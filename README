@@ -62,6 +62,15 @@ Change from "Default" to "Keep Unreferenced Data (/OPT:NOREF)"
 
 This problem does not exist with dll version of the log4cxx library.
 
+Unitary Tests
+=============
+You will need to install
+* cppunit (http://cppunit.sourceforge.net/)
+* boost regex (http://www.boost.org/)
+
+Unix : run "make check"
+Windows : run msvc/tests/runtests.bat
+
 Performance Tests
 =================
 Just run performance/logging.sh.
