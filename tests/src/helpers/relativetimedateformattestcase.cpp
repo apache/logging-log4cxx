@@ -22,6 +22,7 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../insertwide.h"
+#include <apr_time.h>
 
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))

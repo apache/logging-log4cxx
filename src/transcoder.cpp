@@ -30,14 +30,14 @@ using namespace log4cxx::helpers;
 #if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
 
 
-#if !defined(_GCC_VER_)
+#if !defined(__GCC__)
 namespace log4cxx {
       struct mbstate_t {};
       size_t mbsnrtowcs(wchar_t *dest, const char **src,
           size_t srclenin, size_t destlenin, mbstate_t *ps) {
           size_t destlen = destlenin;
           size_t srclen = srclenin;
-          size_t mblen = -1;
+          size_t mblen;
           while(srclen > 0 && destlen > 0) {
             mblen = mbtowc(dest, *src, srclen);
             if (mblen <= 0) break;
@@ -56,10 +56,16 @@ namespace log4cxx {
           size_t destlenin, mbstate_t *ps) {
           size_t destlen = destlenin;
           size_t srclen = srclenin;
-          size_t mblen = -1;
+          size_t mblen;
           char buf[12];
           while(srclen > 0 && destlen > 0) {
             mblen = wctomb(buf, **src);
+            //
+            //   not enough space
+            //
+            if (mblen > destlen) {
+              return (size_t) -1;
+            }
             if (mblen <= 0) break;
             *src++;
             memcpy(dest, buf, mblen);

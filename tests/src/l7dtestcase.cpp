@@ -34,65 +34,65 @@ using namespace log4cxx::helpers;
 
 class L7dTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(L7dTestCase);
-		CPPUNIT_TEST(test1);
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE(L7dTestCase);
+                CPPUNIT_TEST(test1);
+        CPPUNIT_TEST_SUITE_END();
 
-	LoggerPtr root;
-	ResourceBundlePtr bundles[3];
+        LoggerPtr root;
+        ResourceBundlePtr bundles[3];
 
 public:
-	void setUp()
-	{
-		bundles[0] =
-			ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
-		CPPUNIT_ASSERT(bundles[0] != 0);
+        void setUp()
+        {
+                bundles[0] =
+                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
+                CPPUNIT_ASSERT(bundles[0] != 0);
 
-		bundles[1] =
-			ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
-		CPPUNIT_ASSERT(bundles[1] != 0);
+                bundles[1] =
+                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
+                CPPUNIT_ASSERT(bundles[1] != 0);
 
-		bundles[2] =
-			ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
-		CPPUNIT_ASSERT(bundles[2] != 0);
+                bundles[2] =
+                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
+                CPPUNIT_ASSERT(bundles[2] != 0);
 
-		root = Logger::getRootLogger();
-	}
+                root = Logger::getRootLogger();
+        }
 
-	void tearDown()
-	{
-		root->getLoggerRepository()->resetConfiguration();
-	}
+        void tearDown()
+        {
+                root->getLoggerRepository()->resetConfiguration();
+        }
 
-	void test1()
-	{
-		PropertyConfigurator::configure(LOG4CXX_FILE("input/l7d1.properties"));
+        void test1()
+        {
+                PropertyConfigurator::configure(LOG4CXX_FILE("input/l7d1.properties"));
 
-        log4cxx::helpers::Pool pool;
- 
-		for (int i = 0; i < 3; i++)
-		{
-			root->setResourceBundle(bundles[i]);
+                log4cxx::helpers::Pool pool;
 
-			LOG4CXX_L7DLOG(root, Level::DEBUG, _T("bogus1"));
-			LOG4CXX_L7DLOG(root, Level::INFO, _T("test"));
-			LOG4CXX_L7DLOG(root, Level::WARN, _T("hello_world"));
+                for (int i = 0; i < 3; i++)
+                {
+                        root->setResourceBundle(bundles[i]);
+
+                        LOG4CXX_L7DLOG(root, Level::DEBUG, _T("bogus1"));
+                        LOG4CXX_L7DLOG(root, Level::INFO, _T("test"));
+                        LOG4CXX_L7DLOG(root, Level::WARN, _T("hello_world"));
 
 
-            StringBuffer os;
-            os << i + 1;
-			LOG4CXX_L7DLOG2(root, Level::DEBUG, _T("msg1"), os.str(),
-				 _T("log4j"));
-			LOG4CXX_L7DLOG2(root, Level::getError(), _T("bogusMsg"), os.str(),
-				 _T("log4j"));
-			LOG4CXX_L7DLOG2(root, Level::getError(), _T("msg1"), os.str(),
-				 _T("log4j"));
-			LOG4CXX_L7DLOG(root, Level::INFO, _T("bogus2"));
-		}
+                        StringBuffer os;
+                        os << i + 1;
+                        LOG4CXX_L7DLOG2(root, Level::DEBUG, _T("msg1"), os.str().c_str(),
+                                 _T("log4j"));
+                        LOG4CXX_L7DLOG2(root, Level::getError(), _T("bogusMsg"), os.str().c_str(),
+                                 _T("log4j"));
+                        LOG4CXX_L7DLOG2(root, Level::getError(), _T("msg1"), os.str().c_str(),
+                                 _T("log4j"));
+                        LOG4CXX_L7DLOG(root, Level::INFO, _T("bogus2"));
+                }
 
- 		CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),
-        LOG4CXX_FILE("witness/l7d.1")));
-	}
+                CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),
+                LOG4CXX_FILE("witness/l7d.1")));
+        }
 
 };
 

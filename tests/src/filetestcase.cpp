@@ -16,7 +16,9 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/file.h>
-
+#include "insertwide.h"
+#include <log4cxx/helpers/pool.h>
+#include <apr_errno.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -24,65 +26,60 @@ using namespace log4cxx::helpers;
 
 class FileTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(FileTestCase);
-		CPPUNIT_TEST(defaultConstructor);
-		CPPUNIT_TEST(defaultExists);
-		CPPUNIT_TEST(defaultRead);
-        CPPUNIT_TEST(propertyRead);
-        CPPUNIT_TEST(fileWrite1);
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE(FileTestCase);
+                CPPUNIT_TEST(defaultConstructor);
+                CPPUNIT_TEST(defaultExists);
+                CPPUNIT_TEST(defaultRead);
+                CPPUNIT_TEST(propertyRead);
+                CPPUNIT_TEST(fileWrite1);
+        CPPUNIT_TEST_SUITE_END();
 
 public:
-	void defaultConstructor()
-	{
-        File defFile;
-        CPPUNIT_ASSERT_EQUAL(std::string(), defFile.getMBCSName());
-        CPPUNIT_ASSERT_EQUAL(LogString(), defFile.getName());
-	}
+        void defaultConstructor() {
+          File defFile;
+          CPPUNIT_ASSERT_EQUAL((std::string) "", defFile.getMBCSName());
+          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), defFile.getName());
+        }
 
-	void defaultExists()
-	{
-        File defFile;
-        CPPUNIT_ASSERT_EQUAL(false, defFile.exists());
-	}
+        void defaultExists() {
+          File defFile;
+          CPPUNIT_ASSERT_EQUAL(false, defFile.exists());
+        }
 
 
-	void defaultRead()
-	{
-        File defFile;
-        Pool pool;
-        CPPUNIT_ASSERT_EQUAL(LogString, defFile.read(pool));
-	}
+        void defaultRead() {
+          File defFile;
+          Pool pool;
+          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), defFile.read(pool));
+        }
 
 
-	void defaultWrite()
-	{
-        File defFile;
-        Pool pool;
-        LogString greeting("Hello, World");
-        CPPUNIT_ASSERT(defFile.write(greeting, pool) != APR_SUCCESS);
-	}
+        void defaultWrite() {
+          File defFile;
+          Pool pool;
+          LogString greeting(LOG4CXX_STR("Hello, World"));
+          CPPUNIT_ASSERT(defFile.write(greeting, pool) != APR_SUCCESS);
+        }
 
-    void propertyRead() {
-        File propFile("input//patternLayout1.properties");
-        Pool pool;
-        LogString props(propFile.read(pool));
-        LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender\n"));
-        CPPUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length());
-    }
+        void propertyRead() {
+          File propFile("input//patternLayout1.properties");
+          Pool pool;
+          LogString props(propFile.read(pool));
+          LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender\n"));
+          CPPUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
+        }
 
 
-    void fileWrite1() {
-        File outFile("output//fileWrite1.txt");
-        Pool pool;
-        LogString greeting(LOG4CXX_STR("Hello, World\n"));
-        apr_status_t stat = outFile.write(greeting, pool);
-        CPPUNIT_ASSERT_EQUAL(0, stat);
+        void fileWrite1() {
+          File outFile("output//fileWrite1.txt");
+          Pool pool;
+          LogString greeting(LOG4CXX_STR("Hello, World\n"));
+          apr_status_t stat = outFile.write(greeting, pool);
+          CPPUNIT_ASSERT_EQUAL(0, stat);
 
-        LogString reply(outFile.read(pool));
-        CPPUNIT_ASSERT_EQUAL(greeting, reply);
-    }
-
+          LogString reply(outFile.read(pool));
+          CPPUNIT_ASSERT_EQUAL(greeting, reply);
+        }
 };
 
 
