@@ -219,6 +219,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                     <exclude name="**/gnomexml.h"/>
                     <exclude name="**/tchar.h"/>
                     <exclude name="**/config_msvc.h"/>
+                    <exclude name="log4cxx/rollingfileappender.h"/>
              </fileset>
         </copy>
         <foreach target="make-header-check" param="header">
