@@ -22,31 +22,33 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-tstring AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT = _T("ISO8601");
-tstring AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT = _T("ABSOLUTE");
-tstring AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT = _T("DATE");
+String AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT = _T("ISO8601");
+String AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT = _T("ABSOLUTE");
+String AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT = _T("DATE");
 
-DateFormat::DateFormat(const tstring& dateFormat, const tstring& timeZone)
+DateFormat::DateFormat(const String& dateFormat, const String& timeZone)
  : dateFormat(dateFormat), timeZone(timeZone)
 {
 	size_t pos = this->dateFormat.find(_T("%Q"));
-	if (pos != tstring::npos)
+	if (pos != String::npos)
 	{
 		this->dateFormat = this->dateFormat.substr(0, pos) +
-			_T("%") + this->dateFormat.substr(pos + 1);
+			_T("%") + this->dateFormat.substr(pos);
 	}
 }
 
-void DateFormat::format(tostream& os, int64_t timeMillis)
+void DateFormat::format(ostream& os, int64_t timeMillis)
 {
     TCHAR buffer[255];
 
-	time_t time = (time_t)(timeMillis/1000);
-	const tm * tm = gmtime(&time);
-
 	if (!timeZone.empty())
 	{
+		USES_CONVERSION;
+		::setenv("TZ", T2A(timeZone.c_str()), 1);
 	}
+
+	time_t time = (time_t)(timeMillis/1000);
+	const tm * tm = ::localtime(&time);
 
 #ifdef UNICODE
 	size_t len = ::wcsftime(buffer, 255, dateFormat.c_str(), tm);
@@ -55,10 +57,10 @@ void DateFormat::format(tostream& os, int64_t timeMillis)
 #endif
 
 	buffer[len] = '\0';
-	tstring result(buffer);
+	String result(buffer);
 
 	size_t pos = result.find(_T("%Q"));
-	if (pos != tstring::npos)
+	if (pos != String::npos)
 	{
 		os << result.substr(0, pos)
 		   << std::setw(3) << std::setfill(_T('0')) << (long)(timeMillis % 1000)
