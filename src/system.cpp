@@ -25,6 +25,7 @@
 #endif
 
 #include <time.h>
+#include <log4cxx/helpers/properties.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -49,6 +50,11 @@ int64_t System::currentTimeMillis()
 
 String System::getProperty(const String& key)
 {
+	if (key.empty())
+	{
+		throw IllegalArgumentException(_T("key is empty"));
+	}
+	
 	USES_CONVERSION;
 	char * value = ::getenv(T2A(key.c_str()));
 	if (value == 0)
@@ -58,5 +64,29 @@ String System::getProperty(const String& key)
 	else
 	{
 		return A2T(value);
+	}
+}
+
+void System::setProperty(const String& key, const String& value)
+{
+	if (key.empty())
+	{
+		throw IllegalArgumentException(_T("key is empty"));
+	}
+	
+	String strEnv = key + _T("=") + value;
+	USES_CONVERSION;
+	::putenv((char *)T2A(strEnv.c_str()));
+}
+
+void System::setProperties(const Properties& props)
+{
+	std::vector<String> propertyNames = props.propertyNames();
+	
+	for (std::vector<String>::iterator it = propertyNames.begin();
+	it != propertyNames.end(); it++)
+	{
+		const String& propertyName = *it;
+		setProperty(propertyName, props.getProperty(propertyName));
 	}
 }
