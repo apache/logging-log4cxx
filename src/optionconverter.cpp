@@ -35,7 +35,9 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+#ifdef HAVE_XML
 using namespace log4cxx::xml;
+#endif
 
 String OptionConverter::DELIM_START = _T("${");
 TCHAR OptionConverter::DELIM_STOP  = _T('}');
@@ -381,11 +383,13 @@ void OptionConverter::selectAndConfigure(const String& configFileName,
 	ConfiguratorPtr configurator;
 	String clazz = _clazz;
 	
+#ifdef HAVE_XML
 	if(clazz.empty() && !configFileName.empty() 
 		&& StringHelper::endsWith(configFileName, _T(".xml")))
 	{
 		clazz = DOMConfigurator::getStaticClass().toString();
 	}
+#endif
 	
 	if(!clazz.empty())
 	{

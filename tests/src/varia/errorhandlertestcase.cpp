@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#include <log4cxx/config.h>
+
+#ifdef HAVE_XML
+
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -110,3 +114,5 @@ public:
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(ErrorHandlerTestCase);
+
+#endif //HAVE_XML

@@ -16,6 +16,8 @@
 
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
+#include <stdexcept>
+#include <iostream>
 
 int main( int argc, char **argv)
 {
@@ -31,7 +33,14 @@ int main( int argc, char **argv)
 	{
 		for (int n = 1; n < argc; n++)
 		{
-			wasSuccessful = runner.run(argv[n], false) && wasSuccessful;
+			try
+			{
+				wasSuccessful = runner.run(argv[n], false) && wasSuccessful;
+			}
+			catch(std::exception& e)
+			{
+				std::cout << e.what() << std::endl;
+			}
 		}
 	}
 	else

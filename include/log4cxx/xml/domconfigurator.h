@@ -18,6 +18,9 @@
 #define _LOG4CXX_XML_DOM_CONFIGURATOR_H
 
 #include <log4cxx/config.h>
+
+#ifdef HAVE_XML
+
 #include <log4cxx/helpers/tchar.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
@@ -217,5 +220,5 @@ files. You can enable log4cxx internal logging by setting the
 	}  // namespace xml
 }; // namespace log4cxx
 
+#endif // HAVE_XML
 #endif // _LOG4CXX_XML_DOM_CONFIGURATOR_H
-

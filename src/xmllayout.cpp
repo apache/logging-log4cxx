@@ -125,3 +125,4 @@ void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
 
 	output << _T("</log4j:event>") << std::endl;
 }
+

@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#include <log4cxx/config.h>
+
+#ifdef HAVE_XML
+
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include "xlogger.h"
@@ -57,7 +61,7 @@ public:
 	{
 		DOMConfigurator::configure(_T("input/xml/customLogger")
 			+number+_T(".xml"));
-
+		
 		int i = -1;
 		LOG4CXX_TRACE(logger, _T("Message ") << ++i);
 		LOG4CXX_DEBUG(logger, _T("Message ") << ++i);
@@ -72,3 +76,5 @@ public:
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XLoggerTestCase);
+
+#endif //HAVE_XML

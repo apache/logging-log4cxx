@@ -32,7 +32,9 @@
 #include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
+#ifdef HAVE_XML
 using namespace log4cxx::xml;
+#endif
 using namespace log4cxx::net;
 using namespace log4cxx::helpers;
 
@@ -49,18 +51,14 @@ void init(const String& portStr, const String& configFile)
 	USES_CONVERSION;
 	port = ttol(portStr.c_str());
 
+#ifdef HAVE_XML
 	// tests if configFile ends with ".xml"
 	if (StringHelper::endsWith(configFile, _T(".xml")))
 	{
-#ifdef WIN32
-		::CoInitialize(0);
-#endif
 		DOMConfigurator::configure(configFile);
-#ifdef WIN32
-		::CoUninitialize();
-#endif
 	} 
 	else
+#endif
 	{
 		PropertyConfigurator::configure(configFile);
 	}
@@ -76,9 +74,8 @@ int main(int argc, char * argv[])
 	else
 	{
 		USES_CONVERSION;
-		init(_T("4560"), _T("logconfig.xml"));
-//		usage(_T("Wrong number of arguments."));
-//		return 1;
+		usage(_T("Wrong number of arguments."));
+		return 1;
 	}
 
 	try
