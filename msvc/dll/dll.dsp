@@ -195,6 +195,18 @@ SOURCE=..\..\src\criticalsection.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\cyclicbuffer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\datagrampacket.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\datagramsocket.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\dateformat.cpp
 # End Source File
 # Begin Source File
@@ -504,6 +516,14 @@ SOURCE=..\..\src\simplelayout.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\simplesocketserver.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\smtpappender.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\socket.cpp
 # End Source File
 # Begin Source File
@@ -533,6 +553,18 @@ SOURCE=..\..\src\socketoutputstream.cpp
 # Begin Source File
 
 SOURCE=..\..\src\stringmatchfilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\stringtokenizer.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\syslogappender.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\syslogwriter.cpp
 # End Source File
 # Begin Source File
 
@@ -599,6 +631,18 @@ SOURCE=..\..\include\log4cxx\helpers\criticalsection.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\helpers\cyclicbuffer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\datagrampacket.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\datagramsocket.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\helpers\dateformat.h
 # End Source File
 # Begin Source File
@@ -620,6 +664,10 @@ SOURCE=..\..\include\log4cxx\helpers\filewatchdog.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\helpers\formattinginfo.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\gnomexml.h
 # End Source File
 # Begin Source File
 
@@ -707,6 +755,14 @@ SOURCE=..\..\include\log4cxx\helpers\stringhelper.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\helpers\stringtokenizer.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\syslogwriter.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\helpers\system.h
 # End Source File
 # Begin Source File
@@ -781,6 +837,10 @@ SOURCE=..\..\include\log4cxx\spi\repositoryselector.h
 
 SOURCE=..\..\include\log4cxx\spi\rootcategory.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\spi\triggeringeventevaluator.h
+# End Source File
 # End Group
 # Begin Group "xml"
 
@@ -799,6 +859,10 @@ SOURCE=..\..\include\log4cxx\xml\xmllayout.h
 # PROP Default_Filter "h"
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\net\smtpappender.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\net\socketappender.h
 # End Source File
 # Begin Source File
@@ -811,7 +875,15 @@ SOURCE=..\..\include\log4cxx\net\socketnode.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\net\syslogappender.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\net\telnetappender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\net\xmlsocketappender.h
 # End Source File
 # End Group
 # Begin Group "varia"
