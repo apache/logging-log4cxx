@@ -77,7 +77,7 @@ namespace log4cxx
 
 		void addAppender(AppenderPtr newAppender);
 
-		void append(const spi::LoggingEvent& event);
+		void append(const spi::LoggingEventPtr& event);
 
 		/**
 		Close this <code>AsyncAppender</code> by interrupting the

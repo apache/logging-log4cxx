@@ -22,16 +22,10 @@
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/level.h>
 
 namespace log4cxx
 {
-	class Level;
-
-	namespace spi
-	{
-		class LoggingEvent;
-	};	
-
 	/**
 	*  Implementation base class for all appenders.
 	*
@@ -52,7 +46,7 @@ namespace log4cxx
 
 		/**
 		There is no level threshold filtering by default.  */
-		const Level * threshold;
+		LevelPtr threshold;
 
 		/**
 		It is assumed and enforced that errorHandler is never null.
@@ -105,7 +99,7 @@ namespace log4cxx
 		method.
 		*/
 	protected:
-		virtual void append(const spi::LoggingEvent& event) = 0;
+		virtual void append(const spi::LoggingEventPtr& event) = 0;
 
 		/**
 		Clear the filters chain.
@@ -152,7 +146,7 @@ namespace log4cxx
 		method for the meaning of this option.
 		*/
 	public:
-		const Level& getThreshold() { return *threshold; }
+		const LevelPtr& getThreshold() { return threshold; }
 
 		/**
 		Check whether the message level is below the appender's
@@ -160,7 +154,7 @@ namespace log4cxx
 		always <code>true</code>.
 		*/
 	public:
-		bool isAsSevereAsThreshold(const Level& level);
+		bool isAsSevereAsThreshold(LevelPtr level);
 
 
 		/**
@@ -169,7 +163,7 @@ namespace log4cxx
 		* AppenderSkeleton#append method.
 		* */
 	public:
-		void doAppend(const spi::LoggingEvent& event);
+		void doAppend(const spi::LoggingEventPtr& event);
 
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.
@@ -202,7 +196,7 @@ namespace log4cxx
 		string, such as "DEBUG", "INFO" and so on.
 		*/
 	public:
-		void setThreshold(const Level& threshold) { this->threshold = &threshold; }
+		void setThreshold(const LevelPtr& threshold);
 	}; // class AppenderSkeleton
 }; // namespace log4cxx
 
