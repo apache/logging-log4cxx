@@ -38,6 +38,7 @@ void * threadProc(void * arg)
 	thread->run();
 	thread->releaseRef();
 	pthread_exit(0);
+	return 0;
 }
 #elif defined(HAVE_MS_THREAD)
 DWORD WINAPI threadProc(void * arg)
@@ -182,6 +183,7 @@ long Thread::InterlockedIncrement(volatile long * val)
 #else
 	return ::InterlockedIncrement(val);
 #endif // _MSC_VER
+	return *val + 1; // unsafe
 #endif
 }
 
@@ -203,5 +205,6 @@ long Thread::InterlockedDecrement(volatile long * val)
 #else
 	return ::InterlockedDecrement(val);
 #endif // _MSC_VER
+	return *val - 1; // unsafe
 #endif
 }
