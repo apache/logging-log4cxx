@@ -21,6 +21,7 @@
 #include <vector>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>
+#include <log4cxx/appender.h>
 
 namespace log4cxx
 {
@@ -28,8 +29,6 @@ namespace log4cxx
     class Appender;
     typedef helpers::ObjectPtrT<Appender> AppenderPtr;
     typedef std::vector<AppenderPtr> AppenderList;
-
-
 
     namespace spi
     {
@@ -50,7 +49,7 @@ namespace log4cxx
             virtual void addAppender(AppenderPtr newAppender) = 0;
 
             /**
-             * Get all previously added appenders as an Enumeration.
+             * Get all previously added appenders as an AppenderList.
              */
             virtual AppenderList getAllAppenders() = 0;
 
