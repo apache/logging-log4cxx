@@ -1,0 +1,5 @@
+DEBUG [1]: debug message
+INFO  [1]: info message
+WARN  [1]: warn message
+ERROR [1]: error message
+FATAL [1]: fatal message
