@@ -20,6 +20,7 @@ liblog4cxx_la_SOURCES = \
         dateformat.cpp \
         defaultcategoryfactory.cpp \
         domconfigurator.cpp \
+        exception.cpp \
         fallbackerrorhandler.cpp \
         file.cpp \
         fileappender.cpp \

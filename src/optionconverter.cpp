@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,36 +39,6 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
 
-
-
-namespace log4cxx {
-  namespace helpers {
-    class MissingBraceException : public IllegalArgumentException {
-    public:
-       MissingBraceException(const LogString& val, size_t openBrace)
-          : val(val), openBrace(openBrace) {
-       }
-
-       MissingBraceException(const MissingBraceException& src)
-          : IllegalArgumentException(src), val(src.val), openBrace(src.openBrace) {
-       }
-
-       ~MissingBraceException() throw() {
-       }
-
-       const char* what() const throw() {
-          return "Missing brace exception";
-       }
-
-
-    private:
-       MissingBraceException& operator=(const MissingBraceException& src);
-       const LogString val;
-       const size_t openBrace;
-    };
-  }
-}
-
 LogString OptionConverter::convertSpecialChars(const LogString& s)
 {
     logchar c;
@@ -76,48 +46,48 @@ LogString OptionConverter::convertSpecialChars(const LogString& s)
 
     LogString::const_iterator i = s.begin();
     while(i != s.end())
-	{
-		c = *i++;
-		if (c == LOG4CXX_STR('\\'))
-		{
-			c =  *i++;
+        {
+                c = *i++;
+                if (c == LOG4CXX_STR('\\'))
+                {
+                        c =  *i++;
 
-			switch (c)
-			{
-			case LOG4CXX_STR('n'):
-				c = LOG4CXX_STR('\n');
-				break;
+                        switch (c)
+                        {
+                        case LOG4CXX_STR('n'):
+                                c = LOG4CXX_STR('\n');
+                                break;
 
-			case LOG4CXX_STR('r'):
-				c = LOG4CXX_STR('\r');
-				break;
+                        case LOG4CXX_STR('r'):
+                                c = LOG4CXX_STR('\r');
+                                break;
 
-			case LOG4CXX_STR('t'):
-				c = LOG4CXX_STR('\t');
-				break;
+                        case LOG4CXX_STR('t'):
+                                c = LOG4CXX_STR('\t');
+                                break;
 
-			case LOG4CXX_STR('f'):
-				c = LOG4CXX_STR('\f');
-				break;
+                        case LOG4CXX_STR('f'):
+                                c = LOG4CXX_STR('\f');
+                                break;
 
-			case LOG4CXX_STR('\b'):
-				c = LOG4CXX_STR('\b');
-				break;
+                        case LOG4CXX_STR('\b'):
+                                c = LOG4CXX_STR('\b');
+                                break;
 
-			case LOG4CXX_STR('\"'):
-				c = LOG4CXX_STR('\"');
-				break;
+                        case LOG4CXX_STR('\"'):
+                                c = LOG4CXX_STR('\"');
+                                break;
 
-			case LOG4CXX_STR('\''):
-				c = LOG4CXX_STR('\'');
-				break;
+                        case LOG4CXX_STR('\''):
+                                c = LOG4CXX_STR('\'');
+                                break;
 
-			case LOG4CXX_STR('\\'):
-				c = LOG4CXX_STR('\\');
-				break;
-			}
-		}
-		sbuf.append(1, c);
+                        case LOG4CXX_STR('\\'):
+                                c = LOG4CXX_STR('\\');
+                                break;
+                        }
+                }
+                sbuf.append(1, c);
     }
     return sbuf;
 }
@@ -139,39 +109,39 @@ bool OptionConverter::toBoolean(const LogString& value, bool dEfault)
           }
         }
 
-	return dEfault;
+        return dEfault;
 }
 
 int OptionConverter::toInt(const LogString& value, int dEfault)
 {
         LogString trimmed(StringHelper::trim(value));
-	if (trimmed.empty())
-	{
-		return dEfault;
-	}
+        if (trimmed.empty())
+        {
+                return dEfault;
+        }
         LOG4CXX_ENCODE_CHAR(cvalue, trimmed);
 
-	return (int) atol(cvalue.c_str());
+        return (int) atol(cvalue.c_str());
 }
 
 long OptionConverter::toFileSize(const LogString& s, long dEfault)
 {
-	if(s.empty())
-	{
-		return dEfault;
-	}
+        if(s.empty())
+        {
+                return dEfault;
+        }
 
-	size_t index = s.find_first_of(LOG4CXX_STR("bB"));
+        size_t index = s.find_first_of(LOG4CXX_STR("bB"));
         if (index != LogString::npos && index > 0) {
           long multiplier = 1;
           index--;
           if (s[index] == LOG4CXX_STR('k') || s[index] == LOG4CXX_STR('K')) {
-		multiplier = 1024;
-	  } else if(s[index] == LOG4CXX_STR('m') || s[index] == LOG4CXX_STR('M')) {
-		multiplier = 1024*1024;
-	  } else if(s[index] == LOG4CXX_STR('g') || s[index] == LOG4CXX_STR('G')) {
-		multiplier = 1024*1024*1024;
-	  }
+                multiplier = 1024;
+          } else if(s[index] == LOG4CXX_STR('m') || s[index] == LOG4CXX_STR('M')) {
+                multiplier = 1024*1024;
+          } else if(s[index] == LOG4CXX_STR('g') || s[index] == LOG4CXX_STR('G')) {
+                multiplier = 1024*1024*1024;
+          }
           return toInt(s.substr(0, index), 1) * multiplier;
         }
 
@@ -180,236 +150,242 @@ long OptionConverter::toFileSize(const LogString& s, long dEfault)
 
 LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
 {
-	LogString value(props.getProperty(key));
+        LogString value(props.getProperty(key));
 
-	if(value.empty())
-		return value;
+        if(value.empty())
+                return value;
 
-	try
-	{
-		return substVars(value, props);
-	}
-	catch(IllegalArgumentException& e)
-	{
+        try
+        {
+                return substVars(value, props);
+        }
+        catch(IllegalArgumentException& e)
+        {
                 LogLog::error(((LogString) LOG4CXX_STR("Bad option value ["))
                      + value + LOG4CXX_STR("]."), e);
-		return value;
-	}
+                return value;
+        }
 }
 
 LogString OptionConverter::substVars(const LogString& val, Properties& props)
 {
-	LogString sbuf;
+        LogString sbuf;
         static const LogString delimStart(LOG4CXX_STR("${"));
         const logchar delimStop = LOG4CXX_STR('}');
         const size_t DELIM_START_LEN = 2;
         const size_t DELIM_STOP_LEN = 1;
 
-	int i = 0;
-	int j, k;
+        int i = 0;
+        int j, k;
 
-	while(true)
-	{
-		j = val.find(delimStart, i);
-		if(j == -1)
-		{
-			// no more variables
-			if(i==0)
-			{ // this is a simple string
-				return val;
-			}
-			else
-			{ // add the tail string which contails no variables and return the result.
-				sbuf.append(val.substr(i, val.length() - i));
-				return sbuf;
-			}
-		}
-		else
-		{
-			sbuf.append(val.substr(i, j - i));
-			k = val.find(delimStop, j);
-			if(k == -1)
-			{
-				throw MissingBraceException(val, j);
-			}
-			else
-			{
-				j += DELIM_START_LEN;
-				LogString key = val.substr(j, k - j);
-				// first try in System properties
-				LogString replacement = getSystemProperty(key, LOG4CXX_STR(""));
-				// then try props parameter
-				if(replacement.empty())
-				{
-					replacement = props.getProperty(key);
-				}
+        while(true)
+        {
+                j = val.find(delimStart, i);
+                if(j == -1)
+                {
+                        // no more variables
+                        if(i==0)
+                        { // this is a simple string
+                                return val;
+                        }
+                        else
+                        { // add the tail string which contails no variables and return the result.
+                                sbuf.append(val.substr(i, val.length() - i));
+                                return sbuf;
+                        }
+                }
+                else
+                {
+                        sbuf.append(val.substr(i, j - i));
+                        k = val.find(delimStop, j);
+                        if(k == -1)
+                        {
+                            std::string msg(1, '\"');
+                            Transcoder::encode(val, msg);
+                            msg.append("\" has no closing brace. Opening brace at position ");
+                            Pool p;
+                            StringHelper::toString(j, p, msg);
+                            msg.append(1, '.');
+                            throw IllegalArgumentException(msg);
+                        }
+                        else
+                        {
+                                j += DELIM_START_LEN;
+                                LogString key = val.substr(j, k - j);
+                                // first try in System properties
+                                LogString replacement = getSystemProperty(key, LOG4CXX_STR(""));
+                                // then try props parameter
+                                if(replacement.empty())
+                                {
+                                        replacement = props.getProperty(key);
+                                }
 
-				if(!replacement.empty())
-				{
-					// Do variable substitution on the replacement string
-					// such that we can solve "Hello ${x2}" as "Hello p1"
-					// the where the properties are
-					// x1=p1
-					// x2=${x1}
-					LogString recursiveReplacement = substVars(replacement, props);
-					sbuf.append(recursiveReplacement);
-				}
-				i = k + DELIM_STOP_LEN;
-			}
-		}
-	}
+                                if(!replacement.empty())
+                                {
+                                        // Do variable substitution on the replacement string
+                                        // such that we can solve "Hello ${x2}" as "Hello p1"
+                                        // the where the properties are
+                                        // x1=p1
+                                        // x2=${x1}
+                                        LogString recursiveReplacement = substVars(replacement, props);
+                                        sbuf.append(recursiveReplacement);
+                                }
+                                i = k + DELIM_STOP_LEN;
+                        }
+                }
+        }
 }
 
 LogString OptionConverter::getSystemProperty(const LogString& key, const LogString& def)
 {
-	if (!key.empty())
-	{
-		LogString value(System::getProperty(key));
+        if (!key.empty())
+        {
+                LogString value(System::getProperty(key));
 
-		if (!value.empty())
-		{
-			return value;
-		}
-	}
+                if (!value.empty())
+                {
+                        return value;
+                }
+        }
         return def;
 }
 
 const LevelPtr& OptionConverter::toLevel(const LogString& value,
-	const LevelPtr& defaultValue)
+        const LevelPtr& defaultValue)
 {
     size_t hashIndex = value.find(LOG4CXX_STR("#"));
 
-	if (hashIndex == LogString::npos)
-	{
-		if (value.empty())
-		{
-			return defaultValue;
-		}
-		else
-		{
-			LogLog::debug(
+        if (hashIndex == LogString::npos)
+        {
+                if (value.empty())
+                {
+                        return defaultValue;
+                }
+                else
+                {
+                        LogLog::debug(
                 ((LogString) LOG4CXX_STR("OptionConverter::toLevel: no class name specified, level=["))
                          + value
                          +LOG4CXX_STR("]"));
-			// no class name specified : use standard Level class
-			return Level::toLevel(value, defaultValue);
-		}
-	}
+                        // no class name specified : use standard Level class
+                        return Level::toLevel(value, defaultValue);
+                }
+        }
 
-	LogString clazz = value.substr(hashIndex + 1);
-	LogString levelName = value.substr(0, hashIndex);
+        LogString clazz = value.substr(hashIndex + 1);
+        LogString levelName = value.substr(0, hashIndex);
         LogLog::debug(((LogString) LOG4CXX_STR("OptionConverter::toLevel: class=["))
            + clazz + LOG4CXX_STR("], level=[") + levelName + LOG4CXX_STR("]"));
 
-	// This is degenerate case but you never know.
-	if (levelName.empty())
-	{
-		return Level::toLevel(value, defaultValue);
-	}
+        // This is degenerate case but you never know.
+        if (levelName.empty())
+        {
+                return Level::toLevel(value, defaultValue);
+        }
 
-	try
-	{
-		Level::LevelClass& levelClass =
-			(Level::LevelClass&)Loader::loadClass(clazz);
-		return levelClass.toLevel(levelName);
-	}
-	catch (ClassNotFoundException&)
-	{
+        try
+        {
+                Level::LevelClass& levelClass =
+                        (Level::LevelClass&)Loader::loadClass(clazz);
+                return levelClass.toLevel(levelName);
+        }
+        catch (ClassNotFoundException&)
+        {
                 LogLog::warn(((LogString) LOG4CXX_STR("custom level class ["))
                    + clazz + LOG4CXX_STR("] not found."));
-	}
-	catch(Exception& oops)
-	{
-		LogLog::warn(
-			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
-			LOG4CXX_STR("] conversion) failed."), oops);
-	}
-	catch(...)
-	{
-		LogLog::warn(
-			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
-			LOG4CXX_STR("] conversion) failed."));
-	}
+        }
+        catch(Exception& oops)
+        {
+                LogLog::warn(
+                        LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
+                        LOG4CXX_STR("] conversion) failed."), oops);
+        }
+        catch(...)
+        {
+                LogLog::warn(
+                        LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
+                        LOG4CXX_STR("] conversion) failed."));
+        }
 
-	return defaultValue;
+        return defaultValue;
 }
 
 
 ObjectPtr OptionConverter::instantiateByKey(Properties& props, const LogString& key,
-	const Class& superClass, const ObjectPtr& defaultValue)
+        const Class& superClass, const ObjectPtr& defaultValue)
 {
-	// Get the value of the property in string form
-	LogString className(findAndSubst(key, props));
-	if(className.empty())
-	{
-		LogLog::error(
+        // Get the value of the property in string form
+        LogString className(findAndSubst(key, props));
+        if(className.empty())
+        {
+                LogLog::error(
                    ((LogString) LOG4CXX_STR("Could not find value for key ")) + key);
-		return defaultValue;
-	}
+                return defaultValue;
+        }
 
-	// Trim className to avoid trailing spaces that cause problems.
-	return OptionConverter::instantiateByClassName(
-		StringHelper::trim(className), superClass, defaultValue);
+        // Trim className to avoid trailing spaces that cause problems.
+        return OptionConverter::instantiateByClassName(
+                StringHelper::trim(className), superClass, defaultValue);
 }
 
 ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
-	const Class& superClass, const ObjectPtr& defaultValue)
+        const Class& superClass, const ObjectPtr& defaultValue)
 {
-	if(!className.empty())
-	{
-		try
-		{
-			const Class& classObj = Loader::loadClass(className);
-			ObjectPtr newObject =  classObj.newInstance();
-			if (!newObject->instanceof(superClass))
-			{
-				return defaultValue;
-			}
+        if(!className.empty())
+        {
+                try
+                {
+                        const Class& classObj = Loader::loadClass(className);
+                        ObjectPtr newObject =  classObj.newInstance();
+                        if (!newObject->instanceof(superClass))
+                        {
+                                return defaultValue;
+                        }
 
-			return newObject;
-		}
-		catch (Exception& e)
-		{
-			LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate class [")) +
+                        return newObject;
+                }
+                catch (Exception& e)
+                {
+                        LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate class [")) +
                                 className + LOG4CXX_STR("]."), e);
-		}
-	}
-	return defaultValue;
+                }
+        }
+        return defaultValue;
 }
 
 void OptionConverter::selectAndConfigure(const File& configFileName,
-	 const LogString& _clazz, spi::LoggerRepositoryPtr& hierarchy)
+         const LogString& _clazz, spi::LoggerRepositoryPtr& hierarchy)
 {
-	ConfiguratorPtr configurator;
-	LogString clazz = _clazz;
+        ConfiguratorPtr configurator;
+        LogString clazz = _clazz;
 
 #if 0 // LOG4CXX_HAVE_XML
-	if(clazz.empty() && !configFileName.getName().empty()
-		&& StringHelper::endsWith(configFileName, LOG4CXX_STR(".xml")))
-	{
+        if(clazz.empty() && !configFileName.getName().empty()
+                && StringHelper::endsWith(configFileName, LOG4CXX_STR(".xml")))
+        {
 //		clazz = DOMConfigurator::getStaticClass().toString();
-	}
+        }
 #endif
 
-	if(!clazz.empty())
-	{
-		LogLog::debug(
+        if(!clazz.empty())
+        {
+                LogLog::debug(
                    ((LogString) LOG4CXX_STR("Preferred configurator class: ")) + clazz);
-		configurator = instantiateByClassName(clazz,
-			Configurator::getStaticClass(),
-			0);
-		if(configurator == 0)
-		{
-			LogLog::error(
+                configurator = instantiateByClassName(clazz,
+                        Configurator::getStaticClass(),
+                        0);
+                if(configurator == 0)
+                {
+                        LogLog::error(
                                 ((LogString) LOG4CXX_STR("Could not instantiate configurator ["))
-				 + clazz + LOG4CXX_STR("]."));
-			return;
-		}
-	}
-	else
-	{
-		configurator = new PropertyConfigurator();
-	}
+                                 + clazz + LOG4CXX_STR("]."));
+                        return;
+                }
+        }
+        else
+        {
+                configurator = new PropertyConfigurator();
+        }
 
-	configurator->doConfigure(configFileName, hierarchy);
+        configurator->doConfigure(configFileName, hierarchy);
 }

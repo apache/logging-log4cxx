@@ -52,11 +52,11 @@ void XMLLayout::format(LogString& output,
         output.append(LOG4CXX_STR("<log4j:event logger=\""));
         output.append(event->getLoggerName());
         output.append(LOG4CXX_STR("\" timestamp=\""));
-        output.append(StringHelper::toString(event->getTimeStamp()/1000, p));
+        output.append(StringHelper::toString(event->getTimeStamp()/1000L, p));
         output.append(LOG4CXX_STR("\" level=\""));
         output.append(event->getLevel()->toString());
         output.append(LOG4CXX_STR("\" thread=\""));
-        output.append(StringHelper::toString(event->getThreadId(), p));
+        output.append(event->getThreadName());
         output.append(LOG4CXX_STR("\">\n"));
 
         output.append(LOG4CXX_STR("<log4j:message><![CDATA["));

@@ -51,7 +51,7 @@ void TTCCLayout::format(LogString& output,
         if(threadPrinting)
         {
                 output.append(1, LOG4CXX_STR('['));
-                output.append(StringHelper::toString(event->getThreadId(), p));
+                output.append(event->getThreadName());
                 output.append(LOG4CXX_STR("] "));
         }
 

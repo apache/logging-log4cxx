@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,6 +42,7 @@ namespace log4cxx
         * <code>NA</code> is returned. Current value of this string constant is <b>?</b>.
         */
         static const char * const NA;
+        static const char * const NA_METHOD;
 
         static const LocationInfo& getLocationUnavailable();
 
@@ -53,8 +54,7 @@ namespace log4cxx
         *       location info for current code site
         */
         LocationInfo( const char * const fileName,
-                      const char * const className,
-                      const char * const methodName,
+                      const char * const functionName,
                       int lineNumber);
 
        /**
@@ -96,7 +96,7 @@ namespace log4cxx
         int getLineNumber() const;
 
         /** Returns the method name of the caller. */
-        const char * getMethodName() const;
+        const std::string getMethodName() const;
 
         private:
         /** Caller's line number. */
@@ -104,9 +104,6 @@ namespace log4cxx
 
         /** Caller's file name. */
         const char * fileName;
-
-        /** Caller's fully qualified class name. */
-        const char * className;
 
         /** Caller's method name. */
         const char * methodName;
@@ -116,7 +113,7 @@ namespace log4cxx
 
 
       class LOG4CXX_EXPORT LocationFlush : public LocationInfo {
-      	public:
+        public:
        /**
         *   Constructor.
         *   @remarks Used by LOG4CXX_LOCATION_FLUSH to generate
@@ -124,10 +121,9 @@ namespace log4cxx
         *       flush a logging stream
         */
         LocationFlush( const char * const fileName,
-                      const char * const className,
                       const char * const methodName,
                       int lineNumber )
-             : LocationInfo( fileName, className, methodName, lineNumber ) {
+             : LocationInfo( fileName, methodName, lineNumber ) {
         }
       };
     }
@@ -135,47 +131,13 @@ namespace log4cxx
 }
 
   #if !defined(LOG4CXX_LOCATION)
-    #if defined(__PRETTY_FUNCTION__)
+      #define __LOG4CXX_FUNC__ __PRETTY_FUNCTION__
       #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
-           __PRETTY_FUNCTION__,                                              \
-           __func__,                                                         \
+           __LOG4CXX_FUNC__,                                                         \
            __LINE__)
       #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
-           __PRETTY_FUNCTION__,                                              \
-           __func__,                                                         \
+           __LOG4CXX_FUNC__,                                                         \
            __LINE__)
-    #else
-      #if defined(__FUNCSIG__)
-        #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
-             __FUNCSIG__,                                                      \
-             __FUNCTION__,                                                     \
-             __LINE__)
-        #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
-             __FUNCSIG__,                                                      \
-             __FUNCTION__,                                                     \
-             __LINE__)
-      #else
-        #if defined(__func__)
-          #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
-             ::log4cxx::spi::location::LocationInfo::NA,                       \
-             __func__,                                                         \
-             __LINE__)
-          #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
-             ::log4cxx::spi::location::LocationInfo::NA,                       \
-             __func__,                                                         \
-             __LINE__)
-        #else
-          #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
-             ::log4cxx::spi::location::LocationInfo::NA,                       \
-             ::log4cxx::spi::location::LocationInfo::NA,                                                         \
-             __LINE__)
-          #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
-             ::log4cxx::spi::location::LocationInfo::NA,                       \
-             ::log4cxx::spi::location::LocationInfo::NA,                                                         \
-             __LINE__)
-          #endif
-        #endif
-    #endif
   #endif
 
 #endif //_LOG4CXX_SPI_LOCATION_LOCATIONINFO_H

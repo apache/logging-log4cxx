@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -411,7 +411,7 @@ void PatternParser::BasicPatternConverter::convert(LogString& sbuf,
                   StringHelper::toString((event->getTimeStamp() - LoggingEvent::getStartTime())/1000, pool));
                 break;
         case THREAD_CONVERTER:
-                sbuf.append(StringHelper::toString(event->getThreadId(), pool));
+                sbuf.append(event->getThreadName());
                 break;
         case LEVEL_CONVERTER:
                 sbuf.append(event->getLevel()->toString());

@@ -22,6 +22,26 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace boost;
 
+UnexpectedFormatException::UnexpectedFormatException(const LogString& msg)
+    : Exception(formatMessage(msg)) {
+}
+
+UnexpectedFormatException::UnexpectedFormatException(const UnexpectedFormatException& src)
+     : Exception(src) {
+}
+
+UnexpectedFormatException& UnexpectedFormatException::operator=(const UnexpectedFormatException& src) {
+      Exception::operator=(src);
+      return *this;
+}
+
+std::string UnexpectedFormatException::formatMessage(const LogString& msg) {
+      std::string s;
+      Transcoder::encode(msg, s);
+      return s;
+}
+
+
 std::string Filter::merge(const std::string& pattern,
     const std::string& in, const std::string& fmt)
 {

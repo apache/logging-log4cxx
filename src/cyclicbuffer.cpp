@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 #include <log4cxx/helpers/cyclicbuffer.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -31,10 +33,14 @@ The <code>maxSize</code> argument must a positive integer.
 CyclicBuffer::CyclicBuffer(int maxSize)
 : ea(maxSize), first(0), last(0), numElems(0), maxSize(maxSize)
 {
-	if(maxSize < 1)
-	{
-		throw new IllegalArgumentException();
-	}
+        if(maxSize < 1)
+        {
+            std::string msg("The maxSize argument (");
+            Pool p;
+            StringHelper::toString(maxSize, p, msg);
+            msg.append(") is not a positive integer.");
+            throw IllegalArgumentException(msg);
+        }
  }
 
 CyclicBuffer::~CyclicBuffer()
@@ -46,20 +52,20 @@ Add an <code>event</code> as the last event in the buffer.
 */
 void CyclicBuffer::add(const spi::LoggingEventPtr& event)
 {
-	ea[last] = event;
-	if(++last == maxSize)
-	{
-		last = 0;
-	}
+        ea[last] = event;
+        if(++last == maxSize)
+        {
+                last = 0;
+        }
 
-	if(numElems < maxSize)
-	{
-		numElems++;
-	}
-	else if(++first == maxSize)
-	{
-		first = 0;
-	}
+        if(numElems < maxSize)
+        {
+                numElems++;
+        }
+        else if(++first == maxSize)
+        {
+                first = 0;
+        }
  }
 
 
@@ -70,10 +76,10 @@ currently in the buffer, then <code>null</code> is returned.
 */
 spi::LoggingEventPtr CyclicBuffer::get(int i)
 {
-	if(i < 0 || i >= numElems)
-		return 0;
+        if(i < 0 || i >= numElems)
+                return 0;
 
-	return ea[(first + i) % maxSize];
+        return ea[(first + i) % maxSize];
 }
 
 /**
@@ -82,18 +88,18 @@ is removed from the buffer.
 */
 spi::LoggingEventPtr CyclicBuffer::get()
 {
-	LoggingEventPtr r;
-	if(numElems > 0)
-	{
-		numElems--;
-		r = ea[first];
-		ea[first] = 0;
-		if(++first == maxSize)
-		{
-			first = 0;
-		}
-	}
-	return r;
+        LoggingEventPtr r;
+        if(numElems > 0)
+        {
+                numElems--;
+                r = ea[first];
+                ea[first] = 0;
+                if(++first == maxSize)
+                {
+                        first = 0;
+                }
+        }
+        return r;
 }
 
 /**
@@ -102,36 +108,40 @@ Resize the cyclic buffer to <code>newSize</code>.
 */
 void CyclicBuffer::resize(int newSize)
 {
-	if(newSize < 0)
-	{
-		throw new IllegalArgumentException();
-	}
-	if(newSize == numElems)
-		return; // nothing to do
+        if(newSize < 0)
+        {
+             std::string msg("Negative array size [");
+             Pool p;
+             StringHelper::toString(newSize, p, msg);
+             msg.append("] not allowed.");
+             throw IllegalArgumentException(msg);
+        }
+        if(newSize == numElems)
+                return; // nothing to do
 
-	std::vector<LoggingEventPtr> temp(newSize);
+        std::vector<LoggingEventPtr> temp(newSize);
 
-	int loopLen = newSize < numElems ? newSize : numElems;
-	int i;
+        int loopLen = newSize < numElems ? newSize : numElems;
+        int i;
 
-	for(i = 0; i < loopLen; i++)
-	{
-		temp[i] = ea[first];
-		ea[first] = 0;
-		if(++first == numElems)
-		first = 0;
-	}
+        for(i = 0; i < loopLen; i++)
+        {
+                temp[i] = ea[first];
+                ea[first] = 0;
+                if(++first == numElems)
+                first = 0;
+        }
 
-	ea = temp;
-	first = 0;
-	numElems = loopLen;
-	maxSize = newSize;
-	if (loopLen == newSize)
-	{
-		last = 0;
-	}
-	else
-	{
-		last = loopLen;
-	}
+        ea = temp;
+        first = 0;
+        numElems = loopLen;
+        maxSize = newSize;
+        if (loopLen == newSize)
+        {
+                last = 0;
+        }
+        else
+        {
+                last = loopLen;
+        }
 }

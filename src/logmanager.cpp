@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,12 +58,12 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
 {
         if((LogManager::guard != 0) && (LogManager::guard != guard))
         {
-                throw IllegalArgumentException();
+          throw IllegalArgumentException("Attempted to reset the LoggerFactory without possessing the guard.");
         }
 
         if(selector == 0)
         {
-                throw IllegalArgumentException();
+                throw IllegalArgumentException("RepositorySelector must be non-null.");
         }
 
         LogManager::guard = guard;

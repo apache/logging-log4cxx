@@ -124,7 +124,7 @@ public:
                 Pool pool;
                 std::string msg("message");
 
-                for (size_t i = 0; i < LEN; i++) {
+                for (int i = 0; i < LEN; i++) {
                         msg.erase(msg.begin() + 7, msg.end());
                         StringHelper::toString(i, pool, msg);
                         LOG4CXX_DEBUG(root, msg);

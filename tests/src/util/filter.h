@@ -23,42 +23,43 @@
 #define BASIC_PAT LOG4CXX_STR("\\[\\d*\\] (FATAL|ERROR|WARN|INFO|DEBUG)")
 #define ISO8601_PAT LOG4CXX_STR("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}")
 #define ABSOLUTE_DATE_AND_TIME_PAT \
-	LOG4CXX_STR("^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}")
+        LOG4CXX_STR("^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}")
 #define ABSOLUTE_TIME_PAT LOG4CXX_STR("^\\d{2}:\\d{2}:\\d{2},\\d{3}")
 #define RELATIVE_TIME_PAT LOG4CXX_STR("^\\d{1,10}")
 
 namespace log4cxx
 {
-	class UnexpectedFormatException : public helpers::Exception
-	{
-	public:
-		UnexpectedFormatException(const LogString& fmt) {}
-                const char* what() const throw() {
-                   return "UnexpectedFormatException";
-                }
-	};
+        class UnexpectedFormatException : public helpers::Exception
+        {
+        public:
+              UnexpectedFormatException(const LogString& msg);
+              UnexpectedFormatException(const UnexpectedFormatException&);
+              UnexpectedFormatException& operator=(const UnexpectedFormatException&);
+        private:
+              static std::string formatMessage(const LogString& msg);
+        };
 
-	class Filter
-	{
-	public:
-	    Filter() {}
-	    virtual ~Filter() {}
-		virtual LogString filter(const LogString& in)
-			const throw(UnexpectedFormatException) = 0;
+        class Filter
+        {
+        public:
+            Filter() {}
+            virtual ~Filter() {}
+                virtual LogString filter(const LogString& in)
+                        const throw(UnexpectedFormatException) = 0;
 
-		static std::string merge(const std::string& pattern,
-		const std::string& in, const std::string& fmt);
-		static bool match(const std::string& pattern,
+                static std::string merge(const std::string& pattern,
+                const std::string& in, const std::string& fmt);
+                static bool match(const std::string& pattern,
                     const std::string& in);
-		static std::wstring merge(const std::wstring& pattern,
+                static std::wstring merge(const std::wstring& pattern,
                     const std::wstring& in, const std::wstring& fmt);
-		static bool match(const std::wstring& pattern,
+                static bool match(const std::wstring& pattern,
                     const std::wstring& in);
-					
-	private:
-	    Filter(const Filter&);
-	    Filter& operator=(const Filter&);
-	};
+
+        private:
+            Filter(const Filter&);
+            Filter& operator=(const Filter&);
+        };
 }
 
 #endif //_LOG4CXX_TESTS_UTIL_FILTER_H

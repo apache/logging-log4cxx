@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,7 @@
 
 #include <apr_time.h>
 #include <apr_portable.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -44,51 +45,50 @@ log4cxx_time_t LoggingEvent::getStartTime() {
   return log4cxx::helpers::APRInitializer::initialize();
 }
 
-LoggingEvent::LoggingEvent() : 
-   properties(0), 
+LoggingEvent::LoggingEvent() :
+   properties(0),
    ndcLookupRequired(true),
-   mdcCopyLookupRequired(true), 
-   timeStamp(0), 
+   mdcCopyLookupRequired(true),
+   timeStamp(0),
    locationInfo() {
 }
 
 LoggingEvent::LoggingEvent(
-	const LoggerPtr& logger, const LevelPtr& level,
-	const LogString& message, const LocationInfo& locationInfo) : 
-   logger(logger), 
+        const LoggerPtr& logger, const LevelPtr& level,
+        const LogString& message, const LocationInfo& locationInfo) :
+   logger(logger),
    level(level),
-   properties(0), 
+   properties(0),
    ndcLookupRequired(true),
-   mdcCopyLookupRequired(true), 
+   mdcCopyLookupRequired(true),
    message(message),
-   timeStamp(apr_time_now()), 
-   locationInfo(locationInfo) {
-	apr_os_thread_t thread = apr_os_thread_current();
-	threadId = (unsigned long) thread;
+   timeStamp(apr_time_now()),
+   locationInfo(locationInfo),
+   threadName(getCurrentThreadName()) {
 }
 
 LoggingEvent::~LoggingEvent()
 {
-	if (properties != 0)
-	{
-		delete properties;
-	}
+        if (properties != 0)
+        {
+                delete properties;
+        }
 }
 
 const LogString& LoggingEvent::getLoggerName() const
 {
-	return logger->getName();
+        return logger->getName();
 }
 
 const LogString& LoggingEvent::getNDC() const
 {
-	if(ndcLookupRequired)
-	{
-		((LoggingEvent *)this)->ndcLookupRequired = false;
-		((LoggingEvent *)this)->ndc = NDC::get();
-	}
+        if(ndcLookupRequired)
+        {
+                ((LoggingEvent *)this)->ndcLookupRequired = false;
+                ((LoggingEvent *)this)->ndc = NDC::get();
+        }
 
-	return ndc;
+        return ndc;
 }
 
 LogString LoggingEvent::getMDC(const LogString& key) const
@@ -96,16 +96,16 @@ LogString LoggingEvent::getMDC(const LogString& key) const
    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
     // that is associated with the thread.
     if (!mdcCopy.empty())
-	{
-		MDC::Map::const_iterator it = mdcCopy.find(key);
+        {
+                MDC::Map::const_iterator it = mdcCopy.find(key);
 
-		if (it != mdcCopy.end())
-		{
-			if (!it->second.empty())
-			{
-				return it->second;
-			}
-		}
+                if (it != mdcCopy.end())
+                {
+                        if (!it->second.empty())
+                        {
+                                return it->second;
+                        }
+                }
     }
 
     return MDC::get(key);
@@ -114,265 +114,269 @@ LogString LoggingEvent::getMDC(const LogString& key) const
 
 std::set<LogString> LoggingEvent::getMDCKeySet() const
 {
-	std::set<LogString> set;
+        std::set<LogString> set;
 
-	if (!mdcCopy.empty())
-	{
-		MDC::Map::const_iterator it;
-		for (it = mdcCopy.begin(); it != mdcCopy.end(); it++)
-		{
-			set.insert(it->first);
+        if (!mdcCopy.empty())
+        {
+                MDC::Map::const_iterator it;
+                for (it = mdcCopy.begin(); it != mdcCopy.end(); it++)
+                {
+                        set.insert(it->first);
 
-		}
-	}
-	else
-	{
-		MDC::Map m = MDC::getContext();
+                }
+        }
+        else
+        {
+                MDC::Map m = MDC::getContext();
 
-		MDC::Map::const_iterator it;
-		for (it = m.begin(); it != m.end(); it++)
-		{
-			set.insert(it->first);
-		}
-	}
+                MDC::Map::const_iterator it;
+                for (it = m.begin(); it != m.end(); it++)
+                {
+                        set.insert(it->first);
+                }
+        }
 
-	return set;
+        return set;
 }
 
 void LoggingEvent::getMDCCopy() const
 {
-	if(mdcCopyLookupRequired)
-	{
-		((LoggingEvent *)this)->mdcCopyLookupRequired = false;
-		// the clone call is required for asynchronous logging.
-		((LoggingEvent *)this)->mdcCopy = MDC::getContext();
-	}
+        if(mdcCopyLookupRequired)
+        {
+                ((LoggingEvent *)this)->mdcCopyLookupRequired = false;
+                // the clone call is required for asynchronous logging.
+                ((LoggingEvent *)this)->mdcCopy = MDC::getContext();
+        }
 }
 
 LogString LoggingEvent::getProperty(const LogString& key) const
 {
-	if (properties == 0)
-	{
-		return LogString();
-	}
+        if (properties == 0)
+        {
+                return LogString();
+        }
 
-	std::map<LogString, LogString>::const_iterator  it = properties->find(key);
+        std::map<LogString, LogString>::const_iterator  it = properties->find(key);
 
-	if (it != properties->end())
-	{
-		const LogString& p = it->second;
+        if (it != properties->end())
+        {
+                const LogString& p = it->second;
 
-		if (!p.empty())
-		{
-			return p;
-		}
-	}
+                if (!p.empty())
+                {
+                        return p;
+                }
+        }
 
-	return LogString();
+        return LogString();
 }
 
 std::set<LogString> LoggingEvent::getPropertyKeySet() const
 {
-	std::set<LogString> set;
+        std::set<LogString> set;
 
-	if (properties != 0)
-	{
-		std::map<LogString, LogString>::const_iterator it;
-		for (it = properties->begin(); it != properties->end(); it++)
-		{
-			set.insert(it->first);
-		}
-	}
+        if (properties != 0)
+        {
+                std::map<LogString, LogString>::const_iterator it;
+                for (it = properties->begin(); it != properties->end(); it++)
+                {
+                        set.insert(it->first);
+                }
+        }
 
-	return set;
+        return set;
+}
+
+
+const LogString LoggingEvent::getCurrentThreadName() {
+   return StringHelper::formatHex((const void*) apr_os_thread_current());
 }
 
 void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)
 {
 #if 0
-	// fqnOfCategoryClass
-	is->read(fqnOfCategoryClass);
+        // fqnOfCategoryClass
+        is->read(fqnOfCategoryClass);
 
-	// name
-	LogString name;
-	is->read(name);
-	logger = Logger::getLogger(name);
+        // name
+        LogString name;
+        is->read(name);
+        logger = Logger::getLogger(name);
 
-	// level
-	readLevel(is);
+        // level
+        readLevel(is);
 
-	// message
-	is->read(message);
+        // message
+        is->read(message);
 
-	// timeStamp
-	is->read(&timeStamp, sizeof(timeStamp));
+        // timeStamp
+        is->read(&timeStamp, sizeof(timeStamp));
 
-	// file
-	String buffer;
-	is->read(buffer);
+        // file
+        String buffer;
+        is->read(buffer);
 
-	if (!buffer.empty())
-	{
-		USES_CONVERSION;
-		fileFromStream = T2A(buffer.c_str());
-		file = (char *)fileFromStream.c_str();
-	}
+        if (!buffer.empty())
+        {
+                USES_CONVERSION;
+                fileFromStream = T2A(buffer.c_str());
+                file = (char *)fileFromStream.c_str();
+        }
 
-	// line
-	is->read(line);
+        // line
+        is->read(line);
 
-	// ndc
-	is->read(ndc);
-	ndcLookupRequired = false;
+        // ndc
+        is->read(ndc);
+        ndcLookupRequired = false;
 
-	// mdc
-	String key, value;
-	int n, size;
-	is->read(size);
-	for (n = 0; n < size; n++)
-	{
-		is->read(key);
-		is->read(value);
-		mdcCopy[key] = value;
-	}
-	mdcCopyLookupRequired = false;
+        // mdc
+        String key, value;
+        int n, size;
+        is->read(size);
+        for (n = 0; n < size; n++)
+        {
+                is->read(key);
+                is->read(value);
+                mdcCopy[key] = value;
+        }
+        mdcCopyLookupRequired = false;
 
-	// properties
-	is->read(size);
-	for (n = 0; n < size; n++)
-	{
-		is->read(key);
-		is->read(value);
-		setProperty(key, value);
-	}
+        // properties
+        is->read(size);
+        for (n = 0; n < size; n++)
+        {
+                is->read(key);
+                is->read(value);
+                setProperty(key, value);
+        }
 
-	// threadId
-	is->read(threadId);
+        // threadId
+        is->read(threadId);
 #endif
 }
 
 void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& is)
 {
   #if 0
-	int levelInt;
-	is->read(levelInt);
+        int levelInt;
+        is->read(levelInt);
 
     String className;
-	is->read(className);
+        is->read(className);
 
-	if (className.empty())
-	{
-		level = Level::toLevel(levelInt);
-	}
-	else try
-	{
-		Level::LevelClass& levelClass =
-			(Level::LevelClass&)Loader::loadClass(className);
-		level = levelClass.toLevel(levelInt);
-	}
-	catch (Exception& oops)
-	{
-		LogLog::warn(
-			_T("Level deserialization failed, reverting to default."), oops);
-		level = Level::toLevel(levelInt);
-	}
-	catch (...)
-	{
-		LogLog::warn(
-			_T("Level deserialization failed, reverting to default."));
-		level = Level::toLevel(levelInt);
-	}
+        if (className.empty())
+        {
+                level = Level::toLevel(levelInt);
+        }
+        else try
+        {
+                Level::LevelClass& levelClass =
+                        (Level::LevelClass&)Loader::loadClass(className);
+                level = levelClass.toLevel(levelInt);
+        }
+        catch (Exception& oops)
+        {
+                LogLog::warn(
+                        _T("Level deserialization failed, reverting to default."), oops);
+                level = Level::toLevel(levelInt);
+        }
+        catch (...)
+        {
+                LogLog::warn(
+                        _T("Level deserialization failed, reverting to default."));
+                level = Level::toLevel(levelInt);
+        }
 #endif
 }
 
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
-	if (properties == 0)
-	{
-		properties = new std::map<LogString, LogString>;
-	}
+        if (properties == 0)
+        {
+                properties = new std::map<LogString, LogString>;
+        }
 
-	(*properties)[key] = value;
+        (*properties)[key] = value;
 }
 
 void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 {
   #if 0
-	// fqnOfCategoryClass
-	os->write(fqnOfCategoryClass);
+        // fqnOfCategoryClass
+        os->write(fqnOfCategoryClass);
 
-	// name
-	os->write(logger->getName());
+        // name
+        os->write(logger->getName());
 
-	// level
-	writeLevel(os);
+        // level
+        writeLevel(os);
 
-	// message
-	os->write(message);
+        // message
+        os->write(message);
 
-	// timeStamp
-	os->write(&timeStamp, sizeof(timeStamp));
+        // timeStamp
+        os->write(&timeStamp, sizeof(timeStamp));
 
-	// file
-	String buffer;
-	if (file != 0)
-	{
-		USES_CONVERSION;
-		buffer = A2T(file);
-	}
-	os->write(buffer);
+        // file
+        String buffer;
+        if (file != 0)
+        {
+                USES_CONVERSION;
+                buffer = A2T(file);
+        }
+        os->write(buffer);
 
-	// line
-	os->write(line);
+        // line
+        os->write(line);
 
-	// ndc
-	os->write(getNDC());
+        // ndc
+        os->write(getNDC());
 
-	// mdc
-	getMDCCopy();
-	os->write((int)mdcCopy.size());
-	MDC::Map::const_iterator it;
-	for (it = mdcCopy.begin(); it != mdcCopy.end(); it++)
-	{
-		os->write(it->first);
-		os->write(it->second);
-	}
-> tests/src/nt/Makefile
+        // mdc
+        getMDCCopy();
+        os->write((int)mdcCopy.size());
+        MDC::Map::const_iterator it;
+        for (it = mdcCopy.begin(); it != mdcCopy.end(); it++)
+        {
+                os->write(it->first);
+                os->write(it->second);
+        }
 
-	// properties
-	int size = (properties != 0) ? (int)properties->size() : 0;
-	os->write(size);
+        // properties
+        int size = (properties != 0) ? (int)properties->size() : 0;
+        os->write(size);
 
-	if (size > 0)
-	{
-		std::map<String, String>::const_iterator it;
-		for (it = properties->begin(); it != properties->end(); it++)
-		{
-			os->write(it->first);
-			os->write(it->second);
-		}
-	}
+        if (size > 0)
+        {
+                std::map<String, String>::const_iterator it;
+                for (it = properties->begin(); it != properties->end(); it++)
+                {
+                        os->write(it->first);
+                        os->write(it->second);
+                }
+        }
 
-	// threadId
-	os->write(threadId);
+        // threadId
+        os->write(threadId);
 #endif
 }
 
 void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& os) const
 {
 #if 0
-	os->write(level->toInt());
+        os->write(level->toInt());
 
-	const Class& clazz = level->getClass();
+        const Class& clazz = level->getClass();
 
-	if (&clazz == &Level::getStaticClass())
-	{
-		os->write(String());
-	}
-	else
-	{
-		os->write(clazz.getName());
-	}
+        if (&clazz == &Level::getStaticClass())
+        {
+                os->write(String());
+        }
+        else
+        {
+                os->write(clazz.getName());
+        }
 #endif
 }
 

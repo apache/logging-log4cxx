@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,10 +72,10 @@ void HTMLLayout::format(LogString& output,
         output.append(LOG4CXX_STR("</td>\n"));
 
         output.append(LOG4CXX_STR("<td title=\""));
-        LogString threadId(StringHelper::toString(event->getThreadId(), pool));
-        output.append(threadId);
+        LogString threadName(event->getThreadName());
+        output.append(threadName);
         output.append(LOG4CXX_STR(" thread\">"));
-        output.append(threadId);
+        output.append(threadName);
         output.append(LOG4CXX_STR("</td>\n"));
 
         output.append(LOG4CXX_STR("<td title=\"Level\">"));

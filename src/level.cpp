@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ const LevelPtr& Level::getAll() {
 
 
 
-Level::Level(int level, 
+Level::Level(int level,
     const logchar* name, int syslogEquivalent)
 : level(level), name(name), syslogEquivalent(syslogEquivalent)
 {
@@ -116,6 +116,9 @@ const LevelPtr& Level::toLevel(const std::string& sArg, const LevelPtr& defaultL
         if (StringHelper::equalsIgnoreCase(sArg, "ERROR", "error")) {
           return getError();
         }
+        if (StringHelper::equalsIgnoreCase(sArg, "FATAL", "fatal")) {
+          return getFatal();
+        }
       } else {
         if (len == 3) {
           if (StringHelper::equalsIgnoreCase(sArg, "OFF", "off")) {
@@ -151,6 +154,9 @@ const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& default
         if (StringHelper::equalsIgnoreCase(sArg, L"ERROR", L"error")) {
           return getError();
         }
+        if (StringHelper::equalsIgnoreCase(sArg, L"FATAL", L"fatal")) {
+          return getFatal();
+        }
       } else {
         if (len == 3) {
           if (StringHelper::equalsIgnoreCase(sArg, L"OFF", L"off")) {
@@ -169,7 +175,7 @@ const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& default
 
 bool Level::equals(const LevelPtr& level) const
 {
-	return (this->level == level->level);
+        return (this->level == level->level);
 }
 
 bool Level::isGreaterOrEqual(const LevelPtr& level) const

@@ -1,5 +1,6 @@
+
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +15,26 @@
  * limitations under the License.
  */
 
-#include "threadfilter.h"
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
+
+#include <log4cxx/level.h>
 
 using namespace log4cxx;
-using namespace log4cxx::helpers;
 
-LogString ThreadFilter::filter(const LogString& in)
-        const throw(UnexpectedFormatException)
+class LevelTestCase : public CppUnit::TestFixture
 {
-        return merge(LOG4CXX_STR("\\[0x[0-9A-F]*\\]"), in, LOG4CXX_STR("\\[main]"));
-}
+        CPPUNIT_TEST_SUITE(LevelTestCase);
+                CPPUNIT_TEST(testToLevelFatal);
+        CPPUNIT_TEST_SUITE_END();
+
+public:
+        void testToLevelFatal()
+        {
+                LevelPtr level(Level::toLevel(L"fATal"));
+                CPPUNIT_ASSERT_EQUAL((int) Level::FATAL_INT, level->toInt());
+        }
+
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION(LevelTestCase);

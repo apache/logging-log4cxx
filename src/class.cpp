@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ using namespace log4cxx::helpers;
 
 Class::Class(const LogString& name) : name(name)
 {
-	registerClass(this);
+        registerClass(this);
 }
 
 Class::~Class()
@@ -36,18 +36,18 @@ Class::~Class()
 
 const LogString& Class::toString() const
 {
-	return name;
+        return name;
 }
 
 const LogString& Class::getName() const
 {
-	return name;
+        return name;
 }
 
 ObjectPtr Class::newInstance() const
 {
-	throw InstantiationException();
-	return 0;
+        throw InstantiationException("Cannot create new instances of Class.");
+        return 0;
 }
 
 
@@ -58,32 +58,32 @@ Class::ClassMap& Class::getRegistry() {
 
 const Class& Class::forName(const LogString& className)
 {
-	LogString strippedClassName;
-	LogString::size_type pos = className.find_last_of(LOG4CXX_STR('.'));
-	if (pos != LogString::npos)
-	{
-		strippedClassName.assign(className.substr(pos + 1));
-	}
-	else
-	{
-		strippedClassName.assign(className);
-	}
+        LogString strippedClassName;
+        LogString::size_type pos = className.find_last_of(LOG4CXX_STR('.'));
+        if (pos != LogString::npos)
+        {
+                strippedClassName.assign(className.substr(pos + 1));
+        }
+        else
+        {
+                strippedClassName.assign(className);
+        }
 
-	const Class * clazz = getRegistry()[StringHelper::toLowerCase(strippedClassName)];
+        const Class * clazz = getRegistry()[StringHelper::toLowerCase(strippedClassName)];
 
-	if (clazz == 0)
-	{
-		throw ClassNotFoundException(className);
-	}
+        if (clazz == 0)
+        {
+                throw ClassNotFoundException(className);
+        }
 
-	return *clazz;
+        return *clazz;
 }
 
 void Class::registerClass(const Class * newClass)
 {
-	if (newClass == 0)
-	{
-		return;
-	}
-	getRegistry()[StringHelper::toLowerCase(newClass->toString())] = newClass;
+        if (newClass == 0)
+        {
+                return;
+        }
+        getRegistry()[StringHelper::toLowerCase(newClass->toString())] = newClass;
 }

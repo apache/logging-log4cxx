@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,13 @@ namespace log4cxx
                 class LOG4CXX_EXPORT Exception : public ::std::exception
                 {
                 public:
-                        Exception()  {}
-                        const char* what() const throw() { return "log4cxx error"; }
-
+                        Exception(const std::string& msg);
+                        Exception(const Exception& src);
+                        Exception& operator=(const Exception& src);
+                        const char* what() const throw();
+                private:
+                        enum { MSG_SIZE = 128 };
+                        char msg[MSG_SIZE + 1];
                 }; // class Exception
 
                 /** RuntimeException is the parent class of those exceptions that can be
@@ -42,9 +46,9 @@ namespace log4cxx
                 class LOG4CXX_EXPORT RuntimeException : public Exception
                 {
                 public:
-                        RuntimeException() {}
-                        const char* what() const throw() { return "Runtime error"; }
-
+                        RuntimeException(const std::string& msg);
+                        RuntimeException(const RuntimeException& msg);
+                        RuntimeException& operator=(const RuntimeException& src);
                 }; // class RuntimeException
 
                 /** Thrown when an application attempts to use null in a case where an
@@ -53,8 +57,9 @@ namespace log4cxx
                 class LOG4CXX_EXPORT  NullPointerException : public RuntimeException
                 {
                 public:
-                        NullPointerException() {}
-                        const char* what() const throw() { return "Null pointer"; }
+                        NullPointerException(const std::string& msg);
+                        NullPointerException(const NullPointerException& msg);
+                        NullPointerException& operator=(const NullPointerException& src);
                 }; // class NullPointerException
 
                 /** Thrown to indicate that a method has been passed
@@ -62,8 +67,9 @@ namespace log4cxx
                 class LOG4CXX_EXPORT IllegalArgumentException : public RuntimeException
                 {
                 public:
-                   IllegalArgumentException() {}
-                   const char* what() const throw() { return "Illegal argument"; }
+                   IllegalArgumentException(const std::string& msg);
+                   IllegalArgumentException(const IllegalArgumentException&);
+                   IllegalArgumentException& operator=(const IllegalArgumentException&);
                 }; // class IllegalArgumentException
 
                 /** Signals that an I/O exception of some sort has occurred. This class
@@ -73,60 +79,73 @@ namespace log4cxx
                 class LOG4CXX_EXPORT IOException : public Exception
                 {
                 public:
-                    IOException()  {}
-                    IOException(log4cxx_status_t stat)  {}
-                    IOException(const IOException &src) : Exception(src) {
-                    }
-                    const char* what() const throw() { return "IO error"; }
+                    IOException();
+                    IOException(log4cxx_status_t stat);
+                    IOException(const std::string& msg);
+                    IOException(const IOException &src);
+                    IOException& operator=(const IOException&);
+                private:
+                    static std::string formatMessage(log4cxx_status_t stat);
                 };
 
                 class LOG4CXX_EXPORT MissingResourceException : public Exception
                 {
                     public:
-                    MissingResourceException(const LogString& key) {
-                    }
-                    const char* what() const throw() {
-                       return "Missing resource";
-                    }
+                    MissingResourceException(const LogString& key);
+                    MissingResourceException(const MissingResourceException &src);
+                    MissingResourceException& operator=(const MissingResourceException&);
+                private:
+                    static std::string formatMessage(const LogString& key);
                 };
 
                 class LOG4CXX_EXPORT PoolException : public Exception
                 {
                 public:
-                        PoolException(log4cxx_status_t stat) {}
-                        const char* what() const throw() { return "Pool error"; }
+                      PoolException(log4cxx_status_t stat);
+                      PoolException(const PoolException &src);
+                      PoolException& operator=(const PoolException&);
+                private:
+                      static std::string formatMessage(log4cxx_status_t stat);
                 };
 
 
                 class LOG4CXX_EXPORT MutexException : public Exception
                 {
                 public:
-                        MutexException(log4cxx_status_t stat) {}
-                        const char* what() const throw() { return "Mutex error"; }
+                      MutexException(log4cxx_status_t stat);
+                      MutexException(const MutexException &src);
+                      MutexException& operator=(const MutexException&);
+                private:
+                      static std::string formatMessage(log4cxx_status_t stat);
                 };
 
                 class LOG4CXX_EXPORT ConditionException : public Exception
                 {
                 public:
-                        ConditionException(log4cxx_status_t stat) {}
-                        const char* what() const throw() { return "Condition error"; }
+                      ConditionException(log4cxx_status_t stat);
+                      ConditionException(const ConditionException &src);
+                      ConditionException& operator=(const MutexException&);
+                private:
+                      static std::string formatMessage(log4cxx_status_t stat);
                 };
 
-                class LOG4CXX_EXPORT ThreadException : public Exception
-                {
+                class LOG4CXX_EXPORT ThreadException
+                      : public Exception {
                 public:
-                        ThreadException(log4cxx_status_t stat) {}
-                        const char* what() const throw() { return "Thread error"; }
+                      ThreadException(log4cxx_status_t stat);
+                      ThreadException(const ThreadException &src);
+                      ThreadException& operator=(const ThreadException&);
+                private:
+                      static std::string formatMessage(log4cxx_status_t stat);
                 };
 
-		        class LOG4CXX_EXPORT IllegalMonitorStateException : public Exception
-		        {
-		        public:
-			        IllegalMonitorStateException() {
-			        }
-                    const char* what() const throw() { return "Illegal monitor state"; }
-
-		        };
+                class LOG4CXX_EXPORT IllegalMonitorStateException
+                      : public Exception {
+                public:
+                      IllegalMonitorStateException(const std::string& msg);
+                      IllegalMonitorStateException(const IllegalMonitorStateException& msg);
+                      IllegalMonitorStateException& operator=(const IllegalMonitorStateException& msg);
+                };
 
                 /**
                 Thrown when an application tries to create an instance of a class using
@@ -136,8 +155,9 @@ namespace log4cxx
                 class LOG4CXX_EXPORT InstantiationException : public Exception
                 {
                 public:
-                        InstantiationException() {}
-                        const char* what() const throw() { return "Abstract class"; }
+                        InstantiationException(const std::string& msg);
+                        InstantiationException(const InstantiationException& msg);
+                        InstantiationException& operator=(const InstantiationException& msg);
                 };
 
                 /**
@@ -148,12 +168,22 @@ namespace log4cxx
                 class LOG4CXX_EXPORT ClassNotFoundException : public Exception
                 {
                 public:
-                    ClassNotFoundException(const LogString& className) {}
-                    const char* what() const throw() { return "Class not found"; }
+                    ClassNotFoundException(const LogString& className);
+                    ClassNotFoundException(const ClassNotFoundException& msg);
+                    ClassNotFoundException& operator=(const ClassNotFoundException& msg);
+                private:
+                    static std::string formatMessage(const LogString& className);
                 };
 
 
-        
+                class NoSuchElementException : public Exception {
+                public:
+                      NoSuchElementException();
+                      NoSuchElementException(const NoSuchElementException&);
+                      NoSuchElementException& operator=(const NoSuchElementException&);
+                };
+
+
         }  // namespace helpers
 } // namespace log4cxx
 

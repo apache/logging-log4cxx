@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,8 @@ namespace log4cxx
 
                 class LOG4CXX_EXPORT EOFException : public Exception
                 {
+                public:
+                    EOFException() : Exception("EOF Exception") {}
                 };
 
                 class LOG4CXX_EXPORT SocketInputStream : public ObjectImpl

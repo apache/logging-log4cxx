@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,6 +52,17 @@ namespace log4cxx
             static LogString toString(int i, log4cxx::helpers::Pool& pool);
             static void toString(int i, Pool& pool, std::string& s);
             static void toString(int i, Pool& pool, std::wstring& s);
+
+            static LogString toString(log4cxx_int64_t i, log4cxx::helpers::Pool& pool);
+            static void toString(log4cxx_int64_t i, Pool& pool, std::string& s);
+            static void toString(log4cxx_int64_t i, Pool& pool, std::wstring& s);
+
+            static LogString toString(size_t i, log4cxx::helpers::Pool& pool);
+            static void toString(size_t i, Pool& pool, std::string& s);
+            static void toString(size_t i, Pool& pool, std::wstring& s);
+
+
+            static LogString formatHex(const void* handle);
 
             static std::string toLowerCase(const std::string& s);
             static std::wstring toLowerCase(const std::wstring& s);

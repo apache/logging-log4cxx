@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
      <code>NA</code> is returned. Current value of this string
      constant is <b>?</b>.  */
  const char* const LocationInfo::NA = "?";
+ const char* const LocationInfo::NA_METHOD = "?::?";
 
  const LocationInfo& LocationInfo::getLocationUnavailable() {
    static const LocationInfo unavailable;
@@ -35,12 +36,10 @@
 *       location info for current code site
 */
  LocationInfo::LocationInfo( const char * const fileName,
-              const char * const className,
               const char * const methodName,
               int lineNumber )
      :  lineNumber( lineNumber ),
         fileName( fileName ),
-        className( className ),
         methodName( methodName ) {
 }
 
@@ -50,8 +49,7 @@
  LocationInfo::LocationInfo()
    : lineNumber( -1 ),
      fileName(LocationInfo::NA),
-     className(LocationInfo::NA),
-     methodName(LocationInfo::NA) {
+     methodName(LocationInfo::NA_METHOD) {
 }
 
 /**
@@ -61,7 +59,6 @@
  LocationInfo::LocationInfo( const LocationInfo & src )
      :  lineNumber( src.lineNumber ),
         fileName( src.fileName ),
-        className( src.className ),
         methodName( src.methodName ) {
 }
 
@@ -72,7 +69,6 @@
  LocationInfo & LocationInfo::operator = ( const LocationInfo & src )
 {
   fileName = src.fileName;
-  className = src.className;
   methodName = src.methodName;
   lineNumber = src.lineNumber;
   return * this;
@@ -83,8 +79,7 @@
  */
  void LocationInfo::clear() {
   fileName = NA;
-  className = NA;
-  methodName = NA;
+  methodName = NA_METHOD;
   lineNumber = -1;
 }
 
@@ -108,28 +103,38 @@
 }
 
 /** Returns the method name of the caller. */
- const char * LocationInfo::getMethodName() const
+ const std::string LocationInfo::getMethodName() const
 {
-  return methodName;
+    std::string tmp(methodName);
+    size_t colonPos = tmp.find("::");
+    if (colonPos != std::string::npos) {
+      tmp.erase(0, colonPos + 2);
+    } else {
+      size_t spacePos = tmp.find(' ');
+      if (spacePos != std::string::npos) {
+        tmp.erase(0, spacePos + 1);
+      }
+    }
+    size_t parenPos = tmp.find('(');
+    if (parenPos != std::string::npos) {
+      tmp.erase(parenPos);
+    }
+    return tmp;
 }
 
 
 const std::string LocationInfo::getClassName() const {
-	if (className == NULL) {
-		return NA;
-	}
-	if (strchr(className, ':') == NULL) {
-		return className;
-	}
-	std::string tmp(className);
-	size_t colonPos = tmp.find("::");
-	if (colonPos != std::string::npos) {
-		size_t spacePos = tmp.find_last_of(' ', colonPos);
-		if (spacePos != std::string::npos) {
-			tmp.erase(colonPos);
-			tmp.erase(0, spacePos + 1);
-		}
-	}
-	return tmp;
+        std::string tmp(methodName);
+        size_t colonPos = tmp.find("::");
+        if (colonPos != std::string::npos) {
+           tmp.erase(colonPos);
+           size_t spacePos = tmp.find_last_of(' ');
+           if (spacePos != std::string::npos) {
+               tmp.erase(0, spacePos + 1);
+           }
+           return tmp;
+        }
+        tmp.erase(0);
+        return tmp;
 }
 

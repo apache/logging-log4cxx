@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,9 +107,8 @@ namespace log4cxx
                         */
                         static log4cxx_time_t getStartTime();
 
-                        /** Return the #threadId of this event. */
-                        inline unsigned long getThreadId() const
-                                { return threadId; }
+                        /** Return the #threadName of this event. */
+                        const LogString& getThreadName() const;
 
                         /** Return the #timeStamp of this event. */
                         inline log4cxx_time_t getTimeStamp() const
@@ -243,13 +242,14 @@ namespace log4cxx
                         /** The identifier of thread in which this logging event
                         was generated.
                         */
-                        unsigned long threadId;
+                       const LogString threadName;
 
                        //
                        //   prevent copy and assignment
                        //
                        LoggingEvent(const LoggingEvent&);
                        LoggingEvent& operator=(const LoggingEvent&);
+                       static const LogString getCurrentThreadName();
                 };
         }
 }

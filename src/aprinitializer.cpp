@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
+bool APRInitializer::isDestructed = false;
+
 APRInitializer::APRInitializer() {
     apr_initialize();
     apr_pool_create(&p, NULL);
@@ -38,6 +40,7 @@ APRInitializer::~APRInitializer() {
 #if defined(APR_DECLARE_STATIC) && !defined(LOG4CXX_DECLARE_STATIC)
     apr_terminate();
 #endif
+    isDestructed = true;
 }
 
 APRInitializer& APRInitializer::getInstance() {

@@ -13,6 +13,7 @@ testsuite_SOURCES = \
         filetestcase.cpp \
         hierarchythresholdtestcase.cpp\
         l7dtestcase.cpp\
+        leveltestcase.cpp \
         loggertestcase.cpp\
         main.cpp\
         minimumtestcase.cpp\

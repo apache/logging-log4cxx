@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 #include <apr_atomic.h>
 #include <apr_file_io.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -42,6 +43,8 @@ FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
   pool(), ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
+        Pool p;
+        activateOptions(p);
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
@@ -50,6 +53,8 @@ FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
   pool(), ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
+        Pool p;
+        activateOptions(p);
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName)
@@ -57,14 +62,15 @@ FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName)
   pool(), ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
+        Pool p;
+        activateOptions(p);
 }
 
 FileAppender::~FileAppender()
 {
-    //      Can't finalize since we may be called after APR has been terminated
-    //         and finalize does close type things
-    //
-    //        finalize();
+    if (!APRInitializer::isDestructed) {
+        finalize();
+    }
 }
 
 void FileAppender::setFile(const File& file)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,20 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+UnknownHostException::UnknownHostException(const std::string& msg)
+     : Exception(msg) {
+}
+
+UnknownHostException::UnknownHostException(const UnknownHostException& src)
+     : Exception(src) {
+}
+
+UnknownHostException& UnknownHostException::operator=(const UnknownHostException& src) {
+     Exception::operator=(src);
+     return *this;
+}
+
+
 InetAddress::InetAddress() : address(0)
 {
 }
@@ -42,40 +56,40 @@ InetAddress::InetAddress() : address(0)
 */
 int InetAddress::getAddress() const
 {
-	return address;
+        return address;
 }
 
 /** Determines all the IP addresses of a host, given the host's name.
 */
 std::vector<InetAddress> InetAddress::getAllByName(const LogString& host)
 {
-	struct hostent * hostinfo;
+        struct hostent * hostinfo;
 
         std::string hostname;
         Transcoder::encode(host, hostname);
-	hostinfo = ::gethostbyname(hostname.c_str());
+        hostinfo = ::gethostbyname(hostname.c_str());
 
-	if (hostinfo == 0)
-	{
+        if (hostinfo == 0)
+        {
                 LogLog::error(
                    ((LogString) LOG4CXX_STR("Cannot get information about host :"))
                     + host);
-		return std::vector<InetAddress>();
-	}
-	else
-	{
-		std::vector<InetAddress> addresses;
-		InetAddress address;
-		char ** addrs = hostinfo->h_addr_list;
+                return std::vector<InetAddress>();
+        }
+        else
+        {
+                std::vector<InetAddress> addresses;
+                InetAddress address;
+                char ** addrs = hostinfo->h_addr_list;
 
-		while(*addrs != 0)
-		{
-			address.address = ntohl(((in_addr *)*addrs)->s_addr);
-			addresses.push_back(address);
-		}
+                while(*addrs != 0)
+                {
+                        address.address = ntohl(((in_addr *)*addrs)->s_addr);
+                        addresses.push_back(address);
+                }
 
-		return addresses;
-	}
+                return addresses;
+        }
 
 }
 
@@ -83,35 +97,37 @@ std::vector<InetAddress> InetAddress::getAllByName(const LogString& host)
 */
 InetAddress InetAddress::getByName(const LogString& host)
 {
-	struct hostent * hostinfo;
-	InetAddress address;
+        struct hostent * hostinfo;
+        InetAddress address;
 
         std::string hostname;
         Transcoder::encode(host, hostname);
-	hostinfo = ::gethostbyname(hostname.c_str());
+        hostinfo = ::gethostbyname(hostname.c_str());
 
-	if (hostinfo == 0)
-	{
-                LogLog::error(
-                   ((LogString) LOG4CXX_STR("Cannot get information about host: "))
-                    + host);
-		throw UnknownHostException();
-	}
-	else
-	{
-		address.address = ntohl(((in_addr *)*hostinfo->h_addr_list)->s_addr);
-	}
+        if (hostinfo == 0)
+        {
+                LogString msg(LOG4CXX_STR("Cannot get information about host: "));
+                msg.append(host);
+                LogLog::error(msg);
+                std::string s;
+                Transcoder::encode(msg, s);
+                throw UnknownHostException(s);
+        }
+        else
+        {
+                address.address = ntohl(((in_addr *)*hostinfo->h_addr_list)->s_addr);
+        }
 
-	return address;
+        return address;
 }
 
 /** Returns the IP address string "%d.%d.%d.%d".
 */
 LogString InetAddress::getHostAddress() const
 {
-	in_addr addr;
-	addr.s_addr = htonl(address);
-	const char* rv = ::inet_ntoa(addr);
+        in_addr addr;
+        addr.s_addr = htonl(address);
+        const char* rv = ::inet_ntoa(addr);
         LOG4CXX_DECODE_CHAR(wrv, rv);
         return wrv;
 }
@@ -120,35 +136,35 @@ LogString InetAddress::getHostAddress() const
 */
 LogString InetAddress::getHostName() const
 {
-	LogString hostName;
-	struct hostent * hostinfo;
+        LogString hostName;
+        struct hostent * hostinfo;
 
-	in_addr addr;
-	addr.s_addr = htonl(address);
-	hostinfo = ::gethostbyaddr((const char *)&addr, sizeof(addr), AF_INET);
+        in_addr addr;
+        addr.s_addr = htonl(address);
+        hostinfo = ::gethostbyaddr((const char *)&addr, sizeof(addr), AF_INET);
 
-	if (hostinfo != 0)
-	{
+        if (hostinfo != 0)
+        {
                 Transcoder::decode(hostinfo->h_name, strlen(hostinfo->h_name), hostName);
-	}
-	else
-	{
+        }
+        else
+        {
                 LogString msg(LOG4CXX_STR("Cannot get host name: "));
 //  TODO:
 //                msg += address->toString();
-		LogLog::error(msg);
-	}
+                LogLog::error(msg);
+        }
 
-	return hostName;
+        return hostName;
 }
 
 /** Returns the local host.
 */
 InetAddress InetAddress::getLocalHost()
 {
-	InetAddress address;
-	address.address = ntohl(inet_addr("127.0.0.1"));
-	return address;
+        InetAddress address;
+        address.address = ntohl(inet_addr("127.0.0.1"));
+        return address;
 }
 
 /** Utility routine to check if the InetAddress is an IP multicast address.
@@ -157,7 +173,7 @@ i.e first four bits of the address are 1110.
 */
 bool InetAddress::isMulticastAddress() const
 {
-	return (address & 0xF000) == 0xE000;
+        return (address & 0xF000) == 0xE000;
 }
 
 /** Converts this IP address to a String.

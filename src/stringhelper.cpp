@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,8 @@
 #include <locale>
 #include <apr_strings.h>
 #include <log4cxx/helpers/pool.h>
+
+#define INT64_C(x) x##LL
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -199,4 +201,61 @@ void StringHelper::toString(int n, Pool& pool, std::wstring& str) {
 
 
 
+LogString StringHelper::toString(log4cxx_int64_t n, Pool& pool) {
+  std::string s;
+  toString(n, pool, s);
+  LogString rv;
+  Transcoder::decode(s, rv);
+  return rv;
+}
 
+void StringHelper::toString(log4cxx_int64_t n, Pool& pool, std::string& s) {
+  if (n >= INT_MIN && n <= INT_MAX) {
+    s.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), (int) n));
+  } else {
+    const log4cxx_int64_t BILLION = APR_INT64_C(1000000000);
+    int billions = (int) (n / BILLION);
+    s.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), billions));
+    int remain = (n - billions * BILLION);
+    if (remain < 0) remain += BILLION;
+    char* lower = apr_itoa((apr_pool_t*) pool.getAPRPool(), remain);
+    int fill = 9 - strlen(lower);
+    s.append(fill, LOG4CXX_STR('0'));
+    s.append(lower);
+  }
+}
+
+void StringHelper::toString(log4cxx_int64_t n, Pool& pool, std::wstring& ws) {
+    std::string s;
+    toString(n, pool, s);
+    LogString ls;
+    Transcoder::decode(s, ls);
+    Transcoder::encode(ls, ws);
+}
+
+LogString StringHelper::toString(size_t n, Pool& pool) {
+  return toString((apr_int64_t) n, pool);
+}
+
+void StringHelper::toString(size_t n, Pool& pool, std::string& s) {
+  toString((apr_int64_t) n, pool, s);
+}
+
+void StringHelper::toString(size_t n, Pool& pool, std::wstring& ws) {
+  toString((apr_int64_t) n, pool, ws);
+}
+
+
+
+LogString StringHelper::formatHex(const void* ptr) {
+    const logchar* hexdigits = LOG4CXX_STR("0123456789ABCDEF");
+    apr_int64_t iptr = (apr_int64_t) ptr;
+    int width = sizeof(ptr)*2 + 2;
+    LogString s(width, LOG4CXX_STR('x'));
+    s[0] = LOG4CXX_STR('0');
+    for(int i = width - 1; i >= 2; i--) {
+      s[i] = hexdigits[iptr % 0x0F];
+      iptr = iptr >> 4;
+    }
+    return s;
+}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #include <apr_thread_proc.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
+#include <log4cxx/helpers/condition.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <apr_atomic.h>
 
@@ -136,9 +137,9 @@ bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 void AsyncAppender::setBufferSize(int size)
 {
     if (size < 0) {
-          throw IllegalArgumentException();
-        }
-        this->size = size;
+          throw IllegalArgumentException("size argument must be non-negative");
+    }
+    this->size = size;
 }
 
 int AsyncAppender::getBufferSize() const
