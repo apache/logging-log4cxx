@@ -1,6 +1,62 @@
-run
+Introduction
+============
+Log4cxx is a port to C++ of the log4j project.
+The goal is have the same functionnalities and interfaces of log4j.
+
+Features
+========
+Loggers, Hierarchy, Filters, Appenders, Layouts
+
+* Appenders:
+  AsyncAppender, ConsoleAppender, FileAppender, NTEventLogAppender,
+  RollingFileAppender, SocketAppender, SocketHubAappender,
+  TelnetAppender, XMLSocketAppender
+
+* Layouts:
+  HTMLLayout, PatternLayout, SimpleLayout, TTCCLayout, XMLLayout
+
+* Filters:
+  DenyAllFilter, LevelMatchFilter, LevelRangeFilter, StringMatchFilter
+
+* Configurators:
+  DOMConfigurator, PropertyConfigurator
+
+* Java like objects with dynamic cast and instanciation. Custom objects can
+  be configured through the DOMConfigurator and PropertyConfigurator classes
+
+Planned Features
+================
+* Finish support for the Chainsaw log4j UI through the XMLSocketAppender
+* Port the log4j SMTPAppender (depends on finding a C++ SMTP library)
+* Port the JDBCAppender to ODBCAppender
+
+Installation
+============
 ./autogen.sh
 ./configure
 make
 make check
 make install
+
+See INSTALL file for further details.
+
+Links
+=====
+http://log4cxx.sourceforge.net
+	Log4cxx project page
+
+http://sourceforge.net/projects/log4cxx
+	Sourceforge page
+
+http://jakarta.apache.org/log4j/
+	Log4j project page
+
+Contacts
+========
+See AUTHORS file
+
+License
+=======
+This library is licensed under the Apache Public License.  Please read the
+included license.apl for details.
+

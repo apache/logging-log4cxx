@@ -1,26 +1,35 @@
-Main features :
+Version 0.0.1
+=============
+
 Loggers, Hierarchy, Filters, Appenders, Layouts
 
-Appenders:
-AsyncAppender, SocketAppender, SocketHubAappender, TelnetAppender, 
-NTEventLogAppender, ConsoleAppender, FileAppender, RollingFileAppender
+* Appenders:
+  AsyncAppender, ConsoleAppender, FileAppender, NTEventLogAppender,
+  RollingFileAppender, SocketAppender, SocketHubAappender,
+  TelnetAppender
 
-Layouts:
-TTCCLayout, HTMLLayout, PatternLayout, SimpleLayout, XMLLayout
+* Layouts:
+  HTMLLayout, PatternLayout, SimpleLayout, TTCCLayout, XMLLayout
+  NDC
 
-Filters:
-DenyAllFilter, LevelMatchFilter, LevelRangeFilter, StringMatchFilter
+* Filters:
+  DenyAllFilter, LevelMatchFilter, LevelRangeFilter, StringMatchFilter
 
-Configurators:
-DOMConfigurator
+* Configurators:
+  DOMConfigurator
 
-*******************************************************************************
-CVS
+Version 0.1.0
+=============
 
-- FreeBSD Autotools/Compilation support
-- Fixed TelnetAppender crash when a socket bind exception occured.
-- Added log4j DTD support to XMLLayout
-- Can now send events in XML format over TCP (class XMLSocketAppender) for the
-log4j Chainsaw UI
-- Now compiles with 'configure --enable-unicode' (UTF16 Unicode support)
-- Added java like Properties class. It's a helper for the PropertyConfigurator
+* FreeBSD Autotools/Compilation support
+* Fixed TelnetAppender crash when a socket bind exception occured.
+* Added log4j DTD support to XMLLayout and DOMConfigurator
+* Can now send events in XML format over TCP (class XMLSocketAppender) for the
+  log4j Chainsaw UI
+* Now compiles with 'configure --enable-unicode' (UTF16 Unicode support)
+* Added Java like Properties class. It's a helper for the PropertyConfigurator
+* Added Java like objects with dynamic cast and instanciation. Custom objects
+  can be configured through the DOMConfigurator and PropertyConfigurator classes
+* Port of the PropertyConfigurator class
+* Port of the "Map Diagnostic Context" (MDC) class
+* Added 13 tests (try make check)
