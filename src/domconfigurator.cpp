@@ -15,6 +15,9 @@
  ***************************************************************************/
 
 #include <log4cxx/config.h>
+
+#ifdef HAVE_XML
+
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>
@@ -26,43 +29,42 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/config/propertysetter.h>
+#include <log4cxx/spi/errorhandler.h>
+#include <log4cxx/spi/loggerfactory.h>
+#include <log4cxx/defaultcategoryfactory.h>
+#include <log4cxx/helpers/filewatchdog.h>
+#include <log4cxx/spi/loggerrepository.h>
 
-#ifdef WIN32
-#include <log4cxx/helpers/msxmlreader.h>
-#elif defined(HAVE_LIBXML)
-#include <log4cxx/helpers/gnomexmlreader.h>
-#endif // WIN32
+#ifdef HAVE_LIBXML2
+#include <log4cxx/helpers/gnomexml.h>
+#elif defined(HAVE_MS_XML)
+#include <log4cxx/helpers/msxml.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::xml;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+using namespace log4cxx::config;
 
-#define CONFIGURATION_TAG _T("log4j:configuration")
-#define OLD_CONFIGURATION_TAG _T("configuration")
-#define APPENDER_TAG _T("appender")
-#define APPENDER_REF_TAG _T("appender-ref")
-#define PARAM_TAG _T("param")
-#define LAYOUT_TAG _T("layout")
-#define LOGGER _T("logger")
-#define CATEGORY _T("category")
-#define NAME_ATTR _T("name")
-#define CLASS_ATTR _T("class")
-#define VALUE_ATTR _T("value")
-#define ROOT_TAG _T("root")
-#define ROOT_REF _T("root-ref")
-#define LEVEL_TAG _T("level")
-#define PRIORITY_TAG _T("priority")
-#define FILTER_TAG _T("filter")
-#define ERROR_HANDLER_TAG _T("errorHandler")
-#define REF_ATTR _T("ref")
-#define ADDITIVITY_ATTR _T("additivity")
-#define THRESHOLD_ATTR _T("threshold")
-#define INTERNAL_DEBUG_ATTR _T("debug")
-
-
-#define INHERITED _T("inherited")
-#define NuLL _T("null")
+class XMLWatchdog  : public FileWatchdog
+{
+public:
+	XMLWatchdog(const tstring& filename) : FileWatchdog(filename)
+	{
+	}
+	
+	/**
+	Call DOMConfigurator#doConfigure with the
+	<code>filename</code> to reconfigure log4cxx.
+	*/
+	void doOnChange()
+	{
+		DOMConfigurator().doConfigure(filename, 
+			LogManager::getLoggerRepository());
+	}
+};
 
 AppenderPtr AppenderMap::get(const tstring& appenderName)
 {
@@ -77,18 +79,483 @@ void AppenderMap::put(const tstring& appenderName, AppenderPtr appender)
 	map.insert(std::map<tstring, AppenderPtr>::value_type(appenderName, appender));
 }
 
+IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
+
+#define CONFIGURATION_TAG _T("log4j:configuration")
+#define OLD_CONFIGURATION_TAG _T("configuration")
+#define APPENDER_TAG _T("appender")
+#define APPENDER_REF_TAG _T("appender-ref")
+#define PARAM_TAG _T("param")
+#define LAYOUT_TAG _T("layout")
+#define CATEGORY _T("category")
+#define LOGGER _T("logger")
+#define LOGGER_REF _T("logger-ref")
+#define CATEGORY_FACTORY_TAG _T("categoryFactory")
+#define NAME_ATTR _T("name")
+#define CLASS_ATTR _T("class")
+#define VALUE_ATTR _T("value")
+#define ROOT_TAG _T("root")
+#define ROOT_REF _T("root-ref")
+#define LEVEL_TAG _T("level")
+#define PRIORITY_TAG _T("priority")
+#define FILTER_TAG _T("filter")
+#define ERROR_HANDLER_TAG _T("errorHandler")
+#define REF_ATTR _T("ref")
+#define ADDITIVITY_ATTR _T("additivity")
+#define THRESHOLD_ATTR _T("threshold")
+#define CONFIG_DEBUG_ATTR _T("configDebug")
+#define INTERNAL_DEBUG_ATTR _T("debug")
+
+/**
+Used internally to parse appenders by IDREF name.
+*/
+AppenderPtr DOMConfigurator::findAppenderByName(XMLDOMDocumentPtr doc, const tstring& appenderName)
+{      
+    AppenderPtr appender = ((AppenderMap *)appenderBag)->get(appenderName);
+	
+    if (appender != 0)
+	{
+		return appender;
+    } 
+	else
+	{
+		XMLDOMElementPtr element = doc->getElementById(APPENDER_TAG, appenderName);
+		
+		if(element == 0)
+		{
+			LogLog::error(_T("No appender named [")+
+				appenderName+_T("] could be found.")); 
+			return 0;
+		}
+		else
+		{
+			appender = parseAppender(element);
+			((AppenderMap *)appenderBag)->put(appenderName, appender);
+			return appender;
+		}
+    } 
+}
+
+/**
+ Used internally to parse appenders by IDREF element.
+*/
+AppenderPtr DOMConfigurator::findAppenderByReference(XMLDOMElementPtr appenderRef)
+{    
+	tstring appenderName = subst(appenderRef->getAttribute(REF_ATTR));
+	XMLDOMDocumentPtr doc = appenderRef->getOwnerDocument();
+	return findAppenderByName(doc, appenderName);
+}
+
+/**
+Used internally to parse an appender element.
+*/
+AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
+{
+    tstring className = subst(appenderElement->getAttribute(CLASS_ATTR));
+	LogLog::debug(_T("Class name: [") + className+_T("]"));    
+    try
+	{
+		ObjectPtr instance = Loader::loadClass(className).newInstance();
+		AppenderPtr appender = instance;
+		PropertySetter propSetter(appender);
+		
+		appender->setName(subst(appenderElement->getAttribute(NAME_ATTR)));
+		
+		XMLDOMNodeListPtr children = appenderElement->getChildNodes();
+		int length = children->getLength();
+		
+		for (int loop = 0; loop < length; loop++)
+		{
+			XMLDOMNodePtr currentNode = children->item(loop);
+			
+			/* We're only interested in Elements */
+			if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
+			{
+				XMLDOMElementPtr currentElement = currentNode;
+				tstring tagName = currentElement->getTagName();
+
+				// Parse appender parameters 
+				if (tagName == PARAM_TAG)
+				{
+					setParameter(currentElement, propSetter);
+				}
+				// Set appender layout
+				else if (tagName == LAYOUT_TAG)
+				{
+					appender->setLayout(parseLayout(currentElement));
+				}
+				// Add filters
+				else if (tagName == FILTER_TAG)
+				{
+					parseFilters(currentElement, appender);
+				}
+				else if (tagName == ERROR_HANDLER_TAG)
+				{
+					parseErrorHandler(currentElement, appender);
+				}
+				else if (tagName == APPENDER_REF_TAG)
+				{
+					tstring refName = subst(currentElement->getAttribute(REF_ATTR));
+					if(appender->instanceof(AppenderAttachable::getStaticClass()))
+					{
+						AppenderAttachablePtr aa = appender;
+						LogLog::debug(_T("Attaching appender named [")+
+							refName+_T("] to appender named [")+
+							appender->getName()+_T("]."));
+						aa->addAppender(findAppenderByReference(currentElement));
+					} 
+					else
+					{
+						LogLog::error(_T("Requesting attachment of appender named [")+
+							refName+ _T("] to appender named [")+ appender->getName()+
+							_T("] which does not implement AppenderAttachable."));
+					}
+				}
+			}
+		}
+		propSetter.activate();
+		return appender;
+    }
+    /* Yes, it's ugly.  But all of these exceptions point to the same
+	problem: we can't create an Appender */
+    catch (Exception& oops)
+	{
+		LogLog::error(_T("Could not create an Appender. Reported error follows."),
+			oops);
+		return 0;
+    }
+}
+
+/**
+Used internally to parse an {@link ErrorHandler} element.
+*/
+void DOMConfigurator::parseErrorHandler(XMLDOMElementPtr element, AppenderPtr appender)
+{
+    ErrorHandlerPtr eh = OptionConverter::instantiateByClassName(
+		subst(element->getAttribute(CLASS_ATTR)),
+		ErrorHandler::getStaticClass(), 
+		0);
+
+    if(eh != 0)
+	{
+		eh->setAppender(appender);
+		
+		PropertySetter propSetter(eh);
+		XMLDOMNodeListPtr children = element->getChildNodes();
+		int length = children->getLength();
+		
+		for (int loop = 0; loop < length; loop++) 
+		{
+			XMLDOMNodePtr currentNode = children->item(loop);
+			if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
+			{
+				XMLDOMElementPtr currentElement = currentNode;
+				tstring tagName = currentElement->getTagName();
+				if(tagName == PARAM_TAG)
+				{
+					setParameter(currentElement, propSetter);
+				}
+				else if(tagName == APPENDER_REF_TAG)
+				{
+					eh->setBackupAppender(findAppenderByReference(currentElement));
+				}
+				else if(tagName == LOGGER_REF)
+				{
+					tstring loggerName = currentElement->getAttribute(REF_ATTR);	    
+					LoggerPtr logger = repository->getLogger(loggerName, loggerFactory);
+					eh->setLogger(logger);
+				}
+				else if(tagName == ROOT_REF)
+				{
+					LoggerPtr root = repository->getRootLogger();
+					eh->setLogger(root);
+				}
+			}
+		}
+		propSetter.activate();
+		appender->setErrorHandler(eh);
+    }
+}
+
+/**
+ Used internally to parse a filter element.
+*/
+void DOMConfigurator::parseFilters(XMLDOMElementPtr element, AppenderPtr appender)
+{
+	tstring clazz = subst(element->getAttribute(CLASS_ATTR));
+	FilterPtr filter = OptionConverter::instantiateByClassName(clazz,
+		Filter::getStaticClass(), 0);
+	
+	if(filter != 0)
+	{
+		PropertySetter propSetter(filter);
+		XMLDOMNodeListPtr children = element->getChildNodes();
+		int length = children->getLength();
+		
+		for (int loop = 0; loop < length; loop++)
+		{
+			XMLDOMNodePtr currentNode = children->item(loop);
+			if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
+			{
+				XMLDOMElementPtr currentElement = currentNode;
+				tstring tagName = currentElement->getTagName();
+				if(tagName == PARAM_TAG)
+				{
+					setParameter(currentElement, propSetter);
+				} 
+			}
+		}
+		propSetter.activate();
+		LogLog::debug(_T("Adding filter of type [")+filter->getClass().toString()
+			+_T("] to appender named [")+appender->getName()+_T("]."));
+		appender->addFilter(filter);
+	}    
+}
+
+/**
+Used internally to parse an category element.
+*/
+void DOMConfigurator::parseLogger(XMLDOMElementPtr loggerElement)
+{
+	// Create a new org.apache.log4j.Category object from the <category> element.
+	tstring loggerName = subst(loggerElement->getAttribute(NAME_ATTR));
+	
+	LogLog::debug(_T("Retreiving an instance of Logger."));
+	LoggerPtr logger = repository->getLogger(loggerName, loggerFactory);
+
+	// Setting up a category needs to be an atomic operation, in order
+	// to protect potential log operations while category
+	// configuration is in progress.
+	synchronized sync(logger);
+	bool additivity = OptionConverter::toBoolean(
+		subst(loggerElement->getAttribute(ADDITIVITY_ATTR)),
+		true);
+	
+	LogLog::debug(_T("Setting [")+logger->getName()+_T("] additivity to [")+
+		(additivity ? tstring(_T("true")) : tstring(_T("false")))+_T("]."));
+	logger->setAdditivity(additivity);
+	parseChildrenOfLoggerElement(loggerElement, logger, false);
+}
+
+/**
+ Used internally to parse the logger factory element.
+*/
+void DOMConfigurator::parseLoggerFactory(XMLDOMElementPtr factoryElement)
+{
+	tstring className = subst(factoryElement->getAttribute(CLASS_ATTR));
+	
+	if(className.empty())
+	{
+		LogLog::error(_T("Logger Factory tag ") + tstring(CLASS_ATTR) +
+			_T(" attribute not found."));
+		LogLog::debug(_T("No Category Logger configured."));
+	}
+	else
+	{
+		LogLog::debug(_T("Desired logger factory: [")+className+_T("]"));
+		loggerFactory = OptionConverter::instantiateByClassName(
+			className, 
+			LoggerFactory::getStaticClass(), 
+			0);
+		PropertySetter propSetter(loggerFactory);
+		
+		XMLDOMElementPtr currentElement = 0;
+		XMLDOMNodePtr currentNode = 0;
+		XMLDOMNodeListPtr children = factoryElement->getChildNodes();
+		int length = children->getLength();
+		
+		for (int loop=0; loop < length; loop++)
+		{
+			currentNode = children->item(loop);
+			if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
+			{
+				currentElement = currentNode;
+				if (currentElement->getTagName() == PARAM_TAG) 
+				{
+					setParameter(currentElement, propSetter);
+				}
+			}
+		}
+	}
+}
+
+/**
+ Used internally to parse the roor category element.
+*/
+void DOMConfigurator::parseRoot(XMLDOMElementPtr rootElement)
+{
+	LoggerPtr root = repository->getRootLogger();
+	// category configuration needs to be atomic
+	synchronized sync(root);
+	parseChildrenOfLoggerElement(rootElement, root, true);
+}
+
+/**
+ Used internally to parse the children of a logger element.
+*/
+void DOMConfigurator::parseChildrenOfLoggerElement(
+	XMLDOMElementPtr loggerElement, LoggerPtr logger, bool isRoot)
+{
+    
+    PropertySetter propSetter(logger);
+    
+    // Remove all existing appenders from logger. They will be
+    // reconstructed if need be.
+    logger->removeAllAppenders();
+	
+	
+    XMLDOMNodeListPtr children = loggerElement->getChildNodes();
+    int length = children->getLength();
+    
+    for (int loop = 0; loop < length; loop++)
+	{
+		XMLDOMNodePtr currentNode = children->item(loop);
+		
+		if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
+		{
+			XMLDOMElementPtr currentElement = currentNode;
+			tstring tagName = currentElement->getTagName();
+			
+			if (tagName == APPENDER_REF_TAG)
+			{
+				AppenderPtr appender = findAppenderByReference(currentElement);
+				tstring refName =  subst(currentElement->getAttribute(REF_ATTR));
+				if(appender != 0)
+				{
+					LogLog::debug(_T("Adding appender named [")+ refName+ 
+					_T("] to logger [")+logger->getName()+_T("]."));
+				}
+				else 
+				{
+					LogLog::debug(_T("Appender named [")+ refName +
+						_T("] not found."));
+				}
+				
+				logger->addAppender(appender);
+				
+			} 
+			else if(tagName == LEVEL_TAG)
+			{
+				parseLevel(currentElement, logger, isRoot);	
+			} 
+			else if(tagName == PRIORITY_TAG)
+			{
+				parseLevel(currentElement, logger, isRoot);
+			} 
+			else if(tagName == PARAM_TAG)
+			{
+				setParameter(currentElement, propSetter);
+			}
+		}
+    }
+    propSetter.activate();
+}
+
+/**
+ Used internally to parse a layout element.
+*/  
+LayoutPtr DOMConfigurator::parseLayout (XMLDOMElementPtr layout_element)
+{
+	tstring className = subst(layout_element->getAttribute(CLASS_ATTR));
+	LogLog::debug(_T("Parsing layout of class: \"")+className+_T("\""));		 
+	try 
+	{
+		ObjectPtr instance = Loader::loadClass(className).newInstance();
+		LayoutPtr layout = instance;
+		PropertySetter propSetter(layout);
+		
+		XMLDOMNodeListPtr params 	= layout_element->getChildNodes();
+		int length 	= params->getLength();
+		
+		for (int loop = 0; loop < length; loop++)
+		{
+			XMLDOMNodePtr currentNode = params->item(loop);
+			if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
+			{
+				XMLDOMElementPtr currentElement = currentNode;
+				tstring tagName = currentElement->getTagName();
+				if(tagName == PARAM_TAG)
+				{
+					setParameter(currentElement, propSetter);
+				}
+			}
+		}
+		
+		propSetter.activate();
+		return layout;
+	}
+	catch (Exception& oops)
+	{
+		LogLog::error(_T("Could not create the Layout. Reported error follows."),
+			oops);
+		return 0;
+	}
+}
+
+/**
+ Used internally to parse a level  element.
+*/
+void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, bool isRoot)
+{
+    tstring loggerName = logger->getName();
+    if(isRoot) 
+	{
+		loggerName = _T("root");
+    }
+	
+    tstring levelStr = subst(element->getAttribute(VALUE_ATTR));
+	LogLog::debug(_T("Level value for ")+loggerName+_T(" is  [")+levelStr+_T("]."));
+    
+    if(levelStr == INHERITED || levelStr == NuLL) 
+	{
+		if(isRoot)
+		{
+			LogLog::error(_T("Root level cannot be inherited. Ignoring directive."));
+		} 
+		else
+		{
+			logger->setLevel(Level::OFF);
+		}
+    } 
+	else
+	{
+		logger->setLevel(OptionConverter::toLevel(levelStr, Level::DEBUG));
+    }
+
+	LogLog::debug(loggerName + _T(" level set to ") + logger->getLevel().toString());    
+}
+
+void DOMConfigurator::setParameter(XMLDOMElementPtr elem, PropertySetter& propSetter)
+{
+	tstring name = subst(elem->getAttribute(NAME_ATTR));
+	tstring value = elem->getAttribute(VALUE_ATTR);
+	value = subst(OptionConverter::convertSpecialChars(value));
+	propSetter.setProperty(name, value);
+}
+
 void DOMConfigurator::doConfigure(const tstring& filename, spi::LoggerRepositoryPtr repository)
 {
 	this->repository = repository;
 	LogLog::debug(_T("DOMConfigurator configuring file ") + filename + _T("..."));
+
 	appenderBag = new AppenderMap();
-#ifdef WIN32
-	MsXMLReader xmlReader;
-	xmlReader.parse(this, filename);
-#elif defined(HAVE_LIBXML)
-	GnomeXMLReader xmlReader;
-	xmlReader.parse(this, filename);
-#endif // WIN32
+	loggerFactory = new DefaultCategoryFactory();
+
+	try
+	{
+#ifdef HAVE_LIBXML2
+		XMLDOMDocumentPtr doc = new GnomeXMLDOMDocument();
+#elif defined(HAVE_MS_XML)
+		XMLDOMDocumentPtr doc = new MsXMLDOMDocument();
+#endif
+		doc->load(filename); 
+		parse(doc->getDocumentElement());
+    }
+	catch (Exception& e)
+	{
+		// I know this is miserable...
+		LogLog::error(_T("Could not parse input source [")+filename+_T("]."), e);
+    }
 
 	delete (AppenderMap *)appenderBag;
 }
@@ -98,338 +565,131 @@ void DOMConfigurator::configure(const tstring& filename)
 	DOMConfigurator().doConfigure(filename, LogManager::getLoggerRepository());
 }
 
-void DOMConfigurator::BuildElement(const tstring& parentTagName, const tstring& tagName)
+void DOMConfigurator::configureAndWatch(const tstring& configFilename)
 {
-	if (parentTagName == CONFIGURATION_TAG
-		|| parentTagName == OLD_CONFIGURATION_TAG)
-	{
-		if (currentOptionHandler != 0)
-		{
-			currentOptionHandler->activateOptions();
-			currentOptionHandler = 0;
-		}
-
-		if (currentAppenderAttachable != 0)
-		{
-			currentAppenderAttachable = 0;
-		}
-
-		if (currentAppender != 0)
-		{
-			currentAppender->activateOptions();
-			((AppenderMap *)appenderBag)->put(currentAppender->getName(), currentAppender);
-			currentAppender = 0;
-		}
-
-		if (tagName == ROOT_TAG)
-		{
-			currentLogger = repository->getRootLogger();
-			currentAppenderAttachable = currentLogger;
-		}
-		else
-		{
-			currentLogger = 0;
-		}
-	}
-/*
-	else if (tagName == ERROR_HANDLER_TAG)
-	{
-	}*/
+	configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
 }
 
-void DOMConfigurator::BuildAttribute(const tstring& elementTagName, const tstring& name, const tstring& value)
+void DOMConfigurator::configureAndWatch(const tstring& configFilename, long delay)
 {
-	// log4cxx attributes
-	if (elementTagName == CONFIGURATION_TAG
-		|| elementTagName == OLD_CONFIGURATION_TAG)
-	{
-		BuildLog4cxxAttribute(StringHelper::toLowerCase(name), value);
-	}
-
-	// appender attributes
-	else if (elementTagName == APPENDER_TAG)
-	{
-		BuildAppenderAttribute(StringHelper::toLowerCase(name), value);
-	}
-
-	// layout attributes
-	else if (elementTagName == LAYOUT_TAG)
-	{
-		BuildLayoutAttribute(StringHelper::toLowerCase(name), value);
-	}
-
-	// parameter attributes
-	else if (elementTagName == PARAM_TAG)
-	{
-		BuildParameterAttribute(StringHelper::toLowerCase(name), value);
-	}
-
-	// logger attributes
-	else if (elementTagName == LOGGER || elementTagName == CATEGORY)
-	{
-
-
-		BuildLoggerAttribute(StringHelper::toLowerCase(name), value);
-	}
-
-	// level attributes
-	else if (elementTagName == LEVEL_TAG || elementTagName == PRIORITY_TAG)
-	{
-		BuildLevelAttribute(StringHelper::toLowerCase(name), value);
-	}
-
-	// appender_ref attributes
-	else if (elementTagName == APPENDER_REF_TAG)
-	{
-		BuildAppenderRefAttribute(StringHelper::toLowerCase(name), value);
-	}
-
-	// filter attributes
-	else if (elementTagName == FILTER_TAG)
-	{
-		BuildFilterAttribute(StringHelper::toLowerCase(name), value);
-	}
+	XMLWatchdog * xdog = new XMLWatchdog(configFilename);
+	xdog->setDelay(delay);
+	xdog->start();
 }
 
-
-void DOMConfigurator::BuildLog4cxxAttribute(const tstring& name, const tstring& value)
+/**
+ Used internally to configure the log4j framework by parsing a DOM
+ tree of XML elements based on <a
+ href="doc-files/log4j.dtd">log4j.dtd</a>.
+ 
+*/
+void DOMConfigurator::parse(XMLDOMElementPtr element)
 {
-	if (name == INTERNAL_DEBUG_ATTR)
+    tstring rootElementName = element->getTagName();
+	
+    if (rootElementName != CONFIGURATION_TAG)
 	{
-		LogLog::debug(_T("debug attribute= \"") + name +_T("\"."));
-
-		if (!value.empty() || value != _T("null"))
+		if(rootElementName == OLD_CONFIGURATION_TAG)
 		{
-			LogLog::setInternalDebugging(
-				OptionConverter::toBoolean(value, true));
-		}
+			//LogLog::warn(_T("The <")+tstring(OLD_CONFIGURATION_TAG)+
+			//	_T("> element has been deprecated."));
+			//LogLog::warn(_T("Use the <")+tstring(CONFIGURATION_TAG)+
+			//	_T("> element instead."));
+		} 
 		else
 		{
-			LogLog::debug(tstring(_T("Ignoring ")) + INTERNAL_DEBUG_ATTR + _T(" attribute."));
+			LogLog::error(_T("DOM element is - not a <")+
+				tstring(CONFIGURATION_TAG)+_T("> element."));
+			return;
 		}
-	}
+    }
+	
+    tstring debugAttrib = subst(element->getAttribute(INTERNAL_DEBUG_ATTR));
 
-	if (name == THRESHOLD_ATTR)
+    LogLog::debug(_T("debug attribute= \"") + debugAttrib +_T("\"."));
+    // if the log4j.dtd is not specified in the XML file, then the
+    // "debug" attribute is returned as the empty string.
+    if(!debugAttrib.empty() && debugAttrib != NuLL) 
+	{      
+		LogLog::setInternalDebugging(OptionConverter::toBoolean(debugAttrib, true));
+    } 
+	else 
 	{
-		LogLog::debug(_T("Threshold =\"") + value + _T("\"."));
-
-		if (!value.empty() || value != _T("null"))
-		{
-			repository->setThreshold(value);
-		}
-	}
-}
-
-void DOMConfigurator::BuildAppenderAttribute(const tstring& name, const tstring& value)
-{
-	if (name == NAME_ATTR)
+		LogLog::debug(_T("Ignoring ") + tstring(INTERNAL_DEBUG_ATTR)
+			+ _T(" attribute."));
+    }
+	
+	
+    tstring confDebug = subst(element->getAttribute(CONFIG_DEBUG_ATTR));
+    if(!confDebug.empty() && confDebug != NuLL) 
+	{      
+		LogLog::warn(_T("The \"")+tstring(CONFIG_DEBUG_ATTR)+
+			_T("\" attribute is deprecated."));
+		LogLog::warn(_T("Use the \"")+tstring(INTERNAL_DEBUG_ATTR)+
+			_T("\" attribute instead."));
+		LogLog::setInternalDebugging(OptionConverter::toBoolean(confDebug, true));
+    }
+	
+    tstring thresholdStr = subst(element->getAttribute(THRESHOLD_ATTR));
+    LogLog::debug(_T("Threshold =\"") + thresholdStr +_T("\"."));
+    if(!thresholdStr.empty() && thresholdStr != NuLL)
 	{
-		if (currentAppender != 0)
-		{
+		repository->setThreshold(thresholdStr);
+    }
 
-			currentAppender->setName(value);
-		}
-		else
-		{
-			currentAppenderName = value;
-		}
-	}
-	else if (name == CLASS_ATTR)
+    tstring tagName;
+    XMLDOMElementPtr currentElement;
+    XMLDOMNodePtr currentNode;
+    XMLDOMNodeListPtr children = element->getChildNodes();
+    int length = children->getLength();
+	int loop;
+
+    for (loop = 0; loop < length; loop++)
 	{
-		LogLog::debug(_T("Class name: [") + value+_T("]"));
-
-		currentAppender =
-			BuildAppender(StringHelper::toLowerCase(value));
-
-		if (currentAppender != 0)
+		currentNode = children->item(loop);
+		if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
 		{
-			currentAppenderAttachable = currentAppender;
-			currentOptionHandler = currentAppender;
-
-			if (!currentAppenderName.empty())
+			currentElement = currentNode;
+			tagName = currentElement->getTagName();
+			
+			if (tagName == CATEGORY_FACTORY_TAG)
 			{
-				currentAppender->setName(currentAppenderName);
-				currentAppenderName = _T("");
+				parseLoggerFactory(currentElement);
 			}
 		}
-	}
-}
-
-void DOMConfigurator::BuildLayoutAttribute(const tstring& name, const tstring& value)
-{
-	if (name == CLASS_ATTR)
+    }
+    
+    for (loop = 0; loop < length; loop++)
 	{
-		LogLog::debug(_T("Parsing layout of class: [")+value+_T("]"));
-
-		LayoutPtr layout = 
-			BuildLayout(StringHelper::toLowerCase(value));
-		currentOptionHandler = layout;
-
-		if (currentAppender != 0)
+		currentNode = children->item(loop);
+		if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
 		{
-			currentAppender->setLayout(layout);
-		}
-	}
-}
-
-void DOMConfigurator::BuildParameterAttribute(const tstring& name, const tstring& value)
-{
-	if (name == NAME_ATTR)
-	{
-		currentParamName = value;
-	}
-	else if (name == VALUE_ATTR)
-	{
-		currentParamValue = value;
-	}
-
-	if (!currentParamName.empty() && !currentParamValue.empty())
-	{
-		// appender parameter
-		if (currentOptionHandler != 0)
-		{
-			currentOptionHandler->setOption(
-				currentParamName,
-				currentParamValue);
-		}
-
-		currentParamName = _T("");
-		currentParamValue = _T("");
-	}
-}
-
-void DOMConfigurator::BuildLoggerAttribute(const tstring& name, const tstring& value)
-{
-	if (name == NAME_ATTR)
-	{
-		LogLog::debug(_T("Retreiving an instance of Logger."));
-		currentLogger = repository->getLogger(value);
-		currentAppenderAttachable = currentLogger;
-
-		if (!currentAdditivity.empty())
-		{
-			BuildLoggerAdditivity(currentLogger, currentAdditivity);
-			currentAdditivity = _T("");
-		}
-	}
-	else if (name == ADDITIVITY_ATTR)
-	{
-		if (currentLogger != 0)
-		{
-			BuildLoggerAdditivity(currentLogger, value);
-		}
-		else
-		{
-			currentAdditivity = value;
-		}
-	}
-}
-
-void DOMConfigurator::BuildLevelAttribute(const tstring& name, const tstring& value)
-{
-	if (name == VALUE_ATTR && currentLogger != 0)
-	{
-		tstring loggerName = currentLogger->getName();
-
-		LogLog::debug(_T("Level value for ")+loggerName+_T(" is [")+value+_T("]."));
-
-		if (value == INHERITED || value == NuLL)
-		{
-			// root
-
-			if (currentLogger == repository->getRootLogger())
+			currentElement =  currentNode;
+			tagName = currentElement->getTagName();
+			
+			if (tagName == CATEGORY || tagName == LOGGER)
 			{
-				LogLog::error(_T("Root level cannot be inherited. Ignoring directive."));
+				parseLogger(currentElement);
 			}
-			else
+			else if (tagName == ROOT_TAG)
 			{
-
-				currentLogger->setLevel(Level::OFF);
+				parseRoot(currentElement);
 			}
 		}
-		else
-		{
-			currentLogger->setLevel(Level::toLevel(value, Level::DEBUG));
-		}
-
-		LogLog::debug(loggerName + _T(" level set to ") + currentLogger->getLevel().toString());
-	}
+    }
 }
 
-void DOMConfigurator::BuildAppenderRefAttribute(const tstring& name, const tstring& value)
+tstring DOMConfigurator::subst(const tstring& value)
 {
-	if (name == REF_ATTR && currentAppenderAttachable != 0)
+    try
 	{
-		AppenderPtr appender = ((AppenderMap *)appenderBag)->get(value);
-
-		if (appender != 0)
-		{
-			if (currentLogger != 0)
-			{
-				LogLog::debug(_T("Adding appender named [")+ value+ 
-					 _T("] to logger [")+currentLogger->getName()+_T("]."));
-			}
-			else if (currentAppender != 0)
-			{
-				LogLog::debug(_T("Adding appender named [")+ value+ 
-					 _T("] to appender [")+appender->getName()+_T("]."));
-			}
-
-			currentAppenderAttachable->addAppender(appender);
-		}
-		else
-		{
-			LogLog::error(_T("No appender named [")+value+_T("] could be found."));
-		}
-	}
-}
-
-void DOMConfigurator::BuildFilterAttribute(const tstring& name, const tstring& value)
-{
-	if (name == CLASS_ATTR && currentAppender != 0)
+		return OptionConverter::substVars(value, props);
+    } 
+	catch(IllegalArgumentException& e)
 	{
-		FilterPtr filter = BuildFilter(StringHelper::toLowerCase(value));
-		currentOptionHandler = filter;
-
-		if (filter != 0)
-		{
-			LOGLOG_DEBUG(_T("Adding filter of type [") << value
-				<< _T("] to appender named [")
-				<< currentAppender->getName() << _T("]."));
-		   currentAppender->addFilter(filter);
-		}
-	}
+		LogLog::warn(_T("Could not perform variable substitution."), e);
+		return value;
+    }
 }
 
-void DOMConfigurator::BuildLoggerAdditivity(LoggerPtr& logger, const tstring& additivityValue)
-{
-	bool additivity = OptionConverter::toBoolean(additivityValue, true);
-
-	LogLog::debug(_T("Setting [")+logger->getName()+
-		_T("] additivity to [")+
-		(additivity ? _T("true") : _T("false"))+_T("]."));
-
-
-	currentLogger->setAdditivity(additivity);
-}
-
-LayoutPtr DOMConfigurator::BuildLayout(const tstring& className)
-{
-	LayoutPtr layout = OptionConverter::instantiateByClassName(className,
-		Layout::getStaticClass(), 0);
-	return layout;
-}
-
-AppenderPtr DOMConfigurator::BuildAppender(const tstring& className)
-{
-	AppenderPtr appender = OptionConverter::instantiateByClassName(className,
-		Appender::getStaticClass(), 0);
-	return appender;
-}
-
-FilterPtr DOMConfigurator::BuildFilter(const tstring& className)
-{
-	FilterPtr filter = OptionConverter::instantiateByClassName(className,
-		Filter::getStaticClass(), 0);
-	return filter;
-}
+#endif // HAVE_XML
