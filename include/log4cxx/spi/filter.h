@@ -95,7 +95,7 @@ namespace log4cxx
             The log event must be logged immediately without consulting with
             the remaining filters, if any, in the chain.
 			*/
-			ACCEPT = 1,
+			ACCEPT = 1
 
 			};
 

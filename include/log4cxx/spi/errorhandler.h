@@ -43,7 +43,7 @@ namespace log4cxx
 				CLOSE_FAILURE = 3,
 				FILE_OPEN_FAILURE = 4,
 				MISSING_LAYOUT = 5,
-				ADDRESS_PARSE_FAILURE = 6,
+				ADDRESS_PARSE_FAILURE = 6
 			};
 		};
 

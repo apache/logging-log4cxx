@@ -50,7 +50,7 @@ namespace log4cxx
 			{
 				NOT_IMPLEMENTED_NODE = 0,
 				ELEMENT_NODE = 1,
-				DOCUMENT_NODE = 9,
+				DOCUMENT_NODE = 9
 			};
 			
 			virtual XMLDOMNodeListPtr getChildNodes() = 0;
