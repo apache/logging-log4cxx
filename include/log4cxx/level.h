@@ -130,6 +130,12 @@ namespace log4cxx
 		*/
 		virtual bool equals(const Level& level) const;
 
+		inline bool operator==(const Level& level) const
+			{ return (this->level == level.level); }
+
+		inline bool operator!=(const Level& level) const
+			{ return (this->level != level.level); }
+
 		/**
 		Return the syslog equivalent of this level as an integer.
 		*/
