@@ -515,7 +515,7 @@ void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, boo
     String levelStr = subst(element->getAttribute(VALUE_ATTR));
 	LogLog::debug(_T("Level value for ")+loggerName+_T(" is [")+levelStr+_T("]."));
     
-    if(levelStr == INHERITED || levelStr == NuLL)
+    if (StringHelper::equalsIgnoreCase(levelStr,INHERITED) || levelStr == NuLL)
 	{
 		if(isRoot)
 		{
@@ -564,7 +564,8 @@ void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, boo
 		}
     }
 
-	LogLog::debug(loggerName + _T(" level set to ") + logger->getLevel()->toString());    
+	LogLog::debug(loggerName + _T(" level set to ") +
+		logger->getEffectiveLevel()->toString());    
 }
 
 void DOMConfigurator::setParameter(XMLDOMElementPtr elem, PropertySetter& propSetter)
