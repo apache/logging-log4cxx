@@ -7,7 +7,7 @@ log4j</a> by <i>Ceki Gülcü</i>
 
 @section Contents
 - @ref Abstract
-- @ref Introduction
+- @ref IntroductionIntroduction
 - @ref LoggersAppendersAndLayouts
 	- @ref LoggerHierarchy
 	- @ref AppendersAndLayouts
@@ -16,6 +16,7 @@ log4j</a> by <i>Ceki Gülcü</i>
 - @ref DefaultInitializationProcedure
 - @ref NDC
 - @ref Performance
+- @ref Conclusion
 
 @section Abstract
 
@@ -26,7 +27,7 @@ with arbitrary granularity. It is fully configurable at runtime using external
 configuration files. Best of all, log4cxx has a gentle learning curve. Beware:
  judging from user feedback, it is also quite addictive.
  
-@section Introduction
+@section IntroductionIntroduction Introduction
 
 The log4cxx framework is based on log4j, see http://logging.apache.org/log4j
 for more information on log4cxx.
@@ -800,6 +801,7 @@ claims to be fast and flexible: speed first, flexibility second.
 The user should be aware of the following performance issues.
 
 -# <b>Logging performance when logging is turned off.</b>
+@n @n
 When logging is turned
 off entirely or just for a {@link log4cxx::Hierarchy::setThreshold
  set of levels}, the cost of a log request consists of a method
@@ -809,7 +811,7 @@ machine this cost is typically in the 5 to 50 nanosecond range.
 However, The method invocation involves the "hidden" cost of
 parameter construction.
 @n @n
-For example, for some logger <code>cat</code>, writing,
+For example, for some logger <code>logger</code>, writing,
 @code 
 logger->debug("The user named [" + strName + "] is logged");
 @endcode
@@ -824,19 +826,74 @@ To avoid the parameter construction cost write:
 @code 
 if(logger->isDebugEnabled()
 {
-	logger->forcedLog(Level::DEBUG, "The user named [" + strName + "] is logged");
+	logger->forcedLog(Level::DEBUG, 
+		"The user named [" + strName + "] is logged");
 }
 @endcode 
 or in a simpler way:
 @code 
 LOG4CXX_DEBUG(logger, "The user named [" + strName + "] is logged");
-@endcode 
-
+@endcode
+@n
+Certain users resort to preprocessing or compile-time techniques to compile out
+all log statements. This leads to perfect performance efficiency with respect
+to logging. However, since the resulting application binary does not contain
+any log statements, logging cannot be turned on for that binary. In my opinion
+this is a disproportionate price to pay in exchange for a small performance
+gain.
 @n @n
 -# <b>The performance of deciding whether to log or not to log when
 logging is turned on.</b>
 @n @n
+This is essentially the performance of walking the logger
+hierarchy. When logging is turned on, log4cxx still needs to compare
+the level of the log request with the level of the request
+logger. However, loggers may not have an assigned
+level; they can inherit them from the logger hierarchy. Thus,
+before inheriting a level, the logger may need to search its
+ancestors.
+@n @n
+There has been a serious effort to make this hierarchy walk to
+be as fast as possible. For example, child loggers link only to
+their existing ancestors. In the <code>BasicConfigurator</code>
+example shown earlier, the logger named <code>com.foo.Bar</code> is
+linked directly to the root logger, thereby circumventing the
+nonexistent <code>com</code> or <code>com.foo</code> loggers. This
+significantly improves the speed of the walk, especially in "sparse"
+hierarchies.
+@n @n
+The typical cost of walking the hierarchy is typically 3
+times slower than when logging is turned off entirely.
+@n @n
 -# <b>Actually outputting log messages</b>
+This is the cost of formatting the log output and sending it to
+its target destination. Here again, a serious effort was made to
+make layouts (formatters) perform as quickly as possible. The same
+is true for appenders. The typical cost of actually logging is
+about 100 to 300 microseconds.
 
+Although log4cxx has many features, its first design goal was speed.
+Some log4cxx components have been rewritten many times to improve
+performance.  Nevertheless, contributors frequently come up with new
+optimizations. You should be pleased to know that when configured with
+the {@link log4cxx::SimpleLayout SimpleLayout}
+performance tests have shown log4cxx to log as quickly as
+<code>std::cout</code>.
+
+@section Conclusion
+
+Log4cxx is a popular logging package written in C++.  One of its
+distinctive features is the notion of inheritance in loggers. Using
+a logger hierarchy it is possible to control which log statements
+are output at arbitrary granularity. This helps reduce the volume of
+logged output and minimize the cost of logging.
+
+One of the advantages of the log4cxx API is its manageability. Once
+the log statements have been inserted into the code, they can be
+controlled with configuration files. They can be selectively enabled
+or disabled, and sent to different and multiple output targets in
+user-chosen formats. The log4cxx package is designed so that log
+statements can remain in shipped code without incurring a heavy
+performance cost.
 */
 
