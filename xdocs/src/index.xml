@@ -6,7 +6,8 @@
     <title>About</title>
   </properties>
 
-  <meta name="keywords" content="c++, cpp, cxx, logging, tracing, component, framework, API, log4cxx"/>
+  <meta name="keywords" content="c++, cpp, cxx, logging, tracing, component,
+  framework, API, log4cxx"/>
 
 
 <body>
@@ -14,7 +15,10 @@
 
 
   <p>Log4cxx is a port to C++ of the 
-  <a href="http://logging.apache.org/log4j">Log4j</a> project
+  <a href="http://logging.apache.org/log4j">Log4j</a> project.
+  </p>
+  <p>Main concepts of the logging framework are exposed in the
+  <a href="manual/Introduction.html">short introduction to log4cxx</a>.
   </p>
 
 
