@@ -43,7 +43,7 @@ String PropertyResourceBundle::getString(const String& key) const
 	}
 	while (resourceBundle != 0);
 
-	throw MissingResourceException(((String)"Missing resource ") + key);
+	throw MissingResourceException(key);
 
 	return resource;
 }

@@ -292,7 +292,7 @@ protected:
 
 		if (in.bad())
 		{
-			throw IOException("IOException in PropertyParser::get");
+			throw IOException();
 		}
 
 		return true;

@@ -113,17 +113,18 @@ void ObjectImpl::unlock() const
 	cs.unlock();
 }
 
+
 void ObjectImpl::wait() const
 {
 	if (cs.getOwningThread() != Thread::getCurrentThreadId())
 	{
 		if (cs.getOwningThread() == 0)
 		{
-			throw IllegalMonitorStateException(_T("Object not locked"));
+			throw ObjectNotLockedException();
 		}
 		else
 		{
-			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
+			throw ObjectNotLockedByCurrentThreadException();
 		}
 	}
 
@@ -151,11 +152,11 @@ void ObjectImpl::notify() const
 	{
 		if (cs.getOwningThread() == 0)
 		{
-			throw IllegalMonitorStateException(_T("Object not locked"));
+			throw ObjectNotLockedException();
 		}
 		else
 		{
-			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
+			throw ObjectNotLockedByCurrentThreadException();
 		}
 	}
 
@@ -172,11 +173,11 @@ void ObjectImpl::notifyAll() const
 	{
 		if (cs.getOwningThread() == 0)
 		{
-			throw IllegalMonitorStateException(_T("Object not locked"));
+			throw ObjectNotLockedException();
 		}
 		else
 		{
-			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
+			throw ObjectNotLockedByCurrentThreadException();
 		}
 	}
 

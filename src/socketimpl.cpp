@@ -42,6 +42,9 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketImpl)
 #include <string.h>
 #include <assert.h>
 
+
+
+
 #if defined(WIN32) || defined(_WIN32)
 namespace {
     class WinSockInitializer {
@@ -59,11 +62,48 @@ namespace {
 }
 #endif
 
-const String SocketException::createMessage() {
+SocketException::SocketException() {
+}
+
+SocketException::SocketException(const SocketException& src)
+   : IOException(src) {
+}
+
+
+SocketException::~SocketException() throw() {
+}
+
+const char* SocketException::what() const throw() {
+  return "SocketException";
+}
+
+
+PlatformSocketException::PlatformSocketException() {
+   errorNumber = errno;
+}
+
+PlatformSocketException::PlatformSocketException(const PlatformSocketException& src)
+   : SocketException(src), errorNumber(src.getErrorNumber()) {
+}
+
+long PlatformSocketException::getErrorNumber() const {
+  return errorNumber;
+}
+
+PlatformSocketException::~PlatformSocketException() throw() {
+}
+
+
+const char* PlatformSocketException::what() const throw() {
+   return "Socket exception";
+}
+
+
+const String PlatformSocketException::getMessage() const {
   #if defined(WIN32) || defined(_WIN32)
           String message;
           TCHAR messageBuffer[256];
-          DWORD dwError = ::WSAGetLastError();
+          DWORD dwError = errorNumber;
 
           if (dwError != 0)
           {
@@ -87,19 +127,91 @@ const String SocketException::createMessage() {
                   }
                   else
                   {
-                          itot(::WSAGetLastError(), messageBuffer, 10);
+                          itot(errorNumber, messageBuffer, 10);
                           message = messageBuffer;
                   }
           }
   #else
-          USES_CONVERSION;
-          const TCHAR* message = A2T(strerror(errno));
+  const size_t bufsize = 512;
+  char buf[bufsize];
+  const char* message;
+  #if defined(__GNUC__)
+  message = strerror_r(errorNumber, buf, bufsize);
+  #else
+  int stat = strerror_r(errorNumber, buf, bufsize);
+  if (stat == 0) {
+    message = buf;
+  } else {
+    message = "Unrecognized errno";
+  }
   #endif
+#endif
   return message;
 }
 
-SocketException::SocketException() : IOException(getMessage()) {
+ConnectException::ConnectException() {
 }
+
+ConnectException::ConnectException(const ConnectException& src)
+   : PlatformSocketException(src) {
+}
+
+ConnectException::~ConnectException() throw() {
+}
+
+
+const char* ConnectException::what() const throw() {
+   return "Connect exception";
+}
+
+BindException::BindException() {
+}
+
+BindException::BindException(const BindException& src)
+   : PlatformSocketException(src) {
+}
+
+BindException::~BindException() throw() {
+}
+
+
+const char* BindException::what() const throw() {
+   return "Bind exception";
+}
+
+
+InterruptedIOException::InterruptedIOException() {
+}
+
+InterruptedIOException::InterruptedIOException(const InterruptedIOException& src)
+   : IOException(src) {
+}
+
+InterruptedIOException::~InterruptedIOException() throw() {
+}
+
+
+const char* InterruptedIOException::what() const throw() {
+   return "Interrupted IO exception";
+}
+
+SocketTimeoutException::SocketTimeoutException() {
+}
+
+SocketTimeoutException::SocketTimeoutException(const SocketTimeoutException& src)
+   : InterruptedIOException(src) {
+}
+
+SocketTimeoutException::~SocketTimeoutException() throw() {
+}
+
+
+const char* SocketTimeoutException::what() const throw() {
+   return "Socket timeout exception";
+}
+
+
+
 
 SocketImpl::SocketImpl() : fd(0), localport(-1), port(0), timeout(-1), address()
 {
@@ -142,7 +254,7 @@ void SocketImpl::accept(SocketImplPtr s)
 		int retval = ::select(this->fd+1, &rfds, NULL, NULL, &tv);
 		if (retval == 0)
 		{
-			throw SocketTimeoutException("Socket timeout");
+			throw SocketTimeoutException();
 		}
 
 		assert(FD_ISSET(this->fd, &rfds));

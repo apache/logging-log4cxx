@@ -112,7 +112,7 @@ void Thread::start()
 //	LogLog::debug(_T("Thread::start"));
 	if (::pthread_create(&impl->thread, NULL, threadProc, this) != 0)
 	{
-		throw ThreadException("Unable to start thread");
+		throw ThreadException();
 	}
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	unsigned long threadId = 0;
@@ -120,7 +120,7 @@ void Thread::start()
 		(void *)::CreateThread(NULL, 0, threadProc, this, 0, &threadId);
 	if (impl->thread == 0)
 	{
-		throw ThreadException("Unable to start thread");
+		throw UnableToStartThreadException();
 	}
 #endif
 }
@@ -152,7 +152,7 @@ void Thread::join()
 
 	if (!bSuccess)
 	{
-		throw InterruptedException("Failure in Thread::join");
+		throw InterruptedException();
 	}
 
 	LOGLOG_DEBUG(_T("Thread ended."));

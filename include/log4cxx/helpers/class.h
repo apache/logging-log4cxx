@@ -36,7 +36,8 @@ namespace log4cxx
 		class LOG4CXX_EXPORT InstantiationException : public Exception
 		{
 		public:
-			InstantiationException() : Exception(_T("Abstract class")) {}
+			InstantiationException() {}
+                        const char* what() const throw() { return "Abstract class"; }
 		};
 
 		/**
@@ -47,7 +48,8 @@ namespace log4cxx
 		class LOG4CXX_EXPORT ClassNotFoundException : public Exception
 		{
 		public:
-			ClassNotFoundException(const String& className);
+                    ClassNotFoundException(const String& className) {}
+                    const char* what() const throw() { return "Class not found"; }
 		};
 
 		class LOG4CXX_EXPORT Class

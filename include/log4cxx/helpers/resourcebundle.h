@@ -29,8 +29,11 @@ namespace log4cxx
 		class LOG4CXX_EXPORT MissingResourceException : public Exception
 		{
                     public:
-                    MissingResourceException(const String& message) :
-                       Exception(message) {}
+                    MissingResourceException(const String& key) {
+                    }
+                    const char* what() const throw() {
+                       return "Missing resource";
+                    }
 		};
 
 		class ResourceBundle;

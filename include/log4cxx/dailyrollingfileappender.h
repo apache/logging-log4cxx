@@ -82,6 +82,14 @@ namespace log4cxx
 		inline void setTimeZone(const helpers::TimeZonePtr& timeZone)
 			{ this->timeZone = timeZone; }
 
+                class UnknownPeriodicityTypeException : public ::log4cxx::helpers::RuntimeException {
+                    public:
+                    UnknownPeriodicityTypeException() throw() {}
+                    const char* what() const throw() {
+                      return "Unknown periodicity type";
+                    }
+                };
+
 	protected:
 		PeriodicityType type;
 		helpers::TimeZonePtr timeZone;

@@ -22,6 +22,97 @@
 
 using namespace log4cxx::helpers;
 
+//
+//   Specializations of EventException, not in header since they
+//      are subject to change and not part of public API
+//
+namespace log4cxx {
+  namespace helpers {
+
+    class CannotLockMutexException : public EventException
+    {
+    public:
+          CannotLockMutexException()  {
+          }
+          const char* what() const throw() {
+            return "Cannot lock mutex";
+          }
+    };
+
+    class CannotBroadcastConditionException : public EventException
+    {
+    public:
+         CannotBroadcastConditionException()  {
+         }
+         const char* what() const throw() {
+             return "Cannot broadcast condition";
+         }
+    };
+
+    class CannotSignalConditionException : public EventException
+    {
+        public:
+        CannotSignalConditionException()  {
+        }
+        const char* what() const throw() {
+            return "Cannot signal condition";
+        }
+    };
+
+    class CannotUnlockMutexException : public EventException
+    {
+        public:
+        CannotUnlockMutexException()  {
+        }
+        const char* what() const throw() {
+            return "Cannot unlock mutex";
+        }
+    };
+
+    class CannotSetEventException : public EventException
+    {
+        public:
+        CannotSetEventException()  {
+        }
+        const char* what() const throw() {
+            return "Cannot set event";
+        }
+    };
+
+    class CannotCreateEventException : public EventException
+    {
+        public:
+        CannotCreateEventException()  {
+        }
+        const char* what() const throw() {
+            return "Cannot create event";
+        }
+    };
+
+    class CannotWaitOnConditionException : public EventException
+    {
+        public:
+        CannotWaitOnConditionException()  {
+        }
+        const char* what() const throw() {
+            return "Cannot wait on condition";
+        }
+    };
+
+    class WaitOnEventException : public EventException
+    {
+        public:
+        WaitOnEventException()  {
+        }
+        const char* what() const throw() {
+            return "Wait on event error";
+        }
+    };
+
+  }
+}
+
+
 Event::Event(bool manualReset, bool initialState)
 : condition(), mutex()
 #ifdef LOG4CXX_HAVE_PTHREAD
@@ -40,7 +131,7 @@ Event::Event(bool manualReset, bool initialState)
 
 	if (event == NULL)
 	{
-		throw EventException(_T("Cannot create event"));
+		throw CannotCreateEventException();
 	}
 #endif
 }
@@ -60,7 +151,7 @@ void Event::set()
 #ifdef LOG4CXX_HAVE_PTHREAD
 	if (pthread_mutex_lock(&mutex) != 0)
 	{
-		throw EventException(_T("Cannot lock mutex"));
+		throw CannotLockMutexException();
 	}
 
 	// if the event is already set, no need to signal or broadcast
@@ -73,7 +164,7 @@ void Event::set()
 			if (pthread_cond_broadcast(&condition) != 0)
 			{
 				pthread_mutex_unlock(&mutex);
-				throw EventException(_T("Cannot broadcast condition"));
+				throw CannotBroadcastConditionException();
 			}
 		}
 		else
@@ -81,19 +172,19 @@ void Event::set()
 			if (pthread_cond_signal(&condition) != 0)
 			{
 				pthread_mutex_unlock(&mutex);
-				throw EventException(_T("Cannot signal condition"));
+				throw CannotSignalConditionException();
 			}
 		}
 	}
 
 	if (pthread_mutex_unlock(&mutex) != 0)
 	{
-		throw EventException(_T("Cannot unlock mutex"));
+		throw CannotUnlockMutexException();
 	}
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (!::SetEvent((HANDLE)event))
 	{
-		throw EventException(_T("Cannot set event"));
+		throw CannotSetEventException();
 	}
 #endif
 }
@@ -103,19 +194,19 @@ void Event::reset()
 #ifdef LOG4CXX_HAVE_PTHREAD
 	if (pthread_mutex_lock(&mutex) != 0)
 	{
-		throw EventException(_T("Cannot lock mutex"));
+		throw CannotLockMutexException();
 	}
 
 	state = false;
 
 	if (pthread_mutex_unlock(&mutex) != 0)
 	{
-		throw EventException(_T("Cannot unlock mutex"));
+		throw CannotUnlockMutexException();
 	}
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (!::ResetEvent((HANDLE)event))
 	{
-		throw EventException(_T("Cannot reset event"));
+		throw CannotResetEventException();
 	}
 #endif
 }
@@ -125,14 +216,14 @@ void Event::wait()
 #ifdef LOG4CXX_HAVE_PTHREAD
 	if (pthread_mutex_lock(&mutex) != 0)
 	{
-		throw EventException(_T("Cannot lock mutex"));
+		throw CannotUnlockMutexException();
 	}
 
 	// we wait on condition only if the event is not set (state == false)
 	if (!state && pthread_cond_wait(&condition, &mutex) != 0)
 	{
 		pthread_mutex_unlock(&mutex);
-		throw EventException(_T("Cannot wait on condition"));
+		throw CannotWaitOnConditionException();
 	}
 
 	if (!manualReset)
@@ -143,13 +234,13 @@ void Event::wait()
 
 	if (pthread_mutex_unlock(&mutex) != 0)
 	{
-		throw EventException(_T("Cannot unlock mutex"));
+		throw CannotUnlockMutexException();
 	}
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (::WaitForSingleObject((HANDLE)event, INFINITE)
 		!= WAIT_OBJECT_0)
 	{
-		throw EventException(_T("Wait on event error"));
+		throw WaitOnEventException();
 	}
 #endif
 }

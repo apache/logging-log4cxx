@@ -75,7 +75,7 @@ void DateFormat::format(ostream& os, int64_t timeMillis) const
 
 	if (timeZone == 0)
 	{
-		throw NullPointerException(_T("timeZone is null"));
+		throw NullPointerException();
 	}
 
 	int64_t localTimeMillis = timeMillis + timeZone->getOffset(timeMillis);

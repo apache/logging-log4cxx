@@ -26,22 +26,14 @@ namespace log4cxx
 		/** The class Exception and its subclasses indicate conditions that a
 		reasonable application might want to catch.
 		*/
-		class LOG4CXX_EXPORT Exception
+		class LOG4CXX_EXPORT Exception : public ::std::exception
 		{
 		public:
-			Exception() : message() {}
-			Exception(const String& message): message(message) {}
-                        Exception(const Exception& other)
-                            : message(other.getMessage()) {}
-                        virtual ~Exception() {}
-			inline const String& getMessage() const { return message; }
-
-		private:
-			const String message;
-                        //   prevent assignment operations
-                        Exception& operator=(const Exception&);
-
-	}; // class Exception
+			Exception()  {}
+                        virtual const String getMessage() const {
+                          return what();
+                        }
+	        }; // class Exception
 
 		/** RuntimeException is the parent class of those exceptions that can be
 		thrown during the normal operation of the process.
@@ -50,8 +42,6 @@ namespace log4cxx
 		{
 		public:
 			RuntimeException() {}
-			RuntimeException(const String& message)
-			 : Exception(message) {}
 		}; // class RuntimeException
 
 		/** Thrown when an application attempts to use null in a case where an
@@ -61,17 +51,14 @@ namespace log4cxx
 		{
 		public:
 			NullPointerException() {}
-			NullPointerException(const String& message)
-			 : RuntimeException(message) {}
 		}; // class NullPointerException
 
 		/** Thrown to indicate that a method has been passed
 		an illegal or inappropriate argument.*/
 		class LOG4CXX_EXPORT IllegalArgumentException : public RuntimeException
 		{
-		public:
-			IllegalArgumentException(const String& message)
-			 : RuntimeException(message) {}
+                public:
+                   IllegalArgumentException() {}
 		}; // class IllegalArgumentException
 
 		/** Signals that an I/O exception of some sort has occurred. This class
@@ -80,8 +67,10 @@ namespace log4cxx
 		*/
 		class LOG4CXX_EXPORT IOException : public Exception
 		{
-                    public:
-                    IOException(const String& message) : Exception(message) {}
+                public:
+                    IOException()  {}
+                    IOException(const IOException &src) : Exception(src) {
+                    }
 		};
 	}  // namespace helpers
 }; // namespace log4cxx

@@ -157,7 +157,7 @@ void SocketInputStream::read(String& value) const
 	{
 		if (size > 1024)
 		{
-			throw SocketException();
+			throw SocketMessageTooLargeException();
 		}
 
 		TCHAR * buffer;

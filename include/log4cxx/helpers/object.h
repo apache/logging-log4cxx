@@ -70,10 +70,33 @@ namespace log4cxx
 		class LOG4CXX_EXPORT IllegalMonitorStateException : public Exception
 		{
 		public:
-			IllegalMonitorStateException(const String& message) : Exception(message)
-			{
+			IllegalMonitorStateException() {
 			}
+
 		};
+
+               class LOG4CXX_EXPORT ObjectNotLockedException : public IllegalMonitorStateException
+               {
+               public:
+                    ObjectNotLockedException() {
+                    }
+
+                    const char* what() throw() {
+                        return "Object not locked";
+                    }
+               };
+
+                class LOG4CXX_EXPORT ObjectNotLockedByCurrentThreadException : public IllegalMonitorStateException
+                {
+                public:
+                     ObjectNotLockedByCurrentThreadException() {
+                     }
+
+                     const char* what() throw() {
+                         return "Object not locked by this thread";
+                     }
+                };
+
 
 		class Object;
 		typedef ObjectPtrT<Object> ObjectPtr;

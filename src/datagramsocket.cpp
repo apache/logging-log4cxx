@@ -160,7 +160,7 @@ void DatagramSocket::receive(DatagramPacketPtr& p)
 		(sockaddr *)&addr, (socklen_t *)&addr_len) == -1)
 #endif
 	{
-		throw IOException("IOException in DatagramSocket::receive");
+		throw IOException();
 	}
 
 }
@@ -183,7 +183,7 @@ void DatagramSocket::send(DatagramPacketPtr& p)
 		(sockaddr *)&addr, addr_len) == -1)
 #endif
 	{
-		throw IOException("IOException in DatagramSocket::send");
+		throw IOException();
 	}
 }
 

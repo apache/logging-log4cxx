@@ -43,14 +43,14 @@ namespace log4cxx
 		class LOG4CXX_EXPORT ThreadException : public Exception
 		{
                     public:
-                    ThreadException(const String& msg) : Exception(msg) {
+                    ThreadException() : Exception() {
                     }
 		};
 
 		class LOG4CXX_EXPORT InterruptedException : public Exception
 		{
                     public:
-                    InterruptedException(const String& msg) : Exception(msg) {
+                    InterruptedException() : Exception() {
                     }
 		};
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,10 +33,7 @@ CyclicBuffer::CyclicBuffer(int maxSize)
 {
 	if(maxSize < 1)
 	{
-		StringBuffer oss;
-		oss << _T("The maxSize argument (") << maxSize
-			<< _T(") is not a positive integer.");
-		throw new IllegalArgumentException(oss.str());
+		throw new IllegalArgumentException();
 	}
  }
 
@@ -98,7 +95,7 @@ spi::LoggingEventPtr CyclicBuffer::get()
 	}
 	return r;
 }
-  
+
 /**
 Resize the cyclic buffer to <code>newSize</code>.
 @throws IllegalArgumentException if <code>newSize</code> is negative.
@@ -107,10 +104,7 @@ void CyclicBuffer::resize(int newSize)
 {
 	if(newSize < 0)
 	{
-		StringBuffer oss;
-		oss << _T("Negative array size [") << newSize
-			<< _T("] not allowed.");
-		throw new IllegalArgumentException(oss.str());
+		throw new IllegalArgumentException();
 	}
 	if(newSize == numElems)
 		return; // nothing to do

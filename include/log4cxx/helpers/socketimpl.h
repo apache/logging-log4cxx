@@ -33,25 +33,84 @@ namespace log4cxx
 		{
 		public:
 			SocketException();
+                        SocketException(const SocketException&);
+                        virtual ~SocketException() throw();
+                        const char* what() const throw();
+                private:
+                        SocketException& operator=(const SocketException&);
+		};
+
+                /**
+                 * Thrown if an incoming message is too large
+                 */
+                class SocketMessageTooLargeException : public SocketException
+                {
+                public:
+                      SocketMessageTooLargeException() {}
+                      SocketMessageTooLargeException(
+                         const SocketMessageTooLargeException& src) :
+                         SocketException(src) {
+                      }
+                      virtual ~SocketMessageTooLargeException() throw() {}
+                      const char* what() const throw() {
+                         "Incoming message too large";
+                      }
 
                 private:
-                        static const String createMessage();
-		};
+                     SocketMessageTooLargeException& operator=(
+                         const SocketMessageTooLargeException&);
+                };
+
+
+                /** Thrown to indicate that there is an error in the underlying
+                protocol, such as a TCP error.
+                */
+                class LOG4CXX_EXPORT PlatformSocketException : public SocketException
+                {
+                public:
+                        PlatformSocketException();
+                        PlatformSocketException(const PlatformSocketException&);
+                        virtual ~PlatformSocketException() throw();
+                        const char* what() const throw();
+                        virtual const String getMessage() const;
+                        long getErrorNumber() const;
+
+                private:
+                        PlatformSocketException& operator=(const PlatformSocketException&);
+                        long errorNumber;
+                };
+
 
 		/** Signals that an error occurred while attempting to connect a socket
 		to a remote address and port. Typically, the connection was refused
 		remotely (e.g., no process is listening on the remote address/port).
 		*/
-		class LOG4CXX_EXPORT ConnectException : public SocketException
+		class LOG4CXX_EXPORT ConnectException : public PlatformSocketException
 		{
+                public:
+                    ConnectException();
+                    ConnectException(const ConnectException& src);
+                    virtual ~ConnectException() throw();
+                    const char* what() const throw();
+
+                private:
+                   ConnectException& operator=(const ConnectException&);
 		};
 
 		/** Signals that an error occurred while attempting to bind a socket to
 		a local address and port. Typically, the port is in use, or the
 		requested local address could not be assigned.
 		*/
-		class LOG4CXX_EXPORT BindException : public SocketException
+		class LOG4CXX_EXPORT BindException : public PlatformSocketException
 		{
+                public:
+                      BindException();
+                      BindException(const BindException&);
+                      virtual ~BindException() throw();
+                      const char* what() const throw();
+
+                private:
+                     BindException& operator=(const BindException&);
 		};
 
 		/** Signals that an I/O operation has been interrupted. An
@@ -62,19 +121,31 @@ namespace log4cxx
 		*/
 		class LOG4CXX_EXPORT InterruptedIOException : public IOException
 		{
-                     public:
-                     InterruptedIOException(const String& message) :
-                         IOException(message) {}
+                public:
+                     InterruptedIOException();
+                     InterruptedIOException(const InterruptedIOException&);
+                     ~InterruptedIOException() throw();
+                     const char* what() const throw();
+
+                private:
+                     InterruptedIOException& operator=(const InterruptedIOException&);
 		};
 
 		/** Signals that a timeout has occurred on a socket read or accept.
 		*/
 		class LOG4CXX_EXPORT SocketTimeoutException : public InterruptedIOException
 		{
-                    public:
-                    SocketTimeoutException(const String& message) :
-                      InterruptedIOException(message) {}
+                public:
+                    SocketTimeoutException();
+                    SocketTimeoutException(const SocketTimeoutException& src);
+                    ~SocketTimeoutException() throw();
+                    const char* what() const throw();
+
+               private:
+                    SocketTimeoutException& operator=(const SocketTimeoutException&);
 		};
+
+
 
 		class SocketImpl;
 		typedef helpers::ObjectPtrT<SocketImpl> SocketImplPtr;

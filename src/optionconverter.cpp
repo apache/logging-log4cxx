@@ -50,6 +50,41 @@ namespace {
     };
 }
 
+namespace log4cxx {
+  namespace helpers {
+    class MissingBraceException : public IllegalArgumentException {
+    public:
+       MissingBraceException(const String& val, size_t openBrace)
+          : val(val), openBrace(openBrace) {
+       }
+
+       MissingBraceException(const MissingBraceException& src)
+          : IllegalArgumentException(src), val(src.val), openBrace(src.openBrace) {
+       }
+
+       ~MissingBraceException() throw() {
+       }
+
+       const char* what() const throw() {
+          return "Missing brace exception";
+       }
+
+       const String getMessage() const {
+         StringBuffer oss;
+         oss << _T("\"") << val
+                 << _T("\" has no closing brace. Opening brace at position ")
+                 << openBrace << _T(".");
+         return oss.str();
+       }
+
+    private:
+       MissingBraceException& operator=(const MissingBraceException& src);
+       const String val;
+       const size_t openBrace;
+    };
+  }
+}
+
 String OptionConverter::convertSpecialChars(const String& s)
 {
 	TCHAR c;
@@ -222,11 +257,7 @@ String OptionConverter::substVars(const String& val, Properties& props)
 			k = val.find(delimStop, j);
 			if(k == -1)
 			{
-				StringBuffer oss;
-				oss << _T("\"") << val
-					<< _T("\" has no closing brace. Opening brace at position ")
-					<< j << _T(".");
-				throw IllegalArgumentException(oss.str());
+				throw MissingBraceException(val, j);
 			}
 			else
 			{

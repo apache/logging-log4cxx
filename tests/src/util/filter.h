@@ -32,8 +32,10 @@ namespace log4cxx
 	class UnexpectedFormatException : public helpers::Exception
 	{
 	public:
-		UnexpectedFormatException(const String& message)
-		: Exception(message) {}
+		UnexpectedFormatException(const String& fmt) {}
+                const char* what() const throw() {
+                   return "UnexpectedFormatException";
+                }
 	};
 
 	class Filter

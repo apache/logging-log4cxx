@@ -256,7 +256,7 @@ void SocketAppender::Connector::run()
 		{
 			LogLog::debug(_T("Could not connect to ")
 				 +socketAppender->address.getHostName()
-				 +_T(". Exception is ") + e.getMessage());
+				 +_T(". Exception is ") + e.what());
 		}
 	}
 

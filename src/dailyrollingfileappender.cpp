@@ -132,7 +132,7 @@ int64_t RollingCalendar::getNextCheckMillis(int64_t now)
 			return now;
 		}
 	default:
-		throw RuntimeException(_T("Unknown periodicity type."));
+		throw UnknownPeriodicityTypeException();
 	}
 
 	return now;
