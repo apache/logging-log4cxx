@@ -18,6 +18,7 @@
 
 #include <log4cxx/spi/repositoryselector.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/spi/loggerrepository.h>
 
 namespace log4cxx
 {
