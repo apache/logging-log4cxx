@@ -1,0 +1,66 @@
+
+<!-- This file is an ANT build script. ANT is a Java based build tool. -->
+<!-- It is availale from http://jakarta.apache.org/ant/                -->
+
+
+<project name="logging-log4cxx" default="site" basedir="." >
+	<!-- The build.properties file defines the path to local jar files -->
+	<property file="build.properties"/>
+
+	<!-- The base directory relative to which most targets are built -->
+	<property name="base" value="."/>
+    <property name="docs.src" value="./src"/>
+    <property name="docs.dest" value="./www"/>
+
+    <property name="logging-site" 
+             value="../../logging-site"/>
+     
+     <!-- Construct classpath for building the html pages -->
+     <path id="site.classpath">
+       <fileset dir="${logging-site}/lib">
+         <include name="*.jar"/>
+       </fileset>
+     </path>
+
+    <!-- ============================ -->
+    <!-- ======= New targets ======== -->
+    <!-- ============================ -->
+
+    <target name="prepareSite">
+      <available classname="org.apache.velocity.anakia.AnakiaTask"
+    	property="AnakiaTask.present">
+    	<classpath refid="site.classpath"/>
+      </available>
+    </target>
+    
+    <target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
+      <echo>
+    	AnakiaTask is not present! Please check to make sure that
+    	velocity.jar is in your classpath.
+      </echo>
+    </target>
+    
+    <target name="site" depends="checkSite" if="AnakiaTask.present">
+      <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+    	<classpath refid="site.classpath"/>
+      </taskdef>
+    
+      <mkdir dir="${docs.dest}/css"/>  
+      <copy file="${logging-site}/docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
+      
+      <anakia basedir="${docs.src}" destdir="${docs.dest}/"
+    	extension=".html"
+    	style="site.vsl"
+    	projectFile="stylesheets/project.xml"
+    	excludes="**/stylesheets/**, empty.xml"
+    	includes="**/*.xml"
+    	lastModifiedCheck="true"
+    	templatePath="${docs.src}/stylesheets">
+      </anakia>  
+	  
+      <copy file="${docs.src}/manual/doxygen.css" tofile="${docs.dest}/css/doxygen.css"/>
+      <exec dir="${docs.src}/manual" executable="doxygen">
+      </exec>
+
+    </target>
+</project>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Logging Services"
+         href="http://logging.apache.org/">
+
+  <title>log4cxx</title>
+  <!-- <logo href="images/logo.jpg">Apache Logging Services</logo> -->
+  <copyright year="2004" />
+  
+  <body>
+    
+    <menu name="Apache">
+     <item name="Apache Home" href="http://www.apache.org" />
+     <item name="Logging Services" href="http://logging.apache.org/" />
+    </menu>
+
+   <menu name="log4cxx project">
+     <item name="About" href="/index.html"/>
+     <item name="Team" href="/team.html"/>
+     <item name="Documentation" href="/manual/index.html"/>
+     <item name="Download" href="/download.html"/>
+   </menu>
+
+   </body>
+</project>

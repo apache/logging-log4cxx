@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<document>
+
+  <properties>
+    <author email="mcatan at free dot fr">Michael Catanzariti</author>
+    <title>About</title>
+  </properties>
+
+  <meta name="keywords" content="c++, cpp, cxx, logging, tracing, component, framework, API, log4cxx"/>
+
+
+<body>
+  <h1>About log4cxx</h1>
+
+
+  <p>Log4cxx is a port to C++ of the 
+  <a href="http://logging.apache.org/log4j">Log4j</a> project
+  </p>
+
+
+
+  </body>
+</document>
+
