@@ -93,7 +93,10 @@ void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event)
 		output << _T("<td>");
 		Transform::appendEscapingTags(output, A2T(event->getFile()));
 		output.put(_T(':'));
-		output << event->getLine();
+		if (event->getLine() != 0)
+		{
+			output << event->getLine();
+		}
 		output << _T("</td>") << std::endl;
 	}
 
