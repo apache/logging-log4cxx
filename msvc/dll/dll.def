@@ -29,7 +29,10 @@ EXPORTS
 ?getStaticClass@DenyAllFilter@varia@log4cxx@@SAABVClass@helpers@3@XZ
 
 ;class DOMConfigurator
+?doConfigure@DOMConfigurator@xml@log4cxx@@UAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$ObjectPtrT@VLoggerRepository@spi@log4cxx@@@helpers@3@@Z
 ?configure@DOMConfigurator@xml@log4cxx@@SAXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?configureAndWatch@DOMConfigurator@xml@log4cxx@@SAXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?configureAndWatch@DOMConfigurator@xml@log4cxx@@SAXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@J@Z
 
 ;class FileAppender
 ?getStaticClass@FileAppender@log4cxx@@SAABVClass@helpers@2@XZ
@@ -66,18 +69,45 @@ EXPORTS
 ??0LevelRangeFilter@varia@log4cxx@@QAE@XZ
 
 ;class Logger
-?info@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?getClass@Logger@log4cxx@@UBEABVClass@helpers@2@XZ
+?getStaticClass@Logger@log4cxx@@SAABVClass@helpers@2@XZ
+??0Logger@log4cxx@@IAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+??1Logger@log4cxx@@UAE@XZ
+?addAppender@Logger@log4cxx@@UAEXV?$ObjectPtrT@VAppender@log4cxx@@@helpers@2@@Z
+?assertLog@Logger@log4cxx@@QAEX_NABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?callAppenders@Logger@log4cxx@@QAEXABVLoggingEvent@spi@2@@Z
+?closeNestedAppenders@Logger@log4cxx@@QAEXXZ
 ?debug@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
 ?error@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
 ?fatal@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
-?warn@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
-?getRootLogger@Logger@log4cxx@@SA?AV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@XZ
-?isInfoEnabled@Logger@log4cxx@@QAE_NXZ
-?getLogger@Logger@log4cxx@@SA?AV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
-?getLevel@Logger@log4cxx@@QAEABVLevel@2@XZ
+?forcedLog@Logger@log4cxx@@IAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@ABVLevel@2@0PBDH@Z
 ?getAdditivity@Logger@log4cxx@@QAE_NXZ
-?getStaticClass@Logger@log4cxx@@SAABVClass@helpers@2@XZ
+?getAllAppenders@Logger@log4cxx@@UAE?AV?$vector@V?$ObjectPtrT@VAppender@log4cxx@@@helpers@log4cxx@@V?$allocator@V?$ObjectPtrT@VAppender@log4cxx@@@helpers@log4cxx@@@std@@@std@@XZ
+?getAppender@Logger@log4cxx@@UAE?AV?$ObjectPtrT@VAppender@log4cxx@@@helpers@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?getEffectiveLevel@Logger@log4cxx@@UAEABVLevel@2@XZ
+?getLoggerRepository@Logger@log4cxx@@QAE?AV?$ObjectPtrT@VLoggerRepository@spi@log4cxx@@@helpers@2@XZ
 ?getParent@Logger@log4cxx@@QAE?AV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@XZ
+?getLevel@Logger@log4cxx@@QAEABVLevel@2@XZ
+?info@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?isAttached@Logger@log4cxx@@UAE_NV?$ObjectPtrT@VAppender@log4cxx@@@helpers@2@@Z
+?isDebugEnabled@Logger@log4cxx@@QAE_NXZ
+?isEnabledFor@Logger@log4cxx@@QAE_NABVLevel@2@@Z
+?isInfoEnabled@Logger@log4cxx@@QAE_NXZ
+?isErrorEnabled@Logger@log4cxx@@QAE_NXZ
+?isWarnEnabled@Logger@log4cxx@@QAE_NXZ
+?isFatalEnabled@Logger@log4cxx@@QAE_NXZ
+?log@Logger@log4cxx@@QAEXABVLevel@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?removeAllAppenders@Logger@log4cxx@@UAEXXZ
+?removeAppender@Logger@log4cxx@@UAEXV?$ObjectPtrT@VAppender@log4cxx@@@helpers@2@@Z
+?removeAppender@Logger@log4cxx@@UAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?setAdditivity@Logger@log4cxx@@QAEX_N@Z
+?setHierarchy@Logger@log4cxx@@IAEXPAVLoggerRepository@spi@2@@Z
+?setLevel@Logger@log4cxx@@UAEXABVLevel@2@@Z
+?warn@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?getLogger@Logger@log4cxx@@SA?AV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?getRootLogger@Logger@log4cxx@@SA?AV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@XZ
+?getLogger@Logger@log4cxx@@SA?AV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$ObjectPtrT@VLoggerFactory@spi@log4cxx@@@42@@Z
+??1ClassLogger@Logger@log4cxx@@QAE@XZ
 
 ;class LoggingEvent
 ??0LoggingEvent@spi@log4cxx@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@ABV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@ABVLevel@2@0PBDH@Z
@@ -134,7 +164,12 @@ EXPORTS
 ?setConversionPattern@PatternLayout@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
 
 ;class PropertyConfigurator
+?doConfigure@PropertyConfigurator@log4cxx@@UAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$ObjectPtrT@VLoggerRepository@spi@log4cxx@@@helpers@2@@Z
 ?configure@PropertyConfigurator@log4cxx@@SAXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?configureAndWatch@PropertyConfigurator@log4cxx@@SAXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+?configureAndWatch@PropertyConfigurator@log4cxx@@SAXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@J@Z
+?configure@PropertyConfigurator@log4cxx@@SAXAAVProperties@helpers@2@@Z
+?doConfigure@PropertyConfigurator@log4cxx@@QAEXAAVProperties@helpers@2@V?$ObjectPtrT@VLoggerRepository@spi@log4cxx@@@42@@Z
 
 ;class RollingFileAppender
 ;??0RollingFileAppender@log4cxx@@QAE@V?$ObjectPtr@VLayout@log4cxx@@@helpers@1@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z
