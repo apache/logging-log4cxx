@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,29 @@
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/formattinginfo.h>
 #include <log4cxx/helpers/patternconverter.h>
+#include <log4cxx/helpers/dateformat.h>
+#include <log4cxx/helpers/relativetimedateformat.h>
+#include <map>
+#include <vector>
+
+#define DEFINE_PATTERN_CONVERTER(classname)                   \
+class LOG4CXX_EXPORT classname : public PatternConverter {    \
+public:                                                       \
+classname(const FormattingInfo& formattingInfo,               \
+          const std::vector<LogString>& options);             \
+virtual void convert(LogString& sbuf,                         \
+              const spi::LoggingEventPtr& event,              \
+              log4cxx::helpers::Pool& pool) const;            \
+static PatternConverter* newInstance(                         \
+          const FormattingInfo& formattingInfo,               \
+          const std::vector<LogString>& options) {            \
+          return new classname(formattingInfo, options);  }   \
+private:                                                      \
+classname(const classname&);                                  \
+classname& operator=(const classname&);                       \
+
+#define END_DEFINE_PATTERN_CONVERTER(classname)          };
+
 
 namespace log4cxx
 {
@@ -45,133 +68,146 @@ namespace log4cxx
         */
                 class LOG4CXX_EXPORT PatternParser
                 {
-                protected:
-                        int state;
-                        LogString currentLiteral;
-                        size_t patternLength;
-                        size_t i;
-                        PatternConverterPtr head;
-                        PatternConverterPtr tail;
-                        FormattingInfo formattingInfo;
-                        LogString pattern;
-                        LogString timeZone;
+                public:
+                typedef PatternConverter* (*PatternConverterFactory)(
+                     const FormattingInfo& info,
+                     const std::vector<LogString>& options);
+                typedef std::map<LogString, PatternConverterFactory> PatternConverterMap;
+
+                private:
+                  enum {
+                      LITERAL_STATE = 0,
+                      CONVERTER_STATE = 1,
+                      MINUS_STATE = 2,
+                      DOT_STATE = 3,
+                      MIN_STATE = 4,
+                      MAX_STATE = 5 } state;
+
+                  static const PatternConverterMap& getGlobalRulesRegistry();
+
+                  LogString currentLiteral;
+                  int patternLength;
+                  int i;
+                  PatternConverterPtr head;
+                  PatternConverterPtr tail;
+                  FormattingInfo formattingInfo;
+                  LogString pattern;
+
+                  /**
+                   * Additional rules for this particular instance.
+                   * key: the conversion word (as String)
+                   * value: the pattern converter class (as String)
+                   */
+                  PatternConverterMap converterRegistry;
+
+
 
                 public:
-                        PatternParser(const LogString& pattern, const LogString& timeZone);
+                        PatternParser(const LogString& pattern);
 
                 private:
                         void addToList(PatternConverterPtr& pc);
+                        LogString extractConverter(logchar lastChar);
+                        std::vector<LogString> extractOptions();
 
-                protected:
-                        LogString extractOption();
-
-                        /**
-                        The option is expected to be in decimal and positive. In case of
-                        error, zero is returned.  */
-                        int extractPrecisionOption();
 
                 public:
                         PatternConverterPtr parse();
 
-                protected:
+                        PatternConverterMap getConverterRegistry() const;
+                        void setConverterRegistry(const PatternConverterMap&);
+
+
+                private:
+                        PatternConverterFactory findConverterClass(const LogString& converterId);
+
                         void finalizeConverter(logchar c);
 
                         void addConverter(PatternConverterPtr& pc);
+
+                        bool isUnicodeIdentifierStart(logchar ch);
+                        bool isUnicodeIdentifierPart(logchar ch);
+
+                        static void logError(const LogString& msg);
+                        static void logWarn(const LogString& msg);
+                        static int getPrecision(const std::vector<LogString>& options);
+
 
                 // ---------------------------------------------------------------------
                 //                      PatternConverters
                 // ---------------------------------------------------------------------
                 private:
-                        class LOG4CXX_EXPORT BasicPatternConverter : public PatternConverter
-                        {
-                        private:
-                                int type;
+
+                        class LOG4CXX_EXPORT LiteralPatternConverter : public PatternConverter {
                         public:
-                                BasicPatternConverter(const FormattingInfo& formattingInfo, int type);
-                                virtual void convert(LogString& sbuf,
-                                        const spi::LoggingEventPtr& event,
-                                        log4cxx::helpers::Pool& pool) const;
+                            LiteralPatternConverter(const LogString& literal);
+                            virtual void convert(LogString& sbuf,
+                                      const spi::LoggingEventPtr& event,
+                                      log4cxx::helpers::Pool& pool) const;
+                        private:
+                            LiteralPatternConverter(LiteralPatternConverter&);
+                            LiteralPatternConverter& operator=(LiteralPatternConverter&);
+                            LogString literal;
                         };
 
-                        class LOG4CXX_EXPORT LiteralPatternConverter : public PatternConverter
-                        {
-                        private:
-                                LogString literal;
 
-                        public:
-                                LiteralPatternConverter(const LogString& value);
-                                virtual void convert(LogString& sbuf,
-                                        const spi::LoggingEventPtr& event,
-                                        log4cxx::helpers::Pool& pool) const;
-                        private:
-                                //   prevent copy and assignment
-                                LiteralPatternConverter(const LiteralPatternConverter&);
-                                LiteralPatternConverter& operator=(const LiteralPatternConverter&);
-                        };
+                        DEFINE_PATTERN_CONVERTER(DatePatternConverter)
+                            DateFormatPtr df;
+                            static DateFormatPtr createDateFormat(const std::vector<LogString>& options);
+                        END_DEFINE_PATTERN_CONVERTER(DatePatternConverter)
 
-                        class LOG4CXX_EXPORT DatePatternConverter : public PatternConverter
-                        {
-                        private:
-                                DateFormat * df;
+                        DEFINE_PATTERN_CONVERTER(FullLocationPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(FullLocationPatternConverter)
 
-                        public:
-                                DatePatternConverter(const FormattingInfo& formattingInfo,
-                                        DateFormat * df);
-                                ~DatePatternConverter();
+                        DEFINE_PATTERN_CONVERTER(LineLocationPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(LineLocationPatternConverter)
 
-                                virtual void convert(LogString& sbuf,
-                                        const spi::LoggingEventPtr& event,
-                                        log4cxx::helpers::Pool& pool) const;
+                        DEFINE_PATTERN_CONVERTER(FileLocationPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(FileLocationPatternConverter)
 
-                        private:
-                                //   prevent copy and assignment
-                                DatePatternConverter(const DatePatternConverter&);
-                                DatePatternConverter& operator=(const DatePatternConverter&);
-                        };
+                        DEFINE_PATTERN_CONVERTER(MethodLocationPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(MethodLocationPatternConverter)
 
-                        class LOG4CXX_EXPORT MDCPatternConverter : public PatternConverter
-                        {
-                        private:
-                                LogString key;
+                        DEFINE_PATTERN_CONVERTER(ClassNamePatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(ClassNamePatternConverter)
 
-                        public:
-                                MDCPatternConverter(const FormattingInfo& formattingInfo,
-                                        const LogString& key);
-                                virtual void convert(LogString& sbuf,
-                                        const spi::LoggingEventPtr& event,
-                                        log4cxx::helpers::Pool& pool) const;
-                        private:
-                                //   prevent copy and assignment
-                                MDCPatternConverter(const MDCPatternConverter&);
-                                MDCPatternConverter& operator=(const MDCPatternConverter&);
-                        };
+                        DEFINE_PATTERN_CONVERTER(LoggerPatternConverter)
+                            int precision;
+                        END_DEFINE_PATTERN_CONVERTER(LoggerPatternConverter)
 
-                        class LOG4CXX_EXPORT LocationPatternConverter : public PatternConverter
-                        {
-                        private:
-                                int type;
+                        DEFINE_PATTERN_CONVERTER(MessagePatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(MessagePatternConverter)
 
-                        public:
-                                LocationPatternConverter(const FormattingInfo& formattingInfo, int type);
-                                virtual void convert(LogString& sbuf,
-                                        const spi::LoggingEventPtr& event,
-                                        log4cxx::helpers::Pool& pool) const;
-                        };
+                        DEFINE_PATTERN_CONVERTER(LineSeparatorPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(LineSeparatorPatternConverter)
 
-                        class LOG4CXX_EXPORT CategoryPatternConverter : public PatternConverter
-                        {
-                        private:
-                                int precision;
+                        DEFINE_PATTERN_CONVERTER(LevelPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(LevelPatternConverter)
 
-                        public:
-                                CategoryPatternConverter(const FormattingInfo& formattingInfo,
-                                        int precision);
-                                virtual void convert(LogString& sbuf,
-                                        const spi::LoggingEventPtr& event,
-                                        log4cxx::helpers::Pool& pool) const;
-                        };
+                        DEFINE_PATTERN_CONVERTER(RelativeTimePatternConverter)
+                            RelativeTimeDateFormat formatter;
+                        END_DEFINE_PATTERN_CONVERTER(RelativeTimePatternConverter)
+
+                        DEFINE_PATTERN_CONVERTER(ThreadPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(ThreadPatternConverter)
+
+                        DEFINE_PATTERN_CONVERTER(NDCPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(NDCPatternConverter)
+
+                        DEFINE_PATTERN_CONVERTER(PropertiesPatternConverter)
+                          LogString key;
+                          static LogString getKey(const std::vector<LogString>& options);
+                        END_DEFINE_PATTERN_CONVERTER(PropertiesPatternConverter)
+
+                        DEFINE_PATTERN_CONVERTER(ThrowableInformationPatternConverter)
+                        END_DEFINE_PATTERN_CONVERTER(ThrowableInformationPatternConverter)
+
+
                 }; // class PatternParser
         }  // namespace helpers
 } // namespace log4cxx
+
+#undef DEFINE_PATTERN_CONVERTER
+#undef END_DEFINE_PATTERN_CONVERTER
 
 #endif //_LOG4CXX_HELPER_PATTERN_PARSER_H

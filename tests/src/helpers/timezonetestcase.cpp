@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,6 +40,7 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
           CPPUNIT_TEST(test3);
           CPPUNIT_TEST(test4);
           CPPUNIT_TEST(test5);
+          CPPUNIT_TEST(test6);
   CPPUNIT_TEST_SUITE_END();
 
 #define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
@@ -108,6 +109,13 @@ void test5() {
   CPPUNIT_ASSERT_EQUAL(6, exploded.tm_hour);
 }
 
+/**
+ * Checks the GMT timezone
+ */
+void test6() {
+  TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT")));
+  CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
+}
 
 
 };

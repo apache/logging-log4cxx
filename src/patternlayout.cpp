@@ -68,7 +68,7 @@ void PatternLayout::format(LogString& output,
 
 PatternConverterPtr PatternLayout::createPatternParser(const LogString& pattern)
 {
-        return PatternParser(pattern, timeZone).parse();
+        return PatternParser(pattern).parse();
 }
 
 void PatternLayout::setOption(const LogString& option, const LogString& value)
@@ -78,12 +78,6 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
                LOG4CXX_STR("conversionpattern")))
         {
                 pattern = OptionConverter::convertSpecialChars(value);
-        }
-        else if (StringHelper::equalsIgnoreCase(option,
-               LOG4CXX_STR("TIMEZONE"),
-               LOG4CXX_STR("timezone")))
-        {
-                timeZone = value;
         }
 }
 

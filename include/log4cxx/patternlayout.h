@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -383,7 +383,6 @@ namespace log4cxx
                 LogString sbuf;
                 LogString pattern;
                 helpers::PatternConverterPtr head;
-                LogString timeZone;
 
         public:
                 DECLARE_LOG4CXX_OBJECT(PatternLayout)
@@ -436,18 +435,6 @@ namespace log4cxx
                 virtual void format(LogString& output,
                      const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;
 
-                /**
-                The <b>TimeZoneID</b> option is a time zone ID string in the format
-                expected by the <code>locale</code> C++ standard class.
-                */
-                inline void setTimeZone(const LogString& timeZone)
-                        { this->timeZone.assign(timeZone); }
-
-                /**
-                Returns value of the <b>TimeZone</b> option.
-                */
-                inline const LogString& getTimeZone() const
-                        { return timeZone; }
 
         protected:
                 /**

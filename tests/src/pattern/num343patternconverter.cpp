@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,21 @@
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::pattern;
 
-void Num343PatternConverter::convert(LogString& sbuf, const spi::LoggingEventPtr& event)
+Num343PatternConverter::Num343PatternConverter() {
+}
+
+PatternConverter* Num343PatternConverter::newInstance(
+   const FormattingInfo& info,
+   const std::vector<LogString>& options) {
+   return new Num343PatternConverter();
+}
+
+
+void Num343PatternConverter::convert(LogString& sbuf,
+    const spi::LoggingEventPtr& event,
+    Pool& pool) const
 {
         sbuf.append(LOG4CXX_STR("343"));
 }

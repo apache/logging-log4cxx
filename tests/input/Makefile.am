@@ -1,2 +1,2 @@
-SUBDIRS = ndb performance xml
+SUBDIRS = ndc performance xml
 EXTRA_DIST = *.properties

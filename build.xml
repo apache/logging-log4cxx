@@ -518,8 +518,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <foreach target="make-header-check" param="header">
                 <path><fileset dir="${build.dir}/header-check" includes="**/*.h"/></path>
         </foreach>
-        <mkdir dir="${obj.dir}/header-check"/>
-        <cc objdir="${obj.dir}/header-check"
+        <cc objdir="${build.dir}/header-check"
                 name="gcc"
                 exceptions="true"
                 subsystem="gui"
@@ -1033,6 +1032,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <include name="tests/witness/*"/>
             <include name="tests/witness/ndc/*"/>
             <include name="tests/log4j.dtd"/>
+            <include name="**/*.am"/>
+            <include name="**/*.in"/>
+            <include name="**/*.patch"/>
             <exclude name="**/.cvsignore"/>
         </tarfileset>
     </tar>
@@ -1042,7 +1044,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="fixcrlf" depends="init" description="repair end-of-line sequences">
    <fixcrlf srcDir="${base.dir}" tab="remove" tablength="3"
-       fixlast="true" includes="**/*.cpp **/*.h" excludes="lib/**/*"/>
+       eof="remove" fixlast="true" includes="**/*.cpp **/*.h" excludes="lib/**/*"/>
 </target>
 
 </project>
