@@ -47,7 +47,7 @@ endif
 all-local: dox
 
 
-html/index.html: Doxyfile
+html/index.html: Doxyfile introduction.dox mainpage.dox
 	"@DOXYGEN@"
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)
