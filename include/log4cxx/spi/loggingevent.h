@@ -73,9 +73,9 @@ namespace log4cxx
 			@param file The file where this log statement was written.
 			@param line The line where this log statement was written.
 			*/
-			LoggingEvent(const tstring& fqnOfLoggerClass,
+			LoggingEvent(const String& fqnOfLoggerClass,
 				const LoggerPtr& logger,
-				const Level& level,	const tstring& message,
+				const Level& level,	const String& message,
 				const char* file=0, int line=-1);
 
 			/** Return the #level of this event. */
@@ -83,21 +83,21 @@ namespace log4cxx
 				{ return *level; }
 
 			/**  Return the name of the #logger. */
-			inline const tstring& getLoggerName() const
+			inline const String& getLoggerName() const
 				{ return logger->getName(); }
 
 			/** Return the #message for this logging event. */
-			inline const tstring& getMessage() const
+			inline const String& getMessage() const
 				{ return message; }
 
 			/** Return the #message for this logging event. */
-			inline const tstring& getRenderedMessage() const
+			inline const String& getRenderedMessage() const
 				{ return message; }
 
 			/**Returns the time when the application started,
 			in seconds elapsed since 01.01.1970.
 			*/
-			static long getStartTime()
+			static int64_t getStartTime()
 				{ return startTime; }
 
 			/** Return the #threadId of this event. */
@@ -121,7 +121,7 @@ namespace log4cxx
 			* correct content even if the event was generated in a different
 			* thread or even on a different machine. The NDC#get method
 			* should <em>never</em> be called directly.  */
-			const tstring& getNDC() const;
+			const String& getNDC() const;
 
 			/** Write this event to a helpers::SocketOutputStream. */
 			void write(helpers::SocketOutputStreamPtr os) const;
@@ -145,7 +145,7 @@ namespace log4cxx
 			* are searched.
 			* </p>
 			*/
-			tstring getMDC(const tstring& key) const;
+			String getMDC(const String& key) const;
 
 			/**
 			* Returns the set of of the key values in the MDC for the event.
@@ -154,7 +154,7 @@ namespace log4cxx
 			* @return Set an unmodifiable set of the MDC keys.
 			* @since 1.3
 			*/
-			std::set<tstring> getMDCKeySet() const;
+			std::set<String> getMDCKeySet() const;
 
 			/**
 			Obtain a copy of this thread's MDC prior to serialization
@@ -165,25 +165,25 @@ namespace log4cxx
 			/**
 			* Return a previously set property. The return value can be null.
 			*/
-			tstring getProperty(const tstring& key) const;
+			String getProperty(const String& key) const;
 			/**
 			* Returns the set of of the key values in the properties
 			* for the event. The returned set is unmodifiable by the caller.
 			*
 			* @return Set an unmodifiable set of the property keys.
 			*/
-			std::set<tstring> getPropertyKeySet() const;
+			std::set<String> getPropertyKeySet() const;
 
 			/**
 			* Set a string property using a key and a string value.  since 1.3
 			*/
-			void setProperty(const tstring& key, const tstring& value);
+			void setProperty(const String& key, const String& value);
 
 		public:
 			/**
 			* Fully qualified name of the calling category class.
 			*/
-			tstring fqnOfCategoryClass;
+			String fqnOfCategoryClass;
 
 		private:
 			/**
@@ -200,15 +200,15 @@ namespace log4cxx
 			const Level * level;
 
 			/** The nested diagnostic context (NDC) of logging event. */
-			tstring ndc;
+			String ndc;
 
 			/** The mapped diagnostic context (MDC) of logging event. */
 			MDC::Map mdcCopy;
 
 			/**
-			* A map of tstring keys and tstring values.
+			* A map of String keys and String values.
 			*/
-			std::map<tstring, tstring> properties;
+			std::map<String, String> properties;
 
 			/** Have we tried to do an NDC lookup? If we did, there is no need
 			*  to do it again.  Note that its value is always false when
@@ -225,7 +225,7 @@ namespace log4cxx
 			bool mdcCopyLookupRequired;
 
 			/** The application supplied message of logging event. */
-			tstring message;
+			String message;
 
             /** The name of thread in which this logging event was generated. */
             //const LOG4CPLUS_THREAD_KEY_TYPE thread;
