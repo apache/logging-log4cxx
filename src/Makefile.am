@@ -7,6 +7,7 @@ liblog4cxx_la_SOURCES = \
 	appenderskeleton.cpp \
 	asyncappender.cpp \
 	boundedfifo.cpp \
+	class.cpp \
 	consoleappender.cpp \
 	criticalsection.cpp \
 	datelayout.cpp \
@@ -19,9 +20,11 @@ liblog4cxx_la_SOURCES = \
 	hierarchy.cpp \
 	htmllayout.cpp \
 	inetaddress.cpp \
+	layout.cpp\
 	level.cpp \
 	levelmatchfilter.cpp \
 	levelrangefilter.cpp \
+	loader.cpp\
 	logger.cpp \
 	loggingevent.cpp \
 	loglog.cpp \
@@ -36,6 +39,8 @@ liblog4cxx_la_SOURCES = \
 	patternlayout.cpp \
 	patternparser.cpp \
 	properties.cpp \
+	propertyconfigurator.cpp \
+	propertysetter.cpp \
 	rollingfileappender.cpp \
 	rootcategory.cpp \
 	serversocket.cpp \
