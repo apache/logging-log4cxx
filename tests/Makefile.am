@@ -1,4 +1,3 @@
-SUBDIRS = console_test
 noinst_PROGRAMS = \
 		hierarchy_test\
 		level_test\
@@ -10,7 +9,9 @@ noinst_PROGRAMS = \
         htmllayout_test\
         xmllayout_test\
         ttcclayout_test\
-        patternlayout_test
+        patternlayout_test\
+		propertyconfigurator_test\
+		domconfigurator_test
 
 EXTRA_DIST = \
   hierarchy_test.witness\
@@ -33,7 +34,9 @@ EXTRA_DIST = \
   xmllayout_test.witness\
   ttcclayout_test.sh\
   patternlayout_test.witness\
-  patternlayout_test.sh
+  patternlayout_test.sh\
+  propertyconfigurator_test.properties\
+  domconfigurator_test.xml
 
 INCLUDES = -I$(top_srcdir)/include
 
@@ -70,6 +73,12 @@ ttcclayout_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 patternlayout_test_SOURCES = patternlayout_test.cpp
 patternlayout_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
+propertyconfigurator_test_SOURCES = propertyconfigurator_test.cpp
+propertyconfigurator_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+
+domconfigurator_test_SOURCES = domconfigurator_test.cpp
+domconfigurator_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+
 TESTS = \
 		hierarchy_test.sh\
 		level_test.sh\
@@ -81,4 +90,6 @@ TESTS = \
         htmllayout_test.sh\
         xmllayout_test.sh\
         ttcclayout_test.sh\
-        patternlayout_test.sh
+        patternlayout_test.sh\
+		propertyconfigurator_test\
+		domconfigurator_test
