@@ -19,8 +19,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogString XMLThreadFilter::filter(const LogString& in)
-        const throw(UnexpectedFormatException)
-{
-        return merge(LOG4CXX_STR("thread=\"0x[0-9A-F]*\""), in, LOG4CXX_STR("thread=\"main\""));
+XMLThreadFilter::XMLThreadFilter()
+     : Filter("thread=\"0x[0-9A-F]*\"", "thread=\"main\"") {
 }

@@ -47,8 +47,8 @@ log4cxx_time_t LoggingEvent::getStartTime() {
 }
 
 LoggingEvent::LoggingEvent() :
-   properties(0),
    ndc(LOG4CXX_STR("null")),
+   properties(0),
    ndcLookupRequired(true),
    mdcCopyLookupRequired(true),
    timeStamp(0),
@@ -60,8 +60,8 @@ LoggingEvent::LoggingEvent(
         const LogString& message, const LocationInfo& locationInfo) :
    logger(logger),
    level(level),
-   properties(0),
    ndc(LOG4CXX_STR("null")),
+   properties(0),
    ndcLookupRequired(true),
    mdcCopyLookupRequired(true),
    message(message),

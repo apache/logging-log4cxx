@@ -46,7 +46,7 @@ Mutex::Mutex() {
 
 
 Mutex::~Mutex() {
-        apr_status_t stat = apr_thread_mutex_destroy((apr_thread_mutex_t*) mutex);
+        apr_thread_mutex_destroy((apr_thread_mutex_t*) mutex);
 }
 
 

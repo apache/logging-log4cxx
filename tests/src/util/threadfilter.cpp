@@ -19,8 +19,4 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogString ThreadFilter::filter(const LogString& in)
-        const throw(UnexpectedFormatException)
-{
-        return merge(LOG4CXX_STR("\\[0x[0-9A-F]*]"), in, LOG4CXX_STR("\\[main]"));
-}
+ThreadFilter::ThreadFilter() : Filter("\\[0x[0-9A-F]*]", "\\[main]") {}

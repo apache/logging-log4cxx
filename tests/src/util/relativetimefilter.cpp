@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,5 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogString RelativeTimeFilter::filter(const LogString& in)
-	const throw(UnexpectedFormatException)
-{
-	return merge(RELATIVE_TIME_PAT, in, LOG4CXX_STR(""));
-}
+RelativeTimeFilter::RelativeTimeFilter() 
+   : Filter(RELATIVE_TIME_PAT, "") {}

@@ -19,8 +19,5 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogString AbsoluteDateAndTimeFilter::filter(const LogString& in)
-	const throw(UnexpectedFormatException)
-{
-	return merge(ABSOLUTE_DATE_AND_TIME_PAT, in, LOG4CXX_STR(""));
-}
+AbsoluteDateAndTimeFilter::AbsoluteDateAndTimeFilter() :
+     Filter(ABSOLUTE_DATE_AND_TIME_PAT, "") {}

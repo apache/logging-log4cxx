@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogString LineNumberFilter::filter(const LogString& in) const throw(UnexpectedFormatException)
+LineNumberFilter::LineNumberFilter() 
 {
-	LogString temp = merge(LOG4CXX_STR(" [^ ]*[\\\\]"), in, LOG4CXX_STR(" "));
-	return merge(LOG4CXX_STR("\\(\\d{1,4}\\)"), temp, LOG4CXX_STR("\\(X\\)"));
+    patterns.push_back( PatternReplacement(" [^ ]*[\\\\]", " "));
+    patterns.push_back( PatternReplacement("\\(\\d{1,4}\\)", "\\(X\\)"));
 }

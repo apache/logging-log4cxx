@@ -29,11 +29,15 @@ namespace log4cxx
         public:
                 static void transform(const File& in,
                         const File& out,
-                        const std::vector<Filter *>& filters) throw(std::exception);
+                        const std::vector<Filter *>& filters);
 
                 static void transform(const File& in,
                         const File& out,
-                        const Filter& filter) throw(std::exception);
+                        const Filter& filter);
+                        
+                static void transform(const File& in,
+                                      const File& out,
+                                      const std::vector< log4cxx::Filter::PatternReplacement >& patterns);
         };
 }
 

@@ -51,6 +51,9 @@ namespace log4cxx
                     inline const LogString& getName() const {
                        return name;
                     }
+                    inline const std::string& getOSName() const {
+                       return osName;
+                    }
 
                     LogString read(log4cxx::helpers::Pool& pool) const;
 

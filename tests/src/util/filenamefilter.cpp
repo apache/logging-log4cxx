@@ -19,28 +19,23 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-FilenameFilter::FilenameFilter(const LogString& actual, const LogString& expected)
-    : pattern(LOG4CXX_STR(" ")),
-      replacement(LOG4CXX_STR(" ")) {
-        pattern += actual;
-	size_t backslash = pattern.rfind(LOG4CXX_STR('\\'), pattern.length() - 1);
-	while (backslash != std::wstring::npos) {
-		pattern.replace(backslash, 1, LOG4CXX_STR("\\\\"), 2);
+FilenameFilter::FilenameFilter(const std::string& actual, const std::string& expected) {
+    std::string pattern(" ");
+    pattern += actual;
+	size_t backslash = pattern.rfind('\\', pattern.length() - 1);
+	while (backslash != std::string::npos) {
+		pattern.replace(backslash, 1, "\\\\", 2);
 		if (backslash == 0) {
 			backslash = std::string::npos;
 		} else {
-		    backslash = pattern.rfind(LOG4CXX_STR('\\'), backslash - 1);
+		    backslash = pattern.rfind('\\', backslash - 1);
 		}
 	}
-
-
-    replacement += expected;
-}
-
-LogString FilenameFilter::filter(const LogString& in)
-	const throw(UnexpectedFormatException)
-{
-	return merge(pattern, in, replacement);
+	
+	std::string replacement(1, ' ');
+	replacement.append(expected);
+	
+	patterns.push_back( PatternReplacement(pattern, replacement) );
 }
 
 

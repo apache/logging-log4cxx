@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,12 +44,12 @@ using namespace log4cxx::helpers;
 
 #define TTCC_PAT  \
         ABSOLUTE_DATE_AND_TIME_PAT \
-        LOG4CXX_STR(" \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
+        " \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}"
 
 #define TTCC2_PAT \
         ABSOLUTE_DATE_AND_TIME_PAT \
-        LOG4CXX_STR(" \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - ") \
-        LOG4CXX_STR("Messages should bear numbers 0 through 23\\.")
+        " \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - " \
+        "Messages should bear numbers 0 through 23\\."
 
 
 class MinimumTestCase : public CppUnit::TestFixture

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,11 +26,8 @@ namespace log4cxx
 	{
 	public:
 		ControlFilter();
-		LogString filter(const LogString& in) const throw(UnexpectedFormatException);
-		ControlFilter& operator<<(const LogString& allowedPattern);
+		ControlFilter& operator<<(const std::string& allowedPattern);
 
-	protected:
-		std::vector<LogString> allowedPatterns;
 	};
 }
 

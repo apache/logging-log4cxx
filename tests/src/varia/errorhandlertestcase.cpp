@@ -36,14 +36,11 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
-#define LOG4CXX_TEST_STR(x) L##x
-
-
-#define TEST1_A_PAT LOG4CXX_TEST_STR("FALLBACK - test - Message \\d")
-#define TEST1_B_PAT LOG4CXX_TEST_STR("FALLBACK - root - Message \\d")
+#define TEST1_A_PAT "FALLBACK - test - Message \\d"
+#define TEST1_B_PAT "FALLBACK - root - Message \\d"
 #define TEST1_2_PAT \
-	LOG4CXX_TEST_STR("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} ") \
-	LOG4CXX_TEST_STR("\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d")
+	"^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} " \
+	"\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d"
 
 class ErrorHandlerTestCase : public CppUnit::TestFixture
 {
@@ -72,7 +69,7 @@ public:
 
 	void test1()
 	{
-   		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/fallback1.xml"));
+   		DOMConfigurator::configure("input/xml/fallback1.xml");
 		common();
 		
 		ControlFilter cf;

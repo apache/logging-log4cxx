@@ -17,48 +17,41 @@
 #ifndef _LOG4CXX_TESTS_UTIL_FILTER_H
 #define _LOG4CXX_TESTS_UTIL_FILTER_H
 
-#include <log4cxx/logstring.h>
+#include <string>
+#include <vector>
+#include <map>
 #include <log4cxx/helpers/exception.h>
 
-#define BASIC_PAT LOG4CXX_STR("\\[0x[0-9A-F]*] (FATAL|ERROR|WARN|INFO|DEBUG)")
-#define ISO8601_PAT LOG4CXX_STR("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}")
+#define BASIC_PAT "\\[0x[0-9A-F]*] (FATAL|ERROR|WARN|INFO|DEBUG)"
+#define ISO8601_PAT "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}"
 #define ABSOLUTE_DATE_AND_TIME_PAT \
-        LOG4CXX_STR("^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}")
-#define ABSOLUTE_TIME_PAT LOG4CXX_STR("^\\d{2}:\\d{2}:\\d{2},\\d{3}")
-#define RELATIVE_TIME_PAT LOG4CXX_STR("^\\d{1,10}")
+        "^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}"
+#define ABSOLUTE_TIME_PAT "^\\d{2}:\\d{2}:\\d{2},\\d{3}"
+#define RELATIVE_TIME_PAT "^\\d{1,10}"
 
 namespace log4cxx
 {
-        class UnexpectedFormatException : public helpers::Exception
-        {
-        public:
-              UnexpectedFormatException(const LogString& msg);
-              UnexpectedFormatException(const UnexpectedFormatException&);
-              UnexpectedFormatException& operator=(const UnexpectedFormatException&);
-        private:
-              static std::string formatMessage(const LogString& msg);
+        class UnexpectedFormatException : public std::exception {
         };
 
         class Filter
         {
         public:
-            Filter() {}
-            virtual ~Filter() {}
-                virtual LogString filter(const LogString& in)
-                        const throw(UnexpectedFormatException) = 0;
+            Filter(const std::string& match, const std::string& replacement);
+            Filter();
+            virtual ~Filter();
 
-                static std::string merge(const std::string& pattern,
-                const std::string& in, const std::string& fmt);
-                static bool match(const std::string& pattern,
-                    const std::string& in);
-                static std::wstring merge(const std::wstring& pattern,
-                    const std::wstring& in, const std::wstring& fmt);
-                static bool match(const std::wstring& pattern,
-                    const std::wstring& in);
+			typedef std::pair<std::string, std::string> PatternReplacement;    
+			typedef std::vector <PatternReplacement> PatternList;        
+            const PatternList& getPatterns()  const{
+                return patterns;
+            }
 
         private:
             Filter(const Filter&);
             Filter& operator=(const Filter&);
+        protected:
+            PatternList patterns;
         };
 }
 

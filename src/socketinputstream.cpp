@@ -162,8 +162,8 @@ void SocketInputStream::read(LogString& value) const
 			throw SocketMessageTooLargeException();
 		}
 
-		logchar * buffer;
 #if 0
+		logchar * buffer;
 //		buffer = (logchar *)alloca((size + 1)* sizeof(logchar));
 		buffer[size] = LOG4CXX_STR('\0');
 		read(buffer, size * sizeof(logchar));

@@ -24,7 +24,7 @@ namespace log4cxx
 	class XMLLineAttributeFilter : public Filter
 	{
 	public:
-		LogString filter(const LogString& in) const throw(UnexpectedFormatException);
+	    XMLLineAttributeFilter();
 	};
 }
 

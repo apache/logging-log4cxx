@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogString XMLLineAttributeFilter::filter(const LogString& in)
-	const throw(UnexpectedFormatException)
-{
-	LogString temp = merge(LOG4CXX_STR("file=\"[^ ]*[\\\\]"), in, LOG4CXX_STR("file=\""));
-	return merge(LOG4CXX_STR("line=\"\\d{1,3}\""), temp, LOG4CXX_STR("line=\"X\""));
+XMLLineAttributeFilter::XMLLineAttributeFilter() {
+	patterns.push_back( PatternReplacement("file=\"[^ ]*[\\\\]", "file=\""));
+	patterns.push_back( PatternReplacement("line=\"\\d{1,3}\"", "line=\"X\""));
 }

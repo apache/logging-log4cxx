@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,4 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogString ISO8601Filter::filter(const LogString& in) const throw(UnexpectedFormatException)
-{
-	return merge(ISO8601_PAT, in, LOG4CXX_STR(""));
-}
+ISO8601Filter::ISO8601Filter() : Filter(ISO8601_PAT, "") {}

@@ -117,8 +117,7 @@ public:
                 XMLTimestampFilter xmlTimestampFilter;
                 XMLLineAttributeFilter xmlLineAttributeFilter;
                 XMLThreadFilter xmlThreadFilter;
-                LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
-                XMLFilenameFilter xmlFilenameFilter(thisFile.c_str(), LOG4CXX_STR("xmllayouttestcase.cpp"));
+                XMLFilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlTimestampFilter);
@@ -156,8 +155,7 @@ public:
                 XMLTimestampFilter xmlTimestampFilter;
                 XMLLineAttributeFilter xmlLineAttributeFilter;
                 XMLThreadFilter xmlThreadFilter;
-                LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
-                XMLFilenameFilter xmlFilenameFilter(thisFile, LOG4CXX_STR("xmllayouttestcase.cpp"));
+                XMLFilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlTimestampFilter);

@@ -19,30 +19,23 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-XMLFilenameFilter::XMLFilenameFilter(const LogString& actual, const LogString& expected)
-    : pattern(LOG4CXX_STR(" file=\"")),
-      replacement(LOG4CXX_STR(" file=\"")) {
-	LogString filename(actual);
-	size_t backslash = filename.rfind(LOG4CXX_STR('\\'), filename.length() - 1);
+XMLFilenameFilter::XMLFilenameFilter(const std::string& actual, const std::string& expected) {
+    std::string pattern(" file=\"");
+    std::string replacement(" file=\"");
+	std::string filename(actual);
+	size_t backslash = filename.rfind('\\', filename.length() - 1);
 	while (backslash != std::string::npos) {
-		filename.replace(backslash, 1, LOG4CXX_STR("\\\\"), 2);
+		filename.replace(backslash, 1, "\\\\", 2);
 		if (backslash == 0) {
 			backslash = std::string::npos;
 		} else {
-		    backslash = filename.rfind(LOG4CXX_STR('\\'), backslash - 1);
+		    backslash = filename.rfind('\\', backslash - 1);
 		}
 	}
     pattern += filename;
-    pattern += LOG4CXX_STR("\"");
+    pattern += "\"";
 
     replacement += expected;
-    replacement += LOG4CXX_STR("\"");
+    replacement += "\"";
+    patterns.push_back( PatternReplacement(pattern, replacement) );
 }
-
-LogString XMLFilenameFilter::filter(const LogString& in)
-	const throw(UnexpectedFormatException)
-{
-	return merge(pattern, in, replacement);
-}
-
-

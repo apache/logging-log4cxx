@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,24 +23,7 @@ ControlFilter::ControlFilter()
 {
 }
 
-LogString ControlFilter::filter(const LogString& in) const throw(UnexpectedFormatException)
+ControlFilter& ControlFilter::operator<<(const std::string& allowedPattern)
 {
-	int len = allowedPatterns.size();
-
-	for (int i = 0; i < len; i++)
-	{
-		if (match(allowedPatterns[i], in))
-		{
-			return in;
-		}
-	}
-
-	throw UnexpectedFormatException(in);
-}
-
-ControlFilter& ControlFilter::operator<<(const LogString& allowedPattern)
-{
-	allowedPatterns.push_back(allowedPattern);
 	return *this;
 }
-

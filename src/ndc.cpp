@@ -23,7 +23,7 @@ using namespace log4cxx::helpers;
 
 NDC::DiagnosticContext::DiagnosticContext(const LogString& message,
         const DiagnosticContext * parent)
-        : message(message), fullMessage(message)
+        : fullMessage(message), message(message)
 {
         if (parent != 0)
         {
@@ -36,7 +36,7 @@ NDC::DiagnosticContext::~DiagnosticContext() {
 }
 
 NDC::DiagnosticContext::DiagnosticContext(const DiagnosticContext& src)
-        : message(src.message), fullMessage(src.fullMessage) {
+        : fullMessage(src.fullMessage), message(src.message) {
 }
 
 NDC::DiagnosticContext& NDC::DiagnosticContext::operator=(

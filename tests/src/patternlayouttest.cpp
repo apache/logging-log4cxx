@@ -43,20 +43,20 @@
 #include <log4cxx/helpers/stringhelper.h>
 
 
-
-#define PAT0 LOG4CXX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
-#define PAT1 ISO8601_PAT LOG4CXX_STR(" ") PAT0
-#define PAT2 ABSOLUTE_DATE_AND_TIME_PAT LOG4CXX_STR(" ") PAT0
-#define PAT3 ABSOLUTE_TIME_PAT LOG4CXX_STR(" ") PAT0
-#define PAT4 RELATIVE_TIME_PAT LOG4CXX_STR(" ") PAT0
-#define PAT5 LOG4CXX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}")
-#define PAT6 LOG4CXX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\(\\d{1,4}\\): Message \\d{1,3}")
-#define PAT11a LOG4CXX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ log4j.PatternLayoutTest: Message \\d{1,2}")
-#define PAT11b LOG4CXX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ root: Message \\d{1,2}")
-#define PAT12 LOG4CXX_STR("^\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) ")\
-    LOG4CXX_STR(".*patternlayouttest.cpp\\(\\d{1,4}\\): ")\
-    LOG4CXX_STR("Message \\d{1,2}")
-#define PAT_MDC_1 LOG4CXX_STR("")
+#define REGEX_STR(x) x
+#define PAT0 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
+#define PAT1 ISO8601_PAT REGEX_STR(" ") PAT0
+#define PAT2 ABSOLUTE_DATE_AND_TIME_PAT REGEX_STR(" ") PAT0
+#define PAT3 ABSOLUTE_TIME_PAT REGEX_STR(" ") PAT0
+#define PAT4 RELATIVE_TIME_PAT REGEX_STR(" ") PAT0
+#define PAT5 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}")
+#define PAT6 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\(\\d{1,4}\\): Message \\d{1,3}")
+#define PAT11a REGEX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ log4j.PatternLayoutTest: Message \\d{1,2}")
+#define PAT11b REGEX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ root: Message \\d{1,2}")
+#define PAT12 REGEX_STR("^\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) ")\
+    REGEX_STR(".*patternlayouttest.cpp\\(\\d{1,4}\\): ")\
+    REGEX_STR("Message \\d{1,2}")
+#define PAT_MDC_1 REGEX_STR("")
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -335,8 +335,7 @@ public:
                 filter1 << PAT6;
                 ThreadFilter filter2;
                 LineNumberFilter filter3;
-                LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
-                FilenameFilter filenameFilter(thisFile, LOG4CXX_STR("patternlayouttest.cpp"));
+                FilenameFilter filenameFilter(__FILE__, "patternlayouttest.cpp");
 
 
                 std::vector<Filter *> filters;
@@ -394,8 +393,7 @@ public:
                 filter1 << PAT12;
                 ThreadFilter filter2;
                 LineNumberFilter filter3;
-                LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
-                FilenameFilter filenameFilter(thisFile, LOG4CXX_STR("patternlayouttest.cpp"));
+                FilenameFilter filenameFilter(__FILE__, "patternlayouttest.cpp");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&filter1);

@@ -24,12 +24,7 @@ namespace log4cxx
 	class XMLFilenameFilter : public Filter
 	{
 	public:
-                XMLFilenameFilter(const LogString& actual, const LogString& expected);
-		LogString filter(const LogString& in) const throw(UnexpectedFormatException);
-
-        private:
-               LogString pattern;
-               LogString replacement;
+          XMLFilenameFilter(const std::string& actual, const std::string& expected);
 	};
 }
 

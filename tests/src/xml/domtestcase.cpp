@@ -41,12 +41,12 @@ using namespace log4cxx::xml;
 
 
 #define TEST1_1A_PAT \
-        LOG4CXX_TEST_STR("(DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message \\d")
+        "(DEBUG|INFO |WARN |ERROR|FATAL) \\w*\\.\\w* - Message \\d"
 
-#define TEST1_1B_PAT LOG4CXX_TEST_STR("(DEBUG|INFO |WARN |ERROR|FATAL) root - Message \\d")
+#define TEST1_1B_PAT "(DEBUG|INFO |WARN |ERROR|FATAL) root - Message \\d"
 
-#define TEST1_2_PAT LOG4CXX_TEST_STR("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} ") \
-        LOG4CXX_TEST_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d")
+#define TEST1_2_PAT "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3} " \
+        "\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d"
 
 class DOMTestCase : public CppUnit::TestFixture
 {

@@ -55,42 +55,42 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
-
+#define REGEX_STR(x) x
 // %5p %x [%t] %c %m%n
 // DEBUG T1 [thread] org.apache.log4j.net.SocketAppenderTestCase Message 1
 #define PAT1 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[0x[0-9A-F]*]\\ ") \
-        LOG4CXX_STR(".* Message \\d{1,2}")
+        REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[0x[0-9A-F]*]\\ ") \
+        REGEX_STR(".* Message \\d{1,2}")
 
 // DEBUG T2 [thread] patternlayouttest.cpp(?) Message 1
 #define PAT2 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[0x[0-9A-F]*]\\ ") \
-        LOG4CXX_STR(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
+        REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[0x[0-9A-F]*]\\ ") \
+        REGEX_STR(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
 
 // DEBUG T3 [thread] patternlayouttest.cpp(?) Message 1
 #define PAT3 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[0x[0-9A-F]*]\\ ") \
-        LOG4CXX_STR(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
+        REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[0x[0-9A-F]*]\\ ") \
+        REGEX_STR(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
 
 // DEBUG some T4 MDC-TEST4 [thread] SocketAppenderTestCase - Message 1
 // DEBUG some T4 MDC-TEST4 [thread] SocketAppenderTestCase - Message 1
 #define PAT4 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[0x[0-9A-F]*]\\") \
-        LOG4CXX_STR(" (root|SocketServerTestCase) - Message \\d{1,2}")
+        REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[0x[0-9A-F]*]\\") \
+        REGEX_STR(" (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT5 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[0x[0-9A-F]*]\\") \
-        LOG4CXX_STR(" (root|SocketServerTestCase) - Message \\d{1,2}")
+        REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[0x[0-9A-F]*]\\") \
+        REGEX_STR(" (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT6 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6") \
-        LOG4CXX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+        REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6") \
+        REGEX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT7 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7") \
-        LOG4CXX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+        REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7") \
+        REGEX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 
 // DEBUG some8 T8 shortSocketServer MDC-TEST7 [thread] SocketServerTestCase - Message 1
 #define PAT8 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer") \
-        LOG4CXX_STR(" MDC-TEST8 \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+        REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer") \
+        REGEX_STR(" MDC-TEST8 \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 
 class ShortSocketServerLauncher
 {
@@ -105,9 +105,9 @@ public:
                         ZeroMemory( &si, sizeof(si) );
                         si.cb = sizeof(si);
                         ZeroMemory( &pi, sizeof(pi) );
-                        LogString commandLine(LOG4CXX_STR("src\\shortsocketserver 8 input/socketServer"));
+                        std::string commandLine("src\\shortsocketserver 8 input/socketServer");
 
-                        BOOL bResult = ::CreateProcess(NULL, (LPTSTR)commandLine.c_str(), NULL, NULL,
+                        BOOL bResult = ::CreateProcessA(NULL, commandLine.c_str(), NULL, NULL,
                                 TRUE, 0, NULL, NULL, &si, &pi);
 #else
                         if(!::fork())
@@ -216,8 +216,7 @@ public:
                 ThreadFilter threadFilter;
                 LineNumberFilter lineNumberFilter;
                 LogString thisFile;
-                log4cxx::helpers::Transcoder::decode(__FILE__, thisFile);
-                FilenameFilter filenameFilter(thisFile, LOG4CXX_STR("socketservertestcase.cpp"));
+                FilenameFilter filenameFilter(__FILE__, "socketservertestcase.cpp");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&cf);
@@ -252,8 +251,7 @@ public:
                 ThreadFilter threadFilter;
                 LineNumberFilter lineNumberFilter;
                 LogString thisFile;
-                log4cxx::helpers::Transcoder::decode(__FILE__, thisFile);
-                FilenameFilter filenameFilter(thisFile, LOG4CXX_STR("socketservertestcase.cpp"));
+                FilenameFilter filenameFilter(__FILE__, "socketservertestcase.cpp");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&cf);
@@ -352,7 +350,7 @@ public:
                 root->addAppender(asyncAppender);
 
                 NDC::push(LOG4CXX_TEST_STR("some6"));
-        MDC::put(LOG4CXX_TEST_STR("hostID"), LOG4CXX_TEST_STR("client-test6"));
+                MDC::put(LOG4CXX_TEST_STR("hostID"), LOG4CXX_TEST_STR("client-test6"));
                 common(LOG4CXX_STR("T6"), LOG4CXX_STR("key6"), LOG4CXX_STR("MDC-TEST6"));
                 NDC::pop();
                 MDC::remove(LOG4CXX_TEST_STR("hostID"));
@@ -390,7 +388,7 @@ public:
                 root->addAppender(asyncAppender);
 
                 NDC::push(LOG4CXX_TEST_STR("some7"));
-        MDC::put(LOG4CXX_TEST_STR("hostID"), LOG4CXX_TEST_STR("client-test7"));
+                MDC::put(LOG4CXX_TEST_STR("hostID"), LOG4CXX_TEST_STR("client-test7"));
                 common(LOG4CXX_STR("T7"), LOG4CXX_STR("key7"), LOG4CXX_STR("MDC-TEST7"));
                 NDC::pop();
                 MDC::remove(LOG4CXX_TEST_STR("hostID"));
