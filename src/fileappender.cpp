@@ -95,6 +95,10 @@ void FileAppender::setOption(const String& option,
 	{
 		bufferedIO = OptionConverter::toBoolean(value, true);
 	}
+	else if (StringHelper::equalsIgnoreCase(option, _T("immediateflush")))
+	{
+		bufferedIO = !OptionConverter::toBoolean(value, false);
+	}
 	else if (StringHelper::equalsIgnoreCase(option, _T("buffersize")))
 	{
 		bufferSize = OptionConverter::toFileSize(value, 8*1024);
