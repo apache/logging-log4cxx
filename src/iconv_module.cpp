@@ -860,6 +860,7 @@ namespace _tbl_simple {
   #include "ces/_tbl_simple.c"
   #undef NBITS
   }
+#if 0
 namespace ucs2_internal {
   #include "ces/ucs2-internal.c"
   #undef NBITS
@@ -872,6 +873,7 @@ namespace unicode_1_1_utf_7 {
   #include "ces/unicode-1-1-utf-7.c"
   #undef NBITS
   }
+#endif
 namespace utf_16 {
   #include "ces/utf-16.c"
   #undef NBITS
@@ -989,10 +991,14 @@ namespace iconv {
         LOCAL_MODULE("ebcdic-it", ebcdic_it)
         LOCAL_MODULE("ebcdic-pt", ebcdic_pt)
         LOCAL_MODULE("ebcdic-uk", ebcdic_uk)
-        LAST_LOCAL_MODULE("ebcdic-us", ebcdic_us)
+        LOCAL_MODULE("ebcdic-us", ebcdic_us)
+        LOCAL_MODULE("euc-jp", euc_jp)
+        LOCAL_MODULE("euc-kr", euc_kr)
+        LAST_LOCAL_MODULE("euc-tw", euc_tw)
         break;
 
         case 'g':
+        LOCAL_MODULE("gb2312", gb2312)
         LOCAL_MODULE("gb12345", gb12345)
         LAST_LOCAL_MODULE("gb_2312-80", gb_2312_80)
         break;
@@ -1004,6 +1010,13 @@ namespace iconv {
         case 'i':
         LOCAL_MODULE("iso646-dk", iso646_dk)
         LOCAL_MODULE("iso646-kr", iso646_kr)
+        LOCAL_MODULE("iso-10646-ucs-2", iso_10646_ucs_2)
+        LOCAL_MODULE("iso-10646-ucs-4", iso_10646_ucs_4)
+        LOCAL_MODULE("iso-2022-cn", iso_2022_cn)
+        LOCAL_MODULE("iso-2022-jp-2", iso_2022_jp_2)
+        LOCAL_MODULE("iso-2022-jp", iso_2022_jp)
+        LOCAL_MODULE("iso-2022-kr", iso_2022_kr)
+        LOCAL_MODULE("iso-8859-10", iso_8859_10)
         LOCAL_MODULE("iso-8859-10", iso_8859_10)
         LOCAL_MODULE("iso-8859-13", iso_8859_13)
         LOCAL_MODULE("iso-8859-14", iso_8859_14)
@@ -1124,6 +1137,8 @@ namespace iconv {
 
         case 'u':
         LOCAL_MODULE("us-ascii", us_ascii)
+        LOCAL_MODULE("utf-16", utf_16)
+        LAST_LOCAL_MODULE("utf-8", utf_8)
         break;
 
         case 'w':
