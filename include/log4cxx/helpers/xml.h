@@ -24,6 +24,7 @@
 
 namespace log4cxx
 {
+        class File;
         namespace helpers
         {
                 class XMLDOMNode;
@@ -41,8 +42,9 @@ namespace log4cxx
                 class LOG4CXX_EXPORT DOMException : public RuntimeException
                 {
                 public:
-                    DOMException();
+                    DOMException() : RuntimeException("DOM exception") {}
                 };
+
 
                 /**
                 The XMLDOMNode interface is the primary datatype for the entire Document
@@ -74,7 +76,7 @@ namespace log4cxx
                 {
                 public:
                         DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMDocument)
-                        virtual void load(const LogString& fileName) = 0;
+                        virtual void load(const File& fileName) = 0;
                         virtual XMLDOMElementPtr getDocumentElement() = 0;
                         virtual XMLDOMElementPtr getElementById(const LogString& tagName,
                                 const LogString& elementId) = 0;

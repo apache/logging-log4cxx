@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/patternlayout.h>
+#include <log4cxx/file.h>
 
 #include "../util/compare.h"
 #include "xlevel.h"
@@ -33,7 +34,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
-#define TEMP _T("output/temp")
+#define LOG4CXX_TEST_STR(x) L##x
+
 
 class CustomLevelTestCase : public CppUnit::TestFixture
 {
@@ -46,63 +48,81 @@ class CustomLevelTestCase : public CppUnit::TestFixture
 
 	LoggerPtr root;
 	LoggerPtr logger;
+    static const File TEMP;
 
 public:
 	void setUp()
 	{
 		root = Logger::getRootLogger();
-		logger = Logger::getLogger(_T("xml.CustomLevelTestCase"));
+		logger = Logger::getLogger(LOG4CXX_TEST_STR("xml.CustomLevelTestCase"));
 	}
 
 	void tearDown()
 	{
 		root->getLoggerRepository()->resetConfiguration();
 
-		LoggerPtr logger = Logger::getLogger(_T("LOG4J"));
+		LoggerPtr logger = Logger::getLogger(LOG4CXX_TEST_STR("LOG4J"));
 		logger->setAdditivity(false);
 		logger->addAppender(
-			new ConsoleAppender(new PatternLayout(_T("log4j: %-22c{2} - %m%n"))));
+			new ConsoleAppender(new PatternLayout(LOG4CXX_TEST_STR("log4j: %-22c{2} - %m%n"))));
 	}
 
 	void test1()
 	{
-		DOMConfigurator::configure(_T("input/xml/customLevel1.xml"));
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel1.xml"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/customLevel.1")));
+        const File witness(L"witness/customLevel.1");
+		CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
 	}
 
 	void test2()
 	{
-		DOMConfigurator::configure(_T("input/xml/customLevel2.xml"));
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel2.xml"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/customLevel.2")));
+        const File witness(L"witness/customLevel.2");
+		CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
 	}
 
 	void test3()
 	{
-		DOMConfigurator::configure(_T("input/xml/customLevel3.xml"));
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel3.xml"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/customLevel.3")));
+        const File witness(L"witness/customLevel.3");
+		CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
 	}
 
 	void test4()
 	{
-		DOMConfigurator::configure(_T("input/xml/customLevel4.xml"));
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel4.xml"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/customLevel.4")));
+        const File witness(L"witness/customLevel.4");
+		CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
 	}
 
 	void common()
 	{
 		int i = 0;
-		LOG4CXX_DEBUG(logger, _T("Message ") << ++i);
-		LOG4CXX_INFO(logger, _T("Message ") << ++i);
-		LOG4CXX_WARN(logger, _T("Message ") << ++i);
-		LOG4CXX_ERROR(logger, _T("Message ") << ++i);
-		LOG4CXX_LOG(logger, XLevel::TRACE, _T("Message ") << ++i);
+        std::ostringstream os;
+        os << "Message " << ++i;
+		LOG4CXX_DEBUG(logger, os.str());
+        os.str("");
+        os << "Message " <<  ++i;
+		LOG4CXX_INFO(logger, os.str());
+        os.str("");
+        os << "Message " <<  ++i;
+		LOG4CXX_WARN(logger, os.str());
+        os.str("");
+        os << "Message " <<  ++i;
+		LOG4CXX_ERROR(logger, os.str());
+        os.str("");
+        os << "Message " <<  ++i;
+		LOG4CXX_LOG(logger, XLevel::TRACE, os.str());
 	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CustomLevelTestCase);
+
+const File CustomLevelTestCase::TEMP(L"output/temp");
+
 
 #endif //HAVE_XML

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,15 @@
 #define _WIN32_DCOM
 #include <log4cxx/portability.h>
 
-#ifdef LOG4CXX_HAVE_MS_XML
+#ifdef _WIN32
 
 #include <windows.h>
 #include <log4cxx/helpers/msxml.h>
 #include <log4cxx/helpers/loglog.h>
 #include <objbase.h>
+#include <log4cxx/helpers/exception.h>
+#include <sstream>
+#include <log4cxx/file.h>
 #include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
@@ -67,10 +70,7 @@ namespace log4cxx {
 	namespace helpers {
 		class CoInitializeException : Exception {
 		public:
-			CoInitializeException() {}
-			const char* what() const throw() {
-				return "Cannot initialize COM";
-			}
+            CoInitializeException() : Exception("Cannon initialize COM") {}
 		};
 	}
 }
@@ -136,11 +136,11 @@ XMLDOMDocumentPtr MsXMLDOMDocument::getOwnerDocument()
 	return this;
 }
 
-void MsXMLDOMDocument::load(const String& fileName)
+void MsXMLDOMDocument::load(const File& fileName)
 {
 	try
 	{
-		VARIANT_BOOL bSuccess = document->load(fileName.c_str());
+		VARIANT_BOOL bSuccess = document->load(fileName.getName().c_str());
 
 		if (!bSuccess)
 		{
@@ -162,16 +162,17 @@ void MsXMLDOMDocument::load(const String& fileName)
 				len--;
 			}
 
-			USES_CONVERSION;
-			LOGLOG_ERROR(_T("Could not open [") << fileName << _T("] : ")
-				<< W2T((BSTR)reason) << _T("(line ") << line << _T(", column ")
-				<< linepos << _T(")"));
+            std::wostringstream os;
+            os << L"Count not open [" + fileName.getName() << L"] : "
+                << (BSTR) reason << L"(file " << line << L", column "
+                << linepos << L")";
+            LOGLOG_ERROR(os.str());
 		}
 
 	}
 	catch(_com_error&)
 	{
-		LogLog::error(_T("Could not open [")+fileName+_T("]."));
+        LogLog::error((LogString) LOG4CXX_STR("Could not open [")+fileName.getName()+ LOG4CXX_STR("]."));
 		throw DOMException();
 	}
 }
@@ -183,7 +184,7 @@ XMLDOMElementPtr MsXMLDOMDocument::getDocumentElement()
 	return new MsXMLDOMElement(element);
 }
 
-XMLDOMElementPtr MsXMLDOMDocument::getElementById(const String& tagName, const String& elementId)
+XMLDOMElementPtr MsXMLDOMDocument::getElementById(const LogString& tagName, const LogString& elementId)
 {
 	MSXML::IXMLDOMElementPtr element;
 
@@ -197,8 +198,7 @@ XMLDOMElementPtr MsXMLDOMDocument::getElementById(const String& tagName, const S
 			MSXML::IXMLDOMNodePtr attrNode = map->getNamedItem(L"name");
 			_bstr_t nodeValue = attrNode->nodeValue;
 
-			USES_CONVERSION;
-			if (elementId == W2T((BSTR)nodeValue))
+			if (elementId == (BSTR) nodeValue)
 			{
 				element = node;
 				break;
@@ -233,13 +233,12 @@ XMLDOMDocumentPtr MsXMLDOMElement::getOwnerDocument()
 	return new MsXMLDOMDocument(document);
 }
 
-String MsXMLDOMElement::getTagName()
+LogString MsXMLDOMElement::getTagName()
 {
 	try
 	{
 		_bstr_t tagName = element->tagName;
-		USES_CONVERSION;
-		return W2T((BSTR)tagName);
+		return (BSTR)tagName;
 	}
 	catch(_com_error&)
 	{
@@ -247,18 +246,18 @@ String MsXMLDOMElement::getTagName()
 	}
 }
 
-String MsXMLDOMElement::getAttribute(const String& name)
+LogString MsXMLDOMElement::getAttribute(const LogString& name)
 {
 	try
 	{
 		_variant_t attribute = element->getAttribute(name.c_str());
 		if (attribute.vt == VT_NULL)
 		{
-			return String();
+			return LogString();
 		}
 		else
 		{
-			return (const TCHAR *)_bstr_t(attribute);
+			return _bstr_t(attribute);
 		}
 	}
 	catch(_com_error&)

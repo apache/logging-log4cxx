@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef LOG4CXX_HAVE_MS_XML
+#ifdef _WIN32
 
 #include <log4cxx/helpers/xml.h>
 #include <log4cxx/helpers/objectimpl.h>
@@ -30,6 +30,7 @@
 
 namespace log4cxx
 {
+        class File;
         namespace helpers
         {
                 class LOG4CXX_EXPORT MsXMLDOMNode :
@@ -73,9 +74,9 @@ namespace log4cxx
                         virtual XMLDOMNodeType getNodeType()
                                 { return XMLDOMNode::DOCUMENT_NODE; }
                         virtual XMLDOMDocumentPtr getOwnerDocument();
-                        virtual void load(const String& fileName);
+                        virtual void load(const File& fileName);
                         virtual XMLDOMElementPtr getDocumentElement();
-                        virtual XMLDOMElementPtr getElementById(const String& tagName, const String& elementId);
+                        virtual XMLDOMElementPtr getElementById(const LogString& tagName, const LogString& elementId);
 
                 protected:
                         MSXML::IXMLDOMDocumentPtr document;
@@ -99,8 +100,8 @@ namespace log4cxx
                         virtual XMLDOMNodeType getNodeType()
                                 { return XMLDOMNode::ELEMENT_NODE; }
                         virtual XMLDOMDocumentPtr getOwnerDocument();
-                        virtual String getTagName();
-                        virtual String getAttribute(const String& name);
+                        virtual LogString getTagName();
+                        virtual LogString getAttribute(const LogString& name);
 
                 protected:
                         MSXML::IXMLDOMElementPtr element;

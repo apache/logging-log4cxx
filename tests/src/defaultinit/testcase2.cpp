@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
+#include "../insertwide.h"
 
 using namespace log4cxx;
 
@@ -50,7 +51,7 @@ public:
 		
 		AppenderList list = root->getAllAppenders();
 		AppenderPtr appender = list.front();
-		CPPUNIT_ASSERT(appender->getName() == _T("D1"));
+		CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D1"), appender->getName());
 	}
 
 };

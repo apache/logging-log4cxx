@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,10 +24,13 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include "../util/transformer.h"
 #include "../util/compare.h"
+#include <log4cxx/file.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
+
+#define LOG4CXX_TEST_STR(x) L##x
 
 /**
    Tests handling of custom loggers.
@@ -46,7 +49,7 @@ public:
 	{
 		logger =
 			(XLoggerPtr) XLogger::getLogger(
-			_T("org.apache.log4j.customLogger.XLoggerTestCase"));
+			LOG4CXX_TEST_STR("org.apache.log4j.customLogger.XLoggerTestCase"));
 	}
 
 	void tearDown()
@@ -54,25 +57,42 @@ public:
 		logger->getLoggerRepository()->resetConfiguration();
 	}
 
-	void test1() { common(_T("1")); }
-	void test2() { common(_T("2")); }
+	void test1() { common(LOG4CXX_TEST_STR("1")); }
+	void test2() { common(LOG4CXX_TEST_STR("2")); }
 
-	void common(const String& number)
+	void common(const LogString& number)
 	{
-		DOMConfigurator::configure(_T("input/xml/customLogger")
-			+number+_T(".xml"));
+        DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLogger")
+			+number+LOG4CXX_TEST_STR(".xml"));
 		
 		int i = -1;
-		LOG4CXX_TRACE(logger, _T("Message ") << ++i);
-		LOG4CXX_DEBUG(logger, _T("Message ") << ++i);
-		LOG4CXX_WARN(logger, _T("Message ") << ++i);
-		LOG4CXX_ERROR(logger, _T("Message ") << ++i);
-		LOG4CXX_FATAL(logger, _T("Message ") << ++i);
-		LOG4CXX_DEBUG(logger, _T("Message ") << ++i);
+        std::ostringstream os;
+        os << "Message " << ++i;
+        if (logger->isEnabledFor(log4cxx::XLevel::TRACE)) {
+           logger->forcedLog(log4cxx::XLevel::TRACE, os.str(), LOG4CXX_LOCATION); 
+        }
 
-		CPPUNIT_ASSERT(Compare::compare(_T("output/temp"),
-			_T("witness/customLogger.")+number));
-	}
+        os.str("");
+        os << "Message " << ++ i;
+		LOG4CXX_DEBUG(logger, os.str());
+        os.str("");
+        os << "Message " << ++ i;
+		LOG4CXX_WARN(logger, os.str());
+        os.str("");
+        os << "Message " << ++ i;
+		LOG4CXX_ERROR(logger, os.str());
+        os.str("");
+        os << "Message " << ++ i;
+		LOG4CXX_FATAL(logger, os.str());
+        os.str("");
+        os << "Message " << ++ i;
+		LOG4CXX_DEBUG(logger, os.str());
+
+        const File OUTPUT(L"output/temp");
+        const File WITNESS(LogString(LOG4CXX_STR("witness/customLogger.")) + number);
+		CPPUNIT_ASSERT(Compare::compare(OUTPUT, WITNESS));
+//#endif
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XLoggerTestCase);

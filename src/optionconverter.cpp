@@ -33,10 +33,12 @@
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/file.h>
+#include <log4cxx/xml/domconfigurator.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+using namespace log4cxx::xml;
 
 
 LogString OptionConverter::convertSpecialChars(const LogString& s)
@@ -359,13 +361,15 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
         ConfiguratorPtr configurator;
         LogString clazz = _clazz;
 
-#if 0 // LOG4CXX_HAVE_XML
-        if(clazz.empty() && !configFileName.getName().empty()
-                && StringHelper::endsWith(configFileName, LOG4CXX_STR(".xml")))
+        LogString filename(configFileName.getName());
+        if(clazz.empty() 
+                && filename.length() > 4
+                && StringHelper::equalsIgnoreCase(
+                   filename.substr(filename.length() -4), 
+                   LOG4CXX_STR(".XML"), LOG4CXX_STR(".xml")))
         {
-//		clazz = DOMConfigurator::getStaticClass().toString();
+		clazz = DOMConfigurator::getStaticClass().toString();
         }
-#endif
 
         if(!clazz.empty())
         {

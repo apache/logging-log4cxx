@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,6 +33,8 @@
 
 namespace log4cxx
 {
+        class File;
+
         namespace spi
         {
                 class LoggerRepository;
@@ -67,11 +69,11 @@ namespace log4cxx
                 class AppenderMap
                 {
                 public:
-                        AppenderPtr get(const String& appenderName);
-                        void put(const String& appenderName, AppenderPtr appender);
+                        AppenderPtr get(const LogString& appenderName);
+                        void put(const LogString& appenderName, AppenderPtr appender);
 
                 protected:
-                        std::map<String, AppenderPtr> map;
+                        std::map<LogString, AppenderPtr> map;
                 };
 
 /**
@@ -98,7 +100,7 @@ files. You can enable log4cxx internal logging by setting the
                         Used internally to parse appenders by IDREF name.
                         */
                         AppenderPtr findAppenderByName(helpers::XMLDOMDocumentPtr doc,
-                                const String& appenderName);
+                                const LogString& appenderName);
 
                         /**
                         Used internally to parse appenders by IDREF element.
@@ -177,7 +179,8 @@ files. You can enable log4cxx internal logging by setting the
                         /**
                         A static version of #doConfigure.
                         */
-                        static void configure(const LogString& filename);
+                        static void configure(const std::string& filename);
+                        static void configure(const std::wstring& filename);
 
                         /**
                         Like #configureAndWatch(const String& configFilename, long delay)
@@ -185,7 +188,8 @@ files. You can enable log4cxx internal logging by setting the
                         helpers::FileWatchdog#DEFAULT_DELAY is used.
                         @param configFilename A log4j configuration file in XML format.
                         */
-                        static void configureAndWatch(const LogString& configFilename);
+                        static void configureAndWatch(const std::string& configFilename);
+                        static void configureAndWatch(const std::wstring& configFilename);
 
                         /**
                         Read the configuration file <code>configFilename</code> if it
@@ -198,7 +202,9 @@ files. You can enable log4cxx internal logging by setting the
                         @param configFilename A log4j configuration file in XML format.
                         @param delay The delay in milliseconds to wait between each check.
                         */
-                        static void configureAndWatch(const LogString& configFilename,
+                        static void configureAndWatch(const std::string& configFilename,
+                                long delay);
+                        static void configureAndWatch(const std::wstring& configFilename,
                                 long delay);
 
                         /**
@@ -208,11 +214,11 @@ files. You can enable log4cxx internal logging by setting the
                         @param filename The file to parse.
                         @param repository The hierarchy to operation upon.
                         */
-                        void doConfigure(const LogString& filename,
+                        void doConfigure(const File& filename,
                                 spi::LoggerRepositoryPtr& repository);
 
                 protected:
-                        String DOMConfigurator::subst(const LogString& value);
+                        LogString DOMConfigurator::subst(const LogString& value);
 
                 protected:
                         void * appenderBag;

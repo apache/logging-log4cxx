@@ -257,7 +257,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 debug="${debug}">
         <fileset dir="${src.dir}" includes="*.cpp">
              <!--  exclusions while jump starting with APR  -->
-             <exclude name="**/domconfigurator.cpp"/>
              <exclude name="**/gnomexml.cpp"/>
         </fileset>
         <includepath path="${include.dir}"/>
@@ -428,7 +427,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 debug="${debug}">
         <fileset dir="${tests.dir}/src" includes="**/*.cpp">
              <exclude name="shortsocketserver.cpp"/>
+             <exclude name="defaultinit/testcase2.cpp"/>
              <exclude name="defaultinit/testcase3.cpp"/>
+             <exclude name="defaultinit/testcase4.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}"/>
         <includepath path="${include.dir}"/>
@@ -493,6 +494,46 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <project outfile="msvc/log4cxx-testcase3" type="msvc6" if="gen-dsw"/>
         <project outfile="xcode/log4cxx-testcase3" type="xcode" if="gen-xcode"/>
     </cc>
+
+    <!--  testcase4 checks default configuration so must be run in isolation -->
+    <cc name="${compiler}"
+                exceptions="true"
+                outfile="${build.dir}/log4cxx-testcase4"
+                subsystem="console"
+                multithreaded="true"
+                outputfileproperty="log4cxx-testcase4.exe"
+                outtype="executable"
+                objdir="${obj.dir}"
+                debug="${debug}">
+        <fileset dir="${tests.dir}/src">
+             <include name="main.cpp"/>
+             <include name="defaultinit/testcase4.cpp"/>
+        </fileset>
+        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
+                <defineset define="APR_DECLARE_STATIC"/>
+                <defineset define="WIN32" if="is-windows"/>
+                <defineset define="APR_DECLARE_STATIC"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <libset libs="${boost_regex.lib.name}" if="is-gcc" unless="boost.lib.dir"/>
+        <libset libs="${boost_regex.lib.name}" dir="${boost.lib.dir}" if="boost.lib.dir"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+                <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
+        <project outfile="cbx/log4cxx-testcase4" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/log4cxx-testcase4" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/log4cxx-testcase4" type="xcode" if="gen-xcode"/>
+    </cc>
+
 
 </target>
 
@@ -613,6 +654,21 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                    value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
+    <delete file="${build.dir}/log4cxx.properties"/>
+    <delete file="${build.dir}/log4j.properties"/>
+
+    <property name="defaultInit.xml"
+         location="${tests.dir}/input/xml/defaultInit.xml"/>
+    <copy tofile="${build.dir}/log4j.xml"
+       file="${defaultInit.xml}"/>
+    <copy todir="${build.dir}" file="${tests.dir}/input/xml/log4j.dtd"/>
+    <exec executable="${log4cxx-testcase4.exe}" dir="${build.dir}"
+              failonerror="true">
+            <env key="LD_LIBRARY_PATH"
+                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+            <env key="DYLD_LIBRARY_PATH"
+                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+    </exec>
 
 </target>
 

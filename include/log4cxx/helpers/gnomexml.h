@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef LOG4CXX_HAVE_LIBXML2
+#ifndef _WIN32
 
 #include <log4cxx/helpers/xml.h>
 #include <log4cxx/helpers/objectimpl.h>
