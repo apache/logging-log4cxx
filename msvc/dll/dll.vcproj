@@ -1763,6 +1763,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\outputdebugstringappender.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\patternconverter.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2911,7 +2914,7 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 				RelativePath="..\..\include\log4cxx\basicconfigurator.h">
 			</File>
 			<File
-				RelativePath="..\..\include\log4cxx\config.h">
+				RelativePath="..\..\include\log4cxx\config_msvc.h">
 			</File>
 			<File
 				RelativePath="..\..\include\log4cxx\consoleappender.h">
@@ -3229,6 +3232,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 				Filter="h">
 				<File
 					RelativePath="..\..\include\log4cxx\nt\nteventlogappender.h">
+				</File>
+				<File
+					RelativePath="..\..\include\log4cxx\nt\outputdebugstringappender.h">
 				</File>
 			</Filter>
 			<Filter

@@ -454,6 +454,10 @@ SOURCE=..\..\src\optionconverter.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\outputdebugstringappender.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\patternconverter.cpp
 # End Source File
 # Begin Source File
@@ -935,6 +939,10 @@ SOURCE=..\..\include\log4cxx\varia\stringmatchfilter.h
 
 SOURCE=..\..\include\log4cxx\nt\nteventlogappender.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\nt\outputdebugstringappender.h
+# End Source File
 # End Group
 # Begin Group "config"
 
@@ -971,6 +979,10 @@ SOURCE=..\..\include\log4cxx\basicconfigurator.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\config_msvc.h
 # End Source File
 # Begin Source File
 

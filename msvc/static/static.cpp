@@ -21,6 +21,7 @@
 #include <log4cxx/net/telnetappender.h>
 #include <log4cxx/net/xmlsocketappender.h>
 #include <log4cxx/nt/nteventlogappender.h>
+#include <log4cxx/nt/outputdebugstringappender.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/varia/denyallfilter.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
@@ -71,6 +72,7 @@ void ForceSymbolReferences()
 	TelnetAppender();
 	XMLSocketAppender();
 	NTEventLogAppender();
+	OutputDebugStringAppender();
 	LoggingEvent();
 	DenyAllFilter();
 	FallbackErrorHandler();

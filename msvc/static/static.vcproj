@@ -1688,6 +1688,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\outputdebugstringappender.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\patternconverter.cpp">
 				<FileConfiguration
 					Name="Unicode Release|Win32">
@@ -3160,6 +3163,9 @@
 				Filter="h">
 				<File
 					RelativePath="..\..\include\log4cxx\nt\nteventlogappender.h">
+				</File>
+				<File
+					RelativePath="..\..\include\log4cxx\nt\outputdebugstringappender.h">
 				</File>
 			</Filter>
 			<Filter
