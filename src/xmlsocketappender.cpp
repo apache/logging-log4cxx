@@ -195,20 +195,11 @@ void XMLSocketAppender::append(const spi::LoggingEvent& event)
 		this->layout->format(output, event);
 
 		tstring sz = output.str();
-		if (sz.length() <= MAX_EVENT_LEN)
-		{
-			USES_CONVERSION;
-			os->write((void *)T2A(sz.c_str()), sz.length());
+		USES_CONVERSION;
+		os->write((void *)T2A(sz.c_str()), sz.length());
 
-			if (MAX_EVENT_LEN - sz.length() > 0)
-			{
-				// complete with zeros up to MAX_EVENT_LEN characters
-				os->write(zeroBuffer, MAX_EVENT_LEN - sz.length());
-			}
-
-			// flush to socket
-			os->flush();
-		}
+		// flush to socket
+		os->flush();
 	}
 	catch(SocketException& e)
 	{
