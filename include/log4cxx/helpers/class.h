@@ -45,6 +45,7 @@ namespace log4cxx
 			Class(const tstring& name);
 			virtual ObjectPtr newInstance() const;
 			const tstring& toString() const;
+			const tstring& getName() const;
 			static const Class& forName(const tstring& className);
 
 		protected:
