@@ -29,14 +29,19 @@ int main()
 
 		fileAppender->close();
 
-		std::ofstream witness("witness", std::ios::out|std::ios::trunc);
+#ifdef UNICODE
+		std::wofstream witness;
+#else
+		std::ofstream witness;
+#endif
+		witness.open("witness", std::ios::out|std::ios::trunc);
 		witness << _T("DEBUG - debug message") << std::endl;
 		witness << _T("INFO - info message") << std::endl;
 		witness << _T("WARN - warn message") << std::endl;
 		witness << _T("ERROR - error message") << std::endl;
 		witness << _T("FATAL - fatal message") << std::endl;
 		witness.close();
-		
+
 #ifdef UNICODE
 		std::wifstream inr, inw;
 #else
@@ -88,6 +93,6 @@ int main()
 	{
 		ret = EXIT_FAILURE;
 	}
-	
+
 	return ret;
 }
