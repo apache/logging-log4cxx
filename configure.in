@@ -136,7 +136,7 @@ AM_CONDITIONAL(TESTS, test x$enable_tests = xyes)
 
 # Checks header files
 # ----------------------------------------------------------------------------
-AC_CHECK_HEADERS(unistd.h io.h )
+AC_CHECK_HEADERS(unistd.h io.h alloca.h)
 
 # Checks local idioms
 # ----------------------------------------------------------------------------

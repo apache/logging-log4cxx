@@ -84,7 +84,9 @@ namespace std
 	#define USES_CONVERSION void * _dst = _alloca(1024);
 #endif
 #else
+#ifdef HAVE_ALLOCA_H
 	#include <alloca.h>
+#endif
 	#define USES_CONVERSION void * _dst = alloca(1024);
 #endif
 
