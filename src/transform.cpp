@@ -1,29 +1,24 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/helpers/transform.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-String Transform::CDATA_START  = _T("<![CDATA[");
-String Transform::CDATA_END    = _T("]]>");
-String Transform::CDATA_PSEUDO_END = _T("]]&gt;");
-String Transform::CDATA_EMBEDED_END = CDATA_END + CDATA_PSEUDO_END + CDATA_START;
-String::size_type Transform::CDATA_END_LEN = CDATA_END.length();
 
 
 void Transform::appendEscapingTags(
@@ -61,6 +56,12 @@ void Transform::appendEscapingTags(
 void Transform::appendEscapingCDATA(
 	ostream& buf, const String& input)
 {
+     static const String CDATA_END("]]>");
+     static const String CDATA_EMBEDED_END("]]>]]&gt;<![CDATA[");
+
+     const String::size_type CDATA_END_LEN = 3;
+
+
 	if(input.length() == 0 )
 	{
 		return;

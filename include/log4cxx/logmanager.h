@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_LOG_MANAGER_H
 #define _LOG4CXX_LOG_MANAGER_H
 
@@ -31,8 +31,8 @@ namespace log4cxx
     {
 		class LoggerFactory;
 		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
-    } 
-    
+    }
+
     /**
     * Use the <code>LogManager</code> class to retreive Logger
     * instances or to operate on the current {@link spi::LoggerRepository
@@ -43,8 +43,8 @@ namespace log4cxx
     {
     private:
         static void * guard;
-        static spi::RepositorySelectorPtr repositorySelector;
- 
+        static spi::RepositorySelectorPtr& getRepositorySelector();
+
     public:
         /**
         Sets <code>LoggerFactory</code> but only if the correct
@@ -58,7 +58,7 @@ namespace log4cxx
 		parameter.
 
         <p>This allows a high-level component to set the {@link
-        spi::RepositorySelector RepositorySelector} used by the 
+        spi::RepositorySelector RepositorySelector} used by the
 		<code>LogManager</code>.
 		*/
 
@@ -94,7 +94,7 @@ namespace log4cxx
 		static void shutdown();
 
 		/**
-		Reset all values contained in this current {@link 
+		Reset all values contained in this current {@link
 		spi::LoggerRepository LoggerRepository}	to their default.
 		*/
         static void resetConfiguration();

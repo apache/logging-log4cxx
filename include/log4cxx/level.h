@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/helpers/tchar.h>
 #include <limits.h>
 #include <log4cxx/helpers/objectimpl.h>
@@ -63,7 +63,7 @@ namespace log4cxx
 
 			virtual const LevelPtr& toLevel(const String& sArg) const
 			{ return Level::toLevel(sArg); }
-			
+
 			virtual const LevelPtr& toLevel(int val) const
 			{ return Level::toLevel(val); }
 		};
@@ -147,11 +147,20 @@ namespace log4cxx
 		informational events that are most useful to debug an
 		application.  */
 		static const LevelPtr DEBUG;
-	
+
 		/**
 		The <code>OFF</code> level designates not set level
 		*/
 		static const LevelPtr OFF;
+
+                static const LevelPtr& getAll();
+                static const LevelPtr& getFatal();
+                static const LevelPtr& getError();
+                static const LevelPtr& getWarn();
+                static const LevelPtr& getInfo();
+                static const LevelPtr& getDebug();
+                static const LevelPtr& getOff();
+
 
 		/**
 		Two levels are equal if their level fields are equal.
@@ -196,7 +205,7 @@ namespace log4cxx
 		String levelStr;
 		int syslogEquivalent;
 	};
-} 
+}
 
 #define DECLARE_LOG4CXX_LEVEL(level)\
 public:\
@@ -210,7 +219,7 @@ public:\
 	{ return level::toLevel(val); }\
 };\
 DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
-	
+
 #define IMPLEMENT_LOG4CXX_LEVEL(level) \
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
 

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/helpers/properties.h>
@@ -38,6 +38,7 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 using namespace log4cxx::config;
 
+
 class PropertyWatchdog  : public FileWatchdog
 {
 public:
@@ -59,25 +60,13 @@ public:
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
-String PropertyConfigurator::CATEGORY_PREFIX = _T("log4j.category.");
-String PropertyConfigurator::LOGGER_PREFIX = _T("log4j.logger.");
-String PropertyConfigurator::FACTORY_PREFIX = _T("log4j.factory");
-String PropertyConfigurator::ADDITIVITY_PREFIX = _T("log4j.additivity.");
-String PropertyConfigurator::ROOT_CATEGORY_PREFIX = _T("log4j.rootCategory");
-String PropertyConfigurator::ROOT_LOGGER_PREFIX = _T("log4j.rootLogger");
-String PropertyConfigurator::APPENDER_PREFIX = _T("log4j.appender.");
-String PropertyConfigurator::RENDERER_PREFIX = _T("log4j.renderer.");
-String PropertyConfigurator::THRESHOLD_PREFIX = _T("log4j.threshold");
 
-/* Key for specifying the {@link org.apache.log4j.spi.LoggerFactory
-	LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
-String PropertyConfigurator::LOGGER_FACTORY_KEY = _T("log4j.loggerFactory");
-String PropertyConfigurator::INTERNAL_ROOT_NAME = _T("root");
 
 PropertyConfigurator::PropertyConfigurator()
 : loggerFactory(new DefaultCategoryFactory())
 {
 }
+
 
 void PropertyConfigurator::doConfigure(const String& configFileName,
 	spi::LoggerRepositoryPtr& hierarchy)
@@ -146,19 +135,21 @@ void PropertyConfigurator::configureAndWatch(
 void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	spi::LoggerRepositoryPtr& hierarchy)
 {
-	String value = properties.getProperty(LogLog::DEBUG_KEY);
+        static const String DEBUG_KEY("log4j.debug");
+	String value = properties.getProperty(DEBUG_KEY);
 
 	if (!value.empty())
 	{
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(value, true));
 	}
 
+        static const String THRESHOLD_PREFIX("log4j.threshold");
 	String thresholdStr =
 		OptionConverter::findAndSubst(THRESHOLD_PREFIX, properties);
 
 	if (!thresholdStr.empty())
 	{
-		hierarchy->setThreshold(OptionConverter::toLevel(thresholdStr, Level::ALL));
+		hierarchy->setThreshold(OptionConverter::toLevel(thresholdStr, Level::getAll()));
 		LogLog::debug(_T("Hierarchy threshold set to [")
 			+ hierarchy->getThreshold()->toString() + _T("]."));
 	}
@@ -176,6 +167,8 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 
 void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 {
+     static const String LOGGER_FACTORY_KEY("log4j.loggerFactory");
+
 	String factoryClassName =
 		OptionConverter::findAndSubst(LOGGER_FACTORY_KEY, props);
 
@@ -185,14 +178,20 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 		loggerFactory =
 			OptionConverter::instantiateByClassName(
 			factoryClassName, LoggerFactory::getStaticClass(), loggerFactory);
-		PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX + _T("."));
+                static const String FACTORY_PREFIX("log4j.factory.");
+		PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX);
 	}
 }
 
 void PropertyConfigurator::configureRootCategory(helpers::Properties& props,
 			spi::LoggerRepositoryPtr& hierarchy)
 {
-	String effectiveFrefix = ROOT_LOGGER_PREFIX;
+     static const String ROOT_CATEGORY_PREFIX("log4j.rootCategory");
+     static const String ROOT_LOGGER_PREFIX("log4j.rootLogger");
+
+
+
+	String effectiveFrefix(ROOT_LOGGER_PREFIX);
 	String value = OptionConverter::findAndSubst(ROOT_LOGGER_PREFIX, props);
 
 	if (value.empty())
@@ -210,6 +209,7 @@ void PropertyConfigurator::configureRootCategory(helpers::Properties& props,
 		LoggerPtr root = hierarchy->getRootLogger();
 
 		synchronized sync(root);
+                static const String INTERNAL_ROOT_NAME("root");
 		parseCategory(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
 	}
 }
@@ -217,6 +217,9 @@ void PropertyConfigurator::configureRootCategory(helpers::Properties& props,
 void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 			spi::LoggerRepositoryPtr& hierarchy)
 {
+        static const String CATEGORY_PREFIX("log4j.category.");
+        static const String LOGGER_PREFIX("log4j.logger.");
+
 	std::vector<String> names = props.propertyNames();
 
 	std::vector<String>::iterator it = names.begin();
@@ -251,6 +254,11 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 	LoggerPtr& cat, const String& loggerName)
 {
+
+     static const String ADDITIVITY_PREFIX("log4j.additivity.");
+
+
+
 	String value =
 		OptionConverter::findAndSubst(ADDITIVITY_PREFIX + loggerName, props);
 	LogLog::debug(
@@ -294,12 +302,16 @@ void PropertyConfigurator::parseCategory(
 		String levelStr = st.nextToken();
 		LogLog::debug(_T("Level token is [") + levelStr + _T("]."));
 
+                static const String INHERITED("inherited");
+                static const String NuLL("null");
+
 		// If the level value is inherited, set category level value to
 		// null. We also check that the user has not specified inherited for the
 		// root category.
 		if (StringHelper::equalsIgnoreCase(INHERITED, levelStr)
 			|| StringHelper::equalsIgnoreCase(NuLL, levelStr))
 		{
+                        static const String INTERNAL_ROOT_NAME("root");
 			if (loggerName == INTERNAL_ROOT_NAME)
 			{
 				LogLog::warn(_T("The root logger cannot be set to null."));
@@ -311,11 +323,11 @@ void PropertyConfigurator::parseCategory(
 		}
 		else
 		{
-			logger->setLevel(OptionConverter::toLevel(levelStr, Level::DEBUG));
+			logger->setLevel(OptionConverter::toLevel(levelStr, Level::getDebug()));
 		}
 
 		LogLog::debug(_T("Category ") + loggerName +
-			_T(" set to ") + ((logger->getLevel() != 0 )? 
+			_T(" set to ") + ((logger->getLevel() != 0 )?
 			logger->getLevel()->toString() : _T("null")));
 	}
 
@@ -357,6 +369,8 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 		return appender;
 	}
+
+        static const String APPENDER_PREFIX("log4j.appender.");
 
 	// Appender was not previously initialized.
 	String prefix = APPENDER_PREFIX + appenderName;

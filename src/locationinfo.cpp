@@ -25,11 +25,6 @@
  const char* const LocationInfo::NA = "?";
 
 
-  /**
-   * NA_LOCATION_INFO is used in conjunction with deserialized LoggingEvents
-   * without real location info available.
-   */
-LocationInfo LocationInfo::NA_LOCATION_INFO;
 
 const std::string LocationInfo::getClassName() const {
 	if (className == NULL) {

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/logger.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/logmanager.h>
@@ -31,7 +31,7 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
-String Logger::FQCN = Logger::getStaticClass().getName();
+const String Logger::FQCN(getFQCN());
 
 Logger::Logger(const String& name)
 : name(name), additive(true), repository(0)
@@ -41,6 +41,12 @@ Logger::Logger(const String& name)
 Logger::~Logger()
 {
 }
+
+const String& Logger::getFQCN() {
+   static const String fqcn(Logger::getStaticClass().getName());
+   return fqcn;
+}
+
 
 void Logger::addAppender(const AppenderPtr& newAppender)
 {
@@ -76,7 +82,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event)
 		{
 			writes += logger->aai->appendLoopOnAppenders(event);
 		}
-		
+
 		if(!logger->additive)
 		{
 			break;
@@ -106,10 +112,10 @@ void Logger::debug(const String& message, const char* file, int line)
 	{
 		return;
 	}
-	
-	if(Level::DEBUG->isGreaterOrEqual(getEffectiveLevel()))
+
+	if(Level::getDebug()->isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(FQCN, Level::DEBUG, message, file, line);
+		 forcedLog(getFQCN(), Level::getDebug(), message, file, line);
 	}
 }
 
@@ -120,9 +126,9 @@ void Logger::error(const String& message, const char* file, int line)
 		return;
 	}
 
-	if(Level::ERROR->isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::getError()->isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(FQCN, Level::ERROR, message, file, line);
+		 forcedLog(getFQCN(), Level::getError(), message, file, line);
 	}
 }
 
@@ -133,16 +139,16 @@ void Logger::fatal(const String& message, const char* file, int line)
 		return;
 	}
 
-	if(Level::FATAL->isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::getFatal()->isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(FQCN, Level::FATAL, message, file, line);
+		 forcedLog(getFQCN(), Level::getFatal(), message, file, line);
 	}
 }
 
 void Logger::forcedLog(const LevelPtr& level, const String& message,
 	const char* file, int line)
 {
-	callAppenders(new LoggingEvent(FQCN, this, level, message, file, line));
+	callAppenders(new LoggingEvent(getFQCN(), this, level, message, file, line));
 }
 
 void Logger::forcedLog(const String& fqcn, const LevelPtr& level, const String& message,
@@ -178,7 +184,7 @@ AppenderPtr Logger::getAppender(const String& name) const
 	{
 		return 0;
 	}
-	
+
 	return aai->getAppender(name);
 }
 
@@ -224,18 +230,18 @@ String Logger::getResourceBundleString(const String& key) const
 	if (rb == 0)
 	{
 		return String();
-	} 
+	}
 	else
 	{
 		try
 		{
 			return rb->getString(key);
-		} 
+		}
 		catch (MissingResourceException&)
 		{
 			((Logger *)this)->error(_T("No resource is associated with key \"") +
 			 	key + _T("\"."));
-				
+
 			return String();
 		}
 	}
@@ -258,9 +264,9 @@ void Logger::info(const String& message, const char* file, int line)
 		return;
 	}
 
-	if(Level::INFO->isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::getInfo()->isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(FQCN, Level::INFO, message, file, line);
+		 forcedLog(getFQCN(), Level::getInfo(), message, file, line);
 	}
 }
 
@@ -284,8 +290,8 @@ bool Logger::isDebugEnabled() const
 	{
 		return false;
 	}
-	
-	return Level::DEBUG->isGreaterOrEqual(getEffectiveLevel());
+
+	return Level::getDebug()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isEnabledFor(const LevelPtr& level) const
@@ -294,7 +300,7 @@ bool Logger::isEnabledFor(const LevelPtr& level) const
 	{
 		return false;
 	}
-	
+
 	return level->isGreaterOrEqual(getEffectiveLevel());
 }
 
@@ -305,7 +311,7 @@ bool Logger::isInfoEnabled() const
 		return false;
 	}
 
-	return Level::INFO->isGreaterOrEqual(getEffectiveLevel());
+	return Level::getInfo()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isErrorEnabled() const
@@ -315,7 +321,7 @@ bool Logger::isErrorEnabled() const
 		return false;
 	}
 
-	return Level::ERROR->isGreaterOrEqual(getEffectiveLevel());
+	return Level::getError()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isWarnEnabled() const
@@ -325,7 +331,7 @@ bool Logger::isWarnEnabled() const
 		return false;
 	}
 
-	return Level::WARN->isGreaterOrEqual(getEffectiveLevel());
+	return Level::getWarn()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isFatalEnabled() const
@@ -335,7 +341,7 @@ bool Logger::isFatalEnabled() const
 		return false;
 	}
 
-	return Level::FATAL->isGreaterOrEqual(getEffectiveLevel());
+	return Level::getFatal()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 /*void Logger::l7dlog(const LevelPtr& level, const String& key,
@@ -378,7 +384,7 @@ void Logger::l7dlog(const LevelPtr& level, const String& key,
 		{
 			msg = key;
 		}
-		else 
+		else
 		{
 			va_list params;
 			va_start (params, line);
@@ -386,7 +392,7 @@ void Logger::l7dlog(const LevelPtr& level, const String& key,
 			va_end (params);
 		}
 
-		forcedLog(FQCN, level, msg, file, line);
+		forcedLog(getFQCN(), level, msg, file, line);
 	}
 }
 
@@ -400,15 +406,15 @@ void Logger::log(const LevelPtr& level, const String& message,
 	}
 	if(level->isGreaterOrEqual(getEffectiveLevel()))
 	{
-		forcedLog(FQCN, level, message, file, line);
+		forcedLog(getFQCN(), level, message, file, line);
 	}
 
 }
 
-void Logger::removeAllAppenders() 
+void Logger::removeAllAppenders()
 {
 	synchronized sync(this);
-	
+
 	if(aai != 0)
 	{
 		aai->removeAllAppenders();
@@ -428,7 +434,7 @@ void Logger::removeAppender(const AppenderPtr& appender)
 	aai->removeAppender(appender);
 }
 
-void Logger::removeAppender(const String& name) 
+void Logger::removeAppender(const String& name)
 {
 	synchronized sync(this);
 
@@ -462,9 +468,9 @@ void Logger::warn(const String& message, const char* file, int line)
 		return;
 	}
 
-	if(Level::WARN->isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::getWarn()->isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(FQCN, Level::WARN, message, file, line);
+		 forcedLog(getFQCN(), Level::getWarn(), message, file, line);
 	}
 }
 

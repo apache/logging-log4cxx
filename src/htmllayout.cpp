@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/htmllayout.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/optionconverter.h>
@@ -28,9 +28,6 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(HTMLLayout)
 
-String HTMLLayout::TRACE_PREFIX =_T("<br>&nbsp;&nbsp;&nbsp;&nbsp;");
-String HTMLLayout::LOCATION_INFO_OPTION = _T("LocationInfo");
-String HTMLLayout::TITLE_OPTION = _T("Title");
 
 HTMLLayout::HTMLLayout()
 : locationInfo(false), title(_T("Log4cxx Log Messages")),
@@ -38,15 +35,19 @@ dateFormat(TimeZone::getTimeZone(_T("GMT")))
 {
 }
 
+
 void HTMLLayout::setOption(const String& option,
 	const String& value)
 {
+       static const String LOCATION_INFO_OPTION("LocationInfo");
+       static const String TITLE_OPTION("Title");
+
 	if (StringHelper::equalsIgnoreCase(option, TITLE_OPTION))
-	{
+        {
 		setTitle(value);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, LOCATION_INFO_OPTION))
-	{
+        else if (StringHelper::equalsIgnoreCase(option, LOCATION_INFO_OPTION))
+        {
 		setLocationInfo(OptionConverter::toBoolean(value, false));
 	}
 }
@@ -64,13 +65,13 @@ void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) cons
 	output << _T("</td>") << std::endl;
 
 	output << _T("<td title=\"Level\">");
-	if (event->getLevel()->equals(Level::DEBUG))
+	if (event->getLevel()->equals(Level::getDebug()))
 	{
 		output << _T("<font color=\"#339933\">");
 		output << event->getLevel()->toString();
 		output << _T("</font>");
 	}
-	else if(event->getLevel()->isGreaterOrEqual(Level::WARN))
+	else if(event->getLevel()->isGreaterOrEqual(Level::getWarn()))
 	{
 		output << _T("<font color=\"#993300\"><strong>");
 		output << event->getLevel()->toString();
@@ -80,7 +81,7 @@ void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) cons
 	{
 		output << event->getLevel()->toString();
 	}
-	
+
 	output << _T("</td>") << std::endl;
 
 	output << _T("<td title=\"") << event->getLoggerName()

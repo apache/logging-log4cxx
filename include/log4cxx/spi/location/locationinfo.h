@@ -43,11 +43,6 @@ namespace log4cxx
         static const char * const NA;
 
 
-        /**
-         * NA_LOCATION_INFO when  real location info is not available.
-         */
-        static LocationInfo NA_LOCATION_INFO;
-
 
        /**
         *   Constructor.
@@ -156,8 +151,8 @@ namespace log4cxx
 
 
       };
-      
-      
+
+
       class LocationFlush : public LocationInfo {
       	public:
        /**

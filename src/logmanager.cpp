@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/logmanager.h>
 #include <log4cxx/spi/defaultrepositoryselector.h>
 #include <log4cxx/hierarchy.h>
@@ -39,7 +39,12 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(DefaultRepositorySelector)
 
 void * LogManager::guard = 0;
-RepositorySelectorPtr LogManager::repositorySelector;
+
+RepositorySelectorPtr& LogManager::getRepositorySelector() {
+   static spi::RepositorySelectorPtr selector;
+   return selector;
+}
+
 
 void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
 	void * guard)
@@ -57,27 +62,27 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
 	}
 
 	LogManager::guard = guard;
-	LogManager::repositorySelector = selector;
+	LogManager::getRepositorySelector() = selector;
 }
 
 LoggerRepositoryPtr& LogManager::getLoggerRepository()
 {
-	if (repositorySelector == 0)
+	if (getRepositorySelector() == 0)
 	{
-		repositorySelector =
+		getRepositorySelector() =
 			new DefaultRepositorySelector(
 				new Hierarchy(
-					new RootCategory(Level::DEBUG)));
-		
+					new RootCategory(Level::getDebug())));
+
 		// Use automatic configration to configure the default hierarchy
 		String configuratorClassName =
 			OptionConverter::getSystemProperty(CONFIGURATOR_CLASS_KEY,_T(""));
 		String configurationOptionStr =
 			OptionConverter::getSystemProperty(DEFAULT_CONFIGURATION_KEY,_T(""));
-		
+
 		struct stat buff;
 		USES_CONVERSION;
-		
+
 		if (configurationOptionStr.empty())
 		{
 			configurationOptionStr = DEFAULT_XML_CONFIGURATION_FILE;
@@ -86,17 +91,17 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
 				configurationOptionStr = DEFAULT_CONFIGURATION_FILE;
 			}
 		}
-		
+
 		if (stat(T2A(configurationOptionStr.c_str()), &buff) == 0)
 		{
 			LogLog::debug(
-				_T("Using configuration file [") +configurationOptionStr 
+				_T("Using configuration file [") +configurationOptionStr
 				+ _T("] for automatic log4cxx configuration"));
-			
+
 			OptionConverter::selectAndConfigure(
-				configurationOptionStr, 
+				configurationOptionStr,
 				configuratorClassName,
-				repositorySelector->getLoggerRepository()); 
+				getRepositorySelector()->getLoggerRepository());
 		}
 		else
 		{
@@ -106,7 +111,7 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
 		}
 	}
 
-	return repositorySelector->getLoggerRepository();
+	return getRepositorySelector()->getLoggerRepository();
 }
 
 LoggerPtr LogManager::getRootLogger()

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/hierarchy.h>
 #include <log4cxx/defaultcategoryfactory.h>
@@ -46,7 +46,7 @@ Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false)
 {
 	// Enable all level levels by default.
-	setThreshold(Level::ALL);
+	setThreshold(Level::getAll());
 	this->root->setHierarchy(this);
 	defaultFactory = new DefaultCategoryFactory();
 }
@@ -60,7 +60,7 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 	if (std::find(listeners.begin(), listeners.end(), listener) != listeners.end())
 	{
 		LogLog::warn(_T("Ignoring attempt to add an existent listener."));
-	} 
+	}
 	else
 	{
 		listeners.push_back(listener);
@@ -72,7 +72,7 @@ void Hierarchy::clear()
 	mapCs.lock();
 
 	loggers.clear();
-	
+
 	mapCs.unlock();
 }
 
@@ -92,7 +92,7 @@ void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
 LoggerPtr Hierarchy::exists(const String& name)
 {
 	mapCs.lock();
-	
+
 	LoggerPtr logger;
 	LoggerMap::iterator it = loggers.find(name);
 	if (it != loggers.end())
@@ -101,10 +101,10 @@ LoggerPtr Hierarchy::exists(const String& name)
 	}
 
 	mapCs.unlock();
-	
+
 	return logger;
 }
-	
+
 void Hierarchy::setThreshold(const LevelPtr& l)
 {
 	if (l != 0)
@@ -122,7 +122,7 @@ void Hierarchy::setThreshold(const String& levelStr)
 	if(l != 0)
 	{
 		setThreshold(l);
-	} 
+	}
 	else
 	{
 		LogLog::warn(_T("Could not convert [")+levelStr+_T("] to Level."));
@@ -174,7 +174,7 @@ LoggerPtr Hierarchy::getLogger(const String& name, spi::LoggerFactoryPtr factory
 	mapCs.lock();
 
 	LoggerMap::iterator it = loggers.find(name);
-	
+
 	if (it != loggers.end())
 	{
 		logger = it->second;
@@ -232,13 +232,13 @@ bool Hierarchy::isDisabled(int level) const
 void Hierarchy::resetConfiguration()
 {
 	mapCs.lock();
-	
-	getRootLogger()->setLevel(Level::DEBUG);
+
+	getRootLogger()->setLevel(Level::getDebug());
 	root->setResourceBundle(0);
-	setThreshold(Level::ALL);
-	
+	setThreshold(Level::getAll());
+
 	shutdown(); // nested locks are OK
-	
+
 	LoggerList loggers = getCurrentLoggers();
 	LoggerList::iterator it, itEnd = loggers.end();
 
@@ -258,10 +258,10 @@ void Hierarchy::resetConfiguration()
 void Hierarchy::shutdown()
 {
 	LoggerPtr root = getRootLogger();
-	
+
 	// begin by closing nested appenders
 	root->closeNestedAppenders();
-	
+
 	LoggerList loggers = getCurrentLoggers();
 	LoggerList::iterator it, itEnd = loggers.end();
 
@@ -332,12 +332,12 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr& logger)
 	//tcout << _T("updateChildren called for ") << logger->name << std::endl;
 
 	ProvisionNode::iterator it, itEnd = pn.end();
-	
+
 	for(it = pn.begin(); it != itEnd; it++)
 	{
 		LoggerPtr& l = *it;
 		//tcout << _T("Updating child ") << l->name << std::endl;
-		
+
 		// Unless this child already points to a correct (lower) parent,
 		// make cat.parent point to l.parent and l.parent to cat.
 		if(!startsWith(l->parent->name, logger->name))

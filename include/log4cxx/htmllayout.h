@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_HTML_LAYOUT_H
 #define _LOG4CXX_HTML_LAYOUT_H
 
@@ -24,30 +24,13 @@ namespace log4cxx
 {
 	class HTMLLayout;
 	typedef helpers::ObjectPtrT<HTMLLayout> HTMLLayoutPtr;
-	
+
 	/**
 	This layout outputs events in a HTML table.
 	*/
 	class LOG4CXX_EXPORT HTMLLayout : public Layout
 	{
-	protected:
-		static String TRACE_PREFIX;
-
 	private:
-		/**
-		A string constant used in naming the option for setting the the
-		location information flag.  Current value of this string
-		constant is <b>LocationInfo</b>.
-		*/
-		static String LOCATION_INFO_OPTION;
-
-		/**
-		A string constant used in naming the option for setting the the
-		HTML document title.  Current value of this string
-		constant is <b>Title</b>.
-		*/
-		static String TITLE_OPTION;
-
 		// Print no location info by default
 		bool locationInfo; //= false
 
@@ -130,7 +113,7 @@ namespace log4cxx
 		events. Hence, this method return <code>false</code>.  */
 		virtual bool ignoresThrowable() const
 			{ return false; }
-			
+
 	}; // class HtmlLayout
 }  // namespace log4cxx
 

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_PATTERN_LAYOUT_H
 #define _LOG4CXX_PATTERN_LAYOUT_H
 
@@ -26,7 +26,7 @@ namespace log4cxx
 	{
 		class PatternConverter;
 		typedef ObjectPtrT<PatternConverter> PatternConverterPtr;
-	} 
+	}
 
 	class PatternLayout;
 	typedef helpers::ObjectPtrT<PatternLayout> PatternLayoutPtr;
@@ -35,7 +35,7 @@ namespace log4cxx
 	A flexible layout configurable with pattern string.
 
 	<p>The goal of this class is to #format a {@link
-	spi::LoggingEvent LoggingEvent} and return the results as a string. 
+	spi::LoggingEvent LoggingEvent} and return the results as a string.
 	The results depend on the <em>conversion pattern</em>.
 
 	<p>The conversion pattern is closely related to the conversion
@@ -244,7 +244,7 @@ namespace log4cxx
 	<tr>
 	<td align=center><b>X</b></td>
 
-	<td> 
+	<td>
 
 	<p>Used to output the MDC (mapped diagnostic context) associated
 	with the thread that generated the logging event. The <b>X</b>
@@ -374,16 +374,6 @@ namespace log4cxx
 	*/
 	class LOG4CXX_EXPORT PatternLayout : public Layout
 	{
-	public:
-		/** Default pattern string for log output. Currently set to the
-		string <b>"\%m\%n"</b> which just prints the application supplied
-		message. */
-		static String DEFAULT_CONVERSION_PATTERN;
-
-		/** A conversion pattern equivalent to the TTCCCLayout.
-		Current value is <b>\%r [\%t] \%p \%c \%x - \%m\%n</b>. */
-		static String TTCC_CONVERSION_PATTERN;
-
 	protected:
 		static int BUF_SIZE;
 		static int MAX_CAPACITY;
@@ -460,8 +450,8 @@ namespace log4cxx
 
 	protected:
 		/**
-		Returns head of PatternParser used to parse the conversion string. 
-		Subclasses may override this to return a subclass of PatternParser 
+		Returns head of PatternParser used to parse the conversion string.
+		Subclasses may override this to return a subclass of PatternParser
 		which recognize custom conversion characters.
 		*/
 		virtual helpers::PatternConverterPtr createPatternParser(const String& pattern);

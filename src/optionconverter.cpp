@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/appenderskeleton.h>
@@ -40,10 +40,7 @@ using namespace log4cxx::spi;
 using namespace log4cxx::xml;
 #endif
 
-String OptionConverter::DELIM_START = _T("${");
-TCHAR OptionConverter::DELIM_STOP  = _T('}');
-int OptionConverter::DELIM_START_LEN = 2;
-int OptionConverter::DELIM_STOP_LEN  = 1;
+
 
 namespace {
     // Function object to turn a lower case character into an upper case one
@@ -58,7 +55,7 @@ String OptionConverter::convertSpecialChars(const String& s)
 	TCHAR c;
     int len = s.length();
     StringBuffer sbuf;
-	
+
 	String::const_iterator i = s.begin();
     while(i != s.end())
 	{
@@ -150,13 +147,13 @@ long OptionConverter::toFileSize(const String& value, long dEfault)
 
 	long multiplier = 1;
 	int index;
-	
+
 	if((index = s.find(_T("kb"))) != -1)
 	{
 		multiplier = 1024;
 		s = s.substr(0, index);
 	}
-	else if((index = s.find(_T("mb"))) != -1) 
+	else if((index = s.find(_T("mb"))) != -1)
 	{
 		multiplier = 1024*1024;
 		s = s.substr(0, index);
@@ -195,13 +192,17 @@ String OptionConverter::findAndSubst(const String& key, Properties& props)
 String OptionConverter::substVars(const String& val, Properties& props)
 {
 	StringBuffer sbuf;
+        static const String delimStart("${");
+        const TCHAR delimStop = '}';
+        const int DELIM_START_LEN = 2;
+        const int DELIM_STOP_LEN = 1;
 
 	int i = 0;
 	int j, k;
 
 	while(true)
 	{
-		j = val.find(DELIM_START, i);
+		j = val.find(delimStart, i);
 		if(j == -1)
 		{
 			// no more variables
@@ -218,7 +219,7 @@ String OptionConverter::substVars(const String& val, Properties& props)
 		else
 		{
 			sbuf << val.substr(i, j - i);
-			k = val.find(DELIM_STOP, j);
+			k = val.find(delimStop, j);
 			if(k == -1)
 			{
 				StringBuffer oss;
@@ -383,15 +384,15 @@ void OptionConverter::selectAndConfigure(const String& configFileName,
 {
 	ConfiguratorPtr configurator;
 	String clazz = _clazz;
-	
+
 #ifdef LOG4CXX_HAVE_XML
-	if(clazz.empty() && !configFileName.empty() 
+	if(clazz.empty() && !configFileName.empty()
 		&& StringHelper::endsWith(configFileName, _T(".xml")))
 	{
 		clazz = DOMConfigurator::getStaticClass().toString();
 	}
 #endif
-	
+
 	if(!clazz.empty())
 	{
 		LogLog::debug(_T("Preferred configurator class: ") + clazz);
@@ -404,11 +405,11 @@ void OptionConverter::selectAndConfigure(const String& configFileName,
 				clazz+_T("]."));
 			return;
 		}
-	} 
+	}
 	else
 	{
 		configurator = new PropertyConfigurator();
 	}
-	
+
 	configurator->doConfigure(configFileName, hierarchy);
 }

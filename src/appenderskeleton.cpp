@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@ using namespace log4cxx::helpers;
 
 AppenderSkeleton::AppenderSkeleton()
 : errorHandler(new OnlyOnceErrorHandler()), closed(false),
-threshold(Level::ALL)
+threshold(Level::getAll())
 {
 }
 
@@ -69,7 +69,7 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
 {
 	synchronized sync(this);
-	
+
 	if(closed)
 	{
 		LogLog::error(_T("Attempted to append to closed appender named [")
@@ -105,7 +105,7 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler)
 {
 	synchronized sync(this);
-	
+
 	if(errorHandler == 0)
 	{
 		// We do not throw exception here since the cause is probably a

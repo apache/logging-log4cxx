@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/dateformat.h>
 #include <log4cxx/helpers/loglog.h>
@@ -24,9 +24,26 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-String AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT = _T("ISO8601");
-String AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT = _T("ABSOLUTE");
-String AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT = _T("DATE");
+const String& AbsoluteTimeDateFormat::getIso8601DateFormat() {
+   static const String format("ISO8601");
+   return format;
+}
+
+const String& AbsoluteTimeDateFormat::getAbsTimeDateFormat() {
+  static const String format("ABSOLUTE");
+  return format;
+}
+
+const String& AbsoluteTimeDateFormat::getDateAndTimeDateFormat() {
+    static const String format("DATE");
+    return format;
+}
+
+const String AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT(getIso8601DateFormat());
+const String AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT(getAbsTimeDateFormat());
+const String AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT(getDateAndTimeDateFormat());
+
+
 
 DateFormat::DateFormat(const String& dateFormat)
  : dateFormat(dateFormat), timeZone(TimeZone::getDefault())

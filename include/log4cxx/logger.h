@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_LOGGER_H
 #define _LOG4CXX_LOGGER_H
 
@@ -35,8 +35,8 @@ namespace log4cxx
 
 		class LoggerRepository;
 		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-	} 
-	
+	}
+
     class Logger;
 	/** smart pointer to a Logger class */
     typedef helpers::ObjectPtrT<Logger> LoggerPtr;
@@ -77,19 +77,20 @@ namespace log4cxx
         LoggerPtr parent;
 
 		/** The resourceBundle for localized messages.
-		
+
 		@see setResourceBundle, getResourceBundle
 		*/
 		helpers::ResourceBundlePtr resourceBundle;
-		
+
 		/**
 		The fully qualified name of the Category class. See also the getFQCN
 		method.
 		*/
-		static String FQCN;
+		static const String FQCN;
+                static const String& getFQCN();
 
 		// Loggers need to know what Hierarchy they are in
-        spi::LoggerRepository * repository;
+                spi::LoggerRepository * repository;
 
 		helpers::AppenderAttachableImplPtr aai;
 
@@ -101,7 +102,7 @@ namespace log4cxx
         have their additivity flag set to <code>false</code> too. See
         the user manual for more details. */
         bool additive;
-       
+
     protected:
 		friend class DefaultCategoryFactory;
 
@@ -187,7 +188,7 @@ namespace log4cxx
 		@param file the file where the log statement was written.
 		@param line the line where the log statement was written.
 		*/
-        void error(const String& message, const char* file=0, int line=-1); 
+        void error(const String& message, const char* file=0, int line=-1);
 
         /**
         Log a message string with the {@link Level#FATAL FATAL} level.
@@ -255,7 +256,7 @@ namespace log4cxx
 
         <p>The Logger class is designed so that this method executes as
         quickly as possible.
-		
+
 		@throws RuntimeException if all levels are null in the hierarchy
         */
         virtual const LevelPtr& getEffectiveLevel() const;
@@ -301,7 +302,7 @@ namespace log4cxx
 
         /**
         Like #getLogger except that the type of logger
-        instantiated depends on the type returned by the 
+        instantiated depends on the type returned by the
         LoggerFactory#makeNewLoggerInstance method of the
         <code>factory</code> parameter.
 
@@ -314,8 +315,8 @@ namespace log4cxx
 		*/
         static LoggerPtr getLogger(const String& name,
 			spi::LoggerFactoryPtr factory);
-			
-        
+
+
 		/**
 		Return the <em>inherited</em> ResourceBundle for this logger.
 
@@ -338,7 +339,7 @@ namespace log4cxx
 		@see #getResourceBundle.
 		*/
 		String getResourceBundleString(const String& key) const;
-      
+
 	  public:
 	   /**
         Log a message string with the {@link Level#INFO INFO} level.
@@ -398,7 +399,7 @@ namespace log4cxx
         bool isDebugEnabled() const;
 
         /**
-        Check whether this logger is enabled for a given 
+        Check whether this logger is enabled for a given
         Level passed as parameter.
 
         See also #isDebugEnabled.
@@ -443,23 +444,23 @@ namespace log4cxx
         bool isFatalEnabled() const;
 
 		/**
-		Log a localized and parameterized message. 
-		
+		Log a localized and parameterized message.
+
 		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
 		pattern is formatted using helpers::StringHelper::format method with the user
 		supplied object array <code>params</code>.
-		
+
         @param level The level of the logging request.
         @param key The key to be searched in the #resourceBundle.
         @param file The source file of the logging request, may be null.
         @param line The number line of the logging request.
-		
+
 		@see #setResourceBundle
 		*/
 		void l7dlog(const LevelPtr& level, const String& key,
 					const char* file, int line, ...);
-					
+
           /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
@@ -519,7 +520,7 @@ namespace log4cxx
 		*/
 		inline void setResourceBundle(const helpers::ResourceBundlePtr& bundle)
 			{ resourceBundle = bundle; }
-			
+
 		/**
 		Log a message string with the {@link Level#WARN WARN} level.
 
@@ -536,7 +537,7 @@ namespace log4cxx
 		*/
 		void warn(const String& message, const char* file=NULL, int line=-1);
    };
-} 
+}
 
 /** @addtogroup LoggingMacros Logging macros
 @{
@@ -545,7 +546,7 @@ namespace log4cxx
 #if !defined(LOG4CXX_UNLIKELY)
 #if __GNUC__ >= 3
 /**
-Provides optimization hint to the compiler 
+Provides optimization hint to the compiler
 to optimize for the expression being false.
 @param expr boolean expression.
 @returns value of expression.
@@ -553,7 +554,7 @@ to optimize for the expression being false.
 #define LOG4CXX_UNLIKELY(expr) __builtin_expect(expr, 0)
 #else
 /**
-Provides optimization hint to the compiler 
+Provides optimization hint to the compiler
 to optimize for the expression being false.
 @param expr boolean expression.
 @returns value of expression.
@@ -563,7 +564,7 @@ to optimize for the expression being false.
 #endif
 
 
-/** 
+/**
 Logs a message to a specified logger with a specified level.
 
 @param logger the logger to be used.
@@ -576,7 +577,7 @@ Logs a message to a specified logger with a specified level.
 	oss << message; \
 	logger->forcedLog(level, oss.str(), __FILE__, __LINE__); }}
 
-/** 
+/**
 Logs a message to a specified logger with the DEBUG level.
 
 @param logger the logger to be used.
@@ -588,7 +589,7 @@ Logs a message to a specified logger with the DEBUG level.
 	oss << message; \
 	logger->forcedLog(::log4cxx::Level::DEBUG, oss.str(), __FILE__, __LINE__); }}
 
-/** 
+/**
 Logs a message to a specified logger with the INFO level.
 
 @param logger the logger to be used.
@@ -600,7 +601,7 @@ Logs a message to a specified logger with the INFO level.
 	oss << message; \
 	logger->forcedLog(::log4cxx::Level::INFO, oss.str(), __FILE__, __LINE__); }}
 
-/** 
+/**
 Logs a message to a specified logger with the WARN level.
 
 @param logger the logger to be used.
@@ -612,7 +613,7 @@ Logs a message to a specified logger with the WARN level.
 	oss << message; \
 	logger->forcedLog(::log4cxx::Level::WARN, oss.str(), __FILE__, __LINE__); }}
 
-/** 
+/**
 Logs a message to a specified logger with the ERROR level.
 
 @param logger the logger to be used.
@@ -624,7 +625,7 @@ Logs a message to a specified logger with the ERROR level.
 	oss << message; \
 	logger->forcedLog(::log4cxx::Level::ERROR, oss.str(), __FILE__, __LINE__); }}
 
-/** 
+/**
 Logs a message to a specified logger with the FATAL level.
 
 @param logger the logger to be used.
@@ -635,7 +636,7 @@ Logs a message to a specified logger with the FATAL level.
 	::log4cxx::StringBuffer oss; \
 	oss << message; \
 	logger->forcedLog(::log4cxx::Level::FATAL, oss.str(), __FILE__, __LINE__); }}
-	
+
 /**
 Logs a localized message with no parameter.
 
@@ -685,7 +686,7 @@ Logs a localized message with three parameters.
 #define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) { \
 	if (logger->isEnabledFor(level)) {\
 	logger->l7dlog(level, key, __FILE__, __LINE__, p1, p2, p3); }}
-	
+
 /**@}*/
 
 #endif //_LOG4CXX_LOGGER_H

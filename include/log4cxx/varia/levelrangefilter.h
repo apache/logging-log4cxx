@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_VARIA_LEVEL_RANGE_FILTER_H
 #define _LOG4CXX_VARIA_LEVEL_RANGE_FILTER_H
 
@@ -31,13 +31,13 @@ namespace log4cxx
 		<p>The filter admits three options <b>LevelMin</b>, <b>LevelMax</b>
 		and <b>AcceptOnMatch</b>.
 
-		<p>If the level of the {@link spi::LoggingEvent LoggingEvent} is not 
+		<p>If the level of the {@link spi::LoggingEvent LoggingEvent} is not
 		between Min and Max (inclusive), then {@link spi::Filter#DENY DENY}
 		is returned.
 
 		<p> If the Logging event level is within the specified range, then if
-		<b>AcceptOnMatch</b> is true, {@link spi::Filter#ACCEPT ACCEPT} is 
-		returned, and if <b>AcceptOnMatch</b> is false, 
+		<b>AcceptOnMatch</b> is true, {@link spi::Filter#ACCEPT ACCEPT} is
+		returned, and if <b>AcceptOnMatch</b> is false,
 		{@link spi::Filter#NEUTRAL NEUTRAL} is returned.
 
 		<p>If <code>LevelMin</code>w is not defined, then there is no
@@ -48,7 +48,7 @@ namespace log4cxx
 
 		<p>Refer to the {@link
 		AppenderSkeleton#setThreshold setThreshold} method
-		available to <code>all</code> appenders extending 
+		available to <code>all</code> appenders extending
 		AppenderSkeleton for a more convenient way to
 		filter out events by level.
 		*/
@@ -58,10 +58,6 @@ namespace log4cxx
 		class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		{
 		private:
-			static String LEVEL_MIN_OPTION;
-			static String LEVEL_MAX_OPTION;
-			static String ACCEPT_ON_MATCH_OPTION;
-
 			/**
 			Do we return ACCEPT when a match occurs. Default is
 			<code>false</code>, so that later filters get run by default
@@ -125,9 +121,9 @@ namespace log4cxx
 			/**
 			Return the decision of this filter.
 
-			Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the 
+			Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
 			<b>LevelToMatch</b> option is not set or if there is not match.
-			Otherwise, if there is a match, then the returned decision is 
+			Otherwise, if there is a match, then the returned decision is
 			{@link spi::Filter#ACCEPT ACCEPT} if the
 			<b>AcceptOnMatch</b> property is set to <code>true</code>. The
 			returned decision is {@link spi::Filter#DENY DENY} if the

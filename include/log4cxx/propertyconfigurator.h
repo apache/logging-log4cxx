@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_PROPERTY_CONFIGURATOR_H
 #define _LOG4CXX_PROPERTY_CONFIGURATOR_H
 
@@ -39,12 +39,12 @@ namespace log4cxx
 
 		class LoggerRepository;
 		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-	} 
+	}
 
 	namespace helpers
 	{
 		class Properties;
-	} 
+	}
 
 /**
 Allows the configuration of log4cxx from an external file.  See
@@ -58,7 +58,7 @@ files. You can enable log4cxx internal logging by defining the
 <P>At class initialization time class,
 the file <b>log4j.properties</b> will be searched in the current directory.
 If the file can be found, then it will
-be fed to the 
+be fed to the
 {@link PropertyConfigurator#configure(const String& configFilename)}
 method.
 
@@ -89,27 +89,12 @@ example, if <code>java.home</code> system property is set to
 		virtual public helpers::ObjectImpl
 	{
 	protected:
-		static String CATEGORY_PREFIX;
-		static String LOGGER_PREFIX;
-		static String FACTORY_PREFIX;
-		static String ADDITIVITY_PREFIX;
-		static String ROOT_CATEGORY_PREFIX;
-		static String ROOT_LOGGER_PREFIX;
-		static String APPENDER_PREFIX;
-		static String RENDERER_PREFIX;
-		static String THRESHOLD_PREFIX;
-
-		/** Key for specifying the {@link spi::LoggerFactory
-		LoggerFactory}. Currently set to <code>"log4j.loggerFactory"</code>.
-		*/
-		static String LOGGER_FACTORY_KEY;
-		static String INTERNAL_ROOT_NAME;
 
 		/**
 		Used internally to keep track of configured appenders.
 		*/
 		std::map<String, AppenderPtr> registry;
-		
+
 		/**
 		Used to create new instances of logger
 		*/
@@ -201,7 +186,7 @@ appender syntax defined above.
 
 <p>For non-root categories the syntax is almost the same:
 <pre>
-log4j.logger.logger_name=[level|INHERITED|NULL], appenderName, appenderName, 
+log4j.logger.logger_name=[level|INHERITED|NULL], appenderName, appenderName,
 ...
 </pre>
 
@@ -299,7 +284,7 @@ beginning of a line for comments.
 configuration information is stored.
 @param hierarchy The hierarchy to operation upon.
 */
-		void doConfigure(const String& configFileName, 
+		void doConfigure(const String& configFileName,
 			spi::LoggerRepositoryPtr& hierarchy);
 
 		/**
@@ -342,7 +327,7 @@ configuration information is stored.
 		See #doConfigure(const String&, spi::LoggerRepositoryPtr&)
 		for the expected format.
 		*/
-		void doConfigure(helpers::Properties& properties, 
+		void doConfigure(helpers::Properties& properties,
 			spi::LoggerRepositoryPtr& hierarchy);
 
 // --------------------------------------------------------------------------

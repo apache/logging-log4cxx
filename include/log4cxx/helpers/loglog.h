@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_HELPERS_LOG_LOG_H
 #define _LOG4CXX_HELPERS_LOG_LOG_H
 
@@ -39,20 +39,8 @@ namespace log4cxx
 		*/
 		class LOG4CXX_EXPORT LogLog
 		{
-		public:
-			/**
-			Defining this value makes log4j print log4j-internal debug
-			statements to <code>System.out</code>.
-
-			<p> The value of this string is <b>log4j.debug</b>.
-
-			<p>Note that the search for all option names is case sensitive.  */
-			static String DEBUG_KEY;
-
-
-
 		protected:
-			static bool debugEnabled;  
+			static bool debugEnabled;
 
 		  /**
 			 In quietMode not even errors generate any output.
@@ -64,14 +52,14 @@ namespace log4cxx
 			Allows to enable/disable log4cxx internal logging.
 			*/
 			static void setInternalDebugging(bool enabled);
-			
+
 			/**
 			This method is used to output log4cxx internal debug
 			statements. Output goes to the standard output.
 			*/
 			static void debug(const String& msg);
 			static void debug(const String& msg, Exception& e);
-			
+
 			/**
 			This method is used to output log4cxx internal error
 			statements. There is no way to disable error statements.
@@ -82,7 +70,7 @@ namespace log4cxx
 
 			/**
 			In quite mode LogLog generates strictly no output, not even
-			for errors. 
+			for errors.
 
 			@param quietMode <code>true</code> for no output.
 			*/

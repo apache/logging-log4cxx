@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,20 +22,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-typedef std::map<String, const Class *> classMap;
-classMap * registry = 0;
-
-class RegistryDestructor
-{
-public:
-	~RegistryDestructor()
-	{
-		if (registry != 0)
-		{
-			delete registry;
-		}
-	}
-} registryDestructor;
 
 ClassNotFoundException::ClassNotFoundException(const String& className)
 {
@@ -67,6 +53,12 @@ ObjectPtr Class::newInstance() const
 	return 0;
 }
 
+
+Class::ClassMap& Class::getRegistry() {
+    static ClassMap registry;
+    return registry;
+}
+
 const Class& Class::forName(const String& className)
 {
 	String strippedClassName;
@@ -80,7 +72,7 @@ const Class& Class::forName(const String& className)
 		strippedClassName = className;
 	}
 
-	const Class * clazz = (*registry)[StringHelper::toLowerCase(strippedClassName)];
+	const Class * clazz = getRegistry()[StringHelper::toLowerCase(strippedClassName)];
 
 	if (clazz == 0)
 	{
@@ -97,10 +89,5 @@ void Class::registerClass(const Class * newClass)
 		return;
 	}
 
-	if (registry == 0)
-	{
-		registry = new classMap();
-	}
-
-	(*registry)[StringHelper::toLowerCase(newClass->toString())] = newClass;
+	getRegistry()[StringHelper::toLowerCase(newClass->toString())] = newClass;
 }

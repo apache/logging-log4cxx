@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/helpers/patternparser.h>
 #include <log4cxx/helpers/dateformat.h>
 #include <log4cxx/helpers/absolutetimedateformat.h>
@@ -65,7 +65,7 @@ void PatternParser::addToList(PatternConverterPtr& pc)
 	if(head == 0)
 	{
 		head = tail = pc;
-	} 
+	}
 	else
 	{
 		tail->next = pc;
@@ -248,17 +248,17 @@ void PatternParser::finalizeConverter(TCHAR c)
 		}
 		else
 		{
-			dateFormatStr = AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT;
+			dateFormatStr = AbsoluteTimeDateFormat::getIso8601DateFormat();
 		}
 
 		if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT))
+			AbsoluteTimeDateFormat::getIso8601DateFormat()))
 			df = new ISO8601DateFormat(TimeZone::getTimeZone(timeZone));
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT))
+			AbsoluteTimeDateFormat::getAbsTimeDateFormat()))
 			df = new AbsoluteTimeDateFormat(TimeZone::getTimeZone(timeZone));
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT))
+			AbsoluteTimeDateFormat::getDateAndTimeDateFormat()))
 			df = new DateTimeDateFormat(TimeZone::getTimeZone(timeZone));
 		else
 		{
@@ -374,7 +374,7 @@ PatternParser::BasicPatternConverter::BasicPatternConverter(const FormattingInfo
 {
 }
 
-void PatternParser::BasicPatternConverter::convert(ostream& sbuf, 
+void PatternParser::BasicPatternConverter::convert(ostream& sbuf,
 	const spi::LoggingEventPtr& event) const
 {
 	switch(type)
@@ -402,13 +402,13 @@ PatternParser::LiteralPatternConverter::LiteralPatternConverter(const String& va
 {
 }
 
-void PatternParser::LiteralPatternConverter::format(StringBuffer& sbuf, 
+void PatternParser::LiteralPatternConverter::format(StringBuffer& sbuf,
 	const spi::LoggingEventPtr& e) const
 {
 	sbuf << literal;
 }
 
-void PatternParser::LiteralPatternConverter::convert(ostream& sbuf, 
+void PatternParser::LiteralPatternConverter::convert(ostream& sbuf,
 	const spi::LoggingEventPtr& event) const
 {
 	sbuf << literal;
@@ -424,7 +424,7 @@ PatternParser::DatePatternConverter::~DatePatternConverter()
 	delete df;
 }
 
-void PatternParser::DatePatternConverter::convert(ostream& sbuf, 
+void PatternParser::DatePatternConverter::convert(ostream& sbuf,
 	const spi::LoggingEventPtr& event) const
 {
 	df->format(sbuf, event->getTimeStamp());
@@ -435,7 +435,7 @@ PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& fo
 {
 }
 
-void PatternParser::MDCPatternConverter::convert(ostream& sbuf, 
+void PatternParser::MDCPatternConverter::convert(ostream& sbuf,
 	const spi::LoggingEventPtr& event) const
 {
 	/**
@@ -471,7 +471,7 @@ PatternParser::LocationPatternConverter::LocationPatternConverter(const Formatti
 {
 }
 
-void PatternParser::LocationPatternConverter::convert(ostream& sbuf, 
+void PatternParser::LocationPatternConverter::convert(ostream& sbuf,
 	const spi::LoggingEventPtr& event) const
 {
 	switch(type)
@@ -502,7 +502,7 @@ PatternParser::CategoryPatternConverter::CategoryPatternConverter(const Formatti
 {
 }
 
-void PatternParser::CategoryPatternConverter::convert(ostream& sbuf, 
+void PatternParser::CategoryPatternConverter::convert(ostream& sbuf,
 	const spi::LoggingEventPtr& event) const
 {
 	const String& n = event->getLoggerName();
@@ -512,15 +512,15 @@ void PatternParser::CategoryPatternConverter::convert(ostream& sbuf,
 
 		sbuf << n;
 	}
-	else 
+	else
 	{
 		String::size_type len = n.length();
-		
+
 		// We substract 1 from 'len' when assigning to 'end' to avoid out of
 		// bounds exception in return r.substring(end+1, len). This can happen if
 		// precision is 1 and the category name ends with a dot.
 		String::size_type end = len -1 ;
-		for(int i = precision; i > 0; i--) 
+		for(int i = precision; i > 0; i--)
 		{
 			end = n.rfind(_T('.'), end-1);
 			if(end == String::npos)
