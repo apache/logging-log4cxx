@@ -186,14 +186,6 @@ void Transformer::transform(const File& in, const File& out,
         assert(stat == 0);
 
 
-        //
-        //   echo command to stdout
-        //
-        std::cout << "Running sed";
-        for(const char** arg = args; *arg != NULL; arg++) {
-            std::cout << ' ' << *arg;
-        }
-        std::cout << std::endl;
 
         apr_proc_t pid;
         stat = apr_proc_create(&pid,"sed", args, NULL, attr, pool);
