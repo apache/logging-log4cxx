@@ -60,6 +60,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="cppunit.include.dir" location="${cppunit.dir}/include"/>
     <property name="cppunit.lib.dir" location="${cppunit.dir}/lib"/>
     <property name="cppunit.bin.dir" location="${cppunit.dir}/lib"/>
+    <condition property="cppunit.lib.name" value="cppunitd">
+        <istrue value="${debug}"/>
+    </condition>
+    <property name="cppunit.lib.name" value="cppunit"/>
     <property name="boost.include.dir" location="\boost_1_31_0"/>
 </target>
 
@@ -74,10 +78,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 	<property name="lib-suffix" value="-${version}"/>
 
-    <property name="cppunit.dir" location="/home/curta/cppunit-1.10.2"/>
+    <property name="cppunit.dir" location="${user.home}/cppunit-1.10.2"/>
     <property name="cppunit.include.dir" location="${cppunit.dir}/include"/>
     <property name="cppunit.lib.dir" location="${cppunit.dir}/build"/>
     <property name="cppunit.bin.dir" location="${cppunit.dir}/build"/>
+    <property name="cppunit.lib.name" value="cppunit"/>
 </target>
 
 <target name="init" depends="win-init, unix-init">
@@ -94,7 +99,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 	<delete>
 	    <fileset dir="${tests.dir}/src" includes="shortsocket*" excludes="*.cpp"/>
 		<fileset dir="${tests.dir}/output"/>
-	</delete> 
+	</delete>
 </target>
 
 <target name="config-check">
@@ -250,7 +255,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="boost_regex-gcc" if="is-gcc"/>
-        <libset libs="cppunit${lib-suffix}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
         <project outfile="cbx/log4cxx-test" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/log4cxx-test" type="msvc6" if="gen-dsw"/>
         <project outfile="xcode/log4cxx-test" type="xcode" if="gen-xcode"/>
@@ -275,7 +280,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="boost_regex-gcc" if="is-gcc"/>
-        <libset libs="cppunit${lib-suffix}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
         <project outfile="cbx/log4cxx-testcase3" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/log4cxx-testcase3" type="msvc6" if="gen-dsw"/>
         <project outfile="xcode/log4cxx-testcase3" type="xcode" if="gen-xcode"/>
@@ -287,7 +292,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 		outfile="${tests.dir}/src/shortsocketserver"
 		subsystem="console"
 		multithreaded="true"
-                outputfileproperty="shortsocketserver.exe"
 		outtype="executable"
 		objdir="${obj.dir}"
 		debug="${debug}">
@@ -300,7 +304,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="boost_regex-gcc" if="is-gcc"/>
-        <libset libs="cppunit${lib-suffix}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
         <project outfile="cbx/shortsocketserver" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/shortsocketserver" type="msvc6" if="gen-dsw"/>
         <project outfile="xcode/shortsocketserver" type="xcode" if="gen-xcode"/>
