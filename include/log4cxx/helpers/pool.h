@@ -1,39 +1,49 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+#ifndef _LOG4CXX_HELPERS_POOL_H
+#define _LOG4CXX_HELPERS_POOL_H
 
-#if defined(_WIN32)
-#include <log4cxx/nt/outputdebugstringappender.h>
+#include <log4cxx/portability.h>
+#include <log4cxx/helpers/exception.h>
 
-using namespace log4cxx;
-using namespace log4cxx::nt;
+struct apr_pool_t;
 
-IMPLEMENT_LOG4CXX_OBJECT(OutputDebugStringAppender)
-
-OutputDebugStringAppender::OutputDebugStringAppender() {
-}
-
-void OutputDebugStringAppender::append(const spi::LoggingEventPtr& event)
+namespace log4cxx
 {
-	StringBuffer oss;
-	layout->format(oss, event);
-	String sz = oss.str();
-	const TCHAR * s = sz.c_str();
+	namespace helpers
+	{
+		class LOG4CXX_EXPORT PoolException : public Exception
+		{
+		public:
+			PoolException(apr_status_t stat) {}
+		};
 
-	::OutputDebugString(s);
-}
+		class LOG4CXX_EXPORT Pool
+		{
+		public:
+			Pool();
+			~Pool();
 
-#endif
+			inline operator apr_pool_t*() { return pool; }
 
+		protected:
+			apr_pool_t* pool;
+		};
+	} // namespace helpers
+};// namespace log4cxx
+
+#endif //_LOG4CXX_HELPERS_POOL_H

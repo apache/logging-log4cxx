@@ -15,7 +15,7 @@
  */
 
 #include <log4cxx/helpers/dateformat.h>
-#include <apr-1/apr_strings.h>
+#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

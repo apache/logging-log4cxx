@@ -71,7 +71,7 @@ namespace log4cxx
 			The default constructor will instantiate the appender with a
 			spi::TriggeringEventEvaluator that will trigger on events with
 			level ERROR or higher.*/
-			SMTPAppender();
+			SMTPAppender(apr_pool_t* p);
 
 			/**
 			Use <code>evaluator</code> passed as parameter as the
@@ -259,6 +259,9 @@ namespace log4cxx
 			BEGIN_LOG4CXX_CAST_MAP()
 				LOG4CXX_CAST_ENTRY(spi::TriggeringEventEvaluator)
 			END_LOG4CXX_CAST_MAP()
+
+			DefaultEvaluator(apr_pool_t* p);
+
 			/**
 			Is this <code>event</code> the e-mail triggering event?
 			<p>This method returns <code>true</code>, if the event level

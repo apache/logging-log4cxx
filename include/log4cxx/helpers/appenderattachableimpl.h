@@ -19,6 +19,8 @@
 
 #include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/pool.h>
 
 namespace log4cxx
 {
@@ -43,7 +45,7 @@ namespace log4cxx
             AppenderList  appenderList;
 
         public:
-            AppenderAttachableImpl() : appenderList() {
+            AppenderAttachableImpl() : appenderList(), pool(), mutex(pool) {
             }
 
 			DECLARE_LOG4CXX_OBJECT(AppenderAttachableImpl)
@@ -94,6 +96,12 @@ namespace log4cxx
              * list of appenders.
              */
             virtual void removeAppender(const String& name);
+
+			inline apr_thread_mutex_t* getMutex() const { return mutex; }
+
+		private:
+			log4cxx::helpers::Pool pool;
+			log4cxx::helpers::Mutex mutex;
         };
     }
 }

@@ -16,6 +16,7 @@
 
 #include <log4cxx/writerappender.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/synchronized.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -90,7 +91,7 @@ bool WriterAppender::checkEntryConditions() const
 
 void WriterAppender::close()
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if(closed)
 	{

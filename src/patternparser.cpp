@@ -26,7 +26,7 @@
 #include <log4cxx/level.h>
 #include <log4cxx/mdc.h>
 
-#include <apr-1/apr_pools.h>
+#include <apr_pools.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

@@ -18,6 +18,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/synchronized.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -72,7 +73,7 @@ void FileAppender::setFile(const String& file)
 void FileAppender::setFile(const String& fileName, bool append,
 	bool bufferedIO, int bufferSize)
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	LOGLOG_DEBUG(_T("FileAppender::activateOptions called : ")
 		<< fileName << _T(", ") << append);

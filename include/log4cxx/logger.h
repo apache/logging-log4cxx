@@ -25,6 +25,9 @@
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/resourcebundle.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/mutex.h>
+
 
 namespace log4cxx
 {
@@ -35,6 +38,10 @@ namespace log4cxx
 
 		class LoggerRepository;
 		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
+	}
+
+	namespace helpers {
+		class synchronized;
 	}
 
     class Logger;
@@ -538,11 +545,16 @@ namespace log4cxx
 		void warn(const String& message, const char* file=NULL, int line=-1);
 
 
+		inline apr_thread_mutex_t* getMutex() const { return mutex; }
+
         private:
                 //
                 //  prevent copy and assignment
                 Logger(const Logger&);
                 Logger& operator=(const Logger&);
+				log4cxx::helpers::Pool pool;
+				log4cxx::helpers::Mutex mutex;
+				friend class log4cxx::helpers::synchronized;
    };
 }
 

@@ -18,7 +18,9 @@
 #include <log4cxx/helpers/loglog.h>
 #include <sys/stat.h>
 #include <errno.h>
-#include <apr-1/apr_time.h>
+#include <apr_time.h>
+#include <apr_thread_proc.h>
+#include <apr_atomic.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -27,8 +29,12 @@ long FileWatchdog::DEFAULT_DELAY = 60000;
 
 FileWatchdog::FileWatchdog(const String& filename)
  : filename(filename), lastModif(0), delay(DEFAULT_DELAY),
-warnedAlready(false), interrupted(false)
+warnedAlready(false), interrupted(0), thread()
 {
+}
+
+FileWatchdog::~FileWatchdog() {
+	thread.stop();
 }
 
 void FileWatchdog::checkAndConfigure()
@@ -64,18 +70,23 @@ void FileWatchdog::checkAndConfigure()
 	}
 }
 
-void FileWatchdog::run()
-{    
+void* APR_THREAD_FUNC FileWatchdog::run(apr_thread_t* thread, void* data) {
+	FileWatchdog* pThis = (FileWatchdog*) data;
+
+	unsigned int interrupted = apr_atomic_read32(&pThis->interrupted);
     while(!interrupted) 
 	{
-		apr_sleep(APR_INT64_C(1000) * delay);
-		checkAndConfigure();
+		apr_sleep(APR_INT64_C(1000) * pThis->delay);
+		pThis->checkAndConfigure();
+		interrupted = apr_atomic_read32(&pThis->interrupted);
     }
+	return NULL;
 }
 
 void FileWatchdog::start()
 {
 	checkAndConfigure();
-	Thread::start();
+
+	thread.run(pool, run, this);
 }
 

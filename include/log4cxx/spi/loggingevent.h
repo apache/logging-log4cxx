@@ -24,6 +24,8 @@
 #include <log4cxx/mdc.h>
 #include <set>
 
+
+
 namespace log4cxx
 {
 	class Logger;
@@ -255,11 +257,11 @@ namespace log4cxx
 			*/
 			unsigned long threadId;
 
-                        //
-                        //   prevent copy and assignment
-                        //
-                        LoggingEvent(const LoggingEvent&);
-                        LoggingEvent& operator=(const LoggingEvent&);
+            //
+            //   prevent copy and assignment
+            //
+            LoggingEvent(const LoggingEvent&);
+            LoggingEvent& operator=(const LoggingEvent&);
   		};
 	}
 }

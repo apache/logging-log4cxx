@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/synchronized.h>
 #include <stdarg.h>
 
 using namespace log4cxx;
@@ -34,7 +35,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Logger)
 const String Logger::FQCN(getFQCN());
 
 Logger::Logger(const String& name)
-: name(name), additive(true), repository(0)
+: name(name), additive(true), repository(0), pool(), mutex(pool)
 {
 }
 
@@ -48,9 +49,11 @@ const String& Logger::getFQCN() {
 }
 
 
+
+
 void Logger::addAppender(const AppenderPtr& newAppender)
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if (aai == 0)
 	{
@@ -76,7 +79,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event)
 	for(LoggerPtr logger = this; logger != 0; logger = logger->parent)
 	{
 		// Protected against simultaneous call to addAppender, removeAppender,...
-		synchronized sync(logger);
+		synchronized sync(logger->mutex);
 
 		if (logger->aai != 0)
 		{
@@ -97,7 +100,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event)
 
 void Logger::closeNestedAppenders()
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
     AppenderList appenders = getAllAppenders();
     for(AppenderList::iterator it=appenders.begin(); it!=appenders.end(); ++it)
@@ -164,7 +167,7 @@ bool Logger::getAdditivity() const
 
 AppenderList Logger::getAllAppenders() const
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if (aai == 0)
 	{
@@ -178,7 +181,7 @@ AppenderList Logger::getAllAppenders() const
 
 AppenderPtr Logger::getAppender(const String& name) const
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if (aai == 0 || name.empty())
 	{
@@ -272,7 +275,7 @@ void Logger::info(const String& message, const char* file, int line)
 
 bool Logger::isAttached(const AppenderPtr& appender) const
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if (appender == 0 || aai == 0)
 	{
@@ -413,7 +416,7 @@ void Logger::log(const LevelPtr& level, const String& message,
 
 void Logger::removeAllAppenders()
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if(aai != 0)
 	{
@@ -424,7 +427,7 @@ void Logger::removeAllAppenders()
 
 void Logger::removeAppender(const AppenderPtr& appender)
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if(appender == 0 || aai == 0)
 	{
@@ -436,7 +439,7 @@ void Logger::removeAppender(const AppenderPtr& appender)
 
 void Logger::removeAppender(const String& name)
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if(name.empty() || aai == 0)
 	{

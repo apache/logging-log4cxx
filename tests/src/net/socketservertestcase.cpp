@@ -22,9 +22,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <log4cxx/logger.h>
-#include <log4cxx/helpers/boundedfifo.h>
 #include <log4cxx/net/socketappender.h>
-#include <log4cxx/helpers/thread.h>
 #include <log4cxx/ndc.h>
 #include <log4cxx/mdc.h>
 #include <log4cxx/asyncappender.h>
@@ -38,7 +36,7 @@
 #include "../util/threadfilter.h"
 #include "../xml/xlevel.h"
 #include "../util/filenamefilter.h"
-#include <apr-1/apr_time.h>
+#include <apr_time.h>
 
 
 using namespace log4cxx;

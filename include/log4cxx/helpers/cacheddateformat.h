@@ -56,9 +56,9 @@ namespace log4cxx
                                           apr_pool_t* p);
 
                DateFormatPtr formatter;
-               LOG4CXX_MUTABLE int millisecondStart;
-               LOG4CXX_MUTABLE std::string cache;
-               LOG4CXX_MUTABLE apr_time_t previousTime;
+               mutable int millisecondStart;
+               mutable std::string cache;
+               mutable apr_time_t previousTime;
                char zeroDigit;
                char nineDigit;
 			   enum {

@@ -63,24 +63,13 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </condition>
         <!-- hack until I identify a link problem   -->
     <property name="aprutil.lib.name" value=""/>
-	<available property="build-apr-exists" file="${build.dir}/apr-1/apr.h"/>
 </target>
 
-<target name="win-apr1-copy-include" depends="os-detect" 
-    if="is-windows" unless="build-apr-exists"
-	description="Copy apr-1 header files to make paths consistent with Unix">
-	<mkdir dir="${build.dir}/apr-1"/>
-    <property name="apr.dir" location="/apr-1"/>
-	<copy todir="${build.dir}/apr-1">
-	   <fileset dir="${apr.dir}/apr/include" includes="**/*.h"/>
-	</copy>
-</target>
-
-<target name="win-apr1-init" depends="win-apr1-copy-include"
+<target name="win-apr1-init" depends="os-detect"
      if="is-windows"
 	 description="Windows initialization for APR 1.0">
     <property name="apr.dir" location="/apr-1"/>
-    <property name="apr.include.dir" location="${build.dir}"/>
+    <property name="apr.include.dir" location="${apr.dir}/apr/include"/>
     <property name="apr.lib.name" value="apr-1"/>
     <property name="aprutil.lib.name" value="aprutil-1"/>
     <property name="apriconv.lib.name" value="apriconv"/>
@@ -110,24 +99,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="unix-apr0-init" depends="os-detect"
     if="is-unix-apr0" description="Unix initialization for Apache server APR">
-    <property name="apr.include.dir" location="${build.dir}"/>
-    <!--  create a symbolic link in the build directory
-            that redirects #include <apr-1/whatever.h> to /usr/include/apache2  -->
-    <exec executable="ln">
-       <arg value="-s"/>
-       <arg value="/usr/include/apache2"/>
-       <arg value="${build.dir}/apr-1"/>
-    </exec>
+	<property name="apr.include.dir" location="/usr/apache/include"/>
     <property name="apr.lib.name" value="apr-0"/>
     <property name="aprutil.lib.name" value="aprutil-0"/>
     <property name="apriconv.lib.name" value="apriconv"/>
-    <property name="apriconv.lib.dir" location="/usr/local/apr/lib"/>
 </target>
 
 <target name="unix-apr1-init" depends="os-detect"
      if="is-unix-apr1" description="Unix initialization for APR 1.0">
     <property name="apr.dir" location="/usr/local/apr"/>
-    <property name="apr.include.dir" location="${apr.dir}/include"/>
+    <property name="apr.include.dir" location="${apr.dir}/include/apr-1"/>
     <property name="apr.lib.name" value="apr-1"/>
     <property name="aprutil.lib.name" value="aprutil-1"/>
     <property name="apriconv.lib.name" value="apriconv"/>
@@ -560,6 +541,17 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 </target>
 
+<target name="run-standalone-unittest" depends="build-standalone-unittest">
+    <property environment="env"/>
+    <mkdir dir="${tests.dir}/output"/>
+    <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.dir}"
+	      failonerror="true">
+            <env key="LD_LIBRARY_PATH"
+                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+            <env key="Path"
+                   value="${build.dir};${env.Path}"/>
+    </exec>
+</target>
 
 <target name="test-all" depends="build-log4cxx, run-unittest"/>
 

@@ -20,6 +20,8 @@
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/synchronized.h>
+#include <apr_atomic.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -27,12 +29,14 @@ using namespace log4cxx::helpers;
 
 AppenderSkeleton::AppenderSkeleton()
 : errorHandler(new OnlyOnceErrorHandler()),
-  closed(false),
+  closed(0),
   threshold(Level::getAll()),
   layout(),
   name(),
   headFilter(),
-  tailFilter()
+  tailFilter(),
+  pool(),
+  mutex(pool)
 {
 }
 
@@ -73,7 +77,7 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if(closed)
 	{
@@ -109,7 +113,7 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
 
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler)
 {
-	synchronized sync(this);
+	synchronized sync(mutex);
 
 	if(errorHandler == 0)
 	{

@@ -22,7 +22,11 @@
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/level.h>
+
+struct apr_pool_t;
 
 namespace log4cxx
 {
@@ -63,7 +67,10 @@ namespace log4cxx
 		/**
 		Is this appender closed?
 		*/
-		bool closed;
+		volatile unsigned int closed;
+
+		log4cxx::helpers::Pool pool;
+		log4cxx::helpers::Mutex mutex;
 
 	public:
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -183,6 +190,8 @@ namespace log4cxx
 		string, such as "DEBUG", "INFO" and so on.
 		*/
 		void setThreshold(const LevelPtr& threshold);
+
+
 	}; // class AppenderSkeleton
 }  // namespace log4cxx
 

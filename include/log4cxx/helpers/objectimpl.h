@@ -19,7 +19,6 @@
 
 #include <log4cxx/portability.h>
 #include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/criticalsection.h>
 
 namespace log4cxx
 {
@@ -33,16 +32,9 @@ namespace log4cxx
 			virtual ~ObjectImpl();
 			void addRef() const;
 			void releaseRef() const;
-			virtual void lock() const;
-			virtual void unlock() const;
-			virtual void wait() const;
-			virtual void notify() const;
-			virtual void notifyAll() const;
 
 		protected:
 			mutable unsigned int volatile ref;
-			mutable CriticalSection cs;
-			mutable void * eventList;
 
                 private:
                         //

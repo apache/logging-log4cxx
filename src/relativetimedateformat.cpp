@@ -17,8 +17,8 @@
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/spi/loggingevent.h>
 
-#include <apr-1/apr_time.h>
-#include <apr-1/apr_strings.h>
+#include <apr_time.h>
+#include <apr_strings.h>
 
 #include <limits.h>
 

@@ -20,7 +20,7 @@
 #include <iostream>
 
 #include <log4cxx/logger.h>
-#include <apr-1/apr_general.h>
+#include <apr_general.h>
 
 //
 //  initializing a logger will cause the APR used by log4cxx library to be initialized

@@ -22,6 +22,9 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/helpers/synchronized.h>
+#include <apr_atomic.h>
+#include <apr_thread_proc.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -38,12 +41,12 @@ SocketHubAppender::~SocketHubAppender()
 }
 
 SocketHubAppender::SocketHubAppender()
- : port(DEFAULT_PORT), locationInfo(false), oosList(), serverMonitor()
+ : port(DEFAULT_PORT), locationInfo(false), oosList(), thread()
 {
 }
 
 SocketHubAppender::SocketHubAppender(int port)
- : port(port), locationInfo(false), oosList(), serverMonitor()
+ : port(port), locationInfo(false), oosList(), thread()
 {
 	startServer();
 }
@@ -73,47 +76,34 @@ void SocketHubAppender::setOption(const String& option,
 
 void SocketHubAppender::close()
 {
-	synchronized sync(this);
-
-	if(closed)
-	{
-		return;
-	}
+	apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
+	if (wasClosed) return;
 
 	LOGLOG_DEBUG(_T("closing SocketHubAppender ") << getName());
-	closed = true;
-	cleanUp();
-	LOGLOG_DEBUG(_T("SocketHubAppender ") << getName() << _T(" closed"));
-}
+    //
+	//  wait until the server thread completes
+	//
+	thread.join();
 
-void SocketHubAppender::cleanUp()
-{
-	// stop the monitor thread
-	LOGLOG_DEBUG(_T("stopping ServerSocket"));
-        if (NULL != (ServerMonitor*) serverMonitor) {
-	   serverMonitor->stopMonitor();
-        }
-	serverMonitor = 0;
-
+	synchronized sync(mutex);
 	// close all of the connections
 	LOGLOG_DEBUG(_T("closing client connections"));
-	while (!oosList.empty())
-	{
-		SocketOutputStreamPtr oos = oosList.at(0);
-		if(oos != 0)
-		{
-			try
-			{
-				oos->close();
-			}
-			catch(SocketException& e)
-			{
+	for (std::vector<helpers::SocketOutputStreamPtr>::iterator iter = oosList.begin();
+	     iter != oosList.end();
+		 iter++) {
+		 if ( (*iter) != NULL) {
+			 try {
+				(*iter)->close();
+				*iter = NULL;
+			 } catch(SocketException& e) {
 				LogLog::error(_T("could not close oos: "), e);
-			}
+			 }
+		 }
+	 }
+	oosList.erase(oosList.begin(), oosList.end());
 
-			oosList.erase(oosList.begin());
-		}
-	}
+
+	LOGLOG_DEBUG(_T("SocketHubAppender ") << getName() << _T(" closed"));
 }
 
 void SocketHubAppender::append(const spi::LoggingEventPtr& event)
@@ -125,11 +115,6 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event)
 		return;
 	}
 
-/*	// set up location info if requested
-	if (locationInfo)
-	{
-		event.getLocationInformation();
-	} */
 
 	// loop through the current set of open connections, appending the event to each
 	std::vector<SocketOutputStreamPtr>::iterator it = oosList.begin();
@@ -161,66 +146,27 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event)
 
 void SocketHubAppender::startServer()
 {
-	serverMonitor = new ServerMonitor(port, oosList);
+	thread.run(pool, monitor, this);
 }
 
-SocketHubAppender::ServerMonitor::ServerMonitor(int port,  std::vector<helpers::SocketOutputStreamPtr>& oosList)
-: port(port), oosList(oosList), keepRunning(true)
-{
-	monitorThread = new Thread(this);
-	monitorThread->start();
-}
+void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* thread, void* data) {
+	SocketHubAppender* pThis = (SocketHubAppender*) data;
 
-void SocketHubAppender::ServerMonitor::stopMonitor()
-{
-	synchronized sync(this);
-
-	if (keepRunning)
-	{
-		LogLog::debug(_T("server monitor thread shutting down"));
-		keepRunning = false;
-		try
-		{
-			monitorThread->join();
-		}
-		catch (InterruptedException&)
-		{
-			// do nothing?
-		}
-
-		// release the thread
-		monitorThread = 0;
-		LogLog::debug(_T("server monitor thread shut down"));
-	}
-}
-
-void SocketHubAppender::ServerMonitor::run()
-{
 	ServerSocket * serverSocket = 0;
 
 	try
 	{
-		serverSocket = new ServerSocket(port);
+		serverSocket = new ServerSocket(pThis->port);
 		serverSocket->setSoTimeout(1000);
 	}
 	catch (SocketException& e)
 	{
 		LogLog::error(_T("exception setting timeout, shutting down server socket."), e);
-		keepRunning = false;
-		return;
+		return NULL;
 	}
 
-	try
-	{
-		serverSocket->setSoTimeout(1000);
-	}
-	catch (SocketException& e)
-	{
-		LogLog::error(_T("exception setting timeout, shutting down server socket."), e);
-		return;
-	}
-
-	while (keepRunning)
+	apr_uint32_t stopRunning = apr_atomic_read32(&pThis->closed);
+	while (!stopRunning)
 	{
 		SocketPtr socket;
 		try
@@ -234,7 +180,7 @@ void SocketHubAppender::ServerMonitor::run()
 		catch (SocketException& e)
 		{
 			LogLog::error(_T("exception accepting socket, shutting down server socket."), e);
-			keepRunning = false;
+			stopRunning = 1;
 		}
 		catch (IOException& e)
 		{
@@ -253,8 +199,9 @@ void SocketHubAppender::ServerMonitor::run()
 				// create an ObjectOutputStream
 				SocketOutputStreamPtr oos = socket->getOutputStream();
 
-				// add it to the oosList.  OK since Vector is synchronized.
-				oosList.push_back(oos);
+				// add it to the oosList.
+				synchronized sync(pThis->mutex);
+				pThis->oosList.push_back(oos);
 			}
 			catch (IOException& e)
 			{
@@ -264,5 +211,6 @@ void SocketHubAppender::ServerMonitor::run()
 	}
 
 	delete serverSocket;
+	return NULL;
 }
 

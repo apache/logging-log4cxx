@@ -18,8 +18,8 @@
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <apr-1/apr_pools.h>
-#include <apr-1/apr_strings.h>
+#include <apr_pools.h>
+#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

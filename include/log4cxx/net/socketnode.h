@@ -17,7 +17,6 @@
 #ifndef _LOG4CXX_NET_SOCKET_NODE_H
 #define _LOG4CXX_NET_SOCKET_NODE_H
 
-#include <log4cxx/helpers/thread.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 
@@ -52,7 +51,6 @@ namespace log4cxx
         local file and also resent them to a second socket node.
         */
         class LOG4CXX_EXPORT SocketNode :
-			public virtual helpers::Runnable,
 				public virtual helpers::ObjectImpl
 		{
 		protected:
@@ -63,7 +61,6 @@ namespace log4cxx
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketNode)
 			BEGIN_LOG4CXX_CAST_MAP()
 				LOG4CXX_CAST_ENTRY(SocketNode)
-				LOG4CXX_CAST_ENTRY(helpers::Runnable)
 			END_LOG4CXX_CAST_MAP()
 
 			SocketNode(helpers::SocketPtr& socket, 

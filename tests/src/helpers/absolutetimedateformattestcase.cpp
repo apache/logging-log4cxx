@@ -16,7 +16,7 @@
 
 #include <log4cxx/helpers/absolutetimedateformat.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <apr-1/apr_pools.h>
+#include <apr_pools.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

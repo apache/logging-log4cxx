@@ -18,7 +18,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
 
-#include <apr-1/apr_pools.h>
+#include <apr_pools.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;

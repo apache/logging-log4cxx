@@ -22,8 +22,8 @@
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
 
-#include <apr-1/apr_pools.h>
-#include <apr-1/apr_time.h>
+#include <apr_pools.h>
+#include <apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

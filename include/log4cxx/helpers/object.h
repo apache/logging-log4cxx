@@ -21,6 +21,8 @@
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/objectptr.h>
 
+struct apr_pool_t;
+
 #define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
 public:\
 class Class##object : public helpers::Class\
@@ -63,8 +65,14 @@ object::class object::theClass##object;\
 const log4cxx::helpers::Class& object::getClass() const { return theClass##object; }\
 const log4cxx::helpers::Class& object::getStaticClass() { return theClass##object; }
 
+
+struct apr_thread_mutex_t;
+
 namespace log4cxx
 {
+	class AppenderSkeleton;
+	class Logger;
+
 	namespace helpers
 	{
 		class LOG4CXX_EXPORT IllegalMonitorStateException : public Exception
@@ -74,29 +82,6 @@ namespace log4cxx
 			}
 
 		};
-
-               class LOG4CXX_EXPORT ObjectNotLockedException : public IllegalMonitorStateException
-               {
-               public:
-                    ObjectNotLockedException() {
-                    }
-
-                    const char* what() throw() {
-                        return "Object not locked";
-                    }
-               };
-
-                class LOG4CXX_EXPORT ObjectNotLockedByCurrentThreadException : public IllegalMonitorStateException
-                {
-                public:
-                     ObjectNotLockedByCurrentThreadException() {
-                     }
-
-                     const char* what() throw() {
-                         return "Object not locked by this thread";
-                     }
-                };
-
 
 		class Object;
 		typedef ObjectPtrT<Object> ObjectPtr;
@@ -109,33 +94,10 @@ namespace log4cxx
 			virtual ~Object() {}
 			virtual void addRef() const = 0;
 			virtual void releaseRef() const = 0;
-			virtual void lock() const = 0;
-			virtual void unlock() const = 0;
-			virtual void wait() const = 0;
-			virtual void notify() const = 0;
-			virtual void notifyAll() const = 0;
 			virtual bool instanceof(const Class& clazz) const = 0;
 			virtual const void * cast(const Class& clazz) const = 0;
 		};
 
-		/** utility class for objects multi-thread synchronization.*/
-		class synchronized
-		{
-		public:
-			synchronized(const Object * object) : object(object)
-				{ object->lock(); }
-
-			~synchronized()
-				{ object->unlock(); }
-
-		protected:
-			const Object * object;
-
-                private:
-                        //  prevent use of copy and assignment
-                        synchronized(const synchronized&);
-                        synchronized& operator=(const synchronized&);
-		};
 	}
 }
 

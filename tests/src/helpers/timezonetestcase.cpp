@@ -16,8 +16,8 @@
 
 #include <log4cxx/helpers/timezone.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <apr-1/apr_pools.h>
-#include <apr-1/apr_time.h>
+#include <apr_pools.h>
+#include <apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

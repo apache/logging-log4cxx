@@ -16,8 +16,8 @@
 
 #include <log4cxx/helpers/simpledateformat.h>
 
-#include <apr-1/apr_time.h>
-#include <apr-1/apr_strings.h>
+#include <apr_time.h>
+#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

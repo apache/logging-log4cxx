@@ -16,14 +16,6 @@ typedef long long apr_int64_t;
 typedef apr_int64_t apr_time_t;
 typedef int apr_status_t;
 struct apr_time_exp_t;
-struct apr_pool_t;
 
-#define LOG4CXX_MUTABLE mutable
-#define LOG4CXX_ACCESS_MUTABLE(val, C) val
-
-//   alternative definitions for compilers that don't support mutable
-//
-//#define LOG4CXX_MUTABLE
-//#define LOG4CXX_ACCESS_MUTABLE(val, C) (const_cast<C*>(this)->val)
 
 #endif //_LOG4CXX_PORTABILITY_H

@@ -27,7 +27,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <sys/stat.h>
 
-#include <apr-1/apr_general.h>
+#include <apr_general.h>
 
 #include <log4cxx/spi/loggingevent.h>
 

@@ -16,28 +16,29 @@
 
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/boundedfifo.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <apr_thread_proc.h>
+#include <apr_thread_mutex.h>
+#include <apr_thread_cond.h>
+#include <log4cxx/helpers/synchronized.h>
+#include <apr_atomic.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
-IMPLEMENT_LOG4CXX_OBJECT(Dispatcher)
 
-/** The default buffer size is set to 128 events. */
-int AsyncAppender::DEFAULT_BUFFER_SIZE = 128;
 
 AsyncAppender::AsyncAppender()
-: locationInfo(false),
-  interruptedWarningMessage(false),
-  bf(new BoundedFIFO(DEFAULT_BUFFER_SIZE))
+: AppenderSkeleton(), locationInfo(true),
+  size(DEFAULT_BUFFER_SIZE),
+  queue(), pending(pool), available(pool)
 {
-        aai = new AppenderAttachableImpl();
+    aai = new AppenderAttachableImpl();
 
-	dispatcher = new Dispatcher(bf, this);
-	dispatcher->start();
+	thread.run(pool, dispatch, this);
 }
 
 AsyncAppender::~AsyncAppender()
@@ -47,7 +48,7 @@ AsyncAppender::~AsyncAppender()
 
 void AsyncAppender::addAppender(const AppenderPtr& newAppender)
 {
-	synchronized sync(aai);
+	synchronized sync(aai->getMutex());
 	aai->addAppender(newAppender);
 }
 
@@ -59,155 +60,137 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event)
 	// Get a copy of this thread's MDC.
 	event->getMDCCopy();
 
-/*	if(locationInfo)
-	{
-		event.getLocationInformation();
-	}*/
 
-	synchronized sync(bf);
-
-	while(bf->isFull())
+	//
+	//   will block if queue is full
+	//
+	size_t count = 0;
+	bool full = false;
 	{
-		//LOGLOG_DEBUG(_T("Waiting for free space in buffer, ")
-		//	 << bf->length());
-		bf->wait();
+		synchronized sync(mutex);
+		count = queue.size();
+        full = count >= size;
+		if (!full) {
+			queue.push_back(event);
+		}
 	}
 
-	bf->put(event);
-	if(bf->wasEmpty())
-	{
-		//LOGLOG_DEBUG(_T("Notifying dispatcher to process events."));
-		bf->notify();
+	//
+	//   if the queue had been empty then
+	//      notify that there are messages pending
+	if (count == 0) {
+		pending.broadcast();
+	}
+
+	//
+	//   if queue was full, wait until signalled
+	//
+	if (full) {
+		available.wait();
+	}
+
+	//
+	//   if was full, add it now
+	//
+    if (full) {
+		synchronized sync(mutex);
+		queue.push_back(event);
+		pending.broadcast();
 	}
 }
 
 void AsyncAppender::close()
 {
-	{
-		synchronized sync(this);
-		// avoid multiple close, otherwise one gets NullPointerException
-		if(closed)
-		{
-			return;
-		}
+	apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
+	if (!wasClosed) {
+		pending.broadcast();
+		thread.join();
+		// close and remove all appenders
+		synchronized sync(mutex);
+		aai->removeAllAppenders();
 
-		closed = true;
 	}
-
-	// The following cannot be synchronized on "this" because the
-	// dispatcher synchronizes with "this" in its while loop. If we
-	// did synchronize we would systematically get deadlocks when
-	// close was called.
-	dispatcher->close();
-
-	dispatcher->join();
-	dispatcher = 0;
-	bf = 0;
 }
 
 AppenderList AsyncAppender::getAllAppenders() const
 {
-	synchronized sync(aai);
+	synchronized sync(aai->getMutex());
 	return aai->getAllAppenders();
 }
 
 AppenderPtr AsyncAppender::getAppender(const String& name) const
 {
-	synchronized sync(aai);
+	synchronized sync(aai->getMutex());
 	return aai->getAppender(name);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 {
-	synchronized sync(aai);
+	synchronized sync(aai->getMutex());
 	return aai->isAttached(appender);
 }
 
 void AsyncAppender::setBufferSize(int size)
 {
-	bf->resize(size);
+	this->size = size;
 }
 
 int AsyncAppender::getBufferSize() const
 {
-	return bf->getMaxSize();
+	return size;
 }
 
 void AsyncAppender::removeAllAppenders()
 {
-    synchronized sync(aai);
+    synchronized sync(aai->getMutex());
 	aai->removeAllAppenders();
 }
 
 void AsyncAppender::removeAppender(const AppenderPtr& appender)
 {
-    synchronized sync(aai);
+    synchronized sync(aai->getMutex());
 	aai->removeAppender(appender);
 }
 
 void AsyncAppender::removeAppender(const String& name)
 {
-    synchronized sync(aai);
+    synchronized sync(aai->getMutex());
 	aai->removeAppender(name);
 }
 
-Dispatcher::Dispatcher(helpers::BoundedFIFOPtr bf, AsyncAppender * container)
- : bf(bf), container(container), aai(container->aai), interrupted(false)
-{
-	// set the dispatcher priority to lowest possible value
-	setPriority(Thread::MIN_PRIORITY);
-}
+void* APR_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) {
+	AsyncAppender* pThis = (AsyncAppender*) data;
+	LoggingEventPtr event;
+	while(true) {
 
-void Dispatcher::close()
-{
-	synchronized sync(bf);
+		size_t count = 0;
+		{
+			synchronized sync(pThis->mutex);
+			count = pThis->queue.size();
+			if (count > 0) {
+				event = pThis->queue.front(); 
+				pThis->queue.pop_front();
+			}
+		}
 
-	interrupted = true;
-	// We have a waiting dispacther if and only if bf.length is
-	// zero.  In that case, we need to give it a death kiss.
-	if(bf->length() == 0)
-	{
-		bf->notify();
+		if (count == 0) {
+			if (pThis->closed) {
+				return 0;
+			}
+			pThis->pending.wait();
+		} else {
+	        if(pThis->aai != 0) {
+			    synchronized sync(pThis->aai->getMutex());
+			    pThis->aai->appendLoopOnAppenders(event);
+			}
+
+			if (count == pThis->getBufferSize()) {
+				pThis->available.broadcast();
+			}
+
+			event = NULL;
+		}
 	}
 }
 
-void Dispatcher::run()
-{
-	LoggingEventPtr event;
 
-	while(true)
-	{
-		{
-			synchronized sync(bf);
-
-			if(bf->length() == 0)
-			{
-				// Exit loop if interrupted but only if
-				// the buffer is empty.
-				if(interrupted)
-				{
-					//LOGLOG_DEBUG("Exiting.");
-					break;
-				}
-				//LOGLOG_DEBUG("Waiting for new event to dispatch.");
-				bf->wait();
-			}
-
-			event = bf->get();
-			if(bf->wasFull())
-			{
-				//LOGLOG_DEBUG("Notifying AsyncAppender about freed space.");
-				bf->notify();
-			}
-		} // synchronized
-
-		if(aai != 0 && event != 0)
-		{
-			synchronized sync(aai);
-			aai->appendLoopOnAppenders(event);
-		}
-	} // while
-
-	// close and remove all appenders
-	aai->removeAllAppenders();
-}

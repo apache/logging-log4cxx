@@ -32,6 +32,7 @@
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringtokenizer.h>
+#include <log4cxx/helpers/synchronized.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -208,7 +209,7 @@ void PropertyConfigurator::configureRootCategory(helpers::Properties& props,
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
 
-		synchronized sync(root);
+		synchronized sync(root->getMutex());
                 static const String INTERNAL_ROOT_NAME("root");
 		parseCategory(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
 	}
@@ -244,7 +245,7 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 			String value = OptionConverter::findAndSubst(key, props);
 			LoggerPtr logger = hierarchy->getLogger(loggerName, loggerFactory);
 
-			synchronized sync(logger);
+			synchronized sync(logger->getMutex());
 			parseCategory(props, logger, key, loggerName, value);
 			parseAdditivityForLogger(props, logger, loggerName);
 		}

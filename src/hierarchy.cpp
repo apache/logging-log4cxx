@@ -23,6 +23,8 @@
 #include <algorithm>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/appender.h>
+#include <log4cxx/helpers/synchronized.h>
+#include <apr_thread_mutex.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -43,7 +45,8 @@ namespace {
 }
 
 Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
-emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false)
+emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
+pool(), mutex(pool)
 {
 	// Enable all level levels by default.
 	setThreshold(Level::getAll());
@@ -69,11 +72,8 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 
 void Hierarchy::clear()
 {
-	mapCs.lock();
-
+	synchronized sync(mutex);
 	loggers.clear();
-
-	mapCs.unlock();
 }
 
 void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
@@ -91,7 +91,7 @@ void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
 
 LoggerPtr Hierarchy::exists(const String& name)
 {
-	mapCs.lock();
+	synchronized sync(mutex);
 
 	LoggerPtr logger;
 	LoggerMap::iterator it = loggers.find(name);
@@ -100,7 +100,6 @@ LoggerPtr Hierarchy::exists(const String& name)
 		logger = it->second;
 	}
 
-	mapCs.unlock();
 
 	return logger;
 }
@@ -171,7 +170,7 @@ LoggerPtr Hierarchy::getLogger(const String& name, spi::LoggerFactoryPtr factory
 	// assignments are non-atomic.
 	LoggerPtr logger;
 
-	mapCs.lock();
+	synchronized sync(mutex);
 
 	LoggerMap::iterator it = loggers.find(name);
 
@@ -196,14 +195,13 @@ LoggerPtr Hierarchy::getLogger(const String& name, spi::LoggerFactoryPtr factory
 		updateParents(logger);
 	}
 
-	mapCs.unlock();
 
 	return logger;
 }
 
 LoggerList Hierarchy::getCurrentLoggers() const
 {
-	mapCs.lock();
+	synchronized sync(mutex);
 
 	LoggerList v;
 	LoggerMap::const_iterator it, itEnd = loggers.end();
@@ -213,7 +211,6 @@ LoggerList Hierarchy::getCurrentLoggers() const
 		v.push_back(it->second);
 	}
 
-	mapCs.unlock();
 
 	return v;
 }
@@ -231,7 +228,7 @@ bool Hierarchy::isDisabled(int level) const
 
 void Hierarchy::resetConfiguration()
 {
-	mapCs.lock();
+	synchronized sync(mutex);
 
 	getRootLogger()->setLevel(Level::getDebug());
 	root->setResourceBundle(0);
@@ -251,8 +248,6 @@ void Hierarchy::resetConfiguration()
 	}
 
 	//rendererMap.clear();
-
-	mapCs.unlock();
 }
 
 void Hierarchy::shutdown()

@@ -24,7 +24,6 @@
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/net/socketnode.h>
-#include <log4cxx/helpers/thread.h>
 
 #include "net/socketservertestcase.h"
 
@@ -69,10 +68,8 @@ public:
 			LOGLOG_DEBUG(_T("Connected to client at ") << 
 				socket->getInetAddress().toString());
 			LOGLOG_DEBUG(_T("Starting new socket node."));	
-			SocketNodePtr sn = new SocketNode(socket, LogManager::getLoggerRepository());
-			ThreadPtr t = new Thread(sn);
-			t->start(); 
-			t->join();
+			SocketNode sn(socket, LogManager::getLoggerRepository());
+			sn.run();
 		}
 	}
 

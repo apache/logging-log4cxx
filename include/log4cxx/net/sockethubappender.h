@@ -20,8 +20,9 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/thread.h>
+#include <log4cxx/helpers/mutex.h>
 #include <vector>
-#include <log4cxx/helpers/socket.h>
+
 
 namespace log4cxx
 {
@@ -143,11 +144,6 @@ namespace log4cxx
 			virtual void close();
 
 			/**
-			Release the underlying ServerMonitor thread, and drop the connections
-			to all connected remote servers. */
-			void cleanUp();
-
-			/**
 			Append an event to all of current connections. */
 			virtual void append(const spi::LoggingEventPtr& event);
 
@@ -185,49 +181,9 @@ namespace log4cxx
 		private:
 			void startServer();
 
-			/**
-			This class is used internally to monitor a ServerSocket
-			and register new connections in a vector passed in the
-			constructor. */
-			class LOG4CXX_EXPORT ServerMonitor :
-				public helpers::Runnable,
-					public helpers::ObjectImpl
-			{
-			private:
-				int port;
-				std::vector<helpers::SocketOutputStreamPtr>& oosList;
-				bool keepRunning;
-				helpers::Thread * monitorThread;
+			helpers::Thread thread;
+		    static void* LOG4CXX_THREAD_FUNC monitor(apr_thread_t* thread, void* data);
 
-			public:
-				BEGIN_LOG4CXX_CAST_MAP()
-					LOG4CXX_CAST_ENTRY(ServerMonitor)
-				END_LOG4CXX_CAST_MAP()
-
-				/**
-				Create a thread and start the monitor. */
-				ServerMonitor(int port,
-				std::vector<helpers::SocketOutputStreamPtr>& oosList);
-
-				/**
-				Stops the monitor. This method will not return until
-				the thread has finished executing. */
-				void stopMonitor();
-
-				/**
-				Method that runs, monitoring the ServerSocket and adding connections as
-				they connect to the socket. */
-				void run();
-
-                        private:
-                                //   prevent copy and assignment statements
-                                ServerMonitor(const ServerMonitor&);
-                                ServerMonitor& operator=(const ServerMonitor&);
-
-			}; // class ServerMonitor
-
-			typedef helpers::ObjectPtrT<ServerMonitor> ServerMonitorPtr;
-			ServerMonitorPtr serverMonitor;
 		}; // class SocketHubAppender
 	}  // namespace net
 }; // namespace log4cxx

@@ -17,7 +17,6 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/ndc.h>
 
-#include <log4cxx/helpers/thread.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/socketinputstream.h>
@@ -26,9 +25,10 @@
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/socket.h>
 
-#include <apr-1/apr_time.h>
-#include <apr-1/apr_pools.h>
-#include <apr-1/apr_atomic.h>
+#include <apr_time.h>
+#include <apr_pools.h>
+#include <apr_atomic.h>
+#include <apr_portable.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -87,7 +87,8 @@ message(message), file((char*)file), line(line),
 timeStamp(apr_time_now()), ndcLookupRequired(true),
 mdcCopyLookupRequired(true), properties(0)
 {
-	threadId = Thread::getCurrentThreadId();
+	apr_os_thread_t thread = apr_os_thread_current();
+	threadId = (unsigned long) thread;
 }
 
 LoggingEvent::~LoggingEvent()

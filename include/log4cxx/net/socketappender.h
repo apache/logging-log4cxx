@@ -17,18 +17,10 @@
 #ifndef _LOG4CXX_NET_SOCKET_APPENDER_H
 #define _LOG4CXX_NET_SOCKET_APPENDER_H
 
-#include <log4cxx/appenderskeleton.h>
-#include <log4cxx/helpers/socket.h>
-#include <log4cxx/helpers/thread.h>
+#include <log4cxx/net/socketappenderskeleton.h>
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		class SocketOutputStream;
-		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-	}
-
 	namespace net
 	{
 		class LOG4CXX_EXPORT SocketAppender;
@@ -93,12 +85,10 @@ namespace log4cxx
         before exiting the application.
         */
 
-      	class LOG4CXX_EXPORT SocketAppender : public AppenderSkeleton
+      	class LOG4CXX_EXPORT SocketAppender : public SocketAppenderSkeleton
     	{
-		class Connector;
-		friend class Connector;
     	public:
-    		/**
+   		/**
     		The default port number of remote logging server (4560).
     		*/
     		static int DEFAULT_PORT;
@@ -108,23 +98,6 @@ namespace log4cxx
     		*/
     		static int DEFAULT_RECONNECTION_DELAY;
 
-    	protected:
-    		/**
-    		host name
-    		*/
-    		String remoteHost;
-
-    		/**
-    		IP address
-    		*/
-    		helpers::InetAddress address;
-
-    		int port;
-    		helpers::SocketOutputStreamPtr os;
-    		int reconnectionDelay;
-    		bool locationInfo;
-
-    	public:
 			DECLARE_LOG4CXX_OBJECT(SocketAppender)
 			BEGIN_LOG4CXX_CAST_MAP()
 				LOG4CXX_CAST_ENTRY(SocketAppender)
@@ -144,34 +117,15 @@ namespace log4cxx
     		*/
     		SocketAppender(const String& host, int port);
 
-    		/**
-    		Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
-    		*/
-    		void activateOptions();
 
-		    /**
-		    Set options
-		    */
-			virtual void setOption(const String& option, const String& value);
+			/**
+		     *Set options
+		     */
+			virtual void setOption(const String& option, 
+				const String& value) {
+				SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
+			}
 
-    		/**
-    		* Close this appender.
-    		*
-    		* <p>This will mark the appender as closed and call then
-    		* #cleanUp method.
-    		* */
-    		void close();
-
-    		/**
-    		* Drop the connection to the remote host and release the underlying
-    		* connector thread if it has been created
-    		* */
-    		void cleanUp();
-
-    		void connect();
-
-
-    		virtual void append(const spi::LoggingEventPtr& event);
 
     		/**
     		* The SocketAppender does not use a layout. Hence, this method
@@ -180,101 +134,12 @@ namespace log4cxx
     		bool requiresLayout() const
     			{ return false; }
 
-    		/**
-    		* The <b>RemoteHost</b> option takes a string value which should be
-    		* the host name of the server where a
-			* {@link net::SocketNode SocketNode} is running.
-    		* */
-    		inline void setRemoteHost(const String& host)
-    			{ address = helpers::InetAddress::getByName(host);
-    			remoteHost = host; }
+		protected:
+			virtual void renderEvent(const spi::LoggingEventPtr& event,
+				helpers::SocketOutputStreamPtr& os);
 
-    		/**
-    		Returns value of the <b>RemoteHost</b> option.
-    		*/
-    		inline const String& getRemoteHost() const
-    			{ return remoteHost; }
 
-    		/**
-    		The <b>Port</b> option takes a positive integer representing
-    		the port where the server is waiting for connections.
-    		*/
-    		void setPort(int port)
-    			{ this->port = port; }
 
-    		/**
-    		Returns value of the <b>Port</b> option.
-    		*/
-    		int getPort() const
-    			{ return port; }
-
-    		/**
-    		The <b>LocationInfo</b> option takes a boolean value. If true,
-    		the information sent to the remote host will include location
-    		information. By default no location information is sent to the server.
-    		*/
-    		void setLocationInfo(bool locationInfo)
-    			{ this->locationInfo = locationInfo; }
-
-    		/**
-    		Returns value of the <b>LocationInfo</b> option.
-    		*/
-    		bool getLocationInfo() const
-    			{ return locationInfo; }
-
-    		/**
-    		The <b>ReconnectionDelay</b> option takes a positive integer
-    		representing the number of milliseconds to wait between each
-    		failed connection attempt to the server. The default value of
-    		this option is 30000 which corresponds to 30 seconds.
-
-    		<p>Setting this option to zero turns off reconnection
-    		capability.
-    		*/
-    		void setReconnectionDelay(int reconnectionDelay)
-    			{ this->reconnectionDelay = reconnectionDelay; }
-
-    		/**
-    		Returns value of the <b>ReconnectionDelay</b> option.
-    		*/
-    		int getReconnectionDelay() const
-    			{ return reconnectionDelay; }
-
-		    void fireConnector();
-
-       private:
-		   /**
-			The Connector will reconnect when the server becomes available
-			again.  It does this by attempting to open a new connection every
-			<code>reconnectionDelay</code> milliseconds.
-
-			<p>It stops trying whenever a connection is established. It will
-			restart to try reconnect to the server when previpously open
-			connection is droppped.
-			*/
-			class LOG4CXX_EXPORT Connector : public helpers::Thread
-			{
-			public:
-			typedef helpers::Thread BASE_CLASS;
-				BEGIN_LOG4CXX_CAST_MAP()
-					LOG4CXX_CAST_ENTRY(Connector)
-					LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
-				END_LOG4CXX_CAST_MAP()
-
-				bool interrupted;
-				SocketAppender * socketAppender;
-
-				Connector(SocketAppender * socketAppender);
-				virtual void run();
-
-                        private:
-                                Connector(const Connector&);
-                                Connector& operator=(const Connector&);
-			}; // class Connector
-
-			typedef helpers::ObjectPtrT<Connector> ConnectorPtr;
-
-			ConnectorPtr connector;
         }; // class SocketAppender
     } // namespace net
 }; // namespace log4cxx

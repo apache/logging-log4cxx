@@ -18,8 +18,9 @@
 #define _LOG4CXX_HELPERS_FILEWATCHDOG_H
 
 #include <log4cxx/helpers/tchar.h>
-#include <log4cxx/helpers/thread.h>
 #include <time.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/thread.h>
 
 namespace log4cxx
 {
@@ -30,9 +31,10 @@ namespace log4cxx
 		Check every now and then that a certain file has not changed. If it
 		has, then call the #doOnChange method.
 		*/
-		class LOG4CXX_EXPORT FileWatchdog : public Thread
+		class LOG4CXX_EXPORT FileWatchdog
 		{
 		public:
+			virtual ~FileWatchdog();
 			/**
 			The default delay between every file modification check, set to 60
 			seconds.  */
@@ -50,7 +52,7 @@ namespace log4cxx
 			long delay; 
 			time_t lastModif; 
 			bool warnedAlready;
-			bool interrupted;
+			volatile unsigned int interrupted;
 			
 		protected:
 			FileWatchdog(const String& filename);
@@ -64,8 +66,16 @@ namespace log4cxx
 			void setDelay(long delay)
 				{ this->delay = delay; }
 				
-			void run();
 			void start();
+
+		private:
+			static void* LOG4CXX_THREAD_FUNC run(apr_thread_t* thread, void* data);
+			Pool pool;
+			Thread thread;
+
+			FileWatchdog(const FileWatchdog&);
+			FileWatchdog& operator=(const FileWatchdog&);
+
 		};
 	}  // namespace helpers
 }; // namespace log4cxx

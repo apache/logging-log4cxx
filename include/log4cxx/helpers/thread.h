@@ -1,40 +1,40 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *      http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+ 
 #ifndef _LOG4CXX_HELPERS_THREAD_H
 #define _LOG4CXX_HELPERS_THREAD_H
 
 #include <log4cxx/portability.h>
-#include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/mdc.h>
 
-// Windows specific :
-// winspool.h defines MIN_PRIORITY and MAX_PRIORITY
-#ifdef MIN_PRIORITY
-#define OLD_MIN_PRIORITY MIN_PRIORITY
-#undef MIN_PRIORITY
+#if !defined(LOG4CXX_THREAD_FUNC)
+#if defined(APR_THREAD_FUNC)
+#define LOG4CXX_THREAD_FUNC APR_THREAD_FUNC
+#else
+#if defined(_WIN32)
+#define LOG4CXX_THREAD_FUNC __stdcall
+#else
+#define LOG4CXX_THREAD_FUNC
+#endif
+#endif
 #endif
 
-#ifdef MAX_PRIORITY
-#define OLD_MAX_PRIORITY MAX_PRIORITY
-#undef MAX_PRIORITY
-#endif
+
+struct apr_thread_t;
+struct apr_pool_t;
 
 namespace log4cxx
 {
@@ -42,99 +42,35 @@ namespace log4cxx
 	{
 		class LOG4CXX_EXPORT ThreadException : public Exception
 		{
-                    public:
-                    ThreadException() : Exception() {
-                    }
+		public:
+			ThreadException(apr_status_t stat) {}
 		};
 
-		class LOG4CXX_EXPORT InterruptedException : public Exception
-		{
-                    public:
-                    InterruptedException() : Exception() {
-                    }
-		};
-
-		/** The Runnable interface should be implemented by any class whose
-		instances are intended to be executed by a thread.
-		The class must define a method of no arguments called run.
-		*/
-		class LOG4CXX_EXPORT Runnable : public virtual Object
+		class LOG4CXX_EXPORT Thread
 		{
 		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Runnable)
-
-			/** When an object implementing interface Runnable is used to
-			create a thread, starting the thread causes the object's run
-			method to be called in that separately executing thread.
-			*/
-			virtual void run() = 0;
-		};
-
-		typedef ObjectPtrT<Runnable> RunnablePtr;
-
-		/** A thread is a thread of execution in a program.
-		*/
-		class LOG4CXX_EXPORT Thread : public virtual ObjectImpl
-		{
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Thread)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(Thread)
-			END_LOG4CXX_CAST_MAP()
-
-			/**  Allocates a new Thread object.*/
 			Thread();
+			~Thread();
 
-			/**  Allocates a new Thread object.*/
-			Thread(RunnablePtr runnable);
-
-			virtual ~Thread();
-
-			/** Returns the current thread identifier
-			*/
-			static unsigned long getCurrentThreadId();
-
-			/** Causes this thread to begin execution;
-			calls the run method of this thread.
-			*/
-			void start();
-
-			/**  If this thread was constructed using a separate Runnable
-			run object, then that Runnable object's run method is called;
-			otherwise, this method does nothing and returns.
-			*/
-			virtual void run();
-
-			/** Waits for this thread to die.
-			*/
+			void run(apr_pool_t* pool, 
+				void* (LOG4CXX_THREAD_FUNC *start)(apr_thread_t* thread, void* data), 
+				void* data);
+			void stop();
 			void join();
+			//
+			//  called on the worker thread to indicate
+			//    immediate exit from the start method
+			void ending();
 
-			enum
-			{
-				MIN_PRIORITY = 1,
-				NORM_PRIORITY = 2,
-				MAX_PRIORITY = 3
-			};
-
-			/** Changes the priority of this thread.
-			*/
-			void setPriority(int newPriority);
-
-		protected:
-			RunnablePtr runnable;
-			MDC::Map parentMDCMap;
+			inline bool isActive() { return thread != NULL; }
 
 		private:
-			struct Impl;
-			std::auto_ptr<Impl> impl;
-                        //   prevent copy and assignment
-                        Thread(const Thread&);
-                        Thread& operator=(Thread&);
+			apr_thread_t* thread;
+			volatile bool finished;
+			Thread(const Thread&);
+			Thread& operator=(const Thread&);
 		};
+	} // namespace helpers
+};// namespace log4cxx
 
-		typedef ObjectPtrT<Thread> ThreadPtr;
-
-	}  // namespace helpers
-}; //namespace log4cxx
-
-#endif // _LOG4CXX_HELPERS_THREAD_H
+#endif //_LOG4CXX_HELPERS_THREAD_H

@@ -42,6 +42,7 @@
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/defaultcategoryfactory.h>
 #include <log4cxx/helpers/filewatchdog.h>
+#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggingevent.h>
 
@@ -339,7 +340,7 @@ void DOMConfigurator::parseLogger(XMLDOMElementPtr loggerElement)
 	// Setting up a category needs to be an atomic operation, in order
 	// to protect potential log operations while category
 	// configuration is in progress.
-	synchronized sync(logger);
+	synchronized sync(logger->getMutex());
 	bool additivity = OptionConverter::toBoolean(
 		subst(loggerElement->getAttribute(ADDITIVITY_ATTR)),
 		true);
@@ -399,7 +400,7 @@ void DOMConfigurator::parseRoot(XMLDOMElementPtr rootElement)
 {
 	LoggerPtr root = repository->getRootLogger();
 	// category configuration needs to be atomic
-	synchronized sync(root);
+	synchronized sync(root->getMutex());
 	parseChildrenOfLoggerElement(rootElement, root, true);
 }
 

@@ -23,7 +23,7 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/thread.h>
-#include <apr-1/apr_time.h>
+#include <apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

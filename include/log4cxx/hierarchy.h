@@ -23,8 +23,10 @@
 #include <map>
 #include <log4cxx/provisionnode.h>
 #include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/criticalsection.h>
 #include <log4cxx/spi/hierarchyeventlistener.h>
+#include <log4cxx/helpers/pool.h>
+
+class apr_thread_mutex_t;
 
 namespace log4cxx
 {
@@ -79,7 +81,7 @@ namespace log4cxx
         /**
         Map synchronization
         */
-        mutable helpers::CriticalSection mapCs;
+        mutable apr_thread_mutex_t* mapCs;
 		
     public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)
@@ -284,6 +286,9 @@ namespace log4cxx
 	private:
 
 		void updateChildren(ProvisionNode& pn, LoggerPtr& logger);
+
+		log4cxx::helpers::Pool pool;
+		log4cxx::helpers::Mutex mutex;
 	};
 }  //namespace log4cxx
 

@@ -18,8 +18,8 @@
 
 #define INT64_C(x) x##LL
 
-#include <apr-1/apr_time.h>
-#include <apr-1/apr_pools.h>
+#include <apr_time.h>
+#include <apr_pools.h>
 
 using namespace log4cxx::helpers;
 
@@ -87,23 +87,22 @@ void CachedDateFormat::format(std::string& s, apr_time_t date, apr_pool_t* p) co
       formatter->format(s, date, p);
       return;
     }
-    std::string& mutableCache = LOG4CXX_ACCESS_MUTABLE(cache, CachedDateFormat);
     if (date < previousTime + APR_USEC_PER_SEC && date >= previousTime) {
       if (millisecondStart >= 0) {
-        mutableCache.erase(millisecondStart, 3);
+        cache.erase(millisecondStart, 3);
         int millis = apr_time_as_msec(date - previousTime);
         int cacheLength = cache.length();
-        formatter->numberFormat(mutableCache, millis, p);
+        formatter->numberFormat(cache, millis, p);
         int milliLength = cache.length() - cacheLength;
         //
         //   if it didn't belong at the end, then move it
         if (cacheLength != millisecondStart) {
           std::string milli = cache.substr(cacheLength);
-          mutableCache.erase(mutableCache.begin() + cacheLength, mutableCache.end());
-          mutableCache.insert(millisecondStart, milli);
+          cache.erase(cache.begin() + cacheLength, cache.end());
+          cache.insert(millisecondStart, milli);
         }
         if (milliLength < 3) {
-           mutableCache.insert(millisecondStart,
+           cache.insert(millisecondStart,
                  3 - milliLength, zeroDigit);
         }
       }
@@ -115,17 +114,17 @@ void CachedDateFormat::format(std::string& s, apr_time_t date, apr_pool_t* p) co
       if (date - prev < 0) {
         prev -= APR_USEC_PER_SEC;
       }
-      LOG4CXX_ACCESS_MUTABLE(previousTime, CachedDateFormat) = prev;
+	  previousTime = prev;
       int prevLength = cache.length();
-      mutableCache.erase(mutableCache.begin(), mutableCache.end());
-      formatter->format(mutableCache, date, p);
+      cache.erase(cache.begin(), cache.end());
+      formatter->format(cache, date, p);
       //
       //   if the length changed then
       //      recalculate the millisecond position
       if (cache.length() != prevLength) {
         std::string formattedPreviousTime;
         formatter->format(formattedPreviousTime, previousTime, p);
-        LOG4CXX_ACCESS_MUTABLE(millisecondStart, CachedDateFormat) =
+        millisecondStart =
             findMillisecondStart(previousTime,
                                  formattedPreviousTime,
                                  zeroDigit,

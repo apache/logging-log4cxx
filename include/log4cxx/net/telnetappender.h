@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/thread.h>
 #include <vector>
 
+
 namespace log4cxx
 {
 	namespace helpers
@@ -64,7 +65,6 @@ servlet.
 		friend class SocketHandler;
 		private:
 			static int DEFAULT_PORT;
-			SocketHandler * sh;
 			int port;
 
 		public:
@@ -117,45 +117,18 @@ servlet.
 			//---------------------------------------------------------- SocketHandler:
 
 		private:
-                        //   prevent copy and assignment statements
-                        TelnetAppender(const TelnetAppender&);
-                        TelnetAppender& operator=(const TelnetAppender&);
+            //   prevent copy and assignment statements
+            TelnetAppender(const TelnetAppender&);
+            TelnetAppender& operator=(const TelnetAppender&);
 
-			/** The SocketHandler class is used to accept connections from
-			clients.  It is threaded so that clients can connect/disconnect
-			asynchronously. */
-			class LOG4CXX_EXPORT SocketHandler : public helpers::Thread
-			{
-			private:
-				bool done;
-				std::vector<helpers::SocketOutputStreamPtr> writers;
-				std::vector<helpers::SocketPtr> connections;
-				helpers::ServerSocket serverSocket;
-				std::vector<helpers::SocketPtr>::size_type MAX_CONNECTIONS;
+			typedef std::pair<helpers::SocketPtr, helpers::SocketOutputStreamPtr> Connection;
+			typedef std::vector<Connection> ConnectionList;
 
-			public:
-				SocketHandler(int port);
-
-				/** make sure we close all network connections when this handler
-				is destroyed. */
-				void finalize();
-
-				/** sends a message to each of the clients in telnet-friendly output. */
-				void send(const String& message);
-
-				/**
-				Continually accepts client connections.  Client connections
-				are refused when MAX_CONNECTIONS is reached.
-				*/
-				virtual void run();
-
-			protected:
-				void print(helpers::SocketOutputStreamPtr& os, const String& sz);
-
-                        private:
-                                SocketHandler(const SocketHandler&);
-                                SocketHandler& operator=(const SocketHandler&);
-			}; // class SocketHandler
+			ConnectionList connections;
+			helpers::ServerSocket* serverSocket;
+			helpers::Thread sh;
+			volatile unsigned int activeConnections;
+			static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
 		}; // class TelnetAppender
     } // namespace net
 }; // namespace log4cxx
