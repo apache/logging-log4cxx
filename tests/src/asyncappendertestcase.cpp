@@ -25,11 +25,10 @@
 #include "appenderskeletontestcase.h"
 #include <apr_pools.h>
 #include <apr_strings.h>
+#include "testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-
-#define _T(str) L ## str
 
 /**
    A superficial but general test of log4j.
@@ -78,9 +77,9 @@ public:
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
-		root->debug(_T("m1"));
+		root->debug(LOG4CXX_TEST_STR("m1"));
 		asyncAppender->close();
-		root->debug(_T("m2"));
+		root->debug(LOG4CXX_TEST_STR("m2"));
 
 		const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 		CPPUNIT_ASSERT(v.size() == 1);
@@ -98,9 +97,9 @@ public:
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
-		root->debug(_T("m1"));
+		root->debug(LOG4CXX_TEST_STR("m1"));
 		asyncAppender->close();
-		root->debug(_T("m2"));
+		root->debug(LOG4CXX_TEST_STR("m2"));
 
 		const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 		CPPUNIT_ASSERT(v.size() == 1);
@@ -132,7 +131,7 @@ public:
 		}
 
 		asyncAppender->close();
-		root->debug(_T("m2"));
+		root->debug(LOG4CXX_TEST_STR("m2"));
 
                 apr_pool_destroy(pool);
 

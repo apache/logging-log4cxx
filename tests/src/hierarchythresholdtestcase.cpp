@@ -21,10 +21,9 @@
 #include <log4cxx/propertyconfigurator.h>
 #include "util/compare.h"
 #include "xml/xlevel.h"
+#include "testchar.h"
 
 using namespace log4cxx;
-
-#define _T(str) L ## str
 
 /**
 Test the configuration of the hierarchy-wide threshold.
@@ -111,12 +110,12 @@ public:
 
 	static void common()
 	{
-		logger->log(XLevel::getTrace(), _T("m0"));
-		logger->debug(_T("m1"));
-		logger->info(_T("m2"));
-		logger->warn(_T("m3"));
-		logger->error(_T("m4"));
-		logger->fatal(_T("m5"));
+		logger->log(XLevel::getTrace(), LOG4CXX_TEST_STR("m0"));
+		logger->debug(LOG4CXX_TEST_STR("m1"));
+		logger->info(LOG4CXX_TEST_STR("m2"));
+		logger->warn(LOG4CXX_TEST_STR("m3"));
+		logger->error(LOG4CXX_TEST_STR("m4"));
+		logger->fatal(LOG4CXX_TEST_STR("m5"));
 	}
 
 private:
@@ -127,6 +126,6 @@ private:
 File HierarchyThresholdTestCase::TEMP(LOG4CXX_FILE("output/temp"));
 
 LoggerPtr HierarchyThresholdTestCase::logger =
-	Logger::getLogger(_T("HierarchyThresholdTestCase"));
+	Logger::getLogger(LOG4CXX_TEST_STR("HierarchyThresholdTestCase"));
 
 CPPUNIT_TEST_SUITE_REGISTRATION(HierarchyThresholdTestCase);

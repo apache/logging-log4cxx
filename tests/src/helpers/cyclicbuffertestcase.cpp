@@ -22,12 +22,11 @@
 #include <log4cxx/helpers/cyclicbuffer.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/spi/location/locationinfo.h>
+#include "../testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-
-#define _T(str) L ## str
 
 #define MAX 1000
 
@@ -45,7 +44,7 @@ class CyclicBufferTestCase : public CppUnit::TestFixture
 public:
 	void setUp()
 	{
-  		logger = Logger::getLogger(_T("x"));
+  		logger = Logger::getLogger(LOG4CXX_TEST_STR("x"));
 		e.reserve(1000);
 		for (int i = 0; i < MAX; i++)
 		{

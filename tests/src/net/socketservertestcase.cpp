@@ -38,6 +38,7 @@
 #include <iostream>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include "../testchar.h"
 
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))
@@ -51,8 +52,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
-
-#define _T(str) L ## str
 
 #define TEMP LOG4CXX_FILE("output/temp")
 #define FILTERED LOG4CXX_FILE("output/filtered")
@@ -280,7 +279,7 @@ public:
 		SocketAppenderPtr socketAppender =
 			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 		root->addAppender(socketAppender);
-		NDC::push(_T("some"));
+		NDC::push(LOG4CXX_TEST_STR("some"));
 		common(LOG4CXX_STR("T4"), LOG4CXX_STR("key4"), LOG4CXX_STR("MDC-TEST4"));
 		NDC::pop();
 		delay(1);
@@ -316,7 +315,7 @@ public:
 		root->addAppender(socketAppender);
 		root->addAppender(asyncAppender);
 
-		NDC::push(_T("some5"));
+		NDC::push(LOG4CXX_TEST_STR("some5"));
 		common(LOG4CXX_STR("T5"), LOG4CXX_STR("key5"), LOG4CXX_STR("MDC-TEST5"));
 		NDC::pop();
 		delay(2);
@@ -352,11 +351,11 @@ public:
 		root->addAppender(socketAppender);
 		root->addAppender(asyncAppender);
 
-		NDC::push(_T("some6"));
-    	MDC::put(_T("hostID"), _T("client-test6"));
+		NDC::push(LOG4CXX_TEST_STR("some6"));
+    	MDC::put(LOG4CXX_TEST_STR("hostID"), LOG4CXX_TEST_STR("client-test6"));
 		common(LOG4CXX_STR("T6"), LOG4CXX_STR("key6"), LOG4CXX_STR("MDC-TEST6"));
 		NDC::pop();
-  		MDC::remove(_T("hostID"));
+  		MDC::remove(LOG4CXX_TEST_STR("hostID"));
 		delay(2);
 
 		ControlFilter cf;
@@ -390,11 +389,11 @@ public:
 		root->addAppender(socketAppender);
 		root->addAppender(asyncAppender);
 
-		NDC::push(_T("some7"));
-    	MDC::put(_T("hostID"), _T("client-test7"));
+		NDC::push(LOG4CXX_TEST_STR("some7"));
+    	MDC::put(LOG4CXX_TEST_STR("hostID"), LOG4CXX_TEST_STR("client-test7"));
 		common(LOG4CXX_STR("T7"), LOG4CXX_STR("key7"), LOG4CXX_STR("MDC-TEST7"));
 		NDC::pop();
-  		MDC::remove(_T("hostID"));
+  		MDC::remove(LOG4CXX_TEST_STR("hostID"));
 		delay(2);
 
 		ControlFilter cf;
@@ -426,7 +425,7 @@ public:
 
 		root->addAppender(socketAppender);
 
-		NDC::push(_T("some8"));
+		NDC::push(LOG4CXX_TEST_STR("some8"));
  		common(LOG4CXX_STR("T8"), LOG4CXX_STR("key8"), LOG4CXX_STR("MDC-TEST8"));
 		NDC::pop();
 		delay(2);

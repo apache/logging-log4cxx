@@ -23,12 +23,11 @@
 #include <log4cxx/level.h>
 
 #include "num343patternconverter.h"
+#include "../testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-
-#define _T(str) L ## str
 
 class PatternParserTestCase : public CppUnit::TestFixture
 {
@@ -41,7 +40,7 @@ class PatternParserTestCase : public CppUnit::TestFixture
 public:
 	void setUp()
 	{
-		logger = Logger::getLogger(_T("org.foobar"));
+		logger = Logger::getLogger(LOG4CXX_TEST_STR("org.foobar"));
 
 		event = new LoggingEvent(
 			logger, Level::INFO, LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION);

@@ -26,8 +26,9 @@
 #include <vector>
 #include <sstream>
 
-#define _T(str) L ## str
-typedef std::basic_ostringstream<wchar_t> StringBuffer;
+#include "testchar.h"
+
+typedef std::basic_ostringstream<testchar> StringBuffer;
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -74,20 +75,20 @@ public:
                 {
                         root->setResourceBundle(bundles[i]);
 
-                        LOG4CXX_L7DLOG(root, Level::DEBUG, _T("bogus1"));
-                        LOG4CXX_L7DLOG(root, Level::INFO, _T("test"));
-                        LOG4CXX_L7DLOG(root, Level::WARN, _T("hello_world"));
+                        LOG4CXX_L7DLOG(root, Level::DEBUG, LOG4CXX_TEST_STR("bogus1"));
+                        LOG4CXX_L7DLOG(root, Level::INFO, LOG4CXX_TEST_STR("test"));
+                        LOG4CXX_L7DLOG(root, Level::WARN, LOG4CXX_TEST_STR("hello_world"));
 
 
                         StringBuffer os;
                         os << i + 1;
-                        LOG4CXX_L7DLOG2(root, Level::DEBUG, _T("msg1"), os.str().c_str(),
-                                 _T("log4j"));
-                        LOG4CXX_L7DLOG2(root, Level::getError(), _T("bogusMsg"), os.str().c_str(),
-                                 _T("log4j"));
-                        LOG4CXX_L7DLOG2(root, Level::getError(), _T("msg1"), os.str().c_str(),
-                                 _T("log4j"));
-                        LOG4CXX_L7DLOG(root, Level::INFO, _T("bogus2"));
+                        LOG4CXX_L7DLOG2(root, Level::DEBUG, LOG4CXX_TEST_STR("msg1"), os.str().c_str(),
+                                 LOG4CXX_TEST_STR("log4j"));
+                        LOG4CXX_L7DLOG2(root, Level::getError(), LOG4CXX_TEST_STR("bogusMsg"), os.str().c_str(),
+                                 LOG4CXX_TEST_STR("log4j"));
+                        LOG4CXX_L7DLOG2(root, Level::getError(), LOG4CXX_TEST_STR("msg1"), os.str().c_str(),
+                                 LOG4CXX_TEST_STR("log4j"));
+                        LOG4CXX_L7DLOG(root, Level::INFO, LOG4CXX_TEST_STR("bogus2"));
                 }
 
                 CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),

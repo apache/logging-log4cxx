@@ -17,7 +17,7 @@
 #include <log4cxx/helpers/socketinputstream.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/loglog.h>
-#include <malloc.h>
+//#include <malloc.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers ;

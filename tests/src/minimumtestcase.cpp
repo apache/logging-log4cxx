@@ -33,6 +33,7 @@
 #include <iostream>
 #include <apr_pools.h>
 #include <apr_strings.h>
+#include "testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -48,8 +49,6 @@ using namespace log4cxx::helpers;
 	LOG4CXX_STR(" \\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - ") \
 	LOG4CXX_STR("Messages should bear numbers 0 through 23\\.")
 
-
-#define _T(str) L ## str
 
 class MinimumTestCase : public CppUnit::TestFixture
 {
@@ -124,22 +123,22 @@ public:
 		// In the lines below, the category names are chosen as an aid in
 		// remembering their level values. In general, the category names
 		// have no bearing to level values.
-		LoggerPtr ERR = Logger::getLogger(_T("ERR"));
+		LoggerPtr ERR = Logger::getLogger(LOG4CXX_TEST_STR("ERR"));
 		ERR->setLevel(Level::getError());
 
-		LoggerPtr INF = Logger::getLogger(_T("INF"));
+		LoggerPtr INF = Logger::getLogger(LOG4CXX_TEST_STR("INF"));
 		INF->setLevel(Level::INFO);
 
-		LoggerPtr INF_ERR = Logger::getLogger(_T("INF.ERR"));
+		LoggerPtr INF_ERR = Logger::getLogger(LOG4CXX_TEST_STR("INF.ERR"));
 		INF_ERR->setLevel(Level::getError());
 
-		LoggerPtr DEB = Logger::getLogger(_T("DEB"));
+		LoggerPtr DEB = Logger::getLogger(LOG4CXX_TEST_STR("DEB"));
 		DEB->setLevel(Level::DEBUG);
 
 		// Note: categories with undefined level
-		LoggerPtr INF_UNDEF = Logger::getLogger(_T("INF.UNDEF"));
-		LoggerPtr INF_ERR_UNDEF = Logger::getLogger(_T("INF.ERR.UNDEF"));
-		LoggerPtr UNDEF = Logger::getLogger(_T("UNDEF"));
+		LoggerPtr INF_UNDEF = Logger::getLogger(LOG4CXX_TEST_STR("INF.UNDEF"));
+		LoggerPtr INF_ERR_UNDEF = Logger::getLogger(LOG4CXX_TEST_STR("INF.ERR.UNDEF"));
+		LoggerPtr UNDEF = Logger::getLogger(LOG4CXX_TEST_STR("UNDEF"));
 
                 apr_pool_t* pool;
                 apr_status_t rv = apr_pool_create(&pool, NULL);
@@ -231,7 +230,7 @@ public:
 		i++;
 
 		// -------------------------------------------------
-		LOG4CXX_INFO(INF, _T("Messages should bear numbers 0 through 23."));
+		LOG4CXX_INFO(INF, LOG4CXX_TEST_STR("Messages should bear numbers 0 through 23."));
 
                 apr_pool_destroy(pool);
 	}

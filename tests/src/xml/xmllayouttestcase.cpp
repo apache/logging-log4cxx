@@ -30,12 +30,11 @@
 #include "../util/xmlfilenamefilter.h"
 #include <iostream>
 #include <log4cxx/helpers/stringhelper.h>
+#include "../testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
-
-#define _T(str) L ## str
 
 #define FILTERED LOG4CXX_FILE("output/filtered")
 #define TEMP LOG4CXX_FILE("output/temp")
@@ -46,8 +45,8 @@ public:
 	X()
 	{
 		LoggerPtr logger =
-			Logger::getLogger(_T("org.apache.log4j.xml.XMLLayoutTestCase$X"));
-		LOG4CXX_INFO(logger, _T("in X() constructor"));
+			Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.XMLLayoutTestCase$X"));
+		LOG4CXX_INFO(logger, LOG4CXX_TEST_STR("in X() constructor"));
 	}
 };
 
@@ -68,7 +67,7 @@ public:
 	void setUp()
 	{
 		root = Logger::getRootLogger();
-		logger = Logger::getLogger(_T("org.apache.log4j.xml.XMLLayoutTestCase"));
+		logger = Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.XMLLayoutTestCase"));
 	}
 
 	void tearDown()
@@ -141,7 +140,7 @@ public:
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 
 		LOG4CXX_DEBUG(logger,
-			_T("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
+			LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
 
 		XMLTimestampFilter xmlTimestampFilter;
 		XMLLineAttributeFilter xmlLineAttributeFilter;
@@ -173,8 +172,8 @@ public:
 		XMLLayoutPtr xmlLayout = new XMLLayout();
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 
-		LOG4CXX_DEBUG(logger, _T("hi"));
-		LOG4CXX_DEBUG(logger, _T(""));
+		LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("hi"));
+		LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR(""));
 
 		XMLTimestampFilter xmlTimestampFilter;
 		XMLThreadFilter xmlThreadFilter;
@@ -202,10 +201,10 @@ public:
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 
 		MDC::clear();
-		MDC::put(_T("key1"), _T("val1"));
-		MDC::put(_T("key2"), _T("val2"));
+		MDC::put(LOG4CXX_TEST_STR("key1"), LOG4CXX_TEST_STR("val1"));
+		MDC::put(LOG4CXX_TEST_STR("key2"), LOG4CXX_TEST_STR("val2"));
 
-		LOG4CXX_DEBUG(logger, _T("Hello"));
+		LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
 
 		MDC::clear();
 
@@ -236,10 +235,10 @@ public:
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 
 		MDC::clear();
-		MDC::put(_T("blahAttribute"), _T("<blah value=\"blah\">"));
-		MDC::put(_T("<blahKey value=\"blah\"/>"), _T("blahValue"));
+		MDC::put(LOG4CXX_TEST_STR("blahAttribute"), LOG4CXX_TEST_STR("<blah value=\"blah\">"));
+		MDC::put(LOG4CXX_TEST_STR("<blahKey value=\"blah\"/>"), LOG4CXX_TEST_STR("blahValue"));
 
-		LOG4CXX_DEBUG(logger, _T("Hello"));
+		LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
 
 		MDC::clear();
 

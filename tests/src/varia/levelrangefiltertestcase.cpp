@@ -28,12 +28,12 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include "../testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::varia;
 
-#define _T(str) L ## str
 
 #define ACCEPT_FILE LOG4CXX_FILE("output/LevelRangeFilter_accept")
 #define ACCEPT_WITNESS LOG4CXX_FILE("witness/LevelRangeFilter_accept")
@@ -55,7 +55,7 @@ public:
 	{
 		root = Logger::getRootLogger();
 		root->removeAllAppenders();
-		logger = Logger::getLogger(_T("test"));
+		logger = Logger::getLogger(LOG4CXX_TEST_STR("test"));
 	}
 
 	void tearDown()

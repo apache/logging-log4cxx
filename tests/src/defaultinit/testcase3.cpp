@@ -19,8 +19,7 @@
 
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
-
-#define _T(str) L ## str
+#include "../insertwide.h"
 
 using namespace log4cxx;
 
@@ -48,7 +47,7 @@ public:
 
 		AppenderList list = root->getAllAppenders();
 		AppenderPtr appender = list.front();
-		CPPUNIT_ASSERT(appender->getName() == _T("D3"));
+		CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D3"), appender->getName());
 	}
 
 };

@@ -31,6 +31,7 @@
 
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/file.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -173,9 +174,16 @@ LoggerPtr LogManager::getLogger(const LogString& name,
         return getLoggerRepository()->getLogger(name, factory);
 }
 
-LoggerPtr LogManager::exists(const LogString& name)
+LoggerPtr LogManager::exists(const std::string& name)
 {
-        return getLoggerRepository()->exists(name);
+        LOG4CXX_DECODE_CHAR(n, name);
+        return getLoggerRepository()->exists(n);
+}
+
+LoggerPtr LogManager::exists(const std::wstring& name)
+{
+        LOG4CXX_DECODE_WCHAR(n, name);
+        return getLoggerRepository()->exists(n);
 }
 
 LoggerList LogManager::getCurrentLoggers()

@@ -28,8 +28,7 @@
 #include <log4cxx/spi/rootcategory.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
 #include "insertwide.h"
-
-#define _T(str) L ## str
+#include "testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -100,7 +99,7 @@ public:
 	*/
 	void testAppender1()
 	{
-		logger = Logger::getLogger(_T("test"));
+		logger = Logger::getLogger(LOG4CXX_TEST_STR("test"));
 		a1 = new FileAppender();
 		a1->setName(LOG4CXX_STR("testAppender1"));
 		logger->addAppender(a1);
@@ -121,7 +120,7 @@ public:
 		a2 = new FileAppender();
 		a2->setName(LOG4CXX_STR("testAppender2.2"));
 
-		logger = Logger::getLogger(_T("test"));
+		logger = Logger::getLogger(LOG4CXX_TEST_STR("test"));
 		logger->addAppender(a1);
 		logger->addAppender(a2);
 		logger->removeAppender((LogString) LOG4CXX_STR("testAppender2.1"));
@@ -137,8 +136,8 @@ public:
 	*/
 	void testAdditivity1()
 	{
-		LoggerPtr a = Logger::getLogger(_T("a"));
-		LoggerPtr ab = Logger::getLogger(_T("a.b"));
+		LoggerPtr a = Logger::getLogger(LOG4CXX_TEST_STR("a"));
+		LoggerPtr ab = Logger::getLogger(LOG4CXX_TEST_STR("a.b"));
 		CountingAppenderPtr ca = new CountingAppender();
 		a->addAppender(ca);
 
@@ -158,10 +157,10 @@ public:
 	*/
 	void testAdditivity2()
 	{
-		LoggerPtr a = Logger::getLogger(_T("a"));
-		LoggerPtr ab = Logger::getLogger(_T("a.b"));
-		LoggerPtr abc = Logger::getLogger(_T("a.b.c"));
-		LoggerPtr x = Logger::getLogger(_T("x"));
+		LoggerPtr a = Logger::getLogger(LOG4CXX_TEST_STR("a"));
+		LoggerPtr ab = Logger::getLogger(LOG4CXX_TEST_STR("a.b"));
+		LoggerPtr abc = Logger::getLogger(LOG4CXX_TEST_STR("a.b.c"));
+		LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
 
 		CountingAppenderPtr ca1 = new CountingAppender();
 		CountingAppenderPtr ca2 = new CountingAppender();
@@ -191,10 +190,10 @@ public:
 	void testAdditivity3()
 	{
 		LoggerPtr root = Logger::getRootLogger();
-		LoggerPtr a = Logger::getLogger(_T("a"));
-		LoggerPtr ab = Logger::getLogger(_T("a.b"));
-		LoggerPtr abc = Logger::getLogger(_T("a.b.c"));
-		LoggerPtr x = Logger::getLogger(_T("x"));
+		LoggerPtr a = Logger::getLogger(LOG4CXX_TEST_STR("a"));
+		LoggerPtr ab = Logger::getLogger(LOG4CXX_TEST_STR("a.b"));
+		LoggerPtr abc = Logger::getLogger(LOG4CXX_TEST_STR("a.b.c"));
+		LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
 
 		CountingAppenderPtr caRoot = new CountingAppender();
 		CountingAppenderPtr caA = new CountingAppender();
@@ -299,9 +298,9 @@ public:
 		ResourceBundlePtr t = root->getResourceBundle();
 		CPPUNIT_ASSERT(t == rbUS);
 
-		LoggerPtr x = Logger::getLogger(_T("x"));
-		LoggerPtr x_y = Logger::getLogger(_T("x.y"));
-		LoggerPtr x_y_z = Logger::getLogger(_T("x.y.z"));
+		LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
+		LoggerPtr x_y = Logger::getLogger(LOG4CXX_TEST_STR("x.y"));
+		LoggerPtr x_y_z = Logger::getLogger(LOG4CXX_TEST_STR("x.y.z"));
 
 		t = x->getResourceBundle();
 		CPPUNIT_ASSERT(t == rbUS);
@@ -319,9 +318,9 @@ public:
 		ResourceBundlePtr t = root->getResourceBundle();
 		CPPUNIT_ASSERT(t == rbUS);
 
-		LoggerPtr x = Logger::getLogger(_T("x"));
-		LoggerPtr x_y = Logger::getLogger(_T("x.y"));
-		LoggerPtr x_y_z = Logger::getLogger(_T("x.y.z"));
+		LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
+		LoggerPtr x_y = Logger::getLogger(LOG4CXX_TEST_STR("x.y"));
+		LoggerPtr x_y_z = Logger::getLogger(LOG4CXX_TEST_STR("x.y.z"));
 
 		x_y->setResourceBundle(rbFR);
 		t = x->getResourceBundle();
@@ -340,9 +339,9 @@ public:
 		ResourceBundlePtr t = root->getResourceBundle();
 		CPPUNIT_ASSERT(t == rbUS);
 
-		LoggerPtr x = Logger::getLogger(_T("x"));
-		LoggerPtr x_y = Logger::getLogger(_T("x.y"));
-		LoggerPtr x_y_z = Logger::getLogger(_T("x.y.z"));
+		LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
+		LoggerPtr x_y = Logger::getLogger(LOG4CXX_TEST_STR("x.y"));
+		LoggerPtr x_y_z = Logger::getLogger(LOG4CXX_TEST_STR("x.y.z"));
 
 		x_y->setResourceBundle(rbFR);
 		x_y_z->setResourceBundle(rbCH);
@@ -356,18 +355,18 @@ public:
 
 	void testExists()
 	{
-		LoggerPtr a = Logger::getLogger(_T("a"));
-		LoggerPtr a_b = Logger::getLogger(_T("a.b"));
-		LoggerPtr a_b_c = Logger::getLogger(_T("a.b.c"));
+		LoggerPtr a = Logger::getLogger(LOG4CXX_TEST_STR("a"));
+		LoggerPtr a_b = Logger::getLogger(LOG4CXX_TEST_STR("a.b"));
+		LoggerPtr a_b_c = Logger::getLogger(LOG4CXX_TEST_STR("a.b.c"));
 
 		LoggerPtr t;
-		t = LogManager::exists(_T("xx"));
+		t = LogManager::exists(LOG4CXX_TEST_STR("xx"));
 		CPPUNIT_ASSERT(t == 0);
-		t = LogManager::exists(_T("a"));
+		t = LogManager::exists(LOG4CXX_TEST_STR("a"));
 		CPPUNIT_ASSERT_EQUAL(a, t);
-		t = LogManager::exists(_T("a.b"));
+		t = LogManager::exists(LOG4CXX_TEST_STR("a.b"));
 		CPPUNIT_ASSERT_EQUAL(a_b, t);
-		t = LogManager::exists(_T("a.b.c"));
+		t = LogManager::exists(LOG4CXX_TEST_STR("a.b.c"));
 		CPPUNIT_ASSERT_EQUAL(a_b_c, t);
 	}
 
