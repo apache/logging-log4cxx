@@ -204,7 +204,7 @@ namespace log4cxx
 		}
 
 		virtual int_type overflow(
-		int_type c = traits_type::eof())
+		int_type c = stringbuf::traits_type::eof())
 		{
 			using namespace std;
 
