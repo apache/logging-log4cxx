@@ -227,20 +227,22 @@ using namespace log4cxx::pattern;
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     LocaleChanger localeChange(LOCALE_JP);
-    DateFormatPtr baseFormat(new SimpleDateFormat(
-               LOG4CXX_STR("EEE, MMM dd, HH:mm:ss.SSS Z")));
-    CachedDateFormat cachedFormat(baseFormat, 1000000);
-    //
-    //   use a date in 2000 to attempt to confuse the millisecond locator
-    apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
+    if (localeChange.isEffective()) {
+        DateFormatPtr baseFormat(new SimpleDateFormat(
+                   LOG4CXX_STR("EEE, MMM dd, HH:mm:ss.SSS Z")));
+        CachedDateFormat cachedFormat(baseFormat, 1000000);
+        //
+        //   use a date in 2000 to attempt to confuse the millisecond locator
+        apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
 
-    Pool p;
+        Pool p;
 
-    assertFormattedEquals(baseFormat, cachedFormat, ticks, p);
-    assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000, p);
-    assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000, p);
-    assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000, p);
-    assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
+        assertFormattedEquals(baseFormat, cachedFormat, ticks, p);
+        assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000, p);
+        assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000, p);
+        assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000, p);
+        assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
+    }
   }
 
   /**

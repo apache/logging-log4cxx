@@ -24,6 +24,7 @@ using namespace log4cxx::helpers;
 * @param locale locale.
 */
 LocaleChanger::LocaleChanger(const char* locale) {
+    effective = false;
     try {
         std::locale newLocale(locale);
         initial = std::locale::global(newLocale);
