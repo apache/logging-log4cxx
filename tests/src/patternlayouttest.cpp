@@ -425,7 +425,7 @@ public:
 
 		// set appender on root and set level to debug
 		root->addAppender(appender);
-		root->setLevel(Level::getDebugLevel());
+		root->setLevel(Level::DEBUG);
 
 		// output starting message
 		root->debug(_T("starting mdc pattern test"));
