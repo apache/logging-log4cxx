@@ -22,6 +22,8 @@
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <stdarg.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -40,7 +42,7 @@ Logger::~Logger()
 {
 }
 
-void Logger::addAppender(AppenderPtr newAppender)
+void Logger::addAppender(const AppenderPtr& newAppender)
 {
 	synchronized sync(this);
 
@@ -91,11 +93,10 @@ void Logger::closeNestedAppenders()
 {
 	synchronized sync(this);
 
-	
     AppenderList appenders = getAllAppenders();
     for(AppenderList::iterator it=appenders.begin(); it!=appenders.end(); ++it)
     {
-        (*it)->close();
+       (*it)->close();
     }
 }
 
@@ -144,12 +145,12 @@ void Logger::forcedLog(const String& fqcn, const LevelPtr& level, const String& 
 	callAppenders(new LoggingEvent(fqcn, this, level, message, file, line));
 }
 
-bool Logger::getAdditivity()
+bool Logger::getAdditivity() const
 {
 	return additive;
 }
 
-AppenderList Logger::getAllAppenders()
+AppenderList Logger::getAllAppenders() const
 {
 	synchronized sync(this);
 
@@ -163,7 +164,7 @@ AppenderList Logger::getAllAppenders()
 	}
 }
 
-AppenderPtr Logger::getAppender(const String& name)
+AppenderPtr Logger::getAppender(const String& name) const
 {
 	synchronized sync(this);
 
@@ -175,9 +176,9 @@ AppenderPtr Logger::getAppender(const String& name)
 	return aai->getAppender(name);
 }
 
-const LevelPtr& Logger::getEffectiveLevel()
+const LevelPtr& Logger::getEffectiveLevel() const
 {
-	for(Logger * l = this; l != 0; l=l->parent)
+	for(const Logger * l = this; l != 0; l=l->parent)
 	{
 		if(l->level != 0)
 		{
@@ -188,17 +189,57 @@ const LevelPtr& Logger::getEffectiveLevel()
 	throw RuntimeException(_T("level is null for logger") + name);
 }
 
-LoggerRepositoryPtr Logger::getLoggerRepository()
+LoggerRepositoryPtr Logger::getLoggerRepository() const
 {
 	return repository;
 }
 
-LoggerPtr Logger::getParent()
+ResourceBundlePtr Logger::getResourceBundle() const
+{
+	for (LoggerPtr l = this; l != 0; l = l->parent)
+	{
+		if (l->resourceBundle != 0)
+		{
+			return l->resourceBundle;
+		}
+	}
+
+	// It might be the case that there is no resource bundle
+	return 0;
+}
+
+String Logger::getResourceBundleString(const String& key) const
+{
+	ResourceBundlePtr rb = getResourceBundle();
+
+	// This is one of the rare cases where we can use logging in order
+	// to report errors from within log4j.
+	if (rb == 0)
+	{
+		return String();
+	} 
+	else
+	{
+		try
+		{
+			return rb->getString(key);
+		} 
+		catch (MissingResourceException&)
+		{
+			((Logger *)this)->error(_T("No resource is associated with key \"") +
+			 	key + _T("\"."));
+				
+			return String();
+		}
+	}
+}
+
+const LoggerPtr& Logger::getParent() const
 {
 	return parent;
 }
 
-const LevelPtr& Logger::getLevel()
+const LevelPtr& Logger::getLevel() const
 {
 	return level;
 }
@@ -216,7 +257,7 @@ void Logger::info(const String& message, const char* file, int line)
 	}
 }
 
-bool Logger::isAttached(AppenderPtr appender)
+bool Logger::isAttached(const AppenderPtr& appender) const
 {
 	synchronized sync(this);
 
@@ -230,7 +271,7 @@ bool Logger::isAttached(AppenderPtr appender)
 	}
 }
 
-bool Logger::isDebugEnabled()
+bool Logger::isDebugEnabled() const
 {
 	if(repository->isDisabled(Level::DEBUG_INT))
 	{
@@ -240,7 +281,7 @@ bool Logger::isDebugEnabled()
 	return Level::DEBUG->isGreaterOrEqual(getEffectiveLevel());
 }
 
-bool Logger::isEnabledFor(const LevelPtr& level)
+bool Logger::isEnabledFor(const LevelPtr& level) const
 {
 	if(repository->isDisabled(level->level))
 	{
@@ -250,7 +291,7 @@ bool Logger::isEnabledFor(const LevelPtr& level)
 	return level->isGreaterOrEqual(getEffectiveLevel());
 }
 
-bool Logger::isInfoEnabled()
+bool Logger::isInfoEnabled() const
 {
 	if(repository->isDisabled(Level::INFO_INT))
 	{
@@ -260,7 +301,7 @@ bool Logger::isInfoEnabled()
 	return Level::INFO->isGreaterOrEqual(getEffectiveLevel());
 }
 
-bool Logger::isErrorEnabled()
+bool Logger::isErrorEnabled() const
 {
 	if(repository->isDisabled(Level::ERROR_INT))
 	{
@@ -270,7 +311,7 @@ bool Logger::isErrorEnabled()
 	return Level::ERROR->isGreaterOrEqual(getEffectiveLevel());
 }
 
-bool Logger::isWarnEnabled()
+bool Logger::isWarnEnabled() const
 {
 	if(repository->isDisabled(Level::WARN_INT))
 	{
@@ -280,7 +321,7 @@ bool Logger::isWarnEnabled()
 	return Level::WARN->isGreaterOrEqual(getEffectiveLevel());
 }
 
-bool Logger::isFatalEnabled()
+bool Logger::isFatalEnabled() const
 {
 	if(repository->isDisabled(Level::FATAL_INT))
 	{
@@ -288,6 +329,58 @@ bool Logger::isFatalEnabled()
 	}
 
 	return Level::FATAL->isGreaterOrEqual(getEffectiveLevel());
+}
+
+/*void Logger::l7dlog(const LevelPtr& level, const String& key,
+			const char* file, int line)
+{
+	if (repository->isDisabled(level->level))
+	{
+		return;
+	}
+
+	if (level->isGreaterOrEqual(getEffectiveLevel()))
+	{
+		String msg = getResourceBundleString(key);
+
+		// if message corresponding to 'key' could not be found in the
+		// resource bundle, then default to 'key'.
+		if (msg.empty())
+		{
+			msg = key;
+		}
+
+		forcedLog(FQCN, level, msg, file, line);
+	}
+}*/
+
+void Logger::l7dlog(const LevelPtr& level, const String& key,
+			const char* file, int line, ...)
+{
+	if (repository->isDisabled(level->level))
+	{
+		return;
+	}
+
+	if (level->isGreaterOrEqual(getEffectiveLevel()))
+	{
+		String pattern = getResourceBundleString(key);
+		String msg;
+
+		if (pattern.empty())
+		{
+			msg = key;
+		}
+		else 
+		{
+			va_list params;
+			va_start (params, line);
+			msg = StringHelper::format(pattern, params);
+			va_end (params);
+		}
+
+		forcedLog(FQCN, level, msg, file, line);
+	}
 }
 
 void Logger::log(const LevelPtr& level, const String& message,
@@ -316,7 +409,7 @@ void Logger::removeAllAppenders()
 	}
 }
 
-void Logger::removeAppender(AppenderPtr appender)
+void Logger::removeAppender(const AppenderPtr& appender)
 {
 	synchronized sync(this);
 
