@@ -4,14 +4,22 @@ LIBRARY
 
 EXPORTS
 
+;class Appender
+?getStaticClass@Appender@log4cxx@@SAABVClass@helpers@2@XZ
+?getClass@Appender@log4cxx@@UBEABVClass@helpers@2@XZ
+
+;class AppenderSkeleton
+??0AppenderSkeleton@log4cxx@@QAE@XZ
+?addFilter@AppenderSkeleton@log4cxx@@UAEXV?$ObjectPtrT@VFilter@spi@log4cxx@@@helpers@2@@Z
+?clearFilters@AppenderSkeleton@log4cxx@@UAEXXZ
+?setErrorHandler@AppenderSkeleton@log4cxx@@UAEXV?$ObjectPtrT@VErrorHandler@spi@log4cxx@@@helpers@2@@Z
+
 ;class AsyncAppender
 ??0AsyncAppender@log4cxx@@QAE@XZ
 
-;class Appender
-?getStaticClass@Appender@log4cxx@@SAABVClass@helpers@2@XZ
-
 ;class Class
 ?getName@Class@helpers@log4cxx@@QBEABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ
+??0Class@helpers@log4cxx@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
 
 ;class ConsoleAppender
 ?getStaticClass@ConsoleAppender@log4cxx@@SAABVClass@helpers@2@XZ
@@ -118,6 +126,7 @@ EXPORTS
 
 ;class LogManager
 ?getLoggerRepository@LogManager@log4cxx@@SA?AV?$ObjectPtrT@VLoggerRepository@spi@log4cxx@@@helpers@2@XZ
+?shutdown@LogManager@log4cxx@@SAXXZ
 
 ;class MDC
 ?clear@MDC@log4cxx@@SAXXZ
@@ -153,6 +162,7 @@ EXPORTS
 
 ;class OptionConverter
 ?toFileSize@OptionConverter@helpers@log4cxx@@SAJABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@J@Z
+?toInt@OptionConverter@helpers@log4cxx@@SAHABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
 
 ;class OptionHandler
 ?getStaticClass@OptionHandler@spi@log4cxx@@SAABVClass@helpers@3@XZ
