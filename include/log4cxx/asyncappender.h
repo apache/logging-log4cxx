@@ -30,6 +30,7 @@ namespace log4cxx
 	};
 
 	class Dispatcher;
+	typedef helpers::ObjectPtrT<Dispatcher> DispatcherPtr;
 
 	class AsyncAppender;
 	typedef helpers::ObjectPtrT<AsyncAppender> AsyncAppenderPtr;
@@ -67,7 +68,7 @@ namespace log4cxx
 
 		helpers::BoundedFIFOPtr bf;
 		helpers::AppenderAttachableImplPtr aai;
-		Dispatcher * dispatcher;
+		DispatcherPtr dispatcher;
 		bool locationInfo;
 		bool interruptedWarningMessage;
 
@@ -151,6 +152,12 @@ namespace log4cxx
 		AsyncAppender * container;
 
 	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Dispatcher)
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(Dispatcher)
+			LOG4CXX_CAST_ENTRY_CHAIN(Thread)
+		END_LOG4CXX_CAST_MAP()
+
 		Dispatcher(helpers::BoundedFIFOPtr bf, AsyncAppender * container);
 		void close();
 

@@ -24,6 +24,7 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
+IMPLEMENT_LOG4CXX_OBJECT(Dispatcher)
 
 /** The default buffer size is set to 128 events. */
 int AsyncAppender::DEFAULT_BUFFER_SIZE = 128;
