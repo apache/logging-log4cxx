@@ -14,6 +14,8 @@
 
     <property name="logging-site" 
              value="../../logging-site"/>
+    <property name="logging-log4cxx" 
+             value=".."/>
      
      <!-- Construct classpath for building the html pages -->
      <path id="site.classpath">
@@ -47,6 +49,8 @@
     
       <mkdir dir="${docs.dest}/css"/>  
       <copy file="${logging-site}/docs/css/site.css" tofile="${docs.dest}/css/site.css"/>
+      <copy file="${logging-log4cxx}/ChangeLog"
+		tofile="${docs.dest}/ChangeLog"/>
       
       <anakia basedir="${docs.src}" destdir="${docs.dest}/"
     	extension=".html"
