@@ -37,6 +37,22 @@ public:
 	}
 };
 
+inline std::ostream& operator<<(const long long& ll, std::ostream& os)
+{
+	char buff[21];
+	sprintf(buff, "%lld", ll);
+	os << buff;
+	return os;
+}
+
+inline std::wostream& operator<<(const long long& ll, std::wostream& os)
+{
+	wchar_t buff[21];
+	swprintf(buff, 20, L"%lld", ll);
+	os << buff;
+	return os;
+}
+
 #ifdef WIN32
 #ifndef USES_CONVERSION
 	#include <malloc.h>
@@ -61,7 +77,9 @@ public:
 	#define _T(x) L ## x
 #endif
 
+#ifndef TCHAR
 	typedef wchar_t TCHAR;
+#endif
 	typedef std::wstring tstring;
 	#define totupper towupper
 	#define totlower towlower

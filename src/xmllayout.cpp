@@ -51,8 +51,7 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 	output << _T("<log4j:event logger=\"");
 	output << event.getLoggerName();
 	output << _T("\" timestamp=\"");
-	output << (unsigned long)event.getTimeStamp();
-	output << _T("000");
+	output << event.getTimeStamp();
 	output << _T("\" level=\"");
 	output << event.getLevel().toString();
 	output << _T("\" thread=\"");

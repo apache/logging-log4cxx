@@ -17,6 +17,7 @@
 #include <log4cxx/helpers/dateformat.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/absolutetimedateformat.h>
+#include <iomanip> // for setw & setfill
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -30,42 +31,35 @@ DateFormat::DateFormat(const tstring& dateFormat, const tstring& timeZone)
 {
 }
 
-void DateFormat::format(tostream& os, time_t time)
+void DateFormat::format(tostream& os, long long timeMillis)
 {
-	typedef tostream::char_type char_type;
-	typedef tostream::traits_type traits_type;
-	typedef std::ostreambuf_iterator<char_type, traits_type> iterator_type;
-	typedef std::time_put< char_type, iterator_type > facet_type;
+    TCHAR buffer[255];
 
+	time_t time = (time_t)(timeMillis/1000LL);
 	const tm * tm = gmtime(&time);
 
-	if (timeZone.empty())
+	if (!timeZone.empty())
 	{
-		std::locale loc = os.getloc();
+	}
 
-#ifdef WIN32
-		const facet_type& facet = std::use_facet<facet_type>(loc, 0, true);
-		 facet.put(os,os,tm,dateFormat.c_str(), dateFormat.c_str() +
-			 dateFormat.size());
+#ifdef UNICODE
+	size_t len = ::wcsftime(buffer, 255, dateFormat.c_str(), tm);
 #else
-		const facet_type& facet = std::use_facet<facet_type>(loc);
-		 facet.put(os,os,_T(' '),tm,dateFormat.c_str(), dateFormat.c_str() +
-			 dateFormat.size());
+	size_t len = ::strftime(buffer, 255, dateFormat.c_str(), tm);
 #endif
+
+	buffer[len] = '\0';
+	tstring result(buffer);
+
+	size_t pos = result.find(_T("%Q"));
+	if (pos != tstring::npos)
+	{
+		os << result.substr(0, pos)
+		   << std::setw(3) << std::setfill(_T('0')) << (long)(timeMillis % 1000)
+		   << result.substr(pos + 2);
 	}
 	else
 	{
-		USES_CONVERSION;
-		std::locale loc(T2A(timeZone.c_str()));
-
-#ifdef WIN32
-		const facet_type& facet = std::use_facet<facet_type>(loc, 0, true);
-		 facet.put(os,os,tm,dateFormat.c_str(), dateFormat.c_str() +
-			 dateFormat.size());
-#else
-		const facet_type& facet = std::use_facet<facet_type>(loc);
-		 facet.put(os,os,_T(' '),tm,dateFormat.c_str(), dateFormat.c_str() +
-			 dateFormat.size());
-#endif
+		os << result;
 	}
 }

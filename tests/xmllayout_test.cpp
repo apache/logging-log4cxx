@@ -31,7 +31,7 @@ int main()
 		layout->setLocationInfo(false);
 
 		witness << _T("<log4j:event logger=\"root\" timestamp=\"")
-			<< (unsigned long)event.getTimeStamp() << _T("000")
+			<< event.getTimeStamp()
 			<< _T("\" level=\"DEBUG\" thread=\"")
 			<< event.getThreadId() << _T("\">\r\n")
 			<< _T("<log4j:message><![CDATA[debug message]]></log4j:message>\r\n")
@@ -52,7 +52,7 @@ int main()
 		layout->setLocationInfo(true);
 
 		witness2 << _T("<log4j:event logger=\"root\" timestamp=\"")
-			<< (unsigned long)event.getTimeStamp() << _T("000")
+			<< event.getTimeStamp()
 			<< _T("\" level=\"DEBUG\" thread=\"")
 			<< event.getThreadId() << _T("\">\r\n")
 			<< _T("<log4j:message><![CDATA[debug message]]></log4j:message>\r\n")

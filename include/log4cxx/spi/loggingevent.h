@@ -103,7 +103,7 @@ namespace log4cxx
 				{ return threadId; }
 
 			/** Return the #timeStamp of this event. */
-			inline time_t getTimeStamp() const
+			inline long long getTimeStamp() const
 				{ return timeStamp; }
 
 			/* Return the file where this log statement was written. */
@@ -228,9 +228,9 @@ namespace log4cxx
             /** The name of thread in which this logging event was generated. */
             //const LOG4CPLUS_THREAD_KEY_TYPE thread;
 
-            /** The number of seconds elapsed from 1/1/1970 until logging event
+            /** The number of milliseconds elapsed from 1/1/1970 until logging event
             was created. */
-            time_t timeStamp;
+            long long timeStamp;
 
 			/** The is the file where this log statement was written. */
 			char* file;
@@ -243,7 +243,7 @@ namespace log4cxx
 			*/
 			unsigned long threadId;
 
-			static time_t startTime;
+			static long long startTime;
   		};
 	};
 };

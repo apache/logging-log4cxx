@@ -119,9 +119,10 @@ namespace log4cxx
 	<li>%I -- Hour(1-12)
 	<li>%j -- Day of year as a decimal(1-366)
 	<li>%m -- Month as decimal(1-12)
-	<li>%M -- Minute as decimal(0-59)
+	<li>%M -- Minute as decimal(00-59)
 	<li>%p -- Locale's equivalent of AM or PM
-	<li>%S -- Second as decimal(0-59)
+	<li>%Q -- Millisecond as decimal (000-999)
+	<li>%S -- Second as decimal(00-59)
 	<li>%U -- Week of year, Sunday being first day(0-53)
 	<li>%w -- Weekday as a decimal(0-6, Sunday being 0)
 	<li>%W -- Week of year, Monday being first day(0-53)

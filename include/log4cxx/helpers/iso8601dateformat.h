@@ -24,10 +24,10 @@ namespace log4cxx
 	namespace helpers
 	{
 		/**
-		Formats a date in the format "%Y-%m-%d %H:%M:%S" for example
-		"1999-11-27 15:49:37".
+		Formats a date in the format "%Y-%m-%d %H:%M:%S,%Q" for example
+		"1999-11-27 15:49:37,459".
 
-		<p>Refer to the <a
+		<p>Refer to the <a>
 		href=http://www.cl.cam.ac.uk/~mgk25/iso-time.html>summary of the
 		International Standard Date and Time Notation</a> for more
 		information on this format.
@@ -36,7 +36,7 @@ namespace log4cxx
 		{
 		public:
 			ISO8601DateFormat(const tstring& timeZone = _T(""))
-			 : DateFormat(_T("%Y-%m-%d %H:%M:%S"), timeZone) {}
+			 : DateFormat(_T("%Y-%m-%d %H:%M:%S,%Q"), timeZone) {}
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

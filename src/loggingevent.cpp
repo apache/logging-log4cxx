@@ -22,13 +22,14 @@
 #include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/socketinputstream.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/system.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 // time at startup
-time_t LoggingEvent::startTime = time(0);
+long long LoggingEvent::startTime = System::currentTimeMillis();
 
 LoggingEvent::LoggingEvent()
 : timeStamp(0), level(&Level::OFF), ndcLookupRequired(true), line(0),
@@ -40,8 +41,8 @@ LoggingEvent::LoggingEvent(const tstring& fqnOfCategoryClass,
 	const LoggerPtr& logger, const Level& level,
 	const tstring& message, const char* file, int line)
 : fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(&level),
-message(message), file((char*)file), line(line), timeStamp(time(0)),
-ndcLookupRequired(true)
+message(message), file((char*)file), line(line),
+timeStamp(System::currentTimeMillis()), ndcLookupRequired(true)
 {
 	threadId = Thread::getCurrentThreadId();
 }
@@ -174,7 +175,7 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
 	os->write(message);
 
 	// timeStamp
-	os->write(timeStamp);
+	os->write(&timeStamp, sizeof(timeStamp));
 
 	// line
 	os->write(line);
@@ -224,7 +225,7 @@ void LoggingEvent::read(helpers::SocketInputStreamPtr is)
 	is->read(message);
 
 	// timeStamp
-	is->read(timeStamp);
+	is->read(&timeStamp, sizeof(timeStamp));
 
 	// file
 	file = 0;
