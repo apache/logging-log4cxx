@@ -1,5 +1,5 @@
-CVS
-===
+Version 0.9.6 (2004-04-11)
+==========================
 
 * Timezone management has been optimized through the class TimeZone
 * Inter-thread synchronization and reference counting has been optimized
