@@ -89,6 +89,8 @@ namespace log4cxx
 		* intended to be used internally.
 		* */
 		static const Map getContext();
+		
+		static void setContext(Map& map);
 	}; // class MDC;
 }; // namespace log4cxx
 
