@@ -181,8 +181,8 @@ inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
 	#define tcscmp strcmp
 #endif // UNICODE
 
-#define _MinInc  512U
-#define _MaxInc 100U * 1024U
+#define _MinInc  size_t(512)
+#define _MaxInc size_t(100 * 1024)
 
 namespace log4cxx
 {
