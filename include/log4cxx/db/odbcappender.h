@@ -1,26 +1,26 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_DB_ODBC_APPENDER_H
 #define _LOG4CXX_DB_ODBC_APPENDER_H
 
 #include <log4cxx/portability.h>
 
 #ifdef LOG4CXX_HAVE_ODBC
- 
+
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -40,7 +40,7 @@ namespace log4cxx
 		{
 		public:
 			SQLException(int code) : code(code) {}
-			virtual String getMessage() { return String(); }
+			virtual String getMessage() const { return String(); }
 
 			int code;
 		};
@@ -101,17 +101,17 @@ namespace log4cxx
 			* URL of the DB for default connection handling
 			*/
 			String databaseURL;
-			
+
 			/**
 			* User to connect as for default connection handling
 			*/
 			String databaseUser;
-			
+
 			/**
 			* User to use for default connection handling
 			*/
 			String databasePassword;
-			
+
 			/**
 			* Connection used by default.  The connection is opened the first time it
 			* is needed and then held open until the appender is closed (usually at
@@ -121,7 +121,7 @@ namespace log4cxx
 			*/
 			SQLHDBC connection;
 			SQLHENV env;
-			
+
 			/**
 			* Stores the string given to the pattern layout for conversion into a SQL
 			* statement, eg: insert into LogTable (Thread, File, Message) values
@@ -132,19 +132,19 @@ namespace log4cxx
 			* Also see PatternLayout.
 			*/
 			String sqlStatement;
-			
+
 			/**
 			* size of LoggingEvent buffer before writting to the database.
 			* Default is 1.
 			*/
 			size_t bufferSize;
-			
+
 			/**
 			* ArrayList holding the buffer of Logging Events.
 			*/
 			std::list<spi::LoggingEventPtr> buffer;
-			
-		public:			
+
+		public:
 			DECLARE_LOG4CXX_OBJECT(ODBCAppender)
 			BEGIN_LOG4CXX_CAST_MAP()
 				LOG4CXX_CAST_ENTRY(ODBCAppender)
@@ -153,7 +153,7 @@ namespace log4cxx
 
 			ODBCAppender();
 			virtual ~ODBCAppender();
-			
+
 		    /**
 		    Set options
 		    */
@@ -163,7 +163,7 @@ namespace log4cxx
 			* Adds the event to the buffer.  When full the buffer is flushed.
 			*/
 			void append(const spi::LoggingEventPtr& event);
-			
+
 			/**
 			* By default getLogStatement sends the event to the required Layout object.
 			* The layout will format the given pattern into a workable SQL string.
@@ -184,7 +184,7 @@ namespace log4cxx
 			* accessed in an override of this method.
 			* */
 			void execute(const String& sql) /*throw(SQLException)*/;
-			
+
 			/**
 			* Override this to return the connection to a pool, or to clean up the
 			* resource.
@@ -193,7 +193,7 @@ namespace log4cxx
 			* is closed (typically when garbage collected).
 			*/
 			virtual void closeConnection(SQLHDBC con);
-			
+
 			/**
 			* Override this to link with your connection pooling system.
 			*
@@ -201,14 +201,14 @@ namespace log4cxx
 			* until the object is garbage collected.
 			*/
 			virtual SQLHDBC getConnection() /*throw(SQLException)*/;
-			
+
 			/**
 			* Closes the appender, flushing the buffer first then closing the default
 			* connection if it is open.
 			*/
 		public:
 			virtual void close();
-			
+
 			/**
 			* loops through the buffer of LoggingEvents, gets a
 			* sql string from getLogStatement() and sends it to execute().
@@ -217,13 +217,13 @@ namespace log4cxx
 			* If a statement fails the LoggingEvent stays in the buffer!
 			*/
 			void flushBuffer();
-			
+
 			/**
 			* ODBCAppender requires a layout.
 			* */
 			virtual bool requiresLayout() const
 				{ return true; }
-			
+
 			/**
 			* Set pre-formated statement eg: insert into LogTable (msg) values ("%m")
 			*/
@@ -234,34 +234,34 @@ namespace log4cxx
 			*/
 			inline const String& getSql() const
 				{ return sqlStatement; }
-			
-			
+
+
 			inline void setUser(const String& user)
 				{ databaseUser = user; }
-			
-			
+
+
 			inline void setURL(const String& url)
 				{ databaseURL = url; }
-			
-			
+
+
 			inline void setPassword(const String& password)
 				{ databasePassword = password; }
-			
-			
+
+
 			inline void setBufferSize(size_t newBufferSize)
 				{ bufferSize = newBufferSize; }
-			
+
 			inline const String& getUser() const
 				{ return databaseUser; }
-			
-			
+
+
 			inline const String& getURL() const
 				{ return databaseURL; }
-			
-			
+
+
 			inline const String& getPassword() const
 				{ return databasePassword; }
-			
+
 			inline size_t getBufferSize() const
 				{ return bufferSize; }
 		}; // class ODBCAppender

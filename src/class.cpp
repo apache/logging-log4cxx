@@ -23,9 +23,9 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-ClassNotFoundException::ClassNotFoundException(const String& className)
+ClassNotFoundException::ClassNotFoundException(const String& className) :
+    Exception(_T("Class '") + className + _T("' not found"))
 {
-	message = _T("Class '") + className + _T("' not found");
 }
 
 Class::Class(const String& name) : name(name)

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/portability.h>
 
 #if defined(WIN32) || defined(_WIN32)
@@ -59,43 +59,47 @@ namespace {
 }
 #endif
 
-SocketException::SocketException()
-{
-#if defined(WIN32) || defined(_WIN32)
-	TCHAR messageBuffer[256];
-	DWORD dwError = ::WSAGetLastError();
+const String SocketException::createMessage() {
+  #if defined(WIN32) || defined(_WIN32)
+          String message;
+          TCHAR messageBuffer[256];
+          DWORD dwError = ::WSAGetLastError();
 
-	if (dwError != 0)
-	{
-		
-		DWORD dw = ::FormatMessage(
-			FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS |
-				FORMAT_MESSAGE_MAX_WIDTH_MASK,
-			NULL,
-			dwError,
-			MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-			messageBuffer, 
-			sizeof(messageBuffer)/sizeof(messageBuffer[0]),
-			NULL);
+          if (dwError != 0)
+          {
 
-		if (dw != 0)
-		{
-			message = messageBuffer;
+                  DWORD dw = ::FormatMessage(
+                          FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS |
+                                  FORMAT_MESSAGE_MAX_WIDTH_MASK,
+                          NULL,
+                          dwError,
+                          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+                          messageBuffer,
+                          sizeof(messageBuffer)/sizeof(messageBuffer[0]),
+                          NULL);
 
-			// on retire les retours chariots en fin de chaîne
-			message = message.substr(0, message.find_last_not_of(_T("\n\r")) + 1);
-		}
-		else
-		{
-			itot(::WSAGetLastError(), messageBuffer, 10);
-			message = messageBuffer;
-		}
-	}
-#else
-	USES_CONVERSION;
-	message = A2T(strerror(errno));
-#endif
-};
+                  if (dw != 0)
+                  {
+                          message = messageBuffer;
+
+                          // on retire les retours chariots en fin de chaï¿½ne
+                          message = message.substr(0, message.find_last_not_of(_T("\n\r")) + 1);
+                  }
+                  else
+                  {
+                          itot(::WSAGetLastError(), messageBuffer, 10);
+                          message = messageBuffer;
+                  }
+          }
+  #else
+          USES_CONVERSION;
+          const TCHAR* message = A2T(strerror(errno));
+  #endif
+  return message;
+}
+
+SocketException::SocketException() : IOException(getMessage()) {
+}
 
 SocketImpl::SocketImpl() : fd(0), localport(-1), port(0), timeout(-1)
 {
@@ -138,7 +142,7 @@ void SocketImpl::accept(SocketImplPtr s)
 		int retval = ::select(this->fd+1, &rfds, NULL, NULL, &tv);
 		if (retval == 0)
 		{
-			throw SocketTimeoutException();
+			throw SocketTimeoutException("Socket timeout");
 		}
 
 		assert(FD_ISSET(this->fd, &rfds));
@@ -172,7 +176,7 @@ void SocketImpl::bind(InetAddress host, int port)
 {
 	struct sockaddr_in server_addr;
 	int server_len = sizeof(server_addr);
-	
+
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = htonl(host.address);
 	server_addr.sin_port = htons(port);
@@ -199,7 +203,7 @@ void SocketImpl::close()
 		{
 			throw SocketException();
 		}
-	
+
 		address.address = 0;
 		fd = 0;
 		port = 0;
