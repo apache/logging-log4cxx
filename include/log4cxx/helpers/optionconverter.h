@@ -24,6 +24,12 @@ namespace log4cxx
 {
 	class Level;
 
+	namespace spi
+	{
+		class LoggerRepository;
+		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
+	};
+
 	namespace helpers
 	{
 		class Properties;
@@ -46,6 +52,8 @@ namespace log4cxx
 			OptionConverter() {}
 
 		public:
+			static tstring convertSpecialChars(const tstring& s);
+
 			/**
 			If <code>value</code> is "true", then <code>true</code> is
 			returned. If <code>value</code> is "false", then
@@ -127,6 +135,28 @@ balanced by a stop delimeter "}". </p>
 			static ObjectPtr instantiateByKey(Properties& props,
 				const tstring& key, const Class& superClass,
 				ObjectPtr defaultValue);
+
+			/**
+			Configure log4cxx given a configFileName.
+
+			<p>The configFileName must point to a file which will be 
+			interpreted by a new instance of a log4cxx configurator.
+
+			<p>All configurations steps are taken on the
+			<code>hierarchy</code> passed as a parameter.
+
+			<p>
+			@param configFileName The location of the configuration file.
+			@param clazz The classname, of the log4cxx configurator which
+			will parse the file <code>configFileName</code>. This must be
+			a subclass of Configurator, or null. If this value is null then
+			a default configurator of PropertyConfigurator is used, unless the
+			filename pointed to by <code>configFileName</code> ends in '.xml',
+			in which case DOMConfigurator is used.
+			@param hierarchy The Hierarchy to act on.
+			*/
+			static void selectAndConfigure(const tstring& configFileName,
+				const tstring& clazz, spi::LoggerRepositoryPtr hierarchy);
 		};
 	}; // namespace helpers
 }; // namespace log4cxx
