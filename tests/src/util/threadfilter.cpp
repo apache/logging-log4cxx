@@ -21,5 +21,5 @@ using namespace log4cxx::helpers;
 String ThreadFilter::filter(const String& in)
 	const throw(UnexpectedFormatException)
 {
-	return merge(_T("\\[\\d+\\]"), in, _T(""));
+	return merge(_T("\\[\\d+\\]"), in, _T("\\[main]"));
 }
