@@ -1,0 +1,43 @@
+
+<tr>
+<td></td>
+<td title="1 thread">1</td>
+<td title="Level"><font color="#339933">DEBUG</font></td>
+<td title="root category">root</td>
+<td title="Message">debug message</td>
+</tr>
+
+<tr>
+<td></td>
+<td title="1 thread">1</td>
+<td title="Level">INFO</td>
+<td title="root category">root</td>
+<td title="Message">info message</td>
+</tr>
+
+<tr>
+<td></td>
+<td title="1 thread">1</td>
+<td title="Level"><font color="#993300"><strong>WARN</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">warn message</td>
+</tr>
+
+<tr>
+<td></td>
+<td title="1 thread">1</td>
+<td title="Level"><font color="#993300"><strong>ERROR</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">error message</td>
+</tr>
+
+<tr>
+<td></td>
+<td title="1 thread">1</td>
+<td title="Level"><font color="#993300"><strong>FATAL</strong></font></td>
+<td title="root category">root</td>
+<td title="Message">fatal message</td>
+</tr>
+</table>
+<br>
+</body></html>
