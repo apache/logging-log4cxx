@@ -324,7 +324,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </antcall>
 </target>
 
-<target name="untar-apr-src" unless="apr-src-expanded">
+<target name="untar-apr-src" depends="get-apr-src" unless="apr-src-expanded">
     <antcall target="untar-apr-module">
         <param name="module" value="apr"/>
         <param name="module.version" value="${apr.version}"/>
@@ -357,7 +357,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="untar-apriconv-src" unless="apriconv-src-expanded">
+<target name="untar-apriconv-src" depends="get-apriconv-src" unless="apriconv-src-expanded">
     <antcall target="untar-apr-module">
         <param name="module" value="apr-iconv"/>
         <param name="module.version" value="${apriconv.version}"/>
@@ -392,7 +392,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </antcall>
 </target>
 
-<target name="untar-aprutil-src" unless="aprutil-src-expanded">
+<target name="untar-aprutil-src" depends="get-aprutil-src" unless="aprutil-src-expanded">
     <antcall target="untar-apr-module">
         <param name="module" value="apr-util"/>
         <param name="module.version" value="${aprutil.version}"/>

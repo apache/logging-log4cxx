@@ -402,12 +402,5 @@ tests/witness/Makefile
 performance/Makefile
 performance/xml/Makefile
 examples/Makefile
-msvc/Makefile
-msvc/dll/Makefile
-msvc/examples/Makefile
-msvc/simplesocketserver/Makefile
-msvc/static/Makefile
-msvc/tests/Makefile
-msvc/performance/Makefile
 ])
 AC_OUTPUT
