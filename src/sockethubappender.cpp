@@ -130,7 +130,8 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event)
 	} */
 	
 	// loop through the current set of open connections, appending the event to each
-	std::vector<SocketOutputStreamPtr>::iterator it, itEnd = oosList.end();
+	std::vector<SocketOutputStreamPtr>::iterator it = oosList.begin();
+	std::vector<SocketOutputStreamPtr>::iterator itEnd = oosList.end();
 	while(it != itEnd)
 	{ 	
 		SocketOutputStreamPtr oos = *it;
