@@ -1,0 +1,224 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "consoleappender_test"=".\consoleappender_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "domconfigurator_test"=".\domconfigurator_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "fileappender_test"=".\fileappender_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "filter_test"=".\filter_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "hierarchy_test"=".\hierarchy_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "htmllayout_test"=".\htmllayout_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "level_test"=".\level_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "mdc_test"=".\mdc_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "ndc_test"=".\ndc_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "patternlayout_test"=".\patternlayout_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "propertyconfigurator_test"=".\propertyconfigurator_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "tests"=".\tests.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name consoleappender_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name domconfigurator_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name fileappender_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name filter_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name hierarchy_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name htmllayout_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name level_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name patternlayout_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name propertyconfigurator_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ttcclayout_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name xmllayout_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mdc_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name ndc_test
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "ttcclayout_test"=".\ttcclayout_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "xmllayout_test"=".\xmllayout_test.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+}}}
+
+Package=<3>
+{{{
+}}}
+
+###############################################################################
+
