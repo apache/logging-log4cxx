@@ -454,7 +454,10 @@ using namespace com::foo;
 // include log4cxx header files.
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+
 using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 // Define a static logger variable so that it references the
 // Logger instance named "MyApp".
@@ -488,7 +491,7 @@ then defines a static logger variable with the name
 class.
 
 <code>MyApp</code> uses the <code>Bar</code> class defined in the
-header file <code>com/foo/bar.h</code>.
+header file <code>com/foo/bar.h</code> and the source file <code>bar.cpp</code>.
 
 @code
 // file <com/foo/bar.h>
@@ -501,17 +504,31 @@ namespace com
 	{
 		class Bar
 		{
-			static Logger logger = Logger::getLogger(_T("com.foo.bar"));
+			static log4cxx::LoggerPtr logger;
 
 		public:
-			void doIt()
-			{
-				logger->debug(_T("Did it again!"));
-			}
+			void doIt();
 		};
 	};
 };
 @endcode
+
+@code
+// file <bar.cpp>
+
+#include "com/foo/bar.h"
+
+using namespace com::foo;
+using namespace log4cxx;
+
+LoggerPtr Bar::logger = Logger::getLogger(_T("com.foo.bar"));
+
+void Bar::doIt()
+{
+	logger->debug(_T("Did it again!"));
+}
+@endcode
+
 
 The invocation of the {@link log4cxx::BasicConfigurator::configure
 BasicConfigurator::configure} method creates a rather simple log4cxx setup.
@@ -555,7 +572,10 @@ using namespace com::foo;
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+
 using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 // Define a static logger variable so that it references the
 // Logger instance named "MyApp".
@@ -569,7 +589,9 @@ int main(int argc, char **argv)
 		if (argc > 1)
 		{
 			// BasicConfigurator replaced with PropertyConfigurator.
-			PropertyConfigurator::configure(argv[1]);
+			USES_CONVERSION;
+			String propertyFileName = A2W(argv[1]);
+			PropertyConfigurator::configure(propertyFileName);
 		}
 		else
 		{
