@@ -46,7 +46,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
 <property name="with-apr-iconv" value="${apriconv.dir}"/>
 
-<target name="usage">
+<target name="usage" description="Displays usage notes">
         <echo>
         </echo>
 </target>
@@ -107,10 +107,13 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-bcc" value="true">
             <equals arg1="${compiler}" arg2="bcc"/>
         </condition>
+        <condition property="project.if" value="true">
+            <istrue value="${project.if.value}"/>
+        </condition>
 
 </target>
 
-<target name="clean">
+<target name="clean" description="Deletes build products">
         <delete dir="${build.dir}"/>
 </target>
 
@@ -172,6 +175,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
         <fileset dir="${base.dir}/xml/expat/lib"
             includes="xmlparse.c xmlrole.c xmltok.c"/>
+        <fileset dir="${include.dir}" includes="*.h"/>
+        <fileset dir="${include.dir}/private" includes="*.h"/>
+        <fileset dir="${base.dir}/xml/expat/lib" includes="*.h"/>
+        <fileset dir="${base.dir}/xml/expat" includes="*.h"/>
         <includepath path="${include.dir}"/>
         <includepath path="${include.dir}/private"/>
         <includepath path="${apr.include.dir}"/>
@@ -394,7 +401,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
              build-testreslist,
              build-testqueue,
              build-testxlate,
-             build-testall"/>
+             build-testall"
+    description="Builds all tests"/>
 
 <target name="check" 
     depends="build-testdbm,
@@ -405,7 +413,41 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
              run-testreslist,
              run-testqueue,
              run-testxlate,
-             run-testall"/>
+             run-testall"
+     description="Runs all tests"/>
+
+
+    <target name="build-projects">
+            <mkdir dir="${project.dir}"/>
+            <antcall target="build">
+                    <param name="project.if" value="true"/>
+                    <param name="project.type" value="${project.type}"/>
+                    <param name="projects.dir" value="${project.dir}"/>
+                    <param name="projectsOnly" value="true"/>
+            </antcall>
+    </target>
+
+    <target name="build-projects-vc6" description="Builds project files for Microsoft Visual C++ 6">
+        <antcall target="build-projects">
+            <param name="project.dir" value="msvc"/>
+            <param name="project.type" value="msvc6"/>
+        </antcall>
+    </target>
+
+    <target name="build-projects-xcode" description="Builds project files for Apple Xcode">
+        <antcall target="build-projects">
+            <param name="project.dir" value="xcode"/>
+            <param name="project.type" value="xcode"/>
+        </antcall>
+    </target>
+
+    <target name="build-projects-cbx" description="Builds project files for Borland CBuilderX">
+        <antcall target="build-projects">
+            <param name="project.dir" value="cbx"/>
+            <param name="project.type" value="cbuilderx"/>
+        </antcall>
+    </target>
+
 
 
 </project>

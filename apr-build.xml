@@ -31,11 +31,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="base.dir" location="."/>
 <property name="include.dir" location="${base.dir}/include"/>
 <property name="apr.lib.type" value="shared"/>
+<property name="project.dir" value="${build.dir}"/>
 
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
 
-<target name="usage">
+<target name="usage" description="Displays usage notes on build">
         <echo>
         </echo>
 </target>
@@ -53,6 +54,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="win-init" depends="os-detect" if="is-windows">
     <property name="compiler" value="msvc"/>
     <property name="arch" value="win32"/>
+    <property name="project.type" value="msvc6"/>
 </target>
 
 <target name="unix-init" depends="os-detect" if="is-unix">
@@ -64,6 +66,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </or>
     </condition>
     <property name="arch" value="unix"/>
+    <property name="project.type" value="cbuilderx"/>
 </target>
 
 <target name="init" depends="win-init, unix-init">
@@ -89,9 +92,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-bcc" value="true">
             <equals arg1="${compiler}" arg2="bcc"/>
         </condition>
+        <condition property="project.if" value="true">
+            <istrue value="${project.if.value}"/>
+        </condition>
 </target>
 
-<target name="clean">
+<target name="clean" description="Removes build product files">
         <delete dir="${build.dir}"/>
 </target>
 
@@ -135,6 +141,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <fileset dir="${base.dir}/random/unix" includes="*.c"/>
         <fileset dir="${base.dir}/strings" includes="*.c"/>
         <fileset dir="${base.dir}/tables" includes="*.c"/>
+        <fileset dir="${include.dir}" includes="*.h"/>
+        <fileset dir="${include.dir}/arch" includes="*.h"/>
+        <fileset dir="${include.dir}/arch/${arch}" includes="*.h"/>
+        <fileset dir="${include.dir}/arch/unix" includes="*.h"/>
         <includepath path="${include.dir}"/>
         <includepath path="${include.dir}/arch"/>
         <includepath path="${include.dir}/arch/${arch}"/>
@@ -147,6 +157,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <project type="${project.type}" outfile="${project.dir}/apr" if="project.if"/>
     </cc>
 </target>
 
@@ -166,6 +177,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </defineset>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <project type="${project.type}" outfile="${project.dir}/${test}" if="project.if"/>
     </cc>
 </target>
 
@@ -349,6 +361,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </defineset>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <project type="${project.type}" outfile="${project.dir}/testall" if="project.if"/>
     </cc>
 </target>
 
@@ -365,15 +378,55 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
               build-testshmproducer,
               build-testshmconsumer,
               build-testmutexscope,
-              build-testall"/>
+              build-testall"
+     description="Builds all test applications"/>
 
 <target name="check" 
       depends="run-testlockperf, 
                run-testshmproducer,
                run-testshmconsumer,
                run-testmutexscope,
-               run-testall">
+               run-testall"
+      description="Runs all test applications">
 </target>
+
+<target name="build-projects">
+        <mkdir dir="${project.dir}"/>
+        <antcall target="build">
+                <param name="project.if" value="true"/>
+                <param name="project.type" value="${project.type}"/>
+                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projectsOnly" value="true"/>
+        </antcall>
+        <antcall target="build-check">
+                <param name="project.if" value="true"/>
+                <param name="project.type" value="${project.type}"/>
+                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projectsOnly" value="true"/>
+        </antcall>
+</target>
+
+<target name="build-projects-vc6" description="Builds project files for Microsoft Visual C++ 6">
+    <antcall target="build-projects">
+        <param name="project.dir" value="msvc"/>
+        <param name="project.type" value="msvc6"/>
+    </antcall>
+</target>
+
+<target name="build-projects-xcode" description="Builds project files for Apple Xcode">
+    <antcall target="build-projects">
+        <param name="project.dir" value="xcode"/>
+        <param name="project.type" value="xcode"/>
+    </antcall>
+</target>
+
+<target name="build-projects-cbx" description="Builds project files for Borland CBuilderX">
+    <antcall target="build-projects">
+        <param name="project.dir" value="cbx"/>
+        <param name="project.type" value="cbuilderx"/>
+    </antcall>
+</target>
+
 
 
 </project>

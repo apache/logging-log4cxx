@@ -27,6 +27,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <property name="debug" value="true"/>
 <property name="build.dir" location="build"/>
+<property name="project.dir" value="${build.dir}"/>
 <property name="version" value="1.0.1"/>
 <property name="base.dir" location="."/>
 <property name="include.dir" location="${base.dir}/include"/>
@@ -43,7 +44,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="apr.include.dir" location="${apr.dir}/include"/>
 <property name="with-apr" value="${apr.dir}"/>
 
-<target name="usage">
+<target name="usage" description="Displays usage notes">
         <echo>
         </echo>
 </target>
@@ -61,6 +62,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="win-init" depends="os-detect" if="is-windows">
     <property name="compiler" value="msvc"/>
     <property name="arch" value="win32"/>
+    <property name="project.type" value="msvc6"/>
 </target>
 
 <target name="unix-init" depends="os-detect" if="is-unix">
@@ -72,6 +74,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </or>
     </condition>
     <property name="arch" value="unix"/>
+    <property name="project.type" value="cbuilderx"/>
 </target>
 
 <target name="init" depends="win-init, unix-init">
@@ -98,6 +101,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-apriconv-shared" value="true">
             <equals arg1="${apriconv.lib.type}" arg2="shared"/>
         </condition>
+        <condition property="project.if" value="true">
+            <istrue value="${project.if.value}"/>
+        </condition>
+
 </target>
 
 <target name="clean">
@@ -143,7 +150,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outtype="${apriconv.lib.type}"
         objdir="${apriconv.lib.dir}/apriconv_obj"
         debug="${debug}">
-        <fileset dir="${base.dir}" includes="lib/*.c"/>
+        <fileset dir="${base.dir}" includes="lib/*.c lib/*.h"/>
+        <fileset dir="${include.dir}" includes="*.h"/>
+        <includepath path="${base.dir}/lib"/>
         <includepath path="${include.dir}"/>
         <includepath path="${base.dir}/lib"/>
         <includepath path="${apr.include.dir}"/>
@@ -153,6 +162,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <project type="${project.type}" outfile="${project.dir}/apriconv" if="project.if"/>
     </cc>
 </target>
 
@@ -178,6 +188,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="apr-1${lib-suffix}" dir="${apr.lib.dir}"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <project type="${project.type}" outfile="${project.dir}/${module}" if="project.if"/>
     </cc>
 </target>
 
@@ -233,10 +244,43 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-util" depends="build-lib">
 </target>
 
-<target name="build" depends="build-lib, build-ccs, build-ces, build-util"/>
+<target name="build" depends="build-lib, build-ccs, build-ces, build-util" description="Builds all products"/>
 
-<target name="build-check" depends="build-lib"/>
+<target name="build-check" depends="build-lib" description="Builds all tests"/>
 
-<target name="check" depends="build-check"/>
+<target name="check" depends="build-check" description="Runs all tests"/>
+
+
+<target name="build-projects">
+        <mkdir dir="${project.dir}"/>
+        <antcall target="build">
+                <param name="project.if" value="true"/>
+                <param name="project.type" value="${project.type}"/>
+                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projectsOnly" value="true"/>
+        </antcall>
+</target>
+
+<target name="build-projects-vc6" description="Builds project files for Microsoft Visual C++ 6">
+    <antcall target="build-projects">
+        <param name="project.dir" value="msvc"/>
+        <param name="project.type" value="msvc6"/>
+    </antcall>
+</target>
+
+<target name="build-projects-xcode" description="Builds project files for Apple Xcode">
+    <antcall target="build-projects">
+        <param name="project.dir" value="xcode"/>
+        <param name="project.type" value="xcode"/>
+    </antcall>
+</target>
+
+<target name="build-projects-cbx" description="Builds project files for Borland CBuilderX">
+    <antcall target="build-projects">
+        <param name="project.dir" value="cbx"/>
+        <param name="project.type" value="cbuilderx"/>
+    </antcall>
+</target>
+
 
 </project>
