@@ -347,7 +347,7 @@ void PatternParser::finalizeConverter(TCHAR c)
 	}
 	default:
 		LOGLOG_ERROR(_T("Unexpected char [") << c << _T("] at position ") << i
-			<<_T(" in conversion patterrn."));
+			<<_T(" in conversion pattern."));
 		pc = new LiteralPatternConverter(currentLiteral.str());
 		currentLiteral.str(_T(""));
 	}
