@@ -1,5 +1,5 @@
-EXTRA_DIST = *.cpp
-noinst_HEADERS= *.h
+EXTRA_DIST = $(top_srcdir)/tests/src/xml/*.cpp
+noinst_HEADERS= $(top_srcdir)/tests/src/xml/*.h
 
 if TESTS
 
