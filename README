@@ -66,8 +66,15 @@ You will need to install
 * cppunit (http://cppunit.sourceforge.net/)
 * boost regex (http://www.boost.org/)
 
-Unix : run "make check"
-Windows : run msvc/tests/runtests.bat
+POSIC : 
+* run "make check"
+
+MS Visual Studio :
+* compile the projects msvc/dll/dll.dsp (or vcproj), msvc/tests/testsuite.dsp
+  (or vcproj) and msvc/test/shortsocketserver.dsp (or vcproj) with debug
+  targets.
+* cd mscvc/tests
+* run "runtests debug"
 
 Performance Tests
 =================
