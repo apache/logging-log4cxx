@@ -14,7 +14,7 @@ AC_CANONICAL_TARGET
 #  ? :+1 : ?   == just some internal changes, nothing breaks but might work
 #                 better
 # CURRENT : REVISION : AGE
-LT_VERSION=3:1:0
+LT_VERSION=4:0:0
 
 AC_SUBST(LT_VERSION)
 
@@ -196,9 +196,9 @@ AC_CHECK_FUNCS(gettimeofday ftime)
 AC_MSG_CHECKING(for SMTP support)
 AC_ARG_WITH(SMTP,
 	AC_HELP_STRING(--with-SMTP, [SMTP support. Accepted arguments :
-		libsmtp, CDO, no (default=libsmtp)]),
+		libsmtp, CDO, no (default=no)]),
 	[ac_with_smtp=$withval],
-	[ac_with_smtp=libsmtp])
+	[ac_with_smtp=no])
 case "$ac_with_smtp" in
     CDO)
 	AC_MSG_RESULT(CDO)
