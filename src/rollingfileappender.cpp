@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+
 #include <log4cxx/rollingfileappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
@@ -31,14 +32,14 @@ RollingFileAppender::RollingFileAppender()
 
 
 RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
-     const File& fileName, bool append)
+     const LogString& fileName, bool append)
 : FileAppender(layout, fileName, append),
 maxFileSize(10*1024*1024), maxBackupIndex(1)
 {
 }
 
 RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
-   const File& fileName)
+   const LogString& fileName)
    : FileAppender(layout, fileName),
 maxFileSize(10*1024*1024), maxBackupIndex(1)
 {
@@ -127,7 +128,8 @@ void RollingFileAppender::setOption(const LogString& option,
         }
 }
 
+#if 0
 void RollingFileAppender::subAppend(const char* encoded, log4cxx_size_t size, Pool& p) {
   FileAppender::subAppend(encoded, size, p);
 }
-
+#endif

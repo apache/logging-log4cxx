@@ -70,6 +70,8 @@ const log4cxx::helpers::Class& object::getStaticClass() { \
 }                                                         \
 namespace log4cxx { namespace classes { bool object##IsRegistered = log4cxx::helpers::Class::registerClass(object::getStaticClass()); } }
 
+#define REFERENCE_LOG4CXX_OBJECT(object)\
+namespace log4cxx { namespace classes { extern bool object##IsRegistered; } }
 
 namespace log4cxx
 {

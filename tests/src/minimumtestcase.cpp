@@ -74,7 +74,7 @@ public:
         void simple()
         {
                 LayoutPtr layout = new SimpleLayout();
-                AppenderPtr appender = new FileAppender(layout, LOG4CXX_FILE("output/simple"), false);
+                AppenderPtr appender = new FileAppender(layout, LOG4CXX_STR("output/simple"), false);
                 root->addAppender(appender);
                 common();
 
@@ -85,7 +85,7 @@ public:
         {
                 LayoutPtr layout =
                         new TTCCLayout(LOG4CXX_STR("DATE"));
-                AppenderPtr appender = new FileAppender(layout, LOG4CXX_FILE("output/ttcc"), false);
+                AppenderPtr appender = new FileAppender(layout, LOG4CXX_STR("output/ttcc"), false);
                 root->addAppender(appender);
                 common();
 

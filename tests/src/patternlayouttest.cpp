@@ -430,7 +430,7 @@ public:
 
         void testMDC2()
         {
-                File OUTPUT_FILE   = LOG4CXX_FILE("output/patternLayout.mdc.2");
+                LogString OUTPUT_FILE   = LOG4CXX_STR("output/patternLayout.mdc.2");
                 File WITNESS_FILE  = LOG4CXX_FILE("witness/patternLayout.mdc.2");
 
                 LogString mdcMsgPattern1 = LOG4CXX_STR("%m : %X%n");
@@ -534,13 +534,13 @@ public:
         }
 
 private:
-        static const File FILTERED;
-        static const File TEMP;
+        static const LogString FILTERED;
+        static const LogString TEMP;
 
 };
 
-const File PatternLayoutTest::TEMP("output/temp");
-const File PatternLayoutTest::FILTERED("output/filtered");
+const LogString PatternLayoutTest::TEMP(LOG4CXX_STR("output/temp"));
+const LogString PatternLayoutTest::FILTERED(LOG4CXX_STR("output/filtered"));
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(PatternLayoutTest);

@@ -31,6 +31,9 @@ namespace log4cxx
         */
         class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
         {
+        private:
+                LogString target;
+
         public:
                 DECLARE_LOG4CXX_OBJECT(ConsoleAppender)
                 BEGIN_LOG4CXX_CAST_MAP()
@@ -43,48 +46,32 @@ namespace log4cxx
                 ConsoleAppender(const LayoutPtr& layout, const LogString& target);
                 ~ConsoleAppender();
 
-        /**
-        *  This method overrides the parent
-        *  WriterAppender#closeWriter implementation to do nothing because
-        *  the console stream is not ours to close.
-        * */
-        protected:
-                virtual void closeWriter() {}
 
-        /**
-        *  Sets the value of the <b>#target</b> property. Recognized values
-        *  are "System.out" and "System.err". Any other value will be
-        *  ignored.
-        * */
-        public:
+                /**
+                *  Sets the value of the <b>#target</b> property. Recognized values
+                *  are "System.out" and "System.err". Any other value will be
+                *  ignored.
+                * */
                 void setTarget(const LogString& value);
 
-        /**
-        * Returns the current value of the <b>#target</b> property. The
-        * default value of the option is "System.out".
-        *
-        * See also #setTarget.
-        * */
-        public:
-                const LogString& getTarget() const;
+                /**
+                * Returns the current value of the <b>#target</b> property. The
+                * default value of the option is "System.out".
+                *
+                * See also #setTarget.
+                * */
+                LogString getTarget() const;
 
-        protected:
-                void targetWarn(const LogString& val);
-
-        public:
                 void activateOptions(log4cxx::helpers::Pool& p);
                 void setOption(const LogString& option, const LogString& value);
-
-        public:
                 static const LogString& getSystemOut();
                 static const LogString& getSystemErr();
 
 
-        protected:
-                void subAppend(const LogString& msg, log4cxx::helpers::Pool& p);
+        private:
+                void targetWarn(const LogString& val);
+                static log4cxx::helpers::WriterPtr createWriter(const LogString& target);
 
-                LogString target;
-                bool useErr;
         };
 }  //namespace log4cxx
 

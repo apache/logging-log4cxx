@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,10 @@
 #define _LOG4CXX_WRITER_APPENDER_H
 
 #include <log4cxx/appenderskeleton.h>
-#include <log4cxx/helpers/transcoder.h>
-#include <log4cxx/helpers/pool.h>
-
-typedef size_t log4cxx_size_t;
-typedef void* apr_iconv_t;
+#include <log4cxx/helpers/outputstreamwriter.h>
 
 namespace log4cxx
 {
-        class WriterAppender;
-        typedef helpers::ObjectPtrT<WriterAppender> WriterAppenderPtr;
 
         namespace helpers {
           class Transcoder;
@@ -38,16 +32,12 @@ namespace log4cxx
         */
         class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
         {
-        protected:
-                log4cxx::helpers::Pool pool;
+        private:
                 /**
                 Immediate flush means that the underlying writer or output stream
                 will be flushed at the end of each append operation. Immediate
                 flush is slower but ensures that each append request is actually
                 written. If <code>immediateFlush</code> is set to
-
-
-
                 <code>false</code>, then there is a good chance that the last few
                 logs events are not actually written to persistent media if and
                 when the application crashes.
@@ -65,6 +55,11 @@ namespace log4cxx
                 encoding.  */
                 LogString encoding;
 
+                /**
+                *  This is the {@link Writer Writer} where we will write to.
+                */
+                log4cxx::helpers::WriterPtr writer;
+
 
         public:
                 DECLARE_ABSTRACT_LOG4CXX_OBJECT(WriterAppender)
@@ -76,9 +71,19 @@ namespace log4cxx
                 /**
                 This default constructor does nothing.*/
                 WriterAppender();
+        protected:
+                WriterAppender(const LayoutPtr& layout,
+                              log4cxx::helpers::WriterPtr& writer);
                 WriterAppender(const LayoutPtr& layout);
 
+        public:
                 ~WriterAppender();
+
+                /**
+                Derived appenders should override this method if option structure
+                requires it.
+                */
+                virtual void activateOptions(log4cxx::helpers::Pool& pool);
 
                 /**
                 If the <b>ImmediateFlush</b> option is set to
@@ -115,10 +120,6 @@ namespace log4cxx
                 */
                 virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
-                /**
-                *
-                */
-                void activateOptions(log4cxx::helpers::Pool& pool);
 
         protected:
                 /**
@@ -139,56 +140,56 @@ namespace log4cxx
                 */
                 virtual void close();
 
-
         protected:
                 /**
-                * Close the underlying output stream.
-                * */
-                virtual void closeWriter() = 0;
+                 * Close the underlying {@link java.io.Writer}.
+                 * */
+                void closeWriter();
 
+                /**
+                    Returns an OutputStreamWriter when passed an OutputStream.  The
+                    encoding used will depend on the value of the
+                    <code>encoding</code> property.  If the encoding value is
+                    specified incorrectly the writer will be opened using the default
+                    system encoding (an error message will be printed to the loglog.  */
+                log4cxx::helpers::OutputStreamWriterPtr createWriter(
+                    log4cxx::helpers::OutputStreamPtr& os);
 
-        public:
-                const LogString& getEncoding() const;
+       public:
+                LogString getEncoding() const;
                 void setEncoding(const LogString& value);
 
-        protected:
                 /**
+                  <p>Sets the Writer where the log output will go. The
+                  specified Writer must be opened by the user and be
+                  writable.
 
+                  <p>The <code>java.io.Writer</code> will be closed when the
+                  appender instance is closed.
+
+
+                  <p><b>WARNING:</b> Logging to an unopened Writer will fail.
+                  <p>
+                  @param writer An already opened Writer.  */
+                void setWriter(log4cxx::helpers::WriterPtr& writer);
+
+                virtual bool requiresLayout() const;
+
+        protected:
+               /**
                 Actual writing occurs here.
+               */
+               virtual void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
-                <p>Most subclasses of <code>WriterAppender</code> will need to
-                override one of these method.
-                */
-                virtual void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
-                virtual void subAppend(const LogString& msg, log4cxx::helpers::Pool& p);
-                virtual void subAppend(const char* encoded, log4cxx_size_t size, log4cxx::helpers::Pool& p);
 
-        /**
-        The WriterAppender requires a layout. Hence, this method returns
-        <code>true</code>.
-        */
-        public:
-                virtual bool requiresLayout() const { return true; }
-
-        /**
-        Clear internal references to the writer and other variables.
-
-          Subclasses can override this method for an alternate closing
-        behavior.  */
-
-        protected:
-                virtual void reset();
-
-        /**
-        Write a footer as produced by the embedded layout's
-        Layout#appendFooter method.  */
-        protected:
+                /**
+                Write a footer as produced by the embedded layout's
+                Layout#appendFooter method.  */
                 virtual void writeFooter(log4cxx::helpers::Pool& p);
 
-        /**
-        Write a header as produced by the embedded layout's
-        Layout#appendHeader method.  */
-        protected:
+                /**
+                Write a header as produced by the embedded layout's
+                Layout#appendHeader method.  */
                 virtual void writeHeader(log4cxx::helpers::Pool& p);
 
         private:
@@ -196,10 +197,10 @@ namespace log4cxx
                 //  prevent copy and assignment
                 WriterAppender(const WriterAppender&);
                 WriterAppender& operator=(const WriterAppender&);
-                apr_iconv_t transcoder;
-                enum { SUBSTITUTION_CHAR = LOG4CXX_STR('?') };
-                enum { BUFSIZE = 1024 };
         };
+
+        typedef helpers::ObjectPtrT<WriterAppender> WriterAppenderPtr;
+
 }  //namespace log4cxx
 
 #endif //_LOG4CXX_WRITER_APPENDER_H

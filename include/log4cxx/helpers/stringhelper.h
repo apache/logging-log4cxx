@@ -52,6 +52,7 @@ namespace log4cxx
             static LogString toString(size_t i, log4cxx::helpers::Pool& pool);
             static void toString(size_t i, Pool& pool, std::string& s);
 
+            static LogString toString(bool val);
 
             static LogString formatHex(const void* handle);
 

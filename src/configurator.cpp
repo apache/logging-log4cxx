@@ -71,7 +71,7 @@ REFERENCE_LOG4CXX_OBJECT(StringMatchFilter)
 
 
 Configurator::Configurator() {
-    initialized = 
+    initialized =
         STATUS_LOG4CXX_OBJECT(AsyncAppender) &&
         STATUS_LOG4CXX_OBJECT(ConsoleAppender) &&
         STATUS_LOG4CXX_OBJECT(FileAppender) &&

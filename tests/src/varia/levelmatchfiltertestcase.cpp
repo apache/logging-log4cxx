@@ -152,18 +152,18 @@ public:
         }
 
 private:
-        static const File ACCEPT_FILE;
-        static const File ACCEPT_WITNESS;
-        static const File DENY_FILE;
-        static const File DENY_WITNESS;
+        static const LogString ACCEPT_FILE;
+        static const LogString ACCEPT_WITNESS;
+        static const LogString DENY_FILE;
+        static const LogString DENY_WITNESS;
 
 
 };
 
-const File LevelMatchFilterTestCase::ACCEPT_FILE("output/LevelMatchFilter_accept");
-const File LevelMatchFilterTestCase::ACCEPT_WITNESS("witness/LevelMatchFilter_accept");
-const File LevelMatchFilterTestCase::DENY_FILE("output/LevelMatchFilter_deny");
-const File LevelMatchFilterTestCase::DENY_WITNESS("witness/LevelMatchFilter_deny");
+const LogString LevelMatchFilterTestCase::ACCEPT_FILE(LOG4CXX_STR("output/LevelMatchFilter_accept"));
+const LogString LevelMatchFilterTestCase::ACCEPT_WITNESS(LOG4CXX_STR("witness/LevelMatchFilter_accept"));
+const LogString LevelMatchFilterTestCase::DENY_FILE(LOG4CXX_STR("output/LevelMatchFilter_deny"));
+const LogString LevelMatchFilterTestCase::DENY_WITNESS(LOG4CXX_STR("witness/LevelMatchFilter_deny"));
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LevelMatchFilterTestCase);

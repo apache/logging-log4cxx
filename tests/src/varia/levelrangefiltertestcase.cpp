@@ -242,17 +242,17 @@ public:
         }
 
         private:
-        static const File ACCEPT_FILE;
-        static const File ACCEPT_WITNESS;
-        static const File NEUTRAL_FILE;
-        static const File NEUTRAL_WITNESS;
+        static const LogString ACCEPT_FILE;
+        static const LogString ACCEPT_WITNESS;
+        static const LogString NEUTRAL_FILE;
+        static const LogString NEUTRAL_WITNESS;
 
 };
 
 
-const File LevelRangeFilterTestCase::ACCEPT_FILE("output/LevelRangeFilter_accept");
-const File LevelRangeFilterTestCase::ACCEPT_WITNESS("witness/LevelRangeFilter_accept");
-const File LevelRangeFilterTestCase::NEUTRAL_FILE("output/LevelRangeFilter_neutral");
-const File LevelRangeFilterTestCase::NEUTRAL_WITNESS("witness/LevelRangeFilter_neutral");
+const LogString LevelRangeFilterTestCase::ACCEPT_FILE(LOG4CXX_STR("output/LevelRangeFilter_accept"));
+const LogString LevelRangeFilterTestCase::ACCEPT_WITNESS(LOG4CXX_STR("witness/LevelRangeFilter_accept"));
+const LogString LevelRangeFilterTestCase::NEUTRAL_FILE(LOG4CXX_STR("output/LevelRangeFilter_neutral"));
+const LogString LevelRangeFilterTestCase::NEUTRAL_WITNESS(LOG4CXX_STR("witness/LevelRangeFilter_neutral"));
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LevelRangeFilterTestCase);

@@ -309,11 +309,11 @@ public:
                 LOG4CXX_FATAL(root, msg + StringHelper::toString(i, p));
         }
         private:
-        static const File TEMP;
+        static const LogString TEMP;
         static const File FILTERED;
 };
 
-const File XMLLayoutTestCase::TEMP("output/temp");
+const LogString XMLLayoutTestCase::TEMP(LOG4CXX_STR("output/temp"));
 const File XMLLayoutTestCase::FILTERED("output/filtered");
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XMLLayoutTestCase);

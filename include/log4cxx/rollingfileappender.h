@@ -63,14 +63,14 @@ namespace log4cxx
                 appended to. Otherwise, the file desginated by
                 <code>filename</code> will be truncated before being opened.
                 */
-                RollingFileAppender(const LayoutPtr& layout, const File& fileName, bool append);
+                RollingFileAppender(const LayoutPtr& layout, const LogString& fileName, bool append);
 
                 /**
                 Instantiate a FileAppender and open the file designated by
                 <code>filename</code>. The opened filename will become the output
                 destination for this appender.
                 <p>The file will be appended to.  */
-                RollingFileAppender(const LayoutPtr& layout, const File& fileName);
+                RollingFileAppender(const LayoutPtr& layout, const LogString& fileName);
 
                 ~RollingFileAppender();
 
@@ -134,11 +134,6 @@ namespace log4cxx
                 virtual void setOption(const LogString& option, const LogString& value);
 
         protected:
-                /**
-                This method differentiates RollingFileAppender from its parent
-                class.
-                */
-                virtual void subAppend(const char* encoded, log4cxx_size_t size, log4cxx::helpers::Pool& p);
         }; // class RollingFileAppender
 }  // namespace log4cxx
 

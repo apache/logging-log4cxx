@@ -19,11 +19,11 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/synchronized.h>
-#include <log4cxx/helpers/transcoder.h>
-#include <apr_atomic.h>
-#include <apr_file_io.h>
 #include <log4cxx/helpers/pool.h>
-#include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/helpers/fileoutputstream.h>
+#include <log4cxx/helpers/outputstreamwriter.h>
+#include <log4cxx/helpers/bufferedwriter.h>
+#include <log4cxx/helpers/bytebuffer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -33,65 +33,43 @@ IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
 FileAppender::FileAppender()
 : fileAppend(true), fileName(), bufferedIO(false), bufferSize(8*1024),
-  pool(), ofs(NULL), fileClosed(1)
+  fileClosed(1)
 {
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
+FileAppender::FileAppender(const LayoutPtr& layout, const LogString& fileName,
         bool append, bool bufferedIO, int bufferSize)
-: fileAppend(append), fileName(fileName), bufferedIO(bufferedIO), bufferSize(bufferSize),
-  pool(), ofs(NULL), fileClosed(1)
+: WriterAppender(layout), fileAppend(append), fileName(fileName), bufferedIO(bufferedIO), bufferSize(bufferSize),
+  fileClosed(1)
 {
-        this->layout = layout;
         Pool p;
         activateOptions(p);
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
+FileAppender::FileAppender(const LayoutPtr& layout, const LogString& fileName,
         bool append)
-: fileAppend(append), fileName(fileName), bufferedIO(false), bufferSize(8*1024),
-  pool(), ofs(NULL), fileClosed(1)
+: WriterAppender(layout), fileAppend(append), fileName(fileName), bufferedIO(false), bufferSize(8*1024),
+  fileClosed(1)
 {
-        this->layout = layout;
         Pool p;
         activateOptions(p);
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName)
-: fileAppend(true), fileName(fileName), bufferedIO(false), bufferSize(8*1024),
-  pool(), ofs(NULL), fileClosed(1)
+FileAppender::FileAppender(const LayoutPtr& layout, const LogString& fileName)
+: WriterAppender(layout), fileAppend(true), fileName(fileName),
+  bufferedIO(false), bufferSize(8*1024), fileClosed(1)
 {
-        this->layout = layout;
         Pool p;
         activateOptions(p);
 }
 
 FileAppender::~FileAppender()
 {
-    if (!APRInitializer::isDestructed) {
-        finalize();
-    }
 }
 
-void FileAppender::setFile(const File& file)
+void FileAppender::setFile(const LogString& file)
 {
         fileName = file;
-}
-
-void FileAppender::setFile(const File& file, bool append,
-        bool bufferedIO, int bufferSize) {
-        fileName = file;
-        fileAppend = append;
-        this->bufferedIO = bufferedIO;
-        this->bufferSize = bufferSize;
-}
-
-
-void FileAppender::closeWriter() {
-    if (ofs != NULL) {
-        apr_file_close(ofs);
-        ofs = NULL;
-    }
 }
 
 
@@ -101,7 +79,7 @@ void FileAppender::setBufferedIO(bool bufferedIO)
         this->bufferedIO = bufferedIO;
         if(bufferedIO)
         {
-                immediateFlush = false;
+                setImmediateFlush(false);
         }
 }
 
@@ -137,57 +115,39 @@ void FileAppender::setOption(const LogString& option,
 
 void FileAppender::activateOptions(Pool& p)
 {
-        if (fileName.getName().empty()) {
-          LogLog::warn((LogString) LOG4CXX_STR("File option not set for appender [")
-              + name + LOG4CXX_STR("]."));
-          LogLog::warn(LOG4CXX_STR("Are you using FileAppender instead of ConsoleAppender?"));
-        } else {
-          synchronized sync(mutex);
-          if (ofs != NULL) {
-            LogLog::warn((LogString) LOG4CXX_STR("Appender [") +
-                 name + LOG4CXX_STR("] already open."));
-          }
-          apr_fileperms_t perm = APR_OS_DEFAULT;
-          apr_int32_t flags = APR_WRITE | APR_CREATE;
-          if (fileAppend) {
-            flags |= APR_APPEND;
-          } else {
-            flags |= APR_TRUNCATE;
-          }
-          if (bufferedIO) {
-            flags |= APR_BUFFERED;
-          }
-          ofs = NULL;
-          fileName.open(&ofs, flags, perm, pool);
-          fileClosed = 0;
-        }
-        if (ofs != NULL) {
-          writeHeader(p);
-        }
-}
-
-void FileAppender::subAppend(const char* encoded, log4cxx_size_t size, Pool& p) {
-  if (ofs != NULL) {
-    apr_file_write(ofs, encoded, &size);
-    //
-    //   do not call apr_file_flush here as it is a no-op
-    //   on Unix and wildly expensive on Windows.
-    //   See LOGCXX-58 for details
+  int errors = 0;
+  if (!fileName.empty()) {
+    try {
+      setFile(fileName, fileAppend, bufferedIO, bufferSize, p);
+    } catch (IOException& e) {
+      errors++;
+      LogLog::error(
+        LogString(LOG4CXX_STR("setFile(")) + fileName
+           + LOG4CXX_STR(",") + StringHelper::toString(fileAppend) +
+           LOG4CXX_STR(") call failed."), e);
+    }
+  } else {
+    errors++;
+    LogLog::error(LogString(LOG4CXX_STR("File option not set for appender ["))
+       +  name + LOG4CXX_STR("]."));
+    LogLog::warn(LOG4CXX_STR("Are you using FileAppender instead of ConsoleAppender?"));
+  }
+  if(errors == 0) {
+    WriterAppender::activateOptions(p);
   }
 }
-
 
 
 /**
  * Replaces double backslashes (except the leading doubles of UNC's)
  * with single backslashes for compatibility with existing path
- * specifications that were working around use of 
+ * specifications that were working around use of
  * OptionConverter::convertSpecialChars in XML configuration files.
  *
  * @param src source string
  * @return modified string
  * @since 0.9.8
- * 
+ *
  */
 LogString FileAppender::stripDuplicateBackslashes(const LogString& src) {
     logchar backslash = LOG4CXX_STR('\\');
@@ -217,3 +177,80 @@ LogString FileAppender::stripDuplicateBackslashes(const LogString& src) {
     }
     return src;
 }
+
+/**
+  <p>Sets and <i>opens</i> the file where the log output will
+  go. The specified file must be writable.
+
+  <p>If there was already an opened file, then the previous file
+  is closed first.
+
+  <p><b>Do not use this method directly. To configure a FileAppender
+  or one of its subclasses, set its properties one by one and then
+  call activateOptions.</b>
+
+  @param filename The path to the log file.
+  @param append   If true will append to fileName. Otherwise will
+      truncate fileName.
+  @param bufferedIO
+  @param bufferSize
+
+  @throws IOException
+
+ */
+void FileAppender::setFile(
+  const LogString& filename,
+      bool append,
+      bool bufferedIO,
+      size_t bufferSize,
+      Pool& p) {
+  synchronized sync(mutex);
+  LogLog::debug(LOG4CXX_STR("setFile called"));
+
+  // It does not make sense to have immediate flush and bufferedIO.
+  if (bufferedIO) {
+    setImmediateFlush(false);
+  }
+
+  closeWriter();
+
+  bool writeBOM = false;
+  if(StringHelper::equalsIgnoreCase(getEncoding(),
+      LOG4CXX_STR("utf-16"), LOG4CXX_STR("UTF-16"))) {
+      //
+      //    don't want to write a byte order mark if the file exists
+      //
+      if (append) {
+        File outFile(filename);
+        writeBOM = !outFile.exists(p);
+      } else {
+        writeBOM = true;
+      }
+  }
+
+  OutputStreamPtr outStream(new FileOutputStream(filename, append));
+  //
+  //   if a new file and UTF-16, then write a BOM
+  //
+  if (writeBOM) {
+      char bom[] = { 0xFE, 0xFF };
+      ByteBuffer buf(bom, 2);
+      outStream->write(buf, p);
+  }
+
+  WriterPtr newWriter(createWriter(outStream));
+
+  if (bufferedIO) {
+    newWriter = new BufferedWriter(newWriter, bufferSize);
+  }
+  setWriter(newWriter);
+
+  this->fileAppend = append;
+  this->bufferedIO = bufferedIO;
+  this->fileName = filename;
+  this->bufferSize = bufferSize;
+  writeHeader(p);
+  LogLog::debug(LOG4CXX_STR("setFile ended"));
+
+}
+

@@ -208,6 +208,13 @@ LogString StringHelper::toString(int n, Pool& pool) {
   return str;
 }
 
+LogString StringHelper::toString(bool val) {
+  if (val) {
+    return LOG4CXX_STR("true");
+  }
+  return LOG4CXX_STR("false");
+}
+
 void StringHelper::toString(int n, Pool& pool, std::string& str) {
   char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
   str.append(fmt);
