@@ -116,7 +116,7 @@ SocketImpl::~SocketImpl()
 void SocketImpl::accept(SocketImplPtr s)
 {
 	sockaddr_in client_addr;
-#ifdef WIN32 || defined(__hpux)
+#if defined(WIN32) || defined(__hpux)
 	int client_len;
 #else
 	socklen_t client_len;
