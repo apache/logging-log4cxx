@@ -22,5 +22,6 @@ using namespace boost;
 
 String LineNumberFilter::filter(const String& in) const throw(UnexpectedFormatException)
 {
-	return RegEx("\\(\\d{1,4}\\)").Merge(in, "\\(X\\)");
+	String temp = RegEx(" [^ ]*.[\\\\]").Merge(in, " ");
+	return RegEx("\\(\\d{1,4}\\)").Merge(temp, "\\(X\\)");
 }

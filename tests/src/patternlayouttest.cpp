@@ -40,11 +40,11 @@
 #define PAT3 ABSOLUTE_TIME_PAT _T(" ") PAT0
 #define PAT4 RELATIVE_TIME_PAT _T(" ") PAT0
 #define PAT5 _T("\\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}")
-#define PAT6 _T("\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) patternlayouttest.cpp\\(\\d{1,4}\\): Message \\d{1,3}")
+#define PAT6 _T("\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\(\\d{1,4}\\): Message \\d{1,3}")
 #define PAT11a _T("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[\\d*]\\ log4j.PatternLayoutTest: Message \\d{1,2}")
 #define PAT11b _T("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[\\d*]\\ root: Message \\d{1,2}")
 #define PAT12 _T("^\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) ")\
-    _T("patternlayouttest.cpp\\(\\d{1,4}\\): ")\
+    _T(".*patternlayouttest.cpp\\(\\d{1,4}\\): ")\
     _T("Message \\d{1,2}")
 #define PAT_MDC_1 _T("")
 
