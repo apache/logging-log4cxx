@@ -18,7 +18,7 @@ LT_VERSION=8:0:0
 
 AC_SUBST(LT_VERSION)
 
-AM_CONFIG_HEADER(include/log4cxx/config.h)
+AM_CONFIG_HEADER(include/log4cxx/config_auto.h)
 
 AH_VERBATIM([HAVE_NO_EXPLICIT_EXPORTS],
 [/* no explicit exports */
@@ -357,7 +357,6 @@ tests/witness/Makefile
 performance/Makefile
 performance/xml/Makefile
 examples/Makefile
-msvc/config.h.msvc
 msvc/Makefile
 msvc/dll/Makefile
 msvc/examples/Makefile

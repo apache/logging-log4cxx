@@ -2,7 +2,7 @@
 #define PACKAGE "log4cxx"
 
 /* Version number of package */
-#define VERSION "@VERSION@"
+#define VERSION "0.9.6"
 
 /* Define to 1 if you have the `ftime' function. */
 #define HAVE_FTIME 1
