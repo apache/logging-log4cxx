@@ -33,6 +33,7 @@ EXTRA_DIST = \
   xmllayout_test.sh\
   xmllayout_test.witness\
   ttcclayout_test.sh\
+  ttcclayout_test.witness\
   patternlayout_test.witness\
   patternlayout_test.sh\
   propertyconfigurator_test.properties\
