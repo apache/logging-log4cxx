@@ -21,6 +21,9 @@
 
 namespace log4cxx
 {
+	class TTCCLayout;
+	typedef helpers::ObjectPtrT<TTCCLayout> TTCCLayoutPtr;
+
     /**
     TTCC layout format consists of time, thread, category and nested
     diagnostic context information, hence the name.

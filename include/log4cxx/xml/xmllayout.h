@@ -28,6 +28,8 @@ namespace log4cxx
 
 	namespace xml
 	{
+		class XMLLayout;
+		typedef helpers::ObjectPtrT<XMLLayout> XMLLayoutPtr;
 	
 		/**
 		* The output of the XMLLayout consists of a series of log4cxx:event
@@ -87,7 +89,7 @@ namespace log4cxx
 			SMTPAppender} then make sure to set the
 			<b>LocationInfo</b> option of that appender as well.
 			*/
-			inline void setLocationInfo(bool flocationInfoag)
+			inline void setLocationInfo(bool locationInfo)
 				{ this->locationInfo = locationInfo; }
 
 				/**
