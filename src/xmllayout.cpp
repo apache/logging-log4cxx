@@ -75,7 +75,7 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 
     std::set<tstring> mdcKeySet = event.getMDCKeySet();
 
-    if(!mdcKeySet.empty() > 0)
+    if(!mdcKeySet.empty())
     {
 		/**
 		* Normally a sort isn't required, but for Test Case purposes
