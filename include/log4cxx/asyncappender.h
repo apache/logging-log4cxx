@@ -27,7 +27,7 @@ namespace log4cxx
 	{
 		class BoundedFIFO;
 		typedef ObjectPtrT<BoundedFIFO> BoundedFIFOPtr;
-	};
+	} 
 
 	class Dispatcher;
 	typedef helpers::ObjectPtrT<Dispatcher> DispatcherPtr;
@@ -171,7 +171,7 @@ namespace log4cxx
 		*/
 		void run();
 	}; // class Dispatcher
-}; //  namespace log4cxx
+}  //  namespace log4cxx
 
 #endif//  _LOG4CXX_ASYNC_APPENDER_H
 

@@ -49,7 +49,7 @@ namespace log4cxx
 			virtual ~RepositorySelector() {}
 			virtual LoggerRepositoryPtr& getLoggerRepository() = 0;
 		};
-	}; //namespace spi
+	}  //namespace spi
 }; //namespace log4cxx
 
 #endif //_LOG4CXX_SPI_REPOSITORY_SELECTOR_H

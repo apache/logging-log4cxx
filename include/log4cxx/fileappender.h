@@ -217,6 +217,6 @@ namespace log4cxx
         void setBufferSize(int bufferSize) { this->bufferSize = bufferSize; }
 			
 	}; // class FileAppender
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif

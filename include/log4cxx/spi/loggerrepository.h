@@ -113,7 +113,7 @@ namespace log4cxx
 				
             virtual void resetConfiguration() = 0;
         }; // class LoggerRepository
-	}; // namespace spi
+	}  // namespace spi
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_SPI_LOG_REPOSITORY_H

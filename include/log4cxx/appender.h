@@ -139,6 +139,6 @@ namespace log4cxx
        */    
        virtual bool requiresLayout() const = 0;
    };
-};
+} 
 
 #endif //_LOG4CXX_APPENDER_H

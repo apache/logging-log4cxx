@@ -61,4 +61,4 @@ namespace log4cxx
 		static const LevelPtr& toLevel(const String& sArg,
 			const LevelPtr& defaultLevel);
 	};
-};
+} 

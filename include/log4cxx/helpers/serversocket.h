@@ -81,7 +81,7 @@ namespace log4cxx
 		protected:
 			SocketImplPtr socketImpl;
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_SERVER_SOCKET_H

@@ -50,7 +50,7 @@ namespace log4cxx
 			void * mutex;
 #endif
 		};
-	};// namespace helpers
+	} // namespace helpers
 };// namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_MUTEX_H

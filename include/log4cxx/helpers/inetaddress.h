@@ -68,7 +68,7 @@ namespace log4cxx
 
 			int address;
 		}; // class InetAddress
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPER_INETADDRESS_H

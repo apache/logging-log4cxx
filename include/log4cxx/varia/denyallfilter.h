@@ -52,7 +52,7 @@ namespace log4cxx
 			FilterDecision decide(const spi::LoggingEventPtr& event) const
 				{ return spi::Filter::DENY; }
 		}; // class DenyAllFilter
-	}; // namespace varia
+	}  // namespace varia
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_VARIA_DENY_ALL_FILTER_H

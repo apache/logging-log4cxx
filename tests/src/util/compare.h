@@ -27,4 +27,4 @@ namespace log4cxx
 		/// Prints file on the console.
 		static void outputFile(const String& file);
 	};
-};
+} 

@@ -62,7 +62,7 @@ namespace log4cxx
 			static void appendEscapingCDATA(
 				ostream& buf, const String& input);
 		}; // class Transform
-	}; // namespace helpers
+	}  // namespace helpers
 }; //namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_TRANSFORM_H

@@ -82,7 +82,7 @@ namespace log4cxx
 			virtual int getLength() = 0;
 			virtual XMLDOMNodePtr item(int index) = 0;
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_XML_H

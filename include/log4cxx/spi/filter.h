@@ -119,7 +119,7 @@ namespace log4cxx
             @return The decision of the filter.  */
             virtual FilterDecision decide(const LoggingEventPtr& event) const = 0;
 		};
-	};
-};
+	} 
+} 
 
 #endif //_LOG4CXX_SPI_FILTER_H

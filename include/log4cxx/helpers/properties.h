@@ -146,7 +146,7 @@ cheeses
 			*/
 			std::vector<String> propertyNames() const;
 		}; // class Properties
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_HELPER_PROPERTIES_H

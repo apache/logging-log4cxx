@@ -85,7 +85,7 @@ namespace log4cxx
 			*/
 			ResourceBundlePtr parent;
 		}; // class ResourceBundle
- 	}; // namespace helpers
+ 	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif

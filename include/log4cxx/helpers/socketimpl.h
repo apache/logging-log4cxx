@@ -175,7 +175,7 @@ namespace log4cxx
 			*/
 			void setSoTimeout(int timeout);
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_SOCKET_IMPL

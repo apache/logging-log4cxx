@@ -37,6 +37,6 @@ namespace log4cxx
 
 		virtual LoggerPtr makeNewLoggerInstance(const String& name);
 	};	
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_DEFAULT_CATEGORY_FACTORY_H

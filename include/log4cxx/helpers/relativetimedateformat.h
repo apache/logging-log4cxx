@@ -45,7 +45,7 @@ namespace log4cxx
 				os << (time - startTime);
 			}
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_RELATIVE_TIME_DATE_FORMAT_H

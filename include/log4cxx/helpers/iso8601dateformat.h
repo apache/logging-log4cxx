@@ -38,7 +38,7 @@ namespace log4cxx
 			ISO8601DateFormat(const TimeZonePtr& timeZone)
 			 : DateFormat(_T("%Y-%m-%d %H:%M:%S,%Q"), timeZone) {}
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_ISO_8601_DATE_FORMAT_H

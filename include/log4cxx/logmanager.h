@@ -31,7 +31,7 @@ namespace log4cxx
     {
 		class LoggerFactory;
 		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
-    };
+    } 
     
     /**
     * Use the <code>LogManager</code> class to retreive Logger
@@ -99,6 +99,6 @@ namespace log4cxx
 		*/
         static void resetConfiguration();
     }; // class LogManager
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_LOG_MANAGER_H

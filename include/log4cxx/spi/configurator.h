@@ -62,7 +62,7 @@ namespace log4cxx
 			virtual void doConfigure(const String& configFileName, 
 				spi::LoggerRepositoryPtr& repository) = 0;
 		};
-	};
-};
+	} 
+} 
 
 #endif // _LOG4CXX_SPI_CONFIGURATOR_H

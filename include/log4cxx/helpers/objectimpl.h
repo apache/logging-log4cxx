@@ -44,7 +44,7 @@ namespace log4cxx
 			mutable CriticalSection cs;
 			mutable void * eventList;
 		};
-	};
-};
+	} 
+} 
 
 #endif //_LOG4CXX_HELPERS_OBJECT_IMPL_H

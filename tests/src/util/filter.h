@@ -51,6 +51,6 @@ namespace log4cxx
 		static String merge(const String& pattern, const String& in, const String& fmt);
 		static bool match(const String& pattern, const String& in);
 	};
-};
+} 
 
 #endif //_LOG4CXX_TESTS_UTIL_FILTER_H

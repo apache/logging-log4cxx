@@ -85,7 +85,7 @@ namespace log4cxx
 			*/
 			void resize(int newSize);
 		}; // class CyclicBuffer
-	}; //namespace helpers
+	}  //namespace helpers
 }; //namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_CYCLICBUFFER_H

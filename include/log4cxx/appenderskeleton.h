@@ -184,6 +184,6 @@ namespace log4cxx
 		*/
 		void setThreshold(const LevelPtr& threshold);
 	}; // class AppenderSkeleton
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_APPENDER_SKELETON_H

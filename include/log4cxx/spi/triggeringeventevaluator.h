@@ -50,7 +50,7 @@ namespace log4cxx
 			*/
 			virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event) = 0;
 		};
-	};
-};
+	} 
+} 
 
 #endif // _LOG4CXX_SPI_TRIGGERING_EVENT_EVALUATOR_H

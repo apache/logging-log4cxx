@@ -124,7 +124,7 @@ namespace log4cxx
 		protected:
 			MSXML::IXMLDOMNodeListPtr nodeList;
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // HAVE_MS_XML

@@ -170,6 +170,6 @@ namespace log4cxx
 	*/
 	virtual bool ignoresThrowable() const { return true; }
 	};
-};
+} 
 
 #endif

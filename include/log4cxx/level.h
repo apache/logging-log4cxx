@@ -196,7 +196,7 @@ namespace log4cxx
 		String levelStr;
 		int syslogEquivalent;
 	};
-};
+} 
 
 #define DECLARE_LOG4CXX_LEVEL(level)\
 public:\

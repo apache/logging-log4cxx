@@ -39,5 +39,5 @@
 			InetAddress address;
 			DatagramSocketPtr ds;
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx

@@ -111,7 +111,7 @@ namespace log4cxx
 	};
 
 	typedef helpers::ObjectPtrT<XLogger> XLoggerPtr;
-};
+} 
 
 #define LOG4CXX_TRACE(logger, message) { \
 	if (logger->isEnabledFor(log4cxx::XLevel::TRACE)) {\

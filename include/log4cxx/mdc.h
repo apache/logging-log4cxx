@@ -92,6 +92,6 @@ namespace log4cxx
 		
 		static void setContext(Map& map);
 	}; // class MDC;
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif // _LOG4CXX_MDC_H

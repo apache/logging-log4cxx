@@ -125,7 +125,7 @@ namespace log4cxx
 			xmlNodePtr currentChild;
 			int currentIndex;
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // HAVE_LIBXML2

@@ -26,7 +26,7 @@ namespace log4cxx
 	{
 		class PatternConverter;
 		typedef ObjectPtrT<PatternConverter> PatternConverterPtr;
-	};
+	} 
 
 	class PatternLayout;
 	typedef helpers::ObjectPtrT<PatternLayout> PatternLayoutPtr;
@@ -466,6 +466,6 @@ namespace log4cxx
 		*/
 		virtual helpers::PatternConverterPtr createPatternParser(const String& pattern);
 	};
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_PATTERN_LAYOUT_H

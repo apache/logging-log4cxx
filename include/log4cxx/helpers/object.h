@@ -108,8 +108,8 @@ namespace log4cxx
 		protected:
 			const Object * object;
 		};
-	};
-};
+	} 
+} 
 
 #define BEGIN_LOG4CXX_CAST_MAP()\
 const void * cast(const helpers::Class& clazz) const\

@@ -182,6 +182,6 @@ namespace log4cxx
 	protected:
 		virtual void writeHeader();
 	};
-}; //namespace log4cxx
+}  //namespace log4cxx
 
 #endif //_LOG4CXX_WRITER_APPENDER_H

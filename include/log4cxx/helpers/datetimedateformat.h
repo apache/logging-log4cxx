@@ -33,7 +33,7 @@ namespace log4cxx
 			DateTimeDateFormat(const TimeZonePtr& timeZone)
 			 : DateFormat(_T("%d %b %Y %H:%M:%S,%Q"), timeZone) {}
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_DATE_TIME_DATE_FORMAT_H

@@ -135,7 +135,7 @@ namespace log4cxx
 			*/
 			FilterDecision decide(const spi::LoggingEventPtr& event) const;
 		}; // class LevelMatchFilter
-	}; // namespace varia
+	}  // namespace varia
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_VARIA_LEVEL_RANGE_FILTER_H

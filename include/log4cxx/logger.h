@@ -35,7 +35,7 @@ namespace log4cxx
 
 		class LoggerRepository;
 		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-	};
+	} 
 	
     class Logger;
 	/** smart pointer to a Logger class */
@@ -536,7 +536,7 @@ namespace log4cxx
 		*/
 		void warn(const String& message, const char* file=NULL, int line=-1);
    };
-};
+} 
 
 /** @addtogroup LoggingMacros Logging macros
 @{

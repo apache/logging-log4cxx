@@ -119,7 +119,7 @@ namespace log4cxx
 			*/
 			virtual void setBackupAppender(const AppenderPtr& appender) = 0;
 		};
-	}; //namespace spi
+	}  //namespace spi
 }; //namespace log4cxx
 
 #endif //_LOG4CXX_SPI_ERROR_HANDLER_H

@@ -114,7 +114,7 @@ namespace log4cxx
 			
 			static TimeZonePtr defaultTimeZone;
 		};
-	};
-};
+	} 
+} 
 
 #endif //_LOG4CXX_HELPERS_TIMEZONE_H

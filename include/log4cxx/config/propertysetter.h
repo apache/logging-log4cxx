@@ -28,7 +28,7 @@ namespace log4cxx
 		typedef ObjectPtrT<Object> ObjectPtr;
 
 		class Properties;
-	};
+	} 
 
 	namespace config
 	{
@@ -92,7 +92,7 @@ Object supports the spi::OptionHandler interface, the
 
 			void activate();
 		}; // class PropertySetter
-	}; // namespace config;
+	}  // namespace config;
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_CONFIG_PROPERTYSETTER_H

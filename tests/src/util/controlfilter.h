@@ -32,7 +32,7 @@ namespace log4cxx
 	protected:
 		std::vector<String> allowedPatterns;
 	};
-};
+} 
 
 
 #endif //_LOG4CXX_TESTS_UTIL_CONTROL_FILTER_H

@@ -29,7 +29,7 @@ namespace log4cxx
 	{
 		class LoggingEvent;
 		typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-	};
+	} 
 
 	namespace helpers
 	{
@@ -155,7 +155,7 @@ namespace log4cxx
 					const spi::LoggingEventPtr& event) const;
 			};
 		}; // class PatternParser
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_HELPER_PATTERN_PARSER_H

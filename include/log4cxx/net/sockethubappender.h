@@ -29,7 +29,7 @@ namespace log4cxx
 	{
 		class SocketOutputStream;
 		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-	};
+	} 
 
 	namespace net
 	{
@@ -223,7 +223,7 @@ namespace log4cxx
 			typedef helpers::ObjectPtrT<ServerMonitor> ServerMonitorPtr;
 			ServerMonitorPtr serverMonitor;
 		}; // class SocketHubAppender
-	}; // namespace net
+	}  // namespace net
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_NET_SOCKET_HUB_APPENDER_H

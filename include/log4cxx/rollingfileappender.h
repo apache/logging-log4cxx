@@ -134,6 +134,6 @@ namespace log4cxx
 		*/
 		virtual void subAppend(const spi::LoggingEventPtr& event);
 	}; // class RollingFileAppender
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_ROLLING_FILE_APPENDER_H

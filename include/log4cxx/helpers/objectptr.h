@@ -180,7 +180,7 @@ namespace log4cxx
         public:
             T * p;
         };
-    };
-};
+    } 
+} 
 
 #endif //_LOG4CXX_HELPERS_OBJECT_PTR_H

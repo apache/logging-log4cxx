@@ -105,7 +105,7 @@ namespace log4cxx
 			*/
 			void setBackupAppender(const AppenderPtr& backup);
   		};
-	}; // namespace varia
+	}  // namespace varia
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_VARIA_FALLBACK_ERROR_HANDLER_H

@@ -54,7 +54,7 @@ namespace log4cxx
 		protected:
 			Properties properties;
 		}; // class PropertyResourceBundle
- 	}; // namespace helpers
+ 	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_PROPERTY_RESOURCE_BUNDLE_H

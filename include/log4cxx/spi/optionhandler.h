@@ -63,7 +63,7 @@ namespace log4cxx
 			virtual void setOption(const String& option, const String& value) = 0;
 		
 		}; // class OptionConverter
-	}; // namespace spi
+	}  // namespace spi
 }; // namespace log4cxx
 
 

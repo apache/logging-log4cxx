@@ -34,6 +34,6 @@ namespace log4cxx
 			static String getResource(const String& name);
 			static istream * getResourceAsStream(const String& name);
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 #endif //_LOG4CXX_HELPERS_LOADER_H

@@ -27,7 +27,7 @@ namespace log4cxx
 	{
 		class SocketOutputStream;
 		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-	};
+	} 
 
 	namespace net
 	{

@@ -95,7 +95,7 @@ namespace log4cxx
 			HANDLE hEventLog;
 			SID * pCurrentUserSID;
 		}; // class NTEventLogAppender
-    }; // namespace nt
+    }  // namespace nt
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_NT_EVENT_LOG_APPENDER_HEADER_

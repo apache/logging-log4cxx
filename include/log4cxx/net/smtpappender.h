@@ -267,7 +267,7 @@ namespace log4cxx
 			*/
 			virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event);
 		}; // class DefaultEvaluator
-	}; // namespace net
+	}  // namespace net
 }; // namespace log4cxx
 
 //#endif // HAVE_SMTP

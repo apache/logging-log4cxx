@@ -211,6 +211,6 @@ namespace log4cxx
 		*/
 		static void remove();
 	}; // class NDC;
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif // _LOG4CXX_NDC_H

@@ -285,6 +285,6 @@ namespace log4cxx
 
 		void updateChildren(ProvisionNode& pn, LoggerPtr& logger);
 	};
-}; //namespace log4cxx
+}  //namespace log4cxx
 
 #endif //_LOG4CXX_HIERARCHY_H

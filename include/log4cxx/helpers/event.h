@@ -95,7 +95,7 @@ namespace log4cxx
 			void * event;
 #endif 
 		}; // class Event
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cx
 
 #endif //_LOG4CXX_HELPERS_EVENT_H

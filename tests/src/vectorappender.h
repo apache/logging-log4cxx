@@ -56,4 +56,4 @@ namespace log4cxx
 		bool requiresLayout() const
 			{ return false;	}
 	};
-};
+} 

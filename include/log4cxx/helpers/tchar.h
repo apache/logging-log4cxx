@@ -322,6 +322,6 @@ namespace log4cxx
 	typedef std::basic_string<TCHAR> String;
 	typedef std::basic_ostream<TCHAR> ostream;
 	typedef std::basic_istream<TCHAR> istream;
-};
+} 
 
 #endif //_LOG4CXX_HELPERS_TCHAR_H

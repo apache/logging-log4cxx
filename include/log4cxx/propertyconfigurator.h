@@ -39,12 +39,12 @@ namespace log4cxx
 
 		class LoggerRepository;
 		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-	};
+	} 
 
 	namespace helpers
 	{
 		class Properties;
-	};
+	} 
 
 /**
 Allows the configuration of log4cxx from an external file.  See
@@ -384,6 +384,6 @@ protected:
 		void registryPut(const AppenderPtr& appender);
 		AppenderPtr registryGet(const String& name);
 	}; // class PropertyConfigurator
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_PROPERTY_CONFIGURATOR_H

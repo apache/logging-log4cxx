@@ -29,7 +29,7 @@ namespace log4cxx
 	{
 		class LoggerRepository;
 		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-	};
+	} 
 
 	namespace helpers
 	{
@@ -159,7 +159,7 @@ balanced by a stop delimeter "}". </p>
 			static void selectAndConfigure(const String& configFileName,
 				const String& clazz, spi::LoggerRepositoryPtr& hierarchy);
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_HELPER_OPTION_CONVERTER_H

@@ -82,7 +82,7 @@ namespace log4cxx
 	protected:
 		String target;
 	};
-}; //namespace log4cxx
+}  //namespace log4cxx
 
 #endif //_LOG4CXX_CONSOLE_APPENDER_H
 

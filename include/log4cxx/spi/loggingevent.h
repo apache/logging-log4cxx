@@ -38,7 +38,7 @@ namespace log4cxx
 		
 		class SocketInputStream;
 		typedef helpers::ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
-	};
+	} 
 	
 	namespace spi
 	{
@@ -258,7 +258,7 @@ namespace log4cxx
 
 			static int64_t startTime;
   		};
-	};
-};
+	} 
+} 
 
 #endif //_LOG4CXX_SPI_LOGGING_EVENT_H

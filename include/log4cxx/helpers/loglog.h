@@ -96,7 +96,7 @@ namespace log4cxx
 			static void warn(const String&  msg);
 			static void warn(const String&  msg, Exception& e);
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #define LOGLOG_DEBUG(log) { \

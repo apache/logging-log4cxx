@@ -53,7 +53,7 @@ namespace log4cxx
 			AbsoluteTimeDateFormat(const TimeZonePtr& timeZone)
 			: DateFormat(_T("%H:%M:%S,%Q"), timeZone) {}
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_ABSOLUTE_TIME_DATE_FORMAT_H

@@ -113,7 +113,7 @@ namespace log4cxx
 				const TimeZonePtr& timeZone);
 
  		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_DATE_LAYOUT_H

@@ -82,7 +82,7 @@ namespace log4cxx
 			/// verify the CriticalSection state
 			bool locked;
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_CRITICAL_SECTION_H

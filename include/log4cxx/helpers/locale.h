@@ -43,7 +43,7 @@ namespace log4cxx
 			String country;
 			String variant;	
 		}; // class Locale
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_LOCALE_H

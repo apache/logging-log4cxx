@@ -25,7 +25,7 @@ namespace log4cxx
 	namespace helpers
 	{
 		class DateFormat;
-	};
+	} 
 
 	/**
 	*  RollingCalendar is a helper class to DailyRollingFileAppender.
@@ -270,6 +270,6 @@ namespace log4cxx
 		helpers::DateFormat * df;
 		RollingCalendar rc;
 	};
-};
+} 
 
 #endif //_LOG4CXX_DAILY_ROLLING_FILE_APPENDER_H

@@ -83,7 +83,7 @@ namespace log4cxx
           // Dtor
             virtual ~AppenderAttachable(){}
         };
-    };
-};
+    } 
+} 
 
 #endif //_LOG4CXX_SPI_APPENDER_ATTACHABLE_H_

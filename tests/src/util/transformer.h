@@ -31,6 +31,6 @@ namespace log4cxx
 		static void transform(const String& in, const String& out,
 			const Filter& filter) throw(UnexpectedFormatException);
 	};
-};
+} 
 
 #endif //_LOG4CXX_TESTS_UTIL_TRANSFORMER_H

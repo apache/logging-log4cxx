@@ -93,7 +93,7 @@ namespace log4cxx
             */
             void setBackupAppender(const AppenderPtr& appender);
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_ONLY_ONCE_ERROR_HANDLER_H

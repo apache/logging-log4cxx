@@ -30,7 +30,7 @@ namespace log4cxx
     {
 		class LoggingEvent;
         typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-    };
+    } 
 
 	/**
 	Extend this abstract class to create your own log layout format.
@@ -83,6 +83,6 @@ namespace log4cxx
 		*/
 		virtual bool ignoresThrowable() const = 0;
 	};
-};
+} 
 
 #endif // _LOG4CXX_LAYOUT_H

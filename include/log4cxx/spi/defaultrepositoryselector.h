@@ -48,7 +48,7 @@ namespace log4cxx
 		private:
 			LoggerRepositoryPtr repository;
 		};
-	}; // namespace spi
+	}  // namespace spi
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_SPI_DEFAULT_REPOSITORY_SELECTOR_H

@@ -27,7 +27,7 @@ namespace log4cxx
 	{
 		class LoggingEvent;
 		typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-	};
+	} 
 
 	namespace helpers
 	{
@@ -76,7 +76,7 @@ namespace log4cxx
 			virtual void format(ostream& sbuf, const spi::LoggingEventPtr& e) const;
 
 		}; // class PatternConverter
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPER_PATTERN_CONVERTER_H

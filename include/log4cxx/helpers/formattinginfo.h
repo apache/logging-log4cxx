@@ -40,7 +40,7 @@ namespace log4cxx
 			void dump();
 
 		}; // class FormattingInfo
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPER_FORMATTING_INFO_H

@@ -123,7 +123,7 @@ namespace log4cxx
 				{ this->port = port; }
 
 		}; // class DatagramSocketImpl
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_DATAGRAM_SOCKET_IMPL

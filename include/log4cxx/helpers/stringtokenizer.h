@@ -42,7 +42,7 @@ namespace log4cxx
 			TCHAR * token;
 			TCHAR * state;
 		}; // class StringTokenizer
-	}; // namespace helpers;
+	}  // namespace helpers;
 }; // namespace log4cxx;
 
 #endif //_LOG4CXX_HELPERS_STRING_TOKENIZER_H

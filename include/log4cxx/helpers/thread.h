@@ -142,7 +142,7 @@ namespace log4cxx
 		
 		typedef ObjectPtrT<Thread> ThreadPtr;
 	
-	}; // namespace helpers
+	}  // namespace helpers
 }; //namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_THREAD_H

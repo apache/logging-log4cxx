@@ -23,4 +23,4 @@ namespace log4cxx
 	public:
 		void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 	};
-};
+} 

@@ -65,7 +65,7 @@ namespace log4cxx
 			bool wasBroadCast;
 #endif
 		};
-	};// namespace helpers
+	} // namespace helpers
 };// namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_CONDITION_H

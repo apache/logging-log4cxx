@@ -67,7 +67,7 @@ namespace log4cxx
 			void run();
 			void start();
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 

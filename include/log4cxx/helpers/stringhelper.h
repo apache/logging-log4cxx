@@ -51,7 +51,7 @@ namespace log4cxx
 			*/
 			static String format(const String& pattern, va_list argList);
         };
-    };
-};
+    } 
+} 
 
 #endif //_LOG4CXX_HELPERS_STRING_HELPER_H

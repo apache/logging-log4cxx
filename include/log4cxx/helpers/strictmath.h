@@ -42,7 +42,7 @@ namespace log4cxx
 				return (a > b) ? a : b;
 			}
 		}; // class StrictMath
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cx
 
 #endif //_LOG4CXX_HELPERS_STRICTMATH_H

@@ -43,7 +43,7 @@ namespace log4cxx
 
 		class OptionHandler;
 		typedef helpers::ObjectPtrT<OptionHandler> OptionHandlerPtr;
-	};
+	} 
 
 	namespace helpers
 	{
@@ -52,12 +52,12 @@ namespace log4cxx
 
 		class XMLDOMElement;
 		typedef helpers::ObjectPtrT<XMLDOMElement> XMLDOMElementPtr;
-	};
+	} 
 
 	namespace config
 	{
 		class PropertySetter;
-	};
+	} 
 
 	namespace xml
 	{
@@ -214,7 +214,7 @@ files. You can enable log4cxx internal logging by setting the
 			spi::LoggerRepositoryPtr repository;
 			spi::LoggerFactoryPtr loggerFactory;
 		};
-	}; // namespace xml
+	}  // namespace xml
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_XML_DOM_CONFIGURATOR_H

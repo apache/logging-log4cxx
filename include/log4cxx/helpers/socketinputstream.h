@@ -70,7 +70,7 @@ namespace log4cxx
 			size_t currentPos;
 			size_t maxPos;
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_SOCKET_OUTPUT_STREAM_H

@@ -40,7 +40,7 @@ namespace log4cxx
 			TimeZonePtr timeZone;
 			String dateFormat;
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_DATE_FORMAT_H

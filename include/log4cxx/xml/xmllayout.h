@@ -117,7 +117,7 @@ namespace log4cxx
 				{ return false; }
 				
 		};  // class XMLLayout
-	}; // namespace xml
+	}  // namespace xml
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_XML_LAYOUT_H

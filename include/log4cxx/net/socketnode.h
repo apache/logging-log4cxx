@@ -30,13 +30,13 @@ namespace log4cxx
 
 		class SocketInputStream;
 		typedef ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
-	};
+	} 
 	
 	namespace spi
 	{
 		class LoggerRepository;
 		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-	};
+	} 
 
 	namespace net
 	{
@@ -70,7 +70,7 @@ namespace log4cxx
 				spi::LoggerRepositoryPtr& hierarchy);
 			virtual void run();
 		};
-	}; // namespace net
+	}  // namespace net
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_NET_SOCKET_NODE_H

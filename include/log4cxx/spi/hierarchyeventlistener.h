@@ -48,7 +48,7 @@ namespace log4cxx
 			virtual void removeAppenderEvent(const LoggerPtr& logger,
 				const AppenderPtr& appender) = 0;
 		};
-	}; // namespace spi
+	}  // namespace spi
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_SPI_HIERARCHY_EVENT_LISTENER_H

@@ -55,7 +55,7 @@ namespace log4cxx
 			void * semaphore;
 #endif
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_SEMAPHORE_H

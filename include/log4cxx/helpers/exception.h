@@ -76,7 +76,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT IOException : public Exception
 		{
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_EXCEPTION_H

@@ -42,7 +42,7 @@ namespace log4cxx
 			void * key;
 #endif
 		};
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif

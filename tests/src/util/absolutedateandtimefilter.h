@@ -26,7 +26,7 @@ namespace log4cxx
 	public:
 		String filter(const String& in) const throw(UnexpectedFormatException);
 	};
-};
+} 
 
 
 #endif //_LOG4CXX_TESTS_UTIL_ABS_DATE_TIME_FILTER_H

@@ -92,7 +92,7 @@ namespace log4cxx
              */
             virtual void removeAppender(const String& name);
         };
-    };
-};
+    } 
+} 
 
 #endif //_LOG4CXX_HELPERS_APPENDER_ATTACHABLE_IMPL_H

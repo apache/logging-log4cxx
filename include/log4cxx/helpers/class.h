@@ -62,7 +62,7 @@ namespace log4cxx
 			static void registerClass(const Class * newClass);
 			String name;
 		};
-	}; // namespace log4cxx
+	}  // namespace log4cxx
 }; // namespace helper
 
 #endif //_LOG4CXX_HELPERS_CLASS_H

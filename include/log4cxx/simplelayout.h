@@ -67,6 +67,6 @@ namespace log4cxx
 		virtual void activateOptions() {}
 		virtual void setOption(const String& option, const String& value) {}
 	};
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_SIMPLE_LAYOUT_H

@@ -42,7 +42,7 @@ namespace log4cxx
 
 		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
 
-	}; // namespace spi
+	}  // namespace spi
 }; // namesapce log4cxx
 
 #endif //_LOG4CXX_SPI_LOGGERFACTORY_H

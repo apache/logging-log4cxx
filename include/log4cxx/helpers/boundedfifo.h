@@ -105,7 +105,7 @@ namespace log4cxx
 				{ return (numElements+1 == maxSize); }
 				
 		}; // class BoundedFIFO
-	}; // namespace helpers
+	}  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_BOUNDED_FIFO_H

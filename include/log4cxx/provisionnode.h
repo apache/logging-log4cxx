@@ -34,6 +34,6 @@ namespace log4cxx
 			push_back(logger);
 		}
     }; // class LogManager
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_PROVISION_NODE_H

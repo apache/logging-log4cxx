@@ -60,6 +60,6 @@ namespace log4cxx
 		See Hierarchy#resetConfiguration() for more details.  */
 		static void resetConfiguration();
 	}; // class BasicConfigurator
-}; // namespace log4cxx
+}  // namespace log4cxx
 
 #endif //_LOG4CXX_BASIC_CONFIGURATOR_H

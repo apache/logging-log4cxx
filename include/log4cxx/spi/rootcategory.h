@@ -53,7 +53,7 @@ namespace log4cxx
 			*/
             void setLevel(const LevelPtr& level);
 		};
-	}; // namespace spi
+	}  // namespace spi
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_SPI_ROOT_CATEGORY_H
