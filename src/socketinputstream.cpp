@@ -44,7 +44,7 @@ SocketInputStream::~SocketInputStream()
 	delete [] memBuffer;
 }
 
-void SocketInputStream::read(void * buf, int len)
+void SocketInputStream::read(void * buf, size_t len)
 {
 //	LOGLOG_DEBUG(_T("SocketInputStream reading ") << len << _T(" bytes"));
 	unsigned char * dstBuffer = (unsigned char *)buf;
@@ -137,11 +137,11 @@ void SocketInputStream::read(long& value)
 //	LOGLOG_DEBUG(_T("long read:") << value);
 }
 
-void SocketInputStream::read(tstring& value)
+void SocketInputStream::read(String& value)
 {
-	tstring::size_type size = 0;
+	String::size_type size = 0;
 
-	read(&size, sizeof(tstring::size_type));
+	read(&size, sizeof(String::size_type));
 //	LOGLOG_DEBUG(_T("string size read:") << size);
 
 	if (size > 0)

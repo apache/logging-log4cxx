@@ -17,6 +17,7 @@
 #include <log4cxx/helpers/socketimpl.h>
 #include <log4cxx/helpers/loglog.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(SocketImpl)
@@ -91,7 +92,7 @@ SocketException::SocketException()
 #endif
 };
 
-tstring SocketException::getMessage()
+String SocketException::getMessage()
 {
 	return message;
 }
@@ -228,7 +229,7 @@ void SocketImpl::connect(InetAddress address, int port)
 }
 
 /** Connects this socket to the specified port on the named host. */
-void SocketImpl::connect(const tstring& host, int port)
+void SocketImpl::connect(const String& host, int port)
 {
 	connect(InetAddress::getByName(host), port);
 }
@@ -255,9 +256,9 @@ void SocketImpl::listen(int backlog)
 
 /** Returns the address and port of this socket as a String.
 */
-tstring SocketImpl::toString() const
+String SocketImpl::toString() const
 {
-	tostringstream oss;
+	StringBuffer oss;
 	oss << address.getHostAddress() << _T(":") << port;
 	return oss.str();
 }
@@ -269,7 +270,7 @@ size_t SocketImpl::read(void * buf, size_t len)
 	int len_read = 0;
 	unsigned char * p = (unsigned char *)buf;
 
-	while ((p - (unsigned char *)buf) < len)
+	while ((size_t)(p - (unsigned char *)buf) < len)
 	{
 #ifdef WIN32
 		len_read = ::recv(fd, (char *)p, len - (p - (unsigned char *)buf), 0);
@@ -298,7 +299,7 @@ size_t SocketImpl::write(const void * buf, size_t len)
 	int len_written = 0;
 	const unsigned char * p = (const unsigned char *)buf;
 
-	while ((p - (const unsigned char *)buf) < len)
+	while ((size_t)(p - (const unsigned char *)buf) < len)
 	{
 #ifdef WIN32
 		len_written = ::send(fd, (const char *)p, len - (p - (const unsigned char *)buf), 0);

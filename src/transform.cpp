@@ -16,17 +16,18 @@
 
 #include <log4cxx/helpers/transform.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-tstring Transform::CDATA_START  = _T("<![CDATA[");
-tstring Transform::CDATA_END    = _T("]]>");
-tstring Transform::CDATA_PSEUDO_END = _T("]]&gt;");
-tstring Transform::CDATA_EMBEDED_END = CDATA_END + CDATA_PSEUDO_END + CDATA_START;
-int Transform::CDATA_END_LEN = CDATA_END.length();
+String Transform::CDATA_START  = _T("<![CDATA[");
+String Transform::CDATA_END    = _T("]]>");
+String Transform::CDATA_PSEUDO_END = _T("]]&gt;");
+String Transform::CDATA_EMBEDED_END = CDATA_END + CDATA_PSEUDO_END + CDATA_START;
+String::size_type Transform::CDATA_END_LEN = CDATA_END.length();
 
 
 void Transform::appendEscapingTags(
-	tostream& buf, const tstring& input)
+	ostream& buf, const String& input)
 {
 	//Check if the string is zero length -- if so, return
 	//what was sent in.
@@ -36,8 +37,8 @@ void Transform::appendEscapingTags(
 		return;
 	}
 
-	tstring::const_iterator it = input.begin();
-	tstring::const_iterator itEnd = input.end();
+	String::const_iterator it = input.begin();
+	String::const_iterator itEnd = input.end();
 	TCHAR ch;
 	while(it != itEnd)
 	{
@@ -58,22 +59,22 @@ void Transform::appendEscapingTags(
 }
 
 void Transform::appendEscapingCDATA(
-	tostream& buf, const tstring& input)
+	ostream& buf, const String& input)
 {
 	if(input.length() == 0 )
 	{
 		return;
 	}
 
-	int end = input.find(CDATA_END);
-	if (end == tstring::npos)
+	String::size_type end = input.find(CDATA_END);
+	if (end == String::npos)
 	{
 		buf << input;
 		return;
 	}
 
-	int start = 0;
-	while (end != tstring::npos)
+	String::size_type start = 0;
+	while (end != String::npos)
 	{
 		buf << input.substr(start, end-start);
 		buf << CDATA_EMBEDED_END;

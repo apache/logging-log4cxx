@@ -51,8 +51,8 @@ void TelnetAppender::activateOptions()
 	}
 }
 
-void TelnetAppender::setOption(const tstring& option,
-	const tstring& value)
+void TelnetAppender::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("port")))
 	{
@@ -76,7 +76,7 @@ void TelnetAppender::append(const spi::LoggingEvent& event)
 {
 	if (sh != 0)
 	{
-		tostringstream os;
+		StringBuffer os;
 
 		this->layout->format(os, event);
 
@@ -114,7 +114,7 @@ void TelnetAppender::SocketHandler::finalize()
 	done = true;
 }
 
-void TelnetAppender::SocketHandler::send(const tstring& message)
+void TelnetAppender::SocketHandler::send(const String& message)
 {
 	std::vector<helpers::SocketOutputStreamPtr>::iterator it, itEnd;
 	std::vector<helpers::SocketPtr>::iterator itc, itEndc;
@@ -163,7 +163,7 @@ void TelnetAppender::SocketHandler::run()
 				connections.push_back(newClient);
 				writers.push_back(os);
 
-				tostringstream oss;
+				StringBuffer oss;
 				oss << _T("TelnetAppender v1.0 (") << connections.size()
 					<< _T(" active connections)\r\n\r\n");
 				print(os, oss.str());
@@ -183,7 +183,7 @@ void TelnetAppender::SocketHandler::run()
 	}
 }
 
-void TelnetAppender::SocketHandler::print(helpers::SocketOutputStreamPtr& os, const tstring& sz)
+void TelnetAppender::SocketHandler::print(helpers::SocketOutputStreamPtr& os, const String& sz)
 {
 	USES_CONVERSION;
 	os->write((void *)T2A(sz.c_str()), sz.length());

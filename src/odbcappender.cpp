@@ -40,12 +40,12 @@ ODBCAppender::~ODBCAppender()
 	finalize();
 }
 
-void ODBCAppender::setOption(const tstring& option,
-	const tstring& value)
+void ODBCAppender::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("buffersize")))
 	{
-		setBufferSize(OptionConverter::toInt(value, 1));
+		setBufferSize((size_t)OptionConverter::toInt(value, 1));
 	}
 	else if (StringHelper::equalsIgnoreCase(option, _T("password")))
 	{
@@ -78,14 +78,14 @@ void ODBCAppender::append(const spi::LoggingEvent& event)
 		flushBuffer();
 }
 
-tstring ODBCAppender::getLogStatement(const spi::LoggingEvent& event)
+String ODBCAppender::getLogStatement(const spi::LoggingEvent& event)
 {
-	tostringstream sbuf;
+	StringBuffer sbuf;
 	getLayout()->format(sbuf, event);
 	return sbuf.str();
 }
 
-void ODBCAppender::execute(const tstring& sql)
+void ODBCAppender::execute(const String& sql)
 {
 	SQLRETURN ret;
 	SQLHDBC con = SQL_NULL_HDBC;
@@ -227,7 +227,7 @@ void ODBCAppender::flushBuffer()
 		try
 		{
 			const LoggingEvent& logEvent = *i;
-			tstring sql = getLogStatement(logEvent);
+			String sql = getLogStatement(logEvent);
 			execute(sql);
 		}
 		catch (SQLException& e)
@@ -241,7 +241,7 @@ void ODBCAppender::flushBuffer()
 	buffer.clear();
 }
 
-void ODBCAppender::setSql(const tstring& s)
+void ODBCAppender::setSql(const String& s)
 {
 	sqlStatement = s;
 	if (getLayout() == 0)
