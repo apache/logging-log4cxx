@@ -34,7 +34,7 @@ NDC::DiagnosticContext::DiagnosticContext(const String& message,
 }
 
 // static member instanciation
-ThreadSpecificData NDC::threadSpecificData;
+ThreadSpecificData_ptr<NDC::Stack> NDC::threadSpecificData;
 
 NDC::NDC(const String& message)
 {
@@ -48,22 +48,22 @@ NDC::~NDC()
 
 NDC::Stack * NDC::getCurrentThreadStack()
 {
-	return (Stack *)threadSpecificData.GetData();
+	return threadSpecificData;
 }
 
 void NDC::setCurrentThreadStack(NDC::Stack * stack)
 {
-	threadSpecificData.SetData((void *)stack); 
+	threadSpecificData.reset(stack); 
 }
 
 void NDC::clear()
 {
-	Stack * stack = getCurrentThreadStack();    
+/*	Stack * stack = getCurrentThreadStack();    
 	if(stack != 0)
 	{
-		delete stack;
+		delete stack; */
 		setCurrentThreadStack(0);
-	} 
+	//} 
 }
 
 NDC::Stack * NDC::cloneStack()
@@ -83,12 +83,12 @@ void NDC::inherit(NDC::Stack * stack)
 {
 	if(stack != 0)
 	{
-		Stack * oldStack = getCurrentThreadStack();
+/*		Stack * oldStack = getCurrentThreadStack();
 		if(oldStack != 0)
 		{
 			delete oldStack;
 		}
-	
+*/	
 		setCurrentThreadStack(stack);
 	}
 }

@@ -18,10 +18,7 @@
 #define _LOG4CXX_HELPERS_THREAD_SPECIFIC_DATA_H
 
 #include <log4cxx/portability.h>
-
-#ifdef LOG4CXX_HAVE_PTHREAD
-#include <pthread.h>
-#endif
+#include <memory>
 
 namespace log4cxx
 {
@@ -31,17 +28,67 @@ namespace log4cxx
 		{
 		public:
 			ThreadSpecificData();
+			ThreadSpecificData(void (*cleanup)(void*));
 			~ThreadSpecificData();
 			void * GetData() const;
 			void SetData(void * data);
 
 		protected:
-#ifdef LOG4CXX_HAVE_PTHREAD
-			pthread_key_t key;
-#elif defined(LOG4CXX_HAVE_MS_THREAD)
-			void * key;
-#endif
+			struct Impl;
+			std::auto_ptr<Impl> impl;
 		};
+
+		template < typename T >
+			class ThreadSpecificData_ptr
+			{
+			public:
+				ThreadSpecificData_ptr(T * p = 0): impl(&cleanup)
+				{
+					reset(p);
+				}
+
+				T * get() const
+				{
+					return static_cast<T*>( impl.GetData() );
+				}
+
+				void reset(T * p)
+				{
+					T * tmp = get();
+					if(tmp)
+						delete tmp;
+					impl.SetData(p);
+				}
+
+				operator T * () const
+				{
+					return get();
+				}
+
+				T * operator->() const
+				{
+					return get();
+				}
+
+				T & operator*() const
+				{
+					return *get();
+				}
+
+				T * release()
+				{
+					T * tmp = get();
+					impl.SetData(0);
+					return tmp;
+				}
+				
+			private:
+				ThreadSpecificData impl;
+				static void cleanup(void * p)
+				{
+					delete static_cast<T*>(p);
+				}
+			};
 	}  // namespace helpers
 }; // namespace log4cxx
 

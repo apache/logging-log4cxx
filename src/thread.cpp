@@ -28,6 +28,19 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Runnable)
 IMPLEMENT_LOG4CXX_OBJECT(Thread)
 
+struct Thread::Impl
+{
+	Impl(): thread(0) {};
+
+	/** Thread descriptor */
+#ifdef LOG4CXX_HAVE_PTHREAD
+	pthread_t thread;
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
+	void * thread;
+#endif
+
+};
+
 #ifdef LOG4CXX_HAVE_PTHREAD
 #include <pthread.h>
 #include <unistd.h> // usleep
@@ -54,24 +67,25 @@ DWORD WINAPI threadProc(void * arg)
 #endif
 
 
-Thread::Thread() : thread(0)
+Thread::Thread(): impl( new Impl )
 {
 	addRef();
 }
 
-Thread::Thread(RunnablePtr runnable) : runnable(runnable), thread(0)
+Thread::Thread(RunnablePtr runnable) : runnable(runnable), impl( new Impl )
 {
 	addRef();
 }
 
 Thread::~Thread()
 {
-	if (thread != 0)
+	// TODO: why don't we use Thread::join ?
+	if (impl->thread != 0)
 	{
 #ifdef LOG4CXX_HAVE_PTHREAD
-		::pthread_join(thread, 0);
+		::pthread_join(impl->thread, 0);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-		::CloseHandle((HANDLE)thread);
+		::CloseHandle((HANDLE)impl->thread);
 #endif
 		LOGLOG_DEBUG(_T("Thread destroyed."));
 	}
@@ -91,15 +105,15 @@ void Thread::start()
 	parentMDCMap = MDC::getContext();
 #ifdef LOG4CXX_HAVE_PTHREAD
 //	LogLog::debug(_T("Thread::start"));
-	if (::pthread_create(&thread, NULL, threadProc, this) != 0)
+	if (::pthread_create(&impl->thread, NULL, threadProc, this) != 0)
 	{
 		throw ThreadException();
 	}
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	unsigned long threadId = 0;
-	thread =
+	impl->thread =
 		(void *)::CreateThread(NULL, 0, threadProc, this, 0, &threadId);
-	if (thread == 0)
+	if (impl->thread == 0)
 	{
 		throw ThreadException();
 	}
@@ -119,17 +133,17 @@ void Thread::join()
 {
 	bool bSuccess = true;
 #ifdef LOG4CXX_HAVE_PTHREAD
-	::pthread_join(thread, 0);
+	::pthread_join(impl->thread, 0);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-	if (::WaitForSingleObject((HANDLE)thread, INFINITE) != WAIT_OBJECT_0)
+	if (::WaitForSingleObject((HANDLE)impl->thread, INFINITE) != WAIT_OBJECT_0)
 	{
 		bSuccess = false;
 	}
 
-	::CloseHandle((HANDLE)thread);
+	::CloseHandle((HANDLE)impl->thread);
 #endif
 
-	thread = 0;
+	impl->thread = 0;
 
 	if (!bSuccess)
 	{

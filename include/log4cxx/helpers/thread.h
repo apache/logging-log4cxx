@@ -130,14 +130,12 @@ namespace log4cxx
 			static long InterlockedDecrement(volatile long * val);
 		
 		protected:
-			/** Thread descriptor */
-#ifdef LOG4CXX_HAVE_PTHREAD
-			pthread_t thread;
-#elif defined(LOG4CXX_HAVE_MS_THREAD)
-			void * thread;
-#endif
 			RunnablePtr runnable;
 			MDC::Map parentMDCMap;
+
+		private:
+			struct Impl;
+			std::auto_ptr<Impl> impl;
 		};
 		
 		typedef ObjectPtrT<Thread> ThreadPtr;

@@ -111,7 +111,7 @@ namespace log4cxx
 		static Stack * getCurrentThreadStack();
 		static void setCurrentThreadStack(Stack * stack);
 
-		static helpers::ThreadSpecificData threadSpecificData;
+		static helpers::ThreadSpecificData_ptr<Stack> threadSpecificData;
 
 	public:
 		NDC(const String& message);

@@ -26,42 +26,66 @@
 
 using namespace log4cxx::helpers;
 
-ThreadSpecificData::ThreadSpecificData() : key(0)
+struct ThreadSpecificData::Impl
+{
+	Impl(): key(0) {}
+#ifdef LOG4CXX_HAVE_PTHREAD
+	pthread_key_t key;
+//#elif defined(LOG4CXX_HAVE_MS_THREAD)
+#else
+	void * key;
+#endif
+};
+
+ThreadSpecificData::ThreadSpecificData() : impl(new Impl)
 {
 #ifdef LOG4CXX_HAVE_PTHREAD
-	pthread_key_create(&key, NULL);
+	pthread_key_create(&impl->key, NULL);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-	key = (void *)TlsAlloc();
+	impl->key = (void *)TlsAlloc();
+#endif
+}
+
+ThreadSpecificData::ThreadSpecificData(void (*cleanup)(void*)): impl(new Impl)
+{
+#ifdef LOG4CXX_HAVE_PTHREAD
+	pthread_key_create(&impl->key, cleanup);
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
+//	impl->key = (void *)TlsAlloc();
+#error "Not implemented"
 #endif
 }
 
 ThreadSpecificData::~ThreadSpecificData()
 {
 #ifdef LOG4CXX_HAVE_PTHREAD
-	pthread_key_delete(key);
+	pthread_key_delete(impl->key);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-	TlsFree((DWORD)key);
+	TlsFree((DWORD)impl->key);
 #endif
 }
 
 void * ThreadSpecificData::GetData() const
 {
 #ifdef LOG4CXX_HAVE_PTHREAD
-	return pthread_getspecific((pthread_key_t)key);
+	return pthread_getspecific((pthread_key_t)impl->key);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-	return TlsGetValue((DWORD)key);
+	return TlsGetValue((DWORD)impl->key);
 #else
-	return key;
+	return impl->key;
 #endif
 }
 
 void ThreadSpecificData::SetData(void * data)
 {
 #ifdef LOG4CXX_HAVE_PTHREAD
-	pthread_setspecific((pthread_key_t)key, data);
+	pthread_setspecific((pthread_key_t)impl->key, data);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-	TlsSetValue((DWORD)key, data);
+	TlsSetValue((DWORD)impl->key, data);
 #else
-	key = data;
+	impl->key = data;
 #endif
 }
+
+
+ThreadSpecificData_ptr<int> test;

@@ -18,12 +18,7 @@
 #define _LOG4CXX_HELPERS_CRITICAL_SECTION_H
 
 #include <log4cxx/portability.h>
-
-#ifdef LOG4CXX_HAVE_PTHREAD
-#include <pthread.h>
-#elif defined(LOG4CXX_HAVE_MS_THREAD)
-#include <windows.h>
-#endif
+#include <memory>
 
 namespace log4cxx
 {
@@ -32,18 +27,23 @@ namespace log4cxx
 		class LOG4CXX_EXPORT CriticalSection
 		{
 		public:
-			CriticalSection();
+			enum Type {
+				Simple,
+				Recursive
+			};
+
+			
+		public:
+			CriticalSection(Type type = Recursive);
 			~CriticalSection();
 			void lock();
+			bool try_lock();
 			void unlock();
 			unsigned long getOwningThread();
 
-#ifdef LOG4CXX_HAVE_PTHREAD
-			pthread_mutex_t mutex;
-#elif defined(LOG4CXX_HAVE_MS_THREAD)
-			CRITICAL_SECTION mutex;
-#endif						
-			unsigned long owningThread;
+		private:
+			struct Impl;
+			std::auto_ptr<Impl> impl;
 		};
 
 		/** CriticalSection helper class to be used on call stack
