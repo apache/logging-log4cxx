@@ -344,6 +344,7 @@ docs/Makefile
 docs/Doxyfile
 src/Makefile
 include/Makefile
+include/log4cxx/config_msvc.h
 include/log4cxx/Makefile
 include/log4cxx/helpers/Makefile
 include/log4cxx/net/Makefile
