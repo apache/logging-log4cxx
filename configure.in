@@ -177,8 +177,22 @@ case "$ac_with_thread" in
 		LIBS="-pthread $LIBS"
 		;;
 		*solaris*)
+		AC_COMPILE_IFELSE(
+		AC_LANG_PROGRAM(,[
+		#if defined(sparc) && defined(__SUNPRO_CC)
+			char c;
+		#endif
+			c = 0;]),
+			sunpro_cc=yes,
+			sunpro_cc=no)
+		if test "x$sunpro_cc" = "xyes"
+		then
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT -features=%all,no%iddollar,extensions -xarch=v8plus"
 		LIBS="-lpthread -lrt -xarch=v8plus $LIBS"
+		else
+		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+		LIBS="-lpthread -lrt $LIBS"
+		fi
 		;;
 		*)
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
