@@ -174,6 +174,10 @@ case "$ac_with_thread" in
 		CPPFLAGS="$CPPLAGS -D_THREAD_SAFE"
 		LIBS="-pthread $LIBS"
 		;;
+		*solaris*)
+		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+		LIBS="-lpthread -lrt $LIBS"
+		;;
 		*)
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
 		LIBS="-lpthread $LIBS"
