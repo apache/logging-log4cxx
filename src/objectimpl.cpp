@@ -24,6 +24,7 @@
 #include <log4cxx/helpers/criticalsection.h>
 #include <log4cxx/helpers/event.h>
 #include <log4cxx/helpers/thread.h>
+#include <apr-1/apr_atomic.h>
 
 using namespace log4cxx::helpers;
 
@@ -92,12 +93,12 @@ ObjectImpl::~ObjectImpl()
 
 void ObjectImpl::addRef() const
 {
-	Thread::InterlockedIncrement(&ref);
+	apr_atomic_inc32(&ref);
 }
 
 void ObjectImpl::releaseRef() const
 {
-	if (Thread::InterlockedDecrement(&ref) == 0)
+	if (apr_atomic_dec32(&ref) == 0)
 	{
 		delete this;
 	}

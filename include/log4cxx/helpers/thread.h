@@ -125,16 +125,6 @@ namespace log4cxx
 			*/
 			void setPriority(int newPriority);
 
-			/**
-			Atomic increment
-			*/
-			static long InterlockedIncrement(volatile long * val);
-
-			/**
-			Atomic decrement
-			*/
-			static long InterlockedDecrement(volatile long * val);
-
 		protected:
 			RunnablePtr runnable;
 			MDC::Map parentMDCMap;

@@ -40,7 +40,7 @@ namespace log4cxx
 			virtual void notifyAll() const;
 
 		protected:
-			mutable long volatile ref;
+			mutable unsigned int volatile ref;
 			mutable CriticalSection cs;
 			mutable void * eventList;
 

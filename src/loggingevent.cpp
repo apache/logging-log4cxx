@@ -27,6 +27,8 @@
 #include <log4cxx/helpers/socket.h>
 
 #include <apr-1/apr_time.h>
+#include <apr-1/apr_pools.h>
+#include <apr-1/apr_atomic.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -44,11 +46,17 @@ namespace log4cxx {
       public:
       APRInitializer() {
         apr_initialize();
+		apr_pool_create(&p, NULL);
+		apr_atomic_init(p);
       }
 
       ~APRInitializer() {
+		apr_pool_destroy(p);
         apr_terminate();
       }
+
+	  private:
+		  apr_pool_t* p;
     };
   }
 }
