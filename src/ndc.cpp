@@ -19,7 +19,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-NDC::DiagnosticContext::DiagnosticContext(const tstring& message, 
+NDC::DiagnosticContext::DiagnosticContext(const String& message, 
 	const DiagnosticContext * parent)
 	: message(message)
 {
@@ -35,6 +35,16 @@ NDC::DiagnosticContext::DiagnosticContext(const tstring& message,
 
 // static member instanciation
 ThreadSpecificData NDC::threadSpecificData;
+
+NDC::NDC(const String& message)
+{
+	push(message);
+}
+
+NDC::~NDC()
+{
+	pop();
+}
 
 NDC::Stack * NDC::getCurrentThreadStack()
 {
@@ -83,7 +93,7 @@ void NDC::inherit(NDC::Stack * stack)
 	}
 }
 
-tstring NDC::get()
+String NDC::get()
 {
 	Stack * stack = getCurrentThreadStack();
 	if(stack != 0 && !stack->empty())
@@ -92,7 +102,7 @@ tstring NDC::get()
 	}
 	else
 	{
-		return tstring();
+		return String();
 	}
 }
 
@@ -109,12 +119,12 @@ int NDC::getDepth()
 	}
 }
 
-tstring NDC::pop()
+String NDC::pop()
 {
 	Stack * stack = getCurrentThreadStack();
 	if(stack != 0 && !stack->empty())
 	{
-		tstring message = stack->top().message;
+		String message = stack->top().message;
 		stack->pop();
 		if (stack->empty())
 		{
@@ -125,11 +135,11 @@ tstring NDC::pop()
 	}
 	else
 	{
-		return tstring();
+		return String();
 	}
 }
 
-tstring NDC::peek()
+String NDC::peek()
 {
 	Stack * stack = getCurrentThreadStack();
 	if(stack != 0 && !stack->empty())
@@ -138,11 +148,11 @@ tstring NDC::peek()
 	}
 	else
 	{
-		return tstring();
+		return String();
 	}
 }
 
-void NDC::push(const tstring& message)
+void NDC::push(const String& message)
 {
 	Stack * stack = getCurrentThreadStack();
 

@@ -96,16 +96,13 @@ namespace log4cxx
 	class NDC
 	{
 	private:
-		// No instances allowed.
-		NDC() {}
-
 		class DiagnosticContext
 		{
 		public:
-			tstring fullMessage;
-			tstring message;
+			String fullMessage;
+			String message;
     
-			DiagnosticContext(const tstring& message, 
+			DiagnosticContext(const String& message, 
 				const DiagnosticContext * parent);
 		};
 
@@ -117,6 +114,9 @@ namespace log4cxx
 		static helpers::ThreadSpecificData threadSpecificData;
 
 	public:
+		NDC(const String& message);
+		~NDC();
+
 		/**
 		Clear any nested diagnostic information if any. This method is
 		useful in cases where the same thread can be potentially used
@@ -160,7 +160,7 @@ namespace log4cxx
 		{@link spi::LoggingEvent#getNDC LoggingEvent::getNDC}
 		method instead.</b>
 		*/
-		static tstring get();
+		static String get();
 		
 		/**
 		Get the current nesting depth of this diagnostic context.
@@ -174,7 +174,7 @@ namespace log4cxx
 		context is available, then the empty string "" is returned.
 		@return String The innermost diagnostic context.
 		*/
-		static tstring pop();
+		static String pop();
 
 		/**
 		Looks at the last diagnostic context at the top of this NDC
@@ -183,7 +183,7 @@ namespace log4cxx
 		context is available, then the empty string "" is returned.
 		@return String The innermost diagnostic context.
 		*/
-		static tstring peek();
+		static String peek();
 
 		/**
 		Push new diagnostic context information for the current thread.
@@ -191,7 +191,7 @@ namespace log4cxx
 		determined solely by the client.
 		@param message The new diagnostic context information.
 		*/
-		static void push(const tstring& message);
+		static void push(const String& message);
 
 		/**
 		Remove the diagnostic context for this thread.

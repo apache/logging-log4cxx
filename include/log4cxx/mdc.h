@@ -42,18 +42,21 @@ namespace log4cxx
 	class MDC
 	{
 	public:
-		/** tstring to string stl mp
+		/** String to string stl mp
 		*/
-		typedef std::map<tstring, tstring> Map;
+		typedef std::map<String, String> Map;
 
 	private:
-		MDC();
 		static Map * getCurrentThreadMap();
 		static void setCurrentThreadMap(Map * map);
 
 		static helpers::ThreadSpecificData threadSpecificData;
+		const String& key;
 
 	public:
+		MDC(const String& key, const String& value);
+		~MDC();
+
 		/**
 		* Put a context value (the <code>o</code> parameter) as identified
 		* with the <code>key</code> parameter into the current thread's
@@ -62,19 +65,19 @@ namespace log4cxx
 		* <p>If the current thread does not have a context map it is
 		* created as a side effect.
 		* */
-  		static void put(const tstring& key, const tstring& value);
+  		static void put(const String& key, const String& value);
 
 		/**
 		* Get the context identified by the <code>key</code> parameter.
 		*
 		*  <p>This method has no side effects.
 		* */
-		static tstring get(const tstring& key);
+		static String get(const String& key);
 
 		/**
 		* Remove the the context identified by the <code>key</code>
 		* parameter. */
-		static tstring remove(const tstring& key);
+		static String remove(const String& key);
 
 		/**
 		* Clear all entries in the MDC.

@@ -21,6 +21,16 @@ using namespace log4cxx::helpers;
 
 helpers::ThreadSpecificData MDC::threadSpecificData;
 
+MDC::MDC(const String& key, const String& value) : key(key)
+{
+	put(key, value);
+}
+
+MDC::~MDC()
+{
+	remove(key);
+}
+
 MDC::Map * MDC::getCurrentThreadMap()
 {
 	return (MDC::Map *)threadSpecificData.GetData();
@@ -31,7 +41,7 @@ void MDC::setCurrentThreadMap(MDC::Map * map)
 	threadSpecificData.SetData((void *)map);
 }
 
-void MDC::put(const tstring& key, const tstring& value)
+void MDC::put(const String& key, const String& value)
 {
 	Map * map = getCurrentThreadMap();
 
@@ -44,7 +54,7 @@ void MDC::put(const tstring& key, const tstring& value)
 	(*map)[key] = value;
 }
 
-tstring MDC::get(const tstring& key)
+String MDC::get(const String& key)
 {
 	Map::iterator it;
 	Map * map = getCurrentThreadMap();
@@ -55,14 +65,14 @@ tstring MDC::get(const tstring& key)
 	}
 	else
 	{
-		return tstring();
+		return String();
 	}
 
 }
 
-tstring MDC::remove(const tstring& key)
+String MDC::remove(const String& key)
 {
-	tstring value;
+	String value;
 	Map::iterator it;
 	Map * map = getCurrentThreadMap();
 	if (map != 0 && (it = map->find(key)) != map->end())
