@@ -17,7 +17,7 @@
  #include <log4cxx/spi/location/locationinfo.h>
  #include <sstream>
 
- using namespace ::log4cxx::spi::location;
+ using namespace ::log4cxx::spi;
    /**
      When location information is not available the constant
      <code>NA</code> is returned. Current value of this string

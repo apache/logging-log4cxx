@@ -41,7 +41,7 @@ void FormattingInfo::dump()
            + LOG4CXX_STR(", maxChar=")
            + StringHelper::toString(maxChar, pool)
            + LOG4CXX_STR(", leftAlign=")
-           + StringHelper::toString(leftAlign, pool));
+           + (leftAlign ? LOG4CXX_STR("true") : LOG4CXX_STR("false")));
 }
 
 

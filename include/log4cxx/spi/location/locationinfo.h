@@ -24,12 +24,9 @@ namespace log4cxx
 {
   namespace spi
   {
-    namespace location
-    {
       /**
        * This class represents the location of a logging statement.
        *
-       * @remarks This class currently only used by the experimental (and optional) log4cxx::stream class.
        */
       class LOG4CXX_EXPORT LocationInfo
       {
@@ -127,7 +124,6 @@ namespace log4cxx
         }
 
       };
-    }
   }
 }
 
@@ -135,16 +131,19 @@ namespace log4cxx
 #if defined(_MSC_VER)
 #if _MSC_VER >= 1300
       #define __LOG4CXX_FUNC__ __FUNCDNAME__
-#else
-#define __LOG4CXX_FUNC__ ""
 #endif
 #else
+#if defined(__GCC)
       #define __LOG4CXX_FUNC__ __PRETTY_FUNCTION__
 #endif
-      #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
+#endif
+#if !defined(__LOG4CXX_FUNC__)
+#define __LOG4CXX_FUNC__ ""
+#endif
+      #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__, \
            __LOG4CXX_FUNC__,                                                         \
            __LINE__)
-      #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
+      #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::LocationFlush(__FILE__, \
            __LOG4CXX_FUNC__,                                                         \
            __LINE__)
   #endif

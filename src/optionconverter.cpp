@@ -362,6 +362,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
         LogString clazz = _clazz;
 
         LogString filename(configFileName.getName());
+#ifdef LOG4CXX_HAVE_XML
         if(clazz.empty() 
                 && filename.length() > 4
                 && StringHelper::equalsIgnoreCase(
@@ -370,6 +371,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
         {
 		clazz = DOMConfigurator::getStaticClass().toString();
         }
+#endif
 
         if(!clazz.empty())
         {

@@ -152,8 +152,8 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
-        void debug(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
-        void debug(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
+        void debug(const std::string& msg, const log4cxx::spi::LocationInfo& location);
+        void debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void debug(const std::string& msg);
         void debug(const std::wstring& msg);
 
@@ -172,8 +172,8 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
-        void error(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
-        void error(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+        void error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
+        void error(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void error(const std::wstring& msg);
         void error(const std::string& msg);
 
@@ -192,8 +192,8 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
-        void fatal(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
-        void fatal(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+        void fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
+        void fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void fatal(const std::wstring& msg);
         void fatal(const std::string& msg);
 
@@ -205,9 +205,9 @@ namespace log4cxx
         @param locaion location of the logging statement.
         */
         void forcedLog(const LevelPtr& level, const std::string& message,
-                        const log4cxx::spi::location::LocationInfo& location);
+                        const log4cxx::spi::LocationInfo& location);
         void forcedLog(const LevelPtr& level, const std::wstring& message,
-                        const log4cxx::spi::location::LocationInfo& location);
+                        const log4cxx::spi::LocationInfo& location);
 
 
         void forcedLog(const LevelPtr& level, const std::string& message);
@@ -343,8 +343,8 @@ namespace log4cxx
                 @param file the file where the log statement was written.
                 @param line the line where the log statement was written.
                 */
-       void info(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
-       void info(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+       void info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
+       void info(const std::string& msg, const log4cxx::spi::LocationInfo& location);
        void info(const std::wstring& msg);
        void info(const std::string& msg);
 
@@ -452,10 +452,10 @@ namespace log4cxx
         @see #setResourceBundle
         */
         void l7dlog(const LevelPtr& level, const std::wstring& key,
-                                const log4cxx::spi::location::LocationInfo& locationInfo,
+                                const log4cxx::spi::LocationInfo& locationInfo,
                                 ...);
         void l7dlog(const LevelPtr& level, const std::string& key,
-                                const log4cxx::spi::location::LocationInfo& locationInfo,
+                                const log4cxx::spi::LocationInfo& locationInfo,
                                 ...);
 
           /**
@@ -467,9 +467,9 @@ namespace log4cxx
         @param file The source file of the logging request, may be null.
         @param line The number line of the logging request.  */
         void log(const LevelPtr& level, const std::wstring& message,
-            const log4cxx::spi::location::LocationInfo& location);
+            const log4cxx::spi::LocationInfo& location);
         void log(const LevelPtr& level, const std::string& message,
-            const log4cxx::spi::location::LocationInfo& location);
+            const log4cxx::spi::LocationInfo& location);
         void log(const LevelPtr& level, const std::wstring& message);
         void log(const LevelPtr& level, const std::string& message);
 
@@ -538,8 +538,8 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
-        void warn(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
-        void warn(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+        void warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
+        void warn(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void warn(const std::wstring& msg);
         void warn(const std::string& msg);
 

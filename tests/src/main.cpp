@@ -38,17 +38,19 @@
 
 
 extern CPPUNIT_NS::Test* createTestCase1();
-extern CPPUNIT_NS::Test* createTestCase2();
 extern CPPUNIT_NS::Test* createTestCase3();
-extern CPPUNIT_NS::Test* createTestCase4();
 
+#if defined(LOG4CXX_HAVE_XML)
+extern CPPUNIT_NS::Test* createTestCase2();
+extern CPPUNIT_NS::Test* createTestCase4();
+#endif
 
 //
 //  initializing a logger will cause the APR used by log4cxx library to be initialized
 //
 log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("log4cxx_unittest"));
 
-int main( int argc, const char * const argv[])
+int main( int argc, const char * const * argv)
 {
         apr_app_initialize(&argc, &argv, NULL);
         CppUnit::TextUi::TestRunner runner;
@@ -82,15 +84,17 @@ int main( int argc, const char * const argv[])
 							case '1':
 								runner.addTest(createTestCase1());
 								break;
-							case '2':
-								runner.addTest(createTestCase2());
-								break;
 							case '3':
 								runner.addTest(createTestCase3());
+								break;
+#if defined(LOG4CXX_HAVE_XML)
+							case '2':
+								runner.addTest(createTestCase2());
 								break;
 							case '4':
 								runner.addTest(createTestCase4());
 								break;
+#endif
 							default:
 								break;
 						}

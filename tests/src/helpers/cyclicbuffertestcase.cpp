@@ -50,7 +50,7 @@ public:
 		{
 			e.push_back(
 			new LoggingEvent(logger, Level::DEBUG, LOG4CXX_STR("e"),
-                           log4cxx::spi::location::LocationInfo::getLocationUnavailable()));
+                           log4cxx::spi::LocationInfo::getLocationUnavailable()));
 		}
 	}
 

@@ -28,7 +28,7 @@ RootCategory::RootCategory(const LevelPtr& level) : Logger(LOG4CXX_STR("root"))
 	setLevel(level);
 }
 
-const LevelPtr& RootCategory::getEffectiveLevel()
+const LevelPtr& RootCategory::getEffectiveLevel() const
 {
 	return level;
 }

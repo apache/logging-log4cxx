@@ -170,6 +170,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         multithreaded="true"
         outtype="${aprutil.lib.type}"
         objdir="${aprutil.lib.dir}/aprutil_obj"
+        warnings="none"
         debug="${debug}">
         <fileset dir="${base.dir}" includes="**/*.c"
             excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
@@ -195,6 +196,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset dir="${apriconv.lib.dir}" libs="apriconv${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <defineset if="is-bcc">
+            <define name="EILSEQ" value="50"/>
+        </defineset>
     </cc>
 </target>
 

@@ -83,7 +83,7 @@ namespace log4cxx
                         */
                         LoggingEvent(const LoggerPtr& logger,
                                 const LevelPtr& level,	const LogString& message,
-                                const log4cxx::spi::location::LocationInfo& location);
+                                const log4cxx::spi::LocationInfo& location);
 
                         ~LoggingEvent();
 
@@ -117,7 +117,7 @@ namespace log4cxx
                                 { return timeStamp; }
 
                         /* Return the file where this log statement was written. */
-                        inline const log4cxx::spi::location::LocationInfo& getLocationInformation() const
+                        inline const log4cxx::spi::LocationInfo& getLocationInformation() const
                                 { return locationInfo; }
 
                         /**
@@ -238,7 +238,7 @@ namespace log4cxx
                         log4cxx_time_t timeStamp;
 
                         /** The is the location where this log statement was written. */
-                        const log4cxx::spi::location::LocationInfo locationInfo;
+                        const log4cxx::spi::LocationInfo locationInfo;
 
 
                         /** The identifier of thread in which this logging event

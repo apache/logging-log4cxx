@@ -16,7 +16,7 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_XML
+#ifdef LOG4CXX_HAVE_XML
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -61,4 +61,4 @@ CPPUNIT_NS::Test* createTestCase4() {
 	return TestCase4::suite();
 }
 
-#endif //HAVE_XML
+#endif //LOG4CXX_HAVE_XML

@@ -22,7 +22,7 @@
 
 
 using namespace log4cxx;
-using namespace log4cxx::spi::location;
+using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(XLogger)
 IMPLEMENT_LOG4CXX_OBJECT(XFactory)

@@ -78,7 +78,7 @@ namespace log4cxx
                 /**
                         We introduce a new printing method in order to support {@link
                         XLevel#LETHAL}.  */
-                void lethal(const LogString& message, const log4cxx::spi::location::LocationInfo& location);
+                void lethal(const LogString& message, const log4cxx::spi::LocationInfo& location);
 
                 /**
                         We introduce a new printing method in order to support {@link
@@ -98,7 +98,7 @@ namespace log4cxx
                 /**
                         We introduce a new printing method that takes the TRACE level.
                 */
-                void trace(const LogString& message, const log4cxx::spi::location::LocationInfo& location);
+                void trace(const LogString& message, const log4cxx::spi::LocationInfo& location);
 
                 /**
                         We introduce a new printing method that takes the TRACE level.

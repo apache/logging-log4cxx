@@ -33,7 +33,7 @@
 #include <log4cxx/stream.h>
 
 using namespace log4cxx;
-#ifdef HAVE_XML
+#ifdef LOG4CXX_HAVE_XML
 using namespace log4cxx::xml;
 #endif
 using namespace log4cxx::net;
@@ -51,7 +51,7 @@ void init(const std::string& portStr, const std::string& configFile)
 {
         port = atol(portStr.c_str());
 
-#ifdef HAVE_XML
+#ifdef LOG4CXX_HAVE_XML
         // tests if configFile ends with ".xml"
         if (configFile.length() > 4 &&
               configFile.substr(configFile.length() -4) == ".xml")

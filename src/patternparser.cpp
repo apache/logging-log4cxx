@@ -32,7 +32,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-using namespace log4cxx::spi::location;
 
 #define ESCAPE_CHAR LOG4CXX_STR('%')
 

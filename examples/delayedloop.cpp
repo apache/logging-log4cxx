@@ -61,7 +61,7 @@ public:
 
         static void init(const std::string& configFile)
         {
-#ifdef HAVE_XML
+#ifdef LOG4CXX_HAVE_XML
                 if(configFile.length() > 4 &&
                      configFile.substr(configFile.length() - 4) == ".xml")
                 {

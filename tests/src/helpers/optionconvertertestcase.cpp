@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include "../testchar.h"
 #include "../insertwide.h"
+#include <stdlib.h>
 
 
 using namespace log4cxx;

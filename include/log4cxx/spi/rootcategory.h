@@ -45,7 +45,7 @@ namespace log4cxx
             Return the assigned level value without walking the category
             hierarchy.
             */
-            virtual const LevelPtr& getEffectiveLevel();
+            virtual const LevelPtr& getEffectiveLevel() const;
 
             /**
                         Setting a null value to the level of the root category may have catastrophic

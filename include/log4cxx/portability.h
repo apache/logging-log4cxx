@@ -17,19 +17,24 @@
 #ifndef _LOG4CXX_PORTABILITY_H
 #define _LOG4CXX_PORTABILITY_H
 
-#if defined(_MSC_VER)
-#pragma warning(disable : 4250 4251 4786 4290)
-
-#ifdef LOG4CXX_STATIC
+#if defined(LOG4CXX_STATIC)
 #define LOG4CXX_EXPORT
-// cf. file msvc/static/static.cpp
-#pragma comment(linker, "/include:?ForceSymbolReferences@@YAXXZ")
-#else // DLL
+#else
+#if defined(_WIN32)
 #ifdef LOG4CXX
         #define LOG4CXX_EXPORT __declspec(dllexport)
 #else
         #define LOG4CXX_EXPORT __declspec(dllimport)
 #endif
+#endif
+#endif
+
+#if defined(_MSC_VER)
+#pragma warning(disable : 4250 4251 4786 4290)
+
+#ifdef LOG4CXX_STATIC
+// cf. file msvc/static/static.cpp
+#pragma comment(linker, "/include:?ForceSymbolReferences@@YAXXZ")
 #endif
 
 
@@ -40,8 +45,6 @@ typedef long long log4cxx_int64_t;
 #endif
 
 #else
-
-#define LOG4CXX_EXPORT
 typedef long long log4cxx_int64_t;
 
 #endif
@@ -50,8 +53,9 @@ typedef long long log4cxx_int64_t;
 typedef log4cxx_int64_t log4cxx_time_t;
 typedef int log4cxx_status_t;
 
-#define HAVE_XML
-#define LOG4CXX_HAVE_XML
-
+#if !defined(__BORLANDC__)
+#define HAVE_XML 1
+#define LOG4CXX_HAVE_XML 1
+#endif
 
 #endif //_LOG4CXX_PORTABILITY_H

@@ -48,7 +48,7 @@ class Loop {
   static loopFunc loop;
 public:
 
-  static void main(std::vector<LogString>& args)  {
+  static int main(std::vector<LogString>& args)  {
     LoggerPtr j(Logger::getLogger("org.apache.log4j.joran"));
     j->setAdditivity(false);
     j->setLevel(Level::WARN);
@@ -76,6 +76,7 @@ public:
       << "] microseconds per log.";
 
     //memPrint();
+    return 1;
   }
 
   static void usage(const char* msg) {
@@ -187,5 +188,5 @@ int main(int argc, const char* const argv[])
         for (int i = 1; i < argc; i++) {
            Transcoder::decode(argv[i], args[i - 1]);
         }
-        Loop::main(args);
+        return Loop::main(args);
 }

@@ -16,7 +16,7 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_XML
+#ifdef LOG4CXX_HAVE_XML
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>

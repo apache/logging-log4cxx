@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ namespace log4cxx
                    log4cxx::helpers::Pool& p) const;
                virtual void setTimeZone(const TimeZonePtr& zone);
                virtual void numberFormat(LogString& s,
-                                         long n,
+                                         int n,
                                          log4cxx::helpers::Pool& p) const;
 
 

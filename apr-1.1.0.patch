@@ -1,0 +1,263 @@
+Index: include/arch/win32/apr_private.h
+===================================================================
+--- include/arch/win32/apr_private.h	(revision 153549)
++++ include/arch/win32/apr_private.h	(working copy)
+@@ -19,6 +19,9 @@
+  * This is the windows specific autoconf-like config file
+  * which unix would create at build time.
+  */
++#if defined(_WIN32) && !defined(WIN32)
++#define WIN32 1
++#endif
+ 
+ #ifdef WIN32
+ 
+@@ -82,37 +85,7 @@
+ #define HAVE_STRSTR   1
+ #define HAVE_MEMCHR   1
+ 
+-#define SIGHUP     1
+-/* 2 is used for SIGINT on windows */
+-#define SIGQUIT    3
+-/* 4 is used for SIGILL on windows */
+-#define SIGTRAP    5
+-#define SIGIOT     6
+-#define SIGBUS     7
+-/* 8 is used for SIGFPE on windows */
+ #define SIGKILL    9
+-#define SIGUSR1    10
+-/* 11 is used for SIGSEGV on windows */
+-#define SIGUSR2    12
+-#define SIGPIPE    13
+-#define SIGALRM    14
+-/* 15 is used for SIGTERM on windows */
+-#define SIGSTKFLT  16
+-#define SIGCHLD    17 
+-#define SIGCONT    18
+-#define SIGSTOP    19
+-#define SIGTSTP    20
+-/* 21 is used for SIGBREAK on windows */
+-/* 22 is used for SIGABRT on windows */
+-#define SIGTTIN    23
+-#define SIGTTOU    24
+-#define SIGURG     25
+-#define SIGXCPU    26
+-#define SIGXFSZ    27
+-#define SIGVTALRM  28
+-#define SIGPROF    29
+-#define SIGWINCH   30
+-#define SIGIO      31
+ 
+ #define __attribute__(__x) 
+ 
+@@ -162,6 +135,13 @@
+ /* used to check for DWORD overflow in 64bit compiles */
+ #define APR_DWORD_MAX 0xFFFFFFFFUL
+ 
++//
++//   allocate memory like VC's _malloc_dbg or _realloc_dbg
++//      (or just call malloc and realloc if necessary)
++void* apr_malloc_dbg(size_t size, const char* filename, int linenumber);
++void* apr_realloc_dbg(void* userData, size_t newSize, const char* filename, int linenumber);
++
++
+ /*
+  * Include common private declarations.
+  */
+Index: include/apr.hw
+===================================================================
+--- include/apr.hw	(revision 153549)
++++ include/apr.hw	(working copy)
+@@ -35,6 +35,7 @@
+  * for Win32 or Netware by those build environments, respectively.
+  */
+ 
++
+ #if defined(WIN32) || defined(DOXYGEN)
+ 
+ /* Ignore most warnings (back down to /W3) for poorly constructed headers
+@@ -88,7 +89,9 @@
+ #ifndef _WIN32_WCE
+ #include <winsock2.h>
+ #include <mswsock.h>
++#if defined(_MSC_VER)
+ #include <ws2tcpip.h>
++#endif
+ #else
+ #include <winsock.h>
+ #endif
+@@ -349,8 +352,10 @@
+  * based on some APR_HAVE_PID/GID/UID?
+  */
+ typedef  int         pid_t;
++#if !defined(__BORLANDC__)
+ typedef  int         uid_t;
+ typedef  int         gid_t;
++#endif
+ 
+ /* Mechanisms to properly type numeric literals */
+ 
+Index: misc/win32/apr_app.c
+===================================================================
+--- misc/win32/apr_app.c	(revision 153549)
++++ misc/win32/apr_app.c	(working copy)
+@@ -35,7 +35,6 @@
+ 
+ #include "apr_general.h"
+ #include "ShellAPI.h"
+-#include "crtdbg.h"
+ #include "wchar.h"
+ #include "apr_arch_file_io.h"
+ #include "assert.h"
+@@ -57,8 +56,8 @@
+ 
+     dupenv = apr_wastrtoastr(&env, wenv, -1);
+ 
+-    _environ = _malloc_dbg((dupenv + 1) * sizeof (char *), 
+-                           _CRT_BLOCK, __FILE__, __LINE__ );
++    _environ = apr_malloc_dbg((dupenv + 1) * sizeof (char *), 
++                           __FILE__, __LINE__ );
+     memcpy(_environ, env, (dupenv + 1) * sizeof (char *));
+ 
+     /* MSVCRT will attempt to maintain the wide environment calls
+Index: misc/win32/misc.c
+===================================================================
+--- misc/win32/misc.c	(revision 153549)
++++ misc/win32/misc.c	(working copy)
+@@ -16,7 +16,6 @@
+ 
+ #include "apr_private.h"
+ #include "apr_arch_misc.h"
+-#include "crtdbg.h"
+ #include "apr_arch_file_io.h"
+ #include "assert.h"
+ #include "apr_lib.h"
+Index: misc/win32/internal.c
+===================================================================
+--- misc/win32/internal.c	(revision 153549)
++++ misc/win32/internal.c	(working copy)
+@@ -18,7 +18,6 @@
+ 
+ #include "apr_arch_misc.h"
+ #include "apr_arch_file_io.h"
+-#include <crtdbg.h>
+ #include <assert.h>
+ 
+ /* This module is the source of -static- helper functions that are
+@@ -52,8 +51,8 @@
+             ;
+     }
+ 
+-    newarr = _malloc_dbg((args + 1) * sizeof(char *),
+-                         _CRT_BLOCK, __FILE__, __LINE__);
++    newarr = apr_malloc_dbg((args + 1) * sizeof(char *),
++                         __FILE__, __LINE__);
+ 
+     for (arg = 0; arg < args; ++arg) {
+         newarr[arg] = (void*)(wcslen(arr[arg]) + 1);
+@@ -66,8 +65,8 @@
+      * 4 ucs bytes will hold a wchar_t pair value (20 bits)
+      */
+     elesize = elesize * 3 + 1;
+-    ele = elements = _malloc_dbg(elesize * sizeof(char), 
+-                                 _CRT_BLOCK, __FILE__, __LINE__);
++    ele = elements = apr_malloc_dbg(elesize * sizeof(char), 
++                                 __FILE__, __LINE__);
+ 
+     for (arg = 0; arg < args; ++arg) {
+         apr_size_t len = (apr_size_t)newarr[arg];
+@@ -87,8 +86,8 @@
+ 
+     /* Return to the free store if the heap realloc is the least bit optimized
+      */
+-    ele = _realloc_dbg(elements, ele - elements, 
+-                       _CRT_BLOCK, __FILE__, __LINE__);
++    ele = apr_realloc_dbg(elements, ele - elements, 
++                       __FILE__, __LINE__);
+ 
+     if (ele != elements) {
+         apr_size_t diff = ele - elements;
+@@ -100,3 +99,27 @@
+     *retarr = newarr;
+     return args;
+ }
++
++
++#if defined(_MSC_VER)
++#include "crtdbg.h"
++
++void* apr_malloc_dbg(size_t size, const char* filename, int linenumber) {
++    return _malloc_dbg(size, _CRT_BLOCK, filename, linenumber);
++}
++
++void* apr_realloc_dbg(void* userData, size_t newSize, const char* filename, int linenumber) {
++    return _realloc_dbg(userData, newSize, _CRT_BLOCK, filename, linenumber);
++}
++
++#else
++
++void* apr_malloc_dbg(size_t size, const char* filename, int linenumber) {
++    return malloc(size);
++}
++
++void* apr_realloc_dbg(void* userData, size_t newSize, const char* filename, int linenumber) {
++    return realloc(userData, newSize);
++}
++
++#endif
+Index: misc/win32/start.c
+===================================================================
+--- misc/win32/start.c	(revision 153549)
++++ misc/win32/start.c	(working copy)
+@@ -23,7 +23,6 @@
+ #include "apr_arch_misc.h"       /* for WSAHighByte / WSALowByte */
+ #include "wchar.h"
+ #include "apr_arch_file_io.h"
+-#include "crtdbg.h"
+ #include "assert.h"
+ 
+ /* This symbol is _private_, although it must be exported.
+@@ -54,8 +53,8 @@
+     }
+     wsize = 1 + wch - arrsz;
+ 
+-    newarr = _malloc_dbg((args + 1) * sizeof(char *),
+-                         _CRT_BLOCK, __FILE__, __LINE__);
++    newarr = apr_malloc_dbg((args + 1) * sizeof(char *),
++                         __FILE__, __LINE__);
+ 
+     /* This is a safe max allocation, we will realloc after
+      * processing and return the excess to the free store.
+@@ -63,8 +62,8 @@
+      * 4 ucs bytes will hold a wchar_t pair value (20 bits)
+      */
+     newlen = totlen = wsize * 3 + 1;
+-    newarr[0] = _malloc_dbg(newlen * sizeof(char), 
+-                            _CRT_BLOCK, __FILE__, __LINE__);
++    newarr[0] = apr_malloc_dbg(newlen * sizeof(char), 
++                            __FILE__, __LINE__);
+ 
+     (void)apr_conv_ucs2_to_utf8(arrsz, &wsize,
+                                 newarr[0], &newlen);
+@@ -72,8 +71,8 @@
+     assert(newlen && !wsize);
+     /* Return to the free store if the heap realloc is the least bit optimized
+      */
+-    newarr[0] = _realloc_dbg(newarr[0], totlen - newlen, 
+-                             _CRT_BLOCK, __FILE__, __LINE__);
++    newarr[0] = apr_realloc_dbg(newarr[0], totlen - newlen, 
++                             __FILE__, __LINE__);
+ 
+     for (arg = 1; arg < args; ++arg) {
+         newarr[arg] = newarr[arg - 1] + 2;
+@@ -128,8 +127,8 @@
+         dupenv = warrsztoastr(&_environ, sysstr, -1);
+ 
+ 	if (env) {
+-            *env = _malloc_dbg((dupenv + 1) * sizeof (char *), 
+-                               _CRT_BLOCK, __FILE__, __LINE__ );
++            *env = apr_malloc_dbg((dupenv + 1) * sizeof (char *), 
++                               __FILE__, __LINE__ );
+             memcpy((void*)*env, _environ, (dupenv + 1) * sizeof (char *));
+         }
+         else {

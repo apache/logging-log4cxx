@@ -81,7 +81,7 @@ namespace log4cxx
               }
 
 
-              void setLocation(const ::log4cxx::spi::location::LocationInfo& location) {
+              void setLocation(const ::log4cxx::spi::LocationInfo& location) {
                  if (LOG4CXX_UNLIKELY(enabled)) {
                     currentLocation = location;
                  }
@@ -89,7 +89,7 @@ namespace log4cxx
 
 
 
-             inline void flush(const ::log4cxx::spi::location::LocationInfo& location) {
+             inline void flush(const ::log4cxx::spi::LocationInfo& location) {
                  if (LOG4CXX_UNLIKELY(enabled && 0 != impl)) {
                     logger->log(currentLevel,
                        impl->str(),
@@ -121,7 +121,7 @@ namespace log4cxx
              LevelPtr currentLevel;
              ::std::wostringstream* impl;
              bool enabled;
-             ::log4cxx::spi::location::LocationInfo currentLocation;
+             ::log4cxx::spi::LocationInfo currentLocation;
 
         };
 
@@ -138,7 +138,7 @@ log4cxx::logstream& operator<<(
 
 ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
-   const ::log4cxx::spi::location::LocationInfo& rhs) {
+   const ::log4cxx::spi::LocationInfo& rhs) {
    lhs.setLocation(rhs);
    return lhs;
 }
@@ -146,7 +146,7 @@ log4cxx::logstream& operator<<(
 
 ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
-   const ::log4cxx::spi::location::LocationFlush& rhs) {
+   const ::log4cxx::spi::LocationFlush& rhs) {
    lhs.flush(rhs);
    return lhs;
 }

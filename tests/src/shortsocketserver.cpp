@@ -27,6 +27,7 @@
 #include "net/socketservertestcase.h"
 #include <log4cxx/stream.h>
 #include <iostream>
+#include <stdlib.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

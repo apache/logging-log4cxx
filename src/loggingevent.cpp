@@ -33,7 +33,6 @@
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
-using namespace log4cxx::spi::location;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)

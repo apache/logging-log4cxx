@@ -17,6 +17,8 @@
 #define _WIN32_DCOM
 #include <log4cxx/portability.h>
 
+#if LOG4CXX_HAVE_XML
+
 #ifdef _WIN32
 
 #include <windows.h>
@@ -301,4 +303,5 @@ XMLDOMNodePtr MsXMLDOMNodeList::item(int index)
 	}
 }
 
+#endif
 #endif

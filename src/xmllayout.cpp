@@ -28,7 +28,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-using namespace log4cxx::spi::location;
 using namespace log4cxx::xml;
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLLayout)

@@ -31,7 +31,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-using namespace log4cxx::spi::location;
 
 IMPLEMENT_LOG4CXX_OBJECT(HTMLLayout)
 
