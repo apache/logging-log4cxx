@@ -24,9 +24,6 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
-#define FILTERED "output/filtered"
-
-
 /**
    Tests handling of custom loggers.
 */
