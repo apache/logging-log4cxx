@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/logger.h>
 #include <log4cxx/net/socketnode.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -32,9 +32,9 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketNode)
 
 SocketNode::SocketNode(helpers::SocketPtr& socket,
 	spi::LoggerRepositoryPtr& hierarchy)
- : hierarchy(hierarchy)
+ : hierarchy(hierarchy),
+   is(socket->getInputStream())
 {
-	is = socket->getInputStream();
 }
 
 void SocketNode::run()
@@ -48,9 +48,9 @@ void SocketNode::run()
 		{
 			// read an event from the wire
 			event->read(is);
-			
+
 			// get a logger from the hierarchy.
-			// The name of the logger is taken to be the 
+			// The name of the logger is taken to be the
 			// name contained in the event.
 			if (event->getLoggerName() == _T("root"))
 			{

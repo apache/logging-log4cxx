@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,7 +46,7 @@ namespace log4cxx
 
 		class OptionHandler;
 		typedef helpers::ObjectPtrT<OptionHandler> OptionHandlerPtr;
-	} 
+	}
 
 	namespace helpers
 	{
@@ -55,12 +55,12 @@ namespace log4cxx
 
 		class XMLDOMElement;
 		typedef helpers::ObjectPtrT<XMLDOMElement> XMLDOMElementPtr;
-	} 
+	}
 
 	namespace config
 	{
 		class PropertySetter;
-	} 
+	}
 
 	namespace xml
 	{
@@ -89,7 +89,7 @@ files. You can enable log4cxx internal logging by setting the
 
 <p>There are sample XML files included in the package.
 */
-		class LOG4CXX_EXPORT DOMConfigurator : 
+		class LOG4CXX_EXPORT DOMConfigurator :
 			virtual public spi::Configurator,
 			virtual public helpers::ObjectImpl
 		{
@@ -139,32 +139,34 @@ files. You can enable log4cxx internal logging by setting the
 			/**
 			 Used internally to parse the children of a category element.
 			*/
-			void parseChildrenOfLoggerElement(helpers::XMLDOMElementPtr catElement, 
+			void parseChildrenOfLoggerElement(helpers::XMLDOMElementPtr catElement,
 				LoggerPtr logger, bool isRoot);
 
 			/**
 			 Used internally to parse a layout element.
-			*/  
+			*/
 			LayoutPtr parseLayout(helpers::XMLDOMElementPtr layout_element);
 
 			/**
 			 Used internally to parse a level  element.
 			*/
-			void parseLevel(helpers::XMLDOMElementPtr element, 
+			void parseLevel(helpers::XMLDOMElementPtr element,
 				LoggerPtr logger, bool isRoot);
 
-			void setParameter(helpers::XMLDOMElementPtr elem, 
+			void setParameter(helpers::XMLDOMElementPtr elem,
 				config::PropertySetter& propSetter);
 
 			/**
 			 Used internally to configure the log4cxx framework by parsing a DOM
 			 tree of XML elements based on <a
 			 href="docs/log4j.dtd">log4j.dtd</a>.
- 
+
 			*/
 			void parse(helpers::XMLDOMElementPtr element);
 
 		public:
+                        DOMConfigurator();
+
 			DECLARE_LOG4CXX_OBJECT(DOMConfigurator)
 			BEGIN_LOG4CXX_CAST_MAP()
 				LOG4CXX_CAST_ENTRY(spi::Configurator)
@@ -177,8 +179,8 @@ files. You can enable log4cxx internal logging by setting the
 
 			/**
 			Like #configureAndWatch(const String& configFilename, long delay)
-			except that the default delay as defined by 
-			helpers::FileWatchdog#DEFAULT_DELAY is used. 
+			except that the default delay as defined by
+			helpers::FileWatchdog#DEFAULT_DELAY is used.
 			@param configFilename A log4j configuration file in XML format.
 			*/
 			static void configureAndWatch(const String& configFilename);
@@ -189,12 +191,12 @@ files. You can enable log4cxx internal logging by setting the
 			check if <code>configFilename</code> has been created or
 			modified. The period is determined by the <code>delay</code>
 			argument. If a change or file creation is detected, then
-			<code>configFilename</code> is read to configure log4cxx.  
+			<code>configFilename</code> is read to configure log4cxx.
 
 			@param configFilename A log4j configuration file in XML format.
 			@param delay The delay in milliseconds to wait between each check.
 			*/
-			static void configureAndWatch(const String& configFilename, 
+			static void configureAndWatch(const String& configFilename,
 				long delay);
 
 			/**
@@ -204,7 +206,7 @@ files. You can enable log4cxx internal logging by setting the
 			@param filename The file to parse.
 			@param repository The hierarchy to operation upon.
 			*/
-			void doConfigure(const String& filename, 
+			void doConfigure(const String& filename,
 				spi::LoggerRepositoryPtr& repository);
 
 		protected:
@@ -216,6 +218,11 @@ files. You can enable log4cxx internal logging by setting the
 			helpers::Properties props;
 			spi::LoggerRepositoryPtr repository;
 			spi::LoggerFactoryPtr loggerFactory;
+
+                 private:
+                        //   prevent assignment or copy statements
+                        DOMConfigurator(const DOMConfigurator&);
+                        DOMConfigurator& operator=(const DOMConfigurator&);
 		};
 	}  // namespace xml
 }; // namespace log4cxx

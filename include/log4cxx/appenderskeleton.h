@@ -171,7 +171,7 @@ namespace log4cxx
 		/**
 		Set the name of this Appender.
 		*/
-		void setName(const String& name) { this->name = name; }
+		void setName(const String& name) { this->name.assign(name); }
 
 
 		/**

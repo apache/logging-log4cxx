@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_NET_TELNET_APPENDER_H
 #define _LOG4CXX_NET_TELNET_APPENDER_H
 
@@ -29,8 +29,8 @@ namespace log4cxx
 	{
 		class SocketOutputStream;
 		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-	} 
-	
+	}
+
 	namespace net
 	{
 /**
@@ -67,7 +67,7 @@ servlet.
 			SocketHandler * sh;
 			int port;
 
-		public:			
+		public:
 			DECLARE_LOG4CXX_OBJECT(TelnetAppender)
 			BEGIN_LOG4CXX_CAST_MAP()
 				LOG4CXX_CAST_ENTRY(TelnetAppender)
@@ -77,12 +77,12 @@ servlet.
 			TelnetAppender();
 			~TelnetAppender();
 
-			/** 
+			/**
 			This appender requires a layout to format the text to the
 			attached client(s). */
 			virtual bool requiresLayout() const
 				{ return true; }
-			
+
 			/** all of the options have been set, create the socket handler and
 			wait for connections. */
 			void activateOptions();
@@ -97,15 +97,15 @@ servlet.
     		*/
 			int getPort() const
 				{ return port; }
-			
+
     		/**
     		The <b>Port</b> option takes a positive integer representing
     		the port where the server is waiting for connections.
     		*/
 			void setPort(int port)
 			{ this->port = port; }
-			
-			
+
+
 			/** shuts down the appender. */
 			void close();
 
@@ -113,10 +113,14 @@ servlet.
 			/** Handles a log event.  For this appender, that means writing the
 			message to each connected client.  */
 			virtual void append(const spi::LoggingEventPtr& event) ;
-			
+
 			//---------------------------------------------------------- SocketHandler:
-			
+
 		private:
+                        //   prevent copy and assignment statements
+                        TelnetAppender(const TelnetAppender&);
+                        TelnetAppender& operator=(const TelnetAppender&);
+
 			/** The SocketHandler class is used to accept connections from
 			clients.  It is threaded so that clients can connect/disconnect
 			asynchronously. */
@@ -131,22 +135,26 @@ servlet.
 
 			public:
 				SocketHandler(int port);
-				
+
 				/** make sure we close all network connections when this handler
 				is destroyed. */
 				void finalize();
-				
+
 				/** sends a message to each of the clients in telnet-friendly output. */
 				void send(const String& message);
-				
-				/** 
+
+				/**
 				Continually accepts client connections.  Client connections
-				are refused when MAX_CONNECTIONS is reached. 
+				are refused when MAX_CONNECTIONS is reached.
 				*/
 				virtual void run();
 
 			protected:
 				void print(helpers::SocketOutputStreamPtr& os, const String& sz);
+
+                        private:
+                                SocketHandler(const SocketHandler&);
+                                SocketHandler& operator=(const SocketHandler&);
 			}; // class SocketHandler
 		}; // class TelnetAppender
     } // namespace net

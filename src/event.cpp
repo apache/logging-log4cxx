@@ -1,47 +1,48 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/helpers/event.h>
 
 #ifdef LOG4CXX_HAVE_MS_THREAD
 #include <windows.h>
-#endif 
+#endif
 
 using namespace log4cxx::helpers;
 
 Event::Event(bool manualReset, bool initialState)
+: condition(), mutex()
 #ifdef LOG4CXX_HAVE_PTHREAD
-: manualReset(manualReset), state(initialState)
-#endif 
+  , manualReset(manualReset), state(initialState)
+#endif
 {
 #ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_cond_init(&condition, 0);
 	pthread_mutex_init(&mutex, 0);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	event = ::CreateEvent(
-		NULL, 
-		manualReset ? TRUE : FALSE, 
-		initialState ? TRUE : FALSE, 
+		NULL,
+		manualReset ? TRUE : FALSE,
+		initialState ? TRUE : FALSE,
 		NULL);
-		
+
 	if (event == NULL)
 	{
 		throw EventException(_T("Cannot create event"));
 	}
-#endif 
+#endif
 }
 
 Event::~Event()
@@ -51,7 +52,7 @@ Event::~Event()
 	pthread_mutex_destroy(&mutex);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	::CloseHandle((HANDLE)event);
-#endif 
+#endif
 }
 
 void Event::set()
@@ -61,12 +62,12 @@ void Event::set()
 	{
 		throw EventException(_T("Cannot lock mutex"));
 	}
-	
+
 	// if the event is already set, no need to signal or broadcast
 	if (!state)
 	{
 		state = true;
-		
+
 		if(manualReset)
 		{
 			if (pthread_cond_broadcast(&condition) != 0)
@@ -74,7 +75,7 @@ void Event::set()
 				pthread_mutex_unlock(&mutex);
 				throw EventException(_T("Cannot broadcast condition"));
 			}
-		} 
+		}
 		else
 		{
 			if (pthread_cond_signal(&condition) != 0)
@@ -84,7 +85,7 @@ void Event::set()
 			}
 		}
 	}
-	
+
 	if (pthread_mutex_unlock(&mutex) != 0)
 	{
 		throw EventException(_T("Cannot unlock mutex"));
@@ -94,7 +95,7 @@ void Event::set()
 	{
 		throw EventException(_T("Cannot set event"));
 	}
-#endif 
+#endif
 }
 
 void Event::reset()
@@ -104,9 +105,9 @@ void Event::reset()
 	{
 		throw EventException(_T("Cannot lock mutex"));
 	}
-	
+
 	state = false;
-	
+
 	if (pthread_mutex_unlock(&mutex) != 0)
 	{
 		throw EventException(_T("Cannot unlock mutex"));
@@ -116,7 +117,7 @@ void Event::reset()
 	{
 		throw EventException(_T("Cannot reset event"));
 	}
-#endif 
+#endif
 }
 
 void Event::wait()
@@ -139,7 +140,7 @@ void Event::wait()
 		// automatic event reset.
 		state = false;
 	}
-	
+
 	if (pthread_mutex_unlock(&mutex) != 0)
 	{
 		throw EventException(_T("Cannot unlock mutex"));
@@ -150,5 +151,5 @@ void Event::wait()
 	{
 		throw EventException(_T("Wait on event error"));
 	}
-#endif 
+#endif
 }

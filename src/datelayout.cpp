@@ -28,7 +28,7 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-DateLayout::DateLayout() : dateFormat(0)
+DateLayout::DateLayout() : dateFormat(0), timeZoneID(), dateFormatOption()
 {
 }
 

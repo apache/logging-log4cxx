@@ -115,6 +115,10 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define CONFIG_DEBUG_ATTR _T("configDebug")
 #define INTERNAL_DEBUG_ATTR _T("debug")
 
+DOMConfigurator::DOMConfigurator()
+   : appenderBag(), props(), repository() {
+}
+
 /**
 Used internally to parse appenders by IDREF name.
 */

@@ -1,22 +1,22 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_NET_SOCKET_APPENDER_H
 #define _LOG4CXX_NET_SOCKET_APPENDER_H
- 
+
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/thread.h>
@@ -27,7 +27,7 @@ namespace log4cxx
 	{
 		class SocketOutputStream;
 		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-	} 
+	}
 
 	namespace net
 	{
@@ -87,12 +87,12 @@ namespace log4cxx
 		exits before the <code>SocketAppender</code> is closed either
         explicitly or subsequent to destruction, then there might
         be untransmitted data in the pipe which might be lost.
-        @n @n To avoid lost data, it is usually sufficient to 
+        @n @n To avoid lost data, it is usually sufficient to
         #close the <code>SocketAppender</code> either explicitly or by
         calling the LogManager#shutdown method
         before exiting the application.
         */
-        
+
       	class LOG4CXX_EXPORT SocketAppender : public AppenderSkeleton
     	{
 		class Connector;
@@ -153,11 +153,11 @@ namespace log4cxx
 		    Set options
 		    */
 			virtual void setOption(const String& option, const String& value);
-			
+
     		/**
     		* Close this appender.
     		*
-    		* <p>This will mark the appender as closed and call then 
+    		* <p>This will mark the appender as closed and call then
     		* #cleanUp method.
     		* */
     		void close();
@@ -182,7 +182,7 @@ namespace log4cxx
 
     		/**
     		* The <b>RemoteHost</b> option takes a string value which should be
-    		* the host name of the server where a 
+    		* the host name of the server where a
 			* {@link net::SocketNode SocketNode} is running.
     		* */
     		inline void setRemoteHost(const String& host)
@@ -241,7 +241,7 @@ namespace log4cxx
     			{ return reconnectionDelay; }
 
 		    void fireConnector();
-       
+
        private:
 		   /**
 			The Connector will reconnect when the server becomes available
@@ -266,8 +266,12 @@ namespace log4cxx
 
 				Connector(SocketAppender * socketAppender);
 				virtual void run();
+
+                        private:
+                                Connector(const Connector&);
+                                Connector& operator=(const Connector&);
 			}; // class Connector
-			
+
 			typedef helpers::ObjectPtrT<Connector> ConnectorPtr;
 
 			ConnectorPtr connector;

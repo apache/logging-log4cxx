@@ -26,13 +26,15 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
 FileAppender::FileAppender()
-: fileAppend(true), bufferedIO(false), bufferSize(8*1024)
+: fileAppend(true), bufferedIO(false), bufferSize(8*1024),
+   fileName(), ofs()
 {
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName,
 	bool append, bool bufferedIO, int bufferSize)
-: fileAppend(true), bufferedIO(false), bufferSize(8*1024)
+: fileAppend(true), bufferedIO(false), bufferSize(8*1024),
+  fileName(fileName), ofs()
 {
 	this->layout = layout;
 	this->setFile(fileName, append, bufferedIO, bufferSize);
@@ -40,14 +42,16 @@ FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName,
 
 FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName,
 	bool append)
-: fileAppend(true), bufferedIO(false), bufferSize(8*1024)
+: fileAppend(true), bufferedIO(false), bufferSize(8*1024),
+  fileName(fileName), ofs()
 {
 	this->layout = layout;
 	this->setFile(fileName, append, false, bufferSize);
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName)
-: fileAppend(true), bufferedIO(false), bufferSize(8*1024)
+: fileAppend(true), bufferedIO(false), bufferSize(8*1024),
+  fileName(fileName), ofs()
 {
 	this->layout = layout;
 	this->setFile(fileName, true, false, bufferSize);

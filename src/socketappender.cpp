@@ -37,23 +37,28 @@ int SocketAppender::DEFAULT_RECONNECTION_DELAY   = 30000;
 
 SocketAppender::SocketAppender()
 : port(DEFAULT_PORT), reconnectionDelay(DEFAULT_RECONNECTION_DELAY),
-locationInfo(false)
+locationInfo(false),
+remoteHost(), address(), os(), connector()
+
 {
 }
 
 SocketAppender::SocketAppender(unsigned long address, int port)
 : port(port), reconnectionDelay(DEFAULT_RECONNECTION_DELAY),
-locationInfo(false)
+locationInfo(false),
+os(), connector()
 {
-	this->address.address = address;
-	remoteHost = this->address.getHostName();
-	connect();
+    this->address.address = address;
+    remoteHost = this->address.getHostName();
+    connect();
 }
 
 SocketAppender::SocketAppender(const String& host, int port)
 : address(InetAddress::getByName(host)), port(port),
 reconnectionDelay(DEFAULT_RECONNECTION_DELAY), locationInfo(false),
-remoteHost(host)
+remoteHost(host),
+os(), connector()
+
 {
 	connect();
 }

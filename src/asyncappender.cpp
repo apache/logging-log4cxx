@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/boundedfifo.h>
@@ -30,11 +30,11 @@ IMPLEMENT_LOG4CXX_OBJECT(Dispatcher)
 int AsyncAppender::DEFAULT_BUFFER_SIZE = 128;
 
 AsyncAppender::AsyncAppender()
-: locationInfo(false), interruptedWarningMessage(false)
+: locationInfo(false),
+  interruptedWarningMessage(false),
+  bf(new BoundedFIFO(DEFAULT_BUFFER_SIZE))
 {
-	bf = new BoundedFIFO(DEFAULT_BUFFER_SIZE);
-	
-    aai = new AppenderAttachableImpl();
+        aai = new AppenderAttachableImpl();
 
 	dispatcher = new Dispatcher(bf, this);
 	dispatcher->start();
@@ -58,12 +58,12 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event)
 	event->getNDC();
 	// Get a copy of this thread's MDC.
 	event->getMDCCopy();
-	
+
 /*	if(locationInfo)
 	{
 		event.getLocationInformation();
 	}*/
-	
+
 	synchronized sync(bf);
 
 	while(bf->isFull())
@@ -90,16 +90,16 @@ void AsyncAppender::close()
 		{
 			return;
 		}
-		
+
 		closed = true;
 	}
-	
+
 	// The following cannot be synchronized on "this" because the
 	// dispatcher synchronizes with "this" in its while loop. If we
 	// did synchronize we would systematically get deadlocks when
 	// close was called.
 	dispatcher->close();
-	
+
 	dispatcher->join();
 	dispatcher = 0;
 	bf = 0;
@@ -179,7 +179,7 @@ void Dispatcher::run()
 	{
 		{
 			synchronized sync(bf);
-			
+
 			if(bf->length() == 0)
 			{
 				// Exit loop if interrupted but only if
@@ -192,7 +192,7 @@ void Dispatcher::run()
 				//LOGLOG_DEBUG("Waiting for new event to dispatch.");
 				bf->wait();
 			}
-			
+
 			event = bf->get();
 			if(bf->wasFull())
 			{

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/dailyrollingfileappender.h>
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/loglog.h>
@@ -40,7 +40,7 @@ timeZone(timeZone)
 {
 }
 
-RollingCalendar::PeriodicityType 
+RollingCalendar::PeriodicityType
 RollingCalendar::computeTriggeringPeriod(const String& datePattern)
 {
 	RollingCalendar rollingCalendar(GMT_TIMEZONE);
@@ -141,16 +141,26 @@ int64_t RollingCalendar::getNextCheckMillis(int64_t now)
 IMPLEMENT_LOG4CXX_OBJECT(DailyRollingFileAppender)
 
 DailyRollingFileAppender::DailyRollingFileAppender()
-: datePattern(_T(".%Y-%m-%d")), df(0)
+: datePattern(_T(".%Y-%m-%d")),
+  df(0),
+  scheduledFilename(),
+  nextCheck(),
+  now(),
+  rc()
 {
 	nextCheck = System::currentTimeMillis() - 1;
 }
 
 DailyRollingFileAppender::DailyRollingFileAppender(LayoutPtr& layout,
 	const String& filename, const String& datePattern)
-	: FileAppender(layout, filename, true), datePattern(datePattern), df(0)
+	: FileAppender(layout, filename, true),
+          datePattern(datePattern),
+          df(0),
+          scheduledFilename(),
+          nextCheck(System::currentTimeMillis() - 1),
+          now(),
+          rc()
 {
-	nextCheck = System::currentTimeMillis() - 1;
 	activateOptions();
 }
 
@@ -182,7 +192,7 @@ void DailyRollingFileAppender::activateOptions()
 		}
 
 		scheduledFilename = fileName + df->format(lastModified);
-	} 
+	}
 	else
 	{
 		LogLog::error(
@@ -248,15 +258,15 @@ void DailyRollingFileAppender::subAppend(const spi::LoggingEventPtr& event)
 {
 	int64_t n = System::currentTimeMillis();
 
-	if (n >= nextCheck) 
+	if (n >= nextCheck)
 	{
 		now = n;
 		nextCheck = rc.getNextCheckMillis(now);
 
-		try 
+		try
 		{
 			rollOver();
-		} 
+		}
 		catch (Exception& e)
 		{
 			LogLog::error(_T("rollOver() failed."), e);

@@ -440,7 +440,7 @@ namespace log4cxx
 		expected by the <code>locale</code> C++ standard class.
 		*/
 		inline void setTimeZone(const String& timeZone)
-			{ this->timeZone = timeZone; }
+			{ this->timeZone.assign(timeZone); }
 
 		/**
 		Returns value of the <b>TimeZone</b> option.

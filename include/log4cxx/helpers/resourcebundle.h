@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_HELPERS_RESOURCE_BUNDLE_H
 #define _LOG4CXX_HELPERS_RESOURCE_BUNDLE_H
 
@@ -28,12 +28,15 @@ namespace log4cxx
 	{
 		class LOG4CXX_EXPORT MissingResourceException : public Exception
 		{
+                    public:
+                    MissingResourceException(const String& message) :
+                       Exception(message) {}
 		};
-		
+
 		class ResourceBundle;
 		typedef ObjectPtrT<ResourceBundle> ResourceBundlePtr;
-		
-		/** 
+
+		/**
 		Resource bundles contain locale-specific objects
 		*/
 		class LOG4CXX_EXPORT ResourceBundle : public ObjectImpl
@@ -43,13 +46,13 @@ namespace log4cxx
 			BEGIN_LOG4CXX_CAST_MAP()
 				LOG4CXX_CAST_ENTRY(ResourceBundle)
 			END_LOG4CXX_CAST_MAP()
-			
+
 			/**
 			Gets a string for the given key from this resource bundle or one of
 			its parents. Calling this method is equivalent to calling
 
-			@param key the key for the desired string 
-			@return the string for the given key 
+			@param key the key for the desired string
+			@return the string for the given key
 			@throw MissingResourceException - if no object for the given key
 			can be found
 			*/
@@ -57,7 +60,7 @@ namespace log4cxx
 
 			/**
 			Gets a resource bundle using the specified base name and locale
-			
+
 			@param baseName the base name of the resource bundle, a fully
 			qualified class name or property filename
 			@param locale the locale for which a resource bundle is desired
@@ -78,8 +81,8 @@ namespace log4cxx
 				{ this->parent = parent; }
 
 			/**
-			The parent bundle of this bundle. 
-			
+			The parent bundle of this bundle.
+
 			The parent bundle is searched by #getString when this bundle does
 			not contain a particular resource.
 			*/
@@ -89,4 +92,4 @@ namespace log4cxx
 }; // namespace log4cxx
 
 #endif
- 
+

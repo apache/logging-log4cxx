@@ -54,7 +54,7 @@ namespace log4cxx
 			<b>"DATE"</b> or <b>"ISO8601</b>.
 			*/
 			inline void setDateFormat(const String& dateFormat)
-				{ this->dateFormatOption = dateFormat; }
+				{ this->dateFormatOption.assign(dateFormat); }
 
 			/**
 			Returns value of the <b>DateFormat</b> option.
@@ -95,6 +95,12 @@ namespace log4cxx
 			*/
 			void setDateFormat(const String& dateFormatType,
 				const TimeZonePtr& timeZone);
+
+                private:
+                       //
+                       //  prevent copy and assignment
+                       DateLayout(const DateLayout&);
+                       DateLayout& operator=(const DateLayout&);
 
  		};
 	}  // namespace helpers

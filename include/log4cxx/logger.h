@@ -536,6 +536,13 @@ namespace log4cxx
 		@param line the line where the log statement was written.
 		*/
 		void warn(const String& message, const char* file=NULL, int line=-1);
+
+
+        private:
+                //
+                //  prevent copy and assignment
+                Logger(const Logger&);
+                Logger& operator=(const Logger&);
    };
 }
 

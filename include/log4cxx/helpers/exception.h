@@ -29,12 +29,17 @@ namespace log4cxx
 		class LOG4CXX_EXPORT Exception
 		{
 		public:
-			Exception() {}
+			Exception() : message() {}
 			Exception(const String& message): message(message) {}
+                        Exception(const Exception& other)
+                            : message(other.getMessage()) {}
+                        virtual ~Exception() {}
 			inline const String& getMessage() const { return message; }
 
-		protected:
+		private:
 			const String message;
+                        //   prevent assignment operations
+                        Exception& operator=(const Exception&);
 
 	}; // class Exception
 

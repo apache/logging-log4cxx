@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_DAILY_ROLLING_FILE_APPENDER_H
 #define _LOG4CXX_DAILY_ROLLING_FILE_APPENDER_H
 
@@ -25,12 +25,12 @@ namespace log4cxx
 	namespace helpers
 	{
 		class DateFormat;
-	} 
+	}
 
 	/**
 	*  RollingCalendar is a helper class to DailyRollingFileAppender.
 	*  Given a periodicity type and the current time, it computes the
-	*  start of the next interval.  
+	*  start of the next interval.
 	* */
 	class LOG4CXX_EXPORT RollingCalendar
 	{
@@ -47,7 +47,7 @@ namespace log4cxx
 			TOP_OF_WEEK		= 4,
 			TOP_OF_MONTH	= 5,
 		};
-		
+
 		RollingCalendar();
 		RollingCalendar(const helpers::TimeZonePtr& timeZone);
 
@@ -67,27 +67,27 @@ namespace log4cxx
 		PeriodicityType computeTriggeringPeriod(const String& datePattern);
 		void printPeriodicity();
 		int64_t getNextCheckMillis(int64_t now);
-		
+
 		/**
 		Gets the time zone.
 		@return the time zone object associated with this calendar.
 		*/
 		inline const helpers::TimeZonePtr getTimeZone() const
-			{ return timeZone; }	
-			
+			{ return timeZone; }
+
 		/**
 		Sets the time zone with the given time zone value.
 		@return value the given time zone.
 		*/
 		inline void setTimeZone(const helpers::TimeZonePtr& timeZone)
 			{ this->timeZone = timeZone; }
-		
+
 	protected:
 		PeriodicityType type;
 		helpers::TimeZonePtr timeZone;
 		static helpers::TimeZonePtr GMT_TIMEZONE;
 	};
-	
+
 	class DailyRollingFileAppender;
 	typedef helpers::ObjectPtrT<DailyRollingFileAppender> DailyRollingFileAppenderPtr;
 
@@ -206,7 +206,7 @@ namespace log4cxx
 		file designated by <code>filename</code>. The opened filename will
 		become the ouput destination for this appender.
 		*/
-		DailyRollingFileAppender(LayoutPtr& layout, 
+		DailyRollingFileAppender(LayoutPtr& layout,
 			const String& filename, const String& datePattern);
 
 		~DailyRollingFileAppender();
@@ -217,7 +217,7 @@ namespace log4cxx
 		rollover schedule.
 		*/
 		inline void setDatePattern(const String& pattern)
-			{ datePattern = pattern; }
+			{ datePattern.assign(pattern); }
 
 		/** Returns the value of the <b>DatePattern</b> option. */
 		inline const String& getDatePattern() const
@@ -268,7 +268,12 @@ namespace log4cxx
 		int64_t now;
 		helpers::DateFormat * df;
 		RollingCalendar rc;
+
+        private:
+                //   prevent copy and assignment statements
+                DailyRollingFileAppender(const DailyRollingFileAppender&);
+                DailyRollingFileAppender& operator=(const DailyRollingFileAppender&);
 	};
-} 
+}
 
 #endif //_LOG4CXX_DAILY_ROLLING_FILE_APPENDER_H

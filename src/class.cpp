@@ -65,11 +65,11 @@ const Class& Class::forName(const String& className)
 	String::size_type pos = className.find_last_of(_T('.'));
 	if (pos != String::npos)
 	{
-		strippedClassName = className.substr(pos + 1);
+		strippedClassName.assign(className.substr(pos + 1));
 	}
 	else
 	{
-		strippedClassName = className;
+		strippedClassName.assign(className);
 	}
 
 	const Class * clazz = getRegistry()[StringHelper::toLowerCase(strippedClassName)];

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_HELPERS_CRITICAL_SECTION_H
 #define _LOG4CXX_HELPERS_CRITICAL_SECTION_H
 
@@ -32,7 +32,7 @@ namespace log4cxx
 				Recursive
 			};
 
-			
+
 		public:
 			CriticalSection(Type type = Recursive);
 			~CriticalSection();
@@ -44,6 +44,10 @@ namespace log4cxx
 		private:
 			struct Impl;
 			std::auto_ptr<Impl> impl;
+                        //
+                        //   prevent copy and assignment
+                        CriticalSection(const CriticalSection&);
+                        CriticalSection& operator=(const CriticalSection&);
 		};
 
 		/** CriticalSection helper class to be used on call stack
@@ -52,10 +56,9 @@ namespace log4cxx
 		{
 		public:
 			/// lock a critical section
-			WaitAccess(CriticalSection& cs) : cs(cs)
+			WaitAccess(CriticalSection& cs) : cs(cs), locked(true)
 			{
 				cs.lock();
-				locked = true;
 			}
 
 			/** automatically unlock the critical section
@@ -81,6 +84,11 @@ namespace log4cxx
 			CriticalSection& cs;
 			/// verify the CriticalSection state
 			bool locked;
+                        //
+                        //   prevent copy and assignment statements
+                        //
+                        WaitAccess(const WaitAccess&);
+                        WaitAccess& operator=(const WaitAccess&);
 		};
 	}  // namespace helpers
 }; // namespace log4cxx

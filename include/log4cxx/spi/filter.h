@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_SPI_FILTER_H
 #define _LOG4CXX_SPI_FILTER_H
 
@@ -30,10 +30,10 @@ namespace log4cxx
 
 		class LoggingEvent;
     	typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-	
+
         /**
         Users should extend this class to implement customized logging
-        event filtering. Note that Logger and 
+        event filtering. Note that Logger and
         AppenderSkeleton, the parent class of all standard
         appenders, have built-in filtering rules. It is suggested that you
         first use and understand the built-in rules before rushing to write
@@ -45,7 +45,7 @@ namespace log4cxx
         in the order of their addition to the chain.
 
         <p>The {@link #decide decide(LoggingEvent)} method must return one
-        of the integer constants #DENY, #NEUTRAL or 
+        of the integer constants #DENY, #NEUTRAL or
         #ACCEPT.
 
         <p>If the value #DENY is returned, then the log event is
@@ -64,12 +64,15 @@ namespace log4cxx
         Linux ipchains.
 
         <p>Note that filtering is only supported by the {@link
-        xml::DOMConfigurator DOMConfigurator}. 
+        xml::DOMConfigurator DOMConfigurator}.
         */
 		class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
 			public virtual helpers::ObjectImpl
 		{
 		public:
+                        Filter() : next() {
+                        }
+
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
 			BEGIN_LOG4CXX_CAST_MAP()
 				LOG4CXX_CAST_ENTRY(Filter)
@@ -119,7 +122,7 @@ namespace log4cxx
             @return The decision of the filter.  */
             virtual FilterDecision decide(const LoggingEventPtr& event) const = 0;
 		};
-	} 
-} 
+	}
+}
 
 #endif //_LOG4CXX_SPI_FILTER_H

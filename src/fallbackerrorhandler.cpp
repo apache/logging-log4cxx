@@ -29,6 +29,7 @@ using namespace log4cxx::varia;
 IMPLEMENT_LOG4CXX_OBJECT(FallbackErrorHandler)
 
 FallbackErrorHandler::FallbackErrorHandler()
+    : backup(), primary(), loggers()
 {
 }
 

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_HELPERS_GNOMEXML_H
 #define _LOG4CXX_HELPERS_GNOMEXML_H
 
@@ -43,7 +43,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class GnomeXMLDOMNode : 
+		class GnomeXMLDOMNode :
 			virtual public XMLDOMNode,
 			virtual public ObjectImpl
 		{
@@ -63,9 +63,14 @@ namespace log4cxx
 
 		protected:
 			xmlNodePtr node;
+
+                private:
+                        //   prevent assignment or copy statements
+                        GnomeXMLDOMNode(const GnomeXMLDOMNode&);
+                        GnomeXMLDOMNode& operator=(const GnomeXMLDOMNode&);
 		};
 
-		class GnomeXMLDOMDocument : 
+		class GnomeXMLDOMDocument :
 			virtual public XMLDOMDocument,
 			virtual public ObjectImpl
 		{
@@ -92,9 +97,14 @@ namespace log4cxx
 		protected:
 			xmlDocPtr document;
 			bool ownDocument;
+
+                private:
+                        //   prevent assignment or copy statements
+                       GnomeXMLDOMDocument(const GnomeXMLDOMDocument&);
+                       GnomeXMLDOMDocument& operator=(const GnomeXMLDOMDocument&);
 		};
 
-		class GnomeXMLDOMElement : 
+		class GnomeXMLDOMElement :
 			virtual public XMLDOMElement,
 			virtual public ObjectImpl
 		{
@@ -116,9 +126,13 @@ namespace log4cxx
 
 		protected:
 			xmlNodePtr element;
+                private:
+                        //   prevent assignment or copy statements
+                       GnomeXMLDOMElement(const GnomeXMLDOMElement&);
+                       GnomeXMLDOMElement& operator=(const GnomeXMLDOMElement&);
 		};
 
-		class GnomeXMLDOMNodeList : 
+		class GnomeXMLDOMNodeList :
 			virtual public XMLDOMNodeList,
 			virtual public ObjectImpl
 		{
@@ -137,6 +151,11 @@ namespace log4cxx
 			xmlNodePtr firstChild;
 			xmlNodePtr currentChild;
 			int currentIndex;
+
+                private:
+                        //   prevent assignment or copy statements
+                       GnomeXMLDOMNodeList(const GnomeXMLDOMNodeList&);
+                       GnomeXMLDOMNodeList& operator=(const GnomeXMLDOMNodeList&);
 		};
 	}  // namespace helpers
 }; // namespace log4cxx

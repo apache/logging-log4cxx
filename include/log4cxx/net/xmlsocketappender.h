@@ -1,22 +1,22 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_NET_XML_SOCKET_APPENDER_H
 #define _LOG4CXX_NET_XML_SOCKET_APPENDER_H
- 
+
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/thread.h>
@@ -27,7 +27,7 @@ namespace log4cxx
 	{
 		class SocketOutputStream;
 		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-	} 
+	}
 
 	namespace net
 	{
@@ -39,7 +39,7 @@ namespace log4cxx
 		to a remote a log server, usually a XMLSocketNode.
 
         <p>The XMLSocketAppender has the following properties:
-		
+
         - If sent to a XMLSocketNode, remote logging
 		is non-intrusive as far as the log event is concerned. In other
         words, the event will be logged with the same time stamp, {@link
@@ -87,12 +87,12 @@ namespace log4cxx
 		exits before the <code>XMLSocketAppender</code> is closed either
         explicitly or subsequent to destruction, then there might
         be untransmitted data in the pipe which might be lost.
-        @n @n To avoid lost data, it is usually sufficient to 
+        @n @n To avoid lost data, it is usually sufficient to
         #close the <code>XMLSocketAppender</code> either explicitly or by
         calling the LogManager#shutdown method
         before exiting the application.
        */
-        
+
       	class LOG4CXX_EXPORT XMLSocketAppender : public AppenderSkeleton
     	{
 		class Connector;
@@ -159,11 +159,11 @@ namespace log4cxx
 		    Set options
 		    */
 			virtual void setOption(const String& option, const String& value);
-			
+
     		/**
     		* Close this appender.
     		*
-    		* <p>This will mark the appender as closed and call then 
+    		* <p>This will mark the appender as closed and call then
     		* #cleanUp method.
     		* */
     		void close();
@@ -247,8 +247,12 @@ namespace log4cxx
     			{ return reconnectionDelay; }
 
 		    void fireConnector();
-       
+
        private:
+                //  prevent copy and assignment statements
+                XMLSocketAppender(const XMLSocketAppender&);
+                XMLSocketAppender& operator=(const XMLSocketAppender&);
+
 		   /**
 			The Connector will reconnect when the server becomes available
 			again.  It does this by attempting to open a new connection every
@@ -266,6 +270,10 @@ namespace log4cxx
 
 				Connector(XMLSocketAppenderPtr socketAppender);
 				virtual void run();
+
+                        private:
+                                Connector(const Connector&);
+                                Connector& operator=(const Connector&);
 			}; // class Connector
 
 			Connector * connector;

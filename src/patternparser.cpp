@@ -56,7 +56,7 @@ enum ParserState
 
 PatternParser::PatternParser(const String& pattern, const String& timeZone)
 : pattern(pattern), patternLength(pattern.length()), state(LITERAL_STATE), i(0),
-timeZone(timeZone)
+timeZone(timeZone), currentLiteral()
 {
 }
 

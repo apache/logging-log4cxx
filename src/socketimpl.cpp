@@ -101,7 +101,7 @@ const String SocketException::createMessage() {
 SocketException::SocketException() : IOException(getMessage()) {
 }
 
-SocketImpl::SocketImpl() : fd(0), localport(-1), port(0), timeout(-1)
+SocketImpl::SocketImpl() : fd(0), localport(-1), port(0), timeout(-1), address()
 {
 }
 

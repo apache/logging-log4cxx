@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/portability.h>
 
 #if defined(WIN32) || defined(_WIN32)
@@ -42,16 +42,15 @@ IMPLEMENT_LOG4CXX_OBJECT(Socket)
 
 /** Creates an unconnected socket.
 */
-Socket::Socket()
+Socket::Socket() : socketImpl()
 {
 }
 
 /** Creates a stream socket and connects it to the specified port
 number at the specified IP address.
 */
-Socket::Socket(InetAddress address, int port)
+Socket::Socket(InetAddress address, int port) : socketImpl(new SocketImpl())
 {
-	socketImpl = new SocketImpl();
 	socketImpl->create(true);
 	socketImpl->connect(address, port);
 }
@@ -60,9 +59,8 @@ Socket::Socket(InetAddress address, int port)
 address on the specified remote port.
 */
 Socket::Socket(InetAddress address, int port,
-	InetAddress localAddr, int localPort)
+	InetAddress localAddr, int localPort) : socketImpl(new SocketImpl())
 {
-	socketImpl = new SocketImpl();
 	socketImpl->create(true);
 	socketImpl->connect(address, port);
 	socketImpl->bind(localAddr, localPort);
@@ -80,8 +78,8 @@ Socket::Socket(SocketImplPtr impl) : socketImpl(impl)
 port number on the named host.
 */
 Socket::Socket(const String& host, int port)
+   : socketImpl(new SocketImpl())
 {
-	socketImpl = new SocketImpl();
 	socketImpl->create(true);
 	socketImpl->connect(host, port);
 }
@@ -91,8 +89,8 @@ host on the specified remote port.
 */
 Socket::Socket(const String& host, int port,
 	InetAddress localAddr, int localPort)
+        : socketImpl(new SocketImpl())
 {
-	socketImpl = new SocketImpl();
 	socketImpl->create(true);
 	socketImpl->connect(host, port);
 	socketImpl->bind(localAddr, localPort);

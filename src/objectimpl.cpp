@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/portability.h>
 
 #ifdef LOG4CXX_HAVE_MS_THREAD
@@ -34,7 +34,7 @@ protected:
 	: event(event), next(0)
 	{
 	}
-	
+
 public:
 	static void removeAll(EventList * list)
 	{
@@ -44,14 +44,14 @@ public:
 			item = removeHead(item);
 		}
 	}
-	
+
 	static EventList * removeHead(EventList * list)
 	{
 		EventList * next = list->next;
 		delete list;
 		return next;
 	}
-	
+
 	static EventList * append(EventList * list, Event * event)
 	{
 		if (list == 0)
@@ -71,12 +71,18 @@ public:
 			return list;
 		}
 	}
-	
+
 	Event * event;
 	EventList * next;
+
+      private:
+        //
+        //  prevent copy and assignment statements
+        EventList(const EventList&);
+        EventList& operator=(const EventList&);
 };
 
-ObjectImpl::ObjectImpl() : ref(0), eventList(0)
+ObjectImpl::ObjectImpl() : ref(0), eventList(0), cs()
 {
 }
 
@@ -120,11 +126,11 @@ void ObjectImpl::wait() const
 			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
 		}
 	}
-	
+
 	Event event(false, false);
 	eventList = EventList::append((EventList *)eventList, &event);
 	cs.unlock();
-	
+
 	try
 	{
 		event.wait();
@@ -135,7 +141,7 @@ void ObjectImpl::wait() const
 		eventList = EventList::removeHead((EventList *)eventList);
 		return;
 	}
-	
+
 	cs.lock();
 }
 
@@ -152,7 +158,7 @@ void ObjectImpl::notify() const
 			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
 		}
 	}
-	
+
 	if (eventList != 0)
 	{
 		((EventList *)eventList)->event->set();
@@ -173,7 +179,7 @@ void ObjectImpl::notifyAll() const
 			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
 		}
 	}
-	
+
 	while (eventList != 0)
 	{
 		((EventList *)eventList)->event->set();

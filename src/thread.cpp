@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/portability.h>
 
 #if defined(LOG4CXX_HAVE_MS_THREAD)
@@ -38,7 +38,9 @@ struct Thread::Impl
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	void * thread;
 #endif
-
+private:
+        Impl(const Impl&);
+        Impl& operator=(const Impl&);
 };
 
 #ifdef LOG4CXX_HAVE_PTHREAD
@@ -67,12 +69,15 @@ DWORD WINAPI threadProc(void * arg)
 #endif
 
 
-Thread::Thread(): impl( new Impl )
+Thread::Thread(): impl( new Impl ), runnable(), parentMDCMap()
 {
 	addRef();
 }
 
-Thread::Thread(RunnablePtr runnable) : runnable(runnable), impl( new Impl )
+Thread::Thread(RunnablePtr runnable) :
+     runnable(runnable),
+     impl( new Impl ),
+     parentMDCMap()
 {
 	addRef();
 }
@@ -107,7 +112,7 @@ void Thread::start()
 //	LogLog::debug(_T("Thread::start"));
 	if (::pthread_create(&impl->thread, NULL, threadProc, this) != 0)
 	{
-		throw ThreadException();
+		throw ThreadException("Unable to start thread");
 	}
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
 	unsigned long threadId = 0;
@@ -115,7 +120,7 @@ void Thread::start()
 		(void *)::CreateThread(NULL, 0, threadProc, this, 0, &threadId);
 	if (impl->thread == 0)
 	{
-		throw ThreadException();
+		throw ThreadException("Unable to start thread");
 	}
 #endif
 }
@@ -147,7 +152,7 @@ void Thread::join()
 
 	if (!bSuccess)
 	{
-		throw InterruptedException();
+		throw InterruptedException("Failure in Thread::join");
 	}
 
 	LOGLOG_DEBUG(_T("Thread ended."));
@@ -209,7 +214,7 @@ long Thread::InterlockedIncrement(volatile long * val)
 	return __exchange_and_add((volatile _Atomic_word *)val, 1 ) + 1;
 #elif defined(__i386__)
 	long ret;
-	
+
 	__asm__ __volatile__ ("lock; xaddl %0, %1"
 			      : "=r" (ret), "=m" (*val)
 			      : "0" (1), "m" (*val));
@@ -234,13 +239,13 @@ long Thread::InterlockedDecrement(volatile long * val)
 	return __exchange_and_add((volatile _Atomic_word *)val, -1 ) - 1;
 #elif defined(__i386__)
 	long ret;
-	
+
 	__asm__ __volatile__ ("lock; xaddl %0, %1"
 			      : "=r" (ret), "=m" (*val)
 			      : "0" (-1), "m" (*val));
 
 	return ret-1;
-	
+
 #elif defined(sparc) && defined(__SUNPRO_CC)
 	sparc_atomic_add_32(val, -1);
 	return *val;

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/helpers/socketinputstream.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/loglog.h>
@@ -27,14 +27,14 @@ size_t SocketInputStream::DEFAULT_BUFFER_SIZE = 32;
 
 SocketInputStream::SocketInputStream(SocketPtr socket)
 : socket(socket), bufferSize(DEFAULT_BUFFER_SIZE),
-currentPos(0), maxPos(0)
+currentPos(0), maxPos(0), memBuffer()
 {
 //	memBuffer = new unsigned char[bufferSize];
 }
 
 SocketInputStream::SocketInputStream(SocketPtr socket, size_t bufferSize)
 : socket(socket), bufferSize(bufferSize),
-currentPos(0), maxPos(0)
+currentPos(0), maxPos(0), memBuffer()
 {
 //	memBuffer = new unsigned char[bufferSize];
 }
@@ -56,7 +56,7 @@ void SocketInputStream::read(void * buf, size_t len) const
 /*
 //	LOGLOG_DEBUG(_T("SocketInputStream reading ") << len << _T(" bytes"));
 	unsigned char * dstBuffer = (unsigned char *)buf;
-	
+
 	if (len <= maxPos - currentPos)
 	{
 //		LOGLOG_DEBUG(_T("SocketInputStream using cache buffer, currentPos=")
@@ -70,7 +70,7 @@ void SocketInputStream::read(void * buf, size_t len) const
 
 //		LOGLOG_DEBUG(_T("tmpBuffer=alloca(")
 //			<< len - maxPos + currentPos + bufferSize << _T(")"));
-			
+
 		unsigned char * tmpBuffer
  			= (unsigned char *) alloca(len - maxPos + currentPos + bufferSize);
 
@@ -159,14 +159,14 @@ void SocketInputStream::read(String& value) const
 		{
 			throw SocketException();
 		}
-		
+
 		TCHAR * buffer;
 		buffer = (TCHAR *)alloca((size + 1)* sizeof(TCHAR));
 		buffer[size] = _T('\0');
 		read(buffer, size * sizeof(TCHAR));
 		value = buffer;
 	}
-	
+
 //	LOGLOG_DEBUG(_T("string read:") << value);
 }
 

@@ -26,8 +26,13 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 AppenderSkeleton::AppenderSkeleton()
-: errorHandler(new OnlyOnceErrorHandler()), closed(false),
-threshold(Level::getAll())
+: errorHandler(new OnlyOnceErrorHandler()),
+  closed(false),
+  threshold(Level::getAll()),
+  layout(),
+  name(),
+  headFilter(),
+  tailFilter()
 {
 }
 

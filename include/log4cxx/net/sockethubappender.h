@@ -1,22 +1,22 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_NET_SOCKET_HUB_APPENDER_H
 #define _LOG4CXX_NET_SOCKET_HUB_APPENDER_H
- 
+
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/thread.h>
@@ -29,7 +29,7 @@ namespace log4cxx
 	{
 		class SocketOutputStream;
 		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-	} 
+	}
 
 	namespace net
 	{
@@ -82,12 +82,12 @@ namespace log4cxx
 		@n @n On the other hand, if the network link is up, but the remote
 		client is down, the client will not be blocked when making log
 		requests but the log events will be lost due to client
-		unavailability. 
+		unavailability.
 		@n @n The single remote client case extends to multiple clients
 		connections. The rate of logging will be determined by the slowest
 		link.
 
-		- If the application hosting the <code>SocketHubAppender</code> 
+		- If the application hosting the <code>SocketHubAppender</code>
 		exits before the <code>SocketHubAppender</code> is closed either
 		explicitly or subsequent to garbage collection, then there might
 		be untransmitted data in the pipe which might be lost. This is a
@@ -105,11 +105,11 @@ namespace log4cxx
 			The default port number of the ServerSocket will be created on.
 			*/
 			static int DEFAULT_PORT;
-			
+
 			int port;
 			std::vector<helpers::SocketOutputStreamPtr> oosList;
 			bool locationInfo;
-			
+
 		public:
 			DECLARE_LOG4CXX_OBJECT(SocketHubAppender)
 			BEGIN_LOG4CXX_CAST_MAP()
@@ -119,72 +119,72 @@ namespace log4cxx
 
 			SocketHubAppender();
 			~SocketHubAppender();
-			
+
 			/**
 			Connects to remote server at <code>address</code> and <code>port</code>.
 			*/
 			SocketHubAppender(int port) ;
-			
+
 			/**
 			Set up the socket server on the specified port.
 			*/
 			virtual void activateOptions();
-			
+
 		    /**
 		    Set options
 		    */
 			virtual void setOption(const String& option, const String& value);
 
 			/**
-			Close this appender. 
+			Close this appender.
 			<p>This will mark the appender as closed and
 			call then #cleanUp method.
 			*/
 			virtual void close();
-			
+
 			/**
 			Release the underlying ServerMonitor thread, and drop the connections
 			to all connected remote servers. */
 			void cleanUp();
-			
+
 			/**
 			Append an event to all of current connections. */
 			virtual void append(const spi::LoggingEventPtr& event);
-			
+
 			/**
 			The SocketHubAppender does not use a layout. Hence, this method returns
 			<code>false</code>. */
 			virtual bool requiresLayout() const
 				{ return false; }
-			
+
 			/**
 			The <b>Port</b> option takes a positive integer representing
 			the port where the server is waiting for connections. */
 			inline void setPort(int port)
 				{ this->port = port; }
-			
+
 			/**
 			Returns value of the <b>Port</b> option. */
 			inline int getPort() const
 				{ return port; }
-			
+
 			/**
 			The <b>LocationInfo</b> option takes a boolean value. If true,
 			the information sent to the remote host will include location
 			information. By default no location information is sent to the server. */
 			inline void setLocationInfo(bool locationInfo)
 				{  this->locationInfo = locationInfo; }
-			
+
 			/**
 			Returns value of the <b>LocationInfo</b> option. */
 			inline bool getLocationInfo() const
 				{ return locationInfo; }
-			
+
 			/**
 			Start the ServerMonitor thread. */
 		private:
 			void startServer();
-			
+
 			/**
 			This class is used internally to monitor a ServerSocket
 			and register new connections in a vector passed in the
@@ -198,7 +198,7 @@ namespace log4cxx
 				std::vector<helpers::SocketOutputStreamPtr>& oosList;
 				bool keepRunning;
 				helpers::Thread * monitorThread;
-				
+
 			public:
 				BEGIN_LOG4CXX_CAST_MAP()
 					LOG4CXX_CAST_ENTRY(ServerMonitor)
@@ -208,16 +208,22 @@ namespace log4cxx
 				Create a thread and start the monitor. */
 				ServerMonitor(int port,
 				std::vector<helpers::SocketOutputStreamPtr>& oosList);
-			
+
 				/**
 				Stops the monitor. This method will not return until
 				the thread has finished executing. */
 				void stopMonitor();
-				
+
 				/**
 				Method that runs, monitoring the ServerSocket and adding connections as
 				they connect to the socket. */
 				void run();
+
+                        private:
+                                //   prevent copy and assignment statements
+                                ServerMonitor(const ServerMonitor&);
+                                ServerMonitor& operator=(const ServerMonitor&);
+
 			}; // class ServerMonitor
 
 			typedef helpers::ObjectPtrT<ServerMonitor> ServerMonitorPtr;

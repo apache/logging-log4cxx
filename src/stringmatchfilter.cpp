@@ -26,7 +26,9 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(StringMatchFilter)
 
-StringMatchFilter::StringMatchFilter() : acceptOnMatch(true)
+StringMatchFilter::StringMatchFilter() :
+   acceptOnMatch(true),
+   stringToMatch()
 {
 }
 

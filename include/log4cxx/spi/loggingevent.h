@@ -257,6 +257,12 @@ namespace log4cxx
 			unsigned long threadId;
 
 			static int64_t startTime;
+
+                        //
+                        //   prevent copy and assignment
+                        //
+                        LoggingEvent(const LoggingEvent&);
+                        LoggingEvent& operator=(const LoggingEvent&);
   		};
 	}
 }
