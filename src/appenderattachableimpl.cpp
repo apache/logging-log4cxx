@@ -43,7 +43,7 @@ void AppenderAttachableImpl::addAppender(AppenderPtr newAppender)
     }
 }
 
-int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEvent& event)
+int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& event)
 {
     AppenderList::iterator it, itEnd = appenderList.end();
     AppenderPtr appender;

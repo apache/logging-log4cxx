@@ -99,18 +99,18 @@ LoggerPtr Hierarchy::exists(const String& name)
 	mapCs.unlock();
 }
 	
-void Hierarchy::setThreshold(const Level& l)
+void Hierarchy::setThreshold(const LevelPtr& l)
 {
-	thresholdInt = l.level;
-	threshold = &l;
+	thresholdInt = l->level;
+	threshold = l;
 }
 
 void Hierarchy::setThreshold(const String& levelStr)
 
 {
-	const Level& l = Level::toLevel(levelStr, Level::OFF);
+	const LevelPtr& l = Level::toLevel(levelStr, Level::OFF);
 
-	if(&l != &Level::OFF)
+	if(l != Level::OFF)
 	{
 		setThreshold(l);
 	} 
@@ -145,9 +145,9 @@ void Hierarchy::fireRemoveAppenderEvent(LoggerPtr logger, AppenderPtr appender)
 	}
 }
 
-const Level& Hierarchy::getThreshold()
+const LevelPtr& Hierarchy::getThreshold()
 {
-	return *threshold;
+	return threshold;
 }
 
 LoggerPtr Hierarchy::getLogger(const String& name)

@@ -32,9 +32,8 @@ IMPLEMENT_LOG4CXX_OBJECT(Logger)
 String Logger::FQCN = Logger::getStaticClass().getName();
 
 Logger::Logger(const String& name)
-: name(name), level(&Level::OFF), additive(true), repository(0)
+: name(name), level(Level::OFF), additive(true), repository(0)
 {
-
 }
 
 Logger::~Logger()
@@ -62,7 +61,7 @@ void Logger::assertLog(bool assertion, const String& msg)
 	}
 }
 
-void Logger::callAppenders(const spi::LoggingEvent& event)
+void Logger::callAppenders(const spi::LoggingEventPtr& event)
 {
 	int writes = 0;
 
@@ -107,7 +106,7 @@ void Logger::debug(const String& message, const char* file, int line)
 		return;
 	}
 	
-	if(Level::DEBUG.isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::DEBUG->isGreaterOrEqual(getEffectiveLevel()))
 	{
 		 forcedLog(FQCN, Level::DEBUG, message, file, line);
 	}
@@ -120,7 +119,7 @@ void Logger::error(const String& message, const char* file, int line)
 		return;
 	}
 
-	if(Level::ERROR.isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::ERROR->isGreaterOrEqual(getEffectiveLevel()))
 	{
 		 forcedLog(FQCN, Level::ERROR, message, file, line);
 	}
@@ -133,16 +132,16 @@ void Logger::fatal(const String& message, const char* file, int line)
 		return;
 	}
 
-	if(Level::FATAL.isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::FATAL->isGreaterOrEqual(getEffectiveLevel()))
 	{
 		 forcedLog(FQCN, Level::FATAL, message, file, line);
 	}
 }
 
-void Logger::forcedLog(const String& fqcn, const Level& level, const String& message,
+void Logger::forcedLog(const String& fqcn, const LevelPtr& level, const String& message,
 			const char* file, int line)
 {
-	callAppenders(LoggingEvent(fqcn, this, level, message, file, line));
+	callAppenders(new LoggingEvent(fqcn, this, level, message, file, line));
 }
 
 bool Logger::getAdditivity()
@@ -176,13 +175,13 @@ AppenderPtr Logger::getAppender(const String& name)
 	return aai->getAppender(name);
 }
 
-const Level& Logger::getEffectiveLevel()
+const LevelPtr& Logger::getEffectiveLevel()
 {
 	for(Logger * l = this; l != 0; l=l->parent)
 	{
-		if(l->level != &Level::OFF)
+		if(l->level != Level::OFF)
 		{
-			return *l->level;
+			return l->level;
 		}
 	}
 
@@ -199,9 +198,9 @@ LoggerPtr Logger::getParent()
 	return parent;
 }
 
-const Level& Logger::getLevel()
+const LevelPtr& Logger::getLevel()
 {
-	return *level;
+	return level;
 }
 
 void Logger::info(const String& message, const char* file, int line)
@@ -211,7 +210,7 @@ void Logger::info(const String& message, const char* file, int line)
 		return;
 	}
 
-	if(Level::INFO.isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::INFO->isGreaterOrEqual(getEffectiveLevel()))
 	{
 		 forcedLog(FQCN, Level::INFO, message, file, line);
 	}
@@ -238,17 +237,17 @@ bool Logger::isDebugEnabled()
 		return false;
 	}
 	
-	return Level::DEBUG.isGreaterOrEqual(getEffectiveLevel());
+	return Level::DEBUG->isGreaterOrEqual(getEffectiveLevel());
 }
 
-bool Logger::isEnabledFor(const Level& level)
+bool Logger::isEnabledFor(const LevelPtr& level)
 {
-	if(repository->isDisabled(level.level))
+	if(repository->isDisabled(level->level))
 	{
 		return false;
 	}
 	
-	return level.isGreaterOrEqual(getEffectiveLevel());
+	return level->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isInfoEnabled()
@@ -258,7 +257,7 @@ bool Logger::isInfoEnabled()
 		return false;
 	}
 
-	return Level::INFO.isGreaterOrEqual(getEffectiveLevel());
+	return Level::INFO->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isErrorEnabled()
@@ -268,7 +267,7 @@ bool Logger::isErrorEnabled()
 		return false;
 	}
 
-	return Level::ERROR.isGreaterOrEqual(getEffectiveLevel());
+	return Level::ERROR->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isWarnEnabled()
@@ -278,7 +277,7 @@ bool Logger::isWarnEnabled()
 		return false;
 	}
 
-	return Level::WARN.isGreaterOrEqual(getEffectiveLevel());
+	return Level::WARN->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isFatalEnabled()
@@ -288,18 +287,18 @@ bool Logger::isFatalEnabled()
 		return false;
 	}
 
-	return Level::FATAL.isGreaterOrEqual(getEffectiveLevel());
+	return Level::FATAL->isGreaterOrEqual(getEffectiveLevel());
 }
 
-void Logger::log(const Level& level, const String& message,
+void Logger::log(const LevelPtr& level, const String& message,
 	const char* file, int line)
 {
 
-	if(repository->isDisabled(level.level))
+	if(repository->isDisabled(level->level))
 	{
 		return;
 	}
-	if(level.isGreaterOrEqual(getEffectiveLevel()))
+	if(level->isGreaterOrEqual(getEffectiveLevel()))
 	{
 		forcedLog(FQCN, level, message, file, line);
 	}
@@ -351,9 +350,9 @@ void Logger::setHierarchy(spi::LoggerRepository * repository)
 	this->repository = repository;
 }
 
-void Logger::setLevel(const Level& level)
+void Logger::setLevel(const LevelPtr& level)
 {
-	this->level = &level;
+	this->level = level;
 }
 
 void Logger::warn(const String& message, const char* file, int line)
@@ -363,7 +362,7 @@ void Logger::warn(const String& message, const char* file, int line)
 		return;
 	}
 
-	if(Level::WARN.isGreaterOrEqual(getEffectiveLevel()))
+	if(Level::WARN->isGreaterOrEqual(getEffectiveLevel()))
 	{
 		 forcedLog(FQCN, Level::WARN, message, file, line);
 	}

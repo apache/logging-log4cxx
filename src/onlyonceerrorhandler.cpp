@@ -55,7 +55,7 @@ void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Except
 }
 
 void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Exception& e,
-								 int errorCode, log4cxx::spi::LoggingEvent& event)
+								 int errorCode, log4cxx::spi::LoggingEventPtr& event)
 {
 	error(message, e, errorCode);
 }

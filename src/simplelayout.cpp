@@ -24,11 +24,11 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(SimpleLayout)
 
 void SimpleLayout::format(ostream& output,
-						  const spi::LoggingEvent& event)
+						  const spi::LoggingEventPtr& event)
 {
 	output
-		<< event.getLevel().toString()
+		<< event->getLevel()->toString()
 		<< _T(" - ")
-		<< event.getRenderedMessage() 
+		<< event->getRenderedMessage() 
 		<< std::endl;
 }

@@ -23,27 +23,26 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-RootCategory::RootCategory(const Level& level) : Logger(_T("root"))
- {
+RootCategory::RootCategory(const LevelPtr& level) : Logger(_T("root"))
+{
 	setLevel(level);
 }
 
-const Level& RootCategory::getEffectiveLevel()
+const LevelPtr& RootCategory::getEffectiveLevel()
 {
-	return *level;
+	return level;
 }
 
-
-void RootCategory::setLevel(const Level& level)
+void RootCategory::setLevel(const LevelPtr& level)
 {
-	if(&level == &Level::OFF)
+	if(level == Level::OFF)
 	{
 		LogLog::error(_T("You have tried to set an OFF level to root."));
 	}
 	else
 	{
 
-		this->level = &level;
+		this->level = level;
 	}
 }
 

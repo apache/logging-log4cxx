@@ -163,7 +163,7 @@ void SocketAppender::connect()
 	}
 }
 
-void SocketAppender::append(const spi::LoggingEvent& event)
+void SocketAppender::append(const spi::LoggingEventPtr& event)
 {
 	if(address.address == 0)
 	{
@@ -181,7 +181,7 @@ void SocketAppender::append(const spi::LoggingEvent& event)
 			event.getLocationInformation();
 		}
 */
-		event.write(os);
+		event->write(os);
 
 		// flush to socket
 		os->flush();

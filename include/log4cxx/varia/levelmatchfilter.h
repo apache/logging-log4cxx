@@ -18,15 +18,11 @@
 #define _LOG4CXX_VARIA_LEVEL_MATCH_FILTER_H
 
 #include <log4cxx/spi/filter.h>
+#include <log4cxx/level.h>
 
 namespace log4cxx
 {
 	class Level;
-	
-	namespace spi
-	{
-		class LoggingEvent;
-	};
 	
 	namespace varia
 	{
@@ -52,7 +48,7 @@ namespace log4cxx
 			static String ACCEPT_ON_MATCH_OPTION;
 
 			bool acceptOnMatch;
-			const Level * levelToMatch;
+			LevelPtr levelToMatch;
 
 		public:
 			typedef spi::Filter BASE_CLASS;
@@ -91,7 +87,7 @@ namespace log4cxx
 			{@link spi::Filter#DENY DENY} if the
 			<b>AcceptOnMatch</b> property is set to false.
 			*/
-			FilterDecision decide(const spi::LoggingEvent& event);
+			FilterDecision decide(const spi::LoggingEventPtr& event);
 		}; // class LevelMatchFilter
 	}; // namespace varia
 }; // namespace log4cxx

@@ -55,7 +55,7 @@ void PatternLayout::setConversionPattern(const String& conversionPattern)
 	activateOptions();
 }
 
-void PatternLayout::format(ostream& output, const spi::LoggingEvent& event)
+void PatternLayout::format(ostream& output, const spi::LoggingEventPtr& event)
 {
 	PatternConverterPtr c = head;
 	

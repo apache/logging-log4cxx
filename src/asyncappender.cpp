@@ -51,13 +51,13 @@ void AsyncAppender::addAppender(AppenderPtr newAppender)
 	aai->addAppender(newAppender);
 }
 
-void AsyncAppender::append(const spi::LoggingEvent& event)
+void AsyncAppender::append(const spi::LoggingEventPtr& event)
 {
 	// Set the NDC and thread name for the calling thread as these
 	// LoggingEvent fields were not set at event creation time.
-	event.getNDC();
+	event->getNDC();
 	// Get a copy of this thread's MDC.
-	event.getMDCCopy();
+	event->getMDCCopy();
 	
 /*	if(locationInfo)
 	{
@@ -73,7 +73,7 @@ void AsyncAppender::append(const spi::LoggingEvent& event)
 		bf->wait();
 	}
 
-	bf->put(event.copy());
+	bf->put(event);
 	if(bf->wasEmpty())
 	{
 		//LOGLOG_DEBUG(_T("Notifying dispatcher to process events."));
@@ -173,7 +173,7 @@ void Dispatcher::close()
 
 void Dispatcher::run()
 {
-	LoggingEvent * event;
+	LoggingEventPtr event;
 
 	while(true)
 	{
@@ -204,8 +204,7 @@ void Dispatcher::run()
 		if(aai != 0 && event != 0)
 		{
 			synchronized sync(aai);
-			aai->appendLoopOnAppenders(*event);
-			delete event;
+			aai->appendLoopOnAppenders(event);
 		}
 	} // while
 

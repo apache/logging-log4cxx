@@ -39,9 +39,9 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(DefaultEvaluator)
 IMPLEMENT_LOG4CXX_OBJECT(SMTPAppender)
 
-bool DefaultEvaluator::isTriggeringEvent(const spi::LoggingEvent& event)
+bool DefaultEvaluator::isTriggeringEvent(const spi::LoggingEventPtr& event)
 {
-	return event.getLevel().isGreaterOrEqual(Level::ERROR);
+	return event->getLevel().isGreaterOrEqual(Level::ERROR);
 }
 
 SMTPAppender::SMTPAppender()
@@ -235,14 +235,14 @@ void SMTPAppender::activateOptions()
 Perform SMTPAppender specific appending actions, mainly adding
 the event to a cyclic buffer and checking if the event triggers
 an e-mail to be sent. */
-void SMTPAppender::append(const spi::LoggingEvent& event)
+void SMTPAppender::append(const spi::LoggingEventPtr& event)
 {
 	if(!checkEntryConditions())
 	{
 		return;
 	}
 
-	event.getNDC();
+	event->getNDC();
 
 /*	if(locationInfo)
 	{
@@ -327,9 +327,8 @@ void SMTPAppender::sendBuffer()
 		for(int i = 0; i < len; i++)
 		{
 				//sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
-			const LoggingEvent * event = cb.get();
+			LoggingEventPtr event = cb.get();
 			layout->format(sbuf, *event);
-			delete event;
 		}
 
 		layout->appendFooter(sbuf);

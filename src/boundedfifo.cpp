@@ -17,6 +17,7 @@
 #include <log4cxx/helpers/boundedfifo.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/exception.h>
+#include <algorithm>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
@@ -24,7 +25,7 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(BoundedFIFO)
 
 BoundedFIFO::BoundedFIFO(int maxSize)
- : numElements(0), first(0), next(0), maxSize(maxSize)
+ : numElements(0), first(0), next(0), maxSize(maxSize), buf(maxSize)
 {
 	if(maxSize < 1)
 	{
@@ -33,17 +34,16 @@ BoundedFIFO::BoundedFIFO(int maxSize)
 			<< _T(") is not a positive integer.");
 		throw new IllegalArgumentException(oss.str());
 	}
-	buf = new LoggingEvent *[maxSize];
 }
 
-LoggingEvent * BoundedFIFO::get()
+LoggingEventPtr BoundedFIFO::get()
 {
 	if(numElements == 0)
 	{
 		return 0;
 	}
 
-	LoggingEvent * r = buf[first];
+	LoggingEventPtr r = buf[first];
 	buf[first] = 0;
 
 	if(++first == maxSize)
@@ -55,7 +55,7 @@ LoggingEvent * BoundedFIFO::get()
 	return r;
 }
 
-void BoundedFIFO::put(log4cxx::spi::LoggingEvent * o)
+void BoundedFIFO::put(const log4cxx::spi::LoggingEventPtr& o)
 {
 	if(numElements != maxSize)
 	{
@@ -76,9 +76,9 @@ void BoundedFIFO::resize(int newSize)
 	{
 		return;
 	}
-
-	LoggingEvent * * tmp = new LoggingEvent *[newSize];
-
+	
+	std::vector<LoggingEventPtr> tmp(newSize);
+	
 	// we should not copy beyond the buf array
 	int len1 = maxSize - first;
 
@@ -90,7 +90,7 @@ void BoundedFIFO::resize(int newSize)
 	len1 = _min(len1, numElements);
 
 	// Copy from buf starting a first, to tmp, starting at position 0, len1
-	memcpy(tmp, buf + first, len1 * sizeof(LoggingEvent *));
+	std::copy(buf.begin() + first, buf.begin() + (first + len1), tmp.begin());
 
 	// Are there any uncopied elements and
 	// is there still space in the new array?
@@ -99,7 +99,7 @@ void BoundedFIFO::resize(int newSize)
 	{
 		len2 = numElements - len1;
 		len2 = _min(len2, newSize - len1);
-		memcpy(tmp, buf + len1, len2 * sizeof(LoggingEvent *));
+		std::copy(buf.begin(), buf.begin() + (len2), tmp.begin() + len1);
 	}
 
 	this->buf = tmp;

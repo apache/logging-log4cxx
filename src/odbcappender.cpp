@@ -70,7 +70,7 @@ void ODBCAppender::setOption(const String& option,
 	}
 }
 
-void ODBCAppender::append(const spi::LoggingEvent& event)
+void ODBCAppender::append(const spi::LoggingEventPtr& event)
 {
 	buffer.push_back(event);
 	
@@ -78,7 +78,7 @@ void ODBCAppender::append(const spi::LoggingEvent& event)
 		flushBuffer();
 }
 
-String ODBCAppender::getLogStatement(const spi::LoggingEvent& event)
+String ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event)
 {
 	StringBuffer sbuf;
 	getLayout()->format(sbuf, event);
@@ -221,12 +221,12 @@ void ODBCAppender::flushBuffer()
 	//Do the actual logging
 	//removes.ensureCapacity(buffer.size());
 
-	std::list<spi::LoggingEvent>::iterator i;
+	std::list<spi::LoggingEventPtr>::iterator i;
 	for (i = buffer.begin(); i != buffer.end(); i++)
 	{
 		try
 		{
-			const LoggingEvent& logEvent = *i;
+			const LoggingEventPtr& logEvent = *i;
 			String sql = getLogStatement(logEvent);
 			execute(sql);
 		}

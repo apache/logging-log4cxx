@@ -99,11 +99,11 @@ void DateLayout::activateOptions()
 	}
 }
 
-void DateLayout::formatDate(ostream &os, const spi::LoggingEvent& event)
+void DateLayout::formatDate(ostream &os, const spi::LoggingEventPtr& event)
 {
 	if(dateFormat != 0)
 	{
-		dateFormat->format(os, event.getTimeStamp());
+		dateFormat->format(os, event->getTimeStamp());
 		os.put(_T(' '));
 	}
 }

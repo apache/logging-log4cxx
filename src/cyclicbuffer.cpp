@@ -28,7 +28,8 @@ Instantiate a new CyclicBuffer of at most <code>maxSize</code> events.
 The <code>maxSize</code> argument must a positive integer.
 @param maxSize The maximum number of elements in the buffer.
 */
-CyclicBuffer::CyclicBuffer(int maxSize) : maxSize(maxSize), first(0), last(0), numElems(0)
+CyclicBuffer::CyclicBuffer(int maxSize)
+: maxSize(maxSize), first(0), last(0), numElems(0), ea(maxSize)
 {
 	if(maxSize < 1)
 	{
@@ -37,29 +38,18 @@ CyclicBuffer::CyclicBuffer(int maxSize) : maxSize(maxSize), first(0), last(0), n
 			<< _T(") is not a positive integer.");
 		throw new IllegalArgumentException(oss.str());
 	}
-	ea = new LoggingEvent *[maxSize];
-	memset(ea, 0, sizeof(LoggingEvent *) * maxSize);
  }
 
 CyclicBuffer::~CyclicBuffer()
 {
-	for (int i = 0; i < maxSize; i++)
-	{
-		if (ea[i] != 0)
-		{
-			delete ea[i];
-		}
-	}
-	delete ea;
-	ea = 0;
 }
 
 /**
 Add an <code>event</code> as the last event in the buffer.
 */
-void CyclicBuffer::add(const spi::LoggingEvent& event)
+void CyclicBuffer::add(const spi::LoggingEventPtr& event)
 {
-	ea[last] = event.copy();
+	ea[last] = event;
 	if(++last == maxSize)
 	{
 		last = 0;
@@ -81,7 +71,7 @@ Get the <i>i</i>th oldest event currently in the buffer. If
 <em>i</em> is outside the range 0 to the number of elements
 currently in the buffer, then <code>null</code> is returned.
 */
-const LoggingEvent * CyclicBuffer::get(int i)
+spi::LoggingEventPtr CyclicBuffer::get(int i)
 {
 	if(i < 0 || i >= numElems)
 		return 0;
@@ -93,9 +83,9 @@ const LoggingEvent * CyclicBuffer::get(int i)
 Get the oldest (first) element in the buffer. The oldest element
 is removed from the buffer.
 */
-const LoggingEvent * CyclicBuffer::get()
+spi::LoggingEventPtr CyclicBuffer::get()
 {
-	LoggingEvent * r = 0;
+	LoggingEventPtr r;
 	if(numElems > 0)
 	{
 		numElems--;
@@ -125,7 +115,7 @@ void CyclicBuffer::resize(int newSize)
 	if(newSize == numElems)
 		return; // nothing to do
 
-	LoggingEvent * * temp = new LoggingEvent *[newSize];
+	std::vector<LoggingEventPtr> temp(newSize);
 
 	int loopLen = newSize < numElems ? newSize : numElems;
 	int i;
@@ -137,16 +127,6 @@ void CyclicBuffer::resize(int newSize)
 		if(++first == numElems)
 		first = 0;
 	}
-
-	// clean ea
-	for (i = 0; i < numElems; i++)
-	{
-		if (ea[i] != 0)
-		{
-			delete ea[i];
-		}
-	}
-	delete [] ea;
 
 	ea = temp;
 	first = 0;

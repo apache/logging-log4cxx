@@ -23,36 +23,36 @@
 #include <log4cxx/helpers/socketinputstream.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/system.h>
+#include <log4cxx/helpers/loader.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
+
 // time at startup
 int64_t LoggingEvent::startTime = System::currentTimeMillis();
 
 LoggingEvent::LoggingEvent()
-: timeStamp(0), level(&Level::OFF), ndcLookupRequired(true), line(0),
+: timeStamp(0), level(Level::OFF), ndcLookupRequired(true), line(0),
 mdcCopyLookupRequired(true)
 {
 }
 
 LoggingEvent::LoggingEvent(const String& fqnOfCategoryClass,
-	const LoggerPtr& logger, const Level& level,
+	const LoggerPtr& logger, const LevelPtr& level,
 	const String& message, const char* file, int line)
-: fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(&level),
+: fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(level),
 message(message), file((char*)file), line(line),
 timeStamp(System::currentTimeMillis()), ndcLookupRequired(true)
 {
 	threadId = Thread::getCurrentThreadId();
 }
 
-LoggingEvent::LoggingEvent(const LoggingEvent& event)
-: logger(event.logger), level(event.level), message(event.message),
-file(event.file), line(event.line), timeStamp(event.timeStamp),
-ndcLookupRequired(event.ndcLookupRequired), ndc(event.ndc),
-threadId(event.threadId)
-{
+const String& LoggingEvent::getLoggerName() const
+{ 
+	return logger->getName();
 }
 
 const String& LoggingEvent::getNDC() const
@@ -169,7 +169,7 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
 	os->write(logger->getName());
 
 	// level
-	os->write(level->toInt());
+	writeLevel(os);
 
 	// message
 	os->write(message);
@@ -206,6 +206,22 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
 	os->write(threadId);
 }
 
+void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& os) const
+{
+	os->write(level->toInt());
+	
+	const Class& clazz = level->getClass();
+	
+	if (&clazz == &Level::getStaticClass())
+	{
+		os->write(String());
+	}
+	else
+	{
+		os->write(clazz.getName());
+	}
+}
+
 void LoggingEvent::read(helpers::SocketInputStreamPtr is)
 {
 	// fqnOfCategoryClass
@@ -217,9 +233,7 @@ void LoggingEvent::read(helpers::SocketInputStreamPtr is)
 	logger = Logger::getLogger(name);
 
 	// level
-	int levelInt;
-	is->read(levelInt);
-	level = &Level::toLevel(levelInt);
+	readLevel(is);
 
 	// message
 	is->read(message);
@@ -260,8 +274,36 @@ void LoggingEvent::read(helpers::SocketInputStreamPtr is)
 	is->read(threadId);
 }
 
-LoggingEvent * LoggingEvent::copy() const
+void LoggingEvent::readLevel(helpers::SocketInputStreamPtr& is)
 {
-	return new LoggingEvent(*this);
+	int levelInt;
+	is->read(levelInt);
+	
+    String className;
+	is->read(className);
+	
+	if (className.empty())
+	{
+		level = Level::toLevel(levelInt);
+	}
+	else try
+	{
+		Level::LevelClass& levelClass =
+			(Level::LevelClass&)Loader::loadClass(className);
+		level = levelClass.toLevel(levelInt);
+	}
+	catch (Exception& oops)
+	{
+		LogLog::warn(
+			_T("Level deserialization failed, reverting to default."), oops);
+		level = Level::toLevel(levelInt);
+	}
+	catch (...)
+	{
+		LogLog::warn(
+			_T("Level deserialization failed, reverting to default."));
+		level = Level::toLevel(levelInt);
+	}
 }
+
 

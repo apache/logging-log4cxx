@@ -114,7 +114,7 @@ void SocketHubAppender::cleanUp()
 	}
 }
 
-void SocketHubAppender::append(const spi::LoggingEvent& event)
+void SocketHubAppender::append(const spi::LoggingEventPtr& event)
 {
 
 	// if no open connections, exit now
@@ -143,7 +143,7 @@ void SocketHubAppender::append(const spi::LoggingEvent& event)
 		
 		try 
 		{
-			event.write(oos);
+			event->write(oos);
 			oos->flush();
 			it++;
 		}

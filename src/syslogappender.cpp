@@ -207,9 +207,9 @@ SyslogAppender::SyslogFacility SyslogAppender::getFacility(
 	}
 }
 
-void SyslogAppender::append(const spi::LoggingEvent& event)
+void SyslogAppender::append(const spi::LoggingEventPtr& event)
 {
-	if	(!isAsSevereAsThreshold(event.getLevel()))
+	if	(!isAsSevereAsThreshold(event->getLevel()))
 		return;
 
 	// We must not attempt to append if sqw is null.
@@ -222,7 +222,7 @@ void SyslogAppender::append(const spi::LoggingEvent& event)
 
 	StringBuffer sbuf;
 
-	sbuf << _T("<") << (syslogFacility | event.getLevel().getSyslogEquivalent()) << _T(">");
+	sbuf << _T("<") << (syslogFacility | event->getLevel()->getSyslogEquivalent()) << _T(">");
 	if (facilityPrinting)
 	{
 		sbuf << facilityStr;

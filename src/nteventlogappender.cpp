@@ -161,7 +161,7 @@ void NTEventLogAppender::activateOptions()
 	hEventLog = ::RegisterEventSource(server.c_str(), source.c_str());
 }
 
-void NTEventLogAppender::append(const LoggingEvent& event)
+void NTEventLogAppender::append(const LoggingEventPtr& event)
 {
 	if (hEventLog == NULL)
 	{
@@ -234,11 +234,11 @@ void NTEventLogAppender::addRegistryInfo()
 	return;
 }
 
-WORD NTEventLogAppender::getEventType(const LoggingEvent& event)
+WORD NTEventLogAppender::getEventType(const LoggingEventPtr& event)
 {
 	WORD ret_val;
 	
-	switch (event.getLevel().toInt())
+	switch (event->getLevel()->toInt())
 	{
 	case Level::FATAL_INT:
 	case Level::ERROR_INT:
@@ -257,11 +257,11 @@ WORD NTEventLogAppender::getEventType(const LoggingEvent& event)
 	return ret_val;
 }
 
-WORD NTEventLogAppender::getEventCategory(const LoggingEvent& event)
+WORD NTEventLogAppender::getEventCategory(const LoggingEventPtr& event)
 {
 	WORD ret_val;
 	
-	switch (event.getLevel().toInt())
+	switch (event->getLevel()->toInt())
 	{
 	case Level::FATAL_INT:
 		ret_val = 1;

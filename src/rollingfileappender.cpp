@@ -90,7 +90,7 @@ void RollingFileAppender::rollOver()
 	}
 }
 
-void RollingFileAppender::subAppend(const spi::LoggingEvent& event)
+void RollingFileAppender::subAppend(const spi::LoggingEventPtr& event)
 {
 	FileAppender::subAppend(event);
 	if(!fileName.empty() && ofs.tellp() >= maxFileSize)

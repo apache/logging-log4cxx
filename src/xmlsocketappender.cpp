@@ -172,7 +172,7 @@ void XMLSocketAppender::connect()
 	}
 }
 
-void XMLSocketAppender::append(const spi::LoggingEvent& event)
+void XMLSocketAppender::append(const spi::LoggingEventPtr& event)
 {
 	if(address.address == 0)
 	{

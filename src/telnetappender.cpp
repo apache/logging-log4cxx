@@ -72,7 +72,7 @@ void TelnetAppender::close()
 	}
 }
 
-void TelnetAppender::append(const spi::LoggingEvent& event) 
+void TelnetAppender::append(const spi::LoggingEventPtr& event) 
 {
 	if (sh != 0)
 	{

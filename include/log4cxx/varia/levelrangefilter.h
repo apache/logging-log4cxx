@@ -18,16 +18,10 @@
 #define _LOG4CXX_VARIA_LEVEL_RANGE_FILTER_H
 
 #include <log4cxx/spi/filter.h>
+#include <log4cxx/level.h>
 
 namespace log4cxx
 {
-	class Level;
-	
-	namespace spi
-	{
-		class LoggingEvent;
-	};
-	
 	namespace varia
 	{
 		/**
@@ -73,8 +67,8 @@ namespace log4cxx
 			<code>false</code>, so that later filters get run by default
 			*/
 			bool acceptOnMatch;
-			const Level * levelMin;
-			const Level * levelMax;
+			LevelPtr levelMin;
+			LevelPtr levelMax;
 
 		public:
 			typedef spi::Filter BASE_CLASS;
@@ -95,26 +89,26 @@ namespace log4cxx
 			/**
 			Set the <code>LevelMin</code> option.
 			*/
-			void setLevelMin(const Level& levelMin)
-				{ this->levelMin = &levelMin; }
+			void setLevelMin(const LevelPtr& levelMin)
+				{ this->levelMin = levelMin; }
 
 			/**
 			Get the value of the <code>LevelMin</code> option.
 			*/
-			const Level& getLevelMin() const
-				{ return *levelMin; }
+			const LevelPtr& getLevelMin() const
+				{ return levelMin; }
 
 			/**
 			Set the <code>LevelMax</code> option.
 			*/
-			void setLevelMax(const Level& levelMax)
-				{ this->levelMax = &levelMax; }
+			void setLevelMax(const LevelPtr& levelMax)
+				{ this->levelMax = levelMax; }
 
 			/**
 			Get the value of the <code>LevelMax</code> option.
 			*/
-			const Level& getLevelMax() const
-				{ return *levelMax; }
+			const LevelPtr& getLevelMax() const
+				{ return levelMax; }
 
 			/**
 			Set the <code>AcceptOnMatch</code> option.
@@ -139,7 +133,7 @@ namespace log4cxx
 			returned decision is {@link spi::Filter#DENY DENY} if the
 			<b>AcceptOnMatch</b> property is set to false.
 			*/
-			FilterDecision decide(const spi::LoggingEvent& event);
+			FilterDecision decide(const spi::LoggingEventPtr& event);
 		}; // class LevelMatchFilter
 	}; // namespace varia
 }; // namespace log4cxx

@@ -20,31 +20,33 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-const Level Level::OFF(Level::OFF_INT, _T("OFF"), 0);
-const Level Level::FATAL(Level::FATAL_INT, _T("FATAL"), 0);
-const Level Level::ERROR(Level::ERROR_INT, _T("ERROR"), 3);
-const Level Level::WARN(Level::WARN_INT, _T("WARN"),  4);
-const Level Level::INFO(Level::INFO_INT, _T("INFO"),  6);
-const Level Level::DEBUG(Level::DEBUG_INT, _T("DEBUG"), 7);
-const Level Level::ALL(Level::ALL_INT, _T("ALL"), 7);
+IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
-Level::Level(int level, String levelStr, int syslogEquivalent)
+const LevelPtr Level::OFF(new Level(Level::OFF_INT, _T("OFF"), 0));
+const LevelPtr Level::FATAL(new Level(Level::FATAL_INT, _T("FATAL"), 0));
+const LevelPtr Level::ERROR(new Level(Level::ERROR_INT, _T("ERROR"), 3));
+const LevelPtr Level::WARN(new Level(Level::WARN_INT, _T("WARN"),  4));
+const LevelPtr Level::INFO(new Level(Level::INFO_INT, _T("INFO"),  6));
+const LevelPtr Level::DEBUG(new Level(Level::DEBUG_INT, _T("DEBUG"), 7));
+const LevelPtr Level::ALL(new Level(Level::ALL_INT, _T("ALL"), 7));
+
+Level::Level(int level, const String& levelStr, int syslogEquivalent)
 : level(level), levelStr(levelStr), syslogEquivalent(syslogEquivalent)
 {
 }
 
 
-const Level& Level::toLevel(const String& sArg)
+const LevelPtr& Level::toLevel(const String& sArg)
 {
     return toLevel(sArg, Level::DEBUG);
 }
 
-const Level& Level::toLevel(int val)
+const LevelPtr& Level::toLevel(int val)
 {
     return toLevel(val, Level::DEBUG);
 }
 
-const Level& Level::toLevel(int val, const Level& defaultLevel)
+const LevelPtr& Level::toLevel(int val, const LevelPtr& defaultLevel)
 {
     switch(val)
     {
@@ -59,7 +61,7 @@ const Level& Level::toLevel(int val, const Level& defaultLevel)
     }
 }
 
-const Level& Level::toLevel(const String& sArg, const Level& defaultLevel)
+const LevelPtr& Level::toLevel(const String& sArg, const LevelPtr& defaultLevel)
 {
     if (sArg.empty())
     {
@@ -79,9 +81,9 @@ const Level& Level::toLevel(const String& sArg, const Level& defaultLevel)
     return defaultLevel;
 }
 
-bool Level::equals(const Level& level) const
+bool Level::equals(const LevelPtr& level) const
 {
-	return (this->level == level.level);
+	return (this->level == level->level);
 }
 
 int Level::getSyslogEquivalent() const
@@ -89,9 +91,9 @@ int Level::getSyslogEquivalent() const
 	return syslogEquivalent;
 }
 
-bool Level::isGreaterOrEqual(const Level& level) const
+bool Level::isGreaterOrEqual(const LevelPtr& level) const
 {
-    return this->level >= level.level;
+    return this->level >= level->level;
 }
 
 const String& Level::toString() const
@@ -104,37 +106,37 @@ int Level::toInt() const
 	return level;
 }
 
-const Level& Level::getAllLevel()
+const LevelPtr& Level::getAllLevel()
 {
 	return ALL;
 }
 
-const Level& Level::getFatalLevel()
+const LevelPtr& Level::getFatalLevel()
 {
 	return FATAL;
 }
 
-const Level& Level::getErrorLevel()
+const LevelPtr& Level::getErrorLevel()
 {
 	return ERROR;
 }
 
-const Level& Level::getWarnLevel()
+const LevelPtr& Level::getWarnLevel()
 {
 	return WARN;
 }
 
-const Level& Level::getInfoLevel()
+const LevelPtr& Level::getInfoLevel()
 {
 	return INFO;
 }
 
-const Level& Level::getDebugLevel()
+const LevelPtr& Level::getDebugLevel()
 {
 	return DEBUG;
 }
 
-const Level& Level::getOffLevel()
+const LevelPtr& Level::getOffLevel()
 {
 	return OFF;
 }

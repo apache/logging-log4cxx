@@ -38,7 +38,7 @@ WriterAppender::~WriterAppender()
 {
 }
 
-void WriterAppender::append(const spi::LoggingEvent& event)
+void WriterAppender::append(const spi::LoggingEventPtr& event)
 {
 
 // Reminder: the nesting of calls is:
@@ -102,7 +102,7 @@ void WriterAppender::close()
 	reset();
 }
 
-void WriterAppender::subAppend(const spi::LoggingEvent& event)
+void WriterAppender::subAppend(const spi::LoggingEventPtr& event)
 {
 	layout->format(*os, event);
 

@@ -14,8 +14,8 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#include <log4cxx/varia/levelrangefilter.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/varia/levelrangefilter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
@@ -32,7 +32,7 @@ String LevelRangeFilter::LEVEL_MAX_OPTION = _T("LevelMax");
 String LevelRangeFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
 
 LevelRangeFilter::LevelRangeFilter()
-: acceptOnMatch(true), levelMin(&Level::ALL), levelMax(&Level::OFF)
+: acceptOnMatch(true), levelMin(Level::ALL), levelMax(Level::OFF)
 {
 }
 
@@ -41,11 +41,11 @@ void LevelRangeFilter::setOption(const String& option,
 {
 	if (StringHelper::equalsIgnoreCase(option, LEVEL_MIN_OPTION))
 	{
-		levelMin = &Level::toLevel(value, *levelMin);
+		levelMin = OptionConverter::toLevel(value, levelMin);
 	}
 else if (StringHelper::equalsIgnoreCase(option, LEVEL_MAX_OPTION))
 	{
-		levelMax = &Level::toLevel(value, *levelMax);
+		levelMax = OptionConverter::toLevel(value, levelMax);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, ACCEPT_ON_MATCH_OPTION))
 	{
@@ -54,15 +54,15 @@ else if (StringHelper::equalsIgnoreCase(option, LEVEL_MAX_OPTION))
 }
 
 Filter::FilterDecision LevelRangeFilter::decide(
-	const log4cxx::spi::LoggingEvent& event)
+	const spi::LoggingEventPtr& event)
 {
-	if (!event.getLevel().isGreaterOrEqual(*levelMin))
+	if (!event->getLevel()->isGreaterOrEqual(levelMin))
 	{
 		// level of event is less than minimum
 		return Filter::DENY;
 	}
 
-	if (event.getLevel().toInt() > levelMax->toInt())
+	if (event->getLevel()->toInt() > levelMax->toInt())
 	{
 		// level of event is greater than maximum
 		// Alas, there is no Level.isGreater method. and using

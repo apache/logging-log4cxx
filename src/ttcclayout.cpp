@@ -39,25 +39,25 @@ contextPrinting(true), filePrinting(false)
 	activateOptions();
 }
 
-void TTCCLayout::format(ostream& output, const spi::LoggingEvent& event)
+void TTCCLayout::format(ostream& output, const spi::LoggingEventPtr& event)
 {
 	formatDate(output, event);
 
 	if(threadPrinting)
 	{
-		output << _T("[") << event.getThreadId() << _T("] ");
+		output << _T("[") << event->getThreadId() << _T("] ");
 	}
 	
-	output << event.getLevel().toString() << _T(" ");
+	output << event->getLevel()->toString() << _T(" ");
 
 	if(categoryPrefixing)
 	{
-		output << event.getLoggerName() << _T(" ");
+		output << event->getLoggerName() << _T(" ");
 	}
 
 	if(contextPrinting)
 	{
-		String ndc = event.getNDC();
+		String ndc = event->getNDC();
 
 		if(!ndc.empty())
 		{
@@ -65,5 +65,5 @@ void TTCCLayout::format(ostream& output, const spi::LoggingEvent& event)
 		}
 	}
 
-	output << _T("- ") << event.getRenderedMessage() << std::endl;
+	output << _T("- ") << event->getRenderedMessage() << std::endl;
 }

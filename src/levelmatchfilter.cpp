@@ -14,8 +14,8 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#include <log4cxx/varia/levelmatchfilter.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/varia/levelmatchfilter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
@@ -31,7 +31,7 @@ String LevelMatchFilter::LEVEL_TO_MATCH_OPTION = _T("LevelToMatch");
 String LevelMatchFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
 
 LevelMatchFilter::LevelMatchFilter()
-: acceptOnMatch(true), levelToMatch(&Level::OFF)
+: acceptOnMatch(true), levelToMatch(Level::OFF)
 {
 }
 
@@ -50,7 +50,7 @@ void LevelMatchFilter::setOption(const String& option,
 
 void LevelMatchFilter::setLevelToMatch(const String& levelToMatch)
 {
-	this->levelToMatch = &Level::toLevel(levelToMatch, *this->levelToMatch);
+	this->levelToMatch = OptionConverter::toLevel(levelToMatch, this->levelToMatch);
 }
 
 const String& LevelMatchFilter::getLevelToMatch() const
@@ -59,15 +59,9 @@ const String& LevelMatchFilter::getLevelToMatch() const
 }
   
 Filter::FilterDecision LevelMatchFilter::decide(
-	const log4cxx::spi::LoggingEvent& event)
+	const log4cxx::spi::LoggingEventPtr& event)
 {
-	bool matchOccured = false;
-	if(this->levelToMatch->equals(event.getLevel()))
-	{
-		matchOccured = true;
-	}
-
-	if(matchOccured)
+	if(this->levelToMatch->equals(event->getLevel()))
 	{
 		if(this->acceptOnMatch)
 		{

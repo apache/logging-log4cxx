@@ -46,25 +46,25 @@ void XMLLayout::setOption(const String& option,
 	}
 }
 
-void XMLLayout::format(ostream& output, const spi::LoggingEvent& event)
+void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event)
 {
 	output << _T("<log4j:event logger=\"");
-	output << event.getLoggerName();
+	output << event->getLoggerName();
 	output << _T("\" timestamp=\"");
-	output << event.getTimeStamp();
+	output << event->getTimeStamp();
 	output << _T("\" level=\"");
-	output << event.getLevel().toString();
+	output << event->getLevel()->toString();
 	output << _T("\" thread=\"");
-	output << event.getThreadId();
+	output << event->getThreadId();
 	output << _T("\">") << std::endl;
 
 	output << _T("<log4j:message><![CDATA[");
 	// Append the rendered message. Also make sure to escape any
 	// existing CDATA sections.
-	Transform::appendEscapingCDATA(output, event.getRenderedMessage());
+	Transform::appendEscapingCDATA(output, event->getRenderedMessage());
 	output << _T("]]></log4j:message>") << std::endl;
 
-	const String& ndc = event.getNDC();
+	const String& ndc = event->getNDC();
 	if(ndc.length() != 0)
 	{
 		output << _T("<log4j:NDC><![CDATA[");
@@ -72,7 +72,7 @@ void XMLLayout::format(ostream& output, const spi::LoggingEvent& event)
 		output << _T("]]></log4j:NDC>") << std::endl;
 	}
 
-    std::set<String> mdcKeySet = event.getMDCKeySet();
+    std::set<String> mdcKeySet = event->getMDCKeySet();
 
     if(!mdcKeySet.empty())
     {
@@ -89,7 +89,7 @@ void XMLLayout::format(ostream& output, const spi::LoggingEvent& event)
 			i != mdcKeySet.end(); i++)
 		{
 			String key = *i;
-			String val = event.getMDC(key);
+			String val = event->getMDC(key);
 			output << _T("    <log4j:data ");
 			output << _T("name=\"<![CDATA[");
 			Transform::appendEscapingCDATA(output, key);
@@ -106,13 +106,13 @@ void XMLLayout::format(ostream& output, const spi::LoggingEvent& event)
 	{
 		output << _T("<log4j:locationInfo file=\"");
 		USES_CONVERSION;
-		output << A2T(event.getFile());
+		output << A2T(event->getFile());
 		output << _T("\" line=\"");
-		output << event.getLine();
+		output << event->getLine();
 		output << _T("\"/>") << std::endl;
 	}
 
-    std::set<String> propertySet = event.getPropertyKeySet();
+    std::set<String> propertySet = event->getPropertyKeySet();
 
     if (!propertySet.empty())
 	{
@@ -122,7 +122,7 @@ void XMLLayout::format(ostream& output, const spi::LoggingEvent& event)
 		{
 			String propName = *i;
 			output << _T("<log4j:data name=\"") << propName;
-			String propValue = event.getProperty(propName);
+			String propValue = event->getProperty(propName);
 			output << _T("\" value=\"") << propValue;
 			output << _T("\"/>") << std::endl;
 		}

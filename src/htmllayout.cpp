@@ -50,65 +50,65 @@ void HTMLLayout::setOption(const String& option,
 	}
 }
 
-void HTMLLayout::format(ostream& output, const spi::LoggingEvent& event)
+void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event)
 {
 	output << std::endl << _T("<tr>") << std::endl;
 
 	output << _T("<td>");
-	ISO8601DateFormat().format(output, event.getTimeStamp());
+	ISO8601DateFormat().format(output, event->getTimeStamp());
 	output << _T("</td>") << std::endl;
 
-	output << _T("<td title=\"") << event.getThreadId() << _T(" thread\">");
-	output << event.getThreadId();
+	output << _T("<td title=\"") << event->getThreadId() << _T(" thread\">");
+	output << event->getThreadId();
 	output << _T("</td>") << std::endl;
 
 	output << _T("<td title=\"Level\">");
-	if (event.getLevel().equals(Level::DEBUG))
+	if (event->getLevel()->equals(Level::DEBUG))
 	{
 		output << _T("<font color=\"#339933\">");
-		output << event.getLevel().toString();
+		output << event->getLevel()->toString();
 		output << _T("</font>");
 	}
-	else if(event.getLevel().isGreaterOrEqual(Level::WARN))
+	else if(event->getLevel()->isGreaterOrEqual(Level::WARN))
 	{
 		output << _T("<font color=\"#993300\"><strong>");
-		output << event.getLevel().toString();
+		output << event->getLevel()->toString();
 		output << _T("</strong></font>");
 	}
 	else
 	{
-		output << event.getLevel().toString();
+		output << event->getLevel()->toString();
 	}
 	
 	output << _T("</td>") << std::endl;
 
-	output << _T("<td title=\"") << event.getLoggerName()
+	output << _T("<td title=\"") << event->getLoggerName()
 		 << _T(" category\">");
-	Transform::appendEscapingTags(output, event.getLoggerName());
+	Transform::appendEscapingTags(output, event->getLoggerName());
 	output << _T("</td>") << std::endl;
 
 	if(locationInfo)
 	{
 		USES_CONVERSION;
 		output << _T("<td>");
-		Transform::appendEscapingTags(output, A2T(event.getFile()));
+		Transform::appendEscapingTags(output, A2T(event->getFile()));
 		output.put(_T(':'));
-		output << event.getLine();
+		output << event->getLine();
 		output << _T("</td>") << std::endl;
 	}
 
 	output << _T("<td title=\"Message\">");
-	Transform::appendEscapingTags(output, event.getRenderedMessage());
+	Transform::appendEscapingTags(output, event->getRenderedMessage());
 	output << _T("</td>")  << std::endl;
 	output << _T("</tr>") << std::endl;
 
-	if (event.getNDC().length() != 0)
+	if (event->getNDC().length() != 0)
 	{
 		output << _T("<tr><td bgcolor=\"#EEEEEE\" ");
 		output << _T("style=\"font-size : xx-small;\" colspan=\"6\" ");
 		output << _T("title=\"Nested Diagnostic Context\">");
 		output << _T("NDC: ");
-		Transform::appendEscapingTags(output, event.getNDC());
+		Transform::appendEscapingTags(output, event->getNDC());
 		output << _T("</td></tr>") << std::endl;
 	}
 }

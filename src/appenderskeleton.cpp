@@ -27,7 +27,7 @@ using namespace log4cxx::helpers;
 
 AppenderSkeleton::AppenderSkeleton()
 : errorHandler(new OnlyOnceErrorHandler()), closed(false),
-threshold(&Level::ALL)
+threshold(Level::ALL)
 {
 }
 
@@ -61,12 +61,12 @@ void AppenderSkeleton::clearFilters()
 	headFilter = tailFilter = 0;
 }
 
-bool AppenderSkeleton::isAsSevereAsThreshold(const Level& level)
+bool AppenderSkeleton::isAsSevereAsThreshold(LevelPtr level)
 {
-	return level.isGreaterOrEqual(*threshold);
+	return level->isGreaterOrEqual(threshold);
 }
 
-void AppenderSkeleton::doAppend(const spi::LoggingEvent& event)
+void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
 {
 	synchronized sync(this);
 	
@@ -77,7 +77,7 @@ void AppenderSkeleton::doAppend(const spi::LoggingEvent& event)
 		return;
 	}
 
-	if(!isAsSevereAsThreshold(event.getLevel()))
+	if(!isAsSevereAsThreshold(event->getLevel()))
 	{
 		return;
 	}
@@ -116,4 +116,9 @@ void AppenderSkeleton::setErrorHandler(spi::ErrorHandlerPtr errorHandler)
 	{
 		this->errorHandler = errorHandler;
 	}
+}
+
+void AppenderSkeleton::setThreshold(const LevelPtr& threshold)
+{
+	this->threshold = threshold;
 }

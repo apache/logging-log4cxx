@@ -374,24 +374,24 @@ PatternParser::BasicPatternConverter::BasicPatternConverter(const FormattingInfo
 {
 }
 
-void PatternParser::BasicPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::BasicPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
 {
 	switch(type)
 	{
 	case RELATIVE_TIME_CONVERTER:
-		sbuf << (event.getTimeStamp() - LoggingEvent::getStartTime());
+		sbuf << (event->getTimeStamp() - LoggingEvent::getStartTime());
 		break;
 	case THREAD_CONVERTER:
-		sbuf << event.getThreadId();
+		sbuf << event->getThreadId();
 		break;
 	case LEVEL_CONVERTER:
-		sbuf << event.getLevel().toString();
+		sbuf << event->getLevel()->toString();
 		break;
 	case NDC_CONVERTER:
-		sbuf << event.getNDC();
+		sbuf << event->getNDC();
 		break;
 	case MESSAGE_CONVERTER:
-		sbuf << event.getRenderedMessage();
+		sbuf << event->getRenderedMessage();
 		break;
 	}
 }
@@ -401,12 +401,12 @@ PatternParser::LiteralPatternConverter::LiteralPatternConverter(const String& va
 {
 }
 
-void PatternParser::LiteralPatternConverter::format(StringBuffer& sbuf, const spi::LoggingEvent& e) 
+void PatternParser::LiteralPatternConverter::format(StringBuffer& sbuf, const spi::LoggingEventPtr& e) 
 {
 	sbuf << literal;
 }
 
-void PatternParser::LiteralPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::LiteralPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
 {
 	sbuf << literal;
 }
@@ -421,9 +421,9 @@ PatternParser::DatePatternConverter::~DatePatternConverter()
 	delete df;
 }
 
-void PatternParser::DatePatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::DatePatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
 {
-	df->format(sbuf, event.getTimeStamp());
+	df->format(sbuf, event->getTimeStamp());
 }
 
 PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& formattingInfo, const String& key)
@@ -431,7 +431,7 @@ PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& fo
 {
 }
 
-void PatternParser::MDCPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::MDCPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
 {
 	/**
 	* if there is no additional options, we output every single
@@ -441,12 +441,12 @@ void PatternParser::MDCPatternConverter::convert(ostream& sbuf, const spi::Loggi
 	if (key.empty())
 	{
 		sbuf << _T("{");
-		std::set<String> keySet = event.getMDCKeySet();
+		std::set<String> keySet = event->getMDCKeySet();
 		std::set<String>::iterator i;
 		for (i = keySet.begin(); i != keySet.end(); i++)
 		{
 			String item = *i;
-			String val = event.getMDC(item);
+			String val = event->getMDC(item);
 			sbuf << _T("{") << item << _T(",") << val << _T("}");
 		}
 		sbuf << _T("}");
@@ -456,7 +456,7 @@ void PatternParser::MDCPatternConverter::convert(ostream& sbuf, const spi::Loggi
 		/**
 		* otherwise they just want a single key output
 		*/
-		sbuf << event.getMDC(key);
+		sbuf << event->getMDC(key);
 	}
 }
 
@@ -466,24 +466,24 @@ PatternParser::LocationPatternConverter::LocationPatternConverter(const Formatti
 {
 }
 
-void PatternParser::LocationPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::LocationPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
 {
 	switch(type)
 	{
 	case FULL_LOCATION_CONVERTER:
-		if (event.getFile() != 0)
+		if (event->getFile() != 0)
 		{
-			sbuf << event.getFile() << _T("(") << event.getLine() << _T(")");
+			sbuf << event->getFile() << _T("(") << event->getLine() << _T(")");
 		}
 		break;
 	case LINE_LOCATION_CONVERTER:
-		sbuf << event.getLine();
+		sbuf << event->getLine();
 		break;
 	case FILE_LOCATION_CONVERTER:
-		if (event.getFile() != 0)
+		if (event->getFile() != 0)
 		{
 			USES_CONVERSION;
-			sbuf << A2T(event.getFile());
+			sbuf << A2T(event->getFile());
 		}
 		break;
 	}
@@ -494,9 +494,9 @@ PatternParser::CategoryPatternConverter::CategoryPatternConverter(const Formatti
 {
 }
 
-void PatternParser::CategoryPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::CategoryPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
 {
-	const String& n = event.getLoggerName();
+	const String& n = event->getLoggerName();
 
 	if(precision <= 0)
 	{
