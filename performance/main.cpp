@@ -99,16 +99,18 @@ public:
     if (args.size() == 3) {
       if(args[2] == LOG4CXX_STR("char")) {
         loop = Loop::loopChar;
-      } else if (args[2] == LOG4CXX_STR("wide")) {
-        loop = Loop::loopWide;
       } else if (args[2] == LOG4CXX_STR("stream")) {
         loop = Loop::loopStream;
-      } else if (args[2] == LOG4CXX_STR("wide-stream")) {
-        loop = Loop::loopWideStream;
       } else if (args[2] == LOG4CXX_STR("bad-stream")) {
         loop = Loop::loopBadStream;
+#if LOG4CXX_HAS_WCHAR_T
+       } else if (args[2] == LOG4CXX_STR("wide")) {
+        loop = Loop::loopWide;
+      } else if (args[2] == LOG4CXX_STR("wide-stream")) {
+        loop = Loop::loopWideStream;
       } else if (args[2] == LOG4CXX_STR("bad-wide-stream")) {
         loop = Loop::loopBadWideStream;
+#endif
       } else {
         usage("Unrecognized loop type.");
       }
@@ -124,6 +126,7 @@ public:
     return (apr_time_now() - before) / 1000;
   }
 
+ #if LOG4CXX_HAS_WCHAR_T
   static long loopWide(long len, LoggerPtr& logger) {
     const wchar_t* msg = L"Some fix message of medium length.";
     apr_time_t before = apr_time_now();
@@ -132,6 +135,7 @@ public:
     }
     return (apr_time_now() - before) / 1000;
   }
+#endif
 
   static long loopStream(long len, LoggerPtr& logger) {
     const char* msg = "Some fix message of medium length.";
@@ -143,7 +147,8 @@ public:
     return (apr_time_now() - before) / 1000;
   }
 
-  static long loopWideStream(long len, LoggerPtr& logger) {
+#if LOG4CXX_HAS_WCHAR_T
+   static long loopWideStream(long len, LoggerPtr& logger) {
     const wchar_t* msg = L"Some fix message of medium length.";
     apr_time_t before = apr_time_now();
     logstream ls(logger, Level::DEBUG);
@@ -152,6 +157,7 @@ public:
     }
     return (apr_time_now() - before) / 1000;
   }
+#endif
 
   static long loopBadStream(long len, LoggerPtr& logger) {
     const char* msg = "Some fix message of medium length.";
@@ -163,7 +169,8 @@ public:
     return (apr_time_now() - before) / 1000;
   }
 
-  static long loopBadWideStream(long len, LoggerPtr& logger) {
+#if LOG4CXX_HAS_WCHAR_T
+   static long loopBadWideStream(long len, LoggerPtr& logger) {
     const wchar_t* msg = L"Some fix message of medium length.";
     apr_time_t before = apr_time_now();
     for (int i = 0; i < len; i++) {
@@ -172,7 +179,7 @@ public:
     }
     return (apr_time_now() - before) / 1000;
   }
-
+#endif
 
 };
 
