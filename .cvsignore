@@ -1,0 +1,12 @@
+Makefile
+Makefile.in
+configure
+build
+.cdtproject
+aclocal.m4
+autom4te.cache
+bak
+libtool
+linux
+log4cxx.cbx
+log4cxx.cbx.local
