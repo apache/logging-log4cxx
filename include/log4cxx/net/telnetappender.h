@@ -118,6 +118,7 @@ namespace log4cxx
 			
 			//---------------------------------------------------------- SocketHandler:
 			
+		private:
 			/** The SocketHandler class is used to accept connections from
 			clients.  It is threaded so that clients can connect/disconnect
 			asynchronously. */
