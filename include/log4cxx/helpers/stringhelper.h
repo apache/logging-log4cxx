@@ -61,6 +61,11 @@ namespace log4cxx
             {
 				return toLowerCase(s1) == toLowerCase(s2);
             }
+
+			static bool endsWith(const tstring& s, const tstring& suffix)
+			{
+				return (s.length() - s.rfind(suffix)) == suffix.length();
+			}
         };
     };
 };
