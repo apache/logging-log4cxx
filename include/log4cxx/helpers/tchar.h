@@ -20,6 +20,7 @@
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <cwchar>
 
 class Convert
 {
@@ -37,6 +38,8 @@ public:
 	}
 };
 
+#ifndef UNICODE
+#ifndef WIN32
 inline std::ostream& operator<<(const int64_t& ll, std::ostream& os)
 {
 	char buff[21];
@@ -44,8 +47,7 @@ inline std::ostream& operator<<(const int64_t& ll, std::ostream& os)
 	os << buff;
 	return os;
 }
-
-#ifdef WIN32
+#else
 inline std::ostream& operator<<(std::ostream& os, const int64_t& ll)
 {
 	char buff[21];
@@ -53,8 +55,9 @@ inline std::ostream& operator<<(std::ostream& os, const int64_t& ll)
 	os << buff;
 	return os;
 }
-#endif
-
+#endif // WIN32
+#else
+#ifndef WIN32
 inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
 {
 	wchar_t buff[21];
@@ -66,8 +69,8 @@ inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
 	os << buff;
 	return os;
 }
+#else
 
-#ifdef WIN32
 inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 {
 	wchar_t buff[21];
@@ -79,7 +82,9 @@ inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 	os << buff;
 	return os;
 }
-#endif
+#endif // WIN32
+#endif // UNICODE
+
 
 #ifdef WIN32
 #ifndef USES_CONVERSION
