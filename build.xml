@@ -65,7 +65,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
 
-<target name="usage">
+<target name="usage" description="Describes usage of the build script">
         <echo>
 Ant build file for log4cxx
 
@@ -256,7 +256,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="projectsOnly" value="false"/>
 </target>
 
-<target name="clean" depends="init">
+<target name="clean" depends="init" description="Removes built files">
         <delete dir="${build.dir}"/>
         <delete>
             <fileset dir="${tests.dir}/src" includes="shortsocket*" excludes="*.cpp"/>
@@ -346,6 +346,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="base.dir" value="${apr.dir}"/>
         <property name="apr.lib.dir" value="${apr.lib.dir}"/>
         <property name="apr.lib.type" value="${apr.lib.type}"/>
+        <property name="project.type" value="${project.type}"/>
+        <property name="project.dir" value="${project.dir}"/>
+        <property name="project.if.value" value="${project.if}"/>
     </ant>
 </target>
 
@@ -382,6 +385,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="apr.lib.type" value="${apr.lib.type}"/>
         <property name="apriconv.lib.type" value="${apriconv.lib.type}"/>
         <property name="with-apr" value="${apr.dir}/apr--config"/>
+        <property name="project.type" value="${project.type}"/>
+        <property name="project.dir" value="${project.dir}"/>
+        <property name="project.if.value" value="${project.if}"/>
     </ant>
 </target>
 
@@ -425,6 +431,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="apriconv.lib.type" value="${apriconv.lib.type}"/>
         <property name="aprutil.lib.type" value="${aprutil.lib.type}"/>
         <property name="with-apr" value="${apr.dir}/apr--config"/>
+        <property name="project.type" value="${project.type}"/>
+        <property name="project.dir" value="${project.dir}"/>
+        <property name="project.if.value" value="${project.if}"/>
     </ant>
 </target>
 
@@ -456,13 +465,16 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="compiler" value="${compiler}"/>
         <property name="executable.dir" value="${executable.dir}"/>
         <property name="lib.type" value="${cppunit.lib.type}"/>
+        <property name="project.type" value="${project.type}"/>
+        <property name="project.dir" value="${project.dir}"/>
+        <property name="project.if.value" value="${project.if}"/>
     </ant>
     <property name="cppunit.include.dir" value="${cppunit.dir}/include"/>
     <property name="cppunit.lib.dir" value="${executable.dir}/${cppunit.lib.type}"/>
 </target>
 
 
-<target name="make-header-check" description="Generates a minimal C++ source using a specified header">
+<target name="make-header-check">
    <echo file="${header}.cpp" append="false">
 #include "${header}"
 #include "${header}"
@@ -514,7 +526,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="build" depends="build-aprutil, configure, mkdir-project" description="Build log4cxx shared library">
+<target name="build" depends="build-aprutil, configure, mkdir-project" description="Build log4cxx library">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx_obj"/>
 
     <cc name="${compiler}"
@@ -597,6 +609,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="run-example">
+    <!--  remove any stray configuration files  -->
+    <delete>
+        <fileset dir="${log4cxx.lib.dir}" includes="log4*.properties log4*.xml"/>
+    </delete>
     <exec executable="${log4cxx.lib.dir}/${example.name}"
           dir="${log4cxx.lib.dir}"
           failonerror="true">
@@ -633,7 +649,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </antcall>
 </target>
 
-<target name="build-examples" depends="build-delayedloop, build-trivial, build-stream"/>
+<target name="build-examples" 
+    depends="build-delayedloop, build-trivial, build-stream"
+    description="Builds example programs"/>
 
 <target name="build-simplesocketserver" depends="build">
     <antcall target="build-example">
@@ -644,7 +662,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="build-performance" depends="build">
+<target name="build-performance" depends="build" description="Builds performance test">
     <antcall target="build-example">
        <param name="example.src.dir" value="${performance.dir}"/>
        <param name="example.name" value="performance"/>
@@ -690,7 +708,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="build-unittest" depends="build-shortsocketserver, build-cppunit">
+<target name="build-unittest" depends="build-shortsocketserver, build-cppunit"
+    description="Builds unit test app">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
 
     <cc name="${compiler}"
@@ -732,7 +751,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="build-standalone-unittest"
     depends="build-shortsocketserver, build-cppunit"
-    description="Build a single project that is easier to debug in IDEs">
+    description="Builds a unit tests + log4cxx executable">
     <mkdir dir="${executable.dir}/static/log4cxx-standalone-test_obj"/>
     <cc name="${compiler}"
                 exceptions="true"
@@ -779,9 +798,11 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="build-all" depends="build-examples, build-unittest,
-     build-simplesocketserver, build-performance"/>
+     build-simplesocketserver, build-performance"
+     description="Builds all artifacts"/>
 
-<target name="run-unittest" depends="build-unittest">
+<target name="run-unittest" depends="build-unittest"
+    description="Runs unit test">
     <property environment="env"/>
     <mkdir dir="${tests.dir}/output"/>
     <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
@@ -868,7 +889,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 </target>
 
-<target name="run-standalone-unittest" depends="build-standalone-unittest">
+<target name="run-standalone-unittest" 
+   depends="build-standalone-unittest"
+   description="Runs standalone unit test">
     <property environment="env"/>
     <mkdir dir="${tests.dir}/output"/>
     <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.dir}"
@@ -883,7 +906,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="build-projects">
-        <mkdir dir="msvc"/>
+        <mkdir dir="${project.dir}"/>
         <antcall target="build">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
@@ -916,21 +939,21 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </antcall>
 </target>
 
-<target name="build-projects-vc6">
+<target name="build-projects-vc6" description="Builds project files for Microsoft Visual C++ 6">
     <antcall target="build-projects">
         <param name="project.dir" value="msvc"/>
         <param name="project.type" value="msvc6"/>
     </antcall>
 </target>
 
-<target name="build-projects-xcode">
+<target name="build-projects-xcode" description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
         <param name="project.dir" value="xcode"/>
         <param name="project.type" value="xcode"/>
     </antcall>
 </target>
 
-<target name="build-projects-cbx">
+<target name="build-projects-cbx" description="Builds project files for Borland CBuilderX">
     <antcall target="build-projects">
         <param name="project.dir" value="cbx"/>
         <param name="project.type" value="cbuilderx"/>
@@ -938,7 +961,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="check" depends="run-unittest, build-examples, build-performance">
+<target name="check" depends="run-unittest, build-examples, build-performance"
+     description="Runs all diagnostic tests">
     <antcall target="run-example">
         <param name="example.name" value="trivial"/>
     </antcall>
@@ -948,7 +972,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="dist" depends="init">
+<target name="dist" depends="init"
+    description="Builds a source distribution">
     <tar destfile="${build.dir}/log4cxx-${version}.tar.gz"
          compression="gzip">
          <tarfileset dir="${base.dir}" prefix="log4cxx-${version}">
