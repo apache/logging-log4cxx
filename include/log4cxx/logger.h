@@ -542,6 +542,27 @@ namespace log4cxx
 @{
 */
 
+#if !defined(LOG4CXX_UNLIKELY)
+#if __GNUC__ >= 3
+/**
+Provides optimization hint to the compiler 
+to optimize for the expression being false.
+@param expr boolean expression.
+@returns value of expression.
+*/
+#define LOG4CXX_UNLIKELY(expr) __builtin_expect(expr, 0)
+#else
+/**
+Provides optimization hint to the compiler 
+to optimize for the expression being false.
+@param expr boolean expression.
+@returns value of expression.
+**/
+#define LOG4CXX_UNLIKELY(expr) expr
+#endif
+#endif
+
+
 /** 
 Logs a message to a specified logger with a specified level.
 
@@ -562,7 +583,7 @@ Logs a message to a specified logger with the DEBUG level.
 @param message the message string to log.
 */
 #define LOG4CXX_DEBUG(logger, message) { \
-	if (logger->isDebugEnabled()) {\
+	if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
 	::log4cxx::StringBuffer oss; \
 	oss << message; \
 	logger->forcedLog(::log4cxx::Level::DEBUG, oss.str(), __FILE__, __LINE__); }}
