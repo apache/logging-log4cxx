@@ -31,8 +31,44 @@ namespace log4cxx
 			void lock();
 			void unlock();
 
-		protected:
 			void * mutex;
+		};
+
+		/** CriticalSection helper class to be used on call stack
+		*/
+		class WaitAccess
+		{
+		public:
+			/// lock a critical section
+			WaitAccess(CriticalSection& cs) : cs(cs)
+			{
+				cs.lock();
+				locked = true;
+			}
+
+			/** automatically unlock the critical section
+			if unlock has not be called.
+			*/
+			~WaitAccess()
+			{
+				if (locked)
+				{
+					unlock();
+				}
+			}
+
+			/// unlock the critical section
+			void unlock()
+			{
+				cs.unlock();
+				locked = false;
+			}
+
+		private:
+			/// the CriticalSection to be automatically unlocked
+			CriticalSection& cs;
+			/// verify the CriticalSection state
+			bool locked;
 		};
 	}; // namespace helpers
 }; // namespace log4cxx
