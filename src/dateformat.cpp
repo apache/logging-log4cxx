@@ -71,3 +71,10 @@ void DateFormat::format(ostream& os, int64_t timeMillis)
 		os << result;
 	}
 }
+
+String DateFormat::format(int64_t timeMillis)
+{
+	StringBuffer sbuf;
+	format(sbuf, timeMillis);
+	return sbuf.str();
+}
