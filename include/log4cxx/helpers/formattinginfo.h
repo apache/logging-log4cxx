@@ -31,8 +31,8 @@ namespace log4cxx
 		{
 		public:
 
-			int min;
-			int max;
+			int minChar;
+			int maxChar;
 			bool leftAlign;
 
 			FormattingInfo();

@@ -26,15 +26,15 @@ FormattingInfo::FormattingInfo()
 
 void FormattingInfo::reset()
 {
-	min = -1;
-	max = 0x7FFFFFFF;
+	minChar = -1;
+	maxChar = 0x7FFFFFFF;
 	leftAlign = false;      
 }
 
 void FormattingInfo::dump()
 {
-	LOGLOG_DEBUG(_T("min=") << min 
-		<< _T(", max=") << max
+	LOGLOG_DEBUG(_T("minChar=") << minChar 
+		<< _T(", maxChar=") << maxChar
 		<< _T(", leftAlign=") << leftAlign);
 }
 
