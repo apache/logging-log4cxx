@@ -324,9 +324,8 @@ PatternConverterPtr PatternParser::parse() {
 
 PatternConverterPtr PatternParser::createConverter(
                                                   const LogString& converterId,
-                                                  const FormattingInfo& formattingInfo, 
+                                                  const FormattingInfo& formattingInfo,
                                                   const std::vector<LogString>& options) const {
-
     PatternConverterMap::const_iterator r = converterRegistry.find(converterId);
     if(r != converterRegistry.end()) {
        const Class& converterClass = Class::forName(r->second);
@@ -341,7 +340,8 @@ PatternConverterPtr PatternParser::createConverter(
        return (*r2->second)(formattingInfo, options);
     }
 
-    return NULL;
+    PatternConverterPtr converter;
+    return converter;
 }
 
 
