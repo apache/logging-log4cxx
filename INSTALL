@@ -116,10 +116,27 @@ With --enable-unicode, the library will be compiled with UTF16 Unicode support
 If the libXML2 library (http://xmlsoft.org) is detected, the DOMConfigurator
 class will be compiled. 
 
-If the pthread library is detected, log4cxx will be built with thread support.
+Threading support can be added through option -with-thread
+	* "pthread" (default): pthread library
+	* "Microsoft" : native microsoft library
+	* "no" : no threading support
 
-If the unixODBC library (http://www.unixodbc.org) is detected, the ODBCAppender
-class will be compiled.
+ODBC support (ODBCAppender) can be added through option -with-ODBC
+	* "unixODBC" : unixODBC library (http://www.unixodbc.org)
+	* "iODBC" : iODBC library (http://www.iodbc.org)
+	* "Microsoft" : Microsoft ODBC library
+	* "no" (default) : no ODBC support
+
+SMTP support (SMTPAppender) can be added through option -with-SMTP
+	* "libsmtp" (default) : libsmtp library (http://libsmtp.berlios.de)
+	* "CDO" : Microsoft CDO library (no yet implemented !)
+	* "no" : no SMTP support
+
+XML support (DOMConfigurator) can be added through option -with-XML
+	* "libxm2" (default) : gnome xml library (http://xmlsoft.org)
+	* "Microsoft" : MSXML library
+	* "no" : no XML support
+
 
 Specifying the System Type
 ==========================
@@ -187,17 +204,21 @@ MsDev 6.0 Compilation
 =====================
 
 Copy the msvc/config.h.msvc file to include/log4cxx/config.h.
-If you want to compile a dynamic library (dll), compile dll.dsp
-If you want to compile a static library (lib), compile static.dsp
+If you want to compile a dynamic library (dll), compile msvc/dll/dll.dsp.
+If you want to compile a static library (lib), compile msvc/static/static.dsp.
 
-The DOMConfigurator class is compiled with the MSXML library, if 'HAVE_LIBXML'
-is defined in the config.h file.
+The DOMConfigurator class is compiled with the MSXML library, if 'HAVE_XML'
+and 'HAVE_MS_XML' are defined in the config.h file.
 
 The ODBCAppender class is compiled with the Microsoft ODBC library, if
-'HAVE_ODBC' is define in the config.h file.
+'HAVE_ODBC' and 'HAVE_MS_ODBC' are defined in the config.h file.
 
-log4cxx is build with Windows native thread support, if 'HAVE_PTHREAD' is
-define in the config.h file.
+The SMTPAppender class is compiled with the Microsoft CDO library, if
+'HAVE_SMTP' and 'HAVE_CDO_SMTP' are defined in the config.h file.
+(not yet implemented)
+
+log4cxx is build with Windows native thread support, if 'HAVE_THREAD' and
+'HAVE_MS_THREAD' are defined in the config.h file.
 
 UNICODE support is available through 'Unicode Debug' and 'Unicode Release'
 compilation targets.

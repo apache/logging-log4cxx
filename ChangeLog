@@ -40,10 +40,24 @@ Version 0.1.1 (2003-07-09)
 * Fixed MSVC 6.0 compilation problems concerning the 'Release' target
 * Added MSVC 6.0 tests projects
 
-CVS
-===
+Version 0.9.0 (2003-08-06)
+==========================
 
 * Added ODBCAppender (matching log4j JDBCAppender)
+* Added SyslogAppender
+* Added SMTPAppender (only for Linux/FreeBSD)
+* Added BasicConfigurator
+* Added a FileWatchDog in PropertyConfigurator and DOMConfigurator
+* Possibility to load a custom LoggerFactory through the DOMConfigurator
+* Changed time precision from seconds to milliseconds
 * Added MSVC 6.0 'Unicode Debug' and 'Unicode Release' targets
 * Added Java like System class.
-* Changed time precision from seconds to milliseconds
+
+Version 0.9.1 (2003-08-06)
+==========================
+
+* Fixed MSVC 6.0 compilation problems
+* Added MSVC 6.0 static libraty project
+
+
+
