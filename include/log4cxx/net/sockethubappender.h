@@ -195,7 +195,7 @@ namespace log4cxx
 			{
 			private:
 				int port;
-				std::vector<helpers::SocketOutputStreamPtr> oosList;
+				std::vector<helpers::SocketOutputStreamPtr>& oosList;
 				bool keepRunning;
 				helpers::Thread * monitorThread;
 				
@@ -207,7 +207,7 @@ namespace log4cxx
 				/**
 				Create a thread and start the monitor. */
 				ServerMonitor(int port,
-				const std::vector<helpers::SocketOutputStreamPtr>& oosList);
+				std::vector<helpers::SocketOutputStreamPtr>& oosList);
 			
 				/**
 				Stops the monitor. This method will not return until

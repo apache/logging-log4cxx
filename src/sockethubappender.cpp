@@ -162,7 +162,7 @@ void SocketHubAppender::startServer()
 	serverMonitor = new ServerMonitor(port, oosList);
 }
 
-SocketHubAppender::ServerMonitor::ServerMonitor(int port, const std::vector<helpers::SocketOutputStreamPtr>& oosList)
+SocketHubAppender::ServerMonitor::ServerMonitor(int port,  std::vector<helpers::SocketOutputStreamPtr>& oosList)
 : port(port), oosList(oosList), keepRunning(true)
 {
 	monitorThread = new Thread(this);
