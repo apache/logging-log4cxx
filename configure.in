@@ -348,8 +348,11 @@ tests/src/Makefile
 tests/src/customlogger/Makefile
 tests/src/defaultinit/Makefile
 tests/src/helpers/Makefile
+tests/src/net/Makefile
+tests/src/pattern/Makefile
 tests/src/util/Makefile
 tests/src/xml/Makefile
+tests/src/varia/Makefile
 tests/witness/Makefile
 performance/Makefile
 performance/xml/Makefile
