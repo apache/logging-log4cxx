@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/thread.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/level.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -46,8 +47,8 @@ void init(const tstring& portStr, const tstring& configFile)
 	USES_CONVERSION;
 	port = ttol(portStr.c_str());
 
-	// tests if configFie ends with ".xml"
-	if ((configFile.length() - configFile.rfind(_T(".xml"))) == 4)
+	// tests if configFile ends with ".xml"
+	if (StringHelper::endsWith(configFile, _T(".xml")))
 	{
 #ifdef WIN32
 		::CoInitialize(0);
