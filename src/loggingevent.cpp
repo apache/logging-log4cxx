@@ -46,7 +46,8 @@ LoggingEvent::LoggingEvent(const String& fqnOfCategoryClass,
 	const String& message, const char* file, int line)
 : fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(level),
 message(message), file((char*)file), line(line),
-timeStamp(System::currentTimeMillis()), ndcLookupRequired(true)
+timeStamp(System::currentTimeMillis()), ndcLookupRequired(true),
+mdcCopyLookupRequired(true)
 {
 	threadId = Thread::getCurrentThreadId();
 }
@@ -156,12 +157,106 @@ std::set<String> LoggingEvent::getPropertyKeySet() const
 	return set;
 }
 
+void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)
+{
+	// fqnOfCategoryClass
+	is->read(fqnOfCategoryClass);
+
+	// name
+	String name;
+	is->read(name);
+	logger = Logger::getLogger(name);
+
+	// level
+	readLevel(is);
+
+	// message
+	is->read(message);
+
+	// timeStamp
+	is->read(&timeStamp, sizeof(timeStamp));
+
+	// file
+	String buffer;
+	is->read(buffer);
+	
+	if (!buffer.empty())
+	{
+		USES_CONVERSION;
+		fileFromStream = T2A(buffer.c_str());
+		file = (char *)fileFromStream.c_str();
+	}
+
+	// line
+	is->read(line);
+
+	// ndc
+	is->read(ndc);
+	ndcLookupRequired = false;
+
+	// mdc
+	String key, value;
+	int n, size;
+	is->read(size);
+	for (n = 0; n < size; n++)
+	{
+		is->read(key);
+		is->read(value);
+		mdcCopy[key] = value;
+	}
+	mdcCopyLookupRequired = false;
+
+	// properties
+	is->read(size);
+	for (n = 0; n < size; n++)
+	{
+		is->read(key);
+		is->read(value);
+		properties[key] = value;
+	}
+
+	// threadId
+	is->read(threadId);
+}
+
+void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& is)
+{
+	int levelInt;
+	is->read(levelInt);
+	
+    String className;
+	is->read(className);
+	
+	if (className.empty())
+	{
+		level = Level::toLevel(levelInt);
+	}
+	else try
+	{
+		Level::LevelClass& levelClass =
+			(Level::LevelClass&)Loader::loadClass(className);
+		level = levelClass.toLevel(levelInt);
+	}
+	catch (Exception& oops)
+	{
+		LogLog::warn(
+			_T("Level deserialization failed, reverting to default."), oops);
+		level = Level::toLevel(levelInt);
+	}
+	catch (...)
+	{
+		LogLog::warn(
+			_T("Level deserialization failed, reverting to default."));
+		level = Level::toLevel(levelInt);
+	}
+}
+
 void LoggingEvent::setProperty(const String& key, const String& value)
 {
 	properties[key] = value;
 }
 
-void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
+void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 {
 	// fqnOfCategoryClass
 	os->write(fqnOfCategoryClass);
@@ -178,6 +273,15 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
 	// timeStamp
 	os->write(&timeStamp, sizeof(timeStamp));
 
+	// file
+	String buffer;
+	if (file != 0)
+	{
+		USES_CONVERSION;
+		buffer = A2T(file);
+	}
+	os->write(buffer);
+	
 	// line
 	os->write(line);
 
@@ -220,90 +324,6 @@ void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& os) const
 	else
 	{
 		os->write(clazz.getName());
-	}
-}
-
-void LoggingEvent::read(helpers::SocketInputStreamPtr is)
-{
-	// fqnOfCategoryClass
-	is->read(fqnOfCategoryClass);
-
-	// name
-	String name;
-	is->read(name);
-	logger = Logger::getLogger(name);
-
-	// level
-	readLevel(is);
-
-	// message
-	is->read(message);
-
-	// timeStamp
-	is->read(&timeStamp, sizeof(timeStamp));
-
-	// file
-	file = 0;
-
-	// line
-	is->read(line);
-
-	// ndc
-	is->read(ndc);
-
-	// mdc
-	String key, value;
-	int n, size;
-	is->read(size);
-	for (n = 0; n < size; n++)
-	{
-		is->read(key);
-		is->read(value);
-		mdcCopy[key] = value;
-	}
-
-	// properties
-	is->read(size);
-	for (n = 0; n < size; n++)
-	{
-		is->read(key);
-		is->read(value);
-		properties[key] = value;
-	}
-
-	// threadId
-	is->read(threadId);
-}
-
-void LoggingEvent::readLevel(helpers::SocketInputStreamPtr& is)
-{
-	int levelInt;
-	is->read(levelInt);
-	
-    String className;
-	is->read(className);
-	
-	if (className.empty())
-	{
-		level = Level::toLevel(levelInt);
-	}
-	else try
-	{
-		Level::LevelClass& levelClass =
-			(Level::LevelClass&)Loader::loadClass(className);
-		level = levelClass.toLevel(levelInt);
-	}
-	catch (Exception& oops)
-	{
-		LogLog::warn(
-			_T("Level deserialization failed, reverting to default."), oops);
-		level = Level::toLevel(levelInt);
-	}
-	catch (...)
-	{
-		LogLog::warn(
-			_T("Level deserialization failed, reverting to default."));
-		level = Level::toLevel(levelInt);
 	}
 }
 
