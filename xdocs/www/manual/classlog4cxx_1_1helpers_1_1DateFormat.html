@@ -54,6 +54,10 @@ log4cxx - Documentation
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../manual/index.html">Documentation</a>
 </small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../support.html">Support</a>
+</small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../contributing.html">Contributing</a>
+</small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../performance.html">Performance</a>
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../download.html">Download</a>
@@ -78,10 +82,188 @@ log4cxx - Documentation
 </map>
 <center><font size="2">[<a href="graph_legend.html">legend</a>]</font></center><a href="classlog4cxx_1_1helpers_1_1DateFormat-members.html">List of all members.</a><table border=0 cellpadding=0 cellspacing=0>
 <tr><td></td></tr>
+<tr><td colspan=2><br><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html#a0">DateFormat</a> (const String &amp;pattern)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html#a1">DateFormat</a> (const String &amp;pattern, const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">TimeZonePtr</a> &amp;timeZone)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>virtual void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html#a3">format</a> (ostream &amp;toAppendTo, int64_t time) const </td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>String&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html#a4">format</a> (int64_t time) const </td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
-Concrete class for formatting and parsing dates in a locale-sensitive manner.
+Concrete class for formatting and parsing dates in a locale-sensitive manner.<p>
+Date and time formats are specified by date and time pattern strings. Within date and time pattern strings, letters from 'A' to 'Z' and from 'a' to 'z', preceded by the character '%', are interpreted as pattern letters representing the components of a date or time string<p>
+The following pattern letters are defined:<ul>
+<li>%a -- Abbreviated weekday name</li><li>%A -- Full weekday name</li><li>%b -- Abbreviated month name</li><li>%B -- Full month name</li><li>%c -- Standard date and time string</li><li>%d -- Day of month as a decimal(1-31)</li><li>%H -- Hour(0-23)</li><li>%I -- Hour(1-12)</li><li>%j -- Day of year as a decimal(1-366)</li><li>%m -- Month as decimal(1-12)</li><li>%M -- Minute as decimal(00-59)</li><li>%p -- Locale's equivalent of AM or PM</li><li>%Q -- Millisecond as decimal (000-999)</li><li>%S -- Second as decimal(00-59)</li><li>%U -- Week of year, Sunday being first day(0-53)</li><li>%w -- Weekday as a decimal(0-6, Sunday being 0)</li><li>%W -- Week of year, Monday being first day(0-53)</li><li>%x -- Standard date string</li><li>%X -- Standard time string</li><li>%y -- Year in decimal without century(0-99)</li><li>%Y -- Year including century as decimal</li><li>%Z -- Time zone name</li><li>%% -- The percent sign</li></ul>
+
 <p>
+<hr><h2>Constructor &amp; Destructor Documentation</h2>
+<a class="anchor" name="a0" doxytag="log4cxx::helpers::DateFormat::DateFormat" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> <a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html">DateFormat</a> </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const String &amp;&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>pattern</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Constructs a <a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html">DateFormat</a> using the given pattern and the default time zone.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>pattern</em>&nbsp;</td><td>the pattern describing the date and time format</td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a1" doxytag="log4cxx::helpers::DateFormat::DateFormat" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> <a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html">DateFormat</a> </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const String &amp;&nbsp;</td>
+          <td class="mdname" nowrap> <em>pattern</em>, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">TimeZonePtr</a> &amp;&nbsp;</td>
+          <td class="mdname" nowrap> <em>timeZone</em></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Constructs a <a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html">DateFormat</a> using the given pattern and the given time zone.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>pattern</em>&nbsp;</td><td>the pattern describing the date and time format </td></tr>
+    <tr><td valign=top><em>timeZone</em>&nbsp;</td><td>the timeZone to be used in the formatting operations.</td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="a4" doxytag="log4cxx::helpers::DateFormat::format" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> String format </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">int64_t&nbsp;</td>
+          <td class="mdname1" valign="top" nowrap> <em>time</em>          </td>
+          <td class="md" valign="top">&nbsp;)&nbsp;</td>
+          <td class="md" nowrap> const</td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Formats a Date into a date/time string.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>time</em>&nbsp;</td><td>the time value (in milliseconds since January 1, 1970 00:00:00 GMT) to be formatted into a time string.</td></tr>
+  </table>
+</dl>
+<dl compact><dt><b>Returns:</b></dt><dd>the formatted time string.</dd></dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a3" doxytag="log4cxx::helpers::DateFormat::format" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> void format </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">ostream &amp;&nbsp;</td>
+          <td class="mdname" nowrap> <em>toAppendTo</em>, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>int64_t&nbsp;</td>
+          <td class="mdname" nowrap> <em>time</em></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"> const<code> [virtual]</code></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Formats a Date into a date/time string.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>toAppendTo</em>&nbsp;</td><td>the stream for the returning date/time string.</td></tr>
+    <tr><td valign=top><em>time</em>&nbsp;</td><td>the time value (in milliseconds since January 1, 1970 00:00:00 GMT) to be formatted into a time string.</td></tr>
+  </table>
+</dl>
+
+<p>
+Reimplemented in <a class="el" href="classlog4cxx_1_1helpers_1_1RelativeTimeDateFormat.html#a1">RelativeTimeDateFormat</a>.    </td>
+  </tr>
+</table>
 <hr>The documentation for this class was generated from the following files:<ul>
 <li>dateformat.h<li>dateformat.cpp</ul>
                                                 

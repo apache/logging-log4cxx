@@ -54,6 +54,10 @@ log4cxx - Documentation
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../manual/index.html">Documentation</a>
 </small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../support.html">Support</a>
+</small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../contributing.html">Contributing</a>
+</small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../performance.html">Performance</a>
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../download.html">Download</a>
@@ -145,7 +149,7 @@ For example, for the logger name "a.b.c" the pattern <b>%c{2}</b> will output "b
 <td align="center"><b>d</b> </td><td>Used to output the date of the logging event. The date conversion specifier may be followed by a <em>date format specifier</em> enclosed between braces. For example, <b>%d{%H:%M:%S}</b> or <b>%d{%d&nbsp;%b&nbsp;%Y&nbsp;%H:%M:%S}</b>. If no date format specifier is given then <a class="el" href="classlog4cxx_1_1helpers_1_1ISO8601DateFormat.html">ISO8601 format</a> is assumed.<p>
 <p>
 The Following format options are possible:<ul>
-<li>a -- Abbreviated weekday name</li><li>A -- Full weekday name</li><li>b -- Abbreviated month name</li><li>B -- Full month name</li><li>c -- Standard date and time string</li><li>d -- Day of month as a decimal(1-31)</li><li>H -- Hour(0-23)</li><li>I -- Hour(1-12)</li><li>j -- Day of year as a decimal(1-366)</li><li>m -- Month as decimal(1-12)</li><li>M -- Minute as decimal(00-59)</li><li>p -- Locale's equivalent of AM or PM</li><li>Q -- Millisecond as decimal (000-999)</li><li>S -- Second as decimal(00-59)</li><li>U -- Week of year, Sunday being first day(0-53)</li><li>w -- Weekday as a decimal(0-6, Sunday being 0)</li><li>W -- Week of year, Monday being first day(0-53)</li><li>x -- Standard date string</li><li>X -- Standard time string</li><li>y -- Year in decimal without century(0-99)</li><li>Y -- Year including century as decimal</li><li>Z -- Time zone name</li><li>% -- The percent sign</li></ul>
+<li>%a -- Abbreviated weekday name</li><li>%A -- Full weekday name</li><li>%b -- Abbreviated month name</li><li>%B -- Full month name</li><li>%c -- Standard date and time string</li><li>%d -- Day of month as a decimal(1-31)</li><li>%H -- Hour(0-23)</li><li>%I -- Hour(1-12)</li><li>%j -- Day of year as a decimal(1-366)</li><li>%m -- Month as decimal(1-12)</li><li>%M -- Minute as decimal(00-59)</li><li>%p -- Locale's equivalent of AM or PM</li><li>%Q -- Millisecond as decimal (000-999)</li><li>%S -- Second as decimal(00-59)</li><li>%U -- Week of year, Sunday being first day(0-53)</li><li>%w -- Weekday as a decimal(0-6, Sunday being 0)</li><li>%W -- Week of year, Monday being first day(0-53)</li><li>%x -- Standard date string</li><li>%X -- Standard time string</li><li>%y -- Year in decimal without century(0-99)</li><li>%Y -- Year including century as decimal</li><li>%Z -- Time zone name</li><li>%% -- The percent sign</li></ul>
 <p>
 <p>
 Lookup the documentation for the <code>strftime()</code> function found in the <code>&lt;ctime&gt;</code> header for more information.<p>

@@ -54,6 +54,10 @@ log4cxx - Documentation
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../manual/index.html">Documentation</a>
 </small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../support.html">Support</a>
+</small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../contributing.html">Contributing</a>
+</small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../performance.html">Performance</a>
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../download.html">Download</a>
@@ -105,6 +109,11 @@ log4cxx - Documentation
 
 <tr><td colspan=2><br><h2>Protected Attributes</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align=right valign=top>std::map&lt; String, <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">AppenderPtr</a> &gt;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#p0">registry</a></td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top><a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">spi::LoggerFactoryPtr</a>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#p1">loggerFactory</a></td></tr>
+
+<tr><td colspan=2><br><h2>Static Protected Attributes</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>String&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#t9">LOGGER_FACTORY_KEY</a> = _T("log4j.<a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#p1">loggerFactory</a>")</td></tr>
 
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
@@ -278,7 +287,7 @@ Like <a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#e2">configure
     <td>
 
 <p>
-Check the provided <code>Properties</code> object for a #LoggerFactory entry specified by #LOGGER_FACTORY_KEY. If such an entry exists, an attempt is made to create an instance using the default constructor. This instance is used for subsequent <a class="el" href="classlog4cxx_1_1Logger.html">Logger</a> creations within this configurator. <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#b2">parseCatsAndRenderers</a></dd></dl>
+Check the provided <code>Properties</code> object for a <a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#p1">loggerFactory</a> entry specified by <a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#t9">LOGGER_FACTORY_KEY</a>. If such an entry exists, an attempt is made to create an instance using the default constructor. This instance is used for subsequent <a class="el" href="classlog4cxx_1_1Logger.html">Logger</a> creations within this configurator. <dl compact><dt><b>See also:</b></dt><dd><a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#b2">parseCatsAndRenderers</a></dd></dl>
     </td>
   </tr>
 </table>
@@ -399,7 +408,7 @@ The meaning of the optional level value is discussed above in relation to the ro
 If no level value is supplied, then the level of the named logger remains untouched.<p>
 By default categories inherit their level from the hierarchy. However, if you set the level of a logger and later decide that that logger should inherit its level, then you should specify INHERITED as the value for the level value. NULL is a synonym for INHERITED.<p>
 Similar to the root logger syntax, each <em>appenderName</em> (separated by commas) will be attached to the named logger.<p>
-See the <a href="../../../../manual.html#additivity">appender additivity rule</a> in the user manual for the meaning of the <code>additivity</code> flag.<p>
+See the <a href="Introduction.html#additivity">appender additivity rule</a> in the user manual for the meaning of the <code>additivity</code> flag.<p>
 <h3><a class="el" href="classlog4cxx_1_1Logger.html">Logger</a> Factories</h3>
 <p>
 The usage of custom logger factories is discouraged and no longer documented.<p>
@@ -602,6 +611,50 @@ Parse non-root elements, such non-root categories and renderers.    </td>
   </tr>
 </table>
 <hr><h2>Member Data Documentation</h2>
+<a class="anchor" name="t9" doxytag="log4cxx::PropertyConfigurator::LOGGER_FACTORY_KEY" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> String <a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#t9">LOGGER_FACTORY_KEY</a> = _T("log4j.<a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#p1">loggerFactory</a>")<code> [static, protected]</code>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Key for specifying the <a class="el" href="classlog4cxx_1_1spi_1_1LoggerFactory.html">LoggerFactory</a>. Currently set to <code>"log4j.loggerFactory"</code>.    </td>
+  </tr>
+</table>
+<a class="anchor" name="p1" doxytag="log4cxx::PropertyConfigurator::loggerFactory" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">spi::LoggerFactoryPtr</a> <a class="el" href="classlog4cxx_1_1PropertyConfigurator.html#p1">loggerFactory</a><code> [protected]</code>
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Used to create new instances of logger    </td>
+  </tr>
+</table>
 <a class="anchor" name="p0" doxytag="log4cxx::PropertyConfigurator::registry" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>

@@ -54,6 +54,10 @@ log4cxx - Documentation
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../manual/index.html">Documentation</a>
 </small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../support.html">Support</a>
+</small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../contributing.html">Contributing</a>
+</small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../performance.html">Performance</a>
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../download.html">Download</a>
@@ -318,7 +322,7 @@ The log4cxx environment is fully configurable programmatically. However, it is f
 Let us give a taste of how this is done with the help of an imaginary application <code>MyApp</code> that uses log4cxx.<p>
 <div class="fragment"><pre><span class="comment">// file MyApp.cpp</span>
 
-<span class="preprocessor">#include "com/foo/bar.h"</span>;
+<span class="preprocessor">#include "com/foo/bar.h"</span>
 <span class="keyword">using</span> <span class="keyword">namespace </span>com::foo;
 
 <span class="comment">// include log4cxx header files.</span>
@@ -358,7 +362,7 @@ LoggerPtr logger = Logger::getLogger(_T(<span class="stringliteral">"MyApp"</spa
 <code>MyApp</code> uses the <code>Bar</code> class defined in the header file <code>com/foo/bar.h</code> and the source file <code>bar.cpp</code>.<p>
 <div class="fragment"><pre><span class="comment">// file &lt;com/foo/bar.h&gt;</span>
 
-<span class="preprocessor">#include &lt;log4cxx/logger.h&gt;</span>;
+<span class="preprocessor">#include &lt;log4cxx/logger.h&gt;</span>
 
 <span class="keyword">namespace </span>com
 {
@@ -399,7 +403,7 @@ The <code>MyApp</code> class configures log4cxx by invoking <code>BasicConfigura
 The previous example always outputs the same log information. Fortunately, it is easy to modify <code>MyApp</code> so that the log output can be controlled at run-time. Here is a slightly modified version.<p>
 <div class="fragment"><pre><span class="comment">// file MyApp2.cpp</span>
 
-<span class="preprocessor">#include "com/foo/bar.h"</span>;
+<span class="preprocessor">#include "com/foo/bar.h"</span>
 <span class="keyword">using</span> <span class="keyword">namespace </span>com::foo;
 
 <span class="comment">// include log4cxx header files.</span>
@@ -485,14 +489,14 @@ Here is another configuration file that uses multiple appenders.<p>
 <pre><div>log4j.appender.<b>stdout</b>=org.apache.log4j.ConsoleAppender
 log4j.appender.stdout.layout=org.apache.log4j.PatternLayout</pre></div><p>
 <pre><div># Pattern to output the caller's file name and line number.
-log4j.appender.stdout.layout.ConversionPattern=%5p [t] <b>(F:L)</b> - m%n</pre></div><p>
+log4j.appender.stdout.layout.ConversionPattern=%5p [%t] <b>(%F:%L)</b> - %m%n</pre></div><p>
 <pre><div>log4j.appender.<b>R</b>=org.apache.log4j.RollingFileAppender
 log4j.appender.R.File=example.log</pre></div><p>
 <pre><div>log4j.appender.R.MaxFileSize=<b>100KB</b></pre></div><p>
 <pre><div># Keep one backup file
 log4j.appender.R.MaxBackupIndex=1</pre></div><p>
 <pre><div>log4j.appender.R.layout=org.apache.log4j.PatternLayout
-log4j.appender.R.layout.ConversionPattern=%p t c - m%n
+log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
 </pre></div> </td></tr>
 </table>
 <p>

@@ -54,6 +54,10 @@ log4cxx - Documentation
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../manual/index.html">Documentation</a>
 </small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../support.html">Support</a>
+</small></td></tr>
+              	 <tr><td class="navbarItem"><small>    <a href="../contributing.html">Contributing</a>
+</small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../performance.html">Performance</a>
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../download.html">Download</a>
@@ -76,10 +80,61 @@ log4cxx - Documentation
 </map>
 <center><font size="2">[<a href="graph_legend.html">legend</a>]</font></center><a href="classlog4cxx_1_1helpers_1_1RelativeTimeDateFormat-members.html">List of all members.</a><table border=0 cellpadding=0 cellspacing=0>
 <tr><td></td></tr>
+<tr><td colspan=2><br><h2>Public Member Functions</h2></td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>virtual void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1helpers_1_1RelativeTimeDateFormat.html#a1">format</a> (ostream &amp;toAppendTo, int64_t time) const </td></tr>
+
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 Formats a date by printing the number of seconds elapsed since the start of the application. This is the fastest printing <a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html">DateFormat</a> in the package.
 <p>
+<hr><h2>Member Function Documentation</h2>
+<a class="anchor" name="a1" doxytag="log4cxx::helpers::RelativeTimeDateFormat::format" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> virtual void format </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">ostream &amp;&nbsp;</td>
+          <td class="mdname" nowrap> <em>toAppendTo</em>, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>int64_t&nbsp;</td>
+          <td class="mdname" nowrap> <em>time</em></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"> const<code> [inline, virtual]</code></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Formats a Date into a date/time string.<p>
+<dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>toAppendTo</em>&nbsp;</td><td>the stream for the returning date/time string.</td></tr>
+    <tr><td valign=top><em>time</em>&nbsp;</td><td>the time value (in milliseconds since January 1, 1970 00:00:00 GMT) to be formatted into a time string.</td></tr>
+  </table>
+</dl>
+
+<p>
+Reimplemented from <a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html#a3">DateFormat</a>.    </td>
+  </tr>
+</table>
 <hr>The documentation for this class was generated from the following file:<ul>
 <li>relativetimedateformat.h</ul>
                                                 
