@@ -3090,6 +3090,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					RelativePath="..\..\include\log4cxx\helpers\socketoutputstream.h">
 				</File>
 				<File
+					RelativePath="..\..\include\log4cxx\helpers\strictmath.h">
+				</File>
+				<File
 					RelativePath="..\..\include\log4cxx\helpers\stringhelper.h">
 				</File>
 				<File
