@@ -139,7 +139,7 @@ namespace log4cxx
 		Returns the name of this Appender.
 		*/
 	public:
-		const String& getName() { return name; }
+		const String& getName() const { return name; }
 
 		/**
 		Returns this appenders threshold level. See the #setThreshold

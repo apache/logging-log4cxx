@@ -88,7 +88,7 @@ namespace log4cxx
 			Socket(const String& host, int port,
 				InetAddress localAddr, int localPort);
 
-			size_t read(void * buf, size_t len)
+			size_t read(void * buf, size_t len) const
 				{ return socketImpl->read(buf, len); }
 
 			size_t write(const void * buf, size_t len)

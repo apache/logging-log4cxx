@@ -79,7 +79,7 @@ namespace log4cxx
 			@param logger One of the loggers that will be searched for the failing
 			appender in view of replacement.
 			*/
-			virtual void setLogger(LoggerPtr logger) = 0;
+			virtual void setLogger(const LoggerPtr& logger) = 0;
 
 
 			/**
@@ -106,18 +106,18 @@ namespace log4cxx
 			to log.
 			*/
 			virtual void error(const String& message, helpers::Exception& e,
-				int errorCode, LoggingEventPtr& event) = 0;
+				int errorCode, const LoggingEventPtr& event) = 0;
 		
 			/**
 			Set the appender for which errors are handled. This method is
 			usually called when the error handler is configured.
 			*/
-			virtual void setAppender(AppenderPtr appender) = 0;
+			virtual void setAppender(const AppenderPtr& appender) = 0;
 
 			/**
-			Set the appender to falkback upon in case of failure.
+			Set the appender to fallback upon in case of failure.
 			*/
-			virtual void setBackupAppender(AppenderPtr appender) = 0;
+			virtual void setBackupAppender(const AppenderPtr& appender) = 0;
 		};
 	}; //namespace spi
 }; //namespace log4cxx

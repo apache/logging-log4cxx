@@ -34,7 +34,8 @@ namespace log4cxx
 		<p>This policy aims at protecting an otherwise working application
 		from being flooded with error messages when logging fails
 		*/
-		class LOG4CXX_EXPORT OnlyOnceErrorHandler : public virtual spi::ErrorHandler,
+		class LOG4CXX_EXPORT OnlyOnceErrorHandler : 
+			public virtual spi::ErrorHandler,
 			public virtual ObjectImpl
 		{
 		private:
@@ -54,7 +55,7 @@ namespace log4cxx
 			/**
 			 Does not do anything.
 			 */
-            void setLogger(LoggerPtr logger);
+            void setLogger(const LoggerPtr& logger);
 
 
             /**
@@ -74,7 +75,7 @@ namespace log4cxx
             <code>System.err</code>.
             */
             void error(const String& message, Exception& e,
-				int errorCode, spi::LoggingEventPtr& event);
+				int errorCode, const spi::LoggingEventPtr& event);
             
             /**
             Print a the error message passed as parameter on
@@ -85,12 +86,12 @@ namespace log4cxx
             /**
             Does not do anything.
             */
-            void setAppender(AppenderPtr appender);
+            void setAppender(const AppenderPtr& appender);
 
             /**
             Does not do anything.
             */
-            void setBackupAppender(AppenderPtr appender);
+            void setBackupAppender(const AppenderPtr& appender);
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

@@ -178,7 +178,7 @@ namespace log4cxx
 			*/
 			String toString() const;
 
-			size_t read(void * buf, size_t len);
+			size_t read(void * buf, size_t len) const;
 			size_t write(const void * buf, size_t len);
 
 			/** Retrive setting for SO_TIMEOUT.

@@ -93,7 +93,7 @@ namespace log4cxx
          Get the name of this appender. The name uniquely identifies the
          appender.
         */
-        virtual const String& getName() = 0;
+        virtual const String& getName() const = 0;
 
 
         /**
