@@ -1,20 +1,20 @@
-<log4cxx:event logger="root" timestamp="" level="DEBUG" thread="1">
-<log4cxx:message><![CDATA[debug message]]></log4cxx:message>
-</log4cxx:event>
+<log4j:event logger="root" timestamp="" level="DEBUG" thread="1">
+<log4j:message><![CDATA[debug message]]></log4j:message>
+</log4j:event>
 
-<log4cxx:event logger="root" timestamp="" level="INFO" thread="1">
-<log4cxx:message><![CDATA[info message]]></log4cxx:message>
-</log4cxx:event>
+<log4j:event logger="root" timestamp="" level="INFO" thread="1">
+<log4j:message><![CDATA[info message]]></log4j:message>
+</log4j:event>
 
-<log4cxx:event logger="root" timestamp="" level="WARN" thread="1">
-<log4cxx:message><![CDATA[warn message]]></log4cxx:message>
-</log4cxx:event>
+<log4j:event logger="root" timestamp="" level="WARN" thread="1">
+<log4j:message><![CDATA[warn message]]></log4j:message>
+</log4j:event>
 
-<log4cxx:event logger="root" timestamp="" level="ERROR" thread="1">
-<log4cxx:message><![CDATA[error message]]></log4cxx:message>
-</log4cxx:event>
+<log4j:event logger="root" timestamp="" level="ERROR" thread="1">
+<log4j:message><![CDATA[error message]]></log4j:message>
+</log4j:event>
 
-<log4cxx:event logger="root" timestamp="" level="FATAL" thread="1">
-<log4cxx:message><![CDATA[fatal message]]></log4cxx:message>
-</log4cxx:event>
+<log4j:event logger="root" timestamp="" level="FATAL" thread="1">
+<log4j:message><![CDATA[fatal message]]></log4j:message>
+</log4j:event>
 
