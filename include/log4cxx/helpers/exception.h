@@ -23,12 +23,18 @@ namespace log4cxx
 {
 	namespace helpers
 	{
+		/** The class Exception and its subclasses indicate conditions that a
+		reasonable application might want to catch.
+		*/
 		class Exception
 		{
 		public:
 			virtual String getMessage() = 0;
 		}; // class Exception
 
+		/** RuntimeException is the parent class of those exceptions that can be
+		thrown during the normal operation of the process.
+		*/
 		class LOG4CXX_EXPORT RuntimeException : public Exception
 		{
 		public:
@@ -43,7 +49,7 @@ namespace log4cxx
 			String message;
 		}; // class Exception
 
-		   /** Thrown to indicate that a method has been passed 
+		/** Thrown to indicate that a method has been passed 
 		an illegal or inappropriate argument.*/
 		class LOG4CXX_EXPORT IllegalArgumentException : public Exception
 		{
