@@ -55,7 +55,7 @@ Hierarchy::~Hierarchy()
 {
 }
 
-void Hierarchy::addHierarchyEventListener(spi::HierarchyEventListenerPtr listener)
+void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
 	if (std::find(listeners.begin(), listeners.end(), listener) != listeners.end())
 	{
