@@ -144,7 +144,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <copy tofile="${include.dir}/apu.h" file="${include.dir}/apu.hw"/>
     <copy tofile="${include.dir}/apu_want.h" file="${include.dir}/apu_want.hw"/>
     <copy tofile="${include.dir}/apr_ldap.h" file="${include.dir}/apr_ldap.hw"/>
-    <replaceregex file="${include.dir}/apr_ldap.h" match="#define APR_HAS_LDAP.*" value="#define APR_HAS_LDAP 0"/>
+    <replaceregexp file="${include.dir}/apr_ldap.h" match="#define APR_HAS_LDAP.*" replace="#define APR_HAS_LDAP 0"/>
     <copy tofile="${include.dir}/private/apu_config.h" file="${include.dir}/private/apu_config.hw"/>
     <copy tofile="${include.dir}/private/apu_select_dbm.h" file="${include.dir}/private/apu_select_dbm.hw"/>
     <copy tofile="${base.dir}/xml/expat/lib/expat.h" file="${base.dir}/xml/expat/lib/expat.h.in"/>
