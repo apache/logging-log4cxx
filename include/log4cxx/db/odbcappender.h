@@ -173,7 +173,7 @@ namespace log4cxx
 			*
 			*/
 		protected:
-			String getLogStatement(const spi::LoggingEventPtr& event);
+			String getLogStatement(const spi::LoggingEventPtr& event) const;
 
 			/**
 			*
@@ -221,7 +221,7 @@ namespace log4cxx
 			/**
 			* ODBCAppender requires a layout.
 			* */
-			virtual bool requiresLayout()
+			virtual bool requiresLayout() const
 				{ return true; }
 			
 			/**
@@ -251,18 +251,18 @@ namespace log4cxx
 			inline void setBufferSize(size_t newBufferSize)
 				{ bufferSize = newBufferSize; }
 			
-			inline const String& getUser()
+			inline const String& getUser() const
 				{ return databaseUser; }
 			
 			
-			inline const String& getURL()
+			inline const String& getURL() const
 				{ return databaseURL; }
 			
 			
-			inline const String& getPassword()
+			inline const String& getPassword() const
 				{ return databasePassword; }
 			
-			inline size_t getBufferSize()
+			inline size_t getBufferSize() const
 				{ return bufferSize; }
 		}; // class ODBCAppender
     } // namespace db

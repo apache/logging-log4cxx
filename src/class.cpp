@@ -42,11 +42,6 @@ ClassNotFoundException::ClassNotFoundException(const String& className)
 	message = _T("Class '") + className + _T("' not found");
 }
 
-String ClassNotFoundException::getMessage()
-{
-	return message;
-}
-
 Class::Class(const String& name) : name(name)
 {
 	registerClass(this);

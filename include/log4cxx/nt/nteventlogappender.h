@@ -43,7 +43,7 @@ namespace log4cxx
 
 			NTEventLogAppender();
 			NTEventLogAppender(const String& server, const String& log,
-				const String& source, LayoutPtr layout);
+				const String& source, const LayoutPtr& layout);
 
 			virtual ~NTEventLogAppender();
 
@@ -55,7 +55,7 @@ namespace log4cxx
     		* The SocketAppender does not use a layout. Hence, this method
     		* returns <code>false</code>.
     		* */
-    		bool requiresLayout()
+    		bool requiresLayout() const
     			{ return true; }
 
 			void setSource(const String& source)

@@ -66,7 +66,8 @@ namespace log4cxx
 				LOG4CXX_CAST_ENTRY(helpers::Runnable)
 			END_LOG4CXX_CAST_MAP()
 
-			SocketNode(helpers::SocketPtr socket, spi::LoggerRepositoryPtr hierarchy);
+			SocketNode(helpers::SocketPtr& socket, 
+				spi::LoggerRepositoryPtr& hierarchy);
 			virtual void run();
 		};
 	}; // namespace net

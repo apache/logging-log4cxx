@@ -25,8 +25,6 @@ namespace log4cxx
 	{
 		class LOG4CXX_EXPORT NoSuchElementException : public Exception
 		{
-		public:
-			String getMessage() { return String(); }
 		};
 
 		class LOG4CXX_EXPORT StringTokenizer
@@ -34,7 +32,7 @@ namespace log4cxx
 		public:
 			StringTokenizer(const String& str, const String& delim);
 			~StringTokenizer();
-			bool hasMoreTokens();
+			bool hasMoreTokens() const;
 			String nextToken();
 
 		protected:

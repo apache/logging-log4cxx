@@ -54,7 +54,7 @@ namespace log4cxx
             /**
              * Add an appender.
              */
-            virtual void addAppender(AppenderPtr newAppender);
+            virtual void addAppender(const AppenderPtr& newAppender);
 
             /**
              Call the <code>doAppend</code> method on all attached appenders.
@@ -64,18 +64,18 @@ namespace log4cxx
             /**
              * Get all previously added appenders as an Enumeration.
              */
-            virtual AppenderList getAllAppenders();
+            virtual AppenderList getAllAppenders() const;
 
             /**
              * Get an appender by name.
              */
-            virtual AppenderPtr getAppender(const String& name);
+            virtual AppenderPtr getAppender(const String& name) const;
 
             /**
              Returns <code>true</code> if the specified appender is in the
              list of attached appenders, <code>false</code> otherwise.
             */
-            virtual bool isAttached(AppenderPtr appender);
+            virtual bool isAttached(const AppenderPtr& appender) const;
 
             /**
              * Remove all previously added appenders.
@@ -85,7 +85,7 @@ namespace log4cxx
             /**
              * Remove the appender passed as parameter from the list of appenders.
              */
-            virtual void removeAppender(AppenderPtr appender);
+            virtual void removeAppender(const AppenderPtr& appender);
 
             /**
              * Remove the appender with the name passed as parameter from the

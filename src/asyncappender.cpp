@@ -45,7 +45,7 @@ AsyncAppender::~AsyncAppender()
 	finalize();
 }
 
-void AsyncAppender::addAppender(AppenderPtr newAppender)
+void AsyncAppender::addAppender(const AppenderPtr& newAppender)
 {
 	synchronized sync(aai);
 	aai->addAppender(newAppender);
@@ -105,19 +105,19 @@ void AsyncAppender::close()
 	bf = 0;
 }
 
-AppenderList AsyncAppender::getAllAppenders() 
+AppenderList AsyncAppender::getAllAppenders() const
 {
 	synchronized sync(aai);
 	return aai->getAllAppenders();
 }
 
-AppenderPtr AsyncAppender::getAppender(const String& name)
+AppenderPtr AsyncAppender::getAppender(const String& name) const
 {
 	synchronized sync(aai);
 	return aai->getAppender(name);
 }
 
-bool AsyncAppender::isAttached(AppenderPtr appender)
+bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 {
 	synchronized sync(aai);
 	return aai->isAttached(appender);
@@ -128,7 +128,7 @@ void AsyncAppender::setBufferSize(int size)
 	bf->resize(size);
 }
 
-int AsyncAppender::getBufferSize()
+int AsyncAppender::getBufferSize() const
 {
 	return bf->getMaxSize();
 }
@@ -139,7 +139,7 @@ void AsyncAppender::removeAllAppenders()
 	aai->removeAllAppenders();
 }
 
-void AsyncAppender::removeAppender(AppenderPtr appender)
+void AsyncAppender::removeAppender(const AppenderPtr& appender)
 {
     synchronized sync(aai);
 	aai->removeAppender(appender);

@@ -89,7 +89,7 @@ namespace log4cxx
 		then buffered IO will be used to write to the output file.
 
 		*/
-		FileAppender(LayoutPtr layout, const String& filename, bool append, 
+		FileAppender(const LayoutPtr& layout, const String& filename, bool append, 
 			bool bufferedIO, int bufferSize);
 
 		/**
@@ -101,7 +101,7 @@ namespace log4cxx
 		appended to. Otherwise, the file designated by
 		<code>filename</code> will be truncated before being opened.
 		*/
-		FileAppender(LayoutPtr layout, const String& filename, bool append);
+		FileAppender(const LayoutPtr& layout, const String& filename, bool append);
 
 		/**
 		Instantiate a FileAppender and open the file designated by
@@ -109,7 +109,7 @@ namespace log4cxx
 		destination for this appender.
 
 		<p>The file will be appended to.  */
-		FileAppender(LayoutPtr layout, const String& filename);
+		FileAppender(const LayoutPtr& layout, const String& filename);
 
 		~FileAppender();
 
@@ -145,10 +145,10 @@ namespace log4cxx
 		/**
 		Returns the value of the <b>Append</b> option.
 		*/
-		inline bool getAppend() { return fileAppend; }
+		inline bool getAppend() const { return fileAppend; }
 
 		/** Returns the value of the <b>File</b> option. */
-		inline const String& getFile() { return fileName; }
+		inline const String& getFile() const { return fileName; }
 
         /**
         <p>Sets and <i>opens</i> the file where the log output will

@@ -85,7 +85,7 @@ SocketPtr ServerSocket::accept()
 
 /** Retrive setting for SO_TIMEOUT.
 */
-int ServerSocket::getSoTimeout()
+int ServerSocket::getSoTimeout() const
 {
 	return socketImpl->getSoTimeout();
 }

@@ -54,7 +54,7 @@ else if (StringHelper::equalsIgnoreCase(option, LEVEL_MAX_OPTION))
 }
 
 Filter::FilterDecision LevelRangeFilter::decide(
-	const spi::LoggingEventPtr& event)
+	const spi::LoggingEventPtr& event) const
 {
 	if (levelMin != 0 && !event->getLevel()->isGreaterOrEqual(levelMin))
 	{

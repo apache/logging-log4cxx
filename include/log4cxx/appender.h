@@ -59,7 +59,7 @@ namespace log4cxx
         /**
          Add a filter to the end of the filter list.
         */
-        virtual void addFilter(spi::FilterPtr newFilter) = 0;
+        virtual void addFilter(const spi::FilterPtr& newFilter) = 0;
 
         /**
          Returns the head Filter. The Filters are organized in a linked list
@@ -67,7 +67,7 @@ namespace log4cxx
 
          @return the head Filter or null, if no Filters are present
          */
-        virtual spi::FilterPtr getFilter() = 0;
+        virtual const spi::FilterPtr& getFilter() const = 0;
 
         /**
          Clear the list of filters by removing all the filters in it.
@@ -99,22 +99,22 @@ namespace log4cxx
         /**
          Set the {@link spi::ErrorHandler ErrorHandler} for this appender.
         */
-        virtual void setErrorHandler(spi::ErrorHandlerPtr errorHandler) = 0;
+        virtual void setErrorHandler(const spi::ErrorHandlerPtr& errorHandler) = 0;
 
         /**
          Returns the {@link spi::ErrorHandler ErrorHandler} for this appender.
        */
-       virtual spi::ErrorHandlerPtr getErrorHandler() = 0;
+       virtual const spi::ErrorHandlerPtr& getErrorHandler() const = 0;
 
        /**
         Set the Layout for this appender.
        */
-       virtual void setLayout(LayoutPtr layout) = 0;
+       virtual void setLayout(const LayoutPtr& layout) = 0;
 
        /**
         Returns this appenders layout.
        */
-       virtual LayoutPtr getLayout() = 0;
+       virtual const LayoutPtr& getLayout() const = 0;
 
 
        /**
@@ -137,7 +137,7 @@ namespace log4cxx
         implementation admits a layout but can also work without it, then
         the appender should return <code>true</code>.
        */    
-       virtual bool requiresLayout() = 0;
+       virtual bool requiresLayout() const = 0;
    };
 };
 

@@ -42,10 +42,11 @@ namespace log4cxx
 		public:
 			virtual ~HierarchyEventListener() {}
 
-			virtual void addAppenderEvent(LoggerPtr logger, AppenderPtr 
+			virtual void addAppenderEvent(const LoggerPtr& logger, const AppenderPtr& 
 				appender) = 0;
 				
-			virtual void removeAppenderEvent(LoggerPtr logger, AppenderPtr appender) = 0;
+			virtual void removeAppenderEvent(const LoggerPtr& logger,
+				const AppenderPtr& appender) = 0;
 		};
 	}; // namespace spi
 }; // namespace log4cxx

@@ -334,7 +334,7 @@ const LevelPtr& OptionConverter::toLevel(const String& value,
 
 
 ObjectPtr OptionConverter::instantiateByKey(Properties& props, const String& key,
-	const Class& superClass, ObjectPtr defaultValue)
+	const Class& superClass, const ObjectPtr& defaultValue)
 {
 	// Get the value of the property in string form
 	String className = findAndSubst(key, props);
@@ -350,7 +350,7 @@ ObjectPtr OptionConverter::instantiateByKey(Properties& props, const String& key
 }
 
 ObjectPtr OptionConverter::instantiateByClassName(const String& className,
-	const Class& superClass, ObjectPtr defaultValue)
+	const Class& superClass, const ObjectPtr& defaultValue)
 {
 	if(!className.empty())
 	{
@@ -375,7 +375,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const String& className,
 }
 
 void OptionConverter::selectAndConfigure(const String& configFileName,
-	 const String& _clazz, spi::LoggerRepositoryPtr hierarchy)
+	 const String& _clazz, spi::LoggerRepositoryPtr& hierarchy)
 {
 	ConfiguratorPtr configurator;
 	String clazz = _clazz;

@@ -33,7 +33,7 @@ SyslogAppender::SyslogAppender()
 	this->initSyslogFacilityStr();
 }
 
-SyslogAppender::SyslogAppender(LayoutPtr layout,
+SyslogAppender::SyslogAppender(const LayoutPtr& layout,
 	SyslogAppender::SyslogFacility syslogFacility)
 : syslogFacility(syslogFacility), facilityPrinting(false), sw(0)
 {
@@ -41,7 +41,7 @@ SyslogAppender::SyslogAppender(LayoutPtr layout,
 	this->initSyslogFacilityStr();
 }
 
-SyslogAppender::SyslogAppender(LayoutPtr layout,
+SyslogAppender::SyslogAppender(const LayoutPtr& layout,
 	const String& syslogHost, SyslogAppender::SyslogFacility syslogFacility)
 : syslogFacility(syslogFacility), facilityPrinting(false), sw(0)
 {

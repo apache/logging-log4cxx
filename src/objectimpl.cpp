@@ -39,7 +39,7 @@ ObjectImpl::~ObjectImpl()
 {
 }
 
-void ObjectImpl::addRef()
+void ObjectImpl::addRef() const
 {
 #ifdef HAVE_LINUX_ATOMIC_OPERATIONS
 	atomic_inc(&ref);
@@ -58,7 +58,7 @@ void ObjectImpl::addRef()
 #endif
 }
 
-void ObjectImpl::releaseRef()
+void ObjectImpl::releaseRef() const
 {
 #ifdef HAVE_LINUX_ATOMIC_OPERATIONS
 	if (atomic_dec_and_test(&ref))
@@ -91,22 +91,22 @@ void ObjectImpl::releaseRef()
 #endif
 }
 
-void ObjectImpl::lock()
+void ObjectImpl::lock() const
 {
 	mutex.lock();
 }
 
-void ObjectImpl::unlock()
+void ObjectImpl::unlock() const
 {
 	mutex.unlock();
 }
 
-void ObjectImpl::wait()
+void ObjectImpl::wait() const
 {
 	cond.wait(mutex);
 }
 
-void ObjectImpl::notify()
+void ObjectImpl::notify() const
 {
 	cond.signal();
 }

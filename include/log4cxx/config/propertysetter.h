@@ -71,7 +71,8 @@ go. The <code>properties</code> are parsed relative to a
 @param properties A java.util.Properties containing keys and values.
 @param prefix Only keys having the specified prefix will be set.
 */
-			static void setProperties(helpers::ObjectPtr obj, helpers::Properties& properties, const String& prefix);
+			static void setProperties(helpers::ObjectPtr obj, 
+				helpers::Properties& properties, const String& prefix);
 			
 /**
 Set the properites for the object that match the

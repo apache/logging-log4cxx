@@ -75,7 +75,8 @@ namespace log4cxx
 			/** Constructs a datagram packet for sending packets of length
 			<code>length</code> with offset <code>offset</code> to the
 			specified port number on the specified host. */
-			DatagramPacket(void * buf, int offset, int length, InetAddress address, int port);
+			DatagramPacket(void * buf, int offset, int length, InetAddress address,
+				int port);
 
 			~DatagramPacket();
 

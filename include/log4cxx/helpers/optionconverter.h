@@ -131,11 +131,11 @@ balanced by a stop delimeter "}". </p>
 			@param defaultValue The object to return in case of non-fulfillment
 			*/
 			static ObjectPtr instantiateByClassName(const String& className,
-				const Class& superClass, ObjectPtr defaultValue);
+				const Class& superClass, const ObjectPtr& defaultValue);
 
 			static ObjectPtr instantiateByKey(Properties& props,
 				const String& key, const Class& superClass,
-				ObjectPtr defaultValue);
+				const ObjectPtr& defaultValue);
 
 			/**
 			Configure log4cxx given a configFileName.
@@ -157,7 +157,7 @@ balanced by a stop delimeter "}". </p>
 			@param hierarchy The Hierarchy to act on.
 			*/
 			static void selectAndConfigure(const String& configFileName,
-				const String& clazz, spi::LoggerRepositoryPtr hierarchy);
+				const String& clazz, spi::LoggerRepositoryPtr& hierarchy);
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

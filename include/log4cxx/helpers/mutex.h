@@ -30,8 +30,6 @@ namespace log4cxx
 	{
 		class LOG4CXX_EXPORT MutexException : public Exception
 		{
-		public: 
-			virtual String getMessage() { return String();}
 		};
 
 		class Condition;

@@ -42,7 +42,7 @@ namespace {
     }
 }
 
-Hierarchy::Hierarchy(LoggerPtr root) : root(root),
+Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false)
 {
 	// Enable all level levels by default.
@@ -76,7 +76,7 @@ void Hierarchy::clear()
 	mapCs.unlock();
 }
 
-void Hierarchy::emitNoAppenderWarning(LoggerPtr logger)
+void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
 {
 	// No appenders in hierarchy, warn user only once.
 	if(!this->emittedNoAppenderWarning)
@@ -123,7 +123,7 @@ void Hierarchy::setThreshold(const String& levelStr)
 	}
 }
 
-void Hierarchy::fireAddAppenderEvent(LoggerPtr logger, AppenderPtr appender)
+void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
 {
     HierarchyEventListenerList::iterator it, itEnd = listeners.end();
     HierarchyEventListenerPtr listener;
@@ -135,7 +135,7 @@ void Hierarchy::fireAddAppenderEvent(LoggerPtr logger, AppenderPtr appender)
 	}
 }
 
-void Hierarchy::fireRemoveAppenderEvent(LoggerPtr logger, AppenderPtr appender)
+void Hierarchy::fireRemoveAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
 
 {
     HierarchyEventListenerList::iterator it, itEnd = listeners.end();
@@ -148,7 +148,7 @@ void Hierarchy::fireRemoveAppenderEvent(LoggerPtr logger, AppenderPtr appender)
 	}
 }
 
-const LevelPtr& Hierarchy::getThreshold()
+const LevelPtr& Hierarchy::getThreshold() const
 {
 	return threshold;
 }
@@ -195,12 +195,12 @@ LoggerPtr Hierarchy::getLogger(const String& name, spi::LoggerFactoryPtr factory
 	return logger;
 }
 
-LoggerList Hierarchy::getCurrentLoggers()
+LoggerList Hierarchy::getCurrentLoggers() const
 {
 	mapCs.lock();
 
 	LoggerList v;
-	LoggerMap::iterator it, itEnd = loggers.end();
+	LoggerMap::const_iterator it, itEnd = loggers.end();
 
 	for (it = loggers.begin(); it != itEnd; it++)
 	{
@@ -212,12 +212,12 @@ LoggerList Hierarchy::getCurrentLoggers()
 	return v;
 }
 
-LoggerPtr Hierarchy::getRootLogger()
+LoggerPtr Hierarchy::getRootLogger() const
 {
 	return root;
 }
 
-bool Hierarchy::isDisabled(int level)
+bool Hierarchy::isDisabled(int level) const
 {
 	return thresholdInt > level;
 }
@@ -228,7 +228,7 @@ void Hierarchy::resetConfiguration()
 	mapCs.lock();
 	
 	getRootLogger()->setLevel(Level::DEBUG);
-	//root->setResourceBundle(0);
+	root->setResourceBundle(0);
 	setThreshold(Level::ALL);
 	
 	shutdown(); // nested locks are OK
@@ -241,7 +241,7 @@ void Hierarchy::resetConfiguration()
 		LoggerPtr& logger = *it;
 		logger->setLevel(0);
 		logger->setAdditivity(true);
-		//logger->setResourceBundle(0);
+		logger->setResourceBundle(0);
 	}
 
 	//rendererMap.clear();
@@ -275,7 +275,7 @@ void Hierarchy::shutdown()
 }
 
 
-void Hierarchy::updateParents(LoggerPtr logger)
+void Hierarchy::updateParents(LoggerPtr& logger)
 {
 	const String& name = logger->name;
 	int length = name.size();
@@ -321,7 +321,7 @@ void Hierarchy::updateParents(LoggerPtr logger)
 	}
 }
 
-void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
+void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr& logger)
 {
 	//tcout << _T("updateChildren called for ") << logger->name << std::endl;
 

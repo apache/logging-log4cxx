@@ -35,7 +35,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT InstantiationException : public Exception
 		{
 		public:
-			String getMessage() { return _T("Abstract class"); }
+			InstantiationException() : Exception(_T("Abstract class")) {}
 		};
 
 		/**
@@ -47,9 +47,6 @@ namespace log4cxx
 		{
 		public:
 			ClassNotFoundException(const String& className);
-			String getMessage();
-
-			String message;
 		};
 
 		class LOG4CXX_EXPORT Class

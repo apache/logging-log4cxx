@@ -74,7 +74,7 @@ namespace log4cxx
 		/**
 		Instantiate a WriterAppender and set the output destination to
 		<code>os</code>.*/
-		WriterAppender(LayoutPtr layout, ostream * os);
+		WriterAppender(const LayoutPtr& layout, ostream * os);
 
 		~WriterAppender();
 		
@@ -97,7 +97,7 @@ namespace log4cxx
 		/**
 		Returns value of the <b>ImmediateFlush</b> option.
 		*/
-		bool getImmediateFlush() { return immediateFlush; }
+		bool getImmediateFlush() const { return immediateFlush; }
 	
 		/**
 		This method is called by the AppenderSkeleton#doAppend
@@ -120,7 +120,7 @@ namespace log4cxx
 		<p>It checks whether there is a set output target and also if
 		there is a set layout. If these checks fail, then the boolean
 		value <code>false</code> is returned. */
-		virtual bool checkEntryConditions();
+		virtual bool checkEntryConditions() const;
 	
 	
 	public:
@@ -141,7 +141,7 @@ namespace log4cxx
 	
 	
 	public:
-		const String& getEncoding() { return encoding; }
+		const String& getEncoding() const { return encoding; }
 		void setEncoding(const String& value) { encoding = value; }
 	
 	protected:
@@ -159,7 +159,7 @@ namespace log4cxx
 	<code>true</code>.
 	*/
 	public:
-		virtual bool requiresLayout() { return true; }
+		virtual bool requiresLayout() const { return true; }
 	
 	/**
 	Clear internal references to the writer and other variables.

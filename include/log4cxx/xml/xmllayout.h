@@ -106,13 +106,13 @@ namespace log4cxx
 			* Formats a {@link spi::LoggingEvent LoggingEvent} 
 			* in conformance with the log4cxx.dtd.
 			**/
-			virtual void format(ostream& output, const spi::LoggingEventPtr& event);
+			virtual void format(ostream& output, const spi::LoggingEventPtr& event) const;
 
 			/**
 			The XMLLayout prints and does not ignore exceptions. Hence the
 			return value <code>false</code>.
 			*/
-			virtual bool ignoresThrowable()
+			virtual bool ignoresThrowable() const
 				{ return false; }
 				
 		};  // class XMLLayout

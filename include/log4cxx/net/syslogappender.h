@@ -87,8 +87,8 @@ namespace log4cxx
 			} SyslogFacility;
 
 			SyslogAppender();
-			SyslogAppender(LayoutPtr layout, SyslogFacility syslogFacility);
-			SyslogAppender(LayoutPtr layout,
+			SyslogAppender(const LayoutPtr& layout, SyslogFacility syslogFacility);
+			SyslogAppender(const LayoutPtr& layout,
 				const String& syslogHost, SyslogFacility syslogFacility);
 			~SyslogAppender();
 			/** Release any resources held by this SyslogAppender.*/
@@ -122,7 +122,7 @@ namespace log4cxx
 			The SyslogAppender requires a layout. Hence, this method returns
 			<code>true</code>.
 			*/
-			virtual bool requiresLayout()
+			virtual bool requiresLayout() const
 				{ return true; }
 
 			/**
@@ -136,7 +136,7 @@ namespace log4cxx
 			/**
 			Returns the value of the <b>SyslogHost</b> option.
 			*/
-			inline const String& getSyslogHost()
+			inline const String& getSyslogHost() const
 				{ return syslogHost; }
 
 			/**

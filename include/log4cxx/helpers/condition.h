@@ -32,8 +32,6 @@ namespace log4cxx
 	{
 		class LOG4CXX_EXPORT ConditionException : public Exception
 		{
-		public:
-			virtual String getMessage() { return String();}
 		};
 
 		class LOG4CXX_EXPORT Condition

@@ -48,7 +48,7 @@ namespace log4cxx
 
 /**
 Allows the configuration of log4cxx from an external file.  See
-<b>{@link #doConfigure(const String&, spi::LoggerRepositoryPtr)}</b>
+<b>{@link #doConfigure(const String&, spi::LoggerRepositoryPtr&)}</b>
 for the expected format.
 
 <p>It is sometimes useful to see how log4cxx is reading configuration
@@ -294,7 +294,8 @@ beginning of a line for comments.
 configuration information is stored.
 @param hierarchy The hierarchy to operation upon.
 */
-		void doConfigure(const String& configFileName, spi::LoggerRepositoryPtr hierarchy);
+		void doConfigure(const String& configFileName, 
+			spi::LoggerRepositoryPtr& hierarchy);
 
 		/**
 		Read configuration options from file <code>configFilename</code>.
@@ -326,17 +327,18 @@ configuration information is stored.
 
 		/**
 		Read configuration options from <code>properties</code>.
-		See #doConfigure(const string&, spi::LoggerRepositoryPtr)
+		See #doConfigure(const string&, spi::LoggerRepositoryPtr&)
 		for the expected format.
 		*/
 		static void configure(helpers::Properties& properties);
 
 		/**
 		Read configuration options from <code>properties</code>.
-		See #doConfigure(const String&, spi::LoggerRepositoryPtr)
+		See #doConfigure(const String&, spi::LoggerRepositoryPtr&)
 		for the expected format.
 		*/
-		void doConfigure(helpers::Properties& properties, spi::LoggerRepositoryPtr hierarchy);
+		void doConfigure(helpers::Properties& properties, 
+			spi::LoggerRepositoryPtr& hierarchy);
 
 // --------------------------------------------------------------------------
 // Internal stuff
@@ -353,33 +355,33 @@ protected:
 		*/
 		void configureLoggerFactory(helpers::Properties& props);
 
-		void configureRootCategory(helpers::Properties props,
-			spi::LoggerRepositoryPtr hierarchy);
+		void configureRootCategory(helpers::Properties& props,
+			spi::LoggerRepositoryPtr& hierarchy);
 
 		/**
 		Parse non-root elements, such non-root categories and renderers.
 		*/
-		void parseCatsAndRenderers(helpers::Properties props,
-			spi::LoggerRepositoryPtr hierarchy);
+		void parseCatsAndRenderers(helpers::Properties& props,
+			spi::LoggerRepositoryPtr& hierarchy);
 
 		/**
 		Parse the additivity option for a non-root logger.
 		*/
 		void parseAdditivityForLogger(helpers::Properties& props,
-			LoggerPtr cat, const String& loggerName);
+			LoggerPtr& cat, const String& loggerName);
 
 		/**
 		This method must work for the root logger as well.
 		*/
 		void parseCategory(
-			helpers::Properties& props, LoggerPtr logger,
+			helpers::Properties& props, LoggerPtr& logger,
 			const String& optionKey, const String& loggerName,
 			const String& value);
 
 		AppenderPtr parseAppender(
 			helpers::Properties& props, const String& appenderName);
 
-		void registryPut(AppenderPtr appender);
+		void registryPut(const AppenderPtr& appender);
 		AppenderPtr registryGet(const String& name);
 	}; // class PropertyConfigurator
 }; // namespace log4cxx

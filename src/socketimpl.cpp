@@ -95,11 +95,6 @@ SocketException::SocketException()
 #endif
 };
 
-String SocketException::getMessage()
-{
-	return message;
-}
-
 SocketImpl::SocketImpl() : fd(0), localport(-1), port(0), timeout(-1)
 {
 }
@@ -325,7 +320,7 @@ size_t SocketImpl::write(const void * buf, size_t len)
 
 /** Retrive setting for SO_TIMEOUT.
 */
-int SocketImpl::getSoTimeout()
+int SocketImpl::getSoTimeout() const
 {
 	return timeout;
 }

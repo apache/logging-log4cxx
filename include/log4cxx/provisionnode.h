@@ -29,7 +29,7 @@ namespace log4cxx
     class ProvisionNode : public std::vector<LoggerPtr>
     {
     public:
-		ProvisionNode(LoggerPtr logger)
+		ProvisionNode(const LoggerPtr& logger)
 		{
 			push_back(logger);
 		}

@@ -26,11 +26,17 @@ namespace log4cxx
 		/** The class Exception and its subclasses indicate conditions that a
 		reasonable application might want to catch.
 		*/
-		class Exception
+		class LOG4CXX_EXPORT Exception
 		{
 		public:
-			virtual String getMessage() = 0;
-		}; // class Exception
+			Exception() {}
+			Exception(const String& message): message(message) {}
+			inline const String& getMessage() { return message; }
+			
+		protected:
+			String message;
+			
+	}; // class Exception
 
 		/** RuntimeException is the parent class of those exceptions that can be
 		thrown during the normal operation of the process.
@@ -40,13 +46,7 @@ namespace log4cxx
 		public:
 			RuntimeException() {}
 			RuntimeException(const String& message)
-			 : message(message) {}
-
-			virtual String getMessage()
-				{ return message; }
-
-		protected:
-			String message;
+			 : Exception(message) {}
 		}; // class Exception
 
 		/** Thrown to indicate that a method has been passed 
@@ -55,13 +55,15 @@ namespace log4cxx
 		{
 		public:
 			IllegalArgumentException(const String& message)
-			 : message(message) {}
-
-			virtual String getMessage()
-				{ return message; }
-
-		protected:
-			String message;
+			 : Exception(message) {}
+		};
+		
+		/** Signals that an I/O exception of some sort has occurred. This class
+		is the general class of exceptions produced by failed or interrupted
+		I/O operations.
+		*/
+		class LOG4CXX_EXPORT IOException : public Exception
+		{
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

@@ -35,11 +35,12 @@ namespace log4cxx
 			int64_t startTime;
 			
 		public:
-			RelativeTimeDateFormat() : DateFormat(_T(""), _T("")), startTime(System::currentTimeMillis())
+			RelativeTimeDateFormat()
+			 : DateFormat(_T(""), _T("")), startTime(System::currentTimeMillis())
 			{
 			}
 			
-			virtual void format(ostream& os, int64_t time)
+			virtual void format(ostream& os, int64_t time) const
 			{
 				os << (time - startTime);
 			}

@@ -163,7 +163,7 @@ namespace log4cxx
 			/**
 			The SocketHubAppender does not use a layout. Hence, this method returns
 			<code>false</code>. */
-			virtual bool requiresLayout()
+			virtual bool requiresLayout() const
 				{ return false; }
 			
 			/**

@@ -30,7 +30,7 @@ FileAppender::FileAppender()
 {
 }
 
-FileAppender::FileAppender(LayoutPtr layout, const String& fileName,
+FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName,
 	bool append, bool bufferedIO, int bufferSize)
 : fileAppend(true), bufferedIO(false), bufferSize(8*1024)
 {
@@ -38,7 +38,7 @@ FileAppender::FileAppender(LayoutPtr layout, const String& fileName,
 	this->setFile(fileName, append, bufferedIO, bufferSize);
 }
 
-FileAppender::FileAppender(LayoutPtr layout, const String& fileName,
+FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName,
 	bool append)
 : fileAppend(true), bufferedIO(false), bufferSize(8*1024)
 {
@@ -46,7 +46,7 @@ FileAppender::FileAppender(LayoutPtr layout, const String& fileName,
 	this->setFile(fileName, append, false, bufferSize);
 }
 
-FileAppender::FileAppender(LayoutPtr layout, const String& fileName)
+FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName)
 : fileAppend(true), bufferedIO(false), bufferSize(8*1024)
 {
 	this->layout = layout;

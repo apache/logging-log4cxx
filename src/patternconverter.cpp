@@ -36,7 +36,7 @@ PatternConverter::PatternConverter(const FormattingInfo& fi)
 /**
 A template method for formatting in a converter specific way.
 */
-void PatternConverter::format(ostream& sbuf, const spi::LoggingEventPtr& e)
+void PatternConverter::format(ostream& sbuf, const spi::LoggingEventPtr& e) const
 {
 	if (min == 0 && max == 0x7FFFFFFF)
 	{

@@ -30,13 +30,13 @@ RollingFileAppender::RollingFileAppender()
 }
 
 
-RollingFileAppender::RollingFileAppender(LayoutPtr layout, const String& fileName, bool append)
+RollingFileAppender::RollingFileAppender(const LayoutPtr& layout, const String& fileName, bool append)
 : FileAppender(layout, fileName, append),
 maxFileSize(10*1024*1024), maxBackupIndex(1)
 {
 }
 
-RollingFileAppender::RollingFileAppender(LayoutPtr layout, const String& 
+RollingFileAppender::RollingFileAppender(const LayoutPtr& layout, const String& 
 fileName) : FileAppender(layout, fileName),
 maxFileSize(10*1024*1024), maxBackupIndex(1)
 {

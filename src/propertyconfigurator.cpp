@@ -47,7 +47,7 @@ public:
 
 	/**
 	Call PropertyConfigurator#doConfigure(const String& configFileName,
-	spi::LoggerRepositoryPtr hierarchy) with the
+	const spi::LoggerRepositoryPtr& hierarchy) with the
 	<code>filename</code> to reconfigure log4cxx.
 	*/
 	void doOnChange()
@@ -80,7 +80,7 @@ PropertyConfigurator::PropertyConfigurator()
 }
 
 void PropertyConfigurator::doConfigure(const String& configFileName,
-	spi::LoggerRepositoryPtr hierarchy)
+	spi::LoggerRepositoryPtr& hierarchy)
 {
 	Properties props;
 
@@ -97,7 +97,8 @@ void PropertyConfigurator::doConfigure(const String& configFileName,
 		{
 			LogLog::error(
 				_T("Could not read configuration file [") + configFileName + _T("]."));
-			LogLog::error(_T("Ignoring configuration file [") + configFileName + _T("]."));
+			LogLog::error(
+				_T("Ignoring configuration file [") + configFileName + _T("]."));
 
 			return;
 		}
@@ -143,7 +144,7 @@ void PropertyConfigurator::configureAndWatch(
 }
 
 void PropertyConfigurator::doConfigure(helpers::Properties& properties,
-	spi::LoggerRepositoryPtr hierarchy)
+	spi::LoggerRepositoryPtr& hierarchy)
 {
 	String value = properties.getProperty(LogLog::DEBUG_KEY);
 
@@ -188,8 +189,8 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 	}
 }
 
-void PropertyConfigurator::configureRootCategory(helpers::Properties props,
-			spi::LoggerRepositoryPtr hierarchy)
+void PropertyConfigurator::configureRootCategory(helpers::Properties& props,
+			spi::LoggerRepositoryPtr& hierarchy)
 {
 	String effectiveFrefix = ROOT_LOGGER_PREFIX;
 	String value = OptionConverter::findAndSubst(ROOT_LOGGER_PREFIX, props);
@@ -213,8 +214,8 @@ void PropertyConfigurator::configureRootCategory(helpers::Properties props,
 	}
 }
 
-void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties props,
-			spi::LoggerRepositoryPtr hierarchy)
+void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
+			spi::LoggerRepositoryPtr& hierarchy)
 {
 	std::vector<String> names = props.propertyNames();
 
@@ -248,7 +249,7 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties props,
 }
 
 void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
-	LoggerPtr cat, const String& loggerName)
+	LoggerPtr& cat, const String& loggerName)
 {
 	String value =
 		OptionConverter::findAndSubst(ADDITIVITY_PREFIX + loggerName, props);
@@ -270,7 +271,7 @@ void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 	This method must work for the root category as well.
 */
 void PropertyConfigurator::parseCategory(
-	helpers::Properties& props, LoggerPtr logger, const String& optionKey,
+	helpers::Properties& props, LoggerPtr& logger, const String& optionKey,
 	const String& loggerName, const String& value)
 {
 	LogLog::debug(
@@ -405,7 +406,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 	return appender;
 }
 
-void PropertyConfigurator::registryPut(AppenderPtr appender)
+void PropertyConfigurator::registryPut(const AppenderPtr& appender)
 {
 	registry[appender->getName()] = appender;
 }

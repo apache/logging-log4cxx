@@ -110,7 +110,7 @@ namespace log4cxx
 		*/
 		virtual void setOption(const String& option, const String& value);
 
-		virtual void format(ostream& output, const spi::LoggingEventPtr& event);
+		virtual void format(ostream& output, const spi::LoggingEventPtr& event) const;
 
 		/**
 		Append appropriate HTML headers.
@@ -125,7 +125,7 @@ namespace log4cxx
 		/**
 		The HTML layout handles the throwable contained in logging
 		events. Hence, this method return <code>false</code>.  */
-		virtual bool ignoresThrowable()
+		virtual bool ignoresThrowable() const
 			{ return false; }
 			
 	}; // class HtmlLayout

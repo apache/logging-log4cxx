@@ -79,7 +79,7 @@ namespace log4cxx
         /**
         Map synchronization
         */
-        helpers::CriticalSection mapCs;
+        mutable helpers::CriticalSection mapCs;
 		
     public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)
@@ -92,7 +92,7 @@ namespace log4cxx
 		@param root The root of the new hierarchy.
 	 
         */
-        Hierarchy(LoggerPtr root);
+        Hierarchy(const LoggerPtr& root);
 
         ~Hierarchy();
 		
@@ -111,7 +111,7 @@ namespace log4cxx
 		void clear();
 		
 	public:
-		void emitNoAppenderWarning(LoggerPtr logger);
+		void emitNoAppenderWarning(const LoggerPtr& logger);
 		
 		/**
 		Check if the named logger exists in the hierarchy. If so return
@@ -139,17 +139,18 @@ namespace log4cxx
 		void setThreshold(const LevelPtr& l);
 		
 	public:
-		void fireAddAppenderEvent(LoggerPtr logger, AppenderPtr appender);
+		void fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender);
 		
 	public:
-		void fireRemoveAppenderEvent(LoggerPtr logger, AppenderPtr appender);
+		void fireRemoveAppenderEvent(const LoggerPtr& logger, 
+			const AppenderPtr& appender);
 		
 		/**
 		Returns a Level representation of the <code>enable</code>
 		state.
 		*/
 	public:
-		const LevelPtr& getThreshold();
+		const LevelPtr& getThreshold() const;
 		
 		/**
 		Return a new logger instance named as the first parameter using
@@ -188,13 +189,13 @@ namespace log4cxx
 		<p>The root logger is <em>not</em> included in the returned
 		LoggerList.  */
 	public:
-		LoggerList getCurrentLoggers();
+		LoggerList getCurrentLoggers() const;
 		
 		/**
 		Get the root of this hierarchy.
 		*/
 	public:
-		LoggerPtr getRootLogger();
+		LoggerPtr getRootLogger() const;
 		
 		/**
 		This method will return <code>true</code> if this repository is
@@ -202,7 +203,7 @@ namespace log4cxx
 		<code>false</code> otherwise. See also the 
 		{@link #setThreshold(const LevelPtr&) setThreshold} method.  */
 	public:
-		bool isDisabled(int level);
+		bool isDisabled(int level) const;
 		
 		/**
 		Reset all values contained in this hierarchy instance to their
@@ -264,7 +265,7 @@ namespace log4cxx
 		We add 'cat' to the list of children for this potential parent.
 		*/
 	private:
-		void updateParents(LoggerPtr logger);
+		void updateParents(LoggerPtr& logger);
 		
 		/**
 		We update the links for all the children that placed themselves
@@ -282,7 +283,7 @@ namespace log4cxx
 		*/
 	private:
 
-		void updateChildren(ProvisionNode& pn, LoggerPtr logger);
+		void updateChildren(ProvisionNode& pn, LoggerPtr& logger);
 	};
 }; //namespace log4cxx
 

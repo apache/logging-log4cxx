@@ -80,7 +80,7 @@ servlet.
 			/** 
 			This appender requires a layout to format the text to the
 			attached client(s). */
-			virtual bool requiresLayout()
+			virtual bool requiresLayout() const
 				{ return true; }
 			
 			/** all of the options have been set, create the socket handler and
@@ -95,7 +95,7 @@ servlet.
     		/**
     		Returns value of the <b>Port</b> option.
     		*/
-			int getPort()
+			int getPort() const
 				{ return port; }
 			
     		/**

@@ -30,7 +30,8 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(SocketNode)
 
-SocketNode::SocketNode(helpers::SocketPtr socket, spi::LoggerRepositoryPtr hierarchy)
+SocketNode::SocketNode(helpers::SocketPtr& socket,
+	spi::LoggerRepositoryPtr& hierarchy)
  : hierarchy(hierarchy)
 {
 	is = socket->getInputStream();

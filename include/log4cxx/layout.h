@@ -51,7 +51,7 @@ namespace log4cxx
 		/**
 		Implement this method to create your own layout format.
 		*/
-		virtual void format(ostream& output, const spi::LoggingEventPtr& event) = 0;
+		virtual void format(ostream& output, const spi::LoggingEventPtr& event) const = 0;
 
 		/**
 		Returns the content type output by this layout. The base class
@@ -81,7 +81,7 @@ namespace log4cxx
 		PatternLayout all return <code>true</code>. The {@link
 		xml::XMLLayout XMLLayout} returns <code>false</code>.
 		*/
-		virtual bool ignoresThrowable() = 0;
+		virtual bool ignoresThrowable() const = 0;
 	};
 };
 

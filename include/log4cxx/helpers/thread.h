@@ -42,14 +42,10 @@ namespace log4cxx
 	{
 		class LOG4CXX_EXPORT ThreadException : public Exception
 		{
-		public:
-			String getMessage() { return String(); }
 		};
 
 		class LOG4CXX_EXPORT InterruptedException : public Exception
 		{
-		public:
-			String getMessage() { return String(); }
 		};
 		
 		/** The Runnable interface should be implemented by any class whose 

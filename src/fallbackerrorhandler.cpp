@@ -39,19 +39,19 @@ void FallbackErrorHandler::setLogger(const LoggerPtr& logger)
 }
 
 void FallbackErrorHandler::error(const String& message, helpers::Exception& e,
-	int errorCode)
+	int errorCode) const
 { 
 	error(message, e, errorCode, 0);
 }
 
 void FallbackErrorHandler::error(const String& message, helpers::Exception& e,
-	int errorCode, const spi::LoggingEventPtr& event)
+	int errorCode, const spi::LoggingEventPtr& event) const
 {
 	LogLog::debug(_T("FB: The following error reported: ") + message, e);
 	LogLog::debug(_T("FB: INITIATING FALLBACK PROCEDURE."));
 	for(int i = 0; i < loggers.size(); i++)
 	{
-		LoggerPtr& l = loggers.at(i);
+		LoggerPtr& l = (LoggerPtr&)loggers.at(i);
 		LogLog::debug(_T("FB: Searching for [")+primary->getName()+_T("] in logger [")
 			+l->getName() + _T("]."));
 		LogLog::debug(_T("FB: Replacing [")+primary->getName()+_T("] by [")

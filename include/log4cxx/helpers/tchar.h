@@ -22,6 +22,7 @@
 #include <sstream>
 #include <cwchar>
 #include <algorithm> // min & max
+#include <stdio.h> // sprintf
 
 class Convert
 {

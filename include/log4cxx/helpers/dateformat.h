@@ -28,8 +28,8 @@ namespace log4cxx
 		{
 		public:
 			DateFormat(const String& dateFormat, const String& timeZone = _T(""));
-			virtual void format(ostream& os, int64_t time);
-			String format(int64_t timeMillis);
+			virtual void format(ostream& os, int64_t time) const;
+			String format(int64_t timeMillis) const;
 
 		protected:
 			String timeZone;

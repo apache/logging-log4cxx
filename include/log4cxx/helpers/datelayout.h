@@ -104,7 +104,7 @@ namespace log4cxx
 			inline const String& getTimeZone() const
 				{ return timeZone; }
 				
-			void formatDate(ostream &os, const spi::LoggingEventPtr& event);
+			void formatDate(ostream &os, const spi::LoggingEventPtr& event) const;
  		};
 	}; // namespace helpers
 }; // namespace log4cxx

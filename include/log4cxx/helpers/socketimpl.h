@@ -26,16 +26,6 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		/** Signals that an I/O exception of some sort has occurred. This class
-		is the general class of exceptions produced by failed or interrupted
-		I/O operations.
-		*/
-		class LOG4CXX_EXPORT IOException : public Exception
-		{
-		public:
-			String getMessage() { return String(); }
-		};
-
 		/** Thrown to indicate that there is an error in the underlying
 		protocol, such as a TCP error.
 		*/
@@ -43,10 +33,6 @@ namespace log4cxx
 		{
 		public:
 			SocketException();
-			String getMessage();
-
-		protected:
-			String message;
 		};
 
 		/** Signals that an error occurred while attempting to connect a socket
@@ -183,7 +169,7 @@ namespace log4cxx
 
 			/** Retrive setting for SO_TIMEOUT.
 			*/
-			int getSoTimeout();
+			int getSoTimeout() const;
 
 			/** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
 			*/

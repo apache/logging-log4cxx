@@ -90,7 +90,7 @@ NTEventLogAppender::NTEventLogAppender() : hEventLog(NULL), pCurrentUserSID(NULL
 {
 }
 
-NTEventLogAppender::NTEventLogAppender(const String& server, const String& log, const String& source, LayoutPtr layout)
+NTEventLogAppender::NTEventLogAppender(const String& server, const String& log, const String& source, const LayoutPtr& layout)
 : server(server), log(log), source(source), hEventLog(NULL), pCurrentUserSID(NULL)
 {
 	this->layout = layout;

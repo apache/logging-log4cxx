@@ -99,7 +99,7 @@ void DateLayout::activateOptions()
 	}
 }
 
-void DateLayout::formatDate(ostream &os, const spi::LoggingEventPtr& event)
+void DateLayout::formatDate(ostream &os, const spi::LoggingEventPtr& event) const
 {
 	if(dateFormat != 0)
 	{

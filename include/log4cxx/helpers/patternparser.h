@@ -88,7 +88,8 @@ namespace log4cxx
 				int type;
 			public:
 				BasicPatternConverter(const FormattingInfo& formattingInfo, int type);
-				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
+				virtual void convert(ostream& sbuf, 
+					const spi::LoggingEventPtr& event) const;
 			};
 
 			class LOG4CXX_EXPORT LiteralPatternConverter : public PatternConverter
@@ -98,8 +99,10 @@ namespace log4cxx
 
 			public:
 				LiteralPatternConverter(const String& value);
-				virtual void format(StringBuffer& sbuf, const spi::LoggingEventPtr& e);
-				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
+				virtual void format(StringBuffer& sbuf, 
+					const spi::LoggingEventPtr& e) const;
+				virtual void convert(ostream& sbuf, 
+					const spi::LoggingEventPtr& event) const;
 			};
 
 			class LOG4CXX_EXPORT DatePatternConverter : public PatternConverter
@@ -108,11 +111,13 @@ namespace log4cxx
 				DateFormat * df;
 
 			public:
-				DatePatternConverter(const FormattingInfo& formattingInfo, DateFormat * df);
+				DatePatternConverter(const FormattingInfo& formattingInfo, 
+					DateFormat * df);
 				~DatePatternConverter();
 				
 			public:
-				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
+				virtual void convert(ostream& sbuf, 
+					const spi::LoggingEventPtr& event) const;
 			};
 
 			class LOG4CXX_EXPORT MDCPatternConverter : public PatternConverter
@@ -121,8 +126,10 @@ namespace log4cxx
 				String key;
 			
 			public:
-				MDCPatternConverter(const FormattingInfo& formattingInfo, const String& key);
-				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
+				MDCPatternConverter(const FormattingInfo& formattingInfo,
+					const String& key);
+				virtual void convert(ostream& sbuf, 
+					const spi::LoggingEventPtr& event) const;
 			};
 
 			class LOG4CXX_EXPORT LocationPatternConverter : public PatternConverter
@@ -132,7 +139,8 @@ namespace log4cxx
 			
 			public:
 				LocationPatternConverter(const FormattingInfo& formattingInfo, int type);
-				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
+				virtual void convert(ostream& sbuf, 
+					const spi::LoggingEventPtr& event) const;
 			};
 
 			class LOG4CXX_EXPORT CategoryPatternConverter : public PatternConverter
@@ -141,8 +149,10 @@ namespace log4cxx
 				int precision;
 			
 			public:
-				CategoryPatternConverter(const FormattingInfo& formattingInfo, int precision);
-				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
+				CategoryPatternConverter(const FormattingInfo& formattingInfo, 
+					int precision);
+				virtual void convert(ostream& sbuf, 
+					const spi::LoggingEventPtr& event) const;
 			};
 		}; // class PatternParser
 	}; // namespace helpers

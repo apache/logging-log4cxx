@@ -84,7 +84,7 @@ void ODBCAppender::append(const spi::LoggingEventPtr& event)
 		flushBuffer();
 }
 
-String ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event)
+String ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event) const
 {
 	StringBuffer sbuf;
 	getLayout()->format(sbuf, event);

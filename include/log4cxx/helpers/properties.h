@@ -104,7 +104,11 @@ cheeses
  			</pre>
    		 	specifies that the key is "<code>cheeses</code>" and the associated
 			element is the empty string.
+			
 		    @param inStream the input stream.
+			
+			@throw IOException if an error occurred when reading from the input
+			stream.
 			*/
 			void load(istream& inStream);
 

@@ -33,14 +33,14 @@ ConsoleAppender::ConsoleAppender()
 	os = &tcout;
 }
 
-ConsoleAppender::ConsoleAppender(LayoutPtr layout)
+ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
  : target(SYSTEM_OUT)
 {
 	this->layout = layout;
 	os = &tcout;
 }
 
-ConsoleAppender::ConsoleAppender(LayoutPtr layout, const String& target)
+ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const String& target)
  : target(SYSTEM_OUT)
 {
 	this->layout = layout;
@@ -72,7 +72,7 @@ void ConsoleAppender::setTarget(const String& value)
 	}
 }
 
-const String& ConsoleAppender::getTarget()
+const String& ConsoleAppender::getTarget() const
 {
 	return target;
 }

@@ -79,7 +79,6 @@ namespace log4cxx
 		*/
 		void finalize();
 
-	public:
 		/**
 		Derived appenders should override this method if option structure
 		requires it.
@@ -90,8 +89,7 @@ namespace log4cxx
 		/**
 		Add a filter to end of the filter list.
 		*/
-	public:
-		void addFilter(spi::FilterPtr newFilter) ;
+		void addFilter(const spi::FilterPtr& newFilter) ;
 
 		/**
 		Subclasses of <code>AppenderSkeleton</code> should implement this
@@ -111,41 +109,35 @@ namespace log4cxx
 		Return the currently set spi::ErrorHandler for this
 		Appender.
 		*/
-	public:
-		spi::ErrorHandlerPtr getErrorHandler() { return errorHandler; }
+		const spi::ErrorHandlerPtr& getErrorHandler() const { return errorHandler; }
 
 		/**
 		Returns the head Filter.
 		*/
-	public:
-		spi::FilterPtr getFilter() { return headFilter; }
+		const spi::FilterPtr& getFilter() const { return headFilter; }
 
 		/**
 		Return the first filter in the filter chain for this
 		Appender. The return value may be <code>0</code> if no is
 		filter is set.
 		*/
-	public:
-		spi::FilterPtr getFirstFilter() { return headFilter; }
+		const spi::FilterPtr& getFirstFilter() const { return headFilter; }
 
 		/**
 		Returns the layout of this appender. The value may be 0.
 		*/
-	public:
-		LayoutPtr getLayout() { return layout; }
+		const LayoutPtr& getLayout() const { return layout; }
 
 
 		/**
 		Returns the name of this Appender.
 		*/
-	public:
 		const String& getName() const { return name; }
 
 		/**
 		Returns this appenders threshold level. See the #setThreshold
 		method for the meaning of this option.
 		*/
-	public:
 		const LevelPtr& getThreshold() { return threshold; }
 
 		/**
@@ -153,8 +145,7 @@ namespace log4cxx
 		threshold. If there is no threshold set, then the return value is
 		always <code>true</code>.
 		*/
-	public:
-		bool isAsSevereAsThreshold(LevelPtr level);
+		bool isAsSevereAsThreshold(const LevelPtr& level) const;
 
 
 		/**
@@ -162,14 +153,12 @@ namespace log4cxx
 		* delegating actual logging to the subclasses specific
 		* AppenderSkeleton#append method.
 		* */
-	public:
 		void doAppend(const spi::LoggingEventPtr& event);
 
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.
 		*/
-	public:
-		void setErrorHandler(spi::ErrorHandlerPtr eh);
+		void setErrorHandler(const spi::ErrorHandlerPtr& eh);
 
 		/**
 		Set the layout for this appender. Note that some appenders have
@@ -177,13 +166,11 @@ namespace log4cxx
 		{@link net::SocketAppender SocketAppender} ignores the layout set
 		here.
 		*/
-	public:
-		void setLayout(LayoutPtr layout) { this->layout = layout; }
+		void setLayout(const LayoutPtr& layout) { this->layout = layout; }
 
 		/**
 		Set the name of this Appender.
 		*/
-	public:
 		void setName(const String& name) { this->name = name; }
 
 
@@ -195,7 +182,6 @@ namespace log4cxx
 		value of the <b>Threshold</b> option to a level
 		string, such as "DEBUG", "INFO" and so on.
 		*/
-	public:
 		void setThreshold(const LevelPtr& threshold);
 	}; // class AppenderSkeleton
 }; // namespace log4cxx

@@ -75,7 +75,7 @@ namespace log4cxx
 		AsyncAppender();
 		virtual ~AsyncAppender();
 
-		void addAppender(AppenderPtr newAppender);
+		void addAppender(const AppenderPtr& newAppender);
 
 		void append(const spi::LoggingEventPtr& event);
 
@@ -86,8 +86,8 @@ namespace log4cxx
 		*/
 		void close();
 
-		AppenderList getAllAppenders();
-		AppenderPtr getAppender(const String& name);
+		AppenderList getAllAppenders() const;
+		AppenderPtr getAppender(const String& name) const;
 
 		/**
 		Returns the current value of the <b>LocationInfo</b> option.
@@ -98,17 +98,17 @@ namespace log4cxx
 		/**
 		Is the appender passed as parameter attached to this asyncappender?
 		*/
-		bool isAttached(AppenderPtr appender);
+		bool isAttached(const AppenderPtr& appender) const;
 
 		void removeAllAppenders();
-		void removeAppender(AppenderPtr appender);
+		void removeAppender(const AppenderPtr& appender);
 		void removeAppender(const String& name);
 
 		/**
 		The <code>AsyncAppender</code> does not require a layout. Hence,
 		this method always returns <code>false</code>.
 		*/
-		virtual bool requiresLayout()
+		virtual bool requiresLayout() const
 			{ return false; }
 
 		/**
@@ -141,7 +141,7 @@ namespace log4cxx
 		/**
 		Returns the current value of the <b>BufferSize</b> option.
 		*/
-		int getBufferSize();
+		int getBufferSize() const;
 	}; // class AsyncAppender
 
 	class LOG4CXX_EXPORT Dispatcher : public  helpers::Thread

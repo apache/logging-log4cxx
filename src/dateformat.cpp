@@ -39,7 +39,7 @@ DateFormat::DateFormat(const String& dateFormat, const String& timeZone)
 	timeZoneEnv = _T("TZ=") + timeZone;
 }
 
-void DateFormat::format(ostream& os, int64_t timeMillis)
+void DateFormat::format(ostream& os, int64_t timeMillis) const
 {
     TCHAR buffer[255];
 
@@ -72,7 +72,7 @@ void DateFormat::format(ostream& os, int64_t timeMillis)
 	}
 }
 
-String DateFormat::format(int64_t timeMillis)
+String DateFormat::format(int64_t timeMillis) const
 {
 	StringBuffer sbuf;
 	format(sbuf, timeMillis);

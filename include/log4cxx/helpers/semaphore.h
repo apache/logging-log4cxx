@@ -30,8 +30,6 @@ namespace log4cxx
 	{
 		class LOG4CXX_EXPORT SemaphoreException : public Exception
 		{
-		public: 
-			virtual String getMessage() { return String();}
 		};
 
 #ifdef HAVE_MS_THREAD

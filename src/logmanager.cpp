@@ -60,7 +60,7 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
 	LogManager::repositorySelector = selector;
 }
 
-LoggerRepositoryPtr LogManager::getLoggerRepository()
+LoggerRepositoryPtr& LogManager::getLoggerRepository()
 {
 	if (repositorySelector == 0)
 	{

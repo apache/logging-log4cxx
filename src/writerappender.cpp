@@ -28,7 +28,7 @@ WriterAppender::WriterAppender()
 {
 }
 
-WriterAppender::WriterAppender(LayoutPtr layout, ostream * os)
+WriterAppender::WriterAppender(const LayoutPtr& layout, ostream * os)
 : immediateFlush(true), os(os)
 {
 	this->layout = layout;
@@ -61,7 +61,7 @@ void WriterAppender::append(const spi::LoggingEventPtr& event)
 	subAppend(event);
 }
 
-bool WriterAppender::checkEntryConditions()
+bool WriterAppender::checkEntryConditions() const
 {
 	if(closed)
 	{

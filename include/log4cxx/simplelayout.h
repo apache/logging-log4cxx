@@ -55,14 +55,14 @@ namespace log4cxx
 		<p>
 		@return A byte array in SimpleLayout format.
 		*/
-		virtual void format(ostream& output, const spi::LoggingEventPtr& event);
+		virtual void format(ostream& output, const spi::LoggingEventPtr& event) const;
 
 		/**
 		The SimpleLayout does not handle the throwable contained within
 		{@link spi::LoggingEvent LoggingEvents}. Thus, it returns
 		<code>true</code>.
 		*/
-		bool ignoresThrowable() { return true; }
+		bool ignoresThrowable() const { return true; }
 
 		virtual void activateOptions() {}
 		virtual void setOption(const String& option, const String& value) {}

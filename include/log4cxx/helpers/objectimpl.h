@@ -39,26 +39,26 @@ namespace log4cxx
 		public:
 			ObjectImpl();
 			virtual ~ObjectImpl();
-			void addRef();
-			void releaseRef();
-			virtual void lock();
-			virtual void unlock();
-			virtual void wait();
-			virtual void notify();
+			void addRef() const;
+			void releaseRef() const;
+			virtual void lock() const;
+			virtual void unlock() const;
+			virtual void wait() const;
+			virtual void notify() const;
 
 		protected:
 #ifdef HAVE_LINUX_ATOMIC_OPERATIONS
-			atomic_t ref;
+			mutable atomic_t ref;
 #elif defined(HAVE_PTHREAD)
-			CriticalSection refCs;
-			unsigned int ref;
+			mutable CriticalSection refCs;
+			mutable unsigned int ref;
 #elif defined(HAVE_MS_THREAD)
-			long volatile ref;
+			mutable long volatile ref;
 #else
-			unsigned int ref;
+			mutable unsigned int ref;
 #endif
-			Mutex mutex;
-			Condition cond;
+			mutable Mutex mutex;
+			mutable Condition cond;
 		};
 	};
 };

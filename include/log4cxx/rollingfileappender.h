@@ -59,26 +59,26 @@ namespace log4cxx
 		appended to. Otherwise, the file desginated by
 		<code>filename</code> will be truncated before being opened.
 		*/
-		RollingFileAppender(LayoutPtr layout, const String& fileName, bool append);
+		RollingFileAppender(const LayoutPtr& layout, const String& fileName, bool append);
 
 		/**
 		Instantiate a FileAppender and open the file designated by
 		<code>filename</code>. The opened filename will become the output
 		destination for this appender.
 		<p>The file will be appended to.  */
-		RollingFileAppender(LayoutPtr layout, const String& fileName);
+		RollingFileAppender(const LayoutPtr& layout, const String& fileName);
 
 		/**
 		Returns the value of the <b>MaxBackupIndex</b> option.
 		*/
-		inline int getMaxBackupIndex()
+		inline int getMaxBackupIndex() const
 			{ return maxBackupIndex; }
 
 		/**
 		Get the maximum size that the output file is allowed to reach
 		before being rolled over to backup files.
 		*/
-		inline long getMaximumFileSize()
+		inline long getMaximumFileSize() const
 			{ return maxFileSize; }
 
 		/**

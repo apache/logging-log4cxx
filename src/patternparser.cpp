@@ -374,7 +374,8 @@ PatternParser::BasicPatternConverter::BasicPatternConverter(const FormattingInfo
 {
 }
 
-void PatternParser::BasicPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
+void PatternParser::BasicPatternConverter::convert(ostream& sbuf, 
+	const spi::LoggingEventPtr& event) const
 {
 	switch(type)
 	{
@@ -401,12 +402,14 @@ PatternParser::LiteralPatternConverter::LiteralPatternConverter(const String& va
 {
 }
 
-void PatternParser::LiteralPatternConverter::format(StringBuffer& sbuf, const spi::LoggingEventPtr& e) 
+void PatternParser::LiteralPatternConverter::format(StringBuffer& sbuf, 
+	const spi::LoggingEventPtr& e) const
 {
 	sbuf << literal;
 }
 
-void PatternParser::LiteralPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
+void PatternParser::LiteralPatternConverter::convert(ostream& sbuf, 
+	const spi::LoggingEventPtr& event) const
 {
 	sbuf << literal;
 }
@@ -421,7 +424,8 @@ PatternParser::DatePatternConverter::~DatePatternConverter()
 	delete df;
 }
 
-void PatternParser::DatePatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
+void PatternParser::DatePatternConverter::convert(ostream& sbuf, 
+	const spi::LoggingEventPtr& event) const
 {
 	df->format(sbuf, event->getTimeStamp());
 }
@@ -431,7 +435,8 @@ PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& fo
 {
 }
 
-void PatternParser::MDCPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
+void PatternParser::MDCPatternConverter::convert(ostream& sbuf, 
+	const spi::LoggingEventPtr& event) const
 {
 	/**
 	* if there is no additional options, we output every single
@@ -466,7 +471,8 @@ PatternParser::LocationPatternConverter::LocationPatternConverter(const Formatti
 {
 }
 
-void PatternParser::LocationPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
+void PatternParser::LocationPatternConverter::convert(ostream& sbuf, 
+	const spi::LoggingEventPtr& event) const
 {
 	switch(type)
 	{
@@ -490,12 +496,14 @@ void PatternParser::LocationPatternConverter::convert(ostream& sbuf, const spi::
 	}
 }
 
-PatternParser::CategoryPatternConverter::CategoryPatternConverter(const FormattingInfo& formattingInfo, int precision)
+PatternParser::CategoryPatternConverter::CategoryPatternConverter(const FormattingInfo&
+	formattingInfo, int precision)
 : PatternConverter(formattingInfo), precision(precision)
 {
 }
 
-void PatternParser::CategoryPatternConverter::convert(ostream& sbuf, const spi::LoggingEventPtr& event)
+void PatternParser::CategoryPatternConverter::convert(ostream& sbuf, 
+	const spi::LoggingEventPtr& event) const
 {
 	const String& n = event->getLoggerName();
 

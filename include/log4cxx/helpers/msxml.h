@@ -79,6 +79,7 @@ namespace log4cxx
 
 		protected:
 			MSXML::IXMLDOMDocumentPtr document;
+			bool mustCallCoUninitialize;
 		};
 
 		class LOG4CXX_EXPORT MsXMLDOMElement : 

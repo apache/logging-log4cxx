@@ -133,7 +133,7 @@ namespace log4cxx
 			returned decision is {@link spi::Filter#DENY DENY} if the
 			<b>AcceptOnMatch</b> property is set to false.
 			*/
-			FilterDecision decide(const spi::LoggingEventPtr& event);
+			FilterDecision decide(const spi::LoggingEventPtr& event) const;
 		}; // class LevelMatchFilter
 	}; // namespace varia
 }; // namespace log4cxx

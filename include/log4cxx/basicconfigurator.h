@@ -51,7 +51,7 @@ namespace log4cxx
 		Add <code>appender</code> to the root logger.
 		@param appender The appender to add to the root logger.
 		*/
-		static void configure(AppenderPtr appender);
+		static void configure(const AppenderPtr& appender);
 
 		/**
 		Reset the default hierarchy to its defaut. It is equivalent to

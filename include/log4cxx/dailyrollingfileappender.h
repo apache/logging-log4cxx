@@ -31,7 +31,7 @@ namespace log4cxx
 	*  Given a periodicity type and the current time, it computes the
 	*  start of the next interval.  
 	* */
-	class RollingCalendar
+	class LOG4CXX_EXPORT RollingCalendar
 	{
 	public:
 		// The code assumes that the following constants are in a increasing

@@ -191,7 +191,7 @@ namespace log4cxx
     		* The XMLSocketAppender use an internal XMLLayout. Hence, this method
     		* returns <code>false</code>.
     		* */
-    		bool requiresLayout()
+    		bool requiresLayout() const
     			{ return false; }
 
     		/**

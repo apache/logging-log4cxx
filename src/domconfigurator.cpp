@@ -569,7 +569,7 @@ void DOMConfigurator::setParameter(XMLDOMElementPtr elem, PropertySetter& propSe
 	propSetter.setProperty(name, value);
 }
 
-void DOMConfigurator::doConfigure(const String& filename, spi::LoggerRepositoryPtr repository)
+void DOMConfigurator::doConfigure(const String& filename, spi::LoggerRepositoryPtr& repository)
 {
 	this->repository = repository;
 	LogLog::debug(_T("DOMConfigurator configuring file ") + filename + _T("..."));

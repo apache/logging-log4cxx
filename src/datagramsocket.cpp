@@ -139,7 +139,7 @@ void DatagramSocket::create()
 }
 
 /** Receive the datagram packet.*/
-void DatagramSocket::receive(DatagramPacketPtr p)
+void DatagramSocket::receive(DatagramPacketPtr& p)
 {
 	sockaddr_in addr;
 	int addr_len = sizeof(addr);
@@ -162,7 +162,7 @@ void DatagramSocket::receive(DatagramPacketPtr p)
 }
 
 /**  Sends a datagram packet.*/
-void DatagramSocket::send(DatagramPacketPtr p)
+void DatagramSocket::send(DatagramPacketPtr& p)
 {
 	sockaddr_in addr;
 	int addr_len = sizeof(addr);

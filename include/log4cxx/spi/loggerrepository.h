@@ -73,7 +73,7 @@ namespace log4cxx
             Is the repository disabled for a given level? The answer depends
             on the repository threshold and the <code>level</code>
             parameter. See also #setThreshold method.  */
-            virtual bool isDisabled(int level) = 0;
+            virtual bool isDisabled(int level) const = 0;
 
             /**
             Set the repository-wide threshold. All logging requests below the
@@ -87,29 +87,29 @@ namespace log4cxx
             parameter instead of a <code>Level</code>. */
             virtual void setThreshold(const String& val) = 0;
 
-            virtual void emitNoAppenderWarning(LoggerPtr logger) = 0;
+            virtual void emitNoAppenderWarning(const LoggerPtr& logger) = 0;
 
             /**
             Get the repository-wide threshold. See {@link
             #setThreshold(const Level&) setThreshold(Level)}
 			for an explanation. */
-            virtual const LevelPtr& getThreshold() = 0;
+            virtual const LevelPtr& getThreshold() const = 0;
 
             virtual LoggerPtr getLogger(const String& name) = 0;
 
             virtual LoggerPtr getLogger(const String& name, spi::LoggerFactoryPtr 
 				factory) = 0;
 				
-            virtual LoggerPtr getRootLogger() = 0;
+            virtual LoggerPtr getRootLogger() const = 0;
 
             virtual LoggerPtr exists(const String& name) = 0;
 
             virtual void shutdown() = 0;
 
-            virtual LoggerList getCurrentLoggers() = 0;
+            virtual LoggerList getCurrentLoggers() const = 0;
 
-            virtual void fireAddAppenderEvent(LoggerPtr logger, AppenderPtr 
-				appender) = 0;
+            virtual void fireAddAppenderEvent(const LoggerPtr& logger, 
+				const AppenderPtr& appender) = 0;
 				
             virtual void resetConfiguration() = 0;
         }; // class LoggerRepository

@@ -65,7 +65,7 @@ namespace log4cxx
         static void setRepositorySelector(spi::RepositorySelectorPtr selector,
 			void * guard);
 
-        static spi::LoggerRepositoryPtr getLoggerRepository();
+        static spi::LoggerRepositoryPtr& getLoggerRepository();
 
         /**
         Retrieve the appropriate root logger.

@@ -98,10 +98,10 @@ namespace log4cxx
 				{ return port != 0; }
 
 			/**  Receives a datagram packet from this socket. */
-			void receive(DatagramPacketPtr p);
+			void receive(DatagramPacketPtr& p);
 
 			/** Sends a datagram packet from this socket. */
-			void  send(DatagramPacketPtr p);
+			void  send(DatagramPacketPtr& p);
 
 		protected:
 			/** The file descriptor object for this socket. */

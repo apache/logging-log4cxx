@@ -29,7 +29,7 @@ void BasicConfigurator::configure()
 		new PatternLayout(PatternLayout::TTCC_CONVERSION_PATTERN)));
 }
 
-void BasicConfigurator::configure(AppenderPtr appender)
+void BasicConfigurator::configure(const AppenderPtr& appender)
 {
 	LoggerPtr root = Logger::getRootLogger();
 	root->addAppender(appender);

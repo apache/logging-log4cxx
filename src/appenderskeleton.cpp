@@ -43,7 +43,7 @@ void AppenderSkeleton::finalize()
 	close();
 }
 
-void AppenderSkeleton::addFilter(spi::FilterPtr newFilter)
+void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 {
 	if(headFilter == 0)
 	{
@@ -61,7 +61,7 @@ void AppenderSkeleton::clearFilters()
 	headFilter = tailFilter = 0;
 }
 
-bool AppenderSkeleton::isAsSevereAsThreshold(LevelPtr level)
+bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 {
 	return ((level == 0) || level->isGreaterOrEqual(threshold));
 }
@@ -102,7 +102,7 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
 	append(event);
 }
 
-void AppenderSkeleton::setErrorHandler(spi::ErrorHandlerPtr errorHandler)
+void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler)
 {
 	synchronized sync(this);
 	

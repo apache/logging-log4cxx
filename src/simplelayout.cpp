@@ -24,7 +24,7 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(SimpleLayout)
 
 void SimpleLayout::format(ostream& output,
-						  const spi::LoggingEventPtr& event)
+						  const spi::LoggingEventPtr& event) const
 {
 	output
 		<< event->getLevel()->toString()

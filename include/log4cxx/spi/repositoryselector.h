@@ -47,7 +47,7 @@ namespace log4cxx
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(RepositorySelector)
 			virtual ~RepositorySelector() {}
-			virtual LoggerRepositoryPtr getLoggerRepository() = 0;
+			virtual LoggerRepositoryPtr& getLoggerRepository() = 0;
 		};
 	}; //namespace spi
 }; //namespace log4cxx

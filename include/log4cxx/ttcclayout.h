@@ -161,14 +161,14 @@ namespace log4cxx
 	@param output
 	@param event
 	*/
-	virtual void format(ostream& output, const spi::LoggingEventPtr& event);
+	virtual void format(ostream& output, const spi::LoggingEventPtr& event) const;
 
 	/**
 	The TTCCLayout does not handle the throwable contained within
 	{@link spi::LoggingEvent LoggingEvents}. Thus, it returns
 	<code>true</code>.
 	*/
-	virtual bool ignoresThrowable() { return true; }
+	virtual bool ignoresThrowable() const { return true; }
 	};
 };
 

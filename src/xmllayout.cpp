@@ -45,7 +45,7 @@ void XMLLayout::setOption(const String& option,
 	}
 }
 
-void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event)
+void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
 {
 	output << _T("<log4j:event logger=\"");
 	output << event->getLoggerName();

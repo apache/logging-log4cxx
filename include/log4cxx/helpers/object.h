@@ -76,12 +76,12 @@ namespace log4cxx
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Object)
 			virtual ~Object() {}
-			virtual void addRef() = 0;
-			virtual void releaseRef() = 0;
-			virtual void lock() = 0;
-			virtual void unlock() = 0;
-			virtual void wait() = 0;
-			virtual void notify() = 0;
+			virtual void addRef() const = 0;
+			virtual void releaseRef() const = 0;
+			virtual void lock() const = 0;
+			virtual void unlock() const = 0;
+			virtual void wait() const = 0;
+			virtual void notify() const = 0;
 			virtual bool instanceof(const Class& clazz) const = 0;
 			virtual const void * cast(const Class& clazz) const = 0;
 		};
@@ -90,14 +90,14 @@ namespace log4cxx
 		class synchronized
 		{
 		public:
-			synchronized(Object * object) : object(object)
+			synchronized(const Object * object) : object(object)
 				{ object->lock(); }
 
 			~synchronized()
 				{ object->unlock(); }
 
 		protected:
-			Object * object;
+			const Object * object;
 		};
 	};
 };

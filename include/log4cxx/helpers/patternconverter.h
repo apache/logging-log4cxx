@@ -65,13 +65,14 @@ namespace log4cxx
 			Derived pattern converters must override this method in order to
 			convert conversion specifiers in the correct way.
 			*/
-			virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event) = 0;
+			virtual void convert(ostream& sbuf, 
+				const spi::LoggingEventPtr& event) const = 0;
 
 		public:
 			/**
 			A template method for formatting in a converter specific way.
 			*/
-			virtual void format(ostream& sbuf, const spi::LoggingEventPtr& e);
+			virtual void format(ostream& sbuf, const spi::LoggingEventPtr& e) const;
 
 		}; // class PatternConverter
 	}; // namespace helpers

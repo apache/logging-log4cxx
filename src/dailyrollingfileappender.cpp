@@ -220,7 +220,7 @@ void DailyRollingFileAppender::rollOver()
 		// close operations are safe.
 		this->setFile(fileName, false, this->bufferedIO, this->bufferSize);
 	}
-	catch (RuntimeException& e)
+	catch (Exception&)
 	{
 		errorHandler->error(_T("setFile(") + fileName + _T(", false) call failed."));
 	}

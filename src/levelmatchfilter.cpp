@@ -59,7 +59,7 @@ const String& LevelMatchFilter::getLevelToMatch() const
 }
   
 Filter::FilterDecision LevelMatchFilter::decide(
-	const log4cxx::spi::LoggingEventPtr& event)
+	const log4cxx::spi::LoggingEventPtr& event) const
 {
 	if(levelToMatch != 0 && levelToMatch->equals(event->getLevel()))
 	{

@@ -11,7 +11,7 @@
  *                                                                         *
  * This software is published under the terms of the Apache Software       *
  * License version 1.1, a copy of which has been included with this        *
- * distribution in the LICENSE.txt file.                                   *
+ * distribution in the license.apl file.                                   *
  ***************************************************************************/
 
 #ifndef _LOG4CXX_HELPERS_STRING_HELPER_H
@@ -19,53 +19,21 @@
  
 #include <log4cxx/config.h>
 #include <log4cxx/helpers/tchar.h>
-#include <algorithm>
+#include <stdarg.h>
 
 namespace log4cxx
 {
     namespace helpers
     {
-        class StringHelper
+        class LOG4CXX_EXPORT StringHelper
         {
-
-            public:
-            static String toUpperCase(const String& s)
-            {
-				String d;
-                std::transform(s.begin(), s.end(),
-					std::insert_iterator<String>(d, d.begin()), totupper);
-				return d;
-            }
-
-            static String toLowerCase(const String& s)
-            {
-				String d;
-                std::transform(s.begin(), s.end(),
-					std::insert_iterator<String>(d, d.begin()), totlower);
-				return d;
-            }
-
-            static String trim(const String& s)
-            {
-				String::size_type pos = s.find_first_not_of(_T(' '));
-				if (pos == String::npos)
-				{
-					return String();
-				}
-
-				String::size_type n = s.find_last_not_of(_T(' ')) - pos + 1;
-				return s.substr(pos, n);
-            }
-
-            static bool equalsIgnoreCase(const String& s1, const String& s2)
-            {
-				return toLowerCase(s1) == toLowerCase(s2);
-            }
-
-			static bool endsWith(const String& s, const String& suffix)
-			{
-				return (s.length() - s.rfind(suffix)) == suffix.length();
-			}
+           public:
+            static String toUpperCase(const String& s);
+            static String toLowerCase(const String& s);
+            static String trim(const String& s);
+			static bool equalsIgnoreCase(const String& s1, const String& s2);
+  			static bool endsWith(const String& s, const String& suffix);
+			static String format(const String& pattern, va_list argList);
         };
     };
 };

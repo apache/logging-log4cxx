@@ -72,7 +72,7 @@ namespace log4cxx
 
 			/** Retrive setting for SO_TIMEOUT.
 			*/
-			int getSoTimeout();
+			int getSoTimeout() const;
 
 			/** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
 			*/

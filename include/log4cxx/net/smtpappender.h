@@ -118,7 +118,7 @@ namespace log4cxx
 			/**
 			The <code>SMTPAppender</code> requires a {@link
 			Layout layout}.  */
-			virtual bool requiresLayout()
+			virtual bool requiresLayout() const
 				{ return true; }
 
 			/**

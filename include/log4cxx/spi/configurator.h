@@ -60,7 +60,7 @@ namespace log4cxx
 			@param hierarchy The hierarchy to operation upon.
 			*/
 			virtual void doConfigure(const String& configFileName, 
-				spi::LoggerRepositoryPtr repository) = 0;
+				spi::LoggerRepositoryPtr& repository) = 0;
 		};
 	};
 };

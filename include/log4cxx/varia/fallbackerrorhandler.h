@@ -73,26 +73,26 @@ namespace log4cxx
 			<code>System.err</code>.
 			*/
 			void error(const String& message, helpers::Exception& e,
-				int errorCode);
+				int errorCode) const;
 
 			/**
 			Prints the message and the stack trace of the exception on
 			<code>System.err</code>.
 			*/
 			void error(const String& message, helpers::Exception& e,
-				int errorCode, const spi::LoggingEventPtr& event);
+				int errorCode, const spi::LoggingEventPtr& event) const;
 
 
 			/**
 			Print a the error message passed as parameter on
 			<code>System.err</code>.  
 			*/
-			void error(const String& message) {}
+			void error(const String& message) const {}
 
 			/**
 			Return the backup appender.
 			*/
-			AppenderPtr& getBackupAppender()
+			const AppenderPtr& getBackupAppender() const
 				{ return backup; }
 
 			/**

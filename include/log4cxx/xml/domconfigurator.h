@@ -201,7 +201,8 @@ files. You can enable log4cxx internal logging by setting the
 			@param filename The file to parse.
 			@param hierarchy The hierarchy to operation upon.
 			*/
-			void doConfigure(const String& filename, spi::LoggerRepositoryPtr repository);
+			void doConfigure(const String& filename, 
+				spi::LoggerRepositoryPtr& repository);
 
 		protected:
 			String DOMConfigurator::subst(const String& value);

@@ -62,7 +62,7 @@ namespace log4cxx
 			*/
 			spi::LoggingEventPtr get(int i);
 
-			int getMaxSize()
+			int getMaxSize() const
 				{ return maxSize; }
 
 			/**
@@ -76,7 +76,7 @@ namespace log4cxx
 			guaranteed to be in the range 0 to <code>maxSize</code>
 			(inclusive).
 			*/
-			int length()
+			int length() const
 				{ return numElems; }
 
 			/**

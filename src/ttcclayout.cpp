@@ -39,7 +39,7 @@ contextPrinting(true), filePrinting(false)
 	activateOptions();
 }
 
-void TTCCLayout::format(ostream& output, const spi::LoggingEventPtr& event)
+void TTCCLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
 {
 	formatDate(output, event);
 

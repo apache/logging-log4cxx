@@ -88,7 +88,7 @@ namespace log4cxx
 			Returns {@link spi::Filter#NEUTRAL NEUTRAL} 
 			is there is no string match.
 			*/
-			FilterDecision decide(const spi::LoggingEventPtr& event);
+			FilterDecision decide(const spi::LoggingEventPtr& event) const;
 }; // class StringMatchFilter
 	}; // namespace varia
 }; // namespace log4cxx

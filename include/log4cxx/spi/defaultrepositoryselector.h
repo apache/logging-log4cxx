@@ -34,12 +34,12 @@ namespace log4cxx
 				LOG4CXX_CAST_ENTRY(RepositorySelector)
 			END_LOG4CXX_CAST_MAP()
 
-			DefaultRepositorySelector(LoggerRepositoryPtr repository)
+			DefaultRepositorySelector(const LoggerRepositoryPtr& repository)
 			 : repository(repository)
 			{
 			}
 			
-			virtual LoggerRepositoryPtr getLoggerRepository()
+			virtual LoggerRepositoryPtr& getLoggerRepository()
 			{
 				return repository;
 			}

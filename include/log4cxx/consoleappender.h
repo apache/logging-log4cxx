@@ -39,8 +39,8 @@ namespace log4cxx
 		END_LOG4CXX_CAST_MAP()
 
 		ConsoleAppender();
-		ConsoleAppender(LayoutPtr layout);
-		ConsoleAppender(LayoutPtr layout, const String& target);
+		ConsoleAppender(const LayoutPtr& layout);
+		ConsoleAppender(const LayoutPtr& layout, const String& target);
 		~ConsoleAppender();
 
 	/**
@@ -66,7 +66,7 @@ namespace log4cxx
 	* See also #setTarget.
 	* */
 	public:
-		const String& getTarget();
+		const String& getTarget() const;
 
 	protected:
 		void targetWarn(const String& val);

@@ -50,7 +50,7 @@ void HTMLLayout::setOption(const String& option,
 	}
 }
 
-void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event)
+void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
 {
 	output << std::endl << _T("<tr>") << std::endl;
 

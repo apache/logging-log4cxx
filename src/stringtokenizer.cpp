@@ -42,7 +42,7 @@ StringTokenizer::~StringTokenizer()
 	delete this->str;
 }
 
-bool StringTokenizer::hasMoreTokens()
+bool StringTokenizer::hasMoreTokens() const
 {
 	return (token != 0);
 }

@@ -34,8 +34,6 @@ namespace log4cxx
 
 		class LOG4CXX_EXPORT EOFException : public Exception
 		{
-		public:
-			String getMessage() { return String(); }
 		};
 
 		class LOG4CXX_EXPORT SocketInputStream : public ObjectImpl

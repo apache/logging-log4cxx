@@ -45,7 +45,7 @@ void OnlyOnceErrorHandler::setOption(const String& name, const String& value)
 }
 
 void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Exception& e,
-	int errorCode)
+	int errorCode) const
 {
 	if(firstTime)
 	{
@@ -55,13 +55,13 @@ void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Except
 }
 
 void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Exception& e,
-	int errorCode, const log4cxx::spi::LoggingEventPtr& event)
+	int errorCode, const log4cxx::spi::LoggingEventPtr& event) const
 {
 	error(message, e, errorCode);
 }
 
 
-void OnlyOnceErrorHandler::error(const String& message)
+void OnlyOnceErrorHandler::error(const String& message) const
 {
 	if(firstTime)
 	{

@@ -26,7 +26,7 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
-void AppenderAttachableImpl::addAppender(AppenderPtr newAppender)
+void AppenderAttachableImpl::addAppender(const AppenderPtr& newAppender)
 {
     // Null values for newAppender parameter are strictly forbidden.
     if(newAppender == 0)
@@ -56,19 +56,19 @@ int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& ev
 	return appenderList.size();
 }
 
-AppenderList AppenderAttachableImpl::getAllAppenders()
+AppenderList AppenderAttachableImpl::getAllAppenders() const
 {
     return appenderList;
 }
 
-AppenderPtr AppenderAttachableImpl::getAppender(const String& name)
+AppenderPtr AppenderAttachableImpl::getAppender(const String& name) const
 {
 	if (name.empty())
 	{
 		return 0;
 	}
 
-	AppenderList::iterator it, itEnd = appenderList.end();
+	AppenderList::const_iterator it, itEnd = appenderList.end();
 	AppenderPtr appender;
 	for(it = appenderList.begin(); it != itEnd; it++)
 	{
@@ -82,14 +82,14 @@ AppenderPtr AppenderAttachableImpl::getAppender(const String& name)
 	return 0;
 }
 
-bool AppenderAttachableImpl::isAttached(AppenderPtr appender)
+bool AppenderAttachableImpl::isAttached(const AppenderPtr& appender) const
 {
 	if (appender == 0)
     {
         return false;
     }
 
-    AppenderList::iterator it = std::find(
+    AppenderList::const_iterator it = std::find(
         appenderList.begin(), appenderList.end(), appender);
 
     return it != appenderList.end();
@@ -108,7 +108,7 @@ void AppenderAttachableImpl::removeAllAppenders()
     appenderList.clear();
 }
 
-void AppenderAttachableImpl::removeAppender(AppenderPtr appender)
+void AppenderAttachableImpl::removeAppender(const AppenderPtr& appender)
 {
     if (appender == 0)
         return;

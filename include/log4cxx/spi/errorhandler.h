@@ -88,13 +88,13 @@ namespace log4cxx
 			null.
 			*/
 			virtual void error(const String& message, helpers::Exception& e,
-				int errorCode) = 0;
+				int errorCode) const = 0;
 
 			/**
 			This method is normally used to just print the error message
 			passed as a parameter.
 			*/
-			virtual void error(const String& message) = 0;
+			virtual void error(const String& message) const = 0;
 
 			/**
 			This method is invoked to handle the error.
@@ -106,7 +106,7 @@ namespace log4cxx
 			to log.
 			*/
 			virtual void error(const String& message, helpers::Exception& e,
-				int errorCode, const LoggingEventPtr& event) = 0;
+				int errorCode, const LoggingEventPtr& event) const = 0;
 		
 			/**
 			Set the appender for which errors are handled. This method is

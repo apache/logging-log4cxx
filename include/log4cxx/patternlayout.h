@@ -441,13 +441,13 @@ namespace log4cxx
 		{@link spi::LoggingEvent LoggingEvents}. Thus, it returns
 		<code>true</code>.
 		*/
-		virtual bool ignoresThrowable()
+		virtual bool ignoresThrowable() const
 			{ return true; }
 
 		/**
 		Produces a formatted string as specified by the conversion pattern.
 		*/
-		virtual void format(ostream& output, const spi::LoggingEventPtr& event);
+		virtual void format(ostream& output, const spi::LoggingEventPtr& event) const;
 
 		/**
 		The <b>TimeZoneID</b> option is a time zone ID string in the format
