@@ -1,3 +1,16 @@
+Version 0.9.5 (CVS)
+===================
+
+* Port of log4j Jnuit tests with Cppunit and Boost Regex
+* Added explicit exports for MSDEV 6 and MSDEV 7
+* Custom levels can be configured through the DOMConfigurator and
+  PropertyConfigurator classes (Level inherites from Object)
+* Added a reference counter to LoggingEvent to avoid useless copies
+  (LoggingEvent inherites from Object)
+* The file log4j.xml as well as the file log4j.properties are now search
+  for, in log4cxx initialization
+* The root logger can be assigned the "OFF" level
+
 Version 0.9.4 (2003-10-25)
 ==========================
 
