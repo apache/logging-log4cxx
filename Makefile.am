@@ -2,6 +2,7 @@ SUBDIRS = docs src msvc include tests
 EXTRA_DIST = autogen.sh configure include license.apl
 dist-hook:
 	rm -rf\
+	`find $(distdir) -name Makefile`\
 	`find $(distdir) -name Makefile.in`\
 	`find $(distdir) -name CVS`\
 	$(distdir)/aclocal.m4\
