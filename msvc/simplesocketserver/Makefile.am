@@ -1,3 +1,3 @@
-EXTRA_DIST = simplesocketserver.dsp
+EXTRA_DIST = simplesocketserver.dsp simplesocketserver.vcproj
 
 

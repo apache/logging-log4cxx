@@ -1,2 +1,2 @@
-EXTRA_DIST = static.dsp
+EXTRA_DIST = static.dsp static.vcproj
 
