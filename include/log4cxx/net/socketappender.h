@@ -263,15 +263,22 @@ namespace log4cxx
 			class LOG4CXX_EXPORT Connector : public helpers::Thread
 			{
 			public:
+			typedef helpers::Thread BASE_CLASS;
+				BEGIN_LOG4CXX_CAST_MAP()
+					LOG4CXX_CAST_ENTRY(Connector)
+					LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
+				END_LOG4CXX_CAST_MAP()
 
 				bool interrupted;
 				SocketAppender * socketAppender;
 
-				Connector(SocketAppenderPtr socketAppender);
+				Connector(SocketAppender * socketAppender);
 				virtual void run();
 			}; // class Connector
+			
+			typedef helpers::ObjectPtrT<Connector> ConnectorPtr;
 
-			Connector * connector;
+			ConnectorPtr connector;
         }; // class SocketAppender
     } // namespace net
 }; // namespace log4cxx

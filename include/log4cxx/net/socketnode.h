@@ -40,7 +40,10 @@ namespace log4cxx
 
 	namespace net
 	{
-        /**
+		class SocketNode;
+		typedef helpers::ObjectPtrT<SocketNode> SocketNodePtr;
+        
+		/**
         Read {@link spi::LoggingEvent LoggingEvent} objects sent from a remote
 		client using Sockets (TCP). These logging events are logged according
 		to local policy, as if they were generated locally.
