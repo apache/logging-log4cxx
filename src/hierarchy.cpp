@@ -78,10 +78,10 @@ void Hierarchy::clear()
 
 void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
 {
-	// No appenders in hierarchy, warn user only once.
+	// No appender in hierarchy, warn user only once.
 	if(!this->emittedNoAppenderWarning)
 	{
-		LogLog::warn(_T("No appenders could be found for logger (") +
+		LogLog::warn(_T("No appender could be found for logger (") +
 			logger->getName() + _T(")."));
 		LogLog::warn(_T("Please initialize the log4cxx system properly."));
 		this->emittedNoAppenderWarning = true;
