@@ -227,8 +227,8 @@ namespace log4cxx
 			{
 				size_t os = epptr() - b; // taille allouée
 				size_t is =
-					helpers::StrictMath::max(
-					helpers::StrictMath::min(
+					helpers::StrictMath::maximum(
+					helpers::StrictMath::minimum(
 					(os * 2), _MaxInc),_MinInc)
 					+ 1; // incrément d'allocation
 				char_type *p = al.allocate(os + is, 0);

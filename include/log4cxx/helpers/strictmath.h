@@ -10,7 +10,7 @@
 #define _LOG4CXX_HELPERS_STRICTMATH_H
  
 #include <log4cxx/config.h>
- 
+
 namespace log4cxx
 {
 	namespace helpers
@@ -23,13 +23,13 @@ namespace log4cxx
 		{
 		public:
 			template<typename _type> static inline const _type& 
-				min(const _type& a, const _type& b)
+				minimum(const _type& a, const _type& b)
 			{
 				return (a < b) ? a : b;
 			}
 			
 			template<typename _type> static inline const _type& 
-				max(const _type& a, const _type& b)
+				maximum(const _type& a, const _type& b)
 			{
 				return (a > b) ? a : b;
 			}

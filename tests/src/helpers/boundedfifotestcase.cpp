@@ -148,7 +148,7 @@ public:
 
 				bf.resize(n);
 
-				int expectedSize = StrictMath::min(n, StrictMath::min(i, size));
+				int expectedSize = StrictMath::minimum(n, StrictMath::minimum(i, size));
 				CPPUNIT_ASSERT_EQUAL(expectedSize, bf.length());
 
 				for (int c = 0; c < expectedSize; c++)
@@ -167,7 +167,7 @@ public:
 		{
 			for (int i = 0; i < (size * 2); i++)
 			{
-				for (int d = 0; d < StrictMath::min(i, size); d++)
+				for (int d = 0; d < StrictMath::minimum(i, size); d++)
 				{
 					BoundedFIFO bf(size);
 
@@ -186,7 +186,7 @@ public:
 
 					bf.resize(n);
 
-					int expectedSize = StrictMath::min(n, x);
+					int expectedSize = StrictMath::minimum(n, x);
 					CPPUNIT_ASSERT_EQUAL(expectedSize, bf.length());
 
 					for (int c = 0; c < expectedSize; c++)
@@ -227,7 +227,7 @@ public:
 
 						bf.resize(n);
 
-						int expectedSize = StrictMath::min(n, x);
+						int expectedSize = StrictMath::minimum(n, x);
 						CPPUNIT_ASSERT_EQUAL(expectedSize, bf.length());
 
 						for (int c = 0; c < expectedSize; c++)
