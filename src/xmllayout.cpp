@@ -21,7 +21,6 @@
 #include <log4cxx/helpers/transform.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/iso8601dateformat.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -88,24 +87,19 @@ void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event)
 		for (std::set<String>::iterator i = mdcKeySet.begin();
 			i != mdcKeySet.end(); i++)
 		{
-			String key = *i;
-			String val = event->getMDC(key);
-			output << _T("    <log4j:data ");
-			output << _T("name=\"<![CDATA[");
-			Transform::appendEscapingCDATA(output, key);
-			output << _T("]]>\"");
-			output << _T(" ");
-			output << _T("value=\"<![CDATA[");
-			Transform::appendEscapingCDATA(output, val);
-			output << _T("]]>\"/>") << std::endl;
+			String propName = *i;
+			String propValue = event->getMDC(propName);
+			output << _T("    <log4j:data name=\"") << propName;
+			output << _T("\" value=\"") << propValue;
+			output << _T("\"/>") << std::endl;
 		}
 		output << _T("</log4j:MDC>") << std::endl;
     }
 
 	if(locationInfo)
 	{
-		output << _T("<log4j:locationInfo file=\"");
 		USES_CONVERSION;
+		output << _T("<log4j:locationInfo file=\"");
 		output << A2T(event->getFile());
 		output << _T("\" line=\"");
 		output << event->getLine();
