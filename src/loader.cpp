@@ -27,6 +27,8 @@
 #include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/helpers/xml.h>
 #include <log4cxx/spi/triggeringeventevaluator.h>
+#include <sys/stat.h>
+#include <fstream>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -52,4 +54,42 @@ IMPLEMENT_LOG4CXX_OBJECT(TriggeringEventEvaluator)
 const Class& Loader::loadClass(const String& clazz)
 {
 	return Class::forName(clazz);
+}
+
+String Loader::getResource(const String& name)
+{
+	String path;
+	struct stat buff;
+	USES_CONVERSION;
+	if (stat(T2A(name.c_str()), &buff) == 0)
+	{
+		path = name;
+	}
+
+	return path;
+}
+
+istream * Loader::getResourceAsStream(const String& name)
+{
+	String path = getResource(name);
+	if (path.empty())
+	{
+		return 0;
+	}
+
+#ifdef UNICODE
+		std::wifstream * stream = new std::wifstream();
+#else
+		std::ifstream * stream = new std::ifstream();
+#endif
+
+	USES_CONVERSION;
+	stream->open(T2A(name.c_str()));
+	if (stream->fail())
+	{
+		delete stream;
+		return 0;
+	}
+
+	return stream;
 }

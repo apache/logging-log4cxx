@@ -31,6 +31,8 @@ namespace log4cxx
 		{
 		public:
 			static const Class& Loader::loadClass(const String& clazz);
+			static String getResource(const String& name);
+			static istream * getResourceAsStream(const String& name);
 		};
 	}; // namespace helpers
 }; // namespace log4cxx
