@@ -54,13 +54,15 @@ public:
         }
 
         void testHelloWorld() {
-           DWORD expectedCount = 1;
+           DWORD expectedId = 1;
            HANDLE hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");
            if (hEventLog != NULL) {
-               BOOL stat = GetNumberOfEventLogRecords(hEventLog, &expectedCount);
-               CPPUNIT_ASSERT(stat);
+               BOOL stat = GetNumberOfEventLogRecords(hEventLog, &expectedId);
+               DWORD oldest;
+               if(stat) stat = GetOldestEventLogRecord(hEventLog, &oldest);
                CloseEventLog(hEventLog);
-               expectedCount++;
+               CPPUNIT_ASSERT(stat);
+               expectedId += oldest;
            }
  
 
@@ -80,11 +82,15 @@ public:
             }
             hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");
             CPPUNIT_ASSERT(hEventLog != NULL);
-            DWORD actualCount;
-            BOOL stat = GetNumberOfEventLogRecords(hEventLog, &actualCount);
+            DWORD actualId;
+            BOOL stat = GetNumberOfEventLogRecords(hEventLog, &actualId);
+            DWORD oldest;
+            if (stat) stat = GetOldestEventLogRecord(hEventLog, &oldest);
+            actualId += oldest;
+            actualId--;
             CloseEventLog(hEventLog);
             CPPUNIT_ASSERT(stat);
-            CPPUNIT_ASSERT_EQUAL(expectedCount, actualCount);
+            CPPUNIT_ASSERT_EQUAL(expectedId, actualId);
         }
 };
 
