@@ -21,6 +21,9 @@
 
 namespace log4cxx
 {
+	class SimpleLayout;
+	typedef helpers::ObjectPtrT<SimpleLayout> SimpleLayoutPtr;
+
 	/**
 	SimpleLayout consists of the level of the log statement,
 	followed by " - " and then the log message itself. For example,
