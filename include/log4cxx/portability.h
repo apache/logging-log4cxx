@@ -34,11 +34,6 @@
 #if defined(_MSC_VER)
 #pragma warning(disable : 4250 4251 4786 4290)
 
-#ifdef LOG4CXX_STATIC
-// cf. file msvc/static/static.cpp
-#pragma comment(linker, "/include:?ForceSymbolReferences@@YAXXZ")
-#endif
-
 
 #if defined(_MSC_VER) && _MSC_VER >= 1200
 typedef __int64 log4cxx_int64_t;

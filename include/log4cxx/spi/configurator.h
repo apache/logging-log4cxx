@@ -37,6 +37,7 @@ namespace log4cxx
       {
       public:
          DECLARE_ABSTRACT_LOG4CXX_OBJECT(Configurator)
+         Configurator();
 
          /**
          Interpret a resource pointed by a URL and set up log4j accordingly.
@@ -49,6 +50,12 @@ namespace log4cxx
          */
          virtual void doConfigure(const File& configFileName,
             spi::LoggerRepositoryPtr& repository) = 0;
+
+
+      private:
+         Configurator(const Configurator&);
+         Configurator& operator=(const Configurator&);
+         bool initialized;
       };
 
       typedef helpers::ObjectPtrT<Configurator> ConfiguratorPtr;

@@ -169,9 +169,6 @@ Common command line options:
     <condition property="is-mingw" value="true">
         <isset property="is-gcc"/>
     </condition>
-    <condition property="is-win-static" value="true">
-        <equals arg1="${lib.type}" arg2="static"/>
-    </condition>
 </target>
 
 <target name="mac-init" depends="os-detect" if="is-mac">
@@ -195,9 +192,6 @@ Common command line options:
     </condition>
     <condition property="is-cygwin" value="true">
         <os family="windows"/>
-    </condition>
-    <condition property="is-unix-static" value="true">
-        <equals arg1="${lib.type}" arg2="static"/>
     </condition>
 </target>
 
@@ -661,6 +655,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${apriconv.include.dir}"/>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
         <defineset define="LOG4CXX"/>
+        <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
@@ -698,6 +693,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${apr.include.dir}"/>
 
         <defineset define="WIN32" if="is-windows"/>
+        <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
@@ -801,6 +797,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
+        <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset if="is-utf8">
             <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
         </defineset>
@@ -837,6 +834,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${aprutil.include.dir}"/>
         <includepath path="${apriconv.include.dir}"/>
+        <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
@@ -882,6 +880,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${aprutil.include.dir}"/>
         <includepath path="${apriconv.include.dir}"/>
+        <defineset define="LOG4CXX"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
