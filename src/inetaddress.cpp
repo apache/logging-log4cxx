@@ -59,7 +59,7 @@ std::vector<InetAddress> InetAddress::getAllByName(const tstring& host)
 	{
 		std::vector<InetAddress> addresses;
 		InetAddress address;
-		char ** addrs;
+		char ** addrs = hostinfo->h_addr_list;
 
 		while(*addrs != 0)
 		{
