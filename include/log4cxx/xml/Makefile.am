@@ -1,3 +1,3 @@
 xmlincdir = $(includedir)/log4cxx/xml
-xmlinc_HEADERS= *.h
+xmlinc_HEADERS= $(top_srcdir)/include/log4cxx/xml/*.h
 
