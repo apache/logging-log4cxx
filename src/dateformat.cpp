@@ -35,17 +35,17 @@ DateFormat::DateFormat(const String& dateFormat, const String& timeZone)
 		this->dateFormat = this->dateFormat.substr(0, pos) +
 			_T("%") + this->dateFormat.substr(pos);
 	}
+	
+	timeZoneEnv = _T("TZ=") + timeZone;
 }
 
 void DateFormat::format(ostream& os, int64_t timeMillis)
 {
     TCHAR buffer[255];
 
-	if (!timeZone.empty())
-	{
-		USES_CONVERSION;
-		::setenv("TZ", T2A(timeZone.c_str()), 1);
-	}
+	USES_CONVERSION;
+	::putenv((char *)T2A(timeZoneEnv.c_str()));
+	tzset();
 
 	time_t time = (time_t)(timeMillis/1000);
 	const tm * tm = ::localtime(&time);
