@@ -22,6 +22,8 @@
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/ndc.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -66,7 +68,7 @@ void XMLLayout::format(LogString& output,
         output.append(LOG4CXX_STR("]]></log4j:message>\n"));
 
         const LogString& ndc = event->getNDC();
-        if(!ndc.empty())
+        if(!NDC::isNull(ndc))
         {
                 output.append(LOG4CXX_STR("<log4j:NDC><![CDATA["));
                 output.append(ndc);

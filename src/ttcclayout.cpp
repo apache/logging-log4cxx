@@ -18,7 +18,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
-
+#include <log4cxx/ndc.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -67,7 +67,7 @@ void TTCCLayout::format(LogString& output,
         {
                 LogString ndc = event->getNDC();
 
-                if(!ndc.empty())
+                if(!NDC::isNull(ndc))
                 {
                         output.append(ndc);
                         output.append(1, LOG4CXX_STR(' '));

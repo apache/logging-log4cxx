@@ -165,6 +165,12 @@ namespace log4cxx
                 */
                 static int getDepth();
 
+
+                /**
+                * Tests if the NDC is empty.
+                */
+                static bool empty();
+
                 /**
                 Clients should call this method before leaving a diagnostic
                 context.
@@ -210,6 +216,19 @@ namespace log4cxx
                 memory.
                 */
                 static void remove();
+
+
+                /**
+                 *  Tests if the specified string is the value
+                 *  (usually "null") returned when the NDC is empty.
+                 */
+                static bool isNull(const LogString& str);
+
+        private:
+                 /**
+                  *  Get the string returned when the NDC is empty.
+                  */
+                 static const LogString& getNull();
         }; // class NDC;
 }  // namespace log4cxx
 

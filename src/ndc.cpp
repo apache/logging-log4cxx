@@ -96,7 +96,7 @@ LogString NDC::get()
         {
                 return stack.top().fullMessage;
         }
-        return LogString();
+        return getNull();
 }
 
 int NDC::getDepth()
@@ -113,7 +113,7 @@ LogString NDC::pop()
                 stack.pop();
                 return value;
         }
-        return LogString();
+        return getNull();
 }
 
 LogString NDC::peek()
@@ -123,7 +123,7 @@ LogString NDC::peek()
         {
                 return stack.top().message;
         }
-        return LogString();
+        return getNull();
 }
 
 void NDC::pushLogString(const LogString& message)
@@ -158,3 +158,17 @@ void NDC::remove()
         clear();
 }
 
+bool NDC::empty() {
+    Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+    return stack.empty();
+}
+
+bool NDC::isNull(const LogString& str) {
+    return str == getNull();
+}
+
+
+const LogString& NDC::getNull() {
+    static LogString nullStr(LOG4CXX_STR("null"));
+    return nullStr;
+}
