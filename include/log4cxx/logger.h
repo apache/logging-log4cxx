@@ -37,7 +37,7 @@ namespace log4cxx
 	};
 	
     class Logger;
-	/** smart pointer to a Logger class */ 
+	/** smart pointer to a Logger class */
     typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
 	/** vector of {@link Logger loggers} */
@@ -68,7 +68,7 @@ namespace log4cxx
         The assigned level of this logger.  The
         <code>level</code> variable need not be assigned a value in
         which case it is inherited form the hierarchy.  */
-        const Level * level;
+        LevelPtr level;
 
         /**
         The parent of this logger. All loggers have at least one
@@ -142,7 +142,7 @@ namespace log4cxx
         to log the particular log request.
 
         @param event the event to log.  */
-        void callAppenders(const spi::LoggingEvent& event);
+        void callAppenders(const spi::LoggingEventPtr& event);
 
         /**
         Close all attached appenders implementing the AppenderAttachable
@@ -208,7 +208,7 @@ namespace log4cxx
 		@param line the line where the log statement was written.
 		*/
     protected:
-        void forcedLog(const String& fqcn, const Level& level, const String& message,
+        void forcedLog(const String& fqcn, const LevelPtr& level, const String& message,
 			const char* file=0, int line=-1);
 
 
@@ -234,13 +234,13 @@ namespace log4cxx
 		/**
         Starting from this logger, search the logger hierarchy for a
 
-        non-{@link Level#OFF OFF} level and return it. Otherwise, 
+        non-{@link Level#OFF OFF} level and return it. Otherwise,
 		return the level of the root logger.
 
         <p>The Logger class is designed so that this method executes as
         quickly as possible.
         */
-        virtual const Level& getEffectiveLevel();
+        virtual const LevelPtr& getEffectiveLevel();
 
         /**
         Return the the LoggerRepository where this
@@ -269,7 +269,7 @@ namespace log4cxx
 
         @return Level - the assigned Level, can be {@link Level#OFF OFF}.
         */
-        const Level& getLevel();
+        const LevelPtr& getLevel();
 
         /**
         Retrieve a logger by name.
@@ -363,7 +363,7 @@ namespace log4cxx
 
         @return bool True if this logger is enabled for <code>level</code>.
         */
-        bool isEnabledFor(const Level& level);
+        bool isEnabledFor(const LevelPtr& level);
         /**
         Check whether this logger is enabled for the info Level.
         See also #isDebugEnabled.
@@ -408,7 +408,7 @@ namespace log4cxx
         @param message The message of the logging request.
         @param file The source file of the logging request, may be null.
         @param line The number line of the logging request.  */
-        void log(const Level& level, const String& message,
+        void log(const LevelPtr& level, const String& message,
 			const char* file=0, int line=-1);
 
 		/**
@@ -453,7 +453,7 @@ namespace log4cxx
         <p><code>Level#OFF<code> values are admitted.  */
 
 	public:
-        virtual void setLevel(const Level& level);
+        virtual void setLevel(const LevelPtr& level);
 
         /**
         Log a message string with the {@link Level#WARN WARN} level.
