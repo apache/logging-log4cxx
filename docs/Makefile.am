@@ -1,4 +1,4 @@
-EXTRA_DIST = Doxyfile
+EXTRA_DIST = Doxyfile mainpage.dox introduction.dox
 
 # DOC is defined if installer requests doc generation.
 

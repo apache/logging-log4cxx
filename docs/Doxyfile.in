@@ -336,7 +336,8 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @top_srcdir@/include @top_srcdir@/src
+INPUT                  = @top_srcdir@/include @top_srcdir@/src  \                        mainpage.dox \
+                         mainpage.dox introduction.dox
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
