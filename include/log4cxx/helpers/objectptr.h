@@ -48,7 +48,7 @@ namespace log4cxx
 				}
 			}*/
 
-			ObjectPtrT(int null) //throw(IllegalArgumentException)
+			ObjectPtrT(const int& null) //throw(IllegalArgumentException)
 				: p(0)
 			{
 				if (null != 0)
@@ -113,7 +113,7 @@ namespace log4cxx
 				return *this;
             }
 
-			ObjectPtrT& operator=(int null) //throw(IllegalArgumentException)
+			ObjectPtrT& operator=(const int& null) //throw(IllegalArgumentException)
 			{
 				if (null != 0)
 				{
