@@ -1,4 +1,4 @@
-SUBDIRS = docs src msvc include tests
+SUBDIRS = docs src msvc include tests performance
 EXTRA_DIST = autogen.sh configure include license.apl
 dist-hook:
 	rm -rf\

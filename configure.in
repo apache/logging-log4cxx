@@ -231,12 +231,6 @@ AC_CONFIG_FILES([
 Makefile
 docs/Makefile
 src/Makefile
-msvc/Makefile
-msvc/dll/Makefile
-msvc/simplesocketserver/Makefile
-msvc/static/Makefile
-msvc/tests/Makefile
-tests/Makefile
 include/Makefile
 include/log4cxx/Makefile
 include/log4cxx/helpers/Makefile
@@ -247,5 +241,13 @@ include/log4cxx/varia/Makefile
 include/log4cxx/xml/Makefile
 include/log4cxx/config/Makefile
 include/log4cxx/db/Makefile
+tests/Makefile
+performance/Makefile
+performance/xml/Makefile
+msvc/Makefile
+msvc/dll/Makefile
+msvc/simplesocketserver/Makefile
+msvc/static/Makefile
+msvc/tests/Makefile
 ])
 AC_OUTPUT
