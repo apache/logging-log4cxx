@@ -26,8 +26,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 #if defined(_WIN32)
-#define LOCALE_US "us"
-#define LOCALE_FR "france"
+#define LOCALE_US "English_us"
+#define LOCALE_FR "French_france"
 #else
 #define LOCALE_US "en_US"
 #define LOCALE_FR "fr_FR"
@@ -37,6 +37,32 @@ using namespace log4cxx::helpers;
 #if (!defined(INT64_C))
 #define INT64_C(value)  value ## LL
 #endif
+
+
+class LocaleChanger {
+public:
+  LocaleChanger(const char* locale) {
+    try {
+        std::locale newLocale(locale);
+        initial = std::locale::global(newLocale);
+        effective = true;
+    } catch(std::exception&) {
+    }
+  }
+
+  ~LocaleChanger() {
+      if (effective) {
+        std::locale::global(initial);
+      }
+  }
+  inline bool isEffective() { return effective; }
+
+private:
+  LocaleChanger(LocaleChanger&);
+  LocaleChanger& operator=(LocaleChanger&);
+  std::locale initial;
+  bool effective;
+};
 
 
 /**
@@ -53,9 +79,7 @@ class DateTimeDateFormatTestCase : public CppUnit::TestFixture
   CPPUNIT_TEST( test4 );
   CPPUNIT_TEST( test5 );
   CPPUNIT_TEST( test6 );
-#if !defined(_WIN32)
   CPPUNIT_TEST( test7 );
-#endif
   CPPUNIT_TEST( test8 );
   CPPUNIT_TEST_SUITE_END();
 
@@ -161,50 +185,35 @@ private:
           LOG4CXX_STR("03 Jul 2004 00:00:00,000"));
   }
 
+
   /** Check that format is locale sensitive. */
   void test7()
   {
     apr_time_t mars11 = MICROSECONDS_PER_DAY * 12519;
-    std::locale fr(LOCALE_FR);
-    std::locale initialDefault = std::locale::global(fr);
-    LogString formatted;
-    Pool p;
-    try
-    {
-      DateTimeDateFormat formatter;
-      formatter.setTimeZone(TimeZone::getGMT());
-      formatter.format(formatted, mars11, p);
+    LocaleChanger localeChange(LOCALE_FR);
+    if (localeChange.isEffective()) {
+        LogString formatted;
+        Pool p;
+        DateTimeDateFormat formatter;
+        formatter.setTimeZone(TimeZone::getGMT());
+        formatter.format(formatted, mars11, p);
+        CPPUNIT_ASSERT_EQUAL((LogString)  LOG4CXX_STR("11 avr. 2004 00:00:00,000"), formatted );
     }
-    catch ( std::exception& ex )
-    {
-      std::locale::global(initialDefault);
-      throw ex;
-    }
-    std::locale::global(initialDefault);
-    CPPUNIT_ASSERT_EQUAL((LogString)  LOG4CXX_STR("11 avr 2004 00:00:00,000"), formatted );
   }
 
   /** Check that format is locale sensitive. */
   void test8()
   {
     apr_time_t march12 = MICROSECONDS_PER_DAY * 12519;
-    std::locale en(LOCALE_US);
-    std::locale initialDefault = std::locale::global(en);
-    LogString formatted;
-    Pool p;
-    try
-    {
-      DateTimeDateFormat formatter;
-      formatter.setTimeZone(TimeZone::getGMT());
-      formatter.format(formatted, march12, p);
+    LocaleChanger localeChange(LOCALE_US);
+    if (localeChange.isEffective()) {
+        LogString formatted;
+        Pool p;
+        DateTimeDateFormat formatter;
+        formatter.setTimeZone(TimeZone::getGMT());
+        formatter.format(formatted, march12, p);
+        CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("11 Apr 2004 00:00:00,000"), formatted );
     }
-    catch ( std::exception& ex )
-    {
-      std::locale::global(initialDefault);
-      throw ex;
-    }
-    std::locale::global(initialDefault);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("11 Apr 2004 00:00:00,000"), formatted );
   }
 
 
