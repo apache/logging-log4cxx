@@ -49,7 +49,7 @@ void FallbackErrorHandler::error(const String& message, helpers::Exception& e,
 {
 	LogLog::debug(_T("FB: The following error reported: ") + message, e);
 	LogLog::debug(_T("FB: INITIATING FALLBACK PROCEDURE."));
-	for(int i = 0; i < loggers.size(); i++)
+	for(size_t i = 0; i < loggers.size(); i++)
 	{
 		LoggerPtr& l = (LoggerPtr&)loggers.at(i);
 		LogLog::debug(_T("FB: Searching for [")+primary->getName()+_T("] in logger [")
