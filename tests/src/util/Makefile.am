@@ -17,7 +17,10 @@ libutil_a_SOURCES = \
 	linenumberfilter.cpp\
 	relativetimefilter.cpp\
 	threadfilter.cpp\
-	transformer.cpp
+	transformer.cpp\
+	xmllineattributefilter.cpp\
+	xmltimestampfilter.cpp \
+	xmlthreadfilter.cpp
 	
 check: libutil.a
 

@@ -22,9 +22,8 @@ regression: Minimum Logger DOM CustomLevel \
 	HierarchyThreshold DefaultInit SocketServer \
 	XMLLayout AsyncAppender ErrorHandler \
 	OptionConverter BoundedFIFO \
-	CyclicBuffer VariaLevelMatchFilter \
-	VariaLevelRangeFilter PatternParser \
-	LevelMatchFilter
+	CyclicBuffer LevelMatchFilter \
+	LevelRangeFilter PatternParser
 
 longUnit:
 
@@ -41,8 +40,10 @@ HierarchyThreshold: build cleanOutputDir
 	src/testsuite HierarchyThresholdTestCase
 	
 DOM: build cleanOutputDir
+	src/testsuite DOMTestCase
 
 CustomLevel: build cleanOutputDir
+	src/testsuite CustomLevelTestCase
 
 CustomLogger: build cleanOutputDir
 	src/testsuite XLoggerTestCase
@@ -62,21 +63,22 @@ DefaultInit: build cleanOutputDir
 	@rm -f log4j.properties
 
 SocketServer: build cleanOutputDir
+	src/testsuite SocketServerTestCase
 
 XMLLayout: build cleanOutputDir
+	src/testsuite XMLLayoutTestCase
 
 AsyncAppender: build cleanOutputDir
 	src/testsuite AsyncAppenderTestCase
 
-VariaLevelMatchFilter: build cleanOutputDir
-
-VariaLevelRangeFilter: build cleanOutputDir
-
-FiltersLevelMatchFilter: build cleanOutputDir
-
 LevelMatchFilter: build cleanOutputDir
+	src/testsuite LevelMatchFilterTestCase
+
+LevelRangeFilter: build cleanOutputDir
+	src/testsuite LevelRangeFilterTestCase
 
 ErrorHandler: build cleanOutputDir
+	src/testsuite ErrorHandlerTestCase
 
 OptionConverter: build cleanOutputDir
 	src/testsuite OptionConverterTestCase
@@ -88,7 +90,5 @@ CyclicBuffer: build cleanOutputDir
 	src/testsuite CyclicBufferTestCase
 
 PatternParser: build cleanOutputDir
-
-MazeAppender: build cleanOutputDir
 
 endif

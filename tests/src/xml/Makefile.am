@@ -8,7 +8,10 @@ noinst_LIBRARIES = libxml.a
 INCLUDES = -I$(top_srcdir)/include
 
 libxml_a_SOURCES = \
-	xlevel.cpp
+	customleveltestcase.cpp \
+	domtestcase.cpp \
+	xlevel.cpp \
+	xmllayouttestcase.cpp
 	
 check: libxml.a
 
