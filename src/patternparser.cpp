@@ -23,6 +23,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
+#include <log4cxx/mdc.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -430,7 +431,31 @@ PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& fo
 
 void PatternParser::MDCPatternConverter::convert(tostream& sbuf, const spi::LoggingEvent& event)
 {
-	sbuf << event.getNDC();
+	/**
+	* if there is no additional options, we output every single
+	* Key/Value pair for the MDC in a similar format to Hashtable.toString()
+	*/
+
+	if (key.empty())
+	{
+		sbuf << _T("{");
+		std::set<tstring> keySet = event.getMDCKeySet();
+		std::set<tstring>::iterator i;
+		for (i = keySet.begin(); i != keySet.end(); i++)
+		{
+			tstring item = *i;
+			tstring val = event.getMDC(item);
+			sbuf << _T("{") << item << _T(",") << val << _T("}");
+		}
+		sbuf << _T("}");
+	}
+	else
+	{
+		/**
+		* otherwise they just want a single key output
+		*/
+		sbuf << event.getMDC(key);
+	}
 }
 
 

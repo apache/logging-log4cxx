@@ -31,14 +31,17 @@ using namespace log4cxx::helpers;
 time_t LoggingEvent::startTime = time(0);
 
 LoggingEvent::LoggingEvent()
-: timeStamp(0), level(&Level::OFF), ndcLookupRequired(true), line(0)
+: timeStamp(0), level(&Level::OFF), ndcLookupRequired(true), line(0),
+mdcCopyLookupRequired(true)
 {
 }
 
-LoggingEvent::LoggingEvent(const LoggerPtr& logger, const Level& level,
+LoggingEvent::LoggingEvent(const tstring& fqnOfCategoryClass,
+	const LoggerPtr& logger, const Level& level,
 	const tstring& message, const char* file, int line)
-: logger(logger), level(&level), message(message), file((char*)file), 
-line(line), timeStamp(time(0)), ndcLookupRequired(true)
+: fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(&level),
+message(message), file((char*)file), line(line), timeStamp(time(0)),
+ndcLookupRequired(true)
 {
 	threadId = Thread::getCurrentThreadId();
 }
@@ -62,8 +65,105 @@ const tstring& LoggingEvent::getNDC() const
 	return ndc;
 }
 
+tstring LoggingEvent::getMDC(const tstring& key) const
+{
+   // Note the mdcCopy is used if it exists. Otherwise we use the MDC
+    // that is associated with the thread.
+    if (!mdcCopy.empty())
+	{
+		MDC::Map::const_iterator it = mdcCopy.find(key);
+
+		if (it != mdcCopy.end())
+		{
+			tstring r = it->second;
+
+			if (!r.empty())
+			{
+				return r;
+			}
+		}
+    }
+
+    return MDC::get(key);
+
+}
+
+std::set<tstring> LoggingEvent::getMDCKeySet() const
+{
+	std::set<tstring> set;
+
+	if (!mdcCopy.empty())
+	{
+		MDC::Map::const_iterator it;
+		for (it = mdcCopy.begin(); it != mdcCopy.end(); it++)
+		{
+			set.insert(it->first);
+
+		}
+	}
+	else
+	{
+		MDC::Map m = MDC::getContext();
+
+		MDC::Map::const_iterator it;
+		for (it = m.begin(); it != m.end(); it++)
+		{
+			set.insert(it->first);
+		}
+	}
+
+	return set;
+}
+
+void LoggingEvent::getMDCCopy() const
+{
+	if(mdcCopyLookupRequired)
+	{
+		((LoggingEvent *)this)->mdcCopyLookupRequired = false;
+		// the clone call is required for asynchronous logging.
+		((LoggingEvent *)this)->mdcCopy = MDC::getContext();
+	}
+}
+
+tstring LoggingEvent::getProperty(const tstring& key) const
+{
+	std::map<tstring, tstring>::const_iterator  it = properties.find(key);
+
+	if (it != properties.end())
+	{
+		const tstring& p = it->second;
+
+		if (!p.empty())
+		{
+			return p;
+		}
+	}
+
+	return tstring();
+}
+
+std::set<tstring> LoggingEvent::getPropertyKeySet() const
+{
+	std::set<tstring> set;
+	std::map<tstring, tstring>::const_iterator it;
+	for (it = properties.begin(); it != properties.end(); it++)
+	{
+		set.insert(it->first);
+	}
+
+	return set;
+}
+
+void LoggingEvent::setProperty(const tstring& key, const tstring& value)
+{
+	properties[key] = value;
+}
+
 void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
 {
+	// fqnOfCategoryClass
+	os->write(fqnOfCategoryClass);
+
 	// name
 	os->write(logger->getName());
 
@@ -82,12 +182,34 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
 	// ndc
 	os->write(getNDC());
 
+	// mdc
+	getMDCCopy();
+	os->write((int)mdcCopy.size());
+	MDC::Map::const_iterator it;
+	for (it = mdcCopy.begin(); it != mdcCopy.end(); it++)
+	{
+		os->write(it->first);
+		os->write(it->second);
+	}
+
+	// properties
+	os->write((int)properties.size());
+	std::map<tstring, tstring>::const_iterator it2;
+	for (it2 = properties.begin(); it2 != properties.end(); it2++)
+	{
+		os->write(it2->first);
+		os->write(it2->second);
+	}
+
 	// threadId
 	os->write(threadId);
 }
 
 void LoggingEvent::read(helpers::SocketInputStreamPtr is)
 {
+	// fqnOfCategoryClass
+	is->read(fqnOfCategoryClass);
+
 	// name
 	tstring name;
 	is->read(name);
@@ -113,6 +235,26 @@ void LoggingEvent::read(helpers::SocketInputStreamPtr is)
 	// ndc
 	is->read(ndc);
 
+	// mdc
+	tstring key, value;
+	int n, size;
+	is->read(size);
+	for (n = 0; n < size; n++)
+	{
+		is->read(key);
+		is->read(value);
+		mdcCopy[key] = value;
+	}
+
+	// properties
+	is->read(size);
+	for (n = 0; n < size; n++)
+	{
+		is->read(key);
+		is->read(value);
+		properties[key] = value;
+	}
+
 	// threadId
 	is->read(threadId);
 }
@@ -121,6 +263,4 @@ LoggingEvent * LoggingEvent::copy() const
 {
 	return new LoggingEvent(*this);
 }
-
-
 
