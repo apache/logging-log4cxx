@@ -93,10 +93,16 @@ LoggerPtr Hierarchy::exists(const String& name)
 {
 	mapCs.lock();
 	
+	LoggerPtr logger;
 	LoggerMap::iterator it = loggers.find(name);
-	return (it != loggers.end()) ? it->second : 0;
+	if (it != loggers.end())
+	{
+		logger = it->second;
+	}
 
 	mapCs.unlock();
+	
+	return logger;
 }
 	
 void Hierarchy::setThreshold(const LevelPtr& l)
