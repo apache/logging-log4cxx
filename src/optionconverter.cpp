@@ -221,13 +221,20 @@ const Level& OptionConverter::toLevel(const tstring& value, const Level& default
 ObjectPtr OptionConverter::instantiateByKey(Properties& props, const tstring& key,
 	const Class& superClass, ObjectPtr defaultValue)
 {
-// Get the value of the property in string form
+	// Get the value of the property in string form
 	tstring className = findAndSubst(key, props);
 	if(className.empty())
 	{
 		LogLog::error(_T("Could not find value for key ") + key);
 		return defaultValue;
 	}
+
+	tstring::size_type pos = className.find_last_of(_T('.'));
+	if (pos != tstring::npos)
+	{
+		className = className.substr(pos + 1);
+	}
+
 	// Trim className to avoid trailing spaces that cause problems.
 	return OptionConverter::instantiateByClassName(
 		StringHelper::trim(className), superClass, defaultValue);
