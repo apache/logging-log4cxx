@@ -31,9 +31,11 @@ public:
 	~RegistryDestructor()
 	{
 		if (registry != 0)
+		{
 			delete registry;
+		}
 	}
-};
+} registryDestructor;
 
 ClassNotFoundException::ClassNotFoundException(const String& className)
 {
