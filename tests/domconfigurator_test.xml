@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--a simple test config-->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+	<appender name="rootAppender" class="ConsoleAppender">
+		<layout class="SimpleLayout"/>
+	</appender>
+
+	<appender name="A1" class="FileAppender">
+		<param name="file" value="A1.log"/>
+		<layout class="SimpleLayout"/>
+	</appender>
+
+	<appender name="A2" class="ConsoleAppender">
+		<layout class="PatternLayout">
+			<param name="ConversionPattern" value="The message '%m' at time %d%n"/>
+		</layout>
+	</appender>
+
+	<root>
+		<level value ="DEBUG"/>
+		<appender-ref ref="rootAppender"/>
+	</root>
+
+	<logger name="sub1">
+		<appender-ref ref="A1"/>
+	</logger>
+
+	<logger name="sub2">
+		<level value ="INFO"/>
+	</logger>
+
+	<logger name="sub1.sub2" additivity="false">
+		<level value ="ERROR"/>
+		<appender-ref ref="A2"/>
+	</logger>
+</log4j:configuration>
