@@ -81,9 +81,8 @@ SocketException::SocketException()
 		}
 		else
 		{
-			itoa(::WSAGetLastError(), messageBuffer, 10);
-			USES_CONVERSION;
-			message = A2T(messageBuffer);
+			itot(::WSAGetLastError(), messageBuffer, 10);
+			message = messageBuffer;
 		}
 	}
 #else

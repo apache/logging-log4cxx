@@ -89,6 +89,7 @@ public:
 
 	#define tostringstream std::wostringstream
 	#define ttol(s) wcstol(s, 0, 10)
+	#define itot _itow
 	#define tcscmp wcscmp
 #else // Not UNICODE
 	#include <ctype.h>
@@ -125,6 +126,7 @@ public:
 
 	#define tostringstream std::ostringstream
 	#define ttol atol
+	#define itot itoa
 	#define tcscmp strcmp
 #endif // UNICODE
 

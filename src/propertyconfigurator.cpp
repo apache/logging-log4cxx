@@ -314,7 +314,7 @@ void PropertyConfigurator::parseCategory(
 		}
 
 		tstring levelStr = st.nextToken();
-		LogLog::debug(_T("Level token is [" + levelStr + "]."));
+		LogLog::debug(_T("Level token is [") + levelStr + _T("]."));
 
 		// If the level value is inherited, set category level value to
 		// null. We also check that the user has not specified inherited for the
@@ -418,7 +418,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 		}
 
 		//configureOptionHandler((OptionHandler) appender, prefix + _T("."), props);
-		PropertySetter::setProperties(appender, props, prefix + ".");
+		PropertySetter::setProperties(appender, props, prefix + _T("."));
 		LogLog::debug(_T("Parsed \"")
 			+ appenderName + _T("\" options."));
 	}

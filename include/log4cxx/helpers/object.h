@@ -26,7 +26,7 @@ public:\
 class Class##object : public helpers::Class\
 {\
 public:\
-	Class##object() : helpers::Class(#object) {}\
+	Class##object() : helpers::Class(_T(#object)) {}\
 };\
 virtual const helpers::Class& getClass() const;\
 static const helpers::Class& getStaticClass();
@@ -36,7 +36,7 @@ public:\
 class Class##object : public helpers::Class\
 {\
 public:\
-	Class##object() : helpers::Class(#object) {}\
+	Class##object() : helpers::Class(_T(#object)) {}\
 	virtual helpers::ObjectPtr newInstance() const\
 	{\
 		return new object();\

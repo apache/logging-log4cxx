@@ -15,7 +15,7 @@ int main()
   {
     //LayoutPtr layout = new PatternLayout();
     PatternLayout *layout = new PatternLayout();
-    const tstring pattern( "%-5p [%t]: %m%n" );
+    const tstring pattern( _T("%-5p [%t]: %m%n") );
     layout->setConversionPattern( pattern );
 
     AppenderPtr consoleAppender =
