@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,6 +32,7 @@
 #include "util/controlfilter.h"
 #include "util/threadfilter.h"
 #include "util/linenumberfilter.h"
+#include "util/filenamefilter.h"
 
 #define FILTERED _T("output/filtered")
 #define TEMP _T("output/temp")
@@ -69,10 +70,10 @@ class PatternLayoutTest : public CppUnit::TestFixture
 		CPPUNIT_TEST(testMDC1);
 		CPPUNIT_TEST(testMDC2);
 	CPPUNIT_TEST_SUITE_END();
-	
+
 	LoggerPtr root;
 	LoggerPtr logger;
-	
+
 public:
 	void setUp()
 	{
@@ -84,14 +85,14 @@ public:
 	{
 		root->getLoggerRepository()->resetConfiguration();
 	}
-	
+
 	void test1()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout1.properties"));
 		common();
 		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/patternLayout.1")));
 	}
-	
+
 	void test2()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout2.properties"));
@@ -119,7 +120,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.2")));
 	}
-	
+
 	void test3()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout3.properties"));
@@ -147,9 +148,9 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.3")));
 	}
-	
+
 	// Output format:
-	// 06 avr. 2002 18:30:58,937 [12345] DEBUG atternLayoutTest - Message 0  
+	// 06 avr. 2002 18:30:58,937 [12345] DEBUG atternLayoutTest - Message 0
 	void test4()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout4.properties"));
@@ -205,7 +206,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.5")));
 	}
-	
+
 	void test6()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout6.properties"));
@@ -233,7 +234,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.6")));
 	}
-	
+
 	void test7()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout7.properties"));
@@ -261,7 +262,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.7")));
 	}
-	
+
 	void test8()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout8.properties"));
@@ -289,7 +290,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.8")));
 	}
-	
+
 	void test9()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout9.properties"));
@@ -315,7 +316,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.9")));
 	}
-	
+
 	void test10()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout10.properties"));
@@ -325,11 +326,15 @@ public:
 		filter1 << PAT6;
 		ThreadFilter filter2;
 		LineNumberFilter filter3;
+                FilenameFilter filenameFilter(__FILE__, "patternlayouttest.cpp");
+
 
 		std::vector<Filter *> filters;
 		filters.push_back(&filter1);
 		filters.push_back(&filter2);
 		filters.push_back(&filter3);
+                filters.push_back(&filenameFilter);
+
 
 		try
 		{
@@ -343,7 +348,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.10")));
 	}
-	
+
 	void test11()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout11.properties"));
@@ -369,7 +374,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.11")));
 	}
-	
+
 	void test12()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout12.properties"));
@@ -379,11 +384,13 @@ public:
 		filter1 << PAT12;
 		ThreadFilter filter2;
 		LineNumberFilter filter3;
+                FilenameFilter filenameFilter(__FILE__, "patternlayouttest.cpp");
 
 		std::vector<Filter *> filters;
 		filters.push_back(&filter1);
 		filters.push_back(&filter2);
 		filters.push_back(&filter3);
+                filters.push_back(&filenameFilter);
 
 		try
 		{
@@ -397,7 +404,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.12")));
 	}
-	
+
 	void testMDC1()
 	{
 		PropertyConfigurator::configure(_T("input/patternLayout.mdc.1.properties"));
@@ -408,7 +415,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/patternLayout.mdc.1")));
 	}
-	
+
 	void testMDC2()
 	{
 		String OUTPUT_FILE   = _T("output/patternLayout.mdc.2");
@@ -484,8 +491,8 @@ public:
 		CPPUNIT_ASSERT(Compare::compare(OUTPUT_FILE, WITNESS_FILE));
 	}
 
-	
-	void common() 
+
+	void common()
 	{
 		int i = -1;
 

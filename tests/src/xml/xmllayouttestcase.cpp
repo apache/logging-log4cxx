@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,6 +27,7 @@
 #include "../util/xmltimestampfilter.h"
 #include "../util/xmllineattributefilter.h"
 #include "../util/xmlthreadfilter.h"
+#include "../util/xmlfilenamefilter.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -35,12 +36,12 @@ using namespace log4cxx::xml;
 #define FILTERED _T("output/filtered")
 #define TEMP _T("output/temp")
 
-class X 
+class X
 {
 public:
 	X()
 	{
-		LoggerPtr logger = 
+		LoggerPtr logger =
 			Logger::getLogger(_T("org.apache.log4j.xml.XMLLayoutTestCase$X"));
 		LOG4CXX_INFO(logger, _T("in X() constructor"));
 	}
@@ -96,23 +97,25 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.1")));
 	}
-	
+
 	void locationInfo()
 	{
 		XMLLayoutPtr xmlLayout = new XMLLayout();
 		xmlLayout->setLocationInfo(true);
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 		common();
-		
+
 		XMLTimestampFilter xmlTimestampFilter;
 		XMLLineAttributeFilter xmlLineAttributeFilter;
 		XMLThreadFilter xmlThreadFilter;
+                XMLFilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
 
 		std::vector<Filter *> filters;
 		filters.push_back(&xmlTimestampFilter);
 		filters.push_back(&xmlLineAttributeFilter);
 		filters.push_back(&xmlThreadFilter);
-		
+                filters.push_back(&xmlFilenameFilter);
+
 		try
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
@@ -125,25 +128,27 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.2")));
 	}
-	
+
 	void testCDATA()
 	{
 		XMLLayoutPtr xmlLayout = new XMLLayout();
 		xmlLayout->setLocationInfo(true);
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
-		
+
 		LOG4CXX_DEBUG(logger,
 			_T("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
-		
+
 		XMLTimestampFilter xmlTimestampFilter;
 		XMLLineAttributeFilter xmlLineAttributeFilter;
 		XMLThreadFilter xmlThreadFilter;
+                XMLFilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
 
 		std::vector<Filter *> filters;
 		filters.push_back(&xmlTimestampFilter);
 		filters.push_back(&xmlLineAttributeFilter);
 		filters.push_back(&xmlThreadFilter);
-		
+                filters.push_back(&xmlFilenameFilter);
+
 		try
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
@@ -161,17 +166,17 @@ public:
 	{
 		XMLLayoutPtr xmlLayout = new XMLLayout();
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
-		
+
 		LOG4CXX_DEBUG(logger, _T("hi"));
 		LOG4CXX_DEBUG(logger, _T(""));
-		
+
 		XMLTimestampFilter xmlTimestampFilter;
 		XMLThreadFilter xmlThreadFilter;
 
 		std::vector<Filter *> filters;
 		filters.push_back(&xmlTimestampFilter);
 		filters.push_back(&xmlThreadFilter);
-		
+
 		try
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
@@ -184,18 +189,18 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.null")));
 	}
-	
+
 	void testMDC()
 	{
 		XMLLayoutPtr xmlLayout = new XMLLayout();
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
-		
+
 		MDC::clear();
 		MDC::put(_T("key1"), _T("val1"));
 		MDC::put(_T("key2"), _T("val2"));
 
 		LOG4CXX_DEBUG(logger, _T("Hello"));
-		
+
 		MDC::clear();
 
 		XMLTimestampFilter xmlTimestampFilter;
@@ -204,7 +209,7 @@ public:
 		std::vector<Filter *> filters;
 		filters.push_back(&xmlTimestampFilter);
 		filters.push_back(&xmlThreadFilter);
-		
+
 		try
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
@@ -217,19 +222,19 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.mdc.1")));
 	}
-	
+
 	// not incuded in the tests for the moment !
 	void holdTestMDCEscaped()
 	{
 		XMLLayoutPtr xmlLayout = new XMLLayout();
 		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
-		
+
 		MDC::clear();
 		MDC::put(_T("blahAttribute"), _T("<blah value=\"blah\">"));
 		MDC::put(_T("<blahKey value=\"blah\"/>"), _T("blahValue"));
 
 		LOG4CXX_DEBUG(logger, _T("Hello"));
-		
+
 		MDC::clear();
 
 		XMLTimestampFilter xmlTimestampFilter;
@@ -238,7 +243,7 @@ public:
 		std::vector<Filter *> filters;
 		filters.push_back(&xmlTimestampFilter);
 		filters.push_back(&xmlThreadFilter);
-		
+
 		try
 		{
 			Transformer::transform(TEMP, FILTERED, filters);
@@ -251,7 +256,7 @@ public:
 
 		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.mdc.2")));
 	}
-	
+
 	void common()
 	{
 		int i = -1;
