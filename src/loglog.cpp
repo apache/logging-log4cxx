@@ -20,6 +20,7 @@ using namespace log4cxx::helpers;
 
 bool LogLog::debugEnabled = false;  
 bool LogLog::quietMode = false;
+tstring LogLog::DEBUG_KEY = _T("log4j.debug");
 
 void LogLog::setInternalDebugging(bool debugEnabled)
 {

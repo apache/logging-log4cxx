@@ -20,6 +20,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(PatternConverter)
+
 PatternConverter::PatternConverter() : min(-1), max(0x7FFFFFFF), leftAlign(false)
 {
 }

@@ -74,6 +74,13 @@ namespace log4cxx
 			const Level * levelMax;
 
 		public:
+			typedef spi::Filter BASE_CLASS;
+			DECLARE_LOG4CXX_OBJECT(LevelRangeFilter)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(LevelRangeFilter)
+				LOG4CXX_INTERFACE_ENTRY_CHAIN(BASE_CLASS)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			LevelRangeFilter();
 
 			/**

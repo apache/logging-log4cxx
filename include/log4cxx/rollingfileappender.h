@@ -40,6 +40,11 @@ namespace log4cxx
 		int  maxBackupIndex;
 
 	public:
+		DECLARE_LOG4CXX_OBJECT(RollingFileAppender)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(RollingFileAppender)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(FileAppender)
+		END_LOG4CXX_INTERFACE_MAP()
 		/**
 		The default constructor simply calls its {@link
 		FileAppender#FileAppender parents constructor}.  */

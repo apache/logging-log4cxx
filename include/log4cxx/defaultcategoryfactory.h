@@ -23,13 +23,18 @@
 namespace log4cxx
 {
 	class Logger;
-	typedef helpers::ObjectPtr<Logger> LoggerPtr;
+	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 	
 	class DefaultCategoryFactory :
 		public virtual spi::LoggerFactory,
 		public virtual helpers::ObjectImpl
 	{
 	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultCategoryFactory)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(spi::LoggerFactory)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		virtual LoggerPtr makeNewLoggerInstance(const tstring& name);
 	};	
 }; // namespace log4cxx

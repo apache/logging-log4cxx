@@ -39,6 +39,18 @@ namespace log4cxx
 		*/
 		class LogLog
 		{
+		public:
+			/**
+			Defining this value makes log4j print log4j-internal debug
+			statements to <code>System.out</code>.
+
+			<p> The value of this string is <b>log4j.debug</b>.
+
+			<p>Note that the search for all option names is case sensitive.  */
+			static tstring DEBUG_KEY;
+
+
+
 		protected:
 			static bool debugEnabled;  
 

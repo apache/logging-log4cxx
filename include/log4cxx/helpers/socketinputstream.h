@@ -27,10 +27,10 @@ namespace log4cxx
 	namespace helpers
 	{
 		class Socket;
-		typedef ObjectPtr<Socket> SocketPtr;
+		typedef ObjectPtrT<Socket> SocketPtr;
 
 		class SocketInputStream;
-		typedef ObjectPtr<SocketInputStream> SocketInputStreamPtr;
+		typedef ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 
 		class EOFException : Exception
 		{
@@ -44,6 +44,11 @@ namespace log4cxx
 			static size_t DEFAULT_BUFFER_SIZE;
 
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketInputStream)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(SocketInputStream)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			SocketInputStream(SocketPtr socket);
 			SocketInputStream(SocketPtr socket, size_t bufferSize);
 			~SocketInputStream();

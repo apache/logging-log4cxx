@@ -28,6 +28,8 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 using namespace log4cxx::xml;
 
+IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
+
 // The default port number of remote logging server (4560)
 int XMLSocketAppender::DEFAULT_PORT                 = 4560;
 

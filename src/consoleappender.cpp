@@ -22,6 +22,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(ConsoleAppender)
+
 tstring ConsoleAppender::SYSTEM_OUT = _T("System.out");
 tstring ConsoleAppender::SYSTEM_ERR = _T("System.err");
 

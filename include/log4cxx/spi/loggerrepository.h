@@ -27,24 +27,24 @@ namespace log4cxx
 	class Level;
 
 	class Logger;
-	typedef helpers::ObjectPtr<Logger> LoggerPtr;
+	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
 	typedef std::vector<LoggerPtr> LoggerList;
 	
 	class Appender;
-	typedef log4cxx::helpers::ObjectPtr<Appender> AppenderPtr;
+	typedef log4cxx::helpers::ObjectPtrT<Appender> AppenderPtr;
 
 	namespace spi
 	{
 		class HierarchyEventListener;
-		typedef log4cxx::helpers::ObjectPtr<HierarchyEventListener>
+		typedef log4cxx::helpers::ObjectPtrT<HierarchyEventListener>
 			HierarchyEventListenerPtr;
 			
 		class LoggerFactory;
-		typedef helpers::ObjectPtr<LoggerFactory> LoggerFactoryPtr;
+		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
 		
 		class LoggerRepository;
-		typedef helpers::ObjectPtr<LoggerRepository> LoggerRepositoryPtr;
+		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
 		
 		/**
 		A <code>LoggerRepository</code> is used to create and retrieve
@@ -59,6 +59,7 @@ namespace log4cxx
         class LoggerRepository : public virtual helpers::Object
         {
         public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerRepository)
 			virtual ~LoggerRepository() {}
 
             /**

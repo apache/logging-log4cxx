@@ -38,6 +38,13 @@ namespace log4cxx
 		class DenyAllFilter : public spi::Filter
 		{
 		public:
+			typedef spi::Filter BASE_CLASS;
+			DECLARE_LOG4CXX_OBJECT(DenyAllFilter)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(DenyAllFilter)
+				LOG4CXX_INTERFACE_ENTRY_CHAIN(BASE_CLASS)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			/**
 			Always returns the integer constant {@link spi::Filter#DENY DENY}
 			regardless of the {@link spi::LoggingEvent LoggingEvent} parameter.

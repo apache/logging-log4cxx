@@ -58,6 +58,13 @@ namespace log4cxx
 			tstring stringToMatch;
 
 		public:
+			typedef spi::Filter BASE_CLASS;
+			DECLARE_LOG4CXX_OBJECT(StringMatchFilter)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(StringMatchFilter)
+				LOG4CXX_INTERFACE_ENTRY_CHAIN(BASE_CLASS)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			StringMatchFilter();
 
 			/**

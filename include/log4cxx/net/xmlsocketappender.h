@@ -26,13 +26,13 @@ namespace log4cxx
 	namespace helpers
 	{
 		class SocketOutputStream;
-		typedef helpers::ObjectPtr<SocketOutputStream> SocketOutputStreamPtr;
+		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
 	};
 
 	namespace net
 	{
 		class XMLSocketAppender;
-		typedef helpers::ObjectPtr<XMLSocketAppender> XMLSocketAppenderPtr;
+		typedef helpers::ObjectPtrT<XMLSocketAppender> XMLSocketAppenderPtr;
 
         /**
         Sends {@link spi::LoggingEvent LoggingEvent} objects to a remote a log server,
@@ -140,7 +140,13 @@ namespace log4cxx
 			static const int MAX_EVENT_LEN;
 
 		public:
-    		XMLSocketAppender();
+			DECLARE_LOG4CXX_OBJECT(XMLSocketAppender)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(XMLSocketAppender)
+				LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
+			END_LOG4CXX_INTERFACE_MAP()
+
+			XMLSocketAppender();
 			~XMLSocketAppender();
 
     		/**
@@ -261,7 +267,7 @@ namespace log4cxx
 			restart to try reconnect to the server when previpously open
 			connection is droppped.
 			*/
-			class Connector : public helpers::Thread, public helpers::ObjectImpl
+			class Connector : public helpers::Thread
 			{
 			public:
 				bool interrupted;

@@ -69,6 +69,7 @@ public:
 	#define W2T(src) src
 	#define tostringstream std::wostringstream
 	#define ttol(s) wcstol(s, 0, 10)
+	#define tcscmp wcscmp
 #else // Not UNICODE
 	#include <ctype.h>
 	#define _T(x) x
@@ -92,6 +93,7 @@ public:
 	#define W2T(src) W2A(src)
 	#define tostringstream std::ostringstream
 	#define ttol atol
+	#define tcscmp strcmp
 #endif // UNICODE
 
 #endif //_LOG4CXX_HELPERS_TCHAR_H

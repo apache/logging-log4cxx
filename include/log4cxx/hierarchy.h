@@ -29,7 +29,7 @@ namespace log4cxx
 	namespace spi
 	{
 		class HierarchyEventListener;
-		typedef log4cxx::helpers::ObjectPtr<HierarchyEventListener>
+		typedef log4cxx::helpers::ObjectPtrT<HierarchyEventListener>
 			HierarchyEventListenerPtr;
 		typedef std::vector<HierarchyEventListenerPtr> HierarchyEventListenerList;
 	}
@@ -54,9 +54,6 @@ namespace log4cxx
 	*/
 	class Hierarchy :
 		public virtual spi::LoggerRepository,
-
-
-
 		public virtual helpers::ObjectImpl
 	{
 	private:
@@ -83,6 +80,11 @@ namespace log4cxx
         helpers::CriticalSection mapCs;
 		
     public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(spi::LoggerRepository)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		/**
 		Create a new logger hierarchy.
 		@param root The root of the new hierarchy.

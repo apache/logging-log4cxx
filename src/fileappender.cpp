@@ -22,6 +22,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
+
 FileAppender::FileAppender()
 : fileAppend(true), bufferedIO(false), bufferSize(8*1024)
 {

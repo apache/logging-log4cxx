@@ -26,10 +26,13 @@ namespace log4cxx
 	namespace helpers
 	{
 		class BoundedFIFO;
-		typedef ObjectPtr<BoundedFIFO> BoundedFIFOPtr;
+		typedef ObjectPtrT<BoundedFIFO> BoundedFIFOPtr;
 	};
 
 	class Dispatcher;
+
+	class AsyncAppender;
+	typedef helpers::ObjectPtrT<AsyncAppender> AsyncAppenderPtr;
 	
 	/**
 	The AsyncAppender lets users log events asynchronously. It uses a
@@ -46,12 +49,19 @@ namespace log4cxx
 	be script configured using the {@link xml::DOMConfigurator DOMConfigurator}.
 	*/
 	class AsyncAppender :
-		public AppenderSkeleton,
-		public helpers::AppenderAttachableImpl
+		public virtual helpers::AppenderAttachableImpl,
+		public virtual AppenderSkeleton
 	{
 	friend class Dispatcher;
 
 	public:
+		DECLARE_LOG4CXX_OBJECT(AsyncAppender)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(AsyncAppender)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
+			LOG4CXX_INTERFACE_ENTRY(spi::AppenderAttachable)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		/** The default buffer size is set to 128 events. */
 		static int DEFAULT_BUFFER_SIZE;
 
@@ -61,7 +71,7 @@ namespace log4cxx
 		bool interruptedWarningMessage;
 
 		AsyncAppender();
-		~AsyncAppender();
+		virtual ~AsyncAppender();
 
 		void append(const spi::LoggingEvent& event);
 

@@ -28,6 +28,11 @@ namespace log4cxx
 			public virtual helpers::ObjectImpl
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultRepositorySelector)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(RepositorySelector)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			DefaultRepositorySelector(LoggerRepositoryPtr repository)
 			 : repository(repository)
 			{

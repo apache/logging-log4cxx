@@ -35,6 +35,13 @@ namespace log4cxx
 	*/
 	class SimpleLayout : public Layout
 	{
+	public:
+		DECLARE_LOG4CXX_OBJECT(SimpleLayout)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(SimpleLayout)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(Layout)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		/**
 		Returns the log statement in a format consisting of the
 		<code>level</code>, followed by " - " and then the
@@ -45,20 +52,17 @@ namespace log4cxx
 		<p>
 		@return A byte array in SimpleLayout format.
 		*/
-		public:
-			virtual void format(tostream& output, const spi::LoggingEvent& event);
+		virtual void format(tostream& output, const spi::LoggingEvent& event);
 
 		/**
 		The SimpleLayout does not handle the throwable contained within
 		{@link spi::LoggingEvent LoggingEvents}. Thus, it returns
 		<code>true</code>.
 		*/
-		public:
-			bool ignoresThrowable() { return true; }
+		bool ignoresThrowable() { return true; }
 
-		public:
-			virtual void activateOptions() {}
-			virtual void setOption(const tstring& option, const tstring& value) {}
+		virtual void activateOptions() {}
+		virtual void setOption(const tstring& option, const tstring& value) {}
 	};
 }; // namespace log4cxx
 

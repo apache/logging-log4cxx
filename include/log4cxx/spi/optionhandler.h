@@ -26,7 +26,7 @@ namespace log4cxx
 	namespace spi
 	{
 		class OptionHandler;
-		typedef helpers::ObjectPtr<OptionHandler> OptionHandlerPtr;
+		typedef helpers::ObjectPtrT<OptionHandler> OptionHandlerPtr;
 
 		/**
 		A string based interface to configure package components.
@@ -34,6 +34,7 @@ namespace log4cxx
 		class OptionHandler : public virtual helpers::Object
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(OptionHandler)
 			virtual ~OptionHandler() {}
 
 			/**

@@ -21,6 +21,8 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(BoundedFIFO)
+
 BoundedFIFO::BoundedFIFO(int maxSize) : numElements(0), first(0), next(0)
 {
 	if(maxSize < 1)

@@ -24,7 +24,7 @@
 namespace log4cxx
 {
 	class Logger;
-	typedef helpers::ObjectPtr<Logger> LoggerPtr;
+	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
 	namespace spi
 	{
@@ -35,11 +35,12 @@ namespace log4cxx
 		class LoggerFactory : public virtual helpers::Object
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerFactory)
 			virtual ~LoggerFactory() {}
 			virtual LoggerPtr makeNewLoggerInstance(const tstring& name) = 0;
 		};
 
-		typedef helpers::ObjectPtr<LoggerFactory> LoggerFactoryPtr;
+		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
 
 	}; // namespace spi
 }; // namesapce log4cxx

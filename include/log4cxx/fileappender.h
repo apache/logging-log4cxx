@@ -62,6 +62,12 @@ namespace log4cxx
 #endif
 
 	public:
+		DECLARE_LOG4CXX_OBJECT(FileAppender)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(FileAppender)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(WriterAppender)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		/**
 		The default constructor does not do anything.
 		*/

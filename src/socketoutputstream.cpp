@@ -21,6 +21,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(SocketOutputStream)
+
 #define INCREMENT 512
 
 SocketOutputStream::SocketOutputStream(SocketPtr socket)

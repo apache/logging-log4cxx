@@ -25,7 +25,7 @@ namespace log4cxx
 	namespace spi
 	{
 		class TriggeringEventEvaluator;
-		typedef helpers::ObjectPtr<TriggeringEventEvaluator>
+		typedef helpers::ObjectPtrT<TriggeringEventEvaluator>
 			TriggeringEventEvaluatorPtr;
 
 		class LoggingEvent;

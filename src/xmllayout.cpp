@@ -28,6 +28,8 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::xml;
 
+IMPLEMENT_LOG4CXX_OBJECT(XMLLayout)
+
 tstring XMLLayout::LOCATION_INFO_OPTION = _T("LocationInfo");
 
 XMLLayout::XMLLayout()

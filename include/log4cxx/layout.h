@@ -24,7 +24,7 @@
 namespace log4cxx
 {
     class Layout;
-    typedef helpers::ObjectPtr<Layout> LayoutPtr;
+    typedef helpers::ObjectPtrT<Layout> LayoutPtr;
 
     namespace spi
     {
@@ -39,6 +39,12 @@ namespace log4cxx
 		public virtual helpers::ObjectImpl
 	{
 	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Layout)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(Layout)
+			LOG4CXX_INTERFACE_ENTRY(spi::OptionHandler)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		virtual ~Layout() {}
 
 		/**
@@ -75,7 +81,6 @@ namespace log4cxx
 		xml::XMLLayout XMLLayout} returns <code>false</code>.
 		*/
 		virtual bool ignoresThrowable() = 0;
-
 	};
 };
 

@@ -21,6 +21,9 @@
 
 namespace log4cxx
 {
+	class ConsoleAppender;
+	typedef helpers::ObjectPtrT<ConsoleAppender> ConsoleAppenderPtr;
+
 	/**
 	* ConsoleAppender appends log events to <code>stdout</code> or
 	* <code>stderr</code> using a layout specified by the user. The
@@ -29,6 +32,12 @@ namespace log4cxx
 	class ConsoleAppender : public WriterAppender
 	{
 	public:
+		DECLARE_LOG4CXX_OBJECT(ConsoleAppender)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(ConsoleAppender)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		ConsoleAppender();
 		ConsoleAppender(LayoutPtr layout);
 		ConsoleAppender(LayoutPtr layout, const tstring& target);

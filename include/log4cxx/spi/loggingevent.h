@@ -25,17 +25,17 @@
 namespace log4cxx
 {
 	class Logger;
-	typedef helpers::ObjectPtr<Logger> LoggerPtr;
+	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 	
 	class Level;
 
 	namespace helpers
 	{
 		class SocketOutputStream;
-		typedef helpers::ObjectPtr<SocketOutputStream> SocketOutputStreamPtr;
+		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
 
 		class SocketInputStream;
-		typedef helpers::ObjectPtr<SocketInputStream> SocketInputStreamPtr;
+		typedef helpers::ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 	};
 	
 	namespace spi

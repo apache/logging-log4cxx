@@ -23,6 +23,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(PatternLayout)
+
 /** Default pattern string for log output. Currently set to the
 string <b>"%m%n"</b> which just prints the application supplied
 message. */

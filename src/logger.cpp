@@ -28,8 +28,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(Logger)
+
 Logger::Logger(const tstring& name)
-: name(name), level(&Level::OFF), additive(true)
+: name(name), level(&Level::OFF), additive(true), repository(0)
 {
 
 }

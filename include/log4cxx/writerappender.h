@@ -21,6 +21,9 @@
 
 namespace log4cxx
 {
+	class WriterAppender;
+	typedef helpers::ObjectPtrT<WriterAppender> WriterAppenderPtr;
+
 	/**
 	WriterAppender appends log events to a standard output stream
 	(ostream or wostream)
@@ -58,6 +61,12 @@ namespace log4cxx
 	
 	
 	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(WriterAppender)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(WriterAppender)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		/**
 		This default constructor does nothing.*/
 		WriterAppender();

@@ -27,6 +27,8 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(SocketHubAppender)
+
 int SocketHubAppender::DEFAULT_PORT = 4560;
 
 SocketHubAppender::~SocketHubAppender()
@@ -144,7 +146,7 @@ void SocketHubAppender::append(const spi::LoggingEvent& event)
 			oos->flush();
 			it++;
 		}
-		catch(SocketException& e)
+		catch(SocketException&)
 		{
 			// there was an io exception so just drop the connection
 			it = oosList.erase(it);
@@ -177,7 +179,7 @@ void SocketHubAppender::ServerMonitor::stopMonitor()
 		{	
 			monitorThread->join();
 		}
-		catch (InterruptedException e)
+		catch (InterruptedException&)
 		{
 			// do nothing?
 		}
@@ -221,7 +223,7 @@ void SocketHubAppender::ServerMonitor::run()
 		{
 			socket = serverSocket->accept();
 		}
-		catch (InterruptedIOException& e)
+		catch (InterruptedIOException&)
 		{
 			// timeout occurred, so just loop
 		}

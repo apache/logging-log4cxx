@@ -73,6 +73,12 @@ namespace log4cxx
 		  bool filePrinting;
 
 	public:
+		DECLARE_LOG4CXX_OBJECT(TTCCLayout)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(TTCCLayout)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(Layout)
+		END_LOG4CXX_INTERFACE_MAP()
+
 	/**
 	Instantiate a TTCCLayout object with {@link
 	helpers::RelativeTimeDateFormat RelativeTimeDateFormat} as the date

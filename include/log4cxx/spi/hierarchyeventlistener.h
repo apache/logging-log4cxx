@@ -24,14 +24,14 @@
 namespace log4cxx
 {
 	class Logger;
-	typedef helpers::ObjectPtr<Logger> LoggerPtr;
+	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 	class Appender;
-	typedef helpers::ObjectPtr<Appender> AppenderPtr;
+	typedef helpers::ObjectPtrT<Appender> AppenderPtr;
 	
 	namespace spi
 	{
 		class HierarchyEventListener;
-		typedef log4cxx::helpers::ObjectPtr<HierarchyEventListener> 
+		typedef log4cxx::helpers::ObjectPtrT<HierarchyEventListener> 
 			HierarchyEventListenerPtr;
 		typedef std::vector<HierarchyEventListenerPtr> HierarchyEventListenerList;
 			

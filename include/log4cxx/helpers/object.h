@@ -13,18 +13,55 @@
  * License version 1.1, a copy of which has been included with this        *
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
- 
+
 #ifndef _LOG4CXX_HELPERS_OBJECT_H
 #define _LOG4CXX_HELPERS_OBJECT_H
+
+#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/helpers/class.h>
+#include <log4cxx/helpers/objectptr.h>
+
+#define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
+public:\
+class Class##object : public helpers::Class\
+{\
+public:\
+	Class##object() : helpers::Class(#object) {}\
+};\
+virtual const helpers::Class& getClass() const;\
+static const helpers::Class& getStaticClass();
+
+#define DECLARE_LOG4CXX_OBJECT(object)\
+public:\
+class Class##object : public helpers::Class\
+{\
+public:\
+	Class##object() : helpers::Class(#object) {}\
+	virtual helpers::ObjectPtr newInstance() const\
+	{\
+		return new object();\
+	}\
+};\
+virtual const helpers::Class& getClass() const;\
+static const helpers::Class& getStaticClass();
+
+#define IMPLEMENT_LOG4CXX_OBJECT(object)\
+object::Class##object theClass##object;\
+const log4cxx::helpers::Class& object::getClass() const { return theClass##object; }\
+const log4cxx::helpers::Class& object::getStaticClass() { return theClass##object; }
 
 namespace log4cxx
 {
 	namespace helpers
 	{
+		class Object;
+		typedef ObjectPtrT<Object> ObjectPtr;
+
 		/** base class for java-like objects.*/
 		class Object
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Object)
 			virtual ~Object() {}
 			virtual void addRef() = 0;
 			virtual void releaseRef() = 0;
@@ -32,6 +69,8 @@ namespace log4cxx
 			virtual void unlock() = 0;
 			virtual void wait() = 0;
 			virtual void notify() = 0;
+			virtual bool instanceof(const Class& clazz) const = 0;
+			virtual const void * cast(const Class& clazz) const = 0;
 		};
 
 		/** utility class for objects multi-thread synchronization.*/
@@ -49,5 +88,27 @@ namespace log4cxx
 		};
 	};
 };
+
+#define BEGIN_LOG4CXX_INTERFACE_MAP()\
+const void * cast(const helpers::Class& clazz) const\
+{\
+	const void * object = 0;\
+	if (&clazz == &helpers::Object::getStaticClass()) return (helpers::Object *)this;
+
+#define END_LOG4CXX_INTERFACE_MAP()\
+	return object;\
+}\
+bool instanceof(const helpers::Class& clazz) const\
+{ return cast(clazz) != 0; }
+
+#define LOG4CXX_INTERFACE_ENTRY(Interface)\
+if (&clazz == &Interface::getStaticClass()) return (Interface *)this;
+
+#define LOG4CXX_INTERFACE_ENTRY2(Interface, interface2)\
+if (&clazz == &Interface::getStaticClass()) return (Interface *)(interface2 *)this;
+
+#define LOG4CXX_INTERFACE_ENTRY_CHAIN(Interface)\
+object = Interface::cast(clazz);\
+if (object != 0) return object;
 
 #endif //_LOG4CXX_HELPERS_OBJECT_H

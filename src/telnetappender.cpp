@@ -24,6 +24,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
+IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
+
 int TelnetAppender::DEFAULT_PORT = 23;
 
 

@@ -64,8 +64,6 @@ const tstring& LoggingEvent::getNDC() const
 
 void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
 {
-	tstring::size_type size;
-	
 	// name
 	os->write(logger->getName());
 

@@ -26,6 +26,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(HTMLLayout)
+
 tstring HTMLLayout::TRACE_PREFIX =_T("<br>&nbsp;&nbsp;&nbsp;&nbsp;");
 tstring HTMLLayout::LOCATION_INFO_OPTION = _T("LocationInfo");
 tstring HTMLLayout::TITLE_OPTION = _T("Title");

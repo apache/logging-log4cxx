@@ -28,6 +28,8 @@ using namespace log4cxx::net;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(SocketNode)
+
 SocketNode::SocketNode(helpers::SocketPtr socket, spi::LoggerRepositoryPtr hierarchy)
  : hierarchy(hierarchy)
 {
@@ -68,11 +70,11 @@ void SocketNode::run()
 			}
 		}
 	}
-	catch(EOFException& e)
+	catch(EOFException&)
 	{
 		LogLog::debug(_T("Caught EOFException. Closing connection."));
 	}
-	catch(SocketException& e)
+	catch(SocketException&)
 	{
 		LogLog::debug(_T("Caught SocketException. Closing connection"));
 	}

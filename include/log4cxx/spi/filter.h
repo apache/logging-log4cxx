@@ -26,7 +26,7 @@ namespace log4cxx
 	namespace spi
 	{
 		class Filter;
-		typedef helpers::ObjectPtr<Filter> FilterPtr;
+		typedef helpers::ObjectPtrT<Filter> FilterPtr;
 
 		class LoggingEvent;
 	
@@ -69,6 +69,11 @@ namespace log4cxx
 			public virtual helpers::ObjectImpl
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(Filter)
+				LOG4CXX_INTERFACE_ENTRY(spi::OptionHandler)
+			END_LOG4CXX_INTERFACE_MAP()
             /**
             Points to the next filter in the filter chain.
             */

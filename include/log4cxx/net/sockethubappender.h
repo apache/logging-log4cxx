@@ -28,7 +28,7 @@ namespace log4cxx
 	namespace helpers
 	{
 		class SocketOutputStream;
-		typedef helpers::ObjectPtr<SocketOutputStream> SocketOutputStreamPtr;
+		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
 	};
 
 	namespace net
@@ -120,6 +120,12 @@ namespace log4cxx
 			bool locationInfo;
 			
 		public:
+			DECLARE_LOG4CXX_OBJECT(SocketHubAppender)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(SocketHubAppender)
+				LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			SocketHubAppender();
 			~SocketHubAppender();
 			
@@ -192,7 +198,7 @@ namespace log4cxx
 			This class is used internally to monitor a ServerSocket
 			and register new connections in a vector passed in the
 			constructor. */
-			class ServerMonitor : 
+			class ServerMonitor :
 				public helpers::Runnable,
 					public helpers::ObjectImpl
 			{
@@ -203,9 +209,14 @@ namespace log4cxx
 				helpers::Thread * monitorThread;
 				
 			public:
+				BEGIN_LOG4CXX_INTERFACE_MAP()
+					LOG4CXX_INTERFACE_ENTRY(ServerMonitor)
+				END_LOG4CXX_INTERFACE_MAP()
+
 				/**
 				Create a thread and start the monitor. */
-				ServerMonitor(int port, const std::vector<helpers::SocketOutputStreamPtr>& oosList);
+				ServerMonitor(int port,
+				const std::vector<helpers::SocketOutputStreamPtr>& oosList);
 			
 				/**
 				Stops the monitor. This method will not return until
@@ -218,7 +229,7 @@ namespace log4cxx
 				void run();
 			}; // class ServerMonitor
 
-			typedef helpers::ObjectPtr<ServerMonitor> ServerMonitorPtr;
+			typedef helpers::ObjectPtrT<ServerMonitor> ServerMonitorPtr;
 			ServerMonitorPtr serverMonitor;
 		}; // class SocketHubAppender
 	}; // namespace net

@@ -26,16 +26,16 @@ namespace log4cxx
 	namespace helpers
 	{
 		class Socket;
-		typedef ObjectPtr<Socket> SocketPtr;
+		typedef ObjectPtrT<Socket> SocketPtr;
 
 		class SocketInputStream;
-		typedef ObjectPtr<SocketInputStream> SocketInputStreamPtr;
+		typedef ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 	};
 	
 	namespace spi
 	{
 		class LoggerRepository;
-		typedef helpers::ObjectPtr<LoggerRepository> LoggerRepositoryPtr;
+		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
 	};
 
 	namespace net
@@ -48,7 +48,7 @@ namespace log4cxx
         <p>For example, the socket node might decide to log events to a
         local file and also resent them to a second socket node.
         */
-        class SocketNode : 
+        class SocketNode :
 			public virtual helpers::Runnable,
 				public virtual helpers::ObjectImpl
 		{
@@ -57,6 +57,12 @@ namespace log4cxx
 			spi::LoggerRepositoryPtr hierarchy;
 
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketNode)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(SocketNode)
+				LOG4CXX_INTERFACE_ENTRY(helpers::Runnable)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			SocketNode(helpers::SocketPtr socket, spi::LoggerRepositoryPtr hierarchy);
 			virtual void run();
 		};

@@ -25,10 +25,10 @@ namespace log4cxx
 	namespace spi
 	{
 		class LoggerRepository;
-		typedef helpers::ObjectPtr<LoggerRepository> LoggerRepositoryPtr;
+		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
 		
 		class RepositorySelector;
-		typedef helpers::ObjectPtr<RepositorySelector> RepositorySelectorPtr;
+		typedef helpers::ObjectPtrT<RepositorySelector> RepositorySelectorPtr;
 
        /**
        The <code>LogManager</code> uses one (and only one)
@@ -45,6 +45,7 @@ namespace log4cxx
 		class RepositorySelector : public virtual helpers::Object
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(RepositorySelector)
 			virtual ~RepositorySelector() {}
 			virtual LoggerRepositoryPtr getLoggerRepository() = 0;
 		};

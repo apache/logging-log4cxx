@@ -23,7 +23,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
- 
+
 void AppenderAttachableImpl::addAppender(AppenderPtr newAppender)
 {
 	synchronized sync(this);

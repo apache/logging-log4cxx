@@ -68,6 +68,12 @@ namespace log4cxx
 			bool locationInfo; //= false
 
 		public:
+			DECLARE_LOG4CXX_OBJECT(XMLLayout)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(XMLLayout)
+				LOG4CXX_INTERFACE_ENTRY_CHAIN(Layout)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			XMLLayout();
 			
 			/**

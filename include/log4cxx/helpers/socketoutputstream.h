@@ -26,14 +26,19 @@ namespace log4cxx
 	namespace helpers
 	{
 		class Socket;
-		typedef ObjectPtr<Socket> SocketPtr;
+		typedef ObjectPtrT<Socket> SocketPtr;
 		
 		class SocketOutputStream;
-		typedef ObjectPtr<SocketOutputStream> SocketOutputStreamPtr;
+		typedef ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
 		
 		class SocketOutputStream : public ObjectImpl
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketOutputStream)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(SocketOutputStream)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			SocketOutputStream(SocketPtr socket);
 			~SocketOutputStream();
 			

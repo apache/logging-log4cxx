@@ -26,15 +26,15 @@
 namespace log4cxx
 {
     class Appender;
-    typedef log4cxx::helpers::ObjectPtr<Appender> AppenderPtr;
+    typedef log4cxx::helpers::ObjectPtrT<Appender> AppenderPtr;
     
     class Logger;
-    typedef helpers::ObjectPtr<Logger> LoggerPtr;
+    typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
     namespace spi
 	{
 		class ErrorHandler;
-		typedef log4cxx::helpers::ObjectPtr<ErrorHandler> ErrorHandlerPtr;
+		typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
 
 		/**
 		Appenders may delegate their error handling to
@@ -51,6 +51,7 @@ namespace log4cxx
 		class ErrorHandler : public virtual OptionHandler
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(ErrorHandler)
 			virtual ~ErrorHandler() {}
 				
 				/**

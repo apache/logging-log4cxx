@@ -24,6 +24,8 @@ using namespace log4cxx::varia;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(LevelRangeFilter)
+
 tstring LevelRangeFilter::LEVEL_MIN_OPTION = _T("LevelMin");
 tstring LevelRangeFilter::LEVEL_MAX_OPTION = _T("LevelMax");
 tstring LevelRangeFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");

@@ -86,3 +86,4 @@ void ObjectImpl::notify()
 {
 	sem.post();
 }
+

@@ -21,6 +21,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers ;
 
+IMPLEMENT_LOG4CXX_OBJECT(SocketInputStream)
+
 size_t SocketInputStream::DEFAULT_BUFFER_SIZE = 32;
 
 SocketInputStream::SocketInputStream(SocketPtr socket)

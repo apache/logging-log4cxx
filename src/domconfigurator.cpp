@@ -16,42 +16,16 @@
 
 #include <log4cxx/config.h>
 #include <log4cxx/xml/domconfigurator.h>
-
-// appenders
-#include <log4cxx/consoleappender.h>
-#include <log4cxx/fileappender.h>
-#include <log4cxx/rollingfileappender.h>
-#include <log4cxx/net/socketappender.h>
-#include <log4cxx/net/sockethubappender.h>
-#include <log4cxx/net/telnetappender.h>
-#include <log4cxx/asyncappender.h>
-#ifdef WIN32
-#include <log4cxx/nt/nteventlogappender.h>
-using namespace log4cxx::nt;
-#endif // WIN32
-
-// layouts
-#include <log4cxx/simplelayout.h>
-#include <log4cxx/ttcclayout.h>
-#include <log4cxx/patternlayout.h>
-#include <log4cxx/htmllayout.h>
-#include <log4cxx/xml/xmllayout.h>
-
-// logger
+#include <log4cxx/appender.h>
+#include <log4cxx/layout.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/level.h>
-
-// filter
 #include <log4cxx/spi/filter.h>
-#include <log4cxx/varia/denyallfilter.h>
-#include <log4cxx/varia/levelmatchfilter.h>
-#include <log4cxx/varia/levelrangefilter.h>
-#include <log4cxx/varia/stringmatchfilter.h>
-
-// helpers
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/loader.h>
+#include <log4cxx/helpers/optionconverter.h>
 
 #ifdef WIN32
 #include <log4cxx/helpers/msxmlreader.h>
@@ -62,8 +36,6 @@ using namespace log4cxx::nt;
 using namespace log4cxx;
 using namespace log4cxx::xml;
 using namespace log4cxx::helpers;
-using namespace log4cxx::net;
-using namespace log4cxx::varia;
 using namespace log4cxx::spi;
 
 #define CONFIGURATION_TAG _T("log4cxx")
@@ -96,7 +68,7 @@ AppenderPtr AppenderMap::get(const tstring& appenderName)
 	std::map<tstring, AppenderPtr>::iterator it;
 	it = map.find(appenderName);
 
-	return (it == map.end()) ? NULL : it->second;
+	return (it == map.end()) ? 0 : it->second;
 }
 
 void AppenderMap::put(const tstring& appenderName, AppenderPtr appender)
@@ -144,7 +116,7 @@ void DOMConfigurator::BuildElement(const tstring& parentTagName, const tstring& 
 		if (tagName == ROOT_TAG)
 		{
 			currentLogger = Logger::getRootLogger();
-			currentAppenderAttachable = currentLogger.p;
+			currentAppenderAttachable = currentLogger;
 		}
 		else
 		{
@@ -255,16 +227,21 @@ void DOMConfigurator::BuildAppenderAttribute(const tstring& name, const tstring&
 	}
 	else if (name == CLASS_ATTR)
 	{
-		LogLog::debug(_T("Class name: [") + value+_T("]")); 
-		
-		currentAppender = 
-			BuildAppender(StringHelper::toLowerCase(value));
-		currentOptionHandler = currentAppender;
+		LogLog::debug(_T("Class name: [") + value+_T("]"));
 
-		if (!currentAppenderName.empty())
+		currentAppender =
+			BuildAppender(StringHelper::toLowerCase(value));
+
+		if (currentAppender != 0)
 		{
-			currentAppender->setName(currentAppenderName);
-			currentAppenderName = _T("");
+			currentAppenderAttachable = currentAppender;
+			currentOptionHandler = currentAppender;
+
+			if (!currentAppenderName.empty())
+			{
+				currentAppender->setName(currentAppenderName);
+				currentAppenderName = _T("");
+			}
 		}
 	}
 }
@@ -273,8 +250,8 @@ void DOMConfigurator::BuildLayoutAttribute(const tstring& name, const tstring& v
 {
 	if (name == CLASS_ATTR)
 	{
-		LogLog::debug(_T("Parsing layout of class: \"")+value+_T("\""));	
-		
+		LogLog::debug(_T("Parsing layout of class: [")+value+_T("]"));
+
 		LayoutPtr layout = 
 			BuildLayout(StringHelper::toLowerCase(value));
 		currentOptionHandler = layout;
@@ -318,7 +295,7 @@ void DOMConfigurator::BuildLoggerAttribute(const tstring& name, const tstring& v
 	{
 		LogLog::debug(_T("Retreiving an instance of Logger."));
 		currentLogger == Logger::getLogger(value);
-		currentAppenderAttachable = currentLogger.p;
+		currentAppenderAttachable = currentLogger;
 
 		if (!currentAdditivity.empty())
 		{
@@ -388,12 +365,12 @@ void DOMConfigurator::BuildAppenderRefAttribute(const tstring& name, const tstri
 				LogLog::debug(_T("Adding appender named [")+ value+ 
 					 _T("] to appender [")+appender->getName()+_T("]."));
 			}
-			
+
 			currentAppenderAttachable->addAppender(appender);
 		}
 		else
 		{
-			LogLog::error(_T("No appender named [")+value+_T("] could be found.")); 
+			LogLog::error(_T("No appender named [")+value+_T("] could be found."));
 		}
 	}
 }
@@ -403,7 +380,7 @@ void DOMConfigurator::BuildFilterAttribute(const tstring& name, const tstring& v
 	if (name == CLASS_ATTR && currentAppender != 0)
 	{
 		FilterPtr filter = BuildFilter(StringHelper::toLowerCase(value));
-		currentOptionHandler = filter.p;
+		currentOptionHandler = filter;
 
 		if (filter != 0)
 		{
@@ -420,7 +397,7 @@ void DOMConfigurator::BuildLoggerAdditivity(LoggerPtr& logger, const tstring& ad
 	bool additivity = OptionConverter::toBoolean(additivityValue, true);
 
 	LogLog::debug(_T("Setting [")+logger->getName()+
-		_T("] additivity to [")+ 
+		_T("] additivity to [")+
 		(additivity ? _T("true") : _T("false"))+_T("]."));
 
 
@@ -429,109 +406,21 @@ void DOMConfigurator::BuildLoggerAdditivity(LoggerPtr& logger, const tstring& ad
 
 LayoutPtr DOMConfigurator::BuildLayout(const tstring& className)
 {
-	LayoutPtr layout;
-
-	if (className == _T("simplelayout"))
-	{
-		layout = new SimpleLayout();
-	}
-	else if (className == _T("ttcclayout"))
-	{
-		layout = new TTCCLayout();
-	}
-	else if (className == _T("patternlayout"))
-	{
-		layout = new PatternLayout();
-	}
-	else if (className == _T("htmllayout"))
-	{
-		layout = new HTMLLayout();
-	}
-	else if (className == _T("xmllayout"))
-	{
-		layout = new XMLLayout();
-	}
-	else
-	{
-		LogLog::error(_T("Could not create Layout [") +className+ _T("]."));
-	}
-
+	LayoutPtr layout = OptionConverter::instantiateByClassName(className,
+		Layout::getStaticClass(), 0);
 	return layout;
 }
 
 AppenderPtr DOMConfigurator::BuildAppender(const tstring& className)
 {
-	AppenderPtr appender;
-	
-	if (className == _T("consoleappender"))
-	{
-		appender = new ConsoleAppender();
-	}
-	else if (className == _T("fileappender"))
-	{
-		appender = new FileAppender();
-	}
-	else if (className == _T("rollingfileappender"))
-	{
-		appender = new RollingFileAppender();
-	}
-#ifdef WIN32
-	else if (className == _T("nteventlogappender"))
-	{
-		appender = new NTEventLogAppender();
-	}
-#endif
-	else if (className == _T("socketappender"))
-	{
-		appender = new SocketAppender();
-	}
-	else if (className == _T("sockethubappender"))
-	{
-		appender = new SocketHubAppender();
-	}
-	else if (className == _T("telnetappender"))
-	{
-		appender = new TelnetAppender();
-	}
-	else if (className == _T("asyncappender"))
-	{
-		AsyncAppender * asyncAppender = new AsyncAppender();
-		appender = asyncAppender;
-		currentAppenderAttachable = asyncAppender;
-	}
-	else
-	{
-		LogLog::error(_T("Could not create Appender [") +className+ _T("]."));
-	}
-
-
+	AppenderPtr appender = OptionConverter::instantiateByClassName(className,
+		Appender::getStaticClass(), 0);
 	return appender;
 }
 
 FilterPtr DOMConfigurator::BuildFilter(const tstring& className)
 {
-	FilterPtr filter;
-
-	if (className == _T("denyallfilter"))
-	{
-		filter = new DenyAllFilter();
-	}
-	else if (className == _T("levelmatchfilter"))
-	{
-		filter = new LevelMatchFilter();
-	}
-	else if (className == _T("levelrangefilter"))
-	{
-		filter = new LevelRangeFilter();
-	}
-	else if (className == _T("stringmatchfilter"))
-	{
-		filter = new StringMatchFilter();
-	}
-	else
-	{
-		LogLog::error(_T("Could not create Filter [") +className+ _T("]."));
-	}
-
+	FilterPtr filter = OptionConverter::instantiateByClassName(className,
+		Filter::getStaticClass(), 0);
 	return filter;
 }

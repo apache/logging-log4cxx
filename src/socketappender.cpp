@@ -24,6 +24,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
+IMPLEMENT_LOG4CXX_OBJECT(SocketAppender)
+
 // The default port number of remote logging server (4560)
 int SocketAppender::DEFAULT_PORT                 = 4560;
 
@@ -233,12 +235,12 @@ void SocketAppender::Connector::run()
 				break;
 			}
 		}
-		catch(InterruptedException& e)
+		catch(InterruptedException&)
 		{
 			LogLog::debug(_T("Connector interrupted. Leaving loop."));
 			return;
 		}
-		catch(ConnectException& e)
+		catch(ConnectException&)
 		{
 			LogLog::debug(_T("Remote host ")
 				+socketAppender->address.getHostName()

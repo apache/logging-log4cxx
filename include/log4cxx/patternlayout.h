@@ -24,7 +24,7 @@ namespace log4cxx
 	namespace helpers
 	{
 		class PatternConverter;
-		typedef ObjectPtr<PatternConverter> PatternConverterPtr;
+		typedef ObjectPtrT<PatternConverter> PatternConverterPtr;
 	};
 
 	/**
@@ -396,6 +396,12 @@ namespace log4cxx
 		tstring timezone;
 
 	public:
+		DECLARE_LOG4CXX_OBJECT(PatternLayout)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(PatternLayout)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(Layout)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		/**
 		Does nothing
 		*/

@@ -23,6 +23,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(RollingFileAppender)
+
 RollingFileAppender::RollingFileAppender()
 : maxFileSize(10*1024*1024), maxBackupIndex(1)
 {

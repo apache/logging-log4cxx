@@ -55,6 +55,12 @@ namespace log4cxx
 		tstring title;
 
 	public:
+		DECLARE_LOG4CXX_OBJECT(HTMLLayout)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(HTMLLayout)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(Layout)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		HTMLLayout();
 
 		/**

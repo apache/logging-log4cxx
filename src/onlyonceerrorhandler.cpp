@@ -23,6 +23,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
+
 OnlyOnceErrorHandler::OnlyOnceErrorHandler() :
  WARN_PREFIX(_T("log4cxx warning: ")),
 ERROR_PREFIX(_T("log4cxx error: ")), firstTime(true)

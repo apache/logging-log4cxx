@@ -56,7 +56,7 @@ namespace log4cxx
 		};
 
 		class SocketImpl;
-		typedef helpers::ObjectPtr<SocketImpl> SocketImplPtr;
+		typedef helpers::ObjectPtrT<SocketImpl> SocketImplPtr;
 
 		class SocketImpl : public helpers::ObjectImpl
 
@@ -79,6 +79,11 @@ namespace log4cxx
 			int timeout;
 
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketImpl)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(SocketImpl)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			SocketImpl();
 			~SocketImpl();
 			

@@ -33,7 +33,7 @@ namespace log4cxx
 		class FormattingInfo;
 
 		class PatternConverter;
-		typedef ObjectPtr<PatternConverter> PatternConverterPtr;
+		typedef ObjectPtrT<PatternConverter> PatternConverterPtr;
 
 		/**
 		<p>PatternConverter is an abtract class that provides the
@@ -46,6 +46,11 @@ namespace log4cxx
 		class PatternConverter : public ObjectImpl
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(PatternConverter)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(PatternConverter)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			PatternConverterPtr next;
 			int min;
 			int max;

@@ -21,6 +21,8 @@
 using namespace log4cxx;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(TTCCLayout)
+
 TTCCLayout::TTCCLayout()
 : threadPrinting(true), categoryPrefixing(true),
 contextPrinting(true), filePrinting(false)

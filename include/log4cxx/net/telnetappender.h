@@ -28,7 +28,7 @@ namespace log4cxx
 	namespace helpers
 	{
 		class SocketOutputStream;
-		typedef helpers::ObjectPtr<SocketOutputStream> SocketOutputStreamPtr;
+		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
 	};
 	
 	namespace net
@@ -70,6 +70,12 @@ namespace log4cxx
 			int port;
 
 		public:			
+			DECLARE_LOG4CXX_OBJECT(TelnetAppender)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(TelnetAppender)
+				LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			TelnetAppender();
 			~TelnetAppender();
 

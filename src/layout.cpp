@@ -1,7 +1,7 @@
 /***************************************************************************
-                          provisionnode.h  -  class ProvisionNode
+                          layout.cpp  -  description
                              -------------------
-    begin                : jeu avr 17 2003
+    begin                : mer avr 16 2003
     copyright            : (C) 2003 by Michael CATANZARITI
     email                : mcatan@free.fr
  ***************************************************************************/
@@ -14,25 +14,8 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#ifndef _LOG4CXX_PROVISION_NODE_H
-#define _LOG4CXX_PROVISION_NODE_H
+#include <log4cxx/layout.h>
 
-#include <vector>
-#include <log4cxx/helpers/objectptr.h>
+using namespace log4cxx;
 
-namespace log4cxx
-{
-    class Logger;
-    typedef helpers::ObjectPtrT<Logger> LoggerPtr;
-
-    class ProvisionNode : public std::vector<LoggerPtr>
-    {
-    public:
-		ProvisionNode(LoggerPtr logger)
-		{
-			push_back(logger);
-		}
-    }; // class LogManager
-}; // namespace log4cxx
-
-#endif //_LOG4CXX_PROVISION_NODE_H
+IMPLEMENT_LOG4CXX_OBJECT(Layout)

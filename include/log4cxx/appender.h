@@ -30,17 +30,17 @@ namespace log4cxx
         class LoggingEvent;
         
         class Filter;
-        typedef helpers::ObjectPtr<Filter> FilterPtr;
+        typedef helpers::ObjectPtrT<Filter> FilterPtr;
 
         class ErrorHandler;
-		typedef log4cxx::helpers::ObjectPtr<ErrorHandler> ErrorHandlerPtr;
+		typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
     }
 
     class Layout;
-    typedef log4cxx::helpers::ObjectPtr<Layout> LayoutPtr;
+    typedef log4cxx::helpers::ObjectPtrT<Layout> LayoutPtr;
 
     class Appender;
-    typedef log4cxx::helpers::ObjectPtr<Appender> AppenderPtr;
+    typedef log4cxx::helpers::ObjectPtrT<Appender> AppenderPtr;
     typedef std::vector<AppenderPtr> AppenderList;
 
 	/**
@@ -51,6 +51,7 @@ namespace log4cxx
 		public virtual spi::OptionHandler
     {
     public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Appender)
 		virtual ~Appender() {}
 		
         /**

@@ -20,6 +20,7 @@
 #include <log4cxx/config.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/exception.h>
 
 namespace log4cxx
@@ -45,20 +46,27 @@ namespace log4cxx
 		class Runnable : public virtual Object
 		{
 		public:
-			/** When an object implementing interface Runnable is used to 
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Runnable)
+
+			/** When an object implementing interface Runnable is used to
 			create a thread, starting the thread causes the object's run 
 			method to be called in that separately executing thread.
 			*/
 			virtual void run() = 0;
 		};
 
-		typedef ObjectPtr<Runnable> RunnablePtr;
+		typedef ObjectPtrT<Runnable> RunnablePtr;
 		
 		/** A thread is a thread of execution in a program.
 		*/
-		class Thread
+		class Thread : public virtual ObjectImpl
 		{
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Thread)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(Thread)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			/**  Allocates a new Thread object.*/
 			Thread();
 			

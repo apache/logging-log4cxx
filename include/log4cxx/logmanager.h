@@ -24,13 +24,13 @@
 namespace log4cxx
 {
     class Logger;
-    typedef helpers::ObjectPtr<Logger> LoggerPtr;
+    typedef helpers::ObjectPtrT<Logger> LoggerPtr;
     typedef std::vector<LoggerPtr> LoggerList;
 
     namespace spi
     {
 		class LoggerFactory;
-		typedef helpers::ObjectPtr<LoggerFactory> LoggerFactoryPtr;
+		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
     };
     
     /**

@@ -72,6 +72,11 @@ namespace log4cxx
 		bool closed;
 
 	public:
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(Appender)
+			LOG4CXX_INTERFACE_ENTRY(spi::OptionHandler)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		AppenderSkeleton();
 
 		/**
@@ -198,7 +203,6 @@ namespace log4cxx
 		*/
 	public:
 		void setThreshold(const Level& threshold) { this->threshold = &threshold; }
-		
 	}; // class AppenderSkeleton
 }; // namespace log4cxx
 

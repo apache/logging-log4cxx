@@ -52,6 +52,13 @@ namespace log4cxx
 			const Level * levelToMatch;
 
 		public:
+			typedef spi::Filter BASE_CLASS;
+			DECLARE_LOG4CXX_OBJECT(LevelMatchFilter)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(LevelMatchFilter)
+				LOG4CXX_INTERFACE_ENTRY_CHAIN(BASE_CLASS)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			LevelMatchFilter();
 
 			/**

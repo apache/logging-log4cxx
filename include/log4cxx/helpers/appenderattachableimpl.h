@@ -30,14 +30,15 @@ namespace log4cxx
     
     namespace helpers
     {
-        class AppenderAttachableImpl : public spi::AppenderAttachable
+        class AppenderAttachableImpl :
+			public virtual spi::AppenderAttachable
         {
         protected:
             /** Array of appenders. */
             AppenderList  appenderList;
 
         public:
-          // Methods
+		  // Methods
             /**
              * Add an appender.
              */
@@ -78,7 +79,7 @@ namespace log4cxx
              * Remove the appender with the name passed as parameter from the
              * list of appenders.
              */
-            virtual void removeAppender(const tstring& name);            
+            virtual void removeAppender(const tstring& name);
         };
     };
 };

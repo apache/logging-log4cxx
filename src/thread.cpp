@@ -19,6 +19,9 @@
 
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(Runnable)
+IMPLEMENT_LOG4CXX_OBJECT(Thread)
+
 #ifdef HAVE_PTHREAD_H
 #include <pthread.h>
 #include <unistd.h> // usleep

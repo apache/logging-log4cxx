@@ -84,6 +84,8 @@ public:
 	}
 };
 
+IMPLEMENT_LOG4CXX_OBJECT(NTEventLogAppender)
+
 NTEventLogAppender::NTEventLogAppender() : hEventLog(NULL), pCurrentUserSID(NULL)
 {
 }

@@ -27,13 +27,13 @@ namespace log4cxx
 		class ServerSocker;
 		
 		class Socket;
-		typedef helpers::ObjectPtr<Socket> SocketPtr;
+		typedef helpers::ObjectPtrT<Socket> SocketPtr;
 
 		class SocketOutputStream;
-		typedef helpers::ObjectPtr<SocketOutputStream> SocketOutputStreamPtr;
+		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
 
 		class SocketInputStream;
-		typedef helpers::ObjectPtr<SocketInputStream> SocketInputStreamPtr;
+		typedef helpers::ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 
 		/**
 		<p>This class implements client sockets (also called just "sockets"). A socket
@@ -52,6 +52,11 @@ namespace log4cxx
 			Socket();
 
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Socket)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(Socket)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			/** Creates a stream socket and connects it to the specified port
 			number at the specified IP address.
 			*/

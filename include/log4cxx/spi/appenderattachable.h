@@ -26,7 +26,7 @@ namespace log4cxx
 {
     // Forward Declarations
     class Appender;
-    typedef helpers::ObjectPtr<Appender> AppenderPtr;
+    typedef helpers::ObjectPtrT<Appender> AppenderPtr;
     typedef std::vector<AppenderPtr> AppenderList;
 
 
@@ -34,7 +34,7 @@ namespace log4cxx
     namespace spi
     {
 		class AppenderAttachable;
-		typedef helpers::ObjectPtr<AppenderAttachable> AppenderAttachablePtr;
+		typedef helpers::ObjectPtrT<AppenderAttachable> AppenderAttachablePtr;
 
         /**
          * This Interface is for attaching Appenders to objects.
@@ -43,6 +43,7 @@ namespace log4cxx
         {
         public:
           // Methods
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachable)
             /**
              * Add an appender.
              */

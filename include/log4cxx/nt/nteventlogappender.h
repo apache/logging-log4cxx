@@ -35,8 +35,15 @@ namespace log4cxx
 		class NTEventLogAppender : public AppenderSkeleton
 		{
 		public:
+		DECLARE_LOG4CXX_OBJECT(NTEventLogAppender)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(NTEventLogAppender)
+			LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_INTERFACE_MAP()
+
 			NTEventLogAppender();
-			NTEventLogAppender(const tstring& server, const tstring& log, const tstring& source, LayoutPtr layout);
+			NTEventLogAppender(const tstring& server, const tstring& log,
+				const tstring& source, LayoutPtr layout);
 
 			virtual ~NTEventLogAppender();
 

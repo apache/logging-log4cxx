@@ -22,6 +22,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
+
 /** The default buffer size is set to 128 events. */
 int AsyncAppender::DEFAULT_BUFFER_SIZE = 128;
 
@@ -109,7 +111,7 @@ Dispatcher::Dispatcher(helpers::BoundedFIFOPtr bf, AsyncAppender * container)
 	// set the dispatcher priority to lowest possible value
 	setPriority(Thread::MIN_PRIORITY);
 }
-	
+
 void Dispatcher::close()
 {
 	synchronized sync(bf);

@@ -30,16 +30,16 @@ namespace log4cxx
 	namespace spi
 	{
 		class LoggerFactory;
-		typedef helpers::ObjectPtr<LoggerFactory> LoggerFactoryPtr;
+		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
 	};
 	
     class Logger;
 	/** smart pointer to a Logger class */ 
-    typedef helpers::ObjectPtr<Logger> LoggerPtr;
+    typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
 	/** vector of {@link Logger loggers} */
     typedef std::vector<LoggerPtr> LoggerList;
-   
+
     /**
     This is the central class in the log4cxx package. Most logging
     operations, except configuration, are done through this class.
@@ -49,6 +49,11 @@ namespace log4cxx
 		public virtual helpers::ObjectImpl
     {
     public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(Logger)
+			LOG4CXX_INTERFACE_ENTRY(spi::AppenderAttachable)
+		END_LOG4CXX_INTERFACE_MAP()
 
     protected:
         /**
@@ -94,7 +99,7 @@ namespace log4cxx
 
     public:
 		~Logger();
-		
+
         /**
         Add <code>newAppender</code> to the list of appenders of this
         Logger instance.
@@ -408,7 +413,7 @@ namespace log4cxx
 		@param line the line where the log statement was written.
 		*/
         void warn(const tstring& message, const char* file=NULL, int line=-1);
-    };
+   };
 };
 
 #define LOG4CXX_DEBUG(logger, message) { \

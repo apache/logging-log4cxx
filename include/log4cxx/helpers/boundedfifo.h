@@ -30,13 +30,13 @@ namespace log4cxx
 	namespace helpers
 	{
 		class BoundedFIFO;
-		typedef ObjectPtr<BoundedFIFO> BoundedFIFOPtr;
+		typedef ObjectPtrT<BoundedFIFO> BoundedFIFOPtr;
 		
 		/**
 		<code>BoundedFIFO</code> serves as the bounded first-in-first-out
 		buffer heavily used by the AsyncAppender.
 		*/
-		class BoundedFIFO : public ObjectImpl
+		class BoundedFIFO : public virtual Object, public virtual ObjectImpl
 		{
 			spi::LoggingEvent * * buf;
 			int numElements;
@@ -45,6 +45,11 @@ namespace log4cxx
 			int maxSize;
 
 		public:
+			DECLARE_ABSTRACT_LOG4CXX_OBJECT(BoundedFIFO)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(BoundedFIFO)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			/**
 			Instantiate a new BoundedFIFO with a maximum size passed as argument.
 			*/

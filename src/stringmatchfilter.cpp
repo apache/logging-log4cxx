@@ -23,6 +23,8 @@ using namespace log4cxx::varia;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(StringMatchFilter)
+
 tstring StringMatchFilter::STRING_TO_MATCH_OPTION = _T("StringToMatch");
 tstring StringMatchFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
 

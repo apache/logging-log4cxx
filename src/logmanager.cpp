@@ -28,6 +28,8 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(DefaultRepositorySelector)
+
 void * LogManager::guard = 0;
 RepositorySelectorPtr LogManager::repositorySelector =
 	  new DefaultRepositorySelector(

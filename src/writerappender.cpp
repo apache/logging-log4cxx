@@ -21,6 +21,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(WriterAppender)
+
 WriterAppender::WriterAppender()
 : immediateFlush(true), os(0)
 {

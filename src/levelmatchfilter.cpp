@@ -24,6 +24,8 @@ using namespace log4cxx::varia;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(LevelMatchFilter)
+
 tstring LevelMatchFilter::LEVEL_TO_MATCH_OPTION = _T("LevelToMatch");
 tstring LevelMatchFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
 

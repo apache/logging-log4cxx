@@ -19,6 +19,8 @@
 
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(SocketImpl)
+
 #ifdef WIN32
 #include <winsock.h>
 #else
