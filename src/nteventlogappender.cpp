@@ -163,11 +163,23 @@ void NTEventLogAppender::activateOptions(Pool&)
 
         addRegistryInfo();
 
-    std::wstring wserver;
-    Transcoder::encode(server, wserver);
-    std::wstring wsource;
-    Transcoder::encode(source, wsource);
-        hEventLog = ::RegisterEventSourceW(wserver.c_str(), wsource.c_str());
+        std::wstring wsource;
+        Transcoder::encode(source, wsource);
+        std::wstring wserver;
+        const wchar_t* pServer = NULL;
+        if (!server.empty()) {
+            Transcoder::encode(server, wserver);
+            pServer = wserver.c_str();
+        }
+        hEventLog = ::RegisterEventSourceW(pServer, wsource.c_str());
+        if (hEventLog == NULL) {
+            LogString msg(LOG4CXX_STR("Cannot register NT EventLog -- server: '"));
+            msg.append(server);
+            msg.append(LOG4CXX_STR("' source: '"));
+            msg.append(source);
+            LogLog::error(msg);
+            LogLog::error(getErrorString(LOG4CXX_STR("RegisterEventSource")));
+        }
 }
 
 void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
@@ -180,10 +192,10 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 
         LogString oss;
         layout->format(oss, event, p);
-    std::wstring s;
-    log4cxx::helpers::Transcoder::encode(oss, s);
-    const wchar_t* msgs[1];
-    msgs[0] = s.c_str() ;
+        std::wstring s;
+        log4cxx::helpers::Transcoder::encode(oss, s);
+        const wchar_t* msgs[1];
+        msgs[0] = s.c_str() ;
         BOOL bSuccess = ::ReportEventW(
                 hEventLog,
                 getEventType(event),
@@ -197,7 +209,7 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 
         if (!bSuccess)
         {
-                LogLog::error(LOG4CXX_STR("Cannot report event in NT EventLog."));
+                LogLog::error(getErrorString(LOG4CXX_STR("ReportEvent")));
         }
 }
 
@@ -295,6 +307,32 @@ WORD NTEventLogAppender::getEventCategory(const LoggingEventPtr& event)
         }
 
         return ret_val;
+}
+
+LogString NTEventLogAppender::getErrorString(const LogString& function) 
+{ 
+    Pool p;
+    enum { MSGSIZE = 5000 };
+    wchar_t* lpMsgBuf = (wchar_t*) p.palloc(MSGSIZE * sizeof(wchar_t));
+    DWORD dw = GetLastError(); 
+
+    FormatMessageW(
+        FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL,
+        dw,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        lpMsgBuf,
+        MSGSIZE, NULL );
+
+    std::wstring sysmsg(lpMsgBuf);
+
+    LogString msg(function);
+    msg.append(LOG4CXX_STR(" failed with error "));
+    StringHelper::toString((size_t) dw, p, msg);
+    msg.append(LOG4CXX_STR(": "));
+    Transcoder::decode(sysmsg, msg);
+
+    return msg; 
 }
 
 #endif // WIN32

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,6 +72,7 @@ namespace log4cxx
                         const LogString& getServer() const
                                 { return server; }
 
+
                 protected:
                         //
                         //   these typedef are proxies for the real Win32 definitions
@@ -98,11 +99,15 @@ namespace log4cxx
                         LogString source;
                         HANDLE hEventLog;
                         SID * pCurrentUserSID;
+                        static LogString getErrorString(const LogString& function);
 
                 private:
                         NTEventLogAppender(const NTEventLogAppender&);
                         NTEventLogAppender& operator=(const NTEventLogAppender&);
                 }; // class NTEventLogAppender
+
+                typedef helpers::ObjectPtrT<NTEventLogAppender> NTEventLogAppenderPtr;
+
     }  // namespace nt
 } // namespace log4cxx
 
