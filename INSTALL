@@ -128,9 +128,9 @@ ODBC support (ODBCAppender) can be added through option -with-ODBC
 	* "no" (default) : no ODBC support
 
 SMTP support (SMTPAppender) can be added through option -with-SMTP
-	* "libsmtp" (default) : libsmtp library (http://libsmtp.berlios.de)
+	* "libsmtp" : libsmtp library (http://libsmtp.berlios.de)
 	* "CDO" : Microsoft CDO library (no yet implemented !)
-	* "no" : no SMTP support
+	* "no" (default) : no SMTP support
 
 XML support (DOMConfigurator) can be added through option -with-XML
 	* "libxm2" (default) : gnome xml library (http://xmlsoft.org)
