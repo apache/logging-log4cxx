@@ -28,6 +28,7 @@ namespace log4cxx
 	namespace spi
 	{
 		class LoggingEvent;
+		typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
 	};
 
 	namespace helpers
@@ -87,7 +88,7 @@ namespace log4cxx
 				int type;
 			public:
 				BasicPatternConverter(const FormattingInfo& formattingInfo, int type);
-				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
 			class LiteralPatternConverter : public PatternConverter
@@ -97,8 +98,8 @@ namespace log4cxx
 
 			public:
 				LiteralPatternConverter(const String& value);
-				virtual void format(StringBuffer& sbuf, const spi::LoggingEvent& e);
-				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
+				virtual void format(StringBuffer& sbuf, const spi::LoggingEventPtr& e);
+				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
 			class DatePatternConverter : public PatternConverter
@@ -111,7 +112,7 @@ namespace log4cxx
 				~DatePatternConverter();
 				
 			public:
-				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
 			class MDCPatternConverter : public PatternConverter
@@ -121,7 +122,7 @@ namespace log4cxx
 			
 			public:
 				MDCPatternConverter(const FormattingInfo& formattingInfo, const String& key);
-				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
 			class LocationPatternConverter : public PatternConverter
@@ -131,7 +132,7 @@ namespace log4cxx
 			
 			public:
 				LocationPatternConverter(const FormattingInfo& formattingInfo, int type);
-				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
 			class CategoryPatternConverter : public PatternConverter
@@ -141,7 +142,7 @@ namespace log4cxx
 			
 			public:
 				CategoryPatternConverter(const FormattingInfo& formattingInfo, int precision);
-				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 		}; // class PatternParser
 	}; // namespace helpers

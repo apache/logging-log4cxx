@@ -74,7 +74,7 @@ namespace log4cxx
             <code>System.err</code>.
             */
             void error(const String& message, Exception& e,
-				int errorCode, spi::LoggingEvent& event);
+				int errorCode, spi::LoggingEventPtr& event);
             
             /**
             Print a the error message passed as parameter on

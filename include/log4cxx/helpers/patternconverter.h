@@ -26,6 +26,7 @@ namespace log4cxx
 	namespace spi
 	{
 		class LoggingEvent;
+		typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
 	};
 
 	namespace helpers
@@ -64,13 +65,13 @@ namespace log4cxx
 			Derived pattern converters must override this method in order to
 			convert conversion specifiers in the correct way.
 			*/
-			virtual void convert(ostream& sbuf, const spi::LoggingEvent& event) = 0;
+			virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event) = 0;
 
 		public:
 			/**
 			A template method for formatting in a converter specific way.
 			*/
-			virtual void format(ostream& sbuf, const spi::LoggingEvent& e);
+			virtual void format(ostream& sbuf, const spi::LoggingEventPtr& e);
 
 		}; // class PatternConverter
 	}; // namespace helpers
