@@ -33,6 +33,7 @@ namespace log4cxx
 		protected:
 			String timeZone;
 			String dateFormat;
+			String timeZoneEnv;
 		};
 	}; // namespace helpers
 }; // namespace log4cxx
