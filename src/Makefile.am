@@ -44,6 +44,7 @@ liblog4cxx_la_SOURCES = \
         mdc.cpp \
         msxml.cpp \
         mutex.cpp \
+        namedpatternconverter.cpp \
         ndc.cpp \
         nteventlogappender.cpp \
         objectimpl.cpp \

@@ -38,79 +38,53 @@ using namespace log4cxx::pattern;
 
 #define ESCAPE_CHAR LOG4CXX_STR('%')
 
-const PatternParser::PatternConverterMap& PatternParser::getGlobalRulesRegistry() {
-  static PatternConverterMap globalRulesRegistry;
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("c"),
-      LoggerPatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("logger"),
-      LoggerPatternConverter::newInstance));
+#define ADD_PATTERN(specifier, classname) \
+globalRulesRegistry.insert(InternalPatternConverterMap::value_type(LOG4CXX_STR(specifier), classname::newInstance))
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("C"),
-      ClassNamePatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("class"),
-      ClassNamePatternConverter::newInstance));
+const PatternParser::InternalPatternConverterMap& PatternParser::getGlobalRulesRegistry() {
+  static InternalPatternConverterMap globalRulesRegistry;
+  ADD_PATTERN("c", LoggerPatternConverter);
+  ADD_PATTERN("logger", LoggerPatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("d"),
-      DatePatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("date"),
-      DatePatternConverter::newInstance));
+  ADD_PATTERN("C", ClassNamePatternConverter);
+  ADD_PATTERN("class", ClassNamePatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("F"),
-     FileLocationPatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("file"),
-     FileLocationPatternConverter::newInstance));
+  ADD_PATTERN("d", DatePatternConverter);
+  ADD_PATTERN("date", DatePatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("l"),
-     FullLocationPatternConverter::newInstance));
+  ADD_PATTERN("F", FileLocationPatternConverter);
+  ADD_PATTERN("file", FileLocationPatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("L"),
-     LineLocationPatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("line"),
-     LineLocationPatternConverter::newInstance));
+  ADD_PATTERN("l", FullLocationPatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("m"),
-     MessagePatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("message"),
-     MessagePatternConverter::newInstance));
+  ADD_PATTERN("L", LineLocationPatternConverter);
+  ADD_PATTERN("line", LineLocationPatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("n"),
-     LineSeparatorPatternConverter::newInstance));
+  ADD_PATTERN("m", MessagePatternConverter);
+  ADD_PATTERN("message", MessagePatternConverter);
 
-  globalRulesRegistry.insert(
-    PatternConverterMap::value_type(LOG4CXX_STR("M"),
-    MethodLocationPatternConverter::newInstance));
-  globalRulesRegistry.insert(
-    PatternConverterMap::value_type(LOG4CXX_STR("method"),
-    MethodLocationPatternConverter::newInstance));
+  ADD_PATTERN("n", LineSeparatorPatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("p"),
-      LevelPatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("level"),
-      LevelPatternConverter::newInstance));
+  ADD_PATTERN("M", MethodLocationPatternConverter);
+  ADD_PATTERN("method", MethodLocationPatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("r"),
-     RelativeTimePatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("relative"),
-     RelativeTimePatternConverter::newInstance));
+  ADD_PATTERN("p", LevelPatternConverter);
+  ADD_PATTERN("level", LevelPatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("t"),
-     ThreadPatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("thread"),
-     ThreadPatternConverter::newInstance));
+  ADD_PATTERN("r", RelativeTimePatternConverter);
+  ADD_PATTERN("relative", RelativeTimePatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("x"),
-     NDCPatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("ndc"),
-     NDCPatternConverter::newInstance));
+  ADD_PATTERN("t", ThreadPatternConverter);
+  ADD_PATTERN("thread", ThreadPatternConverter);
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("X"),
-     PropertiesPatternConverter::newInstance));
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("properties"),
-     PropertiesPatternConverter::newInstance));
+  ADD_PATTERN("x", NDCPatternConverter);
+  ADD_PATTERN("ndc", NDCPatternConverter);
+
+  ADD_PATTERN("X", PropertiesPatternConverter);
+  ADD_PATTERN("properties", PropertiesPatternConverter);
 
 
-  globalRulesRegistry.insert(PatternConverterMap::value_type(LOG4CXX_STR("throwable"),
-     ThrowableInformationPatternConverter::newInstance));
+  ADD_PATTERN("throwable", ThrowableInformationPatternConverter);
 
   return globalRulesRegistry;
 }
@@ -348,17 +322,23 @@ PatternConverterPtr PatternParser::parse() {
     return head;
   }
 
-PatternParser::PatternConverterFactory PatternParser::findConverterClass(
-     const LogString& converterId) {
+PatternConverterPtr PatternParser::createConverter(
+                                                  const LogString& converterId,
+                                                  const FormattingInfo& formattingInfo, 
+                                                  const std::vector<LogString>& options) const {
 
     PatternConverterMap::const_iterator r = converterRegistry.find(converterId);
     if(r != converterRegistry.end()) {
-       return r->second;
+       const Class& converterClass = Class::forName(r->second);
+       PatternConverterPtr converter = converterClass.newInstance();
+       converter->setFormattingInfo(formattingInfo);
+       converter->setOptions(options);
+       return converter;
     }
 
-    r = getGlobalRulesRegistry().find(converterId);
-    if(r != getGlobalRulesRegistry().end()) {
-       return r->second;
+    InternalPatternConverterMap::const_iterator r2 = getGlobalRulesRegistry().find(converterId);
+    if(r2 != getGlobalRulesRegistry().end()) {
+       return (*r2->second)(formattingInfo, options);
     }
 
     return NULL;
@@ -370,33 +350,32 @@ PatternParser::PatternConverterFactory PatternParser::findConverterClass(
  * and i points to the character following 'c'.
  */
 void PatternParser::finalizeConverter(logchar c) {
-  PatternConverterPtr pc;
-
   LogString converterId(extractConverter(c));
 
-  PatternConverterFactory factory = findConverterClass(converterId);
-
   std::vector<LogString> options(extractOptions());
-
-
-  //System.out.println("Option is [" + option + "]");
-  if (factory != NULL) {
-    pc = (*factory)(formattingInfo, options);
-    currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
-  } else {
-    std::basic_ostringstream<logchar> os;
-    if (converterId.empty()) {
-        os << LOG4CXX_STR("Empty conversion specifier starting at position ");
-    } else {
-        os << LOG4CXX_STR("Unrecognized conversion specifier [")
-           << converterId
-           << LOG4CXX_STR("] starting at position ");
-    }
-    os << i << LOG4CXX_STR(" in conversion pattern.");
-    logError(os.str());
-    pc = new LiteralPatternConverter(currentLiteral);
-    currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+  PatternConverterPtr pc;
+  try {
+      pc = createConverter(converterId, formattingInfo, options);
+      if (pc == NULL) {
+        std::basic_ostringstream<logchar> os;
+        if (converterId.empty()) {
+            os << LOG4CXX_STR("Empty conversion specifier starting at position ");
+        } else {
+            os << LOG4CXX_STR("Unrecognized conversion specifier [")
+               << converterId
+               << LOG4CXX_STR("] starting at position ");
+        }
+        os << i << LOG4CXX_STR(" in conversion pattern.");
+        logError(os.str());
+        pc = new LiteralPatternConverter(currentLiteral);
+      }
+  } catch(ClassNotFoundException& ex) {
+      LogString msg;
+      Transcoder::decode(ex.what(), msg);
+      logError(msg);
+      pc = new LiteralPatternConverter(currentLiteral);
   }
+  currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
   addConverter(pc);
 }
 
@@ -422,20 +401,6 @@ void PatternParser::setConverterRegistry(const PatternConverterMap& newRegistry)
 }
 
 
-int PatternParser::getPrecision(
-    const std::vector<LogString>& options) {
-    int r = 0;
-    if (options.size() > 0 && !options[0].empty()) {
-        r = StringHelper::toInt(options[0]);
-        if (r < 0) {
-          LogString msg(LOG4CXX_STR("Precision options ("));
-          msg.append(options[0]);
-          msg.append(LOG4CXX_STR(") isn't a positive integer."));
-          PatternParser::logError(msg);
-        }
-    }
-    return r;
-}
 
 
 // ---------------------------------------------------------------------
@@ -624,62 +589,37 @@ void PatternParser::MethodLocationPatternConverter::convert(LogString& sbuf,
         Transcoder::decode(locInfo.getMethodName(), sbuf);
 }
 
-PatternParser::ClassNamePatternConverter::ClassNamePatternConverter(
-    const FormattingInfo& formattingInfo,
-    const std::vector<LogString>& opions)
-: PatternConverter(formattingInfo)
+
+
+PatternParser::ClassNamePatternConverter::ClassNamePatternConverter(const FormattingInfo&
+        formattingInfo, const std::vector<LogString>& options)
+: NamedPatternConverter(formattingInfo, options)
 {
 }
 
-void PatternParser::ClassNamePatternConverter::convert(LogString& sbuf,
-        const spi::LoggingEventPtr& event, Pool& pool) const
+LogString PatternParser::ClassNamePatternConverter::getFullyQualifiedName(
+     const spi::LoggingEventPtr& event) const
 {
-        const LocationInfo& locInfo = event->getLocationInformation();
-        Transcoder::decode(locInfo.getClassName(), sbuf);
+    LogString sbuf;
+    const LocationInfo& locInfo = event->getLocationInformation();
+    Transcoder::decode(locInfo.getClassName(), sbuf);
+    return sbuf;
 }
+
 
 
 
 PatternParser::LoggerPatternConverter::LoggerPatternConverter(const FormattingInfo&
         formattingInfo, const std::vector<LogString>& options)
-: PatternConverter(formattingInfo), precision(PatternParser::getPrecision(options))
+: NamedPatternConverter(formattingInfo, options)
 {
 }
 
-
-
-
-void PatternParser::LoggerPatternConverter::convert(LogString& sbuf,
-        const spi::LoggingEventPtr& event,
-        Pool& pool) const
+LogString PatternParser::LoggerPatternConverter::getFullyQualifiedName(
+     const spi::LoggingEventPtr& event) const
 {
-
-        if(precision <= 0)
-        {
-                sbuf.append(event->getLoggerName());
-        }
-        else
-        {
-                const LogString& n = event->getLoggerName();
-                LogString::size_type len = n.length();
-
-                // We substract 1 from 'len' when assigning to 'end' to avoid out of
-                // bounds exception in return r.substring(end+1, len). This can happen if
-                // precision is 1 and the category name ends with a dot.
-                LogString::size_type end = len -1 ;
-                for(int i = precision; i > 0; i--)
-                {
-                        end = n.rfind(LOG4CXX_STR('.'), end-1);
-                        if(end == LogString::npos)
-                        {
-                                sbuf.append(n);
-                                return;
-                        }
-                }
-                sbuf.append(n, end+1, len - (end+1));
-        }
+    return event->getLoggerName();
 }
-
 
 
 PatternParser::MessagePatternConverter::MessagePatternConverter(

@@ -20,6 +20,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <vector>
 
 namespace log4cxx
 {
@@ -76,6 +77,9 @@ namespace log4cxx
                         */
                         virtual void format(LogString& sbuf,
                             const spi::LoggingEventPtr& e, log4cxx::helpers::Pool& pool) const;
+
+                        void setFormattingInfo(const FormattingInfo&);
+                        virtual void setOptions(const std::vector<LogString>& options);
 
                 }; // class PatternConverter
         }  // namespace helpers

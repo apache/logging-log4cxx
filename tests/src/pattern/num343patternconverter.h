@@ -23,6 +23,8 @@ namespace log4cxx
      class Num343PatternConverter : public log4cxx::helpers::PatternConverter
      {
      public:
+        DECLARE_LOG4CXX_OBJECT(Num343PatternConverter)
+
        Num343PatternConverter();
        static log4cxx::helpers::PatternConverter* newInstance(
           const log4cxx::helpers::FormattingInfo& info,

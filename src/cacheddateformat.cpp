@@ -52,6 +52,7 @@ const logchar* const CachedDateFormat::magicString2 = LOG4CXX_STR("987");
  */
 const logchar* const CachedDateFormat::zeroString = LOG4CXX_STR("000");
 
+#undef min
 
 /**
  *  Creates a new CachedDateFormat object.

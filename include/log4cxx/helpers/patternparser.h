@@ -21,7 +21,7 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/formattinginfo.h>
-#include <log4cxx/helpers/patternconverter.h>
+#include <log4cxx/helpers/namedpatternconverter.h>
 #include <log4cxx/helpers/dateformat.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <map>
@@ -41,9 +41,27 @@ static PatternConverter* newInstance(                         \
           return new classname(formattingInfo, options);  }   \
 private:                                                      \
 classname(const classname&);                                  \
-classname& operator=(const classname&);                       \
+classname& operator=(const classname&);
 
 #define END_DEFINE_PATTERN_CONVERTER(classname)          };
+
+
+#define DEFINE_NAMED_PATTERN_CONVERTER(classname)                   \
+class LOG4CXX_EXPORT classname : public NamedPatternConverter {    \
+public:                                                       \
+classname(const FormattingInfo& formattingInfo,               \
+          const std::vector<LogString>& options);             \
+virtual LogString getFullyQualifiedName(                      \
+    const spi::LoggingEventPtr& event) const;                 \
+static PatternConverter* newInstance(                         \
+          const FormattingInfo& formattingInfo,               \
+          const std::vector<LogString>& options) {            \
+          return new classname(formattingInfo, options);  }   \
+private:                                                      \
+classname(const classname&);                                  \
+classname& operator=(const classname&);
+
+#define END_DEFINE_NAMED_PATTERN_CONVERTER(classname)          };
 
 
 namespace log4cxx
@@ -72,7 +90,8 @@ namespace log4cxx
                 typedef PatternConverter* (*PatternConverterFactory)(
                      const FormattingInfo& info,
                      const std::vector<LogString>& options);
-                typedef std::map<LogString, PatternConverterFactory> PatternConverterMap;
+                typedef std::map<LogString, PatternConverterFactory> InternalPatternConverterMap;
+                typedef std::map<LogString, LogString> PatternConverterMap;
 
                 private:
                   enum {
@@ -83,7 +102,7 @@ namespace log4cxx
                       MIN_STATE = 4,
                       MAX_STATE = 5 } state;
 
-                  static const PatternConverterMap& getGlobalRulesRegistry();
+                  static const InternalPatternConverterMap& getGlobalRulesRegistry();
 
                   LogString currentLiteral;
                   int patternLength;
@@ -119,7 +138,9 @@ namespace log4cxx
 
 
                 private:
-                        PatternConverterFactory findConverterClass(const LogString& converterId);
+                        PatternConverterPtr createConverter(const LogString& converterId,
+                           const FormattingInfo& formattingInfo, 
+                           const std::vector<LogString>& options) const;
 
                         void finalizeConverter(logchar c);
 
@@ -130,7 +151,6 @@ namespace log4cxx
 
                         static void logError(const LogString& msg);
                         static void logWarn(const LogString& msg);
-                        static int getPrecision(const std::vector<LogString>& options);
 
 
                 // ---------------------------------------------------------------------
@@ -168,12 +188,11 @@ namespace log4cxx
                         DEFINE_PATTERN_CONVERTER(MethodLocationPatternConverter)
                         END_DEFINE_PATTERN_CONVERTER(MethodLocationPatternConverter)
 
-                        DEFINE_PATTERN_CONVERTER(ClassNamePatternConverter)
-                        END_DEFINE_PATTERN_CONVERTER(ClassNamePatternConverter)
+                        DEFINE_NAMED_PATTERN_CONVERTER(ClassNamePatternConverter)
+                        END_DEFINE_NAMED_PATTERN_CONVERTER(ClassNamePatternConverter)
 
-                        DEFINE_PATTERN_CONVERTER(LoggerPatternConverter)
-                            int precision;
-                        END_DEFINE_PATTERN_CONVERTER(LoggerPatternConverter)
+                        DEFINE_NAMED_PATTERN_CONVERTER(LoggerPatternConverter)
+                        END_DEFINE_NAMED_PATTERN_CONVERTER(LoggerPatternConverter)
 
                         DEFINE_PATTERN_CONVERTER(MessagePatternConverter)
                         END_DEFINE_PATTERN_CONVERTER(MessagePatternConverter)
@@ -209,5 +228,7 @@ namespace log4cxx
 
 #undef DEFINE_PATTERN_CONVERTER
 #undef END_DEFINE_PATTERN_CONVERTER
+#undef DEFINE_NAMED_PATTERN_CONVERTER
+#undef END_DEFINE_NAMED_PATTERN_CONVERTER
 
 #endif //_LOG4CXX_HELPER_PATTERN_PARSER_H

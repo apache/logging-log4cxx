@@ -33,6 +33,14 @@ PatternConverter::PatternConverter(const FormattingInfo& fi)
 {
 }
 
+void PatternConverter::setFormattingInfo(const FormattingInfo& fi) {
+    minChar = fi.minChar;
+    maxChar = fi.maxChar;
+    leftAlign = fi.leftAlign;
+}
+
+void PatternConverter::setOptions(const std::vector<LogString>& options) {
+}
 
 /**
 A template method for formatting in a converter specific way.

@@ -20,6 +20,9 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::pattern;
 
+IMPLEMENT_LOG4CXX_OBJECT(Num343PatternConverter)
+
+
 Num343PatternConverter::Num343PatternConverter() {
 }
 

@@ -85,7 +85,7 @@ public:
      LogString name(LOG4CXX_STR("z343"));
      ruleRegistry.insert(
         PatternParser::PatternConverterMap::value_type(name,
-           Num343PatternConverter::newInstance));
+           LOG4CXX_STR("org.apache.log4j.pattern.Num343PatternConverter")));
 
      patternParser.setConverterRegistry(ruleRegistry);
 
@@ -108,7 +108,7 @@ public:
      LogString name(LOG4CXX_STR("n343"));
      ruleRegistry.insert(
         PatternParser::PatternConverterMap::value_type(name,
-           Num343PatternConverter::newInstance));
+           LOG4CXX_STR("org.apache.log4j.pattern.Num343PatternConverter")));
 
      patternParser.setConverterRegistry(ruleRegistry);
 

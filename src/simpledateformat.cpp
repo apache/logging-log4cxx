@@ -91,9 +91,8 @@ namespace log4cxx {
           size_t initialLength = s.length();
           StringHelper::toString(getField(tm), p, s);
           size_t finalLength = s.length();
-          size_t padding = width - (finalLength - initialLength);
-          if (padding > 0) {
-            s.insert(initialLength, padding, L'0');
+          if (initialLength + width > finalLength) {
+            s.insert(initialLength, (initialLength + width) - finalLength, L'0');
           }
         }
 

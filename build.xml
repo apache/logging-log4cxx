@@ -812,6 +812,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 unless="apriconv.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
+        <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
 
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
