@@ -11,7 +11,7 @@
  *                                                                         *
  * This software is published under the terms of the Apache Software       *
  * License version 1.1, a copy of which has been included with this        *
- * distribution in the LICENSE.txt file.                                   *
+ * distribution in the license.apl file.                                   *
  ***************************************************************************/
 
 #include <log4cxx/helpers/object.h>
