@@ -45,14 +45,12 @@ void init(const tstring& portStr, const tstring& configFile)
 	USES_CONVERSION;
 	port = ttol(portStr.c_str());
 
-	DOMConfigurator domconfigurator;
 #ifdef WIN32
 	::CoInitialize(0);
-	domconfigurator.doConfigure(configFile);
+	DOMConfigurator::configure(configFile);
 	::CoUninitialize();
 #else
-	tcout << _T("domconfigurator.doConfigure") << std::endl;
-	domconfigurator.doConfigure(configFile);
+	DOMConfigurator::configure(configFile);
 #endif
 }
 
