@@ -79,6 +79,7 @@ LevelMatchFilter: build cleanOutputDir
 ErrorHandler: build cleanOutputDir
 
 OptionConverter: build cleanOutputDir
+	src/testsuite OptionConverterTestCase
 
 BoundedFIFO: build cleanOutputDir
 	src/testsuite BoundedFIFOTestCase
