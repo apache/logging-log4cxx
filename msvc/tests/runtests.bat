@@ -50,6 +50,21 @@ echo ********** CyclicBuffer **********
 call ..\msvc\tests\clean.bat
 ..\msvc\bin\%1\testsuite CyclicBufferTestCase
 
+echo ********** OptionConverter **********
+call ..\msvc\tests\clean.bat
+..\msvc\bin\%1\testsuite OptionConverterTestCase
+
+echo ********** CustomLevel **********
+call ..\msvc\tests\clean.bat
+..\msvc\bin\%1\testsuite CustomLevelTestCase
+
+echo ********** DOM **********
+call ..\msvc\tests\clean.bat
+..\msvc\bin\%1\testsuite DOMTestCase
+
+echo ********** SocketServer **********
+call ..\msvc\tests\clean.bat
+..\msvc\bin\%1\testsuite SocketServerTestCase
 
 cd ..\msvc\tests
 

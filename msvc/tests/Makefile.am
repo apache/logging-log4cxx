@@ -1,1 +1,2 @@
-EXTRA_DIST = testsuite.dsp clean.bat runtests.bat
+EXTRA_DIST = testsuite.dsp testsuite.vcproj clean.bat runtests.bat \
+	shortsocketserver.dsp shortsocketserver.vcproj 

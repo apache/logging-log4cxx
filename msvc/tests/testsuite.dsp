@@ -44,7 +44,8 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
+# SUBTRACT CPP /O<none>
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -52,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 log4cxx.lib boost_regex_vc6_mdi.lib cppunit.lib /nologo /subsystem:console /machine:I386 /out:"../Bin/Release/testsuite.exe"
+# ADD LINK32 log4cxx.lib boost_regex_vc6_mdi.lib cppunit.lib /nologo /subsystem:console /debug /machine:I386 /out:"../Bin/Release/testsuite.exe"
 
 !ELSEIF  "$(CFG)" == "testsuite - Win32 Debug"
 
@@ -117,7 +118,8 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "UNICODE" /YX /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "UNICODE" /YX /FD /c
+# SUBTRACT CPP /O<none>
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -125,7 +127,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 log4cxx.lib boost_regex_vc6_mdi.lib cppunit.lib /nologo /subsystem:console /machine:I386 /out:"../Bin/Unicode_R/testsuite.exe"
+# ADD LINK32 log4cxx.lib boost_regex_vc6_mdi.lib cppunit.lib /nologo /subsystem:console /debug /machine:I386 /out:"../Bin/Unicode_R/testsuite.exe"
 
 !ENDIF 
 
@@ -164,7 +166,15 @@ SOURCE=..\..\tests\src\util\controlfilter.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\tests\src\xml\customleveltestcase.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\tests\src\helpers\cyclicbuffertestcase.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\xml\domtestcase.cpp
 # End Source File
 # Begin Source File
 
@@ -196,11 +206,19 @@ SOURCE=..\..\tests\src\minimumtestcase.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\tests\src\helpers\optionconvertertestcase.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\tests\src\patternlayouttest.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\tests\src\util\relativetimefilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\net\socketservertestcase.cpp
 # End Source File
 # Begin Source File
 
@@ -242,6 +260,22 @@ SOURCE=..\..\tests\src\customlogger\xlogger.cpp
 
 SOURCE=..\..\tests\src\customlogger\xloggertestcase.cpp
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\xml\xmllayouttestcase.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\util\xmllineattributefilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\util\xmlthreadfilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\util\xmltimestampfilter.cpp
+# End Source File
 # End Group
 # Begin Group "Header Files"
 
@@ -280,6 +314,10 @@ SOURCE=..\..\tests\src\util\relativetimefilter.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\tests\src\net\socketservertestcase.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\tests\src\util\threadfilter.h
 # End Source File
 # Begin Source File
@@ -297,6 +335,18 @@ SOURCE=..\..\tests\src\xml\xlevel.h
 # Begin Source File
 
 SOURCE=..\..\tests\src\customlogger\xlogger.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\util\xmllineattributefilter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\util\xmlthreadfilter.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\util\xmltimestampfilter.h
 # End Source File
 # End Group
 # Begin Group "Resource Files"
