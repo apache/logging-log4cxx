@@ -26,12 +26,19 @@ namespace log4cxx
 {
 	namespace helpers
 	{
+		/** Signals that an I/O exception of some sort has occurred. This class
+		is the general class of exceptions produced by failed or interrupted
+		I/O operations.
+		*/
 		class IOException : public Exception
 		{
 		public:
 			String getMessage() { return String(); }
 		};
 
+		/** Thrown to indicate that there is an error in the underlying
+		protocol, such as a TCP error.
+		*/
 		class SocketException : public IOException
 		{
 		public:
@@ -42,25 +49,46 @@ namespace log4cxx
 			String message;
 		};
 
+		/** Signals that an error occurred while attempting to connect a socket
+		to a remote address and port. Typically, the connection was refused
+		remotely (e.g., no process is listening on the remote address/port).
+		*/
 		class ConnectException : public SocketException
 		{
 		};
 
+		/** Signals that an error occurred while attempting to bind a socket to
+		a local address and port. Typically, the port is in use, or the
+		requested local address could not be assigned.
+		*/
 		class BindException : public SocketException
 		{
 		};
 
+		/** Signals that an I/O operation has been interrupted. An
+		InterruptedIOException is thrown to indicate that an input or output
+		transfer has been terminated because the thread performing it was
+		interrupted. The field bytesTransferred  indicates how many bytes were
+		successfully transferred before the interruption occurred.
+		*/
 		class InterruptedIOException : public IOException
 		{
-			String getMessage() { return String(); }
+		};
+
+		/** Signals that a timeout has occurred on a socket read or accept.
+		*/
+		class SocketTimeoutException : public InterruptedIOException
+		{
 		};
 
 		class SocketImpl;
 		typedef helpers::ObjectPtrT<SocketImpl> SocketImplPtr;
 
+		/** @brief Default Socket Implementation.
+
+		This implementation does not implement any security check.
+		*/
 		class SocketImpl : public helpers::ObjectImpl
-
-
 		{
 		protected:
 			/** The IP address of the remote end of this socket. */
@@ -87,16 +115,27 @@ namespace log4cxx
 			SocketImpl();
 			~SocketImpl();
 			
-			/** Accepts a connection. */
+			/** @brief Accepts a connection.
+			@param s the connection
+			@throw SocketTimeoutException if a timeout was previously set with
+			setSoTimeout and the timeout has been reached.
+			@throw SocketException if an I/O error occurs when accepting the
+			connection
+			*/
 			void accept(SocketImplPtr s);
 
-			/** Returns the number of bytes that can be read from this socket
+			/** @brief Returns the number of bytes that can be read from this socket
+			without blocking.
+			@return the number of bytes that can be read from this socket
 			without blocking.
 			*/
 			int available();
 
 			/** Binds this socket to the specified port number
 			on the specified host.
+			@param host the host address
+    		@param port the port number.
+			@exception BindException if an I/O error occurs when binding this socket.
 			*/
 			void bind(InetAddress host, int port);
 
