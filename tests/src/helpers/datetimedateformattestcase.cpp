@@ -21,6 +21,7 @@
 #include "../insertwide.h"
 #include <apr.h>
 #include <apr_time.h>
+#include "localechanger.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -39,36 +40,10 @@ using namespace log4cxx::helpers;
 #endif
 
 
-class LocaleChanger {
-public:
-  LocaleChanger(const char* locale) {
-    try {
-        std::locale newLocale(locale);
-        initial = std::locale::global(newLocale);
-        effective = true;
-    } catch(std::exception&) {
-    }
-  }
-
-  ~LocaleChanger() {
-      if (effective) {
-        std::locale::global(initial);
-      }
-  }
-  inline bool isEffective() { return effective; }
-
-private:
-  LocaleChanger(LocaleChanger&);
-  LocaleChanger& operator=(LocaleChanger&);
-  std::locale initial;
-  bool effective;
-};
-
-
 /**
    Unit test {@link DateTimeDateFormat}.
    @author Curt Arnold
-   @since 1.3.0
+   @since 0.9.8
 */
 class DateTimeDateFormatTestCase : public CppUnit::TestFixture
 {

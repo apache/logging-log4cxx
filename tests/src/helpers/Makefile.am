@@ -1,4 +1,4 @@
-EXTRA_DIST = *.cpp
+EXTRA_DIST = *.cpp *.h
 
 if TESTS
 
@@ -12,6 +12,7 @@ libhelpers_a_SOURCES = \
         cyclicbuffertestcase.cpp\
         datetimedateformattestcase.cpp \
         iso8601dateformattestcase.cpp \
+        localechanger.cpp\
         optionconvertertestcase.cpp       \
         propertiestestcase.cpp \
         relativetimedateformattestcase.cpp \

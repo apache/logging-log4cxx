@@ -23,18 +23,20 @@
 #include "../insertwide.h"
 #include <apr.h>
 #include <apr_time.h>
+#include "localechanger.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-
+using namespace log4cxx::pattern;
 
 #if defined(_WIN32)
-#define LOCALE_US "us"
-#define LOCALE_JP "jpn"
+#define LOCALE_US "English_us"
+#define LOCALE_JP "Japanese_japan"
 #else
 #define LOCALE_US "en_US"
 #define LOCALE_JP "ja_JP"
 #endif
+
 
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))
@@ -45,7 +47,7 @@ using namespace log4cxx::helpers;
 /**
    Unit test {@link CachedDateFormat}.
    @author Curt Arnold
-   @since 1.3.0 */
+   @since 0.9.8 */
    class CachedDateFormatTestCase : public CppUnit::TestFixture
    {
      CPPUNIT_TEST_SUITE( CachedDateFormatTestCase );
@@ -53,10 +55,22 @@ using namespace log4cxx::helpers;
      CPPUNIT_TEST( test2 );
      CPPUNIT_TEST( test3 );
      CPPUNIT_TEST( test4 );
-//     CPPUNIT_TEST( test5 );
+     CPPUNIT_TEST( test5 );
      CPPUNIT_TEST( test6 );
-     CPPUNIT_TEST( test7 );
      CPPUNIT_TEST( test8 );
+     CPPUNIT_TEST( test9 );
+     CPPUNIT_TEST( test10 );
+     CPPUNIT_TEST( test11);
+     CPPUNIT_TEST( test12 );
+     CPPUNIT_TEST( test13 );
+     CPPUNIT_TEST( test14 );
+     CPPUNIT_TEST( test15 );
+     CPPUNIT_TEST( test16 );
+     CPPUNIT_TEST( test17);
+     CPPUNIT_TEST( test18);
+     CPPUNIT_TEST( test19);
+     CPPUNIT_TEST( test20);
+     CPPUNIT_TEST( test21);
      CPPUNIT_TEST_SUITE_END();
 
 
@@ -72,7 +86,7 @@ using namespace log4cxx::helpers;
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     DateFormatPtr baseFormatter(new AbsoluteTimeDateFormat());
-    CachedDateFormat gmtFormat(baseFormatter);
+    CachedDateFormat gmtFormat(baseFormatter, 1000000);
     gmtFormat.setTimeZone(TimeZone::getGMT());
 
     apr_time_t jul1 = MICROSECONDS_PER_DAY * 12601L;
@@ -109,28 +123,25 @@ using namespace log4cxx::helpers;
   void test2() {
       apr_time_t jul2 = MICROSECONDS_PER_DAY * 12602;
       DateFormatPtr baseFormatter(new AbsoluteTimeDateFormat());
-      CachedDateFormat gmtFormat(baseFormatter);
+      CachedDateFormat gmtFormat(baseFormatter, 1000000);
       gmtFormat.setTimeZone(TimeZone::getGMT());
 
      DateFormatPtr chicagoBase(new AbsoluteTimeDateFormat());
-     CachedDateFormat chicagoFormat(chicagoBase);
+     CachedDateFormat chicagoFormat(chicagoBase, 1000000);
      chicagoFormat.setTimeZone(TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")));
 
      Pool p;
-
      LogString actual;
-
      gmtFormat.format(actual, jul2, p);
      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
+
      actual.erase(actual.begin(), actual.end());
+     chicagoFormat.format(actual, jul2, p);
+     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("19:00:00,000"), actual);
 
-      chicagoFormat.format(actual, jul2, p);
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("19:00:00,000"), actual);
       actual.erase(actual.begin(), actual.end());
-
-    gmtFormat.format(actual, jul2, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
-    actual.erase(actual.begin(), actual.end());
+      gmtFormat.format(actual, jul2, p);
+      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
   }
 
   /**
@@ -141,7 +152,7 @@ using namespace log4cxx::helpers;
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     DateFormatPtr baseFormatter(new AbsoluteTimeDateFormat());
-    CachedDateFormat gmtFormat(baseFormatter);
+    CachedDateFormat gmtFormat(baseFormatter, 1000000);
     gmtFormat.setTimeZone(TimeZone::getGMT());
 
     apr_time_t ticks = MICROSECONDS_PER_DAY * -7;
@@ -155,7 +166,6 @@ using namespace log4cxx::helpers;
     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
     actual.erase(actual.begin(), actual.end());
 
-#if defined(_WIN32)
    //
    //   APR's explode_time method does not properly calculate tm_usec
    //     prior to 1 Jan 1970 on Unix
@@ -171,11 +181,8 @@ using namespace log4cxx::helpers;
     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
     actual.erase(actual.begin(), actual.end());
 
-//    gmtFormat.format(actual, ticks + 1415000, p);
-//    Fails on both Linux and Win32
-//    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:01,415", actual);
-#endif
-
+    gmtFormat.format(actual, ticks + 1423000, p);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:01,423"), actual);
   }
 
   void assertFormattedEquals(
@@ -189,6 +196,7 @@ using namespace log4cxx::helpers;
         baseFormat->format(expected, date, p);
         cachedFormat.format(actual, date, p);
 
+
         CPPUNIT_ASSERT_EQUAL(expected, actual);
   }
 
@@ -199,7 +207,7 @@ using namespace log4cxx::helpers;
     std::locale localeEN(LOCALE_US);
     DateFormatPtr baseFormat(
          new SimpleDateFormat(LOG4CXX_STR("EEE, MMM dd, HH:mm:ss.SSS Z"), localeEN));
-    CachedDateFormat cachedFormat(baseFormat);
+    CachedDateFormat cachedFormat(baseFormat, 1000000);
     //
     //   use a date in 2000 to attempt to confuse the millisecond locator
     apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
@@ -218,10 +226,10 @@ using namespace log4cxx::helpers;
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
-    std::locale localeJP(LOCALE_JP);
-    DateFormatPtr baseFormat(
-         new SimpleDateFormat(LOG4CXX_STR("EEE, MMM dd, HH:mm:ss.SSS Z"), localeJP));
-    CachedDateFormat cachedFormat(baseFormat);
+    LocaleChanger localeChange(LOCALE_JP);
+    DateFormatPtr baseFormat(new SimpleDateFormat(
+               LOG4CXX_STR("EEE, MMM dd, HH:mm:ss.SSS Z")));
+    CachedDateFormat cachedFormat(baseFormat, 1000000);
     //
     //   use a date in 2000 to attempt to confuse the millisecond locator
     apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
@@ -246,45 +254,338 @@ using namespace log4cxx::helpers;
     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
   }
 
-  /**
-   * Attempt to cache a RelativeTimeDateFormat which isn't compatible
-   * with caching.  Should just delegate to the RelativeTimeDateFormat.
-   */
-   void test7() {
-     //   subsequent calls within one minute
-     //     are optimized to reuse previous formatted value
-     //     make a couple of nearly spaced calls
-     DateFormatPtr baseFormat(new RelativeTimeDateFormat());
-     CachedDateFormat cachedFormat(baseFormat);
-     //
-     //   use a date in 2000 to attempt to confuse the millisecond locator
-     apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
-
-     Pool p;
-
-     assertFormattedEquals(baseFormat, cachedFormat, ticks, p);
-     assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000, p);
-     assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000, p);
-     assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000, p);
-     assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
-   }
 
   /**
    * Set time zone on cached and check that it is effective.
    */
   void test8() {
     DateFormatPtr baseFormat(new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS")));
-    CachedDateFormat cachedFormat(baseFormat);
-    cachedFormat.setTimeZone(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
+    baseFormat->setTimeZone(TimeZone::getGMT());
+    CachedDateFormat cachedFormat(baseFormat, 1000000);
     apr_time_t jul4 = MICROSECONDS_PER_DAY * 12603;
 
     Pool p;
 
     LogString actual;
     cachedFormat.format(actual, jul4, p);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-04 00:00:00,000"), actual);
+
+    cachedFormat.setTimeZone(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
+    actual.erase(actual.begin(), actual.end());
+    cachedFormat.format(actual, jul4, p);
 
     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-03 18:00:00,000"), actual);
   }
+
+
+/**
+ * Test of caching when less than three millisecond digits are specified.
+ */
+void test9() {
+  std::locale localeUS(LOCALE_US);
+
+  DateFormatPtr baseFormat = new SimpleDateFormat(
+      LOG4CXX_STR("yyyy-MMMM-dd HH:mm:ss,SS Z"), localeUS);
+  DateFormatPtr cachedFormat = new CachedDateFormat(baseFormat, 1000000);
+  TimeZonePtr cet = TimeZone::getTimeZone(LOG4CXX_STR("GMT+1"));
+  cachedFormat->setTimeZone(cet);
+
+
+   apr_time_exp_t c;
+   memset(&c, 0, sizeof(c));
+   c.tm_year = 104;
+   c.tm_mon = 11;
+   c.tm_mday = 12;
+   c.tm_hour = 19;
+   c.tm_sec = 37;
+   c.tm_usec = 23000;
+
+   apr_time_t dec12;
+   apr_status_t stat = apr_time_exp_gmt_get(&dec12, &c);
+   const apr_status_t statOK = 0;
+   CPPUNIT_ASSERT_EQUAL(statOK, stat);
+
+   Pool p;
+
+   LogString s;
+   cachedFormat->format(s, dec12, p);
+
+   CPPUNIT_ASSERT_EQUAL(
+       (LogString) LOG4CXX_STR("2004-December-12 20:00:37,23 +0100"), s);
+
+    memset(&c, 0, sizeof(c));
+    c.tm_year = 104;
+    c.tm_mon = 11;
+    c.tm_mday = 31;
+    c.tm_hour = 23;
+    c.tm_sec = 13;
+    c.tm_usec = 905000;
+
+    apr_time_t jan1;
+    stat = apr_time_exp_gmt_get(&jan1, &c);
+    CPPUNIT_ASSERT_EQUAL(statOK, stat);
+
+    s.erase(s.begin(), s.end());
+    cachedFormat->format(s, jan1, p);
+
+    CPPUNIT_ASSERT_EQUAL(
+       (LogString) LOG4CXX_STR("2005-January-01 00:00:13,905 +0100"), s);
+}
+
+
+/**
+ * Test when millisecond position moves but length remains constant.
+ */
+void test10() {
+  std::locale localeUS(LOCALE_US);
+  DateFormatPtr baseFormat = new SimpleDateFormat(
+      LOG4CXX_STR("MMMM SSS EEEEEE"), localeUS);
+  DateFormatPtr cachedFormat = new CachedDateFormat(baseFormat, 1000000);
+  TimeZonePtr cet = TimeZone::getTimeZone(LOG4CXX_STR("GMT+1"));
+  cachedFormat->setTimeZone(cet);
+
+  apr_time_exp_t c;
+  memset(&c, 0, sizeof(c));
+  c.tm_year = 104;
+  c.tm_mon = 9;
+  c.tm_mday = 5;
+  c.tm_hour = 21;
+  c.tm_sec = 37;
+  c.tm_usec = 23000;
+
+  apr_time_t oct5;
+  apr_status_t stat = apr_time_exp_gmt_get(&oct5, &c);
+  const apr_status_t statOK = 0;
+  CPPUNIT_ASSERT_EQUAL(statOK, stat);
+
+  Pool p;
+
+  LogString s;
+  cachedFormat->format(s, oct5, p);
+
+  CPPUNIT_ASSERT_EQUAL(
+    (LogString) LOG4CXX_STR("October 023 Tuesday"), s);
+
+  memset(&c, 0, sizeof(c));
+  c.tm_year = 104;
+  c.tm_mon = 10;
+  c.tm_mday = 1;
+  c.tm_usec = 23000;
+
+  apr_time_t nov1;
+  stat = apr_time_exp_gmt_get(&nov1, &c);
+  CPPUNIT_ASSERT_EQUAL(statOK, stat);
+
+  s.erase(s.begin(), s.end());
+  cachedFormat->format(s, nov1, p);
+
+  CPPUNIT_ASSERT_EQUAL(
+     (LogString) LOG4CXX_STR("November 023 Monday"), s);
+
+   nov1 += 961000;
+   s.erase(s.begin(), s.end());
+   cachedFormat->format(s, nov1, p);
+
+   CPPUNIT_ASSERT_EQUAL(
+      (LogString) LOG4CXX_STR("November 984 Monday"), s);
+}
+
+/**
+ * Test that tests if caching is skipped if only "SS"
+ *     is specified.
+ */
+void test11() {
+   //
+   //   Earlier versions could be tricked by "SS0" patterns.
+   //
+   LogString badPattern(LOG4CXX_STR("ss,SS0"));
+   DateFormatPtr simpleFormat = new SimpleDateFormat(badPattern);
+   DateFormatPtr gmtFormat = new CachedDateFormat(simpleFormat, 1000000);
+   gmtFormat->setTimeZone(TimeZone::getGMT());
+
+   //
+   // The first request has to 100 ms after an ordinal second
+   //    to push the literal zero out of the pattern check
+   apr_time_t ticks = MICROSECONDS_PER_DAY * 11142L;
+   apr_time_t jul2 = ticks + 120000;
+
+   Pool p;
+
+   LogString s;
+   gmtFormat->format(s, jul2, p);
+
+   CPPUNIT_ASSERT_EQUAL(
+      (LogString) LOG4CXX_STR("00,1200"), s);
+
+   jul2 = ticks + 87000;
+
+   s.erase(s.begin(), s.end());
+   gmtFormat->format(s, jul2, p);
+
+   CPPUNIT_ASSERT_EQUAL(
+      (LogString) LOG4CXX_STR("00,870"), s);
+}
+
+/**
+ * Check pattern location for ISO8601
+ */
+void test12() {
+   DateFormatPtr df = new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS"));
+   apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
+
+   Pool p;
+
+   LogString formatted;
+   df->format(formatted, ticks, p);
+
+   int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
+       formatted, df, p);
+   CPPUNIT_ASSERT_EQUAL(20, millisecondStart);
+}
+
+/**
+ * Check pattern location for DATE
+ */
+void test13() {
+   DateFormatPtr df = new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd"));
+   apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
+
+   Pool p;
+
+   LogString formatted;
+   df->format(formatted, ticks, p);
+
+   int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
+       formatted, df, p);
+   CPPUNIT_ASSERT_EQUAL((int) CachedDateFormat::NO_MILLISECONDS, millisecondStart);
+}
+
+/**
+ * Check pattern location for ABSOLUTE
+ */
+void test14() {
+   DateFormatPtr df = new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SSS"));
+   apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
+
+   Pool p;
+   LogString formatted;
+   df->format(formatted, ticks, p);
+
+   int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
+      formatted, df, p);
+   CPPUNIT_ASSERT_EQUAL(9, millisecondStart);
+}
+
+/**
+ * Check pattern location for single S
+ */
+void test15() {
+   DateFormatPtr df = new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,S"));
+   apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
+
+   Pool p;
+   LogString formatted;
+   df->format(formatted, ticks, p);
+
+   int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
+      formatted, df, p);
+   CPPUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
+}
+
+/**
+ * Check pattern location for single SS
+ */
+void test16() {
+   DateFormatPtr df = new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SS"));
+   apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
+
+   Pool p;
+   LogString formatted;
+   df->format(formatted, ticks, p);
+
+   int millisecondStart =
+      CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+   CPPUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
+}
+
+
+/**
+ * Check caching when multiple SSS appear in pattern
+ */
+void test17() {
+    apr_time_t jul2 = 12602L * MICROSECONDS_PER_DAY;
+    LogString badPattern(LOG4CXX_STR("HH:mm:ss,SSS HH:mm:ss,SSS"));
+    DateFormatPtr simpleFormat = new SimpleDateFormat(badPattern);
+    simpleFormat->setTimeZone(TimeZone::getGMT());
+    DateFormatPtr cachedFormat = new CachedDateFormat(simpleFormat, 1000000);
+
+    Pool p;
+    LogString s;
+    cachedFormat->format(s, jul2, p);
+
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000 00:00:00,000"), s);
+    jul2 += 120000;
+
+    s.erase(s.begin(), s.end());
+    simpleFormat->format(s, jul2, p);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s);
+
+    s.erase(s.begin(), s.end());
+    cachedFormat->format(s, jul2, p);
+
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s) ;
+
+    int maxValid = CachedDateFormat::getMaximumCacheValidity(badPattern);
+    CPPUNIT_ASSERT_EQUAL(1000, maxValid);
+}
+
+/**
+ * Check that patterns not containing microseconds
+ * are reported as being able to be cached for a full second.
+ */
+void test18() {
+
+    int maxValid =
+       CachedDateFormat::getMaximumCacheValidity(
+          LOG4CXX_STR("yyyy-MM-dd"));
+    CPPUNIT_ASSERT_EQUAL(1000000, maxValid);
+}
+
+/**
+ * Check that patterns not containing 3 microseconds
+ * are reported as being able to be cached for a full second.
+ */
+void test19() {
+
+    int maxValid =
+       CachedDateFormat::getMaximumCacheValidity(
+          LOG4CXX_STR("yyyy-MM-dd SSS"));
+    CPPUNIT_ASSERT_EQUAL(1000000, maxValid);
+}
+
+/**
+ * Check that patterns not containing 2 S's
+ * are reported as being able to be cached for only a millisecond.
+ */
+void test20() {
+
+    int maxValid =
+       CachedDateFormat::getMaximumCacheValidity(
+          LOG4CXX_STR("yyyy-MM-dd SS"));
+    CPPUNIT_ASSERT_EQUAL(1000, maxValid);
+}
+
+/**
+ * Check that patterns not containing multi S groups
+ * are reported as being able to be cached for only a millisecond.
+ */
+void test21() {
+
+    int maxValid =
+       CachedDateFormat::getMaximumCacheValidity(
+          LOG4CXX_STR("yyyy-MM-dd SSS SSS"));
+    CPPUNIT_ASSERT_EQUAL(1000, maxValid);
+}
 
 };
 

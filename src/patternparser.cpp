@@ -27,12 +27,14 @@
 #include <log4cxx/mdc.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <sstream>
+#include <log4cxx/helpers/exception.h>
 
 #include <apr_pools.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+using namespace log4cxx::pattern;
 
 #define ESCAPE_CHAR LOG4CXX_STR('%')
 
@@ -209,7 +211,7 @@ std::vector<LogString>  PatternParser::extractOptions()
   while ((i < patternLength) && (pattern.at(i) == LOG4CXX_STR('{'))) {
     size_t end = pattern.find(LOG4CXX_STR('}'), i);
 
-    if (end > i) {
+    if (end != LogString::npos && end > i) {
       LogString r(pattern.substr(i + 1, end - (i + 1)));
       options.push_back(r);
        i = end+1;
@@ -461,6 +463,7 @@ PatternParser::DatePatternConverter::DatePatternConverter(const FormattingInfo& 
 DateFormatPtr PatternParser::DatePatternConverter::createDateFormat(
     const std::vector<LogString>& options) {
     DateFormatPtr df;
+    int maximumCacheValidity = 1000000;
     if (options.size() == 0) {
         df = new ISO8601DateFormat();
     } else {
@@ -478,7 +481,16 @@ DateFormatPtr PatternParser::DatePatternConverter::createDateFormat(
             df = new DateTimeDateFormat();
        } else {
          if (dateFormatStr.find(LOG4CXX_STR('%')) == std::string::npos) {
-            df = new SimpleDateFormat(dateFormatStr);
+            try {
+               df = new SimpleDateFormat(dateFormatStr);
+               maximumCacheValidity =
+                  CachedDateFormat::getMaximumCacheValidity(dateFormatStr);
+            } catch(IllegalArgumentException& e) {
+               df = new ISO8601DateFormat();
+               LogLog::warn(((LogString)
+                  LOG4CXX_STR("Could not instantiate SimpleDateFormat with pattern "))
+                     + dateFormatStr, e);
+            }
          } else {
             df = new StrftimeDateFormat(dateFormatStr);
          }
@@ -490,7 +502,9 @@ DateFormatPtr PatternParser::DatePatternConverter::createDateFormat(
          }
        }
     }
-    df = new CachedDateFormat(df);
+    if (maximumCacheValidity > 0) {
+        df = new CachedDateFormat(df, maximumCacheValidity);
+    }
     return df;
 }
 

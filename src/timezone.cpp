@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/logger.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -49,7 +50,17 @@ namespace log4cxx
         /** Explode time to human readable form. */
         log4cxx_status_t explode( apr_time_exp_t * result, log4cxx_time_t input ) const
         {
-          return apr_time_exp_gmt( result, input );
+           apr_status_t stat;
+           //  APR 1.1 and early mishandles microseconds on dates
+           //   before 1970, APR bug 32520
+           if (LOG4CXX_UNLIKELY(input < 0 && apr_time_usec(input) < 0)) {
+              apr_time_t floorTime = (apr_time_sec(input) -1) * APR_USEC_PER_SEC;
+              stat = apr_time_exp_gmt(result, floorTime);
+              result->tm_usec = input - floorTime;
+           } else {
+              stat = apr_time_exp_gmt( result, input );
+           }
+           return stat;
         }
 
       private:
@@ -74,7 +85,17 @@ namespace log4cxx
         /** Explode time to human readable form. */
         log4cxx_status_t explode( apr_time_exp_t * result, log4cxx_time_t input ) const
         {
-          return apr_time_exp_lt( result, input );
+          apr_status_t stat;
+          //  APR 1.1 and early mishandles microseconds on dates
+          //   before 1970, APR bug 32520
+          if (LOG4CXX_UNLIKELY(input < 0 && apr_time_usec(input) < 0)) {
+             apr_time_t floorTime = (apr_time_sec(input) -1) * APR_USEC_PER_SEC;
+             stat = apr_time_exp_lt(result, floorTime);
+             result->tm_usec = input - floorTime;
+          } else {
+             stat = apr_time_exp_lt( result, input );
+          }
+          return stat;
         }
 
 
@@ -112,7 +133,17 @@ namespace log4cxx
         /** Explode time to human readable form. */
         log4cxx_status_t explode( apr_time_exp_t * result, log4cxx_time_t input ) const
         {
-          return apr_time_exp_tz( result, input, offset );
+          apr_status_t stat;
+          //  APR 1.1 and early mishandles microseconds on dates
+          //   before 1970, APR bug 32520
+          if (LOG4CXX_UNLIKELY(input < 0 && apr_time_usec(input) < 0)) {
+             apr_time_t floorTime = (apr_time_sec(input) -1) * APR_USEC_PER_SEC;
+             stat = apr_time_exp_tz(result, floorTime, offset);
+             result->tm_usec = input - floorTime;
+          } else {
+             stat = apr_time_exp_tz( result, input, offset );
+          }
+          return stat;
         }
 
 
