@@ -145,7 +145,11 @@ PatternConverterPtr PatternParser::parse()
                                         i++; // move pointer
                                         break;
                                 case LOG4CXX_STR('n'):
+#if defined(_WIN32)
+                                        currentLiteral.append(LOG4CXX_STR("\x0D\x0A"));
+#else
                                         currentLiteral.append(1, LOG4CXX_STR('\x0A'));
+#endif
                                         i++; // move pointer
                                         break;
                                 default:
@@ -211,7 +215,7 @@ PatternConverterPtr PatternParser::parse()
                                         Pool p;
                                         LogLog::error(((LogString) LOG4CXX_STR("Error occured in position "))
                                                 + StringHelper::toString(i, p)
-                                                + LOG4CXX_STR(".\n Was expecting digit, instead got char \"")
+                                                + LOG4CXX_STR(".") LOG4CXX_EOL LOG4CXX_STR(" Was expecting digit, instead got char \"")
                                                 + LogString(1, c)
                                                 + LOG4CXX_STR("\"."));
                                         state = LITERAL_STATE;

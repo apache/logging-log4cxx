@@ -76,5 +76,5 @@ void TTCCLayout::format(LogString& output,
 
         output.append(LOG4CXX_STR("- "));
         output.append(event->getRenderedMessage());
-        output.append(1, LOG4CXX_STR('\n'));
+        output.append(LOG4CXX_EOL);
 }

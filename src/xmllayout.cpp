@@ -58,20 +58,20 @@ void XMLLayout::format(LogString& output,
         output.append(event->getLevel()->toString());
         output.append(LOG4CXX_STR("\" thread=\""));
         output.append(event->getThreadName());
-        output.append(LOG4CXX_STR("\">\n"));
+        output.append(LOG4CXX_STR("\">") LOG4CXX_EOL);
 
         output.append(LOG4CXX_STR("<log4j:message><![CDATA["));
         // Append the rendered message. Also make sure to escape any
         // existing CDATA sections.
         Transform::appendEscapingCDATA(output, event->getRenderedMessage());
-        output.append(LOG4CXX_STR("]]></log4j:message>\n"));
+        output.append(LOG4CXX_STR("]]></log4j:message>") LOG4CXX_EOL);
 
         const LogString& ndc = event->getNDC();
         if(!NDC::isNull(ndc))
         {
                 output.append(LOG4CXX_STR("<log4j:NDC><![CDATA["));
                 output.append(ndc);
-                output.append(LOG4CXX_STR("]]></log4j:NDC>\n"));
+                output.append(LOG4CXX_STR("]]></log4j:NDC>") LOG4CXX_EOL);
         }
 
         //
@@ -88,7 +88,7 @@ void XMLLayout::format(LogString& output,
                 * of the keys is kinda nice..
                 */
 
-                output.append(LOG4CXX_STR("<log4j:MDC>\n"));
+                output.append(LOG4CXX_STR("<log4j:MDC>") LOG4CXX_EOL);
                 for (std::set<LogString>::iterator i = mdcKeySet.begin();
                         i != mdcKeySet.end(); i++)
                 {
@@ -98,9 +98,9 @@ void XMLLayout::format(LogString& output,
                         output.append(propName);
                         output.append(LOG4CXX_STR("\" value=\""));
                         output.append(propValue);
-                        output.append(LOG4CXX_STR("\"/>\n"));
+                        output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
                 }
-                output.append(LOG4CXX_STR("</log4j:MDC>\n"));
+                output.append(LOG4CXX_STR("</log4j:MDC>") LOG4CXX_EOL);
     }
 
         if(locationInfo)
@@ -117,14 +117,14 @@ void XMLLayout::format(LogString& output,
                 output.append(fileName);
                 output.append(LOG4CXX_STR("\" line=\""));
                 output.append(StringHelper::toString(locInfo.getLineNumber(), p));
-                output.append(LOG4CXX_STR("\"/>\n"));
+                output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
         }
 
     std::set<LogString> propertySet = event->getPropertyKeySet();
 
     if (!propertySet.empty())
         {
-                output.append(LOG4CXX_STR("<log4j:properties>\n"));
+                output.append(LOG4CXX_STR("<log4j:properties>") LOG4CXX_EOL);
                 for (std::set<LogString>::iterator i = propertySet.begin();
                         i != propertySet.end(); i++)
                 {
@@ -134,11 +134,11 @@ void XMLLayout::format(LogString& output,
                         LogString propValue = event->getProperty(propName);
                         output.append(LOG4CXX_STR("\" value=\""));
                         output.append(propValue);
-                        output.append(LOG4CXX_STR("\"/>\n"));
+                        output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
                 }
-                output.append(LOG4CXX_STR("</log4j:properties>\n"));
+                output.append(LOG4CXX_STR("</log4j:properties>") LOG4CXX_EOL);
     }
 
-        output.append(LOG4CXX_STR("</log4j:event>\n"));
+        output.append(LOG4CXX_STR("</log4j:event>") LOG4CXX_EOL);
 }
 

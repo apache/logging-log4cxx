@@ -337,7 +337,7 @@ void PropertyConfigurator::parseCategory(
                         continue;
                 }
 
-                LogLog::debug(((LogString) LOG4CXX_STR("Parsing appender named \n"))
+                LogLog::debug(((LogString) LOG4CXX_STR("Parsing appender named ") LOG4CXX_EOL)
                       + appenderName + LOG4CXX_STR("\"."));
                 appender = parseAppender(props, appenderName);
 

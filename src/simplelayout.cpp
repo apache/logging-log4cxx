@@ -32,5 +32,5 @@ void SimpleLayout::format(LogString& output,
         output.append(event->getLevel()->toString());
         output.append(LOG4CXX_STR(" - "));
         output.append(event->getRenderedMessage());
-        output.append(LOG4CXX_STR("\n"));
+        output.append(LOG4CXX_EOL);
 }

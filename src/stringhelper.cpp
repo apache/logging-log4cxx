@@ -142,8 +142,16 @@ bool StringHelper::getline(std::string& in, std::string& line) {
     line = in;
     in.erase(in.begin(), in.end());
   } else {
-    line.assign(in, 0, nl);
-    in.erase(in.begin(), in.begin() + nl + 1);
+      //
+      //  if the file has CR-LF then
+      //    drop the carriage return alse
+      //
+      if(nl > 0 && in[nl -1] == '\x0D') {
+          line.assign(in, 0, nl - 1);
+      } else {
+          line.assign(in, 0, nl);
+      }
+      in.erase(in.begin(), in.begin() + nl + 1);
   }
   return true;
 }
@@ -158,8 +166,16 @@ bool StringHelper::getline(std::wstring& in, std::wstring& line) {
     line = in;
     in.erase(in.begin(), in.end());
   } else {
-    line.assign(in, 0, nl);
-    in.erase(in.begin(), in.begin() + nl + 1);
+      //
+      //  if the file has CR-LF then
+      //    drop the carriage return alse
+      //
+      if(nl > 0 && in[nl -1] == L'\x0D') {
+          line.assign(in, 0, nl - 1);
+      } else {
+          line.assign(in, 0, nl);
+      }
+      in.erase(in.begin(), in.begin() + nl + 1);
   }
   return true;
 }

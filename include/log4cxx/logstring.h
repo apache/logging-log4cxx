@@ -44,4 +44,13 @@ namespace log4cxx {
 #define LOG4CXX_STR(str) str
 #endif
 
+#if !defined(LOG4CXX_EOL)
+#if defined(_WIN32)
+#define LOG4CXX_EOL LOG4CXX_STR("\x0D\x0A")
+#else
+#define LOG4CXX_EOL LOG4CXX_STR("\x0A")
+#endif
+#endif
+
+
 #endif //_LOG4CXX_STRING_H

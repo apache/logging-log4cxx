@@ -36,7 +36,7 @@ bool Compare::compare(const File& file1, const File& file2)
     LogString back1(in1);
     LogString back2(in2);
 
-        LogString s1;
+    LogString s1;
     LogString s2;
         int lineCounter = 0;
 
@@ -48,21 +48,20 @@ bool Compare::compare(const File& file1, const File& file2)
           s2.erase(s2.begin(), s2.end());
         }
 
-                if (s1 != s2)
-                {
+        if (s1 != s2) {
             LogString msg(LOG4CXX_STR("Files ["));
             msg += file1.getName();
             msg += LOG4CXX_STR("] and [");
             msg += file2.getName();
             msg += LOG4CXX_STR("] differ on line ");
             msg += StringHelper::toString(lineCounter, pool);
-            msg += LOG4CXX_STR("\n");
+            msg += LOG4CXX_EOL;
             msg += LOG4CXX_STR("One reads:  [");
             msg += s1;
-            msg += LOG4CXX_STR("].\n");
+            msg += LOG4CXX_STR("].") LOG4CXX_EOL;
             msg += LOG4CXX_STR("Other reads:[");
             msg += s2;
-            msg += LOG4CXX_STR("].\n");
+            msg += LOG4CXX_STR("].") LOG4CXX_EOL;
             emit(msg);
 
             outputFile(file1, back1, pool);
@@ -78,7 +77,7 @@ bool Compare::compare(const File& file1, const File& file2)
         msg += file2.getName();
         msg += LOG4CXX_STR("] longer than file [");
         msg += file1.getName();
-        msg += LOG4CXX_STR("].\n");
+        msg += LOG4CXX_STR("].") LOG4CXX_EOL;
         emit(msg);
                 outputFile(file1, back1, pool);
                 outputFile(file2, back2, pool);
@@ -94,10 +93,10 @@ void Compare::outputFile(const File& file,
                         log4cxx::helpers::Pool& pool)
 {
         int lineCounter = 0;
-        emit(LOG4CXX_STR("--------------------------------\n"));
+        emit(LOG4CXX_STR("--------------------------------") LOG4CXX_EOL);
         LogString msg(LOG4CXX_STR("Contents of "));
         msg += file.getName();
-        msg += LOG4CXX_STR(":\n");
+        msg += LOG4CXX_STR(":") LOG4CXX_EOL;
         emit(msg);
         LogString in1(contents);
         LogString s1;
@@ -124,7 +123,7 @@ void Compare::outputFile(const File& file,
                         emit(LOG4CXX_STR(": "));
                 }
                 emit(s1);
-                emit(LOG4CXX_STR("\n"));
+                emit(LOG4CXX_EOL);
         }
 }
 

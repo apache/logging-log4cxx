@@ -120,7 +120,7 @@ public:
         void fileWrite1() {
           File outFile("output/fileWrite1.txt");
           Pool pool;
-          LogString greeting(LOG4CXX_STR("Hello, World\n"));
+          LogString greeting(LOG4CXX_STR("Hello, World") LOG4CXX_EOL);
           apr_status_t stat = outFile.write(greeting, pool);
           CPPUNIT_ASSERT_EQUAL(0, stat);
 
