@@ -15,7 +15,8 @@
  */
 
 #include <log4cxx/helpers/dateformat.h>
-#include <apr_strings.h>
+#include <log4cxx/helpers/stringhelper.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -26,10 +27,8 @@ DateFormat::~DateFormat() {}
 
 void DateFormat::setTimeZone(const TimeZonePtr& tz) {}
 
-void DateFormat::numberFormat(std::wstring& s, int n, apr_pool_t* p) const {
-   for(char* numb = apr_itoa(p, n); *numb != 0; numb++) {
-     s.append(1, *numb);
-   }
+void DateFormat::numberFormat(std::wstring& s, int n, Pool& p) const {
+    StringHelper::toString(n, p, s);
 }
 
 DateFormat::DateFormat() {}

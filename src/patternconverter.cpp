@@ -39,7 +39,7 @@ A template method for formatting in a converter specific way.
 */
 void PatternConverter::format(LogString& sbuf,
      const spi::LoggingEventPtr& e,
-     apr_pool_t* p) const
+     Pool& p) const
 {
         if (minChar == -1 && maxChar == 0x7FFFFFFF)
         {

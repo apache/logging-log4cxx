@@ -46,12 +46,12 @@ SocketAppender::SocketAppender()
 
 SocketAppender::SocketAppender(unsigned long address, int port)
 : SocketAppenderSkeleton(address, port, DEFAULT_RECONNECTION_DELAY) {
-	connect();
+        connect();
 }
 
 SocketAppender::SocketAppender(const LogString& host, int port)
 : SocketAppenderSkeleton(host, port, DEFAULT_RECONNECTION_DELAY) {
-	connect();
+        connect();
 }
 
 SocketAppender::~SocketAppender()
@@ -60,8 +60,8 @@ SocketAppender::~SocketAppender()
 
 void SocketAppender::renderEvent(const spi::LoggingEventPtr& event,
      helpers::SocketOutputStreamPtr& os,
-     apr_pool_t* p)
+     Pool& p)
 {
-	event->write(os);
+        event->write(os);
 }
 

@@ -21,8 +21,8 @@
 
 namespace log4cxx
 {
-	class TTCCLayout;
-	typedef helpers::ObjectPtrT<TTCCLayout> TTCCLayoutPtr;
+        class TTCCLayout;
+        typedef helpers::ObjectPtrT<TTCCLayout> TTCCLayoutPtr;
 
     /**
     TTCC layout format consists of time, thread, category and nested
@@ -66,111 +66,111 @@ namespace log4cxx
 
     <p>PatternLayout offers a much more flexible alternative.
     */
-	class LOG4CXX_EXPORT TTCCLayout : public helpers::DateLayout
-	{
-	private:
-		  // Internal representation of options
-		  bool threadPrinting;
-		  bool categoryPrefixing;
-		  bool contextPrinting;
-		  bool filePrinting;
+        class LOG4CXX_EXPORT TTCCLayout : public helpers::DateLayout
+        {
+        private:
+                  // Internal representation of options
+                  bool threadPrinting;
+                  bool categoryPrefixing;
+                  bool contextPrinting;
+                  bool filePrinting;
 
-	public:
-		DECLARE_LOG4CXX_OBJECT(TTCCLayout)
-		BEGIN_LOG4CXX_CAST_MAP()
-			LOG4CXX_CAST_ENTRY(TTCCLayout)
-			LOG4CXX_CAST_ENTRY_CHAIN(Layout)
-		END_LOG4CXX_CAST_MAP()
+        public:
+                DECLARE_LOG4CXX_OBJECT(TTCCLayout)
+                BEGIN_LOG4CXX_CAST_MAP()
+                        LOG4CXX_CAST_ENTRY(TTCCLayout)
+                        LOG4CXX_CAST_ENTRY_CHAIN(Layout)
+                END_LOG4CXX_CAST_MAP()
 
-	/**
-	Instantiate a TTCCLayout object with {@link
-	helpers::RelativeTimeDateFormat RelativeTimeDateFormat} as the date
-	formatter in the local time zone.
-	*/
-		TTCCLayout();
+        /**
+        Instantiate a TTCCLayout object with {@link
+        helpers::RelativeTimeDateFormat RelativeTimeDateFormat} as the date
+        formatter in the local time zone.
+        */
+                TTCCLayout();
 
-	/**
-	Instantiate a TTCCLayout object using the local time zone. The
-	DateFormat used will depend on the <code>dateFormatType</code>.
-	<p>This constructor just calls the {@link
-	helpers::DateLayout#setDateFormat DateLayout::setDateFormat} method.
-	*/
-		TTCCLayout(const LogString& dateFormatType);
+        /**
+        Instantiate a TTCCLayout object using the local time zone. The
+        DateFormat used will depend on the <code>dateFormatType</code>.
+        <p>This constructor just calls the {@link
+        helpers::DateLayout#setDateFormat DateLayout::setDateFormat} method.
+        */
+                TTCCLayout(const LogString& dateFormatType);
 
-	/**
-	The <b>ThreadPrinting</b> option specifies whether the name of the
-	current thread is part of log output or not. This is true by default.
-	*/
-		inline void setThreadPrinting(bool threadPrinting)
-			{ this->threadPrinting = threadPrinting; }
+        /**
+        The <b>ThreadPrinting</b> option specifies whether the name of the
+        current thread is part of log output or not. This is true by default.
+        */
+                inline void setThreadPrinting(bool threadPrinting)
+                        { this->threadPrinting = threadPrinting; }
 
-	/**
-	Returns value of the <b>ThreadPrinting</b> option.
-	*/
-		inline bool getThreadPrinting() const
-			{ return threadPrinting; }
+        /**
+        Returns value of the <b>ThreadPrinting</b> option.
+        */
+                inline bool getThreadPrinting() const
+                        { return threadPrinting; }
 
-	/**
-	The <b>CategoryPrefixing</b> option specifies whether Logger
-	name is part of log output or not. This is true by default.
-	*/
-		inline void setCategoryPrefixing(bool categoryPrefixing)
-			{ this->categoryPrefixing = categoryPrefixing; }
+        /**
+        The <b>CategoryPrefixing</b> option specifies whether Logger
+        name is part of log output or not. This is true by default.
+        */
+                inline void setCategoryPrefixing(bool categoryPrefixing)
+                        { this->categoryPrefixing = categoryPrefixing; }
 
-	/**
-	Returns value of the <b>CategoryPrefixing</b> option.
-	*/
-		inline bool getCategoryPrefixing() const
-			{ return categoryPrefixing; }
+        /**
+        Returns value of the <b>CategoryPrefixing</b> option.
+        */
+                inline bool getCategoryPrefixing() const
+                        { return categoryPrefixing; }
 
-	/**
-	The <b>ContextPrinting</b> option specifies log output will include
-	the nested context information belonging to the current thread.
-	This is true by default.
-	*/
-		inline void setContextPrinting(bool contextPrinting)
-			{ this->contextPrinting = contextPrinting; }
+        /**
+        The <b>ContextPrinting</b> option specifies log output will include
+        the nested context information belonging to the current thread.
+        This is true by default.
+        */
+                inline void setContextPrinting(bool contextPrinting)
+                        { this->contextPrinting = contextPrinting; }
 
-	/**
-	Returns value of the <b>ContextPrinting</b> option.
-	*/
-		inline bool getContextPrinting() const
-			{ return contextPrinting; }
+        /**
+        Returns value of the <b>ContextPrinting</b> option.
+        */
+                inline bool getContextPrinting() const
+                        { return contextPrinting; }
 
-	/**
-	The <b>FilePrinting</b> option specifies log output will include
-	the file and the line where the log statement was written.
-	*/
-		inline void setFilePrinting(bool filePrinting)
-			{ this->filePrinting = filePrinting; }
+        /**
+        The <b>FilePrinting</b> option specifies log output will include
+        the file and the line where the log statement was written.
+        */
+                inline void setFilePrinting(bool filePrinting)
+                        { this->filePrinting = filePrinting; }
 
-	/**
-	Returns value of the <b>ContextPrinting</b> option.
-	*/
-		inline bool getFilePrinting() const
-			{ return filePrinting; }
+        /**
+        Returns value of the <b>ContextPrinting</b> option.
+        */
+                inline bool getFilePrinting() const
+                        { return filePrinting; }
 
-	/**
-	In addition to the level of the statement and message, this function
-	writes to the ouput stream time, thread, category and NDC
-	information.
+        /**
+        In addition to the level of the statement and message, this function
+        writes to the ouput stream time, thread, category and NDC
+        information.
 
-	<p>Time, thread, category and diagnostic context are printed
-	depending on options.
+        <p>Time, thread, category and diagnostic context are printed
+        depending on options.
 
-	@param output
-	@param event
-	*/
-	virtual void format(LogString& output,
-            const spi::LoggingEventPtr& event, apr_pool_t* pool) const;
+        @param output
+        @param event
+        */
+        virtual void format(LogString& output,
+            const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;
 
-	/**
-	The TTCCLayout does not handle the throwable contained within
-	{@link spi::LoggingEvent LoggingEvents}. Thus, it returns
-	<code>true</code>.
-	*/
-	virtual bool ignoresThrowable() const { return true; }
-	};
+        /**
+        The TTCCLayout does not handle the throwable contained within
+        {@link spi::LoggingEvent LoggingEvents}. Thus, it returns
+        <code>true</code>.
+        */
+        virtual bool ignoresThrowable() const { return true; }
+        };
 }
 
 #endif

@@ -15,12 +15,12 @@
  */
 
 #include <apr_general.h>
-#include <apr_pools.h>
 
 #include <log4cxx/portability.h>
 
 #include <log4cxx/logger.h>
 #include <log4cxx/helpers/serversocket.h>
+#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/net/socketnode.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -85,14 +85,14 @@ int main(int argc, const char * const argv[])
                 return 1;
         }
 
-        apr_pool_t* pool;
-        apr_status_t stat = apr_pool_create(&pool, NULL);
         try
         {
+                Pool pool;
                 LoggerPtr logger = Logger::getLogger(L"SimpleSocketServer");
                 log4cxx::logstream logstream(logger, Level::INFO);
 
                 logstream << L"Listening on port " << port;
+
 
                 ServerSocket serverSocket(port);
 
@@ -116,7 +116,6 @@ int main(int argc, const char * const argv[])
                 std::cout << "SocketException: " << e.what() << std::endl;
         }
 
-        apr_pool_destroy(pool);
         apr_terminate();
         return 0;
 }

@@ -71,7 +71,7 @@ namespace log4cxx
                         The default constructor will instantiate the appender with a
                         spi::TriggeringEventEvaluator that will trigger on events with
                         level ERROR or higher.*/
-                        SMTPAppender(apr_pool_t* p);
+                        SMTPAppender(log4cxx::helpers::Pool& p);
 
                         /**
                         Use <code>evaluator</code> passed as parameter as the
@@ -90,13 +90,13 @@ namespace log4cxx
                         Activate the specified options, such as the smtp host, the
                         recipient, from, etc.
                         */
-                        virtual void activateOptions(apr_pool_t* p);
+                        virtual void activateOptions(log4cxx::helpers::Pool& p);
 
                         /**
                         Perform SMTPAppender specific appending actions, mainly adding
                         the event to a cyclic buffer and checking if the event triggers
                         an e-mail to be sent. */
-                        virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                        virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
                         /**
                         This method determines if there is a sense in attempting to append.
@@ -260,7 +260,7 @@ namespace log4cxx
                                 LOG4CXX_CAST_ENTRY(spi::TriggeringEventEvaluator)
                         END_LOG4CXX_CAST_MAP()
 
-                        DefaultEvaluator(apr_pool_t* p);
+                        DefaultEvaluator(log4cxx::helpers::Pool& p);
 
                         /**
                         Is this <code>event</code> the e-mail triggering event?

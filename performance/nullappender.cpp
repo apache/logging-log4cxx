@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,22 +30,22 @@ NullAppender::NullAppender()
 
 NullAppender::NullAppender(const LayoutPtr& layout)
 {
-	this->layout = layout;
+        this->layout = layout;
 }
 
 void NullAppender::close()
 {
 }
 
-void NullAppender::doAppend(const LoggingEventPtr& event, apr_pool_t* p)
+void NullAppender::doAppend(const LoggingEventPtr& event, Pool& p)
 {
-	if (layout != 0)
-	{
-		layout->format(sbuf, event, p);
-	}
+        if (layout != 0)
+        {
+                layout->format(sbuf, event, p);
+        }
 }
 
-void NullAppender::append(const LoggingEventPtr& event, apr_pool_t* p)
+void NullAppender::append(const LoggingEventPtr& event, Pool& p)
 {
 }
 
@@ -54,5 +54,5 @@ This is a bogus appender but it still uses a layout.
 */
 bool NullAppender::requiresLayout() const
 {
-	return true;
+        return true;
 }

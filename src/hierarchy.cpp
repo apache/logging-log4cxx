@@ -36,7 +36,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
-mutex(APRInitializer::getRootPool())
+mutex()
 {
         // Enable all level levels by default.
         setThreshold(Level::getAll());
@@ -283,7 +283,7 @@ void Hierarchy::updateParents(LoggerPtr& logger)
                 LogString substr = name.substr(0, i);
                 //tcout << _T("UpdateParents processing ") << substr << std::endl;
 
-				LoggerMap::iterator it = loggers.find(substr);
+                                LoggerMap::iterator it = loggers.find(substr);
                 if(it != loggers.end())
                 {
                         parentFound = true;

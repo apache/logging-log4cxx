@@ -24,17 +24,17 @@ namespace log4cxx
 {
        class File;
 
-	class Transformer
-	{
-	public:
-		static void transform(const File& in,
+        class Transformer
+        {
+        public:
+                static void transform(const File& in,
                         const File& out,
-			const std::vector<Filter *>& filters) throw(UnexpectedFormatException);
+                        const std::vector<Filter *>& filters) throw(std::exception);
 
-		static void transform(const File& in,
+                static void transform(const File& in,
                         const File& out,
-			const Filter& filter) throw(UnexpectedFormatException);
-	};
+                        const Filter& filter) throw(std::exception);
+        };
 }
 
 #endif //_LOG4CXX_TESTS_UTIL_TRANSFORMER_H

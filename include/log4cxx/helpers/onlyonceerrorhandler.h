@@ -61,7 +61,7 @@ namespace log4cxx
             /**
             No options to activate.
             */
-            void activateOptions(apr_pool_t* p);
+            void activateOptions(log4cxx::helpers::Pool& p);
             void setOption(const LogString& option, const LogString& value);
 
 

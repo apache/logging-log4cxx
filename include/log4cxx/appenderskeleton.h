@@ -89,7 +89,7 @@ namespace log4cxx
                 Derived appenders should override this method if option structure
                 requires it.
                 */
-                virtual void activateOptions(apr_pool_t* pool) {}
+                virtual void activateOptions(log4cxx::helpers::Pool& pool) {}
                 virtual void setOption(const LogString& option, const LogString& value);
 
                 /**
@@ -103,7 +103,7 @@ namespace log4cxx
                 method.
                 */
         protected:
-                virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p) = 0;
+                virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) = 0;
 
                 /**
                 Clear the filters chain.
@@ -159,7 +159,7 @@ namespace log4cxx
                 * delegating actual logging to the subclasses specific
                 * AppenderSkeleton#append method.
                 * */
-                void doAppend(const spi::LoggingEventPtr& event, apr_pool_t* pool);
+                void doAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
 
                 /**
                 Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.

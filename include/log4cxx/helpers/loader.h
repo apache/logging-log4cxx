@@ -35,7 +35,7 @@ namespace log4cxx
 //  TODO
 //			static LogString getResource(const LogString& name);
 //			static void* getResourceAsStream(const LogString& name,
-//                            apr_size_t* size, apr_pool_t* pool);
+//                            apr_size_t* size, log4cxx::helpers::Pool& pool);
                 };
         }  // namespace helpers
 } // namespace log4cxx

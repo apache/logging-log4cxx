@@ -34,6 +34,9 @@ class FileTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(propertyRead);
                 CPPUNIT_TEST(propertyExists);
                 CPPUNIT_TEST(fileWrite1);
+                CPPUNIT_TEST(wcharConstructor);
+                CPPUNIT_TEST(copyConstructor);
+                CPPUNIT_TEST(assignment);
         CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -41,6 +44,8 @@ public:
           File defFile;
           CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), defFile.getName());
         }
+
+
 
         void defaultExists() {
           File defFile;
@@ -69,6 +74,30 @@ public:
           CPPUNIT_ASSERT(stat != APR_SUCCESS);
         }
 
+
+        void wcharConstructor() {
+            File propFile(L"input/patternLayout1.properties");
+            Pool pool;
+            bool exists = propFile.exists(pool);
+            CPPUNIT_ASSERT_EQUAL(true, exists);
+       }
+
+
+        void copyConstructor() {
+            File propFile(L"input/patternLayout1.properties");
+            File copy(propFile);
+            Pool pool;
+            bool exists = copy.exists(pool);
+            CPPUNIT_ASSERT_EQUAL(true, exists);
+        }
+
+        void assignment() {
+            File propFile(L"input/patternLayout1.properties");
+            File copy = propFile;
+            Pool pool;
+            bool exists = copy.exists(pool);
+            CPPUNIT_ASSERT_EQUAL(true, exists);
+        }
 
         void propertyRead() {
           File propFile("input/patternLayout1.properties");

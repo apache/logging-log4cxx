@@ -172,7 +172,7 @@ files. You can enable log4cxx internal logging by setting the
                                 LOG4CXX_CAST_ENTRY(spi::Configurator)
                         END_LOG4CXX_CAST_MAP()
 
-                        DOMConfigurator(apr_pool_t* p);
+                        DOMConfigurator(log4cxx::helpers::Pool& p);
 
                         /**
                         A static version of #doConfigure.

@@ -36,214 +36,223 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::varia;
 
 
-#define ACCEPT_FILE LOG4CXX_FILE("output/LevelRangeFilter_accept")
-#define ACCEPT_WITNESS LOG4CXX_FILE("witness/LevelRangeFilter_accept")
-#define NEUTRAL_FILE LOG4CXX_FILE("output/LevelRangeFilter_neutral")
-#define NEUTRAL_WITNESS LOG4CXX_FILE("witness/LevelMatchFilter_neutral")
 
 class LevelRangeFilterTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(LevelRangeFilterTestCase);
-		CPPUNIT_TEST(accept);
-		CPPUNIT_TEST(neutral);
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE(LevelRangeFilterTestCase);
+                CPPUNIT_TEST(accept);
+                CPPUNIT_TEST(neutral);
+        CPPUNIT_TEST_SUITE_END();
 
-	LoggerPtr root;
-	LoggerPtr logger;
+        LoggerPtr root;
+        LoggerPtr logger;
 
 public:
-	void setUp()
-	{
-		root = Logger::getRootLogger();
-		root->removeAllAppenders();
-		logger = Logger::getLogger(LOG4CXX_TEST_STR("test"));
-	}
+        void setUp()
+        {
+                root = Logger::getRootLogger();
+                root->removeAllAppenders();
+                logger = Logger::getLogger(LOG4CXX_TEST_STR("test"));
+        }
 
-	void tearDown()
-	{
-		root->getLoggerRepository()->resetConfiguration();
-	}
+        void tearDown()
+        {
+                root->getLoggerRepository()->resetConfiguration();
+        }
 
-	void accept()
-	{
-		// set up appender
-		LayoutPtr layout = new SimpleLayout();
-		AppenderPtr appender = new FileAppender(layout, ACCEPT_FILE, false);
+        void accept()
+        {
+                // set up appender
+                LayoutPtr layout = new SimpleLayout();
+                AppenderPtr appender = new FileAppender(layout, ACCEPT_FILE, false);
 
-		// create LevelMatchFilter
-		LevelRangeFilterPtr rangeFilter = new LevelRangeFilter();
+                // create LevelMatchFilter
+                LevelRangeFilterPtr rangeFilter = new LevelRangeFilter();
 
-		// set it to accept on a match
-		rangeFilter->setAcceptOnMatch(true);
+                // set it to accept on a match
+                rangeFilter->setAcceptOnMatch(true);
 
-		// attach match filter to appender
-		appender->addFilter(rangeFilter);
+                // attach match filter to appender
+                appender->addFilter(rangeFilter);
 
-		// set appender on root and set level to debug
-		root->addAppender(appender);
-		root->setLevel(Level::DEBUG);
+                // set appender on root and set level to debug
+                root->addAppender(appender);
+                root->setLevel(Level::DEBUG);
 
-		int passCount = 0;
-		LogString sbuf(LOG4CXX_STR("pass "));
+                int passCount = 0;
+                LogString sbuf(LOG4CXX_STR("pass "));
 
         Pool pool;
         sbuf.append(StringHelper::toString(passCount, pool));
 
         sbuf.append(LOG4CXX_STR("; no min or max set"));
-		common(sbuf);
-		passCount++;
+                common(sbuf);
+                passCount++;
 
-		// test with a min set
-		rangeFilter->setLevelMin(Level::WARN);
-		sbuf.assign(LOG4CXX_STR("pass "));
+                // test with a min set
+                rangeFilter->setLevelMin(Level::WARN);
+                sbuf.assign(LOG4CXX_STR("pass "));
         sbuf.append(StringHelper::toString(passCount, pool));
         sbuf.append(LOG4CXX_STR("; min set to WARN, max not set"));
-		common(sbuf);
-		passCount++;
+                common(sbuf);
+                passCount++;
 
-		// create a clean filter
-		appender->clearFilters();
-		rangeFilter = new LevelRangeFilter();
-		appender->addFilter(rangeFilter);
+                // create a clean filter
+                appender->clearFilters();
+                rangeFilter = new LevelRangeFilter();
+                appender->addFilter(rangeFilter);
 
-		//test with max set
-		rangeFilter->setLevelMax(Level::WARN);
-		sbuf.assign(LOG4CXX_STR("pass "));
+                //test with max set
+                rangeFilter->setLevelMax(Level::WARN);
+                sbuf.assign(LOG4CXX_STR("pass "));
         sbuf.append(StringHelper::toString(passCount, pool));
         sbuf.append(LOG4CXX_STR("; min not set, max set to WARN"));
-		common(sbuf);
-		passCount++;
+                common(sbuf);
+                passCount++;
 
 
-		LevelPtr levelArray[] =
-			{ Level::getDebug(), Level::getInfo(), Level::getWarn(), 
+                LevelPtr levelArray[] =
+                        { Level::getDebug(), Level::getInfo(), Level::getWarn(),
                  Level::getError(), Level::getFatal() };
 
-		int length = sizeof(levelArray)/sizeof(levelArray[0]);
+                int length = sizeof(levelArray)/sizeof(levelArray[0]);
 
-		for (int x = 0; x < length; x++)
-		{
-			// set the min level to match
-			rangeFilter->setLevelMin(levelArray[x]);
+                for (int x = 0; x < length; x++)
+                {
+                        // set the min level to match
+                        rangeFilter->setLevelMin(levelArray[x]);
 
-			for (int y = length - 1; y >= 0; y--)
-			{
-				// set max level to match
-				rangeFilter->setLevelMax(levelArray[y]);
+                        for (int y = length - 1; y >= 0; y--)
+                        {
+                                // set max level to match
+                                rangeFilter->setLevelMax(levelArray[y]);
 
-				sbuf.assign(LOG4CXX_STR("pass "));
+                                sbuf.assign(LOG4CXX_STR("pass "));
                                 sbuf.append(StringHelper::toString(passCount, pool));
-				sbuf.append(LOG4CXX_STR("; filter set to accept between "));
-				sbuf.append(levelArray[x]->toString());
+                                sbuf.append(LOG4CXX_STR("; filter set to accept between "));
+                                sbuf.append(levelArray[x]->toString());
                                 sbuf.append(LOG4CXX_STR(" and "));
-				sbuf.append(levelArray[y]->toString());
+                                sbuf.append(levelArray[y]->toString());
                                 sbuf.append(LOG4CXX_STR(" msgs"));
-				common(sbuf);
+                                common(sbuf);
 
-				// increment passCount
-				passCount++;
-			}
-		}
+                                // increment passCount
+                                passCount++;
+                        }
+                }
 
 
-		CPPUNIT_ASSERT(Compare::compare(ACCEPT_FILE, ACCEPT_WITNESS));
-	}
+                CPPUNIT_ASSERT(Compare::compare(ACCEPT_FILE, ACCEPT_WITNESS));
+        }
 
-	void neutral()
-	{
-		// set up appender
-		LayoutPtr layout = new SimpleLayout();
-		AppenderPtr appender = new FileAppender(layout, ACCEPT_FILE, false);
+        void neutral()
+        {
+                // set up appender
+                LayoutPtr layout = new SimpleLayout();
+                AppenderPtr appender = new FileAppender(layout, ACCEPT_FILE, false);
 
-		// create LevelMatchFilter
-		LevelRangeFilterPtr rangeFilter = new LevelRangeFilter();
+                // create LevelMatchFilter
+                LevelRangeFilterPtr rangeFilter = new LevelRangeFilter();
 
-		// set it to accept on a match
-		rangeFilter->setAcceptOnMatch(true);
+                // set it to accept on a match
+                rangeFilter->setAcceptOnMatch(true);
 
-		// attach match filter to appender
-		appender->addFilter(rangeFilter);
+                // attach match filter to appender
+                appender->addFilter(rangeFilter);
 
-		// set appender on root and set level to debug
-		root->addAppender(appender);
-		root->setLevel(Level::DEBUG);
+                // set appender on root and set level to debug
+                root->addAppender(appender);
+                root->setLevel(Level::DEBUG);
 
-		int passCount = 0;
-		LogString sbuf(LOG4CXX_STR("pass "));
+                int passCount = 0;
+                LogString sbuf(LOG4CXX_STR("pass "));
 
                 Pool pool;
                 sbuf.append(StringHelper::toString(passCount, pool));
 
-		// test with no min or max set
-		sbuf.append(LOG4CXX_STR("; no min or max set"));
-		common(sbuf);
-		passCount++;
+                // test with no min or max set
+                sbuf.append(LOG4CXX_STR("; no min or max set"));
+                common(sbuf);
+                passCount++;
 
-		// test with a min set
-		rangeFilter->setLevelMin(Level::WARN);
-		sbuf.assign(LOG4CXX_STR("pass "));
+                // test with a min set
+                rangeFilter->setLevelMin(Level::WARN);
+                sbuf.assign(LOG4CXX_STR("pass "));
 
                 sbuf.append(StringHelper::toString(passCount, pool));
                 sbuf.append(LOG4CXX_STR("; min set to WARN, max not set"));
-		common(sbuf);
-		passCount++;
+                common(sbuf);
+                passCount++;
 
-		// create a clean filter
-		appender->clearFilters();
-		rangeFilter = new LevelRangeFilter();
-		appender->addFilter(rangeFilter);
+                // create a clean filter
+                appender->clearFilters();
+                rangeFilter = new LevelRangeFilter();
+                appender->addFilter(rangeFilter);
 
-		//test with max set
-		rangeFilter->setLevelMax(Level::WARN);
-		sbuf.append(LOG4CXX_STR("pass "));
+                //test with max set
+                rangeFilter->setLevelMax(Level::WARN);
+                sbuf.append(LOG4CXX_STR("pass "));
 
                 sbuf.append(StringHelper::toString(passCount, pool));
 
-		sbuf.append(LOG4CXX_STR("; min not set, max set to WARN"));
-		common(sbuf);
-		passCount++;
+                sbuf.append(LOG4CXX_STR("; min not set, max set to WARN"));
+                common(sbuf);
+                passCount++;
 
-		LevelPtr levelArray[] =
-			{ Level::getDebug(), Level::getInfo(), Level::getWarn(), 
+                LevelPtr levelArray[] =
+                        { Level::getDebug(), Level::getInfo(), Level::getWarn(),
                  Level::getError(), Level::getFatal() };
 
-		int length = sizeof(levelArray)/sizeof(levelArray[0]);
+                int length = sizeof(levelArray)/sizeof(levelArray[0]);
 
-		for (int x = 0; x < length; x++)
-		{
-			// set the min level to match
-			rangeFilter->setLevelMin(levelArray[x]);
+                for (int x = 0; x < length; x++)
+                {
+                        // set the min level to match
+                        rangeFilter->setLevelMin(levelArray[x]);
 
-			for (int y = length - 1; y >= 0; y--)
-			{
-				// set max level to match
-				rangeFilter->setLevelMax(levelArray[y]);
+                        for (int y = length - 1; y >= 0; y--)
+                        {
+                                // set max level to match
+                                rangeFilter->setLevelMax(levelArray[y]);
 
-				sbuf.assign(LOG4CXX_STR("pass "));
+                                sbuf.assign(LOG4CXX_STR("pass "));
                                 sbuf.append(StringHelper::toString(passCount, pool));
-				sbuf.append(LOG4CXX_STR("; filter set to accept between "));
-				sbuf.append(levelArray[x]->toString());
+                                sbuf.append(LOG4CXX_STR("; filter set to accept between "));
+                                sbuf.append(levelArray[x]->toString());
                                 sbuf.append(LOG4CXX_STR(" and "));
                                 sbuf.append(levelArray[y]->toString());
                                 sbuf.append(LOG4CXX_STR(" msgs"));
-				common(sbuf);
+                                common(sbuf);
 
-				// increment passCount
-				passCount++;
-			}
-		}
+                                // increment passCount
+                                passCount++;
+                        }
+                }
 
-		CPPUNIT_ASSERT(Compare::compare(NEUTRAL_FILE, NEUTRAL_WITNESS));
- 	}
+                CPPUNIT_ASSERT(Compare::compare(NEUTRAL_FILE, NEUTRAL_WITNESS));
+        }
 
-	void common(const LogString& msg)
-	{
-		logger->debug(msg);
-		logger->info(msg);
-		logger->warn(msg);
-		logger->error(msg);
-		logger->fatal(msg);
-	}
+        void common(const LogString& msg)
+        {
+                logger->debug(msg);
+                logger->info(msg);
+                logger->warn(msg);
+                logger->error(msg);
+                logger->fatal(msg);
+        }
+
+        private:
+        static const File ACCEPT_FILE;
+        static const File ACCEPT_WITNESS;
+        static const File NEUTRAL_FILE;
+        static const File NEUTRAL_WITNESS;
+
 };
+
+
+const File LevelRangeFilterTestCase::ACCEPT_FILE("output/LevelRangeFilter_accept");
+const File LevelRangeFilterTestCase::ACCEPT_WITNESS("witness/LevelRangeFilter_accept");
+const File LevelRangeFilterTestCase::NEUTRAL_FILE("output/LevelRangeFilter_neutral");
+const File LevelRangeFilterTestCase::NEUTRAL_WITNESS("witness/LevelMatchFilter_neutral");
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LevelRangeFilterTestCase);

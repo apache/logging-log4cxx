@@ -90,7 +90,7 @@ namespace log4cxx
                                 BasicPatternConverter(const FormattingInfo& formattingInfo, int type);
                                 virtual void convert(LogString& sbuf,
                                         const spi::LoggingEventPtr& event,
-                                        apr_pool_t* pool) const;
+                                        log4cxx::helpers::Pool& pool) const;
                         };
 
                         class LOG4CXX_EXPORT LiteralPatternConverter : public PatternConverter
@@ -102,7 +102,7 @@ namespace log4cxx
                                 LiteralPatternConverter(const LogString& value);
                                 virtual void convert(LogString& sbuf,
                                         const spi::LoggingEventPtr& event,
-                                        apr_pool_t* pool) const;
+                                        log4cxx::helpers::Pool& pool) const;
                         private:
                                 //   prevent copy and assignment
                                 LiteralPatternConverter(const LiteralPatternConverter&);
@@ -121,7 +121,7 @@ namespace log4cxx
 
                                 virtual void convert(LogString& sbuf,
                                         const spi::LoggingEventPtr& event,
-                                        apr_pool_t* pool) const;
+                                        log4cxx::helpers::Pool& pool) const;
 
                         private:
                                 //   prevent copy and assignment
@@ -139,7 +139,7 @@ namespace log4cxx
                                         const LogString& key);
                                 virtual void convert(LogString& sbuf,
                                         const spi::LoggingEventPtr& event,
-                                        apr_pool_t* pool) const;
+                                        log4cxx::helpers::Pool& pool) const;
                         private:
                                 //   prevent copy and assignment
                                 MDCPatternConverter(const MDCPatternConverter&);
@@ -155,7 +155,7 @@ namespace log4cxx
                                 LocationPatternConverter(const FormattingInfo& formattingInfo, int type);
                                 virtual void convert(LogString& sbuf,
                                         const spi::LoggingEventPtr& event,
-                                        apr_pool_t* pool) const;
+                                        log4cxx::helpers::Pool& pool) const;
                         };
 
                         class LOG4CXX_EXPORT CategoryPatternConverter : public PatternConverter
@@ -168,7 +168,7 @@ namespace log4cxx
                                         int precision);
                                 virtual void convert(LogString& sbuf,
                                         const spi::LoggingEventPtr& event,
-                                        apr_pool_t* pool) const;
+                                        log4cxx::helpers::Pool& pool) const;
                         };
                 }; // class PatternParser
         }  // namespace helpers

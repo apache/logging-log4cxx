@@ -30,49 +30,51 @@ TTCCLayout::TTCCLayout()
 : DateLayout(LOG4CXX_STR("RELATIVE")), threadPrinting(true), categoryPrefixing(true),
 contextPrinting(true), filePrinting(false)
 {
-	activateOptions(NULL);
+        Pool pool;
+        activateOptions(pool);
 }
 
 TTCCLayout::TTCCLayout(const LogString& dateFormatType)
 : DateLayout(dateFormatType), threadPrinting(true), categoryPrefixing(true),
 contextPrinting(true), filePrinting(false)
 {
-	activateOptions(NULL);
+        Pool pool;
+        activateOptions(pool);
 }
 
 void TTCCLayout::format(LogString& output,
       const spi::LoggingEventPtr& event,
-      apr_pool_t* p) const
+      Pool& p) const
 {
         formatDate(output, event, p);
 
-	if(threadPrinting)
-	{
+        if(threadPrinting)
+        {
                 output.append(1, LOG4CXX_STR('['));
                 output.append(StringHelper::toString(event->getThreadId(), p));
                 output.append(LOG4CXX_STR("] "));
-	}
+        }
 
         output.append(event->getLevel()->toString());
         output.append(1, LOG4CXX_STR(' '));
-	if(categoryPrefixing)
-	{
+        if(categoryPrefixing)
+        {
                 output.append(event->getLoggerName());
                 output.append(1, LOG4CXX_STR(' '));
-	}
+        }
 
-	if(contextPrinting)
-	{
-		LogString ndc = event->getNDC();
+        if(contextPrinting)
+        {
+                LogString ndc = event->getNDC();
 
-		if(!ndc.empty())
-		{
+                if(!ndc.empty())
+                {
                         output.append(ndc);
                         output.append(1, LOG4CXX_STR(' '));
-		}
-	}
+                }
+        }
 
-	output.append(LOG4CXX_STR("- "));
+        output.append(LOG4CXX_STR("- "));
         output.append(event->getRenderedMessage());
         output.append(1, LOG4CXX_STR('\n'));
 }

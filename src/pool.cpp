@@ -18,19 +18,36 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <apr_pools.h>
+#include <assert.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
 
-Pool::Pool() : pool(0) {
-    apr_status_t stat = apr_pool_create(&pool, APRInitializer::getRootPool());
+Pool::Pool() : pool(0), release(true) {
+    apr_pool_t* aprPool;
+    apr_status_t stat = apr_pool_create(&aprPool, APRInitializer::getRootPool());
     if (stat != APR_SUCCESS) {
         throw PoolException(stat);
     }
+    pool = aprPool;
+}
+
+Pool::Pool(log4cxx_pool_t* p, bool release) : pool((apr_pool_t*) p), release(release) {
+    assert(p != NULL);
 }
 
 Pool::~Pool() {
-        apr_pool_destroy(pool);
+    if (release) {
+      apr_pool_destroy((apr_pool_t*) pool);
+    }
 }
 
+
+const log4cxx_pool_t* Pool::getAPRPool() {
+   return pool;
+}
+
+char* Pool::palloc(size_t size) {
+  return (char*) apr_palloc((apr_pool_t*) pool, size);
+}

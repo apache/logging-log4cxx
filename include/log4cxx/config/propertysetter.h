@@ -72,17 +72,17 @@ namespace log4cxx
                         @param prefix Only keys having the specified prefix will be set.
                         */
                         static void setProperties(const helpers::ObjectPtr& obj,
-                                helpers::Properties& properties, 
+                                helpers::Properties& properties,
                                 const LogString& prefix,
-                                apr_pool_t* p);
+                                log4cxx::helpers::Pool& p);
 
                         /**
                         Set the properites for the object that match the
                         <code>prefix</code> passed as parameter.
                         */
-                        void setProperties(helpers::Properties& properties, 
+                        void setProperties(helpers::Properties& properties,
                             const LogString& prefix,
-                            apr_pool_t* p);
+                            log4cxx::helpers::Pool& p);
 
                         /**
                         Set a property on this PropertySetter's Object. If the underlying
@@ -92,11 +92,11 @@ namespace log4cxx
                         @param name    name of the property
                         @param value   String value of the property
                         */
-                        void setProperty(const LogString& option, 
+                        void setProperty(const LogString& option,
                             const LogString& value,
-                            apr_pool_t* p);
+                            log4cxx::helpers::Pool& p);
 
-                        void activate(apr_pool_t* p);
+                        void activate(log4cxx::helpers::Pool& p);
                 }; // class PropertySetter
         }  // namespace config;
 } // namespace log4cxx

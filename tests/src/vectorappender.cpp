@@ -22,25 +22,25 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(VectorAppender)
 
-void VectorAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
+void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-	try
-	{
-		apr_sleep(5000);
-	}
-	catch (Exception&)
-	{
-	}
+        try
+        {
+                apr_sleep(5000);
+        }
+        catch (Exception&)
+        {
+        }
 
-	vector.push_back(event);
+        vector.push_back(event);
 }
 
 void VectorAppender::close()
 {
-	if (this->closed)
-	{
-		return;
-	}
+        if (this->closed)
+        {
+                return;
+        }
 
-	this->closed = true;
+        this->closed = true;
 }

@@ -18,10 +18,8 @@
 #define _LOG4CXX_HELPERS_APRINITIALIZER_H
 
 #include <log4cxx/portability.h>
-
-extern "C" {
-struct apr_pool_t;
-}
+#include <log4cxx/helpers/pool.h>
+#include <apr_pools.h>
 
 namespace log4cxx
 {
@@ -37,8 +35,8 @@ namespace log4cxx
       APRInitializer();
       APRInitializer(const APRInitializer&);
       APRInitializer& operator=(const APRInitializer&);
-      apr_pool_t * p;
-	  log4cxx_time_t startTime;
+      apr_pool_t* p;
+      log4cxx_time_t startTime;
       static APRInitializer& getInstance();
     public:
       ~APRInitializer();

@@ -23,13 +23,13 @@
 extern "C" {
 struct apr_file_t;
 struct apr_finfo_t;
-struct apr_pool_t;
 }
 
 namespace log4cxx
 {
                 namespace helpers {
                   class Transcoder;
+                  class Pool;
                 }
 
                 /**
@@ -45,23 +45,19 @@ namespace log4cxx
                     File& operator=(const File& src);
                     ~File();
 
-                    bool exists(apr_pool_t* p) const;
-                    size_t length(apr_pool_t* p) const;
-                    log4cxx_time_t lastModified(apr_pool_t* p) const;
+                    bool exists(log4cxx::helpers::Pool& p) const;
+                    size_t length(log4cxx::helpers::Pool& p) const;
+                    log4cxx_time_t lastModified(log4cxx::helpers::Pool& p) const;
                     inline const LogString& getName() const {
                        return name;
                     }
 
-#if defined(_MSC_VER)
-                    LogString read(void* pool) const;
-#else                    
-                    LogString read(apr_pool_t* pool) const;
-#endif
+                    LogString read(log4cxx::helpers::Pool& pool) const;
 
-                    log4cxx_status_t write(const LogString& src, apr_pool_t* p) const;
+                    log4cxx_status_t write(const LogString& src, log4cxx::helpers::Pool& p) const;
 
                     log4cxx_status_t open(apr_file_t** file, int flags,
-                          int perm, apr_pool_t* p) const;
+                          int perm, log4cxx::helpers::Pool& p) const;
 
                 private:
                     LogString name;

@@ -38,255 +38,259 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
-#define FILTERED LOG4CXX_FILE("output/filtered")
-#define TEMP LOG4CXX_FILE("output/temp")
 
 class X
 {
 public:
-	X()
-	{
-		LoggerPtr logger =
-			Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.XMLLayoutTestCase$X"));
-		LOG4CXX_INFO(logger, LOG4CXX_TEST_STR("in X() constructor"));
-	}
+        X()
+        {
+                LoggerPtr logger =
+                        Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.XMLLayoutTestCase$X"));
+                LOG4CXX_INFO(logger, LOG4CXX_TEST_STR("in X() constructor"));
+        }
 };
 
 class XMLLayoutTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(XMLLayoutTestCase);
-		CPPUNIT_TEST(basic);
-		CPPUNIT_TEST(locationInfo);
-		CPPUNIT_TEST(testCDATA);
-		CPPUNIT_TEST(testNULL);
-		CPPUNIT_TEST(testMDC);
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE(XMLLayoutTestCase);
+                CPPUNIT_TEST(basic);
+                CPPUNIT_TEST(locationInfo);
+                CPPUNIT_TEST(testCDATA);
+                CPPUNIT_TEST(testNULL);
+                CPPUNIT_TEST(testMDC);
+        CPPUNIT_TEST_SUITE_END();
 
-	LoggerPtr root;
-	LoggerPtr logger;
+        LoggerPtr root;
+        LoggerPtr logger;
 
 public:
-	void setUp()
-	{
-		root = Logger::getRootLogger();
-		logger = Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.XMLLayoutTestCase"));
-	}
+        void setUp()
+        {
+                root = Logger::getRootLogger();
+                logger = Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.XMLLayoutTestCase"));
+        }
 
-	void tearDown()
-	{
-		logger->getLoggerRepository()->resetConfiguration();
-	}
+        void tearDown()
+        {
+                logger->getLoggerRepository()->resetConfiguration();
+        }
 
-	void basic()
-	{
-		XMLLayoutPtr xmlLayout = new XMLLayout();
-		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
-		common();
+        void basic()
+        {
+                XMLLayoutPtr xmlLayout = new XMLLayout();
+                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+                common();
 
-		XMLTimestampFilter xmlTimestampFilter;
-		XMLThreadFilter xmlThreadFilter;
+                XMLTimestampFilter xmlTimestampFilter;
+                XMLThreadFilter xmlThreadFilter;
 
-		std::vector<Filter *> filters;
-		filters.push_back(&xmlTimestampFilter);
-		filters.push_back(&xmlThreadFilter);
+                std::vector<Filter *> filters;
+                filters.push_back(&xmlTimestampFilter);
+                filters.push_back(&xmlThreadFilter);
 
-		try
-		{
-			Transformer::transform(TEMP, FILTERED, filters);
-		}
-		catch(UnexpectedFormatException& e)
-		{
-			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
-			throw;
-		}
+                try
+                {
+                        Transformer::transform(TEMP, FILTERED, filters);
+                }
+                catch(UnexpectedFormatException& e)
+                {
+                        std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+                        throw;
+                }
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.1")));
-	}
+                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.1")));
+        }
 
-	void locationInfo()
-	{
-		XMLLayoutPtr xmlLayout = new XMLLayout();
-		xmlLayout->setLocationInfo(true);
-		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
-		common();
+        void locationInfo()
+        {
+                XMLLayoutPtr xmlLayout = new XMLLayout();
+                xmlLayout->setLocationInfo(true);
+                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+                common();
 
-		XMLTimestampFilter xmlTimestampFilter;
-		XMLLineAttributeFilter xmlLineAttributeFilter;
-		XMLThreadFilter xmlThreadFilter;
+                XMLTimestampFilter xmlTimestampFilter;
+                XMLLineAttributeFilter xmlLineAttributeFilter;
+                XMLThreadFilter xmlThreadFilter;
                 LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
                 XMLFilenameFilter xmlFilenameFilter(thisFile.c_str(), LOG4CXX_STR("xmllayouttestcase.cpp"));
 
-		std::vector<Filter *> filters;
-		filters.push_back(&xmlTimestampFilter);
-		filters.push_back(&xmlLineAttributeFilter);
-		filters.push_back(&xmlThreadFilter);
+                std::vector<Filter *> filters;
+                filters.push_back(&xmlTimestampFilter);
+                filters.push_back(&xmlLineAttributeFilter);
+                filters.push_back(&xmlThreadFilter);
                 filters.push_back(&xmlFilenameFilter);
 
-		try
-		{
-			Transformer::transform(TEMP, FILTERED, filters);
-		}
-		catch(UnexpectedFormatException& e)
-		{
-			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
-			throw;
-		}
+                try
+                {
+                        Transformer::transform(TEMP, FILTERED, filters);
+                }
+                catch(UnexpectedFormatException& e)
+                {
+                        std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+                        throw;
+                }
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.2")));
-	}
+                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.2")));
+        }
 
-	void testCDATA()
-	{
-		XMLLayoutPtr xmlLayout = new XMLLayout();
-		xmlLayout->setLocationInfo(true);
-		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+        void testCDATA()
+        {
+                XMLLayoutPtr xmlLayout = new XMLLayout();
+                xmlLayout->setLocationInfo(true);
+                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 
-		LOG4CXX_DEBUG(logger,
-			LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
+                LOG4CXX_DEBUG(logger,
+                        LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
 
-		XMLTimestampFilter xmlTimestampFilter;
-		XMLLineAttributeFilter xmlLineAttributeFilter;
-		XMLThreadFilter xmlThreadFilter;
+                XMLTimestampFilter xmlTimestampFilter;
+                XMLLineAttributeFilter xmlLineAttributeFilter;
+                XMLThreadFilter xmlThreadFilter;
                 LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
                 XMLFilenameFilter xmlFilenameFilter(thisFile, LOG4CXX_STR("xmllayouttestcase.cpp"));
 
-		std::vector<Filter *> filters;
-		filters.push_back(&xmlTimestampFilter);
-		filters.push_back(&xmlLineAttributeFilter);
-		filters.push_back(&xmlThreadFilter);
+                std::vector<Filter *> filters;
+                filters.push_back(&xmlTimestampFilter);
+                filters.push_back(&xmlLineAttributeFilter);
+                filters.push_back(&xmlThreadFilter);
                 filters.push_back(&xmlFilenameFilter);
 
-		try
-		{
-			Transformer::transform(TEMP, FILTERED, filters);
-		}
-		catch(UnexpectedFormatException& e)
-		{
-			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
-			throw;
-		}
+                try
+                {
+                        Transformer::transform(TEMP, FILTERED, filters);
+                }
+                catch(UnexpectedFormatException& e)
+                {
+                        std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+                        throw;
+                }
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.3")));
-	}
+                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.3")));
+        }
 
-	void testNULL()
-	{
-		XMLLayoutPtr xmlLayout = new XMLLayout();
-		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+        void testNULL()
+        {
+                XMLLayoutPtr xmlLayout = new XMLLayout();
+                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 
-		LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("hi"));
-		LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR(""));
+                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("hi"));
+                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR(""));
 
-		XMLTimestampFilter xmlTimestampFilter;
-		XMLThreadFilter xmlThreadFilter;
+                XMLTimestampFilter xmlTimestampFilter;
+                XMLThreadFilter xmlThreadFilter;
 
-		std::vector<Filter *> filters;
-		filters.push_back(&xmlTimestampFilter);
-		filters.push_back(&xmlThreadFilter);
+                std::vector<Filter *> filters;
+                filters.push_back(&xmlTimestampFilter);
+                filters.push_back(&xmlThreadFilter);
 
-		try
-		{
-			Transformer::transform(TEMP, FILTERED, filters);
-		}
-		catch(UnexpectedFormatException& e)
-		{
-			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
-			throw;
-		}
+                try
+                {
+                        Transformer::transform(TEMP, FILTERED, filters);
+                }
+                catch(UnexpectedFormatException& e)
+                {
+                        std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+                        throw;
+                }
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.null")));
-	}
+                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.null")));
+        }
 
-	void testMDC()
-	{
-		XMLLayoutPtr xmlLayout = new XMLLayout();
-		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+        void testMDC()
+        {
+                XMLLayoutPtr xmlLayout = new XMLLayout();
+                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 
-		MDC::clear();
-		MDC::put(LOG4CXX_TEST_STR("key1"), LOG4CXX_TEST_STR("val1"));
-		MDC::put(LOG4CXX_TEST_STR("key2"), LOG4CXX_TEST_STR("val2"));
+                MDC::clear();
+                MDC::put(LOG4CXX_TEST_STR("key1"), LOG4CXX_TEST_STR("val1"));
+                MDC::put(LOG4CXX_TEST_STR("key2"), LOG4CXX_TEST_STR("val2"));
 
-		LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
+                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
 
-		MDC::clear();
+                MDC::clear();
 
-		XMLTimestampFilter xmlTimestampFilter;
-		XMLThreadFilter xmlThreadFilter;
+                XMLTimestampFilter xmlTimestampFilter;
+                XMLThreadFilter xmlThreadFilter;
 
-		std::vector<Filter *> filters;
-		filters.push_back(&xmlTimestampFilter);
-		filters.push_back(&xmlThreadFilter);
+                std::vector<Filter *> filters;
+                filters.push_back(&xmlTimestampFilter);
+                filters.push_back(&xmlThreadFilter);
 
-		try
-		{
-			Transformer::transform(TEMP, FILTERED, filters);
-		}
-		catch(UnexpectedFormatException& e)
-		{
-			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
-			throw;
-		}
+                try
+                {
+                        Transformer::transform(TEMP, FILTERED, filters);
+                }
+                catch(UnexpectedFormatException& e)
+                {
+                        std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+                        throw;
+                }
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.1")));
-	}
+                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.1")));
+        }
 
-	// not incuded in the tests for the moment !
-	void holdTestMDCEscaped()
-	{
-		XMLLayoutPtr xmlLayout = new XMLLayout();
-		root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+        // not incuded in the tests for the moment !
+        void holdTestMDCEscaped()
+        {
+                XMLLayoutPtr xmlLayout = new XMLLayout();
+                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
 
-		MDC::clear();
-		MDC::put(LOG4CXX_TEST_STR("blahAttribute"), LOG4CXX_TEST_STR("<blah value=\"blah\">"));
-		MDC::put(LOG4CXX_TEST_STR("<blahKey value=\"blah\"/>"), LOG4CXX_TEST_STR("blahValue"));
+                MDC::clear();
+                MDC::put(LOG4CXX_TEST_STR("blahAttribute"), LOG4CXX_TEST_STR("<blah value=\"blah\">"));
+                MDC::put(LOG4CXX_TEST_STR("<blahKey value=\"blah\"/>"), LOG4CXX_TEST_STR("blahValue"));
 
-		LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
+                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
 
-		MDC::clear();
+                MDC::clear();
 
-		XMLTimestampFilter xmlTimestampFilter;
-		XMLThreadFilter xmlThreadFilter;
+                XMLTimestampFilter xmlTimestampFilter;
+                XMLThreadFilter xmlThreadFilter;
 
-		std::vector<Filter *> filters;
-		filters.push_back(&xmlTimestampFilter);
-		filters.push_back(&xmlThreadFilter);
+                std::vector<Filter *> filters;
+                filters.push_back(&xmlTimestampFilter);
+                filters.push_back(&xmlThreadFilter);
 
-		try
-		{
-			Transformer::transform(TEMP, FILTERED, filters);
-		}
-		catch(UnexpectedFormatException& e)
-		{
-			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
-			throw;
-		}
+                try
+                {
+                        Transformer::transform(TEMP, FILTERED, filters);
+                }
+                catch(UnexpectedFormatException& e)
+                {
+                        std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+                        throw;
+                }
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
-	}
+                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
+        }
 
-	void common()
-	{
-		int i = -1;
-		X x;
+        void common()
+        {
+                int i = -1;
+                X x;
 
                 Pool p;
                 LogString msg(LOG4CXX_STR("Message "));
 
-		LOG4CXX_DEBUG(logger, msg + StringHelper::toString(++i, p));
-		LOG4CXX_DEBUG(root, msg + StringHelper::toString(i, p));
+                LOG4CXX_DEBUG(logger, msg + StringHelper::toString(++i, p));
+                LOG4CXX_DEBUG(root, msg + StringHelper::toString(i, p));
 
-		LOG4CXX_INFO(logger, msg + StringHelper::toString(++i, p));
-		LOG4CXX_INFO(root, msg + StringHelper::toString(i,p));
+                LOG4CXX_INFO(logger, msg + StringHelper::toString(++i, p));
+                LOG4CXX_INFO(root, msg + StringHelper::toString(i,p));
 
-		LOG4CXX_WARN(logger, msg + StringHelper::toString(++i, p));
-		LOG4CXX_WARN(root, msg + StringHelper::toString(i, p));
+                LOG4CXX_WARN(logger, msg + StringHelper::toString(++i, p));
+                LOG4CXX_WARN(root, msg + StringHelper::toString(i, p));
 
-		LOG4CXX_ERROR(logger, msg + StringHelper::toString(++i, p));
-		LOG4CXX_ERROR(root, msg + StringHelper::toString(i, p));
+                LOG4CXX_ERROR(logger, msg + StringHelper::toString(++i, p));
+                LOG4CXX_ERROR(root, msg + StringHelper::toString(i, p));
 
-		LOG4CXX_FATAL(logger, msg + StringHelper::toString(++i, p));
-		LOG4CXX_FATAL(root, msg + StringHelper::toString(i, p));
-	}
+                LOG4CXX_FATAL(logger, msg + StringHelper::toString(++i, p));
+                LOG4CXX_FATAL(root, msg + StringHelper::toString(i, p));
+        }
+        private:
+        static const File TEMP;
+        static const File FILTERED;
 };
+
+const File XMLLayoutTestCase::TEMP("output/temp");
+const File XMLLayoutTestCase::FILTERED("output/filtered");
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XMLLayoutTestCase);

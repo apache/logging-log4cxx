@@ -18,6 +18,7 @@
 #include <log4cxx/helpers/patternparser.h>
 #include <log4cxx/helpers/patternconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -31,7 +32,8 @@ int PatternLayout::MAX_CAPACITY = 1024;
 
 PatternLayout::PatternLayout()
 {
-  activateOptions(NULL);
+  Pool pool;
+  activateOptions(pool);
 }
 
 /**
@@ -39,58 +41,60 @@ Constructs a PatternLayout using the supplied conversion pattern.
 */
 PatternLayout::PatternLayout(const LogString& pattern) : pattern(pattern)
 {
-  activateOptions(NULL);
+  Pool pool;
+  activateOptions(pool);
 }
 
 void PatternLayout::setConversionPattern(const LogString& conversionPattern)
 {
-	pattern = conversionPattern;
-    activateOptions(NULL);
+    pattern = conversionPattern;
+    Pool pool;
+    activateOptions(pool);
 }
 
 void PatternLayout::format(LogString& output,
       const spi::LoggingEventPtr& event,
-      apr_pool_t* pool) const
+      Pool& pool) const
 {
-	PatternConverterPtr c = head;
+        PatternConverterPtr c = head;
 
-	while(c != 0)
-	{
-		c->format(output, event, pool);
-		c = c->next;
-	}
+        while(c != 0)
+        {
+                c->format(output, event, pool);
+                c = c->next;
+        }
 }
 
 PatternConverterPtr PatternLayout::createPatternParser(const LogString& pattern)
 {
-	return PatternParser(pattern, timeZone).parse();
+        return PatternParser(pattern, timeZone).parse();
 }
 
 void PatternLayout::setOption(const LogString& option, const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option,
+        if (StringHelper::equalsIgnoreCase(option,
                LOG4CXX_STR("CONVERSIONPATTERN"),
                LOG4CXX_STR("conversionpattern")))
-	{
-		pattern = value;
-	}
-	else if (StringHelper::equalsIgnoreCase(option,
+        {
+                pattern = value;
+        }
+        else if (StringHelper::equalsIgnoreCase(option,
                LOG4CXX_STR("TIMEZONE"),
                LOG4CXX_STR("timezone")))
-	{
-		timeZone = value;
-	}
+        {
+                timeZone = value;
+        }
 }
 
-void PatternLayout::activateOptions(apr_pool_t* p)
+void PatternLayout::activateOptions(Pool& p)
 {
-	if (pattern.empty())
-	{
+        if (pattern.empty())
+        {
         static const LogString DEFAULT_CONVERSION_PATTERN(LOG4CXX_STR("%m%n"));
-		pattern = DEFAULT_CONVERSION_PATTERN;
-	}
+                pattern = DEFAULT_CONVERSION_PATTERN;
+        }
 
-	head = createPatternParser(pattern);
+        head = createPatternParser(pattern);
 }
 
 

@@ -36,20 +36,20 @@ bool Compare::compare(const File& file1, const File& file2)
     LogString back1(in1);
     LogString back2(in2);
 
-	LogString s1;
+        LogString s1;
     LogString s2;
-	int lineCounter = 0;
+        int lineCounter = 0;
 
-	while (StringHelper::getline(in1, s1))
-	{
-		lineCounter++;
+        while (StringHelper::getline(in1, s1))
+        {
+                lineCounter++;
 
         if(!StringHelper::getline(in2, s2)) {
           s2.erase(s2.begin(), s2.end());
         }
 
-		if (s1 != s2)
-		{
+                if (s1 != s2)
+                {
             LogString msg(LOG4CXX_STR("Files ["));
             msg += file1.getName();
             msg += LOG4CXX_STR("] and [");
@@ -66,13 +66,13 @@ bool Compare::compare(const File& file1, const File& file2)
             emit(msg);
 
             outputFile(file1, back1, pool);
-			outputFile(file2, back2, pool);
+                        outputFile(file2, back2, pool);
 
-			return false;
-		}
-	}
+                        return false;
+                }
+        }
 
-	// the second file is longer
+        // the second file is longer
     if (StringHelper::getline(in2, s2)) {
         LogString msg(LOG4CXX_STR("File ["));
         msg += file2.getName();
@@ -80,21 +80,21 @@ bool Compare::compare(const File& file1, const File& file2)
         msg += file1.getName();
         msg += LOG4CXX_STR("].\n");
         emit(msg);
-		outputFile(file1, back1, pool);
-		outputFile(file2, back2, pool);
+                outputFile(file1, back1, pool);
+                outputFile(file2, back2, pool);
 
-		return false;
-	}
+                return false;
+        }
 
-	return true;
+        return true;
 }
 
 void Compare::outputFile(const File& file,
                         const LogString& contents,
-                        apr_pool_t* pool)
+                        log4cxx::helpers::Pool& pool)
 {
-	int lineCounter = 0;
-	emit(LOG4CXX_STR("--------------------------------\n"));
+        int lineCounter = 0;
+        emit(LOG4CXX_STR("--------------------------------\n"));
         LogString msg(LOG4CXX_STR("Contents of "));
         msg += file.getName();
         msg += LOG4CXX_STR(":\n");
@@ -102,30 +102,30 @@ void Compare::outputFile(const File& file,
         LogString in1(contents);
         LogString s1;
 
-	while (StringHelper::getline(in1, s1))
-	{
-		lineCounter++;
+        while (StringHelper::getline(in1, s1))
+        {
+                lineCounter++;
                 emit(StringHelper::toString(lineCounter, pool));
 
-		if (lineCounter < 10)
-		{
-			emit(LOG4CXX_STR("   : "));
-		}
-		else if (lineCounter < 100)
-		{
-			emit(LOG4CXX_STR("  : "));
-		}
-		else if (lineCounter < 1000)
-		{
-			emit(LOG4CXX_STR(" : "));
-		}
-		else
-		{
-			emit(LOG4CXX_STR(": "));
-		}
+                if (lineCounter < 10)
+                {
+                        emit(LOG4CXX_STR("   : "));
+                }
+                else if (lineCounter < 100)
+                {
+                        emit(LOG4CXX_STR("  : "));
+                }
+                else if (lineCounter < 1000)
+                {
+                        emit(LOG4CXX_STR(" : "));
+                }
+                else
+                {
+                        emit(LOG4CXX_STR(": "));
+                }
                 emit(s1);
                 emit(LOG4CXX_STR("\n"));
-	}
+        }
 }
 
 void Compare::emit(const std::string& s1) {

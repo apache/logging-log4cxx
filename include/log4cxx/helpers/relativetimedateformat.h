@@ -34,7 +34,7 @@ namespace log4cxx
                         RelativeTimeDateFormat();
                         virtual void format(LogString &s,
                                         log4cxx_time_t tm,
-                                        apr_pool_t* p) const;
+                                        log4cxx::helpers::Pool& p) const;
 
                 private:
                         log4cxx_time_t startTime;

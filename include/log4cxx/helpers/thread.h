@@ -34,20 +34,21 @@
 
 extern "C" {
 struct apr_thread_t;
-struct apr_pool_t;
 }
 
 namespace log4cxx
 {
         namespace helpers
         {
+                class Pool;
+
                 class LOG4CXX_EXPORT Thread
                 {
                 public:
                         Thread();
                         ~Thread();
 
-                        void run(apr_pool_t* pool,
+                        void run(log4cxx::helpers::Pool& pool,
                                 void* (LOG4CXX_THREAD_FUNC *start)(apr_thread_t* thread, void* data),
                                 void* data);
                         void stop();

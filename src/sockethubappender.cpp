@@ -37,7 +37,7 @@ int SocketHubAppender::DEFAULT_PORT = 4560;
 
 SocketHubAppender::~SocketHubAppender()
 {
-	finalize();
+        finalize();
 }
 
 SocketHubAppender::SocketHubAppender()
@@ -48,172 +48,172 @@ SocketHubAppender::SocketHubAppender()
 SocketHubAppender::SocketHubAppender(int port)
  : port(port), oosList(), locationInfo(false), thread()
 {
-	startServer();
+        startServer();
 }
 
-void SocketHubAppender::activateOptions(apr_pool_t* p)
+void SocketHubAppender::activateOptions(Pool& p)
 {
-	startServer();
+        startServer();
 }
 
 void SocketHubAppender::setOption(const LogString& option,
-	const LogString& value)
+        const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("PORT"), LOG4CXX_STR("port")))
-	{
-		setPort(OptionConverter::toInt(value, DEFAULT_PORT));
-	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
-	{
-		setLocationInfo(OptionConverter::toBoolean(value, true));
-	}
-	else
-	{
-		AppenderSkeleton::setOption(option, value);
-	}
+        if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("PORT"), LOG4CXX_STR("port")))
+        {
+                setPort(OptionConverter::toInt(value, DEFAULT_PORT));
+        }
+        else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
+        {
+                setLocationInfo(OptionConverter::toBoolean(value, true));
+        }
+        else
+        {
+                AppenderSkeleton::setOption(option, value);
+        }
 }
 
 
 void SocketHubAppender::close()
 {
-	apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
-	if (wasClosed) return;
+        apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
+        if (wasClosed) return;
 
-	LogLog::debug(LOG4CXX_STR("closing SocketHubAppender ") + getName());
+        LogLog::debug(LOG4CXX_STR("closing SocketHubAppender ") + getName());
     //
-	//  wait until the server thread completes
-	//
-	thread.join();
+        //  wait until the server thread completes
+        //
+        thread.join();
 
-	synchronized sync(mutex);
-	// close all of the connections
-	LogLog::debug(LOG4CXX_STR("closing client connections"));
-	for (std::vector<helpers::SocketOutputStreamPtr>::iterator iter = oosList.begin();
-	     iter != oosList.end();
-		 iter++) {
-		 if ( (*iter) != NULL) {
-			 try {
-				(*iter)->close();
-			 } catch(SocketException& e) {
-				LogLog::error(LOG4CXX_STR("could not close oos: "), e);
-			 }
-		 }
-	 }
-	oosList.erase(oosList.begin(), oosList.end());
+        synchronized sync(mutex);
+        // close all of the connections
+        LogLog::debug(LOG4CXX_STR("closing client connections"));
+        for (std::vector<helpers::SocketOutputStreamPtr>::iterator iter = oosList.begin();
+             iter != oosList.end();
+                 iter++) {
+                 if ( (*iter) != NULL) {
+                         try {
+                                (*iter)->close();
+                         } catch(SocketException& e) {
+                                LogLog::error(LOG4CXX_STR("could not close oos: "), e);
+                         }
+                 }
+         }
+        oosList.erase(oosList.begin(), oosList.end());
 
 
-	LogLog::debug(LOG4CXX_STR("SocketHubAppender ")
+        LogLog::debug(LOG4CXX_STR("SocketHubAppender ")
               + getName() + LOG4CXX_STR(" closed"));
 }
 
-void SocketHubAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
+void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
 
-	// if no open connections, exit now
-	if(oosList.empty())
-	{
-		return;
-	}
+        // if no open connections, exit now
+        if(oosList.empty())
+        {
+                return;
+        }
 
 
-	// loop through the current set of open connections, appending the event to each
-	std::vector<SocketOutputStreamPtr>::iterator it = oosList.begin();
-	std::vector<SocketOutputStreamPtr>::iterator itEnd = oosList.end();
-	while(it != itEnd)
-	{
-		SocketOutputStreamPtr oos = *it;
+        // loop through the current set of open connections, appending the event to each
+        std::vector<SocketOutputStreamPtr>::iterator it = oosList.begin();
+        std::vector<SocketOutputStreamPtr>::iterator itEnd = oosList.end();
+        while(it != itEnd)
+        {
+                SocketOutputStreamPtr oos = *it;
 
-		// list size changed unexpectedly? Just exit the append.
-		if (oos == 0)
-		{
-			break;
-		}
+                // list size changed unexpectedly? Just exit the append.
+                if (oos == 0)
+                {
+                        break;
+                }
 
-		try
-		{
-			event->write(oos);
-			oos->flush();
-			it++;
-		}
-		catch(SocketException&)
-		{
-			// there was an io exception so just drop the connection
-			it = oosList.erase(it);
-			LogLog::debug(LOG4CXX_STR("dropped connection"));
-		}
-	}
+                try
+                {
+                        event->write(oos);
+                        oos->flush();
+                        it++;
+                }
+                catch(SocketException&)
+                {
+                        // there was an io exception so just drop the connection
+                        it = oosList.erase(it);
+                        LogLog::debug(LOG4CXX_STR("dropped connection"));
+                }
+        }
 }
 
 void SocketHubAppender::startServer()
 {
-	thread.run(pool, monitor, this);
+        thread.run(pool, monitor, this);
 }
 
 void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* thread, void* data) {
-	SocketHubAppender* pThis = (SocketHubAppender*) data;
+        SocketHubAppender* pThis = (SocketHubAppender*) data;
 
-	ServerSocket * serverSocket = 0;
+        ServerSocket * serverSocket = 0;
 
-	try
-	{
-		serverSocket = new ServerSocket(pThis->port);
-		serverSocket->setSoTimeout(1000);
-	}
-	catch (SocketException& e)
-	{
-		LogLog::error(LOG4CXX_STR("exception setting timeout, shutting down server socket."), e);
-		return NULL;
-	}
+        try
+        {
+                serverSocket = new ServerSocket(pThis->port);
+                serverSocket->setSoTimeout(1000);
+        }
+        catch (SocketException& e)
+        {
+                LogLog::error(LOG4CXX_STR("exception setting timeout, shutting down server socket."), e);
+                return NULL;
+        }
 
-	apr_uint32_t stopRunning = apr_atomic_read32(&pThis->closed);
-	while (!stopRunning)
-	{
-		SocketPtr socket;
-		try
-		{
-			socket = serverSocket->accept();
-		}
-		catch (InterruptedIOException&)
-		{
-			// timeout occurred, so just loop
-		}
-		catch (SocketException& e)
-		{
-			LogLog::error(LOG4CXX_STR("exception accepting socket, shutting down server socket."), e);
-			stopRunning = 1;
-		}
-		catch (IOException& e)
-		{
-			LogLog::error(LOG4CXX_STR("exception accepting socket."), e);
-		}
+        apr_uint32_t stopRunning = apr_atomic_read32(&pThis->closed);
+        while (!stopRunning)
+        {
+                SocketPtr socket;
+                try
+                {
+                        socket = serverSocket->accept();
+                }
+                catch (InterruptedIOException&)
+                {
+                        // timeout occurred, so just loop
+                }
+                catch (SocketException& e)
+                {
+                        LogLog::error(LOG4CXX_STR("exception accepting socket, shutting down server socket."), e);
+                        stopRunning = 1;
+                }
+                catch (IOException& e)
+                {
+                        LogLog::error(LOG4CXX_STR("exception accepting socket."), e);
+                }
 
-		// if there was a socket accepted
-		if (socket != 0)
-		{
-			try
-			{
-				InetAddress remoteAddress = socket->getInetAddress();
-				LogLog::debug(LOG4CXX_STR("accepting connection from ")
+                // if there was a socket accepted
+                if (socket != 0)
+                {
+                        try
+                        {
+                                InetAddress remoteAddress = socket->getInetAddress();
+                                LogLog::debug(LOG4CXX_STR("accepting connection from ")
                                        + remoteAddress.getHostName()
                                        + LOG4CXX_STR(" (")
                                        + remoteAddress.getHostAddress()
                                        + LOG4CXX_STR(")"));
 
-				// create an ObjectOutputStream
-				SocketOutputStreamPtr oos = socket->getOutputStream();
+                                // create an ObjectOutputStream
+                                SocketOutputStreamPtr oos = socket->getOutputStream();
 
-				// add it to the oosList.
-				synchronized sync(pThis->mutex);
-				pThis->oosList.push_back(oos);
-			}
-			catch (IOException& e)
-			{
-				LogLog::error(LOG4CXX_STR("exception creating output stream on socket."), e);
-			}
-		}
-	}
+                                // add it to the oosList.
+                                synchronized sync(pThis->mutex);
+                                pThis->oosList.push_back(oos);
+                        }
+                        catch (IOException& e)
+                        {
+                                LogLog::error(LOG4CXX_STR("exception creating output stream on socket."), e);
+                        }
+                }
+        }
 
-	delete serverSocket;
-	return NULL;
+        delete serverSocket;
+        return NULL;
 }
 

@@ -42,13 +42,14 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
 ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& target)
  : WriterAppender(layout), target(getSystemOut()), useErr(false)
 {
-	setTarget(target);
-	activateOptions(NULL);
+        setTarget(target);
+        Pool p;
+        activateOptions(p);
 }
 
 ConsoleAppender::~ConsoleAppender()
 {
-	finalize();
+        finalize();
 }
 
 const LogString& ConsoleAppender::getSystemOut() {
@@ -64,71 +65,71 @@ const LogString& ConsoleAppender::getSystemErr() {
 
 void ConsoleAppender::setTarget(const LogString& value)
 {
-	LogString v = StringHelper::trim(value);
+        LogString v = StringHelper::trim(value);
 
-	if (StringHelper::equalsIgnoreCase(v,
+        if (StringHelper::equalsIgnoreCase(v,
               LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))
-	{
-		target = getSystemOut();
-	}
-	else if (StringHelper::equalsIgnoreCase(v,
+        {
+                target = getSystemOut();
+        }
+        else if (StringHelper::equalsIgnoreCase(v,
                LOG4CXX_STR("SYSTEM.ERR"), LOG4CXX_STR("system.err")))
-	{
-		target = getSystemErr();
-	}
-	else
-	{
-		targetWarn(value);
-	}
+        {
+                target = getSystemErr();
+        }
+        else
+        {
+                targetWarn(value);
+        }
 }
 
 const LogString& ConsoleAppender::getTarget() const
 {
-	return target;
+        return target;
 }
 
 void ConsoleAppender::targetWarn(const LogString& val)
 {
         LogLog::warn(((LogString) LOG4CXX_STR("["))
            + val +  LOG4CXX_STR("] should be system.out or system.err."));
-	LogLog::warn(LOG4CXX_STR("Using previously set target, System.out by default."));
+        LogLog::warn(LOG4CXX_STR("Using previously set target, System.out by default."));
 }
 
-void ConsoleAppender::activateOptions(apr_pool_t* p)
+void ConsoleAppender::activateOptions(Pool& p)
 {
-	if(StringHelper::equalsIgnoreCase(target,
+        if(StringHelper::equalsIgnoreCase(target,
               LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))
-	{
+        {
                 useErr = false;
-	}
-	else if (StringHelper::equalsIgnoreCase(target,
+        }
+        else if (StringHelper::equalsIgnoreCase(target,
               LOG4CXX_STR("SYSTEM.ERR"), LOG4CXX_STR("system.err")))
-	{
+        {
                 useErr = true;
-	}
+        }
 }
 
 void ConsoleAppender::setOption(const LogString& option, const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option,
+        if (StringHelper::equalsIgnoreCase(option,
               LOG4CXX_STR("TARGET"), LOG4CXX_STR("target")))
-	{
-		setTarget(value);
-	}
-	else
-	{
-		WriterAppender::setOption(option, value);
-	}
+        {
+                setTarget(value);
+        }
+        else
+        {
+                WriterAppender::setOption(option, value);
+        }
 }
 
 
-void ConsoleAppender::subAppend(const LogString& msg, apr_pool_t* p) {
+void ConsoleAppender::subAppend(const LogString& msg, Pool& p) {
         std::wstring wmsg;
         log4cxx::helpers::Transcoder::encode(msg, wmsg);
         if (useErr) {
-          std::wcerr << wmsg << std::endl;
+          std::wcerr << wmsg << std::flush;
         } else {
-          std::wcout << wmsg << std::endl;
+          std::wcout << wmsg << std::flush;
         }
 }
 

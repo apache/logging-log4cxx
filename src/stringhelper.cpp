@@ -180,21 +180,23 @@ log4cxx_int64_t StringHelper::toInt64(const std::wstring& s) {
   return apr_atoi64(charstr.c_str());
 }
 
-LogString StringHelper::toString(int s, const Pool& pool) {
-   return toString(s, (apr_pool_t*) pool);
-}
-
-LogString StringHelper::toString(int s, apr_pool_t* pool) {
-  char* fmt = apr_itoa(pool, s);
+LogString StringHelper::toString(int n, Pool& pool) {
+  char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
   LogString str;
   log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), str);
   return str;
 }
 
-LogString StringHelper::toString(int s) {
-  Pool pool;
-  return LogString(toString(s, pool));
+void StringHelper::toString(int n, Pool& pool, std::string& str) {
+  char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
+  str.append(fmt);
 }
+
+void StringHelper::toString(int n, Pool& pool, std::wstring& str) {
+  char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
+  log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), str);
+}
+
 
 
 

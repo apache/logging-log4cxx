@@ -20,27 +20,23 @@
 #include <log4cxx/portability.h>
 
 
-extern "C" {
-struct apr_pool_t;
-struct apr_thread_cond_t;
-struct apr_thread_mutex_t;
-}
-
 namespace log4cxx
 {
         namespace helpers
         {
+                class Pool;
+
                 class LOG4CXX_EXPORT Condition
                 {
                 public:
-                        Condition(apr_pool_t* p);
+                        Condition(log4cxx::helpers::Pool& p);
                         ~Condition();
                         void broadcast();
                         void wait();
 
                 private:
-                        apr_thread_cond_t* condition;
-                        apr_thread_mutex_t* mutex;
+                        const void* condition;
+                        const void* mutex;
                         Condition(const Condition&);
                         Condition& operator=(const Condition&);
                 };

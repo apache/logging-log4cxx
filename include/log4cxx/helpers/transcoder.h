@@ -22,9 +22,6 @@
 #include <string.h>
 #include <wchar.h>
 
-extern "C" {
-struct apr_pool_t;
-}
 
 namespace log4cxx {
    namespace helpers {

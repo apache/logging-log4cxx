@@ -25,42 +25,42 @@ using namespace log4cxx::helpers;
 
 
 void Transformer::transform(const File& in, const File& out,
-	const std::vector<Filter *>& filters) throw(UnexpectedFormatException)
-{
-        Pool pool;
-	LogString line;
-	LogString input(in.read(pool));
-        LogString output;
-
-	while (StringHelper::getline(input, line))
-	{
-		for (std::vector<Filter *>::size_type i = 0; i < filters.size(); i++)
-		{
-			line = filters[i]->filter(line);
-		}
-		if (!line.empty())
-		{
-			output.append(line);
-                        output.append(1, '\n');
-		}
-	}
-        out.write(output, pool);
-}
-
-void Transformer::transform(const File& in, const File& out,
-	const Filter& filter) throw(UnexpectedFormatException)
+        const std::vector<Filter *>& filters) throw(std::exception)
 {
         Pool pool;
         LogString line;
         LogString input(in.read(pool));
         LogString output;
 
-	while (StringHelper::getline(input, line))
-	{
-		line = filter.filter(line);
-		output.append(line);
+        while (StringHelper::getline(input, line))
+        {
+                for (std::vector<Filter *>::size_type i = 0; i < filters.size(); i++)
+                {
+                        line = filters[i]->filter(line);
+                }
+                if (!line.empty())
+                {
+                        output.append(line);
+                        output.append(1, '\n');
+                }
+        }
+        out.write(output, pool);
+}
+
+void Transformer::transform(const File& in, const File& out,
+        const Filter& filter) throw(std::exception)
+{
+        Pool pool;
+        LogString line;
+        LogString input(in.read(pool));
+        LogString output;
+
+        while (StringHelper::getline(input, line))
+        {
+                line = filter.filter(line);
+                output.append(line);
                 output.append(1, '\n');
-	}
+        }
         out.write(output, pool);
 
 }

@@ -36,7 +36,7 @@ void OnlyOnceErrorHandler::setLogger(const LoggerPtr& logger)
 {
 }
 
-void OnlyOnceErrorHandler::activateOptions(apr_pool_t* p)
+void OnlyOnceErrorHandler::activateOptions(Pool& p)
 {
 }
 
@@ -45,29 +45,29 @@ void OnlyOnceErrorHandler::setOption(const LogString& option, const LogString& v
 }
 
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
-	int errorCode) const
+        int errorCode) const
 {
-	if(firstTime)
-	{
-		LogLog::error(message, e);
-		firstTime = false;
-	}
+        if(firstTime)
+        {
+                LogLog::error(message, e);
+                firstTime = false;
+        }
 }
 
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
-	int errorCode, const log4cxx::spi::LoggingEventPtr& event) const
+        int errorCode, const log4cxx::spi::LoggingEventPtr& event) const
 {
-	error(message, e, errorCode);
+        error(message, e, errorCode);
 }
 
 
 void OnlyOnceErrorHandler::error(const LogString& message) const
 {
-	if(firstTime)
-	{
-		LogLog::error(message);
-		firstTime = false;
-	}
+        if(firstTime)
+        {
+                LogLog::error(message);
+                firstTime = false;
+        }
 }
 
 

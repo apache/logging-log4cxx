@@ -17,6 +17,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
 #include <stdlib.h>
+#include <log4cxx/config.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -29,14 +30,31 @@ using namespace log4cxx::helpers;
 */
 #if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
 
+//
+//
+//  TODO: Have observed strange behavior with C RTL implementations
+//    conversion seems to be fine during static object
+//    initialization then wcsnrtombs starts failing on simple strings
+//    Probably have overwritten the heap and can eventually be
+//    checked with Valgrind and the following #IF can be
+//    modified.
+//
+#if 1 //!((HAVE_MBSNRTOWCS && HAVE_WCSNRTOMBS) || (LOG4CXX_HAVE_MBSNRTOWCS && LOG4CXX_HAVE_WCSNRTOMBS))
+
+//
+//   If the GNU RTL functions mbsnrtowcs and wcsnrtombs are not available
+//      provide alternative implementations based on mbtowc and wctomb.
+//   Presumable the library implementation of the counted string
+//      wide-to-multi conversions are more efficient.
+//
+//   If both the C RTL and these implementations are available
+//      these will be used.
+
 namespace log4cxx {
       namespace helpers {
 
-#if !defined(HAVE_MBSTATE_T)
         struct mbstate_t {};
-#endif
 
-#if !defined(HAVE_MBSNRTOWCS)
         size_t mbsnrtowcs(wchar_t *dest, const char **src,
             size_t srcLen, size_t destLen, mbstate_t *ps) {
             const char* srcEnd = *src + srcLen;
@@ -56,9 +74,7 @@ namespace log4cxx {
             }
             return current - dest;
         }
-#endif
 
-#if !defined(HAVE_WCSNRTOMBS)
         size_t wcsnrtombs(char *dest, const wchar_t **src, size_t srcLen,
             size_t destLen, mbstate_t *ps) {
             const wchar_t* srcEnd = *src + srcLen;
@@ -91,11 +107,10 @@ namespace log4cxx {
             }
             return current - dest;
         }
-#endif
 
     }
 }
-
+#endif
 
 
 void Transcoder::decode(const char* src, size_t len, LogString& dst) {
@@ -133,15 +148,17 @@ void Transcoder::decode(const wchar_t* src, size_t len, LogString& dst) {
 void Transcoder::encode(const LogString& src, std::string& dst) {
   char buf[BUFSIZE];
   mbstate_t ps;
+  size_t srcLen = src.length();
   const wchar_t* pSrc = src.data();
-  const wchar_t* pEnd = pSrc + src.length();
+  const wchar_t* pEnd = pSrc + srcLen;
   for(const wchar_t* in = pSrc;
       in < pEnd && in != NULL;) {
         const wchar_t* start = in;
-        size_t rv = wcsnrtombs(buf, &in, pEnd - in, BUFSIZE, &ps);
+        size_t toConvert = pEnd - in;
+        size_t rv = wcsnrtombs(buf, &in, toConvert, BUFSIZE, &ps);
         //   illegal sequence, convert only the initial fragment
         if (rv == (size_t) -1) {
-          size_t convertableLength = in - start;
+          size_t convertableLength = (in - start);
           in = start;
           if (convertableLength > 0) {
             rv = wcsnrtombs(buf, &in, convertableLength, BUFSIZE, &ps);

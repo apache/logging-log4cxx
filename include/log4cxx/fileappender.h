@@ -162,7 +162,7 @@ namespace log4cxx
 
         <p>If there was already an opened file, then the previous file
         is closed first.*/
-                void activateOptions(apr_pool_t* p);
+                void activateOptions(log4cxx::helpers::Pool& p);
                 void setOption(const LogString& option,
                         const LogString& value);
 
@@ -172,7 +172,7 @@ namespace log4cxx
         */
         virtual void closeWriter();
 
-        virtual void subAppend(const char* encoded, log4cxx_size_t size, apr_pool_t* p);
+        virtual void subAppend(const char* encoded, log4cxx_size_t size, log4cxx::helpers::Pool& p);
 
    public:
         /**

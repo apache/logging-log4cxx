@@ -28,13 +28,13 @@ IMPLEMENT_LOG4CXX_OBJECT(OutputDebugStringAppender)
 OutputDebugStringAppender::OutputDebugStringAppender() {
 }
 
-void OutputDebugStringAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
+void OutputDebugStringAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-	LogString buf;
-	layout->format(buf, event, p);
-	std::wstring wstr;
-	log4cxx::helpers::Transcoder::encode(buf, wstr);
-	::OutputDebugStringW(wstr.c_str());
+        LogString buf;
+        layout->format(buf, event, p);
+        std::wstring wstr;
+        log4cxx::helpers::Transcoder::encode(buf, wstr);
+        ::OutputDebugStringW(wstr.c_str());
 }
 
 #endif

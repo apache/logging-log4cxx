@@ -22,31 +22,31 @@
 #include <log4cxx/level.h>
 
 #ifdef LOG4CXX_HAVE_SYSLOG
-	#include <syslog.h>
+        #include <syslog.h>
 #else
-	/* facility codes */
-	#define	LOG_KERN	(0<<3)	/* kernel messages */
-	#define	LOG_USER	(1<<3)	/* random user-level messages */
-	#define	LOG_MAIL	(2<<3)	/* mail system */
-	#define	LOG_DAEMON	(3<<3)	/* system daemons */
-	#define	LOG_AUTH	(4<<3)	/* security/authorization messages */
-	#define	LOG_SYSLOG	(5<<3)	/* messages generated internally by syslogd */
-	#define	LOG_LPR		(6<<3)	/* line printer subsystem */
-	#define	LOG_NEWS	(7<<3)	/* network news subsystem */
-	#define	LOG_UUCP	(8<<3)	/* UUCP subsystem */
-	#define	LOG_CRON	(9<<3)	/* clock daemon */
-	#define	LOG_AUTHPRIV	(10<<3)	/* security/authorization messages (private) */
-	#define	LOG_FTP		(11<<3)	/* ftp daemon */
+        /* facility codes */
+        #define	LOG_KERN	(0<<3)	/* kernel messages */
+        #define	LOG_USER	(1<<3)	/* random user-level messages */
+        #define	LOG_MAIL	(2<<3)	/* mail system */
+        #define	LOG_DAEMON	(3<<3)	/* system daemons */
+        #define	LOG_AUTH	(4<<3)	/* security/authorization messages */
+        #define	LOG_SYSLOG	(5<<3)	/* messages generated internally by syslogd */
+        #define	LOG_LPR		(6<<3)	/* line printer subsystem */
+        #define	LOG_NEWS	(7<<3)	/* network news subsystem */
+        #define	LOG_UUCP	(8<<3)	/* UUCP subsystem */
+        #define	LOG_CRON	(9<<3)	/* clock daemon */
+        #define	LOG_AUTHPRIV	(10<<3)	/* security/authorization messages (private) */
+        #define	LOG_FTP		(11<<3)	/* ftp daemon */
 
-		/* other codes through 15 reserved for system use */
-	#define	LOG_LOCAL0	(16<<3)	/* reserved for local use */
-	#define	LOG_LOCAL1	(17<<3)	/* reserved for local use */
-	#define	LOG_LOCAL2	(18<<3)	/* reserved for local use */
-	#define	LOG_LOCAL3	(19<<3)	/* reserved for local use */
-	#define	LOG_LOCAL4	(20<<3)	/* reserved for local use */
-	#define	LOG_LOCAL5	(21<<3)	/* reserved for local use */
-	#define	LOG_LOCAL6	(22<<3)	/* reserved for local use */
-	#define	LOG_LOCAL7	(23<<3)	/* reserved for local use */
+                /* other codes through 15 reserved for system use */
+        #define	LOG_LOCAL0	(16<<3)	/* reserved for local use */
+        #define	LOG_LOCAL1	(17<<3)	/* reserved for local use */
+        #define	LOG_LOCAL2	(18<<3)	/* reserved for local use */
+        #define	LOG_LOCAL3	(19<<3)	/* reserved for local use */
+        #define	LOG_LOCAL4	(20<<3)	/* reserved for local use */
+        #define	LOG_LOCAL5	(21<<3)	/* reserved for local use */
+        #define	LOG_LOCAL6	(22<<3)	/* reserved for local use */
+        #define	LOG_LOCAL7	(23<<3)	/* reserved for local use */
 #endif
 
 #define LOG_UNDEF -1
@@ -60,60 +60,61 @@ IMPLEMENT_LOG4CXX_OBJECT(SyslogAppender)
 SyslogAppender::SyslogAppender()
 : syslogFacility(LOG_USER), facilityPrinting(false), sw(0)
 {
-	this->initSyslogFacilityStr();
+        this->initSyslogFacilityStr();
 
 }
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout,
-	int syslogFacility)
+        int syslogFacility)
 : syslogFacility(syslogFacility), facilityPrinting(false), sw(0)
 {
-	this->layout = layout;
-	this->initSyslogFacilityStr();
+        this->layout = layout;
+        this->initSyslogFacilityStr();
 }
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout,
-	const LogString& syslogHost, int syslogFacility)
+        const LogString& syslogHost, int syslogFacility)
 : syslogFacility(syslogFacility), facilityPrinting(false), sw(0)
 {
-	this->layout = layout;
-	this->initSyslogFacilityStr();
-	setSyslogHost(syslogHost);
+        this->layout = layout;
+        this->initSyslogFacilityStr();
+        setSyslogHost(syslogHost);
 }
 
 SyslogAppender::~SyslogAppender()
 {
-	finalize();
+        finalize();
 }
 
 /** Release any resources held by this SyslogAppender.*/
 void SyslogAppender::close()
 {
-	closed = true;
-	if (sw != 0)
-	{
-		delete sw;
-		sw = 0;
-	}
+        closed = true;
+        if (sw != 0)
+        {
+                delete sw;
+                sw = 0;
+        }
 }
 
 void SyslogAppender::initSyslogFacilityStr()
 {
-	facilityStr = getFacilityString(this->syslogFacility);
+        facilityStr = getFacilityString(this->syslogFacility);
 
-	if (facilityStr.empty())
-	{
-		LogLog::error(
+        if (facilityStr.empty())
+        {
+                Pool p;
+                LogLog::error(
                     ((LogString) LOG4CXX_STR("\""))
-                    + StringHelper::toString(syslogFacility)
+                    + StringHelper::toString(syslogFacility, p)
                     + LOG4CXX_STR("\" is an unknown syslog facility. Defaulting to \"USER\"."));
-		this->syslogFacility = LOG_USER;
-		facilityStr = LOG4CXX_STR("user:");
-	}
-	else
-	{
-		facilityStr += LOG4CXX_STR(":");
-	}
+                this->syslogFacility = LOG_USER;
+                facilityStr = LOG4CXX_STR("user:");
+        }
+        else
+        {
+                facilityStr += LOG4CXX_STR(":");
+        }
 }
 
 /**
@@ -121,135 +122,135 @@ Returns the specified syslog facility as a lower-case String,
 e.g. "kern", "user", etc.
 */
 LogString SyslogAppender::getFacilityString(
-	int syslogFacility)
+        int syslogFacility)
 {
-	switch(syslogFacility)
-	{
-	case LOG_KERN:      return LOG4CXX_STR("kern");
-	case LOG_USER:      return LOG4CXX_STR("user");
-	case LOG_MAIL:      return LOG4CXX_STR("mail");
-	case LOG_DAEMON:    return LOG4CXX_STR("daemon");
-	case LOG_AUTH:      return LOG4CXX_STR("auth");
-	case LOG_SYSLOG:    return LOG4CXX_STR("syslog");
-	case LOG_LPR:       return LOG4CXX_STR("lpr");
-	case LOG_NEWS:      return LOG4CXX_STR("news");
-	case LOG_UUCP:      return LOG4CXX_STR("uucp");
-	case LOG_CRON:      return LOG4CXX_STR("cron");
+        switch(syslogFacility)
+        {
+        case LOG_KERN:      return LOG4CXX_STR("kern");
+        case LOG_USER:      return LOG4CXX_STR("user");
+        case LOG_MAIL:      return LOG4CXX_STR("mail");
+        case LOG_DAEMON:    return LOG4CXX_STR("daemon");
+        case LOG_AUTH:      return LOG4CXX_STR("auth");
+        case LOG_SYSLOG:    return LOG4CXX_STR("syslog");
+        case LOG_LPR:       return LOG4CXX_STR("lpr");
+        case LOG_NEWS:      return LOG4CXX_STR("news");
+        case LOG_UUCP:      return LOG4CXX_STR("uucp");
+        case LOG_CRON:      return LOG4CXX_STR("cron");
 #ifdef LOG_AUTHPRIV
-	case LOG_AUTHPRIV:  return LOG4CXX_STR("authpriv");
+        case LOG_AUTHPRIV:  return LOG4CXX_STR("authpriv");
 #endif
 #ifdef LOG_FTP
-	case LOG_FTP:       return LOG4CXX_STR("ftp");
+        case LOG_FTP:       return LOG4CXX_STR("ftp");
 #endif
-	case LOG_LOCAL0:    return LOG4CXX_STR("local0");
-	case LOG_LOCAL1:    return LOG4CXX_STR("local1");
-	case LOG_LOCAL2:    return LOG4CXX_STR("local2");
-	case LOG_LOCAL3:    return LOG4CXX_STR("local3");
-	case LOG_LOCAL4:    return LOG4CXX_STR("local4");
-	case LOG_LOCAL5:    return LOG4CXX_STR("local5");
-	case LOG_LOCAL6:    return LOG4CXX_STR("local6");
-	case LOG_LOCAL7:    return LOG4CXX_STR("local7");
-	default:            return LogString();
-	}
+        case LOG_LOCAL0:    return LOG4CXX_STR("local0");
+        case LOG_LOCAL1:    return LOG4CXX_STR("local1");
+        case LOG_LOCAL2:    return LOG4CXX_STR("local2");
+        case LOG_LOCAL3:    return LOG4CXX_STR("local3");
+        case LOG_LOCAL4:    return LOG4CXX_STR("local4");
+        case LOG_LOCAL5:    return LOG4CXX_STR("local5");
+        case LOG_LOCAL6:    return LOG4CXX_STR("local6");
+        case LOG_LOCAL7:    return LOG4CXX_STR("local7");
+        default:            return LogString();
+        }
 }
 
 int SyslogAppender::getFacility(
-	const LogString& s)
+        const LogString& s)
 {
-	if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("KERN"), LOG4CXX_STR("kern")))
-	{
-		return LOG_KERN;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("USER"), LOG4CXX_STR("user")))
-	{
-		return LOG_USER;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("MAIL"), LOG4CXX_STR("mail")))
-	{
-		return LOG_MAIL;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("DAEMON"), LOG4CXX_STR("daemon")))
-	{
-		return LOG_DAEMON;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("AUTH"), LOG4CXX_STR("auth")))
-	{
-		return LOG_AUTH;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("SYSLOG"), LOG4CXX_STR("syslog")))
-	{
-		return LOG_SYSLOG;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LPR"), LOG4CXX_STR("lpr")))
-	{
-		return LOG_LPR;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("NEWS"), LOG4CXX_STR("news")))
-	{
-		return LOG_NEWS;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("UUCP"), LOG4CXX_STR("uucp")))
-	{
-		return LOG_UUCP;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("CRON"), LOG4CXX_STR("cron")))
-	{
-		return LOG_CRON;
-	}
+        if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("KERN"), LOG4CXX_STR("kern")))
+        {
+                return LOG_KERN;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("USER"), LOG4CXX_STR("user")))
+        {
+                return LOG_USER;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("MAIL"), LOG4CXX_STR("mail")))
+        {
+                return LOG_MAIL;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("DAEMON"), LOG4CXX_STR("daemon")))
+        {
+                return LOG_DAEMON;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("AUTH"), LOG4CXX_STR("auth")))
+        {
+                return LOG_AUTH;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("SYSLOG"), LOG4CXX_STR("syslog")))
+        {
+                return LOG_SYSLOG;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LPR"), LOG4CXX_STR("lpr")))
+        {
+                return LOG_LPR;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("NEWS"), LOG4CXX_STR("news")))
+        {
+                return LOG_NEWS;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("UUCP"), LOG4CXX_STR("uucp")))
+        {
+                return LOG_UUCP;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("CRON"), LOG4CXX_STR("cron")))
+        {
+                return LOG_CRON;
+        }
 #ifdef LOG_AUTHPRIV
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("AUTHPRIV"), LOG4CXX_STR("authpriv")))
-	{
-		return LOG_AUTHPRIV;
-	}
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("AUTHPRIV"), LOG4CXX_STR("authpriv")))
+        {
+                return LOG_AUTHPRIV;
+        }
 #endif
 #ifdef LOG_FTP
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("FTP"), LOG4CXX_STR("ftp")))
-	{
-		return LOG_FTP;
-	}
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("FTP"), LOG4CXX_STR("ftp")))
+        {
+                return LOG_FTP;
+        }
 #endif
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL0"), LOG4CXX_STR("local0")))
-	{
-		return LOG_LOCAL0;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local1")))
-	{
-		return LOG_LOCAL1;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local2")))
-	{
-		return LOG_LOCAL2;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local3")))
-	{
-		return LOG_LOCAL3;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local4")))
-	{
-		return LOG_LOCAL4;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local5")))
-	{
-		return LOG_LOCAL5;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local6")))
-	{
-		return LOG_LOCAL6;
-	}
-	else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local7")))
-	{
-		return LOG_LOCAL7;
-	}
-	else
-	{
-		return LOG_UNDEF;
-	}
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL0"), LOG4CXX_STR("local0")))
+        {
+                return LOG_LOCAL0;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local1")))
+        {
+                return LOG_LOCAL1;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local2")))
+        {
+                return LOG_LOCAL2;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local3")))
+        {
+                return LOG_LOCAL3;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local4")))
+        {
+                return LOG_LOCAL4;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local5")))
+        {
+                return LOG_LOCAL5;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local6")))
+        {
+                return LOG_LOCAL6;
+        }
+        else if (StringHelper::equalsIgnoreCase(s, LOG4CXX_STR("LOCAL1"), LOG4CXX_STR("local7")))
+        {
+                return LOG_LOCAL7;
+        }
+        else
+        {
+                return LOG_UNDEF;
+        }
 }
 
-void SyslogAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
+void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-	if	(!isAsSevereAsThreshold(event->getLevel()))
-		return;
+        if	(!isAsSevereAsThreshold(event->getLevel()))
+                return;
 
 #if 0
 //  TODO
@@ -257,99 +258,99 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
 // On the local host, we can directly use the system function 'syslog'
 // if it is available
 #ifdef LOG4CXX_HAVE_SYSLOG
-	if (sw == 0)
-	{
-  		 sbuf;
- 		layout->format(sbuf, event);
+        if (sw == 0)
+        {
+                 sbuf;
+                layout->format(sbuf, event);
                 std::string msg;
                 log4cxx::helpers::Transcoder::encode(s
-		USES_CONVERSION;
+                USES_CONVERSION;
 
-		// use of "%s" to avoid a security hole
+                // use of "%s" to avoid a security hole
         ::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(),
-			"%s", T2A(sbuf.str().c_str()));
+                        "%s", T2A(sbuf.str().c_str()));
 
-		return;
-	}
+                return;
+        }
 #endif
 
-	// We must not attempt to append if sw is null.
-	if(sw == 0)
-	{
-		errorHandler->error(LOG4CXX_STR("No syslog host is set for SyslogAppedender named \"")+
-			this->name+LOG4CXX_STR("\"."));
-		return;
-	}
+        // We must not attempt to append if sw is null.
+        if(sw == 0)
+        {
+                errorHandler->error(LOG4CXX_STR("No syslog host is set for SyslogAppedender named \"")+
+                        this->name+LOG4CXX_STR("\"."));
+                return;
+        }
 
-	LogStringBuffer sbuf;
+        LogStringBuffer sbuf;
 
-	sbuf << LOG4CXX_STR("<") << (syslogFacility | event->getLevel()->getSyslogEquivalent()) << LOG4CXX_STR(">");
-	if (facilityPrinting)
-	{
-		sbuf << facilityStr;
-	}
-	layout->format(sbuf, event);
-	//LogLog::debug(sbuf.str());
-	sw->write(sbuf.str());
+        sbuf << LOG4CXX_STR("<") << (syslogFacility | event->getLevel()->getSyslogEquivalent()) << LOG4CXX_STR(">");
+        if (facilityPrinting)
+        {
+                sbuf << facilityStr;
+        }
+        layout->format(sbuf, event);
+        //LogLog::debug(sbuf.str());
+        sw->write(sbuf.str());
 
 #endif
 }
 
-void SyslogAppender::activateOptions(apr_pool_t* p)
+void SyslogAppender::activateOptions(Pool& p)
 {
 }
 
 void SyslogAppender::setOption(const LogString& option, const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SYSLOGHOST"), LOG4CXX_STR("sysloghost")))
-	{
-		setSyslogHost(value);
-	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FACILITY"), LOG4CXX_STR("facility")))
-	{
-		setFacility(value);
-	}
-	else
-	{
-		AppenderSkeleton::setOption(option, value);
-	}
+        if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SYSLOGHOST"), LOG4CXX_STR("sysloghost")))
+        {
+                setSyslogHost(value);
+        }
+        else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FACILITY"), LOG4CXX_STR("facility")))
+        {
+                setFacility(value);
+        }
+        else
+        {
+                AppenderSkeleton::setOption(option, value);
+        }
 }
 
 void SyslogAppender::setSyslogHost(const LogString& syslogHost)
 {
-	if (this->sw != 0)
-	{
-		delete this->sw;
-		this->sw = 0;
-	}
+        if (this->sw != 0)
+        {
+                delete this->sw;
+                this->sw = 0;
+        }
 
 // On the local host, we can directly use the system function 'syslog'
 // if it is available (cf. append)
 #ifdef LOG4CXX_HAVE_SYSLOG
-	if (syslogHost != LOG4CXX_STR("localhost") && syslogHost != LOG4CXX_STR("127.0.0.1")
-	&& !syslogHost.empty())
+        if (syslogHost != LOG4CXX_STR("localhost") && syslogHost != LOG4CXX_STR("127.0.0.1")
+        && !syslogHost.empty())
 #endif
-		this->sw = new SyslogWriter(syslogHost);
+                this->sw = new SyslogWriter(syslogHost);
 
-	this->syslogHost = syslogHost;
+        this->syslogHost = syslogHost;
 }
 
 
 void SyslogAppender::setFacility(const LogString& facilityName)
 {
-	if (facilityName.empty())
-	{
-		return;
-	}
+        if (facilityName.empty())
+        {
+                return;
+        }
 
-	syslogFacility = getFacility(facilityName);
-	if (syslogFacility == LOG_UNDEF)
-	{
-		LogLog::error(LOG4CXX_STR("[")+facilityName +
-				LOG4CXX_STR("] is an unknown syslog facility. Defaulting to [USER]."));
-		syslogFacility = LOG_USER;
-	}
+        syslogFacility = getFacility(facilityName);
+        if (syslogFacility == LOG_UNDEF)
+        {
+                LogLog::error(LOG4CXX_STR("[")+facilityName +
+                                LOG4CXX_STR("] is an unknown syslog facility. Defaulting to [USER]."));
+                syslogFacility = LOG_USER;
+        }
 
-	this->initSyslogFacilityStr();
+        this->initSyslogFacilityStr();
 }
 

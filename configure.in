@@ -317,7 +317,7 @@ AC_SUBST(LIBS_ODBC)
 AC_SUBST(CPPFLAGS_ODBC)
 
 #for System
-AC_CHECK_FUNCS(gettimeofday ftime setenv)
+AC_CHECK_FUNCS(gettimeofday ftime setenv mbsnrtowcs wcsnrtombs)
 
 #for SMTPAppender
 AC_MSG_CHECKING(for SMTP support)
@@ -376,6 +376,7 @@ include/log4cxx/helpers/Makefile
 include/log4cxx/net/Makefile
 include/log4cxx/nt/Makefile
 include/log4cxx/spi/Makefile
+include/log4cxx/spi/location/Makefile
 include/log4cxx/varia/Makefile
 include/log4cxx/xml/Makefile
 include/log4cxx/config/Makefile

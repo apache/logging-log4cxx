@@ -51,7 +51,7 @@ WriterAppender::~WriterAppender()
 #endif
 }
 
-void WriterAppender::activateOptions(apr_pool_t* p) {
+void WriterAppender::activateOptions(Pool& p) {
   AppenderSkeleton::activateOptions(p);
 #if HAS_APR_ICONV
   if (transcoder != NULL) {
@@ -78,7 +78,7 @@ void WriterAppender::activateOptions(apr_pool_t* p) {
 }
 
 
-void WriterAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* pool)
+void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool)
 {
 
 // Reminder: the nesting of calls is:
@@ -93,55 +93,55 @@ void WriterAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* pool)
 
 //        - subAppend();
 
-	if(!checkEntryConditions())
-	{
-		return;
-	}
+        if(!checkEntryConditions())
+        {
+                return;
+        }
 
-	subAppend(event, pool);
+        subAppend(event, pool);
 }
 
 bool WriterAppender::checkEntryConditions() const
 {
-	if(closed)
-	{
-		LogLog::warn(LOG4CXX_STR("Not allowed to write to a closed appender."));
-		return false;
-	}
+        if(closed)
+        {
+                LogLog::warn(LOG4CXX_STR("Not allowed to write to a closed appender."));
+                return false;
+        }
 
-	if(layout == 0)
-	{
-		errorHandler->error(
-			((LogString) LOG4CXX_STR("No layout set for the appender named ["))
-			+ name+ LOG4CXX_STR("]."));
-		return false;
-	}
+        if(layout == 0)
+        {
+                errorHandler->error(
+                        ((LogString) LOG4CXX_STR("No layout set for the appender named ["))
+                        + name+ LOG4CXX_STR("]."));
+                return false;
+        }
 
-	return true;
+        return true;
 }
 
 void WriterAppender::close()
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	if(closed)
-	{
-		return;
-	}
+        if(closed)
+        {
+                return;
+        }
 
-	closed = true;
-	writeFooter(pool);
-	reset();
+        closed = true;
+        writeFooter(pool);
+        reset();
 }
 
-void WriterAppender::subAppend(const spi::LoggingEventPtr& event, apr_pool_t* p)
+void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
 {
         LogString msg;
         layout->format(msg, event, p);
         subAppend(msg, pool);
 }
 
-void WriterAppender::subAppend(const LogString& msg, apr_pool_t* p) {
+void WriterAppender::subAppend(const LogString& msg, Pool& p) {
 
         if (transcoder == NULL) {
           //
@@ -184,7 +184,7 @@ void WriterAppender::subAppend(const LogString& msg, apr_pool_t* p) {
         }
 }
 
-void WriterAppender::subAppend(const char* encoded, size_t bytes, apr_pool_t* p) {
+void WriterAppender::subAppend(const char* encoded, size_t bytes, Pool& p) {
 }
 
 void WriterAppender::reset()
@@ -195,10 +195,10 @@ void WriterAppender::reset()
           transcoder = NULL;
        }
 #endif
-	closeWriter();
+        closeWriter();
 }
 
-void WriterAppender::writeFooter(apr_pool_t* p)
+void WriterAppender::writeFooter(Pool& p)
 {
         if (layout != NULL) {
           LogString foot;
@@ -207,11 +207,11 @@ void WriterAppender::writeFooter(apr_pool_t* p)
         }
 }
 
-void WriterAppender::writeHeader(apr_pool_t* p)
+void WriterAppender::writeHeader(Pool& p)
 {
-	if(layout != NULL) {
+        if(layout != NULL) {
           LogString header;
           layout->appendHeader(header, p);
           subAppend(header, p);
-	}
+        }
 }

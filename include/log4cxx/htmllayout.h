@@ -91,7 +91,7 @@ namespace log4cxx
                 /**
                 No options to activate.
                 */
-                virtual void activateOptions(apr_pool_t* p) {}
+                virtual void activateOptions(log4cxx::helpers::Pool& p) {}
 
                 /**
                 Set options
@@ -99,17 +99,17 @@ namespace log4cxx
                 virtual void setOption(const LogString& option, const LogString& value);
 
                 virtual void format(LogString& output,
-                     const spi::LoggingEventPtr& event, apr_pool_t* pool) const;
+                     const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;
 
                 /**
                 Append appropriate HTML headers.
                 */
-                virtual void appendHeader(LogString& output, apr_pool_t* pool);
+                virtual void appendHeader(LogString& output, log4cxx::helpers::Pool& pool);
 
                 /**
                 Append the appropriate HTML footers.
                 */
-                virtual void appendFooter(LogString& output, apr_pool_t* pool);
+                virtual void appendFooter(LogString& output, log4cxx::helpers::Pool& pool);
 
                 /**
                 The HTML layout handles the throwable contained in logging

@@ -46,7 +46,7 @@ namespace log4cxx
 
                   virtual void format(LogString& s,
                                       log4cxx_time_t time,
-                                      apr_pool_t* p) const;
+                                      log4cxx::helpers::Pool& p) const;
 
                   /**
                   *    Set time zone.
@@ -84,7 +84,7 @@ namespace log4cxx
                       */
                        virtual void format(std::wstring& s,
                                            const apr_time_exp_t& date,
-                                           apr_pool_t* p) const = 0;
+                                           log4cxx::helpers::Pool& p) const = 0;
 
                        typedef std::time_put<wchar_t, std::ostreambuf_iterator<wchar_t> > TimePutFacet;
 

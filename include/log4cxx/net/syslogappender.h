@@ -66,13 +66,13 @@ namespace log4cxx
                         */
                         static int getFacility(const LogString &facilityName);
 
-                        void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                        void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
                         /**
                         This method returns immediately as options are activated when they
                         are set.
                         */
-                        void activateOptions(apr_pool_t* p);
+                        void activateOptions(log4cxx::helpers::Pool& p);
                         void setOption(const LogString& option, const LogString& value);
 
                         /**

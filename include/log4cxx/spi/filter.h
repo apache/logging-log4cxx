@@ -23,13 +23,13 @@
 
 namespace log4cxx
 {
-	namespace spi
-	{
-		class Filter;
-		typedef helpers::ObjectPtrT<Filter> FilterPtr;
+        namespace spi
+        {
+                class Filter;
+                typedef helpers::ObjectPtrT<Filter> FilterPtr;
 
-		class LoggingEvent;
-    	typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
+                class LoggingEvent;
+        typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
 
         /**
         Users should extend this class to implement customized logging
@@ -66,18 +66,18 @@ namespace log4cxx
         <p>Note that filtering is only supported by the {@link
         xml::DOMConfigurator DOMConfigurator}.
         */
-		class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
-			public virtual helpers::ObjectImpl
-		{
-		public:
+                class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
+                        public virtual helpers::ObjectImpl
+                {
+                public:
                         Filter() : next() {
                         }
 
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(Filter)
-				LOG4CXX_CAST_ENTRY(spi::OptionHandler)
-			END_LOG4CXX_CAST_MAP()
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(Filter)
+                                LOG4CXX_CAST_ENTRY(spi::OptionHandler)
+                        END_LOG4CXX_CAST_MAP()
             /**
             Points to the next filter in the filter chain.
             */
@@ -87,20 +87,20 @@ namespace log4cxx
             {
             /**
             The log event must be dropped immediately without consulting
-			with the remaining filters, if any, in the chain.  */
-			DENY = -1,
+                        with the remaining filters, if any, in the chain.  */
+                        DENY = -1,
             /**
             This filter is neutral with respect to the log event. The
             remaining filters, if any, should be consulted for a final decision.
             */
-			NEUTRAL = 0,
+                        NEUTRAL = 0,
             /**
             The log event must be logged immediately without consulting with
             the remaining filters, if any, in the chain.
-			*/
-			ACCEPT = 1
+                        */
+                        ACCEPT = 1
 
-			};
+                        };
 
 
             /**
@@ -108,7 +108,7 @@ namespace log4cxx
 
             default do-nothing implementation for convenience.
             */
-            void activateOptions(apr_pool_t* p) {}
+            void activateOptions(log4cxx::helpers::Pool& p) {}
             void setOption(const LogString& option, const LogString& value) {}
 
             /**
@@ -121,8 +121,8 @@ namespace log4cxx
             @param event The LoggingEvent to decide upon.
             @return The decision of the filter.  */
             virtual FilterDecision decide(const LoggingEventPtr& event) const = 0;
-		};
-	}
+                };
+        }
 }
 
 #endif //_LOG4CXX_SPI_FILTER_H

@@ -18,18 +18,9 @@
 #define _LOG4CXX_HELPERS_POOL_H
 
 #include <log4cxx/portability.h>
+#include <string.h>
 
-#if defined(_MSC_VER)
-#if defined(_WIN32) && !defined(WIN32)
-#define WIN32
-#endif
-
-#include <apr_pools.h>
-#else
-extern "C" {
-struct apr_pool_t;
-}
-#endif
+typedef void log4cxx_pool_t;
 
 namespace log4cxx
 {
@@ -39,14 +30,18 @@ namespace log4cxx
                 {
                 public:
                         Pool();
+                        Pool(log4cxx_pool_t* pool, bool release);
+                        const log4cxx_pool_t* getAPRPool();
                         ~Pool();
 
-                        inline operator apr_pool_t*() const { return pool; }
+                        char* palloc(size_t length);
 
                 protected:
-                        apr_pool_t* pool;
+                        log4cxx_pool_t* pool;
+                        const bool release;
+
                 private:
-                        Pool(const Pool&);
+                        Pool(const log4cxx::helpers::Pool&);
                         Pool& operator=(const Pool&);
                 };
         } // namespace helpers

@@ -54,7 +54,7 @@ int CachedDateFormat::findMillisecondStart(const log4cxx_time_t time,
                                           logchar zeroDigit,
                                           logchar nineDigit,
                                           const DateFormatPtr& formatter,
-                                          apr_pool_t* p) {
+                                          Pool& p) {
       LogString plus987;
       formatter->format(plus987, time + 987000, p);
       //
@@ -81,7 +81,7 @@ int CachedDateFormat::findMillisecondStart(const log4cxx_time_t time,
      @param sbuf the string buffer to write to
      @param fieldPosition remains untouched
    */
-void CachedDateFormat::format(LogString& s, log4cxx_time_t date, apr_pool_t* p) const {
+void CachedDateFormat::format(LogString& s, log4cxx_time_t date, Pool& p) const {
     if (millisecondStart == UNRECOGNIZED_MILLISECOND_PATTERN) {
       formatter->format(s, date, p);
       return;
@@ -146,7 +146,7 @@ void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone) {
     formatter->setTimeZone(timeZone);
     size_t prevLength = cache.length();
     cache.erase(cache.begin(), cache.end());
-	Pool p;
+        Pool p;
     formatter->format(cache, previousTime, p);
     //
     //   if the length changed then
@@ -161,6 +161,6 @@ void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone) {
   }
 
 
-void CachedDateFormat::numberFormat(LogString& s, long n, apr_pool_t* p) const {
+void CachedDateFormat::numberFormat(LogString& s, long n, Pool& p) const {
   formatter->numberFormat(s, n, p);
 }

@@ -129,7 +129,7 @@ void FileAppender::setOption(const LogString& option,
         }
 }
 
-void FileAppender::activateOptions(apr_pool_t* p)
+void FileAppender::activateOptions(Pool& p)
 {
         if (fileName.getName().empty()) {
           LogLog::warn((LogString) LOG4CXX_STR("File option not set for appender [")
@@ -160,7 +160,7 @@ void FileAppender::activateOptions(apr_pool_t* p)
         }
 }
 
-void FileAppender::subAppend(const char* encoded, log4cxx_size_t size, apr_pool_t* p) {
+void FileAppender::subAppend(const char* encoded, log4cxx_size_t size, Pool& p) {
   if (ofs != NULL) {
     apr_status_t rv = apr_file_write(ofs, encoded, &size);
     if (rv == APR_SUCCESS && immediateFlush) {

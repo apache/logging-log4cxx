@@ -29,7 +29,7 @@ namespace log4cxx
          * and defers the potentially expensive construction
          * of basic_stream until needed.
          */
-           class logstream : public ::std::ios_base {
+           class logstream : public ::std::basic_ios<wchar_t> {
              public:
              /**
               * Constructor.
@@ -41,9 +41,7 @@ namespace log4cxx
                           impl(0),
                           enabled(loggr->isEnabledFor(level)),
                           currentLocation() {
-#if defined(_MSC_VER)
-                                _Init();
-#endif
+                          init(0);
              }
 
             /**
@@ -56,9 +54,7 @@ namespace log4cxx
                impl(0),
                enabled(logger->isEnabledFor(level)),
                currentLocation() {
-#if defined(_MSC_VER)
-                   _Init();
-#endif
+                   init(0);
               }
 
               ~logstream() {

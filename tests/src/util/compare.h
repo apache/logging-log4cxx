@@ -15,24 +15,26 @@
  */
 
 #include <log4cxx/logstring.h>
-class apr_pool_t;
 
 namespace log4cxx
 {
         class File;
+        namespace helpers {
+            class Pool;
+        }
 
-	class Compare
-	{
-	public:
-		static bool compare(const File& file1,
+        class Compare
+        {
+        public:
+                static bool compare(const File& file1,
                   const File& file2);
 
-	private:
-		/// Prints file on the console.
-		static void outputFile(const File& file,
+        private:
+                /// Prints file on the console.
+                static void outputFile(const File& file,
                       const LogString& contents,
-                      apr_pool_t* pool);
+                      log4cxx::helpers::Pool& pool);
                 static void emit(const std::string &line);
                 static void emit(const std::wstring &line);
-	};
+        };
 }

@@ -19,9 +19,6 @@
 
 #include <log4cxx/helpers/timezone.h>
 
-extern "C" {
-    struct apr_pool_t;
-}
 
 namespace log4cxx
 {
@@ -52,7 +49,7 @@ namespace log4cxx
                    * @param date date to be formatted.
                    * @param p memory pool used during formatting.
                    */
-                   virtual void format(LogString &s, log4cxx_time_t date, apr_pool_t* p) const = 0;
+                   virtual void format(LogString &s, log4cxx_time_t date, log4cxx::helpers::Pool& p) const = 0;
 
                    /**
                    * Sets the time zone.
@@ -68,7 +65,7 @@ namespace log4cxx
                    * @remarks This method is used by CachedDateFormat to
                    * format the milliseconds.
                    */
-                   virtual void numberFormat(LogString& s, int n, apr_pool_t* p) const;
+                   virtual void numberFormat(LogString& s, int n, log4cxx::helpers::Pool& p) const;
 
 
                    protected:

@@ -20,6 +20,7 @@
 #include <apr_strings.h>
 #include <sstream>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -38,15 +39,15 @@ void SimpleDateFormat::PatternToken::setTimeZone(const TimeZonePtr& zone) {
 
 
 void SimpleDateFormat::PatternToken::renderFacet(const std::locale& locale,
-							  std::basic_ostream<wchar_t>& buffer,
-							  const tm* time,
-							  const char spec) {
+                                                          std::basic_ostream<wchar_t>& buffer,
+                                                          const tm* time,
+                                                          const char spec) {
 #if defined(_MSC_VER)
-		_USE(locale, TimePutFacet).put(buffer,
-				 buffer, time, spec);
+                _USE(locale, TimePutFacet).put(buffer,
+                                 buffer, time, spec);
 #else
-		std::use_facet<TimePutFacet>(locale).put(buffer,
-				 buffer, buffer.fill(), time, spec);
+                std::use_facet<TimePutFacet>(locale).put(buffer,
+                                 buffer, buffer.fill(), time, spec);
 #endif
 
 }
@@ -59,7 +60,7 @@ namespace log4cxx {
       public:
         LiteralToken(wchar_t ch, int count) : ch(ch), count(count) {
         }
-        void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
           s.append(count, ch);
         }
 
@@ -72,7 +73,7 @@ namespace log4cxx {
       public:
           EraToken(int count, const std::locale& locale)  {
           }
-          void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+          void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
              s.append(L"AD");
           }
      };
@@ -86,14 +87,13 @@ namespace log4cxx {
 
         virtual int getField(const apr_time_exp_t& tm) const = 0;
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
-          char* fmt = apr_itoa(p, getField(tm));
-          size_t len = strlen(fmt);
-          if (width > len) {
-            s.append(width - len, L'0');
-          }
-          for (size_t i = 0; i < len; i++) {
-            s.append(1, fmt[i]);
+        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+          size_t initialLength = s.length();
+          StringHelper::toString(getField(tm), p, s);
+          size_t finalLength = s.length();
+          size_t padding = width - (finalLength - initialLength);
+          if (padding > 0) {
+            s.insert(initialLength, padding, L'0');
           }
         }
 
@@ -138,7 +138,7 @@ namespace log4cxx {
           }
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
           s.append(names[tm.tm_mon]);
         }
 
@@ -163,7 +163,7 @@ namespace log4cxx {
           }
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
           s.append(names[tm.tm_mon]);
         }
 
@@ -240,7 +240,7 @@ namespace log4cxx {
              }
           }
 
-         void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+         void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
             s.append(names[tm.tm_wday]);
          }
 
@@ -265,7 +265,7 @@ namespace log4cxx {
             }
           }
 
-          void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+          void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
             s.append(names[tm.tm_wday]);
           }
 
@@ -348,7 +348,7 @@ namespace log4cxx {
           }
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
            s.append(names[tm.tm_hour / 12]);
         }
 
@@ -362,7 +362,7 @@ namespace log4cxx {
         GeneralTimeZoneToken(int width)  {
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
            LOG4CXX_ENCODE_WCHAR(tzID, timeZone->getID());
            s.append(tzID);
         }
@@ -380,7 +380,7 @@ namespace log4cxx {
         RFC822TimeZoneToken(int width)  {
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, apr_pool_t* p) const {
+        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
            if (tm.tm_gmtoff == 0) {
              s.append(1, L'Z');
            } else {
@@ -391,20 +391,22 @@ namespace log4cxx {
                s[basePos] = L'-';
                off = -off;
              }
-             char* hours = apr_itoa(p, off/3600);
+             std::wstring hours;
+             StringHelper::toString(off/3600, p, hours);
              size_t hourPos = basePos + 2;
              //
              //   assumes that point values for 0-9 are same between char and wchar_t
              //
-             for (size_t i = strlen(hours); i-- > 0;) {
+             for (size_t i = hours.length(); i-- > 0;) {
                s[hourPos--] = hours[i];
              }
-             char* min = apr_itoa(p, (off % 3600) / 60);
+             std::wstring min;
+             StringHelper::toString((off % 3600) / 60, p, min);
              size_t minPos = basePos + 4;
              //
              //   assumes that point values for 0-9 are same between char and wchar_t
              //
-             for (size_t j = strlen(hours); j-- > 0;) {
+             for (size_t j = min.length(); j-- > 0;) {
                s[minPos--] = min[j];
              }
            }
@@ -563,7 +565,7 @@ void SimpleDateFormat::parsePattern(const LogString& fmt,
      }
 }
 
-void SimpleDateFormat::format(LogString& s, log4cxx_time_t time, apr_pool_t* p) const  {
+void SimpleDateFormat::format(LogString& s, log4cxx_time_t time, Pool& p) const  {
   apr_time_exp_t exploded;
   apr_status_t stat = timeZone->explode(&exploded, time);
   if (stat == APR_SUCCESS) {

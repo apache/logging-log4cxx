@@ -43,7 +43,7 @@ namespace log4cxx
 
                   virtual void format(LogString& s,
                                       log4cxx_time_t time,
-                                      apr_pool_t* p) const;
+                                      log4cxx::helpers::Pool& p) const;
 
                   /**
                   *    Set time zone.

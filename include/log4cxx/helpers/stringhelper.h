@@ -21,9 +21,6 @@
 #include <log4cxx/logstring.h>
 #include <stdarg.h>
 
-extern "C" {
-struct apr_pool_t;
-}
 
 namespace log4cxx
 {
@@ -52,9 +49,9 @@ namespace log4cxx
             static log4cxx_int64_t toInt64(const std::string& s);
             static log4cxx_int64_t toInt64(const std::wstring& s);
 
-            static LogString toString(int s, const log4cxx::helpers::Pool& pool);
-            static LogString toString(int s, apr_pool_t* pool);
-            static LogString toString(int s);
+            static LogString toString(int i, log4cxx::helpers::Pool& pool);
+            static void toString(int i, Pool& pool, std::string& s);
+            static void toString(int i, Pool& pool, std::wstring& s);
 
             static std::string toLowerCase(const std::string& s);
             static std::wstring toLowerCase(const std::wstring& s);

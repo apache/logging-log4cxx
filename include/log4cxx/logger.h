@@ -84,14 +84,14 @@ namespace log4cxx
 
         helpers::AppenderAttachableImplPtr aai;
 
-		/** Additivity is set to true by default, that is children inherit
-			the appenders of their ancestors by default. If this variable is
-			set to <code>false</code> then the appenders found in the
-			ancestors of this logger are not used. However, the children
-			of this logger will inherit its appenders, unless the children
-			have their additivity flag set to <code>false</code> too. See
-			the user manual for more details. */
-		bool additive;
+                /** Additivity is set to true by default, that is children inherit
+                        the appenders of their ancestors by default. If this variable is
+                        set to <code>false</code> then the appenders found in the
+                        ancestors of this logger are not used. However, the children
+                        of this logger will inherit its appenders, unless the children
+                        have their additivity flag set to <code>false</code> too. See
+                        the user manual for more details. */
+                bool additive;
 
     protected:
         friend class DefaultCategoryFactory;
@@ -130,7 +130,7 @@ namespace log4cxx
         to log the particular log request.
 
         @param event the event to log.  */
-        void callAppenders(const spi::LoggingEventPtr& event, apr_pool_t* p);
+        void callAppenders(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
         /**
         Close all attached appenders implementing the AppenderAttachable
@@ -545,7 +545,7 @@ namespace log4cxx
 
 
 
-        inline apr_thread_mutex_t* getMutex() const { return mutex; }
+        inline const log4cxx::helpers::Mutex& getMutex() const { return mutex; }
 
         private:
                 //

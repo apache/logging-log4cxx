@@ -36,7 +36,7 @@ log4cxx::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
 void log4cxx::helpers::RelativeTimeDateFormat::format(
     LogString &s,
     log4cxx_time_t date,
-    apr_pool_t* p) const {
+    Pool& p) const {
     apr_interval_time_t interval = date - startTime;
     apr_interval_time_t ms = interval / 1000;
     if (ms >= INT_MIN && ms <= INT_MAX) {

@@ -41,22 +41,22 @@ DateLayout::~DateLayout()
 void DateLayout::setOption(const LogString& option, const LogString& value)
 {
 
-	if (StringHelper::equalsIgnoreCase(option,
+        if (StringHelper::equalsIgnoreCase(option,
                  LOG4CXX_STR("DATEFORMAT"), LOG4CXX_STR("dateformat")))
-	{
-		dateFormatOption = value;
-	}
-	else if (StringHelper::equalsIgnoreCase(option,
+        {
+                dateFormatOption = value;
+        }
+        else if (StringHelper::equalsIgnoreCase(option,
                  LOG4CXX_STR("TIMEZONE"), LOG4CXX_STR("timezone")))
-	{
-		timeZoneID = value;
-	}
+        {
+                timeZoneID = value;
+        }
 }
 
-void DateLayout::activateOptions(apr_pool_t* p)
+void DateLayout::activateOptions(Pool& p)
 {
-	if(!dateFormatOption.empty())
-	{
+        if(!dateFormatOption.empty())
+        {
 
           if(dateFormatOption.empty())
           {
@@ -96,7 +96,7 @@ void DateLayout::activateOptions(apr_pool_t* p)
           {
                   dateFormat = new SimpleDateFormat(dateFormatOption);
           }
-	}
+        }
         if (dateFormat != NULL) {
            if (timeZoneID.empty()) {
               dateFormat->setTimeZone(TimeZone::getDefault());
@@ -109,12 +109,12 @@ void DateLayout::activateOptions(apr_pool_t* p)
 
 void DateLayout::formatDate(LogString &s,
                             const spi::LoggingEventPtr& event,
-                            apr_pool_t* p) const {
+                            Pool& p) const {
 
-	if(dateFormat != 0)
-	{
+        if(dateFormat != 0)
+        {
                 dateFormat->format(s, event->getTimeStamp(), p);
                 s.append(1, LOG4CXX_STR(' '));
-	}
+        }
 }
 

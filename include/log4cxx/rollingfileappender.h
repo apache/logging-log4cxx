@@ -134,7 +134,7 @@ namespace log4cxx
                 This method differentiates RollingFileAppender from its parent
                 class.
                 */
-                virtual void subAppend(const char* encoded, log4cxx_size_t size, apr_pool_t* p);
+                virtual void subAppend(const char* encoded, log4cxx_size_t size, log4cxx::helpers::Pool& p);
         }; // class RollingFileAppender
 }  // namespace log4cxx
 

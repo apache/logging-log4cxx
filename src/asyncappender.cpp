@@ -32,11 +32,11 @@ IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 
 
 AsyncAppender::AsyncAppender()
-: AppenderSkeleton(), 
-  pool(), 
-  queue(), 
+: AppenderSkeleton(),
+  pool(),
+  queue(),
   size(DEFAULT_BUFFER_SIZE),
-  available(pool), 
+  available(pool),
   pending(pool),
   thread(),
   locationInfo(true),
@@ -46,159 +46,159 @@ AsyncAppender::AsyncAppender()
 
 AsyncAppender::~AsyncAppender()
 {
-	finalize();
+        finalize();
 }
 
 void AsyncAppender::addAppender(const AppenderPtr& newAppender)
 {
-	synchronized sync(aai->getMutex());
-	aai->addAppender(newAppender);
+        synchronized sync(aai->getMutex());
+        aai->addAppender(newAppender);
 }
 
-void AsyncAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
+void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-	// Set the NDC and thread name for the calling thread as these
-	// LoggingEvent fields were not set at event creation time.
-	event->getNDC();
-	// Get a copy of this thread's MDC.
-	event->getMDCCopy();
+        // Set the NDC and thread name for the calling thread as these
+        // LoggingEvent fields were not set at event creation time.
+        event->getNDC();
+        // Get a copy of this thread's MDC.
+        event->getMDCCopy();
 
 
-	//
-	//   will block if queue is full
-	//
-	size_t count = 0;
-	bool full = false;
-	{
-		synchronized sync(mutex);
-		count = queue.size();
-		full = count >= size;
-		if (!full) {
-			queue.push_back(event);
-		}
-	}
+        //
+        //   will block if queue is full
+        //
+        size_t count = 0;
+        bool full = false;
+        {
+                synchronized sync(mutex);
+                count = queue.size();
+                full = count >= size;
+                if (!full) {
+                        queue.push_back(event);
+                }
+        }
 
-	//
-	//   if the queue had been empty then
-	//      notify that there are messages pending
-	if (count == 0) {
-		pending.broadcast();
-	}
+        //
+        //   if the queue had been empty then
+        //      notify that there are messages pending
+        if (count == 0) {
+                pending.broadcast();
+        }
 
-	//
-	//   if queue was full, wait until signalled
-	//
-	if (full) {
-		available.wait();
-	}
+        //
+        //   if queue was full, wait until signalled
+        //
+        if (full) {
+                available.wait();
+        }
 
-	//
-	//   if was full, add it now
-	//
-	if (full) {
-		synchronized sync(mutex);
-		queue.push_back(event);
-		pending.broadcast();
-	}
+        //
+        //   if was full, add it now
+        //
+        if (full) {
+                synchronized sync(mutex);
+                queue.push_back(event);
+                pending.broadcast();
+        }
 }
 
 void AsyncAppender::close()
 {
-	apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
-	if (!wasClosed) {
-		pending.broadcast();
-		thread.join();
-		// close and remove all appenders
-		synchronized sync(mutex);
-		aai->removeAllAppenders();
+        apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
+        if (!wasClosed) {
+                pending.broadcast();
+                thread.join();
+                // close and remove all appenders
+                synchronized sync(mutex);
+                aai->removeAllAppenders();
 
-	}
+        }
 }
 
 AppenderList AsyncAppender::getAllAppenders() const
 {
-	synchronized sync(aai->getMutex());
-	return aai->getAllAppenders();
+        synchronized sync(aai->getMutex());
+        return aai->getAllAppenders();
 }
 
 AppenderPtr AsyncAppender::getAppender(const LogString& name) const
 {
-	synchronized sync(aai->getMutex());
-	return aai->getAppender(name);
+        synchronized sync(aai->getMutex());
+        return aai->getAppender(name);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 {
-	synchronized sync(aai->getMutex());
-	return aai->isAttached(appender);
+        synchronized sync(aai->getMutex());
+        return aai->isAttached(appender);
 }
 
 void AsyncAppender::setBufferSize(int size)
 {
     if (size < 0) {
-	  throw IllegalArgumentException();
-	}
-	this->size = size;
+          throw IllegalArgumentException();
+        }
+        this->size = size;
 }
 
 int AsyncAppender::getBufferSize() const
 {
-	return size;
+        return size;
 }
 
 void AsyncAppender::removeAllAppenders()
 {
     synchronized sync(aai->getMutex());
-	aai->removeAllAppenders();
+        aai->removeAllAppenders();
 }
 
 void AsyncAppender::removeAppender(const AppenderPtr& appender)
 {
     synchronized sync(aai->getMutex());
-	aai->removeAppender(appender);
+        aai->removeAppender(appender);
 }
 
 void AsyncAppender::removeAppender(const LogString& name)
 {
     synchronized sync(aai->getMutex());
-	aai->removeAppender(name);
+        aai->removeAppender(name);
 }
 
 void* APR_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) {
-	AsyncAppender* pThis = (AsyncAppender*) data;
-	LoggingEventPtr event;
-	while(true) {
+        AsyncAppender* pThis = (AsyncAppender*) data;
+        LoggingEventPtr event;
+        while(true) {
 
-		size_t count = 0;
-		{
-			synchronized sync(pThis->mutex);
-			count = pThis->queue.size();
-			if (count > 0) {
-				event = pThis->queue.front();
-				pThis->queue.pop_front();
-			}
-		}
+                size_t count = 0;
+                {
+                        synchronized sync(pThis->mutex);
+                        count = pThis->queue.size();
+                        if (count > 0) {
+                                event = pThis->queue.front();
+                                pThis->queue.pop_front();
+                        }
+                }
 
-		if (count == 0) {
-			if (pThis->closed) {
-				return 0;
-			}
-			pThis->pending.wait();
-		} else {
-			if(pThis->aai != 0) {
-			    synchronized sync(pThis->aai->getMutex());
-				Pool p;
-			    pThis->aai->appendLoopOnAppenders(event, p);
-			}
+                if (count == 0) {
+                        if (pThis->closed) {
+                                return 0;
+                        }
+                        pThis->pending.wait();
+                } else {
+                        if(pThis->aai != 0) {
+                            synchronized sync(pThis->aai->getMutex());
+                                Pool p;
+                            pThis->aai->appendLoopOnAppenders(event, p);
+                        }
 
-			if (count == (size_t) pThis->getBufferSize()) {
-				pThis->available.broadcast();
-			}
+                        if (count == (size_t) pThis->getBufferSize()) {
+                                pThis->available.broadcast();
+                        }
 
-			LoggingEventPtr nullEvent;
-			event = nullEvent;
-		}
-	}
+                        LoggingEventPtr nullEvent;
+                        event = nullEvent;
+                }
+        }
 }
 
 

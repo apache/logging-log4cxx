@@ -72,7 +72,7 @@ namespace log4cxx
                 /**
                 Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
                 */
-                void activateOptions(apr_pool_t* p);
+                void activateOptions(log4cxx::helpers::Pool& p);
 
 
                 /**
@@ -100,7 +100,7 @@ namespace log4cxx
                         { return false; }
 
 
-				void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                                void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
 
                 /**
@@ -174,7 +174,7 @@ namespace log4cxx
 
                         virtual void renderEvent(const spi::LoggingEventPtr& event,
                                 helpers::SocketOutputStreamPtr& os,
-                                apr_pool_t* p) = 0;
+                                log4cxx::helpers::Pool& p) = 0;
 
        private:
                    /**

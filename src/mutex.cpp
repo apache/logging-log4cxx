@@ -18,23 +18,38 @@
 #include <log4cxx/helpers/exception.h>
 #include <apr_thread_mutex.h>
 #include <assert.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
 
-Mutex::Mutex(apr_pool_t* p) {
-	apr_status_t stat = apr_thread_mutex_create(&mutex,
-		APR_THREAD_MUTEX_NESTED, p);
-	if (stat != APR_SUCCESS) {
-		throw MutexException(stat);
-	}
+Mutex::Mutex(Pool& p) {
+        apr_thread_mutex_t* aprMutex = NULL;
+        apr_status_t stat = apr_thread_mutex_create(&aprMutex,
+                APR_THREAD_MUTEX_NESTED, (apr_pool_t*) p.getAPRPool());
+        if (stat != APR_SUCCESS) {
+                throw MutexException(stat);
+        }
+        mutex = aprMutex;
 }
 
+Mutex::Mutex() {
+        apr_thread_mutex_t* aprMutex = NULL;
+        apr_status_t stat = apr_thread_mutex_create(&aprMutex,
+                APR_THREAD_MUTEX_NESTED, APRInitializer::getRootPool());
+        if (stat != APR_SUCCESS) {
+                throw MutexException(stat);
+        }
+        mutex = aprMutex;
+}
+
+
 Mutex::~Mutex() {
-//	apr_status_t stat = apr_thread_mutex_destroy(mutex);
-    //
-    //  can't assert that
-    //     destroying an unused mutex doesn't return APR_SUCCESS
-//	assert(stat == APR_SUCCESS);
+        apr_status_t stat = apr_thread_mutex_destroy((apr_thread_mutex_t*) mutex);
+}
+
+
+const log4cxx_thread_mutex_t* Mutex::getAPRMutex() const {
+    return mutex;
 }

@@ -42,7 +42,7 @@ namespace log4cxx
 
                         virtual ~NTEventLogAppender();
 
-                        virtual void activateOptions(apr_pool_t* p);
+                        virtual void activateOptions(log4cxx::helpers::Pool& p);
                         virtual void close();
                         virtual void setOption(const LogString& option, const LogString& value);
 
@@ -81,7 +81,7 @@ namespace log4cxx
                         typedef void SID;
                         typedef void* HANDLE;
 
-                        virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                        virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
                         static HKEY regGetKey(const std::wstring& subkey, unsigned long *disposition);
                         static void regSetString(HKEY hkey, const wchar_t* name, const wchar_t* value);
                         static void regSetDword(HKEY hkey, const wchar_t* name, unsigned long value);

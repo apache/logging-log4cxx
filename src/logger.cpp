@@ -39,7 +39,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
 Logger::Logger(const LogString& name)
 : name(name), level(), parent(), resourceBundle(),
-repository(0), aai(), additive(true),  mutex(APRInitializer::getRootPool())
+repository(0), aai(), additive(true),  mutex()
 {
 }
 
@@ -63,7 +63,7 @@ void Logger::addAppender(const AppenderPtr& newAppender)
 }
 
 
-void Logger::callAppenders(const spi::LoggingEventPtr& event, apr_pool_t* p)
+void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p)
 {
         int writes = 0;
 

@@ -24,41 +24,43 @@
 
 namespace log4cxx
 {
-	class Layout;
-	typedef helpers::ObjectPtrT<Layout> LayoutPtr;
+        class Layout;
+        typedef helpers::ObjectPtrT<Layout> LayoutPtr;
 
-	namespace performance
-	{
-		class NullAppender;
-		typedef helpers::ObjectPtrT<NullAppender> NullAppenderPtr;
+        namespace performance
+        {
+                class NullAppender;
+                typedef helpers::ObjectPtrT<NullAppender> NullAppenderPtr;
 
-		/**
-		* A bogus appender which calls the format method of its layout object
-		* but does not write the result anywhere.
-		* */
-		class NullAppender : public AppenderSkeleton
-		{
-		public:
-			LogString sbuf;
+                /**
+                * A bogus appender which calls the format method of its layout object
+                * but does not write the result anywhere.
+                * */
+                class NullAppender : public AppenderSkeleton
+                {
+                public:
+                        LogString sbuf;
 
-			DECLARE_LOG4CXX_OBJECT(NullAppender)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(NullAppender)
-				LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-			END_LOG4CXX_CAST_MAP()
+                        DECLARE_LOG4CXX_OBJECT(NullAppender)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(NullAppender)
+                                LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+                        END_LOG4CXX_CAST_MAP()
 
-			NullAppender();
-			NullAppender(const LayoutPtr& layout);
-			void close();
-			void doAppend(const spi::LoggingEventPtr& event, apr_pool_t* p);
-			void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                        NullAppender();
+                        NullAppender(const LayoutPtr& layout);
+                        void close();
+                        void doAppend(const spi::LoggingEventPtr& event,
+                              log4cxx::helpers::Pool& p);
+                        void append(const spi::LoggingEventPtr& event,
+                              log4cxx::helpers::Pool& p);
 
-			/**
-			This is a bogus appender but it still uses a layout.
-			*/
-			bool requiresLayout() const;
-		}; // NullAppender
-	}  // namespace performance
+                        /**
+                        This is a bogus appender but it still uses a layout.
+                        */
+                        bool requiresLayout() const;
+                }; // NullAppender
+        }  // namespace performance
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_PERFORMANCE_NULL_APPENDER_H

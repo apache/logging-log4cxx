@@ -68,14 +68,14 @@ namespace log4cxx
                         */
                         virtual void convert(LogString& sbuf,
                                 const spi::LoggingEventPtr& event,
-                                apr_pool_t* pool) const = 0;
+                                log4cxx::helpers::Pool& pool) const = 0;
 
                 public:
                         /**
                         A template method for formatting in a converter specific way.
                         */
                         virtual void format(LogString& sbuf,
-                            const spi::LoggingEventPtr& e, apr_pool_t* pool) const;
+                            const spi::LoggingEventPtr& e, log4cxx::helpers::Pool& pool) const;
 
                 }; // class PatternConverter
         }  // namespace helpers

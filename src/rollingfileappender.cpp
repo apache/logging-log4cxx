@@ -127,7 +127,7 @@ void RollingFileAppender::setOption(const LogString& option,
         }
 }
 
-void RollingFileAppender::subAppend(const char* encoded, log4cxx_size_t size, apr_pool_t* p) {
+void RollingFileAppender::subAppend(const char* encoded, log4cxx_size_t size, Pool& p) {
   FileAppender::subAppend(encoded, size, p);
 }
 

@@ -33,6 +33,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <errno.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -170,57 +171,57 @@ SocketImpl::SocketImpl() : address(), fd(0), localport(-1), port(0), timeout(-1)
 
 SocketImpl::~SocketImpl()
 {
-	try
-	{
-		close();
-	}
-	catch(SocketException&)
-	{
-	}
+        try
+        {
+                close();
+        }
+        catch(SocketException&)
+        {
+        }
 }
 
 /** Accepts a connection. */
 void SocketImpl::accept(SocketImplPtr s)
 {
-	sockaddr_in client_addr;
+        sockaddr_in client_addr;
 #if defined(WIN32) || defined(_WIN32) || defined(__hpux)
-	int client_len;
+        int client_len;
 #else
-	socklen_t client_len;
+        socklen_t client_len;
 #endif
 
-	client_len = sizeof(client_addr);
+        client_len = sizeof(client_addr);
 
-	if (timeout > 0)
-	{
-		// convert timeout in milliseconds to struct timeval
-		timeval tv;
-		tv.tv_sec = timeout / 1000;
-		tv.tv_usec = (timeout % 1000) * 1000;
+        if (timeout > 0)
+        {
+                // convert timeout in milliseconds to struct timeval
+                timeval tv;
+                tv.tv_sec = timeout / 1000;
+                tv.tv_usec = (timeout % 1000) * 1000;
 
-		fd_set rfds;
-		FD_ZERO(&rfds);
-		FD_SET(this->fd, &rfds);
+                fd_set rfds;
+                FD_ZERO(&rfds);
+                FD_SET(this->fd, &rfds);
 
-		int retval = ::select(this->fd+1, &rfds, NULL, NULL, &tv);
-		if (retval == 0)
-		{
-			throw SocketTimeoutException();
-		}
+                int retval = ::select(this->fd+1, &rfds, NULL, NULL, &tv);
+                if (retval == 0)
+                {
+                        throw SocketTimeoutException();
+                }
 
-		assert(FD_ISSET(this->fd, &rfds));
-	}
+                assert(FD_ISSET(this->fd, &rfds));
+        }
 
-	int fdClient = ::accept(this->fd, (sockaddr *)&client_addr, &client_len);
+        int fdClient = ::accept(this->fd, (sockaddr *)&client_addr, &client_len);
 
-	if (fdClient < 0)
-	{
-		throw SocketException();
-	}
+        if (fdClient < 0)
+        {
+                throw SocketException();
+        }
 
-	s->address.address = ntohl(client_addr.sin_addr.s_addr);
-	s->fd = fdClient;
-	s->port = ntohs(client_addr.sin_port);
+        s->address.address = ntohl(client_addr.sin_addr.s_addr);
+        s->fd = fdClient;
+        s->port = ntohs(client_addr.sin_port);
 }
 
 /** Returns the number of bytes that can be read from this socket
@@ -228,8 +229,8 @@ without blocking.
 */
 int SocketImpl::available()
 {
-	// TODO
-	return 0;
+        // TODO
+        return 0;
 }
 
 /** Binds this socket to the specified port number
@@ -237,41 +238,41 @@ on the specified host.
 */
 void SocketImpl::bind(InetAddress host, int port)
 {
-	struct sockaddr_in server_addr;
-	int server_len = sizeof(server_addr);
+        struct sockaddr_in server_addr;
+        int server_len = sizeof(server_addr);
 
-	server_addr.sin_family = AF_INET;
-	server_addr.sin_addr.s_addr = htonl(host.address);
-	server_addr.sin_port = htons(port);
+        server_addr.sin_family = AF_INET;
+        server_addr.sin_addr.s_addr = htonl(host.address);
+        server_addr.sin_port = htons(port);
 
-	if (::bind(fd, (sockaddr *)&server_addr, server_len) == -1)
-	{
-		throw BindException();
-	}
+        if (::bind(fd, (sockaddr *)&server_addr, server_len) == -1)
+        {
+                throw BindException();
+        }
 
-	this->localport = port;
+        this->localport = port;
 }
 
 /** Closes this socket. */
 void SocketImpl::close()
 {
-	if (fd != 0)
-	{
-		LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
+        if (fd != 0)
+        {
+                LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
 #if defined(WIN32) || defined(_WIN32)
-		if (::closesocket(fd) == -1)
+                if (::closesocket(fd) == -1)
 #else
-		if (::close(fd) == -1)
+                if (::close(fd) == -1)
 #endif
-		{
-			throw SocketException();
-		}
+                {
+                        throw SocketException();
+                }
 
-		address.address = 0;
-		fd = 0;
-		port = 0;
-		localport = -1;
-	}
+                address.address = 0;
+                fd = 0;
+                port = 0;
+                localport = -1;
+        }
 }
 
 /**  Connects this socket to the specified port number
@@ -279,35 +280,35 @@ on the specified host.
 */
 void SocketImpl::connect(InetAddress address, int port)
 {
-	sockaddr_in client_addr;
-	int client_len = sizeof(client_addr);
+        sockaddr_in client_addr;
+        int client_len = sizeof(client_addr);
 
-	client_addr.sin_family = AF_INET;
-	client_addr.sin_addr.s_addr = htonl(address.address);
-	client_addr.sin_port = htons(port);
+        client_addr.sin_family = AF_INET;
+        client_addr.sin_addr.s_addr = htonl(address.address);
+        client_addr.sin_port = htons(port);
 
-	if (::connect(fd, (sockaddr *)&client_addr, client_len) == -1)
-	{
-		throw ConnectException();
-	}
+        if (::connect(fd, (sockaddr *)&client_addr, client_len) == -1)
+        {
+                throw ConnectException();
+        }
 
-	this->address = address;
-	this->port = port;
+        this->address = address;
+        this->port = port;
 }
 
 /** Connects this socket to the specified port on the named host. */
 void SocketImpl::connect(const LogString& host, int port)
 {
-	connect(InetAddress::getByName(host), port);
+        connect(InetAddress::getByName(host), port);
 }
 
 /** Creates either a stream or a datagram socket. */
 void SocketImpl::create(bool stream)
 {
-	if ((fd = ::socket(AF_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 0)) == -1)
-	{
-		throw SocketException();
-	}
+        if ((fd = ::socket(AF_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 0)) == -1)
+        {
+                throw SocketException();
+        }
 }
 
 /** Sets the maximum queue length for incoming connection
@@ -315,48 +316,49 @@ indications (a request to connect) to the count argument.
 */
 void SocketImpl::listen(int backlog)
 {
-	if (::listen(fd, backlog) == -1)
-	{
-		throw SocketException();
-	}
+        if (::listen(fd, backlog) == -1)
+        {
+                throw SocketException();
+        }
 }
 
 /** Returns the address and port of this socket as a String.
 */
 LogString SocketImpl::toString() const
 {
-	LogString oss(address.getHostAddress());
+        LogString oss(address.getHostAddress());
         oss.append(1, LOG4CXX_STR(':'));
-        oss.append(StringHelper::toString(port));
-	return oss;
+        Pool p;
+        oss.append(StringHelper::toString(port, p));
+        return oss;
 }
 
 // thanks to Yves Mettier (ymettier@libertysurf.fr) for this routine
 size_t SocketImpl::read(void * buf, size_t len) const
 {
 //	LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::reading ") << len << LOG4CXX_STR(" bytes."));
-	int len_read = 0;
-	unsigned char * p = (unsigned char *)buf;
+        int len_read = 0;
+        unsigned char * p = (unsigned char *)buf;
 
-	while ((size_t)(p - (unsigned char *)buf) < len)
-	{
+        while ((size_t)(p - (unsigned char *)buf) < len)
+        {
 #if defined(WIN32) || defined(_WIN32)
-		len_read = ::recv(fd, (char *)p, len - (p - (unsigned char *)buf), 0);
+                len_read = ::recv(fd, (char *)p, len - (p - (unsigned char *)buf), 0);
 #else
-		len_read = ::read(fd, p, len - (p - (unsigned char *)buf));
+                len_read = ::read(fd, p, len - (p - (unsigned char *)buf));
 #endif
-		if (len_read < 0)
-		{
-			throw SocketException();
-		}
-		if (len_read == 0)
-		{
-			break;
-		}
-		p += len_read;
-	}
+                if (len_read < 0)
+                {
+                        throw SocketException();
+                }
+                if (len_read == 0)
+                {
+                        break;
+                }
+                p += len_read;
+        }
 
-	return (p - (const unsigned char *)buf);
+        return (p - (const unsigned char *)buf);
 }
 
 // thanks to Yves Mettier (ymettier@libertysurf.fr) for this routine
@@ -364,40 +366,40 @@ size_t SocketImpl::write(const void * buf, size_t len)
 {
 //	LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::writing ") << len << LOG4CXX_STR(" bytes."));
 
-	int len_written = 0;
-	const unsigned char * p = (const unsigned char *)buf;
+        int len_written = 0;
+        const unsigned char * p = (const unsigned char *)buf;
 
-	while ((size_t)(p - (const unsigned char *)buf) < len)
-	{
+        while ((size_t)(p - (const unsigned char *)buf) < len)
+        {
 #if defined(WIN32) || defined(_WIN32)
-		len_written = ::send(fd, (const char *)p, len - (p - (const unsigned char *)buf), 0);
+                len_written = ::send(fd, (const char *)p, len - (p - (const unsigned char *)buf), 0);
 #else
-		len_written = ::write(fd, p, len - (p - (const unsigned char *)buf));
+                len_written = ::write(fd, p, len - (p - (const unsigned char *)buf));
 #endif
-		if (len_written < 0)
-		{
-			throw SocketException();
-		}
-		if (len_written == 0)
-		{
-			break;
-		}
-		p += len_written;
-	}
+                if (len_written < 0)
+                {
+                        throw SocketException();
+                }
+                if (len_written == 0)
+                {
+                        break;
+                }
+                p += len_written;
+        }
 
-	return (p - (const unsigned char *)buf);
+        return (p - (const unsigned char *)buf);
 }
 
 /** Retrive setting for SO_TIMEOUT.
 */
 int SocketImpl::getSoTimeout() const
 {
-	return timeout;
+        return timeout;
 }
 
 /** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
 */
 void SocketImpl::setSoTimeout(int timeout)
 {
-	this->timeout = timeout;
+        this->timeout = timeout;
 }

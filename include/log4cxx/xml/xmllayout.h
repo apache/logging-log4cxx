@@ -89,7 +89,7 @@ namespace log4cxx
                                 { return locationInfo; }
 
                         /** No options to activate. */
-                        void activateOptions(apr_pool_t* p) { }
+                        void activateOptions(log4cxx::helpers::Pool& p) { }
 
                         /**
                         Set options
@@ -103,7 +103,7 @@ namespace log4cxx
                         **/
                         virtual void format(LogString& output,
                            const spi::LoggingEventPtr& event,
-                           apr_pool_t* p) const;
+                           log4cxx::helpers::Pool& p) const;
 
                         /**
                         The XMLLayout prints and does not ignore exceptions. Hence the

@@ -78,11 +78,9 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
      */
     void test2() {
       LogString numb;
-      apr_pool_t* p;
-      apr_pool_create(&p, NULL);
+      Pool p;
       RelativeTimeDateFormat formatter;
       formatter.numberFormat(numb, 87, p);
-      apr_pool_destroy(p);
       CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
     }
 

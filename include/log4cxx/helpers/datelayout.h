@@ -42,7 +42,7 @@ namespace log4cxx
                         DateLayout(const LogString& dateLayoutOption);
                         virtual ~DateLayout();
 
-                        virtual void activateOptions(apr_pool_t* p);
+                        virtual void activateOptions(log4cxx::helpers::Pool& p);
                         virtual void setOption(const LogString& option, const LogString& value);
 
                         /**
@@ -75,7 +75,7 @@ namespace log4cxx
 
                         void formatDate(LogString &s,
                                         const spi::LoggingEventPtr& event,
-                                        apr_pool_t* p) const;
+                                        log4cxx::helpers::Pool& p) const;
 
                 private:
                        //

@@ -113,12 +113,12 @@ namespace log4cxx
                 layout.
 
                 */
-                virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
                 /**
                 *
                 */
-                void activateOptions(apr_pool_t* pool);
+                void activateOptions(log4cxx::helpers::Pool& pool);
 
         protected:
                 /**
@@ -159,9 +159,9 @@ namespace log4cxx
                 <p>Most subclasses of <code>WriterAppender</code> will need to
                 override one of these method.
                 */
-                virtual void subAppend(const spi::LoggingEventPtr& event, apr_pool_t* p);
-                virtual void subAppend(const LogString& msg, apr_pool_t* p);
-                virtual void subAppend(const char* encoded, log4cxx_size_t size, apr_pool_t* p);
+                virtual void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+                virtual void subAppend(const LogString& msg, log4cxx::helpers::Pool& p);
+                virtual void subAppend(const char* encoded, log4cxx_size_t size, log4cxx::helpers::Pool& p);
 
         /**
         The WriterAppender requires a layout. Hence, this method returns
@@ -183,13 +183,13 @@ namespace log4cxx
         Write a footer as produced by the embedded layout's
         Layout#appendFooter method.  */
         protected:
-                virtual void writeFooter(apr_pool_t* p);
+                virtual void writeFooter(log4cxx::helpers::Pool& p);
 
         /**
         Write a header as produced by the embedded layout's
         Layout#appendHeader method.  */
         protected:
-                virtual void writeHeader(apr_pool_t* p);
+                virtual void writeHeader(log4cxx::helpers::Pool& p);
 
         private:
                 //

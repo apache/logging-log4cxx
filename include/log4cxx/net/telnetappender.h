@@ -86,23 +86,23 @@ servlet.
 
                         /** all of the options have been set, create the socket handler and
                         wait for connections. */
-                        void activateOptions(apr_pool_t* p);
+                        void activateOptions(log4cxx::helpers::Pool& p);
 
-						/**
-						Set options
-						*/
+                                                /**
+                                                Set options
+                                                */
                         virtual void setOption(const LogString& option, const LogString& value);
 
-						/**
-						Returns value of the <b>Port</b> option.
-						*/
+                                                /**
+                                                Returns value of the <b>Port</b> option.
+                                                */
                         int getPort() const
                                 { return port; }
 
-						/**
-						The <b>Port</b> option takes a positive integer representing
-						the port where the server is waiting for connections.
-						*/
+                                                /**
+                                                The <b>Port</b> option takes a positive integer representing
+                                                the port where the server is waiting for connections.
+                                                */
                         void setPort(int port)
                         { this->port = port; }
 
@@ -113,14 +113,14 @@ servlet.
                 protected:
                         /** Handles a log event.  For this appender, that means writing the
                         message to each connected client.  */
-                        virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p) ;
+                        virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) ;
 
                         //---------------------------------------------------------- SocketHandler:
 
                 private:
-						//   prevent copy and assignment statements
-						TelnetAppender(const TelnetAppender&);
-						TelnetAppender& operator=(const TelnetAppender&);
+                                                //   prevent copy and assignment statements
+                                                TelnetAppender(const TelnetAppender&);
+                                                TelnetAppender& operator=(const TelnetAppender&);
 
                         typedef std::pair<helpers::SocketPtr, helpers::SocketOutputStreamPtr> Connection;
                         typedef std::vector<Connection> ConnectionList;

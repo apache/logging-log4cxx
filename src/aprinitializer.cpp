@@ -26,7 +26,7 @@ APRInitializer::APRInitializer() {
     apr_initialize();
     apr_pool_create(&p, NULL);
     apr_atomic_init(p);
-	startTime = apr_time_now();
+    startTime = apr_time_now();
 }
 
 APRInitializer::~APRInitializer() {

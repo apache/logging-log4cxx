@@ -19,27 +19,26 @@
 
 #include <log4cxx/portability.h>
 
-extern "C" {
-struct apr_thread_mutex_t;
-struct apr_pool_t;
-}
+typedef void log4cxx_thread_mutex_t;
 
 namespace log4cxx
 {
         namespace helpers
         {
+                class Pool;
+
                 class LOG4CXX_EXPORT Mutex
                 {
                 public:
-                        Mutex(apr_pool_t* p);
+                        Mutex();
+                        Mutex(log4cxx::helpers::Pool& p);
                         ~Mutex();
-
-                        inline operator apr_thread_mutex_t*() const { return mutex; }
+                        const log4cxx_thread_mutex_t* getAPRMutex() const;
 
                 private:
                         Mutex(const Mutex&);
                         Mutex& operator=(const Mutex&);
-                        apr_thread_mutex_t* mutex;
+                        const log4cxx_thread_mutex_t* mutex;
                 };
         } // namespace helpers
 } // namespace log4cxx

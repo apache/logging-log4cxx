@@ -32,13 +32,13 @@ namespace log4cxx
 
     namespace helpers
     {
-		class AppenderAttachableImpl;
-		typedef log4cxx::helpers::ObjectPtrT<AppenderAttachableImpl>
-			AppenderAttachableImplPtr;
+        class AppenderAttachableImpl;
+        typedef log4cxx::helpers::ObjectPtrT<AppenderAttachableImpl>
+                        AppenderAttachableImplPtr;
 
-		class LOG4CXX_EXPORT AppenderAttachableImpl :
-			public virtual spi::AppenderAttachable,
-			public virtual helpers::ObjectImpl
+        class LOG4CXX_EXPORT AppenderAttachableImpl :
+            public virtual spi::AppenderAttachable,
+            public virtual helpers::ObjectImpl
         {
         protected:
             /** Array of appenders. */
@@ -47,13 +47,13 @@ namespace log4cxx
         public:
             AppenderAttachableImpl();
 
-			DECLARE_LOG4CXX_OBJECT(AppenderAttachableImpl)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(AppenderAttachableImpl)
-				LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
-			END_LOG4CXX_CAST_MAP()
+            DECLARE_LOG4CXX_OBJECT(AppenderAttachableImpl)
+            BEGIN_LOG4CXX_CAST_MAP()
+                LOG4CXX_CAST_ENTRY(AppenderAttachableImpl)
+                LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
+            END_LOG4CXX_CAST_MAP()
 
-		  // Methods
+                  // Methods
             /**
              * Add an appender.
              */
@@ -63,7 +63,7 @@ namespace log4cxx
              Call the <code>doAppend</code> method on all attached appenders.
             */
             int appendLoopOnAppenders(const spi::LoggingEventPtr& event,
-                apr_pool_t* p);
+                log4cxx::helpers::Pool& p);
 
             /**
              * Get all previously added appenders as an Enumeration.
@@ -97,10 +97,10 @@ namespace log4cxx
              */
             virtual void removeAppender(const LogString& name);
 
-			inline apr_thread_mutex_t* getMutex() const { return mutex; }
+            inline const log4cxx::helpers::Mutex& getMutex() const { return mutex; }
 
-		private:
-			log4cxx::helpers::Mutex mutex;
+        private:
+            log4cxx::helpers::Mutex mutex;
             AppenderAttachableImpl(const AppenderAttachableImpl&);
             AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);
         };

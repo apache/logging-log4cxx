@@ -87,7 +87,7 @@ namespace log4cxx
          implementations in order to log.
         */
         virtual void doAppend(const spi::LoggingEventPtr& event,
-              apr_pool_t* pool) = 0;
+              log4cxx::helpers::Pool& pool) = 0;
 
 
         /**

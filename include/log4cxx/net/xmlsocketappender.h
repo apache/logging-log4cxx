@@ -148,7 +148,7 @@ namespace log4cxx
 
       protected:
                 void renderEvent(const spi::LoggingEventPtr& event,
-                helpers::SocketOutputStreamPtr& os, apr_pool_t* p);
+                helpers::SocketOutputStreamPtr& os, log4cxx::helpers::Pool& p);
 
 
 

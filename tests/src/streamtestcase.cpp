@@ -51,6 +51,7 @@ template<class Elem, class Tr>
 class StreamTestCase : public CppUnit::TestFixture
 {
         CPPUNIT_TEST_SUITE(StreamTestCase);
+                CPPUNIT_TEST(testConstructor);
                 CPPUNIT_TEST(testSimple);
                 CPPUNIT_TEST(testSimpleWithFlush);
                 CPPUNIT_TEST(testSimpleWithoutFlush);
@@ -58,7 +59,7 @@ class StreamTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(testShortCircuit);
                 CPPUNIT_TEST(testScientific);
                 CPPUNIT_TEST(testPrecision);
-//                CPPUNIT_TEST(testWidth);
+                CPPUNIT_TEST(testWidth);
                 CPPUNIT_TEST(testGetStream);
                 CPPUNIT_TEST(testGetStreamDebug);
                 CPPUNIT_TEST(testInsertLevel);
@@ -78,6 +79,13 @@ public:
         void tearDown()
         {
             LogManager::shutdown();
+        }
+
+        void testConstructor() {
+          LoggerPtr root(Logger::getRootLogger());
+          log4cxx::logstream stream(root, log4cxx::Level::INFO);
+          CPPUNIT_ASSERT_EQUAL(0, stream.width());
+          CPPUNIT_ASSERT_EQUAL(6, stream.precision());
         }
 
         void testSimple() {

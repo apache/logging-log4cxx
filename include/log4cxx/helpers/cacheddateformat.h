@@ -29,11 +29,11 @@ namespace log4cxx
 
                virtual void format(LogString &s,
                    log4cxx_time_t date,
-                   apr_pool_t* p) const;
+                   log4cxx::helpers::Pool& p) const;
                virtual void setTimeZone(const TimeZonePtr& zone);
                virtual void numberFormat(LogString& s,
                                          long n,
-                                         apr_pool_t* p) const;
+                                         log4cxx::helpers::Pool& p) const;
 
 
           private:
@@ -52,7 +52,7 @@ namespace log4cxx
                                           const logchar zeroDigit,
                                           const logchar nineDigit,
                                           const DateFormatPtr& formatter,
-                                          apr_pool_t* p);
+                                          log4cxx::helpers::Pool& p);
 
                DateFormatPtr formatter;
                mutable int millisecondStart;

@@ -62,7 +62,7 @@ void HTMLLayout::setOption(const LogString& option,
 
 void HTMLLayout::format(LogString& output,
      const spi::LoggingEventPtr& event,
-     apr_pool_t* pool) const
+     Pool& pool) const
 {
         output.append(LOG4CXX_STR("\n<tr>\n<td>"));
 
@@ -135,7 +135,7 @@ void HTMLLayout::format(LogString& output,
         }
 }
 
-void HTMLLayout::appendHeader(LogString& output, apr_pool_t* pool)
+void HTMLLayout::appendHeader(LogString& output, Pool& pool)
 {
         output.append(LOG4CXX_STR("<!DOCTYPE HTML PUBLIC "));
         output.append(LOG4CXX_STR("\"-//W3C//DTD HTML 4.01 Transitional//EN\" "));
@@ -174,7 +174,7 @@ void HTMLLayout::appendHeader(LogString& output, apr_pool_t* pool)
         output.append(LOG4CXX_STR("</tr>\n"));
 }
 
-void HTMLLayout::appendFooter(LogString& output, apr_pool_t* pool)
+void HTMLLayout::appendFooter(LogString& output, Pool& pool)
 {
         output.append(LOG4CXX_STR("</table>\n"));
         output.append(LOG4CXX_STR("<br>\n"));

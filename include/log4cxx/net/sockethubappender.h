@@ -130,7 +130,7 @@ namespace log4cxx
                         /**
                         Set up the socket server on the specified port.
                         */
-                        virtual void activateOptions(apr_pool_t* p);
+                        virtual void activateOptions(log4cxx::helpers::Pool& p);
 
                     /**
                     Set options
@@ -146,7 +146,7 @@ namespace log4cxx
 
                         /**
                         Append an event to all of current connections. */
-                        virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                        virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
                         /**
                         The SocketHubAppender does not use a layout. Hence, this method returns

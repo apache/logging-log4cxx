@@ -32,18 +32,16 @@ File::File(const std::string& name)
   : name(), osName() {
   Transcoder::decode(name, this->name);
   Transcoder::encode(this->name, osName);
-//  getOSName(this->name, osName);
 }
 
 File::File(const std::wstring& name)
    : name(), osName() {
   Transcoder::decode(name, this->name);
   Transcoder::encode(this->name, osName);
-//  getOSName(this->name, osName);
 }
 
 File::File(const File& src)
-  : name(name), osName(osName) {
+  : name(src.name), osName(src.osName) {
 }
 
 File& File::operator=(const File& src) {
@@ -61,30 +59,30 @@ File::~File() {
 
 
 log4cxx_status_t File::open(apr_file_t** file, int flags,
-      int perm, apr_pool_t* p) const {
+      int perm, Pool& p) const {
     //
     //   The trunction to MBCS can corrupt filenames
     //       would be nice to be able to do something about
     //       it here since we have both Unicode
     //          and local code page file names
     //
-    return apr_file_open(file, osName.c_str(), flags, perm, p);
+    return apr_file_open(file, osName.c_str(), flags, perm, (apr_pool_t*) p.getAPRPool());
 }
 
 
 
-bool File::exists(apr_pool_t* p) const {
+bool File::exists(Pool& p) const {
   apr_finfo_t finfo;
   apr_status_t rv = apr_stat(&finfo, osName.c_str(),
-        0, p);
+        0, (apr_pool_t*) p.getAPRPool());
   return rv == APR_SUCCESS;
 }
 
 
-size_t File::length(apr_pool_t* pool) const {
+size_t File::length(Pool& pool) const {
   apr_finfo_t finfo;
   apr_status_t rv = apr_stat(&finfo, osName.c_str(),
-        APR_FINFO_SIZE, pool);
+        APR_FINFO_SIZE, (apr_pool_t*) pool.getAPRPool());
   if (rv == APR_SUCCESS) {
     return finfo.size;
   }
@@ -92,10 +90,10 @@ size_t File::length(apr_pool_t* pool) const {
 }
 
 
-log4cxx_time_t File::lastModified(apr_pool_t* pool) const {
+log4cxx_time_t File::lastModified(Pool& pool) const {
   apr_finfo_t finfo;
   apr_status_t rv = apr_stat(&finfo, osName.c_str(),
-        APR_FINFO_MTIME, pool);
+        APR_FINFO_MTIME, (apr_pool_t*) pool.getAPRPool());
   if (rv == APR_SUCCESS) {
     return finfo.mtime;
   }
@@ -107,13 +105,7 @@ log4cxx_time_t File::lastModified(apr_pool_t* pool) const {
 //   Current implementation is limited to MBCS files
 //
 //
-#if defined(_MSC_VER)
-LogString File::read(void* pvoid) const {
-  apr_pool_t* p = (apr_pool_t*) pvoid;
-#else
-LogString File::read(apr_pool_t* p) const {
-#endif
-
+LogString File::read(Pool& p) const {
   LogString output;
   apr_file_t* f = NULL;
   apr_status_t rv = open(&f, APR_READ, APR_OS_DEFAULT, p);
@@ -121,7 +113,7 @@ LogString File::read(apr_pool_t* p) const {
       throw IOException(rv);
   } else {
     const size_t BUFSIZE = 4096;
-    char* buf = (char*) apr_palloc(p, BUFSIZE);
+    char* buf = p.palloc(BUFSIZE);
     char* contents = buf;
     apr_size_t contentLength = 0;
     do {
@@ -143,8 +135,7 @@ LogString File::read(apr_pool_t* p) const {
          //
          //   file was larger than the buffer
          //      realloc a bigger buffer
-         char* newContents =
-             (char*) apr_palloc(p, contentLength + BUFSIZE);
+         char* newContents = p.palloc(contentLength + BUFSIZE);
          buf = newContents + contentLength;
          memcpy(newContents, contents, contentLength);
          //
@@ -165,7 +156,7 @@ LogString File::read(apr_pool_t* p) const {
 //   Current implementation is limited to MBCS files
 //
 //
-log4cxx_status_t File::write(const LogString& src, apr_pool_t* p) const {
+log4cxx_status_t File::write(const LogString& src, Pool& p) const {
   LogString output;
   apr_file_t* f = NULL;
   apr_status_t rv = open(&f,
@@ -176,7 +167,7 @@ log4cxx_status_t File::write(const LogString& src, apr_pool_t* p) const {
     size_t len = encoded.length();
     rv = apr_file_write(f, encoded.data(), &len);
     apr_status_t close = apr_file_close(f);
-	assert(close == APR_SUCCESS);
+    assert(close == APR_SUCCESS);
   }
   return rv;
 }

@@ -28,7 +28,7 @@ public:\
 class Class##object : public helpers::Class\
 {\
 public:\
-	Class##object() : helpers::Class(LOG4CXX_STR(#object)) {}\
+        Class##object() : helpers::Class(LOG4CXX_STR(#object)) {}\
 };\
 virtual const helpers::Class& getClass() const;\
 static const helpers::Class& getStaticClass();\
@@ -39,11 +39,11 @@ public:\
 class Class##object : public helpers::Class\
 {\
 public:\
-	Class##object() : helpers::Class(LOG4CXX_STR(#object)) {}\
-	virtual helpers::ObjectPtr newInstance() const\
-	{\
-		return new object();\
-	}\
+        Class##object() : helpers::Class(LOG4CXX_STR(#object)) {}\
+        virtual helpers::ObjectPtr newInstance() const\
+        {\
+                return new object();\
+        }\
 };\
 virtual const helpers::Class& getClass() const;\
 static const helpers::Class& getStaticClass();\
@@ -65,46 +65,43 @@ object::class object::theClass##object;\
 const log4cxx::helpers::Class& object::getClass() const { return theClass##object; }\
 const log4cxx::helpers::Class& object::getStaticClass() { return theClass##object; }
 
-extern "C" {
-struct apr_thread_mutex_t;
-struct apr_pool_t;
-}
-
 
 namespace log4cxx
 {
-	class AppenderSkeleton;
-	class Logger;
+        class AppenderSkeleton;
+        class Logger;
 
-	namespace helpers
-	{
+        namespace helpers
+        {
 
-		class Object;
-		typedef ObjectPtrT<Object> ObjectPtr;
+                class Object;
+                typedef ObjectPtrT<Object> ObjectPtr;
 
-		/** base class for java-like objects.*/
-		class LOG4CXX_EXPORT Object
-		{
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Object)
-			virtual ~Object() {}
-			virtual void addRef() const = 0;
-			virtual void releaseRef() const = 0;
-			virtual bool instanceof(const Class& clazz) const = 0;
-			virtual const void * cast(const Class& clazz) const = 0;
-		};
+                class Pool;
 
-	}
+                /** base class for java-like objects.*/
+                class LOG4CXX_EXPORT Object
+                {
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(Object)
+                        virtual ~Object() {}
+                        virtual void addRef() const = 0;
+                        virtual void releaseRef() const = 0;
+                        virtual bool instanceof(const Class& clazz) const = 0;
+                        virtual const void * cast(const Class& clazz) const = 0;
+                };
+
+        }
 }
 
 #define BEGIN_LOG4CXX_CAST_MAP()\
 const void * cast(const helpers::Class& clazz) const\
 {\
-	const void * object = 0;\
-	if (&clazz == &helpers::Object::getStaticClass()) return (helpers::Object *)this;
+        const void * object = 0;\
+        if (&clazz == &helpers::Object::getStaticClass()) return (helpers::Object *)this;
 
 #define END_LOG4CXX_CAST_MAP()\
-	return object;\
+        return object;\
 }\
 bool instanceof(const helpers::Class& clazz) const\
 { return cast(clazz) != 0; }

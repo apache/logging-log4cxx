@@ -133,8 +133,6 @@ using namespace log4cxx::helpers;
     gmtFormat.format(actual, jul2, p);
     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
     actual.erase(actual.begin(), actual.end());
-
-    apr_pool_destroy(p);
   }
 
   /**
@@ -186,7 +184,7 @@ using namespace log4cxx::helpers;
       const DateFormatPtr& baseFormat,
       const CachedDateFormat& cachedFormat,
       apr_time_t date,
-      apr_pool_t* p) {
+      Pool& p) {
         LogString expected;
         LogString actual;
 

@@ -20,40 +20,40 @@
 
 namespace log4cxx
 {
-	class VectorAppender;
-	typedef helpers::ObjectPtrT<VectorAppender> VectorAppenderPtr;
+        class VectorAppender;
+        typedef helpers::ObjectPtrT<VectorAppender> VectorAppenderPtr;
 
 
-	/**
-	An appender that appends logging events to a vector.
-	*/
-	class VectorAppender : public AppenderSkeleton
-	{
-	public:
-		DECLARE_LOG4CXX_OBJECT(VectorAppender)
+        /**
+        An appender that appends logging events to a vector.
+        */
+        class VectorAppender : public AppenderSkeleton
+        {
+        public:
+                DECLARE_LOG4CXX_OBJECT(VectorAppender)
 
-		std::vector<spi::LoggingEventPtr> vector;
+                std::vector<spi::LoggingEventPtr> vector;
 
-		/**
-		Does nothing.
-		*/
-		void activateOptions() {}
+                /**
+                Does nothing.
+                */
+                void activateOptions() {}
 
-		/**
-		This method is called by the AppenderSkeleton#doAppend
-		method.
-		*/
-		void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                /**
+                This method is called by the AppenderSkeleton#doAppend
+                method.
+                */
+                void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
-		const std::vector<spi::LoggingEventPtr>& getVector() const
-			{ return vector; }
+                const std::vector<spi::LoggingEventPtr>& getVector() const
+                        { return vector; }
 
-		void close();
+                void close();
 
-		bool isClosed() const
-			{ return closed; }
+                bool isClosed() const
+                        { return closed; }
 
-		bool requiresLayout() const
-			{ return false;	}
-	};
+                bool requiresLayout() const
+                        { return false;	}
+        };
 }

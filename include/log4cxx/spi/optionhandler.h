@@ -21,10 +21,6 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/objectptr.h>
 
-extern "C" {
-struct apr_pool_t;
-}
-
 namespace log4cxx
 {
         namespace spi
@@ -53,7 +49,7 @@ namespace log4cxx
                         FileAppender#setFile File} and {@link
                         FileAppender#setAppend Append} options both of
                         which are ambigous until the other is also set.  */
-                        virtual void activateOptions(apr_pool_t* p) = 0;
+                        virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
 
 
                         /**

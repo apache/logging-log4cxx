@@ -19,6 +19,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <algorithm>
 #include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -27,9 +28,9 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
 
-AppenderAttachableImpl::AppenderAttachableImpl() 
-   : appenderList(), 
-     mutex(APRInitializer::getRootPool()) {
+AppenderAttachableImpl::AppenderAttachableImpl()
+   : appenderList(),
+     mutex() {
 }
 
 
@@ -52,14 +53,14 @@ void AppenderAttachableImpl::addAppender(const AppenderPtr& newAppender)
 
 int AppenderAttachableImpl::appendLoopOnAppenders(
     const spi::LoggingEventPtr& event,
-    apr_pool_t* p)
+    Pool& p)
 {
     for (AppenderList::iterator it = appenderList.begin();
          it != appenderList.end();
          it++) {
         (*it)->doAppend(event, p);
     }
-	return appenderList.size();
+        return appenderList.size();
 }
 
 AppenderList AppenderAttachableImpl::getAllAppenders() const
@@ -69,28 +70,28 @@ AppenderList AppenderAttachableImpl::getAllAppenders() const
 
 AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
 {
-	if (name.empty())
-	{
-		return 0;
-	}
+        if (name.empty())
+        {
+                return 0;
+        }
 
-	AppenderList::const_iterator it, itEnd = appenderList.end();
-	AppenderPtr appender;
-	for(it = appenderList.begin(); it != itEnd; it++)
-	{
-		appender = *it;
-		if(name == appender->getName())
-		{
-			return appender;
-		}
-	}
+        AppenderList::const_iterator it, itEnd = appenderList.end();
+        AppenderPtr appender;
+        for(it = appenderList.begin(); it != itEnd; it++)
+        {
+                appender = *it;
+                if(name == appender->getName())
+                {
+                        return appender;
+                }
+        }
 
-	return 0;
+        return 0;
 }
 
 bool AppenderAttachableImpl::isAttached(const AppenderPtr& appender) const
 {
-	if (appender == 0)
+        if (appender == 0)
     {
         return false;
     }
@@ -130,22 +131,22 @@ void AppenderAttachableImpl::removeAppender(const AppenderPtr& appender)
 
 void AppenderAttachableImpl::removeAppender(const LogString& name)
 {
-	if (name.empty())
-	{
-		return;
-	}
+        if (name.empty())
+        {
+                return;
+        }
 
-	AppenderList::iterator it, itEnd = appenderList.end();
-	AppenderPtr appender;
-	for(it = appenderList.begin(); it != itEnd; it++)
-	{
-		appender = *it;
-		if(name == appender->getName())
-		{
-			appenderList.erase(it);
-			return;
-		}
-	}
+        AppenderList::iterator it, itEnd = appenderList.end();
+        AppenderPtr appender;
+        for(it = appenderList.begin(); it != itEnd; it++)
+        {
+                appender = *it;
+                if(name == appender->getName())
+                {
+                        appenderList.erase(it);
+                        return;
+                }
+        }
 }
 
 
