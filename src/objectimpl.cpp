@@ -41,7 +41,7 @@ void ObjectImpl::addRef()
 {
 #ifdef HAVE_LINUX_ATOMIC_OPERATIONS
 	atomic_inc(&ref);
-#elif define(HAVE_PTHREAD)
+#elif defined(HAVE_PTHREAD)
 	refCs.lock();
 	ref++;
 	refCs.unlock();
@@ -59,7 +59,7 @@ void ObjectImpl::releaseRef()
 	{
 		delete this;
 	}
-#elif define(HAVE_PTHREAD)
+#elif defined(HAVE_PTHREAD)
 	refCs.lock();
 	ref--;
 	if (ref <= 0)
