@@ -50,5 +50,13 @@ int64_t System::currentTimeMillis()
 String System::getProperty(const String& key)
 {
 	USES_CONVERSION;
-	return A2T(::getenv(T2A(key.c_str())));
+	char * value = ::getenv(T2A(key.c_str()));
+	if (value == 0)
+	{
+		return String();
+	}
+	else
+	{
+		return A2T(value);
+	}
 }
