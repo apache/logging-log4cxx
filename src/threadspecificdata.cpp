@@ -30,7 +30,7 @@ using namespace log4cxx::helpers;
 ThreadSpecificData::ThreadSpecificData() : key(0)
 {
 #ifdef HAVE_PTHREAD
-	pthread_key_create((pthread_key_t *)&key, NULL);
+	pthread_key_create(&key, NULL);
 #elif defined(HAVE_MS_THREAD)
 	key = (void *)TlsAlloc();
 #endif
@@ -39,7 +39,7 @@ ThreadSpecificData::ThreadSpecificData() : key(0)
 ThreadSpecificData::~ThreadSpecificData()
 {
 #ifdef HAVE_PTHREAD
-	pthread_key_delete((pthread_key_t)key);
+	pthread_key_delete(key);
 #elif defined(HAVE_MS_THREAD)
 	TlsFree((DWORD)key);
 #endif

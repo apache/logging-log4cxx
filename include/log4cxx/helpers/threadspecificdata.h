@@ -31,7 +31,11 @@ namespace log4cxx
 			void SetData(void * data);
 
 		protected:
+#ifdef HAVE_PTHREAD
+			pthread_key_t key;
+#elif defined(HAVE_MS_THREAD)
 			void * key;
+#endif
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

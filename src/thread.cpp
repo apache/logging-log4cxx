@@ -68,7 +68,7 @@ Thread::~Thread()
 	if (thread != 0)
 	{
 #ifdef HAVE_PTHREAD
-		::pthread_join((pthread_t)thread, 0);
+		::pthread_join(thread, 0);
 #elif defined(HAVE_MS_THREAD)
 		::CloseHandle((HANDLE)thread);
 #endif
@@ -90,7 +90,7 @@ void Thread::start()
 	parentMDCMap = MDC::getContext();
 #ifdef HAVE_PTHREAD
 //	LogLog::debug(_T("Thread::start"));
-	if (::pthread_create((pthread_t *)&thread, NULL, threadProc, this) != 0)
+	if (::pthread_create(&thread, NULL, threadProc, this) != 0)
 	{
 		throw ThreadException();
 	}
@@ -118,7 +118,7 @@ void Thread::join()
 {
 	bool bSuccess = true;
 #ifdef HAVE_PTHREAD
-	::pthread_join((pthread_t)thread, 0);
+	::pthread_join(thread, 0);
 #elif defined(HAVE_MS_THREAD)
 	if (::WaitForSingleObject((HANDLE)thread, INFINITE) != WAIT_OBJECT_0)
 	{

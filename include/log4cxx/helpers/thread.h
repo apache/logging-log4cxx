@@ -121,7 +121,11 @@ namespace log4cxx
 
 		protected:
 			/** Thread descriptor */
+#ifdef HAVE_PTHREAD
+			pthread_t thread;
+#elif defined(HAVE_MS_THREAD)
 			void * thread;
+#endif
 			RunnablePtr runnable;
 			MDC::Map parentMDCMap;
 		};
