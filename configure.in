@@ -37,7 +37,7 @@ AC_LANG(C++)
 # CXX fine tuning
 case "$host" in
     *-dec-osf*)
-	CXXFLAGS="$CXXFLAGS -std strict_ansi_errors" 
+	CXXFLAGS="$CXXFLAGS -std strict_ansi_errors"
 	;;
     *)
 	;;
@@ -221,6 +221,18 @@ case "$ac_with_smtp" in
     *)
 	AC_MSG_RESULT(???)
 	AC_MSG_ERROR(Unknown option : $ac_with_smtp)
+	;;
+esac
+
+#linux atomic functions
+AC_MSG_CHECKING(for Linux atomic operations support)
+case "$host" in
+	*linux*)
+	AC_DEFINE(HAVE_LINUX_ATOMIC_OPERATIONS, 1, Linux atomic operations support.)
+	AC_MSG_RESULT(yes)
+	;;
+	*)
+	AC_MSG_RESULT(no)
 	;;
 esac
 
