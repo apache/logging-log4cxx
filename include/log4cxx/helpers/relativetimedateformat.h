@@ -42,7 +42,7 @@ namespace log4cxx
 			
 			virtual void format(ostream& toAppendTo, int64_t time) const
 			{
-				os << (time - startTime);
+				toAppendTo << (time - startTime);
 			}
 		};
 	}  // namespace helpers
