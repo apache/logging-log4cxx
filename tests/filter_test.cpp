@@ -40,6 +40,7 @@ int main()
 	try
 	{
 		LoggerPtr root = Logger::getRootLogger();
+		tstring fqcn = Logger::getStaticClass().getName();
 
 		// StringMatchFilterPtr
 		StringMatchFilterPtr stringMatchFilter = new StringMatchFilter();
@@ -47,17 +48,17 @@ int main()
 		stringMatchFilter->setAcceptOnMatch(true);
 		tcout << _T("decision (should be ACCEPT): ")
 			<< (Filter::FilterDecision)stringMatchFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 		stringMatchFilter->setAcceptOnMatch(false);
 		tcout << _T("decision (should be DENY): ")
 			<< (Filter::FilterDecision)stringMatchFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 		stringMatchFilter->setStringToMatch(_T("se"));
 		tcout << _T("decision (should be NEUTRAL): ")
 			<< (Filter::FilterDecision)stringMatchFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 
 		// LevelMatchFilter
@@ -66,17 +67,17 @@ int main()
 		levelMatchFilter->setAcceptOnMatch(true);
 		tcout << _T("decision (should be ACCEPT): ")
 			<< (Filter::FilterDecision)levelMatchFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 		levelMatchFilter->setAcceptOnMatch(false);
 		tcout << _T("decision (should be DENY): ")
 			<< (Filter::FilterDecision)levelMatchFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 		levelMatchFilter->setLevelToMatch(_T("DEBUG"));
 		tcout << _T("decision (should be NEUTRAL): ")
 			<< (Filter::FilterDecision)levelMatchFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 
 		// LevelRangeFilter
@@ -86,23 +87,23 @@ int main()
 		levelRangeFilter->setAcceptOnMatch(true);
 		tcout << _T("decision (should be ACCEPT): ")
 			<< (Filter::FilterDecision)levelRangeFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 		levelRangeFilter->setAcceptOnMatch(false);
 		tcout << _T("decision (should be NEUTRAL): ")
 			<< (Filter::FilterDecision)levelRangeFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 		tcout << _T("decision (should be DENY): ")
 			<< (Filter::FilterDecision)levelRangeFilter->decide(
-				LoggingEvent(root, Level::ERROR, _T("test")))
+				LoggingEvent(fqcn, root, Level::ERROR, _T("test")))
 			<< std::endl;
 
 		// DenyAllFilter
 		DenyAllFilterPtr denyAllFilter = new DenyAllFilter();
 		tcout << _T("decision (should be DENY): ")
 			<< (Filter::FilterDecision)denyAllFilter->decide(
-				LoggingEvent(root, Level::INFO, _T("test")))
+				LoggingEvent(fqcn, root, Level::INFO, _T("test")))
 			<< std::endl;
 	}
 	catch(Exception&)
