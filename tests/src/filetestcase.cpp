@@ -103,7 +103,7 @@ public:
           File propFile("input/patternLayout1.properties");
           Pool pool;
           LogString props(propFile.read(pool));
-          LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender\n"));
+          LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender"));
           CPPUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
           LogString tail(LOG4CXX_STR("%-5p - %m%n"));
           CPPUNIT_ASSERT_EQUAL(tail, props.substr(props.length() - tail.length()));
