@@ -41,7 +41,7 @@ long long System::currentTimeMillis()
 
     return (long long)tp.time + ((long long)tp.millitm * 1000LL);
 #else
-    return (long long)::time(0) * 1000LL * 1000LL;
+    return (long long)::time(0) * 1000LL;
 #endif
 }
 
