@@ -223,7 +223,7 @@ namespace log4cxx
 			{
 				size_t os = pptr() - b; // taille allouée
 				size_t is =
-					std::max(std::min((os * 2), _MaxInc), _MinInc)
+					_max(_min((os * 2), _MaxInc), _MinInc)
 					+ 1; // incrément d'allocation
 				char_type *p = al.allocate(os + is, 0);
 				traits_type::copy(p, b, os);

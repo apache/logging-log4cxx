@@ -19,6 +19,11 @@ LT_VERSION=6:0:0
 AC_SUBST(LT_VERSION)
 
 AM_CONFIG_HEADER(include/log4cxx/config.h)
+AH_VERBATIM([HAVE_STD_MINMAX],
+[/* std::min & std::max */
+#include <algorithm>
+#define _min std::min
+#define _max std::max])
 
 AM_INIT_AUTOMAKE(log4cxx, 0.9.4)
 

@@ -87,9 +87,6 @@ namespace log4cxx
 			inline int length() const
 				{ return numElements; }
 
-			inline int min(int a, int b) const
-				{ return a < b ? a : b; }
-
 			/**
 			Resize the buffer to a new size. If the new size is smaller than
 			the old size events might be lost.

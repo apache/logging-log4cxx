@@ -83,11 +83,11 @@ void BoundedFIFO::resize(int newSize)
 	int len1 = maxSize - first;
 
 	// we should not copy beyond the tmp array
-	len1 = min(len1, newSize);
+	len1 = _min(len1, newSize);
 
 	// er.. how much do we actually need to copy?
 	// We should not copy more than the actual number of elements.
-	len1 = min(len1, numElements);
+	len1 = _min(len1, numElements);
 
 	// Copy from buf starting a first, to tmp, starting at position 0, len1
 	memcpy(tmp, buf + first, len1 * sizeof(LoggingEvent *));
@@ -98,7 +98,7 @@ void BoundedFIFO::resize(int newSize)
 	if((len1 < numElements) && (len1 < newSize))
 	{
 		len2 = numElements - len1;
-		len2 = min(len2, newSize - len1);
+		len2 = _min(len2, newSize - len1);
 		memcpy(tmp, buf + len1, len2 * sizeof(LoggingEvent *));
 	}
 
