@@ -9,7 +9,32 @@
     <body>
         <h1>News</h1>
             <h3>
-			10th of April 2004 - Log4cxx 0.9.6 release 
+			10th of May 2004 - Log4cxx 0.9.7 release 
+			</h3>
+            <p>
+			<ul>
+				<li>Fixed examples source code in the "Short introduction to log4cxx".</li>
+				<li>Fixed, in the renaming algorithm of RollingFileAppender and
+				DailyRollingFileAppender, a problem specific to Unicode.</li>
+				<li>Fixed conflict with Windows macros "min" and "max", by renaming
+				StrictMath::min and StrictMath::max to StrictMath::minimum and
+				StrictMath::maximum.</li>
+				<li>Port to HPUX 11.0.</li>
+				<li>Fixed segmentation fault in PropertyConfigurator.</li>
+				<li>Port to Solaris.</li>
+				<li>Fixed MutexException thrown while destroying RollingFileAppender.</li>
+				<li>Logging macros can be used without explicity declaring the use of log4cxx
+				namespace.</li>
+				<li>Fixed static library unresolved externals for msvc 6 and 7.1</li>
+            </ul>
+			</p>
+			<p>
+			<a href="log4cxx-0.9.7.tar.gz">log4cxx-0.9.7.tar.gz - 247.5 KB</a>
+			</p>
+            <hr noshade="noshade" size="1"/>
+            
+			<h3>
+			11th of April 2004 - Log4cxx 0.9.6 release 
 			</h3>
             <p>
 			<ul>
