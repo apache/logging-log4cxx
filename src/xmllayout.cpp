@@ -56,20 +56,20 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 	output << event.getLevel().toString();
 	output << _T("\" thread=\"");
 	output << event.getThreadId();
-	output << _T("\">\r\n");
+	output << _T("\">") << std::endl;
 
 	output << _T("<log4j:message><![CDATA[");
 	// Append the rendered message. Also make sure to escape any
 	// existing CDATA sections.
 	Transform::appendEscapingCDATA(output, event.getRenderedMessage());
-	output << _T("]]></log4j:message>\r\n");
+	output << _T("]]></log4j:message>") << std::endl;
 
 	const tstring& ndc = event.getNDC();
 	if(ndc.length() != 0)
 	{
 		output << _T("<log4j:NDC><![CDATA[");
 		output << ndc;
-		output << _T("]]></log4j:NDC>\r\n");
+		output << _T("]]></log4j:NDC>") << std::endl;
 	}
 
     std::set<tstring> mdcKeySet = event.getMDCKeySet();
@@ -84,7 +84,7 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 		* of the keys is kinda nice..
 		*/
 
-		output << _T("<log4j:MDC>\r\n");
+		output << _T("<log4j:MDC>") << std::endl;
 		for (std::set<tstring>::iterator i = mdcKeySet.begin();
 			i != mdcKeySet.end(); i++)
 		{
@@ -97,10 +97,9 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 			output << _T(" ");
 			output << _T("value=\"<![CDATA[");
 			Transform::appendEscapingCDATA(output, val);
-			output << _T("]]>\"/>");
-			output << _T("\r\n");
+			output << _T("]]>\"/>") << std::endl;
 		}
-		output << _T("</log4j:MDC>\r\n");
+		output << _T("</log4j:MDC>") << std::endl;
     }
 
 	if(locationInfo)
@@ -110,7 +109,7 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 		output << A2T(event.getFile());
 		output << _T("\" line=\"");
 		output << event.getLine();
-		output << _T("\"/>\r\n");
+		output << _T("\"/>") << std::endl;
 	}
 
     std::set<tstring> propertySet = event.getPropertyKeySet();
@@ -125,10 +124,10 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 			output << _T("<log4j:data name=\"") << propName;
 			tstring propValue = event.getProperty(propName);
 			output << _T("\" value=\"") << propValue;
-			output << _T("\"/>\r\n");
+			output << _T("\"/>") << std::endl;
 		}
-		output << _T("</log4j:properties>\r\n");
+		output << _T("</log4j:properties>") << std::endl;
     }
 
-	output << _T("</log4j:event>\r\n\r\n");
+	output << _T("</log4j:event>") << std::endl;
 }

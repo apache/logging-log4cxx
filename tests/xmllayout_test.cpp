@@ -33,9 +33,9 @@ int main()
 		witness << _T("<log4j:event logger=\"root\" timestamp=\"")
 			<< event.getTimeStamp()
 			<< _T("\" level=\"DEBUG\" thread=\"")
-			<< event.getThreadId() << _T("\">\r\n")
-			<< _T("<log4j:message><![CDATA[debug message]]></log4j:message>\r\n")
-			<< _T("</log4j:event>\r\n\r\n");
+			<< event.getThreadId() << _T("\">") << std::endl
+			<< _T("<log4j:message><![CDATA[debug message]]></log4j:message>") << std::endl
+			<< _T("</log4j:event>") << std::endl;
 
 		layout->format(result, event);
 
@@ -54,10 +54,10 @@ int main()
 		witness2 << _T("<log4j:event logger=\"root\" timestamp=\"")
 			<< event.getTimeStamp()
 			<< _T("\" level=\"DEBUG\" thread=\"")
-			<< event.getThreadId() << _T("\">\r\n")
-			<< _T("<log4j:message><![CDATA[debug message]]></log4j:message>\r\n")
-			<< _T("<log4j:locationInfo file=\"file.cpp\" line=\"12\"/>\r\n")
-			<< _T("</log4j:event>\r\n\r\n");
+			<< event.getThreadId() << _T("\">") << std::endl
+			<< _T("<log4j:message><![CDATA[debug message]]></log4j:message>") << std::endl
+			<< _T("<log4j:locationInfo file=\"file.cpp\" line=\"12\"/>") << std::endl
+			<< _T("</log4j:event>") << std::endl;
 
 		layout->format(result2, event);
 
