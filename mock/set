@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-#ifndef _LOG4CXX_HELPERS_APRINITIALIZER_H
-#define _LOG4CXX_HELPERS_APRINITIALIZER_H
 
-class apr_pool_t;
+/**
+*
+* Mock version of STL <set> to allow -Weffc++ to successfully complete.
+* With regular version of STL will complain about missing virtual destructors
+* in template generated code.
+*
+*/
 
-namespace log4cxx
-{
-  namespace helpers
-  {
-    class APRInitializer
-    {
-    public:
-    static void initialize();
+#ifndef _LOG4CXX_MOCK_STL_SET_
+#define _LOG4CXX_MOCK_STL_SET_
 
-    private:
-      APRInitializer();
-      APRInitializer(const APRInitializer&);
-      APRInitializer& operator=(const APRInitializer&);
-      apr_pool_t * p;
-    public:
-      ~APRInitializer();
-    };
-  } // namespace helpers
-}; // namespace log4cxx
+namespace std {
+  template <class T> class set {
+  public:
+     set() {}
+  };
+}
 
-#endif //_LOG4CXX_HELPERS_APRINITIALIZER_H
+#endif

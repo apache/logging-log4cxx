@@ -285,6 +285,8 @@ namespace log4cxx
                 c's parent field to cat.
                 */
         private:
+                Hierarchy(const Hierarchy&);
+                Hierarchy& operator=(const Hierarchy&);
 
                 void updateChildren(ProvisionNode& pn, LoggerPtr& logger);
 

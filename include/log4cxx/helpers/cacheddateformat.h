@@ -18,12 +18,11 @@
 #define _LOG4CXX_HELPERS_CACHED_DATE_FORMAT_H
 
 #include <log4cxx/helpers/dateformat.h>
-#include <locale>
 
 namespace log4cxx
 {
-	namespace helpers
-	{
+        namespace helpers
+        {
           class LOG4CXX_EXPORT CachedDateFormat : public DateFormat {
           public:
                CachedDateFormat(DateFormatPtr& baseFormatter);
@@ -61,14 +60,14 @@ namespace log4cxx
                mutable log4cxx_time_t previousTime;
                logchar zeroDigit;
                logchar nineDigit;
-			   enum {
+                           enum {
                    UNRECOGNIZED_MILLISECOND_PATTERN = -2,
-					   NO_MILLISECOND_PATTERN = -1 };
+                                           NO_MILLISECOND_PATTERN = -1 };
           };
 
 
 
-	}  // namespace helpers
+        }  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_SIMPLE_DATE_FORMAT_H

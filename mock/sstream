@@ -1,0 +1,56 @@
+/*
+ * Copyright 2004 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+/**
+*
+* Mock version of STL <sstream> to allow -Weffc++ to successfully complete.
+* With regular version of STL will complain about missing virtual destructors
+* in template generated code.
+*
+*/
+
+#ifndef _LOG4CXX_MOCK_STL_SSTREAM_
+#define _LOG4CXX_MOCK_STL_SSTREAM_
+
+namespace std {
+  class ios_base {
+  public:
+      ios_base() {}
+      size_t precision(size_t) { return 0; }
+      size_t width(size_t) { return 0; }
+      size_t flags(size_t) { return 0; }
+      size_t precision() const  { return 0; }
+      size_t width() const { return 0; }
+      size_t flags() const { return 0; }
+  };
+
+
+  template<class Char, class Traitsc>
+  class basic_ostream : public ios_base {
+  public:
+  };
+
+
+  template<class Char, class Traits, class Alloc>
+  class basic_ostringstream : public basic_ostream<Char, Traits> {
+  public:
+      string<Char> str();
+      void str(const string<Char>&);
+  };
+}
+
+#endif

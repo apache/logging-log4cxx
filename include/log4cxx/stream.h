@@ -39,9 +39,10 @@ namespace log4cxx
                           logger(loggr),
                           currentLevel(level),
                           impl(0),
-                          enabled(loggr->isEnabledFor(level)) {
+                          enabled(loggr->isEnabledFor(level)),
+                          currentLocation() {
 #if defined(_MSC_VER)
-				_Init();
+                                _Init();
 #endif
              }
 
@@ -53,9 +54,10 @@ namespace log4cxx
                logger(::log4cxx::Logger::getLogger(logName)),
                currentLevel(level),
                impl(0),
-               enabled(logger->isEnabledFor(level)) {
+               enabled(logger->isEnabledFor(level)),
+               currentLocation() {
 #if defined(_MSC_VER)
-				_Init();
+                   _Init();
 #endif
               }
 
@@ -117,11 +119,13 @@ namespace log4cxx
              }
 
              private:
-             LevelPtr currentLevel;
+             logstream(const logstream&);
+             logstream& operator=(const logstream&);
              LoggerPtr logger;
-             ::log4cxx::spi::location::LocationInfo currentLocation;
-             bool enabled;
+             LevelPtr currentLevel;
              ::std::wostringstream* impl;
+             bool enabled;
+             ::log4cxx::spi::location::LocationInfo currentLocation;
 
         };
 
