@@ -38,6 +38,8 @@ int main()
 		rootLogger->warn(_T("warn message"));
 		rootLogger->error(_T("error message"));
 		rootLogger->fatal(_T("fatal message"));
+
+		NDC::pop();
 	}
 	catch(Exception&)
 	{
