@@ -41,7 +41,6 @@ int64_t System::currentTimeMillis()
     struct timeb tp;
     ::ftime(&tp);
 
-	time_t time1 = time(0);
     return ((int64_t)tp.time * 1000) + (int64_t)tp.millitm;
 #else
     return (int64_t)::time(0) * 1000;
