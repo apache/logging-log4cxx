@@ -321,9 +321,10 @@ String Properties::setProperty(const String& key, const String& value)
 	return oldValue;
 }
 
-String Properties::getProperty(const String& key)
+String Properties::getProperty(const String& key) const
 {
-	return properties[key];
+	std::map<String, String>::const_iterator it = properties.find(key);
+	return (it != properties.end()) ? it->second : String();
 }
 
 void Properties::load(istream& inStream)
@@ -333,12 +334,12 @@ void Properties::load(istream& inStream)
 	parser.parse(inStream, *this);
 }
 
-std::vector<String> Properties::propertyNames()
+std::vector<String> Properties::propertyNames() const
 {
 	std::vector<String> names;
 	names.reserve(properties.size());
 
-	std::map<String, String>::iterator it;
+	std::map<String, String>::const_iterator it;
 	for (it = properties.begin(); it != properties.end(); it++)
 	{
 		const String& key = it->first;

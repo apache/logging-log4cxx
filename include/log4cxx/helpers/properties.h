@@ -130,7 +130,7 @@ cheeses
     		@return the value in this property list with the specified
 			key value.
 			*/
-			String getProperty(const String& key);
+			String getProperty(const String& key) const;
 
 			/**
 			Returns an enumeration of all the keys in this property list,
@@ -140,7 +140,7 @@ cheeses
 			@return an array of all the keys in this
 			property list, including the keys in the default property list.
 			*/
-			std::vector<String> propertyNames();
+			std::vector<String> propertyNames() const;
 		}; // class Properties
 	}; // namespace helpers
 }; // namespace log4cxx
