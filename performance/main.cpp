@@ -24,13 +24,8 @@
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/thread.h>
 
-#ifdef HAVE_MS_XML
-#include <windows.h>
-#endif
-
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace log4cxx::xml;
 
 int runLength;
 int delay = -1;
@@ -72,12 +67,8 @@ void init(const String& configFile, const String& runLengthStr,
 		DELAY_MULT = 1000/burstLen;
 	}
 
-#ifdef HAVE_MS_XML
-		::CoInitialize(0);
-#endif
-	DOMConfigurator::configure(configFile);
-#ifdef HAVE_MS_XML
-		::CoUninitialize();
+#ifdef HAVE_MS_XML	
+	xml::DOMConfigurator::configure(configFile);
 #endif
 }
 

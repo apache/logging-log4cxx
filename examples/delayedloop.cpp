@@ -22,7 +22,6 @@
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace log4cxx::xml;
 
 /**
 This test program sits in a loop and logs things. Its logging is
@@ -60,11 +59,13 @@ public:
 
 	static void init(const String& configFile)
 	{
+#ifdef HAVE_XML
 		if(StringHelper::endsWith(configFile, _T("xml")))
 		{
-			DOMConfigurator::configureAndWatch(configFile, 3000);
+			xml::DOMConfigurator::configureAndWatch(configFile, 3000);
 		} 
 		else
+#endif
 		{
 			PropertyConfigurator::configureAndWatch(configFile, 3000);
 		}
