@@ -14,12 +14,10 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#include <log4cxx/helpers/datagrampacket.h>
-#include <log4cxx/helpers/datagramsocket.h>
-#include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/socketimpl.h>
+#include <log4cxx/config.h>
 
 #ifdef WIN32
+#include <windows.h>
 #include <winsock.h>
 #else
 #include <sys/socket.h>
@@ -30,6 +28,11 @@
 #include <sys/time.h>
 #include <sys/types.h>
 #endif
+
+#include <log4cxx/helpers/datagrampacket.h>
+#include <log4cxx/helpers/datagramsocket.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/socketimpl.h>
 
 using namespace log4cxx::helpers;
 

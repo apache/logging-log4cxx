@@ -14,12 +14,10 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#include <log4cxx/helpers/socket.h>
-#include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/socketoutputstream.h>
-#include <log4cxx/helpers/socketinputstream.h>
+#include <log4cxx/config.h>
 
 #ifdef WIN32
+#include <windows.h>
 #include <winsock.h>
 #else
 #include <sys/socket.h>
@@ -28,6 +26,11 @@
 #include <unistd.h>
 #include <netdb.h>
 #endif
+
+#include <log4cxx/helpers/socket.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/socketoutputstream.h>
+#include <log4cxx/helpers/socketinputstream.h>
 
 #include <string.h>
 

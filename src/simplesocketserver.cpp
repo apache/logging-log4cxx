@@ -14,6 +14,12 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
+#include <log4cxx/config.h>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <log4cxx/logger.h>
 #include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/helpers/socket.h>
@@ -24,10 +30,6 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
-
-#ifdef WIN32
-#include <windows.h>
-#endif
 
 using namespace log4cxx;
 using namespace log4cxx::xml;

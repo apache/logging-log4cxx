@@ -14,13 +14,8 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#include <log4cxx/helpers/inetaddress.h>
-#include <log4cxx/helpers/loglog.h>
-
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-
 #ifdef WIN32
+#include <windows.h>
 #include <winsock.h>
 #else
 #include <sys/socket.h>
@@ -31,6 +26,12 @@ using namespace log4cxx::helpers;
 #include <string.h>
 #endif
  
+#include <log4cxx/helpers/inetaddress.h>
+#include <log4cxx/helpers/loglog.h>
+
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+
 InetAddress::InetAddress() : address(0)
 {
 }

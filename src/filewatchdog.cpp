@@ -18,6 +18,10 @@
 #include <log4cxx/helpers/loglog.h>
 #include <sys/stat.h>
 
+#ifdef WIN32
+#include <errno.h>
+#endif
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 

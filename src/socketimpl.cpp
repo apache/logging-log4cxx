@@ -14,15 +14,10 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#include <log4cxx/helpers/socketimpl.h>
-#include <log4cxx/helpers/loglog.h>
-
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-
-IMPLEMENT_LOG4CXX_OBJECT(SocketImpl)
+#include <log4cxx/config.h>
 
 #ifdef WIN32
+#include <windows.h>
 #include <winsock.h>
 #else
 #include <sys/socket.h>
@@ -33,6 +28,14 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketImpl)
 #include <sys/time.h>
 #include <sys/types.h>
 #endif
+
+#include <log4cxx/helpers/socketimpl.h>
+#include <log4cxx/helpers/loglog.h>
+
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+
+IMPLEMENT_LOG4CXX_OBJECT(SocketImpl)
 
 #include <string.h>
 #include <assert.h>
@@ -264,7 +267,7 @@ String SocketImpl::toString() const
 }
 
 // thanks to Yves Mettier (ymettier@libertysurf.fr) for this routine
-size_t SocketImpl::read(void * buf, size_t len)
+size_t SocketImpl::read(void * buf, size_t len) const
 {
 //	LOGLOG_DEBUG(_T("SocketImpl::reading ") << len << _T(" bytes."));
 	int len_read = 0;

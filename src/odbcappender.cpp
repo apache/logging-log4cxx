@@ -14,6 +14,12 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
+#include <log4cxx/config.h>
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <log4cxx/db/odbcappender.h>
 
 #ifdef HAVE_ODBC
@@ -199,7 +205,8 @@ void ODBCAppender::close()
 	} 
 	catch (SQLException& e)
 	{
-		errorHandler->error(_T("Error closing connection"), e, ErrorCode::GENERIC_FAILURE);
+		errorHandler->error(_T("Error closing connection"), 
+			e, ErrorCode::GENERIC_FAILURE);
 	}
 
 	if (connection != SQL_NULL_HDBC)

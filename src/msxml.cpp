@@ -19,6 +19,7 @@
 
 #ifdef HAVE_MS_XML
 
+#include <windows.h>
 #include <log4cxx/helpers/msxml.h>
 #include <log4cxx/helpers/loglog.h>
 #include <objbase.h>

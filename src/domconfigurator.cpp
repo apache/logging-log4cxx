@@ -18,6 +18,14 @@
 
 #ifdef HAVE_XML
 
+#ifdef HAVE_LIBXML2
+#include <log4cxx/helpers/gnomexml.h>
+#elif defined(HAVE_MS_XML)
+#include <windows.h>
+#include <log4cxx/helpers/msxml.h>
+#endif
+
+
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>
@@ -36,12 +44,6 @@
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggingevent.h>
-
-#ifdef HAVE_LIBXML2
-#include <log4cxx/helpers/gnomexml.h>
-#elif defined(HAVE_MS_XML)
-#include <log4cxx/helpers/msxml.h>
-#endif
 
 using namespace log4cxx;
 using namespace log4cxx::xml;

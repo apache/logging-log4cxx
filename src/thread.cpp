@@ -14,6 +14,12 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
+#include <log4cxx/config.h>
+
+#if defined(HAVE_MS_THREAD)
+#include <windows.h>
+#endif
+
 #include <log4cxx/helpers/thread.h>
 #include <log4cxx/helpers/loglog.h>
 
@@ -34,7 +40,6 @@ void * threadProc(void * arg)
 	pthread_exit(0);
 }
 #elif defined(HAVE_MS_THREAD)
-#include <windows.h>
 DWORD WINAPI threadProc(void * arg)
 {
 //	LogLog::debug(_T("entering thread proc"));
@@ -53,7 +58,7 @@ Thread::Thread() : thread(0)
 	addRef();
 }
 
-Thread::Thread(RunnablePtr runnable) : thread(0), runnable(runnable)
+Thread::Thread(RunnablePtr runnable) : runnable(runnable), thread(0)
 {
 	addRef();
 }
@@ -82,6 +87,7 @@ unsigned long Thread::getCurrentThreadId()
 
 void Thread::start()
 {
+	parentMDCMap = MDC::getContext();
 #ifdef HAVE_PTHREAD
 //	LogLog::debug(_T("Thread::start"));
 	if (::pthread_create((pthread_t *)&thread, NULL, threadProc, this) != 0)
@@ -101,6 +107,7 @@ void Thread::start()
 
 void Thread::run()
 {
+	MDC::setContext(parentMDCMap);
 	if (runnable != 0)
 	{
 		runnable->run();

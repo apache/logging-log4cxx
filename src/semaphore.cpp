@@ -14,7 +14,7 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#include <log4cxx/helpers/semaphore.h>
+#include <log4cxx/config.h>
 
 #ifdef HAVE_PTHREAD
 #include <semaphore.h>
@@ -22,6 +22,8 @@
 #include <windows.h>
 #include <limits.h>
 #endif
+
+#include <log4cxx/helpers/semaphore.h>
 
 using namespace log4cxx::helpers;
 

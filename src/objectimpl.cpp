@@ -14,11 +14,13 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
  
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/config.h>
 
 #ifdef HAVE_MS_THREAD
 #include <windows.h>
 #endif
+
+#include <log4cxx/helpers/objectimpl.h>
 
 using namespace log4cxx::helpers;
 

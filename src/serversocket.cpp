@@ -15,14 +15,17 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <log4cxx/helpers/serversocket.h>
-#include <log4cxx/helpers/socket.h>
+#include <log4cxx/config.h>
 
 #ifdef WIN32
+#include <windows.h>
 #include <winsock.h>
 #else
 #include <netinet/in.h>
 #endif
+
+#include <log4cxx/helpers/serversocket.h>
+#include <log4cxx/helpers/socket.h>
 
 #include <assert.h>
 

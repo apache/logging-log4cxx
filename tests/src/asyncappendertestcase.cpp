@@ -89,7 +89,8 @@ public:
 	// closed
 	void test3()
 	{
-		int LEN = 200;
+		typedef std::vector<spi::LoggingEventPtr>::size_type size_type;
+		size_type LEN = 200;
 		LoggerPtr root = Logger::getRootLogger();
 		LayoutPtr layout = new SimpleLayout();
 		VectorAppenderPtr vectorAppender = new VectorAppender();
@@ -98,7 +99,7 @@ public:
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
-		for (int i = 0; i < LEN; i++)
+		for (size_type i = 0; i < LEN; i++)
 		{
 			LOG4CXX_DEBUG(root, _T("message") << i);
 		}

@@ -14,14 +14,16 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#include <log4cxx/helpers/condition.h>
+#include <log4cxx/config.h>
 
 #ifdef HAVE_MS_THREAD
+#ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x0400 // SignalObjectAndWait
-#ifdef HAVE_MS_THREAD
+#endif
 #include <windows.h>
 #endif
-#endif
+
+#include <log4cxx/helpers/condition.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
