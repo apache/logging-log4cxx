@@ -69,23 +69,23 @@ void ObjectImpl::releaseRef()
 
 void ObjectImpl::lock()
 {
-	cs.lock();
+	mutex.lock();
 }
 
 void ObjectImpl::unlock()
 {
-	cs.unlock();
+	mutex.unlock();
 }
 
 void ObjectImpl::wait()
 {
-	cs.unlock();
-	sem.wait();
-	cs.lock();
+	mutex.unlock();
+	cond.wait(mutex);
+	mutex.lock();
 }
 
 void ObjectImpl::notify()
 {
-	sem.post();
+	cond.signal();
 }
 
