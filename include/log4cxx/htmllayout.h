@@ -18,6 +18,7 @@
 #define _LOG4CXX_HTML_LAYOUT_H
 
 #include <log4cxx/layout.h>
+#include <log4cxx/helpers/iso8601dateformat.h>
 
 namespace log4cxx
 {
@@ -51,6 +52,8 @@ namespace log4cxx
 		bool locationInfo; //= false
 
 		String title;
+
+		helpers::ISO8601DateFormat dateFormat;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(HTMLLayout)
