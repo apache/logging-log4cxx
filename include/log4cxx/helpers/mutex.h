@@ -20,7 +20,7 @@
 #include <log4cxx/portability.h>
 #include <log4cxx/helpers/exception.h>
 
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 #include <pthread.h>
 #endif
 
@@ -44,9 +44,9 @@ namespace log4cxx
 			void unlock();
 
 		protected:
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 			pthread_mutex_t mutex;
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 			void * mutex;
 #endif
 		};

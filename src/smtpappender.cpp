@@ -16,7 +16,7 @@
  
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_SMTP
+#ifdef LOG4CXX_HAVE_SMTP
 
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/level.h>
@@ -429,5 +429,5 @@ void SMTPAppender::setEvaluatorClass(const String& value)
 		TriggeringEventEvaluator::getStaticClass(), evaluator);
 }
 
-#endif //HAVE_SMTP
+#endif //LOG4CXX_HAVE_SMTP
 

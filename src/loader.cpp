@@ -77,7 +77,7 @@ istream * Loader::getResourceAsStream(const String& name)
 		return 0;
 	}
 
-#ifdef UNICODE
+#ifdef LOG4CXX_UNICODE
 		std::wifstream * stream = new std::wifstream();
 #else
 		std::ifstream * stream = new std::ifstream();

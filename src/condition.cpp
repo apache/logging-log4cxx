@@ -16,7 +16,7 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_MS_THREAD
+#ifdef LOG4CXX_HAVE_MS_THREAD
 #ifndef _WIN32_WINNT
 #define _WIN32_WINNT 0x0400 // SignalObjectAndWait
 #endif
@@ -30,9 +30,9 @@ using namespace log4cxx;
 
 Condition::Condition()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	::pthread_cond_init(&condition, 0);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	waiters = 0;
 	wasBroadCast = false;
 	waitersDone = ::CreateEvent(0, FALSE, FALSE, NULL);
@@ -41,26 +41,26 @@ Condition::Condition()
 
 Condition::~Condition()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	::pthread_cond_destroy(&condition);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	::CloseHandle(waitersDone);
 #endif
 }
 
 void Condition::broadcast()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	::pthread_cond_broadcast(&condition);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 #endif
 }
 
 void Condition::signal()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	::pthread_cond_signal(&condition);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	// If there aren't any waiters, then this is a no-op.  Note that
 	// this function *must* be called with the <external_mutex> held
 	// since other wise there is a race condition that can lead to the
@@ -69,7 +69,7 @@ void Condition::signal()
 	// updated by another thread.
 
 	// if (waiters != 0) (atomic comparison)
-#	if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
+#	if LOG4CXX_LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	if ((long)InterlockedCompareExchange((void**)&waiters, 0, 0) != 0)
 #	else
 	if ((long)InterlockedCompareExchange(&waiters, 0, 0) != 0)
@@ -82,11 +82,11 @@ void Condition::signal()
 
 void Condition::wait(Mutex& mutex)
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	::pthread_cond_wait(&condition, &mutex.mutex);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 
-#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
+#if LOG4CXX_LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	::InterlockedIncrement((long *)&waiters);
 #else
 	::InterlockedIncrement(&waiters);
@@ -98,7 +98,7 @@ void Condition::wait(Mutex& mutex)
 		throw ConditionException();
 	}
 
-#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
+#if LOG4CXX_LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	long oldWaiters = ::InterlockedDecrement((long*)&waiters);
 #else
 	long oldWaiters = ::InterlockedDecrement(&waiters);

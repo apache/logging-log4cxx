@@ -19,7 +19,7 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_LIBXML2
+#ifdef LOG4CXX_HAVE_LIBXML2
 
 #include <log4cxx/helpers/xml.h>
 #include <log4cxx/helpers/objectimpl.h>
@@ -128,5 +128,5 @@ namespace log4cxx
 	}  // namespace helpers
 }; // namespace log4cxx
 
-#endif // HAVE_LIBXML2
+#endif // LOG4CXX_HAVE_LIBXML2
 #endif // _LOG4CXX_HELPERS_MSXML_H

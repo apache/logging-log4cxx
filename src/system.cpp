@@ -16,11 +16,11 @@
  
 #include <log4cxx/helpers/system.h>
 
-#if defined(HAVE_FTIME)
+#if defined(LOG4CXX_HAVE_FTIME)
 #include <sys/timeb.h>
 #endif
 
-#if defined(HAVE_GETTIMEOFDAY)
+#if defined(LOG4CXX_HAVE_GETTIMEOFDAY)
 #include <sys/time.h>
 #endif
 
@@ -32,12 +32,12 @@ using namespace log4cxx::helpers;
 
 int64_t System::currentTimeMillis()
 {
-#if defined(HAVE_GETTIMEOFDAY)
+#if defined(LOG4CXX_HAVE_GETTIMEOFDAY)
     timeval tp;
     ::gettimeofday(&tp, 0);
 
     return ((int64_t)tp.tv_sec * 1000) + (int64_t)(tp.tv_usec / 1000);
-#elif defined(HAVE_FTIME)
+#elif defined(LOG4CXX_HAVE_FTIME)
     struct timeb tp;
     ::ftime(&tp);
 
@@ -73,7 +73,7 @@ void System::setProperty(const String& key, const String& value)
 		throw IllegalArgumentException(_T("key is empty"));
 	}
 	
-#ifndef HAVE_SETENV
+#ifndef LOG4CXX_HAVE_SETENV
 	String strEnv = key + _T("=") + value;
 	USES_CONVERSION;
 	::putenv((char *)T2A(strEnv.c_str()));

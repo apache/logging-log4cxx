@@ -1,6 +1,6 @@
 lib_LTLIBRARIES = liblog4cxx.la
 
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
 
 liblog4cxx_la_SOURCES = \
 	appenderattachableimpl.cpp \

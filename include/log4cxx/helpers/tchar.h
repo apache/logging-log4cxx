@@ -76,7 +76,7 @@ namespace std
 	}
 }
 
-#ifdef MUST_UNDEF_T
+#ifdef LOG4CXX_MUST_UNDEF_T
 #undef _T
 #endif
 
@@ -98,7 +98,7 @@ namespace std
 #define A2W(src) Convert::ansiToUnicode((wchar_t *)_dst, src)
 #endif
 
-#ifdef UNICODE
+#ifdef LOG4CXX_UNICODE
 	#include <wctype.h>
 
 #ifndef _T
@@ -137,7 +137,7 @@ namespace std
 	#define ttol(s) wcstol(s, 0, 10)
 	#define itot _itow
 	#define tcscmp wcscmp
-#else // Not UNICODE
+#else // Not LOG4CXX_UNICODE
 	#include <ctype.h>
 
 #ifndef _T
@@ -174,7 +174,7 @@ namespace std
 	#define ttol atol
 	#define itot itoa
 	#define tcscmp strcmp
-#endif // UNICODE
+#endif // LOG4CXX_UNICODE
 
 #define _MinInc  size_t(512)
 #define _MaxInc size_t(100 * 1024)

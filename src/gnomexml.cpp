@@ -16,7 +16,7 @@
  
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_LIBXML2
+#ifdef LOG4CXX_HAVE_LIBXML2
 
 #include <log4cxx/helpers/gnomexml.h>
 #include <log4cxx/helpers/loglog.h>
@@ -239,4 +239,4 @@ XMLDOMNodePtr GnomeXMLDOMNodeList::item(int index)
 	}
 }
 
-#endif // HAVE_LIBXML2
+#endif // LOG4CXX_HAVE_LIBXML2

@@ -86,7 +86,7 @@ void PropertyConfigurator::doConfigure(const String& configFileName,
 
 	try
 	{
-#ifdef UNICODE
+#ifdef LOG4CXX_UNICODE
 		std::wifstream istream;
 #else
 		std::ifstream istream;

@@ -70,7 +70,7 @@ void DateFormat::format(ostream& os, int64_t timeMillis) const
 	time_t time = (time_t)(localTimeMillis/1000);
 	const tm * tm = ::gmtime(&time);
 
-#ifdef UNICODE
+#ifdef LOG4CXX_UNICODE
 	size_t len = ::wcsftime(buffer, 255, dateFormat.c_str(), tm);
 #else
 	size_t len = ::strftime(buffer, 255, dateFormat.c_str(), tm);

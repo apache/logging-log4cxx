@@ -20,7 +20,7 @@
 #include <log4cxx/portability.h>
 #include <log4cxx/helpers/exception.h>
 
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 #include <semaphore.h>
 #endif
 
@@ -32,13 +32,13 @@ namespace log4cxx
 		{
 		};
 
-#ifdef HAVE_MS_THREAD
+#ifdef LOG4CXX_HAVE_MS_THREAD
 		class Condition;
 #endif
 
 		class LOG4CXX_EXPORT Semaphore
 		{
-#ifdef HAVE_MS_THREAD
+#ifdef LOG4CXX_HAVE_MS_THREAD
 		friend class Condition;
 #endif
 		public:
@@ -49,9 +49,9 @@ namespace log4cxx
 			void post();
 
 		protected:
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 			sem_t semaphore;
-#elif defined (HAVE_MS_THREAD)
+#elif defined (LOG4CXX_HAVE_MS_THREAD)
 			void * semaphore;
 #endif
 		};

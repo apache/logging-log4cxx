@@ -22,7 +22,7 @@
 
 #include <log4cxx/db/odbcappender.h>
 
-#ifdef HAVE_ODBC
+#ifdef LOG4CXX_HAVE_ODBC
 
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
@@ -107,7 +107,7 @@ void ODBCAppender::execute(const String& sql)
 			throw SQLException(ret);
 		}
 
-#if defined(HAVE_MS_ODBC)
+#if defined(LOG4CXX_HAVE_MS_ODBC)
 		ret = SQLExecDirect(stmt, (SQLTCHAR *)sql.c_str(), SQL_NTS);
 #else
 		USES_CONVERSION;
@@ -171,7 +171,7 @@ SQLHDBC ODBCAppender::getConnection()
 		}
 
 
-#if defined(HAVE_MS_ODBC)
+#if defined(LOG4CXX_HAVE_MS_ODBC)
 		ret = SQLConnect(connection,
 			(SQLTCHAR *)databaseURL.c_str(), SQL_NTS,
 			(SQLTCHAR *)databaseUser.c_str(), SQL_NTS,
@@ -265,4 +265,4 @@ void ODBCAppender::setSql(const String& s)
 	}
 }
 
-#endif //HAVE_ODBC
+#endif //LOG4CXX_HAVE_ODBC

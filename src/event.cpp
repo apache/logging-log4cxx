@@ -16,21 +16,21 @@
  
 #include <log4cxx/helpers/event.h>
 
-#ifdef HAVE_MS_THREAD
+#ifdef LOG4CXX_HAVE_MS_THREAD
 #include <windows.h>
 #endif 
 
 using namespace log4cxx::helpers;
 
 Event::Event(bool manualReset, bool initialState)
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 : manualReset(manualReset), state(initialState)
 #endif 
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_cond_init(&condition, 0);
 	pthread_mutex_init(&mutex, 0);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	event = ::CreateEvent(
 		NULL, 
 		manualReset ? TRUE : FALSE, 
@@ -46,17 +46,17 @@ Event::Event(bool manualReset, bool initialState)
 
 Event::~Event()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	::pthread_cond_destroy(&condition);
 	pthread_mutex_destroy(&mutex);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	::CloseHandle((HANDLE)event);
 #endif 
 }
 
 void Event::set()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	if (pthread_mutex_lock(&mutex) != 0)
 	{
 		throw EventException(_T("Cannot lock mutex"));
@@ -89,7 +89,7 @@ void Event::set()
 	{
 		throw EventException(_T("Cannot unlock mutex"));
 	}
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (!::SetEvent((HANDLE)event))
 	{
 		throw EventException(_T("Cannot set event"));
@@ -99,7 +99,7 @@ void Event::set()
 
 void Event::reset()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	if (pthread_mutex_lock(&mutex) != 0)
 	{
 		throw EventException(_T("Cannot lock mutex"));
@@ -111,7 +111,7 @@ void Event::reset()
 	{
 		throw EventException(_T("Cannot unlock mutex"));
 	}
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (!::ResetEvent((HANDLE)event))
 	{
 		throw EventException(_T("Cannot reset event"));
@@ -121,7 +121,7 @@ void Event::reset()
 
 void Event::wait()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	if (pthread_mutex_lock(&mutex) != 0)
 	{
 		throw EventException(_T("Cannot lock mutex"));
@@ -144,7 +144,7 @@ void Event::wait()
 	{
 		throw EventException(_T("Cannot unlock mutex"));
 	}
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (::WaitForSingleObject((HANDLE)event, INFINITE)
 		!= WAIT_OBJECT_0)
 	{

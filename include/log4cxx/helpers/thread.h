@@ -131,9 +131,9 @@ namespace log4cxx
 		
 		protected:
 			/** Thread descriptor */
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 			pthread_t thread;
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 			void * thread;
 #endif
 			RunnablePtr runnable;

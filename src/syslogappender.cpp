@@ -21,7 +21,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
 
-#ifdef HAVE_SYSLOG
+#ifdef LOG4CXX_HAVE_SYSLOG
 	#include <syslog.h>	
 #else
 	/* facility codes */
@@ -253,7 +253,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event)
 
 // On the local host, we can directly use the system function 'syslog'
 // if it is available
-#ifdef HAVE_SYSLOG	
+#ifdef LOG4CXX_HAVE_SYSLOG	
 	if (sw == 0)
 	{
   		StringBuffer sbuf;
@@ -318,7 +318,7 @@ void SyslogAppender::setSyslogHost(const String& syslogHost)
 	
 // On the local host, we can directly use the system function 'syslog'
 // if it is available (cf. append)
-#ifdef HAVE_SYSLOG	
+#ifdef LOG4CXX_HAVE_SYSLOG	
 	if (syslogHost != _T("localhost") && syslogHost != _T("127.0.0.1")
 	&& !syslogHost.empty())
 #endif		

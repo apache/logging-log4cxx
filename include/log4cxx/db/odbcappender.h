@@ -19,14 +19,14 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_ODBC
+#ifdef LOG4CXX_HAVE_ODBC
  
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <list>
 
-#ifdef HAVE_MS_ODBC
+#ifdef LOG4CXX_HAVE_MS_ODBC
 #include <windows.h>
 #endif
 
@@ -268,5 +268,5 @@ namespace log4cxx
     } // namespace db
 }; // namespace log4cxx
 
-#endif // HAVE_ODBC
+#endif // LOG4CXX_HAVE_ODBC
 #endif // _LOG4CXX_NET_SOCKET_APPENDER_H

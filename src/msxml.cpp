@@ -17,7 +17,7 @@
 #define _WIN32_DCOM
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_MS_XML
+#ifdef LOG4CXX_HAVE_MS_XML
 
 #include <windows.h>
 #include <log4cxx/helpers/msxml.h>

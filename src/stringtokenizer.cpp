@@ -24,7 +24,7 @@ StringTokenizer::StringTokenizer(const String& str, const String& delim)
 {
 	this->str = new TCHAR[str.length() + 1];
 
-#ifdef UNICODE
+#ifdef LOG4CXX_UNICODE
 	wcscpy(this->str, str.c_str());
 #if defined(WIN32) || defined(_WIN32)
 	token = wcstok(this->str, this->delim.c_str());
@@ -56,7 +56,7 @@ String StringTokenizer::nextToken()
 
 	String currentToken = token;
 
-#ifdef UNICODE
+#ifdef LOG4CXX_UNICODE
 #if defined(WIN32) || defined(_WIN32)
 	token = wcstok(0, delim.c_str());
 #else

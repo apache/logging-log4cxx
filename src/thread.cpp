@@ -16,7 +16,7 @@
  
 #include <log4cxx/portability.h>
 
-#if defined(HAVE_MS_THREAD)
+#if defined(LOG4CXX_HAVE_MS_THREAD)
 #include <windows.h>
 #endif
 
@@ -28,7 +28,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Runnable)
 IMPLEMENT_LOG4CXX_OBJECT(Thread)
 
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 #include <pthread.h>
 #include <unistd.h> // usleep
 void * threadProc(void * arg)
@@ -40,7 +40,7 @@ void * threadProc(void * arg)
 	pthread_exit(0);
 	return 0;
 }
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 DWORD WINAPI threadProc(void * arg)
 {
 //	LogLog::debug(_T("entering thread proc"));
@@ -68,9 +68,9 @@ Thread::~Thread()
 {
 	if (thread != 0)
 	{
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 		::pthread_join(thread, 0);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 		::CloseHandle((HANDLE)thread);
 #endif
 		LOGLOG_DEBUG(_T("Thread destroyed."));
@@ -79,9 +79,9 @@ Thread::~Thread()
 
 unsigned long Thread::getCurrentThreadId()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	return (unsigned long)::pthread_self();
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	return ::GetCurrentThreadId();
 #endif
 }
@@ -89,13 +89,13 @@ unsigned long Thread::getCurrentThreadId()
 void Thread::start()
 {
 	parentMDCMap = MDC::getContext();
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 //	LogLog::debug(_T("Thread::start"));
 	if (::pthread_create(&thread, NULL, threadProc, this) != 0)
 	{
 		throw ThreadException();
 	}
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	unsigned long threadId = 0;
 	thread =
 		(void *)::CreateThread(NULL, 0, threadProc, this, 0, &threadId);
@@ -118,9 +118,9 @@ void Thread::run()
 void Thread::join()
 {
 	bool bSuccess = true;
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	::pthread_join(thread, 0);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (::WaitForSingleObject((HANDLE)thread, INFINITE) != WAIT_OBJECT_0)
 	{
 		bSuccess = false;
@@ -141,7 +141,7 @@ void Thread::join()
 
 void Thread::sleep(long millis)
 {
-#ifdef HAVE_MS_THREAD
+#ifdef LOG4CXX_HAVE_MS_THREAD
 	::Sleep(millis);
 #else
 	::usleep(1000 * millis);
@@ -204,8 +204,8 @@ long Thread::InterlockedIncrement(volatile long * val)
 #elif defined(sparc) && defined(__SUNPRO_CC)
 	sparc_atomic_add_32(val, 1);
 	return *val;
-#elif defined(HAVE_MS_THREAD)
-#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
+#if LOG4CXX_LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	return ::InterlockedIncrement((long *)val);
 #else
 	return ::InterlockedIncrement(val);
@@ -230,8 +230,8 @@ long Thread::InterlockedDecrement(volatile long * val)
 #elif defined(sparc) && defined(__SUNPRO_CC)
 	sparc_atomic_add_32(val, -1);
 	return *val;
-#elif defined(HAVE_MS_THREAD)
-#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
+#if LOG4CXX_LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	return ::InterlockedDecrement((long *)val);
 #else
 	return ::InterlockedDecrement(val);

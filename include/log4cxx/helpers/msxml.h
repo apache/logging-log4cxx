@@ -19,7 +19,7 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_MS_XML
+#ifdef LOG4CXX_HAVE_MS_XML
 
 #include <log4cxx/helpers/xml.h>
 #include <log4cxx/helpers/objectimpl.h>
@@ -127,5 +127,5 @@ namespace log4cxx
 	}  // namespace helpers
 }; // namespace log4cxx
 
-#endif // HAVE_MS_XML
+#endif // LOG4CXX_HAVE_MS_XML
 #endif // _LOG4CXX_HELPERS_MSXML_H

@@ -19,7 +19,7 @@
 
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 #include <pthread.h>
 #endif
 
@@ -36,9 +36,9 @@ namespace log4cxx
 			void SetData(void * data);
 
 		protected:
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 			pthread_key_t key;
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 			void * key;
 #endif
 		};

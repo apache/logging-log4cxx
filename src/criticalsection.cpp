@@ -21,31 +21,31 @@ using namespace log4cxx::helpers;
 
 CriticalSection::CriticalSection() : owningThread(0)
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_mutexattr_t attr;
 	pthread_mutexattr_init(&attr);
 	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
 	pthread_mutex_init(&mutex, &attr);
 	pthread_mutexattr_destroy(&attr);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	InitializeCriticalSection(&mutex);
 #endif						
 }
 
 CriticalSection::~CriticalSection()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_mutex_destroy(&mutex);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	DeleteCriticalSection(&mutex);
 #endif
 }
 
 void CriticalSection::lock()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_mutex_lock(&mutex);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	EnterCriticalSection(&mutex);
 #endif
 	owningThread = Thread::getCurrentThreadId();
@@ -55,9 +55,9 @@ void CriticalSection::unlock()
 {
 	owningThread = 0;
 
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_mutex_unlock(&mutex);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	LeaveCriticalSection(&mutex);
 #endif
 }

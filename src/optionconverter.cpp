@@ -36,7 +36,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-#ifdef HAVE_XML
+#ifdef LOG4CXX_HAVE_XML
 using namespace log4cxx::xml;
 #endif
 
@@ -384,7 +384,7 @@ void OptionConverter::selectAndConfigure(const String& configFileName,
 	ConfiguratorPtr configurator;
 	String clazz = _clazz;
 	
-#ifdef HAVE_XML
+#ifdef LOG4CXX_HAVE_XML
 	if(clazz.empty() && !configFileName.empty() 
 		&& StringHelper::endsWith(configFileName, _T(".xml")))
 	{

@@ -16,11 +16,11 @@
  
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_XML
+#ifdef LOG4CXX_HAVE_XML
 
-#ifdef HAVE_LIBXML2
+#ifdef LOG4CXX_HAVE_LIBXML2
 #include <log4cxx/helpers/gnomexml.h>
-#elif defined(HAVE_MS_XML)
+#elif defined(LOG4CXX_HAVE_MS_XML)
 #include <windows.h>
 #include <log4cxx/helpers/msxml.h>
 #endif
@@ -586,9 +586,9 @@ void DOMConfigurator::doConfigure(const String& filename, spi::LoggerRepositoryP
 
 	try
 	{
-#ifdef HAVE_LIBXML2
+#ifdef LOG4CXX_HAVE_LIBXML2
 		XMLDOMDocumentPtr doc = new GnomeXMLDOMDocument();
-#elif defined(HAVE_MS_XML)
+#elif defined(LOG4CXX_HAVE_MS_XML)
 		XMLDOMDocumentPtr doc = new MsXMLDOMDocument();
 #endif
 		doc->load(filename); 
@@ -735,4 +735,4 @@ String DOMConfigurator::subst(const String& value)
     }
 }
 
-#endif // HAVE_XML
+#endif // LOG4CXX_HAVE_XML

@@ -16,7 +16,7 @@
  
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_MS_THREAD
+#ifdef LOG4CXX_HAVE_MS_THREAD
 #include <windows.h>
 #endif
 

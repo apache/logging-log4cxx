@@ -7,6 +7,8 @@ CVS
 * Renamed config.h to portability.h (fixes an automake problem).
 * Fixed a memory leak in the "trivial" example.
 * Fixed errors in documentation
+* simplesocketserver is now in a separate directory.
+* Fixed global namespace pollution (config_auto.h) (Cesar Eduardo Barros).
 
 Version 0.9.7 (2004-05-10)
 ==========================

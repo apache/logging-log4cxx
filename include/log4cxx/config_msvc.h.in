@@ -25,6 +25,7 @@
 /* XML support */
 #define HAVE_XML 1
 
+/*
 typedef __int64 int64_t;
 
 #if defined(WIN32) || defined(_WIN32)
@@ -56,3 +57,4 @@ typedef __int64 int64_t;
 #endif
 
 #define _WIN32_WINNT 0x0400
+*/

@@ -16,9 +16,9 @@
  
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 #include <pthread.h>
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 #include <windows.h>
 #endif
 
@@ -28,27 +28,27 @@ using namespace log4cxx::helpers;
 
 ThreadSpecificData::ThreadSpecificData() : key(0)
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_key_create(&key, NULL);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	key = (void *)TlsAlloc();
 #endif
 }
 
 ThreadSpecificData::~ThreadSpecificData()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_key_delete(key);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	TlsFree((DWORD)key);
 #endif
 }
 
 void * ThreadSpecificData::GetData() const
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	return pthread_getspecific((pthread_key_t)key);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	return TlsGetValue((DWORD)key);
 #else
 	return key;
@@ -57,9 +57,9 @@ void * ThreadSpecificData::GetData() const
 
 void ThreadSpecificData::SetData(void * data)
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_setspecific((pthread_key_t)key, data);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	TlsSetValue((DWORD)key, data);
 #else
 	key = data;

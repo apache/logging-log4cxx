@@ -16,7 +16,7 @@
  
 #include <log4cxx/portability.h>
 
-#ifdef HAVE_MS_THREAD
+#ifdef LOG4CXX_HAVE_MS_THREAD
 #include <windows.h>
 #endif
 
@@ -27,34 +27,34 @@ using namespace log4cxx;
 
 Mutex::Mutex()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_mutexattr_t attr;
 	pthread_mutexattr_init(&attr);
 	pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_RECURSIVE);
 	pthread_mutex_init(&mutex, &attr);
 	pthread_mutexattr_destroy(&attr);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	mutex = ::CreateMutex(0, 0, 0);
 #endif
 }
 
 Mutex::~Mutex()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_mutex_destroy(&mutex);
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	::CloseHandle(mutex);
 #endif
 }
 
 void Mutex::lock()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	if (pthread_mutex_lock(&mutex) != 0)
 	{
 		throw MutexException();
 	}
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (::WaitForSingleObject(mutex, INFINITE) == WAIT_ABANDONED)
 	{
 		throw MutexException();
@@ -64,12 +64,12 @@ void Mutex::lock()
 
 void Mutex::unlock()
 {
-#ifdef HAVE_PTHREAD
+#ifdef LOG4CXX_HAVE_PTHREAD
 	if (pthread_mutex_unlock(&mutex) != 0)
 	{
 		throw MutexException();
 	}
-#elif defined(HAVE_MS_THREAD)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
 	if (!::ReleaseMutex(mutex))
 	{
 		throw MutexException();

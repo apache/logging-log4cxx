@@ -20,7 +20,7 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/syslogwriter.h>
 
-#ifndef HAVE_SYSLOG
+#ifndef LOG4CXX_HAVE_SYSLOG
 #endif
 
 namespace log4cxx
