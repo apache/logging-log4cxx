@@ -1,0 +1,11 @@
+Main features :
+Loggers, Hierarchy, Filters, Appenders, Layouts
+
+Appenders:
+AsyncAppender, SocketAppender, SocketHubAappender, TelnetAppender, NTEventLogAppender, ConsoleAppender, FileAppender, RollingFileAppender
+
+Layouts:
+TTCCLayout, HTMLLayout, PatternLayout, SimpleLayout, XMLLayout
+
+Configurators:
+DOMConfigurator

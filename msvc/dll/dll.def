@@ -1,0 +1,71 @@
+; log4cxx.def : Declares the module parameters.
+
+LIBRARY   
+
+EXPORTS
+
+;class ConsoleAppender
+??0ConsoleAppender@log4cxx@@QAE@V?$ObjectPtr@VLayout@log4cxx@@@helpers@1@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+
+;class DOMConfigurator
+?doConfigure@DOMConfigurator@xml@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+;?_Nil@?$_Tree@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$ObjectPtr@VAppender@log4cxx@@@helpers@log4cxx@@@2@U_Kfn@?$map@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V?$ObjectPtr@VAppender@log4cxx@@@helpers@log4cxx@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$ObjectPtr@VAppender@log4cxx@@@helpers@log4cxx@@@2@@2@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@V?$ObjectPtr@VAppender@log4cxx@@@helpers@log4cxx@@@2@@std@@1PAU_Node@12@A
+
+;class FileAppender
+??0FileAppender@log4cxx@@QAE@V?$ObjectPtr@VLayout@log4cxx@@@helpers@1@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z
+
+;class InetAddress
+?toString@InetAddress@helpers@log4cxx@@QBE?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ
+
+; class NDC
+?pop@NDC@log4cxx@@SA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ
+?peek@NDC@log4cxx@@SA?AV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@XZ
+?push@NDC@log4cxx@@SAXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+
+;class Level
+?getAllLevel@Level@log4cxx@@SAABV12@XZ
+?getFatalLevel@Level@log4cxx@@SAABV12@XZ
+?getErrorLevel@Level@log4cxx@@SAABV12@XZ
+?getWarnLevel@Level@log4cxx@@SAABV12@XZ
+?getInfoLevel@Level@log4cxx@@SAABV12@XZ
+?getDebugLevel@Level@log4cxx@@SAABV12@XZ
+?getOffLevel@Level@log4cxx@@SAABV12@XZ
+
+;class Logger
+?info@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?debug@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?error@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?fatal@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?warn@Logger@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@PBDH@Z
+?getRootLogger@Logger@log4cxx@@SA?AV?$ObjectPtr@VLogger@log4cxx@@@helpers@2@XZ
+?isInfoEnabled@Logger@log4cxx@@QAE_NXZ
+?getLogger@Logger@log4cxx@@SA?AV?$ObjectPtr@VLogger@log4cxx@@@helpers@2@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+
+;class LogLog
+?setInternalDebugging@LogLog@helpers@log4cxx@@SAX_N@Z
+
+;class LogManager
+?getLoggerRepository@LogManager@log4cxx@@SA?AV?$ObjectPtr@VLoggerRepository@spi@log4cxx@@@helpers@2@XZ
+
+;class OptionConverter
+?toFileSize@OptionConverter@helpers@log4cxx@@SAJABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@J@Z
+
+;class RollingFileAppender
+??0RollingFileAppender@log4cxx@@QAE@V?$ObjectPtr@VLayout@log4cxx@@@helpers@1@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@_N@Z
+
+;class ServerSocket
+?accept@ServerSocket@helpers@log4cxx@@QAE?AV?$ObjectPtr@VSocket@helpers@log4cxx@@@23@XZ
+??0ServerSocket@helpers@log4cxx@@QAE@H@Z
+??1ServerSocket@helpers@log4cxx@@QAE@XZ
+
+;class SocketException
+
+;class SocketNode
+??0SocketNode@net@log4cxx@@QAE@V?$ObjectPtr@VSocket@helpers@log4cxx@@@helpers@2@V?$ObjectPtr@VLoggerRepository@spi@log4cxx@@@42@@Z
+
+;class Thread
+?start@Thread@helpers@log4cxx@@QAEXXZ
+??0Thread@helpers@log4cxx@@QAE@V?$ObjectPtr@VRunnable@helpers@log4cxx@@@12@@Z
+
+;class TTCCLayout
+??0TTCCLayout@log4cxx@@QAE@XZ
