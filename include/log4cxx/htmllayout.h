@@ -103,12 +103,12 @@ namespace log4cxx
 		/**
 		Returns the content type output by this layout, i.e "text/html".
 		*/
-		tstring getContentType() const { return _T("text/html"); }
+		virtual tstring getContentType() const { return _T("text/html"); }
 
 		/**
 		No options to activate.
 		*/
-		void activateOptions() {}
+		virtual void activateOptions() {}
 
 		/**
 		Set options

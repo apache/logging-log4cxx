@@ -56,7 +56,7 @@ namespace log4cxx
 		Returns the content type output by this layout. The base class
 		returns "text/plain".
 		*/
-		tstring getContentType() const { return _T("text/plain"); }
+		virtual tstring getContentType() const { return _T("text/plain"); }
 
 		/**
 		Append the header for the layout format. The base class does
