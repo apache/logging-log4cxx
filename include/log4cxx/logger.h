@@ -19,9 +19,11 @@
 
 #include <log4cxx/config.h>
 #include <vector>
-#include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/level.h>
+#include <log4cxx/spi/loggerfactory.h>
+#include <log4cxx/spi/loggerrepository.h>
 
 namespace log4cxx
 {
@@ -29,6 +31,9 @@ namespace log4cxx
 	{
 		class LoggerFactory;
 		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
+
+		class LoggerRepository;
+		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
 	};
 	
     class Logger;

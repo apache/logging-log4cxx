@@ -96,7 +96,7 @@ namespace log4cxx
 
             virtual LoggerPtr getLogger(const tstring& name) = 0;
 
-            virtual LoggerPtr getLogger(const tstring& name, LoggerFactoryPtr 
+            virtual LoggerPtr getLogger(const tstring& name, spi::LoggerFactoryPtr 
 				factory) = 0;
 				
             virtual LoggerPtr getRootLogger() = 0;
