@@ -1,1 +1,2 @@
-./consoleappender_test | cmp consoleappender_test.witness
+#! /bin/sh
+./consoleappender_test > result && diff result consoleappender_test.witness
