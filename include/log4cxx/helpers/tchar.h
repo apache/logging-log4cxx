@@ -41,54 +41,38 @@ public:
 		::wcstombs(dst, src, 512);
 		return dst;
 	}
+	
+	static void int64ToString(wchar_t * dst, size_t maxlen, const int64_t& ll)
+	{
+#ifdef WIN32
+		_snwprintf(dst, maxlen, L"%I64d", ll);
+#else
+		swprintf(dst, maxlen, L"%lld", ll);
+#endif
+	}
+	
+	static void int64ToString(char * dst, size_t maxlen, const int64_t& ll)
+	{
+#ifdef WIN32
+		snprintf(dst, maxlen, "%I64d", ll);
+#else
+		snprintf(dst, maxlen, "%lld", ll);
+#endif
+	}
 };
 
-#ifndef UNICODE
-#if _MSC_VER == 1200 // MSDEV 6
-inline std::ostream& operator<<(std::ostream& os, const int64_t& ll)
+namespace std 
 {
-	char buff[21];
-	sprintf(buff, "%I64d", ll);
-	os << buff;
-	return os;
+	template<typename _CharT, typename _Traits>
+		basic_ostream<_CharT, _Traits>&
+		operator<<(basic_ostream<_CharT, _Traits>& os, const int64_t& ll)
+	{
+		_CharT buff[21];
+		Convert::int64ToString(buff, ll);
+		os << buff;
+		return os;
+	}
 }
-#else
-inline std::ostream& operator<<(const int64_t& ll, std::ostream& os)
-{
-	char buff[21];
-#ifdef WIN32
-	sprintf(buff, "%I64d", ll);
-#else
-	sprintf(buff, "%lld", ll);
-#endif
-	os << buff;
-	return os;
-}
-#endif // _MSC_VER == 1200
-#else
-#if _MSC_VER == 1200 // MSDEV 6
-inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
-{
-	wchar_t buff[21];
-	_snwprintf(buff, 20, L"%I64d", ll);
-	os << buff;
-	return os;
-}
-#else
-inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
-{
-	wchar_t buff[21];
-#ifdef WIN32
-	_snwprintf(buff, 20, L"%I64d", ll);
-#else
-	swprintf(buff, 20, L"%lld", ll);
-#endif
-	os << buff;
-	return os;
-}
-#endif // _MSC_VER == 1200
-#endif // UNICODE
-
 
 #ifdef WIN32
 #ifndef USES_CONVERSION
