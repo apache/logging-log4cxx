@@ -20,7 +20,6 @@
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>
-#include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/exception.h>
 
 namespace log4cxx
@@ -33,6 +32,23 @@ namespace log4cxx
 
     namespace spi
 	{
+		class ErrorCode
+		{
+		public:
+			enum
+			{
+				GENERIC_FAILURE = 0,
+				WRITE_FAILURE = 1,
+				FLUSH_FAILURE = 2,
+				CLOSE_FAILURE = 3,
+				FILE_OPEN_FAILURE = 4,
+				MISSING_LAYOUT = 5,
+				ADDRESS_PARSE_FAILURE = 6,
+			};
+		};
+
+		class LoggingEvent;
+
 		class ErrorHandler;
 		typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
 
