@@ -23,10 +23,6 @@
 #include <time.h>
 #include <log4cxx/helpers/timezone.h>
 
-#ifdef WIN32
-#include <errno.h>
-#endif
-
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
