@@ -34,6 +34,7 @@ liblog4cxx_la_SOURCES = \
 	levelmatchfilter.cpp \
 	levelrangefilter.cpp \
 	loader.cpp\
+	locale.cpp\
 	logger.cpp \
 	loggingevent.cpp \
 	loglog.cpp \
@@ -52,7 +53,9 @@ liblog4cxx_la_SOURCES = \
 	patternparser.cpp \
 	properties.cpp \
 	propertyconfigurator.cpp \
+	propertyresourcebundle.cpp \
 	propertysetter.cpp \
+	resourcebundle.cpp \
 	rollingfileappender.cpp \
 	rootcategory.cpp \
 	serversocket.cpp \
@@ -66,6 +69,7 @@ liblog4cxx_la_SOURCES = \
 	socketinputstream.cpp \
 	socketnode.cpp \
 	socketoutputstream.cpp \
+	stringhelper.cpp \
 	stringmatchfilter.cpp \
 	stringtokenizer.cpp \
 	syslogappender.cpp \
