@@ -71,7 +71,12 @@ void ODBCAppender::execute(const tstring& sql)
 			throw SQLException(ret);
 		}
 
+#if defined(WIN32) | !defined(UNICODE)
 		ret = SQLExecDirect(stmt, (SQLTCHAR *)sql.c_str(), SQL_NTS);
+#else
+		USES_CONVERSION;
+		ret = SQLExecDirect(stmt, (SQLCHAR *)W2A(sql.c_str()), SQL_NTS);
+#endif
 		if (ret < 0)
 		{
 			throw SQLException(ret);
@@ -79,13 +84,6 @@ void ODBCAppender::execute(const tstring& sql)
 	} 
 	catch (SQLException& e)
 	{
-		UCHAR plm_szSqlState[256] = "", plm_szErrorMsg[256] = "";
-		SDWORD plm_pfNativeError = 0L;
-		SWORD plm_pcbErrorMsg = 0;
-
-		SQLGetDiagRec(SQL_HANDLE_STMT, stmt, 1, plm_szSqlState, &plm_pfNativeError,
-			plm_szErrorMsg, 255, &plm_pcbErrorMsg);
-
 		if (stmt != SQL_NULL_HSTMT)
 		{
 			SQLFreeHandle(SQL_HANDLE_STMT, stmt);
@@ -137,10 +135,21 @@ SQLHDBC ODBCAppender::getConnection()
 		}
 
 
+#if defined(WIN32) | !defined(UNICODE)
 		ret = SQLConnect(connection,
 			(SQLTCHAR *)databaseURL.c_str(), SQL_NTS,
-			(SQLTCHAR *)databaseUser.c_str(), SQL_NTS, 
+			(SQLTCHAR *)databaseUser.c_str(), SQL_NTS,
 			(SQLTCHAR *)databasePassword.c_str(), SQL_NTS);
+#else
+		USES_CONVERSION;
+		std::string URL = W2A(databaseURL.c_str());
+		std::string user = W2A(databaseUser.c_str());
+		std::string password = W2A(databasePassword.c_str());
+		ret = SQLConnect(connection,
+			(SQLCHAR *)URL.c_str(), SQL_NTS,
+			(SQLCHAR *)user.c_str(), SQL_NTS,
+			(SQLCHAR *)password.c_str(), SQL_NTS);
+#endif
 		if (ret < 0)
 		{
 			SQLFreeHandle(SQL_HANDLE_DBC, connection);

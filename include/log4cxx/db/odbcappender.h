@@ -28,6 +28,8 @@
 
 #if defined(WIN32) | defined (__CYGWIN32__)
 #include <windows.h>
+#else
+#define SQL_WCHART_CONVERT
 #endif
 
 #include <sqlext.h>
