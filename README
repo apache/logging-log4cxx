@@ -48,6 +48,20 @@ make install
 
 See INSTALL file for further details.
 
+Visual Studio .Net 2003 considerations
+======================================
+By default, Visual .Net 2003 eliminates exports that are never referenced.
+So all appenders and layouts are eliminated by the linker if they are not explicitly
+referenced in a new project linking with the log4cxx static library
+But theses functions have to be referenced for the needs of the PropertyConfigurator
+and DOMConfigurator classes.
+
+So, in the new project, some of the properties need to be changed:
+Linker -> Optimization -> References
+Change from "Default" to "Keep Unreferenced Data (/OPT:NOREF)"
+
+This problem does not exist with dll version of the log4cxx library.
+
 Links
 =====
 http://log4cxx.sourceforge.net
@@ -67,4 +81,5 @@ License
 =======
 This library is licensed under the Apache Public License.  Please read the
 included license.apl for details.
+
 

@@ -222,3 +222,14 @@ log4cxx is build with Windows native thread support, if 'HAVE_THREAD' and
 
 UNICODE support is available through 'Unicode Debug' and 'Unicode Release'
 compilation targets.
+
+Visual Studio .Net 2003 Compilation
+===================================
+
+Copy the msvc/config.h.msvc file to include/log4cxx/config.h.
+If you want to compile a dynamic library (dll), compile msvc/dll/dll.vcproj.
+If you want to compile a static library (lib), compile msvc/static/static.vcproj.
+
+The config file options are same as for MsDev 6.0
+
+
