@@ -1,1 +1,1 @@
-EXTRA_DIST = testsuite.dsp
+EXTRA_DIST = testsuite.dsp clean.bat runtests.bat
