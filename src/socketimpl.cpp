@@ -31,6 +31,7 @@
 
 #include <log4cxx/helpers/socketimpl.h>
 #include <log4cxx/helpers/loglog.h>
+#include <errno.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
