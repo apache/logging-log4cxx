@@ -19,15 +19,7 @@
 
 #include <log4cxx/config.h>
 #include <log4cxx/helpers/object.h>
-
-#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
-#include <asm/atomic.h>
-#elif defined(HAVE_PTHREAD)
 #include <log4cxx/helpers/criticalsection.h>
-#endif
-
-#include <log4cxx/helpers/mutex.h>
-#include <log4cxx/helpers/condition.h>
 
 namespace log4cxx
 {
@@ -45,20 +37,12 @@ namespace log4cxx
 			virtual void unlock() const;
 			virtual void wait() const;
 			virtual void notify() const;
+			virtual void notifyAll() const;
 
 		protected:
-#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
-			mutable atomic_t ref;
-#elif defined(HAVE_PTHREAD)
-			mutable CriticalSection refCs;
-			mutable unsigned int ref;
-#elif defined(HAVE_MS_THREAD)
 			mutable long volatile ref;
-#else
-			mutable unsigned int ref;
-#endif
-			mutable Mutex mutex;
-			mutable Condition cond;
+			mutable CriticalSection cs;
+			mutable void * eventList;
 		};
 	};
 };
