@@ -81,7 +81,7 @@ TimeZonePtr TimeZone::getDefault()
 
 TimeZonePtr TimeZone::getTimeZone(const String& ID)
 {
-	return new TimeZone(_T("ID"));
+	return new TimeZone(ID);
 }
 
 bool TimeZone::inDaylightTime(int64_t date) const
@@ -108,7 +108,7 @@ bool TimeZone::inDaylightTime(int64_t date) const
 	}
 
 	Rule * rule = it->second;
-	return (date >= rule->startDate && date <= rule->endDate);
+	return (date >= rule->startDate && date < rule->endDate);
 }
 
 TimeZone::Rule::Rule(int year)
