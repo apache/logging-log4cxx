@@ -146,7 +146,7 @@ fi
 
 TEST=13
 if [ $TEST -ge $start ]; then
-   format="%C.%M.%L - %m%n"
+   format="%F.%L - %m%n"
    multiRun xml/logging$TEST.xml 4 "PatternLayout \"$format\""  $SHORTRUN 
 fi
 
