@@ -31,10 +31,16 @@ typedef __int64 int64_t;
 #pragma warning(disable : 4250 4251 4786 4290)
 #endif
 
+#ifdef LOG4CXX_STATIC
+#define LOG4CXX_EXPORT
+// cf. file msvc/static/static.cpp
+#pragma comment(linker, "/include:?ForceSymbolReferences@@YAXXZ")
+#else // DLL
 #ifdef LOG4CXX
 	#define LOG4CXX_EXPORT __declspec(dllexport)
 #else
 	#define LOG4CXX_EXPORT __declspec(dllimport)
+#endif
 #endif
 
 #define _WIN32_WINNT 0x0400

@@ -945,6 +945,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\fallbackerrorhandler.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\fileappender.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">

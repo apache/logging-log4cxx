@@ -828,6 +828,9 @@
 				RelativePath="..\..\src\event.cpp">
 			</File>
 			<File
+				RelativePath="..\..\src\fallbackerrorhandler.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\fileappender.cpp">
 				<FileConfiguration
 					Name="Unicode Release|Win32">
@@ -2394,6 +2397,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath=".\static.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\stringhelper.cpp">
 			</File>
 			<File
@@ -2900,6 +2906,9 @@
 				RelativePath="..\..\include\log4cxx\config.h">
 			</File>
 			<File
+				RelativePath="..\..\include\log4cxx\config_msvc.h">
+			</File>
+			<File
 				RelativePath="..\..\include\log4cxx\consoleappender.h">
 			</File>
 			<File
@@ -3201,6 +3210,9 @@
 				Filter="h">
 				<File
 					RelativePath="..\..\include\log4cxx\varia\denyallfilter.h">
+				</File>
+				<File
+					RelativePath="..\..\include\log4cxx\varia\fallbackerrorhandler.h">
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\varia\levelmatchfilter.h">

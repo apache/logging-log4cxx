@@ -54,7 +54,7 @@ public:
 	static void int64ToString(char * dst, size_t maxlen, const int64_t& ll)
 	{
 #ifdef WIN32
-		snprintf(dst, maxlen, "%I64d", ll);
+		_snprintf(dst, maxlen, "%I64d", ll);
 #else
 		snprintf(dst, maxlen, "%lld", ll);
 #endif
