@@ -74,9 +74,21 @@ void System::setProperty(const String& key, const String& value)
 		throw IllegalArgumentException(_T("key is empty"));
 	}
 	
+#ifdef WIN32
 	String strEnv = key + _T("=") + value;
 	USES_CONVERSION;
 	::putenv((char *)T2A(strEnv.c_str()));
+#else
+	/* wARNING ! 
+	We don't use putenv with glibc, because it doesn't make
+	a copy of the string, but try to keep the pointer
+	cf. man 3 putenv.
+	*/
+	USES_CONVERSION;
+	std::string name = T2A(key.c_str());
+	std::string val = T2A(value.c_str());
+	::setenv(name.c_str(), val.c_str(), 1);
+#endif
 }
 
 void System::setProperties(const Properties& props)
