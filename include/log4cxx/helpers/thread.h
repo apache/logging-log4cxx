@@ -22,18 +22,31 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/mdc.h>
+
+// Windows specific :
+// winspool.h defines MIN_PRIORITY and MAX_PRIORITY
+#ifdef MIN_PRIORITY
+#define OLD_MIN_PRIORITY MIN_PRIORITY
+#undef MIN_PRIORITY
+#endif
+
+#ifdef MAX_PRIORITY
+#define OLD_MAX_PRIORITY MAX_PRIORITY
+#undef MAX_PRIORITY
+#endif
 
 namespace log4cxx
 {
 	namespace helpers
 	{
-		class LOG4CXX_EXPORT ThreadException : Exception
+		class LOG4CXX_EXPORT ThreadException : public Exception
 		{
 		public:
 			String getMessage() { return String(); }
 		};
 
-		class LOG4CXX_EXPORT InterruptedException : Exception
+		class LOG4CXX_EXPORT InterruptedException : public Exception
 		{
 		public:
 			String getMessage() { return String(); }
@@ -114,7 +127,11 @@ namespace log4cxx
 			/** Thread descriptor */
 			void * thread;
 			RunnablePtr runnable;
+			MDC::Map parentMDCMap;
 		};
+		
+		typedef ObjectPtrT<Thread> ThreadPtr;
+	
 	}; // namespace helpers
 }; //namespace log4cxx
 

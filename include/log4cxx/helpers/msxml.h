@@ -24,9 +24,9 @@
 #include <log4cxx/helpers/xml.h>
 #include <log4cxx/helpers/objectimpl.h>
 
-#ifndef __IXMLDOMDocument_FWD_DEFINED__
+//#ifndef __IXMLDOMDocument_FWD_DEFINED__
 #import "msxml.dll"
-#endif
+//#endif
 
 namespace log4cxx
 {

@@ -229,7 +229,7 @@ namespace log4cxx
 				traits_type::copy(p, b, os);
 				al.deallocate(b, epptr() - b);
 				setp(p, p + os + is);
-				pbump(os);
+				pbump((int)os);
 
 			}
 
@@ -284,7 +284,8 @@ namespace log4cxx
 	class StringBuffer : public std::basic_ostream<TCHAR>
 	{
 	public:
-		StringBuffer() : std::basic_ostream<TCHAR>(&buffer) {}
+		StringBuffer() : std::basic_ostream<TCHAR>(0)
+			{ this->init(&buffer); }
 		inline std::basic_string<TCHAR> str() const
 			{ return buffer.str(); }
 		inline void str(const std::basic_string<TCHAR>& s)
