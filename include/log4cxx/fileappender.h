@@ -24,6 +24,9 @@
 
 namespace log4cxx
 {
+	class FileAppender;
+	typedef helpers::ObjectPtrT<FileAppender> FileAppenderPtr;
+
 	/**
 	*  FileAppender appends log events to a file.
 	*
