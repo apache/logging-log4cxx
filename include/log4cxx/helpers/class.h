@@ -30,27 +30,27 @@ namespace log4cxx
 		class InstantiationException : public Exception
 		{
 		public:
-			tstring getMessage() { return _T("Abstract class"); }
+			String getMessage() { return _T("Abstract class"); }
 		};
 
 		class ClassNotFoundException : public Exception
 		{
 		public:
-			tstring getMessage() { return _T("Class not found"); }
+			String getMessage() { return _T("Class not found"); }
 		};
 
 		class Class
 		{
 		public:
-			Class(const tstring& name);
+			Class(const String& name);
 			virtual ObjectPtr newInstance() const;
-			const tstring& toString() const;
-			const tstring& getName() const;
-			static const Class& forName(const tstring& className);
+			const String& toString() const;
+			const String& getName() const;
+			static const Class& forName(const String& className);
 
 		protected:
 			static void registerClass(const Class * newClass);
-			tstring name;
+			String name;
 		};
 	}; // namespace log4cxx
 }; // namespace helper

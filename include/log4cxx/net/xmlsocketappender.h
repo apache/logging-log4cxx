@@ -120,7 +120,7 @@ namespace log4cxx
     		/**
     		host name
     		*/
-    		tstring remoteHost;
+    		String remoteHost;
 
     		/**
     		IP address
@@ -156,7 +156,7 @@ namespace log4cxx
     		/**
     		Connects to remote server at <code>host</code> and <code>port</code>.
     		*/
-    		XMLSocketAppender(const tstring& host, int port);
+    		XMLSocketAppender(const String& host, int port);
 
     		/**
     		Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
@@ -166,7 +166,7 @@ namespace log4cxx
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const tstring& option, const tstring& value);
+			virtual void setOption(const String& option, const String& value);
 			
     		/**
     		* Close this appender.
@@ -199,14 +199,14 @@ namespace log4cxx
     		* the host name of the server where an
 			* XMLSocketNode is running.
     		* */
-    		inline void setRemoteHost(const tstring& host)
+    		inline void setRemoteHost(const String& host)
     			{ address = helpers::InetAddress::getByName(host);
     			remoteHost = host; }
 
     		/**
     		Returns value of the <b>RemoteHost</b> option.
     		*/
-    		inline const tstring& getRemoteHost() const
+    		inline const String& getRemoteHost() const
     			{ return remoteHost; }
 
     		/**

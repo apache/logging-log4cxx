@@ -50,7 +50,7 @@ locationInfo(false), connector(0)
 	connect();
 }
 
-SocketAppender::SocketAppender(const tstring& host, int port)
+SocketAppender::SocketAppender(const String& host, int port)
 : address(InetAddress::getByName(host)), port(port),
 reconnectionDelay(DEFAULT_RECONNECTION_DELAY), locationInfo(false),
 remoteHost(host), connector(0)
@@ -68,8 +68,8 @@ void SocketAppender::activateOptions()
 	connect();
 }
 
-void SocketAppender::setOption(const tstring& option,
-	const tstring& value)
+void SocketAppender::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("remotehost")))
 	{
@@ -148,7 +148,7 @@ void SocketAppender::connect()
 	}
 	catch(SocketException& e)
 	{
-		tstring msg = _T("Could not connect to remote log4cxx server at [")
+		String msg = _T("Could not connect to remote log4cxx server at [")
 
 			+address.getHostName()+_T("].");
 			

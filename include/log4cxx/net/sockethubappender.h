@@ -142,7 +142,7 @@ namespace log4cxx
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const tstring& option, const tstring& value);
+			virtual void setOption(const String& option, const String& value);
 
 			/**
 			Close this appender. 

@@ -32,33 +32,33 @@ PropertySetter::PropertySetter(helpers::ObjectPtr obj) : obj(obj)
 {
 }
 
-void PropertySetter::setProperties(helpers::ObjectPtr obj, helpers::Properties& properties, const tstring& prefix)
+void PropertySetter::setProperties(helpers::ObjectPtr obj, helpers::Properties& properties, const String& prefix)
 {
 	PropertySetter(obj).setProperties(properties, prefix);
 }
 
 
-void PropertySetter::setProperties(helpers::Properties& properties, const tstring& prefix)
+void PropertySetter::setProperties(helpers::Properties& properties, const String& prefix)
 {
 	int len = prefix.length();
 
-	std::vector<tstring> names = properties.propertyNames();
-	std::vector<tstring>::iterator it;
+	std::vector<String> names = properties.propertyNames();
+	std::vector<String>::iterator it;
 
 	for (it = names.begin(); it != names.end(); it++)
 	{
-		tstring key = *it;
+		String key = *it;
 		
 		// handle only properties that start with the desired frefix.
 		if (key.find(prefix) == 0)
 		{
 			// ignore key if it contains dots after the prefix
-			if (key.find(_T('.'), len + 1) != tstring::npos)
+			if (key.find(_T('.'), len + 1) != String::npos)
 			{
 				continue;
 			}
 			
-			tstring value = OptionConverter::findAndSubst(key, properties);
+			String value = OptionConverter::findAndSubst(key, properties);
 			key = key.substr(len);
 			if (key == _T("layout")
 				&& obj->instanceof(Appender::getStaticClass()))
@@ -71,7 +71,7 @@ void PropertySetter::setProperties(helpers::Properties& properties, const tstrin
 	activate();
 }
 
-void PropertySetter::setProperty(const tstring& name, const tstring& value)
+void PropertySetter::setProperty(const String& name, const String& value)
 {
 	if (value.empty())
 		return;

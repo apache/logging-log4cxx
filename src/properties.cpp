@@ -16,14 +16,15 @@
 
 #include <log4cxx/helpers/properties.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 class PropertyParser
 {
 public:
-	void parse(tistream& in, Properties& properties)
+	void parse(istream& in, Properties& properties)
 	{
-		tostringstream key, element;
+		StringBuffer key, element;
 		LexemType lexemType = BEGIN;
 		TCHAR c;
 		bool finished = false;
@@ -278,7 +279,7 @@ public:
 	}
 
 protected:
-	bool get(tistream& in, TCHAR& c)
+	bool get(istream& in, TCHAR& c)
 	{
 		if (in.eof())
 		{
@@ -312,35 +313,35 @@ protected:
 	LexemType;
 };
 
-tstring Properties::setProperty(const tstring& key, const tstring& value)
+String Properties::setProperty(const String& key, const String& value)
 {
-	tstring oldValue = properties[key];
+	String oldValue = properties[key];
 	properties[key] = value;
 	//tcout << _T("setting property key=") << key << _T(", value=") << value << std::endl;
 	return oldValue;
 }
 
-tstring Properties::getProperty(const tstring& key)
+String Properties::getProperty(const String& key)
 {
 	return properties[key];
 }
 
-void Properties::load(tistream& inStream)
+void Properties::load(istream& inStream)
 {
 	properties.clear();
 	PropertyParser parser;
 	parser.parse(inStream, *this);
 }
 
-std::vector<tstring> Properties::propertyNames()
+std::vector<String> Properties::propertyNames()
 {
-	std::vector<tstring> names;
+	std::vector<String> names;
 	names.reserve(properties.size());
 
-	std::map<tstring, tstring>::iterator it;
+	std::map<String, String>::iterator it;
 	for (it = properties.begin(); it != properties.end(); it++)
 	{
-		const tstring& key = it->first;
+		const String& key = it->first;
 		names.push_back(key);
 	}
 

@@ -48,7 +48,7 @@ namespace log4cxx
 		LayoutPtr layout;
 
 		/** Appenders are named. */
-		tstring name;
+		String name;
 
 		/**
 		There is no level threshold filtering by default.  */
@@ -91,7 +91,7 @@ namespace log4cxx
 		requires it.
 		*/
 		void activateOptions() {}
-		void setOption(const tstring& name, const tstring& value) {}
+		void setOption(const String& name, const String& value) {}
 
 		/**
 		Add a filter to end of the filter list.
@@ -145,7 +145,7 @@ namespace log4cxx
 		Returns the name of this Appender.
 		*/
 	public:
-		const tstring& getName() { return name; }
+		const String& getName() { return name; }
 
 		/**
 		Returns this appenders threshold level. See the #setThreshold
@@ -190,7 +190,7 @@ namespace log4cxx
 		Set the name of this Appender.
 		*/
 	public:
-		void setName(const tstring& name) { this->name = name; }
+		void setName(const String& name) { this->name = name; }
 
 
 		/**

@@ -24,8 +24,8 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(ConsoleAppender)
 
-tstring ConsoleAppender::SYSTEM_OUT = _T("System.out");
-tstring ConsoleAppender::SYSTEM_ERR = _T("System.err");
+String ConsoleAppender::SYSTEM_OUT = _T("System.out");
+String ConsoleAppender::SYSTEM_ERR = _T("System.err");
 
 ConsoleAppender::ConsoleAppender()
  : target(SYSTEM_OUT)
@@ -40,7 +40,7 @@ ConsoleAppender::ConsoleAppender(LayoutPtr layout)
 	os = &tcout;
 }
 
-ConsoleAppender::ConsoleAppender(LayoutPtr layout, const tstring& target)
+ConsoleAppender::ConsoleAppender(LayoutPtr layout, const String& target)
  : target(SYSTEM_OUT)
 {
 	this->layout = layout;
@@ -54,9 +54,9 @@ ConsoleAppender::~ConsoleAppender()
 	finalize();
 }
 
-void ConsoleAppender::setTarget(const tstring& value)
+void ConsoleAppender::setTarget(const String& value)
 {
-	tstring v = StringHelper::trim(value);
+	String v = StringHelper::trim(value);
 
 	if (StringHelper::equalsIgnoreCase(SYSTEM_OUT, v))
 	{
@@ -72,12 +72,12 @@ void ConsoleAppender::setTarget(const tstring& value)
 	}
 }
 
-const tstring& ConsoleAppender::getTarget()
+const String& ConsoleAppender::getTarget()
 {
 	return target;
 }
 
-void ConsoleAppender::targetWarn(const tstring& val)
+void ConsoleAppender::targetWarn(const String& val)
 {
 	LogLog::warn(_T("[")+val+_T("] should be system.out or system.err."));
 	LogLog::warn(_T("Using previously set target, System.out by default."));
@@ -95,7 +95,7 @@ void ConsoleAppender::activateOptions()
 	}
 }
 
-void ConsoleAppender::setOption(const tstring& option, const tstring& value)
+void ConsoleAppender::setOption(const String& option, const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(_T("target"), option))
 	{

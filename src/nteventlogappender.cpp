@@ -90,7 +90,7 @@ NTEventLogAppender::NTEventLogAppender() : hEventLog(NULL), pCurrentUserSID(NULL
 {
 }
 
-NTEventLogAppender::NTEventLogAppender(const tstring& server, const tstring& log, const tstring& source, LayoutPtr layout)
+NTEventLogAppender::NTEventLogAppender(const String& server, const String& log, const String& source, LayoutPtr layout)
 : server(server), log(log), source(source), hEventLog(NULL), pCurrentUserSID(NULL)
 {
 	this->layout = layout;
@@ -118,7 +118,7 @@ void NTEventLogAppender::close()
 	}
 }
 
-void NTEventLogAppender::setOption(const tstring& option, const tstring& value)
+void NTEventLogAppender::setOption(const String& option, const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("server")))
 	{
@@ -169,9 +169,9 @@ void NTEventLogAppender::append(const LoggingEvent& event)
 		return;
 	}
 
-	tostringstream oss;
+	StringBuffer oss;
 	layout->format(oss, event);
-	tstring sz = oss.str();
+	String sz = oss.str();
 	const TCHAR * s = sz.c_str();
 
 	BOOL bSuccess = ::ReportEvent(
@@ -192,7 +192,7 @@ void NTEventLogAppender::append(const LoggingEvent& event)
 	}
 }
 
-HKEY NTEventLogAppender::regGetKey(const tstring& subkey, DWORD *disposition)
+HKEY NTEventLogAppender::regGetKey(const String& subkey, DWORD *disposition)
 {
 	HKEY hkey = 0;
 	RegCreateKeyEx(HKEY_LOCAL_MACHINE, subkey.c_str(), 0, NULL, 
@@ -201,12 +201,12 @@ HKEY NTEventLogAppender::regGetKey(const tstring& subkey, DWORD *disposition)
 	return hkey;
 }
 
-void NTEventLogAppender::regSetString(HKEY hkey, const tstring& name, const tstring& value)
+void NTEventLogAppender::regSetString(HKEY hkey, const String& name, const String& value)
 {
 	RegSetValueEx(hkey, name.c_str(), 0, REG_SZ, (LPBYTE)value.c_str(), value.length()*sizeof(wchar_t));
 }
 
-void NTEventLogAppender::regSetDword(HKEY hkey, const tstring& name, DWORD value)
+void NTEventLogAppender::regSetDword(HKEY hkey, const String& name, DWORD value)
 {
 	RegSetValueEx(hkey, name.c_str(), 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
 }
@@ -218,7 +218,7 @@ void NTEventLogAppender::addRegistryInfo()
 {
 	DWORD disposition;
 	HKEY hkey = 0;
-	tstring subkey = _T("SYSTEM\\CurrentControlSet\\Services\\EventLog\\")
+	String subkey = _T("SYSTEM\\CurrentControlSet\\Services\\EventLog\\")
 		+ log + _T("\\") + source;
 	
 	hkey = regGetKey(subkey, &disposition);

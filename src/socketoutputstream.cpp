@@ -35,7 +35,7 @@ SocketOutputStream::~SocketOutputStream()
 	delete [] beg;
 }
 
-void SocketOutputStream::write(const void * buffer, int len)
+void SocketOutputStream::write(const void * buffer, size_t len)
 {
 //	LOGLOG_DEBUG (_T("SocketOutputStream writing ") << len << _T(" bytes."));
 	if (cur + len > end)
@@ -86,12 +86,12 @@ void SocketOutputStream::write(long value)
 	write(&value, sizeof(value));
 }
 
-void SocketOutputStream::write(const tstring& value)
+void SocketOutputStream::write(const String& value)
 {
-	tstring::size_type size;
+	String::size_type size;
 
 	size = value.size();
-	write(&size, sizeof(tstring::size_type));
+	write(&size, sizeof(String::size_type));
 	if (size > 0)
 	{
 		if (size > 1024)

@@ -39,7 +39,7 @@ namespace log4cxx
 			{
 				if (p == 0)
 				{
-					throw IllegalArgumentException(tstring());
+					throw IllegalArgumentException(String());
 				}
 				else
 				{
@@ -48,13 +48,13 @@ namespace log4cxx
 				}
 			}*/
 
-			ObjectPtrT(int null) throw(IllegalArgumentException)
+			ObjectPtrT(int null) //throw(IllegalArgumentException)
 				: p(0)
 			{
 				if (null != 0)
 				{
 
-					throw IllegalArgumentException(tstring());
+					throw IllegalArgumentException(String());
 				}
 			}
 
@@ -113,11 +113,11 @@ namespace log4cxx
 				return *this;
             }
 
-			ObjectPtrT& operator=(int null) throw(IllegalArgumentException)
+			ObjectPtrT& operator=(int null) //throw(IllegalArgumentException)
 			{
 				if (null != 0)
 				{
-					throw IllegalArgumentException(tstring());
+					throw IllegalArgumentException(String());
 				}
 
 				if (this->p != 0)

@@ -105,7 +105,7 @@ namespace log4cxx
             default do-nothing implementation for convenience.
             */
             void activateOptions() {}
-            void setOption(const tstring& option, const tstring& value) {}
+            void setOption(const String& option, const String& value) {}
 
             /**
             <p>If the decision is <code>DENY</code>, then the event will be

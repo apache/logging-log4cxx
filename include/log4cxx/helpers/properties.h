@@ -30,7 +30,7 @@ namespace log4cxx
 		class Properties
 		{
 		private:
-			std::map<tstring, tstring> properties;
+			std::map<String, String> properties;
 
 		public:
 			/**
@@ -106,7 +106,7 @@ cheeses
 			element is the empty string.
 		    @param inStream the input stream.
 			*/
-			void load(tistream& inStream);
+			void load(istream& inStream);
 
 			/**
 			Calls the Hashtable method put. Provided for parallelism with the
@@ -118,7 +118,7 @@ cheeses
     		@return the previous value of the specified key in this
 			property list, or an empty string if it did not have one.
 			*/
-			tstring setProperty(const tstring& key, const tstring& value);
+			String setProperty(const String& key, const String& value);
 
 
 			/**
@@ -130,7 +130,7 @@ cheeses
     		@return the value in this property list with the specified
 			key value.
 			*/
-			tstring getProperty(const tstring& key);
+			String getProperty(const String& key);
 
 			/**
 			Returns an enumeration of all the keys in this property list,
@@ -140,7 +140,7 @@ cheeses
 			@return an array of all the keys in this
 			property list, including the keys in the default property list.
 			*/
-			std::vector<tstring> propertyNames();
+			std::vector<String> propertyNames();
 		}; // class Properties
 	}; // namespace helpers
 }; // namespace log4cxx

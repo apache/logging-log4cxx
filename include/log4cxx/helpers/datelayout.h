@@ -36,20 +36,20 @@ namespace log4cxx
 			String constant designating no time information. Current value of
 			this constant is <b>NULL</b>.
 			*/
-			static tstring NULL_DATE_FORMAT;
+			static String NULL_DATE_FORMAT;
 
 			/**
 			String constant designating relative time. Current value of
 			this constant is <b>RELATIVE</b>.
 			*/
-			static tstring RELATIVE_TIME_DATE_FORMAT;
+			static String RELATIVE_TIME_DATE_FORMAT;
 
-			static tstring DATE_FORMAT_OPTION;
-			static tstring TIMEZONE_OPTION;
+			static String DATE_FORMAT_OPTION;
+			static String TIMEZONE_OPTION;
 
 		private:
-			tstring timeZone;
-			tstring dateFormatOption;
+			String timeZone;
+			String dateFormatOption;
 			
 		protected:
 			DateFormat * dateFormat;
@@ -74,7 +74,7 @@ namespace log4cxx
 		*/
   			virtual void activateOptions();
 			
-			virtual void setOption(const tstring& option, const tstring& value);
+			virtual void setOption(const String& option, const String& value);
 
 		/**
 		The value of the <b>DateFormat</b> option should be either an
@@ -82,29 +82,29 @@ namespace log4cxx
 		the srings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
 		<b>"DATE"</b> or <b>"ISO8601</b>.
 		*/
-			inline void setDateFormat(const tstring& dateFormat)
+			inline void setDateFormat(const String& dateFormat)
 				{ this->dateFormatOption = dateFormat; }
 
 		/**
 		Returns value of the <b>DateFormat</b> option.
 		*/
-			inline const tstring& getDateFormat() const
+			inline const String& getDateFormat() const
 				{ return dateFormatOption; }
 
 		/**
 		The <b>TimeZoneID</b> option is a time zone ID string in the format
 		expected by the <code>locale</code> C++ standard class.
 		*/
-			inline void setTimeZone(const tstring& timeZone)
+			inline void setTimeZone(const String& timeZone)
 				{ this->timeZone = timeZone; }
 
 		/**
 		Returns value of the <b>TimeZone</b> option.
 		*/
-			inline const tstring& getTimeZone() const
+			inline const String& getTimeZone() const
 				{ return timeZone; }
 				
-			void formatDate(tostream &os, const spi::LoggingEvent& event);
+			void formatDate(ostream &os, const spi::LoggingEvent& event);
  		};
 	}; // namespace helpers
 }; // namespace log4cxx

@@ -30,15 +30,15 @@ using namespace log4cxx::xml;
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLLayout)
 
-tstring XMLLayout::LOCATION_INFO_OPTION = _T("LocationInfo");
+String XMLLayout::LOCATION_INFO_OPTION = _T("LocationInfo");
 
 XMLLayout::XMLLayout()
 : locationInfo(false)
 {
 }
 
-void XMLLayout::setOption(const tstring& option,
-	const tstring& value)
+void XMLLayout::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LOCATION_INFO_OPTION))
 	{
@@ -46,7 +46,7 @@ void XMLLayout::setOption(const tstring& option,
 	}
 }
 
-void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
+void XMLLayout::format(ostream& output, const spi::LoggingEvent& event)
 {
 	output << _T("<log4j:event logger=\"");
 	output << event.getLoggerName();
@@ -64,7 +64,7 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 	Transform::appendEscapingCDATA(output, event.getRenderedMessage());
 	output << _T("]]></log4j:message>") << std::endl;
 
-	const tstring& ndc = event.getNDC();
+	const String& ndc = event.getNDC();
 	if(ndc.length() != 0)
 	{
 		output << _T("<log4j:NDC><![CDATA[");
@@ -72,7 +72,7 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 		output << _T("]]></log4j:NDC>") << std::endl;
 	}
 
-    std::set<tstring> mdcKeySet = event.getMDCKeySet();
+    std::set<String> mdcKeySet = event.getMDCKeySet();
 
     if(!mdcKeySet.empty())
     {
@@ -85,11 +85,11 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 		*/
 
 		output << _T("<log4j:MDC>") << std::endl;
-		for (std::set<tstring>::iterator i = mdcKeySet.begin();
+		for (std::set<String>::iterator i = mdcKeySet.begin();
 			i != mdcKeySet.end(); i++)
 		{
-			tstring key = *i;
-			tstring val = event.getMDC(key);
+			String key = *i;
+			String val = event.getMDC(key);
 			output << _T("    <log4j:data ");
 			output << _T("name=\"<![CDATA[");
 			Transform::appendEscapingCDATA(output, key);
@@ -112,17 +112,17 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 		output << _T("\"/>") << std::endl;
 	}
 
-    std::set<tstring> propertySet = event.getPropertyKeySet();
+    std::set<String> propertySet = event.getPropertyKeySet();
 
     if (!propertySet.empty())
 	{
 		output << _T("<log4j:properties>\n");
-		for (std::set<tstring>::iterator i = propertySet.begin();
+		for (std::set<String>::iterator i = propertySet.begin();
 			i != propertySet.end(); i++)
 		{
-			tstring propName = *i;
+			String propName = *i;
 			output << _T("<log4j:data name=\"") << propName;
-			tstring propValue = event.getProperty(propName);
+			String propValue = event.getProperty(propName);
 			output << _T("\" value=\"") << propValue;
 			output << _T("\"/>") << std::endl;
 		}

@@ -91,7 +91,7 @@ namespace log4cxx
          Get the name of this appender. The name uniquely identifies the
          appender.
         */
-        virtual const tstring& getName() = 0;
+        virtual const String& getName() = 0;
 
 
         /**
@@ -119,7 +119,7 @@ namespace log4cxx
         Set the name of this appender. The name is used by other
         components to identify this appender.
        */
-       virtual void setName(const tstring& name) = 0;
+       virtual void setName(const String& name) = 0;
 
        /**
         Configurators call this method to determine if the appender

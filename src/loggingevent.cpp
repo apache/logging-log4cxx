@@ -37,9 +37,9 @@ mdcCopyLookupRequired(true)
 {
 }
 
-LoggingEvent::LoggingEvent(const tstring& fqnOfCategoryClass,
+LoggingEvent::LoggingEvent(const String& fqnOfCategoryClass,
 	const LoggerPtr& logger, const Level& level,
-	const tstring& message, const char* file, int line)
+	const String& message, const char* file, int line)
 : fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(&level),
 message(message), file((char*)file), line(line),
 timeStamp(System::currentTimeMillis()), ndcLookupRequired(true)
@@ -55,7 +55,7 @@ threadId(event.threadId)
 {
 }
 
-const tstring& LoggingEvent::getNDC() const
+const String& LoggingEvent::getNDC() const
 {
 	if(ndcLookupRequired)
 	{
@@ -66,7 +66,7 @@ const tstring& LoggingEvent::getNDC() const
 	return ndc;
 }
 
-tstring LoggingEvent::getMDC(const tstring& key) const
+String LoggingEvent::getMDC(const String& key) const
 {
    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
     // that is associated with the thread.
@@ -76,7 +76,7 @@ tstring LoggingEvent::getMDC(const tstring& key) const
 
 		if (it != mdcCopy.end())
 		{
-			tstring r = it->second;
+			String r = it->second;
 
 			if (!r.empty())
 			{
@@ -89,9 +89,9 @@ tstring LoggingEvent::getMDC(const tstring& key) const
 
 }
 
-std::set<tstring> LoggingEvent::getMDCKeySet() const
+std::set<String> LoggingEvent::getMDCKeySet() const
 {
-	std::set<tstring> set;
+	std::set<String> set;
 
 	if (!mdcCopy.empty())
 	{
@@ -126,13 +126,13 @@ void LoggingEvent::getMDCCopy() const
 	}
 }
 
-tstring LoggingEvent::getProperty(const tstring& key) const
+String LoggingEvent::getProperty(const String& key) const
 {
-	std::map<tstring, tstring>::const_iterator  it = properties.find(key);
+	std::map<String, String>::const_iterator  it = properties.find(key);
 
 	if (it != properties.end())
 	{
-		const tstring& p = it->second;
+		const String& p = it->second;
 
 		if (!p.empty())
 		{
@@ -140,13 +140,13 @@ tstring LoggingEvent::getProperty(const tstring& key) const
 		}
 	}
 
-	return tstring();
+	return String();
 }
 
-std::set<tstring> LoggingEvent::getPropertyKeySet() const
+std::set<String> LoggingEvent::getPropertyKeySet() const
 {
-	std::set<tstring> set;
-	std::map<tstring, tstring>::const_iterator it;
+	std::set<String> set;
+	std::map<String, String>::const_iterator it;
 	for (it = properties.begin(); it != properties.end(); it++)
 	{
 		set.insert(it->first);
@@ -155,7 +155,7 @@ std::set<tstring> LoggingEvent::getPropertyKeySet() const
 	return set;
 }
 
-void LoggingEvent::setProperty(const tstring& key, const tstring& value)
+void LoggingEvent::setProperty(const String& key, const String& value)
 {
 	properties[key] = value;
 }
@@ -195,7 +195,7 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr os) const
 
 	// properties
 	os->write((int)properties.size());
-	std::map<tstring, tstring>::const_iterator it2;
+	std::map<String, String>::const_iterator it2;
 	for (it2 = properties.begin(); it2 != properties.end(); it2++)
 	{
 		os->write(it2->first);
@@ -212,7 +212,7 @@ void LoggingEvent::read(helpers::SocketInputStreamPtr is)
 	is->read(fqnOfCategoryClass);
 
 	// name
-	tstring name;
+	String name;
 	is->read(name);
 	logger = Logger::getLogger(name);
 
@@ -237,7 +237,7 @@ void LoggingEvent::read(helpers::SocketInputStreamPtr is)
 	is->read(ndc);
 
 	// mdc
-	tstring key, value;
+	String key, value;
 	int n, size;
 	is->read(size);
 	for (n = 0; n < size; n++)

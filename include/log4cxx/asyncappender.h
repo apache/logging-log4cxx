@@ -86,7 +86,7 @@ namespace log4cxx
 		void close();
 
 		AppenderList getAllAppenders();
-		AppenderPtr getAppender(const tstring& name);
+		AppenderPtr getAppender(const String& name);
 
 		/**
 		Returns the current value of the <b>LocationInfo</b> option.
@@ -101,7 +101,7 @@ namespace log4cxx
 
 		void removeAllAppenders();
 		void removeAppender(AppenderPtr appender);
-		void removeAppender(const tstring& name);
+		void removeAppender(const String& name);
 
 		/**
 		The <code>AsyncAppender</code> does not require a layout. Hence,

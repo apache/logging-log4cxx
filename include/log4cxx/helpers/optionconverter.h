@@ -42,7 +42,7 @@ namespace log4cxx
 		/** A convenience class to convert property values to specific types.*/
 		class OptionConverter
 		{
-			static tstring DELIM_START;
+			static String DELIM_START;
 			static TCHAR DELIM_STOP;
 			static int DELIM_START_LEN;
 			static int DELIM_STOP_LEN;
@@ -52,7 +52,7 @@ namespace log4cxx
 			OptionConverter() {}
 
 		public:
-			static tstring convertSpecialChars(const tstring& s);
+			static String convertSpecialChars(const String& s);
 
 			/**
 			If <code>value</code> is "true", then <code>true</code> is
@@ -62,10 +62,10 @@ namespace log4cxx
 
 			<p>Case of value is unimportant.
 			*/
-			static bool toBoolean(const tstring& value, bool dEfault);
-			static int toInt(const tstring& value, int dEfault);
-			static long toFileSize(const tstring& value, long dEfault);
-			static const Level& toLevel(const tstring& value,
+			static bool toBoolean(const String& value, bool dEfault);
+			static int toInt(const String& value, int dEfault);
+			static long toFileSize(const String& value, long dEfault);
+			static const Level& toLevel(const String& value,
 				const Level& defaultValue);
 
 			/**
@@ -73,7 +73,7 @@ namespace log4cxx
      		<code>props</code>. Then perform variable substitution on the
      		found value.
 			*/
-			static tstring findAndSubst(const tstring& key, Properties& props);
+			static String findAndSubst(const String& key, Properties& props);
 
 /**
 Perform variable substitution in string <code>val</code> from the
@@ -109,7 +109,7 @@ balanced by a stop delimeter "}". </p>
 @param props The properties from which variable substitution is performed.
 @throws IllegalArgumentException if <code>val</code> is malformed.
 */
-			static tstring substVars(const tstring& val, Properties& props);
+			static String substVars(const String& val, Properties& props);
 
 			/**
 			@param key The key to search for.
@@ -117,7 +117,7 @@ balanced by a stop delimeter "}". </p>
 			@return the string value of the system property, or the default
 			value if there is no property with that key.
 			*/
-			static tstring getSystemProperty(const tstring& key, const tstring& def);
+			static String getSystemProperty(const String& key, const String& def);
 
 			/**
 			Instantiate an object given a class name. Check that the
@@ -129,11 +129,11 @@ balanced by a stop delimeter "}". </p>
 			@param superClass The class to which the new object should belong.
 			@param defaultValue The object to return in case of non-fulfillment
 			*/
-			static ObjectPtr instantiateByClassName(const tstring& className,
+			static ObjectPtr instantiateByClassName(const String& className,
 				const Class& superClass, ObjectPtr defaultValue);
 
 			static ObjectPtr instantiateByKey(Properties& props,
-				const tstring& key, const Class& superClass,
+				const String& key, const Class& superClass,
 				ObjectPtr defaultValue);
 
 			/**
@@ -155,8 +155,8 @@ balanced by a stop delimeter "}". </p>
 			in which case DOMConfigurator is used.
 			@param hierarchy The Hierarchy to act on.
 			*/
-			static void selectAndConfigure(const tstring& configFileName,
-				const tstring& clazz, spi::LoggerRepositoryPtr hierarchy);
+			static void selectAndConfigure(const String& configFileName,
+				const String& clazz, spi::LoggerRepositoryPtr hierarchy);
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

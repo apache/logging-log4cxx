@@ -42,7 +42,7 @@ namespace log4cxx
 			/**
 			The name of the file to observe  for changes.
 			*/
-			tstring filename;
+			String filename;
 			
 			/**
 			The delay to observe between every check. 
@@ -53,7 +53,7 @@ namespace log4cxx
 			bool interrupted;
 			
 		protected:
-			FileWatchdog(const tstring& filename);
+			FileWatchdog(const String& filename);
 			virtual void doOnChange() = 0;
 			void checkAndConfigure();
 

@@ -65,9 +65,9 @@ namespace log4cxx
 				{ return socketImpl->getLocalPort(); }
 
 			/** Returns the implementation address and implementation
-			port of this socket as a tstring
+			port of this socket as a String
 			*/
-			inline tstring toString() const
+			inline String toString() const
 				{ return socketImpl->toString(); }
 
 			/** Retrive setting for SO_TIMEOUT.

@@ -20,22 +20,23 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
 
+using namespace log4cxx;
 using namespace log4cxx::varia;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(LevelMatchFilter)
 
-tstring LevelMatchFilter::LEVEL_TO_MATCH_OPTION = _T("LevelToMatch");
-tstring LevelMatchFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
+String LevelMatchFilter::LEVEL_TO_MATCH_OPTION = _T("LevelToMatch");
+String LevelMatchFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
 
 LevelMatchFilter::LevelMatchFilter()
 : acceptOnMatch(true), levelToMatch(&Level::OFF)
 {
 }
 
-void LevelMatchFilter::setOption(const tstring& option,
-	const tstring& value)
+void LevelMatchFilter::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LEVEL_TO_MATCH_OPTION))
 	{
@@ -47,12 +48,12 @@ void LevelMatchFilter::setOption(const tstring& option,
 	}
 }
 
-void LevelMatchFilter::setLevelToMatch(const tstring& levelToMatch)
+void LevelMatchFilter::setLevelToMatch(const String& levelToMatch)
 {
 	this->levelToMatch = &Level::toLevel(levelToMatch, *this->levelToMatch);
 }
 
-const tstring& LevelMatchFilter::getLevelToMatch() const
+const String& LevelMatchFilter::getLevelToMatch() const
 {
 	return levelToMatch->toString();
 }

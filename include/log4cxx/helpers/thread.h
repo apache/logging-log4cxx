@@ -30,13 +30,13 @@ namespace log4cxx
 		class ThreadException : Exception
 		{
 		public:
-			tstring getMessage() { return tstring(); }
+			String getMessage() { return String(); }
 		};
 
 		class InterruptedException : Exception
 		{
 		public:
-			tstring getMessage() { return tstring(); }
+			String getMessage() { return String(); }
 		};
 		
 		/** The Runnable interface should be implemented by any class whose 

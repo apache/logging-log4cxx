@@ -31,7 +31,7 @@ contextPrinting(true), filePrinting(false)
 	activateOptions();
 }
 
-TTCCLayout::TTCCLayout(const tstring& dateFormatType)
+TTCCLayout::TTCCLayout(const String& dateFormatType)
 : threadPrinting(true), categoryPrefixing(true),
 contextPrinting(true), filePrinting(false)
 {
@@ -39,7 +39,7 @@ contextPrinting(true), filePrinting(false)
 	activateOptions();
 }
 
-void TTCCLayout::format(tostream& output, const spi::LoggingEvent& event)
+void TTCCLayout::format(ostream& output, const spi::LoggingEvent& event)
 {
 	formatDate(output, event);
 
@@ -57,7 +57,7 @@ void TTCCLayout::format(tostream& output, const spi::LoggingEvent& event)
 
 	if(contextPrinting)
 	{
-		tstring ndc = event.getNDC();
+		String ndc = event.getNDC();
 
 		if(!ndc.empty())
 		{

@@ -64,7 +64,7 @@ namespace log4cxx
 			location information flag.  Current value of this string
 			constant is <b>LocationInfo</b>.
 			*/
-			static tstring LOCATION_INFO_OPTION;
+			static String LOCATION_INFO_OPTION;
 
 			// Print no location info by default
 			bool locationInfo; //= false
@@ -104,14 +104,14 @@ namespace log4cxx
 			/**
 			Set options
 			*/
-			virtual void setOption(const tstring& option,
-				const tstring& value);
+			virtual void setOption(const String& option,
+				const String& value);
 
 			/**
 			* Formats a {@link spi::LoggingEvent LoggingEvent} 
 			* in conformance with the log4cxx.dtd.
 			**/
-			virtual void format(tostream& output, const spi::LoggingEvent& event);
+			virtual void format(ostream& output, const spi::LoggingEvent& event);
 
 			/**
 			The XMLLayout prints and does not ignore exceptions. Hence the

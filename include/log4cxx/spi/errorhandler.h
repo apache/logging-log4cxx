@@ -82,18 +82,18 @@ namespace log4cxx
 
 
 			/**
-			Equivalent to the error(const tstring&, helpers::Exception&, int,
+			Equivalent to the error(const String&, helpers::Exception&, int,
 			spi::LoggingEvent&) with the the event parameteter set to
 			<code>Level#OFF</code>.
 			*/
-			virtual void error(const tstring& message, helpers::Exception& e,
+			virtual void error(const String& message, helpers::Exception& e,
 				int errorCode) = 0;
 
 			/**
 			This method is normally used to just print the error message
 			passed as a parameter.
 			*/
-			virtual void error(const tstring& message) = 0;
+			virtual void error(const String& message) = 0;
 
 			/**
 			This method is invoked to handle the error.
@@ -104,7 +104,7 @@ namespace log4cxx
 			@param event The logging event that the failing appender is asked
 			to log.
 			*/
-			virtual void error(const tstring& message, helpers::Exception& e,
+			virtual void error(const String& message, helpers::Exception& e,
 				int errorCode, LoggingEvent& event) = 0;
 		
 			/**

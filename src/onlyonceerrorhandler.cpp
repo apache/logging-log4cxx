@@ -40,11 +40,11 @@ void OnlyOnceErrorHandler::activateOptions()
 {
 }
 
-void OnlyOnceErrorHandler::setOption(const tstring& name, const tstring& value)
+void OnlyOnceErrorHandler::setOption(const String& name, const String& value)
 {
 }
 
-void OnlyOnceErrorHandler::error(const tstring& message, log4cxx::helpers::Exception& e,
+void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Exception& e,
 	int errorCode)
 {
 	if(firstTime)
@@ -54,14 +54,14 @@ void OnlyOnceErrorHandler::error(const tstring& message, log4cxx::helpers::Excep
 	}
 }
 
-void OnlyOnceErrorHandler::error(const tstring& message, log4cxx::helpers::Exception& e,
+void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Exception& e,
 								 int errorCode, log4cxx::spi::LoggingEvent& event)
 {
 	error(message, e, errorCode);
 }
 
 
-void OnlyOnceErrorHandler::error(const tstring& message)
+void OnlyOnceErrorHandler::error(const String& message)
 {
 	if(firstTime)
 	{

@@ -47,7 +47,7 @@ namespace log4cxx
 			<p> The value of this string is <b>log4j.debug</b>.
 
 			<p>Note that the search for all option names is case sensitive.  */
-			static tstring DEBUG_KEY;
+			static String DEBUG_KEY;
 
 
 
@@ -69,16 +69,16 @@ namespace log4cxx
 			This method is used to output log4cxx internal debug
 			statements. Output goes to the standard output.
 			*/
-			static void debug(const tstring& msg);
-			static void debug(const tstring& msg, Exception& e);
+			static void debug(const String& msg);
+			static void debug(const String& msg, Exception& e);
 			
 			/**
 			This method is used to output log4cxx internal error
 			statements. There is no way to disable error statements.
 			Output goes to stderr.
 			*/
-			static void error(const tstring& msg);
-			static void error(const tstring& msg, Exception& e);
+			static void error(const String& msg);
+			static void error(const String& msg, Exception& e);
 
 			/**
 			In quite mode LogLog generates strictly no output, not even
@@ -93,24 +93,24 @@ namespace log4cxx
 			statements. There is no way to disable warning statements.
 			Output goes to stderr.
 			*/
-			static void warn(const tstring&  msg);
-			static void warn(const tstring&  msg, Exception& e);
+			static void warn(const String&  msg);
+			static void warn(const String&  msg, Exception& e);
 		};
 	}; // namespace helpers
 }; // namespace log4cxx
 
 #define LOGLOG_DEBUG(log) { \
-	tostringstream oss; \
+	StringBuffer oss; \
 	oss << log; \
 	log4cxx::helpers::LogLog::debug(oss.str()) ; }
 
 #define LOGLOG_WARN(log) { \
-	tostringstream oss; \
+	StringBuffer oss; \
 	oss << log; \
 	log4cxx::helpers::LogLog::warn(oss.str()) ; }
 
 #define LOGLOG_ERROR(log) { \
-	tostringstream oss; \
+	StringBuffer oss; \
 	oss << log; \
 	log4cxx::helpers::LogLog::warn(oss.str()); }
 

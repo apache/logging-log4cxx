@@ -78,12 +78,12 @@ namespace log4cxx
 			/** Creates a stream socket and connects it to the specified
 			port number on the named host.
 			*/
-			Socket(const tstring& host, int port);
+			Socket(const String& host, int port);
 
 			/**  Creates a socket and connects it to the specified remote
 			host on the specified remote port.
 			*/
-			Socket(const tstring& host, int port,
+			Socket(const String& host, int port,
 				InetAddress localAddr, int localPort);
 
 			size_t read(void * buf, size_t len)

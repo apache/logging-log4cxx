@@ -37,7 +37,7 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::xml;
 
-tstring OptionConverter::DELIM_START = _T("${");
+String OptionConverter::DELIM_START = _T("${");
 TCHAR OptionConverter::DELIM_STOP  = _T('}');
 int OptionConverter::DELIM_START_LEN = 2;
 int OptionConverter::DELIM_STOP_LEN  = 1;
@@ -50,13 +50,13 @@ namespace {
     };
 }
 
-tstring OptionConverter::convertSpecialChars(const tstring& s)
+String OptionConverter::convertSpecialChars(const String& s)
 {
 	TCHAR c;
     int len = s.length();
-    tostringstream sbuf;
+    StringBuffer sbuf;
 	
-	tstring::const_iterator i = s.begin();
+	String::const_iterator i = s.begin();
     while(i != s.end())
 	{
 		c = *i++;
@@ -105,14 +105,14 @@ tstring OptionConverter::convertSpecialChars(const tstring& s)
 }
 
 
-bool OptionConverter::toBoolean(const tstring& value, bool dEfault)
+bool OptionConverter::toBoolean(const String& value, bool dEfault)
 {
 	if (value.empty())
 	{
 		return dEfault;
 	}
 
-	tstring trimmedVal = StringHelper::toLowerCase(StringHelper::trim(value));
+	String trimmedVal = StringHelper::toLowerCase(StringHelper::trim(value));
 
 	if (trimmedVal == _T("true"))
 	{
@@ -126,7 +126,7 @@ bool OptionConverter::toBoolean(const tstring& value, bool dEfault)
 	return dEfault;
 }
 
-int OptionConverter::toInt(const tstring& value, int dEfault)
+int OptionConverter::toInt(const String& value, int dEfault)
 {
 	if (value.empty())
 	{
@@ -136,14 +136,14 @@ int OptionConverter::toInt(const tstring& value, int dEfault)
 	return (int)ttol(StringHelper::trim(value).c_str());
 }
 
-long OptionConverter::toFileSize(const tstring& value, long dEfault)
+long OptionConverter::toFileSize(const String& value, long dEfault)
 {
 	if(value.empty())
 	{
 		return dEfault;
 	}
 
-	tstring s = StringHelper::toLowerCase(StringHelper::trim(value));
+	String s = StringHelper::toLowerCase(StringHelper::trim(value));
 
 	long multiplier = 1;
 	int index;
@@ -171,9 +171,9 @@ long OptionConverter::toFileSize(const tstring& value, long dEfault)
 	return dEfault;
 }
 
-tstring OptionConverter::findAndSubst(const tstring& key, Properties& props)
+String OptionConverter::findAndSubst(const String& key, Properties& props)
 {
-	tstring value = props.getProperty(key);
+	String value = props.getProperty(key);
 
 	if(value.empty())
 		return value;
@@ -189,9 +189,9 @@ tstring OptionConverter::findAndSubst(const tstring& key, Properties& props)
 	}
 }
 
-tstring OptionConverter::substVars(const tstring& val, Properties& props)
+String OptionConverter::substVars(const String& val, Properties& props)
 {
-	tostringstream sbuf;
+	StringBuffer sbuf;
 
 	int i = 0;
 	int j, k;
@@ -218,7 +218,7 @@ tstring OptionConverter::substVars(const tstring& val, Properties& props)
 			k = val.find(DELIM_STOP, j);
 			if(k == -1)
 			{
-				tostringstream oss;
+				StringBuffer oss;
 				oss << _T("\"") << val
 					<< _T("\" has no closing brace. Opening brace at position ")
 					<< j << _T(".");
@@ -227,9 +227,9 @@ tstring OptionConverter::substVars(const tstring& val, Properties& props)
 			else
 			{
 				j += DELIM_START_LEN;
-				tstring key = val.substr(j, k - j);
+				String key = val.substr(j, k - j);
 				// first try in System properties
-				tstring replacement = getSystemProperty(key, _T(""));
+				String replacement = getSystemProperty(key, _T(""));
 				// then try props parameter
 				if(replacement.empty())
 				{
@@ -243,7 +243,7 @@ tstring OptionConverter::substVars(const tstring& val, Properties& props)
 					// the where the properties are
 					// x1=p1
 					// x2=${x1}
-					tstring recursiveReplacement = substVars(replacement, props);
+					String recursiveReplacement = substVars(replacement, props);
 					sbuf << (recursiveReplacement);
 				}
 				i = k + DELIM_STOP_LEN;
@@ -252,11 +252,11 @@ tstring OptionConverter::substVars(const tstring& val, Properties& props)
 	}
 }
 
-tstring OptionConverter::getSystemProperty(const tstring& key, const tstring& def)
+String OptionConverter::getSystemProperty(const String& key, const String& def)
 {
 	if (!key.empty())
 	{
-		tstring value = System::getProperty(def);
+		String value = System::getProperty(def);
 
 		if (!value.empty())
 		{
@@ -273,25 +273,25 @@ tstring OptionConverter::getSystemProperty(const tstring& key, const tstring& de
 	}
 }
 
-const Level& OptionConverter::toLevel(const tstring& value, const Level& defaultValue)
+const Level& OptionConverter::toLevel(const String& value, const Level& defaultValue)
 {
 	return Level::toLevel(value, defaultValue);
 }
 
 
-ObjectPtr OptionConverter::instantiateByKey(Properties& props, const tstring& key,
+ObjectPtr OptionConverter::instantiateByKey(Properties& props, const String& key,
 	const Class& superClass, ObjectPtr defaultValue)
 {
 	// Get the value of the property in string form
-	tstring className = findAndSubst(key, props);
+	String className = findAndSubst(key, props);
 	if(className.empty())
 	{
 		LogLog::error(_T("Could not find value for key ") + key);
 		return defaultValue;
 	}
 
-	tstring::size_type pos = className.find_last_of(_T('.'));
-	if (pos != tstring::npos)
+	String::size_type pos = className.find_last_of(_T('.'));
+	if (pos != String::npos)
 	{
 		className = className.substr(pos + 1);
 	}
@@ -301,7 +301,7 @@ ObjectPtr OptionConverter::instantiateByKey(Properties& props, const tstring& ke
 		StringHelper::trim(className), superClass, defaultValue);
 }
 
-ObjectPtr OptionConverter::instantiateByClassName(const tstring& className,
+ObjectPtr OptionConverter::instantiateByClassName(const String& className,
 	const Class& superClass, ObjectPtr defaultValue)
 {
 	if(!className.empty())
@@ -326,11 +326,11 @@ ObjectPtr OptionConverter::instantiateByClassName(const tstring& className,
 	return defaultValue;
 }
 
-void OptionConverter::selectAndConfigure(const tstring& configFileName,
-	 const tstring& _clazz, spi::LoggerRepositoryPtr hierarchy)
+void OptionConverter::selectAndConfigure(const String& configFileName,
+	 const String& _clazz, spi::LoggerRepositoryPtr hierarchy)
 {
 	ConfiguratorPtr configurator;
-	tstring clazz = _clazz;
+	String clazz = _clazz;
 	
 	if(clazz.empty() && !configFileName.empty() 
 		&& StringHelper::endsWith(configFileName, _T(".xml")))

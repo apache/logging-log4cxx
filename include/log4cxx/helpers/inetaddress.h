@@ -28,7 +28,7 @@ namespace log4cxx
 		class UnknownHostException : public Exception
 		{
 		public:
-			tstring getMessage() { return tstring(); }
+			String getMessage() { return String(); }
 		};
 
 		class InetAddress
@@ -42,19 +42,19 @@ namespace log4cxx
 
 			/** Determines all the IP addresses of a host, given the host's name.
 			*/
-			static std::vector<InetAddress> getAllByName(const tstring& host);
+			static std::vector<InetAddress> getAllByName(const String& host);
 
 			/** Determines the IP address of a host, given the host's name.
 			*/
-			static InetAddress getByName(const tstring& host);
+			static InetAddress getByName(const String& host);
 
 			/** Returns the IP address string "%d.%d.%d.%d".
 			*/
-			tstring getHostAddress() const;
+			String getHostAddress() const;
 
 			/** Gets the host name for this IP address.
 			*/
-			tstring getHostName() const;
+			String getHostName() const;
 
 			/** Returns the local host.
 			*/
@@ -66,7 +66,7 @@ namespace log4cxx
 
 			/** Converts this IP address to a String.
 			*/
-			tstring toString() const; 
+			String toString() const; 
 
 			int address;
 		}; // class InetAddress

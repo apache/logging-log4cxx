@@ -23,7 +23,7 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(SimpleLayout)
 
-void SimpleLayout::format(tostream& output,
+void SimpleLayout::format(ostream& output,
 						  const spi::LoggingEvent& event)
 {
 	output

@@ -90,7 +90,7 @@ servlet.
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const tstring& option, const tstring& value);
+			virtual void setOption(const String& option, const String& value);
 
     		/**
     		Returns value of the <b>Port</b> option.
@@ -127,16 +127,17 @@ servlet.
 				std::vector<helpers::SocketOutputStreamPtr> writers;
 				std::vector<helpers::SocketPtr> connections;
 				helpers::ServerSocket serverSocket;
-				int MAX_CONNECTIONS;
+				std::vector<helpers::SocketPtr>::size_type MAX_CONNECTIONS;
 
 			public:
 				SocketHandler(int port);
 				
-				/** make sure we close all network connections when this handler is destroyed. */
+				/** make sure we close all network connections when this handler
+				is destroyed. */
 				void finalize();
 				
 				/** sends a message to each of the clients in telnet-friendly output. */
-				void send(const tstring& message);
+				void send(const String& message);
 				
 				/** 
 				Continually accepts client connections.  Client connections
@@ -145,7 +146,7 @@ servlet.
 				virtual void run();
 
 			protected:
-				void print(helpers::SocketOutputStreamPtr& os, const tstring& sz);
+				void print(helpers::SocketOutputStreamPtr& os, const String& sz);
 			}; // class SocketHandler
 		}; // class TelnetAppender
     } // namespace net

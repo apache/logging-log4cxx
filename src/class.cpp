@@ -19,9 +19,10 @@
 #include <map>
 #include <log4cxx/helpers/stringhelper.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-typedef std::map<tstring, const Class *> classMap;
+typedef std::map<String, const Class *> classMap;
 classMap * registry = 0;
 
 class RegistryDestructor
@@ -34,17 +35,17 @@ public:
 	}
 };
 
-Class::Class(const tstring& name) : name(name)
+Class::Class(const String& name) : name(name)
 {
 	registerClass(this);
 }
 
-const tstring& Class::toString() const
+const String& Class::toString() const
 {
 	return name;
 }
 
-const tstring& Class::getName() const
+const String& Class::getName() const
 {
 	return name;
 }
@@ -55,7 +56,7 @@ ObjectPtr Class::newInstance() const
 	return 0;
 }
 
-const Class& Class::forName(const tstring& className)
+const Class& Class::forName(const String& className)
 {
 	const Class * clazz = (*registry)[StringHelper::toLowerCase(className)];
 

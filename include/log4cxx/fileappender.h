@@ -48,7 +48,7 @@ namespace log4cxx
 
 		/**
 		The name of the log file. */
-		tstring fileName; 
+		String fileName; 
 
 		/**
 		Do we do bufferedIO? */
@@ -89,7 +89,7 @@ namespace log4cxx
 		then buffered IO will be used to write to the output file.
 
 		*/
-		FileAppender(LayoutPtr layout, const tstring& filename, bool append, 
+		FileAppender(LayoutPtr layout, const String& filename, bool append, 
 			bool bufferedIO, int bufferSize);
 
 		/**
@@ -101,7 +101,7 @@ namespace log4cxx
 		appended to. Otherwise, the file designated by
 		<code>filename</code> will be truncated before being opened.
 		*/
-		FileAppender(LayoutPtr layout, const tstring& filename, bool append);
+		FileAppender(LayoutPtr layout, const String& filename, bool append);
 
 		/**
 		Instantiate a FileAppender and open the file designated by
@@ -109,7 +109,7 @@ namespace log4cxx
 		destination for this appender.
 
 		<p>The file will be appended to.  */
-		FileAppender(LayoutPtr layout, const tstring& filename);
+		FileAppender(LayoutPtr layout, const String& filename);
 
 		~FileAppender();
 
@@ -122,7 +122,7 @@ namespace log4cxx
 
 		<p>Note: Actual opening of the file is made when 
 		#activateOptions is called, not when the options are set.  */
-		void setFile(const tstring& file);
+		void setFile(const String& file);
 			
 		/**
 		Returns the value of the <b>Append</b> option.
@@ -130,7 +130,7 @@ namespace log4cxx
 		inline bool getAppend() { return fileAppend; }
 
 		/** Returns the value of the <b>File</b> option. */
-		inline const tstring& getFile() { return fileName; }
+		inline const String& getFile() { return fileName; }
 
         /**
         <p>Sets and <i>opens</i> the file where the log output will
@@ -140,8 +140,8 @@ namespace log4cxx
         is closed first.*/
         
 		void activateOptions();
-		void setOption(const tstring& option,
-			const tstring& value);
+		void setOption(const String& option,
+			const String& value);
 
 	protected:
         /**

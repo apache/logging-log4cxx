@@ -381,11 +381,11 @@ namespace log4cxx
 		/** Default pattern string for log output. Currently set to the
 		string <b>"\%m\%n"</b> which just prints the application supplied
 		message. */
-		static tstring DEFAULT_CONVERSION_PATTERN;
+		static String DEFAULT_CONVERSION_PATTERN;
 
 		/** A conversion pattern equivalent to the TTCCCLayout.
 		Current value is <b>\%r [\%t] \%p \%c \%x - \%m\%n</b>. */
-		static tstring TTCC_CONVERSION_PATTERN;
+		static String TTCC_CONVERSION_PATTERN;
 
 	protected:
 		static int BUF_SIZE;
@@ -393,10 +393,10 @@ namespace log4cxx
 
 	private:
 		// output buffer appended to when format() is invoked
-		tostringstream sbuf;
-		tstring pattern;
+		StringBuffer sbuf;
+		String pattern;
 		helpers::PatternConverterPtr head;
-		tstring timezone;
+		String timezone;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PatternLayout)
@@ -413,19 +413,19 @@ namespace log4cxx
 		/**
 		Constructs a PatternLayout using the supplied conversion pattern.
 		*/
-		PatternLayout(const tstring& pattern);
+		PatternLayout(const String& pattern);
 
 		/**
 		Set the <b>ConversionPattern</b> option. This is the string which
 		controls formatting and consists of a mix of literal content and
 		conversion specifiers.
 		*/
-		void setConversionPattern(const tstring& conversionPattern);
+		void setConversionPattern(const String& conversionPattern);
 
 		/**
 		Returns the value of the <b>ConversionPattern</b> option.
 		*/
-		inline tstring getConversionPattern() const
+		inline String getConversionPattern() const
 			{ return pattern; }
 
 		/**
@@ -433,7 +433,7 @@ namespace log4cxx
 		*/
 		virtual void activateOptions();
 
-		virtual void setOption(const tstring& option, const tstring& value);
+		virtual void setOption(const String& option, const String& value);
 
 		/**
 		The PatternLayout does not handle the throwable contained within
@@ -446,7 +446,7 @@ namespace log4cxx
 		/**
 		Produces a formatted string as specified by the conversion pattern.
 		*/
-		virtual void format(tostream& output, const spi::LoggingEvent& event);
+		virtual void format(ostream& output, const spi::LoggingEvent& event);
 
 	protected:
 		/**
@@ -454,7 +454,7 @@ namespace log4cxx
 		Subclasses may override this to return a subclass of PatternParser 
 		which recognize custom conversion characters.
 		*/
-		virtual helpers::PatternConverterPtr createPatternParser(const tstring& pattern);
+		virtual helpers::PatternConverterPtr createPatternParser(const String& pattern);
 	};
 }; // namespace log4cxx
 

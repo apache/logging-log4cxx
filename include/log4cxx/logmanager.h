@@ -75,15 +75,15 @@ namespace log4cxx
         /**
         Retrieve the appropriate Logger instance.
         */
-        static LoggerPtr getLogger(const tstring& name);
+        static LoggerPtr getLogger(const String& name);
 
         /**
         Retrieve the appropriate Logger instance.
         */
-        static LoggerPtr getLogger(const tstring& name,
+        static LoggerPtr getLogger(const String& name,
 			spi::LoggerFactoryPtr factory);
 
-        static LoggerPtr exists(const tstring& name);
+        static LoggerPtr exists(const String& name);
 
         static LoggerList getCurrentLoggers();
 

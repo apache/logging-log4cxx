@@ -93,7 +93,7 @@ XMLDOMDocumentPtr MsXMLDOMDocument::getOwnerDocument()
 	return this;
 }
 
-void MsXMLDOMDocument::load(const tstring& fileName)
+void MsXMLDOMDocument::load(const String& fileName)
 {
 	try
 	{
@@ -148,7 +148,7 @@ XMLDOMElementPtr MsXMLDOMDocument::getDocumentElement()
 	return new MsXMLDOMElement(element);
 }
 
-XMLDOMElementPtr MsXMLDOMDocument::getElementById(const tstring& tagName, const tstring& elementId)
+XMLDOMElementPtr MsXMLDOMDocument::getElementById(const String& tagName, const String& elementId)
 {
 	MSXML::IXMLDOMElementPtr element;
 
@@ -198,7 +198,7 @@ XMLDOMDocumentPtr MsXMLDOMElement::getOwnerDocument()
 	return new MsXMLDOMDocument(document);
 }
 
-tstring MsXMLDOMElement::getTagName()
+String MsXMLDOMElement::getTagName()
 {
 	try
 	{
@@ -212,14 +212,14 @@ tstring MsXMLDOMElement::getTagName()
 	}
 }
 
-tstring MsXMLDOMElement::getAttribute(const tstring& name)
+String MsXMLDOMElement::getAttribute(const String& name)
 {
 	try
 	{
 		_variant_t attribute = element->getAttribute(name.c_str());
 		if (attribute.vt == VT_NULL)
 		{
-			return tstring();
+			return String();
 		}
 		else
 		{

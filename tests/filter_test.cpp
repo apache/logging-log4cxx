@@ -13,7 +13,7 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 using namespace log4cxx::varia;
 
-tostream& operator << (tostream& os, const Filter::FilterDecision& decision)
+ostream& operator << (ostream& os, const Filter::FilterDecision& decision)
 {
 	switch (decision)
 	{
@@ -40,7 +40,7 @@ int main()
 	try
 	{
 		LoggerPtr root = Logger::getRootLogger();
-		tstring fqcn = Logger::getStaticClass().getName();
+		String fqcn = Logger::getStaticClass().getName();
 		Filter::FilterDecision decision;
 
 		// StringMatchFilterPtr

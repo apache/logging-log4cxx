@@ -28,11 +28,11 @@ IMPLEMENT_LOG4CXX_OBJECT(PatternLayout)
 /** Default pattern string for log output. Currently set to the
 string <b>"%m%n"</b> which just prints the application supplied
 message. */
-tstring PatternLayout::DEFAULT_CONVERSION_PATTERN = _T("%m%n");
+String PatternLayout::DEFAULT_CONVERSION_PATTERN = _T("%m%n");
 
 /** A conversion pattern equivalent to the TTCCCLayout.
 Current value is <b>%r [%t] %p %c %x - %m%n</b>. */
-tstring PatternLayout::TTCC_CONVERSION_PATTERN = _T("%r [%t] %p %c %x - %m%n");
+String PatternLayout::TTCC_CONVERSION_PATTERN = _T("%r [%t] %p %c %x - %m%n");
 
 int PatternLayout::BUF_SIZE = 256;
 int PatternLayout::MAX_CAPACITY = 1024;
@@ -44,18 +44,18 @@ PatternLayout::PatternLayout()
 /**
 Constructs a PatternLayout using the supplied conversion pattern.
 */
-PatternLayout::PatternLayout(const tstring& pattern) : pattern(pattern)
+PatternLayout::PatternLayout(const String& pattern) : pattern(pattern)
 {
 	activateOptions();
 }
 
-void PatternLayout::setConversionPattern(const tstring& conversionPattern)
+void PatternLayout::setConversionPattern(const String& conversionPattern)
 {
 	pattern = conversionPattern;
 	activateOptions();
 }
 
-void PatternLayout::format(tostream& output, const spi::LoggingEvent& event)
+void PatternLayout::format(ostream& output, const spi::LoggingEvent& event)
 {
 	PatternConverterPtr c = head;
 	
@@ -66,12 +66,12 @@ void PatternLayout::format(tostream& output, const spi::LoggingEvent& event)
 	}
 }
 
-PatternConverterPtr PatternLayout::createPatternParser(const tstring& pattern)
+PatternConverterPtr PatternLayout::createPatternParser(const String& pattern)
 {
 	return PatternParser(pattern).parse();
 }
 
-void PatternLayout::setOption(const tstring& option, const tstring& value)
+void PatternLayout::setOption(const String& option, const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("conversionpattern")))
 	{

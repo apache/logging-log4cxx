@@ -36,13 +36,13 @@ using namespace log4cxx::helpers;
 
 int port = 0;
 
-void usage(const tstring& msg)
+void usage(const String& msg)
 {
 	tcout << msg << std::endl;
 	tcout << _T("Usage: simpleocketServer port configFile") << std::endl;
 }
 
-void init(const tstring& portStr, const tstring& configFile)
+void init(const String& portStr, const String& configFile)
 {
 	USES_CONVERSION;
 	port = ttol(portStr.c_str());

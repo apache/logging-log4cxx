@@ -38,8 +38,8 @@ namespace log4cxx
 			public virtual ObjectImpl
 		{
 		private:
-			tstring WARN_PREFIX;
-			tstring ERROR_PREFIX;
+			String WARN_PREFIX;
+			String ERROR_PREFIX;
 			bool firstTime;
 
 		public:
@@ -61,26 +61,26 @@ namespace log4cxx
             No options to activate.
             */
             void activateOptions();
-            void setOption(const tstring& name, const tstring& value);
+            void setOption(const String& name, const String& value);
 
 
             /**
             Prints the message and the stack trace of the exception on
             <code>System.err</code>.  */
-            void error(const tstring& message, Exception& e,
+            void error(const String& message, Exception& e,
 				int errorCode);
             /**
             Prints the message and the stack trace of the exception on
             <code>System.err</code>.
             */
-            void error(const tstring& message, Exception& e,
+            void error(const String& message, Exception& e,
 				int errorCode, spi::LoggingEvent& event);
             
             /**
             Print a the error message passed as parameter on
             <code>System.err</code>.
             */
-             void error(const tstring& message);
+             void error(const String& message);
 
             /**
             Does not do anything.

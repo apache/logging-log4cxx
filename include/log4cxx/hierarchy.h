@@ -60,10 +60,10 @@ namespace log4cxx
         spi::LoggerFactoryPtr defaultFactory;
 		spi::HierarchyEventListenerList listeners;
 		
-        typedef std::map<tstring, LoggerPtr> LoggerMap;
+        typedef std::map<String, LoggerPtr> LoggerMap;
         LoggerMap loggers;
 
-        typedef std::map<tstring, ProvisionNode> ProvisionNodeMap;
+        typedef std::map<String, ProvisionNode> ProvisionNodeMap;
         ProvisionNodeMap provisionNodes;
 
 		LoggerPtr root;
@@ -119,13 +119,13 @@ namespace log4cxx
 		  
 		*/
 	public:
-		LoggerPtr exists(const tstring& name);
+		LoggerPtr exists(const String& name);
 		
 		/**
 		The string form of {@link #setThreshold(const Level&) setThreshold}.
 		*/
 	public:
-		void setThreshold(const tstring& levelStr);
+		void setThreshold(const String& levelStr);
 		
         /**
         Enable logging for logging requests with level <code>l</code> or
@@ -161,7 +161,7 @@ namespace log4cxx
 			
 		*/
 	public:
-		LoggerPtr getLogger(const tstring& name);
+		LoggerPtr getLogger(const String& name);
 		
 		/**
 		Return a new logger instance named as the first parameter using
@@ -177,7 +177,7 @@ namespace log4cxx
 			
 		*/
 	public:
-		LoggerPtr getLogger(const tstring& name, spi::LoggerFactoryPtr factory);
+		LoggerPtr getLogger(const String& name, spi::LoggerFactoryPtr factory);
 		
 		/**
 		Returns all the currently defined loggers in this hierarchy as

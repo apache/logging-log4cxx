@@ -39,7 +39,7 @@ namespace log4cxx
 			{
 			}
 			
-			virtual void format(tostream& os, int64_t time)
+			virtual void format(ostream& os, int64_t time)
 			{
 				os << (time - startTime);
 			}

@@ -110,7 +110,7 @@ AppenderList AsyncAppender::getAllAppenders()
 	return aai->getAllAppenders();
 }
 
-AppenderPtr AsyncAppender::getAppender(const tstring& name)
+AppenderPtr AsyncAppender::getAppender(const String& name)
 {
 	synchronized sync(aai);
 	return aai->getAppender(name);
@@ -144,7 +144,7 @@ void AsyncAppender::removeAppender(AppenderPtr appender)
 	aai->removeAppender(appender);
 }
 
-void AsyncAppender::removeAppender(const tstring& name)
+void AsyncAppender::removeAppender(const String& name)
 {
     synchronized sync(aai);
 	aai->removeAppender(name);

@@ -26,20 +26,20 @@ namespace log4cxx
 		class NoSuchElementException : public Exception
 		{
 		public:
-			tstring getMessage() { return tstring(); }
+			String getMessage() { return String(); }
 		};
 
 		class StringTokenizer
 		{
 		public:
-			StringTokenizer(const tstring& str, const tstring& delim);
+			StringTokenizer(const String& str, const String& delim);
 			~StringTokenizer();
 			bool hasMoreTokens();
-			tstring nextToken();
+			String nextToken();
 
 		protected:
 			TCHAR * str;
-			tstring delim;
+			String delim;
 			TCHAR * token;
 			TCHAR * state;
 		}; // class StringTokenizer

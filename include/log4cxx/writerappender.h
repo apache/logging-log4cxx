@@ -54,10 +54,10 @@ namespace log4cxx
 		<p>The <code>encoding</code> variable is set to <code>""</null> by
 		default which results in the utilization of the system's default
 		encoding.  */
-		tstring encoding;
+		String encoding;
 		
 		/** This is the output stream where we will write to.*/
-		tostream * os;
+		ostream * os;
 	
 	
 	public:
@@ -74,7 +74,7 @@ namespace log4cxx
 		/**
 		Instantiate a WriterAppender and set the output destination to
 		<code>os</code>.*/
-		WriterAppender(LayoutPtr layout, tostream * os);
+		WriterAppender(LayoutPtr layout, ostream * os);
 
 		~WriterAppender();
 		
@@ -141,8 +141,8 @@ namespace log4cxx
 	
 	
 	public:
-		const tstring& getEncoding() { return encoding; }
-		void setEncoding(const tstring& value) { encoding = value; }
+		const String& getEncoding() { return encoding; }
+		void setEncoding(const String& value) { encoding = value; }
 	
 	protected:
 		/**

@@ -71,10 +71,10 @@ namespace log4cxx
 			virtual XMLDOMNodeType getNodeType()
 				{ return XMLDOMNode::DOCUMENT_NODE; }
 			virtual XMLDOMDocumentPtr getOwnerDocument();
-			virtual void load(const tstring& fileName);
+			virtual void load(const String& fileName);
 			virtual XMLDOMElementPtr getDocumentElement();
 			virtual XMLDOMElementPtr getElementById(
-				const tstring& tagName, const tstring& elementId);
+				const String& tagName, const String& elementId);
 
 		protected:
 			xmlDocPtr document;
@@ -98,8 +98,8 @@ namespace log4cxx
 			virtual XMLDOMNodeType getNodeType()
 				{ return XMLDOMNode::ELEMENT_NODE; }
 			virtual XMLDOMDocumentPtr getOwnerDocument();
-			virtual tstring getTagName();
-			virtual tstring getAttribute(const tstring& name);
+			virtual String getTagName();
+			virtual String getAttribute(const String& name);
 
 		protected:
 			xmlNodePtr element;

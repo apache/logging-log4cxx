@@ -35,7 +35,7 @@ namespace log4cxx
 		class EOFException : Exception
 		{
 		public:
-			tstring getMessage() { return tstring(); }
+			String getMessage() { return String(); }
 		};
 
 		class SocketInputStream : public ObjectImpl
@@ -53,12 +53,12 @@ namespace log4cxx
 			SocketInputStream(SocketPtr socket, size_t bufferSize);
 			~SocketInputStream();
 
-			void read(void * buffer, int len);
+			void read(void * buffer, size_t len);
 			void read(unsigned int &value);
 			void read(int &value);
 			void read(unsigned long &value);
 			void read(long &value);
-			void read(tstring& value);
+			void read(String& value);
 			// some read functions are missing ...
 
 			/** Close the stream and dereference the socket.
@@ -69,8 +69,8 @@ namespace log4cxx
 			SocketPtr socket;
 			size_t bufferSize;
 			unsigned char * memBuffer;
-			int currentPos;
-			int maxPos;
+			size_t currentPos;
+			size_t maxPos;
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

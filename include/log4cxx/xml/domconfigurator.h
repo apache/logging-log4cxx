@@ -64,11 +64,11 @@ namespace log4cxx
 		class AppenderMap
 		{
 		public:
-			AppenderPtr get(const tstring& appenderName);
-			void put(const tstring& appenderName, AppenderPtr appender);
+			AppenderPtr get(const String& appenderName);
+			void put(const String& appenderName, AppenderPtr appender);
 
 		protected:
-			std::map<tstring, AppenderPtr> map;
+			std::map<String, AppenderPtr> map;
 		};
 
 /**
@@ -95,7 +95,7 @@ files. You can enable log4cxx internal logging by setting the
 			Used internally to parse appenders by IDREF name.
 			*/
 			AppenderPtr findAppenderByName(helpers::XMLDOMDocumentPtr doc,
-				const tstring& appenderName);
+				const String& appenderName);
 
 			/**
 			Used internally to parse appenders by IDREF element.
@@ -170,15 +170,15 @@ files. You can enable log4cxx internal logging by setting the
 			/**
 			A static version of #doConfigure.
 			*/
-			static void configure(const tstring& filename);
+			static void configure(const String& filename);
 
 			/**
-			Like #configureAndWatch(const tstring& configFilename, long delay)
+			Like #configureAndWatch(const String& configFilename, long delay)
 			except that the default delay as defined by 
 			FileWatchdog#DEFAULT_DELAY is used. 
 			@param configFilename A log4j configuration file in XML format.
 			*/
-			static void configureAndWatch(const tstring& configFilename);
+			static void configureAndWatch(const String& configFilename);
 
 			/**
 			Read the configuration file <code>configFilename</code> if it
@@ -191,7 +191,7 @@ files. You can enable log4cxx internal logging by setting the
 			@param configFilename A log4j configuration file in XML format.
 			@param delay The delay in milliseconds to wait between each check.
 			*/
-			static void configureAndWatch(const tstring& configFilename, 
+			static void configureAndWatch(const String& configFilename, 
 				long delay);
 
 			/**
@@ -201,10 +201,10 @@ files. You can enable log4cxx internal logging by setting the
 			@param filename The file to parse.
 			@param hierarchy The hierarchy to operation upon.
 			*/
-			void doConfigure(const tstring& filename, spi::LoggerRepositoryPtr repository);
+			void doConfigure(const String& filename, spi::LoggerRepositoryPtr repository);
 
 		protected:
-			tstring DOMConfigurator::subst(const tstring& value);
+			String DOMConfigurator::subst(const String& value);
 
 		protected:
 			void * appenderBag;

@@ -41,12 +41,12 @@ using namespace log4cxx::config;
 class PropertyWatchdog  : public FileWatchdog
 {
 public:
-	PropertyWatchdog(const tstring& filename) : FileWatchdog(filename)
+	PropertyWatchdog(const String& filename) : FileWatchdog(filename)
 	{
 	}
 
 	/**
-	Call PropertyConfigurator#doConfigure(const tstring& configFileName,
+	Call PropertyConfigurator#doConfigure(const String& configFileName,
 	spi::LoggerRepositoryPtr hierarchy) with the
 	<code>filename</code> to reconfigure log4cxx.
 	*/
@@ -59,27 +59,27 @@ public:
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
-tstring PropertyConfigurator::CATEGORY_PREFIX = _T("log4j.category.");
-tstring PropertyConfigurator::LOGGER_PREFIX = _T("log4j.logger.");
-tstring PropertyConfigurator::FACTORY_PREFIX = _T("log4j.factory");
-tstring PropertyConfigurator::ADDITIVITY_PREFIX = _T("log4j.additivity.");
-tstring PropertyConfigurator::ROOT_CATEGORY_PREFIX = _T("log4j.rootCategory");
-tstring PropertyConfigurator::ROOT_LOGGER_PREFIX = _T("log4j.rootLogger");
-tstring PropertyConfigurator::APPENDER_PREFIX = _T("log4j.appender.");
-tstring PropertyConfigurator::RENDERER_PREFIX = _T("log4j.renderer.");
-tstring PropertyConfigurator::THRESHOLD_PREFIX = _T("log4j.threshold");
+String PropertyConfigurator::CATEGORY_PREFIX = _T("log4j.category.");
+String PropertyConfigurator::LOGGER_PREFIX = _T("log4j.logger.");
+String PropertyConfigurator::FACTORY_PREFIX = _T("log4j.factory");
+String PropertyConfigurator::ADDITIVITY_PREFIX = _T("log4j.additivity.");
+String PropertyConfigurator::ROOT_CATEGORY_PREFIX = _T("log4j.rootCategory");
+String PropertyConfigurator::ROOT_LOGGER_PREFIX = _T("log4j.rootLogger");
+String PropertyConfigurator::APPENDER_PREFIX = _T("log4j.appender.");
+String PropertyConfigurator::RENDERER_PREFIX = _T("log4j.renderer.");
+String PropertyConfigurator::THRESHOLD_PREFIX = _T("log4j.threshold");
 
 /* Key for specifying the {@link org.apache.log4j.spi.LoggerFactory
 	LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
-tstring PropertyConfigurator::LOGGER_FACTORY_KEY = _T("log4j.loggerFactory");
-tstring PropertyConfigurator::INTERNAL_ROOT_NAME = _T("root");
+String PropertyConfigurator::LOGGER_FACTORY_KEY = _T("log4j.loggerFactory");
+String PropertyConfigurator::INTERNAL_ROOT_NAME = _T("root");
 
 PropertyConfigurator::PropertyConfigurator()
 : loggerFactory(new DefaultCategoryFactory())
 {
 }
 
-void PropertyConfigurator::doConfigure(const tstring& configFileName,
+void PropertyConfigurator::doConfigure(const String& configFileName,
 	spi::LoggerRepositoryPtr hierarchy)
 {
 	Properties props;
@@ -118,7 +118,7 @@ void PropertyConfigurator::doConfigure(const tstring& configFileName,
 	doConfigure(props, hierarchy);
 }
 
-void PropertyConfigurator::configure(const tstring& configFilename)
+void PropertyConfigurator::configure(const String& configFilename)
 {
 	PropertyConfigurator().doConfigure(configFilename, LogManager::getLoggerRepository());
 }
@@ -128,14 +128,14 @@ void PropertyConfigurator::configure(helpers::Properties& properties)
 	PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
 }
 
-void PropertyConfigurator::configureAndWatch(const tstring& configFilename)
+void PropertyConfigurator::configureAndWatch(const String& configFilename)
 {
     configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
 }
 
 
 void PropertyConfigurator::configureAndWatch(
-	const tstring& configFilename, long delay)
+	const String& configFilename, long delay)
 {
     PropertyWatchdog * pdog = new PropertyWatchdog(configFilename);
     pdog->setDelay(delay);
@@ -145,14 +145,14 @@ void PropertyConfigurator::configureAndWatch(
 void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	spi::LoggerRepositoryPtr hierarchy)
 {
-	tstring value = properties.getProperty(LogLog::DEBUG_KEY);
+	String value = properties.getProperty(LogLog::DEBUG_KEY);
 
 	if (!value.empty())
 	{
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(value, true));
 	}
 
-	tstring thresholdStr =
+	String thresholdStr =
 		OptionConverter::findAndSubst(THRESHOLD_PREFIX, properties);
 
 	if (!thresholdStr.empty())
@@ -175,7 +175,7 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 
 void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 {
-	tstring factoryClassName =
+	String factoryClassName =
 		OptionConverter::findAndSubst(LOGGER_FACTORY_KEY, props);
 
 	if (!factoryClassName.empty())
@@ -191,8 +191,8 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 void PropertyConfigurator::configureRootCategory(helpers::Properties props,
 			spi::LoggerRepositoryPtr hierarchy)
 {
-	tstring effectiveFrefix = ROOT_LOGGER_PREFIX;
-	tstring value = OptionConverter::findAndSubst(ROOT_LOGGER_PREFIX, props);
+	String effectiveFrefix = ROOT_LOGGER_PREFIX;
+	String value = OptionConverter::findAndSubst(ROOT_LOGGER_PREFIX, props);
 
 	if (value.empty())
 	{
@@ -216,17 +216,17 @@ void PropertyConfigurator::configureRootCategory(helpers::Properties props,
 void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties props,
 			spi::LoggerRepositoryPtr hierarchy)
 {
-	std::vector<tstring> names = props.propertyNames();
+	std::vector<String> names = props.propertyNames();
 
-	std::vector<tstring>::iterator it = names.begin();
-	std::vector<tstring>::iterator itEnd = names.end();
+	std::vector<String>::iterator it = names.begin();
+	std::vector<String>::iterator itEnd = names.end();
 	while (it != itEnd)
 	{
-		tstring key = *it++;
+		String key = *it++;
 
 		if (key.find(CATEGORY_PREFIX) == 0 || key.find(LOGGER_PREFIX) == 0)
 		{
-			tstring loggerName;
+			String loggerName;
 
 			if (key.find(CATEGORY_PREFIX) == 0)
 			{
@@ -237,7 +237,7 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties props,
 				loggerName = key.substr(LOGGER_PREFIX.length());
 			}
 
-			tstring value = OptionConverter::findAndSubst(key, props);
+			String value = OptionConverter::findAndSubst(key, props);
 			LoggerPtr logger = hierarchy->getLogger(loggerName, loggerFactory);
 
 			synchronized sync(logger);
@@ -248,9 +248,9 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties props,
 }
 
 void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
-	LoggerPtr cat, const tstring& loggerName)
+	LoggerPtr cat, const String& loggerName)
 {
-	tstring value =
+	String value =
 		OptionConverter::findAndSubst(ADDITIVITY_PREFIX + loggerName, props);
 	LogLog::debug(
 		_T("Handling ") + ADDITIVITY_PREFIX + loggerName +
@@ -270,8 +270,8 @@ void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 	This method must work for the root category as well.
 */
 void PropertyConfigurator::parseCategory(
-	helpers::Properties& props, LoggerPtr logger, const tstring& optionKey,
-	const tstring& loggerName, const tstring& value)
+	helpers::Properties& props, LoggerPtr logger, const String& optionKey,
+	const String& loggerName, const String& value)
 {
 	LogLog::debug(
 		_T("Parsing for [") + loggerName + _T("] with value=[")
@@ -290,7 +290,7 @@ void PropertyConfigurator::parseCategory(
 			return;
 		}
 
-		tstring levelStr = st.nextToken();
+		String levelStr = st.nextToken();
 		LogLog::debug(_T("Level token is [") + levelStr + _T("]."));
 
 		// If the level value is inherited, set category level value to
@@ -321,7 +321,7 @@ void PropertyConfigurator::parseCategory(
 	logger->removeAllAppenders();
 
 	AppenderPtr appender;
-	tstring appenderName;
+	String appenderName;
 
 	while (st.hasMoreTokens())
 	{
@@ -344,7 +344,7 @@ void PropertyConfigurator::parseCategory(
 }
 
 AppenderPtr PropertyConfigurator::parseAppender(
-	helpers::Properties& props, const tstring& appenderName)
+	helpers::Properties& props, const String& appenderName)
 {
 	AppenderPtr appender = registryGet(appenderName);
 
@@ -357,8 +357,8 @@ AppenderPtr PropertyConfigurator::parseAppender(
 	}
 
 	// Appender was not previously initialized.
-	tstring prefix = APPENDER_PREFIX + appenderName;
-	tstring layoutPrefix = prefix + _T(".layout");
+	String prefix = APPENDER_PREFIX + appenderName;
+	String layoutPrefix = prefix + _T(".layout");
 
 	appender =
 		OptionConverter::instantiateByKey(
@@ -410,7 +410,7 @@ void PropertyConfigurator::registryPut(AppenderPtr appender)
 	registry[appender->getName()] = appender;
 }
 
-AppenderPtr PropertyConfigurator::registryGet(const tstring& name)
+AppenderPtr PropertyConfigurator::registryGet(const String& name)
 {
 	return registry[name];
 }

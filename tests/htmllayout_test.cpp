@@ -27,7 +27,7 @@ int main()
 			12
 			);
 		
-		tostringstream result, witness;
+		StringBuffer result, witness;
 		
 		witness << std::endl << _T("<tr>") << std::endl << _T("<td>");
 		ISO8601DateFormat().format(witness, event.getTimeStamp());

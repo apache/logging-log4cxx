@@ -38,14 +38,14 @@ namespace log4cxx
 		Instantiate a Level object.
 		*/
 	public:
-		Level(int level, tstring levelStr, int syslogEquivalent);
+		Level(int level, String levelStr, int syslogEquivalent);
 
 
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns #DEBUG.
 		*/
-		static const Level& toLevel(const tstring& sArg);
+		static const Level& toLevel(const String& sArg);
 
 		/**
 		Convert an integer passed as argument to a level. If the
@@ -66,7 +66,7 @@ namespace log4cxx
 		conversion fails, then this method returns the value of
 		<code>defaultLevel</code>.
 		*/
-		static const Level& toLevel(const tstring& sArg, const Level& defaultLevel);
+		static const Level& toLevel(const String& sArg, const Level& defaultLevel);
 
 
 
@@ -160,7 +160,7 @@ namespace log4cxx
 		/**
 		Returns the string representation of this priority.
 		*/
-		virtual const tstring& toString() const;
+		virtual const String& toString() const;
 
 		/**
 		Returns the integer representation of this level.
@@ -169,7 +169,7 @@ namespace log4cxx
 
 	public:
 		int level;
-		tstring levelStr;
+		String levelStr;
 		int syslogEquivalent;
 	};
 };

@@ -12,7 +12,7 @@ public:
 	LoggerPtr logger;
 };
 
-tostream& operator<<(tostream &os, const dump& dump)
+ostream& operator<<(ostream &os, const dump& dump)
 {
 	os << _T("Logger=") << dump.logger->getName()
 		<< _T("\tAssignedLevel=") << dump.logger->getLevel().toString()

@@ -23,7 +23,7 @@ using namespace log4cxx::helpers;
 
 long FileWatchdog::DEFAULT_DELAY = 60000; 
 
-FileWatchdog::FileWatchdog(const tstring& filename)
+FileWatchdog::FileWatchdog(const String& filename)
  : filename(filename), lastModif(0), delay(DEFAULT_DELAY),
 warnedAlready(false), interrupted(false)
 {

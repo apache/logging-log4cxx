@@ -48,8 +48,8 @@ namespace log4cxx
 		class LevelMatchFilter : public spi::Filter
 		{
 		private:
-			static tstring LEVEL_TO_MATCH_OPTION;
-			static tstring ACCEPT_ON_MATCH_OPTION;
+			static String LEVEL_TO_MATCH_OPTION;
+			static String ACCEPT_ON_MATCH_OPTION;
 
 			bool acceptOnMatch;
 			const Level * levelToMatch;
@@ -67,12 +67,12 @@ namespace log4cxx
 			/**
 			Set options
 			*/
-			virtual void setOption(const tstring& option,
-				const tstring& value);
+			virtual void setOption(const String& option,
+				const String& value);
 
-			void setLevelToMatch(const tstring& levelToMatch);
+			void setLevelToMatch(const String& levelToMatch);
 
-			const tstring& getLevelToMatch() const;
+			const String& getLevelToMatch() const;
 
 			inline void setAcceptOnMatch(bool acceptOnMatch)
 				{ this->acceptOnMatch = acceptOnMatch; }

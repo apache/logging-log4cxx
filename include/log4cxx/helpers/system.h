@@ -31,7 +31,7 @@
 		static int64_t currentTimeMillis();
 
 		/** Gets the system property indicated by the specified key.*/
-		static tstring getProperty(const tstring& key);
+		static String getProperty(const String& key);
 		};
 	} // namespace helpers
  }; //  namespace log4cxx

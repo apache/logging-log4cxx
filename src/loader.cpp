@@ -49,7 +49,7 @@ IMPLEMENT_LOG4CXX_OBJECT(XMLDOMElement)
 IMPLEMENT_LOG4CXX_OBJECT(XMLDOMNodeList)
 IMPLEMENT_LOG4CXX_OBJECT(TriggeringEventEvaluator)
 
-const Class& Loader::loadClass(const tstring& clazz)
+const Class& Loader::loadClass(const String& clazz)
 {
 	return Class::forName(clazz);
 }

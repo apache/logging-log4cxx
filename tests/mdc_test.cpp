@@ -32,7 +32,7 @@ int main()
 			ret = EXIT_FAILURE;
 		}
 
-		tstring result = MDC::remove(_T("key2"));
+		String result = MDC::remove(_T("key2"));
 		if (result != _T("context2") && !MDC::get(_T("key2")).empty())
 		{
 			tcout << _T("4. remove key2: result=") << result

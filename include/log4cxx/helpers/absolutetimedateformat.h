@@ -35,22 +35,22 @@ namespace log4cxx
 			ISO8601DateFormat in layouts. Current
 			value is <b>ISO8601</b>.
 			*/
-			static tstring ISO8601_DATE_FORMAT;
+			static String ISO8601_DATE_FORMAT;
 
 			/**
 			String constant used to specify
 			AbsoluteTimeDateFormat in layouts. Current
 			value is <b>ABSOLUTE</b>.  */
-			static tstring ABS_TIME_DATE_FORMAT;
+			static String ABS_TIME_DATE_FORMAT;
 
 			/**
 			String constant used to specify
 			DateTimeDateFormat in layouts.  Current
 			value is <b>DATE</b>.
 			*/
-			static tstring DATE_AND_TIME_DATE_FORMAT;
+			static String DATE_AND_TIME_DATE_FORMAT;
 
-			AbsoluteTimeDateFormat(const tstring& timeZone = _T(""))
+			AbsoluteTimeDateFormat(const String& timeZone = _T(""))
 			: DateFormat(_T("%H:%M:%S"), timeZone) {}
 		};
 	}; // namespace helpers

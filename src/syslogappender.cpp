@@ -42,7 +42,7 @@ SyslogAppender::SyslogAppender(LayoutPtr layout,
 }
 
 SyslogAppender::SyslogAppender(LayoutPtr layout,
-	const tstring& syslogHost, SyslogAppender::SyslogFacility syslogFacility)
+	const String& syslogHost, SyslogAppender::SyslogFacility syslogFacility)
 : syslogFacility(syslogFacility), facilityPrinting(false), sw(0)
 {
 	this->layout = layout;
@@ -87,7 +87,7 @@ void SyslogAppender::initSyslogFacilityStr()
 Returns the specified syslog facility as a lower-case String,
 e.g. "kern", "user", etc.
 */
-tstring SyslogAppender::getFacilityString(
+String SyslogAppender::getFacilityString(
 	SyslogAppender::SyslogFacility syslogFacility)
 {
 	switch(syslogFacility)
@@ -112,14 +112,14 @@ tstring SyslogAppender::getFacilityString(
 	case LOG_LOCAL5:    return _T("local5");
 	case LOG_LOCAL6:    return _T("local6");
 	case LOG_LOCAL7:    return _T("local7");
-	default:            return tstring();
+	default:            return String();
 	}
 }
 
 SyslogAppender::SyslogFacility SyslogAppender::getFacility(
-	const tstring &facilityName)
+	const String &facilityName)
 {
-	tstring s = StringHelper::toUpperCase(StringHelper::trim(facilityName));
+	String s = StringHelper::toUpperCase(StringHelper::trim(facilityName));
 
 	if (s == _T("KERN"))
 	{
@@ -220,7 +220,7 @@ void SyslogAppender::append(const spi::LoggingEvent& event)
 		return;
 	}
 
-	tostringstream sbuf;
+	StringBuffer sbuf;
 
 	sbuf << _T("<") << (syslogFacility | event.getLevel().getSyslogEquivalent()) << _T(">");
 	if (facilityPrinting)
@@ -236,14 +236,14 @@ void SyslogAppender::activateOptions()
 {
 }
 
-void SyslogAppender::setSyslogHost(const tstring& syslogHost)
+void SyslogAppender::setSyslogHost(const String& syslogHost)
 {
 	this->sw = new SyslogWriter(syslogHost);
 	this->syslogHost = syslogHost;
 }
 
 
-void SyslogAppender::setFacility(const tstring& facilityName)
+void SyslogAppender::setFacility(const String& facilityName)
 {
 	if (facilityName.empty())
 	{

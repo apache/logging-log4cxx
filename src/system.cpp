@@ -26,6 +26,7 @@
 
 #include <time.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 int64_t System::currentTimeMillis()
@@ -46,7 +47,7 @@ int64_t System::currentTimeMillis()
 #endif
 }
 
-tstring System::getProperty(const tstring& key)
+String System::getProperty(const String& key)
 {
 	USES_CONVERSION;
 	return A2T(::getenv(T2A(key.c_str())));

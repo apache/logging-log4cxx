@@ -45,7 +45,7 @@ namespace log4cxx
 		{
 		public:
 			SQLException(int code) : code(code) {}
-			virtual tstring getMessage() { return tstring(); }
+			virtual String getMessage() { return String(); }
 
 			int code;
 		};
@@ -105,17 +105,17 @@ namespace log4cxx
 			/**
 			* URL of the DB for default connection handling
 			*/
-			tstring databaseURL;
+			String databaseURL;
 			
 			/**
 			* User to connect as for default connection handling
 			*/
-			tstring databaseUser;
+			String databaseUser;
 			
 			/**
 			* User to use for default connection handling
 			*/
-			tstring databasePassword;
+			String databasePassword;
 			
 			/**
 			* Connection used by default.  The connection is opened the first time it
@@ -136,13 +136,13 @@ namespace log4cxx
 			*
 			* Also see PatternLayout.
 			*/
-			tstring sqlStatement;
+			String sqlStatement;
 			
 			/**
 			* size of LoggingEvent buffer before writting to the database.
 			* Default is 1.
 			*/
-			int bufferSize;
+			size_t bufferSize;
 			
 			/**
 			* ArrayList holding the buffer of Logging Events.
@@ -162,7 +162,7 @@ namespace log4cxx
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const tstring& option, const tstring& value);
+			virtual void setOption(const String& option, const String& value);
 
 			/**
 			* Adds the event to the buffer.  When full the buffer is flushed.
@@ -178,7 +178,7 @@ namespace log4cxx
 			*
 			*/
 		protected:
-			tstring getLogStatement(const spi::LoggingEvent& event);
+			String getLogStatement(const spi::LoggingEvent& event);
 
 			/**
 			*
@@ -188,7 +188,7 @@ namespace log4cxx
 			* end.  I use a connection pool outside of ODBCAppender which is
 			* accessed in an override of this method.
 			* */
-			void execute(const tstring& sql) /*throw(SQLException)*/;
+			void execute(const String& sql) /*throw(SQLException)*/;
 			
 			/**
 			* Override this to return the connection to a pool, or to clean up the
@@ -232,42 +232,42 @@ namespace log4cxx
 			/**
 			* Set pre-formated statement eg: insert into LogTable (msg) values ("%m")
 			*/
-			void setSql(const tstring& s);
+			void setSql(const String& s);
 
 			/**
 			* Returns pre-formated statement eg: insert into LogTable (msg) values ("%m")
 			*/
-			inline const tstring& getSql() const
+			inline const String& getSql() const
 				{ return sqlStatement; }
 			
 			
-			inline void setUser(const tstring& user)
+			inline void setUser(const String& user)
 				{ databaseUser = user; }
 			
 			
-			inline void setURL(const tstring& url)
+			inline void setURL(const String& url)
 				{ databaseURL = url; }
 			
 			
-			inline void setPassword(const tstring& password)
+			inline void setPassword(const String& password)
 				{ databasePassword = password; }
 			
 			
-			inline void setBufferSize(int newBufferSize)
+			inline void setBufferSize(size_t newBufferSize)
 				{ bufferSize = newBufferSize; }
 			
-			inline const tstring& getUser()
+			inline const String& getUser()
 				{ return databaseUser; }
 			
 			
-			inline const tstring& getURL()
+			inline const String& getURL()
 				{ return databaseURL; }
 			
 			
-			inline const tstring& getPassword()
+			inline const String& getPassword()
 				{ return databasePassword; }
 			
-			inline int getBufferSize()
+			inline size_t getBufferSize()
 				{ return bufferSize; }
 		}; // class ODBCAppender
     } // namespace db

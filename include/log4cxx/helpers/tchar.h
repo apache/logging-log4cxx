@@ -113,19 +113,16 @@ inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 #ifndef TCHAR
 	typedef wchar_t TCHAR;
 #endif
-	typedef std::wstring tstring;
 	#define totupper towupper
 	#define totlower towlower
 	#define tcout std::wcout
 	#define tcerr std::wcerr
-	/** output stream */
-	#define tostream std::wostream
-	#define tistream std::wistream
 #ifdef WIN32
 	#define tstrncasecmp _wcsnicmp
 #else
 	#define tstrncasecmp wcsncasecmp
 #endif // WIN32
+
 #ifndef T2A
 	#define T2A(src) W2A(src)
 #endif
@@ -142,7 +139,6 @@ inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 	#define W2T(src) src
 #endif
 
-	#define tostringstream std::wostringstream
 	#define ttol(s) wcstol(s, 0, 10)
 	#define itot _itow
 	#define tcscmp wcscmp
@@ -154,35 +150,43 @@ inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 #endif
 
 	typedef char TCHAR;
-	typedef std::string tstring;
 	#define totupper toupper
 	#define totlower tolower
 	#define tcout std::cout
 	#define tcerr std::cerr
-	/** output stream */
-	#define tostream std::ostream
-	#define tistream std::istream
 #ifdef WIN32
 	#define tstrncasecmp _strnicmp
 #else
 	#define tstrncasecmp strncasecmp
 #endif // WIN32
+
+#ifndef T2A
 	#define T2A(src) src
+#endif
 
 #ifndef T2W
 	#define T2W(src) A2W(src)
 #endif
 
+#ifndef A2T
 	#define A2T(src) src
+#endif
 
 #ifndef W2T
 	#define W2T(src) W2A(src)
 #endif
 
-	#define tostringstream std::ostringstream
 	#define ttol atol
 	#define itot itoa
 	#define tcscmp strcmp
 #endif // UNICODE
+
+namespace log4cxx
+{
+	typedef std::basic_string<TCHAR> String;
+	typedef std::basic_ostringstream<TCHAR> StringBuffer;
+	typedef std::basic_ostream<TCHAR> ostream;
+	typedef std::basic_istream<TCHAR> istream;
+};
 
 #endif //_LOG4CXX_HELPERS_TCHAR_H

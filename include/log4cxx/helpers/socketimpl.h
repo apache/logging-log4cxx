@@ -29,17 +29,17 @@ namespace log4cxx
 		class IOException : public Exception
 		{
 		public:
-			tstring getMessage() { return tstring(); }
+			String getMessage() { return String(); }
 		};
 
 		class SocketException : public IOException
 		{
 		public:
 			SocketException();
-			tstring getMessage();
+			String getMessage();
 
 		protected:
-			tstring message;
+			String message;
 		};
 
 		class ConnectException : public SocketException
@@ -52,7 +52,7 @@ namespace log4cxx
 
 		class InterruptedIOException : public IOException
 		{
-			tstring getMessage() { return tstring(); }
+			String getMessage() { return String(); }
 		};
 
 		class SocketImpl;
@@ -109,7 +109,7 @@ namespace log4cxx
  			void connect(InetAddress address, int port);
 
 			/** Connects this socket to the specified port on the named host. */
-			void connect(const tstring& host, int port);
+			void connect(const String& host, int port);
 
 			/** Creates either a stream or a datagram socket. */
 			void create(bool stream);
@@ -137,7 +137,7 @@ namespace log4cxx
 
 			/** Returns the address and port of this socket as a String.
 			*/
-			tstring toString() const;
+			String toString() const;
 
 			size_t read(void * buf, size_t len);
 			size_t write(const void * buf, size_t len);

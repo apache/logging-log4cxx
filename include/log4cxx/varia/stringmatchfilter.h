@@ -55,11 +55,11 @@ namespace log4cxx
 		class StringMatchFilter : public spi::Filter
 		{
 		private:
-			static tstring STRING_TO_MATCH_OPTION;
-			static tstring ACCEPT_ON_MATCH_OPTION;
+			static String STRING_TO_MATCH_OPTION;
+			static String ACCEPT_ON_MATCH_OPTION;
 
 			bool acceptOnMatch;
-			tstring stringToMatch;
+			String stringToMatch;
 
 		public:
 			typedef spi::Filter BASE_CLASS;
@@ -74,13 +74,13 @@ namespace log4cxx
 			/**
 			Set options
 			*/
-			virtual void setOption(const tstring& option,
-				const tstring& value);
+			virtual void setOption(const String& option,
+				const String& value);
 
-			inline void setStringToMatch(const tstring& stringToMatch)
+			inline void setStringToMatch(const String& stringToMatch)
 				{ this->stringToMatch = stringToMatch; }
 
-			inline const tstring& getStringToMatch() const
+			inline const String& getStringToMatch() const
 				{ return stringToMatch; }
 
 			inline void setAcceptOnMatch(bool acceptOnMatch)

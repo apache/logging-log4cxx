@@ -29,7 +29,7 @@ FileAppender::FileAppender()
 {
 }
 
-FileAppender::FileAppender(LayoutPtr layout, const tstring& fileName,
+FileAppender::FileAppender(LayoutPtr layout, const String& fileName,
 	bool append, bool bufferedIO, int bufferSize)
 : fileName(fileName), fileAppend(append), bufferedIO(bufferedIO), bufferSize(bufferSize)
 {
@@ -37,7 +37,7 @@ FileAppender::FileAppender(LayoutPtr layout, const tstring& fileName,
 	activateOptions();
 }
 
-FileAppender::FileAppender(LayoutPtr layout, const tstring& fileName,
+FileAppender::FileAppender(LayoutPtr layout, const String& fileName,
 	bool append)
 : fileName(fileName), fileAppend(append), bufferedIO(false), bufferSize(8*1024)
 {
@@ -45,7 +45,7 @@ FileAppender::FileAppender(LayoutPtr layout, const tstring& fileName,
 	activateOptions();
 }
 
-FileAppender::FileAppender(LayoutPtr layout, const tstring& fileName)
+FileAppender::FileAppender(LayoutPtr layout, const String& fileName)
 : fileName(fileName), fileAppend(true), bufferedIO(false), bufferSize(8*1024)
 {
 	this->layout = layout;
@@ -57,7 +57,7 @@ FileAppender::~FileAppender()
 	finalize();
 }
 
-void FileAppender::setFile(const tstring& file)
+void FileAppender::setFile(const String& file)
 {
 	// Trim spaces from both ends. The users probably does not want
 	// trailing spaces in file names.
@@ -79,8 +79,8 @@ void FileAppender::setBufferedIO(bool bufferedIO)
 	}
 }
 
-void FileAppender::setOption(const tstring& option,
-	const tstring& value)
+void FileAppender::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("file"))
 		|| StringHelper::equalsIgnoreCase(option, _T("filename")))

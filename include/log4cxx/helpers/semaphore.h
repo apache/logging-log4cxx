@@ -31,7 +31,7 @@ namespace log4cxx
 		class SemaphoreException : public Exception
 		{
 		public: 
-			virtual tstring getMessage() { return tstring();}
+			virtual String getMessage() { return String();}
 		};
 
 		class Semaphore

@@ -19,21 +19,22 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 
+using namespace log4cxx;
 using namespace log4cxx::varia;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(StringMatchFilter)
 
-tstring StringMatchFilter::STRING_TO_MATCH_OPTION = _T("StringToMatch");
-tstring StringMatchFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
+String StringMatchFilter::STRING_TO_MATCH_OPTION = _T("StringToMatch");
+String StringMatchFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
 
 StringMatchFilter::StringMatchFilter() : acceptOnMatch(true)
 {
 }
 
-void StringMatchFilter::setOption(const tstring& option,
-	const tstring& value)
+void StringMatchFilter::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, STRING_TO_MATCH_OPTION))
 	{
@@ -48,7 +49,7 @@ void StringMatchFilter::setOption(const tstring& option,
 Filter::FilterDecision StringMatchFilter::decide(
 	const log4cxx::spi::LoggingEvent& event)
 {
-	const tstring& msg = event.getRenderedMessage();
+	const String& msg = event.getRenderedMessage();
 
 	if(msg.empty() || stringToMatch.empty())
 	{
@@ -56,7 +57,7 @@ Filter::FilterDecision StringMatchFilter::decide(
 	}
 
 
-	if( msg.find(stringToMatch) == tstring::npos )
+	if( msg.find(stringToMatch) == String::npos )
 	{
 		return Filter::NEUTRAL;
 	}

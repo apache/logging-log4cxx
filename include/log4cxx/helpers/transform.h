@@ -29,11 +29,11 @@ namespace log4cxx
 		class Transform
 		{
 		private:
-			static tstring CDATA_START;
-			static tstring CDATA_END;
-			static tstring CDATA_PSEUDO_END;
-			static tstring CDATA_EMBEDED_END;
-			static int CDATA_END_LEN;
+			static String CDATA_START;
+			static String CDATA_END;
+			static String CDATA_PSEUDO_END;
+			static String CDATA_EMBEDED_END;
+			static String::size_type CDATA_END_LEN;
 
 		public:
 			/**
@@ -47,7 +47,7 @@ namespace log4cxx
 			*  &amp;lt; and &amp;gt; respectively.
 			* */
 			static void appendEscapingTags(
-				tostream& buf, const tstring& input);
+				ostream& buf, const String& input);
 
 			/**
 			* Ensures that embeded CDEnd strings (]]>) are handled properly
@@ -60,7 +60,7 @@ namespace log4cxx
 			* Section within buf.
 			*/
 			static void appendEscapingCDATA(
-				tostream& buf, const tstring& input);
+				ostream& buf, const String& input);
 		}; // class Transform
 	}; // namespace helpers
 }; //namespace log4cxx

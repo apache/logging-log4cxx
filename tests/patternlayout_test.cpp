@@ -27,7 +27,7 @@ int main()
 			12
 			);
 		
-		tostringstream result, witness;
+		StringBuffer result, witness;
 		
 		witness << _T("DEBUG [") << event.getThreadId()
 			<< _T("]: debug message") << std::endl;

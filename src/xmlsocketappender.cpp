@@ -57,7 +57,7 @@ locationInfo(false), connector(0)
 	connect();
 }
 
-XMLSocketAppender::XMLSocketAppender(const tstring& host, int port)
+XMLSocketAppender::XMLSocketAppender(const String& host, int port)
 : address(InetAddress::getByName(host)), port(port),
 reconnectionDelay(DEFAULT_RECONNECTION_DELAY), locationInfo(false),
 remoteHost(host), connector(0)
@@ -77,8 +77,8 @@ void XMLSocketAppender::activateOptions()
 	connect();
 }
 
-void XMLSocketAppender::setOption(const tstring& option,
-	const tstring& value)
+void XMLSocketAppender::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("remotehost")))
 	{
@@ -157,7 +157,7 @@ void XMLSocketAppender::connect()
 	}
 	catch(SocketException& e)
 	{
-		tstring msg = _T("Could not connect to remote log4cxx server at [")
+		String msg = _T("Could not connect to remote log4cxx server at [")
 
 			+address.getHostName()+_T("].");
 			
@@ -190,11 +190,11 @@ void XMLSocketAppender::append(const spi::LoggingEvent& event)
 			event.getLocationInformation();
 		}
 */
-		tostringstream output;
+		StringBuffer output;
 
 		this->layout->format(output, event);
 
-		tstring sz = output.str();
+		String sz = output.str();
 		USES_CONVERSION;
 		os->write((void *)T2A(sz.c_str()), sz.length());
 

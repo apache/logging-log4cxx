@@ -60,7 +60,7 @@ namespace log4cxx
 			other may be activated only when #activateOptions is
 			called.
 			*/
-			virtual void setOption(const tstring& option, const tstring& value) = 0;
+			virtual void setOption(const String& option, const String& value) = 0;
 		
 		}; // class OptionConverter
 	}; // namespace spi

@@ -20,23 +20,24 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
 
+using namespace log4cxx;
 using namespace log4cxx::varia;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(LevelRangeFilter)
 
-tstring LevelRangeFilter::LEVEL_MIN_OPTION = _T("LevelMin");
-tstring LevelRangeFilter::LEVEL_MAX_OPTION = _T("LevelMax");
-tstring LevelRangeFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
+String LevelRangeFilter::LEVEL_MIN_OPTION = _T("LevelMin");
+String LevelRangeFilter::LEVEL_MAX_OPTION = _T("LevelMax");
+String LevelRangeFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
 
 LevelRangeFilter::LevelRangeFilter()
 : acceptOnMatch(true), levelMin(&Level::ALL), levelMax(&Level::OFF)
 {
 }
 
-void LevelRangeFilter::setOption(const tstring& option,
-	const tstring& value)
+void LevelRangeFilter::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LEVEL_MIN_OPTION))
 	{

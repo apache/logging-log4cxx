@@ -95,7 +95,7 @@ namespace log4cxx
 	<p>This constructor just calls the {@link
 	helpers::DateLayout#setDateFormat DateLayout::setDateFormat} method.
 	*/
-		TTCCLayout(const tstring& dateFormatType);
+		TTCCLayout(const String& dateFormatType);
 
 	/**
 	The <b>ThreadPrinting</b> option specifies whether the name of the
@@ -161,7 +161,7 @@ namespace log4cxx
 	@param output
 	@param event
 	*/
-	virtual void format(tostream& output, const spi::LoggingEvent& event);
+	virtual void format(ostream& output, const spi::LoggingEvent& event);
 
 	/**
 	The TTCCLayout does not handle the throwable contained within

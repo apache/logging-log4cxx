@@ -27,7 +27,7 @@ int main()
 			);
 
 		// locationInfo = false;
-		tostringstream result, witness;
+		StringBuffer result, witness;
 		layout->setLocationInfo(false);
 
 		witness << _T("<log4j:event logger=\"root\" timestamp=\"")
@@ -48,7 +48,7 @@ int main()
 		}
 
 		// locationInfo = true;
-		tostringstream result2, witness2;
+		StringBuffer result2, witness2;
 		layout->setLocationInfo(true);
 
 		witness2 << _T("<log4j:event logger=\"root\" timestamp=\"")

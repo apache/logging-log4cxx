@@ -68,7 +68,7 @@ namespace log4cxx
             /**
              * Get an appender by name.
              */
-            virtual AppenderPtr getAppender(const tstring& name);
+            virtual AppenderPtr getAppender(const String& name);
 
             /**
              Returns <code>true</code> if the specified appender is in the
@@ -90,7 +90,7 @@ namespace log4cxx
              * Remove the appender with the name passed as parameter from the
              * list of appenders.
              */
-            virtual void removeAppender(const tstring& name);
+            virtual void removeAppender(const String& name);
         };
     };
 };

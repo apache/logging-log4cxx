@@ -55,7 +55,7 @@ namespace log4cxx
 		<p>
 		@return A byte array in SimpleLayout format.
 		*/
-		virtual void format(tostream& output, const spi::LoggingEvent& event);
+		virtual void format(ostream& output, const spi::LoggingEvent& event);
 
 		/**
 		The SimpleLayout does not handle the throwable contained within
@@ -65,7 +65,7 @@ namespace log4cxx
 		bool ignoresThrowable() { return true; }
 
 		virtual void activateOptions() {}
-		virtual void setOption(const tstring& option, const tstring& value) {}
+		virtual void setOption(const String& option, const String& value) {}
 	};
 }; // namespace log4cxx
 

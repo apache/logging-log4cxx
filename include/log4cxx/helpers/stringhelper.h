@@ -29,40 +29,40 @@ namespace log4cxx
         {
 
             public:
-            static tstring toUpperCase(const tstring& s)
+            static String toUpperCase(const String& s)
             {
-				tstring d;
+				String d;
                 std::transform(s.begin(), s.end(),
-					std::insert_iterator<tstring>(d, d.begin()), totupper);
+					std::insert_iterator<String>(d, d.begin()), totupper);
 				return d;
             }
 
-            static tstring toLowerCase(const tstring& s)
+            static String toLowerCase(const String& s)
             {
-				tstring d;
+				String d;
                 std::transform(s.begin(), s.end(),
-					std::insert_iterator<tstring>(d, d.begin()), totlower);
+					std::insert_iterator<String>(d, d.begin()), totlower);
 				return d;
             }
 
-            static tstring trim(const tstring& s)
+            static String trim(const String& s)
             {
-				tstring::size_type pos = s.find_first_not_of(_T(' '));
-				if (pos == tstring::npos)
+				String::size_type pos = s.find_first_not_of(_T(' '));
+				if (pos == String::npos)
 				{
-					return tstring();
+					return String();
 				}
 
-				tstring::size_type n = s.find_last_not_of(_T(' ')) - pos + 1;
+				String::size_type n = s.find_last_not_of(_T(' ')) - pos + 1;
 				return s.substr(pos, n);
             }
 
-            static bool equalsIgnoreCase(const tstring& s1, const tstring& s2)
+            static bool equalsIgnoreCase(const String& s1, const String& s2)
             {
 				return toLowerCase(s1) == toLowerCase(s2);
             }
 
-			static bool endsWith(const tstring& s, const tstring& suffix)
+			static bool endsWith(const String& s, const String& suffix)
 			{
 				return (s.length() - s.rfind(suffix)) == suffix.length();
 			}

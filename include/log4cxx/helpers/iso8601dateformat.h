@@ -35,7 +35,7 @@ namespace log4cxx
 		class ISO8601DateFormat : public DateFormat
 		{
 		public:
-			ISO8601DateFormat(const tstring& timeZone = _T(""))
+			ISO8601DateFormat(const String& timeZone = _T(""))
 			 : DateFormat(_T("%Y-%m-%d %H:%M:%S,%Q"), timeZone) {}
 		};
 	}; // namespace helpers

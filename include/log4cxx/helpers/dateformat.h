@@ -27,12 +27,12 @@ namespace log4cxx
 		class DateFormat
 		{
 		public:
-			DateFormat(const tstring& dateFormat, const tstring& timeZone = _T(""));
-			virtual void format(tostream& os, int64_t time);
+			DateFormat(const String& dateFormat, const String& timeZone = _T(""));
+			virtual void format(ostream& os, int64_t time);
 
 		protected:
-			tstring timeZone;
-			tstring dateFormat;
+			String timeZone;
+			String dateFormat;
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

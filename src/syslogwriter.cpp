@@ -25,7 +25,7 @@
 
 using namespace log4cxx::helpers;
 
-SyslogWriter::SyslogWriter(const tstring& syslogHost)
+SyslogWriter::SyslogWriter(const String& syslogHost)
 : syslogHost(syslogHost)
 {
 	try
@@ -49,7 +49,7 @@ SyslogWriter::SyslogWriter(const tstring& syslogHost)
 	}
 }
 
-void SyslogWriter::write(const tstring& string)
+void SyslogWriter::write(const String& string)
 {
 	USES_CONVERSION;
 	const char * bytes = T2A(string.c_str());

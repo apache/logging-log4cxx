@@ -26,7 +26,7 @@ int main()
 			12
 			);
 		
-		tostringstream result, witness;
+		StringBuffer result, witness;
 
 		layout->formatDate(witness, event);
 		witness << _T("[")

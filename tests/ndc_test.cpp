@@ -48,7 +48,7 @@ int main()
 			ret = EXIT_FAILURE;
 		}
 
-		tstring result = NDC::pop();
+		String result = NDC::pop();
 		if (result != _T("context3"))
 		{
 			tcout << _T("6. pop=") << result

@@ -71,13 +71,13 @@ go. The <code>properties</code> are parsed relative to a
 @param properties A java.util.Properties containing keys and values.
 @param prefix Only keys having the specified prefix will be set.
 */
-			static void setProperties(helpers::ObjectPtr obj, helpers::Properties& properties, const tstring& prefix);
+			static void setProperties(helpers::ObjectPtr obj, helpers::Properties& properties, const String& prefix);
 			
 /**
 Set the properites for the object that match the
 <code>prefix</code> passed as parameter.
 */
-			void setProperties(helpers::Properties& properties, const tstring& prefix);
+			void setProperties(helpers::Properties& properties, const String& prefix);
 			
 /**
 Set a property on this PropertySetter's Object. If the underlying
@@ -85,9 +85,9 @@ Object supports the spi::OptionHandler interface, the
 {@link spi::OptionHandler#setOption setOption} method is called.
 
 @param name    name of the property
-@param value   tstring value of the property
+@param value   String value of the property
 */
-			void setProperty(const tstring& name, const tstring& value);
+			void setProperty(const String& name, const String& value);
 
 			void activate();
 		}; // class PropertySetter

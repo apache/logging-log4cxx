@@ -42,14 +42,14 @@ namespace log4cxx
 		END_LOG4CXX_CAST_MAP()
 
 			NTEventLogAppender();
-			NTEventLogAppender(const tstring& server, const tstring& log,
-				const tstring& source, LayoutPtr layout);
+			NTEventLogAppender(const String& server, const String& log,
+				const String& source, LayoutPtr layout);
 
 			virtual ~NTEventLogAppender();
 
 			virtual void activateOptions();
 			virtual void close();
-			virtual void setOption(const tstring& option, const tstring& value);
+			virtual void setOption(const String& option, const String& value);
 
     		/**
     		* The SocketAppender does not use a layout. Hence, this method
@@ -58,29 +58,29 @@ namespace log4cxx
     		bool requiresLayout()
     			{ return true; }
 
-			void setSource(const tstring& source)
+			void setSource(const String& source)
 				{ this->source = source; }
 			
-			const tstring& getSource() const
+			const String& getSource() const
 				{ return source; }
 
-			void setLog(const tstring& log)
+			void setLog(const String& log)
 				{ this->log = log; }
 			
-			const tstring& getLog() const
+			const String& getLog() const
 				{ return log; }
 
-			void setServer(const tstring& server)
+			void setServer(const String& server)
 				{ this->server = server; }
 			
-			const tstring& getServer() const
+			const String& getServer() const
 				{ return server; }
 
 		protected:
 			virtual void append(const spi::LoggingEvent& event);
-			HKEY regGetKey(const tstring& subkey, unsigned long *disposition);
-			void regSetString(HKEY hkey, const tstring& name, const tstring& value);
-			void regSetDword(HKEY hkey, const tstring& name, unsigned long value);
+			HKEY regGetKey(const String& subkey, unsigned long *disposition);
+			void regSetString(HKEY hkey, const String& name, const String& value);
+			void regSetDword(HKEY hkey, const String& name, unsigned long value);
 			unsigned short getEventType(const spi::LoggingEvent& event);
 			unsigned short getEventCategory(const spi::LoggingEvent& event);
 			/*
@@ -89,9 +89,9 @@ namespace log4cxx
 			void addRegistryInfo();
 
 			// Data
-			tstring server;
-			tstring log;
-			tstring source;
+			String server;
+			String log;
+			String source;
 			HANDLE hEventLog;
 			SID * pCurrentUserSID;
 		}; // class NTEventLogAppender

@@ -84,7 +84,7 @@ namespace log4cxx
             Another form of {@link #setThreshold(const Level&) 
 			setThreshold(Level)} accepting a string
             parameter instead of a <code>Level</code>. */
-            virtual void setThreshold(const tstring& val) = 0;
+            virtual void setThreshold(const String& val) = 0;
 
             virtual void emitNoAppenderWarning(LoggerPtr logger) = 0;
 
@@ -94,14 +94,14 @@ namespace log4cxx
 			for an explanation. */
             virtual const Level& getThreshold() = 0;
 
-            virtual LoggerPtr getLogger(const tstring& name) = 0;
+            virtual LoggerPtr getLogger(const String& name) = 0;
 
-            virtual LoggerPtr getLogger(const tstring& name, spi::LoggerFactoryPtr 
+            virtual LoggerPtr getLogger(const String& name, spi::LoggerFactoryPtr 
 				factory) = 0;
 				
             virtual LoggerPtr getRootLogger() = 0;
 
-            virtual LoggerPtr exists(const tstring& name) = 0;
+            virtual LoggerPtr exists(const String& name) = 0;
 
             virtual void shutdown() = 0;
 

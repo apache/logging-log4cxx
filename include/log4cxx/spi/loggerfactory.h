@@ -37,7 +37,7 @@ namespace log4cxx
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerFactory)
 			virtual ~LoggerFactory() {}
-			virtual LoggerPtr makeNewLoggerInstance(const tstring& name) = 0;
+			virtual LoggerPtr makeNewLoggerInstance(const String& name) = 0;
 		};
 
 		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;

@@ -16,9 +16,10 @@
 
 #include <log4cxx/helpers/stringtokenizer.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-StringTokenizer::StringTokenizer(const tstring& str, const tstring& delim)
+StringTokenizer::StringTokenizer(const String& str, const String& delim)
 : delim(delim), state(0)
 {
 	this->str = new TCHAR[str.length() + 1];
@@ -46,14 +47,14 @@ bool StringTokenizer::hasMoreTokens()
 	return (token != 0);
 }
 
-tstring StringTokenizer::nextToken()
+String StringTokenizer::nextToken()
 {
 	if (token == 0)
 	{
 		throw NoSuchElementException();
 	}
 
-	tstring currentToken = token;
+	String currentToken = token;
 
 #ifdef UNICODE
 #ifdef WIN32

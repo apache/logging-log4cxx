@@ -35,7 +35,7 @@ namespace log4cxx
 			LOG4CXX_CAST_ENTRY(spi::LoggerFactory)
 		END_LOG4CXX_CAST_MAP()
 
-		virtual LoggerPtr makeNewLoggerInstance(const tstring& name);
+		virtual LoggerPtr makeNewLoggerInstance(const String& name);
 	};	
 }; // namespace log4cxx
 

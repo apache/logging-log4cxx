@@ -64,9 +64,9 @@ namespace log4cxx
 		class LevelRangeFilter : public spi::Filter
 		{
 		private:
-			static tstring LEVEL_MIN_OPTION;
-			static tstring LEVEL_MAX_OPTION;
-			static tstring ACCEPT_ON_MATCH_OPTION;
+			static String LEVEL_MIN_OPTION;
+			static String LEVEL_MAX_OPTION;
+			static String ACCEPT_ON_MATCH_OPTION;
 
 			/**
 			Do we return ACCEPT when a match occurs. Default is
@@ -89,8 +89,8 @@ namespace log4cxx
 			/**
 			Set options
 			*/
-			virtual void setOption(const tstring& option,
-				const tstring& value);
+			virtual void setOption(const String& option,
+				const String& value);
 
 			/**
 			Set the <code>LevelMin</code> option.

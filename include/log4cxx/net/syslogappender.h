@@ -89,7 +89,7 @@ namespace log4cxx
 			SyslogAppender();
 			SyslogAppender(LayoutPtr layout, SyslogFacility syslogFacility);
 			SyslogAppender(LayoutPtr layout,
-				const tstring& syslogHost, SyslogFacility syslogFacility);
+				const String& syslogHost, SyslogFacility syslogFacility);
 			~SyslogAppender();
 			/** Release any resources held by this SyslogAppender.*/
 			void close();
@@ -98,7 +98,7 @@ namespace log4cxx
 			Returns the specified syslog facility as a lower-case String,
 			e.g. "kern", "user", etc.
 			*/
-			static tstring getFacilityString(SyslogFacility syslogFacility);
+			static String getFacilityString(SyslogFacility syslogFacility);
 
 			/**
 			Returns the integer value corresponding to the named syslog
@@ -108,7 +108,7 @@ namespace log4cxx
 			LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7.
 			The matching is case-insensitive.
 			*/
-			static SyslogFacility getFacility(const tstring &facilityName);
+			static SyslogFacility getFacility(const String &facilityName);
 
 			void append(const spi::LoggingEvent& event);
 
@@ -131,12 +131,12 @@ namespace log4cxx
 			<b>WARNING</b> If the SyslogHost is not set, then this appender
 			will fail.
 			*/
-			void setSyslogHost(const tstring& syslogHost);
+			void setSyslogHost(const String& syslogHost);
 
 			/**
 			Returns the value of the <b>SyslogHost</b> option.
 			*/
-			inline const tstring& getSyslogHost()
+			inline const String& getSyslogHost()
 				{ return syslogHost; }
 
 			/**
@@ -147,12 +147,12 @@ namespace log4cxx
 			CRON, AUTHPRIV, FTP, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4,
 			LOCAL5, LOCAL6, LOCAL7. Case is unimportant.
 			*/
-			void setFacility(const tstring& facilityName);
+			void setFacility(const String& facilityName);
 
 			/**
 			Returns the value of the <b>Facility</b> option.
 			*/
-			inline tstring getFacility() const
+			inline String getFacility() const
 				{ return getFacilityString(syslogFacility); }
 
 			/**
@@ -173,10 +173,10 @@ namespace log4cxx
 			void initSyslogFacilityStr();
 
 			SyslogFacility syslogFacility; // Have LOG_USER as default
-			tstring facilityStr;
+			String facilityStr;
 			bool facilityPrinting;
 			helpers::SyslogWriter * sw;
-			tstring syslogHost;
+			String syslogHost;
 
 		}; // class SyslogAppender
     } // namespace net

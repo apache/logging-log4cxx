@@ -70,7 +70,7 @@ LoggerPtr LogManager::getRootLogger()
 /**
 Retrieve the appropriate Logger instance.
 */
-LoggerPtr LogManager::getLogger(const tstring& name)
+LoggerPtr LogManager::getLogger(const String& name)
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
 	return repositorySelector->getLoggerRepository()->getLogger(name);
@@ -79,14 +79,14 @@ LoggerPtr LogManager::getLogger(const tstring& name)
 /**
 Retrieve the appropriate Logger instance.
 */
-LoggerPtr LogManager::getLogger(const tstring& name,
+LoggerPtr LogManager::getLogger(const String& name,
 								spi::LoggerFactoryPtr factory)
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
 	return repositorySelector->getLoggerRepository()->getLogger(name, factory);
 }
 
-LoggerPtr LogManager::exists(const tstring& name)
+LoggerPtr LogManager::exists(const String& name)
 {
 	return repositorySelector->getLoggerRepository()->exists(name);
 }

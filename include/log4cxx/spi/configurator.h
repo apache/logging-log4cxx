@@ -42,13 +42,13 @@ namespace log4cxx
 			Special level value signifying inherited behaviour. The current
 			value of this string constant is <b>inherited</b>. #NuLL
 			is a synonym.  */
-			static tstring INHERITED /*= "inherited"*/;
+			static String INHERITED /*= "inherited"*/;
 			
 			/**
 			Special level signifying inherited behaviour, same as
 			#INHERITED. The current value of this string constant is
 			<b>null</b>. */
-			static tstring NuLL /*= "null"*/;
+			static String NuLL /*= "null"*/;
 			
 			/**
 			Interpret a resource pointed by a URL and set up log4j accordingly.
@@ -59,7 +59,7 @@ namespace log4cxx
 			@param filename The file to parse
 			@param hierarchy The hierarchy to operation upon.
 			*/
-			virtual void doConfigure(const tstring& configFileName, 
+			virtual void doConfigure(const String& configFileName, 
 				spi::LoggerRepositoryPtr repository) = 0;
 		};
 	};

@@ -56,7 +56,7 @@ namespace log4cxx
             /**
              * Get an appender by name.
              */
-            virtual AppenderPtr getAppender(const tstring& name) = 0;
+            virtual AppenderPtr getAppender(const String& name) = 0;
 
             /**
 			Returns <code>true</code> if the specified appender is in list of
@@ -78,7 +78,7 @@ namespace log4cxx
              * Remove the appender with the name passed as parameter from the
              * list of appenders.
              */
-            virtual void removeAppender(const tstring& name) = 0;
+            virtual void removeAppender(const String& name) = 0;
 
           // Dtor
             virtual ~AppenderAttachable(){}

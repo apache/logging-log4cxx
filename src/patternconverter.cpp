@@ -36,11 +36,11 @@ PatternConverter::PatternConverter(const FormattingInfo& fi)
 /**
 A template method for formatting in a converter specific way.
 */
-void PatternConverter::format(tostream& sbuf, const spi::LoggingEvent& e)
+void PatternConverter::format(ostream& sbuf, const spi::LoggingEvent& e)
 {
-	tostringstream os;
+	StringBuffer os;
 	convert(os, e);
-	tstring s = os.str();
+	String s = os.str();
 	
 	if(s.empty())
 	{
@@ -72,7 +72,7 @@ void PatternConverter::format(tostream& sbuf, const spi::LoggingEvent& e)
 		sbuf << s;
 }	
 
-tstring PatternConverter::SPACES[] =
+String PatternConverter::SPACES[] =
 {_T(" "), _T("  "), _T("    "), _T("        "), //1,2,4,8 spaces
 _T("                "), // 16 spaces
 _T("                                ") }; // 32 spaces
@@ -80,7 +80,7 @@ _T("                                ") }; // 32 spaces
 /**
 Fast space padding method.
 */
-void PatternConverter::spacePad(tostream& sbuf, int length)
+void PatternConverter::spacePad(ostream& sbuf, int length)
 {
 	while(length >= 32)
 	{

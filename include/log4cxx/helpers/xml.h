@@ -62,17 +62,17 @@ namespace log4cxx
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMDocument)
-			virtual void load(const tstring& fileName) = 0;
+			virtual void load(const String& fileName) = 0;
 			virtual XMLDOMElementPtr getDocumentElement() = 0;
-			virtual XMLDOMElementPtr getElementById(const tstring& tagName, const tstring& elementId) = 0;
+			virtual XMLDOMElementPtr getElementById(const String& tagName, const String& elementId) = 0;
 		};
 
 		class XMLDOMElement : virtual public XMLDOMNode
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMElement)
-			virtual tstring getTagName() = 0;
-			virtual tstring getAttribute(const tstring& name) = 0;
+			virtual String getTagName() = 0;
+			virtual String getAttribute(const String& name) = 0;
 		};
 
 		class XMLDOMNodeList : virtual public Object

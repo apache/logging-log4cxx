@@ -16,18 +16,19 @@
 
 #include <log4cxx/helpers/loglog.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 bool LogLog::debugEnabled = false;  
 bool LogLog::quietMode = false;
-tstring LogLog::DEBUG_KEY = _T("log4j.debug");
+String LogLog::DEBUG_KEY = _T("log4j.debug");
 
 void LogLog::setInternalDebugging(bool debugEnabled)
 {
 	LogLog::debugEnabled = debugEnabled;
 }
 
-void LogLog::debug(const tstring& msg)
+void LogLog::debug(const String& msg)
 {
 	if(debugEnabled && !quietMode)
 	{
@@ -35,14 +36,14 @@ void LogLog::debug(const tstring& msg)
 	}
 }
 
-void LogLog::debug(const tstring& msg, Exception& e)
+void LogLog::debug(const String& msg, Exception& e)
 {
 	debug(msg);
 	tcerr << e.getMessage() << std::endl;
 }
 
 
-void LogLog::error(const tstring& msg)
+void LogLog::error(const String& msg)
 {
 	if(quietMode)
 		return;
@@ -50,7 +51,7 @@ void LogLog::error(const tstring& msg)
 	tcerr << msg << std::endl;
 }  
 
-void LogLog::error(const tstring& msg, Exception& e)
+void LogLog::error(const String& msg, Exception& e)
 {
 	error(msg);
 	tcerr << e.getMessage() << std::endl;
@@ -61,7 +62,7 @@ void LogLog::setQuietMode(bool quietMode)
 	LogLog::quietMode = quietMode;
 }
 
-void LogLog::warn(const tstring& msg) 
+void LogLog::warn(const String& msg) 
 {
 	if(quietMode)
 		return;
@@ -69,7 +70,7 @@ void LogLog::warn(const tstring& msg)
 	tcerr << msg << std::endl;
 }
 
-void LogLog::warn(const tstring& msg, Exception& e)
+void LogLog::warn(const String& msg, Exception& e)
 {
 	warn(msg);
 	tcerr << e.getMessage() << std::endl;

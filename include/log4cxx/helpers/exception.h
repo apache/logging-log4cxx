@@ -26,21 +26,21 @@ namespace log4cxx
 		class Exception
 		{
 		public:
-			virtual tstring getMessage() = 0;
+			virtual String getMessage() = 0;
 		}; // class Exception
 
 		class RuntimeException : public Exception
 		{
 		public:
 			RuntimeException() {}
-			RuntimeException(const tstring& message)
+			RuntimeException(const String& message)
 			 : message(message) {}
 
-			virtual tstring getMessage()
+			virtual String getMessage()
 				{ return message; }
 
 		protected:
-			tstring message;
+			String message;
 		}; // class Exception
 
 		   /** Thrown to indicate that a method has been passed 
@@ -48,14 +48,14 @@ namespace log4cxx
 		class IllegalArgumentException : public Exception
 		{
 		public:
-			IllegalArgumentException(const tstring& message)
+			IllegalArgumentException(const String& message)
 			 : message(message) {}
 
-			virtual tstring getMessage()
+			virtual String getMessage()
 				{ return message; }
 
 		protected:
-			tstring message;
+			String message;
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

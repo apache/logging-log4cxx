@@ -31,7 +31,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 namespace {
-    bool startsWith(const tstring& teststr, const tstring& substr)
+    bool startsWith(const String& teststr, const String& substr)
 	{
         bool val = false;
         if(teststr.length() > substr.length()) {
@@ -89,7 +89,7 @@ void Hierarchy::emitNoAppenderWarning(LoggerPtr logger)
 }
 
 
-LoggerPtr Hierarchy::exists(const tstring& name)
+LoggerPtr Hierarchy::exists(const String& name)
 {
 	mapCs.lock();
 	
@@ -105,7 +105,7 @@ void Hierarchy::setThreshold(const Level& l)
 	threshold = &l;
 }
 
-void Hierarchy::setThreshold(const tstring& levelStr)
+void Hierarchy::setThreshold(const String& levelStr)
 
 {
 	const Level& l = Level::toLevel(levelStr, Level::OFF);
@@ -150,12 +150,12 @@ const Level& Hierarchy::getThreshold()
 	return *threshold;
 }
 
-LoggerPtr Hierarchy::getLogger(const tstring& name)
+LoggerPtr Hierarchy::getLogger(const String& name)
 {
 	return getLogger(name, defaultFactory);
 }
 
-LoggerPtr Hierarchy::getLogger(const tstring& name, spi::LoggerFactoryPtr factory)
+LoggerPtr Hierarchy::getLogger(const String& name, spi::LoggerFactoryPtr factory)
 {
 	// Synchronize to prevent write conflicts. Read conflicts (in
 	// getEffectiveLevel method) are possible only if variable
@@ -274,17 +274,17 @@ void Hierarchy::shutdown()
 
 void Hierarchy::updateParents(LoggerPtr logger)
 {
-	const tstring& name = logger->name;
+	const String& name = logger->name;
 	int length = name.size();
 	bool parentFound = false;
 
 	//tcout << _T("UpdateParents called for ") << name << std::endl;
 
 	// if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
-	for(int i = name.find_last_of(_T('.'), length-1); i != tstring::npos;
+	for(int i = name.find_last_of(_T('.'), length-1); i != String::npos;
 	i = name.find_last_of(_T('.'), i-1))
 	{
-		tstring substr = name.substr(0, i);
+		String substr = name.substr(0, i);
 		//tcout << _T("UpdateParents processing ") << substr << std::endl;
 
         LoggerMap::iterator it = loggers.find(substr);

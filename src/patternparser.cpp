@@ -54,7 +54,7 @@ enum ParserState
 };
 
 
-PatternParser::PatternParser(const tstring& pattern)
+PatternParser::PatternParser(const String& pattern)
 : pattern(pattern), patternLength(pattern.length()), state(LITERAL_STATE), i(0)
 {
 }
@@ -72,25 +72,25 @@ void PatternParser::addToList(PatternConverterPtr& pc)
 	}
 }
 
-tstring PatternParser::extractOption()
+String PatternParser::extractOption()
 {
 	if((i < patternLength) && (pattern.at(i) == _T('{')))
 	{
 		int end = pattern.find(_T('}'), i);
 		if (end > i)
 		{
-			tstring r = pattern.substr(i + 1, end - (i + 1));
+			String r = pattern.substr(i + 1, end - (i + 1));
 			i = end+1;
 			return r;
 		}
 	}
 
-	return tstring();
+	return String();
 }
 
 int PatternParser::extractPrecisionOption()
 {
-	tstring opt = extractOption();
+	String opt = extractOption();
 	int r = 0;
 	if(!opt.empty())
 	{
@@ -237,9 +237,9 @@ void PatternParser::finalizeConverter(TCHAR c)
 		break;
 	case _T('d'):
 	{
-		tstring dateFormatStr;
+		String dateFormatStr;
 		DateFormat * df = 0;
-		tstring dOpt = extractOption();
+		String dOpt = extractOption();
 		if(!dOpt.empty())
 		{
 			dateFormatStr = dOpt;
@@ -338,7 +338,7 @@ void PatternParser::finalizeConverter(TCHAR c)
 		break;
 	case _T('X'):
 	{
-		tstring xOpt = extractOption();
+		String xOpt = extractOption();
 		pc = new MDCPatternConverter(formattingInfo, xOpt);
 		currentLiteral.str(_T(""));
 		break;
@@ -372,7 +372,7 @@ PatternParser::BasicPatternConverter::BasicPatternConverter(const FormattingInfo
 {
 }
 
-void PatternParser::BasicPatternConverter::convert(tostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::BasicPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
 {
 	switch(type)
 	{
@@ -394,17 +394,17 @@ void PatternParser::BasicPatternConverter::convert(tostream& sbuf, const spi::Lo
 	}
 }
 
-PatternParser::LiteralPatternConverter::LiteralPatternConverter(const tstring& value)
+PatternParser::LiteralPatternConverter::LiteralPatternConverter(const String& value)
 : literal(value)
 {
 }
 
-void PatternParser::LiteralPatternConverter::format(tostringstream& sbuf, const spi::LoggingEvent& e) 
+void PatternParser::LiteralPatternConverter::format(StringBuffer& sbuf, const spi::LoggingEvent& e) 
 {
 	sbuf << literal;
 }
 
-void PatternParser::LiteralPatternConverter::convert(tostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::LiteralPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
 {
 	sbuf << literal;
 }
@@ -419,17 +419,17 @@ PatternParser::DatePatternConverter::~DatePatternConverter()
 	delete df;
 }
 
-void PatternParser::DatePatternConverter::convert(tostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::DatePatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
 {
 	df->format(sbuf, event.getTimeStamp());
 }
 
-PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& formattingInfo, const tstring& key)
+PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& formattingInfo, const String& key)
 : PatternConverter(formattingInfo), key(key)
 {
 }
 
-void PatternParser::MDCPatternConverter::convert(tostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::MDCPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
 {
 	/**
 	* if there is no additional options, we output every single
@@ -439,12 +439,12 @@ void PatternParser::MDCPatternConverter::convert(tostream& sbuf, const spi::Logg
 	if (key.empty())
 	{
 		sbuf << _T("{");
-		std::set<tstring> keySet = event.getMDCKeySet();
-		std::set<tstring>::iterator i;
+		std::set<String> keySet = event.getMDCKeySet();
+		std::set<String>::iterator i;
 		for (i = keySet.begin(); i != keySet.end(); i++)
 		{
-			tstring item = *i;
-			tstring val = event.getMDC(item);
+			String item = *i;
+			String val = event.getMDC(item);
 			sbuf << _T("{") << item << _T(",") << val << _T("}");
 		}
 		sbuf << _T("}");
@@ -464,7 +464,7 @@ PatternParser::LocationPatternConverter::LocationPatternConverter(const Formatti
 {
 }
 
-void PatternParser::LocationPatternConverter::convert(tostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::LocationPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
 {
 	switch(type)
 	{
@@ -492,9 +492,9 @@ PatternParser::CategoryPatternConverter::CategoryPatternConverter(const Formatti
 {
 }
 
-void PatternParser::CategoryPatternConverter::convert(tostream& sbuf, const spi::LoggingEvent& event)
+void PatternParser::CategoryPatternConverter::convert(ostream& sbuf, const spi::LoggingEvent& event)
 {
-	const tstring& n = event.getLoggerName();
+	const String& n = event.getLoggerName();
 
 	if(precision <= 0)
 	{
@@ -503,16 +503,16 @@ void PatternParser::CategoryPatternConverter::convert(tostream& sbuf, const spi:
 	}
 	else 
 	{
-		tstring::size_type len = n.length();
+		String::size_type len = n.length();
 		
 		// We substract 1 from 'len' when assigning to 'end' to avoid out of
 		// bounds exception in return r.substring(end+1, len). This can happen if
 		// precision is 1 and the category name ends with a dot.
-		tstring::size_type end = len -1 ;
+		String::size_type end = len -1 ;
 		for(int i = precision; i > 0; i--) 
 		{
 			end = n.rfind(_T('.'), end-1);
-			if(end == tstring::npos)
+			if(end == String::npos)
 			{
 				sbuf << n;
 				return;

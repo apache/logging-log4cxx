@@ -66,8 +66,8 @@ SMTPAppender::~SMTPAppender()
 	finalize();
 }
 
-void SMTPAppender::setOption(const tstring& option,
-	const tstring& value)
+void SMTPAppender::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("buffersize")))
 	{
@@ -129,8 +129,8 @@ void SMTPAppender::activateOptions()
 		0,
 		(libsmtp_session_struct *)session);
 
-	std::vector<tstring> recipients = parseAddress(to);
-	std::vector<tstring>::iterator i;
+	std::vector<String> recipients = parseAddress(to);
+	std::vector<String>::iterator i;
 	for (i = recipients.begin(); i != recipients.end(); i++)
 	{
 		if (::libsmtp_add_recipient(LIBSMTP_REC_TO,
@@ -146,7 +146,7 @@ void SMTPAppender::activateOptions()
 	if (layout != 0)
 	{
 		int mimeType = 0;
-		tstring contentType = layout->getContentType();
+		String contentType = layout->getContentType();
 		if (contentType == _T("text/plain"))
 		{
 			mimeType = LIBSMTP_MIME_SUB_PLAIN;
@@ -298,9 +298,9 @@ void SMTPAppender::close()
 	this->closed = true;
 }
 
-std::vector<tstring> SMTPAppender::parseAddress(const tstring& addressStr)
+std::vector<String> SMTPAppender::parseAddress(const String& addressStr)
 {
-	std::vector<tstring> addresses;
+	std::vector<String> addresses;
 
 	StringTokenizer st(addressStr, _T(","));
 	while (st.hasMoreTokens())
@@ -320,7 +320,7 @@ void SMTPAppender::sendBuffer()
 	// appender. This frees us from needing to synchronize on 'cb'.
 	try
 	{
-		tostringstream sbuf;
+		StringBuffer sbuf;
 		layout->appendHeader(sbuf);
 
 		int len = cb.length();
@@ -366,7 +366,7 @@ void SMTPAppender::sendBuffer()
 			return;
 		}
 
-		tstring s = sbuf.str();
+		String s = sbuf.str();
 		if (::libsmtp_part_send(
 			T2A((TCHAR *)s.c_str()),
 			s.length(),
@@ -399,9 +399,9 @@ void SMTPAppender::sendBuffer()
 /**
 Returns value of the <b>EvaluatorClass</b> option.
 */
-tstring SMTPAppender::getEvaluatorClass()
+String SMTPAppender::getEvaluatorClass()
 {
-	return evaluator == 0 ? tstring() : evaluator->getClass().getName();
+	return evaluator == 0 ? String() : evaluator->getClass().getName();
 }
 
 /**
@@ -424,7 +424,7 @@ TriggeringEventEvaluator} interface. A corresponding object will
 be instantiated and assigned as the triggering event evaluator
 for the SMTPAppender.
 */
-void SMTPAppender::setEvaluatorClass(const tstring& value)
+void SMTPAppender::setEvaluatorClass(const String& value)
 {
 	evaluator = OptionConverter::instantiateByClassName(value,
 		TriggeringEventEvaluator::getStaticClass(), evaluator);

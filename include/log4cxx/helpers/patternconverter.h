@@ -64,20 +64,20 @@ namespace log4cxx
 			Derived pattern converters must override this method in order to
 			convert conversion specifiers in the correct way.
 			*/
-			virtual void convert(tostream& sbuf, const spi::LoggingEvent& event) = 0;
+			virtual void convert(ostream& sbuf, const spi::LoggingEvent& event) = 0;
 
-			static tstring SPACES[];
+			static String SPACES[];
 
 		public:
 			/**
 			A template method for formatting in a converter specific way.
 			*/
-			virtual void format(tostream& sbuf, const spi::LoggingEvent& e);
+			virtual void format(ostream& sbuf, const spi::LoggingEvent& e);
 
 			/**
 			Fast space padding method.
 			*/
-			void spacePad(tostream& sbuf, int length);
+			void spacePad(ostream& sbuf, int length);
 
 		}; // class PatternConverter
 	}; // namespace helpers

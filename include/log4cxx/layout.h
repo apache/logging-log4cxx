@@ -50,25 +50,25 @@ namespace log4cxx
 		/**
 		Implement this method to create your own layout format.
 		*/
-		virtual void format(tostream& output, const spi::LoggingEvent& event) = 0;
+		virtual void format(ostream& output, const spi::LoggingEvent& event) = 0;
 
 		/**
 		Returns the content type output by this layout. The base class
 		returns "text/plain".
 		*/
-		virtual tstring getContentType() const { return _T("text/plain"); }
+		virtual String getContentType() const { return _T("text/plain"); }
 
 		/**
 		Append the header for the layout format. The base class does
 		nothing.
 		*/
-		virtual void appendHeader(tostream& output) {}
+		virtual void appendHeader(ostream& output) {}
 
 		/**
 		Append the footer for the layout format. The base class does
 		nothing.
 		*/
-		virtual void appendFooter(tostream& output) {}
+		virtual void appendFooter(ostream& output) {}
 
 		/**
 		If the layout handles the throwable object contained within

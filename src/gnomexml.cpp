@@ -79,7 +79,7 @@ XMLDOMDocumentPtr GnomeXMLDOMDocument::getOwnerDocument()
 	return this;
 }
 
-void GnomeXMLDOMDocument::load(const tstring& fileName)
+void GnomeXMLDOMDocument::load(const String& fileName)
 {
 	if (document != 0)
 	{
@@ -110,7 +110,7 @@ XMLDOMElementPtr GnomeXMLDOMDocument::getDocumentElement()
 	return new GnomeXMLDOMElement(element);
 }
 
-XMLDOMElementPtr GnomeXMLDOMDocument::getElementById(const tstring& tagName, const tstring& elementId)
+XMLDOMElementPtr GnomeXMLDOMDocument::getElementById(const String& tagName, const String& elementId)
 {
 	if (document == 0) throw DOMException();
 	USES_CONVERSION;
@@ -165,20 +165,20 @@ XMLDOMDocumentPtr GnomeXMLDOMElement::getOwnerDocument()
 	return new GnomeXMLDOMDocument(element->doc);
 }
 
-tstring GnomeXMLDOMElement::getTagName()
+String GnomeXMLDOMElement::getTagName()
 {
 	if (element == 0) throw DOMException();
 	USES_CONVERSION;
 	return A2T((char *)element->name);
 }
 
-tstring GnomeXMLDOMElement::getAttribute(const tstring& name)
+String GnomeXMLDOMElement::getAttribute(const String& name)
 {
 	if (element == 0) throw DOMException();
 	USES_CONVERSION;
 	char * attributeValue = (char *)xmlGetProp(
 		element, (const xmlChar *)T2A(name.c_str()));
-	return (attributeValue == 0) ? tstring() : A2T(attributeValue);
+	return (attributeValue == 0) ? String() : A2T(attributeValue);
 }
 
 // GnomeXMLDOMNodeList	

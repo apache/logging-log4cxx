@@ -28,7 +28,7 @@ BoundedFIFO::BoundedFIFO(int maxSize)
 {
 	if(maxSize < 1)
 	{
-		tostringstream oss;
+		StringBuffer oss;
 		oss << _T("The maxSize argument (") << maxSize
 			<< _T(") is not a positive integer.");
 		throw new IllegalArgumentException(oss.str());

@@ -35,7 +35,7 @@ namespace log4cxx
 	class HTMLLayout : public Layout
 	{
 	protected:
-		static tstring TRACE_PREFIX;
+		static String TRACE_PREFIX;
 
 	private:
 		/**
@@ -43,19 +43,19 @@ namespace log4cxx
 		location information flag.  Current value of this string
 		constant is <b>LocationInfo</b>.
 		*/
-		static tstring LOCATION_INFO_OPTION;
+		static String LOCATION_INFO_OPTION;
 
 		/**
 		A string constant used in naming the option for setting the the
 		HTML document title.  Current value of this string
 		constant is <b>Title</b>.
 		*/
-		static tstring TITLE_OPTION;
+		static String TITLE_OPTION;
 
 		// Print no location info by default
 		bool locationInfo; //= false
 
-		tstring title;
+		String title;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(HTMLLayout)
@@ -91,19 +91,19 @@ namespace log4cxx
 		document title of the generated HTML document.
 		<p>Defaults to 'Log4cxx Log Messages'.
 		*/
-		inline void setTitle(const tstring& title)
+		inline void setTitle(const String& title)
 			{ this->title = title; }
 
 		/**
 		Returns the current value of the <b>Title</b> option.
 		*/
-		inline const tstring& getTitle() const
+		inline const String& getTitle() const
 			{ return title; }
 
 		/**
 		Returns the content type output by this layout, i.e "text/html".
 		*/
-		virtual tstring getContentType() const { return _T("text/html"); }
+		virtual String getContentType() const { return _T("text/html"); }
 
 		/**
 		No options to activate.
@@ -113,19 +113,19 @@ namespace log4cxx
 		/**
 		Set options
 		*/
-		virtual void setOption(const tstring& option, const tstring& value);
+		virtual void setOption(const String& option, const String& value);
 
-		virtual void format(tostream& output, const spi::LoggingEvent& event);
+		virtual void format(ostream& output, const spi::LoggingEvent& event);
 
 		/**
 		Append appropriate HTML headers.
 		*/
-		virtual void appendHeader(tostream& output);
+		virtual void appendHeader(ostream& output);
 
 		/**
 		Append the appropriate HTML footers.
 		*/
-		virtual void appendFooter(tostream& output);
+		virtual void appendFooter(ostream& output);
 
 		/**
 		The HTML layout handles the throwable contained in logging

@@ -28,13 +28,13 @@ const Level Level::INFO(Level::INFO_INT, _T("INFO"),  6);
 const Level Level::DEBUG(Level::DEBUG_INT, _T("DEBUG"), 7);
 const Level Level::ALL(Level::ALL_INT, _T("ALL"), 7);
 
-Level::Level(int level, tstring levelStr, int syslogEquivalent)
+Level::Level(int level, String levelStr, int syslogEquivalent)
 : level(level), levelStr(levelStr), syslogEquivalent(syslogEquivalent)
 {
 }
 
 
-const Level& Level::toLevel(const tstring& sArg)
+const Level& Level::toLevel(const String& sArg)
 {
     return toLevel(sArg, Level::DEBUG);
 }
@@ -59,14 +59,14 @@ const Level& Level::toLevel(int val, const Level& defaultLevel)
     }
 }
 
-const Level& Level::toLevel(const tstring& sArg, const Level& defaultLevel)
+const Level& Level::toLevel(const String& sArg, const Level& defaultLevel)
 {
     if (sArg.empty())
     {
        return defaultLevel;
     }
 
-    tstring s = StringHelper::toUpperCase(sArg);
+    String s = StringHelper::toUpperCase(sArg);
 
     if(s == (_T("ALL"))) return ALL;
     if(s == (_T("DEBUG"))) return DEBUG;
@@ -94,7 +94,7 @@ bool Level::isGreaterOrEqual(const Level& level) const
     return this->level >= level.level;
 }
 
-const tstring& Level::toString() const
+const String& Level::toString() const
 {
 	return levelStr;
 }

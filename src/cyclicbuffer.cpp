@@ -32,7 +32,7 @@ CyclicBuffer::CyclicBuffer(int maxSize) : maxSize(maxSize), first(0), last(0), n
 {
 	if(maxSize < 1)
 	{
-		tostringstream oss;
+		StringBuffer oss;
 		oss << _T("The maxSize argument (") << maxSize
 			<< _T(") is not a positive integer.");
 		throw new IllegalArgumentException(oss.str());
@@ -117,7 +117,7 @@ void CyclicBuffer::resize(int newSize)
 {
 	if(newSize < 0)
 	{
-		tostringstream oss;
+		StringBuffer oss;
 		oss << _T("Negative array size [") << newSize
 			<< _T("] not allowed.");
 		throw new IllegalArgumentException(oss.str());

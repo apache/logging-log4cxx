@@ -27,11 +27,11 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-tstring DateLayout::NULL_DATE_FORMAT = _T("NULL");
-tstring DateLayout::RELATIVE_TIME_DATE_FORMAT = _T("RELATIVE");
+String DateLayout::NULL_DATE_FORMAT = _T("NULL");
+String DateLayout::RELATIVE_TIME_DATE_FORMAT = _T("RELATIVE");
 
-tstring DateLayout::DATE_FORMAT_OPTION = _T("DateFormat");
-tstring DateLayout::TIMEZONE_OPTION = _T("TimeZone");
+String DateLayout::DATE_FORMAT_OPTION = _T("DateFormat");
+String DateLayout::TIMEZONE_OPTION = _T("TimeZone");
 
 DateLayout::DateLayout() : dateFormat(0)
 {
@@ -45,7 +45,7 @@ DateLayout::~DateLayout()
 	}
 }
 
-void DateLayout::setOption(const tstring& option, const tstring& value)
+void DateLayout::setOption(const String& option, const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, DATE_FORMAT_OPTION))
 	{
@@ -99,7 +99,7 @@ void DateLayout::activateOptions()
 	}
 }
 
-void DateLayout::formatDate(tostream &os, const spi::LoggingEvent& event)
+void DateLayout::formatDate(ostream &os, const spi::LoggingEvent& event)
 {
 	if(dateFormat != 0)
 	{

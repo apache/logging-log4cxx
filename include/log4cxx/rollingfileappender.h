@@ -59,14 +59,14 @@ namespace log4cxx
 		appended to. Otherwise, the file desginated by
 		<code>filename</code> will be truncated before being opened.
 		*/
-		RollingFileAppender(LayoutPtr layout, const tstring& fileName, bool append);
+		RollingFileAppender(LayoutPtr layout, const String& fileName, bool append);
 
 		/**
 		Instantiate a FileAppender and open the file designated by
 		<code>filename</code>. The opened filename will become the output
 		destination for this appender.
 		<p>The file will be appended to.  */
-		RollingFileAppender(LayoutPtr layout, const tstring& fileName);
+		RollingFileAppender(LayoutPtr layout, const String& fileName);
 
 		/**
 		Returns the value of the <b>MaxBackupIndex</b> option.
@@ -120,12 +120,12 @@ namespace log4cxx
 		or gigabytes. For example, the value "10KB" will be interpreted
 		as 10240.
 		*/
-		inline void setMaxFileSize(const tstring& value)
+		inline void setMaxFileSize(const String& value)
 			{ maxFileSize = helpers::OptionConverter::toFileSize(
 				value, maxFileSize + 1); }
 
 
-		virtual void setOption(const tstring& option, const tstring& value);
+		virtual void setOption(const String& option, const String& value);
 			
 	protected:
 		/**

@@ -30,7 +30,7 @@ namespace log4cxx
 		class Loader
 		{
 		public:
-			static const Class& Loader::loadClass(const tstring& clazz);
+			static const Class& Loader::loadClass(const String& clazz);
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

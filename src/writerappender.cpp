@@ -28,7 +28,7 @@ WriterAppender::WriterAppender()
 {
 }
 
-WriterAppender::WriterAppender(LayoutPtr layout, tostream * os)
+WriterAppender::WriterAppender(LayoutPtr layout, ostream * os)
 : immediateFlush(true), os(os)
 {
 	this->layout = layout;

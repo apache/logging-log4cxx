@@ -42,12 +42,12 @@ namespace log4cxx
 			SocketOutputStream(SocketPtr socket);
 			~SocketOutputStream();
 			
-			void write(const void * buffer, int len);
+			void write(const void * buffer, size_t len);
 			void write(unsigned int value);
 			void write(int value);
 			void write(unsigned long value);
 			void write(long value);
-			void write(const tstring& value);
+			void write(const String& value);
 			// some write functions are missing ...
 
 			/** Close the stream and dereference the socket.

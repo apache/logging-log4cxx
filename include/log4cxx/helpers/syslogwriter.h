@@ -31,11 +31,11 @@
 		class SyslogWriter
 		{
 		public:
-			SyslogWriter(const tstring& syslogHost);
-			void write(const tstring& string);
+			SyslogWriter(const String& syslogHost);
+			void write(const String& string);
 
 		private:
-			tstring syslogHost;
+			String syslogHost;
 			InetAddress address;
 			DatagramSocketPtr ds;
 		};

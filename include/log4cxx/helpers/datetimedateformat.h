@@ -30,7 +30,7 @@ namespace log4cxx
 		class DateTimeDateFormat : public DateFormat
 		{
 		public:
-			DateTimeDateFormat(const tstring& timeZone = _T(""))
+			DateTimeDateFormat(const String& timeZone = _T(""))
 			 : DateFormat(_T("%d %b %Y %H:%M:%S"), timeZone) {}
 		};
 	}; // namespace helpers

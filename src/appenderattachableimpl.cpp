@@ -61,7 +61,7 @@ AppenderList AppenderAttachableImpl::getAllAppenders()
     return appenderList;
 }
 
-AppenderPtr AppenderAttachableImpl::getAppender(const tstring& name)
+AppenderPtr AppenderAttachableImpl::getAppender(const String& name)
 {
 	if (name.empty())
 	{
@@ -122,7 +122,7 @@ void AppenderAttachableImpl::removeAppender(AppenderPtr appender)
     }
 }
 
-void AppenderAttachableImpl::removeAppender(const tstring& name)
+void AppenderAttachableImpl::removeAppender(const String& name)
 {
 	if (name.empty())
 	{

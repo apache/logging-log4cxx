@@ -46,22 +46,22 @@ namespace log4cxx
 		{
 		protected:
 			int state;
-			tostringstream currentLiteral;
+			StringBuffer currentLiteral;
 			int patternLength;
 			int i;
 			PatternConverterPtr head;
 			PatternConverterPtr tail;
 			FormattingInfo formattingInfo;
-			tstring pattern;
+			String pattern;
 			
 		public:
-			PatternParser(const tstring& pattern);
+			PatternParser(const String& pattern);
 			
 		private:
 			void addToList(PatternConverterPtr& pc);
 			
 		protected:
-			tstring extractOption();
+			String extractOption();
 			
 			/**
 			The option is expected to be in decimal and positive. In case of
@@ -86,18 +86,18 @@ namespace log4cxx
 				int type;
 			public:
 				BasicPatternConverter(const FormattingInfo& formattingInfo, int type);
-				virtual void convert(tostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
 			};
 
 			class LiteralPatternConverter : public PatternConverter
 			{
 			private:
-				tstring literal;
+				String literal;
 
 			public:
-				LiteralPatternConverter(const tstring& value);
-				virtual void format(tostringstream& sbuf, const spi::LoggingEvent& e);
-				virtual void convert(tostream& sbuf, const spi::LoggingEvent& event);
+				LiteralPatternConverter(const String& value);
+				virtual void format(StringBuffer& sbuf, const spi::LoggingEvent& e);
+				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
 			};
 
 			class DatePatternConverter : public PatternConverter
@@ -110,17 +110,17 @@ namespace log4cxx
 				~DatePatternConverter();
 				
 			public:
-				virtual void convert(tostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
 			};
 
 			class MDCPatternConverter : public PatternConverter
 			{
 			private:
-				tstring key;
+				String key;
 			
 			public:
-				MDCPatternConverter(const FormattingInfo& formattingInfo, const tstring& key);
-				virtual void convert(tostream& sbuf, const spi::LoggingEvent& event);
+				MDCPatternConverter(const FormattingInfo& formattingInfo, const String& key);
+				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
 			};
 
 			class LocationPatternConverter : public PatternConverter
@@ -130,7 +130,7 @@ namespace log4cxx
 			
 			public:
 				LocationPatternConverter(const FormattingInfo& formattingInfo, int type);
-				virtual void convert(tostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
 			};
 
 			class CategoryPatternConverter : public PatternConverter
@@ -140,7 +140,7 @@ namespace log4cxx
 			
 			public:
 				CategoryPatternConverter(const FormattingInfo& formattingInfo, int precision);
-				virtual void convert(tostream& sbuf, const spi::LoggingEvent& event);
+				virtual void convert(ostream& sbuf, const spi::LoggingEvent& event);
 			};
 		}; // class PatternParser
 	}; // namespace helpers

@@ -17,6 +17,7 @@
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/loglog.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 #ifdef WIN32
@@ -43,7 +44,7 @@ int InetAddress::getAddress() const
 
 /** Determines all the IP addresses of a host, given the host's name.
 */
-std::vector<InetAddress> InetAddress::getAllByName(const tstring& host)
+std::vector<InetAddress> InetAddress::getAllByName(const String& host)
 {
 	struct hostent * hostinfo;
 
@@ -74,7 +75,7 @@ std::vector<InetAddress> InetAddress::getAllByName(const tstring& host)
 
 /** Determines the IP address of a host, given the host's name.
 */
-InetAddress InetAddress::getByName(const tstring& host)
+InetAddress InetAddress::getByName(const String& host)
 {
 	struct hostent * hostinfo;
 	InetAddress address;
@@ -97,7 +98,7 @@ InetAddress InetAddress::getByName(const tstring& host)
 
 /** Returns the IP address string "%d.%d.%d.%d".
 */
-tstring InetAddress::getHostAddress() const
+String InetAddress::getHostAddress() const
 {
 	USES_CONVERSION;
 	in_addr addr;
@@ -107,9 +108,9 @@ tstring InetAddress::getHostAddress() const
 
 /** Gets the host name for this IP address.
 */
-tstring InetAddress::getHostName() const
+String InetAddress::getHostName() const
 {
-	tstring hostName;
+	String hostName;
 	struct hostent * hostinfo;
 
 	in_addr addr;
@@ -123,7 +124,7 @@ tstring InetAddress::getHostName() const
 	}
 	else
 	{
-		tostringstream oss;
+		StringBuffer oss;
 		oss << _T("Cannot get host name: ") << address;
 		LogLog::error(oss.str());
 	}
@@ -151,7 +152,7 @@ bool InetAddress::isMulticastAddress() const
 
 /** Converts this IP address to a String.
 */
-tstring InetAddress::toString() const
+String InetAddress::toString() const
 {
 	return getHostName() + _T("/") + getHostAddress();
 }

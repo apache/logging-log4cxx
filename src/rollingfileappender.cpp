@@ -31,13 +31,13 @@ RollingFileAppender::RollingFileAppender()
 }
 
 
-RollingFileAppender::RollingFileAppender(LayoutPtr layout, const tstring& fileName, bool append)
+RollingFileAppender::RollingFileAppender(LayoutPtr layout, const String& fileName, bool append)
 : FileAppender(layout, fileName, append),
 maxFileSize(10*1024*1024), maxBackupIndex(1)
 {
 }
 
-RollingFileAppender::RollingFileAppender(LayoutPtr layout, const tstring& 
+RollingFileAppender::RollingFileAppender(LayoutPtr layout, const String& 
 fileName) : FileAppender(layout, fileName),
 maxFileSize(10*1024*1024), maxBackupIndex(1)
 {
@@ -57,7 +57,7 @@ void RollingFileAppender::rollOver()
 	if(maxBackupIndex > 0)
 	{
 		// Delete the oldest file, to keep Windows happy.
-		tostringstream file;
+		StringBuffer file;
 		file << fileName << _T(".") << maxBackupIndex;
 		USES_CONVERSION;
 		remove(T2A(file.str().c_str()));
@@ -65,8 +65,8 @@ void RollingFileAppender::rollOver()
 		// Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
 		for (int i = maxBackupIndex - 1; i >= 1; i--)
 		{
-			tostringstream file;
-			tostringstream target;
+			StringBuffer file;
+			StringBuffer target;
 
 			file << fileName << _T(".") << i;
 			target << fileName << _T(".") << (i + 1);
@@ -75,7 +75,7 @@ void RollingFileAppender::rollOver()
 		}
 
 		// Rename fileName to fileName.1
-		tostringstream target;
+		StringBuffer target;
 		target << fileName << _T(".") << 1;
 
 		LogLog::debug(_T("Renaming file ") + fileName + _T(" to ") + target.str());
@@ -100,8 +100,8 @@ void RollingFileAppender::subAppend(const spi::LoggingEvent& event)
 	}
 }
 
-void RollingFileAppender::setOption(const tstring& option,
-	const tstring& value)
+void RollingFileAppender::setOption(const String& option,
+	const String& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("maxfilesize")) 
 		|| StringHelper::equalsIgnoreCase(option, _T("maximumfilesize")))

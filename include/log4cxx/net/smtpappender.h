@@ -46,16 +46,16 @@ namespace log4cxx
 		class SMTPAppender : public AppenderSkeleton
 		{
 		private:
-			tstring to;
-			tstring from;
-			tstring subject;
-			tstring smtpHost;
+			String to;
+			String from;
+			String subject;
+			String smtpHost;
 			int bufferSize; // 512
 			bool locationInfo;
 			helpers::CyclicBuffer cb;
 			void * session;
-			tstring encoding;
-			tstring charset;
+			String encoding;
+			String charset;
 
 		protected:
 			spi::TriggeringEventEvaluatorPtr evaluator;
@@ -84,7 +84,7 @@ namespace log4cxx
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const tstring& option, const tstring& value);
+			virtual void setOption(const String& option, const String& value);
 
 			/**
 			Activate the specified options, such as the smtp host, the
@@ -107,12 +107,12 @@ namespace log4cxx
 
 			virtual void close();
 
-			std::vector<tstring> parseAddress(const tstring& addressStr);
+			std::vector<String> parseAddress(const String& addressStr);
 
 			/**
 			Returns value of the <b>To</b> option.
 			*/
-			inline const tstring& getTo() const
+			inline const String& getTo() const
 				{ return to; }
 
 			/**
@@ -129,30 +129,30 @@ namespace log4cxx
 			/**
 			Returns value of the <b>Charset</b> option.
 			*/
-			inline const tstring& getCharset() const
+			inline const String& getCharset() const
 				{ return charset; }
 
 			/**
 			Returns value of the <b>Encoding</b> option.
 			*/
-			inline const tstring& getEncoding() const
+			inline const String& getEncoding() const
 				{ return encoding; }
 
 			/**
 			Returns value of the <b>EvaluatorClass</b> option.
 			*/
-			tstring getEvaluatorClass();
+			String getEvaluatorClass();
 
 			/**
 			Returns value of the <b>From</b> option.
 			*/
-			inline const tstring& getFrom() const
+			inline const String& getFrom() const
 				{ return from; }
 
 			/**
 			Returns value of the <b>Subject</b> option.
 			*/
-			inline const tstring& getSubject() const
+			inline const String& getSubject() const
 				{ return subject; }
 
 			/**
@@ -160,7 +160,7 @@ namespace log4cxx
 			charset of the mail (<code>us-ascii</code>, <code>iso8859_1</code>,
 			<code>iso8859_2</code>, <code>iso8859_3</code>).
 			*/
-			inline void setCharset(const tstring& charset)
+			inline void setCharset(const String& charset)
 				{ this->charset = charset; }
 
 			/**
@@ -168,21 +168,21 @@ namespace log4cxx
 			encoding type of the mail (<code>7bit</code>, <code>8bit</code>,
 			<code>base64</code>, <code>binary</code>, <code>quoted</code>).
 			*/
-			inline void setEncoding(const tstring& charset)
+			inline void setEncoding(const String& charset)
 				{ this->encoding = encoding; }
 
 			/**
 			The <b>From</b> option takes a string value which should be a
 			e-mail address of the sender.
 			*/
-			inline void setFrom(const tstring& from)
+			inline void setFrom(const String& from)
 				{ this->from = from; }
 
 			/**
 			The <b>Subject</b> option takes a string value which should be a
 			the subject of the e-mail message.
 			*/
-			inline void setSubject(const tstring& subject)
+			inline void setSubject(const String& subject)
 				{ this->subject = subject; }
 
 			/**
@@ -198,20 +198,20 @@ namespace log4cxx
 			The <b>SMTPHost</b> option takes a string value which should be a
 			the host name of the SMTP server that will send the e-mail message.
 			*/
-			inline void setSMTPHost(const tstring& smtpHost)
+			inline void setSMTPHost(const String& smtpHost)
 				{ this->smtpHost = smtpHost; }
 
 			/**
 			Returns value of the <b>SMTPHost</b> option.
 			*/
-			inline const tstring& getSMTPHost() const
+			inline const String& getSMTPHost() const
 				{ return smtpHost; }
 
 			/**
 			The <b>To</b> option takes a string value which should be a
 			comma separated list of e-mail address of the recipients.
 			*/
-			inline void setTo(const tstring& to)
+			inline void setTo(const String& to)
 				{ this->to = to; }
 
 			/**
@@ -227,7 +227,7 @@ namespace log4cxx
 			be instantiated and assigned as the triggering event evaluator
 			for the SMTPAppender.
 			*/
-			void setEvaluatorClass(const tstring& value);
+			void setEvaluatorClass(const String& value);
 
 			/**
 			The <b>LocationInfo</b> option takes a boolean value. By
