@@ -163,15 +163,19 @@ void NTEventLogAppender::activateOptions(Pool&)
 
         addRegistryInfo();
 
-        std::wstring wsource;
-        Transcoder::encode(source, wsource);
-        std::wstring wserver;
-        const wchar_t* pServer = NULL;
-        if (!server.empty()) {
-            Transcoder::encode(server, wserver);
-            pServer = wserver.c_str();
-        }
-        hEventLog = ::RegisterEventSourceW(pServer, wsource.c_str());
+#if LOG4CXX_HAS_WCHAR_T
+        LOG4CXX_ENCODE_WCHAR(wsource, source);
+        LOG4CXX_ENCODE_WCHAR(wserver, server);
+        hEventLog = ::RegisterEventSourceW(
+            wserver.empty() ? NULL : wserver.c_str(),
+            wsource.c_str());
+#else
+        LOG4CXX_ENCODE_CHAR(wsource, source);
+        LOG4CXX_ENCODE_CHAR(wserver, server);
+        hEventLog = ::RegisterEventSourceA(
+            wserver.empty() ? NULL : wserver.c_str(),
+            wsource.c_str());
+#endif
         if (hEventLog == NULL) {
             LogString msg(LOG4CXX_STR("Cannot register NT EventLog -- server: '"));
             msg.append(server);
@@ -192,8 +196,8 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 
         LogString oss;
         layout->format(oss, event, p);
-        std::wstring s;
-        log4cxx::helpers::Transcoder::encode(oss, s);
+#if LOG4CXX_HAS_WCHAR_T
+        LOG4CXX_ENCODE_WCHAR(s, oss);
         const wchar_t* msgs[1];
         msgs[0] = s.c_str() ;
         BOOL bSuccess = ::ReportEventW(
@@ -204,8 +208,23 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
                 pCurrentUserSID,
                 1,
                 0,
-            msgs,
+                msgs,
                 NULL);
+#else
+        LOG4CXX_ENCODE_CHAR(s, oss);
+        const char* msgs[1];
+        msgs[0] = s.c_str() ;
+        BOOL bSuccess = ::ReportEventA(
+                hEventLog,
+                getEventType(event),
+                getEventCategory(event),
+                0x1000,
+                pCurrentUserSID,
+                1,
+                0,
+                msgs,
+                NULL);
+#endif
 
         if (!bSuccess)
         {
@@ -213,12 +232,21 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
         }
 }
 
-NTEventLogAppender::HKEY NTEventLogAppender::regGetKey(const std::wstring& subkey, DWORD *disposition)
+NTEventLogAppender::HKEY NTEventLogAppender::regGetKey(
+     const LogString& subkey, DWORD *disposition)
 {
         ::HKEY hkey = 0;
-        RegCreateKeyExW((::HKEY) HKEY_LOCAL_MACHINE, subkey.c_str(), 0, NULL,
+#if LOG4CXX_HAS_WCHAR_T
+        LOG4CXX_ENCODE_WCHAR(wstr, subkey);
+        RegCreateKeyExW((::HKEY) HKEY_LOCAL_MACHINE, wstr.c_str(), 0, NULL,
                 REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL,
                 &hkey, disposition);
+#else
+        LOG4CXX_ENCODE_CHAR(str, subkey);
+        RegCreateKeyExA((::HKEY) HKEY_LOCAL_MACHINE, str.c_str(), 0, NULL,
+                REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL,
+                &hkey, disposition);
+#endif
         return hkey;
 }
 
@@ -241,10 +269,10 @@ void NTEventLogAppender::addRegistryInfo()
 {
         DWORD disposition;
         ::HKEY hkey = 0;
-    std::wstring subkey(L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\");
-    Transcoder::encode(log, subkey);
-    subkey += L"\\";
-    Transcoder::encode(source, subkey);
+        LogString subkey(LOG4CXX_STR("SYSTEM\\CurrentControlSet\\Services\\EventLog\\"));
+        subkey.append(log);
+        subkey.append(1, LOG4CXX_STR('\\'));
+        subkey.append(source);
 
         hkey = (::HKEY) regGetKey(subkey, &disposition);
         if (disposition == REG_CREATED_NEW_KEY)
@@ -309,12 +337,14 @@ WORD NTEventLogAppender::getEventCategory(const LoggingEventPtr& event)
         return ret_val;
 }
 
-LogString NTEventLogAppender::getErrorString(const LogString& function) 
-{ 
+LogString NTEventLogAppender::getErrorString(const LogString& function)
+{
     Pool p;
     enum { MSGSIZE = 5000 };
+
+#if LOG4CXX_HAS_WCHAR_T
     wchar_t* lpMsgBuf = (wchar_t*) p.palloc(MSGSIZE * sizeof(wchar_t));
-    DWORD dw = GetLastError(); 
+    DWORD dw = GetLastError();
 
     FormatMessageW(
         FORMAT_MESSAGE_FROM_SYSTEM,
@@ -323,16 +353,29 @@ LogString NTEventLogAppender::getErrorString(const LogString& function)
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
         lpMsgBuf,
         MSGSIZE, NULL );
+    size_t msgLen = wcslen(lpMsgBuf);
+#else
+    char* lpMsgBuf = (char*) p.palloc(MSGSIZE);
+    DWORD dw = GetLastError();
 
-    std::wstring sysmsg(lpMsgBuf);
+    FormatMessageA(
+        FORMAT_MESSAGE_FROM_SYSTEM,
+        NULL,
+        dw,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        lpMsgBuf,
+        MSGSIZE, NULL );
+
+    size_t msgLen = strlen(lpMsgBuf);
+#endif
 
     LogString msg(function);
     msg.append(LOG4CXX_STR(" failed with error "));
     StringHelper::toString((size_t) dw, p, msg);
     msg.append(LOG4CXX_STR(": "));
-    Transcoder::decode(sysmsg, msg);
+    Transcoder::decode(lpMsgBuf, msgLen, msg);
 
-    return msg; 
+    return msg;
 }
 
 #endif // WIN32

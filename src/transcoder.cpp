@@ -238,12 +238,12 @@ namespace log4cxx {
          }
       }
 
+     public:
       ~Xlater() {
         apr_xlate_close(encoder);
         apr_xlate_close(decoder);
       }
 
-    public:
       static const Xlater& getLocaleCharset() {
         static Xlater localeCharset(APR_LOCALE_CHARSET);
         return localeCharset;

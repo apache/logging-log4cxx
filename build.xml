@@ -181,7 +181,7 @@ Common command line options:
     <property name="has-iconv" value="true"/>
     <condition property="has-expat" value="true">
          <not><isset property="is-mac"/></not>
-    </condition>    
+    </condition>
 </target>
 
 
@@ -604,6 +604,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
         <defineset define="LOG4CXX"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset if="is-utf8">
@@ -620,13 +621,13 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="iconv" if="is-unix"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
-
         <libset libs="${apriconv.lib.name}${lib-suffix}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}${lib-suffix}"
                 unless="apriconv.lib.dir"/>
+        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
+
         <syslibset libs="pthread" if="is-unix"/>
         <project type="${project.type}" outfile="${project.dir}/log4cxx" if="project.if"/>
     </cc>
@@ -651,7 +652,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
-        <defineset define="API_DECLARE_STATIC" if="iconv-static"/>
+        <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset if="is-utf8">
             <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
         </defineset>
@@ -815,6 +816,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${aprutil.include.dir}"/>
         <includepath path="${apriconv.include.dir}"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
+        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset if="is-utf8">
             <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
@@ -870,6 +873,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${aprutil.include.dir}"/>
         <includepath path="${apriconv.include.dir}"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
+        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset if="is-utf8">
             <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>

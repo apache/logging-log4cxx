@@ -61,6 +61,7 @@ XMLDOMDocumentPtr MsXMLDOMNode::getOwnerDocument()
    return new MsXMLDOMDocument(document);
 }
 
+
 // MsXMLDOMDocument
 
 MsXMLDOMDocument::MsXMLDOMDocument(MSXML::IXMLDOMDocumentPtr document)
@@ -164,10 +165,16 @@ void MsXMLDOMDocument::load(const File& fileName)
             len--;
          }
 
-            std::wostringstream os;
-            os << L"Count not open [" + fileName.getName() << L"] : "
-                << (BSTR) reason << L"(file " << line << L", column "
-                << linepos << L")";
+            std::basic_ostringstream<logchar> os;
+            os << LOG4CXX_STR("Count not open [")
+               << fileName.getName()
+               << LOG4CXX_STR("] : ")
+               << decode(reason)
+               << LOG4CXX_STR("(file ")
+               << line
+               << LOG4CXX_STR(", column ")
+               << linepos
+               << LOG4CXX_STR(")");
             LOGLOG_ERROR(os.str());
       }
 
@@ -200,7 +207,8 @@ XMLDOMElementPtr MsXMLDOMDocument::getElementById(const LogString& tagName, cons
          MSXML::IXMLDOMNodePtr attrNode = map->getNamedItem(L"name");
          _bstr_t nodeValue = attrNode->nodeValue;
 
-         if (elementId == (BSTR) nodeValue)
+         LogString nodeStr = decode(nodeValue);
+         if (elementId == nodeStr)
          {
             element = node;
             break;
@@ -215,11 +223,31 @@ XMLDOMElementPtr MsXMLDOMDocument::getElementById(const LogString& tagName, cons
    return new MsXMLDOMElement(element);
 }
 
+LogString MsXMLDOMDocument::decode(BSTR src) {
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+    return src;
+#else
+    //
+    //   extremely simplistic down-converter
+    //      but should be sufficient for the needs of this class
+    LogString dst;
+    for (int i = 0; i < wcslen(src); i++) {
+       if(src[i] <= 0x7F) {
+         dst.append(1, (char) src[i]);
+       } else {
+         dst.append(1, '?');
+       }
+    }
+    return dst;
+#endif
+}
+
 // MsXMLDOMElement
 MsXMLDOMElement::MsXMLDOMElement(MSXML::IXMLDOMElementPtr element)
 : element(element)
 {
 }
+
 
 XMLDOMNodeListPtr MsXMLDOMElement::getChildNodes()
 {
@@ -239,8 +267,7 @@ LogString MsXMLDOMElement::getTagName()
 {
    try
    {
-      _bstr_t tagName = element->tagName;
-      return (BSTR)tagName;
+      return MsXMLDOMDocument::decode(element->tagName);
    }
    catch(_com_error&)
    {

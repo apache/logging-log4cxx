@@ -81,6 +81,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="compiler" value="msvc"/>
     <property name="arch" value="win32"/>
     <property name="project.type" value="msvc6"/>
+    <property name="apriconv.mod.suffix" value=".so"/>
 </target>
 
 <target name="unix-init" depends="os-detect" if="is-unix">
@@ -93,6 +94,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     </condition>
     <property name="arch" value="unix"/>
     <property name="project.type" value="cbuilderx"/>
+    <property name="apriconv.mod.suffix" value=".so"/>
 </target>
 
 <target name="init" depends="win-init, unix-init">
@@ -117,6 +119,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <property name="lib-suffix" value=""/>
         <condition property="is-bcc" value="true">
             <equals arg1="${compiler}" arg2="bcc"/>
+        </condition>
+        <condition property="is-msvc" value="true">
+            <equals arg1="${compiler}" arg2="msvc"/>
         </condition>
 
         <condition property="is-apr-shared" value="true">
@@ -195,7 +200,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-module" depends="init">
     <basename file="${module.src}" property="module" suffix="c"/>
     <cc name="${compiler}"
-        outfile="${apriconv.lib.dir}/${module}"
+        outfile="${apriconv.lib.dir}/${module}${apriconv.mod.suffix}"
         subsystem="console"
         multithreaded="true"
         outtype="shared"
@@ -206,7 +211,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${apriconv.dir}/lib"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${apr.include.dir}/private"/>
-        <defineset define="API_DECLARE_EXPORT"/>
+        <defineset define="API_DECLARE_STATIC" unless="is-apriconv-shared"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
@@ -215,7 +220,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="apr-1${lib-suffix}" dir="${apr.lib.dir}"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <libset libs="cw32mt" if="is-bcc"/>
-        <project type="${project.type}" outfile="${project.dir}/${module}" if="project.if"/>
+        <linkerarg value="/export:iconv_module,DATA" if="is-msvc"/>
+        <project type="${project.type}" outfile="${project.dir}/${module}${apriconv.mod.suffix}" if="project.if"/>
     </cc>
 </target>
 

@@ -33,9 +33,13 @@ void OutputDebugStringAppender::append(const spi::LoggingEventPtr& event, Pool& 
 {
         LogString buf;
         layout->format(buf, event, p);
-        std::wstring wstr;
-        log4cxx::helpers::Transcoder::encode(buf, wstr);
+#if LOG4CXX_HAS_WCHAR_T
+        LOG4CXX_ENCODE_WCHAR(wstr, buf);
         ::OutputDebugStringW(wstr.c_str());
+#else
+        LOG4CXX_ENCODE_CHAR(str, buf);
+        ::OutputDebugStringA(str.c_str());
+#endif
 }
 
 #endif

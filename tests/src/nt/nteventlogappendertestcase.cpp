@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,7 +64,7 @@ public:
                CPPUNIT_ASSERT(stat);
                expectedId += oldest;
            }
- 
+
 
             Pool p;
             DWORD expectedTime = apr_time_sec(apr_time_now());
@@ -74,7 +74,7 @@ public:
                 LayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c - %m%n")));
                 appender->setLayout(layout);
                 appender->activateOptions(p);
-                LoggerPtr logger(Logger::getLogger(L"org.foobar"));
+                LoggerPtr logger(Logger::getLogger("org.foobar"));
 
                 LoggingEventPtr event(new LoggingEvent(
                     logger, Level::INFO, LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));

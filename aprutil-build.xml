@@ -215,8 +215,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${aprutil.dir}/xml/expat"/>
         <defineset define="APU_DECLARE_EXPORT" if="is-aprutil-shared"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
-        <defineset define="API_DECLARE_STATIC" if="is-apriconv-shared"/>
-        <defineset define="APR_DECLARE_STATIC" if="is-apr-shared"/>
+        <defineset define="API_DECLARE_STATIC" unless="is-apriconv-shared"/>
+        <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <compilerarg value="${pic-option}" if="pic-option"/>

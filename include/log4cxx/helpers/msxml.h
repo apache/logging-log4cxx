@@ -78,6 +78,7 @@ namespace log4cxx
                         virtual XMLDOMElementPtr getDocumentElement();
                         virtual XMLDOMElementPtr getElementById(const LogString& tagName, const LogString& elementId);
 
+                        static LogString decode(BSTR str);
                 protected:
                         MSXML::IXMLDOMDocumentPtr document;
                         bool mustCallCoUninitialize;

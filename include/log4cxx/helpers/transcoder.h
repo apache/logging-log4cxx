@@ -51,12 +51,6 @@ namespace log4cxx {
         decode(src.data(), src.length(), dst);
       }
 
-      /**
-      *   Determines if the buffer contains Unicode or multibyte
-      *     and returns equivalent internal string.
-      */
-      static void decode(const void* src, size_t byteCount,
-            LogString& dst);
 
       static LogString decode(const std::string& src) {
         LogString dst;
