@@ -32,28 +32,28 @@ int main()
 		LoggerPtr XY = Logger::getLogger(_T("X.Y"));
 		LoggerPtr XYZ = Logger::getLogger(_T("X.Y.Z"));
 
-		setLevel(root, Level::DEBUG);
+		setLevel(root, Level::getDebugLevel());
 		dump(root); dump(X); dump(XY); dump(XYZ);
 		tcout << std::endl;
 
-		setLevel(root, Level::DEBUG);
-		setLevel(X, Level::INFO);
-		setLevel(XY, Level::WARN);
-		setLevel(XYZ, Level::ERROR);
+		setLevel(root, Level::getDebugLevel());
+		setLevel(X, Level::getInfoLevel());
+		setLevel(XY, Level::getWarnLevel());
+		setLevel(XYZ, Level::getErrorLevel());
 		dump(root); dump(X); dump(XY); dump(XYZ);
 		tcout << std::endl;
 
-		setLevel(root, Level::DEBUG);
-		setLevel(X, Level::INFO);
-		setLevel(XY, Level::OFF);
-		setLevel(XYZ, Level::ERROR);
+		setLevel(root, Level::getDebugLevel());
+		setLevel(X, Level::getInfoLevel());
+		setLevel(XY, Level::getOffLevel());
+		setLevel(XYZ, Level::getErrorLevel());
 		dump(root); dump(X); dump(XY); dump(XYZ);
 		tcout << std::endl;
 
-		setLevel(root, Level::DEBUG);
-		setLevel(X, Level::INFO);
-		setLevel(XY, Level::OFF);
-		setLevel(XYZ, Level::OFF);
+		setLevel(root, Level::getDebugLevel());
+		setLevel(X, Level::getInfoLevel());
+		setLevel(XY, Level::getOffLevel());
+		setLevel(XYZ, Level::getOffLevel());
 		dump(root); dump(X); dump(XY); dump(XYZ);
 	}
 	catch(Exception&)
