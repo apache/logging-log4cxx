@@ -13,5 +13,6 @@ EXTRA_DIST = \
 	ttcclayout_test.dsp\
 	patternlayout_test.dsp\
 	propertyconfigurator_test.dsp\
-	domconfigurator_test.dsp
+	domconfigurator_test.dsp\
+	tests.bat
 
