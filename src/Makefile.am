@@ -54,7 +54,8 @@ liblog4cxx_la_SOURCES = \
 	threadspecificdata.cpp \
 	ttcclayout.cpp \
 	writerappender.cpp \
-	xmllayout.cpp
+	xmllayout.cpp\
+	xmlsocketappender.cpp
 
 liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@
 
