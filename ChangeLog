@@ -1,3 +1,13 @@
+CVS
+===
+
+* Fixed examples source code in the "Short introduction to log4cxx".
+* Fixed, in the renaming algorithm of RollingFileAppender and
+  DailyRollingFileAppender, a problem specific to Unicode.
+* Fixed conflict with Windows macros "min" and "max", by renaming
+  StrictMath::min and StrictMath::max to StrictMath::minimum and
+  StrictMath::maximum.
+
 Version 0.9.6 (2004-04-11)
 ==========================
 
