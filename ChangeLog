@@ -1,5 +1,5 @@
-CVS
-===
+Version 0.9.7 (2004-05-10)
+==========================
 
 * Fixed examples source code in the "Short introduction to log4cxx".
 * Fixed, in the renaming algorithm of RollingFileAppender and
@@ -13,6 +13,7 @@ CVS
 * Fixed MutexException thrown while destroying RollingFileAppender.
 * Logging macros can be used without explicity declaring the use of log4cxx
   namespace.
+* Fixed static library unresolved externals for msvc 6 and 7.1
 
 Version 0.9.6 (2004-04-11)
 ==========================

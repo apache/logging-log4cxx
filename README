@@ -15,9 +15,10 @@ Main features :
 - UTF-16 Unicode support
 
 * Appenders:
-  AsyncAppender, ConsoleAppender, FileAppender, NTEventLogAppender,
-  ODBCAppender, RollingFileAppender, SMTPAppender, SocketAppender,
-  SocketHubAappender, SyslogAppender, TelnetAppender, XMLSocketAppender
+  AsyncAppender, ConsoleAppender, DailyRollingFileAppender, FileAppender,
+  NTEventLogAppender, ODBCAppender, RollingFileAppender, SMTPAppender,
+  SocketAppender, SocketHubAappender, SyslogAppender, TelnetAppender,
+  XMLSocketAppender
 
 * Layouts:
   HTMLLayout, PatternLayout, SimpleLayout, TTCCLayout, XMLLayout
@@ -33,10 +34,10 @@ Main features :
 
 Supported OS
 ============
-* Linux
+* Linux (tested on Linux Mandrake 10.0)
 * FreeBSD
-* Windows (MSVC 6.0 or Cygwin)
-* Othe POSIX OS should be supported but were not tested
+* Windows (MSVC 6.0, MSVC 7.1 or Cygwin)
+* Other POSIX OS should be supported but were not tested
 
 Installation
 ============
@@ -48,19 +49,16 @@ make install
 
 See INSTALL file for further details.
 
-Visual Studio .Net 2003 considerations
-======================================
-By default, Visual .Net 2003 eliminates exports that are never referenced.
-So all appenders and layouts are eliminated by the linker if they are not explicitly
-referenced in a new project linking with the log4cxx static library
-But theses functions have to be referenced for the needs of the PropertyConfigurator
-and DOMConfigurator classes.
+Visual Studio .Net 2003 and Visual Studio 6.0 considerations
+============================================================
+For projects linking with log4cxx static library, the macro LOG4CXX_STATIC must
+be defined (tab C++, textbox Preprocessor in the project properties) and
+"log4cxxs.lib" must be passed to the linker (tab Link,textbox Object/Library
+Modules in the project settings).
 
-So, in the new project, some of the properties need to be changed:
-Linker -> Optimization -> References
-Change from "Default" to "Keep Unreferenced Data (/OPT:NOREF)"
-
-This problem does not exist with dll version of the log4cxx library.
+For projects linking with log4cxx dynamic library (dll), "log4cxx.lib" must be
+passed to the linker (tab Link,textbox Object/Library Modules in the project
+settings).
 
 Unitary Tests
 =============
