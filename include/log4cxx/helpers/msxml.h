@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_MSXML_H
 #define _LOG4CXX_HELPERS_MSXML_H
 
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 
 #ifdef HAVE_MS_XML
 

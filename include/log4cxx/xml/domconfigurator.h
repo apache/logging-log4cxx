@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_XML_DOM_CONFIGURATOR_H
 #define _LOG4CXX_XML_DOM_CONFIGURATOR_H
 
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 
 #ifdef HAVE_XML
 

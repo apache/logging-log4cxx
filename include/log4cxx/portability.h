@@ -1,5 +1,5 @@
-#ifndef _LOG4CXX_CONFIG_H
-#define _LOG4CXX_CONFIG_H
+#ifndef _LOG4CXX_PORTABILITY_H
+#define _LOG4CXX_PORTABILITY_H
 
 #ifdef _MSC_VER
 #include <log4cxx/config_msvc.h>
@@ -7,4 +7,4 @@
 #include <log4cxx/config_auto.h>
 #endif
 
-#endif //_LOG4CXX_CONFIG_H
+#endif //_LOG4CXX_PORTABILITY_H

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 
 #ifdef HAVE_MS_THREAD
 #ifndef _WIN32_WINNT

@@ -15,7 +15,7 @@
  */
  
 #define _WIN32_DCOM
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 
 #ifdef HAVE_MS_XML
 

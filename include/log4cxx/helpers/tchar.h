@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_TCHAR_H
 #define _LOG4CXX_HELPERS_TCHAR_H
 
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 #include <string>
 #include <iostream>
 #include <sstream>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 
 #ifdef HAVE_LIBXML2
 

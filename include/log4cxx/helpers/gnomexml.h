@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_GNOMEXML_H
 #define _LOG4CXX_HELPERS_GNOMEXML_H
 
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 
 #ifdef HAVE_LIBXML2
 

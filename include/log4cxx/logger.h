@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_LOGGER_H
 #define _LOG4CXX_LOGGER_H
 
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 #include <vector>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/objectimpl.h>

@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_STRING_HELPER_H
 #define _LOG4CXX_HELPERS_STRING_HELPER_H
  
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 #include <log4cxx/helpers/tchar.h>
 #include <stdarg.h>
 

@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_SEMAPHORE_H
 #define _LOG4CXX_HELPERS_SEMAPHORE_H
 
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 #include <log4cxx/helpers/exception.h>
 
 #ifdef HAVE_PTHREAD

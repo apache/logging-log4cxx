@@ -1,4 +1,4 @@
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 #include <log4cxx/helpers/boundedfifo.h>
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/consoleappender.h>

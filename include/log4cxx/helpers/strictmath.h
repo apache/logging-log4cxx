@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_STRICTMATH_H
 #define _LOG4CXX_HELPERS_STRICTMATH_H
  
-#include <log4cxx/config.h>
+#include <log4cxx/portability.h>
 
 namespace log4cxx
 {
