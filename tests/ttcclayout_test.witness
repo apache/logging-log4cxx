@@ -1,0 +1,5 @@
+0 [1] DEBUG root - debug message
+0 [1] INFO root - info message
+0 [1] WARN root - warn message
+0 [1] ERROR root - error message
+0 [1] FATAL root - fatal message
