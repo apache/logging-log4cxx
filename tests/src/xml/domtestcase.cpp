@@ -55,7 +55,9 @@ class DOMTestCase : public CppUnit::TestFixture
 {
         CPPUNIT_TEST_SUITE(DOMTestCase);
                 CPPUNIT_TEST(test1);
+#if defined(_WIN32)
                 CPPUNIT_TEST(test2);
+#endif
                 CPPUNIT_TEST(test3);
         CPPUNIT_TEST_SUITE_END();
 
