@@ -289,7 +289,7 @@ AC_SUBST(LIBS_ODBC)
 AC_SUBST(CPPFLAGS_ODBC)
 
 #for System
-AC_CHECK_FUNCS(gettimeofday ftime)
+AC_CHECK_FUNCS(gettimeofday ftime setenv)
 
 #for SMTPAppender
 AC_MSG_CHECKING(for SMTP support)

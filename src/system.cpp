@@ -73,7 +73,7 @@ void System::setProperty(const String& key, const String& value)
 		throw IllegalArgumentException(_T("key is empty"));
 	}
 	
-#ifdef WIN32 || defined(__hpux)
+#ifndef HAVE_SETENV
 	String strEnv = key + _T("=") + value;
 	USES_CONVERSION;
 	::putenv((char *)T2A(strEnv.c_str()));
