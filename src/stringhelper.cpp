@@ -75,31 +75,22 @@ std::wstring StringHelper::trim(const std::wstring& s)
 }
 
 
-bool StringHelper::startsWith(const std::wstring& teststr, const std::wstring& substr)
-    {
-    bool val = false;
-    if(teststr.length() > substr.length()) {
-        val = teststr.substr(0, substr.length()) == substr;
-    }
-
-    return val;
+bool StringHelper::startsWith(const std::string& s, const std::string& prefix)
+{
+    return s.compare(0, prefix.length(), prefix) == 0;
 }
 
-bool StringHelper::startsWith(const std::string& teststr, const std::string& substr)
-    {
-    bool val = false;
-    if(teststr.length() > substr.length()) {
-        val = teststr.substr(0, substr.length()) == substr;
-    }
 
-    return val;
+bool StringHelper::startsWith(const std::wstring& s, const std::wstring& prefix)
+{
+    return s.compare(0, prefix.length(), prefix) == 0;
 }
 
 
 bool StringHelper::endsWith(const std::string& s, const std::string& suffix)
 {
     if (suffix.length() <= s.length()) {
-      return suffix.compare(s.length() - suffix.length(), suffix.length(), s) == 0;
+      return s.compare(s.length() - suffix.length(), suffix.length(), suffix) == 0;
     }
     return false;
 }
@@ -108,7 +99,7 @@ bool StringHelper::endsWith(const std::string& s, const std::string& suffix)
 bool StringHelper::endsWith(const std::wstring& s, const std::wstring& suffix)
 {
     if (suffix.length() <= s.length()) {
-      return suffix.compare(s.length() - suffix.length(), suffix.length(), s) == 0;
+      return s.compare(s.length() - suffix.length(), suffix.length(), suffix) == 0;
     }
     return false;
 }
@@ -270,7 +261,7 @@ LogString StringHelper::formatHex(const void* ptr) {
     LogString s(width, LOG4CXX_STR('x'));
     s[0] = LOG4CXX_STR('0');
     for(int i = width - 1; i >= 2; i--) {
-      s[i] = hexdigits[iptr % 0x0F];
+      s[i] = hexdigits[iptr & 0x0F];
       iptr = iptr >> 4;
     }
     return s;
