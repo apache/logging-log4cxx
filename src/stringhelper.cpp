@@ -265,7 +265,7 @@ void StringHelper::toString(size_t n, Pool& pool, std::wstring& ws) {
 
 LogString StringHelper::formatHex(const void* ptr) {
     const logchar* hexdigits = LOG4CXX_STR("0123456789ABCDEF");
-    apr_int64_t iptr = (apr_int64_t) ptr;
+    apr_uint64_t iptr = (apr_uint64_t) ptr;
     int width = sizeof(ptr)*2 + 2;
     LogString s(width, LOG4CXX_STR('x'));
     s[0] = LOG4CXX_STR('0');
