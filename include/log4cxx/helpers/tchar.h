@@ -262,13 +262,13 @@ namespace log4cxx
 				else if (way == std::ios_base::end)
 				{
 					setp(pbase(), epptr());
-					ret = pos_type(off + epptr() - pbase());
+					ret = pos_type(int(off + epptr() - pbase()));
 					pbump(off + epptr() - pbase());
 				}
 				else if (way == std::ios_base::cur)
 				{
 					pbump(off);
-					ret = pos_type(pptr() - pbase());
+					ret = pos_type(int(pptr() - pbase()));
 				}
 			}
 
