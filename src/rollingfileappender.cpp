@@ -80,7 +80,7 @@ void RollingFileAppender::rollOver()
 		target << fileName << _T(".") << 1;
 
 		LogLog::debug(_T("Renaming file ") + fileName + _T(" to ") + target.str());
-		std::string aFileName = T2A(file.str().c_str());
+		std::string aFileName = T2A(fileName.c_str());
 		std::string aTarget = T2A(target.str().c_str());
 		rename(aFileName.c_str(), aTarget.c_str());
 	}
