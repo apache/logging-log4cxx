@@ -22,6 +22,10 @@
 
 namespace log4cxx
 {
+
+        class RollingFileAppender;
+        typedef log4cxx::helpers::ObjectPtrT<RollingFileAppender> RollingFileAppenderPtr;
+
         /**
         RollingFileAppender extends FileAppender to backup the log files when
         they reach a certain size.

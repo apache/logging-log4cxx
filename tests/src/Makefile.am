@@ -1,4 +1,4 @@
-SUBDIRS = customlogger defaultinit helpers net pattern util varia db xml nt
+SUBDIRS = customlogger defaultinit helpers net pattern rolling util varia db xml nt
 
 EXTRA_DIST = $(top_srcdir)/tests/src/*.cpp
 noinst_HEADERS= $(top_srcdir)/tests/src/*.h
