@@ -46,6 +46,7 @@ liblog4cxx_la_SOURCES = \
         ndc.cpp \
         nteventlogappender.cpp \
         objectimpl.cpp \
+        objectptr.cpp \
         odbcappender.cpp \
         onlyonceerrorhandler.cpp \
         optionconverter.cpp \
@@ -67,7 +68,7 @@ liblog4cxx_la_SOURCES = \
         smtpappender.cpp \
         socket.cpp \
         socketappender.cpp \
-	socketappenderskeleton.cpp \
+        socketappenderskeleton.cpp \
         sockethubappender.cpp \
         socketimpl.cpp \
         socketinputstream.cpp \

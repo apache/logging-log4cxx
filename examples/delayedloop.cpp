@@ -21,6 +21,7 @@
 #include <apr_time.h>
 #include <iostream>
 #include <log4cxx/stream.h>
+#include <exception>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -84,7 +85,7 @@ public:
                         {
                                 apr_sleep(1000000);
                         }
-                        catch(Exception& e)
+                        catch(std::exception& e)
                         {
                         }
                 }

@@ -27,10 +27,10 @@ using namespace log4cxx::helpers;
 
 std::string StringHelper::toLowerCase(const std::string& s)
 {
-	std::string d;
-	std::transform(s.begin(), s.end(),
-		std::insert_iterator<std::string>(d, d.begin()), tolower);
-	return d;
+        std::string d;
+        std::transform(s.begin(), s.end(),
+                std::insert_iterator<std::string>(d, d.begin()), tolower);
+        return d;
 }
 
 std::wstring StringHelper::toLowerCase(const std::wstring& s)
@@ -43,21 +43,21 @@ std::wstring StringHelper::toLowerCase(const std::wstring& s)
 #else
         std::transform(s.begin(), s.end(),
                 std::insert_iterator<std::wstring>(d, d.begin()),
-                std::tolower<wchar_t>);
+                (int(*)(int)) std::tolower);
 #endif
         return d;
 }
 
 std::string StringHelper::trim(const std::string& s)
 {
-	std::string::size_type pos = s.find_first_not_of(' ');
-	if (pos == std::string::npos)
-	{
-		return std::string();
-	}
+        std::string::size_type pos = s.find_first_not_of(' ');
+        if (pos == std::string::npos)
+        {
+                return std::string();
+        }
 
-	std::string::size_type n = s.find_last_not_of(' ') - pos + 1;
-	return s.substr(pos, n);
+        std::string::size_type n = s.find_last_not_of(' ') - pos + 1;
+        return s.substr(pos, n);
 }
 
 std::wstring StringHelper::trim(const std::wstring& s)
@@ -180,12 +180,12 @@ log4cxx_int64_t StringHelper::toInt64(const std::wstring& s) {
   return apr_atoi64(charstr.c_str());
 }
 
-#if defined(_MSC_VER)
-LogString StringHelper::toString(int s, void* pool) {
-#else
+LogString StringHelper::toString(int s, const Pool& pool) {
+   return toString(s, (apr_pool_t*) pool);
+}
+
 LogString StringHelper::toString(int s, apr_pool_t* pool) {
-#endif
-  char* fmt = apr_itoa((apr_pool_t*) pool, s);
+  char* fmt = apr_itoa(pool, s);
   LogString str;
   log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), str);
   return str;

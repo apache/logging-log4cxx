@@ -41,7 +41,7 @@ namespace log4cxx
                         Pool();
                         ~Pool();
 
-                        inline operator apr_pool_t*() { return pool; }
+                        inline operator apr_pool_t*() const { return pool; }
 
                 protected:
                         apr_pool_t* pool;

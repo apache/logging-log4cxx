@@ -171,6 +171,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
    </exec>
    <exec executable="sh">
        <arg value="./configure"/>
+       <arg value="--with-apr=${apr.dir}"/>
    </exec>
 </target>
 

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #if !defined(_LOG4CXX_TESTCHAR_H)
-#define _LOG4CXX_TESTCHAR_H 
+#define _LOG4CXX_TESTCHAR_H
 
 //
 //   This macro and typedef lets many tests
