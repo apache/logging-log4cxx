@@ -61,7 +61,15 @@ String MDC::get(const String& key)
 
 	if (map != 0)
 	{
-		return (*map)[key];
+		Map::iterator it = map->find(key);
+		if (it == map->end())
+		{
+			return String();
+		}
+		else
+		{
+			return it->second;
+		}
 	}
 	else
 	{
@@ -105,4 +113,17 @@ const MDC::Map MDC::getContext()
 	{
 		return Map();
 	}
+}
+
+void MDC::setContext(Map& map)
+{
+	Map * currentMap = getCurrentThreadMap();
+
+	if (currentMap == 0)
+	{
+		currentMap = new Map;
+		setCurrentThreadMap(currentMap);
+	}
+	
+	*currentMap = map;
 }
