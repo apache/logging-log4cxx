@@ -38,7 +38,7 @@ SocketNode::SocketNode(helpers::SocketPtr socket, spi::LoggerRepositoryPtr hiera
 
 void SocketNode::run()
 {
-	LoggingEvent event;
+	LoggingEventPtr event = new LoggingEvent();
 	LoggerPtr remoteLogger;
 
 	try
@@ -46,23 +46,23 @@ void SocketNode::run()
 		while(true)
 		{
 			// read an event from the wire
-			event.read(is);
+			event->read(is);
 
 			// get a logger from the hierarchy.
 			// The name of the logger is taken to be the 
 			// name contained in the event.
-			if (event.getLoggerName() == _T("root"))
+			if (event->getLoggerName() == _T("root"))
 			{
 				remoteLogger = hierarchy->getRootLogger();
 			}
 			else
 			{
 				remoteLogger =
-					hierarchy->getLogger(event.getLoggerName());
+					hierarchy->getLogger(event->getLoggerName());
 			}
 
 			// apply the logger-level filter
-			if(event.getLevel().isGreaterOrEqual(
+			if(event->getLevel()->isGreaterOrEqual(
 				remoteLogger->getEffectiveLevel()))
 			{
 				// finally log the event as if was generated locally
