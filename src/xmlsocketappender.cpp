@@ -259,12 +259,12 @@ void XMLSocketAppender::Connector::run()
 				break;
 			}
 		}
-		catch(InterruptedException& e)
+		catch(InterruptedException&)
 		{
 			LogLog::debug(_T("Connector interrupted. Leaving loop."));
 			return;
 		}
-		catch(ConnectException& e)
+		catch(ConnectException&)
 		{
 			LogLog::debug(_T("Remote host ")
 				+socketAppender->address.getHostName()

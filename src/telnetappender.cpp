@@ -99,7 +99,7 @@ void TelnetAppender::SocketHandler::finalize()
 		{
 			(*it)->close();
 		}
-		catch(Exception& ex)
+		catch(Exception&)
 		{
 		}
 	}
@@ -108,7 +108,7 @@ void TelnetAppender::SocketHandler::finalize()
 	{
 		serverSocket.close();
 	} 
-	catch(Exception& ex)
+	catch(Exception&)
 	{
 	}
 	done = true;
