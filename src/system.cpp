@@ -28,20 +28,21 @@
 
 using namespace log4cxx::helpers;
 
-long long System::currentTimeMillis()
+int64_t System::currentTimeMillis()
 {
 #if defined(HAVE_GETTIMEOFDAY)
     timeval tp;
     ::gettimeofday(&tp, 0);
 
-    return ((long long)tp.tv_sec * 1000LL) + (long long)(tp.tv_usec / 1000);
+    return ((int64_t)tp.tv_sec * 1000) + (int64_t)(tp.tv_usec / 1000);
 #elif defined(HAVE_FTIME)
     struct timeb tp;
     ::ftime(&tp);
 
-    return (long long)tp.time + ((long long)tp.millitm * 1000LL);
+	time_t time1 = time(0);
+    return ((int64_t)tp.time * 1000) + (int64_t)tp.millitm;
 #else
-    return (long long)::time(0) * 1000LL;
+    return (int64_t)::time(0) * 1000;
 #endif
 }
 

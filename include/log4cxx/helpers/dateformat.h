@@ -28,7 +28,7 @@ namespace log4cxx
 		{
 		public:
 			DateFormat(const tstring& dateFormat, const tstring& timeZone = _T(""));
-			virtual void format(tostream& os, long long time);
+			virtual void format(tostream& os, int64_t time);
 
 		protected:
 			tstring timeZone;

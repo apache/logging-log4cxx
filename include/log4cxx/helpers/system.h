@@ -28,7 +28,7 @@
 		{
 		public:
 		/** Returns the current time in milliseconds.*/
-		static long long currentTimeMillis();
+		static int64_t currentTimeMillis();
 
 		/** Gets the system property indicated by the specified key.*/
 		static tstring getProperty(const tstring& key);

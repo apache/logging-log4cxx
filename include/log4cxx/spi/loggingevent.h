@@ -65,6 +65,8 @@ namespace log4cxx
 			<p>Except #timeStamp all the other fields of
 			<code>LoggingEvent</code> are filled when actually needed.
 			<p>
+			@param fqnOfLoggerClass The fully qualified name of the calling
+			logger class.
 			@param logger The logger of this event.
 			@param level The level of this event.
 			@param message  The message of this event.
@@ -103,7 +105,7 @@ namespace log4cxx
 				{ return threadId; }
 
 			/** Return the #timeStamp of this event. */
-			inline long long getTimeStamp() const
+			inline int64_t getTimeStamp() const
 				{ return timeStamp; }
 
 			/* Return the file where this log statement was written. */
@@ -230,7 +232,7 @@ namespace log4cxx
 
             /** The number of milliseconds elapsed from 1/1/1970 until logging event
             was created. */
-            long long timeStamp;
+            int64_t timeStamp;
 
 			/** The is the file where this log statement was written. */
 			char* file;
@@ -243,7 +245,7 @@ namespace log4cxx
 			*/
 			unsigned long threadId;
 
-			static long long startTime;
+			static int64_t startTime;
   		};
 	};
 };

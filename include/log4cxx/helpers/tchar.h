@@ -37,7 +37,7 @@ public:
 	}
 };
 
-inline std::ostream& operator<<(const long long& ll, std::ostream& os)
+inline std::ostream& operator<<(const int64_t& ll, std::ostream& os)
 {
 	char buff[21];
 	sprintf(buff, "%lld", ll);
@@ -45,13 +45,41 @@ inline std::ostream& operator<<(const long long& ll, std::ostream& os)
 	return os;
 }
 
-inline std::wostream& operator<<(const long long& ll, std::wostream& os)
+#ifdef WIN32
+inline std::ostream& operator<<(std::ostream& os, const int64_t& ll)
 {
-	wchar_t buff[21];
-	swprintf(buff, 20, L"%lld", ll);
+	char buff[21];
+	sprintf(buff, "%lld", ll);
 	os << buff;
 	return os;
 }
+#endif
+
+inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
+{
+	wchar_t buff[21];
+#ifdef WIN32
+	_snwprintf(buff, 20, L"%lld", ll);
+#else
+	swprintf(buff, 20, L"%lld", ll);
+#endif
+	os << buff;
+	return os;
+}
+
+#ifdef WIN32
+inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
+{
+	wchar_t buff[21];
+#ifdef WIN32
+	_snwprintf(buff, 20, L"%lld", ll);
+#else
+	swprintf(buff, 20, L"%lld", ll);
+#endif
+	os << buff;
+	return os;
+}
+#endif
 
 #ifdef WIN32
 #ifndef USES_CONVERSION

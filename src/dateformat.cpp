@@ -31,11 +31,11 @@ DateFormat::DateFormat(const tstring& dateFormat, const tstring& timeZone)
 {
 }
 
-void DateFormat::format(tostream& os, long long timeMillis)
+void DateFormat::format(tostream& os, int64_t timeMillis)
 {
     TCHAR buffer[255];
 
-	time_t time = (time_t)(timeMillis/1000LL);
+	time_t time = (time_t)(timeMillis/1000);
 	const tm * tm = gmtime(&time);
 
 	if (!timeZone.empty())

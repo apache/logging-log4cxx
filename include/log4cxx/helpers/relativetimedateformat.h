@@ -18,6 +18,7 @@
 #define _LOG4CXX_HELPERS_RELATIVE_TIME_DATE_FORMAT_H
 
 #include <log4cxx/helpers/dateformat.h>
+#include <log4cxx/helpers/system.h>
 
 namespace log4cxx
 {
@@ -31,14 +32,14 @@ namespace log4cxx
 		class RelativeTimeDateFormat : public DateFormat
 		{
 		protected:
-			time_t startTime;
+			int64_t startTime;
 			
 		public:
-			RelativeTimeDateFormat() : DateFormat(_T(""), _T("")), startTime(time(0))
+			RelativeTimeDateFormat() : DateFormat(_T(""), _T("")), startTime(System::currentTimeMillis())
 			{
 			}
 			
-			virtual void format(tostream& os, long long time)
+			virtual void format(tostream& os, int64_t time)
 			{
 				os << (time - startTime);
 			}

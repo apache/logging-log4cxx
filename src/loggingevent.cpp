@@ -29,7 +29,7 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 // time at startup
-long long LoggingEvent::startTime = System::currentTimeMillis();
+int64_t LoggingEvent::startTime = System::currentTimeMillis();
 
 LoggingEvent::LoggingEvent()
 : timeStamp(0), level(&Level::OFF), ndcLookupRequired(true), line(0),
