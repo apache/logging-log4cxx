@@ -336,7 +336,8 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @top_srcdir@/include 
+INPUT                  = \
+			@top_srcdir@/include \ 
 			@top_srcdir@/src \
 			@top_srcdir@/docs/mainpage.dox \
 			@top_srcdir@/docs/introduction.dox
