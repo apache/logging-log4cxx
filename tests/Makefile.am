@@ -1,21 +1,19 @@
 noinst_PROGRAMS = \
-		hierarchy_test\
-		level_test\
-		ndc_test\
-		mdc_test\
-		filter_test\
+	hierarchy_test\
+	level_test\
+	ndc_test\
+	mdc_test\
+	filter_test\
         consoleappender_test\
         fileappender_test\
         htmllayout_test\
         xmllayout_test\
         ttcclayout_test\
         patternlayout_test\
-		propertyconfigurator_test\
-		domconfigurator_test
+	propertyconfigurator_test\
+	domconfigurator_test
 
 EXTRA_DIST = \
-  consoleappender_test.sh\
-  consoleappender_test.witness\
   propertyconfigurator_test.properties\
   domconfigurator_test.xml
 
@@ -61,16 +59,16 @@ domconfigurator_test_SOURCES = domconfigurator_test.cpp
 domconfigurator_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
 TESTS = \
-		hierarchy_test\
-		level_test\
-		ndc_test\
-		mdc_test\
- 		filter_test\
-		consoleappender_test.sh\
+	hierarchy_test\
+	level_test\
+	ndc_test\
+	mdc_test\
+ 	filter_test\
+	consoleappender_test\
         fileappender_test\
         htmllayout_test\
-        xmllayout_test\
-        ttcclayout_test\
-        patternlayout_test\
-		propertyconfigurator_test\
-		domconfigurator_test
+	xmllayout_test\
+	ttcclayout_test\
+	patternlayout_test\
+	propertyconfigurator_test\
+	domconfigurator_test
