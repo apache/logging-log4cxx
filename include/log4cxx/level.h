@@ -20,6 +20,8 @@
 #ifndef _LOG4CXX_LEVEL_H
 #define _LOG4CXX_LEVEL_H
 
+#undef ERROR
+
 namespace log4cxx
 {
 	/**
@@ -79,6 +81,7 @@ namespace log4cxx
             ALL_INT = INT_MIN
         };
 
+#if !defined(WIN32) || defined(LOG4CXX)
 		/**
 		The <code>ALL</code> level designates all the levels
 		*/
@@ -116,6 +119,7 @@ namespace log4cxx
 		The <code>OFF</code> level designates not set level
 		*/
 		static const Level OFF;
+#endif
 
 		static const Level& getAllLevel();
 		static const Level& getFatalLevel();

@@ -38,17 +38,29 @@ public:
 };
 
 #ifdef WIN32
+#ifndef USES_CONVERSION
 	#include <malloc.h>
 	#define USES_CONVERSION void * _dst = _alloca(1024);
+#endif
 #else
 	#define USES_CONVERSION void * _dst = alloca(1024);
 #endif
+
+#ifndef W2A
 #define W2A(src) Convert::unicodeToAnsi((char *)_dst, src)
+#endif
+
+#ifndef A2W
 #define A2W(src) Convert::ansiToUnicode((wchar_t *)_dst, src)
+#endif
 
 #ifdef UNICODE
 	#include <wctype.h>
+
+#ifndef _T
 	#define _T(x) L ## x
+#endif
+
 	typedef wchar_t TCHAR;
 	typedef std::wstring tstring;
 	#define totupper towupper
@@ -64,15 +76,27 @@ public:
 	#define tstrncasecmp wcsncasecmp
 #endif // WIN32
 	#define T2A(src) W2A(src)
+
+#ifndef T2W
 	#define T2W(src) src
+#endif
+
 	#define A2T(src) A2W(src)
+
+#ifndef W2T
 	#define W2T(src) src
+#endif
+
 	#define tostringstream std::wostringstream
 	#define ttol(s) wcstol(s, 0, 10)
 	#define tcscmp wcscmp
 #else // Not UNICODE
 	#include <ctype.h>
+
+#ifndef _T
 	#define _T(x) x
+#endif
+
 	typedef char TCHAR;
 	typedef std::string tstring;
 	#define totupper toupper
@@ -88,9 +112,17 @@ public:
 	#define tstrncasecmp strncasecmp
 #endif // WIN32
 	#define T2A(src) src
+
+#ifndef T2W
 	#define T2W(src) A2W(src)
+#endif
+
 	#define A2T(src) src
+
+#ifndef W2T
 	#define W2T(src) W2A(src)
+#endif
+
 	#define tostringstream std::ostringstream
 	#define ttol atol
 	#define tcscmp strcmp
