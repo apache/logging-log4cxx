@@ -19,11 +19,6 @@ LT_VERSION=8:0:0
 AC_SUBST(LT_VERSION)
 
 AM_CONFIG_HEADER(include/log4cxx/config.h)
-AH_VERBATIM([HAVE_STD_MINMAX],
-[/* std::min & std::max */
-#include <algorithm>
-#define _min std::min
-#define _max std::max])
 
 AH_VERBATIM([HAVE_NO_EXPLICIT_EXPORTS],
 [/* no explicit exports */
@@ -114,6 +109,17 @@ enable_tests=yes
 if test "x$enable_cppunit" = xno; then
         enable_tests=no
 else
+	AC_CHECK_PROG(CPPUNIT_CONFIG, cppunit-config, yes, no)
+	if test "x$CPPUNIT_CONFIG" = "xyes"
+	then
+		LIBS_CPPUNIT="`cppunit-config --libs`"
+		CPPFLAGS_CPPUNIT="`cppunit-config --cflags`"
+		AC_SUBST(LIBS_CPPUNIT)
+		AC_SUBST(CPPFLAGS_CPPUNIT)
+	else
+		AC_MSG_WARN(cppunit not found !)
+	fi
+	
 	AC_CHECK_HEADER([cppunit/TestFixture.h],,
 		enable_tests=no)
 fi
