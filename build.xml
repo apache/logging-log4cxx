@@ -85,15 +85,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="unix-init" depends="os-detect" if="is-unix">
     <property name="apr.dir" location="/usr/local/apr"/>
     <property name="apr.include.dir" location="${apr.dir}/include/apr-1"/>
-    <property name="aprutil.dir" location="/usr/local/apr"/>
+    <property name="aprutil.dir" location="${apr.dir}"/>
     <property name="aprutil.include.dir" location="${aprutil.dir}/include/apr-1"/>
-    <property name="apriconv.include.dir" location="/home/curta/apr-1/apr-iconv-1.0.0/include"/>
+    <property name="apriconv.dir" location="${apr.dir}"/>
+    <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
     <property name="apr.lib.name" value="apr-1"/>
     <property name="aprutil.lib.name" value="aprutil-1"/>
     <property name="apriconv.lib.name" value="apriconv"/>
     <property name="apr.lib.dir" location="${apr.dir}/lib"/>
     <property name="aprutil.lib.dir" location="${aprutil.dir}/lib"/>
-    <property name="apriconv.lib.dir" location="${apr.lib.dir}"/>
+    <property name="apriconv.lib.dir" location="${apriconv.dir}/lib"/>
         <property name="compiler" value="gcc"/>
         <condition property="is-gcc" value="true">
             <or>
@@ -367,11 +368,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                 unless="apriconv.lib.dir"/>
-        <!--  don't see why it wants apr-iconv   -->
-        <libset libs="${apriconv.lib.name}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-                unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <!-- libset libs="boost_regex-gcc" if="is-gcc"/ -->
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
@@ -412,8 +408,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-                unless="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${boost_regex.lib.name}" if="is-gcc" unless="boost.lib.dir"/>
         <libset libs="${boost_regex.lib.name}" dir="${boost.lib.dir}" if="boost.lib.dir"/>
@@ -451,8 +446,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-                unless="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${boost_regex.lib.name}" if="is-gcc" unless="boost.lib.dir"/>
         <libset libs="${boost_regex.lib.name}" dir="${boost.lib.dir}" if="boost.lib.dir"/>
@@ -490,8 +484,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-                unless="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${boost_regex.lib.name}" if="is-gcc" unless="boost.lib.dir"/>
         <libset libs="${boost_regex.lib.name}" dir="${boost.lib.dir}" if="boost.lib.dir"/>
@@ -535,8 +528,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-                unless="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
         <libset libs="${boost_regex.lib.name}" if="is-gcc" unless="boost.lib.dir"/>
