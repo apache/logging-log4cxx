@@ -7,7 +7,8 @@ noinst_LIBRARIES = libhelpers.a
 INCLUDES = -I$(top_srcdir)/include
 
 libhelpers_a_SOURCES = \
-	boundedfifotestcase.cpp
+	boundedfifotestcase.cpp\
+	cyclicbuffertestcase.cpp
 	
 check: libhelpers.a
 
