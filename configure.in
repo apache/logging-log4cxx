@@ -14,13 +14,13 @@ AC_CANONICAL_TARGET
 #  ? :+1 : ?   == just some internal changes, nothing breaks but might work
 #                 better
 # CURRENT : REVISION : AGE
-LT_VERSION=2:0:0
+LT_VERSION=2:1:0
 
 AC_SUBST(LT_VERSION)
 
 AM_CONFIG_HEADER(include/log4cxx/config.h)
 
-AM_INIT_AUTOMAKE(log4cxx, 0.1.0)
+AM_INIT_AUTOMAKE(log4cxx, 0.1.1)
 
 # Checks for programs
 # ----------------------------------------------------------------------------

@@ -33,3 +33,11 @@ Version 0.1.0 (2003-07-08)
 * Port of the PropertyConfigurator class
 * Port of the "Map Diagnostic Context" (MDC) class
 * Added 13 tests (try make check)
+
+Version 0.1.1 (2003-07-09)
+==========================
+
+* Fixed msvc 6 compilation problems concerning the release target
+* Added msvc 6 tests projects
+
+
