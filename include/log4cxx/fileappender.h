@@ -122,7 +122,7 @@ namespace log4cxx
 
 		<p>Note: Actual opening of the file is made when 
 		#activateOptions is called, not when the options are set.  */
-		void setFile(const String& file);
+		virtual void setFile(const String& file);
 			
 		/**
 		Sets and <i>opens</i> the file where the log output will
@@ -141,7 +141,7 @@ namespace log4cxx
 		@param bufferedIO Do we do bufferedIO?
 		@param bufferSize How big should the IO buffer be?
 		*/
-		void setFile(const String& file, bool append,
+		virtual void setFile(const String& file, bool append,
 			bool bufferedIO, int bufferSize);
 		
 		/**
