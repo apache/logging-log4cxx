@@ -89,9 +89,7 @@ msvc/Makefile
 msvc/dll/Makefile
 msvc/simplesocketserver/Makefile
 msvc/tests/Makefile
-msvc/tests/console_test/Makefile
 tests/Makefile
-tests/console_test/Makefile
 include/Makefile
 include/log4cxx/Makefile
 include/log4cxx/helpers/Makefile
