@@ -283,16 +283,16 @@ public:
 protected:
 	bool get(istream& in, TCHAR& c)
 	{
+		in.get(c);
+
 		if (in.eof())
 		{
 			return false;
 		}
 
-		in.get(c);
-
-		if (in.fail())
+		if (in.bad())
 		{
-			return false;
+			throw IOException();
 		}
 
 		return true;
