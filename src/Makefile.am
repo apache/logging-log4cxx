@@ -35,6 +35,7 @@ liblog4cxx_la_SOURCES = \
 	patternconverter.cpp \
 	patternlayout.cpp \
 	patternparser.cpp \
+	properties.cpp \
 	rollingfileappender.cpp \
 	rootcategory.cpp \
 	serversocket.cpp \
