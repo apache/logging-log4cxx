@@ -27,6 +27,21 @@
 
 namespace log4cxx
 {
+	namespace spi
+	{
+		class LoggerRepository;
+		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
+
+		class Filter;
+		typedef helpers::ObjectPtrT<Filter> FilterPtr;
+
+		class AppenderAttachable;
+		typedef helpers::ObjectPtrT<AppenderAttachable> AppenderAttachablePtr;
+
+		class OptionHandler;
+		typedef helpers::ObjectPtrT<OptionHandler> OptionHandlerPtr;
+	};
+
 	namespace xml
 	{
 		class AppenderMap
@@ -57,7 +72,11 @@ namespace log4cxx
 		class DOMConfigurator
 		{
 		public:
-			void doConfigure(const tstring& URL);
+			/**
+			A static version of doConfigure.
+			*/
+			static void configure(const tstring& filename);
+			void doConfigure(const tstring& filename, spi::LoggerRepositoryPtr repository);
 			void BuildElement(const tstring& parentTagName, const tstring& tagName);
 			void BuildAttribute(const tstring& elementTagName, const tstring& name, const tstring& value);
 
@@ -85,6 +104,8 @@ namespace log4cxx
 			spi::OptionHandlerPtr currentOptionHandler;
 
 			void * appenderBag;
+
+			spi::LoggerRepositoryPtr repository;
 		};
 	}; // namespace xml
 }; // namespace log4cxx
