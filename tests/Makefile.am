@@ -11,7 +11,9 @@ noinst_PROGRAMS = \
 	ttcclayout_test\
 	patternlayout_test\
 	propertyconfigurator_test\
-	domconfigurator_test
+	domconfigurator_test\
+	asyncappender_test\
+	dateformat_test
 
 EXTRA_DIST = \
 	propertyconfigurator_test.properties\
@@ -58,6 +60,12 @@ propertyconfigurator_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 domconfigurator_test_SOURCES = domconfigurator_test.cpp
 domconfigurator_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
+asyncappender_test_SOURCES = asyncappender_test.cpp
+asyncappender_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+
+dateformat_test_SOURCES = dateformat_test.cpp
+dateformat_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+
 TESTS = \
 	hierarchy_test\
 	level_test\
@@ -71,4 +79,6 @@ TESTS = \
 	ttcclayout_test\
 	patternlayout_test\
 	propertyconfigurator_test\
-	domconfigurator_test
+	domconfigurator_test\
+	asyncappender_test\
+	dateformat_test
