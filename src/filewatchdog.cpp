@@ -27,7 +27,6 @@ FileWatchdog::FileWatchdog(const String& filename)
  : filename(filename), lastModif(0), delay(DEFAULT_DELAY),
 warnedAlready(false), interrupted(false)
 {
-	checkAndConfigure();
 }
 
 void FileWatchdog::checkAndConfigure()
@@ -35,7 +34,7 @@ void FileWatchdog::checkAndConfigure()
 	struct stat fileStats;
 
 	USES_CONVERSION
-	if (!::stat(T2A(filename.c_str()), &fileStats))
+	if (::stat(T2A(filename.c_str()), &fileStats) != 0)
 	{
 		if (errno == ENOENT)
 		{
@@ -67,7 +66,7 @@ void FileWatchdog::run()
 {    
     while(!interrupted) 
 	{
-		Thread::sleep(delay);
 		checkAndConfigure();
+		Thread::sleep(delay);
     }
 }
