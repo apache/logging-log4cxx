@@ -59,10 +59,10 @@ namespace log4cxx
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(HTMLLayout)
-		BEGIN_LOG4CXX_INTERFACE_MAP()
-			LOG4CXX_INTERFACE_ENTRY(HTMLLayout)
-			LOG4CXX_INTERFACE_ENTRY_CHAIN(Layout)
-		END_LOG4CXX_INTERFACE_MAP()
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(HTMLLayout)
+			LOG4CXX_CAST_ENTRY_CHAIN(Layout)
+		END_LOG4CXX_CAST_MAP()
 
 		HTMLLayout();
 
@@ -73,9 +73,9 @@ namespace log4cxx
 		true, then the file name and line number of the statement
 		at the origin of the log statement will be output.
 
-		<p>If you are embedding this layout within an {@link
-		net::SMTPAppender SMTPAppender} then make sure to set the
-		<b>LocationInfo</b> option of that appender as well.
+		<p>If you are embedding this layout within an
+		{@link net::SMTPAppender SMTPAppender} then make sure
+		to set the <b>LocationInfo</b> option of that appender as well.
 		*/
 		inline void setLocationInfo(bool flocationInfoag)
 			{ this->locationInfo = locationInfo; }

@@ -56,11 +56,11 @@ namespace log4cxx
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(AsyncAppender)
-		BEGIN_LOG4CXX_INTERFACE_MAP()
-			LOG4CXX_INTERFACE_ENTRY(AsyncAppender)
-			LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
-			LOG4CXX_INTERFACE_ENTRY(spi::AppenderAttachable)
-		END_LOG4CXX_INTERFACE_MAP()
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(AsyncAppender)
+			LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+			LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
+		END_LOG4CXX_CAST_MAP()
 
 		/** The default buffer size is set to 128 events. */
 		static int DEFAULT_BUFFER_SIZE;

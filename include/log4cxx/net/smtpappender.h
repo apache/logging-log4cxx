@@ -36,7 +36,6 @@ namespace log4cxx
 		/**
 		Send an e-mail when a specific logging event occurs, typically on
 		errors or fatal errors.
-
 		<p>The number of logging events delivered in this e-mail depend on
 		the value of <b>BufferSize</b> option. The
 		<code>SMTPAppender</code> keeps only the last
@@ -63,10 +62,10 @@ namespace log4cxx
 
 		public:
 			DECLARE_LOG4CXX_OBJECT(SMTPAppender)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(SMTPAppender)
-				LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(SMTPAppender)
+				LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+			END_LOG4CXX_CAST_MAP()
 
 			/**
 			The default constructor will instantiate the appender with a
@@ -257,9 +256,9 @@ namespace log4cxx
 		{
 		public:
 			DECLARE_LOG4CXX_OBJECT(DefaultEvaluator)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(spi::TriggeringEventEvaluator)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(spi::TriggeringEventEvaluator)
+			END_LOG4CXX_CAST_MAP()
 			/**
 			Is this <code>event</code> the e-mail triggering event?
 			<p>This method returns <code>true</code>, if the event level

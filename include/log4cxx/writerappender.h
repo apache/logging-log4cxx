@@ -62,10 +62,10 @@ namespace log4cxx
 	
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(WriterAppender)
-		BEGIN_LOG4CXX_INTERFACE_MAP()
-			LOG4CXX_INTERFACE_ENTRY(WriterAppender)
-			LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
-		END_LOG4CXX_INTERFACE_MAP()
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(WriterAppender)
+			LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_CAST_MAP()
 
 		/**
 		This default constructor does nothing.*/

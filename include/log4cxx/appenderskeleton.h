@@ -72,10 +72,10 @@ namespace log4cxx
 		bool closed;
 
 	public:
-		BEGIN_LOG4CXX_INTERFACE_MAP()
-			LOG4CXX_INTERFACE_ENTRY(Appender)
-			LOG4CXX_INTERFACE_ENTRY(spi::OptionHandler)
-		END_LOG4CXX_INTERFACE_MAP()
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(Appender)
+			LOG4CXX_CAST_ENTRY(spi::OptionHandler)
+		END_LOG4CXX_CAST_MAP()
 
 		AppenderSkeleton();
 

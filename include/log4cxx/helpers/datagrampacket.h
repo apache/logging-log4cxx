@@ -55,9 +55,9 @@ namespace log4cxx
 
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(DatagramPacket)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(DatagramPacket)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(DatagramPacket)
+			END_LOG4CXX_CAST_MAP()
 
 			/** Constructs a DatagramPacket for receiving packets of length
 			<code>length</code>. */

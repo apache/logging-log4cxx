@@ -32,10 +32,10 @@ namespace log4cxx
 		{
 		public:
 			DECLARE_LOG4CXX_OBJECT(SyslogAppender)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(SyslogAppender)
-				LOG4CXX_INTERFACE_ENTRY_CHAIN(AppenderSkeleton)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(SyslogAppender)
+				LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+			END_LOG4CXX_CAST_MAP()
 
 			typedef enum
 			{

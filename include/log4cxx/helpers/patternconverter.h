@@ -47,9 +47,9 @@ namespace log4cxx
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(PatternConverter)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(PatternConverter)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(PatternConverter)
+			END_LOG4CXX_CAST_MAP()
 
 			PatternConverterPtr next;
 			int min;

@@ -37,9 +37,9 @@ namespace log4cxx
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(DatagramSocket)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(DatagramSocket)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(DatagramSocket)
+			END_LOG4CXX_CAST_MAP()
 
 			/** Constructs a datagram socket and binds it to any available port
 			on the local host machine.*/

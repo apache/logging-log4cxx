@@ -58,10 +58,10 @@ namespace log4cxx
 
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketNode)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(SocketNode)
-				LOG4CXX_INTERFACE_ENTRY(helpers::Runnable)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(SocketNode)
+				LOG4CXX_CAST_ENTRY(helpers::Runnable)
+			END_LOG4CXX_CAST_MAP()
 
 			SocketNode(helpers::SocketPtr socket, spi::LoggerRepositoryPtr hierarchy);
 			virtual void run();

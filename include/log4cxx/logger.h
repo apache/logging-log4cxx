@@ -53,10 +53,10 @@ namespace log4cxx
     {
     public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
-		BEGIN_LOG4CXX_INTERFACE_MAP()
-			LOG4CXX_INTERFACE_ENTRY(Logger)
-			LOG4CXX_INTERFACE_ENTRY(spi::AppenderAttachable)
-		END_LOG4CXX_INTERFACE_MAP()
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(Logger)
+			LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
+		END_LOG4CXX_CAST_MAP()
 
 	private:
 		/**

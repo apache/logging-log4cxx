@@ -43,10 +43,10 @@ namespace log4cxx
 		public:
 			typedef spi::Filter BASE_CLASS;
 			DECLARE_LOG4CXX_OBJECT(DenyAllFilter)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(DenyAllFilter)
-				LOG4CXX_INTERFACE_ENTRY_CHAIN(BASE_CLASS)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(DenyAllFilter)
+				LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
+			END_LOG4CXX_CAST_MAP()
 
 			/**
 			Always returns the integer constant {@link spi::Filter#DENY DENY}

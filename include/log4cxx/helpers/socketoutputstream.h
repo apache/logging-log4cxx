@@ -35,9 +35,9 @@ namespace log4cxx
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketOutputStream)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(SocketOutputStream)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(SocketOutputStream)
+			END_LOG4CXX_CAST_MAP()
 
 			SocketOutputStream(SocketPtr socket);
 			~SocketOutputStream();

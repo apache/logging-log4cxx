@@ -163,9 +163,9 @@ files. You can enable log4cxx internal logging by setting the
 
 		public:
 			DECLARE_LOG4CXX_OBJECT(DOMConfigurator)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(spi::Configurator)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(spi::Configurator)
+			END_LOG4CXX_CAST_MAP()
 
 			/**
 			A static version of #doConfigure.

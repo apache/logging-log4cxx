@@ -80,9 +80,9 @@ namespace log4cxx
 
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketImpl)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(SocketImpl)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(SocketImpl)
+			END_LOG4CXX_CAST_MAP()
 
 			SocketImpl();
 			~SocketImpl();

@@ -89,25 +89,25 @@ namespace log4cxx
 	};
 };
 
-#define BEGIN_LOG4CXX_INTERFACE_MAP()\
+#define BEGIN_LOG4CXX_CAST_MAP()\
 const void * cast(const helpers::Class& clazz) const\
 {\
 	const void * object = 0;\
 	if (&clazz == &helpers::Object::getStaticClass()) return (helpers::Object *)this;
 
-#define END_LOG4CXX_INTERFACE_MAP()\
+#define END_LOG4CXX_CAST_MAP()\
 	return object;\
 }\
 bool instanceof(const helpers::Class& clazz) const\
 { return cast(clazz) != 0; }
 
-#define LOG4CXX_INTERFACE_ENTRY(Interface)\
+#define LOG4CXX_CAST_ENTRY(Interface)\
 if (&clazz == &Interface::getStaticClass()) return (Interface *)this;
 
-#define LOG4CXX_INTERFACE_ENTRY2(Interface, interface2)\
+#define LOG4CXX_CAST_ENTRY2(Interface, interface2)\
 if (&clazz == &Interface::getStaticClass()) return (Interface *)(interface2 *)this;
 
-#define LOG4CXX_INTERFACE_ENTRY_CHAIN(Interface)\
+#define LOG4CXX_CAST_ENTRY_CHAIN(Interface)\
 object = Interface::cast(clazz);\
 if (object != 0) return object;
 

@@ -46,9 +46,9 @@ namespace log4cxx
 
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(BoundedFIFO)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(BoundedFIFO)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(BoundedFIFO)
+			END_LOG4CXX_CAST_MAP()
 
 			/**
 			Instantiate a new BoundedFIFO with a maximum size passed as argument.

@@ -44,10 +44,10 @@ namespace log4cxx
 
 		public:
 			DECLARE_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(spi::OptionHandler)
-				LOG4CXX_INTERFACE_ENTRY(spi::ErrorHandler)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(spi::OptionHandler)
+				LOG4CXX_CAST_ENTRY(spi::ErrorHandler)
+			END_LOG4CXX_CAST_MAP()
 
 			OnlyOnceErrorHandler();
 

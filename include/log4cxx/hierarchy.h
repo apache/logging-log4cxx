@@ -81,9 +81,9 @@ namespace log4cxx
 		
     public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)
-		BEGIN_LOG4CXX_INTERFACE_MAP()
-			LOG4CXX_INTERFACE_ENTRY(spi::LoggerRepository)
-		END_LOG4CXX_INTERFACE_MAP()
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(spi::LoggerRepository)
+		END_LOG4CXX_CAST_MAP()
 
 		/**
 		Create a new logger hierarchy.

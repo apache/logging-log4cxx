@@ -40,10 +40,10 @@ namespace log4cxx
 	{
 	public:
 		DECLARE_LOG4CXX_OBJECT(SimpleLayout)
-		BEGIN_LOG4CXX_INTERFACE_MAP()
-			LOG4CXX_INTERFACE_ENTRY(SimpleLayout)
-			LOG4CXX_INTERFACE_ENTRY_CHAIN(Layout)
-		END_LOG4CXX_INTERFACE_MAP()
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(SimpleLayout)
+			LOG4CXX_CAST_ENTRY_CHAIN(Layout)
+		END_LOG4CXX_CAST_MAP()
 
 		/**
 		Returns the log statement in a format consisting of the

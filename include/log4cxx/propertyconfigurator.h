@@ -112,9 +112,9 @@ example, if <code>java.home</code> system property is set to
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
-		BEGIN_LOG4CXX_INTERFACE_MAP()
-			LOG4CXX_INTERFACE_ENTRY(spi::Configurator)
-		END_LOG4CXX_INTERFACE_MAP()
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(spi::Configurator)
+		END_LOG4CXX_CAST_MAP()
 
 		PropertyConfigurator();
 
@@ -302,9 +302,10 @@ configuration information is stored.
 		static void configure(const tstring& configFilename);
 
 		/**
-		Like {@link #configureAndWatch(String, long)} except that the
-		default delay as defined by {@link FileWatchdog#DEFAULT_DELAY} is
-		used.
+		Like {@link #configureAndWatch(const tstring& configFilename, long delay)}
+		except that the
+		default delay as defined by helpers::FileWatchdog#DEFAULT_DELAY
+		is used.
 		@param configFilename A file in key=value format.
 		*/
 		static void configureAndWatch(const tstring& configFilename);
@@ -320,7 +321,7 @@ configuration information is stored.
 		@param configFilename A file in key=value format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
-		static void configureAndWatch(const tstring& configFilename, 
+		static void configureAndWatch(const tstring& configFilename,
 			long delay);
 
 		/**

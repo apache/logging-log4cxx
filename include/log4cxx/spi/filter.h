@@ -70,10 +70,10 @@ namespace log4cxx
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(Filter)
-				LOG4CXX_INTERFACE_ENTRY(spi::OptionHandler)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(Filter)
+				LOG4CXX_CAST_ENTRY(spi::OptionHandler)
+			END_LOG4CXX_CAST_MAP()
             /**
             Points to the next filter in the filter chain.
             */

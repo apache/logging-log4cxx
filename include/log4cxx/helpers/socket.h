@@ -53,9 +53,9 @@ namespace log4cxx
 
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Socket)
-			BEGIN_LOG4CXX_INTERFACE_MAP()
-				LOG4CXX_INTERFACE_ENTRY(Socket)
-			END_LOG4CXX_INTERFACE_MAP()
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(Socket)
+			END_LOG4CXX_CAST_MAP()
 
 			/** Creates a stream socket and connects it to the specified port
 			number at the specified IP address.
