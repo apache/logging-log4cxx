@@ -4,4 +4,5 @@ config_auto_log4cxx.h
 config_auto.h
 config_auto.h.in
 config_msvc.h
+config.h
 stamp-h1

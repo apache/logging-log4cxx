@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<!--
+ Copyright 2004-2005 The Apache Software Foundation.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+
+<!--
+
+This file builds APR using Apache Ant (http://ant.apache.org)
+and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
+
+
+-->
+<project name="apriconv" default="check">
+
+<property name="debug" value="true"/>
+<property name="build.dir" location="build"/>
+<property name="version" value="1.0.1"/>
+<property name="base.dir" location="."/>
+<property name="include.dir" location="${base.dir}/include"/>
+<property name="lib.type" value="static"/>
+
+
+<taskdef resource="cpptasks.tasks"/>
+<typedef resource="cpptasks.types"/>
+<property name="apr.dir" location="${base.dir}/../apr-1.1.0"/>
+<property name="apr.include.dir" location="${apr.dir}/include"/>
+
+<target name="usage">
+        <echo>
+        </echo>
+</target>
+
+<target name="os-detect">
+        <condition property="is-unix" value="true">
+             <os family="unix"/>
+        </condition>
+        <condition property="is-windows" value="true">
+                <os family="windows"/>
+        </condition>
+</target>
+
+
+<target name="win-init" depends="os-detect" if="is-windows">
+    <property name="compiler" value="msvc"/>
+    <property name="arch" value="win32"/>
+</target>
+
+<target name="unix-init" depends="os-detect" if="is-unix">
+    <property name="compiler" value="gcc"/>
+    <condition property="is-gcc" value="true">
+        <or>
+            <equals arg1="${compiler}" arg2="gcc"/>
+            <equals arg1="${compiler}" arg2="g++"/>
+        </or>
+    </condition>
+    <property name="arch" value="unix"/>
+</target>
+
+<target name="init" depends="win-init, unix-init">
+        <condition property="is-debug" value="true">
+            <istrue value="${debug}"/>
+        </condition>
+        <condition property="executable.dir" value="${build.dir}/debug">
+            <isset property="is-debug"/>
+        </condition>
+        <property name="executable.dir" location="${build.dir}/release"/>
+        <mkdir dir="${executable.dir}"/>
+        <condition property="lib-suffix" value="d">
+            <isset property="is-debug"/>
+        </condition>
+        <property name="lib-suffix" value=""/>
+</target>
+
+<target name="clean">
+        <delete dir="${build.dir}"/>
+</target>
+
+
+
+
+
+
+<target name="configure-check" depends="init">
+        <condition property="config-available" value="true">
+            <available file="${base.dir}/lib/apr_iconv_private.h"/>
+        </condition>
+</target>
+
+
+<target name="win-configure" depends="configure-check" if="is-windows" unless="config-available">
+    <copy tofile="${base.dir}/lib/apr_iconv_private.h" file="${base.dir}/lib/apr_iconv_private.h.in"/>
+</target>
+
+<target name="unix-configure" depends="configure-check" if="is-unix" unless="apr_h-available">
+        <exec executable="configure" dir="${base.dir}"/>
+</target>
+
+
+<target name="configure" depends="unix-configure, win-configure"/>
+
+
+<target name="build" depends="configure" description="Build library">
+    <mkdir dir="${executable.dir}/${lib.type}/apriconv_obj"/>
+    <cc name="${compiler}"
+        outfile="${executable.dir}/${lib.type}/apriconv${lib-suffix}"
+        subsystem="console"
+        multithreaded="true"
+        outtype="${lib.type}"
+        objdir="${executable.dir}/${lib.type}/apriconv_obj"
+        debug="${debug}">
+        <fileset dir="${base.dir}" includes="**/*.c" excludes="util/*"/>
+        <includepath path="${include.dir}"/>
+        <includepath path="${base.dir}/lib"/>
+        <includepath path="${apr.include.dir}"/>
+        <defineset define="API_DECLARE_EXPORT" if="is-shared"/>
+        <defineset define="API_DECLARE_STATIC" unless="is-shared"/>
+        <defineset define="WIN32" if="is-windows"/>
+    </cc>
+</target>
+
+<target name="build-check" depends="build"/>
+
+<target name="check" depends="build-check"/>
+
+</project>

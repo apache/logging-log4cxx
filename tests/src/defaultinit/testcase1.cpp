@@ -46,4 +46,7 @@ public:
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TestCase1);
+CPPUNIT_NS::Test* createTestCase1() {
+	return TestCase1::suite();
+}
+

@@ -1,0 +1,168 @@
+<?xml version="1.0"?>
+<!--
+ Copyright 2004-2005 The Apache Software Foundation.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+
+<!--
+
+This file builds APR using Apache Ant (http://ant.apache.org)
+and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
+
+
+-->
+<project name="aprutil" default="check">
+
+<property name="debug" value="true"/>
+<property name="build.dir" location="build"/>
+<property name="version" value="1.1.0"/>
+<property name="base.dir" location="."/>
+<property name="include.dir" location="${base.dir}/include"/>
+<property name="lib.type" value="shared"/>
+
+
+
+<taskdef resource="cpptasks.tasks"/>
+<typedef resource="cpptasks.types"/>
+
+<property name="apr.dir" location="${base.dir}/../apr-1.1.0"/>
+<property name="apr.include.dir" location="${apr.dir}/include"/>
+<property name="apriconv.dir" location="${base.dir}/../apr-iconv-1.0.1"/>
+<property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
+
+<target name="usage">
+        <echo>
+        </echo>
+</target>
+
+<target name="os-detect">
+        <condition property="is-unix" value="true">
+             <os family="unix"/>
+        </condition>
+        <condition property="is-windows" value="true">
+                <os family="windows"/>
+        </condition>
+</target>
+
+
+<target name="win-init" depends="os-detect" if="is-windows">
+    <property name="compiler" value="msvc"/>
+    <property name="arch" value="win32"/>
+</target>
+
+<target name="unix-init" depends="os-detect" if="is-unix">
+    <property name="compiler" value="gcc"/>
+    <condition property="is-gcc" value="true">
+        <or>
+            <equals arg1="${compiler}" arg2="gcc"/>
+            <equals arg1="${compiler}" arg2="g++"/>
+        </or>
+    </condition>
+    <property name="arch" value="unix"/>
+</target>
+
+<target name="init" depends="win-init, unix-init">
+        <condition property="is-debug" value="true">
+            <istrue value="${debug}"/>
+        </condition>
+        <condition property="executable.dir" value="${build.dir}/debug">
+            <isset property="is-debug"/>
+        </condition>
+        <property name="executable.dir" location="${build.dir}/release"/>
+        <mkdir dir="${executable.dir}"/>
+        <condition property="lib-suffix" value="d">
+            <isset property="is-debug"/>
+        </condition>
+        <property name="lib-suffix" value=""/>
+        <available property="src-available" file="${base.dir}"/>
+
+        <condition property="is-shared" value="true">
+            <equals arg1="${lib.type}" arg2="shared"/>
+        </condition>
+</target>
+
+<target name="clean">
+        <delete dir="${build.dir}"/>
+</target>
+
+
+<target name="configure-check" depends="init">
+        <condition property="config-available" value="true">
+              <and>
+                    <available file="${include.dir}/apu.h"/>
+                    <available file="${include.dir}/apu_want.h"/>
+                    <available file="${include.dir}/private/apu_config.h"/>
+                    <available file="${include.dir}/private/apu_select_dbm.h"/>
+                    <available file="${base.dir}/xml/expat/lib/expat.h"/>
+                    <available file="${base.dir}/xml/expat/lib/config.h"/>
+               </and>
+        </condition>
+</target>
+
+
+<target name="win-configure" depends="configure-check" if="is-windows" unless="config-available">
+    <copy tofile="${include.dir}/apu.h" file="${include.dir}/apu.hw"/>
+    <copy tofile="${include.dir}/apu_want.h" file="${include.dir}/apu_want.hw"/>
+    <copy tofile="${include.dir}/private/apu_config.h" file="${include.dir}/private/apu_config.hw"/>
+    <copy tofile="${include.dir}/private/apu_select_dbm.h" file="${include.dir}/private/apu_select_dbm.hw"/>
+    <copy tofile="${base.dir}/xml/expat/lib/expat.h" file="${base.dir}/xml/expat/lib/expat.h.in"/>
+    <copy tofile="${base.dir}/xml/expat/lib/config.h" file="${base.dir}/xml/expat/lib/winconfig.h"/>
+</target>
+
+<target name="unix-configure" depends="configure-check" if="is-unix" unless="apr_h-available">
+        <exec executable="configure" dir="${base.dir}"/>
+</target>
+
+
+<target name="configure" depends="unix-configure, win-configure"/>
+
+
+<target name="build" depends="configure" description="Build library">
+    <mkdir dir="${executable.dir}/${lib.type}/aprutil_obj"/>
+    <cc name="${compiler}"
+        outfile="${executable.dir}/${lib.type}/aprutil-1${lib-suffix}"
+        subsystem="console"
+        multithreaded="true"
+        outtype="${lib.type}"
+        objdir="${executable.dir}/${lib.type}/aprutil_obj"
+        debug="${debug}">
+        <fileset dir="${base.dir}" includes="**/*.c" 
+            excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
+        <fileset dir="${base.dir}/xml/expat/lib" 
+            includes="xmlparse.c xmlrole.c xmltok.c"/>
+        <includepath path="${include.dir}"/>
+        <includepath path="${include.dir}/private"/>
+        <includepath path="${apr.include.dir}"/>
+        <includepath path="${apriconv.include.dir}"/>
+        <includepath path="${base.dir}/xml/expat/lib"/>
+        <defineset define="APU_DECLARE_EXPORT" if="is-shared"/>
+        <defineset define="APU_DECLARE_STATIC" unless="is-shared"/>
+        <defineset>
+            <define name="VERSION" value='\"expat_1.95.1\"'/>
+            <define name="XML_MAJOR_VERSION" value="1"/>
+            <define name="XML_MINOR_VERSION" value="95"/>
+            <define name="XML_MICRO_VERSION" value="1"/>
+        </defineset>
+        <defineset define="WIN32" if="is-windows"/>
+        <libset dir="${apr.lib.dir}" libs="apr-1"/>
+        <libset dir="${apriconv.lib.dir}" libs="apriconv"/>
+    </cc>
+</target>
+
+<target name="build-check" depends="build"/>
+
+<target name="check" depends="build-check"/>
+
+</project>

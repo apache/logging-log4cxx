@@ -52,4 +52,6 @@ public:
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TestCase3);
+CPPUNIT_NS::Test* createTestCase3() {
+	return TestCase3::suite();
+}

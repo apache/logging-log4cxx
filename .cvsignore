@@ -11,3 +11,7 @@ libtool
 linux
 log4cxx.cbx
 log4cxx.cbx.local
+xcode
+cbx
+msvc
+

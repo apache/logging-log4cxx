@@ -26,12 +26,42 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <project name="log4cxx" default="check">
 
 <property name="debug" value="true"/>
-<property name="src.dir" location="src"/>
-<property name="include.dir" location="include"/>
-<property name="build.dir" location="build"/>
-<property name="examples.dir" location="examples"/>
-<property name="tests.dir" location="tests"/>
+<property name="base.dir" location="."/>
+<property name="src.dir" location="${base.dir}/src"/>
+<property name="lib.dir" location="${base.dir}/lib"/>
+<property name="include.dir" location="${base.dir}/include"/>
+<property name="build.dir" location="${base.dir}/build"/>
+<property name="examples.dir" location="${base.dir}/examples"/>
+<property name="tests.dir" location="${base.dir}/tests"/>
+<property name="performance.dir" location="${base.dir}/performance"/>
 <property name="version" value="0.9.8"/>
+<property name="rtti" value="false"/>
+<property name="optimize" value="none"/>
+<property name="lib.type" value="shared"/>
+<property name="apache.mirror" value="http://apache.mirrors.pair.com"/>
+<property name="cppunit.mirror" value="http://unc.dl.sourceforge.net/sourceforge"/>
+
+<property name="apache.dist" value="http://www.apache.org/dist"/>
+
+
+
+<property name="apr.version" value="1.1.0"/>
+<property name="apr.lib.name" value="apr-1"/>
+<property name="apr.lib.type" value="static"/>
+
+<property name="aprutil.version" value="1.1.0"/>
+<property name="aprutil.lib.name" value="aprutil-1"/>
+<property name="aprutil.lib.type" value="static"/>
+
+<property name="apriconv.version" value="1.0.1"/>
+<property name="apriconv.lib.name" value="apriconv"/>
+<property name="apriconv.lib.type" value="static"/>
+
+<property name="cppunit.version" value="1.10.2"/>
+<property name="cppunit.lib.name" value="cppunit"/>
+<property name="cppunit.lib.type" value="static"/>
+
+
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
 
@@ -51,78 +81,142 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <target name="win-init" depends="os-detect" if="is-windows">
-    <property name="apr.dir" location="/apr-1"/>
-    <property name="aprutil.dir" location="/apr-1"/>
-    <property name="apr.include.dir" location="${apr.dir}/apr/include"/>
-    <property name="apr.lib.name" value="apr-1"/>
-    <property name="aprutil.lib.name" value="aprutil-1"/>
-    <property name="apriconv.lib.name" value="apriconv"/>
-        <condition property="apr.lib.dir" value="${apr.dir}/apr/LibD">
-                <istrue value="${debug}"/>
-        </condition>
-    <property name="apr.lib.dir" location="${apr.dir}/apr/LibR"/>
-    <property name="apriconv.lib.dir" location="${apr.lib.dir}"/>
-        <property name="compiler" value="msvc"/>
-        <condition property="lib-suffix" value="d">
-            <istrue value="${debug}"/>
-        </condition>
-        <property name="lib-suffix" value=""/>
-    <property name="cppunit.dir" location="/cppunit-1.10.2"/>
-    <property name="cppunit.include.dir" location="${cppunit.dir}/include"/>
-    <property name="cppunit.lib.dir" location="${cppunit.dir}/lib"/>
-    <condition property="cppunit.lib.name" value="cppunitd">
-        <istrue value="${debug}"/>
-    </condition>
-    <property name="cppunit.lib.name" value="cppunit"/>
+    <property name="lib.prefix" value=""/>
+    <property name="lib.extension" value=".lib"/>
+    <property name="project.type" value="msvc6"/>
+    <property name="project.dir" value="msvc"/>
+    <property name="compiler" value="msvc"/>
 </target>
 
-<target name="unix-init" depends="os-detect" if="is-unix">
-    <property name="apr.dir" location="/usr/local/apr"/>
-    <property name="apr.include.dir" location="${apr.dir}/include/apr-1"/>
-    <property name="aprutil.dir" location="${apr.dir}"/>
-    <property name="aprutil.include.dir" location="${aprutil.dir}/include/apr-1"/>
-    <property name="apriconv.dir" location="${apr.dir}"/>
-    <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
-    <property name="apr.lib.name" value="apr-1"/>
-    <property name="aprutil.lib.name" value="aprutil-1"/>
-    <property name="apriconv.lib.name" value="apriconv"/>
-    <property name="apr.lib.dir" location="${apr.dir}/lib"/>
-    <property name="aprutil.lib.dir" location="${aprutil.dir}/lib"/>
-    <property name="apriconv.lib.dir" location="${apriconv.dir}/lib"/>
-        <property name="compiler" value="gcc"/>
-        <condition property="is-gcc" value="true">
-            <or>
-               <equals arg1="${compiler}" arg2="gcc"/>
-               <equals arg1="${compiler}" arg2="g++"/>
-            </or>
-        </condition>
-
-        <property name="lib-suffix" value="-${version}"/>
-
-    <condition property="cppunit.include.dir" value="${cppunit.dir}/include">
-                <isset property="cppunit.dir"/>
-        </condition>
-        <condition property="cppunit.lib.dir" value="${cppunit.dir}/src/cppunit">
-          <isset property="cppunit.dir"/>
-    </condition>
-    <property name="cppunit.lib.name" value="cppunit"/>
-
-    <property name="expat.lib.name" value="expat"/>
+<target name="mac-init" depends="os-detect" if="is-mac">
+    <property name="project.type" value="cbuilderx"/>
+    <property name="project.dir" value="cbx"/>
 </target>
+
+
+<target name="unix-init" depends="mac-init" if="is-unix">
+
+    <property name="compiler" value="gcc"/>
+    <condition property="is-gcc" value="true">
+        <or>
+           <equals arg1="${compiler}" arg2="gcc"/>
+           <equals arg1="${compiler}" arg2="g++"/>
+        </or>
+    </condition>
+
+    <property name="lib.prefix" value="lib"/>
+    <property name="lib.extension" value=".a"/>
+    <property name="project.type" value="cbuilderx"/>
+    <property name="project.dir" value="cbx"/>
+    <property name="compiler" value="g++"/>
+</target>
+
+
+
 
 <target name="init" depends="win-init, unix-init">
+        <available classname="net.sf.antcontrib.cpptasks.CCTask" property="cctask-available"/>
+        <fail unless="cctask-available">cpptasks required
+
+Use CVS HEAD or Feb 2005 or later release from 
+http://ant-contrib.sourceforge.net.
+</fail>
+
+        <available classname="net.sf.antcontrib.cpptasks.ide.ProjectDef" property="cctask-project-available"/>
+        <fail unless="cctask-project-available">later version of cpptasks required
+
+Required features not present in cpptasks releases prior to Feb 2005</fail>
+
         <mkdir dir="${build.dir}"/>
-        <mkdir dir="cbx"/>
-        <mkdir dir="xcode"/>
-        <mkdir dir="msvc"/>
-        <condition property="obj.dir" value="${build.dir}/debug">
+
+        <condition property="is-debug" value="true">
                 <istrue value="${debug}"/>
         </condition>
-        <property name="obj.dir" value="${build.dir}/release"/>
-        <mkdir dir="${obj.dir}"/>
+
+        <condition property="debug.release" value="debug">
+            <isset property="is-debug"/>
+        </condition>
+        <property name="debug.release" value="release"/>
+
+        <condition property="apr.include.dir" value="${apr.dir}/include">
+            <isset property="apr.dir"/>
+        </condition>
+        <condition property="apr.lib.dir" value="${apr.dir}/lib">
+            <isset property="apr.dir"/>
+        </condition>
+
+
+        <condition property="apriconv.dir" value="${apr.dir}">
+            <isset property="apr.dir"/>
+        </condition>
+        <condition property="apriconv.include.dir" value="${apriconv.dir}/include">
+            <isset property="apriconv.dir"/>
+        </condition>
+        <condition property="apriconv.lib.dir" value="${apriconv.dir}/lib">
+            <isset property="apriconv.dir"/>
+        </condition>
+
+
+        <condition property="aprutil.dir" value="${apr.dir}">
+            <isset property="apr.dir"/>
+        </condition>
+        <condition property="aprutil.include.dir" value="${aprutil.dir}/include">
+            <isset property="aprutil.dir"/>
+        </condition>
+        <condition property="aprutil.lib.dir" value="${aprutil.dir}/lib">
+            <isset property="aprutil.dir"/>
+        </condition>
+
+        <condition property="cppunit.include.dir" value="${cppunit.dir}/include">
+            <isset property="cppunit.dir"/>
+        </condition>
+        <condition property="cppunit.lib.dir" value="${cppunit.dir}/lib">
+            <isset property="cppunit.dir"/>
+        </condition>
+
+        <condition property="lib-suffix" value="d">
+            <isset property="is-debug"/>
+        </condition>
+        <property name="lib-suffix" value=""/>
+
+        <available property="apr-available" file="${apr.lib.dir}/${lib.prefix}apr-1${lib-suffix}${lib.extension}"/>
+        <available property="aprutil-available" file="${aprutil.lib.dir}/${lib.prefix}aprutil-1${lib-suffix}${lib.extension}"/>
+        <available property="apriconv-available" file="${apriconv.lib.dir}/${lib.prefix}apriconv-1${lib-suffix}${lib.extension}"/>
+        <available property="cppunit-available" file="${cppunit.lib.dir}/${lib.prefix}cppunit${lib-suffix}${lib.extension}"/>
+
+        <available property="apr-src-available" file="${lib.dir}/apr-${apr.version}.tar.gz"/>
+        <available property="apriconv-src-available" file="${lib.dir}/apr-iconv-${apriconv.version}.tar.gz"/>
+        <available property="aprutil-src-available" file="${lib.dir}/apr-util-${aprutil.version}.tar.gz"/>
+        <available property="cppunit-src-available" file="${lib.dir}/cppunit-${cppunit.version}.tar.gz"/>
+
+		<condition property="apr-static" value="true">
+			<equals arg1="${apr.lib.type}" arg2="static"/>
+		</condition>
+
+		<condition property="aprutil-static" value="true">
+			<equals arg1="${aprutil.lib.type}" arg2="static"/>
+		</condition>
+
+		<condition property="apriconv-static" value="true">
+			<equals arg1="${apriconv.lib.type}" arg2="static"/>
+		</condition>
+
+		<condition property="cppunit-static" value="true">
+			<equals arg1="${cppunit.lib.type}" arg2="static"/>
+		</condition>
+
+
+        <condition property="executable.dir" value="${build.dir}/debug">
+                <isset property="is-debug"/>
+        </condition>
+        <property name="executable.dir" value="${build.dir}/release"/>
+        <mkdir dir="${executable.dir}"/>
+
+
+        <property name="projectsOnly" value="false"/>
 </target>
 
-<target name="clean">
+<target name="clean" depends="init">
         <delete dir="${build.dir}"/>
         <delete>
             <fileset dir="${tests.dir}/src" includes="shortsocket*" excludes="*.cpp"/>
@@ -137,32 +231,144 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 
-<target name="unix-prep" depends="init, config-check"
+<target name="unix-configure" 
+        depends="config-check" 
         if="is-unix"
         unless="config-available">
+
+        <exec executable="configure">
+            <arg value="--with-apr=${apr.dir}"/>
+            <arg value="--with-aprutil=${aprutil.dir}"/>
+            <arg value="--with-apriconv=${apriconv.dir}"/>
+            <arg value="--with-cppunit=${cppunit.dir}"/>
+        </exec>
 </target>
 
-<target name="check-config-msvc" depends="init" if="is-windows">
-        <condition property="config-msvc-available" value="true">
-                <available file="${include.dir}/log4cxx/config_msvc.h"/>
-        </condition>
-</target>
-
-<target name="prep-config-msvc" depends="check-config-msvc" if="is-windows">
-    <copy tofile="${include.dir}/log4cxx/config_msvc.h" file="${include.dir}/log4cxx/config_msvc.h.in"/>
-        <replace file="${include.dir}/log4cxx/config_msvc.h" token="@VERSION@" value="${version}"/>
+<target name="win-configure" depends="config-check" if="is-windows">
 </target>
 
 
-<target name="win-prep" depends="init, config-check, prep-config-msvc"
-        if="is-windows"
-        unless="config-available">
-        <echo file="${include.dir}/log4cxx/config.h">#include "config_msvc.h"
-</echo>
+<target name="configure" depends="unix-configure, win-configure"/>
+
+<target name="get-apr-module">
+    <get src="${apache.mirror}/apr/${module}-${module.version}.tar.gz"
+         dest="${lib.dir}/${module}-${module.version}.tar.gz"
+         usetimestamp="true"/>
+    <get src="${apache.dist}/apr/${module}-${module.version}.tar.gz.asc"
+         dest="${lib.dir}/${module}-${module.version}.tar.gz.asc"
+         usetimestamp="true"/>
+    <exec executable="gpg" dir="${lib.dir}">
+        <arg value="--verify"/>
+        <arg value="${module}-${module.version}.tar.gz.asc"/>
+    </exec>
+    <untar src="${lib.dir}/${module}-${module.version}.tar.gz"
+           dest="${lib.dir}" compression="gzip"/>
 </target>
 
-<target name="prep" depends="unix-prep, win-prep"/>
+<target name="get-apr-src" unless="apr-src-available">
+    <antcall target="get-apr-module">
+        <param name="module" value="apr"/>
+        <param name="module.version" value="${apr.version}"/>
+    </antcall>
+</target>
 
+<target name="build-apr" depends="init" unless="apr-available">
+    <antcall target="get-apr-src"/>
+
+    <ant antfile="apr-build.xml" target="build" inheritAll="false">
+        <property name="version" value="${apr.version}"/>
+        <property name="debug" value="${debug}"/>
+        <property name="lib-suffix" value="${lib-suffix}"/>
+        <property name="compiler" value="${compiler}"/>
+        <property name="base.dir" value="${lib.dir}/apr-${apr.version}"/>
+        <property name="executable.dir" value="${executable.dir}"/>
+        <property name="lib.type" value="${apr.lib.type}"/>
+    </ant>
+    <property name="apr.dir" value="${lib.dir}/apr-${apr.version}"/>
+    <property name="apr.include.dir" value="${apr.dir}/include"/>
+    <property name="apr.lib.dir" value="${executable.dir}/${apr.lib.type}"/>
+</target>
+
+<target name="get-apriconv-src" unless="apriconv-src-available">
+    <antcall target="get-apr-module">
+        <param name="module" value="apr-iconv"/>
+        <param name="module.version" value="${apriconv.version}"/>
+    </antcall>
+</target>
+
+<target name="build-apriconv" depends="build-apr" unless="apriconv-available">
+    <antcall target="get-apriconv-src"/>
+
+    <ant antfile="apriconv-build.xml" target="build" inheritAll="false">
+        <property name="version" value="${apriconv.version}"/>
+        <property name="base.dir" value="${lib.dir}/apr-iconv-${apriconv.version}"/>
+        <property name="debug" value="${debug}"/>
+        <property name="lib-suffix" value="${lib-suffix}"/>
+        <property name="compiler" value="${compiler}"/>
+        <property name="apr.include.dir" value="${apr.include.dir}"/>
+        <property name="apr.lib.dir" value="${apr.lib.dir}"/>
+        <property name="executable.dir" value="${executable.dir}"/>
+        <property name="lib.type" value="${apriconv.lib.type}"/>
+    </ant>
+    <property name="apriconv.dir" value="${lib.dir}/apr-iconv-${apriconv.version}"/>
+    <property name="apriconv.include.dir" value="${apriconv.dir}/include"/>
+    <property name="apriconv.lib.dir" value="${executable.dir}/${apriconv.lib.type}"/>
+</target>
+
+<target name="get-aprutil-src" unless="aprutil-src-available">
+    <antcall target="get-apr-module">
+        <param name="module" value="apr-util"/>
+        <param name="module.version" value="${aprutil.version}"/>
+    </antcall>
+</target>
+
+
+<target name="build-aprutil" depends="build-apriconv" unless="aprutil-available">
+    <antcall target="get-aprutil-src"/>
+
+    <ant antfile="aprutil-build.xml" target="build" inheritAll="false">
+        <property name="version" value="${aprutil.version}"/>
+        <property name="base.dir" value="${lib.dir}/apr-util-${aprutil.version}"/>
+        <property name="debug" value="${debug}"/>
+        <property name="lib-suffix" value="${lib-suffix}"/>
+        <property name="compiler" value="${compiler}"/>
+        <property name="apr.include.dir" value="${apr.include.dir}"/>
+        <property name="apr.lib.dir" value="${apr.lib.dir}"/>
+        <property name="apriconv.include.dir" value="${apriconv.include.dir}"/>
+        <property name="apriconv.lib.dir" value="${apriconv.lib.dir}"/>
+        <property name="executable.dir" value="${executable.dir}"/>
+        <property name="lib.type" value="${aprutil.lib.type}"/>
+    </ant>
+    <property name="aprutil.dir" value="${lib.dir}/apr-util-${aprutil.version}"/>
+    <property name="aprutil.include.dir" value="${aprutil.dir}/include"/>
+    <property name="aprutil.lib.dir" value="${executable.dir}/${aprutil.lib.type}"/>
+</target>
+
+<target name="get-cppunit-src" unless="cppunit-src-available">
+    <get src="${cppunit.mirror}/cppunit/cppunit-${cppunit.version}.tar.gz"
+         dest="${lib.dir}/cppunit-${cppunit.version}.tar.gz"
+         usetimestamp="true"/>
+    <untar src="${lib.dir}/cppunit-${cppunit.version}.tar.gz"
+           dest="${lib.dir}" compression="gzip"/>
+</target>
+
+
+<target name="build-cppunit" depends="init" unless="cppunit-available">
+    <antcall target="get-cppunit-src"/>
+
+    <ant antfile="cppunit-build.xml" target="build" inheritAll="false">
+        <property name="base.dir" value="${lib.dir}/cppunit-${cppunit.version}"/>
+        <property name="cppunit.version" value="${cppunit.version}"/>
+        <property name="debug" value="${debug}"/>
+        <property name="lib-suffix" value="${lib-suffix}"/>
+        <property name="compiler" value="${compiler}"/>
+        <property name="executable.dir" value="${executable.dir}"/>
+        <property name="lib.type" value="${cppunit.lib.type}"/>
+    </ant>
+    <property name="cppunit.dir" value="${lib.dir}/cppunit-${cppunit.version}"/>
+    <property name="cppunit.include.dir" value="${cppunit.dir}/include"/>
+    <property name="cppunit.lib.dir" value="${executable.dir}/${cppunit.lib.type}"/>
+</target>
 
 
 <target name="make-header-check" description="Generates a minimal C++ source using a specified header">
@@ -172,8 +378,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </echo>
 </target>
 
-<target name="header-check" depends="prep"
-    description="Checks that header files declare their dependencies">
+
+<target name="header-check" depends="build-aprutil, configure"
+    description="Checks headers against Effective C++ guidelines">
+        <fail unless="is-gcc">Requires GCC compiler</fail>
         <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
         <delete dir="${build.dir}/header-check"/>
         <mkdir dir="${build.dir}/header-check"/>
@@ -188,14 +396,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <foreach target="make-header-check" param="header">
                 <path><fileset dir="${build.dir}/header-check" includes="**/*.h"/></path>
         </foreach>
-        <cc objdir="${build.dir}/header-check"
+        <mkdir dir="${obj.dir}/header-check"/>
+        <cc objdir="${obj.dir}/header-check"
                 name="gcc"
                 exceptions="true"
                 subsystem="gui"
                 optimize="none"
                 multithreaded="true"
                 relentless="true"
-                debug="${debug}">
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
                 <compilerarg value="-Weffc++"/>
                 <compilerarg value="-Wall"/>
                 <fileset dir="${build.dir}/header-check" includes="**/*.cpp"/>
@@ -203,22 +413,26 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <includepath path="include"/>
                 <includepath path="${apr.include.dir}"/>
                 <includepath path="${aprutil.include.dir}"/>
-                <project outfile="${build.dir}/header-check/header-check"
-                    type="cbuilderx" if="gen-cbx"/>
+                <project outfile="${project.dir}/header-check" 
+                    type="${project.type}" if="project.if"/>
          </cc>
 </target>
 
 
-<target name="build-log4cxx" depends="prep" description="Build log4cxx shared library">
+<target name="build" depends="build-aprutil, configure" description="Build log4cxx shared library">
+    <mkdir dir="${executable.dir}/${lib.type}/log4cxx_obj"/>
+
     <cc name="${compiler}"
                 exceptions="true"
-                outfile="${build.dir}/log4cxx${lib-suffix}"
+                outfile="${executable.dir}/${lib.type}/log4cxx${lib-suffix}"
                 subsystem="console"
                 multithreaded="true"
-                outtype="shared"
-                objdir="${obj.dir}"
-                debug="${debug}">
+                outtype="${lib.type}"
+                objdir="${executable.dir}/${lib.type}/log4cxx_obj"
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
         <fileset dir="${src.dir}" includes="*.cpp"/>
+        <fileset dir="${include.dir}" includes="**/*.h"/>
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
@@ -226,118 +440,126 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${apriconv.include.dir}"/>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
         <defineset define="LOG4CXX"/>
-        <defineset define="APR_DECLARE_STATIC"/>
-        <defineset define="APU_DECLARE_STATIC"/>
+        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
         <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="xml2" if="is-unix"/>
-        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
 
-        <libset libs="${apriconv.lib.name}"
+        <libset libs="${apriconv.lib.name}${lib-suffix}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
+        <libset libs="${apriconv.lib.name}${lib-suffix}"
                 unless="apriconv.lib.dir"/>
         <syslibset libs="pthread" if="is-unix"/>
-        <project outfile="cbx/log4cxx" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/log4cxx" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/log4cxx" type="xcode" if="gen-xcode"/>
+        <project type="${project.type}" outfile="${project.dir}/log4cxx" if="project.if"/>
     </cc>
 </target>
 
 
-<target name="build-example" description="Build example template task">
+<target name="build-example">
+    <mkdir dir="${executable.dir}/${lib.type}/${example.name}_obj"/>
     <cc name="${compiler}"
                 exceptions="true"
-                outfile="${build.dir}/${example.name}"
+                outfile="${executable.dir}/${lib.type}/${example.name}"
                 subsystem="console"
                 multithreaded="true"
                 outtype="executable"
-                objdir="${obj.dir}"
-                debug="${debug}">
-        <fileset dir="${example.src.dir}" includes="${example.name}.cpp"/>
+                objdir="${executable.dir}/${lib.type}/${example.name}_obj"
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
+        <fileset dir="${example.src.dir}" includes="${example.includes}"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
 
-        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
+        <defineset define="WIN32" if="is-windows"/>
+        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
+        <defineset define="API_DECLARE_STATIC" if="iconv-static"/>
+
+
+        <libset libs="log4cxx${lib-suffix}" dir="${executable.dir}/${lib.type}"/>
+
+        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
+        <libset libs="${apriconv.lib.name}${lib-suffix}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
+        <libset libs="${apriconv.lib.name}${lib-suffix}"
                 unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <project outfile="cbx/${example.name}" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/${example.name}" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/${example.name}" type="xcode" if="gen-xcode"/>
+        <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
+
+
+        <project outfile="${project.dir}/${example.name}" type="${project.type}" if="project.if"/>
     </cc>
 </target>
 
-<target name="build-delayedloop" depends="build-log4cxx">
+<target name="run-example">
+    <exec executable="${executable.dir}/${lib.type}/${example.name}" 
+          dir="${executable.dir}/${lib.type}"
+          failonerror="true">
+          <env key="DYLD_LIBRARY_PATH"
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+            <env key="LD_LIBRARY_PATH"
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+            <env key="Path" value="${env.Path}"/>
+    </exec>
+</target>
+
+
+<target name="build-delayedloop" depends="build">
     <antcall target="build-example">
        <param name="example.src.dir" value="${examples.dir}"/>
        <param name="example.name" value="delayedloop"/>
+       <param name="example.includes" value="delayedloop.cpp"/>
     </antcall>
 </target>
 
-<target name="build-trivial" depends="build-log4cxx">
+<target name="build-trivial" depends="build">
     <antcall target="build-example">
        <param name="example.src.dir" value="${examples.dir}"/>
        <param name="example.name" value="trivial"/>
+       <param name="example.includes" value="trivial.cpp"/>
     </antcall>
 </target>
 
-<target name="build-stream" depends="build-log4cxx">
+<target name="build-stream" depends="build">
     <antcall target="build-example">
        <param name="example.src.dir" value="${examples.dir}"/>
        <param name="example.name" value="stream"/>
+       <param name="example.includes" value="stream.cpp"/>
     </antcall>
 </target>
 
 <target name="build-examples" depends="build-delayedloop, build-trivial, build-stream"/>
 
-<target name="build-simplesocketserver" depends="build-log4cxx">
+<target name="build-simplesocketserver" depends="build">
     <antcall target="build-example">
-       <param name="example.src.dir" value="simplesocketserver"/>
+       <param name="example.src.dir" value="${base.dir}/simplesocketserver"/>
        <param name="example.name" value="simplesocketserver"/>
+       <param name="example.includes" value="simplesocketserver.cpp"/>
     </antcall>
 </target>
 
-<target name="build-performance" depends="build-log4cxx">
-    <cc name="${compiler}"
-                exceptions="true"
-                outfile="${build.dir}/performance"
-                subsystem="console"
-                multithreaded="true"
-                outtype="executable"
-                objdir="${obj.dir}"
-                debug="${debug}">
-        <fileset dir="performance" includes="**/*.cpp"/>
-        <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-                unless="apriconv.lib.dir"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <project outfile="cbx/performance" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/performance" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/performance" type="xcode" if="gen-xcode"/>
-    </cc>
+
+<target name="build-performance" depends="build">
+    <antcall target="build-example">
+       <param name="example.src.dir" value="${performance.dir}"/>
+       <param name="example.name" value="performance"/>
+       <param name="example.includes" value="**/*.cpp"/>
+    </antcall>
 </target>
 
-<target name="build-shortsocketserver" depends="build-log4cxx"
+<target name="build-shortsocketserver" depends="build"
    description="builds a socket server used by unit tests">
+
+    <mkdir dir="${executable.dir}/${lib.type}/shortsocketserver_obj"/>
 
     <cc name="${compiler}"
                 exceptions="true"
@@ -345,193 +567,86 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 subsystem="console"
                 multithreaded="true"
                 outtype="executable"
-                objdir="${obj.dir}"
+                objdir="${executable.dir}/${lib.type}/shortsocketserver_obj"
                 debug="${debug}">
         <fileset dir="${tests.dir}/src">
            <include name="shortsocketserver.cpp"/>
            <include name="xml/xlevel.cpp"/>
+           <include name="net/socketservertestcase.h"/>
         </fileset>
-        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${executable.dir}/${lib.type}"/>
         <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-                unless="apriconv.lib.dir"/>
-        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
-        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
-        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
-        <project outfile="cbx/shortsocketserver" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/shortsocketserver" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/shortsocketserver" type="xcode" if="gen-xcode"/>
+        <project outfile="${project.dir}/shortsocketserver" type="${project.type}" if="project.if"/>
     </cc>
 
 </target>
 
 
-<target name="build-unittest" depends="build-shortsocketserver">
+<target name="build-unittest" depends="build-shortsocketserver, build-cppunit">
+    <mkdir dir="${executable.dir}/${lib.type}/log4cxx-test_obj"/>
+
     <cc name="${compiler}"
                 exceptions="true"
-                outfile="${build.dir}/log4cxx-test"
+                outfile="${executable.dir}/${lib.type}/log4cxx-test"
                 subsystem="console"
                 multithreaded="true"
                 outputfileproperty="log4cxx-test.exe"
                 outtype="executable"
-                objdir="${obj.dir}"
-                debug="${debug}">
-        <fileset dir="${tests.dir}/src" includes="**/*.cpp">
+                objdir="${executable.dir}/${lib.type}/log4cxx-test_obj"
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
+        <fileset dir="${tests.dir}/src" includes="**/*.cpp **/*.h">
              <exclude name="shortsocketserver.cpp"/>
-             <exclude name="defaultinit/testcase2.cpp"/>
-             <exclude name="defaultinit/testcase3.cpp"/>
-             <exclude name="defaultinit/testcase4.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
-                <defineset define="APR_DECLARE_STATIC"/>
-                <defineset define="WIN32" if="is-windows"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
-        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
-        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
+        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="WIN32" if="is-windows"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${executable.dir}/${lib.type}"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
+        <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
-        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
-                <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
-        <project outfile="cbx/log4cxx-test" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/log4cxx-test" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/log4cxx-test" type="xcode" if="gen-xcode"/>
+        <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
+
+        <project outfile="${project.dir}/log4cxx-test" type="${project.type}" if="project.if"/>
     </cc>
-
-    <!--  testcase3 checks default configuration so must be run in isolation -->
-    <cc name="${compiler}"
-                exceptions="true"
-                outfile="${build.dir}/log4cxx-testcase3"
-                subsystem="console"
-                multithreaded="true"
-                outputfileproperty="log4cxx-testcase3.exe"
-                outtype="executable"
-                objdir="${obj.dir}"
-                debug="${debug}">
-        <fileset dir="${tests.dir}/src">
-             <include name="main.cpp"/>
-             <include name="defaultinit/testcase3.cpp"/>
-        </fileset>
-        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
-        <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
-                <defineset define="APR_DECLARE_STATIC"/>
-                <defineset define="WIN32" if="is-windows"/>
-                <defineset define="APR_DECLARE_STATIC"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
-        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
-        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
-        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
-                <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
-        <project outfile="cbx/log4cxx-testcase3" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/log4cxx-testcase3" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/log4cxx-testcase3" type="xcode" if="gen-xcode"/>
-    </cc>
-
-    <!--  testcase4 checks default configuration so must be run in isolation -->
-    <cc name="${compiler}"
-                exceptions="true"
-                outfile="${build.dir}/log4cxx-testcase4"
-                subsystem="console"
-                multithreaded="true"
-                outputfileproperty="log4cxx-testcase4.exe"
-                outtype="executable"
-                objdir="${obj.dir}"
-                debug="${debug}">
-        <fileset dir="${tests.dir}/src">
-             <include name="main.cpp"/>
-             <include name="defaultinit/testcase4.cpp"/>
-        </fileset>
-        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
-        <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
-                <defineset define="APR_DECLARE_STATIC"/>
-                <defineset define="WIN32" if="is-windows"/>
-                <defineset define="APR_DECLARE_STATIC"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
-        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
-        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
-        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
-                <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
-        <project outfile="cbx/log4cxx-testcase4" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/log4cxx-testcase4" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/log4cxx-testcase4" type="xcode" if="gen-xcode"/>
-    </cc>
-
-
 </target>
 
 <target name="build-standalone-unittest"
-    depends="build-shortsocketserver"
+    depends="build-shortsocketserver, build-cppunit"
     description="Build a single project that is easier to debug in IDEs">
-    <mkdir dir="${obj.dir}/standalone"/>
+    <mkdir dir="${executable.dir}/static/log4cxx-standalone-test_obj"/>
     <cc name="${compiler}"
                 exceptions="true"
-                outfile="${build.dir}/log4cxx-standalone-test"
+                outfile="${executable.dir}/static/log4cxx-standalone-test"
                 subsystem="console"
                 multithreaded="true"
                 outputfileproperty="log4cxx-standalone-test.exe"
                 outtype="executable"
-                objdir="${obj.dir}/standalone"
-                debug="${debug}">
+                objdir="${executable.dir}/static/log4cxx-standalone-test_obj"
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
         <fileset dir="${src.dir}" includes="*.cpp"/>
-        <fileset dir="${tests.dir}/src" includes="**/*.cpp">
+        <fileset dir="${include.dir}" includes="**/*.h"/>
+        <fileset dir="${tests.dir}/src" includes="**/*.cpp **/*.h">
              <exclude name="shortsocketserver.cpp"/>
-             <exclude name="defaultinit/testcase3.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
-                <defineset define="APR_DECLARE_STATIC"/>
-                <defineset define="WIN32" if="is-windows"/>
-        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
-        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
-        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
-        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
+        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="WIN32" if="is-windows"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
+        <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
 
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
@@ -541,9 +656,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="xml2" if="is-unix"/>
 
 
-        <project outfile="cbx/log4cxx-standalone-test" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/log4cxx-standalone-test" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/log4cxx-standalone-test" type="xcode" if="gen-xcode"/>
+        <project outfile="${projects.dir}/log4cxx-standalone-test" type="${project.type}" if="project.if"/>
     </cc>
 </target>
 
@@ -555,78 +668,84 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <mkdir dir="${tests.dir}/output"/>
     <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
               failonerror="true">
+            <arg value="+TestCase1"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="Path"
-                   value="${build.dir};${env.Path}"/>
+                   value="${executable.dir}/${lib.type};${env.Path}"/>
     </exec>
 
     <!--  test use of log4j.configuration -->
     <property name="defaultInit3.properties"
          location="${tests.dir}/input/defaultInit3.properties"/>
-    <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
               failonerror="true">
+            <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="log4j.configuration"
                    value="${defaultInit3.properties}"/>
     </exec>
 
     <!--  test of LOG4CXX_CONFIGURATION -->
-    <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
               failonerror="true">
+            <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LOG4CXX_CONFIGURATION"
                    value="${defaultInit3.properties}"/>
     </exec>
 
     <!--  test of log4j.properties -->
-    <mkdir dir="${build.dir}/output"/>
-    <delete file="${build.dir}/log4*.properties"/>
-    <delete file="${build.dir}/log4*.xml"/>
-    <copy tofile="${build.dir}/log4j.properties"
+    <mkdir dir="${executable.dir}/${lib.type}/output"/>
+    <delete file="${executable.dir}/${lib.type}/log4*.properties"/>
+    <delete file="${executable.dir}/${lib.type}/log4*.xml"/>
+    <copy tofile="${executable.dir}/${lib.type}/log4j.properties"
        file="${defaultInit3.properties}" overwrite="true"/>
-    <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${executable.dir}/${lib.type}"
               failonerror="true">
+            <arg value="TestCase3"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <!-- modify log4j.properties so if it has precedence the test fails  -->
-    <replace file="${build.dir}/log4j.properties" token="D3" value="D4"/>
-    <copy tofile="${build.dir}/log4cxx.properties"
+    <replace file="${executable.dir}/${lib.type}/log4j.properties" token="D3" value="D4"/>
+    <copy tofile="${executable.dir}/${lib.type}/log4cxx.properties"
        file="${defaultInit3.properties}"/>
-    <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${executable.dir}/${lib.type}"
               failonerror="true">
+            <arg value="TestCase3"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
-    <delete file="${build.dir}/log4cxx.properties"/>
-    <delete file="${build.dir}/log4j.properties"/>
+    <delete file="${executable.dir}/${lib.type}/log4cxx.properties"/>
+    <delete file="${executable.dir}/${lib.type}/log4j.properties"/>
 
     <property name="defaultInit.xml"
          location="${tests.dir}/input/xml/defaultInit.xml"/>
-    <copy tofile="${build.dir}/log4j.xml"
+    <copy tofile="${executable.dir}/${lib.type}/log4j.xml"
        file="${defaultInit.xml}"/>
-    <copy todir="${build.dir}" file="${tests.dir}/input/xml/log4j.dtd"/>
-    <exec executable="${log4cxx-testcase4.exe}" dir="${build.dir}"
+    <copy todir="${executable.dir}/${lib.type}" file="${tests.dir}/input/xml/log4j.dtd"/>
+    <exec executable="${log4cxx-test.exe}" dir="${executable.dir}/${lib.type}"
               failonerror="true">
+            <arg value="TestCase4"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
     </exec>
 
 </target>
@@ -637,16 +756,115 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="Path"
-                   value="${build.dir};${env.Path}"/>
+                   value="${executable.dir}/${lib.type};${env.Path}"/>
     </exec>
 </target>
 
-<target name="check" depends="build-log4cxx, run-unittest"/>
+<target name="build-projects">
+	<mkdir dir="msvc"/>
+	<antcall target="build">
+		<param name="project.if" value="true"/>
+		<param name="project.type" value="${project.type}"/>
+		<param name="projects.dir" value="${project.dir}"/>
+		<param name="projectsOnly" value="true"/>
+	</antcall>
+	<antcall target="build-unittest">
+		<param name="project.if" value="true"/>
+		<param name="project.type" value="${project.type}"/>
+		<param name="projects.dir" value="${project.dir}"/>
+		<param name="projectsOnly" value="true"/>
+	</antcall>
+	<antcall target="build-standalone-unittest">
+		<param name="project.if" value="true"/>
+		<param name="project.type" value="${project.type}"/>
+		<param name="projects.dir" value="${project.dir}"/>
+		<param name="projectsOnly" value="true"/>
+	</antcall>
+	<antcall target="build-examples">
+		<param name="project.if" value="true"/>
+		<param name="project.type" value="${project.type}"/>
+		<param name="projects.dir" value="${project.dir}"/>
+		<param name="projectsOnly" value="true"/>
+	</antcall>
+	<antcall target="build-performance">
+		<param name="project.if" value="true"/>
+		<param name="project.type" value="${project.type}"/>
+		<param name="projects.dir" value="${project.dir}"/>
+		<param name="projectsOnly" value="true"/>
+	</antcall>
+</target>
 
-<target name="gump" depends="build-log4cxx, check, header-check"/>
+<target name="build-projects-vc6">
+    <antcall target="build-projects">
+        <param name="project.dir" value="msvc"/>
+        <param name="project.type" value="msvc6"/>
+    </antcall>
+</target>
+
+<target name="build-projects-xcode">
+    <antcall target="build-projects">
+        <param name="project.dir" value="xcode"/>
+        <param name="project.type" value="xcode"/>
+    </antcall>
+</target>
+
+<target name="build-projects-cbx">
+    <antcall target="build-projects">
+        <param name="project.dir" value="cbx"/>
+        <param name="project.type" value="cbuilderx"/>
+    </antcall>
+</target>
+
+
+<target name="check" depends="run-unittest, build-examples, build-performance">
+    <antcall target="run-example">
+        <param name="example.name" value="trivial"/>
+    </antcall>
+    <antcall target="run-example">
+        <param name="example.name" value="stream"/>
+    </antcall>
+</target>
+
+
+<target name="dist" depends="init">
+    <tar destfile="${build.dir}/log4cxx-${version}.tar.gz"
+         compression="gzip">
+         <tarfileset dir="${base.dir}" prefix="log4cxx-${version}">
+            <include name="AUTHORS"/>
+            <include name="autogen.sh"/>
+            <include name="ChangeLog"/>
+            <include name="COPYING"/>
+            <include name="INSTALL"/>
+            <include name="license.apl"/>
+            <include name="Makefile.am"/>
+            <include name="NEWS"/>
+            <include name="README"/>
+            <include name="*.xml"/>
+            <include name="examples/*.cpp"/>
+            <include name="include/**/*.h"/>
+            <include name="mock/*"/>
+            <include name="performance/*.cpp"/>
+            <include name="performance/*.h"/>
+            <include name="performance/**/*.xml"/>
+            <include name="simplesocketserver/*.cpp"/>
+            <include name="src/*.cpp"/>
+            <include name="tests/**/*.properties"/>
+            <include name="tests/input/xml/*.xml"/>
+            <include name="tests/input/xml/*.dtd"/>
+            <include name="tests/src/**/*.cpp"/>
+            <include name="tests/src/**/*.h"/>
+            <include name="tests/witness/*"/>
+            <include name="tests/witness/ndc/*"/>
+            <include name="tests/log4j.dtd"/>
+            <exclude name="**/.cvsignore"/>
+        </tarfileset>
+    </tar>
+</target>
+
+<target name="gump" depends="check, header-check"/>
 
 </project>

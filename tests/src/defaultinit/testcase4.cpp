@@ -57,6 +57,8 @@ public:
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TestCase4);
+CPPUNIT_NS::Test* createTestCase4() {
+	return TestCase4::suite();
+}
 
 #endif //HAVE_XML
