@@ -97,13 +97,12 @@ namespace log4cxx
 
 	<p>The rolling schedule is specified by the <b>DatePattern</b>
 	option. This pattern should follow the helpers::DateFormat
-	conventions. In particular, you <em>must</em> escape literal text
-	within a pair of single quotes. A formatted version of the date
+	conventions. A formatted version of the date
 	pattern is used as the suffix for the rolled file name.
 
 	<p>For example, if the <b>File</b> option is set to
 	<code>/foo/bar.log</code> and the <b>DatePattern</b> set to
-	<code>'.'yyyy-MM-dd</code>, on 2001-02-16 at midnight, the logging
+	<code>.\%Y-\%m-\%d</code>, on 2001-02-16 at midnight, the logging
 	file <code>/foo/bar.log</code> will be copied to
 	<code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17
 	will continue in <code>/foo/bar.log</code> until it rolls over
@@ -119,7 +118,7 @@ namespace log4cxx
 	<th>Example</th>
 
 	<tr>
-	<td><code>'.'yyyy-MM</code>
+	<td><code>.\%Y-\%m</code>
 	<td>Rollover at the beginning of each month</td>
 
 	<td>At midnight of May 31st, 2002 <code>/foo/bar.log</code> will be
@@ -128,7 +127,7 @@ namespace log4cxx
 	also rolled over the next month.
 
 	<tr>
-	<td><code>'.'yyyy-ww</code>
+	<td><code>.\%Y-\%W</code>
 
 	<td>Rollover at the first day of each week. The first day of the
 	week depends on the locale.</td>
@@ -140,7 +139,7 @@ namespace log4cxx
 	rolled over the next week.
 
 	<tr>
-	<td><code>'.'yyyy-MM-dd</code>
+	<td><code>.\%Y-\%m-\%d</code>
 
 	<td>Rollover at midnight each day.</td>
 
@@ -150,7 +149,7 @@ namespace log4cxx
 	is rolled over the next day.
 
 	<tr>
-	<td><code>'.'yyyy-MM-dd-a</code>
+	<td><code>.\%Y-\%m-\%d-\%p</code>
 
 	<td>Rollover at midnight and midday of each day.</td>
 
@@ -160,7 +159,7 @@ namespace log4cxx
 	until it is rolled over at midnight.
 
 	<tr>
-	<td><code>'.'yyyy-MM-dd-HH</code>
+	<td><code>.\%Y-\%m-\%d-\%H</code>
 
 	<td>Rollover at the top of every hour.</td>
 
@@ -172,7 +171,7 @@ namespace log4cxx
 
 
 	<tr>
-	<td><code>'.'yyyy-MM-dd-HH-mm</code>
+	<td><code>.\%Y-\%m-\%d-\%H-\%M</code>
 
 	<td>Rollover at the beginning of every minute.</td>
 
@@ -247,7 +246,7 @@ namespace log4cxx
 
 		/**
 		The date pattern. By default, the pattern is set to
-		"'.'yyyy-MM-dd" meaning daily rollover.
+		".%Y-%m-%d" meaning daily rollover.
 		*/
 		String datePattern;
 

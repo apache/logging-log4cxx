@@ -27,15 +27,78 @@ namespace log4cxx
 		/** 
 		Concrete class for formatting and parsing dates in a 
 		locale-sensitive manner.
+		
+		Date and time formats are specified by date and time pattern strings.
+		Within date and time pattern strings, letters from 'A' to 'Z' and from
+		'a' to 'z', preceded by the character '%', are interpreted as pattern
+		letters representing the components	of a date or time string
+		
+		The following pattern letters are defined:
+		- \%a -- Abbreviated weekday name
+		- \%A -- Full weekday name
+		- \%b -- Abbreviated month name
+		- \%B -- Full month name
+		- \%c -- Standard date and time string
+		- \%d -- Day of month as a decimal(1-31)
+		- \%H -- Hour(0-23)
+		- \%I -- Hour(1-12)
+		- \%j -- Day of year as a decimal(1-366)
+		- \%m -- Month as decimal(1-12)
+		- \%M -- Minute as decimal(00-59)
+		- \%p -- Locale's equivalent of AM or PM
+		- \%Q -- Millisecond as decimal (000-999)
+		- \%S -- Second as decimal(00-59)
+		- \%U -- Week of year, Sunday being first day(0-53)
+		- \%w -- Weekday as a decimal(0-6, Sunday being 0)
+		- \%W -- Week of year, Monday being first day(0-53)
+		- \%x -- Standard date string
+		- \%X -- Standard time string
+		- \%y -- Year in decimal without century(0-99)
+		- \%Y -- Year including century as decimal
+		- \%Z -- Time zone name
+		- \%\% -- The percent sign
 		*/
 		class LOG4CXX_EXPORT DateFormat
 		{
 		public:
-			DateFormat(const String& dateFormat);
-			DateFormat(const String& dateFormat, const TimeZonePtr& timeZone);
+			/**
+			Constructs a DateFormat using the given pattern and the default
+			time zone.
+			
+			@param pattern the pattern describing the date and time format
+			*/
+			DateFormat(const String& pattern);
+			
+			/**
+			Constructs a DateFormat using the given pattern and the given
+			time zone.
+			
+			@param pattern the pattern describing the date and time format
+			@param timeZone the timeZone to be used in the formatting
+			operations.
+			*/
+			DateFormat(const String& pattern, const TimeZonePtr& timeZone);
 			virtual ~DateFormat();
-			virtual void format(ostream& os, int64_t time) const;
-			String format(int64_t timeMillis) const;
+			
+			/**
+			Formats a Date into a date/time string.
+			
+			@param toAppendTo the stream for the returning date/time string.
+			
+			@param time the time value (in milliseconds since
+			January 1, 1970 00:00:00 GMT) to be formatted into a time string.
+			*/
+			virtual void format(ostream& toAppendTo, int64_t time) const;
+			
+			/** 
+			Formats a Date into a date/time string.
+			
+			@param time the time value (in milliseconds since
+			January 1, 1970 00:00:00 GMT) to be formatted into a time string.
+			
+			@return the formatted time string.
+			*/
+			String format(int64_t time) const;
 
 		protected:
 			TimeZonePtr timeZone;

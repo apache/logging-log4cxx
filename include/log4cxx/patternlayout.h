@@ -110,29 +110,29 @@ namespace log4cxx
 	ISO8601 format} is assumed.
 
 	<p>The Following format options are possible:
-	- %a -- Abbreviated weekday name
-	- %A -- Full weekday name
-	- %b -- Abbreviated month name
-	- %B -- Full month name
-	- %c -- Standard date and time string
-	- %d -- Day of month as a decimal(1-31)
-	- %H -- Hour(0-23)
-	- %I -- Hour(1-12)
-	- %j -- Day of year as a decimal(1-366)
-	- %m -- Month as decimal(1-12)
-	- %M -- Minute as decimal(00-59)
-	- %p -- Locale's equivalent of AM or PM
-	- %Q -- Millisecond as decimal (000-999)
-	- %S -- Second as decimal(00-59)
-	- %U -- Week of year, Sunday being first day(0-53)
-	- %w -- Weekday as a decimal(0-6, Sunday being 0)
-	- %W -- Week of year, Monday being first day(0-53)
-	- %x -- Standard date string
-	- %X -- Standard time string
-	- %y -- Year in decimal without century(0-99)
-	- %Y -- Year including century as decimal
-	- %Z -- Time zone name
-	- %% -- The percent sign
+	- \%a -- Abbreviated weekday name
+	- \%A -- Full weekday name
+	- \%b -- Abbreviated month name
+	- \%B -- Full month name
+	- \%c -- Standard date and time string
+	- \%d -- Day of month as a decimal(1-31)
+	- \%H -- Hour(0-23)
+	- \%I -- Hour(1-12)
+	- \%j -- Day of year as a decimal(1-366)
+	- \%m -- Month as decimal(1-12)
+	- \%M -- Minute as decimal(00-59)
+	- \%p -- Locale's equivalent of AM or PM
+	- \%Q -- Millisecond as decimal (000-999)
+	- \%S -- Second as decimal(00-59)
+	- \%U -- Week of year, Sunday being first day(0-53)
+	- \%w -- Weekday as a decimal(0-6, Sunday being 0)
+	- \%W -- Week of year, Monday being first day(0-53)
+	- \%x -- Standard date string
+	- \%X -- Standard time string
+	- \%y -- Year in decimal without century(0-99)
+	- \%Y -- Year including century as decimal
+	- \%Z -- Time zone name
+	- \%\% -- The percent sign
 
 	<p>Lookup the documentation for the <code>strftime()</code> function
 	found in the <code>&lt;ctime&gt;</code> header for more information.

@@ -24,7 +24,7 @@ namespace log4cxx
 	namespace helpers
 	{
 		/**
-		Formats a date in the format <b>%H:%M:%S,%Q</b> for example,
+		Formats a date in the format <b>\%H:\%M:\%S,\%Q</b> for example,
 		"15:49:37,459".
 		*/
 		class LOG4CXX_EXPORT AbsoluteTimeDateFormat : public DateFormat
