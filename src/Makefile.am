@@ -9,6 +9,7 @@ liblog4cxx_la_SOURCES = \
 	basicconfigurator.cpp \
 	boundedfifo.cpp \
 	class.cpp \
+	condition.cpp \
 	configurator.cpp \
 	consoleappender.cpp \
 	criticalsection.cpp \
@@ -36,6 +37,7 @@ liblog4cxx_la_SOURCES = \
 	loglog.cpp \
 	logmanager.cpp \
 	msxml.cpp \
+	mutex.cpp \
 	ndc.cpp \
 	mdc.cpp \
 	nteventlogappender.cpp \
