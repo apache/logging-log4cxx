@@ -130,7 +130,7 @@ namespace log4cxx
   #if !defined(LOG4CXX_LOCATION)
 #if defined(_MSC_VER)
 #if _MSC_VER >= 1300
-      #define __LOG4CXX_FUNC__ __FUNCDNAME__
+      #define __LOG4CXX_FUNC__ __FUNCSIG__
 #endif
 #else
 #if defined(__GCC)
