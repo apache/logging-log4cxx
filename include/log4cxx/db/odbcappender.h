@@ -26,10 +26,8 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <list>
 
-#if defined(WIN32) | defined (__CYGWIN32__)
+#ifdef HAVE_MS_ODBC
 #include <windows.h>
-#else
-#define SQL_WCHART_CONVERT
 #endif
 
 #include <sqlext.h>

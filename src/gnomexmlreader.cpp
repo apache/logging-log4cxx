@@ -16,7 +16,7 @@
 
 #include <log4cxx/config.h>
 
-#ifdef HAVE_LIBXML
+#ifdef HAVE_LIBXML2
 
 #include <log4cxx/helpers/gnomexmlreader.h>
 #include <log4cxx/helpers/loglog.h>
@@ -82,4 +82,4 @@ void GnomeXMLReader::parseElement(const tstring& parentTagName,
 	}
 }
 
-#endif // HAVE_LIBXML
+#endif // HAVE_LIBXML2

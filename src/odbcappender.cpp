@@ -71,11 +71,11 @@ void ODBCAppender::execute(const tstring& sql)
 			throw SQLException(ret);
 		}
 
-#if defined(WIN32) | !defined(UNICODE)
+#if defined(HAVE_MS_ODBC)
 		ret = SQLExecDirect(stmt, (SQLTCHAR *)sql.c_str(), SQL_NTS);
 #else
 		USES_CONVERSION;
-		ret = SQLExecDirect(stmt, (SQLCHAR *)W2A(sql.c_str()), SQL_NTS);
+		ret = SQLExecDirect(stmt, (SQLCHAR *)T2A(sql.c_str()), SQL_NTS);
 #endif
 		if (ret < 0)
 		{
@@ -135,16 +135,16 @@ SQLHDBC ODBCAppender::getConnection()
 		}
 
 
-#if defined(WIN32) | !defined(UNICODE)
+#if defined(HAVE_MS_ODBC)
 		ret = SQLConnect(connection,
 			(SQLTCHAR *)databaseURL.c_str(), SQL_NTS,
 			(SQLTCHAR *)databaseUser.c_str(), SQL_NTS,
 			(SQLTCHAR *)databasePassword.c_str(), SQL_NTS);
 #else
 		USES_CONVERSION;
-		std::string URL = W2A(databaseURL.c_str());
-		std::string user = W2A(databaseUser.c_str());
-		std::string password = W2A(databasePassword.c_str());
+		std::string URL = T2A(databaseURL.c_str());
+		std::string user = T2A(databaseUser.c_str());
+		std::string password = T2A(databasePassword.c_str());
 		ret = SQLConnect(connection,
 			(SQLCHAR *)URL.c_str(), SQL_NTS,
 			(SQLCHAR *)user.c_str(), SQL_NTS,

@@ -59,13 +59,42 @@ AC_CHECK_HEADERS(unistd.h io.h )
 AC_CHECK_FUNC(socket)
 
 # for DOMConfigurator
-AC_CHECK_PROGS(XML_CONFIG, xml2-config, xml2-config, )
-if test -n "$XML_CONFIG"
-then
-	AC_DEFINE(HAVE_LIBXML, [1], [Define if you have the libxml2 library.])
-	LIBS="`$XML_CONFIG --libs` $LIBS"
-	CPPFLAGS="`$XML_CONFIG --cflags` $CPPFLAGS"
-fi
+AC_MSG_CHECKING(for XML support)
+AC_ARG_WITH(XML,
+	AC_HELP_STRING(--with-XML, [XML support. Accepted arguments :
+		libxml2, Microsoft, no (default=libxml2)]),
+	[ac_with_xml=$withval],
+	[ac_with_xml=libxml2]
+	)
+case "$ac_with_xml" in
+    Microsoft)
+	AC_DEFINE(HAVE_MS_XML, 1, ODBC support through Microsoft XML.)
+	AC_DEFINE(HAVE_XML, 1, XML support)
+	AC_MSG_RESULT(Microsoft)
+	;;
+    libxml2)
+	AC_MSG_RESULT(libxml2)
+	AC_CHECK_PROG(XML2_CONFIG, xml2-config, yes, no)
+	if test "x$XML2_CONFIG" = "xyes"
+	then
+		AC_DEFINE(HAVE_LIBXML2, 1, XML support through libxml2.)
+		AC_DEFINE(HAVE_XML, 1, XML support)
+		LIBS_XML="`xml2-config --libs`"
+		CPPFLAGS_XML="`xml2-config --cflags`"
+	else
+		AC_MSG_WARN(libxml2 not found !)
+	fi
+	;;
+	no)
+	AC_MSG_RESULT(no)
+	;;
+    *)
+	AC_MSG_RESULT(???)
+	AC_MSG_ERROR(Unknown option : $ac_with_xml)
+	;;
+esac
+AC_SUBST(LIBS_XML)
+AC_SUBST(CPPFLAGS_XML)
 
 # for threads
 AC_PROG_RANLIB
@@ -80,8 +109,49 @@ AC_ARG_ENABLE(unicode,
 	AC_MSG_RESULT(no))
 
 #for ODBCAppender
-AC_CHECK_HEADER(sqlext.h,
-	AC_DEFINE(HAVE_ODBC, 1, ODBC support) LIBS="$LIBS -lodbc")
+AC_MSG_CHECKING(for ODBC support)
+AC_ARG_WITH(ODBC,
+	AC_HELP_STRING(--with-ODBC, [ODBC support. Accepted arguments :
+		unixODBC, iODBC, Microsoft (default=no)]),
+	[ac_with_odbc=$withval],
+	[ac_with_odbc=no])
+case "$ac_with_odbc" in
+    Microsoft)
+	AC_DEFINE(HAVE_MS_ODBC, 1, ODBC support through Microsoft ODBC.)
+	AC_DEFINE(HAVE_ODBC, 1, ODBC support)
+	AC_MSG_RESULT(Microsoft)
+	LIBS_ODBC="-lodbc32"
+	;;
+    unixODBC)
+	AC_MSG_RESULT(unixODBC)
+	AC_CHECK_HEADER(sqlext.h,, AC_MSG_ERROR("unixODBC not found !"))
+	AC_DEFINE(HAVE_UNIX_ODBC, 1, ODBC support through unixODBC.)
+	AC_DEFINE(HAVE_ODBC, 1, ODBC support)
+	LIBS_ODBC="-lodbc"
+	;;
+    iODBC)
+	AC_MSG_RESULT(iODBC)
+	AC_CHECK_PROG(IODBC_CONFIG, iodbc-config, yes, no)
+	if test "x$IODBC_CONFIG" = "xyes"
+	then
+		AC_DEFINE(HAVE_I_ODBC, 1, ODBC support through iODBC.)
+		AC_DEFINE(HAVE_ODBC, 1, ODBC support)
+		LIBS_ODBC="`iodbc-config --libs`"
+		CPPFLAGS_ODBC="`iodbc-config --cflags`"
+	else
+		AC_MSG_ERROR(iODBC not found !)
+	fi
+	;;
+	no)
+	AC_MSG_RESULT(no)
+	;;
+    *)
+	AC_MSG_RESULT(???)
+	AC_MSG_ERROR(Unknown option : $ac_with_odbc)
+	;;
+esac
+AC_SUBST(LIBS_ODBC)
+AC_SUBST(CPPFLAGS_ODBC)
 
 #for System
 AC_CHECK_FUNCS(gettimeofday ftime)

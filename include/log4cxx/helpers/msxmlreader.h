@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_MS_XML_READER_H
 #define _LOG4CXX_HELPERS_MS_XML_READER_H
 
-#ifdef WIN32
+#ifdef HAVE_MS_XML
 
 #include <log4cxx/helpers/tchar.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -45,6 +45,6 @@ namespace log4cxx
 	}; // namespace helpers
 }; // namespace log4cxx
 
-#endif // WIN32
+#endif // HAVE_MS_XML
 
 #endif // _LOG4CXX_HELPERS_MS_XML_READER_H

@@ -14,7 +14,7 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-#ifdef WIN32
+#ifdef HAVE_MS_XML
 
 #include <log4cxx/helpers/msxmlreader.h>
 #include <log4cxx/helpers/loglog.h>
@@ -143,4 +143,4 @@ void MsXMLReader::parseElement(const tstring& parentTagName, IXMLDOMElementPtr& 
 }
 
 
-#endif // WIN32
+#endif // HAVE_MS_XML

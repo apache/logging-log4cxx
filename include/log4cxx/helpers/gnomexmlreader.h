@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_MS_XML_READER_H
 #define _LOG4CXX_HELPERS_MS_XML_READER_H
 
-#ifdef HAVE_LIBXML
+#ifdef HAVE_LIBXML2
 
 #include <log4cxx/helpers/tchar.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -41,6 +41,6 @@ namespace log4cxx
 	}; // namespace helpers
 }; // namespace log4cxx
 
-#endif // HAVE_LIBXML
+#endif // HAVE_LIBXML2
 
 #endif // _LOG4CXX_HELPERS_MS_XML_READER_H
