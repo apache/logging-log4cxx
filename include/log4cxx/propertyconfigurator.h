@@ -307,14 +307,14 @@ namespace log4cxx
 		/**
 		Read configuration options from file <code>configFilename</code>.
 		*/
-		void configure(const tstring& configFilename);
+		static void configure(const tstring& configFilename);
 
 		/**
 		Read configuration options from <code>properties</code>.
 		See #doConfigure(const string&, spi::LoggerRepositoryPtr)
 		for the expected format.
 		*/
-		void configure(helpers::Properties& properties);
+		static void configure(helpers::Properties& properties);
 
 		/**
 		Read configuration options from <code>properties</code>.
