@@ -106,40 +106,5 @@ int Level::toInt() const
 	return level;
 }
 
-const LevelPtr& Level::getAllLevel()
-{
-	return ALL;
-}
-
-const LevelPtr& Level::getFatalLevel()
-{
-	return FATAL;
-}
-
-const LevelPtr& Level::getErrorLevel()
-{
-	return ERROR;
-}
-
-const LevelPtr& Level::getWarnLevel()
-{
-	return WARN;
-}
-
-const LevelPtr& Level::getInfoLevel()
-{
-	return INFO;
-}
-
-const LevelPtr& Level::getDebugLevel()
-{
-	return DEBUG;
-}
-
-const LevelPtr& Level::getOffLevel()
-{
-	return OFF;
-}
-
 
 
