@@ -221,10 +221,10 @@ public:
                 FilenameFilter filenameFilter(__FILE__, "socketservertestcase.cpp");
 
                 std::vector<Filter *> filters;
+                filters.push_back(&filenameFilter);
                 filters.push_back(&cf);
                 filters.push_back(&threadFilter);
                 filters.push_back(&lineNumberFilter);
-                filters.push_back(&filenameFilter);
 
                 try
                 {
@@ -256,10 +256,10 @@ public:
                 FilenameFilter filenameFilter(__FILE__, "socketservertestcase.cpp");
 
                 std::vector<Filter *> filters;
+                filters.push_back(&filenameFilter);
                 filters.push_back(&cf);
                 filters.push_back(&threadFilter);
                 filters.push_back(&lineNumberFilter);
-                filters.push_back(&filenameFilter);
 
                 try
                 {

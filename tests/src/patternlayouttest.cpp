@@ -342,10 +342,10 @@ public:
 
 
                 std::vector<Filter *> filters;
+                filters.push_back(&filenameFilter);
                 filters.push_back(&filter1);
                 filters.push_back(&filter2);
                 filters.push_back(&filter3);
-                filters.push_back(&filenameFilter);
 
 
                 try
@@ -399,10 +399,10 @@ public:
                 FilenameFilter filenameFilter(__FILE__, "patternlayouttest.cpp");
 
                 std::vector<Filter *> filters;
+                filters.push_back(&filenameFilter);
                 filters.push_back(&filter1);
                 filters.push_back(&filter2);
                 filters.push_back(&filter3);
-                filters.push_back(&filenameFilter);
 
                 try
                 {

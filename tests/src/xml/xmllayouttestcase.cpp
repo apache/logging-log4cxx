@@ -121,10 +121,10 @@ public:
                 Filter line5X("53", "X");
 
                 std::vector<Filter *> filters;
+                filters.push_back(&xmlFilenameFilter);
                 filters.push_back(&xmlTimestampFilter);
 
                 filters.push_back(&xmlThreadFilter);
-                filters.push_back(&xmlFilenameFilter);
                 filters.push_back(&line2XX);
                 filters.push_back(&line5X);
 
@@ -161,9 +161,9 @@ public:
                 Filter line1xx("1[0-9][0-9]", "X");
 
                 std::vector<Filter *> filters;
+                filters.push_back(&xmlFilenameFilter);
                 filters.push_back(&xmlTimestampFilter);
                 filters.push_back(&xmlThreadFilter);
-                filters.push_back(&xmlFilenameFilter);
                 filters.push_back(&line1xx);
 
                 try
