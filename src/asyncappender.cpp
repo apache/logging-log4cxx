@@ -72,11 +72,11 @@ void AsyncAppender::append(const spi::LoggingEvent& event)
 		//	 << bf->length());
 		bf->wait();
 	}
-	
+
 	bf->put(event.copy());
 	if(bf->wasEmpty())
 	{
-		//LogLog::debug(_T("Notifying dispatcher to process events."));
+		//LOGLOG_DEBUG(_T("Notifying dispatcher to process events."));
 		bf->notify();
 	}
 }
@@ -186,14 +186,17 @@ void Dispatcher::run()
 				// the buffer is empty.
 				if(interrupted)
 				{
+					//LOGLOG_DEBUG("Exiting.");
 					break;
 				}
+				//LOGLOG_DEBUG("Waiting for new event to dispatch.");
 				bf->wait();
 			}
 			
 			event = bf->get();
 			if(bf->wasFull())
 			{
+				//LOGLOG_DEBUG("Notifying AsyncAppender about freed space.");
 				bf->notify();
 			}
 		} // synchronized
