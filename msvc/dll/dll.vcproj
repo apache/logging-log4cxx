@@ -525,6 +525,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\condition.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\configurator.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -994,7 +997,8 @@
 						Description="Compiling EventLog message file"
 						CommandLine="MC &quot;$(InputPath)&quot; -r &quot;$(IntDir)&quot;  -h &quot;$(IntDir)&quot;
 RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc
-LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res"
+LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res
+"
 						Outputs="$(IntDir)\EventLogCategories.rc;$(IntDir)\EventLogCategories.res;$(TargetDir)NTEventLogAppender.dll"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1004,7 +1008,8 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Description="Compiling EventLog message file"
 						CommandLine="MC &quot;$(InputPath)&quot; -r &quot;$(IntDir)&quot;  -h &quot;$(IntDir)&quot;
 RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc
-LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res"
+LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res
+"
 						Outputs="$(IntDir)\EventLogCategories.rc;$(IntDir)\EventLogCategories.res;$(TargetDir)NTEventLogAppender.dll"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1014,7 +1019,8 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Description="Compiling EventLog message file"
 						CommandLine="MC &quot;$(InputPath)&quot; -r &quot;$(IntDir)&quot;  -h &quot;$(IntDir)&quot;
 RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc
-LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res"
+LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res
+"
 						Outputs="$(IntDir)\EventLogCategories.rc;$(IntDir)\EventLogCategories.res;$(TargetDir)NTEventLogAppender.dll"/>
 				</FileConfiguration>
 				<FileConfiguration
@@ -1024,7 +1030,8 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Description="Compiling EventLog message file"
 						CommandLine="MC &quot;$(InputPath)&quot; -r &quot;$(IntDir)&quot;  -h &quot;$(IntDir)&quot;
 RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc
-LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res"
+LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res
+"
 						Outputs="$(IntDir)\EventLogCategories.rc;$(IntDir)\EventLogCategories.res;$(TargetDir)NTEventLogAppender.dll"/>
 				</FileConfiguration>
 			</File>
@@ -1690,6 +1697,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\mutex.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\ndc.cpp">
@@ -3301,6 +3311,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					RelativePath="..\..\include\log4cxx\helpers\class.h">
 				</File>
 				<File
+					RelativePath="..\..\include\log4cxx\helpers\condition.h">
+				</File>
+				<File
 					RelativePath="..\..\include\log4cxx\helpers\criticalsection.h">
 				</File>
 				<File
@@ -3347,6 +3360,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\helpers\msxml.h">
+				</File>
+				<File
+					RelativePath="..\..\include\log4cxx\helpers\mutex.h">
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\helpers\object.h">
