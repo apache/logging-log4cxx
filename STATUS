@@ -1,0 +1,99 @@
+##
+## $Revision:  $ $Date: $
+##
+
+log4cxx is an effort undergoing incubation at the Apache Software 
+Foundation (ASF), sponsored by the Apache Logging Services project. 
+Incubation is required of all newly accepted projects until a further review
+indicates that the infrastructure, communications, and decision 
+making process have stabilized in a manner consistent with other
+successful ASF projects. While incubation status is not necessarily
+a reflection of the completeness or stability of the code, 
+it does indicate that the project has yet to be fully endorsed
+by the ASF.
+
+
+Exit Status:
+
+The minimum requirements that a Podling SHALL meet prior to being successfully
+ escalated to the ASF are :
+
+    * Legal
+          o All code ASL'ed
+
+carnold: I believe this is satisified.
+
+          o No non ASL or ASL compatable dependencies in the code base
+          
+carnold: log4cxx currently depends on libxml2 (LGPL) or MSXML for XML configuration.
+Migration to Apache Portable Runtime in progress.
+          
+          o License grant complete          
+          o CLAs on file.
+          o Check of project name for trademark issues
+
+    * Meritocracy / Community
+          o Demonstrate an active and diverse development community
+          o The project is not highly dependent on any single contributor 
+          (there's at least 3 legally independent committers and there 
+          is no single company or entity that is vital to the success of the project)
+
+carnold: 3 current committers, carnold, mcatan, cdevienne.  I'm independent of the other committers.
+
+          o The above implies that new committers are admitted according to ASF practices
+          o ASF style voting has been adopted and is standard practice
+
+carnold: Voting examples:
+Migration to APR: http://nagoya.apache.org/eyebrowse/ReadMsg?listName=log4cxx-dev@logging.apache.org&msgNo=331          
+          
+          o Demonstrate ability to tolerate and resolve conflict within the community.
+          o Release plans are developed and excuted in public by the community.
+                + (requriment on minimum number of such releases?)
+                + Note: incubator projects are not permitted to issue an official Release. Test snapshots (however good the quality) and Release plans are OK.
+
+carnold: 0.9.6 and 0.9.7 appeared to be released with no public discussion.
+0.9.8 discussion: http://nagoya.apache.org/eyebrowse/ReadMsg?listName=log4cxx-dev@logging.apache.org&msgNo=338
+
+
+          o Engagement by the incubated community with the other ASF communities, particularly infrastructure@ (this reflects my personal bias that projects should pay an nfrastructure "tax").
+
+carnold: Migrating to Apache Portable Runtime.  I have submitted patches and tests to log4j.
+
+          o Incubator PMC has voted for graduation
+          o Destination PMC, or ASF Board for a TLP, has voted for final acceptance
+
+    * Alignment / Synergy
+          o Use of other ASF subprojects
+
+carnold: Migrating from previous platform abstract to Apache Portable Runtime
+
+          o Develop synergistic relationship with other ASF subprojects
+
+    * Infrastructure
+          o CVS module has been created
+
+http://cvs.apache.org/viewcvs/logging-log4cxx/          
+          
+          o Mailing list(s) have been created
+
+log4cxx-user@logging.apache.org
+log4cxx-dev@logging.apache.org:
+
+          o Mailing lists are being archived
+
+http://nagoya.apache.org/eyebrowse/SummarizeList?listId=218
+http://nagoya.apache.org/eyebrowse/SummarizeList?listId=219
+
+          o Bugzilla has been created
+
+http://nagoya.apache.org/jira/secure/BrowseProject.jspa?id=10550          
+          
+          o Project website has been created
+          
+http://logging.apache.org/log4cxx/
+          
+          o Project ready to comply with ASF mirroring guidlines
+          o Project is integrated with GUMP if appropriate
+          o Releases are PGP signed by a member of the community
+          o Developers tied into ASF PGP web of trust
+
