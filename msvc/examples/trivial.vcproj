@@ -22,6 +22,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../../include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -32,7 +33,7 @@
 				ProgramDataBaseFileName=".\Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
-				DebugInformationFormat="4"/>
+				DebugInformationFormat="3"/>
 			<Tool
 				Name="VCCustomBuildTool"/>
 			<Tool
@@ -41,8 +42,9 @@
 				OutputFile="../Bin/Debug/trivial.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="../Lib/Debug"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/trivial.pdb"
+				ProgramDatabaseFile="../Bin/Debug/trivial.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -82,6 +84,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="2"
 				InlineFunctionExpansion="1"
+				AdditionalIncludeDirectories="../../include"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				StringPooling="TRUE"
 				RuntimeLibrary="4"
@@ -100,7 +103,8 @@
 				OutputFile=".\Release/trivial.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
-				ProgramDatabaseFile=".\Release/trivial.pdb"
+				AdditionalLibraryDirectories="../Lib/Release"
+				ProgramDatabaseFile="../Bin/Debug/trivial.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -139,14 +143,15 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../../include"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;LOG4CXX_STATIC"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
-				PrecompiledHeaderFile=".\Debug/trivial.pch"
-				AssemblerListingLocation=".\Debug/"
-				ObjectFile=".\Debug/"
-				ProgramDataBaseFileName=".\Debug/"
+				PrecompiledHeaderFile=".\Static Debug/trivial.pch"
+				AssemblerListingLocation=".\Static Debug/"
+				ObjectFile=".\Static Debug/"
+				ProgramDataBaseFileName=".\Static Debug/"
 				WarningLevel="3"
 				SuppressStartupBanner="TRUE"
 				DebugInformationFormat="3"/>
@@ -158,8 +163,70 @@
 				OutputFile="../Bin/Static Debug/trivial.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="../Lib/Static Debug"
 				GenerateDebugInformation="TRUE"
-				ProgramDatabaseFile=".\Debug/trivial.pdb"
+				ProgramDatabaseFile="../Bin/Static Debug/trivial.pdb"
+				SubSystem="1"
+				TargetMachine="1"/>
+			<Tool
+				Name="VCMIDLTool"
+				TypeLibraryName=".\Debug/trivial.tlb"
+				HeaderFileName=""/>
+			<Tool
+				Name="VCPostBuildEventTool"/>
+			<Tool
+				Name="VCPreBuildEventTool"/>
+			<Tool
+				Name="VCPreLinkEventTool"/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1036"/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
+				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+		</Configuration>
+		<Configuration
+			Name="Unicode Debug|Win32"
+			OutputDirectory=".\Unicode_D"
+			IntermediateDirectory=".\Unicode_D"
+			ConfigurationType="1"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="FALSE"
+			CharacterSet="2">
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				AdditionalIncludeDirectories="../../include"
+				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE;UNICODE"
+				BasicRuntimeChecks="3"
+				RuntimeLibrary="3"
+				UsePrecompiledHeader="2"
+				PrecompiledHeaderFile=".\Unicode_D/trivial.pch"
+				AssemblerListingLocation=".\Unicode_D/"
+				ObjectFile=".\Unicode_D/"
+				ProgramDataBaseFileName=".\Unicode_D/"
+				WarningLevel="3"
+				SuppressStartupBanner="TRUE"
+				DebugInformationFormat="3"/>
+			<Tool
+				Name="VCCustomBuildTool"/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="log4cxx.lib"
+				OutputFile="../Bin/Unicode_D/trivial.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="TRUE"
+				AdditionalLibraryDirectories="../Lib/Unicode_d"
+				GenerateDebugInformation="TRUE"
+				ProgramDatabaseFile="../Bin/Unicode_D/trivial.pdb"
 				SubSystem="1"
 				TargetMachine="1"/>
 			<Tool
@@ -213,6 +280,14 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Static Debug|Win32">
+					<Tool
+						Name="VCCLCompilerTool"
+						Optimization="0"
+						PreprocessorDefinitions=""
+						BasicRuntimeChecks="3"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Unicode Debug|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="0"
