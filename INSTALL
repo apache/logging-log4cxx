@@ -113,6 +113,14 @@ Optional Features
 With --enable-unicode, the library will be compiled with UTF16 Unicode support
 (2 bytes wide characters instead of 1 byte wide characters)
 
+If the libXML2 library (http://xmlsoft.org) is detected, the DOMConfigurator
+class will be compiled. 
+
+If the pthread library is detected, log4cxx will be built with thread support.
+
+If the unixODBC library (http://www.unixodbc.org) is detected, the ODBCAppender
+class will be compiled.
+
 Specifying the System Type
 ==========================
 
@@ -178,6 +186,18 @@ operates.
 MsDev 6.0 Compilation
 =====================
 
-copy the msvc/config.h.msvc file to include/log4cxx/config.h.
+Copy the msvc/config.h.msvc file to include/log4cxx/config.h.
 If you want to compile a dynamic library (dll), compile dll.dsp
 If you want to compile a static library (lib), compile static.dsp
+
+The DOMConfigurator class is compiled with the MSXML library, if 'HAVE_LIBXML'
+is defined in the config.h file.
+
+The ODBCAppender class is compiled with the Microsoft ODBC library, if
+'HAVE_ODBC' is define in the config.h file.
+
+log4cxx is build with Windows native thread support, if 'HAVE_PTHREAD' is
+define in the config.h file.
+
+UNICODE support is available through 'Unicode Debug' and 'Unicode Release'
+compilation targets.
