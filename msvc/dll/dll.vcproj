@@ -895,6 +895,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\event.cpp">
+			</File>
+			<File
 				RelativePath="..\..\include\log4cxx\nt\EventLogCategories.mc">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2144,41 +2147,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 				</FileConfiguration>
 			</File>
 			<File
-				RelativePath="..\..\src\simplesocketserver.cpp">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode Release|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="2"
-						AdditionalIncludeDirectories=""/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Unicode Debug|Win32">
-					<Tool
-						Name="VCCLCompilerTool"
-						Optimization="0"
-						AdditionalIncludeDirectories=""
-						BasicRuntimeChecks="3"
-						BrowseInformation="1"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="..\..\src\smtpappender.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -2742,6 +2710,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\timezone.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\transform.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -3032,6 +3003,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					RelativePath="..\..\include\log4cxx\helpers\datetimedateformat.h">
 				</File>
 				<File
+					RelativePath="..\..\include\log4cxx\helpers\event.h">
+				</File>
+				<File
 					RelativePath="..\..\include\log4cxx\helpers\exception.h">
 				</File>
 				<File
@@ -3135,6 +3109,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\helpers\threadspecificdata.h">
+				</File>
+				<File
+					RelativePath="..\..\include\log4cxx\helpers\timezone.h">
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\helpers\transform.h">
