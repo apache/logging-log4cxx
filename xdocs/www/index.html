@@ -71,9 +71,7 @@
 </small></td></tr>
                 <tr><td class="navbarItem"><small>    <a href="./download.html">Download</a>
 </small></td></tr>
-                <tr><td class="navbarItem"><small>    <a href="./manual/index.html">Documentation</a>
-</small></td></tr>
-                <tr><td class="navbarItem"><small>    <a href="./support.html">Support</a>
+                <tr><td class="navbarItem"><small>    <a href="./manual/introduction.html">Documentation</a>
 </small></td></tr>
                 <tr><td class="navbarItem"><small>    <a href="http://logging.apache.org/site/cvs-repositories.html">CVS Repositories</a>
 </small></td></tr>
@@ -102,8 +100,8 @@
                                       At this point, log4cxx-0.9.7 is substantially out of date, has known
                                       serious deficiencies that have been resolved in the CVS, and should be avoided
                                       for new code.  Bug reports are available from 
-                                      <a href="http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10550">http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10550</a>                                      
-                                      Bug <a href="http://issues.apache.org/jira/browse/LOGCXX-4">LOG4CXX-4</a>, 
+                                      <a href="http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10550">http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10550</a>.                                      
+                                      Bugs <a href="http://issues.apache.org/jira/browse/LOGCXX-4">LOG4CXX-4</a> and  
                                       <a href="http://issues.apache.org/jira/browse/LOGCXX-11">LOG4CXX-11</a> are 
                                       the most likely to encountered by new users.  Due to the substantial architectural
                                       differences between 0.9.7 and the CVS HEAD, new bug reports against 0.9.7 will be
@@ -117,7 +115,7 @@
                                      use of <a href="http://apr.apache.org">Apache Portable Runtime</a> (APR) for
                                      threading, networking and other services (<a href="http://issues.apache.org/jira/browse/LOGCXX-36">LOGCXX-36</a>,
                                        <a href="http://issues.apache.org/jira/browse/LOGCXX-64">LOGCXX-64</a>),
-                                     simultaneous support for both wide and multibyte messages (
+                                    and simultaneous support for both wide and multibyte messages (
                                      <a href="http://issues.apache.org/jira/browse/LOGCXX-10">LOGCXX-10</a>).
                                 </p>
                                                                                                    <h2>Platforms:</h2>
@@ -129,10 +127,9 @@
                                 GCC on SuSE 9.1 x86_64 and i386, Fedora Core 3 i386 and Apple Moc OS/X 10.3.</p>
                                                                                                    <h2>Building log4cxx:</h2>
                                                                                                    <p>Build instructions are contained in the <a href="http://cvs.apache.org/viewcvs.cgi/logging-log4cxx/INSTALL?rev=1.8&amp;view=log">INSTALL</a>.
-                                An <a href="http://ant.apache.org">Ant</a> build using the <a href="http://ant-contrib.sourceforge.net/cc.html">&lt;cc&gt;</a> and
-                                &lt;foreach&gt; tasks 
-                                and ant-contrib.jar from the <a href="http://ant-contrib.sourceforge.net">Ant-Contrib Project</a>
-                                is used for most day-to-day development and the production of distributions.  The Ant build can produce IDE project files for Microsoft Visual
+                                An <a href="http://ant.apache.org">Ant</a> build which uses the <a href="http://ant-contrib.sourceforge.net/cc.html">&lt;cc&gt;</a> and
+                                &lt;foreach&gt; tasks from the <a href="http://ant-contrib.sourceforge.net">Ant-Contrib Project</a>
+                                is used for most day-to-day development.  The Ant build can produce IDE project files for Microsoft Visual
                                 Studio 6, Borland CBuilderX and Apple XCode on request.  The Ant build can also download and build 
                                 APR and <a href="http://cppunit.sourceforge.net/cgi-bin/moin.cgi">CppUnit</a>.  An autotools build file is also provided but at this moment
                                 is incompatible with some versions of autotools (<a href="http://issues.apache.org/jira/browse/LOGCXX-44">LOGCXX-44</a>).</p>

@@ -17,7 +17,6 @@
      <item name="Introduction" href="/index.html"/>
      <item name="Download" href="/download.html"/>
      <item name="Documentation" href="/manual/introduction.html"/>
-     <item name="Support" href="/support.html"/>
      <item name="CVS Repositories" href="http://logging.apache.org/site/cvs-repositories.html"/>
      <item name="Mailing Lists" href="http://logging.apache.org/site/mailing-lists.html"/>
      <item name="Bug Reporting" href="http://logging.apache.org/site/bugreport.html"/>
