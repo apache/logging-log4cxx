@@ -35,6 +35,16 @@ public:
 	}
 };
 
+ClassNotFoundException::ClassNotFoundException(const String& className)
+{
+	message = _T("Class '") + className + _T("' not found");
+}
+
+String ClassNotFoundException::getMessage()
+{
+	return message;
+}
+
 Class::Class(const String& name) : name(name)
 {
 	registerClass(this);
@@ -58,11 +68,22 @@ ObjectPtr Class::newInstance() const
 
 const Class& Class::forName(const String& className)
 {
-	const Class * clazz = (*registry)[StringHelper::toLowerCase(className)];
+	String strippedClassName;
+	String::size_type pos = className.find_last_of(_T('.'));
+	if (pos != String::npos)
+	{
+		strippedClassName = className.substr(pos + 1);
+	}
+	else
+	{
+		strippedClassName = className;
+	}
+
+	const Class * clazz = (*registry)[StringHelper::toLowerCase(strippedClassName)];
 
 	if (clazz == 0)
 	{
-		throw ClassNotFoundException();
+		throw ClassNotFoundException(className);
 	}
 
 	return *clazz;

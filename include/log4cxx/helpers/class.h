@@ -36,7 +36,10 @@ namespace log4cxx
 		class ClassNotFoundException : public Exception
 		{
 		public:
-			String getMessage() { return _T("Class not found"); }
+			ClassNotFoundException(const String& className);
+			String getMessage();
+
+			String message;
 		};
 
 		class Class
