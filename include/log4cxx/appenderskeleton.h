@@ -26,7 +26,6 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/level.h>
 
-class apr_pool_t;
 
 namespace log4cxx
 {
@@ -190,9 +189,6 @@ namespace log4cxx
                 string, such as "DEBUG", "INFO" and so on.
                 */
                 void setThreshold(const LevelPtr& threshold);
-
-        protected:
-                static apr_pool_t* getSynchronizationPool();
 
         }; // class AppenderSkeleton
 }  // namespace log4cxx

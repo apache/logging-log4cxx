@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include "../testchar.h"
+#include <log4cxx/spi/loggerrepository.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -85,18 +86,18 @@ public:
 		int passCount = 0;
 		LogString sbuf(LOG4CXX_STR("pass "));
 
-                Pool pool;
-                sbuf.append(StringHelper::toString(passCount, pool));
+        Pool pool;
+        sbuf.append(StringHelper::toString(passCount, pool));
 
-                sbuf.append(LOG4CXX_STR("; no min or max set"));
+        sbuf.append(LOG4CXX_STR("; no min or max set"));
 		common(sbuf);
 		passCount++;
 
 		// test with a min set
 		rangeFilter->setLevelMin(Level::WARN);
 		sbuf.assign(LOG4CXX_STR("pass "));
-                sbuf.append(StringHelper::toString(passCount, pool));
-                sbuf.append(LOG4CXX_STR("; min set to WARN, max not set"));
+        sbuf.append(StringHelper::toString(passCount, pool));
+        sbuf.append(LOG4CXX_STR("; min set to WARN, max not set"));
 		common(sbuf);
 		passCount++;
 
@@ -108,14 +109,15 @@ public:
 		//test with max set
 		rangeFilter->setLevelMax(Level::WARN);
 		sbuf.assign(LOG4CXX_STR("pass "));
-                sbuf.append(StringHelper::toString(passCount, pool));
-                sbuf.append(LOG4CXX_STR("; min not set, max set to WARN"));
+        sbuf.append(StringHelper::toString(passCount, pool));
+        sbuf.append(LOG4CXX_STR("; min not set, max set to WARN"));
 		common(sbuf);
 		passCount++;
 
 
 		LevelPtr levelArray[] =
-			{ Level::DEBUG, Level::INFO, Level::WARN, Level::ERROR, Level::FATAL };
+			{ Level::getDebug(), Level::getInfo(), Level::getWarn(), 
+                 Level::getError(), Level::getFatal() };
 
 		int length = sizeof(levelArray)/sizeof(levelArray[0]);
 
@@ -201,9 +203,9 @@ public:
 		common(sbuf);
 		passCount++;
 
-
 		LevelPtr levelArray[] =
-			{ Level::DEBUG, Level::INFO, Level::WARN, Level::ERROR, Level::FATAL };
+			{ Level::getDebug(), Level::getInfo(), Level::getWarn(), 
+                 Level::getError(), Level::getFatal() };
 
 		int length = sizeof(levelArray)/sizeof(levelArray[0]);
 

@@ -16,6 +16,8 @@
 
 #include <log4cxx/logger.h>
 #include "../xml/xlevel.h"
+#include <log4cxx/spi/loggerfactory.h>
+
 
 namespace log4cxx
 {

@@ -29,19 +29,22 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::config;
 
-PropertySetter::PropertySetter(helpers::ObjectPtr obj) : obj(obj)
+PropertySetter::PropertySetter(const helpers::ObjectPtr& obj) : obj(obj)
 {
 }
 
-void PropertySetter::setProperties(helpers::ObjectPtr obj,
-     helpers::Properties& properties, const LogString& prefix)
+void PropertySetter::setProperties(const helpers::ObjectPtr& obj,
+     helpers::Properties& properties, 
+     const LogString& prefix,
+     apr_pool_t* p)
 {
-	PropertySetter(obj).setProperties(properties, prefix);
+	PropertySetter(obj).setProperties(properties, prefix, p);
 }
 
 
 void PropertySetter::setProperties(helpers::Properties& properties,
-        const LogString& prefix)
+        const LogString& prefix,
+        apr_pool_t* p)
 {
 	int len = prefix.length();
 
@@ -68,13 +71,15 @@ void PropertySetter::setProperties(helpers::Properties& properties,
 			{
 				continue;
 			}
-			setProperty(key, value);
+			setProperty(key, value, p);
 		}
 	}
-	activate();
+	activate(p);
 }
 
-void PropertySetter::setProperty(const LogString& option, const LogString& value)
+void PropertySetter::setProperty(const LogString& option, 
+                                 const LogString& value,
+                                 apr_pool_t* p)
 {
 	if (value.empty())
 		return;
@@ -87,11 +92,10 @@ void PropertySetter::setProperty(const LogString& option, const LogString& value
 	}
 }
 
-void PropertySetter::activate()
+void PropertySetter::activate(apr_pool_t* p)
 {
 	if (obj->instanceof(OptionHandler::getStaticClass()))
 	{
-                Pool p;
 		OptionHandlerPtr(obj)->activateOptions(p);
 	}
 }

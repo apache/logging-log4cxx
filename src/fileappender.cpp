@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <apr_atomic.h>
 #include <apr_file_io.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -31,14 +32,14 @@ IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
 FileAppender::FileAppender()
 : fileAppend(true), fileName(), bufferedIO(false), bufferSize(8*1024),
-   ofs(NULL), fileClosed(1)
+  pool(), ofs(NULL), fileClosed(1)
 {
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
         bool append, bool bufferedIO, int bufferSize)
 : fileAppend(append), fileName(fileName), bufferedIO(bufferedIO), bufferSize(bufferSize),
-  ofs(NULL), fileClosed(1)
+  pool(), ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
 }
@@ -46,21 +47,24 @@ FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
         bool append)
 : fileAppend(append), fileName(fileName), bufferedIO(false), bufferSize(8*1024),
-  ofs(NULL), fileClosed(1)
+  pool(), ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName)
 : fileAppend(true), fileName(fileName), bufferedIO(false), bufferSize(8*1024),
-  ofs(NULL), fileClosed(1)
+  pool(), ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
 }
 
 FileAppender::~FileAppender()
 {
-        finalize();
+    //      Can't finalize since we may be called after APR has been terminated
+    //         and finalize does close type things
+    //
+    //        finalize();
 }
 
 void FileAppender::setFile(const File& file)
@@ -78,8 +82,10 @@ void FileAppender::setFile(const File& file, bool append,
 
 
 void FileAppender::closeWriter() {
-      apr_file_close(ofs);
-      ofs = NULL;
+    if (ofs != NULL) {
+        apr_file_close(ofs);
+        ofs = NULL;
+    }
 }
 
 
@@ -146,7 +152,7 @@ void FileAppender::activateOptions(apr_pool_t* p)
             flags |= APR_BUFFERED;
           }
           ofs = NULL;
-          fileName.open(&ofs, flags, perm, p);
+          fileName.open(&ofs, flags, perm, pool);
           fileClosed = 0;
         }
         if (ofs != NULL) {

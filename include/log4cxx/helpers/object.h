@@ -21,7 +21,7 @@
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/objectptr.h>
 
-struct apr_pool_t;
+
 
 #define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
 public:\
@@ -65,8 +65,11 @@ object::class object::theClass##object;\
 const log4cxx::helpers::Class& object::getClass() const { return theClass##object; }\
 const log4cxx::helpers::Class& object::getStaticClass() { return theClass##object; }
 
-
+extern "C" {
 struct apr_thread_mutex_t;
+struct apr_pool_t;
+}
+
 
 namespace log4cxx
 {
@@ -75,13 +78,6 @@ namespace log4cxx
 
 	namespace helpers
 	{
-		class LOG4CXX_EXPORT IllegalMonitorStateException : public Exception
-		{
-		public:
-			IllegalMonitorStateException() {
-			}
-
-		};
 
 		class Object;
 		typedef ObjectPtrT<Object> ObjectPtr;

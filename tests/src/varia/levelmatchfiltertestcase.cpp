@@ -27,6 +27,7 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/spi/loggerrepository.h>
 
 #include "../util/compare.h"
 #include "../testchar.h"

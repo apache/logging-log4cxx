@@ -21,8 +21,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
 
-typedef size_t apr_size_t;
-class apr_pool_t;
 
 namespace log4cxx
 {

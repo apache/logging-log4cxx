@@ -20,7 +20,7 @@
 #include <log4cxx/layout.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 
-class apr_pool_t;
+
 
 namespace log4cxx
 {

@@ -16,6 +16,7 @@
  
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/exception.h>
 
 #include <apr_thread_mutex.h>
 
@@ -25,13 +26,24 @@ using namespace log4cxx;
 synchronized::synchronized(apr_thread_mutex_t* mutex) 
 : mutex(mutex)
 {
+#if 0
 	apr_status_t stat = apr_thread_mutex_lock(mutex); 
 	if (stat != APR_SUCCESS) {
 		throw MutexException(stat);
 	}
+#endif
 }
 
 synchronized::~synchronized()
 {
-	apr_thread_mutex_unlock(mutex);
+#if 0
+	apr_status_t stat = apr_thread_mutex_unlock(mutex);
+	if (stat != APR_SUCCESS) {
+		throw MutexException(stat);
+	}
+#endif
 }
+
+//
+//  TODO
+//

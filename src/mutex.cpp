@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
-
 #include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/exception.h>
 #include <apr_thread_mutex.h>
 #include <assert.h>
 
@@ -33,6 +32,9 @@ Mutex::Mutex(apr_pool_t* p) {
 }
 
 Mutex::~Mutex() {
-	apr_status_t stat = apr_thread_mutex_destroy(mutex);
-	assert(stat == APR_SUCCESS);
+//	apr_status_t stat = apr_thread_mutex_destroy(mutex);
+    //
+    //  can't assert that
+    //     destroying an unused mutex doesn't return APR_SUCCESS
+//	assert(stat == APR_SUCCESS);
 }

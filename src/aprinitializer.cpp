@@ -30,11 +30,27 @@ APRInitializer::APRInitializer() {
 }
 
 APRInitializer::~APRInitializer() {
-    apr_pool_destroy(p);
+//
+//   If we are using a static APR then
+//       we need to clean up after ourselves
+//   otherwise the main executable should terminate APR
+//
+#if defined(APR_DECLARE_STATIC) && !defined(LOG4CXX_DECLARE_STATIC)
     apr_terminate();
+#endif
 }
 
-log4cxx_time_t APRInitializer::initialize() {
+APRInitializer& APRInitializer::getInstance() {
   static APRInitializer init;
-  return init.startTime;
+  return init;
 }
+
+
+log4cxx_time_t APRInitializer::initialize() {
+  return getInstance().startTime;
+}
+
+apr_pool_t* APRInitializer::getRootPool() {
+  return getInstance().p;
+}
+

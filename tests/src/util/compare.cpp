@@ -27,43 +27,45 @@ using namespace log4cxx::helpers;
 
 bool Compare::compare(const File& file1, const File& file2)
 {
-        Pool pool;
+    Pool pool;
 
-        LogString in1(file1.read(pool));
-        LogString in2(file2.read(pool));
+    LogString in1(file1.read(pool));
+    Pool pool2;
+    LogString in2(file2.read(pool2));
 
-        LogString back1(in1);
-        LogString back2(in2);
+    LogString back1(in1);
+    LogString back2(in2);
 
 	LogString s1;
-        LogString s2;
+    LogString s2;
 	int lineCounter = 0;
 
-	while (!StringHelper::getline(in1, s1))
+	while (StringHelper::getline(in1, s1))
 	{
 		lineCounter++;
 
-                if(!StringHelper::getline(in2, s2)) {
-                  s2.erase(s2.begin(), s2.end());
-                }
+        if(!StringHelper::getline(in2, s2)) {
+          s2.erase(s2.begin(), s2.end());
+        }
 
 		if (s1 != s2)
 		{
-                        LogString msg(LOG4CXX_STR("Files ["));
-                        msg += file1.getName();
-                        msg += LOG4CXX_STR("] and [");
-                        msg += file2.getName();
-                        msg += LOG4CXX_STR("] differ on line ");
-                        msg += StringHelper::toString(lineCounter, pool);
-                        msg += LOG4CXX_STR("\n");
-                        msg += LOG4CXX_STR("One reads:  [");
-                        msg += s1;
-                        msg += LOG4CXX_STR("].\n");
-                        msg += LOG4CXX_STR("Other reads:[");
-                        msg += s2;
-                        msg += LOG4CXX_STR("].\n");
-                        emit(msg);
-			outputFile(file1, back1, pool);
+            LogString msg(LOG4CXX_STR("Files ["));
+            msg += file1.getName();
+            msg += LOG4CXX_STR("] and [");
+            msg += file2.getName();
+            msg += LOG4CXX_STR("] differ on line ");
+            msg += StringHelper::toString(lineCounter, pool);
+            msg += LOG4CXX_STR("\n");
+            msg += LOG4CXX_STR("One reads:  [");
+            msg += s1;
+            msg += LOG4CXX_STR("].\n");
+            msg += LOG4CXX_STR("Other reads:[");
+            msg += s2;
+            msg += LOG4CXX_STR("].\n");
+            emit(msg);
+
+            outputFile(file1, back1, pool);
 			outputFile(file2, back2, pool);
 
 			return false;
@@ -71,14 +73,13 @@ bool Compare::compare(const File& file1, const File& file2)
 	}
 
 	// the second file is longer
-        if (StringHelper::getline(in2, s2))
-	{
-                LogString msg(LOG4CXX_STR("File ["));
-                msg += file2.getName();
-                msg += LOG4CXX_STR("] longer than file [");
-                msg += file1.getName();
-                msg += LOG4CXX_STR("].\n");
-                emit(msg);
+    if (StringHelper::getline(in2, s2)) {
+        LogString msg(LOG4CXX_STR("File ["));
+        msg += file2.getName();
+        msg += LOG4CXX_STR("] longer than file [");
+        msg += file1.getName();
+        msg += LOG4CXX_STR("].\n");
+        emit(msg);
 		outputFile(file1, back1, pool);
 		outputFile(file2, back2, pool);
 

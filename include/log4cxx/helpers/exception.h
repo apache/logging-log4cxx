@@ -19,7 +19,7 @@
 
 #include <log4cxx/portability.h>
 #include <exception>
-#include <string>
+#include <log4cxx/logstring.h>
 
 namespace log4cxx
 {
@@ -32,6 +32,8 @@ namespace log4cxx
                 {
                 public:
                         Exception()  {}
+                        const char* what() const throw() { return "log4cxx error"; }
+
                 }; // class Exception
 
                 /** RuntimeException is the parent class of those exceptions that can be
@@ -41,6 +43,8 @@ namespace log4cxx
                 {
                 public:
                         RuntimeException() {}
+                        const char* what() const throw() { return "Runtime error"; }
+
                 }; // class RuntimeException
 
                 /** Thrown when an application attempts to use null in a case where an
@@ -50,6 +54,7 @@ namespace log4cxx
                 {
                 public:
                         NullPointerException() {}
+                        const char* what() const throw() { return "Null pointer"; }
                 }; // class NullPointerException
 
                 /** Thrown to indicate that a method has been passed
@@ -58,6 +63,7 @@ namespace log4cxx
                 {
                 public:
                    IllegalArgumentException() {}
+                   const char* what() const throw() { return "Illegal argument"; }
                 }; // class IllegalArgumentException
 
                 /** Signals that an I/O exception of some sort has occurred. This class
@@ -68,9 +74,86 @@ namespace log4cxx
                 {
                 public:
                     IOException()  {}
+                    IOException(log4cxx_status_t stat)  {}
                     IOException(const IOException &src) : Exception(src) {
                     }
+                    const char* what() const throw() { return "IO error"; }
                 };
+
+                class LOG4CXX_EXPORT MissingResourceException : public Exception
+                {
+                    public:
+                    MissingResourceException(const LogString& key) {
+                    }
+                    const char* what() const throw() {
+                       return "Missing resource";
+                    }
+                };
+
+                class LOG4CXX_EXPORT PoolException : public Exception
+                {
+                public:
+                        PoolException(log4cxx_status_t stat) {}
+                        const char* what() const throw() { return "Pool error"; }
+                };
+
+
+                class LOG4CXX_EXPORT MutexException : public Exception
+                {
+                public:
+                        MutexException(log4cxx_status_t stat) {}
+                        const char* what() const throw() { return "Mutex error"; }
+                };
+
+                class LOG4CXX_EXPORT ConditionException : public Exception
+                {
+                public:
+                        ConditionException(log4cxx_status_t stat) {}
+                        const char* what() const throw() { return "Condition error"; }
+                };
+
+                class LOG4CXX_EXPORT ThreadException : public Exception
+                {
+                public:
+                        ThreadException(log4cxx_status_t stat) {}
+                        const char* what() const throw() { return "Thread error"; }
+                };
+
+		        class LOG4CXX_EXPORT IllegalMonitorStateException : public Exception
+		        {
+		        public:
+			        IllegalMonitorStateException() {
+			        }
+                    const char* what() const throw() { return "Illegal monitor state"; }
+
+		        };
+
+                /**
+                Thrown when an application tries to create an instance of a class using
+                the newInstance method in class Class, but the specified class object
+                cannot be instantiated because it is an interface or is an abstract class.
+                */
+                class LOG4CXX_EXPORT InstantiationException : public Exception
+                {
+                public:
+                        InstantiationException() {}
+                        const char* what() const throw() { return "Abstract class"; }
+                };
+
+                /**
+                Thrown when an application tries to load in a class through its
+                string name but no definition for the class with the specified name
+                could be found.
+                */
+                class LOG4CXX_EXPORT ClassNotFoundException : public Exception
+                {
+                public:
+                    ClassNotFoundException(const LogString& className) {}
+                    const char* what() const throw() { return "Class not found"; }
+                };
+
+
+        
         }  // namespace helpers
 } // namespace log4cxx
 

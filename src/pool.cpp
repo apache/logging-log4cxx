@@ -14,17 +14,17 @@
  * limitations under the License.
  */
  
-#include <log4cxx/portability.h>
-
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/aprinitializer.h>
 #include <apr_pools.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
 
-Pool::Pool() {
-	apr_status_t stat = apr_pool_create(&pool, NULL);
+Pool::Pool() : pool(0) {
+    apr_status_t stat = apr_pool_create(&pool, APRInitializer::getRootPool());
 	if (stat != APR_SUCCESS) {
 		throw PoolException(stat);
 	}
@@ -33,3 +33,4 @@ Pool::Pool() {
 Pool::~Pool() {
 	apr_pool_destroy(pool);
 }
+

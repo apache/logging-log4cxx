@@ -18,20 +18,23 @@
 #define _LOG4CXX_HELPERS_POOL_H
 
 #include <log4cxx/portability.h>
-#include <log4cxx/helpers/exception.h>
 
+#if defined(_MSC_VER)
+#if defined(_WIN32) && !defined(WIN32)
+#define WIN32
+#endif
+
+#include <apr_pools.h>
+#else
+extern "C" {
 struct apr_pool_t;
+}
+#endif
 
 namespace log4cxx
 {
         namespace helpers
         {
-                class LOG4CXX_EXPORT PoolException : public Exception
-                {
-                public:
-                        PoolException(log4cxx_status_t stat) {}
-                };
-
                 class LOG4CXX_EXPORT Pool
                 {
                 public:

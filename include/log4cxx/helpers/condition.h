@@ -17,23 +17,19 @@
 #ifndef _LOG4CXX_HELPERS_CONDITION_H
 #define _LOG4CXX_HELPERS_CONDITION_H
 
-#include <log4cxx/helpers/exception.h>
+#include <log4cxx/portability.h>
 
 
+extern "C" {
 struct apr_pool_t;
 struct apr_thread_cond_t;
 struct apr_thread_mutex_t;
+}
 
 namespace log4cxx
 {
         namespace helpers
         {
-                class LOG4CXX_EXPORT ConditionException : public Exception
-                {
-                public:
-                        ConditionException(log4cxx_status_t stat) {}
-                };
-
                 class LOG4CXX_EXPORT Condition
                 {
                 public:

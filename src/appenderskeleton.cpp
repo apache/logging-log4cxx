@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <apr_atomic.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -35,7 +36,7 @@ AppenderSkeleton::AppenderSkeleton()
     headFilter(),
     tailFilter(),
     closed(0),
-    mutex(getSynchronizationPool())
+    mutex(APRInitializer::getRootPool())
 {
 }
 
@@ -47,7 +48,7 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout)
   headFilter(),
   tailFilter(),
   closed(0),
-  mutex(getSynchronizationPool())
+  mutex(APRInitializer::getRootPool())
 {
 }
 
@@ -155,7 +156,3 @@ void AppenderSkeleton::setOption(const LogString& option,
 }
 
 
-apr_pool_t* AppenderSkeleton::getSynchronizationPool() {
-    static Pool syncPool;
-    return syncPool;
-}

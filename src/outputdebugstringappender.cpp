@@ -18,6 +18,8 @@
 #include <log4cxx/nt/outputdebugstringappender.h>
 #include <log4cxx/helpers/transcoder.h>
 
+#include "windows.h"
+
 using namespace log4cxx;
 using namespace log4cxx::nt;
 

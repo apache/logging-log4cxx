@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/locale.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -122,5 +123,4 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 
 	return resourceBundle;
 }
-
 

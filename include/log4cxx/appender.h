@@ -17,13 +17,11 @@
 #ifndef _LOG4CXX_APPENDER_H
 #define _LOG4CXX_APPENDER_H
 
-#include <log4cxx/logstring.h>
+#include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>
 #include <vector>
-#include <log4cxx/spi/optionhandler.h>
 
-class apr_pool_t;
 
 namespace log4cxx
 {

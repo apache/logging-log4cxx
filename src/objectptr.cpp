@@ -14,37 +14,16 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/propertyresourcebundle.h>
+#include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/exception.h>
 
-using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(PropertyResourceBundle)
-
-PropertyResourceBundle::PropertyResourceBundle(LogString& inStream)
-{
-	properties.load(inStream);
-}
-
-LogString PropertyResourceBundle::getString(const LogString& key) const
-{
-	LogString resource;
-	PropertyResourceBundlePtr resourceBundle = this;
-
-	do
+void ObjectPtrBase::checkNull(const int& null) {
+	if (null != 0)
 	{
-		resource = resourceBundle->properties.getProperty(key);
-		if (!resource.empty())
-		{
-			return resource;
-		}
 
-		resourceBundle = resourceBundle->parent;
+		throw IllegalArgumentException();
 	}
-	while (resourceBundle != 0);
-
-	throw MissingResourceException(key);
-
-	return resource;
 }
+

@@ -19,6 +19,10 @@
 
 #include <log4cxx/helpers/timezone.h>
 
+extern "C" {
+    struct apr_pool_t;
+}
+
 namespace log4cxx
 {
         namespace helpers

@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
 #include <assert.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -27,31 +28,37 @@ using namespace log4cxx::helpers;
 File::File() {
 }
 
-#if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
 File::File(const std::string& name)
-  : internalName(), mbcsName(name) {
-  Transcoder::decode(name, internalName);
+  : name(), osName() {
+  Transcoder::decode(name, this->name);
+  Transcoder::encode(this->name, osName);
+//  getOSName(this->name, osName);
 }
 
 File::File(const std::wstring& name)
-   : internalName(name), mbcsName() {
-  Transcoder::encode(name, mbcsName);
+   : name(), osName() {
+  Transcoder::decode(name, this->name);
+  Transcoder::encode(this->name, osName);
+//  getOSName(this->name, osName);
 }
-#endif
 
 File::File(const File& src)
-  : internalName(internalName), mbcsName(mbcsName) {
+  : name(name), osName(osName) {
 }
 
 File& File::operator=(const File& src) {
-  internalName.assign(src.internalName);
-  mbcsName.assign(src.mbcsName);
+  if (this == &src) return *this;
+
+  name.assign(src.name);
+  osName.assign(src.osName);
+
   return *this;
 }
 
 
 File::~File() {
 }
+
 
 log4cxx_status_t File::open(apr_file_t** file, int flags,
       int perm, apr_pool_t* p) const {
@@ -61,23 +68,22 @@ log4cxx_status_t File::open(apr_file_t** file, int flags,
     //       it here since we have both Unicode
     //          and local code page file names
     //
-    return apr_file_open(file, mbcsName.c_str(), flags, perm, p);
+    return apr_file_open(file, osName.c_str(), flags, perm, p);
 }
 
 
-bool File::exists() const {
-  Pool pool;
+
+bool File::exists(apr_pool_t* p) const {
   apr_finfo_t finfo;
-  apr_status_t rv = apr_stat(&finfo, mbcsName.c_str(),
-        0, pool);
+  apr_status_t rv = apr_stat(&finfo, osName.c_str(),
+        0, p);
   return rv == APR_SUCCESS;
 }
 
 
-size_t File::length() const {
-  Pool pool;
+size_t File::length(apr_pool_t* pool) const {
   apr_finfo_t finfo;
-  apr_status_t rv = apr_stat(&finfo, mbcsName.c_str(),
+  apr_status_t rv = apr_stat(&finfo, osName.c_str(),
         APR_FINFO_SIZE, pool);
   if (rv == APR_SUCCESS) {
     return finfo.size;
@@ -86,10 +92,9 @@ size_t File::length() const {
 }
 
 
-log4cxx_time_t File::lastModified() const {
-  Pool pool;
+log4cxx_time_t File::lastModified(apr_pool_t* pool) const {
   apr_finfo_t finfo;
-  apr_status_t rv = apr_stat(&finfo, mbcsName.c_str(),
+  apr_status_t rv = apr_stat(&finfo, osName.c_str(),
         APR_FINFO_MTIME, pool);
   if (rv == APR_SUCCESS) {
     return finfo.mtime;
@@ -102,26 +107,37 @@ log4cxx_time_t File::lastModified() const {
 //   Current implementation is limited to MBCS files
 //
 //
+#if defined(_MSC_VER)
+LogString File::read(void* pvoid) const {
+  apr_pool_t* p = (apr_pool_t*) pvoid;
+#else
 LogString File::read(apr_pool_t* p) const {
+#endif
+
   LogString output;
   apr_file_t* f = NULL;
   apr_status_t rv = open(&f, APR_READ, APR_OS_DEFAULT, p);
-  if (rv == APR_SUCCESS) {
+  if (rv != APR_SUCCESS) {
+      throw IOException(rv);
+  } else {
     const size_t BUFSIZE = 4096;
     char* buf = (char*) apr_palloc(p, BUFSIZE);
     char* contents = buf;
     apr_size_t contentLength = 0;
-    apr_status_t rv;
     do {
       apr_size_t bytesRead = BUFSIZE;
       rv = apr_file_read(f, buf, &bytesRead);
       contentLength += bytesRead;
-      if (rv == APR_EOF || (rv == APR_SUCCESS && bytesRead < BUFSIZE)) {
+      if (APR_STATUS_IS_EOF(rv)  || (rv == APR_SUCCESS && bytesRead < BUFSIZE)) {
           //
           //     finished file
           //        transcode and exit
           Transcoder::decode(contents, contentLength, output);
-          apr_file_close(f);
+//
+//          TODO - assertion here when called from Compare
+//
+//          rv = apr_file_close(f);
+//          assert(rv == APR_SUCCESS);
           return output;
       } else if (rv == APR_SUCCESS) {
          //
@@ -137,7 +153,8 @@ LogString File::read(apr_pool_t* p) const {
          contents = newContents;
       }
     } while(rv == APR_SUCCESS);
-    apr_file_close(f);
+    rv = apr_file_close(f);
+    assert(rv == APR_SUCCESS);
   }
   return output;
 }

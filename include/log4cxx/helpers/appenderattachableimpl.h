@@ -45,8 +45,7 @@ namespace log4cxx
             AppenderList  appenderList;
 
         public:
-            AppenderAttachableImpl() : appenderList(), pool(), mutex(pool) {
-            }
+            AppenderAttachableImpl();
 
 			DECLARE_LOG4CXX_OBJECT(AppenderAttachableImpl)
 			BEGIN_LOG4CXX_CAST_MAP()
@@ -101,8 +100,9 @@ namespace log4cxx
 			inline apr_thread_mutex_t* getMutex() const { return mutex; }
 
 		private:
-			log4cxx::helpers::Pool pool;
 			log4cxx::helpers::Mutex mutex;
+            AppenderAttachableImpl(const AppenderAttachableImpl&);
+            AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);
         };
     }
 }

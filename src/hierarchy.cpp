@@ -24,8 +24,9 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/helpers/synchronized.h>
-#include <apr_thread_mutex.h>
 #include <log4cxx/logstring.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -33,21 +34,9 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
-namespace {
-    bool startsWith(const LogString& teststr, const LogString& substr)
-        {
-        bool val = false;
-        if(teststr.length() > substr.length()) {
-            val = teststr.substr(0, substr.length()) == substr;
-        }
-
-        return val;
-    }
-}
-
 Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
-pool(), mutex(pool)
+mutex(APRInitializer::getRootPool())
 {
         // Enable all level levels by default.
         setThreshold(Level::getAll());
@@ -338,10 +327,11 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr& logger)
 
                 // Unless this child already points to a correct (lower) parent,
                 // make cat.parent point to l.parent and l.parent to cat.
-                if(!startsWith(l->parent->name, logger->name))
+                if(!StringHelper::startsWith(l->parent->name, logger->name))
                 {
                         logger->parent = l->parent;
                         l->parent = logger;
                 }
         }
 }
+

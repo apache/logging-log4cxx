@@ -19,6 +19,7 @@
 
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/hierarchy.h>
 
 namespace log4cxx
 {
@@ -29,12 +30,6 @@ namespace log4cxx
 
                 class SocketInputStream;
                 typedef ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
-        }
-
-        namespace spi
-        {
-                class LoggerRepository;
-                typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
         }
 
         namespace net

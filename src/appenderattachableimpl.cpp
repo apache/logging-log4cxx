@@ -18,12 +18,20 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <algorithm>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
+
+
+AppenderAttachableImpl::AppenderAttachableImpl() 
+   : appenderList(), 
+     mutex(APRInitializer::getRootPool()) {
+}
+
 
 void AppenderAttachableImpl::addAppender(const AppenderPtr& newAppender)
 {
@@ -46,14 +54,11 @@ int AppenderAttachableImpl::appendLoopOnAppenders(
     const spi::LoggingEventPtr& event,
     apr_pool_t* p)
 {
-    AppenderList::iterator it, itEnd = appenderList.end();
-    AppenderPtr appender;
-    for(it = appenderList.begin(); it != itEnd; it++)
-    {
-        appender = *it;
-        appender->doAppend(event, p);
+    for (AppenderList::iterator it = appenderList.begin();
+         it != appenderList.end();
+         it++) {
+        (*it)->doAppend(event, p);
     }
-
 	return appenderList.size();
 }
 
@@ -142,3 +147,5 @@ void AppenderAttachableImpl::removeAppender(const LogString& name)
 		}
 	}
 }
+
+

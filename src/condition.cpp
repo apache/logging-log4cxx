@@ -15,6 +15,7 @@
  */
 
 #include <log4cxx/helpers/condition.h>
+#include <log4cxx/helpers/exception.h>
 
 #include <apr_thread_cond.h>
 #include <log4cxx/helpers/synchronized.h>

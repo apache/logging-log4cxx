@@ -21,7 +21,6 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/spi/optionhandler.h>
 
-class apr_pool_t;
 
 namespace log4cxx
 {

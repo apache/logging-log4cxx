@@ -18,40 +18,27 @@
 #define _LOG4CXX_LOGGER_H
 
 #include <log4cxx/portability.h>
-#include <vector>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/level.h>
-#include <log4cxx/spi/loggerfactory.h>
-#include <log4cxx/spi/loggerrepository.h>
-#include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/spi/location/locationinfo.h>
+#include <log4cxx/helpers/resourcebundle.h>
+#include <log4cxx/spi/loggerrepository.h>
 
 
 namespace log4cxx
 {
-        namespace spi
-        {
-                class LoggerFactory;
-                typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
 
-                class LoggerRepository;
-                typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-
-        }
-
-        namespace helpers {
-                class synchronized;
-        }
+    namespace helpers {
+            class synchronized;
+    }
 
     class Logger;
-        /** smart pointer to a Logger class */
+    /** smart pointer to a Logger class */
     typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
-        /** vector of {@link Logger loggers} */
-    typedef std::vector<LoggerPtr> LoggerList;
 
     /**
     This is the central class in the log4cxx package. Most logging
@@ -62,11 +49,11 @@ namespace log4cxx
                 public virtual helpers::ObjectImpl
     {
     public:
-                DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
-                BEGIN_LOG4CXX_CAST_MAP()
-                        LOG4CXX_CAST_ENTRY(Logger)
-                        LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
-                END_LOG4CXX_CAST_MAP()
+        DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
+        BEGIN_LOG4CXX_CAST_MAP()
+                LOG4CXX_CAST_ENTRY(Logger)
+                LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
+        END_LOG4CXX_CAST_MAP()
 
     protected:
         /**
@@ -85,43 +72,43 @@ namespace log4cxx
         ancestor which is the root logger. */
         LoggerPtr parent;
 
-                /** The resourceBundle for localized messages.
+        /** The resourceBundle for localized messages.
 
-                @see setResourceBundle, getResourceBundle
-                */
-                helpers::ResourceBundlePtr resourceBundle;
+        @see setResourceBundle, getResourceBundle
+        */
+        helpers::ResourceBundlePtr resourceBundle;
 
 
-                // Loggers need to know what Hierarchy they are in
-                spi::LoggerRepository * repository;
+        // Loggers need to know what Hierarchy they are in
+        spi::LoggerRepository * repository;
 
-                helpers::AppenderAttachableImplPtr aai;
+        helpers::AppenderAttachableImplPtr aai;
 
-				/** Additivity is set to true by default, that is children inherit
-					the appenders of their ancestors by default. If this variable is
-					set to <code>false</code> then the appenders found in the
-					ancestors of this logger are not used. However, the children
-					of this logger will inherit its appenders, unless the children
-					have their additivity flag set to <code>false</code> too. See
-					the user manual for more details. */
-				bool additive;
+		/** Additivity is set to true by default, that is children inherit
+			the appenders of their ancestors by default. If this variable is
+			set to <code>false</code> then the appenders found in the
+			ancestors of this logger are not used. However, the children
+			of this logger will inherit its appenders, unless the children
+			have their additivity flag set to <code>false</code> too. See
+			the user manual for more details. */
+		bool additive;
 
     protected:
-                friend class DefaultCategoryFactory;
+        friend class DefaultCategoryFactory;
 
-                /**
-                This constructor created a new <code>logger</code> instance and
-                sets its name.
+        /**
+        This constructor created a new <code>logger</code> instance and
+        sets its name.
 
-                <p>It is intended to be used by sub-classes only. You should not
-                create categories directly.
+        <p>It is intended to be used by sub-classes only. You should not
+        create categories directly.
 
-                @param name The name of the logger.
-                */
-                  Logger(const LogString& name);
+        @param name The name of the logger.
+        */
+        Logger(const LogString& name);
 
     public:
-                ~Logger();
+        ~Logger();
 
         /**
         Add <code>newAppender</code> to the list of appenders of this
@@ -130,10 +117,10 @@ namespace log4cxx
         <p>If <code>newAppender</code> is already in the list of
         appenders, then it won't be added again.
         */
-                virtual void addAppender(const AppenderPtr& newAppender);
+        virtual void addAppender(const AppenderPtr& newAppender);
 
 
-                /**
+         /**
         Call the appenders in the hierrachy starting at
         <code>this</code>.  If no appenders could be found, emit a
         warning.
@@ -162,22 +149,13 @@ namespace log4cxx
         hierarchy depending on the value of the additivity flag.
 
         @param message the message string to log.
-                @param file the file where the log statement was written.
-                @param line the line where the log statement was written.
-                */
-        template<class STR>
-        void debug(const STR& msg, const log4cxx::spi::location::LocationInfo& location) {
-          if (isEnabledFor(log4cxx::Level::getDebug())) {
-            forcedLog(log4cxx::Level::getDebug(), msg, location);
-          }
-        }
-
-        template<class STR>
-        void debug(const STR& msg) {
-          if (isEnabledFor(log4cxx::Level::getDebug())) {
-            forcedLog(log4cxx::Level::getDebug(), msg);
-          }
-        }
+        @param file the file where the log statement was written.
+        @param line the line where the log statement was written.
+        */
+        void debug(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+        void debug(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
+        void debug(const std::string& msg);
+        void debug(const std::wstring& msg);
 
 
         /**
@@ -191,22 +169,14 @@ namespace log4cxx
         hierarchy depending on the value of the additivity flag.
 
         @param message the message string to log.
-                @param file the file where the log statement was written.
-                @param line the line where the log statement was written.
-                */
-        template<class STR>
-        void error(const STR& msg, const log4cxx::spi::location::LocationInfo& location) {
-          if (isEnabledFor(log4cxx::Level::getError())) {
-             forcedLog(log4cxx::Level::getError(), msg, location);
-          }
-        }
+        @param file the file where the log statement was written.
+        @param line the line where the log statement was written.
+        */
+        void error(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
+        void error(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+        void error(const std::wstring& msg);
+        void error(const std::string& msg);
 
-        template<class STR>
-        void error(const STR& msg) {
-          if (isEnabledFor(log4cxx::Level::getError())) {
-             forcedLog(log4cxx::Level::getError(), msg);
-          }
-        }
 
         /**
         Log a message string with the {@link Level#FATAL FATAL} level.
@@ -219,22 +189,13 @@ namespace log4cxx
         hierarchy depending on the value of the additivity flag.
 
         @param message the message string to log.
-                @param file the file where the log statement was written.
-                @param line the line where the log statement was written.
-                */
-        template<class STR>
-        void fatal(const STR& msg, const log4cxx::spi::location::LocationInfo& location) {
-          if (isEnabledFor(log4cxx::Level::FATAL)) {
-            forcedLog(log4cxx::Level::FATAL, msg, location);
-          }
-        }
-
-        template<class STR>
-        void fatal(const STR& msg) {
-          if (isEnabledFor(log4cxx::Level::FATAL)) {
-            forcedLog(log4cxx::Level::FATAL, msg);
-          }
-        }
+        @param file the file where the log statement was written.
+        @param line the line where the log statement was written.
+        */
+        void fatal(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
+        void fatal(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+        void fatal(const std::wstring& msg);
+        void fatal(const std::string& msg);
 
         /**
         This method creates a new logging event and logs the event
@@ -259,34 +220,34 @@ namespace log4cxx
     public:
         bool getAdditivity() const;
 
-                /**
-                Get the appenders contained in this logger as an AppenderList.
-                If no appenders can be found, then an empty AppenderList
-                is returned.
-                @return AppenderList An collection of the appenders in this logger.*/
-                AppenderList getAllAppenders() const;
+        /**
+        Get the appenders contained in this logger as an AppenderList.
+        If no appenders can be found, then an empty AppenderList
+        is returned.
+        @return AppenderList An collection of the appenders in this logger.*/
+        AppenderList getAllAppenders() const;
 
-                /**
-                Look for the appender named as <code>name</code>.
-                <p>Return the appender with that name if in the list. Return
-                <code>NULL</code> otherwise.  */
-                AppenderPtr getAppender(const LogString& name) const;
+        /**
+        Look for the appender named as <code>name</code>.
+        <p>Return the appender with that name if in the list. Return
+        <code>NULL</code> otherwise.  */
+        AppenderPtr getAppender(const LogString& name) const;
 
-                /**
+        /**
         Starting from this logger, search the logger hierarchy for a
         non-null level and return it.
 
         <p>The Logger class is designed so that this method executes as
         quickly as possible.
 
-                @throws RuntimeException if all levels are null in the hierarchy
+        @throws RuntimeException if all levels are null in the hierarchy
         */
         virtual const LevelPtr& getEffectiveLevel() const;
 
         /**
         Return the the LoggerRepository where this
         <code>Logger</code> is attached.
-                */
+        */
         spi::LoggerRepositoryPtr getLoggerRepository() const;
 
 
@@ -344,31 +305,31 @@ namespace log4cxx
                         const spi::LoggerFactoryPtr& factory);
 
 
-                /**
-                Return the <em>inherited</em> ResourceBundle for this logger.
+        /**
+        Return the <em>inherited</em> ResourceBundle for this logger.
 
 
-                This method walks the hierarchy to find the appropriate resource bundle.
-                It will return the resource bundle attached to the closest ancestor of
-                this logger, much like the way priorities are searched. In case there
-                is no bundle in the hierarchy then <code>NULL</code> is returned.
-                */
-                helpers::ResourceBundlePtr getResourceBundle() const;
+        This method walks the hierarchy to find the appropriate resource bundle.
+        It will return the resource bundle attached to the closest ancestor of
+        this logger, much like the way priorities are searched. In case there
+        is no bundle in the hierarchy then <code>NULL</code> is returned.
+        */
+        helpers::ResourceBundlePtr getResourceBundle() const;
 
         protected:
-                /**
-                Returns the string resource coresponding to <code>key</code> in this
-                category's inherited resource bundle.
+        /**
+        Returns the string resource coresponding to <code>key</code> in this
+        category's inherited resource bundle.
 
-                If the resource cannot be found, then an {@link #error error} message
-                will be logged complaining about the missing resource.
+        If the resource cannot be found, then an {@link #error error} message
+        will be logged complaining about the missing resource.
 
-                @see #getResourceBundle.
-                */
-                LogString getResourceBundleString(const LogString& key) const;
+        @see #getResourceBundle.
+        */
+        LogString getResourceBundleString(const LogString& key) const;
 
-          public:
-           /**
+        public:
+        /**
         Log a message string with the {@link Level#INFO INFO} level.
 
         <p>This method first checks if this logger is <code>INFO</code>
@@ -382,25 +343,15 @@ namespace log4cxx
                 @param file the file where the log statement was written.
                 @param line the line where the log statement was written.
                 */
-        template<class STR>
-        void info(const STR& msg, const log4cxx::spi::location::LocationInfo& location) {
-          if (isEnabledFor(log4cxx::Level::INFO)) {
-            forcedLog(log4cxx::Level::INFO, msg, location);
-          }
-        }
+       void info(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
+       void info(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+       void info(const std::wstring& msg);
+       void info(const std::string& msg);
 
-
-        template<class STR>
-        void info(const STR& msg) {
-          if (isEnabledFor(log4cxx::Level::INFO)) {
-            forcedLog(log4cxx::Level::INFO, msg);
-          }
-        }
-
-                /**
-                Is the appender passed as parameter attached to this category?
-                */
-                bool isAttached(const AppenderPtr& appender) const;
+        /**
+        Is the appender passed as parameter attached to this category?
+        */
+        bool isAttached(const AppenderPtr& appender) const;
 
        /**
         *  Check whether this logger is enabled for the <code>DEBUG</code>
@@ -485,21 +436,21 @@ namespace log4cxx
         */
         bool isFatalEnabled() const;
 
-                /**
-                Log a localized and parameterized message.
+        /**
+        Log a localized and parameterized message.
 
-                First, the user supplied
-                <code>key</code> is searched in the resource bundle. Next, the resulting
-                pattern is formatted using helpers::StringHelper::format method with the user
-                supplied object array <code>params</code>.
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied object array <code>params</code>.
 
         @param level The level of the logging request.
         @param key The key to be searched in the #resourceBundle.
         @param file The source file of the logging request, may be null.
         @param line The number line of the logging request.
 
-                @see #setResourceBundle
-                */
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::wstring& key,
                                 const log4cxx::spi::location::LocationInfo& locationInfo,
                                 ...);
@@ -515,40 +466,32 @@ namespace log4cxx
         @param message The message of the logging request.
         @param file The source file of the logging request, may be null.
         @param line The number line of the logging request.  */
-        template<class STR>
-        void log(const LevelPtr& level, const STR& message,
-            const log4cxx::spi::location::LocationInfo& location) {
-            if (isEnabledFor(level)) {
-              forcedLog(level, message, location);
-            }
-        }
+        void log(const LevelPtr& level, const std::wstring& message,
+            const log4cxx::spi::location::LocationInfo& location);
+        void log(const LevelPtr& level, const std::string& message,
+            const log4cxx::spi::location::LocationInfo& location);
+        void log(const LevelPtr& level, const std::wstring& message);
+        void log(const LevelPtr& level, const std::string& message);
 
 
-        template<class STR>
-        void log(const LevelPtr& level, const STR& message) {
-            if (isEnabledFor(level)) {
-              forcedLog(level, message);
-            }
-        }
 
+        /**
+        Remove all previously added appenders from this logger
+        instance.
+        <p>This is useful when re-reading configuration information.
+        */
+        void removeAllAppenders();
 
-                /**
-                Remove all previously added appenders from this logger
-                instance.
-                <p>This is useful when re-reading configuration information.
-                */
-                void removeAllAppenders();
+        /**
+        Remove the appender passed as parameter form the list of appenders.
+        */
+        void removeAppender(const AppenderPtr& appender);
 
-                /**
-                Remove the appender passed as parameter form the list of appenders.
-                */
-                void removeAppender(const AppenderPtr& appender);
-
-                /**
-                Remove the appender with the name passed as parameter form the
-                list of appenders.
-                 */
-                void removeAppender(const LogString& name);
+        /**
+        Remove the appender with the name passed as parameter form the
+        list of appenders.
+         */
+        void removeAppender(const LogString& name);
 
        /**
         Set the additivity flag for this Logger instance.
@@ -575,53 +518,42 @@ namespace log4cxx
         <p>Null values are admitted.  */
         virtual void setLevel(const LevelPtr& level);
 
-                /**
-                Set the resource bundle to be used with localized logging method #l7dlog.
-                */
-                inline void setResourceBundle(const helpers::ResourceBundlePtr& bundle)
-                        { resourceBundle = bundle; }
+        /**
+        Set the resource bundle to be used with localized logging method #l7dlog.
+        */
+        inline void setResourceBundle(const helpers::ResourceBundlePtr& bundle)
+                { resourceBundle = bundle; }
 
-                /**
-                Log a message string with the {@link Level#WARN WARN} level.
+        /**
+        Log a message string with the {@link Level#WARN WARN} level.
 
-                <p>This method first checks if this logger is <code>WARN</code>
-                enabled by comparing the level of this logger with the {@link
-                Level#WARN WARN} level. If this logger is
-                <code>WARN</code> enabled, it proceeds to call all the
-                registered appenders in this logger and also higher in the
-                hierarchy depending on the value of the additivity flag.
+        <p>This method first checks if this logger is <code>WARN</code>
+        enabled by comparing the level of this logger with the {@link
+        Level#WARN WARN} level. If this logger is
+        <code>WARN</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
 
-                @param message the message string to log.
-                @param file the file where the log statement was written.
-                @param line the line where the log statement was written.
-                */
-                template<class STR>
-                void warn(const STR& msg, const log4cxx::spi::location::LocationInfo& location) {
-                  if (isEnabledFor(log4cxx::Level::WARN)) {
-                    forcedLog(log4cxx::Level::WARN, msg, location);
-                  }
-                }
-
-
-                template<class STR>
-                void warn(const STR& msg) {
-                  if (isEnabledFor(log4cxx::Level::WARN)) {
-                    forcedLog(log4cxx::Level::WARN, msg);
-                  }
-                }
+        @param message the message string to log.
+        @param file the file where the log statement was written.
+        @param line the line where the log statement was written.
+        */
+        void warn(const std::wstring& msg, const log4cxx::spi::location::LocationInfo& location);
+        void warn(const std::string& msg, const log4cxx::spi::location::LocationInfo& location);
+        void warn(const std::wstring& msg);
+        void warn(const std::string& msg);
 
 
 
-                inline apr_thread_mutex_t* getMutex() const { return mutex; }
+        inline apr_thread_mutex_t* getMutex() const { return mutex; }
 
         private:
                 //
-                //  prevent copy and assignment
-                Logger(const Logger&);
-                Logger& operator=(const Logger&);
-                                log4cxx::helpers::Pool pool;
-                                log4cxx::helpers::Mutex mutex;
-                                friend class log4cxx::helpers::synchronized;
+        //  prevent copy and assignment
+        Logger(const Logger&);
+        Logger& operator=(const Logger&);
+        log4cxx::helpers::Mutex mutex;
+        friend class log4cxx::helpers::synchronized;
    };
 }
 

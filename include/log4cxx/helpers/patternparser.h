@@ -23,8 +23,6 @@
 #include <log4cxx/helpers/formattinginfo.h>
 #include <log4cxx/helpers/patternconverter.h>
 
-class apr_pool_t;
-
 namespace log4cxx
 {
         namespace spi

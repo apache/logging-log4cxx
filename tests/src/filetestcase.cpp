@@ -19,6 +19,7 @@
 #include "insertwide.h"
 #include <log4cxx/helpers/pool.h>
 #include <apr_errno.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -38,13 +39,13 @@ class FileTestCase : public CppUnit::TestFixture
 public:
         void defaultConstructor() {
           File defFile;
-          CPPUNIT_ASSERT_EQUAL((std::string) "", defFile.getMBCSName());
           CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), defFile.getName());
         }
 
         void defaultExists() {
           File defFile;
-          bool exists = defFile.exists();
+          Pool pool;
+          bool exists = defFile.exists(pool);
           CPPUNIT_ASSERT_EQUAL(false, exists);
         }
 
@@ -52,8 +53,11 @@ public:
         void defaultRead() {
           File defFile;
           Pool pool;
-          LogString contents(defFile.read(pool));
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), contents);
+          try {
+            LogString contents(defFile.read(pool));
+            CPPUNIT_ASSERT(false);
+          } catch(IOException &ex) {
+          }
         }
 
 
@@ -65,8 +69,9 @@ public:
           CPPUNIT_ASSERT(stat != APR_SUCCESS);
         }
 
+
         void propertyRead() {
-          File propFile("input//patternLayout1.properties");
+          File propFile("input/patternLayout1.properties");
           Pool pool;
           LogString props(propFile.read(pool));
           LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender\n"));
@@ -74,14 +79,15 @@ public:
         }
 
         void propertyExists() {
-          File propFile("input//patternLayout1.properties");
-          bool exists = propFile.exists();
+          File propFile("input/patternLayout1.properties");
+          Pool pool;
+          bool exists = propFile.exists(pool);
           CPPUNIT_ASSERT_EQUAL(true, exists);
         }
 
 
         void fileWrite1() {
-          File outFile("output//fileWrite1.txt");
+          File outFile("output/fileWrite1.txt");
           Pool pool;
           LogString greeting(LOG4CXX_STR("Hello, World\n"));
           apr_status_t stat = outFile.write(greeting, pool);

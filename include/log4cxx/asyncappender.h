@@ -25,7 +25,6 @@
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/condition.h>
 
-struct apr_pool_t;
 
 namespace log4cxx
 {

@@ -35,15 +35,17 @@ std::string StringHelper::toLowerCase(const std::string& s)
 
 std::wstring StringHelper::toLowerCase(const std::wstring& s)
 {
-#if 0
-///
         std::wstring d;
+#if defined(_MSC_VER)
+        std::transform(s.begin(), s.end(),
+                std::insert_iterator<std::wstring>(d, d.begin()),
+                towlower);
+#else
         std::transform(s.begin(), s.end(),
                 std::insert_iterator<std::wstring>(d, d.begin()),
                 std::tolower<wchar_t>);
-        return d;
 #endif
-        return s;
+        return d;
 }
 
 std::string StringHelper::trim(const std::string& s)
@@ -68,6 +70,27 @@ std::wstring StringHelper::trim(const std::wstring& s)
 
         std::wstring::size_type n = s.find_last_not_of(L' ') - pos + 1;
         return s.substr(pos, n);
+}
+
+
+bool StringHelper::startsWith(const std::wstring& teststr, const std::wstring& substr)
+    {
+    bool val = false;
+    if(teststr.length() > substr.length()) {
+        val = teststr.substr(0, substr.length()) == substr;
+    }
+
+    return val;
+}
+
+bool StringHelper::startsWith(const std::string& teststr, const std::string& substr)
+    {
+    bool val = false;
+    if(teststr.length() > substr.length()) {
+        val = teststr.substr(0, substr.length()) == substr;
+    }
+
+    return val;
 }
 
 
@@ -157,8 +180,12 @@ log4cxx_int64_t StringHelper::toInt64(const std::wstring& s) {
   return apr_atoi64(charstr.c_str());
 }
 
+#if defined(_MSC_VER)
+LogString StringHelper::toString(int s, void* pool) {
+#else
 LogString StringHelper::toString(int s, apr_pool_t* pool) {
-  char* fmt = apr_itoa(pool, s);
+#endif
+  char* fmt = apr_itoa((apr_pool_t*) pool, s);
   LogString str;
   log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), str);
   return str;

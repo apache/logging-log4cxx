@@ -18,6 +18,8 @@
 #include <log4cxx/level.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/spi/location/locationinfo.h>
+#include <log4cxx/spi/loggerrepository.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::spi::location;

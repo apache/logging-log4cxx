@@ -39,6 +39,9 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/pool.h>
 #include "testchar.h"
+#include <log4cxx/spi/loggerrepository.h>
+
+
 
 #define FILTERED LOG4CXX_FILE("output/filtered")
 #define TEMP LOG4CXX_FILE("output/temp")

@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/class.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/object.h>
 #include <map>
 #include <log4cxx/helpers/stringhelper.h>
 

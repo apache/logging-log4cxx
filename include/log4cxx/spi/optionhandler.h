@@ -21,7 +21,9 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/objectptr.h>
 
-class apr_pool_t;
+extern "C" {
+struct apr_pool_t;
+}
 
 namespace log4cxx
 {

@@ -16,6 +16,7 @@
 
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -23,51 +24,45 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
 const LevelPtr& Level::getOff() {
-   static LevelPtr level(new Level(Level::OFF_INT, L"OFF", "OFF", 0));
+   static LevelPtr level(new Level(Level::OFF_INT, LOG4CXX_STR("OFF"), 0));
    return level;
 }
 
 const LevelPtr& Level::getFatal() {
-   static LevelPtr level(new Level(Level::FATAL_INT, L"FATAL", "FATAL", 0));
+   static LevelPtr level(new Level(Level::FATAL_INT, LOG4CXX_STR("FATAL"), 0));
    return level;
 }
 
 const LevelPtr& Level::getError() {
-   static LevelPtr level(new Level(Level::ERROR_INT, L"ERROR", "ERROR", 3));
+   static LevelPtr level(new Level(Level::ERROR_INT, LOG4CXX_STR("ERROR"), 3));
    return level;
 }
 
 const LevelPtr& Level::getWarn() {
-   static LevelPtr level(new Level(Level::WARN_INT, L"WARN", "WARN", 4));
+   static LevelPtr level(new Level(Level::WARN_INT, LOG4CXX_STR("WARN"), 4));
    return level;
 }
 
 const LevelPtr& Level::getInfo() {
-   static LevelPtr level(new Level(Level::INFO_INT, L"INFO", "INFO", 6));
+   static LevelPtr level(new Level(Level::INFO_INT, LOG4CXX_STR("INFO"), 6));
    return level;
 }
 
 const LevelPtr& Level::getDebug() {
-   static LevelPtr level(new Level(Level::DEBUG_INT, L"DEBUG", "DEBUG", 7));
+   static LevelPtr level(new Level(Level::DEBUG_INT, LOG4CXX_STR("DEBUG"), 7));
    return level;
 }
 
 const LevelPtr& Level::getAll() {
-   static LevelPtr level(new Level(Level::ALL_INT, L"ALL", "ALL", 7));
+   static LevelPtr level(new Level(Level::ALL_INT, LOG4CXX_STR("ALL"), 7));
    return level;
 }
 
-const LevelPtr Level::OFF(Level::getOff());
-const LevelPtr Level::FATAL(Level::getFatal());
-const LevelPtr Level::ERROR(Level::getError());
-const LevelPtr Level::WARN(Level::getWarn());
-const LevelPtr Level::INFO(Level::getInfo());
-const LevelPtr Level::DEBUG(Level::getDebug());
-const LevelPtr Level::ALL(Level::getAll());
 
-Level::Level(int level, const wchar_t* wName,
-    const char* name, int syslogEquivalent)
-: level(level), syslogEquivalent(syslogEquivalent)
+
+Level::Level(int level, 
+    const logchar* name, int syslogEquivalent)
+: level(level), name(name), syslogEquivalent(syslogEquivalent)
 {
 }
 
@@ -182,5 +177,26 @@ bool Level::isGreaterOrEqual(const LevelPtr& level) const
     return this->level >= level->level;
 }
 
+void Level::toString(std::string& str) const {
+    Transcoder::encode(name, str);
+}
+
+void Level::toString(std::wstring& str) const {
+    Transcoder::encode(name, str);
+}
+
+//
+//   may be declared by some platform headers
+//
+#undef ERROR
+#undef DEBUG
+
+const LevelPtr Level::OFF(Level::getOff());
+const LevelPtr Level::FATAL(Level::getFatal());
+const LevelPtr Level::ERROR(Level::getError());
+const LevelPtr Level::WARN(Level::getWarn());
+const LevelPtr Level::INFO(Level::getInfo());
+const LevelPtr Level::DEBUG(Level::getDebug());
+const LevelPtr Level::ALL(Level::getAll());
 
 

@@ -20,11 +20,11 @@
 #include <log4cxx/portability.h>
 #include <log4cxx/logstring.h>
 
-class apr_file_t;
-class apr_pool_t;
-typedef int apr_int32_t;
-typedef apr_int32_t apr_fileperms_t;
+extern "C" {
+struct apr_file_t;
 struct apr_finfo_t;
+struct apr_pool_t;
+}
 
 namespace log4cxx
 {
@@ -45,18 +45,18 @@ namespace log4cxx
                     File& operator=(const File& src);
                     ~File();
 
-                    bool exists() const;
-                    size_t length() const;
-                    log4cxx_time_t lastModified() const;
+                    bool exists(apr_pool_t* p) const;
+                    size_t length(apr_pool_t* p) const;
+                    log4cxx_time_t lastModified(apr_pool_t* p) const;
                     inline const LogString& getName() const {
-                       return internalName;
+                       return name;
                     }
 
-                    inline const std::string& getMBCSName() const {
-                      return mbcsName;
-                    }
-
+#if defined(_MSC_VER)
+                    LogString read(void* pool) const;
+#else                    
                     LogString read(apr_pool_t* pool) const;
+#endif
 
                     log4cxx_status_t write(const LogString& src, apr_pool_t* p) const;
 
@@ -64,8 +64,8 @@ namespace log4cxx
                           int perm, apr_pool_t* p) const;
 
                 private:
-                    LogString internalName;
-                    std::string mbcsName;
+                    LogString name;
+                    std::string osName;
                 };
 } // namespace log4cxx
 

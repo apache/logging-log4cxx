@@ -23,6 +23,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
 #include <map>
+
 #include <log4cxx/file.h>
 
 namespace log4cxx
@@ -33,19 +34,15 @@ namespace log4cxx
 	class Appender;
 	typedef helpers::ObjectPtrT<Appender> AppenderPtr;
 
-	namespace spi
-	{
-		class LoggerFactory;
-		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
-
-		class LoggerRepository;
-		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-	}
-
 	namespace helpers
 	{
 		class Properties;
 	}
+
+
+    namespace spi {
+        class LoggerFactory;
+    }
 
 /**
 Allows the configuration of log4cxx from an external file.  See
@@ -99,7 +96,7 @@ example, if <code>java.home</code> system property is set to
 		/**
 		Used to create new instances of logger
 		*/
-		spi::LoggerFactoryPtr loggerFactory;
+        helpers::ObjectPtrT<spi::LoggerFactory> loggerFactory;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)

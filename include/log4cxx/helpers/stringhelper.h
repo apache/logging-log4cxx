@@ -21,7 +21,6 @@
 #include <log4cxx/logstring.h>
 #include <stdarg.h>
 
-class apr_pool_t;
 
 namespace log4cxx
 {
@@ -35,6 +34,8 @@ namespace log4cxx
            public:
             static std::string trim(const std::string& s);
             static std::wstring trim(const std::wstring& s);
+            static bool startsWith(const std::string& s, const std::string& suffix);
+            static bool startsWith(const std::wstring& s, const std::wstring& suffix);
             static bool endsWith(const std::string& s, const std::string& suffix);
             static bool endsWith(const std::wstring& s, const std::wstring& suffix);
             static bool equalsIgnoreCase(const std::string& s1, const char* upper, const char* lower);
@@ -45,7 +46,14 @@ namespace log4cxx
             static log4cxx_int64_t toInt64(const std::string& s);
             static log4cxx_int64_t toInt64(const std::wstring& s);
 
+#if defined(_MSC_VER)
+            //
+            //   TODO: would fail to link with VC6 if apr_pool_t* was used
+            //
+            static LogString toString(int s, void* pool);
+#else
             static LogString toString(int s, apr_pool_t* pool);
+#endif
             static LogString toString(int s);
 
             static std::string toLowerCase(const std::string& s);

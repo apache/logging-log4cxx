@@ -36,12 +36,12 @@ namespace log4cxx
 		protected:
 			mutable unsigned int volatile ref;
 
-                private:
+        private:
                         //
-                        //   prevent object copy and assignment
-                        //
-                        ObjectImpl(const ObjectImpl&);
-                        ObjectImpl& operator=(const ObjectImpl&);
+            //   prevent object copy and assignment
+            //
+            ObjectImpl(const ObjectImpl&);
+            ObjectImpl& operator=(const ObjectImpl&);
 		};
 	}
 }

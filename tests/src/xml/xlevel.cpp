@@ -26,25 +26,31 @@ const LevelPtr XLevel::TRACE(XLevel::getTrace());
 const LevelPtr XLevel::LETHAL(XLevel::getLethal());
 
 
-XLevel::XLevel(int level, const wchar_t* wName, const char* name, int syslogEquivalent)
-: Level(level, wName, name, syslogEquivalent)
+XLevel::XLevel(int level, const logchar* name, int syslogEquivalent)
+: Level(level, name, syslogEquivalent)
 {
 }
 
 const LevelPtr& XLevel::getTrace() {
-  static const LevelPtr trace(new XLevel(XLevel::TRACE_INT, L"TRACE", "trace", 7));
+  static const LevelPtr trace(new XLevel(XLevel::TRACE_INT, LOG4CXX_STR("TRACE"), 7));
   return trace;
 }
 
 const LevelPtr& XLevel::getLethal() {
-  static const LevelPtr lethal(new XLevel(XLevel::LETHAL_INT, L"LETHAL", "lethal", 0));
+  static const LevelPtr lethal(new XLevel(XLevel::LETHAL_INT, LOG4CXX_STR("LETHAL"), 0));
   return lethal;
 }
 
-const LevelPtr& XLevel::toLevel(const LogString& sArg)
+const LevelPtr& XLevel::toLevel(const std::string& sArg)
 {
 	return toLevel(sArg, getTrace());
 }
+
+const LevelPtr& XLevel::toLevel(const std::wstring& sArg)
+{
+	return toLevel(sArg, getTrace());
+}
+
 
 const LevelPtr& XLevel::toLevel(int val)
 {
@@ -61,7 +67,8 @@ const LevelPtr& XLevel::toLevel(int val, const LevelPtr& defaultLevel)
 	}
 }
 
-const LevelPtr& XLevel::toLevel(const LogString& sArg, const LevelPtr& defaultLevel)
+
+const LevelPtr& XLevel::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
 {
    if (sArg.empty())
     {
@@ -69,12 +76,32 @@ const LevelPtr& XLevel::toLevel(const LogString& sArg, const LevelPtr& defaultLe
     }
 
     if (StringHelper::equalsIgnoreCase(sArg,
-          LOG4CXX_STR("TRACE"), LOG4CXX_STR("trace"))) {
+          L"TRACE", L"trace")) {
       return getTrace();
     }
 
     if (StringHelper::equalsIgnoreCase(sArg,
-           LOG4CXX_STR("LETHAL"), LOG4CXX_STR("lethal"))) {
+           L"LETHAL", L"lethal")) {
+      return getLethal();
+    }
+
+    return Level::toLevel(sArg, defaultLevel);
+}
+
+const LevelPtr& XLevel::toLevel(const std::string& sArg, const LevelPtr& defaultLevel)
+{
+   if (sArg.empty())
+    {
+       return defaultLevel;
+    }
+
+    if (StringHelper::equalsIgnoreCase(sArg,
+          "TRACE", "trace")) {
+      return getTrace();
+    }
+
+    if (StringHelper::equalsIgnoreCase(sArg,
+           "LETHAL", "lethal")) {
       return getLethal();
     }
 

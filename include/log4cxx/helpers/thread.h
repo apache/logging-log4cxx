@@ -18,7 +18,6 @@
 #define _LOG4CXX_HELPERS_THREAD_H
 
 #include <log4cxx/portability.h>
-#include <log4cxx/helpers/exception.h>
 
 #if !defined(LOG4CXX_THREAD_FUNC)
 #if defined(APR_THREAD_FUNC)
@@ -33,19 +32,15 @@
 #endif
 
 
+extern "C" {
 struct apr_thread_t;
 struct apr_pool_t;
+}
 
 namespace log4cxx
 {
         namespace helpers
         {
-                class LOG4CXX_EXPORT ThreadException : public Exception
-                {
-                public:
-                        ThreadException(log4cxx_status_t stat) {}
-                };
-
                 class LOG4CXX_EXPORT Thread
                 {
                 public:
@@ -62,7 +57,7 @@ namespace log4cxx
                         //    immediate exit from the start method
                         void ending();
 
-                        inline bool isActive() { return thread != NULL; }
+                        inline bool isActive() { return thread != 0; }
 
                 private:
                         apr_thread_t* thread;

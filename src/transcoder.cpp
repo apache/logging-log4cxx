@@ -170,6 +170,26 @@ void Transcoder::encode(const LogString& src, std::wstring& dst) {
   dst.append(src);
 }
 
+
+bool Transcoder::equals(const char* str1, size_t len, const LogString& str2) {
+    if (len == str2.length()) {
+        LogString decoded;
+        decode(str1, len, decoded);
+        return decoded == str2;
+    }
+    return false;
+}
+
+
+bool Transcoder::equals(const wchar_t* str1, size_t len, const LogString& str2) {
+    if (len == str2.length()) {
+        LogString decoded;
+        decode(str1, len, decoded);
+        return decoded == str2;
+    }
+    return false;
+}
+
 #endif
 
 

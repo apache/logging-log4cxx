@@ -15,6 +15,7 @@
  */
 
 #include <log4cxx/helpers/properties.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

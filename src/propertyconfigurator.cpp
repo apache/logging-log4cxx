@@ -136,10 +136,9 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	if (!thresholdStr.empty())
 	{
 		hierarchy->setThreshold(OptionConverter::toLevel(thresholdStr, Level::getAll()));
-                LogString msg(LOG4CXX_STR("Hierarchy threshold set to ["));
-                msg += hierarchy->getThreshold()->toString();
-                msg += LOG4CXX_STR("].");
-		LogLog::debug(msg);
+        LogLog::debug(((LogString) LOG4CXX_STR("Hierarchy threshold set to ["))
+                + hierarchy->getThreshold()->toString()
+                + LOG4CXX_STR("]."));
 	}
 
 	configureRootCategory(properties, hierarchy);
@@ -170,7 +169,8 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 			OptionConverter::instantiateByClassName(
 			factoryClassName, LoggerFactory::getStaticClass(), loggerFactory);
                 static const LogString FACTORY_PREFIX(LOG4CXX_STR("log4j.factory."));
-		PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX);
+        Pool p;
+		PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX, p);
 	}
 }
 
@@ -382,6 +382,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 	if (appender->instanceof(OptionHandler::getStaticClass()))
 	{
+        Pool p;
 		if (appender->requiresLayout())
 		{
 			LayoutPtr layout =
@@ -393,18 +394,18 @@ AppenderPtr PropertyConfigurator::parseAppender(
 				appender->setLayout(layout);
                                 LogLog::debug((LogString) LOG4CXX_STR("Parsing layout options for \"")
                                     + appenderName + LOG4CXX_STR("\"."));
-
+                 
 				//configureOptionHandler(layout, layoutPrefix + ".", props);
-				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."));
-                                LogLog::debug((LogString) LOG4CXX_STR("End of parsing for \"")
-                                    + appenderName +  LOG4CXX_STR("\"."));
+				PropertySetter::setProperties(layout, props, layoutPrefix + LOG4CXX_STR("."), p);
+                LogLog::debug((LogString) LOG4CXX_STR("End of parsing for \"")
+                    + appenderName +  LOG4CXX_STR("\"."));
 			}
 		}
 
 		//configureOptionHandler((OptionHandler) appender, prefix + _T("."), props);
-		PropertySetter::setProperties(appender, props, prefix + LOG4CXX_STR("."));
-                LogLog::debug((LogString) LOG4CXX_STR("Parsed \"")
-                     + appenderName + LOG4CXX_STR("\" options."));
+		PropertySetter::setProperties(appender, props, prefix + LOG4CXX_STR("."), p);
+        LogLog::debug((LogString) LOG4CXX_STR("Parsed \"")
+             + appenderName + LOG4CXX_STR("\" options."));
 	}
 
 	registryPut(appender);

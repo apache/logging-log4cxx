@@ -19,22 +19,12 @@
 
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/locale.h>
 
 namespace log4cxx
 {
         namespace helpers
         {
-                class LOG4CXX_EXPORT MissingResourceException : public Exception
-                {
-                    public:
-                    MissingResourceException(const LogString& key) {
-                    }
-                    const char* what() const throw() {
-                       return "Missing resource";
-                    }
-                };
+                class Locale;
 
                 class ResourceBundle;
                 typedef ObjectPtrT<ResourceBundle> ResourceBundlePtr;

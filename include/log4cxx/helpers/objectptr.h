@@ -17,12 +17,19 @@
 #ifndef _LOG4CXX_HELPERS_OBJECT_PTR_H
 #define _LOG4CXX_HELPERS_OBJECT_PTR_H
 
-#include <log4cxx/helpers/exception.h>
+#include <log4cxx/portability.h>
 
 namespace log4cxx
 {
     namespace helpers
     {
+
+        class LOG4CXX_EXPORT ObjectPtrBase {
+        public:
+            static void checkNull(const int& null);
+        };
+
+
 		/** smart pointer to a Object descendant */
         template<typename T> class ObjectPtrT
         {
@@ -49,13 +56,9 @@ namespace log4cxx
 			}*/
 
 			ObjectPtrT(const int& null) //throw(IllegalArgumentException)
-				: p(0)
+                : p(0)
 			{
-				if (null != 0)
-				{
-
-					throw IllegalArgumentException();
-				}
+                ObjectPtrBase::checkNull(null);
 			}
 
 			ObjectPtrT() : p(0)
@@ -115,10 +118,10 @@ namespace log4cxx
 
 			ObjectPtrT& operator=(const int& null) //throw(IllegalArgumentException)
 			{
-				if (null != 0)
-				{
-					throw IllegalArgumentException();
-				}
+                //
+                //   throws IllegalArgumentException if null != 0
+                //
+                ObjectPtrBase::checkNull(null);
 
 				if (this->p != 0)
                 {

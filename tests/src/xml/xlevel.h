@@ -32,16 +32,16 @@ namespace log4cxx
 		static const LevelPtr& getTrace();
 		static const LevelPtr& getLethal();
 
-                static const LevelPtr TRACE;
-                static const LevelPtr LETHAL;
+        static const LevelPtr TRACE;
+        static const LevelPtr LETHAL;
 
-		XLevel(int level, const wchar_t* wName,
-                    const char* name, int syslogEquivalent);
+		XLevel(int level, const logchar* name, int syslogEquivalent);
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns #DEBUG.
 		*/
-		static const LevelPtr& toLevel(const LogString& sArg);
+        static const LevelPtr& toLevel(const std::string& sArg);
+        static const LevelPtr& toLevel(const std::wstring& sArg);
 
 		/**
 		Convert an integer passed as argument to a level. If the
@@ -62,7 +62,9 @@ namespace log4cxx
 		conversion fails, then this method returns the value of
 		<code>defaultLevel</code>.
 		*/
-		static const LevelPtr& toLevel(const LogString& sArg,
+        static const LevelPtr& toLevel(const std::string& sArg,
+			const LevelPtr& defaultLevel);
+        static const LevelPtr& toLevel(const std::wstring& sArg,
 			const LevelPtr& defaultLevel);
 	};
 }

@@ -27,10 +27,9 @@ namespace log4cxx
     typedef helpers::ObjectPtrT<Logger> LoggerPtr;
     typedef std::vector<LoggerPtr> LoggerList;
 
-    namespace spi
-    {
-                class LoggerFactory;
-                typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
+    namespace spi {
+        class LoggerFactory;
+        typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
     }
 
     /**

@@ -46,7 +46,8 @@ FileWatchdog::~FileWatchdog() {
 
 void FileWatchdog::checkAndConfigure()
 {
-	if (!file.exists())
+    Pool pool;
+	if (!file.exists(pool))
 	{
               if(!warnedAlready)
               {
@@ -58,7 +59,7 @@ void FileWatchdog::checkAndConfigure()
 	}
 	else
 	{
-                apr_time_t thisMod = file.lastModified();
+        apr_time_t thisMod = file.lastModified(pool);
 		if (thisMod > lastModif)
 		{
 			lastModif = thisMod;

@@ -17,21 +17,18 @@
 #ifndef _LOG4CXX_SPI_CONFIGURATOR_H
 #define _LOG4CXX_SPI_CONFIGURATOR_H
 
-#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/objectptr.h>
 
 namespace log4cxx
 {
-        class File;
+    class File;
 
 	namespace spi
 	{
 		class LoggerRepository;
-		typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
+        typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
 
-		class Configurator;
-		typedef helpers::ObjectPtrT<Configurator> ConfiguratorPtr;
 
 		/**
 		Implemented by classes capable of configuring log4j using a URL.
@@ -53,6 +50,8 @@ namespace log4cxx
 			virtual void doConfigure(const File& configFileName,
 				spi::LoggerRepositoryPtr& repository) = 0;
 		};
+
+		typedef helpers::ObjectPtrT<Configurator> ConfiguratorPtr;
 	}
 }
 

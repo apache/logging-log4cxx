@@ -21,7 +21,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-bool LogLog::debugEnabled = false;
+bool LogLog::debugEnabled = true;
 bool LogLog::quietMode = false;
 
 void LogLog::setInternalDebugging(bool debugEnabled)

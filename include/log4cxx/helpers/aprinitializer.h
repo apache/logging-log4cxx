@@ -19,8 +19,9 @@
 
 #include <log4cxx/portability.h>
 
-class apr_pool_t;
-
+extern "C" {
+struct apr_pool_t;
+}
 
 namespace log4cxx
 {
@@ -30,6 +31,7 @@ namespace log4cxx
     {
     public:
     static log4cxx_time_t initialize();
+    static apr_pool_t* getRootPool();
 
     private:
       APRInitializer();
@@ -37,6 +39,7 @@ namespace log4cxx
       APRInitializer& operator=(const APRInitializer&);
       apr_pool_t * p;
 	  log4cxx_time_t startTime;
+      static APRInitializer& getInstance();
     public:
       ~APRInitializer();
     };

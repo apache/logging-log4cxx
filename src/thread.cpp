@@ -15,6 +15,7 @@
  */
  
 #include <log4cxx/helpers/thread.h>
+#include <log4cxx/helpers/exception.h>
 #include <apr_thread_proc.h>
 
 using namespace log4cxx::helpers;

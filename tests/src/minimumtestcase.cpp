@@ -34,6 +34,8 @@
 #include <log4cxx/helpers/pool.h>
 #include <apr_strings.h>
 #include "testchar.h"
+#include <log4cxx/spi/loggerrepository.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

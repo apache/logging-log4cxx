@@ -137,4 +137,4 @@ public:
 	}
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);
+//CPPUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);

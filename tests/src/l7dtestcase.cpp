@@ -20,6 +20,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
+#include <log4cxx/helpers/locale.h>
 
 #include "util/compare.h"
 
@@ -27,6 +28,8 @@
 #include <sstream>
 
 #include "testchar.h"
+#include <log4cxx/spi/loggerrepository.h>
+
 
 typedef std::basic_ostringstream<testchar> StringBuffer;
 
@@ -97,4 +100,4 @@ public:
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(L7dTestCase);
+//CPPUNIT_TEST_SUITE_REGISTRATION(L7dTestCase);

@@ -45,7 +45,7 @@ PatternLayout::PatternLayout(const LogString& pattern) : pattern(pattern)
 void PatternLayout::setConversionPattern(const LogString& conversionPattern)
 {
 	pattern = conversionPattern;
-        activateOptions(NULL);
+    activateOptions(NULL);
 }
 
 void PatternLayout::format(LogString& output,
@@ -86,7 +86,7 @@ void PatternLayout::activateOptions(apr_pool_t* p)
 {
 	if (pattern.empty())
 	{
-                static const LogString DEFAULT_CONVERSION_PATTERN(LOG4CXX_STR("%m%n"));
+        static const LogString DEFAULT_CONVERSION_PATTERN(LOG4CXX_STR("%m%n"));
 		pattern = DEFAULT_CONVERSION_PATTERN;
 	}
 

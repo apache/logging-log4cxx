@@ -32,65 +32,71 @@ namespace log4cxx
 
         namespace config
         {
-/**
-General purpose Object property setter. Clients repeatedly invokes
-{@link #setProperty setProperty(name,value)} in order to invoke setters
-on the Object specified in the constructor.
+                /**
+                General purpose Object property setter. Clients repeatedly invokes
+                {@link #setProperty setProperty(name,value)} in order to invoke setters
+                on the Object specified in the constructor.
 
-<p>Usage:
-<pre>
-PropertySetter ps(anObject);
-ps.set("name", "Joe");
-ps.set("age", "32");
-ps.set("isMale", "true");
-</pre>
-will cause the invocations anObject->setOption("name", "Joe"),
-anObject->setOption("age", "32") and anObject->setOption("isMale", "true")
-if the spi::OptionHandler interface is supported by anObject.
-*/
+                <p>Usage:
+                <pre>
+                PropertySetter ps(anObject);
+                ps.set("name", "Joe");
+                ps.set("age", "32");
+                ps.set("isMale", "true");
+                </pre>
+                will cause the invocations anObject->setOption("name", "Joe"),
+                anObject->setOption("age", "32") and anObject->setOption("isMale", "true")
+                if the spi::OptionHandler interface is supported by anObject.
+                */
                 class LOG4CXX_EXPORT PropertySetter
                 {
                 protected:
                         helpers::ObjectPtr obj;
 
                 public:
-/**
-Create a new PropertySetter for the specified Object. This is done
-in prepartion for invoking #setProperty one or more times.
+                        /**
+                        Create a new PropertySetter for the specified Object. This is done
+                        in prepartion for invoking #setProperty one or more times.
 
-@param obj  the object for which to set properties
-*/
-                        PropertySetter(helpers::ObjectPtr obj);
+                        @param obj  the object for which to set properties
+                        */
+                        PropertySetter(const helpers::ObjectPtr& obj);
 
-/**
-Set the properties of an object passed as a parameter in one
-go. The <code>properties</code> are parsed relative to a
-<code>prefix</code>.
+                        /**
+                        Set the properties of an object passed as a parameter in one
+                        go. The <code>properties</code> are parsed relative to a
+                        <code>prefix</code>.
 
-@param obj The object to configure.
-@param properties A java.util.Properties containing keys and values.
-@param prefix Only keys having the specified prefix will be set.
-*/
-                        static void setProperties(helpers::ObjectPtr obj,
-                                helpers::Properties& properties, const LogString& prefix);
+                        @param obj The object to configure.
+                        @param properties A java.util.Properties containing keys and values.
+                        @param prefix Only keys having the specified prefix will be set.
+                        */
+                        static void setProperties(const helpers::ObjectPtr& obj,
+                                helpers::Properties& properties, 
+                                const LogString& prefix,
+                                apr_pool_t* p);
 
-/**
-Set the properites for the object that match the
-<code>prefix</code> passed as parameter.
-*/
-                        void setProperties(helpers::Properties& properties, const LogString& prefix);
+                        /**
+                        Set the properites for the object that match the
+                        <code>prefix</code> passed as parameter.
+                        */
+                        void setProperties(helpers::Properties& properties, 
+                            const LogString& prefix,
+                            apr_pool_t* p);
 
-/**
-Set a property on this PropertySetter's Object. If the underlying
-Object supports the spi::OptionHandler interface, the
-{@link spi::OptionHandler#setOption setOption} method is called.
+                        /**
+                        Set a property on this PropertySetter's Object. If the underlying
+                        Object supports the spi::OptionHandler interface, the
+                        {@link spi::OptionHandler#setOption setOption} method is called.
 
-@param name    name of the property
-@param value   String value of the property
-*/
-                        void setProperty(const LogString& option, const LogString& value);
+                        @param name    name of the property
+                        @param value   String value of the property
+                        */
+                        void setProperty(const LogString& option, 
+                            const LogString& value,
+                            apr_pool_t* p);
 
-                        void activate();
+                        void activate(apr_pool_t* p);
                 }; // class PropertySetter
         }  // namespace config;
 } // namespace log4cxx

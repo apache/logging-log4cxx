@@ -109,18 +109,19 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
 
                 if (configurationOptionStr.empty())
                 {
+                        Pool pool;
                         configuration = LOG4CXX_FILE("log4cxx.properties");
-                        if (!configuration.exists()) {
+                        if (!configuration.exists(pool)) {
                             File tmp = LOG4CXX_FILE("log4cxx.xml");
-                            if (tmp.exists()) {
+                            if (tmp.exists(pool)) {
                               configuration = tmp;
                             } else {
                               tmp = LOG4CXX_FILE("log4j.properties");
-                              if (tmp.exists()) {
+                              if (tmp.exists(pool)) {
                                 configuration = tmp;
                               } else {
                                 tmp = LOG4CXX_FILE("log4j.xml");
-                                if (tmp.exists()) {
+                                if (tmp.exists(pool)) {
                                   configuration = tmp;
                                 }
                               }
@@ -128,7 +129,8 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
                           }
                 }
 
-                if (configuration.exists())
+                Pool pool;
+                if (configuration.exists(pool))
                 {
                         LogString msg(LOG4CXX_STR("Using configuration file ["));
                         msg += configuration.getName();

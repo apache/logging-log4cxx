@@ -83,6 +83,10 @@ namespace log4cxx
           // Dtor
             virtual ~AppenderAttachable(){}
         };
+
+
+        typedef helpers::ObjectPtrT<AppenderAttachable> AppenderAttachablePtr;
+        
     }
 }
 

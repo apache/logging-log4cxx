@@ -18,6 +18,7 @@
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/loglog.h>
 //#include <malloc.h>
+#include <assert.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers ;
@@ -162,10 +163,17 @@ void SocketInputStream::read(LogString& value) const
 		}
 
 		logchar * buffer;
-		buffer = (logchar *)alloca((size + 1)* sizeof(logchar));
+#if 0
+//		buffer = (logchar *)alloca((size + 1)* sizeof(logchar));
 		buffer[size] = LOG4CXX_STR('\0');
 		read(buffer, size * sizeof(logchar));
 		value = buffer;
+#else
+        //
+        //  TODO: not impl
+        //
+        assert(false);
+#endif
 	}
 
 //	LOGLOG_DEBUG(_T("string read:") << value);

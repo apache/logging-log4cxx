@@ -22,7 +22,9 @@
 #include <string.h>
 #include <wchar.h>
 
-class apr_pool_t;
+extern "C" {
+struct apr_pool_t;
+}
 
 namespace log4cxx {
    namespace helpers {
@@ -71,6 +73,10 @@ namespace log4cxx {
       */
       static void encode(const LogString& src, std::string& dst);
       static void encode(const LogString& src, std::wstring& dst);
+
+
+      static bool equals(const char* str1, size_t len, const LogString& str2);
+      static bool equals(const wchar_t* str1, size_t len, const LogString& str2);
 
 
       private:

@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
+#ifndef _LOG4CXX_LEVEL_H
+#define _LOG4CXX_LEVEL_H
+
+
 #include <log4cxx/logstring.h>
 #include <limits.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
 
-#ifndef _LOG4CXX_LEVEL_H
-#define _LOG4CXX_LEVEL_H
 
 //
 //   ERROR and DEBUG may be defined by Microsoft Platform headers and will conflict
@@ -78,16 +80,15 @@ namespace log4cxx
 		Instantiate a Level object.
 		*/
 		Level(int level,
-                    const wchar_t* wName,
-                    const char* name,
-                    int syslogEquivalent);
+              const logchar* name,
+              int syslogEquivalent);
 
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns #DEBUG.
 		*/
 		static const LevelPtr& toLevel(const std::string& sArg);
-                static const LevelPtr& toLevel(const std::wstring& sArg);
+        static const LevelPtr& toLevel(const std::wstring& sArg);
 
 		/**
 		Convert an integer passed as argument to a level. If the
@@ -108,8 +109,8 @@ namespace log4cxx
 		*/
 		static const LevelPtr& toLevel(const std::string& sArg,
 			const LevelPtr& defaultLevel);
-                static const LevelPtr& toLevel(const std::wstring& sArg,
-                        const LevelPtr& defaultLevel);
+        static const LevelPtr& toLevel(const std::wstring& sArg,
+                const LevelPtr& defaultLevel);
 
         enum
         {
@@ -160,13 +161,13 @@ namespace log4cxx
 		*/
 		static const LevelPtr OFF;
 
-                static const LevelPtr& getAll();
-                static const LevelPtr& getFatal();
-                static const LevelPtr& getError();
-                static const LevelPtr& getWarn();
-                static const LevelPtr& getInfo();
-                static const LevelPtr& getDebug();
-                static const LevelPtr& getOff();
+        static const LevelPtr& getAll();
+        static const LevelPtr& getFatal();
+        static const LevelPtr& getError();
+        static const LevelPtr& getWarn();
+        static const LevelPtr& getInfo();
+        static const LevelPtr& getDebug();
+        static const LevelPtr& getOff();
 
 
 		/**
@@ -203,8 +204,10 @@ namespace log4cxx
 		Returns the string representation of this priority.
 		*/
 		inline const LogString& toString() const {
-                  return wName;
+                  return name;
 		}
+        void toString(std::string& name) const;
+        void toString(std::wstring& name) const;
 
 		/**
 		Returns the integer representation of this level.
@@ -215,11 +218,10 @@ namespace log4cxx
 
 	private:
 		int level;
-		LogString wName;
-                std::string name;
+		LogString name;
 		int syslogEquivalent;
-                Level(const Level&);
-                Level& operator=(const Level&);
+        Level(const Level&);
+        Level& operator=(const Level&);
 	};
 }
 

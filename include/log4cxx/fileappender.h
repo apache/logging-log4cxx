@@ -21,9 +21,11 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/writerappender.h>
 #include <log4cxx/file.h>
+#include <log4cxx/helpers/pool.h>
 
-class apr_file_t;
-typedef unsigned int apr_uint32_t;
+extern "C" {
+struct apr_file_t;
+}
 
 namespace log4cxx
 {
@@ -61,9 +63,10 @@ namespace log4cxx
                 How big should the IO buffer be? Default is 8K. */
                 int bufferSize;
 
+                log4cxx::helpers::Pool pool;
                 apr_file_t* ofs;
 
-                volatile apr_uint32_t fileClosed;
+                volatile unsigned int fileClosed;
 
         public:
                 DECLARE_LOG4CXX_OBJECT(FileAppender)
