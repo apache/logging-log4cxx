@@ -104,7 +104,7 @@ void DateLayout::formatDate(tostream &os, const spi::LoggingEvent& event)
 	if(dateFormat != 0)
 	{
 		dateFormat->format(os, event.getTimeStamp());
-		os << _T(' ');
+		os.put(_T(' '));
 	}
 }
 

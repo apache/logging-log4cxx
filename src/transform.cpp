@@ -52,7 +52,7 @@ void Transform::appendEscapingTags(
 		}
 		else
 		{
-			buf << ch;
+			buf.put(ch);
 		}
 	}
 }
