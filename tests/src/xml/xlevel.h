@@ -17,16 +17,9 @@
 
 namespace log4cxx
 {
-	class XLevel;
-    typedef helpers::ObjectPtrT<XLevel> XLevelPtr;
-
 	class XLevel : public Level
 	{
 		DECLARE_LOG4CXX_LEVEL(XLevel)
-		BEGIN_LOG4CXX_CAST_MAP()
-			LOG4CXX_CAST_ENTRY(XLevel)
-			LOG4CXX_CAST_ENTRY_CHAIN(Level)
-		END_LOG4CXX_CAST_MAP()
 
 	public:
         enum
@@ -35,8 +28,8 @@ namespace log4cxx
 			LETHAL_INT = Level::FATAL_INT + 1
         };
 
-		static const XLevelPtr TRACE;
-		static const XLevelPtr LETHAL;
+		static const LevelPtr TRACE;
+		static const LevelPtr LETHAL;
 
 		XLevel(int level, const String& levelStr, int syslogEquivalent);
 		/**

@@ -24,8 +24,8 @@ IMPLEMENT_LOG4CXX_LEVEL(XLevel)
 #define TRACE_STR _T("TRACE")
 #define LETHAL_STR _T("LETHAL")
 
-const XLevelPtr XLevel::TRACE = new XLevel(XLevel::TRACE_INT, TRACE_STR, 7);
-const XLevelPtr XLevel::LETHAL = new XLevel(XLevel::LETHAL_INT, LETHAL_STR, 0);
+const LevelPtr XLevel::TRACE = new XLevel(XLevel::TRACE_INT, TRACE_STR, 7);
+const LevelPtr XLevel::LETHAL = new XLevel(XLevel::LETHAL_INT, LETHAL_STR, 0);
 
 XLevel::XLevel(int level, const String& levelStr, int syslogEquivalent)
 : Level(level, levelStr, syslogEquivalent)
@@ -46,8 +46,8 @@ const LevelPtr& XLevel::toLevel(int val, const LevelPtr& defaultLevel)
 {
 	switch(val)
 	{
-		case TRACE_INT: return (const LevelPtr&)TRACE;
-		case LETHAL_INT: return (const LevelPtr&)LETHAL;
+		case TRACE_INT: return TRACE;
+		case LETHAL_INT: return LETHAL;
 		default: return defaultLevel;
 	}
 }
@@ -61,8 +61,8 @@ const LevelPtr& XLevel::toLevel(const String& sArg, const LevelPtr& defaultLevel
 
     String s = StringHelper::toUpperCase(sArg);
 
-    if(s == (TRACE_STR)) return (const LevelPtr&)TRACE;
-    if(s == (LETHAL_STR)) return (const LevelPtr&)LETHAL;
+    if(s == (TRACE_STR)) return TRACE;
+    if(s == (LETHAL_STR)) return LETHAL;
 
     return defaultLevel;
 }
