@@ -39,19 +39,19 @@ namespace log4cxx
             The root logger names itself as "root". However, the root
             logger cannot be retrieved by name.
             */
-            RootCategory(const Level& level);
+            RootCategory(const LevelPtr& level);
  
             /**
             Return the assigned level value without walking the category
             hierarchy.
             */
-            virtual const Level& getEffectiveLevel();
+            virtual const LevelPtr& getEffectiveLevel();
 
             /**
             Setting a <code>Level#OFF</code> value to the level of the root
 			logger may have catastrophic results. We prevent this here.
 			*/
-            void setLevel(const Level& level);
+            void setLevel(const LevelPtr& level);
 		};
 	}; // namespace spi
 }; // namespace log4cxx

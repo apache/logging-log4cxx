@@ -25,6 +25,7 @@
 namespace log4cxx
 {
 	class Level;
+	typedef helpers::ObjectPtrT<Level> LevelPtr;
 
 	class Logger;
 	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
@@ -78,7 +79,7 @@ namespace log4cxx
             Set the repository-wide threshold. All logging requests below the
             threshold are immediately dropped. By default, the threshold is
             set to <code>Level.ALL</code> which has the lowest possible rank.  */
-            virtual void setThreshold(const Level& level) = 0;
+            virtual void setThreshold(const LevelPtr& level) = 0;
 
             /**
             Another form of {@link #setThreshold(const Level&) 
@@ -92,7 +93,7 @@ namespace log4cxx
             Get the repository-wide threshold. See {@link
             #setThreshold(const Level&) setThreshold(Level)}
 			for an explanation. */
-            virtual const Level& getThreshold() = 0;
+            virtual const LevelPtr& getThreshold() = 0;
 
             virtual LoggerPtr getLogger(const String& name) = 0;
 
