@@ -450,7 +450,7 @@ namespace log4cxx
         <p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::DEBUG); </pre>
 
 
-        <p>Null values are admitted.  */
+        <p><code>Level#OFF<code> values are admitted.  */
 
 	public:
         virtual void setLevel(const Level& level);

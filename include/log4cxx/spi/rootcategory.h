@@ -24,11 +24,11 @@ namespace log4cxx
 	namespace spi
 	{
         /**
-        RootCategory sits at the top of the category hierachy. It is a
-        regular category except that it provides several guarantees.
+        RootCategory sits at the top of the logger hierachy. It is a
+        regular logger except that it provides several guarantees.
 
         <p>First, it cannot be assigned an <code>Level#OFF</code>
-        level. Second, since root category cannot have a parent, the
+        level. Second, since root logger cannot have a parent, the
         #getEffectiveLevel method always returns the value of the
         level field without walking the hierarchy.
         */
@@ -36,8 +36,8 @@ namespace log4cxx
 		{
 		public:
             /**
-            The root category names itself as "root". However, the root
-            category cannot be retrieved by name.
+            The root logger names itself as "root". However, the root
+            logger cannot be retrieved by name.
             */
             RootCategory(const Level& level);
  
@@ -48,8 +48,8 @@ namespace log4cxx
             virtual const Level& getEffectiveLevel();
 
             /**
-            Setting a null value to the level of the root category may have catastrophic
-            results. We prevent this here.
+            Setting a <code>Level#OFF</code> value to the level of the root
+			logger may have catastrophic results. We prevent this here.
 			*/
             void setLevel(const Level& level);
 		};
