@@ -32,25 +32,25 @@ FileAppender::FileAppender()
 
 FileAppender::FileAppender(LayoutPtr layout, const String& fileName,
 	bool append, bool bufferedIO, int bufferSize)
-: fileName(fileName), fileAppend(append), bufferedIO(bufferedIO), bufferSize(bufferSize)
+: fileAppend(true), bufferedIO(false), bufferSize(8*1024)
 {
 	this->layout = layout;
-	activateOptions();
+	this->setFile(fileName, append, bufferedIO, bufferSize);
 }
 
 FileAppender::FileAppender(LayoutPtr layout, const String& fileName,
 	bool append)
-: fileName(fileName), fileAppend(append), bufferedIO(false), bufferSize(8*1024)
+: fileAppend(true), bufferedIO(false), bufferSize(8*1024)
 {
 	this->layout = layout;
-	activateOptions();
+	this->setFile(fileName, append, false, bufferSize);
 }
 
 FileAppender::FileAppender(LayoutPtr layout, const String& fileName)
-: fileName(fileName), fileAppend(true), bufferedIO(false), bufferSize(8*1024)
+: fileAppend(true), bufferedIO(false), bufferSize(8*1024)
 {
 	this->layout = layout;
-	activateOptions();
+	this->setFile(fileName, true, false, bufferSize);
 }
 
 FileAppender::~FileAppender()
@@ -65,10 +65,67 @@ void FileAppender::setFile(const String& file)
 	fileName = StringHelper::trim(file);
 }
 
+void FileAppender::setFile(const String& fileName, bool append, 
+	bool bufferedIO, int bufferSize)
+{
+	synchronized sync(this);
+	
+	LOGLOG_DEBUG(_T("FileAppender::activateOptions called : ")
+		<< fileName << _T(", ") << append);
+	// It does not make sense to have immediate flush and bufferedIO.
+	if(bufferedIO)
+	{
+		setImmediateFlush(false);
+	}
+
+	if(ofs.is_open())
+	{
+		reset();
+	}
+
+/*	if (bufferedIO && bufferSize > 0)
+	{
+		buffer = new char[bufferSize];
+		out.rdbuf()->setbuf(buffer, 0);
+	}*/
+
+	USES_CONVERSION
+	ofs.open(T2A(fileName.c_str()), (append ? std::ios::app :
+		std::ios::trunc)|std::ios::out);
+
+	if(!ofs.is_open())
+	{
+		throw RuntimeException();
+	}
+
+	this->os = &ofs;
+    this->fileName = fileName;
+    this->fileAppend = append;
+    this->bufferedIO = bufferedIO;
+    this->bufferSize = bufferSize;
+	writeHeader();
+	LogLog::debug(_T("FileAppender::setFile ended"));
+}
+
 void FileAppender::closeWriter()
 {
 	ofs.close();
 	os = 0;
+}
+
+void FileAppender::closeFile()
+{
+	if (os != 0)
+	{
+		try
+		{
+			closeWriter();
+		}
+		catch(Exception& e)
+		{
+			LogLog::error(_T("Could not close file ") + fileName, e);
+		}
+	}
 }
 
 void FileAppender::setBufferedIO(bool bufferedIO)
@@ -114,40 +171,16 @@ void FileAppender::activateOptions()
 {
 	if (!fileName.empty())
 	{
-		LOGLOG_DEBUG(_T("FileAppender::activateOptions called : ")
-			<< fileName << _T(", ") << fileAppend);
-		// It does not make sense to have immediate flush and bufferedIO.
-		if(bufferedIO)
+		try
 		{
-			setImmediateFlush(false);
+			setFile(fileName, fileAppend, bufferedIO, bufferSize);
 		}
-
-		if(ofs.is_open())
+		catch(Exception& e)
 		{
-			reset();
-		}
-
-	/*	if (bufferedIO && bufferSize > 0)
-		{
-			buffer = new char[bufferSize];
-			out.rdbuf()->setbuf(buffer, 0);
-		}*/
-
-		USES_CONVERSION
-		ofs.open(T2A(fileName.c_str()), (fileAppend ? std::ios::app :
-			std::ios::trunc)|std::ios::out);
-
-		if(!ofs.is_open())
-		{
-			RuntimeException e;
 			errorHandler->error(_T("Unable to open file: ") + fileName,
-				e, ErrorCode::FILE_OPEN_FAILURE);
-			return;
+			e, ErrorCode::FILE_OPEN_FAILURE);
 		}
-
-		this->os = &ofs;
-		writeHeader();
-		LogLog::debug(_T("FileAppender::activateOptions ended"));	}
+	}
 	else
 	{
 		LogLog::warn(_T("File option not set for appender [")+name+_T("]."));

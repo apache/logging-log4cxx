@@ -125,6 +125,24 @@ namespace log4cxx
 		void setFile(const String& file);
 			
 		/**
+		Sets and <i>opens</i> the file where the log output will
+		go. The specified file must be writable.
+
+		<p>If there was already an opened file, then the previous file
+		is closed first.
+
+		<p><b>Do not use this method directly. To configure a FileAppender
+		or one of its subclasses, set its properties one by one and then
+		call activateOptions.</b>
+
+		@param fileName The path to the log file.
+		@param append   If true will append to fileName. Otherwise will
+		truncate fileName.
+		*/
+		void setFile(const String& file, bool append,
+			bool bufferedIO, int bufferSize);
+		
+		/**
 		Returns the value of the <b>Append</b> option.
 		*/
 		inline bool getAppend() { return fileAppend; }
@@ -138,8 +156,7 @@ namespace log4cxx
 
         <p>If there was already an opened file, then the previous file
         is closed first.*/
-        
-		void activateOptions();
+  		void activateOptions();
 		void setOption(const String& option,
 			const String& value);
 
@@ -149,7 +166,12 @@ namespace log4cxx
         */
         virtual void closeWriter();
 
-    public:
+		/**
+		Closes the previously opened file.
+		*/
+		void closeFile();
+		
+   public:
         /**
         Get the value of the <b>BufferedIO</b> option.
 
