@@ -59,7 +59,7 @@ int main( int argc, const char * const argv[])
         }
         else
         {
-                bool wasSuccessful = runner.run("", false);
+                wasSuccessful = runner.run("", false);
         }
 
         apr_terminate();

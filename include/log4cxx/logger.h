@@ -97,14 +97,14 @@ namespace log4cxx
 
                 helpers::AppenderAttachableImplPtr aai;
 
-       /** Additivity is set to true by default, that is children inherit
-        the appenders of their ancestors by default. If this variable is
-        set to <code>false</code> then the appenders found in the
-        ancestors of this logger are not used. However, the children
-        of this logger will inherit its appenders, unless the children
-        have their additivity flag set to <code>false</code> too. See
-        the user manual for more details. */
-        bool additive;
+				/** Additivity is set to true by default, that is children inherit
+					the appenders of their ancestors by default. If this variable is
+					set to <code>false</code> then the appenders found in the
+					ancestors of this logger are not used. However, the children
+					of this logger will inherit its appenders, unless the children
+					have their additivity flag set to <code>false</code> too. See
+					the user manual for more details. */
+				bool additive;
 
     protected:
                 friend class DefaultCategoryFactory;

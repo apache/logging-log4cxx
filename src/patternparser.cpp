@@ -60,8 +60,16 @@ enum ParserState
 
 
 PatternParser::PatternParser(const LogString& pattern, const LogString& timeZone)
-: pattern(pattern), patternLength(pattern.length()), state(LITERAL_STATE), i(0),
-timeZone(timeZone), currentLiteral()
+: 
+   state(LITERAL_STATE), 
+   currentLiteral(),
+   patternLength(pattern.length()), 
+   i(0),
+   head(),
+   tail(),
+   formattingInfo(),
+   pattern(pattern), 
+   timeZone(timeZone) 
 {
 }
 
@@ -82,7 +90,7 @@ LogString PatternParser::extractOption()
 {
 	if((i < patternLength) && (pattern.at(i) == LOG4CXX_STR('{')))
 	{
-		int end = pattern.find(LOG4CXX_STR('}'), i);
+		size_t end = pattern.find(LOG4CXX_STR('}'), i);
 		if (end > i)
 		{
 			LogString r = pattern.substr(i + 1, end - (i + 1));
@@ -261,18 +269,18 @@ void PatternParser::finalizeConverter(logchar c)
 			df = new DateTimeDateFormat();
 		else
 		{
-                        if (dateFormatStr.find(LOG4CXX_STR('%')) == std::string::npos) {
-			  df = new SimpleDateFormat(dateFormatStr);
-                        } else {
-                          df = new StrftimeDateFormat(dateFormatStr);
-                        }
+			if (dateFormatStr.find(LOG4CXX_STR('%')) == std::string::npos) {
+			    df = new SimpleDateFormat(dateFormatStr);
+			} else {
+				df = new StrftimeDateFormat(dateFormatStr);
+			}
 		}
                 DateFormatPtr formatter(df);
                 df = new CachedDateFormat(formatter);
 		pc = new DatePatternConverter(formattingInfo, df);
 		//LogLog.debug("DATE converter {"+dateFormatStr+"}.");
 		//formattingInfo.dump();
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+		currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
 	}
 	case LOG4CXX_STR('F'):
@@ -287,7 +295,7 @@ void PatternParser::finalizeConverter(logchar c)
 			FULL_LOCATION_CONVERTER);
 		//LogLog.debug("Location converter.");
 		//formattingInfo.dump();
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+		currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
 	case LOG4CXX_STR('L'):
 
@@ -295,20 +303,20 @@ void PatternParser::finalizeConverter(logchar c)
 			LINE_LOCATION_CONVERTER);
 		//LogLog.debug("LINE NUMBER converter.");
 		//formattingInfo.dump();
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+		currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
 	case LOG4CXX_STR('m'):
 		pc = new BasicPatternConverter(formattingInfo, MESSAGE_CONVERTER);
 		//LogLog.debug("MESSAGE converter.");
 		//formattingInfo.dump();
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+		currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
 	case LOG4CXX_STR('p'):
 		{
 		pc = new BasicPatternConverter(formattingInfo, LEVEL_CONVERTER);
 		//LogLog.debug("LEVEL converter.");
 		//formattingInfo.dump();
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+        currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		}
 		break;
 	case LOG4CXX_STR('r'):
@@ -318,12 +326,15 @@ void PatternParser::finalizeConverter(logchar c)
 		//formattingInfo.dump();
                 currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
+
 	case LOG4CXX_STR('t'):
 		pc = new BasicPatternConverter(formattingInfo, THREAD_CONVERTER);
 		//LogLog.debug("THREAD converter.");
 		//formattingInfo.dump();
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+        currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
+		
+		
 		/*case 'u':
 		if(i < patternLength) {
 		char cNext = pattern.charAt(i);
@@ -338,18 +349,21 @@ void PatternParser::finalizeConverter(logchar c)
 		LogLog.error("Unexpected char" +cNext+" at position "+i);
 		}
 		break;*/
+
 	case LOG4CXX_STR('x'):
 		pc = new BasicPatternConverter(formattingInfo, NDC_CONVERTER);
 		//LogLog.debug("NDC converter.");
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+		currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
+
 	case LOG4CXX_STR('X'):
 	{
 		LogString xOpt = extractOption();
 		pc = new MDCPatternConverter(formattingInfo, xOpt);
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+		currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
 	}
+	
 	default:
 		LogLog::error(((LogString) LOG4CXX_STR("Unexpected char ["))
                         + LogString(1, c)
@@ -357,7 +371,7 @@ void PatternParser::finalizeConverter(logchar c)
                         + StringHelper::toString(i)
 			+ LOG4CXX_STR(" in conversion pattern."));
 		pc = new LiteralPatternConverter(currentLiteral);
-                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+		currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 	}
 
 	addConverter(pc);
@@ -514,11 +528,11 @@ void PatternParser::CategoryPatternConverter::convert(LogString& sbuf,
 
 	if(precision <= 0)
 	{
-                sbuf.append(event->getLoggerName());
+		sbuf.append(event->getLoggerName());
 	}
 	else
 	{
-                const LogString& n = event->getLoggerName();
+		const LogString& n = event->getLoggerName();
 		LogString::size_type len = n.length();
 
 		// We substract 1 from 'len' when assigning to 'end' to avoid out of

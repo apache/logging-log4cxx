@@ -35,7 +35,8 @@ using namespace log4cxx::spi::location;
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
 Logger::Logger(const LogString& name)
-: name(name), additive(true), repository(0), pool(), mutex(pool)
+: name(name), level(), parent(), resourceBundle(),
+  repository(0), aai(), additive(true),  pool(), mutex(pool)
 {
 }
 

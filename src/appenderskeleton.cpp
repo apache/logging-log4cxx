@@ -28,25 +28,25 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 AppenderSkeleton::AppenderSkeleton()
-: errorHandler(new OnlyOnceErrorHandler()),
-  closed(0),
-  threshold(Level::getAll()),
-  layout(),
-  name(),
-  headFilter(),
-  tailFilter(),
-  mutex(getSynchronizationPool())
+:   layout(),
+    name(),
+    threshold(Level::getAll()),
+    errorHandler(new OnlyOnceErrorHandler()),
+    headFilter(),
+    tailFilter(),
+    closed(0),
+    mutex(getSynchronizationPool())
 {
 }
 
 AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout)
-: errorHandler(new OnlyOnceErrorHandler()),
-  closed(0),
-  threshold(Level::getAll()),
-  layout(layout),
+: layout(layout),
   name(),
+  threshold(Level::getAll()),
+  errorHandler(new OnlyOnceErrorHandler()),
   headFilter(),
   tailFilter(),
+  closed(0),
   mutex(getSynchronizationPool())
 {
 }

@@ -288,7 +288,7 @@ void Hierarchy::updateParents(LoggerPtr& logger)
         //tcout << _T("UpdateParents called for ") << name << std::endl;
 
         // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
-        for(int i = name.find_last_of(L'.', length-1); i != LogString::npos;
+        for(size_t i = name.find_last_of(L'.', length-1); i != LogString::npos;
         i = name.find_last_of(L'.', i-1))
         {
                 LogString substr = name.substr(0, i);

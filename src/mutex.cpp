@@ -18,6 +18,7 @@
 
 #include <log4cxx/helpers/mutex.h>
 #include <apr_thread_mutex.h>
+#include <assert.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
@@ -33,4 +34,5 @@ Mutex::Mutex(apr_pool_t* p) {
 
 Mutex::~Mutex() {
 	apr_status_t stat = apr_thread_mutex_destroy(mutex);
+	assert(stat == APR_SUCCESS);
 }

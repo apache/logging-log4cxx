@@ -41,17 +41,23 @@ namespace log4cxx
 	class Filter
 	{
 	public:
+	    Filter() {}
+	    virtual ~Filter() {}
 		virtual LogString filter(const LogString& in)
 			const throw(UnexpectedFormatException) = 0;
 
 		static std::string merge(const std::string& pattern,
-                   const std::string& in, const std::string& fmt);
+		const std::string& in, const std::string& fmt);
 		static bool match(const std::string& pattern,
                     const std::string& in);
-                static std::wstring merge(const std::wstring& pattern,
+		static std::wstring merge(const std::wstring& pattern,
                     const std::wstring& in, const std::wstring& fmt);
-                static bool match(const std::wstring& pattern,
+		static bool match(const std::wstring& pattern,
                     const std::wstring& in);
+					
+	private:
+	    Filter(const Filter&);
+	    Filter& operator=(const Filter&);
 	};
 }
 

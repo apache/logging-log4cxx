@@ -58,7 +58,7 @@ namespace log4cxx
 			LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
 		END_LOG4CXX_CAST_MAP()
 
-                AsyncAppender();
+		AsyncAppender();
 		virtual ~AsyncAppender();
 
 		void addAppender(const AppenderPtr& newAppender);
@@ -118,9 +118,9 @@ namespace log4cxx
 		int getBufferSize() const;
 
 	private:
-                log4cxx::helpers::Pool pool;
+		log4cxx::helpers::Pool pool;
 		std::deque<log4cxx::spi::LoggingEventPtr> queue;
-		int size;
+		size_t size;
 		//
 		//   Condition is signaled when there is room available on the queue
 		//

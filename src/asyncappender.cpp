@@ -32,13 +32,16 @@ IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 
 
 AsyncAppender::AsyncAppender()
-: AppenderSkeleton(), locationInfo(true),
+: AppenderSkeleton(), 
+  pool(), 
+  queue(), 
   size(DEFAULT_BUFFER_SIZE),
-  queue(), pending(pool), available(pool)
-{
-    aai = new AppenderAttachableImpl();
-
-	thread.run(pool, dispatch, this);
+  available(pool), 
+  pending(pool),
+  thread(),
+  locationInfo(true),
+  aai(new AppenderAttachableImpl()) {
+  thread.run(pool, dispatch, this);
 }
 
 AsyncAppender::~AsyncAppender()
@@ -69,7 +72,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
 	{
 		synchronized sync(mutex);
 		count = queue.size();
-                full = count >= size;
+		full = count >= size;
 		if (!full) {
 			queue.push_back(event);
 		}
@@ -92,7 +95,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
 	//
 	//   if was full, add it now
 	//
-        if (full) {
+	if (full) {
 		synchronized sync(mutex);
 		queue.push_back(event);
 		pending.broadcast();
@@ -132,6 +135,9 @@ bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 
 void AsyncAppender::setBufferSize(int size)
 {
+    if (size < 0) {
+	  throw IllegalArgumentException();
+	}
 	this->size = size;
 }
 
@@ -179,17 +185,17 @@ void* APR_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) 
 			}
 			pThis->pending.wait();
 		} else {
-	                if(pThis->aai != 0) {
+			if(pThis->aai != 0) {
 			    synchronized sync(pThis->aai->getMutex());
-                            Pool p;
+				Pool p;
 			    pThis->aai->appendLoopOnAppenders(event, p);
 			}
 
-			if (count == pThis->getBufferSize()) {
+			if (count == (size_t) pThis->getBufferSize()) {
 				pThis->available.broadcast();
 			}
 
-                        LoggingEventPtr nullEvent;
+			LoggingEventPtr nullEvent;
 			event = nullEvent;
 		}
 	}

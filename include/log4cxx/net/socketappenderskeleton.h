@@ -100,7 +100,7 @@ namespace log4cxx
                         { return false; }
 
 
-                        void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+				void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 
 
                 /**

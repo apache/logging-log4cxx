@@ -38,28 +38,39 @@ using namespace log4cxx::net;
 
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay)
-: port(defaultPort), reconnectionDelay(reconnectionDelay),
-locationInfo(false),
-remoteHost(), address(), os(), thread()
-
-{
+:  pool(),
+   remoteHost(), 
+   address(), 
+   port(defaultPort), 
+   os(), 
+   reconnectionDelay(reconnectionDelay),
+   locationInfo(false),
+   thread() {
 }
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(unsigned long address, int port, int delay)
-: port(port), reconnectionDelay(delay),
-locationInfo(false),
-os(), thread() {
+:
+   pool(),
+   remoteHost(),
+   address(), 
+   port(port), 
+   os(), 
+   reconnectionDelay(delay),
+   locationInfo(false),
+   thread() {
     this->address.address = address;
     remoteHost = this->address.getHostName();
 }
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port, int delay)
-: address(InetAddress::getByName(host)), port(port),
-reconnectionDelay(delay), locationInfo(false),
-remoteHost(host),
-os(), thread()
-
-{
+:   pool(),
+    remoteHost(host),
+    address(InetAddress::getByName(host)), 
+	port(port),
+    os(), 
+    reconnectionDelay(delay), 
+	locationInfo(false),
+	thread() {
 }
 
 SocketAppenderSkeleton::~SocketAppenderSkeleton()

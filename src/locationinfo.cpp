@@ -38,21 +38,20 @@
               const char * const className,
               const char * const methodName,
               int lineNumber )
-     : fileName( fileName ),
-       className( className ),
-       methodName( methodName ),
-       lineNumber( lineNumber )
-     {
+     :  lineNumber( lineNumber ),
+        fileName( fileName ),
+        className( className ),
+        methodName( methodName ) {
 }
 
 /**
 *   Default constructor.
 */
  LocationInfo::LocationInfo()
-   : fileName(LocationInfo::NA),
+   : lineNumber( -1 ),
+     fileName(LocationInfo::NA),
      className(LocationInfo::NA),
-     methodName(LocationInfo::NA),
-     lineNumber(-1) {
+     methodName(LocationInfo::NA) {
 }
 
 /**

@@ -35,7 +35,7 @@
 #include "util/filenamefilter.h"
 #include <iostream>
 #include <log4cxx/helpers/transcoder.h>
-#include <apr_pools.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_strings.h>
 #include <log4cxx/helpers/pool.h>
 #include "testchar.h"
@@ -57,6 +57,7 @@
 #define PAT_MDC_1 LOG4CXX_STR("")
 
 using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 class PatternLayoutTest : public CppUnit::TestFixture
 {
@@ -510,8 +511,7 @@ public:
 	{
 		int i = -1;
 
-                apr_pool_t* pool;
-                apr_status_t rv = apr_pool_create(&pool, NULL);
+        Pool pool;
 
 
 		LOG4CXX_DEBUG(logger, createMessage(pool, ++i));
@@ -528,8 +528,6 @@ public:
 
 		LOG4CXX_FATAL(logger, createMessage(pool, ++i));
 		LOG4CXX_FATAL(root, createMessage(pool, i));
-
-                apr_pool_destroy(pool);
 	}
 };
 

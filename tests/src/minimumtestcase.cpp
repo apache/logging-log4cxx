@@ -31,7 +31,7 @@
 #include "util/threadfilter.h"
 #include <log4cxx/file.h>
 #include <iostream>
-#include <apr_pools.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_strings.h>
 #include "testchar.h"
 
@@ -140,10 +140,9 @@ public:
 		LoggerPtr INF_ERR_UNDEF = Logger::getLogger(LOG4CXX_TEST_STR("INF.ERR.UNDEF"));
 		LoggerPtr UNDEF = Logger::getLogger(LOG4CXX_TEST_STR("UNDEF"));
 
-                apr_pool_t* pool;
-                apr_status_t rv = apr_pool_create(&pool, NULL);
+        Pool pool;
 
-                std::string msg("Message ");
+		std::string msg("Message ");
 
 		// These should all log.----------------------------
 		LOG4CXX_FATAL(ERR, createMessage(i, pool));
@@ -231,9 +230,7 @@ public:
 
 		// -------------------------------------------------
 		LOG4CXX_INFO(INF, LOG4CXX_TEST_STR("Messages should bear numbers 0 through 23."));
-
-                apr_pool_destroy(pool);
-	}
+   }
 
 	LoggerPtr root;
 	LoggerPtr logger;

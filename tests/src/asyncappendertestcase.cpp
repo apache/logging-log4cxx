@@ -23,7 +23,7 @@
 #include "vectorappender.h"
 #include <log4cxx/asyncappender.h>
 #include "appenderskeletontestcase.h"
-#include <apr_pools.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_strings.h>
 #include "testchar.h"
 
@@ -111,7 +111,7 @@ public:
 	void test3()
 	{
 		typedef std::vector<spi::LoggingEventPtr>::size_type size_type;
-		int LEN = 200;
+		size_t LEN = 200;
 		LoggerPtr root = Logger::getRootLogger();
 		LayoutPtr layout = new SimpleLayout();
 		VectorAppenderPtr vectorAppender = new VectorAppender();
@@ -120,24 +120,20 @@ public:
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
-                apr_pool_t* pool;
-                apr_status_t rv = apr_pool_create(&pool, NULL);
-                std::string msg("message");
-		for (int i = 0; i < LEN; i++)
-		{
-                        msg.erase(msg.begin() + 7, msg.end());
-                        msg.append(apr_itoa(pool, i));
+        Pool pool;
+		std::string msg("message");
+		for (size_t i = 0; i < LEN; i++) {
+			msg.erase(msg.begin() + 7, msg.end());
+			msg.append(apr_itoa(pool, i));
 			LOG4CXX_DEBUG(root, msg);
 		}
 
 		asyncAppender->close();
 		root->debug(LOG4CXX_TEST_STR("m2"));
 
-                apr_pool_destroy(pool);
-
 		const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
-		CPPUNIT_ASSERT(v.size() == LEN);
-		CPPUNIT_ASSERT(vectorAppender->isClosed());
+		CPPUNIT_ASSERT_EQUAL(LEN, v.size());
+		CPPUNIT_ASSERT_EQUAL(true, vectorAppender->isClosed());
 	}
 };
 

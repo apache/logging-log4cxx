@@ -50,8 +50,8 @@ namespace log4cxx
                 protected:
                         int state;
                         LogString currentLiteral;
-                        int patternLength;
-                        int i;
+                        size_t patternLength;
+                        size_t i;
                         PatternConverterPtr head;
                         PatternConverterPtr tail;
                         FormattingInfo formattingInfo;
