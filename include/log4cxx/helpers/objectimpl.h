@@ -20,7 +20,9 @@
 #include <log4cxx/config.h>
 #include <log4cxx/helpers/object.h>
 
-#ifdef HAVE_PTHREAD
+#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
+#include <asm/atomic.h>
+#elif defined(HAVE_PTHREAD)
 #include <log4cxx/helpers/criticalsection.h>
 #endif
 
@@ -45,9 +47,15 @@ namespace log4cxx
 			virtual void notify();
 
 		protected:
-			unsigned int ref;
-#ifdef HAVE_PTHREAD
+#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
+			atomic_t ref;
+#elif defined(HAVE_PTHREAD)
 			CriticalSection refCs;
+			unsigned int ref;
+#elif defined(HAVE_MS_THREAD)
+			long ref;
+#else
+			unsigned int ref;
 #endif
 			Mutex mutex;
 			Condition cond;
