@@ -47,7 +47,7 @@ public:
 	StringTokenizer(const tstring& str, const tstring& delim)
 	: delim(delim)
 	{
-		this->str = new TCHAR[str.length()];
+		this->str = new TCHAR[str.length() + 1];
 
 #ifdef UNICODE
 		wcscpy(this->str, str.c_str());
@@ -60,7 +60,7 @@ public:
 
 	~StringTokenizer()
 	{
-		delete [] str;
+		delete this->str;
 	}
 
 	bool hasMoreTokens()
@@ -78,9 +78,9 @@ public:
 		tstring currentToken = token;
 
 #ifdef UNICODE
-		token = wcstok(str, delim.c_str());
+		token = wcstok(0, delim.c_str());
 #else
-		token = strtok(str, delim.c_str());
+		token = strtok(0, delim.c_str());
 #endif
 
 		return currentToken;
@@ -157,12 +157,12 @@ void PropertyConfigurator::doConfigure(const tstring& configFileName,
 
 void PropertyConfigurator::configure(const tstring& configFilename)
 {
-	doConfigure(configFilename, LogManager::getLoggerRepository());
+	PropertyConfigurator().doConfigure(configFilename, LogManager::getLoggerRepository());
 }
 
 void PropertyConfigurator::configure(helpers::Properties& properties)
 {
-	doConfigure(properties, LogManager::getLoggerRepository());
+	PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
 }
 
 void PropertyConfigurator::doConfigure(helpers::Properties& properties,
@@ -304,7 +304,7 @@ void PropertyConfigurator::parseCategory(
 	StringTokenizer st(value, _T(","));
 
 	// If value is not in the form ", appender.." or "", then we should set
-	// the level of the loggeregory.
+	// the level of the logger.
 	if (!(value.find(_T(",")) == 0 || value.empty()))
 	{
 		// just to be on the safe side...
@@ -320,7 +320,7 @@ void PropertyConfigurator::parseCategory(
 		// null. We also check that the user has not specified inherited for the
 		// root category.
 		if (StringHelper::equalsIgnoreCase(INHERITED, levelStr)
-			|| StringHelper::equalsIgnoreCase(NULL, levelStr))
+			|| StringHelper::equalsIgnoreCase(NuLL, levelStr))
 		{
 			if (loggerName == INTERNAL_ROOT_NAME)
 			{
