@@ -37,7 +37,7 @@ int64_t LoggingEvent::startTime = System::currentTimeMillis();
 
 LoggingEvent::LoggingEvent()
 : timeStamp(0), ndcLookupRequired(true), line(0),
-mdcCopyLookupRequired(true)
+mdcCopyLookupRequired(true), properties(0)
 {
 }
 
@@ -47,9 +47,17 @@ LoggingEvent::LoggingEvent(const String& fqnOfCategoryClass,
 : fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(level),
 message(message), file((char*)file), line(line),
 timeStamp(System::currentTimeMillis()), ndcLookupRequired(true),
-mdcCopyLookupRequired(true)
+mdcCopyLookupRequired(true), properties(0)
 {
 	threadId = Thread::getCurrentThreadId();
+}
+
+LoggingEvent::~LoggingEvent()
+{
+	if (properties != 0)
+	{
+		delete properties;
+	}
 }
 
 const String& LoggingEvent::getLoggerName() const
@@ -130,9 +138,14 @@ void LoggingEvent::getMDCCopy() const
 
 String LoggingEvent::getProperty(const String& key) const
 {
-	std::map<String, String>::const_iterator  it = properties.find(key);
+	if (properties == 0)
+	{
+		return String();
+	}
 
-	if (it != properties.end())
+	std::map<String, String>::const_iterator  it = properties->find(key);
+
+	if (it != properties->end())
 	{
 		const String& p = it->second;
 
@@ -148,10 +161,14 @@ String LoggingEvent::getProperty(const String& key) const
 std::set<String> LoggingEvent::getPropertyKeySet() const
 {
 	std::set<String> set;
-	std::map<String, String>::const_iterator it;
-	for (it = properties.begin(); it != properties.end(); it++)
+
+	if (properties != 0)
 	{
-		set.insert(it->first);
+		std::map<String, String>::const_iterator it;
+		for (it = properties->begin(); it != properties->end(); it++)
+		{
+			set.insert(it->first);
+		}
 	}
 
 	return set;
@@ -212,7 +229,7 @@ void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)
 	{
 		is->read(key);
 		is->read(value);
-		properties[key] = value;
+		setProperty(key, value);
 	}
 
 	// threadId
@@ -253,7 +270,12 @@ void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& is)
 
 void LoggingEvent::setProperty(const String& key, const String& value)
 {
-	properties[key] = value;
+	if (properties == 0)
+	{
+		properties = new std::map<String, String>;
+	}
+
+	(*properties)[key] = value;
 }
 
 void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
@@ -299,12 +321,17 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 	}
 
 	// properties
-	os->write((int)properties.size());
-	std::map<String, String>::const_iterator it2;
-	for (it2 = properties.begin(); it2 != properties.end(); it2++)
+	int size = (properties != 0) ? (int)properties->size() : 0;
+	os->write(size);
+
+	if (size > 0)
 	{
-		os->write(it2->first);
-		os->write(it2->second);
+		std::map<String, String>::const_iterator it;
+		for (it = properties->begin(); it != properties->end(); it++)
+		{
+			os->write(it->first);
+			os->write(it->second);
+		}
 	}
 
 	// threadId

@@ -19,6 +19,12 @@
 
 #include <log4cxx/config.h>
 
+#ifdef HAVE_PTHREAD
+#include <pthread.h>
+#elif defined(HAVE_MS_THREAD)
+#include <windows.h>
+#endif
+
 namespace log4cxx
 {
 	namespace helpers
@@ -30,8 +36,14 @@ namespace log4cxx
 			~CriticalSection();
 			void lock();
 			void unlock();
+			unsigned long getOwningThread();
 
-			void * mutex;
+#ifdef HAVE_PTHREAD
+			pthread_mutex_t mutex;
+#elif defined(HAVE_MS_THREAD)
+			CRITICAL_SECTION mutex;
+#endif						
+			unsigned long owningThread;
 		};
 
 		/** CriticalSection helper class to be used on call stack

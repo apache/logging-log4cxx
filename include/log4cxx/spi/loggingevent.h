@@ -86,6 +86,8 @@ namespace log4cxx
 				const LevelPtr& level,	const String& message,
 				const char* file=0, int line=-1);
 
+			~LoggingEvent();
+
 			/** Return the #level of this event. */
 			inline const LevelPtr& getLevel() const
 				{ return level; }
@@ -216,7 +218,7 @@ namespace log4cxx
 			/**
 			* A map of String keys and String values.
 			*/
-			std::map<String, String> properties;
+			std::map<String, String> * properties;
 
 			/** Have we tried to do an NDC lookup? If we did, there is no need
 			*  to do it again.  Note that its value is always false when
