@@ -36,7 +36,7 @@ namespace log4cxx
 		{
 		public:
 			ISO8601DateFormat(const tstring& timeZone = _T(""))
-			 : DateFormat(_T("%Y-%m-%d %H:%M:%S,%Q"), timeZone) {}
+			 : DateFormat(_T("%Y-%m-%d %H:%M:%S,%%Q"), timeZone) {}
 		};
 	}; // namespace helpers
 }; // namespace log4cxx
