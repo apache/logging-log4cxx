@@ -1,0 +1,7 @@
+base referer
+rect $classlog4cxx_1_1helpers_1_1InterruptedIOException.html 12,155 159,174
+rect $classlog4cxx_1_1helpers_1_1SocketException.html 183,155 292,174
+rect $classlog4cxx_1_1helpers_1_1Exception.html 127,17 196,35
+rect $classlog4cxx_1_1helpers_1_1SocketTimeoutException.html 7,225 164,243
+rect $classlog4cxx_1_1helpers_1_1BindException.html 188,225 284,243
+rect $classlog4cxx_1_1helpers_1_1ConnectException.html 308,225 425,243

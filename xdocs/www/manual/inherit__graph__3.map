@@ -1,0 +1,12 @@
+base referer
+rect $classlog4cxx_1_1helpers_1_1Exception.html 17,90 87,109
+rect $classlog4cxx_1_1helpers_1_1ClassNotFoundException.html 137,5 295,23
+rect $classlog4cxx_1_1helpers_1_1IllegalArgumentException.html 135,47 297,66
+rect $classlog4cxx_1_1helpers_1_1InstantiationException.html 148,90 284,109
+rect $classlog4cxx_1_1helpers_1_1IOException.html 175,133 257,151
+rect $classlog4cxx_1_1helpers_1_1RuntimeException.html 157,175 275,194
+rect $classlog4cxx_1_1helpers_1_1InterruptedIOException.html 345,111 492,130
+rect $classlog4cxx_1_1helpers_1_1SocketException.html 364,154 473,173
+rect $classlog4cxx_1_1helpers_1_1SocketTimeoutException.html 540,111 697,130
+rect $classlog4cxx_1_1helpers_1_1BindException.html 571,154 667,173
+rect $classlog4cxx_1_1helpers_1_1ConnectException.html 560,197 677,215
