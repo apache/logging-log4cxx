@@ -126,13 +126,17 @@ inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 #else
 	#define tstrncasecmp wcsncasecmp
 #endif // WIN32
+#ifndef T2A
 	#define T2A(src) W2A(src)
+#endif
 
 #ifndef T2W
 	#define T2W(src) src
 #endif
 
+#ifndef A2T
 	#define A2T(src) A2W(src)
+#endif
 
 #ifndef W2T
 	#define W2T(src) src

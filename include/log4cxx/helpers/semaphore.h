@@ -20,7 +20,7 @@
 #include <log4cxx/config.h>
 #include <log4cxx/helpers/exception.h>
 
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 #include <semaphore.h>
 #endif
 
@@ -44,9 +44,9 @@ namespace log4cxx
 			void post();
 
 		protected:
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 			sem_t semaphore;
-#elif defined (WIN32)
+#elif defined (HAVE_MS_THREAD)
 			void * semaphore;
 #endif
 		};

@@ -41,7 +41,7 @@ namespace log4cxx
 
 		protected:
 			unsigned int ref;
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 			CriticalSection refCs;
 #endif
 			CriticalSection cs;
