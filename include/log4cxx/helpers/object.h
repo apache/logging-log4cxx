@@ -29,7 +29,8 @@ public:\
 	Class##object() : helpers::Class(_T(#object)) {}\
 };\
 virtual const helpers::Class& getClass() const;\
-static const helpers::Class& getStaticClass();
+static const helpers::Class& getStaticClass();\
+static Class##object theClass##object;
 
 #define DECLARE_LOG4CXX_OBJECT(object)\
 public:\
@@ -43,10 +44,22 @@ public:\
 	}\
 };\
 virtual const helpers::Class& getClass() const;\
-static const helpers::Class& getStaticClass();
+static const helpers::Class& getStaticClass();\
+static Class##object theClass##object;
+
+#define DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
+public:\
+virtual const helpers::Class& getClass() const;\
+static const helpers::Class& getStaticClass();\
+static class theClass##object;
 
 #define IMPLEMENT_LOG4CXX_OBJECT(object)\
-object::Class##object theClass##object;\
+object::Class##object object::theClass##object;\
+const log4cxx::helpers::Class& object::getClass() const { return theClass##object; }\
+const log4cxx::helpers::Class& object::getStaticClass() { return theClass##object; }
+
+#define IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
+object::class object::theClass##object;\
 const log4cxx::helpers::Class& object::getClass() const { return theClass##object; }\
 const log4cxx::helpers::Class& object::getStaticClass() { return theClass##object; }
 
