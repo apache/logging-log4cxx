@@ -29,36 +29,36 @@ using namespace log4cxx;
 
 class TestCase4 : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(TestCase4);
-		CPPUNIT_TEST(combinedTest);
-	CPPUNIT_TEST_SUITE_END();
-	
+   CPPUNIT_TEST_SUITE(TestCase4);
+      CPPUNIT_TEST(combinedTest);
+   CPPUNIT_TEST_SUITE_END();
+   
 public:
-	void setUp()
-	{
-	}
+   void setUp()
+   {
+   }
 
-	void tearDown()
-	{
-		LogManager::shutdown();
-	}
-	
-	void combinedTest()
-	{
-		LoggerPtr root = Logger::getRootLogger();
-		bool rootIsConfigured = !root->getAllAppenders().empty();
-		CPPUNIT_ASSERT(rootIsConfigured);
-		
-		AppenderList list = root->getAllAppenders();
-		CPPUNIT_ASSERT_EQUAL((size_t) 1, list.size());
-		AppenderPtr appender = list.front();
-		CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D1"), appender->getName());
-	}
+   void tearDown()
+   {
+      LogManager::shutdown();
+   }
+   
+   void combinedTest()
+   {
+      LoggerPtr root = Logger::getRootLogger();
+      bool rootIsConfigured = !root->getAllAppenders().empty();
+      CPPUNIT_ASSERT(rootIsConfigured);
+      
+      AppenderList list = root->getAllAppenders();
+      CPPUNIT_ASSERT_EQUAL((size_t) 1, list.size());
+      AppenderPtr appender = list.front();
+      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D1"), appender->getName());
+   }
 
 };
 
 CPPUNIT_NS::Test* createTestCase4() {
-	return TestCase4::suite();
+   return TestCase4::suite();
 }
 
 #endif //LOG4CXX_HAVE_XML

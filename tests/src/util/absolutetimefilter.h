@@ -21,11 +21,11 @@
 
 namespace log4cxx
 {
-	class AbsoluteTimeFilter : public Filter
-	{
-	public:
-	    AbsoluteTimeFilter();
-	};
+   class AbsoluteTimeFilter : public Filter
+   {
+   public:
+       AbsoluteTimeFilter();
+   };
 }
 
 

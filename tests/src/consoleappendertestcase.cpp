@@ -27,14 +27,14 @@ using namespace log4cxx::helpers;
  */
 class ConsoleAppenderTestCase : public WriterAppenderTestCase
 {
-	CPPUNIT_TEST_SUITE(ConsoleAppenderTestCase);
+   CPPUNIT_TEST_SUITE(ConsoleAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
                 CPPUNIT_TEST(testDefaultThreshold);
                 CPPUNIT_TEST(testSetOptionThreshold);
 
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE_END();
 
 
 public:

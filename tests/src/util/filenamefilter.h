@@ -21,12 +21,12 @@
 
 namespace log4cxx
 {
-	class FilenameFilter : public Filter
-	{
-	public:
+   class FilenameFilter : public Filter
+   {
+   public:
         FilenameFilter(const std::string& actual, const std::string& expected);
         static const std::string getMatch(const std::string& actual);
-	};
+   };
 }
 
 

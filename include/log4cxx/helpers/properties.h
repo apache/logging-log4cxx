@@ -54,7 +54,7 @@ namespace log4cxx
                         then the following line, if it exists, is treated as a continuation
                         line, as described below). The key consists of all the characters in
                         the line starting with the first non-whitespace character and up to,
-                        but	not including, the first ASCII <code>=</code>, <code>:</code>,
+                        but   not including, the first ASCII <code>=</code>, <code>:</code>,
                         or whitespace character. All of the
                         key termination characters may be included in the key by preceding them
                         with a <code>\\</code>. Any whitespace after the key is skipped;
@@ -81,13 +81,13 @@ namespace log4cxx
                         <pre>
  Truth = Beauty
         Truth:Beauty
- Truth			:Beauty
+ Truth         :Beauty
                         </pre>
 
                 As another example, the following three lines specify a single
                         property:
                         <pre>
- fruits				apple, banana, pear, \
+ fruits           apple, banana, pear, \
                                   cantaloupe, watermelon, \
                                   kiwi, mango
                         </pre>

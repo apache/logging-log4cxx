@@ -35,13 +35,13 @@ using namespace log4cxx::helpers;
 */
 ServerSocket::ServerSocket(int port)
 {
-	InetAddress bindAddr;
-	bindAddr.address = INADDR_ANY;
+   InetAddress bindAddr;
+   bindAddr.address = INADDR_ANY;
 
-	socketImpl = new SocketImpl();
-	socketImpl->create(true);
-	socketImpl->bind(bindAddr, port);
-	socketImpl->listen(50);
+   socketImpl = new SocketImpl();
+   socketImpl->create(true);
+   socketImpl->bind(bindAddr, port);
+   socketImpl->listen(50);
 }
 
 /** Creates a server socket and binds it to the specified local
@@ -49,13 +49,13 @@ port number, with the specified backlog.
 */
 ServerSocket::ServerSocket(int port, int backlog)
 {
-	InetAddress bindAddr;
-	bindAddr.address = INADDR_ANY;
+   InetAddress bindAddr;
+   bindAddr.address = INADDR_ANY;
 
-	socketImpl = new SocketImpl();
-	socketImpl->create(true);
-	socketImpl->bind(bindAddr, port);
-	socketImpl->listen(backlog);
+   socketImpl = new SocketImpl();
+   socketImpl->create(true);
+   socketImpl->bind(bindAddr, port);
+   socketImpl->listen(backlog);
 }
 
 /** Create a server with the specified port, listen backlog,
@@ -63,10 +63,10 @@ and local IP address to bind to.
 */
 ServerSocket::ServerSocket(int port, int backlog, InetAddress bindAddr)
 {
-	socketImpl = new SocketImpl();
-	socketImpl->create(true);
-	socketImpl->bind(bindAddr, port);
-	socketImpl->listen(backlog);
+   socketImpl = new SocketImpl();
+   socketImpl->create(true);
+   socketImpl->bind(bindAddr, port);
+   socketImpl->listen(backlog);
 }
 
 ServerSocket::~ServerSocket()
@@ -78,22 +78,22 @@ accepts it
 */
 SocketPtr ServerSocket::accept()
 {
-	SocketImplPtr accepted = new SocketImpl;
-	socketImpl->accept(accepted);
-	return new Socket(accepted);
+   SocketImplPtr accepted = new SocketImpl;
+   socketImpl->accept(accepted);
+   return new Socket(accepted);
 }
 
 /** Retrive setting for SO_TIMEOUT.
 */
 int ServerSocket::getSoTimeout() const
 {
-	return socketImpl->getSoTimeout();
+   return socketImpl->getSoTimeout();
 }
 
 /** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
 */
 void ServerSocket::setSoTimeout(int timeout)
 {
-	socketImpl->setSoTimeout(timeout);
+   socketImpl->setSoTimeout(timeout);
 }
 

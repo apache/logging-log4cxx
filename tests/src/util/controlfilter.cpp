@@ -25,5 +25,5 @@ ControlFilter::ControlFilter()
 
 ControlFilter& ControlFilter::operator<<(const std::string& allowedPattern)
 {
-	return *this;
+   return *this;
 }

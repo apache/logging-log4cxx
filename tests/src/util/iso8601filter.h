@@ -21,11 +21,11 @@
 
 namespace log4cxx
 {
-	class ISO8601Filter : public Filter
-	{
-	public:
-	    ISO8601Filter();
-	};
+   class ISO8601Filter : public Filter
+   {
+   public:
+       ISO8601Filter();
+   };
 }
 
 

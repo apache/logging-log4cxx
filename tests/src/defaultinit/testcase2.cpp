@@ -29,35 +29,35 @@ using namespace log4cxx;
 
 class TestCase2 : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(TestCase2);
-		CPPUNIT_TEST(xmlTest);
-	CPPUNIT_TEST_SUITE_END();
-	
+   CPPUNIT_TEST_SUITE(TestCase2);
+      CPPUNIT_TEST(xmlTest);
+   CPPUNIT_TEST_SUITE_END();
+   
 public:
-	void setUp()
-	{
-	}
+   void setUp()
+   {
+   }
 
-	void tearDown()
-	{
-		LogManager::shutdown();
-	}
-	
-	void xmlTest()
-	{
-		LoggerPtr root = Logger::getRootLogger();
-		bool rootIsConfigured = !root->getAllAppenders().empty();
-		CPPUNIT_ASSERT(rootIsConfigured);
-		
-		AppenderList list = root->getAllAppenders();
-		AppenderPtr appender = list.front();
-		CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D1"), appender->getName());
-	}
+   void tearDown()
+   {
+      LogManager::shutdown();
+   }
+   
+   void xmlTest()
+   {
+      LoggerPtr root = Logger::getRootLogger();
+      bool rootIsConfigured = !root->getAllAppenders().empty();
+      CPPUNIT_ASSERT(rootIsConfigured);
+      
+      AppenderList list = root->getAllAppenders();
+      AppenderPtr appender = list.front();
+      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D1"), appender->getName());
+   }
 
 };
 
 CPPUNIT_NS::Test* createTestCase2() {
-	return TestCase2::suite();
+   return TestCase2::suite();
 }
 
 

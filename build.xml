@@ -659,7 +659,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </antcall>
 </target>
 
-<target name="build-examples" 
+<target name="build-examples"
     depends="build-delayedloop, build-trivial, build-stream"
     description="Builds example programs"/>
 
@@ -902,7 +902,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 </target>
 
-<target name="run-standalone-unittest" 
+<target name="run-standalone-unittest"
    depends="build-standalone-unittest"
    description="Runs standalone unit test">
     <property environment="env"/>
@@ -1022,5 +1022,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="gump" depends="check, header-check"/>
+
+<target name="fixcrlf" depends="init" description="repair end-of-line sequences">
+   <fixcrlf srcDir="${base.dir}" tab="remove" tablength="3"
+       fixlast="true" includes="**/*.cpp **/*.h" excludes="lib/**/*"/>
+</target>
 
 </project>

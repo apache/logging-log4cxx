@@ -27,14 +27,14 @@ using namespace log4cxx::helpers;
  */
 class RollingFileAppenderTestCase : public FileAppenderAbstractTestCase
 {
-	CPPUNIT_TEST_SUITE(RollingFileAppenderTestCase);
+   CPPUNIT_TEST_SUITE(RollingFileAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
                 CPPUNIT_TEST(testDefaultThreshold);
                 CPPUNIT_TEST(testSetOptionThreshold);
 
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE_END();
 
 
 public:

@@ -63,58 +63,58 @@ int main( int argc, const char * const * argv)
         bool wasSuccessful = true;
         if (argc > 1)
         {
-			    bool runAll = false;
+             bool runAll = false;
                 for (int n = 1; n < argc; n++)
                 {
-					std::string testName(argv[n]);
-					//
-					//  if any name starts with a +
-					//     run it in addition to all tests
-					if (argv[n][0] == '+') {
-						runAll = true;
-						testName.erase(0, 1);
-					}
+               std::string testName(argv[n]);
+               //
+               //  if any name starts with a +
+               //     run it in addition to all tests
+               if (argv[n][0] == '+') {
+                  runAll = true;
+                  testName.erase(0, 1);
+               }
 
-					//
-					//   if the test case starts with TestCase
-					//
-					if (testName.length() >= 9 && testName.compare(0, 8, "TestCase") == 0) {
-						char testN = testName[8];
-						switch(testN) {
-							case '1':
-								runner.addTest(createTestCase1());
-								break;
-							case '3':
-								runner.addTest(createTestCase3());
-								break;
+               //
+               //   if the test case starts with TestCase
+               //
+               if (testName.length() >= 9 && testName.compare(0, 8, "TestCase") == 0) {
+                  char testN = testName[8];
+                  switch(testN) {
+                     case '1':
+                        runner.addTest(createTestCase1());
+                        break;
+                     case '3':
+                        runner.addTest(createTestCase3());
+                        break;
 #if defined(LOG4CXX_HAVE_XML)
-							case '2':
-								runner.addTest(createTestCase2());
-								break;
-							case '4':
-								runner.addTest(createTestCase4());
-								break;
+                     case '2':
+                        runner.addTest(createTestCase2());
+                        break;
+                     case '4':
+                        runner.addTest(createTestCase4());
+                        break;
 #endif
-							default:
-								break;
-						}
-					}
+                     default:
+                        break;
+                  }
+               }
 
-					if (runAll) {
-						wasSuccessful = runner.run("", false);
-					} else {
-						try
-						{
-							wasSuccessful = runner.run(testName, false) && wasSuccessful;
-						}
-						catch(std::exception& e)
-						{
-							std::cout << e.what() << std::endl;
-						}
-						catch (...) {
-								std::cout << "Unexpected exception";
-						}
-					}
+               if (runAll) {
+                  wasSuccessful = runner.run("", false);
+               } else {
+                  try
+                  {
+                     wasSuccessful = runner.run(testName, false) && wasSuccessful;
+                  }
+                  catch(std::exception& e)
+                  {
+                     std::cout << e.what() << std::endl;
+                  }
+                  catch (...) {
+                        std::cout << "Unexpected exception";
+                  }
+               }
                 }
         }
         else

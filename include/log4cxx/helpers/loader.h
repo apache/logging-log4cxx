@@ -33,8 +33,8 @@ namespace log4cxx
                 public:
                         static const Class& loadClass(const LogString& clazz);
 //  TODO
-//			static LogString getResource(const LogString& name);
-//			static void* getResourceAsStream(const LogString& name,
+//       static LogString getResource(const LogString& name);
+//       static void* getResourceAsStream(const LogString& name,
 //                            apr_size_t* size, log4cxx::helpers::Pool& pool);
                 };
         }  // namespace helpers

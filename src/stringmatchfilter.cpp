@@ -33,46 +33,46 @@ StringMatchFilter::StringMatchFilter() :
 }
 
 void StringMatchFilter::setOption(const LogString& option,
-	const LogString& value)
+   const LogString& value)
 {
 
-	if (StringHelper::equalsIgnoreCase(option,
+   if (StringHelper::equalsIgnoreCase(option,
              LOG4CXX_STR("STRINGTOMATCH"), LOG4CXX_STR("stringtomatch")))
-	{
-		stringToMatch = value;
-	}
-	else if (StringHelper::equalsIgnoreCase(option,
+   {
+      stringToMatch = value;
+   }
+   else if (StringHelper::equalsIgnoreCase(option,
              LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
-	{
-		acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
-	}
+   {
+      acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
+   }
 }
 
 Filter::FilterDecision StringMatchFilter::decide(
-	const log4cxx::spi::LoggingEventPtr& event) const
+   const log4cxx::spi::LoggingEventPtr& event) const
 {
-	const LogString& msg = event->getRenderedMessage();
+   const LogString& msg = event->getRenderedMessage();
 
-	if(msg.empty() || stringToMatch.empty())
-	{
-		return Filter::NEUTRAL;
-	}
+   if(msg.empty() || stringToMatch.empty())
+   {
+      return Filter::NEUTRAL;
+   }
 
 
-	if( msg.find(stringToMatch) == LogString::npos )
-	{
-		return Filter::NEUTRAL;
-	}
-	else
-	{ // we've got a match
-		if(acceptOnMatch)
-		{
-			return Filter::ACCEPT;
-		}
-		else
-		{
-			return Filter::DENY;
-		}
-	}
+   if( msg.find(stringToMatch) == LogString::npos )
+   {
+      return Filter::NEUTRAL;
+   }
+   else
+   { // we've got a match
+      if(acceptOnMatch)
+      {
+         return Filter::ACCEPT;
+      }
+      else
+      {
+         return Filter::DENY;
+      }
+   }
 }
 

@@ -65,9 +65,9 @@ class LoggerTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(testAdditivity2);
                 CPPUNIT_TEST(testAdditivity3);
                 CPPUNIT_TEST(testDisable1);
-//		CPPUNIT_TEST(testRB1);
-//		CPPUNIT_TEST(testRB2);  //TODO restore
-//		CPPUNIT_TEST(testRB3);
+//    CPPUNIT_TEST(testRB1);
+//    CPPUNIT_TEST(testRB2);  //TODO restore
+//    CPPUNIT_TEST(testRB3);
                 CPPUNIT_TEST(testExists);
                 CPPUNIT_TEST(testHierarchy1);
         CPPUNIT_TEST_SUITE_END();

@@ -18,53 +18,53 @@
 
 namespace log4cxx
 {
-	class XLevel : public Level
-	{
-		DECLARE_LOG4CXX_LEVEL(XLevel)
+   class XLevel : public Level
+   {
+      DECLARE_LOG4CXX_LEVEL(XLevel)
 
-	public:
+   public:
         enum
         {
             TRACE_INT = Level::DEBUG_INT - 1,
-			LETHAL_INT = Level::FATAL_INT + 1
+         LETHAL_INT = Level::FATAL_INT + 1
         };
 
-		static const LevelPtr& getTrace();
-		static const LevelPtr& getLethal();
+      static const LevelPtr& getTrace();
+      static const LevelPtr& getLethal();
 
         static const LevelPtr TRACE;
         static const LevelPtr LETHAL;
 
-		XLevel(int level, const logchar* name, int syslogEquivalent);
-		/**
-		Convert the string passed as argument to a level. If the
-		conversion fails, then this method returns #DEBUG.
-		*/
+      XLevel(int level, const logchar* name, int syslogEquivalent);
+      /**
+      Convert the string passed as argument to a level. If the
+      conversion fails, then this method returns #DEBUG.
+      */
         static const LevelPtr& toLevel(const std::string& sArg);
         static const LevelPtr& toLevel(const std::wstring& sArg);
 
-		/**
-		Convert an integer passed as argument to a level. If the
-		conversion fails, then this method returns #DEBUG.
+      /**
+      Convert an integer passed as argument to a level. If the
+      conversion fails, then this method returns #DEBUG.
 
-		*/
-		static const LevelPtr& toLevel(int val);
+      */
+      static const LevelPtr& toLevel(int val);
 
-		/**
-		Convert an integer passed as argument to a level. If the
-		conversion fails, then this method returns the specified default.
-		*/
-		static const LevelPtr& toLevel(int val, const LevelPtr& defaultLevel);
+      /**
+      Convert an integer passed as argument to a level. If the
+      conversion fails, then this method returns the specified default.
+      */
+      static const LevelPtr& toLevel(int val, const LevelPtr& defaultLevel);
 
 
-		/**
-		Convert the string passed as argument to a level. If the
-		conversion fails, then this method returns the value of
-		<code>defaultLevel</code>.
-		*/
+      /**
+      Convert the string passed as argument to a level. If the
+      conversion fails, then this method returns the value of
+      <code>defaultLevel</code>.
+      */
         static const LevelPtr& toLevel(const std::string& sArg,
-			const LevelPtr& defaultLevel);
+         const LevelPtr& defaultLevel);
         static const LevelPtr& toLevel(const std::wstring& sArg,
-			const LevelPtr& defaultLevel);
-	};
+         const LevelPtr& defaultLevel);
+   };
 }

@@ -18,9 +18,9 @@
 
 namespace log4cxx
 {
-	class Num343PatternConverter : public helpers::PatternConverter
-	{
-	public:
-		void convert(LogString& sbuf, const spi::LoggingEventPtr& event);
-	};
+   class Num343PatternConverter : public helpers::PatternConverter
+   {
+   public:
+      void convert(LogString& sbuf, const spi::LoggingEventPtr& event);
+   };
 }

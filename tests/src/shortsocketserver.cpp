@@ -35,23 +35,23 @@ using namespace log4cxx::net;
 
 class ShortSocketServer
 {
-	static LoggerPtr logger;
+   static LoggerPtr logger;
 
 public:
-	static void main(int argc, char **argv)
-	{
-		int totalTests = 0;
-		std::string prefix;
+   static void main(int argc, char **argv)
+   {
+      int totalTests = 0;
+      std::string prefix;
 
-		if (argc == 3)
-		{
+      if (argc == 3)
+      {
                         totalTests = atoi(argv[1]);
                         prefix = argv[2];
-		}
-		else
-		{
-			usage(argv[0], "Wrong number of arguments.");
-		}
+      }
+      else
+      {
+         usage(argv[0], "Wrong number of arguments.");
+      }
 
                 //
                 //  TODO: May need to make another logger hierarchy to
@@ -64,49 +64,49 @@ public:
                 logstream log(Logger::getLogger("shortsocketserver"), Level::DEBUG);
 
                 log << "Listening on port " << PORT << LOG4CXX_ENDMSG;
-		ServerSocket serverSocket(PORT);
+      ServerSocket serverSocket(PORT);
 
-		MDC::put("hostID", "shortSocketServer");
+      MDC::put("hostID", "shortSocketServer");
 
-		for (int i = 1; i <= totalTests; i++)
-		{
+      for (int i = 1; i <= totalTests; i++)
+      {
                         std::ostringstream sbuf(prefix);
-			sbuf <<  i  << ".properties";
-			PropertyConfigurator::configure(sbuf.str());
-			log << "Waiting to accept a new client." << LOG4CXX_ENDMSG;
-			SocketPtr socket = serverSocket.accept();
+         sbuf <<  i  << ".properties";
+         PropertyConfigurator::configure(sbuf.str());
+         log << "Waiting to accept a new client." << LOG4CXX_ENDMSG;
+         SocketPtr socket = serverSocket.accept();
                         log << "Connected to client at "
                             << socket->getInetAddress().toString() << LOG4CXX_ENDMSG;
-			log << "Starting new socket node." << LOG4CXX_ENDMSG;
-			SocketNode sn(socket, LogManager::getLoggerRepository());
-			sn.run();
-		}
-	}
+         log << "Starting new socket node." << LOG4CXX_ENDMSG;
+         SocketNode sn(socket, LogManager::getLoggerRepository());
+         sn.run();
+      }
+   }
 
 
-	static void usage(const char * programName, const char * msg)
-	{
-		std::cout << msg << std::endl;
-		std::cout << "Usage: " << programName;
-		std::cout << " totalTests configFilePrefix" << std::endl;
-		exit(1);
-	}
+   static void usage(const char * programName, const char * msg)
+   {
+      std::cout << msg << std::endl;
+      std::cout << "Usage: " << programName;
+      std::cout << " totalTests configFilePrefix" << std::endl;
+      exit(1);
+   }
 };
 
 LoggerPtr ShortSocketServer::logger =
-	Logger::getLogger("org.apache.log4j.net.ShortSocketServer");
+   Logger::getLogger("org.apache.log4j.net.ShortSocketServer");
 
 int main(int argc, char **argv)
 {
     int result = EXIT_SUCCESS;
     try
     {
-		ShortSocketServer::main(argc, argv);
-	}
-	catch(Exception&)
-	{
-		result = EXIT_FAILURE;
-	}
+      ShortSocketServer::main(argc, argv);
+   }
+   catch(Exception&)
+   {
+      result = EXIT_FAILURE;
+   }
 
     return result;
 }

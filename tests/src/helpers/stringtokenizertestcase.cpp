@@ -25,8 +25,8 @@ using namespace log4cxx::helpers;
 
 class StringTokenizerTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(StringTokenizerTestCase);
-		CPPUNIT_TEST(testNextTokenEmptyString);
+   CPPUNIT_TEST_SUITE(StringTokenizerTestCase);
+      CPPUNIT_TEST(testNextTokenEmptyString);
                 CPPUNIT_TEST(testHasMoreTokensEmptyString);
                 CPPUNIT_TEST(testNextTokenAllDelim);
                 CPPUNIT_TEST(testHasMoreTokensAllDelim);
@@ -36,7 +36,7 @@ class StringTokenizerTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(test4);
                 CPPUNIT_TEST(test5);
                 CPPUNIT_TEST(test6);
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE_END();
 
 public:
         void testNextTokenEmptyString() {

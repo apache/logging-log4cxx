@@ -336,7 +336,7 @@ LogString SocketImpl::toString() const
 // thanks to Yves Mettier (ymettier@libertysurf.fr) for this routine
 size_t SocketImpl::read(void * buf, size_t len) const
 {
-//	LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::reading ") << len << LOG4CXX_STR(" bytes."));
+// LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::reading ") << len << LOG4CXX_STR(" bytes."));
         int len_read = 0;
         unsigned char * p = (unsigned char *)buf;
 
@@ -364,7 +364,7 @@ size_t SocketImpl::read(void * buf, size_t len) const
 // thanks to Yves Mettier (ymettier@libertysurf.fr) for this routine
 size_t SocketImpl::write(const void * buf, size_t len)
 {
-//	LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::writing ") << len << LOG4CXX_STR(" bytes."));
+// LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::writing ") << len << LOG4CXX_STR(" bytes."));
 
         int len_written = 0;
         const unsigned char * p = (const unsigned char *)buf;

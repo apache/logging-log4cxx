@@ -29,39 +29,39 @@ using namespace log4cxx::helpers;
 SyslogWriter::SyslogWriter(const LogString& syslogHost)
 : syslogHost(syslogHost)
 {
-	try
-	{
-		this->address = InetAddress::getByName(syslogHost);
-	}
-	catch(UnknownHostException& e)
-	{
-		LogLog::error(((LogString) LOG4CXX_STR("Could not find ")) + syslogHost +
-			LOG4CXX_STR(". All logging will FAIL."), e);
-	}
+   try
+   {
+      this->address = InetAddress::getByName(syslogHost);
+   }
+   catch(UnknownHostException& e)
+   {
+      LogLog::error(((LogString) LOG4CXX_STR("Could not find ")) + syslogHost +
+         LOG4CXX_STR(". All logging will FAIL."), e);
+   }
 
-	try
-	{
-		this->ds = new DatagramSocket();
-	}
-	catch (SocketException& e)
-	{
-		LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate DatagramSocket to ")) + syslogHost +
-				LOG4CXX_STR(". All logging will FAIL."), e);
-	}
+   try
+   {
+      this->ds = new DatagramSocket();
+   }
+   catch (SocketException& e)
+   {
+      LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate DatagramSocket to ")) + syslogHost +
+            LOG4CXX_STR(". All logging will FAIL."), e);
+   }
 }
 
 void SyslogWriter::write(const LogString& string)
 {
 #if 0
 //  TODO
-	USES_CONVERSION;
-	const char * bytes = T2A(string.c_str());
-	DatagramPacketPtr packet = new DatagramPacket((void *)bytes, string.length() + 1,
-						address, SYSLOG_PORT);
+   USES_CONVERSION;
+   const char * bytes = T2A(string.c_str());
+   DatagramPacketPtr packet = new DatagramPacket((void *)bytes, string.length() + 1,
+                  address, SYSLOG_PORT);
 
-	if(this->ds != 0)
-	{
-		ds->send(packet);
-	}
+   if(this->ds != 0)
+   {
+      ds->send(packet);
+   }
 #endif
 }

@@ -54,7 +54,7 @@ IMPLEMENT_LOG4CXX_OBJECT(TriggeringEventEvaluator)
 
 const Class& Loader::loadClass(const LogString& clazz)
 {
-	return Class::forName(clazz);
+   return Class::forName(clazz);
 }
 
 #if 0
@@ -65,44 +65,44 @@ File Loader::getResource(const LogString& name)
           return path;
         }
         return File();
-	std::wstring path;
+   std::wstring path;
         std::string name;
-	struct stat buff;
+   struct stat buff;
 
         Transcoder::append(wname.data(), wname.length(), name);
 
-	if (stat(name.c_str(), &buff) == 0)
-	{
-		path = wname;
-	}
+   if (stat(name.c_str(), &buff) == 0)
+   {
+      path = wname;
+   }
 
-	return path;
+   return path;
 }
 #endif
 
 #if 0
 istream * Loader::getResourceAsStream(const LogString& name)
 {
-	String path = getResource(name);
-	if (path.empty())
-	{
-		return 0;
-	}
+   String path = getResource(name);
+   if (path.empty())
+   {
+      return 0;
+   }
 
 #ifdef LOG4CXX_UNICODE
-		std::wifstream * stream = new std::wifstream();
+      std::wifstream * stream = new std::wifstream();
 #else
-		std::ifstream * stream = new std::ifstream();
+      std::ifstream * stream = new std::ifstream();
 #endif
 
-	USES_CONVERSION;
-	stream->open(T2A(name.c_str()));
-	if (stream->fail())
-	{
-		delete stream;
-		return 0;
-	}
+   USES_CONVERSION;
+   stream->open(T2A(name.c_str()));
+   if (stream->fail())
+   {
+      delete stream;
+      return 0;
+   }
 
-	return stream;
+   return stream;
 }
 #endif

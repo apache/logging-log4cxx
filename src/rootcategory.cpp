@@ -25,25 +25,25 @@ using namespace log4cxx::helpers;
 
 RootCategory::RootCategory(const LevelPtr& level) : Logger(LOG4CXX_STR("root"))
 {
-	setLevel(level);
+   setLevel(level);
 }
 
 const LevelPtr& RootCategory::getEffectiveLevel() const
 {
-	return level;
+   return level;
 }
 
 void RootCategory::setLevel(const LevelPtr& level)
 {
-	if(level == 0)
-	{
-		LogLog::error(LOG4CXX_STR("You have tried to set a null level to root."));
-	}
-	else
-	{
+   if(level == 0)
+   {
+      LogLog::error(LOG4CXX_STR("You have tried to set a null level to root."));
+   }
+   else
+   {
 
-		this->level = level;
-	}
+      this->level = level;
+   }
 }
 
 

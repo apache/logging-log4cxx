@@ -33,25 +33,25 @@ using namespace log4cxx::spi;
 
 class PatternParserTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(PatternParserTestCase);
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE(PatternParserTestCase);
+   CPPUNIT_TEST_SUITE_END();
 
-	LoggerPtr logger;
-	LoggingEventPtr event;
+   LoggerPtr logger;
+   LoggingEventPtr event;
 
 public:
-	void setUp()
-	{
-		logger = Logger::getLogger(LOG4CXX_TEST_STR("org.foobar"));
+   void setUp()
+   {
+      logger = Logger::getLogger(LOG4CXX_TEST_STR("org.foobar"));
 
-		event = new LoggingEvent(
-			logger, Level::INFO, LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION);
-	}
+      event = new LoggingEvent(
+         logger, Level::INFO, LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION);
+   }
 
-	void tearDown()
-	{
-		logger->getLoggerRepository()->resetConfiguration();
-	}
+   void tearDown()
+   {
+      logger->getLoggerRepository()->resetConfiguration();
+   }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(PatternParserTestCase);

@@ -27,14 +27,14 @@ using namespace log4cxx::helpers;
  */
 class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 {
-	CPPUNIT_TEST_SUITE(TelnetAppenderTestCase);
+   CPPUNIT_TEST_SUITE(TelnetAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
                 CPPUNIT_TEST(testDefaultThreshold);
                 CPPUNIT_TEST(testSetOptionThreshold);
 
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE_END();
 
 
 public:

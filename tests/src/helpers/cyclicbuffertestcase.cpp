@@ -32,138 +32,138 @@ using namespace log4cxx::spi;
 
 class CyclicBufferTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(CyclicBufferTestCase);
-		CPPUNIT_TEST(test0);
-		CPPUNIT_TEST(test1);
-		CPPUNIT_TEST(testResize);
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE(CyclicBufferTestCase);
+      CPPUNIT_TEST(test0);
+      CPPUNIT_TEST(test1);
+      CPPUNIT_TEST(testResize);
+   CPPUNIT_TEST_SUITE_END();
 
-	LoggerPtr logger;
-	std::vector<LoggingEventPtr> e;
+   LoggerPtr logger;
+   std::vector<LoggingEventPtr> e;
 
 public:
-	void setUp()
-	{
-  		logger = Logger::getLogger(LOG4CXX_TEST_STR("x"));
-		e.reserve(1000);
-		for (int i = 0; i < MAX; i++)
-		{
-			e.push_back(
-			new LoggingEvent(logger, Level::DEBUG, LOG4CXX_STR("e"),
+   void setUp()
+   {
+      logger = Logger::getLogger(LOG4CXX_TEST_STR("x"));
+      e.reserve(1000);
+      for (int i = 0; i < MAX; i++)
+      {
+         e.push_back(
+         new LoggingEvent(logger, Level::DEBUG, LOG4CXX_STR("e"),
                            log4cxx::spi::LocationInfo::getLocationUnavailable()));
-		}
-	}
+      }
+   }
 
-	void tearDown()
-	{
-		LogManager::shutdown();
-	}
+   void tearDown()
+   {
+      LogManager::shutdown();
+   }
 
-	void test0()
-	{
-		int size = 2;
+   void test0()
+   {
+      int size = 2;
 
-		CyclicBuffer cb(size);
-		CPPUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
+      CyclicBuffer cb(size);
+      CPPUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
 
-		cb.add(e[0]);
-		CPPUNIT_ASSERT_EQUAL(1, cb.length());
-		CPPUNIT_ASSERT_EQUAL(e[0], cb.get());
-		CPPUNIT_ASSERT_EQUAL(0, cb.length());
-		CPPUNIT_ASSERT(cb.get() == 0);
-		CPPUNIT_ASSERT_EQUAL(0, cb.length());
+      cb.add(e[0]);
+      CPPUNIT_ASSERT_EQUAL(1, cb.length());
+      CPPUNIT_ASSERT_EQUAL(e[0], cb.get());
+      CPPUNIT_ASSERT_EQUAL(0, cb.length());
+      CPPUNIT_ASSERT(cb.get() == 0);
+      CPPUNIT_ASSERT_EQUAL(0, cb.length());
 
-		CyclicBuffer cb2(size);
-		cb2.add(e[0]);
-		cb2.add(e[1]);
-		CPPUNIT_ASSERT_EQUAL(2, cb2.length());
-		CPPUNIT_ASSERT_EQUAL(e[0], cb2.get());
-		CPPUNIT_ASSERT_EQUAL(1, cb2.length());
-		CPPUNIT_ASSERT_EQUAL(e[1], cb2.get());
-		CPPUNIT_ASSERT_EQUAL(0, cb2.length());
-		CPPUNIT_ASSERT(cb2.get() == 0);
-		CPPUNIT_ASSERT_EQUAL(0, cb2.length());
-	}
+      CyclicBuffer cb2(size);
+      cb2.add(e[0]);
+      cb2.add(e[1]);
+      CPPUNIT_ASSERT_EQUAL(2, cb2.length());
+      CPPUNIT_ASSERT_EQUAL(e[0], cb2.get());
+      CPPUNIT_ASSERT_EQUAL(1, cb2.length());
+      CPPUNIT_ASSERT_EQUAL(e[1], cb2.get());
+      CPPUNIT_ASSERT_EQUAL(0, cb2.length());
+      CPPUNIT_ASSERT(cb2.get() == 0);
+      CPPUNIT_ASSERT_EQUAL(0, cb2.length());
+   }
 
-	void test1()
-	{
-		for (int bufSize = 1; bufSize <= 128; bufSize *= 2)
-			doTest1(bufSize);
-	}
+   void test1()
+   {
+      for (int bufSize = 1; bufSize <= 128; bufSize *= 2)
+         doTest1(bufSize);
+   }
 
-	void doTest1(int size)
-	{
-		//System.out.println("Doing test with size = "+size);
-		CyclicBuffer cb(size);
+   void doTest1(int size)
+   {
+      //System.out.println("Doing test with size = "+size);
+      CyclicBuffer cb(size);
 
-		CPPUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
+      CPPUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
 
-		int i;
+      int i;
 
-		for (i = -(size + 10); i < (size + 10); i++)
-		{
-			CPPUNIT_ASSERT(cb.get(i) == 0);
-		}
+      for (i = -(size + 10); i < (size + 10); i++)
+      {
+         CPPUNIT_ASSERT(cb.get(i) == 0);
+      }
 
-		for (i = 0; i < MAX; i++)
-		{
-			cb.add(e[i]);
+      for (i = 0; i < MAX; i++)
+      {
+         cb.add(e[i]);
 
-			int limit = (i < (size - 1)) ? i : (size - 1);
+         int limit = (i < (size - 1)) ? i : (size - 1);
 
-			//System.out.println("\nLimit is " + limit + ", i="+i);
-			for (int j = limit; j >= 0; j--)
-			{
-				//System.out.println("i= "+i+", j="+j);
-				CPPUNIT_ASSERT_EQUAL(e[i - (limit - j)], cb.get(j));
-			}
+         //System.out.println("\nLimit is " + limit + ", i="+i);
+         for (int j = limit; j >= 0; j--)
+         {
+            //System.out.println("i= "+i+", j="+j);
+            CPPUNIT_ASSERT_EQUAL(e[i - (limit - j)], cb.get(j));
+         }
 
-			CPPUNIT_ASSERT(cb.get(-1) == 0);
-			CPPUNIT_ASSERT(cb.get(limit + 1) == 0);
-		}
-	}
+         CPPUNIT_ASSERT(cb.get(-1) == 0);
+         CPPUNIT_ASSERT(cb.get(limit + 1) == 0);
+      }
+   }
 
-	void testResize()
-	{
-		for (int isize = 1; isize <= 128; isize *= 2)
-		{
-			doTestResize(isize, (isize / 2) + 1, (isize / 2) + 1);
-			doTestResize(isize, (isize / 2) + 1, isize + 10);
-			doTestResize(isize, isize + 10, (isize / 2) + 1);
-			doTestResize(isize, isize + 10, isize + 10);
-		}
+   void testResize()
+   {
+      for (int isize = 1; isize <= 128; isize *= 2)
+      {
+         doTestResize(isize, (isize / 2) + 1, (isize / 2) + 1);
+         doTestResize(isize, (isize / 2) + 1, isize + 10);
+         doTestResize(isize, isize + 10, (isize / 2) + 1);
+         doTestResize(isize, isize + 10, isize + 10);
+      }
 
-	}
+   }
 
-	void doTestResize(int initialSize, int numberOfAdds, int newSize)
-	{
-		//System.out.println("initialSize = "+initialSize+", numberOfAdds="
-		//	       +numberOfAdds+", newSize="+newSize);
-		CyclicBuffer cb(initialSize);
+   void doTestResize(int initialSize, int numberOfAdds, int newSize)
+   {
+      //System.out.println("initialSize = "+initialSize+", numberOfAdds="
+      //        +numberOfAdds+", newSize="+newSize);
+      CyclicBuffer cb(initialSize);
 
-		for (int i = 0; i < numberOfAdds; i++)
-		{
-			cb.add(e[i]);
-		}
+      for (int i = 0; i < numberOfAdds; i++)
+      {
+         cb.add(e[i]);
+      }
 
-		cb.resize(newSize);
+      cb.resize(newSize);
 
-		int offset = numberOfAdds - initialSize;
+      int offset = numberOfAdds - initialSize;
 
-		if (offset < 0)
-		{
-			offset = 0;
-		}
+      if (offset < 0)
+      {
+         offset = 0;
+      }
 
-		int len = (newSize < numberOfAdds) ? newSize : numberOfAdds;
-		len = (len < initialSize) ? len : initialSize;
+      int len = (newSize < numberOfAdds) ? newSize : numberOfAdds;
+      len = (len < initialSize) ? len : initialSize;
 
-		//System.out.println("Len = "+len+", offset="+offset);
-		for (int j = 0; j < len; j++)
-		{
-			CPPUNIT_ASSERT_EQUAL(e[offset + j], cb.get(j));
-		}
-	}
+      //System.out.println("Len = "+len+", offset="+offset);
+      for (int j = 0; j < len; j++)
+      {
+         CPPUNIT_ASSERT_EQUAL(e[offset + j], cb.get(j));
+      }
+   }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CyclicBufferTestCase);

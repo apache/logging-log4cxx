@@ -42,149 +42,149 @@ IMPLEMENT_LOG4CXX_OBJECT(DatagramSocket);
 DatagramSocket::DatagramSocket()
  : fd(0), address(), localAddress(), port(0), localPort(0)
 {
-	create();
+   create();
 }
 
 DatagramSocket::DatagramSocket(int localPort)
  : fd(0), address(), localAddress(), port(0), localPort(0)
 {
-	InetAddress bindAddr;
-	bindAddr.address = INADDR_ANY;
+   InetAddress bindAddr;
+   bindAddr.address = INADDR_ANY;
 
-	create();
-	bind(localPort, bindAddr);
+   create();
+   bind(localPort, bindAddr);
 }
 
 DatagramSocket::DatagramSocket(int localPort, InetAddress localAddress)
  : fd(0), address(), localAddress(), port(0), localPort(0)
 {
-	create();
-	bind(localPort, localAddress);
+   create();
+   bind(localPort, localAddress);
 }
 
 DatagramSocket::~DatagramSocket()
 {
-	try
-	{
-		close();
-	}
-	catch(SocketException&)
-	{
-	}
+   try
+   {
+      close();
+   }
+   catch(SocketException&)
+   {
+   }
 }
 
 /**  Binds a datagram socket to a local port and address.*/
 void DatagramSocket::bind(int localPort, InetAddress localAddress)
 {
-	struct sockaddr_in server_addr;
-	int server_len = sizeof(server_addr);
+   struct sockaddr_in server_addr;
+   int server_len = sizeof(server_addr);
 
-	server_addr.sin_family = AF_INET;
-	server_addr.sin_addr.s_addr = htonl(localAddress.address);
-	server_addr.sin_port = htons(localPort);
+   server_addr.sin_family = AF_INET;
+   server_addr.sin_addr.s_addr = htonl(localAddress.address);
+   server_addr.sin_port = htons(localPort);
 
-	if (::bind(fd, (sockaddr *)&server_addr, server_len) == -1)
-	{
-		throw BindException();
-	}
+   if (::bind(fd, (sockaddr *)&server_addr, server_len) == -1)
+   {
+      throw BindException();
+   }
 
-	this->localPort = localPort;
-	this->localAddress = localAddress;
+   this->localPort = localPort;
+   this->localAddress = localAddress;
 }
 
 /** Close the socket.*/
 void DatagramSocket::close()
 {
-	if (fd != 0)
-	{
-		LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
+   if (fd != 0)
+   {
+      LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
 #if defined(WIN32) || defined(_WIN32)
-		if (::closesocket(fd) == -1)
+      if (::closesocket(fd) == -1)
 #else
-		if (::close(fd) == -1)
+      if (::close(fd) == -1)
 #endif
-		{
-			throw SocketException();
-		}
+      {
+         throw SocketException();
+      }
 
-		fd = 0;
-		localPort = 0;
-	}
+      fd = 0;
+      localPort = 0;
+   }
 }
 
 void DatagramSocket::connect(InetAddress address, int port)
 {
-	sockaddr_in client_addr;
-	int client_len = sizeof(client_addr);
+   sockaddr_in client_addr;
+   int client_len = sizeof(client_addr);
 
-	client_addr.sin_family = AF_INET;
-	client_addr.sin_addr.s_addr = htonl(address.address);
-	client_addr.sin_port = htons(port);
+   client_addr.sin_family = AF_INET;
+   client_addr.sin_addr.s_addr = htonl(address.address);
+   client_addr.sin_port = htons(port);
 
-	if (::connect(fd, (sockaddr *)&client_addr, client_len) == -1)
-	{
-		throw ConnectException();
-	}
+   if (::connect(fd, (sockaddr *)&client_addr, client_len) == -1)
+   {
+      throw ConnectException();
+   }
 
-	this->address = address;
-	this->port = port;
+   this->address = address;
+   this->port = port;
 }
 
 /** Creates a datagram socket.*/
 void DatagramSocket::create()
 {
-	if ((fd = ::socket(AF_INET, SOCK_DGRAM, 0)) == -1)
-	{
-		throw SocketException();
-	}
+   if ((fd = ::socket(AF_INET, SOCK_DGRAM, 0)) == -1)
+   {
+      throw SocketException();
+   }
 }
 
 /** Receive the datagram packet.*/
 void DatagramSocket::receive(DatagramPacketPtr& p)
 {
-	sockaddr_in addr;
-	int addr_len = sizeof(addr);
+   sockaddr_in addr;
+   int addr_len = sizeof(addr);
 
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl(p->getAddress().address);
-	addr.sin_port = htons(p->getPort());
+   addr.sin_family = AF_INET;
+   addr.sin_addr.s_addr = htonl(p->getAddress().address);
+   addr.sin_port = htons(p->getPort());
 
 #if defined(WIN32) || defined(_WIN32)
-	if (::recvfrom(fd, (char *)p->getData(), p->getLength(), 0,
-		(sockaddr *)&addr, &addr_len) == -1)
+   if (::recvfrom(fd, (char *)p->getData(), p->getLength(), 0,
+      (sockaddr *)&addr, &addr_len) == -1)
 #elif defined(__hpux)
-	if (::recvfrom(fd, p->getData(), p->getLength(), 0,
-		(sockaddr *)&addr, &addr_len) == -1)
+   if (::recvfrom(fd, p->getData(), p->getLength(), 0,
+      (sockaddr *)&addr, &addr_len) == -1)
 #else
-	if (::recvfrom(fd, p->getData(), p->getLength(), 0,
-		(sockaddr *)&addr, (socklen_t *)&addr_len) == -1)
+   if (::recvfrom(fd, p->getData(), p->getLength(), 0,
+      (sockaddr *)&addr, (socklen_t *)&addr_len) == -1)
 #endif
-	{
-		throw IOException();
-	}
+   {
+      throw IOException();
+   }
 
 }
 
 /**  Sends a datagram packet.*/
 void DatagramSocket::send(DatagramPacketPtr& p)
 {
-	sockaddr_in addr;
-	int addr_len = sizeof(addr);
+   sockaddr_in addr;
+   int addr_len = sizeof(addr);
 
-	addr.sin_family = AF_INET;
-	addr.sin_addr.s_addr = htonl(p->getAddress().address);
-	addr.sin_port = htons(p->getPort());
+   addr.sin_family = AF_INET;
+   addr.sin_addr.s_addr = htonl(p->getAddress().address);
+   addr.sin_port = htons(p->getPort());
 
 #if defined(WIN32) || defined(_WIN32)
-	if (::sendto(fd, (const char *)p->getData(), p->getLength(), 0,
-		(sockaddr *)&addr, addr_len) == -1)
+   if (::sendto(fd, (const char *)p->getData(), p->getLength(), 0,
+      (sockaddr *)&addr, addr_len) == -1)
 #else
-	if (::sendto(fd, p->getData(), p->getLength(), 0,
-		(sockaddr *)&addr, addr_len) == -1)
+   if (::sendto(fd, p->getData(), p->getLength(), 0,
+      (sockaddr *)&addr, addr_len) == -1)
 #endif
-	{
-		throw IOException();
-	}
+   {
+      throw IOException();
+   }
 }
 
 

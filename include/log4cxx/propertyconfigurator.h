@@ -28,16 +28,16 @@
 
 namespace log4cxx
 {
-	class Logger;
-	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
+   class Logger;
+   typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
-	class Appender;
-	typedef helpers::ObjectPtrT<Appender> AppenderPtr;
+   class Appender;
+   typedef helpers::ObjectPtrT<Appender> AppenderPtr;
 
-	namespace helpers
-	{
-		class Properties;
-	}
+   namespace helpers
+   {
+      class Properties;
+   }
 
 
     namespace spi {
@@ -82,29 +82,29 @@ example, if <code>java.home</code> system property is set to
 <code>${java.home}</code> will be interpreted as
 <code>/home/xyz</code>.
 */
-	class LOG4CXX_EXPORT PropertyConfigurator :
-		virtual public spi::Configurator,
-		virtual public helpers::ObjectImpl
-	{
-	protected:
+   class LOG4CXX_EXPORT PropertyConfigurator :
+      virtual public spi::Configurator,
+      virtual public helpers::ObjectImpl
+   {
+   protected:
 
-		/**
-		Used internally to keep track of configured appenders.
-		*/
-		std::map<LogString, AppenderPtr> registry;
+      /**
+      Used internally to keep track of configured appenders.
+      */
+      std::map<LogString, AppenderPtr> registry;
 
-		/**
-		Used to create new instances of logger
-		*/
+      /**
+      Used to create new instances of logger
+      */
         helpers::ObjectPtrT<spi::LoggerFactory> loggerFactory;
 
-	public:
-		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
-		BEGIN_LOG4CXX_CAST_MAP()
-			LOG4CXX_CAST_ENTRY(spi::Configurator)
-		END_LOG4CXX_CAST_MAP()
+   public:
+      DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
+      BEGIN_LOG4CXX_CAST_MAP()
+         LOG4CXX_CAST_ENTRY(spi::Configurator)
+      END_LOG4CXX_CAST_MAP()
 
-		PropertyConfigurator();
+      PropertyConfigurator();
 
 /**
 Read configuration from a file. <b>The existing configuration is
@@ -282,96 +282,96 @@ beginning of a line for comments.
 configuration information is stored.
 @param hierarchy The hierarchy to operation upon.
 */
-		void doConfigure(const File& configFileName,
-			spi::LoggerRepositoryPtr& hierarchy);
+      void doConfigure(const File& configFileName,
+         spi::LoggerRepositoryPtr& hierarchy);
 
-		/**
-		Read configuration options from file <code>configFilename</code>.
-		*/
-		static void configure(const File& configFilename);
+      /**
+      Read configuration options from file <code>configFilename</code>.
+      */
+      static void configure(const File& configFilename);
 
-		/**
-		Like {@link #configureAndWatch(const String& configFilename, long delay)}
-		except that the
-		default delay as defined by helpers::FileWatchdog#DEFAULT_DELAY
-		is used.
-		@param configFilename A file in key=value format.
-		*/
-		static void configureAndWatch(const File& configFilename);
+      /**
+      Like {@link #configureAndWatch(const String& configFilename, long delay)}
+      except that the
+      default delay as defined by helpers::FileWatchdog#DEFAULT_DELAY
+      is used.
+      @param configFilename A file in key=value format.
+      */
+      static void configureAndWatch(const File& configFilename);
 
-		/**
-		Read the configuration file <code>configFilename</code> if it
-		exists. Moreover, a thread will be created that will periodically
-		check if <code>configFilename</code> has been created or
-		modified. The period is determined by the <code>delay</code>
-		argument. If a change or file creation is detected, then
-		<code>configFilename</code> is read to configure log4j.
+      /**
+      Read the configuration file <code>configFilename</code> if it
+      exists. Moreover, a thread will be created that will periodically
+      check if <code>configFilename</code> has been created or
+      modified. The period is determined by the <code>delay</code>
+      argument. If a change or file creation is detected, then
+      <code>configFilename</code> is read to configure log4j.
 
-		@param configFilename A file in key=value format.
-		@param delay The delay in milliseconds to wait between each check.
-		*/
-		static void configureAndWatch(const File& configFilename,
-			long delay);
+      @param configFilename A file in key=value format.
+      @param delay The delay in milliseconds to wait between each check.
+      */
+      static void configureAndWatch(const File& configFilename,
+         long delay);
 
-		/**
-		Read configuration options from <code>properties</code>.
-		See #doConfigure(const string&, spi::LoggerRepositoryPtr&)
-		for the expected format.
-		*/
-		static void configure(helpers::Properties& properties);
+      /**
+      Read configuration options from <code>properties</code>.
+      See #doConfigure(const string&, spi::LoggerRepositoryPtr&)
+      for the expected format.
+      */
+      static void configure(helpers::Properties& properties);
 
-		/**
-		Read configuration options from <code>properties</code>.
-		See #doConfigure(const String&, spi::LoggerRepositoryPtr&)
-		for the expected format.
-		*/
-		void doConfigure(helpers::Properties& properties,
-			spi::LoggerRepositoryPtr& hierarchy);
+      /**
+      Read configuration options from <code>properties</code>.
+      See #doConfigure(const String&, spi::LoggerRepositoryPtr&)
+      for the expected format.
+      */
+      void doConfigure(helpers::Properties& properties,
+         spi::LoggerRepositoryPtr& hierarchy);
 
 // --------------------------------------------------------------------------
 // Internal stuff
 // --------------------------------------------------------------------------
 protected:
-		/**
-		Check the provided <code>Properties</code> object for a
-		#loggerFactory
-		entry specified by #LOGGER_FACTORY_KEY.  If such an entry
-		exists, an attempt is made to create an instance using the default
-		constructor.  This instance is used for subsequent Logger creations
-		within this configurator.
-		@see #parseCatsAndRenderers
-		*/
-		void configureLoggerFactory(helpers::Properties& props);
+      /**
+      Check the provided <code>Properties</code> object for a
+      #loggerFactory
+      entry specified by #LOGGER_FACTORY_KEY.  If such an entry
+      exists, an attempt is made to create an instance using the default
+      constructor.  This instance is used for subsequent Logger creations
+      within this configurator.
+      @see #parseCatsAndRenderers
+      */
+      void configureLoggerFactory(helpers::Properties& props);
 
-		void configureRootCategory(helpers::Properties& props,
-			spi::LoggerRepositoryPtr& hierarchy);
+      void configureRootCategory(helpers::Properties& props,
+         spi::LoggerRepositoryPtr& hierarchy);
 
-		/**
-		Parse non-root elements, such non-root categories and renderers.
-		*/
-		void parseCatsAndRenderers(helpers::Properties& props,
-			spi::LoggerRepositoryPtr& hierarchy);
+      /**
+      Parse non-root elements, such non-root categories and renderers.
+      */
+      void parseCatsAndRenderers(helpers::Properties& props,
+         spi::LoggerRepositoryPtr& hierarchy);
 
-		/**
-		Parse the additivity option for a non-root logger.
-		*/
-		void parseAdditivityForLogger(helpers::Properties& props,
-			LoggerPtr& cat, const LogString& loggerName);
+      /**
+      Parse the additivity option for a non-root logger.
+      */
+      void parseAdditivityForLogger(helpers::Properties& props,
+         LoggerPtr& cat, const LogString& loggerName);
 
-		/**
-		This method must work for the root logger as well.
-		*/
-		void parseCategory(
-			helpers::Properties& props, LoggerPtr& logger,
-			const LogString& optionKey, const LogString& loggerName,
-			const LogString& value);
+      /**
+      This method must work for the root logger as well.
+      */
+      void parseCategory(
+         helpers::Properties& props, LoggerPtr& logger,
+         const LogString& optionKey, const LogString& loggerName,
+         const LogString& value);
 
-		AppenderPtr parseAppender(
-			helpers::Properties& props, const LogString& appenderName);
+      AppenderPtr parseAppender(
+         helpers::Properties& props, const LogString& appenderName);
 
-		void registryPut(const AppenderPtr& appender);
-		AppenderPtr registryGet(const LogString& name);
-	}; // class PropertyConfigurator
+      void registryPut(const AppenderPtr& appender);
+      AppenderPtr registryGet(const LogString& name);
+   }; // class PropertyConfigurator
 }  // namespace log4cxx
 
 #endif //_LOG4CXX_PROPERTY_CONFIGURATOR_H

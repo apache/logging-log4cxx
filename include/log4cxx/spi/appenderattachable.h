@@ -32,8 +32,8 @@ namespace log4cxx
 
     namespace spi
     {
-		class AppenderAttachable;
-		typedef helpers::ObjectPtrT<AppenderAttachable> AppenderAttachablePtr;
+      class AppenderAttachable;
+      typedef helpers::ObjectPtrT<AppenderAttachable> AppenderAttachablePtr;
 
         /**
          * This Interface is for attaching Appenders to objects.
@@ -42,7 +42,7 @@ namespace log4cxx
         {
         public:
           // Methods
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachable)
+         DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachable)
             /**
              * Add an appender.
              */
@@ -59,10 +59,10 @@ namespace log4cxx
             virtual AppenderPtr getAppender(const LogString& name) const = 0;
 
             /**
-			Returns <code>true</code> if the specified appender is in list of
-			attached attached, <code>false</code> otherwise.
-			*/
-			virtual bool isAttached(const AppenderPtr& appender) const = 0;
+         Returns <code>true</code> if the specified appender is in list of
+         attached attached, <code>false</code> otherwise.
+         */
+         virtual bool isAttached(const AppenderPtr& appender) const = 0;
 
             /**
              * Remove all previously added appenders.

@@ -63,7 +63,7 @@ namespace log4cxx
                         SocketPtr socket;
 
                         /** memory stream buffer */
-/*			class membuf :
+/*       class membuf :
                                 public std::basic_streambuf<char, std::char_traits<char> >
                         {
                         public:

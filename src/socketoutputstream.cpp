@@ -32,94 +32,94 @@ SocketOutputStream::SocketOutputStream(SocketPtr socket)
 
 SocketOutputStream::~SocketOutputStream()
 {
-	delete [] beg;
+   delete [] beg;
 }
 
 void SocketOutputStream::write(const void * buffer, size_t len)
 {
-//	LOGLOG_DEBUG (LOG4CXX_STR("SocketOutputStream writing ") << len << LOG4CXX_STR(" bytes."));
-	if (cur + len > end)
-	{
-		if (beg == 0)
-		{
-			size_t size = ((len > INCREMENT) ? len : INCREMENT);
-//			LOGLOG_DEBUG (LOG4CXX_STR("SocketOutputStream growing ") << size << LOG4CXX_STR(" bytes."));
-			beg = new unsigned char[size];
-			end = beg + size;
-			cur = beg;
-		}
-		else
-		{
-			size_t size = end - beg + ((len > INCREMENT) ? len : INCREMENT);
-			unsigned char * old = beg;
-//			LOGLOG_DEBUG (LOG4CXX_STR("SocketOutputStream growing ") <<
-//				((len > INCREMENT) ? len : INCREMENT) << LOG4CXX_STR(" bytes."));
-			beg = new unsigned char[size];
-			memcpy(beg, old, cur - old);
-			cur = beg + (cur - old);
-			end = beg + size;
-			delete [] old;
-		}
-	}
+// LOGLOG_DEBUG (LOG4CXX_STR("SocketOutputStream writing ") << len << LOG4CXX_STR(" bytes."));
+   if (cur + len > end)
+   {
+      if (beg == 0)
+      {
+         size_t size = ((len > INCREMENT) ? len : INCREMENT);
+//       LOGLOG_DEBUG (LOG4CXX_STR("SocketOutputStream growing ") << size << LOG4CXX_STR(" bytes."));
+         beg = new unsigned char[size];
+         end = beg + size;
+         cur = beg;
+      }
+      else
+      {
+         size_t size = end - beg + ((len > INCREMENT) ? len : INCREMENT);
+         unsigned char * old = beg;
+//       LOGLOG_DEBUG (LOG4CXX_STR("SocketOutputStream growing ") <<
+//          ((len > INCREMENT) ? len : INCREMENT) << LOG4CXX_STR(" bytes."));
+         beg = new unsigned char[size];
+         memcpy(beg, old, cur - old);
+         cur = beg + (cur - old);
+         end = beg + size;
+         delete [] old;
+      }
+   }
 
-	memcpy(cur, buffer, len);
-	cur+= len;
+   memcpy(cur, buffer, len);
+   cur+= len;
 }
 
 void SocketOutputStream::write(unsigned int value)
 {
-	write(&value, sizeof(value));
+   write(&value, sizeof(value));
 }
 
 void SocketOutputStream::write(int value)
 {
-	write(&value, sizeof(value));
+   write(&value, sizeof(value));
 }
 
 void SocketOutputStream::write(unsigned long value)
 {
-	write(&value, sizeof(value));
+   write(&value, sizeof(value));
 }
 
 void SocketOutputStream::write(long value)
 {
-	write(&value, sizeof(value));
+   write(&value, sizeof(value));
 }
 
 void SocketOutputStream::write(const LogString& value)
 {
-	LogString::size_type size;
+   LogString::size_type size;
 
-	size = value.size();
-	write(&size, sizeof(LogString::size_type));
-	if (size > 0)
-	{
-		if (size > 1024)
-		{
-			size = 1024;
-		}
+   size = value.size();
+   write(&size, sizeof(LogString::size_type));
+   if (size > 0)
+   {
+      if (size > 1024)
+      {
+         size = 1024;
+      }
 
-		write(value.c_str(), size * sizeof(logchar));
-	}
+      write(value.c_str(), size * sizeof(logchar));
+   }
 }
 
 void SocketOutputStream::close()
 {
-	// force flushing
-	flush();
+   // force flushing
+   flush();
 
-	// dereference socket
-	socket = 0;
+   // dereference socket
+   socket = 0;
 }
 
 void SocketOutputStream::flush()
 {
-	if (cur != beg)
-	{
-		// write to socket
-		socket->write(beg, cur - beg);
+   if (cur != beg)
+   {
+      // write to socket
+      socket->write(beg, cur - beg);
 
-		// seek to begin
-		cur = beg;
-	}
+      // seek to begin
+      cur = beg;
+   }
 }

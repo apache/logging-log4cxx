@@ -51,19 +51,19 @@ number at the specified IP address.
 */
 Socket::Socket(InetAddress address, int port) : socketImpl(new SocketImpl())
 {
-	socketImpl->create(true);
-	socketImpl->connect(address, port);
+   socketImpl->create(true);
+   socketImpl->connect(address, port);
 }
 
 /** Creates a socket and connects it to the specified remote
 address on the specified remote port.
 */
 Socket::Socket(InetAddress address, int port,
-	InetAddress localAddr, int localPort) : socketImpl(new SocketImpl())
+   InetAddress localAddr, int localPort) : socketImpl(new SocketImpl())
 {
-	socketImpl->create(true);
-	socketImpl->connect(address, port);
-	socketImpl->bind(localAddr, localPort);
+   socketImpl->create(true);
+   socketImpl->connect(address, port);
+   socketImpl->bind(localAddr, localPort);
 }
 
 /** Creates an unconnected Socket
@@ -80,32 +80,32 @@ port number on the named host.
 Socket::Socket(const LogString& host, int port)
    : socketImpl(new SocketImpl())
 {
-	socketImpl->create(true);
-	socketImpl->connect(host, port);
+   socketImpl->create(true);
+   socketImpl->connect(host, port);
 }
 
 /**  Creates a socket and connects it to the specified remote
 host on the specified remote port.
 */
 Socket::Socket(const LogString& host, int port,
-	InetAddress localAddr, int localPort)
+   InetAddress localAddr, int localPort)
         : socketImpl(new SocketImpl())
 {
-	socketImpl->create(true);
-	socketImpl->connect(host, port);
-	socketImpl->bind(localAddr, localPort);
+   socketImpl->create(true);
+   socketImpl->connect(host, port);
+   socketImpl->bind(localAddr, localPort);
 }
 
 /**  Returns an output stream for this socket. */
 SocketOutputStreamPtr Socket::getOutputStream()
 {
-	return new SocketOutputStream(this);
+   return new SocketOutputStream(this);
 }
 
 /**  Returns an input stream for this socket. */
 SocketInputStreamPtr Socket::getInputStream()
 {
-	return new SocketInputStream(this);
+   return new SocketInputStream(this);
 }
 
 

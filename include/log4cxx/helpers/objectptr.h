@@ -30,42 +30,42 @@ namespace log4cxx
         };
 
 
-		/** smart pointer to a Object descendant */
+      /** smart pointer to a Object descendant */
         template<typename T> class ObjectPtrT
         {
         public:
- 			template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p)
-				: p(0)
-			{
-				cast(p);
-			}
+         template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p)
+            : p(0)
+         {
+            cast(p);
+         }
 
-			// Disable conversion using ObjectPtrT* specialization of
-			// template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p)
-/*			template<> explicit ObjectPtrT(ObjectPtrT* const & p) throw(IllegalArgumentException)
-			{
-				if (p == 0)
-				{
-					throw IllegalArgumentException(String());
-				}
-				else
-				{
-					this->p = p->p;
+         // Disable conversion using ObjectPtrT* specialization of
+         // template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p)
+/*       template<> explicit ObjectPtrT(ObjectPtrT* const & p) throw(IllegalArgumentException)
+         {
+            if (p == 0)
+            {
+               throw IllegalArgumentException(String());
+            }
+            else
+            {
+               this->p = p->p;
                     this->p->addRef();
-				}
-			}*/
+            }
+         }*/
 
-			ObjectPtrT(const int& null) //throw(IllegalArgumentException)
+         ObjectPtrT(const int& null) //throw(IllegalArgumentException)
                 : p(0)
-			{
+         {
                 ObjectPtrBase::checkNull(null);
-			}
+         }
 
-			ObjectPtrT() : p(0)
-			{
-			}
+         ObjectPtrT() : p(0)
+         {
+         }
 
-			ObjectPtrT(T * p) : p(p)
+         ObjectPtrT(T * p) : p(p)
             {
                 if (this->p != 0)
                 {
@@ -90,13 +90,13 @@ namespace log4cxx
             }
 
             // Operators
-			template<typename InterfacePtr> ObjectPtrT& operator=(const InterfacePtr& p)
-			{
-				cast(p);
-				return *this;
-			}
+         template<typename InterfacePtr> ObjectPtrT& operator=(const InterfacePtr& p)
+         {
+            cast(p);
+            return *this;
+         }
 
-			ObjectPtrT& operator=(const ObjectPtrT& p)
+         ObjectPtrT& operator=(const ObjectPtrT& p)
             {
                 if (this->p != p.p)
                 {
@@ -113,24 +113,24 @@ namespace log4cxx
                     }
                 }
 
-				return *this;
+            return *this;
             }
 
-			ObjectPtrT& operator=(const int& null) //throw(IllegalArgumentException)
-			{
+         ObjectPtrT& operator=(const int& null) //throw(IllegalArgumentException)
+         {
                 //
                 //   throws IllegalArgumentException if null != 0
                 //
                 ObjectPtrBase::checkNull(null);
 
-				if (this->p != 0)
+            if (this->p != 0)
                 {
                     this->p->releaseRef();
-					this->p = 0;
+               this->p = 0;
                 }
 
-				return *this;
-			}
+            return *this;
+         }
 
             ObjectPtrT& operator=(T* p)
             {
@@ -149,7 +149,7 @@ namespace log4cxx
                     }
                 }
 
-				return *this;
+            return *this;
             }
 
             bool operator==(const ObjectPtrT& p) const { return (this->p == p.p); }
@@ -161,23 +161,23 @@ namespace log4cxx
             T& operator*() const {return *p; }
             operator T*() const {return p; }
 
-			template<typename InterfacePtr> void cast(const InterfacePtr& p)
-			{
-				if (this->p != 0)
+         template<typename InterfacePtr> void cast(const InterfacePtr& p)
+         {
+            if (this->p != 0)
                 {
                     this->p->releaseRef();
-					this->p = 0;
+               this->p = 0;
                 }
 
-				if (p != 0)
-				{
-					this->p = (T*)p->cast(T::getStaticClass());
-					if (this->p != 0)
-					{
-						this->p->addRef();
-					}
-				}
-			}
+            if (p != 0)
+            {
+               this->p = (T*)p->cast(T::getStaticClass());
+               if (this->p != 0)
+               {
+                  this->p->addRef();
+               }
+            }
+         }
 
 
         public:

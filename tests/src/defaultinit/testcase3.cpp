@@ -25,33 +25,33 @@ using namespace log4cxx;
 
 class TestCase3 : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(TestCase3);
-		CPPUNIT_TEST(testProperties);
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE(TestCase3);
+      CPPUNIT_TEST(testProperties);
+   CPPUNIT_TEST_SUITE_END();
 
 public:
-	void setUp()
-	{
-	}
+   void setUp()
+   {
+   }
 
-	void tearDown()
-	{
-		LogManager::shutdown();
-	}
+   void tearDown()
+   {
+      LogManager::shutdown();
+   }
 
-	void testProperties()
-	{
-		LoggerPtr root = Logger::getRootLogger();
-		bool rootIsConfigured = !root->getAllAppenders().empty();
-		CPPUNIT_ASSERT(rootIsConfigured);
+   void testProperties()
+   {
+      LoggerPtr root = Logger::getRootLogger();
+      bool rootIsConfigured = !root->getAllAppenders().empty();
+      CPPUNIT_ASSERT(rootIsConfigured);
 
-		AppenderList list = root->getAllAppenders();
-		AppenderPtr appender = list.front();
-		CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D3"), appender->getName());
-	}
+      AppenderList list = root->getAllAppenders();
+      AppenderPtr appender = list.front();
+      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D3"), appender->getName());
+   }
 
 };
 
 CPPUNIT_NS::Test* createTestCase3() {
-	return TestCase3::suite();
+   return TestCase3::suite();
 }

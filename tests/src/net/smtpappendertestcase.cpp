@@ -30,14 +30,14 @@ using namespace log4cxx::helpers;
  */
 class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 {
-	CPPUNIT_TEST_SUITE(SMTPAppenderTestCase);
+   CPPUNIT_TEST_SUITE(SMTPAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
                 CPPUNIT_TEST(testDefaultThreshold);
                 CPPUNIT_TEST(testSetOptionThreshold);
 
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE_END();
 
 
 public:

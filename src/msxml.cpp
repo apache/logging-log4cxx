@@ -49,16 +49,16 @@ MsXMLDOMNode::MsXMLDOMNode(MSXML::IXMLDOMNodePtr node)
 
 XMLDOMNodeListPtr MsXMLDOMNode::getChildNodes()
 {
-	MSXML::IXMLDOMNodeListPtr nodeList;
-	EXEC(node->get_childNodes(&nodeList));
-	return new MsXMLDOMNodeList(nodeList);
+   MSXML::IXMLDOMNodeListPtr nodeList;
+   EXEC(node->get_childNodes(&nodeList));
+   return new MsXMLDOMNodeList(nodeList);
 }
 
 XMLDOMDocumentPtr MsXMLDOMNode::getOwnerDocument()
 {
-	MSXML::IXMLDOMDocumentPtr document;
-	EXEC(node->get_ownerDocument(&document));
-	return new MsXMLDOMDocument(document);
+   MSXML::IXMLDOMDocumentPtr document;
+   EXEC(node->get_ownerDocument(&document));
+   return new MsXMLDOMDocument(document);
 }
 
 // MsXMLDOMDocument
@@ -69,150 +69,150 @@ MsXMLDOMDocument::MsXMLDOMDocument(MSXML::IXMLDOMDocumentPtr document)
 }
 
 namespace log4cxx {
-	namespace helpers {
-		class CoInitializeException : Exception {
-		public:
+   namespace helpers {
+      class CoInitializeException : Exception {
+      public:
             CoInitializeException() : Exception("Cannon initialize COM") {}
-		};
-	}
+      };
+   }
 }
 
 
 MsXMLDOMDocument::MsXMLDOMDocument() : mustCallCoUninitialize(false)
 {
-	HRESULT hRes = ::CoInitializeEx(0, COINIT_MULTITHREADED);
-	if (FAILED(hRes))
-	{
-		switch (hRes)
-		{
-		case RPC_E_CHANGED_MODE:
-			break;
+   HRESULT hRes = ::CoInitializeEx(0, COINIT_MULTITHREADED);
+   if (FAILED(hRes))
+   {
+      switch (hRes)
+      {
+      case RPC_E_CHANGED_MODE:
+         break;
 
-		default:
-			throw CoInitializeException();
-		}
-	}
-	else
-	{
-		mustCallCoUninitialize = true;
-	}
+      default:
+         throw CoInitializeException();
+      }
+   }
+   else
+   {
+      mustCallCoUninitialize = true;
+   }
 
-	hRes = document.CreateInstance(L"Msxml2.DOMDocument.3.0");
-	if (FAILED(hRes))
-	{
-		hRes = document.CreateInstance(L"Msxml2.DOMDocument.2.6");
-		if (FAILED(hRes))
-		{
-			hRes = document.CreateInstance(L"Msxml2.DOMDocument");
-			if (FAILED(hRes))
-			{
-				hRes = document.CreateInstance(L"Msxml.DOMDocument");
-				if (FAILED(hRes))
-				{
-					throw DOMException();
-				}
-			}
-		}
-	}
+   hRes = document.CreateInstance(L"Msxml2.DOMDocument.3.0");
+   if (FAILED(hRes))
+   {
+      hRes = document.CreateInstance(L"Msxml2.DOMDocument.2.6");
+      if (FAILED(hRes))
+      {
+         hRes = document.CreateInstance(L"Msxml2.DOMDocument");
+         if (FAILED(hRes))
+         {
+            hRes = document.CreateInstance(L"Msxml.DOMDocument");
+            if (FAILED(hRes))
+            {
+               throw DOMException();
+            }
+         }
+      }
+   }
 }
 
 MsXMLDOMDocument::~MsXMLDOMDocument()
 {
-	document.Release();
+   document.Release();
 
-	if (mustCallCoUninitialize)
-	{
-		::CoUninitialize();
-	}
+   if (mustCallCoUninitialize)
+   {
+      ::CoUninitialize();
+   }
 }
 
 XMLDOMNodeListPtr MsXMLDOMDocument::getChildNodes()
 {
-	MSXML::IXMLDOMNodeListPtr nodeList;
-	EXEC(document->get_childNodes(&nodeList));
-	return new MsXMLDOMNodeList(nodeList);
+   MSXML::IXMLDOMNodeListPtr nodeList;
+   EXEC(document->get_childNodes(&nodeList));
+   return new MsXMLDOMNodeList(nodeList);
 }
 
 XMLDOMDocumentPtr MsXMLDOMDocument::getOwnerDocument()
 {
-	return this;
+   return this;
 }
 
 void MsXMLDOMDocument::load(const File& fileName)
 {
-	try
-	{
-		VARIANT_BOOL bSuccess = document->load(fileName.getName().c_str());
+   try
+   {
+      VARIANT_BOOL bSuccess = document->load(fileName.getName().c_str());
 
-		if (!bSuccess)
-		{
-			MSXML::IXMLDOMParseErrorPtr parseError = document->parseError;
+      if (!bSuccess)
+      {
+         MSXML::IXMLDOMParseErrorPtr parseError = document->parseError;
 
-			// fetch errorcode
-			long errorCode = parseError->errorCode;
+         // fetch errorcode
+         long errorCode = parseError->errorCode;
 
-			_bstr_t reason = parseError->reason;
-			long line = parseError->line;
-			long linepos = parseError->linepos;
+         _bstr_t reason = parseError->reason;
+         long line = parseError->line;
+         long linepos = parseError->linepos;
 
-			// remove \n or \r
-			int len = reason.length();
-			while(len > 0 && (((BSTR)reason)[len -1] == L'\n' ||
-				((BSTR)reason)[len -1] == L'\r'))
-			{
-				((BSTR)reason)[len -1] = L'\0';
-				len--;
-			}
+         // remove \n or \r
+         int len = reason.length();
+         while(len > 0 && (((BSTR)reason)[len -1] == L'\n' ||
+            ((BSTR)reason)[len -1] == L'\r'))
+         {
+            ((BSTR)reason)[len -1] = L'\0';
+            len--;
+         }
 
             std::wostringstream os;
             os << L"Count not open [" + fileName.getName() << L"] : "
                 << (BSTR) reason << L"(file " << line << L", column "
                 << linepos << L")";
             LOGLOG_ERROR(os.str());
-		}
+      }
 
-	}
-	catch(_com_error&)
-	{
+   }
+   catch(_com_error&)
+   {
         LogLog::error((LogString) LOG4CXX_STR("Could not open [")+fileName.getName()+ LOG4CXX_STR("]."));
-		throw DOMException();
-	}
+      throw DOMException();
+   }
 }
 
 XMLDOMElementPtr MsXMLDOMDocument::getDocumentElement()
 {
-	MSXML::IXMLDOMElementPtr element;
-	EXEC(document->get_documentElement(&element));
-	return new MsXMLDOMElement(element);
+   MSXML::IXMLDOMElementPtr element;
+   EXEC(document->get_documentElement(&element));
+   return new MsXMLDOMElement(element);
 }
 
 XMLDOMElementPtr MsXMLDOMDocument::getElementById(const LogString& tagName, const LogString& elementId)
 {
-	MSXML::IXMLDOMElementPtr element;
+   MSXML::IXMLDOMElementPtr element;
 
-	try
-	{
-		MSXML::IXMLDOMNodeListPtr list = document->getElementsByTagName(tagName.c_str());
-		for (int t=0; t < list->length; t++)
-		{
-			MSXML::IXMLDOMNodePtr node = list->item[t];
-			MSXML::IXMLDOMNamedNodeMapPtr map= node->attributes;
-			MSXML::IXMLDOMNodePtr attrNode = map->getNamedItem(L"name");
-			_bstr_t nodeValue = attrNode->nodeValue;
+   try
+   {
+      MSXML::IXMLDOMNodeListPtr list = document->getElementsByTagName(tagName.c_str());
+      for (int t=0; t < list->length; t++)
+      {
+         MSXML::IXMLDOMNodePtr node = list->item[t];
+         MSXML::IXMLDOMNamedNodeMapPtr map= node->attributes;
+         MSXML::IXMLDOMNodePtr attrNode = map->getNamedItem(L"name");
+         _bstr_t nodeValue = attrNode->nodeValue;
 
-			if (elementId == (BSTR) nodeValue)
-			{
-				element = node;
-				break;
-			}
-		}
-	}
-	catch(_com_error&)
-	{
-		throw DOMException();
-	}
+         if (elementId == (BSTR) nodeValue)
+         {
+            element = node;
+            break;
+         }
+      }
+   }
+   catch(_com_error&)
+   {
+      throw DOMException();
+   }
 
-	return new MsXMLDOMElement(element);
+   return new MsXMLDOMElement(element);
 }
 
 // MsXMLDOMElement
@@ -223,49 +223,49 @@ MsXMLDOMElement::MsXMLDOMElement(MSXML::IXMLDOMElementPtr element)
 
 XMLDOMNodeListPtr MsXMLDOMElement::getChildNodes()
 {
-	MSXML::IXMLDOMNodeListPtr nodeList;
-	EXEC(element->get_childNodes(&nodeList));
-	return new MsXMLDOMNodeList(nodeList);
+   MSXML::IXMLDOMNodeListPtr nodeList;
+   EXEC(element->get_childNodes(&nodeList));
+   return new MsXMLDOMNodeList(nodeList);
 }
 
 XMLDOMDocumentPtr MsXMLDOMElement::getOwnerDocument()
 {
-	MSXML::IXMLDOMDocumentPtr document;
-	EXEC(element->get_ownerDocument(&document));
-	return new MsXMLDOMDocument(document);
+   MSXML::IXMLDOMDocumentPtr document;
+   EXEC(element->get_ownerDocument(&document));
+   return new MsXMLDOMDocument(document);
 }
 
 LogString MsXMLDOMElement::getTagName()
 {
-	try
-	{
-		_bstr_t tagName = element->tagName;
-		return (BSTR)tagName;
-	}
-	catch(_com_error&)
-	{
-		throw DOMException();
-	}
+   try
+   {
+      _bstr_t tagName = element->tagName;
+      return (BSTR)tagName;
+   }
+   catch(_com_error&)
+   {
+      throw DOMException();
+   }
 }
 
 LogString MsXMLDOMElement::getAttribute(const LogString& name)
 {
-	try
-	{
-		_variant_t attribute = element->getAttribute(name.c_str());
-		if (attribute.vt == VT_NULL)
-		{
-			return LogString();
-		}
-		else
-		{
-			return _bstr_t(attribute);
-		}
-	}
-	catch(_com_error&)
-	{
-		throw DOMException();
-	}
+   try
+   {
+      _variant_t attribute = element->getAttribute(name.c_str());
+      if (attribute.vt == VT_NULL)
+      {
+         return LogString();
+      }
+      else
+      {
+         return _bstr_t(attribute);
+      }
+   }
+   catch(_com_error&)
+   {
+      throw DOMException();
+   }
 }
 
 // MsXMLDOMNodeList
@@ -276,31 +276,31 @@ MsXMLDOMNodeList::MsXMLDOMNodeList(MSXML::IXMLDOMNodeListPtr nodeList)
 
 int MsXMLDOMNodeList::getLength()
 {
-	long length;
-	EXEC(nodeList->get_length(&length));
+   long length;
+   EXEC(nodeList->get_length(&length));
 
-	return (int)length;
+   return (int)length;
 }
 
 XMLDOMNodePtr MsXMLDOMNodeList::item(int index)
 {
-	try
-	{
-		MSXML::IXMLDOMNodePtr node = nodeList->item[index];
+   try
+   {
+      MSXML::IXMLDOMNodePtr node = nodeList->item[index];
 
-		if (node->nodeType == MSXML::NODE_ELEMENT)
-		{
-			return new MsXMLDOMElement(MSXML::IXMLDOMElementPtr(node));
-		}
-		else
-		{
-			return new MsXMLDOMNode(node);
-		}
-	}
-	catch(_com_error&)
-	{
-		throw DOMException();
-	}
+      if (node->nodeType == MSXML::NODE_ELEMENT)
+      {
+         return new MsXMLDOMElement(MSXML::IXMLDOMElementPtr(node));
+      }
+      else
+      {
+         return new MsXMLDOMNode(node);
+      }
+   }
+   catch(_com_error&)
+   {
+      throw DOMException();
+   }
 }
 
 #endif

@@ -33,7 +33,7 @@ WriterAppender* FileAppenderAbstractTestCase::createWriterAppender() const {
  */
 class FileAppenderTestCase : public FileAppenderAbstractTestCase
 {
-	CPPUNIT_TEST_SUITE(FileAppenderTestCase);
+   CPPUNIT_TEST_SUITE(FileAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
@@ -44,7 +44,7 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
                 CPPUNIT_TEST(testSetDoubleBackslashes);
                 CPPUNIT_TEST(testStripDuplicateBackslashes);
 
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE_END();
 
 
 
@@ -94,14 +94,14 @@ public:
                 FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo\\\\bar\\\\foo")));
              CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo\\bar\\foo"), 
                 FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo\\bar\\foo")));
-	         //
-	         //   it it starts with doubles but has no other path component
-	         //      then it is a file path
+            //
+            //   it it starts with doubles but has no other path component
+            //      then it is a file path
              CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo.log"), 
                 FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo.log")));
-	         //
-	         //   it it starts with quads but has no other path component
-	         //      then it is a UNC
+            //
+            //   it it starts with quads but has no other path component
+            //      then it is a UNC
              CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo.log"), 
                 FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo.log")));
           }  

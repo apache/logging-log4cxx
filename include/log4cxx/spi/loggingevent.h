@@ -82,7 +82,7 @@ namespace log4cxx
                         @param line The line where this log statement was written.
                         */
                         LoggingEvent(const LoggerPtr& logger,
-                                const LevelPtr& level,	const LogString& message,
+                                const LevelPtr& level,   const LogString& message,
                                 const log4cxx::spi::LocationInfo& location);
 
                         ~LoggingEvent();

@@ -485,8 +485,8 @@ LayoutPtr DOMConfigurator::parseLayout (XMLDOMElementPtr layout_element)
                 LayoutPtr layout = instance;
                 PropertySetter propSetter(layout);
 
-                XMLDOMNodeListPtr params 	= layout_element->getChildNodes();
-                int length 	= params->getLength();
+                XMLDOMNodeListPtr params  = layout_element->getChildNodes();
+                int length    = params->getLength();
 
                 for (int loop = 0; loop < length; loop++)
                 {
@@ -683,9 +683,9 @@ void DOMConfigurator::parse(XMLDOMElementPtr element)
                 if(rootElementName == OLD_CONFIGURATION_TAG)
                 {
                         //LogLog::warn(LOG4CXX_STR("The <")+String(OLD_CONFIGURATION_TAG)+
-                        //	LOG4CXX_STR("> element has been deprecated."));
+                        // LOG4CXX_STR("> element has been deprecated."));
                         //LogLog::warn(LOG4CXX_STR("Use the <")+String(CONFIGURATION_TAG)+
-                        //	LOG4CXX_STR("> element instead."));
+                        // LOG4CXX_STR("> element instead."));
                 }
                 else
                 {

@@ -27,60 +27,60 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(ResourceBundle)
 
 ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
-	const Locale& locale)
+   const Locale& locale)
 {
-	LogString bundleName;
-	PropertyResourceBundlePtr resourceBundle, previous;
+   LogString bundleName;
+   PropertyResourceBundlePtr resourceBundle, previous;
 
-	std::vector<LogString> bundlesNames;
+   std::vector<LogString> bundlesNames;
 
-	if (!locale.getVariant().empty())
-	{
-		bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
-			locale.getLanguage() + LOG4CXX_STR("_") +
-			locale.getCountry() + LOG4CXX_STR("_") +
-			locale.getVariant());
-	}
+   if (!locale.getVariant().empty())
+   {
+      bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
+         locale.getLanguage() + LOG4CXX_STR("_") +
+         locale.getCountry() + LOG4CXX_STR("_") +
+         locale.getVariant());
+   }
 
-	if (!locale.getCountry().empty())
-	{
-		bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
-				locale.getLanguage() + LOG4CXX_STR("_") +
-				locale.getCountry());
-	}
+   if (!locale.getCountry().empty())
+   {
+      bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
+            locale.getLanguage() + LOG4CXX_STR("_") +
+            locale.getCountry());
+   }
 
-	if (!locale.getLanguage().empty())
-	{
-		bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
-					locale.getLanguage());
-	}
+   if (!locale.getLanguage().empty())
+   {
+      bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
+               locale.getLanguage());
+   }
 
-	bundlesNames.push_back(baseName);
+   bundlesNames.push_back(baseName);
         Pool pool;
 
-	for (std::vector<LogString>::iterator it = bundlesNames.begin();
-		it != bundlesNames.end(); it++)
-	{
+   for (std::vector<LogString>::iterator it = bundlesNames.begin();
+      it != bundlesNames.end(); it++)
+   {
 #if 0
 // TODO
 
                 LogString bundleStream;
-		bundleName = *it;
+      bundleName = *it;
 
-		PropertyResourceBundlePtr current;
+      PropertyResourceBundlePtr current;
 
-		try
-		{
-			const Class& classObj = Loader::loadClass(bundleName);
-			current = classObj.newInstance();
-		}
-		catch(ClassNotFoundException&)
-		{
-			current = 0;
-		}
+      try
+      {
+         const Class& classObj = Loader::loadClass(bundleName);
+         current = classObj.newInstance();
+      }
+      catch(ClassNotFoundException&)
+      {
+         current = 0;
+      }
 
-		if (current == 0)
-		{
+      if (current == 0)
+      {
                         apr_size_t bytes = 0;
                         void* buf = Loader::getResourceAsStream(
                            bundleName + LOG4CXX_STR(".properties"),
@@ -89,38 +89,38 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
                           continue;
                         }
                         log4cxx::helpers::Transcoder::decode(buf, bytes, pool, bundleStream);
-		}
+      }
 
-		try
-		{
-			current = new PropertyResourceBundle(bundleStream);
-		}
-		catch(Exception&)
-		{
-			throw;
-		}
+      try
+      {
+         current = new PropertyResourceBundle(bundleStream);
+      }
+      catch(Exception&)
+      {
+         throw;
+      }
 
-		bundleStream.erase(bundleStream.begin(), bundleStream.end());
+      bundleStream.erase(bundleStream.begin(), bundleStream.end());
 
-		if (resourceBundle == 0)
-		{
-			resourceBundle = current;
-			previous = current;
-		}
-		else
-		{
-			previous->setParent(current);
-			previous = current;
-		}
+      if (resourceBundle == 0)
+      {
+         resourceBundle = current;
+         previous = current;
+      }
+      else
+      {
+         previous->setParent(current);
+         previous = current;
+      }
 #endif
-	}
+   }
 
-	if (resourceBundle == 0)
-	{
-		throw MissingResourceException(
+   if (resourceBundle == 0)
+   {
+      throw MissingResourceException(
                       ((LogString) LOG4CXX_STR("Missing resource bundle ")) + baseName);
-	}
+   }
 
-	return resourceBundle;
+   return resourceBundle;
 }
 

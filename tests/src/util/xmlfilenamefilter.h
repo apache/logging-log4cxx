@@ -21,11 +21,11 @@
 
 namespace log4cxx
 {
-	class XMLFilenameFilter : public Filter
-	{
-	public:
+   class XMLFilenameFilter : public Filter
+   {
+   public:
           XMLFilenameFilter(const std::string& actual, const std::string& expected);
-	};
+   };
 }
 
 

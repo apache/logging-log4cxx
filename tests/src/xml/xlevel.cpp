@@ -43,28 +43,28 @@ const LevelPtr& XLevel::getLethal() {
 
 const LevelPtr& XLevel::toLevel(const std::string& sArg)
 {
-	return toLevel(sArg, getTrace());
+   return toLevel(sArg, getTrace());
 }
 
 const LevelPtr& XLevel::toLevel(const std::wstring& sArg)
 {
-	return toLevel(sArg, getTrace());
+   return toLevel(sArg, getTrace());
 }
 
 
 const LevelPtr& XLevel::toLevel(int val)
 {
-	return toLevel(val, getTrace());
+   return toLevel(val, getTrace());
 }
 
 const LevelPtr& XLevel::toLevel(int val, const LevelPtr& defaultLevel)
 {
-	switch(val)
-	{
-		case TRACE_INT: return getTrace();
-		case LETHAL_INT: return getLethal();
-		default: return defaultLevel;
-	}
+   switch(val)
+   {
+      case TRACE_INT: return getTrace();
+      case LETHAL_INT: return getLethal();
+      default: return defaultLevel;
+   }
 }
 
 

@@ -37,35 +37,35 @@ using namespace log4cxx::xml;
 */
 class XLoggerTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(XLoggerTestCase);
-		CPPUNIT_TEST(test1);
-		CPPUNIT_TEST(test2);
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE(XLoggerTestCase);
+      CPPUNIT_TEST(test1);
+      CPPUNIT_TEST(test2);
+   CPPUNIT_TEST_SUITE_END();
 
-	XLoggerPtr logger;
+   XLoggerPtr logger;
 
 public:
-	void setUp()
-	{
-		logger =
-			(XLoggerPtr) XLogger::getLogger(
-			LOG4CXX_TEST_STR("org.apache.log4j.customLogger.XLoggerTestCase"));
-	}
+   void setUp()
+   {
+      logger =
+         (XLoggerPtr) XLogger::getLogger(
+         LOG4CXX_TEST_STR("org.apache.log4j.customLogger.XLoggerTestCase"));
+   }
 
-	void tearDown()
-	{
-		logger->getLoggerRepository()->resetConfiguration();
-	}
+   void tearDown()
+   {
+      logger->getLoggerRepository()->resetConfiguration();
+   }
 
-	void test1() { common(LOG4CXX_TEST_STR("1")); }
-	void test2() { common(LOG4CXX_TEST_STR("2")); }
+   void test1() { common(LOG4CXX_TEST_STR("1")); }
+   void test2() { common(LOG4CXX_TEST_STR("2")); }
 
-	void common(const LogString& number)
-	{
+   void common(const LogString& number)
+   {
         DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLogger")
-			+number+LOG4CXX_TEST_STR(".xml"));
-		
-		int i = -1;
+         +number+LOG4CXX_TEST_STR(".xml"));
+      
+      int i = -1;
         std::ostringstream os;
         os << "Message " << ++i;
         if (logger->isEnabledFor(log4cxx::XLevel::TRACE)) {
@@ -74,23 +74,23 @@ public:
 
         os.str("");
         os << "Message " << ++ i;
-		LOG4CXX_DEBUG(logger, os.str());
+      LOG4CXX_DEBUG(logger, os.str());
         os.str("");
         os << "Message " << ++ i;
-		LOG4CXX_WARN(logger, os.str());
+      LOG4CXX_WARN(logger, os.str());
         os.str("");
         os << "Message " << ++ i;
-		LOG4CXX_ERROR(logger, os.str());
+      LOG4CXX_ERROR(logger, os.str());
         os.str("");
         os << "Message " << ++ i;
-		LOG4CXX_FATAL(logger, os.str());
+      LOG4CXX_FATAL(logger, os.str());
         os.str("");
         os << "Message " << ++ i;
-		LOG4CXX_DEBUG(logger, os.str());
+      LOG4CXX_DEBUG(logger, os.str());
 
         const File OUTPUT(L"output/temp");
         const File WITNESS(LogString(LOG4CXX_STR("witness/customLogger.")) + number);
-		CPPUNIT_ASSERT(Compare::compare(OUTPUT, WITNESS));
+      CPPUNIT_ASSERT(Compare::compare(OUTPUT, WITNESS));
 //#endif
     }
 };

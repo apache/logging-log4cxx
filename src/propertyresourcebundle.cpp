@@ -24,27 +24,27 @@ IMPLEMENT_LOG4CXX_OBJECT(PropertyResourceBundle)
 
 PropertyResourceBundle::PropertyResourceBundle(LogString& inStream)
 {
-	properties.load(inStream);
+   properties.load(inStream);
 }
 
 LogString PropertyResourceBundle::getString(const LogString& key) const
 {
-	LogString resource;
-	PropertyResourceBundlePtr resourceBundle = this;
+   LogString resource;
+   PropertyResourceBundlePtr resourceBundle = this;
 
-	do
-	{
-		resource = resourceBundle->properties.getProperty(key);
-		if (!resource.empty())
-		{
-			return resource;
-		}
+   do
+   {
+      resource = resourceBundle->properties.getProperty(key);
+      if (!resource.empty())
+      {
+         return resource;
+      }
 
-		resourceBundle = resourceBundle->parent;
-	}
-	while (resourceBundle != 0);
+      resourceBundle = resourceBundle->parent;
+   }
+   while (resourceBundle != 0);
 
-	throw MissingResourceException(key);
+   throw MissingResourceException(key);
 
-	return resource;
+   return resource;
 }

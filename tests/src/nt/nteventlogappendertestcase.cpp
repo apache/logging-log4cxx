@@ -28,14 +28,14 @@ using namespace log4cxx::helpers;
  */
 class NTEventLogAppenderTestCase : public AppenderSkeletonTestCase
 {
-	CPPUNIT_TEST_SUITE(NTEventLogAppenderTestCase);
+   CPPUNIT_TEST_SUITE(NTEventLogAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
                 CPPUNIT_TEST(testDefaultThreshold);
                 CPPUNIT_TEST(testSetOptionThreshold);
 
-	CPPUNIT_TEST_SUITE_END();
+   CPPUNIT_TEST_SUITE_END();
 
 
 public:

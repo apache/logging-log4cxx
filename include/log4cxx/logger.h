@@ -370,9 +370,9 @@ namespace log4cxx
         *
         *  <p>If you are worried about speed, then you should write
         *  <pre>
-        * 	 if(logger->isDebugEnabled()) {
-        * 	   logger->debug("debug message");
-        * 	 }
+        *    if(logger->isDebugEnabled()) {
+        *      logger->debug("debug message");
+        *    }
         *  </pre>
         *
         *  <p>This way you will not incur the cost of parameter

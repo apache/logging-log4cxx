@@ -24,29 +24,29 @@ using namespace log4cxx;
 
 class TestCase1 : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(TestCase1);
-		CPPUNIT_TEST(noneTest);
-	CPPUNIT_TEST_SUITE_END();
-	
+   CPPUNIT_TEST_SUITE(TestCase1);
+      CPPUNIT_TEST(noneTest);
+   CPPUNIT_TEST_SUITE_END();
+   
 public:
-	void setUp()
-	{
-	}
+   void setUp()
+   {
+   }
 
-	void tearDown()
-	{
-		LogManager::shutdown();
-	}
-	
-	void noneTest()
-	{
-		LoggerPtr root = Logger::getRootLogger();
-		bool rootIsConfigured = !root->getAllAppenders().empty();
-		CPPUNIT_ASSERT(!rootIsConfigured);
-	}
+   void tearDown()
+   {
+      LogManager::shutdown();
+   }
+   
+   void noneTest()
+   {
+      LoggerPtr root = Logger::getRootLogger();
+      bool rootIsConfigured = !root->getAllAppenders().empty();
+      CPPUNIT_ASSERT(!rootIsConfigured);
+   }
 };
 
 CPPUNIT_NS::Test* createTestCase1() {
-	return TestCase1::suite();
+   return TestCase1::suite();
 }
 

@@ -101,7 +101,7 @@ namespace log4cxx
 
                 /**
                 Reset all values contained in this current {@link
-                spi::LoggerRepository LoggerRepository}	to their default.
+                spi::LoggerRepository LoggerRepository}  to their default.
                 */
         static void resetConfiguration();
     }; // class LogManager

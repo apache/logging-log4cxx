@@ -31,7 +31,7 @@ Locale::Locale(const LogString& language, const LogString& country)
 }
 
 Locale::Locale(const LogString& language, const LogString& country,
- 	const LogString& variant)
+   const LogString& variant)
 : language(language), country(country), variant(variant)
 {
 }
@@ -39,16 +39,16 @@ Locale::Locale(const LogString& language, const LogString& country,
 
 const LogString& Locale::getLanguage() const
 {
-	return language;
+   return language;
 }
 
 const LogString& Locale::getCountry() const
 {
-	return country;
+   return country;
 }
 
 const LogString& Locale::getVariant() const
 {
-	return variant;
+   return variant;
 }
 
