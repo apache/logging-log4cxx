@@ -2,10 +2,21 @@ Main features :
 Loggers, Hierarchy, Filters, Appenders, Layouts
 
 Appenders:
-AsyncAppender, SocketAppender, SocketHubAappender, TelnetAppender, NTEventLogAppender, ConsoleAppender, FileAppender, RollingFileAppender
+AsyncAppender, SocketAppender, SocketHubAappender, TelnetAppender, 
+NTEventLogAppender, ConsoleAppender, FileAppender, RollingFileAppender
 
 Layouts:
 TTCCLayout, HTMLLayout, PatternLayout, SimpleLayout, XMLLayout
 
 Configurators:
 DOMConfigurator
+
+*******************************************************************************
+CVS
+
+- FreeBSD Autotools/Compilation support
+- Fixed TelnetAppender crash when a socket bind exception occured.
+- Added log4j DTD support to XMLLayout
+- Can now send events in XML format over TCP (class XMLSocketAppender) for the
+log4j Chainsaw UI
+- Now compiles with 'configure --enable-unicode' (UTF16 Unicode support)
