@@ -15,6 +15,7 @@
 
    <menu name="log4cxx project">
      <item name="About" href="/index.html"/>
+     <item name="News" href="/news.html"/>
      <item name="Team" href="/team.html"/>
      <item name="Documentation" href="/manual/index.html"/>
      <item name="Download" href="/download.html"/>

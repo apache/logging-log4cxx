@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<document>
+    <properties>
+        <author email="mcatan at apache dot org">Michael CATANZARITI</author>
+        <title>News</title>
+    </properties>
+    <meta name="keywords" content="log4cxx news"/>
+    <body>
+        <h1>News</h1>
+            <h3>
+			10th of April 2004 - Log4cxx 0.9.6 release 
+			</h3>
+            <p>
+			<ul>
+				<li>Timezone management has been optimized through the class TimeZone.</li>
+				<li>Inter-thread synchronization and reference counting has been
+				optimized.</li>
+				<li>Reference counting now uses gcc atomic functions.</li>
+				<li>Use of StringBuffer has been optimized.</li>
+				<li>Support of localisation throug resourceBundles.</li>
+				<li>SyslogAppender now uses the system function 'syslog' to log on the
+				local host (only for POSIX systems).</li>
+				<li>Added TimeZone configuration to PatternLayout.</li>
+				<li>Support of the DailyRollingFileAppender.</li>
+            </ul>
+			</p>
+			<p>
+			<a href="log4cxx-0.9.6.tar.gz">log4cxx-0.9.6.tar.gz - 265.1 KB</a>
+			</p>
+            <hr noshade="noshade" size="1"/>
+    </body>
+</document>
