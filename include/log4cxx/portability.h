@@ -26,6 +26,8 @@
 #else
         #define LOG4CXX_EXPORT __declspec(dllimport)
 #endif
+#else
+#define LOG4CXX_EXPORT
 #endif
 #endif
 
