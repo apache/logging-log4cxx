@@ -78,6 +78,7 @@ void CriticalSection::lock()
 	impl->owningThread = Thread::getCurrentThreadId();
 }
 
+#if 0
 bool CriticalSection::try_lock()
 {
 #ifdef LOG4CXX_HAVE_PTHREAD
@@ -89,6 +90,7 @@ bool CriticalSection::try_lock()
 #error "try_lock is not implemented for msthread"
 #endif
 }
+#endif
 
 void CriticalSection::unlock()
 {

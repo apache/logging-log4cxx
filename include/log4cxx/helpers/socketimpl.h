@@ -53,7 +53,7 @@ namespace log4cxx
                       }
                       virtual ~SocketMessageTooLargeException() throw() {}
                       const char* what() const throw() {
-                         "Incoming message too large";
+                         return "Incoming message too large";
                       }
 
                 private:

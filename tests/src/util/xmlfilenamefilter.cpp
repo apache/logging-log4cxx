@@ -22,7 +22,17 @@ using namespace log4cxx::helpers;
 XMLFilenameFilter::XMLFilenameFilter(const char* actual, const char* expected)
     : pattern(" file=\""),
       replacement(" file=\"") {
-    pattern += actual;
+	std::string filename(actual);
+	size_t backslash = filename.rfind('\\', filename.length() - 1);
+	while (backslash != std::string::npos) {
+		filename.replace(backslash, 1, "\\\\", 2);
+		if (backslash == 0) {
+			backslash = std::string::npos;
+		} else {
+		    backslash = filename.rfind('\\', backslash - 1);
+		}
+	}
+    pattern += filename;
     pattern += "\"";
 
     replacement += expected;

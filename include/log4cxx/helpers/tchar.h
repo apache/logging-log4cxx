@@ -80,7 +80,7 @@ namespace std
 #undef _T
 #endif
 
-#ifdef WIN32
+#ifdef _WIN32
 #ifndef USES_CONVERSION
 	#include <malloc.h>
 	#define USES_CONVERSION void * _dst = _alloca(1024);
@@ -112,11 +112,11 @@ namespace std
 	#define totlower towlower
 	#define tcout std::wcout
 	#define tcerr std::wcerr
-#ifdef WIN32
+#ifdef _WIN32
 	#define tstrncasecmp _wcsnicmp
 #else
 	#define tstrncasecmp wcsncasecmp
-#endif // WIN32
+#endif // _WIN32
 
 #ifndef T2A
 	#define T2A(src) W2A(src)
@@ -149,11 +149,11 @@ namespace std
 	#define totlower tolower
 	#define tcout std::cout
 	#define tcerr std::cerr
-#ifdef WIN32
+#ifdef _WIN32
 	#define tstrncasecmp _strnicmp
 #else
 	#define tstrncasecmp strncasecmp
-#endif // WIN32
+#endif // _WIN32
 
 #ifndef T2A
 	#define T2A(src) src
@@ -175,6 +175,7 @@ namespace std
 	#define itot itoa
 	#define tcscmp strcmp
 #endif // LOG4CXX_UNICODE
+
 
 #define _MinInc  size_t(512)
 #define _MaxInc size_t(100 * 1024)

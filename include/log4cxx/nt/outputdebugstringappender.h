@@ -18,6 +18,7 @@
 #define _LOG4CXX_NT_OUTPUTDEBUGSTRING_APPENDER_HEADER_
 
 #include <log4cxx/appenderskeleton.h>
+#include <windows.h>
 
 namespace log4cxx
 {

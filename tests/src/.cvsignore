@@ -1,6 +1,8 @@
 Makefile
 Makefile.in
 shortsocketserver
+shortsocketserver.exe
+shortsocketserver.pdb
 .deps
 .libs
 history.xml

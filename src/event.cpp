@@ -89,7 +89,18 @@ namespace log4cxx {
         }
     };
 
-    class CannotWaitOnConditionException : public EventException
+    class CannotResetEventException : public EventException
+    {
+        public:
+        CannotResetEventException()  {
+        }
+        const char* what() const throw() {
+            return "Cannot reset event";
+        }
+    };
+
+    
+	class CannotWaitOnConditionException : public EventException
     {
         public:
         CannotWaitOnConditionException()  {
@@ -114,9 +125,10 @@ namespace log4cxx {
 
 
 Event::Event(bool manualReset, bool initialState)
-: condition(), mutex()
 #ifdef LOG4CXX_HAVE_PTHREAD
-  , manualReset(manualReset), state(initialState)
+: condition(), mutex()  , manualReset(manualReset), state(initialState)
+#elif defined(LOG4CXX_HAVE_MS_THREAD)
+: event(0)
 #endif
 {
 #ifdef LOG4CXX_HAVE_PTHREAD

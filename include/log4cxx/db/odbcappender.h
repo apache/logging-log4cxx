@@ -40,8 +40,15 @@ namespace log4cxx
 		{
 		public:
 			SQLException(int code) : code(code) {}
-			virtual String getMessage() const { return String(); }
+			SQLException(const SQLException& src) : Exception(src), code(src.code) {
+			}
+			const char* what() const throw() {
+				return "SQLException";
+			}
+			virtual ~SQLException() throw() {}
 
+		private:
+			SQLException& operator=(const SQLException&);
 			int code;
 		};
 

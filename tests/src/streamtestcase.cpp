@@ -61,6 +61,8 @@ class StreamTestCase : public CppUnit::TestFixture
 //                CPPUNIT_TEST(testWidth);
                 CPPUNIT_TEST(testGetStream);
                 CPPUNIT_TEST(testGetStreamDebug);
+				CPPUNIT_TEST(testInsertLevel);
+				CPPUNIT_TEST(testInsertLocation);
 	CPPUNIT_TEST_SUITE_END();
 
         VectorAppenderPtr vectorAppender;
@@ -178,6 +180,24 @@ public:
           CPPUNIT_ASSERT_EQUAL((size_t) 0, vectorAppender->getVector().size());
        }
 
+
+	   void testInsertLevel() {
+          LoggerPtr logger(Logger::getLogger("StreamTestCase.insertLevel"));
+          logger->setLevel(log4cxx::Level::INFO);
+          log4cxx::logstream stream(logger, log4cxx::Level::DEBUG);
+		  stream 
+			   << log4cxx::Level::WARN 
+			   << "This message must get through"
+			   << LOG4CXX_ENDMSG;
+          CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
+	   }
+
+	   void testInsertLocation() {
+          LoggerPtr logger(Logger::getRootLogger());
+          log4cxx::logstream stream(logger, log4cxx::Level::DEBUG);
+		  stream 
+			   << LOG4CXX_LOCATION; 
+	   }
 
 };
 

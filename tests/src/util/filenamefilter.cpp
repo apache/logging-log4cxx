@@ -23,6 +23,16 @@ FilenameFilter::FilenameFilter(const char* actual, const char* expected)
     : pattern(" "),
       replacement(" ") {
     pattern += actual;
+	size_t backslash = pattern.rfind('\\', pattern.length() - 1);
+	while (backslash != std::string::npos) {
+		pattern.replace(backslash, 1, "\\\\", 2);
+		if (backslash == 0) {
+			backslash = std::string::npos;
+		} else {
+		    backslash = pattern.rfind('\\', backslash - 1);
+		}
+	}
+
 
     replacement += expected;
 }

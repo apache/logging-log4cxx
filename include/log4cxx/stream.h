@@ -40,6 +40,9 @@ namespace log4cxx
                           currentLevel(level),
                           impl(0),
                           enabled(loggr->isEnabledFor(level)) {
+#if defined(_MSC_VER)
+				_Init();
+#endif
              }
 
             /**
@@ -51,6 +54,9 @@ namespace log4cxx
                currentLevel(level),
                impl(0),
                enabled(logger->isEnabledFor(level)) {
+#if defined(_MSC_VER)
+				_Init();
+#endif
               }
 
               ~basic_logstream() {
@@ -85,15 +91,14 @@ namespace log4cxx
 
 
 
-             void flush(const ::log4cxx::spi::location::LocationInfo& location) {
+             inline void flush(const ::log4cxx::spi::location::LocationInfo& location) {
                  if (LOG4CXX_UNLIKELY(enabled && 0 != impl)) {
-                    ::std::basic_string<Elem, Tr> msg(impl->str());
                     logger->log(currentLevel,
-                       msg,
+                       impl->str(),
                        location.getFileName(),
                        location.getLineNumber());
-                    msg.clear();
-                    impl->str(msg);
+					const std::basic_string<Elem, Tr> emptyStr;
+                    impl->str(emptyStr);
                 }
              }
 
@@ -127,11 +132,64 @@ namespace log4cxx
 
 
 
+//
+//   Insertion operators for LocationInfo, LocationFlush, Level and
+//      manipulators (std::fixed and similar)
+//
+//   Visual C++ 6 and earlier do not implement template partial ordering
+//     (see http://support.microsoft.com/default.aspx?scid=kb;en-us;240869)
+//     resulting in error C2667 unless the non-template definitions for
+//     operator<< (LOG4CXX_DEFINE_LOCATION_INSERTION and similar) are provided.
+//
 
-/**
-* Insertion operator for LocationInfo.
-*
-*/
+#define LOG4CXX_DEFINE_LOCATION_INSERTION(streamtype)        \
+streamtype& operator<<(streamtype& lhs,                      \
+const ::log4cxx::spi::location::LocationInfo& rhs) {         \
+   lhs.setLocation(rhs);                                     \
+   return lhs;                                               \
+}
+
+
+#define LOG4CXX_DEFINE_FLUSH_INSERTION(streamtype)            \
+streamtype& operator<<(streamtype& lhs,                       \
+const ::log4cxx::spi::location::LocationFlush& rhs) {         \
+   lhs.flush(rhs);                                            \
+   return lhs;                                                \
+}
+
+
+
+#define LOG4CXX_DEFINE_LEVEL_INSERTION(streamtype)    \
+streamtype& operator<<(streamtype& lhs,               \
+const ::log4cxx::LevelPtr& rhs) {                     \
+   lhs.setLevel(rhs);                                 \
+   return lhs;                                        \
+}
+
+
+#define LOG4CXX_DEFINE_MANIPULATOR_INSERTION(streamtype)        \
+streamtype& operator<<(                                 \
+   streamtype& lhs,                                     \
+::std::ios_base& (*manip)(::std::ios_base&)) {          \
+     (*manip)(lhs);                                     \
+   return lhs;                                          \
+}
+
+#if _MSC_VER_ < 1300
+LOG4CXX_DEFINE_LOCATION_INSERTION(::log4cxx::logstream)
+LOG4CXX_DEFINE_LOCATION_INSERTION(::log4cxx::wlogstream)
+
+
+LOG4CXX_DEFINE_FLUSH_INSERTION(::log4cxx::logstream)
+//LOG4CXX_DEFINE_FLUSH_INSERTION(::log4cxx::wlogstream)
+
+LOG4CXX_DEFINE_LEVEL_INSERTION(::log4cxx::logstream)
+LOG4CXX_DEFINE_LEVEL_INSERTION(::log4cxx::wlogstream)
+
+LOG4CXX_DEFINE_MANIPULATOR_INSERTION(::log4cxx::logstream)
+LOG4CXX_DEFINE_MANIPULATOR_INSERTION(::log4cxx::wlogstream)
+#else
+
 template<class Elem, class Tr>
 ::log4cxx::basic_logstream<Elem, Tr>& operator<<(
    ::log4cxx::basic_logstream<Elem, Tr>& lhs,
@@ -140,10 +198,7 @@ template<class Elem, class Tr>
    return lhs;
 }
 
-/**
-* Insertion operator for LocationFlush.
-*
-*/
+
 template<class Elem, class Tr>
 ::log4cxx::basic_logstream<Elem, Tr>& operator<<(
    ::log4cxx::basic_logstream<Elem, Tr>& lhs,
@@ -152,11 +207,6 @@ template<class Elem, class Tr>
    return lhs;
 }
 
-
-/**
-* Insertion operator for Level.
-*
-*/
 template<class Elem, class Tr>
 ::log4cxx::basic_logstream<Elem, Tr>& operator<<(
    ::log4cxx::basic_logstream<Elem, Tr>& lhs,
@@ -166,10 +216,6 @@ template<class Elem, class Tr>
 }
 
 
-//
-//
-//   template for manipulators (std::scientific et al)
-//
 template<class Elem, class Tr>
 ::log4cxx::basic_logstream<Elem, Tr>& operator<<(
    ::log4cxx::basic_logstream<Elem, Tr>& lhs,
@@ -177,6 +223,8 @@ template<class Elem, class Tr>
      (*manip)(lhs);
    return lhs;
 }
+#endif
+
 
 
 

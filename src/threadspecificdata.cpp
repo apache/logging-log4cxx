@@ -51,8 +51,7 @@ ThreadSpecificData::ThreadSpecificData(void (*cleanup)(void*)): impl(new Impl)
 #ifdef LOG4CXX_HAVE_PTHREAD
 	pthread_key_create(&impl->key, cleanup);
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-//	impl->key = (void *)TlsAlloc();
-#error "Not implemented"
+	impl->key = (void *)TlsAlloc();
 #endif
 }
 
@@ -87,5 +86,3 @@ void ThreadSpecificData::SetData(void * data)
 #endif
 }
 
-
-ThreadSpecificData_ptr<int> test;

@@ -15,9 +15,10 @@
  */
 
 #ifndef _LOG4CXX_SPI_LOCATION_LOCATIONINFO_H
-  #define _LOG4CXX_SPI_LOCATION_LOCATIONINFO_H
+#define _LOG4CXX_SPI_LOCATION_LOCATIONINFO_H
 
-  #include <string>
+#include <log4cxx/portability.h>
+#include <string>
 
 namespace log4cxx
 {
@@ -30,7 +31,7 @@ namespace log4cxx
        *
        * @remarks This class currently only used by the experimental (and optional) log4cxx::stream class.
        */
-      class LocationInfo
+      class LOG4CXX_EXPORT LocationInfo
       {
       public:
 
@@ -52,58 +53,29 @@ namespace log4cxx
         LocationInfo( const char * const fileName,
                       const char * const className,
                       const char * const methodName,
-                      int lineNumber )
-             : fileName( fileName ),
-               className( className ),
-               methodName( methodName ),
-               lineNumber( lineNumber )
-             {
-        }
+                      int lineNumber);
 
        /**
         *   Default constructor.
         */
-        LocationInfo()
-           : fileName(LocationInfo::NA),
-             className(LocationInfo::NA),
-             methodName(LocationInfo::NA),
-             lineNumber(-1) {
-        }
+        LocationInfo();
 
        /**
         *   Copy constructor.
         *   @param src source location
         */
-        LocationInfo( const LocationInfo & src )
-             : fileName( src.fileName ),
-               className( src.className ),
-               methodName( src.methodName ),
-               lineNumber( src.lineNumber )
-             {
-        }
+        LocationInfo( const LocationInfo & src );
 
        /**
         *  Assignment operator.
         * @param src source location
         */
-        LocationInfo & operator = ( const LocationInfo & src )
-        {
-          fileName = src.fileName;
-          className = src.className;
-          methodName = src.methodName;
-          lineNumber = src.lineNumber;
-          return * this;
-        }
+        LocationInfo & operator = ( const LocationInfo & src );
 
         /**
          *   Resets location info to default state.
          */
-        void clear() {
-          fileName = NA;
-          className = NA;
-          methodName = NA;
-          lineNumber = -1;
-        }
+        void clear();
 
 
         /** Return the class name of the call site. */
@@ -113,25 +85,16 @@ namespace log4cxx
          *   Return the file name of the caller.
          *   @returns file name, may be null.
          */
-        const char * getFileName() const
-        {
-          return fileName;
-        }
+        const char * getFileName() const;
 
         /**
           *   Returns the line number of the caller.
           * @returns line number, -1 if not available.
           */
-        int getLineNumber() const
-        {
-          return lineNumber;
-        }
+        int getLineNumber() const;
 
         /** Returns the method name of the caller. */
-        const char * getMethodName() const
-        {
-          return methodName;
-        }
+        const char * getMethodName() const;
 
         /** Formatted representation of location */
         const std::string getFullInfo() const;
@@ -153,7 +116,7 @@ namespace log4cxx
       };
 
 
-      class LocationFlush : public LocationInfo {
+      class LOG4CXX_EXPORT LocationFlush : public LocationInfo {
       	public:
        /**
         *   Constructor.
@@ -173,7 +136,7 @@ namespace log4cxx
 }
 
   #if !defined(LOG4CXX_LOCATION)
-    #if defined(_GCC_VER)
+    #if defined(__PRETTY_FUNCTION__)
       #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
            __PRETTY_FUNCTION__,                                              \
            __func__,                                                         \
@@ -183,7 +146,7 @@ namespace log4cxx
            __func__,                                                         \
            __LINE__)
     #else
-      #if defined(_MSC_VER)
+      #if defined(__FUNCSIG__)
         #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
              __FUNCSIG__,                                                      \
              __FUNCTION__,                                                     \
@@ -193,15 +156,26 @@ namespace log4cxx
              __FUNCTION__,                                                     \
              __LINE__)
       #else
-        #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
+        #if defined(__func__)
+          #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
              ::log4cxx::spi::location::LocationInfo::NA,                       \
              __func__,                                                         \
              __LINE__)
-        #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
+          #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
              ::log4cxx::spi::location::LocationInfo::NA,                       \
              __func__,                                                         \
              __LINE__)
-      #endif
+        #else
+          #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
+             ::log4cxx::spi::location::LocationInfo::NA,                       \
+             ::log4cxx::spi::location::LocationInfo::NA,                                                         \
+             __LINE__)
+          #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
+             ::log4cxx::spi::location::LocationInfo::NA,                       \
+             ::log4cxx::spi::location::LocationInfo::NA,                                                         \
+             __LINE__)
+          #endif
+        #endif
     #endif
   #endif
 

@@ -24,6 +24,91 @@
      constant is <b>?</b>.  */
  const char* const LocationInfo::NA = "?";
 
+/**
+*   Constructor.
+*   @remarks Used by LOG4CXX_LOCATION to generate
+*       location info for current code site
+*/
+ LocationInfo::LocationInfo( const char * const fileName,
+              const char * const className,
+              const char * const methodName,
+              int lineNumber )
+     : fileName( fileName ),
+       className( className ),
+       methodName( methodName ),
+       lineNumber( lineNumber )
+     {
+}
+
+/**
+*   Default constructor.
+*/
+ LocationInfo::LocationInfo()
+   : fileName(LocationInfo::NA),
+     className(LocationInfo::NA),
+     methodName(LocationInfo::NA),
+     lineNumber(-1) {
+}
+
+/**
+*   Copy constructor.
+*   @param src source location
+*/
+ LocationInfo::LocationInfo( const LocationInfo & src )
+     : fileName( src.fileName ),
+       className( src.className ),
+       methodName( src.methodName ),
+       lineNumber( src.lineNumber )
+     {
+}
+
+/**
+*  Assignment operator.
+* @param src source location
+*/
+ LocationInfo & LocationInfo::operator = ( const LocationInfo & src )
+{
+  fileName = src.fileName;
+  className = src.className;
+  methodName = src.methodName;
+  lineNumber = src.lineNumber;
+  return * this;
+}
+
+/**
+ *   Resets location info to default state.
+ */
+ void LocationInfo::clear() {
+  fileName = NA;
+  className = NA;
+  methodName = NA;
+  lineNumber = -1;
+}
+
+
+/**
+ *   Return the file name of the caller.
+ *   @returns file name, may be null.
+ */
+ const char * LocationInfo::getFileName() const
+{
+  return fileName;
+}
+
+/**
+  *   Returns the line number of the caller.
+  * @returns line number, -1 if not available.
+  */
+ int LocationInfo::getLineNumber() const
+{
+  return lineNumber;
+}
+
+/** Returns the method name of the caller. */
+ const char * LocationInfo::getMethodName() const
+{
+  return methodName;
+}
 
 
 const std::string LocationInfo::getClassName() const {

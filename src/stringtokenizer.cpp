@@ -47,4 +47,5 @@ String StringTokenizer::nextToken()
             }
         }
         throw NoSuchElementException();
+		return String();
 }

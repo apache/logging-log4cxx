@@ -63,6 +63,19 @@ MsXMLDOMDocument::MsXMLDOMDocument(MSXML::IXMLDOMDocumentPtr document)
 {
 }
 
+namespace log4cxx {
+	namespace helpers {
+		class CoInitializeException : Exception {
+		public:
+			CoInitializeException() {}
+			const char* what() const throw() {
+				return "Cannot initialize COM";
+			}
+		};
+	}
+}
+
+
 MsXMLDOMDocument::MsXMLDOMDocument() : mustCallCoUninitialize(false)
 {
 	HRESULT hRes = ::CoInitializeEx(0, COINIT_MULTITHREADED);
@@ -74,7 +87,7 @@ MsXMLDOMDocument::MsXMLDOMDocument() : mustCallCoUninitialize(false)
 			break;
 
 		default:
-			throw RuntimeException(_T("Cannot Initialize COM"));
+			throw CoInitializeException();
 		}
 	}
 	else

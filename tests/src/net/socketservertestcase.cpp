@@ -95,7 +95,7 @@ public:
 			ZeroMemory( &si, sizeof(si) );
 			si.cb = sizeof(si);
 			ZeroMemory( &pi, sizeof(pi) );
-			String commandLine(_T("shortsocketserver 8 input/socketServer"));
+			String commandLine(_T("src\\shortsocketserver 8 input/socketServer"));
 
 			BOOL bResult = ::CreateProcess(NULL, (LPTSTR)commandLine.c_str(), NULL, NULL,
 				TRUE, 0, NULL, NULL, &si, &pi);

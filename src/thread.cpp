@@ -120,7 +120,7 @@ void Thread::start()
 		(void *)::CreateThread(NULL, 0, threadProc, this, 0, &threadId);
 	if (impl->thread == 0)
 	{
-		throw UnableToStartThreadException();
+		throw ThreadException();
 	}
 #endif
 }
@@ -224,7 +224,7 @@ long Thread::InterlockedIncrement(volatile long * val)
 	sparc_atomic_add_32(val, 1);
 	return *val;
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-#if LOG4CXX_LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
+#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	return ::InterlockedIncrement((long *)val);
 #else
 	return ::InterlockedIncrement(val);
@@ -250,7 +250,7 @@ long Thread::InterlockedDecrement(volatile long * val)
 	sparc_atomic_add_32(val, -1);
 	return *val;
 #elif defined(LOG4CXX_HAVE_MS_THREAD)
-#if LOG4CXX_LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
+#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	return ::InterlockedDecrement((long *)val);
 #else
 	return ::InterlockedDecrement(val);

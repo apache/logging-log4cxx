@@ -95,9 +95,11 @@ void DateFormat::format(ostream& os, int64_t timeMillis) const
 	size_t pos = result.find(_T("%Q"));
 	if (pos != String::npos)
 	{
-		os << result.substr(0, pos)
-		   << std::setw(3) << std::setfill(_T('0')) << (long)(timeMillis % 1000)
-		   << result.substr(pos + 2);
+		os << result.substr(0, pos);
+		os.width(3);
+		os.fill(_T('0'));
+		os << (long)(timeMillis % 1000);
+		os << result.substr(pos + 2);
 	}
 	else
 	{
