@@ -66,7 +66,14 @@ void FileWatchdog::run()
 {    
     while(!interrupted) 
 	{
-		checkAndConfigure();
 		Thread::sleep(delay);
+		checkAndConfigure();
     }
 }
+
+void FileWatchdog::start()
+{
+	checkAndConfigure();
+	Thread::start();
+}
+

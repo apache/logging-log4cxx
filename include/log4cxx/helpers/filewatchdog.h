@@ -65,6 +65,7 @@ namespace log4cxx
 				{ this->delay = delay; }
 				
 			void run();
+			void start();
 		};
 	}; // namespace helpers
 }; // namespace log4cxx
