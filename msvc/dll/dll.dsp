@@ -257,7 +257,7 @@ SOURCE=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Release
-TargetDir=\log4cxx-0.9.5\msvc\Bin\Release
+TargetDir=\log4cxx-0.9.6\msvc\Bin\Release
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -280,7 +280,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Debug
-TargetDir=\log4cxx-0.9.5\msvc\Bin\Debug
+TargetDir=\log4cxx-0.9.6\msvc\Bin\Debug
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -303,7 +303,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_D
-TargetDir=\log4cxx-0.9.5\msvc\Bin\Unicode_D
+TargetDir=\log4cxx-0.9.6\msvc\Bin\Unicode_D
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -326,7 +326,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_R
-TargetDir=\log4cxx-0.9.5\msvc\Bin\Unicode_R
+TargetDir=\log4cxx-0.9.6\msvc\Bin\Unicode_R
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -499,10 +499,6 @@ SOURCE=..\..\src\serversocket.cpp
 # Begin Source File
 
 SOURCE=..\..\src\simplelayout.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\simplesocketserver.cpp
 # End Source File
 # Begin Source File
 
