@@ -44,8 +44,8 @@ public:
 	static void usage(const char * programName, const char * msg)
 	{
 		std::cout << msg << std::endl;
-		std::cout << "Usage: java " << programName <<
-				"configFile" << std::endl;
+		std::cout << "Usage: " << programName <<
+				" configFile" << std::endl;
 		exit(1);
 	}
 
