@@ -168,10 +168,11 @@ void FileAppender::activateOptions(Pool& p)
 
 void FileAppender::subAppend(const char* encoded, log4cxx_size_t size, Pool& p) {
   if (ofs != NULL) {
-    apr_status_t rv = apr_file_write(ofs, encoded, &size);
-    if (rv == APR_SUCCESS && immediateFlush) {
-      rv = apr_file_flush(ofs);
-    }
+    apr_file_write(ofs, encoded, &size);
+    //
+    //   do not call apr_file_flush here as it is a no-op
+    //   on Unix and wildly expensive on Windows.
+    //   See LOGCXX-58 for details
   }
 }
 
