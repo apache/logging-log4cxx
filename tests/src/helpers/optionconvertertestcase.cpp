@@ -95,9 +95,10 @@ public:
 		}
 		catch(IllegalArgumentException& e)
 		{
+			String witness = String(_T("\""))+val
+				+ _T("\" has no closing brace. Opening brace at position 6.");
 			String errorMsg = e.getMessage();
-			CPPUNIT_ASSERT(errorMsg == String(_T("\""))+val
-				+ _T("\" has no closing brace. Opening brace at position 6."));
+			CPPUNIT_ASSERT(errorMsg == witness);
 		}
 	}
 	
