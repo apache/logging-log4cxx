@@ -1,0 +1,25 @@
+  FATAL ERR - Message 0
+  ERROR ERR - Message 1
+  FATAL INF - Message 2
+  ERROR INF - Message 3
+  WARN INF - Message 4
+  INFO INF - Message 5
+  FATAL INF.UNDEF - Message 6
+  ERROR INF.UNDEF - Message 7
+  WARN INF.UNDEF - Message 8
+  INFO INF.UNDEF - Message 9
+  FATAL INF.ERR - Message 10
+  ERROR INF.ERR - Message 11
+  FATAL INF.ERR.UNDEF - Message 12
+  ERROR INF.ERR.UNDEF - Message 13
+  FATAL DEB - Message 14
+  ERROR DEB - Message 15
+  WARN DEB - Message 16
+  INFO DEB - Message 17
+  DEBUG DEB - Message 18
+  FATAL UNDEF - Message 19
+  ERROR UNDEF - Message 20
+  WARN UNDEF - Message 21
+  INFO UNDEF - Message 22
+  DEBUG UNDEF - Message 23
+  INFO INF - Messages should bear numbers 0 through 23.
