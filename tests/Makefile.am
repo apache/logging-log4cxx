@@ -22,7 +22,7 @@ regression: Minimum Logger DOM CustomLevel \
 	HierarchyThreshold DefaultInit SocketServer \
 	XMLLayout AsyncAppender ErrorHandler \
 	OptionConverter BoundedFIFO \
-	CyclicBuffer LevelMatchFilter \
+	CyclicBuffer DRFA LevelMatchFilter \
 	LevelRangeFilter PatternParser
 
 longUnit:
@@ -88,6 +88,9 @@ BoundedFIFO: build cleanOutputDir
 
 CyclicBuffer: build cleanOutputDir
 	src/testsuite CyclicBufferTestCase
+	
+DRFA: build cleanOutputDir
+	src/testsuite DRFATestCase
 
 PatternParser: build cleanOutputDir
 

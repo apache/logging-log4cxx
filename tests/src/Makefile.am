@@ -10,6 +10,7 @@ noinst_PROGRAMS = testsuite shortsocketserver
 
 testsuite_SOURCES = \
 	asyncappendertestcase.cpp\
+	drfatestcase.cpp\
 	hierarchythresholdtestcase.cpp\
 	loggertestcase.cpp\
 	main.cpp\
