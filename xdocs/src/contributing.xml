@@ -46,7 +46,7 @@
 							
 						<li>
 						<p>
-						To subscribe to the digest list sent an e-mail to <br />
+						To subscribe to the digest list sent an e-mail to <br/>
 						<a href="mailto:log4cxx-dev-digest-subscribe@logging.apache.org">
 						log4cxx-dev-digest-subscribe@logging.apache.org</a>.
 						</p>
@@ -136,5 +136,12 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout logging-log4cxx<
 						<a href="http://jakarta.apache.org/site/cvsindex.html">
 						Jakarta's CVS page</a> may hold many helpful hints.
 					</p>
+		<h2>Issue Tracking</h2>
+			<p>
+				Report a log4cxx bug <a
+				href="http://nagoya.apache.org/jira/secure/BrowseProject.jspa?id=10550">
+				here</a>.
+			</p>
+
 	</body>
 </document>
