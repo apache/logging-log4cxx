@@ -29,9 +29,9 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
-tstring Logger::FQCN = Logger::getStaticClass().getName();
+String Logger::FQCN = Logger::getStaticClass().getName();
 
-Logger::Logger(const tstring& name)
+Logger::Logger(const String& name)
 : name(name), level(&Level::OFF), additive(true), repository(0)
 {
 
@@ -54,7 +54,7 @@ void Logger::addAppender(AppenderPtr newAppender)
 }
 
 
-void Logger::assertLog(bool assertion, const tstring& msg)
+void Logger::assertLog(bool assertion, const String& msg)
 {
 	if(!assertion)
 	{
@@ -100,7 +100,7 @@ void Logger::closeNestedAppenders()
     }
 }
 
-void Logger::debug(const tstring& message, const char* file, int line)
+void Logger::debug(const String& message, const char* file, int line)
 {
 	if(repository->isDisabled(Level::DEBUG_INT))
 	{
@@ -113,7 +113,7 @@ void Logger::debug(const tstring& message, const char* file, int line)
 	}
 }
 
-void Logger::error(const tstring& message, const char* file, int line)
+void Logger::error(const String& message, const char* file, int line)
 {
 	if(repository->isDisabled(Level::ERROR_INT))
 	{
@@ -126,7 +126,7 @@ void Logger::error(const tstring& message, const char* file, int line)
 	}
 }
 
-void Logger::fatal(const tstring& message, const char* file, int line)
+void Logger::fatal(const String& message, const char* file, int line)
 {
 	if(repository->isDisabled(Level::FATAL_INT))
 	{
@@ -139,7 +139,7 @@ void Logger::fatal(const tstring& message, const char* file, int line)
 	}
 }
 
-void Logger::forcedLog(const tstring& fqcn, const Level& level, const tstring& message,
+void Logger::forcedLog(const String& fqcn, const Level& level, const String& message,
 			const char* file, int line)
 {
 	callAppenders(LoggingEvent(fqcn, this, level, message, file, line));
@@ -164,7 +164,7 @@ AppenderList Logger::getAllAppenders()
 	}
 }
 
-AppenderPtr Logger::getAppender(const tstring& name)
+AppenderPtr Logger::getAppender(const String& name)
 {
 	synchronized sync(this);
 
@@ -204,7 +204,7 @@ const Level& Logger::getLevel()
 	return *level;
 }
 
-void Logger::info(const tstring& message, const char* file, int line)
+void Logger::info(const String& message, const char* file, int line)
 {
 	if(repository->isDisabled(Level::INFO_INT))
 	{
@@ -259,10 +259,39 @@ bool Logger::isInfoEnabled()
 	}
 
 	return Level::INFO.isGreaterOrEqual(getEffectiveLevel());
-
 }
 
-void Logger::log(const Level& level, const tstring& message,
+bool Logger::isErrorEnabled()
+{
+	if(repository->isDisabled(Level::ERROR_INT))
+	{
+		return false;
+	}
+
+	return Level::ERROR.isGreaterOrEqual(getEffectiveLevel());
+}
+
+bool Logger::isWarnEnabled()
+{
+	if(repository->isDisabled(Level::WARN_INT))
+	{
+		return false;
+	}
+
+	return Level::WARN.isGreaterOrEqual(getEffectiveLevel());
+}
+
+bool Logger::isFatalEnabled()
+{
+	if(repository->isDisabled(Level::FATAL_INT))
+	{
+		return false;
+	}
+
+	return Level::FATAL.isGreaterOrEqual(getEffectiveLevel());
+}
+
+void Logger::log(const Level& level, const String& message,
 	const char* file, int line)
 {
 
@@ -300,7 +329,7 @@ void Logger::removeAppender(AppenderPtr appender)
 	aai->removeAppender(appender);
 }
 
-void Logger::removeAppender(const tstring& name) 
+void Logger::removeAppender(const String& name) 
 {
 	synchronized sync(this);
 
@@ -327,7 +356,7 @@ void Logger::setLevel(const Level& level)
 	this->level = &level;
 }
 
-void Logger::warn(const tstring& message, const char* file, int line)
+void Logger::warn(const String& message, const char* file, int line)
 {
 	if(repository->isDisabled(Level::WARN_INT))
 	{
@@ -341,7 +370,7 @@ void Logger::warn(const tstring& message, const char* file, int line)
 }
 
 
-LoggerPtr Logger::getLogger(const tstring& name)
+LoggerPtr Logger::getLogger(const String& name)
 {
 	return LogManager::getLogger(name);
 }
@@ -350,7 +379,7 @@ LoggerPtr Logger::getRootLogger() {
 	return LogManager::getRootLogger();
 }
 
-LoggerPtr Logger::getLogger(const tstring& name,
+LoggerPtr Logger::getLogger(const String& name,
 							spi::LoggerFactoryPtr factory)
 {
 	return LogManager::getLogger(name, factory);

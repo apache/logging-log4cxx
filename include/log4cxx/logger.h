@@ -62,7 +62,7 @@ namespace log4cxx
         /**
         The name of this logger.
         */
-        tstring name;
+        String name;
 
         /**
         The assigned level of this logger.  The
@@ -79,7 +79,7 @@ namespace log4cxx
 		The fully qualified name of the Category class. See also the getFQCN
 		method.
 		*/
-		static tstring FQCN;
+		static String FQCN;
 
 		// Loggers need to know what Hierarchy they are in
         spi::LoggerRepository * repository;
@@ -107,7 +107,7 @@ namespace log4cxx
 
 		@param name The name of the logger.
 		*/
-		  Logger(const tstring& name);
+		  Logger(const String& name);
 
     public:
 		~Logger();
@@ -130,7 +130,7 @@ namespace log4cxx
         @param msg The message to print if <code>assertion</code> is
         false.
 		*/
-        void assertLog(bool assertion, const tstring& msg);
+        void assertLog(bool assertion, const String& msg);
 
 		/**
         Call the appenders in the hierrachy starting at
@@ -164,7 +164,7 @@ namespace log4cxx
 		@param file the file where the log statement was written.
 		@param line the line where the log statement was written.
 		*/
-        void debug(const tstring& message, const char* file=0, int line=-1);
+        void debug(const String& message, const char* file=0, int line=-1);
 
         /**
         Log a message string with the {@link Level#ERROR ERROR} level.
@@ -180,7 +180,7 @@ namespace log4cxx
 		@param file the file where the log statement was written.
 		@param line the line where the log statement was written.
 		*/
-        void error(const tstring& message, const char* file=0, int line=-1); 
+        void error(const String& message, const char* file=0, int line=-1); 
 
         /**
         Log a message string with the {@link Level#FATAL FATAL} level.
@@ -196,7 +196,7 @@ namespace log4cxx
 		@param file the file where the log statement was written.
 		@param line the line where the log statement was written.
 		*/
-        void fatal(const tstring& message, const char* file=0, int line=-1);
+        void fatal(const String& message, const char* file=0, int line=-1);
 
         /**
         This method creates a new logging event and logs the event
@@ -208,7 +208,7 @@ namespace log4cxx
 		@param line the line where the log statement was written.
 		*/
     protected:
-        void forcedLog(const tstring& fqcn, const Level& level, const tstring& message,
+        void forcedLog(const String& fqcn, const Level& level, const String& message,
 			const char* file=0, int line=-1);
 
 
@@ -229,7 +229,7 @@ namespace log4cxx
 		Look for the appender named as <code>name</code>.
 		<p>Return the appender with that name if in the list. Return
 		<code>null</code> otherwise.  */
-		AppenderPtr getAppender(const tstring& name);
+		AppenderPtr getAppender(const String& name);
 
 		/**
         Starting from this logger, search the logger hierarchy for a
@@ -251,7 +251,7 @@ namespace log4cxx
 
         /**
         Return the logger name.  */
-        inline const tstring& getName() const
+        inline const String& getName() const
 			{ return name; }
 
 
@@ -274,7 +274,7 @@ namespace log4cxx
         /**
         Retrieve a logger by name.
         */
-        static LoggerPtr getLogger(const tstring& name);
+        static LoggerPtr getLogger(const String& name);
 
         /**
         Retrieve the root logger.
@@ -294,7 +294,7 @@ namespace log4cxx
         @param factory A LoggerFactory implementation that will
         actually create a new Instance.
 		*/
-        static LoggerPtr getLogger(const tstring& name,
+        static LoggerPtr getLogger(const String& name,
 			spi::LoggerFactoryPtr factory);
 			
         
@@ -312,7 +312,7 @@ namespace log4cxx
 		@param file the file where the log statement was written.
 		@param line the line where the log statement was written.
 		*/
-        void info(const tstring& message, const char* file=NULL, int line=-1);
+        void info(const String& message, const char* file=NULL, int line=-1);
 
 		/**
 		Is the appender passed as parameter attached to this category?
@@ -328,7 +328,7 @@ namespace log4cxx
         *
         *  <p> For some <code>logger</code> Logger object, when you write,
         *  <pre>
-        *      logger.debug("This is entry number: " + i );
+        *      logger->debug("debug message");
         *  </pre>
         *
         *  <p>You incur the cost constructing the message, concatenation in
@@ -336,8 +336,8 @@ namespace log4cxx
         *
         *  <p>If you are worried about speed, then you should write
         *  <pre>
-        * 	 if(logger.isDebugEnabled()) {
-        * 	   logger.debug("This is entry number: " + i );
+        * 	 if(logger->isDebugEnabled()) {
+        * 	   logger->debug("debug message");
         * 	 }
         *  </pre>
         *
@@ -374,6 +374,33 @@ namespace log4cxx
         bool isInfoEnabled();
 
          /**
+        Check whether this logger is enabled for the warn Level.
+        See also #isDebugEnabled.
+
+        @return bool - <code>true</code> if this logger is enabled
+        for level warn, <code>false</code> otherwise.
+        */
+        bool isWarnEnabled();
+
+         /**
+        Check whether this logger is enabled for the error Level.
+        See also #isDebugEnabled.
+
+        @return bool - <code>true</code> if this logger is enabled
+        for level error, <code>false</code> otherwise.
+        */
+        bool isErrorEnabled();
+
+         /**
+        Check whether this logger is enabled for the fatal Level.
+        See also #isDebugEnabled.
+
+        @return bool - <code>true</code> if this logger is enabled
+        for level fatal, <code>false</code> otherwise.
+        */
+        bool isFatalEnabled();
+
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -381,7 +408,7 @@ namespace log4cxx
         @param message The message of the logging request.
         @param file The source file of the logging request, may be null.
         @param line The number line of the logging request.  */
-        void log(const Level& level, const tstring& message,
+        void log(const Level& level, const String& message,
 			const char* file=0, int line=-1);
 
 		/**
@@ -400,7 +427,7 @@ namespace log4cxx
 		Remove the appender with the name passed as parameter form the
 		list of appenders.
 		 */
-		void removeAppender(const tstring& name);
+		void removeAppender(const String& name);
 
        /**
         Set the additivity flag for this Logger instance.
@@ -442,37 +469,37 @@ namespace log4cxx
 		@param file the file where the log statement was written.
 		@param line the line where the log statement was written.
 		*/
-        void warn(const tstring& message, const char* file=NULL, int line=-1);
+        void warn(const String& message, const char* file=NULL, int line=-1);
    };
 };
 
 #define LOG4CXX_DEBUG(logger, message) { \
 	if (logger->isDebugEnabled()) {\
-	tostringstream oss; \
+	StringBuffer oss; \
 	oss << message; \
 	logger->debug(oss.str(), __FILE__, __LINE__); }}
 
 #define LOG4CXX_INFO(logger, message) { \
 	if (logger->isInfoEnabled()) {\
-	tostringstream oss; \
+	StringBuffer oss; \
 	oss << message; \
 	logger->info(oss.str(), __FILE__, __LINE__); }}
 
 #define LOG4CXX_WARN(logger, message) { \
 	if (logger->isWarnEnabled()) {\
-	tostringstream oss; \
+	StringBuffer oss; \
 	oss << message; \
 	logger->warn(oss.str(), __FILE__, __LINE__); }}
 
 #define LOG4CXX_ERROR(logger, message) { \
 	if (logger->isErrorEnabled()) {\
-	tostringstream oss; \
+	StringBuffer oss; \
 	oss << message; \
 	logger->error(oss.str(), __FILE__, __LINE__); }}
 
 #define LOG4CXX_FATAL(logger, message) { \
 	if (logger->isFatalEnabled()) {\
-	tostringstream oss; \
+	StringBuffer oss; \
 	oss << message; \
 	logger->fatal(oss.str(), __FILE__, __LINE__); }}
 
