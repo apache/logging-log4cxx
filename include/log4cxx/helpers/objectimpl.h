@@ -48,7 +48,7 @@ namespace log4cxx
 
 		protected:
 #ifdef HAVE_LINUX_ATOMIC_OPERATIONS
-			volatile atomic_t ref;
+			atomic_t ref;
 #elif defined(HAVE_PTHREAD)
 			CriticalSection refCs;
 			unsigned int ref;
