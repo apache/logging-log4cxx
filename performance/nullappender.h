@@ -39,7 +39,7 @@ namespace log4cxx
 		class NullAppender : public AppenderSkeleton
 		{
 		public:
-			static String s;
+			StringBuffer sbuf;
 
 			DECLARE_LOG4CXX_OBJECT(NullAppender)
 			BEGIN_LOG4CXX_CAST_MAP()

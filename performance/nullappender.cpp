@@ -24,8 +24,6 @@ using namespace log4cxx::performance;
 
 IMPLEMENT_LOG4CXX_OBJECT(NullAppender)
 
-String NullAppender::s;
-
 NullAppender::NullAppender()
 {
 }
@@ -43,9 +41,8 @@ void NullAppender::doAppend(const LoggingEventPtr& event)
 {
 	if (layout != 0)
 	{
-		StringBuffer sbuf;
+		sbuf.seekp(0);
 		layout->format(sbuf, event);
-		s = sbuf.str();
 	}
 }
 
