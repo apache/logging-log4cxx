@@ -67,4 +67,4 @@ Version 0.9.2 (2003-08-10)
 * Fixed FreeBSD compilation problem with pthread mutex (class CriticalSection).
 * Fixed milliseconds formatting problem (class DateFormat).
 * Long events (> 1024 chars) are now supported in the class XMLSocketAppender.
-* Carriage return are normalized in the class XMLLayout.
+* Carriage returns have been normalized in the class XMLLayout.
