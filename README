@@ -5,12 +5,19 @@ The goal is have the same functionnalities and interfaces of log4j.
 
 Features
 ========
-Loggers, Hierarchy, Filters, Appenders, Layouts
+It's a flexible and highly configurable logging framework
+Main features :
+- Configurable logging destinations (appenders)
+- Configurable logging format (layouts)
+- Categorized logging statements through a hierarchy (loggers)
+- Filtering filters (filters)
+- Thread safe library
+- UTF-16 Unicode support
 
 * Appenders:
   AsyncAppender, ConsoleAppender, FileAppender, NTEventLogAppender,
-  RollingFileAppender, SocketAppender, SocketHubAappender,
-  TelnetAppender, XMLSocketAppender
+  ODBCAppender, RollingFileAppender, SMTPAppender, SocketAppender,
+  SocketHubAappender, SyslogAppender, TelnetAppender, XMLSocketAppender
 
 * Layouts:
   HTMLLayout, PatternLayout, SimpleLayout, TTCCLayout, XMLLayout
@@ -19,16 +26,17 @@ Loggers, Hierarchy, Filters, Appenders, Layouts
   DenyAllFilter, LevelMatchFilter, LevelRangeFilter, StringMatchFilter
 
 * Configurators:
-  DOMConfigurator, PropertyConfigurator
+  BasicConfigurator, DOMConfigurator, PropertyConfigurator
 
 * Java like objects with dynamic cast and instanciation. Custom objects can
   be configured through the DOMConfigurator and PropertyConfigurator classes
 
-Planned Features
-================
-* Finish support for the Chainsaw log4j UI through the XMLSocketAppender
-* Port the log4j SMTPAppender (depends on finding a C++ SMTP library)
-* Port the JDBCAppender to ODBCAppender
+Supported OS
+============
+* Linux
+* FreeBSD
+* Windows (MSVC 6.0 or Cygwin)
+* Othe POSIX OS should be supported but were not tested
 
 Installation
 ============
