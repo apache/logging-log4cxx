@@ -50,7 +50,7 @@ log4cxx - Documentation
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../team.html">Team</a>
 </small></td></tr>
-              	 <tr><td class="navbarItem"><small>    <a href="../documentation.html">Documentation</a>
+              	 <tr><td class="navbarItem"><small>    <a href="../manual/index.html">Documentation</a>
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../download.html">Download</a>
 </small></td></tr>
@@ -93,57 +93,59 @@ log4cxx - Documentation
 
 <tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a7">fatal</a> (const String &amp;message, const char *file=0, int line=-1)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a8">getAdditivity</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a8">forcedLog</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>, const String &amp;message, const char *file=0, int line=-1)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>AppenderList&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a9">getAllAppenders</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a9">getAdditivity</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top><a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">AppenderPtr</a>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a10">getAppender</a> (const String &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p0">name</a>) const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>AppenderList&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a10">getAllAppenders</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>virtual const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a11">getEffectiveLevel</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top><a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">AppenderPtr</a>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a11">getAppender</a> (const String &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p0">name</a>) const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top><a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">spi::LoggerRepositoryPtr</a>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a12">getLoggerRepository</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>virtual const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a12">getEffectiveLevel</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>const String &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a13">getName</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top><a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">spi::LoggerRepositoryPtr</a>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a13">getLoggerRepository</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LoggerPtr</a> &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a14">getParent</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>const String &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a14">getName</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a15">getLevel</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LoggerPtr</a> &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a15">getParent</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top><a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">helpers::ResourceBundlePtr</a>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a16">getResourceBundle</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a16">getLevel</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a17">info</a> (const String &amp;message, const char *file=NULL, int line=-1)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top><a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">helpers::ResourceBundlePtr</a>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a17">getResourceBundle</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a18">isAttached</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">AppenderPtr</a> &amp;appender) const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a18">info</a> (const String &amp;message, const char *file=NULL, int line=-1)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a19">isDebugEnabled</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a19">isAttached</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">AppenderPtr</a> &amp;appender) const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a20">isEnabledFor</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>) const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a20">isDebugEnabled</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a21">isInfoEnabled</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a21">isEnabledFor</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>) const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a22">isWarnEnabled</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a22">isInfoEnabled</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a23">isErrorEnabled</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a23">isWarnEnabled</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a24">isFatalEnabled</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a24">isErrorEnabled</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a25">l7dlog</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>, const String &amp;key, const char *file, int line,...)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a25">isFatalEnabled</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a26">log</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>, const String &amp;message, const char *file=0, int line=-1)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a26">l7dlog</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>, const String &amp;key, const char *file, int line,...)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a27">removeAllAppenders</a> ()</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a27">log</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>, const String &amp;message, const char *file=0, int line=-1)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a28">removeAppender</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">AppenderPtr</a> &amp;appender)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a28">removeAllAppenders</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a29">removeAppender</a> (const String &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p0">name</a>)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a29">removeAppender</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">AppenderPtr</a> &amp;appender)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a30">setAdditivity</a> (bool <a class="el" href="classlog4cxx_1_1Logger.html#p6">additive</a>)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a30">removeAppender</a> (const String &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p0">name</a>)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>virtual void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a31">setLevel</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a31">setAdditivity</a> (bool <a class="el" href="classlog4cxx_1_1Logger.html#p6">additive</a>)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a32">setResourceBundle</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">helpers::ResourceBundlePtr</a> &amp;bundle)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>virtual void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a32">setLevel</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p1">level</a>)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a33">warn</a> (const String &amp;message, const char *file=NULL, int line=-1)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a33">setResourceBundle</a> (const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">helpers::ResourceBundlePtr</a> &amp;bundle)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#a34">warn</a> (const String &amp;message, const char *file=NULL, int line=-1)</td></tr>
 
 <tr><td colspan=2><br><h2>Static Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align=right valign=top><a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LoggerPtr</a>&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1Logger.html#e0">getLogger</a> (const String &amp;<a class="el" href="classlog4cxx_1_1Logger.html#p0">name</a>)</td></tr>
@@ -583,7 +585,65 @@ This method creates a new logging event and logs the event without further check
     </td>
   </tr>
 </table>
-<a class="anchor" name="a8" doxytag="log4cxx::Logger::getAdditivity" ></a><p>
+<a class="anchor" name="a8" doxytag="log4cxx::Logger::forcedLog" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> void forcedLog </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const <a class="el" href="classlog4cxx_1_1helpers_1_1ObjectPtrT.html">LevelPtr</a> &amp;&nbsp;</td>
+          <td class="mdname" nowrap> <em>level</em>, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>const String &amp;&nbsp;</td>
+          <td class="mdname" nowrap> <em>message</em>, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>const char *&nbsp;</td>
+          <td class="mdname" nowrap> <em>file</em> = 0, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>int&nbsp;</td>
+          <td class="mdname" nowrap> <em>line</em> = -1</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+This method creates a new logging event and logs the event without further checks. <dl compact><dt><b>Parameters:</b></dt><dd>
+  <table border="0" cellspacing="2" cellpadding="0">
+    <tr><td valign=top><em>level</em>&nbsp;</td><td>the level to log. </td></tr>
+    <tr><td valign=top><em>message</em>&nbsp;</td><td>the message string to log. </td></tr>
+    <tr><td valign=top><em>file</em>&nbsp;</td><td>the file where the log statement was written. </td></tr>
+    <tr><td valign=top><em>line</em>&nbsp;</td><td>the line where the log statement was written.</td></tr>
+  </table>
+</dl>
+    </td>
+  </tr>
+</table>
+<a class="anchor" name="a9" doxytag="log4cxx::Logger::getAdditivity" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -611,7 +671,7 @@ This method creates a new logging event and logs the event without further check
 Get the additivity flag for this <a class="el" href="classlog4cxx_1_1Logger.html">Logger</a> instance.     </td>
   </tr>
 </table>
-<a class="anchor" name="a9" doxytag="log4cxx::Logger::getAllAppenders" ></a><p>
+<a class="anchor" name="a10" doxytag="log4cxx::Logger::getAllAppenders" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -642,7 +702,7 @@ Get the appenders contained in this logger as an AppenderList. If no appenders c
 Implements <a class="el" href="classlog4cxx_1_1spi_1_1AppenderAttachable.html#a1">AppenderAttachable</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a10" doxytag="log4cxx::Logger::getAppender" ></a><p>
+<a class="anchor" name="a11" doxytag="log4cxx::Logger::getAppender" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -674,7 +734,7 @@ Return the appender with that name if in the list. Return <code>NULL</code> othe
 Implements <a class="el" href="classlog4cxx_1_1spi_1_1AppenderAttachable.html#a2">AppenderAttachable</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a11" doxytag="log4cxx::Logger::getEffectiveLevel" ></a><p>
+<a class="anchor" name="a12" doxytag="log4cxx::Logger::getEffectiveLevel" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -709,7 +769,7 @@ The <a class="el" href="classlog4cxx_1_1Logger.html">Logger</a> class is designe
     </td>
   </tr>
 </table>
-<a class="anchor" name="a15" doxytag="log4cxx::Logger::getLevel" ></a><p>
+<a class="anchor" name="a16" doxytag="log4cxx::Logger::getLevel" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -814,7 +874,7 @@ This method is intended to be used by sub-classes.<p>
 Retrieve a logger by name.     </td>
   </tr>
 </table>
-<a class="anchor" name="a12" doxytag="log4cxx::Logger::getLoggerRepository" ></a><p>
+<a class="anchor" name="a13" doxytag="log4cxx::Logger::getLoggerRepository" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -842,7 +902,7 @@ Retrieve a logger by name.     </td>
 Return the the LoggerRepository where this <code><a class="el" href="classlog4cxx_1_1Logger.html">Logger</a></code> is attached.    </td>
   </tr>
 </table>
-<a class="anchor" name="a13" doxytag="log4cxx::Logger::getName" ></a><p>
+<a class="anchor" name="a14" doxytag="log4cxx::Logger::getName" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -870,7 +930,7 @@ Return the the LoggerRepository where this <code><a class="el" href="classlog4cx
 Return the logger name.     </td>
   </tr>
 </table>
-<a class="anchor" name="a14" doxytag="log4cxx::Logger::getParent" ></a><p>
+<a class="anchor" name="a15" doxytag="log4cxx::Logger::getParent" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -899,7 +959,7 @@ Returns the parent of this logger. Note that the parent of a given logger may ch
 The root logger will return <code>0</code>.     </td>
   </tr>
 </table>
-<a class="anchor" name="a16" doxytag="log4cxx::Logger::getResourceBundle" ></a><p>
+<a class="anchor" name="a17" doxytag="log4cxx::Logger::getResourceBundle" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -956,7 +1016,7 @@ This method walks the hierarchy to find the appropriate resource bundle. It will
 <p>
 Returns the string resource coresponding to <code>key</code> in this category's inherited resource bundle.<p>
 If the resource cannot be found, then an <a class="el" href="classlog4cxx_1_1Logger.html#a6">error</a> message will be logged complaining about the missing resource.<p>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="classlog4cxx_1_1Logger.html#a16">getResourceBundle</a>.</dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="classlog4cxx_1_1Logger.html#a17">getResourceBundle</a>.</dd></dl>
     </td>
   </tr>
 </table>
@@ -988,7 +1048,7 @@ If the resource cannot be found, then an <a class="el" href="classlog4cxx_1_1Log
 Retrieve the root logger.     </td>
   </tr>
 </table>
-<a class="anchor" name="a17" doxytag="log4cxx::Logger::info" ></a><p>
+<a class="anchor" name="a18" doxytag="log4cxx::Logger::info" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1041,7 +1101,7 @@ This method first checks if this logger is <code>INFO</code> enabled by comparin
     </td>
   </tr>
 </table>
-<a class="anchor" name="a18" doxytag="log4cxx::Logger::isAttached" ></a><p>
+<a class="anchor" name="a19" doxytag="log4cxx::Logger::isAttached" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1072,7 +1132,7 @@ Is the appender passed as parameter attached to this category?
 Implements <a class="el" href="classlog4cxx_1_1spi_1_1AppenderAttachable.html#a3">AppenderAttachable</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a19" doxytag="log4cxx::Logger::isDebugEnabled" ></a><p>
+<a class="anchor" name="a20" doxytag="log4cxx::Logger::isDebugEnabled" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1104,7 +1164,7 @@ For some <code>logger</code> <a class="el" href="classlog4cxx_1_1Logger.html">Lo
   </pre></div><p>
 You incur the cost constructing the message, concatenation in this case, regardless of whether the message is logged or not.<p>
 If you are worried about speed, then you should write <pre><div>
- 	 if(logger-&gt;<a class="el" href="classlog4cxx_1_1Logger.html#a19">isDebugEnabled()</a>) {
+ 	 if(logger-&gt;<a class="el" href="classlog4cxx_1_1Logger.html#a20">isDebugEnabled()</a>) {
  	   logger-&gt;debug("debug message");
  	 }
   </pre></div><p>
@@ -1113,7 +1173,7 @@ This way you will not incur the cost of parameter construction if debugging is d
     </td>
   </tr>
 </table>
-<a class="anchor" name="a20" doxytag="log4cxx::Logger::isEnabledFor" ></a><p>
+<a class="anchor" name="a21" doxytag="log4cxx::Logger::isEnabledFor" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1140,12 +1200,12 @@ This way you will not incur the cost of parameter construction if debugging is d
 
 <p>
 Check whether this logger is enabled for a given <a class="el" href="classlog4cxx_1_1Level.html">Level</a> passed as parameter.<p>
-See also <a class="el" href="classlog4cxx_1_1Logger.html#a19">isDebugEnabled</a>.<p>
+See also <a class="el" href="classlog4cxx_1_1Logger.html#a20">isDebugEnabled</a>.<p>
 <dl compact><dt><b>Returns:</b></dt><dd>bool True if this logger is enabled for <code>level</code>. </dd></dl>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a23" doxytag="log4cxx::Logger::isErrorEnabled" ></a><p>
+<a class="anchor" name="a24" doxytag="log4cxx::Logger::isErrorEnabled" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1170,12 +1230,12 @@ See also <a class="el" href="classlog4cxx_1_1Logger.html#a19">isDebugEnabled</a>
     <td>
 
 <p>
-Check whether this logger is enabled for the error <a class="el" href="classlog4cxx_1_1Level.html">Level</a>. See also <a class="el" href="classlog4cxx_1_1Logger.html#a19">isDebugEnabled</a>.<p>
+Check whether this logger is enabled for the error <a class="el" href="classlog4cxx_1_1Level.html">Level</a>. See also <a class="el" href="classlog4cxx_1_1Logger.html#a20">isDebugEnabled</a>.<p>
 <dl compact><dt><b>Returns:</b></dt><dd>bool - <code>true</code> if this logger is enabled for level error, <code>false</code> otherwise. </dd></dl>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a24" doxytag="log4cxx::Logger::isFatalEnabled" ></a><p>
+<a class="anchor" name="a25" doxytag="log4cxx::Logger::isFatalEnabled" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1200,12 +1260,12 @@ Check whether this logger is enabled for the error <a class="el" href="classlog4
     <td>
 
 <p>
-Check whether this logger is enabled for the fatal <a class="el" href="classlog4cxx_1_1Level.html">Level</a>. See also <a class="el" href="classlog4cxx_1_1Logger.html#a19">isDebugEnabled</a>.<p>
+Check whether this logger is enabled for the fatal <a class="el" href="classlog4cxx_1_1Level.html">Level</a>. See also <a class="el" href="classlog4cxx_1_1Logger.html#a20">isDebugEnabled</a>.<p>
 <dl compact><dt><b>Returns:</b></dt><dd>bool - <code>true</code> if this logger is enabled for level fatal, <code>false</code> otherwise. </dd></dl>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a21" doxytag="log4cxx::Logger::isInfoEnabled" ></a><p>
+<a class="anchor" name="a22" doxytag="log4cxx::Logger::isInfoEnabled" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1230,12 +1290,12 @@ Check whether this logger is enabled for the fatal <a class="el" href="classlog4
     <td>
 
 <p>
-Check whether this logger is enabled for the info <a class="el" href="classlog4cxx_1_1Level.html">Level</a>. See also <a class="el" href="classlog4cxx_1_1Logger.html#a19">isDebugEnabled</a>.<p>
+Check whether this logger is enabled for the info <a class="el" href="classlog4cxx_1_1Level.html">Level</a>. See also <a class="el" href="classlog4cxx_1_1Logger.html#a20">isDebugEnabled</a>.<p>
 <dl compact><dt><b>Returns:</b></dt><dd>bool - <code>true</code> if this logger is enabled for level info, <code>false</code> otherwise. </dd></dl>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a22" doxytag="log4cxx::Logger::isWarnEnabled" ></a><p>
+<a class="anchor" name="a23" doxytag="log4cxx::Logger::isWarnEnabled" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1260,12 +1320,12 @@ Check whether this logger is enabled for the info <a class="el" href="classlog4c
     <td>
 
 <p>
-Check whether this logger is enabled for the warn <a class="el" href="classlog4cxx_1_1Level.html">Level</a>. See also <a class="el" href="classlog4cxx_1_1Logger.html#a19">isDebugEnabled</a>.<p>
+Check whether this logger is enabled for the warn <a class="el" href="classlog4cxx_1_1Level.html">Level</a>. See also <a class="el" href="classlog4cxx_1_1Logger.html#a20">isDebugEnabled</a>.<p>
 <dl compact><dt><b>Returns:</b></dt><dd>bool - <code>true</code> if this logger is enabled for level warn, <code>false</code> otherwise. </dd></dl>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a25" doxytag="log4cxx::Logger::l7dlog" ></a><p>
+<a class="anchor" name="a26" doxytag="log4cxx::Logger::l7dlog" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1328,11 +1388,11 @@ First, the user supplied <code>key</code> is searched in the resource bundle. Ne
     <tr><td valign=top><em>line</em>&nbsp;</td><td>The number line of the logging request.</td></tr>
   </table>
 </dl>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="classlog4cxx_1_1Logger.html#a32">setResourceBundle</a></dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="classlog4cxx_1_1Logger.html#a33">setResourceBundle</a></dd></dl>
     </td>
   </tr>
 </table>
-<a class="anchor" name="a26" doxytag="log4cxx::Logger::log" ></a><p>
+<a class="anchor" name="a27" doxytag="log4cxx::Logger::log" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1391,7 +1451,7 @@ This is the most generic printing method. It is intended to be invoked by <b>wra
     </td>
   </tr>
 </table>
-<a class="anchor" name="a27" doxytag="log4cxx::Logger::removeAllAppenders" ></a><p>
+<a class="anchor" name="a28" doxytag="log4cxx::Logger::removeAllAppenders" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1422,7 +1482,7 @@ This is useful when re-reading configuration information.
 Implements <a class="el" href="classlog4cxx_1_1spi_1_1AppenderAttachable.html#a4">AppenderAttachable</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a29" doxytag="log4cxx::Logger::removeAppender" ></a><p>
+<a class="anchor" name="a30" doxytag="log4cxx::Logger::removeAppender" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1453,7 +1513,7 @@ Remove the appender with the name passed as parameter form the list of appenders
 Implements <a class="el" href="classlog4cxx_1_1spi_1_1AppenderAttachable.html#a6">AppenderAttachable</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a28" doxytag="log4cxx::Logger::removeAppender" ></a><p>
+<a class="anchor" name="a29" doxytag="log4cxx::Logger::removeAppender" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1484,7 +1544,7 @@ Remove the appender passed as parameter form the list of appenders.
 Implements <a class="el" href="classlog4cxx_1_1spi_1_1AppenderAttachable.html#a5">AppenderAttachable</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a30" doxytag="log4cxx::Logger::setAdditivity" ></a><p>
+<a class="anchor" name="a31" doxytag="log4cxx::Logger::setAdditivity" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1542,7 +1602,7 @@ Set the additivity flag for this <a class="el" href="classlog4cxx_1_1Logger.html
 Only the <a class="el" href="classlog4cxx_1_1Hierarchy.html">Hierarchy</a> class can set the hierarchy of a logger.     </td>
   </tr>
 </table>
-<a class="anchor" name="a31" doxytag="log4cxx::Logger::setLevel" ></a><p>
+<a class="anchor" name="a32" doxytag="log4cxx::Logger::setLevel" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1575,7 +1635,7 @@ Null values are admitted.
 Reimplemented in <a class="el" href="classlog4cxx_1_1spi_1_1RootCategory.html#a2">RootCategory</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a32" doxytag="log4cxx::Logger::setResourceBundle" ></a><p>
+<a class="anchor" name="a33" doxytag="log4cxx::Logger::setResourceBundle" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1601,10 +1661,10 @@ Reimplemented in <a class="el" href="classlog4cxx_1_1spi_1_1RootCategory.html#a2
     <td>
 
 <p>
-Set the resource bundle to be used with localized logging method <a class="el" href="classlog4cxx_1_1Logger.html#a25">l7dlog</a>.    </td>
+Set the resource bundle to be used with localized logging method <a class="el" href="classlog4cxx_1_1Logger.html#a26">l7dlog</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a33" doxytag="log4cxx::Logger::warn" ></a><p>
+<a class="anchor" name="a34" doxytag="log4cxx::Logger::warn" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -1788,7 +1848,7 @@ The parent of this logger. All loggers have at least one ancestor which is the r
 
 <p>
 The resourceBundle for localized messages.<p>
-<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="classlog4cxx_1_1Logger.html#a32">setResourceBundle</a>, <a class="el" href="classlog4cxx_1_1Logger.html#a16">getResourceBundle</a></dd></dl>
+<dl compact><dt><b>See also:</b></dt><dd><a class="el" href="classlog4cxx_1_1Logger.html#a33">setResourceBundle</a>, <a class="el" href="classlog4cxx_1_1Logger.html#a17">getResourceBundle</a></dd></dl>
     </td>
   </tr>
 </table>

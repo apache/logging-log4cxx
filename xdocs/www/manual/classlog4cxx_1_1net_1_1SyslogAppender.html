@@ -50,7 +50,7 @@ log4cxx - Documentation
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../team.html">Team</a>
 </small></td></tr>
-              	 <tr><td class="navbarItem"><small>    <a href="../documentation.html">Documentation</a>
+              	 <tr><td class="navbarItem"><small>    <a href="../manual/index.html">Documentation</a>
 </small></td></tr>
               	 <tr><td class="navbarItem"><small>    <a href="../download.html">Download</a>
 </small></td></tr>
@@ -117,19 +117,21 @@ log4cxx - Documentation
 
 <tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a6">activateOptions</a> ()</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>virtual bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a7">requiresLayout</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a7">setOption</a> (const String &amp;option, const String &amp;value)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a8">setSyslogHost</a> (const String &amp;syslogHost)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>virtual bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a8">requiresLayout</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>const String &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a9">getSyslogHost</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a9">setSyslogHost</a> (const String &amp;syslogHost)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a10">setFacility</a> (const String &amp;facilityName)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>const String &amp;&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a10">getSyslogHost</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>String&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a11">getFacility</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a11">setFacility</a> (const String &amp;facilityName)</td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a12">setFacilityPrinting</a> (bool facilityPrinting)</td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>String&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a12">getFacility</a> () const </td></tr>
 
-<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a13">getFacilityPrinting</a> () const </td></tr>
+<tr><td class="memItemLeft" nowrap align=right valign=top>void&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a13">setFacilityPrinting</a> (bool facilityPrinting)</td></tr>
+
+<tr><td class="memItemLeft" nowrap align=right valign=top>bool&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a14">getFacilityPrinting</a> () const </td></tr>
 
 <tr><td colspan=2><br><h2>Static Public Member Functions</h2></td></tr>
 <tr><td class="memItemLeft" nowrap align=right valign=top>String&nbsp;</td><td class="memItemRight" valign=bottom><a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#e0">getFacilityString</a> (<a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#w21">SyslogFacility</a> syslogFacility)</td></tr>
@@ -299,7 +301,7 @@ Release any resources held by this <a class="el" href="classlog4cxx_1_1net_1_1Sy
 Implements <a class="el" href="classlog4cxx_1_1Appender.html#a4">Appender</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a11" doxytag="log4cxx::net::SyslogAppender::getFacility" ></a><p>
+<a class="anchor" name="a12" doxytag="log4cxx::net::SyslogAppender::getFacility" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -361,7 +363,7 @@ Returns the integer value corresponding to the named syslog facility, or -1 if i
     </td>
   </tr>
 </table>
-<a class="anchor" name="a13" doxytag="log4cxx::net::SyslogAppender::getFacilityPrinting" ></a><p>
+<a class="anchor" name="a14" doxytag="log4cxx::net::SyslogAppender::getFacilityPrinting" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -418,7 +420,7 @@ Returns the value of the <b>FacilityPrinting</b> option.    </td>
 Returns the specified syslog facility as a lower-case String, e.g. "kern", "user", etc.    </td>
   </tr>
 </table>
-<a class="anchor" name="a9" doxytag="log4cxx::net::SyslogAppender::getSyslogHost" ></a><p>
+<a class="anchor" name="a10" doxytag="log4cxx::net::SyslogAppender::getSyslogHost" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -446,7 +448,7 @@ Returns the specified syslog facility as a lower-case String, e.g. "kern", "user
 Returns the value of the <b>SyslogHost</b> option.    </td>
   </tr>
 </table>
-<a class="anchor" name="a7" doxytag="log4cxx::net::SyslogAppender::requiresLayout" ></a><p>
+<a class="anchor" name="a8" doxytag="log4cxx::net::SyslogAppender::requiresLayout" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -476,7 +478,7 @@ The <a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html">SyslogAppend
 Implements <a class="el" href="classlog4cxx_1_1Appender.html#a12">Appender</a>.    </td>
   </tr>
 </table>
-<a class="anchor" name="a10" doxytag="log4cxx::net::SyslogAppender::setFacility" ></a><p>
+<a class="anchor" name="a11" doxytag="log4cxx::net::SyslogAppender::setFacility" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -506,7 +508,7 @@ Set the syslog facility. This is the <b>Facility</b> option.<p>
 The <code>facilityName</code> parameter must be one of the strings KERN, USER, MAIL, DAEMON, AUTH, SYSLOG, LPR, NEWS, UUCP, CRON, AUTHPRIV, FTP, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7. Case is unimportant.    </td>
   </tr>
 </table>
-<a class="anchor" name="a12" doxytag="log4cxx::net::SyslogAppender::setFacilityPrinting" ></a><p>
+<a class="anchor" name="a13" doxytag="log4cxx::net::SyslogAppender::setFacilityPrinting" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
@@ -535,7 +537,48 @@ The <code>facilityName</code> parameter must be one of the strings KERN, USER, M
 If the <b>FacilityPrinting</b> option is set to true, the printed message will include the facility name of the application. It is <em>false</em> by default.    </td>
   </tr>
 </table>
-<a class="anchor" name="a8" doxytag="log4cxx::net::SyslogAppender::setSyslogHost" ></a><p>
+<a class="anchor" name="a7" doxytag="log4cxx::net::SyslogAppender::setOption" ></a><p>
+<table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
+  <tr>
+    <td class="mdRow">
+      <table cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td class="md" nowrap valign="top"> void setOption </td>
+          <td class="md" valign="top">(&nbsp;</td>
+          <td class="md" nowrap valign="top">const String &amp;&nbsp;</td>
+          <td class="mdname" nowrap> <em>option</em>, </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td class="md" nowrap>const String &amp;&nbsp;</td>
+          <td class="mdname" nowrap> <em>value</em></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td class="md">)&nbsp;</td>
+          <td class="md" colspan="2"><code> [virtual]</code></td>
+        </tr>
+
+      </table>
+    </td>
+  </tr>
+</table>
+<table cellspacing=5 cellpadding=0 border=0>
+  <tr>
+    <td>
+      &nbsp;
+    </td>
+    <td>
+
+<p>
+Set <code>option</code> to <code>value</code>.<p>
+The handling of each option depends on the OptionHandler instance. Some options may become active immediately whereas other may be activated only when <a class="el" href="classlog4cxx_1_1net_1_1SyslogAppender.html#a6">activateOptions</a> is called.
+<p>
+Reimplemented from <a class="el" href="classlog4cxx_1_1AppenderSkeleton.html#a3">AppenderSkeleton</a>.    </td>
+  </tr>
+</table>
+<a class="anchor" name="a9" doxytag="log4cxx::net::SyslogAppender::setSyslogHost" ></a><p>
 <table class="mdTable" width="100%" cellpadding="2" cellspacing="0">
   <tr>
     <td class="mdRow">
