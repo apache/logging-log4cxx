@@ -42,6 +42,11 @@ maxFileSize(10*1024*1024), maxBackupIndex(1)
 {
 }
 
+RollingFileAppender::~RollingFileAppender()
+{
+	finalize();
+}
+
 // synchronization not necessary since doAppend is alreasy synched
 void RollingFileAppender::rollOver()
 {

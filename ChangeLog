@@ -7,8 +7,10 @@ CVS
 * Fixed conflict with Windows macros "min" and "max", by renaming
   StrictMath::min and StrictMath::max to StrictMath::minimum and
   StrictMath::maximum.
-* Port to HPUX 11.0
-* Fixed segmentation fault in PropertyConfigurator
+* Port to HPUX 11.0.
+* Fixed segmentation fault in PropertyConfigurator.
+* Port to Solaris.
+* Fixed MutexException thrown while destroying RollingFileAppender.
 
 Version 0.9.6 (2004-04-11)
 ==========================
