@@ -26,9 +26,11 @@
 namespace log4cxx
 {
     // Forward declarations
-    namespace spi {
+    namespace spi
+	{
         class LoggingEvent;
-        
+        typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
+       
         class Filter;
         typedef helpers::ObjectPtrT<Filter> FilterPtr;
 
@@ -84,7 +86,7 @@ namespace log4cxx
          Loggers will call the <code>doAppend</code> method of appender
          implementations in order to log.
         */
-        virtual void doAppend(const spi::LoggingEvent& event) = 0;
+        virtual void doAppend(const spi::LoggingEventPtr& event) = 0;
 
 
         /**
