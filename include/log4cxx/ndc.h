@@ -104,6 +104,9 @@ namespace log4cxx
 
                         DiagnosticContext(const LogString& message,
                                 const DiagnosticContext * parent);
+                        virtual ~DiagnosticContext();
+                        DiagnosticContext(const DiagnosticContext& src);
+                        DiagnosticContext& operator=(const DiagnosticContext& src);
                 };
 
         public:

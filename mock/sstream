@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,9 +38,14 @@ namespace std {
       size_t flags() const { return 0; }
   };
 
+  template<class Char, class Traits>
+  class basic_ios : public ios_base {
+      public:
+      void init(void*);
+  };
 
-  template<class Char, class Traitsc>
-  class basic_ostream : public ios_base {
+  template<class Char, class Traits>
+  class basic_ostream : public basic_ios<Char, Traits> {
   public:
   };
 

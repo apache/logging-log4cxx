@@ -233,6 +233,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <fileset dir="${build.dir}/header-check" includes="**/*.cpp"/>
                 <includepath path="mock"/>
                 <includepath path="include"/>
+                <includepath path="${apr.include.dir}"/>
                 <project outfile="${build.dir}/header-check/header-check"
                     type="cbuilderx" if="gen-cbx"/>
          </cc>

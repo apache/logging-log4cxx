@@ -28,6 +28,7 @@ namespace log4cxx
                 typedef ObjectPtrT<Object> ObjectPtr;
 
                 class Properties;
+                class Pool;
         }
 
         namespace config

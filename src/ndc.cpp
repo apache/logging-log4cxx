@@ -32,6 +32,20 @@ NDC::DiagnosticContext::DiagnosticContext(const LogString& message,
         }
 }
 
+NDC::DiagnosticContext::~DiagnosticContext() {
+}
+
+NDC::DiagnosticContext::DiagnosticContext(const DiagnosticContext& src)
+        : message(src.message), fullMessage(src.fullMessage) {
+}
+
+NDC::DiagnosticContext& NDC::DiagnosticContext::operator=(
+        const DiagnosticContext& src)
+{
+        message.assign(src.message);
+        fullMessage.assign(src.fullMessage);
+}
+
 NDC::NDC(const LogString& message)
 {
         push(message);
