@@ -125,13 +125,22 @@ namespace log4cxx
                       int lineNumber )
              : LocationInfo( fileName, methodName, lineNumber ) {
         }
+
       };
     }
   }
 }
 
   #if !defined(LOG4CXX_LOCATION)
+#if defined(_MSC_VER)
+#if _MSC_VER >= 1300
+      #define __LOG4CXX_FUNC__ __FUNCDNAME__
+#else
+#define __LOG4CXX_FUNC__ ""
+#endif
+#else
       #define __LOG4CXX_FUNC__ __PRETTY_FUNCTION__
+#endif
       #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
            __LOG4CXX_FUNC__,                                                         \
            __LINE__)

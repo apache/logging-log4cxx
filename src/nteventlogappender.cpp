@@ -24,6 +24,7 @@
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -95,7 +96,8 @@ NTEventLogAppender::NTEventLogAppender(const LogString& server, const LogString&
 : server(server), log(log), source(source), hEventLog(NULL), pCurrentUserSID(NULL)
 {
         this->layout = layout;
-        activateOptions(NULL);
+        Pool pool;
+        activateOptions(pool);
 }
 
 NTEventLogAppender::~NTEventLogAppender()

@@ -38,6 +38,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
+#if _MSC_VER < 1300
+#undef __LOG4CXX_FUNC__
+#define __LOG4CXX_FUNC__ "X::X()"
+#endif
 
 class X
 {
@@ -49,6 +53,8 @@ public:
                 LOG4CXX_INFO(logger, LOG4CXX_TEST_STR("in X() constructor"));
         }
 };
+
+
 
 class XMLLayoutTestCase : public CppUnit::TestFixture
 {
@@ -132,6 +138,11 @@ public:
 
                 CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.2")));
         }
+
+#if _MSC_VER < 1300
+#undef __LOG4CXX_FUNC__
+#define __LOG4CXX_FUNC__ "void XMLLayoutTestCase::testCDATA()"
+#endif
 
         void testCDATA()
         {
@@ -261,6 +272,12 @@ public:
 
                 CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
         }
+
+
+#if _MSC_VER < 1300
+#undef __LOG4CXX_FUNC__
+#define __LOG4CXX_FUNC__ "void XMLLayoutTestCase::common()"
+#endif
 
         void common()
         {

@@ -32,11 +32,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="examples.dir" location="examples"/>
 <property name="tests.dir" location="tests"/>
 <property name="apr.version" value="1"/>
-
+<property name="boost.version" value="1_32"/>
 <property name="version" value="0.9.7"/>
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
-<property name="boost_regex.lib.name" value="boost_regex-gcc"/>
 
 <target name="usage">
         <echo>
@@ -95,7 +94,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <istrue value="${debug}"/>
     </condition>
     <property name="cppunit.lib.name" value="cppunit"/>
-    <property name="boost.include.dir" location="\boost_1_31_0"/>
+    <property name="boost.include.dir" location="\boost\include\boost-${boost.version}"/>
+    <property name="boost-lib.suffix" value="-vc6-mt-gd-${boost.version}"/>
+    <property name="boost-lib.prefix" value="lib"/>
+    <property name="boost.lib.dir" value="/boost/lib"/>
 </target>
 
 <target name="unix-apr0-init" depends="os-detect"
@@ -133,10 +135,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="cppunit.lib.dir" location="/usr/local/lib"/>
     <property name="cppunit.bin.dir" location="/usr/local/lib"/>
     <property name="cppunit.lib.name" value="cppunit"/>
+    <property name="boost-lib.suffix" value="-gcc"/>
 
 </target>
 
 <target name="init" depends="win-init, unix-init">
+        <property name="boost_regex.lib.name" value="${boost-lib.prefix}boost_regex${boost-lib.suffix}"/>
         <mkdir dir="${build.dir}"/>
         <mkdir dir="cbx"/>
         <mkdir dir="xcode"/>
@@ -152,7 +156,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <delete dir="${build.dir}"/>
         <delete>
             <fileset dir="${tests.dir}/src" includes="shortsocket*" excludes="*.cpp"/>
-                <fileset dir="${tests.dir}/output"/>
+            <fileset dir="${tests.dir}/output"/>
         </delete>
 </target>
 
@@ -523,8 +527,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${apriconv.lib.name}"
                 unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="boost_regex-gcc" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${boost_regex.lib.name}" if="is-gcc" unless="boost.lib.dir"/>
+        <libset libs="${boost_regex.lib.name}" dir="${boost.lib.dir}" if="boost.lib.dir"/>
 
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>

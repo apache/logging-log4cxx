@@ -27,7 +27,7 @@ NDC::DiagnosticContext::DiagnosticContext(const LogString& message,
 {
         if (parent != 0)
         {
-                fullMessage.insert(0, 1, LOG4CXX_STR(' '));
+                fullMessage.insert(0, LOG4CXX_STR(" "));
                 fullMessage.insert(0, parent->fullMessage);
         }
 }
@@ -44,6 +44,7 @@ NDC::DiagnosticContext& NDC::DiagnosticContext::operator=(
 {
         message.assign(src.message);
         fullMessage.assign(src.fullMessage);
+        return *this;
 }
 
 NDC::NDC(const LogString& message)

@@ -134,7 +134,7 @@ const std::string LocationInfo::getClassName() const {
            }
            return tmp;
         }
-        tmp.erase(0);
+        tmp.erase(0, tmp.length() );
         return tmp;
 }
 

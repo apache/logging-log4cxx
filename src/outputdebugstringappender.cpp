@@ -21,6 +21,7 @@
 #include "windows.h"
 
 using namespace log4cxx;
+using namespace log4cxx::helpers;
 using namespace log4cxx::nt;
 
 IMPLEMENT_LOG4CXX_OBJECT(OutputDebugStringAppender)
