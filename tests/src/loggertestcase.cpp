@@ -24,9 +24,11 @@
 #include <log4cxx/level.h>
 #include <log4cxx/hierarchy.h>
 #include <log4cxx/spi/rootcategory.h>
+#include <log4cxx/helpers/propertyresourcebundle.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
+using namespace log4cxx::helpers;
 
 class CountingAppender;
 typedef helpers::ObjectPtrT<CountingAppender> CountingAppenderPtr;
@@ -45,7 +47,7 @@ public:
 	void append(const spi::LoggingEventPtr& event)
 		{ counter++; }
 
-	bool requiresLayout()
+	bool requiresLayout() const
 		{ return true; }
 };
 
@@ -58,6 +60,9 @@ class LoggerTestCase : public CppUnit::TestFixture
 		CPPUNIT_TEST(testAdditivity2);
 		CPPUNIT_TEST(testAdditivity3);
 		CPPUNIT_TEST(testDisable1);
+		CPPUNIT_TEST(testRB1);
+		CPPUNIT_TEST(testRB2);
+		CPPUNIT_TEST(testRB3);
 		CPPUNIT_TEST(testExists);
 		CPPUNIT_TEST(testHierarchy1);
 	CPPUNIT_TEST_SUITE_END();
@@ -65,6 +70,14 @@ class LoggerTestCase : public CppUnit::TestFixture
 public:
 	void setUp()
 	{
+		rbUS = PropertyResourceBundle::getBundle(_T("L7D"), Locale(_T("en"), _T("US")));
+		CPPUNIT_ASSERT(rbUS != 0);
+
+		rbFR = PropertyResourceBundle::getBundle(_T("L7D"), Locale(_T("fr"), _T("FR")));
+		CPPUNIT_ASSERT(rbFR != 0);
+
+		rbCH = PropertyResourceBundle::getBundle(_T("L7D"), Locale(_T("fr"), _T("CH")));
+		CPPUNIT_ASSERT(rbCH != 0);
 	}
 
 	void tearDown()
@@ -270,6 +283,69 @@ public:
 		CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
 	}
 
+	void testRB1()
+	{
+		LoggerPtr root = Logger::getRootLogger();
+		root->setResourceBundle(rbUS);
+
+		ResourceBundlePtr t = root->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbUS);
+
+		LoggerPtr x = Logger::getLogger(_T("x"));
+		LoggerPtr x_y = Logger::getLogger(_T("x.y"));
+		LoggerPtr x_y_z = Logger::getLogger(_T("x.y.z"));
+
+		t = x->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbUS);
+		t = x_y->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbUS);
+		t = x_y_z->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbUS);
+	}
+
+	void testRB2()
+	{
+		LoggerPtr root = Logger::getRootLogger();
+		root->setResourceBundle(rbUS);
+
+		ResourceBundlePtr t = root->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbUS);
+
+		LoggerPtr x = Logger::getLogger(_T("x"));
+		LoggerPtr x_y = Logger::getLogger(_T("x.y"));
+		LoggerPtr x_y_z = Logger::getLogger(_T("x.y.z"));
+
+		x_y->setResourceBundle(rbFR);
+		t = x->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbUS);
+		t = x_y->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbFR);
+		t = x_y_z->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbFR);
+	}
+
+	void testRB3()
+	{
+		LoggerPtr root = Logger::getRootLogger();
+		root->setResourceBundle(rbUS);
+
+		ResourceBundlePtr t = root->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbUS);
+
+		LoggerPtr x = Logger::getLogger(_T("x"));
+		LoggerPtr x_y = Logger::getLogger(_T("x.y"));
+		LoggerPtr x_y_z = Logger::getLogger(_T("x.y.z"));
+
+		x_y->setResourceBundle(rbFR);
+		x_y_z->setResourceBundle(rbCH);
+		t = x->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbUS);
+		t = x_y->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbFR);
+		t = x_y_z->getResourceBundle();
+		CPPUNIT_ASSERT(t == rbCH);
+	}
+
 	void testExists()
 	{
 		LoggerPtr a = Logger::getLogger(_T("a"));
@@ -300,10 +376,13 @@ public:
 	}
 
 protected:
+	static String MSG;
 	LoggerPtr logger;
 	AppenderPtr a1;
 	AppenderPtr a2;
-	static String MSG;
+	ResourceBundlePtr rbUS;
+	ResourceBundlePtr rbFR;
+	ResourceBundlePtr rbCH;
 };
 
 String LoggerTestCase::MSG = _T("M");

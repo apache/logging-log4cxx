@@ -49,10 +49,10 @@ namespace log4cxx
 
 		void close();
 
-		bool isClosed()
+		bool isClosed() const
 			{ return closed; }
 
-		bool requiresLayout()
+		bool requiresLayout() const
 			{ return false;	}
 	};
 };

@@ -33,19 +33,19 @@ public:
 		RollingCalendar rc;
 	   
 		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_DAY,
-			rc.computeTriggeringPeriod("%Y-%m-%d.log"));
+			rc.computeTriggeringPeriod(_T("%Y-%m-%d.log")));
 	
 		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_MINUTE,
-			rc.computeTriggeringPeriod("%Y-%m-%d %M.log"));
+			rc.computeTriggeringPeriod(_T("%Y-%m-%d %M.log")));
    
 		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_HOUR,
-			rc.computeTriggeringPeriod("%Y-%m-%d %H.log"));
+			rc.computeTriggeringPeriod(_T("%Y-%m-%d %H.log")));
     
 		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_MONTH,
-			rc.computeTriggeringPeriod("%Y-%m.log"));
+			rc.computeTriggeringPeriod(_T("%Y-%m.log")));
 	
 		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_HOUR,
-			rc.computeTriggeringPeriod("log%Hlog"));
+			rc.computeTriggeringPeriod(_T("log%Hlog")));
 	}
 	
 	void testRC1()

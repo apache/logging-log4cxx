@@ -30,7 +30,7 @@ NullAppender::NullAppender()
 {
 }
 
-NullAppender::NullAppender(LayoutPtr layout)
+NullAppender::NullAppender(const LayoutPtr& layout)
 {
 	this->layout = layout;
 }
@@ -56,7 +56,7 @@ void NullAppender::append(const LoggingEventPtr& event)
 /**
 This is a bogus appender but it still uses a layout.
 */
-bool NullAppender::requiresLayout()
+bool NullAppender::requiresLayout() const
 {
 	return true;
 }

@@ -48,7 +48,7 @@ namespace log4cxx
 			END_LOG4CXX_CAST_MAP()
 
 			NullAppender();
-			NullAppender(LayoutPtr layout);
+			NullAppender(const LayoutPtr& layout);
 			void close();
 			void doAppend(const spi::LoggingEventPtr& event);
 			void append(const spi::LoggingEventPtr& event);
@@ -56,7 +56,7 @@ namespace log4cxx
 			/**
 			This is a bogus appender but it still uses a layout.
 			*/
-			bool requiresLayout();
+			bool requiresLayout() const;
 		}; // NullAppender
 	}; // namespace performance
 }; // namespace log4cxx
