@@ -64,7 +64,7 @@ void TelnetAppender::setOption(const tstring& option,
 
 void TelnetAppender::close() 
 {
-	if (sh)
+	if (sh != 0)
 	{
 		sh->finalize();
 	}
@@ -72,11 +72,14 @@ void TelnetAppender::close()
 
 void TelnetAppender::append(const spi::LoggingEvent& event) 
 {
-	tostringstream os;
+	if (sh != 0)
+	{
+		tostringstream os;
 
-	this->layout->format(os, event);
+		this->layout->format(os, event);
 
-	sh->send(os.str());
+		sh->send(os.str());
+	}
 }
 
 TelnetAppender::SocketHandler::SocketHandler(int port)
