@@ -31,9 +31,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="build.dir" location="build"/>
 <property name="examples.dir" location="examples"/>
 <property name="tests.dir" location="tests"/>
-<property name="apr.version" value="1"/>
 <property name="boost.version" value="1_32"/>
-<property name="version" value="0.9.7"/>
+<property name="version" value="0.9.8"/>
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
 
@@ -49,25 +48,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-windows" value="true">
                 <os family="windows"/>
         </condition>
-        <condition property="is-unix-apr0" value="true">
-            <and>
-                <isset property="is-unix"/>
-                <equals arg1="${apr.version}" arg2="0"/>
-            </and>
-        </condition>
-        <condition property="is-unix-apr1" value="true">
-            <and>
-                <isset property="is-unix"/>
-                <not><isset property="is-unix-apr0"/></not>
-            </and>
-        </condition>
         <!-- hack until I identify a link problem   -->
     <property name="aprutil.lib.name" value=""/>
 </target>
 
-<target name="win-apr1-init" depends="os-detect"
-     if="is-windows"
-         description="Windows initialization for APR 1.0">
+
+<target name="win-init" depends="os-detect" if="is-windows">
     <property name="apr.dir" location="/apr-1"/>
     <property name="apr.include.dir" location="${apr.dir}/apr/include"/>
     <property name="apr.lib.name" value="apr-1"/>
@@ -78,9 +64,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </condition>
     <property name="apr.lib.dir" location="${apr.dir}/apr/LibR"/>
     <property name="apriconv.lib.dir" location="${apr.lib.dir}"/>
-</target>
-
-<target name="win-init" depends="win-apr1-init" if="is-windows">
         <property name="compiler" value="msvc"/>
         <condition property="lib-suffix" value="d">
             <istrue value="${debug}"/>
@@ -100,16 +83,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="boost.lib.dir" value="/boost/lib"/>
 </target>
 
-<target name="unix-apr0-init" depends="os-detect"
-    if="is-unix-apr0" description="Unix initialization for Apache server APR">
-        <property name="apr.include.dir" location="/usr/apache/include"/>
-    <property name="apr.lib.name" value="apr-0"/>
-    <property name="aprutil.lib.name" value="aprutil-0"/>
-    <property name="apriconv.lib.name" value="apriconv"/>
-</target>
-
-<target name="unix-apr1-init" depends="os-detect"
-     if="is-unix-apr1" description="Unix initialization for APR 1.0">
+<target name="unix-init" depends="os-detect" if="is-unix">
     <property name="apr.dir" location="/usr/local/apr"/>
     <property name="apr.include.dir" location="${apr.dir}/include/apr-1"/>
     <property name="apriconv.include.dir" location="/home/curta/apr-1/apr-iconv-1.0.0/include"/>
@@ -118,9 +92,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="apriconv.lib.name" value="apriconv"/>
     <property name="apr.lib.dir" location="${apr.dir}/lib"/>
     <property name="apriconv.lib.dir" location="${apr.lib.dir}"/>
-</target>
-
-<target name="unix-init" depends="unix-apr0-init, unix-apr1-init" if="is-unix">
         <property name="compiler" value="gcc"/>
         <condition property="is-gcc" value="true">
             <or>
