@@ -19,6 +19,13 @@
 #include <stdexcept>
 #include <iostream>
 
+#include <log4cxx/logger.h>
+
+//
+//  initializing a logger will cause APR to be initialized
+//
+log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("log4cxx_unittest"));
+
 int main( int argc, char **argv)
 {
 	CppUnit::TextUi::TestRunner runner;
@@ -40,6 +47,9 @@ int main( int argc, char **argv)
 			catch(std::exception& e)
 			{
 				std::cout << e.what() << std::endl;
+			}
+			catch (...) {
+				std::cout << "Unexpected exception";
 			}
 		}
 	}

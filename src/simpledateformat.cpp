@@ -15,11 +15,15 @@
  */
 
 #include <log4cxx/helpers/simpledateformat.h>
+
 #include <apr-1/apr_time.h>
 #include <apr-1/apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+
+using namespace std;
+
 
 SimpleDateFormat::PatternToken::PatternToken() {
 }
@@ -30,6 +34,20 @@ SimpleDateFormat::PatternToken::~PatternToken() {
 void SimpleDateFormat::PatternToken::setTimeZone(const TimeZonePtr& zone) {
 }
 
+
+void SimpleDateFormat::PatternToken::renderFacet(const std::locale& locale, 
+							  std::ostream& buffer, 
+							  const tm* time, 
+							  const char spec) {
+#if defined(_MSC_VER)
+		_USE(locale, TimePutFacet).put(buffer, 
+				 buffer, time, spec);
+#else
+		std::use_facet<TimePutFacet>(locale).put(buffer, 
+				 buffer, buffer.fill(), time, spec);
+#endif
+
+}
 
 namespace log4cxx {
   namespace helpers {
@@ -109,7 +127,7 @@ namespace log4cxx {
           size_t start = 0;
           for (int imon = 0; imon < 12; imon++) {
              time.tm_mon = imon;
-             std::use_facet<TimePutFacet>(locale).put(buffer, buffer, buffer.fill(), &time, 'b');
+			 renderFacet(locale, buffer, &time, 'b');
              std::string monthnames(buffer.str());
              names[imon] = monthnames.substr(start);
              start = monthnames.length();
@@ -134,7 +152,7 @@ namespace log4cxx {
           size_t start = 0;
           for (int imon = 0; imon < 12; imon++) {
              time.tm_mon = imon;
-             std::use_facet<TimePutFacet>(locale).put(buffer, buffer, buffer.fill(), &time, 'B');
+             renderFacet(locale, buffer, &time, 'B');
              std::string monthnames(buffer.str());
              names[imon] = monthnames.substr(start);
              start = monthnames.length();
@@ -211,7 +229,7 @@ namespace log4cxx {
              size_t start = 0;
              for (int iday = 0; iday < 7; iday++) {
                 time.tm_wday = iday;
-                std::use_facet<TimePutFacet>(locale).put(buffer, buffer, buffer.fill(), &time, 'a');
+                renderFacet(locale, buffer, &time, 'a');
                 std::string daynames(buffer.str());
                 names[iday] = daynames.substr(start);
                 start = daynames.length();
@@ -236,7 +254,7 @@ namespace log4cxx {
             size_t start = 0;
             for (int iday = 0; iday < 7; iday++) {
                time.tm_wday = iday;
-               std::use_facet<TimePutFacet>(locale).put(buffer, buffer, buffer.fill(), &time, 'A');
+               renderFacet(locale, buffer, &time, 'A');
                std::string daynames(buffer.str());
                names[iday] = daynames.substr(start);
                start = daynames.length();
@@ -264,7 +282,7 @@ namespace log4cxx {
           }
 
           private:
-          const int offset;
+          int offset;
       };
 
       class HourToken : public NumericToken {
@@ -277,7 +295,7 @@ namespace log4cxx {
           }
 
           private:
-          const int offset;
+          int offset;
       };
 
      class MinuteToken : public NumericToken {
@@ -319,7 +337,7 @@ namespace log4cxx {
           size_t start = 0;
           for (int i = 0; i < 2; i++) {
              time.tm_hour = i * 12;
-             std::use_facet<TimePutFacet>(locale).put(buffer, buffer, buffer.fill(), &time, 'p');
+             renderFacet(locale, buffer, &time, 'p');
              std::string ampm = buffer.str();
              names[i] = ampm.substr(start);
              start = ampm.length();

@@ -20,6 +20,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/simplelayout.h>
+#include <log4cxx/helpers/boundedfifo.h>
 #include "vectorappender.h"
 #include <log4cxx/asyncappender.h>
 #include "appenderskeletontestcase.h"

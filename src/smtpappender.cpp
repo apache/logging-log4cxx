@@ -26,10 +26,8 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 
-extern "C" {
 #include <libsmtp.h>
 #include <libsmtp_mime.h>
-}
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

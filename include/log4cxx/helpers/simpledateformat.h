@@ -88,6 +88,12 @@ namespace log4cxx
 
                        typedef std::time_put<char, std::ostreambuf_iterator<char> > TimePutFacet;
 
+				  protected:
+					  static void renderFacet(const std::locale& locale, 
+										 std::ostream& buffer, 
+										 const tm* time, 
+						                 const char spec);
+					  
                   private:
                       /**
                       *    Private copy constructor.

@@ -7,6 +7,7 @@
 
 #include <log4cxx/helpers/timezone.h>
 #include <stdlib.h>
+
 #include <apr-1/apr_time.h>
 #include <apr-1/apr_pools.h>
 #include <apr-1/apr_strings.h>
@@ -163,7 +164,7 @@ const TimeZonePtr TimeZone::getTimeZone( const String & id )
     std::string s("GMT");
     apr_pool_t* p;
     apr_status_t stat = apr_pool_create(&p, NULL);
-    char* hh = apr_itoa(p, std::abs(hours));
+    char* hh = apr_itoa(p, hours);
     if (sign > 0) {
       s.append(1, '+');
     } else {

@@ -16,6 +16,8 @@
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include <log4cxx/helpers/datagramsocket.h>
+#include <log4cxx/helpers/boundedfifo.h>
 #include <log4cxx/net/syslogappender.h>
 #include "../appenderskeletontestcase.h"
 

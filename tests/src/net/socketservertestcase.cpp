@@ -22,6 +22,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <log4cxx/logger.h>
+#include <log4cxx/helpers/boundedfifo.h>
 #include <log4cxx/net/socketappender.h>
 #include <log4cxx/helpers/thread.h>
 #include <log4cxx/ndc.h>

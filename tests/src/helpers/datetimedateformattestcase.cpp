@@ -22,6 +22,13 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+#if defined(_WIN32)
+#define LOCALE_US "us"
+#define LOCALE_FR "france"
+#else
+#define LOCALE_US "en_US"
+#define LOCALE_FR "fr_FR"
+#endif
 
 
 /**
@@ -38,7 +45,9 @@ class DateTimeDateFormatTestCase : public CppUnit::TestFixture
   CPPUNIT_TEST( test4 );
   CPPUNIT_TEST( test5 );
   CPPUNIT_TEST( test6 );
+#if !defined(_WIN32)
   CPPUNIT_TEST( test7 );
+#endif
   CPPUNIT_TEST( test8 );
   CPPUNIT_TEST_SUITE_END();
 
@@ -46,7 +55,7 @@ class DateTimeDateFormatTestCase : public CppUnit::TestFixture
 
 private:
 
-  static const apr_time_t MICROSECONDS_PER_DAY = 86400000000LL;
+#define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
 
 
   /**
@@ -76,7 +85,7 @@ private:
     //   02 Jan 2004 00:00 GMT
     //
     apr_time_t jan2 = MICROSECONDS_PER_DAY * 12419;
-    std::locale localeUS("en_US");
+    std::locale localeUS(LOCALE_US);
     assertFormattedTime( jan2, localeUS, TimeZone::getGMT(), "02 Jan 2004 00:00:00,000" );
   }
 
@@ -86,7 +95,7 @@ private:
     //
     //   03 Jan 2004 00:00 GMT
     apr_time_t jan3 = MICROSECONDS_PER_DAY * 12420;
-    std::locale localeUS("en_US");
+    std::locale localeUS(LOCALE_US);
     assertFormattedTime( jan3, localeUS, TimeZone::getTimeZone("GMT-6"), "02 Jan 2004 18:00:00,000" );
   }
 
@@ -95,7 +104,7 @@ private:
   void test3()
   {
     apr_time_t jun30 = MICROSECONDS_PER_DAY * 12599;
-    std::locale localeUS("en_US");
+    std::locale localeUS(LOCALE_US);
     assertFormattedTime( jun30, localeUS, TimeZone::getGMT(), "30 Jun 2004 00:00:00,000" );
   }
 
@@ -103,7 +112,7 @@ private:
   void test4()
   {
     apr_time_t jul1 = MICROSECONDS_PER_DAY * 12600;
-    std::locale localeUS("en_US");
+    std::locale localeUS(LOCALE_US);
     assertFormattedTime( jul1, localeUS, TimeZone::getTimeZone("GMT-5"), "30 Jun 2004 19:00:00,000" );
   }
 
@@ -114,7 +123,7 @@ private:
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     apr_time_t ticks = MICROSECONDS_PER_DAY * 12601;
-    std::locale localeUS("en_US");
+    std::locale localeUS(LOCALE_US);
     assertFormattedTime( ticks, localeUS, TimeZone::getGMT(), "02 Jul 2004 00:00:00,000" );
     assertFormattedTime( ticks + 8000, localeUS, TimeZone::getGMT(), "02 Jul 2004 00:00:00,008" );
     assertFormattedTime( ticks + 17000, localeUS, TimeZone::getGMT(), "02 Jul 2004 00:00:00,017" );
@@ -126,7 +135,7 @@ private:
   void test6()
   {
     apr_time_t jul3 = MICROSECONDS_PER_DAY * 12602;
-    std::locale localeUS("en_US");
+    std::locale localeUS(LOCALE_US);
     assertFormattedTime( jul3, localeUS, TimeZone::getGMT(), "03 Jul 2004 00:00:00,000" );
     assertFormattedTime( jul3, localeUS, TimeZone::getTimeZone("GMT-5"), "02 Jul 2004 19:00:00,000" );
     assertFormattedTime( jul3, localeUS, TimeZone::getGMT(), "03 Jul 2004 00:00:00,000" );
@@ -136,7 +145,7 @@ private:
   void test7()
   {
     apr_time_t mars11 = MICROSECONDS_PER_DAY * 12519;
-    std::locale fr("fr_FR");
+    std::locale fr(LOCALE_FR);
     std::locale initialDefault = std::locale::global(fr);
     std::string formatted;
     apr_pool_t* p;
@@ -163,7 +172,7 @@ private:
   void test8()
   {
     apr_time_t march12 = MICROSECONDS_PER_DAY * 12519;
-    std::locale en("en_US");
+    std::locale en(LOCALE_US);
     std::locale initialDefault = std::locale::global(en);
     std::string formatted;
     apr_pool_t* p;

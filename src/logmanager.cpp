@@ -26,7 +26,9 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/loglog.h>
 #include <sys/stat.h>
+
 #include <apr-1/apr_general.h>
+
 #include <log4cxx/spi/loggingevent.h>
 
 

@@ -61,8 +61,9 @@ namespace log4cxx
                LOG4CXX_MUTABLE apr_time_t previousTime;
                char zeroDigit;
                char nineDigit;
-               static const int UNRECOGNIZED_MILLISECOND_PATTERN = -2;
-               static const int NO_MILLISECOND_PATTERN = -1;
+			   enum {
+                   UNRECOGNIZED_MILLISECOND_PATTERN = -2,
+					   NO_MILLISECOND_PATTERN = -1 };
           };
 
 

@@ -15,6 +15,7 @@
  */
 
 #include <log4cxx/helpers/strftimedateformat.h>
+
 #include <apr-1/apr_time.h>
 
 using namespace log4cxx;

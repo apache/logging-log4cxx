@@ -16,9 +16,11 @@
 
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/spi/loggingevent.h>
+
 #include <apr-1/apr_time.h>
 #include <apr-1/apr_strings.h>
-#include <limits>
+
+#include <limits.h>
 
 
 log4cxx::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
@@ -31,13 +33,13 @@ void log4cxx::helpers::RelativeTimeDateFormat::format(
     apr_time_t date,
     apr_pool_t* p) const {
     apr_interval_time_t interval = date - startTime;
-    apr_interval_time_t ms = interval / 1000LL;
-    if (ms >= std::numeric_limits<long>::min() && ms <= std::numeric_limits<long>::max()) {
-      s.append(apr_ltoa(p, ms));
+    apr_interval_time_t ms = interval / 1000;
+    if (ms >= INT_MIN && ms <= INT_MAX) {
+      s.append(apr_itoa(p, ms));
     } else {
-      const apr_int64_t BILLION = 1000000000LL;
-      s.append(apr_ltoa(p, ms / BILLION));
-      char* lower = apr_ltoa(p, ms % BILLION);
+      const apr_int64_t BILLION = 1000000000;
+      s.append(apr_itoa(p, ms / BILLION));
+      char* lower = apr_itoa(p, ms % BILLION);
       int fill = 9 - strlen(lower);
       int start = 0;
       if (ms < 0) {

@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/transform.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
+
 #include <apr-1/apr_pools.h>
 #include <apr-1/apr_time.h>
 

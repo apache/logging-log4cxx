@@ -37,7 +37,7 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
              CPPUNIT_TEST(test3);
      CPPUNIT_TEST_SUITE_END();
 
-     static const apr_time_t MICROSECONDS_PER_DAY = 86400000000LL;
+#define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
 
   public:
 
