@@ -123,7 +123,7 @@ void CyclicBuffer::resize(int newSize)
 	for(i = 0; i < loopLen; i++)
 	{
 		temp[i] = ea[first];
-		ea[i] = 0;
+		ea[first] = 0;
 		if(++first == numElems)
 		first = 0;
 	}
