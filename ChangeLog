@@ -33,3 +33,17 @@ Version 0.1.0 (2003-07-08)
 * Port of the PropertyConfigurator class
 * Port of the "Map Diagnostic Context" (MDC) class
 * Added 13 tests (try make check)
+
+Version 0.1.1 (2003-07-09)
+==========================
+
+* Fixed MSVC 6.0 compilation problems concerning the 'Release' target
+* Added MSVC 6.0 tests projects
+
+CVS
+===
+
+* Added ODBCAppender (matching log4j JDBCAppender)
+* Added MSVC 6.0 'Unicode Debug' and 'Unicode Release' targets
+* Added Java like System class.
+
