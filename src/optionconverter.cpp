@@ -38,7 +38,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-using namespace log4cxx::xml;
 
 
 LogString OptionConverter::convertSpecialChars(const LogString& s)
@@ -369,7 +368,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
                    filename.substr(filename.length() -4), 
                    LOG4CXX_STR(".XML"), LOG4CXX_STR(".xml")))
         {
-      clazz = DOMConfigurator::getStaticClass().toString();
+            clazz = log4cxx::xml::DOMConfigurator::getStaticClass().toString();
         }
 #endif
 
