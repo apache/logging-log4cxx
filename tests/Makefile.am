@@ -28,12 +28,6 @@ EXTRA_DIST = \
   consoleappender_test.witness\
   fileappender_test.sh\
   fileappender_test.witness\
-  htmllayout_test.sh\
-  htmllayout_test.witness\
-  xmllayout_test.sh\
-  xmllayout_test.witness\
-  ttcclayout_test.sh\
-  ttcclayout_test.witness\
   patternlayout_test.witness\
   patternlayout_test.sh\
   propertyconfigurator_test.properties\
@@ -88,9 +82,9 @@ TESTS = \
  		filter_test.sh\
 		consoleappender_test.sh\
         fileappender_test.sh\
-        htmllayout_test.sh\
-        xmllayout_test.sh\
-        ttcclayout_test.sh\
+        htmllayout_test\
+        xmllayout_test\
+        ttcclayout_test\
         patternlayout_test.sh\
 		propertyconfigurator_test\
 		domconfigurator_test

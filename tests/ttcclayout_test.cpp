@@ -3,34 +3,51 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/ttcclayout.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/level.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
 
 int main()
 {
-  int result = EXIT_SUCCESS;
+	int result = EXIT_SUCCESS;
+	
+	try
+	{
+		TTCCLayoutPtr layout = new TTCCLayout();
+		LoggingEvent event(
+			Logger::getStaticClass().getName(),
+			Logger::getRootLogger(),
+			Level::getDebugLevel(),
+			_T("debug message"),
+			"file.cpp", 
+			12
+			);
+		
+		tostringstream result, witness;
 
-  try
-  {
-    LayoutPtr layout = new TTCCLayout();
+		layout->formatDate(witness, event);
+		witness << _T("[")
+			<< event.getThreadId()
+			<< _T("] DEBUG root - debug message")
+			<< std::endl;
 
-    AppenderPtr consoleAppender =
-      new ConsoleAppender(layout, _T("System.out"));
+		layout->format(result, event);
 
-    LoggerPtr rootLogger = Logger::getRootLogger();
-    rootLogger->addAppender(consoleAppender);
+//		tcout << witness.str();
+//		tcout << result.str();
 
-    rootLogger->debug(_T("debug message"));
-    rootLogger->info(_T("info message"));
-    rootLogger->warn(_T("warn message"));
-    rootLogger->error(_T("error message"));
-    rootLogger->fatal(_T("fatal message"));
-  }
-  catch(Exception&)
-  {
-    result = EXIT_FAILURE;
-  }
-
-  return result;
+		if (witness.str() != result.str())
+		{
+			return EXIT_FAILURE;
+		}
+	}
+	catch(Exception&)
+	{
+		result = EXIT_FAILURE;
+	}
+	
+	return result;
 }
