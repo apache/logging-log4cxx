@@ -13,8 +13,8 @@
  * distribution in the license.apl file.                                   *
  ***************************************************************************/
 
-#include "filter.h"
 #include <boost/regex.hpp>
+#include "filter.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
