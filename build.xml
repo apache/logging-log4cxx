@@ -23,7 +23,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 -->
-<project name="log4cxx" default="test-all">
+<project name="log4cxx" default="check">
 
 <property name="debug" value="true"/>
 <property name="src.dir" location="src"/>
@@ -100,9 +100,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <property name="lib-suffix" value="-${version}"/>
 
     <condition property="cppunit.include.dir" value="${cppunit.dir}/include">
-		<isset property="cppunit.dir"/>
-	</condition>
-	<condition property="cppunit.lib.dir" value="${cppunit.dir}/src/cppunit">
+                <isset property="cppunit.dir"/>
+        </condition>
+        <condition property="cppunit.lib.dir" value="${cppunit.dir}/src/cppunit">
           <isset property="cppunit.dir"/>
     </condition>
     <property name="cppunit.lib.name" value="cppunit"/>
