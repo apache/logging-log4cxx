@@ -21,19 +21,64 @@
 #endif
 
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/criticalsection.h>
+#include <log4cxx/helpers/event.h>
+#include <log4cxx/helpers/thread.h>
 
 using namespace log4cxx::helpers;
 
-#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
-ObjectImpl::ObjectImpl()
+class EventList
 {
-	ref.counter = 0;
-}
-#else
-ObjectImpl::ObjectImpl() : ref(0)
+protected:
+	EventList(Event * event)
+	: event(event), next(0)
+	{
+	}
+	
+public:
+	static void removeAll(EventList * list)
+	{
+		EventList * item = list;
+		while (item != 0)
+		{
+			item = removeHead(item);
+		}
+	}
+	
+	static EventList * removeHead(EventList * list)
+	{
+		EventList * next = list->next;
+		delete list;
+		return next;
+	}
+	
+	static EventList * append(EventList * list, Event * event)
+	{
+		if (list == 0)
+		{
+			return new EventList(event);
+		}
+		else
+		{
+			EventList * current = list;
+			EventList * next = list->next;
+			while (next != 0)
+			{
+				current = next;
+				next = next->next;
+			}
+			current->next = new EventList(event);
+			return list;
+		}
+	}
+	
+	Event * event;
+	EventList * next;
+};
+
+ObjectImpl::ObjectImpl() : ref(0), eventList(0)
 {
 }
-#endif
 
 ObjectImpl::~ObjectImpl()
 {
@@ -41,73 +86,98 @@ ObjectImpl::~ObjectImpl()
 
 void ObjectImpl::addRef() const
 {
-#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
-	atomic_inc(&ref);
-#elif defined(HAVE_PTHREAD)
-	refCs.lock();
-	ref++;
-	refCs.unlock();
-#elif defined(HAVE_MS_THREAD)
-#if _MSC_VER == 1200	// MSDEV 6
-	::InterlockedIncrement((long *)&ref);
-#else
-	::InterlockedIncrement(&ref);
-#endif
-#else
-	ref++;
-#endif
+	Thread::InterlockedIncrement(&ref);
 }
 
 void ObjectImpl::releaseRef() const
 {
-#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
-	if (atomic_dec_and_test(&ref))
+	if (Thread::InterlockedDecrement(&ref) == 0)
 	{
 		delete this;
 	}
-#elif defined(HAVE_PTHREAD)
-	refCs.lock();
-	ref--;
-	if (ref <= 0)
-	{
-		delete this;
-	}
-	refCs.unlock();
-#elif defined(HAVE_MS_THREAD)
-#if _MSC_VER == 1200	// MSDEV 6
-	if (::InterlockedDecrement((long *)&ref) == 0)
-#else
-	if (::InterlockedDecrement(&ref) == 0)
-#endif
-	{
-		delete this;
-	}
-#else
-	ref--;
-	if (ref <= 0)
-	{
-		delete this;
-	}
-#endif
 }
 
 void ObjectImpl::lock() const
 {
-	mutex.lock();
+	cs.lock();
 }
 
 void ObjectImpl::unlock() const
 {
-	mutex.unlock();
+	cs.unlock();
 }
 
 void ObjectImpl::wait() const
 {
-	cond.wait(mutex);
+	if (cs.getOwningThread() != Thread::getCurrentThreadId())
+	{
+		if (cs.getOwningThread() == 0)
+		{
+			throw IllegalMonitorStateException(_T("Object not locked"));
+		}
+		else
+		{
+			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
+		}
+	}
+	
+	Event event(false, false);
+	eventList = EventList::append((EventList *)eventList, &event);
+	cs.unlock();
+	
+	try
+	{
+		event.wait();
+	}
+	catch(Exception&)
+	{
+		cs.lock();
+		eventList = EventList::removeHead((EventList *)eventList);
+		return;
+	}
+	
+	cs.lock();
 }
 
 void ObjectImpl::notify() const
 {
-	cond.signal();
+	if (cs.getOwningThread() != Thread::getCurrentThreadId())
+	{
+		if (cs.getOwningThread() == 0)
+		{
+			throw IllegalMonitorStateException(_T("Object not locked"));
+		}
+		else
+		{
+			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
+		}
+	}
+	
+	if (eventList != 0)
+	{
+		((EventList *)eventList)->event->set();
+		eventList = EventList::removeHead((EventList *)eventList);
+	}
+}
+
+void ObjectImpl::notifyAll() const
+{
+	if (cs.getOwningThread() != Thread::getCurrentThreadId())
+	{
+		if (cs.getOwningThread() == 0)
+		{
+			throw IllegalMonitorStateException(_T("Object not locked"));
+		}
+		else
+		{
+			throw IllegalMonitorStateException(_T("Object not locked by this thread"));
+		}
+	}
+	
+	while (eventList != 0)
+	{
+		((EventList *)eventList)->event->set();
+		eventList = EventList::removeHead((EventList *)eventList);
+	}
 }
 
