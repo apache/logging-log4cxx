@@ -30,7 +30,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="version" value="1.1.0"/>
 <property name="base.dir" location="."/>
 <property name="include.dir" location="${base.dir}/include"/>
-<property name="lib.type" value="shared"/>
+<property name="apr.lib.type" value="shared"/>
+<property name="apriconv.lib.type" value="static"/>
+<property name="aprutil.lib.type" value="shared"/>
 
 
 
@@ -79,20 +81,33 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-debug" value="true">
             <istrue value="${debug}"/>
         </condition>
-        <condition property="executable.dir" value="${build.dir}/debug">
+        <condition property="aprutil.lib.dir" value="${build.dir}/debug/${aprutil.lib.type}">
             <isset property="is-debug"/>
         </condition>
-        <property name="executable.dir" location="${build.dir}/release"/>
-        <mkdir dir="${executable.dir}"/>
+        <property name="aprutil.lib.dir" location="${build.dir}/release/${aprutil.lib.type}"/>
+        <mkdir dir="${aprutil.lib.dir}"/>
+
         <condition property="lib-suffix" value="d">
             <isset property="is-debug"/>
         </condition>
         <property name="lib-suffix" value=""/>
         <available property="src-available" file="${base.dir}"/>
 
-        <condition property="is-shared" value="true">
-            <equals arg1="${lib.type}" arg2="shared"/>
+        <condition property="is-apr-shared" value="true">
+            <equals arg1="${apr.lib.type}" arg2="shared"/>
         </condition>
+        <condition property="is-apriconv-shared" value="true">
+            <equals arg1="${apriconv.lib.type}" arg2="shared"/>
+        </condition>
+        <condition property="is-aprutil-shared" value="true">
+            <equals arg1="${aprutil.lib.type}" arg2="shared"/>
+        </condition>
+
+
+        <condition property="is-bcc" value="true">
+            <equals arg1="${compiler}" arg2="bcc"/>
+        </condition>
+
 </target>
 
 <target name="clean">
@@ -117,6 +132,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="win-configure" depends="configure-check" if="is-windows" unless="config-available">
     <copy tofile="${include.dir}/apu.h" file="${include.dir}/apu.hw"/>
     <copy tofile="${include.dir}/apu_want.h" file="${include.dir}/apu_want.hw"/>
+    <copy tofile="${include.dir}/apr_ldap.h" file="${include.dir}/apr_ldap.hw"/>
     <copy tofile="${include.dir}/private/apu_config.h" file="${include.dir}/private/apu_config.hw"/>
     <copy tofile="${include.dir}/private/apu_select_dbm.h" file="${include.dir}/private/apu_select_dbm.hw"/>
     <copy tofile="${base.dir}/xml/expat/lib/expat.h" file="${base.dir}/xml/expat/lib/expat.h.in"/>
@@ -136,7 +152,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <target name="build" depends="configure" description="Build library">
-    <mkdir dir="${executable.dir}/${lib.type}/aprutil_obj"/>
+    <mkdir dir="${aprutil.lib.dir}/aprutil_obj"/>
     <!--   uses replace instead of preprocessor since
               the quotes on VERSION cause problems with cpptasks  -->
     <replace file="${base.dir}/xml/expat/lib/xmlparse.c">
@@ -146,11 +162,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
        <replacefilter token="VERSION" value='"expat_1.95.1"'/>
     </replace>
     <cc name="${compiler}"
-        outfile="${executable.dir}/${lib.type}/aprutil-1${lib-suffix}"
+        outfile="${aprutil.lib.dir}/aprutil-1${lib-suffix}"
         subsystem="console"
         multithreaded="true"
-        outtype="${lib.type}"
-        objdir="${executable.dir}/${lib.type}/aprutil_obj"
+        outtype="${aprutil.lib.type}"
+        objdir="${aprutil.lib.dir}/aprutil_obj"
         debug="${debug}">
         <fileset dir="${base.dir}" includes="**/*.c"
             excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
@@ -162,18 +178,234 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${apriconv.include.dir}"/>
         <includepath path="${base.dir}/xml/expat/lib"/>
         <includepath path="${base.dir}/xml/expat"/>
-        <defineset define="APU_DECLARE_EXPORT" if="is-shared"/>
-        <defineset define="APU_DECLARE_STATIC" unless="is-shared"/>
+        <defineset define="APU_DECLARE_EXPORT" if="is-aprutil-shared"/>
+        <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
+        <defineset define="API_DECLARE_STATIC" if="is-apriconv-shared"/>
+        <defineset define="APR_DECLARE_STATIC" if="is-apr-shared"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
 
-        <libset dir="${apr.lib.dir}" libs="apr-1"/>
-        <libset dir="${apriconv.lib.dir}" libs="apriconv"/>
+        <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
+        <libset dir="${apriconv.lib.dir}" libs="apriconv${lib-suffix}"/>
+        <libset libs="cw32mt" if="is-bcc"/>
     </cc>
 </target>
 
-<target name="build-check" depends="build"/>
+<target name="build-test">
+    <mkdir dir="${aprutil.lib.dir}/apr_obj"/>
+    <cc name="${compiler}"
+        outfile="${aprutil.lib.dir}/${test}"
+        subsystem="console"
+        multithreaded="true"
+        outtype="executable"
+        objdir="${aprutil.lib.dir}/apr_obj"
+        debug="${debug}">
+        <fileset dir="${base.dir}/test" includes="${testfiles}"/>
+        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
+        <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
+        <defineset define="API_DECLARE_STATIC" if="is-apriconv-shared"/>
+        <defineset define="APR_DECLARE_STATIC" if="is-apr-shared"/>
+        <defineset if="is-windows">
+            <define name="WIN32" value="1"/>
+        </defineset>
+        <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
+        <libset dir="${aprutil.lib.dir}" libs="aprutil-1${lib-suffix}"/>
+        <libset libs="cw32mt" if="is-bcc"/>
+    </cc>
+</target>
 
-<target name="check" depends="build-check"/>
+<target name="copy-apr" if="is-windows">
+    <copy todir="${aprutil.lib.dir}">
+        <fileset dir="${apr.lib.dir}" includes="apr-1${lib-suffix}.dll"/>
+        <fileset dir="${apriconv.lib.dir}" includes="*.dll"/>
+    </copy>
+</target>
+
+<target name="run-test" depends="copy-apr">
+    <exec executable="${aprutil.lib.dir}/${test}"
+          dir="${aprutil.lib.dir}"
+          failonerror="true">
+        <env key="DYLD_LIBRARY_PATH"
+           value="${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+        <env key="LD_LIBRARY_PATH"
+           value="${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+        <env key="Path"
+           value="${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.Path}"/>
+    </exec>
+</target>
+
+
+<target name="build-testdbm" depends="build">
+    <antcall target="build-test">
+        <param name="test" value="testdbm"/>
+        <param name="testfiles" value="testdbm.c"/>
+    </antcall>
+</target>
+
+<target name="run-testdbm" depends="build-testdbm">
+    <antcall target="run-test">
+        <param name="test" value="testdbm"/>
+    </antcall>
+</target>
+
+<target name="build-testdbd" depends="build">
+    <antcall target="build-test">
+        <param name="test" value="testdbd"/>
+        <param name="testfiles" value="testdbd.c"/>
+    </antcall>
+</target>
+
+<target name="run-testdbd" depends="build-testdbd">
+    <antcall target="run-test">
+        <param name="test" value="testdbd"/>
+    </antcall>
+</target>
+
+<target name="build-testdate" depends="build" unless="is-windows">
+    <antcall target="build-test">
+        <param name="test" value="testdate"/>
+        <param name="testfiles" value="testdate.c"/>
+    </antcall>
+</target>
+
+<target name="run-testdate" depends="build-testdate" unless="is-windows">
+    <antcall target="run-test">
+        <param name="test" value="testdate"/>
+    </antcall>
+</target>
+
+
+<target name="build-testxml" depends="build">
+    <antcall target="build-test">
+        <param name="test" value="testxml"/>
+        <param name="testfiles" value="testxml.c"/>
+    </antcall>
+</target>
+
+<target name="run-testxml" depends="build-testxml">
+    <antcall target="run-test">
+        <param name="test" value="testxml"/>
+    </antcall>
+</target>
+
+<target name="build-testrmm" depends="build">
+    <antcall target="build-test">
+        <param name="test" value="testrmm"/>
+        <param name="testfiles" value="testrmm.c"/>
+    </antcall>
+</target>
+
+<target name="run-testrmm" depends="build-testrmm">
+    <antcall target="run-test">
+        <param name="test" value="testrmm"/>
+    </antcall>
+</target>
+
+<target name="build-testreslist" depends="build" unless="is-windows">
+    <antcall target="build-test">
+        <param name="test" value="testreslist"/>
+        <param name="testfiles" value="testreslist.c"/>
+    </antcall>
+</target>
+
+<target name="run-testreslist" depends="build-testreslist" unless="is-windows">
+    <antcall target="run-test">
+        <param name="test" value="testreslist"/>
+    </antcall>
+</target>
+
+<target name="build-testqueue" depends="build">
+    <antcall target="build-test">
+        <param name="test" value="testqueue"/>
+        <param name="testfiles" value="testqueue.c"/>
+    </antcall>
+</target>
+
+<target name="run-testqueue" depends="build-testqueue">
+    <antcall target="run-test">
+        <param name="test" value="testqueue"/>
+    </antcall>
+</target>
+
+<target name="build-testxlate" depends="build">
+    <antcall target="build-test">
+        <param name="test" value="testxlate"/>
+        <param name="testfiles" value="testxlate.c"/>
+    </antcall>
+</target>
+
+<target name="run-testxlate" depends="build-testxlate">
+    <antcall target="run-test">
+        <param name="test" value="testxlate"/>
+    </antcall>
+</target>
+
+
+<target name="build-testall" depends="build">
+    <mkdir dir="${aprutil.lib.dir}/apr_obj"/>
+    <cc name="${compiler}"
+        outfile="${aprutil.lib.dir}/testall"
+        subsystem="console"
+        multithreaded="true"
+        outtype="executable"
+        objdir="${aprutil.lib.dir}/apr_obj"
+        debug="${debug}">
+        <fileset dir="${base.dir}/test" includes="*.c">
+            <exclude name="nw_misc.c"/>
+            <exclude name="testdbm.c"/>
+            <exclude name="testdbd.c"/>
+            <exclude name="testdate.c"/>
+            <exclude name="testxml.c"/>
+            <exclude name="testrmm.c"/>
+            <exclude name="testreslist.c"/>
+            <exclude name="testqueue.c"/>
+            <exclude name="testxlate.c"/>
+            <exclude name="testldap.c"/>
+        </fileset>
+        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
+        <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
+        <defineset define="API_DECLARE_STATIC" if="is-apriconv-shared"/>
+        <defineset define="APR_DECLARE_STATIC" if="is-apr-shared"/>
+        <defineset if="is-windows">
+            <define name="WIN32" value="1"/>
+        </defineset>
+        <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
+        <libset dir="${aprutil.lib.dir}" libs="aprutil-1${lib-suffix}"/>
+        <libset libs="cw32mt" if="is-bcc"/>
+    </cc>
+</target>
+
+<target name="run-testall" depends="build-testall">
+    <antcall target="run-test">
+        <param name="test" value="testall"/>
+    </antcall>
+</target>
+
+
+
+<target name="build-check" 
+    depends="build-testdbm,
+             build-testdbd,
+             build-testdate,
+             build-testxml,
+             build-testrmm,
+             build-testreslist,
+             build-testqueue,
+             build-testxlate,
+             build-testall"/>
+
+<target name="check" 
+    depends="build-testdbm,
+             build-testdbd,
+             run-testdate,
+             run-testxml,
+             run-testrmm,
+             run-testreslist,
+             run-testqueue,
+             run-testxlate,
+             run-testall"/>
+
 
 </project>

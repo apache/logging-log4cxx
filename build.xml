@@ -335,6 +335,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <antcall target="untar-apr-src"/>
 
     <property name="apr.dir" location="${lib.dir}/apr-${apr.version}"/>
+    <property name="apr.include.dir" location="${apr.dir}/include"/>
+    <property name="apr.lib.dir" location="${executable.dir}/${apr.lib.type}"/>
 
     <ant antfile="apr-build.xml" target="build" inheritAll="false">
         <property name="version" value="${apr.version}"/>
@@ -342,11 +344,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="lib-suffix" value="${lib-suffix}"/>
         <property name="compiler" value="${compiler}"/>
         <property name="base.dir" value="${apr.dir}"/>
-        <property name="executable.dir" value="${executable.dir}"/>
-        <property name="lib.type" value="${apr.lib.type}"/>
+        <property name="apr.lib.dir" value="${apr.lib.dir}"/>
+        <property name="apr.lib.type" value="${apr.lib.type}"/>
     </ant>
-    <property name="apr.include.dir" location="${apr.dir}/include"/>
-    <property name="apr.lib.dir" location="${executable.dir}/${apr.lib.type}"/>
 </target>
 
 <target name="get-apriconv-src" unless="apriconv-src-available">
@@ -368,7 +368,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <antcall target="untar-apriconv-src"/>
 
     <property name="apriconv.dir" location="${lib.dir}/apr-iconv-${apriconv.version}"/>
-    <ant antfile="apriconv-build.xml" target="build" inheritAll="false">
+    <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
+    <property name="apriconv.lib.dir" location="${executable.dir}/${apriconv.lib.type}"/>
+    <ant antfile="apriconv-build.xml" target="build-lib" inheritAll="false">
         <property name="version" value="${apriconv.version}"/>
         <property name="base.dir" value="${apriconv.dir}"/>
         <property name="debug" value="${debug}"/>
@@ -376,12 +378,11 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="compiler" value="${compiler}"/>
         <property name="apr.include.dir" value="${apr.include.dir}"/>
         <property name="apr.lib.dir" value="${apr.lib.dir}"/>
-        <property name="executable.dir" value="${executable.dir}"/>
-        <property name="lib.type" value="${apriconv.lib.type}"/>
+        <property name="apriconv.lib.dir" value="${apriconv.lib.dir}"/>
+        <property name="apr.lib.type" value="${apr.lib.type}"/>
+        <property name="apriconv.lib.type" value="${apriconv.lib.type}"/>
         <property name="with-apr" value="${apr.dir}/apr--config"/>
     </ant>
-    <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
-    <property name="apriconv.lib.dir" location="${executable.dir}/${apriconv.lib.type}"/>
 </target>
 
 <target name="get-aprutil-src" unless="aprutil-src-available">
@@ -406,6 +407,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <antcall target="untar-aprutil-src"/>
 
     <property name="aprutil.dir" location="${lib.dir}/apr-util-${aprutil.version}"/>
+    <property name="aprutil.include.dir" location="${aprutil.dir}/include"/>
+    <property name="aprutil.lib.dir" location="${executable.dir}/${aprutil.lib.type}"/>
 
     <ant antfile="aprutil-build.xml" target="build" inheritAll="false">
         <property name="version" value="${aprutil.version}"/>
@@ -417,12 +420,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="apr.lib.dir" value="${apr.lib.dir}"/>
         <property name="apriconv.include.dir" value="${apriconv.include.dir}"/>
         <property name="apriconv.lib.dir" value="${apriconv.lib.dir}"/>
-        <property name="executable.dir" value="${executable.dir}"/>
-        <property name="lib.type" value="${aprutil.lib.type}"/>
+        <property name="aprutil.lib.dir" value="${aprutil.lib.dir}"/>
+        <property name="apr.lib.type" value="${apr.lib.type}"/>
+        <property name="apriconv.lib.type" value="${apriconv.lib.type}"/>
+        <property name="aprutil.lib.type" value="${aprutil.lib.type}"/>
         <property name="with-apr" value="${apr.dir}/apr--config"/>
     </ant>
-    <property name="aprutil.include.dir" location="${aprutil.dir}/include"/>
-    <property name="aprutil.lib.dir" location="${executable.dir}/${aprutil.lib.type}"/>
 </target>
 
 <target name="get-cppunit-src" unless="cppunit-src-available">

@@ -18,7 +18,7 @@
 
 <!--
 
-This file builds APR using Apache Ant (http://ant.apache.org)
+This file builds APR-iconv using Apache Ant (http://ant.apache.org)
 and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
@@ -30,11 +30,15 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="version" value="1.0.1"/>
 <property name="base.dir" location="."/>
 <property name="include.dir" location="${base.dir}/include"/>
-<property name="lib.type" value="static"/>
+<property name="apriconv.lib.type" value="static"/>
+<property name="apr.lib.type" value="shared"/>
 
 
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
+<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
+
+
 <property name="apr.dir" location="${base.dir}/../apr-1.1.0"/>
 <property name="apr.include.dir" location="${apr.dir}/include"/>
 <property name="with-apr" value="${apr.dir}"/>
@@ -74,15 +78,26 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-debug" value="true">
             <istrue value="${debug}"/>
         </condition>
-        <condition property="executable.dir" value="${build.dir}/debug">
+        <condition property="apriconv.lib.dir" value="${build.dir}/debug/${aprutil.lib.type}">
             <isset property="is-debug"/>
         </condition>
-        <property name="executable.dir" location="${build.dir}/release"/>
-        <mkdir dir="${executable.dir}"/>
+        <property name="apriconv.lib.dir" location="${build.dir}/release/${aprutil.lib.type}"/>
+        <mkdir dir="${apriconv.lib.dir}"/>
         <condition property="lib-suffix" value="d">
             <isset property="is-debug"/>
         </condition>
         <property name="lib-suffix" value=""/>
+        <condition property="is-bcc" value="true">
+            <equals arg1="${compiler}" arg2="bcc"/>
+        </condition>
+
+        <condition property="is-apr-shared" value="true">
+            <equals arg1="${apr.lib.type}" arg2="shared"/>
+        </condition>
+
+        <condition property="is-apriconv-shared" value="true">
+            <equals arg1="${apriconv.lib.type}" arg2="shared"/>
+        </condition>
 </target>
 
 <target name="clean">
@@ -102,7 +117,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <target name="win-configure" depends="configure-check" if="is-windows" unless="config-available">
-    <copy tofile="${base.dir}/lib/apr_iconv_private.h" file="${base.dir}/lib/apr_iconv_private.h.in"/>
+    <copy tofile="${base.dir}/lib/apr_iconv_private.h" 
+        file="${base.dir}/lib/apr_iconv_private.h.in"
+        failonerror="false"/>
 </target>
 
 <target name="unix-configure" depends="configure-check" if="is-unix" unless="config-available">
@@ -117,28 +134,108 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="configure" depends="unix-configure, win-configure"/>
 
 
-<target name="build" depends="configure" description="Build library">
-    <mkdir dir="${executable.dir}/${lib.type}/apriconv_obj"/>
+<target name="build-lib" depends="configure" description="Build library">
+    <mkdir dir="${apriconv.lib.dir}/apriconv_obj"/>
     <cc name="${compiler}"
-        outfile="${executable.dir}/${lib.type}/apriconv${lib-suffix}"
+        outfile="${apriconv.lib.dir}/apriconv${lib-suffix}"
         subsystem="console"
         multithreaded="true"
-        outtype="${lib.type}"
-        objdir="${executable.dir}/${lib.type}/apriconv_obj"
+        outtype="${apriconv.lib.type}"
+        objdir="${apriconv.lib.dir}/apriconv_obj"
         debug="${debug}">
-        <fileset dir="${base.dir}" includes="**/*.c" excludes="util/*"/>
+        <fileset dir="${base.dir}" includes="lib/*.c"/>
         <includepath path="${include.dir}"/>
         <includepath path="${base.dir}/lib"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${apr.include.dir}/private"/>
-        <defineset define="API_DECLARE_EXPORT" if="is-shared"/>
-        <defineset define="API_DECLARE_STATIC" unless="is-shared"/>
+        <defineset define="API_DECLARE_EXPORT" if="is-apriconv-shared"/>
+        <defineset define="API_DECLARE_STATIC" unless="is-apriconv-shared"/>
+        <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
     </cc>
 </target>
 
-<target name="build-check" depends="build"/>
+<target name="build-module" depends="init">
+    <basename file="${module.src}" property="module" suffix="c"/>
+    <cc name="${compiler}"
+        outfile="${apriconv.lib.dir}/${module}"
+        subsystem="console"
+        multithreaded="true"
+        outtype="shared"
+        objdir="${apriconv.lib.dir}/apriconv_obj"
+        debug="${debug}">
+        <fileset file="${module.src}"/>
+        <includepath path="${include.dir}"/>
+        <includepath path="${base.dir}/lib"/>
+        <includepath path="${apr.include.dir}"/>
+        <includepath path="${apr.include.dir}/private"/>
+        <defineset define="API_DECLARE_EXPORT"/>
+        <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
+        <defineset define="WIN32" if="is-windows"/>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <libset libs="apriconv${lib-suffix}" dir="${apriconv.lib.dir}"/>
+        <libset libs="apr-1${lib-suffix}" dir="${apr.lib.dir}"/>
+        <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
+        <libset libs="cw32mt" if="is-bcc"/>
+    </cc>
+</target>
+
+
+<target name="build-ces" depends="build-lib">
+
+<foreach target="build-module" param="module.src">
+    <path>
+       <fileset dir="${base.dir}" includes="ces/*.c"/>
+    </path>
+</foreach>
+
+</target>
+
+
+<target name="build-ccs-c" depends="build-lib">
+    <foreach target="build-module" param="module.src">
+        <path>
+           <fileset dir="${base.dir}/ccs" includes="c*.c"/>
+        </path>
+    </foreach>
+</target>
+
+<target name="build-ccs-i" depends="build-lib">
+    <foreach target="build-module" param="module.src">
+        <path>
+           <fileset dir="${base.dir}/ccs" includes="i*.c"/>
+        </path>
+    </foreach>
+</target>
+
+<target name="build-ccs-w" depends="build-lib">
+    <foreach target="build-module" param="module.src">
+        <path>
+           <fileset dir="${base.dir}/ccs" includes="w*.c"/>
+        </path>
+    </foreach>
+</target>
+
+<target name="build-ccs-other" depends="build-lib">
+
+    <foreach target="build-module" param="module.src">
+        <path>
+           <fileset dir="${base.dir}/ccs" 
+                includes="*.c"
+                excludes="c*.c i*.c w*.c"/>
+        </path>
+    </foreach>
+</target>
+
+<target name="build-ccs" depends="build-ccs-c, build-ccs-i, build-ccs-w, build-ccs-other"/>
+
+<target name="build-util" depends="build-lib">
+</target>
+
+<target name="build" depends="build-lib, build-ccs, build-ces, build-util"/>
+
+<target name="build-check" depends="build-lib"/>
 
 <target name="check" depends="build-check"/>
 
