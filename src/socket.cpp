@@ -31,6 +31,7 @@
 
 #include <string.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Socket)

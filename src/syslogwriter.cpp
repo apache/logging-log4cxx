@@ -23,6 +23,7 @@
 
 #define SYSLOG_PORT 514
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 SyslogWriter::SyslogWriter(const String& syslogHost)
