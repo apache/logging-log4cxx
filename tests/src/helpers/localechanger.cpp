@@ -15,6 +15,7 @@
  */
 
 #include "localechanger.h"
+#include <stdexcept>
 
 using namespace log4cxx::helpers;
 
@@ -27,6 +28,7 @@ LocaleChanger::LocaleChanger(const char* locale) {
         std::locale newLocale(locale);
         initial = std::locale::global(newLocale);
         effective = true;
+    } catch(std::runtime_error&) {
     } catch(std::exception&) {
     }
   }
