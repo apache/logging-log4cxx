@@ -105,14 +105,14 @@ namespace log4cxx
                         /**Returns the time when the application started,
                         in seconds elapsed since 01.01.1970.
                         */
-                        static apr_time_t getStartTime();
+                        static log4cxx_time_t getStartTime();
 
                         /** Return the #threadId of this event. */
                         inline unsigned long getThreadId() const
                                 { return threadId; }
 
                         /** Return the #timeStamp of this event. */
-                        inline apr_time_t getTimeStamp() const
+                        inline log4cxx_time_t getTimeStamp() const
                                 { return timeStamp; }
 
                         /* Return the file where this log statement was written. */
@@ -234,7 +234,7 @@ namespace log4cxx
 
                         /** The number of milliseconds elapsed from 1/1/1970 until logging event
                          was created. */
-                        apr_time_t timeStamp;
+                        log4cxx_time_t timeStamp;
 
                         /** The is the location where this log statement was written. */
                         const log4cxx::spi::location::LocationInfo locationInfo;

@@ -25,6 +25,7 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <apr_thread_mutex.h>
+#include <log4cxx/logstring.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -280,7 +281,7 @@ void Hierarchy::shutdown()
 
 void Hierarchy::updateParents(LoggerPtr& logger)
 {
-        const LogString& name(logger->name);
+        const LogString& name = logger->getName();
         int length = name.size();
         bool parentFound = false;
 

@@ -46,7 +46,7 @@ RepositorySelectorPtr& LogManager::getRepositorySelector() {
    //
    //     call to initialize APR and trigger "start" of logging clock
    //
-   static apr_time_t tm(LoggingEvent::getStartTime());
+   static log4cxx_time_t tm = LoggingEvent::getStartTime();
    static spi::RepositorySelectorPtr selector;
    return selector;
 }

@@ -42,7 +42,7 @@ void log4cxx::helpers::RelativeTimeDateFormat::format(
     if (ms >= INT_MIN && ms <= INT_MAX) {
       s.append(StringHelper::toString(ms, p));
     } else {
-      const apr_int64_t BILLION = APR_INT64_C(1000000000);
+      const log4cxx_int64_t BILLION = APR_INT64_C(1000000000);
       s.append(StringHelper::toString(ms / BILLION, p));
       LogString lower(StringHelper::toString(ms % BILLION, p));
       int fill = 9 - lower.length();

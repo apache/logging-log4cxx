@@ -33,11 +33,11 @@ namespace log4cxx
 		public:
 			RelativeTimeDateFormat();
                         virtual void format(LogString &s,
-                                        apr_time_t tm,
+                                        log4cxx_time_t tm,
                                         apr_pool_t* p) const;
 
                 private:
-                        apr_time_t startTime;
+                        log4cxx_time_t startTime;
 
 		};
 	}  // namespace helpers

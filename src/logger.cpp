@@ -482,3 +482,11 @@ LoggerPtr Logger::getLogger(const LogString& name,
 {
         return LogManager::getLogger(name, factory);
 }
+
+void Logger::getName(std::string& rv) const {
+    Transcoder::encode(name, rv);
+}
+
+void Logger::getName(std::wstring& rv) const {
+    Transcoder::encode(name, rv);
+}

@@ -31,7 +31,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT ConditionException : public Exception
 		{
 		public:
-			ConditionException(apr_status_t stat) {}
+			ConditionException(log4cxx_status_t stat) {}
 		};
 
 		class LOG4CXX_EXPORT Condition

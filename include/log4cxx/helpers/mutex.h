@@ -30,7 +30,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT MutexException : public Exception
 		{
 		public:
-			MutexException(apr_status_t stat) {}
+			MutexException(log4cxx_status_t stat) {}
 		};
 
 		class LOG4CXX_EXPORT Mutex

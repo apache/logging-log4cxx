@@ -16,8 +16,8 @@
 
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
-#include <string>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 

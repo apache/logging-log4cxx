@@ -29,7 +29,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT PoolException : public Exception
 		{
 		public:
-			PoolException(apr_status_t stat) {}
+			PoolException(log4cxx_status_t stat) {}
 		};
 
 		class LOG4CXX_EXPORT Pool

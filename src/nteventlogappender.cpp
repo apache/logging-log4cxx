@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -90,11 +91,11 @@ NTEventLogAppender::NTEventLogAppender() : hEventLog(NULL), pCurrentUserSID(NULL
 {
 }
 
-NTEventLogAppender::NTEventLogAppender(const String& server, const String& log, const String& source, const LayoutPtr& layout)
+NTEventLogAppender::NTEventLogAppender(const LogString& server, const LogString& log, const LogString& source, const LayoutPtr& layout)
 : server(server), log(log), source(source), hEventLog(NULL), pCurrentUserSID(NULL)
 {
 	this->layout = layout;
-	activateOptions();
+	activateOptions(NULL);
 }
 
 NTEventLogAppender::~NTEventLogAppender()
@@ -118,17 +119,17 @@ void NTEventLogAppender::close()
 	}
 }
 
-void NTEventLogAppender::setOption(const String& option, const String& value)
+void NTEventLogAppender::setOption(const LogString& option, const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, _T("server")))
+	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SERVER"), LOG4CXX_STR("server")))
 	{
 		server = value;
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("log")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOG"), LOG4CXX_STR("log")))
 	{
 		log = value;
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("source")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SOURCE"), LOG4CXX_STR("source")))
 	{
 		source = value;
 	}
@@ -138,17 +139,19 @@ void NTEventLogAppender::setOption(const String& option, const String& value)
 	}
 }
 
-void NTEventLogAppender::activateOptions()
+void NTEventLogAppender::activateOptions(apr_pool_t* p)
 {
 	if (source.empty())
 	{
-		LogLog::warn(_T("Source option not set for appender [")+name+_T("]."));
+		LogLog::warn(
+             ((LogString) LOG4CXX_STR("Source option not set for appender ["))
+                + name + LOG4CXX_STR("]."));
 		return;
 	}
 
 	if (log.empty())
 	{
-		log = _T("Application");
+		log = LOG4CXX_STR("Application");
 	}
 
 	close();
@@ -158,23 +161,28 @@ void NTEventLogAppender::activateOptions()
 
 	addRegistryInfo();
 
-	hEventLog = ::RegisterEventSource(server.c_str(), source.c_str());
+    std::wstring wserver;
+    Transcoder::encode(server, wserver);
+    std::wstring wsource;
+    Transcoder::encode(source, wsource);
+	hEventLog = ::RegisterEventSourceW(wserver.c_str(), wsource.c_str());
 }
 
-void NTEventLogAppender::append(const LoggingEventPtr& event)
+void NTEventLogAppender::append(const LoggingEventPtr& event, apr_pool_t* p)
 {
 	if (hEventLog == NULL)
 	{
-		LogLog::warn(_T("NT EventLog not opened."));
+		LogLog::warn(LOG4CXX_STR("NT EventLog not opened."));
 		return;
 	}
 
-	StringBuffer oss;
-	layout->format(oss, event);
-	String sz = oss.str();
-	const TCHAR * s = sz.c_str();
-
-	BOOL bSuccess = ::ReportEvent(
+	LogString oss;
+	layout->format(oss, event, p);
+    std::wstring s;
+    log4cxx::helpers::Transcoder::encode(oss, s);
+    const wchar_t* msgs[1];
+    msgs[0] = s.c_str() ;
+	BOOL bSuccess = ::ReportEventW(
 		hEventLog,
 		getEventType(event),
 		getEventCategory(event),
@@ -182,33 +190,35 @@ void NTEventLogAppender::append(const LoggingEventPtr& event)
 		pCurrentUserSID,
 		1,
 		0,
-		&s,
+	    msgs,
 		NULL);
 
 	if (!bSuccess)
 	{
 		DWORD dwError = ::GetLastError();
-		LogLog::error(_T("Cannot report event in NT EventLog."));
+		LogLog::error(LOG4CXX_STR("Cannot report event in NT EventLog."));
 	}
 }
 
-NTEventLogAppender::HKEY NTEventLogAppender::regGetKey(const String& subkey, DWORD *disposition)
+NTEventLogAppender::HKEY NTEventLogAppender::regGetKey(const std::wstring& subkey, DWORD *disposition)
 {
 	::HKEY hkey = 0;
-	RegCreateKeyEx((::HKEY) HKEY_LOCAL_MACHINE, subkey.c_str(), 0, NULL, 
+	RegCreateKeyExW((::HKEY) HKEY_LOCAL_MACHINE, subkey.c_str(), 0, NULL, 
 		REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, 
 		&hkey, disposition);
 	return hkey;
 }
 
-void NTEventLogAppender::regSetString(HKEY hkey, const String& name, const String& value)
+void NTEventLogAppender::regSetString(HKEY hkey, const wchar_t*  name, 
+                                       const wchar_t* value)
 {
-	RegSetValueEx((::HKEY) hkey, name.c_str(), 0, REG_SZ, (LPBYTE)value.c_str(), value.length()*sizeof(wchar_t));
+	RegSetValueExW((::HKEY) hkey, name, 0, REG_SZ, (LPBYTE) value, 
+        wcslen(value)*sizeof(wchar_t));
 }
 
-void NTEventLogAppender::regSetDword(HKEY hkey, const String& name, DWORD value)
+void NTEventLogAppender::regSetDword(HKEY hkey, const wchar_t* name, DWORD value)
 {
-	RegSetValueEx((::HKEY) hkey, name.c_str(), 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
+	RegSetValueExW((::HKEY) hkey, name, 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
 }
 
 /*
@@ -218,16 +228,18 @@ void NTEventLogAppender::addRegistryInfo()
 {
 	DWORD disposition;
 	::HKEY hkey = 0;
-	String subkey = _T("SYSTEM\\CurrentControlSet\\Services\\EventLog\\")
-		+ log + _T("\\") + source;
+    std::wstring subkey(L"SYSTEM\\CurrentControlSet\\Services\\EventLog\\");
+    Transcoder::encode(log, subkey);
+    subkey += L"\\";
+    Transcoder::encode(source, subkey);
 	
 	hkey = (::HKEY) regGetKey(subkey, &disposition);
 	if (disposition == REG_CREATED_NEW_KEY)
 	{
-		regSetString(hkey, _T("EventMessageFile"), _T("NTEventLogAppender.dll"));
-		regSetString(hkey, _T("CategoryMessageFile"), _T("NTEventLogAppender.dll"));
-		regSetDword(hkey, _T("TypesSupported"), (DWORD)7);
-		regSetDword(hkey, _T("CategoryCount"), (DWORD)5);
+		regSetString(hkey, L"EventMessageFile", L"NTEventLogAppender.dll");
+		regSetString(hkey, L"CategoryMessageFile", L"NTEventLogAppender.dll");
+		regSetDword(hkey,  L"TypesSupported", (DWORD)7);
+		regSetDword(hkey,  L"CategoryCount", (DWORD)5);
 	}
 	
 	RegCloseKey(hkey);

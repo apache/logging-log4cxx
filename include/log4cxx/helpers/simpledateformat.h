@@ -45,7 +45,7 @@ namespace log4cxx
                   ~SimpleDateFormat();
 
                   virtual void format(LogString& s,
-                                      apr_time_t time,
+                                      log4cxx_time_t time,
                                       apr_pool_t* p) const;
 
                   /**

@@ -18,9 +18,13 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <apr_iconv.h>
 
+//
+//  temporary hack until build is fixed to always have apr_iconv
 #define HAS_APR_ICONV 0
+#if HAS_APR_ICONV
+#include <apr_iconv.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

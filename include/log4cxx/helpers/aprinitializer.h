@@ -30,8 +30,9 @@ namespace log4cxx
 
     private:
       APRInitializer();
-      ~APRInitializer();
       apr_pool_t * p;
+    public:
+      ~APRInitializer();
     };
   } // namespace helpers
 }; // namespace log4cxx

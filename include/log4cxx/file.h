@@ -47,7 +47,7 @@ namespace log4cxx
 
                     bool exists() const;
                     size_t length() const;
-                    apr_time_t lastModified() const;
+                    log4cxx_time_t lastModified() const;
                     inline const LogString& getName() const {
                        return internalName;
                     }
@@ -58,7 +58,7 @@ namespace log4cxx
 
                     LogString read(apr_pool_t* pool) const;
 
-                    apr_status_t write(const LogString& src, apr_pool_t* p) const;
+                    log4cxx_status_t write(const LogString& src, apr_pool_t* p) const;
 
                 private:
                     LogString internalName;

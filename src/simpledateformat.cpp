@@ -404,8 +404,8 @@ namespace log4cxx {
              //
              //   assumes that point values for 0-9 are same between char and wchar_t
              //
-             for (size_t i = strlen(hours); i-- > 0;) {
-               s[minPos--] = min[i];
+             for (size_t j = strlen(hours); j-- > 0;) {
+               s[minPos--] = min[j];
              }
            }
         }

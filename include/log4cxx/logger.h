@@ -167,15 +167,15 @@ namespace log4cxx
                 */
         template<class STR>
         void debug(const STR& msg, const log4cxx::spi::location::LocationInfo& location) {
-          if (isEnabledFor(log4cxx::Level::DEBUG)) {
-            forcedLog(log4cxx::Level::DEBUG, msg, location);
+          if (isEnabledFor(log4cxx::Level::getDebug())) {
+            forcedLog(log4cxx::Level::getDebug(), msg, location);
           }
         }
 
         template<class STR>
         void debug(const STR& msg) {
-          if (isEnabledFor(log4cxx::Level::DEBUG)) {
-            forcedLog(log4cxx::Level::DEBUG, msg);
+          if (isEnabledFor(log4cxx::Level::getDebug())) {
+            forcedLog(log4cxx::Level::getDebug(), msg);
           }
         }
 
@@ -294,6 +294,8 @@ namespace log4cxx
         Return the logger name.  */
         inline const LogString& getName() const
                         { return name; }
+        void getName(std::string& name) const;
+        void getName(std::wstring& name) const;
 
 
         /**
@@ -567,7 +569,7 @@ namespace log4cxx
         <code>Level#FATAL</code> as a parameter, you need to case them as
         Level.
 
-        <p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::DEBUG); </pre>
+        <p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::getDebug()); </pre>
 
 
         <p>Null values are admitted.  */
@@ -667,7 +669,7 @@ Logs a message to a specified logger with the DEBUG level.
 */
 #define LOG4CXX_DEBUG(logger, message) { \
         if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
-           logger->forcedLog(::log4cxx::Level::DEBUG, message, LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getDebug(), message, LOG4CXX_LOCATION); }}
 
 /**
 Logs a message to a specified logger with the INFO level.

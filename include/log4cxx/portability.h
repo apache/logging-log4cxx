@@ -18,22 +18,21 @@
 
 
 #if defined(_MSC_VER) && _MSC_VER >= 1200
-typedef __int64 apr_int64_t;
+typedef __int64 log4cxx_int64_t;
 #else
-typedef long long apr_int64_t;
+typedef long long log4cxx_int64_t;
 #endif
 
 #else
 
 #define LOG4CXX_EXPORT
-typedef long long apr_int64_t;
+typedef long long log4cxx_int64_t;
 
 #endif
 
 
-typedef apr_int64_t apr_time_t;
-typedef int apr_status_t;
-struct apr_time_exp_t;
+typedef log4cxx_int64_t log4cxx_time_t;
+typedef int log4cxx_status_t;
 
 
 #endif //_LOG4CXX_PORTABILITY_H

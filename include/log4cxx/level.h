@@ -23,11 +23,17 @@
 #define _LOG4CXX_LEVEL_H
 
 //
-//   ERROR may be defined by windows.h and will conflict
-//      with the defintion of log4cxx::Level::ERROR below. 
+//   ERROR and DEBUG may be defined by Microsoft Platform headers and will conflict
+//      with the defintion of log4cxx::Level::ERROR and log4cxx::Level::DEBUG below. 
 //      log4cxx::level::getError() can be used in place of log4cxx::Level::ERROR.
 #if defined(ERROR)
-#error Preprocessor macro ERROR defined (likely by windows.h).  Include windows.h later or #undef ERROR.
+#define LOGCXX_PLATFORM_ERROR ERROR
+#undef ERROR
+#endif
+
+#if defined(DEBUG)
+#define LOGCXX_PLATFORM_DEBUG DEBUG
+#undef DEBUG
 #endif
 
 
@@ -233,5 +239,14 @@ DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
 #define IMPLEMENT_LOG4CXX_LEVEL(level) \
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
 
+#if defined(LOG4CXX_PLATFORM_ERROR)
+#define ERROR LOGCXX_PLATFORM_ERROR
+#undef LOG4CXX_PLATFORM_ERROR
+#endif
+
+#if defined(LOG4CXX_PLATFORM_DEBUG)
+#define DEBUG LOGCXX_PLATFORM_DEBUG
+#undef LOG4CXX_PLATFORM_DEBUG
+#endif
 
 #endif //_LOG4CXX_LEVEL_H

@@ -43,7 +43,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT ThreadException : public Exception
 		{
 		public:
-			ThreadException(apr_status_t stat) {}
+			ThreadException(log4cxx_status_t stat) {}
 		};
 
 		class LOG4CXX_EXPORT Thread

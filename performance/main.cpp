@@ -82,19 +82,19 @@ void init(const String& configFile, const String& runLengthStr,
 
 double NoDelayLoop(LoggerPtr logger, const String& msg)
 {
-	apr_time_t before = apr_time_now();
+	log4cxx_time_t before = apr_time_now();
     for(int i = 0; i < runLength; i++)
 	{
 		logger->info(msg, __FILE__, __LINE__);
     }
-	apr_time_t after = apr_time_now();
+	log4cxx_time_t after = apr_time_now();
 	return (after - before)/(runLength*1000);
 }
 
 double DelayedLoop(LoggerPtr logger, const String& msg)
 {
 
-    apr_time_t before = apr_time_now();
+    log4cxx_time_t before = apr_time_now();
     int j = 0;
     for(int i = 0; i < runLength; i++)
 	{

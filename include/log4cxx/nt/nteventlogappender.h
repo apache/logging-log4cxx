@@ -82,8 +82,8 @@ namespace log4cxx
 
 			virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 			static HKEY regGetKey(const std::wstring& subkey, unsigned long *disposition);
-			static void regSetString(HKEY hkey, const std::wstring& name, const std::wstring& value);
-			static void regSetDword(HKEY hkey, const std::wstring& name, unsigned long value);
+			static void regSetString(HKEY hkey, const wchar_t* name, const wchar_t* value);
+			static void regSetDword(HKEY hkey, const wchar_t* name, unsigned long value);
 			unsigned short getEventType(const spi::LoggingEventPtr& event);
 			unsigned short getEventCategory(const spi::LoggingEventPtr& event);
 			/*
@@ -92,9 +92,9 @@ namespace log4cxx
 			void addRegistryInfo();
 
 			// Data
-			LogString server;
-			LogString log;
-			LogString source;
+            LogString server;
+            LogString log;
+            LogString source;
 			HANDLE hEventLog;
 			SID * pCurrentUserSID;
 		}; // class NTEventLogAppender

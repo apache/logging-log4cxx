@@ -22,6 +22,8 @@
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
 
+struct apr_time_exp_t;
+
 namespace log4cxx
 {
 	namespace helpers
@@ -38,27 +40,27 @@ namespace log4cxx
 			END_LOG4CXX_CAST_MAP()
 
 			static const TimeZonePtr& getDefault();
-                        static const TimeZonePtr& getGMT();
+            static const TimeZonePtr& getGMT();
 			static const TimeZonePtr getTimeZone(const LogString& ID);
 
-                        const LogString getID() const {
-                          return id;
-                        }
+            const LogString getID() const {
+                   return id;
+            }
 
 
-                        /**
-                         *   Expand an APR time into the human readable
-                         *      components for this timezone.
-                         */
-                        virtual apr_status_t explode(apr_time_exp_t* result,
-                                                     apr_time_t input) const = 0;
+            /**
+             *   Expand an APR time into the human readable
+             *      components for this timezone.
+             */
+            virtual log4cxx_status_t explode(apr_time_exp_t* result,
+                    log4cxx_time_t input) const = 0;
 
 
 		protected:
-                       TimeZone(const LogString& ID);
-                       virtual ~TimeZone();
+            TimeZone(const LogString& ID);
+            virtual ~TimeZone();
 
-                       const LogString id;
+            const LogString id;
 		};
 
 

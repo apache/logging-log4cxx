@@ -142,26 +142,23 @@ int StringHelper::toInt(const std::string& s) {
 }
 
 int StringHelper::toInt(const std::wstring& s) {
-  //  ugly, transcode to ascii call atoi
-  std::string ascii;
-  log4cxx::helpers::Transcoder::encode(s, ascii);
-  return atoi(ascii.c_str());
+  LOG4CXX_DECODE_WCHAR(logstr, s);
+  LOG4CXX_ENCODE_CHAR(charstr, logstr);
+  return atoi(charstr.c_str());
 }
 
-apr_int64_t StringHelper::toInt64(const std::string& s) {
+log4cxx_int64_t StringHelper::toInt64(const std::string& s) {
   return apr_atoi64(s.c_str());
 }
 
-apr_int64_t StringHelper::toInt64(const std::wstring& s) {
-  //  ugly, transcode to ascii call atoi
-  std::string ascii;
-  log4cxx::helpers::Transcoder::encode(s, ascii);
-  return apr_atoi64(ascii.c_str());
+log4cxx_int64_t StringHelper::toInt64(const std::wstring& s) {
+  LOG4CXX_DECODE_WCHAR(logstr, s);
+  LOG4CXX_ENCODE_CHAR(charstr, logstr);
+  return apr_atoi64(charstr.c_str());
 }
 
 LogString StringHelper::toString(int s, apr_pool_t* pool) {
   char* fmt = apr_itoa(pool, s);
-  size_t chars = 0;
   LogString str;
   log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), str);
   return str;

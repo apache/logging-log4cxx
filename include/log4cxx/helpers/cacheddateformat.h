@@ -29,7 +29,7 @@ namespace log4cxx
                CachedDateFormat(DateFormatPtr& baseFormatter);
 
                virtual void format(LogString &s,
-                   apr_time_t date,
+                   log4cxx_time_t date,
                    apr_pool_t* p) const;
                virtual void setTimeZone(const TimeZonePtr& zone);
                virtual void numberFormat(LogString& s,
@@ -48,7 +48,7 @@ namespace log4cxx
            *    -1 indicates no millisecond field, -2 indicates unrecognized
            *    field (likely RelativeTimeDateFormat)
            */
-               static int findMillisecondStart(const apr_time_t time,
+               static int findMillisecondStart(const log4cxx_time_t time,
                                           const LogString& formatted,
                                           const logchar zeroDigit,
                                           const logchar nineDigit,
@@ -58,7 +58,7 @@ namespace log4cxx
                DateFormatPtr formatter;
                mutable int millisecondStart;
                mutable LogString cache;
-               mutable apr_time_t previousTime;
+               mutable log4cxx_time_t previousTime;
                logchar zeroDigit;
                logchar nineDigit;
 			   enum {

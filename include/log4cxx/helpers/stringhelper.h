@@ -42,8 +42,8 @@ namespace log4cxx
 
             static int toInt(const std::string& s);
             static int toInt(const std::wstring& s);
-            static apr_int64_t toInt64(const std::string& s);
-            static apr_int64_t toInt64(const std::wstring& s);
+            static log4cxx_int64_t toInt64(const std::string& s);
+            static log4cxx_int64_t toInt64(const std::wstring& s);
 
             static LogString toString(int s, apr_pool_t* pool);
             static LogString toString(int s);
