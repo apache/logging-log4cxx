@@ -99,8 +99,9 @@ example, if <code>java.home</code> system property is set to
 		static String RENDERER_PREFIX;
 		static String THRESHOLD_PREFIX;
 
-		/* Key for specifying the {@link spi::LoggerFactory
-			LoggerFactory}.  Currently set to "<code>log4j.loggerFactory</code>".  */
+		/** Key for specifying the {@link spi::LoggerFactory
+		LoggerFactory}. Currently set to <code>"log4j.loggerFactory"</code>.
+		*/
 		static String LOGGER_FACTORY_KEY;
 		static String INTERNAL_ROOT_NAME;
 
@@ -108,6 +109,10 @@ example, if <code>java.home</code> system property is set to
 		Used internally to keep track of configured appenders.
 		*/
 		std::map<String, AppenderPtr> registry;
+		
+		/**
+		Used to create new instances of logger
+		*/
 		spi::LoggerFactoryPtr loggerFactory;
 
 	public:
@@ -217,7 +222,7 @@ synonym for INHERITED.
 <p>Similar to the root logger syntax, each <i>appenderName</i>
 (separated by commas) will be attached to the named logger.
 
-<p>See the <a href="../../../../manual.html#additivity">appender
+<p>See the <a href="Introduction.html#additivity">appender
 additivity rule</a> in the user manual for the meaning of the
 <code>additivity</code> flag.
 
@@ -346,7 +351,7 @@ configuration information is stored.
 protected:
 		/**
 		Check the provided <code>Properties</code> object for a
-		#LoggerFactory
+		#loggerFactory
 		entry specified by #LOGGER_FACTORY_KEY.  If such an entry
 		exists, an attempt is made to create an instance using the default
 		constructor.  This instance is used for subsequent Logger creations

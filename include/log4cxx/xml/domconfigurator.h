@@ -178,7 +178,7 @@ files. You can enable log4cxx internal logging by setting the
 			/**
 			Like #configureAndWatch(const String& configFilename, long delay)
 			except that the default delay as defined by 
-			FileWatchdog#DEFAULT_DELAY is used. 
+			helpers::FileWatchdog#DEFAULT_DELAY is used. 
 			@param configFilename A log4j configuration file in XML format.
 			*/
 			static void configureAndWatch(const String& configFilename);
