@@ -3,6 +3,7 @@ noinst_PROGRAMS = \
 		hierarchy_test\
 		level_test\
 		ndc_test\
+		filter_test\
         consoleappender_test\
         fileappender_test\
         htmllayout_test\
@@ -17,6 +18,8 @@ EXTRA_DIST = \
   level_test.sh\
   ndc_test.witness\
   ndc_test.sh\
+  filter_test.witness\
+  filter_test.sh\
   consoleappender_test.sh\
   consoleappender_test.witness\
   fileappender_test.sh\
@@ -40,6 +43,9 @@ level_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 ndc_test_SOURCES = ndc_test.cpp
 ndc_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
+filter_test_SOURCES = filter_test.cpp
+filter_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+
 consoleappender_test_SOURCES = consoleappender_test.cpp
 consoleappender_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
@@ -62,7 +68,8 @@ TESTS = \
 		hierarchy_test.sh\
 		level_test.sh\
 		ndc_test.sh\
-        consoleappender_test.sh\
+ 		filter_test.sh\
+		consoleappender_test.sh\
         fileappender_test.sh\
         htmllayout_test.sh\
         xmllayout_test.sh\
