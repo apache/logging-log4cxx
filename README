@@ -10,7 +10,7 @@ Main features :
 - Configurable logging destinations (appenders)
 - Configurable logging format (layouts)
 - Categorized logging statements through a hierarchy (loggers)
-- Filtering filters (filters)
+- Advanced filtering (filters)
 - Thread safe library
 - UTF-16 Unicode support
 
