@@ -68,7 +68,7 @@ namespace std
 		operator<<(basic_ostream<_CharT, _Traits>& os, const int64_t& ll)
 	{
 		_CharT buff[21];
-		Convert::int64ToString(buff, ll);
+		Convert::int64ToString(buff, 20, ll);
 		os << buff;
 		return os;
 	}
@@ -84,9 +84,7 @@ namespace std
 	#define USES_CONVERSION void * _dst = _alloca(1024);
 #endif
 #else
-#ifdef HAVE_ALLOCA_H
 	#include <alloca.h>
-#endif
 	#define USES_CONVERSION void * _dst = alloca(1024);
 #endif
 
