@@ -61,6 +61,10 @@ void GnomeXMLReader::parseElement(const tstring& parentTagName,
 		tstring value = A2T((char *)xmlNodeListGetString(
 			attribute->doc, attribute->children, 1));
 		
+		//tcout << _T("BuildAttribute parentTagName=") << parentTagName
+		//	<< _T(", tagName=") << tagName
+		//	<< _T(", name=") << name
+		//	<< _T(", value=") << value << std::endl;
 		configurator->BuildAttribute(tagName, name, value);
  		attribute = attribute->next;
 	}
