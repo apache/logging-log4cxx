@@ -26,6 +26,7 @@ namespace log4cxx
     namespace spi
     {
         class LoggingEvent;
+        typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
     }
     
     namespace helpers
@@ -58,7 +59,7 @@ namespace log4cxx
             /**
              Call the <code>doAppend</code> method on all attached appenders.
             */
-            int appendLoopOnAppenders(const spi::LoggingEvent& event);
+            int appendLoopOnAppenders(const spi::LoggingEventPtr& event);
 
             /**
              * Get all previously added appenders as an Enumeration.

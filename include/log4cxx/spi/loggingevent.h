@@ -42,6 +42,10 @@ namespace log4cxx
 	
 	namespace spi
 	{
+		class LoggingEvent;
+		/** smart pointer to a LoggingEvent class */
+		typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
+		
 		/**
 		The internal representation of logging events. When an affirmative
 		decision is made to log then a <code>LoggingEvent</code> instance
@@ -50,10 +54,14 @@ namespace log4cxx
 
 		<p>This class is of concern to those wishing to extend log4cxx.
 		*/
-		class LoggingEvent
+		class LoggingEvent : 
+			public virtual helpers::ObjectImpl
 		{
 		public:
-			LoggingEvent(const LoggingEvent& event);
+			DECLARE_LOG4CXX_OBJECT(LoggingEvent)
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(LoggingEvent)
+			END_LOG4CXX_CAST_MAP()
 			
 			/** For serialization only
 			*/
@@ -75,16 +83,15 @@ namespace log4cxx
 			*/
 			LoggingEvent(const String& fqnOfLoggerClass,
 				const LoggerPtr& logger,
-				const Level& level,	const String& message,
+				const LevelPtr& level,	const String& message,
 				const char* file=0, int line=-1);
 
 			/** Return the #level of this event. */
-			inline const Level& getLevel() const
-				{ return *level; }
+			inline const LevelPtr& getLevel() const
+				{ return level; }
 
 			/**  Return the name of the #logger. */
-			inline const String& getLoggerName() const
-				{ return logger->getName(); }
+			const String& getLoggerName() const;
 
 			/** Return the #message for this logging event. */
 			inline const String& getMessage() const
@@ -126,12 +133,13 @@ namespace log4cxx
 			/** Write this event to a helpers::SocketOutputStream. */
 			void write(helpers::SocketOutputStreamPtr os) const;
 
+			void writeLevel(helpers::SocketOutputStreamPtr& os) const;
+			
 			/** Read this event from a helpers::SocketOutputStream. */
 			void read(helpers::SocketInputStreamPtr is);
 
-			/** Obtain a copy a this event. */
-			LoggingEvent * copy() const;
-
+			void readLevel(helpers::SocketInputStreamPtr& is);
+			
 			/**
 			* Returns the the context corresponding to the <code>key</code> parameter.
 			* If there is a local MDC copy, possibly because we are in a logging
@@ -197,7 +205,7 @@ namespace log4cxx
 			LoggerPtr logger;
 
             /** level of logging event. */
-			const Level * level;
+			LevelPtr level;
 
 			/** The nested diagnostic context (NDC) of logging event. */
 			String ndc;

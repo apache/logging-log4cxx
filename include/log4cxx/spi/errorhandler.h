@@ -48,6 +48,7 @@ namespace log4cxx
 		};
 
 		class LoggingEvent;
+		typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
 
 		class ErrorHandler;
 		typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
@@ -105,7 +106,7 @@ namespace log4cxx
 			to log.
 			*/
 			virtual void error(const String& message, helpers::Exception& e,
-				int errorCode, LoggingEvent& event) = 0;
+				int errorCode, LoggingEventPtr& event) = 0;
 		
 			/**
 			Set the appender for which errors are handled. This method is

@@ -29,6 +29,7 @@ namespace log4cxx
 			TriggeringEventEvaluatorPtr;
 
 		class LoggingEvent;
+    	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
 		/**
 		Implementions of this interface allow certain appenders to decide
@@ -47,7 +48,7 @@ namespace log4cxx
 			/**
 			Is this the triggering event?
 			*/
-			virtual bool isTriggeringEvent(const spi::LoggingEvent& event) = 0;
+			virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event) = 0;
 		};
 	};
 };

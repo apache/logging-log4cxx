@@ -39,7 +39,7 @@ void NullAppender::close()
 {
 }
 
-void NullAppender::doAppend(const LoggingEvent& event)
+void NullAppender::doAppend(const LoggingEventPtr& event)
 {
 	if (layout != 0)
 	{
@@ -49,7 +49,7 @@ void NullAppender::doAppend(const LoggingEvent& event)
 	}
 }
 
-void NullAppender::append(const LoggingEvent& event)
+void NullAppender::append(const LoggingEventPtr& event)
 {
 }
 

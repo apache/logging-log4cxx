@@ -19,14 +19,11 @@
 
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
+#include <vector>
+#include <log4cxx/spi/loggingevent.h>
 
 namespace log4cxx
 {
-	namespace spi
-	{
-		class LoggingEvent;
-	};
-	
 	namespace helpers
 	{
 		class BoundedFIFO;
@@ -38,7 +35,7 @@ namespace log4cxx
 		*/
 		class BoundedFIFO : public virtual Object, public virtual ObjectImpl
 		{
-			spi::LoggingEvent * * buf;
+			std::vector<spi::LoggingEventPtr> buf;
 			int numElements;
 			int first;
 			int next;
@@ -54,18 +51,18 @@ namespace log4cxx
 			Instantiate a new BoundedFIFO with a maximum size passed as argument.
 			*/
 			BoundedFIFO(int maxSize);
-
+			
 			/**
 			Get the first element in the buffer. Returns <code>null</code> if
 			there are no elements in the buffer.  */
-			spi::LoggingEvent * get();
+			spi::LoggingEventPtr get();
 
 			/**
 			Place a {@link spi::LoggingEvent LoggingEvent} in the buffer.
 			If the buffer is full
 			then the event is <b>silently dropped</b>. It is the caller's
 			responsability to make sure that the buffer has free space.  */
-			void put(spi::LoggingEvent * o);
+			void put(const spi::LoggingEventPtr& o);
 
 			/**
 			Get the maximum size of the buffer.

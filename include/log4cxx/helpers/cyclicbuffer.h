@@ -17,13 +17,11 @@
 #ifndef _LOG4CXX_HELPERS_CYCLICBUFFER_H
 #define _LOG4CXX_HELPERS_CYCLICBUFFER_H
 
+#include <log4cxx/spi/loggingevent.h>
+#include <vector>
+
 namespace log4cxx
 {
-	namespace spi
-	{
-		class LoggingEvent;
-	};
-
 	namespace helpers
 	{
 		/**
@@ -34,7 +32,7 @@ namespace log4cxx
 		*/
 		class CyclicBuffer
 		{
-			spi::LoggingEvent * * ea;
+			std::vector<spi::LoggingEventPtr> ea;
 			int first;
 			int last;
 			int numElems;
@@ -55,14 +53,14 @@ namespace log4cxx
 			/**
 			Add an <code>event</code> as the last event in the buffer.
 			*/
-			void add(const spi::LoggingEvent& event);
+			void add(const spi::LoggingEventPtr& event);
 
 			/**
 			Get the <i>i</i>th oldest event currently in the buffer. If
 			<em>i</em> is outside the range 0 to the number of elements
 			currently in the buffer, then <code>null</code> is returned.
 			*/
-			const spi::LoggingEvent * get(int i);
+			spi::LoggingEventPtr get(int i);
 
 			int getMaxSize()
 				{ return maxSize; }
@@ -71,7 +69,7 @@ namespace log4cxx
 			Get the oldest (first) element in the buffer. The oldest element
 			is removed from the buffer.
 			*/
-			const spi::LoggingEvent * get();
+			spi::LoggingEventPtr get();
 
 			/**
 			Get the number of elements in the buffer. This number is

@@ -21,11 +21,6 @@
 
 namespace log4cxx
 {
-	namespace spi
-	{
-		class LoggingEvent;
-	};
-	
 	namespace varia
 	{
 		/**
@@ -54,7 +49,7 @@ namespace log4cxx
 			@param event The LoggingEvent to filter.
 			@return Always returns {@link spi::Filter#DENY DENY}.
 			*/
-			FilterDecision decide(const spi::LoggingEvent& event)
+			FilterDecision decide(const spi::LoggingEventPtr& event)
 				{ return spi::Filter::DENY; }
 		}; // class DenyAllFilter
 	}; // namespace varia

@@ -24,11 +24,6 @@
 
 namespace log4cxx
 {
-	namespace spi
-	{
-		class LoggingEvent;
-	};
-
 	class Layout;
 	typedef helpers::ObjectPtrT<Layout> LayoutPtr;
 
@@ -55,8 +50,8 @@ namespace log4cxx
 			NullAppender();
 			NullAppender(LayoutPtr layout);
 			void close();
-			void doAppend(const spi::LoggingEvent& event);
-			void append(const spi::LoggingEvent& event);
+			void doAppend(const spi::LoggingEventPtr& event);
+			void append(const spi::LoggingEventPtr& event);
 
 			/**
 			This is a bogus appender but it still uses a layout.

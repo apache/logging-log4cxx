@@ -29,6 +29,7 @@ namespace log4cxx
 		typedef helpers::ObjectPtrT<Filter> FilterPtr;
 
 		class LoggingEvent;
+    	typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
 	
         /**
         Users should extend this class to implement customized logging
@@ -116,7 +117,7 @@ namespace log4cxx
 
             @param event The LoggingEvent to decide upon.
             @return The decision of the filter.  */
-            virtual FilterDecision decide(const LoggingEvent& event) = 0;
+            virtual FilterDecision decide(const LoggingEventPtr& event) = 0;
 		};
 	};
 };
