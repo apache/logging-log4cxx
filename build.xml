@@ -243,7 +243,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 <isset property="is-debug"/>
         </condition>
         <property name="executable.dir" value="${build.dir}/release"/>
-        <mkdir dir="${executable.dir}"/>
+
+        <property name="log4cxx.lib.dir" value="${executable.dir}/${lib.type}"/>
+        <mkdir dir="${log4cxx.lib.dir}"/>
 
 
         <property name="projectsOnly" value="false"/>
@@ -466,17 +468,21 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
          </cc>
 </target>
 
+<target name="mkdir-project" if="project.if">
+    <mkdir dir="${project.dir}"/>
+</target>
 
-<target name="build" depends="build-aprutil, configure" description="Build log4cxx shared library">
-    <mkdir dir="${executable.dir}/${lib.type}/log4cxx_obj"/>
+
+<target name="build" depends="build-aprutil, configure, mkdir-project" description="Build log4cxx shared library">
+    <mkdir dir="${log4cxx.lib.dir}/log4cxx_obj"/>
 
     <cc name="${compiler}"
                 exceptions="true"
-                outfile="${executable.dir}/${lib.type}/log4cxx${lib-suffix}"
+                outfile="${log4cxx.lib.dir}/log4cxx${lib-suffix}"
                 subsystem="console"
                 multithreaded="true"
                 outtype="${lib.type}"
-                objdir="${executable.dir}/${lib.type}/log4cxx_obj"
+                objdir="${log4cxx.lib.dir}/log4cxx_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
         <fileset dir="${src.dir}" includes="*.cpp"/>
@@ -510,14 +516,14 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 
 <target name="build-example">
-    <mkdir dir="${executable.dir}/${lib.type}/${example.name}_obj"/>
+    <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>
     <cc name="${compiler}"
                 exceptions="true"
-                outfile="${executable.dir}/${lib.type}/${example.name}"
+                outfile="${log4cxx.lib.dir}/${example.name}"
                 subsystem="console"
                 multithreaded="true"
                 outtype="executable"
-                objdir="${executable.dir}/${lib.type}/${example.name}_obj"
+                objdir="${log4cxx.lib.dir}/${example.name}_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
         <fileset dir="${example.src.dir}" includes="${example.includes}"/>
@@ -530,7 +536,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="API_DECLARE_STATIC" if="iconv-static"/>
 
 
-        <libset libs="log4cxx${lib-suffix}" dir="${executable.dir}/${lib.type}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
 
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
@@ -550,13 +556,13 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="run-example">
-    <exec executable="${executable.dir}/${lib.type}/${example.name}"
-          dir="${executable.dir}/${lib.type}"
+    <exec executable="${log4cxx.lib.dir}/${example.name}"
+          dir="${log4cxx.lib.dir}"
           failonerror="true">
           <env key="DYLD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="Path" value="${env.Path}"/>
     </exec>
 </target>
@@ -608,7 +614,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="build-shortsocketserver" depends="build"
    description="builds a socket server used by unit tests">
 
-    <mkdir dir="${executable.dir}/${lib.type}/shortsocketserver_obj"/>
+    <mkdir dir="${log4cxx.lib.dir}/shortsocketserver_obj"/>
 
     <cc name="${compiler}"
                 exceptions="true"
@@ -616,7 +622,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 subsystem="console"
                 multithreaded="true"
                 outtype="executable"
-                objdir="${executable.dir}/${lib.type}/shortsocketserver_obj"
+                objdir="${log4cxx.lib.dir}/shortsocketserver_obj"
                 debug="${debug}">
         <fileset dir="${tests.dir}/src">
            <include name="shortsocketserver.cpp"/>
@@ -625,7 +631,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </fileset>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${executable.dir}/${lib.type}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
@@ -637,16 +643,16 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 
 <target name="build-unittest" depends="build-shortsocketserver, build-cppunit">
-    <mkdir dir="${executable.dir}/${lib.type}/log4cxx-test_obj"/>
+    <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
 
     <cc name="${compiler}"
                 exceptions="true"
-                outfile="${executable.dir}/${lib.type}/log4cxx-test"
+                outfile="${log4cxx.lib.dir}/log4cxx-test"
                 subsystem="console"
                 multithreaded="true"
                 outputfileproperty="log4cxx-test.exe"
                 outtype="executable"
-                objdir="${executable.dir}/${lib.type}/log4cxx-test_obj"
+                objdir="${log4cxx.lib.dir}/log4cxx-test_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
         <fileset dir="${tests.dir}/src" includes="**/*.cpp **/*.h">
@@ -657,7 +663,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="WIN32" if="is-windows"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${executable.dir}/${lib.type}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
@@ -720,11 +726,11 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
               failonerror="true">
             <arg value="+TestCase1"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="Path"
-                   value="${executable.dir}/${lib.type};${env.Path}"/>
+                   value="${log4cxx.lib.dir};${env.Path}"/>
     </exec>
 
     <!--  test use of log4j.configuration -->
@@ -734,9 +740,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="log4j.configuration"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -746,56 +752,56 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LOG4CXX_CONFIGURATION"
                    value="${defaultInit3.properties}"/>
     </exec>
 
     <!--  test of log4j.properties -->
-    <mkdir dir="${executable.dir}/${lib.type}/output"/>
-    <delete file="${executable.dir}/${lib.type}/log4*.properties"/>
-    <delete file="${executable.dir}/${lib.type}/log4*.xml"/>
-    <copy tofile="${executable.dir}/${lib.type}/log4j.properties"
+    <mkdir dir="${log4cxx.lib.dir}/output"/>
+    <delete file="${log4cxx.lib.dir}/log4*.properties"/>
+    <delete file="${log4cxx.lib.dir}/log4*.xml"/>
+    <copy tofile="${log4cxx.lib.dir}/log4j.properties"
        file="${defaultInit3.properties}" overwrite="true"/>
-    <exec executable="${log4cxx-test.exe}" dir="${executable.dir}/${lib.type}"
+    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <!-- modify log4j.properties so if it has precedence the test fails  -->
-    <replace file="${executable.dir}/${lib.type}/log4j.properties" token="D3" value="D4"/>
-    <copy tofile="${executable.dir}/${lib.type}/log4cxx.properties"
+    <replace file="${log4cxx.lib.dir}/log4j.properties" token="D3" value="D4"/>
+    <copy tofile="${log4cxx.lib.dir}/log4cxx.properties"
        file="${defaultInit3.properties}"/>
-    <exec executable="${log4cxx-test.exe}" dir="${executable.dir}/${lib.type}"
+    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
-    <delete file="${executable.dir}/${lib.type}/log4cxx.properties"/>
-    <delete file="${executable.dir}/${lib.type}/log4j.properties"/>
+    <delete file="${log4cxx.lib.dir}/log4cxx.properties"/>
+    <delete file="${log4cxx.lib.dir}/log4j.properties"/>
 
     <property name="defaultInit.xml"
          location="${tests.dir}/input/xml/defaultInit.xml"/>
-    <copy tofile="${executable.dir}/${lib.type}/log4j.xml"
+    <copy tofile="${log4cxx.lib.dir}/log4j.xml"
        file="${defaultInit.xml}"/>
-    <copy todir="${executable.dir}/${lib.type}" file="${tests.dir}/input/xml/log4j.dtd"/>
-    <exec executable="${log4cxx-test.exe}" dir="${executable.dir}/${lib.type}"
+    <copy todir="${log4cxx.lib.dir}" file="${tests.dir}/input/xml/log4j.dtd"/>
+    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
               failonerror="true">
             <arg value="TestCase4"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
     </exec>
 
 </target>
@@ -806,11 +812,11 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="DYLD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${executable.dir}/${lib.type}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="Path"
-                   value="${executable.dir}/${lib.type};${env.Path}"/>
+                   value="${log4cxx.lib.dir};${env.Path}"/>
     </exec>
 </target>
 
