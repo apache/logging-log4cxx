@@ -151,6 +151,9 @@ void DatagramSocket::receive(DatagramPacketPtr& p)
 #ifdef WIN32
 	if (::recvfrom(fd, (char *)p->getData(), p->getLength(), 0,
 		(sockaddr *)&addr, &addr_len) == -1)
+#elif defined(__hpux)
+	if (::recvfrom(fd, p->getData(), p->getLength(), 0,
+		(sockaddr *)&addr, &addr_len) == -1)
 #else
 	if (::recvfrom(fd, p->getData(), p->getLength(), 0,
 		(sockaddr *)&addr, (socklen_t *)&addr_len) == -1)

@@ -133,8 +133,12 @@ String SyslogAppender::getFacilityString(
 	case LOG_NEWS:      return _T("news");
 	case LOG_UUCP:      return _T("uucp");
 	case LOG_CRON:      return _T("cron");
+#ifdef LOG_AUTHPRIV
 	case LOG_AUTHPRIV:  return _T("authpriv");
+#endif
+#ifdef LOG_FTP
 	case LOG_FTP:       return _T("ftp");
+#endif
 	case LOG_LOCAL0:    return _T("local0");
 	case LOG_LOCAL1:    return _T("local1");
 	case LOG_LOCAL2:    return _T("local2");
@@ -192,14 +196,18 @@ int SyslogAppender::getFacility(
 	{
 		return LOG_CRON;
 	}
+#ifdef LOG_AUTHPRIV
 	else if (s == _T("AUTHPRIV"))
 	{
 		return LOG_AUTHPRIV;
 	}
+#endif
+#ifdef LOG_FTP
 	else if (s == _T("FTP"))
 	{
 		return LOG_FTP;
 	}
+#endif
 	else if (s == _T("LOCAL0"))
 	{
 		return LOG_LOCAL0;

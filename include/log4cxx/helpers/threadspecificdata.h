@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_HELPERS_THREAD_SPECIFIC_DATA_H
 #define _LOG4CXX_HELPERS_THREAD_SPECIFIC_DATA_H
 
+#include <log4cxx/config.h>
+
+#ifdef HAVE_PTHREAD
+#include <pthread.h>
+#endif
+
 namespace log4cxx
 {
 	namespace helpers

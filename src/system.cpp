@@ -73,12 +73,12 @@ void System::setProperty(const String& key, const String& value)
 		throw IllegalArgumentException(_T("key is empty"));
 	}
 	
-#ifdef WIN32
+#ifdef WIN32 || defined(__hpux)
 	String strEnv = key + _T("=") + value;
 	USES_CONVERSION;
 	::putenv((char *)T2A(strEnv.c_str()));
 #else
-	/* wARNING ! 
+	/* WARNING ! 
 	We don't use putenv with glibc, because it doesn't make
 	a copy of the string, but try to keep the pointer
 	cf. man 3 putenv.

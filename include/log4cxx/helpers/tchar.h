@@ -95,6 +95,7 @@ inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
 	#define USES_CONVERSION void * _dst = _alloca(1024);
 #endif
 #else
+	#include <alloca.h>
 	#define USES_CONVERSION void * _dst = alloca(1024);
 #endif
 
