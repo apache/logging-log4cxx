@@ -40,6 +40,36 @@ ODBCAppender::~ODBCAppender()
 	finalize();
 }
 
+void ODBCAppender::setOption(const tstring& option,
+	const tstring& value)
+{
+	if (StringHelper::equalsIgnoreCase(option, _T("buffersize")))
+	{
+		setBufferSize(OptionConverter::toInt(value, 1));
+	}
+	else if (StringHelper::equalsIgnoreCase(option, _T("password")))
+	{
+		setPassword(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, _T("sql")))
+	{
+		setSql(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, _T("url"))
+		|| StringHelper::equalsIgnoreCase(option, _T("dns")))
+	{
+		setURL(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, _T("user")))
+	{
+		setUser(value);
+	}
+	else
+	{
+		AppenderSkeleton::setOption(name, value);
+	}
+}
+
 void ODBCAppender::append(const spi::LoggingEvent& event)
 {
 	buffer.push_back(event);
@@ -185,7 +215,6 @@ void ODBCAppender::close()
 	
 	this->closed = true;
 }
-
 
 void ODBCAppender::flushBuffer()
 {
