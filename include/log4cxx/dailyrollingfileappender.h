@@ -1,8 +1,8 @@
 /***************************************************************************
-                          dateformat.h  -  description
+                          dailyrollingfileappender.h
                              -------------------
-    begin                : dim avr 20 2003
-    copyright            : (C) 2003 by Michael CATANZARITI
+    begin                : 2004/02/09
+    copyright            : (C) 2004 by Michael CATANZARITI
     email                : mcatan@free.fr
  ***************************************************************************/
 
@@ -17,8 +17,62 @@
 #ifndef _LOG4CXX_DAILY_ROLLING_FILE_APPENDER_H
 #define _LOG4CXX_DAILY_ROLLING_FILE_APPENDER_H
 
+#include <log4cxx/fileappender.h>
+
 namespace log4cxx
 {
+	namespace helpers
+	{
+		class DateFormat;
+	};
+
+	/**
+	*  RollingCalendar is a helper class to DailyRollingFileAppender.
+	*  Given a periodicity type and the current time, it computes the
+	*  start of the next interval.  
+	* */
+	class RollingCalendar
+	{
+	public:
+		// The code assumes that the following constants are in a increasing
+		// sequence.
+		typedef enum PeriodicityType
+		{
+			TOP_OF_TROUBLE	=-1,
+			TOP_OF_MINUTE	= 0,
+			TOP_OF_HOUR		= 1,
+			HALF_DAY		= 2,
+			TOP_OF_DAY		= 3,
+			TOP_OF_WEEK		= 4,
+			TOP_OF_MONTH	= 5,
+		};
+		
+		RollingCalendar();
+
+		inline void setType(PeriodicityType type)
+			{ this->type = type; }
+
+		/**
+		This method computes the roll over period by looping over the
+		periods, starting with the shortest, and stopping when the r0 is
+		different from from r1, where r0 is the epoch formatted according
+		the datePattern (supplied by the user) and r1 is the
+		epoch+nextMillis(i) formatted according to datePattern. All date
+		formatting is done in GMT and not local format because the test
+		logic is based on comparisons relative to 1970-01-01 00:00:00
+		GMT (the epoch).
+		*/
+		PeriodicityType computeTriggeringPeriod(const String& datePattern);
+		void printPeriodicity();
+		int64_t getNextCheckMillis(int64_t now);
+		
+	protected:
+		PeriodicityType type;
+	};
+	
+	class DailyRollingFileAppender;
+	typedef helpers::ObjectPtrT<DailyRollingFileAppender> DailyRollingFileAppenderPtr;
+
 	/**
 	DailyRollingFileAppender extends {@link FileAppender} so that the
 	underlying file is rolled over at a user chosen frequency.
@@ -119,163 +173,85 @@ namespace log4cxx
 	**/
 	class LOG4CXX_EXPORT DailyRollingFileAppender : public FileAppender
 	{
-// The gmtTimeZone is used only in computeCheckPeriod() method.
-static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
+	public:
+		DECLARE_LOG4CXX_OBJECT(DailyRollingFileAppender)
+		BEGIN_LOG4CXX_CAST_MAP()
+			LOG4CXX_CAST_ENTRY(DailyRollingFileAppender)
+			LOG4CXX_CAST_ENTRY_CHAIN(FileAppender)
+		END_LOG4CXX_CAST_MAP()
 
-/**
-	The date pattern. By default, the pattern is set to
-	"'.'yyyy-MM-dd" meaning daily rollover.
-*/
-private String datePattern = "'.'yyyy-MM-dd";
+		/**
+		The default constructor does nothing. */
+		DailyRollingFileAppender();
 
-/**
-	The log file will be renamed to the value of the
-	scheduledFilename variable when the next interval is entered. For
-	example, if the rollover period is one hour, the log file will be
-	renamed to the value of "scheduledFilename" at the beginning of
-	the next hour.
+		/**
+		Instantiate a <code>DailyRollingFileAppender</code> and open the
+		file designated by <code>filename</code>. The opened filename will
+		become the ouput destination for this appender.
+		*/
+		DailyRollingFileAppender(LayoutPtr& layout, 
+			const String& filename, const String& datePattern);
 
-	The precise time when a rollover occurs depends on logging
-	activity.
-*/
-private String scheduledFilename;
+		~DailyRollingFileAppender();
 
-/**
-	The next time we estimate a rollover should occur. */
-private long nextCheck = System.currentTimeMillis() - 1;
-Date now = new Date();
-SimpleDateFormat sdf;
-RollingCalendar rc = new RollingCalendar();
+		/**
+		The <b>DatePattern</b> takes a string in the same format as
+		expected by {@link SimpleDateFormat}. This options determines the
+		rollover schedule.
+		*/
+		inline void setDatePattern(const String& pattern)
+			{ datePattern = pattern; }
 
-/**
-	The default constructor does nothing. */
-public DailyRollingFileAppender() {
-}
+		/** Returns the value of the <b>DatePattern</b> option. */
+		inline const String& getDatePattern() const
+			{ return datePattern; }
 
-/**
-	Instantiate a <code>DailyRollingFileAppender</code> and open the
-	file designated by <code>filename</code>. The opened filename will
-	become the ouput destination for this appender.
+		void activateOptions();
+		void setOption(const String& option,
+			const String& value);
 
-	*/
-public DailyRollingFileAppender(
-	Layout layout, String filename, String datePattern)
-	throws IOException {
-	super(layout, filename, true);
-	this.datePattern = datePattern;
-	activateOptions();
-}
+	protected:
+		/**
+		Rollover the current file to a new file.
+		*/
+		void rollOver();
 
-/**
-	The <b>DatePattern</b> takes a string in the same format as
-	expected by {@link SimpleDateFormat}. This options determines the
-	rollover schedule.
-*/
-public void setDatePattern(String pattern) {
-	datePattern = pattern;
-}
 
-/** Returns the value of the <b>DatePattern</b> option. */
-public String getDatePattern() {
-	return datePattern;
-}
+		/**
+		* This method differentiates DailyRollingFileAppender from its
+		* super class.
+		*
+		* <p>Before actually logging, this method will check whether it is
+		* time to do a rollover. If it is, it will schedule the next
+		* rollover time and then rollover.
+		* */
+		virtual void subAppend(const spi::LoggingEventPtr& event);
 
-public void activateOptions() {
-	super.activateOptions();
+		/**
+		The date pattern. By default, the pattern is set to
+		"'.'yyyy-MM-dd" meaning daily rollover.
+		*/
+		String datePattern;
 
-	if ((datePattern != null) && (fileName != null)) {
-	now.setTime(System.currentTimeMillis());
+		/**
+		The log file will be renamed to the value of the
+		scheduledFilename variable when the next interval is entered. For
+		example, if the rollover period is one hour, the log file will be
+		renamed to the value of "scheduledFilename" at the beginning of
+		the next hour.
 
-	//sdf = new SimpleDateFormat(datePattern);
-	int type = rc.computeTriggeringPeriod(datePattern);
-	rc.printPeriodicity();
-	rc.setType(type);
+		The precise time when a rollover occurs depends on logging
+		activity.
+		*/
+		String scheduledFilename;
 
-	File file = new File(fileName);
-	scheduledFilename = fileName + sdf.format(new Date(file.lastModified()));
-	} else {
-	LogLog.error(
-		"Either File or DatePattern options are not set for appender [" + name
-		+ "].");
-	}
-}
-
-// This method computes the roll over period by looping over the
-
-/**
-	Rollover the current file to a new file.
-*/
-void rollOver() throws IOException {
-	/* Compute filename, but only if datePattern is specified */
-	if (datePattern == null) {
-	errorHandler.error("Missing DatePattern option in rollOver().");
-
-	return;
-	}
-
-	String datedFilename = fileName + sdf.format(now);
-
-	// It is too early to roll over because we are still within the
-	// bounds of the current interval. Rollover will occur once the
-	// next interval is reached.
-	if (scheduledFilename.equals(datedFilename)) {
-	return;
-	}
-
-	// close current file, and rename it to datedFilename
-	this.closeFile();
-
-	File target = new File(scheduledFilename);
-
-	if (target.exists()) {
-	target.delete();
-	}
-
-	File file = new File(fileName);
-	boolean result = file.renameTo(target);
-
-	if (result) {
-	LogLog.debug(fileName + " -> " + scheduledFilename);
-	} else {
-	LogLog.error(
-		"Failed to rename [" + fileName + "] to [" + scheduledFilename + "].");
-	}
-
-	try {
-	// This will also close the file. This is OK since multiple
-	// close operations are safe.
-	this.setFile(fileName, false, this.bufferedIO, this.bufferSize);
-	} catch (IOException e) {
-	errorHandler.error("setFile(" + fileName + ", false) call failed.");
-	}
-
-	scheduledFilename = datedFilename;
-}
-
-/**
-* This method differentiates DailyRollingFileAppender from its
-* super class.
-*
-* <p>Before actually logging, this method will check whether it is
-* time to do a rollover. If it is, it will schedule the next
-* rollover time and then rollover.
-* */
-protected void subAppend(LoggingEvent event) {
-	long n = System.currentTimeMillis();
-
-	if (n >= nextCheck) {
-	now.setTime(n);
-	nextCheck = rc.getNextCheckMillis(now);
-
-	try {
-		rollOver();
-	} catch (IOException ioe) {
-		LogLog.error("rollOver() failed.", ioe);
-	}
-	}
-
-	super.subAppend(event);
-}
-}
+		/**
+		The next time we estimate a rollover should occur. */
+		int64_t nextCheck;
+		int64_t now;
+		helpers::DateFormat * df;
+		RollingCalendar rc;
+	};
+};
 
 #endif //_LOG4CXX_DAILY_ROLLING_FILE_APPENDER_H

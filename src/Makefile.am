@@ -14,6 +14,7 @@ liblog4cxx_la_SOURCES = \
 	consoleappender.cpp \
 	criticalsection.cpp \
 	cyclicbuffer.cpp \
+	dailyrollingfileappender.cpp \
 	datagrampacket.cpp \
 	datagramsocket.cpp \
 	datelayout.cpp \
