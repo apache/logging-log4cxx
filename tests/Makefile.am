@@ -1,4 +1,5 @@
 SUBDIRS = input src witness
+EXTRA_DIST = log4j.dtd
 
 if TESTS
 
@@ -83,6 +84,7 @@ BoundedFIFO: build cleanOutputDir
 	src/testsuite BoundedFIFOTestCase
 
 CyclicBuffer: build cleanOutputDir
+	src/testsuite CyclicBufferTestCase
 
 PatternParser: build cleanOutputDir
 
