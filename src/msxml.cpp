@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #define _WIN32_DCOM
 #include <log4cxx/portability.h>
 
@@ -150,7 +150,7 @@ void MsXMLDOMDocument::load(const String& fileName)
 			}
 
 			USES_CONVERSION;
-			LOGLOG_ERROR(_T("Could not open [") << fileName << _T("] : ") 
+			LOGLOG_ERROR(_T("Could not open [") << fileName << _T("] : ")
 				<< W2T((BSTR)reason) << _T("(line ") << line << _T(", column ")
 				<< linepos << _T(")"));
 		}
@@ -254,7 +254,7 @@ String MsXMLDOMElement::getAttribute(const String& name)
 	}
 }
 
-// MsXMLDOMNodeList	
+// MsXMLDOMNodeList
 MsXMLDOMNodeList::MsXMLDOMNodeList(MSXML::IXMLDOMNodeListPtr nodeList)
 : nodeList(nodeList)
 {

@@ -1,0 +1,318 @@
+<?xml version="1.0"?>
+<!--
+ Copyright 2004 The Apache Software Foundation.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+
+<!--
+
+This file builds log4cxx using Apache Ant (http://ant.apache.org)
+and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
+
+
+-->
+<project name="log4cxx" default="test-all">
+
+<property name="debug" value="true"/>
+<property name="compiler" value="gcc"/>
+<property name="src.dir" location="src"/>
+<property name="include.dir" location="include"/>
+<property name="build.dir" location="build"/>
+<property name="examples.dir" location="examples"/>
+<property name="tests.dir" location="tests"/>
+<property name="cppunit.dir" location="/home/curta/cppunit-1.10.2"/>
+<property name="cppunit.include.dir" location="/home/curta/cppunit-1.10.2/include"/>
+<property name="cppunit.lib.dir" location="/home/curta/cppunit-1.10.2/build"/>
+<property name="cppunit.bin.dir" location="/home/curta/cppunit-1.10.2/build"/>
+
+<property name="version" value="0.9.7"/>
+<taskdef resource="cpptasks.tasks"/>
+<typedef resource="cpptasks.types"/>
+
+<target name="usage">
+	<echo>
+	</echo>
+</target>
+
+<target name="os-detect">
+	<condition property="is-unix" value="true">
+	     <os family="unix"/>
+	</condition>
+	<condition property="is-windows" value="true">
+		<os family="windows"/>
+	</condition>
+</target>
+
+<target name="win-init" depends="os-detect" if="is-windows">
+	<property name="compiler" value="msvc"/>
+	<condition property="lib-suffix" value="d">
+	    <istrue value="${debug}"/>
+	</condition>
+	<property name="lib-suffix" value=""/>
+</target>
+
+<target name="unix-init" depends="os-detect" if="is-unix">
+	<property name="compiler" value="gcc"/>
+        <condition property="is-gcc" value="true">
+            <or>
+               <equals arg1="${compiler}" arg2="gcc"/>
+               <equals arg1="${compiler}" arg2="g++"/>
+            </or>
+        </condition>
+
+	<property name="lib-suffix" value="-${version}"/>
+</target>
+
+<target name="init" depends="win-init, unix-init">
+	<mkdir dir="${build.dir}"/>
+	<condition property="obj.dir" value="${build.dir}/debug">
+		<istrue value="${debug}"/>
+	</condition>
+	<property name="obj.dir" value="${build.dir}/release"/>
+	<mkdir dir="${obj.dir}"/>
+</target>
+
+<target name="clean">
+	<delete dir="${build.dir}"/>
+</target>
+
+<target name="config-check">
+	<condition property="config-available" value="true">
+		<available file="${include.dir}/log4cxx/config_auto.h"/>
+	</condition>
+</target>
+
+
+<target name="unix-prep" depends="init, config-check"
+	if="is-unix"
+	unless="config-available">
+   <exec executable="sh">
+       <arg value="./autogen.sh"/>
+   </exec>
+   <exec executable="sh">
+       <arg value="./configure"/>
+   </exec>
+</target>
+
+
+
+<target name="win-prep" depends="init, config-check"
+	if="is-windows"
+	unless="config-available">
+	<echo file="${include.dir}/log4cxx/config.h">#include "config_msvc.h"
+</echo>
+</target>
+
+<target name="prep" depends="unix-prep, win-prep"/>
+
+<target name="build-log4cxx" depends="prep" description="Build log4cxx shared library">
+    <cc name="${compiler}"
+		exceptions="true"
+		outfile="${build.dir}/log4cxx${lib-suffix}"
+		subsystem="console"
+		multithreaded="true"
+		outtype="shared"
+		objdir="${obj.dir}"
+		debug="${debug}">
+        <fileset dir="${src.dir}" includes="*.cpp"/>
+        <includepath path="${include.dir}"/>
+    	<includepath path="/usr/include/libxml2" if="is-unix"/>
+        <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
+        <defineset define="LOG4CXX"/>
+        <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <libset libs="xml2" if="is-unix"/>
+        <syslibset libs="pthread" if="is-unix"/>
+        <project outfile="cbx/log4cxx" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/log4cxx" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/log4cxx" type="xcode" if="gen-xcode"/>
+    </cc>
+</target>
+
+
+<target name="build-example" description="Build example template task">
+    <cc name="${compiler}"
+		exceptions="true"
+		outfile="${build.dir}/${example.name}"
+		subsystem="console"
+		multithreaded="true"
+		outtype="executable"
+		objdir="${obj.dir}"
+		debug="${debug}">
+        <fileset dir="${example.src.dir}" includes="${example.name}.cpp"/>
+        <includepath path="${include.dir}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <project outfile="cbx/${example.name}" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/${example.name}" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/${example.name}" type="xcode" if="gen-xcode"/>
+    </cc>
+</target>
+
+<target name="build-delayedloop" depends="build-log4cxx">
+    <antcall target="build-example">
+       <param name="example.src.dir" value="${examples.dir}"/>
+       <param name="example.name" value="delayedloop"/>
+    </antcall>
+</target>
+
+<target name="build-trivial" depends="build-log4cxx">
+    <antcall target="build-example">
+       <param name="example.src.dir" value="${examples.dir}"/>
+       <param name="example.name" value="trivial"/>
+    </antcall>
+</target>
+
+<target name="build-stream" depends="build-log4cxx">
+    <antcall target="build-example">
+       <param name="example.src.dir" value="${examples.dir}"/>
+       <param name="example.name" value="stream"/>
+    </antcall>
+</target>
+
+<target name="build-examples" depends="build-delayedloop, build-trivial, build-stream"/>
+
+<target name="build-simplesocketserver" depends="build-log4cxx">
+    <antcall target="build-example">
+       <param name="example.src.dir" value="simplesocketserver"/>
+       <param name="example.name" value="simplesocketserver"/>
+    </antcall>
+</target>
+
+<target name="build-performance" depends="build-log4cxx">
+    <cc name="${compiler}"
+		exceptions="true"
+		outfile="${build.dir}/performance"
+		subsystem="console"
+		multithreaded="true"
+		outtype="executable"
+		objdir="${obj.dir}"
+		debug="${debug}">
+        <fileset dir="performance" includes="**/*.cpp"/>
+        <includepath path="${include.dir}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <project outfile="cbx/performance" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/performance" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/performance" type="xcode" if="gen-xcode"/>
+    </cc>
+</target>
+
+
+<target name="build-unittest" depends="build-log4cxx">
+    <cc name="${compiler}"
+		exceptions="true"
+		outfile="${build.dir}/log4cxx-test"
+		subsystem="console"
+		multithreaded="true"
+                outputfileproperty="log4cxx-test.exe"
+		outtype="executable"
+		objdir="${obj.dir}"
+		debug="${debug}">
+        <fileset dir="${tests.dir}/src" includes="**/*.cpp">
+             <exclude name="shortsocketserver.cpp"/>
+             <exclude name="defaultinit/testcase3.cpp"/>
+        </fileset>
+        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${include.dir}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <libset libs="boost_regex-gcc" if="is-gcc"/>
+        <libset libs="cppunit" dir="${cppunit.lib.dir}"/>
+        <project outfile="cbx/log4cxx-test" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/log4cxx-test" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/log4cxx-test" type="xcode" if="gen-xcode"/>
+    </cc>
+
+    <!--  testcase3 checks default configuration so must be run in isolation -->
+    <cc name="${compiler}"
+		exceptions="true"
+		outfile="${build.dir}/log4cxx-testcase3"
+		subsystem="console"
+		multithreaded="true"
+                outputfileproperty="log4cxx-testcase3.exe"
+		outtype="executable"
+		objdir="${obj.dir}"
+		debug="${debug}">
+        <fileset dir="${tests.dir}/src">
+             <include name="main.cpp"/>
+             <include name="defaultinit/testcase3.cpp"/>
+        </fileset>
+        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${include.dir}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <libset libs="boost_regex-gcc" if="is-gcc"/>
+        <libset libs="cppunit" dir="${cppunit.lib.dir}"/>
+        <project outfile="cbx/log4cxx-testcase3" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/log4cxx-testcase3" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/log4cxx-testcase3" type="xcode" if="gen-xcode"/>
+    </cc>
+
+
+    <cc name="${compiler}"
+		exceptions="true"
+		outfile="${tests.dir}/src/shortsocketserver"
+		subsystem="console"
+		multithreaded="true"
+                outputfileproperty="shortsocketserver.exe"
+		outtype="executable"
+		objdir="${obj.dir}"
+		debug="${debug}">
+        <fileset dir="${tests.dir}/src">
+           <include name="shortsocketserver.cpp"/>
+           <include name="xml/xlevel.cpp"/>
+        </fileset>
+        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${include.dir}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <libset libs="boost_regex-gcc" if="is-gcc"/>
+        <libset libs="cppunit" dir="${cppunit.lib.dir}"/>
+        <project outfile="cbx/tests" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/tests" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/tests" type="xcode" if="gen-xcode"/>
+    </cc>
+
+</target>
+
+<target name="build-all" depends="build-examples, build-unittest,
+     build-simplesocketserver, build-performance"/>
+
+<target name="run-unittest" depends="build-unittest">
+    <property environment="env"/>
+    <mkdir dir="${tests.dir}/output"/>
+    <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
+	      failonerror="true">
+            <env key="LD_LIBRARY_PATH"
+                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+    </exec>
+
+    <!--  testcase3 checks default configuration so must be run in isolation -->
+    <property name="defaultInit3.properties"
+         location="${tests.dir}/input/defaultInit3.properties"/>
+    <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
+	      failonerror="true">
+            <env key="LD_LIBRARY_PATH"
+                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+            <env key="log4j.configuration"
+                   value="${defaultInit3.properties}"/>
+    </exec>
+</target>
+
+
+<target name="test-all" depends="build-log4cxx, run-unittest"/>
+
+</project>
