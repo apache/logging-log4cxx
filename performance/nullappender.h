@@ -58,7 +58,7 @@ namespace log4cxx
 			*/
 			bool requiresLayout() const;
 		}; // NullAppender
-	}; // namespace performance
+	}  // namespace performance
 }; // namespace log4cxx
 
 #endif //_LOG4CXX_PERFORMANCE_NULL_APPENDER_H
