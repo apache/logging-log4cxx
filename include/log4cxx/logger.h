@@ -565,7 +565,7 @@ Logs a message to a specified logger with the DEBUG level.
 	if (logger->isDebugEnabled()) {\
 	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->forcedLog(Level::DEBUG, oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(::log4cxx::Level::DEBUG, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the INFO level.
@@ -577,7 +577,7 @@ Logs a message to a specified logger with the INFO level.
 	if (logger->isInfoEnabled()) {\
 	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->forcedLog(Level::INFO, oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(::log4cxx::Level::INFO, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the WARN level.
@@ -589,7 +589,7 @@ Logs a message to a specified logger with the WARN level.
 	if (logger->isWarnEnabled()) {\
 	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->forcedLog(Level::WARN, oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(::log4cxx::Level::WARN, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the ERROR level.
@@ -601,7 +601,7 @@ Logs a message to a specified logger with the ERROR level.
 	if (logger->isErrorEnabled()) {\
 	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->forcedLog(Level::ERROR, oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(::log4cxx::Level::ERROR, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the FATAL level.
@@ -613,7 +613,7 @@ Logs a message to a specified logger with the FATAL level.
 	if (logger->isFatalEnabled()) {\
 	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->forcedLog(Level::FATAL, oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(::log4cxx::Level::FATAL, oss.str(), __FILE__, __LINE__); }}
 	
 /**
 Logs a localized message with no parameter.

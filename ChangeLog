@@ -11,6 +11,8 @@ CVS
 * Fixed segmentation fault in PropertyConfigurator.
 * Port to Solaris.
 * Fixed MutexException thrown while destroying RollingFileAppender.
+* Logging macros can be used without explicity declaring the use of log4cxx
+  namespace.
 
 Version 0.9.6 (2004-04-11)
 ==========================
