@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+
+<document>
+    <properties>
+        <author email="mcatan at apache dot org">Michael CATANZARITI</author>
+        <title>News</title>
+    </properties>
+    <meta name="keywords" content="log4cxx performance"/>
+    <body>
+        <h1>Performance of logging</h1>
+            <p>
+			Experimental results are listed below in units of <b>micro-seconds
+			</b>. Measurements were done on a AMD Athlon 2200+ running Linux
+			Mandrake 10.0.
+            </p>
+ 			<p>
+			<table border="1">
+			<caption align="top">Version 0.9.6</caption>
+				<tr>
+					<th>Layout</th>
+					<th>NullAppender</th>
+					<th>FileAppender</th>
+					<th>FileAppender (no flush)</th>
+					<th>AsyncAppender (no flush)</th>
+				</tr>
+				<tr>
+					<td>SimpleLayout</td>
+					<td>4</td>
+					<td>12</td>
+					<td>11</td>
+					<td>24</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%p - %m%n"</td>
+					<td>5</td>
+					<td>12</td>
+					<td>5</td>
+					<td>15</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%-5p - %m%n"</td>
+					<td>6</td>
+					<td>NA</td>
+					<td>NA</td>
+					<td>NA</td>
+				</tr>
+				<tr>
+					<td>TTCCLayout/RELATIVE</td>
+					<td>7</td>
+					<td>17</td>
+					<td>17</td>
+					<td>29</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%r [%t] %-5p %c{2} %x - %m%n"</td>
+					<td>10</td>
+					<td>NA</td>
+					<td>NA</td>
+					<td>NA</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%r [%t] %-5p %.10c %x - %m%n"</td>
+					<td>11</td>
+					<td>NA</td>
+					<td>NA</td>
+					<td>NA</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%r [%t] %-5p %.20c %x - %m%n"</td>
+					<td>11</td>
+					<td>NA</td>
+					<td>NA</td>
+					<td>NA</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%r [%t] %-5p %c - %m%n"</td>
+					<td>9</td>
+					<td>18</td>
+					<td>10</td>
+					<td>22</td>
+				</tr>
+				<tr>
+					<td>TTCCLayout/ISO8601</td>
+					<td>12</td>
+					<td>23</td>
+					<td>23</td>
+					<td>36</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%d{ISO8601} [%t] %-5p %c %x - %m%n"</td>
+					<td>14</td>
+					<td>26</td>
+					<td>16</td>
+					<td>29</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%d{yyyy-MM-dd HH:mm:ss,SSS} [%t] %-5p %c %x - %m%n"</td>
+					<td>14</td>
+					<td>26</td>
+					<td>16</td>
+					<td>28</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%l - %m%n"</td>
+					<td>6</td>
+					<td>14</td>
+					<td>6</td>
+					<td>13</td>
+				</tr>
+				<tr>
+					<td>PatternLayout "%F.%L - %m%n"</td>
+					<td>6</td>
+					<td>NA</td>
+					<td>NA</td>
+					<td>NA</td>
+				</tr>
+			</table>
+			</p>
+    </body>
+</document>
