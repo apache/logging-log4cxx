@@ -13,6 +13,8 @@ liblog4cxx_la_SOURCES = \
 	consoleappender.cpp \
 	criticalsection.cpp \
 	cyclicbuffer.cpp \
+	datagrampacket.cpp \
+	datagramsocket.cpp \
 	datelayout.cpp \
 	dateformat.cpp \
 	defaultcategoryfactory.cpp \
@@ -62,6 +64,8 @@ liblog4cxx_la_SOURCES = \
 	socketoutputstream.cpp \
 	stringmatchfilter.cpp \
 	stringtokenizer.cpp \
+	syslogappender.cpp \
+	syslogwriter.cpp \
 	system.cpp \
 	telnetappender.cpp \
 	transform.cpp \
