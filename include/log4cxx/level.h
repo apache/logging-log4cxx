@@ -22,7 +22,19 @@
 #ifndef _LOG4CXX_LEVEL_H
 #define _LOG4CXX_LEVEL_H
 
+// Windows specific :
+// wingdi.h defines ERROR
+#ifdef ERROR
+#define OLD_ERROR ERROR
 #undef ERROR
+#endif
+
+// Windows specific :
+// atldef.h defines DEBUG
+#ifdef DEBUG
+#define OLD_DEBUG DEBUG
+#undef DEBUG
+#endif
 
 namespace log4cxx
 {
@@ -49,10 +61,10 @@ namespace log4cxx
 		public:
 			LevelClass() : helpers::Class(_T("Level")) {}
 
-			virtual const LevelPtr& toLevel(const String& sArg)
+			virtual const LevelPtr& toLevel(const String& sArg) const
 			{ return Level::toLevel(sArg); }
 			
-			virtual const LevelPtr& toLevel(int val)
+			virtual const LevelPtr& toLevel(int val) const
 			{ return Level::toLevel(val); }
 		};
 
@@ -103,7 +115,6 @@ namespace log4cxx
             ALL_INT = INT_MIN
         };
 
-#if !defined(WIN32) || defined(LOG4CXX)
 		/**
 		The <code>ALL</code> level designates all the levels
 		*/
@@ -141,15 +152,6 @@ namespace log4cxx
 		The <code>OFF</code> level designates not set level
 		*/
 		static const LevelPtr OFF;
-#endif
-
-		static const LevelPtr& getAllLevel();
-		static const LevelPtr& getFatalLevel();
-		static const LevelPtr& getErrorLevel();
-		static const LevelPtr& getWarnLevel();
-		static const LevelPtr& getInfoLevel();
-		static const LevelPtr& getDebugLevel();
-		static const LevelPtr& getOffLevel();
 
 		/**
 		Two levels are equal if their level fields are equal.
@@ -202,16 +204,15 @@ public:\
 {\
 public:\
 	Class##level() : Level::LevelClass(_T(#level)) {}\
-	virtual const LevelPtr& toLevel(const String& sArg)\
+	virtual const LevelPtr& toLevel(const String& sArg) const\
 	{ return level::toLevel(sArg); }\
-	virtual const LevelPtr& toLevel(const int val)\
+	virtual const LevelPtr& toLevel(int val) const\
 	{ return level::toLevel(val); }\
 };\
 DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
 	
 #define IMPLEMENT_LOG4CXX_LEVEL(level) \
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
-
 
 
 #endif //_LOG4CXX_LEVEL_H
