@@ -21,6 +21,7 @@
 #include <iostream>
 #include <sstream>
 #include <cwchar>
+#include <algorithm> // min & max
 
 class Convert
 {
@@ -180,75 +181,70 @@ inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
 	#define tcscmp strcmp
 #endif // UNICODE
 
-#define _MinInc  512
-#define _MaxInc 100 * 1024
+#define _MinInc  512U
+#define _MaxInc 100U * 1024U
 
 namespace log4cxx
 {
-	class stringbuf : public std::basic_streambuf<TCHAR>
+	class stringbuf : public std::basic_streambuf<TCHAR, std::char_traits<TCHAR> >
 	{
 	public:
-		typedef TCHAR _E;
-		typedef std::char_traits<_E> _Tr;
-		typedef std::allocator<_E> _A;
+		typedef TCHAR char_type;
+		typedef std::char_traits<char_type> traits_type;
+		typedef std::allocator<char_type> allocator_type;
+		typedef traits_type::int_type int_type;
 
 		~stringbuf()
 		{
-			_E *_B = pbase();
-			if (_B)
+			char_type * b = pbase();
+			if (b)
 			{
-				_Al.deallocate(_B, epptr() - _B);
+				al.deallocate(b, epptr() - b);
 			}
 		}
 
 		virtual int_type overflow(
-		int_type _C = std::char_traits<_E>::eof())
+		int_type c = traits_type::eof())
 		{
 			using namespace std;
 
-			if (_Tr::eq_int_type(_Tr::eof(), _C))
+			if (traits_type::eq_int_type(traits_type::eof(), c))
 			{
-				return _Tr::not_eof(_C);
+				return traits_type::not_eof(c);
 			}
 
-			_E *_B = pbase();
-			if (_B == 0)
+			char_type *b = pbase();
+			if (b == 0)
 			{
-				_E *_P = _Al.allocate(_MinInc, 0);
-				setp(_P, _P + _MinInc);
+				char_type * p = al.allocate(_MinInc, 0);
+				setp(p, p + _MinInc);
 			}
 			else
 			{
-				size_t _Os = pptr() - _B; // taille allouée
-				size_t _Is =
-					max(min((_Os * 2), _MaxInc), _MinInc)
+				size_t os = pptr() - b; // taille allouée
+				size_t is =
+					std::max(std::min((os * 2), _MaxInc), _MinInc)
 					+ 1; // incrément d'allocation
-				_E *_P = _Al.allocate(_Os + _Is, 0);
-				_Tr::copy(_P, _B, _Os);
-				_Al.deallocate(_B, epptr() - _B);
-				setp(_P, _P + _Os + _Is);
-				pbump(_Os);
+				char_type *p = al.allocate(os + is, 0);
+				traits_type::copy(p, b, os);
+				al.deallocate(b, epptr() - b);
+				setp(p, p + os + is);
+				pbump(os);
 
 			}
 
-			*pptr() = _C;
+			*pptr() = c;
 			pbump(1);
 
-			return _Tr::not_eof(_C);
+			return traits_type::not_eof(c);
 		}
 
-		std::basic_string<_E> str() const
+		std::basic_string<char_type> str() const
 		{
-			return std::basic_string<_E>(pbase(), pptr() - pbase());
+			return std::basic_string<char_type>(pbase(), pptr() - pbase());
 		}
 
-		inline int min(int a, int b) const
-			{ return a < b ? a : b; }
-
-		inline int max(int a, int b) const
-			{ return a > b ? a : b; }
-
-		void str(const std::basic_string<_E>& s)
+		void str(const std::basic_string<char_type>& s)
 		{
 			setp(pbase(), epptr());
 		}
@@ -282,13 +278,13 @@ namespace log4cxx
 		}
 
 	protected:
-		_A _Al;
+		allocator_type al;
 	};
 
-	class StringBuffer : public std::ostream<TCHAR>
+	class StringBuffer : public std::basic_ostream<TCHAR>
 	{
 	public:
-		StringBuffer() : std::ostream<TCHAR>(&buffer) {}
+		StringBuffer() : std::basic_ostream<TCHAR>(&buffer) {}
 		inline std::basic_string<TCHAR> str() const
 			{ return buffer.str(); }
 		inline void str(const std::basic_string<TCHAR>& s)
@@ -299,7 +295,6 @@ namespace log4cxx
 	};
 
 	typedef std::basic_string<TCHAR> String;
-	//typedef std::basic_ostringstream<TCHAR> StringBuffer;
 	typedef std::basic_ostream<TCHAR> ostream;
 	typedef std::basic_istream<TCHAR> istream;
 };
