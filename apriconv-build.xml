@@ -94,12 +94,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="arch" value="unix"/>
     <property name="project.type" value="cbuilderx"/>
     <property name="apriconv.mod.suffix" value=".so"/>
-    <!--   
-        can't use Windows path names if building cygwin   
+    <!--
+        can't use Windows path names if building cygwin
         assuming typical location.
     -->
     <basename property="with-apr-base" file="${apr.dir}"/>
-    <condition property="with-apr" value="../${with-apr-base}">
+    <condition property="with-apr" value="../${with-apr-base}/apr--config">
         <os family="windows"/>
     </condition>
 </target>
@@ -142,7 +142,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <istrue value="${project.if.value}"/>
         </condition>
 
-        <property name="with-apr" value="${apr.dir}"/>
+        <property name="with-apr" value="${apr.dir}/apr--config"/>
 
 </target>
 
@@ -190,11 +190,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outtype="${apriconv.lib.type}"
         objdir="${apriconv.lib.dir}/apriconv_obj"
         debug="${debug}">
-        <fileset dir="${apriconv.dir}" includes="lib/*.c lib/*.h"/>
+        <fileset dir="${apriconv.dir}" includes="lib/*.c lib/*.h lib/*.cpp"/>
         <fileset dir="${include.dir}" includes="*.h"/>
         <includepath path="${apriconv.dir}/lib"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apriconv.dir}/lib"/>
+        <includepath path="${apriconv.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${apr.include.dir}/private"/>
         <defineset define="API_DECLARE_EXPORT" if="is-apriconv-shared"/>

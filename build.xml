@@ -411,10 +411,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </ant>
 
     <!--  configure can't handle a Windows path   -->
-    <condition property="with-apr" value="../apr-${apr.version}">
+    <condition property="with-apr" value="../apr-${apr.version}/apr--config">
          <isset property="is-cygwin"/>
     </condition>
-    <property name="with-apr" location="${apr.dir}"/>
+    <property name="with-apr" location="${apr.dir}/apr--config"/>
 </target>
 
 <target name="get-apriconv-src" unless="apriconv-src-available">
@@ -430,6 +430,13 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <param name="module" value="apr-iconv"/>
         <param name="module.version" value="${apriconv.version}"/>
     </antcall>
+    <patch patchfile="${base.dir}/apr-iconv-${apriconv.version}.patch"
+           dir="${lib.dir}/apr-iconv-${apriconv.version}"
+           strip="0"/>
+    <delete file="${lib.dir}/apr-iconv-${apriconv.version}/lib/iconv_module.c"/>
+    <copy todir="${lib.dir}/apr-iconv-${apriconv.version}/lib">
+        <fileset dir="${src.dir}" includes="iconv_module.cpp"/>
+    </copy>
 </target>
 
 <target name="build-apriconv" depends="build-apr" unless="apriconv-available">
@@ -618,7 +625,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 objdir="${log4cxx.lib.dir}/log4cxx_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
-        <fileset dir="${src.dir}" includes="*.cpp"/>
+        <fileset dir="${src.dir}" includes="*.cpp" excludes="**/iconv_module.cpp"/>
         <fileset dir="${include.dir}" includes="**/*.h"/>
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
@@ -890,7 +897,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 objdir="${executable.dir}/static/log4cxx-standalone-test_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
-        <fileset dir="${src.dir}" includes="*.cpp"/>
+        <fileset dir="${src.dir}" includes="*.cpp" excludes="**/iconv_module.cpp"/>
         <fileset dir="${include.dir}" includes="**/*.h"/>
         <fileset dir="${tests.dir}/src" includes="**/*.cpp **/*.h">
              <exclude name="shortsocketserver.cpp"/>

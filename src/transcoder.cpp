@@ -273,13 +273,10 @@ namespace log4cxx {
              apr_size_t outBytesLeft = BUFSIZE;
              apr_status_t stat = apr_xlate_conv_buffer(decoder,
                  in, &inBytesLeft, buf, &outBytesLeft);
-             if (stat != APR_INCOMPLETE && stat != APR_SUCCESS) {
-               throw TranscoderException(stat);
-             }
              dst.append(buf, BUFSIZE - outBytesLeft);
-             if (stat == APR_INCOMPLETE) {
+             if (stat != APR_SUCCESS) {
                dst.append(1, '?');
-               return;
+               inBytesLeft--;
              }
              in = end - inBytesLeft;
           }
