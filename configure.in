@@ -381,6 +381,7 @@ include/log4cxx/varia/Makefile
 include/log4cxx/xml/Makefile
 include/log4cxx/config/Makefile
 include/log4cxx/db/Makefile
+include/log4cxx/rolling/Makefile
 simplesocketserver/Makefile
 tests/Makefile
 tests/input/Makefile
@@ -397,6 +398,7 @@ tests/src/util/Makefile
 tests/src/xml/Makefile
 tests/src/varia/Makefile
 tests/witness/Makefile
+tests/rolling/Makefile
 performance/Makefile
 performance/xml/Makefile
 examples/Makefile

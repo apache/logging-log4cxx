@@ -7,8 +7,8 @@ noinst_LIBRARIES = librolling.a
 INCLUDES = -I$(top_srcdir)/include
 
 librolling_a_SOURCES = \
-	timebasedrollingtest.cpp \
-	
+        timebasedrollingtest.cpp
+
 check: librolling.a
 
 endif
