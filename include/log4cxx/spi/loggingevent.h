@@ -52,10 +52,9 @@ namespace log4cxx
 		*/
 		class LoggingEvent
 		{
-		protected:
+		public:
 			LoggingEvent(const LoggingEvent& event);
 			
-		public:
 			/** For serialization only
 			*/
 			LoggingEvent();
