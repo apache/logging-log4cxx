@@ -108,25 +108,36 @@ logger as a parameter.Some of the basic methods in the Logger class are listed
 below.
 
 @code
-#include <log4cxx/logger.h>
-
-class Logger
-{
-public:
-    // Creation & retrieval methods:
-    static LoggerPtr getRootLogger();
-    static LoggerPtr getLogger(const String& name);
-
-    // printing methods:
-    void debug(const String& message);
-    void info(const String& message);
-    void warn(const String& message);
-    void error(const String& message);
-    void fatal(const String& message);
-
-    // generic printing method:
-    void log(const LevelPtr& l, const String& message);
-};
+ namespace log4cxx {
+    typedef std::string String;
+ 
+    class Logger {
+    public:
+        // Creation & retrieval methods:
+        static LoggerPtr getRootLogger();
+        static LoggerPtr getLogger(const String& name);
+ 
+        // printing methods:
+        void debug(const String& message, const char* file = 0, int line = -1);
+        void info(const String& message, const char* file = 0, int line = -1);
+        void warn(const String& message, const char* file = 0, int line = -1);
+        void error(const String& message, const char* file = 0, int line = -1);
+        void fatal(const String& message, const char* file = 0, int line = -1);
+ 
+        // generic printing method:
+        void log(const LevelPtr& l, const String& message,
+            const char* file = 0, int line = -1);
+    };
+ }
+ 
+ //
+ //    Use these instead of calling Logger methods directly.
+ //
+ #define LOG4CXX_DEBUG(logger, msg) ...
+ #define LOG4CXX_INFO(logger, msg) ...
+ #define LOG4CXX_WARN(logger, msg) ...
+ #define LOG4CXX_ERROR(logger, msg) ...
+ #define LOG4CXX_FATAL(logger, msg) ...
 @endcode
 
 Loggers may be assigned levels. The set of possible levels, that is {@link 
@@ -257,29 +268,29 @@ Here is an example of this rule.
 
 @code
 // get a logger instance named "com.foo"
-LoggerPtr logger = Logger::getLogger(_T("com.foo"));
+log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("com.foo"));
 
 // Now set its level. Normally you do not need to set the
 // level of a logger programmatically. This is usually done
 // in configuration files.
-logger->setLevel(Level::INFO);
+logger->setLevel(log4cxx::Level::INFO);
 
-LoggerPtr barlogger = Logger::getLogger(_T("com.foo.Bar"));
+log4cxx::LoggerPtr barlogger(Logger::getLogger(("com.foo.Bar"));
 
 // This request is enabled, because WARN >= INFO.
-logger->warn(_T("Low fuel level."));
+LOG4CXX_WARN(logger, "Low fuel level.");
 
 // This request is disabled, because DEBUG < INFO.
-logger->debug(_T("Starting search for nearest gas station."));
+LOG4CXX_DEBUG(logger-, "Starting search for nearest gas station.");
 
 // The logger instance barlogger, named "com.foo.Bar",
 // will inherit its level from the logger named
 // "com.foo" Thus, the following request is enabled
 // because INFO >= INFO.
-barlogger->info(_T("Located nearest gas station."));
+LOG4CXX_INFO(barlogger, "Located nearest gas station.");
 
 // This request is disabled, because DEBUG < INFO.
-barlogger->debug(_T("Exiting gas station search"));
+LOG4CXX_DEBUG(barlogger, "Exiting gas station search");
 @endcode
 
 Calling the <code>getLogger</code> method with the same name will
@@ -461,7 +472,7 @@ using namespace log4cxx::helpers;
 
 // Define a static logger variable so that it references the
 // Logger instance named "MyApp".
-LoggerPtr logger = Logger::getLogger(_T("MyApp"));
+LoggerPtr logger(Logger::getLogger("MyApp"));
 
 int main(int argc, char **argv)
 {
@@ -471,10 +482,10 @@ int main(int argc, char **argv)
 		// Set up a simple configuration that logs on the console.
 		BasicConfigurator::configure();
 
-		logger->info(_T("Entering application."));
+		LOG4CXX_INFO(logger, "Entering application.");
 		Bar bar;
 		bar.doIt();
-		logger->info(_T("Exiting application."));
+		LOG4CXX_INFO(logger, "Exiting application.");
 	}
 	catch(Exception&)
 	{
@@ -521,11 +532,11 @@ namespace com
 using namespace com::foo;
 using namespace log4cxx;
 
-LoggerPtr Bar::logger = Logger::getLogger(_T("com.foo.bar"));
+LoggerPtr Bar::logger(Logger::getLogger("com.foo.bar"));
 
 void Bar::doIt()
 {
-	logger->debug(_T("Did it again!"));
+	LOG4CXX_DEBUG(logger, "Did it again!");
 }
 @endcode
 
@@ -579,7 +590,7 @@ using namespace log4cxx::helpers;
 
 // Define a static logger variable so that it references the
 // Logger instance named "MyApp".
-LoggerPtr logger = Logger::getLogger(_T("MyApp"));
+LoggerPtr logger(Logger::getLogger("MyApp"));
 
 int main(int argc, char **argv)
 {
@@ -589,19 +600,17 @@ int main(int argc, char **argv)
 		if (argc > 1)
 		{
 			// BasicConfigurator replaced with PropertyConfigurator.
-			USES_CONVERSION;
-			String propertyFileName = A2W(argv[1]);
-			PropertyConfigurator::configure(propertyFileName);
+			PropertyConfigurator::configure(argv[1]);
 		}
 		else
 		{
 			BasicConfigurator::configure();
 		}
 
-		logger->info(_T("Entering application."));
+		LOG4CXX_INFO(logger, "Entering application.");
 		Bar bar
 		bar.doIt();
-		logger->info(_T("Exiting application."));
+		LOG4CXX_INFO(logger, "Exiting application.");
 	}
 	catch(Exception&)
 	{
@@ -827,15 +836,14 @@ The user should be aware of the following performance issues.
 When logging is turned
 off entirely or just for a {@link log4cxx::Hierarchy::setThreshold
  set of levels}, the cost of a log request consists of a method
-invocation plus an integer comparison.  On a 233 MHz Pentium II
-machine this cost is typically in the 5 to 50 nanosecond range.
+invocation plus an integer comparison.
 @n @n
 However, The method invocation involves the "hidden" cost of
 parameter construction.
 @n @n
 For example, for some logger <code>logger</code>, writing,
 @code 
-logger->debug("The user named [" + strName + "] is logged");
+logger->debug("The user named [" + strName + "] is logged", __FILE__, __LINE__);
 @endcode
 incurs the cost of constructing the message parameter, i.e.
 concatenating intermediate strings,
@@ -849,13 +857,14 @@ To avoid the parameter construction cost write:
 if(logger->isDebugEnabled()
 {
 	logger->forcedLog(Level::DEBUG, 
-		"The user named [" + strName + "] is logged");
+		"The user named [" + strName + "] is logged", __FILE__, __LINE__);
 }
 @endcode 
-or in a simpler way:
+or better yet:
 @code 
 LOG4CXX_DEBUG(logger, "The user named [" + strName + "] is logged");
 @endcode
+
 @n
 Certain users resort to preprocessing or compile-time techniques to compile out
 all log statements. This leads to perfect performance efficiency with respect
@@ -891,8 +900,7 @@ times slower than when logging is turned off entirely.
 This is the cost of formatting the log output and sending it to
 its target destination. Here again, a serious effort was made to
 make layouts (formatters) perform as quickly as possible. The same
-is true for appenders. The typical cost of actually logging is
-about 100 to 300 microseconds.
+is true for appenders.
 
 Although log4cxx has many features, its first design goal was speed.
 Some log4cxx components have been rewritten many times to improve
