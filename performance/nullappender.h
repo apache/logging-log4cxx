@@ -39,7 +39,7 @@ namespace log4cxx
 		class NullAppender : public AppenderSkeleton
 		{
 		public:
-			StringBuffer sbuf;
+			LogString sbuf;
 
 			DECLARE_LOG4CXX_OBJECT(NullAppender)
 			BEGIN_LOG4CXX_CAST_MAP()
@@ -50,8 +50,8 @@ namespace log4cxx
 			NullAppender();
 			NullAppender(const LayoutPtr& layout);
 			void close();
-			void doAppend(const spi::LoggingEventPtr& event);
-			void append(const spi::LoggingEventPtr& event);
+			void doAppend(const spi::LoggingEventPtr& event, apr_pool_t* p);
+			void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 
 			/**
 			This is a bogus appender but it still uses a layout.

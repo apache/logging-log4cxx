@@ -80,7 +80,7 @@ namespace log4cxx
 			typedef void SID;
 			typedef void* HANDLE;
 
-			virtual void append(const spi::LoggingEventPtr& event);
+			virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 			static HKEY regGetKey(const std::wstring& subkey, unsigned long *disposition);
 			static void regSetString(HKEY hkey, const std::wstring& name, const std::wstring& value);
 			static void regSetDword(HKEY hkey, const std::wstring& name, unsigned long value);

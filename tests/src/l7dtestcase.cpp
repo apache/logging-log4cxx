@@ -22,12 +22,12 @@
 #include <log4cxx/helpers/propertyresourcebundle.h>
 
 #include "util/compare.h"
-#include <apr_pools.h>
-#include <apr_strings.h>
 
 #include <vector>
+#include <sstream>
 
 #define _T(str) L ## str
+typedef std::basic_ostringstream<wchar_t> StringBuffer;
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -68,9 +68,8 @@ public:
 	{
 		PropertyConfigurator::configure(LOG4CXX_FILE("input/l7d1.properties"));
 
-                apr_pool_t* pool;
-                apr_status_t rv = apr_pool_create(&pool, NULL);
-
+        log4cxx::helpers::Pool pool;
+ 
 		for (int i = 0; i < 3; i++)
 		{
 			root->setResourceBundle(bundles[i]);
@@ -80,20 +79,19 @@ public:
 			LOG4CXX_L7DLOG(root, Level::WARN, _T("hello_world"));
 
 
-                        const char* sbuf = apr_itoa(pool, i+1);
-			LOG4CXX_L7DLOG2(root, Level::DEBUG, _T("msg1"), sbuf,
+            StringBuffer os;
+            os << i + 1;
+			LOG4CXX_L7DLOG2(root, Level::DEBUG, _T("msg1"), os.str(),
 				 _T("log4j"));
-			LOG4CXX_L7DLOG2(root, Level::ERROR, _T("bogusMsg"), sbuf,
+			LOG4CXX_L7DLOG2(root, Level::getError(), _T("bogusMsg"), os.str(),
 				 _T("log4j"));
-			LOG4CXX_L7DLOG2(root, Level::ERROR, _T("msg1"), sbuf,
+			LOG4CXX_L7DLOG2(root, Level::getError(), _T("msg1"), os.str(),
 				 _T("log4j"));
 			LOG4CXX_L7DLOG(root, Level::INFO, _T("bogus2"));
 		}
 
-                apr_pool_destroy(pool);
-
-		CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),
-                        LOG4CXX_FILE("witness/l7d.1")));
+ 		CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),
+        LOG4CXX_FILE("witness/l7d.1")));
 	}
 
 };

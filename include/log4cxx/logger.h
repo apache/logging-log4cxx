@@ -196,15 +196,15 @@ namespace log4cxx
                 */
         template<class STR>
         void error(const STR& msg, const log4cxx::spi::location::LocationInfo& location) {
-          if (isEnabledFor(log4cxx::Level::ERROR)) {
-             forcedLog(log4cxx::Level::ERROR, msg, location);
+          if (isEnabledFor(log4cxx::Level::getError())) {
+             forcedLog(log4cxx::Level::getError(), msg, location);
           }
         }
 
         template<class STR>
         void error(const STR& msg) {
-          if (isEnabledFor(log4cxx::Level::ERROR)) {
-             forcedLog(log4cxx::Level::ERROR, msg);
+          if (isEnabledFor(log4cxx::Level::getError())) {
+             forcedLog(log4cxx::Level::getError(), msg);
           }
         }
 
@@ -697,7 +697,7 @@ Logs a message to a specified logger with the ERROR level.
 */
 #define LOG4CXX_ERROR(logger, message) { \
         if (logger->isErrorEnabled()) {\
-             logger->forcedLog(::log4cxx::Level::ERROR, message, LOG4CXX_LOCATION); }}
+             logger->forcedLog(::log4cxx::Level::getError(), message, LOG4CXX_LOCATION); }}
 
 /**
 Logs a error if the condition is not true.
@@ -708,7 +708,7 @@ Logs a error if the condition is not true.
 */
 #define LOG4CXX_ASSERT(logger, condition, message) { \
         if (!condition && logger->isErrorEnabled()) {\
-             logger->forcedLog(::log4cxx::Level::ERROR, message, LOG4CXX_LOCATION); }}
+             logger->forcedLog(::log4cxx::Level::getError(), message, LOG4CXX_LOCATION); }}
 
 
 /**

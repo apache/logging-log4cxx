@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/tchar.h>
 #include <log4cxx/ndc.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>

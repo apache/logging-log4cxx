@@ -37,16 +37,15 @@ void NullAppender::close()
 {
 }
 
-void NullAppender::doAppend(const LoggingEventPtr& event)
+void NullAppender::doAppend(const LoggingEventPtr& event, apr_pool_t* p)
 {
 	if (layout != 0)
 	{
-		sbuf.seekp(0);
-		layout->format(sbuf, event);
+		layout->format(sbuf, event, p);
 	}
 }
 
-void NullAppender::append(const LoggingEventPtr& event)
+void NullAppender::append(const LoggingEventPtr& event, apr_pool_t* p)
 {
 }
 

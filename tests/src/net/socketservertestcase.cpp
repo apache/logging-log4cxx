@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-#if defined(WIN32) || defined(_WIN32)
-	#include <windows.h>
-#endif
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -47,6 +44,9 @@
 #define INT64_C(value)  value ## LL
 #endif
 
+#if defined(WIN32) || defined(_WIN32)
+	#include <windows.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

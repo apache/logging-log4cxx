@@ -197,7 +197,7 @@ namespace log4cxx
                 WriterAppender(const WriterAppender&);
                 WriterAppender& operator=(const WriterAppender&);
                 apr_iconv_t transcoder;
-                static const logchar SUBSTITUTION_CHAR = LOG4CXX_STR('?');
+                enum { SUBSTITUTION_CHAR = LOG4CXX_STR('?') };
                 enum { BUFSIZE = 1024 };
 	};
 }  //namespace log4cxx

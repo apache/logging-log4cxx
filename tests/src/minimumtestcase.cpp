@@ -125,13 +125,13 @@ public:
 		// remembering their level values. In general, the category names
 		// have no bearing to level values.
 		LoggerPtr ERR = Logger::getLogger(_T("ERR"));
-		ERR->setLevel(Level::ERROR);
+		ERR->setLevel(Level::getError());
 
 		LoggerPtr INF = Logger::getLogger(_T("INF"));
 		INF->setLevel(Level::INFO);
 
 		LoggerPtr INF_ERR = Logger::getLogger(_T("INF.ERR"));
-		INF_ERR->setLevel(Level::ERROR);
+		INF_ERR->setLevel(Level::getError());
 
 		LoggerPtr DEB = Logger::getLogger(_T("DEB"));
 		DEB->setLevel(Level::DEBUG);

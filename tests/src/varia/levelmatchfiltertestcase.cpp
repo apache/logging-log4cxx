@@ -85,7 +85,7 @@ public:
 		root->setLevel(Level::DEBUG);
 
 		LevelPtr levelArray[] =
-			{ Level::DEBUG, Level::INFO, Level::WARN, Level::ERROR, Level::FATAL };
+			{ Level::DEBUG, Level::INFO, Level::WARN, Level::getError(), Level::FATAL };
 
 		int length = sizeof(levelArray)/sizeof(levelArray[0]);
 
@@ -123,7 +123,7 @@ public:
 		root->setLevel(Level::DEBUG);
 
 		LevelPtr levelArray[] =
-			{ Level::DEBUG, Level::INFO, Level::WARN, Level::ERROR, Level::FATAL };
+			{ Level::DEBUG, Level::INFO, Level::WARN, Level::getError(), Level::FATAL };
 
 		int length = sizeof(levelArray)/sizeof(levelArray[0]);
 

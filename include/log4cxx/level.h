@@ -22,20 +22,6 @@
 #ifndef _LOG4CXX_LEVEL_H
 #define _LOG4CXX_LEVEL_H
 
-// Windows specific :
-// wingdi.h defines ERROR
-#ifdef ERROR
-#define OLD_ERROR ERROR
-#undef ERROR
-#endif
-
-// Windows specific :
-// atldef.h defines DEBUG
-#ifdef DEBUG
-#define OLD_DEBUG DEBUG
-#undef DEBUG
-#endif
-
 
 namespace log4cxx
 {
