@@ -56,7 +56,16 @@ bool StringHelper::equalsIgnoreCase(const String& s1, const String& s2)
 
 bool StringHelper::endsWith(const String& s, const String& suffix)
 {
-	return (s.length() - s.rfind(suffix)) == suffix.length();
+	/*If suffix is not in s, false must be returned */ 
+    int place = s.rfind(suffix);
+    if (place == -1)
+	{
+        return false;
+    }
+    else
+	{
+        return (s.length() - place) == suffix.length();
+    }
 }
 
 String StringHelper::format(const String& pattern, va_list argList)
