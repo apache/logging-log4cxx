@@ -14,6 +14,8 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
+#include <log4cxx/spi/loggerfactory.h>
+#include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <algorithm>
 #include <ctype.h>
@@ -27,9 +29,13 @@
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/system.h>
+#include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/xml/domconfigurator.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
+using namespace log4cxx::xml;
 
 tstring OptionConverter::DELIM_START = _T("${");
 TCHAR OptionConverter::DELIM_STOP  = _T('}');
@@ -43,6 +49,61 @@ namespace {
         void operator()(TCHAR& c){c = toupper(c);}
     };
 }
+
+tstring OptionConverter::convertSpecialChars(const tstring& s)
+{
+	TCHAR c;
+    int len = s.length();
+    tostringstream sbuf;
+	
+	tstring::const_iterator i = s.begin();
+    while(i != s.end())
+	{
+		c = *i++;
+		if (c == _T('\\'))
+		{
+			c =  *i++;
+
+			switch (c)
+			{
+			case _T('n'):
+				c = _T('\n');
+				break;
+
+			case _T('r'):
+				c = _T('\r');
+				break;
+
+			case _T('t'):
+				c = _T('\t');
+				break;
+
+			case _T('f'):
+				c = _T('\f');
+				break;
+
+			case _T('\b'):
+				c = _T('\b');
+				break;
+
+			case _T('\"'):
+				c = _T('\"');
+				break;
+
+			case _T('\''):
+				c = _T('\'');
+				break;
+
+			case _T('\\'):
+				c = _T('\\');
+				break;
+			}
+		}
+		sbuf.put(c);
+    }
+    return sbuf.str();
+}
+
 
 bool OptionConverter::toBoolean(const tstring& value, bool dEfault)
 {
@@ -263,4 +324,37 @@ ObjectPtr OptionConverter::instantiateByClassName(const tstring& className,
 		}
 	}
 	return defaultValue;
+}
+
+void OptionConverter::selectAndConfigure(const tstring& configFileName,
+	 const tstring& _clazz, spi::LoggerRepositoryPtr hierarchy)
+{
+	ConfiguratorPtr configurator;
+	tstring clazz = _clazz;
+	
+	if(clazz.empty() && !configFileName.empty() 
+		&& StringHelper::endsWith(configFileName, _T(".xml")))
+	{
+		clazz = DOMConfigurator::getStaticClass().toString();
+	}
+	
+	if(!clazz.empty())
+	{
+		LogLog::debug(_T("Preferred configurator class: ") + clazz);
+		configurator = instantiateByClassName(clazz,
+			Configurator::getStaticClass(),
+			0);
+		if(configurator == 0)
+		{
+			LogLog::error(_T("Could not instantiate configurator [")+
+				clazz+_T("]."));
+			return;
+		}
+	} 
+	else
+	{
+		configurator = new PropertyConfigurator();
+	}
+	
+	configurator->doConfigure(configFileName, hierarchy);
 }
