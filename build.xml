@@ -70,7 +70,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="cppunit.dir" location="/cppunit-1.10.2"/>
     <property name="cppunit.include.dir" location="${cppunit.dir}/include"/>
     <property name="cppunit.lib.dir" location="${cppunit.dir}/lib"/>
-    <property name="cppunit.bin.dir" location="${cppunit.dir}/lib"/>
     <condition property="cppunit.lib.name" value="cppunitd">
         <istrue value="${debug}"/>
     </condition>
@@ -100,9 +99,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
         <property name="lib-suffix" value="-${version}"/>
 
-    <property name="cppunit.include.dir" location="/usr/local/include/cppunit"/>
-    <property name="cppunit.lib.dir" location="/usr/local/lib"/>
-    <property name="cppunit.bin.dir" location="/usr/local/lib"/>
+    <condition property="cppunit.include.dir" value="${cppunit.dir}/include">
+		<isset property="cppunit.dir"/>
+	</condition>
+	<condition property="cppunit.lib.dir" value="${cppunit.dir}/src/cppunit">
+          <isset property="cppunit.dir"/>
+    </condition>
     <property name="cppunit.lib.name" value="cppunit"/>
 
     <property name="expat.lib.name" value="expat"/>
@@ -349,7 +351,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
            <include name="shortsocketserver.cpp"/>
            <include name="xml/xlevel.cpp"/>
         </fileset>
-        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
@@ -364,7 +366,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
         <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
         <project outfile="cbx/shortsocketserver" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/shortsocketserver" type="msvc6" if="gen-dsw"/>
         <project outfile="xcode/shortsocketserver" type="xcode" if="gen-xcode"/>
@@ -389,7 +392,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
              <exclude name="defaultinit/testcase3.cpp"/>
              <exclude name="defaultinit/testcase4.cpp"/>
         </fileset>
-        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
                 <defineset define="APR_DECLARE_STATIC"/>
@@ -405,7 +408,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
         <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
                 <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
         <project outfile="cbx/log4cxx-test" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/log4cxx-test" type="msvc6" if="gen-dsw"/>
@@ -426,7 +430,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
              <include name="main.cpp"/>
              <include name="defaultinit/testcase3.cpp"/>
         </fileset>
-        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
                 <defineset define="APR_DECLARE_STATIC"/>
@@ -443,7 +447,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
         <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
                 <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
         <project outfile="cbx/log4cxx-testcase3" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/log4cxx-testcase3" type="msvc6" if="gen-dsw"/>
@@ -464,7 +469,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
              <include name="main.cpp"/>
              <include name="defaultinit/testcase4.cpp"/>
         </fileset>
-        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
                 <defineset define="APR_DECLARE_STATIC"/>
@@ -481,7 +486,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
         <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
                 <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
         <project outfile="cbx/log4cxx-testcase4" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/log4cxx-testcase4" type="msvc6" if="gen-dsw"/>
@@ -509,7 +515,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
              <exclude name="shortsocketserver.cpp"/>
              <exclude name="defaultinit/testcase3.cpp"/>
         </fileset>
-        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
                 <defineset define="APR_DECLARE_STATIC"/>
@@ -522,7 +528,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}" unless="cppunit.lib.dir"/>
         <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
         <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
 
@@ -549,9 +556,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="Path"
                    value="${build.dir};${env.Path}"/>
     </exec>
@@ -562,9 +569,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="log4j.configuration"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -573,9 +580,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LOG4CXX_CONFIGURATION"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -589,9 +596,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
               failonerror="true">
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <!-- modify log4j.properties so if it has precedence the test fails  -->
@@ -601,9 +608,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
               failonerror="true">
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <delete file="${build.dir}/log4cxx.properties"/>
@@ -617,9 +624,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase4.exe}" dir="${build.dir}"
               failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
     </exec>
 
 </target>
@@ -630,9 +637,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="Path"
                    value="${build.dir};${env.Path}"/>
     </exec>
