@@ -1,2 +1,3 @@
-SUBDIRS = console_test
+EXTRA_DIST = \
+	propertyconfigurator_test.dsp
 
