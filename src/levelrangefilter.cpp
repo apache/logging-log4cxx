@@ -52,7 +52,8 @@ else if (StringHelper::equalsIgnoreCase(option, LEVEL_MAX_OPTION))
 	}
 }
 
-int LevelRangeFilter::decide(const log4cxx::spi::LoggingEvent& event)
+Filter::FilterDecision LevelRangeFilter::decide(
+	const log4cxx::spi::LoggingEvent& event)
 {
 	if (!event.getLevel().isGreaterOrEqual(*levelMin))
 	{

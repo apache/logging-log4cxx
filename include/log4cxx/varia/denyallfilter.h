@@ -35,6 +35,9 @@ namespace log4cxx
 		filtering behaviour to a "deny all unless instructed otherwise"
 		behaviour.
 		*/
+		class DenyAllFilter;
+		typedef helpers::ObjectPtrT<DenyAllFilter> DenyAllFilterPtr;
+
 		class DenyAllFilter : public spi::Filter
 		{
 		public:
@@ -51,7 +54,7 @@ namespace log4cxx
 			@param event The LoggingEvent to filter.
 			@return Always returns {@link spi::Filter#DENY DENY}.
 			*/
-			int decide(const spi::LoggingEvent& event)
+			FilterDecision decide(const spi::LoggingEvent& event)
 				{ return spi::Filter::DENY; }
 		}; // class DenyAllFilter
 	}; // namespace varia

@@ -57,7 +57,8 @@ const tstring& LevelMatchFilter::getLevelToMatch() const
 	return levelToMatch->toString();
 }
   
-int LevelMatchFilter::decide(const log4cxx::spi::LoggingEvent& event)
+Filter::FilterDecision LevelMatchFilter::decide(
+	const log4cxx::spi::LoggingEvent& event)
 {
 	bool matchOccured = false;
 	if(this->levelToMatch->equals(event.getLevel()))

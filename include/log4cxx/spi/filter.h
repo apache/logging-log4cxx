@@ -116,7 +116,7 @@ namespace log4cxx
 
             @param event The LoggingEvent to decide upon.
             @return The decision of the filter.  */
-            virtual int decide(const LoggingEvent& event) = 0;
+            virtual FilterDecision decide(const LoggingEvent& event) = 0;
 		};
 	};
 };

@@ -45,7 +45,8 @@ void StringMatchFilter::setOption(const tstring& option,
 	}
 }
 
-int StringMatchFilter::decide(const log4cxx::spi::LoggingEvent& event)
+Filter::FilterDecision StringMatchFilter::decide(
+	const log4cxx::spi::LoggingEvent& event)
 {
 	const tstring& msg = event.getRenderedMessage();
 

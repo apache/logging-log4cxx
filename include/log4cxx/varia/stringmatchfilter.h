@@ -48,6 +48,10 @@ namespace log4cxx
 		href="../xml/doc-files/test10.xml">test10.xml</a> for examples of
 		seeting up a <code>StringMatchFilter</code>.
 		*/
+
+		class StringMatchFilter;
+		typedef helpers::ObjectPtrT<StringMatchFilter> StringMatchFilterPtr;
+
 		class StringMatchFilter : public spi::Filter
 		{
 		private:
@@ -89,7 +93,7 @@ namespace log4cxx
 			Returns {@link spi::Filter#NEUTRAL NEUTRAL} 
 			is there is no string match.
 			*/
-			int decide(const spi::LoggingEvent& event);
+			FilterDecision decide(const spi::LoggingEvent& event);
 }; // class StringMatchFilter
 	}; // namespace varia
 }; // namespace log4cxx
