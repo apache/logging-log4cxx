@@ -159,7 +159,7 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	{
 		hierarchy->setThreshold(OptionConverter::toLevel(thresholdStr, Level::ALL));
 		LogLog::debug(_T("Hierarchy threshold set to [")
-			+ hierarchy->getThreshold().toString() + _T("]."));
+			+ hierarchy->getThreshold()->toString() + _T("]."));
 	}
 
 	configureRootCategory(properties, hierarchy);
@@ -314,7 +314,7 @@ void PropertyConfigurator::parseCategory(
 		}
 
 		LogLog::debug(_T("Category ") + loggerName +
-			_T(" set to ") + logger->getLevel().toString());
+			_T(" set to ") + logger->getLevel()->toString());
 	}
 
 	// Begin by removing all existing appenders.
