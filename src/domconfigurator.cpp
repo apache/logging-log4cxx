@@ -71,10 +71,16 @@ public:
 
 AppenderPtr AppenderMap::get(const String& appenderName)
 {
+	AppenderPtr appender;
 	std::map<String, AppenderPtr>::iterator it;
 	it = map.find(appenderName);
+	
+	if (it != map.end())
+	{
+		appender = it->second;
+	}
 
-	return (it == map.end()) ? 0 : it->second;
+	return appender;
 }
 
 void AppenderMap::put(const String& appenderName, AppenderPtr appender)
