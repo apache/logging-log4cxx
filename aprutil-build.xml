@@ -63,6 +63,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                   <or>
                       <os family="unix"/>
                       <equals arg1="${os.family}" arg2="unix"/>
+                      <equals arg1="${os.family}" arg2="cygwin"/>
                   </or>
              </and>
         </condition>

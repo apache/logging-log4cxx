@@ -104,11 +104,21 @@ Common command line options:
 </target>
 
 <target name="os-detect">
-        <condition property="is-unix" value="true">
+        <condition property="is-mac" value="true">
              <and>
-                 <os family="unix"/>
+                 <os family="mac"/>
                  <not><isset property="is-windows"/></not>
              </and>
+        </condition>
+        <condition property="is-unix" value="true">
+             <or>
+                  <isset property="is-mac"/>
+                  <equals arg1="${os.family}" arg2="cygwin"/>
+                  <and>
+                     <os family="unix"/>
+                     <not><isset property="is-windows"/></not>
+                  </and>
+             </or>
         </condition>
         <condition property="is-windows" value="true">
              <and>
@@ -140,8 +150,8 @@ Common command line options:
 </target>
 
 <target name="mac-init" depends="os-detect" if="is-mac">
-    <property name="project.type" value="cbuilderx"/>
-    <property name="project.dir" value="cbx"/>
+    <property name="project.type" value="xcode"/>
+    <property name="project.dir" value="xcode"/>
 </target>
 
 
@@ -168,8 +178,10 @@ Common command line options:
     <property name="project.dir" value="cbx"/>
     <property name="compiler" value="g++"/>
     <property name="lib-suffix" value=""/>
-
-    <property name="extra.libs" value="expat"/>
+    <property name="has-iconv" value="true"/>
+    <condition property="has-expat" value="true">
+         <not><isset property="is-mac"/></not>
+    </condition>    
 </target>
 
 
@@ -605,6 +617,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="xml2" if="is-unix"/>
+        <libset libs="iconv" if="is-unix"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
@@ -658,7 +671,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}${lib-suffix}"
                 unless="apriconv.lib.dir"/>
-        <libset libs="${extra.libs}" if="extra.libs"/>
+        <libset libs="iconv" if="has-iconv"/>
+        <libset libs="expat" if="has-expat"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
@@ -768,9 +782,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}${lib-suffix}"
                 unless="apriconv.lib.dir"/>
+        <libset libs="iconv" if="has-iconv"/>
+        <libset libs="expat" if="has-expat"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="cw32mt" if="is-bcc"/>
-        <libset libs="${extra.libs}" if="extra.libs"/>
         <project outfile="${project.dir}/shortsocketserver" type="${project.type}" if="project.if"/>
     </cc>
 
@@ -820,6 +835,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 unless="apriconv.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
+        <libset libs="iconv" if="has-iconv"/>
+        <libset libs="expat" if="has-expat"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
@@ -872,6 +889,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 unless="apriconv.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
+        <libset libs="iconv" if="has-iconv"/>
+        <libset libs="expat" if="has-expat"/>
         <syslibset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
 
         <includepath path="${include.dir}"/>

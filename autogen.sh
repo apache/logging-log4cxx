@@ -1,7 +1,11 @@
 #! /bin/sh
 # Regenerate the files autoconf / automake
 
-libtoolize --force --automake
+case `uname` in
+      (Darwin)        LIBTOOLIZE=glibtoolize  ;;
+      (*)             LIBTOOLIZE=libtoolize   ;;
+esac
+$LIBTOOLIZE --force --automake
 
 rm -f config.cache
 rm -f config.log

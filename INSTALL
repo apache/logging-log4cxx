@@ -76,6 +76,9 @@ Build options:
      -Dapr.lib.type=[static | shared]
      -Daprutil.lib.type=[static | shared]
      -Dapriconv.lib.type=[static | shared]
+     -Dhas.wchar_t=[1 | 0]
+     -Dlogchar=[wchar_t utf8]
+     -Dos.family=cygwin
 
 Build targets:
 
