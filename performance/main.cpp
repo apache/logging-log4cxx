@@ -67,7 +67,7 @@ void init(const String& configFile, const String& runLengthStr,
 		DELAY_MULT = 1000/burstLen;
 	}
 
-#ifdef HAVE_XML	
+#ifdef LOG4CXX_HAVE_XML	
 	xml::DOMConfigurator::configure(configFile);
 #endif
 }
