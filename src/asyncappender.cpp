@@ -17,6 +17,7 @@
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/boundedfifo.h>
+#include <log4cxx/spi/loggingevent.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

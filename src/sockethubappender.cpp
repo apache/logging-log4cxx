@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/serversocket.h>
+#include <log4cxx/spi/loggingevent.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

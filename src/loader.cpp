@@ -24,6 +24,7 @@
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/varia/denyallfilter.h>
 #include <log4cxx/spi/repositoryselector.h>
+#include <log4cxx/spi/appenderattachable.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
