@@ -65,6 +65,8 @@ typedef int log4cxx_status_t;
 #endif
 
 #if !defined(_WIN32)
+#define HAVE_XML 1
+#define LOG4CXX_HAVE_XML 1
 #define LOG4CXX_HAVE_SYSLOG 1
 #endif
 

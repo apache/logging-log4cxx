@@ -132,12 +132,6 @@ Common command line options:
         <condition property="os.family" value="unix">
             <isset property="is-unix"/>
         </condition>
-        <condition property="is-gcc" value="true">
-            <or>
-               <equals arg1="${compiler}" arg2="gcc"/>
-               <equals arg1="${compiler}" arg2="g++"/>
-            </or>
-        </condition>
 
 
 </target>
@@ -169,12 +163,6 @@ Common command line options:
 <target name="unix-init" depends="mac-init" if="is-unix">
 
     <property name="compiler" value="gcc"/>
-    <condition property="pic-option" value="-fPIC">
-        <and>
-                <isset property="is-gcc"/>
-                <istrue value="${use-pic}"/>
-        </and>
-    </condition>
 
     <property name="lib.prefix" value="lib"/>
     <property name="lib.extension" value=".a"/>
@@ -207,6 +195,21 @@ http://ant-contrib.sourceforge.net.
 Required features not present in cpptasks releases prior to Feb 2005</fail>
 
         <mkdir dir="${build.dir}"/>
+
+        <condition property="is-gcc" value="true">
+            <or>
+               <equals arg1="${compiler}" arg2="gcc"/>
+               <equals arg1="${compiler}" arg2="g++"/>
+            </or>
+        </condition>
+
+         <condition property="pic-option" value="-fPIC">
+            <and>
+                     <isset property="is-gcc"/>
+                     <istrue value="${use-pic}"/>
+            </and>
+         </condition>
+
 
         <condition property="is-debug" value="true">
                 <istrue value="${debug}"/>
@@ -642,7 +645,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="cw32mt" if="is-bcc"/>
-        <!-- libset libs="xml2" if="is-unix"/ -->
+        <libset libs="xml2" if="is-unix"/>
         <libset libs="iconv" if="has-iconv"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
@@ -927,7 +930,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="LOG4CXX"/>
-        <!-- libset libs="xml2" if="is-unix"/ -->
+        <libset libs="xml2" if="is-unix"/>
         <libset libs="cw32mt" if="is-bcc"/>
 
 
