@@ -55,6 +55,46 @@ AC_CHECK_HEADERS(unistd.h io.h )
 # Checks for libraries
 # ----------------------------------------------------------------------------
 
+AC_PROG_RANLIB
+
+# for threads
+AC_MSG_CHECKING(for thread support)
+AC_ARG_WITH(thread,
+	AC_HELP_STRING(--with-thread, [thread support. Accepted arguments :
+		pthread, Microsoft, no (default=pthread)]),
+	[ac_with_thread=$withval],
+	[ac_with_thread=pthread])
+case "$ac_with_thread" in
+    Microsoft)
+	AC_DEFINE(HAVE_MS_THREAD, 1, thread support through Microsoft threads.)
+	AC_DEFINE(HAVE_THREAD, 1, thread support)
+	AC_MSG_RESULT(Microsoft)
+	;;
+    pthread)
+	AC_MSG_RESULT(pthread)
+	AC_CHECK_HEADER(pthread.h,, AC_MSG_ERROR(pthread library not found !))
+	AC_DEFINE(HAVE_PTHREAD, 1, thread support through pthread library.)
+	AC_DEFINE(HAVE_THREAD, 1, thread support)
+	case "$host" in
+		*cygwin*)
+		CPPFLAGS="-D_REENTRANT $CPPFLAGS"
+		LIBS="-lpthread $LIBS"
+		;;
+		*)
+		CPPFLAGS="-pthread $CPPFLAGS"
+		LIBS="-pthread $LIBS"
+		;;
+	esac
+	;;
+	no)
+	AC_MSG_RESULT(no)
+	;;
+    *)
+	AC_MSG_RESULT(???)
+	AC_MSG_ERROR(Unknown option : $ac_with_thread)
+	;;
+esac
+
 # for SocketAppender
 AC_CHECK_FUNC(socket)
 
@@ -96,14 +136,10 @@ esac
 AC_SUBST(LIBS_XML)
 AC_SUBST(CPPFLAGS_XML)
 
-# for threads
-AC_PROG_RANLIB
-AC_CHECK_HEADER(pthread.h, CPPFLAGS="-pthread $CPPFLAGS")
-
 #for UNICODE
 AC_MSG_CHECKING(for UTF-16 Unicode support)
 AC_ARG_ENABLE(unicode,
-	AC_HELP_STRING(--enable-unicode, UTF-16 Unicode support default=no),
+	AC_HELP_STRING(--enable-unicode, [UTF-16 Unicode support (default=no)]),
 	AC_DEFINE(UNICODE, 1, UTF-16 Unicode support.)
 	AC_MSG_RESULT(yes),
 	AC_MSG_RESULT(no))
@@ -112,7 +148,7 @@ AC_ARG_ENABLE(unicode,
 AC_MSG_CHECKING(for ODBC support)
 AC_ARG_WITH(ODBC,
 	AC_HELP_STRING(--with-ODBC, [ODBC support. Accepted arguments :
-		unixODBC, iODBC, Microsoft (default=no)]),
+		unixODBC, iODBC, Microsoft, no (default=no)]),
 	[ac_with_odbc=$withval],
 	[ac_with_odbc=no])
 case "$ac_with_odbc" in
@@ -124,7 +160,7 @@ case "$ac_with_odbc" in
 	;;
     unixODBC)
 	AC_MSG_RESULT(unixODBC)
-	AC_CHECK_HEADER(sqlext.h,, AC_MSG_ERROR("unixODBC not found !"))
+	AC_CHECK_HEADER(sqlext.h,, AC_MSG_ERROR(unixODBC not found !))
 	AC_DEFINE(HAVE_UNIX_ODBC, 1, ODBC support through unixODBC.)
 	AC_DEFINE(HAVE_ODBC, 1, ODBC support)
 	LIBS_ODBC="-lodbc"
@@ -155,6 +191,38 @@ AC_SUBST(CPPFLAGS_ODBC)
 
 #for System
 AC_CHECK_FUNCS(gettimeofday ftime)
+
+#for SMTPAppender
+AC_MSG_CHECKING(for SMTP support)
+AC_ARG_WITH(SMTP,
+	AC_HELP_STRING(--with-SMTP, [SMTP support. Accepted arguments :
+		libsmtp, CDO, no (default=libsmtp)]),
+	[ac_with_smtp=$withval],
+	[ac_with_smtp=libsmtp])
+case "$ac_with_smtp" in
+    CDO)
+	AC_MSG_RESULT(CDO)
+	AC_DEFINE(HAVE_CDO_SMTP, 1, SMTP support through Microsoft CDO.)
+	AC_DEFINE(HAVE_SMTP, 1, SMTP support)
+	;;
+    libsmtp)
+	AC_MSG_RESULT(libsmtp)
+	AC_CHECK_LIB([smtp_mime], [libsmtp_session_initialize],,
+		AC_MSG_ERROR(libsmtp library not found !),
+		`glib-config --libs` -lsmtp)
+	AC_DEFINE(HAVE_LIBSMTP, 1, SMTP support through libsmtp library.)
+	AC_DEFINE(HAVE_SMTP, 1, SMTP support)
+	LIBS="`glib-config --libs` -lsmtp $LIBS"
+	CPPFLAGS="`glib-config --cflags` $CPPFLAGS"
+	;;
+	no)
+	AC_MSG_RESULT(no)
+	;;
+    *)
+	AC_MSG_RESULT(???)
+	AC_MSG_ERROR(Unknown option : $ac_with_smtp)
+	;;
+esac
 
 # Create files
 # ----------------------------------------------------------------------------
