@@ -14,12 +14,14 @@
 * distribution in the LICENSE.txt file.                                   *
 ***************************************************************************/
 
+#define _WIN32_DCOM
 #include <log4cxx/config.h>
 
 #ifdef HAVE_MS_XML
 
 #include <log4cxx/helpers/msxml.h>
 #include <log4cxx/helpers/loglog.h>
+#include <objbase.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -57,10 +59,13 @@ XMLDOMDocumentPtr MsXMLDOMNode::getOwnerDocument()
 MsXMLDOMDocument::MsXMLDOMDocument(MSXML::IXMLDOMDocumentPtr document)
 : document(document)
 {
+	::CoInitializeEx(0, COINIT_MULTITHREADED);
 }
 
 MsXMLDOMDocument::MsXMLDOMDocument()
 {
+	::CoInitializeEx(0, COINIT_MULTITHREADED);
+
 	HRESULT hRes;
 	hRes = document.CreateInstance(L"Msxml2.DOMDocument.3.0");
 	if (FAILED(hRes))
@@ -79,6 +84,12 @@ MsXMLDOMDocument::MsXMLDOMDocument()
 			}
 		}
 	}
+}
+
+MsXMLDOMDocument::~MsXMLDOMDocument()
+{
+	document.Release();
+	::CoUninitialize();
 }
 
 XMLDOMNodeListPtr MsXMLDOMDocument::getChildNodes()
@@ -106,31 +117,23 @@ void MsXMLDOMDocument::load(const String& fileName)
 			// fetch errorcode
 			long errorCode = parseError->errorCode;
 
-			// XML file not found
-			if (errorCode == INET_E_RESOURCE_NOT_FOUND)
+			_bstr_t reason = parseError->reason;
+			long line = parseError->line;
+			long linepos = parseError->linepos;
+
+			// remove \n or \r
+			int len = reason.length();
+			while(len > 0 && (((BSTR)reason)[len -1] == L'\n' ||
+				((BSTR)reason)[len -1] == L'\r'))
 			{
-				LogLog::error(_T("Could not find [")+fileName+_T("]."));
+				((BSTR)reason)[len -1] = L'\0';
+				len--;
 			}
-			else
-			{
-				_bstr_t reason = parseError->reason;
-				long line = parseError->line;
-				long linepos = parseError->linepos;
 
-				// remove \n or \r
-				int len = reason.length();
-				while(len > 0 && (((BSTR)reason)[len -1] == L'\n' ||
-					((BSTR)reason)[len -1] == L'\r'))
-				{
-					((BSTR)reason)[len -1] = L'\0';
-					len--;
-				}
-
-				USES_CONVERSION;
-				LOGLOG_ERROR(_T("Could not open [") << fileName << _T("] : ") 
-					<< W2T((BSTR)reason) << _T("(line ") << line << _T(", column ")
-					<< linepos << _T(")"));
-			}		
+			USES_CONVERSION;
+			LOGLOG_ERROR(_T("Could not open [") << fileName << _T("] : ") 
+				<< W2T((BSTR)reason) << _T("(line ") << line << _T(", column ")
+				<< linepos << _T(")"));
 		}
 
 	}
