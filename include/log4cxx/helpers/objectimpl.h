@@ -53,7 +53,7 @@ namespace log4cxx
 			CriticalSection refCs;
 			unsigned int ref;
 #elif defined(HAVE_MS_THREAD)
-			long ref;
+			long volatile ref;
 #else
 			unsigned int ref;
 #endif
