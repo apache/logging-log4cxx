@@ -1,1 +1,1 @@
-EXTRA_DIST = examples.dsw trivial.dsp
+EXTRA_DIST = examples.dsw trivial.dsp trivial.vcproj
