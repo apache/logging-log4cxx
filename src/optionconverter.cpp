@@ -26,6 +26,7 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/loader.h>
+#include <log4cxx/helpers/system.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -194,8 +195,7 @@ tstring OptionConverter::getSystemProperty(const tstring& key, const tstring& de
 {
 	if (!key.empty())
 	{
-		USES_CONVERSION;
-		tstring value = A2T(::getenv(T2A(def.c_str())));
+		tstring value = System::getProperty(def);
 
 		if (!value.empty())
 		{
