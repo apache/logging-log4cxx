@@ -57,11 +57,11 @@ public:
 		String r;
 		
 		r = OptionConverter::substVars(_T("hello world."), nullProperties);
-		//CPPUNIT_ASSERT_EQUAL(String(_T("hello world.")), r);
+		CPPUNIT_ASSERT(r == _T("hello world."));
 
 		r = OptionConverter::substVars(_T("hello ${TOTO} world."), nullProperties);
 
-		//CPPUNIT_ASSERT_EQUAL(String(_T("hello wonderful world.")), r);
+		CPPUNIT_ASSERT(r == _T("hello wonderful world."));
 	}
 
   
