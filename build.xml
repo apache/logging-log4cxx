@@ -118,7 +118,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <available classname="net.sf.antcontrib.cpptasks.CCTask" property="cctask-available"/>
         <fail unless="cctask-available">cpptasks required
 
-Use CVS HEAD or Feb 2005 or later release from 
+Use CVS HEAD or Feb 2005 or later release from
 http://ant-contrib.sourceforge.net.
 </fail>
 
@@ -189,21 +189,21 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <available property="aprutil-src-available" file="${lib.dir}/apr-util-${aprutil.version}.tar.gz"/>
         <available property="cppunit-src-available" file="${lib.dir}/cppunit-${cppunit.version}.tar.gz"/>
 
-		<condition property="apr-static" value="true">
-			<equals arg1="${apr.lib.type}" arg2="static"/>
-		</condition>
+                <condition property="apr-static" value="true">
+                        <equals arg1="${apr.lib.type}" arg2="static"/>
+                </condition>
 
-		<condition property="aprutil-static" value="true">
-			<equals arg1="${aprutil.lib.type}" arg2="static"/>
-		</condition>
+                <condition property="aprutil-static" value="true">
+                        <equals arg1="${aprutil.lib.type}" arg2="static"/>
+                </condition>
 
-		<condition property="apriconv-static" value="true">
-			<equals arg1="${apriconv.lib.type}" arg2="static"/>
-		</condition>
+                <condition property="apriconv-static" value="true">
+                        <equals arg1="${apriconv.lib.type}" arg2="static"/>
+                </condition>
 
-		<condition property="cppunit-static" value="true">
-			<equals arg1="${cppunit.lib.type}" arg2="static"/>
-		</condition>
+                <condition property="cppunit-static" value="true">
+                        <equals arg1="${cppunit.lib.type}" arg2="static"/>
+                </condition>
 
 
         <condition property="executable.dir" value="${build.dir}/debug">
@@ -231,17 +231,17 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="unix-configure" 
-        depends="config-check" 
+<target name="unix-configure"
+        depends="config-check"
         if="is-unix"
         unless="config-available">
 
-        <exec executable="configure">
-            <arg value="--with-apr=${apr.dir}"/>
-            <arg value="--with-aprutil=${aprutil.dir}"/>
-            <arg value="--with-apriconv=${apriconv.dir}"/>
-            <arg value="--with-cppunit=${cppunit.dir}"/>
-        </exec>
+        <!-- exec executable="configure">
+            <arg value="- -with-apr=${apr.dir}"/>
+            <arg value="- -with-aprutil=${aprutil.dir}"/>
+            <arg value="- -with-apriconv=${apriconv.dir}"/>
+            <arg value="- -with-cppunit=${cppunit.dir}"/>
+        </exec-->
 </target>
 
 <target name="win-configure" depends="config-check" if="is-windows">
@@ -251,6 +251,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="configure" depends="unix-configure, win-configure"/>
 
 <target name="get-apr-module">
+    <mkdir dir="${lib.dir}"/>
     <get src="${apache.mirror}/apr/${module}-${module.version}.tar.gz"
          dest="${lib.dir}/${module}-${module.version}.tar.gz"
          usetimestamp="true"/>
@@ -263,6 +264,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </exec>
     <untar src="${lib.dir}/${module}-${module.version}.tar.gz"
            dest="${lib.dir}" compression="gzip"/>
+    <chmod file="${lib.dir}/${module}-${module.version}/configure"
+           perm="u+x"/>
+
 </target>
 
 <target name="get-apr-src" unless="apr-src-available">
@@ -275,18 +279,19 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="build-apr" depends="init" unless="apr-available">
     <antcall target="get-apr-src"/>
 
+    <property name="apr.dir" location="${lib.dir}/apr-${apr.version}"/>
+
     <ant antfile="apr-build.xml" target="build" inheritAll="false">
         <property name="version" value="${apr.version}"/>
         <property name="debug" value="${debug}"/>
         <property name="lib-suffix" value="${lib-suffix}"/>
         <property name="compiler" value="${compiler}"/>
-        <property name="base.dir" value="${lib.dir}/apr-${apr.version}"/>
+        <property name="base.dir" value="${apr.dir}"/>
         <property name="executable.dir" value="${executable.dir}"/>
         <property name="lib.type" value="${apr.lib.type}"/>
     </ant>
-    <property name="apr.dir" value="${lib.dir}/apr-${apr.version}"/>
-    <property name="apr.include.dir" value="${apr.dir}/include"/>
-    <property name="apr.lib.dir" value="${executable.dir}/${apr.lib.type}"/>
+    <property name="apr.include.dir" location="${apr.dir}/include"/>
+    <property name="apr.lib.dir" location="${executable.dir}/${apr.lib.type}"/>
 </target>
 
 <target name="get-apriconv-src" unless="apriconv-src-available">
@@ -299,9 +304,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="build-apriconv" depends="build-apr" unless="apriconv-available">
     <antcall target="get-apriconv-src"/>
 
+    <property name="apriconv.dir" location="${lib.dir}/apr-iconv-${apriconv.version}"/>
     <ant antfile="apriconv-build.xml" target="build" inheritAll="false">
         <property name="version" value="${apriconv.version}"/>
-        <property name="base.dir" value="${lib.dir}/apr-iconv-${apriconv.version}"/>
+        <property name="base.dir" value="${apriconv.dir}"/>
         <property name="debug" value="${debug}"/>
         <property name="lib-suffix" value="${lib-suffix}"/>
         <property name="compiler" value="${compiler}"/>
@@ -309,10 +315,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="apr.lib.dir" value="${apr.lib.dir}"/>
         <property name="executable.dir" value="${executable.dir}"/>
         <property name="lib.type" value="${apriconv.lib.type}"/>
+        <property name="with-apr" value="${apr.dir}/apr--config"/>
     </ant>
-    <property name="apriconv.dir" value="${lib.dir}/apr-iconv-${apriconv.version}"/>
-    <property name="apriconv.include.dir" value="${apriconv.dir}/include"/>
-    <property name="apriconv.lib.dir" value="${executable.dir}/${apriconv.lib.type}"/>
+    <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
+    <property name="apriconv.lib.dir" location="${executable.dir}/${apriconv.lib.type}"/>
 </target>
 
 <target name="get-aprutil-src" unless="aprutil-src-available">
@@ -320,15 +326,20 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <param name="module" value="apr-util"/>
         <param name="module.version" value="${aprutil.version}"/>
     </antcall>
+    <chmod file="${lib.dir}/apr-util-$aprutil.version}/xml/expat/configure"
+           perm="u+x"/>
+
 </target>
 
 
 <target name="build-aprutil" depends="build-apriconv" unless="aprutil-available">
     <antcall target="get-aprutil-src"/>
 
+    <property name="aprutil.dir" location="${lib.dir}/apr-util-${aprutil.version}"/>
+
     <ant antfile="aprutil-build.xml" target="build" inheritAll="false">
         <property name="version" value="${aprutil.version}"/>
-        <property name="base.dir" value="${lib.dir}/apr-util-${aprutil.version}"/>
+        <property name="base.dir" value="${aprutil.dir}"/>
         <property name="debug" value="${debug}"/>
         <property name="lib-suffix" value="${lib-suffix}"/>
         <property name="compiler" value="${compiler}"/>
@@ -338,26 +349,31 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="apriconv.lib.dir" value="${apriconv.lib.dir}"/>
         <property name="executable.dir" value="${executable.dir}"/>
         <property name="lib.type" value="${aprutil.lib.type}"/>
+        <property name="with-apr" value="${apr.dir}/apr--config"/>
     </ant>
-    <property name="aprutil.dir" value="${lib.dir}/apr-util-${aprutil.version}"/>
-    <property name="aprutil.include.dir" value="${aprutil.dir}/include"/>
-    <property name="aprutil.lib.dir" value="${executable.dir}/${aprutil.lib.type}"/>
+    <property name="aprutil.include.dir" location="${aprutil.dir}/include"/>
+    <property name="aprutil.lib.dir" location="${executable.dir}/${aprutil.lib.type}"/>
 </target>
 
 <target name="get-cppunit-src" unless="cppunit-src-available">
+    <mkdir dir="${lib.dir}"/>
     <get src="${cppunit.mirror}/cppunit/cppunit-${cppunit.version}.tar.gz"
          dest="${lib.dir}/cppunit-${cppunit.version}.tar.gz"
          usetimestamp="true"/>
     <untar src="${lib.dir}/cppunit-${cppunit.version}.tar.gz"
            dest="${lib.dir}" compression="gzip"/>
+    <chmod file="${lib.dir}/cppunit-${cppunit.version}/configure"
+           perm="u+x"/>
 </target>
 
 
 <target name="build-cppunit" depends="init" unless="cppunit-available">
     <antcall target="get-cppunit-src"/>
 
+    <property name="cppunit.dir" value="${lib.dir}/cppunit-${cppunit.version}"/>
+
     <ant antfile="cppunit-build.xml" target="build" inheritAll="false">
-        <property name="base.dir" value="${lib.dir}/cppunit-${cppunit.version}"/>
+        <property name="base.dir" value="${cppunit.dir}"/>
         <property name="cppunit.version" value="${cppunit.version}"/>
         <property name="debug" value="${debug}"/>
         <property name="lib-suffix" value="${lib-suffix}"/>
@@ -365,7 +381,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="executable.dir" value="${executable.dir}"/>
         <property name="lib.type" value="${cppunit.lib.type}"/>
     </ant>
-    <property name="cppunit.dir" value="${lib.dir}/cppunit-${cppunit.version}"/>
     <property name="cppunit.include.dir" value="${cppunit.dir}/include"/>
     <property name="cppunit.lib.dir" value="${executable.dir}/${cppunit.lib.type}"/>
 </target>
@@ -413,7 +428,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 <includepath path="include"/>
                 <includepath path="${apr.include.dir}"/>
                 <includepath path="${aprutil.include.dir}"/>
-                <project outfile="${project.dir}/header-check" 
+                <project outfile="${project.dir}/header-check"
                     type="${project.type}" if="project.if"/>
          </cc>
 </target>
@@ -501,7 +516,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="run-example">
-    <exec executable="${executable.dir}/${lib.type}/${example.name}" 
+    <exec executable="${executable.dir}/${lib.type}/${example.name}"
           dir="${executable.dir}/${lib.type}"
           failonerror="true">
           <env key="DYLD_LIBRARY_PATH"
@@ -577,8 +592,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <libset libs="log4cxx${lib-suffix}" dir="${executable.dir}/${lib.type}"/>
-        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <project outfile="${project.dir}/shortsocketserver" type="${project.type}" if="project.if"/>
     </cc>
@@ -765,37 +780,37 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="build-projects">
-	<mkdir dir="msvc"/>
-	<antcall target="build">
-		<param name="project.if" value="true"/>
-		<param name="project.type" value="${project.type}"/>
-		<param name="projects.dir" value="${project.dir}"/>
-		<param name="projectsOnly" value="true"/>
-	</antcall>
-	<antcall target="build-unittest">
-		<param name="project.if" value="true"/>
-		<param name="project.type" value="${project.type}"/>
-		<param name="projects.dir" value="${project.dir}"/>
-		<param name="projectsOnly" value="true"/>
-	</antcall>
-	<antcall target="build-standalone-unittest">
-		<param name="project.if" value="true"/>
-		<param name="project.type" value="${project.type}"/>
-		<param name="projects.dir" value="${project.dir}"/>
-		<param name="projectsOnly" value="true"/>
-	</antcall>
-	<antcall target="build-examples">
-		<param name="project.if" value="true"/>
-		<param name="project.type" value="${project.type}"/>
-		<param name="projects.dir" value="${project.dir}"/>
-		<param name="projectsOnly" value="true"/>
-	</antcall>
-	<antcall target="build-performance">
-		<param name="project.if" value="true"/>
-		<param name="project.type" value="${project.type}"/>
-		<param name="projects.dir" value="${project.dir}"/>
-		<param name="projectsOnly" value="true"/>
-	</antcall>
+        <mkdir dir="msvc"/>
+        <antcall target="build">
+                <param name="project.if" value="true"/>
+                <param name="project.type" value="${project.type}"/>
+                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projectsOnly" value="true"/>
+        </antcall>
+        <antcall target="build-unittest">
+                <param name="project.if" value="true"/>
+                <param name="project.type" value="${project.type}"/>
+                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projectsOnly" value="true"/>
+        </antcall>
+        <antcall target="build-standalone-unittest">
+                <param name="project.if" value="true"/>
+                <param name="project.type" value="${project.type}"/>
+                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projectsOnly" value="true"/>
+        </antcall>
+        <antcall target="build-examples">
+                <param name="project.if" value="true"/>
+                <param name="project.type" value="${project.type}"/>
+                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projectsOnly" value="true"/>
+        </antcall>
+        <antcall target="build-performance">
+                <param name="project.if" value="true"/>
+                <param name="project.type" value="${project.type}"/>
+                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projectsOnly" value="true"/>
+        </antcall>
 </target>
 
 <target name="build-projects-vc6">

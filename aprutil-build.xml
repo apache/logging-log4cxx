@@ -39,8 +39,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <property name="apr.dir" location="${base.dir}/../apr-1.1.0"/>
 <property name="apr.include.dir" location="${apr.dir}/include"/>
+<property name="with-apr" value="${apr.dir}"/>
 <property name="apriconv.dir" location="${base.dir}/../apr-iconv-1.0.1"/>
 <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
+<property name="with-apr-iconv" value="${apriconv.dir}"/>
 
 <target name="usage">
         <echo>
@@ -106,7 +108,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                     <available file="${include.dir}/private/apu_config.h"/>
                     <available file="${include.dir}/private/apu_select_dbm.h"/>
                     <available file="${base.dir}/xml/expat/lib/expat.h"/>
-                    <available file="${base.dir}/xml/expat/lib/config.h"/>
+                    <available file="${base.dir}/xml/expat/config.h"/>
                </and>
         </condition>
 </target>
@@ -121,8 +123,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <copy tofile="${base.dir}/xml/expat/lib/config.h" file="${base.dir}/xml/expat/lib/winconfig.h"/>
 </target>
 
-<target name="unix-configure" depends="configure-check" if="is-unix" unless="apr_h-available">
-        <exec executable="configure" dir="${base.dir}"/>
+<target name="unix-configure" depends="configure-check" if="is-unix" unless="config-available">
+        <exec executable="${base.dir}/configure" dir="${base.dir}">
+           <arg value="--with-apr=${with-apr}"/>
+           <arg value="--with-apr-iconv=${with-apr-iconv}"/>
+        </exec>
+        <exec executable="${base.dir}/xml/expat/configure" dir="${base.dir}/xml/expat"/>
 </target>
 
 
@@ -138,24 +144,36 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outtype="${lib.type}"
         objdir="${executable.dir}/${lib.type}/aprutil_obj"
         debug="${debug}">
-        <fileset dir="${base.dir}" includes="**/*.c" 
+        <fileset dir="${base.dir}" includes="**/*.c"
             excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
-        <fileset dir="${base.dir}/xml/expat/lib" 
+        <fileset dir="${base.dir}/xml/expat/lib"
             includes="xmlparse.c xmlrole.c xmltok.c"/>
         <includepath path="${include.dir}"/>
         <includepath path="${include.dir}/private"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${apriconv.include.dir}"/>
         <includepath path="${base.dir}/xml/expat/lib"/>
+        <includepath path="${base.dir}/xml/expat"/>
         <defineset define="APU_DECLARE_EXPORT" if="is-shared"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-shared"/>
         <defineset>
-            <define name="VERSION" value='\"expat_1.95.1\"'/>
+            <!-- define name="VERSION" value='\"expat_1.95.1\"'/ -->
             <define name="XML_MAJOR_VERSION" value="1"/>
             <define name="XML_MINOR_VERSION" value="95"/>
             <define name="XML_MICRO_VERSION" value="1"/>
         </defineset>
+        <defineset unless="is-gcc">
+            <define name="VERSION" value='\"expat_1.95.1\"'/>
+        </defineset>
+        <defineset if="is-gcc">
+            <define name="VERSION" value='0'/>
+        </defineset>
         <defineset define="WIN32" if="is-windows"/>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE _LARGEFILE64_SOURCE"
+              unless="is-windows">
+              <define name="LINUX" value="2"/>
+        </defineset>
+
         <libset dir="${apr.lib.dir}" libs="apr-1"/>
         <libset dir="${apriconv.lib.dir}" libs="apriconv"/>
     </cc>

@@ -37,6 +37,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <typedef resource="cpptasks.types"/>
 <property name="apr.dir" location="${base.dir}/../apr-1.1.0"/>
 <property name="apr.include.dir" location="${apr.dir}/include"/>
+<property name="with-apr" value="${apr.dir}"/>
 
 <target name="usage">
         <echo>
@@ -104,9 +105,13 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <copy tofile="${base.dir}/lib/apr_iconv_private.h" file="${base.dir}/lib/apr_iconv_private.h.in"/>
 </target>
 
-<target name="unix-configure" depends="configure-check" if="is-unix" unless="apr_h-available">
-        <exec executable="configure" dir="${base.dir}"/>
+<target name="unix-configure" depends="configure-check" if="is-unix" unless="configure-available">
+        <exec executable="${base.dir}/configure" dir="${base.dir}">
+           <arg value="--with-apr=${with-apr}"/>
+        </exec>
 </target>
+
+
 
 
 <target name="configure" depends="unix-configure, win-configure"/>
@@ -125,9 +130,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="${base.dir}/lib"/>
         <includepath path="${apr.include.dir}"/>
+        <includepath path="${apr.include.dir}/private"/>
         <defineset define="API_DECLARE_EXPORT" if="is-shared"/>
         <defineset define="API_DECLARE_STATIC" unless="is-shared"/>
         <defineset define="WIN32" if="is-windows"/>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE _LARGEFILE64_SOURCE"
+              unless="is-windows">
+              <define name="LINUX" value="2"/>
+        </defineset>
     </cc>
 </target>
 

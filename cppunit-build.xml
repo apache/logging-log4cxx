@@ -93,7 +93,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="configure-check" depends="init">
         <condition property="config-available" value="true">
-              <available file="${include.dir}/apr.h"/>
+              <available file="${include.dir}/cppunit/config-auto.h"/>
         </condition>
 </target>
 
@@ -102,7 +102,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="unix-configure" depends="configure-check" if="is-unix" unless="config-available">
-        <exec executable="configure" dir="${base.dir}"/>
+        <exec executable="${base.dir}/configure" dir="${base.dir}"/>
 </target>
 
 
@@ -120,11 +120,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         exceptions="true"
         objdir="${executable.dir}/${lib.type}/cppunit_obj"
         debug="${debug}">
-        <fileset dir="${base.dir}/src/cppunit" includes="**/*.cpp"/>
+        <fileset dir="${base.dir}/src/cppunit" includes="**/*.cpp" excludes="DllMain.cpp"/>
         <includepath path="${include.dir}"/>
         <defineset define="CPPUNIT_BUILD_DLL" if="is-shared"/>
         <defineset define="CPPUNIT_BUILD_STATIC" unless="is-shared"/>
         <defineset define="WIN32" if="is-windows"/>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE _LARGEFILE64_SOURCE"
+              unless="is-windows">
+              <define name="LINUX" value="2"/>
+        </defineset>
+
     </cc>
 </target>
 
