@@ -178,7 +178,6 @@ Common command line options:
     <property name="project.dir" value="cbx"/>
     <property name="compiler" value="g++"/>
     <property name="lib-suffix" value=""/>
-    <property name="has-iconv" value="true"/>
     <condition property="has-expat" value="true">
          <not><isset property="is-mac"/></not>
     </condition>
@@ -618,7 +617,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="xml2" if="is-unix"/>
-        <libset libs="iconv" if="is-unix"/>
+        <libset libs="iconv" if="has-iconv"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="${apriconv.lib.name}${lib-suffix}"
