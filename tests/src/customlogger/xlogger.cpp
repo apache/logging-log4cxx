@@ -34,7 +34,7 @@ void XLogger::debug(const String& message, const char* file, int line)
 
 	if (XLevel::LETHAL->isGreaterOrEqual(this->getEffectiveLevel()))
 	{
-		forcedLog(FQCN, Level::getDebugLevel(), message + _T(" ") + suffix, file,line);
+		forcedLog(FQCN, Level::DEBUG, message + _T(" ") + suffix, file,line);
 	}
 }
 
