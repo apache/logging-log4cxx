@@ -53,9 +53,10 @@ namespace log4cxx
 			PatternConverterPtr tail;
 			FormattingInfo formattingInfo;
 			String pattern;
-			
+			String timeZone;
+
 		public:
-			PatternParser(const String& pattern);
+			PatternParser(const String& pattern, const String& timeZone);
 			
 		private:
 			void addToList(PatternConverterPtr& pc);

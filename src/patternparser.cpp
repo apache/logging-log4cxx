@@ -54,8 +54,9 @@ enum ParserState
 };
 
 
-PatternParser::PatternParser(const String& pattern)
-: pattern(pattern), patternLength(pattern.length()), state(LITERAL_STATE), i(0)
+PatternParser::PatternParser(const String& pattern, const String& timeZone)
+: pattern(pattern), patternLength(pattern.length()), state(LITERAL_STATE), i(0),
+timeZone(timeZone)
 {
 }
 
@@ -252,16 +253,16 @@ void PatternParser::finalizeConverter(TCHAR c)
 
 		if(StringHelper::equalsIgnoreCase(dateFormatStr,
 			AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT))
-			df = new ISO8601DateFormat();
+			df = new ISO8601DateFormat(timeZone);
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
 			AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT))
-			df = new AbsoluteTimeDateFormat();
+			df = new AbsoluteTimeDateFormat(timeZone);
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
 			AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT))
-			df = new DateTimeDateFormat();
+			df = new DateTimeDateFormat(timeZone);
 		else
 		{
-			df = new DateFormat(dateFormatStr);
+			df = new DateFormat(dateFormatStr, timeZone);
 		}
 		pc = new DatePatternConverter(formattingInfo, df);
 		//LogLog.debug("DATE converter {"+dateFormatStr+"}.");

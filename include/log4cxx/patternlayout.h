@@ -396,7 +396,7 @@ namespace log4cxx
 		StringBuffer sbuf;
 		String pattern;
 		helpers::PatternConverterPtr head;
-		String timezone;
+		String timeZone;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PatternLayout)
@@ -447,6 +447,19 @@ namespace log4cxx
 		Produces a formatted string as specified by the conversion pattern.
 		*/
 		virtual void format(ostream& output, const spi::LoggingEvent& event);
+
+		/**
+		The <b>TimeZoneID</b> option is a time zone ID string in the format
+		expected by the <code>locale</code> C++ standard class.
+		*/
+		inline void setTimeZone(const String& timeZone)
+			{ this->timeZone = timeZone; }
+
+		/**
+		Returns value of the <b>TimeZone</b> option.
+		*/
+		inline const String& getTimeZone() const
+			{ return timeZone; }
 
 	protected:
 		/**

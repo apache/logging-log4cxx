@@ -68,7 +68,7 @@ void PatternLayout::format(ostream& output, const spi::LoggingEvent& event)
 
 PatternConverterPtr PatternLayout::createPatternParser(const String& pattern)
 {
-	return PatternParser(pattern).parse();
+	return PatternParser(pattern, timeZone).parse();
 }
 
 void PatternLayout::setOption(const String& option, const String& value)
