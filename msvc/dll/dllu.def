@@ -13,9 +13,14 @@ EXPORTS
 ?addFilter@AppenderSkeleton@log4cxx@@UAEXV?$ObjectPtrT@VFilter@spi@log4cxx@@@helpers@2@@Z
 ?clearFilters@AppenderSkeleton@log4cxx@@UAEXXZ
 ?setErrorHandler@AppenderSkeleton@log4cxx@@UAEXV?$ObjectPtrT@VErrorHandler@spi@log4cxx@@@helpers@2@@Z
+?doAppend@AppenderSkeleton@log4cxx@@UAEXABVLoggingEvent@spi@2@@Z
 
 ;class AsyncAppender
 ??0AsyncAppender@log4cxx@@QAE@XZ
+
+;class BasicConfigurator
+?configure@BasicConfigurator@log4cxx@@SAXXZ
+?resetConfiguration@BasicConfigurator@log4cxx@@SAXXZ
 
 ;class Class
 ?getName@Class@helpers@log4cxx@@QBEABV?$basic_string@GU?$char_traits@G@std@@V?$allocator@G@2@@std@@XZ
@@ -45,10 +50,14 @@ EXPORTS
 ;class FileAppender
 ?getStaticClass@FileAppender@log4cxx@@SAABVClass@helpers@2@XZ
 ??0FileAppender@log4cxx@@QAE@V?$ObjectPtrT@VLayout@log4cxx@@@helpers@1@ABV?$basic_string@GU?$char_traits@G@std@@V?$allocator@G@2@@std@@_N@Z
+??0FileAppender@log4cxx@@QAE@XZ
 
 ;class Filter
 ?getClass@Filter@spi@log4cxx@@UBEABVClass@helpers@3@XZ
 ?getStaticClass@Filter@spi@log4cxx@@SAABVClass@helpers@3@XZ
+
+;class Hierarchy
+??0Hierarchy@log4cxx@@QAE@V?$ObjectPtrT@VLogger@log4cxx@@@helpers@1@@Z
 
 ;class HTMLLayout
 ??0HTMLLayout@log4cxx@@QAE@XZ
@@ -68,6 +77,7 @@ EXPORTS
 ?getInfoLevel@Level@log4cxx@@SAABV12@XZ
 ?getDebugLevel@Level@log4cxx@@SAABV12@XZ
 ?getOffLevel@Level@log4cxx@@SAABV12@XZ
+?getStaticClass@Level@log4cxx@@SAABVClass@helpers@2@XZ
 
 ;class LevelMatchFilter
 ?setLevelToMatch@LevelMatchFilter@varia@log4cxx@@QAEXABV?$basic_string@GU?$char_traits@G@std@@V?$allocator@G@2@@std@@@Z
@@ -117,8 +127,13 @@ EXPORTS
 ?getLogger@Logger@log4cxx@@SA?AV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@ABV?$basic_string@GU?$char_traits@G@std@@V?$allocator@G@2@@std@@V?$ObjectPtrT@VLoggerFactory@spi@log4cxx@@@42@@Z
 ??1ClassLogger@Logger@log4cxx@@QAE@XZ
 
+;class LoggerRepository
+?getStaticClass@LoggerRepository@spi@log4cxx@@SAABVClass@helpers@3@XZ
+
+
 ;class LoggingEvent
 ??0LoggingEvent@spi@log4cxx@@QAE@ABV?$basic_string@GU?$char_traits@G@std@@V?$allocator@G@2@@std@@ABV?$ObjectPtrT@VLogger@log4cxx@@@helpers@2@ABVLevel@2@0PBDH@Z
+??0LoggingEvent@spi@log4cxx@@QAE@ABV012@@Z
 
 ;class LogLog
 ?setInternalDebugging@LogLog@helpers@log4cxx@@SAX_N@Z
