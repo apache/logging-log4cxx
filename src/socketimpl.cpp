@@ -97,7 +97,7 @@ String SocketException::getMessage()
 	return message;
 }
 
-SocketImpl::SocketImpl() : fd(0), localport(0), port(0), timeout(-1)
+SocketImpl::SocketImpl() : fd(0), localport(-1), port(0), timeout(-1)
 {
 }
 
@@ -138,7 +138,7 @@ void SocketImpl::accept(SocketImplPtr s)
 		int retval = ::select(this->fd+1, &rfds, NULL, NULL, &tv);
 		if (retval == 0)
 		{
-			throw InterruptedIOException();
+			throw SocketTimeoutException();
 		}
 
 		assert(FD_ISSET(this->fd, &rfds));
@@ -203,7 +203,7 @@ void SocketImpl::close()
 		address.address = 0;
 		fd = 0;
 		port = 0;
-		localport = 0;
+		localport = -1;
 	}
 }
 
