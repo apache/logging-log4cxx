@@ -19,8 +19,13 @@
 
 #include <log4cxx/config.h>
 #include <log4cxx/helpers/object.h>
+
+#ifdef HAVE_PTHREAD
 #include <log4cxx/helpers/criticalsection.h>
-#include <log4cxx/helpers/semaphore.h>
+#endif
+
+#include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/condition.h>
 
 namespace log4cxx
 {
@@ -44,8 +49,8 @@ namespace log4cxx
 #ifdef HAVE_PTHREAD
 			CriticalSection refCs;
 #endif
-			CriticalSection cs;
-			Semaphore sem;
+			Mutex mutex;
+			Condition cond;
 		};
 	};
 };
