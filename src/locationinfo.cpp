@@ -59,11 +59,10 @@
 *   @param src source location
 */
  LocationInfo::LocationInfo( const LocationInfo & src )
-     : fileName( src.fileName ),
-       className( src.className ),
-       methodName( src.methodName ),
-       lineNumber( src.lineNumber )
-     {
+     :  lineNumber( src.lineNumber ),
+        fileName( src.fileName ),
+        className( src.className ),
+        methodName( src.methodName ) {
 }
 
 /**

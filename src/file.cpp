@@ -19,6 +19,7 @@
 #include <apr_file_info.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
+#include <assert.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -28,18 +29,18 @@ File::File() {
 
 #if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
 File::File(const std::string& name)
-  : mbcsName(name) {
+  : internalName(), mbcsName(name) {
   Transcoder::decode(name, internalName);
 }
 
 File::File(const std::wstring& name)
-   : internalName(name) {
+   : internalName(name), mbcsName() {
   Transcoder::encode(name, mbcsName);
 }
 #endif
 
 File::File(const File& src)
-  : mbcsName(mbcsName), internalName(internalName) {
+  : internalName(internalName), mbcsName(mbcsName) {
 }
 
 File& File::operator=(const File& src) {
@@ -158,6 +159,7 @@ log4cxx_status_t File::write(const LogString& src, apr_pool_t* p) const {
     size_t len = encoded.length();
     rv = apr_file_write(f, encoded.data(), &len);
     apr_status_t close = apr_file_close(f);
+	assert(close == APR_SUCCESS);
   }
   return rv;
 }

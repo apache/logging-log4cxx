@@ -79,7 +79,7 @@ namespace log4cxx {
               //
               //   if not enough space then return length so far
               //
-              if(mblen > (destEnd - current)) {
+              if(current + mblen > destEnd) {
                 return current - dest;
               }
               //

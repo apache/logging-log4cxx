@@ -29,7 +29,7 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
 DateLayout::DateLayout(const LogString& dateFormatOption) :
-   dateFormat(0), timeZoneID(), dateFormatOption(dateFormatOption)
+   timeZoneID(), dateFormatOption(dateFormatOption), dateFormat(0)
 {
 }
 

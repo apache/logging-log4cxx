@@ -80,7 +80,7 @@ namespace log4cxx {
 
       class NumericToken : public SimpleDateFormat::PatternToken {
       public:
-        NumericToken(int width)
+        NumericToken(size_t width)
             : width(width) {
         }
 
@@ -98,7 +98,7 @@ namespace log4cxx {
         }
 
       private:
-        int width;
+        size_t width;
         char zeroDigit;
       };
 

@@ -29,7 +29,7 @@ The <code>maxSize</code> argument must a positive integer.
 @param maxSize The maximum number of elements in the buffer.
 */
 CyclicBuffer::CyclicBuffer(int maxSize)
-: maxSize(maxSize), first(0), last(0), numElems(0), ea(maxSize)
+: ea(maxSize), first(0), last(0), numElems(0), maxSize(maxSize)
 {
 	if(maxSize < 1)
 	{

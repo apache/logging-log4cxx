@@ -32,8 +32,8 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketNode)
 
 SocketNode::SocketNode(helpers::SocketPtr& socket,
 	spi::LoggerRepositoryPtr& hierarchy)
- : hierarchy(hierarchy),
-   is(socket->getInputStream())
+ : is(socket->getInputStream()), 
+   hierarchy(hierarchy)
 {
 }
 

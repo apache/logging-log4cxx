@@ -39,29 +39,30 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 
 //
 //   Accessor for start time.
-//     Called from LogManager::getRepositorySelector
-//       to initialize APR and set "start" time.
 //
 log4cxx_time_t LoggingEvent::getStartTime() {
-  log4cxx::helpers::APRInitializer::initialize();
-  static apr_time_t startTime(apr_time_now());
-  return startTime;
+  return log4cxx::helpers::APRInitializer::initialize();
 }
 
-LoggingEvent::LoggingEvent()
-: timeStamp(0), ndcLookupRequired(true), locationInfo(),
-mdcCopyLookupRequired(true), properties(0)
-{
+LoggingEvent::LoggingEvent() : 
+   properties(0), 
+   ndcLookupRequired(true),
+   mdcCopyLookupRequired(true), 
+   timeStamp(0), 
+   locationInfo() {
 }
 
 LoggingEvent::LoggingEvent(
 	const LoggerPtr& logger, const LevelPtr& level,
-	const LogString& message, const LocationInfo& locationInfo)
-: logger(logger), level(level),
-message(message), locationInfo(locationInfo),
-timeStamp(apr_time_now()), ndcLookupRequired(true),
-mdcCopyLookupRequired(true), properties(0)
-{
+	const LogString& message, const LocationInfo& locationInfo) : 
+   logger(logger), 
+   level(level),
+   properties(0), 
+   ndcLookupRequired(true),
+   mdcCopyLookupRequired(true), 
+   message(message),
+   timeStamp(apr_time_now()), 
+   locationInfo(locationInfo) {
 	apr_os_thread_t thread = apr_os_thread_current();
 	threadId = (unsigned long) thread;
 }

@@ -33,13 +33,14 @@ ConsoleAppender::ConsoleAppender()
 }
 
 ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
- : WriterAppender(layout), useErr(false),
-   target(getSystemOut())
+ : WriterAppender(layout),
+   target(getSystemOut()),
+   useErr(false)
 {
 }
 
 ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& target)
- : WriterAppender(layout), target(getSystemOut())
+ : WriterAppender(layout), target(getSystemOut()), useErr(false)
 {
 	setTarget(target);
 	activateOptions(NULL);

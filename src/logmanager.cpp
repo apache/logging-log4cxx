@@ -32,6 +32,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -47,7 +48,7 @@ RepositorySelectorPtr& LogManager::getRepositorySelector() {
    //
    //     call to initialize APR and trigger "start" of logging clock
    //
-   static log4cxx_time_t tm = LoggingEvent::getStartTime();
+   APRInitializer::initialize();
    static spi::RepositorySelectorPtr selector;
    return selector;
 }

@@ -41,12 +41,12 @@ SocketHubAppender::~SocketHubAppender()
 }
 
 SocketHubAppender::SocketHubAppender()
- : port(DEFAULT_PORT), locationInfo(false), oosList(), thread()
+ : port(DEFAULT_PORT), oosList(), locationInfo(false), thread()
 {
 }
 
 SocketHubAppender::SocketHubAppender(int port)
- : port(port), locationInfo(false), oosList(), thread()
+ : port(port), oosList(), locationInfo(false), thread()
 {
 	startServer();
 }

@@ -72,7 +72,6 @@ namespace log4cxx {
 LogString OptionConverter::convertSpecialChars(const LogString& s)
 {
     logchar c;
-    int len = s.length();
     LogString sbuf;
 
     LogString::const_iterator i = s.begin();
@@ -280,7 +279,7 @@ const LevelPtr& OptionConverter::toLevel(const LogString& value,
 {
     size_t hashIndex = value.find(LOG4CXX_STR("#"));
 
-	if (hashIndex == -1)
+	if (hashIndex == LogString::npos)
 	{
 		if (value.empty())
 		{
@@ -288,16 +287,14 @@ const LevelPtr& OptionConverter::toLevel(const LogString& value,
 		}
 		else
 		{
-                        LogLog::debug(
-                           ((LogString) LOG4CXX_STR("OptionConverter::toLevel: no class name specified, level=["))
-                            + value
-                            +LOG4CXX_STR("]"));
+			LogLog::debug(
+                ((LogString) LOG4CXX_STR("OptionConverter::toLevel: no class name specified, level=["))
+                         + value
+                         +LOG4CXX_STR("]"));
 			// no class name specified : use standard Level class
 			return Level::toLevel(value, defaultValue);
 		}
 	}
-
-	const LevelPtr& result = defaultValue;
 
 	LogString clazz = value.substr(hashIndex + 1);
 	LogString levelName = value.substr(0, hashIndex);

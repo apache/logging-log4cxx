@@ -164,7 +164,7 @@ const char* SocketTimeoutException::what() const throw() {
 
 
 
-SocketImpl::SocketImpl() : fd(0), localport(-1), port(0), timeout(-1), address()
+SocketImpl::SocketImpl() : address(), fd(0), localport(-1), port(0), timeout(-1)
 {
 }
 

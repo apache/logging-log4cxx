@@ -28,14 +28,14 @@ size_t SocketInputStream::DEFAULT_BUFFER_SIZE = 32;
 
 SocketInputStream::SocketInputStream(SocketPtr socket)
 : socket(socket), bufferSize(DEFAULT_BUFFER_SIZE),
-currentPos(0), maxPos(0), memBuffer()
+  memBuffer(), currentPos(0), maxPos(0)
 {
 //	memBuffer = new unsigned char[bufferSize];
 }
 
 SocketInputStream::SocketInputStream(SocketPtr socket, size_t bufferSize)
 : socket(socket), bufferSize(bufferSize),
-currentPos(0), maxPos(0), memBuffer()
+  memBuffer(), currentPos(0), maxPos(0)
 {
 //	memBuffer = new unsigned char[bufferSize];
 }

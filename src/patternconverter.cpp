@@ -22,14 +22,14 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(PatternConverter)
 
-PatternConverter::PatternConverter() : minChar(-1), maxChar(0x7FFFFFFF),
-     leftAlign(false), next(), os()
+PatternConverter::PatternConverter() :  next(), minChar(-1), maxChar(0x7FFFFFFF),
+     leftAlign(false),os()
 {
 }
 
 PatternConverter::PatternConverter(const FormattingInfo& fi)
-   : minChar(fi.minChar), maxChar(fi.maxChar), leftAlign(fi.leftAlign),
-     next(), os()
+   : next(), minChar(fi.minChar), maxChar(fi.maxChar), leftAlign(fi.leftAlign),
+     os()
 {
 }
 

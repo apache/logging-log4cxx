@@ -40,13 +40,13 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(DatagramSocket);
 
 DatagramSocket::DatagramSocket()
- : fd(0), port(0), localPort(0), address(), localAddress()
+ : fd(0), address(), localAddress(), port(0), localPort(0)
 {
 	create();
 }
 
 DatagramSocket::DatagramSocket(int localPort)
- : fd(0), port(0), localPort(0), address(), localAddress()
+ : fd(0), address(), localAddress(), port(0), localPort(0)
 {
 	InetAddress bindAddr;
 	bindAddr.address = INADDR_ANY;
@@ -56,7 +56,7 @@ DatagramSocket::DatagramSocket(int localPort)
 }
 
 DatagramSocket::DatagramSocket(int localPort, InetAddress localAddress)
- : fd(0), port(0), localPort(0), address(), localAddress()
+ : fd(0), address(), localAddress(), port(0), localPort(0)
 {
 	create();
 	bind(localPort, localAddress);

@@ -30,30 +30,30 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
 FileAppender::FileAppender()
-: fileAppend(true), bufferedIO(false), bufferSize(8*1024),
-   fileName(), ofs(NULL), fileClosed(1)
+: fileAppend(true), fileName(), bufferedIO(false), bufferSize(8*1024),
+   ofs(NULL), fileClosed(1)
 {
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
         bool append, bool bufferedIO, int bufferSize)
-: fileAppend(append), bufferedIO(bufferedIO), bufferSize(bufferSize),
-  fileName(fileName), ofs(NULL), fileClosed(1)
+: fileAppend(append), fileName(fileName), bufferedIO(bufferedIO), bufferSize(bufferSize),
+  ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
         bool append)
-: fileAppend(append), bufferedIO(false), bufferSize(8*1024),
-  fileName(fileName), ofs(NULL), fileClosed(1)
+: fileAppend(append), fileName(fileName), bufferedIO(false), bufferSize(8*1024),
+  ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName)
-: fileAppend(true), bufferedIO(false), bufferSize(8*1024),
-  fileName(fileName), ofs(NULL), fileClosed(1)
+: fileAppend(true), fileName(fileName), bufferedIO(false), bufferSize(8*1024),
+  ofs(NULL), fileClosed(1)
 {
         this->layout = layout;
 }
@@ -146,8 +146,7 @@ void FileAppender::activateOptions(apr_pool_t* p)
             flags |= APR_BUFFERED;
           }
           ofs = NULL;
-          apr_status_t rv = apr_file_open(&ofs,
-              fileName.getMBCSName().c_str(), flags, perm, p);
+          fileName.open(&ofs, flags, perm, p);
           fileClosed = 0;
         }
         if (ofs != NULL) {

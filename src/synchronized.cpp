@@ -33,5 +33,5 @@ synchronized::synchronized(apr_thread_mutex_t* mutex)
 
 synchronized::~synchronized()
 {
-	apr_status_t stat = apr_thread_mutex_unlock(mutex);
+	apr_thread_mutex_unlock(mutex);
 }

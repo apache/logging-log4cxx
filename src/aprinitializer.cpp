@@ -17,6 +17,7 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <apr_pools.h>
 #include <apr_atomic.h>
+#include <apr_time.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
@@ -25,6 +26,7 @@ APRInitializer::APRInitializer() {
     apr_initialize();
     apr_pool_create(&p, NULL);
     apr_atomic_init(p);
+	startTime = apr_time_now();
 }
 
 APRInitializer::~APRInitializer() {
@@ -32,6 +34,7 @@ APRInitializer::~APRInitializer() {
     apr_terminate();
 }
 
-void APRInitializer::initialize() {
+log4cxx_time_t APRInitializer::initialize() {
   static APRInitializer init;
+  return init.startTime;
 }

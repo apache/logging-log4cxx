@@ -17,7 +17,10 @@
 #ifndef _LOG4CXX_HELPERS_APRINITIALIZER_H
 #define _LOG4CXX_HELPERS_APRINITIALIZER_H
 
+#include <log4cxx/portability.h>
+
 class apr_pool_t;
+
 
 namespace log4cxx
 {
@@ -26,13 +29,14 @@ namespace log4cxx
     class APRInitializer
     {
     public:
-    static void initialize();
+    static log4cxx_time_t initialize();
 
     private:
       APRInitializer();
       APRInitializer(const APRInitializer&);
       APRInitializer& operator=(const APRInitializer&);
       apr_pool_t * p;
+	  log4cxx_time_t startTime;
     public:
       ~APRInitializer();
     };

@@ -23,7 +23,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DatagramPacket);
 /** Constructs a DatagramPacket for receiving packets of length
 <code>length</code>. */
 DatagramPacket::DatagramPacket(void * buf, int length)
-: buf(buf), offset(0), length(length), port(0), address()
+: buf(buf), offset(0), length(length), address(), port(0)
 {
 }
 
@@ -39,7 +39,7 @@ int port)
 /** Constructs a DatagramPacket for receiving packets of length
 <code>length</code>, specifying an offset into the buffer. */
 DatagramPacket::DatagramPacket(void * buf, int offset, int length)
-: buf(buf), offset(offset), length(length), port(0), address()
+: buf(buf), offset(offset), length(length), address(), port(0)
 {
 }
 /** Constructs a datagram packet for sending packets of length

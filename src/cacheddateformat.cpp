@@ -60,7 +60,7 @@ int CachedDateFormat::findMillisecondStart(const log4cxx_time_t time,
       //
       //    find first difference between values
       //
-      for (int i = 0; i < formatted.length(); i++) {
+      for (size_t i = 0; i < formatted.length(); i++) {
         if (formatted[i] != plus987[i]) {
           if (formatted[i] == zeroDigit && plus987[i] == nineDigit) {
             return i;
@@ -114,7 +114,7 @@ void CachedDateFormat::format(LogString& s, log4cxx_time_t date, apr_pool_t* p) 
         prev -= APR_USEC_PER_SEC;
       }
           previousTime = prev;
-      int prevLength = cache.length();
+      size_t prevLength = cache.length();
       cache.erase(cache.begin(), cache.end());
       formatter->format(cache, date, p);
       //
@@ -144,10 +144,9 @@ void CachedDateFormat::format(LogString& s, log4cxx_time_t date, apr_pool_t* p) 
    */
 void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone) {
     formatter->setTimeZone(timeZone);
-    int prevLength = cache.length();
+    size_t prevLength = cache.length();
     cache.erase(cache.begin(), cache.end());
-    apr_pool_t *p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
+	Pool p;
     formatter->format(cache, previousTime, p);
     //
     //   if the length changed then
@@ -159,7 +158,6 @@ void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone) {
                                               nineDigit,
                                               formatter, p);
     }
-    apr_pool_destroy(p);
   }
 
 

@@ -152,7 +152,7 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString & id )
     LogString off( id.substr( 4 ) );
     if ( id.length() >= 7 )
     {
-      int colonPos = off.find( LOG4CXX_STR(':') );
+      size_t colonPos = off.find( LOG4CXX_STR(':') );
       if ( colonPos == LogString::npos )
       {
         minutes = StringHelper::toInt(off.substr(off.length() - 2));

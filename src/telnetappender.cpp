@@ -35,10 +35,10 @@ int TelnetAppender::DEFAULT_PORT = 23;
 
 TelnetAppender::TelnetAppender()
    : port(23),
-     sh(),
 	 connections(20),
-	 activeConnections(0),
-	 serverSocket(NULL)
+	 serverSocket(NULL),
+     sh(),
+	 activeConnections(0)
 {
 }
 
