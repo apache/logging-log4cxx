@@ -156,6 +156,23 @@ namespace log4cxx
 
 
       };
+      
+      
+      class LocationFlush : public LocationInfo {
+      	public:
+       /**
+        *   Constructor.
+        *   @remarks Used by LOG4CXX_LOCATION_FLUSH to generate
+        *       location info for current code site and
+        *       flush a logging stream
+        */
+        LocationFlush( const char * const fileName,
+                      const char * const className,
+                      const char * const methodName,
+                      int lineNumber )
+             : LocationInfo( fileName, className, methodName, lineNumber ) {
+        }
+      };
     }
   }
 }
@@ -166,14 +183,26 @@ namespace log4cxx
            __PRETTY_FUNCTION__,                                              \
            __func__,                                                         \
            __LINE__)
+      #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
+           __PRETTY_FUNCTION__,                                              \
+           __func__,                                                         \
+           __LINE__)
     #else
       #if defined(_MSC_VER)
         #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
              __FUNCSIG__,                                                      \
              __FUNCTION__,                                                     \
              __LINE__)
+        #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
+             __FUNCSIG__,                                                      \
+             __FUNCTION__,                                                     \
+             __LINE__)
       #else
         #define LOG4CXX_LOCATION ::log4cxx::spi::location::LocationInfo(__FILE__, \
+             ::log4cxx::spi::location::LocationInfo::NA,                       \
+             __func__,                                                         \
+             __LINE__)
+        #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::location::LocationFlush(__FILE__, \
              ::log4cxx::spi::location::LocationInfo::NA,                       \
              __func__,                                                         \
              __LINE__)

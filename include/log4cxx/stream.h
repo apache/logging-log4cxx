@@ -38,15 +38,15 @@ namespace log4cxx
 	                   ::std::basic_stringbuf<Elem, Tr>(::std::ios_base::out),
 	                   logger(logger),
 	                   level(level)  {
-	        isLoggerEnabled = logger->isEnabledFor(level);
+	        enabled = logger->isEnabledFor(level);
 	   }
 
        /**
         * Gets whether logger is currently enabled for the specified level.
         * @returns true if enabled
         */
-	   bool isEnabled() const {
-	   	  return isLoggerEnabled;
+	   inline bool isEnabled() const {
+	   	  return enabled;
 	   }
 
 	   /**
@@ -62,8 +62,17 @@ namespace log4cxx
 	    * @param level level
 	    */
 	   void setLevel(const ::log4cxx::LevelPtr& level) {
+	   	  bool newState = logger->isEnabledFor(level);
+	   	  //
+	   	  //    if not previously enabled but soon to be enabled then
+	   	  //       reset the buffer to clear any previously inserted content
+	   	  if (newState && !enabled) {
+	   	     //
+	   	     //   reset the stream buffer
+	   	     seekoff(0, ::std::ios_base::beg, ::std::ios_base::out);
+	   	  }
 	   	  this->level = level;
-	   	  isLoggerEnabled = logger->isEnabledFor(level);
+	   	  enabled = newState;
 	   }
 
        protected:
@@ -72,22 +81,30 @@ namespace log4cxx
         *
         */
 	   int sync() {
-	   	  isLoggerEnabled = logger->isEnabledFor(level);
-	   	  if (isLoggerEnabled) {
-	   	  	 ::std::basic_string<Elem, Tr> msg(str());
-	   	  	 if (msg.length() > 0) {
-	   	             logger->forcedLog(level,
-	   	                 msg,
-	   	                 location.getFileName(),
-	   	                 location.getLineNumber());
-	   	  	 }
+	   	  //
+	   	  //  if previously enabled
+	   	  if (enabled) {
+	   	  	 //  check (and cache) whether it is still enabled
+	   	     enabled = logger->isEnabledFor(level);
+	   	     //  log message if still enabled
+	   	     if (enabled) {
+	   	          logger->forcedLog(level,
+	   	              str(),
+	   	              location.getFileName(),
+	   	              location.getLineNumber());
+	   	     }
 	   	  }
-                  location.clear();
+	   	  //  clear call site information
+          location.clear();
 	   	  //
 	   	  //   reset the stream buffer
 	   	  seekoff(0, ::std::ios_base::beg, ::std::ios_base::out);
 	   	  return 0;
 	   }
+
+       bool isEnabledFor(const ::log4cxx::LevelPtr& level) const {
+       	   return logger.isEnabledFor(level);
+       }
 
 	   private:
 	   /**
@@ -103,10 +120,10 @@ namespace log4cxx
 	    */
 	   ::log4cxx::spi::location::LocationInfo location;
 
-           /**
-           * State of logger at last sync or level changes.
-           */
-           bool isLoggerEnabled;
+       /**
+        * State of logger at last sync or level changes.
+        */
+       bool enabled;
 
 	};
 
@@ -154,9 +171,13 @@ namespace log4cxx
 	   	  buffer.setLevel(level);
 	   }
 
-           bool isEnabled() const {
-             return buffer.isEnabled();
-           }
+       inline bool isEnabled() const {
+           return buffer.isEnabled();
+       }
+       
+       bool isEnabledFor(const ::log4cxx::LevelPtr& level) const {
+       	   return buffer.isEnabledFor(level);
+       }
 
 
 	   private:
@@ -175,9 +196,27 @@ template<class Elem, class Tr>
 ::log4cxx::basic_logstream<Elem, Tr>& operator<<(
    ::log4cxx::basic_logstream<Elem, Tr>& lhs,
    const ::log4cxx::spi::location::LocationInfo& rhs) {
-   lhs.setLocation(rhs);
+   if (LOG4CXX_UNLIKELY(lhs.isEnabled())) {
+      lhs.setLocation(rhs);
+   }
    return lhs;
 }
+
+/**
+* Insertion operator for LocationFlush.
+*
+*/
+template<class Elem, class Tr>
+::log4cxx::basic_logstream<Elem, Tr>& operator<<(
+   ::log4cxx::basic_logstream<Elem, Tr>& lhs,
+   const ::log4cxx::spi::location::LocationFlush& rhs) {
+   if (LOG4CXX_UNLIKELY(lhs.isEnabled())) {
+   	  lhs.setLocation(rhs);
+   	  lhs.flush();
+   }
+   return lhs;
+}
+
 
 /**
 * Insertion operator for LocationInfo.
@@ -197,11 +236,13 @@ template<class Elem, class Tr>                             \
 ::log4cxx::basic_logstream<Elem, Tr>& operator<<(          \
    ::log4cxx::basic_logstream<Elem, Tr>& lhs,              \
    InsType rhs) {                                          \
-   if (lhs.isEnabled()) {                                  \
+   if (LOG4CXX_UNLIKELY(lhs.isEnabled())) {                \
       ((::std::basic_ostream<Elem, Tr>&) lhs) << rhs;      \
    }                                                       \
    return lhs;                                             \
 }
+
+
 
 /*
 * Insertion operators for common types.
@@ -228,15 +269,15 @@ template<class Elem, class Tr>
 ::log4cxx::basic_logstream<Elem, Tr>& operator<<(
    ::log4cxx::basic_logstream<Elem, Tr>& lhs,
    const ::std::basic_string<Elem, Tr>& rhs) {
-   if (lhs.isEnabled()) {
+   if (LOG4CXX_UNLIKELY(lhs.isEnabled())) {
       ((::std::basic_ostream<Elem, Tr>&) lhs) << rhs;
    }
    return lhs;
 }
 
 
-#if !defined(LOG4CXX_ENDL)
-#define LOG4CXX_ENDMSG LOG4CXX_LOCATION << ::std::flush
+#if !defined(LOG4CXX_ENDMSG)
+#define LOG4CXX_ENDMSG LOG4CXX_LOCATION_FLUSH
 #endif
 
 
