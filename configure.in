@@ -83,6 +83,7 @@ AC_ARG_ENABLE(unicode,
 
 AC_CONFIG_FILES([
 Makefile
+docs/Makefile
 src/Makefile
 msvc/Makefile
 msvc/dll/Makefile
