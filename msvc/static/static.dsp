@@ -347,10 +347,6 @@ SOURCE=..\..\src\simplelayout.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\simplesocketserver.cpp
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\smtpappender.cpp
 # End Source File
 # Begin Source File
