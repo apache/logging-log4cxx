@@ -284,19 +284,20 @@ public:
 
         ResourceBundlePtr getBundle(const LogString& lang, const LogString& region)
         {
-        ResourceBundlePtr bundle(PropertyResourceBundle::getBundle(LOG4CXX_STR("L7D"),
-                      Locale(lang, region)));
-                CPPUNIT_ASSERT(bundle != 0);
-        return bundle;
+             Locale l(lang, region);
+             ResourceBundlePtr bundle(
+                 PropertyResourceBundle::getBundle(LOG4CXX_STR("L7D"),l));
+             CPPUNIT_ASSERT(bundle != 0);
+             return bundle;
         }
 
         void testRB1()
         {
-        ResourceBundlePtr rbUS(getBundle(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
-        ResourceBundlePtr rbFR(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
-        ResourceBundlePtr rbCH(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
+                ResourceBundlePtr rbUS(getBundle(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
+                ResourceBundlePtr rbFR(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
+                ResourceBundlePtr rbCH(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
 
-        LoggerPtr root = Logger::getRootLogger();
+                LoggerPtr root = Logger::getRootLogger();
                 root->setResourceBundle(rbUS);
 
                 ResourceBundlePtr t = root->getResourceBundle();
@@ -317,11 +318,11 @@ public:
         void testRB2()
         {
                 LoggerPtr root = Logger::getRootLogger();
-        ResourceBundlePtr rbUS(getBundle(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
-        ResourceBundlePtr rbFR(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
-        ResourceBundlePtr rbCH(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
+                ResourceBundlePtr rbUS(getBundle(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
+                ResourceBundlePtr rbFR(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
+                ResourceBundlePtr rbCH(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
 
-        root->setResourceBundle(rbUS);
+                root->setResourceBundle(rbUS);
 
                 ResourceBundlePtr t = root->getResourceBundle();
                 CPPUNIT_ASSERT(t == rbUS);
@@ -341,11 +342,11 @@ public:
 
         void testRB3()
         {
-        ResourceBundlePtr rbUS(getBundle(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
-        ResourceBundlePtr rbFR(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
-        ResourceBundlePtr rbCH(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
+                ResourceBundlePtr rbUS(getBundle(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
+                ResourceBundlePtr rbFR(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
+                ResourceBundlePtr rbCH(getBundle(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
 
-        LoggerPtr root = Logger::getRootLogger();
+                LoggerPtr root = Logger::getRootLogger();
                 root->setResourceBundle(rbUS);
 
                 ResourceBundlePtr t = root->getResourceBundle();

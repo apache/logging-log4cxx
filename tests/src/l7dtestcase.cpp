@@ -48,16 +48,19 @@ class L7dTestCase : public CppUnit::TestFixture
 public:
         void setUp()
         {
+                Locale localeUS(LOG4CXX_STR("en"), LOG4CXX_STR("US"));
                 bundles[0] =
-                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
+                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), localeUS);
                 CPPUNIT_ASSERT(bundles[0] != 0);
-
+ 
+                Locale localeFR(LOG4CXX_STR("fr"), LOG4CXX_STR("FR"));
                 bundles[1] =
-                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
+                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), localeFR);
                 CPPUNIT_ASSERT(bundles[1] != 0);
 
+                Locale localeCH(LOG4CXX_STR("fr"), LOG4CXX_STR("CH"));
                 bundles[2] =
-                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), Locale(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
+                        ResourceBundle::getBundle(LOG4CXX_STR("L7D"), localeCH);
                 CPPUNIT_ASSERT(bundles[2] != 0);
 
                 root = Logger::getRootLogger();
