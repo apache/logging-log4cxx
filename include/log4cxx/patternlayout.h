@@ -103,8 +103,8 @@ namespace log4cxx
 	<tr> <td align=center><b>d</b></td> <td>Used to output the date of
 	the logging event. The date conversion specifier may be
 	followed by a <em>date format specifier</em> enclosed between
-	braces. For example, <b>\%d{\%H:\%M:\%s}</b> or
-	<b>\%d{\%d&nbsp;\%b&nbsp;\%Y&nbsp;\%H:\%M:\%s}</b>.  If no
+	braces. For example, <b>\%d{\%H:\%M:\%S}</b> or
+	<b>\%d{\%d&nbsp;\%b&nbsp;\%Y&nbsp;\%H:\%M:\%S}</b>.  If no
 	date format specifier is given then {@link helpers::ISO8601DateFormat
 	ISO8601 format} is assumed.
 

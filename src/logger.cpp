@@ -14,8 +14,6 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-/*! \file logger.cpp Implementation of the class Logger. */
-
 #include <log4cxx/logger.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/logmanager.h>

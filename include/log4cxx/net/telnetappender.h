@@ -33,33 +33,31 @@ namespace log4cxx
 	
 	namespace net
 	{
-	/**
-	<p>The TelnetAppender is a log4cxx appender that specializes in
-	writing to a read-only socket.  The output is provided in a
-	telnet-friendly way so that a log can be monitored over TCP/IP.
-	Clients using telnet connect to the socket and receive log data.
-	This is handy for remote monitoring, especially when monitoring a
-	servlet.
-	
-	  <p>Here is a list of the available configuration options:
-	  
-		<table border=1>
-		<tr>
-		<th>Name</th>
-		<th>Requirement</th>
-		<th>Description</th>
-		<th>Sample Value</th>
-		</tr>
-		
-		  <tr>
-		  <td>Port</td>
-		  <td>optional</td>
-		  <td>This parameter determines the port to use for announcing log events.  The default port is 23 (telnet).</td>
-		  <td>5875</td>
-		  </table>
-		  
-			@author <a HREF="mailto:jay@v-wave.com">Jay Funnell</a>
-		*/
+/**
+<p>The TelnetAppender is a log4cxx appender that specializes in
+writing to a read-only socket.  The output is provided in a
+telnet-friendly way so that a log can be monitored over TCP/IP.
+Clients using telnet connect to the socket and receive log data.
+This is handy for remote monitoring, especially when monitoring a
+servlet.
+
+<p>Here is a list of the available configuration options:
+
+<table border=1>
+<tr>
+<td align=center><b>Name</b></td>
+<td align=center><b>Requirement</b></td>
+<td align=center><b>Description</b></td>
+<td align=center><b>Sample Value</b></td>
+</tr>
+
+<tr>
+<td>Port</td>
+<td>optional</td>
+<td>This parameter determines the port to use for announcing log events.  The default port is 23 (telnet).</td>
+<td>5875</td>
+</table>
+*/
         class TelnetAppender : public AppenderSkeleton
 		{
 		class SocketHandler;

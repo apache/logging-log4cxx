@@ -24,11 +24,11 @@ namespace log4cxx
 	namespace helpers
 	{
 		/**
-		Formats a date in the format "%Y-%m-%d %H:%M:%S,%Q" for example
+		Formats a date in the format <b>\%d-\%m-\%Y \%H:\%M:\%S,\%Q</b> for example
 		"1999-11-27 15:49:37,459".
 
-		<p>Refer to the <a>
-		href=http://www.cl.cam.ac.uk/~mgk25/iso-time.html>summary of the
+		<p>Refer to the
+		<a href=http://www.cl.cam.ac.uk/~mgk25/iso-time.html>summary of the
 		International Standard Date and Time Notation</a> for more
 		information on this format.
 		*/

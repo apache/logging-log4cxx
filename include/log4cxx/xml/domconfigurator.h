@@ -54,29 +54,38 @@ namespace log4cxx
 			std::map<tstring, AppenderPtr> map;
 		};
 
-		/**
-		Use this class to initialize the log4cxx environment using a DOM tree.
+/**
+Use this class to initialize the log4cxx environment using a DOM tree.
 
-		<p>Sometimes it is useful to see how log4cxx is reading configuration
-		files. You can enable log4cxx internal logging by setting the
-		<code>debug</code> attribute in the
-		<code>log4cxx</code> element. As in
-		<pre>
-		&lt;log4cxx <b>debug="true"</b>>
-		...
-		&lt;/log4cxx>
-		</pre>
+<p>Sometimes it is useful to see how log4cxx is reading configuration
+files. You can enable log4cxx internal logging by setting the
+<code>debug</code> attribute in the
+<code>log4cxx</code> element. As in
+<pre>
+	&lt;log4j:configuration <b>debug="true"</b> xmlns:log4j="http://jakarta.apache.org/log4j/">
+	...
+	&lt;/log4j:configuration>
+</pre>
 
-		<p>There are sample XML files included in the package.
-		*/
+<p>There are sample XML files included in the package.
+*/
 		class DOMConfigurator
 		{
 		public:
 			/**
-			A static version of doConfigure.
+			A static version of #doConfigure.
 			*/
 			static void configure(const tstring& filename);
+
+			/**
+			Interpret the XML file pointed by <code>filename</code> and set up
+			log4cxx accordingly.
+			<p>The configuration is done relative to the hierarchy parameter.
+			@param filename The file to parse.
+			@param hierarchy The hierarchy to operation upon.
+			*/
 			void doConfigure(const tstring& filename, spi::LoggerRepositoryPtr repository);
+
 			void BuildElement(const tstring& parentTagName, const tstring& tagName);
 			void BuildAttribute(const tstring& elementTagName, const tstring& name, const tstring& value);
 

@@ -32,7 +32,7 @@ PropertySetter::PropertySetter(helpers::ObjectPtr obj) : obj(obj)
 {
 }
 
-void PropertySetter::setProperties(helpers::ObjectPtr obj, Properties& properties, const tstring& prefix)
+void PropertySetter::setProperties(helpers::ObjectPtr obj, helpers::Properties& properties, const tstring& prefix)
 {
 	PropertySetter(obj).setProperties(properties, prefix);
 }

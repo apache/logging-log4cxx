@@ -14,8 +14,6 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
-/** \file logger.h Declaration of the class Logger. */
-
 #ifndef _LOG4CXX_LOGGER_H
 #define _LOG4CXX_LOGGER_H
 
@@ -202,6 +200,7 @@ namespace log4cxx
         /**
         This method creates a new logging event and logs the event
         without further checks.
+		@param fqcn The fully qualified name of the calling logger class.
         @param level the level to log.
         @param message the message string to log.
 		@param file the file where the log statement was written.

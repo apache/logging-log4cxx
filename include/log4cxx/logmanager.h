@@ -35,8 +35,8 @@ namespace log4cxx
     
     /**
     * Use the <code>LogManager</code> class to retreive Logger
-    * instances or to operate on the current 
-    * LoggerRepository. When the <code>LogManager</code> class is loaded
+    * instances or to operate on the current {@link spi::LoggerRepository
+	* LoggerRepository}. When the <code>LogManager</code> class is loaded
     * into memory the default initialization procedure is inititated.
 	*/
     class LogManager
@@ -89,6 +89,10 @@ namespace log4cxx
 
         static void shutdown();
 
+		/**
+		Reset all values contained in this current {@link 
+		spi::LoggerRepository LoggerRepository}	to their default.
+		*/
         static void resetConfiguration();
     }; // class LogManager
 }; // namespace log4cxx

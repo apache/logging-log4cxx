@@ -42,7 +42,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggerRepository)
 IMPLEMENT_LOG4CXX_OBJECT(DenyAllFilter)
 IMPLEMENT_LOG4CXX_OBJECT(RepositorySelector)
 
-const Class& Loader::loadClass(const tstring& clazz)
+const helpers::Class& Loader::loadClass(const tstring& clazz)
 {
 	return Class::forName(clazz);
 }
