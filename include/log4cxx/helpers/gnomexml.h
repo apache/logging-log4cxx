@@ -26,6 +26,19 @@
 
 #include <libxml/tree.h>
 
+//
+//  This checks that tree.h is from libxml2 not libxml
+//  The name of this class might tempt you to put /usr/include/gnome-xml
+//      in the include path which, at least for my distribution, is libxml.
+//      libxml2 is located in /usr/include/libxml2.  Note: gnomexml.cpp
+//      can compile for both libxml and libxml2 if ".children" is
+//      replaced by ".xmlChildrenNode" and "#include <libxml/parse.h>" is
+//      added.  See bug report LOGCXX-21.
+//
+#if LIBXML_VERSION < 20000
+#error libxml include file found where libxml2 was expected
+#endif
+
 namespace log4cxx
 {
 	namespace helpers
