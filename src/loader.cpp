@@ -25,6 +25,8 @@
 #include <log4cxx/varia/denyallfilter.h>
 #include <log4cxx/spi/repositoryselector.h>
 #include <log4cxx/spi/appenderattachable.h>
+#include <log4cxx/helpers/xml.h>
+#include <log4cxx/spi/triggeringeventevaluator.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -41,6 +43,11 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggerFactory)
 IMPLEMENT_LOG4CXX_OBJECT(LoggerRepository)
 IMPLEMENT_LOG4CXX_OBJECT(DenyAllFilter)
 IMPLEMENT_LOG4CXX_OBJECT(RepositorySelector)
+IMPLEMENT_LOG4CXX_OBJECT(XMLDOMNode)
+IMPLEMENT_LOG4CXX_OBJECT(XMLDOMDocument)
+IMPLEMENT_LOG4CXX_OBJECT(XMLDOMElement)
+IMPLEMENT_LOG4CXX_OBJECT(XMLDOMNodeList)
+IMPLEMENT_LOG4CXX_OBJECT(TriggeringEventEvaluator)
 
 const helpers::Class& Loader::loadClass(const tstring& clazz)
 {
