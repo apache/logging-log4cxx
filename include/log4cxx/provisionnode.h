@@ -19,6 +19,7 @@
 
 #include <vector>
 #include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/logger.h>
 
 namespace log4cxx
 {
