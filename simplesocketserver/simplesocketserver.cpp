@@ -16,7 +16,7 @@
  
 #include <log4cxx/portability.h>
 
-#if defined(WIN32) || defined(_WIN32)
+#ifdef WIN32
 #include <windows.h>
 #endif
 

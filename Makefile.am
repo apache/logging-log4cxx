@@ -1,4 +1,4 @@
-SUBDIRS = docs src msvc include tests performance examples
+SUBDIRS = docs src msvc include simplesocketserver tests performance examples
 EXTRA_DIST = autogen.sh license.apl
 
 

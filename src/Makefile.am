@@ -89,9 +89,3 @@ liblog4cxx_la_SOURCES = \
 AM_CPPFLAGS = @CPPFLAGS_XML@ @CPPFLAGS_ODBC@
 liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_XML@ @LIBS_ODBC@
 
-bin_PROGRAMS = simplesocketserver
-simplesocketserver_SOURCES = simplesocketserver.cpp
-simplesocketserver_LDADD = $(top_builddir)/src/liblog4cxx.la
-
-
-
