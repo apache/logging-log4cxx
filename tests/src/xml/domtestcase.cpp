@@ -32,6 +32,9 @@
 #include "../util/transformer.h"
 #include <iostream>
 #include <log4cxx/file.h>
+#include <log4cxx/fileappender.h>
+#include <apr_pools.h>
+#include <apr_file_io.h>
 
 #define LOG4CXX_TEST_STR(x) L##x
 
@@ -52,6 +55,8 @@ class DOMTestCase : public CppUnit::TestFixture
 {
         CPPUNIT_TEST_SUITE(DOMTestCase);
                 CPPUNIT_TEST(test1);
+                CPPUNIT_TEST(test2);
+                CPPUNIT_TEST(test3);
         CPPUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
@@ -61,6 +66,10 @@ class DOMTestCase : public CppUnit::TestFixture
         static const File TEMP_A2;
         static const File FILTERED_A1;
         static const File FILTERED_A2;
+        static const File TEMP_A1_2;
+        static const File TEMP_A2_2;
+        static const File FILTERED_A1_2;
+        static const File FILTERED_A2_2;
 
 public:
         void setUp()
@@ -74,8 +83,8 @@ public:
                 root->getLoggerRepository()->resetConfiguration();
         }
 
-        void test1()
-        {
+
+        void test1() {
                 DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase1.xml"));
                 common();
 
@@ -115,6 +124,51 @@ public:
                 CPPUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
         }
 
+        //
+        //   Same test but backslashes instead of forward
+        //
+        void test2() {
+                DOMConfigurator::configure(LOG4CXX_TEST_STR("input\\xml\\DOMTestCase2.xml"));
+                common();
+
+                ThreadFilter threadFilter;
+                ISO8601Filter iso8601Filter;
+
+                std::vector<Filter *> filters1;
+
+                std::vector<Filter *> filters2;
+                filters2.push_back(&threadFilter);
+                filters2.push_back(&iso8601Filter);
+
+                try
+                {
+                        Transformer::transform(TEMP_A1_2, FILTERED_A1_2, filters1);
+                        Transformer::transform(TEMP_A2_2, FILTERED_A2_2, filters2);
+                }
+                catch(UnexpectedFormatException& e)
+                {
+                    std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+                        throw;
+                }
+
+                const File witness1(L"witness/dom.A1.2");
+                const File witness2(L"witness/dom.A2.2");
+                //   TODO: A1 doesn't contain duplicate entries
+                //
+                //                CPPUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
+                CPPUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
+        }
+
+        void test3() {
+                DOMConfigurator::configure(LOG4CXX_STR("input/xml/DOMTestCase3.xml"));
+                LoggerPtr root(Logger::getRootLogger());
+                FileAppenderPtr appender(root->getAppender(LOG4CXX_STR("A1")));
+                File file(appender->getFile());
+                std::string osname(file.getOSName());
+                CPPUNIT_ASSERT_EQUAL((std::string) "e:\\tmp\\temp.A1", osname);
+        }
+
+
         void common()
         {
                 int i = -1;
@@ -153,6 +207,11 @@ const File DOMTestCase::TEMP_A1(L"output/temp.A1");
 const File DOMTestCase::TEMP_A2(L"output/temp.A2");
 const File DOMTestCase::FILTERED_A1(L"output/filtered.A1");
 const File DOMTestCase::FILTERED_A2(L"output/filtered.A2");
+
+const File DOMTestCase::TEMP_A1_2(L"output/temp.A1.2");
+const File DOMTestCase::TEMP_A2_2(L"output/temp.A2.2");
+const File DOMTestCase::FILTERED_A1_2(L"output/filtered.A1.2");
+const File DOMTestCase::FILTERED_A2_2(L"output/filtered.A2.2");
 
 
 #endif //HAVE_XML

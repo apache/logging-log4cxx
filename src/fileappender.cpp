@@ -111,7 +111,9 @@ void FileAppender::setOption(const LogString& option,
         if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
                 || StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
         {
-                fileName = value;
+                LogString tmpValue(value);
+                stripDoubleBackslashes(tmpValue);
+                fileName = tmpValue;
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
         {
@@ -177,3 +179,14 @@ void FileAppender::subAppend(const char* encoded, log4cxx_size_t size, Pool& p) 
 }
 
 
+
+void FileAppender::stripDoubleBackslashes(LogString& name) {
+    logchar backslash = LOG4CXX_STR('\\');
+    for(LogString::size_type i = name.find(backslash);
+        i != LogString::npos;
+        i = name.find(backslash, i + 1)) {
+            if (i + 1 < name.length() && name[i + 1] == backslash) {
+                name.erase(i, 1);
+            }
+    }
+}

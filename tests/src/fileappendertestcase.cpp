@@ -18,11 +18,48 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/fileappender.h>
-
+#include "insertwide.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-WriterAppender* FileAppenderTestCase::createWriterAppender() const {
+WriterAppender* FileAppenderAbstractTestCase::createWriterAppender() const {
     return createFileAppender();
 }
+
+
+/**
+   Unit tests of log4cxx::FileAppender
+ */
+class FileAppenderTestCase : public FileAppenderAbstractTestCase
+{
+	CPPUNIT_TEST_SUITE(FileAppenderTestCase);
+                //
+                //    tests inherited from AppenderSkeletonTestCase
+                //
+                CPPUNIT_TEST(testDefaultThreshold);
+                CPPUNIT_TEST(testSetOptionThreshold);
+
+                //  tests defined here
+                CPPUNIT_TEST(testSetDoubleBackslashes);
+
+	CPPUNIT_TEST_SUITE_END();
+
+
+
+
+public:
+
+        FileAppender* createFileAppender() const {
+          return new log4cxx::FileAppender();
+        }
+
+        void testSetDoubleBackslashes() {
+            FileAppender appender;
+            appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
+            const File& file = appender.getFile();
+            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getName()); 
+        }
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION(FileAppenderTestCase);

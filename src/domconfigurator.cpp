@@ -586,15 +586,16 @@ void DOMConfigurator::setParameter(XMLDOMElementPtr elem, PropertySetter& propSe
 {
         LogString name = subst(elem->getAttribute(NAME_ATTR));
         LogString value = elem->getAttribute(VALUE_ATTR);
-    Pool p;
-        value = subst(OptionConverter::convertSpecialChars(value));	propSetter.setProperty(name, value, p);
+        Pool p;
+        value = subst(value);
+        propSetter.setProperty(name, value, p);
 }
 
 void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr& repository)
 {
         this->repository = repository;
-    std::wostringstream os(L"DOMConfigurator configuring file ");
-    os << filename.getName() << L"...";
+        std::wostringstream os(L"DOMConfigurator configuring file ");
+        os << filename.getName() << L"...";
         LogLog::debug(os.str());
 
         appenderBag = new AppenderMap();

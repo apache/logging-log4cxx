@@ -25,7 +25,7 @@ using namespace log4cxx::helpers;
 /**
    Unit tests of log4cxx::RollingFileAppender
  */
-class RollingFileAppenderTestCase : public FileAppenderTestCase
+class RollingFileAppenderTestCase : public FileAppenderAbstractTestCase
 {
 	CPPUNIT_TEST_SUITE(RollingFileAppenderTestCase);
                 //

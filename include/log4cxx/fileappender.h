@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -220,6 +220,8 @@ namespace log4cxx
         private:
         FileAppender(const FileAppender&);
         FileAppender& operator=(const FileAppender&);
+
+        void stripDoubleBackslashes(LogString& name);
 
         }; // class FileAppender
 }  // namespace log4cxx

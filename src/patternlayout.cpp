@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/patternconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/optionconverter.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -47,7 +48,7 @@ PatternLayout::PatternLayout(const LogString& pattern) : pattern(pattern)
 
 void PatternLayout::setConversionPattern(const LogString& conversionPattern)
 {
-    pattern = conversionPattern;
+    pattern = OptionConverter::convertSpecialChars(conversionPattern);
     Pool pool;
     activateOptions(pool);
 }
@@ -76,7 +77,7 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
                LOG4CXX_STR("CONVERSIONPATTERN"),
                LOG4CXX_STR("conversionpattern")))
         {
-                pattern = value;
+                setConversionPattern(value);
         }
         else if (StringHelper::equalsIgnoreCase(option,
                LOG4CXX_STR("TIMEZONE"),

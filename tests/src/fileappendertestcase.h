@@ -23,7 +23,7 @@
    An abstract set of tests for inclusion in concrete
    appender test case
  */
-class FileAppenderTestCase : public WriterAppenderTestCase
+class FileAppenderAbstractTestCase : public WriterAppenderTestCase
 {
 
 public:
