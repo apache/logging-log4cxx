@@ -24,14 +24,14 @@ namespace log4cxx
 	namespace helpers
 	{
 		/**
-		Formats a date in the format "\%d \%b \%Y \%H:\%M:\%S" for example,
-	   "06 Nov 1994 15:49:37".
+		Formats a date in the format <b>\%d-\%m-\%Y \%H:\%M:\%S,\%Q</b> for example,
+	   "06 Nov 1994 15:49:37,459".
 		*/
 		class DateTimeDateFormat : public DateFormat
 		{
 		public:
 			DateTimeDateFormat(const String& timeZone = _T(""))
-			 : DateFormat(_T("%d %b %Y %H:%M:%S"), timeZone) {}
+			 : DateFormat(_T("%d %b %Y %H:%M:%S,%Q"), timeZone) {}
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

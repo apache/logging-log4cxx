@@ -24,8 +24,8 @@ namespace log4cxx
 	namespace helpers
 	{
 		/**
-		Formats a date in the format "%H:%M:%S" for example,
-		"15:49:37".
+		Formats a date in the format <b>%H:%M:%S,%Q</b> for example,
+		"15:49:37,459".
 		*/
 		class AbsoluteTimeDateFormat : public DateFormat
 		{
@@ -51,7 +51,7 @@ namespace log4cxx
 			static String DATE_AND_TIME_DATE_FORMAT;
 
 			AbsoluteTimeDateFormat(const String& timeZone = _T(""))
-			: DateFormat(_T("%H:%M:%S"), timeZone) {}
+			: DateFormat(_T("%H:%M:%S,%Q"), timeZone) {}
 		};
 	}; // namespace helpers
 }; // namespace log4cxx
