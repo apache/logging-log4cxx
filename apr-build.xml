@@ -214,6 +214,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl" if="is-unix"/>
+        <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <project type="${project.type}" outfile="${project.dir}/${test}" if="project.if"/>
     </cc>
 </target>
@@ -344,6 +345,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <project type="${project.type}" outfile="${project.dir}/mod_test" if="project.if"/>
     </cc>
     <copy file="${libmod_test.so}" tofile="${apr.lib.dir}/.libs/mod_test.so"/>
@@ -384,6 +386,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl" if="is-unix"/>
+        <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <project type="${project.type}" outfile="${project.dir}/testall" if="project.if"/>
     </cc>
 </target>

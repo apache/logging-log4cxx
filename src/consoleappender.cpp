@@ -124,7 +124,7 @@ void ConsoleAppender::setOption(const LogString& option, const LogString& value)
 
 
 void ConsoleAppender::subAppend(const LogString& msg, Pool&) {
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_HAS_WCHAR_T && LOG4CXX_HAS_STD_WCOUT
         std::wstring wmsg;
         log4cxx::helpers::Transcoder::encode(msg, wmsg);
         if (useErr) {

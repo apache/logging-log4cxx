@@ -32,15 +32,12 @@
 #endif
 
 
-extern "C" {
-struct apr_thread_t;
-}
-
 namespace log4cxx
 {
         namespace helpers
         {
                 class Pool;
+                typedef void log4cxx_thread_t;
 
                 class LOG4CXX_EXPORT Thread
                 {
@@ -49,7 +46,7 @@ namespace log4cxx
                         ~Thread();
 
                         void run(log4cxx::helpers::Pool& pool,
-                                void* (LOG4CXX_THREAD_FUNC *start)(apr_thread_t* thread, void* data),
+                                void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
                                 void* data);
                         void stop();
                         void join();
@@ -61,7 +58,7 @@ namespace log4cxx
                         inline bool isActive() { return thread != 0; }
 
                 private:
-                        apr_thread_t* thread;
+                        log4cxx_thread_t* thread;
                         volatile bool finished;
                         Thread(const Thread&);
                         Thread& operator=(const Thread&);

@@ -136,7 +136,7 @@ namespace log4cxx
 
                 enum { DEFAULT_BUFFER_SIZE = 128 };
 
-                static void* LOG4CXX_THREAD_FUNC dispatch(apr_thread_t* thread, void* data);
+                static void* LOG4CXX_THREAD_FUNC dispatch(helpers::log4cxx_thread_t* thread, void* data);
 
         }; // class AsyncAppender
 

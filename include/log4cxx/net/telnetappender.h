@@ -129,7 +129,7 @@ servlet.
                         helpers::ServerSocket* serverSocket;
                         helpers::Thread sh;
                         volatile unsigned int activeConnections;
-                        static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
+                        static void* LOG4CXX_THREAD_FUNC acceptConnections(helpers::log4cxx_thread_t* thread, void* data);
                 }; // class TelnetAppender
     } // namespace net
 } // namespace log4cxx

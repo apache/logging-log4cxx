@@ -55,7 +55,7 @@ namespace log4cxx
                   */
                   void setTimeZone(const TimeZonePtr& zone);
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_HAS_STD_WLOCALE && LOG4CXX_HAS_WCHAR_T
                   typedef wchar_t localechar;
 #else
                   typedef char localechar;

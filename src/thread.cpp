@@ -30,9 +30,10 @@ Thread::~Thread() {
         join();
 }
 
-
-void Thread::run(Pool& p, apr_thread_start_t start, void* data) {
-    if (thread != NULL && !finished) {
+void Thread::run(log4cxx::helpers::Pool& p,
+        void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
+        void* data) {
+        if (thread != NULL && !finished) {
                 throw ThreadException(0);
         }
         apr_threadattr_t* attrs;
@@ -40,7 +41,8 @@ void Thread::run(Pool& p, apr_thread_start_t start, void* data) {
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
-        stat = apr_thread_create(&thread, attrs, start, data, (apr_pool_t*) p.getAPRPool());
+        stat = apr_thread_create((apr_thread_t**) &thread, attrs, 
+            (apr_thread_start_t) start, data, (apr_pool_t*) p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
@@ -50,7 +52,7 @@ void Thread::run(Pool& p, apr_thread_start_t start, void* data) {
 
 void Thread::stop() {
         if (thread != NULL && !finished) {
-                apr_status_t stat = apr_thread_exit(thread, 0);
+                apr_status_t stat = apr_thread_exit((apr_thread_t*) thread, 0);
                 finished = true;
                 thread = NULL;
                 if (stat != APR_SUCCESS) {
@@ -62,7 +64,7 @@ void Thread::stop() {
 void Thread::join() {
         if (thread != NULL && !finished) {
                 apr_status_t startStat;
-                apr_status_t stat = apr_thread_join(&startStat, thread);
+                apr_status_t stat = apr_thread_join(&startStat, (apr_thread_t*) thread);
                 finished = true;
                 thread = NULL;
                 if (stat != APR_SUCCESS) {

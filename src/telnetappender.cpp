@@ -140,7 +140,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 }
 
 
-void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* thread, void* data) {
+void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* thread, void* data) {
         TelnetAppender* pThis = (TelnetAppender*) data;
 
         try

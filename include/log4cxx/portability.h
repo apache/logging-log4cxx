@@ -55,14 +55,25 @@ typedef long long log4cxx_int64_t;
 typedef log4cxx_int64_t log4cxx_time_t;
 typedef int log4cxx_status_t;
 
-#if !defined(__BORLANDC__)
+#if defined(_MSC_VER)
 #define HAVE_XML 1
 #define LOG4CXX_HAVE_XML 1
+#endif
+
+#if !defined(__BORLANDC__)
 #define LOG4CXX_RETURN_AFTER_THROW
 #endif
 
 #if !defined(_WIN32)
 #define LOG4CXX_HAVE_SYSLOG 1
+#endif
+
+#if !defined(LOG4CXX_HAS_STD_WCOUT)
+#define LOG4CXX_HAS_STD_WCOUT 1
+#endif
+
+#if !defined(LOG4CXX_HAS_STD_WLOCALE)
+#define LOG4CXX_HAS_STD_WLOCALE 1
 #endif
 
 #endif //_LOG4CXX_PORTABILITY_H

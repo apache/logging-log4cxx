@@ -1,3 +1,21 @@
+Index: include/arch/win32/apr_arch_misc.h
+===================================================================
+--- include/arch/win32/apr_arch_misc.h	(revision 153549)
++++ include/arch/win32/apr_arch_misc.h	(working copy)
+@@ -133,10 +133,12 @@
+ #if APR_HAS_ANSI_FS && APR_HAS_UNICODE_FS
+ #define IF_WIN_OS_IS_UNICODE if (apr_os_level >= APR_WIN_UNICODE)
+ #define ELSE_WIN_OS_IS_ANSI else
+-#else APR_HAS_UNICODE_FS
++#else 
++#if APR_HAS_UNICODE_FS
+ #define IF_WIN_OS_IS_UNICODE
+ #define ELSE_WIN_OS_IS_ANSI
+ #endif /* WINNT */
++#endif
+ 
+ typedef enum {
+     DLL_WINBASEAPI = 0,    // kernel32 From WinBase.h
 Index: include/arch/win32/apr_private.h
 ===================================================================
 --- include/arch/win32/apr_private.h	(revision 153549)
@@ -64,6 +82,18 @@ Index: include/arch/win32/apr_private.h
  /*
   * Include common private declarations.
   */
+Index: include/arch/win32/apr_arch_file_io.h
+===================================================================
+--- include/arch/win32/apr_arch_file_io.h	(revision 153549)
++++ include/arch/win32/apr_arch_file_io.h	(working copy)
+@@ -52,7 +52,6 @@
+ #include "arch/win32/apr_arch_utf8.h"
+ #include <wchar.h>
+ 
+-typedef apr_uint16_t apr_wchar_t;
+ 
+ /* Helper functions for the WinNT ApiW() functions.  APR treats all
+  * resource identifiers (files, etc) by their UTF-8 name, to provide 
 Index: include/apr.hw
 ===================================================================
 --- include/apr.hw	(revision 153549)
@@ -86,7 +116,7 @@ Index: include/apr.hw
  #else
  #include <winsock.h>
  #endif
-@@ -349,8 +352,10 @@
+@@ -349,15 +352,21 @@
   * based on some APR_HAVE_PID/GID/UID?
   */
  typedef  int         pid_t;
@@ -97,6 +127,34 @@ Index: include/apr.hw
  
  /* Mechanisms to properly type numeric literals */
  
++#if defined(__GNUC__)
++#define APR_INT64_C(val) (val##LL)
++#define APR_UINT64_C(val) (val##ULL)
++#else
+ #define APR_INT64_C(val) (val##i64)
+ #define APR_UINT64_C(val) (val##Ui64)
++#endif
+ 
+-
+ #if APR_HAVE_IPV6
+ 
+ /* Appears in later flavors, not the originals. */
+Index: threadproc/win32/proc.c
+===================================================================
+--- threadproc/win32/proc.c	(revision 153549)
++++ threadproc/win32/proc.c	(working copy)
+@@ -210,6 +210,11 @@
+     return APR_SUCCESS;
+ }
+ 
++#if !defined(LOGON32_LOGON_NETWORK)
++#define LOGON32_LOGON_NETWORK 3
++#endif
++
++
+ APR_DECLARE(apr_status_t) apr_procattr_user_set(apr_procattr_t *attr, 
+                                                 const char *username,
+                                                 const char *password)
 Index: misc/win32/apr_app.c
 ===================================================================
 --- misc/win32/apr_app.c	(revision 153549)
@@ -120,6 +178,21 @@ Index: misc/win32/apr_app.c
      memcpy(_environ, env, (dupenv + 1) * sizeof (char *));
  
      /* MSVCRT will attempt to maintain the wide environment calls
+Index: misc/win32/rand.c
+===================================================================
+--- misc/win32/rand.c	(revision 153549)
++++ misc/win32/rand.c	(working copy)
+@@ -20,8 +20,10 @@
+ #include "apr_portable.h"
+ #include "apr_arch_misc.h"
+ #include <wincrypt.h>
++#include <basetyps.h>
+ 
+ 
++
+ APR_DECLARE(apr_status_t) apr_generate_random_bytes(unsigned char * buf,
+                                                     apr_size_t length)
+ {
 Index: misc/win32/misc.c
 ===================================================================
 --- misc/win32/misc.c	(revision 153549)

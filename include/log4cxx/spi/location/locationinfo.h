@@ -133,7 +133,7 @@ namespace log4cxx
       #define __LOG4CXX_FUNC__ __FUNCSIG__
 #endif
 #else
-#if defined(__GCC)
+#if defined(__GNUC__)
       #define __LOG4CXX_FUNC__ __PRETTY_FUNCTION__
 #endif
 #endif

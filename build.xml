@@ -132,6 +132,14 @@ Common command line options:
         <condition property="os.family" value="unix">
             <isset property="is-unix"/>
         </condition>
+        <condition property="is-gcc" value="true">
+            <or>
+               <equals arg1="${compiler}" arg2="gcc"/>
+               <equals arg1="${compiler}" arg2="g++"/>
+            </or>
+        </condition>
+
+
 </target>
 
 
@@ -147,6 +155,9 @@ Common command line options:
         </or>
     </condition>
 
+    <condition property="is-mingw" value="true">
+        <isset property="is-gcc"/>
+    </condition>
 </target>
 
 <target name="mac-init" depends="os-detect" if="is-mac">
@@ -158,13 +169,6 @@ Common command line options:
 <target name="unix-init" depends="mac-init" if="is-unix">
 
     <property name="compiler" value="gcc"/>
-    <condition property="is-gcc" value="true">
-        <or>
-           <equals arg1="${compiler}" arg2="gcc"/>
-           <equals arg1="${compiler}" arg2="g++"/>
-        </or>
-    </condition>
-
     <condition property="pic-option" value="-fPIC">
         <and>
                 <isset property="is-gcc"/>
@@ -611,6 +615,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </defineset>
         <defineset>
             <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
+        </defineset>
+        <defineset if="is-mingw">
+            <define name="LOG4CXX_HAS_STD_WCOUT" value="0"/>
+            <define name="LOG4CXX_HAS_STD_WLOCALE" value="0"/>
         </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
