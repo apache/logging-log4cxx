@@ -1,3 +1,16 @@
+CVS
+===
+
+* Timezone management has been optimized through the class TimeZone
+* Inter-thread synchronization and reference counting has been optimized
+* Reference counting now uses gcc atomic functions (bug 929078)
+* Use of StringBuffer has been optimized.
+* Support of localisation throug resourceBundles
+* SyslogAppender now uses the system function 'syslog' to log on the local host.
+ (only for POSIX systems)
+* Added TimeZone configuration to PatternLayout (bug 912563)
+* Support of the DailyRollingFileAppender (feature request 842765)
+
 Version 0.9.5 (2004-02-04)
 ==========================
 
