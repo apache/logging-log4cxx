@@ -21,6 +21,7 @@ liblog4cxx_la_SOURCES = \
 	dateformat.cpp \
 	defaultcategoryfactory.cpp \
 	domconfigurator.cpp \
+	event.cpp \
 	fallbackerrorhandler.cpp \
 	fileappender.cpp \
 	filewatchdog.cpp \
@@ -76,6 +77,7 @@ liblog4cxx_la_SOURCES = \
 	syslogwriter.cpp \
 	system.cpp \
 	telnetappender.cpp \
+	timezone.cpp \
 	transform.cpp \
 	thread.cpp \
 	threadspecificdata.cpp \
