@@ -39,15 +39,7 @@ public:
 };
 
 #ifndef UNICODE
-#ifndef WIN32
-inline std::ostream& operator<<(const int64_t& ll, std::ostream& os)
-{
-	char buff[21];
-	sprintf(buff, "%lld", ll);
-	os << buff;
-	return os;
-}
-#else
+#if _MSC_VER == 1200 // MSDEV 6
 inline std::ostream& operator<<(std::ostream& os, const int64_t& ll)
 {
 	char buff[21];
@@ -55,22 +47,17 @@ inline std::ostream& operator<<(std::ostream& os, const int64_t& ll)
 	os << buff;
 	return os;
 }
-#endif // WIN32
 #else
-#ifndef WIN32
-inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
+inline std::ostream& operator<<(const int64_t& ll, std::ostream& os)
 {
-	wchar_t buff[21];
-#ifdef WIN32
-	_snwprintf(buff, 20, L"%lld", ll);
-#else
-	swprintf(buff, 20, L"%lld", ll);
-#endif
+	char buff[21];
+	sprintf(buff, "%lld", ll);
 	os << buff;
 	return os;
 }
+#endif // _MSC_VER == 1200
 #else
-
+#if _MSC_VER == 1200 // MSDEV 6
 inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 {
 	wchar_t buff[21];
@@ -82,7 +69,19 @@ inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 	os << buff;
 	return os;
 }
-#endif // WIN32
+#else
+inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
+{
+	wchar_t buff[21];
+#ifdef WIN32
+	_snwprintf(buff, 20, L"%lld", ll);
+#else
+	swprintf(buff, 20, L"%lld", ll);
+#endif
+	os << buff;
+	return os;
+}
+#endif // _MSC_VER == 1200
 #endif // UNICODE
 
 
