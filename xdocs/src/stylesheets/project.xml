@@ -18,8 +18,10 @@
      <item name="News" href="/news.html"/>
      <item name="Team" href="/team.html"/>
      <item name="Documentation" href="/manual/index.html"/>
+     <item name="Support" href="/support.html"/>
+     <item name="Contributing" href="/contributing.html"/>
      <item name="Performance" href="/performance.html"/>
-    <item name="Download" href="/download.html"/>
+     <item name="Download" href="/download.html"/>
    </menu>
 
    </body>
