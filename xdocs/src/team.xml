@@ -2,7 +2,7 @@
 <document>
 
   <properties>
-    <author email="mcatan at free dot fr">Michael Catanzariti</author>
+    <author email="mcatan at apache dot org">Michael Catanzariti</author>
     <title>Team</title>
   </properties>
 
@@ -22,6 +22,12 @@
     <ul>
       <li>Apache login name: carnold</li>
       <li>Email: carnold AT apache DOT org</li>
+    </ul>
+  
+    <h3>Christophe De Vienne - Committer, Developer</h3>
+    <ul>
+      <li>Apache login name: cdevienne</li>
+      <li>Email: cdevienne AT apache DOT org</li>
     </ul>
   
   </body>
