@@ -171,11 +171,19 @@ SOURCE=..\..\src\asyncappender.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\basicconfigurator.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\boundedfifo.cpp
 # End Source File
 # Begin Source File
 
 SOURCE=..\..\src\class.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\configurator.cpp
 # End Source File
 # Begin Source File
 
@@ -364,11 +372,11 @@ SOURCE=..\..\src\fileappender.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\formattinginfo.cpp
+SOURCE=..\..\src\filewatchdog.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\gnomexmlreader.cpp
+SOURCE=..\..\src\formattinginfo.cpp
 # End Source File
 # Begin Source File
 
@@ -424,7 +432,7 @@ SOURCE=..\..\src\mdc.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\src\msxmlreader.cpp
+SOURCE=..\..\src\msxml.cpp
 # End Source File
 # Begin Source File
 
@@ -493,10 +501,6 @@ SOURCE=..\..\src\serversocket.cpp
 # Begin Source File
 
 SOURCE=..\..\src\simplelayout.cpp
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\src\simplesocketserver.cpp
 # End Source File
 # Begin Source File
 
@@ -611,11 +615,11 @@ SOURCE=..\..\include\log4cxx\helpers\exception.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\log4cxx\helpers\formattinginfo.h
+SOURCE=..\..\include\log4cxx\helpers\filewatchdog.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\log4cxx\helpers\gnomexmlreader.h
+SOURCE=..\..\include\log4cxx\helpers\formattinginfo.h
 # End Source File
 # Begin Source File
 
@@ -635,7 +639,7 @@ SOURCE=..\..\include\log4cxx\helpers\loglog.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\log4cxx\helpers\msxmlreader.h
+SOURCE=..\..\include\log4cxx\helpers\msxml.h
 # End Source File
 # Begin Source File
 
@@ -721,6 +725,10 @@ SOURCE=..\..\include\log4cxx\helpers\threadspecificdata.h
 
 SOURCE=..\..\include\log4cxx\helpers\transform.h
 # End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\xml.h
+# End Source File
 # End Group
 # Begin Group "spi"
 
@@ -728,6 +736,10 @@ SOURCE=..\..\include\log4cxx\helpers\transform.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\spi\appenderattachable.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\spi\configurator.h
 # End Source File
 # Begin Source File
 
@@ -857,6 +869,10 @@ SOURCE=..\..\include\log4cxx\appenderskeleton.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\asyncappender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\basicconfigurator.h
 # End Source File
 # Begin Source File
 
