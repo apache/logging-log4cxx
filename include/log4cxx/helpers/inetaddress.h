@@ -19,11 +19,18 @@
 
 #include <log4cxx/helpers/tchar.h>
 #include <vector>
+#include <log4cxx/helpers/exception.h>
 
 namespace log4cxx
 {
 	namespace helpers
 	{
+		class UnknownHostException : public Exception
+		{
+		public:
+			tstring getMessage() { return tstring(); }
+		};
+
 		class InetAddress
 		{
 		public:

@@ -85,7 +85,7 @@ InetAddress InetAddress::getByName(const tstring& host)
 	if (hostinfo == 0)
 	{
 		LogLog::error(_T("Cannot get information about host: ") + host);
-		address.address = 0;
+		throw UnknownHostException();
 	}
 	else
 	{
