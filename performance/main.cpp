@@ -67,7 +67,7 @@ void init(const String& configFile, const String& runLengthStr,
 		DELAY_MULT = 1000/burstLen;
 	}
 
-#ifdef HAVE_MS_XML	
+#ifdef HAVE_XML	
 	xml::DOMConfigurator::configure(configFile);
 #endif
 }
