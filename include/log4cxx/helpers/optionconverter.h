@@ -23,6 +23,7 @@
 namespace log4cxx
 {
 	class Level;
+    typedef helpers::ObjectPtrT<Level> LevelPtr;
 
 	namespace spi
 	{
@@ -65,8 +66,8 @@ namespace log4cxx
 			static bool toBoolean(const String& value, bool dEfault);
 			static int toInt(const String& value, int dEfault);
 			static long toFileSize(const String& value, long dEfault);
-			static const Level& toLevel(const String& value,
-				const Level& defaultValue);
+			static const LevelPtr& toLevel(const String& value,
+				const LevelPtr& defaultValue);
 
 			/**
      		Find the value corresponding to <code>key</code> in
