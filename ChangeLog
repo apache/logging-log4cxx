@@ -46,4 +46,4 @@ CVS
 * Added ODBCAppender (matching log4j JDBCAppender)
 * Added MSVC 6.0 'Unicode Debug' and 'Unicode Release' targets
 * Added Java like System class.
-
+* Changed time presion from seconds to milliseconds
