@@ -36,6 +36,7 @@ liblog4cxx_la_SOURCES = \
 	levelrangefilter.cpp \
 	loader.cpp\
 	locale.cpp\
+        locationinfo.cpp\
 	logger.cpp \
 	loggingevent.cpp \
 	loglog.cpp \
