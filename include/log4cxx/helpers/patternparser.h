@@ -74,7 +74,7 @@ namespace log4cxx
 			PatternConverterPtr parse();
 			
 		protected:
-			void finalizeConverter(TCHAR c);
+			virtual void finalizeConverter(TCHAR c);
 
 			void addConverter(PatternConverterPtr& pc);
 
