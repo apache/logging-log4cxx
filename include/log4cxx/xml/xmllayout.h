@@ -21,11 +21,6 @@
 
 namespace log4cxx
 {
-	namespace spi
-	{
-		class LoggingEvent;
-	};
-
 	namespace xml
 	{
 		class XMLLayout;
@@ -111,7 +106,7 @@ namespace log4cxx
 			* Formats a {@link spi::LoggingEvent LoggingEvent} 
 			* in conformance with the log4cxx.dtd.
 			**/
-			virtual void format(ostream& output, const spi::LoggingEvent& event);
+			virtual void format(ostream& output, const spi::LoggingEventPtr& event);
 
 			/**
 			The XMLLayout prints and does not ignore exceptions. Hence the

@@ -446,7 +446,7 @@ namespace log4cxx
 		/**
 		Produces a formatted string as specified by the conversion pattern.
 		*/
-		virtual void format(ostream& output, const spi::LoggingEvent& event);
+		virtual void format(ostream& output, const spi::LoggingEventPtr& event);
 
 		/**
 		The <b>TimeZoneID</b> option is a time zone ID string in the format

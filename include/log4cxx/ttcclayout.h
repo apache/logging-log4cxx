@@ -161,7 +161,7 @@ namespace log4cxx
 	@param output
 	@param event
 	*/
-	virtual void format(ostream& output, const spi::LoggingEvent& event);
+	virtual void format(ostream& output, const spi::LoggingEventPtr& event);
 
 	/**
 	The TTCCLayout does not handle the throwable contained within

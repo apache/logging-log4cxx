@@ -55,7 +55,7 @@ namespace log4cxx
 		<p>
 		@return A byte array in SimpleLayout format.
 		*/
-		virtual void format(ostream& output, const spi::LoggingEvent& event);
+		virtual void format(ostream& output, const spi::LoggingEventPtr& event);
 
 		/**
 		The SimpleLayout does not handle the throwable contained within

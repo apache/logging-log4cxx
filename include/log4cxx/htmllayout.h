@@ -21,11 +21,6 @@
 
 namespace log4cxx
 {
-	namespace spi
-	{
-		class LoggingEvent;
-	};
-
 	class HTMLLayout;
 	typedef helpers::ObjectPtrT<HTMLLayout> HTMLLayoutPtr;
 	
@@ -115,7 +110,7 @@ namespace log4cxx
 		*/
 		virtual void setOption(const String& option, const String& value);
 
-		virtual void format(ostream& output, const spi::LoggingEvent& event);
+		virtual void format(ostream& output, const spi::LoggingEventPtr& event);
 
 		/**
 		Append appropriate HTML headers.

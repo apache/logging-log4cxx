@@ -70,7 +70,7 @@ namespace log4cxx
 		LoggerPtr root;
 		
         int thresholdInt;
-        const Level * threshold;
+        LevelPtr threshold;
 		
         bool emittedNoAppenderWarning;
         bool emittedNoResourceBundleWarning;
@@ -123,7 +123,7 @@ namespace log4cxx
 		LoggerPtr exists(const String& name);
 		
 		/**
-		The string form of {@link #setThreshold(const Level&) setThreshold}.
+		The string form of {@link #setThreshold(const LevelPtr&) setThreshold}.
 		*/
 	public:
 		void setThreshold(const String& levelStr);
@@ -135,7 +135,7 @@ namespace log4cxx
 		@param l The minimum level for which logging requests are sent to
         their appenders.  */
    	public:
-		void setThreshold(const Level& l);
+		void setThreshold(const LevelPtr& l);
 		
 	public:
 		void fireAddAppenderEvent(LoggerPtr logger, AppenderPtr appender);
@@ -148,7 +148,7 @@ namespace log4cxx
 		state.
 		*/
 	public:
-		const Level& getThreshold();
+		const LevelPtr& getThreshold();
 		
 		/**
 		Return a new logger instance named as the first parameter using
@@ -199,7 +199,7 @@ namespace log4cxx
 		This method will return <code>true</code> if this repository is
 		disabled for <code>level</code> object passed as parameter and
 		<code>false</code> otherwise. See also the 
-		{@link #setThreshold(const Level&) setThreshold} method.  */
+		{@link #setThreshold(const LevelPtr&) setThreshold} method.  */
 	public:
 		bool isDisabled(int level);
 		

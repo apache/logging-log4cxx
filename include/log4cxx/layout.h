@@ -29,6 +29,7 @@ namespace log4cxx
     namespace spi
     {
 		class LoggingEvent;
+        typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
     };
 
 	/**
@@ -50,7 +51,7 @@ namespace log4cxx
 		/**
 		Implement this method to create your own layout format.
 		*/
-		virtual void format(ostream& output, const spi::LoggingEvent& event) = 0;
+		virtual void format(ostream& output, const spi::LoggingEventPtr& event) = 0;
 
 		/**
 		Returns the content type output by this layout. The base class
