@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="simplesocketserver"
+	ProjectGUID="{CDACA6B7-9482-48D2-97D7-D798A108D3C4}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
