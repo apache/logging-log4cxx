@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/net/socketnode.h>
 #include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/thread.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/level.h>
@@ -45,13 +46,21 @@ void init(const tstring& portStr, const tstring& configFile)
 	USES_CONVERSION;
 	port = ttol(portStr.c_str());
 
+	// tests if configFie ends with ".xml"
+	if ((configFile.length() - configFile.rfind(_T(".xml"))) == 4)
+	{
 #ifdef WIN32
-	::CoInitialize(0);
-	DOMConfigurator::configure(configFile);
-	::CoUninitialize();
-#else
-	DOMConfigurator::configure(configFile);
+		::CoInitialize(0);
 #endif
+		DOMConfigurator::configure(configFile);
+#ifdef WIN32
+		::CoUninitialize();
+#endif
+	} 
+	else
+	{
+		PropertyConfigurator::configure(configFile);
+	}
 }
 
 int main(int argc, char * argv[])
