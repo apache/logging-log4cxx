@@ -14,13 +14,13 @@ AC_CANONICAL_TARGET
 #  ? :+1 : ?   == just some internal changes, nothing breaks but might work
 #                 better
 # CURRENT : REVISION : AGE
-LT_VERSION=2:0:0
+LT_VERSION=2:1:0
 
 AC_SUBST(LT_VERSION)
 
 AM_CONFIG_HEADER(include/log4cxx/config.h)
 
-AM_INIT_AUTOMAKE(log4cxx, 0.1.0)
+AM_INIT_AUTOMAKE(log4cxx, 0.1.1)
 
 # Checks for programs
 # ----------------------------------------------------------------------------
@@ -68,15 +68,22 @@ then
 	CPPFLAGS="`$XML_CONFIG --cflags` $CPPFLAGS"
 fi
 
+# for threads
 AC_PROG_RANLIB
 AC_CHECK_HEADER(pthread.h, CPPFLAGS="-pthread $CPPFLAGS")
 
+#for UNICODE
 AC_MSG_CHECKING(for UTF-16 Unicode support)
 AC_ARG_ENABLE(unicode,
-	AC_HELP_STRING(--enable-unicode, UTF-16 Unicode support),
+	AC_HELP_STRING(--enable-unicode, UTF-16 Unicode support default=no),
 	AC_DEFINE(UNICODE, 1, UTF-16 Unicode support.)
 	AC_MSG_RESULT(yes),
 	AC_MSG_RESULT(no))
+
+#for ODBCAppender
+AC_CHECK_HEADER(sqlext.h,
+	AC_DEFINE(HAVE_ODBC, 1, ODBC support) LIBS="$LIBS -lodbc")
+
 
 # Create files
 # ----------------------------------------------------------------------------
@@ -99,5 +106,6 @@ include/log4cxx/spi/Makefile
 include/log4cxx/varia/Makefile
 include/log4cxx/xml/Makefile
 include/log4cxx/config/Makefile
+include/log4cxx/db/Makefile
 ])
 AC_OUTPUT
