@@ -72,14 +72,16 @@ int main()
 			}
 			else
 			{
-				unsigned char * result = new unsigned char[sizer];
-				unsigned char * witness = new unsigned char[sizer];
-				memset(result, (sizer) * sizeof(TCHAR), 0);
-				memset(witness, (sizer) * sizeof(TCHAR), 0);
-				inr.read((TCHAR *)result, sizer);
-				inw.read((TCHAR *)witness, sizer);
+				TCHAR * result = new TCHAR[sizer + 1];
+				TCHAR * witness = new TCHAR[sizew + 1];
+				memset(result, sizer * sizeof(TCHAR), 0);
+				memset(witness, sizew * sizeof(TCHAR), 0);
+				inr.read(result, sizer);
+				inw.read(witness, sizew);
+				result[sizer] = _T('\0');
+				witness[sizew] = _T('\0');
 
-				if (memcmp(result, witness, sizer) != 0)
+				if (memcmp(result, witness, sizer * sizeof(TCHAR)) != 0)
 				{
 					ret = EXIT_FAILURE;
 				}

@@ -11,27 +11,36 @@
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/helpers/loglog.h>
 
-#ifdef WIN32
+#ifdef HAVE_MS_XML
 #include <windows.h>
 #endif
-
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
-int main()
+int main(int argc, char *argv[])
 {
 	int result = EXIT_SUCCESS;
 
 	try
 	{
-#ifdef WIN32
+#ifdef HAVE_MS_XML
 		::CoInitialize(0);
-		DOMConfigurator::configure(_T("domconfigurator_test.xml"));
+#endif
+
+		if (argc > 1)
+		{
+			USES_CONVERSION;
+			DOMConfigurator::configure(A2T(argv[1]));
+		}
+		else
+		{
+			DOMConfigurator::configure(_T("domconfigurator_test.xml"));
+		}
+
+#ifdef HAVE_MS_XML
 		::CoUninitialize();
-#else
-		DOMConfigurator::configure(_T("domconfigurator_test.xml"));
 #endif
 
 		// levels

@@ -4,18 +4,18 @@ noinst_PROGRAMS = \
 	ndc_test\
 	mdc_test\
 	filter_test\
-        consoleappender_test\
-        fileappender_test\
-        htmllayout_test\
-        xmllayout_test\
-        ttcclayout_test\
-        patternlayout_test\
+	consoleappender_test\
+	fileappender_test\
+	htmllayout_test\
+	xmllayout_test\
+	ttcclayout_test\
+	patternlayout_test\
 	propertyconfigurator_test\
 	domconfigurator_test
 
 EXTRA_DIST = \
-  propertyconfigurator_test.properties\
-  domconfigurator_test.xml
+	propertyconfigurator_test.properties\
+	domconfigurator_test.xml
 
 INCLUDES = -I$(top_srcdir)/include
 
@@ -63,10 +63,10 @@ TESTS = \
 	level_test\
 	ndc_test\
 	mdc_test\
- 	filter_test\
+	filter_test\
 	consoleappender_test\
-        fileappender_test\
-        htmllayout_test\
+	fileappender_test\
+	htmllayout_test\
 	xmllayout_test\
 	ttcclayout_test\
 	patternlayout_test\

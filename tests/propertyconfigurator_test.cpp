@@ -13,13 +13,21 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-int main()
+int main(int argc, char *argv[])
 {
 	int result = EXIT_SUCCESS;
 
 	try
 	{
-		PropertyConfigurator::configure(_T("propertyconfigurator_test.properties"));
+		if (argc > 1)
+		{
+			USES_CONVERSION;
+			PropertyConfigurator::configure(A2T(argv[1]));
+		}
+		else
+		{
+			PropertyConfigurator::configure(_T("propertyconfigurator_test.properties"));
+		}
 
 		// levels
 		LoggerPtr root = Logger::getRootLogger();
