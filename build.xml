@@ -171,13 +171,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="unix-prep" depends="init, config-check"
         if="is-unix"
         unless="config-available">
-   <exec executable="sh">
-       <arg value="./autogen.sh"/>
-   </exec>
-   <exec executable="sh">
-       <arg value="./configure"/>
-       <arg value="--with-apr=${apr.dir}"/>
-   </exec>
 </target>
 
 <target name="check-config-msvc" depends="init" if="is-windows">

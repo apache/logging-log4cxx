@@ -39,17 +39,17 @@ using namespace log4cxx::rolling;
  * A rather exhaustive set of tests. Tests include leaving the ActiveFileName
  * argument blank, or setting it, with and without compression, and tests
  * with or without stopping/restarting the RollingFileAppender.
- * 
- * The regression tests log a few times using a RollingFileAppender. Then, 
+ *
+ * The regression tests log a few times using a RollingFileAppender. Then,
  * they predict the names of the files which sould be generated and compare
  * them with witness files.
- * 
+ *
  * <pre>
-         Compression    ActiveFileName  Stop/Restart 
+         Compression    ActiveFileName  Stop/Restart
  Test1      NO              BLANK          NO
  Test2      NO              BLANK          YES
  Test3      YES             BLANK          NO
- Test4      NO                SET          YES 
+ Test4      NO                SET          YES
  Test5      NO                SET          NO
  Test6      YES               SET          NO
  * </pre>
@@ -57,8 +57,8 @@ using namespace log4cxx::rolling;
  */
 class TimeBasedRollingTest  : public CppUnit::TestFixture {
 
-	CPPUNIT_TEST_SUITE(TimeBasedRollingTest);
-	CPPUNIT_TEST_SUITE_END();
+        CPPUNIT_TEST_SUITE(TimeBasedRollingTest);
+        CPPUNIT_TEST_SUITE_END();
 
     static LoggerPtr logger;
 
@@ -261,7 +261,7 @@ public:
       cal.add(Calendar.SECOND, 1);
     }
     filenames[3] = "output/test4.log";
-    
+
     System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
     System.out.println("Done waiting.");
@@ -394,7 +394,7 @@ public:
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("./input/rolling/time1.xml", LogManager.getLoggerRepository());
     jc.dumpErrors();
-    
+
     String datePattern = "yyyy-MM-dd_HH_mm_ss";
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
@@ -423,14 +423,14 @@ public:
     for (int i = 0; i < 4; i++) {
       assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test1." + i));
     }
-    
+
   }
-  
+
   public void XXXtestWithJoran10() throws Exception {
     JoranConfigurator jc = new JoranConfigurator();
     jc.doConfigure("./input/rolling/time2.xml", LogManager.getLoggerRepository());
     jc.dumpErrors();
-    
+
     String datePattern = "yyyy-MM-dd";
 
     SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
@@ -449,9 +449,9 @@ public:
     for (int i = 0; i < 1; i++) {
       assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test10." + i));
     }
-    
+
   }
-#endif  
+#endif
 
   void delayUntilNextSecond(int millis) {
     apr_time_t now = apr_time_now();
@@ -490,7 +490,7 @@ public:
 //    suite.addTest(new TimeBasedRollingTest("test6"));
 //    suite.addTest(new TimeBasedRollingTest("testWithJoran1"));
     suite.addTest(new TimeBasedRollingTest("testWithJoran10"));
-    
+
     return suite;
   }
 #endif
