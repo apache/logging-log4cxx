@@ -101,6 +101,8 @@ void Condition::wait(Mutex& mutex)
 			throw ConditionException();
 		}
 	}
+
+	mutex.lock();
 #endif
 }
 
