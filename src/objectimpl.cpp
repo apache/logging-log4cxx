@@ -46,7 +46,11 @@ void ObjectImpl::addRef()
 	ref++;
 	refCs.unlock();
 #elif defined(HAVE_MS_THREAD)
+#if _MSC_VER == 1200	// MSDEV 6
+	::InterlockedIncrement((long *)&ref);
+#else
 	::InterlockedIncrement(&ref);
+#endif
 #else
 	ref++;
 #endif
@@ -68,7 +72,11 @@ void ObjectImpl::releaseRef()
 	}
 	refCs.unlock();
 #elif defined(HAVE_MS_THREAD)
-	if (::InterlockedDecrement(&ref) <= 0)
+#if _MSC_VER == 1200	// MSDEV 6
+	if (::InterlockedDecrement((long *)&ref) == 0)
+#else
+	if (::InterlockedDecrement(&ref) == 0)
+#endif
 	{
 		delete this;
 	}
