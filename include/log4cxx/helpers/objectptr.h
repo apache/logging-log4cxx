@@ -153,7 +153,8 @@ namespace log4cxx
             bool operator!=(const ObjectPtrT& p) const { return (this->p != p.p); }
             bool operator==(const T* p) const { return (this->p == p); }
             bool operator!=(const T* p) const { return (this->p != p); }
-            T* operator->() const {return p; }
+            T* operator->() {return p; }
+            const T* operator->() const {return p; }
             T& operator*() const {return *p; }
             operator T*() const {return p; }
 
