@@ -19,6 +19,7 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/helpers/boundedfifo.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/helpers/strictmath.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -147,7 +148,7 @@ public:
 
 				bf.resize(n);
 
-				int expectedSize = _min(n, _min(i, size));
+				int expectedSize = StrictMath::min(n, StrictMath::min(i, size));
 				CPPUNIT_ASSERT_EQUAL(expectedSize, bf.length());
 
 				for (int c = 0; c < expectedSize; c++)
@@ -166,7 +167,7 @@ public:
 		{
 			for (int i = 0; i < (size * 2); i++)
 			{
-				for (int d = 0; d < _min(i, size); d++)
+				for (int d = 0; d < StrictMath::min(i, size); d++)
 				{
 					BoundedFIFO bf(size);
 
@@ -185,7 +186,7 @@ public:
 
 					bf.resize(n);
 
-					int expectedSize = _min(n, x);
+					int expectedSize = StrictMath::min(n, x);
 					CPPUNIT_ASSERT_EQUAL(expectedSize, bf.length());
 
 					for (int c = 0; c < expectedSize; c++)
@@ -226,7 +227,7 @@ public:
 
 						bf.resize(n);
 
-						int expectedSize = _min(n, x);
+						int expectedSize = StrictMath::min(n, x);
 						CPPUNIT_ASSERT_EQUAL(expectedSize, bf.length());
 
 						for (int c = 0; c < expectedSize; c++)

@@ -24,6 +24,7 @@
 #include <algorithm> // min & max
 #include <stdio.h> // sprintf
 #include <streambuf> // basic_streambuf
+#include <log4cxx/helpers/strictmath.h>
 
 class Convert
 {
@@ -226,7 +227,9 @@ namespace log4cxx
 			{
 				size_t os = epptr() - b; // taille allouée
 				size_t is =
-					_max(_min((os * 2), _MaxInc), _MinInc)
+					helpers::StrictMath::max(
+					helpers::StrictMath::min(
+					(os * 2), _MaxInc),_MinInc)
 					+ 1; // incrément d'allocation
 				char_type *p = al.allocate(os + is, 0);
 				traits_type::copy(p, b, os);
