@@ -146,7 +146,11 @@ PatternConverterPtr PatternParser::parse()
                                         i++; // move pointer
                                         break;
                                 case LOG4CXX_STR('n'):
-                                        currentLiteral.append(1, LOG4CXX_STR('\n'));
+#if defined(_WIN32)
+                                        currentLiteral.append(LOG4CXX_STR("\x0D\x0A"));
+#else
+                                        currentLiteral.append(1, LOG4CXX_STR('\x0A'));
+#endif
                                         i++; // move pointer
                                         break;
                                 default:
@@ -508,8 +512,9 @@ void PatternParser::LocationPatternConverter::convert(LogString& sbuf,
         {
         case FULL_LOCATION_CONVERTER:
                 Transcoder::decode(locInfo.getFileName(), sbuf);
-                sbuf.append(1, LOG4CXX_STR(':'));
+                sbuf.append(1, LOG4CXX_STR('('));
                 sbuf.append(StringHelper::toString(locInfo.getLineNumber(), pool));
+                sbuf.append(1, LOG4CXX_STR(')'));
                 break;
         case LINE_LOCATION_CONVERTER:
                 sbuf.append(StringHelper::toString(locInfo.getLineNumber(), pool));

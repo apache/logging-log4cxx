@@ -13,6 +13,7 @@ libhelpers_a_SOURCES = \
         datetimedateformattestcase.cpp \
         iso8601dateformattestcase.cpp \
         optionconvertertestcase.cpp       \
+        propertiestestcase.cpp \
         relativetimedateformattestcase.cpp \
         stringtokenizertestcase.cpp \
         timezonetestcase.cpp \

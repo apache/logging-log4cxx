@@ -108,7 +108,9 @@ namespace log4cxx
                         static log4cxx_time_t getStartTime();
 
                         /** Return the #threadName of this event. */
-                        const LogString& getThreadName() const;
+                        inline const LogString& getThreadName() const {
+                             return threadName;
+                        }
 
                         /** Return the #timeStamp of this event. */
                         inline log4cxx_time_t getTimeStamp() const

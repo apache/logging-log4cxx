@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,16 +44,16 @@
 
 
 
-#define PAT0 LOG4CXX_STR("\\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
+#define PAT0 LOG4CXX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
 #define PAT1 ISO8601_PAT LOG4CXX_STR(" ") PAT0
 #define PAT2 ABSOLUTE_DATE_AND_TIME_PAT LOG4CXX_STR(" ") PAT0
 #define PAT3 ABSOLUTE_TIME_PAT LOG4CXX_STR(" ") PAT0
 #define PAT4 RELATIVE_TIME_PAT LOG4CXX_STR(" ") PAT0
-#define PAT5 LOG4CXX_STR("\\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}")
-#define PAT6 LOG4CXX_STR("\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\(\\d{1,4}\\): Message \\d{1,3}")
-#define PAT11a LOG4CXX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[\\d*]\\ log4j.PatternLayoutTest: Message \\d{1,2}")
-#define PAT11b LOG4CXX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[\\d*]\\ root: Message \\d{1,2}")
-#define PAT12 LOG4CXX_STR("^\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) ")\
+#define PAT5 LOG4CXX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}")
+#define PAT6 LOG4CXX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\(\\d{1,4}\\): Message \\d{1,3}")
+#define PAT11a LOG4CXX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ log4j.PatternLayoutTest: Message \\d{1,2}")
+#define PAT11b LOG4CXX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ root: Message \\d{1,2}")
+#define PAT12 LOG4CXX_STR("^\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) ")\
     LOG4CXX_STR(".*patternlayouttest.cpp\\(\\d{1,4}\\): ")\
     LOG4CXX_STR("Message \\d{1,2}")
 #define PAT_MDC_1 LOG4CXX_STR("")

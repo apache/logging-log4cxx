@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
 
-#define BASIC_PAT LOG4CXX_STR("\\[\\d*\\] (FATAL|ERROR|WARN|INFO|DEBUG)")
+#define BASIC_PAT LOG4CXX_STR("\\[0x[0-9A-F]*] (FATAL|ERROR|WARN|INFO|DEBUG)")
 #define ISO8601_PAT LOG4CXX_STR("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}")
 #define ABSOLUTE_DATE_AND_TIME_PAT \
         LOG4CXX_STR("^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}")

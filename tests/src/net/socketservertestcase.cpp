@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,38 +59,38 @@ using namespace log4cxx::net;
 // %5p %x [%t] %c %m%n
 // DEBUG T1 [thread] org.apache.log4j.net.SocketAppenderTestCase Message 1
 #define PAT1 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[\\d*]\\ ") \
+        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[0x[0-9A-F]*]\\ ") \
         LOG4CXX_STR(".* Message \\d{1,2}")
 
 // DEBUG T2 [thread] patternlayouttest.cpp(?) Message 1
 #define PAT2 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[\\d*]\\ ") \
+        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[0x[0-9A-F]*]\\ ") \
         LOG4CXX_STR(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
 
 // DEBUG T3 [thread] patternlayouttest.cpp(?) Message 1
 #define PAT3 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[\\d*]\\ ") \
+        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[0x[0-9A-F]*]\\ ") \
         LOG4CXX_STR(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
 
 // DEBUG some T4 MDC-TEST4 [thread] SocketAppenderTestCase - Message 1
 // DEBUG some T4 MDC-TEST4 [thread] SocketAppenderTestCase - Message 1
 #define PAT4 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[\\d*]\\") \
+        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[0x[0-9A-F]*]\\") \
         LOG4CXX_STR(" (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT5 \
-        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[\\d*]\\") \
+        LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[0x[0-9A-F]*]\\") \
         LOG4CXX_STR(" (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT6 \
         LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6") \
-        LOG4CXX_STR(" \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+        LOG4CXX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT7 \
         LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7") \
-        LOG4CXX_STR(" \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+        LOG4CXX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 
 // DEBUG some8 T8 shortSocketServer MDC-TEST7 [thread] SocketServerTestCase - Message 1
 #define PAT8 \
         LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer") \
-        LOG4CXX_STR(" MDC-TEST8 \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+        LOG4CXX_STR(" MDC-TEST8 \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 
 class ShortSocketServerLauncher
 {

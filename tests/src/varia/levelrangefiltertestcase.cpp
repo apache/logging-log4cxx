@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -149,7 +149,7 @@ public:
         {
                 // set up appender
                 LayoutPtr layout = new SimpleLayout();
-                AppenderPtr appender = new FileAppender(layout, ACCEPT_FILE, false);
+                AppenderPtr appender = new FileAppender(layout, NEUTRAL_FILE, false);
 
                 // create LevelMatchFilter
                 LevelRangeFilterPtr rangeFilter = new LevelRangeFilter();

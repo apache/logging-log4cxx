@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,18 +37,6 @@ void log4cxx::helpers::RelativeTimeDateFormat::format(
     LogString &s,
     log4cxx_time_t date,
     Pool& p) const {
-    apr_interval_time_t interval = date - startTime;
-    apr_interval_time_t ms = interval / 1000;
-    if (ms >= INT_MIN && ms <= INT_MAX) {
-      s.append(StringHelper::toString(ms, p));
-    } else {
-      const log4cxx_int64_t BILLION = APR_INT64_C(1000000000);
-      s.append(StringHelper::toString(ms / BILLION, p));
-      LogString lower(StringHelper::toString(ms % BILLION, p));
-      int fill = 9 - lower.length();
-      if (fill > 0) {
-        s.append(fill, LOG4CXX_STR('0'));
-      }
-      s.append(lower);
-    }
+    apr_int64_t interval = (date - startTime) / APR_INT64_C(1000);
+    s.append(StringHelper::toString(interval, p));
 }

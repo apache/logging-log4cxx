@@ -44,11 +44,11 @@ using namespace log4cxx::helpers;
 
 #define TTCC_PAT  \
         ABSOLUTE_DATE_AND_TIME_PAT \
-        LOG4CXX_STR(" \\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
+        LOG4CXX_STR(" \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
 
 #define TTCC2_PAT \
         ABSOLUTE_DATE_AND_TIME_PAT \
-        LOG4CXX_STR(" \\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - ") \
+        LOG4CXX_STR(" \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - ") \
         LOG4CXX_STR("Messages should bear numbers 0 through 23\\.")
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,6 +105,8 @@ public:
           LogString props(propFile.read(pool));
           LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender\n"));
           CPPUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
+          LogString tail(LOG4CXX_STR("%-5p - %m%n"));
+          CPPUNIT_ASSERT_EQUAL(tail, props.substr(props.length() - tail.length()));
         }
 
         void propertyExists() {
