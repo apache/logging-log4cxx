@@ -195,7 +195,8 @@ PatternConverterPtr PatternParser::parse()
 				}
 				else {
 					LOGLOG_ERROR(_T("Error occured in position ") << i
-						<< _T(".\n Was expecting digit, instead got char \"") << c << _T("\"."));
+						<< _T(".\n Was expecting digit, instead got char \"")
+						<< c << _T("\"."));
 					state = LITERAL_STATE;
 				}
 				break;
@@ -248,7 +249,7 @@ void PatternParser::finalizeConverter(TCHAR c)
 		{
 			dateFormatStr = AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT;
 		}
-		
+
 		if(StringHelper::equalsIgnoreCase(dateFormatStr,
 			AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT))
 			df = new ISO8601DateFormat();
