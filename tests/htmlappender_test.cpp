@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <log4cxx/logger.h>
-#include <log4cxx/fileappender.h>
+#include <log4cxx/consoleappender.h>
 #include <log4cxx/htmllayout.h>
 #include <log4cxx/helpers/exception.h>
 
@@ -15,11 +15,11 @@ int main()
   {
     LayoutPtr layout = new HTMLLayout();
 
-    FileAppender *fileAppender =
-      new FileAppender(layout, _T("result"), false);
+    AppenderPtr consoleAppender =
+      new ConsoleAppender(layout, _T("System.out"));
 
     LoggerPtr rootLogger = Logger::getRootLogger();
-    rootLogger->addAppender(fileAppender);
+    rootLogger->addAppender(consoleAppender);
 
     rootLogger->debug(_T("debug message"));
     rootLogger->info(_T("info message"));
