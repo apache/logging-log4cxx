@@ -26,7 +26,7 @@ StringTokenizer::StringTokenizer(const String& str, const String& delim)
 
 #ifdef UNICODE
 	wcscpy(this->str, str.c_str());
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	token = wcstok(this->str, this->delim.c_str());
 #else
 	token = wcstok(this->str, this->delim.c_str(), &state);
@@ -57,7 +57,7 @@ String StringTokenizer::nextToken()
 	String currentToken = token;
 
 #ifdef UNICODE
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	token = wcstok(0, delim.c_str());
 #else
 	token = wcstok(0, delim.c_str(), &state);

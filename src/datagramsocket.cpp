@@ -16,7 +16,7 @@
  
 #include <log4cxx/portability.h>
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
 #include <winsock.h>
 #else
@@ -98,7 +98,7 @@ void DatagramSocket::close()
 	if (fd != 0)
 	{
 		LOGLOG_DEBUG(_T("closing socket"));
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 		if (::closesocket(fd) == -1)
 #else
 		if (::close(fd) == -1)
@@ -149,7 +149,7 @@ void DatagramSocket::receive(DatagramPacketPtr& p)
 	addr.sin_addr.s_addr = htonl(p->getAddress().address);
 	addr.sin_port = htons(p->getPort());
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	if (::recvfrom(fd, (char *)p->getData(), p->getLength(), 0,
 		(sockaddr *)&addr, &addr_len) == -1)
 #elif defined(__hpux)
@@ -175,7 +175,7 @@ void DatagramSocket::send(DatagramPacketPtr& p)
 	addr.sin_addr.s_addr = htonl(p->getAddress().address);
 	addr.sin_port = htons(p->getPort());
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	if (::sendto(fd, (const char *)p->getData(), p->getLength(), 0,
 		(sockaddr *)&addr, addr_len) == -1)
 #else

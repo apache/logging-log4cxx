@@ -44,7 +44,7 @@ public:
 	
 	static void int64ToString(wchar_t * dst, size_t maxlen, const int64_t& ll)
 	{
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 		_snwprintf(dst, maxlen, L"%I64d", ll);
 #else
 #ifdef HAVE_SWPRINTF
@@ -55,7 +55,7 @@ public:
 	
 	static void int64ToString(char * dst, size_t maxlen, const int64_t& ll)
 	{
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 		_snprintf(dst, maxlen, "%I64d", ll);
 #else
 		snprintf(dst, maxlen, "%lld", ll);

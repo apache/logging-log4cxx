@@ -16,7 +16,7 @@
  
 #include <log4cxx/portability.h>
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
 #include <winsock.h>
 #else
@@ -42,7 +42,7 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketImpl)
 #include <string.h>
 #include <assert.h>
 
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 namespace {
     class WinSockInitializer {
     public:
@@ -61,7 +61,7 @@ namespace {
 
 SocketException::SocketException()
 {
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 	TCHAR messageBuffer[256];
 	DWORD dwError = ::WSAGetLastError();
 
@@ -116,7 +116,7 @@ SocketImpl::~SocketImpl()
 void SocketImpl::accept(SocketImplPtr s)
 {
 	sockaddr_in client_addr;
-#if defined(WIN32) || defined(__hpux)
+#if defined(WIN32) || defined(_WIN32) || defined(__hpux)
 	int client_len;
 #else
 	socklen_t client_len;
@@ -191,7 +191,7 @@ void SocketImpl::close()
 	if (fd != 0)
 	{
 		LOGLOG_DEBUG(_T("closing socket"));
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 		if (::closesocket(fd) == -1)
 #else
 		if (::close(fd) == -1)
@@ -272,7 +272,7 @@ size_t SocketImpl::read(void * buf, size_t len) const
 
 	while ((size_t)(p - (unsigned char *)buf) < len)
 	{
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 		len_read = ::recv(fd, (char *)p, len - (p - (unsigned char *)buf), 0);
 #else
 		len_read = ::read(fd, p, len - (p - (unsigned char *)buf));
@@ -301,7 +301,7 @@ size_t SocketImpl::write(const void * buf, size_t len)
 
 	while ((size_t)(p - (const unsigned char *)buf) < len)
 	{
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 		len_written = ::send(fd, (const char *)p, len - (p - (const unsigned char *)buf), 0);
 #else
 		len_written = ::write(fd, p, len - (p - (const unsigned char *)buf));

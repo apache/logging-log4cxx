@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-#ifdef WIN32
+#if defined(WIN32) || defined(_WIN32)
 
 #include <windows.h>
 #undef ERROR
