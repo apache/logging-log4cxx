@@ -217,7 +217,9 @@ void DailyRollingFileAppender::rollOver()
 	USES_CONVERSION;
 	remove(T2A(scheduledFilename.c_str()));
 
-	if (rename(T2A(fileName.c_str()), T2A(scheduledFilename.c_str())) == 0)
+	std::string aFileName = T2A(fileName.c_str());
+	std::string aScheduledFilename = T2A(scheduledFilename.c_str());
+	if (rename(aFileName.c_str(), aScheduledFilename.c_str()) == 0)
 	{
 		LogLog::debug(fileName + _T(" -> ") + scheduledFilename);
 	}

@@ -70,7 +70,9 @@ void RollingFileAppender::rollOver()
 			file << fileName << _T(".") << i;
 			target << fileName << _T(".") << (i + 1);
 			LogLog::debug(_T("Renaming file ") + file.str() + _T(" to ") + target.str());
-			rename(T2A(file.str().c_str()), T2A(target.str().c_str()));
+			std::string aFileName = T2A(file.str().c_str());
+			std::string aTarget = T2A(target.str().c_str());
+			rename(aFileName.c_str(), aTarget.c_str());
 		}
 
 		// Rename fileName to fileName.1
@@ -78,7 +80,9 @@ void RollingFileAppender::rollOver()
 		target << fileName << _T(".") << 1;
 
 		LogLog::debug(_T("Renaming file ") + fileName + _T(" to ") + target.str());
-		rename(T2A(fileName.c_str()), T2A(target.str().c_str()));
+		std::string aFileName = T2A(file.str().c_str());
+		std::string aTarget = T2A(target.str().c_str());
+		rename(aFileName.c_str(), aTarget.c_str());
 	}
 
 	// Open the current file up again in truncation mode
