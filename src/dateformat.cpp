@@ -29,6 +29,12 @@ tstring AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT = _T("DATE");
 DateFormat::DateFormat(const tstring& dateFormat, const tstring& timeZone)
  : dateFormat(dateFormat), timeZone(timeZone)
 {
+	size_t pos = this->dateFormat.find(_T("%Q"));
+	if (pos != tstring::npos)
+	{
+		this->dateFormat = this->dateFormat.substr(0, pos) +
+			_T("%") + this->dateFormat.substr(pos + 1);
+	}
 }
 
 void DateFormat::format(tostream& os, int64_t timeMillis)
