@@ -6,17 +6,21 @@ liblog4cxx_la_SOURCES = \
 	appenderattachableimpl.cpp \
 	appenderskeleton.cpp \
 	asyncappender.cpp \
+	basicconfigurator.cpp \
 	boundedfifo.cpp \
 	class.cpp \
+	configurator.cpp \
 	consoleappender.cpp \
 	criticalsection.cpp \
+	cyclicbuffer.cpp \
 	datelayout.cpp \
 	dateformat.cpp \
 	defaultcategoryfactory.cpp \
 	domconfigurator.cpp \
 	fileappender.cpp \
+	filewatchdog.cpp \
 	formattinginfo.cpp \
-	gnomexmlreader.cpp \
+	gnomexml.cpp \
 	hierarchy.cpp \
 	htmllayout.cpp \
 	inetaddress.cpp \
@@ -29,7 +33,7 @@ liblog4cxx_la_SOURCES = \
 	loggingevent.cpp \
 	loglog.cpp \
 	logmanager.cpp \
-	msxmlreader.cpp \
+	msxml.cpp \
 	ndc.cpp \
 	mdc.cpp \
 	nteventlogappender.cpp \
@@ -48,6 +52,7 @@ liblog4cxx_la_SOURCES = \
 	serversocket.cpp \
 	semaphore.cpp \
 	simplelayout.cpp \
+	smtpappender.cpp \
 	socket.cpp \
 	socketappender.cpp \
 	sockethubappender.cpp \
@@ -56,6 +61,7 @@ liblog4cxx_la_SOURCES = \
 	socketnode.cpp \
 	socketoutputstream.cpp \
 	stringmatchfilter.cpp \
+	stringtokenizer.cpp \
 	system.cpp \
 	telnetappender.cpp \
 	transform.cpp \
@@ -72,5 +78,6 @@ liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_XML@ @LIBS_ODBC@
 bin_PROGRAMS = simplesocketserver
 simplesocketserver_SOURCES = simplesocketserver.cpp
 simplesocketserver_LDADD = $(top_builddir)/src/liblog4cxx.la
+
 
 
