@@ -53,14 +53,14 @@ void PropertySetter::setProperties(helpers::Properties& properties, const tstrin
 		if (key.find(prefix) == 0)
 		{
 			// ignore key if it contains dots after the prefix
-			if (key.find('.', len + 1) > 0)
+			if (key.find(_T('.'), len + 1) != tstring::npos)
 			{
 				continue;
 			}
 			
 			tstring value = OptionConverter::findAndSubst(key, properties);
 			key = key.substr(len);
-			if (key == "layout"
+			if (key == _T("layout")
 				&& obj->instanceof(Appender::getStaticClass()))
 			{
 				continue;
@@ -78,6 +78,8 @@ void PropertySetter::setProperty(const tstring& name, const tstring& value)
 	
 	if (obj->instanceof(OptionHandler::getStaticClass()))
 	{
+		LogLog::debug(_T("Setting option name=[") + 
+			name + _T("], value=[") + value + _T("]"));
 		OptionHandlerPtr(obj)->setOption(name, value);
 	}
 }
