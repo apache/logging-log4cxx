@@ -82,18 +82,18 @@ public:
                 int passCount = 0;
                 LogString sbuf(LOG4CXX_STR("pass "));
 
-        Pool pool;
-        sbuf.append(StringHelper::toString(passCount, pool));
+                Pool pool;
+                sbuf.append(StringHelper::toString(passCount, pool));
 
-        sbuf.append(LOG4CXX_STR("; no min or max set"));
+                sbuf.append(LOG4CXX_STR("; no min or max set"));
                 common(sbuf);
                 passCount++;
 
                 // test with a min set
                 rangeFilter->setLevelMin(Level::WARN);
                 sbuf.assign(LOG4CXX_STR("pass "));
-        sbuf.append(StringHelper::toString(passCount, pool));
-        sbuf.append(LOG4CXX_STR("; min set to WARN, max not set"));
+                sbuf.append(StringHelper::toString(passCount, pool));
+                sbuf.append(LOG4CXX_STR("; min set to WARN, max not set"));
                 common(sbuf);
                 passCount++;
 
@@ -105,8 +105,8 @@ public:
                 //test with max set
                 rangeFilter->setLevelMax(Level::WARN);
                 sbuf.assign(LOG4CXX_STR("pass "));
-        sbuf.append(StringHelper::toString(passCount, pool));
-        sbuf.append(LOG4CXX_STR("; min not set, max set to WARN"));
+                sbuf.append(StringHelper::toString(passCount, pool));
+                sbuf.append(LOG4CXX_STR("; min not set, max set to WARN"));
                 common(sbuf);
                 passCount++;
 
@@ -191,7 +191,7 @@ public:
 
                 //test with max set
                 rangeFilter->setLevelMax(Level::WARN);
-                sbuf.append(LOG4CXX_STR("pass "));
+                sbuf.assign(LOG4CXX_STR("pass "));
 
                 sbuf.append(StringHelper::toString(passCount, pool));
 
@@ -253,6 +253,6 @@ public:
 const File LevelRangeFilterTestCase::ACCEPT_FILE("output/LevelRangeFilter_accept");
 const File LevelRangeFilterTestCase::ACCEPT_WITNESS("witness/LevelRangeFilter_accept");
 const File LevelRangeFilterTestCase::NEUTRAL_FILE("output/LevelRangeFilter_neutral");
-const File LevelRangeFilterTestCase::NEUTRAL_WITNESS("witness/LevelMatchFilter_neutral");
+const File LevelRangeFilterTestCase::NEUTRAL_WITNESS("witness/LevelRangeFilter_neutral");
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LevelRangeFilterTestCase);

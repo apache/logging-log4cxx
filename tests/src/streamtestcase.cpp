@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -155,13 +155,14 @@ public:
       void testWidth() {
           LoggerPtr root(Logger::getRootLogger());
           log4cxx::logstream stream(root, log4cxx::Level::INFO);
-          stream.width(4);
+          stream.width(5);
+          stream.precision(2);
           stream << std::fixed
-             << 10.00015
+             << '[' << 10.0 << L']'
              << LOG4CXX_ENDMSG;
           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
           LogString msg(event->getMessage());
-          CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("10.00")) == LogString::npos);
+          CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("[10.00]")) == LogString::npos);
        }
 
        void addMessage(std::wostream& os) {
