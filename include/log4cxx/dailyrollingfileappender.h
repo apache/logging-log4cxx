@@ -231,7 +231,7 @@ namespace log4cxx
 		/**
 		Rollover the current file to a new file.
 		*/
-		void rollOver();
+		virtual void rollOver();
 
 
 		/**
