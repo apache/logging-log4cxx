@@ -5,20 +5,21 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-void dump(LoggerPtr logger)
+class dump
 {
-	tcout << _T("Logger=") << logger->getName()
-		<< _T("\tAssignedLevel=") << logger->getLevel().toString()
-		<< _T("\tInheritedLevel=") << logger->getEffectiveLevel().toString()
+public:
+	dump(LoggerPtr logger) : logger(logger) {}
+	LoggerPtr logger;
+};
+
+tostream& operator<<(tostream &os, const dump& dump)
+{
+	os << _T("Logger=") << dump.logger->getName()
+		<< _T("\tAssignedLevel=") << dump.logger->getLevel().toString()
+		<< _T("\tInheritedLevel=") << dump.logger->getEffectiveLevel().toString()
 		<< std::endl;
-}
 
-void setLevel(LoggerPtr logger, const Level& level)
-{
-	tcout << _T("Setting level ") << level.toString() << _T(" to logger ")
-		<< logger->getName() << std::endl;
-
-	logger->setLevel(level);
+	return os;
 }
 
 int main()
@@ -32,29 +33,70 @@ int main()
 		LoggerPtr XY = Logger::getLogger(_T("X.Y"));
 		LoggerPtr XYZ = Logger::getLogger(_T("X.Y.Z"));
 
-		setLevel(root, Level::getDebugLevel());
-		dump(root); dump(X); dump(XY); dump(XYZ);
-		tcout << std::endl;
+		root->setLevel(Level::getDebugLevel());
+		if (root->getLevel() != Level::getDebugLevel()
+			|| root->getEffectiveLevel() != Level::getDebugLevel()
+			|| X->getLevel() != Level::getOffLevel()
+			|| X->getEffectiveLevel() != Level::getDebugLevel()
+			|| XY->getLevel() != Level::getOffLevel()
+			|| XY->getEffectiveLevel() != Level::getDebugLevel()
+			|| XYZ->getLevel() != Level::getOffLevel()
+			|| XYZ->getEffectiveLevel() != Level::getDebugLevel())
+		{
+			tcout << dump(root) << dump(X) << dump(XY) << dump(XYZ) << std::endl;
+			result = EXIT_FAILURE;
+		}
 
-		setLevel(root, Level::getDebugLevel());
-		setLevel(X, Level::getInfoLevel());
-		setLevel(XY, Level::getWarnLevel());
-		setLevel(XYZ, Level::getErrorLevel());
-		dump(root); dump(X); dump(XY); dump(XYZ);
-		tcout << std::endl;
+		root->setLevel(Level::getDebugLevel());
+		X->setLevel(Level::getInfoLevel());
+		XY->setLevel(Level::getWarnLevel());
+		XYZ->setLevel(Level::getErrorLevel());
+		if (root->getLevel() != Level::getDebugLevel()
+			|| root->getEffectiveLevel() != Level::getDebugLevel()
+			|| X->getLevel() != Level::getInfoLevel()
+			|| X->getEffectiveLevel() != Level::getInfoLevel()
+			|| XY->getLevel() != Level::getWarnLevel()
+			|| XY->getEffectiveLevel() != Level::getWarnLevel()
+			|| XYZ->getLevel() != Level::getErrorLevel()
+			|| XYZ->getEffectiveLevel() != Level::getErrorLevel())
+		{
+			tcout << dump(root) << dump(X) << dump(XY) << dump(XYZ) << std::endl;
+			result = EXIT_FAILURE;
+		}
 
-		setLevel(root, Level::getDebugLevel());
-		setLevel(X, Level::getInfoLevel());
-		setLevel(XY, Level::getOffLevel());
-		setLevel(XYZ, Level::getErrorLevel());
-		dump(root); dump(X); dump(XY); dump(XYZ);
-		tcout << std::endl;
+		root->setLevel(Level::getDebugLevel());
+		X->setLevel(Level::getInfoLevel());
+		XY->setLevel(Level::getOffLevel());
+		XYZ->setLevel(Level::getErrorLevel());
+		if (root->getLevel() != Level::getDebugLevel()
+			|| root->getEffectiveLevel() != Level::getDebugLevel()
+			|| X->getLevel() != Level::getInfoLevel()
+			|| X->getEffectiveLevel() != Level::getInfoLevel()
+			|| XY->getLevel() != Level::getOffLevel()
+			|| XY->getEffectiveLevel() != Level::getInfoLevel()
+			|| XYZ->getLevel() != Level::getErrorLevel()
+			|| XYZ->getEffectiveLevel() != Level::getErrorLevel())
+		{
+			tcout << dump(root) << dump(X) << dump(XY) << dump(XYZ) << std::endl;
+			result = EXIT_FAILURE;
+		}
 
-		setLevel(root, Level::getDebugLevel());
-		setLevel(X, Level::getInfoLevel());
-		setLevel(XY, Level::getOffLevel());
-		setLevel(XYZ, Level::getOffLevel());
-		dump(root); dump(X); dump(XY); dump(XYZ);
+		root->setLevel(Level::getDebugLevel());
+		X->setLevel(Level::getInfoLevel());
+		XY->setLevel(Level::getOffLevel());
+		XYZ->setLevel(Level::getOffLevel());
+		if (root->getLevel() != Level::getDebugLevel()
+			|| root->getEffectiveLevel() != Level::getDebugLevel()
+			|| X->getLevel() != Level::getInfoLevel()
+			|| X->getEffectiveLevel() != Level::getInfoLevel()
+			|| XY->getLevel() != Level::getOffLevel()
+			|| XY->getEffectiveLevel() != Level::getInfoLevel()
+			|| XYZ->getLevel() != Level::getOffLevel()
+			|| XYZ->getEffectiveLevel() != Level::getInfoLevel())
+		{
+			tcout << dump(root) << dump(X) << dump(XY) << dump(XYZ);
+			result = EXIT_FAILURE;
+		}
 	}
 	catch(Exception&)
 	{

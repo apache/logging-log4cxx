@@ -12,7 +12,7 @@ using namespace log4cxx::spi;
 
 int main()
 {
-	int result = EXIT_SUCCESS;
+	int ret = EXIT_SUCCESS;
 	
 	try
 	{
@@ -41,13 +41,13 @@ int main()
 
 		if (witness.str() != result.str())
 		{
-			return EXIT_FAILURE;
+			ret = EXIT_FAILURE;
 		}
 	}
 	catch(Exception&)
 	{
-		result = EXIT_FAILURE;
+		ret = EXIT_FAILURE;
 	}
 	
-	return result;
+	return ret;
 }

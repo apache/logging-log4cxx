@@ -1,5 +1,0 @@
-logger=X.Y.Z, parent=root
-logger=X, parent=root
-logger=X.Y.Z, parent=X
-logger=X.Y, parent=X
-logger=X.Y.Z, parent=X.Y

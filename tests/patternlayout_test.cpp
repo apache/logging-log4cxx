@@ -3,37 +3,48 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/level.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
 
 int main()
 {
-  int result = EXIT_SUCCESS;
+	int ret = EXIT_SUCCESS;
+	
+	try
+	{
+		PatternLayoutPtr layout = new PatternLayout();
+		layout->setConversionPattern(_T("%-5p [%t]: %m%n"));
+		LoggingEvent event(
+			Logger::getStaticClass().getName(),
+			Logger::getRootLogger(),
+			Level::getDebugLevel(),
+			_T("debug message"),
+			"file.cpp", 
+			12
+			);
+		
+		tostringstream result, witness;
+		
+		witness << _T("DEBUG [") << event.getThreadId()
+			<< _T("]: debug message") << std::endl;
+//		tcout << witness.str();
 
-  try
-  {
-    //LayoutPtr layout = new PatternLayout();
-    PatternLayout *layout = new PatternLayout();
-    const tstring pattern( _T("%-5p [%t]: %m%n") );
-    layout->setConversionPattern( pattern );
-
-    AppenderPtr consoleAppender =
-      new ConsoleAppender(layout, _T("System.out"));
-
-    LoggerPtr rootLogger = Logger::getRootLogger();
-    rootLogger->addAppender(consoleAppender);
-
-    rootLogger->debug(_T("debug message"));
-    rootLogger->info(_T("info message"));
-    rootLogger->warn(_T("warn message"));
-    rootLogger->error(_T("error message"));
-    rootLogger->fatal(_T("fatal message"));
-  }
-  catch(Exception&)
-  {
-    result = EXIT_FAILURE;
-  }
-
-  return result;
+		layout->format(result, event);
+//		tcout << result.str();
+		
+		if (witness.str() != result.str())
+		{
+			ret = EXIT_FAILURE;
+		}
+	}
+	catch(Exception&)
+	{
+		ret = EXIT_FAILURE;
+	}
+	
+	return ret;
 }

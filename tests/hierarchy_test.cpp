@@ -13,24 +13,49 @@ int main()
 		LoggerPtr logger;
 
 		logger = Logger::getLogger(_T("X.Y.Z"));
-		tcout << "logger=" << logger->getName()
-			<< ", parent=" << logger->getParent()->getName() << std::endl;
+		if (logger->getParent()->getName() != _T("root"))
+		{
+			tcout << "logger=" << logger->getName()
+				<< ", parent=" << logger->getParent()->getName()
+				<< _T(" (should be root)") << std::endl;
+			result = EXIT_FAILURE;
+		}
 
 		logger = Logger::getLogger(_T("X"));
-		tcout << "logger=" << logger->getName()
-			<< ", parent=" << logger->getParent()->getName() << std::endl;
+		if (logger->getParent()->getName() != _T("root"))
+		{
+			tcout << "logger=" << logger->getName()
+				<< ", parent=" << logger->getParent()->getName()
+				<< _T(" (should be root)") << std::endl;
+			result = EXIT_FAILURE;
+		}
 
 		logger = Logger::getLogger(_T("X.Y.Z"));
-		tcout << "logger=" << logger->getName()
-			<< ", parent=" << logger->getParent()->getName() << std::endl;
+		if (logger->getParent()->getName() != _T("X"))
+		{
+			tcout << "logger=" << logger->getName()
+				<< ", parent=" << logger->getParent()->getName()
+				<< _T(" (should be X)") << std::endl;
+			result = EXIT_FAILURE;
+		}
 
 		logger = Logger::getLogger(_T("X.Y"));
-		tcout << "logger=" << logger->getName()
-			<< ", parent=" << logger->getParent()->getName() << std::endl;
+		if (logger->getParent()->getName() != _T("X"))
+		{
+			tcout << "logger=" << logger->getName()
+				<< ", parent=" << logger->getParent()->getName()
+				<< _T(" (should be X)") << std::endl;
+			result = EXIT_FAILURE;
+		}
 
 		logger = Logger::getLogger(_T("X.Y.Z"));
-		tcout << "logger=" << logger->getName()
-			<< ", parent=" << logger->getParent()->getName() << std::endl;
+		if (logger->getParent()->getName() != _T("X.Y"))
+		{
+			tcout << "logger=" << logger->getName()
+				<< ", parent=" << logger->getParent()->getName()
+				<< _T(" (should be X.Y)") << std::endl;
+			result = EXIT_FAILURE;
+		}
 	}
 	catch(Exception&)
 	{

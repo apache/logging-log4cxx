@@ -13,7 +13,7 @@ using namespace log4cxx::spi;
 
 int main()
 {
-	int result = EXIT_SUCCESS;
+	int ret = EXIT_SUCCESS;
 	
 	try
 	{
@@ -40,21 +40,20 @@ int main()
 			<< _T("<td title=\"root category\">root</td>") << std::endl
 			<< _T("<td title=\"Message\">debug message</td>") << std::endl
 			<< _T("</tr>") << std::endl;
-		
-		layout->format(result, event);
-		
 //		tcout << witness.str();
+
+		layout->format(result, event);
 //		tcout << result.str();
 		
 		if (witness.str() != result.str())
 		{
-			return EXIT_FAILURE;
+			ret = EXIT_FAILURE;
 		}
 	}
 	catch(Exception&)
 	{
-		result = EXIT_FAILURE;
+		ret = EXIT_FAILURE;
 	}
 	
-	return result;
+	return ret;
 }

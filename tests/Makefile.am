@@ -14,22 +14,8 @@ noinst_PROGRAMS = \
 		domconfigurator_test
 
 EXTRA_DIST = \
-  hierarchy_test.witness\
-  hierarchy_test.sh\
-  level_test.witness\
-  level_test.sh\
-  ndc_test.witness\
-  ndc_test.sh\
-  mdc_test.witness\
-  mdc_test.sh\
-  filter_test.witness\
-  filter_test.sh\
   consoleappender_test.sh\
   consoleappender_test.witness\
-  fileappender_test.sh\
-  fileappender_test.witness\
-  patternlayout_test.witness\
-  patternlayout_test.sh\
   propertyconfigurator_test.properties\
   domconfigurator_test.xml
 
@@ -75,16 +61,16 @@ domconfigurator_test_SOURCES = domconfigurator_test.cpp
 domconfigurator_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
 TESTS = \
-		hierarchy_test.sh\
-		level_test.sh\
-		ndc_test.sh\
-		mdc_test.sh\
- 		filter_test.sh\
+		hierarchy_test\
+		level_test\
+		ndc_test\
+		mdc_test\
+ 		filter_test\
 		consoleappender_test.sh\
-        fileappender_test.sh\
+        fileappender_test\
         htmllayout_test\
         xmllayout_test\
         ttcclayout_test\
-        patternlayout_test.sh\
+        patternlayout_test\
 		propertyconfigurator_test\
 		domconfigurator_test
