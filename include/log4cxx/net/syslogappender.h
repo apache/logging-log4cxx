@@ -117,6 +117,7 @@ namespace log4cxx
 			are set.
 			*/
 			void activateOptions();
+			void setOption(const String& option, const String& value);
 
 			/**
 			The SyslogAppender requires a layout. Hence, this method returns

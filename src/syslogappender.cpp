@@ -236,6 +236,22 @@ void SyslogAppender::activateOptions()
 {
 }
 
+void SyslogAppender::setOption(const String& option, const String& value)
+{
+	if (StringHelper::equalsIgnoreCase(option, _T("sysloghost")))
+	{
+		setSyslogHost(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, _T("facility")))
+	{
+		setFacility(value);
+	}
+	else
+	{
+		AppenderSkeleton::setOption(name, value);
+	}
+}
+
 void SyslogAppender::setSyslogHost(const String& syslogHost)
 {
 	this->sw = new SyslogWriter(syslogHost);
