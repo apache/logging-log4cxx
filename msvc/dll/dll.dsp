@@ -45,7 +45,7 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /Yu"stdafx.h" /FD /c
-# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zi /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /FD /c
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -131,7 +131,7 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /Zi /O2 /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /FD /c
 # SUBTRACT BASE CPP /YX /Yc /Yu
-# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /D "UNICODE" /FD /c
+# ADD CPP /nologo /MD /W3 /GX /Zi /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /D "UNICODE" /FD /c
 # SUBTRACT CPP /YX /Yc /Yu
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
@@ -253,7 +253,7 @@ SOURCE=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Release
-TargetDir=\log4cxx-0.9.4\msvc\Bin\Release
+TargetDir=\log4cxx-0.9.5\msvc\Bin\Release
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -276,7 +276,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Debug
-TargetDir=\log4cxx-0.9.4\msvc\Bin\Debug
+TargetDir=\log4cxx-0.9.5\msvc\Bin\Debug
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -299,7 +299,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_D
-TargetDir=\log4cxx-0.9.4\msvc\Bin\Unicode_D
+TargetDir=\log4cxx-0.9.5\msvc\Bin\Unicode_D
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -322,7 +322,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_R
-TargetDir=\log4cxx-0.9.4\msvc\Bin\Unicode_R
+TargetDir=\log4cxx-0.9.5\msvc\Bin\Unicode_R
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \

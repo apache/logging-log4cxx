@@ -47,7 +47,7 @@ void SocketNode::run()
 		{
 			// read an event from the wire
 			event->read(is);
-
+			
 			// get a logger from the hierarchy.
 			// The name of the logger is taken to be the 
 			// name contained in the event.
