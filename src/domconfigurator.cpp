@@ -38,7 +38,8 @@ using namespace log4cxx::xml;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-#define CONFIGURATION_TAG _T("log4cxx")
+#define CONFIGURATION_TAG _T("log4j:configuration")
+#define OLD_CONFIGURATION_TAG _T("configuration")
 #define APPENDER_TAG _T("appender")
 #define APPENDER_REF_TAG _T("appender-ref")
 #define PARAM_TAG _T("param")
@@ -76,24 +77,31 @@ void AppenderMap::put(const tstring& appenderName, AppenderPtr appender)
 	map.insert(std::map<tstring, AppenderPtr>::value_type(appenderName, appender));
 }
 
-void DOMConfigurator::doConfigure(const tstring& URL)
+void DOMConfigurator::doConfigure(const tstring& filename, spi::LoggerRepositoryPtr repository)
 {
-	LogLog::debug(_T("DOMConfigurator configuring file ") + URL + _T("..."));
+	this->repository = repository;
+	LogLog::debug(_T("DOMConfigurator configuring file ") + filename + _T("..."));
 	appenderBag = new AppenderMap();
 #ifdef WIN32
 	MsXMLReader xmlReader;
-	xmlReader.parse(this, URL);
+	xmlReader.parse(this, filename);
 #elif defined(HAVE_LIBXML)
 	GnomeXMLReader xmlReader;
-	xmlReader.parse(this, URL);
+	xmlReader.parse(this, filename);
 #endif // WIN32
 
 	delete (AppenderMap *)appenderBag;
 }
 
+void DOMConfigurator::configure(const tstring& filename)
+{
+	DOMConfigurator().doConfigure(filename, LogManager::getLoggerRepository());
+}
+
 void DOMConfigurator::BuildElement(const tstring& parentTagName, const tstring& tagName)
 {
-	if (parentTagName == CONFIGURATION_TAG)
+	if (parentTagName == CONFIGURATION_TAG
+		|| parentTagName == OLD_CONFIGURATION_TAG)
 	{
 		if (currentOptionHandler != 0)
 		{
@@ -115,7 +123,7 @@ void DOMConfigurator::BuildElement(const tstring& parentTagName, const tstring& 
 
 		if (tagName == ROOT_TAG)
 		{
-			currentLogger = Logger::getRootLogger();
+			currentLogger = repository->getRootLogger();
 			currentAppenderAttachable = currentLogger;
 		}
 		else
@@ -132,7 +140,8 @@ void DOMConfigurator::BuildElement(const tstring& parentTagName, const tstring& 
 void DOMConfigurator::BuildAttribute(const tstring& elementTagName, const tstring& name, const tstring& value)
 {
 	// log4cxx attributes
-	if (elementTagName == CONFIGURATION_TAG)
+	if (elementTagName == CONFIGURATION_TAG
+		|| elementTagName == OLD_CONFIGURATION_TAG)
 	{
 		BuildLog4cxxAttribute(StringHelper::toLowerCase(name), value);
 	}
@@ -206,7 +215,7 @@ void DOMConfigurator::BuildLog4cxxAttribute(const tstring& name, const tstring& 
 
 		if (!value.empty() || value != _T("null"))
 		{
-			LogManager::getLoggerRepository()->setThreshold(value);
+			repository->setThreshold(value);
 		}
 	}
 }
@@ -280,7 +289,7 @@ void DOMConfigurator::BuildParameterAttribute(const tstring& name, const tstring
 		if (currentOptionHandler != 0)
 		{
 			currentOptionHandler->setOption(
-				currentParamName, 
+				currentParamName,
 				currentParamValue);
 		}
 
@@ -294,7 +303,7 @@ void DOMConfigurator::BuildLoggerAttribute(const tstring& name, const tstring& v
 	if (name == NAME_ATTR)
 	{
 		LogLog::debug(_T("Retreiving an instance of Logger."));
-		currentLogger == Logger::getLogger(value);
+		currentLogger = repository->getLogger(value);
 		currentAppenderAttachable = currentLogger;
 
 		if (!currentAdditivity.empty())
@@ -328,7 +337,7 @@ void DOMConfigurator::BuildLevelAttribute(const tstring& name, const tstring& va
 		{
 			// root
 
-			if (currentLogger == Logger::getRootLogger())
+			if (currentLogger == repository->getRootLogger())
 			{
 				LogLog::error(_T("Root level cannot be inherited. Ignoring directive."));
 			}
