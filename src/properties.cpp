@@ -24,7 +24,7 @@ public:
 	void parse(tistream& in, Properties& properties)
 	{
 		tostringstream key, element;
-		LexemType lexemType = KEY;
+		LexemType lexemType = BEGIN;
 		TCHAR c;
 		bool finished = false;
 
@@ -262,7 +262,9 @@ public:
 
 			case COMMENT:
 				if (c == _T('\n') || c == _T('\r'))
+				{
 					lexemType = BEGIN;
+				}
 				if (!get(in, c))
 					finished = true;
 				break;
@@ -314,6 +316,7 @@ tstring Properties::setProperty(const tstring& key, const tstring& value)
 {
 	tstring oldValue = properties[key];
 	properties[key] = value;
+	//tcout << _T("setting property key=") << key << _T(", value=") << value << std::endl;
 	return oldValue;
 }
 
@@ -334,10 +337,8 @@ std::vector<tstring> Properties::propertyNames()
 	std::vector<tstring> names;
 	names.reserve(properties.size());
 
-	std::map<tstring, tstring>::iterator it, itEnd;
-	it = properties.begin();
-	itEnd = properties.end();
-	while(it != itEnd)
+	std::map<tstring, tstring>::iterator it;
+	for (it = properties.begin(); it != properties.end(); it++)
 	{
 		const tstring& key = it->first;
 		names.push_back(key);
