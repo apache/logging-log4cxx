@@ -4,7 +4,8 @@ noinst_PROGRAMS = \
         consoleappender_test\
         fileappender_test\
         htmllayout_test\
-        xmllayout_test
+        xmllayout_test\
+        ttcclayout_test
 
 EXTRA_DIST = \
 	consoleappender_test.sh\
@@ -15,6 +16,8 @@ EXTRA_DIST = \
 	htmllayout_test.witness
 	xmllayout_test.sh\
 	xmllayout_test.witness
+	ttcclayout_test.sh\
+	ttcclayout_test.witness
 
 INCLUDES = -I$(top_srcdir)/include
 
@@ -30,8 +33,12 @@ htmllayout_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 xmllayout_test_SOURCES = xmllayout_test.cpp
 xmllayout_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
+ttcclayout_test_SOURCES = ttcclayout_test.cpp
+ttcclayout_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+
 TESTS = \
         consoleappender_test.sh\
         fileappender_test.sh\
         htmllayout_test.sh\
-        xmllayout_test.sh
+        xmllayout_test.sh\
+        ttcclayout_test.sh
