@@ -46,39 +46,34 @@ void XMLLayout::setOption(const tstring& option,
 
 void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 {
-	output << _T("<log4cxx:event logger=\"");
-//	output << _T("<event logger=\"");
+	output << _T("<log4j:event logger=\"");
 	output << event.getLoggerName();
 	output << _T("\" timestamp=\"");
-	ISO8601DateFormat().format(output, event.getTimeStamp());
+	output << (unsigned long)event.getTimeStamp();
+	output << _T("000");
 	output << _T("\" level=\"");
 	output << event.getLevel().toString();
 	output << _T("\" thread=\"");
 	output << event.getThreadId();
 	output << _T("\">\r\n");
 
-	output << _T("<log4cxx:message><![CDATA[");
-//	output << _T("<message><![CDATA[");
+	output << _T("<log4j:message><![CDATA[");
 	// Append the rendered message. Also make sure to escape any
 	// existing CDATA sections.
 	Transform::appendEscapingCDATA(output, event.getRenderedMessage());
-	output << _T("]]></log4cxx:message>\r\n");
-//	output << _T("]]></message>\r\n");
+	output << _T("]]></log4j:message>\r\n");
 
 	const tstring& ndc = event.getNDC();
 	if(ndc.length() != 0)
 	{
-		output << _T("<log4cxx:NDC><![CDATA[");
-//		output << _T("<NDC><![CDATA[");
+		output << _T("<log4j:NDC><![CDATA[");
 		output << ndc;
-		output << _T("]]></log4cxx:NDC>\r\n");
-//		output << _T("]]></NDC>\r\n");
+		output << _T("]]></log4j:NDC>\r\n");
 	}
 
 	if(locationInfo)
 	{
-		output << _T("<log4cxx:locationInfo file=\"");
-//		output << _T("<locationInfo file=\"");
+		output << _T("<log4j:locationInfo file=\"");
 		USES_CONVERSION;
 		output << A2T(event.getFile());
 		output << _T("\" line=\"");
@@ -86,6 +81,5 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 		output << _T("\"/>\r\n");
 	}
 
-	output << _T("</log4cxx:event>\r\n\r\n");
-//	output << _T("</event>\r\n\r\n");
+	output << _T("</log4j:event>\r\n\r\n");
 }
