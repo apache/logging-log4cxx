@@ -448,6 +448,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\condition.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\configurator.cpp">
 				<FileConfiguration
 					Name="Unicode Release|Win32">
@@ -1445,6 +1448,9 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\mutex.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\ndc.cpp">
