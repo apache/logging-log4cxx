@@ -24,6 +24,13 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+#if !defined(APR_FOPEN_READ)
+#define APR_FOPEN_READ APR_READ
+#define APR_FOPEN_CREATE APR_CREATE
+#define APR_FOPEN_WRITE APR_WRITE
+#define APR_FOPEN_TRUNCATE APR_TRUNCATE
+#define APR_FOPEN_APPEND APR_APPEND
+#endif
 
 void Transformer::transform(const File& in, const File& out,
         const std::vector<Filter *>& filters)
@@ -56,52 +63,55 @@ void Transformer::transform(const File& in, const File& out,
      apr_pool_t* pool;
      apr_status_t stat = apr_pool_create(&pool, NULL);
 
-     //
-     //    open the output file
-     //
-     apr_file_t* child_out;
-     apr_int32_t flags = APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-     stat = apr_file_open(&child_out, out.getOSName().c_str(),
+
+     if (patterns.size() == 0) {
+        //
+        //    fairly naive file copy code
+        //
+        //
+        apr_file_t* child_out;
+        apr_int32_t flags = APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
+        stat = apr_file_open(&child_out, out.getOSName().c_str(),
           flags, APR_OS_DEFAULT, pool);
-     assert(stat == 0);
+        assert(stat == 0);
 
-      //
-      //    fairly naive file copy code
-      //
-      //
-      apr_file_t* in_file;
-      stat = apr_file_open(&in_file, in.getOSName().c_str(),
+        apr_file_t* in_file;
+        stat = apr_file_open(&in_file, in.getOSName().c_str(),
            APR_FOPEN_READ, APR_OS_DEFAULT, pool);
-      assert(stat == 0);
-      apr_size_t bufsize = 32000;
-      void* buf = apr_palloc(pool, bufsize);
-      apr_size_t bytesRead = bufsize;
+        assert(stat == 0);
+        apr_size_t bufsize = 32000;
+        void* buf = apr_palloc(pool, bufsize);
+        apr_size_t bytesRead = bufsize;
 
-      while(stat == 0 && bytesRead == bufsize) {
-        stat = apr_file_read(in_file, buf, &bytesRead);
-        if (stat == 0 && bytesRead > 0) {
-           stat = apr_file_write(child_out, buf, &bytesRead);
-           assert(stat == 0);
+        while(stat == 0 && bytesRead == bufsize) {
+            stat = apr_file_read(in_file, buf, &bytesRead);
+            if (stat == 0 && bytesRead > 0) {
+                stat = apr_file_write(child_out, buf, &bytesRead);
+                assert(stat == 0);
+            }
         }
-      }
-      apr_file_close(child_out);
-      apr_file_close(in_file);
-
-
-     //
-     //   if there are patterns, invoke sed to execute the replacements
-     //
-     //
-     if (patterns.size() > 0) {
+     } else {
+        //
+        //   if there are patterns, invoke sed to execute the replacements
+        //
+        //
         apr_procattr_t* attr = NULL;
         stat = apr_procattr_create(&attr, pool);
         assert(stat == 0);
 
+        //
+        //   find the program on the path
+        //
+        stat = apr_procattr_cmdtype_set(attr, APR_PROGRAM_PATH);
+        assert(stat == 0);
 
+        //
+        //   build the argument list
+        //      using Q as regex separator on s command
+        //
         const char** args = (const char**)
-          apr_palloc(pool, (patterns.size()*2 + 4) * sizeof(*args));
+          apr_palloc(pool, (patterns.size()*2 + 3) * sizeof(*args));
         int i = 0;
-        args[i++] = "-i";
         args[i++] = "-r";
         std::string tmp;
         for (log4cxx::Filter::PatternList::const_iterator iter = patterns.begin();
@@ -118,38 +128,45 @@ void Transformer::transform(const File& in, const File& out,
           args[i++] = arg;
         }
 
-        args[i++] = out.getOSName().c_str();
+        //
+        //    specify the input file
+        args[i++] = in.getOSName().c_str();
         args[i] = NULL;
 
-#if 0
-        //    capture the error stream to diagnose problems
+
         //
-        //    open the error file
+        //    set the output stream to go to the out file
         //
+        apr_file_t* child_out;
+        stat = apr_file_open(&child_out, 
+             out.getOSName().c_str(),
+             APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE, 
+             APR_OS_DEFAULT, 
+             pool);
+        assert(stat == 0);
+
+        stat =  apr_procattr_child_out_set(attr, child_out, NULL);
+        assert(stat == 0);
+
         apr_file_t* child_err;
-        apr_int32_t flags = APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-        stat = apr_file_open(&child_err, "sed.log",
-             flags, APR_OS_DEFAULT, pool);
+        stat = apr_file_open(&child_err, 
+             "sed.err",
+             APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_APPEND, 
+             APR_OS_DEFAULT, 
+             pool);
         assert(stat == 0);
 
         stat =  apr_procattr_child_err_set(attr, child_err, NULL);
         assert(stat == 0);
-#endif
-
-
-
 
 
         apr_proc_t pid;
         stat = apr_proc_create(&pid,"sed", args, NULL, attr, pool);
         assert(stat == 0);
 
-        int exitcode = -1;
-        apr_exit_why_e exitwhy;
-        stat = apr_proc_wait(&pid, &exitcode, &exitwhy, APR_WAIT);
-        apr_exit_why_e foo = exitwhy;
+        apr_proc_wait(&pid, NULL, NULL, APR_WAIT);
      }
-
      apr_pool_destroy(pool);
+
 
 }

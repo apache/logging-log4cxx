@@ -20,6 +20,6 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 XMLTimestampFilter::XMLTimestampFilter()
-    : Filter("timestamp=\"[0-9]{10,13}\"", "timestamp=\"XXX\"") {}
+    : Filter("[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]*", "XXX") {}
 
 

@@ -60,37 +60,37 @@ using namespace log4cxx::net;
 // DEBUG T1 [thread] org.apache.log4j.net.SocketAppenderTestCase Message 1
 #define PAT1 \
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[0x[0-9A-F]*]\\ ") \
-        REGEX_STR(".* Message [0-9]{1,2}")
+        REGEX_STR(".* Message [0-9]\\{1,2\\}")
 
 // DEBUG T2 [thread] patternlayouttest.cpp(?) Message 1
 #define PAT2 \
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[0x[0-9A-F]*]\\ ") \
-        REGEX_STR(".*socketservertestcase.cpp\\([0-9]{1,4}\\) Message [0-9]{1,2}")
+        REGEX_STR(".*socketservertestcase.cpp\\([0-9]\\{1,4\\}\\) Message [0-9]\\{1,2\\}")
 
 // DEBUG T3 [thread] patternlayouttest.cpp(?) Message 1
 #define PAT3 \
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[0x[0-9A-F]*]\\ ") \
-        REGEX_STR(".*socketservertestcase.cpp\\([0-9]{1,4}\\) Message [0-9]{1,2}")
+        REGEX_STR(".*socketservertestcase.cpp\\([0-9]\\{1,4\\}\\) Message [0-9]\\{1,2\\}")
 
 // DEBUG some T4 MDC-TEST4 [thread] SocketAppenderTestCase - Message 1
 // DEBUG some T4 MDC-TEST4 [thread] SocketAppenderTestCase - Message 1
 #define PAT4 \
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[0x[0-9A-F]*]\\") \
-        REGEX_STR(" (root|SocketServerTestCase) - Message [0-9]{1,2}")
+        REGEX_STR(" (root|SocketServerTestCase) - Message [0-9]\\{1,2\\}")
 #define PAT5 \
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[0x[0-9A-F]*]\\") \
-        REGEX_STR(" (root|SocketServerTestCase) - Message [0-9]{1,2}")
+        REGEX_STR(" (root|SocketServerTestCase) - Message [0-9]\\{1,2\\}")
 #define PAT6 \
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6") \
-        REGEX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message [0-9]{1,2}")
+        REGEX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message [0-9]\\{1,2\\}")
 #define PAT7 \
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7") \
-        REGEX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message [0-9]{1,2}")
+        REGEX_STR(" \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message [0-9]\\{1,2\\}")
 
 // DEBUG some8 T8 shortSocketServer MDC-TEST7 [thread] SocketServerTestCase - Message 1
 #define PAT8 \
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer") \
-        REGEX_STR(" MDC-TEST8 \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message [0-9]{1,2}")
+        REGEX_STR(" MDC-TEST8 \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message [0-9]\\{1,2\\}")
 
 class ShortSocketServerLauncher
 {
@@ -99,15 +99,17 @@ public:
         {
                 if (!launched)
                 {
+                        //
+                        //   should be replaced with apr_proc calls
 #ifdef WIN32
                         PROCESS_INFORMATION pi;
                         STARTUPINFO si;
                         ZeroMemory( &si, sizeof(si) );
                         si.cb = sizeof(si);
                         ZeroMemory( &pi, sizeof(pi) );
-                        std::string commandLine("src\\shortsocketserver 8 input/socketServer");
+                        char commandLine[] = "src\\shortsocketserver 8 input/socketServer";
 
-                        BOOL bResult = ::CreateProcessA(NULL, commandLine.c_str(), NULL, NULL,
+                        BOOL bResult = ::CreateProcessA(NULL, commandLine, NULL, NULL,
                                 TRUE, 0, NULL, NULL, &si, &pi);
 #else
                         if(!::fork())

@@ -27,7 +27,7 @@
 #include "../util/xmltimestampfilter.h"
 #include "../util/xmllineattributefilter.h"
 #include "../util/xmlthreadfilter.h"
-#include "../util/xmlfilenamefilter.h"
+#include "../util/filenamefilter.h"
 #include <iostream>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../testchar.h"
@@ -115,15 +115,18 @@ public:
                 common();
 
                 XMLTimestampFilter xmlTimestampFilter;
-                XMLLineAttributeFilter xmlLineAttributeFilter;
                 XMLThreadFilter xmlThreadFilter;
-                XMLFilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
+                FilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
+                Filter line2XX("[23][0-9][0-9]", "X");
+                Filter line5X("53", "X");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlTimestampFilter);
-                filters.push_back(&xmlLineAttributeFilter);
+
                 filters.push_back(&xmlThreadFilter);
                 filters.push_back(&xmlFilenameFilter);
+                filters.push_back(&line2XX);
+                filters.push_back(&line5X);
 
                 try
                 {
@@ -153,15 +156,15 @@ public:
                         LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
 
                 XMLTimestampFilter xmlTimestampFilter;
-                XMLLineAttributeFilter xmlLineAttributeFilter;
                 XMLThreadFilter xmlThreadFilter;
-                XMLFilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
+                FilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
+                Filter line1xx("1[0-9][0-9]", "X");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlTimestampFilter);
-                filters.push_back(&xmlLineAttributeFilter);
                 filters.push_back(&xmlThreadFilter);
                 filters.push_back(&xmlFilenameFilter);
+                filters.push_back(&line1xx);
 
                 try
                 {

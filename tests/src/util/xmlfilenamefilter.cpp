@@ -20,22 +20,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 XMLFilenameFilter::XMLFilenameFilter(const std::string& actual, const std::string& expected) {
-    std::string pattern(" file=\"");
-    std::string replacement(" file=\"");
-	std::string filename(actual);
-	size_t backslash = filename.rfind('\\', filename.length() - 1);
-	while (backslash != std::string::npos) {
-		filename.replace(backslash, 1, "\\\\", 2);
-		if (backslash == 0) {
-			backslash = std::string::npos;
-		} else {
-		    backslash = filename.rfind('\\', backslash - 1);
-		}
-	}
-    pattern += filename;
-    pattern += "\"";
+    std::string pattern(" file=\\(.\\).*");
+    pattern += expected;
 
+    std::string replacement(" file=\\\\1");
     replacement += expected;
-    replacement += "\"";
-    patterns.push_back( PatternReplacement(pattern, replacement) );
+//    patterns.push_back( PatternReplacement(pattern, replacement) );
 }

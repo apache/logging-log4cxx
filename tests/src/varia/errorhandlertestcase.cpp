@@ -39,7 +39,7 @@ using namespace log4cxx::xml;
 #define TEST1_A_PAT "FALLBACK - test - Message [0-9]"
 #define TEST1_B_PAT "FALLBACK - root - Message [0-9]"
 #define TEST1_2_PAT \
-        "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3} " \
+        "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " \
         "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]"
 
 class ErrorHandlerTestCase : public CppUnit::TestFixture

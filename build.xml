@@ -640,6 +640,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="test-all" depends="build-log4cxx, run-unittest"/>
 
-<target name="gump" depends="build-log4cxx, header-check"/>
+<target name="gump" depends="build-log4cxx, header-check, test-all"/>
 
 </project>

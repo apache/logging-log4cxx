@@ -44,18 +44,18 @@
 
 
 #define REGEX_STR(x) x
-#define PAT0 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]{1,2}")
+#define PAT0 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]\\{1,2\\}")
 #define PAT1 ISO8601_PAT REGEX_STR(" ") PAT0
 #define PAT2 ABSOLUTE_DATE_AND_TIME_PAT REGEX_STR(" ") PAT0
 #define PAT3 ABSOLUTE_TIME_PAT REGEX_STR(" ") PAT0
 #define PAT4 RELATIVE_TIME_PAT REGEX_STR(" ") PAT0
-#define PAT5 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message [0-9]{1,2}")
-#define PAT6 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\([0-9]{1,4}\\): Message [0-9]{1,3}")
-#define PAT11a REGEX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ log4j.PatternLayoutTest: Message [0-9]{1,2}")
-#define PAT11b REGEX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ root: Message [0-9]{1,2}")
+#define PAT5 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message [0-9]\\{1,2\\}")
+#define PAT6 REGEX_STR("\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\([0-9]\\{1,4\\}\\): Message [0-9]\\{1,3\\}")
+#define PAT11a REGEX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ log4j.PatternLayoutTest: Message [0-9]\\{1,2\\}")
+#define PAT11b REGEX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[0x[0-9A-F]*]\\ root: Message [0-9]\\{1,2\\}")
 #define PAT12 REGEX_STR("^\\[0x[0-9A-F]*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) ")\
-    REGEX_STR(".*patternlayouttest.cpp\\([0-9]{1,4}\\): ")\
-    REGEX_STR("Message [0-9]{1,2}")
+    REGEX_STR(".*patternlayouttest.cpp([0-9]\\{1,4\\}): ")\
+    REGEX_STR("Message [0-9]\\{1,2\\}")
 #define PAT_MDC_1 REGEX_STR("")
 
 using namespace log4cxx;
@@ -277,15 +277,18 @@ public:
                 PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout8.properties"));
                 common();
 
+
                 ControlFilter filter1;
                 filter1 << PAT4;
-                RelativeTimeFilter filter2;
-                ThreadFilter filter3;
+                //
+                //   combo of relative time and thread identifier
+                //     (the \\\\1 preserve a leading space)
+                Filter filter2(".*0x[0-9A-F]*]", "[main]");
 
                 std::vector<Filter *> filters;
+
                 filters.push_back(&filter1);
                 filters.push_back(&filter2);
-                filters.push_back(&filter3);
 
                 try
                 {

@@ -45,7 +45,7 @@ using namespace log4cxx::xml;
 
 #define TEST1_1B_PAT "(DEBUG|INFO |WARN |ERROR|FATAL) root - Message [0-9]"
 
-#define TEST1_2_PAT "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3} " \
+#define TEST1_2_PAT "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " \
         "\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]"
 
 class DOMTestCase : public CppUnit::TestFixture
