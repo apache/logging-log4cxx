@@ -430,6 +430,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <get src="${cppunit.mirror}/cppunit/cppunit-${cppunit.version}.tar.gz"
          dest="${lib.dir}/cppunit-${cppunit.version}.tar.gz"
          usetimestamp="true"/>
+</target>
+
+<target name="untar-cppunit-src" depends="get-cppunit-src" unless="cppunit-src-expanded">
     <untar src="${lib.dir}/cppunit-${cppunit.version}.tar.gz"
            dest="${lib.dir}" compression="gzip"/>
     <chmod file="${lib.dir}/cppunit-${cppunit.version}/configure"
@@ -438,7 +441,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 
 <target name="build-cppunit" depends="init" unless="cppunit-available">
-    <antcall target="get-cppunit-src"/>
+    <antcall target="untar-cppunit-src"/>
 
     <property name="cppunit.dir" value="${lib.dir}/cppunit-${cppunit.version}"/>
 
