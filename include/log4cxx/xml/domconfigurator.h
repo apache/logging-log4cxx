@@ -20,10 +20,13 @@
 #include <log4cxx/config.h>
 #include <log4cxx/helpers/tchar.h>
 #include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/objectimpl.h>
 #include <map>
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/helpers/properties.h>
+#include <log4cxx/spi/configurator.h>
 
 namespace log4cxx
 {
@@ -40,6 +43,20 @@ namespace log4cxx
 
 		class OptionHandler;
 		typedef helpers::ObjectPtrT<OptionHandler> OptionHandlerPtr;
+	};
+
+	namespace helpers
+	{
+		class XMLDOMDocument;
+		typedef helpers::ObjectPtrT<XMLDOMDocument> XMLDOMDocumentPtr;
+
+		class XMLDOMElement;
+		typedef helpers::ObjectPtrT<XMLDOMElement> XMLDOMElementPtr;
+	};
+
+	namespace config
+	{
+		class PropertySetter;
 	};
 
 	namespace xml
@@ -69,13 +86,113 @@ files. You can enable log4cxx internal logging by setting the
 
 <p>There are sample XML files included in the package.
 */
-		class DOMConfigurator
+		class DOMConfigurator : 
+			virtual public spi::Configurator,
+			virtual public helpers::ObjectImpl
 		{
+		protected:
+			/**
+			Used internally to parse appenders by IDREF name.
+			*/
+			AppenderPtr findAppenderByName(helpers::XMLDOMDocumentPtr doc,
+				const tstring& appenderName);
+
+			/**
+			Used internally to parse appenders by IDREF element.
+			*/
+			AppenderPtr findAppenderByReference(
+				helpers::XMLDOMElementPtr appenderRef);
+
+			/**
+			Used internally to parse an appender element.
+			*/
+			AppenderPtr parseAppender(helpers::XMLDOMElementPtr appenderElement);
+
+			/**
+			Used internally to parse an {@link spi::ErrorHandler ErrorHandler } element.
+			*/
+			void parseErrorHandler(helpers::XMLDOMElementPtr element, AppenderPtr appender);
+
+			/**
+			 Used internally to parse a filter element.
+			*/
+			void parseFilters(helpers::XMLDOMElementPtr element, AppenderPtr appender);
+
+			/**
+			Used internally to parse a logger element.
+			*/
+			void parseLogger(helpers::XMLDOMElementPtr loggerElement);
+
+			/**
+			 Used internally to parse the logger factory element.
+			*/
+			void parseLoggerFactory(helpers::XMLDOMElementPtr factoryElement);
+
+			/**
+			 Used internally to parse the roor category element.
+			*/
+			void parseRoot(helpers::XMLDOMElementPtr rootElement);
+
+			/**
+			 Used internally to parse the children of a category element.
+			*/
+			void parseChildrenOfLoggerElement(helpers::XMLDOMElementPtr catElement, 
+				LoggerPtr logger, bool isRoot);
+
+			/**
+			 Used internally to parse a layout element.
+			*/  
+			LayoutPtr parseLayout(helpers::XMLDOMElementPtr layout_element);
+
+			/**
+			 Used internally to parse a level  element.
+			*/
+			void parseLevel(helpers::XMLDOMElementPtr element, 
+				LoggerPtr logger, bool isRoot);
+
+			void setParameter(helpers::XMLDOMElementPtr elem, 
+				config::PropertySetter& propSetter);
+
+			/**
+			 Used internally to configure the log4cxx framework by parsing a DOM
+			 tree of XML elements based on <a
+			 href="docs/log4j.dtd">log4j.dtd</a>.
+ 
+			*/
+			void parse(helpers::XMLDOMElementPtr element);
+
 		public:
+			DECLARE_LOG4CXX_OBJECT(DOMConfigurator)
+			BEGIN_LOG4CXX_INTERFACE_MAP()
+				LOG4CXX_INTERFACE_ENTRY(spi::Configurator)
+			END_LOG4CXX_INTERFACE_MAP()
+
 			/**
 			A static version of #doConfigure.
 			*/
 			static void configure(const tstring& filename);
+
+			/**
+			Like #configureAndWatch(const tstring& configFilename, long delay)
+			except that the default delay as defined by 
+			FileWatchdog#DEFAULT_DELAY is used. 
+			@param configFilename A log4j configuration file in XML format.
+			*/
+			static void configureAndWatch(const tstring& configFilename);
+
+			/**
+			Read the configuration file <code>configFilename</code> if it
+			exists. Moreover, a thread will be created that will periodically
+			check if <code>configFilename</code> has been created or
+			modified. The period is determined by the <code>delay</code>
+			argument. If a change or file creation is detected, then
+			<code>configFilename</code> is read to configure log4cxx.  
+
+			@param configFilename A log4j configuration file in XML format.
+			@param delay The delay in milliseconds to wait between each check.
+			*/
+			static void configureAndWatch(const tstring& configFilename, 
+				long delay);
 
 			/**
 			Interpret the XML file pointed by <code>filename</code> and set up
@@ -86,35 +203,15 @@ files. You can enable log4cxx internal logging by setting the
 			*/
 			void doConfigure(const tstring& filename, spi::LoggerRepositoryPtr repository);
 
-			void BuildElement(const tstring& parentTagName, const tstring& tagName);
-			void BuildAttribute(const tstring& elementTagName, const tstring& name, const tstring& value);
+		protected:
+			tstring DOMConfigurator::subst(const tstring& value);
 
-		private:
-			void BuildLog4cxxAttribute(const tstring& name, const tstring& value);
-			void BuildAppenderAttribute(const tstring& name, const tstring& value);
-			void BuildLayoutAttribute(const tstring& name, const tstring& value);
-			void BuildParameterAttribute(const tstring& name, const tstring& value);
-			void BuildLoggerAttribute(const tstring& name, const tstring& value);
-			void BuildAppenderRefAttribute(const tstring& name, const tstring& value);
-			void BuildFilterAttribute(const tstring& name, const tstring& value);
-			void BuildLevelAttribute(const tstring& name, const tstring& value);
-			void BuildLoggerAdditivity(LoggerPtr& logger, const tstring& additivityValue);
-			AppenderPtr BuildAppender(const tstring& className);
-			LayoutPtr BuildLayout(const tstring& className);
-			spi::FilterPtr BuildFilter(const tstring& className);
-
-			AppenderPtr currentAppender;
-			tstring currentAppenderName;
-			tstring currentParamName;
-			tstring currentParamValue;
-			LoggerPtr currentLogger;
-			tstring currentAdditivity;
-			spi::AppenderAttachablePtr currentAppenderAttachable;
-			spi::OptionHandlerPtr currentOptionHandler;
-
+		protected:
 			void * appenderBag;
 
+			helpers::Properties props;
 			spi::LoggerRepositoryPtr repository;
+			spi::LoggerFactoryPtr loggerFactory;
 		};
 	}; // namespace xml
 }; // namespace log4cxx
