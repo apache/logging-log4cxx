@@ -19,7 +19,7 @@
 
 #include <log4cxx/config.h>
 
-//#ifdef HAVE_SMTP
+#ifdef HAVE_SMTP
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/cyclicbuffer.h>
@@ -270,5 +270,5 @@ namespace log4cxx
 	}  // namespace net
 }; // namespace log4cxx
 
-//#endif // HAVE_SMTP
+#endif // HAVE_SMTP
 #endif // _LOG4CXX_NET_SMTP_H
