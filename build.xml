@@ -300,7 +300,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                    value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
-    <!--  testcase3 checks default configuration so must be run in isolation -->
+    <!--  test use of log4j.configuration -->
     <property name="defaultInit3.properties"
          location="${tests.dir}/input/defaultInit3.properties"/>
     <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
@@ -310,6 +310,39 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <env key="log4j.configuration"
                    value="${defaultInit3.properties}"/>
     </exec>
+
+    <!--  test of LOG4CXX_CONFIGURATION -->
+    <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
+	      failonerror="true">
+            <env key="LD_LIBRARY_PATH"
+                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+            <env key="LOG4CXX_CONFIGURATION"
+                   value="${defaultInit3.properties}"/>
+    </exec>
+
+    <!--  test of log4j.properties -->
+    <mkdir dir="${build.dir}/output"/>
+    <delete file="${build.dir}/log4*.properties"/>
+    <delete file="${build.dir}/log4*.xml"/>
+    <copy tofile="${build.dir}/log4j.properties"
+       file="${defaultInit3.properties}" overwrite="true"/>
+    <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
+	      failonerror="true">
+            <env key="LD_LIBRARY_PATH"
+                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+    </exec>
+
+    <!-- modify log4j.properties so if it has precedence the test fails  -->
+    <replace file="${build.dir}/log4j.properties" token="D3" value="D4"/>
+    <copy tofile="${build.dir}/log4cxx.properties"
+       file="${defaultInit3.properties}"/>
+    <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
+	      failonerror="true">
+            <env key="LD_LIBRARY_PATH"
+                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+    </exec>
+
+
 </target>
 
 

@@ -1,9 +1,9 @@
-/** 
+/**
 @page Introduction Short introduction to log4cxx
 
 This document is largely inspired of the
 <a href=http://logging.apache.org/log4j/docs/manual.html>Short introduction to
-log4j</a> by <i>Ceki Gülcü</i>
+log4j</a> by <i>Ceki Gï¿½lcï¿½</i>
 
 @section Contents
 - @ref Abstract
@@ -26,15 +26,15 @@ authors. It allows the developer to control which log statements are output
 with arbitrary granularity. It is fully configurable at runtime using external
 configuration files. Best of all, log4cxx has a gentle learning curve. Beware:
  judging from user feedback, it is also quite addictive.
- 
+
 @section IntroductionIntroduction Introduction
 
 The log4cxx framework is based on log4j, see http://logging.apache.org/log4j
 for more information on log4cxx.
 
-The package is distributed under the 
+The package is distributed under the
 <a href=http://logging.apache.org/log4j/LICENSE.txt>Apache Software License
-</a>, a fully-fledged open source license certified by the 
+</a>, a fully-fledged open source license certified by the
 <a href=http://www.opensource.org/> open source</a> initiative. The latest
 log4cxx version, including full-source code, class files and documentation can
 be found at http://logging.apache.org/log4cxx .
@@ -99,7 +99,7 @@ The root logger resides at the top of the logger hierarchy. It is exceptional
 in two ways:
 
 -# it always exists,
--# it cannot be retrieved by name. 
+-# it cannot be retrieved by name.
 
 Invoking the class static log4cxx::Logger::getRootLogger method retrieves it.
 All other loggers are instantiated and retrieved with the class static
@@ -110,26 +110,26 @@ below.
 @code
  namespace log4cxx {
     typedef std::string String;
- 
+
     class Logger {
     public:
         // Creation & retrieval methods:
         static LoggerPtr getRootLogger();
         static LoggerPtr getLogger(const String& name);
- 
+
         // printing methods:
         void debug(const String& message, const char* file = 0, int line = -1);
         void info(const String& message, const char* file = 0, int line = -1);
         void warn(const String& message, const char* file = 0, int line = -1);
         void error(const String& message, const char* file = 0, int line = -1);
         void fatal(const String& message, const char* file = 0, int line = -1);
- 
+
         // generic printing method:
         void log(const LevelPtr& l, const String& message,
             const char* file = 0, int line = -1);
     };
  }
- 
+
  //
  //    Use these instead of calling Logger methods directly.
  //
@@ -140,7 +140,7 @@ below.
  #define LOG4CXX_FATAL(logger, msg) ...
 @endcode
 
-Loggers may be assigned levels. The set of possible levels, that is {@link 
+Loggers may be assigned levels. The set of possible levels, that is {@link
 log4cxx::Level::DEBUG DEBUG}, {@link log4cxx::Level::INFO INFO}, {@link
 log4cxx::Level::WARN WARN}, {@link log4cxx::Level::ERROR ERROR} and {@link
 log4cxx::Level::FATAL FATAL} are defined in the log4cxx::Level class. Although
@@ -167,7 +167,7 @@ To ensure that all loggers can eventually inherit a level, the root logger
  always has an assigned level.
 
 Below are four tables with various assigned level values and the resulting
-inherited levels according to the above rule. 
+inherited levels according to the above rule.
 
 <table border="1" >
   <caption align=bottom>Example 1</caption>
@@ -264,7 +264,7 @@ q</i>.
 This rule is at the heart of log4cxx. It assumes that levels are ordered. For
 the standard levels, we have DEBUG < INFO < WARN < ERROR < FATAL.
 
-Here is an example of this rule. 
+Here is an example of this rule.
 
 @code
 // get a logger instance named "com.foo"
@@ -336,11 +336,11 @@ The ability to selectively enable or disable logging requests based
 on their logger is only part of the picture. Log4cxx allows logging
 requests to print to multiple destinations. In log4cxx speak, an output
 destination is called an <em>appender</em>. Currently, appenders exist
-for the {@link log4cxx::ConsoleAppender console}, {@link 
-log4cxx::FileAppender files}, GUI components, {@link 
+for the {@link log4cxx::ConsoleAppender console}, {@link
+log4cxx::FileAppender files}, GUI components, {@link
 log4cxx::net::SocketAppender remote socket} servers, {@link
 log4cxx::nt::NTEventLogAppender NT Event Loggers}, and remote UNIX {@link
-log4cxx::net::SyslogAppender Syslog} daemons. 
+log4cxx::net::SyslogAppender Syslog} daemons.
 It is also possible to log {@link log4cxx::AsyncAppender asynchronously}.
 
 More than one appender can be attached to a logger.
@@ -357,7 +357,7 @@ console. If in addition a file appender is added to a logger, say
 <em>C</em>, then enabled logging requests for <em>C</em> and
 <em>C</em>'s children will print on a file <em>and</em> on the
 console. It is possible to override this default behavior so that
-appender accumulation is no longer additive by {@link 
+appender accumulation is no longer additive by {@link
 log4cxx::Logger::setAdditivity setting
 the additivity flag} to <code>false</code>.
 
@@ -543,7 +543,7 @@ void Bar::doIt()
 
 The invocation of the {@link log4cxx::BasicConfigurator::configure
 BasicConfigurator::configure} method creates a rather simple log4cxx setup.
-This method is hardwired to add to the root logger {@link 
+This method is hardwired to add to the root logger {@link
 log4cxx::ConsoleAppender ConsoleAppender}. The output will be formatted using a
 {@link  log4cxx::PatternLayout PatternLayout} set
 to the pattern "\%-4r [\%t] \%-5p \%c \%x - \%m\%n".
@@ -724,35 +724,30 @@ The log4cxx library does not make any assumptions about its
 environment. In particular, there are no default log4cxx
 appenders. Under certain well-defined circumstances however, the
 initialization of the logger hierarchy will attempt to
-automatically configure log4cxx. 
+automatically configure log4cxx.
 
 The exact default initialization algorithm is defined as follows:
 
--# Set the <code>configurationOptionStr</code> string variable to the value of
-the <b>log4j.configuration</b> environment variable.  <em>The preferred
-way to specify the default initialization file is through the
-<b>log4j.configuration</b> environment variable.</em> In case the environment
-variable <b>log4j.configuration</b> is not defined, then set the
-string variable <code>configurationOptionStr</code> to its default value
-"log4j.properties".
+-#  Set the <code>configurationOptionStr</code> string variable
+to the value of the <b>LOG4CXX_CONFIGURATION</b> environment variable if set,
+otherwise the value of the <b>log4j.configuration</b> environment variable if set,
+otherwise the first of the following file names which exist in the current
+working directory, "log4cxx.properties", "log4j.properties",
+"log4cxx.xml" and "log4j.xml".  If <code>configurationOptionStr</code>
+has not been set, then disable logging.
 @n @n
--# Attempt to convert the <code>configurationOptionStr</code> variable to a
-valid file name.
-@n @n
--# If no file could be found, abort default
-initialization. Otherwise, configure log4cxx from the file name.
-@n @n
-The {@link log4cxx::PropertyConfigurator PropertyConfigurator}
-will be used to parse the file to configure log4cxx unless the file name ends
+Unless a custom configurator is specified using the
+<b>LOG4CXX_CONFIGURATOR_CLASS</b> or <b>log4j.configuratorClass</b>
+environment variable, the {@link log4cxx::PropertyConfigurator PropertyConfigurator}
+will be used to configure log4cxx unless the file name ends
 with the ".xml" extension, in which case the {@link
 log4cxx::xml::DOMConfigurator DOMConfigurator}
-will be used. You can optionaly specify a custom configurator. The
-value of the <b>log4j.configuratorClass</b> environment variable is taken
-as the fully qualified class name of your custom configurator. The
-custom configurator you specify <em>must</em> implement the {@link
-log4cxx::spi::Configurator Configurator} interface. 
+will be used.  If a custom configurator is specified,
+the environment variable should contain a fully qualified class name
+of a class that implements the {@link
+log4cxx::spi::Configurator Configurator} interface.
 
-@section NDC Nested Diagnostic Contexts 
+@section NDC Nested Diagnostic Contexts
 
 Most real-world systems have to deal with multiple clients
 simultaneously. In a typical multithreaded implementation of such a
@@ -842,7 +837,7 @@ However, The method invocation involves the "hidden" cost of
 parameter construction.
 @n @n
 For example, for some logger <code>logger</code>, writing,
-@code 
+@code
 logger->debug("The user named [" + strName + "] is logged", __FILE__, __LINE__);
 @endcode
 incurs the cost of constructing the message parameter, i.e.
@@ -853,15 +848,15 @@ This cost of parameter construction can be quite high and it
 depends on the size of the parameters involved.
 @n @n
 To avoid the parameter construction cost write:
-@code 
+@code
 if(logger->isDebugEnabled()
 {
-	logger->forcedLog(Level::DEBUG, 
+	logger->forcedLog(Level::DEBUG,
 		"The user named [" + strName + "] is logged", __FILE__, __LINE__);
 }
-@endcode 
+@endcode
 or better yet:
-@code 
+@code
 LOG4CXX_DEBUG(logger, "The user named [" + strName + "] is logged");
 @endcode
 

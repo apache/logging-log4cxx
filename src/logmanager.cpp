@@ -27,10 +27,6 @@
 #include <log4cxx/helpers/loglog.h>
 #include <sys/stat.h>
 
-#define DEFAULT_CONFIGURATION_FILE _T("log4j.properties")
-#define DEFAULT_XML_CONFIGURATION_FILE _T("log4j.xml")
-#define DEFAULT_CONFIGURATION_KEY _T("log4j.configuration")
-#define CONFIGURATOR_CLASS_KEY _T("log4j.configuratorClass")
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -65,6 +61,31 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
 	LogManager::getRepositorySelector() = selector;
 }
 
+const String LogManager::getConfiguratorClass() {
+
+   static const String LOG4J_CONFIGURATOR_CLASS_KEY("log4j.configuratorClass");
+   static const String LOG4CXX_CONFIGURATOR_CLASS_KEY("LOG4CXX_CONFIGURATOR_CLASS");
+   // Use automatic configration to configure the default hierarchy
+   const String log4jConfiguratorClassName(
+        OptionConverter::getSystemProperty(LOG4J_CONFIGURATOR_CLASS_KEY,_T("")));
+   const String configuratorClassName(
+        OptionConverter::getSystemProperty(LOG4CXX_CONFIGURATOR_CLASS_KEY,
+            log4jConfiguratorClassName));
+   return configuratorClassName;
+}
+
+const String LogManager::getConfigurationFileName() {
+  static const String LOG4CXX_DEFAULT_CONFIGURATION_KEY("LOG4CXX_CONFIGURATION");
+  static const String LOG4J_DEFAULT_CONFIGURATION_KEY("log4j.configuration");
+  const String log4jConfigurationOptionStr(
+          OptionConverter::getSystemProperty(LOG4J_DEFAULT_CONFIGURATION_KEY,_T("")));
+  const String configurationOptionStr(
+          OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_KEY,
+              log4jConfigurationOptionStr));
+  return configurationOptionStr;
+}
+
+
 LoggerRepositoryPtr& LogManager::getLoggerRepository()
 {
 	if (getRepositorySelector() == 0)
@@ -74,22 +95,29 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
 				new Hierarchy(
 					new RootCategory(Level::getDebug())));
 
-		// Use automatic configration to configure the default hierarchy
-		String configuratorClassName =
-			OptionConverter::getSystemProperty(CONFIGURATOR_CLASS_KEY,_T(""));
-		String configurationOptionStr =
-			OptionConverter::getSystemProperty(DEFAULT_CONFIGURATION_KEY,_T(""));
+                const String configuratorClassName(getConfiguratorClass());
+
+                String configurationOptionStr(getConfigurationFileName());
 
 		struct stat buff;
-		USES_CONVERSION;
 
 		if (configurationOptionStr.empty())
 		{
-			configurationOptionStr = DEFAULT_XML_CONFIGURATION_FILE;
-			if (stat(T2A(configurationOptionStr.c_str()), &buff) == -1)
-			{
-				configurationOptionStr = DEFAULT_CONFIGURATION_FILE;
-			}
+                        configurationOptionStr = "log4cxx.properties";
+                        const char* configFilenames[] = {
+                             "log4cxx.properties",
+                             "log4j.properties",
+                             "log4cxx.xml",
+                             "log4j.xml",
+                             NULL };
+                        for (const char** configFile = configFilenames;
+                             *configFile != NULL;
+                             configFile++) {
+                             if (stat(*configFile, &buff) == 0) {
+                                configurationOptionStr = *configFile;
+                                break;
+                             }
+                        }
 		}
 
 		if (stat(T2A(configurationOptionStr.c_str()), &buff) == 0)
