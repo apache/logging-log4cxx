@@ -135,7 +135,9 @@ AC_CHECK_HEADERS(unistd.h io.h )
 # Checks local idioms
 # ----------------------------------------------------------------------------
 
-# syslog_test
+# for SysLogAppender
+
+AC_CHECK_FUNCS(syslog)
 
 # Checks for libraries
 # ----------------------------------------------------------------------------
