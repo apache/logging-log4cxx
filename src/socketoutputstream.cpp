@@ -105,8 +105,8 @@ void SocketOutputStream::write(const String& value)
 
 void SocketOutputStream::close()
 {
-	// seek to begin
-	cur = beg;
+	// force flushing
+	flush();
 
 	// dereference socket
 	socket = 0;
@@ -114,9 +114,12 @@ void SocketOutputStream::close()
 
 void SocketOutputStream::flush()
 {
-	// write to socket
-	socket->write(beg, cur - beg);
+	if (cur != beg)
+	{
+		// write to socket
+		socket->write(beg, cur - beg);
 
-	// seek to begin
-	cur = beg;
+		// seek to begin
+		cur = beg;
+	}
 }
