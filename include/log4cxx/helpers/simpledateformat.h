@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -87,13 +87,11 @@ namespace log4cxx
                                            const apr_time_exp_t& date,
                                            log4cxx::helpers::Pool& p) const = 0;
 
-                       typedef std::time_put<wchar_t, std::ostreambuf_iterator<wchar_t> > TimePutFacet;
-
                   protected:
                         static void renderFacet(const std::locale& locale,
                                              std::wostream& buffer,
                                              const tm* time,
-                                             const char spec);
+                                             const wchar_t spec);
 
                   private:
                       /**

@@ -42,13 +42,13 @@ void SimpleDateFormat::PatternToken::setTimeZone(const TimeZonePtr& zone) {
 void SimpleDateFormat::PatternToken::renderFacet(const std::locale& locale,
                                                           std::basic_ostream<wchar_t>& buffer,
                                                           const tm* time,
-                                                          const char spec) {
-#if defined(_MSC_VER) && _MSC_VER < 1300
-                _USE(locale, TimePutFacet).put(buffer,
-                                 buffer, time, spec);
+                                                          const wchar_t spec) {
+#if defined(_USEFAC)
+    _USEFAC(locale, std::time_put<wchar_t> )
+        .put(buffer, buffer, time, spec);
 #else
-                std::use_facet<TimePutFacet>(locale).put(buffer,
-                                 buffer, buffer.fill(), time, spec);
+    std::use_facet<std::time_put<wchar_t> >(locale)
+        .put(buffer, buffer, buffer.fill(), time, spec);
 #endif
 
 }
@@ -131,7 +131,7 @@ namespace log4cxx {
           size_t start = 0;
           for (int imon = 0; imon < 12; imon++) {
              time.tm_mon = imon;
-             renderFacet(locale, buffer, &time, 'b');
+             renderFacet(locale, buffer, &time, L'b');
              std::wstring monthnames(buffer.str());
              names[imon] = monthnames.substr(start);
              start = monthnames.length();
@@ -156,7 +156,7 @@ namespace log4cxx {
           size_t start = 0;
           for (int imon = 0; imon < 12; imon++) {
              time.tm_mon = imon;
-             renderFacet(locale, buffer, &time, 'B');
+             renderFacet(locale, buffer, &time, L'B');
              std::wstring monthnames(buffer.str());
              names[imon] = monthnames.substr(start);
              start = monthnames.length();
@@ -233,7 +233,7 @@ namespace log4cxx {
              size_t start = 0;
              for (int iday = 0; iday < 7; iday++) {
                 time.tm_wday = iday;
-                renderFacet(locale, buffer, &time, 'a');
+                renderFacet(locale, buffer, &time, L'a');
                 std::wstring daynames(buffer.str());
                 names[iday] = daynames.substr(start);
                 start = daynames.length();
@@ -258,7 +258,7 @@ namespace log4cxx {
             size_t start = 0;
             for (int iday = 0; iday < 7; iday++) {
                time.tm_wday = iday;
-               renderFacet(locale, buffer, &time, 'A');
+               renderFacet(locale, buffer, &time, L'A');
                std::wstring daynames(buffer.str());
                names[iday] = daynames.substr(start);
                start = daynames.length();
@@ -341,7 +341,7 @@ namespace log4cxx {
           size_t start = 0;
           for (int i = 0; i < 2; i++) {
              time.tm_hour = i * 12;
-             renderFacet(locale, buffer, &time, 'p');
+             renderFacet(locale, buffer, &time, L'p');
              std::wstring ampm = buffer.str();
              names[i] = ampm.substr(start);
              start = ampm.length();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#define __STDC_CONSTANT_MACROS
 #include <log4cxx/helpers/datetimedateformat.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/pool.h>
@@ -22,9 +23,11 @@
 #include <apr.h>
 #include <apr_time.h>
 #include "localechanger.h"
+#include <sstream>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace std;
 
 #if defined(_WIN32)
 #define LOCALE_US "English_us"
@@ -32,11 +35,6 @@ using namespace log4cxx::helpers;
 #else
 #define LOCALE_US "en_US"
 #define LOCALE_FR "fr_FR"
-#endif
-
-//Define INT64_C for compilers that don't have it
-#if (!defined(INT64_C))
-#define INT64_C(value)  value ## LL
 #endif
 
 
@@ -54,9 +52,7 @@ class DateTimeDateFormatTestCase : public CppUnit::TestFixture
   CPPUNIT_TEST( test4 );
   CPPUNIT_TEST( test5 );
   CPPUNIT_TEST( test6 );
-#if !defined(__BORLANDC__)
   CPPUNIT_TEST( test7 );
-#endif
   CPPUNIT_TEST( test8 );
   CPPUNIT_TEST_SUITE_END();
 
@@ -162,6 +158,20 @@ private:
           LOG4CXX_STR("03 Jul 2004 00:00:00,000"));
   }
 
+  LogString formatDate(const std::locale& locale, const tm& date, const LogString& fmt) {
+        //
+        //  output the using STL
+        //
+        std::basic_ostringstream<logchar> buffer;
+#if defined(_USEFAC)
+         _USEFAC(locale, std::time_put<logchar>)
+             .put(buffer, buffer, &date, fmt.c_str(), fmt.c_str() + fmt.length());
+#else
+         std::use_facet<std::time_put<logchar> >(locale)
+             .put(buffer, buffer, buffer.fill(), &date, fmt.c_str(), fmt.c_str() + fmt.length());
+#endif
+        return buffer.str();
+  }
 
   /** Check that format is locale sensitive. */
   void test7()
@@ -171,30 +181,34 @@ private:
     if (localeChange.isEffective()) {
         LogString formatted;
         Pool p;
-        DateTimeDateFormat formatter;
-        formatter.setTimeZone(TimeZone::getGMT());
+        SimpleDateFormat formatter(LOG4CXX_STR("MMM"));
         formatter.format(formatted, avr11, p);
-        //
-        //   abbreviation for Avril varies
-        //
-        if (formatted != LOG4CXX_STR("11 avr. 2004 00:00:00,000")) {
-            CPPUNIT_ASSERT_EQUAL((LogString)  LOG4CXX_STR("11 avr 2004 00:00:00,000"), formatted );
-        }
+        
+        std::locale localeFR(LOCALE_FR);
+        struct tm avr11tm = { 0, 0, 0, 11, 03, 104 };
+        LogString expected(formatDate(localeFR, avr11tm, LOG4CXX_STR("%b")));
+        
+        CPPUNIT_ASSERT_EQUAL(expected, formatted);
     }
   }
 
   /** Check that format is locale sensitive. */
   void test8()
   {
-    apr_time_t march12 = MICROSECONDS_PER_DAY * 12519;
+    apr_time_t apr11 = MICROSECONDS_PER_DAY * 12519;
     LocaleChanger localeChange(LOCALE_US);
     if (localeChange.isEffective()) {
         LogString formatted;
         Pool p;
-        DateTimeDateFormat formatter;
+        SimpleDateFormat formatter(LOG4CXX_STR("MMM"));
         formatter.setTimeZone(TimeZone::getGMT());
-        formatter.format(formatted, march12, p);
-        CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("11 Apr 2004 00:00:00,000"), formatted );
+        formatter.format(formatted, apr11, p);
+
+        std::locale localeUS(LOCALE_US);
+        struct tm apr11tm = { 0, 0, 0, 11, 03, 104 };
+        LogString expected(formatDate(localeUS, apr11tm, LOG4CXX_STR("%b")));
+
+        CPPUNIT_ASSERT_EQUAL(expected, formatted);
     }
   }
 
