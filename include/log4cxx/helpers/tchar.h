@@ -44,7 +44,7 @@ public:
 inline std::ostream& operator<<(std::ostream& os, const int64_t& ll)
 {
 	char buff[21];
-	sprintf(buff, "%l64d", ll);
+	sprintf(buff, "%I64d", ll);
 	os << buff;
 	return os;
 }
@@ -66,7 +66,7 @@ inline std::ostream& operator<<(const int64_t& ll, std::ostream& os)
 inline std::wostream& operator<<(std::wostream& os, const int64_t& ll)
 {
 	wchar_t buff[21];
-	_snwprintf(buff, 20, L"%l64d", ll);
+	_snwprintf(buff, 20, L"%I64d", ll);
 	os << buff;
 	return os;
 }
