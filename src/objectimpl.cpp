@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
-
-#ifdef LOG4CXX_HAVE_MS_THREAD
-#include <windows.h>
-#endif
-
 #include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/event.h>
 #include <apr_atomic.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx::helpers;
 
-ObjectImpl::ObjectImpl() : ref(0)
+ObjectImpl::ObjectImpl() : ref( 0 )
 {
+  log4cxx::helpers::APRInitializer::initialize();
 }
 
 ObjectImpl::~ObjectImpl()
@@ -36,13 +31,13 @@ ObjectImpl::~ObjectImpl()
 
 void ObjectImpl::addRef() const
 {
-	apr_atomic_inc32(&ref);
+  apr_atomic_inc32( & ref );
 }
 
 void ObjectImpl::releaseRef() const
 {
-	if (apr_atomic_dec32(&ref) == 0)
-	{
-		delete this;
-	}
+  if ( apr_atomic_dec32( & ref ) == 0 )
+  {
+    delete this;
+  }
 }

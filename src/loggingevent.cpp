@@ -24,10 +24,9 @@
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/socket.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 #include <apr_time.h>
-#include <apr_pools.h>
-#include <apr_atomic.h>
 #include <apr_portable.h>
 
 using namespace log4cxx;
@@ -37,38 +36,13 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 
 
-/**
- *   Apache Portable Runtime (APR) initializer
- */
-namespace log4cxx {
-  namespace spi {
-    class APRInitializer {
-      public:
-      APRInitializer() {
-        apr_initialize();
-		apr_pool_create(&p, NULL);
-		apr_atomic_init(p);
-      }
-
-      ~APRInitializer() {
-		apr_pool_destroy(p);
-        apr_terminate();
-      }
-
-	  private:
-		  apr_pool_t* p;
-    };
-  }
-}
-
-
 //
 //   Accessor for start time.
 //     Called from LogManager::getRepositorySelector
 //       to initialize APR and set "start" time.
 //
 apr_time_t LoggingEvent::getStartTime() {
-  static APRInitializer aprInit;
+  log4cxx::helpers::APRInitializer::initialize();
   static apr_time_t startTime(apr_time_now());
   return startTime;
 }

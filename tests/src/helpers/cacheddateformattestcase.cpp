@@ -30,7 +30,7 @@ using namespace log4cxx::helpers;
 #define LOCALE_JP "jpn"
 #else
 #define LOCALE_US "en_US"
-#define LOCALE_JP "jp_JP"
+#define LOCALE_JP "ja_JP"
 #endif
 
 //Define INT64_C for compilers that don't have it
@@ -50,7 +50,7 @@ using namespace log4cxx::helpers;
      CPPUNIT_TEST( test2 );
      CPPUNIT_TEST( test3 );
      CPPUNIT_TEST( test4 );
-#if !defined(_WIN32)
+#if defined(_WIN32)
      CPPUNIT_TEST( test5 );
 #endif
      CPPUNIT_TEST( test6 );

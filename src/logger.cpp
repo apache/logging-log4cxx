@@ -100,8 +100,6 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event)
 
 void Logger::closeNestedAppenders()
 {
-	synchronized sync(mutex);
-
     AppenderList appenders = getAllAppenders();
     for(AppenderList::iterator it=appenders.begin(); it!=appenders.end(); ++it)
     {

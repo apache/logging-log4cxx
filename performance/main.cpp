@@ -21,8 +21,8 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/xml/domconfigurator.h>
-#include <log4cxx/helpers/system.h>
-#include <log4cxx/helpers/thread.h>
+#include <apr_general.h>
+#include <apr_pools.h>
 #include <apr_time.h>
 
 using namespace log4cxx;
@@ -89,7 +89,7 @@ double NoDelayLoop(LoggerPtr logger, const String& msg)
 		logger->info(msg, __FILE__, __LINE__);
     }
 	apr_time_t after = apr_time_now();
-	return ((after - before))/runLength;
+	return (after - before)/(runLength*1000);
 }
 
 double DelayedLoop(LoggerPtr logger, const String& msg)
@@ -105,7 +105,7 @@ double DelayedLoop(LoggerPtr logger, const String& msg)
 			j = 0;
 			try
 			{
-				Thread::sleep(delay);
+                                apr_sleep(delay * 1000);
 			}
 			catch(Exception&)
 			{
@@ -113,13 +113,14 @@ double DelayedLoop(LoggerPtr logger, const String& msg)
 		}
 
     }
-    double actualTime = ((apr_time_now()-before)/runLength);
+    double actualTime = (apr_time_now()-before)/(runLength*1000);
     tcout << "actual time: " << actualTime << std::endl;
     return (actualTime - delay*DELAY_MULT);
 }
 
-int main(int argc, char* argv[])
+int main(int argc, const char* const argv[])
 {
+        apr_app_initialize(&argc, &argv, NULL);
 	int ret = EXIT_SUCCESS;
 
 	try
@@ -155,6 +156,8 @@ int main(int argc, char* argv[])
 	{
 		ret = EXIT_FAILURE;
 	}
+
+        apr_terminate();
 
 	return ret;
 }

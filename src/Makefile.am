@@ -1,19 +1,18 @@
 lib_LTLIBRARIES = liblog4cxx.la
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I/usr/local/apr/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I/usr/local/apr/include/apr-1
 
 liblog4cxx_la_SOURCES = \
 	appenderattachableimpl.cpp \
 	appenderskeleton.cpp \
+        aprinitializer.cpp \
 	asyncappender.cpp \
 	basicconfigurator.cpp \
-	boundedfifo.cpp \
         cacheddateformat.cpp \
 	class.cpp \
 	condition.cpp \
 	configurator.cpp \
 	consoleappender.cpp \
-	criticalsection.cpp \
 	cyclicbuffer.cpp \
 	datagrampacket.cpp \
 	datagramsocket.cpp \
@@ -41,10 +40,10 @@ liblog4cxx_la_SOURCES = \
 	loggingevent.cpp \
 	loglog.cpp \
 	logmanager.cpp \
+	mdc.cpp \
 	msxml.cpp \
 	mutex.cpp \
 	ndc.cpp \
-	mdc.cpp \
 	nteventlogappender.cpp \
 	objectimpl.cpp \
 	odbcappender.cpp \
@@ -53,6 +52,7 @@ liblog4cxx_la_SOURCES = \
 	patternconverter.cpp \
 	patternlayout.cpp \
 	patternparser.cpp \
+        pool.cpp \
 	properties.cpp \
 	propertyconfigurator.cpp \
 	propertyresourcebundle.cpp \
@@ -62,7 +62,6 @@ liblog4cxx_la_SOURCES = \
 	rollingfileappender.cpp \
 	rootcategory.cpp \
 	serversocket.cpp \
-	semaphore.cpp \
         simpledateformat.cpp \
 	simplelayout.cpp \
 	smtpappender.cpp \
@@ -77,6 +76,7 @@ liblog4cxx_la_SOURCES = \
 	stringhelper.cpp \
 	stringmatchfilter.cpp \
 	stringtokenizer.cpp \
+	synchronized.cpp \
 	syslogappender.cpp \
 	syslogwriter.cpp \
 	system.cpp \

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2004 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
+#ifndef _LOG4CXX_HELPERS_APRINITIALIZER_H
+#define _LOG4CXX_HELPERS_APRINITIALIZER_H
 
-#include <log4cxx/helpers/mutex.h>
-#include <apr_thread_mutex.h>
+class apr_pool_t;
 
-using namespace log4cxx::helpers;
-using namespace log4cxx;
+namespace log4cxx
+{
+  namespace helpers
+  {
+    class APRInitializer
+    {
+    public:
+    static void initialize();
 
+    private:
+      APRInitializer();
+      ~APRInitializer();
+      apr_pool_t * p;
+    };
+  } // namespace helpers
+}; // namespace log4cxx
 
-Mutex::Mutex(apr_pool_t* p) {
-	apr_status_t stat = apr_thread_mutex_create(&mutex,
-		APR_THREAD_MUTEX_NESTED, p);
-	if (stat != APR_SUCCESS) {
-		throw MutexException(stat);
-	}
-}
-
-Mutex::~Mutex() {
-	apr_status_t stat = apr_thread_mutex_destroy(mutex);
-}
+#endif //_LOG4CXX_HELPERS_APRINITIALIZER_H

@@ -8,7 +8,6 @@ INCLUDES = -I$(top_srcdir)/include
 
 libhelpers_a_SOURCES = \
         absolutetimedateformattestcase.cpp \
-	boundedfifotestcase.cpp\
         cacheddateformattestcase.cpp \
 	cyclicbuffertestcase.cpp\
         datetimedateformattestcase.cpp \
