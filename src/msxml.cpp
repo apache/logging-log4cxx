@@ -23,6 +23,7 @@
 #include <log4cxx/helpers/msxml.h>
 #include <log4cxx/helpers/loglog.h>
 #include <objbase.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -58,16 +59,29 @@ XMLDOMDocumentPtr MsXMLDOMNode::getOwnerDocument()
 // MsXMLDOMDocument
 
 MsXMLDOMDocument::MsXMLDOMDocument(MSXML::IXMLDOMDocumentPtr document)
-: document(document)
+: document(document), mustCallCoUninitialize(false)
 {
-	::CoInitializeEx(0, COINIT_MULTITHREADED);
 }
 
-MsXMLDOMDocument::MsXMLDOMDocument()
+MsXMLDOMDocument::MsXMLDOMDocument() : mustCallCoUninitialize(false)
 {
-	::CoInitializeEx(0, COINIT_MULTITHREADED);
+	HRESULT hRes = ::CoInitializeEx(0, COINIT_MULTITHREADED);
+	if (FAILED(hRes))
+	{
+		switch (hRes)
+		{
+		case RPC_E_CHANGED_MODE:
+			break;
 
-	HRESULT hRes;
+		default:
+			throw RuntimeException(_T("Cannot Initialize COM"));
+		}
+	}
+	else
+	{
+		mustCallCoUninitialize = true;
+	}
+
 	hRes = document.CreateInstance(L"Msxml2.DOMDocument.3.0");
 	if (FAILED(hRes))
 	{
@@ -90,7 +104,11 @@ MsXMLDOMDocument::MsXMLDOMDocument()
 MsXMLDOMDocument::~MsXMLDOMDocument()
 {
 	document.Release();
-	::CoUninitialize();
+
+	if (mustCallCoUninitialize)
+	{
+		::CoUninitialize();
+	}
 }
 
 XMLDOMNodeListPtr MsXMLDOMDocument::getChildNodes()
