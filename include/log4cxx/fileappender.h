@@ -217,11 +217,18 @@ namespace log4cxx
         */
         void setBufferSize(int bufferSize) { this->bufferSize = bufferSize; }
 
+        /**
+         *   Replaces double backslashes with single backslashes
+         *   for compatibility with paths from earlier XML configurations files.
+         *   @param name file name
+         *   @return corrected file name
+         */
+        static LogString stripDuplicateBackslashes(const LogString& name);
+
         private:
         FileAppender(const FileAppender&);
         FileAppender& operator=(const FileAppender&);
 
-        void stripDoubleBackslashes(LogString& name);
 
         }; // class FileAppender
 }  // namespace log4cxx

@@ -42,6 +42,7 @@ class FileAppenderTestCase : public FileAppenderAbstractTestCase
 
                 //  tests defined here
                 CPPUNIT_TEST(testSetDoubleBackslashes);
+                CPPUNIT_TEST(testStripDuplicateBackslashes);
 
 	CPPUNIT_TEST_SUITE_END();
 
@@ -60,6 +61,51 @@ public:
             const File& file = appender.getFile();
             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getName()); 
         }
+
+          /**
+           * Tests that double backslashes in filespecs are stripped
+           *  on calls to setOption.
+           * @since 0.9.8
+           */
+        void testStripDoubleBackslashes() {
+
+            FileAppender appender;
+            appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
+            const File& file = appender.getFile();
+            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getName()); 
+        }
+
+          /**
+           * Tests stripDuplicateBackslashes
+           *
+           * @since 0.9.8
+           */
+        void testStripDuplicateBackslashes() {
+             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo"), 
+                 FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\foo\\bar\\foo")));
+             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo\\"), 
+                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo\\\\bar\\\\foo\\\\")));
+             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo\\"), 
+                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\foo\\bar\\foo\\")));
+             //
+             //   UNC's should either start with two backslashes and contain additional singles
+             //       or four back slashes and addition doubles
+             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo\\bar\\foo"), 
+                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo\\\\bar\\\\foo")));
+             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo\\bar\\foo"), 
+                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo\\bar\\foo")));
+	         //
+	         //   it it starts with doubles but has no other path component
+	         //      then it is a file path
+             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo.log"), 
+                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo.log")));
+	         //
+	         //   it it starts with quads but has no other path component
+	         //      then it is a UNC
+             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo.log"), 
+                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo.log")));
+          }  
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(FileAppenderTestCase);

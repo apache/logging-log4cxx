@@ -111,9 +111,7 @@ void FileAppender::setOption(const LogString& option,
         if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
                 || StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
         {
-                LogString tmpValue(value);
-                stripDoubleBackslashes(tmpValue);
-                fileName = tmpValue;
+                fileName = stripDuplicateBackslashes(value);
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
         {
@@ -180,13 +178,42 @@ void FileAppender::subAppend(const char* encoded, log4cxx_size_t size, Pool& p) 
 
 
 
-void FileAppender::stripDoubleBackslashes(LogString& name) {
+/**
+ * Replaces double backslashes (except the leading doubles of UNC's)
+ * with single backslashes for compatibility with existing path
+ * specifications that were working around use of 
+ * OptionConverter::convertSpecialChars in XML configuration files.
+ *
+ * @param src source string
+ * @return modified string
+ * @since 0.9.8
+ * 
+ */
+LogString FileAppender::stripDuplicateBackslashes(const LogString& src) {
     logchar backslash = LOG4CXX_STR('\\');
-    for(LogString::size_type i = name.find(backslash);
-        i != LogString::npos;
-        i = name.find(backslash, i + 1)) {
-            if (i + 1 < name.length() && name[i + 1] == backslash) {
-                name.erase(i, 1);
+    LogString::size_type i = src.find_last_of(backslash);
+    if (i != LogString::npos) {
+        LogString tmp(src);
+        for(;
+            i != LogString::npos && i > 0;
+            i = tmp.find_last_of(backslash, i - 1)) {
+            //
+            //   if the preceding character is a slash then
+            //      remove the preceding character
+            //      and continue processing
+            if (tmp[i - 1] == backslash) {
+                tmp.erase(i, 1);
+                i--;
+                if (i == 0) break;
+            } else {
+                //
+                //  if there an odd number of slashes
+                //     the string wasn't trying to work around
+                //     OptionConverter::convertSpecialChars
+                return src;
             }
+       }
+       return tmp;
     }
+    return src;
 }
