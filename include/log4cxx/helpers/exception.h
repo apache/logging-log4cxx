@@ -47,16 +47,27 @@ namespace log4cxx
 			RuntimeException() {}
 			RuntimeException(const String& message)
 			 : Exception(message) {}
-		}; // class Exception
+		}; // class RuntimeException
+
+		/** Thrown when an application attempts to use null in a case where an
+		object is required.
+		*/
+		class LOG4CXX_EXPORT  NullPointerException : public RuntimeException
+		{
+		public:
+			NullPointerException() {}
+			NullPointerException(const String& message)
+			 : RuntimeException(message) {}
+		}; // class NullPointerException
 
 		/** Thrown to indicate that a method has been passed 
 		an illegal or inappropriate argument.*/
-		class LOG4CXX_EXPORT IllegalArgumentException : public Exception
+		class LOG4CXX_EXPORT IllegalArgumentException : public RuntimeException
 		{
 		public:
 			IllegalArgumentException(const String& message)
-			 : Exception(message) {}
-		};
+			 : RuntimeException(message) {}
+		}; // class IllegalArgumentException
 		
 		/** Signals that an I/O exception of some sort has occurred. This class
 		is the general class of exceptions produced by failed or interrupted
