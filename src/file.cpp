@@ -52,6 +52,18 @@ File& File::operator=(const File& src) {
 File::~File() {
 }
 
+log4cxx_status_t File::open(apr_file_t** file, int flags,
+      int perm, apr_pool_t* p) const {
+    //
+    //   The trunction to MBCS can corrupt filenames
+    //       would be nice to be able to do something about
+    //       it here since we have both Unicode
+    //          and local code page file names
+    //
+    return apr_file_open(file, mbcsName.c_str(), flags, perm, p);
+}
+
+
 bool File::exists() const {
   Pool pool;
   apr_finfo_t finfo;
@@ -92,7 +104,7 @@ apr_time_t File::lastModified() const {
 LogString File::read(apr_pool_t* p) const {
   LogString output;
   apr_file_t* f = NULL;
-  apr_status_t rv = apr_file_open(&f, mbcsName.c_str(), APR_READ, APR_OS_DEFAULT, p);
+  apr_status_t rv = open(&f, APR_READ, APR_OS_DEFAULT, p);
   if (rv == APR_SUCCESS) {
     const size_t BUFSIZE = 4096;
     char* buf = (char*) apr_palloc(p, BUFSIZE);
@@ -124,8 +136,8 @@ LogString File::read(apr_pool_t* p) const {
          contents = newContents;
       }
     } while(rv == APR_SUCCESS);
+    apr_file_close(f);
   }
-  apr_file_close(f);
   return output;
 }
 
@@ -138,7 +150,7 @@ LogString File::read(apr_pool_t* p) const {
 apr_status_t File::write(const LogString& src, apr_pool_t* p) const {
   LogString output;
   apr_file_t* f = NULL;
-  apr_status_t rv = apr_file_open(&f, mbcsName.c_str(),
+  apr_status_t rv = open(&f,
        APR_WRITE | APR_TRUNCATE | APR_CREATE, APR_OS_DEFAULT, p);
   if (rv == APR_SUCCESS) {
     std::string encoded;

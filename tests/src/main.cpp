@@ -31,39 +31,39 @@ log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("log4cxx_unittest"));
 
 int main( int argc, const char * const argv[])
 {
-	apr_app_initialize(&argc, &argv, NULL);
-	CppUnit::TextUi::TestRunner runner;
+        apr_app_initialize(&argc, &argv, NULL);
+        CppUnit::TextUi::TestRunner runner;
 
-	CppUnit::TestFactoryRegistry &registry =
-		CppUnit::TestFactoryRegistry::getRegistry();
+        CppUnit::TestFactoryRegistry &registry =
+                CppUnit::TestFactoryRegistry::getRegistry();
 
-	runner.addTest(registry.makeTest());
+        runner.addTest(registry.makeTest());
 
-	bool wasSuccessful = true;
-	if (argc > 1)
-	{
-		for (int n = 1; n < argc; n++)
-		{
-			try
-			{
-				wasSuccessful = runner.run(argv[n], false) && wasSuccessful;
-			}
-			catch(std::exception& e)
-			{
-				std::cout << e.what() << std::endl;
-			}
-			catch (...) {
-				std::cout << "Unexpected exception";
-			}
-		}
-	}
-	else
-	{
-		bool wasSuccessful = runner.run("", false);
-	}
+        bool wasSuccessful = true;
+        if (argc > 1)
+        {
+                for (int n = 1; n < argc; n++)
+                {
+                        try
+                        {
+                                wasSuccessful = runner.run(argv[n], false) && wasSuccessful;
+                        }
+                        catch(std::exception& e)
+                        {
+                                std::cout << e.what() << std::endl;
+                        }
+                        catch (...) {
+                                std::cout << "Unexpected exception";
+                        }
+                }
+        }
+        else
+        {
+                bool wasSuccessful = runner.run("", false);
+        }
 
-	apr_terminate();
-	return wasSuccessful ? EXIT_SUCCESS : EXIT_FAILURE;
+        apr_terminate();
+        return wasSuccessful ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
 std::ostream& operator<<(std::ostream& os,

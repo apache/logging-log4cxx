@@ -15,11 +15,12 @@
  */
 
 #include <log4cxx/logger.h>
-#include <log4cxx//helpers/stringhelper.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <apr_general.h>
 #include <apr_time.h>
+#include <iostream>
+#include <log4cxx/stream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -31,65 +32,66 @@ file are monitored and when a change occurs, the config file is re-read.
 */
 class DelayedLoop
 {
-	static LoggerPtr logger;
+        static LoggerPtr logger;
 
 public:
-	static void main(int argc, const char * const argv[])
-	{
-		if(argc == 2)
-		{
-			USES_CONVERSION;
-			init(A2T(argv[1]));
-		}
-		else
-		{
-			usage(argv[0], "Wrong number of arguments.");
-		}
+        static void main(int argc, const char * const argv[])
+        {
+                if(argc == 2)
+                {
+                        init(argv[1]);
+                }
+                else
+                {
+                        usage(argv[0], "Wrong number of arguments.");
+                }
 
-		test();
-	}
+                test();
+        }
 
-	static void usage(const char * programName, const char * msg)
-	{
-		std::cout << msg << std::endl;
-		std::cout << "Usage: " << programName <<
-				" configFile" << std::endl;
-		exit(1);
-	}
+        static void usage(const char * programName, const char * msg)
+        {
+                std::cout << msg << std::endl;
+                std::cout << "Usage: " << programName <<
+                                " configFile" << std::endl;
+                exit(1);
+        }
 
 
-	static void init(const String& configFile)
-	{
+        static void init(const std::string& configFile)
+        {
 #ifdef HAVE_XML
-		if(StringHelper::endsWith(configFile, _T("xml")))
-		{
-			xml::DOMConfigurator::configureAndWatch(configFile, 3000);
-		}
-		else
+                if(configFile.length() > 4 &&
+                     configFile.substr(configFile.length() - 4) == ".xml")
+                {
+                        xml::DOMConfigurator::configureAndWatch(configFile, 3000);
+                }
+                else
 #endif
-		{
-			PropertyConfigurator::configureAndWatch(configFile, 3000);
-		}
-	}
+                {
+                        PropertyConfigurator::configureAndWatch(configFile, 3000);
+                }
+        }
 
-	static void test()
-	{
-		int i = 0;
-		while(true)
-		{
-			LOG4CXX_DEBUG(logger, _T("MSG ") << i++);
-			try
-			{
-				apr_sleep(1000000);
-			}
-			catch(Exception& e)
-			{
-			}
-		}
-	}
+        static void test()
+        {
+                int i = 0;
+                logstream log(logger, Level::DEBUG);
+                while(true)
+                {
+                        log << L"MSG " << i++ << LOG4CXX_ENDMSG;
+                        try
+                        {
+                                apr_sleep(1000000);
+                        }
+                        catch(Exception& e)
+                        {
+                        }
+                }
+        }
 };
 
-LoggerPtr DelayedLoop::logger = Logger::getLogger(_T("DelayedLoop"));
+LoggerPtr DelayedLoop::logger = Logger::getLogger(L"DelayedLoop");
 
 int main(int argc, const char * const argv[])
 {
@@ -97,12 +99,12 @@ int main(int argc, const char * const argv[])
     int result = EXIT_SUCCESS;
     try
     {
-		DelayedLoop::main(argc, argv);
-	}
-	catch(Exception&)
-	{
-		result = EXIT_FAILURE;
-	}
+                DelayedLoop::main(argc, argv);
+        }
+        catch(std::exception&)
+        {
+                result = EXIT_FAILURE;
+        }
 
     apr_terminate();
     return result;

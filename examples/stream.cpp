@@ -28,26 +28,26 @@ int main()
     int result = EXIT_SUCCESS;
     try
     {
-		BasicConfigurator::configure();
- 		LoggerPtr rootLogger = Logger::getRootLogger();
+                BasicConfigurator::configure();
+                LoggerPtr rootLogger = Logger::getRootLogger();
 
-		NDC::push(_T("trivial context"));
+                NDC::push("trivial context");
 
                 log4cxx::logstream logstream(rootLogger, Level::DEBUG);
-                logstream << "debug message" << LOG4CXX_ENDMSG;
+                logstream << "debug message " << 1 << LOG4CXX_ENDMSG;
                 logstream.setLevel(Level::INFO);
-                logstream << "info message" << LOG4CXX_ENDMSG;
+                logstream << L"info message" << LOG4CXX_ENDMSG;
                 logstream << Level::WARN << "warn message" << LOG4CXX_ENDMSG;
-                logstream << Level::ERROR << "error message" << LOG4CXX_ENDMSG;
+                logstream << Level::ERROR << L"error message" << LOG4CXX_ENDMSG;
                 logstream << Level::FATAL << "fatal message" << LOG4CXX_ENDMSG;
 
 
-		NDC::pop();
-	}
-	catch(Exception&)
-	{
-		result = EXIT_FAILURE;
-	}
+                NDC::pop();
+        }
+        catch(std::exception&)
+        {
+                result = EXIT_FAILURE;
+        }
 
     return result;
 }

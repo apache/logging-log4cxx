@@ -49,7 +49,7 @@ CachedDateFormat::CachedDateFormat(DateFormatPtr& formatter) :
            p);
 }
 
-int CachedDateFormat::findMillisecondStart(const apr_time_t time,
+int CachedDateFormat::findMillisecondStart(const log4cxx_time_t time,
                                           const LogString& formatted,
                                           logchar zeroDigit,
                                           logchar nineDigit,
@@ -81,7 +81,7 @@ int CachedDateFormat::findMillisecondStart(const apr_time_t time,
      @param sbuf the string buffer to write to
      @param fieldPosition remains untouched
    */
-void CachedDateFormat::format(LogString& s, apr_time_t date, apr_pool_t* p) const {
+void CachedDateFormat::format(LogString& s, log4cxx_time_t date, apr_pool_t* p) const {
     if (millisecondStart == UNRECOGNIZED_MILLISECOND_PATTERN) {
       formatter->format(s, date, p);
       return;
@@ -113,7 +113,7 @@ void CachedDateFormat::format(LogString& s, apr_time_t date, apr_pool_t* p) cons
       if (date - prev < 0) {
         prev -= APR_USEC_PER_SEC;
       }
-	  previousTime = prev;
+          previousTime = prev;
       int prevLength = cache.length();
       cache.erase(cache.begin(), cache.end());
       formatter->format(cache, date, p);

@@ -70,13 +70,11 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
 
 const LogString LogManager::getConfiguratorClass() {
 
-   static const LogString LOG4J_CONFIGURATOR_CLASS_KEY(LOG4CXX_STR("log4j.configuratorClass"));
-   static const LogString LOG4CXX_CONFIGURATOR_CLASS_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"));
    // Use automatic configration to configure the default hierarchy
    const LogString log4jConfiguratorClassName(
-        OptionConverter::getSystemProperty(LOG4J_CONFIGURATOR_CLASS_KEY,LOG4CXX_STR("")));
+        OptionConverter::getSystemProperty(LOG4CXX_STR("log4j.configuratorClass"),LOG4CXX_STR("")));
    const LogString configuratorClassName(
-        OptionConverter::getSystemProperty(LOG4CXX_CONFIGURATOR_CLASS_KEY,
+        OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"),
             log4jConfiguratorClassName));
    return configuratorClassName;
 }

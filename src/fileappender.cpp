@@ -36,36 +36,36 @@ FileAppender::FileAppender()
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
-	bool append, bool bufferedIO, int bufferSize)
+        bool append, bool bufferedIO, int bufferSize)
 : fileAppend(append), bufferedIO(bufferedIO), bufferSize(bufferSize),
   fileName(fileName), ofs(NULL), fileClosed(1)
 {
-	this->layout = layout;
+        this->layout = layout;
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
-	bool append)
+        bool append)
 : fileAppend(append), bufferedIO(false), bufferSize(8*1024),
   fileName(fileName), ofs(NULL), fileClosed(1)
 {
-	this->layout = layout;
+        this->layout = layout;
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName)
 : fileAppend(true), bufferedIO(false), bufferSize(8*1024),
   fileName(fileName), ofs(NULL), fileClosed(1)
 {
-	this->layout = layout;
+        this->layout = layout;
 }
 
 FileAppender::~FileAppender()
 {
-	finalize();
+        finalize();
 }
 
 void FileAppender::setFile(const File& file)
 {
-	fileName = file;
+        fileName = file;
 }
 
 void FileAppender::setFile(const File& file, bool append,
@@ -86,41 +86,41 @@ void FileAppender::closeWriter() {
 
 void FileAppender::setBufferedIO(bool bufferedIO)
 {
-	this->bufferedIO = bufferedIO;
-	if(bufferedIO)
-	{
-		immediateFlush = false;
-	}
+        this->bufferedIO = bufferedIO;
+        if(bufferedIO)
+        {
+                immediateFlush = false;
+        }
 }
 
 void FileAppender::setOption(const LogString& option,
-	const LogString& value)
+        const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
-		|| StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
-	{
-		fileName = value;
-	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
-	{
-		fileAppend = OptionConverter::toBoolean(value, true);
-	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDIO"), LOG4CXX_STR("bufferedio")))
-	{
-		bufferedIO = OptionConverter::toBoolean(value, true);
-	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("IMMEDIATEFLUSH"), LOG4CXX_STR("immediateflush")))
-	{
-		bufferedIO = !OptionConverter::toBoolean(value, false);
-	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
-	{
-		bufferSize = OptionConverter::toFileSize(value, 8*1024);
-	}
-	else
-	{
-		WriterAppender::setOption(option, value);
-	}
+        if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
+                || StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
+        {
+                fileName = value;
+        }
+        else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
+        {
+                fileAppend = OptionConverter::toBoolean(value, true);
+        }
+        else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDIO"), LOG4CXX_STR("bufferedio")))
+        {
+                bufferedIO = OptionConverter::toBoolean(value, true);
+        }
+        else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("IMMEDIATEFLUSH"), LOG4CXX_STR("immediateflush")))
+        {
+                bufferedIO = !OptionConverter::toBoolean(value, false);
+        }
+        else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
+        {
+                bufferSize = OptionConverter::toFileSize(value, 8*1024);
+        }
+        else
+        {
+                WriterAppender::setOption(option, value);
+        }
 }
 
 void FileAppender::activateOptions(apr_pool_t* p)
@@ -155,7 +155,7 @@ void FileAppender::activateOptions(apr_pool_t* p)
         }
 }
 
-void FileAppender::subAppend(const char* encoded, apr_size_t size, apr_pool_t* p) {
+void FileAppender::subAppend(const char* encoded, log4cxx_size_t size, apr_pool_t* p) {
   if (ofs != NULL) {
     apr_status_t rv = apr_file_write(ofs, encoded, &size);
     if (rv == APR_SUCCESS && immediateFlush) {

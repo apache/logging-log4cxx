@@ -23,6 +23,9 @@
 #include <apr_general.h>
 #include <apr_pools.h>
 #include <apr_time.h>
+#include <iostream>
+
+#define _T(str) str
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -37,16 +40,16 @@ int DELAY_MULT = 1000/burstLen;
 
 LoggerPtr logger = Logger::getLogger(_T("A0123456789.B0123456789.C0123456789"));
 
-void Usage(const String& processName, const String& msg)
+void Usage(const std::string& processName, const std::string& msg)
 {
-	tcerr << msg << std::endl;
-	tcerr <<
-		_T("Usage: ") << processName
-		<< _T(" confFile runLength [delay] [burstLen]") << std::endl
-		<< _T("       confFile is an XML configuration file and") << std::endl
-		<< _T("       runLength (integer) is the length of test loop.") << std::endl
-		<< _T("       delay is the time in millisecs to wait every burstLen log requests.") << std::endl;
-	exit(EXIT_FAILURE);
+        std::cerr << msg << std::endl;
+        std::cerr <<
+                "Usage: " << processName
+                << " confFile runLength [delay] [burstLen]" << std::endl
+                << "       confFile is an XML configuration file and" << std::endl
+                << "       runLength (integer) is the length of test loop." << std::endl
+                << "       delay is the time in millisecs to wait every burstLen log requests." << std::endl;
+        exit(EXIT_FAILURE);
 }
 
 class IllegalRunLengthException : public IllegalArgumentException {
@@ -57,106 +60,103 @@ class IllegalRunLengthException : public IllegalArgumentException {
    }
 };
 
-void init(const String& configFile, const String& runLengthStr,
-		  const String& delayStr, const String& burstLenStr)
+void init(const std::string& configFile, const std::string& runLengthStr,
+                  const std::string& delayStr, const std::string& burstLenStr)
 {
-	runLength = OptionConverter::toInt(runLengthStr, runLength);
-	if (runLength < 1)
-	{
-		throw IllegalRunLengthException();
-	}
-	if (!delayStr.empty())
-	{
-		delay = OptionConverter::toInt(delayStr, delay);
-	}
-	if (!burstLenStr.empty())
-	{
-		burstLen = OptionConverter::toInt(burstLenStr, burstLen);
-		DELAY_MULT = 1000/burstLen;
-	}
+        runLength = atoi(runLengthStr.c_str());
+        if (runLength < 1)
+        {
+                throw IllegalRunLengthException();
+        }
+        if (!delayStr.empty())
+        {
+                delay = atoi(delayStr.c_str());
+        }
+        if (!burstLenStr.empty())
+        {
+                burstLen = atoi(burstLenStr.c_str());
+                DELAY_MULT = 1000/burstLen;
+        }
 
 #ifdef LOG4CXX_HAVE_XML
-	xml::DOMConfigurator::configure(configFile);
+        xml::DOMConfigurator::configure(configFile);
 #endif
 }
 
-double NoDelayLoop(LoggerPtr logger, const String& msg)
+double NoDelayLoop(LoggerPtr logger, const std::string& msg)
 {
-	log4cxx_time_t before = apr_time_now();
-    for(int i = 0; i < runLength; i++)
-	{
-		logger->info(msg, __FILE__, __LINE__);
+    log4cxx_time_t before = apr_time_now();
+    for(int i = 0; i < runLength; i++) {
+        logger->info(msg, LOG4CXX_LOCATION);
     }
-	log4cxx_time_t after = apr_time_now();
-	return (after - before)/(runLength*1000);
+    log4cxx_time_t after = apr_time_now();
+    return (after - before)/(runLength*1000);
 }
 
-double DelayedLoop(LoggerPtr logger, const String& msg)
+double DelayedLoop(LoggerPtr logger, const std::string& msg)
 {
 
     log4cxx_time_t before = apr_time_now();
     int j = 0;
     for(int i = 0; i < runLength; i++)
-	{
-		logger->info(msg);
-		if(j++ == burstLen)
-		{
-			j = 0;
-			try
-			{
+        {
+                logger->info(msg, LOG4CXX_LOCATION);
+                if(j++ == burstLen)
+                {
+                        j = 0;
+                        try
+                        {
                                 apr_sleep(delay * 1000);
-			}
-			catch(Exception&)
-			{
-			}
-		}
+                        }
+                        catch(Exception&)
+                        {
+                        }
+                }
 
     }
     double actualTime = (apr_time_now()-before)/(runLength*1000);
-    tcout << "actual time: " << actualTime << std::endl;
+    std::cout << "actual time: " << actualTime << std::endl;
     return (actualTime - delay*DELAY_MULT);
 }
 
 int main(int argc, const char* const argv[])
 {
         apr_app_initialize(&argc, &argv, NULL);
-	int ret = EXIT_SUCCESS;
+        int ret = EXIT_SUCCESS;
 
-	try
-	{
-		USES_CONVERSION;
-
-		if(argc == 3)
-			init(A2T(argv[1]), A2T(argv[2]), String(), String());
-		else if(argc == 5)
-			init(A2T(argv[1]), A2T(argv[2]), A2T(argv[3]), A2T(argv[4]));
-		else
-			Usage(A2T(argv[0]), _T("Wrong number of arguments."));
+        try
+        {
+                if(argc == 3)
+                        init(argv[1], argv[2], "", "");
+                else if(argc == 5)
+                        init(argv[1], argv[2], argv[3], argv[4]);
+                else
+                        Usage(argv[0], "Wrong number of arguments.");
 
 
-		NDC::push(_T("some context"));
+                NDC::push(_T("some context"));
 
-		double delta;
-		String msg = _T("ABCDEGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz1234567890");
-		if(delay <= 0)
-		{
-			delta = NoDelayLoop(logger, msg);
-		}
-		else
-		{
-			delta = DelayedLoop(logger, msg);
-		}
+                double delta;
+                std::string msg = _T("ABCDEGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz1234567890");
+                if(delay <= 0)
+                {
+                        delta = NoDelayLoop(logger, msg);
+                }
+                else
+                {
+                        delta = DelayedLoop(logger, msg);
+                }
 
-		tcout << (int)delta << std::endl;
+                std::cout << (int)delta << std::endl;
 
-		LogManager::shutdown();
-	}
-	catch(Exception&)
-	{
-		ret = EXIT_FAILURE;
-	}
+                LogManager::shutdown();
+        }
+        catch(Exception&)
+        {
+                ret = EXIT_FAILURE;
+        }
 
         apr_terminate();
 
-	return ret;
+        return ret;
 }

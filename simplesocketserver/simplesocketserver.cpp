@@ -29,6 +29,8 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <iostream>
+#include <log4cxx/stream.h>
 
 using namespace log4cxx;
 #ifdef HAVE_XML
@@ -39,28 +41,28 @@ using namespace log4cxx::helpers;
 
 int port = 0;
 
-void usage(const String& msg)
+void usage(const std::string& msg)
 {
-	tcout << msg << std::endl;
-	tcout << _T("Usage: simpleocketServer port configFile") << std::endl;
+        std::cout << msg << std::endl;
+        std::cout << "Usage: simpleocketServer port configFile" << std::endl;
 }
 
-void init(const String& portStr, const String& configFile)
+void init(const std::string& portStr, const std::string& configFile)
 {
-	USES_CONVERSION;
-	port = ttol(portStr.c_str());
+        port = atol(portStr.c_str());
 
 #ifdef HAVE_XML
-	// tests if configFile ends with ".xml"
-	if (StringHelper::endsWith(configFile, _T(".xml")))
-	{
-		DOMConfigurator::configure(configFile);
-	}
-	else
+        // tests if configFile ends with ".xml"
+        if (configFile.length() > 4 &&
+              configFile.substr(configFile.length() -4) == ".xml")
+        {
+                DOMConfigurator::configure(configFile);
+        }
+        else
 #endif
-	{
-		PropertyConfigurator::configure(configFile);
-	}
+        {
+                PropertyConfigurator::configure(configFile);
+        }
 }
 
 void* LOG4CXX_THREAD_FUNC runSocket(apr_thread_t* thread, void* data) {
@@ -73,50 +75,49 @@ void* LOG4CXX_THREAD_FUNC runSocket(apr_thread_t* thread, void* data) {
 int main(int argc, const char * const argv[])
 {
         apr_app_initialize(&argc, &argv, NULL);
-	if(argc == 3)
-	{
-		USES_CONVERSION;
-		init(A2T(argv[1]), A2T(argv[2]));
-	}
-	else
-	{
-		USES_CONVERSION;
-		usage(_T("Wrong number of arguments."));
-		return 1;
-	}
+        if(argc == 3)
+        {
+                init(argv[1], argv[2]);
+        }
+        else
+        {
+                usage("Wrong number of arguments.");
+                return 1;
+        }
 
         apr_pool_t* pool;
         apr_status_t stat = apr_pool_create(&pool, NULL);
-	try
-	{
-		LoggerPtr logger = Logger::getLogger(_T("SimpleSocketServer"));
+        try
+        {
+                LoggerPtr logger = Logger::getLogger(L"SimpleSocketServer");
+                log4cxx::logstream logstream(logger, Level::INFO);
 
-		LOG4CXX_INFO(logger, _T("Listening on port ") << port);
+                logstream << L"Listening on port " << port;
 
-		ServerSocket serverSocket(port);
+                ServerSocket serverSocket(port);
 
-		while(true)
-		{
-			LOG4CXX_INFO(logger, _T("Waiting to accept a new client."));
-			SocketPtr socket = serverSocket.accept();
+                while(true)
+                {
+                        logstream << "Waiting to accept a new client.";
+                        SocketPtr socket = serverSocket.accept();
 
-			LOG4CXX_INFO(logger, _T("Connected to client at ")
-				<< socket->getInetAddress().toString());
-			LOG4CXX_INFO(logger, _T("Starting new socket node."));
+                        logstream << "Connected to client at "
+                                << socket->getInetAddress().toString();
+                        logstream << "Starting new socket node.";
 
-			Thread * thread = new Thread();
+                        Thread * thread = new Thread();
                         SocketNode* node = new SocketNode(socket,
-				LogManager::getLoggerRepository());
+                                LogManager::getLoggerRepository());
                         thread->run(pool, runSocket, node);
-		}
-	}
-	catch(SocketException& e)
-	{
-		tcout << _T("SocketException: ") << e.getMessage() << std::endl;
-	}
+                }
+        }
+        catch(SocketException& e)
+        {
+                std::cout << "SocketException: " << e.what() << std::endl;
+        }
 
         apr_pool_destroy(pool);
         apr_terminate();
-	return 0;
+        return 0;
 }
 

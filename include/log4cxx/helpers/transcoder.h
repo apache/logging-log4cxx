@@ -82,8 +82,6 @@ namespace log4cxx {
       enum { BUFSIZE = 256 };
       static const Transcoder& detect(unsigned char byte0, unsigned char byte1, size_t* offset);
       };
-      static const char SUBSTITUTION_CHAR = '?';
-      static const wchar_t SUBSTITUTION_WCHAR = L'?';
    }
 };
 

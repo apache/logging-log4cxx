@@ -169,7 +169,7 @@ namespace log4cxx
         */
         virtual void closeWriter();
 
-        virtual void subAppend(const char* encoded, apr_size_t size, apr_pool_t* p);
+        virtual void subAppend(const char* encoded, log4cxx_size_t size, apr_pool_t* p);
 
    public:
         /**

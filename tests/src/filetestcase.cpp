@@ -31,6 +31,7 @@ class FileTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(defaultExists);
                 CPPUNIT_TEST(defaultRead);
                 CPPUNIT_TEST(propertyRead);
+                CPPUNIT_TEST(propertyExists);
                 CPPUNIT_TEST(fileWrite1);
         CPPUNIT_TEST_SUITE_END();
 
@@ -43,14 +44,16 @@ public:
 
         void defaultExists() {
           File defFile;
-          CPPUNIT_ASSERT_EQUAL(false, defFile.exists());
+          bool exists = defFile.exists();
+          CPPUNIT_ASSERT_EQUAL(false, exists);
         }
 
 
         void defaultRead() {
           File defFile;
           Pool pool;
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), defFile.read(pool));
+          LogString contents(defFile.read(pool));
+          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), contents);
         }
 
 
@@ -58,7 +61,8 @@ public:
           File defFile;
           Pool pool;
           LogString greeting(LOG4CXX_STR("Hello, World"));
-          CPPUNIT_ASSERT(defFile.write(greeting, pool) != APR_SUCCESS);
+          apr_status_t stat = defFile.write(greeting, pool);
+          CPPUNIT_ASSERT(stat != APR_SUCCESS);
         }
 
         void propertyRead() {
@@ -67,6 +71,12 @@ public:
           LogString props(propFile.read(pool));
           LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender\n"));
           CPPUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
+        }
+
+        void propertyExists() {
+          File propFile("input//patternLayout1.properties");
+          bool exists = propFile.exists();
+          CPPUNIT_ASSERT_EQUAL(true, exists);
         }
 
 

@@ -60,6 +60,9 @@ namespace log4cxx
 
                     log4cxx_status_t write(const LogString& src, apr_pool_t* p) const;
 
+                    log4cxx_status_t open(apr_file_t** file, int flags,
+                          int perm, apr_pool_t* p) const;
+
                 private:
                     LogString internalName;
                     std::string mbcsName;

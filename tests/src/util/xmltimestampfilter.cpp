@@ -20,9 +20,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 LogString XMLTimestampFilter::filter(const LogString& in)
-	const throw(UnexpectedFormatException)
-{
-	return merge(LOG4CXX_STR("timestamp=\"\\d{10,13}\""), in, LOG4CXX_STR("timestamp=\"XXX\""));
+        const throw(UnexpectedFormatException) {
+        return merge(LOG4CXX_STR("timestamp=\"\\d{10,13}\""), in, LOG4CXX_STR("timestamp=\"XXX\""));
 }
 
 
