@@ -1,5 +1,5 @@
-Version 0.0.1
-=============
+Version 0.0.1 (2003-05-31)
+==========================
 
 Loggers, Hierarchy, Filters, Appenders, Layouts
 
@@ -18,8 +18,8 @@ Loggers, Hierarchy, Filters, Appenders, Layouts
 * Configurators:
   DOMConfigurator
 
-Version 0.1.0
-=============
+Version 0.1.0 (2003-07-08)
+==========================
 
 * FreeBSD Autotools/Compilation support
 * Fixed TelnetAppender crash when a socket bind exception occured.
