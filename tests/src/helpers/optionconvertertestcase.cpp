@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@
 #include "../testchar.h"
 #include "../insertwide.h"
 #include <stdlib.h>
+#include <apr_pools.h>
+#include <apr_file_io.h>
+#include <apr_user.h>
 
 
 using namespace log4cxx;
@@ -40,6 +43,12 @@ class OptionConverterTestCase : public CppUnit::TestFixture
       CPPUNIT_TEST(varSubstTest3);
       CPPUNIT_TEST(varSubstTest4);
       CPPUNIT_TEST(varSubstTest5);
+      CPPUNIT_TEST(testTmpDir);
+#if APR_HAS_USER
+      CPPUNIT_TEST(testUserHome);
+      CPPUNIT_TEST(testUserName);
+#endif
+      CPPUNIT_TEST(testUserDir);
    CPPUNIT_TEST_SUITE_END();
 
    Properties props;
@@ -125,7 +134,91 @@ public:
       CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("x1"), res);
    }
 
-        private:
+    void testTmpDir()
+    {
+       LogString actual(OptionConverter::substVars(
+          LOG4CXX_STR("${java.io.tmpdir}"), nullProperties));
+       apr_pool_t* p;
+       apr_status_t stat = apr_pool_create(&p, NULL);
+       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+       const char* tmpdir = NULL;
+       stat = apr_temp_dir_get(&tmpdir, p);
+       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+       LogString expected;
+       Transcoder::decode(tmpdir, strlen(tmpdir), expected);
+       apr_pool_destroy(p);
+
+       CPPUNIT_ASSERT_EQUAL(expected, actual);
+    }
+
+#if APR_HAS_USER
+    void testUserHome() {
+      LogString actual(OptionConverter::substVars(
+         LOG4CXX_STR("${user.home}"), nullProperties));
+      apr_pool_t* p;
+      apr_status_t stat = apr_pool_create(&p, NULL);
+      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+      apr_uid_t userid;
+      apr_gid_t groupid;
+      stat = apr_uid_current(&userid, &groupid, p);
+      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+      char* username = NULL;
+      stat = apr_uid_name_get(&username, userid, p);
+      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+      char* dirname = NULL;
+      stat = apr_uid_homepath_get(&dirname, username, p);
+
+      LogString expected;
+      Transcoder::decode(dirname, strlen(dirname), expected);
+      apr_pool_destroy(p);
+
+      CPPUNIT_ASSERT_EQUAL(expected, actual);
+    }
+
+    void testUserName() {
+       LogString actual(OptionConverter::substVars(
+           LOG4CXX_STR("${user.name}"), nullProperties));
+       apr_pool_t* p;
+       apr_status_t stat = apr_pool_create(&p, NULL);
+       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+       apr_uid_t userid;
+       apr_gid_t groupid;
+       stat = apr_uid_current(&userid, &groupid, p);
+       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+       char* username = NULL;
+       stat = apr_uid_name_get(&username, userid, p);
+       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+       LogString expected;
+       Transcoder::decode(username, strlen(username), expected);
+       apr_pool_destroy(p);
+
+       CPPUNIT_ASSERT_EQUAL(expected, actual);
+   }
+#endif
+
+    void testUserDir() {
+      LogString actual(OptionConverter::substVars(
+          LOG4CXX_STR("${user.dir}"), nullProperties));
+      apr_pool_t* p;
+      apr_status_t stat = apr_pool_create(&p, NULL);
+      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+      char* dirname = NULL;
+      stat = apr_filepath_get(&dirname, APR_FILEPATH_NATIVE, p);
+      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+      LogString expected;
+      Transcoder::decode(dirname, strlen(dirname), expected);
+      apr_pool_destroy(p);
+
+      CPPUNIT_ASSERT_EQUAL(expected, actual);
+    }
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(OptionConverterTestCase);

@@ -28,6 +28,10 @@
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <stdlib.h>
+#include <log4cxx/helpers/pool.h>
+#include <apr_file_io.h>
+#include <apr_user.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -40,8 +44,54 @@ LogString System::getProperty(const LogString& lkey)
                 throw IllegalArgumentException("key is empty");
         }
 
-        LOG4CXX_ENCODE_CHAR(key, lkey);
         LogString rv;
+        if (lkey == LOG4CXX_STR("java.io.tmpdir")) {
+          Pool p;
+          const char* dir = NULL;
+          apr_status_t stat = apr_temp_dir_get(&dir, (apr_pool_t*) p.getAPRPool());
+          if (stat == APR_SUCCESS) {
+            Transcoder::decode(dir, strlen(dir), rv);
+          }
+          return rv;
+        }
+
+        if (lkey == LOG4CXX_STR("user.dir")) {
+          Pool p;
+          char* dir = NULL;
+          apr_status_t stat = apr_filepath_get(&dir, APR_FILEPATH_NATIVE,
+              (apr_pool_t*) p.getAPRPool());
+          if (stat == APR_SUCCESS) {
+            Transcoder::decode(dir, strlen(dir), rv);
+          }
+          return rv;
+        }
+#if APR_HAS_USER
+        if (lkey == LOG4CXX_STR("user.home") || lkey == LOG4CXX_STR("user.name")) {
+          Pool pool;
+          apr_uid_t userid;
+          apr_gid_t groupid;
+          apr_pool_t* p = (apr_pool_t*) pool.getAPRPool();
+          apr_status_t stat = apr_uid_current(&userid, &groupid, p);
+          if (stat == APR_SUCCESS) {
+            char* username = NULL;
+            stat = apr_uid_name_get(&username, userid, p);
+            if (stat == APR_SUCCESS) {
+              if (lkey == LOG4CXX_STR("user.name")) {
+                Transcoder::decode(username, strlen(username), rv);
+              } else {
+                char* dirname = NULL;
+                stat = apr_uid_homepath_get(&dirname, username, p);
+                if (stat == APR_SUCCESS) {
+                  Transcoder::decode(dirname, strlen(dirname), rv);
+                }
+              }
+            }
+          }
+          return rv;
+        }
+#endif
+
+        LOG4CXX_ENCODE_CHAR(key, lkey);
         const char * value = ::getenv(key.c_str());
         if (value != 0) {
                 Transcoder::decode(value, rv);
