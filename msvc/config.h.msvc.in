@@ -28,7 +28,7 @@
 typedef __int64 int64_t;
 
 #ifdef WIN32
-#pragma warning(disable : 4250 4251 4786)
+#pragma warning(disable : 4250 4251 4786 4290)
 #endif
 
 #define _min(a,b) (((a) < (b)) ? (a) : (b))
@@ -39,3 +39,5 @@ typedef __int64 int64_t;
 #else
 	#define LOG4CXX_EXPORT __declspec(dllimport)
 #endif
+
+#define _WIN32_WINNT 0x0400

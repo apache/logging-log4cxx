@@ -32,7 +32,7 @@ void Transformer::transform(const String& in, const String& out,
 
 	while (!std::getline(input, line).fail())
 	{
-		for (int i = 0; i < filters.size(); i++)
+		for (std::vector<Filter *>::size_type i = 0; i < filters.size(); i++)
 		{
 			line = filters[i]->filter(line);
 		}
