@@ -107,7 +107,7 @@ int PatternParser::extractPrecisionOption()
 
 PatternConverterPtr PatternParser::parse()
 {
-	char c;
+	TCHAR c;
 	i = 0;
 	while(i < patternLength)
 	{
@@ -118,7 +118,7 @@ PatternConverterPtr PatternParser::parse()
 			// In literal state, the last char is always a literal.
 			if(i == patternLength)
 			{
-				currentLiteral << c;
+				currentLiteral.put(c);
 				continue;
 			}
 			if(c == ESCAPE_CHAR)
@@ -127,7 +127,7 @@ PatternConverterPtr PatternParser::parse()
 				switch(pattern.at(i))
 				{
 				case ESCAPE_CHAR:
-					currentLiteral << c;
+					currentLiteral.put(c);
 					i++; // move pointer
 					break;
 				case _T('n'):
@@ -145,18 +145,18 @@ PatternConverterPtr PatternParser::parse()
 						//           +currentLiteral+"\".");
 					}
 					currentLiteral.str(_T(""));
-					currentLiteral << c; // append %
+					currentLiteral.put(c); // append %
 					state = CONVERTER_STATE;
 					formattingInfo.reset();
 				}
 			}
 			else
 			{
-				currentLiteral << c;
+				currentLiteral.put(c);
 			}
 			break;
 		case CONVERTER_STATE:
-			currentLiteral << c;
+			currentLiteral.put(c);
 			switch(c)
 			{
 			case _T('-'):
@@ -176,7 +176,7 @@ PatternConverterPtr PatternParser::parse()
 			} // switch
 			break;
 			case MIN_STATE:
-				currentLiteral << c;
+				currentLiteral.put(c);
 				if(c >= _T('0') && c <= _T('9'))
 					formattingInfo.min = formattingInfo.min*10 + (c - _T('0'));
 				else if(c == _T('.'))
@@ -187,7 +187,7 @@ PatternConverterPtr PatternParser::parse()
 				}
 				break;
 			case DOT_STATE:
-				currentLiteral << c;
+				currentLiteral.put(c);
 				if(c >= _T('0') && c <= _T('9'))
 				{
 					formattingInfo.max = c - _T('0');
@@ -200,7 +200,7 @@ PatternConverterPtr PatternParser::parse()
 				}
 				break;
 			case MAX_STATE:
-				currentLiteral << c;
+				currentLiteral.put(c);
 				if(c >= _T('0') && c <= _T('9'))
 					formattingInfo.max = formattingInfo.max*10 + (c - _T('0'));
 				else
