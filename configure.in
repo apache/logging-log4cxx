@@ -100,5 +100,6 @@ include/log4cxx/nt/Makefile
 include/log4cxx/spi/Makefile
 include/log4cxx/varia/Makefile
 include/log4cxx/xml/Makefile
+include/log4cxx/config/Makefile
 ])
 AC_OUTPUT
