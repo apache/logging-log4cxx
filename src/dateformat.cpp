@@ -14,10 +14,12 @@
  * distribution in the LICENSE.txt file.                                   *
  ***************************************************************************/
 
+#include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/dateformat.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/absolutetimedateformat.h>
 #include <iomanip> // for setw & setfill
+#include <time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -26,7 +28,18 @@ String AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT = _T("ISO8601");
 String AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT = _T("ABSOLUTE");
 String AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT = _T("DATE");
 
-DateFormat::DateFormat(const String& dateFormat, const String& timeZone)
+DateFormat::DateFormat(const String& dateFormat)
+ : dateFormat(dateFormat), timeZone(TimeZone::getDefault())
+{
+	size_t pos = this->dateFormat.find(_T("%Q"));
+	if (pos != String::npos)
+	{
+		this->dateFormat = this->dateFormat.substr(0, pos) +
+			_T("%") + this->dateFormat.substr(pos);
+	}
+}
+
+DateFormat::DateFormat(const String& dateFormat, const TimeZonePtr& timeZone)
  : dateFormat(dateFormat), timeZone(timeZone)
 {
 	size_t pos = this->dateFormat.find(_T("%Q"));
@@ -35,20 +48,21 @@ DateFormat::DateFormat(const String& dateFormat, const String& timeZone)
 		this->dateFormat = this->dateFormat.substr(0, pos) +
 			_T("%") + this->dateFormat.substr(pos);
 	}
-	
-	timeZoneEnv = _T("TZ=") + timeZone;
 }
 
 void DateFormat::format(ostream& os, int64_t timeMillis) const
 {
     TCHAR buffer[255];
 
-	USES_CONVERSION;
-	::putenv((char *)T2A(timeZoneEnv.c_str()));
-	tzset();
+	if (timeZone == 0)
+	{
+		throw NullPointerException(_T("timeZone is null"));
+	}
 
-	time_t time = (time_t)(timeMillis/1000);
-	const tm * tm = ::localtime(&time);
+	int64_t localTimeMillis = timeMillis + timeZone->getOffset(timeMillis);
+
+	time_t time = (time_t)(localTimeMillis/1000);
+	const tm * tm = ::gmtime(&time);
 
 #ifdef UNICODE
 	size_t len = ::wcsftime(buffer, 255, dateFormat.c_str(), tm);

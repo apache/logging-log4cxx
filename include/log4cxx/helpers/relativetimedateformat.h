@@ -36,7 +36,7 @@ namespace log4cxx
 			
 		public:
 			RelativeTimeDateFormat()
-			 : DateFormat(_T(""), _T("")), startTime(System::currentTimeMillis())
+			 : DateFormat(_T(""), 0), startTime(System::currentTimeMillis())
 			{
 			}
 			

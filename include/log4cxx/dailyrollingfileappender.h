@@ -18,6 +18,7 @@
 #define _LOG4CXX_DAILY_ROLLING_FILE_APPENDER_H
 
 #include <log4cxx/fileappender.h>
+#include <log4cxx/helpers/timezone.h>
 
 namespace log4cxx
 {
@@ -48,6 +49,7 @@ namespace log4cxx
 		};
 		
 		RollingCalendar();
+		RollingCalendar(const helpers::TimeZonePtr& timeZone);
 
 		inline void setType(PeriodicityType type)
 			{ this->type = type; }
@@ -66,8 +68,24 @@ namespace log4cxx
 		void printPeriodicity();
 		int64_t getNextCheckMillis(int64_t now);
 		
+		/**
+		Gets the time zone.
+		@return the time zone object associated with this calendar.
+		*/
+		inline const helpers::TimeZonePtr getTimeZone() const
+			{ return timeZone; }	
+			
+		/**
+		Sets the time zone with the given time zone value.
+		@return value the given time zone.
+		*/
+		inline void setTimeZone(const helpers::TimeZonePtr& timeZone)
+			{ this->timeZone = timeZone; }
+		
 	protected:
 		PeriodicityType type;
+		helpers::TimeZonePtr timeZone;
+		static helpers::TimeZonePtr GMT_TIMEZONE;
 	};
 	
 	class DailyRollingFileAppender;

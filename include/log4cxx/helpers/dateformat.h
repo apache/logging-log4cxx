@@ -18,7 +18,7 @@
 #define _LOG4CXX_HELPERS_DATE_FORMAT_H
 
 #include <log4cxx/helpers/tchar.h>
-#include <locale>
+#include <log4cxx/helpers/timezone.h>
 
 namespace log4cxx
 {
@@ -31,14 +31,14 @@ namespace log4cxx
 		class LOG4CXX_EXPORT DateFormat
 		{
 		public:
-			DateFormat(const String& dateFormat, const String& timeZone = _T(""));
+			DateFormat(const String& dateFormat);
+			DateFormat(const String& dateFormat, const TimeZonePtr& timeZone);
 			virtual void format(ostream& os, int64_t time) const;
 			String format(int64_t timeMillis) const;
 
 		protected:
-			String timeZone;
+			TimeZonePtr timeZone;
 			String dateFormat;
-			String timeZoneEnv;
 		};
 	}; // namespace helpers
 }; // namespace log4cxx

@@ -24,7 +24,9 @@ namespace log4cxx
 	namespace helpers
 	{
 		class DateFormat;
-		
+		class TimeZone;
+		typedef helpers::ObjectPtrT<TimeZone> TimeZonePtr;
+	
 		/**
 		This abstract layout takes care of all the date related options and
 		formatting work.
@@ -48,7 +50,7 @@ namespace log4cxx
 			static String TIMEZONE_OPTION;
 
 		private:
-			String timeZone;
+			String timeZoneID;
 			String dateFormatOption;
 			
 		protected:
@@ -57,54 +59,59 @@ namespace log4cxx
 		public:
 			DateLayout();
 			virtual ~DateLayout();
-		/**
-		Sets the DateFormat used to format date and time in the time zone
-		determined by <code>timeZone</code> parameter. The 
-		helpers::DateFormat DateFormat used
-		will depend on the <code>dateFormatType</code>.
 
-		<p>The recognized types are #NULL_DATE_FORMAT, 
-		#RELATIVE_TIME_DATE_FORMAT, 
-		helpers::AbsoluteTimeDateFormat#ABS_TIME_DATE_FORMAT,
-		helpers::AbsoluteTimeDateFormat#DATE_AND_TIME_DATE_FORMAT and 
-		helpers::AbsoluteTimeDateFormat#ISO8601_DATE_FORMAT. If the
-		<code>dateFormatType</code> is not one of the above, then the
-		argument is assumed to be a date pattern for 
-		helpers::DateFormat.
-		*/
-  			virtual void activateOptions();
-			
+			virtual void activateOptions();
 			virtual void setOption(const String& option, const String& value);
 
-		/**
-		The value of the <b>DateFormat</b> option should be either an
-		argument to the constructor of helpers::DateFormat or one of
-		the srings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
-		<b>"DATE"</b> or <b>"ISO8601</b>.
-		*/
+			/**
+			The value of the <b>DateFormat</b> option should be either an
+			argument to the constructor of helpers::DateFormat or one of
+			the srings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
+			<b>"DATE"</b> or <b>"ISO8601</b>.
+			*/
 			inline void setDateFormat(const String& dateFormat)
 				{ this->dateFormatOption = dateFormat; }
 
-		/**
-		Returns value of the <b>DateFormat</b> option.
-		*/
+			/**
+			Returns value of the <b>DateFormat</b> option.
+			*/
 			inline const String& getDateFormat() const
 				{ return dateFormatOption; }
 
-		/**
-		The <b>TimeZoneID</b> option is a time zone ID string in the format
-		expected by the <code>locale</code> C++ standard class.
-		*/
+			/**
+			The <b>TimeZoneID</b> option is a time zone ID string in the format
+			expected by the <code>locale</code> C++ standard class.
+			*/
 			inline void setTimeZone(const String& timeZone)
-				{ this->timeZone = timeZone; }
+				{ this->timeZoneID = timeZone; }
 
-		/**
-		Returns value of the <b>TimeZone</b> option.
-		*/
+			/**
+			Returns value of the <b>TimeZone</b> option.
+			*/
 			inline const String& getTimeZone() const
-				{ return timeZone; }
+				{ return timeZoneID; }
 				
 			void formatDate(ostream &os, const spi::LoggingEventPtr& event) const;
+
+		protected:
+			/**
+			Sets the DateFormat used to format date and time in the time zone
+			determined by <code>timeZone</code> parameter. The 
+			helpers::DateFormat DateFormat used
+			will depend on the <code>dateFormatType</code>.
+
+			<p>The recognized types are #NULL_DATE_FORMAT, 
+			#RELATIVE_TIME_DATE_FORMAT, 
+			helpers::AbsoluteTimeDateFormat#ABS_TIME_DATE_FORMAT,
+			helpers::AbsoluteTimeDateFormat#DATE_AND_TIME_DATE_FORMAT and 
+			helpers::AbsoluteTimeDateFormat#ISO8601_DATE_FORMAT. If the
+			<code>dateFormatType</code> is not one of the above, then the
+			argument is assumed to be a date pattern for 
+			helpers::DateFormat.
+			*/
+			void setDateFormat(const String& dateFormatType, 
+				const TimeZonePtr& timeZone);
+
  		};
 	}; // namespace helpers
 }; // namespace log4cxx

@@ -50,7 +50,7 @@ namespace log4cxx
 			*/
 			static String DATE_AND_TIME_DATE_FORMAT;
 
-			AbsoluteTimeDateFormat(const String& timeZone = _T(""))
+			AbsoluteTimeDateFormat(const TimeZonePtr& timeZone)
 			: DateFormat(_T("%H:%M:%S,%Q"), timeZone) {}
 		};
 	}; // namespace helpers

@@ -22,14 +22,14 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(PatternConverter)
 
-PatternConverter::PatternConverter() : min(-1), max(0x7FFFFFFF), leftAlign(false)
+PatternConverter::PatternConverter() : minChar(-1), maxChar(0x7FFFFFFF), leftAlign(false)
 {
 }
 
 PatternConverter::PatternConverter(const FormattingInfo& fi)
 {
-	min = fi.min;
-	max = fi.max;
+	minChar = fi.minChar;
+	maxChar = fi.maxChar;
 	leftAlign = fi.leftAlign;
 }
 
@@ -38,39 +38,39 @@ A template method for formatting in a converter specific way.
 */
 void PatternConverter::format(ostream& sbuf, const spi::LoggingEventPtr& e) const
 {
-	if (min == 0 && max == 0x7FFFFFFF)
+	if (minChar == -1 && maxChar == 0x7FFFFFFF)
 	{
 		convert(sbuf, e);
 	}
 	else
 	{
-		StringBuffer os;
+		os.seekp(0);
 		convert(os, e);
 		String s = os.str();
 
-		if(s.empty())
+		if (s.empty())
 		{
-			if(0 < min)
-				sbuf << String(min, _T(' '));
+			if(0 < minChar)
+				sbuf << String(minChar, _T(' '));
 			return;
 		}
 
 		int len = s.size();
 
-		if(len > max)
+		if (len > maxChar)
 		{
-			sbuf << (s.substr(len-max));
+			sbuf << (s.substr(len-maxChar));
 		}
-		else if(len < min)
+		else if (len < minChar)
 		{
-			if(leftAlign)
+			if (leftAlign)
 			{
 				sbuf << s;
-				sbuf << String(min-len, _T(' '));
+				sbuf << String(minChar-len, _T(' '));
 			}
 			else
 			{
-				sbuf << String(min-len, _T(' '));
+				sbuf << String(minChar-len, _T(' '));
 				sbuf << s;
 			}
 		}

@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/absolutetimedateformat.h>
 #include <log4cxx/helpers/datetimedateformat.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
+#include <log4cxx/helpers/timezone.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -53,11 +54,27 @@ void DateLayout::setOption(const String& option, const String& value)
 	}
 	else if (StringHelper::equalsIgnoreCase(option, TIMEZONE_OPTION))
 	{
-		timeZone = value;
+		timeZoneID = value;
 	}
 }
 
 void DateLayout::activateOptions()
+{
+	if(!dateFormatOption.empty())
+	{
+		if (timeZoneID.empty())
+		{
+			setDateFormat(dateFormatOption, TimeZone::getDefault());
+		}
+		else
+		{
+			setDateFormat(dateFormatOption, TimeZone::getTimeZone(timeZoneID));
+		}
+	}
+}
+
+void DateLayout::setDateFormat(const String& dateFormatType, 
+	const TimeZonePtr& timeZone)
 {
 	if (dateFormat != 0)
 	{

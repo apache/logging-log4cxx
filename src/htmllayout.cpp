@@ -33,7 +33,8 @@ String HTMLLayout::LOCATION_INFO_OPTION = _T("LocationInfo");
 String HTMLLayout::TITLE_OPTION = _T("Title");
 
 HTMLLayout::HTMLLayout()
-: locationInfo(false), title(_T("Log4cxx Log Messages"))
+: locationInfo(false), title(_T("Log4cxx Log Messages")),
+dateFormat(TimeZone::getTimeZone(_T("GMT")))
 {
 }
 
@@ -55,7 +56,7 @@ void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) cons
 	output << std::endl << _T("<tr>") << std::endl;
 
 	output << _T("<td>");
-	ISO8601DateFormat().format(output, event->getTimeStamp());
+	dateFormat.format(output, event->getTimeStamp());
 	output << _T("</td>") << std::endl;
 
 	output << _T("<td title=\"") << event->getThreadId() << _T(" thread\">");
@@ -134,7 +135,7 @@ void HTMLLayout::appendHeader(ostream& output)
 	output << _T("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">") << std::endl;
 	output << _T("<hr size=\"1\" noshade>") << std::endl;
 	output << _T("Log session start time ");
-	ISO8601DateFormat().format(output, time(0));
+	dateFormat.format(output, time(0));
 	output << _T("<br>") << std::endl;
 	output << _T("<br>") << std::endl;
 	output << _T("<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">") << std::endl;

@@ -77,6 +77,10 @@ void PatternLayout::setOption(const String& option, const String& value)
 	{
 		pattern = value;
 	}
+	else if (StringHelper::equalsIgnoreCase(option, _T("TimeZone")))
+	{
+		timeZone = value;
+	}
 }
 
 void PatternLayout::activateOptions()

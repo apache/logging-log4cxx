@@ -145,7 +145,7 @@ PatternConverterPtr PatternParser::parse()
 						//LogLog.debug("Parsed LITERAL converter: \""
 						//           +currentLiteral+"\".");
 					}
-					currentLiteral.str(_T(""));
+					currentLiteral.seekp(0);
 					currentLiteral.put(c); // append %
 					state = CONVERTER_STATE;
 					formattingInfo.reset();
@@ -169,7 +169,7 @@ PatternConverterPtr PatternParser::parse()
 			default:
 				if(c >= _T('0') && c <= _T('9'))
 				{
-					formattingInfo.min = c - _T('0');
+					formattingInfo.minChar = c - _T('0');
 					state = MIN_STATE;
 				}
 				else
@@ -179,7 +179,7 @@ PatternConverterPtr PatternParser::parse()
 			case MIN_STATE:
 				currentLiteral.put(c);
 				if(c >= _T('0') && c <= _T('9'))
-					formattingInfo.min = formattingInfo.min*10 + (c - _T('0'));
+					formattingInfo.minChar = formattingInfo.minChar*10 + (c - _T('0'));
 				else if(c == _T('.'))
 					state = DOT_STATE;
 				else
@@ -191,7 +191,7 @@ PatternConverterPtr PatternParser::parse()
 				currentLiteral.put(c);
 				if(c >= _T('0') && c <= _T('9'))
 				{
-					formattingInfo.max = c - _T('0');
+					formattingInfo.maxChar = c - _T('0');
 					state = MAX_STATE;
 				}
 				else {
@@ -204,7 +204,7 @@ PatternConverterPtr PatternParser::parse()
 			case MAX_STATE:
 				currentLiteral.put(c);
 				if(c >= _T('0') && c <= _T('9'))
-					formattingInfo.max = formattingInfo.max*10 + (c - _T('0'));
+					formattingInfo.maxChar = formattingInfo.maxChar*10 + (c - _T('0'));
 				else
 				{
 					finalizeConverter(c);
@@ -235,7 +235,7 @@ void PatternParser::finalizeConverter(TCHAR c)
 			extractPrecisionOption());
 		//LogLog::debug(_T("CATEGORY converter."));
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	case _T('d'):
 	{
@@ -253,21 +253,21 @@ void PatternParser::finalizeConverter(TCHAR c)
 
 		if(StringHelper::equalsIgnoreCase(dateFormatStr,
 			AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT))
-			df = new ISO8601DateFormat(timeZone);
+			df = new ISO8601DateFormat(TimeZone::getTimeZone(timeZone));
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
 			AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT))
-			df = new AbsoluteTimeDateFormat(timeZone);
+			df = new AbsoluteTimeDateFormat(TimeZone::getTimeZone(timeZone));
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
 			AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT))
-			df = new DateTimeDateFormat(timeZone);
+			df = new DateTimeDateFormat(TimeZone::getTimeZone(timeZone));
 		else
 		{
-			df = new DateFormat(dateFormatStr, timeZone);
+			df = new DateFormat(dateFormatStr, TimeZone::getTimeZone(timeZone));
 		}
 		pc = new DatePatternConverter(formattingInfo, df);
 		//LogLog.debug("DATE converter {"+dateFormatStr+"}.");
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	}
 	case _T('F'):
@@ -275,14 +275,14 @@ void PatternParser::finalizeConverter(TCHAR c)
 			FILE_LOCATION_CONVERTER);
 		//LogLog.debug("File name converter.");
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	case _T('l'):
 		pc = new LocationPatternConverter(formattingInfo,
 			FULL_LOCATION_CONVERTER);
 		//LogLog.debug("Location converter.");
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	case _T('L'):
 
@@ -290,20 +290,20 @@ void PatternParser::finalizeConverter(TCHAR c)
 			LINE_LOCATION_CONVERTER);
 		//LogLog.debug("LINE NUMBER converter.");
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	case _T('m'):
 		pc = new BasicPatternConverter(formattingInfo, MESSAGE_CONVERTER);
 		//LogLog.debug("MESSAGE converter.");
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	case _T('p'):
 		{
 		pc = new BasicPatternConverter(formattingInfo, LEVEL_CONVERTER);
 		//LogLog.debug("LEVEL converter.");
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		}
 		break;
 	case _T('r'):
@@ -311,13 +311,13 @@ void PatternParser::finalizeConverter(TCHAR c)
 			RELATIVE_TIME_CONVERTER);
 		//LogLog.debug("RELATIVE time converter.");
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	case _T('t'):
 		pc = new BasicPatternConverter(formattingInfo, THREAD_CONVERTER);
 		//LogLog.debug("THREAD converter.");
 		//formattingInfo.dump();
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 		/*case 'u':
 		if(i < patternLength) {
@@ -336,20 +336,20 @@ void PatternParser::finalizeConverter(TCHAR c)
 	case _T('x'):
 		pc = new BasicPatternConverter(formattingInfo, NDC_CONVERTER);
 		//LogLog.debug("NDC converter.");
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	case _T('X'):
 	{
 		String xOpt = extractOption();
 		pc = new MDCPatternConverter(formattingInfo, xOpt);
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 		break;
 	}
 	default:
 		LOGLOG_ERROR(_T("Unexpected char [") << c << _T("] at position ") << i
 			<<_T(" in conversion pattern."));
 		pc = new LiteralPatternConverter(currentLiteral.str());
-		currentLiteral.str(_T(""));
+		currentLiteral.seekp(0);
 	}
 
 	addConverter(pc);
@@ -357,7 +357,7 @@ void PatternParser::finalizeConverter(TCHAR c)
 
 void PatternParser::addConverter(PatternConverterPtr& pc)
 {
-	currentLiteral.str(_T(""));
+	currentLiteral.seekp(0);
 	// Add the pattern converter to the list.
 	addToList(pc);
 	// Next pattern is assumed to be a literal.

@@ -53,9 +53,10 @@ namespace log4cxx
 			END_LOG4CXX_CAST_MAP()
 
 			PatternConverterPtr next;
-			int min;
-			int max;
+			int minChar;
+			int maxChar;
 			bool leftAlign;
+			mutable StringBuffer os;
 
 		protected:
 			PatternConverter();
