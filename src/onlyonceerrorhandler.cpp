@@ -32,7 +32,7 @@ ERROR_PREFIX(_T("log4cxx error: ")), firstTime(true)
 }
 
 
-void OnlyOnceErrorHandler::setLogger(LoggerPtr logger)
+void OnlyOnceErrorHandler::setLogger(const LoggerPtr& logger)
 {
 }
 
@@ -55,7 +55,7 @@ void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Except
 }
 
 void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Exception& e,
-								 int errorCode, log4cxx::spi::LoggingEventPtr& event)
+	int errorCode, const log4cxx::spi::LoggingEventPtr& event)
 {
 	error(message, e, errorCode);
 }
@@ -71,11 +71,11 @@ void OnlyOnceErrorHandler::error(const String& message)
 }
 
 
-void OnlyOnceErrorHandler::setAppender(AppenderPtr appender)
+void OnlyOnceErrorHandler::setAppender(const AppenderPtr& appender)
 {
 }
 
 
-void OnlyOnceErrorHandler::setBackupAppender(AppenderPtr appender)
+void OnlyOnceErrorHandler::setBackupAppender(const AppenderPtr& appender)
 {
 }
