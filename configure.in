@@ -14,13 +14,13 @@ AC_CANONICAL_TARGET
 #  ? :+1 : ?   == just some internal changes, nothing breaks but might work
 #                 better
 # CURRENT : REVISION : AGE
-LT_VERSION=2:1:0
+LT_VERSION=3:1:0
 
 AC_SUBST(LT_VERSION)
 
 AM_CONFIG_HEADER(include/log4cxx/config.h)
 
-AM_INIT_AUTOMAKE(log4cxx, 0.1.1)
+AM_INIT_AUTOMAKE(log4cxx, 0.9.1)
 
 # Checks for programs
 # ----------------------------------------------------------------------------
@@ -234,6 +234,7 @@ src/Makefile
 msvc/Makefile
 msvc/dll/Makefile
 msvc/simplesocketserver/Makefile
+msvc/static/Makefile
 msvc/tests/Makefile
 tests/Makefile
 include/Makefile
