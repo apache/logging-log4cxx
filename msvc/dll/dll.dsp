@@ -70,7 +70,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /Yu"stdafx.h" /FD /GZ /c
-# ADD CPP /nologo /MDd /w /W0 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /FR /YX /FD /GZ /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x40c /d "_DEBUG"
@@ -107,6 +107,10 @@ SOURCE=..\..\src\asyncappender.cpp
 # Begin Source File
 
 SOURCE=..\..\src\boundedfifo.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\class.cpp
 # End Source File
 # Begin Source File
 
@@ -228,6 +232,10 @@ SOURCE=..\..\src\inetaddress.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\layout.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\level.cpp
 # End Source File
 # Begin Source File
@@ -237,6 +245,10 @@ SOURCE=..\..\src\levelmatchfilter.cpp
 # Begin Source File
 
 SOURCE=..\..\src\levelrangefilter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\loader.cpp
 # End Source File
 # Begin Source File
 
@@ -289,6 +301,18 @@ SOURCE=..\..\src\patternlayout.cpp
 # Begin Source File
 
 SOURCE=..\..\src\patternparser.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\properties.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\propertyconfigurator.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\propertysetter.cpp
 # End Source File
 # Begin Source File
 
@@ -373,6 +397,10 @@ SOURCE=..\..\src\writerappender.cpp
 # Begin Source File
 
 SOURCE=..\..\src\xmllayout.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\xmlsocketappender.cpp
 # End Source File
 # End Group
 # Begin Group "Header Files"
@@ -620,6 +648,14 @@ SOURCE=..\..\include\log4cxx\varia\stringmatchfilter.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\nt\nteventlogappender.h
+# End Source File
+# End Group
+# Begin Group "config"
+
+# PROP Default_Filter "h"
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\config\propertysetter.h
 # End Source File
 # End Group
 # Begin Source File
