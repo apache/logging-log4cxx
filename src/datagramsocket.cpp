@@ -145,8 +145,13 @@ void DatagramSocket::receive(DatagramPacketPtr p)
 	addr.sin_addr.s_addr = htonl(p->getAddress().address);
 	addr.sin_port = htons(p->getPort());
 
+#ifdef WIN32
+	if (::recvfrom(fd, (char *)p->getData(), p->getLength(), 0,
+		(sockaddr *)&addr, &addr_len) == -1)
+#else
 	if (::recvfrom(fd, p->getData(), p->getLength(), 0,
 		(sockaddr *)&addr, (socklen_t *)&addr_len) == -1)
+#endif
 	{
 		throw IOException();
 	}
@@ -163,8 +168,13 @@ void DatagramSocket::send(DatagramPacketPtr p)
 	addr.sin_addr.s_addr = htonl(p->getAddress().address);
 	addr.sin_port = htons(p->getPort());
 
+#ifdef WIN32
+	if (::sendto(fd, (const char *)p->getData(), p->getLength(), 0,
+		(sockaddr *)&addr, addr_len) == -1)
+#else
 	if (::sendto(fd, p->getData(), p->getLength(), 0,
 		(sockaddr *)&addr, addr_len) == -1)
+#endif
 	{
 		throw IOException();
 	}

@@ -37,7 +37,7 @@ CyclicBuffer::CyclicBuffer(int maxSize) : maxSize(maxSize), first(0), last(0), n
 			<< _T(") is not a positive integer.");
 		throw new IllegalArgumentException(oss.str());
 	}
-	ea = new (LoggingEvent *)[maxSize];
+	ea = new LoggingEvent *[maxSize];
 	memset(ea, 0, sizeof(LoggingEvent *) * maxSize);
  }
 
@@ -125,7 +125,7 @@ void CyclicBuffer::resize(int newSize)
 	if(newSize == numElems)
 		return; // nothing to do
 
-	LoggingEvent * * temp = new (LoggingEvent *)[newSize];
+	LoggingEvent * * temp = new LoggingEvent *[newSize];
 
 	int loopLen = newSize < numElems ? newSize : numElems;
 	int i;
