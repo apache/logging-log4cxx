@@ -83,4 +83,13 @@ Version 0.9.3 (2003-09-19)
 * Added new tests
 * Added benchmarks
 
+Version 0.9.4 (2003-10-25)
+==========================
+
+* StringBuffer has been optimized.
+* Fixed miscellaneous threading problems.
+* Added TimeZone support in PatternLayout (bug 796894)
+* Fixed threading configuration problems (bug 809125)
+* Fixed miscellaneous MSVC and cygwin compilation problems.
+
 
