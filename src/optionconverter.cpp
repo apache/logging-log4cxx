@@ -290,12 +290,6 @@ ObjectPtr OptionConverter::instantiateByKey(Properties& props, const String& key
 		return defaultValue;
 	}
 
-	String::size_type pos = className.find_last_of(_T('.'));
-	if (pos != String::npos)
-	{
-		className = className.substr(pos + 1);
-	}
-
 	// Trim className to avoid trailing spaces that cause problems.
 	return OptionConverter::instantiateByClassName(
 		StringHelper::trim(className), superClass, defaultValue);
