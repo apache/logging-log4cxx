@@ -67,7 +67,37 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="usage">
         <echo>
-        </echo>
+Ant build file for log4cxx
+
+Common invocations:
+
+> ant
+
+Builds and tests log4cxx.  Will download and build
+apr, apr-util, apr-iconv and cppunit from source.
+
+> ant -Dapr.dir=/usr/local/lib -Dcppunit.dir=/usr/lib
+
+Builds and tests log4cxx using installed APR and cppunit
+
+> ant -p
+
+Displays available targets
+
+> ant build-projects-vc6
+
+Builds Microsoft Visual Studio projects.
+-xcode and -cbx for Apple Xcode and Borland CBuilderX for Linux
+respectively.
+
+Common command line options:
+
+-Ddebug=[true|false]
+-Doptimize=[speed|size|none]
+-Dversion=n.n.n
+-Dlib.type=[shared|static]
+
+</echo>
 </target>
 
 <target name="os-detect">
@@ -109,6 +139,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="project.type" value="cbuilderx"/>
     <property name="project.dir" value="cbx"/>
     <property name="compiler" value="g++"/>
+    <property name="lib-suffix" value=""/>
+
+    <property name="extra.libs" value="expat"/>
 </target>
 
 
@@ -138,7 +171,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </condition>
         <property name="debug.release" value="release"/>
 
-        <condition property="apr.include.dir" value="${apr.dir}/include">
+        <condition property="apr.include.dir" value="${apr.dir}/include/apr-1">
             <isset property="apr.dir"/>
         </condition>
         <condition property="apr.lib.dir" value="${apr.dir}/lib">
@@ -149,7 +182,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <condition property="apriconv.dir" value="${apr.dir}">
             <isset property="apr.dir"/>
         </condition>
-        <condition property="apriconv.include.dir" value="${apriconv.dir}/include">
+        <condition property="apriconv.include.dir" value="${apriconv.dir}/include/apr-1">
             <isset property="apriconv.dir"/>
         </condition>
         <condition property="apriconv.lib.dir" value="${apriconv.dir}/lib">
@@ -160,7 +193,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <condition property="aprutil.dir" value="${apr.dir}">
             <isset property="apr.dir"/>
         </condition>
-        <condition property="aprutil.include.dir" value="${aprutil.dir}/include">
+        <condition property="aprutil.include.dir" value="${aprutil.dir}/include/apr-1">
             <isset property="aprutil.dir"/>
         </condition>
         <condition property="aprutil.lib.dir" value="${aprutil.dir}/lib">
@@ -181,7 +214,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
         <available property="apr-available" file="${apr.lib.dir}/${lib.prefix}apr-1${lib-suffix}${lib.extension}"/>
         <available property="aprutil-available" file="${aprutil.lib.dir}/${lib.prefix}aprutil-1${lib-suffix}${lib.extension}"/>
-        <available property="apriconv-available" file="${apriconv.lib.dir}/${lib.prefix}apriconv-1${lib-suffix}${lib.extension}"/>
+        <available property="apriconv-available" file="${apriconv.lib.dir}/${lib.prefix}apriconv${lib-suffix}${lib.extension}"/>
         <available property="cppunit-available" file="${cppunit.lib.dir}/${lib.prefix}cppunit${lib-suffix}${lib.extension}"/>
 
         <available property="apr-src-available" file="${lib.dir}/apr-${apr.version}.tar.gz"/>
@@ -507,6 +540,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}${lib-suffix}"
                 unless="apriconv.lib.dir"/>
+        <libset libs="${extra.libs}" if="extra.libs"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
 
@@ -595,6 +629,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
+        <libset libs="${extra.libs}" if="extra.libs"/>
         <project outfile="${project.dir}/shortsocketserver" type="${project.type}" if="project.if"/>
     </cc>
 

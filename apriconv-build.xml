@@ -105,7 +105,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <copy tofile="${base.dir}/lib/apr_iconv_private.h" file="${base.dir}/lib/apr_iconv_private.h.in"/>
 </target>
 
-<target name="unix-configure" depends="configure-check" if="is-unix" unless="configure-available">
+<target name="unix-configure" depends="configure-check" if="is-unix" unless="config-available">
         <exec executable="${base.dir}/configure" dir="${base.dir}">
            <arg value="--with-apr=${with-apr}"/>
         </exec>
@@ -134,10 +134,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="API_DECLARE_EXPORT" if="is-shared"/>
         <defineset define="API_DECLARE_STATIC" unless="is-shared"/>
         <defineset define="WIN32" if="is-windows"/>
-        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE _LARGEFILE64_SOURCE"
-              unless="is-windows">
-              <define name="LINUX" value="2"/>
-        </defineset>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
     </cc>
 </target>
 

@@ -125,10 +125,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="CPPUNIT_BUILD_DLL" if="is-shared"/>
         <defineset define="CPPUNIT_BUILD_STATIC" unless="is-shared"/>
         <defineset define="WIN32" if="is-windows"/>
-        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE _LARGEFILE64_SOURCE"
-              unless="is-windows">
-              <define name="LINUX" value="2"/>
-        </defineset>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
 
     </cc>
 </target>

@@ -137,6 +137,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="build" depends="configure" description="Build library">
     <mkdir dir="${executable.dir}/${lib.type}/aprutil_obj"/>
+    <!--   uses replace instead of preprocessor since
+              the quotes on VERSION cause problems with cpptasks  -->
+    <replace file="${base.dir}/xml/expat/lib/xmlparse.c">
+       <replacefilter token="XML_MAJOR_VERSION" value="1"/>
+       <replacefilter token="XML_MINOR_VERSION" value="95"/>
+       <replacefilter token="XML_MICRO_VERSION" value="1"/>
+       <replacefilter token="VERSION" value='"expat_1.95.1"'/>
+    </replace>
     <cc name="${compiler}"
         outfile="${executable.dir}/${lib.type}/aprutil-1${lib-suffix}"
         subsystem="console"
@@ -156,23 +164,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${base.dir}/xml/expat"/>
         <defineset define="APU_DECLARE_EXPORT" if="is-shared"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-shared"/>
-        <defineset>
-            <!-- define name="VERSION" value='\"expat_1.95.1\"'/ -->
-            <define name="XML_MAJOR_VERSION" value="1"/>
-            <define name="XML_MINOR_VERSION" value="95"/>
-            <define name="XML_MICRO_VERSION" value="1"/>
-        </defineset>
-        <defineset unless="is-gcc">
-            <define name="VERSION" value='\"expat_1.95.1\"'/>
-        </defineset>
-        <defineset if="is-gcc">
-            <define name="VERSION" value='0'/>
-        </defineset>
         <defineset define="WIN32" if="is-windows"/>
-        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE _LARGEFILE64_SOURCE"
-              unless="is-windows">
-              <define name="LINUX" value="2"/>
-        </defineset>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
 
         <libset dir="${apr.lib.dir}" libs="apr-1"/>
         <libset dir="${apriconv.lib.dir}" libs="apriconv"/>
