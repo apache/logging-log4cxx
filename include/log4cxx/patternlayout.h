@@ -27,6 +27,8 @@ namespace log4cxx
 		typedef ObjectPtrT<PatternConverter> PatternConverterPtr;
 	};
 
+	class PatternLayout;
+	typedef helpers::ObjectPtrT<PatternLayout> PatternLayoutPtr;
 	/**
 
 	A flexible layout configurable with pattern string.
