@@ -256,7 +256,7 @@ String OptionConverter::getSystemProperty(const String& key, const String& def)
 {
 	if (!key.empty())
 	{
-		String value = System::getProperty(def);
+		String value = System::getProperty(key);
 
 		if (!value.empty())
 		{
@@ -273,9 +273,63 @@ String OptionConverter::getSystemProperty(const String& key, const String& def)
 	}
 }
 
-const Level& OptionConverter::toLevel(const String& value, const Level& defaultValue)
+const LevelPtr& OptionConverter::toLevel(const String& value,
+	const LevelPtr& defaultValue)
 {
-	return Level::toLevel(value, defaultValue);
+    int hashIndex = value.find(_T("#"));
+
+	if (hashIndex == -1)
+	{
+		if (value.empty())
+		{
+			return defaultValue;
+		}
+		else
+		{
+			LogLog::debug("OptionConverter::toLevel: no class name specified,"
+			" level=["+value+"]");
+			// no class name specified : use standard Level class
+			return Level::toLevel(value, defaultValue);
+		}
+	}
+
+	const LevelPtr& result = defaultValue;
+
+	String clazz = value.substr(hashIndex + 1);
+	String levelName = value.substr(0, hashIndex);
+	LogLog::debug("OptionConverter::toLevel: class=[" +clazz+"], level=["+
+		levelName+"]");
+
+	// This is degenerate case but you never know.
+	if (levelName.empty())
+	{
+		return Level::toLevel(value, defaultValue);
+	}
+
+	try
+	{
+		Level::LevelClass& levelClass =
+			(Level::LevelClass&)Loader::loadClass(clazz);
+		return levelClass.toLevel(levelName);
+	}
+	catch (ClassNotFoundException&)
+	{
+		LogLog::warn(_T("custom level class [") + clazz + _T("] not found."));
+	}
+	catch(Exception& oops)
+	{
+		LogLog::warn(
+			_T("class [") + clazz + _T("], level [") + levelName +
+			_T("] conversion) failed."), oops);
+	}
+	catch(...)
+	{
+		LogLog::warn(
+			_T("class [") + clazz + _T("], level [") + levelName +
+			_T("] conversion) failed."));
+	}
+
+	return defaultValue;
 }
 
 
