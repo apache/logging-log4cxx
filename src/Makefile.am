@@ -31,6 +31,7 @@ liblog4cxx_la_SOURCES = \
 	logmanager.cpp \
 	msxmlreader.cpp \
 	ndc.cpp \
+	mdc.cpp \
 	nteventlogappender.cpp \
 	objectimpl.cpp\
 	onlyonceerrorhandler.cpp \

@@ -1,0 +1,7 @@
+1. empty MDC key1: 
+2. put key1: context1
+3. put key2: context2
+4. remove key2: context2
+5. empty MDC key2: 
+6. clear
+7. empty MDC key1: 
