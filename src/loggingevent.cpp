@@ -24,6 +24,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/loader.h>
+#include <log4cxx/helpers/socket.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
