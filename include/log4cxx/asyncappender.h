@@ -49,7 +49,7 @@ namespace log4cxx
 	be script configured using the {@link xml::DOMConfigurator DOMConfigurator}.
 	*/
 	class AsyncAppender :
-		public virtual helpers::AppenderAttachableImpl,
+		public virtual spi::AppenderAttachable,
 		public virtual AppenderSkeleton
 	{
 	friend class Dispatcher;
@@ -66,12 +66,15 @@ namespace log4cxx
 		static int DEFAULT_BUFFER_SIZE;
 
 		helpers::BoundedFIFOPtr bf;
+		helpers::AppenderAttachableImplPtr aai;
 		Dispatcher * dispatcher;
 		bool locationInfo;
 		bool interruptedWarningMessage;
 
 		AsyncAppender();
 		virtual ~AsyncAppender();
+
+		void addAppender(AppenderPtr newAppender);
 
 		void append(const spi::LoggingEvent& event);
 
@@ -82,11 +85,23 @@ namespace log4cxx
 		*/
 		void close();
 
+		AppenderList getAllAppenders();
+		AppenderPtr getAppender(const tstring& name);
+
 		/**
 		Returns the current value of the <b>LocationInfo</b> option.
 		*/
 		inline bool getLocationInfo() const
 			{ return locationInfo; }
+
+		/**
+		Is the appender passed as parameter attached to this asyncappender?
+		*/
+		bool isAttached(AppenderPtr appender);
+
+		void removeAllAppenders();
+		void removeAppender(AppenderPtr appender);
+		void removeAppender(const tstring& name);
 
 		/**
 		The <code>AsyncAppender</code> does not require a layout. Hence,
@@ -131,6 +146,7 @@ namespace log4cxx
 	class Dispatcher : public  helpers::Thread
 	{
 		helpers::BoundedFIFOPtr bf;
+		helpers::AppenderAttachableImplPtr aai;
 		bool interrupted;
 		AsyncAppender * container;
 

@@ -24,10 +24,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
+
 void AppenderAttachableImpl::addAppender(AppenderPtr newAppender)
 {
-	synchronized sync(this);
-	
     // Null values for newAppender parameter are strictly forbidden.
     if(newAppender == 0)
     {
@@ -45,8 +45,6 @@ void AppenderAttachableImpl::addAppender(AppenderPtr newAppender)
 
 int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEvent& event)
 {
-	synchronized sync(this);
-
     AppenderList::iterator it, itEnd = appenderList.end();
     AppenderPtr appender;
     for(it = appenderList.begin(); it != itEnd; it++)
@@ -60,15 +58,11 @@ int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEvent& event
 
 AppenderList AppenderAttachableImpl::getAllAppenders()
 {
-	synchronized sync(this);
-
     return appenderList;
 }
 
 AppenderPtr AppenderAttachableImpl::getAppender(const tstring& name)
 {
-	synchronized sync(this);
-
 	if (name.empty())
 	{
 		return 0;
@@ -90,8 +84,6 @@ AppenderPtr AppenderAttachableImpl::getAppender(const tstring& name)
 
 bool AppenderAttachableImpl::isAttached(AppenderPtr appender)
 {
-	synchronized sync(this);
-
 	if (appender == 0)
     {
         return false;
@@ -105,8 +97,6 @@ bool AppenderAttachableImpl::isAttached(AppenderPtr appender)
 
 void AppenderAttachableImpl::removeAllAppenders()
 {
-	synchronized sync(this);
-
     AppenderList::iterator it, itEnd = appenderList.end();
     AppenderPtr a;
     for(it = appenderList.begin(); it != itEnd; it++)
@@ -120,8 +110,6 @@ void AppenderAttachableImpl::removeAllAppenders()
 
 void AppenderAttachableImpl::removeAppender(AppenderPtr appender)
 {
-	synchronized sync(this);
-
     if (appender == 0)
         return;
         
@@ -136,8 +124,6 @@ void AppenderAttachableImpl::removeAppender(AppenderPtr appender)
 
 void AppenderAttachableImpl::removeAppender(const tstring& name)
 {
-	synchronized sync(this);
-
 	if (name.empty())
 	{
 		return;

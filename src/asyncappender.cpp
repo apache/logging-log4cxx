@@ -33,6 +33,8 @@ AsyncAppender::AsyncAppender()
 {
 	bf = new BoundedFIFO(DEFAULT_BUFFER_SIZE);
 	
+    aai = new AppenderAttachableImpl();
+
 	dispatcher = new Dispatcher(bf, this);
 	dispatcher->start();
 }
@@ -40,6 +42,12 @@ AsyncAppender::AsyncAppender()
 AsyncAppender::~AsyncAppender()
 {
 	finalize();
+}
+
+void AsyncAppender::addAppender(AppenderPtr newAppender)
+{
+	synchronized sync(aai);
+	aai->addAppender(newAppender);
 }
 
 void AsyncAppender::append(const spi::LoggingEvent& event)
@@ -96,6 +104,24 @@ void AsyncAppender::close()
 	bf = 0;
 }
 
+AppenderList AsyncAppender::getAllAppenders() 
+{
+	synchronized sync(aai);
+	return aai->getAllAppenders();
+}
+
+AppenderPtr AsyncAppender::getAppender(const tstring& name)
+{
+	synchronized sync(aai);
+	return aai->getAppender(name);
+}
+
+bool AsyncAppender::isAttached(AppenderPtr appender)
+{
+	synchronized sync(aai);
+	return aai->isAttached(appender);
+}
+
 void AsyncAppender::setBufferSize(int size)
 {
 	bf->resize(size);
@@ -106,8 +132,26 @@ int AsyncAppender::getBufferSize()
 	return bf->getMaxSize();
 }
 
+void AsyncAppender::removeAllAppenders()
+{
+    synchronized sync(aai);
+	aai->removeAllAppenders();
+}
+
+void AsyncAppender::removeAppender(AppenderPtr appender)
+{
+    synchronized sync(aai);
+	aai->removeAppender(appender);
+}
+
+void AsyncAppender::removeAppender(const tstring& name)
+{
+    synchronized sync(aai);
+	aai->removeAppender(name);
+}
+
 Dispatcher::Dispatcher(helpers::BoundedFIFOPtr bf, AsyncAppender * container)
- : bf(bf), container(container), interrupted(false)
+ : bf(bf), container(container), aai(container->aai), interrupted(false)
 {
 	// set the dispatcher priority to lowest possible value
 	setPriority(Thread::MIN_PRIORITY);
@@ -153,13 +197,14 @@ void Dispatcher::run()
 			}
 		} // synchronized
 
-		if(event != 0)
+		if(aai != 0 && event != 0)
 		{
-			container->appendLoopOnAppenders(*event);
+			synchronized sync(aai);
+			aai->appendLoopOnAppenders(*event);
 			delete event;
 		}
 	} // while
 
 	// close and remove all appenders
-	container->removeAllAppenders();
+	aai->removeAllAppenders();
 }

@@ -43,7 +43,13 @@ Logger::~Logger()
 
 void Logger::addAppender(AppenderPtr newAppender)
 {
-	AppenderAttachableImpl::addAppender(newAppender);
+	synchronized sync(this);
+
+	if (aai == 0)
+	{
+		  aai = new AppenderAttachableImpl();
+	}
+	aai->addAppender(newAppender);
 	repository->fireAddAppenderEvent(this, newAppender);
 }
 
@@ -62,8 +68,14 @@ void Logger::callAppenders(const spi::LoggingEvent& event)
 
 	for(LoggerPtr logger = this; logger != 0; logger = logger->parent)
 	{
-		writes += logger->appendLoopOnAppenders(event);
+		// Protected against simultaneous call to addAppender, removeAppender,...
+		synchronized sync(logger);
 
+		if (logger->aai != 0)
+		{
+			writes += logger->aai->appendLoopOnAppenders(event);
+		}
+		
 		if(!logger->additive)
 		{
 			break;
@@ -138,6 +150,32 @@ bool Logger::getAdditivity()
 	return additive;
 }
 
+AppenderList Logger::getAllAppenders()
+{
+	synchronized sync(this);
+
+	if (aai == 0)
+	{
+		return AppenderList();
+	}
+	else
+	{
+		return aai->getAllAppenders();
+	}
+}
+
+AppenderPtr Logger::getAppender(const tstring& name)
+{
+	synchronized sync(this);
+
+	if (aai == 0 || name.empty())
+	{
+		return 0;
+	}
+	
+	return aai->getAppender(name);
+}
+
 const Level& Logger::getEffectiveLevel()
 {
 	for(Logger * l = this; l != 0; l=l->parent)
@@ -176,6 +214,20 @@ void Logger::info(const tstring& message, const char* file, int line)
 	if(Level::INFO.isGreaterOrEqual(getEffectiveLevel()))
 	{
 		 forcedLog(FQCN, Level::INFO, message, file, line);
+	}
+}
+
+bool Logger::isAttached(AppenderPtr appender)
+{
+	synchronized sync(this);
+
+	if (appender == 0 || aai == 0)
+	{
+		return false;
+	}
+	else
+	{
+		return aai->isAttached(appender);
 	}
 }
 
@@ -223,6 +275,41 @@ void Logger::log(const Level& level, const tstring& message,
 		forcedLog(FQCN, level, message, file, line);
 	}
 
+}
+
+void Logger::removeAllAppenders() 
+{
+	synchronized sync(this);
+	
+	if(aai != 0)
+	{
+		aai->removeAllAppenders();
+		aai = 0;
+	}
+}
+
+void Logger::removeAppender(AppenderPtr appender)
+{
+	synchronized sync(this);
+
+	if(appender == 0 || aai == 0)
+	{
+		return;
+	}
+
+	aai->removeAppender(appender);
+}
+
+void Logger::removeAppender(const tstring& name) 
+{
+	synchronized sync(this);
+
+	if(name.empty() || aai == 0)
+	{
+		return;
+	}
+
+	aai->removeAppender(name);
 }
 
 void Logger::setAdditivity(bool additive)

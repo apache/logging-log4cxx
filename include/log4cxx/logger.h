@@ -48,7 +48,7 @@ namespace log4cxx
     operations, except configuration, are done through this class.
     */
     class Logger :
-		public virtual helpers::AppenderAttachableImpl,
+		public virtual spi::AppenderAttachable,
 		public virtual helpers::ObjectImpl
     {
     public:
@@ -57,13 +57,6 @@ namespace log4cxx
 			LOG4CXX_CAST_ENTRY(Logger)
 			LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
 		END_LOG4CXX_CAST_MAP()
-
-	private:
-		/**
-		* The fully qualified name of the Category class. See also the getFQCN
-		* method.
-		*/
-		static tstring FQCN;
 
     protected:
         /**
@@ -82,10 +75,18 @@ namespace log4cxx
         ancestor which is the root logger. */
         LoggerPtr parent;
 
-        // Loggers need to know what Hierarchy they are in
+ 		/**
+		The fully qualified name of the Category class. See also the getFQCN
+		method.
+		*/
+		static tstring FQCN;
+
+		// Loggers need to know what Hierarchy they are in
         spi::LoggerRepository * repository;
 
-        /** Additivity is set to true by default, that is children inherit
+		helpers::AppenderAttachableImplPtr aai;
+
+       /** Additivity is set to true by default, that is children inherit
         the appenders of their ancestors by default. If this variable is
         set to <code>false</code> then the appenders found in the
         ancestors of this logger are not used. However, the children
@@ -94,18 +95,19 @@ namespace log4cxx
         the user manual for more details. */
         bool additive;
        
-	/**
-        This constructor created a new <code>logger</code> instance and
-        sets its name.
-
-        <p>It is intended to be used by sub-classes only. You should not
-        create categories directly.
-
-        @param name The name of the logger.
-        */
     protected:
 		friend class DefaultCategoryFactory;
-        Logger(const tstring& name);
+
+		/**
+		This constructor created a new <code>logger</code> instance and
+		sets its name.
+
+		<p>It is intended to be used by sub-classes only. You should not
+		create categories directly.
+
+		@param name The name of the logger.
+		*/
+		  Logger(const tstring& name);
 
     public:
 		~Logger();
@@ -128,16 +130,10 @@ namespace log4cxx
         @param msg The message to print if <code>assertion</code> is
         false.
 		*/
-		
         void assertLog(bool assertion, const tstring& msg);
 
-
-
-        /**
+		/**
         Call the appenders in the hierrachy starting at
-
-
-
         <code>this</code>.  If no appenders could be found, emit a
         warning.
 
@@ -222,29 +218,39 @@ namespace log4cxx
     public:
         bool getAdditivity();
 
-         /**
+		/**
+		Get the appenders contained in this logger as an AppenderList.
+		If no appenders can be found, then an empty AppenderList
+		is returned.
+		@return AppenderList An collection of the appenders in this logger.*/
+		AppenderList getAllAppenders();
+
+		/**
+		Look for the appender named as <code>name</code>.
+		<p>Return the appender with that name if in the list. Return
+		<code>null</code> otherwise.  */
+		AppenderPtr getAppender(const tstring& name);
+
+		/**
         Starting from this logger, search the logger hierarchy for a
 
         non-{@link Level#OFF OFF} level and return it. Otherwise, 
-	return the level of the root logger.
+		return the level of the root logger.
 
         <p>The Logger class is designed so that this method executes as
         quickly as possible.
         */
-    public:
         virtual const Level& getEffectiveLevel();
 
         /**
         Return the the LoggerRepository where this
         <code>Logger</code> is attached.
 		*/
-    public:
         spi::LoggerRepositoryPtr getLoggerRepository();
 
 
         /**
         Return the logger name.  */
-    public:
         inline const tstring& getName() const
 			{ return name; }
 
@@ -255,7 +261,6 @@ namespace log4cxx
 
         <p>The root logger will return <code>0</code>.
         */
-    public:
         LoggerPtr getParent();
 
 
@@ -264,19 +269,16 @@ namespace log4cxx
 
         @return Level - the assigned Level, can be {@link Level#OFF OFF}.
         */
-    public:
         const Level& getLevel();
 
         /**
         Retrieve a logger by name.
         */
-    public:
         static LoggerPtr getLogger(const tstring& name);
 
         /**
         Retrieve the root logger.
         */
-    public:
         static LoggerPtr getRootLogger();
 
         /**
@@ -292,7 +294,6 @@ namespace log4cxx
         @param factory A LoggerFactory implementation that will
         actually create a new Instance.
 		*/
-    public:
         static LoggerPtr getLogger(const tstring& name,
 			spi::LoggerFactoryPtr factory);
 			
@@ -313,7 +314,12 @@ namespace log4cxx
 		*/
         void info(const tstring& message, const char* file=NULL, int line=-1);
 
-        /**
+		/**
+		Is the appender passed as parameter attached to this category?
+		*/
+		bool isAttached(AppenderPtr appender);
+
+       /**
         *  Check whether this logger is enabled for the <code>DEBUG</code>
         *  Level.
         *
@@ -347,7 +353,6 @@ namespace log4cxx
         *  @return bool - <code>true</code> if this logger is debug
         *  enabled, <code>false</code> otherwise.
         *   */
-    public:
         bool isDebugEnabled();
 
         /**
@@ -358,7 +363,6 @@ namespace log4cxx
 
         @return bool True if this logger is enabled for <code>level</code>.
         */
-    public:
         bool isEnabledFor(const Level& level);
         /**
         Check whether this logger is enabled for the info Level.
@@ -367,7 +371,6 @@ namespace log4cxx
         @return bool - <code>true</code> if this logger is enabled
         for level info, <code>false</code> otherwise.
         */
-    public:
         bool isInfoEnabled();
 
          /**
@@ -378,14 +381,30 @@ namespace log4cxx
         @param message The message of the logging request.
         @param file The source file of the logging request, may be null.
         @param line The number line of the logging request.  */
-     public:
         void log(const Level& level, const tstring& message,
 			const char* file=0, int line=-1);
 
-        /**
+		/**
+		Remove all previously added appenders from this logger
+		instance.
+		<p>This is useful when re-reading configuration information.
+		*/
+		void removeAllAppenders();
+
+		/**
+		Remove the appender passed as parameter form the list of appenders.
+		*/
+		void removeAppender(AppenderPtr appender);
+
+		/**
+		Remove the appender with the name passed as parameter form the
+		list of appenders.
+		 */
+		void removeAppender(const tstring& name);
+
+       /**
         Set the additivity flag for this Logger instance.
          */
-    public:
         void setAdditivity(bool additive);
 
     protected:
@@ -406,7 +425,7 @@ namespace log4cxx
 
         <p>Null values are admitted.  */
 
-    public:
+	public:
         virtual void setLevel(const Level& level);
 
         /**

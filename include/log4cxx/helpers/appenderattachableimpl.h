@@ -19,7 +19,7 @@
 #define _LOG4CXX_HELPERS_APPENDER_ATTACHABLE_IMPL_H
 
 #include <log4cxx/spi/appenderattachable.h>
-#include <vector>
+#include <log4cxx/helpers/objectimpl.h>
 
 namespace log4cxx
 {
@@ -30,14 +30,25 @@ namespace log4cxx
     
     namespace helpers
     {
-        class AppenderAttachableImpl :
-			public virtual spi::AppenderAttachable
+		class AppenderAttachableImpl;
+		typedef log4cxx::helpers::ObjectPtrT<AppenderAttachableImpl>
+			AppenderAttachableImplPtr;
+  
+		class AppenderAttachableImpl :
+			public virtual spi::AppenderAttachable,
+			public virtual helpers::ObjectImpl
         {
         protected:
             /** Array of appenders. */
             AppenderList  appenderList;
 
         public:
+			DECLARE_LOG4CXX_OBJECT(AppenderAttachableImpl)
+			BEGIN_LOG4CXX_CAST_MAP()
+				LOG4CXX_CAST_ENTRY(AppenderAttachableImpl)
+				LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
+			END_LOG4CXX_CAST_MAP()
+
 		  // Methods
             /**
              * Add an appender.

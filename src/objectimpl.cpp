@@ -79,7 +79,9 @@ void ObjectImpl::unlock()
 
 void ObjectImpl::wait()
 {
+	cs.unlock();
 	sem.wait();
+	cs.lock();
 }
 
 void ObjectImpl::notify()
