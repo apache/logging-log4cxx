@@ -41,7 +41,7 @@ IMPLEMENT_LOG4CXX_OBJECT(SMTPAppender)
 
 bool DefaultEvaluator::isTriggeringEvent(const spi::LoggingEventPtr& event)
 {
-	return event->getLevel().isGreaterOrEqual(Level::ERROR);
+	return event->getLevel()->isGreaterOrEqual(Level::ERROR);
 }
 
 SMTPAppender::SMTPAppender()
@@ -328,7 +328,7 @@ void SMTPAppender::sendBuffer()
 		{
 				//sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
 			LoggingEventPtr event = cb.get();
-			layout->format(sbuf, *event);
+			layout->format(sbuf, event);
 		}
 
 		layout->appendFooter(sbuf);
