@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/ndc.h>
 
@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/socket.h>
+#include <apr-1/apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -32,8 +33,36 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 
-// time at startup
-int64_t LoggingEvent::startTime = System::currentTimeMillis();
+
+/**
+ *   Apache Portable Runtime (APR) initializer
+ */
+namespace log4cxx {
+  namespace spi {
+    class APRInitializer {
+      public:
+      APRInitializer() {
+        apr_initialize();
+      }
+
+      ~APRInitializer() {
+        apr_terminate();
+      }
+    };
+  }
+}
+
+
+//
+//   Accessor for start time.
+//     Called from LogManager::getRepositorySelector
+//       to initialize APR and set "start" time.
+//
+apr_time_t LoggingEvent::getStartTime() {
+  static APRInitializer aprInit;
+  static apr_time_t startTime(apr_time_now());
+  return startTime;
+}
 
 LoggingEvent::LoggingEvent()
 : timeStamp(0), ndcLookupRequired(true), line(0),
@@ -46,7 +75,7 @@ LoggingEvent::LoggingEvent(const String& fqnOfCategoryClass,
 	const String& message, const char* file, int line)
 : fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(level),
 message(message), file((char*)file), line(line),
-timeStamp(System::currentTimeMillis()), ndcLookupRequired(true),
+timeStamp(apr_time_now()), ndcLookupRequired(true),
 mdcCopyLookupRequired(true), properties(0)
 {
 	threadId = Thread::getCurrentThreadId();
@@ -61,7 +90,7 @@ LoggingEvent::~LoggingEvent()
 }
 
 const String& LoggingEvent::getLoggerName() const
-{ 
+{
 	return logger->getName();
 }
 
@@ -196,7 +225,7 @@ void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)
 	// file
 	String buffer;
 	is->read(buffer);
-	
+
 	if (!buffer.empty())
 	{
 		USES_CONVERSION;
@@ -240,10 +269,10 @@ void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& is)
 {
 	int levelInt;
 	is->read(levelInt);
-	
+
     String className;
 	is->read(className);
-	
+
 	if (className.empty())
 	{
 		level = Level::toLevel(levelInt);
@@ -303,7 +332,7 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 		buffer = A2T(file);
 	}
 	os->write(buffer);
-	
+
 	// line
 	os->write(line);
 
@@ -341,9 +370,9 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& os) const
 {
 	os->write(level->toInt());
-	
+
 	const Class& clazz = level->getClass();
-	
+
 	if (&clazz == &Level::getStaticClass())
 	{
 		os->write(String());

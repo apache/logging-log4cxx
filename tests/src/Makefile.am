@@ -5,7 +5,7 @@ noinst_HEADERS= $(top_srcdir)/tests/src/*.h
 
 if TESTS
 
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I/usr/local/apr/include
 noinst_PROGRAMS = testsuite shortsocketserver
 
 testsuite_SOURCES = \

@@ -26,6 +26,8 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/loglog.h>
 #include <sys/stat.h>
+#include <apr-1/apr_general.h>
+#include <log4cxx/spi/loggingevent.h>
 
 
 using namespace log4cxx;
@@ -36,7 +38,13 @@ IMPLEMENT_LOG4CXX_OBJECT(DefaultRepositorySelector)
 
 void * LogManager::guard = 0;
 
+
+
 RepositorySelectorPtr& LogManager::getRepositorySelector() {
+   //
+   //     call to initialize APR and trigger "start" of logging clock
+   //
+   static apr_time_t tm(LoggingEvent::getStartTime());
    static spi::RepositorySelectorPtr selector;
    return selector;
 }

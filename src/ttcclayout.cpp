@@ -17,6 +17,7 @@
 #include <log4cxx/ttcclayout.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
+#include <apr-1/apr_pools.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -24,25 +25,28 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(TTCCLayout)
 
 TTCCLayout::TTCCLayout()
-: threadPrinting(true), categoryPrefixing(true),
+: DateLayout("RELATIVE"), threadPrinting(true), categoryPrefixing(true),
 contextPrinting(true), filePrinting(false)
 {
-        static const String RELATIVE_TIME_DATE_FORMAT("RELATIVE");
-	setDateFormat(RELATIVE_TIME_DATE_FORMAT);
 	activateOptions();
 }
 
 TTCCLayout::TTCCLayout(const String& dateFormatType)
-: threadPrinting(true), categoryPrefixing(true),
+: DateLayout(dateFormatType), threadPrinting(true), categoryPrefixing(true),
 contextPrinting(true), filePrinting(false)
 {
-	setDateFormat(dateFormatType);
 	activateOptions();
 }
 
 void TTCCLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
 {
-	formatDate(output, event);
+        std::string date;
+        apr_pool_t* p;
+        apr_pool_create(&p, NULL);
+        formatDate(date, event, p);
+        apr_pool_destroy(p);
+
+        output << date;
 
 	if(threadPrinting)
 	{

@@ -31,6 +31,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="build.dir" location="build"/>
 <property name="examples.dir" location="examples"/>
 <property name="tests.dir" location="tests"/>
+<property name="apr.version" value="1"/>
 
 <property name="version" value="0.9.7"/>
 <taskdef resource="cpptasks.tasks"/>
@@ -48,6 +49,20 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 	<condition property="is-windows" value="true">
 		<os family="windows"/>
 	</condition>
+        <condition property="is-unix-apr0" value="true">
+            <and>
+                <isset property="is-unix"/>
+                <equals arg1="${apr.version}" arg2="0"/>
+            </and>
+        </condition>
+        <condition property="is-unix-apr1" value="true">
+            <and>
+                <isset property="is-unix"/>
+                <not><isset property="is-unix-apr0"/></not>
+            </and>
+        </condition>
+        <!-- hack until I identify a link problem   -->
+    <property name="aprutil.lib.name" value=""/>
 </target>
 
 <target name="win-init" depends="os-detect" if="is-windows">
@@ -67,7 +82,34 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="boost.include.dir" location="\boost_1_31_0"/>
 </target>
 
-<target name="unix-init" depends="os-detect" if="is-unix">
+<target name="unix-apr0-init" depends="os-detect"
+    if="is-unix-apr0" description="Unix initialization for Apache server APR">
+    <property name="apr.include.dir" location="${build.dir}"/>
+    <!--  create a symbolic link in the build directory
+            that redirects #include <apr-1/whatever.h> to /usr/include/apache2  -->
+    <exec executable="ln">
+       <arg value="-s"/>
+       <arg value="/usr/include/apache2"/>
+       <arg value="${build.dir}/apr-1"/>
+    </exec>
+    <property name="apr.lib.name" value="apr-0"/>
+    <property name="aprutil.lib.name" value="aprutil-0"/>
+    <property name="apriconv.lib.name" value="apriconv"/>
+    <property name="apriconv.lib.dir" location="/usr/local/apr/lib"/>
+</target>
+
+<target name="unix-apr1-init" depends="os-detect"
+     if="is-unix-apr1" description="Unix initialization for APR 1.0">
+    <property name="apr.dir" location="/usr/local/apr"/>
+    <property name="apr.include.dir" location="${apr.dir}/include"/>
+    <property name="apr.lib.name" value="apr-1"/>
+    <property name="aprutil.lib.name" value="aprutil-1"/>
+    <property name="apriconv.lib.name" value="apriconv"/>
+    <property name="apr.lib.dir" location="${apr.dir}/lib"/>
+    <property name="apriconv.lib.dir" location="${apr.lib.dir}"/>
+</target>
+
+<target name="unix-init" depends="unix-apr0-init, unix-apr1-init" if="is-unix">
 	<property name="compiler" value="gcc"/>
         <condition property="is-gcc" value="true">
             <or>
@@ -83,10 +125,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="cppunit.lib.dir" location="${cppunit.dir}/build"/>
     <property name="cppunit.bin.dir" location="${cppunit.dir}/build"/>
     <property name="cppunit.lib.name" value="cppunit"/>
+
 </target>
 
 <target name="init" depends="win-init, unix-init">
 	<mkdir dir="${build.dir}"/>
+        <mkdir dir="cbx"/>
+        <mkdir dir="xcode"/>
+        <mkdir dir="msvc"/>
 	<condition property="obj.dir" value="${build.dir}/debug">
 		<istrue value="${debug}"/>
 	</condition>
@@ -153,11 +199,20 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <fileset dir="${src.dir}" includes="*.cpp"/>
         <includepath path="${include.dir}"/>
     	<includepath path="/usr/include/libxml2" if="is-unix"/>
+        <includepath path="${apr.include.dir}"/>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
         <defineset define="LOG4CXX"/>
         <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="xml2" if="is-unix"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
         <syslibset libs="pthread" if="is-unix"/>
         <project outfile="cbx/log4cxx" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/log4cxx" type="msvc6" if="gen-dsw"/>
@@ -177,7 +232,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 		debug="${debug}">
         <fileset dir="${example.src.dir}" includes="${example.name}.cpp"/>
         <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <project outfile="cbx/${example.name}" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/${example.name}" type="msvc6" if="gen-dsw"/>
@@ -226,7 +290,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 		debug="${debug}">
         <fileset dir="performance" includes="**/*.cpp"/>
         <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <project outfile="cbx/performance" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/performance" type="msvc6" if="gen-dsw"/>
@@ -234,8 +307,45 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     </cc>
 </target>
 
+<target name="build-shortsocketserver" depends="build-log4cxx"
+   description="builds a socket server used by unit tests">
 
-<target name="build-unittest" depends="build-log4cxx">
+    <cc name="${compiler}"
+		exceptions="true"
+		outfile="${tests.dir}/src/shortsocketserver"
+		subsystem="console"
+		multithreaded="true"
+		outtype="executable"
+		objdir="${obj.dir}"
+		debug="${debug}">
+        <fileset dir="${tests.dir}/src">
+           <include name="shortsocketserver.cpp"/>
+           <include name="xml/xlevel.cpp"/>
+        </fileset>
+        <includepath path="${cppunit.include.dir}"/>
+        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <libset libs="boost_regex-gcc" if="is-gcc"/>
+        <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+        <project outfile="cbx/shortsocketserver" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/shortsocketserver" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/shortsocketserver" type="xcode" if="gen-xcode"/>
+    </cc>
+
+</target>
+
+
+<target name="build-unittest" depends="build-shortsocketserver">
     <cc name="${compiler}"
 		exceptions="true"
 		outfile="${build.dir}/log4cxx-test"
@@ -251,8 +361,17 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </fileset>
         <includepath path="${cppunit.include.dir}"/>
         <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
 		<includepath path="${boost.include.dir}" if="boost.include.dir"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="boost_regex-gcc" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
@@ -278,6 +397,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${cppunit.include.dir}"/>
         <includepath path="${include.dir}"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="boost_regex-gcc" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
@@ -286,30 +413,54 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <project outfile="xcode/log4cxx-testcase3" type="xcode" if="gen-xcode"/>
     </cc>
 
+</target>
 
+<target name="build-standalone-unittest"
+    depends="build-shortsocketserver"
+    description="Build a single project that is easier to debug in IDEs">
+    <mkdir dir="${obj.dir}/standalone"/>
     <cc name="${compiler}"
 		exceptions="true"
-		outfile="${tests.dir}/src/shortsocketserver"
+		outfile="${build.dir}/log4cxx-standalone-test"
 		subsystem="console"
 		multithreaded="true"
+                outputfileproperty="log4cxx-standalone-test.exe"
 		outtype="executable"
-		objdir="${obj.dir}"
+		objdir="${obj.dir}/standalone"
 		debug="${debug}">
-        <fileset dir="${tests.dir}/src">
-           <include name="shortsocketserver.cpp"/>
-           <include name="xml/xlevel.cpp"/>
+        <fileset dir="${src.dir}" includes="*.cpp"/>
+        <fileset dir="${tests.dir}/src" includes="**/*.cpp">
+             <exclude name="shortsocketserver.cpp"/>
+             <exclude name="defaultinit/testcase3.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}"/>
         <includepath path="${include.dir}"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
+        <includepath path="${apr.include.dir}"/>
+        <includepath path="${boost.include.dir}" if="boost.include.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
+               unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="boost_regex-gcc" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
-        <project outfile="cbx/shortsocketserver" type="cbuilderx" if="gen-cbx"/>
-        <project outfile="msvc/shortsocketserver" type="msvc6" if="gen-dsw"/>
-        <project outfile="xcode/shortsocketserver" type="xcode" if="gen-xcode"/>
-    </cc>
 
+        <includepath path="${include.dir}"/>
+    	<includepath path="/usr/include/libxml2" if="is-unix"/>
+        <includepath path="${apr.include.dir}"/>
+        <defineset define="LOG4CXX"/>
+        <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
+        <libset libs="xml2" if="is-unix"/>
+
+
+        <project outfile="cbx/log4cxx-standalone-test" type="cbuilderx" if="gen-cbx"/>
+        <project outfile="msvc/log4cxx-standalone-test" type="msvc6" if="gen-dsw"/>
+        <project outfile="xcode/log4cxx-standalone-test" type="xcode" if="gen-xcode"/>
+    </cc>
 </target>
 
 <target name="build-all" depends="build-examples, build-unittest,
@@ -321,7 +472,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
 	      failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="Path"
                    value="${build.dir};${env.Path}"/>
     </exec>
@@ -332,7 +483,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
 	      failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="log4j.configuration"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -341,7 +492,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
 	      failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="LOG4CXX_CONFIGURATION"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -355,7 +506,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
 	      failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <!-- modify log4j.properties so if it has precedence the test fails  -->
@@ -365,7 +516,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
 	      failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${cppunit.bin.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${cppunit.bin.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
 

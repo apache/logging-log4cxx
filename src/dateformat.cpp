@@ -14,102 +14,21 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/dateformat.h>
-#include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/absolutetimedateformat.h>
-#include <iomanip> // for setw & setfill
-#include <time.h>
+#include <apr-1/apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-const String& AbsoluteTimeDateFormat::getIso8601DateFormat() {
-   static const String format("ISO8601");
-   return format;
+IMPLEMENT_LOG4CXX_OBJECT(DateFormat)
+
+DateFormat::~DateFormat() {}
+
+void DateFormat::setTimeZone(const TimeZonePtr& tz) {}
+
+void DateFormat::numberFormat(std::string& s, int n, apr_pool_t* p) const {
+   s.append(apr_itoa(p, n));
 }
 
-const String& AbsoluteTimeDateFormat::getAbsTimeDateFormat() {
-  static const String format("ABSOLUTE");
-  return format;
-}
+DateFormat::DateFormat() {}
 
-const String& AbsoluteTimeDateFormat::getDateAndTimeDateFormat() {
-    static const String format("DATE");
-    return format;
-}
-
-const String AbsoluteTimeDateFormat::ISO8601_DATE_FORMAT(getIso8601DateFormat());
-const String AbsoluteTimeDateFormat::ABS_TIME_DATE_FORMAT(getAbsTimeDateFormat());
-const String AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT(getDateAndTimeDateFormat());
-
-
-
-DateFormat::DateFormat(const String& dateFormat)
- : dateFormat(dateFormat), timeZone(TimeZone::getDefault())
-{
-	size_t pos = this->dateFormat.find(_T("%Q"));
-	if (pos != String::npos)
-	{
-		this->dateFormat.insert(pos, _T("%"));
-	}
-}
-
-DateFormat::DateFormat(const String& dateFormat, const TimeZonePtr& timeZone)
- : dateFormat(dateFormat), timeZone(timeZone)
-{
-	size_t pos = this->dateFormat.find(_T("%Q"));
-	if (pos != String::npos)
-	{
-		this->dateFormat.insert(pos, _T("%"));
-	}
-}
-
-DateFormat::~DateFormat()
-{
-}
-
-void DateFormat::format(ostream& os, int64_t timeMillis) const
-{
-    TCHAR buffer[255];
-
-	if (timeZone == 0)
-	{
-		throw NullPointerException();
-	}
-
-	int64_t localTimeMillis = timeMillis + timeZone->getOffset(timeMillis);
-
-	time_t time = (time_t)(localTimeMillis/1000);
-	const tm * tm = ::gmtime(&time);
-
-#ifdef LOG4CXX_UNICODE
-	size_t len = ::wcsftime(buffer, 255, dateFormat.c_str(), tm);
-#else
-	size_t len = ::strftime(buffer, 255, dateFormat.c_str(), tm);
-#endif
-
-	buffer[len] = '\0';
-	String result(buffer);
-
-	size_t pos = result.find(_T("%Q"));
-	if (pos != String::npos)
-	{
-		os << result.substr(0, pos);
-		os.width(3);
-		os.fill(_T('0'));
-		os << (long)(timeMillis % 1000);
-		os << result.substr(pos + 2);
-	}
-	else
-	{
-		os << result;
-	}
-}
-
-String DateFormat::format(int64_t timeMillis) const
-{
-	StringBuffer sbuf;
-	format(sbuf, timeMillis);
-	return sbuf.str();
-}

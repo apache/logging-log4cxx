@@ -50,7 +50,7 @@ void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
 	output << _T("<log4j:event logger=\"");
 	output << event->getLoggerName();
 	output << _T("\" timestamp=\"");
-	output << event->getTimeStamp();
+	output << event->getTimeStamp()/1000;
 	output << _T("\" level=\"");
 	output << event->getLevel()->toString();
 	output << _T("\" thread=\"");

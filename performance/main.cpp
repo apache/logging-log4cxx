@@ -23,6 +23,7 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/thread.h>
+#include <apr-1/apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -82,19 +83,19 @@ void init(const String& configFile, const String& runLengthStr,
 
 double NoDelayLoop(LoggerPtr logger, const String& msg)
 {
-	int64_t before = System::currentTimeMillis();
+	apr_time_t before = apr_time_now();
     for(int i = 0; i < runLength; i++)
 	{
 		logger->info(msg, __FILE__, __LINE__);
     }
-	int64_t after = System::currentTimeMillis();
-	return ((after - before)*1000.0)/runLength;
+	apr_time_t after = apr_time_now();
+	return ((after - before))/runLength;
 }
 
 double DelayedLoop(LoggerPtr logger, const String& msg)
 {
 
-    int64_t before = System::currentTimeMillis();
+    apr_time_t before = apr_time_now();
     int j = 0;
     for(int i = 0; i < runLength; i++)
 	{
@@ -112,7 +113,7 @@ double DelayedLoop(LoggerPtr logger, const String& msg)
 		}
 
     }
-    double actualTime = ((System::currentTimeMillis()-before)*1000.0/runLength);
+    double actualTime = ((apr_time_now()-before)/runLength);
     tcout << "actual time: " << actualTime << std::endl;
     return (actualTime - delay*DELAY_MULT);
 }

@@ -1,6 +1,6 @@
 lib_LTLIBRARIES = liblog4cxx.la
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I/usr/local/apr/include
 
 liblog4cxx_la_SOURCES = \
 	appenderattachableimpl.cpp \
@@ -8,13 +8,13 @@ liblog4cxx_la_SOURCES = \
 	asyncappender.cpp \
 	basicconfigurator.cpp \
 	boundedfifo.cpp \
+        cacheddateformat.cpp \
 	class.cpp \
 	condition.cpp \
 	configurator.cpp \
 	consoleappender.cpp \
 	criticalsection.cpp \
 	cyclicbuffer.cpp \
-	dailyrollingfileappender.cpp \
 	datagrampacket.cpp \
 	datagramsocket.cpp \
 	datelayout.cpp \
@@ -57,11 +57,13 @@ liblog4cxx_la_SOURCES = \
 	propertyconfigurator.cpp \
 	propertyresourcebundle.cpp \
 	propertysetter.cpp \
+        relativetimedateformat.cpp \
 	resourcebundle.cpp \
 	rollingfileappender.cpp \
 	rootcategory.cpp \
 	serversocket.cpp \
 	semaphore.cpp \
+        simpledateformat.cpp \
 	simplelayout.cpp \
 	smtpappender.cpp \
 	socket.cpp \
@@ -71,6 +73,7 @@ liblog4cxx_la_SOURCES = \
 	socketinputstream.cpp \
 	socketnode.cpp \
 	socketoutputstream.cpp \
+        strftimedateformat.cpp \
 	stringhelper.cpp \
 	stringmatchfilter.cpp \
 	stringtokenizer.cpp \
@@ -88,5 +91,5 @@ liblog4cxx_la_SOURCES = \
 	xmlsocketappender.cpp
 
 AM_CPPFLAGS = @CPPFLAGS_XML@ @CPPFLAGS_ODBC@
-liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_XML@ @LIBS_ODBC@
+liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_XML@ @LIBS_ODBC@ -L/usr/local/apr/lib -static -lapr-1 -lapriconv
 

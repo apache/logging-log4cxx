@@ -17,45 +17,21 @@
 #ifndef _LOG4CXX_HELPERS_ABSOLUTE_TIME_DATE_FORMAT_H
 #define _LOG4CXX_HELPERS_ABSOLUTE_TIME_DATE_FORMAT_H
 
-#include <log4cxx/helpers/dateformat.h>
+#include <log4cxx/helpers/simpledateformat.h>
 
 namespace log4cxx
 {
 	namespace helpers
 	{
 		/**
-		Formats a date in the format <b>\%H:\%M:\%S,\%Q</b> for example,
+		Formats a date in the format <b>HH:mm:ss,SSS</b> for example,
 		"15:49:37,459".
 		*/
-		class LOG4CXX_EXPORT AbsoluteTimeDateFormat : public DateFormat
+		class LOG4CXX_EXPORT AbsoluteTimeDateFormat : public SimpleDateFormat
 		{
 		public:
-
-			/**
-			string constant used to specify
-			ISO8601DateFormat in layouts. Current
-			value is <b>ISO8601</b>.
-			*/
-                        static const String& getIso8601DateFormat();
-                        static const String ISO8601_DATE_FORMAT;
-
-			/**
-			String constant used to specify
-			AbsoluteTimeDateFormat in layouts. Current
-			value is <b>ABSOLUTE</b>.  */
-                        static const String& getAbsTimeDateFormat();
-                        static const String ABS_TIME_DATE_FORMAT;
-
-			/**
-			String constant used to specify
-			DateTimeDateFormat in layouts.  Current
-			value is <b>DATE</b>.
-			*/
-                        static const String& getDateAndTimeDateFormat();
-                        static const String DATE_AND_TIME_DATE_FORMAT;
-
-			AbsoluteTimeDateFormat(const TimeZonePtr& timeZone)
-			: DateFormat(_T("%H:%M:%S,%Q"), timeZone) {}
+			AbsoluteTimeDateFormat()
+			: SimpleDateFormat("HH:mm:ss,SSS") {}
 		};
 	}  // namespace helpers
 }; // namespace log4cxx

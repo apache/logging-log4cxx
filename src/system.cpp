@@ -30,22 +30,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-int64_t System::currentTimeMillis()
-{
-#if defined(LOG4CXX_HAVE_GETTIMEOFDAY)
-    timeval tp;
-    ::gettimeofday(&tp, 0);
-
-    return ((int64_t)tp.tv_sec * 1000) + (int64_t)(tp.tv_usec / 1000);
-#elif defined(LOG4CXX_HAVE_FTIME)
-    struct timeb tp;
-    ::ftime(&tp);
-
-    return ((int64_t)tp.time * 1000) + (int64_t)tp.millitm;
-#else
-    return (int64_t)::time(0) * 1000;
-#endif
-}
 
 String System::getProperty(const String& key)
 {

@@ -35,13 +35,11 @@ class PatternParserTestCase : public CppUnit::TestFixture
 
 	LoggerPtr logger;
 	LoggingEventPtr event;
-	long now;
 
 public:
 	void setUp()
 	{
 		logger = Logger::getLogger(_T("org.foobar"));
-		now = System::currentTimeMillis() + 13;
 
 		event = new LoggingEvent(
 			Logger::getStaticClass().getName(), logger, Level::INFO, 

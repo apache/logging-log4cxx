@@ -15,15 +15,17 @@
  */
 
 #include <log4cxx/helpers/patternparser.h>
-#include <log4cxx/helpers/dateformat.h>
 #include <log4cxx/helpers/absolutetimedateformat.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
+#include <log4cxx/helpers/strftimedateformat.h>
 #include <log4cxx/helpers/datetimedateformat.h>
+#include <log4cxx/helpers/cacheddateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
 #include <log4cxx/mdc.h>
+#include <apr-1/apr_pools.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -248,22 +250,33 @@ void PatternParser::finalizeConverter(TCHAR c)
 		}
 		else
 		{
-			dateFormatStr = AbsoluteTimeDateFormat::getIso8601DateFormat();
+			dateFormatStr = "ISO8601";
 		}
 
+                static const String ISO8601_DATE_FORMAT("ISO8601");
+                static const String DATE_TIME_DATE_FORMAT("DATE");
+                static const String ABSOLUTE_TIME_DATE_FORMAT("ABSOLUTE");
+                static const String RELATIVE_FORMAT("RELATIVE");
+
 		if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			AbsoluteTimeDateFormat::getIso8601DateFormat()))
-			df = new ISO8601DateFormat(TimeZone::getTimeZone(timeZone));
+			ISO8601_DATE_FORMAT))
+			df = new ISO8601DateFormat();
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			AbsoluteTimeDateFormat::getAbsTimeDateFormat()))
-			df = new AbsoluteTimeDateFormat(TimeZone::getTimeZone(timeZone));
+			ABSOLUTE_TIME_DATE_FORMAT))
+			df = new AbsoluteTimeDateFormat();
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			AbsoluteTimeDateFormat::getDateAndTimeDateFormat()))
-			df = new DateTimeDateFormat(TimeZone::getTimeZone(timeZone));
+			DATE_TIME_DATE_FORMAT))
+			df = new DateTimeDateFormat();
 		else
 		{
-			df = new DateFormat(dateFormatStr, TimeZone::getTimeZone(timeZone));
+                        if (dateFormatStr.find('%') == std::string::npos) {
+			  df = new SimpleDateFormat(dateFormatStr);
+                        } else {
+                          df = new StrftimeDateFormat(dateFormatStr);
+                        }
 		}
+                DateFormatPtr formatter(df);
+                df = new CachedDateFormat(formatter);
 		pc = new DatePatternConverter(formattingInfo, df);
 		//LogLog.debug("DATE converter {"+dateFormatStr+"}.");
 		//formattingInfo.dump();
@@ -380,7 +393,7 @@ void PatternParser::BasicPatternConverter::convert(ostream& sbuf,
 	switch(type)
 	{
 	case RELATIVE_TIME_CONVERTER:
-		sbuf << (event->getTimeStamp() - LoggingEvent::getStartTime());
+		sbuf << (event->getTimeStamp() - LoggingEvent::getStartTime())/1000;
 		break;
 	case THREAD_CONVERTER:
 		sbuf << event->getThreadId();
@@ -427,7 +440,14 @@ PatternParser::DatePatternConverter::~DatePatternConverter()
 void PatternParser::DatePatternConverter::convert(ostream& sbuf,
 	const spi::LoggingEventPtr& event) const
 {
-	df->format(sbuf, event->getTimeStamp());
+        apr_time_t eventTime = event->getTimeStamp();
+
+        apr_pool_t* p;
+        apr_pool_create(&p, NULL);
+        std::string date;
+        df->format(date, eventTime, p);
+        apr_pool_destroy(p);
+        sbuf << date;
 }
 
 PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& formattingInfo, const String& key)

@@ -106,15 +106,14 @@ namespace log4cxx
 			/**Returns the time when the application started,
 			in seconds elapsed since 01.01.1970.
 			*/
-			static int64_t getStartTime()
-				{ return startTime; }
+			static apr_time_t getStartTime();
 
 			/** Return the #threadId of this event. */
 			inline unsigned long getThreadId() const
 				{ return threadId; }
 
 			/** Return the #timeStamp of this event. */
-			inline int64_t getTimeStamp() const
+			inline apr_time_t getTimeStamp() const
 				{ return timeStamp; }
 
 			/* Return the file where this log statement was written. */
@@ -240,9 +239,9 @@ namespace log4cxx
             /** The name of thread in which this logging event was generated. */
             //const LOG4CPLUS_THREAD_KEY_TYPE thread;
 
-            /** The number of milliseconds elapsed from 1/1/1970 until logging event
-            was created. */
-            int64_t timeStamp;
+                        /** The number of milliseconds elapsed from 1/1/1970 until logging event
+                         was created. */
+                        apr_time_t timeStamp;
 
 			/** The is the file where this log statement was written. */
 			char* file;
@@ -255,8 +254,6 @@ namespace log4cxx
 			was generated.
 			*/
 			unsigned long threadId;
-
-			static int64_t startTime;
 
                         //
                         //   prevent copy and assignment

@@ -1,202 +1,193 @@
-/*
- * Copyright 2003,2004 The Apache Software Foundation.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+/* * Copyright 2003,2004 The Apache Software Foundation. * * Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License. * You may obtain a copy of the License at *
+*      http://www.apache.org/licenses/LICENSE-2.0 * * Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and * limitations under the License. */
 
 #include <log4cxx/helpers/timezone.h>
-#include <locale>
-
-
-int getYear(int64_t date)
-{
-	time_t d = (time_t)(date / 1000);
-	return ::localtime(&d)->tm_year;
-}
+#include <stdlib.h>
+#include <apr-1/apr_time.h>
+#include <apr-1/apr_pools.h>
+#include <apr-1/apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(TimeZone)
+IMPLEMENT_LOG4CXX_OBJECT( TimeZone )
 
-TimeZone::TimeZone(const String& ID)
-: ID(ID), rawOffset(0), DSTSavings(0)
+namespace log4cxx
 {
-	String timeZoneEnv = _T("TZ=") + ID;
+  namespace helpers
+  {
+    namespace TimeZoneImpl
+    {
+      /** Time zone object that represents GMT. */
+      class GMTTimeZone : public TimeZone
+      {
+      public:
+        /** Class factory. */
+        static const TimeZonePtr & getInstance()
+        {
+          static TimeZonePtr tz( new GMTTimeZone() );
+          return tz;
+        }
 
-	USES_CONVERSION;
-	::putenv((char *)T2A(timeZoneEnv.c_str()));
-	tzset();
+        /** Explode time to human readable form. */
+        apr_status_t explode( apr_time_exp_t * result, apr_time_t input ) const
+        {
+          return apr_time_exp_gmt( result, input );
+        }
 
-	time_t now = time(0);
-	tm localNow = *::localtime(&now);
-	tm utcNow = *::gmtime(&now);
-	rawOffset = (int)::difftime(::mktime(&localNow), ::mktime(&utcNow)) * 1000;
+      private:
+        GMTTimeZone() : TimeZone( "GMT" )
+        {
+        }
+      };
 
-	int year = localNow.tm_year;
-	Rule * rule = new Rule(year);
 
-	// we check if we found a daylight time
-	if (rule->startDate != 0 && rule->endDate != 0)
-	{
-		// since we have computed a rule, we store it
-		rules.insert(RuleMap::value_type(year, rule));
-		DSTSavings = 3600 * 1000; // 1 hour
-	}
-	else
-	{
-		delete rule;
-	}
+
+      /** Time zone object that represents GMT. */
+      class LocalTimeZone : public TimeZone
+      {
+      public:
+        /** Class factory. */
+        static const TimeZonePtr & getInstance()
+        {
+          static TimeZonePtr tz( new LocalTimeZone() );
+          return tz;
+        }
+
+        /** Explode time to human readable form. */
+        apr_status_t explode( apr_time_exp_t * result, apr_time_t input ) const
+        {
+          return apr_time_exp_lt( result, input );
+        }
+
+
+      private:
+        LocalTimeZone() : TimeZone( getTimeZoneName() )
+        {
+        }
+
+        static const String getTimeZoneName()
+        {
+          const int MAX_TZ_LENGTH = 255;
+          char tzName[MAX_TZ_LENGTH];
+          apr_size_t tzLength;
+          apr_time_exp_t tm;
+          apr_time_exp_lt(&tm, 0);
+          apr_strftime(tzName, &tzLength, MAX_TZ_LENGTH, "%Z", &tm);
+          tzName[tzLength] = 0;
+          return tzName;
+        }
+
+      };
+
+
+
+      /** Time zone object that represents a fixed offset from GMT. */
+      class FixedTimeZone : public TimeZone
+      {
+      public:
+        FixedTimeZone( const String & name, apr_int32_t offset ) : TimeZone( name ), offset( offset )
+        {
+        }
+
+        /** Explode time to human readable form. */
+        apr_status_t explode( apr_time_exp_t * result, apr_time_t input ) const
+        {
+          return apr_time_exp_tz( result, input, offset );
+        }
+
+
+      private:
+        const apr_int32_t offset;
+      };
+
+    }
+  }
+}
+
+
+
+TimeZone::TimeZone( const String & id ) : id( id )
+{
 }
 
 TimeZone::~TimeZone()
 {
-	for (RuleMap::iterator it = rules.begin(); it != rules.end(); it++)
-	{
-		Rule * rule = it->second;
-		delete rule;
-	}
 }
 
-int TimeZone::getOffset(int64_t date) const
+const TimeZonePtr & TimeZone::getDefault()
 {
-	if (inDaylightTime(date))
-	{
-		return rawOffset + DSTSavings;
-	}
-	else
-	{
-		return rawOffset;
-	}
+  return log4cxx::helpers::TimeZoneImpl::LocalTimeZone::getInstance();
 }
 
-TimeZonePtr TimeZone::getDefault()
+const TimeZonePtr & TimeZone::getGMT()
 {
-        static TimeZonePtr defaultTimeZone(new TimeZone(""));
-	return defaultTimeZone;
+  return log4cxx::helpers::TimeZoneImpl::GMTTimeZone::getInstance();
 }
 
-TimeZonePtr TimeZone::getTimeZone(const String& ID)
+const TimeZonePtr TimeZone::getTimeZone( const String & id )
 {
-	return new TimeZone(ID);
+  if ( id == "GMT" )
+  {
+    return log4cxx::helpers::TimeZoneImpl::LocalTimeZone::getInstance();
+  }
+  if ( id.length() >= 5 && id.substr( 0, 3 ) == "GMT" )
+  {
+    int hours = 0;
+    int minutes = 0;
+    int sign = 1;
+    if (id[3] == '-') {
+      sign = -1;
+    }
+    std::string off( id.substr( 4 ) );
+    if ( id.length() >= 7 )
+    {
+      int colonPos = off.find( ':' );
+      if ( colonPos == String::npos )
+      {
+        minutes = atoi(off.substr(off.length() - 2).c_str());
+        hours = atoi(off.substr(0, off.length() - 2).c_str());
+      }
+      else
+      {
+        minutes = atoi(off.substr(colonPos + 1).c_str());
+        hours = atoi(off.substr(0, colonPos).c_str());
+      }
+    } else {
+      hours = atoi(off.c_str());
+    }
+    std::string s("GMT");
+    apr_pool_t* p;
+    apr_status_t stat = apr_pool_create(&p, NULL);
+    char* hh = apr_itoa(p, std::abs(hours));
+    if (sign > 0) {
+      s.append(1, '+');
+    } else {
+      s.append(1, '-');
+    }
+    if (hh[1] == 0) {
+      s.append(1, '0');
+    }
+    s.append(hh);
+    s.append(1, ':');
+    char* mm = apr_itoa(p, minutes);
+    if (mm[1] == 0) {
+      s.append(1, '0');
+    }
+    s.append(mm);
+    apr_pool_destroy(p);
+    apr_int32_t offset = sign * (hours * 3600 + minutes * 60);
+    return new log4cxx::helpers::TimeZoneImpl::FixedTimeZone( s, offset );
+  }
+  const TimeZonePtr & ltz = getDefault();
+  if ( ltz->getID() == id )
+  {
+    return ltz;
+  }
+  return getGMT();
 }
-
-bool TimeZone::inDaylightTime(int64_t date) const
-{
-	if (!useDaylightTime())
-	{
-		return false;
-	}
-
-	time_t d = (time_t)(date / 1000);
-	int year = ::localtime(&d)->tm_year;
-
-	RuleMap::iterator it = rules.find(year);
-	if (it == rules.end())
-	{
-		synchronized sync(this);
-
-		it = rules.find(year);
-		if (it == rules.end())
-		{
-			it = rules.insert(RuleMap::value_type(
-				year, new Rule(year))).first;
-		}
-	}
-
-	Rule * rule = it->second;
-	return (date >= rule->startDate && date < rule->endDate);
-}
-
-TimeZone::Rule::Rule(int year)
-: startDate(0), endDate(0)
-{
-	tm tm;
-	memset (&tm, 0, sizeof (tm));
-	tm.tm_mday = 1;
-	tm.tm_year = year;
-
-	time_t t = ::mktime(&tm);
-	int isDST, day, hour, min;
-
-	for (day = 0; day < 365; day++)
-	{
-		t += 60 * 60 * 24;
-
-		isDST = ::localtime(&t)->tm_isdst;
-		if (startDate == 0)
-		{
-			if (isDST > 0)
-			{
-				t -= 60 * 60 * 24;
-
-				for (hour = 0; hour < 24; hour++)
-				{
-					t += 60 * 60;
-
-					isDST = ::localtime(&t)->tm_isdst;
-					if (isDST > 0)
-					{
-						t -= 60 * 60;
-						for (min = 0; min < 60; min++)
-						{
-							t += 60;
-							isDST = ::localtime(&t)->tm_isdst;
-							if (isDST > 0)
-							{
-								startDate = (int64_t)t * 1000;
-								break;
-							}
-						}
-
-						break;
-					}
-				}
-			}
-		}
-		else if (isDST == 0)
-		{
-			t -= 60 * 60 * 24;
-
-			for (hour = 0; hour < 24; hour++)
-			{
-				t += 60 * 60;
-
-				isDST = ::localtime(&t)->tm_isdst;
-				if (isDST == 0)
-				{
-					t -= 60 * 60;
-					for (min = 0; min < 60; min++)
-					{
-						t += 60;
-						isDST = ::localtime(&t)->tm_isdst;
-						if (isDST == 0)
-						{
-							endDate = (int64_t)t * 1000;
-							break;
-						}
-					}
-
-					break;
-				}
-			}
-
-			if (endDate != 0)
-			{
-				break;
-			}
-		}
-	}
-}
-
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -77,7 +77,7 @@ public:
 	void ttcc()
 	{
 		LayoutPtr layout =
-			new TTCCLayout(AbsoluteTimeDateFormat::DATE_AND_TIME_DATE_FORMAT);
+			new TTCCLayout("DATE");
 		AppenderPtr appender = new FileAppender(layout, _T("output/ttcc"), false);
 		root->addAppender(appender);
 		common();

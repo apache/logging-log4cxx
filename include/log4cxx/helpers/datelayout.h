@@ -18,15 +18,13 @@
 #define _LOG4CXX_HELPERS_DATE_LAYOUT_H
 
 #include <log4cxx/layout.h>
+#include <log4cxx/helpers/dateformat.h>
+#include <log4cxx/helpers/timezone.h>
 
 namespace log4cxx
 {
 	namespace helpers
 	{
-		class DateFormat;
-		class TimeZone;
-		typedef helpers::ObjectPtrT<TimeZone> TimeZonePtr;
-
 		/**
 		This abstract layout takes care of all the date related options and
 		formatting work.
@@ -38,10 +36,10 @@ namespace log4cxx
 			String dateFormatOption;
 
 		protected:
-			DateFormat * dateFormat;
+			DateFormatPtr dateFormat;
 
 		public:
-			DateLayout();
+			DateLayout(const String& dateLayoutOption);
 			virtual ~DateLayout();
 
 			virtual void activateOptions();
@@ -50,11 +48,11 @@ namespace log4cxx
 			/**
 			The value of the <b>DateFormat</b> option should be either an
 			argument to the constructor of helpers::DateFormat or one of
-			the srings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
+			the strings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
 			<b>"DATE"</b> or <b>"ISO8601</b>.
 			*/
 			inline void setDateFormat(const String& dateFormat)
-				{ this->dateFormatOption.assign(dateFormat); }
+                          { this->dateFormatOption = dateFormat; }
 
 			/**
 			Returns value of the <b>DateFormat</b> option.
@@ -75,26 +73,9 @@ namespace log4cxx
 			inline const String& getTimeZone() const
 				{ return timeZoneID; }
 
-			void formatDate(ostream &os, const spi::LoggingEventPtr& event) const;
-
-		protected:
-			/**
-			Sets the DateFormat used to format date and time in the time zone
-			determined by <code>timeZone</code> parameter. The
-			helpers::DateFormat DateFormat used
-			will depend on the <code>dateFormatType</code>.
-
-			<p>The recognized types are #NULL_DATE_FORMAT,
-			#RELATIVE_TIME_DATE_FORMAT,
-			helpers::AbsoluteTimeDateFormat#ABS_TIME_DATE_FORMAT,
-			helpers::AbsoluteTimeDateFormat#DATE_AND_TIME_DATE_FORMAT and
-			helpers::AbsoluteTimeDateFormat#ISO8601_DATE_FORMAT. If the
-			<code>dateFormatType</code> is not one of the above, then the
-			argument is assumed to be a date pattern for
-			helpers::DateFormat.
-			*/
-			void setDateFormat(const String& dateFormatType,
-				const TimeZonePtr& timeZone);
+			void formatDate(std::string &s,
+                                        const spi::LoggingEventPtr& event,
+                                        apr_pool_t* p) const;
 
                 private:
                        //

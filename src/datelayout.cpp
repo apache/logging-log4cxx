@@ -28,16 +28,13 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-DateLayout::DateLayout() : dateFormat(0), timeZoneID(), dateFormatOption()
+DateLayout::DateLayout(const String& dateFormatOption) :
+   dateFormat(0), timeZoneID(), dateFormatOption(dateFormatOption)
 {
 }
 
 DateLayout::~DateLayout()
 {
-	if (dateFormat != 0)
-	{
-		delete dateFormat;
-	}
 }
 
 
@@ -61,69 +58,64 @@ void DateLayout::activateOptions()
 {
 	if(!dateFormatOption.empty())
 	{
-		if (timeZoneID.empty())
-		{
-			setDateFormat(dateFormatOption, TimeZone::getDefault());
-		}
-		else
-		{
-			setDateFormat(dateFormatOption, TimeZone::getTimeZone(timeZoneID));
-		}
+          static const String NULL_DATE_FORMAT("NULL");
+          static const String RELATIVE_TIME_DATE_FORMAT("RELATIVE");
+          static const String ABSOLUTE_TIME_DATE_FORMAT("ABSOLUTE");
+          static const String DATE_TIME_DATE_FORMAT("DATE");
+          static const String ISO8601_DATE_FORMAT("ISO601");
+
+          if(dateFormatOption.empty())
+          {
+                  dateFormat = 0;
+          }
+          else if(StringHelper::equalsIgnoreCase(dateFormatOption,
+                  NULL_DATE_FORMAT))
+          {
+                  dateFormat = 0;
+          }
+          else if(StringHelper::equalsIgnoreCase(dateFormatOption,
+                  RELATIVE_TIME_DATE_FORMAT))
+          {
+                  dateFormat =  new RelativeTimeDateFormat();
+          }
+          else if(StringHelper::equalsIgnoreCase(dateFormatOption,
+                  ABSOLUTE_TIME_DATE_FORMAT))
+          {
+                  dateFormat =  new AbsoluteTimeDateFormat();
+          }
+          else if(StringHelper::equalsIgnoreCase(dateFormatOption,
+                  DATE_TIME_DATE_FORMAT))
+          {
+                  dateFormat =  new DateTimeDateFormat();
+          }
+          else if(StringHelper::equalsIgnoreCase(dateFormatOption,
+                  ISO8601_DATE_FORMAT))
+          {
+                  dateFormat =  new ISO8601DateFormat();
+          }
+          else
+          {
+                  dateFormat = new SimpleDateFormat(dateFormatOption);
+          }
 	}
+        if (dateFormat != NULL) {
+           if (timeZoneID.empty()) {
+              dateFormat->setTimeZone(TimeZone::getDefault());
+           } else {
+              dateFormat->setTimeZone(TimeZone::getTimeZone(timeZoneID));
+           }
+        }
 }
 
-void DateLayout::setDateFormat(const String& dateFormatType,
-	const TimeZonePtr& timeZone)
-{
-	if (dateFormat != 0)
-	{
-		delete dateFormat;
-	}
 
-        static const String NULL_DATE_FORMAT("NULL");
-        static const String RELATIVE_TIME_DATE_FORMAT("RELATIVE");
+void DateLayout::formatDate(std::string &s,
+                            const spi::LoggingEventPtr& event,
+                            apr_pool_t* p) const {
 
-	if(dateFormatOption.empty())
-	{
-		dateFormat = 0;
-	}
-	else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-		NULL_DATE_FORMAT))
-	{
-		dateFormat = 0;
-	}
-	else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-		RELATIVE_TIME_DATE_FORMAT))
-	{
-		dateFormat =  new RelativeTimeDateFormat();
-	}
-	else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-		AbsoluteTimeDateFormat::getAbsTimeDateFormat()))
-	{
-		dateFormat =  new AbsoluteTimeDateFormat(timeZone);
-	}
-	else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-		AbsoluteTimeDateFormat::getDateAndTimeDateFormat()))
-	{
-		dateFormat =  new DateTimeDateFormat(timeZone);
-	}
-	else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-		AbsoluteTimeDateFormat::getIso8601DateFormat()))
-	{
-		dateFormat =  new ISO8601DateFormat(timeZone);
-	}
-	else
-	{
-		dateFormat = new DateFormat(dateFormatOption, timeZone);
-	}
-}
-
-void DateLayout::formatDate(ostream &os, const spi::LoggingEventPtr& event) const
-{
 	if(dateFormat != 0)
 	{
-		dateFormat->format(os, event->getTimeStamp());
-		os.put(_T(' '));
+                dateFormat->format(s, event->getTimeStamp(), p);
+                s.append(1, ' ');
 	}
 }
 

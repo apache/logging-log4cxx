@@ -21,6 +21,8 @@
 #include <log4cxx/helpers/transform.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <apr-1/apr_pools.h>
+#include <apr-1/apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -31,8 +33,9 @@ IMPLEMENT_LOG4CXX_OBJECT(HTMLLayout)
 
 HTMLLayout::HTMLLayout()
 : locationInfo(false), title(_T("Log4cxx Log Messages")),
-dateFormat(TimeZone::getTimeZone(_T("GMT")))
+dateFormat()
 {
+   dateFormat.setTimeZone(TimeZone::getGMT());
 }
 
 
@@ -57,7 +60,18 @@ void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) cons
 	output << std::endl << _T("<tr>") << std::endl;
 
 	output << _T("<td>");
-	dateFormat.format(output, event->getTimeStamp());
+
+        //
+        //   longer than it should be, eventually an apr_pool_t will
+        //     be passed into the layout
+        std::string date;
+        apr_pool_t* p;
+        apr_pool_create(&p, NULL);
+	dateFormat.format(date, event->getTimeStamp(), p);
+        apr_pool_destroy(p);
+        output << date;
+
+
 	output << _T("</td>") << std::endl;
 
 	output << _T("<td title=\"") << event->getThreadId() << _T(" thread\">");
@@ -136,7 +150,15 @@ void HTMLLayout::appendHeader(ostream& output)
 	output << _T("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">") << std::endl;
 	output << _T("<hr size=\"1\" noshade>") << std::endl;
 	output << _T("Log session start time ");
-	dateFormat.format(output, time(0));
+
+        apr_pool_t* p;
+        apr_pool_create(&p, NULL);
+        std::string date;
+        dateFormat.format(date, apr_time_now(), p);
+        apr_pool_destroy(p);
+
+        output << date;
+
 	output << _T("<br>") << std::endl;
 	output << _T("<br>") << std::endl;
 	output << _T("<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">") << std::endl;
