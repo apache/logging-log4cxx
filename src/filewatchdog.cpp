@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#define __STDC_CONSTANT_MACROS
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/loglog.h>
 #include <sys/stat.h>
@@ -23,10 +23,6 @@
 #include <apr_atomic.h>
 #include <log4cxx/helpers/transcoder.h>
 
-//Define INT64_C for compilers that don't have it
-#if (!defined(INT64_C))
-#define INT64_C(value)  int64_t(value)
-#endif
 
 
 using namespace log4cxx;

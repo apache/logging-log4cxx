@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#define __STDC_CONSTANT_MACROS
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <algorithm>
@@ -22,9 +23,6 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/pool.h>
 
-#if !defined(INT64_C)
-#define INT64_C(x) x##LL
-#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

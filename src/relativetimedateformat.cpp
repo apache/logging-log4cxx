@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#define __STDC_CONSTANT_MACROS
 #include <apr.h>
 
 #include <log4cxx/helpers/relativetimedateformat.h>
@@ -23,10 +23,6 @@
 #include <apr_time.h>
 #include <log4cxx/helpers/stringhelper.h>
 
-
-#if !defined(INT64_C)
-#define INT64_C(x) x ## LL
-#endif
 
 log4cxx::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
  : DateFormat(), startTime(log4cxx::spi::LoggingEvent::getStartTime())

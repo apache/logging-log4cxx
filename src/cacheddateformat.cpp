@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#define __STDC_CONSTANT_MACROS
 #include <log4cxx/helpers/cacheddateformat.h>
 
-#define INT64_C(x) x##LL
 
 #include <apr_time.h>
 #include <log4cxx/helpers/pool.h>
@@ -26,6 +25,9 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::pattern;
+
+
+
 
 /**
 *  Supported digit set.  If the wrapped DateFormat uses

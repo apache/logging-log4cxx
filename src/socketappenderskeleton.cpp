@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#define __STDC_CONSTANT_MACROS
 #include <log4cxx/net/socketappenderskeleton.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/socketoutputstream.h>
@@ -25,11 +26,6 @@
 #include <apr_atomic.h>
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/transcoder.h>
-
-//Define INT64_C for compilers that don't have it
-#if (!defined(INT64_C))
-#define INT64_C(value)  int64_t(value)
-#endif
 
 
 using namespace log4cxx;
