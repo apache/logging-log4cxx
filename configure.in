@@ -177,8 +177,8 @@ case "$ac_with_thread" in
 		LIBS="-pthread $LIBS"
 		;;
 		*solaris*)
-		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
-		LIBS="-lpthread -lrt $LIBS"
+		CPPFLAGS="$CPPFLAGS -D_REENTRANT -features=%all,no%iddollar,extensions -xarch=v8plus"
+		LIBS="-lpthread -lrt -xarch=v8plus $LIBS"
 		;;
 		*)
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
