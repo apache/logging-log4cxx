@@ -58,11 +58,12 @@ namespace log4cxx
         public:
                 class LOG4CXX_EXPORT LevelClass : public helpers::Class
                 {
-                protected:
-                        LevelClass(const LogString& className) : helpers::Class(className) {}
-
                 public:
-                        LevelClass() : helpers::Class(LOG4CXX_STR("Level")) {}
+                        LevelClass() : helpers::Class() {}
+
+                        virtual const log4cxx::logchar* getName() const {
+                            return LOG4CXX_STR("Level");
+                        }
 
                         virtual const LevelPtr& toLevel(const LogString& sArg) const
                         { return Level::toLevel(sArg); }
@@ -229,7 +230,8 @@ public:\
         class Class##level : public Level::LevelClass\
 {\
 public:\
-        Class##level() : Level::LevelClass(LOG4CXX_STR(#level)) {}\
+        Class##level() : Level::LevelClass() {}\
+        virtual const log4cxx::logchar* getName() const { return LOG4CXX_STR(#level); } \
         virtual const LevelPtr& toLevel(const LogString& sArg) const\
         { return level::toLevel(sArg); }\
         virtual const LevelPtr& toLevel(int val) const\

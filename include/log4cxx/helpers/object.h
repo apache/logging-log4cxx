@@ -28,42 +28,47 @@ public:\
 class Class##object : public helpers::Class\
 {\
 public:\
-        Class##object() : helpers::Class(LOG4CXX_STR(#object)) {}\
+        Class##object() : helpers::Class() {}\
+        virtual const log4cxx::logchar* getName() const { return LOG4CXX_STR(#object); } \
 };\
 virtual const helpers::Class& getClass() const;\
-static const helpers::Class& getStaticClass();\
-static Class##object theClass##object;
+static const helpers::Class& getStaticClass();
 
 #define DECLARE_LOG4CXX_OBJECT(object)\
 public:\
 class Class##object : public helpers::Class\
 {\
 public:\
-        Class##object() : helpers::Class(LOG4CXX_STR(#object)) {}\
+        Class##object() : helpers::Class() {}\
+        virtual const log4cxx::logchar* getName() const { return LOG4CXX_STR(#object); } \
         virtual helpers::ObjectPtr newInstance() const\
         {\
                 return new object();\
         }\
 };\
 virtual const helpers::Class& getClass() const;\
-static const helpers::Class& getStaticClass();\
-static Class##object theClass##object;
+static const helpers::Class& getStaticClass();
 
 #define DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
 public:\
 virtual const helpers::Class& getClass() const;\
-static const helpers::Class& getStaticClass();\
-static class theClass##object;
+static const helpers::Class& getStaticClass();
 
 #define IMPLEMENT_LOG4CXX_OBJECT(object)\
-object::Class##object object::theClass##object;\
-const log4cxx::helpers::Class& object::getClass() const { return theClass##object; }\
-const log4cxx::helpers::Class& object::getStaticClass() { return theClass##object; }
+const log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
+const log4cxx::helpers::Class& object::getStaticClass() { \
+   static Class##object theClass;                         \
+   return theClass;                                       \
+}                                                         \
+namespace log4cxx { namespace classes { bool object##IsRegistered = log4cxx::helpers::Class::registerClass(object::getStaticClass()); } }
 
 #define IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(object, class)\
-object::class object::theClass##object;\
-const log4cxx::helpers::Class& object::getClass() const { return theClass##object; }\
-const log4cxx::helpers::Class& object::getStaticClass() { return theClass##object; }
+const log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
+const log4cxx::helpers::Class& object::getStaticClass() { \
+   static class theClass;                                 \
+   return theClass;                                       \
+}                                                         \
+namespace log4cxx { namespace classes { bool object##IsRegistered = log4cxx::helpers::Class::registerClass(object::getStaticClass()); } }
 
 
 namespace log4cxx

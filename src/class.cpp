@@ -25,23 +25,16 @@ using namespace log4cxx::helpers;
 
 
 
-Class::Class(const LogString& name) : name(name)
-{
-        registerClass(this);
+Class::Class() {
 }
 
 Class::~Class()
 {
 }
 
-const LogString& Class::toString() const
+const LogString Class::toString() const
 {
-        return name;
-}
-
-const LogString& Class::getName() const
-{
-        return name;
+        return getName();
 }
 
 ObjectPtr Class::newInstance() const
@@ -79,11 +72,8 @@ const Class& Class::forName(const LogString& className)
         return *clazz;
 }
 
-void Class::registerClass(const Class * newClass)
+bool Class::registerClass(const Class& newClass)
 {
-        if (newClass == 0)
-        {
-                return;
-        }
-        getRegistry()[StringHelper::toLowerCase(newClass->toString())] = newClass;
+        getRegistry()[StringHelper::toLowerCase(newClass.getName())] = &newClass;
+        return true;
 }

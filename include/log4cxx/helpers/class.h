@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,18 +32,19 @@ namespace log4cxx
                 class LOG4CXX_EXPORT Class
                 {
                 public:
-                        Class(const LogString& name);
                         virtual ~Class();
                         virtual ObjectPtr newInstance() const;
-                        const LogString& toString() const;
-                        const LogString& getName() const;
+                        const LogString toString() const;
+                        virtual const logchar* getName() const = 0;
                         static const Class& forName(const LogString& className);
+                        static bool registerClass(const Class& newClass);
 
                 protected:
-                        static void registerClass(const Class * newClass);
-                        LogString name;
+                        Class();
 
                 private:
+                        Class(const Class&);
+                        Class& operator=(const Class&);
                         typedef std::map<LogString, const Class *> ClassMap;
                         static ClassMap& getRegistry();
                 };
