@@ -47,7 +47,9 @@ public:
 #ifdef WIN32
 		_snwprintf(dst, maxlen, L"%I64d", ll);
 #else
+#ifdef HAVE_SWPRINTF
 		swprintf(dst, maxlen, L"%lld", ll);
+#endif
 #endif
 	}
 	
