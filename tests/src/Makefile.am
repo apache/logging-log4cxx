@@ -31,7 +31,9 @@ testsuite_LDFLAGS = \
 	-Wl,--whole-archive,util/libutil.a,--no-whole-archive\
 	-Wl,--whole-archive,varia/libvaria.a,--no-whole-archive\
 	-Wl,--whole-archive,xml/libxml.a,--no-whole-archive\
-	-lcppunit -ldl -lboost_regex
+	@LIBS_CPPUNIT@ -lboost_regex
+	
+AM_CPPFLAGS = @CPPFLAGS_CPPUNIT@
 	
 testsuite_DEPENDENCIES = \
 	customlogger/libcustomlogger.a\
@@ -53,8 +55,8 @@ shortsocketserver_LDADD = \
 shortsocketserver_LDFLAGS = \
 	-Wl,--whole-archive,util/libutil.a,--no-whole-archive\
 	-Wl,--whole-archive,xml/libxml.a,--no-whole-archive\
-	-lcppunit -ldl
-	
+	@LIBS_CPPUNIT@ -lboost_regex
+
 shortsocketserver_DEPENDENCIES = \
 	util/libutil.a\
 	xml/libxml.a\
