@@ -222,7 +222,7 @@ namespace log4cxx
 			char_type *b = pbase();
 			if (b == 0)
 			{
-				char_type * p = al.allocate(_MinInc, 0);
+				char_type * p = (char_type *)al.allocate(_MinInc, 0);
 				setp(p, p + _MinInc);
 			}
 			else
@@ -233,7 +233,7 @@ namespace log4cxx
 					helpers::StrictMath::minimum(
 					(os * 2), _MaxInc),_MinInc)
 					+ 1; // incrément d'allocation
-				char_type *p = al.allocate(os + is, 0);
+				char_type *p = (char_type *)al.allocate(os + is, 0);
 				traits_type::copy(p, b, os);
 				al.deallocate(b, epptr() - b);
 				setp(p, p + os + is);
