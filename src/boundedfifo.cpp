@@ -23,7 +23,8 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(BoundedFIFO)
 
-BoundedFIFO::BoundedFIFO(int maxSize) : numElements(0), first(0), next(0)
+BoundedFIFO::BoundedFIFO(int maxSize)
+ : numElements(0), first(0), next(0), maxSize(maxSize)
 {
 	if(maxSize < 1)
 	{
