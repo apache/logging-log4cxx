@@ -40,4 +40,8 @@ typedef __int64 int64_t;
 	#define _max std::max
 #endif
 
-
+#ifdef LOG4CXX
+	#define LOG4CXX_EXPORT __declspec(dllexport)
+#else
+	#define LOG4CXX_EXPORT __declspec(dllimport)
+#endif

@@ -243,44 +243,6 @@ SOURCE=.\dll.cpp
 # End Source File
 # Begin Source File
 
-SOURCE=.\dll.def
-
-!IF  "$(CFG)" == "dll - Win32 Release"
-
-!ELSEIF  "$(CFG)" == "dll - Win32 Debug"
-
-!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Release"
-
-# PROP Exclude_From_Build 1
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
-SOURCE=.\dllu.def
-
-!IF  "$(CFG)" == "dll - Win32 Release"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "dll - Win32 Debug"
-
-# PROP Exclude_From_Build 1
-
-!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Debug"
-
-!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Release"
-
-!ENDIF 
-
-# End Source File
-# Begin Source File
-
 SOURCE=..\..\src\domconfigurator.cpp
 # End Source File
 # Begin Source File
