@@ -185,6 +185,9 @@ Common command line options:
     <condition property="has-expat" value="true">
          <not><isset property="is-mac"/></not>
     </condition>
+    <condition property="is-cygwin" value="true">
+        <os family="windows"/>
+    </condition>
 </target>
 
 
@@ -324,7 +327,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         unless="config-available">
 
         <!-- exec executable="configure">
-            <arg value="- -with-apr=${apr.dir}"/>
+            <arg value="- -with-apr=${with-apr}"/>
             <arg value="- -with-aprutil=${aprutil.dir}"/>
             <arg value="- -with-apriconv=${apriconv.dir}"/>
             <arg value="- -with-cppunit=${cppunit.dir}"/>
@@ -403,6 +406,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="use-pic" value="${use-pic}"/>
         <property name="os.family" value="${os.family}"/>
     </ant>
+
+    <!--  configure can't handle a Windows path   -->
+    <condition property="with-apr" value="../apr-${apr.version}">
+         <isset property="is-cygwin"/>
+    </condition>
+    <property name="with-apr" location="${apr.dir}"/>
 </target>
 
 <target name="get-apriconv-src" unless="apriconv-src-available">
@@ -437,13 +446,21 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="apriconv.lib.dir" value="${apriconv.lib.dir}"/>
         <property name="apr.lib.type" value="${apr.lib.type}"/>
         <property name="apriconv.lib.type" value="${apriconv.lib.type}"/>
-        <property name="with-apr" value="${apr.dir}/apr--config"/>
+        <property name="with-apr" value="${with-apr}"/>
         <property name="project.type" value="${project.type}"/>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
         <property name="use-pic" value="${use-pic}"/>
         <property name="os.family" value="${os.family}"/>
     </ant>
+
+
+    <!--  configure can't handle a Windows path   -->
+    <condition property="with-apr-iconv" value="../apr-iconv-${apriconv.version}">
+         <isset property="is-cygwin"/>
+    </condition>
+    <property name="with-apr-iconv" location="${apriconv.dir}"/>
+
 </target>
 
 <target name="get-aprutil-src" unless="aprutil-src-available">
@@ -485,7 +502,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="apr.lib.type" value="${apr.lib.type}"/>
         <property name="apriconv.lib.type" value="${apriconv.lib.type}"/>
         <property name="aprutil.lib.type" value="${aprutil.lib.type}"/>
-        <property name="with-apr" value="${apr.dir}/apr--config"/>
+        <property name="with-apr" value="${with-apr}"/>
+        <property name="with-apr-iconv" value="${with-apr-iconv}"/>
         <property name="project.type" value="${project.type}"/>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
@@ -624,7 +642,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="cw32mt" if="is-bcc"/>
-        <libset libs="xml2" if="is-unix"/>
+        <!-- libset libs="xml2" if="is-unix"/ -->
         <libset libs="iconv" if="has-iconv"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
@@ -909,7 +927,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="LOG4CXX"/>
-        <libset libs="xml2" if="is-unix"/>
+        <!-- libset libs="xml2" if="is-unix"/ -->
         <libset libs="cw32mt" if="is-bcc"/>
 
 

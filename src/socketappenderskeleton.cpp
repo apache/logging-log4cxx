@@ -32,6 +32,7 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
+#if APR_HAS_THREADS
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay)
 :  pool(),
@@ -246,3 +247,5 @@ void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* thread, 
         LogLog::debug(LOG4CXX_STR("Exiting Connector.run() method."));
         return NULL;
 }
+
+#endif

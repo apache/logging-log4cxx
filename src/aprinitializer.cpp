@@ -31,8 +31,10 @@ APRInitializer::APRInitializer() {
     apr_pool_create(&p, NULL);
     apr_atomic_init(p);
     startTime = apr_time_now();
+#if APR_HAS_THREADS
     apr_status_t stat = apr_threadkey_private_create(&tlsKey, tlsDestruct, p);
     assert(stat == APR_SUCCESS);
+#endif
 }
 
 APRInitializer::~APRInitializer() {

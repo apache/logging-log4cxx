@@ -23,6 +23,8 @@
 #include <apr_atomic.h>
 #include <log4cxx/helpers/transcoder.h>
 
+#if APR_HAS_THREADS
+
 
 
 using namespace log4cxx;
@@ -85,3 +87,4 @@ void FileWatchdog::start()
    thread.run(pool, run, this);
 }
 
+#endif

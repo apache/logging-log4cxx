@@ -29,6 +29,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
+#if APR_HAS_THREADS
+
 IMPLEMENT_LOG4CXX_OBJECT(SocketAppender)
 
 
@@ -65,3 +67,4 @@ void SocketAppender::renderEvent(const spi::LoggingEventPtr& event,
         event->write(os);
 }
 
+#endif

@@ -41,10 +41,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <property name="apr.dir" location="${aprutil.dir}/../apr-1.1.0"/>
 <property name="apr.include.dir" location="${apr.dir}/include"/>
-<property name="with-apr" value="${apr.dir}"/>
 <property name="apriconv.dir" location="${aprutil.dir}/../apr-iconv-1.0.1"/>
 <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
-<property name="with-apr-iconv" value="${apriconv.dir}"/>
 
 <target name="usage" description="Displays usage notes">
         <echo>
@@ -93,6 +91,19 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </or>
     </condition>
     <property name="arch" value="unix"/>
+    <!--   
+        can't use Windows path names if building cygwin   
+        assuming typical location.
+    -->
+    <basename property="with-apr-base" file="${apr.dir}"/>
+    <condition property="with-apr" value="../${with-apr-base}">
+        <os family="windows"/>
+    </condition>
+    <basename property="with-apr-iconv-base" file="${apriconv.dir}"/>
+    <condition property="with-apr-iconv" value="../${with-apr-iconv-base}">
+        <os family="windows"/>
+    </condition>
+
 </target>
 
 <target name="init" depends="win-init, unix-init">
@@ -137,6 +148,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <istrue value="${project.if.value}"/>
         </condition>
 
+        <property name="with-apr" value="${apr.dir}"/>
+        <property name="with-apr-iconv" value="${apriconv.dir}"/>
+
 </target>
 
 <target name="clean" description="Deletes build products">
@@ -170,11 +184,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="unix-configure" depends="configure-check" if="is-unix" unless="config-available">
-        <exec executable="${aprutil.dir}/configure" dir="${aprutil.dir}">
+        <exec executable="sh" dir="${aprutil.dir}">
+           <arg value="./configure"/>
            <arg value="--with-apr=${with-apr}"/>
            <arg value="--with-apr-iconv=${with-apr-iconv}"/>
         </exec>
-        <exec executable="${aprutil.dir}/xml/expat/configure" dir="${aprutil.dir}/xml/expat"/>
+        <exec executable="sh" dir="${aprutil.dir}/xml/expat">
+            <arg value="./configure"/>
+        </exec>
 </target>
 
 

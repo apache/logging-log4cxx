@@ -191,7 +191,11 @@ std::set<LogString> LoggingEvent::getPropertyKeySet() const
 
 
 const LogString LoggingEvent::getCurrentThreadName() {
+#if APR_HAS_THREADS
    return StringHelper::formatHex((const void*) apr_os_thread_current());
+#else
+   return LOG4CXX_STR("0x00000000");
+#endif
 }
 
 void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)

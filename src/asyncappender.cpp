@@ -29,6 +29,9 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+#if APR_HAS_THREADS
+
+
 IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 
 
@@ -201,5 +204,7 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* thread, void
                 }
         }
 }
+
+#endif
 
 

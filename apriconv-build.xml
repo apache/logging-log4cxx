@@ -42,7 +42,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <property name="apr.dir" location="${apriconv.dir}/../apr-1.1.0"/>
 <property name="apr.include.dir" location="${apr.dir}/include"/>
-<property name="with-apr" value="${apr.dir}"/>
 
 <target name="usage" description="Displays usage notes">
         <echo>
@@ -95,6 +94,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="arch" value="unix"/>
     <property name="project.type" value="cbuilderx"/>
     <property name="apriconv.mod.suffix" value=".so"/>
+    <!--   
+        can't use Windows path names if building cygwin   
+        assuming typical location.
+    -->
+    <basename property="with-apr-base" file="${apr.dir}"/>
+    <condition property="with-apr" value="../${with-apr-base}">
+        <os family="windows"/>
+    </condition>
 </target>
 
 <target name="init" depends="win-init, unix-init">
@@ -135,6 +142,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <istrue value="${project.if.value}"/>
         </condition>
 
+        <property name="with-apr" value="${apr.dir}"/>
+
 </target>
 
 <target name="clean">
@@ -160,7 +169,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="unix-configure" depends="configure-check" if="is-unix" unless="config-available">
-        <exec executable="${apriconv.dir}/configure" dir="${apriconv.dir}">
+        <exec executable="sh" dir="${apriconv.dir}">
+           <arg value="./configure"/>
            <arg value="--with-apr=${with-apr}"/>
         </exec>
 </target>

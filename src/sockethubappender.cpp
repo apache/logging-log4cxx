@@ -31,6 +31,8 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 using namespace log4cxx::spi;
 
+#if APR_HAS_THREADS
+
 IMPLEMENT_LOG4CXX_OBJECT(SocketHubAppender)
 
 int SocketHubAppender::DEFAULT_PORT = 4560;
@@ -217,3 +219,4 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* thread, void*
         return NULL;
 }
 
+#endif

@@ -25,6 +25,9 @@
 #include <apr_time.h>
 #include <log4cxx/helpers/synchronized.h>
 
+
+#if APR_HAS_THREADS
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
@@ -91,4 +94,6 @@ void XMLSocketAppender::setOption(const LogString& option,
       const LogString& value) {
         SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
 }
+
+#endif
 

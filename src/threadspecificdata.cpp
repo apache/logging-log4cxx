@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 
 using namespace log4cxx::helpers;
 
+
 ThreadSpecificData::ThreadSpecificData()
     : ndcStack(), mdcMap() {
 }
@@ -38,6 +39,7 @@ log4cxx::MDC::Map& ThreadSpecificData::getCurrentThreadMap() {
 }
 
 ThreadSpecificData& ThreadSpecificData::getCurrentData() {
+#if APR_HAS_THREADS
   void* pData = NULL;
   apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
   if (stat != APR_SUCCESS) {
@@ -53,4 +55,8 @@ ThreadSpecificData& ThreadSpecificData::getCurrentData() {
     return *newData;
   }
   return *((ThreadSpecificData*) pData);
+#else
+  static ThreadSpecificData data;
+  return data;
+#endif
 }

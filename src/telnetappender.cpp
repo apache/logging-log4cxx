@@ -28,6 +28,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
+#if APR_HAS_THREADS
+
 IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 
 int TelnetAppender::DEFAULT_PORT = 23;
@@ -188,6 +190,7 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* thread
         return NULL;
 }
 
+#endif
 
 
 

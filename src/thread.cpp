@@ -22,14 +22,16 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
-
 Thread::Thread() : thread(NULL), finished(false) {
 }
 
 Thread::~Thread() {
-        join();
+#if APR_HAS_THREADS    
+    join();
+#endif
 }
 
+#if APR_HAS_THREADS
 void Thread::run(log4cxx::helpers::Pool& p,
         void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
         void* data) {
@@ -48,10 +50,8 @@ void Thread::run(log4cxx::helpers::Pool& p,
         }
 }
 
-
-
 void Thread::stop() {
-        if (thread != NULL && !finished) {
+    if (thread != NULL && !finished) {
                 apr_status_t stat = apr_thread_exit((apr_thread_t*) thread, 0);
                 finished = true;
                 thread = NULL;
@@ -72,6 +72,7 @@ void Thread::join() {
                 }
         }
 }
+#endif
 
 void Thread::ending() {
         finished = true;

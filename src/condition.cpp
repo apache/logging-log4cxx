@@ -24,6 +24,9 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
+#if APR_HAS_THREADS
+
+
 Condition::Condition(Pool& p)
 {
         apr_pool_t* aprPool = (apr_pool_t*) p.getAPRPool();
@@ -75,3 +78,5 @@ void Condition::wait()
            throw MutexException(stat);
         }
 }
+
+#endif

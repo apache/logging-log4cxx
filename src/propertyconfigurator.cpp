@@ -28,7 +28,6 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/config/propertysetter.h>
-#include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/synchronized.h>
@@ -43,6 +42,9 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 using namespace log4cxx::config;
 
+
+#if APR_HAS_THREADS
+#include <log4cxx/helpers/filewatchdog.h>
 
 class PropertyWatchdog  : public FileWatchdog
 {
@@ -62,6 +64,7 @@ public:
                         LogManager::getLoggerRepository());
         }
 };
+#endif
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
@@ -104,10 +107,12 @@ void PropertyConfigurator::configure(helpers::Properties& properties)
         PropertyConfigurator().doConfigure(properties, LogManager::getLoggerRepository());
 }
 
+#if APR_HAS_THREADS
 void PropertyConfigurator::configureAndWatch(const File& configFilename)
 {
     configureAndWatch(configFilename, FileWatchdog::DEFAULT_DELAY);
 }
+
 
 
 void PropertyConfigurator::configureAndWatch(
@@ -117,6 +122,7 @@ void PropertyConfigurator::configureAndWatch(
     pdog->setDelay(delay);
     pdog->start();
 }
+#endif
 
 void PropertyConfigurator::doConfigure(helpers::Properties& properties,
         spi::LoggerRepositoryPtr& hierarchy)
