@@ -1,118 +1,106 @@
 <?xml version="1.0"?>
 <document>
 
-	<properties>
-		<author email="mcatan at apache dot org">Michael Catanzariti</author>
-		<title>About</title>
-	</properties>
-	
-	<meta name="keywords" content="c++, cpp, cxx, logging, tracing, component,
-	framework, API, log4cxx"/>
-	
-	
-	<body>
-		<h1>Project Status</h1>
-		
-		
-		<p>
-			Log4cxx is an effort undergoing incubation at the Apache Software
-			Foundation (ASF), sponsored by the Apache Logging Services
-			project. Incubation is required of all newly accepted projects until a
-			further review indicates that the infrastructure, communications, and
-			decision making process have stabilized in a manner consistent with
-			other successful ASF projects. While incubation status is not
-			necessarily a reflection of the completeness or stability of the code,
-			it does indicate that the project has yet to be fully endorsed by the
-			ASF.
-		</p>
-		
-		<h1>About log4cxx</h1>
-			<h2>Introduction</h2>
-				<p>
-					Log4cxx is a port to C++ of the 
-					<a href="http://logging.apache.org/log4j">Log4j</a> project.
-				</p>
-				
-				<p>
-					The goal is have the same functionnalities and interfaces of log4j.
-				</p>
-				
-				<p>
-					Main concepts of the logging framework are exposed in the
-					<a href="manual/Introduction.html">short introduction to log4cxx</a>.
-				</p>
-			
-			<h2>Features</h2>
-				<p>
-					It's a flexible and highly configurable logging framework.<br/>
-				</p>
-				
-				<h3>Main features</h3>
-					<ul>
-						<li>Configurable logging destinations.</li>
-						<li>Configurable logging format.</li>
-						<li>Categorized logging statements through a hierarchy.</li>
-						<li>Filters.</li>
-						<li>Thread safe library.</li>
-						<li>UTF-16 Unicode support.</li>
-					</ul>
-				
-				<h3>Appenders</h3>
-					<ul>
-						<li>AsyncAppender</li>
-						<li>ConsoleAppender</li>
-						<li>DailyRollingFileAppender</li>
-						<li>FileAppender</li>
-						<li>NTEventLogAppender</li>
-						<li>ODBCAppender</li>
-						<li>RollingFileAppender</li>
-						<li>SMTPAppender</li>
-						<li>SocketAppender</li>
-						<li>SocketHubAappender</li>
-						<li>SyslogAppender</li>
-						<li>TelnetAppender</li>
-						<li>XMLSocketAppender</li>
-					</ul>
-									
-				<h3>Layouts</h3>
-					<ul>
-						<li>HTMLLayout</li>
-						<li>PatternLayout</li>
-						<li>SimpleLayout</li>
-						<li>TTCCLayout</li>
-						<li>XMLLayout</li>
-					</ul>
-				
-				<h3>Filters</h3>
-					<ul>
-						<li>DenyAllFilter</li>
-						<li>LevelMatchFilter</li>
-						<li>LevelRangeFilter</li>
-						<li>StringMatchFilter</li>
-					</ul>
-				
-				<h3>Configurators</h3>
-					<ul>
-						<li>BasicConfigurator</li>
-						<li>DOMConfigurator</li>
-						<li>PropertyConfigurator</li>
-					</ul>
+        <properties>
+                <author email="mcatan at apache dot org">Michael Catanzariti</author>
+                <title>About</title>
+        </properties>
 
-				<h3>Customization</h3>
-					<p>
-						Java like objects with dynamic cast and instanciation. 
-						Custom objects can be configured through the DOMConfigurator
-						and PropertyConfigurator classes.
-					</p>
-					
-			<h2>Supported OS</h2>
-				<ul>
-					<li>Linux (tested on Linux Mandrake 10.0)</li>
-					<li>FreeBSD</li>
-					<li>Windows (MSVC 6.0, MSVC 7.1 or Cygwin)</li>
-					<li>Other POSIX OS should be supported but were not tested</li>
-				</ul>
+        <meta name="keywords" content="c++, cpp, cxx, logging, tracing, component,
+        framework, API, log4cxx"/>
 
-	</body>
+
+        <body>
+                <h1>Project Status</h1>
+
+
+                <h1>About log4cxx</h1>
+                        <h2>Introduction</h2>
+                                <p>
+                                        Log4cxx is a port to C++ of the
+                                        <a href="http://logging.apache.org/log4j">Log4j</a> project.
+                                </p>
+
+                                <p>
+                                        The goal is have the same functionalities and interfaces of log4j.
+                                </p>
+
+                                <p>
+                                        Main concepts of the logging framework are exposed in the
+                                        <a href="manual/Introduction.html">short introduction to log4cxx</a>.
+                                </p>
+
+                        <h2>Features</h2>
+                                <p>
+                                        It's a flexible and highly configurable logging framework.<br/>
+                                </p>
+
+                                <h3>Main features</h3>
+                                        <ul>
+                                                <li>Configurable logging destinations.</li>
+                                                <li>Configurable logging format.</li>
+                                                <li>Categorized logging statements through a hierarchy.</li>
+                                                <li>Filters.</li>
+                                                <li>Thread safe library.</li>
+                                                <li>UTF-16 Unicode support.</li>
+                                        </ul>
+
+                                <h3>Appenders</h3>
+                                        <ul>
+                                                <li>AsyncAppender</li>
+                                                <li>ConsoleAppender</li>
+                                                <li>DailyRollingFileAppender</li>
+                                                <li>FileAppender</li>
+                                                <li>NTEventLogAppender</li>
+                                                <li>ODBCAppender</li>
+                                                <li>RollingFileAppender</li>
+                                                <li>SMTPAppender</li>
+                                                <li>SocketAppender</li>
+                                                <li>SocketHubAappender</li>
+                                                <li>SyslogAppender</li>
+                                                <li>TelnetAppender</li>
+                                                <li>XMLSocketAppender</li>
+                                        </ul>
+
+                                <h3>Layouts</h3>
+                                        <ul>
+                                                <li>HTMLLayout</li>
+                                                <li>PatternLayout</li>
+                                                <li>SimpleLayout</li>
+                                                <li>TTCCLayout</li>
+                                                <li>XMLLayout</li>
+                                        </ul>
+
+                                <h3>Filters</h3>
+                                        <ul>
+                                                <li>DenyAllFilter</li>
+                                                <li>LevelMatchFilter</li>
+                                                <li>LevelRangeFilter</li>
+                                                <li>StringMatchFilter</li>
+                                        </ul>
+
+                                <h3>Configurators</h3>
+                                        <ul>
+                                                <li>BasicConfigurator</li>
+                                                <li>DOMConfigurator</li>
+                                                <li>PropertyConfigurator</li>
+                                        </ul>
+
+                                <h3>Customization</h3>
+                                        <p>
+                                                Java like objects with dynamic cast and instanciation.
+                                                Custom objects can be configured through the DOMConfigurator
+                                                and PropertyConfigurator classes.
+                                        </p>
+
+                        <h2>Supported OS</h2>
+                                <ul>
+                                        <li>Linux (tested on Linux Mandrake 10.0)</li>
+                                        <li>FreeBSD</li>
+                                        <li>Windows (MSVC 6.0, MSVC 7.1 or Cygwin)</li>
+                                        <li>Other POSIX OS should be supported but were not tested</li>
+                                </ul>
+
+        </body>
 </document>
 

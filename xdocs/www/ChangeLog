@@ -1,3 +1,18 @@
+CVS
+===
+
+* Appender threshold can now be configured through the PropertyConfigurator and
+  the DOMConfigurator.
+* Added virtual destructors to Class and DateFormat.
+* Renamed config.h to portability.h (fixes an automake problem).
+* Fixed a memory leak in the "trivial" example.
+* Fixed errors in documentation
+* simplesocketserver is now in a separate directory. (Christophe de Vienne)
+* Fixed global namespace pollution (config_auto.h) (Cesar Eduardo Barros).
+* Hidden thread related classes members (Christophe de Vienne)
+* Added TreadSpecificData_ptr (Christophe de Vienne)
+* Added CriticalSection::Type so one can use fast mutexes, not only recursive (Christophe de Vienne).
+
 Version 0.9.7 (2004-05-10)
 ==========================
 

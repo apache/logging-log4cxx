@@ -8,140 +8,140 @@
     <meta name="keywords" content="log4cxx contributing, CVS, mailing list"/>
     <body>
         <h1>Contributing to log4cxx Development</h1>
-			<h2>Developer Mailing List</h2>
-				 <p>
-				 All discussion relating to log4cxx development takes place
-				 on this list. All CVS checkin notifications are also copied to
-				 this list.
-				 </p>
+                        <h2>Developer Mailing List</h2>
+                                 <p>
+                                 All discussion relating to log4cxx development takes place
+                                 on this list. All CVS checkin notifications are also copied to
+                                 this list.
+                                 </p>
 
-				<h3>Mailing List Archives</h3>
-					<p>
-					You can browse the mailing list archives at the following
-					location:
-					</p>
-					
-					<ul>
-						<li><a 
-						href="http://nagoya.apache.org/eyebrowse/SummarizeList?listId=218">
-						eyebrowse</a></li>
-						<li><a 
-						href="http://marc.theaimsgroup.com/?l=log4cxx-dev&amp;r=1&amp;w=2">
-						MARC</a></li>
-					</ul>
-				
-				<h3>Subscribe</h3>
-					<p>
-					Subscribe to either the list or to the digest list:
-					</p>
-					
-					<ul>
-						<li>
-						<p>
-						To subscribe to this list send an e-mail to <br/>
-						<a href="mailto:log4cxx-dev-subscribe@logging.apache.org">
-						log4cxx-dev-subscribe@logging.apache.org</a>.
-						</p>
-						</li>
-							
-						<li>
-						<p>
-						To subscribe to the digest list sent an e-mail to <br/>
-						<a href="mailto:log4cxx-dev-digest-subscribe@logging.apache.org">
-						log4cxx-dev-digest-subscribe@logging.apache.org</a>.
-						</p>
-						</li>
-					</ul>
+                                <h3>Mailing List Archives</h3>
+                                        <p>
+                                        You can browse the mailing list archives at the following
+                                        location:
+                                        </p>
 
-				<h3>Unsubscribe</h3>
-					<p>
-					To unsubscribe send an email to the relevant email address:
-					</p>
-					
-					<ul>
-						<li>
-						<p>
-						To unsubscribe from this list send an e-mail to <br/>
-						<a href="mailto:log4cxx-dev-unsubscribe@logging.apache.org">
-						log4cxx-dev-unsubscribe@logging.apache.org</a>.
-						</p>
-						</li>
-							
-						<li>
-						<p>
-						To unsubscribe from the digest list sent an e-mail to <br/>
-						<a href="mailto:log4cxx-dev-digest-unsubscribe@logging.apache.org">
-						log4cxx-dev-digest-unsubscribe@logging.apache.org</a>.
-						</p>
-						</li>
-					</ul>				
-				
-				<h3>Posting</h3>
-					<p>
-					Please have a quick read through the <a 
-					href="http://jakarta.apache.org/site/mail.html">
-					guidelines</a>, thanks.
-					</p>
-					
-					<p>
-						<strong>To prevent spam, we require you to be subscribed to
-						the list before posting to it.</strong>
-					</p>
-					
-					<p>
-						<em>This is the log4cxx developer list, it holds discussions
-						relating to the development of log4cxx not the use of log4cxx.
-						If you have a question that begins with the word "How" or you
-						are unsure as the the appropriate list to post to then you
-						probably want to start with the <a href="support.html">
-						log4cxx-user list</a>.</em>
-					</p>
-					
-					<p>
-						Post to the list by sending mail to <a 
-						href="mailto:log4cxx-dev@logging.apache.org">
-						log4cxx-dev@logging.apache.org</a>.
-					</p>
-			
-			<h2>CVS Access</h2>
-				<h3>Browsing CVS</h3>
-					<p>
-						<a href="http://cvs.apache.org/viewcvs/logging-log4cxx/">
-						Browse log4cxx</a> CVS repository using ViewCVS.
-					</p>
-				<h3>Anonymous CVS Access</h3>
-					<p>
-						Anyone can checkout source code from our anonymous CVS
-						server. To do so, simply use the following commands (if you are
-						using a GUI CVS client, configure it appropriately).
-					</p>
-					
-					<p>
-						First login to the CVS server as the anonymous user.
-					</p>
-					
-					<source language="shell">
+                                        <ul>
+                                                <li><a
+                                                href="http://nagoya.apache.org/eyebrowse/SummarizeList?listId=218">
+                                                eyebrowse</a></li>
+                                                <li><a
+                                                href="http://marc.theaimsgroup.com/?l=log4cxx-dev&amp;r=1&amp;w=2">
+                                                MARC</a></li>
+                                        </ul>
+
+                                <h3>Subscribe</h3>
+                                        <p>
+                                        Subscribe to either the list or to the digest list:
+                                        </p>
+
+                                        <ul>
+                                                <li>
+                                                <p>
+                                                To subscribe to this list send an e-mail to <br/>
+                                                <a href="mailto:log4cxx-dev-subscribe@logging.apache.org">
+                                                log4cxx-dev-subscribe@logging.apache.org</a>.
+                                                </p>
+                                                </li>
+
+                                                <li>
+                                                <p>
+                                                To subscribe to the digest list sent an e-mail to <br/>
+                                                <a href="mailto:log4cxx-dev-digest-subscribe@logging.apache.org">
+                                                log4cxx-dev-digest-subscribe@logging.apache.org</a>.
+                                                </p>
+                                                </li>
+                                        </ul>
+
+                                <h3>Unsubscribe</h3>
+                                        <p>
+                                        To unsubscribe send an email to the relevant email address:
+                                        </p>
+
+                                        <ul>
+                                                <li>
+                                                <p>
+                                                To unsubscribe from this list send an e-mail to <br/>
+                                                <a href="mailto:log4cxx-dev-unsubscribe@logging.apache.org">
+                                                log4cxx-dev-unsubscribe@logging.apache.org</a>.
+                                                </p>
+                                                </li>
+
+                                                <li>
+                                                <p>
+                                                To unsubscribe from the digest list sent an e-mail to <br/>
+                                                <a href="mailto:log4cxx-dev-digest-unsubscribe@logging.apache.org">
+                                                log4cxx-dev-digest-unsubscribe@logging.apache.org</a>.
+                                                </p>
+                                                </li>
+                                        </ul>
+
+                                <h3>Posting</h3>
+                                        <p>
+                                        Please have a quick read through the <a
+                                        href="http://jakarta.apache.org/site/mail.html">
+                                        guidelines</a>, thanks.
+                                        </p>
+
+                                        <p>
+                                                <strong>To prevent spam, we require you to be subscribed to
+                                                the list before posting to it.</strong>
+                                        </p>
+
+                                        <p>
+                                                <em>This is the log4cxx developer list, it holds discussions
+                                                relating to the development of log4cxx not the use of log4cxx.
+                                                If you have a question that begins with the word "How" or you
+                                                are unsure as the the appropriate list to post to then you
+                                                probably want to start with the <a href="support.html">
+                                                log4cxx-user list</a>.</em>
+                                        </p>
+
+                                        <p>
+                                                Post to the list by sending mail to <a
+                                                href="mailto:log4cxx-dev@logging.apache.org">
+                                                log4cxx-dev@logging.apache.org</a>.
+                                        </p>
+
+                        <h2>CVS Access</h2>
+                                <h3>Browsing CVS</h3>
+                                        <p>
+                                                <a href="http://cvs.apache.org/viewcvs/logging-log4cxx/">
+                                                Browse log4cxx</a> CVS repository using ViewCVS.
+                                        </p>
+                                <h3>Anonymous CVS Access</h3>
+                                        <p>
+                                                Anyone can checkout source code from our anonymous CVS
+                                                server. To do so, simply use the following commands (if you are
+                                                using a GUI CVS client, configure it appropriately).
+                                        </p>
+
+                                        <p>
+                                                First login to the CVS server as the anonymous user.
+                                        </p>
+
+                                        <source language="shell">
 cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic login
 password: anoncvs</source>
 
-					<p>
-						Then checkout the logging-log4cxx module.
-					</p>
-					
-					<source language="shell">
+                                        <p>
+                                                Then checkout the logging-log4cxx module.
+                                        </p>
+
+                                        <source language="shell">
 cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout logging-log4cxx</source>
 
-					<p>
-						If you are not familiar with CVS, 
-						<a href="http://jakarta.apache.org/site/cvsindex.html">
-						Jakarta's CVS page</a> may hold many helpful hints.
-					</p>
-		<h2>Issue Tracking</h2>
-			<p>
-				Report a log4cxx bug <a
-				href="http://nagoya.apache.org/jira/secure/BrowseProject.jspa?id=10550">
-				here</a>.
-			</p>
+                                        <p>
+                                                If you are not familiar with CVS,
+                                                <a href="http://jakarta.apache.org/site/cvsindex.html">
+                                                Jakarta's CVS page</a> may hold many helpful hints.
+                                        </p>
+                <h2>Issue Tracking</h2>
+                        <p>
+                                Report a log4cxx bug or enhancement request or submit a patch <a
+                                href="http://nagoya.apache.org/jira/secure/BrowseProject.jspa?id=10550">
+                                here</a>.
+                        </p>
 
-	</body>
+        </body>
 </document>
