@@ -183,6 +183,10 @@ SOURCE=..\..\src\class.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\condition.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\configurator.cpp
 # End Source File
 # Begin Source File
@@ -287,7 +291,7 @@ SOURCE=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Release
-TargetDir=\log4cxx\msvc\Bin\Release
+TargetDir=\log4cxx-0.9.4\msvc\Bin\Release
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -310,7 +314,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Debug
-TargetDir=\log4cxx\msvc\Bin\Debug
+TargetDir=\log4cxx-0.9.4\msvc\Bin\Debug
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -333,7 +337,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_D
-TargetDir=\log4cxx\msvc\Bin\Unicode_D
+TargetDir=\log4cxx-0.9.4\msvc\Bin\Unicode_D
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -356,7 +360,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_R
-TargetDir=\log4cxx\msvc\Bin\Unicode_R
+TargetDir=\log4cxx-0.9.4\msvc\Bin\Unicode_R
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -445,6 +449,10 @@ SOURCE=..\..\src\mdc.cpp
 # Begin Source File
 
 SOURCE=..\..\src\msxml.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\mutex.cpp
 # End Source File
 # Begin Source File
 
@@ -627,6 +635,10 @@ SOURCE=..\..\include\log4cxx\helpers\class.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\helpers\condition.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\helpers\criticalsection.h
 # End Source File
 # Begin Source File
@@ -688,6 +700,10 @@ SOURCE=..\..\include\log4cxx\helpers\loglog.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\helpers\msxml.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\mutex.h
 # End Source File
 # Begin Source File
 
