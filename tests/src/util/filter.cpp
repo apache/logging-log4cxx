@@ -14,7 +14,7 @@
  ***************************************************************************/
 
 #include "filter.h"
-#include <boost/cregex.hpp>
+#include <boost/regex.hpp>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
