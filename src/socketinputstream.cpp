@@ -29,23 +29,31 @@ SocketInputStream::SocketInputStream(SocketPtr socket)
 : socket(socket), bufferSize(DEFAULT_BUFFER_SIZE),
 currentPos(0), maxPos(0)
 {
-	memBuffer = new unsigned char[bufferSize];
+//	memBuffer = new unsigned char[bufferSize];
 }
 
 SocketInputStream::SocketInputStream(SocketPtr socket, size_t bufferSize)
 : socket(socket), bufferSize(bufferSize),
 currentPos(0), maxPos(0)
 {
-	memBuffer = new unsigned char[bufferSize];
+//	memBuffer = new unsigned char[bufferSize];
 }
 
 SocketInputStream::~SocketInputStream()
 {
-	delete [] memBuffer;
+//	delete [] memBuffer;
 }
 
-void SocketInputStream::read(void * buf, size_t len)
+void SocketInputStream::read(void * buf, size_t len) const
 {
+	size_t read = socket->read(buf, len);
+
+	if (read == 0)
+	{
+		throw EOFException();
+	}
+
+/*
 //	LOGLOG_DEBUG(_T("SocketInputStream reading ") << len << _T(" bytes"));
 	unsigned char * dstBuffer = (unsigned char *)buf;
 	
@@ -111,33 +119,34 @@ void SocketInputStream::read(void * buf, size_t len)
 			currentPos = 0;
 		}
 	}
+*/
 }
 
-void SocketInputStream::read(unsigned int& value)
+void SocketInputStream::read(unsigned int& value) const
 {
 	read(&value, sizeof(value));
 //	LOGLOG_DEBUG(_T("unsigned int read:") << value);
 }
 
-void SocketInputStream::read(int& value)
+void SocketInputStream::read(int& value) const
 {
 	read(&value, sizeof(value));
 //	LOGLOG_DEBUG(_T("int read:") << value);
 }
 
-void SocketInputStream::read(unsigned long& value)
+void SocketInputStream::read(unsigned long& value) const
 {
 	read(&value, sizeof(value));
 //	LOGLOG_DEBUG(_T("unsigned long read:") << value);
 }
 
-void SocketInputStream::read(long& value)
+void SocketInputStream::read(long& value) const
 {
 	read(&value, sizeof(value));
 //	LOGLOG_DEBUG(_T("long read:") << value);
 }
 
-void SocketInputStream::read(String& value)
+void SocketInputStream::read(String& value) const
 {
 	String::size_type size = 0;
 
