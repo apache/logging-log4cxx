@@ -8,6 +8,9 @@ NTEventLogAppender, ConsoleAppender, FileAppender, RollingFileAppender
 Layouts:
 TTCCLayout, HTMLLayout, PatternLayout, SimpleLayout, XMLLayout
 
+Filters:
+DenyAllFilter, LevelMatchFilter, LevelRangeFilter, StringMatchFilter
+
 Configurators:
 DOMConfigurator
 
@@ -20,3 +23,4 @@ CVS
 - Can now send events in XML format over TCP (class XMLSocketAppender) for the
 log4j Chainsaw UI
 - Now compiles with 'configure --enable-unicode' (UTF16 Unicode support)
+- Added java like Properties class. It's a helper for the PropertyConfigurator
