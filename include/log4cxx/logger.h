@@ -208,6 +208,17 @@ namespace log4cxx
         /**
         This method creates a new logging event and logs the event
         without further checks.
+        @param level the level to log.
+        @param message the message string to log.
+		@param file the file where the log statement was written.
+		@param line the line where the log statement was written.
+		*/
+        void forcedLog(const LevelPtr& level, const String& message,
+			const char* file=0, int line=-1);
+
+		/**
+        This method creates a new logging event and logs the event
+        without further checks.
 		@param fqcn The fully qualified name of the calling logger class.
         @param level the level to log.
         @param message the message string to log.
@@ -527,7 +538,7 @@ namespace log4cxx
    };
 };
 
-/** @addtogroup macros
+/** @addtogroup LoggingMacros Logging macros
 @{
 */
 
@@ -540,9 +551,9 @@ Logs a message to a specified logger with a specified level.
 */
 #define LOG4CXX_LOG(logger, level, message) { \
 	if (logger->isEnabledFor(level)) {\
-	StringBuffer oss; \
+	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->log(level, oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(level, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the DEBUG level.
@@ -552,9 +563,9 @@ Logs a message to a specified logger with the DEBUG level.
 */
 #define LOG4CXX_DEBUG(logger, message) { \
 	if (logger->isDebugEnabled()) {\
-	StringBuffer oss; \
+	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->debug(oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(Level::DEBUG, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the INFO level.
@@ -564,9 +575,9 @@ Logs a message to a specified logger with the INFO level.
 */
 #define LOG4CXX_INFO(logger, message) { \
 	if (logger->isInfoEnabled()) {\
-	StringBuffer oss; \
+	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->info(oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(Level::INFO, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the WARN level.
@@ -576,9 +587,9 @@ Logs a message to a specified logger with the WARN level.
 */
 #define LOG4CXX_WARN(logger, message) { \
 	if (logger->isWarnEnabled()) {\
-	StringBuffer oss; \
+	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->warn(oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(Level::WARN, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the ERROR level.
@@ -588,9 +599,9 @@ Logs a message to a specified logger with the ERROR level.
 */
 #define LOG4CXX_ERROR(logger, message) { \
 	if (logger->isErrorEnabled()) {\
-	StringBuffer oss; \
+	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->error(oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(Level::ERROR, oss.str(), __FILE__, __LINE__); }}
 
 /** 
 Logs a message to a specified logger with the FATAL level.
@@ -600,9 +611,9 @@ Logs a message to a specified logger with the FATAL level.
 */
 #define LOG4CXX_FATAL(logger, message) { \
 	if (logger->isFatalEnabled()) {\
-	StringBuffer oss; \
+	::log4cxx::StringBuffer oss; \
 	oss << message; \
-	logger->fatal(oss.str(), __FILE__, __LINE__); }}
+	logger->forcedLog(Level::FATAL, oss.str(), __FILE__, __LINE__); }}
 	
 /**
 Logs a localized message with no parameter.

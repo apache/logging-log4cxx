@@ -139,6 +139,12 @@ void Logger::fatal(const String& message, const char* file, int line)
 	}
 }
 
+void Logger::forcedLog(const LevelPtr& level, const String& message,
+	const char* file, int line)
+{
+	callAppenders(new LoggingEvent(FQCN, this, level, message, file, line));
+}
+
 void Logger::forcedLog(const String& fqcn, const LevelPtr& level, const String& message,
 			const char* file, int line)
 {
