@@ -179,6 +179,10 @@ SOURCE=..\..\src\cyclicbuffer.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\dailyrollingfileappender.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\datagrampacket.cpp
 # End Source File
 # Begin Source File
@@ -376,6 +380,10 @@ SOURCE=..\..\src\socketnode.cpp
 # Begin Source File
 
 SOURCE=..\..\src\socketoutputstream.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\stringhelper.cpp
 # End Source File
 # Begin Source File
 
@@ -784,6 +792,10 @@ SOURCE=..\..\include\log4cxx\config.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\consoleappender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\dailyrollingfileappender.h
 # End Source File
 # Begin Source File
 

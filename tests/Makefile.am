@@ -1,5 +1,5 @@
 SUBDIRS = input src witness
-EXTRA_DIST = log4j.dtd
+EXTRA_DIST = log4j.dtd L7D_en_US.properties L7D_fr_CH.properties L7D_fr.properties
 
 if TESTS
 
@@ -23,7 +23,7 @@ regression: Minimum Logger DOM CustomLevel \
 	XMLLayout AsyncAppender ErrorHandler \
 	OptionConverter BoundedFIFO \
 	CyclicBuffer DRFA LevelMatchFilter \
-	LevelRangeFilter PatternParser
+	LevelRangeFilter PatternParser L7d
 
 longUnit:
 
@@ -93,5 +93,8 @@ DRFA: build cleanOutputDir
 	src/testsuite DRFATestCase
 
 PatternParser: build cleanOutputDir
+
+L7d: build cleanOutputDir
+	src/testsuite L7dTestCase
 
 endif

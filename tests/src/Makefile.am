@@ -12,6 +12,7 @@ testsuite_SOURCES = \
 	asyncappendertestcase.cpp\
 	drfatestcase.cpp\
 	hierarchythresholdtestcase.cpp\
+	l7dtestcase.cpp\
 	loggertestcase.cpp\
 	main.cpp\
 	minimumtestcase.cpp\

@@ -24,7 +24,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;DLL_EXPORTS;LOG4CXX"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;DLL_EXPORTS;LOG4CXX;LOG4CXX_DLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -94,7 +94,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_USRDLL;DLL_EXPORTS;LOG4CXX"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_USRDLL;DLL_EXPORTS;LOG4CXX;LOG4CXX_DLL"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -161,7 +161,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE"
+				PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_USRDLL;DLL_EXPORTS;UNICODE;LOG4CXX;LOG4CXX_DLL"
 				StringPooling="TRUE"
 				RuntimeLibrary="2"
 				EnableFunctionLevelLinking="TRUE"
@@ -227,7 +227,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE"
+				PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_USRDLL;DLL_EXPORTS;UNICODE;LOG4CXX;LOG4CXX_DLL"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
 				UsePrecompiledHeader="2"
@@ -299,7 +299,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -308,16 +307,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -325,7 +322,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -338,7 +334,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -347,16 +342,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -364,7 +357,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -377,7 +369,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -386,16 +377,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -403,7 +392,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -416,7 +404,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -425,16 +412,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -442,7 +427,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -455,7 +439,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -464,16 +447,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -481,7 +462,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -494,7 +474,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -503,16 +482,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -520,7 +497,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -536,7 +512,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -545,16 +520,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -562,7 +535,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -575,7 +547,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -584,16 +555,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -601,7 +570,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -614,7 +582,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -623,16 +590,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -640,7 +605,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -653,7 +617,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -662,16 +625,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -679,10 +640,12 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\dailyrollingfileappender.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\datagrampacket.cpp">
@@ -692,7 +655,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -701,16 +663,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -718,7 +678,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -731,7 +690,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -740,16 +698,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -757,7 +713,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -770,7 +725,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -779,16 +733,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -796,7 +748,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -809,7 +760,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -818,16 +768,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -835,7 +783,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -848,7 +795,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -857,16 +803,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -874,7 +818,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -887,7 +830,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 						WarningLevel="0"/>
@@ -897,16 +839,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -914,7 +854,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"
 						WarningLevel="0"/>
@@ -928,7 +867,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -937,16 +875,14 @@
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -954,7 +890,6 @@
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1014,7 +949,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1023,16 +957,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1040,7 +972,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1053,7 +984,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1062,16 +992,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1079,7 +1007,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1092,7 +1019,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1101,16 +1027,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1118,7 +1042,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1131,7 +1054,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1140,16 +1062,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1157,7 +1077,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1170,7 +1089,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1179,16 +1097,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1196,7 +1112,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1209,7 +1124,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1218,16 +1132,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1235,7 +1147,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1248,7 +1159,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1257,16 +1167,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1274,7 +1182,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1287,7 +1194,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1296,16 +1202,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1313,7 +1217,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1326,7 +1229,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1335,16 +1237,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1352,7 +1252,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1365,7 +1264,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1374,16 +1272,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1391,7 +1287,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1404,7 +1299,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1413,16 +1307,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1430,10 +1322,12 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\locale.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\logger.cpp">
@@ -1443,7 +1337,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1452,16 +1345,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1469,7 +1360,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1482,7 +1372,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1491,16 +1380,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1508,7 +1395,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1521,7 +1407,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1530,16 +1415,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1547,7 +1430,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1560,7 +1442,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1569,16 +1450,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1586,7 +1465,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1599,7 +1477,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1608,16 +1485,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1625,7 +1500,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1638,7 +1512,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1647,16 +1520,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1664,7 +1535,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1680,7 +1550,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1689,16 +1558,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1706,7 +1573,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1719,7 +1585,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1728,16 +1593,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1745,7 +1608,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1758,7 +1620,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1767,16 +1628,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1784,7 +1643,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1797,7 +1655,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1806,16 +1663,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1823,7 +1678,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1836,7 +1690,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1845,16 +1698,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1862,7 +1713,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1875,7 +1725,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1884,16 +1733,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1901,7 +1748,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1914,7 +1760,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1923,16 +1768,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1940,7 +1783,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1953,7 +1795,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1962,16 +1803,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -1979,7 +1818,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -1992,7 +1830,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2001,16 +1838,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2018,7 +1853,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2031,7 +1865,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2040,16 +1873,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2057,7 +1888,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2070,7 +1900,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2079,16 +1908,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2096,10 +1923,12 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\propertyresourcebundle.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\propertysetter.cpp">
@@ -2109,7 +1938,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2118,16 +1946,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2135,10 +1961,12 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\resourcebundle.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\rollingfileappender.cpp">
@@ -2148,7 +1976,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2157,16 +1984,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2174,7 +1999,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2187,7 +2011,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2196,16 +2019,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2213,7 +2034,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2226,7 +2046,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2235,16 +2054,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2252,7 +2069,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2265,7 +2081,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2274,16 +2089,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2291,7 +2104,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2304,7 +2116,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2313,16 +2124,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2330,7 +2139,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2343,7 +2151,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2352,16 +2159,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2369,7 +2174,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2382,7 +2186,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2391,16 +2194,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2408,7 +2209,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2421,7 +2221,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2430,16 +2229,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2447,7 +2244,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2460,7 +2256,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2469,16 +2264,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2486,7 +2279,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2499,7 +2291,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2508,16 +2299,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2525,7 +2314,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2538,7 +2326,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2547,16 +2334,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2564,7 +2349,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2577,7 +2361,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2586,16 +2369,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2603,7 +2384,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2616,7 +2396,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2625,16 +2404,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2642,7 +2419,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2655,7 +2431,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2664,16 +2439,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2681,10 +2454,12 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\stringhelper.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\stringmatchfilter.cpp">
@@ -2694,7 +2469,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2703,16 +2477,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2720,7 +2492,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2733,7 +2504,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2742,16 +2512,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2759,7 +2527,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2772,7 +2539,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2781,16 +2547,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2798,7 +2562,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2811,7 +2574,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2820,16 +2582,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2837,7 +2597,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2850,7 +2609,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2859,16 +2617,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2876,7 +2632,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2889,7 +2644,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2898,16 +2652,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2915,7 +2667,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2928,7 +2679,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2937,16 +2687,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2954,7 +2702,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2967,7 +2714,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -2976,16 +2722,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -2993,7 +2737,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3006,7 +2749,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3015,16 +2757,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -3032,7 +2772,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3045,7 +2784,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3054,16 +2792,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -3071,7 +2807,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3084,7 +2819,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3093,16 +2827,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -3110,7 +2842,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3123,7 +2854,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3132,16 +2862,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -3149,7 +2877,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3162,7 +2889,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3171,16 +2897,14 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Release|Win32">
 					<Tool
 						Name="VCCLCompilerTool"
 						Optimization="2"
-						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="NDEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"/>
+						AdditionalIncludeDirectories=""/>
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Unicode Debug|Win32">
@@ -3188,7 +2912,6 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 						Name="VCCLCompilerTool"
 						Optimization="0"
 						AdditionalIncludeDirectories=""
-						PreprocessorDefinitions="_DEBUG;WIN32;_WINDOWS;_MBCS;_USRDLL;DLL_EXPORTS;LOG4CXX;UNICODE;$(NoInherit)"
 						BasicRuntimeChecks="3"
 						BrowseInformation="1"/>
 				</FileConfiguration>
@@ -3214,6 +2937,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 			</File>
 			<File
 				RelativePath="..\..\include\log4cxx\consoleappender.h">
+			</File>
+			<File
+				RelativePath="..\..\include\log4cxx\dailyrollingfileappender.h">
 			</File>
 			<File
 				RelativePath="..\..\include\log4cxx\defaultcategoryfactory.h">
@@ -3327,6 +3053,9 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					RelativePath="..\..\include\log4cxx\helpers\loader.h">
 				</File>
 				<File
+					RelativePath="..\..\include\log4cxx\helpers\locale.h">
+				</File>
+				<File
 					RelativePath="..\..\include\log4cxx\helpers\loglog.h">
 				</File>
 				<File
@@ -3360,7 +3089,13 @@ LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppende
 					RelativePath="..\..\include\log4cxx\helpers\properties.h">
 				</File>
 				<File
+					RelativePath="..\..\include\log4cxx\helpers\propertyresourcebundle.h">
+				</File>
+				<File
 					RelativePath="..\..\include\log4cxx\helpers\relativetimedateformat.h">
+				</File>
+				<File
+					RelativePath="..\..\include\log4cxx\helpers\resourcebundle.h">
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\helpers\semaphore.h">

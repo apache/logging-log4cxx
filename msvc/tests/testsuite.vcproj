@@ -494,6 +494,9 @@
 				RelativePath="..\..\tests\src\xml\domtestcase.cpp">
 			</File>
 			<File
+				RelativePath="..\..\tests\src\drfatestcase.cpp">
+			</File>
+			<File
 				RelativePath="..\..\tests\src\util\filter.cpp">
 				<FileConfiguration
 					Name="Debug|Win32">
@@ -591,6 +594,9 @@
 						PreprocessorDefinitions=""
 						BasicRuntimeChecks="3"/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\tests\src\l7dtestcase.cpp">
 			</File>
 			<File
 				RelativePath="..\..\tests\src\util\linenumberfilter.cpp">

@@ -203,6 +203,10 @@ SOURCE=..\..\src\cyclicbuffer.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\dailyrollingfileappender.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\datagrampacket.cpp
 # End Source File
 # Begin Source File
@@ -390,6 +394,10 @@ SOURCE=..\..\src\loader.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\locale.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\logger.cpp
 # End Source File
 # Begin Source File
@@ -462,7 +470,15 @@ SOURCE=..\..\src\propertyconfigurator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\propertyresourcebundle.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\propertysetter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\resourcebundle.cpp
 # End Source File
 # Begin Source File
 
@@ -519,6 +535,10 @@ SOURCE=..\..\src\socketnode.cpp
 # Begin Source File
 
 SOURCE=..\..\src\socketoutputstream.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\stringhelper.cpp
 # End Source File
 # Begin Source File
 
@@ -657,6 +677,10 @@ SOURCE=..\..\include\log4cxx\helpers\loader.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\helpers\locale.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\helpers\loglog.h
 # End Source File
 # Begin Source File
@@ -701,7 +725,15 @@ SOURCE=..\..\include\log4cxx\helpers\properties.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\helpers\propertyresourcebundle.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\helpers\relativetimedateformat.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\resourcebundle.h
 # End Source File
 # Begin Source File
 
@@ -931,6 +963,10 @@ SOURCE=..\..\include\log4cxx\config.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\consoleappender.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\dailyrollingfileappender.h
 # End Source File
 # Begin Source File
 

@@ -3,6 +3,7 @@
 	ProjectType="Visual C++"
 	Version="7.10"
 	Name="static"
+	ProjectGUID="{7BC0D5CE-5FCE-4713-A16D-6CDDAF03ADDA}"
 	SccProjectName=""
 	SccLocalPath="">
 	<Platforms>
@@ -23,7 +24,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;LOG4CXX;UNICODE"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;UNICODE;LOG4CXX;LOG4CXX_STATIC"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
@@ -75,7 +76,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;LOG4CXX"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;LOG4CXX;LOG4CXX_STATIC"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
@@ -126,7 +127,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;LOG4CXX;UNICODE"
+				PreprocessorDefinitions="WIN32;_DEBUG;_LIB;UNICODE;LOG4CXX;LOG4CXX_STATIC"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
@@ -178,7 +179,7 @@
 				Optimization="2"
 				InlineFunctionExpansion="1"
 				AdditionalIncludeDirectories="../../include"
-				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;LOG4CXX"
+				PreprocessorDefinitions="WIN32;NDEBUG;_LIB;LOG4CXX;LOG4CXX_STATIC"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				EnableFunctionLevelLinking="TRUE"
@@ -597,6 +598,9 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\dailyrollingfileappender.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\datagrampacket.cpp">
@@ -1226,6 +1230,9 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\locale.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\logger.cpp">
@@ -1860,6 +1867,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\propertyresourcebundle.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\propertysetter.cpp">
 				<FileConfiguration
 					Name="Unicode Release|Win32">
@@ -1895,6 +1905,9 @@
 						AdditionalIncludeDirectories=""
 						PreprocessorDefinitions=""/>
 				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="..\..\src\resourcebundle.cpp">
 			</File>
 			<File
 				RelativePath="..\..\src\rollingfileappender.cpp">
@@ -2415,6 +2428,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\stringhelper.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\stringmatchfilter.cpp">
 				<FileConfiguration
 					Name="Unicode Release|Win32">
@@ -2918,6 +2934,9 @@
 				RelativePath="..\..\include\log4cxx\consoleappender.h">
 			</File>
 			<File
+				RelativePath="..\..\include\log4cxx\dailyrollingfileappender.h">
+			</File>
+			<File
 				RelativePath="..\..\include\log4cxx\defaultcategoryfactory.h">
 			</File>
 			<File
@@ -3040,6 +3059,9 @@
 					RelativePath="..\..\include\log4cxx\helpers\loader.h">
 				</File>
 				<File
+					RelativePath="..\..\include\log4cxx\helpers\locale.h">
+				</File>
+				<File
 					RelativePath="..\..\include\log4cxx\helpers\loglog.h">
 				</File>
 				<File
@@ -3070,7 +3092,13 @@
 					RelativePath="..\..\include\log4cxx\helpers\properties.h">
 				</File>
 				<File
+					RelativePath="..\..\include\log4cxx\helpers\propertyresourcebundle.h">
+				</File>
+				<File
 					RelativePath="..\..\include\log4cxx\helpers\relativetimedateformat.h">
+				</File>
+				<File
+					RelativePath="..\..\include\log4cxx\helpers\resourcebundle.h">
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\helpers\semaphore.h">

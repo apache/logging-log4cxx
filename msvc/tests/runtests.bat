@@ -50,6 +50,10 @@ echo ********** CyclicBuffer **********
 call ..\msvc\tests\clean.bat
 ..\msvc\bin\%1\testsuite CyclicBufferTestCase
 
+echo ********** DRFA **********
+call ..\msvc\tests\clean.bat
+..\msvc\bin\%1\testsuite DRFATestCase
+
 echo ********** OptionConverter **********
 call ..\msvc\tests\clean.bat
 ..\msvc\bin\%1\testsuite OptionConverterTestCase
@@ -65,6 +69,10 @@ call ..\msvc\tests\clean.bat
 echo ********** SocketServer **********
 call ..\msvc\tests\clean.bat
 ..\msvc\bin\%1\testsuite SocketServerTestCase
+
+echo ********** L7d **********
+call ..\msvc\tests\clean.bat
+..\msvc\bin\%1\testsuite L7dTestCase
 
 cd ..\msvc\tests
 

@@ -45,7 +45,6 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GX /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# SUBTRACT CPP /O<none>
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -119,7 +118,6 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
 # ADD CPP /nologo /MD /W3 /GX /Zi /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "UNICODE" /YX /FD /c
-# SUBTRACT CPP /O<none>
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -178,6 +176,10 @@ SOURCE=..\..\tests\src\xml\domtestcase.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\tests\src\drfatestcase.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\tests\src\util\filter.cpp
 # End Source File
 # Begin Source File
@@ -187,6 +189,10 @@ SOURCE=..\..\tests\src\hierarchythresholdtestcase.cpp
 # Begin Source File
 
 SOURCE=..\..\tests\src\util\iso8601filter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\tests\src\l7dtestcase.cpp
 # End Source File
 # Begin Source File
 
