@@ -22,6 +22,14 @@
 #ifndef _LOG4CXX_LEVEL_H
 #define _LOG4CXX_LEVEL_H
 
+//
+//   ERROR may be defined by windows.h and will conflict
+//      with the defintion of log4cxx::Level::ERROR below. 
+//      log4cxx::level::getError() can be used in place of log4cxx::Level::ERROR.
+#if defined(ERROR)
+#error Preprocessor macro ERROR defined (likely by windows.h).  Include windows.h later or #undef ERROR.
+#endif
+
 
 namespace log4cxx
 {
