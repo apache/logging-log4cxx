@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 			Usage(A2T(argv[0]), _T("Wrong number of arguments."));
 		
 		
-		NDC::push("some context");
+		NDC::push(_T("some context"));
 
 		double delta;
 		String msg = _T("ABCDEGHIJKLMNOPQRSTUVWXYZabcdeghijklmnopqrstuvwxyz1234567890");

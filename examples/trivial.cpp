@@ -15,7 +15,7 @@ int main()
 		BasicConfigurator::configure();
  		LoggerPtr rootLogger = Logger::getRootLogger();
 
-		NDC::push("trivial context");
+		NDC::push(_T("trivial context"));
 
 		rootLogger->debug(_T("debug message"));
 		rootLogger->info(_T("info message"));
