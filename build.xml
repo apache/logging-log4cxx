@@ -48,13 +48,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-windows" value="true">
                 <os family="windows"/>
         </condition>
-        <!-- hack until I identify a link problem   -->
-    <property name="aprutil.lib.name" value=""/>
 </target>
 
 
 <target name="win-init" depends="os-detect" if="is-windows">
     <property name="apr.dir" location="/apr-1"/>
+    <property name="aprutil.dir" location="/apr-1"/>
     <property name="apr.include.dir" location="${apr.dir}/apr/include"/>
     <property name="apr.lib.name" value="apr-1"/>
     <property name="aprutil.lib.name" value="aprutil-1"/>
@@ -86,11 +85,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="unix-init" depends="os-detect" if="is-unix">
     <property name="apr.dir" location="/usr/local/apr"/>
     <property name="apr.include.dir" location="${apr.dir}/include/apr-1"/>
+    <property name="aprutil.dir" location="/usr/local/apr"/>
+    <property name="aprutil.include.dir" location="${aprutil.dir}/include/apr-1"/>
     <property name="apriconv.include.dir" location="/home/curta/apr-1/apr-iconv-1.0.0/include"/>
     <property name="apr.lib.name" value="apr-1"/>
     <property name="aprutil.lib.name" value="aprutil-1"/>
     <property name="apriconv.lib.name" value="apriconv"/>
     <property name="apr.lib.dir" location="${apr.dir}/lib"/>
+    <property name="aprutil.lib.dir" location="${aprutil.dir}/lib"/>
     <property name="apriconv.lib.dir" location="${apr.lib.dir}"/>
         <property name="compiler" value="gcc"/>
         <condition property="is-gcc" value="true">
@@ -204,6 +206,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <includepath path="mock"/>
                 <includepath path="include"/>
                 <includepath path="${apr.include.dir}"/>
+                <includepath path="${aprutil.include.dir}"/>
                 <project outfile="${build.dir}/header-check/header-check"
                     type="cbuilderx" if="gen-cbx"/>
          </cc>
@@ -223,18 +226,21 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
+        <includepath path="${aprutil.include.dir}"/>
         <includepath path="${apriconv.include.dir}"/>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
         <defineset define="LOG4CXX"/>
-                <defineset define="APR_DECLARE_STATIC"/>
-                <defineset define="WIN32" if="is-windows"/>
+        <defineset define="APR_DECLARE_STATIC"/>
+        <defineset define="APU_DECLARE_STATIC"/>
+        <defineset define="WIN32" if="is-windows"/>
         <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="xml2" if="is-unix"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
+
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
@@ -260,10 +266,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               unless="apr.lib.dir"/>
+
+        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
@@ -318,10 +325,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
@@ -352,10 +359,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
@@ -399,10 +406,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <defineset define="WIN32" if="is-windows"/>
         <includepath path="${boost.include.dir}" if="boost.include.dir"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
@@ -438,10 +445,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <defineset define="WIN32" if="is-windows"/>
                 <defineset define="APR_DECLARE_STATIC"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
@@ -477,10 +484,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <defineset define="WIN32" if="is-windows"/>
                 <defineset define="APR_DECLARE_STATIC"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
@@ -522,10 +529,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${boost.include.dir}" if="boost.include.dir"/>
                 <defineset define="APR_DECLARE_STATIC"/>
                 <defineset define="WIN32" if="is-windows"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name} ${aprutil.lib.name}"
-               unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}" unless="apr.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}" unless="aprutil.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
