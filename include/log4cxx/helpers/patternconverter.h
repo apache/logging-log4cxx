@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPER_PATTERN_CONVERTER_H
 #define _LOG4CXX_HELPER_PATTERN_CONVERTER_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 

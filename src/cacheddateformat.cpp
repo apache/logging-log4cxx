@@ -21,6 +21,7 @@
 #include <apr_time.h>
 #include <log4cxx/helpers/pool.h>
 
+using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 CachedDateFormat::CachedDateFormat(DateFormatPtr& formatter) :

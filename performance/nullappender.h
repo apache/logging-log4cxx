@@ -18,7 +18,7 @@
 #define _LOG4CXX_PERFORMANCE_NULL_APPENDER_H
 
 #include <log4cxx/portability.h>
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/appenderskeleton.h>
 
 

@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_FILEWATCHDOG_H
 #define _LOG4CXX_HELPERS_FILEWATCHDOG_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <time.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/thread.h>

@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPER_PATTERN_PARSER_H
 #define _LOG4CXX_HELPER_PATTERN_PARSER_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/formattinginfo.h>

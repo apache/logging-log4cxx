@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <limits.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>

@@ -21,7 +21,7 @@
 
 #ifdef LOG4CXX_HAVE_XML
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <map>

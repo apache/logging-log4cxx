@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_SPI_APPENDER_ATTACHABLE_H_
 #define _LOG4CXX_SPI_APPENDER_ATTACHABLE_H_
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <vector>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>

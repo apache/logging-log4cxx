@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPER_INETADDRESS_H
 #define _LOG4CXX_HELPER_INETADDRESS_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <vector>
 #include <log4cxx/helpers/exception.h>
 

@@ -18,7 +18,7 @@
 #define _LOG4CXX_HELPERS_STRING_HELPER_H
 
 #include <log4cxx/portability.h>
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <stdarg.h>
 
 class apr_pool_t;

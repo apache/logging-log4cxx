@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_STRING_TOKENIZER_H
 #define _LOG4CXX_HELPERS_STRING_TOKENIZER_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
 
 namespace log4cxx

@@ -18,7 +18,7 @@
 #define _LOG4CXX_FILE_H
 
 #include <log4cxx/portability.h>
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 
 class apr_file_t;
 class apr_pool_t;

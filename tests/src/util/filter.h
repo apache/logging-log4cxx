@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_TESTS_UTIL_FILTER_H
 #define _LOG4CXX_TESTS_UTIL_FILTER_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
 
 #define BASIC_PAT LOG4CXX_STR("\\[\\d*\\] (FATAL|ERROR|WARN|INFO|DEBUG)")

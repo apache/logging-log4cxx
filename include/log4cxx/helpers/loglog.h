@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_LOG_LOG_H
 #define _LOG4CXX_HELPERS_LOG_LOG_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <exception>
 #include <log4cxx/portability.h>
 

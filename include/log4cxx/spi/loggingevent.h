@@ -18,7 +18,7 @@
 #define _LOG4CXX_SPI_LOGGING_EVENT_H
 
 #include <log4cxx/helpers/objectptr.h>
-#include <log4cxx//string.h>
+#include <log4cxx/logstring.h>
 #include <time.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/mdc.h>

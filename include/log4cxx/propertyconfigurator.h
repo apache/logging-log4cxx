@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/portability.h>
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
 #include <map>
 #include <log4cxx/file.h>

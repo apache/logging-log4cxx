@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 class apr_pool_t;
 
 namespace log4cxx

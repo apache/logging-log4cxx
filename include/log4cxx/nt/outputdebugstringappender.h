@@ -40,7 +40,7 @@ namespace log4cxx
 
 			virtual void close() {}
 
-			virtual void append(const spi::LoggingEventPtr& event);
+			virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 		};
 	}
 }

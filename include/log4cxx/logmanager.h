@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_LOG_MANAGER_H
 #define _LOG4CXX_LOG_MANAGER_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <vector>
 #include <log4cxx/spi/repositoryselector.h>
 

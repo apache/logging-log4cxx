@@ -12,7 +12,7 @@ libhelpers_a_SOURCES = \
 	cyclicbuffertestcase.cpp\
         datetimedateformattestcase.cpp \
         iso8601dateformattestcase.cpp \
-	optionconvertertestcase.cpp
+	optionconvertertestcase.cpp       \
         relativetimedateformattestcase.cpp \
         stringtokenizertestcase.cpp \
         timezonetestcase.cpp

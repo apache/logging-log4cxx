@@ -45,6 +45,7 @@ File::File(const File& src)
 File& File::operator=(const File& src) {
   internalName.assign(src.internalName);
   mbcsName.assign(src.mbcsName);
+  return *this;
 }
 
 

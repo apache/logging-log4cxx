@@ -76,7 +76,7 @@
 * 1. All inclusions of log4cxx/helpers/tchar.h
 *       and use of TCHAR, log4cxx::String and _T
 *       were removed from log4cxx.
-* 2. log4cxx/string.h was added to define the
+* 2. log4cxx/logstring.h was added to define the
 *     implementation character model using the log4cxx::logchar
 *     and log4cxx::LogString typedefs and LOG4CXX_STR macro.
 * 3. Methods commonly used by calling applications were defined

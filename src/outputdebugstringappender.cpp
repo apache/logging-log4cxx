@@ -16,6 +16,7 @@
 
 #if defined(_WIN32)
 #include <log4cxx/nt/outputdebugstringappender.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::nt;
@@ -25,14 +26,13 @@ IMPLEMENT_LOG4CXX_OBJECT(OutputDebugStringAppender)
 OutputDebugStringAppender::OutputDebugStringAppender() {
 }
 
-void OutputDebugStringAppender::append(const spi::LoggingEventPtr& event)
+void OutputDebugStringAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
 {
-	StringBuffer oss;
-	layout->format(oss, event);
-	String sz = oss.str();
-	const TCHAR * s = sz.c_str();
-
-	::OutputDebugString(s);
+	LogString buf;
+	layout->format(buf, event, p);
+	std::wstring wstr;
+	log4cxx::helpers::Transcoder::encode(buf, wstr);
+	::OutputDebugStringW(wstr.c_str());
 }
 
 #endif

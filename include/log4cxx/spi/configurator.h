@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_SPI_CONFIGURATOR_H
 #define _LOG4CXX_SPI_CONFIGURATOR_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/objectptr.h>
 

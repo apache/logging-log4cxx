@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_SOCKET_H
 #define _LOG4CXX_HELPERS_SOCKET_H
 
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/socketimpl.h>
 #include <log4cxx/helpers/socketinputstream.h>
 #include <log4cxx/helpers/socketoutputstream.h>

@@ -18,7 +18,7 @@
 #define _LOG4CXX_HELPERS_LOADER_H
 
 #include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/string.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
 
 typedef size_t apr_size_t;
