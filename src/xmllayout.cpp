@@ -99,7 +99,7 @@ void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
 	if(locationInfo)
 	{
 		USES_CONVERSION;
-		output << _T("<log4j:locationInfo file=\"");
+		output << _T("<log4j:locationInfo class=\"\" method=\"\" file=\"");
 		output << A2T(event->getFile());
 		output << _T("\" line=\"");
 		output << event->getLine();

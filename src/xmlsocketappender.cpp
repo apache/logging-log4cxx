@@ -91,6 +91,8 @@ void XMLSocketAppender::setOption(const String& option,
 	else if (StringHelper::equalsIgnoreCase(option, _T("locationinfo")))
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, false));
+		XMLLayoutPtr xmlLayout = layout;
+		xmlLayout->setLocationInfo(locationInfo);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, _T("reconnectiondelay")))
 	{
