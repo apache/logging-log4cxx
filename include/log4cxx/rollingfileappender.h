@@ -67,6 +67,8 @@ namespace log4cxx
 		destination for this appender.
 		<p>The file will be appended to.  */
 		RollingFileAppender(const LayoutPtr& layout, const String& fileName);
+		
+		~RollingFileAppender();
 
 		/**
 		Returns the value of the <b>MaxBackupIndex</b> option.
