@@ -48,7 +48,7 @@ PatternLayout::PatternLayout(const LogString& pattern) : pattern(pattern)
 
 void PatternLayout::setConversionPattern(const LogString& conversionPattern)
 {
-    pattern = OptionConverter::convertSpecialChars(conversionPattern);
+    pattern = conversionPattern;
     Pool pool;
     activateOptions(pool);
 }
@@ -77,7 +77,7 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
                LOG4CXX_STR("CONVERSIONPATTERN"),
                LOG4CXX_STR("conversionpattern")))
         {
-                setConversionPattern(value);
+                pattern = OptionConverter::convertSpecialChars(value);
         }
         else if (StringHelper::equalsIgnoreCase(option,
                LOG4CXX_STR("TIMEZONE"),
