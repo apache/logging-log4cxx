@@ -91,7 +91,7 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
 		{
 			LogLog::debug(
 				_T("Using configuration file [") +configurationOptionStr 
-				+ _T("] for automatic log4j configuration"));
+				+ _T("] for automatic log4cxx configuration"));
 			
 			OptionConverter::selectAndConfigure(
 				configurationOptionStr, 
