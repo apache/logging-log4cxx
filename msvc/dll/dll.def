@@ -114,6 +114,10 @@ EXPORTS
 ?wait@ObjectImpl@helpers@log4cxx@@UAEXXZ
 ?notify@ObjectImpl@helpers@log4cxx@@UAEXXZ
 
+;class ODBCAppender
+??0ODBCAppender@db@log4cxx@@QAE@XZ
+?setSql@ODBCAppender@db@log4cxx@@QAEXABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
+
 ;class OptionConverter
 ?toFileSize@OptionConverter@helpers@log4cxx@@SAJABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@J@Z
 

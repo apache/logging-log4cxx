@@ -4,7 +4,7 @@
 
 # TARGTYPE "Win32 (x86) Dynamic-Link Library" 0x0102
 
-CFG=dll - Win32 Debug
+CFG=dll - Win32 Unicode Debug
 !MESSAGE This is not a valid makefile. To build this project using NMAKE,
 !MESSAGE use the Export Makefile command and run
 !MESSAGE 
@@ -13,12 +13,14 @@ CFG=dll - Win32 Debug
 !MESSAGE You can specify a configuration when running NMAKE
 !MESSAGE by defining the macro CFG on the command line. For example:
 !MESSAGE 
-!MESSAGE NMAKE /f "dll.mak" CFG="dll - Win32 Debug"
+!MESSAGE NMAKE /f "dll.mak" CFG="dll - Win32 Unicode Debug"
 !MESSAGE 
 !MESSAGE Possible choices for configuration are:
 !MESSAGE 
 !MESSAGE "dll - Win32 Release" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE "dll - Win32 Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "dll - Win32 Unicode Debug" (based on "Win32 (x86) Dynamic-Link Library")
+!MESSAGE "dll - Win32 Unicode Release" (based on "Win32 (x86) Dynamic-Link Library")
 !MESSAGE 
 
 # Begin Project
@@ -54,7 +56,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /machine:I386
-# ADD LINK32 advapi32.lib Ws2_32.lib /nologo /dll /pdb:"../Bin/Release/log4cxx.pdb" /debug /machine:I386 /out:"../Bin/Release/log4cxx.dll" /implib:"../Lib/Release/log4cxx.lib"
+# ADD LINK32 advapi32.lib Ws2_32.lib odbc32.lib /nologo /dll /pdb:"../Bin/Release/log4cxx.pdb" /debug /machine:I386 /out:"../Bin/Release/log4cxx.dll" /implib:"../Lib/Release/log4cxx.lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "dll - Win32 Debug"
@@ -81,7 +83,67 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /dll /debug /machine:I386 /pdbtype:sept
-# ADD LINK32 advapi32.lib Ws2_32.lib /nologo /dll /pdb:"../Bin/Debug/log4cxx.pdb" /map /debug /machine:I386 /out:"../Bin/Debug/log4cxx.dll" /implib:"../Lib/Debug/log4cxx.lib" /pdbtype:sept
+# ADD LINK32 advapi32.lib Ws2_32.lib odbc32.lib /nologo /dll /pdb:"../Bin/Debug/log4cxx.pdb" /map /debug /machine:I386 /out:"../Bin/Debug/log4cxx.dll" /implib:"../Lib/Debug/log4cxx.lib" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Debug"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 1
+# PROP BASE Output_Dir "dll___Win32_Unicode_Debug"
+# PROP BASE Intermediate_Dir "dll___Win32_Unicode_Debug"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 1
+# PROP Output_Dir "Unicode_D"
+# PROP Intermediate_Dir "Unicode_D"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I "../../include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /FR /YX /FD /GZ /c
+# ADD CPP /nologo /MDd /W3 /Gm /GX /Zi /Od /I "../../include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /D "UNICODE" /FR /YX /FD /GZ /c
+# ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x40c /d "_DEBUG"
+# ADD RSC /l 0x40c /d "_DEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 advapi32.lib Ws2_32.lib /nologo /dll /pdb:"../Bin/Debug/log4cxx.pdb" /map /debug /machine:I386 /out:"../Bin/Debug/log4cxx.dll" /implib:"../Lib/Debug/log4cxx.lib" /pdbtype:sept
+# SUBTRACT BASE LINK32 /pdb:none
+# ADD LINK32 advapi32.lib Ws2_32.lib odbc32.lib /nologo /dll /pdb:"../Bin/Unicode_D/log4cxx.pdb" /map /debug /machine:I386 /out:"../Bin/Unicode_D/log4cxx.dll" /implib:"../Lib/Unicode_D/log4cxx.lib" /pdbtype:sept
+# SUBTRACT LINK32 /pdb:none
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Release"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "dll___Win32_Unicode_Release"
+# PROP BASE Intermediate_Dir "dll___Win32_Unicode_Release"
+# PROP BASE Ignore_Export_Lib 0
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "Unicode_R"
+# PROP Intermediate_Dir "Unicode_R"
+# PROP Ignore_Export_Lib 0
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MD /W3 /GX /Zi /O2 /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /FD /c
+# SUBTRACT BASE CPP /YX /Yc /Yu
+# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /I "../../include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "DLL_EXPORTS" /D "LOG4CXX" /D "UNICODE" /FD /c
+# SUBTRACT CPP /YX /Yc /Yu
+# ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
+# ADD BASE RSC /l 0x40c /d "NDEBUG"
+# ADD RSC /l 0x40c /d "NDEBUG"
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LINK32=link.exe
+# ADD BASE LINK32 advapi32.lib Ws2_32.lib /nologo /dll /pdb:"../Bin/Release/log4cxx.pdb" /debug /machine:I386 /out:"../Bin/Release/log4cxx.dll" /implib:"../Lib/Release/log4cxx.lib"
+# SUBTRACT BASE LINK32 /pdb:none
+# ADD LINK32 advapi32.lib Ws2_32.lib odbc32.lib /nologo /dll /pdb:"../Bin/Unicode_R/log4cxx.pdb" /debug /machine:I386 /out:"../Bin/Unicode_R/log4cxx.dll" /implib:"../Lib/Unicode_R/log4cxx.lib"
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
@@ -90,6 +152,8 @@ LINK32=link.exe
 
 # Name "dll - Win32 Release"
 # Name "dll - Win32 Debug"
+# Name "dll - Win32 Unicode Debug"
+# Name "dll - Win32 Unicode Release"
 # Begin Group "Source Files"
 
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
@@ -143,12 +207,53 @@ SOURCE=.\dll.cpp
 
 # ADD CPP /w /W0
 
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Debug"
+
+# ADD BASE CPP /w /W0
+# ADD CPP /w /W0
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Release"
+
 !ENDIF 
 
 # End Source File
 # Begin Source File
 
 SOURCE=.\dll.def
+
+!IF  "$(CFG)" == "dll - Win32 Release"
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Debug"
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Release"
+
+# PROP Exclude_From_Build 1
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=.\dllu.def
+
+!IF  "$(CFG)" == "dll - Win32 Release"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Debug"
+
+# PROP Exclude_From_Build 1
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Debug"
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Release"
+
+!ENDIF 
+
 # End Source File
 # Begin Source File
 
@@ -190,6 +295,52 @@ InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
 	MC $(InputPath) -r $(IntDir)  -h $(IntDir) \
+	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
+	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
+	
+
+"$(IntDir)\EventLogCategories.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(IntDir)\EventLogCategories.res" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(TargetDir)\NTEventLogAppender.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Debug"
+
+# Begin Custom Build - Compiling EventLog message file
+IntDir=.\Unicode_D
+TargetDir=\log4cxx-0.1.0\msvc\Bin\Unicode_D
+InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
+
+BuildCmds= \
+	MC $(InputPath) -r $(IntDir)  -h $(IntDir) \
+	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
+	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
+	
+
+"$(IntDir)\EventLogCategories.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(IntDir)\EventLogCategories.res" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(TargetDir)\NTEventLogAppender.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "dll - Win32 Unicode Release"
+
+# Begin Custom Build - Compiling EventLog message file
+IntDir=.\Unicode_R
+TargetDir=\log4cxx-0.1.0\msvc\Bin\Unicode_R
+InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
+
+BuildCmds= \
+	MC $(InputPath) -r $(IntDir) \
 	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
 	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
 	
@@ -286,6 +437,10 @@ SOURCE=..\..\src\nteventlogappender.cpp
 # Begin Source File
 
 SOURCE=..\..\src\objectimpl.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\odbcappender.cpp
 # End Source File
 # Begin Source File
 
@@ -673,6 +828,14 @@ SOURCE=..\..\include\log4cxx\nt\nteventlogappender.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\config\propertysetter.h
+# End Source File
+# End Group
+# Begin Group "db"
+
+# PROP Default_Filter "h"
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\db\odbcappender.h
 # End Source File
 # End Group
 # Begin Source File
