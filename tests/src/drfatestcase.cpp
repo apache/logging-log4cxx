@@ -33,14 +33,14 @@ public:
 	{
 		RollingCalendar rc;
 	   
-		/*CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_DAY,
+		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_DAY,
 			rc.computeTriggeringPeriod(_T("%Y-%m-%d.log")));
 	
 		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_MINUTE,
 			rc.computeTriggeringPeriod(_T("%Y-%m-%d %M.log")));
 
 		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_HOUR,
-			rc.computeTriggeringPeriod(_T("%Y-%m-%d %H.log")));*/
+			rc.computeTriggeringPeriod(_T("%Y-%m-%d %H.log")));
     
 		CPPUNIT_ASSERT_EQUAL(RollingCalendar::TOP_OF_MONTH,
 			rc.computeTriggeringPeriod(_T("%Y-%m.log")));
@@ -149,14 +149,14 @@ public:
 						
 						if (dltState0 == dltState1)
 						{
-							CPPUNIT_ASSERT_EQUAL((h + 1) % 24, nextTime->tm_hour);
+							CPPUNIT_ASSERT_EQUAL((tm.tm_hour + 1) % 24, nextTime->tm_hour);
 						} 
 						else 
 						{
 							// returning to standard time
 							if (dltState0) 
 							{
-								CPPUNIT_ASSERT_EQUAL(h, nextTime->tm_hour);
+								CPPUNIT_ASSERT_EQUAL(tm.tm_hour, nextTime->tm_hour);
 							} 
 							else 
 							{
@@ -164,9 +164,9 @@ public:
 							}
 						}
 
-						if (h == 23)
+						if (tm.tm_hour == 23)
 						{
-							CPPUNIT_ASSERT_EQUAL((d + 1) % 32, nextTime->tm_mday);
+							CPPUNIT_ASSERT_EQUAL(d % 31 + 1, nextTime->tm_mday);
 							if (d == 31)
 							{
 								CPPUNIT_ASSERT_EQUAL((M31[i] + 1) % 12, nextTime->tm_mon);
@@ -187,7 +187,5 @@ public:
 		}
 	}
 };
-
-
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DRFATestCase);
