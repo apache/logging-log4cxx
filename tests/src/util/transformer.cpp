@@ -61,11 +61,11 @@ void Transformer::transform(const File& in, const File& out,
 void Transformer::transform(const File& in, const File& out,
         const log4cxx::Filter::PatternList& patterns)
 {
-     apr_pool_t* pool;
-     apr_status_t stat = apr_pool_create(&pool, NULL);
+    {
+       apr_pool_t* pool;
+       apr_status_t stat = apr_pool_create(&pool, NULL);
 
 
-     if (patterns.size() == 0) {
         //
         //    fairly naive file copy code
         //
@@ -91,7 +91,14 @@ void Transformer::transform(const File& in, const File& out,
                 assert(stat == 0);
             }
         }
-     } else {
+        stat = apr_file_close(child_out);
+        assert(stat == 0);
+        apr_pool_destroy(pool);
+     }
+
+     if (patterns.size() > 0) {
+        apr_pool_t* pool;
+        apr_status_t stat = apr_pool_create(&pool, NULL);
         //
         //   if there are patterns, invoke sed to execute the replacements
         //
@@ -113,34 +120,41 @@ void Transformer::transform(const File& in, const File& out,
         const char** args = (const char**)
           apr_palloc(pool, 6 * sizeof(*args));
         int i = 0;
-        
+
         //
         //   write the regex's to a temporary file since they
         //      may get mangled if passed as parameters
         //
         apr_file_t* regexFile;
         char regexName[400];
-        
+
         const char* tmpDir;
         stat = apr_temp_dir_get(&tmpDir, pool);
-        
+
         strcpy(regexName, tmpDir);
         strcat(regexName, "/regexpXXXXXX");
-        stat = apr_file_mktemp(&regexFile, regexName, APR_WRITE | APR_CREATE, pool);
+
+        apr_pool_t* regexPool;
+        stat = apr_pool_create(&regexPool, pool);
+
+        stat = apr_file_mktemp(&regexFile, regexName, APR_WRITE | APR_CREATE, regexPool);
         assert(stat == 0);
-        
+
         args[i++] = "-f";
         const char* tmpName;
         stat = apr_file_name_get(&tmpName, regexFile);
         assert(stat == 0);
-        args[i++] = tmpName;
-        
+        char* tmpName2 = (char*) apr_palloc(pool, strlen(tmpName) + 1);
+        strcpy(tmpName2, tmpName);
+        args[i++] = tmpName2;
+
+        args[i++] = "-i";
         //
         //    specify the input file
-        args[i++] = in.getOSName().c_str();
+        args[i++] = out.getOSName().c_str();
         args[i] = NULL;
 
-        
+
         std::string tmp;
         for (log4cxx::Filter::PatternList::const_iterator iter = patterns.begin();
           iter != patterns.end();
@@ -153,18 +167,14 @@ void Transformer::transform(const File& in, const File& out,
           apr_file_puts(tmp.c_str(), regexFile);
         }
         apr_file_close(regexFile);
-
+        apr_pool_destroy(regexPool);
 
 
         //
-        //    set the output stream to go to the out file
+        //    set the output stream to go to the console
         //
         apr_file_t* child_out;
-        stat = apr_file_open(&child_out, 
-             out.getOSName().c_str(),
-             APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE, 
-             APR_OS_DEFAULT, 
-             pool);
+        stat = apr_file_open_stdout(&child_out, pool);
         assert(stat == 0);
 
         stat =  apr_procattr_child_out_set(attr, child_out, NULL);
@@ -187,15 +197,16 @@ void Transformer::transform(const File& in, const File& out,
         for(const char** arg = args; *arg != NULL; arg++) {
             std::cout << ' ' << *arg;
         }
-        std::cout << " > " << out.getOSName(); 
+        std::cout << std::endl;
 
         apr_proc_t pid;
         stat = apr_proc_create(&pid,"sed", args, NULL, attr, pool);
         assert(stat == 0);
 
         apr_proc_wait(&pid, NULL, NULL, APR_WAIT);
+        apr_pool_destroy(pool);
+
      }
-     apr_pool_destroy(pool);
 
 
 }
