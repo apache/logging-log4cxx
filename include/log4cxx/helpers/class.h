@@ -53,6 +53,7 @@ namespace log4cxx
 		{
 		public:
 			Class(const String& name);
+			virtual ~Class();
 			virtual ObjectPtr newInstance() const;
 			const String& toString() const;
 			const String& getName() const;

@@ -33,6 +33,7 @@ namespace log4cxx
 		public:
 			DateFormat(const String& dateFormat);
 			DateFormat(const String& dateFormat, const TimeZonePtr& timeZone);
+			virtual ~DateFormat();
 			virtual void format(ostream& os, int64_t time) const;
 			String format(int64_t timeMillis) const;
 

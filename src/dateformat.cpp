@@ -50,6 +50,10 @@ DateFormat::DateFormat(const String& dateFormat, const TimeZonePtr& timeZone)
 	}
 }
 
+DateFormat::~DateFormat()
+{
+}
+
 void DateFormat::format(ostream& os, int64_t timeMillis) const
 {
     TCHAR buffer[255];

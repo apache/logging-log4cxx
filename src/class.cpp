@@ -47,6 +47,10 @@ Class::Class(const String& name) : name(name)
 	registerClass(this);
 }
 
+Class::~Class()
+{
+}
+
 const String& Class::toString() const
 {
 	return name;
