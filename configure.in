@@ -75,16 +75,18 @@ case "$ac_with_thread" in
 	AC_CHECK_HEADER(pthread.h,, AC_MSG_ERROR(pthread library not found !))
 	AC_DEFINE(HAVE_PTHREAD, 1, thread support through pthread library.)
 	AC_DEFINE(HAVE_THREAD, 1, thread support)
+
 	case "$host" in
-		*cygwin*)
-		CPPFLAGS="-D_REENTRANT $CPPFLAGS"
-		LIBS="-lpthread $LIBS"
-		;;
-		*)
-		CPPFLAGS="-pthread $CPPFLAGS"
+		*freebsd*)
+		CPPFLAGS="$CPPLAGS -D_THREAD_SAFE"
 		LIBS="-pthread $LIBS"
 		;;
+		*)
+		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
+		LIBS="-lpthread $LIBS"
+		;;
 	esac
+
 	;;
 	no)
 	AC_MSG_RESULT(no)
