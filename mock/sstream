@@ -53,8 +53,8 @@ namespace std {
   template<class Char, class Traits, class Alloc>
   class basic_ostringstream : public basic_ostream<Char, Traits> {
   public:
-      string<Char> str();
-      void str(const string<Char>&);
+      basic_string<Char> str();
+      void str(const basic_string<Char>&);
   };
 }
 

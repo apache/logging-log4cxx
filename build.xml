@@ -556,9 +556,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="Path"
                    value="${build.dir};${env.Path}"/>
     </exec>
@@ -569,9 +569,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="log4j.configuration"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -580,9 +580,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LOG4CXX_CONFIGURATION"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -596,9 +596,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
               failonerror="true">
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <!-- modify log4j.properties so if it has precedence the test fails  -->
@@ -608,9 +608,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase3.exe}" dir="${build.dir}"
               failonerror="true">
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <delete file="${build.dir}/log4cxx.properties"/>
@@ -624,9 +624,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-testcase4.exe}" dir="${build.dir}"
               failonerror="true">
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
     </exec>
 
 </target>
@@ -637,16 +637,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <env key="DYLD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${build.dir}:${apr.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${build.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="Path"
                    value="${build.dir};${env.Path}"/>
     </exec>
 </target>
 
-<target name="test-all" depends="build-log4cxx, run-unittest"/>
+<target name="check" depends="build-log4cxx, run-unittest"/>
 
-<target name="gump" depends="build-log4cxx, header-check, test-all"/>
+<target name="gump" depends="build-log4cxx, check, header-check"/>
 
 </project>
