@@ -58,12 +58,7 @@ void NDC::setCurrentThreadStack(NDC::Stack * stack)
 
 void NDC::clear()
 {
-/*	Stack * stack = getCurrentThreadStack();    
-	if(stack != 0)
-	{
-		delete stack; */
-		setCurrentThreadStack(0);
-	//} 
+	setCurrentThreadStack(0);
 }
 
 NDC::Stack * NDC::cloneStack()
@@ -83,12 +78,6 @@ void NDC::inherit(NDC::Stack * stack)
 {
 	if(stack != 0)
 	{
-/*		Stack * oldStack = getCurrentThreadStack();
-		if(oldStack != 0)
-		{
-			delete oldStack;
-		}
-*/	
 		setCurrentThreadStack(stack);
 	}
 }
@@ -128,7 +117,6 @@ String NDC::pop()
 		stack->pop();
 		if (stack->empty())
 		{
-			delete stack;
 			setCurrentThreadStack(0);
 		}
 		return message;
@@ -175,10 +163,5 @@ void NDC::push(const String& message)
 
 void NDC::remove()
 {
-	Stack * stack = getCurrentThreadStack();
-	if(stack != 0)
-	{
-		delete stack;
-		setCurrentThreadStack(0);
-	}
+	setCurrentThreadStack(0);
 }
