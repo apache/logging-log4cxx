@@ -20,6 +20,7 @@
 #include <apr_pools.h>
 #include <apr_file_io.h>
 #include <assert.h>
+#include <iostream>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -110,28 +111,49 @@ void Transformer::transform(const File& in, const File& out,
         //      using Q as regex separator on s command
         //
         const char** args = (const char**)
-          apr_palloc(pool, (patterns.size()*2 + 3) * sizeof(*args));
+          apr_palloc(pool, 6 * sizeof(*args));
         int i = 0;
-        args[i++] = "-r";
-        std::string tmp;
-        for (log4cxx::Filter::PatternList::const_iterator iter = patterns.begin();
-          iter != patterns.end();
-          iter++) {
-          args[i++] = "-e";
-          tmp = "sQ";
-          tmp.append(iter->first);
-          tmp.append(1, 'Q');
-          tmp.append(iter->second);
-          tmp.append("Qg");
-          char* arg = (char*) apr_palloc(pool, (tmp.length() + 1) * sizeof(char));
-          strcpy(arg, tmp.c_str());
-          args[i++] = arg;
-        }
-
+        
+        //
+        //   write the regex's to a temporary file since they
+        //      may get mangled if passed as parameters
+        //
+        apr_file_t* regexFile;
+        char regexName[400];
+        
+        const char* tmpDir;
+        stat = apr_temp_dir_get(&tmpDir, pool);
+        
+        strcpy(regexName, tmpDir);
+        strcat(regexName, "/regexpXXXXXX");
+        stat = apr_file_mktemp(&regexFile, regexName, APR_WRITE | APR_CREATE, pool);
+        assert(stat == 0);
+        
+        args[i++] = "-f";
+        const char* tmpName;
+        stat = apr_file_name_get(&tmpName, regexFile);
+        assert(stat == 0);
+        args[i++] = tmpName;
+        
         //
         //    specify the input file
         args[i++] = in.getOSName().c_str();
         args[i] = NULL;
+
+        
+        std::string tmp;
+        for (log4cxx::Filter::PatternList::const_iterator iter = patterns.begin();
+          iter != patterns.end();
+          iter++) {
+          tmp = "sQ";
+          tmp.append(iter->first);
+          tmp.append(1, 'Q');
+          tmp.append(iter->second);
+          tmp.append("Qg\n");
+          apr_file_puts(tmp.c_str(), regexFile);
+        }
+        apr_file_close(regexFile);
+
 
 
         //
@@ -148,17 +170,24 @@ void Transformer::transform(const File& in, const File& out,
         stat =  apr_procattr_child_out_set(attr, child_out, NULL);
         assert(stat == 0);
 
+        //
+        //   redirect the child's error stream this processes
+        //
         apr_file_t* child_err;
-        stat = apr_file_open(&child_err, 
-             "sed.err",
-             APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_APPEND, 
-             APR_OS_DEFAULT, 
-             pool);
+        stat = apr_file_open_stderr(&child_err, pool);
         assert(stat == 0);
-
         stat =  apr_procattr_child_err_set(attr, child_err, NULL);
         assert(stat == 0);
 
+
+        //
+        //   echo command to stdout
+        //
+        std::cout << "Running sed";
+        for(const char** arg = args; *arg != NULL; arg++) {
+            std::cout << ' ' << *arg;
+        }
+        std::cout << " > " << out.getOSName(); 
 
         apr_proc_t pid;
         stat = apr_proc_create(&pid,"sed", args, NULL, attr, pool);
