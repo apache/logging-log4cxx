@@ -1,4 +1,4 @@
 base referer
-rect $classlog4cxx_1_1helpers_1_1SocketException.html 11,155 120,174
-rect $classlog4cxx_1_1helpers_1_1IOException.html 24,86 107,105
-rect $classlog4cxx_1_1helpers_1_1Exception.html 31,17 100,35
+rect $classlog4cxx_1_1helpers_1_1SocketException.html 10,168 117,192
+rect $classlog4cxx_1_1helpers_1_1IOException.html 24,93 103,117
+rect $classlog4cxx_1_1helpers_1_1Exception.html 30,19 97,43

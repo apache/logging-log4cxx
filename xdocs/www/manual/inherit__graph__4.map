@@ -1,2 +1,13 @@
 base referer
-rect $classlog4cxx_1_1helpers_1_1FormattingInfo.html 19,5 112,23
+rect $classlog4cxx_1_1helpers_1_1Exception.html 17,79 84,103
+rect $classlog4cxx_1_1helpers_1_1ClassNotFoundException.html 132,7 286,31
+rect $classlog4cxx_1_1helpers_1_1InstantiationException.html 142,55 276,79
+rect $classlog4cxx_1_1helpers_1_1IOException.html 169,103 249,126
+rect $classlog4cxx_1_1helpers_1_1RuntimeException.html 152,150 266,174
+rect $classlog4cxx_1_1helpers_1_1InterruptedIOException.html 342,55 486,79
+rect $classlog4cxx_1_1helpers_1_1SocketException.html 361,103 468,126
+rect $classlog4cxx_1_1helpers_1_1SocketTimeoutException.html 542,55 697,79
+rect $classlog4cxx_1_1helpers_1_1BindException.html 573,103 666,126
+rect $classlog4cxx_1_1helpers_1_1ConnectException.html 562,150 677,174
+rect $classlog4cxx_1_1helpers_1_1IllegalArgumentException.html 334,150 494,174
+rect $classlog4cxx_1_1helpers_1_1NullPointerException.html 349,198 480,222

@@ -1,2 +1,4 @@
 base referer
-rect $classlog4cxx_1_1helpers_1_1Exception.html 31,17 100,36
+rect $classlog4cxx_1_1helpers_1_1IllegalArgumentException.html 6,168 166,192
+rect $classlog4cxx_1_1helpers_1_1NullPointerException.html 190,168 321,192
+rect $classlog4cxx_1_1helpers_1_1Exception.html 137,18 203,42

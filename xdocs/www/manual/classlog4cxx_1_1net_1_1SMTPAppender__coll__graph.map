@@ -1,8 +1,8 @@
 base referer
-rect $classlog4cxx_1_1AppenderSkeleton.html 101,329 227,348
-rect $classlog4cxx_1_1Appender.html 21,180 96,198
-rect $classlog4cxx_1_1spi_1_1OptionHandler.html 7,89 105,108
-rect $classlog4cxx_1_1helpers_1_1Object.html 81,17 135,36
-rect $classlog4cxx_1_1helpers_1_1ObjectImpl.html 101,134 179,153
-rect $classlog4cxx_1_1helpers_1_1ObjectPtrT.html 227,180 301,198
-rect $classlog4cxx_1_1helpers_1_1CyclicBuffer.html 413,329 496,348
+rect $classlog4cxx_1_1AppenderSkeleton.html 100,346 222,370
+rect $classlog4cxx_1_1Appender.html 21,197 93,221
+rect $classlog4cxx_1_1spi_1_1OptionHandler.html 6,96 102,120
+rect $classlog4cxx_1_1helpers_1_1Object.html 80,18 130,42
+rect $classlog4cxx_1_1helpers_1_1ObjectImpl.html 100,146 174,170
+rect $classlog4cxx_1_1helpers_1_1ObjectPtrT.html 217,197 289,221
+rect $classlog4cxx_1_1helpers_1_1CyclicBuffer.html 384,346 464,370

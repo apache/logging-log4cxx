@@ -10,14 +10,28 @@
 
 
 <body>
-  <h1>Log4cxx releases</h1>
+ <h1>Releases Notes</h1>
+ 
+ <p>
+ See <a href="ChangeLog">ChangeLog</a> for details.
+ </p>
+ 
+ <h1>Sources</h1>
 
-
-  <p><a href="http://sourceforge.net/project/showfiles.php?group_id=82335&amp;package_id=84397&amp;release_id=214783">log4cxx-0.9.5</a>
-  </p>
-  
-  <p><a href="http://sourceforge.net/project/showfiles.php?group_id=82335&amp;package_id=84397&amp;release_id=193257">log4cxx-0.9.4</a>
-  </p>
+  <table id="data" cellspacing="0" cellpadding="0" summary="Download">
+     <tr align="center">
+      <th>Date</th>    
+      <th>tar.gz</th>
+    </tr> 
+    <tr align="center">
+      <td>2004-02-04</td>
+        <td><a href="log4cxx-0.9.5.tar.gz">log4cxx-0.9.5.tar.gz</a></td>
+    </tr>
+    <tr align="center">
+      <td>2003-10-25</td>
+        <td><a href="log4cxx-0.9.4.tar.gz">log4cxx-0.9.4.tar.gz</a></td>
+    </tr>
+  </table>
 
   </body>
 </document>

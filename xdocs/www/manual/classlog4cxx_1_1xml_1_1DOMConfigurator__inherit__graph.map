@@ -1,4 +1,4 @@
 base referer
-rect $classlog4cxx_1_1spi_1_1Configurator.html 7,86 89,105
-rect $classlog4cxx_1_1helpers_1_1Object.html 73,17 127,36
-rect $classlog4cxx_1_1helpers_1_1ObjectImpl.html 113,86 191,105
+rect $classlog4cxx_1_1spi_1_1Configurator.html 6,93 86,117
+rect $classlog4cxx_1_1helpers_1_1Object.html 72,18 122,42
+rect $classlog4cxx_1_1helpers_1_1ObjectImpl.html 110,93 185,117
