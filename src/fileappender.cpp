@@ -21,6 +21,7 @@
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
@@ -138,7 +139,9 @@ void FileAppender::activateOptions()
 
 		if(!ofs.is_open())
 		{
-			errorHandler->error(_T("Unable to open file: ") + fileName);
+			RuntimeException e;
+			errorHandler->error(_T("Unable to open file: ") + fileName,
+				e, ErrorCode::FILE_OPEN_FAILURE);
 			return;
 		}
 
