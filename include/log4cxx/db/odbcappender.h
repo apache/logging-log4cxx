@@ -159,6 +159,11 @@ namespace log4cxx
 			ODBCAppender();
 			virtual ~ODBCAppender();
 			
+		    /**
+		    Set options
+		    */
+			virtual void setOption(const tstring& option, const tstring& value);
+
 			/**
 			* Adds the event to the buffer.  When full the buffer is flushed.
 			*/
@@ -225,15 +230,14 @@ namespace log4cxx
 				{ return true; }
 			
 			/**
-			*
+			* Set pre-formated statement eg: insert into LogTable (msg) values ("%m")
 			*/
 			void setSql(const tstring& s);
-			
-			
+
 			/**
 			* Returns pre-formated statement eg: insert into LogTable (msg) values ("%m")
 			*/
-			inline const tstring& getSql() const 
+			inline const tstring& getSql() const
 				{ return sqlStatement; }
 			
 			
@@ -249,7 +253,7 @@ namespace log4cxx
 				{ databasePassword = password; }
 			
 			
-			void setBufferSize(int newBufferSize)
+			inline void setBufferSize(int newBufferSize)
 				{ bufferSize = newBufferSize; }
 			
 			inline const tstring& getUser()
