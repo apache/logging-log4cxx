@@ -37,7 +37,7 @@ The package is distributed under the
 </a>, a fully-fledged open source license certified by the 
 <a href=http://www.opensource.org/> open source</a> initiative. The latest
 log4cxx version, including full-source code, class files and documentation can
-be found at http://sf.net/projects/log4cxx .
+be found at http://logging.apache.org/log4cxx .
 
 Almost every large application includes its own logging or tracing API.
 Inserting log statements into code is a low-tech method for debugging it.
