@@ -1,0 +1,32 @@
+Setting level DEBUG to logger root
+Logger=root	AssignedLevel=DEBUG	InheritedLevel=DEBUG
+Logger=X	AssignedLevel=OFF	InheritedLevel=DEBUG
+Logger=X.Y	AssignedLevel=OFF	InheritedLevel=DEBUG
+Logger=X.Y.Z	AssignedLevel=OFF	InheritedLevel=DEBUG
+
+Setting level DEBUG to logger root
+Setting level INFO to logger X
+Setting level WARN to logger X.Y
+Setting level ERROR to logger X.Y.Z
+Logger=root	AssignedLevel=DEBUG	InheritedLevel=DEBUG
+Logger=X	AssignedLevel=INFO	InheritedLevel=INFO
+Logger=X.Y	AssignedLevel=WARN	InheritedLevel=WARN
+Logger=X.Y.Z	AssignedLevel=ERROR	InheritedLevel=ERROR
+
+Setting level DEBUG to logger root
+Setting level INFO to logger X
+Setting level OFF to logger X.Y
+Setting level ERROR to logger X.Y.Z
+Logger=root	AssignedLevel=DEBUG	InheritedLevel=DEBUG
+Logger=X	AssignedLevel=INFO	InheritedLevel=INFO
+Logger=X.Y	AssignedLevel=OFF	InheritedLevel=INFO
+Logger=X.Y.Z	AssignedLevel=ERROR	InheritedLevel=ERROR
+
+Setting level DEBUG to logger root
+Setting level INFO to logger X
+Setting level OFF to logger X.Y
+Setting level OFF to logger X.Y.Z
+Logger=root	AssignedLevel=DEBUG	InheritedLevel=DEBUG
+Logger=X	AssignedLevel=INFO	InheritedLevel=INFO
+Logger=X.Y	AssignedLevel=OFF	InheritedLevel=INFO
+Logger=X.Y.Z	AssignedLevel=OFF	InheritedLevel=INFO

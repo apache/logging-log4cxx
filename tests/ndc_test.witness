@@ -1,0 +1,7 @@
+1. empty NDC: 
+2. push context1: context1
+3. push context2: context1 context2
+4. push context3: context1 context2 context3
+5. get depth: 3
+6. pop: context3
+7. clear: 

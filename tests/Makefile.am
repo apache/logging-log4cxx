@@ -1,6 +1,8 @@
 SUBDIRS = console_test
-PATTERNLAYOUT = patternlayout_test
 noinst_PROGRAMS = \
+		hierarchy_test\
+		level_test\
+		ndc_test\
         consoleappender_test\
         fileappender_test\
         htmllayout_test\
@@ -9,6 +11,12 @@ noinst_PROGRAMS = \
         patternlayout_test
 
 EXTRA_DIST = \
+  hierarchy_test.witness\
+  hierarchy_test.sh\
+  level_test.witness\
+  level_test.sh\
+  ndc_test.witness\
+  ndc_test.sh\
   consoleappender_test.sh\
   consoleappender_test.witness\
   fileappender_test.sh\
@@ -22,6 +30,15 @@ EXTRA_DIST = \
   patternlayout_test.sh
 
 INCLUDES = -I$(top_srcdir)/include
+
+hierarchy_test_SOURCES = hierarchy_test.cpp
+hierarchy_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+
+level_test_SOURCES = level_test.cpp
+level_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+
+ndc_test_SOURCES = ndc_test.cpp
+ndc_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
 consoleappender_test_SOURCES = consoleappender_test.cpp
 consoleappender_test_LDADD = $(top_builddir)/src/liblog4cxx.la
@@ -42,6 +59,9 @@ patternlayout_test_SOURCES = patternlayout_test.cpp
 patternlayout_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
 TESTS = \
+		hierarchy_test.sh\
+		level_test.sh\
+		ndc_test.sh\
         consoleappender_test.sh\
         fileappender_test.sh\
         htmllayout_test.sh\
