@@ -448,7 +448,7 @@ imaginary application <code>MyApp</code> that uses log4cxx.
 @code
 // file MyApp.cpp
 
-#include "com/foo/bar.h";
+#include "com/foo/bar.h"
 using namespace com::foo;
 
 // include log4cxx header files.
@@ -496,7 +496,7 @@ header file <code>com/foo/bar.h</code> and the source file <code>bar.cpp</code>.
 @code
 // file <com/foo/bar.h>
 
-#include <log4cxx/logger.h>;
+#include <log4cxx/logger.h>
 
 namespace com
 {
@@ -565,7 +565,7 @@ version.
 @code
 // file MyApp2.cpp
 
-#include "com/foo/bar.h";
+#include "com/foo/bar.h"
 using namespace com::foo;
 
 // include log4cxx header files.
