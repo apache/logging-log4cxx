@@ -159,3 +159,49 @@ void Thread::setPriority(int newPriority)
 		break;
 	}
 }
+
+#ifdef __GLIBCPP__
+#include <bits/atomicity.h>
+#endif
+
+long Thread::InterlockedIncrement(volatile long * val)
+{
+#ifdef __GLIBCPP__
+	return __exchange_and_add((volatile _Atomic_word *)val, 1 ) + 1;
+#elif defined(__i386__)
+	long ret;
+	
+	__asm__ __volatile__ ("lock; xaddl %0, %1"
+			      : "=r" (ret), "=m" (*val)
+			      : "0" (1), "m" (*val));
+
+	return ret+1;
+#elif defined(HAVE_MS_THREAD)
+#if _MSC_VER == 1200	// MSDEV 6
+	return ::InterlockedIncrement((long *)val);
+#else
+	return ::InterlockedIncrement(val);
+#endif // _MSC_VER
+#endif
+}
+
+long Thread::InterlockedDecrement(volatile long * val)
+{
+#ifdef __GLIBCPP__
+	return __exchange_and_add((volatile _Atomic_word *)val, -1 ) - 1;
+#elif defined(__i386__)
+	long ret;
+	
+	__asm__ __volatile__ ("lock; xaddl %0, %1"
+			      : "=r" (ret), "=m" (*val)
+			      : "0" (-1), "m" (*val));
+
+	return ret-1;
+#elif defined(HAVE_MS_THREAD)
+#if _MSC_VER == 1200	// MSDEV 6
+	return ::InterlockedDecrement((long *)val);
+#else
+	return ::InterlockedDecrement(val);
+#endif // _MSC_VER
+#endif
+}
