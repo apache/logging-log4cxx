@@ -102,6 +102,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="unix-configure" depends="configure-check" if="is-unix" unless="configure-available">
+        <echo>base.dir = ${base.dir}</echo>
         <exec executable="${base.dir}/configure" dir="${base.dir}"/>
 </target>
 

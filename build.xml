@@ -291,7 +291,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <get src="${apache.dist}/apr/${module}-${module.version}.tar.gz.asc"
          dest="${lib.dir}/${module}-${module.version}.tar.gz.asc"
          usetimestamp="true"/>
-    <exec executable="gpg" dir="${lib.dir}">
+    <exec executable="gpg" dir="${lib.dir}" failifexecutionfails="false">
         <arg value="--verify"/>
         <arg value="${module}-${module.version}.tar.gz.asc"/>
     </exec>
@@ -359,7 +359,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <param name="module" value="apr-util"/>
         <param name="module.version" value="${aprutil.version}"/>
     </antcall>
-    <chmod file="${lib.dir}/apr-util-$aprutil.version}/xml/expat/configure"
+    <chmod file="${lib.dir}/apr-util-${aprutil.version}/xml/expat/configure"
            perm="u+x"/>
 
 </target>
