@@ -43,7 +43,7 @@ RSC=rc.exe
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /Yu"stdafx.h" /FD /c
-# ADD CPP /nologo /MT /W3 /GX /Zi /O2 /Ob1 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "LOG4CXX" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /Zi /O2 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /D "LOG4CXX" /YX /FD /c
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -159,6 +159,10 @@ SOURCE=..\..\src\class.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\condition.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\configurator.cpp
 # End Source File
 # Begin Source File
@@ -264,6 +268,10 @@ SOURCE=..\..\src\mdc.cpp
 # Begin Source File
 
 SOURCE=..\..\src\msxml.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\mutex.cpp
 # End Source File
 # Begin Source File
 
@@ -767,6 +775,10 @@ SOURCE=..\..\include\log4cxx\basicconfigurator.h
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\helpers\condition.h
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\config.h
 # End Source File
 # Begin Source File
@@ -808,6 +820,10 @@ SOURCE=..\..\include\log4cxx\logmanager.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\mdc.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\mutex.h
 # End Source File
 # Begin Source File
 
