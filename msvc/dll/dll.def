@@ -14,6 +14,13 @@ EXPORTS
 ?getStaticClass@ConsoleAppender@log4cxx@@SAABVClass@helpers@2@XZ
 ??0ConsoleAppender@log4cxx@@QAE@V?$ObjectPtrT@VLayout@log4cxx@@@helpers@1@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
 
+;class DateFormat
+?format@DateFormat@helpers@log4cxx@@UAEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@J@Z
+??0DateFormat@helpers@log4cxx@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
+
+;class DateLayout
+?formatDate@DateLayout@helpers@log4cxx@@QAEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@ABVLoggingEvent@spi@3@@Z
+
 ;class DenyAllFilter
 ?getClass@DenyAllFilter@varia@log4cxx@@UBEABVClass@helpers@3@XZ
 ?getStaticClass@DenyAllFilter@varia@log4cxx@@SAABVClass@helpers@3@XZ

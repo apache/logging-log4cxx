@@ -21,10 +21,6 @@ Loggers, Hierarchy, Filters, Appenders, Layouts
 * Configurators:
   DOMConfigurator, PropertyConfigurator
 
-* Nested Diagnostic Context (NDC)
-
-* Mapped Diagnostic Context (MDC)
-
 * Java like objects with dynamic cast and instanciation. Custom objects can
   be configured through the DOMConfigurator and PropertyConfigurator classes
 
@@ -33,13 +29,6 @@ Planned Features
 * Finish support for the Chainsaw log4j UI through the XMLSocketAppender
 * Port the log4j SMTPAppender (depends on finding a C++ SMTP library)
 * Port the JDBCAppender to ODBCAppender
-
-Tested Platforms
-================
-* Linux
-* FreeBSD
-* MSVC 6.0
-* Cygwin
 
 Installation
 ============

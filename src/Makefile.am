@@ -55,6 +55,7 @@ liblog4cxx_la_SOURCES = \
 	socketnode.cpp \
 	socketoutputstream.cpp \
 	stringmatchfilter.cpp \
+	system.cpp \
 	telnetappender.cpp \
 	transform.cpp \
 	thread.cpp \
