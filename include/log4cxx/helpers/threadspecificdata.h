@@ -52,7 +52,7 @@ namespace log4cxx
 					return static_cast<T*>( impl.GetData() );
 				}
 
-				void reset(T * p)
+				void reset(T * p = 0)
 				{
 					T * tmp = get();
 					if(tmp)
