@@ -23,6 +23,14 @@
 #include <log4cxx/level.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/loglog.h>
+#include <sys/stat.h>
+
+#define DEFAULT_CONFIGURATION_FILE _T("log4j.properties")
+#define DEFAULT_XML_CONFIGURATION_FILE _T("log4j.xml")
+#define DEFAULT_CONFIGURATION_KEY _T("log4j.configuration")
+#define CONFIGURATOR_CLASS_KEY _T("log4j.configuratorClass")
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -31,11 +39,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(DefaultRepositorySelector)
 
 void * LogManager::guard = 0;
-RepositorySelectorPtr LogManager::repositorySelector =
-	  new DefaultRepositorySelector(
-		  new Hierarchy(
-			  new RootCategory(Level::DEBUG)));
-
+RepositorySelectorPtr LogManager::repositorySelector;
 
 void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
 	void * guard)
@@ -58,13 +62,57 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
 
 LoggerRepositoryPtr LogManager::getLoggerRepository()
 {
+	if (repositorySelector == 0)
+	{
+		repositorySelector =
+			new DefaultRepositorySelector(
+				new Hierarchy(
+					new RootCategory(Level::DEBUG)));
+		
+		// Use automatic configration to configure the default hierarchy
+		String configuratorClassName =
+			OptionConverter::getSystemProperty(CONFIGURATOR_CLASS_KEY,_T(""));
+		String configurationOptionStr =
+			OptionConverter::getSystemProperty(DEFAULT_CONFIGURATION_KEY,_T(""));
+		
+		struct stat buff;
+		USES_CONVERSION;
+		
+		if (configurationOptionStr.empty())
+		{
+			configurationOptionStr = DEFAULT_XML_CONFIGURATION_FILE;
+			if (stat(T2A(configurationOptionStr.c_str()), &buff) == -1)
+			{
+				configurationOptionStr = DEFAULT_CONFIGURATION_FILE;
+			}
+		}
+		
+		if (stat(T2A(configurationOptionStr.c_str()), &buff) == 0)
+		{
+			LogLog::debug(
+				_T("Using configuration file [") +configurationOptionStr 
+				+ _T("] for automatic log4j configuration"));
+			
+			OptionConverter::selectAndConfigure(
+				configurationOptionStr, 
+				configuratorClassName,
+				repositorySelector->getLoggerRepository()); 
+		}
+		else
+		{
+			LogLog::debug(
+				_T("Could not find configuration file: [")
+				+configurationOptionStr+_T("]."));
+		}
+	}
+
 	return repositorySelector->getLoggerRepository();
 }
 
 LoggerPtr LogManager::getRootLogger()
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
-	return repositorySelector->getLoggerRepository()->getRootLogger();
+	return getLoggerRepository()->getRootLogger();
 }
 
 /**
@@ -73,7 +121,7 @@ Retrieve the appropriate Logger instance.
 LoggerPtr LogManager::getLogger(const String& name)
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
-	return repositorySelector->getLoggerRepository()->getLogger(name);
+	return getLoggerRepository()->getLogger(name);
 }
 
 /**
@@ -83,27 +131,25 @@ LoggerPtr LogManager::getLogger(const String& name,
 								spi::LoggerFactoryPtr factory)
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
-	return repositorySelector->getLoggerRepository()->getLogger(name, factory);
+	return getLoggerRepository()->getLogger(name, factory);
 }
 
 LoggerPtr LogManager::exists(const String& name)
 {
-	return repositorySelector->getLoggerRepository()->exists(name);
+	return getLoggerRepository()->exists(name);
 }
 
 LoggerList LogManager::getCurrentLoggers()
 {
-	return repositorySelector->getLoggerRepository()->getCurrentLoggers();
+	return getLoggerRepository()->getCurrentLoggers();
 }
 
 void LogManager::shutdown()
 {
-	repositorySelector->getLoggerRepository()->shutdown();
+	getLoggerRepository()->shutdown();
 }
 
 void LogManager::resetConfiguration()
 {
-	repositorySelector->getLoggerRepository()->resetConfiguration();
+	getLoggerRepository()->resetConfiguration();
 }
-
- 
