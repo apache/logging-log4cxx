@@ -8,7 +8,8 @@ INCLUDES = -I$(top_srcdir)/include
 
 libhelpers_a_SOURCES = \
 	boundedfifotestcase.cpp\
-	cyclicbuffertestcase.cpp
+	cyclicbuffertestcase.cpp\
+	optionconvertertestcase.cpp
 	
 check: libhelpers.a
 
