@@ -20,14 +20,16 @@
 #include <iostream>
 
 #include <log4cxx/logger.h>
+#include <apr-1/apr_general.h>
 
 //
-//  initializing a logger will cause APR to be initialized
+//  initializing a logger will cause the APR used by log4cxx library to be initialized
 //
 log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("log4cxx_unittest"));
 
-int main( int argc, char **argv)
+int main( int argc, const char * const argv[])
 {
+	apr_app_initialize(&argc, &argv, NULL);
 	CppUnit::TextUi::TestRunner runner;
 
 	CppUnit::TestFactoryRegistry &registry =
@@ -58,5 +60,6 @@ int main( int argc, char **argv)
 		bool wasSuccessful = runner.run("", false);
 	}
 
+	apr_terminate();
 	return wasSuccessful ? EXIT_SUCCESS : EXIT_FAILURE;
 }

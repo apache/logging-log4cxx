@@ -427,8 +427,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </fileset>
         <includepath path="${cppunit.include.dir}"/>
         <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
 		<defineset define="APR_DECLARE_STATIC"/>
 		<defineset define="WIN32" if="is-windows"/>
+		<defineset define="APR_DECLARE_STATIC"/>
         <libset libs="log4cxx${lib-suffix}" dir="${build.dir}"/>
         <libset libs="${apr.lib.name} ${aprutil.lib.name}"
                dir="${apr.lib.dir}" if="apr.lib.dir"/>
@@ -441,6 +443,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="boost_regex-gcc" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+		<syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
         <project outfile="cbx/log4cxx-testcase3" type="cbuilderx" if="gen-cbx"/>
         <project outfile="msvc/log4cxx-testcase3" type="msvc6" if="gen-dsw"/>
         <project outfile="xcode/log4cxx-testcase3" type="xcode" if="gen-xcode"/>
