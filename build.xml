@@ -1,4 +1,21 @@
 <?xml version="1.0"?>
+<!DOCTYPE project [
+<!ENTITY libsets '
+        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
+        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
+        <libset libs="${apriconv.lib.name}${lib-suffix}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}${lib-suffix}"
+                unless="apriconv.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
+        <libset libs="iconv" if="has-iconv"/>
+        <libset libs="xml2 pthread" if="is-unix"/>
+        <libset libs="expat" if="has-expat"/>
+        <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
+        <libset libs="stdc++" if="is-gcc"/>
+        <libset libs="cw32mt" if="is-bcc"/>
+'>]>
 <!--
  Copyright 2004-2005 The Apache Software Foundation.
 
@@ -152,6 +169,9 @@ Common command line options:
     <condition property="is-mingw" value="true">
         <isset property="is-gcc"/>
     </condition>
+    <condition property="is-win-static" value="true">
+        <equals arg1="${lib.type}" arg2="static"/>
+    </condition>
 </target>
 
 <target name="mac-init" depends="os-detect" if="is-mac">
@@ -175,6 +195,9 @@ Common command line options:
     </condition>
     <condition property="is-cygwin" value="true">
         <os family="windows"/>
+    </condition>
+    <condition property="is-unix-static" value="true">
+        <equals arg1="${lib.type}" arg2="static"/>
     </condition>
 </target>
 
@@ -279,6 +302,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <available property="apriconv-src-expanded" file="${lib.dir}/apr-iconv-${apriconv.version}"/>
         <available property="aprutil-src-expanded" file="${lib.dir}/apr-util-${aprutil.version}"/>
         <available property="cppunit-src-expanded" file="${lib.dir}/cppunit-${cppunit.version}"/>
+
+        <condition property="is-static" value="true">
+              <equals arg1="${lib.type}" arg2="static"/>
+        </condition>
 
                 <condition property="apr-static" value="true">
                         <equals arg1="${apr.lib.type}" arg2="static"/>
@@ -649,21 +676,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <define name="LOG4CXX_HAS_STD_WLOCALE" value="0"/>
         </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
-        <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="cw32mt" if="is-bcc"/>
-        <libset libs="xml2" if="is-unix"/>
-        <libset libs="iconv" if="has-iconv"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-                unless="apriconv.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
-
-        <syslibset libs="pthread" if="is-unix"/>
+        &libsets;
         <project type="${project.type}" outfile="${project.dir}/log4cxx" if="project.if"/>
     </cc>
 </target>
@@ -698,21 +711,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
-
-        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-                unless="apriconv.lib.dir"/>
-        <libset libs="iconv" if="has-iconv"/>
-        <libset libs="expat" if="has-expat"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="cw32mt" if="is-bcc"/>
-        <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
-
+        &libsets;
 
         <project outfile="${project.dir}/${example.name}" type="${project.type}" if="project.if"/>
     </cc>
@@ -809,19 +808,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
         </defineset>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
-
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-                unless="apriconv.lib.dir"/>
-        <libset libs="iconv" if="has-iconv"/>
-        <libset libs="expat" if="has-expat"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="cw32mt" if="is-bcc"/>
+        &libsets;
         <project outfile="${project.dir}/shortsocketserver" type="${project.type}" if="project.if"/>
     </cc>
 
@@ -861,23 +848,11 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
         </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
 
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-                unless="apriconv.lib.dir"/>
+        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
-        <libset libs="iconv" if="has-iconv"/>
-        <libset libs="expat" if="has-expat"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="cw32mt" if="is-bcc"/>
-        <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
+        &libsets;
 
         <project outfile="${project.dir}/log4cxx-test" type="${project.type}" if="project.if"/>
     </cc>
@@ -918,20 +893,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
         </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
-        <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
-
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-                unless="apriconv.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
-        <libset libs="iconv" if="has-iconv"/>
-        <libset libs="expat" if="has-expat"/>
-        <syslibset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
+
+        &libsets;
 
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>

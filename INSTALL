@@ -11,27 +11,27 @@ Prerequisites:
 Apache Ant 1.6.1 or later (1.6.2 preferred)
    http://ant.apache.org
 
-cpptasks.jar and ant-contrib.jar on CLASSPATH 
+cpptasks.jar and ant-contrib.jar on CLASSPATH
    (March 2005 or later releases or CVS HEAD)
    http://ant-contrib.sourceforge.net
-   
-JDK 1.4 or later.  Earlier versions might work but 
+
+JDK 1.4 or later.  Earlier versions might work but
 have not been tested.
 
 GNU patch on command path.
 
 GNU sed on command path (required for tests)
 
-Connection to internet 
+Connection to internet
 
-   - or - 
+   - or -
 
 The following files placed in the lib directory:
     apr-1.1.0.tar.gz
     apr-util-1.1.0.tar.gz
     apr-iconv-1.0.1.tar.gz
     cppunit-1.10.2.gz
-    
+
     http://apr.apache.org
     http://cppunit.sourceforge.net
 
@@ -48,7 +48,7 @@ $> export CLASSPATH=path_to_cpptasks/cpptasks.jar:path_to_antcontrib/ant-contrib
 $> setenv CLASSPATH path_to_cpptasks/cpptasks.jar:path_to_antcontrib/ant-contrib.jar
 
 
-$> ant   
+$> ant
 
 
 Microsoft Visual C++:
@@ -69,7 +69,7 @@ Build options:
 
      -Dcompiler= see list from http://ant-contrib.sourceforge.net/cc.html
      -Ddebug=[true | false]
-     -Dlibtype=[shared | static | dylib]
+     -Dlib.type=[shared | static | dylib]
      -Drtti=[false | true]
      -Dapache.mirror=URL
      -Dcppunit.mirror=URL
@@ -111,7 +111,7 @@ autotools
     autoconf.sh is known to be incompatible with some versions
 of autotools.  The autotools make has not been kept up to date
 with development.  See Bug LOGCXX-43 for details on this issue.
-The following description has not been changed since log4cxx-0.9.7.  
+The following description has not been changed since log4cxx-0.9.7.
 
     The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
@@ -138,13 +138,13 @@ The simplest way to compile this package is:
 
   2. type `./autogen.sh' to generate the configure script.
      If you're using `csh' on an old version of System V, you might
-	 need to type `sh ./autogen.sh' instead to prevent `csh' from trying
-	 to execute `autogen.sh' itself.
+         need to type `sh ./autogen.sh' instead to prevent `csh' from trying
+         to execute `autogen.sh' itself.
 
   3. type `./configure' to configure the package for your system.
      If you're using `csh' on an old version of System V, you might
-	 need to type `sh ./configure' instead to prevent `csh' from trying
-	 to execute `configure' itself.
+         need to type `sh ./configure' instead to prevent `csh' from trying
+         to execute `configure' itself.
 
      Running `configure' takes awhile.  While running, it prints some
      messages telling which features it is checking for.
@@ -226,28 +226,28 @@ With --enable-unicode, the library will be compiled with UTF16 Unicode support
 (2 bytes wide characters instead of 1 byte wide characters)
 
 If the libXML2 library (http://xmlsoft.org) is detected, the DOMConfigurator
-class will be compiled. 
+class will be compiled.
 
 Threading support can be added through option -with-thread
-	* "pthread" (default): pthread library
-	* "Microsoft" : native microsoft library
-	* "no" : no threading support
+        * "pthread" (default): pthread library
+        * "Microsoft" : native microsoft library
+        * "no" : no threading support
 
 ODBC support (ODBCAppender) can be added through option -with-ODBC
-	* "unixODBC" : unixODBC library (http://www.unixodbc.org)
-	* "iODBC" : iODBC library (http://www.iodbc.org)
-	* "Microsoft" : Microsoft ODBC library
-	* "no" (default) : no ODBC support
+        * "unixODBC" : unixODBC library (http://www.unixodbc.org)
+        * "iODBC" : iODBC library (http://www.iodbc.org)
+        * "Microsoft" : Microsoft ODBC library
+        * "no" (default) : no ODBC support
 
 SMTP support (SMTPAppender) can be added through option -with-SMTP
-	* "libsmtp" : libsmtp library (http://libsmtp.berlios.de)
-	* "CDO" : Microsoft CDO library (no yet implemented !)
-	* "no" (default) : no SMTP support
+        * "libsmtp" : libsmtp library (http://libsmtp.berlios.de)
+        * "CDO" : Microsoft CDO library (no yet implemented !)
+        * "no" (default) : no SMTP support
 
 XML support (DOMConfigurator) can be added through option -with-XML
-	* "libxm2" (default) : gnome xml library (http://xmlsoft.org)
-	* "Microsoft" : MSXML library
-	* "no" : no XML support
+        * "libxm2" (default) : gnome xml library (http://xmlsoft.org)
+        * "Microsoft" : MSXML library
+        * "no" : no XML support
 
 
 Specifying the System Type
