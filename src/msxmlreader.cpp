@@ -43,8 +43,38 @@ void MsXMLReader::parse(DOMConfigurator * configurator, const tstring& URL)
 		}
 		else
 		{
-			LogLog::error(_T("Could not open [")+URL+_T("]."));
+			IXMLDOMParseErrorPtr parseError = document->parseError;
+
+			// fetch errorcode
+			long errorCode = parseError->errorCode;
+
+			// XML file not found
+			if (errorCode == INET_E_RESOURCE_NOT_FOUND)
+			{
+				LogLog::error(_T("Could not find [")+URL+_T("]."));
+			}
+			else
+			{
+				_bstr_t reason = parseError->reason;
+				long line = parseError->line;
+				long linepos = parseError->linepos;
+
+				// remove \n or \r
+				int len = reason.length();
+				while(len > 0 && (((BSTR)reason)[len -1] == L'\n' ||
+					((BSTR)reason)[len -1] == L'\r'))
+				{
+					((BSTR)reason)[len -1] = L'\0';
+					len--;
+				}
+
+				USES_CONVERSION;
+				LOGLOG_ERROR(_T("Could not open [") << URL << _T("] : ") 
+					<< W2T((BSTR)reason) << _T("(line ") << line << _T(", column ")
+					<< linepos << _T(")"));
+			}		
 		}
+
 	}
 	catch(_com_error&)
 	{
