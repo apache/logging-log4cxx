@@ -473,6 +473,12 @@ namespace log4cxx
    };
 };
 
+#define LOG4CXX_LOG(logger, level, message) { \
+	if (logger->isEnabledFor(level)) {\
+	StringBuffer oss; \
+	oss << message; \
+	logger->log(level, oss.str(), __FILE__, __LINE__); }}
+
 #define LOG4CXX_DEBUG(logger, message) { \
 	if (logger->isDebugEnabled()) {\
 	StringBuffer oss; \
