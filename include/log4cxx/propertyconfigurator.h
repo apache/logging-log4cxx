@@ -18,8 +18,10 @@
 #define _LOG4CXX_PROPERTY_CONFIGURATOR_H
 
 #include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/config.h>
 #include <log4cxx/helpers/tchar.h>
+#include <log4cxx/spi/configurator.h>
 #include <map>
 
 namespace log4cxx
@@ -82,7 +84,9 @@ example, if <code>java.home</code> system property is set to
 <code>${java.home}</code> will be interpreted as
 <code>/home/xyz</code>.
 */
-	class PropertyConfigurator
+	class PropertyConfigurator :
+		virtual public spi::Configurator,
+		virtual public helpers::ObjectImpl
 	{
 	protected:
 		static tstring CATEGORY_PREFIX;
@@ -107,6 +111,11 @@ example, if <code>java.home</code> system property is set to
 		spi::LoggerFactoryPtr loggerFactory;
 
 	public:
+		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
+		BEGIN_LOG4CXX_INTERFACE_MAP()
+			LOG4CXX_INTERFACE_ENTRY(spi::Configurator)
+		END_LOG4CXX_INTERFACE_MAP()
+
 		PropertyConfigurator();
 
 /**
@@ -291,6 +300,28 @@ configuration information is stored.
 		Read configuration options from file <code>configFilename</code>.
 		*/
 		static void configure(const tstring& configFilename);
+
+		/**
+		Like {@link #configureAndWatch(String, long)} except that the
+		default delay as defined by {@link FileWatchdog#DEFAULT_DELAY} is
+		used.
+		@param configFilename A file in key=value format.
+		*/
+		static void configureAndWatch(const tstring& configFilename);
+
+		/**
+		Read the configuration file <code>configFilename</code> if it
+		exists. Moreover, a thread will be created that will periodically
+		check if <code>configFilename</code> has been created or
+		modified. The period is determined by the <code>delay</code>
+		argument. If a change or file creation is detected, then
+		<code>configFilename</code> is read to configure log4j.
+
+		@param configFilename A file in key=value format.
+		@param delay The delay in milliseconds to wait between each check.
+		*/
+		static void configureAndWatch(const tstring& configFilename, 
+			long delay);
 
 		/**
 		Read configuration options from <code>properties</code>.
