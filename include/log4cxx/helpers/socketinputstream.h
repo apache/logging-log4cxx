@@ -32,7 +32,7 @@ namespace log4cxx
 		class SocketInputStream;
 		typedef ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 
-		class LOG4CXX_EXPORT EOFException : Exception
+		class LOG4CXX_EXPORT EOFException : public Exception
 		{
 		public:
 			String getMessage() { return String(); }
@@ -53,12 +53,12 @@ namespace log4cxx
 			SocketInputStream(SocketPtr socket, size_t bufferSize);
 			~SocketInputStream();
 
-			void read(void * buffer, size_t len);
-			void read(unsigned int &value);
-			void read(int &value);
-			void read(unsigned long &value);
-			void read(long &value);
-			void read(String& value);
+			void read(void * buffer, size_t len) const;
+			void read(unsigned int &value) const;
+			void read(int &value) const;
+			void read(unsigned long &value) const;
+			void read(long &value) const;
+			void read(String& value) const;
 			// some read functions are missing ...
 
 			/** Close the stream and dereference the socket.
