@@ -47,7 +47,7 @@ public:
 		for (int i = 0; i < MAX; i++)
 		{
 			e.push_back(
-			new LoggingEvent(_T(""), logger, Level::getDebugLevel(), _T("e")));
+			new LoggingEvent(_T(""), logger, Level::DEBUG, _T("e")));
 		}
 	}
 
