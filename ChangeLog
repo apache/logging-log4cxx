@@ -1,20 +1,24 @@
-Version 0.9.5 (CVS)
-===================
+Version 0.9.5 (2004-02-04)
+==========================
 
-* Port of log4j Jnuit tests with Cppunit and Boost Regex
-* Added explicit exports for MSDEV 6 and MSDEV 7
+* Port of log4j Jnuit tests with Cppunit and Boost Regex.
+* Added explicit exports for MSDEV 6 and MSDEV 7 (no further need of .def files)
 * Custom levels can be configured through the DOMConfigurator and
   PropertyConfigurator classes (Level inherites from Object)
 * Added a reference counter to LoggingEvent to avoid useless copies
   (LoggingEvent inherites from Object)
 * The file log4j.xml as well as the file log4j.properties are now search
-  for, in log4cxx initialization
-* The root logger can be assigned the "OFF" level
+  for, in log4cxx initialization.
+* The root logger can be assigned the "OFF" level.
 * Added MSVC6 project missing files mutext.cpp & condition.cpp (bug 847397)
 * condition.cpp now compiles with MSVC6 (bug 847417)
 * fixed pure virtual function call in PropertyConfigurator::configureAndWatch
   (bug 848521)
 * XMLAppender now displays correct timestamp with MSVC 6 (bug 852836)
+* SRLPORT 4.6 support.
+* Fixed an infinite loop in class Properties.
+* Fixed compilations problems with unicode.
+* Fixed SocketAppender bug concerning MDC ans NDC.
 
 Version 0.9.4 (2003-10-25)
 ==========================
