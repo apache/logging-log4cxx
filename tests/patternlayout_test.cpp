@@ -28,7 +28,7 @@ int main()
 			);
 		
 		StringBuffer result, witness;
-		
+
 		witness << _T("DEBUG [") << event.getThreadId()
 			<< _T("]: debug message") << std::endl;
 //		tcout << witness.str();
@@ -38,6 +38,8 @@ int main()
 		
 		if (witness.str() != result.str())
 		{
+			tcout << witness.str();
+			tcout << result.str() << std::endl;
 			ret = EXIT_FAILURE;
 		}
 	}
