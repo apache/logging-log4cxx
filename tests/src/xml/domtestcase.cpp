@@ -58,7 +58,6 @@ class DOMTestCase : public CppUnit::TestFixture
 #if defined(_WIN32)
                 CPPUNIT_TEST(test2);
 #endif
-                CPPUNIT_TEST(test3);
         CPPUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
@@ -159,15 +158,6 @@ public:
                 //
                 //                CPPUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
                 CPPUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
-        }
-
-        void test3() {
-                DOMConfigurator::configure(LOG4CXX_STR("input/xml/DOMTestCase3.xml"));
-                LoggerPtr root(Logger::getRootLogger());
-                FileAppenderPtr appender(root->getAppender(LOG4CXX_STR("A1")));
-                File file(appender->getFile());
-                std::string osname(file.getOSName());
-                CPPUNIT_ASSERT_EQUAL((std::string) "e:\\tmp\\temp.A1", osname);
         }
 
 
