@@ -1,4 +1,4 @@
-noinst_PROGRAMS = \
+check_PROGRAMS = \
 	hierarchy_test\
 	level_test\
 	ndc_test\
