@@ -118,39 +118,39 @@ log4cxx - Documentation
 </table>
 <hr><a name="_details"></a><h2>Detailed Description</h2>
 <a class="el" href="classlog4cxx_1_1DailyRollingFileAppender.html">DailyRollingFileAppender</a> extends <a class="el" href="classlog4cxx_1_1FileAppender.html">FileAppender</a> so that the underlying file is rolled over at a user chosen frequency.<p>
-The rolling schedule is specified by the <b>DatePattern</b> option. This pattern should follow the <a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html">helpers::DateFormat</a> conventions. In particular, you <em>must</em> escape literal text within a pair of single quotes. A formatted version of the date pattern is used as the suffix for the rolled file name.<p>
-For example, if the <b>File</b> option is set to <code>/foo/bar.log</code> and the <b>DatePattern</b> set to <code>'.'yyyy-MM-dd</code>, on 2001-02-16 at midnight, the logging file <code>/foo/bar.log</code> will be copied to <code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17 will continue in <code>/foo/bar.log</code> until it rolls over the next day.<p>
+The rolling schedule is specified by the <b>DatePattern</b> option. This pattern should follow the <a class="el" href="classlog4cxx_1_1helpers_1_1DateFormat.html">helpers::DateFormat</a> conventions. A formatted version of the date pattern is used as the suffix for the rolled file name.<p>
+For example, if the <b>File</b> option is set to <code>/foo/bar.log</code> and the <b>DatePattern</b> set to <code>.%Y-%m-%d</code>, on 2001-02-16 at midnight, the logging file <code>/foo/bar.log</code> will be copied to <code>/foo/bar.log.2001-02-16</code> and logging for 2001-02-17 will continue in <code>/foo/bar.log</code> until it rolls over the next day.<p>
 Is is possible to specify monthly, weekly, half-daily, daily, hourly, or minutely rollover schedules.<p>
 <table border="1" cellpadding="2" cellspacing="3">
 <tr>
 <th>DatePattern </th><th>Rollover schedule </th><th>Example<p>
 </th></tr>
 <tr>
-<td><code>'.'yyyy-MM</code> </td><td>Rollover at the beginning of each month<p>
+<td><code>.%Y-%m</code> </td><td>Rollover at the beginning of each month<p>
 </td><td>At midnight of May 31st, 2002 <code>/foo/bar.log</code> will be copied to <code>/foo/bar.log.2002-05</code>. Logging for the month of June will be output to <code>/foo/bar.log</code> until it is also rolled over the next month.<p>
 </td></tr>
 <tr>
-<td><code>'.'yyyy-ww</code><p>
+<td><code>.%Y-%W</code><p>
 </td><td>Rollover at the first day of each week. The first day of the week depends on the locale.<p>
 </td><td>Assuming the first day of the week is Sunday, on Saturday midnight, June 9th 2002, the file <em>/foo/bar.log</em> will be copied to <em>/foo/bar.log.2002-23</em>. Logging for the 24th week of 2002 will be output to <code>/foo/bar.log</code> until it is rolled over the next week.<p>
 </td></tr>
 <tr>
-<td><code>'.'yyyy-MM-dd</code><p>
+<td><code>.%Y-%m-%d</code><p>
 </td><td>Rollover at midnight each day.<p>
 </td><td>At 00:00 AM March 8th, 2002, <code>/foo/bar.log</code> will be copied to <code>/foo/bar.log.2002-03-07</code>. Logging for the 8th day of March will be output to <code>/foo/bar.log</code> until it is rolled over the next day.<p>
 </td></tr>
 <tr>
-<td><code>'.'yyyy-MM-dd-a</code><p>
+<td><code>.%Y-%m-%d-%p</code><p>
 </td><td>Rollover at midnight and midday of each day.<p>
 </td><td>At noon, on March 9th, 2002, <code>/foo/bar.log</code> will be copied to <code>/foo/bar.log.2002-03-09-AM</code>. Logging for the afternoon of the 9th will be output to <code>/foo/bar.log</code> until it is rolled over at midnight.<p>
 </td></tr>
 <tr>
-<td><code>'.'yyyy-MM-dd-HH</code><p>
+<td><code>.%Y-%m-%d-%H</code><p>
 </td><td>Rollover at the top of every hour.<p>
 </td><td>At approximately 11:00.000 o'clock on March 9th, 2002, <code>/foo/bar.log</code> will be copied to <code>/foo/bar.log.2002-03-09-10</code>. Logging for the 11th hour of the 9th of March will be output to <code>/foo/bar.log</code> until it is rolled over at the beginning of the next hour.<p>
 </td></tr>
 <tr>
-<td><code>'.'yyyy-MM-dd-HH-mm</code><p>
+<td><code>.%Y-%m-%d-%H-%M</code><p>
 </td><td>Rollover at the beginning of every minute.<p>
 </td><td>At approximately 11:23,000, on March 9th, 2001, <code>/foo/bar.log</code> will be copied to <code>/foo/bar.log.2001-03-09-11-22</code>. Logging for the minute of 11:23 (9th of March) will be output to <code>/foo/bar.log</code> until it is rolled over the next minute.<p>
 </td></tr>
@@ -441,7 +441,7 @@ Reimplemented from <a class="el" href="classlog4cxx_1_1WriterAppender.html#b2">W
     <td>
 
 <p>
-The date pattern. By default, the pattern is set to "'.'yyyy-MM-dd" meaning daily rollover.    </td>
+The date pattern. By default, the pattern is set to ".%Y-%m-%d" meaning daily rollover.    </td>
   </tr>
 </table>
 <a class="anchor" name="p2" doxytag="log4cxx::DailyRollingFileAppender::nextCheck" ></a><p>
