@@ -92,7 +92,7 @@ public:
         }
 };
 
-LoggerPtr DelayedLoop::logger = Logger::getLogger(L"DelayedLoop");
+LoggerPtr DelayedLoop::logger = Logger::getLogger("DelayedLoop");
 
 int main(int argc, const char * const argv[])
 {
