@@ -24,6 +24,7 @@
 #include <log4cxx/level.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/helpers/resourcebundle.h>
 
 namespace log4cxx
 {
@@ -75,7 +76,9 @@ namespace log4cxx
         ancestor which is the root logger. */
         LoggerPtr parent;
 
- 		/**
+		helpers::ResourceBundlePtr resourceBundle;
+		
+		/**
 		The fully qualified name of the Category class. See also the getFQCN
 		method.
 		*/
@@ -119,7 +122,7 @@ namespace log4cxx
         <p>If <code>newAppender</code> is already in the list of
         appenders, then it won't be added again.
         */
-  		virtual void addAppender(AppenderPtr newAppender);
+  		virtual void addAppender(const AppenderPtr& newAppender);
 
         /**
         If <code>assertion</code> parameter is <code>false</code>, then
@@ -216,20 +219,20 @@ namespace log4cxx
         Get the additivity flag for this Logger instance.
         */
     public:
-        bool getAdditivity();
+        bool getAdditivity() const;
 
 		/**
 		Get the appenders contained in this logger as an AppenderList.
 		If no appenders can be found, then an empty AppenderList
 		is returned.
 		@return AppenderList An collection of the appenders in this logger.*/
-		AppenderList getAllAppenders();
+		AppenderList getAllAppenders() const;
 
 		/**
 		Look for the appender named as <code>name</code>.
 		<p>Return the appender with that name if in the list. Return
-		<code>null</code> otherwise.  */
-		AppenderPtr getAppender(const String& name);
+		<code>NULL</code> otherwise.  */
+		AppenderPtr getAppender(const String& name) const;
 
 		/**
         Starting from this logger, search the logger hierarchy for a
@@ -240,13 +243,13 @@ namespace log4cxx
 		
 		@throws RuntimeException if all levels are null in the hierarchy
         */
-        virtual const LevelPtr& getEffectiveLevel();
+        virtual const LevelPtr& getEffectiveLevel() const;
 
         /**
         Return the the LoggerRepository where this
         <code>Logger</code> is attached.
 		*/
-        spi::LoggerRepositoryPtr getLoggerRepository();
+        spi::LoggerRepositoryPtr getLoggerRepository() const;
 
 
         /**
@@ -261,7 +264,7 @@ namespace log4cxx
 
         <p>The root logger will return <code>0</code>.
         */
-        LoggerPtr getParent();
+        const LoggerPtr& getParent() const;
 
 
         /**
@@ -269,7 +272,7 @@ namespace log4cxx
 
         @return Level - the assigned Level, can be null.
         */
-        const LevelPtr& getLevel();
+        const LevelPtr& getLevel() const;
 
         /**
         Retrieve a logger by name.
@@ -298,7 +301,31 @@ namespace log4cxx
 			spi::LoggerFactoryPtr factory);
 			
         
-        /**
+		/**
+		Return the <em>inherited</em> ResourceBundle for this logger.
+
+
+		This method walks the hierarchy to find the appropriate resource bundle.
+		It will return the resource bundle attached to the closest ancestor of
+		this logger, much like the way priorities are searched. In case there
+		is no bundle in the hierarchy then <code>NULL</code> is returned.
+		*/
+		helpers::ResourceBundlePtr getResourceBundle() const;
+
+	protected:
+		/**
+		Returns the string resource coresponding to <code>key</code> in this
+		category's inherited resource bundle.
+
+		If the resource cannot be found, then an {@link #error error} message
+		will be logged complaining about the missing resource.
+
+		@see #getResourceBundle.
+		*/
+		String getResourceBundleString(const String& key) const;
+      
+	  public:
+	   /**
         Log a message string with the {@link Level#INFO INFO} level.
 
         <p>This method first checks if this logger is <code>INFO</code>
@@ -317,7 +344,7 @@ namespace log4cxx
 		/**
 		Is the appender passed as parameter attached to this category?
 		*/
-		bool isAttached(AppenderPtr appender);
+		bool isAttached(const AppenderPtr& appender) const;
 
        /**
         *  Check whether this logger is enabled for the <code>DEBUG</code>
@@ -353,7 +380,7 @@ namespace log4cxx
         *  @return bool - <code>true</code> if this logger is debug
         *  enabled, <code>false</code> otherwise.
         *   */
-        bool isDebugEnabled();
+        bool isDebugEnabled() const;
 
         /**
         Check whether this logger is enabled for a given 
@@ -363,7 +390,7 @@ namespace log4cxx
 
         @return bool True if this logger is enabled for <code>level</code>.
         */
-        bool isEnabledFor(const LevelPtr& level);
+        bool isEnabledFor(const LevelPtr& level) const;
         /**
         Check whether this logger is enabled for the info Level.
         See also #isDebugEnabled.
@@ -371,7 +398,7 @@ namespace log4cxx
         @return bool - <code>true</code> if this logger is enabled
         for level info, <code>false</code> otherwise.
         */
-        bool isInfoEnabled();
+        bool isInfoEnabled() const;
 
          /**
         Check whether this logger is enabled for the warn Level.
@@ -380,7 +407,7 @@ namespace log4cxx
         @return bool - <code>true</code> if this logger is enabled
         for level warn, <code>false</code> otherwise.
         */
-        bool isWarnEnabled();
+        bool isWarnEnabled() const;
 
          /**
         Check whether this logger is enabled for the error Level.
@@ -389,7 +416,7 @@ namespace log4cxx
         @return bool - <code>true</code> if this logger is enabled
         for level error, <code>false</code> otherwise.
         */
-        bool isErrorEnabled();
+        bool isErrorEnabled() const;
 
          /**
         Check whether this logger is enabled for the fatal Level.
@@ -398,9 +425,20 @@ namespace log4cxx
         @return bool - <code>true</code> if this logger is enabled
         for level fatal, <code>false</code> otherwise.
         */
-        bool isFatalEnabled();
+        bool isFatalEnabled() const;
 
-        /**
+		/**
+		Log a localized and parameterized message. First, the user supplied
+		<code>key</code> is searched in the resource bundle. Next, the resulting
+		pattern is formatted using StringHelper#format method with the user
+		supplied object array <code>params</code>.
+		
+		@see #setResourceBundle
+		*/
+		void l7dlog(const LevelPtr& level, const String& key,
+					const char* file, int line, ...);
+					
+          /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -421,7 +459,7 @@ namespace log4cxx
 		/**
 		Remove the appender passed as parameter form the list of appenders.
 		*/
-		void removeAppender(AppenderPtr appender);
+		void removeAppender(const AppenderPtr& appender);
 
 		/**
 		Remove the appender with the name passed as parameter form the
@@ -440,6 +478,7 @@ namespace log4cxx
         Only the Hierarchy class can set the hierarchy of a logger.*/
         void setHierarchy(spi::LoggerRepository * repository);
 
+	public:
         /**
         Set the level of this Logger. If you are passing any of
         <code>Level#DEBUG</code>, <code>Level#INFO</code>,
@@ -451,25 +490,29 @@ namespace log4cxx
 
 
         <p>Null values are admitted.  */
-
-	public:
         virtual void setLevel(const LevelPtr& level);
 
-        /**
-        Log a message string with the {@link Level#WARN WARN} level.
+		/**
+		Set the resource bundle to be used with localized logging method #l7dlog.
+		*/
+		inline void setResourceBundle(const helpers::ResourceBundlePtr& bundle)
+			{ resourceBundle = bundle; }
+			
+		/**
+		Log a message string with the {@link Level#WARN WARN} level.
 
-        <p>This method first checks if this logger is <code>WARN</code>
-        enabled by comparing the level of this logger with the {@link
-        Level#WARN WARN} level. If this logger is
-        <code>WARN</code> enabled, it proceeds to call all the
-        registered appenders in this logger and also higher in the
-        hierarchy depending on the value of the additivity flag.
+		<p>This method first checks if this logger is <code>WARN</code>
+		enabled by comparing the level of this logger with the {@link
+		Level#WARN WARN} level. If this logger is
+		<code>WARN</code> enabled, it proceeds to call all the
+		registered appenders in this logger and also higher in the
+		hierarchy depending on the value of the additivity flag.
 
-        @param message the message string to log.
+		@param message the message string to log.
 		@param file the file where the log statement was written.
 		@param line the line where the log statement was written.
 		*/
-        void warn(const String& message, const char* file=NULL, int line=-1);
+		void warn(const String& message, const char* file=NULL, int line=-1);
    };
 };
 
@@ -508,5 +551,21 @@ namespace log4cxx
 	StringBuffer oss; \
 	oss << message; \
 	logger->fatal(oss.str(), __FILE__, __LINE__); }}
+	
+#define LOG4CXX_L7DLOG(logger, level, key) { \
+	if (logger->isEnabledFor(level)) {\
+	logger->l7dlog(level, key, __FILE__, __LINE__); }}
+
+#define LOG4CXX_L7DLOG1(logger, level, key, p1) { \
+	if (logger->isEnabledFor(level)) {\
+	logger->l7dlog(level, key, __FILE__, __LINE__, p1); }}
+
+#define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) { \
+	if (logger->isEnabledFor(level)) {\
+	logger->l7dlog(level, key, __FILE__, __LINE__, p1, p2); }}
+
+#define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) { \
+	if (logger->isEnabledFor(level)) {\
+	logger->l7dlog(level, key, __FILE__, __LINE__, p1, p2, p3); }}
 
 #endif //_LOG4CXX_LOGGER_H
