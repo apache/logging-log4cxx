@@ -251,6 +251,10 @@ SOURCE=..\..\src\domconfigurator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\event.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 !IF  "$(CFG)" == "dll - Win32 Release"
@@ -570,6 +574,10 @@ SOURCE=..\..\src\threadspecificdata.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\timezone.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\transform.cpp
 # End Source File
 # Begin Source File
@@ -642,6 +650,10 @@ SOURCE=..\..\include\log4cxx\helpers\datelayout.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\helpers\datetimedateformat.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\event.h
 # End Source File
 # Begin Source File
 
@@ -782,6 +794,10 @@ SOURCE=..\..\include\log4cxx\helpers\thread.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\helpers\threadspecificdata.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\timezone.h
 # End Source File
 # Begin Source File
 

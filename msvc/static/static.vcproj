@@ -825,6 +825,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\event.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\fileappender.cpp">
 				<FileConfiguration
 					Name="Unicode Release|Win32">
@@ -2690,6 +2693,9 @@
 				</FileConfiguration>
 			</File>
 			<File
+				RelativePath="..\..\src\timezone.cpp">
+			</File>
+			<File
 				RelativePath="..\..\src\transform.cpp">
 				<FileConfiguration
 					Name="Unicode Release|Win32">
@@ -3001,6 +3007,9 @@
 					RelativePath="..\..\include\log4cxx\helpers\datetimedateformat.h">
 				</File>
 				<File
+					RelativePath="..\..\include\log4cxx\helpers\event.h">
+				</File>
+				<File
 					RelativePath="..\..\include\log4cxx\helpers\exception.h">
 				</File>
 				<File
@@ -3101,6 +3110,9 @@
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\helpers\threadspecificdata.h">
+				</File>
+				<File
+					RelativePath="..\..\include\log4cxx\helpers\timezone.h">
 				</File>
 				<File
 					RelativePath="..\..\include\log4cxx\helpers\transform.h">
