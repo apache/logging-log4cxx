@@ -35,6 +35,7 @@
 #include <log4cxx/defaultcategoryfactory.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/spi/loggingevent.h>
 
 #ifdef HAVE_LIBXML2
 #include <log4cxx/helpers/gnomexml.h>
@@ -152,7 +153,7 @@ Used internally to parse an appender element.
 AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
 {
     String className = subst(appenderElement->getAttribute(CLASS_ATTR));
-	LogLog::debug(_T("Class name: [") + className+_T("]"));    
+	LogLog::debug(_T("Class name: [") + className+_T("]"));
     try
 	{
 		ObjectPtr instance = Loader::loadClass(className).newInstance();
@@ -160,7 +161,7 @@ AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
 		PropertySetter propSetter(appender);
 		
 		appender->setName(subst(appenderElement->getAttribute(NAME_ATTR)));
-		
+
 		XMLDOMNodeListPtr children = appenderElement->getChildNodes();
 		int length = children->getLength();
 		
@@ -436,7 +437,7 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 			} 
 			else if(tagName == LEVEL_TAG)
 			{
-				parseLevel(currentElement, logger, isRoot);	
+				parseLevel(currentElement, logger, isRoot);
 			} 
 			else if(tagName == PRIORITY_TAG)
 			{
@@ -504,9 +505,9 @@ void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, boo
     }
 	
     String levelStr = subst(element->getAttribute(VALUE_ATTR));
-	LogLog::debug(_T("Level value for ")+loggerName+_T(" is  [")+levelStr+_T("]."));
+	LogLog::debug(_T("Level value for ")+loggerName+_T(" is [")+levelStr+_T("]."));
     
-    if(levelStr == INHERITED || levelStr == NuLL) 
+    if(levelStr == INHERITED || levelStr == NuLL)
 	{
 		if(isRoot)
 		{
@@ -519,10 +520,43 @@ void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, boo
     } 
 	else
 	{
-		logger->setLevel(OptionConverter::toLevel(levelStr, Level::DEBUG));
+		String className = subst(element->getAttribute(CLASS_ATTR));
+
+		if (className.empty())
+		{
+			logger->setLevel(OptionConverter::toLevel(levelStr, Level::DEBUG));
+		}
+		else
+		{
+			LogLog::debug(_T("Desired Level sub-class: [") + className + _T("]"));
+
+			try
+			{
+				Level::LevelClass& levelClass =
+					(Level::LevelClass&)Loader::loadClass(className);
+				LevelPtr level = levelClass.toLevel(levelStr);
+				logger->setLevel(level);
+			}
+			catch (Exception& oops)
+			{
+				LogLog::error(
+					_T("Could not create level [") + levelStr +
+					_T("]. Reported error follows."),
+					oops);
+
+				return;
+			}
+			catch (...)
+			{
+				LogLog::error(
+					_T("Could not create level [") + levelStr);
+
+				return;
+			}
+		}
     }
 
-	LogLog::debug(loggerName + _T(" level set to ") + logger->getLevel().toString());    
+	LogLog::debug(loggerName + _T(" level set to ") + logger->getLevel()->toString());    
 }
 
 void DOMConfigurator::setParameter(XMLDOMElementPtr elem, PropertySetter& propSetter)
