@@ -249,5 +249,6 @@ msvc/dll/Makefile
 msvc/simplesocketserver/Makefile
 msvc/static/Makefile
 msvc/tests/Makefile
+msvc/performance/Makefile
 ])
 AC_OUTPUT
