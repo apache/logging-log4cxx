@@ -118,35 +118,25 @@ void Transformer::transform(const File& in, const File& out,
         //      using Q as regex separator on s command
         //
         const char** args = (const char**)
-          apr_palloc(pool, 6 * sizeof(*args));
+          apr_palloc(pool, 5 * sizeof(*args));
         int i = 0;
+
+        //
+        //   not well documented
+        //     but the first arg is a duplicate of the executable name
+        //
+        args[i++] = "sed";
 
         //
         //   write the regex's to a temporary file since they
         //      may get mangled if passed as parameters
         //
-        apr_file_t* regexFile;
-        char regexName[400];
+        std::string regexName(in.getOSName());
+        regexName.append(".sed");
 
-        const char* tmpDir;
-        stat = apr_temp_dir_get(&tmpDir, pool);
-
-        strcpy(regexName, tmpDir);
-        strcat(regexName, "/regexpXXXXXX");
-
-        apr_pool_t* regexPool;
-        stat = apr_pool_create(&regexPool, pool);
-
-        stat = apr_file_mktemp(&regexFile, regexName, APR_WRITE | APR_CREATE, regexPool);
-        assert(stat == 0);
-
-        args[i++] = "-f";
-        const char* tmpName;
-        stat = apr_file_name_get(&tmpName, regexFile);
-        assert(stat == 0);
-        char* tmpName2 = (char*) apr_palloc(pool, strlen(tmpName) + 1);
-        strcpy(tmpName2, tmpName);
-        args[i++] = tmpName2;
+        std::string regexArg("-f");
+        regexArg.append(regexName);
+        args[i++] = regexArg.c_str();
 
         args[i++] = "-i";
         //
@@ -154,6 +144,13 @@ void Transformer::transform(const File& in, const File& out,
         args[i++] = out.getOSName().c_str();
         args[i] = NULL;
 
+
+        apr_file_t* regexFile;
+        apr_int32_t flags = APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
+        stat = apr_file_open(&regexFile, 
+               regexName.c_str(),
+               APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE, APR_OS_DEFAULT, 
+               pool);
 
         std::string tmp;
         for (log4cxx::Filter::PatternList::const_iterator iter = patterns.begin();
@@ -167,7 +164,6 @@ void Transformer::transform(const File& in, const File& out,
           apr_file_puts(tmp.c_str(), regexFile);
         }
         apr_file_close(regexFile);
-        apr_pool_destroy(regexPool);
 
 
         //
