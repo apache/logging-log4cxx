@@ -67,6 +67,14 @@ namespace log4cxx
 {
 	namespace helpers
 	{
+		class LOG4CXX_EXPORT IllegalMonitorStateException : public Exception
+		{
+		public:
+			IllegalMonitorStateException(const String& message) : Exception(message)
+			{
+			}
+		};
+		
 		class Object;
 		typedef ObjectPtrT<Object> ObjectPtr;
 
@@ -82,6 +90,7 @@ namespace log4cxx
 			virtual void unlock() const = 0;
 			virtual void wait() const = 0;
 			virtual void notify() const = 0;
+			virtual void notifyAll() const = 0;
 			virtual bool instanceof(const Class& clazz) const = 0;
 			virtual const void * cast(const Class& clazz) const = 0;
 		};
