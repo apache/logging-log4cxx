@@ -22,7 +22,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Runnable)
 IMPLEMENT_LOG4CXX_OBJECT(Thread)
 
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 #include <pthread.h>
 #include <unistd.h> // usleep
 void * threadProc(void * arg)
@@ -33,7 +33,7 @@ void * threadProc(void * arg)
 	delete thread;
 	pthread_exit(0);
 }
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 #include <windows.h>
 DWORD WINAPI threadProc(void * arg)
 {
@@ -60,9 +60,9 @@ Thread::~Thread()
 {
 	if (thread != 0)
 	{
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 		::pthread_join((pthread_t)thread, 0);
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 		::CloseHandle((HANDLE)thread);
 #endif
 		LOGLOG_DEBUG(_T("Thread ended."));
@@ -71,22 +71,22 @@ Thread::~Thread()
 
 unsigned long Thread::getCurrentThreadId()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	return (unsigned long)::pthread_self();
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	return ::GetCurrentThreadId();
 #endif
 }
 
 void Thread::start()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 //	LogLog::debug(_T("Thread::start"));
 	if (::pthread_create((pthread_t *)&thread, NULL, threadProc, this) != 0)
 	{
 		throw ThreadException();
 	}
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	unsigned long threadId = 0;
 	thread =
 		(void *)::CreateThread(NULL, 0, threadProc, this, 0, &threadId);
@@ -108,9 +108,9 @@ void Thread::run()
 void Thread::join()
 {
 	bool bSuccess = true;
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	::pthread_join((pthread_t)thread, 0);
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	if (::WaitForSingleObject((HANDLE)thread, INFINITE) != WAIT_OBJECT_0)
 	{
 		bSuccess = false;
@@ -131,7 +131,7 @@ void Thread::join()
 
 void Thread::sleep(long millis)
 {
-#ifdef WIN32
+#ifdef HAVE_MS_THREAD
 	::Sleep(millis);
 #else
 	::usleep(1000 * millis);

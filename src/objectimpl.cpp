@@ -16,7 +16,7 @@
  
 #include <log4cxx/helpers/objectimpl.h>
 
-#ifdef WIN32
+#ifdef HAVE_MS_THREAD
 #include <windows.h>
 #endif
 
@@ -32,11 +32,11 @@ ObjectImpl::~ObjectImpl()
 
 void ObjectImpl::addRef()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	refCs.lock();
 	ref++;
 	refCs.unlock();
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	::InterlockedIncrement((long *)&ref);
 #else
 	ref++;
@@ -45,7 +45,7 @@ void ObjectImpl::addRef()
 
 void ObjectImpl::releaseRef()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	refCs.lock();
 	ref--;
 	if (ref <= 0)
@@ -53,7 +53,7 @@ void ObjectImpl::releaseRef()
 		delete this;
 	}
 	refCs.unlock();
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	if (::InterlockedDecrement((long *)&ref) <= 0)
 	{
 		delete this;

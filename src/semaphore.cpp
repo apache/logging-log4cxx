@@ -16,9 +16,9 @@
 
 #include <log4cxx/helpers/semaphore.h>
 
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 #include <semaphore.h>
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 #include <windows.h>
 #include <limits.h>
 #endif
@@ -27,12 +27,12 @@ using namespace log4cxx::helpers;
 
 Semaphore::Semaphore(int value)
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	if (::sem_init(&semaphore, 0, value) != 0)
 	{
 		throw SemaphoreException();
 	}
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	semaphore = ::CreateSemaphore(0, (long)value, LONG_MAX, 0);
 	if (semaphore == 0)
 	{
@@ -43,21 +43,21 @@ Semaphore::Semaphore(int value)
 
 Semaphore::~Semaphore()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	::sem_destroy(&semaphore);
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	::CloseHandle(semaphore);
 #endif
 }
 
 void Semaphore::wait()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	if (::sem_wait(&semaphore) != 0)
 	{
 		throw SemaphoreException();
 	}
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	if (::WaitForSingleObject(semaphore, INFINITE) != WAIT_OBJECT_0)
 	{
 		throw SemaphoreException();
@@ -67,9 +67,9 @@ void Semaphore::wait()
 
 bool Semaphore::tryWait()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	return (::sem_trywait(&semaphore) == 0);
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	bool bSuccess;
 	switch(::WaitForSingleObject(semaphore, 0))
 	{
@@ -89,12 +89,12 @@ bool Semaphore::tryWait()
 
 void Semaphore::post()
 {
-#ifdef HAVE_PTHREAD_H
+#ifdef HAVE_PTHREAD
 	if (::sem_post(&semaphore) != 0)
 	{
 		throw SemaphoreException();
 	}
-#elif defined(WIN32)
+#elif defined(HAVE_MS_THREAD)
 	long previousCount;
 	if (!::ReleaseSemaphore(semaphore, 1, &previousCount))
 	{
