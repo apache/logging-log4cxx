@@ -211,6 +211,8 @@ public:
 				case _T('\''):
 				case _T('\\'):
 				case _T('\"'):
+				case _T(':'):
+				default:
 					element << c;
 					lexemType = ELEMENT;
 					if (!get(in, c))
