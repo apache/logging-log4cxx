@@ -3,8 +3,9 @@ CVS
 
 * Appender threshold can now be configured through the PropertyConfigurator and
   the DOMConfigurator.
-* Added virtual destructors to Class and DateFormat
-* Renamed config.h to portability.h (fixes an automake problem)
+* Added virtual destructors to Class and DateFormat.
+* Renamed config.h to portability.h (fixes an automake problem).
+* Fixed a memory leak in the "trivial" example.
 
 Version 0.9.7 (2004-05-10)
 ==========================
