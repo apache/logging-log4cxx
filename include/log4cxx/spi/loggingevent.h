@@ -21,6 +21,8 @@
 #include <log4cxx/helpers/tchar.h>
 #include <time.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/mdc.h>
+#include <set>
 
 namespace log4cxx
 {
@@ -70,28 +72,40 @@ namespace log4cxx
 			@param file The file where this log statement was written.
 			@param line The line where this log statement was written.
 			*/
-			LoggingEvent(const LoggerPtr& logger, const Level& level,
-				const tstring& message, const char* file=0, int line=-1);
-
-			/**  Return the name of the #logger. */
-			inline const tstring& getLoggerName() const
-				{ return logger->getName(); }
+			LoggingEvent(const tstring& fqnOfLoggerClass,
+				const LoggerPtr& logger,
+				const Level& level,	const tstring& message,
+				const char* file=0, int line=-1);
 
 			/** Return the #level of this event. */
 			inline const Level& getLevel() const
 				{ return *level; }
 
+			/**  Return the name of the #logger. */
+			inline const tstring& getLoggerName() const
+				{ return logger->getName(); }
+
+			/** Return the #message for this logging event. */
+			inline const tstring& getMessage() const
+				{ return message; }
+
 			/** Return the #message for this logging event. */
 			inline const tstring& getRenderedMessage() const
 				{ return message; }
 
-			/** Return the #timeStamp of this event. */
-			inline time_t getTimeStamp() const
-				{ return timeStamp; }
+			/**Returns the time when the application started,
+			in seconds elapsed since 01.01.1970.
+			*/
+			static long getStartTime()
+				{ return startTime; }
 
 			/** Return the #threadId of this event. */
 			inline unsigned long getThreadId() const
 				{ return threadId; }
+
+			/** Return the #timeStamp of this event. */
+			inline time_t getTimeStamp() const
+				{ return timeStamp; }
 
 			/* Return the file where this log statement was written. */
 			inline char * getFile() const
@@ -114,26 +128,100 @@ namespace log4cxx
 			/** Read this event from a helpers::SocketOutputStream. */
 			void read(helpers::SocketInputStreamPtr is);
 
-			/**Returns the time when the application started,
-			in seconds elapsed since 01.01.1970.
-			*/
-			static long getStartTime()
-				{ return startTime; }
-
 			/** Obtain a copy a this event. */
 			LoggingEvent * copy() const;
+
+			/**
+			* Returns the the context corresponding to the <code>key</code> parameter.
+			* If there is a local MDC copy, possibly because we are in a logging
+			* server or running inside AsyncAppender, then we search for the key in
+			* MDC copy, if a value is found it is returned. Otherwise, if the search
+			* in MDC copy returns an empty result, then the current thread's
+			* <code>MDC</code> is used.
+			*
+			* <p>
+			* Note that <em>both</em> the local MDC copy and the current thread's MDC
+			* are searched.
+			* </p>
+			*/
+			tstring getMDC(const tstring& key) const;
+
+			/**
+			* Returns the set of of the key values in the MDC for the event.
+			* The returned set is unmodifiable by the caller.
+			*
+			* @return Set an unmodifiable set of the MDC keys.
+			* @since 1.3
+			*/
+			std::set<tstring> getMDCKeySet() const;
 
 			/**
 			Obtain a copy of this thread's MDC prior to serialization
 			or asynchronous logging.
 			*/
-			void getMDCCopy() const {}
+			void getMDCCopy() const;
+
+			/**
+			* Return a previously set property. The return value can be null.
+			*/
+			tstring getProperty(const tstring& key) const;
+			/**
+			* Returns the set of of the key values in the properties
+			* for the event. The returned set is unmodifiable by the caller.
+			*
+			* @return Set an unmodifiable set of the property keys.
+			*/
+			std::set<tstring> getPropertyKeySet() const;
+
+			/**
+			* Set a string property using a key and a string value.  since 1.3
+			*/
+			void setProperty(const tstring& key, const tstring& value);
+
+		public:
+			/**
+			* Fully qualified name of the calling category class.
+			*/
+			tstring fqnOfCategoryClass;
+
 		private:
-            /** The logger of the logging event */
+			/**
+			* The logger of the logging event. This field is not serialized for
+			* performance reasons.
+			*
+			* <p>
+			* It is set by the LoggingEvent constructor or set by a remote
+			* entity after deserialization.
+			**/
 			LoggerPtr logger;
 
             /** level of logging event. */
 			const Level * level;
+
+			/** The nested diagnostic context (NDC) of logging event. */
+			tstring ndc;
+
+			/** The mapped diagnostic context (MDC) of logging event. */
+			MDC::Map mdcCopy;
+
+			/**
+			* A map of tstring keys and tstring values.
+			*/
+			std::map<tstring, tstring> properties;
+
+			/** Have we tried to do an NDC lookup? If we did, there is no need
+			*  to do it again.  Note that its value is always false when
+			*  serialized. Thus, a receiving SocketNode will never use it's own
+			*  (incorrect) NDC. See also writeObject method.
+			*/
+			bool ndcLookupRequired;
+
+			/**
+			* Have we tried to do an MDC lookup? If we did, there is no need to do it
+			* again.  Note that its value is always false when serialized. See also
+			* the getMDC and getMDCCopy methods.
+			*/
+			bool mdcCopyLookupRequired;
 
 			/** The application supplied message of logging event. */
 			tstring message;
@@ -150,16 +238,6 @@ namespace log4cxx
 
 			/** The is the line where this log statement was written. */
 			int line;
-
-			/** Have we tried to do an NDC lookup? If we did, there is no need
-			*  to do it again.  Note that its value is always false when
-			*  serialized. Thus, a receiving SocketNode will never use it's own
-			*  (incorrect) NDC. See also writeObject method.
-			*/
-			bool ndcLookupRequired;
-
-			/** The nested diagnostic context (NDC) of logging event. */
-			tstring ndc;
 
 			/** The identifier of thread in which this logging event
 			was generated.

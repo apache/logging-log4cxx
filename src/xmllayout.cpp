@@ -73,6 +73,37 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 		output << _T("]]></log4j:NDC>\r\n");
 	}
 
+    std::set<tstring> mdcKeySet = event.getMDCKeySet();
+
+    if(!mdcKeySet.empty() > 0)
+    {
+		/**
+		* Normally a sort isn't required, but for Test Case purposes
+		* we need to guarantee a particular order.
+		*
+		* Besides which, from a human readable point of view, the sorting
+		* of the keys is kinda nice..
+		*/
+
+		output << _T("<log4j:MDC>\r\n");
+		for (std::set<tstring>::iterator i = mdcKeySet.begin();
+			i != mdcKeySet.end(); i++)
+		{
+			tstring key = *i;
+			tstring val = event.getMDC(key);
+			output << _T("    <log4j:data ");
+			output << _T("name=\"<![CDATA[");
+			Transform::appendEscapingCDATA(output, key);
+			output << _T("]]>\"");
+			output << _T(" ");
+			output << _T("value=\"<![CDATA[");
+			Transform::appendEscapingCDATA(output, val);
+			output << _T("]]>\"/>");
+			output << _T("\r\n");
+		}
+		output << _T("</log4j:MDC>\r\n");
+    }
+
 	if(locationInfo)
 	{
 		output << _T("<log4j:locationInfo file=\"");
@@ -82,6 +113,23 @@ void XMLLayout::format(tostream& output, const spi::LoggingEvent& event)
 		output << event.getLine();
 		output << _T("\"/>\r\n");
 	}
+
+    std::set<tstring> propertySet = event.getPropertyKeySet();
+
+    if (!propertySet.empty())
+	{
+		output << _T("<log4j:properties>\n");
+		for (std::set<tstring>::iterator i = propertySet.begin();
+			i != propertySet.end(); i++)
+		{
+			tstring propName = *i;
+			output << _T("<log4j:data name=\"") << propName;
+			tstring propValue = event.getProperty(propName);
+			output << _T("\" value=\"") << propValue;
+			output << _T("\"/>\r\n");
+		}
+		output << _T("</log4j:properties>\r\n");
+    }
 
 	output << _T("</log4j:event>\r\n\r\n");
 }
