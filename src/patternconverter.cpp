@@ -38,62 +38,45 @@ A template method for formatting in a converter specific way.
 */
 void PatternConverter::format(ostream& sbuf, const spi::LoggingEvent& e)
 {
-	StringBuffer os;
-	convert(os, e);
-	String s = os.str();
-	
-	if(s.empty())
+	if (min == 0 && max == 0x7FFFFFFF)
 	{
-		if(0 < min)
-			spacePad(sbuf, min);
-		return;
-	}
-	
-	int len = s.size();
-	
-	if(len > max)
-	{
-		sbuf << (s.substr(len-max));
-	}
-	else if(len < min)
-	{
-		if(leftAlign)
-		{	
-			sbuf << s;
-			spacePad(sbuf, min-len);
-		}
-		else
-		{
-			spacePad(sbuf, min-len);
-			sbuf << s;
-		}
+		convert(sbuf, e);
 	}
 	else
-		sbuf << s;
-}	
-
-String PatternConverter::SPACES[] =
-{_T(" "), _T("  "), _T("    "), _T("        "), //1,2,4,8 spaces
-_T("                "), // 16 spaces
-_T("                                ") }; // 32 spaces
-
-/**
-Fast space padding method.
-*/
-void PatternConverter::spacePad(ostream& sbuf, int length)
-{
-	while(length >= 32)
 	{
-		sbuf << SPACES[5];
-		length -= 32;
-	}
-	
-	for(int i = 4; i >= 0; i--)
-	{	
-		if((length & (1<<i)) != 0)
+		StringBuffer os;
+		convert(os, e);
+		String s = os.str();
+
+		if(s.empty())
 		{
-			sbuf << SPACES[i];
+			if(0 < min)
+				sbuf << String(min, _T(' '));
+			return;
 		}
+
+		int len = s.size();
+
+		if(len > max)
+		{
+			sbuf << (s.substr(len-max));
+		}
+		else if(len < min)
+		{
+			if(leftAlign)
+			{
+				sbuf << s;
+				sbuf << String(min-len, _T(' '));
+			}
+			else
+			{
+				sbuf << String(min-len, _T(' '));
+				sbuf << s;
+			}
+		}
+		else
+			sbuf << s;
 	}
 }
+
 

@@ -66,18 +66,11 @@ namespace log4cxx
 			*/
 			virtual void convert(ostream& sbuf, const spi::LoggingEvent& event) = 0;
 
-			static String SPACES[];
-
 		public:
 			/**
 			A template method for formatting in a converter specific way.
 			*/
 			virtual void format(ostream& sbuf, const spi::LoggingEvent& e);
-
-			/**
-			Fast space padding method.
-			*/
-			void spacePad(ostream& sbuf, int length);
 
 		}; // class PatternConverter
 	}; // namespace helpers

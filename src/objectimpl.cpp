@@ -22,9 +22,16 @@
 
 using namespace log4cxx::helpers;
 
+#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
+ObjectImpl::ObjectImpl()
+{
+	ref.counter = 0;
+}
+#else
 ObjectImpl::ObjectImpl() : ref(0)
 {
 }
+#endif
 
 ObjectImpl::~ObjectImpl()
 {
@@ -32,12 +39,14 @@ ObjectImpl::~ObjectImpl()
 
 void ObjectImpl::addRef()
 {
-#ifdef HAVE_PTHREAD
+#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
+	atomic_inc(&ref);
+#elif define(HAVE_PTHREAD)
 	refCs.lock();
 	ref++;
 	refCs.unlock();
 #elif defined(HAVE_MS_THREAD)
-	::InterlockedIncrement((long *)&ref);
+	::InterlockedIncrement(&ref);
 #else
 	ref++;
 #endif
@@ -45,7 +54,12 @@ void ObjectImpl::addRef()
 
 void ObjectImpl::releaseRef()
 {
-#ifdef HAVE_PTHREAD
+#ifdef HAVE_LINUX_ATOMIC_OPERATIONS
+	if (atomic_dec_and_test(&ref))
+	{
+		delete this;
+	}
+#elif define(HAVE_PTHREAD)
 	refCs.lock();
 	ref--;
 	if (ref <= 0)
@@ -54,7 +68,7 @@ void ObjectImpl::releaseRef()
 	}
 	refCs.unlock();
 #elif defined(HAVE_MS_THREAD)
-	if (::InterlockedDecrement((long *)&ref) <= 0)
+	if (::InterlockedDecrement(&ref) <= 0)
 	{
 		delete this;
 	}
@@ -79,9 +93,7 @@ void ObjectImpl::unlock()
 
 void ObjectImpl::wait()
 {
-	mutex.unlock();
 	cond.wait(mutex);
-	mutex.lock();
 }
 
 void ObjectImpl::notify()

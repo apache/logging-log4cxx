@@ -180,10 +180,126 @@ inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
 	#define tcscmp strcmp
 #endif // UNICODE
 
+#define _MinInc  512
+#define _MaxInc 100 * 1024
+
 namespace log4cxx
 {
+	class stringbuf : public std::basic_streambuf<TCHAR>
+	{
+	public:
+		typedef TCHAR _E;
+		typedef std::char_traits<_E> _Tr;
+		typedef std::allocator<_E> _A;
+
+		~stringbuf()
+		{
+			_E *_B = pbase();
+			if (_B)
+			{
+				_Al.deallocate(_B, epptr() - _B);
+			}
+		}
+
+		virtual int_type overflow(
+		int_type _C = std::char_traits<_E>::eof())
+		{
+			using namespace std;
+
+			if (_Tr::eq_int_type(_Tr::eof(), _C))
+			{
+				return _Tr::not_eof(_C);
+			}
+
+			_E *_B = pbase();
+			if (_B == 0)
+			{
+				_E *_P = _Al.allocate(_MinInc, 0);
+				setp(_P, _P + _MinInc);
+			}
+			else
+			{
+				size_t _Os = pptr() - _B; // taille allouée
+				size_t _Is =
+					max(min((_Os * 2), _MaxInc), _MinInc)
+					+ 1; // incrément d'allocation
+				_E *_P = _Al.allocate(_Os + _Is, 0);
+				_Tr::copy(_P, _B, _Os);
+				_Al.deallocate(_B, epptr() - _B);
+				setp(_P, _P + _Os + _Is);
+				pbump(_Os);
+
+			}
+
+			*pptr() = _C;
+			pbump(1);
+
+			return _Tr::not_eof(_C);
+		}
+
+		std::basic_string<_E> str() const
+		{
+			return std::basic_string<_E>(pbase(), pptr() - pbase());
+		}
+
+		inline int min(int a, int b) const
+			{ return a < b ? a : b; }
+
+		inline int max(int a, int b) const
+			{ return a > b ? a : b; }
+
+		void str(const std::basic_string<_E>& s)
+		{
+			setp(pbase(), epptr());
+		}
+
+		virtual pos_type seekoff(off_type off, std::ios_base::seekdir way,
+			std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out)
+		{
+			pos_type ret = pos_type(off_type(-1));
+			if (mode == std::ios_base::out)
+			{
+				if (way == std::ios_base::beg)
+				{
+					setp(pbase(), epptr());
+					ret = pos_type(off);
+					pbump(off);
+				}
+				else if (way == std::ios_base::end)
+				{
+					setp(pbase(), epptr());
+					ret = pos_type(off + epptr() - pbase());
+					pbump(off + epptr() - pbase());
+				}
+				else if (way == std::ios_base::cur)
+				{
+					pbump(off);
+					ret = pos_type(pptr() - pbase());
+				}
+			}
+
+			return ret;
+		}
+
+	protected:
+		_A _Al;
+	};
+
+	class StringBuffer : public std::ostream<TCHAR>
+	{
+	public:
+		StringBuffer() : std::ostream<TCHAR>(&buffer) {}
+		inline std::basic_string<TCHAR> str() const
+			{ return buffer.str(); }
+		inline void str(const std::basic_string<TCHAR>& s)
+			{ buffer.str(s); }
+
+	protected:
+		stringbuf buffer;
+	};
+
 	typedef std::basic_string<TCHAR> String;
-	typedef std::basic_ostringstream<TCHAR> StringBuffer;
+	//typedef std::basic_ostringstream<TCHAR> StringBuffer;
 	typedef std::basic_ostream<TCHAR> ostream;
 	typedef std::basic_istream<TCHAR> istream;
 };
