@@ -23,6 +23,7 @@
 #include <map>
 #include <log4cxx/provisionnode.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/criticalsection.h>
 
 namespace log4cxx
 {
