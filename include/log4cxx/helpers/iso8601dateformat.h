@@ -24,7 +24,7 @@ namespace log4cxx
 	namespace helpers
 	{
 		/**
-		Formats a date in the format <b>\%d-\%m-\%Y \%H:\%M:\%S,\%Q</b> for example
+		Formats a date in the format <b>\%Y-\%m-\%d \%H:\%M:\%S,\%Q</b> for example
 		"1999-11-27 15:49:37,459".
 
 		<p>Refer to the
