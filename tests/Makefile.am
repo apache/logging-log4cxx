@@ -24,8 +24,8 @@ consoleappender_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 fileappender_test_SOURCES = fileappender_test.cpp
 fileappender_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
-htmlappender_test_SOURCES = htmllayout_test.cpp
-htmlappender_test_LDADD = $(top_builddir)/src/liblog4cxx.la
+htmllayout_test_SOURCES = htmllayout_test.cpp
+htmllayout_test_LDADD = $(top_builddir)/src/liblog4cxx.la
 
 xmllayout_test_SOURCES = xmllayout_test.cpp
 xmllayout_test_LDADD = $(top_builddir)/src/liblog4cxx.la
