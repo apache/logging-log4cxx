@@ -4,6 +4,9 @@ LIBRARY
 
 EXPORTS
 
+;class AsyncAppender
+??0AsyncAppender@log4cxx@@QAE@XZ
+
 ;class Appender
 ?getStaticClass@Appender@log4cxx@@SAABVClass@helpers@2@XZ
 
@@ -149,7 +152,8 @@ EXPORTS
 ?format@SimpleLayout@log4cxx@@UAEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@ABVLoggingEvent@spi@2@@Z
 ?getClass@SimpleLayout@log4cxx@@UBEABVClass@helpers@2@XZ
 
-;class SocketException
+;class SocketAppender
+??0SocketAppender@net@log4cxx@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@H@Z
 
 ;class SocketNode
 ??0SocketNode@net@log4cxx@@QAE@V?$ObjectPtrT@VSocket@helpers@log4cxx@@@helpers@2@V?$ObjectPtrT@VLoggerRepository@spi@log4cxx@@@42@@Z
@@ -160,9 +164,13 @@ EXPORTS
 ;class System
 ?currentTimeMillis@System@helpers@log4cxx@@SA_JXZ
 
+;class TelnetAppender
+??0TelnetAppender@net@log4cxx@@QAE@XZ
+
 ;class Thread
 ?start@Thread@helpers@log4cxx@@QAEXXZ
 ??0Thread@helpers@log4cxx@@QAE@V?$ObjectPtrT@VRunnable@helpers@log4cxx@@@12@@Z
+?sleep@Thread@helpers@log4cxx@@SAXJ@Z
 
 ;class TTCCLayout
 ??0TTCCLayout@log4cxx@@QAE@XZ
