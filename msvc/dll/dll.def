@@ -15,7 +15,7 @@ EXPORTS
 ??0ConsoleAppender@log4cxx@@QAE@V?$ObjectPtrT@VLayout@log4cxx@@@helpers@1@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@Z
 
 ;class DateFormat
-?format@DateFormat@helpers@log4cxx@@UAEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@J@Z
+?format@DateFormat@helpers@log4cxx@@UAEXAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@_J@Z
 ??0DateFormat@helpers@log4cxx@@QAE@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@0@Z
 
 ;class DateLayout
@@ -156,6 +156,9 @@ EXPORTS
 
 ;class StringMatchFilter
 ??0StringMatchFilter@varia@log4cxx@@QAE@XZ
+
+;class System
+?currentTimeMillis@System@helpers@log4cxx@@SA_JXZ
 
 ;class Thread
 ?start@Thread@helpers@log4cxx@@QAEXXZ

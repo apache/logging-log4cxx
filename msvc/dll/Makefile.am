@@ -1,2 +1,2 @@
-EXTRA_DIST = dll.dsp dll.cpp dll.def
+EXTRA_DIST = dll.dsp dll.cpp dll.def dllu.def
 

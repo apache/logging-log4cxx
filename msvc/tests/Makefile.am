@@ -9,6 +9,7 @@ EXTRA_DIST = \
 	fileappender_test.dsp\
 	htmllayout_test.dsp\
 	xmllayout_test.dsp\
+	tests.dsp\
 	ttcclayout_test.dsp\
 	patternlayout_test.dsp\
 	propertyconfigurator_test.dsp\

@@ -13,6 +13,10 @@
 /* Version number of package */
 #define VERSION "0.0.1"
 
+#define HAVE_ODBC
+
+typedef __int64 int64_t;
+
 #ifdef WIN32
 #pragma warning(disable :4250 4786)
 #endif

@@ -267,7 +267,7 @@ SOURCE=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Release
-TargetDir=\log4cxx-0.1.0\msvc\Bin\Release
+TargetDir=\log4cxx\msvc\Bin\Release
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -290,7 +290,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Debug
-TargetDir=\log4cxx-0.1.0\msvc\Bin\Debug
+TargetDir=\log4cxx\msvc\Bin\Debug
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -313,7 +313,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_D
-TargetDir=\log4cxx-0.1.0\msvc\Bin\Unicode_D
+TargetDir=\log4cxx\msvc\Bin\Unicode_D
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -336,7 +336,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_R
-TargetDir=\log4cxx-0.1.0\msvc\Bin\Unicode_R
+TargetDir=\log4cxx\msvc\Bin\Unicode_R
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -532,6 +532,10 @@ SOURCE=..\..\src\stringmatchfilter.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\system.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\telnetappender.cpp
 # End Source File
 # Begin Source File
@@ -696,6 +700,10 @@ SOURCE=..\..\include\log4cxx\helpers\socketoutputstream.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\helpers\stringhelper.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\system.h
 # End Source File
 # Begin Source File
 

@@ -44,8 +44,8 @@ RSC=rc.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /YX /FD /c
-# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
-# SUBTRACT CPP /YX
+# ADD CPP /nologo /MD /W3 /GX /Zi /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
+# SUBTRACT CPP /O<none> /YX
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
@@ -80,7 +80,7 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /debug /machine:I386 /pdbtype:sept
 # ADD LINK32 log4cxx.lib /nologo /subsystem:console /pdb:"../Bin/Debug/ttcclayout_test.pdb" /debug /machine:I386 /out:"../Bin/Debug/ttcclayout_test.exe" /libpath:"../lib/debug"
-# SUBTRACT LINK32 /pdb:none /pdbtype:<none>
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "ttcclayout_test - Win32 Unicode Debug"
 
@@ -109,7 +109,7 @@ LINK32=link.exe
 # ADD BASE LINK32 log4cxx.lib /nologo /subsystem:console /pdb:"../Bin/Debug/ttcclayout_test.pdb" /debug /machine:I386 /out:"../Bin/Debug/ttcclayout_test.exe" /pdbtype:sept /libpath:"../lib/debug"
 # SUBTRACT BASE LINK32 /pdb:none
 # ADD LINK32 log4cxx.lib /nologo /subsystem:console /pdb:"../Bin/Unicode_D/ttcclayout_test.pdb" /debug /machine:I386 /out:"../Bin/Unicode_D/ttcclayout_test.exe" /libpath:"../lib/unicode_d"
-# SUBTRACT LINK32 /pdb:none /pdbtype:<none>
+# SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "ttcclayout_test - Win32 Unicode Release"
 
@@ -127,8 +127,8 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MD /W3 /GX /O2 /I "../../include" /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /FD /c
 # SUBTRACT BASE CPP /YX
-# ADD CPP /nologo /MD /W3 /GX /Zi /O2 /I "../../include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "UNICODE" /FD /c
-# SUBTRACT CPP /YX
+# ADD CPP /nologo /MD /W3 /GX /Zi /I "../../include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "_MBCS" /D "UNICODE" /FD /c
+# SUBTRACT CPP /O<none> /YX
 # ADD BASE RSC /l 0x40c /d "NDEBUG"
 # ADD RSC /l 0x40c /d "NDEBUG"
 BSC32=bscmake.exe
