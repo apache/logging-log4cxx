@@ -33,7 +33,8 @@ liblog4cxx_la_SOURCES = \
 	ndc.cpp \
 	mdc.cpp \
 	nteventlogappender.cpp \
-	objectimpl.cpp\
+	objectimpl.cpp \
+	odbcappender.cpp \
 	onlyonceerrorhandler.cpp \
 	optionconverter.cpp \
 	patternconverter.cpp \
