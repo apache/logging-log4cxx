@@ -30,7 +30,7 @@ void * threadProc(void * arg)
 //	LogLog::debug(_T("entering thread proc"));
 	Thread * thread = (Thread *)arg;
 	thread->run();
-	delete thread;
+	thread->releaseRef();
 	pthread_exit(0);
 }
 #elif defined(HAVE_MS_THREAD)
@@ -40,7 +40,7 @@ DWORD WINAPI threadProc(void * arg)
 //	LogLog::debug(_T("entering thread proc"));
 	Thread * thread = (Thread *)arg;
 	thread->run();
-	delete thread;
+	thread->releaseRef();
 	return 0;
 }
 #else
@@ -50,10 +50,12 @@ DWORD WINAPI threadProc(void * arg)
 
 Thread::Thread() : thread(0)
 {
+	addRef();
 }
 
 Thread::Thread(RunnablePtr runnable) : thread(0), runnable(runnable)
 {
+	addRef();
 }
 
 Thread::~Thread()
@@ -65,7 +67,7 @@ Thread::~Thread()
 #elif defined(HAVE_MS_THREAD)
 		::CloseHandle((HANDLE)thread);
 #endif
-		LOGLOG_DEBUG(_T("Thread ended."));
+		LOGLOG_DEBUG(_T("Thread destroyed."));
 	}
 }
 
