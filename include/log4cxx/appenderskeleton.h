@@ -84,7 +84,7 @@ namespace log4cxx
 		requires it.
 		*/
 		void activateOptions() {}
-		void setOption(const String& name, const String& value) {}
+		void setOption(const String& name, const String& value);
 
 		/**
 		Add a filter to end of the filter list.

@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <log4cxx/level.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -120,4 +121,13 @@ void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler)
 void AppenderSkeleton::setThreshold(const LevelPtr& threshold)
 {
 	this->threshold = threshold;
+}
+
+void AppenderSkeleton::setOption(const String& option,
+	const String& value)
+{
+	if (StringHelper::equalsIgnoreCase(option, _T("threshold")))
+	{
+		setThreshold(Level::toLevel(value));
+	}
 }
