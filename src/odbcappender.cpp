@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/portability.h>
 
 #if defined(WIN32) || defined(_WIN32)
@@ -72,14 +72,14 @@ void ODBCAppender::setOption(const String& option,
 	}
 	else
 	{
-		AppenderSkeleton::setOption(name, value);
+		AppenderSkeleton::setOption(option, value);
 	}
 }
 
 void ODBCAppender::append(const spi::LoggingEventPtr& event)
 {
 	buffer.push_back(event);
-	
+
 	if (buffer.size() >= bufferSize)
 		flushBuffer();
 }
@@ -100,7 +100,7 @@ void ODBCAppender::execute(const String& sql)
 	try
 	{
 		con = getConnection();
-		
+
 		ret = SQLAllocHandle(SQL_HANDLE_STMT, con, &stmt);
 		if (ret < 0)
 		{
@@ -117,7 +117,7 @@ void ODBCAppender::execute(const String& sql)
 		{
 			throw SQLException(ret);
 		}
-	} 
+	}
 	catch (SQLException& e)
 	{
 		if (stmt != SQL_NULL_HSTMT)
@@ -129,7 +129,7 @@ void ODBCAppender::execute(const String& sql)
 	}
 	SQLFreeHandle(SQL_HANDLE_STMT, stmt);
 	closeConnection(con);
-	
+
 	//tcout << _T("Execute: ") << sql << std::endl;
 }
 
@@ -151,7 +151,7 @@ SQLHDBC ODBCAppender::getConnection()
 			env = SQL_NULL_HENV;
 			throw SQLException(ret);
 		}
-		
+
 		ret = SQLSetEnvAttr(env, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_INTEGER);
 		if (ret < 0)
 		{
@@ -160,7 +160,7 @@ SQLHDBC ODBCAppender::getConnection()
 			throw SQLException(ret);
 		}
 	}
-	
+
 	if (connection == SQL_NULL_HDBC)
 	{
 		ret = SQLAllocHandle(SQL_HANDLE_DBC, env, &connection);
@@ -193,7 +193,7 @@ SQLHDBC ODBCAppender::getConnection()
 			throw SQLException(ret);
 		}
 	}
-	
+
 	return connection;
 }
 
@@ -202,10 +202,10 @@ void ODBCAppender::close()
 	try
 	{
 		flushBuffer();
-	} 
+	}
 	catch (SQLException& e)
 	{
-		errorHandler->error(_T("Error closing connection"), 
+		errorHandler->error(_T("Error closing connection"),
 			e, ErrorCode::GENERIC_FAILURE);
 	}
 
@@ -214,12 +214,12 @@ void ODBCAppender::close()
 		SQLDisconnect(connection);
 		SQLFreeHandle(SQL_HANDLE_DBC, connection);
 	}
-	
+
 	if (env != SQL_NULL_HENV)
 	{
 		SQLFreeHandle(SQL_HANDLE_ENV, env);
 	}
-	
+
 	this->closed = true;
 }
 
@@ -243,7 +243,7 @@ void ODBCAppender::flushBuffer()
 				ErrorCode::FLUSH_FAILURE);
 		}
 	}
-	
+
 	// clear the buffer of reported events
 	buffer.clear();
 }

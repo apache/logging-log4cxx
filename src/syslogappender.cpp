@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/net/syslogappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>
@@ -22,7 +22,7 @@
 #include <log4cxx/level.h>
 
 #ifdef LOG4CXX_HAVE_SYSLOG
-	#include <syslog.h>	
+	#include <syslog.h>
 #else
 	/* facility codes */
 	#define	LOG_KERN	(0<<3)	/* kernel messages */
@@ -37,7 +37,7 @@
 	#define	LOG_CRON	(9<<3)	/* clock daemon */
 	#define	LOG_AUTHPRIV	(10<<3)	/* security/authorization messages (private) */
 	#define	LOG_FTP		(11<<3)	/* ftp daemon */
-	
+
 		/* other codes through 15 reserved for system use */
 	#define	LOG_LOCAL0	(16<<3)	/* reserved for local use */
 	#define	LOG_LOCAL1	(17<<3)	/* reserved for local use */
@@ -253,17 +253,17 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event)
 
 // On the local host, we can directly use the system function 'syslog'
 // if it is available
-#ifdef LOG4CXX_HAVE_SYSLOG	
+#ifdef LOG4CXX_HAVE_SYSLOG
 	if (sw == 0)
 	{
   		StringBuffer sbuf;
  		layout->format(sbuf, event);
 		USES_CONVERSION;
-		
+
 		// use of "%s" to avoid a security hole
-        ::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(), 
+        ::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(),
 			"%s", T2A(sbuf.str().c_str()));
-			
+
 		return;
 	}
 #endif
@@ -304,7 +304,7 @@ void SyslogAppender::setOption(const String& option, const String& value)
 	}
 	else
 	{
-		AppenderSkeleton::setOption(name, value);
+		AppenderSkeleton::setOption(option, value);
 	}
 }
 
@@ -315,15 +315,15 @@ void SyslogAppender::setSyslogHost(const String& syslogHost)
 		delete this->sw;
 		this->sw = 0;
 	}
-	
+
 // On the local host, we can directly use the system function 'syslog'
 // if it is available (cf. append)
-#ifdef LOG4CXX_HAVE_SYSLOG	
+#ifdef LOG4CXX_HAVE_SYSLOG
 	if (syslogHost != _T("localhost") && syslogHost != _T("127.0.0.1")
 	&& !syslogHost.empty())
-#endif		
+#endif
 		this->sw = new SyslogWriter(syslogHost);
-		
+
 	this->syslogHost = syslogHost;
 }
 

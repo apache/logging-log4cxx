@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/net/socketappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/socketoutputstream.h>
@@ -36,13 +36,13 @@ int SocketAppender::DEFAULT_RECONNECTION_DELAY   = 30000;
 
 
 SocketAppender::SocketAppender()
-: port(DEFAULT_PORT), reconnectionDelay(DEFAULT_RECONNECTION_DELAY), 
+: port(DEFAULT_PORT), reconnectionDelay(DEFAULT_RECONNECTION_DELAY),
 locationInfo(false)
 {
 }
 
 SocketAppender::SocketAppender(unsigned long address, int port)
-: port(port), reconnectionDelay(DEFAULT_RECONNECTION_DELAY), 
+: port(port), reconnectionDelay(DEFAULT_RECONNECTION_DELAY),
 locationInfo(false)
 {
 	this->address.address = address;
@@ -89,7 +89,7 @@ void SocketAppender::setOption(const String& option,
 	}
 	else
 	{
-		AppenderSkeleton::setOption(name, value);
+		AppenderSkeleton::setOption(option, value);
 	}
 }
 
@@ -118,17 +118,17 @@ void SocketAppender::cleanUp()
 		{
 			LogLog::error(_T("Could not close socket :"), e);
 		}
-		
+
 		os = 0;
 	}
-	
+
 	if(connector != 0)
 	{
 		//LogLog::debug(_T("Interrupting the connector."));
 		connector->interrupted = true;
 		connector = 0;
 	}
-	
+
 }
 
 void SocketAppender::connect()
@@ -137,12 +137,12 @@ void SocketAppender::connect()
 	{
 		return;
 	}
-	
+
 	try
 	{
 		// First, close the previous connection if any.
 		cleanUp();
-		
+
 		SocketPtr socket = new Socket(address, port);
 		os = socket->getOutputStream();
 	}
@@ -151,14 +151,14 @@ void SocketAppender::connect()
 		String msg = _T("Could not connect to remote log4cxx server at [")
 
 			+address.getHostName()+_T("].");
-			
+
 		if(reconnectionDelay > 0)
 		{
 			msg += _T(" We will try again later. ");
 		}
 
 		fireConnector(); // fire the connector thread
-		
+
 		LogLog::error(msg, e);
 	}
 }
@@ -175,7 +175,7 @@ void SocketAppender::append(const spi::LoggingEventPtr& event)
 
 	if(os != 0) try
 	{
-/*	
+/*
 		if(locationInfo)
 		{
 			event.getLocationInformation();
@@ -227,7 +227,7 @@ void SocketAppender::Connector::run()
 			LogLog::debug(_T("Attempting connection to ")
 				+socketAppender->address.getHostName());
 			socket = new Socket(socketAppender->address, socketAppender->port);
-			
+
 			synchronized sync(this);
 			{
 				socketAppender->os = socket->getOutputStream();
@@ -254,6 +254,6 @@ void SocketAppender::Connector::run()
 				 +_T(". Exception is ") + e.getMessage());
 		}
 	}
-	
+
 	LogLog::debug(_T("Exiting Connector.run() method."));
 }

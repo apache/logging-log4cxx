@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/net/telnetappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/socketoutputstream.h>
@@ -38,9 +38,9 @@ TelnetAppender::~TelnetAppender()
 	finalize();
 }
 
-void TelnetAppender::activateOptions() 
+void TelnetAppender::activateOptions()
 {
-	try 
+	try
 	{
 		sh = new SocketHandler(port);
 		sh->start();
@@ -60,11 +60,11 @@ void TelnetAppender::setOption(const String& option,
 	}
 	else
 	{
-		AppenderSkeleton::setOption(name, value);
+		AppenderSkeleton::setOption(option, value);
 	}
 }
 
-void TelnetAppender::close() 
+void TelnetAppender::close()
 {
 	if (sh != 0)
 	{
@@ -72,7 +72,7 @@ void TelnetAppender::close()
 	}
 }
 
-void TelnetAppender::append(const spi::LoggingEventPtr& event) 
+void TelnetAppender::append(const spi::LoggingEventPtr& event)
 {
 	if (sh != 0)
 	{
@@ -95,7 +95,7 @@ void TelnetAppender::SocketHandler::finalize()
 
 	for (it = connections.begin(); it != itEnd; it++)
 	{
-		try 
+		try
 		{
 			(*it)->close();
 		}
@@ -107,7 +107,7 @@ void TelnetAppender::SocketHandler::finalize()
 	try
 	{
 		serverSocket.close();
-	} 
+	}
 	catch(Exception&)
 	{
 	}
@@ -154,7 +154,7 @@ void TelnetAppender::SocketHandler::run()
 {
 	while(!done)
 	{
-		try 
+		try
 		{
 			SocketPtr newClient = serverSocket.accept();
 			SocketOutputStreamPtr os = newClient->getOutputStream();
@@ -168,15 +168,15 @@ void TelnetAppender::SocketHandler::run()
 					<< _T(" active connections)\r\n\r\n");
 				print(os, oss.str());
 				os->flush();
-			} 
+			}
 			else
 			{
 				print(os, _T("Too many connections.\r\n"));
 				os->flush();
 				newClient->close();
 			}
-		} 
-		catch(Exception& e) 
+		}
+		catch(Exception& e)
 		{
 			LogLog::error(_T("Encountered error while in SocketHandler loop."), e);
 		}

@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,7 +39,7 @@ int XMLSocketAppender::DEFAULT_RECONNECTION_DELAY   = 30000;
 const int XMLSocketAppender::MAX_EVENT_LEN 				= 1024;
 
 XMLSocketAppender::XMLSocketAppender()
-: port(DEFAULT_PORT), reconnectionDelay(DEFAULT_RECONNECTION_DELAY), 
+: port(DEFAULT_PORT), reconnectionDelay(DEFAULT_RECONNECTION_DELAY),
 locationInfo(false), connector(0)
 {
 	layout = new XMLLayout();
@@ -47,7 +47,7 @@ locationInfo(false), connector(0)
 }
 
 XMLSocketAppender::XMLSocketAppender(unsigned long address, int port)
-: port(port), reconnectionDelay(DEFAULT_RECONNECTION_DELAY), 
+: port(port), reconnectionDelay(DEFAULT_RECONNECTION_DELAY),
 locationInfo(false), connector(0)
 {
 	layout = new XMLLayout();
@@ -100,7 +100,7 @@ void XMLSocketAppender::setOption(const String& option,
 	}
 	else
 	{
-		AppenderSkeleton::setOption(name, value);
+		AppenderSkeleton::setOption(option, value);
 	}
 }
 
@@ -129,17 +129,17 @@ void XMLSocketAppender::cleanUp()
 		{
 			LogLog::error(_T("Could not close socket :"), e);
 		}
-		
+
 		os = 0;
 	}
-	
+
 	if(connector != 0)
 	{
 		//LogLog::debug(_T("Interrupting the connector."));
 		connector->interrupted = true;
 		connector = 0;
 	}
-	
+
 }
 
 void XMLSocketAppender::connect()
@@ -148,12 +148,12 @@ void XMLSocketAppender::connect()
 	{
 		return;
 	}
-	
+
 	try
 	{
 		// First, close the previous connection if any.
 		cleanUp();
-		
+
 		SocketPtr socket = new Socket(address, port);
 		os = socket->getOutputStream();
 	}
@@ -162,14 +162,14 @@ void XMLSocketAppender::connect()
 		String msg = _T("Could not connect to remote log4cxx server at [")
 
 			+address.getHostName()+_T("].");
-			
+
 		if(reconnectionDelay > 0)
 		{
 			msg += _T(" We will try again later. ");
 		}
 
 		fireConnector(); // fire the connector thread
-		
+
 		LogLog::error(msg, e);
 	}
 }
@@ -243,7 +243,7 @@ void XMLSocketAppender::Connector::run()
 			LogLog::debug(_T("Attempting connection to ")
 				+socketAppender->address.getHostName());
 			socket = new Socket(socketAppender->address, socketAppender->port);
-			
+
 			synchronized sync(this);
 			{
 				socketAppender->os = socket->getOutputStream();
@@ -270,6 +270,6 @@ void XMLSocketAppender::Connector::run()
 				 +_T(". Exception is ") + e.getMessage());
 		}
 	}
-	
+
 	LogLog::debug(_T("Exiting Connector.run() method."));
 }

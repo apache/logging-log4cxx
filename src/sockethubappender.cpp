@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/net/sockethubappender.h>
 
 #include <log4cxx/helpers/loglog.h>
@@ -66,7 +66,7 @@ void SocketHubAppender::setOption(const String& option,
 	}
 	else
 	{
-		AppenderSkeleton::setOption(name, value);
+		AppenderSkeleton::setOption(option, value);
 	}
 }
 
@@ -79,7 +79,7 @@ void SocketHubAppender::close()
 	{
 		return;
 	}
-	
+
 	LOGLOG_DEBUG(_T("closing SocketHubAppender ") << getName());
 	closed = true;
 	cleanUp();
@@ -90,9 +90,11 @@ void SocketHubAppender::cleanUp()
 {
 	// stop the monitor thread
 	LOGLOG_DEBUG(_T("stopping ServerSocket"));
-	serverMonitor->stopMonitor();
+        if (NULL != (ServerMonitor*) serverMonitor) {
+	   serverMonitor->stopMonitor();
+        }
 	serverMonitor = 0;
-	
+
 	// close all of the connections
 	LOGLOG_DEBUG(_T("closing client connections"));
 	while (!oosList.empty())
@@ -108,8 +110,8 @@ void SocketHubAppender::cleanUp()
 			{
 				LogLog::error(_T("could not close oos: "), e);
 			}
-			
-			oosList.erase(oosList.begin());     
+
+			oosList.erase(oosList.begin());
 		}
 	}
 }
@@ -122,27 +124,27 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event)
 	{
 		return;
 	}
-	
+
 /*	// set up location info if requested
 	if (locationInfo)
 	{
-		event.getLocationInformation();	
+		event.getLocationInformation();
 	} */
-	
+
 	// loop through the current set of open connections, appending the event to each
 	std::vector<SocketOutputStreamPtr>::iterator it = oosList.begin();
 	std::vector<SocketOutputStreamPtr>::iterator itEnd = oosList.end();
 	while(it != itEnd)
-	{ 	
+	{
 		SocketOutputStreamPtr oos = *it;
-		
+
 		// list size changed unexpectedly? Just exit the append.
 		if (oos == 0)
 		{
 			break;
 		}
-		
-		try 
+
+		try
 		{
 			event->write(oos);
 			oos->flush();
@@ -174,18 +176,18 @@ void SocketHubAppender::ServerMonitor::stopMonitor()
 	synchronized sync(this);
 
 	if (keepRunning)
-	{	
+	{
 		LogLog::debug(_T("server monitor thread shutting down"));
 		keepRunning = false;
 		try
-		{	
+		{
 			monitorThread->join();
 		}
 		catch (InterruptedException&)
 		{
 			// do nothing?
 		}
-		
+
 		// release the thread
 		monitorThread = 0;
 		LogLog::debug(_T("server monitor thread shut down"));
@@ -207,7 +209,7 @@ void SocketHubAppender::ServerMonitor::run()
 		keepRunning = false;
 		return;
 	}
-	
+
 	try
 	{
 		serverSocket->setSoTimeout(1000);
@@ -217,7 +219,7 @@ void SocketHubAppender::ServerMonitor::run()
 		LogLog::error(_T("exception setting timeout, shutting down server socket."), e);
 		return;
 	}
-	
+
 	while (keepRunning)
 	{
 		SocketPtr socket;
@@ -238,19 +240,19 @@ void SocketHubAppender::ServerMonitor::run()
 		{
 			LogLog::error(_T("exception accepting socket."), e);
 		}
-		
+
 		// if there was a socket accepted
 		if (socket != 0)
 		{
 			try
 			{
 				InetAddress remoteAddress = socket->getInetAddress();
-				LOGLOG_DEBUG(_T("accepting connection from ") << remoteAddress.getHostName() 
+				LOGLOG_DEBUG(_T("accepting connection from ") << remoteAddress.getHostName()
 					<< _T(" (") + remoteAddress.getHostAddress() + _T(")"));
-				
+
 				// create an ObjectOutputStream
 				SocketOutputStreamPtr oos = socket->getOutputStream();
-				
+
 				// add it to the oosList.  OK since Vector is synchronized.
 				oosList.push_back(oos);
 			}

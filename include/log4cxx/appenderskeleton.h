@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_APPENDER_SKELETON_H
 #define _LOG4CXX_APPENDER_SKELETON_H
 
@@ -56,7 +56,7 @@ namespace log4cxx
 		/** The first filter in the filter chain. Set to <code>null</code>
 		initially. */
 		spi::FilterPtr headFilter;
-	
+
 		/** The last filter in the filter chain. */
 		spi::FilterPtr tailFilter;
 
@@ -84,7 +84,7 @@ namespace log4cxx
 		requires it.
 		*/
 		void activateOptions() {}
-		void setOption(const String& name, const String& value);
+		void setOption(const String& option, const String& value);
 
 		/**
 		Add a filter to end of the filter list.

@@ -112,7 +112,7 @@ void ConsoleAppender::setOption(const String& option, const String& value)
 	}
 	else
 	{
-		AppenderSkeleton::setOption(option, value);
+		WriterAppender::setOption(option, value);
 	}
 }
 
