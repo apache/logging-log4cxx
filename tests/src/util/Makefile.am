@@ -12,6 +12,7 @@ libutil_a_SOURCES = \
 	absolutedateandtimefilter.cpp\
 	compare.cpp\
 	controlfilter.cpp\
+	filter.cpp\
 	iso8601filter.cpp\
 	linenumberfilter.cpp\
 	relativetimefilter.cpp\

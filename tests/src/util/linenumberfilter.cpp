@@ -14,14 +14,12 @@
  ***************************************************************************/
 
 #include "linenumberfilter.h"
-#include <boost/cregex.hpp>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace boost;
 
 String LineNumberFilter::filter(const String& in) const throw(UnexpectedFormatException)
 {
-	String temp = RegEx(" [^ ]*.[\\\\]").Merge(in, " ");
-	return RegEx("\\(\\d{1,4}\\)").Merge(temp, "\\(X\\)");
+	String temp = merge(_T(" [^ ]*.[\\\\]"), in, _T(" "));
+	return merge(_T("\\(\\d{1,4}\\)"), temp, _T("\\(X\\)"));
 }

@@ -14,14 +14,12 @@
  ***************************************************************************/
 
 #include "absolutetimefilter.h"
-#include <boost/cregex.hpp>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace boost;
 
 String AbsoluteTimeFilter::filter(const String& in)
 	const throw(UnexpectedFormatException)
 {
-	return RegEx(ABSOLUTE_TIME_PAT).Merge(in, "");
+	return merge(ABSOLUTE_TIME_PAT, in, _T(""));
 }

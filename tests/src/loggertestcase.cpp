@@ -79,9 +79,9 @@ public:
 	*/
 	void testAppender1()
 	{
-		logger = Logger::getLogger("test");
+		logger = Logger::getLogger(_T("test"));
 		a1 = new FileAppender();
-		a1->setName("testAppender1");
+		a1->setName(_T("testAppender1"));
 		logger->addAppender(a1);
 
 		AppenderList list = logger->getAllAppenders();
@@ -96,14 +96,14 @@ public:
 	void testAppender2()
 	{
 		a1 = new FileAppender();
-		a1->setName("testAppender2.1");
+		a1->setName(_T("testAppender2.1"));
 		a2 = new FileAppender();
-		a2->setName("testAppender2.2");
+		a2->setName(_T("testAppender2.2"));
 
-		logger = Logger::getLogger("test");
+		logger = Logger::getLogger(_T("test"));
 		logger->addAppender(a1);
 		logger->addAppender(a2);
-		logger->removeAppender(String("testAppender2.1"));
+		logger->removeAppender(String(_T("testAppender2.1")));
 
 		AppenderList list = logger->getAllAppenders();
 		AppenderPtr aHat = list.front();
@@ -116,8 +116,8 @@ public:
 	*/
 	void testAdditivity1()
 	{
-		LoggerPtr a = Logger::getLogger("a");
-		LoggerPtr ab = Logger::getLogger("a.b");
+		LoggerPtr a = Logger::getLogger(_T("a"));
+		LoggerPtr ab = Logger::getLogger(_T("a.b"));
 		CountingAppenderPtr ca = new CountingAppender();
 		a->addAppender(ca);
 
@@ -137,10 +137,10 @@ public:
 	*/
 	void testAdditivity2()
 	{
-		LoggerPtr a = Logger::getLogger("a");
-		LoggerPtr ab = Logger::getLogger("a.b");
-		LoggerPtr abc = Logger::getLogger("a.b.c");
-		LoggerPtr x = Logger::getLogger("x");
+		LoggerPtr a = Logger::getLogger(_T("a"));
+		LoggerPtr ab = Logger::getLogger(_T("a.b"));
+		LoggerPtr abc = Logger::getLogger(_T("a.b.c"));
+		LoggerPtr x = Logger::getLogger(_T("x"));
 
 		CountingAppenderPtr ca1 = new CountingAppender();
 		CountingAppenderPtr ca2 = new CountingAppender();
@@ -170,10 +170,10 @@ public:
 	void testAdditivity3()
 	{
 		LoggerPtr root = Logger::getRootLogger();
-		LoggerPtr a = Logger::getLogger("a");
-		LoggerPtr ab = Logger::getLogger("a.b");
-		LoggerPtr abc = Logger::getLogger("a.b.c");
-		LoggerPtr x = Logger::getLogger("x");
+		LoggerPtr a = Logger::getLogger(_T("a"));
+		LoggerPtr ab = Logger::getLogger(_T("a.b"));
+		LoggerPtr abc = Logger::getLogger(_T("a.b.c"));
+		LoggerPtr x = Logger::getLogger(_T("x"));
 
 		CountingAppenderPtr caRoot = new CountingAppender();
 		CountingAppenderPtr caA = new CountingAppender();
@@ -272,30 +272,30 @@ public:
 
 	void testExists()
 	{
-		LoggerPtr a = Logger::getLogger("a");
-		LoggerPtr a_b = Logger::getLogger("a.b");
-		LoggerPtr a_b_c = Logger::getLogger("a.b.c");
+		LoggerPtr a = Logger::getLogger(_T("a"));
+		LoggerPtr a_b = Logger::getLogger(_T("a.b"));
+		LoggerPtr a_b_c = Logger::getLogger(_T("a.b.c"));
 
 		LoggerPtr t;
-		t = LogManager::exists("xx");
+		t = LogManager::exists(_T("xx"));
 		CPPUNIT_ASSERT(t == 0);
-		t = LogManager::exists("a");
+		t = LogManager::exists(_T("a"));
 		CPPUNIT_ASSERT_EQUAL(a, t);
-		t = LogManager::exists("a.b");
+		t = LogManager::exists(_T("a.b"));
 		CPPUNIT_ASSERT_EQUAL(a_b, t);
-		t = LogManager::exists("a.b.c");
+		t = LogManager::exists(_T("a.b.c"));
 		CPPUNIT_ASSERT_EQUAL(a_b_c, t);
 	}
 
 	void testHierarchy1()
 	{
 		LoggerRepositoryPtr h = new Hierarchy(new RootCategory(Level::getErrorLevel()));
-		LoggerPtr a0 = h->getLogger("a");
-		CPPUNIT_ASSERT_EQUAL(String("a"), a0->getName());
-		CPPUNIT_ASSERT(a0->getLevel() == Level::getOffLevel());
+		LoggerPtr a0 = h->getLogger(_T("a"));
+		CPPUNIT_ASSERT(String(_T("a")) == a0->getName());
+		CPPUNIT_ASSERT(a0->getLevel() == 0);
 		CPPUNIT_ASSERT(Level::getErrorLevel() == a0->getEffectiveLevel());
 
-		LoggerPtr a1 = h->getLogger("a");
+		LoggerPtr a1 = h->getLogger(_T("a"));
 		CPPUNIT_ASSERT_EQUAL(a0, a1);
 	}
 

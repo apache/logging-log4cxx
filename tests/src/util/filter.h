@@ -19,12 +19,12 @@
 #include <log4cxx/helpers/tchar.h>
 #include <log4cxx/helpers/exception.h>
 
-#define BASIC_PAT "\\[\\d*\\] (FATAL|ERROR|WARN|INFO|DEBUG)"
-#define ISO8601_PAT "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}"
+#define BASIC_PAT _T("\\[\\d*\\] (FATAL|ERROR|WARN|INFO|DEBUG)")
+#define ISO8601_PAT _T("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}")
 #define ABSOLUTE_DATE_AND_TIME_PAT \
-	"^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}"
-#define ABSOLUTE_TIME_PAT "^\\d{2}:\\d{2}:\\d{2},\\d{3}"
-#define RELATIVE_TIME_PAT "^\\d{1,10}"
+	_T("^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}")
+#define ABSOLUTE_TIME_PAT _T("^\\d{2}:\\d{2}:\\d{2},\\d{3}")
+#define RELATIVE_TIME_PAT _T("^\\d{1,10}")
 
 namespace log4cxx
 {
@@ -46,6 +46,9 @@ namespace log4cxx
 	public:
 		virtual String filter(const String& in)
 			const throw(UnexpectedFormatException) = 0;
+			
+		static String merge(const String& pattern, const String& in, const String& fmt);
+		static bool match(const String& pattern, const String& in);
 	};
 };
 

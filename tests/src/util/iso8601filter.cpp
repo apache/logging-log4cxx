@@ -14,13 +14,11 @@
  ***************************************************************************/
 
 #include "iso8601filter.h"
-#include <boost/cregex.hpp>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace boost;
 
 String ISO8601Filter::filter(const String& in) const throw(UnexpectedFormatException)
 {
-	return RegEx(ISO8601_PAT).Merge(in, "");
+	return merge(ISO8601_PAT, in, _T(""));
 }

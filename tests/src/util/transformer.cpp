@@ -18,13 +18,17 @@
 
 using namespace log4cxx;
 
+typedef std::basic_ifstream<TCHAR> ifstream;
+typedef std::basic_ofstream<TCHAR> ofstream;
+
 
 void Transformer::transform(const String& in, const String& out,
 	const std::vector<Filter *>& filters) throw(UnexpectedFormatException)
 {
 	String line;
-	std::ifstream input(in.c_str());
-	std::ofstream output(out.c_str());
+	USES_CONVERSION
+	ifstream input(T2A(in.c_str()));
+	ofstream output(T2A(out.c_str()));
 
 	while (!std::getline(input, line).fail())
 	{
@@ -43,8 +47,9 @@ void Transformer::transform(const String& in, const String& out,
 	const Filter& filter) throw(UnexpectedFormatException)
 {
 	String line;
-	std::ifstream input(in.c_str());
-	std::ofstream output(out.c_str());
+	USES_CONVERSION
+	ifstream input(T2A(in.c_str()));
+	ofstream output(T2A(out.c_str()));
 
 	while (!std::getline(input, line).fail())
 	{

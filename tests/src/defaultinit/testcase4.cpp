@@ -45,7 +45,7 @@ public:
 		
 		AppenderList list = root->getAllAppenders();
 		AppenderPtr appender = list.front();
-		CPPUNIT_ASSERT_EQUAL(appender->getName(), String(_T("D1")));
+		CPPUNIT_ASSERT(appender->getName() == _T("D1"));
 		CPPUNIT_ASSERT(list.size() == 1);
 	}
 

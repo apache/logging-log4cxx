@@ -37,58 +37,58 @@ public:
 
 	void test1()
 	{
-		PropertyConfigurator::configure("input/hierarchyThreshold1.properties");
+		PropertyConfigurator::configure(_T("input/hierarchyThreshold1.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, "witness/hierarchyThreshold.1"));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/hierarchyThreshold.1")));
 	}
 
 	void test2()
 	{
-		PropertyConfigurator::configure("input/hierarchyThreshold2.properties");
+		PropertyConfigurator::configure(_T("input/hierarchyThreshold2.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, "witness/hierarchyThreshold.2"));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/hierarchyThreshold.2")));
 	}
 
 	void test3()
 	{
-		PropertyConfigurator::configure("input/hierarchyThreshold3.properties");
+		PropertyConfigurator::configure(_T("input/hierarchyThreshold3.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, "witness/hierarchyThreshold.3"));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/hierarchyThreshold.3")));
 	}
 
 	void test4()
 	{
-		PropertyConfigurator::configure("input/hierarchyThreshold4.properties");
+		PropertyConfigurator::configure(_T("input/hierarchyThreshold4.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, "witness/hierarchyThreshold.4"));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/hierarchyThreshold.4")));
 	}
 
 	void test5()
 	{
-		PropertyConfigurator::configure("input/hierarchyThreshold5.properties");
+		PropertyConfigurator::configure(_T("input/hierarchyThreshold5.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, "witness/hierarchyThreshold.5"));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/hierarchyThreshold.5")));
 	}
 
 	void test6()
 	{
-		PropertyConfigurator::configure("input/hierarchyThreshold6.properties");
+		PropertyConfigurator::configure(_T("input/hierarchyThreshold6.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, "witness/hierarchyThreshold.6"));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/hierarchyThreshold.6")));
 	}
 
 	void test7()
 	{
-		PropertyConfigurator::configure("input/hierarchyThreshold7.properties");
+		PropertyConfigurator::configure(_T("input/hierarchyThreshold7.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, "witness/hierarchyThreshold.7"));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/hierarchyThreshold.7")));
 	}
 
 	void test8()
 	{
-		PropertyConfigurator::configure("input/hierarchyThreshold8.properties");
+		PropertyConfigurator::configure(_T("input/hierarchyThreshold8.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, "witness/hierarchyThreshold.8"));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/hierarchyThreshold.8")));
 	}
 
 	static void common()

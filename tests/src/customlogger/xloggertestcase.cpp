@@ -44,7 +44,7 @@ public:
 	{
 		logger =
 			(XLoggerPtr) XLogger::getLogger(
-			"org.apache.log4j.customLogger.XLoggerTestCase");
+			_T("org.apache.log4j.customLogger.XLoggerTestCase"));
 	}
 
 	void tearDown()
@@ -52,27 +52,24 @@ public:
 		logger->getLoggerRepository()->resetConfiguration();
 	}
 
-	void test1() { common("1"); }
-	void test2() { common("2"); }
+	void test1() { common(_T("1")); }
+	void test2() { common(_T("2")); }
 
 	void common(const String& number)
 	{
-		DOMConfigurator::configure("input/xml/customLogger"+number+".xml");
+		DOMConfigurator::configure(_T("input/xml/customLogger")
+			+number+_T(".xml"));
 
 		int i = -1;
-		LOG4CXX_TRACE(logger, "Message " << ++i);
-		LOG4CXX_DEBUG(logger, "Message " << ++i);
-		LOG4CXX_WARN(logger, "Message " << ++i);
-		LOG4CXX_ERROR(logger, "Message " << ++i);
-		LOG4CXX_FATAL(logger, "Message " << ++i);
-		LOG4CXX_DEBUG(logger, "Message " << ++i);
+		LOG4CXX_TRACE(logger, _T("Message ") << ++i);
+		LOG4CXX_DEBUG(logger, _T("Message ") << ++i);
+		LOG4CXX_WARN(logger, _T("Message ") << ++i);
+		LOG4CXX_ERROR(logger, _T("Message ") << ++i);
+		LOG4CXX_FATAL(logger, _T("Message ") << ++i);
+		LOG4CXX_DEBUG(logger, _T("Message ") << ++i);
 
-/*		Transformer::transform("output/temp", FILTERED, new Filter[] {
-													new LineNumberFilter(),
-													new SunReflectFilter()});
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, "witness/customLogger."+number));
-*/
-		CPPUNIT_ASSERT(Compare::compare("output/temp", "witness/customLogger."+number));
+		CPPUNIT_ASSERT(Compare::compare(_T("output/temp"),
+			_T("witness/customLogger.")+number));
 	}
 };
 

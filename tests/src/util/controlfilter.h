@@ -25,7 +25,6 @@ namespace log4cxx
 	{
 	public:
 		ControlFilter();
-		ControlFilter(const std::vector<String>& allowedPatterns);
 		String filter(const String& in) const throw(UnexpectedFormatException);
 		ControlFilter& operator<<(const String& allowedPattern);
 

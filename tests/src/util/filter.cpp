@@ -1,8 +1,8 @@
 /***************************************************************************
-                            absolutedateandtimefilter.cpp
+                            filter.cpp
                              -------------------
-    begin                : 2003/12/11
-    copyright            : (C) 2003 by Michael CATANZARITI
+    begin                : 2004/01/24
+    copyright            : (C) 2004 by Michael CATANZARITI
     email                : mcatan@free.fr
  ***************************************************************************/
  /***************************************************************************
@@ -13,13 +13,30 @@
  * distribution in the license.apl file.                                   *
  ***************************************************************************/
 
-#include "absolutedateandtimefilter.h"
+#include "filter.h"
+#include <boost/cregex.hpp>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace boost;
 
-String AbsoluteDateAndTimeFilter::filter(const String& in)
-	const throw(UnexpectedFormatException)
+String Filter::merge(const String& pattern, const String& in, const String& fmt)
 {
-	return merge(ABSOLUTE_DATE_AND_TIME_PAT, in, _T(""));
+	USES_CONVERSION;
+	std::string convPattern = T2A(pattern.c_str());
+	std::string convIn = T2A(in.c_str());
+	std::string convFmt = T2A(fmt.c_str());
+	
+	return A2T(RegEx(convPattern).Merge(convIn, convFmt).c_str());
+	
 }
+
+bool Filter::match(const String& pattern, const String& in)
+{
+	USES_CONVERSION;
+	std::string convPattern = T2A(pattern.c_str());
+	std::string convIn = T2A(in.c_str());
+
+	return RegEx(convPattern).Match(convIn);
+}
+

@@ -112,7 +112,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -140,7 +140,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -151,7 +151,7 @@ public:
 	// 06 avr. 2002 18:30:58,937 [12345] DEBUG atternLayoutTest - Message 0  
 	void test4()
 	{
-		PropertyConfigurator::configure("input/patternLayout4.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout4.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -170,7 +170,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -179,7 +179,7 @@ public:
 
 	void test5()
 	{
-		PropertyConfigurator::configure("input/patternLayout5.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout5.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -198,7 +198,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -207,7 +207,7 @@ public:
 	
 	void test6()
 	{
-		PropertyConfigurator::configure("input/patternLayout6.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout6.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -226,7 +226,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -235,7 +235,7 @@ public:
 	
 	void test7()
 	{
-		PropertyConfigurator::configure("input/patternLayout7.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout7.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -254,7 +254,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -263,7 +263,7 @@ public:
 	
 	void test8()
 	{
-		PropertyConfigurator::configure("input/patternLayout8.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout8.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -282,7 +282,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -291,7 +291,7 @@ public:
 	
 	void test9()
 	{
-		PropertyConfigurator::configure("input/patternLayout9.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout9.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -308,7 +308,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -317,7 +317,7 @@ public:
 	
 	void test10()
 	{
-		PropertyConfigurator::configure("input/patternLayout10.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout10.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -336,7 +336,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -345,7 +345,7 @@ public:
 	
 	void test11()
 	{
-		PropertyConfigurator::configure("input/patternLayout11.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout11.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -362,7 +362,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -371,7 +371,7 @@ public:
 	
 	void test12()
 	{
-		PropertyConfigurator::configure("input/patternLayout12.properties");
+		PropertyConfigurator::configure(_T("input/patternLayout12.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -390,7 +390,7 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << "UnexpectedFormatException :" << e.getMessage() << std::endl;
+			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
 			throw;
 		}
 
@@ -428,57 +428,57 @@ public:
 		root->setLevel(Level::getDebugLevel());
 
 		// output starting message
-		root->debug("starting mdc pattern test");
+		root->debug(_T("starting mdc pattern test"));
 
 		layout->setConversionPattern(mdcMsgPattern1);
 		layout->activateOptions();
-		root->debug("empty mdc, no key specified in pattern");
+		root->debug(_T("empty mdc, no key specified in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern2);
 		layout->activateOptions();
-		root->debug("empty mdc, key1 in pattern");
+		root->debug(_T("empty mdc, key1 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern3);
 		layout->activateOptions();
-		root->debug("empty mdc, key2 in pattern");
+		root->debug(_T("empty mdc, key2 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern4);
 		layout->activateOptions();
-		root->debug("empty mdc, key3 in pattern");
+		root->debug(_T("empty mdc, key3 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern5);
 		layout->activateOptions();
-		root->debug("empty mdc, key1, key2, and key3 in pattern");
+		root->debug(_T("empty mdc, key1, key2, and key3 in pattern"));
 
-		MDC::put("key1", "value1");
-		MDC::put("key2", "value2");
+		MDC::put(_T("key1"), _T("value1"));
+		MDC::put(_T("key2"), _T("value2"));
 
 		layout->setConversionPattern(mdcMsgPattern1);
 		layout->activateOptions();
-		root->debug("filled mdc, no key specified in pattern");
+		root->debug(_T("filled mdc, no key specified in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern2);
 		layout->activateOptions();
-		root->debug("filled mdc, key1 in pattern");
+		root->debug(_T("filled mdc, key1 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern3);
 		layout->activateOptions();
-		root->debug("filled mdc, key2 in pattern");
+		root->debug(_T("filled mdc, key2 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern4);
 		layout->activateOptions();
-		root->debug("filled mdc, key3 in pattern");
+		root->debug(_T("filled mdc, key3 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern5);
 		layout->activateOptions();
-		root->debug("filled mdc, key1, key2, and key3 in pattern");
+		root->debug(_T("filled mdc, key1, key2, and key3 in pattern"));
 
-		MDC::remove("key1");
-		MDC::remove("key2");
+		MDC::remove(_T("key1"));
+		MDC::remove(_T("key2"));
 
-		layout->setConversionPattern("%m%n");
+		layout->setConversionPattern(_T("%m%n"));
 		layout->activateOptions();
-		root->debug("finished mdc pattern test");
+		root->debug(_T("finished mdc pattern test"));
 
 		CPPUNIT_ASSERT(Compare::compare(OUTPUT_FILE, WITNESS_FILE));
 	}

@@ -52,13 +52,13 @@ public:
 		LayoutPtr layout = new SimpleLayout();
 		VectorAppenderPtr vectorAppender = new VectorAppender();
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
-		asyncAppender->setName("async-CloseTest");
+		asyncAppender->setName(_T("async-CloseTest"));
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
-		root->debug("m1");
+		root->debug(_T("m1"));
 		asyncAppender->close();
-		root->debug("m2");
+		root->debug(_T("m2"));
 
 		const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 		CPPUNIT_ASSERT(v.size() == 1);
@@ -72,13 +72,13 @@ public:
 		LayoutPtr layout = new SimpleLayout();
 		VectorAppenderPtr vectorAppender = new VectorAppender();
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
-		asyncAppender->setName("async-test2");
+		asyncAppender->setName(_T("async-test2"));
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
-		root->debug("m1");
+		root->debug(_T("m1"));
 		asyncAppender->close();
-		root->debug("m2");
+		root->debug(_T("m2"));
 
 		const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 		CPPUNIT_ASSERT(v.size() == 1);
@@ -94,17 +94,17 @@ public:
 		LayoutPtr layout = new SimpleLayout();
 		VectorAppenderPtr vectorAppender = new VectorAppender();
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
-		asyncAppender->setName("async-test3");
+		asyncAppender->setName(_T("async-test3"));
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
 		for (int i = 0; i < LEN; i++)
 		{
-			root->debug("message" + i);
+			LOG4CXX_DEBUG(root, _T("message") << i);
 		}
 
 		asyncAppender->close();
-		root->debug("m2");
+		root->debug(_T("m2"));
 
 		const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 		CPPUNIT_ASSERT(v.size() == LEN);

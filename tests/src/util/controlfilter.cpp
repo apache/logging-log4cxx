@@ -14,18 +14,11 @@
  ***************************************************************************/
 
 #include "controlfilter.h"
-#include <boost/cregex.hpp>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace boost;
 
 ControlFilter::ControlFilter()
-{
-}
-
-ControlFilter::ControlFilter(const std::vector<String>& allowedPatterns)
-: allowedPatterns(allowedPatterns)
 {
 }
 
@@ -35,13 +28,13 @@ String ControlFilter::filter(const String& in) const throw(UnexpectedFormatExcep
 
 	for (int i = 0; i < len; i++)
 	{
-		if (RegEx(allowedPatterns[i]).Match(in))
+		if (match(allowedPatterns[i], in))
 		{
 			return in;
 		}
 	}
 
-	throw UnexpectedFormatException(String("[") + in + "]");
+	throw UnexpectedFormatException(String(_T("[")) + in + _T("]"));
 }
 
 ControlFilter& ControlFilter::operator<<(const String& allowedPattern)

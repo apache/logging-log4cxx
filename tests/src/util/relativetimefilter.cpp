@@ -14,14 +14,12 @@
  ***************************************************************************/
 
 #include "relativetimefilter.h"
-#include <boost/cregex.hpp>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace boost;
 
 String RelativeTimeFilter::filter(const String& in)
 	const throw(UnexpectedFormatException)
 {
-	return RegEx(RELATIVE_TIME_PAT).Merge(in, "");
+	return merge(RELATIVE_TIME_PAT, in, _T(""));
 }

@@ -14,14 +14,12 @@
  ***************************************************************************/
 
 #include "threadfilter.h"
-#include <boost/cregex.hpp>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace boost;
 
 String ThreadFilter::filter(const String& in)
 	const throw(UnexpectedFormatException)
 {
-	return RegEx("\\[\\d+\\]").Merge(in, "");
+	return merge(_T("\\[\\d+\\]"), in, _T(""));
 }

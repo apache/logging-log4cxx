@@ -16,12 +16,15 @@
 #include "compare.h"
 #include <fstream>
 
+typedef std::basic_ifstream<TCHAR> ifstream;
+
 using namespace log4cxx;
 
 bool Compare::compare(const String& file1, const String& file2)
 {
-	std::ifstream in1(file1.c_str());
-	std::ifstream in2(file2.c_str());
+	USES_CONVERSION
+	ifstream in1(T2A(file1.c_str()));
+	ifstream in2(T2A(file2.c_str()));
 
 	String s1;
 	int lineCounter = 0;
@@ -35,10 +38,10 @@ bool Compare::compare(const String& file1, const String& file2)
 
 		if (s1 != s2)
 		{
-			tcout << "Files [" << file1 << "] and [" << file2
-				<< "] differ on line " << lineCounter << std::endl;
-			tcout << "One reads:  [" << s1 << "]." << std::endl;
-			tcout << "Other reads:[" << s2 << "]." << std::endl;
+			tcout << _T("Files [") << file1 << _T("] and [") << file2
+				<< _T("] differ on line ") << lineCounter << std::endl;
+			tcout << _T("One reads:  [") << s1 << _T("].") << std::endl;
+			tcout << _T("Other reads:[") << s2 << _T("].") << std::endl;
 			outputFile(file1);
 			outputFile(file2);
 
@@ -49,7 +52,7 @@ bool Compare::compare(const String& file1, const String& file2)
 	// the second file is longer
 	if (in2.get() != std::ifstream::traits_type::eof())
 	{
-		tcout << "File [" << file2 << "] longer than file [" << file1 << "]."
+		tcout << _T("File [") << file2 << _T("] longer than file [") << file1 << _T("].")
 		<< std::endl;
 		outputFile(file1);
 		outputFile(file2);
@@ -62,12 +65,13 @@ bool Compare::compare(const String& file1, const String& file2)
 
 void Compare::outputFile(const String& file)
 {
-	std::ifstream in1(file.c_str());
+	USES_CONVERSION;
+	ifstream in1(T2A(file.c_str()));
 
 	String s1;
 	int lineCounter = 0;
-	tcout << "--------------------------------" << std::endl;
-	tcout << "Contents of " << file << ":" << std::endl;
+	tcout << _T("--------------------------------") << std::endl;
+	tcout << _T("Contents of ") << file << _T(":") << std::endl;
 
 	while (!std::getline(in1, s1).fail())
 	{
@@ -76,19 +80,19 @@ void Compare::outputFile(const String& file)
 
 		if (lineCounter < 10)
 		{
-			tcout << "   : ";
+			tcout << _T("   : ");
 		}
 		else if (lineCounter < 100)
 		{
-			tcout << "  : ";
+			tcout << _T("  : ");
 		}
 		else if (lineCounter < 1000)
 		{
-			tcout << " : ";
+			tcout << _T(" : ");
 		}
 		else
 		{
-			tcout << ": ";
+			tcout << _T(": ");
 		}
 
 		tcout << s1 << std::endl;
