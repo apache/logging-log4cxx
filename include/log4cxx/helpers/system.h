@@ -27,7 +27,8 @@
 		class System
 		{
 		public:
-		/** Returns the current time in milliseconds.*/
+		/** Returns the current time in milliseconds since midnight (0 hour),
+		January 1, 1970.*/
 		static int64_t currentTimeMillis();
 
 		/** Gets the system property indicated by the specified key.*/
