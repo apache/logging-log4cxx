@@ -286,8 +286,9 @@ const LevelPtr& OptionConverter::toLevel(const String& value,
 		}
 		else
 		{
-			LogLog::debug(_T("OptionConverter::toLevel: no class name specified,")
-			_T(" level=[")+value+_T("]"));
+			LogLog::debug(
+			_T("OptionConverter::toLevel: no class name specified, level=[")
+			+value+_T("]"));
 			// no class name specified : use standard Level class
 			return Level::toLevel(value, defaultValue);
 		}
