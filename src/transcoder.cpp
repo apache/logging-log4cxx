@@ -16,6 +16,7 @@
 
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
+#include <stdlib.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -27,6 +28,55 @@ using namespace log4cxx::helpers;
 *     internal string.
 */
 #if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
+
+
+#if !defined(_GCC_VER_)
+namespace log4cxx {
+      struct mbstate_t {};
+      size_t mbsnrtowcs(wchar_t *dest, const char **src,
+          size_t srclenin, size_t destlenin, mbstate_t *ps) {
+          size_t destlen = destlenin;
+          size_t srclen = srclenin;
+          size_t mblen = -1;
+          while(srclen > 0 && destlen > 0) {
+            mblen = mbtowc(dest, *src, srclen);
+            if (mblen <= 0) break;
+            *src += mblen;
+            *dest++;
+            destlen--;
+            srclen -= mblen;
+          }
+          if (mblen < 0) {
+              return mblen;
+          }
+          return destlenin - destlen;
+      }
+
+      size_t wcsnrtombs(char *dest, const wchar_t **src, size_t srclenin,
+          size_t destlenin, mbstate_t *ps) {
+          size_t destlen = destlenin;
+          size_t srclen = srclenin;
+          size_t mblen = -1;
+          char buf[12];
+          while(srclen > 0 && destlen > 0) {
+            mblen = wctomb(buf, **src);
+            if (mblen <= 0) break;
+            *src++;
+            memcpy(dest, buf, mblen);
+            *dest += mblen;
+            destlen -= mblen;
+            srclen--;
+          }
+          if (mblen < 0) {
+              return mblen;
+          }
+          return destlenin - destlen;
+      }
+}
+#endif
+
+
+
 void Transcoder::decode(const char* src, size_t len, LogString& dst) {
   wchar_t buf[BUFSIZE];
   mbstate_t ps;

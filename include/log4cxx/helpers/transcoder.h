@@ -84,14 +84,6 @@ namespace log4cxx {
       };
       static const char SUBSTITUTION_CHAR = '?';
       static const wchar_t SUBSTITUTION_WCHAR = L'?';
-
-#if !defined(_GCC_VER_)
-      struct mbstate_t {};
-      size_t mbsnrtowcs(wchar_t *dest, const char **src,
-                   size_t nms, size_t len, mbstate_t *ps);
-      size_t wcsnrtombs(char *dest, const wchar_t **src, size_t nwc,
-                   size_t len, mbstate_t *ps); 
-#endif
    }
 };
 
