@@ -37,10 +37,9 @@ namespace log4cxx
 			String nextToken();
 
 		protected:
-			TCHAR * str;
-			String delim;
-			TCHAR * token;
-			TCHAR * state;
+                        String src;
+                        String delim;
+                        size_t pos;
 
                 private:
                         //   prevent copy and assignment statements
