@@ -132,7 +132,7 @@ namespace log4cxx
 		This method differentiates RollingFileAppender from its parent
 		class.
 		*/
-		virtual void subAppend(const spi::LoggingEvent& event);
+		virtual void subAppend(const spi::LoggingEventPtr& event);
 	}; // class RollingFileAppender
 }; // namespace log4cxx
 

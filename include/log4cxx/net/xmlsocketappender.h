@@ -185,7 +185,7 @@ namespace log4cxx
     		void connect();
 
 
-    		virtual void append(const spi::LoggingEvent& event);
+    		virtual void append(const spi::LoggingEventPtr& event);
 
     		/**
     		* The XMLSocketAppender use an internal XMLLayout. Hence, this method

@@ -34,11 +34,6 @@
 
 namespace log4cxx
 {
-	namespace spi
-	{
-		class LoggingEvent;
-	}
-
 	namespace db
 	{
 		class SQLException : public helpers::Exception
@@ -147,7 +142,7 @@ namespace log4cxx
 			/**
 			* ArrayList holding the buffer of Logging Events.
 			*/
-			std::list<spi::LoggingEvent> buffer;
+			std::list<spi::LoggingEventPtr> buffer;
 			
 		public:			
 			DECLARE_LOG4CXX_OBJECT(ODBCAppender)
@@ -167,7 +162,7 @@ namespace log4cxx
 			/**
 			* Adds the event to the buffer.  When full the buffer is flushed.
 			*/
-			void append(const spi::LoggingEvent& event);
+			void append(const spi::LoggingEventPtr& event);
 			
 			/**
 			* By default getLogStatement sends the event to the required Layout object.
@@ -178,7 +173,7 @@ namespace log4cxx
 			*
 			*/
 		protected:
-			String getLogStatement(const spi::LoggingEvent& event);
+			String getLogStatement(const spi::LoggingEventPtr& event);
 
 			/**
 			*

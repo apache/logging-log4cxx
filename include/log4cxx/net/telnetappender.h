@@ -112,7 +112,7 @@ servlet.
 		protected:
 			/** Handles a log event.  For this appender, that means writing the
 			message to each connected client.  */
-			virtual void append(const spi::LoggingEvent& event) ;
+			virtual void append(const spi::LoggingEventPtr& event) ;
 			
 			//---------------------------------------------------------- SocketHandler:
 			

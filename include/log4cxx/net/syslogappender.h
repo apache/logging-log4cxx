@@ -110,7 +110,7 @@ namespace log4cxx
 			*/
 			static SyslogFacility getFacility(const String &facilityName);
 
-			void append(const spi::LoggingEvent& event);
+			void append(const spi::LoggingEventPtr& event);
 
 			/**
 			This method returns immediately as options are activated when they

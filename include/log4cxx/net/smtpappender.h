@@ -96,7 +96,7 @@ namespace log4cxx
 			Perform SMTPAppender specific appending actions, mainly adding
 			the event to a cyclic buffer and checking if the event triggers
 			an e-mail to be sent. */
-			virtual void append(const spi::LoggingEvent& event);
+			virtual void append(const spi::LoggingEventPtr& event);
 
 			/**
 			This method determines if there is a sense in attempting to append.
@@ -265,7 +265,7 @@ namespace log4cxx
 			has ERROR level or higher. Otherwise it returns
 			<code>false</code>.
 			*/
-			virtual bool isTriggeringEvent(const spi::LoggingEvent& event);
+			virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event);
 		}; // class DefaultEvaluator
 	}; // namespace net
 }; // namespace log4cxx

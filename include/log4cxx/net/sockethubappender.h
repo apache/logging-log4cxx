@@ -158,7 +158,7 @@ namespace log4cxx
 			
 			/**
 			Append an event to all of current connections. */
-			virtual void append(const spi::LoggingEvent& event);
+			virtual void append(const spi::LoggingEventPtr& event);
 			
 			/**
 			The SocketHubAppender does not use a layout. Hence, this method returns

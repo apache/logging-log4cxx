@@ -77,12 +77,12 @@ namespace log4cxx
 				{ return server; }
 
 		protected:
-			virtual void append(const spi::LoggingEvent& event);
+			virtual void append(const spi::LoggingEventPtr& event);
 			HKEY regGetKey(const String& subkey, unsigned long *disposition);
 			void regSetString(HKEY hkey, const String& name, const String& value);
 			void regSetDword(HKEY hkey, const String& name, unsigned long value);
-			unsigned short getEventType(const spi::LoggingEvent& event);
-			unsigned short getEventCategory(const spi::LoggingEvent& event);
+			unsigned short getEventType(const spi::LoggingEventPtr& event);
+			unsigned short getEventCategory(const spi::LoggingEventPtr& event);
 			/*
 			 * Add this source with appropriate configuration keys to the registry.
 			 */

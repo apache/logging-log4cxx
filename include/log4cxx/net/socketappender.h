@@ -179,7 +179,7 @@ namespace log4cxx
     		void connect();
 
 
-    		virtual void append(const spi::LoggingEvent& event);
+    		virtual void append(const spi::LoggingEventPtr& event);
 
     		/**
     		* The SocketAppender does not use a layout. Hence, this method

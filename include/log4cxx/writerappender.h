@@ -111,7 +111,7 @@ namespace log4cxx
 		layout.
 
 		*/
-		virtual void append(const spi::LoggingEvent& event);
+		virtual void append(const spi::LoggingEventPtr& event);
 	
 	protected:
 		/**
@@ -152,7 +152,7 @@ namespace log4cxx
 		<p>Most subclasses of <code>WriterAppender</code> will need to
 		override this method.
 		*/
-		virtual void subAppend(const spi::LoggingEvent& event);
+		virtual void subAppend(const spi::LoggingEventPtr& event);
 	
 	/**
 	The WriterAppender requires a layout. Hence, this method returns
