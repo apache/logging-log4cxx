@@ -48,6 +48,11 @@ namespace log4cxx
             static tstring trim(const tstring& s)
             {
 				tstring::size_type pos = s.find_first_not_of(_T(' '));
+				if (pos == tstring::npos)
+				{
+					return tstring();
+				}
+
 				tstring::size_type n = s.find_last_not_of(_T(' ')) - pos + 1;
 				return s.substr(pos, n);
             }
