@@ -19,6 +19,12 @@
 #include <apr_pools.h>
 #include <locale>
 
+//Define INT64_C for compilers that don't have it
+#if (!defined(INT64_C))
+#define INT64_C(value)  value ## LL
+#endif
+
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 

@@ -94,7 +94,6 @@ void SocketHubAppender::close()
 		 if ( (*iter) != NULL) {
 			 try {
 				(*iter)->close();
-				*iter = NULL;
 			 } catch(SocketException& e) {
 				LogLog::error(_T("could not close oos: "), e);
 			 }

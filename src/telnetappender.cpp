@@ -33,10 +33,10 @@ IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 int TelnetAppender::DEFAULT_PORT = 23;
 
 
-TelnetAppender::TelnetAppender() 
-   : port(23), 
-     sh(), 
-	 connections(20), 
+TelnetAppender::TelnetAppender()
+   : port(23),
+     sh(),
+	 connections(20),
 	 activeConnections(0),
 	 serverSocket(NULL)
 {
@@ -77,6 +77,8 @@ void TelnetAppender::close()
 	synchronized sync(mutex);
 	sh.stop();
 
+        SocketPtr nullSocket;
+        SocketOutputStreamPtr nullStream;
 	for(ConnectionList::iterator iter = connections.begin();
 	    iter != connections.end();
 		iter++) {
@@ -85,12 +87,12 @@ void TelnetAppender::close()
 				iter->second->close();
 			} catch(Exception& ex) {
 			}
-			iter->second = NULL;
+			iter->second = nullStream;
 			try {
 				iter->first->close();
 			} catch(Exception& ex) {
 			}
-			iter->first = NULL;
+			iter->first = nullSocket;
 		}
 	}
 
@@ -113,7 +115,11 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event)
 		this->layout->format(os, event);
 		os << "\r\n";
 
+                SocketPtr nullSocket;
+                SocketOutputStreamPtr nullStream;
+
 		synchronized sync(this->mutex);
+
 
 		for (ConnectionList::iterator iter = connections.begin();
 			 iter != connections.end();
@@ -124,8 +130,8 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event)
 					iter->second->flush();
 				} catch(Exception& ex) {
 					// The client has closed the connection, remove it from our list:
-					iter->first = NULL;
-					iter->second = NULL;
+					iter->first = nullSocket;
+					iter->second = nullStream;
 					apr_atomic_dec32(&activeConnections);
 				}
 			}

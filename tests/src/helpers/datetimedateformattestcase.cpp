@@ -30,6 +30,11 @@ using namespace log4cxx::helpers;
 #define LOCALE_FR "fr_FR"
 #endif
 
+//Define INT64_C for compilers that don't have it
+#if (!defined(INT64_C))
+#define INT64_C(value)  value ## LL
+#endif
+
 
 /**
    Unit test {@link DateTimeDateFormat}.

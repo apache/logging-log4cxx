@@ -168,7 +168,7 @@ void* APR_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) 
 			synchronized sync(pThis->mutex);
 			count = pThis->queue.size();
 			if (count > 0) {
-				event = pThis->queue.front(); 
+				event = pThis->queue.front();
 				pThis->queue.pop_front();
 			}
 		}
@@ -188,7 +188,8 @@ void* APR_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) 
 				pThis->available.broadcast();
 			}
 
-			event = NULL;
+                        LoggingEventPtr nullEvent;
+			event = nullEvent;
 		}
 	}
 }
