@@ -27,7 +27,8 @@ String Filter::merge(const String& pattern, const String& in, const String& fmt)
 	std::string convIn = T2A(in.c_str());
 	std::string convFmt = T2A(fmt.c_str());
 	
-	return A2T(RegEx(convPattern).Merge(convIn, convFmt).c_str());
+	std::string result = RegEx(convPattern).Merge(convIn, convFmt);
+	return A2T(result.c_str());
 	
 }
 

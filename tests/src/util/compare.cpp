@@ -50,7 +50,7 @@ bool Compare::compare(const String& file1, const String& file2)
 	}
 
 	// the second file is longer
-	if (in2.get() != std::ifstream::traits_type::eof())
+	if (in2.get() != ifstream::traits_type::eof())
 	{
 		tcout << _T("File [") << file2 << _T("] longer than file [") << file1 << _T("].")
 		<< std::endl;
