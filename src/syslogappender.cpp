@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #ifdef LOG4CXX_HAVE_SYSLOG
         #include <syslog.h>
@@ -252,23 +253,20 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
         if  (!isAsSevereAsThreshold(event->getLevel()))
                 return;
 
-#if 0
-//  TODO
+        LogString msg;
+        layout->format(msg, event, p);
 
 // On the local host, we can directly use the system function 'syslog'
 // if it is available
 #ifdef LOG4CXX_HAVE_SYSLOG
         if (sw == 0)
         {
-                 sbuf;
-                layout->format(sbuf, event);
-                std::string msg;
-                log4cxx::helpers::Transcoder::encode(s
-                USES_CONVERSION;
+                std::string sbuf;
+                Transcoder::encode(msg, sbuf);
 
                 // use of "%s" to avoid a security hole
-        ::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(),
-                        "%s", T2A(sbuf.str().c_str()));
+                 ::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(),
+                        "%s", sbuf.c_str());
 
                 return;
         }
@@ -282,18 +280,16 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                 return;
         }
 
-        LogStringBuffer sbuf;
-
-        sbuf << LOG4CXX_STR("<") << (syslogFacility | event->getLevel()->getSyslogEquivalent()) << LOG4CXX_STR(">");
+        LogString sbuf(1, LOG4CXX_STR('<'));
+        StringHelper::toString((syslogFacility | event->getLevel()->getSyslogEquivalent()),
+                  p, sbuf);
+        sbuf.append(1, LOG4CXX_STR('>'));
         if (facilityPrinting)
         {
-                sbuf << facilityStr;
+                sbuf.append(facilityStr);
         }
-        layout->format(sbuf, event);
-        //LogLog::debug(sbuf.str());
-        sw->write(sbuf.str());
-
-#endif
+        sbuf.append(msg);
+        sw->write(sbuf);
 }
 
 void SyslogAppender::activateOptions(Pool& p)
