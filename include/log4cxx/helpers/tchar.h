@@ -74,6 +74,10 @@ namespace std
 	}
 }
 
+#ifdef MUST_UNDEF_T
+#undef _T
+#endif
+
 #ifdef WIN32
 #ifndef USES_CONVERSION
 	#include <malloc.h>

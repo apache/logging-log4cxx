@@ -323,6 +323,15 @@ case "$ac_with_smtp" in
 	;;
 esac
 
+#for _T
+
+case "$host" in
+	*apple-darwin*)
+	AC_DEFINE(MUST_UNDEF_T, 1, Defined to 1 if macro _T has to be undefined)
+	;;
+esac
+
+
 # Create files
 # ----------------------------------------------------------------------------
 
