@@ -189,15 +189,20 @@ private:
   /** Check that format is locale sensitive. */
   void test7()
   {
-    apr_time_t mars11 = MICROSECONDS_PER_DAY * 12519;
+    apr_time_t avr11 = MICROSECONDS_PER_DAY * 12519;
     LocaleChanger localeChange(LOCALE_FR);
     if (localeChange.isEffective()) {
         LogString formatted;
         Pool p;
         DateTimeDateFormat formatter;
         formatter.setTimeZone(TimeZone::getGMT());
-        formatter.format(formatted, mars11, p);
-        CPPUNIT_ASSERT_EQUAL((LogString)  LOG4CXX_STR("11 avr. 2004 00:00:00,000"), formatted );
+        formatter.format(formatted, avr11, p);
+        //
+        //   abbreviation for Avril varies
+        //
+        if (formatted != LOG4CXX_STR("11 avr. 2004 00:00:00,000")) {
+            CPPUNIT_ASSERT_EQUAL((LogString)  LOG4CXX_STR("11 avr 2004 00:00:00,000"), formatted );
+        }
     }
   }
 
