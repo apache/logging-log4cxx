@@ -29,17 +29,31 @@ namespace log4cxx
 			virtual tstring getMessage() = 0;
 		}; // class Exception
 
-		/** Thrown to indicate that a method has been passed 
+		class RuntimeException : public Exception
+		{
+		public:
+			RuntimeException() {}
+			RuntimeException(const tstring& message)
+			 : message(message) {}
+
+			virtual tstring getMessage()
+				{ return message; }
+
+		protected:
+			tstring message;
+		}; // class Exception
+
+		   /** Thrown to indicate that a method has been passed 
 		an illegal or inappropriate argument.*/
 		class IllegalArgumentException : public Exception
 		{
 		public:
 			IllegalArgumentException(const tstring& message)
 			 : message(message) {}
-			 
+
 			virtual tstring getMessage()
 				{ return message; }
-				
+
 		protected:
 			tstring message;
 		};
