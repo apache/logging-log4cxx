@@ -2,7 +2,7 @@ SUBDIRS = xml
 noinst_PROGRAMS = logging
 
 performanceincdir = $(includedir)/log4cxx
-performanceinc_HEADERS= *.h
+noinst_HEADERS= *.h
 
 INCLUDES = -I$(top_srcdir)/include
 
