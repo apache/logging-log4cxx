@@ -34,8 +34,15 @@ namespace log4cxx
 			virtual String getMessage() { return String();}
 		};
 
+#ifdef HAVE_MS_THREAD
+		class Condition;
+#endif
+
 		class Semaphore
 		{
+#ifdef HAVE_MS_THREAD
+		friend class Condition;
+#endif
 		public:
 			Semaphore(int value = 0);
 			~Semaphore();
