@@ -182,7 +182,7 @@ public:
 		i++;
 		LOG4CXX_INFO(UNDEF, _T("Message ") << i);
 		i++;
-		LOG4CXX_DEBUG(UNDEF, "Message " << i);
+		LOG4CXX_DEBUG(UNDEF, _T("Message ") << i);
 		i++;
 
 		// -------------------------------------------------

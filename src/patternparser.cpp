@@ -473,7 +473,8 @@ void PatternParser::LocationPatternConverter::convert(ostream& sbuf, const spi::
 	case FULL_LOCATION_CONVERTER:
 		if (event->getFile() != 0)
 		{
-			sbuf << event->getFile() << _T("(") << event->getLine() << _T(")");
+			USES_CONVERSION;
+			sbuf << A2T(event->getFile()) << _T("(") << event->getLine() << _T(")");
 		}
 		break;
 	case LINE_LOCATION_CONVERTER:
