@@ -24,7 +24,7 @@ AH_VERBATIM([HAVE_NO_EXPLICIT_EXPORTS],
 [/* no explicit exports */
 #define LOG4CXX_EXPORT])
 
-AM_INIT_AUTOMAKE(log4cxx, 0.9.7)
+AM_INIT_AUTOMAKE(log4cxx, 0.9.8)
 
 # Checks for programs
 # ----------------------------------------------------------------------------
@@ -394,11 +394,11 @@ tests/src/helpers/Makefile
 tests/src/net/Makefile
 tests/src/nt/Makefile
 tests/src/pattern/Makefile
+tests/src/rolling/Makefile
 tests/src/util/Makefile
 tests/src/xml/Makefile
 tests/src/varia/Makefile
 tests/witness/Makefile
-tests/rolling/Makefile
 performance/Makefile
 performance/xml/Makefile
 examples/Makefile

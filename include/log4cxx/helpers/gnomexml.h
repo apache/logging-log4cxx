@@ -17,11 +17,9 @@
 #ifndef _LOG4CXX_HELPERS_GNOMEXML_H
 #define _LOG4CXX_HELPERS_GNOMEXML_H
 
-#error this file isn't obsolete but soon will be
-
 #include <log4cxx/portability.h>
 
-#ifndef _WIN32
+#if !defined(_WIN32)
 
 #include <log4cxx/helpers/xml.h>
 #include <log4cxx/helpers/objectimpl.h>
@@ -43,6 +41,7 @@
 
 namespace log4cxx
 {
+        class File;
         namespace helpers
         {
                 class GnomeXMLDOMNode :
@@ -91,7 +90,7 @@ namespace log4cxx
                         virtual XMLDOMNodeType getNodeType()
                                 { return XMLDOMNode::DOCUMENT_NODE; }
                         virtual XMLDOMDocumentPtr getOwnerDocument();
-                        virtual void load(const LogString& fileName);
+                        virtual void load(const File& fileName);
                         virtual XMLDOMElementPtr getDocumentElement();
                         virtual XMLDOMElementPtr getElementById(
                                 const LogString& tagName, const LogString& elementId);

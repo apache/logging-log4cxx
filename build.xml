@@ -255,10 +255,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 outtype="shared"
                 objdir="${obj.dir}"
                 debug="${debug}">
-        <fileset dir="${src.dir}" includes="*.cpp">
-             <!--  exclusions while jump starting with APR  -->
-             <exclude name="**/gnomexml.cpp"/>
-        </fileset>
+        <fileset dir="${src.dir}" includes="*.cpp"/>
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
@@ -687,5 +684,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="test-all" depends="build-log4cxx, run-unittest"/>
+
+<target name="gump" depends="build-log4cxx, header-check"/>
 
 </project>
