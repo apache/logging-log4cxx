@@ -55,6 +55,13 @@ namespace log4cxx
 			LOG4CXX_INTERFACE_ENTRY(spi::AppenderAttachable)
 		END_LOG4CXX_INTERFACE_MAP()
 
+	private:
+		/**
+		* The fully qualified name of the Category class. See also the getFQCN
+		* method.
+		*/
+		static tstring FQCN;
+
     protected:
         /**
         The name of this logger.
@@ -201,7 +208,7 @@ namespace log4cxx
 		@param line the line where the log statement was written.
 		*/
     protected:
-        void forcedLog(const Level& level, const tstring& message, 
+        void forcedLog(const tstring& fqcn, const Level& level, const tstring& message,
 			const char* file=0, int line=-1);
 
 

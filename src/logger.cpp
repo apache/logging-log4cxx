@@ -30,6 +30,8 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
+tstring Logger::FQCN = Logger::getStaticClass().getName();
+
 Logger::Logger(const tstring& name)
 : name(name), level(&Level::OFF), additive(true), repository(0)
 {
@@ -96,7 +98,7 @@ void Logger::debug(const tstring& message, const char* file, int line)
 	
 	if(Level::DEBUG.isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(Level::DEBUG, message, file, line);
+		 forcedLog(FQCN, Level::DEBUG, message, file, line);
 	}
 }
 
@@ -109,7 +111,7 @@ void Logger::error(const tstring& message, const char* file, int line)
 
 	if(Level::ERROR.isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(Level::ERROR, message, file, line);
+		 forcedLog(FQCN, Level::ERROR, message, file, line);
 	}
 }
 
@@ -122,14 +124,14 @@ void Logger::fatal(const tstring& message, const char* file, int line)
 
 	if(Level::FATAL.isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(Level::FATAL, message, file, line);
+		 forcedLog(FQCN, Level::FATAL, message, file, line);
 	}
 }
 
-void Logger::forcedLog(const Level& level, const tstring& message,
+void Logger::forcedLog(const tstring& fqcn, const Level& level, const tstring& message,
 			const char* file, int line)
 {
-	callAppenders(LoggingEvent(this, level, message, file, line));
+	callAppenders(LoggingEvent(fqcn, this, level, message, file, line));
 }
 
 bool Logger::getAdditivity()
@@ -174,7 +176,7 @@ void Logger::info(const tstring& message, const char* file, int line)
 
 	if(Level::INFO.isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(Level::INFO, message, file, line);
+		 forcedLog(FQCN, Level::INFO, message, file, line);
 	}
 }
 
@@ -219,7 +221,7 @@ void Logger::log(const Level& level, const tstring& message,
 	}
 	if(level.isGreaterOrEqual(getEffectiveLevel()))
 	{
-		forcedLog(level, message, file, line);
+		forcedLog(FQCN, level, message, file, line);
 	}
 
 }
@@ -248,7 +250,7 @@ void Logger::warn(const tstring& message, const char* file, int line)
 
 	if(Level::WARN.isGreaterOrEqual(getEffectiveLevel()))
 	{
-		 forcedLog(Level::WARN, message, file, line);
+		 forcedLog(FQCN, Level::WARN, message, file, line);
 	}
 }
 
