@@ -22,6 +22,7 @@
 #include <log4cxx/xml/xmllayout.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/transform.h>
+#include <apr-1/apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -239,7 +240,7 @@ void XMLSocketAppender::Connector::run()
 	{
 		try
 		{
-			sleep(socketAppender->reconnectionDelay);
+			apr_sleep(APR_INT64_C(1000) * socketAppender->reconnectionDelay);
 			LogLog::debug(_T("Attempting connection to ")
 				+socketAppender->address.getHostName());
 			socket = new Socket(socketAppender->address, socketAppender->port);

@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <apr-1/apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -228,7 +229,7 @@ void SocketAppender::Connector::run()
 	{
 		try
 		{
-			sleep(socketAppender->reconnectionDelay);
+			apr_sleep(APR_INT64_C(1000) * socketAppender->reconnectionDelay);
 			LogLog::debug(_T("Attempting connection to ")
 				+socketAppender->address.getHostName());
 			socket = new Socket(socketAppender->address, socketAppender->port);

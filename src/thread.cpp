@@ -158,15 +158,6 @@ void Thread::join()
 	LOGLOG_DEBUG(_T("Thread ended."));
 }
 
-void Thread::sleep(long millis)
-{
-#ifdef LOG4CXX_HAVE_MS_THREAD
-	::Sleep(millis);
-#else
-	::usleep(1000 * millis);
-#endif
-}
-
 void Thread::setPriority(int newPriority)
 {
 	switch(newPriority)

@@ -38,6 +38,7 @@
 #include "../util/threadfilter.h"
 #include "../xml/xlevel.h"
 #include "../util/filenamefilter.h"
+#include <apr-1/apr_time.h>
 
 
 using namespace log4cxx;
@@ -464,7 +465,7 @@ public:
 
 	void delay(int secs)
 	{
-		Thread::sleep(secs * 1000);
+		apr_sleep(APR_USEC_PER_SEC * secs);
 	}
 };
 

@@ -94,11 +94,6 @@ namespace log4cxx
 			*/
 			static unsigned long getCurrentThreadId();
 
-			/** Causes the currently executing thread to sleep (temporarily
-			cease execution) for the specified number of milliseconds.
-			*/
-			static void sleep(long millis);
-
 			/** Causes this thread to begin execution;
 			calls the run method of this thread.
 			*/

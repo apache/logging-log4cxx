@@ -16,6 +16,7 @@
 
 #include "vectorappender.h"
 #include <log4cxx/helpers/thread.h>
+#include <apr-1/apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -26,7 +27,7 @@ void VectorAppender::append(const spi::LoggingEventPtr& event)
 {
 	try
 	{
-		Thread::sleep(5);
+		apr_sleep(5000);
 	}
 	catch (Exception&)
 	{

@@ -18,6 +18,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <sys/stat.h>
 #include <errno.h>
+#include <apr-1/apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -67,7 +68,7 @@ void FileWatchdog::run()
 {    
     while(!interrupted) 
 	{
-		Thread::sleep(delay);
+		apr_sleep(APR_INT64_C(1000) * delay);
 		checkAndConfigure();
     }
 }
