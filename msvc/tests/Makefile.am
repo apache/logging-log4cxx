@@ -14,5 +14,22 @@ EXTRA_DIST = \
 	patternlayout_test.dsp\
 	propertyconfigurator_test.dsp\
 	domconfigurator_test.dsp\
-	tests.bat
-
+	asyncappender_test.dsp\
+	dateformat_test.dsp\
+	tests.bat \
+	tests.sln\
+	hierarchy_test.vcproj\
+	level_test.vcproj\
+	ndc_test.vcproj\
+	mdc_test.vcproj\
+	filter_test.vcproj\
+	consoleappender_test.vcproj\
+	fileappender_test.vcproj\
+	htmllayout_test.vcproj\
+	xmllayout_test.vcproj\
+	ttcclayout_test.vcproj\
+	patternlayout_test.vcproj\
+	propertyconfigurator_test.vcproj\
+	domconfigurator_test.vcproj\
+	asyncappender_test.vcproj\
+	dateformat_test.vcproj

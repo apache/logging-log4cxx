@@ -3,7 +3,31 @@ Microsoft Developer Studio Workspace File, Format Version 6.00
 
 ###############################################################################
 
+Project: "asyncappender_test"=.\asyncappender_test.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
 Project: "consoleappender_test"=.\consoleappender_test.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Project: "dateformat_test"=.\dateformat_test.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -181,6 +205,12 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name xmllayout_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name asyncappender_test
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name dateformat_test
     End Project Dependency
 }}}
 

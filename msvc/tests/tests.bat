@@ -41,6 +41,12 @@ IF ERRORLEVEL 1 (ECHO propertyconfigurator_test FAILED) ELSE (ECHO propertyconfi
 ..\Bin\%1\domconfigurator_test ../../tests/domconfigurator_test.xml
 IF ERRORLEVEL 1 (ECHO domconfigurator_test FAILED) ELSE (ECHO domconfigurator_test PASSED)
 
+..\Bin\%1\asyncappender_test
+IF ERRORLEVEL 1 (ECHO asyncappender_test FAILED) ELSE (ECHO asyncappender_test PASSED)
+
+..\Bin\%1\dateformat_test
+IF ERRORLEVEL 1 (ECHO dateformat_test FAILED) ELSE (ECHO dateformat_test PASSED)
+
 goto done
 
 :usage
