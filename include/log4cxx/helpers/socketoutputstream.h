@@ -23,55 +23,55 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		class Socket;
-		typedef ObjectPtrT<Socket> SocketPtr;
+        namespace helpers
+        {
+                class Socket;
+                typedef ObjectPtrT<Socket> SocketPtr;
 
-		class SocketOutputStream;
-		typedef ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
+                class SocketOutputStream;
+                typedef ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
 
-		class LOG4CXX_EXPORT SocketOutputStream : public ObjectImpl
-		{
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketOutputStream)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(SocketOutputStream)
-			END_LOG4CXX_CAST_MAP()
+                class LOG4CXX_EXPORT SocketOutputStream : public ObjectImpl
+                {
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketOutputStream)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(SocketOutputStream)
+                        END_LOG4CXX_CAST_MAP()
 
-			SocketOutputStream(SocketPtr socket);
-			~SocketOutputStream();
+                        SocketOutputStream(SocketPtr socket);
+                        ~SocketOutputStream();
 
-			void write(const void * buffer, size_t len);
-			void write(unsigned int value);
-			void write(int value);
-			void write(unsigned long value);
-			void write(long value);
-			void write(const LogString& value);
-			// some write functions are missing ...
+                        void write(const void * buffer, size_t len);
+                        void write(unsigned int value);
+                        void write(int value);
+                        void write(unsigned long value);
+                        void write(long value);
+                        void write(const LogString& value);
+                        // some write functions are missing ...
 
-			/** Close the stream and dereference the socket.
-			*/
-			void close();
+                        /** Close the stream and dereference the socket.
+                        */
+                        void close();
 
-			/** Flushes this output stream and forces any buffered output
-			bytes to be written out.
-			*/
-			void flush();
+                        /** Flushes this output stream and forces any buffered output
+                        bytes to be written out.
+                        */
+                        void flush();
 
-		protected:
-			SocketPtr socket;
+                protected:
+                        SocketPtr socket;
 
-			/** memory stream buffer */
+                        /** memory stream buffer */
 /*			class membuf :
-				public std::basic_streambuf<char, std::char_traits<char> >
-			{
-			public:
-				const void * buffer() const;
-				const size_t size() const;
-			}*/
+                                public std::basic_streambuf<char, std::char_traits<char> >
+                        {
+                        public:
+                                const void * buffer() const;
+                                const size_t size() const;
+                        }*/
 
-			unsigned char * beg, * cur, * end;
+                        unsigned char * beg, * cur, * end;
 
 
                 private:
@@ -80,8 +80,8 @@ namespace log4cxx
                        SocketOutputStream(const SocketOutputStream&);
                        SocketOutputStream& operator=(const SocketOutputStream&);
 
-		};
-	}  // namespace helpers
-}; // namespace log4cxx
+                };
+        }  // namespace helpers
+} // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_SOCKET_OUTPUT_STREAM_H

@@ -47,6 +47,6 @@ namespace log4cxx
                         Pool& operator=(const Pool&);
                 };
         } // namespace helpers
-};// namespace log4cxx
+} // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_POOL_H

@@ -23,84 +23,84 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		/**
-		This class used to output log statements from within the log4cxx package.
+        namespace helpers
+        {
+                /**
+                This class used to output log statements from within the log4cxx package.
 
-		<p>Log4cxx components cannot make log4cxx logging calls. However, it is
-		sometimes useful for the user to learn about what log4cxx is
-		doing. You can enable log4cxx internal logging by calling the
-		<b>#setInternalDebugging</b> method.
+                <p>Log4cxx components cannot make log4cxx logging calls. However, it is
+                sometimes useful for the user to learn about what log4cxx is
+                doing. You can enable log4cxx internal logging by calling the
+                <b>#setInternalDebugging</b> method.
 
-		<p>All log4cxx internal debug calls go to standard output
-		where as internal error messages are sent to
-		standard error output. All internal messages are prepended with
-		the string "log4cxx: ".
-		*/
-		class LOG4CXX_EXPORT LogLog
-		{
-		protected:
-			static bool debugEnabled;
+                <p>All log4cxx internal debug calls go to standard output
+                where as internal error messages are sent to
+                standard error output. All internal messages are prepended with
+                the string "log4cxx: ".
+                */
+                class LOG4CXX_EXPORT LogLog
+                {
+                protected:
+                        static bool debugEnabled;
 
-		  /**
-			 In quietMode not even errors generate any output.
-		   */
-			static bool quietMode;
+                  /**
+                         In quietMode not even errors generate any output.
+                   */
+                        static bool quietMode;
 
-		public:
-			/**
-			Allows to enable/disable log4cxx internal logging.
-			*/
-			static void setInternalDebugging(bool enabled);
+                public:
+                        /**
+                        Allows to enable/disable log4cxx internal logging.
+                        */
+                        static void setInternalDebugging(bool enabled);
 
-			/**
-			This method is used to output log4cxx internal debug
-			statements. Output goes to the standard output.
-			*/
-			static void debug(const LogString& msg);
-			static void debug(const LogString& msg, const std::exception& e);
-
-
-			/**
-			This method is used to output log4cxx internal error
-			statements. There is no way to disable error statements.
-			Output goes to stderr.
-			*/
-			static void error(const LogString& msg);
-			static void error(const LogString& msg, const std::exception& e);
+                        /**
+                        This method is used to output log4cxx internal debug
+                        statements. Output goes to the standard output.
+                        */
+                        static void debug(const LogString& msg);
+                        static void debug(const LogString& msg, const std::exception& e);
 
 
-			/**
-			In quite mode LogLog generates strictly no output, not even
-			for errors.
+                        /**
+                        This method is used to output log4cxx internal error
+                        statements. There is no way to disable error statements.
+                        Output goes to stderr.
+                        */
+                        static void error(const LogString& msg);
+                        static void error(const LogString& msg, const std::exception& e);
 
-			@param quietMode <code>true</code> for no output.
-			*/
-			static void setQuietMode(bool quietMode);
 
-			/**
-			This method is used to output log4cxx internal warning
-			statements. There is no way to disable warning statements.
-			Output goes to stderr.
-			*/
-			static void warn(const LogString&  msg);
-			static void warn(const LogString&  msg, const std::exception& e);
+                        /**
+                        In quite mode LogLog generates strictly no output, not even
+                        for errors.
+
+                        @param quietMode <code>true</code> for no output.
+                        */
+                        static void setQuietMode(bool quietMode);
+
+                        /**
+                        This method is used to output log4cxx internal warning
+                        statements. There is no way to disable warning statements.
+                        Output goes to stderr.
+                        */
+                        static void warn(const LogString&  msg);
+                        static void warn(const LogString&  msg, const std::exception& e);
 
                         private:
                         static void emit(const std::string& msg);
                         static void emit(const std::wstring& msg);
-		};
-	}  // namespace helpers
-}; // namespace log4cxx
+                };
+        }  // namespace helpers
+} // namespace log4cxx
 
 #define LOGLOG_DEBUG(log) { \
-	log4cxx::helpers::LogLog::debug(log) ; }
+        log4cxx::helpers::LogLog::debug(log) ; }
 
 #define LOGLOG_WARN(log) { \
-	log4cxx::helpers::LogLog::warn(log) ; }
+        log4cxx::helpers::LogLog::warn(log) ; }
 
 #define LOGLOG_ERROR(log) { \
-	log4cxx::helpers::LogLog::warn(log); }
+        log4cxx::helpers::LogLog::warn(log); }
 
 #endif //_LOG4CXX_HELPERS_LOG_LOG_H

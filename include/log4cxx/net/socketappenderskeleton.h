@@ -194,7 +194,7 @@ namespace log4cxx
 
         }; // class SocketAppenderSkeleton
     } // namespace net
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif // _LOG4CXX_NET_SOCKET_APPENDER_SKELETON_H
 

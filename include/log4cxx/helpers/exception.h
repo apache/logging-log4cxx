@@ -23,55 +23,55 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		/** The class Exception and its subclasses indicate conditions that a
-		reasonable application might want to catch.
-		*/
-		class LOG4CXX_EXPORT Exception : public ::std::exception
-		{
-		public:
-			Exception()  {}
-	        }; // class Exception
+        namespace helpers
+        {
+                /** The class Exception and its subclasses indicate conditions that a
+                reasonable application might want to catch.
+                */
+                class LOG4CXX_EXPORT Exception : public ::std::exception
+                {
+                public:
+                        Exception()  {}
+                }; // class Exception
 
-		/** RuntimeException is the parent class of those exceptions that can be
-		thrown during the normal operation of the process.
-		*/
-		class LOG4CXX_EXPORT RuntimeException : public Exception
-		{
-		public:
-			RuntimeException() {}
-		}; // class RuntimeException
+                /** RuntimeException is the parent class of those exceptions that can be
+                thrown during the normal operation of the process.
+                */
+                class LOG4CXX_EXPORT RuntimeException : public Exception
+                {
+                public:
+                        RuntimeException() {}
+                }; // class RuntimeException
 
-		/** Thrown when an application attempts to use null in a case where an
-		object is required.
-		*/
-		class LOG4CXX_EXPORT  NullPointerException : public RuntimeException
-		{
-		public:
-			NullPointerException() {}
-		}; // class NullPointerException
+                /** Thrown when an application attempts to use null in a case where an
+                object is required.
+                */
+                class LOG4CXX_EXPORT  NullPointerException : public RuntimeException
+                {
+                public:
+                        NullPointerException() {}
+                }; // class NullPointerException
 
-		/** Thrown to indicate that a method has been passed
-		an illegal or inappropriate argument.*/
-		class LOG4CXX_EXPORT IllegalArgumentException : public RuntimeException
-		{
+                /** Thrown to indicate that a method has been passed
+                an illegal or inappropriate argument.*/
+                class LOG4CXX_EXPORT IllegalArgumentException : public RuntimeException
+                {
                 public:
                    IllegalArgumentException() {}
-		}; // class IllegalArgumentException
+                }; // class IllegalArgumentException
 
-		/** Signals that an I/O exception of some sort has occurred. This class
-		is the general class of exceptions produced by failed or interrupted
-		I/O operations.
-		*/
-		class LOG4CXX_EXPORT IOException : public Exception
-		{
+                /** Signals that an I/O exception of some sort has occurred. This class
+                is the general class of exceptions produced by failed or interrupted
+                I/O operations.
+                */
+                class LOG4CXX_EXPORT IOException : public Exception
+                {
                 public:
                     IOException()  {}
                     IOException(const IOException &src) : Exception(src) {
                     }
-		};
-	}  // namespace helpers
-}; // namespace log4cxx
+                };
+        }  // namespace helpers
+} // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_EXCEPTION_H

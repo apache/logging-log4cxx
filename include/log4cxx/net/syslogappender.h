@@ -139,7 +139,7 @@ namespace log4cxx
                         SyslogAppender& operator=(const SyslogAppender&);
                 }; // class SyslogAppender
     } // namespace net
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif // _LOG4CXX_NET_SYSLOG_APPENDER_H
 

@@ -22,71 +22,71 @@
 
 namespace log4cxx
 {
-	class Level;
+        class Level;
 
-	namespace varia
-	{
-		/**
-		This is a very simple filter based on level matching.
+        namespace varia
+        {
+                /**
+                This is a very simple filter based on level matching.
 
-		<p>The filter admits two options <b>LevelToMatch</b> and
-		<b>AcceptOnMatch</b>. If there is an exact match between the value
-		of the <b>LevelToMatch</b> option and the level of the {@link
-		spi::LoggingEvent LoggingEvent}, then the #decide method returns {@link
-		spi::Filter#ACCEPT ACCEPT} in case the <b>AcceptOnMatch</b>
-		option value is set to <code>true</code>, if it is <code>false</code>
-		then {@link spi::Filter#DENY DENY} is returned. If there is no match,
-		{@link spi::Filter#NEUTRAL NEUTRAL} is returned.
-		*/
-		class LevelMatchFilter;
-		typedef helpers::ObjectPtrT<LevelMatchFilter> LevelMatchFilterPtr;
+                <p>The filter admits two options <b>LevelToMatch</b> and
+                <b>AcceptOnMatch</b>. If there is an exact match between the value
+                of the <b>LevelToMatch</b> option and the level of the {@link
+                spi::LoggingEvent LoggingEvent}, then the #decide method returns {@link
+                spi::Filter#ACCEPT ACCEPT} in case the <b>AcceptOnMatch</b>
+                option value is set to <code>true</code>, if it is <code>false</code>
+                then {@link spi::Filter#DENY DENY} is returned. If there is no match,
+                {@link spi::Filter#NEUTRAL NEUTRAL} is returned.
+                */
+                class LevelMatchFilter;
+                typedef helpers::ObjectPtrT<LevelMatchFilter> LevelMatchFilterPtr;
 
-		class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
-		{
-		private:
-			bool acceptOnMatch;
-			LevelPtr levelToMatch;
+                class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
+                {
+                private:
+                        bool acceptOnMatch;
+                        LevelPtr levelToMatch;
 
-		public:
-			typedef spi::Filter BASE_CLASS;
-			DECLARE_LOG4CXX_OBJECT(LevelMatchFilter)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(LevelMatchFilter)
-				LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
-			END_LOG4CXX_CAST_MAP()
+                public:
+                        typedef spi::Filter BASE_CLASS;
+                        DECLARE_LOG4CXX_OBJECT(LevelMatchFilter)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(LevelMatchFilter)
+                                LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
+                        END_LOG4CXX_CAST_MAP()
 
-			LevelMatchFilter();
+                        LevelMatchFilter();
 
-			/**
-			Set options
-			*/
-			virtual void setOption(const LogString& option,
-				const LogString& value);
+                        /**
+                        Set options
+                        */
+                        virtual void setOption(const LogString& option,
+                                const LogString& value);
 
-			void setLevelToMatch(const LogString& levelToMatch);
+                        void setLevelToMatch(const LogString& levelToMatch);
 
-			const LogString& getLevelToMatch() const;
+                        const LogString& getLevelToMatch() const;
 
-			inline void setAcceptOnMatch(bool acceptOnMatch)
-				{ this->acceptOnMatch = acceptOnMatch; }
+                        inline void setAcceptOnMatch(bool acceptOnMatch)
+                                { this->acceptOnMatch = acceptOnMatch; }
 
-			inline bool getAcceptOnMatch() const
-				{ return acceptOnMatch; }
+                        inline bool getAcceptOnMatch() const
+                                { return acceptOnMatch; }
 
-			/**
-			Return the decision of this filter.
+                        /**
+                        Return the decision of this filter.
 
-			Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
-			<b>LevelToMatch</b> option is not set or if there is not match.
-			Otherwise, if there is a match, then the returned decision is
-			{@link spi::Filter#ACCEPT ACCEPT} if the <b>AcceptOnMatch</b>
-			property is set to <code>true</code>. The returned decision is
-			{@link spi::Filter#DENY DENY} if the
-			<b>AcceptOnMatch</b> property is set to false.
-			*/
-			FilterDecision decide(const spi::LoggingEventPtr& event) const;
-		}; // class LevelMatchFilter
-	}  // namespace varia
-}; // namespace log4cxx
+                        Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
+                        <b>LevelToMatch</b> option is not set or if there is not match.
+                        Otherwise, if there is a match, then the returned decision is
+                        {@link spi::Filter#ACCEPT ACCEPT} if the <b>AcceptOnMatch</b>
+                        property is set to <code>true</code>. The returned decision is
+                        {@link spi::Filter#DENY DENY} if the
+                        <b>AcceptOnMatch</b> property is set to false.
+                        */
+                        FilterDecision decide(const spi::LoggingEventPtr& event) const;
+                }; // class LevelMatchFilter
+        }  // namespace varia
+} // namespace log4cxx
 
 #endif // _LOG4CXX_VARIA_STRING_MATCH_FILTER_H

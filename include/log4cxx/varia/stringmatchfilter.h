@@ -88,6 +88,6 @@ namespace log4cxx
                         FilterDecision decide(const spi::LoggingEventPtr& event) const;
 }; // class StringMatchFilter
         }  // namespace varia
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif // _LOG4CXX_VARIA_STRING_MATCH_FILTER_H

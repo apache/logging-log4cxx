@@ -26,19 +26,19 @@ class apr_pool_t;
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		class Class;
+        namespace helpers
+        {
+                class Class;
 
-		class LOG4CXX_EXPORT Loader
-		{
-		public:
-			static const Class& loadClass(const LogString& clazz);
+                class LOG4CXX_EXPORT Loader
+                {
+                public:
+                        static const Class& loadClass(const LogString& clazz);
 //  TODO
 //			static LogString getResource(const LogString& name);
 //			static void* getResourceAsStream(const LogString& name,
 //                            apr_size_t* size, apr_pool_t* pool);
-		};
-	}  // namespace helpers
-}; // namespace log4cxx
+                };
+        }  // namespace helpers
+} // namespace log4cxx
 #endif //_LOG4CXX_HELPERS_LOADER_H

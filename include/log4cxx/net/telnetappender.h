@@ -26,14 +26,14 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		class SocketOutputStream;
-		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-	}
+        namespace helpers
+        {
+                class SocketOutputStream;
+                typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
+        }
 
-	namespace net
-	{
+        namespace net
+        {
 /**
 <p>The TelnetAppender is a log4cxx appender that specializes in
 writing to a read-only socket.  The output is provided in a
@@ -60,79 +60,79 @@ servlet.
 </table>
 */
         class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
-		{
-		class SocketHandler;
-		friend class SocketHandler;
-		private:
+                {
+                class SocketHandler;
+                friend class SocketHandler;
+                private:
                         log4cxx::helpers::Pool pool;
-			static int DEFAULT_PORT;
-			int port;
+                        static int DEFAULT_PORT;
+                        int port;
 
-		public:
-			DECLARE_LOG4CXX_OBJECT(TelnetAppender)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(TelnetAppender)
-				LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-			END_LOG4CXX_CAST_MAP()
+                public:
+                        DECLARE_LOG4CXX_OBJECT(TelnetAppender)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(TelnetAppender)
+                                LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+                        END_LOG4CXX_CAST_MAP()
 
-			TelnetAppender();
-			~TelnetAppender();
+                        TelnetAppender();
+                        ~TelnetAppender();
 
-			/**
-			This appender requires a layout to format the text to the
-			attached client(s). */
-			virtual bool requiresLayout() const
-				{ return true; }
+                        /**
+                        This appender requires a layout to format the text to the
+                        attached client(s). */
+                        virtual bool requiresLayout() const
+                                { return true; }
 
-			/** all of the options have been set, create the socket handler and
-			wait for connections. */
-			void activateOptions(apr_pool_t* p);
+                        /** all of the options have been set, create the socket handler and
+                        wait for connections. */
+                        void activateOptions(apr_pool_t* p);
 
-		    /**
-		    Set options
-		    */
-			virtual void setOption(const LogString& option, const LogString& value);
+                    /**
+                    Set options
+                    */
+                        virtual void setOption(const LogString& option, const LogString& value);
 
-    		/**
-    		Returns value of the <b>Port</b> option.
-    		*/
-			int getPort() const
-				{ return port; }
+                /**
+                Returns value of the <b>Port</b> option.
+                */
+                        int getPort() const
+                                { return port; }
 
-    		/**
-    		The <b>Port</b> option takes a positive integer representing
-    		the port where the server is waiting for connections.
-    		*/
-			void setPort(int port)
-			{ this->port = port; }
+                /**
+                The <b>Port</b> option takes a positive integer representing
+                the port where the server is waiting for connections.
+                */
+                        void setPort(int port)
+                        { this->port = port; }
 
 
-			/** shuts down the appender. */
-			void close();
+                        /** shuts down the appender. */
+                        void close();
 
-		protected:
-			/** Handles a log event.  For this appender, that means writing the
-			message to each connected client.  */
-			virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p) ;
+                protected:
+                        /** Handles a log event.  For this appender, that means writing the
+                        message to each connected client.  */
+                        virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p) ;
 
-			//---------------------------------------------------------- SocketHandler:
+                        //---------------------------------------------------------- SocketHandler:
 
-		private:
+                private:
             //   prevent copy and assignment statements
             TelnetAppender(const TelnetAppender&);
             TelnetAppender& operator=(const TelnetAppender&);
 
-			typedef std::pair<helpers::SocketPtr, helpers::SocketOutputStreamPtr> Connection;
-			typedef std::vector<Connection> ConnectionList;
+                        typedef std::pair<helpers::SocketPtr, helpers::SocketOutputStreamPtr> Connection;
+                        typedef std::vector<Connection> ConnectionList;
 
-			ConnectionList connections;
-			helpers::ServerSocket* serverSocket;
-			helpers::Thread sh;
-			volatile unsigned int activeConnections;
-			static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
-		}; // class TelnetAppender
+                        ConnectionList connections;
+                        helpers::ServerSocket* serverSocket;
+                        helpers::Thread sh;
+                        volatile unsigned int activeConnections;
+                        static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
+                }; // class TelnetAppender
     } // namespace net
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif // _LOG4CXX_NET_TELNET_APPENDER_H
 

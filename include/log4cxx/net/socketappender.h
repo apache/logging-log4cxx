@@ -21,10 +21,10 @@
 
 namespace log4cxx
 {
-	namespace net
-	{
-		class LOG4CXX_EXPORT SocketAppender;
-		typedef helpers::ObjectPtrT<SocketAppender> SocketAppenderPtr;
+        namespace net
+        {
+                class LOG4CXX_EXPORT SocketAppender;
+                typedef helpers::ObjectPtrT<SocketAppender> SocketAppenderPtr;
 
         /**
         Sends {@link spi::LoggingEvent LoggingEvent} objects to a remote a log server,
@@ -33,14 +33,14 @@ namespace log4cxx
         <p>The SocketAppender has the following properties:
 
         - If sent to a {@link net::SocketNode SocketNode}, remote logging
-		is non-intrusive as far as the log event is concerned. In other
+                is non-intrusive as far as the log event is concerned. In other
         words, the event will be logged with the same time stamp, {@link
         NDC NDC}, location info as if it were logged locally by
         the client.
 
         - SocketAppenders do not use a layout. They ship a
         serialized {@link spi::LoggingEvent LoggingEvent} object
-		to the server side.
+                to the server side.
 
         - Remote logging uses the TCP protocol. Consequently, if
         the server is reachable, then log events will eventually arrive
@@ -76,7 +76,7 @@ namespace log4cxx
         ignore it.
 
         - If the application hosting the <code>SocketAppender</code>
-		exits before the <code>SocketAppender</code> is closed either
+                exits before the <code>SocketAppender</code> is closed either
         explicitly or subsequent to destruction, then there might
         be untransmitted data in the pipe which might be lost.
         @n @n To avoid lost data, it is usually sufficient to
@@ -85,65 +85,65 @@ namespace log4cxx
         before exiting the application.
         */
 
-      	class LOG4CXX_EXPORT SocketAppender : public SocketAppenderSkeleton
-    	{
-    	public:
-   		/**
-    		The default port number of remote logging server (4560).
-    		*/
-    		static int DEFAULT_PORT;
+        class LOG4CXX_EXPORT SocketAppender : public SocketAppenderSkeleton
+        {
+        public:
+                /**
+                The default port number of remote logging server (4560).
+                */
+                static int DEFAULT_PORT;
 
-    		/**
-    		The default reconnection delay (30000 milliseconds or 30 seconds).
-    		*/
-    		static int DEFAULT_RECONNECTION_DELAY;
+                /**
+                The default reconnection delay (30000 milliseconds or 30 seconds).
+                */
+                static int DEFAULT_RECONNECTION_DELAY;
 
-			DECLARE_LOG4CXX_OBJECT(SocketAppender)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(SocketAppender)
-				LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-			END_LOG4CXX_CAST_MAP()
+                        DECLARE_LOG4CXX_OBJECT(SocketAppender)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(SocketAppender)
+                                LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+                        END_LOG4CXX_CAST_MAP()
 
-    		SocketAppender();
-			~SocketAppender();
+                SocketAppender();
+                        ~SocketAppender();
 
-    		/**
-    		Connects to remote server at <code>address</code> and <code>port</code>.
-    		*/
-    		SocketAppender(unsigned long address, int port);
+                /**
+                Connects to remote server at <code>address</code> and <code>port</code>.
+                */
+                SocketAppender(unsigned long address, int port);
 
-    		/**
-    		Connects to remote server at <code>host</code> and <code>port</code>.
-    		*/
-    		SocketAppender(const LogString& host, int port);
-
-
-			/**
-		     *Set options
-		     */
-			virtual void setOption(const LogString& option,
-				const LogString& value) {
-				SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
-			}
+                /**
+                Connects to remote server at <code>host</code> and <code>port</code>.
+                */
+                SocketAppender(const LogString& host, int port);
 
 
-    		/**
-    		* The SocketAppender does not use a layout. Hence, this method
-    		* returns <code>false</code>.
-    		* */
-    		bool requiresLayout() const
-    			{ return false; }
+                        /**
+                     *Set options
+                     */
+                        virtual void setOption(const LogString& option,
+                                const LogString& value) {
+                                SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
+                        }
 
-		protected:
-			virtual void renderEvent(const spi::LoggingEventPtr& event,
-				helpers::SocketOutputStreamPtr& os,
+
+                /**
+                * The SocketAppender does not use a layout. Hence, this method
+                * returns <code>false</code>.
+                * */
+                bool requiresLayout() const
+                        { return false; }
+
+                protected:
+                        virtual void renderEvent(const spi::LoggingEventPtr& event,
+                                helpers::SocketOutputStreamPtr& os,
                                 apr_pool_t* p);
 
 
 
         }; // class SocketAppender
     } // namespace net
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif // _LOG4CXX_NET_SOCKET_APPENDER_H
 

@@ -22,16 +22,16 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		class Object;
-		typedef ObjectPtrT<Object> ObjectPtr;
+        namespace helpers
+        {
+                class Object;
+                typedef ObjectPtrT<Object> ObjectPtr;
 
-		class Properties;
-	}
+                class Properties;
+        }
 
-	namespace config
-	{
+        namespace config
+        {
 /**
 General purpose Object property setter. Clients repeatedly invokes
 {@link #setProperty setProperty(name,value)} in order to invoke setters
@@ -48,19 +48,19 @@ will cause the invocations anObject->setOption("name", "Joe"),
 anObject->setOption("age", "32") and anObject->setOption("isMale", "true")
 if the spi::OptionHandler interface is supported by anObject.
 */
-		class LOG4CXX_EXPORT PropertySetter
-		{
-		protected:
-			helpers::ObjectPtr obj;
+                class LOG4CXX_EXPORT PropertySetter
+                {
+                protected:
+                        helpers::ObjectPtr obj;
 
-		public:
+                public:
 /**
 Create a new PropertySetter for the specified Object. This is done
 in prepartion for invoking #setProperty one or more times.
 
 @param obj  the object for which to set properties
 */
-			PropertySetter(helpers::ObjectPtr obj);
+                        PropertySetter(helpers::ObjectPtr obj);
 
 /**
 Set the properties of an object passed as a parameter in one
@@ -71,14 +71,14 @@ go. The <code>properties</code> are parsed relative to a
 @param properties A java.util.Properties containing keys and values.
 @param prefix Only keys having the specified prefix will be set.
 */
-			static void setProperties(helpers::ObjectPtr obj,
-				helpers::Properties& properties, const LogString& prefix);
+                        static void setProperties(helpers::ObjectPtr obj,
+                                helpers::Properties& properties, const LogString& prefix);
 
 /**
 Set the properites for the object that match the
 <code>prefix</code> passed as parameter.
 */
-			void setProperties(helpers::Properties& properties, const LogString& prefix);
+                        void setProperties(helpers::Properties& properties, const LogString& prefix);
 
 /**
 Set a property on this PropertySetter's Object. If the underlying
@@ -88,11 +88,11 @@ Object supports the spi::OptionHandler interface, the
 @param name    name of the property
 @param value   String value of the property
 */
-			void setProperty(const LogString& option, const LogString& value);
+                        void setProperty(const LogString& option, const LogString& value);
 
-			void activate();
-		}; // class PropertySetter
-	}  // namespace config;
-}; // namespace log4cxx
+                        void activate();
+                }; // class PropertySetter
+        }  // namespace config;
+} // namespace log4cxx
 
 #endif //_LOG4CXX_CONFIG_PROPERTYSETTER_H

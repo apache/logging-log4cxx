@@ -23,62 +23,62 @@
 
 namespace log4cxx
 {
-	namespace spi
-	{
-		class LoggingEvent;
-		typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-	}
+        namespace spi
+        {
+                class LoggingEvent;
+                typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
+        }
 
-	namespace helpers
-	{
-		class FormattingInfo;
+        namespace helpers
+        {
+                class FormattingInfo;
 
-		class PatternConverter;
-		typedef ObjectPtrT<PatternConverter> PatternConverterPtr;
+                class PatternConverter;
+                typedef ObjectPtrT<PatternConverter> PatternConverterPtr;
 
-		/**
-		<p>PatternConverter is an abtract class that provides the
-		formatting functionality that derived classes need.
+                /**
+                <p>PatternConverter is an abtract class that provides the
+                formatting functionality that derived classes need.
 
-		<p>Conversion specifiers in a conversion patterns are parsed to
-		individual PatternConverters. Each of which is responsible for
-		converting a logging event in a converter specific manner.
-		*/
-		class LOG4CXX_EXPORT PatternConverter : public ObjectImpl
-		{
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(PatternConverter)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(PatternConverter)
-			END_LOG4CXX_CAST_MAP()
+                <p>Conversion specifiers in a conversion patterns are parsed to
+                individual PatternConverters. Each of which is responsible for
+                converting a logging event in a converter specific manner.
+                */
+                class LOG4CXX_EXPORT PatternConverter : public ObjectImpl
+                {
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(PatternConverter)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(PatternConverter)
+                        END_LOG4CXX_CAST_MAP()
 
-			PatternConverterPtr next;
-			int minChar;
-			int maxChar;
-			bool leftAlign;
-			mutable LogString os;
+                        PatternConverterPtr next;
+                        int minChar;
+                        int maxChar;
+                        bool leftAlign;
+                        mutable LogString os;
 
-		protected:
-			PatternConverter();
-			PatternConverter(const FormattingInfo& fi);
+                protected:
+                        PatternConverter();
+                        PatternConverter(const FormattingInfo& fi);
 
-			/**
-			Derived pattern converters must override this method in order to
-			convert conversion specifiers in the correct way.
-			*/
-			virtual void convert(LogString& sbuf,
-				const spi::LoggingEventPtr& event,
+                        /**
+                        Derived pattern converters must override this method in order to
+                        convert conversion specifiers in the correct way.
+                        */
+                        virtual void convert(LogString& sbuf,
+                                const spi::LoggingEventPtr& event,
                                 apr_pool_t* pool) const = 0;
 
-		public:
-			/**
-			A template method for formatting in a converter specific way.
-			*/
-			virtual void format(LogString& sbuf,
+                public:
+                        /**
+                        A template method for formatting in a converter specific way.
+                        */
+                        virtual void format(LogString& sbuf,
                             const spi::LoggingEventPtr& e, apr_pool_t* pool) const;
 
-		}; // class PatternConverter
-	}  // namespace helpers
-}; // namespace log4cxx
+                }; // class PatternConverter
+        }  // namespace helpers
+} // namespace log4cxx
 
 #endif // _LOG4CXX_HELPER_PATTERN_CONVERTER_H

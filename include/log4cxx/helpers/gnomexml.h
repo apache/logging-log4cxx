@@ -43,124 +43,124 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		class GnomeXMLDOMNode :
-			virtual public XMLDOMNode,
-			virtual public ObjectImpl
-		{
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(GnomeXMLDOMNode)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(XMLDOMNode)
-			END_LOG4CXX_CAST_MAP()
+        namespace helpers
+        {
+                class GnomeXMLDOMNode :
+                        virtual public XMLDOMNode,
+                        virtual public ObjectImpl
+                {
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(GnomeXMLDOMNode)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(XMLDOMNode)
+                        END_LOG4CXX_CAST_MAP()
 
-			GnomeXMLDOMNode(xmlNodePtr node);
+                        GnomeXMLDOMNode(xmlNodePtr node);
 
-			virtual XMLDOMNodeListPtr getChildNodes();
-			virtual XMLDOMNodeType getNodeType()
-				{ return NOT_IMPLEMENTED_NODE; }
+                        virtual XMLDOMNodeListPtr getChildNodes();
+                        virtual XMLDOMNodeType getNodeType()
+                                { return NOT_IMPLEMENTED_NODE; }
 
-			virtual XMLDOMDocumentPtr getOwnerDocument();
+                        virtual XMLDOMDocumentPtr getOwnerDocument();
 
-		protected:
-			xmlNodePtr node;
+                protected:
+                        xmlNodePtr node;
 
                 private:
                         //   prevent assignment or copy statements
                         GnomeXMLDOMNode(const GnomeXMLDOMNode&);
                         GnomeXMLDOMNode& operator=(const GnomeXMLDOMNode&);
-		};
+                };
 
-		class GnomeXMLDOMDocument :
-			virtual public XMLDOMDocument,
-			virtual public ObjectImpl
-		{
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(GnomeXMLDOMDocument)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(XMLDOMDocument)
-				LOG4CXX_CAST_ENTRY(XMLDOMNode)
-			END_LOG4CXX_CAST_MAP()
+                class GnomeXMLDOMDocument :
+                        virtual public XMLDOMDocument,
+                        virtual public ObjectImpl
+                {
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(GnomeXMLDOMDocument)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(XMLDOMDocument)
+                                LOG4CXX_CAST_ENTRY(XMLDOMNode)
+                        END_LOG4CXX_CAST_MAP()
 
-			GnomeXMLDOMDocument();
-			GnomeXMLDOMDocument(xmlDocPtr document);
-			~GnomeXMLDOMDocument();
+                        GnomeXMLDOMDocument();
+                        GnomeXMLDOMDocument(xmlDocPtr document);
+                        ~GnomeXMLDOMDocument();
 
-			virtual XMLDOMNodeListPtr getChildNodes();
-			virtual XMLDOMNodeType getNodeType()
-				{ return XMLDOMNode::DOCUMENT_NODE; }
-			virtual XMLDOMDocumentPtr getOwnerDocument();
-			virtual void load(const LogString& fileName);
-			virtual XMLDOMElementPtr getDocumentElement();
-			virtual XMLDOMElementPtr getElementById(
-				const LogString& tagName, const LogString& elementId);
+                        virtual XMLDOMNodeListPtr getChildNodes();
+                        virtual XMLDOMNodeType getNodeType()
+                                { return XMLDOMNode::DOCUMENT_NODE; }
+                        virtual XMLDOMDocumentPtr getOwnerDocument();
+                        virtual void load(const LogString& fileName);
+                        virtual XMLDOMElementPtr getDocumentElement();
+                        virtual XMLDOMElementPtr getElementById(
+                                const LogString& tagName, const LogString& elementId);
 
-		protected:
-			xmlDocPtr document;
-			bool ownDocument;
+                protected:
+                        xmlDocPtr document;
+                        bool ownDocument;
 
                 private:
                         //   prevent assignment or copy statements
                        GnomeXMLDOMDocument(const GnomeXMLDOMDocument&);
                        GnomeXMLDOMDocument& operator=(const GnomeXMLDOMDocument&);
-		};
+                };
 
-		class GnomeXMLDOMElement :
-			virtual public XMLDOMElement,
-			virtual public ObjectImpl
-		{
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(GnomeXMLDOMElement)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(XMLDOMElement)
-				LOG4CXX_CAST_ENTRY(XMLDOMNode)
-			END_LOG4CXX_CAST_MAP()
+                class GnomeXMLDOMElement :
+                        virtual public XMLDOMElement,
+                        virtual public ObjectImpl
+                {
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(GnomeXMLDOMElement)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(XMLDOMElement)
+                                LOG4CXX_CAST_ENTRY(XMLDOMNode)
+                        END_LOG4CXX_CAST_MAP()
 
-			GnomeXMLDOMElement(xmlNodePtr element);
+                        GnomeXMLDOMElement(xmlNodePtr element);
 
-			virtual XMLDOMNodeListPtr getChildNodes();
-			virtual XMLDOMNodeType getNodeType()
-				{ return XMLDOMNode::ELEMENT_NODE; }
-			virtual XMLDOMDocumentPtr getOwnerDocument();
-			virtual LogString getTagName();
-			virtual LogString getAttribute(const LogString& name);
+                        virtual XMLDOMNodeListPtr getChildNodes();
+                        virtual XMLDOMNodeType getNodeType()
+                                { return XMLDOMNode::ELEMENT_NODE; }
+                        virtual XMLDOMDocumentPtr getOwnerDocument();
+                        virtual LogString getTagName();
+                        virtual LogString getAttribute(const LogString& name);
 
-		protected:
-			xmlNodePtr element;
+                protected:
+                        xmlNodePtr element;
                 private:
                         //   prevent assignment or copy statements
                        GnomeXMLDOMElement(const GnomeXMLDOMElement&);
                        GnomeXMLDOMElement& operator=(const GnomeXMLDOMElement&);
-		};
+                };
 
-		class GnomeXMLDOMNodeList :
-			virtual public XMLDOMNodeList,
-			virtual public ObjectImpl
-		{
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(GnomeXMLDOMNodeList)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(XMLDOMNodeList)
-			END_LOG4CXX_CAST_MAP()
+                class GnomeXMLDOMNodeList :
+                        virtual public XMLDOMNodeList,
+                        virtual public ObjectImpl
+                {
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(GnomeXMLDOMNodeList)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(XMLDOMNodeList)
+                        END_LOG4CXX_CAST_MAP()
 
-			GnomeXMLDOMNodeList(xmlNodePtr firstChild);
+                        GnomeXMLDOMNodeList(xmlNodePtr firstChild);
 
-			virtual int getLength();
-			virtual XMLDOMNodePtr item(int index);
+                        virtual int getLength();
+                        virtual XMLDOMNodePtr item(int index);
 
-		protected:
-			xmlNodePtr firstChild;
-			xmlNodePtr currentChild;
-			int currentIndex;
+                protected:
+                        xmlNodePtr firstChild;
+                        xmlNodePtr currentChild;
+                        int currentIndex;
 
                 private:
                         //   prevent assignment or copy statements
                        GnomeXMLDOMNodeList(const GnomeXMLDOMNodeList&);
                        GnomeXMLDOMNodeList& operator=(const GnomeXMLDOMNodeList&);
-		};
-	}  // namespace helpers
-}; // namespace log4cxx
+                };
+        }  // namespace helpers
+} // namespace log4cxx
 
 #endif // LOG4CXX_HAVE_LIBXML2
 #endif // _LOG4CXX_HELPERS_MSXML_H

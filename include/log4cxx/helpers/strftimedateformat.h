@@ -21,8 +21,8 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
+        namespace helpers
+        {
 
           /**
           Concrete class for formatting and parsing dates in a
@@ -61,7 +61,7 @@ namespace log4cxx
           };
 
 
-	}  // namespace helpers
-}; // namespace log4cxx
+        }  // namespace helpers
+} // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_STRFTIME_DATE_FORMAT_H

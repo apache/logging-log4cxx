@@ -47,6 +47,6 @@ namespace log4cxx
                         apr_thread_mutex_t* mutex;
                 };
         } // namespace helpers
-};// namespace log4cxx
+} // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_MUTEX_H

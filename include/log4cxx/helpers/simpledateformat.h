@@ -128,6 +128,6 @@ namespace log4cxx
 
 
         }  // namespace helpers
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_SIMPLE_DATE_FORMAT_H

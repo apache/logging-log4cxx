@@ -159,7 +159,7 @@ namespace log4cxx
 
         }; // class XMLSocketAppender
     } // namespace net
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif // _LOG4CXX_NET_XML_SOCKET_APPENDER_H
 

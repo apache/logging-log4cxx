@@ -104,6 +104,6 @@ namespace log4cxx
                         NTEventLogAppender& operator=(const NTEventLogAppender&);
                 }; // class NTEventLogAppender
     }  // namespace nt
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif //_LOG4CXX_NT_EVENT_LOG_APPENDER_HEADER_

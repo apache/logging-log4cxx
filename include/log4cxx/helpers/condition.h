@@ -49,6 +49,6 @@ namespace log4cxx
                         Condition& operator=(const Condition&);
                 };
         } // namespace helpers
-};// namespace log4cxx
+} // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_CONDITION_H

@@ -64,7 +64,7 @@ namespace log4cxx
                     LogString internalName;
                     std::string mbcsName;
                 };
-}; // namespace log4cxx
+} // namespace log4cxx
 
 
 #define LOG4CXX_FILE(name) log4cxx::File(LOG4CXX_STR(name))

@@ -24,58 +24,58 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		class Socket;
-		typedef ObjectPtrT<Socket> SocketPtr;
+        namespace helpers
+        {
+                class Socket;
+                typedef ObjectPtrT<Socket> SocketPtr;
 
-		class SocketInputStream;
-		typedef ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
+                class SocketInputStream;
+                typedef ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 
-		class LOG4CXX_EXPORT EOFException : public Exception
-		{
-		};
+                class LOG4CXX_EXPORT EOFException : public Exception
+                {
+                };
 
-		class LOG4CXX_EXPORT SocketInputStream : public ObjectImpl
-		{
-		private:
-			static size_t DEFAULT_BUFFER_SIZE;
+                class LOG4CXX_EXPORT SocketInputStream : public ObjectImpl
+                {
+                private:
+                        static size_t DEFAULT_BUFFER_SIZE;
 
-		public:
-			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketInputStream)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(SocketInputStream)
-			END_LOG4CXX_CAST_MAP()
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketInputStream)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(SocketInputStream)
+                        END_LOG4CXX_CAST_MAP()
 
-			SocketInputStream(SocketPtr socket);
-			SocketInputStream(SocketPtr socket, size_t bufferSize);
-			~SocketInputStream();
+                        SocketInputStream(SocketPtr socket);
+                        SocketInputStream(SocketPtr socket, size_t bufferSize);
+                        ~SocketInputStream();
 
-			void read(void * buffer, size_t len) const;
-			void read(unsigned int &value) const;
-			void read(int &value) const;
-			void read(unsigned long &value) const;
-			void read(long &value) const;
-			void read(LogString& value) const;
-			// some read functions are missing ...
+                        void read(void * buffer, size_t len) const;
+                        void read(unsigned int &value) const;
+                        void read(int &value) const;
+                        void read(unsigned long &value) const;
+                        void read(long &value) const;
+                        void read(LogString& value) const;
+                        // some read functions are missing ...
 
-			/** Close the stream and dereference the socket.
-			*/
-			void close();
+                        /** Close the stream and dereference the socket.
+                        */
+                        void close();
 
-		protected:
-			SocketPtr socket;
-			size_t bufferSize;
-			unsigned char * memBuffer;
-			size_t currentPos;
-			size_t maxPos;
+                protected:
+                        SocketPtr socket;
+                        size_t bufferSize;
+                        unsigned char * memBuffer;
+                        size_t currentPos;
+                        size_t maxPos;
 
                 private:
                         //   prevent copy and assignment statements
                         SocketInputStream(const SocketInputStream&);
                         SocketInputStream& operator=(const SocketInputStream&);
-		};
-	}  // namespace helpers
-}; // namespace log4cxx
+                };
+        }  // namespace helpers
+} // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_SOCKET_OUTPUT_STREAM_H

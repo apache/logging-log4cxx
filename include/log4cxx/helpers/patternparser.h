@@ -174,6 +174,6 @@ namespace log4cxx
                         };
                 }; // class PatternParser
         }  // namespace helpers
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif //_LOG4CXX_HELPER_PATTERN_PARSER_H

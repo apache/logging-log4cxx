@@ -37,6 +37,6 @@ namespace log4cxx
       ~APRInitializer();
     };
   } // namespace helpers
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_APRINITIALIZER_H

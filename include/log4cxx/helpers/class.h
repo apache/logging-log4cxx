@@ -23,54 +23,54 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
-		class Object;
-		typedef ObjectPtrT<Object> ObjectPtr;
+        namespace helpers
+        {
+                class Object;
+                typedef ObjectPtrT<Object> ObjectPtr;
 
-		/**
-		Thrown when an application tries to create an instance of a class using
-		the newInstance method in class Class, but the specified class object
-		cannot be instantiated because it is an interface or is an abstract class.
-		*/
-		class LOG4CXX_EXPORT InstantiationException : public Exception
-		{
-		public:
-			InstantiationException() {}
+                /**
+                Thrown when an application tries to create an instance of a class using
+                the newInstance method in class Class, but the specified class object
+                cannot be instantiated because it is an interface or is an abstract class.
+                */
+                class LOG4CXX_EXPORT InstantiationException : public Exception
+                {
+                public:
+                        InstantiationException() {}
                         const char* what() const throw() { return "Abstract class"; }
-		};
+                };
 
-		/**
-		Thrown when an application tries to load in a class through its
-		string name but no definition for the class with the specified name
-		could be found.
-		*/
-		class LOG4CXX_EXPORT ClassNotFoundException : public Exception
-		{
-		public:
+                /**
+                Thrown when an application tries to load in a class through its
+                string name but no definition for the class with the specified name
+                could be found.
+                */
+                class LOG4CXX_EXPORT ClassNotFoundException : public Exception
+                {
+                public:
                     ClassNotFoundException(const LogString& className) {}
                     const char* what() const throw() { return "Class not found"; }
-		};
+                };
 
-		class LOG4CXX_EXPORT Class
-		{
-		public:
-			Class(const LogString& name);
-			virtual ~Class();
-			virtual ObjectPtr newInstance() const;
-			const LogString& toString() const;
-			const LogString& getName() const;
-			static const Class& forName(const LogString& className);
+                class LOG4CXX_EXPORT Class
+                {
+                public:
+                        Class(const LogString& name);
+                        virtual ~Class();
+                        virtual ObjectPtr newInstance() const;
+                        const LogString& toString() const;
+                        const LogString& getName() const;
+                        static const Class& forName(const LogString& className);
 
-		protected:
-			static void registerClass(const Class * newClass);
-			LogString name;
+                protected:
+                        static void registerClass(const Class * newClass);
+                        LogString name;
 
                 private:
                         typedef std::map<LogString, const Class *> ClassMap;
                         static ClassMap& getRegistry();
-		};
-	}  // namespace log4cxx
-}; // namespace helper
+                };
+        }  // namespace log4cxx
+} // namespace helper
 
 #endif //_LOG4CXX_HELPERS_CLASS_H

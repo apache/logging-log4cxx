@@ -44,6 +44,6 @@
                         DatagramSocketPtr ds;
                 };
         }  // namespace helpers
-}; // namespace log4cxx
+} // namespace log4cxx
 
 #endif
