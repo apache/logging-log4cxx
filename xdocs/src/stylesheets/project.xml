@@ -14,14 +14,15 @@
     </menu>
 
    <menu name="log4cxx project">
-     <item name="About" href="/index.html"/>
-     <item name="News" href="/news.html"/>
-     <item name="Team" href="/team.html"/>
-     <item name="Documentation" href="/manual/index.html"/>
-     <item name="Support" href="/support.html"/>
-     <item name="Contributing" href="/contributing.html"/>
-     <item name="Performance" href="/performance.html"/>
+     <item name="Introduction" href="/index.html"/>
      <item name="Download" href="/download.html"/>
+     <item name="Documentation" href="/manual/introduction.html"/>
+     <item name="Support" href="/support.html"/>
+     <item name="CVS Repositories" href="http://logging.apache.org/site/cvs-repositories.html"/>
+     <item name="Mailing Lists" href="http://logging.apache.org/site/mailing-lists.html"/>
+     <item name="Bug Reporting" href="http://logging.apache.org/site/bugreport.html"/>
+     <item name="Gump" href="http://brutus.apache.org/gump/public/logging-log4cxx/logging-log4cxx-ant/gump_work/build_logging-log4cxx_logging-log4cxx-ant.html"/>
+     
    </menu>
 
    </body>

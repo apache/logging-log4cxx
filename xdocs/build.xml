@@ -62,9 +62,10 @@
     	templatePath="${docs.src}/stylesheets">
       </anakia>  
 	  
+	  <!--
       <copy file="${docs.src}/manual/doxygen.css" tofile="${docs.dest}/css/doxygen.css"/>
       <exec dir="${docs.src}/manual" executable="doxygen">
       </exec>
-
+      -->
     </target>
 </project>

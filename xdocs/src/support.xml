@@ -3,31 +3,25 @@
 <document>
     <properties>
         <author email="mcatan at apache dot org">Michael CATANZARITI</author>
+        <author email="carnold at apache dot org">Curt Arnold</author>
         <title>Support</title>
     </properties>
     <meta name="keywords" content="log4cxx support, mailing list"/>
     <body>
         <h1>Log4cxx Support</h1>
                         <p>
-                         log4cxx user support is provided via the log4cxx-user mailing list.
-                         Please search the archives before posting because it is likely that your question has
-                         been answered before.
+       log4cxx user support is provided via the log4cxx-user@logging.apache.org mailing list.
+       Please search mailing list archives and <a href="http://nagoya.apache.org/jira/secure/BrowseProject.jspa?id=10550">bug tracker</a> before posting.
+       The development mailing lists are described in the <a href="contributing.html">contributing</a> topic.
                          </p>
 
                         <h3>Mailing List Archives</h3>
                                 <p>
-                                You can browse the mailing list archives at the following
-                                location:
-                                </p>
-
-                                <ul>
-                                        <li><a
-                                        href="http://nagoya.apache.org/eyebrowse/SummarizeList?listId=219">
-                                        eyebrowse</a></li>
-                                        <li><a
-                                        href="http://marc.theaimsgroup.com/?l=log4cxx-user&amp;r=1&amp;w=2">
-                                        MARC</a></li>
-                                </ul>
+                    log4cxx-user@logging.apache.org is archived at                                                    
+                    <a href="http://marc.theaimsgroup.com/?l=log4cxx-user&amp;r=1&amp;w=2">MARC</a>, 
+                    <a href="http://dir.gmane.org/gmane.comp.apache.logging.log4cxx.user">GMANE</a>,
+                    and apache.org (<a href="http://mail-archives.eu.apache.org/mod_mbox/logging-log4cxx-user/">mod_mbox</a>,
+                    <a href="http://nagoya.apache.org/eyebrowse/SummarizeList?listId=219">eyebrowse</a>).</p>
 
                         <h3>Subscribe</h3>
                                 <p>
@@ -90,10 +84,11 @@
                                 <p>
                                         Post a message to the list by sending mail to
                                         <a href="mailto:log4cxx-user@logging.apache.org">
-                                        log4cxx-user@logging.apache.org</a>.
+                                        log4cxx-user@logging.apache.org</a>.  Message containing attachments are
+                                        not accepted.
                                 </p>
                                 <p>
-                                        To check for known bugs, report new ones or submit a patch, use the <a href="http://nagoya.apache.org/jira/secure/BrowseProject.jspa?id=10550">log4cxx JIRA</a>.
+                                        To check for known bugs, report new ones or submit a patch, use the <a href="http://nagoya.apache.org/jira/secure/BrowseProject.jspa?id=10550">log4cxx bug tracker</a>.
                                 </p>
         </body>
 </document>

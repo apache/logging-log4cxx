@@ -3,32 +3,34 @@
 <document>
     <properties>
         <author email="mcatan at apache dot org">Michael CATANZARITI</author>
+        <author email="carnold at apache dot org">Curt Arnold</author>
         <title>Contributing</title>
     </properties>
     <meta name="keywords" content="log4cxx contributing, CVS, mailing list"/>
     <body>
         <h1>Contributing to log4cxx Development</h1>
-                        <h2>Developer Mailing List</h2>
-                                 <p>
-                                 All discussion relating to log4cxx development takes place
-                                 on this list. All CVS checkin notifications are also copied to
+            <h2>Bug Reporting and patch submission</h2>
+            <p>All bugs and patches should be reported using the 
+                <a href="http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10550">log4cxx project bug tracker</a>.
+                Bugs and patches against log4cxx-0.9.7 are no longer desired, please check if the behavior
+                exists in the CVS HEAD before submitting a bug or a patch.
+                Patches should be attached to a bug report with the license grant statement selected.
+                Substantial contributions will require the receipt of an <a href="http://www.apache.org/licenses">
+                Contributor License Agreement</a> before acceptance.</p>
+                
+                        <h2>Development Mailing List</h2>
+                                 <p>Discussion relating to log4cxx development takes place
+                                 on log4cxx-dev@logging.apache.org. All CVS checkin notifications are also copied to
                                  this list.
                                  </p>
 
                                 <h3>Mailing List Archives</h3>
                                         <p>
-                                        You can browse the mailing list archives at the following
-                                        location:
-                                        </p>
-
-                                        <ul>
-                                                <li><a
-                                                href="http://nagoya.apache.org/eyebrowse/SummarizeList?listId=218">
-                                                eyebrowse</a></li>
-                                                <li><a
-                                                href="http://marc.theaimsgroup.com/?l=log4cxx-dev&amp;r=1&amp;w=2">
-                                                MARC</a></li>
-                                        </ul>
+                    log4cxx-dev@logging.apache.org is archived at                                                    
+                    <a href="http://marc.theaimsgroup.com/?l=log4cxx-dev&amp;r=1&amp;w=2">MARC</a>, 
+                    <a href="http://dir.gmane.org/gmane.comp.apache.logging.log4cxx.devel">GMANE</a>,
+                    and apache.org (<a href="http://mail-archives.eu.apache.org/mod_mbox/logging-log4cxx-dev/">mod_mbox</a>, 
+                    <a href="http://nagoya.apache.org/eyebrowse/SummarizeList?listId=218">eyebrowse</a>).</p>
 
                                 <h3>Subscribe</h3>
                                         <p>
@@ -136,12 +138,5 @@ cvs -d :pserver:anoncvs@cvs.apache.org:/home/cvspublic checkout logging-log4cxx<
                                                 <a href="http://jakarta.apache.org/site/cvsindex.html">
                                                 Jakarta's CVS page</a> may hold many helpful hints.
                                         </p>
-                <h2>Issue Tracking</h2>
-                        <p>
-                                Report a log4cxx bug or enhancement request or submit a patch <a
-                                href="http://nagoya.apache.org/jira/secure/BrowseProject.jspa?id=10550">
-                                here</a>.
-                        </p>
-
         </body>
 </document>
