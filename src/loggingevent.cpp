@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/helpers/threadspecificdata.h>
 
 #include <apr_time.h>
 #include <apr_portable.h>
@@ -127,7 +128,7 @@ std::set<LogString> LoggingEvent::getMDCKeySet() const
         }
         else
         {
-                MDC::Map m = MDC::getContext();
+                MDC::Map& m = ThreadSpecificData::getCurrentThreadMap();
 
                 MDC::Map::const_iterator it;
                 for (it = m.begin(); it != m.end(); it++)
@@ -145,7 +146,7 @@ void LoggingEvent::getMDCCopy() const
         {
                 ((LoggingEvent *)this)->mdcCopyLookupRequired = false;
                 // the clone call is required for asynchronous logging.
-                ((LoggingEvent *)this)->mdcCopy = MDC::getContext();
+                ((LoggingEvent *)this)->mdcCopy = ThreadSpecificData::getCurrentThreadMap();
         }
 }
 

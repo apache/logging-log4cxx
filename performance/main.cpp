@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,13 +52,6 @@ void Usage(const std::string& processName, const std::string& msg)
         exit(EXIT_FAILURE);
 }
 
-class IllegalRunLengthException : public IllegalArgumentException {
-   public:
-   IllegalRunLengthException() throw() {}
-   const char* what() const throw() {
-     return "run Length must be greater than 0";
-   }
-};
 
 void init(const std::string& configFile, const std::string& runLengthStr,
                   const std::string& delayStr, const std::string& burstLenStr)
@@ -66,7 +59,7 @@ void init(const std::string& configFile, const std::string& runLengthStr,
         runLength = atoi(runLengthStr.c_str());
         if (runLength < 1)
         {
-                throw IllegalRunLengthException();
+                throw IllegalArgumentException("run Length must be greater than 0");
         }
         if (!delayStr.empty())
         {

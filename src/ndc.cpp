@@ -16,141 +16,114 @@
 
 #include <log4cxx/ndc.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/threadspecificdata.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 NDC::DiagnosticContext::DiagnosticContext(const LogString& message,
-	const DiagnosticContext * parent)
-	: message(message)
+        const DiagnosticContext * parent)
+        : message(message), fullMessage(message)
 {
-	if (parent != 0)
-	{
-		fullMessage = parent->fullMessage + LOG4CXX_STR(' ') + message;
-	}
-	else
-	{
-		fullMessage = message;
-	}
+        if (parent != 0)
+        {
+                fullMessage.insert(0, 1, LOG4CXX_STR(' '));
+                fullMessage.insert(0, parent->fullMessage);
+        }
 }
-
-// static member instanciation
-ThreadSpecificData_ptr<NDC::Stack> NDC::threadSpecificData;
 
 NDC::NDC(const LogString& message)
 {
-	push(message);
+        push(message);
 }
 
 NDC::~NDC()
 {
-	pop();
+        pop();
 }
 
-NDC::Stack * NDC::getCurrentThreadStack()
-{
-	return threadSpecificData;
-}
-
-void NDC::setCurrentThreadStack(NDC::Stack * stack)
-{
-	threadSpecificData.reset(stack);
-}
 
 void NDC::clear()
 {
-	setCurrentThreadStack(0);
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        while(!stack.empty()) {
+          stack.pop();
+        }
 }
 
+#if 0
 NDC::Stack * NDC::cloneStack()
 {
-	Stack * stack = getCurrentThreadStack();
-	if(stack != 0)
-	{
-		return new Stack(*stack);
-	}
-	else
-	{
-		return new Stack();
-	}
+        Stack * stack = getCurrentThreadStack();
+        if(stack != 0)
+        {
+                return new Stack(*stack);
+        }
+        else
+        {
+                return new Stack();
+        }
 }
 
 void NDC::inherit(NDC::Stack * stack)
 {
-	if(stack != 0)
-	{
-		setCurrentThreadStack(stack);
-	}
+        if(stack != 0)
+        {
+                setCurrentThreadStack(stack);
+        }
 }
 
+#endif
 LogString NDC::get()
 {
-	Stack * stack = getCurrentThreadStack();
-	if(stack != 0 && !stack->empty())
-	{
-		return stack->top().fullMessage;
-	}
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                return stack.top().fullMessage;
+        }
         return LogString();
 }
 
 int NDC::getDepth()
 {
-	Stack * stack = getCurrentThreadStack();
-	if(stack == 0)
-	{
-		return 0;
-	}
-	else
-	{
-		return stack->size();
-	}
+  return ThreadSpecificData::getCurrentThreadStack().size();
 }
 
 LogString NDC::pop()
 {
-	Stack * stack = getCurrentThreadStack();
-	if(stack != 0 && !stack->empty())
-	{
-		LogString value(stack->top().message);
-		stack->pop();
-		if (stack->empty())
-		{
-			setCurrentThreadStack(0);
-		}
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                LogString value(stack.top().message);
+                stack.pop();
                 return value;
-	}
+        }
         return LogString();
 }
 
 LogString NDC::peek()
 {
-	Stack * stack = getCurrentThreadStack();
-	if(stack != 0 && !stack->empty())
-	{
-		return stack->top().message;
-	}
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                return stack.top().message;
+        }
         return LogString();
 }
 
 void NDC::pushLogString(const LogString& message)
 {
-	Stack * stack = getCurrentThreadStack();
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
 
-	if (stack == 0)
-	{
-		stack = new Stack;
-		setCurrentThreadStack(stack);
-		stack->push(DiagnosticContext(message, 0));
-	}
-	else if (stack->empty())
-	{
-		stack->push(DiagnosticContext(message, 0));
-	}
-	else
-	{
-		DiagnosticContext& parent = stack->top();
-		stack->push(DiagnosticContext(message, &parent));
-	}
+        if (stack.empty())
+        {
+                stack.push(DiagnosticContext(message, 0));
+        }
+        else
+        {
+                DiagnosticContext& parent = stack.top();
+                stack.push(DiagnosticContext(message, &parent));
+        }
 }
 
 void NDC::push(const std::string& message)
@@ -165,8 +138,8 @@ void NDC::push(const std::wstring& message)
    pushLogString(msg);
 }
 
-
 void NDC::remove()
 {
-	setCurrentThreadStack(0);
+        clear();
 }
+

@@ -16,43 +16,25 @@
 
 #include <log4cxx/mdc.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/threadspecificdata.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-helpers::ThreadSpecificData MDC::threadSpecificData;
-
 MDC::MDC(const LogString& key, const LogString& value) : key(key)
 {
-	put(key, value);
+        put(key, value);
 }
 
 MDC::~MDC()
 {
-	remove(key);
-}
-
-MDC::Map * MDC::getCurrentThreadMap()
-{
-	return (MDC::Map *)threadSpecificData.GetData();
-}
-
-void MDC::setCurrentThreadMap(MDC::Map * map)
-{
-	threadSpecificData.SetData((void *)map);
+        remove(key);
 }
 
 void MDC::putLogString(const LogString& key, const LogString& value)
 {
-	Map * map = getCurrentThreadMap();
-
-	if (map == 0)
-	{
-		map = new Map;
-		setCurrentThreadMap(map);
-	}
-
-	(*map)[key] = value;
+        Map& map = ThreadSpecificData::getCurrentThreadMap();
+        map[key] = value;
 }
 
 
@@ -72,17 +54,13 @@ void MDC::put(const std::string& key, const std::string& value)
 
 bool MDC::get(const LogString& key, LogString& value)
 {
-	Map::iterator it;
-	Map * map = getCurrentThreadMap();
+        Map& map = ThreadSpecificData::getCurrentThreadMap();
 
-	if (map != 0)
-	{
-		Map::iterator it = map->find(key);
-		if (it != map->end()) {
-                        value = it->second;
-			return true;
-		}
-	}
+        Map::iterator it = map.find(key);
+        if (it != map.end()) {
+                value = it->second;
+                return true;
+        }
         return false;
 }
 
@@ -111,14 +89,14 @@ std::wstring MDC::get(const std::wstring& key)
 
 bool MDC::remove(const LogString& key, LogString& value)
 {
-	Map::iterator it;
-	Map * map = getCurrentThreadMap();
-	if (map != 0 && (it = map->find(key)) != map->end())
-	{
-		value = it->second;
-		map->erase(it);
+        Map::iterator it;
+        Map& map = ThreadSpecificData::getCurrentThreadMap();
+        if ((it = map.find(key)) != map.end())
+        {
+                value = it->second;
+                map.erase(it);
                 return true;
-	}
+        }
         return false;
 }
 
@@ -147,36 +125,7 @@ std::wstring MDC::remove(const std::wstring& key)
 
 void MDC::clear()
 {
-	Map * map = getCurrentThreadMap();
-	if(map != 0)
-	{
-		delete map;
-		setCurrentThreadMap(0);
-	}
+        Map& map = ThreadSpecificData::getCurrentThreadMap();
+        map.erase(map.begin(), map.end());
 }
 
-const MDC::Map MDC::getContext()
-{
-	Map * map = getCurrentThreadMap();
-	if(map != 0)
-	{
-		return *map;
-	}
-	else
-	{
-		return Map();
-	}
-}
-
-void MDC::setContext(Map& map)
-{
-	Map * currentMap = getCurrentThreadMap();
-
-	if (currentMap == 0)
-	{
-		currentMap = new Map;
-		setCurrentThreadMap(currentMap);
-	}
-
-	*currentMap = map;
-}

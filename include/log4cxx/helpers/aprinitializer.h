@@ -20,6 +20,7 @@
 #include <log4cxx/portability.h>
 #include <log4cxx/helpers/pool.h>
 #include <apr_pools.h>
+#include <apr_thread_proc.h>
 
 namespace log4cxx
 {
@@ -30,6 +31,7 @@ namespace log4cxx
     public:
     static log4cxx_time_t initialize();
     static apr_pool_t* getRootPool();
+    static apr_threadkey_t* getTlsKey();
     static bool isDestructed;
 
     private:
@@ -38,7 +40,10 @@ namespace log4cxx
       APRInitializer& operator=(const APRInitializer&);
       apr_pool_t* p;
       log4cxx_time_t startTime;
+      apr_threadkey_t* tlsKey;
       static APRInitializer& getInstance();
+      static void tlsDestruct(void*);
+
     public:
       ~APRInitializer();
     };

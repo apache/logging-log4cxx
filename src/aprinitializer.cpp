@@ -18,6 +18,8 @@
 #include <apr_pools.h>
 #include <apr_atomic.h>
 #include <apr_time.h>
+#include <assert.h>
+#include <log4cxx/helpers/threadspecificdata.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
@@ -29,6 +31,8 @@ APRInitializer::APRInitializer() {
     apr_pool_create(&p, NULL);
     apr_atomic_init(p);
     startTime = apr_time_now();
+    apr_status_t stat = apr_threadkey_private_create(&tlsKey, tlsDestruct, p);
+    assert(stat == APR_SUCCESS);
 }
 
 APRInitializer::~APRInitializer() {
@@ -57,3 +61,10 @@ apr_pool_t* APRInitializer::getRootPool() {
   return getInstance().p;
 }
 
+apr_threadkey_t* APRInitializer::getTlsKey() {
+   return getInstance().tlsKey;
+}
+
+void APRInitializer::tlsDestruct(void* ptr) {
+  delete ((ThreadSpecificData*) ptr);
+}

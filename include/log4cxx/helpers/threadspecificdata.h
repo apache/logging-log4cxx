@@ -17,78 +17,33 @@
 #ifndef _LOG4CXX_HELPERS_THREAD_SPECIFIC_DATA_H
 #define _LOG4CXX_HELPERS_THREAD_SPECIFIC_DATA_H
 
-#include <log4cxx/portability.h>
-#include <memory>
+#include <log4cxx/ndc.h>
+#include <log4cxx/mdc.h>
+
 
 namespace log4cxx
 {
         namespace helpers
         {
+                /**
+                  *   This class contains all the thread-specific
+                  *   data in use by log4cxx.
+                  */
                 class LOG4CXX_EXPORT ThreadSpecificData
                 {
                 public:
                         ThreadSpecificData();
-                        ThreadSpecificData(void (*cleanup)(void*));
                         ~ThreadSpecificData();
-                        void * GetData() const;
-                        void SetData(void * data);
 
-                protected:
-                        struct Impl;
-                        std::auto_ptr<Impl> impl;
+                        static log4cxx::NDC::Stack& getCurrentThreadStack();
+                        static log4cxx::MDC::Map& getCurrentThreadMap();
+
+                private:
+                        static ThreadSpecificData& getCurrentData();
+                        log4cxx::NDC::Stack ndcStack;
+                        log4cxx::MDC::Map mdcMap;
                 };
 
-                template < typename T >
-                        class ThreadSpecificData_ptr
-                        {
-                        public:
-                                ThreadSpecificData_ptr(T * p = 0): impl(&cleanup)
-                                {
-                                        reset(p);
-                                }
-
-                                T * get() const
-                                {
-                                        return static_cast<T*>( impl.GetData() );
-                                }
-
-                                void reset(T * p = 0)
-                                {
-                                        T * tmp = get();
-                                        if(tmp)
-                                                delete tmp;
-                                        impl.SetData(p);
-                                }
-
-                                operator T * () const
-                                {
-                                        return get();
-                                }
-
-                                T * operator->() const
-                                {
-                                        return get();
-                                }
-
-                                T & operator*() const
-                                {
-                                        return *get();
-                                }
-
-                                T * release()
-                                {
-                                        T * tmp = get();
-                                        impl.SetData(0);
-                                        return tmp;
-                                }
-
-                        private:
-                                ThreadSpecificData impl;
-                                static void cleanup(void * p)
-                                {
-                                        delete static_cast<T*>(p);
-                                }
-                        };
         }  // namespace helpers
 } // namespace log4cxx
 

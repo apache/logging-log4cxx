@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,88 +17,84 @@
 #ifndef _LOG4CXX_MDC_H
 #define _LOG4CXX_MDC_H
 
+#include <log4cxx/portability.h>
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/threadspecificdata.h>
 #include <map>
 
 namespace log4cxx
 {
-	/**
-	The MDC class is similar to the {@link NDC} class except that it is
-	based on a map instead of a stack. It provides <em>mapped
-	diagnostic contexts</em>. A <em>Mapped Diagnostic Context</em>, or
-	MDC in short, is an instrument for distinguishing interleaved log
-	output from different sources. Log output is typically interleaved
-	when a server handles multiple clients near-simultaneously.
+        /**
+        The MDC class is similar to the {@link NDC} class except that it is
+        based on a map instead of a stack. It provides <em>mapped
+        diagnostic contexts</em>. A <em>Mapped Diagnostic Context</em>, or
+        MDC in short, is an instrument for distinguishing interleaved log
+        output from different sources. Log output is typically interleaved
+        when a server handles multiple clients near-simultaneously.
 
-	<p><b><em>The MDC is managed on a per thread basis</em></b>. A
-	child thread automatically inherits a <em>copy</em> of the mapped
-	diagnostic context of its parent.
+        <p><b><em>The MDC is managed on a per thread basis</em></b>. A
+        child thread automatically inherits a <em>copy</em> of the mapped
+        diagnostic context of its parent.
 
-	<p>The MDC class requires JDK 1.2 or above. Under JDK 1.1 the MDC
-	will always return empty values but otherwise will not affect or
-	harm your application.
-	*/
-	class LOG4CXX_EXPORT MDC
-	{
-	public:
-		/** String to string stl mp
-		*/
-		typedef std::map<LogString, LogString> Map;
+        <p>The MDC class requires JDK 1.2 or above. Under JDK 1.1 the MDC
+        will always return empty values but otherwise will not affect or
+        harm your application.
+        */
+        class LOG4CXX_EXPORT MDC
+        {
+        public:
+                /** String to string stl mp
+                */
+                typedef std::map<LogString, LogString> Map;
 
-	private:
-		static Map * getCurrentThreadMap();
-		static void setCurrentThreadMap(Map * map);
+        private:
+                const LogString& key;
 
-		static helpers::ThreadSpecificData threadSpecificData;
-		const LogString& key;
+        public:
+                MDC(const LogString& key, const LogString& value);
+                ~MDC();
 
-	public:
-		MDC(const LogString& key, const LogString& value);
-		~MDC();
-
-		/**
-		* Put a context value (the <code>o</code> parameter) as identified
-		* with the <code>key</code> parameter into the current thread's
-		* context map.
-		*
-		* <p>If the current thread does not have a context map it is
-		* created as a side effect.
-		* */
-  		static void put(const std::wstring& key, const std::wstring& value);
+                /**
+                * Put a context value (the <code>o</code> parameter) as identified
+                * with the <code>key</code> parameter into the current thread's
+                * context map.
+                *
+                * <p>If the current thread does not have a context map it is
+                * created as a side effect.
+                * */
+                static void put(const std::wstring& key, const std::wstring& value);
                 static void put(const std::string& key, const std::string& value);
                 static void putLogString(const LogString& key, const LogString& value);
 
-		/**
-		* Get the context identified by the <code>key</code> parameter.
-		*
-		*  <p>This method has no side effects.
-		* */
-		static std::wstring get(const std::wstring& key);
+                /**
+                * Get the context identified by the <code>key</code> parameter.
+                *
+                *  <p>This method has no side effects.
+                * */
+                static std::wstring get(const std::wstring& key);
                 static std::string get(const std::string& key);
                 static bool get(const LogString& key, LogString& value);
 
-		/**
-		* Remove the the context identified by the <code>key</code>
-		* parameter. */
-		static std::string remove(const std::string& key);
+                /**
+                * Remove the the context identified by the <code>key</code>
+                * parameter. */
+                static std::string remove(const std::string& key);
                 static std::wstring remove(const std::wstring& key);
                 static bool remove(const LogString& key, LogString& prevValue);
 
-		/**
-		* Clear all entries in the MDC.
-		*/
-		static void clear();
+                /**
+                * Clear all entries in the MDC.
+                */
+                static void clear();
 
-		/**
-		* Get the current thread's MDC as a Map. This method is
-		* intended to be used internally.
-		* */
-		static const Map getContext();
+                /**
+                * Get the current thread's MDC as a Map. This method is
+                * intended to be used internally.
+                * */
+//                static const Map getContext();
 
-		static void setContext(Map& map);
+//                static void setContext(Map& map);
 
-	}; // class MDC;
+        }; // class MDC;
 }  // namespace log4cxx
 
 #endif // _LOG4CXX_MDC_H

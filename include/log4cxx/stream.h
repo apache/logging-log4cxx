@@ -108,9 +108,9 @@ namespace log4cxx
                 if (0 == impl) {
                   impl = new ::std::wostringstream();
                 }
+                impl->flags(flags());
                 impl->precision(precision());
                 impl->width(width());
-                impl->flags(flags());
                 return *impl;
              }
 
