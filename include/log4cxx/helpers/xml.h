@@ -42,6 +42,10 @@ namespace log4cxx
 		{
 		};
 
+		/**
+		The XMLDOMNode interface is the primary datatype for the entire Document
+		Object Model.
+		*/
 		class LOG4CXX_EXPORT XMLDOMNode : virtual public Object
 		{
 		public:
@@ -58,15 +62,25 @@ namespace log4cxx
 			virtual XMLDOMDocumentPtr getOwnerDocument() = 0;
 		};
 
+		/**
+		The XMLDOMDocument interface represents an entire XML document.
+		
+		Conceptually, it is the root of the document tree, and provides the
+		primary access to the document's data.
+		*/
 		class LOG4CXX_EXPORT XMLDOMDocument : virtual public XMLDOMNode
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMDocument)
 			virtual void load(const String& fileName) = 0;
 			virtual XMLDOMElementPtr getDocumentElement() = 0;
-			virtual XMLDOMElementPtr getElementById(const String& tagName, const String& elementId) = 0;
+			virtual XMLDOMElementPtr getElementById(const String& tagName,
+				const String& elementId) = 0;
 		};
 
+		/** 
+		The XMLDOMElement interface represents an element in an XML document
+		*/
 		class LOG4CXX_EXPORT XMLDOMElement : virtual public XMLDOMNode
 		{
 		public:
@@ -75,6 +89,16 @@ namespace log4cxx
 			virtual String getAttribute(const String& name) = 0;
 		};
 
+		/**
+		The XMLDOMNodeList interface provides the abstraction of an ordered
+		collection of nodes, without defining or constraining how this
+		collection is implemented. 
+		
+		XMLDOMNodeList objects in the DOM are live.
+
+		The items in the XMLDOMNodeList are accessible via an integral index,
+		starting from 0. 
+		*/
 		class LOG4CXX_EXPORT XMLDOMNodeList : virtual public Object
 		{
 		public:
