@@ -261,11 +261,11 @@ SOURCE=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Release
-TargetDir=\log4cxx-0.9.6\msvc\Bin\Release
+TargetDir=\logging-log4cxx\msvc\Bin\Release
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
-	MC $(InputPath) -r $(IntDir) \
+	MC $(InputPath) -r $(IntDir)  -h $(IntDir) \
 	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
 	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
 	
@@ -284,7 +284,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Debug
-TargetDir=\log4cxx-0.9.6\msvc\Bin\Debug
+TargetDir=\logging-log4cxx\msvc\Bin\Debug
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -307,7 +307,7 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_D
-TargetDir=\log4cxx-0.9.6\msvc\Bin\Unicode_D
+TargetDir=\logging-log4cxx\msvc\Bin\Unicode_D
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
@@ -330,11 +330,11 @@ BuildCmds= \
 
 # Begin Custom Build - Compiling EventLog message file
 IntDir=.\Unicode_R
-TargetDir=\log4cxx-0.9.6\msvc\Bin\Unicode_R
+TargetDir=\logging-log4cxx\msvc\Bin\Unicode_R
 InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
 
 BuildCmds= \
-	MC $(InputPath) -r $(IntDir) \
+	MC $(InputPath) -r $(IntDir)  -h $(IntDir) \
 	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
 	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
 	
