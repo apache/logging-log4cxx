@@ -1,3 +1,5 @@
+#include <log4cxx/config.h>
+#include <log4cxx/helpers/boundedfifo.h>
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/dailyrollingfileappender.h>
@@ -12,9 +14,9 @@
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <log4cxx/net/smtpappender.h>
-#include <log4cxx/net/smtpappender.h>
 #include <log4cxx/net/socketappender.h>
 #include <log4cxx/net/sockethubappender.h>
+#include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/net/syslogappender.h>
 #include <log4cxx/net/telnetappender.h>
 #include <log4cxx/net/xmlsocketappender.h>

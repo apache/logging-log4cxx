@@ -211,6 +211,109 @@ SOURCE=..\..\src\event.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\include\log4cxx\nt\EventLogCategories.mc
+
+!IF  "$(CFG)" == "static - Win32 Release"
+
+# Begin Custom Build
+IntDir=.\Release
+TargetDir=\logging-log4cxx\msvc\Lib\Release
+InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
+
+BuildCmds= \
+	MC $(InputPath) -r $(IntDir)  -h $(IntDir) \
+	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
+	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
+	
+
+"$(IntDir)\EventLogCategories.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(IntDir)\EventLogCategories.res" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(TargetDir)\NTEventLogAppender.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "static - Win32 Debug"
+
+# Begin Custom Build
+IntDir=.\Debug
+TargetDir=\logging-log4cxx\msvc\Lib\Debug
+InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
+
+BuildCmds= \
+	MC $(InputPath) -r $(IntDir)  -h $(IntDir) \
+	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
+	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
+	
+
+"$(IntDir)\EventLogCategories.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(IntDir)\EventLogCategories.res" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(TargetDir)\NTEventLogAppender.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "static - Win32 Unicode Release"
+
+# Begin Custom Build
+IntDir=.\Unicode_R
+TargetDir=\logging-log4cxx\msvc\Lib\Unicode_R
+InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
+
+BuildCmds= \
+	MC $(InputPath) -r $(IntDir)  -h $(IntDir) \
+	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
+	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
+	
+
+"$(IntDir)\EventLogCategories.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(IntDir)\EventLogCategories.res" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(TargetDir)\NTEventLogAppender.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ELSEIF  "$(CFG)" == "static - Win32 Unicode Debug"
+
+# Begin Custom Build
+IntDir=.\Unicode_D
+TargetDir=\logging-log4cxx\msvc\Lib\Unicode_D
+InputPath=..\..\include\log4cxx\nt\EventLogCategories.mc
+
+BuildCmds= \
+	MC $(InputPath) -r $(IntDir)  -h $(IntDir) \
+	RC -r -fo $(IntDir)\EventLogCategories.res $(IntDir)\EventLogCategories.rc \
+	LINK /subsystem:windows /INCREMENTAL:NO /dll /out:$(TargetDir)\NTEventLogAppender.dll /NOENTRY /machine:I386 $(IntDir)\EventLogCategories.res \
+	
+
+"$(IntDir)\EventLogCategories.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(IntDir)\EventLogCategories.res" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+
+"$(TargetDir)\NTEventLogAppender.dll" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
+   $(BuildCmds)
+# End Custom Build
+
+!ENDIF 
+
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\fallbackerrorhandler.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\fileappender.cpp
 # End Source File
 # Begin Source File
@@ -252,6 +355,10 @@ SOURCE=..\..\src\levelrangefilter.cpp
 # Begin Source File
 
 SOURCE=..\..\src\loader.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\locale.cpp
 # End Source File
 # Begin Source File
 
@@ -327,7 +434,15 @@ SOURCE=..\..\src\propertyconfigurator.cpp
 # End Source File
 # Begin Source File
 
+SOURCE=..\..\src\propertyresourcebundle.cpp
+# End Source File
+# Begin Source File
+
 SOURCE=..\..\src\propertysetter.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\resourcebundle.cpp
 # End Source File
 # Begin Source File
 
@@ -348,6 +463,10 @@ SOURCE=..\..\src\serversocket.cpp
 # Begin Source File
 
 SOURCE=..\..\src\simplelayout.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\src\simplesocketserver.cpp
 # End Source File
 # Begin Source File
 
@@ -380,6 +499,10 @@ SOURCE=..\..\src\socketnode.cpp
 # Begin Source File
 
 SOURCE=..\..\src\socketoutputstream.cpp
+# End Source File
+# Begin Source File
+
+SOURCE=.\static.cpp
 # End Source File
 # Begin Source File
 
@@ -526,11 +649,11 @@ SOURCE=..\..\include\log4cxx\helpers\formattinginfo.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\log4cxx\helpers\gnomexml.h
+SOURCE=..\..\include\log4cxx\helpers\inetaddress.h
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\include\log4cxx\helpers\inetaddress.h
+SOURCE=..\..\include\log4cxx\helpers\intializationutil.h
 # End Source File
 # Begin Source File
 
@@ -539,6 +662,10 @@ SOURCE=..\..\include\log4cxx\helpers\iso8601dateformat.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\helpers\loader.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\locale.h
 # End Source File
 # Begin Source File
 
@@ -607,6 +734,10 @@ SOURCE=..\..\include\log4cxx\helpers\socketinputstream.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\helpers\socketoutputstream.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\helpers\strictmath.h
 # End Source File
 # Begin Source File
 
@@ -800,6 +931,10 @@ SOURCE=..\..\include\log4cxx\helpers\condition.h
 # Begin Source File
 
 SOURCE=..\..\include\log4cxx\config.h
+# End Source File
+# Begin Source File
+
+SOURCE=..\..\include\log4cxx\config_msvc.h
 # End Source File
 # Begin Source File
 
