@@ -79,7 +79,7 @@ void PropertySetter::setProperties(helpers::Properties& properties,
 
 void PropertySetter::setProperty(const LogString& option,
                                  const LogString& value,
-                                 Pool& p)
+                                 Pool&)
 {
         if (value.empty())
                 return;

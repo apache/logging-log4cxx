@@ -117,7 +117,7 @@ int CachedDateFormat::findMillisecondStart(
       return UNRECOGNIZED_MILLISECONDS;
   } else {
       // find first difference between values
-     for (int i = 0; i < formatted.length(); i++) {
+     for (LogString::size_type i = 0; i < formatted.length(); i++) {
         if (formatted[i] != plusMagic[i]) {
            //
            //   determine the expected digits for the base time

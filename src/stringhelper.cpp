@@ -234,7 +234,7 @@ void StringHelper::toString(log4cxx_int64_t n, Pool& pool, std::string& s) {
     const log4cxx_int64_t BILLION = APR_INT64_C(1000000000);
     int billions = (int) (n / BILLION);
     s.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), billions));
-    int remain = (n - billions * BILLION);
+    int remain = (int) (n - billions * BILLION);
     if (remain < 0) remain *= -1;
     char* lower = apr_itoa((apr_pool_t*) pool.getAPRPool(), remain);
     int fill = 9 - strlen(lower);

@@ -183,7 +183,7 @@ std::vector<LogString>  PatternParser::extractOptions()
 {
   std::vector<LogString> options;
   while ((i < patternLength) && (pattern.at(i) == LOG4CXX_STR('{'))) {
-    size_t end = pattern.find(LOG4CXX_STR('}'), i);
+    LogString::size_type end = pattern.find(LOG4CXX_STR('}'), i);
 
     if (end != LogString::npos && end > i) {
       LogString r(pattern.substr(i + 1, end - (i + 1)));
@@ -290,7 +290,7 @@ PatternConverterPtr PatternParser::parse() {
           std::basic_ostringstream<logchar> os;
           os << LOG4CXX_STR("Error occured in position ") << i
              << LOG4CXX_STR(".\n Was expecting digit, instead got char \"")
-             << c + LOG4CXX_STR("\".");
+             << c << LOG4CXX_STR("\".");
           logError(os.str());
           state = LITERAL_STATE;
         }

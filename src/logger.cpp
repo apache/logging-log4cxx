@@ -103,7 +103,8 @@ void Logger::forcedLog(const LevelPtr& level, const std::string& message,
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
-        callAppenders(new LoggingEvent(this, level, msg, location), p);
+        LoggingEventPtr event(new LoggingEvent(this, level, msg, location));
+        callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level, const std::wstring& message,
@@ -111,23 +112,26 @@ void Logger::forcedLog(const LevelPtr& level, const std::wstring& message,
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
-        callAppenders(new LoggingEvent(this, level, msg, location), p);
+        LoggingEventPtr event(new LoggingEvent(this, level, msg, location));
+        callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level, const std::string& message)
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
-        callAppenders(new LoggingEvent(this, level, msg,
-              LocationInfo::getLocationUnavailable()), p);
+        LoggingEventPtr event(new LoggingEvent(this, level, msg,
+              LocationInfo::getLocationUnavailable()));
+        callAppenders(event, p);
 }
 
 void Logger::forcedLog(const LevelPtr& level, const std::wstring& message)
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
-        callAppenders(new LoggingEvent(this, level, msg,
-           LocationInfo::getLocationUnavailable()), p);
+        LoggingEventPtr event(new LoggingEvent(this, level, msg,
+           LocationInfo::getLocationUnavailable()));
+        callAppenders(event, p);
 }
 
 
@@ -173,7 +177,9 @@ const LevelPtr& Logger::getEffectiveLevel() const
         }
 
         throw NullPointerException("No level specified for logger or ancestors.");
+#if defined(LOG4CXX_RETURN_AFTER_THROW)
         return this->level;
+#endif
 }
 
 LoggerRepositoryPtr Logger::getLoggerRepository() const

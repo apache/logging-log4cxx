@@ -34,10 +34,6 @@ namespace log4cxx
 
                 std::vector<spi::LoggingEventPtr> vector;
 
-                /**
-                Does nothing.
-                */
-                void activateOptions() {}
 
                 /**
                 This method is called by the AppenderSkeleton#doAppend

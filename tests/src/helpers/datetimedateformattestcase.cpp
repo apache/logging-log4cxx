@@ -54,7 +54,9 @@ class DateTimeDateFormatTestCase : public CppUnit::TestFixture
   CPPUNIT_TEST( test4 );
   CPPUNIT_TEST( test5 );
   CPPUNIT_TEST( test6 );
+#if !defined(__BORLANDC__)
   CPPUNIT_TEST( test7 );
+#endif
   CPPUNIT_TEST( test8 );
   CPPUNIT_TEST_SUITE_END();
 

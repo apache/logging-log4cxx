@@ -58,6 +58,7 @@ typedef int log4cxx_status_t;
 #if !defined(__BORLANDC__)
 #define HAVE_XML 1
 #define LOG4CXX_HAVE_XML 1
+#define LOG4CXX_RETURN_AFTER_THROW
 #endif
 
 #if !defined(_WIN32)

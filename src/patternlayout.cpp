@@ -81,7 +81,7 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
         }
 }
 
-void PatternLayout::activateOptions(Pool& p)
+void PatternLayout::activateOptions(Pool&)
 {
         if (pattern.empty())
         {

@@ -23,7 +23,7 @@ ControlFilter::ControlFilter()
 {
 }
 
-ControlFilter& ControlFilter::operator<<(const std::string& allowedPattern)
+ControlFilter& ControlFilter::operator<<(const std::string&)
 {
    return *this;
 }

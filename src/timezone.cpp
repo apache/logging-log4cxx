@@ -56,7 +56,7 @@ namespace log4cxx
            if (LOG4CXX_UNLIKELY(input < 0 && apr_time_usec(input) < 0)) {
               apr_time_t floorTime = (apr_time_sec(input) -1) * APR_USEC_PER_SEC;
               stat = apr_time_exp_gmt(result, floorTime);
-              result->tm_usec = input - floorTime;
+              result->tm_usec = (int) (input - floorTime);
            } else {
               stat = apr_time_exp_gmt( result, input );
            }
@@ -91,7 +91,7 @@ namespace log4cxx
           if (LOG4CXX_UNLIKELY(input < 0 && apr_time_usec(input) < 0)) {
              apr_time_t floorTime = (apr_time_sec(input) -1) * APR_USEC_PER_SEC;
              stat = apr_time_exp_lt(result, floorTime);
-             result->tm_usec = input - floorTime;
+             result->tm_usec = (int) (input - floorTime);
           } else {
              stat = apr_time_exp_lt( result, input );
           }
@@ -112,6 +112,9 @@ namespace log4cxx
           apr_time_exp_t tm;
           apr_time_exp_lt(&tm, 0);
           apr_strftime(tzName, &tzLength, MAX_TZ_LENGTH, "%Z", &tm);
+          if (tzLength == 0) {
+            apr_strftime(tzName, &tzLength, MAX_TZ_LENGTH, "%z", &tm);
+          }
           tzName[tzLength] = 0;
           LogString rv;
           log4cxx::helpers::Transcoder::decode(tzName, tzLength, rv);
@@ -139,7 +142,7 @@ namespace log4cxx
           if (LOG4CXX_UNLIKELY(input < 0 && apr_time_usec(input) < 0)) {
              apr_time_t floorTime = (apr_time_sec(input) -1) * APR_USEC_PER_SEC;
              stat = apr_time_exp_tz(result, floorTime, offset);
-             result->tm_usec = input - floorTime;
+             result->tm_usec = (int) (input - floorTime);
           } else {
              stat = apr_time_exp_tz( result, input, offset );
           }

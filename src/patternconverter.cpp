@@ -39,7 +39,7 @@ void PatternConverter::setFormattingInfo(const FormattingInfo& fi) {
     leftAlign = fi.leftAlign;
 }
 
-void PatternConverter::setOptions(const std::vector<LogString>& options) {
+void PatternConverter::setOptions(const std::vector<LogString>&) {
 }
 
 /**

@@ -37,7 +37,9 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
   CPPUNIT_TEST_SUITE(TimeZoneTestCase);
           CPPUNIT_TEST(test1);
           CPPUNIT_TEST(test2);
+#if !defined(__BORLANDC__)
           CPPUNIT_TEST(test3);
+#endif
           CPPUNIT_TEST(test4);
           CPPUNIT_TEST(test5);
           CPPUNIT_TEST(test6);

@@ -48,17 +48,31 @@ class OptionConverterTestCase : public CppUnit::TestFixture
 public:
    void setUp()
    {
-      ::putenv("TOTO=wonderful");
-      ::putenv("key1=value1");
-      ::putenv("key2=value2");
    }
 
    void tearDown()
    {
    }
 
+   /**
+   * Checks that environment variables were properly set
+   * before invoking tests.  ::putenv not reliable.
+   */
+   void envCheck() {
+     const char* toto = ::getenv("TOTO");
+     CPPUNIT_ASSERT(toto != NULL);
+     CPPUNIT_ASSERT_EQUAL(std::string("wonderful"), (std::string) toto);
+     const char* key1 = ::getenv("key1");
+     CPPUNIT_ASSERT(key1 != NULL);
+     CPPUNIT_ASSERT_EQUAL(std::string("value1"), (std::string) key1);
+     const char* key2 = ::getenv("key2");
+     CPPUNIT_ASSERT(key2 != NULL);
+     CPPUNIT_ASSERT_EQUAL(std::string("value2"), (std::string) key2);
+   }
+
    void varSubstTest1()
    {
+      envCheck();
       LogString r(OptionConverter::substVars(LOG4CXX_STR("hello world."), nullProperties));
       CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("hello world."), r);
 
@@ -70,6 +84,7 @@ public:
 
    void varSubstTest2()
    {
+     envCheck();
       LogString r(OptionConverter::substVars(LOG4CXX_STR("Test2 ${key1} mid ${key2} end."),
          nullProperties));
       CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Test2 value1 mid value2 end."), r);
@@ -78,6 +93,7 @@ public:
 
    void varSubstTest3()
    {
+     envCheck();
       LogString r(OptionConverter::substVars(
          LOG4CXX_STR("Test3 ${unset} mid ${key1} end."), nullProperties));
       CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Test3  mid value1 end."), r);

@@ -40,7 +40,9 @@ const LogString Class::toString() const
 ObjectPtr Class::newInstance() const
 {
         throw InstantiationException("Cannot create new instances of Class.");
+#if defined(LOG4CXX_RETURN_AFTER_THROW)
         return 0;
+#endif
 }
 
 

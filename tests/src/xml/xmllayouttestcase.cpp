@@ -84,7 +84,8 @@ public:
         void basic()
         {
                 XMLLayoutPtr xmlLayout = new XMLLayout();
-                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+                AppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                root->addAppender(appender);
                 common();
 
                 XMLTimestampFilter xmlTimestampFilter;
@@ -150,7 +151,8 @@ public:
         {
                 XMLLayoutPtr xmlLayout = new XMLLayout();
                 xmlLayout->setLocationInfo(true);
-                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+                FileAppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                root->addAppender(appender);
 
                 LOG4CXX_DEBUG(logger,
                         LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
@@ -182,7 +184,8 @@ public:
         void testNULL()
         {
                 XMLLayoutPtr xmlLayout = new XMLLayout();
-                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+                FileAppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                root->addAppender(appender);
 
                 LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("hi"));
                 LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR(""));
@@ -210,7 +213,8 @@ public:
         void testMDC()
         {
                 XMLLayoutPtr xmlLayout = new XMLLayout();
-                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+                FileAppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                root->addAppender(appender);
 
                 MDC::clear();
                 MDC::put(LOG4CXX_TEST_STR("key1"), LOG4CXX_TEST_STR("val1"));
@@ -244,7 +248,8 @@ public:
         void holdTestMDCEscaped()
         {
                 XMLLayoutPtr xmlLayout = new XMLLayout();
-                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+                FileAppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                root->addAppender(appender);
 
                 MDC::clear();
                 MDC::put(LOG4CXX_TEST_STR("blahAttribute"), LOG4CXX_TEST_STR("<blah value=\"blah\">"));

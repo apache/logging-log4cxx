@@ -26,10 +26,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <project name="apr" default="check">
 
 <property name="debug" value="true"/>
-<property name="build.dir" location="build"/>
 <property name="version" value="1.1.0"/>
-<property name="base.dir" location="."/>
-<property name="include.dir" location="${base.dir}/include"/>
+<property name="apr.dir" location="."/>
+<property name="include.dir" location="${apr.dir}/include"/>
+<property name="build.dir" location="${apr.dir}/build"/>
+<property name="src.dir" location="${apr.dir}"/>
+<property name="test.dir" location="${apr.dir}/test"/>
 <property name="apr.lib.type" value="shared"/>
 <property name="project.dir" value="${build.dir}"/>
 
@@ -122,8 +124,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="unix-configure" depends="configure-check" if="is-unix" unless="configure-available">
-        <echo>base.dir = ${base.dir}</echo>
-        <exec executable="${base.dir}/configure" dir="${base.dir}"/>
+        <exec executable="${apr.dir}/configure" dir="${apr.dir}"/>
 </target>
 
 
@@ -140,16 +141,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         objdir="${apr.lib.dir}/apr_obj"
         outputfileproperty="apr-1.dll"
         debug="${debug}">
-        <fileset dir="${base.dir}" includes="**/${arch}/*.c" excludes="**/apr_app.c"/>
-        <fileset dir="${base.dir}/file_io/unix" includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"/>
-        <fileset dir="${base.dir}/memory/unix" includes="*.c"/>
-        <fileset dir="${base.dir}/misc/unix" includes="errorcodes.c getopt.c otherchild.c version.c"/>
-        <fileset dir="${base.dir}/mmap/unix" includes="common.c"/>
-        <fileset dir="${base.dir}/network_io/unix" includes="inet_ntop.c inet_pton.c sockaddr.c"/>
-        <fileset dir="${base.dir}/poll/unix" includes="select.c"/>
-        <fileset dir="${base.dir}/random/unix" includes="*.c"/>
-        <fileset dir="${base.dir}/strings" includes="*.c"/>
-        <fileset dir="${base.dir}/tables" includes="*.c"/>
+        <fileset dir="${src.dir}" includes="**/${arch}/*.c" excludes="**/apr_app.c"/>
+        <fileset dir="${src.dir}/file_io/unix" includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"/>
+        <fileset dir="${src.dir}/memory/unix" includes="*.c"/>
+        <fileset dir="${src.dir}/misc/unix" includes="errorcodes.c getopt.c otherchild.c version.c"/>
+        <fileset dir="${src.dir}/mmap/unix" includes="common.c"/>
+        <fileset dir="${src.dir}/network_io/unix" includes="inet_ntop.c inet_pton.c sockaddr.c"/>
+        <fileset dir="${src.dir}/poll/unix" includes="select.c"/>
+        <fileset dir="${src.dir}/random/unix" includes="*.c"/>
+        <fileset dir="${src.dir}/strings" includes="*.c"/>
+        <fileset dir="${src.dir}/tables" includes="*.c"/>
         <fileset dir="${include.dir}" includes="*.h"/>
         <fileset dir="${include.dir}/arch" includes="*.h"/>
         <fileset dir="${include.dir}/arch/${arch}" includes="*.h"/>
@@ -181,7 +182,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outtype="executable"
         objdir="${apr.lib.dir}/apr_obj"
         debug="${debug}">
-        <fileset dir="${base.dir}/test" includes="${testfiles}"/>
+        <fileset dir="${test.dir}" includes="${testfiles}"/>
         <includepath path="${include.dir}"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
@@ -312,7 +313,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         objdir="${apr.lib.dir}/apr_obj"
         outputfileproperty="libmod_test.so"
         debug="${debug}">
-        <fileset dir="${base.dir}/test" includes="mod_test.c"/>
+        <fileset dir="${test.dir}" includes="mod_test.c"/>
         <includepath path="${include.dir}"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
@@ -336,7 +337,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outtype="executable"
         objdir="${apr.lib.dir}/apr_obj"
         debug="${debug}">
-        <fileset dir="${base.dir}/test" includes="*.c">
+        <fileset dir="${test.dir}" includes="*.c">
             <exclude name="nw_misc.c"/>
             <exclude name="testlockperf.c"/>
             <exclude name="occhild.c"/>
@@ -368,7 +369,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="run-testall" depends="build-testall, build-mod_test, build-tryread, build-readchild, build-globalmutexchild, build-occhild, build-proc_child, build-testshmconsumer, build-testshmproducer, build-sockchild">
     <mkdir dir="${apr.lib.dir}/data"/>
     <copy todir="${apr.lib.dir}/data">
-        <fileset dir="${base.dir}/test/data" includes="*"/>
+        <fileset dir="${test.dir}/data" includes="*"/>
     </copy>
     <exec executable="${apr.lib.dir}/testall"
           dir="${apr.lib.dir}"

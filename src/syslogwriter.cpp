@@ -50,7 +50,7 @@ SyslogWriter::SyslogWriter(const LogString& syslogHost)
    }
 }
 
-void SyslogWriter::write(const LogString& string)
+void SyslogWriter::write(const LogString&)
 {
 #if 0
 //  TODO

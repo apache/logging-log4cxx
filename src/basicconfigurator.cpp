@@ -26,8 +26,9 @@ void BasicConfigurator::configure()
 {
    LoggerPtr root = Logger::getRootLogger();
         static const LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%r [%t] %p %c %x - %m%n"));
-   root->addAppender(new ConsoleAppender(
-      new PatternLayout(TTCC_CONVERSION_PATTERN)));
+   LayoutPtr layout(new PatternLayout(TTCC_CONVERSION_PATTERN));
+   AppenderPtr appender(new ConsoleAppender(layout));
+   root->addAppender(appender);
 }
 
 void BasicConfigurator::configure(const AppenderPtr& appender)

@@ -84,7 +84,7 @@ size_t File::length(Pool& pool) const {
   apr_status_t rv = apr_stat(&finfo, osName.c_str(),
         APR_FINFO_SIZE, (apr_pool_t*) pool.getAPRPool());
   if (rv == APR_SUCCESS) {
-    return finfo.size;
+    return (size_t) finfo.size;
   }
   return 0;
 }

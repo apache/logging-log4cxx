@@ -56,7 +56,7 @@ namespace log4cxx {
         struct mbstate_t {};
 
         size_t mbsnrtowcs(wchar_t *dest, const char **src,
-            size_t srcLen, size_t destLen, mbstate_t *ps) {
+            size_t srcLen, size_t destLen, mbstate_t *) {
             const char* srcEnd = *src + srcLen;
             wchar_t* current = dest;
             const wchar_t* destEnd = dest + destLen;
@@ -76,7 +76,7 @@ namespace log4cxx {
         }
 
         size_t wcsnrtombs(char *dest, const wchar_t **src, size_t srcLen,
-            size_t destLen, mbstate_t *ps) {
+            size_t destLen, mbstate_t *) {
             const wchar_t* srcEnd = *src + srcLen;
             char* current = dest;
             const char* destEnd = dest + destLen;

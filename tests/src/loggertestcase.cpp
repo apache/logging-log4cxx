@@ -384,7 +384,8 @@ public:
 
         void testHierarchy1()
         {
-                LoggerRepositoryPtr h = new Hierarchy(new RootCategory(Level::ERROR));
+                LoggerPtr root(new RootCategory(Level::ERROR));
+                LoggerRepositoryPtr h = new Hierarchy(root);
                 LoggerPtr a0 = h->getLogger(LOG4CXX_STR("a"));
                 CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("a"), a0->getName());
                 CPPUNIT_ASSERT(a0->getLevel() == 0);

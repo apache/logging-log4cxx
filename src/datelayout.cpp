@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ void DateLayout::setOption(const LogString& option, const LogString& value)
         }
 }
 
-void DateLayout::activateOptions(Pool& p)
+void DateLayout::activateOptions(Pool&)
 {
         if(!dateFormatOption.empty())
         {

@@ -358,7 +358,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="debug" value="${debug}"/>
         <property name="lib-suffix" value="${lib-suffix}"/>
         <property name="compiler" value="${compiler}"/>
-        <property name="base.dir" value="${apr.dir}"/>
+        <property name="apr.dir" value="${apr.dir}"/>
         <property name="apr.lib.dir" value="${apr.lib.dir}"/>
         <property name="apr.lib.type" value="${apr.lib.type}"/>
         <property name="project.type" value="${project.type}"/>
@@ -391,7 +391,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <property name="apriconv.lib.dir" location="${executable.dir}/${apriconv.lib.type}"/>
     <ant antfile="apriconv-build.xml" target="build-lib" inheritAll="false">
         <property name="version" value="${apriconv.version}"/>
-        <property name="base.dir" value="${apriconv.dir}"/>
+        <property name="apriconv.dir" value="${apriconv.dir}"/>
         <property name="debug" value="${debug}"/>
         <property name="lib-suffix" value="${lib-suffix}"/>
         <property name="compiler" value="${compiler}"/>
@@ -435,7 +435,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
     <ant antfile="aprutil-build.xml" target="build" inheritAll="false">
         <property name="version" value="${aprutil.version}"/>
-        <property name="base.dir" value="${aprutil.dir}"/>
+        <property name="aprutil.dir" value="${aprutil.dir}"/>
         <property name="debug" value="${debug}"/>
         <property name="lib-suffix" value="${lib-suffix}"/>
         <property name="compiler" value="${compiler}"/>
@@ -545,7 +545,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="build" depends="build-aprutil, configure, mkdir-project" description="Build log4cxx library">
+<target name="build" depends="build-aprutil" description="Build log4cxx library">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx_obj"/>
 
     <cc name="${compiler}"
@@ -838,6 +838,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <arg value="+TestCase1"/>
+            <env key="TOTO" value="wonderful"/>
+            <env key="key1" value="value1"/>
+            <env key="key2" value="value2"/>
             <env key="LD_LIBRARY_PATH"
                    value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
@@ -926,6 +929,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <mkdir dir="${tests.dir}/output"/>
     <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.dir}"
               failonerror="true">
+            <env key="TOTO" value="wonderful"/>
+            <env key="key1" value="value1"/>
+            <env key="key2" value="value2"/>
             <env key="DYLD_LIBRARY_PATH"
                    value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
@@ -1045,7 +1051,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="fixcrlf" depends="init" description="repair end-of-line sequences">
    <fixcrlf srcDir="${base.dir}" tab="remove" tablength="3"
-       eof="remove" fixlast="true" includes="**/*.cpp **/*.h" excludes="lib/**/*"/>
+       eof="remove" fixlast="true" eol="unix" includes="**/*.cpp **/*.h" excludes="lib/**/*"/>
 </target>
 
 </project>

@@ -184,7 +184,7 @@ void WriterAppender::subAppend(const LogString& msg, Pool& p) {
         }
 }
 
-void WriterAppender::subAppend(const char* encoded, size_t bytes, Pool& p) {
+void WriterAppender::subAppend(const char*, size_t, Pool&) {
 }
 
 void WriterAppender::reset()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 #include <sstream>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <assert.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -452,96 +453,99 @@ void SimpleDateFormat::addToken(const wchar_t spec,
                                 const int repeat,
                                 const std::locale& locale,
                                 PatternTokenList& pattern) {
+    PatternToken* token = NULL;
     switch(spec) {
       case L'G':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::EraToken(repeat, locale));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::EraToken(repeat, locale));
       break;
 
       case L'y':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::YearToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::YearToken(repeat));
       break;
 
       case L'M':
       if (repeat <= 2) {
-         pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::MonthToken(repeat));
+         token = (new log4cxx::helpers::SimpleDateFormatImpl::MonthToken(repeat));
       } else if (repeat <= 3) {
-        pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::AbbreviatedMonthNameToken(repeat, locale));
+        token = (new log4cxx::helpers::SimpleDateFormatImpl::AbbreviatedMonthNameToken(repeat, locale));
       } else {
-        pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::FullMonthNameToken(repeat, locale));
+        token = (new log4cxx::helpers::SimpleDateFormatImpl::FullMonthNameToken(repeat, locale));
       }
       break;
 
       case L'w':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::WeekInYearToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::WeekInYearToken(repeat));
       break;
 
       case L'W':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::WeekInMonthToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::WeekInMonthToken(repeat));
       break;
 
       case L'D':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::DayInYearToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::DayInYearToken(repeat));
       break;
 
       case L'd':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::DayInMonthToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::DayInMonthToken(repeat));
       break;
 
       case L'F':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::DayOfWeekInMonthToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::DayOfWeekInMonthToken(repeat));
       break;
 
       case L'E':
       if (repeat <= 3) {
-        pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::AbbreviatedDayNameToken(repeat, locale));
+        token = (new log4cxx::helpers::SimpleDateFormatImpl::AbbreviatedDayNameToken(repeat, locale));
       } else {
-        pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::FullDayNameToken(repeat, locale));
+        token = (new log4cxx::helpers::SimpleDateFormatImpl::FullDayNameToken(repeat, locale));
       }
       break;
 
       case L'a':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::AMPMToken(repeat, locale));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::AMPMToken(repeat, locale));
       break;
 
       case L'H':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::MilitaryHourToken(repeat, 0));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::MilitaryHourToken(repeat, 0));
       break;
 
       case L'k':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::MilitaryHourToken(repeat, 1));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::MilitaryHourToken(repeat, 1));
       break;
 
       case L'K':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::HourToken(repeat, 0));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::HourToken(repeat, 0));
       break;
 
       case L'h':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::HourToken(repeat, 1));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::HourToken(repeat, 1));
       break;
 
       case L'm':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::MinuteToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::MinuteToken(repeat));
       break;
 
       case L's':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::SecondToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::SecondToken(repeat));
       break;
 
       case L'S':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::MillisecondToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::MillisecondToken(repeat));
       break;
 
       case L'z':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::GeneralTimeZoneToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::GeneralTimeZoneToken(repeat));
       break;
 
       case L'Z':
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::RFC822TimeZoneToken(repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::RFC822TimeZoneToken(repeat));
       break;
 
       default:
-      pattern.push_back(new log4cxx::helpers::SimpleDateFormatImpl::LiteralToken(spec, repeat));
+      token = (new log4cxx::helpers::SimpleDateFormatImpl::LiteralToken(spec, repeat));
     }
+    assert(token != NULL);
+    pattern.push_back(token);
 }
 
 void SimpleDateFormat::parsePattern(const LogString& fmt,

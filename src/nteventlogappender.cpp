@@ -141,7 +141,7 @@ void NTEventLogAppender::setOption(const LogString& option, const LogString& val
         }
 }
 
-void NTEventLogAppender::activateOptions(Pool& p)
+void NTEventLogAppender::activateOptions(Pool&)
 {
         if (source.empty())
         {
@@ -197,7 +197,6 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 
         if (!bSuccess)
         {
-                DWORD dwError = ::GetLastError();
                 LogLog::error(LOG4CXX_STR("Cannot report event in NT EventLog."));
         }
 }

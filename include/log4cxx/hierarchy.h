@@ -275,6 +275,7 @@ namespace log4cxx
 
             log4cxx::helpers::Mutex mutex;
         };
+
 }  //namespace log4cxx
 
 #endif //_LOG4CXX_HIERARCHY_H

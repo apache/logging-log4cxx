@@ -48,5 +48,7 @@ LogString StringTokenizer::nextToken()
             }
         }
         throw NoSuchElementException();
-                return LogString();
+#if defined(LOG4CXX_RETURN_AFTER_THROW)
+        return LogString();
+#endif
 }

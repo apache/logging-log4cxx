@@ -27,15 +27,15 @@ Num343PatternConverter::Num343PatternConverter() {
 }
 
 PatternConverter* Num343PatternConverter::newInstance(
-   const FormattingInfo& info,
-   const std::vector<LogString>& options) {
+   const FormattingInfo&,
+   const std::vector<LogString>&) {
    return new Num343PatternConverter();
 }
 
 
 void Num343PatternConverter::convert(LogString& sbuf,
-    const spi::LoggingEventPtr& event,
-    Pool& pool) const
+    const spi::LoggingEventPtr&,
+    Pool&) const
 {
         sbuf.append(LOG4CXX_STR("343"));
 }

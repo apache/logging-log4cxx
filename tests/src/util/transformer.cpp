@@ -146,10 +146,9 @@ void Transformer::transform(const File& in, const File& out,
 
 
         apr_file_t* regexFile;
-        apr_int32_t flags = APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-        stat = apr_file_open(&regexFile, 
+        stat = apr_file_open(&regexFile,
                regexName.c_str(),
-               APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE, APR_OS_DEFAULT, 
+               APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE, APR_OS_DEFAULT,
                pool);
 
         std::string tmp;

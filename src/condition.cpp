@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,8 @@ Condition::Condition(Pool& p)
 
 Condition::~Condition()
 {
-        apr_status_t stat = apr_thread_cond_destroy((apr_thread_cond_t*) condition);
-        stat = apr_thread_mutex_destroy((apr_thread_mutex_t*)mutex);
+        apr_thread_cond_destroy((apr_thread_cond_t*) condition);
+        apr_thread_mutex_destroy((apr_thread_mutex_t*)mutex);
 }
 
 void Condition::broadcast()

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,11 +46,12 @@ public:
    {
       logger = Logger::getLogger(LOG4CXX_TEST_STR("x"));
       e.reserve(1000);
+      LoggingEventPtr event;
       for (int i = 0; i < MAX; i++)
       {
-         e.push_back(
-         new LoggingEvent(logger, Level::DEBUG, LOG4CXX_STR("e"),
-                           log4cxx::spi::LocationInfo::getLocationUnavailable()));
+         event = new LoggingEvent(logger, Level::DEBUG, LOG4CXX_STR("e"),
+                          log4cxx::spi::LocationInfo::getLocationUnavailable());
+         e.push_back(event);
       }
    }
 

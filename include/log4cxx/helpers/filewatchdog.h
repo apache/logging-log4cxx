@@ -51,7 +51,7 @@ namespace log4cxx
                         The delay to observe between every check.
                         By default set DEFAULT_DELAY.*/
                         long delay;
-                        time_t lastModif;
+                        log4cxx_time_t lastModif;
                         bool warnedAlready;
                         volatile unsigned int interrupted;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ void FallbackErrorHandler::error(const LogString& message,
 
 void FallbackErrorHandler::error(const LogString& message,
         const std::exception& e,
-        int errorCode, const spi::LoggingEventPtr& event) const
+        int, const spi::LoggingEventPtr&) const
 {
         LogLog::debug(((LogString) LOG4CXX_STR("FB: The following error reported: "))
            +  message, e);
@@ -86,11 +86,11 @@ void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup)
         this->backup = backup;
 }
 
-void FallbackErrorHandler::activateOptions(Pool& p)
+void FallbackErrorHandler::activateOptions(Pool&)
 {
 }
 
-void FallbackErrorHandler::setOption(const LogString& option, const LogString& value)
+void FallbackErrorHandler::setOption(const LogString&, const LogString&)
 {
 }
 

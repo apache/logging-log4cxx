@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,20 +32,20 @@ ERROR_PREFIX(LOG4CXX_STR("log4cxx error: ")), firstTime(true)
 }
 
 
-void OnlyOnceErrorHandler::setLogger(const LoggerPtr& logger)
+void OnlyOnceErrorHandler::setLogger(const LoggerPtr&)
 {
 }
 
-void OnlyOnceErrorHandler::activateOptions(Pool& p)
+void OnlyOnceErrorHandler::activateOptions(Pool&)
 {
 }
 
-void OnlyOnceErrorHandler::setOption(const LogString& option, const LogString& value)
+void OnlyOnceErrorHandler::setOption(const LogString&, const LogString&)
 {
 }
 
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
-        int errorCode) const
+        int) const
 {
         if(firstTime)
         {
@@ -55,7 +55,7 @@ void OnlyOnceErrorHandler::error(const LogString& message, const std::exception&
 }
 
 void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
-        int errorCode, const log4cxx::spi::LoggingEventPtr& event) const
+        int errorCode, const log4cxx::spi::LoggingEventPtr&) const
 {
         error(message, e, errorCode);
 }
@@ -71,11 +71,11 @@ void OnlyOnceErrorHandler::error(const LogString& message) const
 }
 
 
-void OnlyOnceErrorHandler::setAppender(const AppenderPtr& appender)
+void OnlyOnceErrorHandler::setAppender(const AppenderPtr&)
 {
 }
 
 
-void OnlyOnceErrorHandler::setBackupAppender(const AppenderPtr& appender)
+void OnlyOnceErrorHandler::setBackupAppender(const AppenderPtr&)
 {
 }

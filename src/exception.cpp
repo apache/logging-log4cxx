@@ -148,7 +148,7 @@ PoolException& PoolException::operator=(const PoolException& src) {
      return *this;
 }
 
-std::string PoolException::formatMessage(log4cxx_status_t stat) {
+std::string PoolException::formatMessage(log4cxx_status_t) {
      return "Pool exception";
 }
 

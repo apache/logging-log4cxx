@@ -97,10 +97,10 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
 {
         if (getRepositorySelector() == 0)
         {
-                getRepositorySelector() =
-                        new DefaultRepositorySelector(
-                                new Hierarchy(
-                                        new RootCategory(Level::getDebug())));
+                LoggerPtr root(new RootCategory(Level::getDebug()));
+                LoggerRepositoryPtr hierarchy(new Hierarchy(root));
+                RepositorySelectorPtr selector(new DefaultRepositorySelector(hierarchy));
+                getRepositorySelector() = selector;
 
                 const LogString configuratorClassName(getConfiguratorClass());
 

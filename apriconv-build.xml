@@ -26,11 +26,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <project name="apriconv" default="check">
 
 <property name="debug" value="true"/>
-<property name="build.dir" location="build"/>
-<property name="project.dir" value="${build.dir}"/>
 <property name="version" value="1.0.1"/>
-<property name="base.dir" location="."/>
-<property name="include.dir" location="${base.dir}/include"/>
+<property name="apriconv.dir" location="."/>
+<property name="include.dir" location="${apriconv.dir}/include"/>
+<property name="build.dir" location="${apriconv.dir}/build"/>
+<property name="project.dir" value="${build.dir}"/>
 <property name="apriconv.lib.type" value="static"/>
 <property name="apr.lib.type" value="shared"/>
 
@@ -40,7 +40,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 
 
-<property name="apr.dir" location="${base.dir}/../apr-1.1.0"/>
+<property name="apr.dir" location="${apriconv.dir}/../apr-1.1.0"/>
 <property name="apr.include.dir" location="${apr.dir}/include"/>
 <property name="with-apr" value="${apr.dir}"/>
 
@@ -125,19 +125,19 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="configure-check" depends="init">
         <condition property="config-available" value="true">
-            <available file="${base.dir}/lib/apr_iconv_private.h"/>
+            <available file="${apriconv.dir}/lib/apr_iconv_private.h"/>
         </condition>
 </target>
 
 
 <target name="win-configure" depends="configure-check" if="is-windows" unless="config-available">
-    <copy tofile="${base.dir}/lib/apr_iconv_private.h"
-        file="${base.dir}/lib/apr_iconv_private.h.in"
+    <copy tofile="${apriconv.dir}/lib/apr_iconv_private.h"
+        file="${apriconv.dir}/lib/apr_iconv_private.h.in"
         failonerror="false"/>
 </target>
 
 <target name="unix-configure" depends="configure-check" if="is-unix" unless="config-available">
-        <exec executable="${base.dir}/configure" dir="${base.dir}">
+        <exec executable="${apriconv.dir}/configure" dir="${apriconv.dir}">
            <arg value="--with-apr=${with-apr}"/>
         </exec>
 </target>
@@ -157,11 +157,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outtype="${apriconv.lib.type}"
         objdir="${apriconv.lib.dir}/apriconv_obj"
         debug="${debug}">
-        <fileset dir="${base.dir}" includes="lib/*.c lib/*.h"/>
+        <fileset dir="${apriconv.dir}" includes="lib/*.c lib/*.h"/>
         <fileset dir="${include.dir}" includes="*.h"/>
-        <includepath path="${base.dir}/lib"/>
+        <includepath path="${apriconv.dir}/lib"/>
         <includepath path="${include.dir}"/>
-        <includepath path="${base.dir}/lib"/>
+        <includepath path="${apriconv.dir}/lib"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${apr.include.dir}/private"/>
         <defineset define="API_DECLARE_EXPORT" if="is-apriconv-shared"/>
@@ -185,7 +185,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         debug="${debug}">
         <fileset file="${module.src}"/>
         <includepath path="${include.dir}"/>
-        <includepath path="${base.dir}/lib"/>
+        <includepath path="${apriconv.dir}/lib"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${apr.include.dir}/private"/>
         <defineset define="API_DECLARE_EXPORT"/>
@@ -206,7 +206,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <foreach target="build-module" param="module.src">
     <path>
-       <fileset dir="${base.dir}" includes="ces/*.c"/>
+       <fileset dir="${apriconv.dir}" includes="ces/*.c"/>
     </path>
 </foreach>
 
@@ -216,7 +216,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-ccs-c" depends="build-lib">
     <foreach target="build-module" param="module.src">
         <path>
-           <fileset dir="${base.dir}/ccs" includes="c*.c"/>
+           <fileset dir="${apriconv.dir}/ccs" includes="c*.c"/>
         </path>
     </foreach>
 </target>
@@ -224,7 +224,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-ccs-i" depends="build-lib">
     <foreach target="build-module" param="module.src">
         <path>
-           <fileset dir="${base.dir}/ccs" includes="i*.c"/>
+           <fileset dir="${apriconv.dir}/ccs" includes="i*.c"/>
         </path>
     </foreach>
 </target>
@@ -232,7 +232,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-ccs-w" depends="build-lib">
     <foreach target="build-module" param="module.src">
         <path>
-           <fileset dir="${base.dir}/ccs" includes="w*.c"/>
+           <fileset dir="${apriconv.dir}/ccs" includes="w*.c"/>
         </path>
     </foreach>
 </target>
@@ -241,7 +241,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
     <foreach target="build-module" param="module.src">
         <path>
-           <fileset dir="${base.dir}/ccs"
+           <fileset dir="${apriconv.dir}/ccs"
                 includes="*.c"
                 excludes="c*.c i*.c w*.c"/>
         </path>

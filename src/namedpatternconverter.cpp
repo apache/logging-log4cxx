@@ -24,7 +24,7 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(NamedPatternConverter)
 
-NamedPatternConverter::NamedPatternConverter(const FormattingInfo& fi, 
+NamedPatternConverter::NamedPatternConverter(const FormattingInfo& fi,
                                              const std::vector<LogString>& options) :
 PatternConverter(fi), precision(0) {
     setOptions(options);
@@ -46,7 +46,7 @@ void NamedPatternConverter::setOptions(const std::vector<LogString>& options) {
 
 void NamedPatternConverter::convert(LogString& sbuf,
                 const log4cxx::spi::LoggingEventPtr& event,
-                log4cxx::helpers::Pool& pool) const {
+                log4cxx::helpers::Pool&) const {
     LogString n(getFullyQualifiedName(event));
     if (precision <= 0) {
         sbuf.append(n);

@@ -39,8 +39,8 @@ public:
 //
 template<class Elem, class Tr>
 ::std::basic_ostream<Elem, Tr>& operator<<(
-   ::std::basic_ostream<Elem, Tr>& lhs,
-   const ExceptionOnInsert& rhs) {
+   ::std::basic_ostream<Elem, Tr>&,
+   const ExceptionOnInsert&) {
    throw "Should have been short-circuited";
 }
 
@@ -176,7 +176,7 @@ public:
          stream << LOG4CXX_ENDMSG;
          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
          LogString msg(event->getMessage());
-         CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("Hello, World")) >= 0);
+         CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("Hello, World")) != LogString::npos);
        }
 
 

@@ -292,7 +292,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
         sw->write(sbuf);
 }
 
-void SyslogAppender::activateOptions(Pool& p)
+void SyslogAppender::activateOptions(Pool&)
 {
 }
 

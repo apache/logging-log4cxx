@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ public:
 
 
                         StringBuffer os;
-                        os << i + 1;
+                        os << (i + 1);
                         LOG4CXX_L7DLOG2(root, Level::DEBUG, LOG4CXX_TEST_STR("msg1"), os.str().c_str(),
                                  LOG4CXX_TEST_STR("log4j"));
                         LOG4CXX_L7DLOG2(root, Level::getError(), LOG4CXX_TEST_STR("bogusMsg"), os.str().c_str(),

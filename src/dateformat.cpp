@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DateFormat)
 
 DateFormat::~DateFormat() {}
 
-void DateFormat::setTimeZone(const TimeZonePtr& tz) {}
+void DateFormat::setTimeZone(const TimeZonePtr&) {}
 
 void DateFormat::numberFormat(std::wstring& s, int n, Pool& p) const {
     StringHelper::toString(n, p, s);
