@@ -82,7 +82,8 @@ void FileAppender::setBufferedIO(bool bufferedIO)
 void FileAppender::setOption(const tstring& option,
 	const tstring& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, _T("file")))
+	if (StringHelper::equalsIgnoreCase(option, _T("file"))
+		|| StringHelper::equalsIgnoreCase(option, _T("filename")))
 	{
 		fileName = value;
 	}
