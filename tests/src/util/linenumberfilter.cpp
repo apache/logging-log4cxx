@@ -20,6 +20,6 @@ using namespace log4cxx::helpers;
 
 String LineNumberFilter::filter(const String& in) const throw(UnexpectedFormatException)
 {
-	String temp = merge(_T(" [^ ]*.[\\\\]"), in, _T(" "));
+	String temp = merge(_T(" [^ ]*[\\\\]"), in, _T(" "));
 	return merge(_T("\\(\\d{1,4}\\)"), temp, _T("\\(X\\)"));
 }
