@@ -4,7 +4,7 @@ Basic Installation
     The `configure' shell script attempts to guess correct values for
 various system-dependent variables used during compilation.  It uses
 those values to create a `Makefile' in each directory of the package.
-It also create a `config.h' file containing system-dependent
+It also create a `config_auto.h' file containing system-dependent
 definitions.  Finally, it creates a shell script `config.status' that
 you can run in the future to recreate the current configuration, a file
 `config.cache' that saves the results of its tests to speed up
@@ -203,22 +203,21 @@ operates.
 MsDev 6.0 Compilation
 =====================
 
-Copy the msvc/config.h.msvc file to include/log4cxx/config.h.
 If you want to compile a dynamic library (dll), compile msvc/dll/dll.dsp.
 If you want to compile a static library (lib), compile msvc/static/static.dsp.
 
 The DOMConfigurator class is compiled with the MSXML library, if 'HAVE_XML'
-and 'HAVE_MS_XML' are defined in the config.h file.
+and 'HAVE_MS_XML' are defined in the config_msvc.h file.
 
 The ODBCAppender class is compiled with the Microsoft ODBC library, if
-'HAVE_ODBC' and 'HAVE_MS_ODBC' are defined in the config.h file.
+'HAVE_ODBC' and 'HAVE_MS_ODBC' are defined in the config_msvc.h file.
 
 The SMTPAppender class is compiled with the Microsoft CDO library, if
-'HAVE_SMTP' and 'HAVE_CDO_SMTP' are defined in the config.h file.
+'HAVE_SMTP' and 'HAVE_CDO_SMTP' are defined in the config_msvc.h file.
 (not yet implemented)
 
 log4cxx is build with Windows native thread support, if 'HAVE_THREAD' and
-'HAVE_MS_THREAD' are defined in the config.h file.
+'HAVE_MS_THREAD' are defined in the config_msvc.h file.
 
 UNICODE support is available through 'Unicode Debug' and 'Unicode Release'
 compilation targets.
@@ -226,10 +225,9 @@ compilation targets.
 Visual Studio .Net 2003 Compilation
 ===================================
 
-Copy the msvc/config.h.msvc file to include/log4cxx/config.h.
 If you want to compile a dynamic library (dll), compile msvc/dll/dll.vcproj.
 If you want to compile a static library (lib), compile msvc/static/static.vcproj.
 
-The config file options are same as for MsDev 6.0
+The config_msvc.h file options are same as for MsDev 6.0
 
 
