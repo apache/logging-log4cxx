@@ -85,7 +85,7 @@ namespace log4cxx
 			/**
 			Equivalent to the error(const String&, helpers::Exception&, int,
 			spi::LoggingEvent&) with the the event parameteter set to
-			<code>Level#OFF</code>.
+			null.
 			*/
 			virtual void error(const String& message, helpers::Exception& e,
 				int errorCode) = 0;
