@@ -44,6 +44,11 @@ const tstring& Class::toString() const
 	return name;
 }
 
+const tstring& Class::getName() const
+{
+	return name;
+}
+
 ObjectPtr Class::newInstance() const
 {
 	throw InstantiationException();
