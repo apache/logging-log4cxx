@@ -22,7 +22,9 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/pool.h>
 
+#if !defined(INT64_C)
 #define INT64_C(x) x##LL
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
