@@ -42,7 +42,7 @@ void SimpleDateFormat::PatternToken::renderFacet(const std::locale& locale,
                                                           std::basic_ostream<wchar_t>& buffer,
                                                           const tm* time,
                                                           const char spec) {
-#if _MSC_VER < 1300
+#if defined(_MSC_VER) && _MSC_VER < 1300
                 _USE(locale, TimePutFacet).put(buffer,
                                  buffer, time, spec);
 #else
