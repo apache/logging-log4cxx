@@ -57,6 +57,7 @@ public:
 	#define tcerr std::wcerr
 	/** output stream */
 	#define tostream std::wostream
+	#define tistream std::wistream
 #ifdef WIN32
 	#define tstrncasecmp _wcsnicmp
 #else
@@ -79,6 +80,7 @@ public:
 	#define tcerr std::cerr
 	/** output stream */
 	#define tostream std::ostream
+	#define tistream std::istream
 #ifdef WIN32
 	#define tstrncasecmp _strnicmp
 #else
