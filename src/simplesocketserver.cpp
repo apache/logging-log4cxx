@@ -43,7 +43,7 @@ void usage(const tstring& msg)
 void init(const tstring& portStr, const tstring& configFile)
 {
 	USES_CONVERSION;
-	port = strtol(T2A(portStr.c_str()), 0, 10);
+	port = ttol(portStr.c_str());
 
 	DOMConfigurator domconfigurator;
 #ifdef WIN32
@@ -66,7 +66,7 @@ int main(int argc, char * argv[])
 	else
 	{
 		USES_CONVERSION;
-		init("4560", "logconfig.xml");
+		init(_T("4560"), _T("logconfig.xml"));
 //		usage(_T("Wrong number of arguments."));
 //		return 1;
 	}

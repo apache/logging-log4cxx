@@ -49,8 +49,8 @@ void TelnetAppender::activateOptions()
 	}
 }
 
-void TelnetAppender::setOption(const std::string& option,
-	const std::string& value)
+void TelnetAppender::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("port")))
 	{

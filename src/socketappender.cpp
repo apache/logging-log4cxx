@@ -65,8 +65,8 @@ void SocketAppender::activateOptions()
 	connect();
 }
 
-void SocketAppender::setOption(const std::string& option,
-	const std::string& value)
+void SocketAppender::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("remotehost")))
 	{
@@ -252,5 +252,5 @@ void SocketAppender::Connector::run()
 		}
 	}
 	
-	LogLog::debug("Exiting Connector.run() method.");
+	LogLog::debug(_T("Exiting Connector.run() method."));
 }

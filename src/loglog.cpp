@@ -37,7 +37,7 @@ void LogLog::debug(const tstring& msg)
 void LogLog::debug(const tstring& msg, Exception& e)
 {
 	debug(msg);
-	std::cerr << e.getMessage() << std::endl;
+	tcerr << e.getMessage() << std::endl;
 }
 
 
@@ -52,7 +52,7 @@ void LogLog::error(const tstring& msg)
 void LogLog::error(const tstring& msg, Exception& e)
 {
 	error(msg);
-	std::cerr << e.getMessage() << std::endl;
+	tcerr << e.getMessage() << std::endl;
 }
 
 void LogLog::setQuietMode(bool quietMode) 
@@ -71,6 +71,6 @@ void LogLog::warn(const tstring& msg)
 void LogLog::warn(const tstring& msg, Exception& e)
 {
 	warn(msg);
-	std::cerr << e.getMessage() << std::endl;
+	tcerr << e.getMessage() << std::endl;
 }
  

@@ -43,8 +43,8 @@ public:
 #else
 	#define USES_CONVERSION void * _dst = alloca(1024);
 #endif
-#define W2A(src) Convert::unicodeToAnsi((char *)_dst, src);
-#define A2W(src) Convert::ansiToUnicode((wchar_t *)_dst, src);
+#define W2A(src) Convert::unicodeToAnsi((char *)_dst, src)
+#define A2W(src) Convert::ansiToUnicode((wchar_t *)_dst, src)
 
 #ifdef UNICODE
 	#include <wctype.h>
@@ -67,7 +67,7 @@ public:
 	#define A2T(src) A2W(src)
 	#define W2T(src) src
 	#define tostringstream std::wostringstream
-	#define ttol wcstol
+	#define ttol(s) wcstol(s, 0, 10)
 #else // Not UNICODE
 	#include <ctype.h>
 	#define _T(x) x

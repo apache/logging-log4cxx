@@ -77,8 +77,8 @@ void FileAppender::setBufferedIO(bool bufferedIO)
 	}
 }
 
-void FileAppender::setOption(const std::string& option,
-	const std::string& value)
+void FileAppender::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("file")))
 	{
@@ -125,6 +125,7 @@ void FileAppender::activateOptions()
 			out.rdbuf()->setbuf(buffer, 0);
 		}*/
 
+		USES_CONVERSION
 		ofs.open(T2A(fileName.c_str()), (fileAppend ? std::ios::app :
 			std::ios::trunc)|std::ios::out);
 

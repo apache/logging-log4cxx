@@ -30,8 +30,8 @@ StringMatchFilter::StringMatchFilter() : acceptOnMatch(true)
 {
 }
 
-void StringMatchFilter::setOption(const std::string& option,
-	const std::string& value)
+void StringMatchFilter::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, STRING_TO_MATCH_OPTION))
 	{

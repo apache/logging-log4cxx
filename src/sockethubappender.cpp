@@ -50,8 +50,8 @@ void SocketHubAppender::activateOptions()
 	startServer();
 }
 
-void SocketHubAppender::setOption(const std::string& option,
-	const std::string& value)
+void SocketHubAppender::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("port")))
 	{

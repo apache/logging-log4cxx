@@ -33,8 +33,8 @@ LevelRangeFilter::LevelRangeFilter()
 {
 }
 
-void LevelRangeFilter::setOption(const std::string& option,
-	const std::string& value)
+void LevelRangeFilter::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LEVEL_MIN_OPTION))
 	{

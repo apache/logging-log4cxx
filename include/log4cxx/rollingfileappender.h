@@ -120,7 +120,7 @@ namespace log4cxx
 				value, maxFileSize + 1); }
 
 
-		virtual void setOption(const std::string& option, const std::string& value);
+		virtual void setOption(const tstring& option, const tstring& value);
 			
 	protected:
 		/**

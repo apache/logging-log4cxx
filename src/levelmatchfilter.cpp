@@ -32,8 +32,8 @@ LevelMatchFilter::LevelMatchFilter()
 {
 }
 
-void LevelMatchFilter::setOption(const std::string& option,
-	const std::string& value)
+void LevelMatchFilter::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LEVEL_TO_MATCH_OPTION))
 	{

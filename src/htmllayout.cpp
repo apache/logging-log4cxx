@@ -35,8 +35,8 @@ HTMLLayout::HTMLLayout()
 {
 }
 
-void HTMLLayout::setOption(const std::string& option,
-	const std::string& value)
+void HTMLLayout::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, TITLE_OPTION))
 	{

@@ -35,8 +35,8 @@ XMLLayout::XMLLayout()
 {
 }
 
-void XMLLayout::setOption(const std::string& option,
-	const std::string& value)
+void XMLLayout::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LOCATION_INFO_OPTION))
 	{

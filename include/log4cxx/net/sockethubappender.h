@@ -136,7 +136,7 @@ namespace log4cxx
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const std::string& option, const std::string& value);
+			virtual void setOption(const tstring& option, const tstring& value);
 
 			/**
 			Close this appender. 

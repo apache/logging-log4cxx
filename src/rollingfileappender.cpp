@@ -57,6 +57,7 @@ void RollingFileAppender::rollOver()
 		// Delete the oldest file, to keep Windows happy.
 		tostringstream file;
 		file << fileName << _T(".") << maxBackupIndex;
+		USES_CONVERSION;
 		remove(T2A(file.str().c_str()));
 
 		// Map {(maxBackupIndex - 1), ..., 2, 1} to {maxBackupIndex, ..., 3, 2}
@@ -80,6 +81,7 @@ void RollingFileAppender::rollOver()
 	}
 
 	// Open the current file up again in truncation mode
+	USES_CONVERSION;
 	ofs.open(T2A(fileName.c_str()), std::ios::out|std::ios::trunc);
 	if(!ofs.is_open())
 	{
@@ -96,8 +98,8 @@ void RollingFileAppender::subAppend(const spi::LoggingEvent& event)
 	}
 }
 
-void RollingFileAppender::setOption(const std::string& option,
-	const std::string& value)
+void RollingFileAppender::setOption(const tstring& option,
+	const tstring& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, _T("maxfilesize")) 
 		|| StringHelper::equalsIgnoreCase(option, _T("maximumfilesize")))

@@ -70,9 +70,10 @@ void PatternConverter::format(tostream& sbuf, const spi::LoggingEvent& e)
 		sbuf << s;
 }	
 
-tstring PatternConverter::SPACES[] = {" ", "  ", "    ", "        ", //1,2,4,8 spaces
-"                ", // 16 spaces
-"                                " }; // 32 spaces
+tstring PatternConverter::SPACES[] =
+{_T(" "), _T("  "), _T("    "), _T("        "), //1,2,4,8 spaces
+_T("                "), // 16 spaces
+_T("                                ") }; // 32 spaces
 
 /**
 Fast space padding method.

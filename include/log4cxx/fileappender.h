@@ -131,8 +131,8 @@ namespace log4cxx
         is closed first.*/
         
 		void activateOptions();
-		void setOption(const std::string& option,
-			const std::string& value);
+		void setOption(const tstring& option,
+			const tstring& value);
 
 	protected:
         /**

@@ -25,9 +25,9 @@ NDC::DiagnosticContext::DiagnosticContext(const tstring& message,
 {
 	if (parent != 0)
 	{
-		fullMessage = parent->fullMessage + ' ' + message;
+		fullMessage = parent->fullMessage + _T(' ') + message;
 	} 
-	else 
+	else
 	{
 		fullMessage = message;
 	}
