@@ -117,7 +117,7 @@ namespace log4cxx
 	as the protocol specificaion of a URL which is probably not what
 	you want.
 	**/
-	class DailyRollingFileAppender : public FileAppender
+	class LOG4CXX_EXPORT DailyRollingFileAppender : public FileAppender
 	{
 // The gmtTimeZone is used only in computeCheckPeriod() method.
 static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");

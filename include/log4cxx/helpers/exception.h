@@ -29,7 +29,7 @@ namespace log4cxx
 			virtual String getMessage() = 0;
 		}; // class Exception
 
-		class RuntimeException : public Exception
+		class LOG4CXX_EXPORT RuntimeException : public Exception
 		{
 		public:
 			RuntimeException() {}
@@ -45,7 +45,7 @@ namespace log4cxx
 
 		   /** Thrown to indicate that a method has been passed 
 		an illegal or inappropriate argument.*/
-		class IllegalArgumentException : public Exception
+		class LOG4CXX_EXPORT IllegalArgumentException : public Exception
 		{
 		public:
 			IllegalArgumentException(const String& message)

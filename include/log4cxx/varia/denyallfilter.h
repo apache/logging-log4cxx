@@ -33,7 +33,7 @@ namespace log4cxx
 		class DenyAllFilter;
 		typedef helpers::ObjectPtrT<DenyAllFilter> DenyAllFilterPtr;
 
-		class DenyAllFilter : public spi::Filter
+		class LOG4CXX_EXPORT DenyAllFilter : public spi::Filter
 		{
 		public:
 			typedef spi::Filter BASE_CLASS;

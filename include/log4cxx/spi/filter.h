@@ -66,7 +66,7 @@ namespace log4cxx
         <p>Note that filtering is only supported by the {@link
         xml::DOMConfigurator DOMConfigurator}. 
         */
-		class Filter : public virtual OptionHandler,
+		class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
 			public virtual helpers::ObjectImpl
 		{
 		public:

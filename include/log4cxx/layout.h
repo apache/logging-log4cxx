@@ -35,7 +35,7 @@ namespace log4cxx
 	/**
 	Extend this abstract class to create your own log layout format.
 	*/
-	class Layout :
+	class LOG4CXX_EXPORT Layout :
 		public virtual spi::OptionHandler,
 		public virtual helpers::ObjectImpl
 	{

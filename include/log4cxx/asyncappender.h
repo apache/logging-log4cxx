@@ -49,7 +49,7 @@ namespace log4cxx
 	<p><b>Important note:</b> The <code>AsyncAppender</code> can only
 	be script configured using the {@link xml::DOMConfigurator DOMConfigurator}.
 	*/
-	class AsyncAppender :
+	class LOG4CXX_EXPORT AsyncAppender :
 		public virtual spi::AppenderAttachable,
 		public virtual AppenderSkeleton
 	{
@@ -144,7 +144,7 @@ namespace log4cxx
 		int getBufferSize();
 	}; // class AsyncAppender
 
-	class Dispatcher : public  helpers::Thread
+	class LOG4CXX_EXPORT Dispatcher : public  helpers::Thread
 	{
 		helpers::BoundedFIFOPtr bf;
 		helpers::AppenderAttachableImplPtr aai;

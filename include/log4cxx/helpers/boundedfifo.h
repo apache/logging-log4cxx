@@ -33,7 +33,7 @@ namespace log4cxx
 		<code>BoundedFIFO</code> serves as the bounded first-in-first-out
 		buffer heavily used by the AsyncAppender.
 		*/
-		class BoundedFIFO : public virtual Object, public virtual ObjectImpl
+		class LOG4CXX_EXPORT BoundedFIFO : public virtual Object, public virtual ObjectImpl
 		{
 			std::vector<spi::LoggingEventPtr> buf;
 			int numElements;

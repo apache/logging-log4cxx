@@ -65,7 +65,7 @@ namespace log4cxx
 		that errors are not properly handled. You are most welcome to
 		suggest new error handling policies or criticize existing policies.
 		*/
-		class ErrorHandler : public virtual OptionHandler
+		class LOG4CXX_EXPORT ErrorHandler : public virtual OptionHandler
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(ErrorHandler)

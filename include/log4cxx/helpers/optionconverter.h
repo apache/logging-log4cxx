@@ -41,7 +41,7 @@ namespace log4cxx
 		class Class;
 
 		/** A convenience class to convert property values to specific types.*/
-		class OptionConverter
+		class LOG4CXX_EXPORT OptionConverter
 		{
 			static String DELIM_START;
 			static TCHAR DELIM_STOP;

@@ -66,7 +66,7 @@ namespace log4cxx
 
     <p>PatternLayout offers a much more flexible alternative.
     */
-	class TTCCLayout : public helpers::DateLayout
+	class LOG4CXX_EXPORT TTCCLayout : public helpers::DateLayout
 	{
 	private:
 		  // Internal representation of options

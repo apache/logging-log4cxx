@@ -29,7 +29,7 @@ namespace log4cxx
 		elapsed since the start of the application. This is the fastest
 		printing DateFormat in the package.
 		*/
-		class RelativeTimeDateFormat : public DateFormat
+		class LOG4CXX_EXPORT RelativeTimeDateFormat : public DateFormat
 		{
 		protected:
 			int64_t startTime;

@@ -48,7 +48,7 @@ will cause the invocations anObject->setOption("name", "Joe"),
 anObject->setOption("age", "32") and anObject->setOption("isMale", "true")
 if the spi::OptionHandler interface is supported by anObject.
 */
-		class PropertySetter
+		class LOG4CXX_EXPORT PropertySetter
 		{
 		protected: 
 			helpers::ObjectPtr obj;

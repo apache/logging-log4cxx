@@ -32,7 +32,7 @@ namespace log4cxx
         #getEffectiveLevel method always returns the value of the
         level field without walking the hierarchy.
         */
-        class RootCategory : public Logger
+        class LOG4CXX_EXPORT RootCategory : public Logger
 		{
 		public:
             /**

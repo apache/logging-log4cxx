@@ -24,7 +24,7 @@ namespace log4cxx
 {
 	namespace spi
 	{
-		class DefaultRepositorySelector :
+		class LOG4CXX_EXPORT DefaultRepositorySelector :
 			public virtual RepositorySelector,
 			public virtual helpers::ObjectImpl
 		{

@@ -23,7 +23,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class CriticalSection
+		class LOG4CXX_EXPORT CriticalSection
 		{
 		public:
 			CriticalSection();

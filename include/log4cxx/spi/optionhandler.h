@@ -31,7 +31,7 @@ namespace log4cxx
 		/**
 		A string based interface to configure package components.
 		*/
-		class OptionHandler : public virtual helpers::Object
+		class LOG4CXX_EXPORT OptionHandler : public virtual helpers::Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(OptionHandler)

@@ -28,7 +28,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class MutexException : public Exception
+		class LOG4CXX_EXPORT MutexException : public Exception
 		{
 		public: 
 			virtual String getMessage() { return String();}
@@ -36,7 +36,7 @@ namespace log4cxx
 
 		class Condition;
 
-		class Mutex
+		class LOG4CXX_EXPORT Mutex
 		{
 		friend class Condition;
 		public:

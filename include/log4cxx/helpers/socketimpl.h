@@ -30,7 +30,7 @@ namespace log4cxx
 		is the general class of exceptions produced by failed or interrupted
 		I/O operations.
 		*/
-		class IOException : public Exception
+		class LOG4CXX_EXPORT IOException : public Exception
 		{
 		public:
 			String getMessage() { return String(); }
@@ -39,7 +39,7 @@ namespace log4cxx
 		/** Thrown to indicate that there is an error in the underlying
 		protocol, such as a TCP error.
 		*/
-		class SocketException : public IOException
+		class LOG4CXX_EXPORT SocketException : public IOException
 		{
 		public:
 			SocketException();
@@ -53,7 +53,7 @@ namespace log4cxx
 		to a remote address and port. Typically, the connection was refused
 		remotely (e.g., no process is listening on the remote address/port).
 		*/
-		class ConnectException : public SocketException
+		class LOG4CXX_EXPORT ConnectException : public SocketException
 		{
 		};
 
@@ -61,7 +61,7 @@ namespace log4cxx
 		a local address and port. Typically, the port is in use, or the
 		requested local address could not be assigned.
 		*/
-		class BindException : public SocketException
+		class LOG4CXX_EXPORT BindException : public SocketException
 		{
 		};
 
@@ -71,13 +71,13 @@ namespace log4cxx
 		interrupted. The field bytesTransferred  indicates how many bytes were
 		successfully transferred before the interruption occurred.
 		*/
-		class InterruptedIOException : public IOException
+		class LOG4CXX_EXPORT InterruptedIOException : public IOException
 		{
 		};
 
 		/** Signals that a timeout has occurred on a socket read or accept.
 		*/
-		class SocketTimeoutException : public InterruptedIOException
+		class LOG4CXX_EXPORT SocketTimeoutException : public InterruptedIOException
 		{
 		};
 
@@ -88,7 +88,7 @@ namespace log4cxx
 
 		This implementation does not implement any security check.
 		*/
-		class SocketImpl : public helpers::ObjectImpl
+		class LOG4CXX_EXPORT SocketImpl : public helpers::ObjectImpl
 		{
 		protected:
 			/** The IP address of the remote end of this socket. */

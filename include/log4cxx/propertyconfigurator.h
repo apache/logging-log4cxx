@@ -84,7 +84,7 @@ example, if <code>java.home</code> system property is set to
 <code>${java.home}</code> will be interpreted as
 <code>/home/xyz</code>.
 */
-	class PropertyConfigurator :
+	class LOG4CXX_EXPORT PropertyConfigurator :
 		virtual public spi::Configurator,
 		virtual public helpers::ObjectImpl
 	{

@@ -57,7 +57,7 @@ namespace log4cxx
         <code>LoggerRepository</code> can be queried for existing loggers,
         can act as a point of registry for events related to loggers.
         */
-        class LoggerRepository : public virtual helpers::Object
+        class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
         {
         public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerRepository)
@@ -67,7 +67,7 @@ namespace log4cxx
             Add a {@link spi::HierarchyEventListener HierarchyEventListener}
 			event to the repository.
             */
-            virtual void addHierarchyEventListener(HierarchyEventListenerPtr 
+            virtual void addHierarchyEventListener(const HierarchyEventListenerPtr& 
 				listener) = 0;
             /**
             Is the repository disabled for a given level? The answer depends

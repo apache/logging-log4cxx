@@ -34,7 +34,7 @@ namespace log4cxx
 		<p>This policy aims at protecting an otherwise working application
 		from being flooded with error messages when logging fails
 		*/
-		class OnlyOnceErrorHandler : public virtual spi::ErrorHandler,
+		class LOG4CXX_EXPORT OnlyOnceErrorHandler : public virtual spi::ErrorHandler,
 			public virtual ObjectImpl
 		{
 		private:

@@ -43,7 +43,7 @@ namespace log4cxx
 		keeps memory requirements at a reasonable level while still
 		delivering useful application context.
 		*/
-		class SMTPAppender : public AppenderSkeleton
+		class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		{
 		private:
 			String to;
@@ -250,7 +250,7 @@ namespace log4cxx
 				{ return locationInfo; }
 		}; // class SMTPAppender
 
-		class DefaultEvaluator :
+		class LOG4CXX_EXPORT DefaultEvaluator :
 			public virtual spi::TriggeringEventEvaluator,
 			public virtual helpers::ObjectImpl
 		{

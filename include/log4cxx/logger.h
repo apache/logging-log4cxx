@@ -47,7 +47,7 @@ namespace log4cxx
     This is the central class in the log4cxx package. Most logging
     operations, except configuration, are done through this class.
     */
-    class Logger :
+    class LOG4CXX_EXPORT Logger :
 		public virtual spi::AppenderAttachable,
 		public virtual helpers::ObjectImpl
     {

@@ -49,7 +49,7 @@ namespace log4cxx
 	Implement this interface for your own strategies for outputting log
 	statements.
 	*/
-    class Appender :
+    class LOG4CXX_EXPORT Appender :
 		public virtual spi::OptionHandler
     {
     public:

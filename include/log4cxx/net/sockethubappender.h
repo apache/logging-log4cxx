@@ -107,7 +107,7 @@ namespace log4cxx
 		</ul>
 		*/
 
-		class SocketHubAppender : public AppenderSkeleton
+		class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 		{
 		private:
 			/**
@@ -198,7 +198,7 @@ namespace log4cxx
 			This class is used internally to monitor a ServerSocket
 			and register new connections in a vector passed in the
 			constructor. */
-			class ServerMonitor :
+			class LOG4CXX_EXPORT ServerMonitor :
 				public helpers::Runnable,
 					public helpers::ObjectImpl
 			{

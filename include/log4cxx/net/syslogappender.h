@@ -28,7 +28,7 @@ namespace log4cxx
 		typedef helpers::ObjectPtrT<SyslogAppender> SyslogAppenderPtr;
 
 		/** Use SyslogAppender to send log messages to a remote syslog daemon.*/
-		class SyslogAppender : public AppenderSkeleton
+		class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		{
 		public:
 			DECLARE_LOG4CXX_OBJECT(SyslogAppender)

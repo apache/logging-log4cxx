@@ -30,7 +30,7 @@ namespace log4cxx
 		<p>This buffer gives read access to any element in the buffer not
 		just the first or last element.
 		*/
-		class CyclicBuffer
+		class LOG4CXX_EXPORT CyclicBuffer
 		{
 			std::vector<spi::LoggingEventPtr> ea;
 			int first;

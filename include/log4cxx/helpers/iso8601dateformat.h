@@ -32,7 +32,7 @@ namespace log4cxx
 		International Standard Date and Time Notation</a> for more
 		information on this format.
 		*/
-		class ISO8601DateFormat : public DateFormat
+		class LOG4CXX_EXPORT ISO8601DateFormat : public DateFormat
 		{
 		public:
 			ISO8601DateFormat(const String& timeZone = _T(""))

@@ -32,7 +32,7 @@ namespace log4cxx
 	*  This class provides the code for common functionality, such as
 	*  support for threshold filtering and support for general filters.
 	* */
-	class AppenderSkeleton :
+	class LOG4CXX_EXPORT AppenderSkeleton :
 		public virtual Appender,
 		public virtual helpers::ObjectImpl
 	{

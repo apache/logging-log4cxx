@@ -51,7 +51,7 @@ namespace log4cxx
 		* appender where it is embedded.
 		*
 		* */
-		class XMLLayout : public Layout
+		class LOG4CXX_EXPORT XMLLayout : public Layout
 		{
 		private:
 			/**

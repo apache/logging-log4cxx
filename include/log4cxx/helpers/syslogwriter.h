@@ -28,7 +28,7 @@
 		SyslogWriter is a wrapper around the DatagramSocket class
 		it writes text to the specified host on the port 514 (UNIX syslog)
 		*/
-		class SyslogWriter
+		class LOG4CXX_EXPORT SyslogWriter
 		{
 		public:
 			SyslogWriter(const String& syslogHost);

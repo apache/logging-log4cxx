@@ -36,7 +36,7 @@ namespace log4cxx
 		typedef std::vector<HierarchyEventListenerPtr> HierarchyEventListenerList;
 			
 		/** Listen to events occuring within a Hierarchy.*/
-		class HierarchyEventListener :
+		class LOG4CXX_EXPORT HierarchyEventListener :
 			public virtual log4cxx::helpers::Object
 		{
 		public:

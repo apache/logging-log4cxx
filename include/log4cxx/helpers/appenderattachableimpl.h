@@ -35,7 +35,7 @@ namespace log4cxx
 		typedef log4cxx::helpers::ObjectPtrT<AppenderAttachableImpl>
 			AppenderAttachableImplPtr;
   
-		class AppenderAttachableImpl :
+		class LOG4CXX_EXPORT AppenderAttachableImpl :
 			public virtual spi::AppenderAttachable,
 			public virtual helpers::ObjectImpl
         {

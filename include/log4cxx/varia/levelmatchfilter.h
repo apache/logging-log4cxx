@@ -41,7 +41,7 @@ namespace log4cxx
 		class LevelMatchFilter;
 		typedef helpers::ObjectPtrT<LevelMatchFilter> LevelMatchFilterPtr;
 
-		class LevelMatchFilter : public spi::Filter
+		class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
 		{
 		private:
 			static String LEVEL_TO_MATCH_OPTION;

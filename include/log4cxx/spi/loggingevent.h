@@ -54,7 +54,7 @@ namespace log4cxx
 
 		<p>This class is of concern to those wishing to extend log4cxx.
 		*/
-		class LoggingEvent : 
+		class LOG4CXX_EXPORT LoggingEvent : 
 			public virtual helpers::ObjectImpl
 		{
 		public:

@@ -42,7 +42,7 @@ namespace log4cxx
 
        <p>See also LogManager.
        */
-		class RepositorySelector : public virtual helpers::Object
+		class LOG4CXX_EXPORT RepositorySelector : public virtual helpers::Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(RepositorySelector)

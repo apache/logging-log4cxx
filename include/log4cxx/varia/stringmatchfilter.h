@@ -47,7 +47,7 @@ namespace log4cxx
 		class StringMatchFilter;
 		typedef helpers::ObjectPtrT<StringMatchFilter> StringMatchFilterPtr;
 
-		class StringMatchFilter : public spi::Filter
+		class LOG4CXX_EXPORT StringMatchFilter : public spi::Filter
 		{
 		private:
 			static String STRING_TO_MATCH_OPTION;

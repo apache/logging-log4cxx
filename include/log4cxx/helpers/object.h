@@ -71,7 +71,7 @@ namespace log4cxx
 		typedef ObjectPtrT<Object> ObjectPtr;
 
 		/** base class for java-like objects.*/
-		class Object
+		class LOG4CXX_EXPORT Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Object)

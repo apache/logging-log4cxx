@@ -28,7 +28,7 @@ namespace log4cxx
 	WriterAppender appends log events to a standard output stream
 	(ostream or wostream)
 	*/
-	class WriterAppender : public AppenderSkeleton
+	class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 	{
 	protected:
 		/**

@@ -24,7 +24,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class DateFormat
+		class LOG4CXX_EXPORT DateFormat
 		{
 		public:
 			DateFormat(const String& dateFormat, const String& timeZone = _T(""));

@@ -31,7 +31,7 @@ namespace log4cxx
 
 	namespace net
 	{
-		class SocketAppender;
+		class LOG4CXX_EXPORT SocketAppender;
 		typedef helpers::ObjectPtrT<SocketAppender> SocketAppenderPtr;
 
         /**
@@ -101,7 +101,7 @@ namespace log4cxx
         </ul>
         */
         
-      	class SocketAppender : public AppenderSkeleton
+      	class LOG4CXX_EXPORT SocketAppender : public AppenderSkeleton
     	{
 		class Connector;
 		friend class Connector;
@@ -260,7 +260,7 @@ namespace log4cxx
 			restart to try reconnect to the server when previpously open
 			connection is droppped.
 			*/
-			class Connector : public helpers::Thread
+			class LOG4CXX_EXPORT Connector : public helpers::Thread
 			{
 			public:
 

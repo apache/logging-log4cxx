@@ -41,7 +41,7 @@ namespace log4cxx
 		returned result is <code>false</code>.
 
 		*/
- 		class TriggeringEventEvaluator : public virtual helpers::Object
+ 		class LOG4CXX_EXPORT TriggeringEventEvaluator : public virtual helpers::Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(TriggeringEventEvaluator)

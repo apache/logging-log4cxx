@@ -27,13 +27,13 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class ThreadException : Exception
+		class LOG4CXX_EXPORT ThreadException : Exception
 		{
 		public:
 			String getMessage() { return String(); }
 		};
 
-		class InterruptedException : Exception
+		class LOG4CXX_EXPORT InterruptedException : Exception
 		{
 		public:
 			String getMessage() { return String(); }
@@ -43,7 +43,7 @@ namespace log4cxx
 		instances are intended to be executed by a thread. 
 		The class must define a method of no arguments called run.
 		*/
-		class Runnable : public virtual Object
+		class LOG4CXX_EXPORT Runnable : public virtual Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Runnable)
@@ -59,7 +59,7 @@ namespace log4cxx
 		
 		/** A thread is a thread of execution in a program.
 		*/
-		class Thread : public virtual ObjectImpl
+		class LOG4CXX_EXPORT Thread : public virtual ObjectImpl
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Thread)

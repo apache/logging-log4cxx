@@ -55,7 +55,7 @@ namespace log4cxx
 		class LevelRangeFilter;
 		typedef helpers::ObjectPtrT<LevelRangeFilter> LevelRangeFilterPtr;
 
-		class LevelRangeFilter : public spi::Filter
+		class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		{
 		private:
 			static String LEVEL_MIN_OPTION;

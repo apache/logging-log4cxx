@@ -25,7 +25,7 @@ namespace log4cxx
 	class Logger;
 	typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 	
-	class DefaultCategoryFactory :
+	class LOG4CXX_EXPORT DefaultCategoryFactory :
 		public virtual spi::LoggerFactory,
 		public virtual helpers::ObjectImpl
 	{

@@ -32,13 +32,13 @@ namespace log4cxx
 		class SocketInputStream;
 		typedef ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 
-		class EOFException : Exception
+		class LOG4CXX_EXPORT EOFException : Exception
 		{
 		public:
 			String getMessage() { return String(); }
 		};
 
-		class SocketInputStream : public ObjectImpl
+		class LOG4CXX_EXPORT SocketInputStream : public ObjectImpl
 		{
 		private:
 			static size_t DEFAULT_BUFFER_SIZE;

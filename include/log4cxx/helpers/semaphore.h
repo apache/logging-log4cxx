@@ -28,7 +28,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class SemaphoreException : public Exception
+		class LOG4CXX_EXPORT SemaphoreException : public Exception
 		{
 		public: 
 			virtual String getMessage() { return String();}
@@ -38,7 +38,7 @@ namespace log4cxx
 		class Condition;
 #endif
 
-		class Semaphore
+		class LOG4CXX_EXPORT Semaphore
 		{
 #ifdef HAVE_MS_THREAD
 		friend class Condition;

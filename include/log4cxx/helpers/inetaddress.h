@@ -25,13 +25,13 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class UnknownHostException : public Exception
+		class LOG4CXX_EXPORT UnknownHostException : public Exception
 		{
 		public:
 			String getMessage() { return String(); }
 		};
 
-		class InetAddress
+		class LOG4CXX_EXPORT InetAddress
 		{
 		public:
 			InetAddress();

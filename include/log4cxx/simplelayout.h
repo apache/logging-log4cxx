@@ -36,7 +36,7 @@ namespace log4cxx
 
 	<p>PatternLayout offers a much more powerful alternative.
 	*/
-	class SimpleLayout : public Layout
+	class LOG4CXX_EXPORT SimpleLayout : public Layout
 	{
 	public:
 		DECLARE_LOG4CXX_OBJECT(SimpleLayout)

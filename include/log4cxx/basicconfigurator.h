@@ -35,7 +35,7 @@ namespace log4cxx
 	PropertyConfigurator. For XML based configuration see
 	DOMConfigurator.
 	*/
-	class BasicConfigurator
+	class LOG4CXX_EXPORT BasicConfigurator
 	{
 	protected:
 		BasicConfigurator() {}

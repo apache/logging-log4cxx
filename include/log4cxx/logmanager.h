@@ -39,7 +39,7 @@ namespace log4cxx
 	* LoggerRepository}. When the <code>LogManager</code> class is loaded
     * into memory the default initialization procedure is inititated.
 	*/
-    class LogManager
+    class LOG4CXX_EXPORT LogManager
     {
     private:
         static void * guard;

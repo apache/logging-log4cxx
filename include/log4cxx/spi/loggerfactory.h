@@ -32,7 +32,7 @@ namespace log4cxx
 		Implement this interface to create new instances of Logger or
 		a sub-class of Logger.
 		*/
-		class LoggerFactory : public virtual helpers::Object
+		class LOG4CXX_EXPORT LoggerFactory : public virtual helpers::Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerFactory)

@@ -18,6 +18,7 @@
 #define _LOG4CXX_PATTERN_LAYOUT_H
 
 #include <log4cxx/layout.h>
+#include <log4cxx/helpers/patternconverter.h>
 
 namespace log4cxx
 {
@@ -375,7 +376,7 @@ namespace log4cxx
 	Philip E. Margolis' highly recommended book "C -- a Software
 	Engineering Approach", ISBN 0-387-97389-3.
 	*/
-	class PatternLayout : public Layout
+	class LOG4CXX_EXPORT PatternLayout : public Layout
 	{
 	public:
 		/** Default pattern string for log output. Currently set to the

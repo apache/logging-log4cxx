@@ -32,7 +32,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class MsXMLDOMNode : 
+		class LOG4CXX_EXPORT MsXMLDOMNode : 
 			virtual public XMLDOMNode,
 			virtual public ObjectImpl
 		{
@@ -54,7 +54,7 @@ namespace log4cxx
 			MSXML::IXMLDOMNodePtr node;
 		};
 
-		class MsXMLDOMDocument : 
+		class LOG4CXX_EXPORT MsXMLDOMDocument : 
 			virtual public XMLDOMDocument,
 			virtual public ObjectImpl
 		{
@@ -67,6 +67,7 @@ namespace log4cxx
 
 			MsXMLDOMDocument();
 			MsXMLDOMDocument(MSXML::IXMLDOMDocumentPtr document);
+			~MsXMLDOMDocument();
 
 			virtual XMLDOMNodeListPtr getChildNodes();
 			virtual XMLDOMNodeType getNodeType()
@@ -80,7 +81,7 @@ namespace log4cxx
 			MSXML::IXMLDOMDocumentPtr document;
 		};
 
-		class MsXMLDOMElement : 
+		class LOG4CXX_EXPORT MsXMLDOMElement : 
 			virtual public XMLDOMElement,
 			virtual public ObjectImpl
 		{
@@ -104,7 +105,7 @@ namespace log4cxx
 			MSXML::IXMLDOMElementPtr element;
 		};
 
-		class MsXMLDOMNodeList : 
+		class LOG4CXX_EXPORT MsXMLDOMNodeList : 
 			virtual public XMLDOMNodeList,
 			virtual public ObjectImpl
 		{

@@ -37,7 +37,7 @@ namespace log4cxx
 		standard error output. All internal messages are prepended with
 		the string "log4cxx: ".
 		*/
-		class LogLog
+		class LOG4CXX_EXPORT LogLog
 		{
 		public:
 			/**

@@ -29,7 +29,7 @@ namespace log4cxx
 		This abstract layout takes care of all the date related options and
 		formatting work.
 		*/
- 		class DateLayout : public Layout
+ 		class LOG4CXX_EXPORT DateLayout : public Layout
 		{
 		public:
 			/**

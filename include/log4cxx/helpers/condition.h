@@ -30,13 +30,13 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class ConditionException : public Exception
+		class LOG4CXX_EXPORT ConditionException : public Exception
 		{
 		public:
 			virtual String getMessage() { return String();}
 		};
 
-		class Condition
+		class LOG4CXX_EXPORT Condition
 		{
 		public:
 			Condition();

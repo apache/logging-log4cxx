@@ -24,7 +24,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class ServerSocket
+		class LOG4CXX_EXPORT ServerSocket
 		{
 		public:
 			/**  Creates a server socket on a specified port.

@@ -34,7 +34,7 @@ namespace log4cxx
 		/**
 		Implemented by classes capable of configuring log4j using a URL.
 		*/
-		class Configurator : virtual public helpers::Object
+		class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(Configurator)

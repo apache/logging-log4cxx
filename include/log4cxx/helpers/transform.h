@@ -26,7 +26,7 @@ namespace log4cxx
 		/**
 		Utility class for transforming strings.
 		*/
-		class Transform
+		class LOG4CXX_EXPORT Transform
 		{
 		private:
 			static String CDATA_START;

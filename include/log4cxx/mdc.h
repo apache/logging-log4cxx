@@ -39,7 +39,7 @@ namespace log4cxx
 	will always return empty values but otherwise will not affect or
 	harm your application.
 	*/
-	class MDC
+	class LOG4CXX_EXPORT MDC
 	{
 	public:
 		/** String to string stl mp

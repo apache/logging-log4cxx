@@ -38,11 +38,11 @@ namespace log4cxx
 		class XMLDOMNodeList;
 		typedef helpers::ObjectPtrT<XMLDOMNodeList> XMLDOMNodeListPtr;
 
-		class DOMException : public RuntimeException
+		class LOG4CXX_EXPORT DOMException : public RuntimeException
 		{
 		};
 
-		class XMLDOMNode : virtual public Object
+		class LOG4CXX_EXPORT XMLDOMNode : virtual public Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMNode)
@@ -58,7 +58,7 @@ namespace log4cxx
 			virtual XMLDOMDocumentPtr getOwnerDocument() = 0;
 		};
 
-		class XMLDOMDocument : virtual public XMLDOMNode
+		class LOG4CXX_EXPORT XMLDOMDocument : virtual public XMLDOMNode
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMDocument)
@@ -67,7 +67,7 @@ namespace log4cxx
 			virtual XMLDOMElementPtr getElementById(const String& tagName, const String& elementId) = 0;
 		};
 
-		class XMLDOMElement : virtual public XMLDOMNode
+		class LOG4CXX_EXPORT XMLDOMElement : virtual public XMLDOMNode
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMElement)
@@ -75,7 +75,7 @@ namespace log4cxx
 			virtual String getAttribute(const String& name) = 0;
 		};
 
-		class XMLDOMNodeList : virtual public Object
+		class LOG4CXX_EXPORT XMLDOMNodeList : virtual public Object
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMNodeList)

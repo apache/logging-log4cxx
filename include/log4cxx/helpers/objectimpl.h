@@ -34,7 +34,7 @@ namespace log4cxx
 	namespace helpers
 	{
 		/** Implementation class for Object.*/
-		class ObjectImpl : public virtual Object
+		class LOG4CXX_EXPORT ObjectImpl : public virtual Object
 		{
 		public:
 			ObjectImpl();

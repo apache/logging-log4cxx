@@ -24,6 +24,7 @@
 #include <log4cxx/provisionnode.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/criticalsection.h>
+#include <log4cxx/spi/hierarchyeventlistener.h>
 
 namespace log4cxx
 {
@@ -53,7 +54,7 @@ namespace log4cxx
 	to the provision node. Other descendants of the same ancestor add
 	themselves to the previously created provision node.
 	*/
-	class Hierarchy :
+	class LOG4CXX_EXPORT Hierarchy :
 		public virtual spi::LoggerRepository,
 		public virtual helpers::ObjectImpl
 	{
@@ -96,7 +97,7 @@ namespace log4cxx
         ~Hierarchy();
 		
 	public:
-		void addHierarchyEventListener(spi::HierarchyEventListenerPtr listener);
+		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
 		
 		/**
 		This call will clear all logger definitions from the internal

@@ -27,13 +27,13 @@ namespace log4cxx
 		class Object;
 		typedef ObjectPtrT<Object> ObjectPtr;
 
-		class InstantiationException : public Exception
+		class LOG4CXX_EXPORT InstantiationException : public Exception
 		{
 		public:
 			String getMessage() { return _T("Abstract class"); }
 		};
 
-		class ClassNotFoundException : public Exception
+		class LOG4CXX_EXPORT ClassNotFoundException : public Exception
 		{
 		public:
 			ClassNotFoundException(const String& className);
@@ -42,7 +42,7 @@ namespace log4cxx
 			String message;
 		};
 
-		class Class
+		class LOG4CXX_EXPORT Class
 		{
 		public:
 			Class(const String& name);

@@ -17,6 +17,8 @@
 #ifndef _LOG4CXX_HELPER_FORMATTING_INFO_H
 #define _LOG4CXX_HELPER_FORMATTING_INFO_H
 
+#include <log4cxx/config.h>
+
 namespace log4cxx
 {
 	namespace helpers
@@ -25,7 +27,7 @@ namespace log4cxx
 		FormattingInfo instances contain the information obtained when parsing
 		formatting modifiers in conversion modifiers.
 		*/
-		class FormattingInfo 
+		class LOG4CXX_EXPORT FormattingInfo 
 		{
 		public:
 

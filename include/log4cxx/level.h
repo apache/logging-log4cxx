@@ -38,10 +38,10 @@ namespace log4cxx
 	<p>The <code>Level</code> class may be subclassed to define a larger
 	level set.
 	*/
-	class Level : public helpers::ObjectImpl
+	class LOG4CXX_EXPORT Level : public helpers::ObjectImpl
 	{
 	public:
-		class LevelClass : public helpers::Class
+		class LOG4CXX_EXPORT LevelClass : public helpers::Class
 		{
 		protected:
 			LevelClass(const String& className) : helpers::Class(className) {}

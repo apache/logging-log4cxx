@@ -31,7 +31,7 @@ namespace log4cxx
 		class SocketOutputStream;
 		typedef ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
 		
-		class SocketOutputStream : public ObjectImpl
+		class LOG4CXX_EXPORT SocketOutputStream : public ObjectImpl
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketOutputStream)

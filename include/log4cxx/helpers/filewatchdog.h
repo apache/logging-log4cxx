@@ -30,7 +30,7 @@ namespace log4cxx
 		Check every now and then that a certain file has not changed. If it
 		has, then call the #doOnChange method.
 		*/
-		class FileWatchdog : public Thread
+		class LOG4CXX_EXPORT FileWatchdog : public Thread
 		{
 		public:
 			/**

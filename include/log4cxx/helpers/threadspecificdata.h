@@ -22,7 +22,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class ThreadSpecificData
+		class LOG4CXX_EXPORT ThreadSpecificData
 		{
 		public:
 			ThreadSpecificData();

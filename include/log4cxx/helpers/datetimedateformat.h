@@ -27,7 +27,7 @@ namespace log4cxx
 		Formats a date in the format <b>\%d-\%m-\%Y \%H:\%M:\%S,\%Q</b> for example,
 	   "06 Nov 1994 15:49:37,459".
 		*/
-		class DateTimeDateFormat : public DateFormat
+		class LOG4CXX_EXPORT DateTimeDateFormat : public DateFormat
 		{
 		public:
 			DateTimeDateFormat(const String& timeZone = _T(""))

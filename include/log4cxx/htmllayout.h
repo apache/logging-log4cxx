@@ -27,7 +27,7 @@ namespace log4cxx
 	/**
 	This layout outputs events in a HTML table.
 	*/
-	class HTMLLayout : public Layout
+	class LOG4CXX_EXPORT HTMLLayout : public Layout
 	{
 	protected:
 		static String TRACE_PREFIX;

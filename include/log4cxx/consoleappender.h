@@ -29,7 +29,7 @@ namespace log4cxx
 	* <code>stderr</code> using a layout specified by the user. The
 	* default target is <code>stdout</code>.
 	*/
-	class ConsoleAppender : public WriterAppender
+	class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
 	{
 	public:
 		DECLARE_LOG4CXX_OBJECT(ConsoleAppender)

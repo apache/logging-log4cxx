@@ -38,7 +38,7 @@ namespace log4cxx
         /**
          * This Interface is for attaching Appenders to objects.
          */
-        class AppenderAttachable : public virtual helpers::Object
+        class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
         {
         public:
           // Methods

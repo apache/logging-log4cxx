@@ -36,7 +36,7 @@ namespace log4cxx
 {
 	namespace db
 	{
-		class SQLException : public helpers::Exception
+		class LOG4CXX_EXPORT SQLException : public helpers::Exception
 		{
 		public:
 			SQLException(int code) : code(code) {}
@@ -94,7 +94,7 @@ namespace log4cxx
 		</ul>
 		*/
 
-		class ODBCAppender : public AppenderSkeleton
+		class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		{
 		protected:
 			/**

@@ -32,7 +32,7 @@ namespace log4cxx
 		/**
 		 * Appends log events to NT EventLog. 
 		 */
-		class NTEventLogAppender : public AppenderSkeleton
+		class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		{
 		public:
 		DECLARE_LOG4CXX_OBJECT(NTEventLogAppender)

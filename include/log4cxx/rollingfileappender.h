@@ -26,7 +26,7 @@ namespace log4cxx
 	RollingFileAppender extends FileAppender to backup the log files when
 	they reach a certain size.
 	*/
-	class RollingFileAppender : public FileAppender
+	class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 	{
 	protected:
 		/**

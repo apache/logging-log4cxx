@@ -43,7 +43,7 @@ namespace log4cxx
 	<p>It is this class that parses conversion patterns and creates
 	a chained list of {@link helpers::OptionConverter OptionConverters}.
 	*/
-		class PatternParser
+		class LOG4CXX_EXPORT PatternParser
 		{
 		protected:
 			int state;
@@ -82,7 +82,7 @@ namespace log4cxx
 		//                      PatternConverters
 		// ---------------------------------------------------------------------
 		private:
-			class BasicPatternConverter : public PatternConverter
+			class LOG4CXX_EXPORT BasicPatternConverter : public PatternConverter
 			{
 			private:
 				int type;
@@ -91,7 +91,7 @@ namespace log4cxx
 				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
-			class LiteralPatternConverter : public PatternConverter
+			class LOG4CXX_EXPORT LiteralPatternConverter : public PatternConverter
 			{
 			private:
 				String literal;
@@ -102,7 +102,7 @@ namespace log4cxx
 				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
-			class DatePatternConverter : public PatternConverter
+			class LOG4CXX_EXPORT DatePatternConverter : public PatternConverter
 			{
 			private:
 				DateFormat * df;
@@ -115,7 +115,7 @@ namespace log4cxx
 				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
-			class MDCPatternConverter : public PatternConverter
+			class LOG4CXX_EXPORT MDCPatternConverter : public PatternConverter
 			{
 			private:
 				String key;
@@ -125,7 +125,7 @@ namespace log4cxx
 				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
-			class LocationPatternConverter : public PatternConverter
+			class LOG4CXX_EXPORT LocationPatternConverter : public PatternConverter
 			{
 			private:
 				int type;
@@ -135,7 +135,7 @@ namespace log4cxx
 				virtual void convert(ostream& sbuf, const spi::LoggingEventPtr& event);
 			};
 
-			class CategoryPatternConverter : public PatternConverter
+			class LOG4CXX_EXPORT CategoryPatternConverter : public PatternConverter
 			{
 			private:
 				int precision;

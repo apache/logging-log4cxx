@@ -101,7 +101,7 @@ namespace log4cxx
         </ul>
         */
         
-      	class XMLSocketAppender : public AppenderSkeleton
+      	class LOG4CXX_EXPORT XMLSocketAppender : public AppenderSkeleton
     	{
 		class Connector;
 		friend class Connector;
@@ -266,7 +266,7 @@ namespace log4cxx
 			restart to try reconnect to the server when previpously open
 			connection is droppped.
 			*/
-			class Connector : public helpers::Thread
+			class LOG4CXX_EXPORT Connector : public helpers::Thread
 			{
 			public:
 				bool interrupted;

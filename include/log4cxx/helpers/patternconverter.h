@@ -44,7 +44,7 @@ namespace log4cxx
 		individual PatternConverters. Each of which is responsible for
 		converting a logging event in a converter specific manner.
 		*/
-		class PatternConverter : public ObjectImpl
+		class LOG4CXX_EXPORT PatternConverter : public ObjectImpl
 		{
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(PatternConverter)

@@ -19,6 +19,8 @@
 
 #include <log4cxx/helpers/tchar.h>
 #include <log4cxx/helpers/socketimpl.h>
+#include <log4cxx/helpers/socketinputstream.h>
+#include <log4cxx/helpers/socketoutputstream.h>
 
 namespace log4cxx
 {
@@ -43,7 +45,7 @@ namespace log4cxx
 		implementation, can configure itself to create sockets appropriate to the 
 		local firewall.
 		*/
-		class Socket : public helpers::ObjectImpl
+		class LOG4CXX_EXPORT Socket : public helpers::ObjectImpl
 		{
 		friend class ServerSocket;
 		protected:

@@ -24,7 +24,7 @@
  {
  	namespace helpers
 	{
-		class System
+		class LOG4CXX_EXPORT System
 		{
 		public:
 		/** Returns the current time in milliseconds since midnight (0 hour),

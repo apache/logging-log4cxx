@@ -58,7 +58,7 @@ servlet.
 <td>5875</td>
 </table>
 */
-        class TelnetAppender : public AppenderSkeleton
+        class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		{
 		class SocketHandler;
 		friend class SocketHandler;
@@ -120,7 +120,7 @@ servlet.
 			/** The SocketHandler class is used to accept connections from
 			clients.  It is threaded so that clients can connect/disconnect
 			asynchronously. */
-			class SocketHandler : public helpers::Thread
+			class LOG4CXX_EXPORT SocketHandler : public helpers::Thread
 			{
 			private:
 				bool done;

@@ -34,7 +34,7 @@ namespace log4cxx
 	*  has been deprecated and then removed. See the replacement
 	*  solutions: WriterAppender and ConsoleAppender.
 	*/
- 	class FileAppender : public WriterAppender
+ 	class LOG4CXX_EXPORT FileAppender : public WriterAppender
 	{
 	protected:
 		/** Append to or truncate the file? The default value for this

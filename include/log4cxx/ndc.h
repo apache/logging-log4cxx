@@ -93,7 +93,7 @@ namespace log4cxx
 	#clonestack method and pass the reference to any other
 	thread, in particular to a child.
 	*/
-	class NDC
+	class LOG4CXX_EXPORT NDC
 	{
 	private:
 		class DiagnosticContext

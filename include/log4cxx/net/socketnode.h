@@ -48,7 +48,7 @@ namespace log4cxx
         <p>For example, the socket node might decide to log events to a
         local file and also resent them to a second socket node.
         */
-        class SocketNode :
+        class LOG4CXX_EXPORT SocketNode :
 			public virtual helpers::Runnable,
 				public virtual helpers::ObjectImpl
 		{

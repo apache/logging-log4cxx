@@ -27,7 +27,7 @@ namespace log4cxx
 {
 	namespace helpers
 	{
-		class Properties
+		class LOG4CXX_EXPORT Properties
 		{
 		private:
 			std::map<String, String> properties;
