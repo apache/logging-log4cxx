@@ -38,7 +38,7 @@ namespace log4cxx
         }
 
         /** Explode time to human readable form. */
-        apr_status_t explode( apr_time_exp_t * result, apr_time_t input ) const
+        log4cxx_status_t explode( apr_time_exp_t * result, log4cxx_time_t input ) const
         {
           return apr_time_exp_gmt( result, input );
         }
@@ -63,7 +63,7 @@ namespace log4cxx
         }
 
         /** Explode time to human readable form. */
-        apr_status_t explode( apr_time_exp_t * result, apr_time_t input ) const
+        log4cxx_status_t explode( apr_time_exp_t * result, log4cxx_time_t input ) const
         {
           return apr_time_exp_lt( result, input );
         }
@@ -101,7 +101,7 @@ namespace log4cxx
         }
 
         /** Explode time to human readable form. */
-        apr_status_t explode( apr_time_exp_t * result, apr_time_t input ) const
+        log4cxx_status_t explode( apr_time_exp_t * result, log4cxx_time_t input ) const
         {
           return apr_time_exp_tz( result, input, offset );
         }

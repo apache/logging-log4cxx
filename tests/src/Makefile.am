@@ -1,16 +1,15 @@
-SUBDIRS = customlogger defaultinit helpers net pattern util varia xml
+SUBDIRS = customlogger defaultinit helpers net pattern util varia db xml nt
 
 EXTRA_DIST = $(top_srcdir)/tests/src/*.cpp
 noinst_HEADERS= $(top_srcdir)/tests/src/*.h
 
 if TESTS
 
-INCLUDES = -I$(top_srcdir)/include -I/usr/local/apr/include
+INCLUDES = -I$(top_srcdir)/include
 noinst_PROGRAMS = testsuite shortsocketserver
 
 testsuite_SOURCES = \
         asyncappendertestcase.cpp\
-        drfatestcase.cpp\
         filetestcase.cpp \
         hierarchythresholdtestcase.cpp\
         l7dtestcase.cpp\
@@ -21,7 +20,6 @@ testsuite_SOURCES = \
         vectorappender.cpp\
         appenderskeletontestcase.cpp\
         consoleappendertestcase.cpp\
-        dailyrollingfileappendertestcase.cpp\
         fileappendertestcase.cpp\
         rollingfileappendertestcase.cpp\
         writerappendertestcase.cpp
@@ -39,8 +37,8 @@ testsuite_LDFLAGS = \
         -Wl,--whole-archive,util/libutil.a,--no-whole-archive\
         -Wl,--whole-archive,varia/libvaria.a,--no-whole-archive\
         -Wl,--whole-archive,xml/libxml.a,--no-whole-archive\
-        -Wl,--whole-archive,xml/libdb.a,--no-whole-archive\
-        -Wl,--whole-archive,xml/libnt.a,--no-whole-archive\
+        -Wl,--whole-archive,db/libdb.a,--no-whole-archive\
+        -Wl,--whole-archive,nt/libnt.a,--no-whole-archive\
         @LIBS_CPPUNIT@ -lboost_regex
 
 AM_CPPFLAGS = @CPPFLAGS_CPPUNIT@

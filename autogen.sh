@@ -5,7 +5,7 @@ libtoolize --force --automake
 
 rm -f config.cache
 rm -f config.log
-aclocal
+aclocal -I .
 autoheader
 autoconf
 automake -a

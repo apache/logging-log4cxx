@@ -1,6 +1,6 @@
 lib_LTLIBRARIES = liblog4cxx.la
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I/usr/local/apr/include/apr-1
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
 
 liblog4cxx_la_SOURCES = \
         appenderattachableimpl.cpp \
@@ -67,6 +67,7 @@ liblog4cxx_la_SOURCES = \
         smtpappender.cpp \
         socket.cpp \
         socketappender.cpp \
+	socketappenderskeleton.cpp \
         sockethubappender.cpp \
         socketimpl.cpp \
         socketinputstream.cpp \
@@ -92,5 +93,5 @@ liblog4cxx_la_SOURCES = \
         xmlsocketappender.cpp
 
 AM_CPPFLAGS = @CPPFLAGS_XML@ @CPPFLAGS_ODBC@
-liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_XML@ @LIBS_ODBC@ -L/usr/local/apr/lib -static -lapr-1 -lapriconv
+liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_XML@ @LIBS_ODBC@ -@APR_LIBS@
 

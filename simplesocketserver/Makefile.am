@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include -I/usr/local/apr/include/apr-1
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
 
 AM_CPPFLAGS = @CPPFLAGS_XML@ @CPPFLAGS_ODBC@
 

@@ -85,7 +85,7 @@ size_t File::length() const {
 }
 
 
-apr_time_t File::lastModified() const {
+log4cxx_time_t File::lastModified() const {
   Pool pool;
   apr_finfo_t finfo;
   apr_status_t rv = apr_stat(&finfo, mbcsName.c_str(),
@@ -147,7 +147,7 @@ LogString File::read(apr_pool_t* p) const {
 //   Current implementation is limited to MBCS files
 //
 //
-apr_status_t File::write(const LogString& src, apr_pool_t* p) const {
+log4cxx_status_t File::write(const LogString& src, apr_pool_t* p) const {
   LogString output;
   apr_file_t* f = NULL;
   apr_status_t rv = open(&f,

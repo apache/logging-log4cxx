@@ -12,12 +12,14 @@ libutil_a_SOURCES = \
 	absolutedateandtimefilter.cpp\
 	compare.cpp\
 	controlfilter.cpp\
+	filenamefilter.cpp \
 	filter.cpp\
 	iso8601filter.cpp\
 	linenumberfilter.cpp\
 	relativetimefilter.cpp\
 	threadfilter.cpp\
 	transformer.cpp\
+	xmlfilenamefilter.cpp \
 	xmllineattributefilter.cpp\
 	xmltimestampfilter.cpp \
 	xmlthreadfilter.cpp

@@ -42,7 +42,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 //     Called from LogManager::getRepositorySelector
 //       to initialize APR and set "start" time.
 //
-apr_time_t LoggingEvent::getStartTime() {
+log4cxx_time_t LoggingEvent::getStartTime() {
   log4cxx::helpers::APRInitializer::initialize();
   static apr_time_t startTime(apr_time_now());
   return startTime;
@@ -336,6 +336,7 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 		os->write(it->first);
 		os->write(it->second);
 	}
+> tests/src/nt/Makefile
 
 	// properties
 	int size = (properties != 0) ? (int)properties->size() : 0;
