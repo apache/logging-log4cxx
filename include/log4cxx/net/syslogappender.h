@@ -20,6 +20,9 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/syslogwriter.h>
 
+#ifndef HAVE_SYSLOG
+#endif
+
 namespace log4cxx
 {
 	namespace net
@@ -37,59 +40,12 @@ namespace log4cxx
 				LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
 			END_LOG4CXX_CAST_MAP()
 
-			typedef enum
-			{
-				/** Kernel messages */
-				LOG_KERN     = 0,
-				/** Random user-level messages */
-				LOG_USER     = 1<<3,
-				/** Mail system */
-				LOG_MAIL     = 2<<3,
-				/** System daemons */
-				LOG_DAEMON   = 3<<3,
-				/** security/authorization messages */
-				LOG_AUTH     = 4<<3,
-				/** messages generated internally by syslogd */
-				LOG_SYSLOG   = 5<<3,
 
-				/** line printer subsystem */
-				LOG_LPR      = 6<<3,
-				/** network news subsystem */
-				LOG_NEWS     = 7<<3,
-				/** UUCP subsystem */
-				LOG_UUCP     = 8<<3,
-				/** clock daemon */
-				LOG_CRON     = 9<<3,
-				/** security/authorization  messages (private) */
-				LOG_AUTHPRIV = 10<<3,
-				/** ftp daemon */
-				LOG_FTP      = 11<<3,
-
-				// other codes through 15 reserved for system use
-				/** reserved for local use */
-				LOG_LOCAL0 = 16<<3,
-				/** reserved for local use */
-				LOG_LOCAL1 = 17<<3,
-				/** reserved for local use */
-				LOG_LOCAL2 = 18<<3,
-				/** reserved for local use */
-				LOG_LOCAL3 = 19<<3,
-				/** reserved for local use */
-				LOG_LOCAL4 = 20<<3,
-				/** reserved for local use */
-				LOG_LOCAL5 = 21<<3,
-				/** reserved for local use */
-				LOG_LOCAL6 = 22<<3,
-				/** reserved for local use*/
-				LOG_LOCAL7 = 23<<3,
-
-				LOG_UNDEF = -1
-			} SyslogFacility;
 
 			SyslogAppender();
-			SyslogAppender(const LayoutPtr& layout, SyslogFacility syslogFacility);
+			SyslogAppender(const LayoutPtr& layout, int syslogFacility);
 			SyslogAppender(const LayoutPtr& layout,
-				const String& syslogHost, SyslogFacility syslogFacility);
+				const String& syslogHost, int syslogFacility);
 			~SyslogAppender();
 			/** Release any resources held by this SyslogAppender.*/
 			void close();
@@ -98,7 +54,7 @@ namespace log4cxx
 			Returns the specified syslog facility as a lower-case String,
 			e.g. "kern", "user", etc.
 			*/
-			static String getFacilityString(SyslogFacility syslogFacility);
+			static String getFacilityString(int syslogFacility);
 
 			/**
 			Returns the integer value corresponding to the named syslog
@@ -108,7 +64,7 @@ namespace log4cxx
 			LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7.
 			The matching is case-insensitive.
 			*/
-			static SyslogFacility getFacility(const String &facilityName);
+			static int getFacility(const String &facilityName);
 
 			void append(const spi::LoggingEventPtr& event);
 
@@ -173,12 +129,11 @@ namespace log4cxx
 		protected:
 			void initSyslogFacilityStr();
 
-			SyslogFacility syslogFacility; // Have LOG_USER as default
+			int syslogFacility; // Have LOG_USER as default
 			String facilityStr;
 			bool facilityPrinting;
 			helpers::SyslogWriter * sw;
 			String syslogHost;
-
 		}; // class SyslogAppender
     } // namespace net
 }; // namespace log4cxx
