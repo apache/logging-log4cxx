@@ -34,8 +34,9 @@ DateFormat::DateFormat(const String& dateFormat)
 	size_t pos = this->dateFormat.find(_T("%Q"));
 	if (pos != String::npos)
 	{
-		this->dateFormat = this->dateFormat.substr(0, pos) +
-			_T("%") + this->dateFormat.substr(pos);
+		this->dateFormat = this->dateFormat.substr(0, pos);
+		this->dateFormat +=_T("%");
+		this->dateFormat += this->dateFormat.substr(pos);
 	}
 }
 
@@ -45,8 +46,9 @@ DateFormat::DateFormat(const String& dateFormat, const TimeZonePtr& timeZone)
 	size_t pos = this->dateFormat.find(_T("%Q"));
 	if (pos != String::npos)
 	{
-		this->dateFormat = this->dateFormat.substr(0, pos) +
-			_T("%") + this->dateFormat.substr(pos);
+		this->dateFormat = this->dateFormat.substr(0, pos);
+		this->dateFormat += _T("%");
+		this->dateFormat += this->dateFormat.substr(pos);
 	}
 }
 

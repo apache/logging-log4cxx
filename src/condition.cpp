@@ -69,7 +69,7 @@ void Condition::signal()
 	// updated by another thread.
 
 	// if (waiters != 0) (atomic comparison)
-#	if _MSC_VER == 1200	// MSDEV 6
+#	if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	if ((long)InterlockedCompareExchange((void**)&waiters, 0, 0) != 0)
 #	else
 	if ((long)InterlockedCompareExchange(&waiters, 0, 0) != 0)
@@ -86,7 +86,7 @@ void Condition::wait(Mutex& mutex)
 	::pthread_cond_wait(&condition, &mutex.mutex);
 #elif defined(HAVE_MS_THREAD)
 
-#if _MSC_VER == 1200	// MSDEV 6
+#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	::InterlockedIncrement((long *)&waiters);
 #else
 	::InterlockedIncrement(&waiters);
@@ -98,7 +98,7 @@ void Condition::wait(Mutex& mutex)
 		throw ConditionException();
 	}
 
-#if _MSC_VER == 1200	// MSDEV 6
+#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	long oldWaiters = ::InterlockedDecrement((long*)&waiters);
 #else
 	long oldWaiters = ::InterlockedDecrement(&waiters);

@@ -16,6 +16,7 @@
  
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <algorithm>
 #include <ctype.h>

@@ -113,7 +113,7 @@ void NTEventLogAppender::close()
 
 	if (pCurrentUserSID != NULL)
 	{
-		CCtUserSIDHelper::FreeSid(pCurrentUserSID);
+		CCtUserSIDHelper::FreeSid((::SID*) pCurrentUserSID);
 		pCurrentUserSID = NULL;
 	}
 }
@@ -154,7 +154,7 @@ void NTEventLogAppender::activateOptions()
 	close();
 
 	// current user security identifier
-	CCtUserSIDHelper::GetCurrentUserSID(&pCurrentUserSID);
+	CCtUserSIDHelper::GetCurrentUserSID((::SID**) &pCurrentUserSID);
 
 	addRegistryInfo();
 
@@ -192,10 +192,10 @@ void NTEventLogAppender::append(const LoggingEventPtr& event)
 	}
 }
 
-HKEY NTEventLogAppender::regGetKey(const String& subkey, DWORD *disposition)
+NTEventLogAppender::HKEY NTEventLogAppender::regGetKey(const String& subkey, DWORD *disposition)
 {
-	HKEY hkey = 0;
-	RegCreateKeyEx(HKEY_LOCAL_MACHINE, subkey.c_str(), 0, NULL, 
+	::HKEY hkey = 0;
+	RegCreateKeyEx((::HKEY) HKEY_LOCAL_MACHINE, subkey.c_str(), 0, NULL, 
 		REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL, 
 		&hkey, disposition);
 	return hkey;
@@ -203,12 +203,12 @@ HKEY NTEventLogAppender::regGetKey(const String& subkey, DWORD *disposition)
 
 void NTEventLogAppender::regSetString(HKEY hkey, const String& name, const String& value)
 {
-	RegSetValueEx(hkey, name.c_str(), 0, REG_SZ, (LPBYTE)value.c_str(), value.length()*sizeof(wchar_t));
+	RegSetValueEx((::HKEY) hkey, name.c_str(), 0, REG_SZ, (LPBYTE)value.c_str(), value.length()*sizeof(wchar_t));
 }
 
 void NTEventLogAppender::regSetDword(HKEY hkey, const String& name, DWORD value)
 {
-	RegSetValueEx(hkey, name.c_str(), 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
+	RegSetValueEx((::HKEY) hkey, name.c_str(), 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
 }
 
 /*
@@ -217,11 +217,11 @@ void NTEventLogAppender::regSetDword(HKEY hkey, const String& name, DWORD value)
 void NTEventLogAppender::addRegistryInfo()
 {
 	DWORD disposition;
-	HKEY hkey = 0;
+	::HKEY hkey = 0;
 	String subkey = _T("SYSTEM\\CurrentControlSet\\Services\\EventLog\\")
 		+ log + _T("\\") + source;
 	
-	hkey = regGetKey(subkey, &disposition);
+	hkey = (::HKEY) regGetKey(subkey, &disposition);
 	if (disposition == REG_CREATED_NEW_KEY)
 	{
 		regSetString(hkey, _T("EventMessageFile"), _T("NTEventLogAppender.dll"));

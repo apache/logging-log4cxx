@@ -19,11 +19,6 @@
 
 #include <log4cxx/appenderskeleton.h>
 
-typedef void * HANDLE;
-struct HKEY__; 
-struct _SID;
-typedef struct HKEY__ *HKEY;
-typedef struct _SID SID;
 
 namespace log4cxx
 {
@@ -77,10 +72,18 @@ namespace log4cxx
 				{ return server; }
 
 		protected:
+			//
+			//   these typedef are proxies for the real Win32 definitions
+			//     and need to be cast to the global definitions before
+			//     use with a Win32 API call
+			typedef void* HKEY;
+			typedef void SID;
+			typedef void* HANDLE;
+
 			virtual void append(const spi::LoggingEventPtr& event);
-			HKEY regGetKey(const String& subkey, unsigned long *disposition);
-			void regSetString(HKEY hkey, const String& name, const String& value);
-			void regSetDword(HKEY hkey, const String& name, unsigned long value);
+			static HKEY regGetKey(const String& subkey, unsigned long *disposition);
+			static void regSetString(HKEY hkey, const String& name, const String& value);
+			static void regSetDword(HKEY hkey, const String& name, unsigned long value);
 			unsigned short getEventType(const spi::LoggingEventPtr& event);
 			unsigned short getEventCategory(const spi::LoggingEventPtr& event);
 			/*

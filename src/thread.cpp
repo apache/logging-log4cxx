@@ -205,7 +205,7 @@ long Thread::InterlockedIncrement(volatile long * val)
 	sparc_atomic_add_32(val, 1);
 	return *val;
 #elif defined(HAVE_MS_THREAD)
-#if _MSC_VER == 1200	// MSDEV 6
+#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	return ::InterlockedIncrement((long *)val);
 #else
 	return ::InterlockedIncrement(val);
@@ -231,7 +231,7 @@ long Thread::InterlockedDecrement(volatile long * val)
 	sparc_atomic_add_32(val, -1);
 	return *val;
 #elif defined(HAVE_MS_THREAD)
-#if _MSC_VER == 1200	// MSDEV 6
+#if LOG4CXX_HAVE_OLD_WIN32_INTERLOCKS	// MSDEV 6
 	return ::InterlockedDecrement((long *)val);
 #else
 	return ::InterlockedDecrement(val);

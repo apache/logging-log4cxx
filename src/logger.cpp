@@ -193,6 +193,7 @@ const LevelPtr& Logger::getEffectiveLevel() const
 	}
 
 	throw RuntimeException(_T("level is null for logger") + name);
+	return this->level;
 }
 
 LoggerRepositoryPtr Logger::getLoggerRepository() const
