@@ -35,21 +35,21 @@ namespace log4cxx
 		typedef helpers::ObjectPtrT<XMLSocketAppender> XMLSocketAppenderPtr;
 
         /**
-        Sends {@link spi::LoggingEvent LoggingEvent} objects to a remote a log server,
-        usually a {@link net::SocketNode SocketNode}.
+        Sends {@link spi::LoggingEvent LoggingEvent} objects in XML format
+		to a remote a log server, usually a XMLSocketNode.
 
-        <p>The SocketAppender has the following properties:
+        <p>The XMLSocketAppender has the following properties:
 
         <ul>
 
-        <p><li>If sent to a {@link net::SocketNode SocketNode}, remote logging
+        <p><li>If sent to a XMLSocketNode, remote logging
 		is non-intrusive as far as the log event is concerned. In other
         words, the event will be logged with the same time stamp, {@link
         NDC NDC}, location info as if it were logged locally by
         the client.
 
-        <p><li>SocketAppenders do not use a layout. They ship a
-        serialized {@link spi::LoggingEvent LoggingEvent} object
+        <p><li>XMLSocketAppenders use exclusively an XMLLayout. They ship an
+        XML stream representing a {@link spi::LoggingEvent LoggingEvent} object
 		to the server side.
 
         <p><li>Remote logging uses the TCP protocol. Consequently, if
@@ -75,26 +75,25 @@ namespace log4cxx
         is down, the client will not be blocked when making log requests
         but the log events will be lost due to server unavailability.
 
-        <p><li>Even if a <code>SocketAppender</code> is no longer
-        attached to any category, it will not be garbage collected in
+        <p><li>Even if an <code>XMLSocketAppender</code> is no longer
+        attached to any logger, it will not be destroyed in
         the presence of a connector thread. A connector thread exists
         only if the connection to the server is down. To avoid this
-        garbage collection problem, you should #close the the
-        <code>SocketAppender</code> explicitly. See also next item.
+        destruction problem, you should #close the the
+        <code>XMLSocketAppender</code> explicitly. See also next item.
 
         <p>Long lived applications which create/destroy many
-        <code>SocketAppender</code> instances should be aware of this
-        garbage collection problem. Most other applications can safely
+        <code>XMLSocketAppender</code> instances should be aware of this
+        destruction problem. Most other applications can safely
         ignore it.
 
-        <p><li>If the JVM hosting the <code>SocketAppender</code> exits
-        before the <code>SocketAppender</code> is closed either
-        explicitly or subsequent to garbage collection, then there might
-        be untransmitted data in the pipe which might be lost. This is a
-        common problem on Windows based systems.
+        <p><li>If the application hosting the <code>XMLSocketAppender</code>
+		exits before the <code>XMLSocketAppender</code> is closed either
+        explicitly or subsequent to destruction, then there might
+        be untransmitted data in the pipe which might be lost.
 
         <p>To avoid lost data, it is usually sufficient to 
-        #close the <code>SocketAppender</code> either explicitly or by
+        #close the <code>XMLSocketAppender</code> either explicitly or by
         calling the LogManager#shutdown method
         before exiting the application.
 
@@ -189,7 +188,7 @@ namespace log4cxx
     		virtual void append(const spi::LoggingEvent& event);
 
     		/**
-    		* The SocketAppender does not use a layout. Hence, this method
+    		* The XMLSocketAppender use an internal XMLLayout. Hence, this method
     		* returns <code>false</code>.
     		* */
     		bool requiresLayout()
@@ -197,8 +196,8 @@ namespace log4cxx
 
     		/**
     		* The <b>RemoteHost</b> option takes a string value which should be
-    		* the host name of the server where a 
-			* {@link net::SocketNode SocketNode} is running.
+    		* the host name of the server where an
+			* XMLSocketNode is running.
     		* */
     		inline void setRemoteHost(const tstring& host)
     			{ address = helpers::InetAddress::getByName(host);

@@ -76,22 +76,21 @@ namespace log4cxx
         but the log events will be lost due to server unavailability.
 
         <p><li>Even if a <code>SocketAppender</code> is no longer
-        attached to any category, it will not be garbage collected in
+        attached to any logger, it will not be destroyed in
         the presence of a connector thread. A connector thread exists
         only if the connection to the server is down. To avoid this
-        garbage collection problem, you should #close the the
+        destruction problem, you should #close the the
         <code>SocketAppender</code> explicitly. See also next item.
 
         <p>Long lived applications which create/destroy many
         <code>SocketAppender</code> instances should be aware of this
-        garbage collection problem. Most other applications can safely
+        destruction problem. Most other applications can safely
         ignore it.
 
-        <p><li>If the JVM hosting the <code>SocketAppender</code> exits
-        before the <code>SocketAppender</code> is closed either
-        explicitly or subsequent to garbage collection, then there might
-        be untransmitted data in the pipe which might be lost. This is a
-        common problem on Windows based systems.
+        <p><li>If the application hosting the <code>SocketAppender</code>
+		exits before the <code>SocketAppender</code> is closed either
+        explicitly or subsequent to destruction, then there might
+        be untransmitted data in the pipe which might be lost.
 
         <p>To avoid lost data, it is usually sufficient to 
         #close the <code>SocketAppender</code> either explicitly or by
