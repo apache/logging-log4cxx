@@ -67,10 +67,10 @@ void WriterAppender::activateOptions(Pool& p) {
 //         LogLog::error(((LogString) LOG4CXX_STR("Unrecognized encoding "))
 //             + encoding + LOG4CXX(" for appender [") + name + LOG4CXX_STR("]."));
        }
-#elif defined(LOG4CXX_LOGCHAR_IS_CHAR)
+#elif defined(LOG4CXX_LOGCHAR_IS_UTF8)
 #error not implemented
 #else
-#error either LOG4CXX_LOGCHAR_IS_WCHAR or LOG4CXX_LOGCHAR_IS_CHAR should be set
+#error either LOG4CXX_LOGCHAR_IS_WCHAR or LOG4CXX_LOGCHAR_IS_UTF8 should be set
 #endif
 
   }

@@ -147,11 +147,13 @@ void NDC::push(const std::string& message)
    pushLogString(msg);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void NDC::push(const std::wstring& message)
 {
    LOG4CXX_DECODE_WCHAR(msg, message);
    pushLogString(msg);
 }
+#endif
 
 void NDC::remove()
 {

@@ -34,7 +34,9 @@ class FileTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(propertyRead);
                 CPPUNIT_TEST(propertyExists);
                 CPPUNIT_TEST(fileWrite1);
+#if LOG4CXX_HAS_WCHAR_T
                 CPPUNIT_TEST(wcharConstructor);
+#endif
                 CPPUNIT_TEST(copyConstructor);
                 CPPUNIT_TEST(assignment);
         CPPUNIT_TEST_SUITE_END();
@@ -75,16 +77,17 @@ public:
         }
 
 
+#if LOG4CXX_HAS_WCHAR_T
         void wcharConstructor() {
             File propFile(L"input/patternLayout1.properties");
             Pool pool;
             bool exists = propFile.exists(pool);
             CPPUNIT_ASSERT_EQUAL(true, exists);
        }
-
+#endif
 
         void copyConstructor() {
-            File propFile(L"input/patternLayout1.properties");
+            File propFile("input/patternLayout1.properties");
             File copy(propFile);
             Pool pool;
             bool exists = copy.exists(pool);
@@ -92,7 +95,7 @@ public:
         }
 
         void assignment() {
-            File propFile(L"input/patternLayout1.properties");
+            File propFile("input/patternLayout1.properties");
             File copy = propFile;
             Pool pool;
             bool exists = copy.exists(pool);

@@ -97,7 +97,6 @@ namespace log4cxx
                   enum {
                       LITERAL_STATE = 0,
                       CONVERTER_STATE = 1,
-                      MINUS_STATE = 2,
                       DOT_STATE = 3,
                       MIN_STATE = 4,
                       MAX_STATE = 5 } state;
@@ -105,8 +104,8 @@ namespace log4cxx
                   static const InternalPatternConverterMap& getGlobalRulesRegistry();
 
                   LogString currentLiteral;
-                  int patternLength;
-                  int i;
+                  LogString::size_type patternLength;
+                  LogString::size_type i;
                   PatternConverterPtr head;
                   PatternConverterPtr tail;
                   FormattingInfo formattingInfo;
@@ -139,7 +138,7 @@ namespace log4cxx
 
                 private:
                         PatternConverterPtr createConverter(const LogString& converterId,
-                           const FormattingInfo& formattingInfo, 
+                           const FormattingInfo& formattingInfo,
                            const std::vector<LogString>& options) const;
 
                         void finalizeConverter(logchar c);

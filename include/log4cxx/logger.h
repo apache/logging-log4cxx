@@ -153,10 +153,11 @@ namespace log4cxx
         @param line the line where the log statement was written.
         */
         void debug(const std::string& msg, const log4cxx::spi::LocationInfo& location);
-        void debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void debug(const std::string& msg);
+#if LOG4CXX_HAS_WCHAR_T
+        void debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void debug(const std::wstring& msg);
-
+#endif
 
         /**
         Log a message string with the {@link Level#ERROR ERROR} level.
@@ -172,11 +173,12 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
-        void error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void error(const std::string& msg, const log4cxx::spi::LocationInfo& location);
-        void error(const std::wstring& msg);
         void error(const std::string& msg);
-
+#if LOG4CXX_HAS_WCHAR_T
+        void error(const std::wstring& msg);
+        void error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
+#endif
 
         /**
         Log a message string with the {@link Level#FATAL FATAL} level.
@@ -192,11 +194,12 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
-        void fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location);
-        void fatal(const std::wstring& msg);
         void fatal(const std::string& msg);
-
+#if LOG4CXX_HAS_WCHAR_T
+        void fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
+        void fatal(const std::wstring& msg);
+#endif
         /**
         This method creates a new logging event and logs the event
         without further checks.
@@ -206,13 +209,15 @@ namespace log4cxx
         */
         void forcedLog(const LevelPtr& level, const std::string& message,
                         const log4cxx::spi::LocationInfo& location);
+        void forcedLog(const LevelPtr& level, const std::string& message);
+
+#if LOG4CXX_HAS_WCHAR_T
         void forcedLog(const LevelPtr& level, const std::wstring& message,
                         const log4cxx::spi::LocationInfo& location);
 
 
-        void forcedLog(const LevelPtr& level, const std::string& message);
         void forcedLog(const LevelPtr& level, const std::wstring& message);
-
+#endif
 
         /**
         Get the additivity flag for this Logger instance.
@@ -256,8 +261,9 @@ namespace log4cxx
         inline const LogString& getName() const
                         { return name; }
         void getName(std::string& name) const;
+#if LOG4CXX_HAS_WCHAR_T
         void getName(std::wstring& name) const;
-
+#endif
 
         /**
         Returns the parent of this logger. Note that the parent of a
@@ -279,9 +285,11 @@ namespace log4cxx
         Retrieve a logger by name.
         */
         static LoggerPtr getLogger(const std::string& name);
-        static LoggerPtr getLogger(const std::wstring& name);
         static LoggerPtr getLogger(const char* const name);
+#if LOG4CXX_HAS_WCHAR_T
+        static LoggerPtr getLogger(const std::wstring& name);
         static LoggerPtr getLogger(const wchar_t* const name);
+#endif
 
         /**
         Retrieve the root logger.
@@ -343,9 +351,11 @@ namespace log4cxx
                 @param file the file where the log statement was written.
                 @param line the line where the log statement was written.
                 */
+#if LOG4CXX_HAS_WCHAR_T
        void info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
-       void info(const std::string& msg, const log4cxx::spi::LocationInfo& location);
        void info(const std::wstring& msg);
+#endif
+       void info(const std::string& msg, const log4cxx::spi::LocationInfo& location);
        void info(const std::string& msg);
 
         /**
@@ -451,9 +461,11 @@ namespace log4cxx
 
         @see #setResourceBundle
         */
+#if LOG4CXX_HAS_WCHAR_T
         void l7dlog(const LevelPtr& level, const std::wstring& key,
                                 const log4cxx::spi::LocationInfo& locationInfo,
                                 ...);
+#endif
         void l7dlog(const LevelPtr& level, const std::string& key,
                                 const log4cxx::spi::LocationInfo& locationInfo,
                                 ...);
@@ -466,11 +478,13 @@ namespace log4cxx
         @param message The message of the logging request.
         @param file The source file of the logging request, may be null.
         @param line The number line of the logging request.  */
+#if LOG4CXX_HAS_WCHAR_T
         void log(const LevelPtr& level, const std::wstring& message,
             const log4cxx::spi::LocationInfo& location);
+        void log(const LevelPtr& level, const std::wstring& message);
+#endif
         void log(const LevelPtr& level, const std::string& message,
             const log4cxx::spi::LocationInfo& location);
-        void log(const LevelPtr& level, const std::wstring& message);
         void log(const LevelPtr& level, const std::string& message);
 
 
@@ -538,9 +552,11 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
+#if LOG4CXX_HAS_WCHAR_T
         void warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
-        void warn(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void warn(const std::wstring& msg);
+#endif
+        void warn(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void warn(const std::string& msg);
 
 

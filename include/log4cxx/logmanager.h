@@ -79,8 +79,10 @@ namespace log4cxx
         static LoggerPtr getLogger(const std::string& name);
         static LoggerPtr getLogger(const char* const name);
 
+#if LOG4CXX_HAS_WCHAR_T
         static LoggerPtr getLogger(const std::wstring& name);
         static LoggerPtr getLogger(const wchar_t* const name);
+#endif
 
         /**
         Retrieve the appropriate Logger instance.
@@ -89,20 +91,21 @@ namespace log4cxx
                         const spi::LoggerFactoryPtr& factory);
 
         static LoggerPtr exists(const std::string& name);
+#if LOG4CXX_HAS_WCHAR_T
         static LoggerPtr exists(const std::wstring& name);
-
+#endif
         static LoggerList getCurrentLoggers();
 
         /**
-                Safely close and remove all appenders in all loggers including
-                the root logger.
-                */
-                static void shutdown();
+        Safely close and remove all appenders in all loggers including
+        the root logger.
+        */
+        static void shutdown();
 
-                /**
-                Reset all values contained in this current {@link
-                spi::LoggerRepository LoggerRepository}  to their default.
-                */
+        /**
+        Reset all values contained in this current {@link
+        spi::LoggerRepository LoggerRepository}  to their default.
+        */
         static void resetConfiguration();
     }; // class LogManager
 }  // namespace log4cxx

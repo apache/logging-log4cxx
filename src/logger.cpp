@@ -107,6 +107,7 @@ void Logger::forcedLog(const LevelPtr& level, const std::string& message,
         callAppenders(event, p);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::forcedLog(const LevelPtr& level, const std::wstring& message,
         const LocationInfo& location)
 {
@@ -115,6 +116,7 @@ void Logger::forcedLog(const LevelPtr& level, const std::wstring& message,
         LoggingEventPtr event(new LoggingEvent(this, level, msg, location));
         callAppenders(event, p);
 }
+#endif
 
 void Logger::forcedLog(const LevelPtr& level, const std::string& message)
 {
@@ -125,6 +127,7 @@ void Logger::forcedLog(const LevelPtr& level, const std::string& message)
         callAppenders(event, p);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::forcedLog(const LevelPtr& level, const std::wstring& message)
 {
         Pool p;
@@ -133,6 +136,7 @@ void Logger::forcedLog(const LevelPtr& level, const std::wstring& message)
            LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
+#endif
 
 
 bool Logger::getAdditivity() const
@@ -369,6 +373,7 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
         }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
                         const LocationInfo& location, ...)
 {
@@ -399,7 +404,7 @@ void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
                 forcedLog(level, key, location);
         }
 }
-
+#endif
 
 void Logger::removeAllAppenders()
 {
@@ -455,17 +460,17 @@ void Logger::setLevel(const LevelPtr& level)
 
 LoggerPtr Logger::getLogger(const std::string& name)
 {
-        LogString lname;
-        Transcoder::decode(name, lname);
+        LOG4CXX_DECODE_CHAR(lname, name);
         return LogManager::getLogger(lname);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 LoggerPtr Logger::getLogger(const std::wstring& name)
 {
-        LogString lname;
-        Transcoder::decode(name, lname);
+        LOG4CXX_DECODE_WCHAR(lname, name);
         return LogManager::getLogger(lname);
 }
+#endif
 
 LoggerPtr Logger::getLogger(const char* const name)
 {
@@ -474,12 +479,14 @@ LoggerPtr Logger::getLogger(const char* const name)
         return LogManager::getLogger(lname);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 LoggerPtr Logger::getLogger(const wchar_t* const name)
 {
         LogString lname;
         Transcoder::decode(name, wcslen(name), lname);
         return LogManager::getLogger(lname);
 }
+#endif
 
 
 LoggerPtr Logger::getRootLogger() {
@@ -496,10 +503,11 @@ void Logger::getName(std::string& rv) const {
     Transcoder::encode(name, rv);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::getName(std::wstring& rv) const {
     Transcoder::encode(name, rv);
 }
-
+#endif
 
 void Logger::debug(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::getDebug())) {
@@ -507,12 +515,13 @@ void Logger::debug(const std::string& msg, const log4cxx::spi::LocationInfo& loc
   }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::getDebug())) {
     forcedLog(log4cxx::Level::getDebug(), msg, location);
   }
 }
-
+#endif
 
 void Logger::debug(const std::string& msg) {
   if (isEnabledFor(log4cxx::Level::getDebug())) {
@@ -520,18 +529,21 @@ void Logger::debug(const std::string& msg) {
   }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::debug(const std::wstring& msg) {
   if (isEnabledFor(log4cxx::Level::getDebug())) {
     forcedLog(log4cxx::Level::getDebug(), msg);
   }
 }
+#endif
 
-
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::getError())) {
      forcedLog(log4cxx::Level::getError(), msg, location);
   }
 }
+#endif
 
 void Logger::error(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::getError())) {
@@ -539,12 +551,13 @@ void Logger::error(const std::string& msg, const log4cxx::spi::LocationInfo& loc
   }
 }
 
-
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::error(const std::wstring& msg) {
   if (isEnabledFor(log4cxx::Level::getError())) {
      forcedLog(log4cxx::Level::getError(), msg);
   }
 }
+#endif
 
 void Logger::error(const std::string& msg) {
   if (isEnabledFor(log4cxx::Level::getError())) {
@@ -552,12 +565,13 @@ void Logger::error(const std::string& msg) {
   }
 }
 
-
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::FATAL)) {
     forcedLog(log4cxx::Level::FATAL, msg, location);
   }
 }
+#endif
 
 void Logger::fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::FATAL)) {
@@ -565,11 +579,13 @@ void Logger::fatal(const std::string& msg, const log4cxx::spi::LocationInfo& loc
   }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::fatal(const std::wstring& msg) {
   if (isEnabledFor(log4cxx::Level::FATAL)) {
     forcedLog(log4cxx::Level::FATAL, msg);
   }
 }
+#endif
 
 void Logger::fatal(const std::string& msg) {
   if (isEnabledFor(log4cxx::Level::FATAL)) {
@@ -577,12 +593,13 @@ void Logger::fatal(const std::string& msg) {
   }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::INFO)) {
     forcedLog(log4cxx::Level::INFO, msg, location);
   }
 }
-
+#endif
 
 void Logger::info(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::INFO)) {
@@ -590,11 +607,13 @@ void Logger::info(const std::string& msg, const log4cxx::spi::LocationInfo& loca
   }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::info(const std::wstring& msg) {
   if (isEnabledFor(log4cxx::Level::INFO)) {
     forcedLog(log4cxx::Level::INFO, msg);
   }
 }
+#endif
 
 void Logger::info(const std::string& msg) {
   if (isEnabledFor(log4cxx::Level::INFO)) {
@@ -602,13 +621,14 @@ void Logger::info(const std::string& msg) {
   }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::log(const LevelPtr& level, const std::wstring& message,
     const log4cxx::spi::LocationInfo& location) {
     if (isEnabledFor(level)) {
       forcedLog(level, message, location);
     }
 }
-
+#endif
 
 void Logger::log(const LevelPtr& level, const std::string& message,
     const log4cxx::spi::LocationInfo& location) {
@@ -617,11 +637,13 @@ void Logger::log(const LevelPtr& level, const std::string& message,
     }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::log(const LevelPtr& level, const std::wstring& message) {
     if (isEnabledFor(level)) {
       forcedLog(level, message);
     }
 }
+#endif
 
 void Logger::log(const LevelPtr& level, const std::string& message) {
     if (isEnabledFor(level)) {
@@ -629,12 +651,13 @@ void Logger::log(const LevelPtr& level, const std::string& message) {
     }
 }
 
-
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::WARN)) {
     forcedLog(log4cxx::Level::WARN, msg, location);
   }
 }
+#endif
 
 void Logger::warn(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::WARN)) {
@@ -642,12 +665,13 @@ void Logger::warn(const std::string& msg, const log4cxx::spi::LocationInfo& loca
   }
 }
 
-
+#if LOG4CXX_HAS_WCHAR_T
 void Logger::warn(const std::wstring& msg) {
   if (isEnabledFor(log4cxx::Level::WARN)) {
     forcedLog(log4cxx::Level::WARN, msg);
   }
 }
+#endif
 
 void Logger::warn(const std::string& msg) {
   if (isEnabledFor(log4cxx::Level::WARN)) {

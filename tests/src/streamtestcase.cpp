@@ -165,8 +165,14 @@ public:
           CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("[10.00]")) == LogString::npos);
        }
 
+#if LOG4CXX_HAS_WCHAR_T
        void addMessage(std::wostream& os) {
           os << L"Hello, World";
+       }
+#endif
+
+       void addMessage(std::ostream& os) {
+         os << "Hello, World";
        }
 
        void testGetStream() {

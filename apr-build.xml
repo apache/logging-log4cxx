@@ -45,10 +45,27 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="os-detect">
         <condition property="is-unix" value="true">
-             <os family="unix"/>
+             <and>
+                  <not>
+                      <or>
+                          <isset property="is-windows"/>
+                          <equals arg1="${os.family}" arg2="windows"/>
+                      </or>
+                  </not>
+                  <or>
+                       <os family="unix"/>
+                       <equals arg1="${os.family}" arg2="unix"/>
+                  </or>
+             </and>
         </condition>
         <condition property="is-windows" value="true">
-                <os family="windows"/>
+             <and>
+                  <not><isset property="is-unix"/></not>
+                  <or>
+                      <os family="windows"/>
+                      <equals arg1="${os.family}" arg2="windows"/>
+                  </or>
+             </and>
         </condition>
 </target>
 
@@ -142,11 +159,15 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outputfileproperty="apr-1.dll"
         debug="${debug}">
         <fileset dir="${src.dir}" includes="**/${arch}/*.c" excludes="**/apr_app.c"/>
-        <fileset dir="${src.dir}/file_io/unix" includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"/>
+        <fileset dir="${src.dir}/file_io/unix"
+            includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"/>
         <fileset dir="${src.dir}/memory/unix" includes="*.c"/>
-        <fileset dir="${src.dir}/misc/unix" includes="errorcodes.c getopt.c otherchild.c version.c"/>
+        <fileset dir="${src.dir}/misc/${arch}" includes="*.c"/>
+        <fileset dir="${src.dir}/misc/unix"
+            includes="errorcodes.c getopt.c otherchild.c version.c"/>
         <fileset dir="${src.dir}/mmap/unix" includes="common.c"/>
-        <fileset dir="${src.dir}/network_io/unix" includes="inet_ntop.c inet_pton.c sockaddr.c"/>
+        <fileset dir="${src.dir}/network_io/unix"
+            includes="inet_ntop.c inet_pton.c sockaddr.c"/>
         <fileset dir="${src.dir}/poll/unix" includes="select.c"/>
         <fileset dir="${src.dir}/random/unix" includes="*.c"/>
         <fileset dir="${src.dir}/strings" includes="*.c"/>

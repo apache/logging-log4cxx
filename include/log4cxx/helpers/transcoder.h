@@ -38,17 +38,12 @@ namespace log4cxx {
       *     internal string.
       */
       static void decode(const char* src, size_t len, LogString& dst);
-      static void decode(const wchar_t* src, size_t len, LogString& dst);
 
       //
       //   convienience wrappers
       //
       inline static void decode(const char* src, LogString& dst) {
         decode(src, strlen(src), dst);
-      }
-
-      inline static void decode(const wchar_t* src, LogString& dst) {
-        decode(src, wcslen(src), dst);
       }
 
       template<class SRC>
@@ -63,17 +58,41 @@ namespace log4cxx {
       static void decode(const void* src, size_t byteCount,
             LogString& dst);
 
+      static LogString decode(const std::string& src) {
+        LogString dst;
+        decode(src, dst);
+        return dst;
+      }
+
 
       /**
       *   Appends an internal string to an
       *     external string.
       */
       static void encode(const LogString& src, std::string& dst);
-      static void encode(const LogString& src, std::wstring& dst);
 
 
       static bool equals(const char* str1, size_t len, const LogString& str2);
+
+#if LOG4CXX_HAS_WCHAR_T
+      static void decode(const wchar_t* src, size_t len, LogString& dst);
+
+      inline static void decode(const wchar_t* src, LogString& dst) {
+        decode(src, wcslen(src), dst);
+      }
+
+      static LogString decode(const std::wstring& src) {
+        LogString dst;
+        decode(src, dst);
+        return dst;
+      }
+
+      static void encode(const LogString& src, std::wstring& dst);
+
       static bool equals(const wchar_t* str1, size_t len, const LogString& str2);
+
+#endif
+
 
 
       private:
@@ -84,6 +103,7 @@ namespace log4cxx {
       Transcoder& operator=(const Transcoder&);
       enum { BUFSIZE = 256 };
       static const Transcoder& detect(unsigned char byte0, unsigned char byte1, size_t* offset);
+
       };
    }
 };
@@ -96,19 +116,25 @@ log4cxx::helpers::Transcoder::encode(src, var)
 log4cxx::LogString var;                      \
 log4cxx::helpers::Transcoder::decode(src, var)
 
+#define LOG4CXX_DECODE_CHAR_1PARAM(src) \
+log4cxx::helpers::Transcoder::decode(src)
+
 
 #if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
 
 #define LOG4CXX_ENCODE_WCHAR(var, src) \
-const std::wstring& var = src;
+const std::wstring& var = src
 
 #define LOG4CXX_DECODE_WCHAR(var, src) \
-const log4cxx::LogString& var = src;
+const log4cxx::LogString& var = src
+
+#define LOG4CXX_DECODE_WCHAR_1PARAM(src) \
+src
 
 #endif
 
 
-#if defined(LOG4CXX_LOGCHAR_IS_CHAR)
+#if defined(LOG4CXX_LOGCHAR_IS_UTF8)
 
 #define LOG4CXX_ENCODE_WCHAR(var, src) \
 std::wstring var;                      \
@@ -117,6 +143,10 @@ log4cxx::helpers::Transcoder::encode(src, var)
 #define LOG4CXX_DECODE_WCHAR(var, src) \
 log4cxx::LogString var;                      \
 log4cxx::helpers::Transcoder::decode(src, var)
+
+#define LOG4CXX_DECODE_WCHAR_1PARAM(src) \
+log4cxx::helpers::Transcoder::decode(src)
+
 
 #endif
 

@@ -21,7 +21,7 @@
 //   This macro and typedef lets many tests
 //      check either the wchar_t or char based methods.
 //
-#if defined(LOG4CXX_TEST_WCHAR)
+#if LOG4CXX_HAS_WCHAR_T && defined(LOG4CXX_TEST_WCHAR)
 #define LOG4CXX_TEST_STR(str) L ## str
 typedef wchar_t testchar;
 #else

@@ -183,11 +183,13 @@ LoggerPtr LogManager::exists(const std::string& name)
         return getLoggerRepository()->exists(n);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 LoggerPtr LogManager::exists(const std::wstring& name)
 {
         LOG4CXX_DECODE_WCHAR(n, name);
         return getLoggerRepository()->exists(n);
 }
+#endif
 
 LoggerList LogManager::getCurrentLoggers()
 {

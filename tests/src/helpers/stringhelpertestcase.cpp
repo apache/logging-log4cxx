@@ -25,26 +25,30 @@ using namespace log4cxx::helpers;
 /**
    Unit test for StringHelper.
    @author Curt Arnold
-   @since 0.9.8   
+   @since 0.9.8
 */
 class StringHelperTestCase : public CppUnit::TestFixture
    {
      CPPUNIT_TEST_SUITE( StringHelperTestCase );
+#if LOG4CXX_HAS_WCHAR_T
      CPPUNIT_TEST( testWideStartsWith1 );
      CPPUNIT_TEST( testWideStartsWith2 );
      CPPUNIT_TEST( testWideStartsWith3 );
      CPPUNIT_TEST( testWideStartsWith4 );
      CPPUNIT_TEST( testWideStartsWith5 );
+#endif
      CPPUNIT_TEST( testStartsWith1 );
      CPPUNIT_TEST( testStartsWith2 );
      CPPUNIT_TEST( testStartsWith3 );
      CPPUNIT_TEST( testStartsWith4 );
      CPPUNIT_TEST( testStartsWith5 );
+#if LOG4CXX_HAS_WCHAR_T
      CPPUNIT_TEST( testWideEndsWith1 );
      CPPUNIT_TEST( testWideEndsWith2 );
      CPPUNIT_TEST( testWideEndsWith3 );
      CPPUNIT_TEST( testWideEndsWith4 );
      CPPUNIT_TEST( testWideEndsWith5 );
+#endif
      CPPUNIT_TEST( testEndsWith1 );
      CPPUNIT_TEST( testEndsWith2 );
      CPPUNIT_TEST( testEndsWith3 );
@@ -54,6 +58,7 @@ class StringHelperTestCase : public CppUnit::TestFixture
 
 
 public:
+#if LOG4CXX_HAS_WCHAR_T
   /**
    * Check that startsWith("foobar", "foo") returns true.
    */
@@ -88,6 +93,7 @@ public:
   void testWideStartsWith5() {
     CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(L"foobar", L"abc"));
   }
+#endif
 
   /**
    * Check that startsWith("foobar", "foo") returns true.
@@ -125,7 +131,7 @@ public:
   }
 
 
-
+#if LOG4CXX_HAS_WCHAR_T
   /**
    * Check that endsWith("foobar", "bar") returns true.
    */
@@ -160,6 +166,7 @@ public:
   void testWideEndsWith5() {
     CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(L"foobar", L"abc"));
   }
+#endif
 
   /**
    * Check that endsWith("foobar", "bar") returns true.

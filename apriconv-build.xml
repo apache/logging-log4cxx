@@ -51,10 +51,27 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="os-detect">
         <condition property="is-unix" value="true">
-             <os family="unix"/>
+             <and>
+                  <not>
+                      <or>
+                         <isset property="is-windows"/>
+                         <equals arg1="${os.family}" arg2="windows"/>
+                      </or>
+                  </not>
+                  <or>
+                       <os family="unix"/>
+                       <equals arg1="${os.family}" arg2="unix"/>
+                  </or>
+             </and>
         </condition>
         <condition property="is-windows" value="true">
-                <os family="windows"/>
+             <and>
+                  <not><isset property="is-unix"/></not>
+                  <or>
+                       <os family="windows"/>
+                       <equals arg1="${os.family}" arg2="windows"/>
+                  </or>
+             </and>
         </condition>
 </target>
 

@@ -24,12 +24,17 @@
 
 namespace log4cxx
 {
+#if LOG4CXX_HAS_WCHAR_T
+typedef wchar_t logstream_char;
+#else
+typedef char logstream_char;
+#endif
         /**
          * This template acts as a proxy for base_logstreamimpl
          * and defers the potentially expensive construction
          * of basic_stream until needed.
          */
-           class logstream : public ::std::basic_ios<wchar_t> {
+           class logstream : public ::std::basic_ios<logstream_char> {
              public:
              /**
               * Constructor.
@@ -56,6 +61,21 @@ namespace log4cxx
                currentLocation() {
                    init(0);
               }
+
+#if LOG4CXX_HAS_WCHAR_T
+              /**
+               * Constructor.
+               */
+               logstream(const wchar_t* logName,
+                 ::log4cxx::LevelPtr& level) :
+                 logger(::log4cxx::Logger::getLogger(logName)),
+                 currentLevel(level),
+                 impl(0),
+                 enabled(logger->isEnabledFor(level)),
+                 currentLocation() {
+                     init(0);
+                }
+#endif
 
               ~logstream() {
                   delete impl;
@@ -94,7 +114,7 @@ namespace log4cxx
                     logger->log(currentLevel,
                        impl->str(),
                        location);
-                    const std::wstring emptyStr;
+                    const std::basic_string<logstream_char> emptyStr;
                     impl->str(emptyStr);
                 }
              }
@@ -104,9 +124,9 @@ namespace log4cxx
              }
 
 
-             ::std::wostream& getStream() {
+             ::std::basic_ostream<logstream_char>& getStream() {
                 if (0 == impl) {
-                  impl = new ::std::wostringstream();
+                  impl = new ::std::basic_ostringstream<logstream_char>();
                 }
                 impl->flags(flags());
                 impl->precision(precision());
@@ -119,7 +139,7 @@ namespace log4cxx
              logstream& operator=(const logstream&);
              LoggerPtr logger;
              LevelPtr currentLevel;
-             ::std::wostringstream* impl;
+             ::std::basic_ostringstream<logstream_char>* impl;
              bool enabled;
              ::log4cxx::spi::LocationInfo currentLocation;
 
@@ -127,14 +147,26 @@ namespace log4cxx
 
 }  // namespace log4cxx
 
+#if LOG4CXX_HAS_WCHAR_T
 log4cxx::logstream& operator<<(
   ::log4cxx::logstream& lhs,
   const char* rhs) {
-  std::wstring msg;
-  ::log4cxx::helpers::Transcoder::decode(rhs, msg);
+  LOG4CXX_DECODE_CHAR(tmp, rhs);
+  LOG4CXX_ENCODE_WCHAR(msg, tmp);
   lhs.getStream() << msg;
   return lhs;
 }
+#else
+log4cxx::logstream& operator<<(
+  ::log4cxx::logstream& lhs,
+  const char* rhs) {
+  LOG4CXX_DECODE_CHAR(tmp, rhs);
+  LOG4CXX_ENCODE_CHAR(msg, tmp);
+  lhs.getStream() << msg;
+  return lhs;
+}
+#endif
+
 
 ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,

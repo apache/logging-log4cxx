@@ -19,6 +19,8 @@
 #include <cppunit/extensions/HelperMacros.h>
 
 #include <log4cxx/level.h>
+#include "testchar.h"
+
 
 using namespace log4cxx;
 
@@ -31,7 +33,7 @@ class LevelTestCase : public CppUnit::TestFixture
 public:
         void testToLevelFatal()
         {
-                LevelPtr level(Level::toLevel(L"fATal"));
+                LevelPtr level(Level::toLevel(LOG4CXX_TEST_STR("fATal")));
                 CPPUNIT_ASSERT_EQUAL((int) Level::FATAL_INT, level->toInt());
         }
 

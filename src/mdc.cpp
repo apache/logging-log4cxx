@@ -37,13 +37,14 @@ void MDC::putLogString(const LogString& key, const LogString& value)
         map[key] = value;
 }
 
-
+#if LOG4CXX_HAS_WCHAR_T
 void MDC::put(const std::wstring& key, const std::wstring& value)
 {
         LOG4CXX_DECODE_WCHAR(lkey, key);
         LOG4CXX_DECODE_WCHAR(lvalue, value);
         putLogString(lkey, lvalue);
 }
+#endif
 
 void MDC::put(const std::string& key, const std::string& value)
 {
@@ -75,6 +76,7 @@ std::string MDC::get(const std::string& key)
         return std::string();
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 std::wstring MDC::get(const std::wstring& key)
 {
         LOG4CXX_DECODE_WCHAR(lkey, key);
@@ -85,7 +87,7 @@ std::wstring MDC::get(const std::wstring& key)
         }
         return std::wstring();
 }
-
+#endif
 
 bool MDC::remove(const LogString& key, LogString& value)
 {
@@ -111,6 +113,7 @@ std::string MDC::remove(const std::string& key)
         return std::string();
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 std::wstring MDC::remove(const std::wstring& key)
 {
         LOG4CXX_DECODE_WCHAR(lkey, key);
@@ -121,7 +124,7 @@ std::wstring MDC::remove(const std::wstring& key)
         }
         return std::wstring();
 }
-
+#endif
 
 void MDC::clear()
 {

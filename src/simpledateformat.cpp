@@ -29,6 +29,12 @@ using namespace log4cxx::helpers;
 using namespace std;
 
 
+#if LOG4CXX_HAS_WCHAR_T
+#define LOG4CXX_LOCALE_STR(str) L ## str
+#else
+#define LOG4CXX_LOCALE_STR(str) str
+#endif
+
 SimpleDateFormat::PatternToken::PatternToken() {
 }
 
@@ -40,14 +46,14 @@ void SimpleDateFormat::PatternToken::setTimeZone(const TimeZonePtr& zone) {
 
 
 void SimpleDateFormat::PatternToken::renderFacet(const std::locale& locale,
-                                                          std::basic_ostream<wchar_t>& buffer,
-                                                          const tm* time,
-                                                          const wchar_t spec) {
+        std::basic_ostream<localechar>& buffer,
+        const tm* time,
+        const localechar spec) {
 #if defined(_USEFAC)
-    _USEFAC(locale, std::time_put<wchar_t> )
+    _USEFAC(locale, std::time_put<localechar> )
         .put(buffer, buffer, time, spec);
 #else
-    std::use_facet<std::time_put<wchar_t> >(locale)
+    std::use_facet<std::time_put<localechar> >(locale)
         .put(buffer, buffer, buffer.fill(), time, spec);
 #endif
 
@@ -57,16 +63,22 @@ namespace log4cxx {
   namespace helpers {
     namespace SimpleDateFormatImpl {
 
+#if LOG4CXX_HAS_WCHAR_T
+typedef wchar_t localechar;
+#else
+typedef char localechar;
+#endif
+
       class LiteralToken : public SimpleDateFormat::PatternToken {
       public:
-        LiteralToken(wchar_t ch, int count) : ch(ch), count(count) {
+        LiteralToken(localechar ch, int count) : ch(ch), count(count) {
         }
-        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+        void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
           s.append(count, ch);
         }
 
       private:
-        wchar_t ch;
+        localechar ch;
         int count;
       };
 
@@ -74,8 +86,8 @@ namespace log4cxx {
       public:
           EraToken(int count, const std::locale& locale)  {
           }
-          void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
-             s.append(L"AD");
+          void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
+             s.append(LOG4CXX_LOCALE_STR("AD"));
           }
      };
 
@@ -88,12 +100,14 @@ namespace log4cxx {
 
         virtual int getField(const apr_time_exp_t& tm) const = 0;
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+        void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
           size_t initialLength = s.length();
           StringHelper::toString(getField(tm), p, s);
           size_t finalLength = s.length();
           if (initialLength + width > finalLength) {
-            s.insert(initialLength, (initialLength + width) - finalLength, L'0');
+            s.insert(initialLength,
+                (initialLength + width) - finalLength,
+                LOG4CXX_LOCALE_STR('0'));
           }
         }
 
@@ -127,23 +141,24 @@ namespace log4cxx {
         AbbreviatedMonthNameToken(int width, const std::locale& locale) : names(12) {
           tm time;
           memset(&time, sizeof(time), 0);
-          std::basic_ostringstream<wchar_t> buffer;
+          std::basic_ostringstream<localechar> buffer;
           size_t start = 0;
           for (int imon = 0; imon < 12; imon++) {
              time.tm_mon = imon;
-             renderFacet(locale, buffer, &time, L'b');
-             std::wstring monthnames(buffer.str());
+             renderFacet(locale, buffer, &time,
+                 LOG4CXX_LOCALE_STR('b'));
+             std::basic_string<localechar> monthnames(buffer.str());
              names[imon] = monthnames.substr(start);
              start = monthnames.length();
           }
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+        void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
           s.append(names[tm.tm_mon]);
         }
 
       private:
-        std::vector<std::wstring> names;
+        std::vector<std::basic_string<localechar> > names;
 
       };
 
@@ -152,23 +167,24 @@ namespace log4cxx {
         FullMonthNameToken(int width, const std::locale& locale) : names(12) {
           tm time;
           memset(&time, sizeof(time), 0);
-          std::basic_ostringstream<wchar_t> buffer;
+          std::basic_ostringstream<localechar> buffer;
           size_t start = 0;
           for (int imon = 0; imon < 12; imon++) {
              time.tm_mon = imon;
-             renderFacet(locale, buffer, &time, L'B');
-             std::wstring monthnames(buffer.str());
+             renderFacet(locale, buffer, &time,
+                LOG4CXX_LOCALE_STR('B'));
+             std::basic_string<localechar> monthnames(buffer.str());
              names[imon] = monthnames.substr(start);
              start = monthnames.length();
           }
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+        void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
           s.append(names[tm.tm_mon]);
         }
 
       private:
-        std::vector<std::wstring> names;
+        std::vector<std::basic_string<localechar> > names;
 
       };
 
@@ -229,23 +245,24 @@ namespace log4cxx {
           AbbreviatedDayNameToken(int width, const std::locale& locale) : names(7) {
              tm time;
              memset(&time, sizeof(time), 0);
-             std::wostringstream buffer;
+             std::basic_ostringstream<localechar> buffer;
              size_t start = 0;
              for (int iday = 0; iday < 7; iday++) {
                 time.tm_wday = iday;
-                renderFacet(locale, buffer, &time, L'a');
-                std::wstring daynames(buffer.str());
+                renderFacet(locale, buffer, &time,
+                   LOG4CXX_LOCALE_STR('a'));
+                std::basic_string<localechar> daynames(buffer.str());
                 names[iday] = daynames.substr(start);
                 start = daynames.length();
              }
           }
 
-         void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+         void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
             s.append(names[tm.tm_wday]);
          }
 
         private:
-            std::vector<std::wstring> names;
+            std::vector<std::basic_string<localechar> > names;
 
         };
 
@@ -254,23 +271,24 @@ namespace log4cxx {
           FullDayNameToken(int width, const std::locale& locale) : names(7) {
             tm time;
             memset(&time, sizeof(time), 0);
-            std::basic_ostringstream<wchar_t> buffer;
+            std::basic_ostringstream<localechar> buffer;
             size_t start = 0;
             for (int iday = 0; iday < 7; iday++) {
                time.tm_wday = iday;
-               renderFacet(locale, buffer, &time, L'A');
-               std::wstring daynames(buffer.str());
+               renderFacet(locale, buffer, &time,
+                  LOG4CXX_LOCALE_STR('A'));
+               std::basic_string<localechar> daynames(buffer.str());
                names[iday] = daynames.substr(start);
                start = daynames.length();
             }
           }
 
-          void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+          void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
             s.append(names[tm.tm_wday]);
           }
 
         private:
-          std::vector<std::wstring> names;
+          std::vector<std::basic_string<localechar> > names;
 
         };
 
@@ -337,23 +355,24 @@ namespace log4cxx {
         AMPMToken(int width, const std::locale& locale) : names(2)  {
           tm time;
           memset(&time, sizeof(time), 0);
-          std::basic_ostringstream<wchar_t> buffer;
+          std::basic_ostringstream<localechar> buffer;
           size_t start = 0;
           for (int i = 0; i < 2; i++) {
              time.tm_hour = i * 12;
-             renderFacet(locale, buffer, &time, L'p');
-             std::wstring ampm = buffer.str();
+             renderFacet(locale, buffer, &time,
+                LOG4CXX_LOCALE_STR('p'));
+             std::basic_string<localechar> ampm = buffer.str();
              names[i] = ampm.substr(start);
              start = ampm.length();
           }
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+        void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
            s.append(names[tm.tm_hour / 12]);
         }
 
         private:
-        std::vector<std::wstring> names;
+        std::vector<std::basic_string<localechar> > names;
     };
 
 
@@ -362,8 +381,11 @@ namespace log4cxx {
         GeneralTimeZoneToken(int width)  {
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
-           LOG4CXX_ENCODE_WCHAR(tzID, timeZone->getID());
+        void format(std::basic_string<localechar>& s,
+               const apr_time_exp_t& tm,
+               Pool& p) const {
+           std::basic_string<localechar> tzID;
+           Transcoder::encode(timeZone->getID(), tzID);
            s.append(tzID);
         }
 
@@ -380,18 +402,18 @@ namespace log4cxx {
         RFC822TimeZoneToken(int width)  {
         }
 
-        void format(std::wstring& s, const apr_time_exp_t& tm, Pool& p) const {
+        void format(std::basic_string<localechar>& s, const apr_time_exp_t& tm, Pool& p) const {
            if (tm.tm_gmtoff == 0) {
-             s.append(1, L'Z');
+             s.append(1, LOG4CXX_LOCALE_STR('Z'));
            } else {
              apr_int32_t off = tm.tm_gmtoff;
              size_t basePos = s.length();
-             s.append(L"+0000");
+             s.append(LOG4CXX_LOCALE_STR("+0000"));
              if (off < 0) {
-               s[basePos] = L'-';
+               s[basePos] = LOG4CXX_LOCALE_STR('-');
                off = -off;
              }
-             std::wstring hours;
+             std::basic_string<localechar> hours;
              StringHelper::toString(off/3600, p, hours);
              size_t hourPos = basePos + 2;
              //
@@ -400,7 +422,7 @@ namespace log4cxx {
              for (size_t i = hours.length(); i-- > 0;) {
                s[hourPos--] = hours[i];
              }
-             std::wstring min;
+             std::basic_string<localechar> min;
              StringHelper::toString((off % 3600) / 60, p, min);
              size_t minPos = basePos + 4;
              //
@@ -449,21 +471,21 @@ SimpleDateFormat::~SimpleDateFormat() {
   }
 }
 
-void SimpleDateFormat::addToken(const wchar_t spec,
+void SimpleDateFormat::addToken(const localechar spec,
                                 const int repeat,
                                 const std::locale& locale,
                                 PatternTokenList& pattern) {
     PatternToken* token = NULL;
     switch(spec) {
-      case L'G':
+      case LOG4CXX_LOCALE_STR('G'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::EraToken(repeat, locale));
       break;
 
-      case L'y':
+      case LOG4CXX_LOCALE_STR('y'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::YearToken(repeat));
       break;
 
-      case L'M':
+      case LOG4CXX_LOCALE_STR('M'):
       if (repeat <= 2) {
          token = (new log4cxx::helpers::SimpleDateFormatImpl::MonthToken(repeat));
       } else if (repeat <= 3) {
@@ -473,27 +495,27 @@ void SimpleDateFormat::addToken(const wchar_t spec,
       }
       break;
 
-      case L'w':
+      case LOG4CXX_LOCALE_STR('w'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::WeekInYearToken(repeat));
       break;
 
-      case L'W':
+      case LOG4CXX_LOCALE_STR('W'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::WeekInMonthToken(repeat));
       break;
 
-      case L'D':
+      case LOG4CXX_LOCALE_STR('D'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::DayInYearToken(repeat));
       break;
 
-      case L'd':
+      case LOG4CXX_LOCALE_STR('d'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::DayInMonthToken(repeat));
       break;
 
-      case L'F':
+      case LOG4CXX_LOCALE_STR('F'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::DayOfWeekInMonthToken(repeat));
       break;
 
-      case L'E':
+      case LOG4CXX_LOCALE_STR('E'):
       if (repeat <= 3) {
         token = (new log4cxx::helpers::SimpleDateFormatImpl::AbbreviatedDayNameToken(repeat, locale));
       } else {
@@ -501,43 +523,43 @@ void SimpleDateFormat::addToken(const wchar_t spec,
       }
       break;
 
-      case L'a':
+      case LOG4CXX_LOCALE_STR('a'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::AMPMToken(repeat, locale));
       break;
 
-      case L'H':
+      case LOG4CXX_LOCALE_STR('H'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::MilitaryHourToken(repeat, 0));
       break;
 
-      case L'k':
+      case LOG4CXX_LOCALE_STR('k'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::MilitaryHourToken(repeat, 1));
       break;
 
-      case L'K':
+      case LOG4CXX_LOCALE_STR('K'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::HourToken(repeat, 0));
       break;
 
-      case L'h':
+      case LOG4CXX_LOCALE_STR('h'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::HourToken(repeat, 1));
       break;
 
-      case L'm':
+      case LOG4CXX_LOCALE_STR('m'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::MinuteToken(repeat));
       break;
 
-      case L's':
+      case LOG4CXX_LOCALE_STR('s'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::SecondToken(repeat));
       break;
 
-      case L'S':
+      case LOG4CXX_LOCALE_STR('S'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::MillisecondToken(repeat));
       break;
 
-      case L'z':
+      case LOG4CXX_LOCALE_STR('z'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::GeneralTimeZoneToken(repeat));
       break;
 
-      case L'Z':
+      case LOG4CXX_LOCALE_STR('Z'):
       token = (new log4cxx::helpers::SimpleDateFormatImpl::RFC822TimeZoneToken(repeat));
       break;
 
@@ -554,7 +576,7 @@ void SimpleDateFormat::parsePattern(const LogString& fmt,
      if (!fmt.empty()) {
         LogString::const_iterator iter = fmt.begin();
         int repeat = 1;
-        wchar_t prevChar = *iter;
+        localechar prevChar = *iter;
         for(iter++; iter != fmt.end(); iter++) {
           if (*iter == prevChar) {
             repeat++;
@@ -572,7 +594,7 @@ void SimpleDateFormat::format(LogString& s, log4cxx_time_t time, Pool& p) const 
   apr_time_exp_t exploded;
   apr_status_t stat = timeZone->explode(&exploded, time);
   if (stat == APR_SUCCESS) {
-    std::wstring formatted;
+    std::basic_string<localechar> formatted;
     for(PatternTokenList::const_iterator iter = pattern.begin();
         iter != pattern.end();
         iter++) {

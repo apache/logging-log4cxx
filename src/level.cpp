@@ -74,10 +74,12 @@ const LevelPtr& Level::toLevel(const std::string& sArg)
     return toLevel(sArg, Level::getDebug());
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 const LevelPtr& Level::toLevel(const std::wstring& sArg)
 {
     return toLevel(sArg, Level::getDebug());
 }
+#endif
 
 const LevelPtr& Level::toLevel(int val)
 {
@@ -136,7 +138,7 @@ const LevelPtr& Level::toLevel(const std::string& sArg, const LevelPtr& defaultL
     return defaultLevel;
 }
 
-
+#if LOG4CXX_HAS_WCHAR_T
 const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
 {
     const size_t len = sArg.length();
@@ -173,7 +175,7 @@ const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& default
 
     return defaultLevel;
 }
-
+#endif
 
 bool Level::equals(const LevelPtr& level) const
 {
@@ -189,9 +191,11 @@ void Level::toString(std::string& str) const {
     Transcoder::encode(name, str);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Level::toString(std::wstring& str) const {
     Transcoder::encode(name, str);
 }
+#endif
 
 //
 //   may be declared by some platform headers

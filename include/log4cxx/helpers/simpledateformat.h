@@ -55,6 +55,11 @@ namespace log4cxx
                   */
                   void setTimeZone(const TimeZonePtr& zone);
 
+#if LOG4CXX_HAS_WCHAR_T
+                  typedef wchar_t localechar;
+#else
+                  typedef char localechar;
+#endif
 
                   /**
                   * Abstract inner class representing one format token
@@ -83,15 +88,15 @@ namespace log4cxx
                       * @param date exploded date/time.
                       * @param p memory pool.
                       */
-                       virtual void format(std::wstring& s,
+                       virtual void format(std::basic_string<localechar>& s,
                                            const apr_time_exp_t& date,
                                            log4cxx::helpers::Pool& p) const = 0;
 
                   protected:
                         static void renderFacet(const std::locale& locale,
-                                             std::wostream& buffer,
+                                             std::basic_ostream<localechar>& buffer,
                                              const tm* time,
-                                             const wchar_t spec);
+                                             const localechar spec);
 
                   private:
                       /**
@@ -116,10 +121,10 @@ namespace log4cxx
                   */
                   typedef std::vector<PatternToken*> PatternTokenList;
                   PatternTokenList pattern;
-                  static void addToken(const wchar_t spec,
-                                                  const int repeat,
-                                                  const std::locale& locale,
-                                                  PatternTokenList& pattern);
+                  static void addToken(const localechar spec,
+                                       const int repeat,
+                                       const std::locale& locale,
+                                       PatternTokenList& pattern);
                   static void parsePattern(const LogString& fmt,
                           const std::locale& locale,
                           PatternTokenList& pattern);

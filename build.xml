@@ -38,6 +38,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="rtti" value="false"/>
 <property name="optimize" value="none"/>
 <property name="lib.type" value="shared"/>
+<!--  other recognized option: utf8 -->
+<property name="logchar" value="wchar_t"/>
+<property name="has.wchar_t" value="1"/>
 <property name="apache.mirror" value="http://apache.mirrors.pair.com"/>
 <property name="cppunit.mirror" value="http://unc.dl.sourceforge.net/sourceforge"/>
 
@@ -102,10 +105,22 @@ Common command line options:
 
 <target name="os-detect">
         <condition property="is-unix" value="true">
-             <os family="unix"/>
+             <and>
+                 <os family="unix"/>
+                 <not><isset property="is-windows"/></not>
+             </and>
         </condition>
         <condition property="is-windows" value="true">
+             <and>
                 <os family="windows"/>
+                <not><isset property="is-unix"/></not>
+             </and>
+        </condition>
+        <condition property="os.family" value="windows">
+            <isset property="is-windows"/>
+        </condition>
+        <condition property="os.family" value="unix">
+            <isset property="is-unix"/>
         </condition>
 </target>
 
@@ -177,6 +192,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
         <condition property="is-debug" value="true">
                 <istrue value="${debug}"/>
+        </condition>
+
+        <condition property="is-utf8" value="true">
+                <equals arg1="${logchar}" arg2="utf8"/>
         </condition>
 
         <condition property="debug.release" value="debug">
@@ -319,6 +338,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
            dest="${lib.dir}" compression="gzip"/>
     <chmod file="${lib.dir}/${module}-${module.version}/configure"
            perm="u+x"/>
+    <chmod file="${lib.dir}/${module}-${module.version}/build/get-version.sh"
+           perm="u+x"/>
 
 </target>
 
@@ -365,6 +386,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
         <property name="use-pic" value="${use-pic}"/>
+        <property name="os.family" value="${os.family}"/>
     </ant>
 </target>
 
@@ -405,6 +427,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
         <property name="use-pic" value="${use-pic}"/>
+        <property name="os.family" value="${os.family}"/>
     </ant>
 </target>
 
@@ -452,6 +475,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
         <property name="use-pic" value="${use-pic}"/>
+        <property name="os.family" value="${os.family}"/>
     </ant>
 </target>
 
@@ -487,6 +511,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
         <property name="use-pic" value="${use-pic}"/>
+        <property name="os.family" value="${os.family}"/>
     </ant>
     <property name="cppunit.include.dir" value="${cppunit.dir}/include"/>
     <property name="cppunit.lib.dir" value="${executable.dir}/${cppunit.lib.type}"/>
@@ -569,6 +594,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
+        <defineset if="is-utf8">
+            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
+        </defineset>
+        <defineset>
+            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
+        </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
         <libset libs="stdc++" if="is-gcc"/>
@@ -608,6 +639,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="API_DECLARE_STATIC" if="iconv-static"/>
+        <defineset if="is-utf8">
+            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
+        </defineset>
+        <defineset>
+            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
+        </defineset>
 
         <compilerarg value="${pic-option}" if="pic-option"/>
 
@@ -705,7 +742,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 multithreaded="true"
                 outtype="executable"
                 objdir="${log4cxx.lib.dir}/shortsocketserver_obj"
-                debug="${debug}">
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
         <fileset dir="${tests.dir}/src">
            <include name="shortsocketserver.cpp"/>
            <include name="xml/xlevel.cpp"/>
@@ -714,6 +752,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
+        <defineset if="is-utf8">
+            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
+        </defineset>
+        <defineset>
+            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
+        </defineset>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
@@ -753,8 +797,16 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
+        <includepath path="${aprutil.include.dir}"/>
+        <includepath path="${apriconv.include.dir}"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="WIN32" if="is-windows"/>
+        <defineset if="is-utf8">
+            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
+        </defineset>
+        <defineset>
+            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
+        </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
@@ -798,8 +850,16 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
+        <includepath path="${aprutil.include.dir}"/>
+        <includepath path="${apriconv.include.dir}"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="WIN32" if="is-windows"/>
+        <defineset if="is-utf8">
+            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
+        </defineset>
+        <defineset>
+            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
+        </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>

@@ -40,7 +40,9 @@ namespace log4cxx
                 public:
                     File();
                     File(const std::string& name);
+#if LOG4CXX_HAS_WCHAR_T
                     File(const std::wstring& name);
+#endif
                     File(const File& src);
                     File& operator=(const File& src);
                     ~File();

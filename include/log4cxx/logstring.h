@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,16 +19,35 @@
 
 #include <string>
 
+#if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_LOGCHAR_IS_UTF8
+#error only one of LOG4CXX_LOGCHAR_IS_WCHAR and LOG4CXX_LOGCHAR_IS_UTF8 may be true
+#endif
+
+#if !defined(LOG4CXX_HAS_WCHAR_T)
+#define LOG4CXX_HAS_WCHAR_T 1
+#endif
+
+#if !LOG4CXX_LOGCHAR_IS_WCHAR && !LOG4CXX_LOGCHAR_IS_UTF8
+
+#if LOG4CXX_HAS_WCHAR_T
 #define LOG4CXX_LOGCHAR_IS_WCHAR 1
+#else
+#define LOG4CXX_LOGCHAR_IS_UTF8 1
+#endif
+#endif
 
 namespace log4cxx {
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
    typedef wchar_t logchar;
+#define LOG4CXX_STR(str) L ## str
+
 #endif
 
-#if LOG4CXX_LOGCHAR_IS_CHAR
+#if LOG4CXX_LOGCHAR_IS_UTF8
    typedef char logchar;
+#define LOG4CXX_STR(str) str
+
 #endif
 
    typedef std::basic_string<logchar> LogString;
@@ -36,13 +55,6 @@ namespace log4cxx {
 
 }
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-#define LOG4CXX_STR(str) L ## str
-#endif
-
-#if LOG4CXX_LOGCHAR_IS_CHAR
-#define LOG4CXX_STR(str) str
-#endif
 
 #if !defined(LOG4CXX_EOL)
 #if defined(_WIN32)

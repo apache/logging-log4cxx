@@ -195,7 +195,9 @@ namespace log4cxx
                 determined solely by the client.
                 @param message The new diagnostic context information.
                 */
+#if LOG4CXX_HAS_WCHAR_T
                 static void push(const std::wstring& message);
+#endif
                 static void push(const std::string& message);
                 static void pushLogString(const LogString& message);
 

@@ -101,7 +101,7 @@ public:
 
                 try
                 {
-                        const File output(L"output/ttcc");
+                        const File output("output/ttcc");
                         Transformer::transform(output, FILTERED, filters);
                 }
                 catch(std::exception& e)
@@ -110,7 +110,7 @@ public:
                         throw;
                 }
 
-                const File witness(L"witness/ttcc");
+                const File witness("witness/ttcc");
                 CPPUNIT_ASSERT(Compare::compare(FILTERED, witness));
         }
 
@@ -244,7 +244,7 @@ private:
 };
 
 
-const File MinimumTestCase::FILTERED(L"output/filtered");
+const File MinimumTestCase::FILTERED("output/filtered");
 
 
 CPPUNIT_TEST_SUITE_REGISTRATION(MinimumTestCase);

@@ -1,12 +1,12 @@
 /*
  * Copyright 2003-2005 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,12 +29,11 @@
 
 #include "../util/compare.h"
 #include "xlevel.h"
+#include "../testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
-
-#define LOG4CXX_TEST_STR(x) L##x
 
 
 class CustomLevelTestCase : public CppUnit::TestFixture
@@ -64,14 +63,14 @@ public:
       LoggerPtr logger = Logger::getLogger(LOG4CXX_TEST_STR("LOG4J"));
       logger->setAdditivity(false);
       logger->addAppender(
-         new ConsoleAppender(new PatternLayout(LOG4CXX_TEST_STR("log4j: %-22c{2} - %m%n"))));
+         new ConsoleAppender(new PatternLayout(LOG4CXX_STR("log4j: %-22c{2} - %m%n"))));
    }
 
    void test1()
    {
       DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel1.xml"));
       common();
-        const File witness(L"witness/customLevel.1");
+        const File witness("witness/customLevel.1");
       CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
    }
 
@@ -79,7 +78,7 @@ public:
    {
       DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel2.xml"));
       common();
-        const File witness(L"witness/customLevel.2");
+        const File witness("witness/customLevel.2");
       CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
    }
 
@@ -87,7 +86,7 @@ public:
    {
       DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel3.xml"));
       common();
-        const File witness(L"witness/customLevel.3");
+        const File witness("witness/customLevel.3");
       CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
    }
 
@@ -95,7 +94,7 @@ public:
    {
       DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel4.xml"));
       common();
-        const File witness(L"witness/customLevel.4");
+        const File witness("witness/customLevel.4");
       CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
    }
 
@@ -122,7 +121,7 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CustomLevelTestCase);
 
-const File CustomLevelTestCase::TEMP(L"output/temp");
+const File CustomLevelTestCase::TEMP("output/temp");
 
 
 #endif //HAVE_XML

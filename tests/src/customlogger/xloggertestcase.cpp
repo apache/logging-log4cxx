@@ -1,12 +1,12 @@
 /*
  * Copyright 2003-2005 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,9 +47,8 @@ class XLoggerTestCase : public CppUnit::TestFixture
 public:
    void setUp()
    {
-      logger =
-         (XLoggerPtr) XLogger::getLogger(
-         LOG4CXX_TEST_STR("org.apache.log4j.customLogger.XLoggerTestCase"));
+      logger = XLogger::getLogger(
+            LOG4CXX_STR("org.apache.log4j.customLogger.XLoggerTestCase"));
    }
 
    void tearDown()
@@ -57,19 +56,21 @@ public:
       logger->getLoggerRepository()->resetConfiguration();
    }
 
-   void test1() { common(LOG4CXX_TEST_STR("1")); }
-   void test2() { common(LOG4CXX_TEST_STR("2")); }
+   void test1() { common("1"); }
+   void test2() { common("2"); }
 
-   void common(const LogString& number)
+   void common(const char* number)
    {
-        DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLogger")
-         +number+LOG4CXX_TEST_STR(".xml"));
-      
-      int i = -1;
+        std::string fn("input/xml/customLogger");
+        fn.append(number);
+        fn.append(".xml");
+        DOMConfigurator::configure(fn);
+
+        int i = -1;
         std::ostringstream os;
         os << "Message " << ++i;
         if (logger->isEnabledFor(log4cxx::XLevel::TRACE)) {
-           logger->forcedLog(log4cxx::XLevel::TRACE, os.str(), LOG4CXX_LOCATION); 
+           logger->forcedLog(log4cxx::XLevel::TRACE, os.str(), LOG4CXX_LOCATION);
         }
 
         os.str("");
@@ -88,8 +89,10 @@ public:
         os << "Message " << ++ i;
       LOG4CXX_DEBUG(logger, os.str());
 
-        const File OUTPUT(L"output/temp");
-        const File WITNESS(LogString(LOG4CXX_STR("witness/customLogger.")) + number);
+        const File OUTPUT("output/temp");
+        std::string witness("witness/customLogger.");
+        witness.append(number);
+        const File WITNESS(witness);
       CPPUNIT_ASSERT(Compare::compare(OUTPUT, WITNESS));
 //#endif
     }

@@ -124,6 +124,7 @@ void ConsoleAppender::setOption(const LogString& option, const LogString& value)
 
 
 void ConsoleAppender::subAppend(const LogString& msg, Pool&) {
+#if LOG4CXX_HAS_WCHAR_T
         std::wstring wmsg;
         log4cxx::helpers::Transcoder::encode(msg, wmsg);
         if (useErr) {
@@ -131,6 +132,15 @@ void ConsoleAppender::subAppend(const LogString& msg, Pool&) {
         } else {
           std::wcout << wmsg << std::flush;
         }
+#else
+        std::string wmsg;
+        log4cxx::helpers::Transcoder::encode(msg, wmsg);
+        if (useErr) {
+          std::cerr << wmsg << std::flush;
+        } else {
+          std::cout << wmsg << std::flush;
+        }
+#endif
 }
 
 

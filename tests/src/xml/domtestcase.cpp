@@ -35,8 +35,7 @@
 #include <log4cxx/fileappender.h>
 #include <apr_pools.h>
 #include <apr_file_io.h>
-
-#define LOG4CXX_TEST_STR(x) L##x
+#include "../testchar.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -117,8 +116,8 @@ public:
                         throw;
                 }
 
-                const File witness1(L"witness/dom.A1.1");
-                const File witness2(L"witness/dom.A2.1");
+                const File witness1(LOG4CXX_TEST_STR("witness/dom.A1.1"));
+                const File witness2(LOG4CXX_TEST_STR("witness/dom.A2.1"));
                 //   TODO: A1 doesn't contain duplicate entries
                 //
                 //                CPPUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
@@ -152,8 +151,8 @@ public:
                         throw;
                 }
 
-                const File witness1(L"witness/dom.A1.2");
-                const File witness2(L"witness/dom.A2.2");
+                const File witness1(LOG4CXX_TEST_STR("witness/dom.A1.2"));
+                const File witness2(LOG4CXX_TEST_STR("witness/dom.A2.2"));
                 //   TODO: A1 doesn't contain duplicate entries
                 //
                 //                CPPUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
@@ -195,15 +194,15 @@ public:
 
 CPPUNIT_TEST_SUITE_REGISTRATION(DOMTestCase);
 
-const File DOMTestCase::TEMP_A1(L"output/temp.A1");
-const File DOMTestCase::TEMP_A2(L"output/temp.A2");
-const File DOMTestCase::FILTERED_A1(L"output/filtered.A1");
-const File DOMTestCase::FILTERED_A2(L"output/filtered.A2");
+const File DOMTestCase::TEMP_A1(LOG4CXX_TEST_STR("output/temp.A1"));
+const File DOMTestCase::TEMP_A2(LOG4CXX_TEST_STR("output/temp.A2"));
+const File DOMTestCase::FILTERED_A1(LOG4CXX_TEST_STR("output/filtered.A1"));
+const File DOMTestCase::FILTERED_A2(LOG4CXX_TEST_STR("output/filtered.A2"));
 
-const File DOMTestCase::TEMP_A1_2(L"output/temp.A1.2");
-const File DOMTestCase::TEMP_A2_2(L"output/temp.A2.2");
-const File DOMTestCase::FILTERED_A1_2(L"output/filtered.A1.2");
-const File DOMTestCase::FILTERED_A2_2(L"output/filtered.A2.2");
+const File DOMTestCase::TEMP_A1_2(LOG4CXX_TEST_STR("output/temp.A1.2"));
+const File DOMTestCase::TEMP_A2_2(LOG4CXX_TEST_STR("output/temp.A2.2"));
+const File DOMTestCase::FILTERED_A1_2(LOG4CXX_TEST_STR("output/filtered.A1.2"));
+const File DOMTestCase::FILTERED_A2_2(LOG4CXX_TEST_STR("output/filtered.A2.2"));
 
 
 #endif //HAVE_XML

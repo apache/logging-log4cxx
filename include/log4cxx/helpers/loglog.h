@@ -89,7 +89,9 @@ namespace log4cxx
 
                         private:
                         static void emit(const std::string& msg);
+#if LOG4CXX_HAS_WCHAR_T
                         static void emit(const std::wstring& msg);
+#endif
                 };
         }  // namespace helpers
 } // namespace log4cxx

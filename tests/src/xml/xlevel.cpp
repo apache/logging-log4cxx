@@ -46,11 +46,12 @@ const LevelPtr& XLevel::toLevel(const std::string& sArg)
    return toLevel(sArg, getTrace());
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 const LevelPtr& XLevel::toLevel(const std::wstring& sArg)
 {
    return toLevel(sArg, getTrace());
 }
-
+#endif
 
 const LevelPtr& XLevel::toLevel(int val)
 {
@@ -68,6 +69,7 @@ const LevelPtr& XLevel::toLevel(int val, const LevelPtr& defaultLevel)
 }
 
 
+#if LOG4CXX_HAS_WCHAR_T
 const LevelPtr& XLevel::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
 {
    if (sArg.empty())
@@ -87,6 +89,7 @@ const LevelPtr& XLevel::toLevel(const std::wstring& sArg, const LevelPtr& defaul
 
     return Level::toLevel(sArg, defaultLevel);
 }
+#endif
 
 const LevelPtr& XLevel::toLevel(const std::string& sArg, const LevelPtr& defaultLevel)
 {

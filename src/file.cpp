@@ -34,11 +34,13 @@ File::File(const std::string& name)
   Transcoder::encode(this->name, osName);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 File::File(const std::wstring& name)
    : name(), osName() {
   Transcoder::decode(name, this->name);
   Transcoder::encode(this->name, osName);
 }
+#endif
 
 File::File(const File& src)
   : name(src.name), osName(src.osName) {

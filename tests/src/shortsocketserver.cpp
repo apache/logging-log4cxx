@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,25 +45,25 @@ public:
 
       if (argc == 3)
       {
-                        totalTests = atoi(argv[1]);
-                        prefix = argv[2];
+          totalTests = atoi(argv[1]);
+          prefix = argv[2];
       }
       else
       {
          usage(argv[0], "Wrong number of arguments.");
       }
 
-                //
-                //  TODO: May need to make another logger hierarchy to
-                //     keep this distinct from the log messages the server
-                //     is handling
-                log4cxx::BasicConfigurator::configure();
-                //
-                //   using the stream interface since it knows
-                //      numeric and encoding conversion
-                logstream log(Logger::getLogger("shortsocketserver"), Level::DEBUG);
+      //
+      //  TODO: May need to make another logger hierarchy to
+      //     keep this distinct from the log messages the server
+      //     is handling
+      log4cxx::BasicConfigurator::configure();
+      //
+      //   using the stream interface since it knows
+      //      numeric and encoding conversion
+      logstream log(Logger::getLogger("shortsocketserver"), Level::DEBUG);
 
-                log << "Listening on port " << PORT << LOG4CXX_ENDMSG;
+      log << "Listening on port " << PORT << LOG4CXX_ENDMSG;
       ServerSocket serverSocket(PORT);
 
       MDC::put("hostID", "shortSocketServer");

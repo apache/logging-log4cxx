@@ -153,6 +153,24 @@ std::string PoolException::formatMessage(log4cxx_status_t) {
 }
 
 
+TranscoderException::TranscoderException(log4cxx_status_t stat)
+    : Exception(formatMessage(stat)) {
+}
+
+TranscoderException::TranscoderException(const TranscoderException &src)
+   : Exception(src) {
+}
+
+TranscoderException& TranscoderException::operator=(const TranscoderException& src) {
+     Exception::operator=(src);
+     return *this;
+}
+
+std::string TranscoderException::formatMessage(log4cxx_status_t) {
+     return "Transcoder exception";
+}
+
+
 MutexException::MutexException(log4cxx_status_t stat)
      : Exception(formatMessage(stat)) {
 }

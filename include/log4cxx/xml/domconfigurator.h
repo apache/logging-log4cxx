@@ -180,8 +180,9 @@ files. You can enable log4cxx internal logging by setting the
                         A static version of #doConfigure.
                         */
                         static void configure(const std::string& filename);
+#if LOG4CXX_HAS_WCHAR_T
                         static void configure(const std::wstring& filename);
-
+#endif
                         /**
                         Like #configureAndWatch(const String& configFilename, long delay)
                         except that the default delay as defined by
@@ -189,8 +190,9 @@ files. You can enable log4cxx internal logging by setting the
                         @param configFilename A log4j configuration file in XML format.
                         */
                         static void configureAndWatch(const std::string& configFilename);
+#if LOG4CXX_HAS_WCHAR_T
                         static void configureAndWatch(const std::wstring& configFilename);
-
+#endif
                         /**
                         Read the configuration file <code>configFilename</code> if it
                         exists. Moreover, a thread will be created that will periodically
@@ -204,8 +206,10 @@ files. You can enable log4cxx internal logging by setting the
                         */
                         static void configureAndWatch(const std::string& configFilename,
                                 long delay);
+#if LOG4CXX_HAS_WCHAR_T
                         static void configureAndWatch(const std::wstring& configFilename,
                                 long delay);
+#endif
 
                         /**
                         Interpret the XML file pointed by <code>filename</code> and set up

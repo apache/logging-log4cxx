@@ -17,18 +17,38 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
 #include <stdlib.h>
-//#include <log4cxx/config.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+
+bool Transcoder::equals(const char* str1, size_t len, const LogString& str2) {
+    if (len == str2.length()) {
+        LogString decoded;
+        decode(str1, len, decoded);
+        return decoded == str2;
+    }
+    return false;
+}
+
+#if LOG4CXX_HAS_WCHAR_T
+bool Transcoder::equals(const wchar_t* str1, size_t len, const LogString& str2) {
+    if (len == str2.length()) {
+        LogString decoded;
+        decode(str1, len, decoded);
+        return decoded == str2;
+    }
+    return false;
+}
+#endif
 
 
 /**
 *   Appends an external string to an
 *     internal string.
 */
-#if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 
 //
 //
@@ -141,9 +161,11 @@ void Transcoder::decode(const char* src, size_t len, LogString& dst) {
   }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Transcoder::decode(const wchar_t* src, size_t len, LogString& dst) {
   dst.append(src, len);
 }
+#endif
 
 void Transcoder::encode(const LogString& src, std::string& dst) {
   char buf[BUFSIZE];
@@ -183,32 +205,169 @@ void Transcoder::encode(const LogString& src, std::string& dst) {
   }
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Transcoder::encode(const LogString& src, std::wstring& dst) {
   dst.append(src);
 }
-
-
-bool Transcoder::equals(const char* str1, size_t len, const LogString& str2) {
-    if (len == str2.length()) {
-        LogString decoded;
-        decode(str1, len, decoded);
-        return decoded == str2;
-    }
-    return false;
-}
-
-
-bool Transcoder::equals(const wchar_t* str1, size_t len, const LogString& str2) {
-    if (len == str2.length()) {
-        LogString decoded;
-        decode(str1, len, decoded);
-        return decoded == str2;
-    }
-    return false;
-}
+#endif
 
 #endif
 
 
+#if LOG4CXX_LOGCHAR_IS_UTF8
+#include <apr_xlate.h>
+
+namespace log4cxx {
+  namespace helpers {
+    class Xlater {
+    private:
+      Xlater(const char* other) {
+         apr_status_t stat = apr_xlate_open(&decoder,
+             "UTF-8",
+             other,
+             (apr_pool_t*) pool.getAPRPool());
+         if (stat != APR_SUCCESS) {
+           throw TranscoderException(stat);
+         }
+         stat = apr_xlate_open(&encoder,
+             other,
+             "UTF-8",
+             (apr_pool_t*) pool.getAPRPool());
+         if (stat != APR_SUCCESS) {
+           throw TranscoderException(stat);
+         }
+      }
+
+      ~Xlater() {
+        apr_xlate_close(encoder);
+        apr_xlate_close(decoder);
+      }
+
+    public:
+      static const Xlater& getLocaleCharset() {
+        static Xlater localeCharset(APR_LOCALE_CHARSET);
+        return localeCharset;
+      }
+
+#if LOG4CXX_HAS_WCHAR_T
+      static const Xlater& getWideCharset() {
+        static Xlater wide("WCHAR_T");
+        return wide;
+      }
+#endif
+
+      apr_xlate_t* getEncoder() const { return encoder; }
+      apr_xlate_t* getDecoder() const { return decoder; }
+
+      static void decode(
+          apr_xlate_t* decoder,
+          const char* src,
+          size_t len,
+          LogString& dst) {
+        enum { BUFSIZE = 256 };
+        logchar buf[BUFSIZE];
+        const char* end = src + len;
+        for(const char* in = src;
+             in < end;) {
+             apr_size_t inBytesLeft = end - in;
+             apr_size_t outBytesLeft = BUFSIZE;
+             apr_status_t stat = apr_xlate_conv_buffer(decoder,
+                 in, &inBytesLeft, buf, &outBytesLeft);
+             if (stat != APR_INCOMPLETE && stat != APR_SUCCESS) {
+               throw TranscoderException(stat);
+             }
+             dst.append(buf, BUFSIZE - outBytesLeft);
+             if (stat == APR_INCOMPLETE) {
+               dst.append(1, '?');
+               return;
+             }
+             in = end - inBytesLeft;
+          }
+      }
+
+
+    private:
+      Pool pool;
+      apr_xlate_t* encoder;
+      apr_xlate_t* decoder;
+    };
+  }
+}
+
+
+
+void Transcoder::decode(const char* src, size_t len, LogString& dst) {
+  if (len > 0) {
+    apr_xlate_t* decoder = Xlater::getLocaleCharset().getDecoder();
+    Xlater::decode(decoder, src, len, dst);
+  }
+}
+
+#if LOG4CXX_HAS_WCHAR_T
+void Transcoder::decode(const wchar_t* src, size_t len, LogString& dst) {
+  if (len > 0) {
+    apr_xlate_t* decoder = Xlater::getWideCharset().getDecoder();
+    Xlater::decode(decoder, (const char*) src, len *sizeof(wchar_t), dst);
+  }
+}
+#endif
+
+
+void Transcoder::encode(const LogString& srcString, std::string& dst) {
+  if (srcString.length() > 0) {
+    apr_xlate_t* encoder = Xlater::getLocaleCharset().getEncoder();
+    char buf[BUFSIZE];
+    const logchar* src = srcString.data();
+    size_t len = srcString.length();
+    const char* end = src + len;
+    for(const char* in = src;
+         in < end;) {
+         apr_size_t inBytesLeft = end - in;
+         apr_size_t outBytesLeft = BUFSIZE;
+         apr_status_t stat = apr_xlate_conv_buffer(encoder,
+             in, &inBytesLeft, buf, &outBytesLeft);
+         if (stat != APR_INCOMPLETE && stat != APR_SUCCESS) {
+           throw TranscoderException(stat);
+         }
+         dst.append(buf, BUFSIZE - outBytesLeft);
+         if (stat == APR_INCOMPLETE) {
+           dst.append(1, '?');
+           return;
+         }
+         in = end - inBytesLeft;
+      }
+  }
+}
+
+#if LOG4CXX_HAS_WCHAR_T
+void Transcoder::encode(const LogString& srcString, std::wstring& dst) {
+  if (srcString.length() > 0) {
+    apr_xlate_t* encoder = Xlater::getWideCharset().getEncoder();
+    char buf[BUFSIZE];
+    const char* src = srcString.data();
+    size_t len = srcString.length() * sizeof(wchar_t);
+    const char* end = src + len;
+    for(const char* in = src;
+         in < end;) {
+         apr_size_t inBytesLeft = end - in;
+         apr_size_t outBytesLeft = BUFSIZE;
+         apr_status_t stat = apr_xlate_conv_buffer(encoder,
+             in, &inBytesLeft, buf, &outBytesLeft);
+         if (stat != APR_INCOMPLETE && stat != APR_SUCCESS) {
+           throw TranscoderException(stat);
+         }
+         dst.append((const wchar_t*) buf,
+              (BUFSIZE - outBytesLeft) / sizeof(wchar_t));
+         if (stat == APR_INCOMPLETE) {
+           dst.append(1, L'?');
+           return;
+         }
+         in = end - inBytesLeft;
+      }
+  }
+}
+#endif
+
+#endif
 
 

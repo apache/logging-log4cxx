@@ -20,6 +20,9 @@
 #include <ostream>
 #include <string>
 
+#if LOG4CXX_HAS_WCHAR_T
 std::ostream& operator<<(std::ostream& os,
                                const std::wstring& str);
+#endif
+
 #endif

@@ -594,8 +594,8 @@ void DOMConfigurator::setParameter(XMLDOMElementPtr elem, PropertySetter& propSe
 void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr& repository)
 {
         this->repository = repository;
-        std::wostringstream os(L"DOMConfigurator configuring file ");
-        os << filename.getName() << L"...";
+        std::basic_ostringstream<logchar> os(LOG4CXX_STR("DOMConfigurator configuring file "));
+        os << filename.getName() << LOG4CXX_STR("...");
         LogLog::debug(os.str());
 
         appenderBag = new AppenderMap();
@@ -614,8 +614,8 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
         catch (Exception& e)
         {
                 // I know this is miserable..
-        std::wostringstream os(L"Could not parse input source [");
-        os << filename.getName() << L"].";
+        std::basic_ostringstream<logchar> os(LOG4CXX_STR("Could not parse input source ["));
+        os << filename.getName() << LOG4CXX_STR("].");
                 LogLog::error(os.str(), e);
     }
 
@@ -624,49 +624,49 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 
 void DOMConfigurator::configure(const std::string& filename)
 {
-    LogString fn;
-    Transcoder::decode(filename, fn);
-        DOMConfigurator().doConfigure(fn, LogManager::getLoggerRepository());
+    LOG4CXX_DECODE_CHAR(fn, filename);
+    DOMConfigurator().doConfigure(fn, LogManager::getLoggerRepository());
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void DOMConfigurator::configure(const std::wstring& filename)
 {
-    LogString fn;
-    Transcoder::decode(filename, fn);
-        DOMConfigurator().doConfigure(fn, LogManager::getLoggerRepository());
+    LOG4CXX_DECODE_WCHAR(fn, filename);
+    DOMConfigurator().doConfigure(fn, LogManager::getLoggerRepository());
 }
+#endif
 
 void DOMConfigurator::configureAndWatch(const std::string& filename)
 {
-    LogString fn;
-    Transcoder::decode(filename, fn);
-        configureAndWatch(fn, FileWatchdog::DEFAULT_DELAY);
+  LOG4CXX_DECODE_CHAR(fn, filename);
+  configureAndWatch(fn, FileWatchdog::DEFAULT_DELAY);
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void DOMConfigurator::configureAndWatch(const std::wstring& filename)
 {
-    LogString fn;
-    Transcoder::decode(filename, fn);
-        configureAndWatch(fn, FileWatchdog::DEFAULT_DELAY);
+  LOG4CXX_DECODE_WCHAR(fn, filename);
+  configureAndWatch(fn, FileWatchdog::DEFAULT_DELAY);
 }
+#endif
 
 void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 {
-    LogString fn;
-    Transcoder::decode(filename, fn);
+  LOG4CXX_DECODE_CHAR(fn, filename);
         XMLWatchdog * xdog = new XMLWatchdog(fn);
         xdog->setDelay(delay);
         xdog->start();
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
 {
-    LogString fn;
-    Transcoder::decode(filename, fn);
+  LOG4CXX_DECODE_WCHAR(fn, filename);
         XMLWatchdog * xdog = new XMLWatchdog(fn);
         xdog->setDelay(delay);
         xdog->start();
 }
+#endif
 
 /**
  Used internally to configure the log4j framework by parsing a DOM

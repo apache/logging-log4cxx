@@ -89,7 +89,9 @@ namespace log4cxx
                 conversion fails, then this method returns #DEBUG.
                 */
                 static const LevelPtr& toLevel(const std::string& sArg);
+#if LOG4CXX_HAS_WCHAR_T
                 static const LevelPtr& toLevel(const std::wstring& sArg);
+#endif
 
                 /**
                 Convert an integer passed as argument to a level. If the
@@ -110,8 +112,10 @@ namespace log4cxx
                 */
                 static const LevelPtr& toLevel(const std::string& sArg,
                         const LevelPtr& defaultLevel);
+#if LOG4CXX_HAS_WCHAR_T
                 static const LevelPtr& toLevel(const std::wstring& sArg,
                         const LevelPtr& defaultLevel);
+#endif
 
                 enum {
                     OFF_INT = INT_MAX,
@@ -207,7 +211,9 @@ namespace log4cxx
                   return name;
                 }
                 void toString(std::string& name) const;
+#if LOG4CXX_HAS_WCHAR_T
                 void toString(std::wstring& name) const;
+#endif
 
                 /**
                 Returns the integer representation of this level.

@@ -139,6 +139,16 @@ namespace log4cxx
                       static std::string formatMessage(log4cxx_status_t stat);
                 };
 
+                class LOG4CXX_EXPORT TranscoderException : public Exception
+                {
+                public:
+                      TranscoderException(log4cxx_status_t stat);
+                      TranscoderException(const TranscoderException &src);
+                      TranscoderException& operator=(const TranscoderException&);
+                private:
+                      static std::string formatMessage(log4cxx_status_t stat);
+                };
+
                 class LOG4CXX_EXPORT IllegalMonitorStateException
                       : public Exception {
                 public:

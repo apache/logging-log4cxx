@@ -53,10 +53,27 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="os-detect">
         <condition property="is-unix" value="true">
-             <os family="unix"/>
+             <and>
+                  <not>
+                      <or>
+                          <isset property="is-windows"/>
+                          <equals arg1="${os.family}" arg2="windows"/>
+                      </or>
+                  </not>
+                  <or>
+                      <os family="unix"/>
+                      <equals arg1="${os.family}" arg2="unix"/>
+                  </or>
+             </and>
         </condition>
         <condition property="is-windows" value="true">
-                <os family="windows"/>
+             <and>
+                  <not><isset property="is-unix"/></not>
+                  <or>
+                       <os family="windows"/>
+                       <equals arg1="${os.family}" arg2="windows"/>
+                  </or>
+             </and>
         </condition>
 </target>
 
@@ -210,6 +227,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset if="is-bcc">
             <define name="EILSEQ" value="50"/>
         </defineset>
+        <project type="${project.type}" outfile="${project.dir}/aprutil" if="project.if"/>
     </cc>
 </target>
 
@@ -237,6 +255,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset dir="${aprutil.lib.dir}" libs="aprutil-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl crypt" if="is-unix"/>
+        <project type="${project.type}" outfile="${project.dir}/aprutil-test" if="project.if"/>
     </cc>
 </target>
 

@@ -126,11 +126,13 @@ int main( int argc, const char * const * argv)
         return wasSuccessful ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 std::ostream& operator<<(std::ostream& os,
                                const std::wstring& str) {
-    std::string encoded;
-    log4cxx::helpers::Transcoder::encode(str, encoded);
+    LOG4CXX_DECODE_WCHAR(tmp, str);
+    LOG4CXX_ENCODE_CHAR(encoded, tmp);
     os << encoded;
     return os;
 }
+#endif
 

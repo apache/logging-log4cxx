@@ -81,6 +81,8 @@ void LogLog::emit(const std::string& msg) {
     std::cerr << msg << std::endl;
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void LogLog::emit(const std::wstring& msg) {
     std::wcerr << msg << std::endl;
 }
+#endif

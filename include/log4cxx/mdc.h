@@ -61,7 +61,9 @@ namespace log4cxx
                 * <p>If the current thread does not have a context map it is
                 * created as a side effect.
                 * */
+#if LOG4CXX_HAS_WCHAR_T
                 static void put(const std::wstring& key, const std::wstring& value);
+#endif
                 static void put(const std::string& key, const std::string& value);
                 static void putLogString(const LogString& key, const LogString& value);
 
@@ -70,7 +72,9 @@ namespace log4cxx
                 *
                 *  <p>This method has no side effects.
                 * */
+#if LOG4CXX_HAS_WCHAR_T
                 static std::wstring get(const std::wstring& key);
+#endif
                 static std::string get(const std::string& key);
                 static bool get(const LogString& key, LogString& value);
 
@@ -78,7 +82,9 @@ namespace log4cxx
                 * Remove the the context identified by the <code>key</code>
                 * parameter. */
                 static std::string remove(const std::string& key);
+#if LOG4CXX_HAS_WCHAR_T
                 static std::wstring remove(const std::wstring& key);
+#endif
                 static bool remove(const LogString& key, LogString& prevValue);
 
                 /**

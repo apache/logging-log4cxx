@@ -59,7 +59,7 @@ public:
         void setUp()
         {
                 root = Logger::getRootLogger();
-                logger = Logger::getLogger(L"test");
+                logger = Logger::getLogger("test");
         }
 
         void tearDown()
@@ -95,7 +95,7 @@ public:
                         throw;
                 }
 
-        const File witness(L"witness/fallback");
+        const File witness("witness/fallback");
                 CPPUNIT_ASSERT(Compare::compare(FILTERED, witness));
         }
 
@@ -135,8 +135,8 @@ public:
 
 //CPPUNIT_TEST_SUITE_REGISTRATION(ErrorHandlerTestCase);
 
-const File ErrorHandlerTestCase::TEMP(L"output/temp");
-const File ErrorHandlerTestCase::FILTERED(L"output/filtered");
+const File ErrorHandlerTestCase::TEMP("output/temp");
+const File ErrorHandlerTestCase::FILTERED("output/filtered");
 
 
 #endif //HAVE_XML
