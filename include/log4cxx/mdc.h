@@ -85,7 +85,7 @@ namespace log4cxx
 		* Get the current thread's MDC as a Map. This method is
 		* intended to be used internally.
 		* */
-		static Map getContext();
+		static const Map getContext();
 	}; // class MDC;
 }; // namespace log4cxx
 

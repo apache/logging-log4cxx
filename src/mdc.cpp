@@ -84,7 +84,7 @@ void MDC::clear()
 	}
 }
 
-MDC::Map MDC::getContext()
+const MDC::Map MDC::getContext()
 {
 	Map * map = getCurrentThreadMap();
 	if(map != 0)
