@@ -19,7 +19,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-XMLTimestampFilter::XMLTimestampFilter() 
-    : Filter("timestamp=\"\\d{10,13}\"", "timestamp=\"XXX\"") {}
+XMLTimestampFilter::XMLTimestampFilter()
+    : Filter("timestamp=\"[0-9]{10,13}\"", "timestamp=\"XXX\"") {}
 
 

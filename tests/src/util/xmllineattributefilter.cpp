@@ -20,6 +20,6 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 XMLLineAttributeFilter::XMLLineAttributeFilter() {
-	patterns.push_back( PatternReplacement("file=\"[^ ]*[\\\\]", "file=\""));
-	patterns.push_back( PatternReplacement("line=\"\\d{1,3}\"", "line=\"X\""));
+        patterns.push_back( PatternReplacement("file=\"[^ ]*[\\\\]", "file=\""));
+        patterns.push_back( PatternReplacement("line=\"[0-9]{1,3}\"", "line=\"X\""));
 }

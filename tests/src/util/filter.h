@@ -23,11 +23,11 @@
 #include <log4cxx/helpers/exception.h>
 
 #define BASIC_PAT "\\[0x[0-9A-F]*] (FATAL|ERROR|WARN|INFO|DEBUG)"
-#define ISO8601_PAT "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}"
+#define ISO8601_PAT "^[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}"
 #define ABSOLUTE_DATE_AND_TIME_PAT \
-        "^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}"
-#define ABSOLUTE_TIME_PAT "^\\d{2}:\\d{2}:\\d{2},\\d{3}"
-#define RELATIVE_TIME_PAT "^\\d{1,10}"
+        "^[0-9]{1,2} .{2,6}\\.? 200[0-9] [0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}"
+#define ABSOLUTE_TIME_PAT "^[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}"
+#define RELATIVE_TIME_PAT "^[0-9]{1,10}"
 
 namespace log4cxx
 {
@@ -41,8 +41,8 @@ namespace log4cxx
             Filter();
             virtual ~Filter();
 
-			typedef std::pair<std::string, std::string> PatternReplacement;    
-			typedef std::vector <PatternReplacement> PatternList;        
+                        typedef std::pair<std::string, std::string> PatternReplacement;
+                        typedef std::vector <PatternReplacement> PatternList;
             const PatternList& getPatterns()  const{
                 return patterns;
             }

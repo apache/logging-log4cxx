@@ -44,7 +44,7 @@ using namespace log4cxx::helpers;
 
 #define TTCC_PAT  \
         ABSOLUTE_DATE_AND_TIME_PAT \
-        " \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}"
+        " \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]{1,2}"
 
 #define TTCC2_PAT \
         ABSOLUTE_DATE_AND_TIME_PAT \

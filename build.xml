@@ -104,6 +104,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <property name="cppunit.lib.dir" location="/usr/local/lib"/>
     <property name="cppunit.bin.dir" location="/usr/local/lib"/>
     <property name="cppunit.lib.name" value="cppunit"/>
+
+    <property name="expat.lib.name" value="expat"/>
 </target>
 
 <target name="init" depends="win-init, unix-init">
@@ -359,6 +361,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"
                 unless="apriconv.lib.dir"/>
+        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
+        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
         <project outfile="cbx/shortsocketserver" type="cbuilderx" if="gen-cbx"/>
@@ -398,6 +402,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
+        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
+        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
                 <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
@@ -434,6 +440,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
+        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
+        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
                 <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
@@ -470,6 +478,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
+        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
+        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
                 <syslibset libs="Ws2_32 ws2 advapi32" if="is-windows"/>
@@ -513,6 +523,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="${apriconv.lib.name}" unless="apriconv.lib.dir"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="${cppunit.lib.name}" dir="${cppunit.lib.dir}"/>
+        <libset libs="${expat.lib.name}" dir="${expat.lib.dir}" if="expat.lib.dir"/>
+        <libset libs="${expat.lib.name}" unless="expat.lib.dir" if="expat.lib.name"/>
 
         <includepath path="${include.dir}"/>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
