@@ -23,6 +23,7 @@
 #include <cwchar>
 #include <algorithm> // min & max
 #include <stdio.h> // sprintf
+#include <streambuf> // basic_streambuf
 
 class Convert
 {
@@ -187,11 +188,12 @@ inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
 
 namespace log4cxx
 {
-	class stringbuf : public std::basic_streambuf<TCHAR, std::char_traits<TCHAR> >
+	class stringbuf : public std::basic_streambuf<TCHAR>
 	{
 	public:
-		typedef TCHAR char_type;
-		typedef std::char_traits<char_type> traits_type;
+		typedef std::basic_streambuf<TCHAR> base;
+		typedef base::char_type char_type;
+		typedef base::traits_type traits_type;
 		typedef std::allocator<char_type> allocator_type;
 		typedef traits_type::int_type int_type;
 
@@ -205,7 +207,7 @@ namespace log4cxx
 		}
 
 		virtual int_type overflow(
-		int_type c = stringbuf::traits_type::eof())
+			int_type c = stringbuf::traits_type::eof())
 		{
 			using namespace std;
 
@@ -222,7 +224,7 @@ namespace log4cxx
 			}
 			else
 			{
-				size_t os = pptr() - b; // taille allouée
+				size_t os = epptr() - b; // taille allouée
 				size_t is =
 					_max(_min((os * 2), _MaxInc), _MinInc)
 					+ 1; // incrément d'allocation
@@ -276,6 +278,22 @@ namespace log4cxx
 			}
 
 			return ret;
+		}
+
+		virtual pos_type seekpos(pos_type pos,
+			std::ios_base::openmode mode = std::ios_base::in | std::ios_base::out)
+		{
+			std::streamoff off = (std::streamoff)pos;
+			if (pbase() + off > epptr())
+			{
+				return pos_type(-1);
+			}
+			else
+			{
+				setp(pbase(), epptr());
+				pbump(off);
+				return pos;
+			}
 		}
 
 	protected:
