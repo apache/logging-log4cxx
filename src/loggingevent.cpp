@@ -36,7 +36,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 int64_t LoggingEvent::startTime = System::currentTimeMillis();
 
 LoggingEvent::LoggingEvent()
-: timeStamp(0), level(Level::OFF), ndcLookupRequired(true), line(0),
+: timeStamp(0), ndcLookupRequired(true), line(0),
 mdcCopyLookupRequired(true)
 {
 }

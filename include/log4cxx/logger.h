@@ -233,12 +233,12 @@ namespace log4cxx
 
 		/**
         Starting from this logger, search the logger hierarchy for a
-
-        non-{@link Level#OFF OFF} level and return it. Otherwise,
-		return the level of the root logger.
+        non-null level and return it.
 
         <p>The Logger class is designed so that this method executes as
         quickly as possible.
+		
+		@throws RuntimeException if all levels are null in the hierarchy
         */
         virtual const LevelPtr& getEffectiveLevel();
 
@@ -267,7 +267,7 @@ namespace log4cxx
         /**
         Returns the assigned Level, if any, for this Logger.
 
-        @return Level - the assigned Level, can be {@link Level#OFF OFF}.
+        @return Level - the assigned Level, can be null.
         */
         const LevelPtr& getLevel();
 
@@ -450,7 +450,7 @@ namespace log4cxx
         <p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::DEBUG); </pre>
 
 
-        <p><code>Level#OFF<code> values are admitted.  */
+        <p>Null values are admitted.  */
 
 	public:
         virtual void setLevel(const LevelPtr& level);

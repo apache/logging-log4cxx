@@ -35,9 +35,9 @@ const LevelPtr& RootCategory::getEffectiveLevel()
 
 void RootCategory::setLevel(const LevelPtr& level)
 {
-	if(level == Level::OFF)
+	if(level == 0)
 	{
-		LogLog::error(_T("You have tried to set an OFF level to root."));
+		LogLog::error(_T("You have tried to set a null level to root."));
 	}
 	else
 	{

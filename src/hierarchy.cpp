@@ -101,16 +101,19 @@ LoggerPtr Hierarchy::exists(const String& name)
 	
 void Hierarchy::setThreshold(const LevelPtr& l)
 {
-	thresholdInt = l->level;
-	threshold = l;
+	if (l != 0)
+	{
+		thresholdInt = l->level;
+		threshold = l;
+	}
 }
 
 void Hierarchy::setThreshold(const String& levelStr)
 
 {
-	const LevelPtr& l = Level::toLevel(levelStr, Level::OFF);
+	const LevelPtr& l = Level::toLevel(levelStr, 0);
 
-	if(l != Level::OFF)
+	if(l != 0)
 	{
 		setThreshold(l);
 	} 
@@ -236,7 +239,7 @@ void Hierarchy::resetConfiguration()
 	for (it = loggers.begin(); it != itEnd; it++)
 	{
 		LoggerPtr& logger = *it;
-		logger->setLevel(Level::OFF);
+		logger->setLevel(0);
 		logger->setAdditivity(true);
 		//logger->setResourceBundle(0);
 	}

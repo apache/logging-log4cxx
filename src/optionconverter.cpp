@@ -222,7 +222,7 @@ String OptionConverter::substVars(const String& val, Properties& props)
 				oss << _T("\"") << val
 					<< _T("\" has no closing brace. Opening brace at position ")
 					<< j << _T(".");
-				throw new IllegalArgumentException(oss.str());
+				throw IllegalArgumentException(oss.str());
 			}
 			else
 			{
@@ -286,8 +286,8 @@ const LevelPtr& OptionConverter::toLevel(const String& value,
 		}
 		else
 		{
-			LogLog::debug("OptionConverter::toLevel: no class name specified,"
-			" level=["+value+"]");
+			LogLog::debug(_T("OptionConverter::toLevel: no class name specified,")
+			_T(" level=[")+value+_T("]"));
 			// no class name specified : use standard Level class
 			return Level::toLevel(value, defaultValue);
 		}
@@ -297,8 +297,8 @@ const LevelPtr& OptionConverter::toLevel(const String& value,
 
 	String clazz = value.substr(hashIndex + 1);
 	String levelName = value.substr(0, hashIndex);
-	LogLog::debug("OptionConverter::toLevel: class=[" +clazz+"], level=["+
-		levelName+"]");
+	LogLog::debug(_T("OptionConverter::toLevel: class=[") +clazz+_T("], level=[")+
+		levelName+_T("]"));
 
 	// This is degenerate case but you never know.
 	if (levelName.empty())

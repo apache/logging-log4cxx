@@ -27,7 +27,7 @@ namespace log4cxx
         RootCategory sits at the top of the logger hierachy. It is a
         regular logger except that it provides several guarantees.
 
-        <p>First, it cannot be assigned an <code>Level#OFF</code>
+        <p>First, it cannot be assigned a null
         level. Second, since root logger cannot have a parent, the
         #getEffectiveLevel method always returns the value of the
         level field without walking the hierarchy.
@@ -48,8 +48,8 @@ namespace log4cxx
             virtual const LevelPtr& getEffectiveLevel();
 
             /**
-            Setting a <code>Level#OFF</code> value to the level of the root
-			logger may have catastrophic results. We prevent this here.
+			Setting a null value to the level of the root category may have catastrophic
+			results. We prevent this here.
 			*/
             void setLevel(const LevelPtr& level);
 		};

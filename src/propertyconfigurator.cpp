@@ -305,7 +305,7 @@ void PropertyConfigurator::parseCategory(
 			}
 			else
 			{
-				logger->setLevel(Level::OFF);
+				logger->setLevel(0);
 			}
 		}
 		else

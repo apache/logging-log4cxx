@@ -56,13 +56,13 @@ else if (StringHelper::equalsIgnoreCase(option, LEVEL_MAX_OPTION))
 Filter::FilterDecision LevelRangeFilter::decide(
 	const spi::LoggingEventPtr& event)
 {
-	if (!event->getLevel()->isGreaterOrEqual(levelMin))
+	if (levelMin != 0 && !event->getLevel()->isGreaterOrEqual(levelMin))
 	{
 		// level of event is less than minimum
 		return Filter::DENY;
 	}
 
-	if (event->getLevel()->toInt() > levelMax->toInt())
+	if (levelMax != 0 && event->getLevel()->toInt() > levelMax->toInt())
 	{
 		// level of event is greater than maximum
 		// Alas, there is no Level.isGreater method. and using

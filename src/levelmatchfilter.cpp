@@ -31,7 +31,7 @@ String LevelMatchFilter::LEVEL_TO_MATCH_OPTION = _T("LevelToMatch");
 String LevelMatchFilter::ACCEPT_ON_MATCH_OPTION = _T("AcceptOnMatch");
 
 LevelMatchFilter::LevelMatchFilter()
-: acceptOnMatch(true), levelToMatch(Level::OFF)
+: acceptOnMatch(true)
 {
 }
 
@@ -61,9 +61,9 @@ const String& LevelMatchFilter::getLevelToMatch() const
 Filter::FilterDecision LevelMatchFilter::decide(
 	const log4cxx::spi::LoggingEventPtr& event)
 {
-	if(this->levelToMatch->equals(event->getLevel()))
+	if(levelToMatch != 0 && levelToMatch->equals(event->getLevel()))
 	{
-		if(this->acceptOnMatch)
+		if(acceptOnMatch)
 		{
 			return Filter::ACCEPT;
 		}

@@ -63,7 +63,7 @@ void AppenderSkeleton::clearFilters()
 
 bool AppenderSkeleton::isAsSevereAsThreshold(LevelPtr level)
 {
-	return level->isGreaterOrEqual(threshold);
+	return ((level == 0) || level->isGreaterOrEqual(threshold));
 }
 
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)

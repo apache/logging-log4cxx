@@ -515,7 +515,7 @@ void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, boo
 		} 
 		else
 		{
-			logger->setLevel(Level::OFF);
+			logger->setLevel(0);
 		}
     } 
 	else

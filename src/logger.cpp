@@ -32,7 +32,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Logger)
 String Logger::FQCN = Logger::getStaticClass().getName();
 
 Logger::Logger(const String& name)
-: name(name), level(Level::OFF), additive(true), repository(0)
+: name(name), additive(true), repository(0)
 {
 }
 
@@ -179,13 +179,13 @@ const LevelPtr& Logger::getEffectiveLevel()
 {
 	for(Logger * l = this; l != 0; l=l->parent)
 	{
-		if(l->level != Level::OFF)
+		if(l->level != 0)
 		{
 			return l->level;
 		}
 	}
 
-	return Level::OFF; // If reached will cause an NullPointerException.
+	throw RuntimeException(_T("level is null for logger") + name);
 }
 
 LoggerRepositoryPtr Logger::getLoggerRepository()
