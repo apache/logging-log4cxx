@@ -82,6 +82,13 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-debug" value="true">
             <istrue value="${debug}"/>
         </condition>
+        <condition property="pic-option" value="-fPIC">
+                <and>
+                        <isset property="is-gcc"/>
+                        <istrue value="${use-pic}"/>
+                </and>
+        </condition>
+
         <condition property="aprutil.lib.dir" value="${build.dir}/debug/${aprutil.lib.type}">
             <isset property="is-debug"/>
         </condition>
@@ -194,6 +201,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="APR_DECLARE_STATIC" if="is-apr-shared"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset dir="${apriconv.lib.dir}" libs="apriconv${lib-suffix}"/>
@@ -224,6 +232,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset dir="${aprutil.lib.dir}" libs="aprutil-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
@@ -387,6 +396,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset dir="${aprutil.lib.dir}" libs="aprutil-1${lib-suffix}"/>
         <libset libs="pthread dl crypt" if="is-unix"/>

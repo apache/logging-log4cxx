@@ -140,6 +140,13 @@ Common command line options:
         </or>
     </condition>
 
+    <condition property="pic-option" value="-fPIC">
+        <and>
+                <isset property="is-gcc"/>
+                <istrue value="${use-pic}"/>
+        </and>
+    </condition>
+
     <property name="lib.prefix" value="lib"/>
     <property name="lib.extension" value=".a"/>
     <property name="project.type" value="cbuilderx"/>
@@ -357,6 +364,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="project.type" value="${project.type}"/>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
+        <property name="use-pic" value="${use-pic}"/>
     </ant>
 </target>
 
@@ -396,6 +404,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="project.type" value="${project.type}"/>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
+        <property name="use-pic" value="${use-pic}"/>
     </ant>
 </target>
 
@@ -442,6 +451,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="project.type" value="${project.type}"/>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
+        <property name="use-pic" value="${use-pic}"/>
     </ant>
 </target>
 
@@ -476,6 +486,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="project.type" value="${project.type}"/>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
+        <property name="use-pic" value="${use-pic}"/>
     </ant>
     <property name="cppunit.include.dir" value="${cppunit.dir}/include"/>
     <property name="cppunit.lib.dir" value="${executable.dir}/${cppunit.lib.type}"/>
@@ -519,6 +530,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 projectsOnly="${projectsOnly}">
                 <compilerarg value="-Weffc++"/>
                 <compilerarg value="-Wall"/>
+                <compilerarg value="${pic-option}" if="pic-option"/>
                 <fileset dir="${build.dir}/header-check" includes="**/*.cpp"/>
                 <includepath path="mock"/>
                 <includepath path="include"/>
@@ -558,6 +570,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="advapi32 odbc32 ws2_32" if="is-windows"/>
         <libset libs="stdc++" if="is-gcc"/>
         <libset libs="cw32mt" if="is-bcc"/>
@@ -597,6 +610,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="API_DECLARE_STATIC" if="iconv-static"/>
 
+        <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
 
@@ -700,6 +714,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </fileset>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
@@ -741,6 +756,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="WIN32" if="is-windows"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
@@ -785,6 +801,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="WIN32" if="is-windows"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>

@@ -71,6 +71,13 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="init" depends="win-init, unix-init">
         <property environment="env"/>
+        <condition property="pic-option" value="-fPIC">
+                <and>
+                        <isset property="is-gcc"/>
+                        <istrue value="${use-pic}"/>
+                </and>
+        </condition>
+
         <condition property="is-debug" value="true">
             <istrue value="${debug}"/>
         </condition>
@@ -157,6 +164,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <libset libs="pthread dl" if="is-unix"/>
         <libset libs="cw32mt" if="is-bcc"/>
@@ -179,6 +187,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl" if="is-unix"/>
@@ -309,6 +318,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <project type="${project.type}" outfile="${project.dir}/mod_test" if="project.if"/>
@@ -347,6 +357,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl" if="is-unix"/>
