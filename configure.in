@@ -195,7 +195,10 @@ case "$ac_with_thread" in
 esac
 
 # for SocketAppender
-AC_CHECK_FUNC(socket)
+AC_CHECK_FUNCS(gethostbyname,,
+	[AC_CHECK_LIB(nsl,gethostbyname,,
+	[AC_CHECK_LIB(socket,gethostbyname)])])
+AC_CHECK_FUNCS(setsockopt,,[AC_CHECK_LIB(socket,setsockopt)]) 
 
 # for DOMConfigurator
 AC_MSG_CHECKING(for XML support)
