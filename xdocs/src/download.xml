@@ -24,6 +24,10 @@
       <th>tar.gz</th>
     </tr> 
     <tr align="center">
+      <td>2004-04-11</td>
+        <td><a href="log4cxx-0.9.6.tar.gz">log4cxx-0.9.6.tar.gz</a></td>
+    </tr>
+    <tr align="center">
       <td>2004-02-04</td>
         <td><a href="log4cxx-0.9.5.tar.gz">log4cxx-0.9.5.tar.gz</a></td>
     </tr>
