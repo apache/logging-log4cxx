@@ -81,10 +81,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-debug" value="true">
             <istrue value="${debug}"/>
         </condition>
-        <condition property="apriconv.lib.dir" value="${build.dir}/debug/${aprutil.lib.type}">
+        <condition property="apriconv.lib.dir" value="${build.dir}/debug/${apriconv.lib.type}">
             <isset property="is-debug"/>
         </condition>
-        <property name="apriconv.lib.dir" location="${build.dir}/release/${aprutil.lib.type}"/>
+        <property name="apriconv.lib.dir" location="${build.dir}/release/${apriconv.lib.type}"/>
         <mkdir dir="${apriconv.lib.dir}"/>
         <condition property="lib-suffix" value="d">
             <isset property="is-debug"/>
@@ -124,7 +124,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <target name="win-configure" depends="configure-check" if="is-windows" unless="config-available">
-    <copy tofile="${base.dir}/lib/apr_iconv_private.h" 
+    <copy tofile="${base.dir}/lib/apr_iconv_private.h"
         file="${base.dir}/lib/apr_iconv_private.h.in"
         failonerror="false"/>
 </target>
@@ -232,7 +232,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
     <foreach target="build-module" param="module.src">
         <path>
-           <fileset dir="${base.dir}/ccs" 
+           <fileset dir="${base.dir}/ccs"
                 includes="*.c"
                 excludes="c*.c i*.c w*.c"/>
         </path>

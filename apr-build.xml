@@ -70,6 +70,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="init" depends="win-init, unix-init">
+        <property environment="env"/>
         <condition property="is-debug" value="true">
             <istrue value="${debug}"/>
         </condition>
@@ -130,6 +131,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         multithreaded="true"
         outtype="${apr.lib.type}"
         objdir="${apr.lib.dir}/apr_obj"
+        outputfileproperty="apr-1.dll"
         debug="${debug}">
         <fileset dir="${base.dir}" includes="**/${arch}/*.c" excludes="**/apr_app.c"/>
         <fileset dir="${base.dir}/file_io/unix" includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"/>
@@ -156,6 +158,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
+        <libset libs="pthread dl" if="is-unix"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <project type="${project.type}" outfile="${project.dir}/apr" if="project.if"/>
     </cc>
@@ -175,8 +178,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
         </defineset>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <libset libs="pthread dl" if="is-unix"/>
         <project type="${project.type}" outfile="${project.dir}/${test}" if="project.if"/>
     </cc>
 </target>
@@ -213,12 +218,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     </antcall>
 </target>
 
-<target name="run-testshmproducer" depends="build-testshmproducer">
-    <antcall target="run-test">
-        <param name="test" value="testshmproducer"/>
-    </antcall>
-</target>
-
 <target name="build-testshmconsumer" depends="build">
     <antcall target="build-test">
         <param name="test" value="testshmconsumer"/>
@@ -226,11 +225,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     </antcall>
 </target>
 
-<target name="run-testshmconsumer" depends="build-testshmconsumer">
-    <antcall target="run-test">
-        <param name="test" value="testshmconsumer"/>
-    </antcall>
-</target>
 
 <target name="build-testmutexscope" depends="build">
     <antcall target="build-test">
@@ -252,24 +246,13 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     </antcall>
 </target>
 
-<target name="run-occhild" depends="build-occhild">
-    <antcall target="run-test">
-        <param name="test" value="occhild"/>
-    </antcall>
-</target>
-
-<target name="build-mockchild" depends="build">
+<target name="build-sockchild" depends="build">
     <antcall target="build-test">
-        <param name="test" value="mockchild"/>
-        <param name="testfiles" value="mockchild.c"/>
+        <param name="test" value="sockchild"/>
+        <param name="testfiles" value="sockchild.c"/>
     </antcall>
 </target>
 
-<target name="run-mockchild" depends="build-mockchild">
-    <antcall target="run-test">
-        <param name="test" value="mockchild"/>
-    </antcall>
-</target>
 
 <target name="build-readchild" depends="build">
     <antcall target="build-test">
@@ -278,22 +261,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     </antcall>
 </target>
 
-<target name="run-readchild" depends="build-readchild">
-    <antcall target="run-test">
-        <param name="test" value="readchild"/>
-    </antcall>
-</target>
 
 <target name="build-globalmutexchild" depends="build">
     <antcall target="build-test">
         <param name="test" value="globalmutexchild"/>
         <param name="testfiles" value="globalmutexchild.c"/>
-    </antcall>
-</target>
-
-<target name="run-globalmuxtexchild" depends="build-globalmutexchild">
-    <antcall target="run-test">
-        <param name="test" value="globalmutexchild"/>
     </antcall>
 </target>
 
@@ -304,24 +276,13 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     </antcall>
 </target>
 
-<target name="run-tryread" depends="build-tryread">
-    <antcall target="run-test">
-        <param name="test" value="tryread"/>
-    </antcall>
-</target>
-
-<target name="build-procchild" depends="build">
+<target name="build-proc_child" depends="build">
     <antcall target="build-test">
-        <param name="test" value="procchild"/>
-        <param name="testfiles" value="procchild.c"/>
+        <param name="test" value="proc_child"/>
+        <param name="testfiles" value="proc_child.c"/>
     </antcall>
 </target>
 
-<target name="run-procchild" depends="build-procchild">
-    <antcall target="run-test">
-        <param name="test" value="procchild"/>
-    </antcall>
-</target>
 
 <target name="build-sendfile" depends="build">
     <antcall target="build-test">
@@ -329,6 +290,32 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <param name="testfiles" value="sendfile.c"/>
     </antcall>
 </target>
+
+
+<target name="build-mod_test" depends="build">
+    <mkdir dir="${apr.lib.dir}/apr_obj"/>
+    <mkdir dir="${apr.lib.dir}/.libs"/>
+    <cc name="${compiler}"
+        outfile="${apr.lib.dir}/.libs/mod_test"
+        subsystem="console"
+        multithreaded="true"
+        outtype="shared"
+        objdir="${apr.lib.dir}/apr_obj"
+        outputfileproperty="libmod_test.so"
+        debug="${debug}">
+        <fileset dir="${base.dir}/test" includes="mod_test.c"/>
+        <includepath path="${include.dir}"/>
+        <defineset if="is-windows">
+            <define name="WIN32" value="1"/>
+        </defineset>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
+        <libset libs="cw32mt" if="is-bcc"/>
+        <project type="${project.type}" outfile="${project.dir}/mod_test" if="project.if"/>
+    </cc>
+    <copy file="${libmod_test.so}" tofile="${apr.lib.dir}/.libs/mod_test.so"/>
+</target>
+
 
 <target name="build-testall" depends="build">
     <mkdir dir="${apr.lib.dir}/apr_obj"/>
@@ -359,33 +346,41 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
         </defineset>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <libset libs="pthread dl" if="is-unix"/>
         <project type="${project.type}" outfile="${project.dir}/testall" if="project.if"/>
     </cc>
 </target>
 
-<target name="run-testall" depends="build-testall">
-    <antcall target="run-test">
-        <param name="test" value="testall"/>
-    </antcall>
+<target name="run-testall" depends="build-testall, build-mod_test, build-tryread, build-readchild, build-globalmutexchild, build-occhild, build-proc_child, build-testshmconsumer, build-testshmproducer, build-sockchild">
+    <mkdir dir="${apr.lib.dir}/data"/>
+    <copy todir="${apr.lib.dir}/data">
+        <fileset dir="${base.dir}/test/data" includes="*"/>
+    </copy>
+    <exec executable="${apr.lib.dir}/testall"
+          dir="${apr.lib.dir}"
+          failonerror="true">
+        <env key="DYLD_LIBRARY_PATH"
+           value="${apr.lib.dir}:${apr.lib.dir}/.libs:${env.DYLD_LIBRARY_PATH}"/>
+        <env key="LD_LIBRARY_PATH"
+           value="${apr.lib.dir}:${apr.lib.dir}/.libs:${env.LD_LIBRARY_PATH}"/>
+    </exec>
 </target>
 
 
 
-<target name="build-check" 
-     depends="build-testlockperf, 
+<target name="build-check"
+     depends="build-testlockperf,
               build-testshmproducer,
               build-testshmconsumer,
               build-testmutexscope,
               build-testall"
      description="Builds all test applications"/>
 
-<target name="check" 
-      depends="run-testlockperf, 
-               run-testshmproducer,
-               run-testshmconsumer,
-               run-testmutexscope,
+<target name="check"
+      depends="run-testlockperf,
                run-testall"
       description="Runs all test applications">
 </target>

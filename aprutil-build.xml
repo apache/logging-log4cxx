@@ -78,6 +78,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="init" depends="win-init, unix-init">
+        <property environment="env"/>
         <condition property="is-debug" value="true">
             <istrue value="${debug}"/>
         </condition>
@@ -136,6 +137,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <copy tofile="${include.dir}/apu.h" file="${include.dir}/apu.hw"/>
     <copy tofile="${include.dir}/apu_want.h" file="${include.dir}/apu_want.hw"/>
     <copy tofile="${include.dir}/apr_ldap.h" file="${include.dir}/apr_ldap.hw"/>
+    <replaceregex file="${include.dir}/apr_ldap.h" match="#define APR_HAS_LDAP.*" value="#define APR_HAS_LDAP 0"/>
     <copy tofile="${include.dir}/private/apu_config.h" file="${include.dir}/private/apu_config.hw"/>
     <copy tofile="${include.dir}/private/apu_select_dbm.h" file="${include.dir}/private/apu_select_dbm.hw"/>
     <copy tofile="${base.dir}/xml/expat/lib/expat.h" file="${base.dir}/xml/expat/lib/expat.h.in"/>
@@ -196,6 +198,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset dir="${apriconv.lib.dir}" libs="apriconv${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <libset libs="pthread dl crypt" if="is-unix"/>
         <defineset if="is-bcc">
             <define name="EILSEQ" value="50"/>
         </defineset>
@@ -215,14 +218,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
-        <defineset define="API_DECLARE_STATIC" if="is-apriconv-shared"/>
-        <defineset define="APR_DECLARE_STATIC" if="is-apr-shared"/>
+        <defineset define="API_DECLARE_STATIC" unless="is-apriconv-shared"/>
+        <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
         </defineset>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset dir="${aprutil.lib.dir}" libs="aprutil-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
+        <libset libs="pthread dl crypt" if="is-unix"/>
     </cc>
 </target>
 
@@ -372,18 +377,19 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <exclude name="testreslist.c"/>
             <exclude name="testqueue.c"/>
             <exclude name="testxlate.c"/>
-            <exclude name="testldap.c"/>
         </fileset>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
-        <defineset define="API_DECLARE_STATIC" if="is-apriconv-shared"/>
-        <defineset define="APR_DECLARE_STATIC" if="is-apr-shared"/>
+        <defineset define="API_DECLARE_STATIC" unless="is-apriconv-shared"/>
+        <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
         </defineset>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset dir="${aprutil.lib.dir}" libs="aprutil-1${lib-suffix}"/>
+        <libset libs="pthread dl crypt" if="is-unix"/>
         <libset libs="cw32mt" if="is-bcc"/>
     </cc>
 </target>
@@ -396,7 +402,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 
-<target name="build-check" 
+<target name="build-check"
     depends="build-testdbm,
              build-testdbd,
              build-testdate,
@@ -408,7 +414,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
              build-testall"
     description="Builds all tests"/>
 
-<target name="check" 
+<target name="check"
     depends="build-testdbm,
              build-testdbd,
              run-testdate,
