@@ -78,7 +78,7 @@ namespace log4cxx
 	underlying file is rolled over at a user chosen frequency.
 
 	<p>The rolling schedule is specified by the <b>DatePattern</b>
-	option. This pattern should follow the {@link SimpleDateFormat}
+	option. This pattern should follow the helpers::DateFormat
 	conventions. In particular, you <em>must</em> escape literal text
 	within a pair of single quotes. A formatted version of the date
 	pattern is used as the suffix for the rolled file name.
@@ -196,7 +196,7 @@ namespace log4cxx
 
 		/**
 		The <b>DatePattern</b> takes a string in the same format as
-		expected by {@link SimpleDateFormat}. This options determines the
+		expected by helpers::DateFormat. This options determines the
 		rollover schedule.
 		*/
 		inline void setDatePattern(const String& pattern)

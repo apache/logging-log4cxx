@@ -60,7 +60,7 @@ namespace log4cxx
 			
 			@param baseName the base name of the resource bundle, a fully
 			qualified class name or property filename
-			@locale the locale for which a resource bundle is desired
+			@param locale the locale for which a resource bundle is desired
 			*/
 			static ResourceBundlePtr getBundle(const String& baseName,
 				const Locale& locale);

@@ -24,6 +24,10 @@ namespace log4cxx
 {
 	namespace helpers
 	{
+		/** 
+		Concrete class for formatting and parsing dates in a 
+		locale-sensitive manner.
+		*/
 		class LOG4CXX_EXPORT DateFormat
 		{
 		public:

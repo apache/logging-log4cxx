@@ -51,7 +51,7 @@ namespace log4cxx
 		
 		/**
 		The encoding to use when opening an input stream.  
-		<p>The <code>encoding</code> variable is set to <code>""</null> by
+		<p>The <code>encoding</code> variable is set to <code>""</code> by
 		default which results in the utilization of the system's default
 		encoding.  */
 		String encoding;

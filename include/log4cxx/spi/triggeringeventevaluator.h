@@ -35,7 +35,7 @@ namespace log4cxx
 		Implementions of this interface allow certain appenders to decide
 		when to perform an appender specific action.
 
-		<p>For example the {@net::SMTPAppender SMTPAppender} sends
+		<p>For example the {@link net::SMTPAppender SMTPAppender} sends
 		an email when the #isTriggeringEvent method returns
 		<code>true</code> and adds the event to an internal buffer when the
 		returned result is <code>false</code>.

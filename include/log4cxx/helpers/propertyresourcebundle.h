@@ -43,8 +43,9 @@ namespace log4cxx
 			
 			/**
 			Creates a property resource bundle.
-			@param stream property file to read from.
-			@throw IOException
+			@param inStream property file to read from.
+			@throw IOException if an error occurred when reading from the
+			input stream.
 			*/
 			PropertyResourceBundle(istream& inStream);
 

@@ -30,7 +30,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT Loader
 		{
 		public:
-			static const Class& Loader::loadClass(const String& clazz);
+			static const Class& loadClass(const String& clazz);
 			static String getResource(const String& name);
 			static istream * getResourceAsStream(const String& name);
 		};

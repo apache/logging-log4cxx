@@ -40,29 +40,27 @@ namespace log4cxx
 
         <p>The SocketAppender has the following properties:
 
-        <ul>
-
-        <p><li>If sent to a {@link net::SocketNode SocketNode}, remote logging
+        - If sent to a {@link net::SocketNode SocketNode}, remote logging
 		is non-intrusive as far as the log event is concerned. In other
         words, the event will be logged with the same time stamp, {@link
         NDC NDC}, location info as if it were logged locally by
         the client.
 
-        <p><li>SocketAppenders do not use a layout. They ship a
+        - SocketAppenders do not use a layout. They ship a
         serialized {@link spi::LoggingEvent LoggingEvent} object
 		to the server side.
 
-        <p><li>Remote logging uses the TCP protocol. Consequently, if
+        - Remote logging uses the TCP protocol. Consequently, if
         the server is reachable, then log events will eventually arrive
         at the server.
 
-        <p><li>If the remote server is down, the logging requests are
+        - If the remote server is down, the logging requests are
         simply dropped. However, if and when the server comes back up,
         then event transmission is resumed transparently. This
         transparent reconneciton is performed by a <em>connector</em>
         thread which periodically attempts to connect to the server.
 
-        <p><li>Logging events are automatically <em>buffered</em> by the
+        - Logging events are automatically <em>buffered</em> by the
         native TCP implementation. This means that if the link to server
         is slow but still faster than the rate of (log) event production
         by the client, the client will not be affected by the slow
@@ -70,35 +68,29 @@ namespace log4cxx
         then the rate of event production, then the client can only
         progress at the network rate. In particular, if the network link
         to the the server is down, the client will be blocked.
-
-        <p>On the other hand, if the network link is up, but the server
+        @n @n On the other hand, if the network link is up, but the server
         is down, the client will not be blocked when making log requests
         but the log events will be lost due to server unavailability.
 
-        <p><li>Even if a <code>SocketAppender</code> is no longer
+        - Even if a <code>SocketAppender</code> is no longer
         attached to any logger, it will not be destroyed in
         the presence of a connector thread. A connector thread exists
         only if the connection to the server is down. To avoid this
         destruction problem, you should #close the the
         <code>SocketAppender</code> explicitly. See also next item.
-
-        <p>Long lived applications which create/destroy many
+        @n @n Long lived applications which create/destroy many
         <code>SocketAppender</code> instances should be aware of this
         destruction problem. Most other applications can safely
         ignore it.
 
-        <p><li>If the application hosting the <code>SocketAppender</code>
+        - If the application hosting the <code>SocketAppender</code>
 		exits before the <code>SocketAppender</code> is closed either
         explicitly or subsequent to destruction, then there might
         be untransmitted data in the pipe which might be lost.
-
-        <p>To avoid lost data, it is usually sufficient to 
+        @n @n To avoid lost data, it is usually sufficient to 
         #close the <code>SocketAppender</code> either explicitly or by
         calling the LogManager#shutdown method
         before exiting the application.
-
-
-        </ul>
         */
         
       	class LOG4CXX_EXPORT SocketAppender : public AppenderSkeleton

@@ -76,6 +76,10 @@ namespace log4cxx
         ancestor which is the root logger. */
         LoggerPtr parent;
 
+		/** The resourceBundle for localized messages.
+		
+		@see setResourceBundle, getResourceBundle
+		*/
 		helpers::ResourceBundlePtr resourceBundle;
 		
 		/**
@@ -428,10 +432,17 @@ namespace log4cxx
         bool isFatalEnabled() const;
 
 		/**
-		Log a localized and parameterized message. First, the user supplied
+		Log a localized and parameterized message. 
+		
+		First, the user supplied
 		<code>key</code> is searched in the resource bundle. Next, the resulting
-		pattern is formatted using StringHelper#format method with the user
+		pattern is formatted using helpers::StringHelper::format method with the user
 		supplied object array <code>params</code>.
+		
+        @param level The level of the logging request.
+        @param key The key to be searched in the #resourceBundle.
+        @param file The source file of the logging request, may be null.
+        @param line The number line of the logging request.
 		
 		@see #setResourceBundle
 		*/
@@ -516,56 +527,133 @@ namespace log4cxx
    };
 };
 
+/** @addtogroup macros
+@{
+*/
+
+/** 
+Logs a message to a specified logger with a specified level.
+
+@param logger the logger to be used.
+@param level the level to log.
+@param message the message string to log.
+*/
 #define LOG4CXX_LOG(logger, level, message) { \
 	if (logger->isEnabledFor(level)) {\
 	StringBuffer oss; \
 	oss << message; \
 	logger->log(level, oss.str(), __FILE__, __LINE__); }}
 
+/** 
+Logs a message to a specified logger with the DEBUG level.
+
+@param logger the logger to be used.
+@param message the message string to log.
+*/
 #define LOG4CXX_DEBUG(logger, message) { \
 	if (logger->isDebugEnabled()) {\
 	StringBuffer oss; \
 	oss << message; \
 	logger->debug(oss.str(), __FILE__, __LINE__); }}
 
+/** 
+Logs a message to a specified logger with the INFO level.
+
+@param logger the logger to be used.
+@param message the message string to log.
+*/
 #define LOG4CXX_INFO(logger, message) { \
 	if (logger->isInfoEnabled()) {\
 	StringBuffer oss; \
 	oss << message; \
 	logger->info(oss.str(), __FILE__, __LINE__); }}
 
+/** 
+Logs a message to a specified logger with the WARN level.
+
+@param logger the logger to be used.
+@param message the message string to log.
+*/
 #define LOG4CXX_WARN(logger, message) { \
 	if (logger->isWarnEnabled()) {\
 	StringBuffer oss; \
 	oss << message; \
 	logger->warn(oss.str(), __FILE__, __LINE__); }}
 
+/** 
+Logs a message to a specified logger with the ERROR level.
+
+@param logger the logger to be used.
+@param message the message string to log.
+*/
 #define LOG4CXX_ERROR(logger, message) { \
 	if (logger->isErrorEnabled()) {\
 	StringBuffer oss; \
 	oss << message; \
 	logger->error(oss.str(), __FILE__, __LINE__); }}
 
+/** 
+Logs a message to a specified logger with the FATAL level.
+
+@param logger the logger to be used.
+@param message the message string to log.
+*/
 #define LOG4CXX_FATAL(logger, message) { \
 	if (logger->isFatalEnabled()) {\
 	StringBuffer oss; \
 	oss << message; \
 	logger->fatal(oss.str(), __FILE__, __LINE__); }}
 	
+/**
+Logs a localized message with no parameter.
+
+@param logger the logger to be used.
+@param level the level to log.
+@param key the key to be searched in the resourceBundle of the logger.
+*/
 #define LOG4CXX_L7DLOG(logger, level, key) { \
 	if (logger->isEnabledFor(level)) {\
 	logger->l7dlog(level, key, __FILE__, __LINE__); }}
 
+/**
+Logs a localized message with one parameter.
+
+@param logger the logger to be used.
+@param level the level to log.
+@param key the key to be searched in the resourceBundle of the logger.
+@param p1 the unique parameter. Must be of type (TCHAR *).
+*/
 #define LOG4CXX_L7DLOG1(logger, level, key, p1) { \
 	if (logger->isEnabledFor(level)) {\
 	logger->l7dlog(level, key, __FILE__, __LINE__, p1); }}
 
+/**
+Logs a localized message with two parameters.
+
+@param logger the logger to be used.
+@param level the level to log.
+@param key the key to be searched in the resourceBundle of the logger.
+@param p1 the first parameter. Must be of type (TCHAR *).
+@param p2 the second parameter. Must be of type (TCHAR *).
+*/
 #define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) { \
 	if (logger->isEnabledFor(level)) {\
 	logger->l7dlog(level, key, __FILE__, __LINE__, p1, p2); }}
 
+/**
+Logs a localized message with three parameters.
+
+@param logger the logger to be used.
+@param level the level to log.
+@param key the key to be searched in the resourceBundle of the logger.
+@param p1 the first parameter. Must be of type (TCHAR *).
+@param p2 the second parameter. Must be of type (TCHAR *).
+@param p3 the third parameter. Must be of type (TCHAR *).
+*/
 #define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) { \
 	if (logger->isEnabledFor(level)) {\
 	logger->l7dlog(level, key, __FILE__, __LINE__, p1, p2, p3); }}
+	
+/**@}*/
 
 #endif //_LOG4CXX_LOGGER_H

@@ -39,7 +39,7 @@ namespace log4cxx
 	protected:
 		/** Append to or truncate the file? The default value for this
 		variable is <code>true</code>, meaning that by default a
-		code>FileAppender</code> will append to an existing file and
+		<code>FileAppender</code> will append to an existing file and
 		not truncate it.
 		<p>This option is meaningful only if the FileAppender opens the
 		file.
@@ -117,8 +117,8 @@ namespace log4cxx
 		The <b>File</b> property takes a string value which should be the
 		name of the file to append to.
 
-		<p><font color="#DD0044"><b>Note that the special values
-		"System.out" or "System.err" are no longer honored.</b></font>
+		<p><b>Note that the special values
+		"System.out" or "System.err" are no longer honored.</b>
 
 		<p>Note: Actual opening of the file is made when 
 		#activateOptions is called, not when the options are set.  */
@@ -135,9 +135,11 @@ namespace log4cxx
 		or one of its subclasses, set its properties one by one and then
 		call activateOptions.</b>
 
-		@param fileName The path to the log file.
-		@param append   If true will append to fileName. Otherwise will
+		@param file The path to the log file.
+		@param append If true will append to fileName. Otherwise will
 		truncate fileName.
+		@param bufferedIO Do we do bufferedIO?
+		@param bufferSize How big should the IO buffer be?
 		*/
 		void setFile(const String& file, bool append,
 			bool bufferedIO, int bufferSize);

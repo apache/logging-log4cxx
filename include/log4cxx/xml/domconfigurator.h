@@ -199,7 +199,7 @@ files. You can enable log4cxx internal logging by setting the
 			log4cxx accordingly.
 			<p>The configuration is done relative to the hierarchy parameter.
 			@param filename The file to parse.
-			@param hierarchy The hierarchy to operation upon.
+			@param repository The hierarchy to operation upon.
 			*/
 			void doConfigure(const String& filename, 
 				spi::LoggerRepositoryPtr& repository);

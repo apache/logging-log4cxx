@@ -49,9 +49,9 @@ namespace log4cxx
 		typedef helpers::ObjectPtrT<ODBCAppender> ODBCAppenderPtr;
 
 		/**
-		<p><b><font color="#FF2222">WARNING: This version of ODBCAppender
+		<p><b>WARNING: This version of ODBCAppender
 		is very likely to be completely replaced in the future. Moreoever,
-		it does not log exceptions.</font></b> </p>
+		it does not log exceptions.</b> </p>
 
 		The ODBCAppender provides for sending log events to a database.
 

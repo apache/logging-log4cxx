@@ -56,24 +56,22 @@ namespace log4cxx
 
 		<p>The SocketHubAppender has the following characteristics:
 
-		<ul>
-
-		<p><li>If sent to a SocketNode, logging is non-intrusive as
+		- If sent to a SocketNode, logging is non-intrusive as
 		far as the log event is concerned. In other words, the event will be
 		logged with the same time stamp, NDC,
 		location info as if it were logged locally.
 
-		<p><li><code>SocketHubAppender</code> does not use a layout. It
+		- <code>SocketHubAppender</code> does not use a layout. It
 		ships a serialized spi::LoggingEvent object to the remote side.
 
-		<p><li><code>SocketHubAppender</code> relies on the TCP
+		- <code>SocketHubAppender</code> relies on the TCP
 		protocol. Consequently, if the remote side is reachable, then log
 		events will eventually arrive at remote client.
 
-		<p><li>If no remote clients are attached, the logging requests are
+		- If no remote clients are attached, the logging requests are
 		simply dropped.
 
-		<p><li>Logging events are automatically <em>buffered</em> by the
+		- Logging events are automatically <em>buffered</em> by the
 		native TCP implementation. This means that if the link to remote
 		client is slow but still faster than the rate of (log) event
 		production, the application will not be affected by the slow network
@@ -81,30 +79,23 @@ namespace log4cxx
 		rate of event production, then the local application can only
 		progress at the network rate. In particular, if the network link to
 		the the remote client is down, the application will be blocked.
-
-		<p>On the other hand, if the network link is up, but the remote
+		@n @n On the other hand, if the network link is up, but the remote
 		client is down, the client will not be blocked when making log
 		requests but the log events will be lost due to client
 		unavailability. 
-
-		<p>The single remote client case extends to multiple clients
+		@n @n The single remote client case extends to multiple clients
 		connections. The rate of logging will be determined by the slowest
-
-
 		link.
 
-		<p><li>If the application hosting the <code>SocketHubAppender</code> 
+		- If the application hosting the <code>SocketHubAppender</code> 
 		exits before the <code>SocketHubAppender</code> is closed either
 		explicitly or subsequent to garbage collection, then there might
 		be untransmitted data in the pipe which might be lost. This is a
 		common problem on Windows based systems.
-
-		<p>To avoid lost data, it is usually sufficient to #close
+		@n @n To avoid lost data, it is usually sufficient to #close
 		the <code>SocketHubAppender</code> either explicitly or by calling
 		the LogManager#shutdown method before
 		exiting the application.
-
-		</ul>
 		*/
 
 		class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton

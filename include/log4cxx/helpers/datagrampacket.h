@@ -64,7 +64,7 @@ namespace log4cxx
 			DatagramPacket(void * buf, int length);
 
 			/** Constructs a datagram packet for sending packets of length
-			<code>length/<code> to the specified port number on the specified
+			<code>length</code> to the specified port number on the specified
 			host. */
 			DatagramPacket(void * buf, int length, InetAddress address, int port);
 

@@ -87,7 +87,11 @@ namespace log4cxx
 
         static LoggerList getCurrentLoggers();
 
-        static void shutdown();
+        /**
+		Safely close and remove all appenders in all loggers including
+		the root logger.
+		*/
+		static void shutdown();
 
 		/**
 		Reset all values contained in this current {@link 

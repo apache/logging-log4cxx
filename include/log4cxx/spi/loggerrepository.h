@@ -78,12 +78,12 @@ namespace log4cxx
             /**
             Set the repository-wide threshold. All logging requests below the
             threshold are immediately dropped. By default, the threshold is
-            set to <code>Level.ALL</code> which has the lowest possible rank.  */
+            set to <code>Level::ALL</code> which has the lowest possible rank.  */
             virtual void setThreshold(const LevelPtr& level) = 0;
 
             /**
-            Another form of {@link #setThreshold(const Level&) 
-			setThreshold(Level)} accepting a string
+            Another form of {@link #setThreshold(const LevelPtr&) 
+			setThreshold} accepting a string
             parameter instead of a <code>Level</code>. */
             virtual void setThreshold(const String& val) = 0;
 
@@ -91,7 +91,7 @@ namespace log4cxx
 
             /**
             Get the repository-wide threshold. See {@link
-            #setThreshold(const Level&) setThreshold(Level)}
+            #setThreshold(const LevelPtr&) setThreshold}
 			for an explanation. */
             virtual const LevelPtr& getThreshold() const = 0;
 

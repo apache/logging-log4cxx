@@ -56,8 +56,8 @@ namespace log4cxx
 			The configuration is done relative to the <code>hierarchy</code>
 			parameter.
 
-			@param filename The file to parse
-			@param hierarchy The hierarchy to operation upon.
+			@param configFileName The file to parse
+			@param repository The hierarchy to operation upon.
 			*/
 			virtual void doConfigure(const String& configFileName, 
 				spi::LoggerRepositoryPtr& repository) = 0;

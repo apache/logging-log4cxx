@@ -27,30 +27,31 @@ namespace log4cxx
 		typedef helpers::ObjectPtrT<XMLLayout> XMLLayoutPtr;
 	
 		/**
-		* The output of the XMLLayout consists of a series of log4cxx:event
-		* elements as defined in the <a
-		* href="doc-files/log4cxx.dtd">log4cxx.dtd</a>. It does not output a
-		* complete well-formed XML file. The output is designed to be
-		* included as an <em>external entity</em> in a separate file to form
-		* a correct XML file.
-		*
-		* <p>For example, if <code>abc</code> is the name of the file where
-		* the XMLLayout ouput goes, then a well-formed XML file would be:
-		*
-		<pre>
-		&lt;?xml version="1.0" ?&gt;
-
-		&lt;!DOCTYPE log4cxx:eventSet SYSTEM "log4cxx.dtd" [&lt;!ENTITY data SYSTEM 
-		"abc"&gt;]&gt;
-		&lt;log4cxx:eventSet version="0.0.1" 
-		xmlns:log4j="http://jakarta.apache.org/log4j/"&gt; &nbsp;&nbsp;&data;
-		&lt;/log4cxx:eventSet&gt;
-		</pre>
-
-		* <p>This approach enforces the independence of the XMLLayout and the
-		* appender where it is embedded.
-		*
-		* */
+		The output of the XMLLayout consists of a series of log4j:event
+		elements as defined in the <a
+		href="doc-files/log4j.dtd">log4j.dtd</a>. It does not output a
+		 complete well-formed XML file. The output is designed to be
+		included as an <em>external entity</em> in a separate file to form
+		a correct XML file.
+		
+		<p>For example, if <code>abc</code> is the name of the file where
+		the XMLLayout ouput goes, then a well-formed XML file would be:
+		
+		<code>
+		<?xml version="1.0" ?>
+		
+		<!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [<!ENTITY data SYSTEM "abc">]>
+		
+		<log4j:eventSet version="1.2" xmlns:log4j="http://jakarta.apache.org/log4j/">
+		
+			@&data;
+			
+		</log4j:eventSet>
+		</code>
+		
+		<p>This approach enforces the independence of the XMLLayout and the
+		appender where it is embedded.
+		*/
 		class LOG4CXX_EXPORT XMLLayout : public Layout
 		{
 		private:
@@ -80,8 +81,8 @@ namespace log4cxx
 			true, then the file name and line number of the statement
 			at the origin of the log statement will be output.
 
-			<p>If you are embedding this layout within an {@link
-			SMTPAppender} then make sure to set the
+			<p>If you are embedding this layout within a SMTPAppender
+			then make sure to set the
 			<b>LocationInfo</b> option of that appender as well.
 			*/
 			inline void setLocationInfo(bool locationInfo)

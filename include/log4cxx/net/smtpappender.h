@@ -19,7 +19,7 @@
 
 #include <log4cxx/config.h>
 
-#ifdef HAVE_SMTP
+//#ifdef HAVE_SMTP
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/cyclicbuffer.h>
@@ -222,8 +222,8 @@ namespace log4cxx
 
 			/**
 			The <b>EvaluatorClass</b> option takes a string value
-			representing the name of the class implementing the {@link
-			TriggeringEventEvaluator} interface. A corresponding object will
+			representing the name of the class implementing the
+			spi::TriggeringEventEvaluator interface. A corresponding object will
 			be instantiated and assigned as the triggering event evaluator
 			for the SMTPAppender.
 			*/
@@ -270,5 +270,5 @@ namespace log4cxx
 	}; // namespace net
 }; // namespace log4cxx
 
-#endif // HAVE_SMTP
+//#endif // HAVE_SMTP
 #endif // _LOG4CXX_NET_SMTP_H

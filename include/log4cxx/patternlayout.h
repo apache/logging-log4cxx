@@ -110,29 +110,29 @@ namespace log4cxx
 	ISO8601 format} is assumed.
 
 	<p>The Following format options are possible:
-	<li>%a -- Abbreviated weekday name
-	<li>%A -- Full weekday name
-	<li>%b -- Abbreviated month name
-	<li>%B -- Full month name
-	<li>%c -- Standard date and time string
-	<li>%d -- Day of month as a decimal(1-31)
-	<li>%H -- Hour(0-23)
-	<li>%I -- Hour(1-12)
-	<li>%j -- Day of year as a decimal(1-366)
-	<li>%m -- Month as decimal(1-12)
-	<li>%M -- Minute as decimal(00-59)
-	<li>%p -- Locale's equivalent of AM or PM
-	<li>%Q -- Millisecond as decimal (000-999)
-	<li>%S -- Second as decimal(00-59)
-	<li>%U -- Week of year, Sunday being first day(0-53)
-	<li>%w -- Weekday as a decimal(0-6, Sunday being 0)
-	<li>%W -- Week of year, Monday being first day(0-53)
-	<li>%x -- Standard date string
-	<li>%X -- Standard time string
-	<li>%y -- Year in decimal without century(0-99)
-	<li>%Y -- Year including century as decimal
-	<li>%Z -- Time zone name
-	<li>%% -- The percent sign
+	- %a -- Abbreviated weekday name
+	- %A -- Full weekday name
+	- %b -- Abbreviated month name
+	- %B -- Full month name
+	- %c -- Standard date and time string
+	- %d -- Day of month as a decimal(1-31)
+	- %H -- Hour(0-23)
+	- %I -- Hour(1-12)
+	- %j -- Day of year as a decimal(1-366)
+	- %m -- Month as decimal(1-12)
+	- %M -- Minute as decimal(00-59)
+	- %p -- Locale's equivalent of AM or PM
+	- %Q -- Millisecond as decimal (000-999)
+	- %S -- Second as decimal(00-59)
+	- %U -- Week of year, Sunday being first day(0-53)
+	- %w -- Weekday as a decimal(0-6, Sunday being 0)
+	- %W -- Week of year, Monday being first day(0-53)
+	- %x -- Standard date string
+	- %X -- Standard time string
+	- %y -- Year in decimal without century(0-99)
+	- %Y -- Year including century as decimal
+	- %Z -- Time zone name
+	- %% -- The percent sign
 
 	<p>Lookup the documentation for the <code>strftime()</code> function
 	found in the <code>&lt;ctime&gt;</code> header for more information.
@@ -357,20 +357,16 @@ namespace log4cxx
 
 	<p>Below are some examples of conversion patterns.
 
-	<dl>
+	<p><b>\%r [\%t] \%-5p \%c \%x - \%m\n</b>
+	<p>This is essentially the TTCC layout.
 
-	<p><dt><b>\%r [\%t] \%-5p \%c \%x - \%m\n</b>
-	<p><dd>This is essentially the TTCC layout.
+	<p><b>\%-6r [\%15.15t] \%-5p \%30.30c \%x - \%m\n</b>
 
-	<p><dt><b>\%-6r [\%15.15t] \%-5p \%30.30c \%x - \%m\n</b>
-
-	<p><dd>Similar to the TTCC layout except that the relative time is
+	<p>Similar to the TTCC layout except that the relative time is
 	right padded if less than 6 digits, thread name is right padded if
 	less than 15 characters and truncated if longer and the logger
 	name is left padded if shorter than 30 characters and truncated if
 	longer.
-
-	</dl>
 
 	<p>The above text is largely inspired from Peter A. Darnell and
 	Philip E. Margolis' highly recommended book "C -- a Software
