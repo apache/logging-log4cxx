@@ -53,7 +53,7 @@ inline std::ostream& operator<<(const int64_t& ll, std::ostream& os)
 {
 	char buff[21];
 #ifdef WIN32
-	sprintf(buff, "%l64d", ll);
+	sprintf(buff, "%I64d", ll);
 #else
 	sprintf(buff, "%lld", ll);
 #endif
@@ -75,7 +75,7 @@ inline std::wostream& operator<<(const int64_t& ll, std::wostream& os)
 {
 	wchar_t buff[21];
 #ifdef WIN32
-	_snwprintf(buff, 20, L"%l64d", ll);
+	_snwprintf(buff, 20, L"%I64d", ll);
 #else
 	swprintf(buff, 20, L"%lld", ll);
 #endif
