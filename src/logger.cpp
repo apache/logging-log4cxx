@@ -21,6 +21,7 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/spi/loggerrepository.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
