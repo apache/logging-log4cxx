@@ -35,7 +35,7 @@ namespace log4cxx
 	{
 		class SocketOutputStream;
 		typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-
+		
 		class SocketInputStream;
 		typedef helpers::ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 	};
@@ -131,14 +131,14 @@ namespace log4cxx
 			const String& getNDC() const;
 
 			/** Write this event to a helpers::SocketOutputStream. */
-			void write(helpers::SocketOutputStreamPtr os) const;
+			void write(helpers::SocketOutputStreamPtr& os) const;
 
 			void writeLevel(helpers::SocketOutputStreamPtr& os) const;
 			
 			/** Read this event from a helpers::SocketOutputStream. */
-			void read(helpers::SocketInputStreamPtr is);
+			void read(const helpers::SocketInputStreamPtr& is);
 
-			void readLevel(helpers::SocketInputStreamPtr& is);
+			void readLevel(const helpers::SocketInputStreamPtr& is);
 			
 			/**
 			* Returns the the context corresponding to the <code>key</code> parameter.
@@ -244,6 +244,7 @@ namespace log4cxx
 
 			/** The is the file where this log statement was written. */
 			char* file;
+			std::string fileFromStream;
 
 			/** The is the line where this log statement was written. */
 			int line;
