@@ -10,6 +10,11 @@ Version 0.9.5 (CVS)
 * The file log4j.xml as well as the file log4j.properties are now search
   for, in log4cxx initialization
 * The root logger can be assigned the "OFF" level
+* Added MSVC6 project missing files mutext.cpp & condition.cpp (bug 847397)
+* condition.cpp now compiles with MSVC6 (bug 847417)
+* fixed pure virtual function call in PropertyConfigurator::configureAndWatch
+  (bug 848521)
+* XMLAppender now displays correct timestamp with MSVC 6 (bug 852836)
 
 Version 0.9.4 (2003-10-25)
 ==========================
