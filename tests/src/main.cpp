@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,6 +21,8 @@
 
 #include <log4cxx/logger.h>
 #include <apr_general.h>
+#include "insertwide.h"
+#include <log4cxx/helpers/transcoder.h>
 
 //
 //  initializing a logger will cause the APR used by log4cxx library to be initialized
@@ -36,7 +38,7 @@ int main( int argc, const char * const argv[])
 		CppUnit::TestFactoryRegistry::getRegistry();
 
 	runner.addTest(registry.makeTest());
-	
+
 	bool wasSuccessful = true;
 	if (argc > 1)
 	{
@@ -63,3 +65,12 @@ int main( int argc, const char * const argv[])
 	apr_terminate();
 	return wasSuccessful ? EXIT_SUCCESS : EXIT_FAILURE;
 }
+
+std::ostream& operator<<(std::ostream& os,
+                               const std::wstring& str) {
+    std::string encoded;
+    log4cxx::helpers::Transcoder::encode(str, encoded);
+    os << encoded;
+    return os;
+}
+

@@ -24,17 +24,17 @@
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <stdarg.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+using namespace log4cxx::spi::location;
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
-const String Logger::FQCN(getFQCN());
-
-Logger::Logger(const String& name)
+Logger::Logger(const LogString& name)
 : name(name), additive(true), repository(0), pool(), mutex(pool)
 {
 }
@@ -43,59 +43,46 @@ Logger::~Logger()
 {
 }
 
-const String& Logger::getFQCN() {
-   static const String fqcn(Logger::getStaticClass().getName());
-   return fqcn;
-}
-
 
 
 
 void Logger::addAppender(const AppenderPtr& newAppender)
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	if (aai == 0)
-	{
-		  aai = new AppenderAttachableImpl();
-	}
-	aai->addAppender(newAppender);
-	repository->fireAddAppenderEvent(this, newAppender);
+        if (aai == 0)
+        {
+                  aai = new AppenderAttachableImpl();
+        }
+        aai->addAppender(newAppender);
+        repository->fireAddAppenderEvent(this, newAppender);
 }
 
 
-void Logger::assertLog(bool assertion, const String& msg)
+void Logger::callAppenders(const spi::LoggingEventPtr& event, apr_pool_t* p)
 {
-	if(!assertion)
-	{
-		this->error(msg);
-	}
-}
+        int writes = 0;
 
-void Logger::callAppenders(const spi::LoggingEventPtr& event)
-{
-	int writes = 0;
+        for(LoggerPtr logger = this; logger != 0; logger = logger->parent)
+        {
+                // Protected against simultaneous call to addAppender, removeAppender,...
+                synchronized sync(logger->mutex);
 
-	for(LoggerPtr logger = this; logger != 0; logger = logger->parent)
-	{
-		// Protected against simultaneous call to addAppender, removeAppender,...
-		synchronized sync(logger->mutex);
+                if (logger->aai != 0)
+                {
+                        writes += logger->aai->appendLoopOnAppenders(event, p);
+                }
 
-		if (logger->aai != 0)
-		{
-			writes += logger->aai->appendLoopOnAppenders(event);
-		}
+                if(!logger->additive)
+                {
+                        break;
+                }
+        }
 
-		if(!logger->additive)
-		{
-			break;
-		}
-	}
-
-	if(writes == 0)
-	{
-		repository->emitNoAppenderWarning(this);
-	}
+        if(writes == 0)
+        {
+                repository->emitNoAppenderWarning(this);
+        }
 }
 
 void Logger::closeNestedAppenders()
@@ -107,386 +94,391 @@ void Logger::closeNestedAppenders()
     }
 }
 
-void Logger::debug(const String& message, const char* file, int line)
-{
-	if(repository->isDisabled(Level::DEBUG_INT))
-	{
-		return;
-	}
 
-	if(Level::getDebug()->isGreaterOrEqual(getEffectiveLevel()))
-	{
-		 forcedLog(getFQCN(), Level::getDebug(), message, file, line);
-	}
+void Logger::forcedLog(const LevelPtr& level, const std::string& message,
+        const LocationInfo& location)
+{
+        Pool p;
+        LOG4CXX_DECODE_CHAR(msg, message);
+        callAppenders(new LoggingEvent(this, level, msg, location), p);
 }
 
-void Logger::error(const String& message, const char* file, int line)
+void Logger::forcedLog(const LevelPtr& level, const std::wstring& message,
+        const LocationInfo& location)
 {
-	if(repository->isDisabled(Level::ERROR_INT))
-	{
-		return;
-	}
-
-	if(Level::getError()->isGreaterOrEqual(getEffectiveLevel()))
-	{
-		 forcedLog(getFQCN(), Level::getError(), message, file, line);
-	}
+        Pool p;
+        LOG4CXX_DECODE_WCHAR(msg, message);
+        callAppenders(new LoggingEvent(this, level, msg, location), p);
 }
 
-void Logger::fatal(const String& message, const char* file, int line)
+void Logger::forcedLog(const LevelPtr& level, const std::string& message)
 {
-	if(repository->isDisabled(Level::FATAL_INT))
-	{
-		return;
-	}
-
-	if(Level::getFatal()->isGreaterOrEqual(getEffectiveLevel()))
-	{
-		 forcedLog(getFQCN(), Level::getFatal(), message, file, line);
-	}
+        Pool p;
+        LOG4CXX_DECODE_CHAR(msg, message);
+        callAppenders(new LoggingEvent(this, level, msg,
+              LocationInfo::getLocationUnavailable()), p);
 }
 
-void Logger::forcedLog(const LevelPtr& level, const String& message,
-	const char* file, int line)
+void Logger::forcedLog(const LevelPtr& level, const std::wstring& message)
 {
-	callAppenders(new LoggingEvent(getFQCN(), this, level, message, file, line));
+        Pool p;
+        LOG4CXX_DECODE_WCHAR(msg, message);
+        callAppenders(new LoggingEvent(this, level, msg,
+           LocationInfo::getLocationUnavailable()), p);
 }
 
-void Logger::forcedLog(const String& fqcn, const LevelPtr& level, const String& message,
-			const char* file, int line)
-{
-	callAppenders(new LoggingEvent(fqcn, this, level, message, file, line));
-}
 
 bool Logger::getAdditivity() const
 {
-	return additive;
+        return additive;
 }
 
 AppenderList Logger::getAllAppenders() const
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	if (aai == 0)
-	{
-		return AppenderList();
-	}
-	else
-	{
-		return aai->getAllAppenders();
-	}
+        if (aai == 0)
+        {
+                return AppenderList();
+        }
+        else
+        {
+                return aai->getAllAppenders();
+        }
 }
 
-AppenderPtr Logger::getAppender(const String& name) const
+AppenderPtr Logger::getAppender(const LogString& name) const
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	if (aai == 0 || name.empty())
-	{
-		return 0;
-	}
+        if (aai == 0 || name.empty())
+        {
+                return 0;
+        }
 
-	return aai->getAppender(name);
+        return aai->getAppender(name);
 }
 
 const LevelPtr& Logger::getEffectiveLevel() const
 {
-	for(const Logger * l = this; l != 0; l=l->parent)
-	{
-		if(l->level != 0)
-		{
-			return l->level;
-		}
-	}
+        for(const Logger * l = this; l != 0; l=l->parent)
+        {
+                if(l->level != 0)
+                {
+                        return l->level;
+                }
+        }
 
-	throw RuntimeException();
-	return this->level;
+        throw RuntimeException();
+        return this->level;
 }
 
 LoggerRepositoryPtr Logger::getLoggerRepository() const
 {
-	return repository;
+        return repository;
 }
 
 ResourceBundlePtr Logger::getResourceBundle() const
 {
-	for (LoggerPtr l = this; l != 0; l = l->parent)
-	{
-		if (l->resourceBundle != 0)
-		{
-			return l->resourceBundle;
-		}
-	}
+        for (LoggerPtr l = this; l != 0; l = l->parent)
+        {
+                if (l->resourceBundle != 0)
+                {
+                        return l->resourceBundle;
+                }
+        }
 
-	// It might be the case that there is no resource bundle
-	return 0;
+        // It might be the case that there is no resource bundle
+        return 0;
 }
 
+#if 0
 String Logger::getResourceBundleString(const String& key) const
 {
-	ResourceBundlePtr rb = getResourceBundle();
+        ResourceBundlePtr rb = getResourceBundle();
 
-	// This is one of the rare cases where we can use logging in order
-	// to report errors from within log4j.
-	if (rb == 0)
-	{
-		return String();
-	}
-	else
-	{
-		try
-		{
-			return rb->getString(key);
-		}
-		catch (MissingResourceException&)
-		{
-			((Logger *)this)->error(_T("No resource is associated with key \"") +
-			 	key + _T("\"."));
+        // This is one of the rare cases where we can use logging in order
+        // to report errors from within log4j.
+        if (rb == 0)
+        {
+                return String();
+        }
+        else
+        {
+                try
+                {
+                        return rb->getString(key);
+                }
+                catch (MissingResourceException&)
+                {
+                        ((Logger *)this)->error(LOG4CXX_WSTR("No resource is associated with key \"") +
+                                key + LOG4CXX_WSTR("\"."));
 
-			return String();
-		}
-	}
+                        return String();
+                }
+        }
 }
+#endif
 
 const LoggerPtr& Logger::getParent() const
 {
-	return parent;
+        return parent;
 }
 
 const LevelPtr& Logger::getLevel() const
 {
-	return level;
+        return level;
 }
 
-void Logger::info(const String& message, const char* file, int line)
-{
-	if(repository->isDisabled(Level::INFO_INT))
-	{
-		return;
-	}
-
-	if(Level::getInfo()->isGreaterOrEqual(getEffectiveLevel()))
-	{
-		 forcedLog(getFQCN(), Level::getInfo(), message, file, line);
-	}
-}
 
 bool Logger::isAttached(const AppenderPtr& appender) const
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	if (appender == 0 || aai == 0)
-	{
-		return false;
-	}
-	else
-	{
-		return aai->isAttached(appender);
-	}
+        if (appender == 0 || aai == 0)
+        {
+                return false;
+        }
+        else
+        {
+                return aai->isAttached(appender);
+        }
 }
 
 bool Logger::isDebugEnabled() const
 {
-	if(repository->isDisabled(Level::DEBUG_INT))
-	{
-		return false;
-	}
+        if(repository->isDisabled(Level::DEBUG_INT))
+        {
+                return false;
+        }
 
-	return Level::getDebug()->isGreaterOrEqual(getEffectiveLevel());
+        return Level::getDebug()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isEnabledFor(const LevelPtr& level) const
 {
-	if(repository->isDisabled(level->level))
-	{
-		return false;
-	}
+        if(repository->isDisabled(level->toInt()))
+        {
+                return false;
+        }
 
-	return level->isGreaterOrEqual(getEffectiveLevel());
+        return level->isGreaterOrEqual(getEffectiveLevel());
 }
+
 
 bool Logger::isInfoEnabled() const
 {
-	if(repository->isDisabled(Level::INFO_INT))
-	{
-		return false;
-	}
+        if(repository->isDisabled(Level::INFO_INT))
+        {
+                return false;
+        }
 
-	return Level::getInfo()->isGreaterOrEqual(getEffectiveLevel());
+        return Level::getInfo()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isErrorEnabled() const
 {
-	if(repository->isDisabled(Level::ERROR_INT))
-	{
-		return false;
-	}
+        if(repository->isDisabled(Level::ERROR_INT))
+        {
+                return false;
+        }
 
-	return Level::getError()->isGreaterOrEqual(getEffectiveLevel());
+        return Level::getError()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isWarnEnabled() const
 {
-	if(repository->isDisabled(Level::WARN_INT))
-	{
-		return false;
-	}
+        if(repository->isDisabled(Level::WARN_INT))
+        {
+                return false;
+        }
 
-	return Level::getWarn()->isGreaterOrEqual(getEffectiveLevel());
+        return Level::getWarn()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 bool Logger::isFatalEnabled() const
 {
-	if(repository->isDisabled(Level::FATAL_INT))
-	{
-		return false;
-	}
+        if(repository->isDisabled(Level::FATAL_INT))
+        {
+                return false;
+        }
 
-	return Level::getFatal()->isGreaterOrEqual(getEffectiveLevel());
+        return Level::getFatal()->isGreaterOrEqual(getEffectiveLevel());
 }
 
 /*void Logger::l7dlog(const LevelPtr& level, const String& key,
-			const char* file, int line)
+                        const char* file, int line)
 {
-	if (repository->isDisabled(level->level))
-	{
-		return;
-	}
+        if (repository->isDisabled(level->level))
+        {
+                return;
+        }
 
-	if (level->isGreaterOrEqual(getEffectiveLevel()))
-	{
-		String msg = getResourceBundleString(key);
+        if (level->isGreaterOrEqual(getEffectiveLevel()))
+        {
+                String msg = getResourceBundleString(key);
 
-		// if message corresponding to 'key' could not be found in the
-		// resource bundle, then default to 'key'.
-		if (msg.empty())
-		{
-			msg = key;
-		}
+                // if message corresponding to 'key' could not be found in the
+                // resource bundle, then default to 'key'.
+                if (msg.empty())
+                {
+                        msg = key;
+                }
 
-		forcedLog(FQCN, level, msg, file, line);
-	}
+                forcedLog(FQCN, level, msg, file, line);
+        }
 }*/
 
-void Logger::l7dlog(const LevelPtr& level, const String& key,
-			const char* file, int line, ...)
+void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+                        const LocationInfo& location, ...)
 {
-	if (repository->isDisabled(level->level))
-	{
-		return;
-	}
+        if (repository->isDisabled(level->toInt()))
+        {
+                return;
+        }
 
-	if (level->isGreaterOrEqual(getEffectiveLevel()))
-	{
-		String pattern = getResourceBundleString(key);
-		String msg;
+        if (level->isGreaterOrEqual(getEffectiveLevel()))
+        {
+#if 0
+//    TODO
+                String pattern = getResourceBundleString(key);
+                String msg;
 
-		if (pattern.empty())
-		{
-			msg = key;
-		}
-		else
-		{
-			va_list params;
-			va_start (params, line);
-			msg = StringHelper::format(pattern, params);
-			va_end (params);
-		}
-
-		forcedLog(getFQCN(), level, msg, file, line);
-	}
+                if (pattern.empty())
+                {
+                        msg = key;
+                }
+                else
+                {
+                        va_list params;
+                        va_start (params, line);
+                        msg = StringHelper::format(pattern, params);
+                        va_end (params);
+                }
+#endif
+                forcedLog(level, key, location);
+        }
 }
 
-void Logger::log(const LevelPtr& level, const String& message,
-	const char* file, int line)
+void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
+                        const LocationInfo& location, ...)
 {
+        if (repository->isDisabled(level->toInt()))
+        {
+                return;
+        }
 
-	if(repository->isDisabled(level->level))
-	{
-		return;
-	}
-	if(level->isGreaterOrEqual(getEffectiveLevel()))
-	{
-		forcedLog(getFQCN(), level, message, file, line);
-	}
+        if (level->isGreaterOrEqual(getEffectiveLevel()))
+        {
+#if 0
+//    TODO
+                String pattern = getResourceBundleString(key);
+                String msg;
 
+                if (pattern.empty())
+                {
+                        msg = key;
+                }
+                else
+                {
+                        va_list params;
+                        va_start (params, line);
+                        msg = StringHelper::format(pattern, params);
+                        va_end (params);
+                }
+#endif
+                forcedLog(level, key, location);
+        }
 }
+
 
 void Logger::removeAllAppenders()
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	if(aai != 0)
-	{
-		aai->removeAllAppenders();
-		aai = 0;
-	}
+        if(aai != 0)
+        {
+                aai->removeAllAppenders();
+                aai = 0;
+        }
 }
 
 void Logger::removeAppender(const AppenderPtr& appender)
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	if(appender == 0 || aai == 0)
-	{
-		return;
-	}
+        if(appender == 0 || aai == 0)
+        {
+                return;
+        }
 
-	aai->removeAppender(appender);
+        aai->removeAppender(appender);
 }
 
-void Logger::removeAppender(const String& name)
+void Logger::removeAppender(const LogString& name)
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	if(name.empty() || aai == 0)
-	{
-		return;
-	}
+        if(name.empty() || aai == 0)
+        {
+                return;
+        }
 
-	aai->removeAppender(name);
+        aai->removeAppender(name);
 }
 
 void Logger::setAdditivity(bool additive)
 {
-	this->additive = additive;
+        this->additive = additive;
 }
 
 void Logger::setHierarchy(spi::LoggerRepository * repository)
 {
-	this->repository = repository;
+        this->repository = repository;
 }
 
 void Logger::setLevel(const LevelPtr& level)
 {
-	this->level = level;
+        this->level = level;
 }
 
-void Logger::warn(const String& message, const char* file, int line)
+
+
+LoggerPtr Logger::getLogger(const std::string& name)
 {
-	if(repository->isDisabled(Level::WARN_INT))
-	{
-		return;
-	}
-
-	if(Level::getWarn()->isGreaterOrEqual(getEffectiveLevel()))
-	{
-		 forcedLog(getFQCN(), Level::getWarn(), message, file, line);
-	}
+        LogString lname;
+        Transcoder::decode(name, lname);
+        return LogManager::getLogger(lname);
 }
 
-
-LoggerPtr Logger::getLogger(const String& name)
+LoggerPtr Logger::getLogger(const std::wstring& name)
 {
-	return LogManager::getLogger(name);
+        LogString lname;
+        Transcoder::decode(name, lname);
+        return LogManager::getLogger(lname);
 }
+
+LoggerPtr Logger::getLogger(const char* const name)
+{
+        LogString lname;
+        Transcoder::decode(name, strlen(name), lname);
+        return LogManager::getLogger(lname);
+}
+
+LoggerPtr Logger::getLogger(const wchar_t* const name)
+{
+        LogString lname;
+        Transcoder::decode(name, wcslen(name), lname);
+        return LogManager::getLogger(lname);
+}
+
 
 LoggerPtr Logger::getRootLogger() {
-	return LogManager::getRootLogger();
+        return LogManager::getRootLogger();
 }
 
-LoggerPtr Logger::getLogger(const String& name,
-							spi::LoggerFactoryPtr factory)
+LoggerPtr Logger::getLogger(const LogString& name,
+        const spi::LoggerFactoryPtr& factory)
 {
-	return LogManager::getLogger(name, factory);
+        return LogManager::getLogger(name, factory);
 }

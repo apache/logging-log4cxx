@@ -31,55 +31,62 @@ int PatternLayout::MAX_CAPACITY = 1024;
 
 PatternLayout::PatternLayout()
 {
+  activateOptions(NULL);
 }
 
 /**
 Constructs a PatternLayout using the supplied conversion pattern.
 */
-PatternLayout::PatternLayout(const String& pattern) : pattern(pattern)
+PatternLayout::PatternLayout(const LogString& pattern) : pattern(pattern)
 {
-	activateOptions();
+  activateOptions(NULL);
 }
 
-void PatternLayout::setConversionPattern(const String& conversionPattern)
+void PatternLayout::setConversionPattern(const LogString& conversionPattern)
 {
 	pattern = conversionPattern;
-	activateOptions();
+        activateOptions(NULL);
 }
 
-void PatternLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
+void PatternLayout::format(LogString& output,
+      const spi::LoggingEventPtr& event,
+      apr_pool_t* pool) const
 {
 	PatternConverterPtr c = head;
 
 	while(c != 0)
 	{
-		c->format(output, event);
+		c->format(output, event, pool);
 		c = c->next;
 	}
 }
 
-PatternConverterPtr PatternLayout::createPatternParser(const String& pattern)
+PatternConverterPtr PatternLayout::createPatternParser(const LogString& pattern)
 {
 	return PatternParser(pattern, timeZone).parse();
 }
 
-void PatternLayout::setOption(const String& option, const String& value)
+void PatternLayout::setOption(const LogString& option, const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, _T("conversionpattern")))
+	if (StringHelper::equalsIgnoreCase(option,
+               LOG4CXX_STR("CONVERSIONPATTERN"),
+               LOG4CXX_STR("conversionpattern")))
 	{
 		pattern = value;
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("TimeZone")))
+	else if (StringHelper::equalsIgnoreCase(option,
+               LOG4CXX_STR("TIMEZONE"),
+               LOG4CXX_STR("timezone")))
 	{
 		timeZone = value;
 	}
 }
 
-void PatternLayout::activateOptions()
+void PatternLayout::activateOptions(apr_pool_t* p)
 {
 	if (pattern.empty())
 	{
-                static const String DEFAULT_CONVERSION_PATTERN("%m%n");
+                static const LogString DEFAULT_CONVERSION_PATTERN(LOG4CXX_STR("%m%n"));
 		pattern = DEFAULT_CONVERSION_PATTERN;
 	}
 

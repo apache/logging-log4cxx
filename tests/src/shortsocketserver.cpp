@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,8 +15,7 @@
  */
 
 #include <log4cxx/logger.h>
-#include <log4cxx/helpers/optionconverter.h>
-#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/basicconfigurator.h>
 #include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/mdc.h>
 #include <log4cxx/propertyconfigurator.h>
@@ -26,11 +25,13 @@
 #include <log4cxx/net/socketnode.h>
 
 #include "net/socketservertestcase.h"
+#include <log4cxx/stream.h>
+#include <iostream>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
-  
+
 class ShortSocketServer
 {
 	static LoggerPtr logger;
@@ -39,35 +40,43 @@ public:
 	static void main(int argc, char **argv)
 	{
 		int totalTests = 0;
-		String prefix;
+		std::string prefix;
 
 		if (argc == 3)
 		{
-			USES_CONVERSION
-			totalTests = OptionConverter::toInt(A2T(argv[1]), totalTests);
-			prefix = A2T(argv[2]);
-		} 
+                        totalTests = atoi(argv[1]);
+                        prefix = argv[2];
+		}
 		else
 		{
-			usage(argv[0], "Wrong number of arguments."); 
+			usage(argv[0], "Wrong number of arguments.");
 		}
 
+                //
+                //  TODO: May need to make another logger hierarchy to
+                //     keep this distinct from the log messages the server
+                //     is handling
+                log4cxx::BasicConfigurator::configure();
+                //
+                //   using the stream interface since it knows
+                //      numeric and encoding conversion
+                logstream log(Logger::getLogger("shortsocketserver"), Level::DEBUG);
 
-		LOGLOG_DEBUG(_T("Listening on port ") << PORT);
+                log << "Listening on port " << PORT << LOG4CXX_ENDMSG;
 		ServerSocket serverSocket(PORT);
 
-		MDC::put(_T("hostID"), _T("shortSocketServer"));
+		MDC::put("hostID", "shortSocketServer");
 
 		for (int i = 1; i <= totalTests; i++)
 		{
-			StringBuffer sbuf;
-			sbuf << prefix << i  << _T(".properties");
+                        std::ostringstream sbuf(prefix);
+			sbuf <<  i  << ".properties";
 			PropertyConfigurator::configure(sbuf.str());
-			LOGLOG_DEBUG(_T("Waiting to accept a new client."));
+			log << "Waiting to accept a new client." << LOG4CXX_ENDMSG;
 			SocketPtr socket = serverSocket.accept();
-			LOGLOG_DEBUG(_T("Connected to client at ") << 
-				socket->getInetAddress().toString());
-			LOGLOG_DEBUG(_T("Starting new socket node."));	
+                        log << "Connected to client at "
+                            << socket->getInetAddress().toString() << LOG4CXX_ENDMSG;
+			log << "Starting new socket node." << LOG4CXX_ENDMSG;
 			SocketNode sn(socket, LogManager::getLoggerRepository());
 			sn.run();
 		}
@@ -80,11 +89,11 @@ public:
 		std::cout << "Usage: " << programName;
 		std::cout << " totalTests configFilePrefix" << std::endl;
 		exit(1);
-	}    
+	}
 };
 
 LoggerPtr ShortSocketServer::logger =
-	Logger::getLogger(_T("org.apache.log4j.net.ShortSocketServer"));
+	Logger::getLogger("org.apache.log4j.net.ShortSocketServer");
 
 int main(int argc, char **argv)
 {

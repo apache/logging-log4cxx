@@ -38,29 +38,29 @@ int XMLSocketAppender::DEFAULT_PORT                 = 4560;
 // The default reconnection delay (30000 milliseconds or 30 seconds).
 int XMLSocketAppender::DEFAULT_RECONNECTION_DELAY   = 30000;
 
-const int XMLSocketAppender::MAX_EVENT_LEN 				= 1024;
+const int XMLSocketAppender::MAX_EVENT_LEN          = 1024;
 
 XMLSocketAppender::XMLSocketAppender()
 : SocketAppenderSkeleton(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY)
 {
-	layout = new XMLLayout();
-	memset(zeroBuffer, 0, MAX_EVENT_LEN);
+        layout = new XMLLayout();
+        memset(zeroBuffer, 0, MAX_EVENT_LEN);
 }
 
 XMLSocketAppender::XMLSocketAppender(unsigned long address, int port)
 : SocketAppenderSkeleton(address, port, DEFAULT_RECONNECTION_DELAY)
 {
-	layout = new XMLLayout();
-	memset(zeroBuffer, 0, MAX_EVENT_LEN);
-	connect();
+        layout = new XMLLayout();
+        memset(zeroBuffer, 0, MAX_EVENT_LEN);
+        connect();
 }
 
-XMLSocketAppender::XMLSocketAppender(const String& host, int port)
+XMLSocketAppender::XMLSocketAppender(const LogString& host, int port)
 : SocketAppenderSkeleton(host, port, DEFAULT_RECONNECTION_DELAY)
 {
-	layout = new XMLLayout();
-	memset(zeroBuffer, 0, MAX_EVENT_LEN);
-	connect();
+        layout = new XMLLayout();
+        memset(zeroBuffer, 0, MAX_EVENT_LEN);
+        connect();
 }
 
 XMLSocketAppender::~XMLSocketAppender() {
@@ -68,22 +68,27 @@ XMLSocketAppender::~XMLSocketAppender() {
 
 
 void XMLSocketAppender::setLocationInfo(bool locationInfo) {
-	this->locationInfo = locationInfo;
-	XMLLayoutPtr xmlLayout = layout;
-	xmlLayout->setLocationInfo(locationInfo);
+        this->locationInfo = locationInfo;
+        XMLLayoutPtr xmlLayout = layout;
+        xmlLayout->setLocationInfo(locationInfo);
 }
 
 
 void XMLSocketAppender::renderEvent(const spi::LoggingEventPtr& event,
-								 helpers::SocketOutputStreamPtr& os)
+    helpers::SocketOutputStreamPtr& os, apr_pool_t* p)
 {
-	StringBuffer output;
+        LogString output;
 
-	layout->format(output, event);
+        layout->format(output, event, p);
 
-	String sz = output.str();
-	USES_CONVERSION;
-	os->write((void *)T2A(sz.c_str()), sz.length());
+//      TODO
+//
+//      USES_CONVERSION;
+//      os->write((void *)T2A(sz.c_str()), sz.length());
 }
 
+void XMLSocketAppender::setOption(const LogString& option,
+      const LogString& value) {
+        SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
+}
 

@@ -18,8 +18,11 @@
 #include <log4cxx/helpers/absolutetimedateformat.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <apr_pools.h>
+#include <log4cxx/helpers/pool.h>
 #include <locale>
+#include "../insertwide.h"
+#include <apr.h>
+#include <apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -75,33 +78,30 @@ using namespace log4cxx::helpers;
     gmtFormat.setTimeZone(TimeZone::getGMT());
 
     apr_time_t jul1 = MICROSECONDS_PER_DAY * 12601L;
-    apr_pool_t* p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
-    CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+    Pool p;
 
-    std::string actual;
+    LogString actual;
 
     gmtFormat.format(actual, jul1, p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,000", actual);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul1 + 8000, p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,008", actual);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,008"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul1 + 17000, p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,017", actual);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,017"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul1 + 237000, p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,237", actual);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul1 + 1415000, p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:01,415", actual);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:01,415"), actual);
     actual.erase(actual.begin(), actual.end());
 
-    apr_pool_destroy(p);
   }
 
   /**
@@ -116,24 +116,22 @@ using namespace log4cxx::helpers;
 
      DateFormatPtr chicagoBase(new AbsoluteTimeDateFormat());
      CachedDateFormat chicagoFormat(chicagoBase);
-     chicagoFormat.setTimeZone(TimeZone::getTimeZone("GMT-5"));
+     chicagoFormat.setTimeZone(TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")));
 
-     apr_pool_t* p;
-     apr_status_t stat = apr_pool_create(&p, NULL);
-     CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+     Pool p;
 
-     std::string actual;
+     LogString actual;
 
      gmtFormat.format(actual, jul2, p);
-     CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,000", actual);
+     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
      actual.erase(actual.begin(), actual.end());
 
       chicagoFormat.format(actual, jul2, p);
-      CPPUNIT_ASSERT_EQUAL((std::string) "19:00:00,000", actual);
+      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("19:00:00,000"), actual);
       actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul2, p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,000", actual);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
     actual.erase(actual.begin(), actual.end());
 
     apr_pool_destroy(p);
@@ -152,15 +150,13 @@ using namespace log4cxx::helpers;
 
     apr_time_t ticks = MICROSECONDS_PER_DAY * -7;
 
-    apr_pool_t* p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
-    CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+    Pool p;
 
-    std::string actual;
+    LogString actual;
 
 
     gmtFormat.format(actual, ticks, p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,000", actual);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
     actual.erase(actual.begin(), actual.end());
 
 #if defined(_WIN32)
@@ -168,15 +164,15 @@ using namespace log4cxx::helpers;
    //   APR's explode_time method does not properly calculate tm_usec
    //     prior to 1 Jan 1970 on Unix
    gmtFormat.format(actual, ticks + 8000, p);
-   CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,008", actual);
+   CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,008"), actual);
    actual.erase(actual.begin(), actual.end());
 
    gmtFormat.format(actual, ticks + 17000, p);
-   CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,017", actual);
+   CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,017"), actual);
    actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, ticks + 237000, p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:00,237", actual);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, ticks + 1415000, p);
@@ -184,7 +180,6 @@ using namespace log4cxx::helpers;
 //    CPPUNIT_ASSERT_EQUAL((std::string) "00:00:01,415", actual);
 #endif
 
-    apr_pool_destroy(p);
   }
 
   void assertFormattedEquals(
@@ -192,8 +187,8 @@ using namespace log4cxx::helpers;
       const CachedDateFormat& cachedFormat,
       apr_time_t date,
       apr_pool_t* p) {
-        std::string expected;
-        std::string actual;
+        LogString expected;
+        LogString actual;
 
         baseFormat->format(expected, date, p);
         cachedFormat.format(actual, date, p);
@@ -207,23 +202,19 @@ using namespace log4cxx::helpers;
     //     make a couple of nearly spaced calls
     std::locale localeEN(LOCALE_US);
     DateFormatPtr baseFormat(
-         new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z", localeEN));
+         new SimpleDateFormat(LOG4CXX_STR("EEE, MMM dd, HH:mm:ss.SSS Z"), localeEN));
     CachedDateFormat cachedFormat(baseFormat);
     //
     //   use a date in 2000 to attempt to confuse the millisecond locator
     apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
 
-    apr_pool_t* p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
-    CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+    Pool p;
 
     assertFormattedEquals(baseFormat, cachedFormat, ticks, p);
     assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000, p);
     assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000, p);
     assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000, p);
     assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
-
-    apr_pool_destroy(p);
   }
 
 
@@ -233,36 +224,30 @@ using namespace log4cxx::helpers;
     //     make a couple of nearly spaced calls
     std::locale localeJP(LOCALE_JP);
     DateFormatPtr baseFormat(
-         new SimpleDateFormat("EEE, MMM dd, HH:mm:ss.SSS Z", localeJP));
+         new SimpleDateFormat(LOG4CXX_STR("EEE, MMM dd, HH:mm:ss.SSS Z"), localeJP));
     CachedDateFormat cachedFormat(baseFormat);
     //
     //   use a date in 2000 to attempt to confuse the millisecond locator
     apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
 
-    apr_pool_t* p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
-    CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+    Pool p;
 
     assertFormattedEquals(baseFormat, cachedFormat, ticks, p);
     assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000, p);
     assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000, p);
     assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000, p);
     assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
-
-    apr_pool_destroy(p);
   }
 
   /**
    * Checks that numberFormat works as expected.
    */
   void test6() {
-    std::string numb;
-    apr_pool_t* p;
-    apr_pool_create(&p, NULL);
+    LogString numb;
+    Pool p;
     AbsoluteTimeDateFormat formatter;
     formatter.numberFormat(numb, 87, p);
-    apr_pool_destroy(p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "87", numb);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
   }
 
   /**
@@ -279,38 +264,30 @@ using namespace log4cxx::helpers;
      //   use a date in 2000 to attempt to confuse the millisecond locator
      apr_time_t ticks = MICROSECONDS_PER_DAY * 11141;
 
-     apr_pool_t* p;
-     apr_status_t stat = apr_pool_create(&p, NULL);
-     CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+     Pool p;
 
      assertFormattedEquals(baseFormat, cachedFormat, ticks, p);
      assertFormattedEquals(baseFormat, cachedFormat, ticks + 8000, p);
      assertFormattedEquals(baseFormat, cachedFormat, ticks + 17000, p);
      assertFormattedEquals(baseFormat, cachedFormat, ticks + 237000, p);
      assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
-
-     apr_pool_destroy(p);
    }
 
   /**
    * Set time zone on cached and check that it is effective.
    */
   void test8() {
-    DateFormatPtr baseFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS"));
+    DateFormatPtr baseFormat(new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS")));
     CachedDateFormat cachedFormat(baseFormat);
-    cachedFormat.setTimeZone(TimeZone::getTimeZone("GMT-6"));
+    cachedFormat.setTimeZone(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
     apr_time_t jul4 = MICROSECONDS_PER_DAY * 12603;
 
-    apr_pool_t* p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
-    CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+    Pool p;
 
-    std::string actual;
+    LogString actual;
     cachedFormat.format(actual, jul4, p);
 
-    CPPUNIT_ASSERT_EQUAL((std::string) "2004-07-03 18:00:00,000", actual);
-
-    apr_pool_destroy(p);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-03 18:00:00,000"), actual);
   }
 
 };

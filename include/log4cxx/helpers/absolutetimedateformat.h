@@ -31,7 +31,7 @@ namespace log4cxx
 		{
 		public:
 			AbsoluteTimeDateFormat()
-			: SimpleDateFormat("HH:mm:ss,SSS") {}
+			: SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SSS")) {}
 		};
 	}  // namespace helpers
 }; // namespace log4cxx

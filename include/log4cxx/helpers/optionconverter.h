@@ -17,13 +17,14 @@
 #ifndef _LOG4CXX_HELPER_OPTION_CONVERTER_H
 #define _LOG4CXX_HELPER_OPTION_CONVERTER_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/objectptr.h>
 
 namespace log4cxx
 {
 	class Level;
-    typedef helpers::ObjectPtrT<Level> LevelPtr;
+        class File;
+        typedef helpers::ObjectPtrT<Level> LevelPtr;
 
 	namespace spi
 	{
@@ -48,7 +49,7 @@ namespace log4cxx
 			OptionConverter() {}
 
 		public:
-			static String convertSpecialChars(const String& s);
+			static LogString convertSpecialChars(const LogString& s);
 
 			/**
 			If <code>value</code> is "true", then <code>true</code> is
@@ -58,10 +59,10 @@ namespace log4cxx
 
 			<p>Case of value is unimportant.
 			*/
-			static bool toBoolean(const String& value, bool dEfault);
-			static int toInt(const String& value, int dEfault);
-			static long toFileSize(const String& value, long dEfault);
-			static const LevelPtr& toLevel(const String& value,
+			static bool toBoolean(const LogString& value, bool dEfault);
+			static int toInt(const LogString& value, int dEfault);
+			static long toFileSize(const LogString& value, long dEfault);
+			static const LevelPtr& toLevel(const LogString& value,
 				const LevelPtr& defaultValue);
 
 			/**
@@ -69,7 +70,7 @@ namespace log4cxx
      		<code>props</code>. Then perform variable substitution on the
      		found value.
 			*/
-			static String findAndSubst(const String& key, Properties& props);
+			static LogString findAndSubst(const LogString& key, Properties& props);
 
 /**
 Perform variable substitution in string <code>val</code> from the
@@ -105,7 +106,7 @@ balanced by a stop delimeter "}". </p>
 @param props The properties from which variable substitution is performed.
 @throws IllegalArgumentException if <code>val</code> is malformed.
 */
-			static String substVars(const String& val, Properties& props);
+			static LogString substVars(const LogString& val, Properties& props);
 
 			/**
 			@param key The key to search for.
@@ -113,7 +114,7 @@ balanced by a stop delimeter "}". </p>
 			@return the string value of the system property, or the default
 			value if there is no property with that key.
 			*/
-			static String getSystemProperty(const String& key, const String& def);
+			static LogString getSystemProperty(const LogString& key, const LogString& def);
 
 			/**
 			Instantiate an object given a class name. Check that the
@@ -125,11 +126,11 @@ balanced by a stop delimeter "}". </p>
 			@param superClass The class to which the new object should belong.
 			@param defaultValue The object to return in case of non-fulfillment
 			*/
-			static ObjectPtr instantiateByClassName(const String& className,
+			static ObjectPtr instantiateByClassName(const LogString& className,
 				const Class& superClass, const ObjectPtr& defaultValue);
 
 			static ObjectPtr instantiateByKey(Properties& props,
-				const String& key, const Class& superClass,
+				const LogString& key, const Class& superClass,
 				const ObjectPtr& defaultValue);
 
 			/**
@@ -151,8 +152,8 @@ balanced by a stop delimeter "}". </p>
 			in which case DOMConfigurator is used.
 			@param hierarchy The Hierarchy to act on.
 			*/
-			static void selectAndConfigure(const String& configFileName,
-				const String& clazz, spi::LoggerRepositoryPtr& hierarchy);
+			static void selectAndConfigure(const File& configFileName,
+				const LogString& clazz, spi::LoggerRepositoryPtr& hierarchy);
 		};
 	}  // namespace helpers
 }; // namespace log4cxx

@@ -23,9 +23,13 @@
 #include "vectorappender.h"
 #include <log4cxx/asyncappender.h>
 #include "appenderskeletontestcase.h"
+#include <apr_pools.h>
+#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+
+#define _T(str) L ## str
 
 /**
    A superficial but general test of log4j.
@@ -70,7 +74,7 @@ public:
 		LayoutPtr layout = new SimpleLayout();
 		VectorAppenderPtr vectorAppender = new VectorAppender();
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
-		asyncAppender->setName(_T("async-CloseTest"));
+		asyncAppender->setName(LOG4CXX_STR("async-CloseTest"));
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
@@ -90,7 +94,7 @@ public:
 		LayoutPtr layout = new SimpleLayout();
 		VectorAppenderPtr vectorAppender = new VectorAppender();
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
-		asyncAppender->setName(_T("async-test2"));
+		asyncAppender->setName(LOG4CXX_STR("async-test2"));
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
@@ -108,22 +112,29 @@ public:
 	void test3()
 	{
 		typedef std::vector<spi::LoggingEventPtr>::size_type size_type;
-		size_type LEN = 200;
+		int LEN = 200;
 		LoggerPtr root = Logger::getRootLogger();
 		LayoutPtr layout = new SimpleLayout();
 		VectorAppenderPtr vectorAppender = new VectorAppender();
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
-		asyncAppender->setName(_T("async-test3"));
+		asyncAppender->setName(LOG4CXX_STR("async-test3"));
 		asyncAppender->addAppender(vectorAppender);
 		root->addAppender(asyncAppender);
 
-		for (size_type i = 0; i < LEN; i++)
+                apr_pool_t* pool;
+                apr_status_t rv = apr_pool_create(&pool, NULL);
+                std::string msg("message");
+		for (int i = 0; i < LEN; i++)
 		{
-			LOG4CXX_DEBUG(root, _T("message") << i);
+                        msg.erase(msg.begin() + 7, msg.end());
+                        msg.append(apr_itoa(pool, i));
+			LOG4CXX_DEBUG(root, msg);
 		}
 
 		asyncAppender->close();
 		root->debug(_T("m2"));
+
+                apr_pool_destroy(pool);
 
 		const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
 		CPPUNIT_ASSERT(v.size() == LEN);

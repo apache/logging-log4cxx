@@ -19,7 +19,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-StringTokenizer::StringTokenizer(const String& str, const String& delim)
+StringTokenizer::StringTokenizer(const LogString& str, const LogString& delim)
 : src(str), delim(delim), pos(0)
 {
 }
@@ -30,22 +30,22 @@ StringTokenizer::~StringTokenizer()
 
 bool StringTokenizer::hasMoreTokens() const
 {
-        return (pos != String::npos
-            && src.find_first_not_of(delim, pos) != String::npos);
+        return (pos != LogString::npos
+            && src.find_first_not_of(delim, pos) != LogString::npos);
 }
 
-String StringTokenizer::nextToken()
+LogString StringTokenizer::nextToken()
 {
-        if (pos != String::npos) {
+        if (pos != LogString::npos) {
             size_t nextPos = src.find_first_not_of(delim, pos);
-            if (nextPos != String::npos) {
+            if (nextPos != LogString::npos) {
                pos = src.find_first_of(delim, nextPos);
-               if (pos == String::npos) {
+               if (pos == LogString::npos) {
                  return src.substr(nextPos);
                }
                return src.substr(nextPos, pos - nextPos);
             }
         }
         throw NoSuchElementException();
-		return String();
+		return LogString();
 }

@@ -17,6 +17,8 @@
 #ifndef _LOG4CXX_HELPERS_GNOMEXML_H
 #define _LOG4CXX_HELPERS_GNOMEXML_H
 
+#error this file isn't obsolete but soon will be
+
 #include <log4cxx/portability.h>
 
 #ifdef LOG4CXX_HAVE_LIBXML2
@@ -89,10 +91,10 @@ namespace log4cxx
 			virtual XMLDOMNodeType getNodeType()
 				{ return XMLDOMNode::DOCUMENT_NODE; }
 			virtual XMLDOMDocumentPtr getOwnerDocument();
-			virtual void load(const String& fileName);
+			virtual void load(const LogString& fileName);
 			virtual XMLDOMElementPtr getDocumentElement();
 			virtual XMLDOMElementPtr getElementById(
-				const String& tagName, const String& elementId);
+				const LogString& tagName, const LogString& elementId);
 
 		protected:
 			xmlDocPtr document;
@@ -121,8 +123,8 @@ namespace log4cxx
 			virtual XMLDOMNodeType getNodeType()
 				{ return XMLDOMNode::ELEMENT_NODE; }
 			virtual XMLDOMDocumentPtr getOwnerDocument();
-			virtual String getTagName();
-			virtual String getAttribute(const String& name);
+			virtual LogString getTagName();
+			virtual LogString getAttribute(const LogString& name);
 
 		protected:
 			xmlNodePtr element;

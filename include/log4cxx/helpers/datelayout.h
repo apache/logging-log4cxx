@@ -32,18 +32,18 @@ namespace log4cxx
  		class LOG4CXX_EXPORT DateLayout : public Layout
 		{
 		private:
-			String timeZoneID;
-			String dateFormatOption;
+			LogString timeZoneID;
+			LogString dateFormatOption;
 
 		protected:
 			DateFormatPtr dateFormat;
 
 		public:
-			DateLayout(const String& dateLayoutOption);
+			DateLayout(const LogString& dateLayoutOption);
 			virtual ~DateLayout();
 
-			virtual void activateOptions();
-			virtual void setOption(const String& option, const String& value);
+			virtual void activateOptions(apr_pool_t* p);
+			virtual void setOption(const LogString& option, const LogString& value);
 
 			/**
 			The value of the <b>DateFormat</b> option should be either an
@@ -51,29 +51,29 @@ namespace log4cxx
 			the strings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
 			<b>"DATE"</b> or <b>"ISO8601</b>.
 			*/
-			inline void setDateFormat(const String& dateFormat)
+			inline void setDateFormat(const LogString& dateFormat)
                           { this->dateFormatOption = dateFormat; }
 
 			/**
 			Returns value of the <b>DateFormat</b> option.
 			*/
-			inline const String& getDateFormat() const
+			inline const LogString& getDateFormat() const
 				{ return dateFormatOption; }
 
 			/**
 			The <b>TimeZoneID</b> option is a time zone ID string in the format
 			expected by the <code>locale</code> C++ standard class.
 			*/
-			inline void setTimeZone(const String& timeZone)
-				{ this->timeZoneID = timeZone; }
+			inline void setTimeZone(const LogString& timeZone)
+				{ this->timeZoneID.assign(timeZone); }
 
 			/**
 			Returns value of the <b>TimeZone</b> option.
 			*/
-			inline const String& getTimeZone() const
+			inline const LogString& getTimeZone() const
 				{ return timeZoneID; }
 
-			void formatDate(std::string &s,
+			void formatDate(LogString &s,
                                         const spi::LoggingEventPtr& event,
                                         apr_pool_t* p) const;
 

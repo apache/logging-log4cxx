@@ -21,10 +21,12 @@
 #include <log4cxx/helpers/transform.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+using namespace log4cxx::spi::location;
 using namespace log4cxx::xml;
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLLayout)
@@ -34,47 +36,49 @@ XMLLayout::XMLLayout()
 {
 }
 
-void XMLLayout::setOption(const String& option,
-	const String& value)
+void XMLLayout::setOption(const LogString& option,
+	const LogString& value)
 {
-     static const String LOCATION_INFO_OPTION("LocationInfo");
-
-	if (StringHelper::equalsIgnoreCase(option, LOCATION_INFO_OPTION))
+	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, false));
 	}
 }
 
-void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
+void XMLLayout::format(LogString& output,
+     const spi::LoggingEventPtr& event,
+     apr_pool_t* p) const
 {
-	output << _T("<log4j:event logger=\"");
-	output << event->getLoggerName();
-	output << _T("\" timestamp=\"");
-	output << event->getTimeStamp()/1000;
-	output << _T("\" level=\"");
-	output << event->getLevel()->toString();
-	output << _T("\" thread=\"");
-	output << event->getThreadId();
-	output << _T("\">") << std::endl;
+	output.append(LOG4CXX_STR("<log4j:event logger=\""));
+	output.append(event->getLoggerName());
+	output.append(LOG4CXX_STR("\" timestamp=\""));
+	output.append(StringHelper::toString(event->getTimeStamp()/1000, p));
+	output.append(LOG4CXX_STR("\" level=\""));
+	output.append(event->getLevel()->toString());
+	output.append(LOG4CXX_STR("\" thread=\""));
+	output.append(StringHelper::toString(event->getThreadId(), p));
+	output.append(LOG4CXX_STR("\">\n"));
 
-	output << _T("<log4j:message><![CDATA[");
+	output.append(LOG4CXX_STR("<log4j:message><![CDATA["));
 	// Append the rendered message. Also make sure to escape any
 	// existing CDATA sections.
 	Transform::appendEscapingCDATA(output, event->getRenderedMessage());
-	output << _T("]]></log4j:message>") << std::endl;
+	output.append(LOG4CXX_STR("]]></log4j:message>\n"));
 
-	const String& ndc = event->getNDC();
-	if(ndc.length() != 0)
+	const LogString& ndc = event->getNDC();
+	if(!ndc.empty())
 	{
-		output << _T("<log4j:NDC><![CDATA[");
-		output << ndc;
-		output << _T("]]></log4j:NDC>") << std::endl;
+		output.append(LOG4CXX_STR("<log4j:NDC><![CDATA["));
+		output.append(ndc);
+		output.append(LOG4CXX_STR("]]></log4j:NDC>\n"));
 	}
 
-    std::set<String> mdcKeySet = event->getMDCKeySet();
+        //
+        //  TODO: looks pretty inefficient if empty
+        //
+        std::set<LogString> mdcKeySet = event->getMDCKeySet();
 
-    if(!mdcKeySet.empty())
-    {
+        if(!mdcKeySet.empty()) {
 		/**
 		* Normally a sort isn't required, but for Test Case purposes
 		* we need to guarantee a particular order.
@@ -83,46 +87,57 @@ void XMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
 		* of the keys is kinda nice..
 		*/
 
-		output << _T("<log4j:MDC>") << std::endl;
-		for (std::set<String>::iterator i = mdcKeySet.begin();
+		output.append(LOG4CXX_STR("<log4j:MDC>\n"));
+		for (std::set<LogString>::iterator i = mdcKeySet.begin();
 			i != mdcKeySet.end(); i++)
 		{
-			String propName = *i;
-			String propValue = event->getMDC(propName);
-			output << _T("    <log4j:data name=\"") << propName;
-			output << _T("\" value=\"") << propValue;
-			output << _T("\"/>") << std::endl;
+			LogString propName = *i;
+			LogString propValue = event->getMDC(propName);
+			output.append(LOG4CXX_STR("    <log4j:data name=\""));
+                        output.append(propName);
+			output.append(LOG4CXX_STR("\" value=\""));
+                        output.append(propValue);
+			output.append(LOG4CXX_STR("\"/>\n"));
 		}
-		output << _T("</log4j:MDC>") << std::endl;
+		output.append(LOG4CXX_STR("</log4j:MDC>\n"));
     }
 
 	if(locationInfo)
 	{
-		USES_CONVERSION;
-		output << _T("<log4j:locationInfo class=\"\" method=\"\" file=\"");
-		output << A2T(event->getFile());
-		output << _T("\" line=\"");
-		output << event->getLine();
-		output << _T("\"/>") << std::endl;
+		output.append(LOG4CXX_STR("<log4j:locationInfo class=\""));
+                const LocationInfo& locInfo = event->getLocationInformation();
+                LOG4CXX_DECODE_CHAR(className, locInfo.getClassName());
+                output.append(className);
+                output.append(LOG4CXX_STR("\" method=\""));
+                LOG4CXX_DECODE_CHAR(method, locInfo.getMethodName());
+                output.append(method);
+                output.append(LOG4CXX_STR("\" file=\""));
+                LOG4CXX_DECODE_CHAR(fileName, locInfo.getFileName());
+                output.append(fileName);
+		output.append(LOG4CXX_STR("\" line=\""));
+		output.append(StringHelper::toString(locInfo.getLineNumber(), p));
+		output.append(LOG4CXX_STR("\"/>\n"));
 	}
 
-    std::set<String> propertySet = event->getPropertyKeySet();
+    std::set<LogString> propertySet = event->getPropertyKeySet();
 
     if (!propertySet.empty())
 	{
-		output << _T("<log4j:properties>\n");
-		for (std::set<String>::iterator i = propertySet.begin();
+		output.append(LOG4CXX_STR("<log4j:properties>\n"));
+		for (std::set<LogString>::iterator i = propertySet.begin();
 			i != propertySet.end(); i++)
 		{
-			String propName = *i;
-			output << _T("<log4j:data name=\"") << propName;
-			String propValue = event->getProperty(propName);
-			output << _T("\" value=\"") << propValue;
-			output << _T("\"/>") << std::endl;
+			LogString propName = *i;
+			output .append(LOG4CXX_STR("<log4j:data name=\""));
+                        output.append(propName);
+			LogString propValue = event->getProperty(propName);
+			output.append(LOG4CXX_STR("\" value=\""));
+                        output.append(propValue);
+			output.append(LOG4CXX_STR("\"/>\n"));
 		}
-		output << _T("</log4j:properties>") << std::endl;
+		output.append(LOG4CXX_STR("</log4j:properties>\n"));
     }
 
-	output << _T("</log4j:event>") << std::endl;
+	output.append(LOG4CXX_STR("</log4j:event>\n"));
 }
 

@@ -58,12 +58,12 @@ namespace log4cxx
 			LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
 		END_LOG4CXX_CAST_MAP()
 
-        AsyncAppender();
+                AsyncAppender();
 		virtual ~AsyncAppender();
 
 		void addAppender(const AppenderPtr& newAppender);
 
-		void append(const spi::LoggingEventPtr& event);
+		void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 
 		/**
 		Close this <code>AsyncAppender</code> by interrupting the
@@ -73,7 +73,7 @@ namespace log4cxx
 		void close();
 
 		AppenderList getAllAppenders() const;
-		AppenderPtr getAppender(const String& name) const;
+		AppenderPtr getAppender(const LogString& name) const;
 
 		/**
 		Returns the current value of the <b>LocationInfo</b> option.
@@ -88,7 +88,7 @@ namespace log4cxx
 
 		void removeAllAppenders();
 		void removeAppender(const AppenderPtr& appender);
-		void removeAppender(const String& name);
+		void removeAppender(const LogString& name);
 
 		/**
 		The <code>AsyncAppender</code> does not require a layout. Hence,
@@ -118,6 +118,7 @@ namespace log4cxx
 		int getBufferSize() const;
 
 	private:
+                log4cxx::helpers::Pool pool;
 		std::deque<log4cxx::spi::LoggingEventPtr> queue;
 		int size;
 		//
@@ -128,7 +129,7 @@ namespace log4cxx
 		//   Condition is signaled when there is at least one event in the queue.
 		//
 		log4cxx::helpers::Condition pending;
-		
+
 		helpers::Thread thread;
 
 		bool locationInfo;

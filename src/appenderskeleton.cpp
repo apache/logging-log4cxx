@@ -35,8 +35,19 @@ AppenderSkeleton::AppenderSkeleton()
   name(),
   headFilter(),
   tailFilter(),
-  pool(),
-  mutex(pool)
+  mutex(getSynchronizationPool())
+{
+}
+
+AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout)
+: errorHandler(new OnlyOnceErrorHandler()),
+  closed(0),
+  threshold(Level::getAll()),
+  layout(layout),
+  name(),
+  headFilter(),
+  tailFilter(),
+  mutex(getSynchronizationPool())
 {
 }
 
@@ -75,14 +86,15 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 	return ((level == 0) || level->isGreaterOrEqual(threshold));
 }
 
-void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
+void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, apr_pool_t* pool)
 {
 	synchronized sync(mutex);
 
+
 	if(closed)
 	{
-		LogLog::error(_T("Attempted to append to closed appender named [")
-			+name+_T("]."));
+                LogLog::error(((LogString) LOG4CXX_STR("Attempted to append to closed appender named ["))
+                      + name + LOG4CXX_STR("]."));
 		return;
 	}
 
@@ -108,7 +120,7 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event)
 		 }
 	}
 
-	append(event);
+	append(event, pool);
 }
 
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler)
@@ -119,7 +131,7 @@ void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler)
 	{
 		// We do not throw exception here since the cause is probably a
 		// bad config file.
-		LogLog::warn(_T("You have tried to set a null error-handler."));
+		LogLog::warn(LOG4CXX_STR("You have tried to set a null error-handler."));
 	}
 	else
 	{
@@ -132,11 +144,18 @@ void AppenderSkeleton::setThreshold(const LevelPtr& threshold)
 	this->threshold = threshold;
 }
 
-void AppenderSkeleton::setOption(const String& option,
-	const String& value)
+void AppenderSkeleton::setOption(const LogString& option,
+	const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, _T("threshold")))
+	if (StringHelper::equalsIgnoreCase(option,
+              LOG4CXX_STR("THRESHOLD"), LOG4CXX_STR("threshold")))
 	{
 		setThreshold(Level::toLevel(value));
 	}
+}
+
+
+apr_pool_t* AppenderSkeleton::getSynchronizationPool() {
+    static Pool syncPool;
+    return syncPool;
 }

@@ -52,7 +52,7 @@ void SocketNode::run()
 			// get a logger from the hierarchy.
 			// The name of the logger is taken to be the
 			// name contained in the event.
-			if (event->getLoggerName() == _T("root"))
+			if (event->getLoggerName() == LOG4CXX_STR("root"))
 			{
 				remoteLogger = hierarchy->getRootLogger();
 			}
@@ -66,27 +66,28 @@ void SocketNode::run()
 			if(event->getLevel()->isGreaterOrEqual(
 				remoteLogger->getEffectiveLevel()))
 			{
+                                Pool p;
 				// finally log the event as if was generated locally
-				remoteLogger->callAppenders(event);
+				remoteLogger->callAppenders(event, p);
 			}
 		}
 	}
 	catch(EOFException&)
 	{
-		LogLog::debug(_T("Caught EOFException. Closing connection."));
+		LogLog::debug(LOG4CXX_STR("Caught EOFException. Closing connection."));
 	}
 	catch(SocketException&)
 	{
-		LogLog::debug(_T("Caught SocketException. Closing connection"));
+		LogLog::debug(LOG4CXX_STR("Caught SocketException. Closing connection"));
 	}
     catch(IOException& e)
     {
-      LogLog::debug(_T("Caught IOException."), e);
-      LogLog::debug(_T("Closing connection."));
+      LogLog::debug(LOG4CXX_STR("Caught IOException."), e);
+      LogLog::debug(LOG4CXX_STR("Closing connection."));
     }
     catch(Exception& e)
     {
-      LogLog::error(_T("Unexpected exception. Closing connection."), e);
+      LogLog::error(LOG4CXX_STR("Unexpected exception. Closing connection."), e);
     }
 
 	try
@@ -95,6 +96,6 @@ void SocketNode::run()
 	}
 	catch(SocketException& e)
 	{
-		LogLog::debug(_T("Could not close SocketNode connection: "), e);
+		LogLog::debug(LOG4CXX_STR("Could not close SocketNode connection: "), e);
 	}
 }

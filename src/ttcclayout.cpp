@@ -17,59 +17,62 @@
 #include <log4cxx/ttcclayout.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
+#include <log4cxx/helpers/stringhelper.h>
 
-#include <apr_pools.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
+using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(TTCCLayout)
 
 TTCCLayout::TTCCLayout()
-: DateLayout("RELATIVE"), threadPrinting(true), categoryPrefixing(true),
+: DateLayout(LOG4CXX_STR("RELATIVE")), threadPrinting(true), categoryPrefixing(true),
 contextPrinting(true), filePrinting(false)
 {
-	activateOptions();
+	activateOptions(NULL);
 }
 
-TTCCLayout::TTCCLayout(const String& dateFormatType)
+TTCCLayout::TTCCLayout(const LogString& dateFormatType)
 : DateLayout(dateFormatType), threadPrinting(true), categoryPrefixing(true),
 contextPrinting(true), filePrinting(false)
 {
-	activateOptions();
+	activateOptions(NULL);
 }
 
-void TTCCLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
+void TTCCLayout::format(LogString& output,
+      const spi::LoggingEventPtr& event,
+      apr_pool_t* p) const
 {
-        std::string date;
-        apr_pool_t* p;
-        apr_pool_create(&p, NULL);
-        formatDate(date, event, p);
-        apr_pool_destroy(p);
-
-        output << date;
+        formatDate(output, event, p);
 
 	if(threadPrinting)
 	{
-		output << _T("[") << event->getThreadId() << _T("] ");
+                output.append(1, LOG4CXX_STR('['));
+                output.append(StringHelper::toString(event->getThreadId(), p));
+                output.append(LOG4CXX_STR("] "));
 	}
 
-	output << event->getLevel()->toString() << _T(" ");
-
+        output.append(event->getLevel()->toString());
+        output.append(1, LOG4CXX_STR(' '));
 	if(categoryPrefixing)
 	{
-		output << event->getLoggerName() << _T(" ");
+                output.append(event->getLoggerName());
+                output.append(1, LOG4CXX_STR(' '));
 	}
 
 	if(contextPrinting)
 	{
-		String ndc = event->getNDC();
+		LogString ndc = event->getNDC();
 
 		if(!ndc.empty())
 		{
-			output << ndc << _T(" ");
+                        output.append(ndc);
+                        output.append(1, LOG4CXX_STR(' '));
 		}
 	}
 
-	output << _T("- ") << event->getRenderedMessage() << std::endl;
+	output.append(LOG4CXX_STR("- "));
+        output.append(event->getRenderedMessage());
+        output.append(1, LOG4CXX_STR('\n'));
 }

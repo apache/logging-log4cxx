@@ -26,8 +26,10 @@ DateFormat::~DateFormat() {}
 
 void DateFormat::setTimeZone(const TimeZonePtr& tz) {}
 
-void DateFormat::numberFormat(std::string& s, int n, apr_pool_t* p) const {
-   s.append(apr_itoa(p, n));
+void DateFormat::numberFormat(std::wstring& s, int n, apr_pool_t* p) const {
+   for(char* numb = apr_itoa(p, n); *numb != 0; numb++) {
+     s.append(1, *numb);
+   }
 }
 
 DateFormat::DateFormat() {}

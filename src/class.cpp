@@ -24,7 +24,7 @@ using namespace log4cxx::helpers;
 
 
 
-Class::Class(const String& name) : name(name)
+Class::Class(const LogString& name) : name(name)
 {
 	registerClass(this);
 }
@@ -33,12 +33,12 @@ Class::~Class()
 {
 }
 
-const String& Class::toString() const
+const LogString& Class::toString() const
 {
 	return name;
 }
 
-const String& Class::getName() const
+const LogString& Class::getName() const
 {
 	return name;
 }
@@ -55,11 +55,11 @@ Class::ClassMap& Class::getRegistry() {
     return registry;
 }
 
-const Class& Class::forName(const String& className)
+const Class& Class::forName(const LogString& className)
 {
-	String strippedClassName;
-	String::size_type pos = className.find_last_of(_T('.'));
-	if (pos != String::npos)
+	LogString strippedClassName;
+	LogString::size_type pos = className.find_last_of(LOG4CXX_STR('.'));
+	if (pos != LogString::npos)
 	{
 		strippedClassName.assign(className.substr(pos + 1));
 	}
@@ -84,6 +84,5 @@ void Class::registerClass(const Class * newClass)
 	{
 		return;
 	}
-
 	getRegistry()[StringHelper::toLowerCase(newClass->toString())] = newClass;
 }

@@ -19,6 +19,9 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <apr_atomic.h>
+#include <apr_file_io.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -28,34 +31,31 @@ IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
 FileAppender::FileAppender()
 : fileAppend(true), bufferedIO(false), bufferSize(8*1024),
-   fileName(), ofs()
+   fileName(), ofs(NULL), fileClosed(1)
 {
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName,
+FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
 	bool append, bool bufferedIO, int bufferSize)
-: fileAppend(true), bufferedIO(false), bufferSize(8*1024),
-  fileName(fileName), ofs()
+: fileAppend(append), bufferedIO(bufferedIO), bufferSize(bufferSize),
+  fileName(fileName), ofs(NULL), fileClosed(1)
 {
 	this->layout = layout;
-	this->setFile(fileName, append, bufferedIO, bufferSize);
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName,
+FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName,
 	bool append)
-: fileAppend(true), bufferedIO(false), bufferSize(8*1024),
-  fileName(fileName), ofs()
+: fileAppend(append), bufferedIO(false), bufferSize(8*1024),
+  fileName(fileName), ofs(NULL), fileClosed(1)
 {
 	this->layout = layout;
-	this->setFile(fileName, append, false, bufferSize);
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const String& fileName)
+FileAppender::FileAppender(const LayoutPtr& layout, const File& fileName)
 : fileAppend(true), bufferedIO(false), bufferSize(8*1024),
-  fileName(fileName), ofs()
+  fileName(fileName), ofs(NULL), fileClosed(1)
 {
 	this->layout = layout;
-	this->setFile(fileName, true, false, bufferSize);
 }
 
 FileAppender::~FileAppender()
@@ -63,75 +63,26 @@ FileAppender::~FileAppender()
 	finalize();
 }
 
-void FileAppender::setFile(const String& file)
+void FileAppender::setFile(const File& file)
 {
-	// Trim spaces from both ends. The users probably does not want
-	// trailing spaces in file names.
-	fileName = StringHelper::trim(file);
+	fileName = file;
 }
 
-void FileAppender::setFile(const String& fileName, bool append,
-	bool bufferedIO, int bufferSize)
-{
-	synchronized sync(mutex);
-
-	LOGLOG_DEBUG(_T("FileAppender::activateOptions called : ")
-		<< fileName << _T(", ") << append);
-	// It does not make sense to have immediate flush and bufferedIO.
-	if(bufferedIO)
-	{
-		setImmediateFlush(false);
-	}
-
-	if(ofs.is_open())
-	{
-		reset();
-	}
-
-/*	if (bufferedIO && bufferSize > 0)
-	{
-		buffer = new char[bufferSize];
-		out.rdbuf()->setbuf(buffer, 0);
-	}*/
-
-	USES_CONVERSION
-	ofs.open(T2A(fileName.c_str()), (append ? std::ios::app :
-		std::ios::trunc)|std::ios::out);
-
-	if(!ofs.is_open())
-	{
-		throw RuntimeException();
-	}
-
-	this->os = &ofs;
-    this->fileName = fileName;
-    this->fileAppend = append;
-    this->bufferedIO = bufferedIO;
-    this->bufferSize = bufferSize;
-	writeHeader();
-	LogLog::debug(_T("FileAppender::setFile ended"));
+void FileAppender::setFile(const File& file, bool append,
+        bool bufferedIO, int bufferSize) {
+        fileName = file;
+        fileAppend = append;
+        this->bufferedIO = bufferedIO;
+        this->bufferSize = bufferSize;
 }
 
-void FileAppender::closeWriter()
-{
-	ofs.close();
-	os = 0;
+
+void FileAppender::closeWriter() {
+      apr_file_close(ofs);
+      ofs = NULL;
 }
 
-void FileAppender::closeFile()
-{
-	if (os != 0)
-	{
-		try
-		{
-			closeWriter();
-		}
-		catch(Exception& e)
-		{
-			LogLog::error(_T("Could not close file ") + fileName, e);
-		}
-	}
-}
+
 
 void FileAppender::setBufferedIO(bool bufferedIO)
 {
@@ -142,27 +93,27 @@ void FileAppender::setBufferedIO(bool bufferedIO)
 	}
 }
 
-void FileAppender::setOption(const String& option,
-	const String& value)
+void FileAppender::setOption(const LogString& option,
+	const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, _T("file"))
-		|| StringHelper::equalsIgnoreCase(option, _T("filename")))
+	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
+		|| StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
 	{
 		fileName = value;
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("append")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
 	{
 		fileAppend = OptionConverter::toBoolean(value, true);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("bufferedio")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDIO"), LOG4CXX_STR("bufferedio")))
 	{
 		bufferedIO = OptionConverter::toBoolean(value, true);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("immediateflush")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("IMMEDIATEFLUSH"), LOG4CXX_STR("immediateflush")))
 	{
 		bufferedIO = !OptionConverter::toBoolean(value, false);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("buffersize")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
 		bufferSize = OptionConverter::toFileSize(value, 8*1024);
 	}
@@ -172,25 +123,45 @@ void FileAppender::setOption(const String& option,
 	}
 }
 
-void FileAppender::activateOptions()
+void FileAppender::activateOptions(apr_pool_t* p)
 {
-	if (!fileName.empty())
-	{
-		try
-		{
-			setFile(fileName, fileAppend, bufferedIO, bufferSize);
-		}
-		catch(Exception& e)
-		{
-			errorHandler->error(_T("Unable to open file: ") + fileName,
-			e, ErrorCode::FILE_OPEN_FAILURE);
-		}
-	}
-	else
-	{
-		LogLog::warn(_T("File option not set for appender [")+name+_T("]."));
-		LogLog::warn(_T("Are you using FileAppender instead of ConsoleAppender?"));
-	}
+        if (fileName.getName().empty()) {
+          LogLog::warn((LogString) LOG4CXX_STR("File option not set for appender [")
+              + name + LOG4CXX_STR("]."));
+          LogLog::warn(LOG4CXX_STR("Are you using FileAppender instead of ConsoleAppender?"));
+        } else {
+          synchronized sync(mutex);
+          if (ofs != NULL) {
+            LogLog::warn((LogString) LOG4CXX_STR("Appender [") +
+                 name + LOG4CXX_STR("] already open."));
+          }
+          apr_fileperms_t perm = APR_OS_DEFAULT;
+          apr_int32_t flags = APR_WRITE | APR_CREATE;
+          if (fileAppend) {
+            flags |= APR_APPEND;
+          } else {
+            flags |= APR_TRUNCATE;
+          }
+          if (bufferedIO) {
+            flags |= APR_BUFFERED;
+          }
+          ofs = NULL;
+          apr_status_t rv = apr_file_open(&ofs,
+              fileName.getMBCSName().c_str(), flags, perm, p);
+          fileClosed = 0;
+        }
+        if (ofs != NULL) {
+          writeHeader(p);
+        }
+}
+
+void FileAppender::subAppend(const char* encoded, apr_size_t size, apr_pool_t* p) {
+  if (ofs != NULL) {
+    apr_status_t rv = apr_file_write(ofs, encoded, &size);
+    if (rv == APR_SUCCESS && immediateFlush) {
+      rv = apr_file_flush(ofs);
+    }
+  }
 }
 
 

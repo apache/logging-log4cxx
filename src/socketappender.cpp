@@ -40,7 +40,7 @@ int SocketAppender::DEFAULT_RECONNECTION_DELAY   = 30000;
 
 
 
-SocketAppender::SocketAppender() 
+SocketAppender::SocketAppender()
 : SocketAppenderSkeleton(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY) {
 }
 
@@ -49,7 +49,7 @@ SocketAppender::SocketAppender(unsigned long address, int port)
 	connect();
 }
 
-SocketAppender::SocketAppender(const String& host, int port)
+SocketAppender::SocketAppender(const LogString& host, int port)
 : SocketAppenderSkeleton(host, port, DEFAULT_RECONNECTION_DELAY) {
 	connect();
 }
@@ -59,7 +59,8 @@ SocketAppender::~SocketAppender()
 }
 
 void SocketAppender::renderEvent(const spi::LoggingEventPtr& event,
-								 helpers::SocketOutputStreamPtr& os)
+     helpers::SocketOutputStreamPtr& os,
+     apr_pool_t* p)
 {
 	event->write(os);
 }

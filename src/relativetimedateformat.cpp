@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
+#include <apr.h>
+
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/spi/loggingevent.h>
 
+
 #include <apr_time.h>
-#include <apr_strings.h>
+#include <log4cxx/helpers/stringhelper.h>
 
-#include <limits.h>
 
+#if !defined(INT64_C)
+#define INT64_C(x) x ## LL
+#endif
 
 log4cxx::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
  : DateFormat(), startTime(log4cxx::spi::LoggingEvent::getStartTime())
@@ -29,26 +34,21 @@ log4cxx::helpers::RelativeTimeDateFormat::RelativeTimeDateFormat()
 }
 
 void log4cxx::helpers::RelativeTimeDateFormat::format(
-    std::string &s,
+    LogString &s,
     apr_time_t date,
     apr_pool_t* p) const {
     apr_interval_time_t interval = date - startTime;
     apr_interval_time_t ms = interval / 1000;
     if (ms >= INT_MIN && ms <= INT_MAX) {
-      s.append(apr_itoa(p, ms));
+      s.append(StringHelper::toString(ms, p));
     } else {
-      const apr_int64_t BILLION = 1000000000;
-      s.append(apr_itoa(p, ms / BILLION));
-      char* lower = apr_itoa(p, ms % BILLION);
-      int fill = 9 - strlen(lower);
-      int start = 0;
-      if (ms < 0) {
-        fill++;
-        start++;
-      }
+      const apr_int64_t BILLION = APR_INT64_C(1000000000);
+      s.append(StringHelper::toString(ms / BILLION, p));
+      LogString lower(StringHelper::toString(ms % BILLION, p));
+      int fill = 9 - lower.length();
       if (fill > 0) {
-        s.append(fill, '0');
+        s.append(fill, LOG4CXX_STR('0'));
       }
-      s.append(lower + start);
+      s.append(lower);
     }
 }

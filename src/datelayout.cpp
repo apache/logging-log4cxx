@@ -28,7 +28,7 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-DateLayout::DateLayout(const String& dateFormatOption) :
+DateLayout::DateLayout(const LogString& dateFormatOption) :
    dateFormat(0), timeZoneID(), dateFormatOption(dateFormatOption)
 {
 }
@@ -38,60 +38,59 @@ DateLayout::~DateLayout()
 }
 
 
-void DateLayout::setOption(const String& option, const String& value)
+void DateLayout::setOption(const LogString& option, const LogString& value)
 {
 
-  static String DATE_FORMAT_OPTION("DateFormat");
-  static String TIMEZONE_OPTION("TimeZone");
-
-	if (StringHelper::equalsIgnoreCase(option, DATE_FORMAT_OPTION))
+	if (StringHelper::equalsIgnoreCase(option,
+                 LOG4CXX_STR("DATEFORMAT"), LOG4CXX_STR("dateformat")))
 	{
-		dateFormatOption = StringHelper::toUpperCase(value);
+		dateFormatOption = value;
 	}
-	else if (StringHelper::equalsIgnoreCase(option, TIMEZONE_OPTION))
+	else if (StringHelper::equalsIgnoreCase(option,
+                 LOG4CXX_STR("TIMEZONE"), LOG4CXX_STR("timezone")))
 	{
 		timeZoneID = value;
 	}
 }
 
-void DateLayout::activateOptions()
+void DateLayout::activateOptions(apr_pool_t* p)
 {
 	if(!dateFormatOption.empty())
 	{
-          static const String NULL_DATE_FORMAT("NULL");
-          static const String RELATIVE_TIME_DATE_FORMAT("RELATIVE");
-          static const String ABSOLUTE_TIME_DATE_FORMAT("ABSOLUTE");
-          static const String DATE_TIME_DATE_FORMAT("DATE");
-          static const String ISO8601_DATE_FORMAT("ISO601");
 
           if(dateFormatOption.empty())
           {
                   dateFormat = 0;
           }
           else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-                  NULL_DATE_FORMAT))
+                  LOG4CXX_STR("NULL"), LOG4CXX_STR("null")))
           {
                   dateFormat = 0;
+                  dateFormatOption = LOG4CXX_STR("NULL");
           }
           else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-                  RELATIVE_TIME_DATE_FORMAT))
+                  LOG4CXX_STR("RELATIVE"), LOG4CXX_STR("relative")))
           {
                   dateFormat =  new RelativeTimeDateFormat();
+                  dateFormatOption = LOG4CXX_STR("RELATIVE");
           }
           else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-                  ABSOLUTE_TIME_DATE_FORMAT))
+                  LOG4CXX_STR("ABSOLUTE"),  LOG4CXX_STR("absolute")))
           {
                   dateFormat =  new AbsoluteTimeDateFormat();
+                  dateFormatOption = LOG4CXX_STR("ABSOLUTE");
           }
           else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-                  DATE_TIME_DATE_FORMAT))
+                  LOG4CXX_STR("DATE"), LOG4CXX_STR("date")))
           {
                   dateFormat =  new DateTimeDateFormat();
+                  dateFormatOption = LOG4CXX_STR("DATE");
           }
           else if(StringHelper::equalsIgnoreCase(dateFormatOption,
-                  ISO8601_DATE_FORMAT))
+                  LOG4CXX_STR("ISO8601"), LOG4CXX_STR("iso8601")))
           {
                   dateFormat =  new ISO8601DateFormat();
+                  dateFormatOption = LOG4CXX_STR("iso8601");
           }
           else
           {
@@ -108,14 +107,14 @@ void DateLayout::activateOptions()
 }
 
 
-void DateLayout::formatDate(std::string &s,
+void DateLayout::formatDate(LogString &s,
                             const spi::LoggingEventPtr& event,
                             apr_pool_t* p) const {
 
 	if(dateFormat != 0)
 	{
                 dateFormat->format(s, event->getTimeStamp(), p);
-                s.append(1, ' ');
+                s.append(1, LOG4CXX_STR(' '));
 	}
 }
 

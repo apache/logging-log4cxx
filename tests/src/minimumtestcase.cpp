@@ -29,21 +29,27 @@
 #include "util/controlfilter.h"
 #include "util/absolutedateandtimefilter.h"
 #include "util/threadfilter.h"
+#include <log4cxx/file.h>
+#include <iostream>
+#include <apr_pools.h>
+#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-#define FILTERED _T("output/filtered")
+#define FILTERED LOG4CXX_FILE("output/filtered")
 
 #define TTCC_PAT  \
 	ABSOLUTE_DATE_AND_TIME_PAT \
-	_T(" \\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
+	LOG4CXX_STR(" \\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
 
 #define TTCC2_PAT \
 	ABSOLUTE_DATE_AND_TIME_PAT \
-	_T(" \\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - ") \
-	_T("Messages should bear numbers 0 through 23\\.")
+	LOG4CXX_STR(" \\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - ") \
+	LOG4CXX_STR("Messages should bear numbers 0 through 23\\.")
 
+
+#define _T(str) L ## str
 
 class MinimumTestCase : public CppUnit::TestFixture
 {
@@ -67,18 +73,18 @@ public:
 	void simple()
 	{
 		LayoutPtr layout = new SimpleLayout();
-		AppenderPtr appender = new FileAppender(layout, _T("output/simple"), false);
+		AppenderPtr appender = new FileAppender(layout, LOG4CXX_FILE("output/simple"), false);
 		root->addAppender(appender);
 		common();
 
-		CPPUNIT_ASSERT(Compare::compare(_T("output/simple"), _T("witness/simple")));
+		CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/simple"), LOG4CXX_FILE("witness/simple")));
 	}
 
 	void ttcc()
 	{
 		LayoutPtr layout =
-			new TTCCLayout("DATE");
-		AppenderPtr appender = new FileAppender(layout, _T("output/ttcc"), false);
+			new TTCCLayout(LOG4CXX_STR("DATE"));
+		AppenderPtr appender = new FileAppender(layout, LOG4CXX_FILE("output/ttcc"), false);
 		root->addAppender(appender);
 		common();
 
@@ -94,16 +100,22 @@ public:
 
 		try
 		{
-			Transformer::transform(_T("output/ttcc"), FILTERED, filters);
+			Transformer::transform(LOG4CXX_FILE("output/ttcc"), FILTERED, filters);
 		}
-		catch(UnexpectedFormatException& e)
+		catch(std::exception& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/ttcc")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/ttcc")));
 	}
+
+        std::string createMessage(int i, apr_pool_t* p) {
+          std::string msg("Message ");
+          msg += apr_itoa(p, i);
+          return msg;
+        }
 
 	void common()
 	{
@@ -129,92 +141,99 @@ public:
 		LoggerPtr INF_ERR_UNDEF = Logger::getLogger(_T("INF.ERR.UNDEF"));
 		LoggerPtr UNDEF = Logger::getLogger(_T("UNDEF"));
 
+                apr_pool_t* pool;
+                apr_status_t rv = apr_pool_create(&pool, NULL);
+
+                std::string msg("Message ");
+
 		// These should all log.----------------------------
-		LOG4CXX_FATAL(ERR, _T("Message ") << i);
+		LOG4CXX_FATAL(ERR, createMessage(i, pool));
 		i++; //0
-		LOG4CXX_ERROR(ERR, _T("Message ") << i);
+		LOG4CXX_ERROR(ERR, createMessage(i, pool));
 		i++;
 
-		LOG4CXX_FATAL(INF, _T("Message ") << i);
+		LOG4CXX_FATAL(INF, createMessage(i, pool));
 		i++; // 2
-		LOG4CXX_ERROR(INF, _T("Message ") << i);
+		LOG4CXX_ERROR(INF, createMessage(i, pool));
 		i++;
-		LOG4CXX_WARN(INF, _T("Message ") << i);
+		LOG4CXX_WARN(INF, createMessage(i, pool));
 		i++;
-		LOG4CXX_INFO(INF, _T("Message ") << i);
+		LOG4CXX_INFO(INF, createMessage(i, pool));
 		i++;
 
-		LOG4CXX_FATAL(INF_UNDEF, _T("Message ") << i);
+		LOG4CXX_FATAL(INF_UNDEF, createMessage(i, pool));
 		i++; //6
-		LOG4CXX_ERROR(INF_UNDEF, _T("Message ") << i);
+		LOG4CXX_ERROR(INF_UNDEF, createMessage(i, pool));
 		i++;
-		LOG4CXX_WARN(INF_UNDEF, _T("Message ") << i);
+		LOG4CXX_WARN(INF_UNDEF, createMessage(i, pool));
 		i++;
-		LOG4CXX_INFO(INF_UNDEF, _T("Message ") << i);
+		LOG4CXX_INFO(INF_UNDEF, createMessage(i, pool));
 		i++;
 
-		LOG4CXX_FATAL(INF_ERR, _T("Message ") << i);
+		LOG4CXX_FATAL(INF_ERR, createMessage(i, pool));
 		i++; // 10
-		LOG4CXX_ERROR(INF_ERR, _T("Message ") << i);
+		LOG4CXX_ERROR(INF_ERR, createMessage(i, pool));
 		i++;
 
-		LOG4CXX_FATAL(INF_ERR_UNDEF, _T("Message ") << i);
+		LOG4CXX_FATAL(INF_ERR_UNDEF, createMessage(i, pool));
 		i++;
-		LOG4CXX_ERROR(INF_ERR_UNDEF, _T("Message ") << i);
+		LOG4CXX_ERROR(INF_ERR_UNDEF, createMessage(i, pool));
 		i++;
 
-		LOG4CXX_FATAL(DEB, _T("Message ") << i);
+		LOG4CXX_FATAL(DEB, createMessage(i, pool));
 		i++; //14
-		LOG4CXX_ERROR(DEB, _T("Message ") << i);
+		LOG4CXX_ERROR(DEB, createMessage(i, pool));
 		i++;
-		LOG4CXX_WARN(DEB, _T("Message ") << i);
+		LOG4CXX_WARN(DEB, createMessage(i, pool));
 		i++;
-		LOG4CXX_INFO(DEB, _T("Message ") << i);
+		LOG4CXX_INFO(DEB, createMessage(i, pool));
 		i++;
-		LOG4CXX_DEBUG(DEB, _T("Message ") << i);
+		LOG4CXX_DEBUG(DEB, createMessage(i, pool));
 		i++;
 
 		// defaultLevel=DEBUG
-		LOG4CXX_FATAL(UNDEF, _T("Message ") << i);
+		LOG4CXX_FATAL(UNDEF, createMessage(i, pool));
 		i++; // 19
-		LOG4CXX_ERROR(UNDEF, _T("Message ") << i);
+		LOG4CXX_ERROR(UNDEF, createMessage(i, pool));
 		i++;
-		LOG4CXX_WARN(UNDEF, _T("Message ") << i);
+		LOG4CXX_WARN(UNDEF, createMessage(i, pool));
 		i++;
-		LOG4CXX_INFO(UNDEF, _T("Message ") << i);
+		LOG4CXX_INFO(UNDEF, createMessage(i, pool));
 		i++;
-		LOG4CXX_DEBUG(UNDEF, _T("Message ") << i);
+		LOG4CXX_DEBUG(UNDEF, createMessage(i, pool));
 		i++;
 
 		// -------------------------------------------------
 		// The following should not log
-		LOG4CXX_WARN(ERR, _T("Message ") << i);
+		LOG4CXX_WARN(ERR, createMessage(i, pool));
 		i++;
-		LOG4CXX_INFO(ERR, _T("Message ") << i);
+		LOG4CXX_INFO(ERR, createMessage(i, pool));
 		i++;
-		LOG4CXX_DEBUG(ERR, _T("Message ") << i);
-		i++;
-
-		LOG4CXX_DEBUG(INF, _T("Message ") << i);
-		i++;
-		LOG4CXX_DEBUG(INF_UNDEF, _T("Message ") << i);
+		LOG4CXX_DEBUG(ERR, createMessage(i, pool));
 		i++;
 
-		LOG4CXX_WARN(INF_ERR, _T("Message ") << i);
+		LOG4CXX_DEBUG(INF, createMessage(i, pool));
 		i++;
-		LOG4CXX_INFO(INF_ERR, _T("Message ") << i);
+		LOG4CXX_DEBUG(INF_UNDEF, createMessage(i, pool));
 		i++;
-		LOG4CXX_DEBUG(INF_ERR, _T("Message ") << i);
+
+		LOG4CXX_WARN(INF_ERR, createMessage(i, pool));
 		i++;
-		LOG4CXX_WARN(INF_ERR_UNDEF, _T("Message ") << i);
+		LOG4CXX_INFO(INF_ERR, createMessage(i, pool));
 		i++;
-		LOG4CXX_INFO(INF_ERR_UNDEF, _T("Message ") << i);
+		LOG4CXX_DEBUG(INF_ERR, createMessage(i, pool));
 		i++;
-		LOG4CXX_DEBUG(INF_ERR_UNDEF, _T("Message ") << i);
+		LOG4CXX_WARN(INF_ERR_UNDEF, createMessage(i, pool));
+		i++;
+		LOG4CXX_INFO(INF_ERR_UNDEF, createMessage(i, pool));
+		i++;
+		LOG4CXX_DEBUG(INF_ERR_UNDEF, createMessage(i, pool));
 		i++;
 
 		// -------------------------------------------------
 		LOG4CXX_INFO(INF, _T("Messages should bear numbers 0 through 23."));
+
+                apr_pool_destroy(pool);
 	}
 
 	LoggerPtr root;

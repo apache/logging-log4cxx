@@ -102,6 +102,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 		{
 		private:
+                        log4cxx::helpers::Pool pool;
 			/**
 			The default port number of the ServerSocket will be created on.
 			*/
@@ -129,12 +130,12 @@ namespace log4cxx
 			/**
 			Set up the socket server on the specified port.
 			*/
-			virtual void activateOptions();
+			virtual void activateOptions(apr_pool_t* p);
 
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const String& option, const String& value);
+			virtual void setOption(const LogString& option, const LogString& value);
 
 			/**
 			Close this appender.
@@ -145,7 +146,7 @@ namespace log4cxx
 
 			/**
 			Append an event to all of current connections. */
-			virtual void append(const spi::LoggingEventPtr& event);
+			virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 
 			/**
 			The SocketHubAppender does not use a layout. Hence, this method returns

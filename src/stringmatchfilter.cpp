@@ -32,17 +32,17 @@ StringMatchFilter::StringMatchFilter() :
 {
 }
 
-void StringMatchFilter::setOption(const String& option,
-	const String& value)
+void StringMatchFilter::setOption(const LogString& option,
+	const LogString& value)
 {
-    static const String STRING_TO_MATCH_OPTION("StringToMatch");
-    static const String ACCEPT_ON_MATCH_OPTION("AcceptOnMatch");
 
-	if (StringHelper::equalsIgnoreCase(option, STRING_TO_MATCH_OPTION))
+	if (StringHelper::equalsIgnoreCase(option,
+             LOG4CXX_STR("STRINGTOMATCH"), LOG4CXX_STR("stringtomatch")))
 	{
 		stringToMatch = value;
 	}
-	else if (StringHelper::equalsIgnoreCase(option, ACCEPT_ON_MATCH_OPTION))
+	else if (StringHelper::equalsIgnoreCase(option,
+             LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
 	{
 		acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
 	}
@@ -51,7 +51,7 @@ void StringMatchFilter::setOption(const String& option,
 Filter::FilterDecision StringMatchFilter::decide(
 	const log4cxx::spi::LoggingEventPtr& event) const
 {
-	const String& msg = event->getRenderedMessage();
+	const LogString& msg = event->getRenderedMessage();
 
 	if(msg.empty() || stringToMatch.empty())
 	{
@@ -59,7 +59,7 @@ Filter::FilterDecision StringMatchFilter::decide(
 	}
 
 
-	if( msg.find(stringToMatch) == String::npos )
+	if( msg.find(stringToMatch) == LogString::npos )
 	{
 		return Filter::NEUTRAL;
 	}

@@ -17,20 +17,22 @@
 #include <log4cxx/helpers/strftimedateformat.h>
 
 #include <apr_time.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-StrftimeDateFormat::StrftimeDateFormat(const String& fmt)
-  : pattern(fmt), timeZone(TimeZone::getDefault()) {
+StrftimeDateFormat::StrftimeDateFormat(const LogString& fmt)
+  : timeZone(TimeZone::getDefault()) {
+    log4cxx::helpers::Transcoder::encode(fmt, pattern);
 }
 
 StrftimeDateFormat::~StrftimeDateFormat() {
 }
 
 
-void StrftimeDateFormat::format(std::string& s, apr_time_t time, apr_pool_t* p) const  {
+void StrftimeDateFormat::format(LogString& s, apr_time_t time, apr_pool_t* p) const  {
   apr_time_exp_t exploded;
   apr_status_t stat = timeZone->explode(&exploded, time);
   if (stat == APR_SUCCESS) {
@@ -39,7 +41,7 @@ void StrftimeDateFormat::format(std::string& s, apr_time_t time, apr_pool_t* p) 
     apr_size_t bufLen;
     stat = apr_strftime(buf, &bufLen, bufSize, pattern.c_str(), &exploded);
     if (stat == APR_SUCCESS) {
-      s.append(buf, bufLen);
+      log4cxx::helpers::Transcoder::decode(buf, bufLen, s);
     }
   }
 }

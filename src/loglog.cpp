@@ -15,6 +15,8 @@
  */
 
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <iostream>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -27,33 +29,32 @@ void LogLog::setInternalDebugging(bool debugEnabled)
 	LogLog::debugEnabled = debugEnabled;
 }
 
-void LogLog::debug(const String& msg)
+void LogLog::debug(const LogString& msg)
 {
 	if(debugEnabled && !quietMode)
 	{
-		tcout << msg << std::endl;
+                emit(msg);
 	}
 }
 
-void LogLog::debug(const String& msg, Exception& e)
+void LogLog::debug(const LogString& msg, const std::exception& e)
 {
 	debug(msg);
-	tcerr << e.getMessage() << std::endl;
+        emit(e.what());
 }
 
 
-void LogLog::error(const String& msg)
+void LogLog::error(const LogString& msg)
 {
 	if(quietMode)
 		return;
-
-	tcerr << msg << std::endl;
+        emit(msg);
 }
 
-void LogLog::error(const String& msg, Exception& e)
+void LogLog::error(const LogString& msg, const std::exception& e)
 {
 	error(msg);
-	tcerr << e.getMessage() << std::endl;
+        emit(e.what());
 }
 
 void LogLog::setQuietMode(bool quietMode)
@@ -61,17 +62,25 @@ void LogLog::setQuietMode(bool quietMode)
 	LogLog::quietMode = quietMode;
 }
 
-void LogLog::warn(const String& msg)
+void LogLog::warn(const LogString& msg)
 {
 	if(quietMode)
 		return;
 
-	tcerr << msg << std::endl;
+        emit(msg);
 }
 
-void LogLog::warn(const String& msg, Exception& e)
+void LogLog::warn(const LogString& msg, const std::exception& e)
 {
 	warn(msg);
-	tcerr << e.getMessage() << std::endl;
+        emit(e.what());
 }
 
+
+void LogLog::emit(const std::string& msg) {
+    std::cerr << msg << std::endl;
+}
+
+void LogLog::emit(const std::wstring& msg) {
+    std::wcerr << msg << std::endl;
+}

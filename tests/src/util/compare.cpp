@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,47 +16,71 @@
 
 #include "compare.h"
 #include <fstream>
-
-typedef std::basic_ifstream<TCHAR> ifstream;
+#include <iostream>
+#include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/file.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
+using namespace log4cxx::helpers;
 
-bool Compare::compare(const String& file1, const String& file2)
+bool Compare::compare(const File& file1, const File& file2)
 {
-	USES_CONVERSION
-	ifstream in1(T2A(file1.c_str()));
-	ifstream in2(T2A(file2.c_str()));
+        Pool pool;
 
-	String s1;
+        LogString in1(file1.read(pool));
+        LogString in2(file2.read(pool));
+
+        LogString back1(in1);
+        LogString back2(in2);
+
+	LogString s1;
+        LogString s2;
 	int lineCounter = 0;
 
-	while (!std::getline(in1, s1).fail())
+	while (!StringHelper::getline(in1, s1))
 	{
 		lineCounter++;
 
-		String s2;
-		std::getline(in2, s2);
+                if(!StringHelper::getline(in2, s2)) {
+                  s2.erase(s2.begin(), s2.end());
+                }
 
 		if (s1 != s2)
 		{
-			tcout << _T("Files [") << file1 << _T("] and [") << file2
-				<< _T("] differ on line ") << lineCounter << std::endl;
-			tcout << _T("One reads:  [") << s1 << _T("].") << std::endl;
-			tcout << _T("Other reads:[") << s2 << _T("].") << std::endl;
-			outputFile(file1);
-			outputFile(file2);
+                        LogString msg(LOG4CXX_STR("Files ["));
+                        msg += file1.getName();
+                        msg += LOG4CXX_STR("] and [");
+                        msg += file2.getName();
+                        msg += LOG4CXX_STR("] differ on line ");
+                        msg += StringHelper::toString(lineCounter, pool);
+                        msg += LOG4CXX_STR("\n");
+                        msg += LOG4CXX_STR("One reads:  [");
+                        msg += s1;
+                        msg += LOG4CXX_STR("].\n");
+                        msg += LOG4CXX_STR("Other reads:[");
+                        msg += s2;
+                        msg += LOG4CXX_STR("].\n");
+                        emit(msg);
+			outputFile(file1, back1, pool);
+			outputFile(file2, back2, pool);
 
 			return false;
 		}
 	}
 
 	// the second file is longer
-	if (in2.get() != ifstream::traits_type::eof())
+        if (StringHelper::getline(in2, s2))
 	{
-		tcout << _T("File [") << file2 << _T("] longer than file [") << file1 << _T("].")
-		<< std::endl;
-		outputFile(file1);
-		outputFile(file2);
+                LogString msg(LOG4CXX_STR("File ["));
+                msg += file2.getName();
+                msg += LOG4CXX_STR("] longer than file [");
+                msg += file1.getName();
+                msg += LOG4CXX_STR("].\n");
+                emit(msg);
+		outputFile(file1, back1, pool);
+		outputFile(file2, back2, pool);
 
 		return false;
 	}
@@ -64,38 +88,50 @@ bool Compare::compare(const String& file1, const String& file2)
 	return true;
 }
 
-void Compare::outputFile(const String& file)
+void Compare::outputFile(const File& file,
+                        const LogString& contents,
+                        apr_pool_t* pool)
 {
-	USES_CONVERSION;
-	ifstream in1(T2A(file.c_str()));
-
-	String s1;
 	int lineCounter = 0;
-	tcout << _T("--------------------------------") << std::endl;
-	tcout << _T("Contents of ") << file << _T(":") << std::endl;
+	emit(LOG4CXX_STR("--------------------------------\n"));
+        LogString msg(LOG4CXX_STR("Contents of "));
+        msg += file.getName();
+        msg += LOG4CXX_STR(":\n");
+        emit(msg);
+        LogString in1(contents);
+        LogString s1;
 
-	while (!std::getline(in1, s1).fail())
+	while (StringHelper::getline(in1, s1))
 	{
 		lineCounter++;
-		tcout << lineCounter;
+                emit(StringHelper::toString(lineCounter, pool));
 
 		if (lineCounter < 10)
 		{
-			tcout << _T("   : ");
+			emit(LOG4CXX_STR("   : "));
 		}
 		else if (lineCounter < 100)
 		{
-			tcout << _T("  : ");
+			emit(LOG4CXX_STR("  : "));
 		}
 		else if (lineCounter < 1000)
 		{
-			tcout << _T(" : ");
+			emit(LOG4CXX_STR(" : "));
 		}
 		else
 		{
-			tcout << _T(": ");
+			emit(LOG4CXX_STR(": "));
 		}
-
-		tcout << s1 << std::endl;
+                emit(s1);
+                emit(LOG4CXX_STR("\n"));
 	}
 }
+
+void Compare::emit(const std::string& s1) {
+  std::cout << s1;
+}
+
+void Compare::emit(const std::wstring& s1) {
+  std::wcout << s1;
+}
+

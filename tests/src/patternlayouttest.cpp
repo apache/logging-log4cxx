@@ -33,22 +33,29 @@
 #include "util/threadfilter.h"
 #include "util/linenumberfilter.h"
 #include "util/filenamefilter.h"
+#include <iostream>
+#include <log4cxx/helpers/transcoder.h>
+#include <apr_pools.h>
+#include <apr_strings.h>
+#include <log4cxx/helpers/pool.h>
 
-#define FILTERED _T("output/filtered")
-#define TEMP _T("output/temp")
-#define PAT0 _T("\\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
-#define PAT1 ISO8601_PAT _T(" ") PAT0
-#define PAT2 ABSOLUTE_DATE_AND_TIME_PAT _T(" ") PAT0
-#define PAT3 ABSOLUTE_TIME_PAT _T(" ") PAT0
-#define PAT4 RELATIVE_TIME_PAT _T(" ") PAT0
-#define PAT5 _T("\\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}")
-#define PAT6 _T("\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\(\\d{1,4}\\): Message \\d{1,3}")
-#define PAT11a _T("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[\\d*]\\ log4j.PatternLayoutTest: Message \\d{1,2}")
-#define PAT11b _T("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[\\d*]\\ root: Message \\d{1,2}")
-#define PAT12 _T("^\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) ")\
-    _T(".*patternlayouttest.cpp\\(\\d{1,4}\\): ")\
-    _T("Message \\d{1,2}")
-#define PAT_MDC_1 _T("")
+#define _T(str) L ## str
+
+#define FILTERED LOG4CXX_FILE("output/filtered")
+#define TEMP LOG4CXX_FILE("output/temp")
+#define PAT0 LOG4CXX_STR("\\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message \\d{1,2}")
+#define PAT1 ISO8601_PAT LOG4CXX_STR(" ") PAT0
+#define PAT2 ABSOLUTE_DATE_AND_TIME_PAT LOG4CXX_STR(" ") PAT0
+#define PAT3 ABSOLUTE_TIME_PAT LOG4CXX_STR(" ") PAT0
+#define PAT4 RELATIVE_TIME_PAT LOG4CXX_STR(" ") PAT0
+#define PAT5 LOG4CXX_STR("\\[\\d*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* : Message \\d{1,2}")
+#define PAT6 LOG4CXX_STR("\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) .*patternlayouttest.cpp\\(\\d{1,4}\\): Message \\d{1,3}")
+#define PAT11a LOG4CXX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[\\d*]\\ log4j.PatternLayoutTest: Message \\d{1,2}")
+#define PAT11b LOG4CXX_STR("^(DEBUG|INFO |WARN |ERROR|FATAL) \\[\\d*]\\ root: Message \\d{1,2}")
+#define PAT12 LOG4CXX_STR("^\\[\\d*]\\ (DEBUG|INFO |WARN |ERROR|FATAL) ")\
+    LOG4CXX_STR(".*patternlayouttest.cpp\\(\\d{1,4}\\): ")\
+    LOG4CXX_STR("Message \\d{1,2}")
+#define PAT_MDC_1 LOG4CXX_STR("")
 
 using namespace log4cxx;
 
@@ -88,14 +95,14 @@ public:
 
 	void test1()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout1.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout1.properties"));
 		common();
-		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/patternLayout.1")));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.1")));
 	}
 
 	void test2()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout2.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout2.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -114,16 +121,16 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.2")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.2")));
 	}
 
 	void test3()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout3.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout3.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -142,18 +149,18 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.3")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.3")));
 	}
 
 	// Output format:
 	// 06 avr. 2002 18:30:58,937 [12345] DEBUG atternLayoutTest - Message 0
 	void test4()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout4.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout4.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -172,16 +179,16 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.4")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.4")));
 	}
 
 	void test5()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout5.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout5.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -200,16 +207,16 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.5")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.5")));
 	}
 
 	void test6()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout6.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout6.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -228,16 +235,16 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.6")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.6")));
 	}
 
 	void test7()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout7.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout7.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -256,16 +263,16 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.7")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.7")));
 	}
 
 	void test8()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout8.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout8.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -284,16 +291,16 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.8")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.8")));
 	}
 
 	void test9()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout9.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout9.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -310,23 +317,24 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.9")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.9")));
 	}
 
 	void test10()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout10.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout10.properties"));
 		common();
 
 		ControlFilter filter1;
 		filter1 << PAT6;
 		ThreadFilter filter2;
 		LineNumberFilter filter3;
-                FilenameFilter filenameFilter(__FILE__, "patternlayouttest.cpp");
+                LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
+                FilenameFilter filenameFilter(thisFile, LOG4CXX_STR("patternlayouttest.cpp"));
 
 
 		std::vector<Filter *> filters;
@@ -342,16 +350,16 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.10")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.10")));
 	}
 
 	void test11()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout11.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout11.properties"));
 		common();
 
 		ControlFilter filter1;
@@ -368,23 +376,24 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.11")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.11")));
 	}
 
 	void test12()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout12.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout12.properties"));
 		common();
 
 		ControlFilter filter1;
 		filter1 << PAT12;
 		ThreadFilter filter2;
 		LineNumberFilter filter3;
-                FilenameFilter filenameFilter(__FILE__, "patternlayouttest.cpp");
+                LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
+                FilenameFilter filenameFilter(thisFile, LOG4CXX_STR("patternlayouttest.cpp"));
 
 		std::vector<Filter *> filters;
 		filters.push_back(&filter1);
@@ -398,37 +407,37 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/patternLayout.12")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.12")));
 	}
 
 	void testMDC1()
 	{
-		PropertyConfigurator::configure(_T("input/patternLayout.mdc.1.properties"));
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout.mdc.1.properties"));
 		MDC::put(_T("key1"), _T("va11"));
 		MDC::put(_T("key2"), _T("va12"));
 		logger->debug(_T("Hello World"));
 		MDC::clear();
 
-		CPPUNIT_ASSERT(Compare::compare(TEMP, _T("witness/patternLayout.mdc.1")));
+		CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.mdc.1")));
 	}
 
 	void testMDC2()
 	{
-		String OUTPUT_FILE   = _T("output/patternLayout.mdc.2");
-		String WITNESS_FILE  = _T("witness/patternLayout.mdc.2");
+		File OUTPUT_FILE   = LOG4CXX_FILE("output/patternLayout.mdc.2");
+		File WITNESS_FILE  = LOG4CXX_FILE("witness/patternLayout.mdc.2");
 
-		String mdcMsgPattern1 = _T("%m : %X%n");
-		String mdcMsgPattern2 = _T("%m : %X{key1}%n");
-		String mdcMsgPattern3 = _T("%m : %X{key2}%n");
-		String mdcMsgPattern4 = _T("%m : %X{key3}%n");
-		String mdcMsgPattern5 = _T("%m : %X{key1},%X{key2},%X{key3}%n");
+		LogString mdcMsgPattern1 = LOG4CXX_STR("%m : %X%n");
+		LogString mdcMsgPattern2 = LOG4CXX_STR("%m : %X{key1}%n");
+		LogString mdcMsgPattern3 = LOG4CXX_STR("%m : %X{key2}%n");
+		LogString mdcMsgPattern4 = LOG4CXX_STR("%m : %X{key3}%n");
+		LogString mdcMsgPattern5 = LOG4CXX_STR("%m : %X{key1},%X{key2},%X{key3}%n");
 
 		// set up appender
-		PatternLayoutPtr layout = new PatternLayout(_T("%m%n"));
+		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%m%n"));
 		AppenderPtr appender = new FileAppender(layout, OUTPUT_FILE, false);
 
 		// set appender on root and set level to debug
@@ -439,77 +448,89 @@ public:
 		root->debug(_T("starting mdc pattern test"));
 
 		layout->setConversionPattern(mdcMsgPattern1);
-		layout->activateOptions();
+                log4cxx::helpers::Pool pool;
+		layout->activateOptions(pool);
 		root->debug(_T("empty mdc, no key specified in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern2);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("empty mdc, key1 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern3);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("empty mdc, key2 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern4);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("empty mdc, key3 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern5);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("empty mdc, key1, key2, and key3 in pattern"));
 
 		MDC::put(_T("key1"), _T("value1"));
 		MDC::put(_T("key2"), _T("value2"));
 
 		layout->setConversionPattern(mdcMsgPattern1);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("filled mdc, no key specified in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern2);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("filled mdc, key1 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern3);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("filled mdc, key2 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern4);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("filled mdc, key3 in pattern"));
 
 		layout->setConversionPattern(mdcMsgPattern5);
-		layout->activateOptions();
+		layout->activateOptions(pool);
 		root->debug(_T("filled mdc, key1, key2, and key3 in pattern"));
 
 		MDC::remove(_T("key1"));
 		MDC::remove(_T("key2"));
 
-		layout->setConversionPattern(_T("%m%n"));
-		layout->activateOptions();
+		layout->setConversionPattern(LOG4CXX_STR("%m%n"));
+		layout->activateOptions(pool);
 		root->debug(_T("finished mdc pattern test"));
 
 		CPPUNIT_ASSERT(Compare::compare(OUTPUT_FILE, WITNESS_FILE));
 	}
 
+       std::string createMessage(apr_pool_t* pool, int i) {
+         std::string msg("Message ");
+         msg += apr_itoa(pool, i);
+         return msg;
+       }
 
 	void common()
 	{
 		int i = -1;
 
-		LOG4CXX_DEBUG(logger, _T("Message ") << ++i);
-		LOG4CXX_DEBUG(root, _T("Message ") << i);
+                apr_pool_t* pool;
+                apr_status_t rv = apr_pool_create(&pool, NULL);
 
-		LOG4CXX_INFO(logger, _T("Message ") << ++i);
-		LOG4CXX_INFO(root, _T("Message ") << i);
 
-		LOG4CXX_WARN(logger, _T("Message ") << ++i);
-		LOG4CXX_WARN(root, _T("Message ") << i);
+		LOG4CXX_DEBUG(logger, createMessage(pool, ++i));
+		LOG4CXX_DEBUG(root, createMessage(pool, i));
 
-		LOG4CXX_ERROR(logger, _T("Message ") << ++i);
-		LOG4CXX_ERROR(root, _T("Message ") << i);
+		LOG4CXX_INFO(logger, createMessage(pool, ++i));
+		LOG4CXX_INFO(root, createMessage(pool, i));
 
-		LOG4CXX_FATAL(logger, _T("Message ") << ++i);
-		LOG4CXX_FATAL(root, _T("Message ") << i);
+		LOG4CXX_WARN(logger, createMessage(pool, ++i));
+		LOG4CXX_WARN(root, createMessage(pool, i));
+
+		LOG4CXX_ERROR(logger, createMessage(pool, ++i));
+		LOG4CXX_ERROR(root, createMessage(pool, i));
+
+		LOG4CXX_FATAL(logger, createMessage(pool, ++i));
+		LOG4CXX_FATAL(root, createMessage(pool, i));
+
+                apr_pool_destroy(pool);
 	}
 };
 

@@ -32,7 +32,7 @@ void AppenderSkeletonTestCase::testDefaultThreshold() {
 
 void AppenderSkeletonTestCase::testSetOptionThreshold() {
     ObjectPtrT<AppenderSkeleton> appender(createAppenderSkeleton());
-    appender->setOption("threshold", "debug");
+    appender->setOption(LOG4CXX_STR("threshold"), LOG4CXX_STR("debug"));
     LevelPtr threshold(appender->getThreshold());
     CPPUNIT_ASSERT_EQUAL(Level::DEBUG->toInt(), threshold->toInt());
 }

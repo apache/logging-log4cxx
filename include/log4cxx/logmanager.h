@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_LOG_MANAGER_H
 #define _LOG4CXX_LOG_MANAGER_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <vector>
 #include <log4cxx/spi/repositoryselector.h>
 
@@ -29,23 +29,23 @@ namespace log4cxx
 
     namespace spi
     {
-		class LoggerFactory;
-		typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
+                class LoggerFactory;
+                typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
     }
 
     /**
     * Use the <code>LogManager</code> class to retreive Logger
     * instances or to operate on the current {@link spi::LoggerRepository
-	* LoggerRepository}. When the <code>LogManager</code> class is loaded
+        * LoggerRepository}. When the <code>LogManager</code> class is loaded
     * into memory the default initialization procedure is inititated.
-	*/
+        */
     class LOG4CXX_EXPORT LogManager
     {
     private:
         static void * guard;
         static spi::RepositorySelectorPtr& getRepositorySelector();
-        static const String getConfigurationFileName();
-        static const String LogManager::getConfiguratorClass();
+        static const LogString getConfigurationFileName();
+        static const LogString LogManager::getConfiguratorClass();
 
     public:
         /**
@@ -56,16 +56,16 @@ namespace log4cxx
         <code>null</code>, then invoking this method sets the logger
         factory and the guard. Following invocations will throw a {@link
         helpers::IllegalArgumentException IllegalArgumentException},
-		unless the previously set <code>guard</code> is passed as the second
-		parameter.
+                unless the previously set <code>guard</code> is passed as the second
+                parameter.
 
         <p>This allows a high-level component to set the {@link
         spi::RepositorySelector RepositorySelector} used by the
-		<code>LogManager</code>.
-		*/
+                <code>LogManager</code>.
+                */
 
         static void setRepositorySelector(spi::RepositorySelectorPtr selector,
-			void * guard);
+                        void * guard);
 
         static spi::LoggerRepositoryPtr& getLoggerRepository();
 
@@ -77,28 +77,33 @@ namespace log4cxx
         /**
         Retrieve the appropriate Logger instance.
         */
-        static LoggerPtr getLogger(const String& name);
+        static LoggerPtr getLogger(const std::string& name);
+        static LoggerPtr getLogger(const char* const name);
+
+        static LoggerPtr getLogger(const std::wstring& name);
+        static LoggerPtr getLogger(const wchar_t* const name);
 
         /**
         Retrieve the appropriate Logger instance.
         */
-        static LoggerPtr getLogger(const String& name,
-			spi::LoggerFactoryPtr factory);
+        static LoggerPtr getLogger(const LogString& name,
+                        const spi::LoggerFactoryPtr& factory);
 
-        static LoggerPtr exists(const String& name);
+        static LoggerPtr exists(const std::string& name);
+        static LoggerPtr exists(const std::wstring& name);
 
         static LoggerList getCurrentLoggers();
 
         /**
-		Safely close and remove all appenders in all loggers including
-		the root logger.
-		*/
-		static void shutdown();
+                Safely close and remove all appenders in all loggers including
+                the root logger.
+                */
+                static void shutdown();
 
-		/**
-		Reset all values contained in this current {@link
-		spi::LoggerRepository LoggerRepository}	to their default.
-		*/
+                /**
+                Reset all values contained in this current {@link
+                spi::LoggerRepository LoggerRepository}	to their default.
+                */
         static void resetConfiguration();
     }; // class LogManager
 }  // namespace log4cxx

@@ -107,17 +107,17 @@ namespace log4cxx
 			/**
 			* URL of the DB for default connection handling
 			*/
-			String databaseURL;
+			LogString databaseURL;
 
 			/**
 			* User to connect as for default connection handling
 			*/
-			String databaseUser;
+			LogString databaseUser;
 
 			/**
 			* User to use for default connection handling
 			*/
-			String databasePassword;
+			LogString databasePassword;
 
 			/**
 			* Connection used by default.  The connection is opened the first time it
@@ -138,7 +138,7 @@ namespace log4cxx
 			*
 			* Also see PatternLayout.
 			*/
-			String sqlStatement;
+			LogString sqlStatement;
 
 			/**
 			* size of LoggingEvent buffer before writting to the database.
@@ -164,7 +164,7 @@ namespace log4cxx
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const String& option, const String& value);
+			virtual void setOption(const LogString& option, const LogString& value);
 
 			/**
 			* Adds the event to the buffer.  When full the buffer is flushed.
@@ -180,7 +180,7 @@ namespace log4cxx
 			*
 			*/
 		protected:
-			String getLogStatement(const spi::LoggingEventPtr& event) const;
+			LogString getLogStatement(const spi::LoggingEventPtr& event) const;
 
 			/**
 			*
@@ -190,7 +190,7 @@ namespace log4cxx
 			* end.  I use a connection pool outside of ODBCAppender which is
 			* accessed in an override of this method.
 			* */
-			void execute(const String& sql) /*throw(SQLException)*/;
+			void execute(const LogString& sql) /*throw(SQLException)*/;
 
 			/**
 			* Override this to return the connection to a pool, or to clean up the
@@ -234,39 +234,39 @@ namespace log4cxx
 			/**
 			* Set pre-formated statement eg: insert into LogTable (msg) values ("%m")
 			*/
-			void setSql(const String& s);
+			void setSql(const LogString& s);
 
 			/**
 			* Returns pre-formated statement eg: insert into LogTable (msg) values ("%m")
 			*/
-			inline const String& getSql() const
+			inline const LogString& getSql() const
 				{ return sqlStatement; }
 
 
-			inline void setUser(const String& user)
+			inline void setUser(const LogString& user)
 				{ databaseUser = user; }
 
 
-			inline void setURL(const String& url)
+			inline void setURL(const LogString& url)
 				{ databaseURL = url; }
 
 
-			inline void setPassword(const String& password)
+			inline void setPassword(const LogString& password)
 				{ databasePassword = password; }
 
 
 			inline void setBufferSize(size_t newBufferSize)
 				{ bufferSize = newBufferSize; }
 
-			inline const String& getUser() const
+			inline const LogString& getUser() const
 				{ return databaseUser; }
 
 
-			inline const String& getURL() const
+			inline const LogString& getURL() const
 				{ return databaseURL; }
 
 
-			inline const String& getPassword() const
+			inline const LogString& getPassword() const
 				{ return databasePassword; }
 
 			inline size_t getBufferSize() const

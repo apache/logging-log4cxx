@@ -18,6 +18,8 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/loglog.h>
+#include <iostream>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -26,25 +28,21 @@ IMPLEMENT_LOG4CXX_OBJECT(ConsoleAppender)
 
 
 ConsoleAppender::ConsoleAppender()
- : target(getSystemOut())
+ : target(getSystemOut()), useErr(false)
 {
-	os = &tcout;
 }
 
 ConsoleAppender::ConsoleAppender(const LayoutPtr& layout)
- : target(getSystemOut())
+ : WriterAppender(layout), useErr(false),
+   target(getSystemOut())
 {
-	this->layout = layout;
-	os = &tcout;
 }
 
-ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const String& target)
- : target(getSystemOut())
+ConsoleAppender::ConsoleAppender(const LayoutPtr& layout, const LogString& target)
+ : WriterAppender(layout), target(getSystemOut())
 {
-	this->layout = layout;
-
 	setTarget(target);
-	activateOptions();
+	activateOptions(NULL);
 }
 
 ConsoleAppender::~ConsoleAppender()
@@ -52,26 +50,28 @@ ConsoleAppender::~ConsoleAppender()
 	finalize();
 }
 
-const String& ConsoleAppender::getSystemOut() {
-  static const String name("System.out");
+const LogString& ConsoleAppender::getSystemOut() {
+  static const LogString name(LOG4CXX_STR("System.out"));
   return name;
 }
 
-const String& ConsoleAppender::getSystemErr() {
-  static const String name("System.err");
+const LogString& ConsoleAppender::getSystemErr() {
+  static const LogString name(LOG4CXX_STR("System.err"));
   return name;
 }
 
 
-void ConsoleAppender::setTarget(const String& value)
+void ConsoleAppender::setTarget(const LogString& value)
 {
-	String v = StringHelper::trim(value);
+	LogString v = StringHelper::trim(value);
 
-	if (StringHelper::equalsIgnoreCase(getSystemOut(), v))
+	if (StringHelper::equalsIgnoreCase(v,
+              LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))
 	{
 		target = getSystemOut();
 	}
-	else if (StringHelper::equalsIgnoreCase(getSystemErr(), v))
+	else if (StringHelper::equalsIgnoreCase(v,
+               LOG4CXX_STR("SYSTEM.ERR"), LOG4CXX_STR("system.err")))
 	{
 		target = getSystemErr();
 	}
@@ -81,32 +81,36 @@ void ConsoleAppender::setTarget(const String& value)
 	}
 }
 
-const String& ConsoleAppender::getTarget() const
+const LogString& ConsoleAppender::getTarget() const
 {
 	return target;
 }
 
-void ConsoleAppender::targetWarn(const String& val)
+void ConsoleAppender::targetWarn(const LogString& val)
 {
-	LogLog::warn(_T("[")+val+_T("] should be system.out or system.err."));
-	LogLog::warn(_T("Using previously set target, System.out by default."));
+        LogLog::warn(((LogString) LOG4CXX_STR("["))
+           + val +  LOG4CXX_STR("] should be system.out or system.err."));
+	LogLog::warn(LOG4CXX_STR("Using previously set target, System.out by default."));
 }
 
-void ConsoleAppender::activateOptions()
+void ConsoleAppender::activateOptions(apr_pool_t* p)
 {
-	if(StringHelper::equalsIgnoreCase(getSystemOut(), target))
+	if(StringHelper::equalsIgnoreCase(target,
+              LOG4CXX_STR("SYSTEM.OUT"), LOG4CXX_STR("system.out")))
 	{
-		os = &tcout;
+                useErr = false;
 	}
-	else if (StringHelper::equalsIgnoreCase(getSystemErr(), target))
+	else if (StringHelper::equalsIgnoreCase(target,
+              LOG4CXX_STR("SYSTEM.ERR"), LOG4CXX_STR("system.err")))
 	{
-		os = &tcerr;
+                useErr = true;
 	}
 }
 
-void ConsoleAppender::setOption(const String& option, const String& value)
+void ConsoleAppender::setOption(const LogString& option, const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(_T("target"), option))
+	if (StringHelper::equalsIgnoreCase(option,
+              LOG4CXX_STR("TARGET"), LOG4CXX_STR("target")))
 	{
 		setTarget(value);
 	}
@@ -114,6 +118,17 @@ void ConsoleAppender::setOption(const String& option, const String& value)
 	{
 		WriterAppender::setOption(option, value);
 	}
+}
+
+
+void ConsoleAppender::subAppend(const LogString& msg, apr_pool_t* p) {
+        std::wstring wmsg;
+        log4cxx::helpers::Transcoder::encode(msg, wmsg);
+        if (useErr) {
+          std::wcerr << wmsg << std::endl;
+        } else {
+          std::wcout << wmsg << std::endl;
+        }
 }
 
 

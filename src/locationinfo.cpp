@@ -24,6 +24,11 @@
      constant is <b>?</b>.  */
  const char* const LocationInfo::NA = "?";
 
+ const LocationInfo& LocationInfo::getLocationUnavailable() {
+   static const LocationInfo unavailable;
+   return unavailable;
+ }
+
 /**
 *   Constructor.
 *   @remarks Used by LOG4CXX_LOCATION to generate
@@ -130,15 +135,3 @@ const std::string LocationInfo::getClassName() const {
 	return tmp;
 }
 
-const std::string LocationInfo::getFullInfo() const {
-	std::ostringstream os;
-	os << getClassName()
-	   << '.'
-	   << getMethodName()
-	   << '('
-	   << getFileName()
-	   << ':'
-	   << getLineNumber()
-	   << ')';
-	return os.str();
-}

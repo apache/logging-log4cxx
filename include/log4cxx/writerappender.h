@@ -18,19 +18,28 @@
 #define _LOG4CXX_WRITER_APPENDER_H
 
 #include <log4cxx/appenderskeleton.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/pool.h>
+
+typedef unsigned int apr_size_t;
+typedef void* apr_iconv_t;
 
 namespace log4cxx
 {
 	class WriterAppender;
 	typedef helpers::ObjectPtrT<WriterAppender> WriterAppenderPtr;
 
+        namespace helpers {
+          class Transcoder;
+        }
+
 	/**
 	WriterAppender appends log events to a standard output stream
-	(ostream or wostream)
 	*/
 	class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 	{
 	protected:
+                log4cxx::helpers::Pool pool;
 		/**
 		Immediate flush means that the underlying writer or output stream
 		will be flushed at the end of each append operation. Immediate
@@ -54,10 +63,7 @@ namespace log4cxx
 		<p>The <code>encoding</code> variable is set to <code>""</code> by
 		default which results in the utilization of the system's default
 		encoding.  */
-		String encoding;
-
-		/** This is the output stream where we will write to.*/
-		ostream * os;
+		LogString encoding;
 
 
 	public:
@@ -70,11 +76,7 @@ namespace log4cxx
 		/**
 		This default constructor does nothing.*/
 		WriterAppender();
-
-		/**
-		Instantiate a WriterAppender and set the output destination to
-		<code>os</code>.*/
-		WriterAppender(const LayoutPtr& layout, ostream * os);
+                WriterAppender(const LayoutPtr& layout);
 
 		~WriterAppender();
 
@@ -111,7 +113,12 @@ namespace log4cxx
 		layout.
 
 		*/
-		virtual void append(const spi::LoggingEventPtr& event);
+		virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
+
+                /**
+                *
+                */
+                void activateOptions(apr_pool_t* pool);
 
 	protected:
 		/**
@@ -141,8 +148,8 @@ namespace log4cxx
 
 
 	public:
-		const String& getEncoding() const { return encoding; }
-		void setEncoding(const String& value) { encoding.assign(value); }
+		const LogString& getEncoding() const;
+		void setEncoding(const LogString& value);
 
 	protected:
 		/**
@@ -150,9 +157,11 @@ namespace log4cxx
 		Actual writing occurs here.
 
 		<p>Most subclasses of <code>WriterAppender</code> will need to
-		override this method.
+		override one of these method.
 		*/
-		virtual void subAppend(const spi::LoggingEventPtr& event);
+		virtual void subAppend(const spi::LoggingEventPtr& event, apr_pool_t* p);
+                virtual void subAppend(const LogString& msg, apr_pool_t* p);
+                virtual void subAppend(const char* encoded, apr_size_t size, apr_pool_t* p);
 
 	/**
 	The WriterAppender requires a layout. Hence, this method returns
@@ -174,19 +183,22 @@ namespace log4cxx
 	Write a footer as produced by the embedded layout's
 	Layout#appendFooter method.  */
 	protected:
-		virtual void writeFooter();
+		virtual void writeFooter(apr_pool_t* p);
 
 	/**
 	Write a header as produced by the embedded layout's
 	Layout#appendHeader method.  */
 	protected:
-		virtual void writeHeader();
+		virtual void writeHeader(apr_pool_t* p);
 
         private:
                 //
                 //  prevent copy and assignment
                 WriterAppender(const WriterAppender&);
                 WriterAppender& operator=(const WriterAppender&);
+                apr_iconv_t transcoder;
+                static const logchar SUBSTITUTION_CHAR = LOG4CXX_STR('?');
+                enum { BUFSIZE = 1024 };
 	};
 }  //namespace log4cxx
 

@@ -26,62 +26,25 @@
 
 #include <time.h>
 #include <log4cxx/helpers/properties.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-String System::getProperty(const String& key)
+LogString System::getProperty(const LogString& lkey)
 {
-	if (key.empty())
+	if (lkey.empty())
 	{
 		throw IllegalArgumentException();
 	}
 
-	USES_CONVERSION;
-	char * value = ::getenv(T2A(key.c_str()));
-	if (value == 0)
-	{
-		return String();
+        LOG4CXX_ENCODE_CHAR(key, lkey);
+        LogString rv;
+	const char * value = ::getenv(key.c_str());
+	if (value != 0) {
+                Transcoder::decode(value, rv);
 	}
-	else
-	{
-		return A2T(value);
-	}
+        return rv;
 }
 
-void System::setProperty(const String& key, const String& value)
-{
-	if (key.empty())
-	{
-		throw IllegalArgumentException();
-	}
-
-#ifndef LOG4CXX_HAVE_SETENV
-	String strEnv = key + _T("=") + value;
-	USES_CONVERSION;
-	::putenv((char *)T2A(strEnv.c_str()));
-#else
-	/* WARNING !
-	We don't use putenv with glibc, because it doesn't make
-	a copy of the string, but try to keep the pointer
-	cf. man 3 putenv.
-	*/
-	USES_CONVERSION;
-	std::string name = T2A(key.c_str());
-	std::string val = T2A(value.c_str());
-	::setenv(name.c_str(), val.c_str(), 1);
-#endif
-}
-
-void System::setProperties(const Properties& props)
-{
-	std::vector<String> propertyNames = props.propertyNames();
-
-	for (std::vector<String>::iterator it = propertyNames.begin();
-	it != propertyNames.end(); it++)
-	{
-		const String& propertyName = *it;
-		setProperty(propertyName, props.getProperty(propertyName));
-	}
-}

@@ -77,7 +77,7 @@ Socket::Socket(SocketImplPtr impl) : socketImpl(impl)
 /** Creates a stream socket and connects it to the specified
 port number on the named host.
 */
-Socket::Socket(const String& host, int port)
+Socket::Socket(const LogString& host, int port)
    : socketImpl(new SocketImpl())
 {
 	socketImpl->create(true);
@@ -87,7 +87,7 @@ Socket::Socket(const String& host, int port)
 /**  Creates a socket and connects it to the specified remote
 host on the specified remote port.
 */
-Socket::Socket(const String& host, int port,
+Socket::Socket(const LogString& host, int port,
 	InetAddress localAddr, int localPort)
         : socketImpl(new SocketImpl())
 {

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/spi/filter.h>
@@ -29,6 +29,7 @@
 #include <log4cxx/spi/triggeringeventevaluator.h>
 #include <sys/stat.h>
 #include <fstream>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -51,25 +52,36 @@ IMPLEMENT_LOG4CXX_OBJECT(XMLDOMElement)
 IMPLEMENT_LOG4CXX_OBJECT(XMLDOMNodeList)
 IMPLEMENT_LOG4CXX_OBJECT(TriggeringEventEvaluator)
 
-const Class& Loader::loadClass(const String& clazz)
+const Class& Loader::loadClass(const LogString& clazz)
 {
 	return Class::forName(clazz);
 }
 
-String Loader::getResource(const String& name)
+#if 0
+File Loader::getResource(const LogString& name)
 {
-	String path;
+        File path(name);
+        if (path.exists()) {
+          return path;
+        }
+        return File();
+	std::wstring path;
+        std::string name;
 	struct stat buff;
-	USES_CONVERSION;
-	if (stat(T2A(name.c_str()), &buff) == 0)
+
+        Transcoder::append(wname.data(), wname.length(), name);
+
+	if (stat(name.c_str(), &buff) == 0)
 	{
-		path = name;
+		path = wname;
 	}
 
 	return path;
 }
+#endif
 
-istream * Loader::getResourceAsStream(const String& name)
+#if 0
+istream * Loader::getResourceAsStream(const LogString& name)
 {
 	String path = getResource(name);
 	if (path.empty())
@@ -93,3 +105,4 @@ istream * Loader::getResourceAsStream(const String& name)
 
 	return stream;
 }
+#endif

@@ -33,29 +33,29 @@ LevelMatchFilter::LevelMatchFilter()
 {
 }
 
-void LevelMatchFilter::setOption(const String& option,
-	const String& value)
+void LevelMatchFilter::setOption(const LogString& option,
+	const LogString& value)
 {
 
-    static const String LEVEL_TO_MATCH_OPTION("LevelToMatch");
-    static const String ACCEPT_ON_MATCH_OPTION("AcceptOnMatch");
 
-	if (StringHelper::equalsIgnoreCase(option, LEVEL_TO_MATCH_OPTION))
+	if (StringHelper::equalsIgnoreCase(option,
+             LOG4CXX_STR("LEVELTOMATCH"), LOG4CXX_STR("leveltomatch")))
 	{
 		setLevelToMatch(value);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, ACCEPT_ON_MATCH_OPTION))
+	else if (StringHelper::equalsIgnoreCase(option,
+             LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
 	{
 		acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
 	}
 }
 
-void LevelMatchFilter::setLevelToMatch(const String& levelToMatch)
+void LevelMatchFilter::setLevelToMatch(const LogString& levelToMatch)
 {
 	this->levelToMatch = OptionConverter::toLevel(levelToMatch, this->levelToMatch);
 }
 
-const String& LevelMatchFilter::getLevelToMatch() const
+const LogString& LevelMatchFilter::getLevelToMatch() const
 {
 	return levelToMatch->toString();
 }

@@ -18,8 +18,10 @@
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <apr_pools.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_strings.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include "../insertwide.h"
 
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))
@@ -56,16 +58,14 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
 
     RelativeTimeDateFormat formatter;
 
-    apr_pool_t* p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
+    Pool p;
 
-    std::string actual;
+    LogString actual;
 
     formatter.format(actual, jan2, p);
 
-    apr_time_t elapsed = apr_atoi64(actual.c_str());
+    apr_time_t elapsed = log4cxx::helpers::StringHelper::toInt64(actual);
 
-    apr_pool_destroy(p);
 
     CPPUNIT_ASSERT(preStartTime + elapsed*1000 > jan2 - 2000);
     CPPUNIT_ASSERT(preStartTime + elapsed*1000 < jan2 + 2000);
@@ -76,13 +76,13 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
      * Checks that numberFormat works as expected.
      */
     void test2() {
-      std::string numb;
+      LogString numb;
       apr_pool_t* p;
       apr_pool_create(&p, NULL);
       RelativeTimeDateFormat formatter;
       formatter.numberFormat(numb, 87, p);
       apr_pool_destroy(p);
-      CPPUNIT_ASSERT_EQUAL((std::string) "87", numb);
+      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
     }
 
 

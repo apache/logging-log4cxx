@@ -21,7 +21,7 @@
 
 #ifdef LOG4CXX_HAVE_XML
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <map>
@@ -177,7 +177,7 @@ files. You can enable log4cxx internal logging by setting the
 			/**
 			A static version of #doConfigure.
 			*/
-			static void configure(const String& filename);
+			static void configure(const LogString& filename);
 
 			/**
 			Like #configureAndWatch(const String& configFilename, long delay)
@@ -185,7 +185,7 @@ files. You can enable log4cxx internal logging by setting the
 			helpers::FileWatchdog#DEFAULT_DELAY is used.
 			@param configFilename A log4j configuration file in XML format.
 			*/
-			static void configureAndWatch(const String& configFilename);
+			static void configureAndWatch(const LogString& configFilename);
 
 			/**
 			Read the configuration file <code>configFilename</code> if it
@@ -198,7 +198,7 @@ files. You can enable log4cxx internal logging by setting the
 			@param configFilename A log4j configuration file in XML format.
 			@param delay The delay in milliseconds to wait between each check.
 			*/
-			static void configureAndWatch(const String& configFilename,
+			static void configureAndWatch(const LogString& configFilename,
 				long delay);
 
 			/**
@@ -208,11 +208,11 @@ files. You can enable log4cxx internal logging by setting the
 			@param filename The file to parse.
 			@param repository The hierarchy to operation upon.
 			*/
-			void doConfigure(const String& filename,
+			void doConfigure(const LogString& filename,
 				spi::LoggerRepositoryPtr& repository);
 
 		protected:
-			String DOMConfigurator::subst(const String& value);
+			String DOMConfigurator::subst(const LogString& value);
 
 		protected:
 			void * appenderBag;

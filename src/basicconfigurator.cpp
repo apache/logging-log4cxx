@@ -25,7 +25,7 @@ using namespace log4cxx;
 void BasicConfigurator::configure()
 {
 	LoggerPtr root = Logger::getRootLogger();
-        static const String TTCC_CONVERSION_PATTERN("%r [%t] %p %c %x - %m%n");
+        static const LogString TTCC_CONVERSION_PATTERN(LOG4CXX_STR("%r [%t] %p %c %x - %m%n"));
 	root->addAppender(new ConsoleAppender(
 		new PatternLayout(TTCC_CONVERSION_PATTERN)));
 }

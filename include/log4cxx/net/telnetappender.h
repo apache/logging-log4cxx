@@ -64,6 +64,7 @@ servlet.
 		class SocketHandler;
 		friend class SocketHandler;
 		private:
+                        log4cxx::helpers::Pool pool;
 			static int DEFAULT_PORT;
 			int port;
 
@@ -85,12 +86,12 @@ servlet.
 
 			/** all of the options have been set, create the socket handler and
 			wait for connections. */
-			void activateOptions();
+			void activateOptions(apr_pool_t* p);
 
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const String& option, const String& value);
+			virtual void setOption(const LogString& option, const LogString& value);
 
     		/**
     		Returns value of the <b>Port</b> option.
@@ -112,7 +113,7 @@ servlet.
 		protected:
 			/** Handles a log event.  For this appender, that means writing the
 			message to each connected client.  */
-			virtual void append(const spi::LoggingEventPtr& event) ;
+			virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p) ;
 
 			//---------------------------------------------------------- SocketHandler:
 

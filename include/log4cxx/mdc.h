@@ -1,23 +1,23 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_MDC_H
 #define _LOG4CXX_MDC_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <map>
 
@@ -44,17 +44,17 @@ namespace log4cxx
 	public:
 		/** String to string stl mp
 		*/
-		typedef std::map<String, String> Map;
+		typedef std::map<LogString, LogString> Map;
 
 	private:
 		static Map * getCurrentThreadMap();
 		static void setCurrentThreadMap(Map * map);
 
 		static helpers::ThreadSpecificData threadSpecificData;
-		const String& key;
+		const LogString& key;
 
 	public:
-		MDC(const String& key, const String& value);
+		MDC(const LogString& key, const LogString& value);
 		~MDC();
 
 		/**
@@ -65,19 +65,25 @@ namespace log4cxx
 		* <p>If the current thread does not have a context map it is
 		* created as a side effect.
 		* */
-  		static void put(const String& key, const String& value);
+  		static void put(const std::wstring& key, const std::wstring& value);
+                static void put(const std::string& key, const std::string& value);
+                static void putLogString(const LogString& key, const LogString& value);
 
 		/**
 		* Get the context identified by the <code>key</code> parameter.
 		*
 		*  <p>This method has no side effects.
 		* */
-		static String get(const String& key);
+		static std::wstring get(const std::wstring& key);
+                static std::string get(const std::string& key);
+                static bool get(const LogString& key, LogString& value);
 
 		/**
 		* Remove the the context identified by the <code>key</code>
 		* parameter. */
-		static String remove(const String& key);
+		static std::string remove(const std::string& key);
+                static std::wstring remove(const std::wstring& key);
+                static bool remove(const LogString& key, LogString& prevValue);
 
 		/**
 		* Clear all entries in the MDC.
@@ -89,8 +95,9 @@ namespace log4cxx
 		* intended to be used internally.
 		* */
 		static const Map getContext();
-		
+
 		static void setContext(Map& map);
+
 	}; // class MDC;
 }  // namespace log4cxx
 

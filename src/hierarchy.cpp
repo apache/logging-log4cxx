@@ -33,8 +33,8 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 namespace {
-    bool startsWith(const String& teststr, const String& substr)
-	{
+    bool startsWith(const LogString& teststr, const LogString& substr)
+        {
         bool val = false;
         if(teststr.length() > substr.length()) {
             val = teststr.substr(0, substr.length()) == substr;
@@ -48,10 +48,10 @@ Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
 pool(), mutex(pool)
 {
-	// Enable all level levels by default.
-	setThreshold(Level::getAll());
-	this->root->setHierarchy(this);
-	defaultFactory = new DefaultCategoryFactory();
+        // Enable all level levels by default.
+        setThreshold(Level::getAll());
+        this->root->setHierarchy(this);
+        defaultFactory = new DefaultCategoryFactory();
 }
 
 Hierarchy::~Hierarchy()
@@ -60,72 +60,73 @@ Hierarchy::~Hierarchy()
 
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
-	if (std::find(listeners.begin(), listeners.end(), listener) != listeners.end())
-	{
-		LogLog::warn(_T("Ignoring attempt to add an existent listener."));
-	}
-	else
-	{
-		listeners.push_back(listener);
-	}
+        if (std::find(listeners.begin(), listeners.end(), listener) != listeners.end())
+        {
+                LogLog::warn(LOG4CXX_STR("Ignoring attempt to add an existent listener."));
+        }
+        else
+        {
+                listeners.push_back(listener);
+        }
 }
 
 void Hierarchy::clear()
 {
-	synchronized sync(mutex);
-	loggers.clear();
+        synchronized sync(mutex);
+        loggers.clear();
 }
 
 void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
 {
-	// No appender in hierarchy, warn user only once.
-	if(!this->emittedNoAppenderWarning)
-	{
-		LogLog::warn(_T("No appender could be found for logger (") +
-			logger->getName() + _T(")."));
-		LogLog::warn(_T("Please initialize the log4cxx system properly."));
-		this->emittedNoAppenderWarning = true;
-	}
+        // No appender in hierarchy, warn user only once.
+        if(!this->emittedNoAppenderWarning)
+        {
+                LogLog::warn(((LogString) LOG4CXX_STR("No appender could be found for logger ("))
+                   + logger->getName() + LOG4CXX_STR(")."));
+                LogLog::warn(LOG4CXX_STR("Please initialize the log4cxx system properly."));
+                this->emittedNoAppenderWarning = true;
+        }
 }
 
 
-LoggerPtr Hierarchy::exists(const String& name)
+LoggerPtr Hierarchy::exists(const LogString& name)
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	LoggerPtr logger;
-	LoggerMap::iterator it = loggers.find(name);
-	if (it != loggers.end())
-	{
-		logger = it->second;
-	}
+        LoggerPtr logger;
+        LoggerMap::iterator it = loggers.find(name);
+        if (it != loggers.end())
+        {
+                logger = it->second;
+        }
 
 
-	return logger;
+        return logger;
 }
 
 void Hierarchy::setThreshold(const LevelPtr& l)
 {
-	if (l != 0)
-	{
-		thresholdInt = l->level;
-		threshold = l;
-	}
+        if (l != 0)
+        {
+                thresholdInt = l->toInt();
+                threshold = l;
+        }
 }
 
-void Hierarchy::setThreshold(const String& levelStr)
+void Hierarchy::setThreshold(const LogString& levelStr)
 
 {
-	const LevelPtr& l = Level::toLevel(levelStr, 0);
+        const LevelPtr& l = Level::toLevel(levelStr, 0);
 
-	if(l != 0)
-	{
-		setThreshold(l);
-	}
-	else
-	{
-		LogLog::warn(_T("Could not convert [")+levelStr+_T("] to Level."));
-	}
+        if(l != 0)
+        {
+                setThreshold(l);
+        }
+        else
+        {
+                LogLog::warn(((LogString) LOG4CXX_STR("No appender could be found for logger ("))
+                    + levelStr + LOG4CXX_STR("] to Level."));
+        }
 }
 
 void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
@@ -134,10 +135,10 @@ void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr&
     HierarchyEventListenerPtr listener;
 
     for(it = listeners.begin(); it != itEnd; it++)
-	{
-		listener = *it;
-		listener->addAppenderEvent(logger, appender);
-	}
+        {
+                listener = *it;
+                listener->addAppenderEvent(logger, appender);
+        }
 }
 
 void Hierarchy::fireRemoveAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
@@ -147,198 +148,199 @@ void Hierarchy::fireRemoveAppenderEvent(const LoggerPtr& logger, const AppenderP
     HierarchyEventListenerPtr listener;
 
     for(it = listeners.begin(); it != itEnd; it++)
-	{
-		listener = *it;
-		listener->removeAppenderEvent(logger, appender);
-	}
+        {
+                listener = *it;
+                listener->removeAppenderEvent(logger, appender);
+        }
 }
 
 const LevelPtr& Hierarchy::getThreshold() const
 {
-	return threshold;
+        return threshold;
 }
 
-LoggerPtr Hierarchy::getLogger(const String& name)
+LoggerPtr Hierarchy::getLogger(const LogString& name)
 {
-	return getLogger(name, defaultFactory);
+        return getLogger(name, defaultFactory);
 }
 
-LoggerPtr Hierarchy::getLogger(const String& name, spi::LoggerFactoryPtr factory)
+LoggerPtr Hierarchy::getLogger(const LogString& name,
+     const spi::LoggerFactoryPtr& factory)
 {
-	// Synchronize to prevent write conflicts. Read conflicts (in
-	// getEffectiveLevel method) are possible only if variable
-	// assignments are non-atomic.
-	LoggerPtr logger;
+        // Synchronize to prevent write conflicts. Read conflicts (in
+        // getEffectiveLevel method) are possible only if variable
+        // assignments are non-atomic.
+        LoggerPtr logger;
 
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	LoggerMap::iterator it = loggers.find(name);
+        LoggerMap::iterator it = loggers.find(name);
 
-	if (it != loggers.end())
-	{
-		logger = it->second;
-	}
-	else
-	{
-		logger = factory->makeNewLoggerInstance(name);
+        if (it != loggers.end())
+        {
+                logger = it->second;
+        }
+        else
+        {
+                logger = factory->makeNewLoggerInstance(name);
 
-		logger->setHierarchy(this);
-		loggers.insert(LoggerMap::value_type(name, logger));
+                logger->setHierarchy(this);
+                loggers.insert(LoggerMap::value_type(name, logger));
 
-		ProvisionNodeMap::iterator it2 = provisionNodes.find(name);
-		if (it2 != provisionNodes.end())
-		{
-			updateChildren(it2->second, logger);
-			provisionNodes.erase(it2);
-		}
+                ProvisionNodeMap::iterator it2 = provisionNodes.find(name);
+                if (it2 != provisionNodes.end())
+                {
+                        updateChildren(it2->second, logger);
+                        provisionNodes.erase(it2);
+                }
 
-		updateParents(logger);
-	}
+                updateParents(logger);
+        }
 
 
-	return logger;
+        return logger;
 }
 
 LoggerList Hierarchy::getCurrentLoggers() const
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	LoggerList v;
-	LoggerMap::const_iterator it, itEnd = loggers.end();
+        LoggerList v;
+        LoggerMap::const_iterator it, itEnd = loggers.end();
 
-	for (it = loggers.begin(); it != itEnd; it++)
-	{
-		v.push_back(it->second);
-	}
+        for (it = loggers.begin(); it != itEnd; it++)
+        {
+                v.push_back(it->second);
+        }
 
 
-	return v;
+        return v;
 }
 
 LoggerPtr Hierarchy::getRootLogger() const
 {
-	return root;
+        return root;
 }
 
 bool Hierarchy::isDisabled(int level) const
 {
-	return thresholdInt > level;
+        return thresholdInt > level;
 }
 
 
 void Hierarchy::resetConfiguration()
 {
-	synchronized sync(mutex);
+        synchronized sync(mutex);
 
-	getRootLogger()->setLevel(Level::getDebug());
-	root->setResourceBundle(0);
-	setThreshold(Level::getAll());
+        getRootLogger()->setLevel(Level::getDebug());
+        root->setResourceBundle(0);
+        setThreshold(Level::getAll());
 
-	shutdown(); // nested locks are OK
+        shutdown(); // nested locks are OK
 
-	LoggerList loggers = getCurrentLoggers();
-	LoggerList::iterator it, itEnd = loggers.end();
+        LoggerList loggers = getCurrentLoggers();
+        LoggerList::iterator it, itEnd = loggers.end();
 
-	for (it = loggers.begin(); it != itEnd; it++)
-	{
-		LoggerPtr& logger = *it;
-		logger->setLevel(0);
-		logger->setAdditivity(true);
-		logger->setResourceBundle(0);
-	}
+        for (it = loggers.begin(); it != itEnd; it++)
+        {
+                LoggerPtr& logger = *it;
+                logger->setLevel(0);
+                logger->setAdditivity(true);
+                logger->setResourceBundle(0);
+        }
 
-	//rendererMap.clear();
+        //rendererMap.clear();
 }
 
 void Hierarchy::shutdown()
 {
-	LoggerPtr root = getRootLogger();
+        LoggerPtr root = getRootLogger();
 
-	// begin by closing nested appenders
-	root->closeNestedAppenders();
+        // begin by closing nested appenders
+        root->closeNestedAppenders();
 
-	LoggerList loggers = getCurrentLoggers();
-	LoggerList::iterator it, itEnd = loggers.end();
+        LoggerList loggers = getCurrentLoggers();
+        LoggerList::iterator it, itEnd = loggers.end();
 
-	for (it = loggers.begin(); it != itEnd; it++)
-	{
-		LoggerPtr& logger = *it;
-		logger->closeNestedAppenders();
-	}
+        for (it = loggers.begin(); it != itEnd; it++)
+        {
+                LoggerPtr& logger = *it;
+                logger->closeNestedAppenders();
+        }
 
-	// then, remove all appenders
-	root->removeAllAppenders();
-	for (it = loggers.begin(); it != itEnd; it++)
-	{
-		LoggerPtr& logger = *it;
-		logger->removeAllAppenders();
-	}
+        // then, remove all appenders
+        root->removeAllAppenders();
+        for (it = loggers.begin(); it != itEnd; it++)
+        {
+                LoggerPtr& logger = *it;
+                logger->removeAllAppenders();
+        }
 }
 
 
 void Hierarchy::updateParents(LoggerPtr& logger)
 {
-	const String& name = logger->name;
-	int length = name.size();
-	bool parentFound = false;
+        const LogString& name(logger->name);
+        int length = name.size();
+        bool parentFound = false;
 
-	//tcout << _T("UpdateParents called for ") << name << std::endl;
+        //tcout << _T("UpdateParents called for ") << name << std::endl;
 
-	// if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
-	for(int i = name.find_last_of(_T('.'), length-1); i != String::npos;
-	i = name.find_last_of(_T('.'), i-1))
-	{
-		String substr = name.substr(0, i);
-		//tcout << _T("UpdateParents processing ") << substr << std::endl;
+        // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
+        for(int i = name.find_last_of(L'.', length-1); i != LogString::npos;
+        i = name.find_last_of(L'.', i-1))
+        {
+                LogString substr = name.substr(0, i);
+                //tcout << _T("UpdateParents processing ") << substr << std::endl;
 
         LoggerMap::iterator it = loggers.find(substr);
-		if(it != loggers.end())
-		{
-			parentFound = true;
-			logger->parent = it->second;
-			break; // no need to update the ancestors of the closest ancestor
-		}
-		else
-		{
-			ProvisionNodeMap::iterator it2 = provisionNodes.find(name);
-			if (it2 != provisionNodes.end())
-			{
-				it2->second.push_back(logger);
-			}
-			else
-			{
-				//tcout << _T("Inserting ProvisionNode for ") << substr << std::endl;
-				ProvisionNode node(logger);
-				provisionNodes.insert(
-					ProvisionNodeMap::value_type(substr, node));
-			}
-		}
-	}
+                if(it != loggers.end())
+                {
+                        parentFound = true;
+                        logger->parent = it->second;
+                        break; // no need to update the ancestors of the closest ancestor
+                }
+                else
+                {
+                        ProvisionNodeMap::iterator it2 = provisionNodes.find(name);
+                        if (it2 != provisionNodes.end())
+                        {
+                                it2->second.push_back(logger);
+                        }
+                        else
+                        {
+                                //tcout << _T("Inserting ProvisionNode for ") << substr << std::endl;
+                                ProvisionNode node(logger);
+                                provisionNodes.insert(
+                                        ProvisionNodeMap::value_type(substr, node));
+                        }
+                }
+        }
 
-	// If we could not find any existing parents, then link with root.
-	if(!parentFound)
-	{
-		logger->parent = root;
-	}
+        // If we could not find any existing parents, then link with root.
+        if(!parentFound)
+        {
+                logger->parent = root;
+        }
 }
 
 void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr& logger)
 {
-	//tcout << _T("updateChildren called for ") << logger->name << std::endl;
+        //tcout << _T("updateChildren called for ") << logger->name << std::endl;
 
-	ProvisionNode::iterator it, itEnd = pn.end();
+        ProvisionNode::iterator it, itEnd = pn.end();
 
-	for(it = pn.begin(); it != itEnd; it++)
-	{
-		LoggerPtr& l = *it;
-		//tcout << _T("Updating child ") << l->name << std::endl;
+        for(it = pn.begin(); it != itEnd; it++)
+        {
+                LoggerPtr& l = *it;
+                //tcout << _T("Updating child ") << l->name << std::endl;
 
-		// Unless this child already points to a correct (lower) parent,
-		// make cat.parent point to l.parent and l.parent to cat.
-		if(!startsWith(l->parent->name, logger->name))
-		{
-			logger->parent = l->parent;
-			l->parent = logger;
-		}
-	}
+                // Unless this child already points to a correct (lower) parent,
+                // make cat.parent point to l.parent and l.parent to cat.
+                if(!startsWith(l->parent->name, logger->name))
+                {
+                        logger->parent = l->parent;
+                        l->parent = logger;
+                }
+        }
 }

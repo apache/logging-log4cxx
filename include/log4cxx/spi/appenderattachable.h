@@ -1,23 +1,23 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_SPI_APPENDER_ATTACHABLE_H_
 #define _LOG4CXX_SPI_APPENDER_ATTACHABLE_H_
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <vector>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>
@@ -56,7 +56,7 @@ namespace log4cxx
             /**
              * Get an appender by name.
              */
-            virtual AppenderPtr getAppender(const String& name) const = 0;
+            virtual AppenderPtr getAppender(const LogString& name) const = 0;
 
             /**
 			Returns <code>true</code> if the specified appender is in list of
@@ -78,12 +78,12 @@ namespace log4cxx
              * Remove the appender with the name passed as parameter from the
              * list of appenders.
              */
-            virtual void removeAppender(const String& name) = 0;
+            virtual void removeAppender(const LogString& name) = 0;
 
           // Dtor
             virtual ~AppenderAttachable(){}
         };
-    } 
-} 
+    }
+}
 
 #endif //_LOG4CXX_SPI_APPENDER_ATTACHABLE_H_

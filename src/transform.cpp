@@ -22,7 +22,7 @@ using namespace log4cxx::helpers;
 
 
 void Transform::appendEscapingTags(
-	ostream& buf, const String& input)
+	LogString& buf, const LogString& input)
 {
 	//Check if the string is zero length -- if so, return
 	//what was sent in.
@@ -32,34 +32,34 @@ void Transform::appendEscapingTags(
 		return;
 	}
 
-	String::const_iterator it = input.begin();
-	String::const_iterator itEnd = input.end();
-	TCHAR ch;
+	LogString::const_iterator it = input.begin();
+	LogString::const_iterator itEnd = input.end();
+	logchar ch;
 	while(it != itEnd)
 	{
 		ch = *it++;
-		if(ch == _T('<'))
+		if(ch == LOG4CXX_STR('<'))
 		{
-			buf << _T("&lt;");
+			buf.append(LOG4CXX_STR("&lt;"));
 		}
-		else if(ch == _T('>'))
+		else if(ch == LOG4CXX_STR('>'))
 		{
-			buf << _T("&gt;");
+			buf.append(LOG4CXX_STR("&gt;"));
 		}
 		else
 		{
-			buf.put(ch);
+			buf.append(1, ch);
 		}
 	}
 }
 
 void Transform::appendEscapingCDATA(
-	ostream& buf, const String& input)
+	LogString& buf, const LogString& input)
 {
-     static const String CDATA_END("]]>");
-     static const String CDATA_EMBEDED_END("]]>]]&gt;<![CDATA[");
+     static const LogString CDATA_END(LOG4CXX_STR("]]>"));
+     static const LogString CDATA_EMBEDED_END(LOG4CXX_STR("]]>]]&gt;<![CDATA["));
 
-     const String::size_type CDATA_END_LEN = 3;
+     const LogString::size_type CDATA_END_LEN = 3;
 
 
 	if(input.length() == 0 )
@@ -67,18 +67,18 @@ void Transform::appendEscapingCDATA(
 		return;
 	}
 
-	String::size_type end = input.find(CDATA_END);
-	if (end == String::npos)
+	LogString::size_type end = input.find(CDATA_END);
+	if (end == LogString::npos)
 	{
-		buf << input;
+		buf.append(input);
 		return;
 	}
 
-	String::size_type start = 0;
-	while (end != String::npos)
+	LogString::size_type start = 0;
+	while (end != LogString::npos)
 	{
-		buf << input.substr(start, end-start);
-		buf << CDATA_EMBEDED_END;
+		buf.append(input, start, end-start);
+		buf.append(CDATA_EMBEDED_END);
 		start = end + CDATA_END_LEN;
 		if (start < input.length())
 		{
@@ -90,6 +90,6 @@ void Transform::appendEscapingCDATA(
 		}
 	}
 
-	buf << input.substr(start);
+	buf.append(input, start, input.length() - start);
 }
 

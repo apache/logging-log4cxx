@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_CLASS_H
 #define _LOG4CXX_HELPERS_CLASS_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <map>
 
@@ -48,26 +48,26 @@ namespace log4cxx
 		class LOG4CXX_EXPORT ClassNotFoundException : public Exception
 		{
 		public:
-                    ClassNotFoundException(const String& className) {}
+                    ClassNotFoundException(const LogString& className) {}
                     const char* what() const throw() { return "Class not found"; }
 		};
 
 		class LOG4CXX_EXPORT Class
 		{
 		public:
-			Class(const String& name);
+			Class(const LogString& name);
 			virtual ~Class();
 			virtual ObjectPtr newInstance() const;
-			const String& toString() const;
-			const String& getName() const;
-			static const Class& forName(const String& className);
+			const LogString& toString() const;
+			const LogString& getName() const;
+			static const Class& forName(const LogString& className);
 
 		protected:
 			static void registerClass(const Class * newClass);
-			String name;
+			LogString name;
 
                 private:
-                        typedef std::map<String, const Class *> ClassMap;
+                        typedef std::map<LogString, const Class *> ClassMap;
                         static ClassMap& getRegistry();
 		};
 	}  // namespace log4cxx

@@ -39,8 +39,8 @@ namespace log4cxx
 			public virtual ObjectImpl
 		{
 		private:
-			String WARN_PREFIX;
-			String ERROR_PREFIX;
+			LogString WARN_PREFIX;
+			LogString ERROR_PREFIX;
 			mutable bool firstTime;
 
 		public:
@@ -61,27 +61,27 @@ namespace log4cxx
             /**
             No options to activate.
             */
-            void activateOptions();
-            void setOption(const String& option, const String& value);
+            void activateOptions(apr_pool_t* p);
+            void setOption(const LogString& option, const LogString& value);
 
 
             /**
             Prints the message and the stack trace of the exception on
             <code>System.err</code>.  */
-            void error(const String& message, Exception& e,
+            void error(const LogString& message, const std::exception& e,
 				int errorCode) const;
             /**
             Prints the message and the stack trace of the exception on
             <code>System.err</code>.
             */
-            void error(const String& message, Exception& e,
+            void error(const LogString& message, const std::exception& e,
 				int errorCode, const spi::LoggingEventPtr& event) const;
 
             /**
             Print a the error message passed as parameter on
             <code>System.err</code>.
             */
-             void error(const String& message) const;
+             void error(const LogString& message) const;
 
             /**
             Does not do anything.

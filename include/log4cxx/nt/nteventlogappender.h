@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_NT_EVENT_LOG_APPENDER_HEADER_
 #define _LOG4CXX_NT_EVENT_LOG_APPENDER_HEADER_
 
@@ -25,7 +25,7 @@ namespace log4cxx
 	namespace nt
 	{
 		/**
-		 * Appends log events to NT EventLog. 
+		 * Appends log events to NT EventLog.
 		 */
 		class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		{
@@ -37,14 +37,14 @@ namespace log4cxx
 		END_LOG4CXX_CAST_MAP()
 
 			NTEventLogAppender();
-			NTEventLogAppender(const String& server, const String& log,
-				const String& source, const LayoutPtr& layout);
+			NTEventLogAppender(const LogString& server, const LogString& log,
+				const LogString& source, const LayoutPtr& layout);
 
 			virtual ~NTEventLogAppender();
 
-			virtual void activateOptions();
+			virtual void activateOptions(apr_pool_t* p);
 			virtual void close();
-			virtual void setOption(const String& option, const String& value);
+			virtual void setOption(const LogString& option, const LogString& value);
 
     		/**
     		* The SocketAppender does not use a layout. Hence, this method
@@ -53,22 +53,22 @@ namespace log4cxx
     		bool requiresLayout() const
     			{ return true; }
 
-			void setSource(const String& source)
+			void setSource(const LogString& source)
 				{ this->source = source; }
-			
-			const String& getSource() const
+
+			const LogString& getSource() const
 				{ return source; }
 
-			void setLog(const String& log)
+			void setLog(const LogString& log)
 				{ this->log = log; }
-			
-			const String& getLog() const
+
+			const LogString& getLog() const
 				{ return log; }
 
-			void setServer(const String& server)
+			void setServer(const LogString& server)
 				{ this->server = server; }
-			
-			const String& getServer() const
+
+			const LogString& getServer() const
 				{ return server; }
 
 		protected:
@@ -81,9 +81,9 @@ namespace log4cxx
 			typedef void* HANDLE;
 
 			virtual void append(const spi::LoggingEventPtr& event);
-			static HKEY regGetKey(const String& subkey, unsigned long *disposition);
-			static void regSetString(HKEY hkey, const String& name, const String& value);
-			static void regSetDword(HKEY hkey, const String& name, unsigned long value);
+			static HKEY regGetKey(const std::wstring& subkey, unsigned long *disposition);
+			static void regSetString(HKEY hkey, const std::wstring& name, const std::wstring& value);
+			static void regSetDword(HKEY hkey, const std::wstring& name, unsigned long value);
 			unsigned short getEventType(const spi::LoggingEventPtr& event);
 			unsigned short getEventCategory(const spi::LoggingEventPtr& event);
 			/*
@@ -92,9 +92,9 @@ namespace log4cxx
 			void addRegistryInfo();
 
 			// Data
-			String server;
-			String log;
-			String source;
+			LogString server;
+			LogString log;
+			LogString source;
 			HANDLE hEventLog;
 			SID * pCurrentUserSID;
 		}; // class NTEventLogAppender

@@ -20,6 +20,8 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
 
+#define _T(str) L ## str
+
 using namespace log4cxx;
 
 class TestCase3 : public CppUnit::TestFixture

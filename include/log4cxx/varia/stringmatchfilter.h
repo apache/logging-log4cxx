@@ -51,7 +51,7 @@ namespace log4cxx
 		{
 		private:
 			bool acceptOnMatch;
-			String stringToMatch;
+			LogString stringToMatch;
 
 		public:
 			typedef spi::Filter BASE_CLASS;
@@ -66,13 +66,13 @@ namespace log4cxx
 			/**
 			Set options
 			*/
-			virtual void setOption(const String& option,
-				const String& value);
+			virtual void setOption(const LogString& option,
+				const LogString& value);
 
-			inline void setStringToMatch(const String& stringToMatch)
+			inline void setStringToMatch(const LogString& stringToMatch)
 				{ this->stringToMatch = stringToMatch; }
 
-			inline const String& getStringToMatch() const
+			inline const LogString& getStringToMatch() const
 				{ return stringToMatch; }
 
 			inline void setAcceptOnMatch(bool acceptOnMatch)

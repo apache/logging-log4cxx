@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_SOCKET_INPUT_STREAM_H
 #define _LOG4CXX_HELPERS_SOCKET_INPUT_STREAM_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/exception.h>
@@ -56,7 +56,7 @@ namespace log4cxx
 			void read(int &value) const;
 			void read(unsigned long &value) const;
 			void read(long &value) const;
-			void read(String& value) const;
+			void read(LogString& value) const;
 			// some read functions are missing ...
 
 			/** Close the stream and dereference the socket.

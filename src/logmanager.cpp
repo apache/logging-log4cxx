@@ -30,7 +30,7 @@
 #include <apr_general.h>
 
 #include <log4cxx/spi/loggingevent.h>
-
+#include <log4cxx/file.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -52,41 +52,41 @@ RepositorySelectorPtr& LogManager::getRepositorySelector() {
 }
 
 void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
-	void * guard)
+        void * guard)
 {
-	if((LogManager::guard != 0) && (LogManager::guard != guard))
-	{
-		throw IllegalArgumentException();
-	}
+        if((LogManager::guard != 0) && (LogManager::guard != guard))
+        {
+                throw IllegalArgumentException();
+        }
 
-	if(selector == 0)
-	{
-		throw IllegalArgumentException();
-	}
+        if(selector == 0)
+        {
+                throw IllegalArgumentException();
+        }
 
-	LogManager::guard = guard;
-	LogManager::getRepositorySelector() = selector;
+        LogManager::guard = guard;
+        LogManager::getRepositorySelector() = selector;
 }
 
-const String LogManager::getConfiguratorClass() {
+const LogString LogManager::getConfiguratorClass() {
 
-   static const String LOG4J_CONFIGURATOR_CLASS_KEY("log4j.configuratorClass");
-   static const String LOG4CXX_CONFIGURATOR_CLASS_KEY("LOG4CXX_CONFIGURATOR_CLASS");
+   static const LogString LOG4J_CONFIGURATOR_CLASS_KEY(LOG4CXX_STR("log4j.configuratorClass"));
+   static const LogString LOG4CXX_CONFIGURATOR_CLASS_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"));
    // Use automatic configration to configure the default hierarchy
-   const String log4jConfiguratorClassName(
-        OptionConverter::getSystemProperty(LOG4J_CONFIGURATOR_CLASS_KEY,_T("")));
-   const String configuratorClassName(
+   const LogString log4jConfiguratorClassName(
+        OptionConverter::getSystemProperty(LOG4J_CONFIGURATOR_CLASS_KEY,LOG4CXX_STR("")));
+   const LogString configuratorClassName(
         OptionConverter::getSystemProperty(LOG4CXX_CONFIGURATOR_CLASS_KEY,
             log4jConfiguratorClassName));
    return configuratorClassName;
 }
 
-const String LogManager::getConfigurationFileName() {
-  static const String LOG4CXX_DEFAULT_CONFIGURATION_KEY("LOG4CXX_CONFIGURATION");
-  static const String LOG4J_DEFAULT_CONFIGURATION_KEY("log4j.configuration");
-  const String log4jConfigurationOptionStr(
-          OptionConverter::getSystemProperty(LOG4J_DEFAULT_CONFIGURATION_KEY,_T("")));
-  const String configurationOptionStr(
+const LogString LogManager::getConfigurationFileName() {
+  static const LogString LOG4CXX_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
+  static const LogString LOG4J_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("log4j.configuration"));
+  const LogString log4jConfigurationOptionStr(
+          OptionConverter::getSystemProperty(LOG4J_DEFAULT_CONFIGURATION_KEY, LOG4CXX_STR("")));
+  const LogString configurationOptionStr(
           OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_KEY,
               log4jConfigurationOptionStr));
   return configurationOptionStr;
@@ -95,101 +95,102 @@ const String LogManager::getConfigurationFileName() {
 
 LoggerRepositoryPtr& LogManager::getLoggerRepository()
 {
-	if (getRepositorySelector() == 0)
-	{
-		getRepositorySelector() =
-			new DefaultRepositorySelector(
-				new Hierarchy(
-					new RootCategory(Level::getDebug())));
+        if (getRepositorySelector() == 0)
+        {
+                getRepositorySelector() =
+                        new DefaultRepositorySelector(
+                                new Hierarchy(
+                                        new RootCategory(Level::getDebug())));
 
-                const String configuratorClassName(getConfiguratorClass());
+                const LogString configuratorClassName(getConfiguratorClass());
 
-                String configurationOptionStr(getConfigurationFileName());
+                LogString configurationOptionStr(getConfigurationFileName());
+                File configuration(configurationOptionStr);
 
-		struct stat buff;
+                if (configurationOptionStr.empty())
+                {
+                        configuration = LOG4CXX_FILE("log4cxx.properties");
+                        if (!configuration.exists()) {
+                            File tmp = LOG4CXX_FILE("log4cxx.xml");
+                            if (tmp.exists()) {
+                              configuration = tmp;
+                            } else {
+                              tmp = LOG4CXX_FILE("log4j.properties");
+                              if (tmp.exists()) {
+                                configuration = tmp;
+                              } else {
+                                tmp = LOG4CXX_FILE("log4j.xml");
+                                if (tmp.exists()) {
+                                  configuration = tmp;
+                                }
+                              }
+                            }
+                          }
+                }
 
-		if (configurationOptionStr.empty())
-		{
-                        configurationOptionStr = "log4cxx.properties";
-                        const char* configFilenames[] = {
-                             "log4cxx.properties",
-                             "log4j.properties",
-                             "log4cxx.xml",
-                             "log4j.xml",
-                             NULL };
-                        for (const char** configFile = configFilenames;
-                             *configFile != NULL;
-                             configFile++) {
-                             if (stat(*configFile, &buff) == 0) {
-                                configurationOptionStr = *configFile;
-                                break;
-                             }
-                        }
-		}
+                if (configuration.exists())
+                {
+                        LogString msg(LOG4CXX_STR("Using configuration file ["));
+                        msg += configuration.getName();
+                        msg += LOG4CXX_STR("] for automatic log4cxx configuration");
+                        LogLog::debug(msg);
 
-		if (stat(T2A(configurationOptionStr.c_str()), &buff) == 0)
-		{
-			LogLog::debug(
-				_T("Using configuration file [") +configurationOptionStr
-				+ _T("] for automatic log4cxx configuration"));
+                        OptionConverter::selectAndConfigure(
+                                configuration,
+                                configuratorClassName,
+                                getRepositorySelector()->getLoggerRepository());
+                }
+                else
+                {
+                        LogString msg(LOG4CXX_STR("Could not find configuration file: ["));
+                        msg += configuration.getName();
+                        msg += LOG4CXX_STR("].");
+                }
+        }
 
-			OptionConverter::selectAndConfigure(
-				configurationOptionStr,
-				configuratorClassName,
-				getRepositorySelector()->getLoggerRepository());
-		}
-		else
-		{
-			LogLog::debug(
-				_T("Could not find configuration file: [")
-				+configurationOptionStr+_T("]."));
-		}
-	}
-
-	return getRepositorySelector()->getLoggerRepository();
+        return getRepositorySelector()->getLoggerRepository();
 }
 
 LoggerPtr LogManager::getRootLogger()
 {
-	// Delegate the actual manufacturing of the logger to the logger repository.
-	return getLoggerRepository()->getRootLogger();
+        // Delegate the actual manufacturing of the logger to the logger repository.
+        return getLoggerRepository()->getRootLogger();
 }
 
 /**
 Retrieve the appropriate Logger instance.
 */
-LoggerPtr LogManager::getLogger(const String& name)
+LoggerPtr LogManager::getLogger(const LogString& name)
 {
-	// Delegate the actual manufacturing of the logger to the logger repository.
-	return getLoggerRepository()->getLogger(name);
+        return getLoggerRepository()->getLogger(name);
 }
 
 /**
 Retrieve the appropriate Logger instance.
 */
-LoggerPtr LogManager::getLogger(const String& name,
-								spi::LoggerFactoryPtr factory)
+LoggerPtr LogManager::getLogger(const LogString& name,
+        const spi::LoggerFactoryPtr& factory)
 {
-	// Delegate the actual manufacturing of the logger to the logger repository.
-	return getLoggerRepository()->getLogger(name, factory);
+        // Delegate the actual manufacturing of the logger to the logger repository.
+        return getLoggerRepository()->getLogger(name, factory);
 }
 
-LoggerPtr LogManager::exists(const String& name)
+LoggerPtr LogManager::exists(const LogString& name)
 {
-	return getLoggerRepository()->exists(name);
+        return getLoggerRepository()->exists(name);
 }
 
 LoggerList LogManager::getCurrentLoggers()
 {
-	return getLoggerRepository()->getCurrentLoggers();
+        return getLoggerRepository()->getCurrentLoggers();
 }
 
 void LogManager::shutdown()
 {
-	getLoggerRepository()->shutdown();
+        getLoggerRepository()->shutdown();
 }
 
 void LogManager::resetConfiguration()
 {
-	getLoggerRepository()->resetConfiguration();
+        getLoggerRepository()->resetConfiguration();
 }

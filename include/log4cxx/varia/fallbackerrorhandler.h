@@ -64,22 +64,22 @@ namespace log4cxx
 			/**
 			No options to activate.
 			*/
-            void activateOptions();
-            void setOption(const String& option, const String& value);
+                        void activateOptions(apr_pool_t* p);
+                        void setOption(const LogString& option, const LogString& value);
 
 
 			/**
 			Prints the message and the stack trace of the exception on
 			<code>System.err</code>.
 			*/
-			void error(const String& message, helpers::Exception& e,
+			void error(const LogString& message, const std::exception& e,
 				int errorCode) const;
 
 			/**
 			Prints the message and the stack trace of the exception on
 			<code>System.err</code>.
 			*/
-			void error(const String& message, helpers::Exception& e,
+			void error(const LogString& message, const std::exception& e,
 				int errorCode, const spi::LoggingEventPtr& event) const;
 
 
@@ -87,7 +87,7 @@ namespace log4cxx
 			Print a the error message passed as parameter on
 			<code>System.err</code>.
 			*/
-			void error(const String& message) const {}
+			void error(const LogString& message) const {}
 
 			/**
 			Return the backup appender.

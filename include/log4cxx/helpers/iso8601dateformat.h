@@ -36,7 +36,7 @@ namespace log4cxx
 		{
 		public:
 			ISO8601DateFormat()
-			 : SimpleDateFormat("yyyy-MM-dd HH:mm:ss,SSS") {}
+			 : SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS")) {}
 		};
 	}  // namespace helpers
 }; // namespace log4cxx

@@ -1,27 +1,28 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_HELPER_PROPERTIES_H
 #define _LOG4CXX_HELPER_PROPERTIES_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <map>
 #include <vector>
+#include <istream>
 
 namespace log4cxx
 {
@@ -30,7 +31,8 @@ namespace log4cxx
 		class LOG4CXX_EXPORT Properties
 		{
 		private:
-			std::map<String, String> properties;
+			typedef std::map<LogString, LogString> PropertyMap;
+                        PropertyMap properties;
 
 		public:
 			/**
@@ -104,13 +106,13 @@ cheeses
  			</pre>
    		 	specifies that the key is "<code>cheeses</code>" and the associated
 			element is the empty string.
-			
+
 		    @param inStream the input stream.
-			
+
 			@throw IOException if an error occurred when reading from the input
 			stream.
 			*/
-			void load(istream& inStream);
+			void load(LogString& inStream);
 
 			/**
 			Calls the Hashtable method put. Provided for parallelism with the
@@ -122,7 +124,7 @@ cheeses
     		@return the previous value of the specified key in this
 			property list, or an empty string if it did not have one.
 			*/
-			String setProperty(const String& key, const String& value);
+			LogString setProperty(const LogString& key, const LogString& value);
 
 
 			/**
@@ -134,7 +136,7 @@ cheeses
     		@return the value in this property list with the specified
 			key value.
 			*/
-			String getProperty(const String& key) const;
+			LogString getProperty(const LogString& key) const;
 
 			/**
 			Returns an enumeration of all the keys in this property list,
@@ -144,7 +146,7 @@ cheeses
 			@return an array of all the keys in this
 			property list, including the keys in the default property list.
 			*/
-			std::vector<String> propertyNames() const;
+			std::vector<LogString> propertyNames() const;
 		}; // class Properties
 	}  // namespace helpers
 }; // namespace log4cxx

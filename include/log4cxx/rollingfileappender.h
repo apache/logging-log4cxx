@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_ROLLING_FILE_APPENDER_H
 #define _LOG4CXX_ROLLING_FILE_APPENDER_H
 
@@ -59,15 +59,15 @@ namespace log4cxx
 		appended to. Otherwise, the file desginated by
 		<code>filename</code> will be truncated before being opened.
 		*/
-		RollingFileAppender(const LayoutPtr& layout, const String& fileName, bool append);
+		RollingFileAppender(const LayoutPtr& layout, const File& fileName, bool append);
 
 		/**
 		Instantiate a FileAppender and open the file designated by
 		<code>filename</code>. The opened filename will become the output
 		destination for this appender.
 		<p>The file will be appended to.  */
-		RollingFileAppender(const LayoutPtr& layout, const String& fileName);
-		
+		RollingFileAppender(const LayoutPtr& layout, const File& fileName);
+
 		~RollingFileAppender();
 
 		/**
@@ -122,19 +122,19 @@ namespace log4cxx
 		or gigabytes. For example, the value "10KB" will be interpreted
 		as 10240.
 		*/
-		inline void setMaxFileSize(const String& value)
+		inline void setMaxFileSize(const LogString& value)
 			{ maxFileSize = helpers::OptionConverter::toFileSize(
 				value, maxFileSize + 1); }
 
 
-		virtual void setOption(const String& option, const String& value);
-			
+		virtual void setOption(const LogString& option, const LogString& value);
+
 	protected:
 		/**
 		This method differentiates RollingFileAppender from its parent
 		class.
 		*/
-		virtual void subAppend(const spi::LoggingEventPtr& event);
+                virtual void subAppend(const char* encoded, apr_size_t size, apr_pool_t* p);
 	}; // class RollingFileAppender
 }  // namespace log4cxx
 

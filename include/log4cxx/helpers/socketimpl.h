@@ -72,7 +72,6 @@ namespace log4cxx
                         PlatformSocketException(const PlatformSocketException&);
                         virtual ~PlatformSocketException() throw();
                         const char* what() const throw();
-                        virtual const String getMessage() const;
                         long getErrorNumber() const;
 
                 private:
@@ -214,7 +213,7 @@ namespace log4cxx
  			void connect(InetAddress address, int port);
 
 			/** Connects this socket to the specified port on the named host. */
-			void connect(const String& host, int port);
+			void connect(const LogString& host, int port);
 
 			/** Creates either a stream or a datagram socket. */
 			void create(bool stream);
@@ -242,7 +241,7 @@ namespace log4cxx
 
 			/** Returns the address and port of this socket as a String.
 			*/
-			String toString() const;
+			LogString toString() const;
 
 			size_t read(void * buf, size_t len) const;
 			size_t write(const void * buf, size_t len);

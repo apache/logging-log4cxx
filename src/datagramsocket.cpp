@@ -97,7 +97,7 @@ void DatagramSocket::close()
 {
 	if (fd != 0)
 	{
-		LOGLOG_DEBUG(_T("closing socket"));
+		LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
 #if defined(WIN32) || defined(_WIN32)
 		if (::closesocket(fd) == -1)
 #else

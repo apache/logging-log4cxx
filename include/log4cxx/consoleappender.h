@@ -40,7 +40,7 @@ namespace log4cxx
 
 		ConsoleAppender();
 		ConsoleAppender(const LayoutPtr& layout);
-		ConsoleAppender(const LayoutPtr& layout, const String& target);
+		ConsoleAppender(const LayoutPtr& layout, const LogString& target);
 		~ConsoleAppender();
 
 	/**
@@ -57,7 +57,7 @@ namespace log4cxx
 	*  ignored.
 	* */
 	public:
-		void setTarget(const String& value);
+		void setTarget(const LogString& value);
 
 	/**
 	* Returns the current value of the <b>#target</b> property. The
@@ -66,22 +66,25 @@ namespace log4cxx
 	* See also #setTarget.
 	* */
 	public:
-		const String& getTarget() const;
+		const LogString& getTarget() const;
 
 	protected:
-		void targetWarn(const String& val);
+		void targetWarn(const LogString& val);
 
 	public:
-		void activateOptions();
-		void setOption(const String& option, const String& value);
+		void activateOptions(apr_pool_t* p);
+		void setOption(const LogString& option, const LogString& value);
 
 	public:
-                static const String& getSystemOut();
-                static const String& getSystemErr();
+                static const LogString& getSystemOut();
+                static const LogString& getSystemErr();
 
 
 	protected:
-		String target;
+                void subAppend(const LogString& msg, apr_pool_t* p);
+
+		LogString target;
+                bool useErr;
 	};
 }  //namespace log4cxx
 

@@ -52,7 +52,7 @@ void AsyncAppender::addAppender(const AppenderPtr& newAppender)
 	aai->addAppender(newAppender);
 }
 
-void AsyncAppender::append(const spi::LoggingEventPtr& event)
+void AsyncAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
 {
 	// Set the NDC and thread name for the calling thread as these
 	// LoggingEvent fields were not set at event creation time.
@@ -69,7 +69,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event)
 	{
 		synchronized sync(mutex);
 		count = queue.size();
-        full = count >= size;
+                full = count >= size;
 		if (!full) {
 			queue.push_back(event);
 		}
@@ -92,7 +92,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event)
 	//
 	//   if was full, add it now
 	//
-    if (full) {
+        if (full) {
 		synchronized sync(mutex);
 		queue.push_back(event);
 		pending.broadcast();
@@ -118,7 +118,7 @@ AppenderList AsyncAppender::getAllAppenders() const
 	return aai->getAllAppenders();
 }
 
-AppenderPtr AsyncAppender::getAppender(const String& name) const
+AppenderPtr AsyncAppender::getAppender(const LogString& name) const
 {
 	synchronized sync(aai->getMutex());
 	return aai->getAppender(name);
@@ -152,7 +152,7 @@ void AsyncAppender::removeAppender(const AppenderPtr& appender)
 	aai->removeAppender(appender);
 }
 
-void AsyncAppender::removeAppender(const String& name)
+void AsyncAppender::removeAppender(const LogString& name)
 {
     synchronized sync(aai->getMutex());
 	aai->removeAppender(name);
@@ -179,9 +179,10 @@ void* APR_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) 
 			}
 			pThis->pending.wait();
 		} else {
-	        if(pThis->aai != 0) {
+	                if(pThis->aai != 0) {
 			    synchronized sync(pThis->aai->getMutex());
-			    pThis->aai->appendLoopOnAppenders(event);
+                            Pool p;
+			    pThis->aai->appendLoopOnAppenders(event, p);
 			}
 
 			if (count == pThis->getBufferSize()) {

@@ -50,7 +50,7 @@ template<class Elem, class Tr>
  */
 class StreamTestCase : public CppUnit::TestFixture
 {
-	CPPUNIT_TEST_SUITE(StreamTestCase);
+        CPPUNIT_TEST_SUITE(StreamTestCase);
                 CPPUNIT_TEST(testSimple);
                 CPPUNIT_TEST(testSimpleWithFlush);
                 CPPUNIT_TEST(testSimpleWithoutFlush);
@@ -61,24 +61,24 @@ class StreamTestCase : public CppUnit::TestFixture
 //                CPPUNIT_TEST(testWidth);
                 CPPUNIT_TEST(testGetStream);
                 CPPUNIT_TEST(testGetStreamDebug);
-				CPPUNIT_TEST(testInsertLevel);
-				CPPUNIT_TEST(testInsertLocation);
-	CPPUNIT_TEST_SUITE_END();
+                CPPUNIT_TEST(testInsertLevel);
+                CPPUNIT_TEST(testInsertLocation);
+        CPPUNIT_TEST_SUITE_END();
 
         VectorAppenderPtr vectorAppender;
 
 public:
-	void setUp() {
+        void setUp() {
            LoggerPtr root(Logger::getRootLogger());
            LayoutPtr layout(new SimpleLayout());
            vectorAppender = new VectorAppender();
            root->addAppender(vectorAppender);
         }
 
-	void tearDown()
-	{
+        void tearDown()
+        {
             LogManager::shutdown();
-	}
+        }
 
         void testSimple() {
             LoggerPtr root(Logger::getRootLogger());
@@ -126,9 +126,9 @@ public:
                   << 0.000001115
                   << LOG4CXX_ENDMSG;
            spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-           std::string msg(event->getMessage());
-           CPPUNIT_ASSERT(msg.find("e-") != std::string::npos ||
-                msg.find("E-") != std::string::npos);
+           LogString msg(event->getMessage());
+           CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("e-")) != LogString::npos ||
+                msg.find(LOG4CXX_STR("E-")) != LogString::npos);
        }
 
        void testPrecision() {
@@ -139,8 +139,8 @@ public:
               << 1.000001
               << LOG4CXX_ENDMSG;
           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-          std::string msg(event->getMessage());
-          CPPUNIT_ASSERT(msg.find("1.00000") == std::string::npos);
+          LogString msg(event->getMessage());
+          CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("1.00000")) == LogString::npos);
       }
 
 
@@ -152,12 +152,12 @@ public:
              << 10.00015
              << LOG4CXX_ENDMSG;
           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-          std::string msg(event->getMessage());
-          CPPUNIT_ASSERT(msg.find("10.00") == std::string::npos);
+          LogString msg(event->getMessage());
+          CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("10.00")) == LogString::npos);
        }
 
-       void addMessage(std::ostream& os) {
-          os << "Hello, World";
+       void addMessage(std::wostream& os) {
+          os << L"Hello, World";
        }
 
        void testGetStream() {
@@ -166,8 +166,8 @@ public:
          addMessage(stream.getStream());
          stream << LOG4CXX_ENDMSG;
          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
-         std::string msg(event->getMessage());
-         CPPUNIT_ASSERT(msg.find("Hello, World") >= 0);
+         LogString msg(event->getMessage());
+         CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("Hello, World")) >= 0);
        }
 
 
@@ -181,23 +181,22 @@ public:
        }
 
 
-	   void testInsertLevel() {
+       void testInsertLevel() {
           LoggerPtr logger(Logger::getLogger("StreamTestCase.insertLevel"));
           logger->setLevel(log4cxx::Level::INFO);
           log4cxx::logstream stream(logger, log4cxx::Level::DEBUG);
-		  stream 
-			   << log4cxx::Level::WARN 
-			   << "This message must get through"
-			   << LOG4CXX_ENDMSG;
+          stream
+              << log4cxx::Level::WARN
+              << "This message must get through"
+              << LOG4CXX_ENDMSG;
           CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
-	   }
+       }
 
-	   void testInsertLocation() {
+       void testInsertLocation() {
           LoggerPtr logger(Logger::getRootLogger());
           log4cxx::logstream stream(logger, log4cxx::Level::DEBUG);
-		  stream 
-			   << LOG4CXX_LOCATION; 
-	   }
+          stream << LOG4CXX_LOCATION;
+       }
 
 };
 

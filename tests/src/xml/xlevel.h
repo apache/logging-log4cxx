@@ -29,17 +29,19 @@ namespace log4cxx
 			LETHAL_INT = Level::FATAL_INT + 1
         };
 
-		static const LevelPtr TRACE;
-		static const LevelPtr LETHAL;
-                static const LevelPtr& getTrace();
-                static const LevelPtr& getLethal();
+		static const LevelPtr& getTrace();
+		static const LevelPtr& getLethal();
 
-		XLevel(int level, const String& levelStr, int syslogEquivalent);
+                static const LevelPtr TRACE;
+                static const LevelPtr LETHAL;
+
+		XLevel(int level, const wchar_t* wName,
+                    const char* name, int syslogEquivalent);
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns #DEBUG.
 		*/
-		static const LevelPtr& toLevel(const String& sArg);
+		static const LevelPtr& toLevel(const LogString& sArg);
 
 		/**
 		Convert an integer passed as argument to a level. If the
@@ -60,7 +62,7 @@ namespace log4cxx
 		conversion fails, then this method returns the value of
 		<code>defaultLevel</code>.
 		*/
-		static const LevelPtr& toLevel(const String& sArg,
+		static const LevelPtr& toLevel(const LogString& sArg,
 			const LevelPtr& defaultLevel);
 	};
 }

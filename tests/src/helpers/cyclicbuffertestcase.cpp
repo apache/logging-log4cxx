@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -21,10 +21,13 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/helpers/cyclicbuffer.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/spi/location/locationinfo.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+
+#define _T(str) L ## str
 
 #define MAX 1000
 
@@ -35,10 +38,10 @@ class CyclicBufferTestCase : public CppUnit::TestFixture
 		CPPUNIT_TEST(test1);
 		CPPUNIT_TEST(testResize);
 	CPPUNIT_TEST_SUITE_END();
-	
+
 	LoggerPtr logger;
 	std::vector<LoggingEventPtr> e;
-	
+
 public:
 	void setUp()
 	{
@@ -47,7 +50,8 @@ public:
 		for (int i = 0; i < MAX; i++)
 		{
 			e.push_back(
-			new LoggingEvent(_T(""), logger, Level::DEBUG, _T("e")));
+			new LoggingEvent(logger, Level::DEBUG, LOG4CXX_STR("e"),
+                           log4cxx::spi::location::LocationInfo::getLocationUnavailable()));
 		}
 	}
 
@@ -55,7 +59,7 @@ public:
 	{
 		LogManager::shutdown();
 	}
-	
+
 	void test0()
 	{
 		int size = 2;
@@ -81,20 +85,20 @@ public:
 		CPPUNIT_ASSERT(cb2.get() == 0);
 		CPPUNIT_ASSERT_EQUAL(0, cb2.length());
 	}
-	
+
 	void test1()
 	{
 		for (int bufSize = 1; bufSize <= 128; bufSize *= 2)
 			doTest1(bufSize);
 	}
-	
+
 	void doTest1(int size)
 	{
 		//System.out.println("Doing test with size = "+size);
 		CyclicBuffer cb(size);
 
 		CPPUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
-		
+
 		int i;
 
 		for (i = -(size + 10); i < (size + 10); i++)
@@ -109,7 +113,7 @@ public:
 			int limit = (i < (size - 1)) ? i : (size - 1);
 
 			//System.out.println("\nLimit is " + limit + ", i="+i);
-			for (int j = limit; j >= 0; j--) 
+			for (int j = limit; j >= 0; j--)
 			{
 				//System.out.println("i= "+i+", j="+j);
 				CPPUNIT_ASSERT_EQUAL(e[i - (limit - j)], cb.get(j));
@@ -119,7 +123,7 @@ public:
 			CPPUNIT_ASSERT(cb.get(limit + 1) == 0);
 		}
 	}
-	
+
 	void testResize()
 	{
 		for (int isize = 1; isize <= 128; isize *= 2)
@@ -129,9 +133,9 @@ public:
 			doTestResize(isize, isize + 10, (isize / 2) + 1);
 			doTestResize(isize, isize + 10, isize + 10);
 		}
-	
+
 	}
-	
+
 	void doTestResize(int initialSize, int numberOfAdds, int newSize)
 	{
 		//System.out.println("initialSize = "+initialSize+", numberOfAdds="
@@ -160,7 +164,7 @@ public:
 		{
 			CPPUNIT_ASSERT_EQUAL(e[offset + j], cb.get(j));
 		}
-	}		
+	}
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(CyclicBufferTestCase);

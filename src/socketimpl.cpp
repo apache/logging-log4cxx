@@ -2,8 +2,7 @@
  * Copyright 2003,2004 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * you may not use this file except in compliance with the License. may obtain a copy of the License at
  *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
@@ -33,6 +32,7 @@
 #include <log4cxx/helpers/socketimpl.h>
 #include <log4cxx/helpers/loglog.h>
 #include <errno.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -99,55 +99,6 @@ const char* PlatformSocketException::what() const throw() {
 }
 
 
-const String PlatformSocketException::getMessage() const {
-  #if defined(WIN32) || defined(_WIN32)
-          String message;
-          TCHAR messageBuffer[256];
-          DWORD dwError = errorNumber;
-
-          if (dwError != 0)
-          {
-
-                  DWORD dw = ::FormatMessage(
-                          FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS |
-                                  FORMAT_MESSAGE_MAX_WIDTH_MASK,
-                          NULL,
-                          dwError,
-                          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
-                          messageBuffer,
-                          sizeof(messageBuffer)/sizeof(messageBuffer[0]),
-                          NULL);
-
-                  if (dw != 0)
-                  {
-                          message = messageBuffer;
-
-                          // on retire les retours chariots en fin de cha�ne
-                          message = message.substr(0, message.find_last_not_of(_T("\n\r")) + 1);
-                  }
-                  else
-                  {
-                          itot(errorNumber, messageBuffer, 10);
-                          message = messageBuffer;
-                  }
-          }
-  #else
-  const size_t bufsize = 512;
-  char buf[bufsize];
-  const char* message;
-  #if defined(__GNUC__)
-  message = strerror_r(errorNumber, buf, bufsize);
-  #else
-  int stat = strerror_r(errorNumber, buf, bufsize);
-  if (stat == 0) {
-    message = buf;
-  } else {
-    message = "Unrecognized errno";
-  }
-  #endif
-#endif
-  return message;
-}
 
 ConnectException::ConnectException() {
 }
@@ -306,7 +257,7 @@ void SocketImpl::close()
 {
 	if (fd != 0)
 	{
-		LOGLOG_DEBUG(_T("closing socket"));
+		LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
 #if defined(WIN32) || defined(_WIN32)
 		if (::closesocket(fd) == -1)
 #else
@@ -345,7 +296,7 @@ void SocketImpl::connect(InetAddress address, int port)
 }
 
 /** Connects this socket to the specified port on the named host. */
-void SocketImpl::connect(const String& host, int port)
+void SocketImpl::connect(const LogString& host, int port)
 {
 	connect(InetAddress::getByName(host), port);
 }
@@ -372,17 +323,18 @@ void SocketImpl::listen(int backlog)
 
 /** Returns the address and port of this socket as a String.
 */
-String SocketImpl::toString() const
+LogString SocketImpl::toString() const
 {
-	StringBuffer oss;
-	oss << address.getHostAddress() << _T(":") << port;
-	return oss.str();
+	LogString oss(address.getHostAddress());
+        oss.append(1, LOG4CXX_STR(':'));
+        oss.append(StringHelper::toString(port));
+	return oss;
 }
 
 // thanks to Yves Mettier (ymettier@libertysurf.fr) for this routine
 size_t SocketImpl::read(void * buf, size_t len) const
 {
-//	LOGLOG_DEBUG(_T("SocketImpl::reading ") << len << _T(" bytes."));
+//	LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::reading ") << len << LOG4CXX_STR(" bytes."));
 	int len_read = 0;
 	unsigned char * p = (unsigned char *)buf;
 
@@ -410,7 +362,7 @@ size_t SocketImpl::read(void * buf, size_t len) const
 // thanks to Yves Mettier (ymettier@libertysurf.fr) for this routine
 size_t SocketImpl::write(const void * buf, size_t len)
 {
-//	LOGLOG_DEBUG(_T("SocketImpl::writing ") << len << _T(" bytes."));
+//	LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::writing ") << len << LOG4CXX_STR(" bytes."));
 
 	int len_written = 0;
 	const unsigned char * p = (const unsigned char *)buf;

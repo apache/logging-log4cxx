@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_SPI_ERROR_HANDLER_H
 #define _LOG4CXX_SPI_ERROR_HANDLER_H
 
@@ -26,7 +26,7 @@ namespace log4cxx
 {
     class Appender;
     typedef log4cxx::helpers::ObjectPtrT<Appender> AppenderPtr;
-    
+
     class Logger;
     typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
@@ -70,7 +70,7 @@ namespace log4cxx
 		public:
 			DECLARE_ABSTRACT_LOG4CXX_OBJECT(ErrorHandler)
 			virtual ~ErrorHandler() {}
-				
+
 				/**
 			Add a reference to a logger to which the failing appender might
 			be attached to. The failing appender will be searched and
@@ -87,14 +87,14 @@ namespace log4cxx
 			spi::LoggingEvent&) with the the event parameteter set to
 			null.
 			*/
-			virtual void error(const String& message, helpers::Exception& e,
+			virtual void error(const LogString& message, const std::exception& e,
 				int errorCode) const = 0;
 
 			/**
 			This method is normally used to just print the error message
 			passed as a parameter.
 			*/
-			virtual void error(const String& message) const = 0;
+			virtual void error(const LogString& message) const = 0;
 
 			/**
 			This method is invoked to handle the error.
@@ -105,9 +105,9 @@ namespace log4cxx
 			@param event The logging event that the failing appender is asked
 			to log.
 			*/
-			virtual void error(const String& message, helpers::Exception& e,
+			virtual void error(const LogString& message, const std::exception& e,
 				int errorCode, const LoggingEventPtr& event) const = 0;
-		
+
 			/**
 			Set the appender for which errors are handled. This method is
 			usually called when the error handler is configured.

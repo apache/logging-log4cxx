@@ -18,6 +18,7 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <apr_pools.h>
 #include <apr_time.h>
+#include "../insertwide.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -50,15 +51,15 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
    */
   void test1() {
     TimeZonePtr tz(TimeZone::getGMT());
-    CPPUNIT_ASSERT_EQUAL((std::string) "GMT", tz->getID());
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
   }
 
   /**
    * Get "GMT-6" time zone
    */
   void test2() {
-    TimeZonePtr tz(TimeZone::getTimeZone("GMT-6"));
-    CPPUNIT_ASSERT_EQUAL((std::string) "GMT-06:00", tz->getID());
+    TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT-06:00"), tz->getID());
 
     apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
     apr_time_exp_t exploded;
@@ -72,7 +73,7 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
    */
   void test3() {
     TimeZonePtr tz(TimeZone::getDefault());
-    std::string tzName(tz->getID());
+    LogString tzName(tz->getID());
     CPPUNIT_ASSERT(tzName.length() > 0);
   }
 
@@ -81,8 +82,8 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
  * Get "GMT+0010" time zone
  */
 void test4() {
-  TimeZonePtr tz(TimeZone::getTimeZone("GMT+0010"));
-  CPPUNIT_ASSERT_EQUAL((std::string) "GMT+00:10", tz->getID());
+  TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT+0010")));
+  CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+00:10"), tz->getID());
 
   apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
   apr_time_exp_t exploded;
@@ -97,8 +98,8 @@ void test4() {
  * Get "GMT+6" time zone
  */
 void test5() {
-  TimeZonePtr tz(TimeZone::getTimeZone("GMT+6"));
-  CPPUNIT_ASSERT_EQUAL((std::string) "GMT+06:00", tz->getID());
+  TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT+6")));
+  CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+06:00"), tz->getID());
 
   apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
   apr_time_exp_t exploded;

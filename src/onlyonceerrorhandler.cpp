@@ -26,8 +26,8 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
 
 OnlyOnceErrorHandler::OnlyOnceErrorHandler() :
- WARN_PREFIX(_T("log4cxx warning: ")),
-ERROR_PREFIX(_T("log4cxx error: ")), firstTime(true)
+ WARN_PREFIX(LOG4CXX_STR("log4cxx warning: ")),
+ERROR_PREFIX(LOG4CXX_STR("log4cxx error: ")), firstTime(true)
 {
 }
 
@@ -36,15 +36,15 @@ void OnlyOnceErrorHandler::setLogger(const LoggerPtr& logger)
 {
 }
 
-void OnlyOnceErrorHandler::activateOptions()
+void OnlyOnceErrorHandler::activateOptions(apr_pool_t* p)
 {
 }
 
-void OnlyOnceErrorHandler::setOption(const String& option, const String& value)
+void OnlyOnceErrorHandler::setOption(const LogString& option, const LogString& value)
 {
 }
 
-void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Exception& e,
+void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
 	int errorCode) const
 {
 	if(firstTime)
@@ -54,14 +54,14 @@ void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Except
 	}
 }
 
-void OnlyOnceErrorHandler::error(const String& message, log4cxx::helpers::Exception& e,
+void OnlyOnceErrorHandler::error(const LogString& message, const std::exception& e,
 	int errorCode, const log4cxx::spi::LoggingEventPtr& event) const
 {
 	error(message, e, errorCode);
 }
 
 
-void OnlyOnceErrorHandler::error(const String& message) const
+void OnlyOnceErrorHandler::error(const LogString& message) const
 {
 	if(firstTime)
 	{

@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_OBJECT_H
 #define _LOG4CXX_HELPERS_OBJECT_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/objectptr.h>
 
@@ -28,7 +28,7 @@ public:\
 class Class##object : public helpers::Class\
 {\
 public:\
-	Class##object() : helpers::Class(_T(#object)) {}\
+	Class##object() : helpers::Class(LOG4CXX_STR(#object)) {}\
 };\
 virtual const helpers::Class& getClass() const;\
 static const helpers::Class& getStaticClass();\
@@ -39,7 +39,7 @@ public:\
 class Class##object : public helpers::Class\
 {\
 public:\
-	Class##object() : helpers::Class(_T(#object)) {}\
+	Class##object() : helpers::Class(LOG4CXX_STR(#object)) {}\
 	virtual helpers::ObjectPtr newInstance() const\
 	{\
 		return new object();\

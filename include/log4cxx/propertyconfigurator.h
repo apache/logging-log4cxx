@@ -20,9 +20,10 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/portability.h>
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/spi/configurator.h>
 #include <map>
+#include <log4cxx/file.h>
 
 namespace log4cxx
 {
@@ -93,7 +94,7 @@ example, if <code>java.home</code> system property is set to
 		/**
 		Used internally to keep track of configured appenders.
 		*/
-		std::map<String, AppenderPtr> registry;
+		std::map<LogString, AppenderPtr> registry;
 
 		/**
 		Used to create new instances of logger
@@ -284,13 +285,13 @@ beginning of a line for comments.
 configuration information is stored.
 @param hierarchy The hierarchy to operation upon.
 */
-		void doConfigure(const String& configFileName,
+		void doConfigure(const File& configFileName,
 			spi::LoggerRepositoryPtr& hierarchy);
 
 		/**
 		Read configuration options from file <code>configFilename</code>.
 		*/
-		static void configure(const String& configFilename);
+		static void configure(const File& configFilename);
 
 		/**
 		Like {@link #configureAndWatch(const String& configFilename, long delay)}
@@ -299,7 +300,7 @@ configuration information is stored.
 		is used.
 		@param configFilename A file in key=value format.
 		*/
-		static void configureAndWatch(const String& configFilename);
+		static void configureAndWatch(const File& configFilename);
 
 		/**
 		Read the configuration file <code>configFilename</code> if it
@@ -312,7 +313,7 @@ configuration information is stored.
 		@param configFilename A file in key=value format.
 		@param delay The delay in milliseconds to wait between each check.
 		*/
-		static void configureAndWatch(const String& configFilename,
+		static void configureAndWatch(const File& configFilename,
 			long delay);
 
 		/**
@@ -358,21 +359,21 @@ protected:
 		Parse the additivity option for a non-root logger.
 		*/
 		void parseAdditivityForLogger(helpers::Properties& props,
-			LoggerPtr& cat, const String& loggerName);
+			LoggerPtr& cat, const LogString& loggerName);
 
 		/**
 		This method must work for the root logger as well.
 		*/
 		void parseCategory(
 			helpers::Properties& props, LoggerPtr& logger,
-			const String& optionKey, const String& loggerName,
-			const String& value);
+			const LogString& optionKey, const LogString& loggerName,
+			const LogString& value);
 
 		AppenderPtr parseAppender(
-			helpers::Properties& props, const String& appenderName);
+			helpers::Properties& props, const LogString& appenderName);
 
 		void registryPut(const AppenderPtr& appender);
-		AppenderPtr registryGet(const String& name);
+		AppenderPtr registryGet(const LogString& name);
 	}; // class PropertyConfigurator
 }  // namespace log4cxx
 

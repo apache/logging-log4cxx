@@ -23,8 +23,8 @@
 
 namespace log4cxx
 {
-	namespace helpers
-	{
+        namespace helpers
+        {
 
           /**
           Concrete class for formatting and parsing dates in a
@@ -40,11 +40,11 @@ namespace log4cxx
 
                   @param pattern the pattern describing the date and time format
                   */
-                  SimpleDateFormat(const String& pattern);
-                  SimpleDateFormat(const String& pattern, const std::locale& locale);
+                  SimpleDateFormat(const LogString& pattern);
+                  SimpleDateFormat(const LogString& pattern, const std::locale& locale);
                   ~SimpleDateFormat();
 
-                  virtual void format(std::string& s,
+                  virtual void format(LogString& s,
                                       apr_time_t time,
                                       apr_pool_t* p) const;
 
@@ -82,18 +82,18 @@ namespace log4cxx
                       * @param date exploded date/time.
                       * @param p memory pool.
                       */
-                       virtual void format(std::string& s,
+                       virtual void format(std::wstring& s,
                                            const apr_time_exp_t& date,
                                            apr_pool_t* p) const = 0;
 
-                       typedef std::time_put<char, std::ostreambuf_iterator<char> > TimePutFacet;
+                       typedef std::time_put<wchar_t, std::ostreambuf_iterator<wchar_t> > TimePutFacet;
 
-				  protected:
-					  static void renderFacet(const std::locale& locale, 
-										 std::ostream& buffer, 
-										 const tm* time, 
-						                 const char spec);
-					  
+                  protected:
+                        static void renderFacet(const std::locale& locale,
+                                             std::wostream& buffer,
+                                             const tm* time,
+                                             const char spec);
+
                   private:
                       /**
                       *    Private copy constructor.
@@ -117,17 +117,17 @@ namespace log4cxx
                   */
                   typedef std::vector<PatternToken*> PatternTokenList;
                   PatternTokenList pattern;
-                  static void addToken(const char spec,
+                  static void addToken(const wchar_t spec,
                                                   const int repeat,
                                                   const std::locale& locale,
                                                   PatternTokenList& pattern);
-                  static void parsePattern(const String& fmt,
+                  static void parsePattern(const LogString& fmt,
                           const std::locale& locale,
                           PatternTokenList& pattern);
           };
 
 
-	}  // namespace helpers
+        }  // namespace helpers
 }; // namespace log4cxx
 
 #endif // _LOG4CXX_HELPERS_SIMPLE_DATE_FORMAT_H

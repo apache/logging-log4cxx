@@ -19,7 +19,7 @@
 #define INT64_C(x) x##LL
 
 #include <apr_time.h>
-#include <apr_pools.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx::helpers;
 
@@ -34,10 +34,9 @@ CachedDateFormat::CachedDateFormat(DateFormatPtr& formatter) :
     if (nowTime - previousTime < 0) {
       previousTime -= APR_USEC_PER_SEC;
     }
-    apr_pool_t* p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
+    Pool p;
     formatter->format(cache, previousTime, p);
-    std::string digits;
+    LogString digits;
     formatter->numberFormat(digits, 90, p);
     nineDigit = digits[0];
     zeroDigit = digits[1];
@@ -47,16 +46,15 @@ CachedDateFormat::CachedDateFormat(DateFormatPtr& formatter) :
            nineDigit,
            formatter,
            p);
-    apr_pool_destroy(p);
 }
 
 int CachedDateFormat::findMillisecondStart(const apr_time_t time,
-                                          const std::string& formatted,
-                                          char zeroDigit,
-                                          char nineDigit,
+                                          const LogString& formatted,
+                                          logchar zeroDigit,
+                                          logchar nineDigit,
                                           const DateFormatPtr& formatter,
                                           apr_pool_t* p) {
-      std::string plus987;
+      LogString plus987;
       formatter->format(plus987, time + 987000, p);
       //
       //    find first difference between values
@@ -82,7 +80,7 @@ int CachedDateFormat::findMillisecondStart(const apr_time_t time,
      @param sbuf the string buffer to write to
      @param fieldPosition remains untouched
    */
-void CachedDateFormat::format(std::string& s, apr_time_t date, apr_pool_t* p) const {
+void CachedDateFormat::format(LogString& s, apr_time_t date, apr_pool_t* p) const {
     if (millisecondStart == UNRECOGNIZED_MILLISECOND_PATTERN) {
       formatter->format(s, date, p);
       return;
@@ -97,7 +95,7 @@ void CachedDateFormat::format(std::string& s, apr_time_t date, apr_pool_t* p) co
         //
         //   if it didn't belong at the end, then move it
         if (cacheLength != millisecondStart) {
-          std::string milli = cache.substr(cacheLength);
+          LogString milli = cache.substr(cacheLength);
           cache.erase(cache.begin() + cacheLength, cache.end());
           cache.insert(millisecondStart, milli);
         }
@@ -122,7 +120,7 @@ void CachedDateFormat::format(std::string& s, apr_time_t date, apr_pool_t* p) co
       //   if the length changed then
       //      recalculate the millisecond position
       if (cache.length() != prevLength) {
-        std::string formattedPreviousTime;
+        LogString formattedPreviousTime;
         formatter->format(formattedPreviousTime, previousTime, p);
         millisecondStart =
             findMillisecondStart(previousTime,
@@ -164,6 +162,6 @@ void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone) {
   }
 
 
-void CachedDateFormat::numberFormat(std::string& s, long n, apr_pool_t* p) const {
+void CachedDateFormat::numberFormat(LogString& s, long n, apr_pool_t* p) const {
   formatter->numberFormat(s, n, p);
 }

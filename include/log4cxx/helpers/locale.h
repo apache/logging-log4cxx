@@ -17,7 +17,8 @@
 #ifndef _LOG4CXX_HELPERS_LOCALE_H
 #define _LOG4CXX_HELPERS_LOCALE_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/portability.h>
+#include <log4cxx/string.h>
 
 namespace log4cxx
 {
@@ -26,21 +27,21 @@ namespace log4cxx
 		class LOG4CXX_EXPORT Locale
 		{
 		public:
-			Locale(const String& language);
-			Locale(const String& language, const String& country);
-			Locale(const String& language, const String& country,
-				const String& variant);
+			Locale(const LogString& language);
+			Locale(const LogString& language, const LogString& country);
+			Locale(const LogString& language, const LogString& country,
+				const LogString& variant);
 
-			const String& getLanguage() const;
-			const String& getCountry() const;
-			const String& getVariant() const;
+			const LogString& getLanguage() const;
+			const LogString& getCountry() const;
+			const LogString& getVariant() const;
 
 		protected:
                         Locale(const Locale&);
                         Locale& operator=(const Locale&);
-			const String language;
-			const String country;
-			const String variant;
+			const LogString language;
+			const LogString country;
+			const LogString variant;
 		}; // class Locale
 	}  // namespace helpers
 }; // namespace log4cxx

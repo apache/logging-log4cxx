@@ -28,13 +28,17 @@
 #include "../util/xmllineattributefilter.h"
 #include "../util/xmlthreadfilter.h"
 #include "../util/xmlfilenamefilter.h"
+#include <iostream>
+#include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
-#define FILTERED _T("output/filtered")
-#define TEMP _T("output/temp")
+#define _T(str) L ## str
+
+#define FILTERED LOG4CXX_FILE("output/filtered")
+#define TEMP LOG4CXX_FILE("output/temp")
 
 class X
 {
@@ -91,11 +95,11 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.1")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.1")));
 	}
 
 	void locationInfo()
@@ -108,7 +112,8 @@ public:
 		XMLTimestampFilter xmlTimestampFilter;
 		XMLLineAttributeFilter xmlLineAttributeFilter;
 		XMLThreadFilter xmlThreadFilter;
-                XMLFilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
+                LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
+                XMLFilenameFilter xmlFilenameFilter(thisFile.c_str(), LOG4CXX_STR("xmllayouttestcase.cpp"));
 
 		std::vector<Filter *> filters;
 		filters.push_back(&xmlTimestampFilter);
@@ -122,11 +127,11 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.2")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.2")));
 	}
 
 	void testCDATA()
@@ -141,7 +146,8 @@ public:
 		XMLTimestampFilter xmlTimestampFilter;
 		XMLLineAttributeFilter xmlLineAttributeFilter;
 		XMLThreadFilter xmlThreadFilter;
-                XMLFilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
+                LOG4CXX_DECODE_CHAR(thisFile, __FILE__);
+                XMLFilenameFilter xmlFilenameFilter(thisFile, LOG4CXX_STR("xmllayouttestcase.cpp"));
 
 		std::vector<Filter *> filters;
 		filters.push_back(&xmlTimestampFilter);
@@ -155,11 +161,11 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.3")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.3")));
 	}
 
 	void testNULL()
@@ -183,11 +189,11 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.null")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.null")));
 	}
 
 	void testMDC()
@@ -216,11 +222,11 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.mdc.1")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.1")));
 	}
 
 	// not incuded in the tests for the moment !
@@ -250,11 +256,11 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/xmlLayout.mdc.2")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
 	}
 
 	void common()
@@ -262,20 +268,23 @@ public:
 		int i = -1;
 		X x;
 
-		LOG4CXX_DEBUG(logger, _T("Message ") << ++i);
-		LOG4CXX_DEBUG(root, _T("Message ") << i);
+                Pool p;
+                LogString msg(LOG4CXX_STR("Message "));
 
-		LOG4CXX_INFO(logger, _T("Message ") << ++i);
-		LOG4CXX_INFO(root, _T("Message ") << i);
+		LOG4CXX_DEBUG(logger, msg + StringHelper::toString(++i, p));
+		LOG4CXX_DEBUG(root, msg + StringHelper::toString(i, p));
 
-		LOG4CXX_WARN(logger, _T("Message ") << ++i);
-		LOG4CXX_WARN(root, _T("Message ") << i);
+		LOG4CXX_INFO(logger, msg + StringHelper::toString(++i, p));
+		LOG4CXX_INFO(root, msg + StringHelper::toString(i,p));
 
-		LOG4CXX_ERROR(logger, _T("Message ") << ++i);
-		LOG4CXX_ERROR(root, _T("Message ") << i);
+		LOG4CXX_WARN(logger, msg + StringHelper::toString(++i, p));
+		LOG4CXX_WARN(root, msg + StringHelper::toString(i, p));
 
-		LOG4CXX_FATAL(logger, _T("Message ") << ++i);
-		LOG4CXX_FATAL(root, _T("Message ") << i);
+		LOG4CXX_ERROR(logger, msg + StringHelper::toString(++i, p));
+		LOG4CXX_ERROR(root, msg + StringHelper::toString(i, p));
+
+		LOG4CXX_FATAL(logger, msg + StringHelper::toString(++i, p));
+		LOG4CXX_FATAL(root, msg + StringHelper::toString(i, p));
 	}
 };
 

@@ -17,7 +17,8 @@
 #ifndef _LOG4CXX_HELPERS_TRANSFORM_H
 #define _LOG4CXX_HELPERS_TRANSFORM_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/portability.h>
+#include <log4cxx/string.h>
 
 namespace log4cxx
 {
@@ -40,7 +41,7 @@ namespace log4cxx
 			*  &amp;lt; and &amp;gt; respectively.
 			* */
 			static void appendEscapingTags(
-				ostream& buf, const String& input);
+				LogString& buf, const LogString& input);
 
 			/**
 			* Ensures that embeded CDEnd strings (]]>) are handled properly
@@ -53,7 +54,7 @@ namespace log4cxx
 			* Section within buf.
 			*/
 			static void appendEscapingCDATA(
-				ostream& buf, const String& input);
+				LogString& buf, const LogString& input);
 		}; // class Transform
 	}  // namespace helpers
 }; //namespace log4cxx

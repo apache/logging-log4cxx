@@ -18,7 +18,7 @@
  #define _LOG4CXX_HELPERS_SYSTEM_H
 
  #include <log4cxx/portability.h>
- #include <log4cxx/helpers/tchar.h>
+ #include <log4cxx/string.h>
  #include <log4cxx/helpers/exception.h>
 
  namespace log4cxx
@@ -44,19 +44,8 @@
 
 		@throws IllegalArgumentException if key is empty.
 		*/
-		static String getProperty(const String& key);
+		static LogString getProperty(const LogString& key);
 
-		/**
-		Sets the system property indicated by the specified key.
-
-		@param key the name of the system property.
-		@param value the value of the system property.
-
-		@throws IllegalArgumentException if key is empty.
-		*/
-		static void setProperty(const String& key, const String& value);
-
-		static void setProperties(const Properties& props);
 		};
 	} // namespace helpers
  }; //  namespace log4cxx

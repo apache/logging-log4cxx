@@ -22,11 +22,11 @@ using namespace log4cxx::helpers;
 class PropertyParser
 {
 public:
-	void parse(istream& in, Properties& properties)
+	void parse(LogString& in, Properties& properties)
 	{
-		StringBuffer key, element;
+		LogString key, element;
 		LexemType lexemType = BEGIN;
-		TCHAR c;
+		logchar c;
 		bool finished = false;
 
 		if (!get(in, c))
@@ -41,16 +41,16 @@ public:
 			case BEGIN:
 				switch(c)
 				{
-				case _T(' '):
-				case _T('\t'):
-				case _T('\n'):
-				case _T('\r'):
+				case LOG4CXX_STR(' '):
+				case LOG4CXX_STR('\t'):
+				case LOG4CXX_STR('\n'):
+				case LOG4CXX_STR('\r'):
 					if (!get(in, c))
 						finished = true;
 					break;
 
-				case _T('#'):
-				case _T('!'):
+				case LOG4CXX_STR('#'):
+				case LOG4CXX_STR('!'):
 					lexemType = COMMENT;
 					if (!get(in, c))
 						finished = true;
@@ -65,33 +65,33 @@ public:
 			case KEY:
 				switch(c)
 				{
-				case _T('\\'):
+				case LOG4CXX_STR('\\'):
 					lexemType = KEY_ESCAPE;
 					if (!get(in, c))
 						finished = true;
 					break;
 
-				case _T('\t'):
-				case _T(' '):
-				case _T(':'):
-				case _T('='):
+				case LOG4CXX_STR('\t'):
+				case LOG4CXX_STR(' '):
+				case LOG4CXX_STR(':'):
+				case LOG4CXX_STR('='):
 					lexemType = DELIMITER;
 					if (!get(in, c))
 						finished = true;
 					break;
 
-				case _T('\n'):
-				case _T('\r'):
+				case LOG4CXX_STR('\n'):
+				case LOG4CXX_STR('\r'):
 					// key associated with an empty string element
-					properties.setProperty(key.str(), _T(""));
-					key.str(_T(""));
+					properties.setProperty(key, LOG4CXX_STR(""));
+					key.erase(key.begin(), key.end());
 					lexemType = BEGIN;
 					if (!get(in, c))
 						finished = true;
 					break;
 
 				default:
-					key << c;
+					key.append(1, c);
 					if (!get(in, c))
 						finished = true;
 					break;
@@ -101,24 +101,24 @@ public:
 			case KEY_ESCAPE:
 				switch(c)
 				{
-				case _T('\t'):
-				case _T(' '):
-				case _T(':'):
-				case _T('='):
-				case _T('\\'):
-					key << c;
+				case LOG4CXX_STR('\t'):
+				case LOG4CXX_STR(' '):
+				case LOG4CXX_STR(':'):
+				case LOG4CXX_STR('='):
+				case LOG4CXX_STR('\\'):
+					key.append(1, c);
 					lexemType = KEY;
 					if (!get(in, c))
 						finished = true;
 					break;
 
-				case _T('\n'):
+				case LOG4CXX_STR('\n'):
 					lexemType = KEY_CONTINUE;
 					if (!get(in, c))
 						finished = true;
 					break;
 
-				case _T('\r'):
+				case LOG4CXX_STR('\r'):
 					lexemType = KEY_CONTINUE2;
 					if (!get(in, c))
 						finished = true;
@@ -129,8 +129,8 @@ public:
 			case KEY_CONTINUE:
 				switch(c)
 				{
-				case _T(' '):
-				case _T('\t'):
+				case LOG4CXX_STR(' '):
+				case LOG4CXX_STR('\t'):
 					if (!get(in, c))
 						finished = true;
 					break;
@@ -144,7 +144,7 @@ public:
 			case KEY_CONTINUE2:
 				switch(c)
 				{
-				case _T('\n'):
+				case LOG4CXX_STR('\n'):
 					if (!get(in, c))
 						finished = true;
 					lexemType = KEY_CONTINUE;
@@ -159,10 +159,10 @@ public:
 			case DELIMITER:
 				switch(c)
 				{
-				case _T('\t'):
-				case _T(' '):
-				case _T(':'):
-				case _T('='):
+				case LOG4CXX_STR('\t'):
+				case LOG4CXX_STR(' '):
+				case LOG4CXX_STR(':'):
+				case LOG4CXX_STR('='):
 					if (!get(in, c))
 						finished = true;
 					break;
@@ -176,25 +176,25 @@ public:
 			case ELEMENT:
 				switch(c)
 				{
-				case _T('\\'):
+				case LOG4CXX_STR('\\'):
 					lexemType = ELEMENT_ESCAPE;
 					if (!get(in, c))
 						finished = true;
 					break;
 
-				case _T('\n'):
-				case _T('\r'):
+				case LOG4CXX_STR('\n'):
+				case LOG4CXX_STR('\r'):
 					// key associated with an empty string element
-					properties.setProperty(key.str(), element.str());
-					key.str(_T(""));
-					element.str(_T(""));
+					properties.setProperty(key, element);
+					key.erase(key.begin(), key.end());
+					element.erase(element.begin(), element.end());
 					lexemType = BEGIN;
 					if (!get(in, c))
 						finished = true;
 					break;
 
 				default:
-					element << c;
+					element.append(1, c);
 					if (!get(in, c))
 						finished = true;
 					break;
@@ -204,28 +204,28 @@ public:
 			case ELEMENT_ESCAPE:
 				switch(c)
 				{
-				case _T('t'):
-				case _T(' '):
-				case _T('n'):
-				case _T('r'):
-				case _T('\''):
-				case _T('\\'):
-				case _T('\"'):
-				case _T(':'):
+				case LOG4CXX_STR('t'):
+				case LOG4CXX_STR(' '):
+				case LOG4CXX_STR('n'):
+				case LOG4CXX_STR('r'):
+				case LOG4CXX_STR('\''):
+				case LOG4CXX_STR('\\'):
+				case LOG4CXX_STR('\"'):
+				case LOG4CXX_STR(':'):
 				default:
-					element << c;
+					element.append(1, c);
 					lexemType = ELEMENT;
 					if (!get(in, c))
 						finished = true;
 					break;
 
-				case _T('\n'):
+				case LOG4CXX_STR('\n'):
 					lexemType = ELEMENT_CONTINUE;
 					if (!get(in, c))
 						finished = true;
 					break;
 
-				case _T('\r'):
+				case LOG4CXX_STR('\r'):
 					lexemType = ELEMENT_CONTINUE2;
 					if (!get(in, c))
 						finished = true;
@@ -236,8 +236,8 @@ public:
 			case ELEMENT_CONTINUE:
 				switch(c)
 				{
-				case _T(' '):
-				case _T('\t'):
+				case LOG4CXX_STR(' '):
+				case LOG4CXX_STR('\t'):
 					if (!get(in, c))
 						finished = true;
 					break;
@@ -251,7 +251,7 @@ public:
 			case ELEMENT_CONTINUE2:
 				switch(c)
 				{
-				case _T('\n'):
+				case LOG4CXX_STR('\n'):
 					if (!get(in, c))
 						finished = true;
 					lexemType = ELEMENT_CONTINUE;
@@ -264,7 +264,7 @@ public:
 				break;
 
 			case COMMENT:
-				if (c == _T('\n') || c == _T('\r'))
+				if (c == LOG4CXX_STR('\n') || c == LOG4CXX_STR('\r'))
 				{
 					lexemType = BEGIN;
 				}
@@ -274,25 +274,24 @@ public:
 			}
 		}
 
-		if (!key.str().empty())
+		if (!key.empty())
 		{
-			properties.setProperty(key.str(), element.str());
+			properties.setProperty(key, element);
 		}
 	}
 
 protected:
-	bool get(istream& in, TCHAR& c)
+	bool get(LogString& in, logchar& c)
 	{
-		in.get(c);
+                if (in.empty()) {
+                    throw IOException();
+                }
+                c = in[0];
+                in.erase(in.begin());
 
-		if (in.eof())
+		if (in.empty())
 		{
 			return false;
-		}
-
-		if (in.bad())
-		{
-			throw IOException();
 		}
 
 		return true;
@@ -315,36 +314,36 @@ protected:
 	LexemType;
 };
 
-String Properties::setProperty(const String& key, const String& value)
+LogString Properties::setProperty(const LogString& key, const LogString& value)
 {
-	String oldValue = properties[key];
+	LogString oldValue(properties[key]);
 	properties[key] = value;
-	//tcout << _T("setting property key=") << key << _T(", value=") << value << std::endl;
+	//tcout << LOG4CXX_STR("setting property key=") << key << LOG4CXX_STR(", value=") << value << std::endl;
 	return oldValue;
 }
 
-String Properties::getProperty(const String& key) const
+LogString Properties::getProperty(const LogString& key) const
 {
-	std::map<String, String>::const_iterator it = properties.find(key);
-	return (it != properties.end()) ? it->second : String();
+	std::map<LogString, LogString>::const_iterator it = properties.find(key);
+	return (it != properties.end()) ? it->second : LogString();
 }
 
-void Properties::load(istream& inStream)
+void Properties::load(LogString& inStream)
 {
 	properties.clear();
 	PropertyParser parser;
 	parser.parse(inStream, *this);
 }
 
-std::vector<String> Properties::propertyNames() const
+std::vector<LogString> Properties::propertyNames() const
 {
-	std::vector<String> names;
+	std::vector<LogString> names;
 	names.reserve(properties.size());
 
-	std::map<String, String>::const_iterator it;
+	std::map<LogString, LogString>::const_iterator it;
 	for (it = properties.begin(); it != properties.end(); it++)
 	{
-		const String& key = it->first;
+		const LogString& key = it->first;
 		names.push_back(key);
 	}
 

@@ -31,6 +31,7 @@
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
+using namespace log4cxx::spi::location;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
@@ -48,16 +49,16 @@ apr_time_t LoggingEvent::getStartTime() {
 }
 
 LoggingEvent::LoggingEvent()
-: timeStamp(0), ndcLookupRequired(true), line(0),
+: timeStamp(0), ndcLookupRequired(true), locationInfo(),
 mdcCopyLookupRequired(true), properties(0)
 {
 }
 
-LoggingEvent::LoggingEvent(const String& fqnOfCategoryClass,
+LoggingEvent::LoggingEvent(
 	const LoggerPtr& logger, const LevelPtr& level,
-	const String& message, const char* file, int line)
-: fqnOfCategoryClass(fqnOfCategoryClass), logger(logger), level(level),
-message(message), file((char*)file), line(line),
+	const LogString& message, const LocationInfo& locationInfo)
+: logger(logger), level(level),
+message(message), locationInfo(locationInfo),
 timeStamp(apr_time_now()), ndcLookupRequired(true),
 mdcCopyLookupRequired(true), properties(0)
 {
@@ -73,12 +74,12 @@ LoggingEvent::~LoggingEvent()
 	}
 }
 
-const String& LoggingEvent::getLoggerName() const
+const LogString& LoggingEvent::getLoggerName() const
 {
 	return logger->getName();
 }
 
-const String& LoggingEvent::getNDC() const
+const LogString& LoggingEvent::getNDC() const
 {
 	if(ndcLookupRequired)
 	{
@@ -89,7 +90,7 @@ const String& LoggingEvent::getNDC() const
 	return ndc;
 }
 
-String LoggingEvent::getMDC(const String& key) const
+LogString LoggingEvent::getMDC(const LogString& key) const
 {
    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
     // that is associated with the thread.
@@ -99,11 +100,9 @@ String LoggingEvent::getMDC(const String& key) const
 
 		if (it != mdcCopy.end())
 		{
-			String r = it->second;
-
-			if (!r.empty())
+			if (!it->second.empty())
 			{
-				return r;
+				return it->second;
 			}
 		}
     }
@@ -112,9 +111,9 @@ String LoggingEvent::getMDC(const String& key) const
 
 }
 
-std::set<String> LoggingEvent::getMDCKeySet() const
+std::set<LogString> LoggingEvent::getMDCKeySet() const
 {
-	std::set<String> set;
+	std::set<LogString> set;
 
 	if (!mdcCopy.empty())
 	{
@@ -149,18 +148,18 @@ void LoggingEvent::getMDCCopy() const
 	}
 }
 
-String LoggingEvent::getProperty(const String& key) const
+LogString LoggingEvent::getProperty(const LogString& key) const
 {
 	if (properties == 0)
 	{
-		return String();
+		return LogString();
 	}
 
-	std::map<String, String>::const_iterator  it = properties->find(key);
+	std::map<LogString, LogString>::const_iterator  it = properties->find(key);
 
 	if (it != properties->end())
 	{
-		const String& p = it->second;
+		const LogString& p = it->second;
 
 		if (!p.empty())
 		{
@@ -168,16 +167,16 @@ String LoggingEvent::getProperty(const String& key) const
 		}
 	}
 
-	return String();
+	return LogString();
 }
 
-std::set<String> LoggingEvent::getPropertyKeySet() const
+std::set<LogString> LoggingEvent::getPropertyKeySet() const
 {
-	std::set<String> set;
+	std::set<LogString> set;
 
 	if (properties != 0)
 	{
-		std::map<String, String>::const_iterator it;
+		std::map<LogString, LogString>::const_iterator it;
 		for (it = properties->begin(); it != properties->end(); it++)
 		{
 			set.insert(it->first);
@@ -189,11 +188,12 @@ std::set<String> LoggingEvent::getPropertyKeySet() const
 
 void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)
 {
+#if 0
 	// fqnOfCategoryClass
 	is->read(fqnOfCategoryClass);
 
 	// name
-	String name;
+	LogString name;
 	is->read(name);
 	logger = Logger::getLogger(name);
 
@@ -247,10 +247,12 @@ void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)
 
 	// threadId
 	is->read(threadId);
+#endif
 }
 
 void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& is)
 {
+  #if 0
 	int levelInt;
 	is->read(levelInt);
 
@@ -279,13 +281,14 @@ void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& is)
 			_T("Level deserialization failed, reverting to default."));
 		level = Level::toLevel(levelInt);
 	}
+#endif
 }
 
-void LoggingEvent::setProperty(const String& key, const String& value)
+void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
 	if (properties == 0)
 	{
-		properties = new std::map<String, String>;
+		properties = new std::map<LogString, LogString>;
 	}
 
 	(*properties)[key] = value;
@@ -293,6 +296,7 @@ void LoggingEvent::setProperty(const String& key, const String& value)
 
 void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 {
+  #if 0
 	// fqnOfCategoryClass
 	os->write(fqnOfCategoryClass);
 
@@ -349,10 +353,12 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 
 	// threadId
 	os->write(threadId);
+#endif
 }
 
 void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& os) const
 {
+#if 0
 	os->write(level->toInt());
 
 	const Class& clazz = level->getClass();
@@ -365,6 +371,6 @@ void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& os) const
 	{
 		os->write(clazz.getName());
 	}
+#endif
 }
-
 

@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_NET_SMTP_H
 #define _LOG4CXX_NET_SMTP_H
 
@@ -46,16 +46,16 @@ namespace log4cxx
 		class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		{
 		private:
-			String to;
-			String from;
-			String subject;
-			String smtpHost;
+			LogString to;
+			LogString from;
+			LogString subject;
+			LogString smtpHost;
 			int bufferSize; // 512
 			bool locationInfo;
 			helpers::CyclicBuffer cb;
 			void * session;
-			String encoding;
-			String charset;
+			LogString encoding;
+			LogString charset;
 
 		protected:
 			spi::TriggeringEventEvaluatorPtr evaluator;
@@ -84,19 +84,19 @@ namespace log4cxx
 		    /**
 		    Set options
 		    */
-			virtual void setOption(const String& option, const String& value);
+			virtual void setOption(const LogString& option, const LogString& value);
 
 			/**
 			Activate the specified options, such as the smtp host, the
 			recipient, from, etc.
 			*/
-			virtual void activateOptions();
+			virtual void activateOptions(apr_pool_t* p);
 
 			/**
 			Perform SMTPAppender specific appending actions, mainly adding
 			the event to a cyclic buffer and checking if the event triggers
 			an e-mail to be sent. */
-			virtual void append(const spi::LoggingEventPtr& event);
+			virtual void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 
 			/**
 			This method determines if there is a sense in attempting to append.
@@ -107,12 +107,12 @@ namespace log4cxx
 
 			virtual void close();
 
-			std::vector<String> parseAddress(const String& addressStr);
+			std::vector<LogString> parseAddress(const LogString& addressStr);
 
 			/**
 			Returns value of the <b>To</b> option.
 			*/
-			inline const String& getTo() const
+			inline const LogString& getTo() const
 				{ return to; }
 
 			/**
@@ -129,30 +129,30 @@ namespace log4cxx
 			/**
 			Returns value of the <b>Charset</b> option.
 			*/
-			inline const String& getCharset() const
+			inline const LogString& getCharset() const
 				{ return charset; }
 
 			/**
 			Returns value of the <b>Encoding</b> option.
 			*/
-			inline const String& getEncoding() const
+			inline const LogString& getEncoding() const
 				{ return encoding; }
 
 			/**
 			Returns value of the <b>EvaluatorClass</b> option.
 			*/
-			String getEvaluatorClass();
+			LogString getEvaluatorClass();
 
 			/**
 			Returns value of the <b>From</b> option.
 			*/
-			inline const String& getFrom() const
+			inline const LogString& getFrom() const
 				{ return from; }
 
 			/**
 			Returns value of the <b>Subject</b> option.
 			*/
-			inline const String& getSubject() const
+			inline const LogString& getSubject() const
 				{ return subject; }
 
 			/**
@@ -160,7 +160,7 @@ namespace log4cxx
 			charset of the mail (<code>us-ascii</code>, <code>iso8859_1</code>,
 			<code>iso8859_2</code>, <code>iso8859_3</code>).
 			*/
-			inline void setCharset(const String& charset)
+			inline void setCharset(const LogString& charset)
 				{ this->charset = charset; }
 
 			/**
@@ -168,21 +168,21 @@ namespace log4cxx
 			encoding type of the mail (<code>7bit</code>, <code>8bit</code>,
 			<code>base64</code>, <code>binary</code>, <code>quoted</code>).
 			*/
-			inline void setEncoding(const String& charset)
+			inline void setEncoding(const LogString& charset)
 				{ this->encoding = encoding; }
 
 			/**
 			The <b>From</b> option takes a string value which should be a
 			e-mail address of the sender.
 			*/
-			inline void setFrom(const String& from)
+			inline void setFrom(const LogString& from)
 				{ this->from = from; }
 
 			/**
 			The <b>Subject</b> option takes a string value which should be a
 			the subject of the e-mail message.
 			*/
-			inline void setSubject(const String& subject)
+			inline void setSubject(const LogString& subject)
 				{ this->subject = subject; }
 
 			/**
@@ -198,20 +198,20 @@ namespace log4cxx
 			The <b>SMTPHost</b> option takes a string value which should be a
 			the host name of the SMTP server that will send the e-mail message.
 			*/
-			inline void setSMTPHost(const String& smtpHost)
+			inline void setSMTPHost(const LogString& smtpHost)
 				{ this->smtpHost = smtpHost; }
 
 			/**
 			Returns value of the <b>SMTPHost</b> option.
 			*/
-			inline const String& getSMTPHost() const
+			inline const LogString& getSMTPHost() const
 				{ return smtpHost; }
 
 			/**
 			The <b>To</b> option takes a string value which should be a
 			comma separated list of e-mail address of the recipients.
 			*/
-			inline void setTo(const String& to)
+			inline void setTo(const LogString& to)
 				{ this->to = to; }
 
 			/**
@@ -227,7 +227,7 @@ namespace log4cxx
 			be instantiated and assigned as the triggering event evaluator
 			for the SMTPAppender.
 			*/
-			void setEvaluatorClass(const String& value);
+			void setEvaluatorClass(const LogString& value);
 
 			/**
 			The <b>LocationInfo</b> option takes a boolean value. By

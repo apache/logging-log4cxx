@@ -1,12 +1,13 @@
+
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,6 +27,9 @@
 #include <log4cxx/hierarchy.h>
 #include <log4cxx/spi/rootcategory.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
+#include "insertwide.h"
+
+#define _T(str) L ## str
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -45,7 +49,7 @@ public:
 	void close()
 		{}
 
-	void append(const spi::LoggingEventPtr& event)
+	void append(const spi::LoggingEventPtr& event, apr_pool_t* p)
 		{ counter++; }
 
 	bool requiresLayout() const
@@ -71,13 +75,16 @@ class LoggerTestCase : public CppUnit::TestFixture
 public:
 	void setUp()
 	{
-		rbUS = PropertyResourceBundle::getBundle(_T("L7D"), Locale(_T("en"), _T("US")));
+		rbUS = PropertyResourceBundle::getBundle(LOG4CXX_STR("L7D"),
+                      Locale(LOG4CXX_STR("en"), LOG4CXX_STR("US")));
 		CPPUNIT_ASSERT(rbUS != 0);
 
-		rbFR = PropertyResourceBundle::getBundle(_T("L7D"), Locale(_T("fr"), _T("FR")));
+		rbFR = PropertyResourceBundle::getBundle(LOG4CXX_STR("L7D"),
+                       Locale(LOG4CXX_STR("fr"), LOG4CXX_STR("FR")));
 		CPPUNIT_ASSERT(rbFR != 0);
 
-		rbCH = PropertyResourceBundle::getBundle(_T("L7D"), Locale(_T("fr"), _T("CH")));
+		rbCH = PropertyResourceBundle::getBundle(LOG4CXX_STR("L7D"),
+                       Locale(LOG4CXX_STR("fr"), LOG4CXX_STR("CH")));
 		CPPUNIT_ASSERT(rbCH != 0);
 	}
 
@@ -95,7 +102,7 @@ public:
 	{
 		logger = Logger::getLogger(_T("test"));
 		a1 = new FileAppender();
-		a1->setName(_T("testAppender1"));
+		a1->setName(LOG4CXX_STR("testAppender1"));
 		logger->addAppender(a1);
 
 		AppenderList list = logger->getAllAppenders();
@@ -110,14 +117,14 @@ public:
 	void testAppender2()
 	{
 		a1 = new FileAppender();
-		a1->setName(_T("testAppender2.1"));
+		a1->setName(LOG4CXX_STR("testAppender2.1"));
 		a2 = new FileAppender();
-		a2->setName(_T("testAppender2.2"));
+		a2->setName(LOG4CXX_STR("testAppender2.2"));
 
 		logger = Logger::getLogger(_T("test"));
 		logger->addAppender(a1);
 		logger->addAppender(a2);
-		logger->removeAppender(String(_T("testAppender2.1")));
+		logger->removeAppender((LogString) LOG4CXX_STR("testAppender2.1"));
 
 		AppenderList list = logger->getAllAppenders();
 		AppenderPtr aHat = list.front();
@@ -367,17 +374,17 @@ public:
 	void testHierarchy1()
 	{
 		LoggerRepositoryPtr h = new Hierarchy(new RootCategory(Level::ERROR));
-		LoggerPtr a0 = h->getLogger(_T("a"));
-		CPPUNIT_ASSERT(String(_T("a")) == a0->getName());
+		LoggerPtr a0 = h->getLogger(LOG4CXX_STR("a"));
+		CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("a"), a0->getName());
 		CPPUNIT_ASSERT(a0->getLevel() == 0);
 		CPPUNIT_ASSERT(Level::ERROR == a0->getEffectiveLevel());
 
-		LoggerPtr a1 = h->getLogger(_T("a"));
+		LoggerPtr a1 = h->getLogger(LOG4CXX_STR("a"));
 		CPPUNIT_ASSERT_EQUAL(a0, a1);
 	}
 
 protected:
-	static String MSG;
+	static LogString MSG;
 	LoggerPtr logger;
 	AppenderPtr a1;
 	AppenderPtr a2;
@@ -386,6 +393,6 @@ protected:
 	ResourceBundlePtr rbCH;
 };
 
-String LoggerTestCase::MSG = _T("M");
+LogString LoggerTestCase::MSG(LOG4CXX_STR("M"));
 
 CPPUNIT_TEST_SUITE_REGISTRATION(LoggerTestCase);

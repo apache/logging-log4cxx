@@ -24,12 +24,12 @@ namespace log4cxx
 	class FilenameFilter : public Filter
 	{
 	public:
-                FilenameFilter(const char* actual, const char* expected);
-		String filter(const String& in) const throw(UnexpectedFormatException);
+                FilenameFilter(const LogString& actual, const LogString& expected);
+		LogString filter(const LogString& in) const throw(UnexpectedFormatException);
 
         private:
-                String pattern;
-                String replacement;
+                LogString pattern;
+                LogString replacement;
 	};
 }
 

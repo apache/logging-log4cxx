@@ -33,50 +33,53 @@ PatternConverter::PatternConverter(const FormattingInfo& fi)
 {
 }
 
+
 /**
 A template method for formatting in a converter specific way.
 */
-void PatternConverter::format(ostream& sbuf, const spi::LoggingEventPtr& e) const
+void PatternConverter::format(LogString& sbuf,
+     const spi::LoggingEventPtr& e,
+     apr_pool_t* p) const
 {
-	if (minChar == -1 && maxChar == 0x7FFFFFFF)
-	{
-		convert(sbuf, e);
-	}
-	else
-	{
-		os.seekp(0);
-		convert(os, e);
-		String s = os.str();
+        if (minChar == -1 && maxChar == 0x7FFFFFFF)
+        {
+                convert(sbuf, e, p);
+        }
+        else
+        {
+                LogString s;
+                convert(s, e, p);
 
-		if (s.empty())
-		{
-			if(0 < minChar)
-				sbuf << String(minChar, _T(' '));
-			return;
-		}
+                if (s.empty())
+                {
+                        if(0 < minChar)
+                                sbuf.append(minChar, LOG4CXX_STR(' '));
+                        return;
+                }
 
-		int len = s.size();
+                int len = s.size();
 
-		if (len > maxChar)
-		{
-			sbuf << (s.substr(len-maxChar));
-		}
-		else if (len < minChar)
-		{
-			if (leftAlign)
-			{
-				sbuf << s;
-				sbuf << String(minChar-len, _T(' '));
-			}
-			else
-			{
-				sbuf << String(minChar-len, _T(' '));
-				sbuf << s;
-			}
-		}
-		else
-			sbuf << s;
-	}
+                if (len > maxChar)
+                {
+                        sbuf.append(s.substr(len-maxChar));
+                }
+                else if (len < minChar)
+                {
+                        if (leftAlign)
+                        {
+                                sbuf.append(s);
+                                sbuf.append(minChar-len, LOG4CXX_STR(' '));
+                        }
+                        else
+                        {
+                                sbuf.append(minChar-len, LOG4CXX_STR(' '));
+                                sbuf.append(s);
+                        }
+                }
+                else
+                        sbuf.append(s);
+        }
 }
+
 
 

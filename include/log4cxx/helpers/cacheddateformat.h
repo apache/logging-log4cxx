@@ -28,11 +28,11 @@ namespace log4cxx
           public:
                CachedDateFormat(DateFormatPtr& baseFormatter);
 
-               virtual void format(std::string &s,
+               virtual void format(LogString &s,
                    apr_time_t date,
                    apr_pool_t* p) const;
                virtual void setTimeZone(const TimeZonePtr& zone);
-               virtual void numberFormat(std::string& s,
+               virtual void numberFormat(LogString& s,
                                          long n,
                                          apr_pool_t* p) const;
 
@@ -49,18 +49,18 @@ namespace log4cxx
            *    field (likely RelativeTimeDateFormat)
            */
                static int findMillisecondStart(const apr_time_t time,
-                                          const String& formatted,
-                                          const char zeroDigit,
-                                          const char nineDigit,
+                                          const LogString& formatted,
+                                          const logchar zeroDigit,
+                                          const logchar nineDigit,
                                           const DateFormatPtr& formatter,
                                           apr_pool_t* p);
 
                DateFormatPtr formatter;
                mutable int millisecondStart;
-               mutable std::string cache;
+               mutable LogString cache;
                mutable apr_time_t previousTime;
-               char zeroDigit;
-               char nineDigit;
+               logchar zeroDigit;
+               logchar nineDigit;
 			   enum {
                    UNRECOGNIZED_MILLISECOND_PATTERN = -2,
 					   NO_MILLISECOND_PATTERN = -1 };

@@ -21,14 +21,14 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyResourceBundle)
 
-PropertyResourceBundle::PropertyResourceBundle(istream& inStream)
+PropertyResourceBundle::PropertyResourceBundle(LogString& inStream)
 {
 	properties.load(inStream);
 }
 
-String PropertyResourceBundle::getString(const String& key) const
+LogString PropertyResourceBundle::getString(const LogString& key) const
 {
-	String resource;
+	LogString resource;
 	PropertyResourceBundlePtr resourceBundle = this;
 
 	do

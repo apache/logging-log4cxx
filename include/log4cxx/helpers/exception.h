@@ -17,7 +17,9 @@
 #ifndef _LOG4CXX_HELPERS_EXCEPTION_H
 #define _LOG4CXX_HELPERS_EXCEPTION_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/portability.h>
+#include <exception>
+#include <string>
 
 namespace log4cxx
 {
@@ -30,9 +32,6 @@ namespace log4cxx
 		{
 		public:
 			Exception()  {}
-                        virtual const String getMessage() const {
-                          return what();
-                        }
 	        }; // class Exception
 
 		/** RuntimeException is the parent class of those exceptions that can be

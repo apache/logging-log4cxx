@@ -33,22 +33,22 @@ LevelRangeFilter::LevelRangeFilter()
 {
 }
 
-void LevelRangeFilter::setOption(const String& option,
-	const String& value)
+void LevelRangeFilter::setOption(const LogString& option,
+	const LogString& value)
 {
-    static const String LEVEL_MIN_OPTION("LevelMin");
-    static const String LEVEL_MAX_OPTION("LevelMax");
-    static const String ACCEPT_ON_MATCH_OPTION("AcceptOnMatch");
 
-	if (StringHelper::equalsIgnoreCase(option, LEVEL_MIN_OPTION))
+	if (StringHelper::equalsIgnoreCase(option,
+                 LOG4CXX_STR("LEVELMIN"), LOG4CXX_STR("levelmin")))
 	{
 		levelMin = OptionConverter::toLevel(value, levelMin);
 	}
-        else if (StringHelper::equalsIgnoreCase(option, LEVEL_MAX_OPTION))
+        else if (StringHelper::equalsIgnoreCase(option,
+                LOG4CXX_STR("LEVELMAX"), LOG4CXX_STR("levelmax")))
 	{
 		levelMax = OptionConverter::toLevel(value, levelMax);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, ACCEPT_ON_MATCH_OPTION))
+	else if (StringHelper::equalsIgnoreCase(option,
+                LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
 	{
 		acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
 	}

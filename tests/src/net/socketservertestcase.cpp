@@ -37,6 +37,10 @@
 #include "../xml/xlevel.h"
 #include "../util/filenamefilter.h"
 #include <apr_time.h>
+#include <log4cxx/file.h>
+#include <iostream>
+#include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))
@@ -48,44 +52,46 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
-#define TEMP _T("output/temp")
-#define FILTERED _T("output/filtered")
+#define _T(str) L ## str
+
+#define TEMP LOG4CXX_FILE("output/temp")
+#define FILTERED LOG4CXX_FILE("output/filtered")
 
 // %5p %x [%t] %c %m%n
 // DEBUG T1 [thread] org.apache.log4j.net.SocketAppenderTestCase Message 1
 #define PAT1 \
-	_T("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[\\d*]\\ ") \
-	_T(".* Message \\d{1,2}")
+	LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T1 \\[\\d*]\\ ") \
+	LOG4CXX_STR(".* Message \\d{1,2}")
 
 // DEBUG T2 [thread] patternlayouttest.cpp(?) Message 1
 #define PAT2 \
-	_T("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[\\d*]\\ ") \
-	_T(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
+	LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T2 \\[\\d*]\\ ") \
+	LOG4CXX_STR(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
 
 // DEBUG T3 [thread] patternlayouttest.cpp(?) Message 1
 #define PAT3 \
-	_T("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[\\d*]\\ ") \
-	_T(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
+	LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) T3 \\[\\d*]\\ ") \
+	LOG4CXX_STR(".*socketservertestcase.cpp\\(\\d{1,4}\\) Message \\d{1,2}")
 
 // DEBUG some T4 MDC-TEST4 [thread] SocketAppenderTestCase - Message 1
 // DEBUG some T4 MDC-TEST4 [thread] SocketAppenderTestCase - Message 1
 #define PAT4 \
-	_T("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[\\d*]\\") \
-	_T(" (root|SocketServerTestCase) - Message \\d{1,2}")
+	LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some T4 MDC-TEST4 \\[\\d*]\\") \
+	LOG4CXX_STR(" (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT5 \
-	_T("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[\\d*]\\") \
-	_T(" (root|SocketServerTestCase) - Message \\d{1,2}")
+	LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some5 T5 MDC-TEST5 \\[\\d*]\\") \
+	LOG4CXX_STR(" (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT6 \
-	_T("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6") \
-	_T(" \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+	LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some6 T6 client-test6 MDC-TEST6") \
+	LOG4CXX_STR(" \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 #define PAT7 \
-	_T("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7") \
-	_T(" \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+	LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some7 T7 client-test7 MDC-TEST7") \
+	LOG4CXX_STR(" \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 
 // DEBUG some8 T8 shortSocketServer MDC-TEST7 [thread] SocketServerTestCase - Message 1
 #define PAT8 \
-	_T("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer") \
-	_T(" MDC-TEST8 \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
+	LOG4CXX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer") \
+	LOG4CXX_STR(" MDC-TEST8 \\[\\d*]\\ (root|SocketServerTestCase) - Message \\d{1,2}")
 
 class ShortSocketServerLauncher
 {
@@ -100,7 +106,7 @@ public:
 			ZeroMemory( &si, sizeof(si) );
 			si.cb = sizeof(si);
 			ZeroMemory( &pi, sizeof(pi) );
-			String commandLine(_T("src\\shortsocketserver 8 input/socketServer"));
+			LogString commandLine(LOG4CXX_STR("src\\shortsocketserver 8 input/socketServer"));
 
 			BOOL bResult = ::CreateProcess(NULL, (LPTSTR)commandLine.c_str(), NULL, NULL,
 				TRUE, 0, NULL, NULL, &si, &pi);
@@ -150,7 +156,7 @@ public:
 	void setUp()
 	{
 		ShortSocketServerLauncher();
-  		logger = Logger::getLogger(_T("org.apache.log4j.net.SocketServerTestCase"));
+  		logger = Logger::getLogger(LOG4CXX_STR("org.apache.log4j.net.SocketServerTestCase"));
 		root = Logger::getRootLogger();
 	}
 
@@ -170,9 +176,9 @@ public:
 	void test1()
 	{
 		SocketAppenderPtr socketAppender =
-			new SocketAppender(_T("localhost"), PORT);
+			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 		root->addAppender(socketAppender);
-		common(_T("T1"), _T("key1"), _T("MDC-TEST1"));
+		common(LOG4CXX_STR("T1"), LOG4CXX_STR("key1"), LOG4CXX_STR("MDC-TEST1"));
 		delay(1);
 
 		ControlFilter cf;
@@ -190,19 +196,19 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/socketServer.1")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.1")));
 	}
 
 	void test2()
 	{
 		SocketAppenderPtr socketAppender =
-			new SocketAppender(_T("localhost"), PORT);
+			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 		root->addAppender(socketAppender);
-		common(_T("T2"), _T("key2"), _T("MDC-TEST2"));
+		common(LOG4CXX_STR("T2"), LOG4CXX_STR("key2"), LOG4CXX_STR("MDC-TEST2"));
 		delay(1);
 
 		ControlFilter cf;
@@ -210,7 +216,9 @@ public:
 
 		ThreadFilter threadFilter;
 		LineNumberFilter lineNumberFilter;
-                FilenameFilter filenameFilter(__FILE__, "socketservertestcase.cpp");
+                LogString thisFile;
+                log4cxx::helpers::Transcoder::decode(__FILE__, thisFile);
+                FilenameFilter filenameFilter(thisFile, LOG4CXX_STR("socketservertestcase.cpp"));
 
 		std::vector<Filter *> filters;
 		filters.push_back(&cf);
@@ -224,19 +232,19 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/socketServer.2")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.2")));
 	}
 
  	void test3()
 	{
 		SocketAppenderPtr socketAppender =
-			new SocketAppender(_T("localhost"), PORT);
+			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 		root->addAppender(socketAppender);
-		common(_T("T3"), _T("key3"), _T("MDC-TEST3"));
+		common(LOG4CXX_STR("T3"), LOG4CXX_STR("key3"), LOG4CXX_STR("MDC-TEST3"));
 		delay(1);
 
 		ControlFilter cf;
@@ -244,7 +252,9 @@ public:
 
 		ThreadFilter threadFilter;
 		LineNumberFilter lineNumberFilter;
-                FilenameFilter filenameFilter(__FILE__, "socketservertestcase.cpp");
+                LogString thisFile;
+                log4cxx::helpers::Transcoder::decode(__FILE__, thisFile);
+                FilenameFilter filenameFilter(thisFile, LOG4CXX_STR("socketservertestcase.cpp"));
 
 		std::vector<Filter *> filters;
 		filters.push_back(&cf);
@@ -258,20 +268,20 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/socketServer.3")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.3")));
 	}
 
  	void test4()
 	{
 		SocketAppenderPtr socketAppender =
-			new SocketAppender(_T("localhost"), PORT);
+			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 		root->addAppender(socketAppender);
 		NDC::push(_T("some"));
-		common(_T("T4"), _T("key4"), _T("MDC-TEST4"));
+		common(LOG4CXX_STR("T4"), LOG4CXX_STR("key4"), LOG4CXX_STR("MDC-TEST4"));
 		NDC::pop();
 		delay(1);
 
@@ -290,24 +300,24 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/socketServer.4")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.4")));
 	}
 
 	void test5()
 	{
 		SocketAppenderPtr socketAppender =
-			new SocketAppender(_T("localhost"), PORT);
+			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
 
 		root->addAppender(socketAppender);
 		root->addAppender(asyncAppender);
 
 		NDC::push(_T("some5"));
-		common(_T("T5"), _T("key5"), _T("MDC-TEST5"));
+		common(LOG4CXX_STR("T5"), LOG4CXX_STR("key5"), LOG4CXX_STR("MDC-TEST5"));
 		NDC::pop();
 		delay(2);
 
@@ -326,17 +336,17 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/socketServer.5")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.5")));
 	}
 
 	void test6()
 	{
 		SocketAppenderPtr socketAppender =
-			new SocketAppender(_T("localhost"), PORT);
+			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
 
 		root->addAppender(socketAppender);
@@ -344,7 +354,7 @@ public:
 
 		NDC::push(_T("some6"));
     	MDC::put(_T("hostID"), _T("client-test6"));
-		common(_T("T6"), _T("key6"), _T("MDC-TEST6"));
+		common(LOG4CXX_STR("T6"), LOG4CXX_STR("key6"), LOG4CXX_STR("MDC-TEST6"));
 		NDC::pop();
   		MDC::remove(_T("hostID"));
 		delay(2);
@@ -364,17 +374,17 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/socketServer.6")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.6")));
 	}
 
 	void test7()
 	{
 		SocketAppenderPtr socketAppender =
-			new SocketAppender(_T("localhost"), PORT);
+			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 		AsyncAppenderPtr asyncAppender = new AsyncAppender();
 
 		root->addAppender(socketAppender);
@@ -382,7 +392,7 @@ public:
 
 		NDC::push(_T("some7"));
     	MDC::put(_T("hostID"), _T("client-test7"));
-		common(_T("T7"), _T("key7"), _T("MDC-TEST7"));
+		common(LOG4CXX_STR("T7"), LOG4CXX_STR("key7"), LOG4CXX_STR("MDC-TEST7"));
 		NDC::pop();
   		MDC::remove(_T("hostID"));
 		delay(2);
@@ -402,22 +412,22 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/socketServer.7")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.7")));
 	}
 
 	void test8()
 	{
 		SocketAppenderPtr socketAppender =
-			new SocketAppender(_T("localhost"), PORT);
+			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
 
 		root->addAppender(socketAppender);
 
 		NDC::push(_T("some8"));
- 		common(_T("T8"), _T("key8"), _T("MDC-TEST8"));
+ 		common(LOG4CXX_STR("T8"), LOG4CXX_STR("key8"), LOG4CXX_STR("MDC-TEST8"));
 		NDC::pop();
 		delay(2);
 
@@ -436,31 +446,35 @@ public:
 		}
 		catch(UnexpectedFormatException& e)
 		{
-			tcout << _T("UnexpectedFormatException :") << e.getMessage() << std::endl;
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
 			throw;
 		}
 
-		CPPUNIT_ASSERT(Compare::compare(FILTERED, _T("witness/socketServer.8")));
+		CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.8")));
 	}
 
-	void common(const String& dc, const String& key, const String& val)
+	void common(const LogString& dc, const LogString& key, const LogString& val)
 	{
 		int i = -1;
 		NDC::push(dc);
 		MDC::put(key, val);
+                Pool p;
 
 		i++;
-		LOG4CXX_LOG(logger, XLevel::TRACE, _T("Message ") << i);
+                LogString msg(LOG4CXX_STR("Message "));
+
+		LOG4CXX_LOG(logger, XLevel::TRACE,
+                     msg + StringHelper::toString(i, p));
 		i++;
-		LOG4CXX_DEBUG(logger, _T("Message ") << i);
+		LOG4CXX_DEBUG(logger, msg + StringHelper::toString(i, p));
 		i++;
-		LOG4CXX_DEBUG(root, _T("Message ") << i);
+		LOG4CXX_DEBUG(root, msg + StringHelper::toString(i, p));
 		i++;
-		LOG4CXX_INFO(logger, _T("Message ") << i);
+		LOG4CXX_INFO(logger, msg + StringHelper::toString(i, p));
 		i++;
-		LOG4CXX_WARN(logger, _T("Message ") << i);
+		LOG4CXX_WARN(logger, msg + StringHelper::toString(i, p));
 		i++;
-		LOG4CXX_LOG(logger, XLevel::LETHAL, _T("Message ") << i); //5
+		LOG4CXX_LOG(logger, XLevel::LETHAL, msg + StringHelper::toString(i, p)); //5
 
 		NDC::pop();
 		MDC::remove(key);

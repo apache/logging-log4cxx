@@ -16,7 +16,10 @@
 
 #include <log4cxx/helpers/absolutetimedateformat.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <apr_pools.h>
+#include "../insertwide.h"
+#include <apr.h>
+#include <apr_time.h>
+#include <log4cxx/helpers/pool.h>
 
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))
@@ -58,14 +61,12 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
   private:
   void assertFormattedTime(apr_time_t date,
                            const TimeZonePtr& timeZone,
-                           const std::string& expected) {
+                           const LogString& expected) {
     AbsoluteTimeDateFormat formatter;
     formatter.setTimeZone(timeZone);
-    std::string actual;
-    apr_pool_t* p;
-    apr_pool_create(&p, NULL);
+    LogString actual;
+    Pool p;
     formatter.format(actual, date, p);
-    apr_pool_destroy(p);
     CPPUNIT_ASSERT_EQUAL(expected, actual);
   }
 
@@ -80,7 +81,7 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
     //   02 Jan 2004 00:00 GMT
     //
     apr_time_t jan2 = MICROSECONDS_PER_DAY * 12419;
-    assertFormattedTime(jan2, TimeZone::getGMT(), "00:00:00,000");
+    assertFormattedTime(jan2, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,000"));
   }
 
   /**
@@ -92,7 +93,7 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
     //       (asking for the same time at a different timezone
     //          will ignore the change of timezone)
     apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
-    assertFormattedTime(jan2, TimeZone::getTimeZone("GMT-6"), "18:00:00,000");
+    assertFormattedTime(jan2, TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")), LOG4CXX_STR("18:00:00,000"));
   }
 
   /**
@@ -100,7 +101,7 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
    */
   void test3() {
     apr_time_t jun29 = MICROSECONDS_PER_DAY * 12599;
-    assertFormattedTime(jun29, TimeZone::getGMT(), "00:00:00,000");
+    assertFormattedTime(jun29, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,000"));
   }
 
   /**
@@ -112,7 +113,7 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
     //   log4cxx doesn't support non-fixed timezones at this time
     //      passing the fixed equivalent to Chicago's Daylight Savings Time
     //
-    assertFormattedTime(jun30, TimeZone::getTimeZone("GMT-5"), "19:00:00,000");
+    assertFormattedTime(jun30, TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")), LOG4CXX_STR("19:00:00,000"));
   }
 
   /**
@@ -123,11 +124,11 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     apr_time_t ticks = MICROSECONDS_PER_DAY * 12601;
-    assertFormattedTime(ticks, TimeZone::getGMT(), "00:00:00,000");
-    assertFormattedTime(ticks + 8000, TimeZone::getGMT(), "00:00:00,008");
-    assertFormattedTime(ticks + 17000, TimeZone::getGMT(), "00:00:00,017");
-    assertFormattedTime(ticks + 237000, TimeZone::getGMT(), "00:00:00,237");
-    assertFormattedTime(ticks + 1415000, TimeZone::getGMT(), "00:00:01,415");
+    assertFormattedTime(ticks, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,000"));
+    assertFormattedTime(ticks + 8000, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,008"));
+    assertFormattedTime(ticks + 17000, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,017"));
+    assertFormattedTime(ticks + 237000, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,237"));
+    assertFormattedTime(ticks + 1415000, TimeZone::getGMT(), LOG4CXX_STR("00:00:01,415"));
   }
 
   /**
@@ -136,8 +137,8 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
    */
   void test6() {
     apr_time_t jul2 = MICROSECONDS_PER_DAY * 12602;
-    assertFormattedTime(jul2, TimeZone::getGMT(), "00:00:00,000");
-    assertFormattedTime(jul2, TimeZone::getTimeZone("GMT-5"), "19:00:00,000");
+    assertFormattedTime(jul2, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,000"));
+    assertFormattedTime(jul2, TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")), LOG4CXX_STR("19:00:00,000"));
   }
 
   /**
@@ -148,15 +149,15 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
     apr_time_t ticks = MICROSECONDS_PER_DAY * -7;
-    assertFormattedTime(ticks, TimeZone::getGMT(), "00:00:00,000");
+    assertFormattedTime(ticks, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,000"));
 #if defined(_WIN32)
     //
     //   These tests fail on Unix due to bug in APR's explode_time
     //
-//    assertFormattedTime(ticks + 8000, TimeZone::getGMT(), "00:00:00,008");
-//    assertFormattedTime(ticks + 17000, TimeZone::getGMT(), "00:00:00,017");
-//    assertFormattedTime(ticks + 237000, TimeZone::getGMT(), "00:00:00,237");
-//    assertFormattedTime(ticks + 1415000, TimeZone::getGMT(), "00:00:01,415");
+//    assertFormattedTime(ticks + 8000, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,008"));
+//    assertFormattedTime(ticks + 17000, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,017"));
+//    assertFormattedTime(ticks + 237000, TimeZone::getGMT(), LOG4CXX_STR("00:00:00,237"));
+//    assertFormattedTime(ticks + 1415000, TimeZone::getGMT(), LOG4CXX_STR("00:00:01,415"));
 #endif
   }
 
@@ -164,13 +165,11 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
    * Checks that numberFormat works as expected.
    */
   void test8() {
-    std::string numb;
-    apr_pool_t* p;
-    apr_pool_create(&p, NULL);
+    Pool p;
+    LogString numb;
     AbsoluteTimeDateFormat formatter;
     formatter.numberFormat(numb, 87, p);
-    apr_pool_destroy(p);
-    CPPUNIT_ASSERT_EQUAL((std::string) "87", numb);
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
   }
 
 };

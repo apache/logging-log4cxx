@@ -146,11 +146,11 @@ void SocketInputStream::read(long& value) const
 //	LOGLOG_DEBUG(_T("long read:") << value);
 }
 
-void SocketInputStream::read(String& value) const
+void SocketInputStream::read(LogString& value) const
 {
-	String::size_type size = 0;
+	LogString::size_type size = 0;
 
-	read(&size, sizeof(String::size_type));
+	read(&size, sizeof(LogString::size_type));
 //	LOGLOG_DEBUG(_T("string size read:") << size);
 
 	if (size > 0)
@@ -160,10 +160,10 @@ void SocketInputStream::read(String& value) const
 			throw SocketMessageTooLargeException();
 		}
 
-		TCHAR * buffer;
-		buffer = (TCHAR *)alloca((size + 1)* sizeof(TCHAR));
-		buffer[size] = _T('\0');
-		read(buffer, size * sizeof(TCHAR));
+		logchar * buffer;
+		buffer = (logchar *)alloca((size + 1)* sizeof(logchar));
+		buffer[size] = LOG4CXX_STR('\0');
+		read(buffer, size * sizeof(logchar));
 		value = buffer;
 	}
 

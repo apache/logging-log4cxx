@@ -18,7 +18,9 @@
 #define _LOG4CXX_SPI_LOCATION_LOCATIONINFO_H
 
 #include <log4cxx/portability.h>
-#include <string>
+#include <log4cxx/string.h>
+
+class apr_pool_t;
 
 namespace log4cxx
 {
@@ -42,6 +44,8 @@ namespace log4cxx
         * <code>NA</code> is returned. Current value of this string constant is <b>?</b>.
         */
         static const char * const NA;
+
+        static const LocationInfo& getLocationUnavailable();
 
 
 
@@ -95,9 +99,6 @@ namespace log4cxx
 
         /** Returns the method name of the caller. */
         const char * getMethodName() const;
-
-        /** Formatted representation of location */
-        const std::string getFullInfo() const;
 
         private:
         /** Caller's line number. */

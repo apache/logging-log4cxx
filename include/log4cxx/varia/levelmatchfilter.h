@@ -60,12 +60,12 @@ namespace log4cxx
 			/**
 			Set options
 			*/
-			virtual void setOption(const String& option,
-				const String& value);
+			virtual void setOption(const LogString& option,
+				const LogString& value);
 
-			void setLevelToMatch(const String& levelToMatch);
+			void setLevelToMatch(const LogString& levelToMatch);
 
-			const String& getLevelToMatch() const;
+			const LogString& getLevelToMatch() const;
 
 			inline void setAcceptOnMatch(bool acceptOnMatch)
 				{ this->acceptOnMatch = acceptOnMatch; }

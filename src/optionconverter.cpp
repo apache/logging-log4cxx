@@ -31,30 +31,21 @@
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/propertyconfigurator.h>
-#include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/file.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-#ifdef LOG4CXX_HAVE_XML
-using namespace log4cxx::xml;
-#endif
 
 
 
-namespace {
-    // Function object to turn a lower case character into an upper case one
-    class ToUpper {
-    public:
-        void operator()(TCHAR& c){c = toupper(c);}
-    };
-}
 
 namespace log4cxx {
   namespace helpers {
     class MissingBraceException : public IllegalArgumentException {
     public:
-       MissingBraceException(const String& val, size_t openBrace)
+       MissingBraceException(const LogString& val, size_t openBrace)
           : val(val), openBrace(openBrace) {
        }
 
@@ -69,146 +60,128 @@ namespace log4cxx {
           return "Missing brace exception";
        }
 
-       const String getMessage() const {
-         StringBuffer oss;
-         oss << _T("\"") << val
-                 << _T("\" has no closing brace. Opening brace at position ")
-                 << openBrace << _T(".");
-         return oss.str();
-       }
 
     private:
        MissingBraceException& operator=(const MissingBraceException& src);
-       const String val;
+       const LogString val;
        const size_t openBrace;
     };
   }
 }
 
-String OptionConverter::convertSpecialChars(const String& s)
+LogString OptionConverter::convertSpecialChars(const LogString& s)
 {
-	TCHAR c;
+    logchar c;
     int len = s.length();
-    StringBuffer sbuf;
+    LogString sbuf;
 
-	String::const_iterator i = s.begin();
+    LogString::const_iterator i = s.begin();
     while(i != s.end())
 	{
 		c = *i++;
-		if (c == _T('\\'))
+		if (c == LOG4CXX_STR('\\'))
 		{
 			c =  *i++;
 
 			switch (c)
 			{
-			case _T('n'):
-				c = _T('\n');
+			case LOG4CXX_STR('n'):
+				c = LOG4CXX_STR('\n');
 				break;
 
-			case _T('r'):
-				c = _T('\r');
+			case LOG4CXX_STR('r'):
+				c = LOG4CXX_STR('\r');
 				break;
 
-			case _T('t'):
-				c = _T('\t');
+			case LOG4CXX_STR('t'):
+				c = LOG4CXX_STR('\t');
 				break;
 
-			case _T('f'):
-				c = _T('\f');
+			case LOG4CXX_STR('f'):
+				c = LOG4CXX_STR('\f');
 				break;
 
-			case _T('\b'):
-				c = _T('\b');
+			case LOG4CXX_STR('\b'):
+				c = LOG4CXX_STR('\b');
 				break;
 
-			case _T('\"'):
-				c = _T('\"');
+			case LOG4CXX_STR('\"'):
+				c = LOG4CXX_STR('\"');
 				break;
 
-			case _T('\''):
-				c = _T('\'');
+			case LOG4CXX_STR('\''):
+				c = LOG4CXX_STR('\'');
 				break;
 
-			case _T('\\'):
-				c = _T('\\');
+			case LOG4CXX_STR('\\'):
+				c = LOG4CXX_STR('\\');
 				break;
 			}
 		}
-		sbuf.put(c);
+		sbuf.append(1, c);
     }
-    return sbuf.str();
+    return sbuf;
 }
 
 
-bool OptionConverter::toBoolean(const String& value, bool dEfault)
+bool OptionConverter::toBoolean(const LogString& value, bool dEfault)
 {
-	if (value.empty())
-	{
-		return dEfault;
-	}
+        if (value.length() >= 4) {
+          if (StringHelper::equalsIgnoreCase(value.substr(0,4),
+             LOG4CXX_STR("TRUE"), LOG4CXX_STR("true"))) {
+               return true;
+          }
+        }
 
-	String trimmedVal = StringHelper::toLowerCase(StringHelper::trim(value));
-
-	if (trimmedVal == _T("true"))
-	{
-		return true;
-	}
-	if (trimmedVal == _T("false"))
-	{
-		return false;
-	}
+        if (dEfault && value.length() >= 5) {
+          if (StringHelper::equalsIgnoreCase(value.substr(0,5),
+             LOG4CXX_STR("FALSE"), LOG4CXX_STR("false"))) {
+               return false;
+          }
+        }
 
 	return dEfault;
 }
 
-int OptionConverter::toInt(const String& value, int dEfault)
+int OptionConverter::toInt(const LogString& value, int dEfault)
 {
-	if (value.empty())
+        LogString trimmed(StringHelper::trim(value));
+	if (trimmed.empty())
 	{
 		return dEfault;
 	}
+        LOG4CXX_ENCODE_CHAR(cvalue, trimmed);
 
-	return (int)ttol(StringHelper::trim(value).c_str());
+	return (int) atol(cvalue.c_str());
 }
 
-long OptionConverter::toFileSize(const String& value, long dEfault)
+long OptionConverter::toFileSize(const LogString& s, long dEfault)
 {
-	if(value.empty())
+	if(s.empty())
 	{
 		return dEfault;
 	}
 
-	String s = StringHelper::toLowerCase(StringHelper::trim(value));
-
-	long multiplier = 1;
-	int index;
-
-	if((index = s.find(_T("kb"))) != -1)
-	{
+	size_t index = s.find_first_of(LOG4CXX_STR("bB"));
+        if (index != LogString::npos && index > 0) {
+          long multiplier = 1;
+          index--;
+          if (s[index] == LOG4CXX_STR('k') || s[index] == LOG4CXX_STR('K')) {
 		multiplier = 1024;
-		s = s.substr(0, index);
-	}
-	else if((index = s.find(_T("mb"))) != -1)
-	{
+	  } else if(s[index] == LOG4CXX_STR('m') || s[index] == LOG4CXX_STR('M')) {
 		multiplier = 1024*1024;
-		s = s.substr(0, index);
-	}
-	else if((index = s.find(_T("gb"))) != -1)
-	{
+	  } else if(s[index] == LOG4CXX_STR('g') || s[index] == LOG4CXX_STR('G')) {
 		multiplier = 1024*1024*1024;
-		s = s.substr(0, index);
-	}
-	if(!s.empty())
-	{
-		return ttol(s.c_str()) * multiplier;
-	}
+	  }
+          return toInt(s.substr(0, index), 1) * multiplier;
+        }
 
-	return dEfault;
+        return toInt(s, 1);
 }
 
-String OptionConverter::findAndSubst(const String& key, Properties& props)
+LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
 {
-	String value = props.getProperty(key);
+	LogString value(props.getProperty(key));
 
 	if(value.empty())
 		return value;
@@ -219,18 +192,19 @@ String OptionConverter::findAndSubst(const String& key, Properties& props)
 	}
 	catch(IllegalArgumentException& e)
 	{
-		LogLog::error(_T("Bad option value [")+value+_T("]."), e);
+                LogLog::error(((LogString) LOG4CXX_STR("Bad option value ["))
+                     + value + LOG4CXX_STR("]."), e);
 		return value;
 	}
 }
 
-String OptionConverter::substVars(const String& val, Properties& props)
+LogString OptionConverter::substVars(const LogString& val, Properties& props)
 {
-	StringBuffer sbuf;
-        static const String delimStart("${");
-        const TCHAR delimStop = '}';
-        const int DELIM_START_LEN = 2;
-        const int DELIM_STOP_LEN = 1;
+	LogString sbuf;
+        static const LogString delimStart(LOG4CXX_STR("${"));
+        const logchar delimStop = LOG4CXX_STR('}');
+        const size_t DELIM_START_LEN = 2;
+        const size_t DELIM_STOP_LEN = 1;
 
 	int i = 0;
 	int j, k;
@@ -247,13 +221,13 @@ String OptionConverter::substVars(const String& val, Properties& props)
 			}
 			else
 			{ // add the tail string which contails no variables and return the result.
-				sbuf << val.substr(i, val.length() - i);
-				return sbuf.str();
+				sbuf.append(val.substr(i, val.length() - i));
+				return sbuf;
 			}
 		}
 		else
 		{
-			sbuf << val.substr(i, j - i);
+			sbuf.append(val.substr(i, j - i));
 			k = val.find(delimStop, j);
 			if(k == -1)
 			{
@@ -262,9 +236,9 @@ String OptionConverter::substVars(const String& val, Properties& props)
 			else
 			{
 				j += DELIM_START_LEN;
-				String key = val.substr(j, k - j);
+				LogString key = val.substr(j, k - j);
 				// first try in System properties
-				String replacement = getSystemProperty(key, _T(""));
+				LogString replacement = getSystemProperty(key, LOG4CXX_STR(""));
 				// then try props parameter
 				if(replacement.empty())
 				{
@@ -278,8 +252,8 @@ String OptionConverter::substVars(const String& val, Properties& props)
 					// the where the properties are
 					// x1=p1
 					// x2=${x1}
-					String recursiveReplacement = substVars(replacement, props);
-					sbuf << (recursiveReplacement);
+					LogString recursiveReplacement = substVars(replacement, props);
+					sbuf.append(recursiveReplacement);
 				}
 				i = k + DELIM_STOP_LEN;
 			}
@@ -287,31 +261,24 @@ String OptionConverter::substVars(const String& val, Properties& props)
 	}
 }
 
-String OptionConverter::getSystemProperty(const String& key, const String& def)
+LogString OptionConverter::getSystemProperty(const LogString& key, const LogString& def)
 {
 	if (!key.empty())
 	{
-		String value = System::getProperty(key);
+		LogString value(System::getProperty(key));
 
 		if (!value.empty())
 		{
 			return value;
 		}
-		else
-		{
-			return def;
-		}
 	}
-	else
-	{
-		return def;
-	}
+        return def;
 }
 
-const LevelPtr& OptionConverter::toLevel(const String& value,
+const LevelPtr& OptionConverter::toLevel(const LogString& value,
 	const LevelPtr& defaultValue)
 {
-    int hashIndex = value.find(_T("#"));
+    size_t hashIndex = value.find(LOG4CXX_STR("#"));
 
 	if (hashIndex == -1)
 	{
@@ -321,9 +288,10 @@ const LevelPtr& OptionConverter::toLevel(const String& value,
 		}
 		else
 		{
-			LogLog::debug(
-			_T("OptionConverter::toLevel: no class name specified, level=[")
-			+value+_T("]"));
+                        LogLog::debug(
+                           ((LogString) LOG4CXX_STR("OptionConverter::toLevel: no class name specified, level=["))
+                            + value
+                            +LOG4CXX_STR("]"));
 			// no class name specified : use standard Level class
 			return Level::toLevel(value, defaultValue);
 		}
@@ -331,10 +299,10 @@ const LevelPtr& OptionConverter::toLevel(const String& value,
 
 	const LevelPtr& result = defaultValue;
 
-	String clazz = value.substr(hashIndex + 1);
-	String levelName = value.substr(0, hashIndex);
-	LogLog::debug(_T("OptionConverter::toLevel: class=[") +clazz+_T("], level=[")+
-		levelName+_T("]"));
+	LogString clazz = value.substr(hashIndex + 1);
+	LogString levelName = value.substr(0, hashIndex);
+        LogLog::debug(((LogString) LOG4CXX_STR("OptionConverter::toLevel: class=["))
+           + clazz + LOG4CXX_STR("], level=[") + levelName + LOG4CXX_STR("]"));
 
 	// This is degenerate case but you never know.
 	if (levelName.empty())
@@ -350,33 +318,35 @@ const LevelPtr& OptionConverter::toLevel(const String& value,
 	}
 	catch (ClassNotFoundException&)
 	{
-		LogLog::warn(_T("custom level class [") + clazz + _T("] not found."));
+                LogLog::warn(((LogString) LOG4CXX_STR("custom level class ["))
+                   + clazz + LOG4CXX_STR("] not found."));
 	}
 	catch(Exception& oops)
 	{
 		LogLog::warn(
-			_T("class [") + clazz + _T("], level [") + levelName +
-			_T("] conversion) failed."), oops);
+			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
+			LOG4CXX_STR("] conversion) failed."), oops);
 	}
 	catch(...)
 	{
 		LogLog::warn(
-			_T("class [") + clazz + _T("], level [") + levelName +
-			_T("] conversion) failed."));
+			LOG4CXX_STR("class [") + clazz + LOG4CXX_STR("], level [") + levelName +
+			LOG4CXX_STR("] conversion) failed."));
 	}
 
 	return defaultValue;
 }
 
 
-ObjectPtr OptionConverter::instantiateByKey(Properties& props, const String& key,
+ObjectPtr OptionConverter::instantiateByKey(Properties& props, const LogString& key,
 	const Class& superClass, const ObjectPtr& defaultValue)
 {
 	// Get the value of the property in string form
-	String className = findAndSubst(key, props);
+	LogString className(findAndSubst(key, props));
 	if(className.empty())
 	{
-		LogLog::error(_T("Could not find value for key ") + key);
+		LogLog::error(
+                   ((LogString) LOG4CXX_STR("Could not find value for key ")) + key);
 		return defaultValue;
 	}
 
@@ -385,7 +355,7 @@ ObjectPtr OptionConverter::instantiateByKey(Properties& props, const String& key
 		StringHelper::trim(className), superClass, defaultValue);
 }
 
-ObjectPtr OptionConverter::instantiateByClassName(const String& className,
+ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 	const Class& superClass, const ObjectPtr& defaultValue)
 {
 	if(!className.empty())
@@ -403,37 +373,39 @@ ObjectPtr OptionConverter::instantiateByClassName(const String& className,
 		}
 		catch (Exception& e)
 		{
-			LogLog::error(_T("Could not instantiate class [") + className
-				+ _T("]."), e);
+			LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate class [")) +
+                                className + LOG4CXX_STR("]."), e);
 		}
 	}
 	return defaultValue;
 }
 
-void OptionConverter::selectAndConfigure(const String& configFileName,
-	 const String& _clazz, spi::LoggerRepositoryPtr& hierarchy)
+void OptionConverter::selectAndConfigure(const File& configFileName,
+	 const LogString& _clazz, spi::LoggerRepositoryPtr& hierarchy)
 {
 	ConfiguratorPtr configurator;
-	String clazz = _clazz;
+	LogString clazz = _clazz;
 
-#ifdef LOG4CXX_HAVE_XML
-	if(clazz.empty() && !configFileName.empty()
-		&& StringHelper::endsWith(configFileName, _T(".xml")))
+#if 0 // LOG4CXX_HAVE_XML
+	if(clazz.empty() && !configFileName.getName().empty()
+		&& StringHelper::endsWith(configFileName, LOG4CXX_STR(".xml")))
 	{
-		clazz = DOMConfigurator::getStaticClass().toString();
+//		clazz = DOMConfigurator::getStaticClass().toString();
 	}
 #endif
 
 	if(!clazz.empty())
 	{
-		LogLog::debug(_T("Preferred configurator class: ") + clazz);
+		LogLog::debug(
+                   ((LogString) LOG4CXX_STR("Preferred configurator class: ")) + clazz);
 		configurator = instantiateByClassName(clazz,
 			Configurator::getStaticClass(),
 			0);
 		if(configurator == 0)
 		{
-			LogLog::error(_T("Could not instantiate configurator [")+
-				clazz+_T("]."));
+			LogLog::error(
+                                ((LogString) LOG4CXX_STR("Could not instantiate configurator ["))
+				 + clazz + LOG4CXX_STR("]."));
 			return;
 		}
 	}

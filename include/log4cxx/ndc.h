@@ -1,23 +1,23 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_NDC_H
 #define _LOG4CXX_NDC_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <stack>
 
@@ -42,7 +42,7 @@ namespace log4cxx
 	come into play.
 
 	<p><em><b>note that ndcs are managed on a per thread
-	basis</b></em>. ndc operations such as #push, 
+	basis</b></em>. ndc operations such as #push,
 	#pop, #clear and #getDepth
 	affect the ndc of the <em>current</em> thread only. ndcs of other
 	threads remain unaffected.
@@ -63,7 +63,7 @@ namespace log4cxx
 	 <p><li>when leaving a context, call <code>ndc.pop</code>.
 
 	 <p><li><b>when exiting a thread make sure to call #remove
-	 </b>.  
+	 </b>.
 	</ul>
 
 	<p>there is no penalty for forgetting to match each
@@ -71,7 +71,7 @@ namespace log4cxx
 	except the obvious mismatch between the real application context
 	and the context set in the ndc.
 
-	<p>if configured to do so, PatternLayout and 
+	<p>if configured to do so, PatternLayout and
 	TTCCLayout instances automatically retrieve the nested diagnostic
 	context for the current thread without any user intervention.
 	hence, even if a servlet is serving multiple clients
@@ -89,7 +89,7 @@ namespace log4cxx
 
 	<p>a thread may inherit the nested diagnostic context of another
 	(possibly parent) thread using the #inherit
-	method. a thread may obtain a copy of its ndc with the 
+	method. a thread may obtain a copy of its ndc with the
 	#clonestack method and pass the reference to any other
 	thread, in particular to a child.
 	*/
@@ -99,10 +99,10 @@ namespace log4cxx
 		class DiagnosticContext
 		{
 		public:
-			String fullMessage;
-			String message;
-    
-			DiagnosticContext(const String& message, 
+			LogString fullMessage;
+			LogString message;
+
+			DiagnosticContext(const LogString& message,
 				const DiagnosticContext * parent);
 		};
 
@@ -114,7 +114,7 @@ namespace log4cxx
 		static helpers::ThreadSpecificData_ptr<Stack> threadSpecificData;
 
 	public:
-		NDC(const String& message);
+		NDC(const LogString& message);
 		~NDC();
 
 		/**
@@ -156,12 +156,12 @@ namespace log4cxx
 		static void inherit(Stack * stack);
 
 		/**
-		<b>Never use this method directly, use the 
+		<b>Never use this method directly, use the
 		{@link spi::LoggingEvent#getNDC LoggingEvent::getNDC}
 		method instead.</b>
 		*/
-		static String get();
-		
+		static LogString get();
+
 		/**
 		Get the current nesting depth of this diagnostic context.
 		*/
@@ -174,7 +174,7 @@ namespace log4cxx
 		context is available, then the empty string "" is returned.
 		@return String The innermost diagnostic context.
 		*/
-		static String pop();
+		static LogString pop();
 
 		/**
 		Looks at the last diagnostic context at the top of this NDC
@@ -183,7 +183,7 @@ namespace log4cxx
 		context is available, then the empty string "" is returned.
 		@return String The innermost diagnostic context.
 		*/
-		static String peek();
+		static LogString peek();
 
 		/**
 		Push new diagnostic context information for the current thread.
@@ -191,7 +191,9 @@ namespace log4cxx
 		determined solely by the client.
 		@param message The new diagnostic context information.
 		*/
-		static void push(const String& message);
+		static void push(const std::wstring& message);
+                static void push(const std::string& message);
+                static void pushLogString(const LogString& message);
 
 		/**
 		Remove the diagnostic context for this thread.

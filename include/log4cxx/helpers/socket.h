@@ -1,23 +1,23 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_HELPERS_SOCKET_H
 #define _LOG4CXX_HELPERS_SOCKET_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/socketimpl.h>
 #include <log4cxx/helpers/socketinputstream.h>
 #include <log4cxx/helpers/socketoutputstream.h>
@@ -27,7 +27,7 @@ namespace log4cxx
 	namespace helpers
 	{
 		class ServerSocker;
-		
+
 		class Socket;
 		typedef helpers::ObjectPtrT<Socket> SocketPtr;
 
@@ -42,7 +42,7 @@ namespace log4cxx
 		is an endpoint for communication between two machines.
 		<p>The actual work of the socket is performed by an instance of the SocketImpl
 		class. An application, by changing the socket factory that creates the socket
-		implementation, can configure itself to create sockets appropriate to the 
+		implementation, can configure itself to create sockets appropriate to the
 		local firewall.
 		*/
 		class LOG4CXX_EXPORT Socket : public helpers::ObjectImpl
@@ -80,12 +80,12 @@ namespace log4cxx
 			/** Creates a stream socket and connects it to the specified
 			port number on the named host.
 			*/
-			Socket(const String& host, int port);
+			Socket(const LogString& host, int port);
 
 			/**  Creates a socket and connects it to the specified remote
 			host on the specified remote port.
 			*/
-			Socket(const String& host, int port,
+			Socket(const LogString& host, int port,
 				InetAddress localAddr, int localPort);
 
 			size_t read(void * buf, size_t len) const

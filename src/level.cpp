@@ -23,37 +23,37 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
 const LevelPtr& Level::getOff() {
-   static LevelPtr level(new Level(Level::OFF_INT, "OFF", 0));
+   static LevelPtr level(new Level(Level::OFF_INT, L"OFF", "OFF", 0));
    return level;
 }
 
 const LevelPtr& Level::getFatal() {
-   static LevelPtr level(new Level(Level::FATAL_INT, "FATAL", 0));
+   static LevelPtr level(new Level(Level::FATAL_INT, L"FATAL", "FATAL", 0));
    return level;
 }
 
 const LevelPtr& Level::getError() {
-   static LevelPtr level(new Level(Level::ERROR_INT, "ERROR", 3));
+   static LevelPtr level(new Level(Level::ERROR_INT, L"ERROR", "ERROR", 3));
    return level;
 }
 
 const LevelPtr& Level::getWarn() {
-   static LevelPtr level(new Level(Level::WARN_INT, "WARN", 4));
+   static LevelPtr level(new Level(Level::WARN_INT, L"WARN", "WARN", 4));
    return level;
 }
 
 const LevelPtr& Level::getInfo() {
-   static LevelPtr level(new Level(Level::INFO_INT, "INFO", 6));
+   static LevelPtr level(new Level(Level::INFO_INT, L"INFO", "INFO", 6));
    return level;
 }
 
 const LevelPtr& Level::getDebug() {
-   static LevelPtr level(new Level(Level::DEBUG_INT, "DEBUG", 7));
+   static LevelPtr level(new Level(Level::DEBUG_INT, L"DEBUG", "DEBUG", 7));
    return level;
 }
 
 const LevelPtr& Level::getAll() {
-   static LevelPtr level(new Level(Level::ALL_INT, "ALL", 7));
+   static LevelPtr level(new Level(Level::ALL_INT, L"ALL", "ALL", 7));
    return level;
 }
 
@@ -65,13 +65,19 @@ const LevelPtr Level::INFO(Level::getInfo());
 const LevelPtr Level::DEBUG(Level::getDebug());
 const LevelPtr Level::ALL(Level::getAll());
 
-Level::Level(int level, const String& levelStr, int syslogEquivalent)
-: level(level), levelStr(levelStr), syslogEquivalent(syslogEquivalent)
+Level::Level(int level, const wchar_t* wName,
+    const char* name, int syslogEquivalent)
+: level(level), syslogEquivalent(syslogEquivalent)
 {
 }
 
 
-const LevelPtr& Level::toLevel(const String& sArg)
+const LevelPtr& Level::toLevel(const std::string& sArg)
+{
+    return toLevel(sArg, Level::getDebug());
+}
+
+const LevelPtr& Level::toLevel(const std::wstring& sArg)
 {
     return toLevel(sArg, Level::getDebug());
 }
@@ -96,49 +102,84 @@ const LevelPtr& Level::toLevel(int val, const LevelPtr& defaultLevel)
     }
 }
 
-const LevelPtr& Level::toLevel(const String& sArg, const LevelPtr& defaultLevel)
+const LevelPtr& Level::toLevel(const std::string& sArg, const LevelPtr& defaultLevel)
 {
-    if (sArg.empty())
-    {
-       return defaultLevel;
+    const size_t len = sArg.length();
+
+    if (len == 4) {
+      if (StringHelper::equalsIgnoreCase(sArg, "INFO", "info")) {
+        return getInfo();
+      }
+      if (StringHelper::equalsIgnoreCase(sArg, "WARN", "warn")) {
+        return getWarn();
+      }
+    } else {
+      if (len == 5) {
+        if (StringHelper::equalsIgnoreCase(sArg, "DEBUG", "debug")) {
+          return getDebug();
+        }
+        if (StringHelper::equalsIgnoreCase(sArg, "ERROR", "error")) {
+          return getError();
+        }
+      } else {
+        if (len == 3) {
+          if (StringHelper::equalsIgnoreCase(sArg, "OFF", "off")) {
+            return getOff();
+          }
+          if (StringHelper::equalsIgnoreCase(sArg, "ALL", "all")) {
+            return getAll();
+          }
+        }
+      }
     }
-
-    String s = StringHelper::toUpperCase(sArg);
-
-    if(s == (_T("ALL"))) return getAll();
-    if(s == (_T("DEBUG"))) return getDebug();
-    if(s == (_T("INFO"))) return getInfo();
-    if(s == (_T("WARN")))  return getWarn();
-    if(s == (_T("ERROR"))) return getError();
-    if(s == (_T("FATAL"))) return getFatal();
-    if(s == (_T("OFF"))) return getOff();
 
     return defaultLevel;
 }
+
+
+const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
+{
+    const size_t len = sArg.length();
+
+    if (len == 4) {
+      if (StringHelper::equalsIgnoreCase(sArg, L"INFO", L"info")) {
+        return getInfo();
+      }
+      if (StringHelper::equalsIgnoreCase(sArg, L"WARN", L"warn")) {
+        return getWarn();
+      }
+    } else {
+      if (len == 5) {
+        if (StringHelper::equalsIgnoreCase(sArg, L"DEBUG", L"debug")) {
+          return getDebug();
+        }
+        if (StringHelper::equalsIgnoreCase(sArg, L"ERROR", L"error")) {
+          return getError();
+        }
+      } else {
+        if (len == 3) {
+          if (StringHelper::equalsIgnoreCase(sArg, L"OFF", L"off")) {
+            return getOff();
+          }
+          if (StringHelper::equalsIgnoreCase(sArg, L"ALL", L"all")) {
+            return getAll();
+          }
+        }
+      }
+    }
+
+    return defaultLevel;
+}
+
 
 bool Level::equals(const LevelPtr& level) const
 {
 	return (this->level == level->level);
 }
 
-int Level::getSyslogEquivalent() const
-{
-	return syslogEquivalent;
-}
-
 bool Level::isGreaterOrEqual(const LevelPtr& level) const
 {
     return this->level >= level->level;
-}
-
-const String& Level::toString() const
-{
-	return levelStr;
-}
-
-int Level::toInt() const
-{
-	return level;
 }
 
 

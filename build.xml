@@ -109,6 +109,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
      if="is-unix-apr1" description="Unix initialization for APR 1.0">
     <property name="apr.dir" location="/usr/local/apr"/>
     <property name="apr.include.dir" location="${apr.dir}/include/apr-1"/>
+    <property name="apriconv.include.dir" location="/home/curta/apr-1/apr-iconv-1.0.0/include"/>
     <property name="apr.lib.name" value="apr-1"/>
     <property name="aprutil.lib.name" value="aprutil-1"/>
     <property name="apriconv.lib.name" value="apriconv"/>
@@ -203,10 +204,15 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 		outtype="shared"
 		objdir="${obj.dir}"
 		debug="${debug}">
-        <fileset dir="${src.dir}" includes="*.cpp"/>
+        <fileset dir="${src.dir}" includes="*.cpp">
+             <!--  exclusions while jump starting with APR  -->
+             <exclude name="**/domconfigurator.cpp"/>
+             <exclude name="**/gnomexml.cpp"/>
+        </fileset>
         <includepath path="${include.dir}"/>
     	<includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
+        <includepath path="${apriconv.include.dir}"/>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
         <defineset define="LOG4CXX"/>
 		<defineset define="APR_DECLARE_STATIC"/>
@@ -339,6 +345,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name} ${aprutil.lib.name}"
                unless="apr.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
+        <libset libs="${apriconv.lib.name}"
+                unless="apriconv.lib.dir"/>
+        <!--  don't see why it wants apr-iconv   -->
         <libset libs="${apriconv.lib.name}"
                dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
         <libset libs="${apriconv.lib.name}"

@@ -29,7 +29,7 @@ namespace log4cxx
 		class LOG4CXX_EXPORT MissingResourceException : public Exception
 		{
                     public:
-                    MissingResourceException(const String& key) {
+                    MissingResourceException(const LogString& key) {
                     }
                     const char* what() const throw() {
                        return "Missing resource";
@@ -59,7 +59,7 @@ namespace log4cxx
 			@throw MissingResourceException - if no object for the given key
 			can be found
 			*/
-			virtual String getString(const String& key) const = 0;
+			virtual LogString getString(const LogString& key) const = 0;
 
 			/**
 			Gets a resource bundle using the specified base name and locale
@@ -68,7 +68,7 @@ namespace log4cxx
 			qualified class name or property filename
 			@param locale the locale for which a resource bundle is desired
 			*/
-			static ResourceBundlePtr getBundle(const String& baseName,
+			static ResourceBundlePtr getBundle(const LogString& baseName,
 				const Locale& locale);
 
 		protected:

@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_CONFIG_PROPERTYSETTER_H
 #define _LOG4CXX_CONFIG_PROPERTYSETTER_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/objectptr.h>
 
 namespace log4cxx
@@ -72,13 +72,13 @@ go. The <code>properties</code> are parsed relative to a
 @param prefix Only keys having the specified prefix will be set.
 */
 			static void setProperties(helpers::ObjectPtr obj,
-				helpers::Properties& properties, const String& prefix);
+				helpers::Properties& properties, const LogString& prefix);
 
 /**
 Set the properites for the object that match the
 <code>prefix</code> passed as parameter.
 */
-			void setProperties(helpers::Properties& properties, const String& prefix);
+			void setProperties(helpers::Properties& properties, const LogString& prefix);
 
 /**
 Set a property on this PropertySetter's Object. If the underlying
@@ -88,7 +88,7 @@ Object supports the spi::OptionHandler interface, the
 @param name    name of the property
 @param value   String value of the property
 */
-			void setProperty(const String& option, const String& value);
+			void setProperty(const LogString& option, const LogString& value);
 
 			void activate();
 		}; // class PropertySetter

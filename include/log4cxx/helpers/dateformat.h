@@ -48,7 +48,7 @@ namespace log4cxx
                    * @param date date to be formatted.
                    * @param p memory pool used during formatting.
                    */
-                   virtual void format(std::string &s, apr_time_t date, apr_pool_t* p) const = 0;
+                   virtual void format(LogString &s, apr_time_t date, apr_pool_t* p) const = 0;
 
                    /**
                    * Sets the time zone.
@@ -64,7 +64,7 @@ namespace log4cxx
                    * @remarks This method is used by CachedDateFormat to
                    * format the milliseconds.
                    */
-                   virtual void numberFormat(std::string& s, int n, apr_pool_t* p) const;
+                   virtual void numberFormat(LogString& s, int n, apr_pool_t* p) const;
 
 
                    protected:

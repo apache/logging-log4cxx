@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,9 +19,9 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-String XMLLineAttributeFilter::filter(const String& in)
+LogString XMLLineAttributeFilter::filter(const LogString& in)
 	const throw(UnexpectedFormatException)
 {
-	String temp = merge(_T("file=\"[^ ]*[\\\\]"), in, _T("file=\""));
-	return merge(_T("line=\"\\d{1,3}\""), temp, _T("line=\"X\""));
+	LogString temp = merge(LOG4CXX_STR("file=\"[^ ]*[\\\\]"), in, LOG4CXX_STR("file=\""));
+	return merge(LOG4CXX_STR("line=\"\\d{1,3}\""), temp, LOG4CXX_STR("line=\"X\""));
 }

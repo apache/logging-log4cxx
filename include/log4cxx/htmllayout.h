@@ -20,6 +20,8 @@
 #include <log4cxx/layout.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 
+class apr_pool_t;
+
 namespace log4cxx
 {
 	class HTMLLayout;
@@ -34,7 +36,7 @@ namespace log4cxx
 		// Print no location info by default
 		bool locationInfo; //= false
 
-		String title;
+		LogString title;
 
 		helpers::ISO8601DateFormat dateFormat;
 
@@ -72,41 +74,42 @@ namespace log4cxx
 		document title of the generated HTML document.
 		<p>Defaults to 'Log4cxx Log Messages'.
 		*/
-		inline void setTitle(const String& title)
+		inline void setTitle(const LogString& title)
 			{ this->title = title; }
 
 		/**
 		Returns the current value of the <b>Title</b> option.
 		*/
-		inline const String& getTitle() const
+		inline const LogString& getTitle() const
 			{ return title; }
 
 		/**
 		Returns the content type output by this layout, i.e "text/html".
 		*/
-		virtual String getContentType() const { return _T("text/html"); }
+		virtual LogString getContentType() const { return LOG4CXX_STR("text/html"); }
 
 		/**
 		No options to activate.
 		*/
-		virtual void activateOptions() {}
+		virtual void activateOptions(apr_pool_t* p) {}
 
 		/**
 		Set options
 		*/
-		virtual void setOption(const String& option, const String& value);
+		virtual void setOption(const LogString& option, const LogString& value);
 
-		virtual void format(ostream& output, const spi::LoggingEventPtr& event) const;
+		virtual void format(LogString& output,
+                     const spi::LoggingEventPtr& event, apr_pool_t* pool) const;
 
 		/**
 		Append appropriate HTML headers.
 		*/
-		virtual void appendHeader(ostream& output);
+		virtual void appendHeader(LogString& output, apr_pool_t* pool);
 
 		/**
 		Append the appropriate HTML footers.
 		*/
-		virtual void appendFooter(ostream& output);
+		virtual void appendFooter(LogString& output, apr_pool_t* pool);
 
 		/**
 		The HTML layout handles the throwable contained in logging

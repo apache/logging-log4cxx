@@ -20,6 +20,7 @@
 #include <log4cxx/logger.h>
 #include <sstream>
 #include <log4cxx/spi/location/locationinfo.h>
+#include <log4cxx/helpers/transcoder.h>
 
 namespace log4cxx
 {
@@ -28,13 +29,12 @@ namespace log4cxx
          * and defers the potentially expensive construction
          * of basic_stream until needed.
          */
-        template <class Elem, class Tr = ::std::char_traits<Elem> >
-           class basic_logstream : public ::std::ios_base {
+           class logstream : public ::std::ios_base {
              public:
              /**
               * Constructor.
               */
-             basic_logstream(const ::log4cxx::LoggerPtr& loggr,
+             logstream(const ::log4cxx::LoggerPtr& loggr,
                           const ::log4cxx::LevelPtr& level) :
                           logger(loggr),
                           currentLevel(level),
@@ -48,7 +48,7 @@ namespace log4cxx
             /**
              * Constructor.
              */
-             basic_logstream(const char* logName,
+             logstream(const char* logName,
                ::log4cxx::LevelPtr& level) :
                logger(::log4cxx::Logger::getLogger(logName)),
                currentLevel(level),
@@ -59,7 +59,7 @@ namespace log4cxx
 #endif
               }
 
-              ~basic_logstream() {
+              ~logstream() {
                   delete impl;
               }
 
@@ -79,7 +79,7 @@ namespace log4cxx
               }
 
               bool isEnabledFor(const ::log4cxx::LevelPtr& level) const {
-                 return logger.isEnabledFor(level);
+                 return logger->isEnabledFor(level);
               }
 
 
@@ -95,9 +95,8 @@ namespace log4cxx
                  if (LOG4CXX_UNLIKELY(enabled && 0 != impl)) {
                     logger->log(currentLevel,
                        impl->str(),
-                       location.getFileName(),
-                       location.getLineNumber());
-					const std::basic_string<Elem, Tr> emptyStr;
+                       location);
+                    const std::wstring emptyStr;
                     impl->str(emptyStr);
                 }
              }
@@ -107,9 +106,9 @@ namespace log4cxx
              }
 
 
-             ::std::basic_ostream<Elem, Tr>& getStream() {
+             ::std::wostream& getStream() {
                 if (0 == impl) {
-                  impl = new ::std::basic_ostringstream<Elem, Tr>();
+                  impl = new ::std::wostringstream();
                 }
                 impl->precision(precision());
                 impl->width(width());
@@ -122,108 +121,50 @@ namespace log4cxx
              LoggerPtr logger;
              ::log4cxx::spi::location::LocationInfo currentLocation;
              bool enabled;
-             ::std::basic_ostringstream<Elem, Tr>* impl;
+             ::std::wostringstream* impl;
 
         };
 
-	typedef basic_logstream<char> logstream;
-	typedef basic_logstream<wchar_t> wlogstream;
 }  // namespace log4cxx
 
-
-
-//
-//   Insertion operators for LocationInfo, LocationFlush, Level and
-//      manipulators (std::fixed and similar)
-//
-//   Visual C++ 6 and earlier do not implement template partial ordering
-//     (see http://support.microsoft.com/default.aspx?scid=kb;en-us;240869)
-//     resulting in error C2667 unless the non-template definitions for
-//     operator<< (LOG4CXX_DEFINE_LOCATION_INSERTION and similar) are provided.
-//
-
-#define LOG4CXX_DEFINE_LOCATION_INSERTION(streamtype)        \
-streamtype& operator<<(streamtype& lhs,                      \
-const ::log4cxx::spi::location::LocationInfo& rhs) {         \
-   lhs.setLocation(rhs);                                     \
-   return lhs;                                               \
+log4cxx::logstream& operator<<(
+  ::log4cxx::logstream& lhs,
+  const char* rhs) {
+  std::wstring msg;
+  ::log4cxx::helpers::Transcoder::decode(rhs, msg);
+  lhs.getStream() << msg;
+  return lhs;
 }
 
-
-#define LOG4CXX_DEFINE_FLUSH_INSERTION(streamtype)            \
-streamtype& operator<<(streamtype& lhs,                       \
-const ::log4cxx::spi::location::LocationFlush& rhs) {         \
-   lhs.flush(rhs);                                            \
-   return lhs;                                                \
-}
-
-
-
-#define LOG4CXX_DEFINE_LEVEL_INSERTION(streamtype)    \
-streamtype& operator<<(streamtype& lhs,               \
-const ::log4cxx::LevelPtr& rhs) {                     \
-   lhs.setLevel(rhs);                                 \
-   return lhs;                                        \
-}
-
-
-#define LOG4CXX_DEFINE_MANIPULATOR_INSERTION(streamtype)        \
-streamtype& operator<<(                                 \
-   streamtype& lhs,                                     \
-::std::ios_base& (*manip)(::std::ios_base&)) {          \
-     (*manip)(lhs);                                     \
-   return lhs;                                          \
-}
-
-#if _MSC_VER_ < 1300
-LOG4CXX_DEFINE_LOCATION_INSERTION(::log4cxx::logstream)
-LOG4CXX_DEFINE_LOCATION_INSERTION(::log4cxx::wlogstream)
-
-
-LOG4CXX_DEFINE_FLUSH_INSERTION(::log4cxx::logstream)
-//LOG4CXX_DEFINE_FLUSH_INSERTION(::log4cxx::wlogstream)
-
-LOG4CXX_DEFINE_LEVEL_INSERTION(::log4cxx::logstream)
-LOG4CXX_DEFINE_LEVEL_INSERTION(::log4cxx::wlogstream)
-
-LOG4CXX_DEFINE_MANIPULATOR_INSERTION(::log4cxx::logstream)
-LOG4CXX_DEFINE_MANIPULATOR_INSERTION(::log4cxx::wlogstream)
-#else
-
-template<class Elem, class Tr>
-::log4cxx::basic_logstream<Elem, Tr>& operator<<(
-   ::log4cxx::basic_logstream<Elem, Tr>& lhs,
+::log4cxx::logstream& operator<<(
+   ::log4cxx::logstream& lhs,
    const ::log4cxx::spi::location::LocationInfo& rhs) {
    lhs.setLocation(rhs);
    return lhs;
 }
 
 
-template<class Elem, class Tr>
-::log4cxx::basic_logstream<Elem, Tr>& operator<<(
-   ::log4cxx::basic_logstream<Elem, Tr>& lhs,
+::log4cxx::logstream& operator<<(
+   ::log4cxx::logstream& lhs,
    const ::log4cxx::spi::location::LocationFlush& rhs) {
    lhs.flush(rhs);
    return lhs;
 }
 
-template<class Elem, class Tr>
-::log4cxx::basic_logstream<Elem, Tr>& operator<<(
-   ::log4cxx::basic_logstream<Elem, Tr>& lhs,
+::log4cxx::logstream& operator<<(
+   ::log4cxx::logstream& lhs,
    const ::log4cxx::LevelPtr& rhs) {
    lhs.setLevel(rhs);
    return lhs;
 }
 
 
-template<class Elem, class Tr>
-::log4cxx::basic_logstream<Elem, Tr>& operator<<(
-   ::log4cxx::basic_logstream<Elem, Tr>& lhs,
+::log4cxx::logstream& operator<<(
+   ::log4cxx::logstream& lhs,
    ::std::ios_base& (*manip)(::std::ios_base&)) {
      (*manip)(lhs);
    return lhs;
 }
-#endif
 
 
 
@@ -231,9 +172,9 @@ template<class Elem, class Tr>
 //
 //   template for all other insertion operators
 //
-template<class Elem, class Tr, class ArbitraryType>
-::log4cxx::basic_logstream<Elem, Tr>& operator<<(
-   ::log4cxx::basic_logstream<Elem, Tr>& lhs,
+template<class ArbitraryType>
+::log4cxx::logstream& operator<<(
+   ::log4cxx::logstream& lhs,
    const ArbitraryType& rhs) {
    if (LOG4CXX_UNLIKELY(lhs.isEnabled())) {
        lhs.getStream() << rhs;

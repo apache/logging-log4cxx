@@ -63,7 +63,8 @@ namespace log4cxx
             /**
              Call the <code>doAppend</code> method on all attached appenders.
             */
-            int appendLoopOnAppenders(const spi::LoggingEventPtr& event);
+            int appendLoopOnAppenders(const spi::LoggingEventPtr& event,
+                apr_pool_t* p);
 
             /**
              * Get all previously added appenders as an Enumeration.
@@ -73,7 +74,7 @@ namespace log4cxx
             /**
              * Get an appender by name.
              */
-            virtual AppenderPtr getAppender(const String& name) const;
+            virtual AppenderPtr getAppender(const LogString& name) const;
 
             /**
              Returns <code>true</code> if the specified appender is in the
@@ -95,7 +96,7 @@ namespace log4cxx
              * Remove the appender with the name passed as parameter from the
              * list of appenders.
              */
-            virtual void removeAppender(const String& name);
+            virtual void removeAppender(const LogString& name);
 
 			inline apr_thread_mutex_t* getMutex() const { return mutex; }
 

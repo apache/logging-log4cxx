@@ -17,6 +17,10 @@
 #include <log4cxx/writerappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <apr_iconv.h>
+
+#define HAS_APR_ICONV 0
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -25,21 +29,52 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(WriterAppender)
 
 WriterAppender::WriterAppender()
-: immediateFlush(true), os(0), encoding()
+: immediateFlush(true), transcoder(NULL)
 {
 }
 
-WriterAppender::WriterAppender(const LayoutPtr& layout, ostream * os)
-: immediateFlush(true), os(os), encoding()
+WriterAppender::WriterAppender(const LayoutPtr& layout)
+: AppenderSkeleton(layout), immediateFlush(true), transcoder(NULL)
 {
-	this->layout = layout;
 }
 
 WriterAppender::~WriterAppender()
 {
+#if HAS_APR_ICONV
+  if (transcoder != NULL) {
+    apr_iconv_close(transcoder, pool);
+  }
+#endif
 }
 
-void WriterAppender::append(const spi::LoggingEventPtr& event)
+void WriterAppender::activateOptions(apr_pool_t* p) {
+  AppenderSkeleton::activateOptions(p);
+#if HAS_APR_ICONV
+  if (transcoder != NULL) {
+    apr_iconv_close(transcoder, pool);
+    transcoder = NULL;
+  }
+  if (encoding.length() > 0) {
+#if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
+       std::string enc;
+       Transcoder::encode(encoding, enc);
+       apr_status_t rv = apr_iconv_open(enc.c_str(), "WCHAR", pool, &transcoder);
+       if (rv != APR_SUCCESS) {
+//         LogLog::error(((LogString) LOG4CXX_STR("Unrecognized encoding "))
+//             + encoding + LOG4CXX(" for appender [") + name + LOG4CXX_STR("]."));
+       }
+#elif defined(LOG4CXX_LOGCHAR_IS_CHAR)
+#error not implemented
+#else
+#error either LOG4CXX_LOGCHAR_IS_WCHAR or LOG4CXX_LOGCHAR_IS_CHAR should be set
+#endif
+
+  }
+#endif
+}
+
+
+void WriterAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* pool)
 {
 
 // Reminder: the nesting of calls is:
@@ -59,30 +94,22 @@ void WriterAppender::append(const spi::LoggingEventPtr& event)
 		return;
 	}
 
-	subAppend(event);
+	subAppend(event, pool);
 }
 
 bool WriterAppender::checkEntryConditions() const
 {
 	if(closed)
 	{
-		LogLog::warn(_T("Not allowed to write to a closed appender."));
-		return false;
-	}
-
-	if(os == 0)
-	{
-		errorHandler->error(
-			_T("No output stream or file set for the appender named [")
-			+ name+ _T("]."));
+		LogLog::warn(LOG4CXX_STR("Not allowed to write to a closed appender."));
 		return false;
 	}
 
 	if(layout == 0)
 	{
 		errorHandler->error(
-			_T("No layout set for the appender named [")
-			+ name+_T("]."));
+			((LogString) LOG4CXX_STR("No layout set for the appender named ["))
+			+ name+ LOG4CXX_STR("]."));
 		return false;
 	}
 
@@ -99,45 +126,88 @@ void WriterAppender::close()
 	}
 
 	closed = true;
-	writeFooter();
+	writeFooter(pool);
 	reset();
 }
 
-void WriterAppender::subAppend(const spi::LoggingEventPtr& event)
+void WriterAppender::subAppend(const spi::LoggingEventPtr& event, apr_pool_t* p)
 {
-	layout->format(*os, event);
+        LogString msg;
+        layout->format(msg, event, p);
+        subAppend(msg, pool);
+}
 
-	if(immediateFlush)
-	{
-		os->flush();
-	}
+void WriterAppender::subAppend(const LogString& msg, apr_pool_t* p) {
+
+        if (transcoder == NULL) {
+          //
+          //   write to platform default MBCS
+          //
+          std::string encoded;
+          Transcoder::encode(msg, encoded);
+          subAppend(encoded.data(), encoded.length(), p);
+#if HAS_APR_ICONV
+        } else {
+          char buf[BUFSIZE];
+          char* out = buf;
+          apr_size_t outbytesleft = BUFSIZE;
+          const char* in = (char*) msg.data();
+          apr_size_t inbytesleft = msg.length() * sizeof(logchar);
+          while(inbytesleft > 0) {
+            size_t converted;
+            apr_status_t rv = apr_iconv(transcoder, &in, &inbytesleft,
+               &out, &outbytesleft, &converted);
+            if (converted > 0) {
+              subAppend(buf, converted, p);
+            }
+            //
+            //   if we fail after resetting the output buffer
+            //      then output a substition character and move on
+            if (rv != APR_SUCCESS && outbytesleft == BUFSIZE) {
+              logchar subchar = SUBSTITUTION_CHAR;
+              const char* subin = (const char*) &subchar;
+              size_t subbytesleft = sizeof(logchar);
+              rv = apr_iconv(transcoder, &subin, &subbytesleft,
+                 &out, &outbytesleft, &converted);
+              in += sizeof(logchar);
+              inbytesleft -= sizeof(logchar);
+              rv = apr_iconv(transcoder, &in, &inbytesleft,
+                 &out, &outbytesleft, &converted);
+              subAppend(buf, (out - buf), p);
+            }
+          }
+#endif
+        }
+}
+
+void WriterAppender::subAppend(const char* encoded, size_t bytes, apr_pool_t* p) {
 }
 
 void WriterAppender::reset()
 {
+#if HAS_APR_ICONV
+       if (transcoder != NULL) {
+          apr_iconv_close(transcoder, pool);
+          transcoder = NULL;
+       }
+#endif
 	closeWriter();
-	os = 0;
 }
 
-void WriterAppender::writeFooter()
+void WriterAppender::writeFooter(apr_pool_t* p)
 {
-	if(layout != 0)
-	{
-		if(os != 0)
-		{
-			layout->appendFooter(*os);
-			os->flush();
-		}
-	}
+        if (layout != NULL) {
+          LogString foot;
+          layout->appendFooter(foot, p);
+          subAppend(foot, p);
+        }
 }
 
-void WriterAppender::writeHeader()
+void WriterAppender::writeHeader(apr_pool_t* p)
 {
-	if(layout != 0)
-	{
-		if(os != 0)
-		{
-			layout->appendHeader(*os);
-		}
+	if(layout != NULL) {
+          LogString header;
+          layout->appendHeader(header, p);
+          subAppend(header, p);
 	}
 }

@@ -11,6 +11,9 @@
 #include <apr_time.h>
 #include <apr_pools.h>
 #include <apr_strings.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -41,7 +44,7 @@ namespace log4cxx
         }
 
       private:
-        GMTTimeZone() : TimeZone( "GMT" )
+        GMTTimeZone() : TimeZone( LOG4CXX_STR("GMT") )
         {
         }
       };
@@ -71,7 +74,7 @@ namespace log4cxx
         {
         }
 
-        static const String getTimeZoneName()
+        static const LogString getTimeZoneName()
         {
           const int MAX_TZ_LENGTH = 255;
           char tzName[MAX_TZ_LENGTH];
@@ -80,7 +83,9 @@ namespace log4cxx
           apr_time_exp_lt(&tm, 0);
           apr_strftime(tzName, &tzLength, MAX_TZ_LENGTH, "%Z", &tm);
           tzName[tzLength] = 0;
-          return tzName;
+          LogString rv;
+          log4cxx::helpers::Transcoder::decode(tzName, tzLength, rv);
+          return rv;
         }
 
       };
@@ -91,7 +96,7 @@ namespace log4cxx
       class FixedTimeZone : public TimeZone
       {
       public:
-        FixedTimeZone( const String & name, apr_int32_t offset ) : TimeZone( name ), offset( offset )
+        FixedTimeZone( const LogString & name, apr_int32_t offset ) : TimeZone( name ), offset( offset )
         {
         }
 
@@ -112,7 +117,7 @@ namespace log4cxx
 
 
 
-TimeZone::TimeZone( const String & id ) : id( id )
+TimeZone::TimeZone( const LogString & id ) : id( id )
 {
 }
 
@@ -130,13 +135,13 @@ const TimeZonePtr & TimeZone::getGMT()
   return log4cxx::helpers::TimeZoneImpl::GMTTimeZone::getInstance();
 }
 
-const TimeZonePtr TimeZone::getTimeZone( const String & id )
+const TimeZonePtr TimeZone::getTimeZone( const LogString & id )
 {
-  if ( id == "GMT" )
+  if ( id == LOG4CXX_STR("GMT") )
   {
     return log4cxx::helpers::TimeZoneImpl::LocalTimeZone::getInstance();
   }
-  if ( id.length() >= 5 && id.substr( 0, 3 ) == "GMT" )
+  if ( id.length() >= 5 && id.substr( 0, 3 ) == LOG4CXX_STR("GMT") )
   {
     int hours = 0;
     int minutes = 0;
@@ -144,43 +149,41 @@ const TimeZonePtr TimeZone::getTimeZone( const String & id )
     if (id[3] == '-') {
       sign = -1;
     }
-    std::string off( id.substr( 4 ) );
+    LogString off( id.substr( 4 ) );
     if ( id.length() >= 7 )
     {
-      int colonPos = off.find( ':' );
-      if ( colonPos == String::npos )
+      int colonPos = off.find( LOG4CXX_STR(':') );
+      if ( colonPos == LogString::npos )
       {
-        minutes = atoi(off.substr(off.length() - 2).c_str());
-        hours = atoi(off.substr(0, off.length() - 2).c_str());
+        minutes = StringHelper::toInt(off.substr(off.length() - 2));
+        hours = StringHelper::toInt(off.substr(0, off.length() - 2));
       }
       else
       {
-        minutes = atoi(off.substr(colonPos + 1).c_str());
-        hours = atoi(off.substr(0, colonPos).c_str());
+        minutes = StringHelper::toInt(off.substr(colonPos + 1));
+        hours = StringHelper::toInt(off.substr(0, colonPos));
       }
     } else {
-      hours = atoi(off.c_str());
+      hours = StringHelper::toInt(off);
     }
-    std::string s("GMT");
-    apr_pool_t* p;
-    apr_status_t stat = apr_pool_create(&p, NULL);
-    char* hh = apr_itoa(p, hours);
+    LogString s(LOG4CXX_STR("GMT"));
+    Pool p;
+    LogString hh = StringHelper::toString(hours, p);
     if (sign > 0) {
-      s.append(1, '+');
+      s.append(1, LOG4CXX_STR('+'));
     } else {
-      s.append(1, '-');
+      s.append(1, LOG4CXX_STR('-'));
     }
-    if (hh[1] == 0) {
-      s.append(1, '0');
+    if (hh.length() == 1) {
+      s.append(1, LOG4CXX_STR('0'));
     }
     s.append(hh);
-    s.append(1, ':');
-    char* mm = apr_itoa(p, minutes);
-    if (mm[1] == 0) {
-      s.append(1, '0');
+    s.append(1, LOG4CXX_STR(':'));
+    LogString mm(StringHelper::toString(minutes, p));
+    if (mm.length() == 1) {
+      s.append(1, LOG4CXX_STR('0'));
     }
     s.append(mm);
-    apr_pool_destroy(p);
     apr_int32_t offset = sign * (hours * 3600 + minutes * 60);
     return new log4cxx::helpers::TimeZoneImpl::FixedTimeZone( s, offset );
   }

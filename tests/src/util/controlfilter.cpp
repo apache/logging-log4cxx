@@ -23,7 +23,7 @@ ControlFilter::ControlFilter()
 {
 }
 
-String ControlFilter::filter(const String& in) const throw(UnexpectedFormatException)
+LogString ControlFilter::filter(const LogString& in) const throw(UnexpectedFormatException)
 {
 	int len = allowedPatterns.size();
 
@@ -38,7 +38,7 @@ String ControlFilter::filter(const String& in) const throw(UnexpectedFormatExcep
 	throw UnexpectedFormatException(in);
 }
 
-ControlFilter& ControlFilter::operator<<(const String& allowedPattern)
+ControlFilter& ControlFilter::operator<<(const LogString& allowedPattern)
 {
 	allowedPatterns.push_back(allowedPattern);
 	return *this;

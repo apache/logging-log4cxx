@@ -32,7 +32,7 @@ namespace log4cxx
 		{
 		public:
 			RelativeTimeDateFormat();
-                        virtual void format(std::string &s,
+                        virtual void format(LogString &s,
                                         apr_time_t tm,
                                         apr_pool_t* p) const;
 

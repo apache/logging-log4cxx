@@ -79,8 +79,8 @@ namespace log4cxx
 			/**
 			Set options
 			*/
-			virtual void setOption(const String& option,
-				const String& value);
+			virtual void setOption(const LogString& option,
+				const LogString& value);
 
 			/**
 			Set the <code>LevelMin</code> option.

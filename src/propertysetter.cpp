@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -32,35 +33,37 @@ PropertySetter::PropertySetter(helpers::ObjectPtr obj) : obj(obj)
 {
 }
 
-void PropertySetter::setProperties(helpers::ObjectPtr obj, helpers::Properties& properties, const String& prefix)
+void PropertySetter::setProperties(helpers::ObjectPtr obj,
+     helpers::Properties& properties, const LogString& prefix)
 {
 	PropertySetter(obj).setProperties(properties, prefix);
 }
 
 
-void PropertySetter::setProperties(helpers::Properties& properties, const String& prefix)
+void PropertySetter::setProperties(helpers::Properties& properties,
+        const LogString& prefix)
 {
 	int len = prefix.length();
 
-	std::vector<String> names = properties.propertyNames();
-	std::vector<String>::iterator it;
+	std::vector<LogString> names = properties.propertyNames();
+	std::vector<LogString>::iterator it;
 
 	for (it = names.begin(); it != names.end(); it++)
 	{
-		String key = *it;
+		LogString key = *it;
 
 		// handle only properties that start with the desired frefix.
 		if (key.find(prefix) == 0)
 		{
 			// ignore key if it contains dots after the prefix
-			if (key.find(_T('.'), len + 1) != String::npos)
+			if (key.find(LOG4CXX_STR('.'), len + 1) != LogString::npos)
 			{
 				continue;
 			}
 
-			String value = OptionConverter::findAndSubst(key, properties);
+			LogString value = OptionConverter::findAndSubst(key, properties);
 			key = key.substr(len);
-			if (key == _T("layout")
+			if (key == LOG4CXX_STR("layout")
 				&& obj->instanceof(Appender::getStaticClass()))
 			{
 				continue;
@@ -71,15 +74,15 @@ void PropertySetter::setProperties(helpers::Properties& properties, const String
 	activate();
 }
 
-void PropertySetter::setProperty(const String& option, const String& value)
+void PropertySetter::setProperty(const LogString& option, const LogString& value)
 {
 	if (value.empty())
 		return;
 
 	if (obj->instanceof(OptionHandler::getStaticClass()))
 	{
-		LogLog::debug(_T("Setting option name=[") +
-			option + _T("], value=[") + value + _T("]"));
+		LogLog::debug(LOG4CXX_STR("Setting option name=[") +
+			option + LOG4CXX_STR("], value=[") + value + LOG4CXX_STR("]"));
 		OptionHandlerPtr(obj)->setOption(option, value);
 	}
 }
@@ -88,6 +91,7 @@ void PropertySetter::activate()
 {
 	if (obj->instanceof(OptionHandler::getStaticClass()))
 	{
-		OptionHandlerPtr(obj)->activateOptions();
+                Pool p;
+		OptionHandlerPtr(obj)->activateOptions(p);
 	}
 }

@@ -17,8 +17,9 @@
 #ifndef _LOG4CXX_HELPERS_LOG_LOG_H
 #define _LOG4CXX_HELPERS_LOG_LOG_H
 
-#include <log4cxx/helpers/tchar.h>
-#include <log4cxx/helpers/exception.h>
+#include <log4cxx/string.h>
+#include <exception>
+#include <log4cxx/portability.h>
 
 namespace log4cxx
 {
@@ -57,16 +58,18 @@ namespace log4cxx
 			This method is used to output log4cxx internal debug
 			statements. Output goes to the standard output.
 			*/
-			static void debug(const String& msg);
-			static void debug(const String& msg, Exception& e);
+			static void debug(const LogString& msg);
+			static void debug(const LogString& msg, const std::exception& e);
+
 
 			/**
 			This method is used to output log4cxx internal error
 			statements. There is no way to disable error statements.
 			Output goes to stderr.
 			*/
-			static void error(const String& msg);
-			static void error(const String& msg, Exception& e);
+			static void error(const LogString& msg);
+			static void error(const LogString& msg, const std::exception& e);
+
 
 			/**
 			In quite mode LogLog generates strictly no output, not even
@@ -81,25 +84,23 @@ namespace log4cxx
 			statements. There is no way to disable warning statements.
 			Output goes to stderr.
 			*/
-			static void warn(const String&  msg);
-			static void warn(const String&  msg, Exception& e);
+			static void warn(const LogString&  msg);
+			static void warn(const LogString&  msg, const std::exception& e);
+
+                        private:
+                        static void emit(const std::string& msg);
+                        static void emit(const std::wstring& msg);
 		};
 	}  // namespace helpers
 }; // namespace log4cxx
 
 #define LOGLOG_DEBUG(log) { \
-	StringBuffer oss; \
-	oss << log; \
-	log4cxx::helpers::LogLog::debug(oss.str()) ; }
+	log4cxx::helpers::LogLog::debug(log) ; }
 
 #define LOGLOG_WARN(log) { \
-	StringBuffer oss; \
-	oss << log; \
-	log4cxx::helpers::LogLog::warn(oss.str()) ; }
+	log4cxx::helpers::LogLog::warn(log) ; }
 
 #define LOGLOG_ERROR(log) { \
-	StringBuffer oss; \
-	oss << log; \
-	log4cxx::helpers::LogLog::warn(oss.str()); }
+	log4cxx::helpers::LogLog::warn(log); }
 
 #endif //_LOG4CXX_HELPERS_LOG_LOG_H

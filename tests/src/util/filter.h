@@ -17,22 +17,22 @@
 #ifndef _LOG4CXX_TESTS_UTIL_FILTER_H
 #define _LOG4CXX_TESTS_UTIL_FILTER_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/exception.h>
 
-#define BASIC_PAT _T("\\[\\d*\\] (FATAL|ERROR|WARN|INFO|DEBUG)")
-#define ISO8601_PAT _T("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}")
+#define BASIC_PAT LOG4CXX_STR("\\[\\d*\\] (FATAL|ERROR|WARN|INFO|DEBUG)")
+#define ISO8601_PAT LOG4CXX_STR("^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2},\\d{3}")
 #define ABSOLUTE_DATE_AND_TIME_PAT \
-	_T("^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}")
-#define ABSOLUTE_TIME_PAT _T("^\\d{2}:\\d{2}:\\d{2},\\d{3}")
-#define RELATIVE_TIME_PAT _T("^\\d{1,10}")
+	LOG4CXX_STR("^\\d{1,2} .{2,6}\\.? 200\\d \\d{2}:\\d{2}:\\d{2},\\d{3}")
+#define ABSOLUTE_TIME_PAT LOG4CXX_STR("^\\d{2}:\\d{2}:\\d{2},\\d{3}")
+#define RELATIVE_TIME_PAT LOG4CXX_STR("^\\d{1,10}")
 
 namespace log4cxx
 {
 	class UnexpectedFormatException : public helpers::Exception
 	{
 	public:
-		UnexpectedFormatException(const String& fmt) {}
+		UnexpectedFormatException(const LogString& fmt) {}
                 const char* what() const throw() {
                    return "UnexpectedFormatException";
                 }
@@ -41,11 +41,17 @@ namespace log4cxx
 	class Filter
 	{
 	public:
-		virtual String filter(const String& in)
+		virtual LogString filter(const LogString& in)
 			const throw(UnexpectedFormatException) = 0;
 
-		static String merge(const String& pattern, const String& in, const String& fmt);
-		static bool match(const String& pattern, const String& in);
+		static std::string merge(const std::string& pattern,
+                   const std::string& in, const std::string& fmt);
+		static bool match(const std::string& pattern,
+                    const std::string& in);
+                static std::wstring merge(const std::wstring& pattern,
+                    const std::wstring& in, const std::wstring& fmt);
+                static bool match(const std::wstring& pattern,
+                    const std::wstring& in);
 	};
 }
 

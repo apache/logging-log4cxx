@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/rollingfileappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
@@ -30,14 +30,16 @@ RollingFileAppender::RollingFileAppender()
 }
 
 
-RollingFileAppender::RollingFileAppender(const LayoutPtr& layout, const String& fileName, bool append)
+RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
+     const File& fileName, bool append)
 : FileAppender(layout, fileName, append),
 maxFileSize(10*1024*1024), maxBackupIndex(1)
 {
 }
 
-RollingFileAppender::RollingFileAppender(const LayoutPtr& layout, const String& 
-fileName) : FileAppender(layout, fileName),
+RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
+   const File& fileName)
+   : FileAppender(layout, fileName),
 maxFileSize(10*1024*1024), maxBackupIndex(1)
 {
 }
@@ -50,12 +52,14 @@ RollingFileAppender::~RollingFileAppender()
 // synchronization not necessary since doAppend is alreasy synched
 void RollingFileAppender::rollOver()
 {
-	LOGLOG_DEBUG(_T("rolling over count=") << ofs.tellp());
-	LOGLOG_DEBUG(_T("maxBackupIndex=") << maxBackupIndex);
+  //   TODO
+#if 0
+	LogLog::debug(LOG4CXX_STR("rolling over count="));
+	LogLog::debug(((LogString) LOG4CXX_STR("maxBackupIndex=")) + StringHelper::toInt(maxBackupIndex));
 
 	// close and reset the current file
-	ofs.close();
-	ofs.clear();
+        apr_file_close(ofs);
+        ofs = NULL;
 
 	// If maxBackups <= 0, then there is no file renaming to be done.
 	if(maxBackupIndex > 0)
@@ -97,32 +101,33 @@ void RollingFileAppender::rollOver()
 	{
 		LogLog::error(_T("Unable to open file: ") + fileName);
 	}
+#endif
 }
 
-void RollingFileAppender::subAppend(const spi::LoggingEventPtr& event)
+void RollingFileAppender::setOption(const LogString& option,
+	const LogString& value)
 {
-	FileAppender::subAppend(event);
-	if(!fileName.empty() && ofs.tellp() >= maxFileSize)
-	{
-		rollOver();
-	}
-}
-
-void RollingFileAppender::setOption(const String& option,
-	const String& value)
-{
-	if (StringHelper::equalsIgnoreCase(option, _T("maxfilesize")) 
-		|| StringHelper::equalsIgnoreCase(option, _T("maximumfilesize")))
+	if (StringHelper::equalsIgnoreCase(option,
+                        LOG4CXX_STR("MAXFILESIZE"), LOG4CXX_STR("maxfilesize"))
+		|| StringHelper::equalsIgnoreCase(option,
+                        LOG4CXX_STR("MAXIMUMFILESIZE"), LOG4CXX_STR("maximumfilesize")))
 	{
 		setMaxFileSize(value);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("maxbackupindex"))
-		|| StringHelper::equalsIgnoreCase(option, _T("maximumbackupindex")))
+	else if (StringHelper::equalsIgnoreCase(option,
+                        LOG4CXX_STR("MAXBACKUPINDEX"), LOG4CXX_STR("maxbackupindex"))
+		|| StringHelper::equalsIgnoreCase(option,
+                        LOG4CXX_STR("MAXIMUMBACKUPINDEX"), LOG4CXX_STR("maximumbackupindex")))
 	{
-		maxBackupIndex = ttol(value.c_str());
+		maxBackupIndex = StringHelper::toInt(value);
 	}
 	else
 	{
 		FileAppender::setOption(option, value);
 	}
 }
+
+void RollingFileAppender::subAppend(const char* encoded, apr_size_t size, apr_pool_t* p) {
+  FileAppender::subAppend(encoded, size, p);
+}
+

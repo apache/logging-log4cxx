@@ -16,6 +16,8 @@
 
 #include <log4cxx/helpers/formattinginfo.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx::helpers;
 
@@ -26,16 +28,20 @@ FormattingInfo::FormattingInfo()
 
 void FormattingInfo::reset()
 {
-	minChar = -1;
-	maxChar = 0x7FFFFFFF;
-	leftAlign = false;
+        minChar = -1;
+        maxChar = 0x7FFFFFFF;
+        leftAlign = false;
 }
 
 void FormattingInfo::dump()
 {
-	LOGLOG_DEBUG(_T("minChar=") << minChar
-		<< _T(", maxChar=") << maxChar
-		<< _T(", leftAlign=") << leftAlign);
+        Pool pool;
+        LogLog::debug(((LogString) LOG4CXX_STR("minChar="))
+           + StringHelper::toString(minChar, pool)
+           + LOG4CXX_STR(", maxChar=")
+           + StringHelper::toString(maxChar, pool)
+           + LOG4CXX_STR(", leftAlign=")
+           + StringHelper::toString(leftAlign, pool));
 }
 
 

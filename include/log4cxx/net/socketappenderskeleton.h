@@ -39,10 +39,11 @@ namespace log4cxx
       	class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
     	{
     	private:
+                log4cxx::helpers::Pool pool;
     		/**
     		host name
     		*/
-    		String remoteHost;
+    		LogString remoteHost;
 
     		/**
     		IP address
@@ -66,12 +67,12 @@ namespace log4cxx
     		/**
     		Connects to remote server at <code>host</code> and <code>port</code>.
     		*/
-    		SocketAppenderSkeleton(const String& host, int port, int reconnectionDelay);
+    		SocketAppenderSkeleton(const LogString& host, int port, int reconnectionDelay);
 
     		/**
     		Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
     		*/
-    		void activateOptions();
+    		void activateOptions(apr_pool_t* p);
 
 
     		/**
@@ -93,13 +94,13 @@ namespace log4cxx
 		   /**
     		* This appender does not use a layout. Hence, this method
     		* returns <code>false</code>.
-    		* 
+    		*
 			*/
     		bool requiresLayout() const
     			{ return false; }
 
 
-			void append(const spi::LoggingEventPtr& event);
+			void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 
 
     		/**
@@ -107,14 +108,14 @@ namespace log4cxx
     		* the host name of the server where a
 			* {@link net::SocketNode SocketNode} is running.
     		* */
-    		inline void setRemoteHost(const String& host)
+    		inline void setRemoteHost(const LogString& host)
     			{ address = helpers::InetAddress::getByName(host);
     			remoteHost = host; }
 
     		/**
     		Returns value of the <b>RemoteHost</b> option.
     		*/
-    		inline const String& getRemoteHost() const
+    		inline const LogString& getRemoteHost() const
     			{ return remoteHost; }
 
     		/**
@@ -168,11 +169,12 @@ namespace log4cxx
 		    /**
 		    Set options
 		    */
-			void setOption(const String& option, 
-				const String& value, int defaultPort, int defaultDelay);
+			void setOption(const LogString& option,
+				const LogString& value, int defaultPort, int defaultDelay);
 
 			virtual void renderEvent(const spi::LoggingEventPtr& event,
-				helpers::SocketOutputStreamPtr& os) = 0;
+				helpers::SocketOutputStreamPtr& os,
+                                apr_pool_t* p) = 0;
 
        private:
 		   /**

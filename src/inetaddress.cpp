@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
 #include <winsock.h>
@@ -26,9 +26,10 @@
 #include <netdb.h>
 #include <string.h>
 #endif
- 
+
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -36,7 +37,7 @@ using namespace log4cxx::helpers;
 InetAddress::InetAddress() : address(0)
 {
 }
- 
+
 /** Returns the raw IP address of this InetAddress  object.
 */
 int InetAddress::getAddress() const
@@ -46,16 +47,19 @@ int InetAddress::getAddress() const
 
 /** Determines all the IP addresses of a host, given the host's name.
 */
-std::vector<InetAddress> InetAddress::getAllByName(const String& host)
+std::vector<InetAddress> InetAddress::getAllByName(const LogString& host)
 {
 	struct hostent * hostinfo;
 
-	USES_CONVERSION;
-	hostinfo = ::gethostbyname(T2A(host.c_str()));
+        std::string hostname;
+        Transcoder::encode(host, hostname);
+	hostinfo = ::gethostbyname(hostname.c_str());
 
 	if (hostinfo == 0)
 	{
-		LogLog::error(_T("Cannot get information about host :") + host);
+                LogLog::error(
+                   ((LogString) LOG4CXX_STR("Cannot get information about host :"))
+                    + host);
 		return std::vector<InetAddress>();
 	}
 	else
@@ -69,7 +73,7 @@ std::vector<InetAddress> InetAddress::getAllByName(const String& host)
 			address.address = ntohl(((in_addr *)*addrs)->s_addr);
 			addresses.push_back(address);
 		}
-		
+
 		return addresses;
 	}
 
@@ -77,17 +81,20 @@ std::vector<InetAddress> InetAddress::getAllByName(const String& host)
 
 /** Determines the IP address of a host, given the host's name.
 */
-InetAddress InetAddress::getByName(const String& host)
+InetAddress InetAddress::getByName(const LogString& host)
 {
 	struct hostent * hostinfo;
 	InetAddress address;
 
-	USES_CONVERSION;
-	hostinfo = ::gethostbyname(T2A(host.c_str()));
+        std::string hostname;
+        Transcoder::encode(host, hostname);
+	hostinfo = ::gethostbyname(hostname.c_str());
 
 	if (hostinfo == 0)
 	{
-		LogLog::error(_T("Cannot get information about host: ") + host);
+                LogLog::error(
+                   ((LogString) LOG4CXX_STR("Cannot get information about host: "))
+                    + host);
 		throw UnknownHostException();
 	}
 	else
@@ -100,19 +107,20 @@ InetAddress InetAddress::getByName(const String& host)
 
 /** Returns the IP address string "%d.%d.%d.%d".
 */
-String InetAddress::getHostAddress() const
+LogString InetAddress::getHostAddress() const
 {
-	USES_CONVERSION;
 	in_addr addr;
 	addr.s_addr = htonl(address);
-	return A2T(::inet_ntoa(addr));
+	const char* rv = ::inet_ntoa(addr);
+        LOG4CXX_DECODE_CHAR(wrv, rv);
+        return wrv;
 }
 
 /** Gets the host name for this IP address.
 */
-String InetAddress::getHostName() const
+LogString InetAddress::getHostName() const
 {
-	String hostName;
+	LogString hostName;
 	struct hostent * hostinfo;
 
 	in_addr addr;
@@ -121,14 +129,14 @@ String InetAddress::getHostName() const
 
 	if (hostinfo != 0)
 	{
-		USES_CONVERSION;
-		hostName = A2T(hostinfo->h_name);
+                Transcoder::decode(hostinfo->h_name, strlen(hostinfo->h_name), hostName);
 	}
 	else
 	{
-		StringBuffer oss;
-		oss << _T("Cannot get host name: ") << address;
-		LogLog::error(oss.str());
+                LogString msg(LOG4CXX_STR("Cannot get host name: "));
+//  TODO:
+//                msg += address->toString();
+		LogLog::error(msg);
 	}
 
 	return hostName;
@@ -154,7 +162,10 @@ bool InetAddress::isMulticastAddress() const
 
 /** Converts this IP address to a String.
 */
-String InetAddress::toString() const
+LogString InetAddress::toString() const
 {
-	return getHostName() + _T("/") + getHostAddress();
+        LogString rv(getHostName());
+        rv.append(LOG4CXX_STR("/"));
+        rv.append(getHostAddress());
+        return rv;
 }

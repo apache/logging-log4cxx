@@ -17,6 +17,7 @@
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
+#include "../insertwide.h"
 
 
 using namespace log4cxx;
@@ -39,11 +40,11 @@ class StringTokenizerTestCase : public CppUnit::TestFixture
 
 public:
         void testNextTokenEmptyString() {
-           String src;
-           String delim(" ");
+           LogString src;
+           LogString delim(LOG4CXX_STR(" "));
            StringTokenizer tokenizer(src, delim);
            try {
-             String token(tokenizer.nextToken());
+             LogString token(tokenizer.nextToken());
            } catch (NoSuchElementException &ex) {
              return;
            }
@@ -51,18 +52,18 @@ public:
         }
 
         void testHasMoreTokensEmptyString() {
-           String src;
-           String delim(" ");
+           LogString src;
+           LogString delim(LOG4CXX_STR(" "));
            StringTokenizer tokenizer(src, delim);
            CPPUNIT_ASSERT_EQUAL(false, tokenizer.hasMoreTokens());
         }
 
         void testNextTokenAllDelim() {
-           String src("===");
-           String delim("=");
+           LogString src(LOG4CXX_STR("==="));
+           LogString delim(LOG4CXX_STR("="));
            StringTokenizer tokenizer(src, delim);
            try {
-             String token(tokenizer.nextToken());
+             LogString token(tokenizer.nextToken());
            } catch (NoSuchElementException &ex) {
              return;
            }
@@ -70,23 +71,23 @@ public:
         }
 
         void testHasMoreTokensAllDelim() {
-           String src("===");
-           String delim("=");
+           LogString src(LOG4CXX_STR("==="));
+           LogString delim(LOG4CXX_STR("="));
            StringTokenizer tokenizer(src, delim);
            CPPUNIT_ASSERT_EQUAL(false, tokenizer.hasMoreTokens());
         }
 
-        void testBody(const String& src, const String& delim) {
+        void testBody(const LogString& src, const LogString& delim) {
            StringTokenizer tokenizer(src, delim);
            CPPUNIT_ASSERT_EQUAL(true, tokenizer.hasMoreTokens());
-           CPPUNIT_ASSERT_EQUAL((String) "log4j", tokenizer.nextToken());
+           CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("log4j"), tokenizer.nextToken());
            CPPUNIT_ASSERT_EQUAL(true, tokenizer.hasMoreTokens());
-           CPPUNIT_ASSERT_EQUAL((String) "properties", tokenizer.nextToken());
+           CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("properties"), tokenizer.nextToken());
            CPPUNIT_ASSERT_EQUAL(true, tokenizer.hasMoreTokens());
-           CPPUNIT_ASSERT_EQUAL((String) "txt", tokenizer.nextToken());
+           CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("txt"), tokenizer.nextToken());
            CPPUNIT_ASSERT_EQUAL(false, tokenizer.hasMoreTokens());
            try {
-              String token(tokenizer.nextToken());
+              LogString token(tokenizer.nextToken());
            } catch (NoSuchElementException& ex) {
              return;
            }
@@ -94,38 +95,38 @@ public:
         }
 
         void test1() {
-          String src("log4j.properties.txt");
-          String delim(".");
+          LogString src(LOG4CXX_STR("log4j.properties.txt"));
+          LogString delim(LOG4CXX_STR("."));
           testBody(src, delim);
         }
 
         void test2() {
-          String src(".log4j.properties.txt");
-          String delim(".");
+          LogString src(LOG4CXX_STR(".log4j.properties.txt"));
+          LogString delim(LOG4CXX_STR("."));
           testBody(src, delim);
         }
 
         void test3() {
-          String src("log4j.properties.txt.");
-          String delim(".");
+          LogString src(LOG4CXX_STR("log4j.properties.txt."));
+          LogString delim(LOG4CXX_STR("."));
           testBody(src, delim);
         }
 
         void test4() {
-          String src("log4j..properties....txt");
-          String delim(".");
+          LogString src(LOG4CXX_STR("log4j..properties....txt"));
+          LogString delim(LOG4CXX_STR("."));
           testBody(src, delim);
         }
 
         void test5() {
-          String src("log4j properties,txt");
-          String delim(" ,");
+          LogString src(LOG4CXX_STR("log4j properties,txt"));
+          LogString delim(LOG4CXX_STR(" ,"));
           testBody(src, delim);
         }
 
         void test6() {
-           String src(" log4j properties,txt ");
-           String delim(" ,");
+           LogString src(LOG4CXX_STR(" log4j properties,txt "));
+           LogString delim(LOG4CXX_STR(" ,"));
            testBody(src, delim);
         }
 

@@ -1,22 +1,22 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #ifndef _LOG4CXX_NET_SYSLOG_APPENDER_H
 #define _LOG4CXX_NET_SYSLOG_APPENDER_H
- 
+
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/syslogwriter.h>
 
@@ -45,7 +45,7 @@ namespace log4cxx
 			SyslogAppender();
 			SyslogAppender(const LayoutPtr& layout, int syslogFacility);
 			SyslogAppender(const LayoutPtr& layout,
-				const String& syslogHost, int syslogFacility);
+				const LogString& syslogHost, int syslogFacility);
 			~SyslogAppender();
 			/** Release any resources held by this SyslogAppender.*/
 			void close();
@@ -54,7 +54,7 @@ namespace log4cxx
 			Returns the specified syslog facility as a lower-case String,
 			e.g. "kern", "user", etc.
 			*/
-			static String getFacilityString(int syslogFacility);
+			static LogString getFacilityString(int syslogFacility);
 
 			/**
 			Returns the integer value corresponding to the named syslog
@@ -64,16 +64,16 @@ namespace log4cxx
 			LOCAL1, LOCAL2, LOCAL3, LOCAL4, LOCAL5, LOCAL6, LOCAL7.
 			The matching is case-insensitive.
 			*/
-			static int getFacility(const String &facilityName);
+			static int getFacility(const LogString &facilityName);
 
-			void append(const spi::LoggingEventPtr& event);
+			void append(const spi::LoggingEventPtr& event, apr_pool_t* p);
 
 			/**
 			This method returns immediately as options are activated when they
 			are set.
 			*/
-			void activateOptions();
-			void setOption(const String& option, const String& value);
+			void activateOptions(apr_pool_t* p);
+			void setOption(const LogString& option, const LogString& value);
 
 			/**
 			The SyslogAppender requires a layout. Hence, this method returns
@@ -88,12 +88,12 @@ namespace log4cxx
 			<b>WARNING</b> If the SyslogHost is not set, then this appender
 			will fail.
 			*/
-			void setSyslogHost(const String& syslogHost);
+			void setSyslogHost(const LogString& syslogHost);
 
 			/**
 			Returns the value of the <b>SyslogHost</b> option.
 			*/
-			inline const String& getSyslogHost() const
+			inline const LogString& getSyslogHost() const
 				{ return syslogHost; }
 
 			/**
@@ -104,12 +104,12 @@ namespace log4cxx
 			CRON, AUTHPRIV, FTP, LOCAL0, LOCAL1, LOCAL2, LOCAL3, LOCAL4,
 			LOCAL5, LOCAL6, LOCAL7. Case is unimportant.
 			*/
-			void setFacility(const String& facilityName);
+			void setFacility(const LogString& facilityName);
 
 			/**
 			Returns the value of the <b>Facility</b> option.
 			*/
-			inline String getFacility() const
+			inline LogString getFacility() const
 				{ return getFacilityString(syslogFacility); }
 
 			/**
@@ -130,10 +130,10 @@ namespace log4cxx
 			void initSyslogFacilityStr();
 
 			int syslogFacility; // Have LOG_USER as default
-			String facilityStr;
+			LogString facilityStr;
 			bool facilityPrinting;
 			helpers::SyslogWriter * sw;
-			String syslogHost;
+			LogString syslogHost;
 		}; // class SyslogAppender
     } // namespace net
 }; // namespace log4cxx

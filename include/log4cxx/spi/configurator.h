@@ -17,12 +17,14 @@
 #ifndef _LOG4CXX_SPI_CONFIGURATOR_H
 #define _LOG4CXX_SPI_CONFIGURATOR_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/objectptr.h>
 
 namespace log4cxx
 {
+        class File;
+
 	namespace spi
 	{
 		class LoggerRepository;
@@ -48,7 +50,7 @@ namespace log4cxx
 			@param configFileName The file to parse
 			@param repository The hierarchy to operation upon.
 			*/
-			virtual void doConfigure(const String& configFileName,
+			virtual void doConfigure(const File& configFileName,
 				spi::LoggerRepositoryPtr& repository) = 0;
 		};
 	}

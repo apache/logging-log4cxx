@@ -380,10 +380,10 @@ namespace log4cxx
 
 	private:
 		// output buffer appended to when format() is invoked
-		StringBuffer sbuf;
-		String pattern;
+		LogString sbuf;
+		LogString pattern;
 		helpers::PatternConverterPtr head;
-		String timeZone;
+		LogString timeZone;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PatternLayout)
@@ -400,27 +400,27 @@ namespace log4cxx
 		/**
 		Constructs a PatternLayout using the supplied conversion pattern.
 		*/
-		PatternLayout(const String& pattern);
+		PatternLayout(const LogString& pattern);
 
 		/**
 		Set the <b>ConversionPattern</b> option. This is the string which
 		controls formatting and consists of a mix of literal content and
 		conversion specifiers.
 		*/
-		void setConversionPattern(const String& conversionPattern);
+		void setConversionPattern(const LogString& conversionPattern);
 
 		/**
 		Returns the value of the <b>ConversionPattern</b> option.
 		*/
-		inline String getConversionPattern() const
+		inline LogString getConversionPattern() const
 			{ return pattern; }
 
 		/**
 		Call createPatternParser
 		*/
-		virtual void activateOptions();
+		virtual void activateOptions(apr_pool_t* p);
 
-		virtual void setOption(const String& option, const String& value);
+		virtual void setOption(const LogString& option, const LogString& value);
 
 		/**
 		The PatternLayout does not handle the throwable contained within
@@ -433,19 +433,20 @@ namespace log4cxx
 		/**
 		Produces a formatted string as specified by the conversion pattern.
 		*/
-		virtual void format(ostream& output, const spi::LoggingEventPtr& event) const;
+		virtual void format(LogString& output,
+                     const spi::LoggingEventPtr& event, apr_pool_t* pool) const;
 
 		/**
 		The <b>TimeZoneID</b> option is a time zone ID string in the format
 		expected by the <code>locale</code> C++ standard class.
 		*/
-		inline void setTimeZone(const String& timeZone)
+		inline void setTimeZone(const LogString& timeZone)
 			{ this->timeZone.assign(timeZone); }
 
 		/**
 		Returns value of the <b>TimeZone</b> option.
 		*/
-		inline const String& getTimeZone() const
+		inline const LogString& getTimeZone() const
 			{ return timeZone; }
 
 	protected:
@@ -454,7 +455,7 @@ namespace log4cxx
 		Subclasses may override this to return a subclass of PatternParser
 		which recognize custom conversion characters.
 		*/
-		virtual helpers::PatternConverterPtr createPatternParser(const String& pattern);
+		virtual helpers::PatternConverterPtr createPatternParser(const LogString& pattern);
 	};
 }  // namespace log4cxx
 

@@ -38,10 +38,10 @@ namespace log4cxx
 
                   @param pattern the pattern describing the date and time format
                   */
-                  StrftimeDateFormat(const String& pattern);
+                  StrftimeDateFormat(const LogString& pattern);
                   ~StrftimeDateFormat();
 
-                  virtual void format(std::string& s,
+                  virtual void format(LogString& s,
                                       apr_time_t time,
                                       apr_pool_t* p) const;
 

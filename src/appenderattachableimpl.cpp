@@ -1,12 +1,12 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/tchar.h>
-#include <log4cxx/appender.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
+#include <log4cxx/appender.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <algorithm>
 
@@ -43,14 +42,16 @@ void AppenderAttachableImpl::addAppender(const AppenderPtr& newAppender)
     }
 }
 
-int AppenderAttachableImpl::appendLoopOnAppenders(const spi::LoggingEventPtr& event)
+int AppenderAttachableImpl::appendLoopOnAppenders(
+    const spi::LoggingEventPtr& event,
+    apr_pool_t* p)
 {
     AppenderList::iterator it, itEnd = appenderList.end();
     AppenderPtr appender;
     for(it = appenderList.begin(); it != itEnd; it++)
     {
         appender = *it;
-        appender->doAppend(event);
+        appender->doAppend(event, p);
     }
 
 	return appenderList.size();
@@ -61,7 +62,7 @@ AppenderList AppenderAttachableImpl::getAllAppenders() const
     return appenderList;
 }
 
-AppenderPtr AppenderAttachableImpl::getAppender(const String& name) const
+AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
 {
 	if (name.empty())
 	{
@@ -78,7 +79,7 @@ AppenderPtr AppenderAttachableImpl::getAppender(const String& name) const
 			return appender;
 		}
 	}
-	
+
 	return 0;
 }
 
@@ -104,7 +105,7 @@ void AppenderAttachableImpl::removeAllAppenders()
         a = *it;
         a->close();
     }
-     
+
     appenderList.clear();
 }
 
@@ -112,7 +113,7 @@ void AppenderAttachableImpl::removeAppender(const AppenderPtr& appender)
 {
     if (appender == 0)
         return;
-        
+
     AppenderList::iterator it = std::find(
         appenderList.begin(), appenderList.end(), appender);
 
@@ -122,7 +123,7 @@ void AppenderAttachableImpl::removeAppender(const AppenderPtr& appender)
     }
 }
 
-void AppenderAttachableImpl::removeAppender(const String& name)
+void AppenderAttachableImpl::removeAppender(const LogString& name)
 {
 	if (name.empty())
 	{

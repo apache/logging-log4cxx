@@ -25,14 +25,16 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/level.h>
 #include <log4cxx/mdc.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include <apr_pools.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+using namespace log4cxx::spi::location;
 
-#define ESCAPE_CHAR _T('%')
+#define ESCAPE_CHAR LOG4CXX_STR('%')
 
 enum ParserState
 {
@@ -57,7 +59,7 @@ enum ParserState
 };
 
 
-PatternParser::PatternParser(const String& pattern, const String& timeZone)
+PatternParser::PatternParser(const LogString& pattern, const LogString& timeZone)
 : pattern(pattern), patternLength(pattern.length()), state(LITERAL_STATE), i(0),
 timeZone(timeZone), currentLiteral()
 {
@@ -76,33 +78,34 @@ void PatternParser::addToList(PatternConverterPtr& pc)
 	}
 }
 
-String PatternParser::extractOption()
+LogString PatternParser::extractOption()
 {
-	if((i < patternLength) && (pattern.at(i) == _T('{')))
+	if((i < patternLength) && (pattern.at(i) == LOG4CXX_STR('{')))
 	{
-		int end = pattern.find(_T('}'), i);
+		int end = pattern.find(LOG4CXX_STR('}'), i);
 		if (end > i)
 		{
-			String r = pattern.substr(i + 1, end - (i + 1));
+			LogString r = pattern.substr(i + 1, end - (i + 1));
 			i = end+1;
 			return r;
 		}
 	}
 
-	return String();
+	return LogString();
 }
 
 int PatternParser::extractPrecisionOption()
 {
-	String opt = extractOption();
+	LogString opt = extractOption();
 	int r = 0;
 	if(!opt.empty())
 	{
-		r = (int)ttol(opt.c_str());
+		r = StringHelper::toInt(opt);
 		if(r <= 0)
 		{
 			LogLog::error(
-				_T("Precision option (") + opt + _T(") isn't a positive integer."));
+				((LogString) LOG4CXX_STR("Precision option ("))
+                                 + opt + LOG4CXX_STR(") isn't a positive integer."));
 			r = 0;
 		}
 	}
@@ -111,7 +114,7 @@ int PatternParser::extractPrecisionOption()
 
 PatternConverterPtr PatternParser::parse()
 {
-	TCHAR c;
+	logchar c;
 	i = 0;
 	while(i < patternLength)
 	{
@@ -122,7 +125,7 @@ PatternConverterPtr PatternParser::parse()
 			// In literal state, the last char is always a literal.
 			if(i == patternLength)
 			{
-				currentLiteral.put(c);
+				currentLiteral.append(1, c);
 				continue;
 			}
 			if(c == ESCAPE_CHAR)
@@ -131,48 +134,48 @@ PatternConverterPtr PatternParser::parse()
 				switch(pattern.at(i))
 				{
 				case ESCAPE_CHAR:
-					currentLiteral.put(c);
+					currentLiteral.append(1, c);
 					i++; // move pointer
 					break;
-				case _T('n'):
-					currentLiteral << std::endl;
+				case LOG4CXX_STR('n'):
+					currentLiteral.append(1, LOG4CXX_STR('\n'));
 					i++; // move pointer
 					break;
 				default:
 					// test if currentLiteral is not empty
-					if(currentLiteral.tellp() > std::streamoff(0))
+					if(!currentLiteral.empty())
 					{
 						PatternConverterPtr patternConverter(new LiteralPatternConverter(
-							currentLiteral.str()));
+							currentLiteral));
 						addToList(patternConverter);
 						//LogLog.debug("Parsed LITERAL converter: \""
 						//           +currentLiteral+"\".");
 					}
-					currentLiteral.seekp(0);
-					currentLiteral.put(c); // append %
+					currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+					currentLiteral.append(1, c); // append %
 					state = CONVERTER_STATE;
 					formattingInfo.reset();
 				}
 			}
 			else
 			{
-				currentLiteral.put(c);
+				currentLiteral.append(1, c);
 			}
 			break;
 		case CONVERTER_STATE:
-			currentLiteral.put(c);
+			currentLiteral.append(1, c);
 			switch(c)
 			{
-			case _T('-'):
+			case LOG4CXX_STR('-'):
 				formattingInfo.leftAlign = true;
 				break;
-			case _T('.'):
+			case LOG4CXX_STR('.'):
 				state = DOT_STATE;
 				break;
 			default:
-				if(c >= _T('0') && c <= _T('9'))
+				if(c >= LOG4CXX_STR('0') && c <= LOG4CXX_STR('9'))
 				{
-					formattingInfo.minChar = c - _T('0');
+					formattingInfo.minChar = c - LOG4CXX_STR('0');
 					state = MIN_STATE;
 				}
 				else
@@ -180,10 +183,10 @@ PatternConverterPtr PatternParser::parse()
 			} // switch
 			break;
 			case MIN_STATE:
-				currentLiteral.put(c);
-				if(c >= _T('0') && c <= _T('9'))
-					formattingInfo.minChar = formattingInfo.minChar*10 + (c - _T('0'));
-				else if(c == _T('.'))
+				currentLiteral.append(1, c);
+				if(c >= LOG4CXX_STR('0') && c <= LOG4CXX_STR('9'))
+					formattingInfo.minChar = formattingInfo.minChar*10 + (c - LOG4CXX_STR('0'));
+				else if(c == LOG4CXX_STR('.'))
 					state = DOT_STATE;
 				else
 				{
@@ -191,23 +194,25 @@ PatternConverterPtr PatternParser::parse()
 				}
 				break;
 			case DOT_STATE:
-				currentLiteral.put(c);
-				if(c >= _T('0') && c <= _T('9'))
+				currentLiteral.append(1, c);
+				if(c >= LOG4CXX_STR('0') && c <= LOG4CXX_STR('9'))
 				{
-					formattingInfo.maxChar = c - _T('0');
+					formattingInfo.maxChar = c - LOG4CXX_STR('0');
 					state = MAX_STATE;
 				}
 				else {
-					LOGLOG_ERROR(_T("Error occured in position ") << i
-						<< _T(".\n Was expecting digit, instead got char \"")
-						<< c << _T("\"."));
+					LogLog::error(((LogString) LOG4CXX_STR("Error occured in position "))
+                                                + StringHelper::toString(i)
+						+ LOG4CXX_STR(".\n Was expecting digit, instead got char \"")
+                                                + LogString(1, c)
+                                                + LOG4CXX_STR("\"."));
 					state = LITERAL_STATE;
 				}
 				break;
 			case MAX_STATE:
-				currentLiteral.put(c);
-				if(c >= _T('0') && c <= _T('9'))
-					formattingInfo.maxChar = formattingInfo.maxChar*10 + (c - _T('0'));
+				currentLiteral.append(1, c);
+				if(c >= LOG4CXX_STR('0') && c <= LOG4CXX_STR('9'))
+					formattingInfo.maxChar = formattingInfo.maxChar*10 + (c - LOG4CXX_STR('0'));
 				else
 				{
 					finalizeConverter(c);
@@ -217,60 +222,46 @@ PatternConverterPtr PatternParser::parse()
 		} // switch
 	} // while
 	// test if currentLiteral is not empty
-	if(currentLiteral.tellp() > std::streamoff(0))
+	if(!currentLiteral.empty())
 	{
 		PatternConverterPtr patternConverter(
-			new LiteralPatternConverter(currentLiteral.str()));
+			new LiteralPatternConverter(currentLiteral));
 		addToList(patternConverter);
 		//LogLog.debug("Parsed LITERAL converter: \""+currentLiteral+"\".");
 	}
 	return head;
 }
 
-void PatternParser::finalizeConverter(TCHAR c)
+void PatternParser::finalizeConverter(logchar c)
 {
 	PatternConverterPtr pc;
 
 	switch(c)
 	{
-	case _T('c'):
+	case LOG4CXX_STR('c'):
 		pc = new CategoryPatternConverter(formattingInfo,
 			extractPrecisionOption());
-		//LogLog::debug(_T("CATEGORY converter."));
+		//LogLog::debug(LOG4CXX_STR("CATEGORY converter."));
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+		currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
-	case _T('d'):
+	case LOG4CXX_STR('d'):
 	{
-		String dateFormatStr;
 		DateFormat * df = 0;
-		String dOpt = extractOption();
-		if(!dOpt.empty())
-		{
-			dateFormatStr = dOpt;
-		}
-		else
-		{
-			dateFormatStr = "ISO8601";
-		}
-
-                static const String ISO8601_DATE_FORMAT("ISO8601");
-                static const String DATE_TIME_DATE_FORMAT("DATE");
-                static const String ABSOLUTE_TIME_DATE_FORMAT("ABSOLUTE");
-                static const String RELATIVE_FORMAT("RELATIVE");
-
-		if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			ISO8601_DATE_FORMAT))
+		LogString dateFormatStr(extractOption());
+		if(dateFormatStr.empty() ||
+                        StringHelper::equalsIgnoreCase(dateFormatStr,
+                        LOG4CXX_STR("ISO8601"), LOG4CXX_STR("iso8601")))
 			df = new ISO8601DateFormat();
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			ABSOLUTE_TIME_DATE_FORMAT))
+			LOG4CXX_STR("ABSOLUTE"), LOG4CXX_STR("absolute")))
 			df = new AbsoluteTimeDateFormat();
 		else if(StringHelper::equalsIgnoreCase(dateFormatStr,
-			DATE_TIME_DATE_FORMAT))
+			LOG4CXX_STR("DATE"), LOG4CXX_STR("date")))
 			df = new DateTimeDateFormat();
 		else
 		{
-                        if (dateFormatStr.find('%') == std::string::npos) {
+                        if (dateFormatStr.find(LOG4CXX_STR('%')) == std::string::npos) {
 			  df = new SimpleDateFormat(dateFormatStr);
                         } else {
                           df = new StrftimeDateFormat(dateFormatStr);
@@ -281,57 +272,57 @@ void PatternParser::finalizeConverter(TCHAR c)
 		pc = new DatePatternConverter(formattingInfo, df);
 		//LogLog.debug("DATE converter {"+dateFormatStr+"}.");
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
 	}
-	case _T('F'):
+	case LOG4CXX_STR('F'):
 		pc = new LocationPatternConverter(formattingInfo,
 			FILE_LOCATION_CONVERTER);
 		//LogLog.debug("File name converter.");
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
-	case _T('l'):
+	case LOG4CXX_STR('l'):
 		pc = new LocationPatternConverter(formattingInfo,
 			FULL_LOCATION_CONVERTER);
 		//LogLog.debug("Location converter.");
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
-	case _T('L'):
+	case LOG4CXX_STR('L'):
 
 		pc = new LocationPatternConverter(formattingInfo,
 			LINE_LOCATION_CONVERTER);
 		//LogLog.debug("LINE NUMBER converter.");
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
-	case _T('m'):
+	case LOG4CXX_STR('m'):
 		pc = new BasicPatternConverter(formattingInfo, MESSAGE_CONVERTER);
 		//LogLog.debug("MESSAGE converter.");
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
-	case _T('p'):
+	case LOG4CXX_STR('p'):
 		{
 		pc = new BasicPatternConverter(formattingInfo, LEVEL_CONVERTER);
 		//LogLog.debug("LEVEL converter.");
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		}
 		break;
-	case _T('r'):
+	case LOG4CXX_STR('r'):
 		pc = new BasicPatternConverter(formattingInfo,
 			RELATIVE_TIME_CONVERTER);
 		//LogLog.debug("RELATIVE time converter.");
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
-	case _T('t'):
+	case LOG4CXX_STR('t'):
 		pc = new BasicPatternConverter(formattingInfo, THREAD_CONVERTER);
 		//LogLog.debug("THREAD converter.");
 		//formattingInfo.dump();
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
 		/*case 'u':
 		if(i < patternLength) {
@@ -347,23 +338,26 @@ void PatternParser::finalizeConverter(TCHAR c)
 		LogLog.error("Unexpected char" +cNext+" at position "+i);
 		}
 		break;*/
-	case _T('x'):
+	case LOG4CXX_STR('x'):
 		pc = new BasicPatternConverter(formattingInfo, NDC_CONVERTER);
 		//LogLog.debug("NDC converter.");
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
-	case _T('X'):
+	case LOG4CXX_STR('X'):
 	{
-		String xOpt = extractOption();
+		LogString xOpt = extractOption();
 		pc = new MDCPatternConverter(formattingInfo, xOpt);
-		currentLiteral.seekp(0);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 		break;
 	}
 	default:
-		LOGLOG_ERROR(_T("Unexpected char [") << c << _T("] at position ") << i
-			<<_T(" in conversion pattern."));
-		pc = new LiteralPatternConverter(currentLiteral.str());
-		currentLiteral.seekp(0);
+		LogLog::error(((LogString) LOG4CXX_STR("Unexpected char ["))
+                        + LogString(1, c)
+                        + LOG4CXX_STR("] at position ")
+                        + StringHelper::toString(i)
+			+ LOG4CXX_STR(" in conversion pattern."));
+		pc = new LiteralPatternConverter(currentLiteral);
+                currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 	}
 
 	addConverter(pc);
@@ -371,7 +365,7 @@ void PatternParser::finalizeConverter(TCHAR c)
 
 void PatternParser::addConverter(PatternConverterPtr& pc)
 {
-	currentLiteral.seekp(0);
+        currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
 	// Add the pattern converter to the list.
 	addToList(pc);
 	// Next pattern is assumed to be a literal.
@@ -388,44 +382,42 @@ PatternParser::BasicPatternConverter::BasicPatternConverter(const FormattingInfo
 {
 }
 
-void PatternParser::BasicPatternConverter::convert(ostream& sbuf,
-	const spi::LoggingEventPtr& event) const
+void PatternParser::BasicPatternConverter::convert(LogString& sbuf,
+	const spi::LoggingEventPtr& event,
+        apr_pool_t* pool) const
 {
 	switch(type)
 	{
 	case RELATIVE_TIME_CONVERTER:
-		sbuf << (event->getTimeStamp() - LoggingEvent::getStartTime())/1000;
+                sbuf.append(
+                  StringHelper::toString((event->getTimeStamp() - LoggingEvent::getStartTime())/1000, pool));
 		break;
 	case THREAD_CONVERTER:
-		sbuf << event->getThreadId();
+		sbuf.append(StringHelper::toString(event->getThreadId(), pool));
 		break;
 	case LEVEL_CONVERTER:
-		sbuf << event->getLevel()->toString();
+		sbuf.append(event->getLevel()->toString());
 		break;
 	case NDC_CONVERTER:
-		sbuf << event->getNDC();
+		sbuf.append(event->getNDC());
 		break;
 	case MESSAGE_CONVERTER:
-		sbuf << event->getRenderedMessage();
+		sbuf.append(event->getRenderedMessage());
 		break;
 	}
 }
 
-PatternParser::LiteralPatternConverter::LiteralPatternConverter(const String& value)
+PatternParser::LiteralPatternConverter::LiteralPatternConverter(const LogString& value)
 : literal(value)
 {
 }
 
-void PatternParser::LiteralPatternConverter::format(StringBuffer& sbuf,
-	const spi::LoggingEventPtr& e) const
-{
-	sbuf << literal;
-}
 
-void PatternParser::LiteralPatternConverter::convert(ostream& sbuf,
-	const spi::LoggingEventPtr& event) const
+void PatternParser::LiteralPatternConverter::convert(LogString& sbuf,
+	const spi::LoggingEventPtr& event,
+        apr_pool_t* pool) const
 {
-	sbuf << literal;
+	sbuf.append(literal);
 }
 
 PatternParser::DatePatternConverter::DatePatternConverter(const FormattingInfo& formattingInfo, DateFormat * df)
@@ -438,26 +430,20 @@ PatternParser::DatePatternConverter::~DatePatternConverter()
 	delete df;
 }
 
-void PatternParser::DatePatternConverter::convert(ostream& sbuf,
-	const spi::LoggingEventPtr& event) const
+void PatternParser::DatePatternConverter::convert(LogString& sbuf,
+	const spi::LoggingEventPtr& event, apr_pool_t* p) const
 {
-        apr_time_t eventTime = event->getTimeStamp();
-
-        apr_pool_t* p;
-        apr_pool_create(&p, NULL);
-        std::string date;
-        df->format(date, eventTime, p);
-        apr_pool_destroy(p);
-        sbuf << date;
+        df->format(sbuf, event->getTimeStamp(), p);
 }
 
-PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& formattingInfo, const String& key)
+PatternParser::MDCPatternConverter::MDCPatternConverter(const FormattingInfo& formattingInfo, const LogString& key)
 : PatternConverter(formattingInfo), key(key)
 {
 }
 
-void PatternParser::MDCPatternConverter::convert(ostream& sbuf,
-	const spi::LoggingEventPtr& event) const
+void PatternParser::MDCPatternConverter::convert(LogString& sbuf,
+	const spi::LoggingEventPtr& event,
+        apr_pool_t* pool) const
 {
 	/**
 	* if there is no additional options, we output every single
@@ -466,23 +452,27 @@ void PatternParser::MDCPatternConverter::convert(ostream& sbuf,
 
 	if (key.empty())
 	{
-		sbuf << _T("{");
-		std::set<String> keySet = event->getMDCKeySet();
-		std::set<String>::iterator i;
+		sbuf.append(1, LOG4CXX_STR('{'));
+		std::set<LogString> keySet = event->getMDCKeySet();
+		std::set<LogString>::iterator i;
 		for (i = keySet.begin(); i != keySet.end(); i++)
 		{
-			String item = *i;
-			String val = event->getMDC(item);
-			sbuf << _T("{") << item << _T(",") << val << _T("}");
+			LogString item = *i;
+			LogString val = event->getMDC(item);
+                        sbuf.append(1, LOG4CXX_STR('{'));
+                        sbuf.append(item);
+                        sbuf.append(1, LOG4CXX_STR(','));
+                        sbuf.append(val);
+                        sbuf.append(1, LOG4CXX_STR('}'));
 		}
-		sbuf << _T("}");
+		sbuf.append(1, LOG4CXX_STR('}'));
 	}
 	else
 	{
 		/**
 		* otherwise they just want a single key output
 		*/
-		sbuf << event->getMDC(key);
+		sbuf.append(event->getMDC(key));
 	}
 }
 
@@ -492,28 +482,22 @@ PatternParser::LocationPatternConverter::LocationPatternConverter(const Formatti
 {
 }
 
-void PatternParser::LocationPatternConverter::convert(ostream& sbuf,
-	const spi::LoggingEventPtr& event) const
+void PatternParser::LocationPatternConverter::convert(LogString& sbuf,
+	const spi::LoggingEventPtr& event, apr_pool_t* pool) const
 {
+        const LocationInfo& locInfo = event->getLocationInformation();
 	switch(type)
 	{
 	case FULL_LOCATION_CONVERTER:
-		if (event->getFile() != 0)
-		{
-			USES_CONVERSION;
-			sbuf << A2T(event->getFile()) << _T("(") << event->getLine() << _T(")");
-		}
+                Transcoder::decode(locInfo.getFileName(), sbuf);
+                sbuf.append(1, LOG4CXX_STR(':'));
+                sbuf.append(StringHelper::toString(locInfo.getLineNumber(), pool));
 		break;
 	case LINE_LOCATION_CONVERTER:
-		sbuf << event->getLine();
+                sbuf.append(StringHelper::toString(locInfo.getLineNumber(), pool));
 		break;
 	case FILE_LOCATION_CONVERTER:
-		if (event->getFile() != 0)
-		{
-			USES_CONVERSION;
-			sbuf << A2T(event->getFile());
-		}
-		break;
+                Transcoder::decode(locInfo.getFileName(), sbuf);
 	}
 }
 
@@ -523,34 +507,34 @@ PatternParser::CategoryPatternConverter::CategoryPatternConverter(const Formatti
 {
 }
 
-void PatternParser::CategoryPatternConverter::convert(ostream& sbuf,
-	const spi::LoggingEventPtr& event) const
+void PatternParser::CategoryPatternConverter::convert(LogString& sbuf,
+	const spi::LoggingEventPtr& event,
+        apr_pool_t* pool) const
 {
-	const String& n = event->getLoggerName();
 
 	if(precision <= 0)
 	{
-
-		sbuf << n;
+                sbuf.append(event->getLoggerName());
 	}
 	else
 	{
-		String::size_type len = n.length();
+                const LogString& n = event->getLoggerName();
+		LogString::size_type len = n.length();
 
 		// We substract 1 from 'len' when assigning to 'end' to avoid out of
 		// bounds exception in return r.substring(end+1, len). This can happen if
 		// precision is 1 and the category name ends with a dot.
-		String::size_type end = len -1 ;
+		LogString::size_type end = len -1 ;
 		for(int i = precision; i > 0; i--)
 		{
-			end = n.rfind(_T('.'), end-1);
-			if(end == String::npos)
+			end = n.rfind(LOG4CXX_STR('.'), end-1);
+			if(end == LogString::npos)
 			{
-				sbuf << n;
+				sbuf.append(n);
 				return;
 			}
 		}
-		sbuf << n.substr(end+1, len - (end+1));
+		sbuf.append(n, end+1, len - (end+1));
 	}
 }
 

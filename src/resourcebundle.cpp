@@ -17,47 +17,53 @@
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
 #include <log4cxx/helpers/loader.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(ResourceBundle)
 
-ResourceBundlePtr ResourceBundle::getBundle(const String& baseName,
+ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 	const Locale& locale)
 {
-	String bundleName;
-	istream * bundleStream;
+	LogString bundleName;
 	PropertyResourceBundlePtr resourceBundle, previous;
 
-	std::vector<String> bundlesNames;
+	std::vector<LogString> bundlesNames;
 
 	if (!locale.getVariant().empty())
 	{
-		bundlesNames.push_back(baseName + _T("_") +
-			locale.getLanguage() + _T("_") +
-			locale.getCountry() + _T("_") +
+		bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
+			locale.getLanguage() + LOG4CXX_STR("_") +
+			locale.getCountry() + LOG4CXX_STR("_") +
 			locale.getVariant());
 	}
 
 	if (!locale.getCountry().empty())
 	{
-		bundlesNames.push_back(baseName + _T("_") +
-				locale.getLanguage() + _T("_") +
+		bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
+				locale.getLanguage() + LOG4CXX_STR("_") +
 				locale.getCountry());
 	}
 
 	if (!locale.getLanguage().empty())
 	{
-		bundlesNames.push_back(baseName + _T("_") +
+		bundlesNames.push_back(baseName + LOG4CXX_STR("_") +
 					locale.getLanguage());
 	}
 
 	bundlesNames.push_back(baseName);
+        Pool pool;
 
-	for (std::vector<String>::iterator it = bundlesNames.begin();
+	for (std::vector<LogString>::iterator it = bundlesNames.begin();
 		it != bundlesNames.end(); it++)
 	{
+#if 0
+// TODO
+
+                LogString bundleStream;
 		bundleName = *it;
 
 		PropertyResourceBundlePtr current;
@@ -74,28 +80,26 @@ ResourceBundlePtr ResourceBundle::getBundle(const String& baseName,
 
 		if (current == 0)
 		{
-			bundleStream =
-				Loader::getResourceAsStream(bundleName + _T(".properties"));
-
-			if (bundleStream == 0)
-			{
-				continue;
-			}
+                        apr_size_t bytes = 0;
+                        void* buf = Loader::getResourceAsStream(
+                           bundleName + LOG4CXX_STR(".properties"),
+                           &bytes, pool);
+                        if (bytes == 0 || buf == NULL) {
+                          continue;
+                        }
+                        log4cxx::helpers::Transcoder::decode(buf, bytes, pool, bundleStream);
 		}
 
 		try
 		{
-			current = new PropertyResourceBundle(*bundleStream);
+			current = new PropertyResourceBundle(bundleStream);
 		}
 		catch(Exception&)
 		{
-			delete bundleStream;
-			bundleStream = 0;
 			throw;
 		}
 
-		delete bundleStream;
-		bundleStream = 0;
+		bundleStream.erase(bundleStream.begin(), bundleStream.end());
 
 		if (resourceBundle == 0)
 		{
@@ -107,12 +111,13 @@ ResourceBundlePtr ResourceBundle::getBundle(const String& baseName,
 			previous->setParent(current);
 			previous = current;
 		}
+#endif
 	}
 
 	if (resourceBundle == 0)
 	{
 		throw MissingResourceException(
-                      ((String) "Missing resource bundle ") + baseName);
+                      ((LogString) LOG4CXX_STR("Missing resource bundle ")) + baseName);
 	}
 
 	return resourceBundle;

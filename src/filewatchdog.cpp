@@ -21,6 +21,7 @@
 #include <apr_time.h>
 #include <apr_thread_proc.h>
 #include <apr_atomic.h>
+#include <log4cxx/helpers/transcoder.h>
 
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))
@@ -33,8 +34,8 @@ using namespace log4cxx::helpers;
 
 long FileWatchdog::DEFAULT_DELAY = 60000;
 
-FileWatchdog::FileWatchdog(const String& filename)
- : filename(filename), lastModif(0), delay(DEFAULT_DELAY),
+FileWatchdog::FileWatchdog(const File& file)
+ : file(file), lastModif(0), delay(DEFAULT_DELAY),
 warnedAlready(false), interrupted(0), thread()
 {
 }
@@ -45,31 +46,22 @@ FileWatchdog::~FileWatchdog() {
 
 void FileWatchdog::checkAndConfigure()
 {
-	struct stat fileStats;
-
-	USES_CONVERSION
-	if (::stat(T2A(filename.c_str()), &fileStats) != 0)
+	if (!file.exists())
 	{
-		if (errno == ENOENT)
-		{
-			if(!warnedAlready)
-			{
-				LogLog::debug(_T("[")+filename+_T("] does not exist."));
-				warnedAlready = true;
-			}
-		}
-		else
-		{
-			LogLog::warn(_T("Was not able to read check file existance, file:[")+
-				filename+_T("]."));
-			interrupted = true; // there is no point in continuing
-		}
+              if(!warnedAlready)
+              {
+                      LogLog::debug(((LogString) LOG4CXX_STR("["))
+                         + file.getName()
+                         + LOG4CXX_STR("] does not exist."));
+                      warnedAlready = true;
+              }
 	}
 	else
 	{
-		if (fileStats.st_mtime > lastModif)
+                apr_time_t thisMod = file.lastModified();
+		if (thisMod > lastModif)
 		{
-			lastModif = fileStats.st_mtime;
+			lastModif = thisMod;
 			doOnChange();
 			warnedAlready = false;
 		}

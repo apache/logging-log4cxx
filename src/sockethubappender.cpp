@@ -51,19 +51,19 @@ SocketHubAppender::SocketHubAppender(int port)
 	startServer();
 }
 
-void SocketHubAppender::activateOptions()
+void SocketHubAppender::activateOptions(apr_pool_t* p)
 {
 	startServer();
 }
 
-void SocketHubAppender::setOption(const String& option,
-	const String& value)
+void SocketHubAppender::setOption(const LogString& option,
+	const LogString& value)
 {
-	if (StringHelper::equalsIgnoreCase(option, _T("port")))
+	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("PORT"), LOG4CXX_STR("port")))
 	{
 		setPort(OptionConverter::toInt(value, DEFAULT_PORT));
 	}
-	else if (StringHelper::equalsIgnoreCase(option, _T("locationinfo")))
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
 	{
 		setLocationInfo(OptionConverter::toBoolean(value, true));
 	}
@@ -79,7 +79,7 @@ void SocketHubAppender::close()
 	apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
 	if (wasClosed) return;
 
-	LOGLOG_DEBUG(_T("closing SocketHubAppender ") << getName());
+	LogLog::debug(LOG4CXX_STR("closing SocketHubAppender ") + getName());
     //
 	//  wait until the server thread completes
 	//
@@ -87,7 +87,7 @@ void SocketHubAppender::close()
 
 	synchronized sync(mutex);
 	// close all of the connections
-	LOGLOG_DEBUG(_T("closing client connections"));
+	LogLog::debug(LOG4CXX_STR("closing client connections"));
 	for (std::vector<helpers::SocketOutputStreamPtr>::iterator iter = oosList.begin();
 	     iter != oosList.end();
 		 iter++) {
@@ -95,17 +95,18 @@ void SocketHubAppender::close()
 			 try {
 				(*iter)->close();
 			 } catch(SocketException& e) {
-				LogLog::error(_T("could not close oos: "), e);
+				LogLog::error(LOG4CXX_STR("could not close oos: "), e);
 			 }
 		 }
 	 }
 	oosList.erase(oosList.begin(), oosList.end());
 
 
-	LOGLOG_DEBUG(_T("SocketHubAppender ") << getName() << _T(" closed"));
+	LogLog::debug(LOG4CXX_STR("SocketHubAppender ")
+              + getName() + LOG4CXX_STR(" closed"));
 }
 
-void SocketHubAppender::append(const spi::LoggingEventPtr& event)
+void SocketHubAppender::append(const spi::LoggingEventPtr& event, apr_pool_t* p)
 {
 
 	// if no open connections, exit now
@@ -138,7 +139,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event)
 		{
 			// there was an io exception so just drop the connection
 			it = oosList.erase(it);
-			LOGLOG_DEBUG(_T("dropped connection"));
+			LogLog::debug(LOG4CXX_STR("dropped connection"));
 		}
 	}
 }
@@ -160,7 +161,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* thread, void* dat
 	}
 	catch (SocketException& e)
 	{
-		LogLog::error(_T("exception setting timeout, shutting down server socket."), e);
+		LogLog::error(LOG4CXX_STR("exception setting timeout, shutting down server socket."), e);
 		return NULL;
 	}
 
@@ -178,12 +179,12 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* thread, void* dat
 		}
 		catch (SocketException& e)
 		{
-			LogLog::error(_T("exception accepting socket, shutting down server socket."), e);
+			LogLog::error(LOG4CXX_STR("exception accepting socket, shutting down server socket."), e);
 			stopRunning = 1;
 		}
 		catch (IOException& e)
 		{
-			LogLog::error(_T("exception accepting socket."), e);
+			LogLog::error(LOG4CXX_STR("exception accepting socket."), e);
 		}
 
 		// if there was a socket accepted
@@ -192,8 +193,11 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* thread, void* dat
 			try
 			{
 				InetAddress remoteAddress = socket->getInetAddress();
-				LOGLOG_DEBUG(_T("accepting connection from ") << remoteAddress.getHostName()
-					<< _T(" (") + remoteAddress.getHostAddress() + _T(")"));
+				LogLog::debug(LOG4CXX_STR("accepting connection from ")
+                                       + remoteAddress.getHostName()
+                                       + LOG4CXX_STR(" (")
+                                       + remoteAddress.getHostAddress()
+                                       + LOG4CXX_STR(")"));
 
 				// create an ObjectOutputStream
 				SocketOutputStreamPtr oos = socket->getOutputStream();
@@ -204,7 +208,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* thread, void* dat
 			}
 			catch (IOException& e)
 			{
-				LogLog::error(_T("exception creating output stream on socket."), e);
+				LogLog::error(LOG4CXX_STR("exception creating output stream on socket."), e);
 			}
 		}
 	}

@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_SOCKET_OUTPUT_STREAM_H
 #define _LOG4CXX_HELPERS_SOCKET_OUTPUT_STREAM_H
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
 
@@ -47,7 +47,7 @@ namespace log4cxx
 			void write(int value);
 			void write(unsigned long value);
 			void write(long value);
-			void write(const String& value);
+			void write(const LogString& value);
 			// some write functions are missing ...
 
 			/** Close the stream and dereference the socket.

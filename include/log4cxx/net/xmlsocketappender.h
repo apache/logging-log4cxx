@@ -21,26 +21,26 @@
 
 namespace log4cxx
 {
-	namespace net
-	{
-		class XMLSocketAppender;
-		typedef helpers::ObjectPtrT<XMLSocketAppender> XMLSocketAppenderPtr;
+        namespace net
+        {
+                class XMLSocketAppender;
+                typedef helpers::ObjectPtrT<XMLSocketAppender> XMLSocketAppenderPtr;
 
         /**
         Sends {@link spi::LoggingEvent LoggingEvent} objects in XML format
-		to a remote a log server, usually a XMLSocketNode.
+                to a remote a log server, usually a XMLSocketNode.
 
         <p>The XMLSocketAppender has the following properties:
 
         - If sent to a XMLSocketNode, remote logging
-		is non-intrusive as far as the log event is concerned. In other
+                is non-intrusive as far as the log event is concerned. In other
         words, the event will be logged with the same time stamp, {@link
         NDC NDC}, location info as if it were logged locally by
         the client.
 
         - XMLSocketAppenders use exclusively an XMLLayout. They ship an
         XML stream representing a {@link spi::LoggingEvent LoggingEvent} object
-		to the server side.
+                to the server side.
 
        - Remote logging uses the TCP protocol. Consequently, if
         the server is reachable, then log events will eventually arrive
@@ -76,7 +76,7 @@ namespace log4cxx
         ignore it.
 
         - If the application hosting the <code>XMLSocketAppender</code>
-		exits before the <code>XMLSocketAppender</code> is closed either
+                exits before the <code>XMLSocketAppender</code> is closed either
         explicitly or subsequent to destruction, then there might
         be untransmitted data in the pipe which might be lost.
         @n @n To avoid lost data, it is usually sufficient to
@@ -85,73 +85,70 @@ namespace log4cxx
         before exiting the application.
        */
 
-      	class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
-    	{
-    	public:
-    		/**
-    		The default port number of remote logging server (4560).
-    		*/
-    		static int DEFAULT_PORT;
+        class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
+        {
+        public:
+                /**
+                The default port number of remote logging server (4560).
+                */
+                static int DEFAULT_PORT;
 
-    		/**
-    		The default reconnection delay (30000 milliseconds or 30 seconds).
-    		*/
-    		static int DEFAULT_RECONNECTION_DELAY;
+                /**
+                The default reconnection delay (30000 milliseconds or 30 seconds).
+                */
+                static int DEFAULT_RECONNECTION_DELAY;
 
-    		bool locationInfo;
-			char zeroBuffer[1024];
+                bool locationInfo;
+                char zeroBuffer[1024];
 
-			/**
-			An event XML stream cannot exceed 1024 bytes.
-			*/
-			static const int MAX_EVENT_LEN;
+                /**
+                An event XML stream cannot exceed 1024 bytes.
+                */
+                static const int MAX_EVENT_LEN;
 
-		public:
-			DECLARE_LOG4CXX_OBJECT(XMLSocketAppender)
-			BEGIN_LOG4CXX_CAST_MAP()
-				LOG4CXX_CAST_ENTRY(XMLSocketAppender)
-				LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-			END_LOG4CXX_CAST_MAP()
+                DECLARE_LOG4CXX_OBJECT(XMLSocketAppender)
+                BEGIN_LOG4CXX_CAST_MAP()
+                        LOG4CXX_CAST_ENTRY(XMLSocketAppender)
+                        LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+                END_LOG4CXX_CAST_MAP()
 
-			XMLSocketAppender();
-			~XMLSocketAppender();
+                XMLSocketAppender();
+                ~XMLSocketAppender();
 
-    		/**
-    		Connects to remote server at <code>address</code> and <code>port</code>.
-    		*/
-    		XMLSocketAppender(unsigned long address, int port);
+                /**
+                Connects to remote server at <code>address</code> and <code>port</code>.
+                */
+                XMLSocketAppender(unsigned long address, int port);
 
-    		/**
-    		Connects to remote server at <code>host</code> and <code>port</code>.
-    		*/
-    		XMLSocketAppender(const String& host, int port);
+                /**
+                Connects to remote server at <code>host</code> and <code>port</code>.
+                */
+                XMLSocketAppender(const LogString& host, int port);
 
- 
-			/**
-		     *Set options
-		     */
-			virtual void setOption(const String& option, 
-				const String& value) {
-				SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
-			}
 
- 
-    		/**
-    		The <b>LocationInfo</b> option takes a boolean value. If true,
-    		the information sent to the remote host will include location
-    		information. By default no location information is sent to the server.
-    		*/
-    		void setLocationInfo(bool locationInfo);
- 
-    		/**
-    		Returns value of the <b>LocationInfo</b> option.
-    		*/
-    		bool getLocationInfo() const
-    			{ return locationInfo; }
+                /**
+                 *Set options
+                 */
+                virtual void setOption(const LogString& option,
+                      const LogString& value);
 
-		protected:
-			void renderEvent(const spi::LoggingEventPtr& event,
-								 helpers::SocketOutputStreamPtr& os);
+
+                /**
+                The <b>LocationInfo</b> option takes a boolean value. If true,
+                the information sent to the remote host will include location
+                information. By default no location information is sent to the server.
+                */
+                void setLocationInfo(bool locationInfo);
+
+                /**
+                Returns value of the <b>LocationInfo</b> option.
+                */
+                bool getLocationInfo() const
+                        { return locationInfo; }
+
+      protected:
+                void renderEvent(const spi::LoggingEventPtr& event,
+                helpers::SocketOutputStreamPtr& os, apr_pool_t* p);
 
 
 

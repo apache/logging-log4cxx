@@ -115,14 +115,14 @@ namespace log4cxx
     		/**
     		Connects to remote server at <code>host</code> and <code>port</code>.
     		*/
-    		SocketAppender(const String& host, int port);
+    		SocketAppender(const LogString& host, int port);
 
 
 			/**
 		     *Set options
 		     */
-			virtual void setOption(const String& option, 
-				const String& value) {
+			virtual void setOption(const LogString& option,
+				const LogString& value) {
 				SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
 			}
 
@@ -136,7 +136,8 @@ namespace log4cxx
 
 		protected:
 			virtual void renderEvent(const spi::LoggingEventPtr& event,
-				helpers::SocketOutputStreamPtr& os);
+				helpers::SocketOutputStreamPtr& os,
+                                apr_pool_t* p);
 
 
 

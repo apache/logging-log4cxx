@@ -16,8 +16,11 @@
 
 #include <log4cxx/helpers/datetimedateformat.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <apr_pools.h>
+#include <log4cxx/helpers/pool.h>
 #include <locale>
+#include "../insertwide.h"
+#include <apr.h>
+#include <apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -71,15 +74,13 @@ private:
    @param expected String expected string
   */
   void assertFormattedTime( apr_time_t date, const std::locale& locale,
-       const TimeZonePtr& timeZone, const std::string& expected )
+       const TimeZonePtr& timeZone, const LogString& expected )
        {
          DateTimeDateFormat formatter(locale);
          formatter.setTimeZone(timeZone);
-         std::string actual;
-         apr_pool_t* p;
-         apr_pool_create(&p, NULL);
+         LogString actual;
+         Pool p;
          formatter.format(actual, date, p);
-         apr_pool_destroy(p);
          CPPUNIT_ASSERT_EQUAL( expected, actual );
   }
 
@@ -91,7 +92,7 @@ private:
     //
     apr_time_t jan2 = MICROSECONDS_PER_DAY * 12419;
     std::locale localeUS(LOCALE_US);
-    assertFormattedTime( jan2, localeUS, TimeZone::getGMT(), "02 Jan 2004 00:00:00,000" );
+    assertFormattedTime( jan2, localeUS, TimeZone::getGMT(), LOG4CXX_STR("02 Jan 2004 00:00:00,000"));
   }
 
   /** Convert 03 Jan 2004 00:00:00 GMT for America/Chicago. */
@@ -101,7 +102,9 @@ private:
     //   03 Jan 2004 00:00 GMT
     apr_time_t jan3 = MICROSECONDS_PER_DAY * 12420;
     std::locale localeUS(LOCALE_US);
-    assertFormattedTime( jan3, localeUS, TimeZone::getTimeZone("GMT-6"), "02 Jan 2004 18:00:00,000" );
+    assertFormattedTime( jan3, localeUS,
+             TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")),
+             LOG4CXX_STR("02 Jan 2004 18:00:00,000"));
   }
 
 
@@ -110,7 +113,8 @@ private:
   {
     apr_time_t jun30 = MICROSECONDS_PER_DAY * 12599;
     std::locale localeUS(LOCALE_US);
-    assertFormattedTime( jun30, localeUS, TimeZone::getGMT(), "30 Jun 2004 00:00:00,000" );
+    assertFormattedTime( jun30, localeUS, TimeZone::getGMT(),
+           LOG4CXX_STR("30 Jun 2004 00:00:00,000"));
   }
 
   /** Convert 29 Jun 2004 00:00:00 GMT for Chicago, daylight savings in effect. */
@@ -118,7 +122,9 @@ private:
   {
     apr_time_t jul1 = MICROSECONDS_PER_DAY * 12600;
     std::locale localeUS(LOCALE_US);
-    assertFormattedTime( jul1, localeUS, TimeZone::getTimeZone("GMT-5"), "30 Jun 2004 19:00:00,000" );
+    assertFormattedTime( jul1, localeUS,
+           TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")),
+           LOG4CXX_STR("30 Jun 2004 19:00:00,000"));
   }
 
   /** Test multiple calls in close intervals. */
@@ -129,11 +135,16 @@ private:
     //     make a couple of nearly spaced calls
     apr_time_t ticks = MICROSECONDS_PER_DAY * 12601;
     std::locale localeUS(LOCALE_US);
-    assertFormattedTime( ticks, localeUS, TimeZone::getGMT(), "02 Jul 2004 00:00:00,000" );
-    assertFormattedTime( ticks + 8000, localeUS, TimeZone::getGMT(), "02 Jul 2004 00:00:00,008" );
-    assertFormattedTime( ticks + 17000, localeUS, TimeZone::getGMT(), "02 Jul 2004 00:00:00,017" );
-    assertFormattedTime( ticks + 237000, localeUS, TimeZone::getGMT(), "02 Jul 2004 00:00:00,237" );
-    assertFormattedTime( ticks + 1415000, localeUS, TimeZone::getGMT(), "02 Jul 2004 00:00:01,415" );
+    assertFormattedTime( ticks, localeUS, TimeZone::getGMT(),
+           LOG4CXX_STR("02 Jul 2004 00:00:00,000"));
+    assertFormattedTime( ticks + 8000, localeUS, TimeZone::getGMT(),
+           LOG4CXX_STR("02 Jul 2004 00:00:00,008"));
+    assertFormattedTime( ticks + 17000, localeUS, TimeZone::getGMT(),
+           LOG4CXX_STR("02 Jul 2004 00:00:00,017"));
+    assertFormattedTime( ticks + 237000, localeUS, TimeZone::getGMT(),
+           LOG4CXX_STR("02 Jul 2004 00:00:00,237"));
+    assertFormattedTime( ticks + 1415000, localeUS, TimeZone::getGMT(),
+           LOG4CXX_STR("02 Jul 2004 00:00:01,415"));
   }
 
   /** Check that caching does not disregard timezone. This test would fail for revision 1.4 of DateTimeDateFormat.java. */
@@ -141,9 +152,13 @@ private:
   {
     apr_time_t jul3 = MICROSECONDS_PER_DAY * 12602;
     std::locale localeUS(LOCALE_US);
-    assertFormattedTime( jul3, localeUS, TimeZone::getGMT(), "03 Jul 2004 00:00:00,000" );
-    assertFormattedTime( jul3, localeUS, TimeZone::getTimeZone("GMT-5"), "02 Jul 2004 19:00:00,000" );
-    assertFormattedTime( jul3, localeUS, TimeZone::getGMT(), "03 Jul 2004 00:00:00,000" );
+    assertFormattedTime( jul3, localeUS, TimeZone::getGMT(),
+        LOG4CXX_STR("03 Jul 2004 00:00:00,000"));
+    assertFormattedTime( jul3, localeUS,
+          TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")),
+          LOG4CXX_STR("02 Jul 2004 19:00:00,000"));
+    assertFormattedTime( jul3, localeUS, TimeZone::getGMT(),
+          LOG4CXX_STR("03 Jul 2004 00:00:00,000"));
   }
 
   /** Check that format is locale sensitive. */
@@ -152,9 +167,8 @@ private:
     apr_time_t mars11 = MICROSECONDS_PER_DAY * 12519;
     std::locale fr(LOCALE_FR);
     std::locale initialDefault = std::locale::global(fr);
-    std::string formatted;
-    apr_pool_t* p;
-    apr_pool_create(&p, NULL);
+    LogString formatted;
+    Pool p;
     try
     {
       DateTimeDateFormat formatter;
@@ -163,14 +177,11 @@ private:
     }
     catch ( std::exception& ex )
     {
-      apr_pool_destroy(p);
       std::locale::global(initialDefault);
       throw ex;
     }
-
-    apr_pool_destroy(p);
     std::locale::global(initialDefault);
-    CPPUNIT_ASSERT_EQUAL((std::string)  "11 avr 2004 00:00:00,000", formatted );
+    CPPUNIT_ASSERT_EQUAL((LogString)  LOG4CXX_STR("11 avr 2004 00:00:00,000"), formatted );
   }
 
   /** Check that format is locale sensitive. */
@@ -179,9 +190,8 @@ private:
     apr_time_t march12 = MICROSECONDS_PER_DAY * 12519;
     std::locale en(LOCALE_US);
     std::locale initialDefault = std::locale::global(en);
-    std::string formatted;
-    apr_pool_t* p;
-    apr_pool_create(&p, NULL);
+    LogString formatted;
+    Pool p;
     try
     {
       DateTimeDateFormat formatter;
@@ -190,13 +200,11 @@ private:
     }
     catch ( std::exception& ex )
     {
-      apr_pool_destroy(p);
       std::locale::global(initialDefault);
       throw ex;
     }
-    apr_pool_destroy(p);
     std::locale::global(initialDefault);
-    CPPUNIT_ASSERT_EQUAL((std::string) "11 Apr 2004 00:00:00,000", formatted );
+    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("11 Apr 2004 00:00:00,000"), formatted );
   }
 
 

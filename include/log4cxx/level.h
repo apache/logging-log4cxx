@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/tchar.h>
+#include <log4cxx/string.h>
 #include <limits.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
@@ -36,6 +36,7 @@
 #undef DEBUG
 #endif
 
+
 namespace log4cxx
 {
     class Level;
@@ -56,12 +57,12 @@ namespace log4cxx
 		class LOG4CXX_EXPORT LevelClass : public helpers::Class
 		{
 		protected:
-			LevelClass(const String& className) : helpers::Class(className) {}
+			LevelClass(const LogString& className) : helpers::Class(className) {}
 
 		public:
-			LevelClass() : helpers::Class(_T("Level")) {}
+			LevelClass() : helpers::Class(LOG4CXX_STR("Level")) {}
 
-			virtual const LevelPtr& toLevel(const String& sArg) const
+			virtual const LevelPtr& toLevel(const LogString& sArg) const
 			{ return Level::toLevel(sArg); }
 
 			virtual const LevelPtr& toLevel(int val) const
@@ -76,13 +77,17 @@ namespace log4cxx
 		/**
 		Instantiate a Level object.
 		*/
-		Level(int level, const String& levelStr, int syslogEquivalent);
+		Level(int level,
+                    const wchar_t* wName,
+                    const char* name,
+                    int syslogEquivalent);
 
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns #DEBUG.
 		*/
-		static const LevelPtr& toLevel(const String& sArg);
+		static const LevelPtr& toLevel(const std::string& sArg);
+                static const LevelPtr& toLevel(const std::wstring& sArg);
 
 		/**
 		Convert an integer passed as argument to a level. If the
@@ -101,8 +106,10 @@ namespace log4cxx
 		conversion fails, then this method returns the value of
 		<code>defaultLevel</code>.
 		*/
-		static const LevelPtr& toLevel(const String& sArg,
+		static const LevelPtr& toLevel(const std::string& sArg,
 			const LevelPtr& defaultLevel);
+                static const LevelPtr& toLevel(const std::wstring& sArg,
+                        const LevelPtr& defaultLevel);
 
         enum
         {
@@ -176,7 +183,9 @@ namespace log4cxx
 		/**
 		Return the syslog equivalent of this level as an integer.
 		*/
-		virtual int getSyslogEquivalent() const;
+		inline int getSyslogEquivalent() const {
+                  return syslogEquivalent;
+		}
 
 
 		/**
@@ -193,17 +202,24 @@ namespace log4cxx
 		/**
 		Returns the string representation of this priority.
 		*/
-		virtual const String& toString() const;
+		inline const LogString& toString() const {
+                  return wName;
+		}
 
 		/**
 		Returns the integer representation of this level.
 		*/
-		virtual int toInt() const;
+		inline int toInt() const {
+                  return level;
+		}
 
-	public:
+	private:
 		int level;
-		String levelStr;
+		LogString wName;
+                std::string name;
 		int syslogEquivalent;
+                Level(const Level&);
+                Level& operator=(const Level&);
 	};
 }
 
@@ -212,8 +228,8 @@ public:\
 	class Class##level : public Level::LevelClass\
 {\
 public:\
-	Class##level() : Level::LevelClass(_T(#level)) {}\
-	virtual const LevelPtr& toLevel(const String& sArg) const\
+	Class##level() : Level::LevelClass(LOG4CXX_STR(#level)) {}\
+	virtual const LevelPtr& toLevel(const LogString& sArg) const\
 	{ return level::toLevel(sArg); }\
 	virtual const LevelPtr& toLevel(int val) const\
 	{ return level::toLevel(val); }\

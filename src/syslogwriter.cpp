@@ -1,19 +1,19 @@
 /*
  * Copyright 2003,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include <log4cxx/helpers/syslogwriter.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/inetaddress.h>
@@ -26,7 +26,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-SyslogWriter::SyslogWriter(const String& syslogHost)
+SyslogWriter::SyslogWriter(const LogString& syslogHost)
 : syslogHost(syslogHost)
 {
 	try
@@ -35,8 +35,8 @@ SyslogWriter::SyslogWriter(const String& syslogHost)
 	}
 	catch(UnknownHostException& e)
 	{
-		LogLog::error(_T("Could not find ") + syslogHost +
-			_T(". All logging will FAIL."), e);
+		LogLog::error(((LogString) LOG4CXX_STR("Could not find ")) + syslogHost +
+			LOG4CXX_STR(". All logging will FAIL."), e);
 	}
 
 	try
@@ -45,13 +45,15 @@ SyslogWriter::SyslogWriter(const String& syslogHost)
 	}
 	catch (SocketException& e)
 	{
-		LogLog::error(_T("Could not instantiate DatagramSocket to ") + syslogHost +
-				_T(". All logging will FAIL."), e);
+		LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate DatagramSocket to ")) + syslogHost +
+				LOG4CXX_STR(". All logging will FAIL."), e);
 	}
 }
 
-void SyslogWriter::write(const String& string)
+void SyslogWriter::write(const LogString& string)
 {
+#if 0
+//  TODO
 	USES_CONVERSION;
 	const char * bytes = T2A(string.c_str());
 	DatagramPacketPtr packet = new DatagramPacket((void *)bytes, string.length() + 1,
@@ -61,5 +63,5 @@ void SyslogWriter::write(const String& string)
 	{
 		ds->send(packet);
 	}
-
+#endif
 }

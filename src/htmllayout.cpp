@@ -21,164 +21,162 @@
 #include <log4cxx/helpers/transform.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include <apr_pools.h>
 #include <apr_time.h>
+#include <apr_strings.h>
+#include <string.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+using namespace log4cxx::spi::location;
 
 IMPLEMENT_LOG4CXX_OBJECT(HTMLLayout)
 
 
 HTMLLayout::HTMLLayout()
-: locationInfo(false), title(_T("Log4cxx Log Messages")),
+: locationInfo(false), title(LOG4CXX_STR("Log4cxx Log Messages")),
 dateFormat()
 {
    dateFormat.setTimeZone(TimeZone::getGMT());
 }
 
 
-void HTMLLayout::setOption(const String& option,
-	const String& value)
+void HTMLLayout::setOption(const LogString& option,
+        const LogString& value)
 {
-       static const String LOCATION_INFO_OPTION("LocationInfo");
-       static const String TITLE_OPTION("Title");
 
-	if (StringHelper::equalsIgnoreCase(option, TITLE_OPTION))
+        if (StringHelper::equalsIgnoreCase(option,
+               LOG4CXX_STR("TITLE"), LOG4CXX_STR("title")))
         {
-		setTitle(value);
-	}
-        else if (StringHelper::equalsIgnoreCase(option, LOCATION_INFO_OPTION))
+                setTitle(value);
+        }
+        else if (StringHelper::equalsIgnoreCase(option,
+               LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
         {
-		setLocationInfo(OptionConverter::toBoolean(value, false));
-	}
+                setLocationInfo(OptionConverter::toBoolean(value, false));
+        }
 }
 
-void HTMLLayout::format(ostream& output, const spi::LoggingEventPtr& event) const
+void HTMLLayout::format(LogString& output,
+     const spi::LoggingEventPtr& event,
+     apr_pool_t* pool) const
 {
-	output << std::endl << _T("<tr>") << std::endl;
+        output.append(LOG4CXX_STR("\n<tr>\n<td>"));
 
-	output << _T("<td>");
-
-        //
-        //   longer than it should be, eventually an apr_pool_t will
-        //     be passed into the layout
-        std::string date;
-        apr_pool_t* p;
-        apr_pool_create(&p, NULL);
-	dateFormat.format(date, event->getTimeStamp(), p);
-        apr_pool_destroy(p);
-        output << date;
+        dateFormat.format(output, event->getTimeStamp(), pool);
 
 
-	output << _T("</td>") << std::endl;
+        output.append(LOG4CXX_STR("</td>\n"));
 
-	output << _T("<td title=\"") << event->getThreadId() << _T(" thread\">");
-	output << event->getThreadId();
-	output << _T("</td>") << std::endl;
+        output.append(LOG4CXX_STR("<td title=\""));
+        LogString threadId(StringHelper::toString(event->getThreadId(), pool));
+        output.append(threadId);
+        output.append(LOG4CXX_STR(" thread\">"));
+        output.append(threadId);
+        output.append(LOG4CXX_STR("</td>\n"));
 
-	output << _T("<td title=\"Level\">");
-	if (event->getLevel()->equals(Level::getDebug()))
-	{
-		output << _T("<font color=\"#339933\">");
-		output << event->getLevel()->toString();
-		output << _T("</font>");
-	}
-	else if(event->getLevel()->isGreaterOrEqual(Level::getWarn()))
-	{
-		output << _T("<font color=\"#993300\"><strong>");
-		output << event->getLevel()->toString();
-		output << _T("</strong></font>");
-	}
-	else
-	{
-		output << event->getLevel()->toString();
-	}
+        output.append(LOG4CXX_STR("<td title=\"Level\">"));
+        if (event->getLevel()->equals(Level::getDebug()))
+        {
+                output.append(LOG4CXX_STR("<font color=\"#339933\">"));
+                output.append(event->getLevel()->toString());
+                output.append(LOG4CXX_STR("</font>"));
+        }
+        else if(event->getLevel()->isGreaterOrEqual(Level::getWarn()))
+        {
+                output.append(LOG4CXX_STR("<font color=\"#993300\"><strong>"));
+                output.append(event->getLevel()->toString());
+                output.append(LOG4CXX_STR("</strong></font>"));
+        }
+        else
+        {
+                output.append(event->getLevel()->toString());
+        }
 
-	output << _T("</td>") << std::endl;
+        output.append(LOG4CXX_STR("</td>\n"));
 
-	output << _T("<td title=\"") << event->getLoggerName()
-		 << _T(" category\">");
-	Transform::appendEscapingTags(output, event->getLoggerName());
-	output << _T("</td>") << std::endl;
+        output.append(LOG4CXX_STR("<td title=\""));
+        output.append(event->getLoggerName());
+        output.append(LOG4CXX_STR(" category\">"));
+        Transform::appendEscapingTags(output, event->getLoggerName());
+        output.append(LOG4CXX_STR("</td>\n"));
 
-	if(locationInfo)
-	{
-		USES_CONVERSION;
-		output << _T("<td>");
-		Transform::appendEscapingTags(output, A2T(event->getFile()));
-		output.put(_T(':'));
-		if (event->getLine() != 0)
-		{
-			output << event->getLine();
-		}
-		output << _T("</td>") << std::endl;
-	}
+        if(locationInfo)
+        {
+                output.append(LOG4CXX_STR("<td>"));
+                const LocationInfo& locInfo = event->getLocationInformation();
+                LOG4CXX_DECODE_CHAR(fileName, locInfo.getFileName());
+                Transform::appendEscapingTags(output, fileName);
+                output.append(1, LOG4CXX_STR(':'));
+                int line = event->getLocationInformation().getLineNumber();
+                if (line != 0)
+                {
+                        output.append(StringHelper::toString(line, pool));
+                }
+                output.append(LOG4CXX_STR("</td>\n"));
+        }
 
-	output << _T("<td title=\"Message\">");
-	Transform::appendEscapingTags(output, event->getRenderedMessage());
-	output << _T("</td>")  << std::endl;
-	output << _T("</tr>") << std::endl;
+        output.append(LOG4CXX_STR("<td title=\"Message\">"));
+        Transform::appendEscapingTags(output, event->getRenderedMessage());
+        output.append(LOG4CXX_STR("</td>\n"));
+        output.append(LOG4CXX_STR("</tr>\n"));
 
-	if (event->getNDC().length() != 0)
-	{
-		output << _T("<tr><td bgcolor=\"#EEEEEE\" ");
-		output << _T("style=\"font-size : xx-small;\" colspan=\"6\" ");
-		output << _T("title=\"Nested Diagnostic Context\">");
-		output << _T("NDC: ");
-		Transform::appendEscapingTags(output, event->getNDC());
-		output << _T("</td></tr>") << std::endl;
-	}
+        if (event->getNDC().length() != 0)
+        {
+                output.append(LOG4CXX_STR("<tr><td bgcolor=\"#EEEEEE\" "));
+                output.append(LOG4CXX_STR("style=\"font-size : xx-small;\" colspan=\"6\" "));
+                output.append(LOG4CXX_STR("title=\"Nested Diagnostic Context\">"));
+                output.append(LOG4CXX_STR("NDC: "));
+                Transform::appendEscapingTags(output, event->getNDC());
+                output.append(LOG4CXX_STR("</td></tr>\n"));
+        }
 }
 
-void HTMLLayout::appendHeader(ostream& output)
+void HTMLLayout::appendHeader(LogString& output, apr_pool_t* pool)
 {
-	output << _T("<!DOCTYPE HTML PUBLIC ");
-	output << _T("\"-//W3C//DTD HTML 4.01 Transitional//EN\" ");
-	output << _T("\"http://www.w3.org/TR/html4/loose.dtd\">") << std::endl;
-	output << _T("<html>") << std::endl;
-	output << _T("<head>") << std::endl;
-	output << _T("<title>") << title << _T("</title>") << std::endl;
-	output << _T("<style type=\"text/css\">") << std::endl;
-	output << _T("<!--") << std::endl;
-	output << _T("body, table {font-family: arial,sans-serif; font-size: x-small;}") << std::endl;
-	output << _T("th {background: #336699; color: #FFFFFF; text-align: left;}") << std::endl;
-	output << _T("-->") << std::endl;
-	output << _T("</style>") << std::endl;
-	output << _T("</head>") << std::endl;
-	output << _T("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">") << std::endl;
-	output << _T("<hr size=\"1\" noshade>") << std::endl;
-	output << _T("Log session start time ");
+        output.append(LOG4CXX_STR("<!DOCTYPE HTML PUBLIC "));
+        output.append(LOG4CXX_STR("\"-//W3C//DTD HTML 4.01 Transitional//EN\" "));
+        output.append(LOG4CXX_STR("\"http://www.w3.org/TR/html4/loose.dtd\">\n"));
+        output.append(LOG4CXX_STR("<html>\n"));
+        output.append(LOG4CXX_STR("<head>\n"));
+        output.append(LOG4CXX_STR("<title>"));
+        output.append(title);
+        output.append(LOG4CXX_STR("</title>\n"));
+        output.append(LOG4CXX_STR("<style type=\"text/css\">\n"));
+        output.append(LOG4CXX_STR("<!--\n"));
+        output.append(LOG4CXX_STR("body, table {font-family: arial,sans-serif; font-size: x-small;}\n"));
+        output.append(LOG4CXX_STR("th {background: #336699; color: #FFFFFF; text-align: left;}\n"));
+        output.append(LOG4CXX_STR("-->\n"));
+        output.append(LOG4CXX_STR("</style>\n"));
+        output.append(LOG4CXX_STR("</head>\n"));
+        output.append(LOG4CXX_STR("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">\n"));
+        output.append(LOG4CXX_STR("<hr size=\"1\" noshade>\n"));
+        output.append(LOG4CXX_STR("Log session start time "));
 
-        apr_pool_t* p;
-        apr_pool_create(&p, NULL);
-        std::string date;
-        dateFormat.format(date, apr_time_now(), p);
-        apr_pool_destroy(p);
+        dateFormat.format(output, apr_time_now(), pool);
 
-        output << date;
-
-	output << _T("<br>") << std::endl;
-	output << _T("<br>") << std::endl;
-	output << _T("<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">") << std::endl;
-	output << _T("<tr>") << std::endl;
-	output << _T("<th>Time</th>") << std::endl;
-	output << _T("<th>Thread</th>") << std::endl;
-	output << _T("<th>Level</th>") << std::endl;
-	output << _T("<th>Category</th>") << std::endl;
-	if(locationInfo)
-	{
-		output << _T("<th>File:Line</th>") << std::endl;
-	}
-	output << _T("<th>Message</th>") << std::endl;
-	output << _T("</tr>") << std::endl;
+        output.append(LOG4CXX_STR("<br>\n"));
+        output.append(LOG4CXX_STR("<br>\n"));
+        output.append(LOG4CXX_STR("<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">\n"));
+        output.append(LOG4CXX_STR("<tr>\n"));
+        output.append(LOG4CXX_STR("<th>Time</th>\n"));
+        output.append(LOG4CXX_STR("<th>Thread</th>\n"));
+        output.append(LOG4CXX_STR("<th>Level</th>\n"));
+        output.append(LOG4CXX_STR("<th>Category</th>\n"));
+        if(locationInfo)
+        {
+                output.append(LOG4CXX_STR("<th>File:Line</th>\n"));
+        }
+        output.append(LOG4CXX_STR("<th>Message</th>\n"));
+        output.append(LOG4CXX_STR("</tr>\n"));
 }
 
-void HTMLLayout::appendFooter(ostream& output)
+void HTMLLayout::appendFooter(LogString& output, apr_pool_t* pool)
 {
-	output << _T("</table>") << std::endl;
-	output << _T("<br>") << std::endl;
-	output << _T("</body></html>");
+        output.append(LOG4CXX_STR("</table>\n"));
+        output.append(LOG4CXX_STR("<br>\n"));
+        output.append(LOG4CXX_STR("</body></html>"));
 }
