@@ -84,8 +84,8 @@ public:
         void testConstructor() {
           LoggerPtr root(Logger::getRootLogger());
           log4cxx::logstream stream(root, log4cxx::Level::INFO);
-          CPPUNIT_ASSERT_EQUAL(0, stream.width());
-          CPPUNIT_ASSERT_EQUAL(6, stream.precision());
+          CPPUNIT_ASSERT_EQUAL(0, (int) stream.width());
+          CPPUNIT_ASSERT_EQUAL(6, (int) stream.precision());
         }
 
         void testSimple() {

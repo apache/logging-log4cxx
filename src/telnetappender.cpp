@@ -162,7 +162,7 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* thread, vo
                         newClient->close();
                 } else {
                         LogString oss(LOG4CXX_STR("TelnetAppender v1.0 ("));
-                        oss += StringHelper::toString(count, pThis->pool);
+                        oss += StringHelper::toString((int) count, pThis->pool);
                         oss += LOG4CXX_STR(" active connections)\r\n\r\n");
                         os->write(oss);
                         os->flush();

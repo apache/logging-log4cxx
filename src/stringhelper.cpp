@@ -234,15 +234,15 @@ void StringHelper::toString(log4cxx_int64_t n, Pool& pool, std::wstring& ws) {
 }
 
 LogString StringHelper::toString(size_t n, Pool& pool) {
-  return toString((apr_int64_t) n, pool);
+  return toString((log4cxx_int64_t) n, pool);
 }
 
 void StringHelper::toString(size_t n, Pool& pool, std::string& s) {
-  toString((apr_int64_t) n, pool, s);
+  toString((log4cxx_int64_t) n, pool, s);
 }
 
 void StringHelper::toString(size_t n, Pool& pool, std::wstring& ws) {
-  toString((apr_int64_t) n, pool, ws);
+  toString((log4cxx_int64_t) n, pool, ws);
 }
 
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,11 @@
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
-#include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/TestSuite.h>
 #include <cppunit/TextTestResult.h>
 #include <cppunit/TextOutputter.h>
 #include <cppunit/TextTestProgressListener.h>
 #include <cppunit/TestResult.h>
-#include <cppunit/ui/text/TextTestRunner.h>
 #include <iostream>
 #include <stdexcept>
 #include <log4cxx/basicconfigurator.h>
