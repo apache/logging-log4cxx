@@ -91,7 +91,7 @@ CachedDateFormat::CachedDateFormat(const DateFormatPtr& dateFormat,
  *    field (likely RelativeTimeDateFormat)
  */
 int CachedDateFormat::findMillisecondStart(
-  apr_time_t time, const LogString& formatted,
+  log4cxx_time_t time, const LogString& formatted,
   const DateFormatPtr& formatter,
   Pool& pool) {
 
