@@ -15,6 +15,7 @@
  */
 
 #include <apr_general.h>
+#include <apr_thread_proc.h>
 
 #include <log4cxx/portability.h>
 
@@ -65,7 +66,7 @@ void init(const std::string& portStr, const std::string& configFile)
         }
 }
 
-void* LOG4CXX_THREAD_FUNC runSocket(apr_thread_t* thread, void* data) {
+void* LOG4CXX_THREAD_FUNC runSocket(log4cxx_thread_t* thread, void* data) {
   SocketNode* node = (SocketNode*) data;
   node->run();
   delete node;

@@ -8,7 +8,11 @@ liblog4cxx_la_SOURCES = \
         aprinitializer.cpp \
         asyncappender.cpp \
         basicconfigurator.cpp \
+        bufferedwriter.cpp \
+        bytebuffer.cpp \
         cacheddateformat.cpp \
+        charsetdecoder.cpp \
+        charsetencoder.cpp \
         class.cpp \
         condition.cpp \
         configurator.cpp \
@@ -24,6 +28,7 @@ liblog4cxx_la_SOURCES = \
         fallbackerrorhandler.cpp \
         file.cpp \
         fileappender.cpp \
+        fileoutputstream.cpp \
         filewatchdog.cpp \
         formattinginfo.cpp \
         gnomexml.cpp \
@@ -52,6 +57,8 @@ liblog4cxx_la_SOURCES = \
         odbcappender.cpp \
         onlyonceerrorhandler.cpp \
         optionconverter.cpp \
+        outputstream.cpp \
+        outputstreamwriter.cpp \
         patternconverter.cpp \
         patternlayout.cpp \
         patternparser.cpp \
@@ -84,6 +91,8 @@ liblog4cxx_la_SOURCES = \
         syslogappender.cpp \
         syslogwriter.cpp \
         system.cpp \
+        systemerrwriter.cpp \
+        systemoutwriter.cpp \
         telnetappender.cpp \
         timezone.cpp \
         transform.cpp \
@@ -91,6 +100,7 @@ liblog4cxx_la_SOURCES = \
         threadspecificdata.cpp \
         transcoder.cpp \
         ttcclayout.cpp \
+        writer.cpp \
         writerappender.cpp \
         xmllayout.cpp\
         xmlsocketappender.cpp
