@@ -18,7 +18,6 @@
 #define _LOG4CXX_HELPERS_CHARSETDECODER_H
 
 #include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/pool.h>
 
 namespace log4cxx
 {
@@ -39,29 +38,25 @@ namespace log4cxx
                   BEGIN_LOG4CXX_CAST_MAP()
                           LOG4CXX_CAST_ENTRY(CharsetDecoder)
                   END_LOG4CXX_CAST_MAP()
-
-          private:
-                  CharsetDecoder(const char* fromset);
-                  virtual ~CharsetDecoder();
-
+          protected:
+                  CharsetDecoder();
           public:
+                  virtual ~CharsetDecoder();
                   static CharsetDecoderPtr getDefaultDecoder();
+#if LOG4CXX_HAS_WCHAR_T
                   static CharsetDecoderPtr getWideDecoder();
-                  static CharsetDecoderPtr getDecoder(const LogString& charset);
+#endif
 
                   virtual log4cxx_status_t decode(ByteBuffer& in,
-                        LogString& out);
+                        LogString& out) = 0;
 
                   inline static bool isError(log4cxx_status_t stat) {
                      return (stat != 0);
                   }
 
-
           private:
                   CharsetDecoder(const CharsetDecoder&);
                   CharsetDecoder& operator=(const CharsetDecoder&);
-                  Pool pool;
-                  void *convset;
           };
 
         } // namespace helpers

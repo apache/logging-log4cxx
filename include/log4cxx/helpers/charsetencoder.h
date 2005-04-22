@@ -41,14 +41,15 @@ namespace log4cxx
                           LOG4CXX_CAST_ENTRY(CharsetEncoder)
                   END_LOG4CXX_CAST_MAP()
 
-          private:
-                  CharsetEncoder(const char* topage);
-                  virtual ~CharsetEncoder();
+          protected:
+                  CharsetEncoder();
 
           public:
+                  virtual ~CharsetEncoder();
                   static CharsetEncoderPtr getDefaultEncoder();
-                  static CharsetEncoderPtr getWideEncoder();
-                  static CharsetEncoderPtr getEncoder(const LogString& charset);
+//                  static CharsetEncoderPtr getWideEncoder();
+                  static CharsetEncoderPtr getEncoder(const std::wstring& charset);
+                  static CharsetEncoderPtr getEncoder(const std::string& charset);
 
                   /**
                   * Encodes a string replacing unmappable
@@ -62,7 +63,7 @@ namespace log4cxx
 
                   virtual log4cxx_status_t encode(const LogString& in,
                         LogString::const_iterator& iter,
-                        ByteBuffer& out);
+                        ByteBuffer& out) = 0;
 
                   virtual void reset();
 
@@ -76,8 +77,6 @@ namespace log4cxx
           private:
                   CharsetEncoder(const CharsetEncoder&);
                   CharsetEncoder& operator=(const CharsetEncoder&);
-                  Pool pool;
-                  void *convset;
           };
 
         } // namespace helpers
