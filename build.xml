@@ -55,9 +55,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="rtti" value="false"/>
 <property name="optimize" value="none"/>
 <property name="lib.type" value="shared"/>
-<!--  other recognized option: utf8 -->
-<property name="logchar" value="wchar_t"/>
 <property name="has.wchar_t" value="1"/>
+<!--  utf-8 will be used if -Dhas.wchar_t=0 or -Dlogchar=utf-8   -->
+<property name="logchar" value="wchar_t"/>
 <property name="apache.mirror" value="http://apache.mirrors.pair.com"/>
 <property name="cppunit.mirror" value="http://unc.dl.sourceforge.net/sourceforge"/>
 
@@ -233,7 +233,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </condition>
 
         <condition property="is-utf8" value="true">
-                <equals arg1="${logchar}" arg2="utf8"/>
+                <or>
+                   <not><equals arg1="${has.wchar_t}" arg2="1"/></not>
+                   <equals arg1="${logchar}" arg2="utf-8"/>
+                </or>
         </condition>
 
         <condition property="debug.release" value="debug">

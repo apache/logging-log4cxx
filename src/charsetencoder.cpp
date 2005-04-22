@@ -57,7 +57,7 @@ namespace log4cxx
                     throw IllegalArgumentException(topage);
                   }
               }
-              
+
               virtual ~APRCharsetEncoder() {
                     apr_xlate_close(convset);
                     apr_pool_destroy(pool);
@@ -107,7 +107,7 @@ namespace log4cxx
           public:
               WcstombsCharsetEncoder() {
               }
-              
+
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
@@ -130,8 +130,8 @@ namespace log4cxx
                              chunkSize = in.length() - inOffset;
                          }
                          memset(buf, 0, BUFSIZE * sizeof(wchar_t));
-                         memcpy(buf, 
-                             in.data() + inOffset, 
+                         memcpy(buf,
+                             in.data() + inOffset,
                              chunkSize * sizeof(wchar_t));
                          size_t converted = wcstombs(out.data() + position, buf, outbytes_left);
 
@@ -176,7 +176,7 @@ namespace log4cxx
           public:
               USASCIICharsetEncoder() {
               }
-              
+
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
@@ -213,7 +213,7 @@ namespace log4cxx
           public:
               ISOLatin1CharsetEncoder() {
               }
-              
+
 #if LOG4CXX_LOGCHAR_IS_WCHAR
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
@@ -254,7 +254,7 @@ namespace log4cxx
               UTF8CharsetEncoder() {
               }
 
-#if LOG4CXX_LOGCHAR_IS_UTF8              
+#if LOG4CXX_LOGCHAR_IS_UTF8
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
@@ -265,7 +265,7 @@ namespace log4cxx
                       if (count > out.remaining()) {
                           count = out.remaining();
                       }
-                      memcpy(out.data() + out.position(), 
+                      memcpy(out.data() + out.position(),
                              in.data() + inOffset,
                              count);
                       out.position(out.position() + count);
@@ -275,7 +275,7 @@ namespace log4cxx
               }
 #endif
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR              
+#if LOG4CXX_LOGCHAR_IS_WCHAR
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
@@ -308,9 +308,9 @@ namespace log4cxx
                                if (dst + 3 < dstEnd && (iter + 1) != in.end()) {
                                    *(dst++) = 0xF0 | ((sv >> 8) & 0x03);
                                    *(dst++) = 0x80 | ((sv >> 2) & 0x3F);
-                                   unsigned short ls = *(++iter); 
-                                   *(dst++) = 0x80 
-                                               | ((sv & 0x03) << 4) 
+                                   unsigned short ls = *(++iter);
+                                   *(dst++) = 0x80
+                                               | ((sv & 0x03) << 4)
                                                | ((ls >> 6) & 0x0F);
                                    *(dst++) = 0x80 | (ls & 0x3F);
                                } else {
@@ -339,7 +339,7 @@ namespace log4cxx
           public:
               UTF16BECharsetEncoder() {
               }
-              
+
 #if LOG4CXX_LOGCHAR_IS_WCHAR
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
@@ -372,7 +372,7 @@ namespace log4cxx
           public:
               UTF16LECharsetEncoder() {
               }
-              
+
 #if LOG4CXX_LOGCHAR_IS_WCHAR
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
@@ -414,7 +414,7 @@ CharsetEncoderPtr CharsetEncoder::getDefaultEncoder() {
 #if LOG4CXX_HAS_WCHAR_T || defined(_WIN32)
   static CharsetEncoderPtr encoder(new WcstombsCharsetEncoder());
 #else
-  static CharsetEncoderPtr encoder(new CharsetEncoder(APR_LOCALE_CHARSET));
+  static CharsetEncoderPtr encoder(new APRCharsetEncoder(APR_LOCALE_CHARSET));
 #endif
   return encoder;
 }
@@ -443,7 +443,7 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::string& charset) {
         return new UTF16BECharsetEncoder();
     } else if (StringHelper::equalsIgnoreCase(charset, "UTF-16LE", "utf-16le")) {
         return new UTF16LECharsetEncoder();
-    } 
+    }
     throw IllegalArgumentException(charset);
 #else
    return new APRCharsetEncoder(charset.c_str());
