@@ -104,10 +104,11 @@ void Transcoder::decode(const wchar_t* src, size_t len, LogString& dst) {
 void Transcoder::encode(const LogString& src, std::wstring& dst) {
   dst.append(src);
 }
-#else
-#if LOG4CXX_HAS_WCHAR_T
+#endif
+
+#if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_HAS_WCHAR_T
 void Transcoder::decode(const wchar_t* src, size_t len, LogString& dst) {
-  static CharsetDecoderPtr encoder(CharsetDecoder::getWideDecoder());
+  static CharsetDecoderPtr decoder(CharsetDecoder::getWideDecoder());
   if (len > 0) {
     ByteBuffer buf((char*) src, len * sizeof(wchar_t));
     while(buf.remaining() > 0) {
@@ -126,18 +127,18 @@ void Transcoder::encode(const LogString& src, std::wstring& dst) {
   if (src.length() > 0) {
     char buf[BUFSIZE];
     ByteBuffer out(buf, BUFSIZE);
-    LogString::const_iterator iter = src.begin();
-    for(iter != src.end()) {
+    LogString::const_iterator iter(src.begin());
+    while(iter != src.end()) {
       log4cxx_status_t stat = encoder->encode(src, iter, out);
       out.flip();
-      dst.append(out.data(), out.limit());
+      dst.append((const wchar_t*)out.data(), out.limit()/sizeof(wchar_t));
       out.clear();
       if (CharsetEncoder::isError(stat)) {
         //
         //  represent character with an escape sequence
         //
-        dst.append("\\u");
-        const char* hexdigits = "0123456789ABCDEF";
+        dst.append(L"\\u");
+        const wchar_t* hexdigits = L"0123456789ABCDEF";
         unsigned short unencodable = *iter;
         dst.append(1, hexdigits[(unencodable >> 12) & 0x0F]);
         dst.append(1, hexdigits[(unencodable >> 8) & 0x0F]);
@@ -149,7 +150,6 @@ void Transcoder::encode(const LogString& src, std::wstring& dst) {
     encoder->encode(src, iter, out);
   }
 }
-#endif
 #endif
 
 

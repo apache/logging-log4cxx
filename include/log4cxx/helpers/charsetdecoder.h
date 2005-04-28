@@ -28,8 +28,8 @@ namespace log4cxx
 
 
           /**
-          *   An engine to transform a byte array in
-          *     a character set to LogStrings.
+          *   An abstract engine to transform a sequences of bytes in a specific charset
+        *   into a LogString.
           */
           class LOG4CXX_EXPORT CharsetDecoder : public ObjectImpl
           {
@@ -39,24 +39,58 @@ namespace log4cxx
                           LOG4CXX_CAST_ENTRY(CharsetDecoder)
                   END_LOG4CXX_CAST_MAP()
           protected:
+               /**
+               *  Protected constructor.
+               */
                   CharsetDecoder();
           public:
+               /**
+               *  Destructor.
+               */
                   virtual ~CharsetDecoder();
+
+              /**
+               *   Get decoder for default charset.
+               */
                   static CharsetDecoderPtr getDefaultDecoder();
+
 #if LOG4CXX_HAS_WCHAR_T
+              /**
+               *   Get decoder for a byte array containing wchar_t values.
+                   */
                   static CharsetDecoderPtr getWideDecoder();
 #endif
 
+              /**
+               *  Decodes as many bytes as possible from the given
+               *   input buffer, writing the results to the given output string.
+               *  @param in input buffer.
+               *  @param out output string.
+               *  @return APR_SUCCESS if not encoding errors were found.
+               */
                   virtual log4cxx_status_t decode(ByteBuffer& in,
                         LogString& out) = 0;
 
+              /**
+               *  Determins if status value indicates an invalid byte sequence.
+               */
                   inline static bool isError(log4cxx_status_t stat) {
                      return (stat != 0);
                   }
 
           private:
+               /**
+               *  Private copy constructor.
+               */
                   CharsetDecoder(const CharsetDecoder&);
+               /**
+               *  Private assignment operator.
+               */
                   CharsetDecoder& operator=(const CharsetDecoder&);
+              /**
+               *  Creates a new decoder for the default charset.
+               */
+                  static CharsetDecoder* createDefaultDecoder();
           };
 
         } // namespace helpers

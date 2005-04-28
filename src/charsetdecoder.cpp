@@ -17,7 +17,11 @@
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/unicodehelper.h>
 #include <apr_xlate.h>
+#if HAS_LANGINFO_CODESET
+#include <langinfo.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -29,14 +33,19 @@ namespace log4cxx
 {
         namespace helpers {
 
-#if !defined(_WIN32)
+#if APR_HAS_XLATE
           /**
            *  Converts from an arbitrary encoding to LogString
-           *    using apr_xlate.
+           *    using apr_xlate.  Requires real iconv implementation,
+         *    apr-iconv will crash in use.
            */
           class APRCharsetDecoder : public CharsetDecoder
           {
           public:
+           /**
+            *  Creates a new instance.
+            *  @param frompage name of source encoding.
+            */
               APRCharsetDecoder(const char* frompage) {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
                 const char* topage = "WCHAR_T";
@@ -57,6 +66,9 @@ namespace log4cxx
                 }
               }
 
+           /**
+            *  Destructor.
+            */
               virtual ~APRCharsetDecoder() {
                 apr_xlate_close(convset);
                 apr_pool_destroy(pool);
@@ -99,8 +111,7 @@ namespace log4cxx
           };
 #endif
 
-
-#if LOG4CXX_HAS_WCHAR_T || defined(_WIN32)
+#if LOG4CXX_HAS_WCHAR_T
           /**
           *    Converts from the default multi-byte string to
           *        LogString using mbstowcs.
@@ -115,8 +126,34 @@ namespace log4cxx
               virtual ~MbstowcsCharsetDecoder() {
               }
 
+          private:
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+              inline log4cxx_status_t append(LogString& out, const wchar_t* buf) {
+                  out.append(buf);
+                  return APR_SUCCESS;
+              }
+#endif
+
+#if LOG4CXX_LOGCHAR_IS_UTF8
+              log4cxx_status_t append(LogString& out, const wchar_t* buf) {
+                  char utf8[8];
+                  const wchar_t* current = buf;
+                  const wchar_t* end = wcschr(buf, 0);
+                  while(current < end) {
+                      unsigned int sv = UnicodeHelper::decodeWide(current, end);
+                      if (sv == 0xFFFF) {
+                          return APR_BADARG;
+                      }
+                      int bytes = UnicodeHelper::encodeUTF8(sv, utf8);
+                      out.append(utf8, bytes);
+                  }
+                  return APR_SUCCESS;
+              }
+#endif
+
               virtual log4cxx_status_t decode(ByteBuffer& in,
                   LogString& out) {
+                  log4cxx_status_t stat = APR_SUCCESS;
                   enum { BUFSIZE = 256 };
                   wchar_t buf[BUFSIZE];
 
@@ -130,15 +167,7 @@ namespace log4cxx
                         memset(buf, 0, BUFSIZE*sizeof(wchar_t));
                         size_t converted = mbstowcs(buf, in.data() + in.position(), requested);
                         if (converted != (size_t) -1) {
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-                            out.append(buf);
-#else
-                            size_t wlen = wcslen(buf);
-                            out.reserve(out.length() + wlen);
-                            for(int i = 0; i < wlen; i++) {
-                                encodeUTF8(buf[i], out);
-                            }
-#endif
+                            stat = append(out, buf);
                             in.position(in.position() + converted);
                             break;
                         }
@@ -147,19 +176,7 @@ namespace log4cxx
                           return APR_BADARG;
                       }
                   }
-                  return APR_SUCCESS;
-              }
-
-
-              static void encodeUTF8(unsigned short ch, std::string& out) {
-                  if (ch <= 0x7F) {
-                      out.append(1, (char) ch);
-                  } else {
-                      //
-                      //   TODO
-                      //
-                      out.append(1, '?');
-                  }
+                  return stat;
               }
 
 
@@ -171,46 +188,42 @@ namespace log4cxx
 #endif
 
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR
           /**
-          *    Converts from the default multi-byte string to
-          *        LogString using mbstowcs.
+          *    Decoder used when the external and internal charsets
+        *    are the same.
           *
           */
-          class TrivialWideCharsetDecoder : public CharsetDecoder
+          class TrivialCharsetDecoder : public CharsetDecoder
           {
           public:
-              TrivialWideCharsetDecoder() {
+              TrivialCharsetDecoder() {
               }
 
-              virtual ~TrivialWideCharsetDecoder() {
+              virtual ~TrivialCharsetDecoder() {
               }
 
               virtual log4cxx_status_t decode(ByteBuffer& in,
                   LogString& out) {
-                  const wchar_t* src = (const wchar_t*) (in.data() + in.position());
                   size_t remaining = in.remaining();
-                  size_t count = remaining / sizeof(wchar_t);
-                  out.append(src, count);
-                  in.position(in.position() + count * sizeof(wchar_t));
-                  if (remaining & 1) {
-                      return APR_BADARG;
-                  }
+              if( remaining > 0) {
+               const logchar* src = (const logchar*) (in.data() + in.position());
+               size_t count = remaining / sizeof(logchar);
+               out.append(src, count);
+               in.position(in.position() + remaining);
+              }
                   return APR_SUCCESS;
               }
 
 
 
           private:
-                  TrivialWideCharsetDecoder(const TrivialWideCharsetDecoder&);
-                  TrivialWideCharsetDecoder& operator=(const TrivialWideCharsetDecoder&);
+                  TrivialCharsetDecoder(const TrivialCharsetDecoder&);
+                  TrivialCharsetDecoder& operator=(const TrivialCharsetDecoder&);
           };
-#endif
 
-#if LOG4CXX_LOGCHAR_IS_UTF8 && defined(_WIN32)
+#if LOG4CXX_LOGCHAR_IS_UTF8
           /**
-          *    Converts from the default multi-byte string to
-          *        UTF-8 std::string
+          *    Decoder to convert array of wchar_t to UTF-8 bytes.
           *
           */
           class WideToUTF8CharsetDecoder : public CharsetDecoder
@@ -222,19 +235,22 @@ namespace log4cxx
               virtual ~WideToUTF8CharsetDecoder() {
               }
 
+
               virtual log4cxx_status_t decode(ByteBuffer& in,
                   LogString& out) {
-                  const wchar_t* src = in.data() + in.position();
-                  size_t remaining = in.remaining();
-                  size_t count = remaining / sizeof(wchar_t);
-                  out.reserve(out.length() + count;
-                  for(int i = 0; i < count; i++, src++) {
-                      MbstowcsCharsetDecoder::encodeUTF8(*src, out);
+                  const wchar_t* src = (const wchar_t*) (in.data() + in.position());
+                  const wchar_t* srcEnd = (const wchar_t*) (in.data() + in.limit());
+                  out.reserve(out.length() + in.remaining()/sizeof(wchar_t));
+                  char utf8[8];
+                  while(src < srcEnd) {
+                      unsigned int sv = UnicodeHelper::decodeWide(src, srcEnd);
+                      if (sv == 0xFFFF) {
+                          return APR_BADARG;
+                      }
+                      int bytes = UnicodeHelper::encodeUTF8(sv, utf8);
+                      out.append(utf8, bytes);
                   }
-                  in.position(in.position() + count * sizeof(wchar_t));
-                  if (remaining & 1) {
-                      return APR_BADARG;
-                  }
+                  in.position(((char*) src) - in.data());
                   return APR_SUCCESS;
               }
 
@@ -259,20 +275,32 @@ CharsetDecoder::CharsetDecoder() {
 CharsetDecoder::~CharsetDecoder() {
 }
 
-CharsetDecoderPtr CharsetDecoder::getDefaultDecoder() {
-#if LOG4CXX_HAS_WCHAR_T || defined(_WIN32)
-    static CharsetDecoderPtr decoder(new MbstowcsCharsetDecoder());
-#else
-    static CharsetDecoderPtr decoder(new APRCharsetDecoder(APR_LOCALE_CHARSET));
+CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
+#if LOG4CXX_LOGCHAR_IS_UTF8 && HAS_LANGINFO_CODESET
+    //
+    //   detect if encoding is UTF-8
+    //
+    if(strcmp(nl_langinfo(CODESET), "UTF-8") == 0) {
+        return new TrivialCharsetDecoder();
+    }
 #endif
+#if LOG4CXX_HAS_WCHAR_T
+    return new MbstowcsCharsetDecoder();
+#else
+    return new APRCharsetDecoder(APR_LOCALE_CHARSET);
+#endif
+}
+
+CharsetDecoderPtr CharsetDecoder::getDefaultDecoder() {
+    static CharsetDecoderPtr decoder(createDefaultDecoder());
     return decoder;
 }
 
 #if LOG4CXX_HAS_WCHAR_T
 CharsetDecoderPtr CharsetDecoder::getWideDecoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
-  static CharsetDecoderPtr decoder(new TrivialWideCharsetDecoder());
-#elif defined(_WIN32)
+  static CharsetDecoderPtr decoder(new TrivialCharsetDecoder());
+#elif defined(_WIN32) || defined(__STDC_ISO_10646__)
   static CharsetDecoderPtr decoder(new WideToUTF8CharsetDecoder());
 #else
   static CharsetDecoderPtr decoder(new APRCharsetDecoder("WCHAR_T"));

@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/exception.h>
 #include <apr_xlate.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/unicodehelper.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -30,10 +31,9 @@ namespace log4cxx
 
         namespace helpers {
 
-#if !defined(_WIN32)
+#if APR_HAS_XLATE
           /**
-          *   An engine to transform LogStrings into bytes
-          *     for the specific character set.
+          * A character encoder implemented using apr_xlate.
           */
           class APRCharsetEncoder : public CharsetEncoder
           {
@@ -97,19 +97,21 @@ namespace log4cxx
           };
 #endif
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR
+#if LOG4CXX_HAS_WCHAR_T
           /**
-          *   An engine to transform LogStrings into bytes
-          *     for the specific character set.
-          */
+           *  A character encoder implemented using wcstombs.
+          */   
           class WcstombsCharsetEncoder : public CharsetEncoder
           {
           public:
               WcstombsCharsetEncoder() {
               }
 
-              virtual log4cxx_status_t encode(const LogString& in,
-                    LogString::const_iterator& iter,
+           /**
+            *   Converts a wchar_t to the default external multibyte encoding.
+            */
+              log4cxx_status_t encode(const std::wstring& in,
+                  std::wstring::const_iterator& iter,
                     ByteBuffer& out) {
                       log4cxx_status_t stat = APR_SUCCESS;
 
@@ -117,7 +119,7 @@ namespace log4cxx
                          size_t outbytes_left = out.remaining();
                          size_t initial_outbytes_left = outbytes_left;
                          size_t position = out.position();
-                         LogString::size_type inOffset = (iter - in.begin());
+                         std::wstring::size_type inOffset = (iter - in.begin());
                          size_t inchars_left = (in.size() - inOffset);
                          apr_size_t initial_inchars_left = inchars_left;
                          enum { BUFSIZE = 256 };
@@ -149,6 +151,7 @@ namespace log4cxx
                                  if (converted != (size_t) -1) {
                                     iter += chunkSize;
                                     out.position(out.position() + converted);
+                           break;
                                  }
                              }
                          } else {
@@ -159,6 +162,48 @@ namespace log4cxx
                       return stat;
               }
 
+#if LOG4CXX_LOGCHAR_IS_UTF8
+           /**
+            *    Performs encoding by converting UTF-8 LogString into a wstring
+            *      and delegating to the other encode method.
+            */
+              virtual log4cxx_status_t encode(const std::string& in,
+                  std::string::const_iterator& iter,
+                  ByteBuffer& out) {
+                  log4cxx_status_t stat = APR_SUCCESS;
+                  if (iter != in.end()) {
+                    std::wstring wideIn;
+                    wideIn.reserve(in.length());
+                    const char* src = in.data() + (iter - in.begin());
+                    const char* srcEnd = in.data() + in.length();
+                    wchar_t tmp[2];
+                    while(src < srcEnd) {
+                        unsigned int sv = UnicodeHelper::decodeUTF8(src, srcEnd);
+                        if (sv == 0xFFFF) {
+                            iter = in.begin() + (src - in.data());
+                            return APR_BADARG;
+                        }
+
+                        int wcharCount = UnicodeHelper::encodeWide(sv, tmp);
+                        wideIn.append(tmp, wcharCount);
+                    }
+                    std::wstring::const_iterator wideIter(wideIn.begin());
+                    stat = encode(wideIn, wideIter, out);
+                    if (wideIter == wideIn.end()) {
+                        iter = in.end();
+                    } else {
+                        for(std::wstring::const_iterator i = wideIn.begin();
+                            i != wideIter;
+                            i++) {
+                            iter += UnicodeHelper::lengthUTF8(*i);
+                        }
+                    }
+                  }
+                  return stat;
+              }
+#endif
+
+
           private:
                   WcstombsCharsetEncoder(const WcstombsCharsetEncoder&);
                   WcstombsCharsetEncoder& operator=(const WcstombsCharsetEncoder&);
@@ -166,10 +211,8 @@ namespace log4cxx
 #endif
 
 
-#if defined(_WIN32)
           /**
-          *   An engine to transform LogStrings into bytes
-          *     for the specific character set.
+          *   Encodes a LogString to US-ASCII.
           */
           class USASCIICharsetEncoder : public CharsetEncoder
           {
@@ -182,19 +225,17 @@ namespace log4cxx
                     ByteBuffer& out) {
                   log4cxx_status_t stat = APR_SUCCESS;
                   if (iter != in.end()) {
-                      char* dstEnd = out.data() + out.limit();
-                      char* dst = out.data() + out.position();
-                      for(;
-                          dst < dstEnd && iter != in.end();
-                          iter++, dst++) {
-                          unsigned short ch = *iter;
-                          if (0x7F < ch) {
+                      while(out.remaining() > 0 && iter != in.end()) {
+                    LogString::const_iterator prev(iter);
+                          unsigned int sv = UnicodeHelper::decode(in, iter);
+                          if (sv <= 0x7F) {
+                              out.put((char) sv);
+                          } else {
+                       iter = prev;
                               stat = APR_BADARG;
                               break;
                           }
-                          *dst = ch;
                       }
-                      out.position(dst - out.data());
                   }
                   return stat;
               }
@@ -205,8 +246,7 @@ namespace log4cxx
           };
 
           /**
-          *   An engine to transform LogStrings into bytes
-          *     for the specific character set.
+          *   Converts a LogString to ISO-8859-1.
           */
           class ISOLatin1CharsetEncoder : public CharsetEncoder
           {
@@ -214,39 +254,70 @@ namespace log4cxx
               ISOLatin1CharsetEncoder() {
               }
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
                   log4cxx_status_t stat = APR_SUCCESS;
                   if (iter != in.end()) {
-                      char* dstEnd = out.data() + out.limit();
-                      char* dst = out.data() + out.position();
-                      for(;
-                          dst < dstEnd && iter != in.end();
-                          iter++, dst++) {
-                          unsigned short ch = *iter;
-                          if (0xFF < ch) {
+                      while(out.remaining() > 0 && iter != in.end()) {
+                    LogString::const_iterator prev(iter);
+                          unsigned int sv = UnicodeHelper::decode(in, iter);
+                          if (sv <= 0xFF) {
+                              out.put((char) sv);
+                          } else {
+                       iter = prev;
                               stat = APR_BADARG;
                               break;
                           }
-                          *dst = ch;
                       }
-                      out.position(dst - out.data());
                   }
                   return stat;
               }
-#endif
-
+          
           private:
                   ISOLatin1CharsetEncoder(const ISOLatin1CharsetEncoder&);
                   ISOLatin1CharsetEncoder& operator=(const ISOLatin1CharsetEncoder&);
           };
 
-
           /**
-          *   An engine to transform LogStrings into bytes
-          *     for the specific character set.
+          *   Encodes a LogString to a byte array when the encodings are indentical.
+          */
+          class TrivialCharsetEncoder : public CharsetEncoder
+          {
+          public:
+              TrivialCharsetEncoder() {
+              }
+
+
+              virtual log4cxx_status_t encode(const LogString& in,
+                    LogString::const_iterator& iter,
+                    ByteBuffer& out) {
+                  if(iter != in.end()) {
+                 size_t requested = in.length() - (iter - in.begin());
+                 if (requested > out.remaining()/sizeof(logchar)) {
+                    requested = out.remaining()/sizeof(logchar);
+                 }
+                 memcpy(out.current(), 
+                       (const char*) in.data() + (iter - in.begin()),
+                      requested * sizeof(logchar));
+                 iter += requested;
+                 out.position(out.position() + requested * sizeof(logchar));
+              }
+                  return APR_SUCCESS;
+              }
+
+          private:
+                  TrivialCharsetEncoder(const TrivialCharsetEncoder&);
+                  TrivialCharsetEncoder& operator=(const TrivialCharsetEncoder&);
+          };
+
+#if LOG4CXX_LOGCHAR_IS_UTF8
+typedef TrivialCharsetEncoder UTF8CharsetEncoder;
+#endif
+
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+          /**
+         *  Converts a wstring to UTF-8. 
           */
           class UTF8CharsetEncoder : public CharsetEncoder
           {
@@ -254,85 +325,37 @@ namespace log4cxx
               UTF8CharsetEncoder() {
               }
 
-#if LOG4CXX_LOGCHAR_IS_UTF8
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
+              log4cxx_status_t stat = APR_SUCCESS;
                   if (iter != in.end()) {
-                      size_t inOffset = iter - in.begin();
-                      char* dst = out.data() + out.position();
-                      size_t count = in.length() - inOffset;
-                      if (count > out.remaining()) {
-                          count = out.remaining();
-                      }
-                      memcpy(out.data() + out.position(),
-                             in.data() + inOffset,
-                             count);
-                      out.position(out.position() + count);
-                      iter += count;
-                  }
-                  return APR_SUCCESS;
-              }
-#endif
-
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-              virtual log4cxx_status_t encode(const LogString& in,
-                    LogString::const_iterator& iter,
-                    ByteBuffer& out) {
-                  if (iter != in.end()) {
-                      size_t inOffset = iter - in.begin();
-                      char* dst = out.data() + out.position();
-                      char* dstEnd = out.data() + out.limit();
-                      for(;
-                           dst < dstEnd && iter != in.end();
-                           iter++) {
-                           unsigned short sv = *iter;
-                           if (sv <= 0x7F) {
-                               *(dst++) = sv;
-                           } else if (sv <= 0x7FF) {
-                               if(dst + 1 < dstEnd) {
-                                   *(dst++) = 0xC0 | (sv >> 6);
-                                   *(dst++) = 0x80 | (sv & 0x3F);
-                               } else {
-                                   break;
-                               }
-                           } else if (sv < 0xD800 || sv > 0xDFFF) {
-                               if (dst + 2 < dstEnd) {
-                                   *(dst++) = 0xE0 | (sv >> 12);
-                                   *(dst++) = 0x80 | ((sv >> 6) & 0x3F);
-                                   *(dst++) = 0x80 | (sv & 0x3F);
-                               } else {
-                                   break;
-                               }
-                           } else {
-                               if (dst + 3 < dstEnd && (iter + 1) != in.end()) {
-                                   *(dst++) = 0xF0 | ((sv >> 8) & 0x03);
-                                   *(dst++) = 0x80 | ((sv >> 2) & 0x3F);
-                                   unsigned short ls = *(++iter);
-                                   *(dst++) = 0x80
-                                               | ((sv & 0x03) << 4)
-                                               | ((ls >> 6) & 0x0F);
-                                   *(dst++) = 0x80 | (ls & 0x3F);
-                               } else {
-                                   break;
-                               }
+                      const logchar* const srcBase = in.data();
+                      const logchar* const srcEnd = srcBase + in.length();
+                      const logchar* src = in.data() + (iter - in.begin());
+                      while(out.remaining() >= 8 && src < srcEnd) {
+                           unsigned int sv = UnicodeHelper::decodeWide(src, srcEnd);
+                           if (sv == 0xFFFF) {
+                               stat = APR_BADARG;
+                        break;
                            }
-                       }
-                       out.position(dst - out.data());
+                           int bytes = UnicodeHelper::encodeUTF8(sv, out.data() + out.position());
+                           out.position(out.position() + bytes);
+                      }
+                 iter = in.begin() + (src - srcBase);
                   }
                   return APR_SUCCESS;
               }
-#endif
 
           private:
                   UTF8CharsetEncoder(const UTF8CharsetEncoder&);
                   UTF8CharsetEncoder& operator=(const UTF8CharsetEncoder&);
           };
+#endif
 
 
           /**
-          *   An engine to transform LogStrings into bytes
-          *     for the specific character set.
+          *   Encodes a LogString to UTF16-BE.
           */
           class UTF16BECharsetEncoder : public CharsetEncoder
           {
@@ -340,23 +363,21 @@ namespace log4cxx
               UTF16BECharsetEncoder() {
               }
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
                   log4cxx_status_t stat = APR_SUCCESS;
-                  char* dstEnd = out.data() + out.limit() - 1;
-                  char* dst = out.data() + out.position();
-                  for(;
-                      dst < dstEnd && iter != in.end();
-                      iter++) {
-                      *(dst++) = (*iter & 0xFF00) >> 8;
-                      *(dst++) = *iter & 0x00FF;
+                  while(iter != in.end() && out.remaining() >= 4) {
+                      unsigned int sv = UnicodeHelper::decode(in, iter);
+                      if (sv == 0xFFFF) {
+                          stat = APR_BADARG;
+                          break;
+                      }
+                      int bytes = UnicodeHelper::encodeUTF16BE(sv, out.current());
+                      out.position(out.position() + bytes);
                   }
-                  out.position(dst - out.data());
                   return stat;
               }
-#endif
 
           private:
                   UTF16BECharsetEncoder(const UTF16BECharsetEncoder&);
@@ -364,8 +385,7 @@ namespace log4cxx
           };
 
           /**
-          *   An engine to transform LogStrings into bytes
-          *     for the specific character set.
+          *   Encodes a LogString to UTF16-LE.
           */
           class UTF16LECharsetEncoder : public CharsetEncoder
           {
@@ -373,30 +393,61 @@ namespace log4cxx
               UTF16LECharsetEncoder() {
               }
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR
+
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
                   log4cxx_status_t stat = APR_SUCCESS;
-                  char* dstEnd = out.data() + out.limit() - 1;
-                  char* dst = out.data() + out.position();
-                  for(;
-                      dst < dstEnd && iter != in.end();
-                      iter++) {
-                      *(dst++) = *iter & 0x00FF;
-                      *(dst++) = (*iter & 0xFF00) >> 8;
+                  while(iter != in.end() && out.remaining() >= 4) {
+                      unsigned int sv = UnicodeHelper::decode(in, iter);
+                      if (sv == 0xFFFF) {
+                          stat = APR_BADARG;
+                          break;
+                      }
+                      int bytes = UnicodeHelper::encodeUTF16LE(sv, out.current());
+                      out.position(out.position() + bytes);
                   }
-                  out.position(dst - out.data());
                   return stat;
               }
-#endif
 
           private:
                   UTF16LECharsetEncoder(const UTF16LECharsetEncoder&);
                   UTF16LECharsetEncoder& operator=(const UTF16LECharsetEncoder&);
           };
 
+#if LOG4CXX_HAS_WCHAR_T
+          /**
+          *   Converts a LogString to an array of wchar_t.
+          */
+          class WideCharsetEncoder : public CharsetEncoder
+          {
+          public:
+              WideCharsetEncoder() {
+              }
+
+
+              virtual log4cxx_status_t encode(const LogString& in,
+                    LogString::const_iterator& iter,
+                    ByteBuffer& out) {
+                  log4cxx_status_t stat = APR_SUCCESS;
+                  while(iter != in.end() && out.remaining() >= 4) {
+                      unsigned int sv = UnicodeHelper::decode(in, iter);
+                      if (sv == 0xFFFF) {
+                          stat = APR_BADARG;
+                          break;
+                      }
+                      int count = UnicodeHelper::encodeWide(sv, (wchar_t*) out.current());
+                      out.position(out.position() + count * sizeof(wchar_t));
+                  }
+                  return stat;
+              }
+
+          private:
+                  WideCharsetEncoder(const WideCharsetEncoder&);
+                  WideCharsetEncoder& operator=(const WideCharsetEncoder&);
+          };
 #endif
+
 
         } // namespace helpers
 
@@ -411,7 +462,7 @@ CharsetEncoder::~CharsetEncoder() {
 }
 
 CharsetEncoderPtr CharsetEncoder::getDefaultEncoder() {
-#if LOG4CXX_HAS_WCHAR_T || defined(_WIN32)
+#if LOG4CXX_HAS_WCHAR_T
   static CharsetEncoderPtr encoder(new WcstombsCharsetEncoder());
 #else
   static CharsetEncoderPtr encoder(new APRCharsetEncoder(APR_LOCALE_CHARSET));
@@ -422,11 +473,27 @@ CharsetEncoderPtr CharsetEncoder::getDefaultEncoder() {
 
 CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
    std::string cs(charset.size(), ' ');
-   for(int i = 0; i < charset.size(); i++) {
+   for(std::wstring::size_type i = 0; 
+      i < charset.length(); 
+     i++) {
       cs[i] = (char) charset[i];
    }
    return getEncoder(cs);
 }
+
+
+#if LOG4CXX_HAS_WCHAR_T
+CharsetEncoderPtr CharsetEncoder::getWideEncoder() {
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+  static CharsetEncoderPtr encoder(new TrivialCharsetEncoder());
+#endif
+#if LOG4CXX_LOGCHAR_IS_UTF8
+  static CharsetEncoderPtr encoder(new WideCharsetEncoder());
+#endif
+   return encoder;
+}
+#endif
+
 
 CharsetEncoderPtr CharsetEncoder::getEncoder(const std::string& charset) {
 #if defined(_WIN32)
@@ -464,7 +531,15 @@ void CharsetEncoder::encode(CharsetEncoderPtr& enc,
     ByteBuffer& dst) {
     log4cxx_status_t stat = enc->encode(src, iter, dst);
     if (stat != APR_SUCCESS && iter != src.end()) {
+#if LOG4CXX_LOGCHAR_IS_WCHAR
       iter++;
+#elif LOG4CXX_LOGCHAR_IS_UTF8
+      //  advance past this character and all continuation characters
+     while((*(++iter) & 0xC0) == 0x80);
+#else
+#error logchar is unrecognized
+#endif
+
       dst.put('?');
     }
 }

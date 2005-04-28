@@ -100,6 +100,7 @@ liblog4cxx_la_SOURCES = \
         threadspecificdata.cpp \
         transcoder.cpp \
         ttcclayout.cpp \
+        unicoderhelper.cpp \
         writer.cpp \
         writerappender.cpp \
         xmllayout.cpp\

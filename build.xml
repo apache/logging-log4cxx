@@ -3,10 +3,6 @@
 <!ENTITY libsets '
         <libset libs="${aprutil.lib.name}${lib-suffix}" dir="${aprutil.lib.dir}" if="aprutil.lib.dir"/>
         <libset libs="${aprutil.lib.name}${lib-suffix}" unless="aprutil.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-               dir="${apriconv.lib.dir}" if="apriconv.lib.dir"/>
-        <libset libs="${apriconv.lib.name}${lib-suffix}"
-                unless="apriconv.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="iconv" if="has-iconv"/>
@@ -73,9 +69,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="aprutil.lib.name" value="aprutil-1"/>
 <property name="aprutil.lib.type" value="static"/>
 
-<property name="apriconv.version" value="1.0.1"/>
-<property name="apriconv.lib.name" value="apriconv"/>
-<property name="apriconv.lib.type" value="static"/>
 
 <property name="cppunit.version" value="1.10.2"/>
 <property name="cppunit.lib.name" value="cppunit"/>
@@ -252,15 +245,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </condition>
 
 
-        <condition property="apriconv.dir" value="${apr.dir}">
-            <isset property="apr.dir"/>
-        </condition>
-        <condition property="apriconv.include.dir" value="${apriconv.dir}/include/apr-1">
-            <isset property="apriconv.dir"/>
-        </condition>
-        <condition property="apriconv.lib.dir" value="${apriconv.dir}/lib">
-            <isset property="apriconv.dir"/>
-        </condition>
 
 
         <condition property="aprutil.dir" value="${apr.dir}">
@@ -287,16 +271,13 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
         <available property="apr-available" file="${apr.lib.dir}/${lib.prefix}apr-1${lib-suffix}${lib.extension}"/>
         <available property="aprutil-available" file="${aprutil.lib.dir}/${lib.prefix}aprutil-1${lib-suffix}${lib.extension}"/>
-        <available property="apriconv-available" file="${apriconv.lib.dir}/${lib.prefix}apriconv${lib-suffix}${lib.extension}"/>
         <available property="cppunit-available" file="${cppunit.lib.dir}/${lib.prefix}cppunit${lib-suffix}${lib.extension}"/>
 
         <available property="apr-src-available" file="${lib.dir}/apr-${apr.version}.tar.gz"/>
-        <available property="apriconv-src-available" file="${lib.dir}/apr-iconv-${apriconv.version}.tar.gz"/>
         <available property="aprutil-src-available" file="${lib.dir}/apr-util-${aprutil.version}.tar.gz"/>
         <available property="cppunit-src-available" file="${lib.dir}/cppunit-${cppunit.version}.tar.gz"/>
 
         <available property="apr-src-expanded" file="${lib.dir}/apr-${apr.version}"/>
-        <available property="apriconv-src-expanded" file="${lib.dir}/apr-iconv-${apriconv.version}"/>
         <available property="aprutil-src-expanded" file="${lib.dir}/apr-util-${aprutil.version}"/>
         <available property="cppunit-src-expanded" file="${lib.dir}/cppunit-${cppunit.version}"/>
 
@@ -310,10 +291,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
                 <condition property="aprutil-static" value="true">
                         <equals arg1="${aprutil.lib.type}" arg2="static"/>
-                </condition>
-
-                <condition property="apriconv-static" value="true">
-                        <equals arg1="${apriconv.lib.type}" arg2="static"/>
                 </condition>
 
                 <condition property="cppunit-static" value="true">
@@ -356,7 +333,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <!-- exec executable="configure">
             <arg value="- -with-apr=${with-apr}"/>
             <arg value="- -with-aprutil=${aprutil.dir}"/>
-            <arg value="- -with-apriconv=${apriconv.dir}"/>
             <arg value="- -with-cppunit=${cppunit.dir}"/>
         </exec-->
 </target>
@@ -441,61 +417,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <property name="with-apr" location="${apr.dir}/apr--config"/>
 </target>
 
-<target name="get-apriconv-src" unless="apriconv-src-available">
-    <antcall target="get-apr-module">
-        <param name="module" value="apr-iconv"/>
-        <param name="module.version" value="${apriconv.version}"/>
-    </antcall>
-</target>
-
-
-<target name="untar-apriconv-src" depends="get-apriconv-src" unless="apriconv-src-expanded">
-    <antcall target="untar-apr-module">
-        <param name="module" value="apr-iconv"/>
-        <param name="module.version" value="${apriconv.version}"/>
-    </antcall>
-    <patch patchfile="${base.dir}/apr-iconv-${apriconv.version}.patch"
-           dir="${lib.dir}/apr-iconv-${apriconv.version}"
-           strip="0"/>
-    <delete file="${lib.dir}/apr-iconv-${apriconv.version}/lib/iconv_module.c"/>
-    <copy todir="${lib.dir}/apr-iconv-${apriconv.version}/lib">
-        <fileset dir="${src.dir}" includes="iconv_module.cpp"/>
-    </copy>
-</target>
-
-<target name="build-apriconv" depends="build-apr" unless="apriconv-available">
-    <antcall target="untar-apriconv-src"/>
-
-    <property name="apriconv.dir" location="${lib.dir}/apr-iconv-${apriconv.version}"/>
-    <property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
-    <property name="apriconv.lib.dir" location="${executable.dir}/${apriconv.lib.type}"/>
-    <ant antfile="apriconv-build.xml" target="build-lib" inheritAll="false">
-        <property name="version" value="${apriconv.version}"/>
-        <property name="apriconv.dir" value="${apriconv.dir}"/>
-        <property name="debug" value="${debug}"/>
-        <property name="lib-suffix" value="${lib-suffix}"/>
-        <property name="compiler" value="${compiler}"/>
-        <property name="apr.include.dir" value="${apr.include.dir}"/>
-        <property name="apr.lib.dir" value="${apr.lib.dir}"/>
-        <property name="apriconv.lib.dir" value="${apriconv.lib.dir}"/>
-        <property name="apr.lib.type" value="${apr.lib.type}"/>
-        <property name="apriconv.lib.type" value="${apriconv.lib.type}"/>
-        <property name="with-apr" value="${with-apr}"/>
-        <property name="project.type" value="${project.type}"/>
-        <property name="project.dir" value="${project.dir}"/>
-        <property name="project.if.value" value="${project.if}"/>
-        <property name="use-pic" value="${use-pic}"/>
-        <property name="os.family" value="${os.family}"/>
-    </ant>
-
-
-    <!--  configure can't handle a Windows path   -->
-    <condition property="with-apr-iconv" value="../apr-iconv-${apriconv.version}">
-         <isset property="is-cygwin"/>
-    </condition>
-    <property name="with-apr-iconv" location="${apriconv.dir}"/>
-
-</target>
 
 <target name="get-aprutil-src" unless="aprutil-src-available">
     <antcall target="get-apr-module">
@@ -515,7 +436,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="build-aprutil" depends="build-apriconv" unless="aprutil-available">
+
+<target name="build-aprutil" depends="build-apr" unless="aprutil-available">
     <antcall target="untar-aprutil-src"/>
 
     <property name="aprutil.dir" location="${lib.dir}/apr-util-${aprutil.version}"/>
@@ -530,14 +452,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <property name="compiler" value="${compiler}"/>
         <property name="apr.include.dir" value="${apr.include.dir}"/>
         <property name="apr.lib.dir" value="${apr.lib.dir}"/>
-        <property name="apriconv.include.dir" value="${apriconv.include.dir}"/>
-        <property name="apriconv.lib.dir" value="${apriconv.lib.dir}"/>
         <property name="aprutil.lib.dir" value="${aprutil.lib.dir}"/>
         <property name="apr.lib.type" value="${apr.lib.type}"/>
-        <property name="apriconv.lib.type" value="${apriconv.lib.type}"/>
         <property name="aprutil.lib.type" value="${aprutil.lib.type}"/>
         <property name="with-apr" value="${with-apr}"/>
-        <property name="with-apr-iconv" value="${with-apr-iconv}"/>
         <property name="project.type" value="${project.type}"/>
         <property name="project.dir" value="${project.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
@@ -655,12 +573,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${aprutil.include.dir}"/>
-        <includepath path="${apriconv.include.dir}"/>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
         <defineset define="LOG4CXX"/>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
-        <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset if="is-utf8">
@@ -699,7 +615,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
-        <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset if="is-utf8">
             <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
         </defineset>
@@ -725,9 +640,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
           dir="${log4cxx.lib.dir}"
           failonerror="true">
           <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="Path" value="${env.Path}"/>
     </exec>
 </target>
@@ -836,10 +751,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${aprutil.include.dir}"/>
-        <includepath path="${apriconv.include.dir}"/>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
-        <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset if="is-utf8">
@@ -882,10 +795,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${aprutil.include.dir}"/>
-        <includepath path="${apriconv.include.dir}"/>
         <defineset define="LOG4CXX"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
-        <defineset define="API_DECLARE_STATIC" if="apriconv-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset if="is-utf8">
@@ -927,9 +838,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <env key="key1" value="value1"/>
             <env key="key2" value="value2"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="Path"
                    value="${log4cxx.lib.dir};${env.Path}"/>
     </exec>
@@ -941,9 +852,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="log4j.configuration"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -953,9 +864,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LOG4CXX_CONFIGURATION"
                    value="${defaultInit3.properties}"/>
     </exec>
@@ -970,9 +881,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <!-- modify log4j.properties so if it has precedence the test fails  -->
@@ -983,9 +894,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
     </exec>
 
     <delete file="${log4cxx.lib.dir}/log4cxx.properties"/>
@@ -1000,9 +911,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
               failonerror="true">
             <arg value="TestCase4"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
     </exec>
 
 </target>
@@ -1018,9 +929,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <env key="key1" value="value1"/>
             <env key="key2" value="value2"/>
             <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
             <env key="Path"
                    value="${log4cxx.lib.dir};${env.Path}"/>
     </exec>

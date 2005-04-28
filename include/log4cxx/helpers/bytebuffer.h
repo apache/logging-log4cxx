@@ -45,6 +45,8 @@ namespace log4cxx
 
                   inline char* data() { return base; }
                   inline const char* data() const { return base; }
+                  inline char* current() { return base + pos; }
+                  inline const char* current() const { return base + pos; }
                   inline size_t limit() const { return lim; }
                   inline size_t position() const { return pos; }
                   inline size_t remaining() const { return lim - pos; }

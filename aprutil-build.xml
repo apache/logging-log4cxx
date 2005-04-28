@@ -31,7 +31,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="build.dir" location="${aprutil.dir}/build"/>
 <property name="include.dir" location="${aprutil.dir}/include"/>
 <property name="apr.lib.type" value="shared"/>
-<property name="apriconv.lib.type" value="static"/>
 <property name="aprutil.lib.type" value="shared"/>
 
 
@@ -41,8 +40,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <property name="apr.dir" location="${aprutil.dir}/../apr-1.1.0"/>
 <property name="apr.include.dir" location="${apr.dir}/include"/>
-<property name="apriconv.dir" location="${aprutil.dir}/../apr-iconv-1.0.1"/>
-<property name="apriconv.include.dir" location="${apriconv.dir}/include"/>
 
 <target name="usage" description="Displays usage notes">
         <echo>
@@ -99,10 +96,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <condition property="with-apr" value="../${with-apr-base}">
         <os family="windows"/>
     </condition>
-    <basename property="with-apr-iconv-base" file="${apriconv.dir}"/>
-    <condition property="with-apr-iconv" value="../${with-apr-iconv-base}">
-        <os family="windows"/>
-    </condition>
 
 </target>
 
@@ -133,9 +126,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-apr-shared" value="true">
             <equals arg1="${apr.lib.type}" arg2="shared"/>
         </condition>
-        <condition property="is-apriconv-shared" value="true">
-            <equals arg1="${apriconv.lib.type}" arg2="shared"/>
-        </condition>
         <condition property="is-aprutil-shared" value="true">
             <equals arg1="${aprutil.lib.type}" arg2="shared"/>
         </condition>
@@ -149,7 +139,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </condition>
 
         <property name="with-apr" value="${apr.dir}"/>
-        <property name="with-apr-iconv" value="${apriconv.dir}"/>
 
 </target>
 
@@ -174,6 +163,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="win-configure" depends="configure-check" if="is-windows" unless="config-available">
     <copy tofile="${include.dir}/apu.h" file="${include.dir}/apu.hw"/>
+    <replaceregexp file="${include.dir}/apu.h" match="#define *APU_HAVE_APR_ICONV.*" replace="#define APU_HAVE_APR_ICONV 0"/>
     <copy tofile="${include.dir}/apu_want.h" file="${include.dir}/apu_want.hw"/>
     <copy tofile="${include.dir}/apr_ldap.h" file="${include.dir}/apr_ldap.hw"/>
     <replaceregexp file="${include.dir}/apr_ldap.h" match="#define APR_HAS_LDAP.*" replace="#define APR_HAS_LDAP 0"/>
@@ -187,7 +177,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <exec executable="sh" dir="${aprutil.dir}">
            <arg value="./configure"/>
            <arg value="--with-apr=${with-apr}"/>
-           <arg value="--with-apr-iconv=${with-apr-iconv}"/>
         </exec>
         <exec executable="sh" dir="${aprutil.dir}/xml/expat">
             <arg value="./configure"/>
@@ -227,23 +216,23 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="${include.dir}/private"/>
         <includepath path="${apr.include.dir}"/>
-        <includepath path="${apriconv.include.dir}"/>
         <includepath path="${aprutil.dir}/xml/expat/lib"/>
         <includepath path="${aprutil.dir}/xml/expat"/>
         <defineset define="APU_DECLARE_EXPORT" if="is-aprutil-shared"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
-        <defineset define="API_DECLARE_STATIC" unless="is-apriconv-shared"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
-        <libset dir="${apriconv.lib.dir}" libs="apriconv${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl crypt" if="is-unix"/>
         <defineset if="is-bcc">
             <define name="EILSEQ" value="50"/>
+        </defineset>
+        <defineset>
+			<define name="APU_HAVE_APR_ICONV" value="0"/>
         </defineset>
         <project type="${project.type}" outfile="${project.dir}/aprutil" if="project.if"/>
     </cc>
@@ -262,7 +251,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
-        <defineset define="API_DECLARE_STATIC" unless="is-apriconv-shared"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
@@ -280,7 +268,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="copy-apr" if="is-windows">
     <copy todir="${aprutil.lib.dir}">
         <fileset dir="${apr.lib.dir}" includes="apr-1${lib-suffix}.dll"/>
-        <fileset dir="${apriconv.lib.dir}" includes="*.dll"/>
     </copy>
 </target>
 
@@ -289,11 +276,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
           dir="${aprutil.lib.dir}"
           failonerror="true">
         <env key="DYLD_LIBRARY_PATH"
-           value="${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+           value="${apr.lib.dir}:${aprutil.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
         <env key="LD_LIBRARY_PATH"
-           value="${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+           value="${apr.lib.dir}:${aprutil.lib.dir}:${env.LD_LIBRARY_PATH}"/>
         <env key="Path"
-           value="${apr.lib.dir}:${aprutil.lib.dir}:${apriconv.lib.dir}:${env.Path}"/>
+           value="${apr.lib.dir}:${aprutil.lib.dir}:${env.Path}"/>
     </exec>
 </target>
 
@@ -427,7 +414,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <includepath path="${include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
-        <defineset define="API_DECLARE_STATIC" unless="is-apriconv-shared"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>

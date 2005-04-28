@@ -36,11 +36,7 @@ class TranscoderTestCase : public CppUnit::TestFixture
 #if LOG4CXX_HAS_WCHAR_T
                 CPPUNIT_TEST(decode4);
 #endif
-                CPPUNIT_TEST(decode5);
-                CPPUNIT_TEST(decode6);
                 CPPUNIT_TEST(decode7);
-                CPPUNIT_TEST(decode8);
-                CPPUNIT_TEST(decode9);
 #if LOG4CXX_HAS_WCHAR_T
                 CPPUNIT_TEST(encode1);
 #endif
@@ -89,34 +85,6 @@ public:
         }
 #endif
 
-        void decode5() {
-            //
-            //  copyright symbol on ISO-8859-1, bad sequence in UTF-8
-            const char badUTF8[] = { 0xA9, 0 } ;
-            LogString decoded(LOG4CXX_STR("foo"));
-            Transcoder::decode(badUTF8, decoded);
-            CPPUNIT_ASSERT_EQUAL((size_t) 4, decoded.length());
-            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo"), decoded.substr(0, 3));
-            if (decoded[3] != (logchar) 0x00A9) {
-              CPPUNIT_ASSERT_EQUAL(LOG4CXX_STR('?'), decoded[3]);
-            }
-        }
-
-
-        void decode6() {
-            //
-            //  copyright symbol on ISO-8859-1, bad sequence in UTF-8
-            //    Followed by "Hello"
-            const char badUTF8[] = { 0xA9, 'H', 'e', 'l', 'l', 'o', 0 } ;
-            LogString decoded(LOG4CXX_STR("foo"));
-            Transcoder::decode(badUTF8, decoded);
-            CPPUNIT_ASSERT_EQUAL((size_t) 9, decoded.length());
-            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo"), decoded.substr(0, 3));
-            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Hello"), decoded.substr(4));
-            if (decoded[3] != (logchar) 0x00A9) {
-              CPPUNIT_ASSERT_EQUAL(LOG4CXX_STR('?'), decoded[3]);
-            }
-        }
 
         enum { BUFSIZE = 255 };
 
@@ -135,45 +103,6 @@ public:
                   decoded.substr(BUFSIZE -2 ));
         }
 
-        void decode8() {
-            //
-            //   Bad UTF-8 striding over a buffer boundary
-            //
-            std::string longMsg(BUFSIZE - 1, 'A');
-            longMsg.append(1, (char) 0xA9);
-            LogString decoded;
-            Transcoder::decode(longMsg, decoded);
-            CPPUNIT_ASSERT_EQUAL((size_t) BUFSIZE, decoded.length());
-            CPPUNIT_ASSERT_EQUAL(LogString(BUFSIZE - 1, LOG4CXX_STR('A')),
-                  decoded.substr(0, BUFSIZE - 1));
-            if (decoded[BUFSIZE - 1] != (logchar) 0x00A9) {
-              CPPUNIT_ASSERT_EQUAL(LOG4CXX_STR('?'), decoded[BUFSIZE-1]);
-            }
-        }
-
-
-        void decode9() {
-            //
-            //   Good UTF-8 multibyte sequqnce striding over a buffer boundary
-            //
-            std::string longMsg(BUFSIZE - 1, 'A');
-            longMsg.append(1, (char) 0xC2);
-            longMsg.append(1, (char) 0xA9);
-            longMsg.append("Hello");
-            LogString decoded;
-            Transcoder::decode(longMsg, decoded);
-            //
-            //  starts with a lot of A's
-            CPPUNIT_ASSERT_EQUAL(LogString(BUFSIZE - 1, LOG4CXX_STR('A')),
-                  decoded.substr(0, BUFSIZE - 1));
-            //
-            //  ends with Hello
-            CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Hello")),
-                  decoded.substr(decoded.length() - 5));
-            //
-            //  can't say what the middle should be
-            //      typically copyright or an accented A + copyright
-        }
 
 #if LOG4CXX_HAS_WCHAR_T
         void encode1() {

@@ -18,7 +18,8 @@ libhelpers_a_SOURCES = \
         relativetimedateformattestcase.cpp \
         stringtokenizertestcase.cpp \
         timezonetestcase.cpp \
-        transcodertestcase.cpp
+        transcodertestcase.cpp \
+        unicodehelpertestcase.cpp 
 
 check: libhelpers.a
 

@@ -25,7 +25,7 @@
 #include <log4cxx/net/socketnode.h>
 
 #include "net/socketservertestcase.h"
-#include <log4cxx/stream.h>
+#include <sstream>
 #include <iostream>
 #include <stdlib.h>
 
@@ -61,23 +61,26 @@ public:
       //
       //   using the stream interface since it knows
       //      numeric and encoding conversion
-      logstream log(Logger::getLogger("shortsocketserver"), Level::DEBUG);
+      LoggerPtr logger(Logger::getLogger("shortsocketserver"));
+     std::ostringstream os("Listening on port ");
+     os << PORT;
+     LOG4CXX_INFO(logger, os.str());
 
-      log << "Listening on port " << PORT << LOG4CXX_ENDMSG;
-      ServerSocket serverSocket(PORT);
+     ServerSocket serverSocket(PORT);
 
       MDC::put("hostID", "shortSocketServer");
 
       for (int i = 1; i <= totalTests; i++)
       {
-                        std::ostringstream sbuf(prefix);
+         std::ostringstream sbuf(prefix);
          sbuf <<  i  << ".properties";
          PropertyConfigurator::configure(sbuf.str());
-         log << "Waiting to accept a new client." << LOG4CXX_ENDMSG;
+         LOG4CXX_INFO(logger, "Waiting to accept a new client.");
          SocketPtr socket = serverSocket.accept();
-                        log << "Connected to client at "
-                            << socket->getInetAddress().toString() << LOG4CXX_ENDMSG;
-         log << "Starting new socket node." << LOG4CXX_ENDMSG;
+       LogString msg(socket->getInetAddress().toString());
+       msg.insert(0, LOG4CXX_STR("Connected to client at "));
+       LOG4CXX_INFO(logger, msg);
+         LOG4CXX_INFO(logger, "Starting new socket node.");
          SocketNode sn(socket, LogManager::getLoggerRepository());
          sn.run();
       }
