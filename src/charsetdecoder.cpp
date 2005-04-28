@@ -19,9 +19,7 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/unicodehelper.h>
 #include <apr_xlate.h>
-#if HAS_LANGINFO_CODESET
-#include <langinfo.h>
-#endif
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -190,7 +188,7 @@ namespace log4cxx
 
           /**
           *    Decoder used when the external and internal charsets
-        *    are the same.
+          *    are the same.
           *
           */
           class TrivialCharsetDecoder : public CharsetDecoder
@@ -220,6 +218,143 @@ namespace log4cxx
                   TrivialCharsetDecoder(const TrivialCharsetDecoder&);
                   TrivialCharsetDecoder& operator=(const TrivialCharsetDecoder&);
           };
+
+
+#if LOG4CXX_LOGCHAR_IS_UTF8
+typedef TrivialCharsetDecoder UTF8CharsetDecoder;
+#endif
+
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+/**
+*    Converts from UTF-8 to std::wstring
+*
+*/
+class UTF8CharsetDecoder : public CharsetDecoder
+{
+public:
+    UTF8CharsetDecoder() {
+    }
+
+    virtual ~UTF8CharsetDecoder() {
+    }
+
+private:
+    virtual log4cxx_status_t decode(ByteBuffer& in,
+        LogString& out) {
+        log4cxx_status_t stat = APR_SUCCESS;
+        if (in.remaining() > 0) {
+          wchar_t buf[2];
+
+          const char* src = in.current();
+          const char* srcEnd = in.data() + in.limit();
+          while(src < srcEnd) {
+             unsigned int sv = UnicodeHelper::decodeUTF8(src, srcEnd);
+             if (sv == 0xFFFF) {
+                stat = APR_BADARG;
+                break;
+             }
+             int wchars = UnicodeHelper::encodeWide(sv, buf);
+             out.append(buf, wchars);
+          }
+          in.position(src - in.data());
+        }
+        return stat;
+    }
+
+
+
+private:
+        UTF8CharsetDecoder(const UTF8CharsetDecoder&);
+        UTF8CharsetDecoder& operator=(const UTF8CharsetDecoder&);
+};
+#endif
+
+/**
+*    Converts from ISO-8859-1 to LogString.
+*
+*/
+class ISOLatinCharsetDecoder : public CharsetDecoder
+{
+public:
+    ISOLatinCharsetDecoder() {
+    }
+
+    virtual ~ISOLatinCharsetDecoder() {
+    }
+
+private:
+    virtual log4cxx_status_t decode(ByteBuffer& in,
+        LogString& out) {
+        log4cxx_status_t stat = APR_SUCCESS;
+        if (in.remaining() > 0) {
+          logchar buf[8];
+
+          const unsigned char* src = (unsigned char*) in.current();
+          const unsigned char* srcEnd = src + in.remaining();
+          while(src < srcEnd) {
+             unsigned int sv = *(src++);
+             int logchars = UnicodeHelper::encode(sv, buf);
+             out.append(buf, logchars);
+          }
+          in.position(in.limit());
+        }
+        return stat;
+    }
+
+
+
+private:
+        ISOLatinCharsetDecoder(const ISOLatinCharsetDecoder&);
+        ISOLatinCharsetDecoder& operator=(const ISOLatinCharsetDecoder&);
+};
+
+
+/**
+*    Converts from ISO-8859-1 to LogString.
+*
+*/
+class USASCIICharsetDecoder : public CharsetDecoder
+{
+public:
+    USASCIICharsetDecoder() {
+    }
+
+    virtual ~USASCIICharsetDecoder() {
+    }
+
+private:
+
+  virtual log4cxx_status_t decode(ByteBuffer& in,
+      LogString& out) {
+      log4cxx_status_t stat = APR_SUCCESS;
+      if (in.remaining() > 0) {
+        logchar buf[8];
+
+        const unsigned char* src = (unsigned char*) in.current();
+        const unsigned char* srcEnd = src + in.remaining();
+        while(src < srcEnd) {
+           unsigned char sv = *src;
+           if (sv < 0x80) {
+              src++;
+              int logchars = UnicodeHelper::encode(sv, buf);
+              out.append(buf, logchars);
+           } else {
+             stat = APR_BADARG;
+             break;
+           }
+        }
+        in.position(src - (const unsigned char*) in.data());
+      }
+      return stat;
+    }
+
+
+
+private:
+        USASCIICharsetDecoder(const USASCIICharsetDecoder&);
+        USASCIICharsetDecoder& operator=(const USASCIICharsetDecoder&);
+};
+
 
 #if LOG4CXX_LOGCHAR_IS_UTF8
           /**
@@ -276,14 +411,6 @@ CharsetDecoder::~CharsetDecoder() {
 }
 
 CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
-#if LOG4CXX_LOGCHAR_IS_UTF8 && HAS_LANGINFO_CODESET
-    //
-    //   detect if encoding is UTF-8
-    //
-    if(strcmp(nl_langinfo(CODESET), "UTF-8") == 0) {
-        return new TrivialCharsetDecoder();
-    }
-#endif
 #if LOG4CXX_HAS_WCHAR_T
     return new MbstowcsCharsetDecoder();
 #else

@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/unicodehelper.h>
 
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -100,7 +101,7 @@ namespace log4cxx
 #if LOG4CXX_HAS_WCHAR_T
           /**
            *  A character encoder implemented using wcstombs.
-          */   
+          */
           class WcstombsCharsetEncoder : public CharsetEncoder
           {
           public:
@@ -248,10 +249,10 @@ namespace log4cxx
           /**
           *   Converts a LogString to ISO-8859-1.
           */
-          class ISOLatin1CharsetEncoder : public CharsetEncoder
+          class ISOLatinCharsetEncoder : public CharsetEncoder
           {
           public:
-              ISOLatin1CharsetEncoder() {
+              ISOLatinCharsetEncoder() {
               }
 
               virtual log4cxx_status_t encode(const LogString& in,
@@ -260,12 +261,12 @@ namespace log4cxx
                   log4cxx_status_t stat = APR_SUCCESS;
                   if (iter != in.end()) {
                       while(out.remaining() > 0 && iter != in.end()) {
-                    LogString::const_iterator prev(iter);
+                          LogString::const_iterator prev(iter);
                           unsigned int sv = UnicodeHelper::decode(in, iter);
                           if (sv <= 0xFF) {
                               out.put((char) sv);
                           } else {
-                       iter = prev;
+                              iter = prev;
                               stat = APR_BADARG;
                               break;
                           }
@@ -273,10 +274,10 @@ namespace log4cxx
                   }
                   return stat;
               }
-          
+
           private:
-                  ISOLatin1CharsetEncoder(const ISOLatin1CharsetEncoder&);
-                  ISOLatin1CharsetEncoder& operator=(const ISOLatin1CharsetEncoder&);
+                  ISOLatinCharsetEncoder(const ISOLatinCharsetEncoder&);
+                  ISOLatinCharsetEncoder& operator=(const ISOLatinCharsetEncoder&);
           };
 
           /**
@@ -297,7 +298,7 @@ namespace log4cxx
                  if (requested > out.remaining()/sizeof(logchar)) {
                     requested = out.remaining()/sizeof(logchar);
                  }
-                 memcpy(out.current(), 
+                 memcpy(out.current(),
                        (const char*) in.data() + (iter - in.begin()),
                       requested * sizeof(logchar));
                  iter += requested;
@@ -317,7 +318,7 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
           /**
-         *  Converts a wstring to UTF-8. 
+         *  Converts a wstring to UTF-8.
           */
           class UTF8CharsetEncoder : public CharsetEncoder
           {
@@ -462,19 +463,23 @@ CharsetEncoder::~CharsetEncoder() {
 }
 
 CharsetEncoderPtr CharsetEncoder::getDefaultEncoder() {
-#if LOG4CXX_HAS_WCHAR_T
-  static CharsetEncoderPtr encoder(new WcstombsCharsetEncoder());
-#else
-  static CharsetEncoderPtr encoder(new APRCharsetEncoder(APR_LOCALE_CHARSET));
-#endif
+  static CharsetEncoderPtr encoder(createDefaultEncoder());
   return encoder;
+}
+
+CharsetEncoder* CharsetEncoder::createDefaultEncoder() {
+#if LOG4CXX_HAS_WCHAR_T
+  return new WcstombsCharsetEncoder();
+#else
+  return new APRCharsetEncoder(APR_LOCALE_CHARSET);
+#endif
 }
 
 
 CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
    std::string cs(charset.size(), ' ');
-   for(std::wstring::size_type i = 0; 
-      i < charset.length(); 
+   for(std::wstring::size_type i = 0;
+      i < charset.length();
      i++) {
       cs[i] = (char) charset[i];
    }
@@ -496,13 +501,13 @@ CharsetEncoderPtr CharsetEncoder::getWideEncoder() {
 
 
 CharsetEncoderPtr CharsetEncoder::getEncoder(const std::string& charset) {
-#if defined(_WIN32)
     if (StringHelper::equalsIgnoreCase(charset, "US-ASCII", "us-ascii") ||
-        StringHelper::equalsIgnoreCase(charset, "ISO646-US", "iso646-US")) {
+        StringHelper::equalsIgnoreCase(charset, "ISO646-US", "iso646-US") ||
+        StringHelper::equalsIgnoreCase(charset, "ANSI_X3.4-1968", "ansi_x3.4-1968")) {
         return new USASCIICharsetEncoder();
     } else if (StringHelper::equalsIgnoreCase(charset, "ISO-8859-1", "iso-8859-1") ||
         StringHelper::equalsIgnoreCase(charset, "ISO-LATIN-1", "iso-latin-1")) {
-        return new ISOLatin1CharsetEncoder();
+        return new ISOLatinCharsetEncoder();
     } else if (StringHelper::equalsIgnoreCase(charset, "UTF-8", "utf-8")) {
         return new UTF8CharsetEncoder();
     } else if (StringHelper::equalsIgnoreCase(charset, "UTF-16BE", "utf-16be")
@@ -511,9 +516,10 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::string& charset) {
     } else if (StringHelper::equalsIgnoreCase(charset, "UTF-16LE", "utf-16le")) {
         return new UTF16LECharsetEncoder();
     }
+#if defined(_WIN32)
     throw IllegalArgumentException(charset);
 #else
-   return new APRCharsetEncoder(charset.c_str());
+    return new APRCharsetEncoder(charset.c_str());
 #endif
 }
 

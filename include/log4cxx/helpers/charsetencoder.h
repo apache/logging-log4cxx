@@ -59,8 +59,8 @@ namespace log4cxx
 
               /**
                *  Get encoder for specified character set.
-               *  @param charset, the following values should be recognized: 
-               *     "US-ASCII", "ISO-8859-1", "UTF-8", 
+               *  @param charset, the following values should be recognized:
+               *     "US-ASCII", "ISO-8859-1", "UTF-8",
                *     "UTF-16BE", "UTF-16LE".
                *  @return encoder, may be null if charset was not recognized.
                */
@@ -74,8 +74,8 @@ namespace log4cxx
 
               /**
                *  Get encoder for specified character set.
-               *  @param charset, the following values should be recognized: 
-               *     "US-ASCII", "ISO-8859-1", "UTF-8", 
+               *  @param charset, the following values should be recognized:
+               *     "US-ASCII", "ISO-8859-1", "UTF-8",
                *     "UTF-16BE", "UTF-16LE".
                *  @return encoder, may be null if charset was not recognized.
                */
@@ -133,6 +133,8 @@ namespace log4cxx
                *   Private assignment operator.
                */
                   CharsetEncoder& operator=(const CharsetEncoder&);
+
+              static CharsetEncoder* createDefaultEncoder();
           };
 
         } // namespace helpers

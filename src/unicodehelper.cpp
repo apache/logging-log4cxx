@@ -22,7 +22,7 @@ using namespace log4cxx::helpers;
 
 
 
-unsigned int UnicodeHelper::decodeUTF8(const char*& src, 
+unsigned int UnicodeHelper::decodeUTF8(const char*& src,
                                        const char* srcEnd) {
   const char* start = src;
   unsigned char ch1 = *(src++);
@@ -61,7 +61,7 @@ unsigned int UnicodeHelper::decodeUTF8(const char*& src,
           }
           if ((ch1 & 0xF0) == 0xE0) {
               unsigned rv = ((ch1 & 0x0F) << 12)
-              + ((ch2 & 0x3F) << 6) 
+              + ((ch2 & 0x3F) << 6)
               + (ch3 & 0x3F);
               if (rv <= 0x800) {
               src = start;
@@ -124,7 +124,7 @@ int UnicodeHelper::encodeWide(unsigned int ch, wchar_t* dst) {
 int UnicodeHelper::lengthUTF8(wchar_t ch) {
   if (ch <= 0x7F) {
       return 1;
-  } 
+  }
   if(ch <= 0x7FF) {
       return 2;
   }
@@ -153,7 +153,7 @@ unsigned int UnicodeHelper::decodeWide(const wchar_t*& src, const wchar_t* srcEn
 int UnicodeHelper::lengthUTF8(wchar_t ch) {
   if (ch <= 0x7F) {
       return 1;
-  } 
+  }
   if(ch <= 0x7FF) {
       return 2;
   }
@@ -255,4 +255,19 @@ unsigned int UnicodeHelper::decode(const LogString& in, LogString::const_iterato
     return sv;
 }
 #endif
+
+
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+int UnicodeHelper::encode(unsigned int sv, logchar* out) {
+    return encodeWide(sv, out);
+}
+#endif
+
+
+#if LOG4CXX_LOGCHAR_IS_UTF8
+int UnicodeHelper::encode(unsigned int sv, logchar* out) {
+    return encodeUTF8(sv, out);
+}
+#endif
+
 
