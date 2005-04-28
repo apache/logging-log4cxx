@@ -155,23 +155,27 @@ namespace log4cxx
                   enum { BUFSIZE = 256 };
                   wchar_t buf[BUFSIZE];
 
+                  mbstate_t mbstate;
+
                   while(in.remaining() > 0) {
                       size_t requested = in.remaining();
                       if (requested > BUFSIZE - 1) {
                           requested = BUFSIZE - 1;
                       }
 
-                      for(; requested > 0; requested--) {
-                        memset(buf, 0, BUFSIZE*sizeof(wchar_t));
-                        size_t converted = mbstowcs(buf, in.data() + in.position(), requested);
-                        if (converted != (size_t) -1) {
-                            stat = append(out, buf);
-                            in.position(in.position() + converted);
-                            break;
-                        }
-                      }
-                      if (requested == 0) {
-                          return APR_BADARG;
+                      memset(buf, 0, BUFSIZE*sizeof(wchar_t));
+                      const char* src = in.current();
+                      size_t converted = mbsrtowcs(buf,
+                           &src,
+                           requested,
+                           &mbstate);
+                      if (converted == (size_t) -1) {
+                          stat = APR_BADARG;
+                          in.position(src - in.data());
+                          break;
+                      } else {
+                         stat = append(out, buf);
+                         in.position(in.position() + converted);
                       }
                   }
                   return stat;
