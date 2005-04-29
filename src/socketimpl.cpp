@@ -21,6 +21,10 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/transcoder.h>
 
+#include "apr_network_io.h"
+#include "apr_lib.h"
+
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -161,7 +165,7 @@ void SocketImpl::accept(SocketImplPtr s)
 {
       // If a timeout is set then wait at most for the specified timeout
       if (getSoTimeout() > 0) {
-        apr_status_t status = apr_wait_for_io_or_timeout(NULL, socket, 0);
+        apr_status_t status = apr_wait_for_io_or_timeout(NULL, (apr_socket_t*) socket, 0);
         if (status == APR_TIMEUP) {
           throw SocketTimeoutException();
         }
@@ -173,7 +177,7 @@ void SocketImpl::accept(SocketImplPtr s)
       // Accept new connection
       apr_socket_t *clientSocket = 0;
       apr_status_t status = 
-          apr_socket_accept(&clientSocket, socket, (apr_pool_t*) memoryPool.getAPRPool());
+          apr_socket_accept(&clientSocket, (apr_socket_t*) socket, (apr_pool_t*) memoryPool.getAPRPool());
       if (status != APR_SUCCESS) {
         throw SocketException(status);
       }
@@ -216,7 +220,7 @@ void SocketImpl::bind(InetAddress address, int port)
         }
 
         // bind the socket to the address
-        status = apr_socket_bind(socket, server_addr);
+        status = apr_socket_bind((apr_socket_t*) socket, server_addr);
         if (status != APR_SUCCESS) {
           throw BindException(status);
         }
@@ -229,7 +233,7 @@ void SocketImpl::close()
 {
         if (socket != 0) {
           LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
-          apr_status_t status = apr_socket_close(socket);
+          apr_status_t status = apr_socket_close((apr_socket_t*) socket);
           if (status != APR_SUCCESS) {
             throw SocketException(status);
           }
@@ -258,7 +262,7 @@ void SocketImpl::connect(InetAddress address, int port)
         }
 
         // connect the socket
-        status =  apr_socket_connect(socket, client_addr);
+        status =  apr_socket_connect((apr_socket_t*) socket, client_addr);
         if (status != APR_SUCCESS) {
           throw ConnectException();
         }
@@ -276,9 +280,11 @@ void SocketImpl::connect(const LogString& host, int port)
 /** Creates either a stream or a datagram socket. */
 void SocketImpl::create(bool stream)
 {
+  apr_socket_t* newSocket;
   apr_status_t status =
-    apr_socket_create(&socket, APR_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 
+    apr_socket_create(&newSocket, APR_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 
                       APR_PROTO_TCP, (apr_pool_t*) memoryPool.getAPRPool());
+  socket = newSocket;
   if (status != APR_SUCCESS) {
     throw SocketException(status);
   }
@@ -290,7 +296,7 @@ indications (a request to connect) to the count argument.
 void SocketImpl::listen(int backlog)
 {
 
-  apr_status_t status = apr_socket_listen (socket, backlog);
+  apr_status_t status = apr_socket_listen ((apr_socket_t*) socket, backlog);
   if (status != APR_SUCCESS) {
     throw SocketException(status);
   }
@@ -317,7 +323,7 @@ size_t SocketImpl::read(void * buf, size_t len) const
         while ((size_t)(p - (char *)buf) < len)
         {
           apr_size_t len_read = len - (p - (const char *)buf);
-          apr_status_t status = apr_socket_recv(socket, p, &len_read);
+          apr_status_t status = apr_socket_recv((apr_socket_t*) socket, p, &len_read);
           if (status != APR_SUCCESS) {
             throw SocketException(status);
           }
@@ -346,9 +352,13 @@ size_t SocketImpl::write(const void * buf, size_t len)
           // signal. Otherwise, when the client has closed the connection,
           // the send() function would not return an error but call the
           // SIGPIPE handler.
+#if APR_HAVE_SIGACTION
           apr_sigfunc_t* old = apr_signal(SIGPIPE, SIG_IGN);
-          apr_status_t status = apr_socket_send(socket, p, &len_written);
+          apr_status_t status = apr_socket_send((apr_socket_t*) socket, p, &len_written);
           apr_signal(SIGPIPE, old);
+#else
+          apr_status_t status = apr_socket_send((apr_socket_t*) socket, p, &len_written);
+#endif
 
           if (status != APR_SUCCESS) {
             throw SocketException(status);
@@ -368,7 +378,7 @@ size_t SocketImpl::write(const void * buf, size_t len)
 int SocketImpl::getSoTimeout() const
 {
   apr_interval_time_t timeout;
-  apr_status_t status = apr_socket_timeout_get(socket, &timeout);
+  apr_status_t status = apr_socket_timeout_get((apr_socket_t*) socket, &timeout);
   if (status != APR_SUCCESS) {
     throw SocketException(status);
   }
@@ -381,7 +391,7 @@ int SocketImpl::getSoTimeout() const
 void SocketImpl::setSoTimeout(int timeout)
 {
   apr_interval_time_t time = timeout * 1000;
-  apr_status_t status = apr_socket_timeout_set(socket, time);
+  apr_status_t status = apr_socket_timeout_set((apr_socket_t*) socket, time);
   if (status != APR_SUCCESS) {
     throw SocketException(status);
   }

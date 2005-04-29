@@ -23,9 +23,6 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/pool.h>
 
-#include "apr_network_io.h"
-#include "apr_lib.h"
-
 
 namespace log4cxx
 {
@@ -38,20 +35,20 @@ namespace log4cxx
                 {
                 public:
                         SocketException();
-                        SocketException(apr_status_t status);
+                        SocketException(log4cxx_status_t status);
                         SocketException(const SocketException&);
                         virtual ~SocketException() throw();
                         const char* what() const throw();
-                        apr_status_t getErrorNumber() const;
+                        log4cxx_status_t getErrorNumber() const;
 
                 protected:
-                        SocketException(const char* what, apr_status_t status);
+                        SocketException(const char* what, log4cxx_status_t status);
 
                 private:
                         SocketException& operator=(const SocketException&);
 
                         /** The APR error code */
-                        apr_status_t errorNumber;
+                        log4cxx_status_t errorNumber;
 
                         /** The container for the message returned by what() */
                         std::string msg;
@@ -89,7 +86,7 @@ namespace log4cxx
                         virtual ~PlatformSocketException() throw();
 
                 protected:
-                        PlatformSocketException(const char *what, apr_status_t status);
+                        PlatformSocketException(const char *what, log4cxx_status_t status);
 
                 private:
                         PlatformSocketException& operator=(const PlatformSocketException&);
@@ -104,7 +101,7 @@ namespace log4cxx
                 {
                 public:
                     ConnectException();
-                    ConnectException(apr_status_t status);
+                    ConnectException(log4cxx_status_t status);
                     ConnectException(const ConnectException& src);
                     virtual ~ConnectException() throw();
 
@@ -120,7 +117,7 @@ namespace log4cxx
                 {
                 public:
                       BindException();
-                      BindException(apr_status_t status);
+                      BindException(log4cxx_status_t status);
                       BindException(const BindException&);
                       virtual ~BindException() throw();
 
@@ -179,7 +176,7 @@ namespace log4cxx
                         Pool memoryPool;
 
                         /** The APR socket */
-                        apr_socket_t *socket;
+                        void *socket;
 
                         /** The local port number to which this socket is connected. */
                         int localport;
@@ -216,7 +213,7 @@ namespace log4cxx
                         /** Binds this socket to the specified port number
                         on the specified host.
                         @param host the host address
-                @param port the port number.
+						@param port the port number.
                         @exception BindException if an I/O error occurs when binding this socket.
                         */
                         void bind(InetAddress host, int port);

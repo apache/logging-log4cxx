@@ -180,6 +180,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <fileset dir="${include.dir}/arch" includes="*.h"/>
         <fileset dir="${include.dir}/arch/${arch}" includes="*.h"/>
         <fileset dir="${include.dir}/arch/unix" includes="*.h"/>
+        <fileset dir="${src.dir}/support/unix" includes="waitio.c"/>
         <includepath path="${include.dir}"/>
         <includepath path="${include.dir}/arch"/>
         <includepath path="${include.dir}/arch/${arch}"/>
