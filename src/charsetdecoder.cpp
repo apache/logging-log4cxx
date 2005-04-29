@@ -360,7 +360,7 @@ private:
 };
 
 
-#if LOG4CXX_LOGCHAR_IS_UTF8
+#if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_HAS_WCHAR_T
           /**
           *    Decoder to convert array of wchar_t to UTF-8 bytes.
           *

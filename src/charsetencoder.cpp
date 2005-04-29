@@ -475,7 +475,7 @@ CharsetEncoder* CharsetEncoder::createDefaultEncoder() {
 #endif
 }
 
-
+#if LOG4CXX_HAS_WCHAR_T
 CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
    std::string cs(charset.size(), ' ');
    for(std::wstring::size_type i = 0;
@@ -485,6 +485,7 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
    }
    return getEncoder(cs);
 }
+#endif
 
 
 #if LOG4CXX_HAS_WCHAR_T
