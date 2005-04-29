@@ -65,7 +65,8 @@ servlet.
                 friend class SocketHandler;
                 private:
                         log4cxx::helpers::Pool pool;
-                        static int DEFAULT_PORT;
+                        static const int DEFAULT_PORT;
+                        static const int MAX_CONNECTIONS;
                         int port;
 
                 public:

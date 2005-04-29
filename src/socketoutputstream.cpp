@@ -91,16 +91,32 @@ void SocketOutputStream::write(const LogString& value)
    LogString::size_type size;
 
    size = value.size();
+   if (size > 1024)
+   {
+     size = 1024;
+   }
+
    write(&size, sizeof(LogString::size_type));
    if (size > 0)
    {
-      if (size > 1024)
-      {
-         size = 1024;
-      }
-
       write(value.c_str(), size * sizeof(logchar));
    }
+}
+
+void SocketOutputStream::writeRaw(const LogString& value)
+{
+  LogString::size_type size;
+
+  size = value.size();
+  if (size > 0)
+  {
+    if (size > 1024)
+    {
+      size = 1024;
+    }
+
+    write(value.c_str(), size * sizeof(logchar));
+  }
 }
 
 void SocketOutputStream::close()

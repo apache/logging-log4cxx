@@ -47,7 +47,24 @@ namespace log4cxx
                         void write(int value);
                         void write(unsigned long value);
                         void write(long value);
+
+                        /**
+                         * Writes a LogString to a socket.
+                         * The length of the string is written as the first
+                         * two bytes to allow proper deserialization on the
+                         * client side.
+                         */
                         void write(const LogString& value);
+
+                        /**
+                         * Writes a LogString to a socket.
+                         * Only the contents of the String itself are written,
+                         * no length byte is passed to the client. This is 
+                         * usefull when the client does not need to properly
+                         * deserialize the String, such as raw telnet clients.
+                         */
+                        void writeRaw(const LogString& value);
+
                         // some write functions are missing ...
 
                         /** Close the stream and dereference the socket.

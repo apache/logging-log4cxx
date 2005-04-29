@@ -21,6 +21,11 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/pool.h>
+
+#include "apr_network_io.h"
+#include "apr_lib.h"
+
 
 namespace log4cxx
 {
@@ -33,11 +38,23 @@ namespace log4cxx
                 {
                 public:
                         SocketException();
+                        SocketException(apr_status_t status);
                         SocketException(const SocketException&);
                         virtual ~SocketException() throw();
                         const char* what() const throw();
+                        apr_status_t getErrorNumber() const;
+
+                protected:
+                        SocketException(const char* what, apr_status_t status);
+
                 private:
                         SocketException& operator=(const SocketException&);
+
+                        /** The APR error code */
+                        apr_status_t errorNumber;
+
+                        /** The container for the message returned by what() */
+                        std::string msg;
                 };
 
                 /**
@@ -68,15 +85,14 @@ namespace log4cxx
                 class LOG4CXX_EXPORT PlatformSocketException : public SocketException
                 {
                 public:
-                        PlatformSocketException();
                         PlatformSocketException(const PlatformSocketException&);
                         virtual ~PlatformSocketException() throw();
-                        const char* what() const throw();
-                        long getErrorNumber() const;
+
+                protected:
+                        PlatformSocketException(const char *what, apr_status_t status);
 
                 private:
                         PlatformSocketException& operator=(const PlatformSocketException&);
-                        long errorNumber;
                 };
 
 
@@ -88,9 +104,9 @@ namespace log4cxx
                 {
                 public:
                     ConnectException();
+                    ConnectException(apr_status_t status);
                     ConnectException(const ConnectException& src);
                     virtual ~ConnectException() throw();
-                    const char* what() const throw();
 
                 private:
                    ConnectException& operator=(const ConnectException&);
@@ -104,9 +120,9 @@ namespace log4cxx
                 {
                 public:
                       BindException();
+                      BindException(apr_status_t status);
                       BindException(const BindException&);
                       virtual ~BindException() throw();
-                      const char* what() const throw();
 
                 private:
                      BindException& operator=(const BindException&);
@@ -159,8 +175,11 @@ namespace log4cxx
                         /** The IP address of the remote end of this socket. */
                         InetAddress address;
 
-                        /** The file descriptor object for this socket. */
-                        int fd;
+                        /** The APR memory pool to use for this socket */
+                        Pool memoryPool;
+
+                        /** The APR socket */
+                        apr_socket_t *socket;
 
                         /** The local port number to which this socket is connected. */
                         int localport;
@@ -168,8 +187,6 @@ namespace log4cxx
                         /** The port number on the remote host to which
                         this socket is connected. */
                         int port;
-
-                        int timeout;
 
                 public:
                         DECLARE_ABSTRACT_LOG4CXX_OBJECT(SocketImpl)
@@ -217,10 +234,6 @@ namespace log4cxx
 
                         /** Creates either a stream or a datagram socket. */
                         void create(bool stream);
-
-                        /** Returns the value of this socket's fd field. */
-                        inline int getFileDescriptor() const
-                                { return fd; }
 
                         /** Returns the value of this socket's address field. */
                         inline InetAddress getInetAddress() const

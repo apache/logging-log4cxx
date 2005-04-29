@@ -32,15 +32,15 @@ using namespace log4cxx::net;
 
 IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 
-int TelnetAppender::DEFAULT_PORT = 23;
+/** The default telnet server port */
+const int TelnetAppender::DEFAULT_PORT = 23;
 
+/** The maximum number of concurrent connections */
+const int TelnetAppender::MAX_CONNECTIONS = 20;
 
 TelnetAppender::TelnetAppender()
-   : port(23),
-         connections(20),
-         serverSocket(NULL),
-     sh(),
-         activeConnections(0)
+  : port(DEFAULT_PORT), connections(MAX_CONNECTIONS),
+    serverSocket(NULL), sh(), activeConnections(0)
 {
 }
 
@@ -128,7 +128,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                          iter++) {
                         if (iter->first != NULL) {
                                 try {
-                                        iter->second->write(os);
+                                        iter->second->writeRaw(os);
                                         iter->second->flush();
                                 } catch(Exception& ex) {
                                         // The client has closed the connection, remove it from our list:
@@ -141,34 +141,30 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
         }
 }
 
-
 void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* thread, void* data) {
-        TelnetAppender* pThis = (TelnetAppender*) data;
+    TelnetAppender* pThis = (TelnetAppender*) data;
 
+    // main loop; is left when This->closed is != 0 after an accept()
+    while(true)
+    {
         try
         {
                 SocketPtr newClient = pThis->serverSocket->accept();
                 SocketOutputStreamPtr os = newClient->getOutputStream();
                 apr_uint32_t done = apr_atomic_read32(&pThis->closed);
                 if (done) {
-                        os->write(LOG4CXX_STR("Log closed.\r\n"));
+                        os->writeRaw(LOG4CXX_STR("Log closed.\r\n"));
                         os->flush();
                         newClient->close();
                         return NULL;
                 }
 
                 apr_uint32_t count = apr_atomic_read32(&pThis->activeConnections);
-                if (count > pThis->connections.size()) {
-                        os->write(LOG4CXX_STR("Too many connections.\r\n"));
+                if (count >= pThis->connections.size()) {
+                        os->writeRaw(LOG4CXX_STR("Too many connections.\r\n"));
                         os->flush();
                         newClient->close();
                 } else {
-                        LogString oss(LOG4CXX_STR("TelnetAppender v1.0 ("));
-                        oss += StringHelper::toString((int) count, pThis->pool);
-                        oss += LOG4CXX_STR(" active connections)\r\n\r\n");
-                        os->write(oss);
-                        os->flush();
-
                         //
                         //   find unoccupied connection
                         //
@@ -183,14 +179,19 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* thread
                                         break;
                                 }
                         }
+
+                        LogString oss(LOG4CXX_STR("TelnetAppender v1.0 ("));
+                        oss += StringHelper::toString((int) count+1, pThis->pool);
+                        oss += LOG4CXX_STR(" active connections)\r\n\r\n");
+                        os->writeRaw(oss);
+                        os->flush();
                 }
         } catch(Exception& e) {
                 LogLog::error(LOG4CXX_STR("Encountered error while in SocketHandler loop."), e);
         }
-        return NULL;
+    }
+
+    return NULL;
 }
 
 #endif
-
-
-
