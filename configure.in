@@ -144,8 +144,18 @@ fi
 
 CPPFLAGS="$CPPFLAGS `$apr_config --cppflags` `$apr_config --includes`"
 APR_LIBS="`$apr_config --link-ld --libs`"
+AC_SUBST(APR_LIBS)
 LDFLAGS="$LDFLAGS $APR_LIBS"
 
+APR_FIND_APU( , , 1, 1)
+if test "$apu_found" = "no"; then
+ AC_MSG_ERROR(APR-util could not be located. Please use the --with-apr-util option.)
+fi
+
+CPPFLAGS="$CPPFLAGS `$apu_config --includes`"
+APU_LIBS="`$apu_config --link-ld --libs`"
+AC_SUBST(APU_LIBS)
+LDFLAGS="$LDFLAGS $APU_LIBS"
 
 # Checks local idioms
 # ----------------------------------------------------------------------------
@@ -385,6 +395,8 @@ include/log4cxx/rolling/Makefile
 simplesocketserver/Makefile
 tests/Makefile
 tests/input/Makefile
+tests/input/performance/Makefile
+tests/input/ndc/Makefile
 tests/input/xml/Makefile
 tests/src/Makefile
 tests/src/customlogger/Makefile
