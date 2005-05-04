@@ -43,6 +43,9 @@ using namespace log4cxx::pattern;
 #define INT64_C(value)  value ##LL
 #endif
 
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx.h>
+
 
 /**
    Unit test {@link CachedDateFormat}.
@@ -55,7 +58,9 @@ using namespace log4cxx::pattern;
      CPPUNIT_TEST( test2 );
      CPPUNIT_TEST( test3 );
      CPPUNIT_TEST( test4 );
+#if LOG4CXX_HAS_STD_LOCALE
      CPPUNIT_TEST( test5 );
+#endif
      CPPUNIT_TEST( test6 );
      CPPUNIT_TEST( test8 );
      CPPUNIT_TEST( test9 );
@@ -204,7 +209,12 @@ using namespace log4cxx::pattern;
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
-    std::locale localeEN(LOCALE_US);
+#if LOG4CXX_HAS_STD_LOCALE
+    std::locale loco(LOCALE_US);
+    std::locale* localeEN = &loco;
+#else
+    std::locale* localeEN = NULL;
+#endif
     DateFormatPtr baseFormat(
          new SimpleDateFormat(LOG4CXX_STR("EEE, MMM dd, HH:mm:ss.SSS Z"), localeEN));
     CachedDateFormat cachedFormat(baseFormat, 1000000);
@@ -222,6 +232,7 @@ using namespace log4cxx::pattern;
   }
 
 
+#if LOG4CXX_HAS_STD_LOCALE
   void test5() {
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
@@ -244,6 +255,7 @@ using namespace log4cxx::pattern;
         assertFormattedEquals(baseFormat, cachedFormat, ticks + 1415000, p);
     }
   }
+#endif
 
   /**
    * Checks that numberFormat works as expected.
@@ -287,7 +299,7 @@ void test9() {
   std::locale localeUS(LOCALE_US);
 
   DateFormatPtr baseFormat = new SimpleDateFormat(
-      LOG4CXX_STR("yyyy-MMMM-dd HH:mm:ss,SS Z"), localeUS);
+      LOG4CXX_STR("yyyy-MMMM-dd HH:mm:ss,SS Z"), &localeUS);
   DateFormatPtr cachedFormat = new CachedDateFormat(baseFormat, 1000000);
   TimeZonePtr cet = TimeZone::getTimeZone(LOG4CXX_STR("GMT+1"));
   cachedFormat->setTimeZone(cet);
@@ -339,7 +351,12 @@ void test9() {
  * Test when millisecond position moves but length remains constant.
  */
 void test10() {
-  std::locale localeUS(LOCALE_US);
+#if LOG4CXX_HAS_STD_LOCALE
+  std::locale loco(LOCALE_US);
+  std::locale* localeUS = &loco;
+#else
+  std::locale* localeUS = NULL;
+#endif
   DateFormatPtr baseFormat = new SimpleDateFormat(
       LOG4CXX_STR("MMMM SSS EEEEEE"), localeUS);
   DateFormatPtr cachedFormat = new CachedDateFormat(baseFormat, 1000000);
