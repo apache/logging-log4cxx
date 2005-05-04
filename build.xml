@@ -314,7 +314,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <delete dir="${build.dir}"/>
         <delete>
             <fileset dir="${tests.dir}/src" includes="shortsocket*" excludes="*.cpp"/>
-            <fileset dir="${tests.dir}/output"/>
+            <fileset dir="${tests.dir}" includes="output/*"/>
             <fileset dir="${include.dir}/log4cxx" includes="**/log4cxx.h"/>
         </delete>
 </target>

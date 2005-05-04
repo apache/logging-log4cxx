@@ -33,10 +33,25 @@
 
 #define LOG4CXX_HAS_WCHAR_T 1
 
-#define LOG4CXX_EXPORT
 
+#if defined(_MSC_VER)
+typedef __int64 log4cxx_int64_t;
+#else
 typedef long long log4cxx_int64_t;
+#endif
+
 typedef log4cxx_int64_t log4cxx_time_t;
 typedef int log4cxx_status_t;
+
+#if defined(LOG4CXX_STATIC)
+#define LOG4CXX_EXPORT
+#else
+#ifdef LOG4CXX
+        #define LOG4CXX_EXPORT __declspec(dllexport)
+#else
+        #define LOG4CXX_EXPORT __declspec(dllimport)
+#endif
+#endif
+
 
 #endif

@@ -16,6 +16,7 @@
 
 #define _WIN32_DCOM
 
+#include <log4cxx/private/log4cxx.h>
 #if LOG4CXX_HAVE_XML
 
 #ifdef _WIN32
