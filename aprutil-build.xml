@@ -29,7 +29,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="version" value="1.1.0"/>
 <property name="aprutil.dir" location="."/>
 <property name="build.dir" location="${aprutil.dir}/build"/>
-<property name="include.dir" location="${aprutil.dir}/include"/>
+<property name="aprutil.include.dir" location="${aprutil.dir}/include"/>
 <property name="apr.lib.type" value="shared"/>
 <property name="aprutil.lib.type" value="shared"/>
 
@@ -88,8 +88,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </or>
     </condition>
     <property name="arch" value="unix"/>
-    <!--   
-        can't use Windows path names if building cygwin   
+    <!--
+        can't use Windows path names if building cygwin
         assuming typical location.
     -->
     <basename property="with-apr-base" file="${apr.dir}"/>
@@ -148,12 +148,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <target name="configure-check" depends="init">
-        <condition property="config-available" value="true">
+        <condition property="aprutil-config-available" value="true">
               <and>
-                    <available file="${include.dir}/apu.h"/>
-                    <available file="${include.dir}/apu_want.h"/>
-                    <available file="${include.dir}/private/apu_config.h"/>
-                    <available file="${include.dir}/private/apu_select_dbm.h"/>
+                    <available file="${aprutil.include.dir}/apu.h"/>
+                    <available file="${aprutil.include.dir}/apu_want.h"/>
+                    <available file="${aprutil.include.dir}/private/apu_config.h"/>
+                    <available file="${aprutil.include.dir}/private/apu_select_dbm.h"/>
                     <available file="${aprutil.dir}/xml/expat/lib/expat.h"/>
                     <available file="${aprutil.dir}/xml/expat/config.h"/>
                </and>
@@ -161,19 +161,19 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 
-<target name="win-configure" depends="configure-check" if="is-windows" unless="config-available">
-    <copy tofile="${include.dir}/apu.h" file="${include.dir}/apu.hw"/>
-    <replaceregexp file="${include.dir}/apu.h" match="#define *APU_HAVE_APR_ICONV.*" replace="#define APU_HAVE_APR_ICONV 0"/>
-    <copy tofile="${include.dir}/apu_want.h" file="${include.dir}/apu_want.hw"/>
-    <copy tofile="${include.dir}/apr_ldap.h" file="${include.dir}/apr_ldap.hw"/>
-    <replaceregexp file="${include.dir}/apr_ldap.h" match="#define APR_HAS_LDAP.*" replace="#define APR_HAS_LDAP 0"/>
-    <copy tofile="${include.dir}/private/apu_config.h" file="${include.dir}/private/apu_config.hw"/>
-    <copy tofile="${include.dir}/private/apu_select_dbm.h" file="${include.dir}/private/apu_select_dbm.hw"/>
+<target name="win-configure" depends="configure-check" if="is-windows" unless="aprutil-config-available">
+    <copy tofile="${aprutil.include.dir}/apu.h" file="${aprutil.include.dir}/apu.hw"/>
+    <replaceregexp file="${aprutil.include.dir}/apu.h" match="#define *APU_HAVE_APR_ICONV.*" replace="#define APU_HAVE_APR_ICONV 0"/>
+    <copy tofile="${aprutil.include.dir}/apu_want.h" file="${aprutil.include.dir}/apu_want.hw"/>
+    <copy tofile="${aprutil.include.dir}/apr_ldap.h" file="${aprutil.include.dir}/apr_ldap.hw"/>
+    <replaceregexp file="${aprutil.include.dir}/apr_ldap.h" match="#define APR_HAS_LDAP.*" replace="#define APR_HAS_LDAP 0"/>
+    <copy tofile="${aprutil.include.dir}/private/apu_config.h" file="${aprutil.include.dir}/private/apu_config.hw"/>
+    <copy tofile="${aprutil.include.dir}/private/apu_select_dbm.h" file="${aprutil.include.dir}/private/apu_select_dbm.hw"/>
     <copy tofile="${aprutil.dir}/xml/expat/lib/expat.h" file="${aprutil.dir}/xml/expat/lib/expat.h.in"/>
     <copy tofile="${aprutil.dir}/xml/expat/lib/config.h" file="${aprutil.dir}/xml/expat/lib/winconfig.h"/>
 </target>
 
-<target name="unix-configure" depends="configure-check" if="is-unix" unless="config-available">
+<target name="unix-configure" depends="configure-check" if="is-unix" unless="aprutil-config-available">
         <exec executable="sh" dir="${aprutil.dir}">
            <arg value="./configure"/>
            <arg value="--with-apr=${with-apr}"/>
@@ -209,12 +209,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
         <fileset dir="${aprutil.dir}/xml/expat/lib"
             includes="xmlparse.c xmlrole.c xmltok.c"/>
-        <fileset dir="${include.dir}" includes="*.h"/>
-        <fileset dir="${include.dir}/private" includes="*.h"/>
+        <fileset dir="${aprutil.include.dir}" includes="*.h"/>
+        <fileset dir="${aprutil.include.dir}/private" includes="*.h"/>
         <fileset dir="${aprutil.dir}/xml/expat/lib" includes="*.h"/>
         <fileset dir="${aprutil.dir}/xml/expat" includes="*.h"/>
-        <includepath path="${include.dir}"/>
-        <includepath path="${include.dir}/private"/>
+        <includepath path="${aprutil.include.dir}"/>
+        <includepath path="${aprutil.include.dir}/private"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${aprutil.dir}/xml/expat/lib"/>
         <includepath path="${aprutil.dir}/xml/expat"/>
@@ -232,7 +232,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="EILSEQ" value="50"/>
         </defineset>
         <defineset>
-			<define name="APU_HAVE_APR_ICONV" value="0"/>
+                        <define name="APU_HAVE_APR_ICONV" value="0"/>
         </defineset>
         <project type="${project.type}" outfile="${project.dir}/aprutil" if="project.if"/>
     </cc>
@@ -248,7 +248,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         objdir="${aprutil.lib.dir}/apr_obj"
         debug="${debug}">
         <fileset dir="${aprutil.dir}/test" includes="${testfiles}"/>
-        <includepath path="${include.dir}"/>
+        <includepath path="${aprutil.include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
@@ -411,7 +411,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <exclude name="testqueue.c"/>
             <exclude name="testxlate.c"/>
         </fileset>
-        <includepath path="${include.dir}"/>
+        <includepath path="${aprutil.include.dir}"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-aprutil-shared"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>

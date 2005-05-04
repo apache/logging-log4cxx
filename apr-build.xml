@@ -28,7 +28,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="debug" value="true"/>
 <property name="version" value="1.1.0"/>
 <property name="apr.dir" location="."/>
-<property name="include.dir" location="${apr.dir}/include"/>
+<property name="apr.include.dir" location="${apr.dir}/include"/>
 <property name="build.dir" location="${apr.dir}/build"/>
 <property name="src.dir" location="${apr.dir}"/>
 <property name="test.dir" location="${apr.dir}/test"/>
@@ -131,17 +131,17 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <target name="configure-check" depends="init">
-        <condition property="configure-available" value="true">
-              <available file="${include.dir}/apr.h"/>
+        <condition property="apr-configure-available" value="true">
+              <available file="${apr.include.dir}/apr.h"/>
         </condition>
 </target>
 
 
-<target name="win-configure" depends="configure-check" if="is-windows" unless="configure-available">
-    <copy tofile="${include.dir}/apr.h" file="${include.dir}/apr.hw"/>
+<target name="win-configure" depends="configure-check" if="is-windows" unless="apr-configure-available">
+    <copy tofile="${apr.include.dir}/apr.h" file="${apr.include.dir}/apr.hw"/>
 </target>
 
-<target name="unix-configure" depends="configure-check" if="is-unix" unless="configure-available">
+<target name="unix-configure" depends="configure-check" if="is-unix" unless="apr-configure-available">
          <!--  shelling to configure allows cygwin to work  -->
         <exec executable="sh" dir="${apr.dir}">
             <arg value="./configure"/>
@@ -176,15 +176,15 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <fileset dir="${src.dir}/random/unix" includes="*.c"/>
         <fileset dir="${src.dir}/strings" includes="*.c"/>
         <fileset dir="${src.dir}/tables" includes="*.c"/>
-        <fileset dir="${include.dir}" includes="*.h"/>
-        <fileset dir="${include.dir}/arch" includes="*.h"/>
-        <fileset dir="${include.dir}/arch/${arch}" includes="*.h"/>
-        <fileset dir="${include.dir}/arch/unix" includes="*.h"/>
+        <fileset dir="${apr.include.dir}" includes="*.h"/>
+        <fileset dir="${apr.include.dir}/arch" includes="*.h"/>
+        <fileset dir="${apr.include.dir}/arch/${arch}" includes="*.h"/>
+        <fileset dir="${apr.include.dir}/arch/unix" includes="*.h"/>
         <fileset dir="${src.dir}/support/unix" includes="waitio.c"/>
-        <includepath path="${include.dir}"/>
-        <includepath path="${include.dir}/arch"/>
-        <includepath path="${include.dir}/arch/${arch}"/>
-        <includepath path="${include.dir}/arch/unix"/>
+        <includepath path="${apr.include.dir}"/>
+        <includepath path="${apr.include.dir}/arch"/>
+        <includepath path="${apr.include.dir}/arch/${arch}"/>
+        <includepath path="${apr.include.dir}/arch/unix"/>
         <defineset define="APR_DECLARE_EXPORT" if="is-apr-shared"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <defineset if="is-windows">
@@ -209,7 +209,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         objdir="${apr.lib.dir}/apr_obj"
         debug="${debug}">
         <fileset dir="${test.dir}" includes="${testfiles}"/>
-        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
         </defineset>
@@ -341,7 +341,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outputfileproperty="libmod_test.so"
         debug="${debug}">
         <fileset dir="${test.dir}" includes="mod_test.c"/>
-        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
         </defineset>
@@ -381,7 +381,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <exclude name="testmutexscope.c"/>
             <exclude name="testapp.c"/>
         </fileset>
-        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
         <defineset if="is-windows">
             <define name="WIN32" value="1"/>
         </defineset>

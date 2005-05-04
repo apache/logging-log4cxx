@@ -441,7 +441,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <condition property="with-apr" value="../apr-${apr.version}/apr--config">
          <isset property="is-cygwin"/>
     </condition>
-    <property name="with-apr" location="${apr.dir}/apr--config"/>
+    <property name="with-apr" location="${apr.dir}"/>
 </target>
 
 
