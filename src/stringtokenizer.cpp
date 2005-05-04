@@ -16,6 +16,7 @@
 
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/private/log4cxx.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -48,7 +49,7 @@ LogString StringTokenizer::nextToken()
             }
         }
         throw NoSuchElementException();
-#if defined(LOG4CXX_RETURN_AFTER_THROW)
+#if LOG4CXX_RETURN_AFTER_THROW
         return LogString();
 #endif
 }

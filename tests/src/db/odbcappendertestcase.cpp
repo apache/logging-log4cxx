@@ -19,6 +19,9 @@
 #include <log4cxx/db/odbcappender.h>
 #include "../appenderskeletontestcase.h"
 
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx.h>
+
 #ifdef LOG4CXX_HAVE_ODBC
 
 using namespace log4cxx;

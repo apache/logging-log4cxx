@@ -36,11 +36,12 @@
 #include <stdexcept>
 #include <log4cxx/basicconfigurator.h>
 
+#include <log4cxx/log4cxx.h>
 
 extern CPPUNIT_NS::Test* createTestCase1();
 extern CPPUNIT_NS::Test* createTestCase3();
 
-#if defined(LOG4CXX_HAVE_XML)
+#if LOG4CXX_HAVE_XML
 extern CPPUNIT_NS::Test* createTestCase2();
 extern CPPUNIT_NS::Test* createTestCase4();
 #endif
@@ -87,7 +88,7 @@ int main( int argc, const char * const * argv)
                      case '3':
                         runner.addTest(createTestCase3());
                         break;
-#if defined(LOG4CXX_HAVE_XML)
+#if LOG4CXX_HAVE_XML
                      case '2':
                         runner.addTest(createTestCase2());
                         break;

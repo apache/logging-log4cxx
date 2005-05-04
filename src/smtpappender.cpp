@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
-
-#ifdef LOG4CXX_HAVE_SMTP
+#include <log4cxx/private/log4cxx.h>
+#if LOG4CXX_HAVE_SMTP
 
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/level.h>

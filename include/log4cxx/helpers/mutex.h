@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_MUTEX_H
 #define _LOG4CXX_HELPERS_MUTEX_H
 
-#include <log4cxx/portability.h>
+#include <log4cxx/log4cxx.h>
 
 typedef void log4cxx_thread_mutex_t;
 

@@ -17,7 +17,6 @@
 #if !defined(_LOG4CXX_ROLLING_SIZE_BASED_TRIGGERING_POLICY_H)
 #define _LOG4CXX_ROLLING_SIZE_BASED_TRIGGERING_POLICY_H
 
-#include <log4cxx/portability.h>
 #include <log4cxx/rolling/triggeringpolicy.h>
 
 namespace log4cxx {

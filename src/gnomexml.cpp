@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
 
 #if !defined(_WIN32)
 

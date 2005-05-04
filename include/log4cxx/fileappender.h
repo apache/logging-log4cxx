@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_FILE_APPENDER_H
 #define _LOG4CXX_FILE_APPENDER_H
 
-#include <log4cxx/portability.h>
+#include <log4cxx/logger.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/writerappender.h>
 #include <log4cxx/file.h>

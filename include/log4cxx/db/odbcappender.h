@@ -17,7 +17,6 @@
 #ifndef _LOG4CXX_DB_ODBC_APPENDER_H
 #define _LOG4CXX_DB_ODBC_APPENDER_H
 
-#include <log4cxx/portability.h>
 
 #ifdef LOG4CXX_HAVE_ODBC
 

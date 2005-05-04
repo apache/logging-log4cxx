@@ -17,7 +17,6 @@
 #ifndef _LOG4CXX_HELPERS_OBJECT_IMPL_H
 #define _LOG4CXX_HELPERS_OBJECT_IMPL_H
 
-#include <log4cxx/portability.h>
 #include <log4cxx/helpers/object.h>
 
 namespace log4cxx

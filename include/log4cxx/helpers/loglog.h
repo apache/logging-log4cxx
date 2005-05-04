@@ -19,7 +19,6 @@
 
 #include <log4cxx/logstring.h>
 #include <exception>
-#include <log4cxx/portability.h>
 
 namespace log4cxx
 {

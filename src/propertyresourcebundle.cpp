@@ -16,6 +16,7 @@
 
 #include <log4cxx/helpers/propertyresourcebundle.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/private/log4cxx.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -45,7 +46,7 @@ LogString PropertyResourceBundle::getString(const LogString& key) const
    while (resourceBundle != 0);
 
    throw MissingResourceException(key);
-#if defined(LOG4CXX_RETURN_AFTER_THROW)
+#if LOG4CXX_RETURN_AFTER_THROW
    return resource;
 #endif
 }

@@ -18,8 +18,6 @@ LT_VERSION=9:0:0
 
 AC_SUBST(LT_VERSION)
 
-AC_CONFIG_HEADERS([include/log4cxx/config_auto.h],[cat "${ac_abs_top_builddir}/include/log4cxx/config_auto.h" | sed -e 's/\(HAVE_\|MUST_\|UNICODE\)/LOG4CXX_\1/;s/^\(.*PACKAGE.*\|.*VERSION.*\|.*STDC_HEADERS.*\)$/\/* \1 *\//' > "${ac_abs_top_builddir}/include/log4cxx/config_auto_log4cxx.h"])
-
 AH_VERBATIM([HAVE_NO_EXPLICIT_EXPORTS],
 [/* no explicit exports */
 #define LOG4CXX_EXPORT])
@@ -380,7 +378,7 @@ docs/Makefile
 docs/Doxyfile
 src/Makefile
 include/Makefile
-include/log4cxx/config_msvc.h
+include/log4cxx/private/log4cxx.h
 include/log4cxx/Makefile
 include/log4cxx/helpers/Makefile
 include/log4cxx/net/Makefile

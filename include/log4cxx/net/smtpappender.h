@@ -17,9 +17,6 @@
 #ifndef _LOG4CXX_NET_SMTP_H
 #define _LOG4CXX_NET_SMTP_H
 
-#include <log4cxx/portability.h>
-
-#ifdef LOG4CXX_HAVE_SMTP
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/cyclicbuffer.h>
@@ -67,6 +64,7 @@ namespace log4cxx
                                 LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
                         END_LOG4CXX_CAST_MAP()
 
+                        SMTPAppender();
                         /**
                         The default constructor will instantiate the appender with a
                         spi::TriggeringEventEvaluator that will trigger on events with
@@ -260,6 +258,7 @@ namespace log4cxx
                                 LOG4CXX_CAST_ENTRY(spi::TriggeringEventEvaluator)
                         END_LOG4CXX_CAST_MAP()
 
+                        DefaultEvaluator();
                         DefaultEvaluator(log4cxx::helpers::Pool& p);
 
                         /**
@@ -273,5 +272,4 @@ namespace log4cxx
         }  // namespace net
 } // namespace log4cxx
 
-#endif // LOG4CXX_HAVE_SMTP
 #endif // _LOG4CXX_NET_SMTP_H

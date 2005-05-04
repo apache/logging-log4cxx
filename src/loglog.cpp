@@ -17,6 +17,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <iostream>
+#include <log4cxx/private/log4cxx.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -87,7 +88,7 @@ void LogLog::emit(const std::wstring& msg) {
     std::wcerr << "log4cxx: " << msg << std::endl;
 #else
     LOG4CXX_ENCODE_CHAR(encoded, msg);
-    std::err << "log4cxx: " << encoded << std::endl;
+    std::cerr << "log4cxx: " << encoded << std::endl;
 #endif
 }
 #endif

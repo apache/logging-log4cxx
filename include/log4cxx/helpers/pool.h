@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_POOL_H
 #define _LOG4CXX_HELPERS_POOL_H
 
-#include <log4cxx/portability.h>
+#include <log4cxx/log4cxx.h>
 #include <string.h>
 
 typedef void log4cxx_pool_t;

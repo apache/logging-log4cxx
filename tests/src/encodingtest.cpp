@@ -15,8 +15,6 @@
  */
 
 
-#include <log4cxx/portability.h>
-
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 

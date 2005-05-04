@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/private/log4cxx.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -181,7 +182,7 @@ const LevelPtr& Logger::getEffectiveLevel() const
         }
 
         throw NullPointerException("No level specified for logger or ancestors.");
-#if defined(LOG4CXX_RETURN_AFTER_THROW)
+#if LOG4CXX_RETURN_AFTER_THROW
         return this->level;
 #endif
 }

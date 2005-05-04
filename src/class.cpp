@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/object.h>
 #include <map>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/private/log4cxx.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -40,7 +41,7 @@ const LogString Class::toString() const
 ObjectPtr Class::newInstance() const
 {
         throw InstantiationException("Cannot create new instances of Class.");
-#if defined(LOG4CXX_RETURN_AFTER_THROW)
+#if LOG4CXX_RETURN_AFTER_THROW
         return 0;
 #endif
 }

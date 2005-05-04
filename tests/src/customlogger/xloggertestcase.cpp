@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx.h>
 
 #ifdef LOG4CXX_HAVE_XML
 

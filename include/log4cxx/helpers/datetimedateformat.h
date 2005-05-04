@@ -32,7 +32,7 @@ namespace log4cxx
                 public:
                         DateTimeDateFormat()
                          : SimpleDateFormat(LOG4CXX_STR("dd MMM yyyy HH:mm:ss,SSS")) {}
-                         DateTimeDateFormat(const std::locale& locale)
+                         DateTimeDateFormat(const std::locale* locale)
                           : SimpleDateFormat(LOG4CXX_STR("dd MMM yyyy HH:mm:ss,SSS"), locale) {}
                 };
         }  // namespace helpers

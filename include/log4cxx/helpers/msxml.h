@@ -17,8 +17,6 @@
 #ifndef _LOG4CXX_HELPERS_MSXML_H
 #define _LOG4CXX_HELPERS_MSXML_H
 
-#include <log4cxx/portability.h>
-
 #ifdef _WIN32
 
 #include <log4cxx/helpers/xml.h>

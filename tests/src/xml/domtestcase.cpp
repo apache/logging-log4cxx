@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
-
 #ifdef HAVE_XML
 
 #include <cppunit/TestFixture.h>

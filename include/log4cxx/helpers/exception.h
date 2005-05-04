@@ -17,8 +17,8 @@
 #ifndef _LOG4CXX_HELPERS_EXCEPTION_H
 #define _LOG4CXX_HELPERS_EXCEPTION_H
 
-#include <log4cxx/portability.h>
 #include <exception>
+#include <log4cxx/log4cxx.h>
 #include <log4cxx/logstring.h>
 
 namespace log4cxx

@@ -20,7 +20,10 @@
 #include <log4cxx/net/smtpappender.h>
 #include "../appenderskeletontestcase.h"
 
-#ifdef LOG4CXX_HAVE_SMTP
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx.h>
+
+#if LOG4CXX_HAVE_SMTP
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

@@ -17,7 +17,6 @@
 #ifndef _LOG4CXX_HELPERS_TIMEZONE_H
 #define _LOG4CXX_HELPERS_TIMEZONE_H
 
-#include <log4cxx/portability.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>

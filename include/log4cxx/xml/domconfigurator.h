@@ -17,10 +17,6 @@
 #ifndef _LOG4CXX_XML_DOM_CONFIGURATOR_H
 #define _LOG4CXX_XML_DOM_CONFIGURATOR_H
 
-#include <log4cxx/portability.h>
-
-#ifdef LOG4CXX_HAVE_XML
-
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
@@ -76,21 +72,21 @@ namespace log4cxx
                         std::map<LogString, AppenderPtr> map;
                 };
 
-/**
-Use this class to initialize the log4cxx environment using a DOM tree.
+              /**
+              Use this class to initialize the log4cxx environment using a DOM tree.
 
-<p>Sometimes it is useful to see how log4cxx is reading configuration
-files. You can enable log4cxx internal logging by setting the
-<code>debug</code> attribute in the
-<code>log4cxx</code> element. As in
-<pre>
-        &lt;log4j:configuration <b>debug="true"</b> xmlns:log4j="http://jakarta.apache.org/log4j/">
-        ...
-        &lt;/log4j:configuration>
-</pre>
+              <p>Sometimes it is useful to see how log4cxx is reading configuration
+              files. You can enable log4cxx internal logging by setting the
+              <code>debug</code> attribute in the
+              <code>log4cxx</code> element. As in
+              <pre>
+                      &lt;log4j:configuration <b>debug="true"</b> xmlns:log4j="http://jakarta.apache.org/log4j/">
+                      ...
+                      &lt;/log4j:configuration>
+              </pre>
 
-<p>There are sample XML files included in the package.
-*/
+              <p>There are sample XML files included in the package.
+              */
                 class LOG4CXX_EXPORT DOMConfigurator :
                         virtual public spi::Configurator,
                         virtual public helpers::ObjectImpl
@@ -239,5 +235,4 @@ files. You can enable log4cxx internal logging by setting the
         }  // namespace xml
 } // namespace log4cxx
 
-#endif // LOG4CXX_HAVE_XML
 #endif // _LOG4CXX_XML_DOM_CONFIGURATOR_H

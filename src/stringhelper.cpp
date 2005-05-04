@@ -22,7 +22,7 @@
 #include <locale>
 #include <apr_strings.h>
 #include <log4cxx/helpers/pool.h>
-
+#include <log4cxx/private/log4cxx.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -223,7 +223,7 @@ void StringHelper::toString(int n, Pool& pool, std::string& str) {
 #if LOG4CXX_HAS_WCHAR_T
 void StringHelper::toString(int n, Pool& pool, std::wstring& str) {
   char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
-#if defined(LOG4CXX_LOGCHAR_IS_UTF8)
+#if LOG4CXX_LOGCHAR_IS_UTF8
   LogString ls;
   log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), ls);
   log4cxx::helpers::Transcoder::encode(ls, str);
@@ -284,7 +284,7 @@ void StringHelper::toString(size_t n, Pool& pool, std::wstring& ws) {
 
 LogString StringHelper::formatHex(const void* ptr) {
     const logchar* hexdigits = LOG4CXX_STR("0123456789ABCDEF");
-    apr_uint64_t iptr = (apr_uint64_t) ptr;
+    log4cxx_intptr_t iptr = (log4cxx_intptr_t) ptr;
     int width = sizeof(ptr)*2 + 2;
     LogString s(width, LOG4CXX_STR('x'));
     s[0] = LOG4CXX_STR('0');

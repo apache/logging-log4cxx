@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
-
+#include <log4cxx/private/log4cxx.h>
 #ifdef LOG4CXX_HAVE_XML
 
 #if defined(_WIN32)

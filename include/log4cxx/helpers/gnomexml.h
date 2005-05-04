@@ -17,7 +17,7 @@
 #ifndef _LOG4CXX_HELPERS_GNOMEXML_H
 #define _LOG4CXX_HELPERS_GNOMEXML_H
 
-#include <log4cxx/portability.h>
+#include <log4cxx/log4cxx.h>
 
 #if !defined(_WIN32)
 

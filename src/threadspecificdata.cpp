@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/exception.h>

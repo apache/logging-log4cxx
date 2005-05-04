@@ -17,60 +17,8 @@
 #ifndef _LOG4CXX_PORTABILITY_H
 #define _LOG4CXX_PORTABILITY_H
 
-#if defined(LOG4CXX_STATIC)
-#define LOG4CXX_EXPORT
-#else
-#if defined(_WIN32)
-#ifdef LOG4CXX
-        #define LOG4CXX_EXPORT __declspec(dllexport)
-#else
-        #define LOG4CXX_EXPORT __declspec(dllimport)
-#endif
-#else
-#define LOG4CXX_EXPORT
-#endif
-#endif
-
-#if defined(_MSC_VER)
-#pragma warning(disable : 4250 4251 4786 4290)
-
-
-#if defined(_MSC_VER) && _MSC_VER >= 1200
-typedef __int64 log4cxx_int64_t;
-#else
-typedef long long log4cxx_int64_t;
-#endif
-
-#else
-typedef long long log4cxx_int64_t;
-
-#endif
-
-
-typedef log4cxx_int64_t log4cxx_time_t;
-typedef int log4cxx_status_t;
-
-#if defined(_MSC_VER)
-#define HAVE_XML 1
-#define LOG4CXX_HAVE_XML 1
-#endif
-
-#if !defined(__BORLANDC__)
-#define LOG4CXX_RETURN_AFTER_THROW
-#endif
-
-#if !defined(_WIN32)
-#define HAVE_XML 1
-#define LOG4CXX_HAVE_XML 1
-#define LOG4CXX_HAVE_SYSLOG 1
-#endif
-
-#if !defined(LOG4CXX_HAS_STD_WCOUT)
-#define LOG4CXX_HAS_STD_WCOUT 1
-#endif
-
-#if !defined(LOG4CXX_HAS_STD_WLOCALE)
-#define LOG4CXX_HAS_STD_WLOCALE 1
-#endif
+//
+//    Obsolete file
+//
 
 #endif //_LOG4CXX_PORTABILITY_H

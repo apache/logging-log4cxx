@@ -18,9 +18,6 @@
 #define _LOG4CXX_HELPERS_TRANSCODER_H
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/portability.h>
-#include <string.h>
-#include <wchar.h>
 
 
 namespace log4cxx {
@@ -114,7 +111,7 @@ log4cxx::helpers::Transcoder::decode(src, var)
 log4cxx::helpers::Transcoder::decode(src)
 
 
-#if defined(LOG4CXX_LOGCHAR_IS_WCHAR)
+#if LOG4CXX_LOGCHAR_IS_WCHAR
 
 #define LOG4CXX_ENCODE_WCHAR(var, src) \
 const std::wstring& var = src
@@ -128,7 +125,7 @@ src
 #endif
 
 
-#if defined(LOG4CXX_LOGCHAR_IS_UTF8)
+#if LOG4CXX_LOGCHAR_IS_UTF8
 
 #define LOG4CXX_ENCODE_WCHAR(var, src) \
 std::wstring var;                      \

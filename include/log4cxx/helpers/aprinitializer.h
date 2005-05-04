@@ -17,7 +17,6 @@
 #ifndef _LOG4CXX_HELPERS_APRINITIALIZER_H
 #define _LOG4CXX_HELPERS_APRINITIALIZER_H
 
-#include <log4cxx/portability.h>
 #include <log4cxx/helpers/pool.h>
 #include <apr_pools.h>
 #include <apr_thread_proc.h>

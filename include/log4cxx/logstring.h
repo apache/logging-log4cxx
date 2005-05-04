@@ -18,23 +18,12 @@
 #define _LOG4CXX_STRING_H
 
 #include <string>
+#include <log4cxx/log4cxx.h>
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_LOGCHAR_IS_UTF8
 #error only one of LOG4CXX_LOGCHAR_IS_WCHAR and LOG4CXX_LOGCHAR_IS_UTF8 may be true
 #endif
 
-#if !defined(LOG4CXX_HAS_WCHAR_T)
-#define LOG4CXX_HAS_WCHAR_T 1
-#endif
-
-#if !LOG4CXX_LOGCHAR_IS_WCHAR && !LOG4CXX_LOGCHAR_IS_UTF8
-
-#if LOG4CXX_HAS_WCHAR_T
-#define LOG4CXX_LOGCHAR_IS_WCHAR 1
-#else
-#define LOG4CXX_LOGCHAR_IS_UTF8 1
-#endif
-#endif
 
 namespace log4cxx {
 

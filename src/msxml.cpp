@@ -15,7 +15,6 @@
  */
 
 #define _WIN32_DCOM
-#include <log4cxx/portability.h>
 
 #if LOG4CXX_HAVE_XML
 

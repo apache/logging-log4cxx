@@ -17,17 +17,13 @@
 #ifndef _LOG4CXX_HELPERS_THREAD_H
 #define _LOG4CXX_HELPERS_THREAD_H
 
-#include <log4cxx/portability.h>
+#include <log4cxx/log4cxx.h>
 
 #if !defined(LOG4CXX_THREAD_FUNC)
-#if defined(APR_THREAD_FUNC)
-#define LOG4CXX_THREAD_FUNC APR_THREAD_FUNC
-#else
 #if defined(_WIN32)
 #define LOG4CXX_THREAD_FUNC __stdcall
 #else
 #define LOG4CXX_THREAD_FUNC
-#endif
 #endif
 #endif
 
