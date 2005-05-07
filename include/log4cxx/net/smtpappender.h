@@ -79,9 +79,9 @@ namespace log4cxx
 
                         ~SMTPAppender();
 
-                    /**
-                    Set options
-                    */
+                        /**
+                         Set options
+                        */
                         virtual void setOption(const LogString& option, const LogString& value);
 
                         /**
@@ -159,7 +159,7 @@ namespace log4cxx
                         <code>iso8859_2</code>, <code>iso8859_3</code>).
                         */
                         inline void setCharset(const LogString& charset)
-                                { this->charset = charset; }
+                                { this->charset.assign(charset); }
 
                         /**
                         The <b>Encoding</b> option takes a string value which should be the
@@ -167,21 +167,21 @@ namespace log4cxx
                         <code>base64</code>, <code>binary</code>, <code>quoted</code>).
                         */
                         inline void setEncoding(const LogString& charset)
-                                { this->encoding = encoding; }
+                                { this->encoding.assign(encoding); }
 
                         /**
                         The <b>From</b> option takes a string value which should be a
                         e-mail address of the sender.
                         */
                         inline void setFrom(const LogString& from)
-                                { this->from = from; }
+                                { this->from.assign(from); }
 
                         /**
                         The <b>Subject</b> option takes a string value which should be a
                         the subject of the e-mail message.
                         */
                         inline void setSubject(const LogString& subject)
-                                { this->subject = subject; }
+                                { this->subject.assign(subject); }
 
                         /**
                         The <b>BufferSize</b> option takes a positive integer
@@ -197,7 +197,7 @@ namespace log4cxx
                         the host name of the SMTP server that will send the e-mail message.
                         */
                         inline void setSMTPHost(const LogString& smtpHost)
-                                { this->smtpHost = smtpHost; }
+                                { this->smtpHost.assign(smtpHost); }
 
                         /**
                         Returns value of the <b>SMTPHost</b> option.
@@ -210,7 +210,7 @@ namespace log4cxx
                         comma separated list of e-mail address of the recipients.
                         */
                         inline void setTo(const LogString& to)
-                                { this->to = to; }
+                                { this->to.assign(to); }
 
                         /**
                         Returns value of the <b>BufferSize</b> option.
@@ -246,6 +246,11 @@ namespace log4cxx
                         */
                         inline bool getLocationInfo() const
                                 { return locationInfo; }
+
+                private:
+                        SMTPAppender(const SMTPAppender&);
+                        SMTPAppender& operator=(const SMTPAppender&);
+
                 }; // class SMTPAppender
 
                 class LOG4CXX_EXPORT DefaultEvaluator :

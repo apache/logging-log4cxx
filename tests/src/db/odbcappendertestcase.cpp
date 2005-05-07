@@ -20,7 +20,7 @@
 #include "../appenderskeletontestcase.h"
 
 #define LOG4CXX_TEST 1
-#include <log4cxx/private/log4cxx.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 #ifdef LOG4CXX_HAVE_ODBC
 

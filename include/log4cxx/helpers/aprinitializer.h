@@ -17,6 +17,10 @@
 #ifndef _LOG4CXX_HELPERS_APRINITIALIZER_H
 #define _LOG4CXX_HELPERS_APRINITIALIZER_H
 
+#ifndef LOG4CXX
+#error "aprinitializer.h should only be included by log4cxx implementation"
+#endif
+
 #include <log4cxx/helpers/pool.h>
 #include <apr_pools.h>
 #include <apr_thread_proc.h>

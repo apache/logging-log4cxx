@@ -38,7 +38,7 @@ using namespace std;
 #endif
 
 #define LOG4CXX_TEST 1
-#include <log4cxx/private/log4cxx.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 
 #if LOG4CXX_HAS_STD_LOCALE

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <log4cxx/private/log4cxx.h>
+#include <log4cxx/private/log4cxx_private.h>
 #if LOG4CXX_HAVE_SMTP
 
 #include <log4cxx/net/smtpappender.h>

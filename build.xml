@@ -323,7 +323,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <condition property="config-available" value="true">
                 <and>
                     <available file="${include.dir}/log4cxx/log4cxx.h"/>
-                    <available file="${include.dir}/log4cxx/private/log4cxx.h"/>
+                    <available file="${include.dir}/log4cxx/private/log4cxx_private.h"/>
                 </and>
         </condition>
 </target>
@@ -336,8 +336,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
         <copy tofile="${include.dir}/log4cxx/log4cxx.h"
               file="${include.dir}/log4cxx/log4cxx.h.in"/>
-        <copy tofile="${include.dir}/log4cxx/private/log4cxx.h"
-              file="${include.dir}/log4cxx/private/log4cxx.h.in"/>
+        <copy tofile="${include.dir}/log4cxx/private/log4cxx_private.h"
+              file="${include.dir}/log4cxx/private/log4cxx_private.h.in"/>
 </target>
 
 <target name="win-configure"
@@ -346,8 +346,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         unless="config-available">
         <copy tofile="${include.dir}/log4cxx/log4cxx.h"
               file="${include.dir}/log4cxx/log4cxx.hw"/>
-        <copy tofile="${include.dir}/log4cxx/private/log4cxx.h"
-              file="${include.dir}/log4cxx/private/log4cxx.hw"/>
+        <copy tofile="${include.dir}/log4cxx/private/log4cxx_private.h"
+              file="${include.dir}/log4cxx/private/log4cxx_private.hw"/>
 </target>
 
 
@@ -567,11 +567,11 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 <compilerarg value="-Weffc++"/>
                 <compilerarg value="-Wall"/>
                 <compilerarg value="${pic-option}" if="pic-option"/>
-                <fileset dir="${build.dir}/header-check" includes="**/*.cpp"/>
+                <fileset dir="${build.dir}/header-check"
+                     includes="**/*.cpp"
+                     excludes="log4cxx/private/*.cpp **/aprinitializer.h.cpp"/>
                 <includepath path="mock"/>
                 <includepath path="include"/>
-                <includepath path="${apr.include.dir}"/>
-                <includepath path="${aprutil.include.dir}"/>
                 <project outfile="${project.dir}/header-check"
                     type="${project.type}" if="project.if"/>
          </cc>

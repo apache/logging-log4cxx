@@ -213,7 +213,7 @@ namespace log4cxx
                         /** Binds this socket to the specified port number
                         on the specified host.
                         @param host the host address
-						@param port the port number.
+                                                @param port the port number.
                         @exception BindException if an I/O error occurs when binding this socket.
                         */
                         void bind(InetAddress host, int port);
@@ -263,6 +263,10 @@ namespace log4cxx
                         /** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
                         */
                         void setSoTimeout(int timeout);
+
+                private:
+                        SocketImpl(const SocketImpl&);
+                        SocketImpl& operator=(const SocketImpl&);
                 };
         }  // namespace helpers
 } // namespace log4cxx

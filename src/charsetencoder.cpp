@@ -468,7 +468,13 @@ CharsetEncoderPtr CharsetEncoder::getDefaultEncoder() {
 }
 
 CharsetEncoder* CharsetEncoder::createDefaultEncoder() {
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_LOCALE_ENCODING_UTF8
+   return new UTF8CharsetEncoder();
+#elif LOG4CXX_LOCALE_ENCODING_ISO_8859_1
+   return new ISOLatinCharsetEncoder();
+#elif LOG4CXX_LOCALE_ENCODING_US_ASCII
+   return new USASCIICharsetEncoder();
+#elif LOG4CXX_HAS_WCHAR_T
   return new WcstombsCharsetEncoder();
 #else
   return new APRCharsetEncoder(APR_LOCALE_CHARSET);

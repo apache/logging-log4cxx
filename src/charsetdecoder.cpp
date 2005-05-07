@@ -415,7 +415,13 @@ CharsetDecoder::~CharsetDecoder() {
 }
 
 CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_LOCALE_ENCODING_UTF8
+     return new UTF8CharsetDecoder();
+#elif LOG4CXX_LOCALE_ENCODING_ISO_8859_1
+     return new ISOLatinCharsetDecoder();
+#elif LOG4CXX_LOCALE_ENCODING_US_ASCII
+     return new USASCIICharsetDecoder();
+#elif LOG4CXX_HAS_WCHAR_T
     return new MbstowcsCharsetDecoder();
 #else
     return new APRCharsetDecoder(APR_LOCALE_CHARSET);

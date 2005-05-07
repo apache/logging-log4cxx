@@ -19,7 +19,7 @@
 #include <log4cxx/helpers/object.h>
 #include <map>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/private/log4cxx.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

@@ -17,9 +17,9 @@
 #ifndef LOG4CXX_LOG4CXX_H
 #define LOG4CXX_LOG4CXX_H
 
-/* GENERATED FILE WARNING!  DO NOT EDIT log4cxx.h
+/* GENERATED FILE WARNING!  DO NOT EDIT log4cxx_private.h
  *
- * Edit log4cxx.h.in instead
+ * Edit log4cxx_private.h.in instead
  *
  */
 
@@ -53,5 +53,8 @@ typedef int log4cxx_status_t;
 #endif
 #endif
 
+#define LOG4CXX_LOCALE_ENCODING_UTF8 0
+#define LOG4CXX_LOCALE_ENCODING_ISO_8859_1 0
+#define LOG4CXX_LOCALE_ENCODING_US_ASCII 0
 
 #endif
