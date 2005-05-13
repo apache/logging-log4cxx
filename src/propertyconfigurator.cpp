@@ -79,6 +79,7 @@ PropertyConfigurator::PropertyConfigurator()
 void PropertyConfigurator::doConfigure(const File& configFileName,
         spi::LoggerRepositoryPtr& hierarchy)
 {
+       hierarchy->setConfigured(true);
         Pool pool;
         LogString config(configFileName.read(pool));
         if (config.length() == 0) {
@@ -127,6 +128,8 @@ void PropertyConfigurator::configureAndWatch(
 void PropertyConfigurator::doConfigure(helpers::Properties& properties,
         spi::LoggerRepositoryPtr& hierarchy)
 {
+       hierarchy->setConfigured(true);
+
         static const LogString DEBUG_KEY(LOG4CXX_STR("log4j.debug"));
         LogString value(properties.getProperty(DEBUG_KEY));
 

@@ -230,6 +230,10 @@ namespace log4cxx
             void shutdown();
 
 
+            virtual bool isConfigured();
+            virtual void setConfigured(bool configured);
+
+
         private:
 
             /**
@@ -272,8 +276,8 @@ namespace log4cxx
             Hierarchy& operator=(const Hierarchy&);
 
             void updateChildren(ProvisionNode& pn, LoggerPtr& logger);
-
             log4cxx::helpers::Mutex mutex;
+            bool configured;
         };
 
 }  //namespace log4cxx

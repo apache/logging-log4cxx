@@ -37,6 +37,8 @@
 #include <log4cxx/basicconfigurator.h>
 
 #include <log4cxx/log4cxx.h>
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx_private.h>
 
 extern CPPUNIT_NS::Test* createTestCase1();
 extern CPPUNIT_NS::Test* createTestCase3();

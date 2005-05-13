@@ -592,6 +592,7 @@ void DOMConfigurator::setParameter(XMLDOMElementPtr elem, PropertySetter& propSe
 
 void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr& repository)
 {
+       repository->setConfigured(true);
         this->repository = repository;
         std::basic_ostringstream<logchar> os(LOG4CXX_STR("DOMConfigurator configuring file "));
         os << filename.getName() << LOG4CXX_STR("...");

@@ -42,6 +42,7 @@ public:
    void testProperties()
    {
       LoggerPtr root = Logger::getRootLogger();
+     LOG4CXX_DEBUG(root, "Hello, world");
       bool rootIsConfigured = !root->getAllAppenders().empty();
       CPPUNIT_ASSERT(rootIsConfigured);
 

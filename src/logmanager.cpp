@@ -70,27 +70,6 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
         LogManager::getRepositorySelector() = selector;
 }
 
-const LogString LogManager::getConfiguratorClass() {
-
-   // Use automatic configration to configure the default hierarchy
-   const LogString log4jConfiguratorClassName(
-        OptionConverter::getSystemProperty(LOG4CXX_STR("log4j.configuratorClass"),LOG4CXX_STR("")));
-   const LogString configuratorClassName(
-        OptionConverter::getSystemProperty(LOG4CXX_STR("LOG4CXX_CONFIGURATOR_CLASS"),
-            log4jConfiguratorClassName));
-   return configuratorClassName;
-}
-
-const LogString LogManager::getConfigurationFileName() {
-  static const LogString LOG4CXX_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
-  static const LogString LOG4J_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("log4j.configuration"));
-  const LogString log4jConfigurationOptionStr(
-          OptionConverter::getSystemProperty(LOG4J_DEFAULT_CONFIGURATION_KEY, LOG4CXX_STR("")));
-  const LogString configurationOptionStr(
-          OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_KEY,
-              log4jConfigurationOptionStr));
-  return configurationOptionStr;
-}
 
 
 LoggerRepositoryPtr& LogManager::getLoggerRepository()
@@ -101,53 +80,6 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
                 LoggerRepositoryPtr hierarchy(new Hierarchy(root));
                 RepositorySelectorPtr selector(new DefaultRepositorySelector(hierarchy));
                 getRepositorySelector() = selector;
-
-                const LogString configuratorClassName(getConfiguratorClass());
-
-                LogString configurationOptionStr(getConfigurationFileName());
-                File configuration(configurationOptionStr);
-
-                if (configurationOptionStr.empty())
-                {
-                        Pool pool;
-                        configuration = LOG4CXX_FILE("log4cxx.properties");
-                        if (!configuration.exists(pool)) {
-                            File tmp = LOG4CXX_FILE("log4cxx.xml");
-                            if (tmp.exists(pool)) {
-                              configuration = tmp;
-                            } else {
-                              tmp = LOG4CXX_FILE("log4j.properties");
-                              if (tmp.exists(pool)) {
-                                configuration = tmp;
-                              } else {
-                                tmp = LOG4CXX_FILE("log4j.xml");
-                                if (tmp.exists(pool)) {
-                                  configuration = tmp;
-                                }
-                              }
-                            }
-                          }
-                }
-
-                Pool pool;
-                if (configuration.exists(pool))
-                {
-                        LogString msg(LOG4CXX_STR("Using configuration file ["));
-                        msg += configuration.getName();
-                        msg += LOG4CXX_STR("] for automatic log4cxx configuration");
-                        LogLog::debug(msg);
-
-                        OptionConverter::selectAndConfigure(
-                                configuration,
-                                configuratorClassName,
-                                getRepositorySelector()->getLoggerRepository());
-                }
-                else
-                {
-                        LogString msg(LOG4CXX_STR("Could not find configuration file: ["));
-                        msg += configuration.getName();
-                        msg += LOG4CXX_STR("].");
-                }
         }
 
         return getRepositorySelector()->getLoggerRepository();

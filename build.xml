@@ -746,8 +746,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 </target>
 
-
-<target name="build-unittest" depends="build-shortsocketserver, build-cppunit"
+<target name="build-unittest" depends="build, build-shortsocketserver, build-cppunit"
     description="Builds unit test app">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
 
@@ -762,6 +761,90 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
         <fileset dir="${tests.dir}/src" includes="**/*.cpp **/*.h">
+             <exclude name="shortsocketserver.cpp"/>
+        </fileset>
+        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
+        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
+        <includepath path="${aprutil.include.dir}"/>
+        <defineset define="LOG4CXX_STATIC" if="is-static"/>
+        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
+        <defineset define="WIN32" if="is-windows"/>
+        <defineset if="is-utf8">
+            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
+        </defineset>
+        <defineset>
+            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
+        </defineset>
+        <compilerarg value="${pic-option}" if="pic-option"/>
+
+        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
+        &libsets;
+
+        <project outfile="${project.dir}/log4cxx-test" type="${project.type}" if="project.if"/>
+    </cc>
+</target>
+
+<target name="build-defaultinit-unittest" depends="build, build-cppunit"
+    description="Builds test of default init">
+    <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
+
+    <cc name="${compiler}"
+                exceptions="true"
+                outfile="${log4cxx.lib.dir}/log4cxx-defaultinit-test"
+                subsystem="console"
+                multithreaded="true"
+                outputfileproperty="log4cxx-defaultinit-test.exe"
+                outtype="executable"
+                objdir="${log4cxx.lib.dir}/log4cxx-test_obj"
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
+        <fileset dir="${tests.dir}/src" includes="defaultinit/*.cpp main.cpp">
+             <exclude name="shortsocketserver.cpp"/>
+        </fileset>
+        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
+        <includepath path="${include.dir}"/>
+        <includepath path="${apr.include.dir}"/>
+        <includepath path="${aprutil.include.dir}"/>
+        <defineset define="LOG4CXX_STATIC" if="is-static"/>
+        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
+        <defineset define="WIN32" if="is-windows"/>
+        <defineset if="is-utf8">
+            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
+        </defineset>
+        <defineset>
+            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
+        </defineset>
+        <compilerarg value="${pic-option}" if="pic-option"/>
+
+        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
+        <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
+        <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
+        &libsets;
+
+        <project outfile="${project.dir}/log4cxx-defaultinit-test" type="${project.type}" if="project.if"/>
+    </cc>
+</target>
+
+
+<target name="make-unittest">
+    <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
+
+    <cc name="${compiler}"
+                exceptions="true"
+                outfile="${log4cxx.lib.dir}/${outfile.name}"
+                subsystem="console"
+                multithreaded="true"
+                outputfileproperty="${outfile.property}"
+                outtype="executable"
+                objdir="${log4cxx.lib.dir}/log4cxx-test_obj"
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
+        <fileset dir="${tests.dir}/src" includes="${src.pattern}">
              <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
@@ -844,7 +927,88 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
      build-simplesocketserver, build-performance"
      description="Builds all artifacts"/>
 
-<target name="run-unittest" depends="build-unittest"
+<target name="run-defaultinit-unittest" depends="build-defaultinit-unittest"
+    description="Runs default init unit tests">
+    
+    <!--  test use of log4j.configuration -->
+    <property name="defaultInit3.properties"
+         location="${tests.dir}/input/defaultInit3.properties"/>
+         
+    <property name="defaultInit.xml"
+         location="${tests.dir}/input/xml/defaultInit.xml"/>
+         
+    
+    <!--  test of log4j.properties -->
+    <mkdir dir="${log4cxx.lib.dir}/output"/>
+    <delete file="${log4cxx.lib.dir}/log4*.properties"/>
+    <delete file="${log4cxx.lib.dir}/log4*.xml"/>
+    <copy tofile="${log4cxx.lib.dir}/log4j.properties"
+       file="${defaultInit3.properties}" overwrite="true"/>
+    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${log4cxx.lib.dir}"
+              failonerror="true">
+            <arg value="TestCase3"/>
+            <env key="DYLD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+            <env key="LD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+    </exec>
+
+    <!-- modify log4j.properties so if it has precedence the test fails  -->
+    <replace file="${log4cxx.lib.dir}/log4j.properties" token="D3" value="D4"/>
+    <copy tofile="${log4cxx.lib.dir}/log4cxx.properties"
+       file="${defaultInit3.properties}"/>
+    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${log4cxx.lib.dir}"
+              failonerror="true">
+            <arg value="TestCase3"/>
+            <env key="DYLD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+            <env key="LD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+    </exec>
+
+    <delete file="${log4cxx.lib.dir}/log4cxx.properties"/>
+    <delete file="${log4cxx.lib.dir}/log4j.properties"/>
+
+    <copy tofile="${log4cxx.lib.dir}/log4j.xml"
+       file="${defaultInit.xml}"/>
+    <copy todir="${log4cxx.lib.dir}" file="${tests.dir}/input/xml/log4j.dtd"/>
+    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${log4cxx.lib.dir}"
+              failonerror="true">
+            <arg value="TestCase4"/>
+            <env key="LD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+            <env key="DYLD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+    </exec>
+
+    
+    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.dir}"
+              failonerror="true">
+            <arg value="TestCase3"/>
+            <env key="LD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+            <env key="DYLD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+            <env key="log4j.configuration"
+                   value="${defaultInit3.properties}"/>
+    </exec>
+
+    <!--  test of LOG4CXX_CONFIGURATION -->
+    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.dir}"
+              failonerror="true">
+            <arg value="TestCase3"/>
+            <env key="LD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
+            <env key="DYLD_LIBRARY_PATH"
+                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
+            <env key="LOG4CXX_CONFIGURATION"
+                   value="${defaultInit3.properties}"/>
+    </exec>
+
+
+</target>
+
+<target name="run-unittest" depends="build-unittest, run-defaultinit-unittest"
     description="Runs unit test">
     <property environment="env"/>
     <mkdir dir="${tests.dir}/output"/>
@@ -860,77 +1024,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                    value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
             <env key="Path"
                    value="${log4cxx.lib.dir};${env.Path}"/>
-    </exec>
-
-    <!--  test use of log4j.configuration -->
-    <property name="defaultInit3.properties"
-         location="${tests.dir}/input/defaultInit3.properties"/>
-    <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
-              failonerror="true">
-            <arg value="TestCase3"/>
-            <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
-            <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
-            <env key="log4j.configuration"
-                   value="${defaultInit3.properties}"/>
-    </exec>
-
-    <!--  test of LOG4CXX_CONFIGURATION -->
-    <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
-              failonerror="true">
-            <arg value="TestCase3"/>
-            <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
-            <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
-            <env key="LOG4CXX_CONFIGURATION"
-                   value="${defaultInit3.properties}"/>
-    </exec>
-
-    <!--  test of log4j.properties -->
-    <mkdir dir="${log4cxx.lib.dir}/output"/>
-    <delete file="${log4cxx.lib.dir}/log4*.properties"/>
-    <delete file="${log4cxx.lib.dir}/log4*.xml"/>
-    <copy tofile="${log4cxx.lib.dir}/log4j.properties"
-       file="${defaultInit3.properties}" overwrite="true"/>
-    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
-              failonerror="true">
-            <arg value="TestCase3"/>
-            <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
-            <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
-    </exec>
-
-    <!-- modify log4j.properties so if it has precedence the test fails  -->
-    <replace file="${log4cxx.lib.dir}/log4j.properties" token="D3" value="D4"/>
-    <copy tofile="${log4cxx.lib.dir}/log4cxx.properties"
-       file="${defaultInit3.properties}"/>
-    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
-              failonerror="true">
-            <arg value="TestCase3"/>
-            <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
-            <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
-    </exec>
-
-    <delete file="${log4cxx.lib.dir}/log4cxx.properties"/>
-    <delete file="${log4cxx.lib.dir}/log4j.properties"/>
-
-    <property name="defaultInit.xml"
-         location="${tests.dir}/input/xml/defaultInit.xml"/>
-    <copy tofile="${log4cxx.lib.dir}/log4j.xml"
-       file="${defaultInit.xml}"/>
-    <copy todir="${log4cxx.lib.dir}" file="${tests.dir}/input/xml/log4j.dtd"/>
-    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
-              failonerror="true">
-            <arg value="TestCase4"/>
-            <env key="LD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.LD_LIBRARY_PATH}"/>
-            <env key="DYLD_LIBRARY_PATH"
-                   value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
     </exec>
 
 </target>

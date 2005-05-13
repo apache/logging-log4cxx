@@ -27,6 +27,8 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/defaultconfigurator.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -34,9 +36,9 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
-Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
+Hierarchy::Hierarchy(const LoggerPtr& root) : root(root), 
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
-mutex()
+mutex(), configured(false)
 {
         // Enable all level levels by default.
         setThreshold(Level::getAll());
@@ -103,9 +105,7 @@ void Hierarchy::setThreshold(const LevelPtr& l)
         }
 }
 
-void Hierarchy::setThreshold(const LogString& levelStr)
-
-{
+void Hierarchy::setThreshold(const LogString& levelStr) {
         const LevelPtr& l = Level::toLevel(levelStr, 0);
 
         if(l != 0)
@@ -114,13 +114,14 @@ void Hierarchy::setThreshold(const LogString& levelStr)
         }
         else
         {
-                LogLog::warn(((LogString) LOG4CXX_STR("No appender could be found for logger ("))
-                    + levelStr + LOG4CXX_STR("] to Level."));
+                LogLog::warn(((LogString) LOG4CXX_STR("No level could be found named \""))
+                    + levelStr + LOG4CXX_STR("\"."));
         }
 }
 
 void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
 {
+   setConfigured(true);
     HierarchyEventListenerList::iterator it, itEnd = listeners.end();
     HierarchyEventListenerPtr listener;
 
@@ -214,7 +215,18 @@ LoggerPtr Hierarchy::getRootLogger() const
 
 bool Hierarchy::isDisabled(int level) const
 {
-        return thresholdInt > level;
+   //
+   //   if repository hasn't been configured,
+   //     do default configuration
+   //
+   if (!configured) {
+     synchronized sync(mutex);
+      if (!configured) {
+         DefaultConfigurator::configure(const_cast<Hierarchy*>(this));
+      } 
+   }
+
+    return thresholdInt > level;
 }
 
 
@@ -244,6 +256,8 @@ void Hierarchy::resetConfiguration()
 
 void Hierarchy::shutdown()
 {
+      setConfigured(false);
+
         LoggerPtr root = getRootLogger();
 
         // begin by closing nested appenders
@@ -335,3 +349,10 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr& logger)
         }
 }
 
+void Hierarchy::setConfigured(bool newValue) {
+   configured = newValue;
+}
+
+bool Hierarchy::isConfigured() {
+   return configured;
+}

@@ -108,6 +108,10 @@ namespace log4cxx
                                     const AppenderPtr& appender) = 0;
 
                 virtual void resetConfiguration() = 0;
+
+            virtual bool isConfigured() = 0;
+            virtual void setConfigured(bool configured) = 0;
+
             }; // class LoggerRepository
 
             typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;

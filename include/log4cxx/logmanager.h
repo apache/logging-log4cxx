@@ -43,8 +43,6 @@ namespace log4cxx
     private:
         static void * guard;
         static spi::RepositorySelectorPtr& getRepositorySelector();
-        static const LogString getConfigurationFileName();
-        static const LogString LogManager::getConfiguratorClass();
 
     public:
         /**
