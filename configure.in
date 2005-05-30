@@ -378,7 +378,9 @@ docs/Makefile
 docs/Doxyfile
 src/Makefile
 include/Makefile
-include/log4cxx/private/log4cxx.h
+include/log4cxx/log4cxx.h
+include/log4cxx/private/log4cxx_private.h
+include/log4cxx/private/Makefile
 include/log4cxx/Makefile
 include/log4cxx/helpers/Makefile
 include/log4cxx/net/Makefile
