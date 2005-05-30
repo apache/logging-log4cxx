@@ -5,11 +5,11 @@ case `uname` in
       (Darwin)        LIBTOOLIZE=glibtoolize  ;;
       (*)             LIBTOOLIZE=libtoolize   ;;
 esac
-$LIBTOOLIZE --force --automake
+$LIBTOOLIZE --force --automake --copy
 
 rm -f config.cache
 rm -f config.log
 aclocal -I .
 autoheader
 autoconf
-automake -a
+automake -a --copy

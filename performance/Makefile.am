@@ -1,3 +1,5 @@
+SUBDIRS = xml
+
 noinst_PROGRAMS = logging
 
 performanceincdir = $(includedir)/log4cxx
