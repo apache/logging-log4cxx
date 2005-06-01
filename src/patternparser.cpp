@@ -22,6 +22,8 @@ using namespace log4cxx;
 using namespace log4cxx::pattern;
 using namespace log4cxx::helpers;
 
+const logchar PatternParser::ESCAPE_CHAR = LOG4CXX_STR('%');
+
 
 /**
  * Private constructor.

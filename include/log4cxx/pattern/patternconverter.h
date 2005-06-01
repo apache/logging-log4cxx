@@ -22,6 +22,11 @@
 #include <log4cxx/logstring.h>
 #include <vector>
 
+#ifdef _MSC_VER
+//   disable identifier too wide for debugging warning
+#pragma warning (disable : 4786)
+#endif
+
 #define DECLARE_LOG4CXX_PATTERN(cls) DECLARE_ABSTRACT_LOG4CXX_OBJECT(cls)
 
 namespace log4cxx {

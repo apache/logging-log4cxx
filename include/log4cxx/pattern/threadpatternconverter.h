@@ -25,10 +25,10 @@ namespace log4cxx { namespace pattern {
 /**
  * Formats the event thread name.
  *
- * @author Ceki G&uuml;lc&uuml;
- * @since 1.3
+ * @author Curt Arnold
+ * @since 0.9.8
  */
-class ThreadPatternConverter : public LoggingEventPatternConverter {
+class LOG4CXX_EXPORT ThreadPatternConverter : public LoggingEventPatternConverter {
   /**
    * Private constructor.
    */

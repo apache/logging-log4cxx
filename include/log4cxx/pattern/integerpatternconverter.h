@@ -26,9 +26,9 @@ namespace log4cxx { namespace pattern {
  * Formats an integer.
  *
  * @author Curt Arnold
- * @since 1.3
+ * @since 0.9.8
  */
-class IntegerPatternConverter : public PatternConverter {
+class LOG4CXX_EXPORT IntegerPatternConverter : public PatternConverter {
 
   /**
    * Private constructor.

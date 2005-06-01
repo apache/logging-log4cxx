@@ -35,7 +35,7 @@ namespace log4cxx {
          * @author Curt Arnold
          * @since 0.9.8
          */
-        class RollingPolicyBase :
+        class LOG4CXX_EXPORT RollingPolicyBase :
            public virtual RollingPolicy,
            public virtual helpers::ObjectImpl {
         protected:

@@ -142,6 +142,7 @@ public:
     PatternAbbreviatorFragment& operator=(const PatternAbbreviatorFragment& src) {
        charCount = src.charCount;
        ellipsis = src.ellipsis;
+       return *this;
     }
 
     /**

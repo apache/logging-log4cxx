@@ -32,7 +32,7 @@ namespace log4cxx { namespace pattern {
  * @author Curt Arnold
  * @since 0.9.8
  */
-class PropertiesPatternConverter
+class LOG4CXX_EXPORT PropertiesPatternConverter
   : public LoggingEventPatternConverter {
   /**
    * Name of property to output.

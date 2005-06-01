@@ -41,7 +41,7 @@
  * @since 1.3
  *
  */
-class FilterBasedTriggeringPolicy : public TriggeringPolicy {
+class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy {
 
   DECLARE_LOG4CXX_OBJECT(FilterBasedTriggeringPolicy)
   BEGIN_LOG4CXX_CAST_MAP()

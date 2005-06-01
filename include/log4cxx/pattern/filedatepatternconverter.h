@@ -28,9 +28,9 @@ namespace log4cxx { namespace pattern {
  * the %d pattern in pattern layout.
  *
  * @author Curt Arnold
- * @since 1.3
+ * @since 0.9.8
  */
-class FileDatePatternConverter {
+class LOG4CXX_EXPORT FileDatePatternConverter {
   /**
    * Private constructor.
    */

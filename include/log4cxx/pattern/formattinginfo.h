@@ -33,14 +33,11 @@ typedef helpers::ObjectPtrT<FormattingInfo> FormattingInfoPtr;
  * Modifies the output of a pattern converter for a specified minimum
  * and maximum width and alignment.
  *
- *
- *  @author <a href=mailto:jim_cakalic@na.biomerieux.com>Jim Cakalic</a>
- *  @author Ceki G&uuml;lc&uuml;
  *  @author Curt Arnold
  *
- *  @since 1.3
+ *  @since 0.9.8
  */
-class FormattingInfo : public virtual log4cxx::helpers::ObjectImpl {
+class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::ObjectImpl {
 
   /**
    * Minimum length.

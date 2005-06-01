@@ -30,7 +30,7 @@ namespace log4cxx { namespace pattern {
  * @since 0.9.8
  *
  */
-class ThrowableInformationPatternConverter
+class LOG4CXX_EXPORT ThrowableInformationPatternConverter
   : public LoggingEventPatternConverter {
   /**
    * If "short", only first line of throwable report will be formatted.

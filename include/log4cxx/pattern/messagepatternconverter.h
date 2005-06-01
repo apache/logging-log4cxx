@@ -28,7 +28,7 @@ namespace log4cxx { namespace pattern {
  * @author Curt Arnold
  * @since 0.9.8
  */
-class MessagePatternConverter : public LoggingEventPatternConverter {
+class LOG4CXX_EXPORT MessagePatternConverter : public LoggingEventPatternConverter {
 
   /**
    * Private constructor.

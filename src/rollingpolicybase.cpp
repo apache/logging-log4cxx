@@ -109,6 +109,8 @@ PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const {
         return *converterIter;
       }
   }
+  PatternConverterPtr noMatch;
+  return noMatch;
 }
 
 PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const {
@@ -121,6 +123,8 @@ PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const {
         return *converterIter;
       }
   }
+  PatternConverterPtr noMatch;
+  return noMatch;
 }
 
 

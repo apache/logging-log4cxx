@@ -28,7 +28,7 @@ namespace log4cxx { namespace pattern {
  * @author Curt Arnold
  * @since 0.9.8
  */
-class MethodLocationPatternConverter
+class LOG4CXX_EXPORT MethodLocationPatternConverter
   : public LoggingEventPatternConverter {
 
   /**

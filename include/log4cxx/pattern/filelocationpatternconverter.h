@@ -29,7 +29,7 @@ namespace log4cxx {
  * @author Ceki G&uuml;lc&uuml;
  * @since 1.3
  */
-class FileLocationPatternConverter
+class LOG4CXX_EXPORT FileLocationPatternConverter
   : public LoggingEventPatternConverter {
   /**
    * Private constructor.

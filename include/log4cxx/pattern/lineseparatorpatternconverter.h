@@ -29,7 +29,7 @@ namespace pattern {
  * @author Curt Arnold
  * @since 0.9.8
  */
-class LineSeparatorPatternConverter
+class LOG4CXX_EXPORT LineSeparatorPatternConverter
   : public LoggingEventPatternConverter {
 
   /**

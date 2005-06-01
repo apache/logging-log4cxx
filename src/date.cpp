@@ -22,7 +22,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Date)
 
 
-Date::Date() {
+Date::Date() : time(0) {
 }
 
 Date::Date(log4cxx_time_t t) : time(t) {

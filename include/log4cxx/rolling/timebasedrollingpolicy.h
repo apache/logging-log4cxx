@@ -174,7 +174,7 @@ namespace log4cxx {
            */
            RolloverDescriptionPtr initialize(
             const LogString& file,
-            bool append,
+            const bool append,
             log4cxx::helpers::Pool& pool);
 
           /**

@@ -29,7 +29,7 @@ namespace log4cxx {
      *      internal strings.
      *
      */
-      class Date : public virtual ObjectImpl {
+      class LOG4CXX_EXPORT Date : public ObjectImpl {
       const log4cxx_time_t time;
 
       public:

@@ -29,7 +29,7 @@ namespace pattern {
  * @author Curt Arnold
  * @since 0.9.8
  */
-class LineLocationPatternConverter
+class LOG4CXX_EXPORT LineLocationPatternConverter
   : public LoggingEventPatternConverter {
   /**
    * Private constructor.

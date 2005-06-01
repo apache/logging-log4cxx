@@ -26,10 +26,10 @@ namespace pattern {
 /**
  * Format the event's line location information.
  *
- * @author Ceki G&uuml;lc&uuml;
- * @since 1.3
+ * @author Curt Arnold
+ * @since 0.9.8
  */
-class FullLocationPatternConverter
+class LOG4CXX_EXPORT FullLocationPatternConverter
   : public LoggingEventPatternConverter {
   /**
    * Private constructor.

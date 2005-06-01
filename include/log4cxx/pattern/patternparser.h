@@ -53,7 +53,7 @@ class LOG4CXX_EXPORT PatternParser {
   /**
    * Escape character for format specifier.
    */
-  static const logchar ESCAPE_CHAR = LOG4CXX_STR('%');
+  static const logchar ESCAPE_CHAR;
 
   enum {
     LITERAL_STATE = 0,

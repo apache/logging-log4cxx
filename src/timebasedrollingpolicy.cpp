@@ -86,7 +86,7 @@ TimeBasedRollingPolicy::FileNamePatternMap::FileNamePatternMap() {
  */
 RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
   const LogString& currentActiveFile,
-  bool append,
+  const bool append,
   Pool& pool) {
   apr_time_t n = apr_time_now();
   nextCheck = ((n / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC;

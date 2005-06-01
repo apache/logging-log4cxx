@@ -26,9 +26,9 @@ namespace log4cxx { namespace pattern {
  * Format the relative time in milliseconds.
  *
  * @author Curt Arnold
- * @since 1.3
+ * @since 0.9.8
  */
-class RelativeTimePatternConverter : public LoggingEventPatternConverter {
+class LOG4CXX_EXPORT RelativeTimePatternConverter : public LoggingEventPatternConverter {
 public:
 DECLARE_LOG4CXX_PATTERN(RelativeTimePatternConverter)
 BEGIN_LOG4CXX_CAST_MAP()
