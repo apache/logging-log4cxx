@@ -69,6 +69,10 @@ namespace log4cxx
                 class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
                         public virtual helpers::ObjectImpl
                 {
+                  /**
+                  Points to the next filter in the filter chain.
+                  */
+                  FilterPtr next;
                 public:
                         Filter() : next() {
                         }
@@ -78,10 +82,13 @@ namespace log4cxx
                                 LOG4CXX_CAST_ENTRY(Filter)
                                 LOG4CXX_CAST_ENTRY(spi::OptionHandler)
                         END_LOG4CXX_CAST_MAP()
-            /**
-            Points to the next filter in the filter chain.
-            */
-            FilterPtr next;
+
+                        log4cxx::spi::FilterPtr getNext() const {
+                            return next;
+                        }
+                        void setNext(const log4cxx::spi::FilterPtr& newNext) {
+                           next = newNext;
+                        }
 
             enum FilterDecision
             {

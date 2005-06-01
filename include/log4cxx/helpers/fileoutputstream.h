@@ -46,9 +46,9 @@ namespace log4cxx
                   FileOutputStream(const LogString& filename, bool append);
                   virtual ~FileOutputStream();
 
-                  void close(Pool& p);
-                  void flush(Pool& p);
-                  void write(ByteBuffer& buf, Pool& p);
+                  virtual void close(Pool& p);
+                  virtual void flush(Pool& p);
+                  virtual void write(ByteBuffer& buf, Pool& p);
 
           private:
                   FileOutputStream(const FileOutputStream&);

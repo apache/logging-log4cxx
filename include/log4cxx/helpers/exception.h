@@ -193,6 +193,13 @@ namespace log4cxx
                       NoSuchElementException& operator=(const NoSuchElementException&);
                 };
 
+                class IllegalStateException : public Exception {
+                public:
+                      IllegalStateException();
+                      IllegalStateException(const IllegalStateException&);
+                      IllegalStateException& operator=(const IllegalStateException&);
+                };
+
 
         }  // namespace helpers
 } // namespace log4cxx

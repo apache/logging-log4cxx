@@ -64,9 +64,15 @@ namespace log4cxx
                     log4cxx_status_t open(apr_file_t** file, int flags,
                           int perm, log4cxx::helpers::Pool& p) const;
 
+                    std::vector<LogString> list(log4cxx::helpers::Pool& p) const;
+
+                    bool deleteFile(log4cxx::helpers::Pool& p) const;
+                    bool renameTo(const File& dest, log4cxx::helpers::Pool& p) const;
+
                 private:
                     LogString name;
                     std::string osName;
+                    static std::string convertBackSlashes(const std::string& src);
                 };
 } // namespace log4cxx
 

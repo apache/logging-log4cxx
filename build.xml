@@ -795,6 +795,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
+        <libset libs="dl" if="is-unix"/>
         &libsets;
 
         <project outfile="${project.dir}/log4cxx-test" type="${project.type}" if="project.if"/>
@@ -837,6 +838,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
+        <libset libs="dl" if="is-unix"/>
         &libsets;
 
         <project outfile="${project.dir}/log4cxx-defaultinit-test" type="${project.type}" if="project.if"/>
@@ -942,15 +944,15 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="run-defaultinit-unittest" depends="build-defaultinit-unittest"
     description="Runs default init unit tests">
-    
+
     <!--  test use of log4j.configuration -->
     <property name="defaultInit3.properties"
          location="${tests.dir}/input/defaultInit3.properties"/>
-         
+
     <property name="defaultInit.xml"
          location="${tests.dir}/input/xml/defaultInit.xml"/>
-         
-    
+
+
     <!--  test of log4j.properties -->
     <mkdir dir="${log4cxx.lib.dir}/output"/>
     <delete file="${log4cxx.lib.dir}/log4*.properties"/>
@@ -994,7 +996,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                    value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
     </exec>
 
-    
+
     <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
@@ -1025,6 +1027,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     description="Runs unit test">
     <property environment="env"/>
     <mkdir dir="${tests.dir}/output"/>
+    <delete>
+         <fileset dir="${tests.dir}/output" includes="*"/>
+    </delete>
     <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
               failonerror="true">
             <arg value="+TestCase1"/>

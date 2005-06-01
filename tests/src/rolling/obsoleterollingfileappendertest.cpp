@@ -1,0 +1,134 @@
+/*
+ * Copyright 1999,2005 The Apache Software Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ #include <cppunit/TestFixture.h>
+ #include <cppunit/extensions/HelperMacros.h>
+
+ #include "../util/compare.h"
+ #include "../insertwide.h"
+ #include <apr_time.h>
+ #include <log4cxx/logmanager.h>
+ #include <log4cxx/xml/domconfigurator.h>
+ #include <log4cxx/patternlayout.h>
+ #include <log4cxx/rolling/rollingfileappender.h>
+ #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
+ #include <log4cxx/rolling/filterbasedtriggeringpolicy.h>
+ #include <log4cxx/filter/levelrangefilter.h>
+ #include <log4cxx/helpers/pool.h>
+ #include <log4cxx/logger.h>
+ #include <log4cxx/propertyconfigurator.h>
+ #include <log4cxx/rollingfileappender.h>
+ #include <log4cxx/helpers/stringhelper.h>
+
+
+ using namespace log4cxx;
+ using namespace log4cxx::rolling;
+ using namespace log4cxx::xml;
+ using namespace log4cxx::filter;
+ using namespace log4cxx::helpers;
+
+/**
+ * Tests the emulation of org.apache.log4j.RollingFileAppender
+ *
+ * @author Curt Arnold
+ *
+ */
+ class ObsoleteRollingFileAppenderTest : public CppUnit::TestFixture  {
+   CPPUNIT_TEST_SUITE(ObsoleteRollingFileAppenderTest);
+//    TODO: Property configurator isn't able to distinguish between
+//        obsolete and o.a.l.rolling.RollingFileAppender
+//           CPPUNIT_TEST(test1);
+           CPPUNIT_TEST(test2);
+   CPPUNIT_TEST_SUITE_END();
+
+
+ public:
+
+  void tearDown() {
+    LogManager::shutdown();
+  }
+
+  /**
+   * Test basic rolling functionality.
+   */
+  void test1() {
+    PropertyConfigurator::configure(File("input/rolling/obsoleteRFA1.properties"));
+
+    char msg[11];
+    strcpy(msg, "Hello---?");
+    LoggerPtr logger(Logger::getLogger("org.apache.logj4.ObsoleteRollingFileAppenderTest"));
+
+    // Write exactly 10 bytes with each log
+    for (int i = 0; i < 25; i++) {
+      apr_sleep(100000);
+
+      if (i < 10) {
+        msg[9] = (char) ('0' + i);
+        LOG4CXX_DEBUG(logger, msg);
+      } else if (i < 100) {
+        msg[8] = (char) ('0' + i / 10);
+        msg[9] = (char) ('0' + i % 10);
+        LOG4CXX_DEBUG(logger, msg);
+      }
+    }
+
+    Pool p;
+    CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test1.log").exists(p));
+    CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test1.log.1").exists(p));
+  }
+
+  /**
+   * Test basic rolling functionality.
+   * @deprecated Class under test is deprecated.
+   */
+  void test2()  {
+    PatternLayoutPtr layout(new PatternLayout(LOG4CXX_STR("%m\n")));
+    log4cxx::RollingFileAppenderPtr rfa(
+      new log4cxx::RollingFileAppender());
+    rfa->setName(LOG4CXX_STR("ROLLING"));
+    rfa->setLayout(layout);
+    rfa->setOption(LOG4CXX_STR("append"), LOG4CXX_STR("false"));
+    rfa->setMaximumFileSize(100);
+    rfa->setFile(LOG4CXX_STR("output/obsoleteRFA-test2.log"));
+    Pool p;
+    rfa->activateOptions(p);
+    LoggerPtr root(Logger::getRootLogger());
+    root->addAppender(rfa);
+
+    char msg[11];
+    strcpy(msg, "Hello---?");
+    LoggerPtr logger(Logger::getLogger("org.apache.logj4.ObsoleteRollingFileAppenderTest"));
+
+    // Write exactly 10 bytes with each log
+    for (int i = 0; i < 25; i++) {
+      apr_sleep(100000);
+
+      if (i < 10) {
+        msg[9] = (char) ('0' + i);
+        LOG4CXX_DEBUG(logger, msg);
+      } else if (i < 100) {
+        msg[8] = (char) ('0' + i / 10);
+        msg[9] = (char) ('0' + i % 10);
+        LOG4CXX_DEBUG(logger, msg);
+      }
+    }
+
+    CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log").exists(p));
+    CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log.1").exists(p));
+  }
+};
+
+CPPUNIT_TEST_SUITE_REGISTRATION(ObsoleteRollingFileAppenderTest);
+

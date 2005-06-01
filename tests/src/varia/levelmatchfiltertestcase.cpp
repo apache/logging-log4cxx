@@ -21,8 +21,8 @@
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/level.h>
-#include <log4cxx/varia/levelmatchfilter.h>
-#include <log4cxx/varia/denyallfilter.h>
+#include <log4cxx/filter/levelmatchfilter.h>
+#include <log4cxx/filter/denyallfilter.h>
 #include <log4cxx/helpers/pool.h>
 #include <apr_strings.h>
 #include <log4cxx/helpers/transcoder.h>
@@ -35,7 +35,7 @@
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace log4cxx::varia;
+using namespace log4cxx::filter;
 
 class LevelMatchFilterTestCase : public CppUnit::TestFixture
 {
@@ -74,7 +74,7 @@ public:
 
                 // attach DenyAllFilter to end of filter chain to deny neutral
                 // (non matching) messages
-                spi::FilterPtr filter(new DenyAllFilter);
+                spi::FilterPtr filter(new DenyAllFilter());
                 appender->addFilter(filter);
 
                 // set appender on root and set level to debug

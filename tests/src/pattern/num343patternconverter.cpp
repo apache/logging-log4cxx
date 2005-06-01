@@ -23,18 +23,19 @@ using namespace log4cxx::pattern;
 IMPLEMENT_LOG4CXX_OBJECT(Num343PatternConverter)
 
 
-Num343PatternConverter::Num343PatternConverter() {
+Num343PatternConverter::Num343PatternConverter() :
+   LoggingEventPatternConverter(LOG4CXX_STR("Num343"), LOG4CXX_STR("num343")) {
 }
 
-PatternConverter* Num343PatternConverter::newInstance(
-   const FormattingInfo&,
+PatternConverterPtr Num343PatternConverter::newInstance(
    const std::vector<LogString>&) {
    return new Num343PatternConverter();
 }
 
 
-void Num343PatternConverter::convert(LogString& sbuf,
+void Num343PatternConverter::format(
     const spi::LoggingEventPtr&,
+    LogString& sbuf,
     Pool&) const
 {
         sbuf.append(LOG4CXX_STR("343"));

@@ -1,5 +1,5 @@
 /*
- * Copyright 2004 The Apache Software Foundation.
+ * Copyright 2004-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <log4cxx/rollingfileappender.h>
+#include <log4cxx/rolling/rollingfileappender.h>
 #include "fileappendertestcase.h"
 
 using namespace log4cxx;
@@ -40,7 +40,7 @@ class RollingFileAppenderTestCase : public FileAppenderAbstractTestCase
 public:
 
         FileAppender* createFileAppender() const {
-          return new log4cxx::RollingFileAppender();
+          return new log4cxx::rolling::RollingFileAppender();
         }
 };
 

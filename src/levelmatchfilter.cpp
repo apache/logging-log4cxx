@@ -15,13 +15,13 @@
  */
 
 #include <log4cxx/spi/loggingevent.h>
-#include <log4cxx/varia/levelmatchfilter.h>
+#include <log4cxx/filter/levelmatchfilter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
 
 using namespace log4cxx;
-using namespace log4cxx::varia;
+using namespace log4cxx::filter;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 

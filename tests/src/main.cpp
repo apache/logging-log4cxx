@@ -128,7 +128,6 @@ int main( int argc, const char * const * argv)
         apr_terminate();
         return wasSuccessful ? EXIT_SUCCESS : EXIT_FAILURE;
 }
-
 #if LOG4CXX_HAS_WCHAR_T
 std::ostream& operator<<(std::ostream& os,
                                const std::wstring& str) {

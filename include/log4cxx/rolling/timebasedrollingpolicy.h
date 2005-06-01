@@ -29,16 +29,16 @@ namespace log4cxx {
 
 
         /**
-         * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite 
-         * powerful. 
-         * 
-         * <p>In order to use  <code>TimeBasedRollingPolicy</code>, the 
-         * <b>FileNamePattern</b> option must be set. It basically specifies the name of the 
-         * rolled log files. The value <code>FileNamePattern</code> should consist of 
-         * the name of the file, plus a suitably placed <code>%d</code> conversion 
-         * specifier. The <code>%d</code> conversion specifier may contain a date and 
-         * time pattern as specified by the {@link java.text.SimpleDateFormat} class. If 
-         * the date and time pattern is ommitted, then the default pattern of 
+         * <code>TimeBasedRollingPolicy</code> is both easy to configure and quite
+         * powerful.
+         *
+         * <p>In order to use  <code>TimeBasedRollingPolicy</code>, the
+         * <b>FileNamePattern</b> option must be set. It basically specifies the name of the
+         * rolled log files. The value <code>FileNamePattern</code> should consist of
+         * the name of the file, plus a suitably placed <code>%d</code> conversion
+         * specifier. The <code>%d</code> conversion specifier may contain a date and
+         * time pattern as specified by the {@link java.text.SimpleDateFormat} class. If
+         * the date and time pattern is ommitted, then the default pattern of
          * "yyyy-MM-dd" is assumed. The following examples should clarify the point.
          *
          * <p>
@@ -50,29 +50,29 @@ namespace log4cxx {
          *   </tr>
          *   <tr>
          *     <td nowrap="true"><code>/wombat/folder/foo.%d</code></td>
-         *     <td>Daily rollover (at midnight).  Due to the omission of the optional 
+         *     <td>Daily rollover (at midnight).  Due to the omission of the optional
          *         time and date pattern for the %d token specifier, the default pattern
          *         of "yyyy-MM-dd" is assumed, which corresponds to daily rollover.
          *     </td>
-         *     <td>During November 23rd, 2004, logging output will go to 
+         *     <td>During November 23rd, 2004, logging output will go to
          *       the file <code>/wombat/foo.2004-11-23</code>. At midnight and for
-         *       the rest of the 24th, logging output will be directed to 
-         *       <code>/wombat/foo.2004-11-24</code>. 
+         *       the rest of the 24th, logging output will be directed to
+         *       <code>/wombat/foo.2004-11-24</code>.
          *     </td>
          *   </tr>
          *   <tr>
          *     <td nowrap="true"><code>/wombat/foo.%d{yyyy-MM}.log</code></td>
          *     <td>Rollover at the beginning of each month.</td>
          *     <td>During the month of October 2004, logging output will go to
-         *     <code>/wombat/foo.2004-10.log</code>. After midnight of October 31st 
-         *     and for the rest of November, logging output will be directed to 
+         *     <code>/wombat/foo.2004-10.log</code>. After midnight of October 31st
+         *     and for the rest of November, logging output will be directed to
          *       <code>/wombat/foo.2004-11.log</code>.
          *     </td>
          *   </tr>
          * </table>
          * <h2>Automatic file compression</h2>
-         * <code>TimeBasedRollingPolicy</code> supports automatic file compression. 
-         * This feature is enabled if the value of the <b>FileNamePattern</b> option 
+         * <code>TimeBasedRollingPolicy</code> supports automatic file compression.
+         * This feature is enabled if the value of the <b>FileNamePattern</b> option
          * ends with <code>.gz</code> or <code>.zip</code>.
          * <p>
          * <table cellspacing="5px" border="1">
@@ -83,26 +83,26 @@ namespace log4cxx {
          *   </tr>
          *   <tr>
          *     <td nowrap="true"><code>/wombat/foo.%d.gz</code></td>
-         *     <td>Daily rollover (at midnight) with automatic GZIP compression of the 
+         *     <td>Daily rollover (at midnight) with automatic GZIP compression of the
          *      arcived files.</td>
-         *     <td>During November 23rd, 2004, logging output will go to 
+         *     <td>During November 23rd, 2004, logging output will go to
          *       the file <code>/wombat/foo.2004-11-23</code>. However, at midnight that
          *       file will be compressed to become <code>/wombat/foo.2004-11-23.gz</code>.
-         *       For the 24th of November, logging output will be directed to 
+         *       For the 24th of November, logging output will be directed to
          *       <code>/wombat/folder/foo.2004-11-24</code> until its rolled over at the
          *       beginning of the next day.
          *     </td>
          *   </tr>
          * </table>
-         * 
+         *
          * <h2>Decoupling the location of the active log file and the archived log files</h2>
-         * <p>The <em>active file</em> is defined as the log file for the current period 
+         * <p>The <em>active file</em> is defined as the log file for the current period
          * whereas <em>archived files</em> are thos files which have been rolled over
          * in previous periods.
-         * 
-         * <p>By setting the <b>ActiveFileName</b> option you can decouple the location 
+         *
+         * <p>By setting the <b>ActiveFileName</b> option you can decouple the location
          * of the active log file and the location of the archived log files.
-         * <p> 
+         * <p>
          *  <table cellspacing="5px" border="1">
          *   <tr>
          *     <th><code>FileNamePattern</code> value</th>
@@ -114,13 +114,13 @@ namespace log4cxx {
          *     <td nowrap="true"><code>/wombat/foo.log.%d</code></td>
          *     <td nowrap="true"><code>/wombat/foo.log</code></td>
          *     <td>Daily rollover.</td>
-         * 
-         *     <td>During November 23rd, 2004, logging output will go to 
-         *       the file <code>/wombat/foo.log</code>. However, at midnight that file 
+         *
+         *     <td>During November 23rd, 2004, logging output will go to
+         *       the file <code>/wombat/foo.log</code>. However, at midnight that file
          *       will archived as <code>/wombat/foo.log.2004-11-23</code>. For the 24th
-         *       of November, logging output will be directed to 
-         *       <code>/wombat/folder/foo.log</code> until its archived as 
-         *       <code>/wombat/foo.log.2004-11-24</code> at the beginning of the next 
+         *       of November, logging output will be directed to
+         *       <code>/wombat/folder/foo.log</code> until its archived as
+         *       <code>/wombat/foo.log.2004-11-24</code> at the beginning of the next
          *       day.
          *     </td>
          *   </tr>
@@ -135,30 +135,88 @@ namespace log4cxx {
          * @author Ceki G&uuml;lc&uuml;
          * @since 1.3
          */
-        class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase {
+        class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
+             public TriggeringPolicy {
+          DECLARE_ABSTRACT_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
+          BEGIN_LOG4CXX_CAST_MAP()
+                  LOG4CXX_CAST_ENTRY(TimeBasedRollingPolicy)
+                  LOG4CXX_CAST_ENTRY_CHAIN(RollingPolicyBase)
+                  LOG4CXX_CAST_ENTRY_CHAIN(TriggeringPolicy)
+          END_LOG4CXX_CAST_MAP()
+
         private:
-//            RollingCalendar rc;
-            log4cxx_time_t nextCheck;
-            log4cxx_time_t lastCheck;
-            File elapsedPeriodsFileName;
-            FileNamePattern activeFileNamePattern;
-  
+        /**
+         * Time for next determination if time for rollover.
+         */
+        log4cxx_time_t nextCheck;
+
+        /**
+         * File name at last rollover.
+         */
+        LogString lastFileName;
+
+        /**
+         * Length of any file type suffix (.gz, .zip).
+         */
+        int suffixLength;
+
         public:
+            TimeBasedRollingPolicy();
             void activateOptions(log4cxx::helpers::Pool& );
-
-            void rollover();
-
             /**
-             *
-             * The active log file is determined by the value of the activeFileName
-             * option if it is set. However, in case the activeFileName is left blank,
-             * then, the active log file equals the file name for the current period
-             * as computed by the <b>FileNamePattern</b> option.
-             *
-             */
-            File getActiveFileName();
+           * Initialize the policy and return any initial actions for rolling file appender..
+           *
+           * @param file current value of RollingFileAppender.getFile().
+           * @param append current value of RollingFileAppender.getAppend().
+           * @return Description of the initialization, may be null to indicate
+           * no initialization needed.
+           * @throws SecurityException if denied access to log files.
+           */
+           RolloverDescriptionPtr initialize(
+            const LogString& file,
+            bool append,
+            log4cxx::helpers::Pool& pool);
 
-            bool isTriggeringEvent(const File& file);
+          /**
+           * Prepare for a rollover.  This method is called prior to
+           * closing the active log file, performs any necessary
+           * preliminary actions and describes actions needed
+           * after close of current log file.
+           *
+           * @param activeFile file name for current active log file.
+           * @return Description of pending rollover, may be null to indicate no rollover
+           * at this time.
+           * @throws SecurityException if denied access to log files.
+           */
+          RolloverDescriptionPtr rollover(const LogString& activeFile,
+            log4cxx::helpers::Pool& pool);
+
+/**
+ * Determines if a rollover may be appropriate at this time.  If
+ * true is returned, RolloverPolicy.rollover will be called but it
+ * can determine that a rollover is not warranted.
+ *
+ * @param appender A reference to the appender.
+ * @param event A reference to the currently event.
+ * @param filename The filename for the currently active log file.
+ * @param fileLength Length of the file in bytes.
+ * @return true if a rollover should occur.
+ */
+virtual bool isTriggeringEvent(
+  Appender* appender,
+  const log4cxx::spi::LoggingEventPtr& event,
+  const LogString& filename,
+  size_t fileLength);
+
+  protected:
+               const log4cxx::pattern::PatternMap& getFormatSpecifiers() const;
+
+  private:
+               class FileNamePatternMap : public log4cxx::pattern::PatternMap {
+               public:
+                    FileNamePatternMap();
+               };
+
         };
 
         typedef log4cxx::helpers::ObjectPtrT<TimeBasedRollingPolicy> TimeBasedRollingPolicyPtr;

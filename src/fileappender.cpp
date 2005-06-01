@@ -205,7 +205,6 @@ void FileAppender::setFile(
       size_t bufferSize,
       Pool& p) {
   synchronized sync(mutex);
-  LogLog::debug(LOG4CXX_STR("setFile called"));
 
   // It does not make sense to have immediate flush and bufferedIO.
   if (bufferedIO) {
@@ -250,7 +249,6 @@ void FileAppender::setFile(
   this->fileName = filename;
   this->bufferSize = bufferSize;
   writeHeader(p);
-  LogLog::debug(LOG4CXX_STR("setFile ended"));
 
 }
 

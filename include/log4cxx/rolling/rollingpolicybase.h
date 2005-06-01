@@ -17,67 +17,96 @@
 #if !defined(_LOG4CXX_ROLLING_ROLLING_POLICY_BASE_H)
 #define _LOG4CXX_ROLLING_ROLLING_POLICY_BASE_H
 
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/rolling/rollingpolicy.h>
+#include <log4cxx/pattern/patternconverter.h>
+#include <log4cxx/pattern/formattinginfo.h>
+#include <log4cxx/pattern/patternparser.h>
 
 namespace log4cxx {
     namespace rolling {
 
-         typedef LogString FileNamePattern;
-
         /**
          * Implements methods common to most, it not all, rolling
-         * policies. Currently such methods are limited to a compression mode
-         * getter/setter.
+         * policies.
          *
-         * @author Ceki G&uuml;lc&uuml;
-         * @since 1.3
+         * @author Curt Arnold
+         * @since 0.9.8
          */
-        class RollingPolicyBase : public virtual RollingPolicy,
-            public virtual log4cxx::helpers::ObjectImpl
-        {
+        class RollingPolicyBase :
+           public virtual RollingPolicy,
+           public virtual helpers::ObjectImpl {
         protected:
-          int compressionMode;
-          FileNamePattern fileNamePattern;
+          BEGIN_LOG4CXX_CAST_MAP()
+                  LOG4CXX_CAST_ENTRY(RollingPolicy)
+                  LOG4CXX_CAST_ENTRY(spi::OptionHandler)
+          END_LOG4CXX_CAST_MAP()
+
+
+          private:
+          /**
+           * File name pattern converters.
+           */
+          std::vector<log4cxx::pattern::PatternConverterPtr> patternConverters;
+
+          /**
+           * File name field specifiers.
+           */
+          std::vector<log4cxx::pattern::FormattingInfoPtr> patternFields;
+
+          /**
+           * File name pattern.
+           */
           LogString fileNamePatternStr;
-          File activeFileName;
-
-        public:
-        BEGIN_LOG4CXX_CAST_MAP()
-                LOG4CXX_CAST_ENTRY(RollingPolicyBase)
-                LOG4CXX_CAST_ENTRY(spi::OptionHandler)
-        END_LOG4CXX_CAST_MAP()
 
 
+          public:
+          RollingPolicyBase();
+          virtual ~RollingPolicyBase();
+          /**
+           * {@inheritDoc}
+           */
+          virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
+          virtual const log4cxx::pattern::PatternMap& getFormatSpecifiers() const = 0;
 
-        virtual void activateOptions(log4cxx::helpers::Pool& pool) {}
-        virtual void setOption(const LogString& option, const LogString& value);
-
-        protected:
+          virtual void setOption(const LogString& option,
+               const LogString& value);
 
           /**
-           * Given the FileNamePattern string, this method determines the compression
-           * mode depending on last letters of the fileNamePatternStr. Patterns
-           * ending with .gz imply GZIP compression, endings with '.zip' imply
-           * ZIP compression. Otherwise and by default, there is no compression.
+           * Set file name pattern.
+           * @param fnp file name pattern.
+           */
+           void setFileNamePattern(const LogString& fnp);
+
+           /**
+            * Get file name pattern.
+            * @return file name pattern.
+            */
+           LogString getFileNamePattern() const;
+
+
+           protected:
+           /**
+            *   Parse file name pattern.
+            */
+           void parseFileNamePattern();
+
+          /**
+           * Format file name.
            *
+           * @param obj object to be evaluted in formatting, may not be null.
+           * @param buf string buffer to which formatted file name is appended, may not be null.
            */
-          void determineCompressionMode();
+          void formatFileName(log4cxx::helpers::ObjectPtr& obj,
+             LogString& buf, log4cxx::helpers::Pool& p) const;
 
-        public:
+           log4cxx::pattern::PatternConverterPtr getIntegerPatternConverter() const;
+           log4cxx::pattern::PatternConverterPtr getDatePatternConverter() const;
 
-          void setFileNamePattern(const LogString& fnp);
 
-          LogString getFileNamePattern() const;
-
-          /**
-           * ActiveFileName can be left unset, i.e. as null.
-           * @see #getActiveFileName
-           */
-          void setActiveFileName(const File& afn);
-
-        };
+       };
     }
 }
 

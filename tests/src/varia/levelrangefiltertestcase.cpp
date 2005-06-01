@@ -21,7 +21,7 @@
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/level.h>
-#include <log4cxx/varia/levelrangefilter.h>
+#include <log4cxx/filter/levelrangefilter.h>
 
 #include "../util/compare.h"
 
@@ -33,7 +33,7 @@
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-using namespace log4cxx::varia;
+using namespace log4cxx::filter;
 
 
 

@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#if 0
-
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/rolling/rollingfileappender.h>
@@ -58,6 +56,10 @@ using namespace log4cxx::rolling;
 class TimeBasedRollingTest  : public CppUnit::TestFixture {
 
         CPPUNIT_TEST_SUITE(TimeBasedRollingTest);
+           CPPUNIT_TEST(test1);
+           CPPUNIT_TEST(test2);
+           CPPUNIT_TEST(test4);
+           CPPUNIT_TEST(test5);
         CPPUNIT_TEST_SUITE_END();
 
     static LoggerPtr logger;
@@ -99,6 +101,7 @@ public:
     Pool pool;
     apr_time_t now = apr_time_now();
     { for (int i = 0; i < 4; i++) {
+      filenames[i] = LOG4CXX_STR("output/test1-");
       sdf.format(filenames[i], now, p);
       now += APR_USEC_PER_SEC;
     } }
@@ -111,79 +114,83 @@ public:
         std::string message("Hello---");
         StringHelper::toString(i, pool, message);
         LOG4CXX_DEBUG(logger, message);
-        apr_sleep(500000);
+        apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
-    std::ostringstream os;
     for (int i = 0; i < 4; i++) {
-      os.str("witness/rolling/tbr-test1.");
-      os << i;
-      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(os.str())));
+      LogString witness(LOG4CXX_STR("witness/rolling/tbr-test1."));
+      StringHelper::toString(i, pool, witness);
+      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
     }
   }
-
-#if 0
 
   /**
    * No compression, with stop/restart, activeFileName left blank
    */
-  public void test2() throws Exception {
-    String datePattern = "yyyy-MM-dd_HH_mm_ss";
+  void test2()  {
+    LogString datePattern(LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss"));
 
-    PatternLayout layout1 = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa1 = new RollingFileAppender();
-    rfa1.setLayout(layout1);
+    PatternLayoutPtr layout1(new PatternLayout(LOG4CXX_STR("%c{1} - %m%n")));
+    RollingFileAppenderPtr rfa1(new RollingFileAppender());
+    rfa1->setLayout(layout1);
 
-    TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
-    tbrp1.setFileNamePattern("output/test2-%d{" + datePattern + "}");
-    tbrp1.activateOptions();
-    rfa1.setRollingPolicy(tbrp1);
-    rfa1.activateOptions();
-    logger.addAppender(rfa1);
+    TimeBasedRollingPolicyPtr tbrp1(new TimeBasedRollingPolicy());
+    tbrp1->setFileNamePattern(LOG4CXX_STR("output/test2-%d{yyyy-MM-dd_HH_mm_ss}"));
+    Pool pool;
+    tbrp1->activateOptions(pool);
+    rfa1->setRollingPolicy(tbrp1);
+    rfa1->activateOptions(pool);
+    logger->addAppender(rfa1);
 
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[4];
+    SimpleDateFormat sdf(datePattern);
+    LogString filenames[4];
 
-    Calendar cal = Calendar.getInstance();
+    apr_time_t now = apr_time_now();
+    { for (int i = 0; i < 4; i++) {
+      filenames[i] = LOG4CXX_STR("output/test2-");
+      sdf.format(filenames[i], now, pool);
+      now += APR_USEC_PER_SEC;
+    } }
 
-    for (int i = 0; i < 4; i++) {
-      filenames[i] = "output/test2-" + sdf.format(cal.getTime());
-      cal.add(Calendar.SECOND, 1);
-    }
-
-    System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
-    System.out.println("Done waiting.");
 
-    for (int i = 0; i <= 2; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
+    { for (int i = 0; i <= 2; i++) {
+        std::string message("Hello---");
+        StringHelper::toString(i, pool, message);
+        LOG4CXX_DEBUG(logger, message);
+        apr_sleep(APR_USEC_PER_SEC/2);
+    } }
 
-    logger.removeAppender(rfa1);
-    rfa1.close();
 
-    PatternLayout layout2 = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa2 = new RollingFileAppender();
-    rfa2.setLayout(layout2);
+    logger->removeAppender(rfa1);
+    rfa1->close();
 
-    TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
-    tbrp2.setFileNamePattern("output/test2-%d{" + datePattern + "}");
-    tbrp2.activateOptions();
-    rfa2.setRollingPolicy(tbrp2);
-    rfa2.activateOptions();
-    logger.addAppender(rfa2);
+    PatternLayoutPtr layout2(new PatternLayout(LOG4CXX_STR("%c{1} - %m%n")));
+    RollingFileAppenderPtr rfa2 = new RollingFileAppender();
+    rfa2->setLayout(layout2);
 
-    for (int i = 3; i <= 4; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
+    TimeBasedRollingPolicyPtr tbrp2 = new TimeBasedRollingPolicy();
+    tbrp2->setFileNamePattern(LOG4CXX_STR("output/test2-%d{yyyy-MM-dd_HH_mm_ss}"));
+    tbrp2->activateOptions(pool);
+    rfa2->setRollingPolicy(tbrp2);
+    rfa2->activateOptions(pool);
+    logger->addAppender(rfa2);
+
+    { for (int i = 3; i <= 4; i++) {
+        std::string message("Hello---");
+        StringHelper::toString(i, pool, message);
+        LOG4CXX_DEBUG(logger, message);
+        apr_sleep(APR_USEC_PER_SEC/2);
+    } }
 
     for (int i = 0; i < 4; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test2." + i));
+      LogString witness(LOG4CXX_STR("witness/rolling/tbr-test2."));
+      StringHelper::toString(i, pool, witness);
+      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
     }
   }
 
+#if 0
   /**
    * With compression, activeFileName left blank, no stop/restart
    */
@@ -232,114 +239,129 @@ public:
 
     assertTrue(Compare.compare(filenames[3], "witness/rolling/tbr-test3.3"));
   }
+#endif
 
   /**
    * Without compression, activeFileName set,  with stop/restart
    */
-  public void test4() throws Exception {
-    String datePattern = "yyyy-MM-dd_HH_mm_ss";
+  void test4()  {
+    LogString datePattern = LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss");
 
-    PatternLayout layout1 = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa1 = new RollingFileAppender();
-    rfa1.setLayout(layout1);
+    PatternLayoutPtr layout1 = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
+    RollingFileAppenderPtr rfa1 = new RollingFileAppender();
+    rfa1->setLayout(layout1);
 
-    TimeBasedRollingPolicy tbrp1 = new TimeBasedRollingPolicy();
-    tbrp1.setActiveFileName("output/test4.log");
-    tbrp1.setFileNamePattern("output/test4-%d{" + datePattern + "}");
-    tbrp1.activateOptions();
-    rfa1.setRollingPolicy(tbrp1);
-    rfa1.activateOptions();
-    logger.addAppender(rfa1);
+    Pool pool;
 
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[4];
+    TimeBasedRollingPolicyPtr tbrp1 = new TimeBasedRollingPolicy();
+    rfa1->setFile(LOG4CXX_STR("output/test4.log"));
+    tbrp1->setFileNamePattern(LOG4CXX_STR("output/test4-%d{yyyy-MM-dd_HH_mm_ss}"));
+    tbrp1->activateOptions(pool);
+    rfa1->setRollingPolicy(tbrp1);
+    rfa1->activateOptions(pool);
+    logger->addAppender(rfa1);
 
-    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf(datePattern);
+    LogString filenames[4];
 
-    for (int i = 0; i < 3; i++) {
-      filenames[i] = "output/test4-" + sdf.format(cal.getTime());
-      cal.add(Calendar.SECOND, 1);
-    }
-    filenames[3] = "output/test4.log";
+    apr_time_t now = apr_time_now();
+    { for (int i = 0; i < 3; i++) {
+      filenames[i] = LOG4CXX_STR("output/test4-");
+      sdf.format(filenames[i], now, pool);
+      now += APR_USEC_PER_SEC;
+    } }
+    filenames[3] = LOG4CXX_STR("output/test4.log");
 
-    System.out.println("Waiting until next second and 100 millis.");
+    std::cout << "Waiting until next second and 100 millis.";
     delayUntilNextSecond(100);
-    System.out.println("Done waiting.");
+    std::cout << "Done waiting.";
 
-    for (int i = 0; i <= 2; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
+    { for (int i = 0; i <= 2; i++) {
+        std::string message("Hello---");
+        StringHelper::toString(i, pool, message);
+        LOG4CXX_DEBUG(logger, message);
+        apr_sleep(APR_USEC_PER_SEC/2);
+    } }
 
-    logger.removeAppender(rfa1);
-    rfa1.close();
+    logger->removeAppender(rfa1);
+    rfa1->close();
 
-    PatternLayout layout2 = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa2 = new RollingFileAppender();
-    rfa2.setLayout(layout2);
+    PatternLayoutPtr layout2 = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
+    RollingFileAppenderPtr rfa2 = new RollingFileAppender();
+    rfa2->setLayout(layout2);
 
-    TimeBasedRollingPolicy tbrp2 = new TimeBasedRollingPolicy();
-    tbrp2.setFileNamePattern("output/test4-%d{" + datePattern + "}");
-    tbrp2.setActiveFileName("output/test4.log");
-    tbrp2.activateOptions();
-    rfa2.setRollingPolicy(tbrp2);
-    rfa2.activateOptions();
-    logger.addAppender(rfa2);
+    TimeBasedRollingPolicyPtr tbrp2 = new TimeBasedRollingPolicy();
+    tbrp2->setFileNamePattern(LOG4CXX_STR("output/test4-%d{yyyy-MM-dd_HH_mm_ss}"));
+    rfa2->setFile(LOG4CXX_STR("output/test4.log"));
+    tbrp2->activateOptions(pool);
+    rfa2->setRollingPolicy(tbrp2);
+    rfa2->activateOptions(pool);
+    logger->addAppender(rfa2);
 
-    for (int i = 3; i <= 4; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
+    { for (int i = 3; i <= 4; i++) {
+        std::string message("Hello---");
+        StringHelper::toString(i, pool, message);
+        LOG4CXX_DEBUG(logger, message);
+        apr_sleep(APR_USEC_PER_SEC/2);
+    } }
 
     for (int i = 0; i < 4; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test4." + i));
+      LogString witness(LOG4CXX_STR("witness/rolling/tbr-test4."));
+      StringHelper::toString(i, pool, witness);
+      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
     }
   }
 
   /**
    * No compression, activeFileName set,  without stop/restart
    */
-  public void test5() throws Exception {
-    PatternLayout layout = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa = new RollingFileAppender();
-    rfa.setLayout(layout);
+  void test5()  {
+    PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
+    RollingFileAppenderPtr rfa = new RollingFileAppender();
+    rfa->setLayout(layout);
 
-    String datePattern = "yyyy-MM-dd_HH_mm_ss";
+    LogString datePattern(LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss"));
 
-    TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-    tbrp.setFileNamePattern("output/test5-%d{" + datePattern + "}");
-    tbrp.setActiveFileName("output/test5.log");
-    tbrp.activateOptions();
-    rfa.setRollingPolicy(tbrp);
-    rfa.activateOptions();
-    logger.addAppender(rfa);
+    TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
+    tbrp->setFileNamePattern(LOG4CXX_STR("output/test5-%d{yyyy-MM-dd_HH_mm_ss}"));
+    rfa->setFile(LOG4CXX_STR("output/test5.log"));
+    Pool pool;
 
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[4];
+    tbrp->activateOptions(pool);
+    rfa->setRollingPolicy(tbrp);
+    rfa->activateOptions(pool);
+    logger->addAppender(rfa);
 
-    Calendar cal = Calendar.getInstance();
+    SimpleDateFormat sdf(datePattern);
+    LogString filenames[4];
 
-    for (int i = 0; i < 3; i++) {
-      filenames[i] = "output/test5-" + sdf.format(cal.getTime());
-      cal.add(Calendar.SECOND, 1);
-    }
+    apr_time_t now = apr_time_now();
+    { for (int i = 0; i < 3; i++) {
+      filenames[i] = LOG4CXX_STR("output/test5-");
+      sdf.format(filenames[i], now, pool);
+      now += APR_USEC_PER_SEC;
+    } }
+    filenames[3] = LOG4CXX_STR("output/test5.log");
 
-    filenames[3] = "output/test5.log";
-
-    System.out.println("Waiting until next second and 100 millis.");
+    std::cout << "Waiting until next second and 100 millis.";
     delayUntilNextSecond(100);
-    System.out.println("Done waiting.");
+    std::cout << "Done waiting.";
 
-    for (int i = 0; i < 5; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
+    { for (int i = 0; i < 5; i++) {
+        std::string message("Hello---");
+        StringHelper::toString(i, pool, message);
+        LOG4CXX_DEBUG(logger, message);
+        apr_sleep(APR_USEC_PER_SEC/2);
+    } }
 
     for (int i = 0; i < 4; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test5." + i));
+      LogString witness(LOG4CXX_STR("witness/rolling/tbr-test5."));
+      StringHelper::toString(i, pool, witness);
+      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
     }
   }
 
+#if 0
   /**
    * With compression, activeFileName set, no stop/restart,
    */
@@ -461,42 +483,17 @@ public:
     apr_sleep(next - now);
   }
 
-#if 0
   void delayUntilNextMinute(int seconds) {
-    long now = System.currentTimeMillis();
-    Calendar cal = Calendar.getInstance();
-    cal.setTime(new Date(now));
+    apr_time_t now = apr_time_now();
+    apr_time_t next = ((now / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC
+          + seconds * 1000000L;
 
-    cal.set(Calendar.SECOND, seconds);
-    cal.add(Calendar.MINUTE, 1);
-
-    long next = cal.getTime().getTime();
-
-    try {
-      Thread.sleep(next - now);
-    } catch (Exception e) {
-    }
+    apr_sleep(next - now);
   }
 
-  public static Test XXXsuite() {
-    TestSuite suite = new TestSuite();
-
-//    suite.addTest(new TimeBasedRollingTest("test1"));
-//    suite.addTest(new TimeBasedRollingTest("test2"));
-//    suite.addTest(new TimeBasedRollingTest("test3"));
-//    suite.addTest(new TimeBasedRollingTest("test4"));
-//
-//    suite.addTest(new TimeBasedRollingTest("test5"));
-//    suite.addTest(new TimeBasedRollingTest("test6"));
-//    suite.addTest(new TimeBasedRollingTest("testWithJoran1"));
-    suite.addTest(new TimeBasedRollingTest("testWithJoran10"));
-
-    return suite;
-  }
-#endif
 };
 
 
-//LoggerPtr TimeBasedRollingTest::logger("org.apache.log4j.rolling.TimeBasedRollingTest");
+LoggerPtr TimeBasedRollingTest::logger(Logger::getLogger("org.apache.log4j.TimeBasedRollingTest"));
 
-#endif
+CPPUNIT_TEST_SUITE_REGISTRATION(TimeBasedRollingTest);

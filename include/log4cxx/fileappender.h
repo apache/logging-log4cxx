@@ -187,6 +187,12 @@ namespace log4cxx
                 */
                 inline void setAppend(bool fileAppend)
                                 { this->fileAppend = fileAppend; }
+
+
+                inline void getAppend(bool append)  {
+                  fileAppend = append;
+                }
+
                 /**
                 The <b>BufferedIO</b> option takes a boolean value. It is set to
                 <code>false</code> by default. If true, then <code>File</code>

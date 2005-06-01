@@ -73,7 +73,7 @@ void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
         }
         else
         {
-                tailFilter->next = newFilter;
+                tailFilter->setNext(newFilter);
                 tailFilter = newFilter;
         }
 }
@@ -118,7 +118,7 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool)
                                  f = 0;
                                  break;
                          case Filter::NEUTRAL:
-                                 f = f->next;
+                                 f = f->getNext();
                  }
         }
 

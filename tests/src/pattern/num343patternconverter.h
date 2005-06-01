@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/patternconverter.h>
+#include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include <vector>
 
 namespace log4cxx
 {
    namespace pattern {
-     class Num343PatternConverter : public log4cxx::helpers::PatternConverter
+     class Num343PatternConverter : public LoggingEventPatternConverter
      {
      public:
         DECLARE_LOG4CXX_OBJECT(Num343PatternConverter)
 
        Num343PatternConverter();
-       static log4cxx::helpers::PatternConverter* newInstance(
-          const log4cxx::helpers::FormattingInfo& info,
+       static PatternConverterPtr newInstance(
           const std::vector<LogString>& options);
 
      protected:
-     virtual void convert(LogString& sbuf,
+          void format(
               const log4cxx::spi::LoggingEventPtr& event,
+              LogString& toAppendTo,
               log4cxx::helpers::Pool& pool) const;
      };
    }

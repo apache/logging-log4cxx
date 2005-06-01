@@ -67,7 +67,7 @@ namespace log4cxx
 
          @return the head Filter or null, if no Filters are present
          */
-        virtual const spi::FilterPtr& getFilter() const = 0;
+        virtual spi::FilterPtr getFilter() const = 0;
 
         /**
          Clear the list of filters by removing all the filters in it.
@@ -94,18 +94,8 @@ namespace log4cxx
          Get the name of this appender. The name uniquely identifies the
          appender.
         */
-        virtual const LogString& getName() const = 0;
+        virtual LogString getName() const = 0;
 
-
-        /**
-         Set the {@link spi::ErrorHandler ErrorHandler} for this appender.
-        */
-        virtual void setErrorHandler(const spi::ErrorHandlerPtr& errorHandler) = 0;
-
-        /**
-         Returns the {@link spi::ErrorHandler ErrorHandler} for this appender.
-       */
-       virtual const spi::ErrorHandlerPtr& getErrorHandler() const = 0;
 
        /**
         Set the Layout for this appender.
@@ -115,7 +105,7 @@ namespace log4cxx
        /**
         Returns this appenders layout.
        */
-       virtual const LayoutPtr& getLayout() const = 0;
+       virtual LayoutPtr getLayout() const = 0;
 
 
        /**

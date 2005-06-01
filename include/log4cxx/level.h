@@ -124,6 +124,7 @@ namespace log4cxx
                     WARN_INT = 30000,
                     INFO_INT = 20000,
                     DEBUG_INT = 10000,
+                    TRACE_INT = 5000,
                     ALL_INT = INT_MIN
                 };
 

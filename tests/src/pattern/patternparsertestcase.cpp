@@ -26,15 +26,40 @@
 #include "../testchar.h"
 #include "../insertwide.h"
 #include <log4cxx/spi/loggerrepository.h>
-#include <log4cxx/helpers/patternparser.h>
-#include <log4cxx/helpers/patternconverter.h>
+#include <log4cxx/pattern/patternparser.h>
+#include <log4cxx/pattern/patternconverter.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/helpers/simpledateformat.h>
+
+
+#include <log4cxx/pattern/loggerpatternconverter.h>
+#include <log4cxx/pattern/literalpatternconverter.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/pattern/classnamepatternconverter.h>
+#include <log4cxx/pattern/datepatternconverter.h>
+#include <log4cxx/pattern/filedatepatternconverter.h>
+#include <log4cxx/pattern/filelocationpatternconverter.h>
+#include <log4cxx/pattern/fulllocationpatternconverter.h>
+#include <log4cxx/pattern/integerpatternconverter.h>
+#include <log4cxx/pattern/linelocationpatternconverter.h>
+#include <log4cxx/pattern/messagepatternconverter.h>
+#include <log4cxx/pattern/lineseparatorpatternconverter.h>
+#include <log4cxx/pattern/methodlocationpatternconverter.h>
+#include <log4cxx/pattern/levelpatternconverter.h>
+#include <log4cxx/pattern/relativetimepatternconverter.h>
+#include <log4cxx/pattern/threadpatternconverter.h>
+#include <log4cxx/pattern/ndcpatternconverter.h>
+#include <log4cxx/pattern/propertiespatternconverter.h>
+#include <log4cxx/pattern/throwableinformationpatternconverter.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::pattern;
+
+#define RULES_PUT(spec, cls) \
+map.insert(PatternMap::value_type(LOG4CXX_STR(spec), cls ::newInstance))
 
 
 class PatternParserTestCase : public CppUnit::TestFixture
@@ -66,35 +91,81 @@ public:
       logger->getLoggerRepository()->resetConfiguration();
    }
 
-   void convert(LoggingEventPtr& event,
-      PatternConverterPtr& head,
-      Pool& p,
-      LogString& dst) {
-     PatternConverterPtr c(head);
 
-     while (c != NULL) {
-       c->format(dst, event, p);
-       c = c->next;
-     }
+   PatternMap getFormatSpecifiers() {
+     PatternMap map;
+     RULES_PUT("c", LoggerPatternConverter);
+     RULES_PUT("logger", LoggerPatternConverter);
+
+     RULES_PUT("C", ClassNamePatternConverter);
+     RULES_PUT("class", ClassNamePatternConverter);
+
+     RULES_PUT("d", DatePatternConverter);
+     RULES_PUT("date", DatePatternConverter);
+
+     RULES_PUT("F", FileLocationPatternConverter);
+     RULES_PUT("file", FileLocationPatternConverter);
+
+     RULES_PUT("l", FullLocationPatternConverter);
+
+     RULES_PUT("L", LineLocationPatternConverter);
+     RULES_PUT("line", LineLocationPatternConverter);
+
+     RULES_PUT("m", MessagePatternConverter);
+     RULES_PUT("message", MessagePatternConverter);
+
+     RULES_PUT("n", LineSeparatorPatternConverter);
+
+     RULES_PUT("M", MethodLocationPatternConverter);
+     RULES_PUT("method", MethodLocationPatternConverter);
+
+     RULES_PUT("p", LevelPatternConverter);
+     RULES_PUT("level", LevelPatternConverter);
+
+     RULES_PUT("r", RelativeTimePatternConverter);
+     RULES_PUT("relative", RelativeTimePatternConverter);
+
+     RULES_PUT("t", ThreadPatternConverter);
+     RULES_PUT("thread", ThreadPatternConverter);
+
+     RULES_PUT("x", NDCPatternConverter);
+     RULES_PUT("ndc", NDCPatternConverter);
+
+     RULES_PUT("X", PropertiesPatternConverter);
+     RULES_PUT("properties", PropertiesPatternConverter);
+
+     RULES_PUT("throwable", ThrowableInformationPatternConverter);
+
+     return map;
+
+   }
+
+   void assertFormattedEquals(const LogString& pattern,
+        const PatternMap& patternMap,
+        const LogString& expected) {
+      std::vector<PatternConverterPtr> converters;
+      std::vector<FormattingInfoPtr> fields;
+      PatternParser::parse(pattern, converters, fields, patternMap);
+      Pool p;
+      LogString actual;
+      std::vector<FormattingInfoPtr>::const_iterator fieldIter = fields.begin();
+      for(std::vector<PatternConverterPtr>::const_iterator converterIter = converters.begin();
+          converterIter != converters.end();
+          converterIter++, fieldIter++) {
+          int fieldStart = actual.length();
+          (*converterIter)->format(event, actual, p);
+          (*fieldIter)->format(fieldStart, actual);
+      }
+      CPPUNIT_ASSERT_EQUAL(expected, actual);
    }
 
 
    void testNewWord()  {
-     PatternParser patternParser(LOG4CXX_STR("%z343"));
-     PatternParser::PatternConverterMap ruleRegistry;
-     LogString name(LOG4CXX_STR("z343"));
-     ruleRegistry.insert(
-        PatternParser::PatternConverterMap::value_type(name,
-           LOG4CXX_STR("org.apache.log4j.pattern.Num343PatternConverter")));
-
-     patternParser.setConverterRegistry(ruleRegistry);
-
-     PatternConverterPtr head(patternParser.parse());
-
-     Pool p;
-     LogString result;
-     convert(event, head, p, result);
-     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("343"), result);
+     PatternMap testRules(getFormatSpecifiers());
+     testRules.insert(
+        PatternMap::value_type(LOG4CXX_STR("z343"),
+            Num343PatternConverter::newInstance));
+     assertFormattedEquals(LOG4CXX_STR("%z343"), testRules, LOG4CXX_STR("343"));
    }
 
 
@@ -102,89 +173,50 @@ public:
     * which was previously the case by mistake.
     */
    void testNewWord2()  {
-     PatternParser patternParser(LOG4CXX_STR("%n343"));
-
-     PatternParser::PatternConverterMap ruleRegistry;
-     LogString name(LOG4CXX_STR("n343"));
-     ruleRegistry.insert(
-        PatternParser::PatternConverterMap::value_type(name,
-           LOG4CXX_STR("org.apache.log4j.pattern.Num343PatternConverter")));
-
-     patternParser.setConverterRegistry(ruleRegistry);
-
-     PatternConverterPtr head(patternParser.parse());
-
-     Pool p;
-     LogString result;
-     convert(event, head, p, result);
-     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("343"), result);
+     PatternMap testRules(getFormatSpecifiers());
+     testRules.insert(
+        PatternMap::value_type(LOG4CXX_STR("n343"),
+            Num343PatternConverter::newInstance));
+     assertFormattedEquals(LOG4CXX_STR("%n343"), testRules, LOG4CXX_STR("343"));
    }
 
    void testBogusWord1()  {
-     PatternParser patternParser(LOG4CXX_STR("%, foobar"));
-     PatternConverterPtr head(patternParser.parse());
-
-     Pool p;
-     LogString result;
-     convert(event, head, p, result);
-
-     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("%, foobar"), result);
+     assertFormattedEquals(LOG4CXX_STR("%, foobar"),
+         getFormatSpecifiers(),
+         LOG4CXX_STR("%, foobar"));
    }
 
    void testBogusWord2()  {
-     PatternParser patternParser(LOG4CXX_STR("xyz %, foobar"));
-     PatternConverterPtr head = patternParser.parse();
-
-     Pool p;
-     LogString result;
-     convert(event, head, p, result);
-
-
-     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("xyz %, foobar"), result);
+     assertFormattedEquals(LOG4CXX_STR("xyz %, foobar"),
+        getFormatSpecifiers(),
+        LOG4CXX_STR("xyz %, foobar"));
    }
 
    void testBasic1()  {
-     PatternParser patternParser(LOG4CXX_STR("hello %-5level - %m%n"));
-     PatternConverterPtr head = patternParser.parse();
-
-     Pool p;
-     LogString result;
-     convert(event, head, p, result);
-
-     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("hello INFO  - msg 1") LOG4CXX_EOL, result);
+     assertFormattedEquals(LOG4CXX_STR("hello %-5level - %m%n"),
+        getFormatSpecifiers(),
+        LogString(LOG4CXX_STR("hello INFO  - msg 1")) + LOG4CXX_EOL);
    }
 
    void testBasic2()  {
-     PatternParser patternParser(
-       LOG4CXX_STR("%relative %-5level [%thread] %logger - %m%n"));
-     PatternConverterPtr head = patternParser.parse();
+      Pool pool;
+      RelativeTimeDateFormat relativeFormat;
+      LogString expected;
+      relativeFormat.format(expected, event->getTimeStamp(), pool);
 
-     Pool pool;
-     LogString result;
-     convert(event, head, pool, result);
+      expected.append(LOG4CXX_STR(" INFO  ["));
+      expected.append(event->getThreadName());
+      expected.append(LOG4CXX_STR("] "));
+      expected.append(logger->getName());
+      expected.append(LOG4CXX_STR(" - msg 1") LOG4CXX_EOL);
 
-
-     RelativeTimeDateFormat relativeFormat;
-     LogString expected;
-     relativeFormat.format(expected, event->getTimeStamp(), pool);
-
-     expected.append(LOG4CXX_STR(" INFO  ["));
-     expected.append(event->getThreadName());
-     expected.append(LOG4CXX_STR("] "));
-     expected.append(logger->getName());
-     expected.append(LOG4CXX_STR(" - msg 1") LOG4CXX_EOL);
-
-     CPPUNIT_ASSERT_EQUAL(expected, result);
+      assertFormattedEquals(LOG4CXX_STR("%relative %-5level [%thread] %logger - %m%n"),
+        getFormatSpecifiers(),
+        expected);
    }
 
    void testMultiOption()  {
-     PatternParser patternParser
-       (LOG4CXX_STR("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m"));
-     PatternConverterPtr head = patternParser.parse();
-
      Pool pool;
-     LogString result;
-     convert(event, head, pool, result);
 
      SimpleDateFormat dateFormat(LOG4CXX_STR("HH:mm:ss"));
      LogString localTime;
@@ -194,12 +226,15 @@ public:
      LogString utcTime;
      dateFormat.format(utcTime, event->getTimeStamp(), pool);
 
-     LogString buf(utcTime);
-     buf.append(1, LOG4CXX_STR(' '));
-     buf.append(localTime);
-     buf.append(LOG4CXX_STR(" org.foobar  - msg 1"));
-     CPPUNIT_ASSERT_EQUAL(buf, result);
+     LogString expected(utcTime);
+     expected.append(1, LOG4CXX_STR(' '));
+     expected.append(localTime);
+     expected.append(LOG4CXX_STR(" org.foobar  - msg 1"));
 
+
+     assertFormattedEquals(LOG4CXX_STR("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m"),
+       getFormatSpecifiers(),
+       expected);
    }
 
 };

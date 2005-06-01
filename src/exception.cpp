@@ -290,3 +290,17 @@ NoSuchElementException& NoSuchElementException::operator=(const NoSuchElementExc
       Exception::operator=(src);
       return *this;
 }
+
+
+IllegalStateException::IllegalStateException()
+     : Exception("Illegal state") {
+}
+
+IllegalStateException::IllegalStateException(const IllegalStateException& src)
+     : Exception(src) {
+}
+
+IllegalStateException& IllegalStateException::operator=(const IllegalStateException& src) {
+      Exception::operator=(src);
+      return *this;
+}

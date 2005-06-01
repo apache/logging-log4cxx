@@ -93,7 +93,7 @@ void Transformer::copyFile(const File& in, const File& out) {
         apr_pool_destroy(pool);
 }
 
-void Transformer::createSedCommandFile(const std::string& regexName, 
+void Transformer::createSedCommandFile(const std::string& regexName,
         const log4cxx::Filter::PatternList& patterns,
         apr_pool_t* pool) {
         apr_file_t* regexFile;
@@ -101,6 +101,7 @@ void Transformer::createSedCommandFile(const std::string& regexName,
                regexName.c_str(),
                APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE, APR_OS_DEFAULT,
                pool);
+        assert(stat == APR_SUCCESS);
 
         std::string tmp;
         for (log4cxx::Filter::PatternList::const_iterator iter = patterns.begin();
@@ -113,7 +114,7 @@ void Transformer::createSedCommandFile(const std::string& regexName,
           tmp.append("Qg\n");
           apr_file_puts(tmp.c_str(), regexFile);
         }
-        apr_file_close(regexFile);        
+        apr_file_close(regexFile);
 }
 
 void Transformer::transform(const File& in, const File& out,
@@ -127,7 +128,7 @@ void Transformer::transform(const File& in, const File& out,
     } else {
        apr_pool_t* pool;
         apr_status_t stat = apr_pool_create(&pool, NULL);
-        
+
         //
         //   write the regex's to a temporary file since they
         //      may get mangled if passed as parameters
@@ -135,8 +136,8 @@ void Transformer::transform(const File& in, const File& out,
         std::string regexName(in.getOSName());
         regexName.append(".sed");
         createSedCommandFile(regexName, patterns, pool);
-        
-        
+
+
         //
         //  prepare to launch sed
         //

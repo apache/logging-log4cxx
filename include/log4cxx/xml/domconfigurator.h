@@ -60,6 +60,17 @@ namespace log4cxx
                 class PropertySetter;
         }
 
+        namespace rolling
+        {
+                class RollingPolicy;
+                typedef helpers::ObjectPtrT<RollingPolicy> RollingPolicyPtr;
+
+                class TriggeringPolicy;
+                typedef helpers::ObjectPtrT<TriggeringPolicy> TriggeringPolicyPtr;
+        }
+
+
+
         namespace xml
         {
                 class AppenderMap
@@ -117,7 +128,8 @@ namespace log4cxx
                         /**
                          Used internally to parse a filter element.
                         */
-                        void parseFilters(helpers::XMLDOMElementPtr element, AppenderPtr appender);
+                        void parseFilters(helpers::XMLDOMElementPtr element,
+                           std::vector<log4cxx::spi::FilterPtr>& filters);
 
                         /**
                         Used internally to parse a logger element.
@@ -128,6 +140,16 @@ namespace log4cxx
                          Used internally to parse the logger factory element.
                         */
                         void parseLoggerFactory(helpers::XMLDOMElementPtr factoryElement);
+
+                        /**
+                         Used internally to parse the logger factory element.
+                        */
+                        log4cxx::rolling::TriggeringPolicyPtr parseTriggeringPolicy(helpers::XMLDOMElementPtr factoryElement);
+
+                        /**
+                         Used internally to parse the logger factory element.
+                        */
+                        log4cxx::rolling::RollingPolicyPtr parseRollingPolicy(helpers::XMLDOMElementPtr factoryElement);
 
                         /**
                          Used internally to parse the roor category element.

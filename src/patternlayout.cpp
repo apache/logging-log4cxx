@@ -15,40 +15,58 @@
  */
 
 #include <log4cxx/patternlayout.h>
-#include <log4cxx/helpers/patternparser.h>
-#include <log4cxx/helpers/patternconverter.h>
+#include <log4cxx/pattern/patternparser.h>
+#include <log4cxx/pattern/loggingeventpatternconverter.h>
+#include <log4cxx/pattern/formattinginfo.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/optionconverter.h>
 
+#include <log4cxx/pattern/loggerpatternconverter.h>
+#include <log4cxx/pattern/literalpatternconverter.h>
+#include <log4cxx/helpers/loglog.h>
+#include <log4cxx/pattern/classnamepatternconverter.h>
+#include <log4cxx/pattern/datepatternconverter.h>
+#include <log4cxx/pattern/filedatepatternconverter.h>
+#include <log4cxx/pattern/filelocationpatternconverter.h>
+#include <log4cxx/pattern/fulllocationpatternconverter.h>
+#include <log4cxx/pattern/integerpatternconverter.h>
+#include <log4cxx/pattern/linelocationpatternconverter.h>
+#include <log4cxx/pattern/messagepatternconverter.h>
+#include <log4cxx/pattern/lineseparatorpatternconverter.h>
+#include <log4cxx/pattern/methodlocationpatternconverter.h>
+#include <log4cxx/pattern/levelpatternconverter.h>
+#include <log4cxx/pattern/relativetimepatternconverter.h>
+#include <log4cxx/pattern/threadpatternconverter.h>
+#include <log4cxx/pattern/ndcpatternconverter.h>
+#include <log4cxx/pattern/propertiespatternconverter.h>
+#include <log4cxx/pattern/throwableinformationpatternconverter.h>
+
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
+using namespace log4cxx::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(PatternLayout)
 
 
-int PatternLayout::BUF_SIZE = 256;
-int PatternLayout::MAX_CAPACITY = 1024;
-
 PatternLayout::PatternLayout()
 {
-  Pool pool;
-  activateOptions(pool);
 }
 
 /**
 Constructs a PatternLayout using the supplied conversion pattern.
 */
-PatternLayout::PatternLayout(const LogString& pattern) : pattern(pattern)
-{
+PatternLayout::PatternLayout(const LogString& pattern)
+  : conversionPattern(pattern) {
   Pool pool;
   activateOptions(pool);
 }
 
-void PatternLayout::setConversionPattern(const LogString& conversionPattern)
+void PatternLayout::setConversionPattern(const LogString& pattern)
 {
-    pattern = conversionPattern;
+    conversionPattern = pattern;
     Pool pool;
     activateOptions(pool);
 }
@@ -57,18 +75,17 @@ void PatternLayout::format(LogString& output,
       const spi::LoggingEventPtr& event,
       Pool& pool) const
 {
-        PatternConverterPtr c = head;
+  std::vector<FormattingInfoPtr>::const_iterator formatterIter =
+     patternFields.begin();
+  for(std::vector<LoggingEventPatternConverterPtr>::const_iterator
+           converterIter = patternConverters.begin();
+      converterIter != patternConverters.end();
+      converterIter++, formatterIter++) {
+      int startField = output.length();
+      (*converterIter)->format(event, output, pool);
+      (*formatterIter)->format(startField, output);
+  }
 
-        while(c != 0)
-        {
-                c->format(output, event, pool);
-                c = c->next;
-        }
-}
-
-PatternConverterPtr PatternLayout::createPatternParser(const LogString& pattern)
-{
-        return PatternParser(pattern).parse();
 }
 
 void PatternLayout::setOption(const LogString& option, const LogString& value)
@@ -77,21 +94,89 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
                LOG4CXX_STR("CONVERSIONPATTERN"),
                LOG4CXX_STR("conversionpattern")))
         {
-                pattern = OptionConverter::convertSpecialChars(value);
+                conversionPattern = OptionConverter::convertSpecialChars(value);
         }
 }
 
 void PatternLayout::activateOptions(Pool&)
 {
-        if (pattern.empty())
-        {
-        static const LogString DEFAULT_CONVERSION_PATTERN(LOG4CXX_STR("%m%n"));
-                pattern = DEFAULT_CONVERSION_PATTERN;
+        LogString pat(conversionPattern);
+        if (pat.empty()) {
+            pat = LOG4CXX_STR("%m%n");
         }
+        patternConverters.erase(patternConverters.begin(), patternConverters.end());
+        patternFields.erase(patternFields.begin(), patternFields.end());
+        std::vector<PatternConverterPtr> converters;
+        PatternParser::parse(pat,
+                converters,
+                patternFields,
+                getFormatSpecifiers());
 
-        head = createPatternParser(pattern);
+       //
+       //   strip out any pattern converters that don't handle LoggingEvents
+       //
+       //
+       for(std::vector<PatternConverterPtr>::const_iterator converterIter = converters.begin();
+           converterIter != converters.end();
+           converterIter++) {
+           LoggingEventPatternConverterPtr eventConverter(*converterIter);
+           if (eventConverter != NULL) {
+             patternConverters.push_back(eventConverter);
+           }
+       }
 }
 
+#define RULES_PUT(spec, cls) \
+insert(value_type(LOG4CXX_STR(spec), cls ::newInstance))
+
+PatternLayout::PatternLayoutMap::PatternLayoutMap() {
+  RULES_PUT("c", LoggerPatternConverter);
+  RULES_PUT("logger", LoggerPatternConverter);
+
+  RULES_PUT("C", ClassNamePatternConverter);
+  RULES_PUT("class", ClassNamePatternConverter);
+
+  RULES_PUT("d", DatePatternConverter);
+  RULES_PUT("date", DatePatternConverter);
+
+  RULES_PUT("F", FileLocationPatternConverter);
+  RULES_PUT("file", FileLocationPatternConverter);
+
+  RULES_PUT("l", FullLocationPatternConverter);
+
+  RULES_PUT("L", LineLocationPatternConverter);
+  RULES_PUT("line", LineLocationPatternConverter);
+
+  RULES_PUT("m", MessagePatternConverter);
+  RULES_PUT("message", MessagePatternConverter);
+
+  RULES_PUT("n", LineSeparatorPatternConverter);
+
+  RULES_PUT("M", MethodLocationPatternConverter);
+  RULES_PUT("method", MethodLocationPatternConverter);
+
+  RULES_PUT("p", LevelPatternConverter);
+  RULES_PUT("level", LevelPatternConverter);
+
+  RULES_PUT("r", RelativeTimePatternConverter);
+  RULES_PUT("relative", RelativeTimePatternConverter);
+
+  RULES_PUT("t", ThreadPatternConverter);
+  RULES_PUT("thread", ThreadPatternConverter);
+
+  RULES_PUT("x", NDCPatternConverter);
+  RULES_PUT("ndc", NDCPatternConverter);
+
+  RULES_PUT("X", PropertiesPatternConverter);
+  RULES_PUT("properties", PropertiesPatternConverter);
+
+  RULES_PUT("throwable", ThrowableInformationPatternConverter);
+}
+
+const log4cxx::pattern::PatternMap& PatternLayout::getFormatSpecifiers() {
+   static PatternLayoutMap map;
+   return map;
+}
 
 
 

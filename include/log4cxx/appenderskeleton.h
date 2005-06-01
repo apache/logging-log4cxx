@@ -120,7 +120,7 @@ namespace log4cxx
                 /**
                 Returns the head Filter.
                 */
-                const spi::FilterPtr& getFilter() const { return headFilter; }
+                spi::FilterPtr getFilter() const { return headFilter; }
 
                 /**
                 Return the first filter in the filter chain for this
@@ -132,13 +132,13 @@ namespace log4cxx
                 /**
                 Returns the layout of this appender. The value may be 0.
                 */
-                const LayoutPtr& getLayout() const { return layout; }
+                LayoutPtr getLayout() const { return layout; }
 
 
                 /**
                 Returns the name of this Appender.
                 */
-                const LogString& getName() const { return name; }
+                LogString getName() const { return name; }
 
                 /**
                 Returns this appenders threshold level. See the #setThreshold

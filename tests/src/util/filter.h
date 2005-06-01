@@ -41,8 +41,8 @@ namespace log4cxx
             Filter();
             virtual ~Filter();
 
-                        typedef std::pair<std::string, std::string> PatternReplacement;
-                        typedef std::vector <PatternReplacement> PatternList;
+            typedef std::pair<std::string, std::string> PatternReplacement;
+            typedef std::vector <PatternReplacement> PatternList;
             const PatternList& getPatterns()  const{
                 return patterns;
             }

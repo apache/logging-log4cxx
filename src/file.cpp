@@ -80,6 +80,32 @@ bool File::exists(Pool& p) const {
   return rv == APR_SUCCESS;
 }
 
+std::string File::convertBackSlashes(const std::string& src) {
+  std::string::size_type pos = src.find('\\');
+  if (pos == std::string::npos) {
+    return src;
+  }
+  std::string mod(src);
+  while(pos != std::string::npos) {
+    mod[pos] = '/';
+    pos = src.find('\\');
+  }
+  return mod;
+}
+
+bool File::deleteFile(Pool& p) const {
+  apr_status_t rv = apr_file_remove(convertBackSlashes(osName).c_str(),
+        (apr_pool_t*) p.getAPRPool());
+  return rv == APR_SUCCESS;
+}
+
+bool File::renameTo(const File& dest, Pool& p) const {
+  apr_status_t rv = apr_file_rename(convertBackSlashes(osName).c_str(),
+        convertBackSlashes(dest.getOSName()).c_str(),
+        (apr_pool_t*) p.getAPRPool());
+  return rv == APR_SUCCESS;
+}
+
 
 size_t File::length(Pool& pool) const {
   apr_finfo_t finfo;
@@ -172,4 +198,11 @@ log4cxx_status_t File::write(const LogString& src, Pool& p) const {
     assert(close == APR_SUCCESS);
   }
   return rv;
+}
+
+
+std::vector<LogString> File::list(Pool& p) const {
+  return std::vector<LogString>();
+  //
+  //  TODO:
 }

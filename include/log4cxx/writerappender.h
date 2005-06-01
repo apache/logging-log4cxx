@@ -152,7 +152,7 @@ namespace log4cxx
                     <code>encoding</code> property.  If the encoding value is
                     specified incorrectly the writer will be opened using the default
                     system encoding (an error message will be printed to the loglog.  */
-                log4cxx::helpers::OutputStreamWriterPtr createWriter(
+                virtual log4cxx::helpers::OutputStreamWriterPtr createWriter(
                     log4cxx::helpers::OutputStreamPtr& os);
 
        public:

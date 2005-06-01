@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#include <log4cxx/varia/stringmatchfilter.h>
+#include <log4cxx/filter/stringmatchfilter.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 
 using namespace log4cxx;
-using namespace log4cxx::varia;
+using namespace log4cxx::filter;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 

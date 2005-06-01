@@ -22,7 +22,7 @@
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/errorhandler.h>
-#include <log4cxx/varia/denyallfilter.h>
+#include <log4cxx/filter/denyallfilter.h>
 #include <log4cxx/spi/repositoryselector.h>
 #include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/helpers/xml.h>
@@ -34,7 +34,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
-using namespace log4cxx::varia;
+using namespace log4cxx::filter;
 
 IMPLEMENT_LOG4CXX_OBJECT(Object)
 IMPLEMENT_LOG4CXX_OBJECT(OptionHandler)

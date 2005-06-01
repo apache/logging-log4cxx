@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,80 +14,32 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/patternconverter.h>
-#include <log4cxx/helpers/formattinginfo.h>
+#include <log4cxx/pattern/patternconverter.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
-using namespace log4cxx::helpers;
+using namespace log4cxx::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(PatternConverter)
 
-PatternConverter::PatternConverter() :  next(), minChar(-1), maxChar(0x7FFFFFFF),
-     leftAlign(false),os()
-{
+PatternConverter::PatternConverter(
+   const LogString& name, const LogString& style) :
+   name(name), style(style) {
 }
 
-PatternConverter::PatternConverter(const FormattingInfo& fi)
-   : next(), minChar(fi.minChar), maxChar(fi.maxChar), leftAlign(fi.leftAlign),
-     os()
-{
+PatternConverter::~PatternConverter() {
 }
 
-void PatternConverter::setFormattingInfo(const FormattingInfo& fi) {
-    minChar = fi.minChar;
-    maxChar = fi.maxChar;
-    leftAlign = fi.leftAlign;
+LogString PatternConverter::getName() const {
+    return name;
 }
 
-void PatternConverter::setOptions(const std::vector<LogString>&) {
+LogString PatternConverter::getStyleClass(const log4cxx::helpers::ObjectPtr& e) const {
+    return style;
+  }
+
+void PatternConverter::append(LogString& toAppendTo, const std::string& src) {
+  LOG4CXX_DECODE_CHAR(decoded, src);
+  toAppendTo.append(decoded);
 }
-
-/**
-A template method for formatting in a converter specific way.
-*/
-void PatternConverter::format(LogString& sbuf,
-     const spi::LoggingEventPtr& e,
-     Pool& p) const
-{
-        if (minChar == -1 && maxChar == 0x7FFFFFFF)
-        {
-                convert(sbuf, e, p);
-        }
-        else
-        {
-                LogString s;
-                convert(s, e, p);
-
-                if (s.empty())
-                {
-                        if(0 < minChar)
-                                sbuf.append(minChar, LOG4CXX_STR(' '));
-                        return;
-                }
-
-                int len = s.size();
-
-                if (len > maxChar)
-                {
-                        sbuf.append(s.substr(len-maxChar));
-                }
-                else if (len < minChar)
-                {
-                        if (leftAlign)
-                        {
-                                sbuf.append(s);
-                                sbuf.append(minChar-len, LOG4CXX_STR(' '));
-                        }
-                        else
-                        {
-                                sbuf.append(minChar-len, LOG4CXX_STR(' '));
-                                sbuf.append(s);
-                        }
-                }
-                else
-                        sbuf.append(s);
-        }
-}
-
-
 

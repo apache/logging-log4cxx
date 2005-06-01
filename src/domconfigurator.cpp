@@ -47,12 +47,15 @@
 #include <log4cxx/helpers/pool.h>
 #include <sstream>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/rolling/rollingfileappender.h>
+#include <log4cxx/rolling/filterbasedtriggeringpolicy.h>
 
 using namespace log4cxx;
 using namespace log4cxx::xml;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::config;
+using namespace log4cxx::rolling;
 
 class XMLWatchdog  : public FileWatchdog
 {
@@ -99,6 +102,8 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define APPENDER_REF_TAG LOG4CXX_STR("appender-ref")
 #define PARAM_TAG LOG4CXX_STR("param")
 #define LAYOUT_TAG LOG4CXX_STR("layout")
+#define ROLLING_POLICY_TAG LOG4CXX_STR("rollingPolicy")
+#define TRIGGERING_POLICY_TAG LOG4CXX_STR("triggeringPolicy")
 #define CATEGORY LOG4CXX_STR("category")
 #define LOGGER LOG4CXX_STR("logger")
 #define LOGGER_REF LOG4CXX_STR("logger-ref")
@@ -203,11 +208,33 @@ AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
                                 // Add filters
                                 else if (tagName == FILTER_TAG)
                                 {
-                                        parseFilters(currentElement, appender);
+                                        std::vector<log4cxx::spi::FilterPtr> filters;
+                                        parseFilters(currentElement, filters);
+                                        for(std::vector<log4cxx::spi::FilterPtr>::iterator iter = filters.begin();
+                                            iter != filters.end();
+                                            iter++) {
+                                            appender->addFilter(*iter);
+                                        }
                                 }
                                 else if (tagName == ERROR_HANDLER_TAG)
                                 {
                                         parseErrorHandler(currentElement, appender);
+                                }
+                                else if (tagName == ROLLING_POLICY_TAG)
+                                {
+                                        RollingPolicyPtr rollPolicy(parseRollingPolicy(currentElement));
+                                        RollingFileAppenderPtr rfa(appender);
+                                        if (rfa != NULL) {
+                                           rfa->setRollingPolicy(rollPolicy);
+                                        }
+                                }
+                                else if (tagName == TRIGGERING_POLICY_TAG)
+                                {
+                                        TriggeringPolicyPtr triggerPolicy(parseTriggeringPolicy(currentElement));
+                                        RollingFileAppenderPtr rfa(appender);
+                                        if (rfa != NULL) {
+                                           rfa->setTriggeringPolicy(triggerPolicy);
+                                        }
                                 }
                                 else if (tagName == APPENDER_REF_TAG)
                                 {
@@ -289,16 +316,16 @@ void DOMConfigurator::parseErrorHandler(XMLDOMElementPtr element, AppenderPtr ap
                                 }
                         }
                 }
-        Pool p;
+                Pool p;
                 propSetter.activate(p);
-                appender->setErrorHandler(eh);
+//                appender->setErrorHandler(eh);
     }
 }
 
 /**
  Used internally to parse a filter element.
 */
-void DOMConfigurator::parseFilters(XMLDOMElementPtr element, AppenderPtr appender)
+void DOMConfigurator::parseFilters(XMLDOMElementPtr element, std::vector<log4cxx::spi::FilterPtr>& filters)
 {
         LogString clazz = subst(element->getAttribute(CLASS_ATTR));
         FilterPtr filter = OptionConverter::instantiateByClassName(clazz,
@@ -323,11 +350,9 @@ void DOMConfigurator::parseFilters(XMLDOMElementPtr element, AppenderPtr appende
                                 }
                         }
                 }
-        Pool p;
+                Pool p;
                 propSetter.activate(p);
-                LogLog::debug(LOG4CXX_STR("Adding filter of type [")+filter->getClass().toString()
-                        +LOG4CXX_STR("] to appender named [")+appender->getName()+LOG4CXX_STR("]."));
-                appender->addFilter(filter);
+                filters.push_back(filter);
         }
 }
 
@@ -512,6 +537,104 @@ LayoutPtr DOMConfigurator::parseLayout (XMLDOMElementPtr layout_element)
                 return 0;
         }
 }
+
+/**
+ Used internally to parse a triggering policy
+*/
+TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (XMLDOMElementPtr layout_element)
+{
+        LogString className = subst(layout_element->getAttribute(CLASS_ATTR));
+        LogLog::debug(LOG4CXX_STR("Parsing triggering policy of class: \"")+className+LOG4CXX_STR("\""));
+        try
+        {
+                ObjectPtr instance = Loader::loadClass(className).newInstance();
+                TriggeringPolicyPtr layout = instance;
+                PropertySetter propSetter(layout);
+
+                XMLDOMNodeListPtr params  = layout_element->getChildNodes();
+                int length    = params->getLength();
+
+                for (int loop = 0; loop < length; loop++)
+                {
+                        XMLDOMNodePtr currentNode = params->item(loop);
+                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
+                        {
+                                XMLDOMElementPtr currentElement = currentNode;
+                                LogString tagName = currentElement->getTagName();
+                                if(tagName == PARAM_TAG)
+                                {
+                                        setParameter(currentElement, propSetter);
+                                }
+                                else if (tagName == FILTER_TAG) {
+                                  std::vector<log4cxx::spi::FilterPtr> filters;
+                                  parseFilters(currentElement, filters);
+                                  FilterBasedTriggeringPolicyPtr fbtp(instance);
+                                  if (fbtp != NULL) {
+                                    for(std::vector<log4cxx::spi::FilterPtr>::iterator iter = filters.begin();
+                                        iter != filters.end();
+                                        iter++) {
+                                        fbtp->addFilter(*iter);
+                                    }
+                                  }
+                                }
+                        }
+                }
+
+                Pool p;
+                propSetter.activate(p);
+                return layout;
+        }
+        catch (Exception& oops)
+        {
+                LogLog::error(LOG4CXX_STR("Could not create the TriggeringPolicy. Reported error follows."),
+                        oops);
+                return 0;
+        }
+}
+
+/**
+ Used internally to parse a triggering policy
+*/
+RollingPolicyPtr DOMConfigurator::parseRollingPolicy (XMLDOMElementPtr layout_element)
+{
+        LogString className = subst(layout_element->getAttribute(CLASS_ATTR));
+        LogLog::debug(LOG4CXX_STR("Parsing rolling policy of class: \"")+className+LOG4CXX_STR("\""));
+        try
+        {
+                ObjectPtr instance = Loader::loadClass(className).newInstance();
+                RollingPolicyPtr layout = instance;
+                PropertySetter propSetter(layout);
+
+                XMLDOMNodeListPtr params  = layout_element->getChildNodes();
+                int length    = params->getLength();
+
+                for (int loop = 0; loop < length; loop++)
+                {
+                        XMLDOMNodePtr currentNode = params->item(loop);
+                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
+                        {
+                                XMLDOMElementPtr currentElement = currentNode;
+                                LogString tagName = currentElement->getTagName();
+                                if(tagName == PARAM_TAG)
+                                {
+                                        setParameter(currentElement, propSetter);
+                                }
+                        }
+                }
+
+                Pool p;
+                propSetter.activate(p);
+                return layout;
+        }
+        catch (Exception& oops)
+        {
+                LogLog::error(LOG4CXX_STR("Could not create the RollingPolicy. Reported error follows."),
+                        oops);
+                return 0;
+        }
+}
+
+
 
 /**
  Used internally to parse a level  element.

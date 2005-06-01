@@ -18,15 +18,12 @@
 #define _LOG4CXX_PATTERN_LAYOUT_H
 
 #include <log4cxx/layout.h>
-#include <log4cxx/helpers/patternconverter.h>
+#include <log4cxx/pattern/loggingeventpatternconverter.h>
+#include <log4cxx/pattern/formattinginfo.h>
+#include <log4cxx/pattern/patternparser.h>
 
 namespace log4cxx
 {
-        namespace helpers
-        {
-                class PatternConverter;
-                typedef ObjectPtrT<PatternConverter> PatternConverterPtr;
-        }
 
         class PatternLayout;
         typedef helpers::ObjectPtrT<PatternLayout> PatternLayoutPtr;
@@ -374,15 +371,21 @@ namespace log4cxx
         */
         class LOG4CXX_EXPORT PatternLayout : public Layout
         {
-        protected:
-                static int BUF_SIZE;
-                static int MAX_CAPACITY;
+                 /**
+                  * Conversion pattern.
+                  */
+                LogString conversionPattern;
 
-        private:
-                // output buffer appended to when format() is invoked
-                LogString sbuf;
-                LogString pattern;
-                helpers::PatternConverterPtr head;
+                /**
+                 * Pattern converters.
+                 */
+                std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr> patternConverters;
+
+               /**
+                * Field widths and alignment corresponding to pattern converters.
+                */
+                std::vector<log4cxx::pattern::FormattingInfoPtr> patternFields;
+
 
         public:
                 DECLARE_LOG4CXX_OBJECT(PatternLayout)
@@ -412,7 +415,7 @@ namespace log4cxx
                 Returns the value of the <b>ConversionPattern</b> option.
                 */
                 inline LogString getConversionPattern() const
-                        { return pattern; }
+                        { return conversionPattern; }
 
                 /**
                 Call createPatternParser
@@ -435,14 +438,14 @@ namespace log4cxx
                 virtual void format(LogString& output,
                      const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;
 
-
         protected:
-                /**
-                Returns head of PatternParser used to parse the conversion string.
-                Subclasses may override this to return a subclass of PatternParser
-                which recognize custom conversion characters.
-                */
-                virtual helpers::PatternConverterPtr createPatternParser(const LogString& pattern);
+                virtual const log4cxx::pattern::PatternMap& getFormatSpecifiers();
+
+        private:
+                class PatternLayoutMap : public log4cxx::pattern::PatternMap {
+                public:
+                    PatternLayoutMap();
+                };
         };
 }  // namespace log4cxx
 

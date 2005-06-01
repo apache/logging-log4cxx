@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 1999,2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,35 +14,53 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/formattinginfo.h>
-#include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/pool.h>
+#include <log4cxx/pattern/formattinginfo.h>
+#include <limits.h>
 
-using namespace log4cxx::helpers;
+ using namespace log4cxx;
+ using namespace log4cxx::pattern;
 
-FormattingInfo::FormattingInfo()
-   : minChar(-1), maxChar(0x7FFFFFFF), leftAlign(false)
-{
+ IMPLEMENT_LOG4CXX_OBJECT(FormattingInfo)
+
+  /**
+   * Creates new instance.
+   * @param leftAlign left align if true.
+   * @param minLength minimum length.
+   * @param maxLength maximum length.
+   */
+FormattingInfo::FormattingInfo(
+    bool leftAlign, int minLength, int maxLength) :
+    leftAlign(leftAlign),
+    minLength(minLength),
+    maxLength(maxLength) {
 }
 
-void FormattingInfo::reset()
-{
-        minChar = -1;
-        maxChar = 0x7FFFFFFF;
-        leftAlign = false;
+  /**
+   * Gets default instance.
+   * @return default instance.
+   */
+FormattingInfoPtr FormattingInfo::getDefault() {
+    static FormattingInfoPtr def(new FormattingInfo(false, 0, INT_MAX));
+    return def;
 }
 
-void FormattingInfo::dump()
-{
-        Pool pool;
-        LogLog::debug(((LogString) LOG4CXX_STR("minChar="))
-           + StringHelper::toString(minChar, pool)
-           + LOG4CXX_STR(", maxChar=")
-           + StringHelper::toString(maxChar, pool)
-           + LOG4CXX_STR(", leftAlign=")
-           + (leftAlign ? LOG4CXX_STR("true") : LOG4CXX_STR("false")));
-}
+  /**
+   * Adjust the content of the buffer based on the specified lengths and alignment.
+   *
+   * @param fieldStart start of field in buffer.
+   * @param buffer buffer to be modified.
+   */
+void FormattingInfo::format(int fieldStart, LogString& buffer) const {
+    int rawLength = buffer.length() - fieldStart;
 
-
-
+    if (rawLength > maxLength) {
+      buffer.erase(buffer.begin() + fieldStart,
+                   buffer.begin() + fieldStart + (rawLength - maxLength));
+    } else if (rawLength < minLength) {
+      if (leftAlign) {
+        buffer.append(minLength - rawLength, LOG4CXX_STR(' '));
+      } else {
+        buffer.insert(fieldStart, minLength - rawLength, LOG4CXX_STR(' '));
+      }
+    }
+  }
