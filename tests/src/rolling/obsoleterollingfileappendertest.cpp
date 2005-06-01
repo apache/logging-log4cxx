@@ -107,7 +107,7 @@
     LoggerPtr root(Logger::getRootLogger());
     root->addAppender(rfa);
 
-    char msg[11];
+    char msg[10];
     strcpy(msg, "Hello---?");
     LoggerPtr logger(Logger::getLogger("org.apache.logj4.ObsoleteRollingFileAppenderTest"));
 
@@ -116,11 +116,11 @@
       apr_sleep(100000);
 
       if (i < 10) {
-        msg[9] = (char) ('0' + i);
+        msg[8] = (char) ('0' + i);
         LOG4CXX_DEBUG(logger, msg);
       } else if (i < 100) {
-        msg[8] = (char) ('0' + i / 10);
-        msg[9] = (char) ('0' + i % 10);
+        msg[7] = (char) ('0' + i / 10);
+        msg[8] = (char) ('0' + i % 10);
         LOG4CXX_DEBUG(logger, msg);
       }
     }

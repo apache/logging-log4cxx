@@ -81,7 +81,8 @@ namespace log4cxx
           BUFSIZE = 256
         };
         char buf[BUFSIZE];
-        apr_size_t retsize;
+        memset(buf, 0, BUFSIZE);
+        apr_size_t retsize = 0;
         apr_status_t stat = apr_strftime( buf, & retsize, BUFSIZE, format, tm );
         if ( stat != APR_SUCCESS )
         {
@@ -214,7 +215,7 @@ public:
     }
 #endif
     apr_time_exp_t time;
-    memset( & time, sizeof( time ), 0 );
+    memset( & time, 0, sizeof( time ));
     for ( int imon = 0; imon < 12; imon++ )
     {
       time.tm_mon = imon;
@@ -243,7 +244,7 @@ public:
     if ( locale != NULL )
     {
       tm time;
-      memset( & time, sizeof( time ), 0 );
+      memset( & time, 0, sizeof( time ));
       std::basic_ostringstream < localechar > buffer;
       size_t start = 0;
       for ( int imon = 0; imon < 12; imon++ )
@@ -258,7 +259,7 @@ public:
     }
 #endif
     apr_time_exp_t time;
-    memset( & time, sizeof( time ), 0 );
+    memset( & time, 0, sizeof( time ));
     for ( int imon = 0; imon < 12; imon++ )
     {
       time.tm_mon = imon;
@@ -362,7 +363,7 @@ public:
     if ( locale != NULL )
     {
       tm time;
-      memset( & time, sizeof( time ), 0 );
+      memset( & time, 0, sizeof( time ));
       std::basic_ostringstream < localechar > buffer;
       size_t start = 0;
       for ( int iday = 0; iday < 7; iday++ )
@@ -377,7 +378,7 @@ public:
     }
 #endif
     apr_time_exp_t time;
-    memset( & time, sizeof( time ), 0 );
+    memset( & time, 0, sizeof( time ));
     for ( int iday = 0; iday < 7; iday++ )
     {
       time.tm_wday = iday;
@@ -406,7 +407,7 @@ public:
     if ( locale != NULL )
     {
       tm time;
-      memset( & time, sizeof( time ), 0 );
+      memset( & time, 0, sizeof( time ));
       std::basic_ostringstream < localechar > buffer;
       size_t start = 0;
       for ( int iday = 0; iday < 7; iday++ )
@@ -421,7 +422,7 @@ public:
     }
 #endif
     apr_time_exp_t time;
-    memset( & time, sizeof( time ), 0 );
+    memset( & time, 0, sizeof( time ));
     for ( int iday = 0; iday < 7; iday++ )
     {
       time.tm_wday = iday;
@@ -531,7 +532,7 @@ public:
     if ( locale != NULL )
     {
       tm time;
-      memset( & time, sizeof( time ), 0 );
+      memset( & time, 0, sizeof( time ));
       std::basic_ostringstream < localechar > buffer;
       size_t start = 0;
       for ( int i = 0; i < 2; i++ )
@@ -546,7 +547,7 @@ public:
     }
 #endif
     apr_time_exp_t time;
-    memset( & time, sizeof( time ), 0 );
+    memset( & time, 0, sizeof( time ));
     for ( int i = 0; i < 2; i++ )
     {
       time.tm_hour = i * 12;

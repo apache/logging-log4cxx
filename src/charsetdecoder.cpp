@@ -156,6 +156,7 @@ namespace log4cxx
                   wchar_t buf[BUFSIZE];
 
                   mbstate_t mbstate;
+                  memset(&mbstate, 0, sizeof(mbstate));
 
                   while(in.remaining() > 0) {
                       size_t requested = in.remaining();
