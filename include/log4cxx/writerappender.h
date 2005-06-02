@@ -158,6 +158,8 @@ namespace log4cxx
        public:
                 LogString getEncoding() const;
                 void setEncoding(const LogString& value);
+                void setOption(const LogString& option,
+                    const LogString& value);
 
                 /**
                   <p>Sets the Writer where the log output will go. The
