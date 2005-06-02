@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#if LOG4CXX_HAVE_SMTP
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -23,7 +24,6 @@
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
 
-#if LOG4CXX_HAVE_SMTP
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

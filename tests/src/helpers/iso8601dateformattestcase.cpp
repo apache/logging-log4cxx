@@ -16,15 +16,11 @@
 
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <cppunit/extensions/HelperMacros.h>
-#include <apr_time.h>
 #include <locale>
 #include "../insertwide.h"
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/date.h>
 
-//Define INT64_C for compilers that don't have it
-#if (!defined(INT64_C))
-#define INT64_C(value)  value ## LL
-#endif
 
 
 using namespace log4cxx;
@@ -54,7 +50,7 @@ using namespace log4cxx::helpers;
    * @param timeZone TimeZone timezone for conversion
    * @param expected String expected string
    */
-  void assertFormattedTime(apr_time_t date,
+  void assertFormattedTime(log4cxx_time_t date,
                            const TimeZonePtr& timeZone,
                            const LogString& expected) {
     ISO8601DateFormat formatter;
@@ -65,14 +61,13 @@ using namespace log4cxx::helpers;
     CPPUNIT_ASSERT_EQUAL(expected, actual);
   }
 
-#define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
 
 public:
   /**
    * Convert 02 Jan 2004 00:00:00 GMT for GMT.
    */
   void test1() {
-    apr_time_t jan2 = MICROSECONDS_PER_DAY * 12419;
+    log4cxx_time_t jan2 = Date::getMicrosecondsPerDay() * 12419;
     assertFormattedTime(jan2, TimeZone::getGMT(),
           LOG4CXX_STR("2004-01-02 00:00:00,000"));
   }
@@ -85,7 +80,7 @@ public:
     //   03 Jan 2004 00:00 GMT
     //       (asking for the same time at a different timezone
     //          will ignore the change of timezone)
-    apr_time_t jan3 = MICROSECONDS_PER_DAY * 12420;
+    log4cxx_time_t jan3 = Date::getMicrosecondsPerDay() * 12420;
     assertFormattedTime(jan3, TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")),
           LOG4CXX_STR("2004-01-02 18:00:00,000"));
   }
@@ -95,7 +90,7 @@ public:
    * Convert 30 Jun 2004 00:00:00 GMT for GMT.
    */
   void test3() {
-    apr_time_t jun30 = MICROSECONDS_PER_DAY * 12599;
+    log4cxx_time_t jun30 = Date::getMicrosecondsPerDay() * 12599;
     assertFormattedTime(jun30, TimeZone::getGMT(),
           LOG4CXX_STR("2004-06-30 00:00:00,000"));
   }
@@ -104,7 +99,7 @@ public:
    * Convert 1 Jul 2004 00:00:00 GMT for Chicago, daylight savings in effect.
    */
   void test4() {
-    apr_time_t jul1 = MICROSECONDS_PER_DAY * 12600;
+    log4cxx_time_t jul1 = Date::getMicrosecondsPerDay() * 12600;
     assertFormattedTime(jul1, TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")),
            LOG4CXX_STR("2004-06-30 19:00:00,000"));
   }
@@ -116,7 +111,7 @@ public:
     //   subsequent calls within one minute
     //     are optimized to reuse previous formatted value
     //     make a couple of nearly spaced calls
-    apr_time_t ticks =  MICROSECONDS_PER_DAY * 12601;
+    log4cxx_time_t ticks =  Date::getMicrosecondsPerDay() * 12601;
     assertFormattedTime(ticks, TimeZone::getGMT(),
           LOG4CXX_STR("2004-07-02 00:00:00,000"));
     assertFormattedTime(ticks + 8000, TimeZone::getGMT(),
@@ -134,7 +129,7 @@ public:
    * This test would fail for revision 1.4 of DateTimeDateFormat.java.
    */
   void test6() {
-    apr_time_t jul3 =  MICROSECONDS_PER_DAY * 12602;
+    log4cxx_time_t jul3 =  Date::getMicrosecondsPerDay() * 12602;
     assertFormattedTime(jul3, TimeZone::getGMT(),
            LOG4CXX_STR("2004-07-03 00:00:00,000"));
     assertFormattedTime(jul3, TimeZone::getTimeZone(LOG4CXX_STR("GMT-5")),

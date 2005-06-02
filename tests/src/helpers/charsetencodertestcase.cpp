@@ -20,10 +20,11 @@
 #include <log4cxx/helpers/charsetencoder.h>
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
-#include <apr_xlate.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+
+#define APR_SUCCESS ((log4cxx_status_t) 0)
 
 
 class CharsetEncoderTestCase : public CppUnit::TestFixture

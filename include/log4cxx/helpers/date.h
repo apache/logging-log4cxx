@@ -46,6 +46,15 @@ namespace log4cxx {
         return time;
       }
 
+      /**
+       *   Get start of next second
+       */
+      log4cxx_time_t getNextSecond() const;
+
+
+      static log4cxx_time_t getMicrosecondsPerDay();
+      static log4cxx_time_t getMicrosecondsPerSecond();
+
       };
 
       typedef log4cxx::helpers::ObjectPtrT<Date> DatePtr;

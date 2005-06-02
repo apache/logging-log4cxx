@@ -19,15 +19,10 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/pool.h>
-#include <apr_strings.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../insertwide.h"
-#include <apr_time.h>
+#include <log4cxx/helpers/date.h>
 
-//Define INT64_C for compilers that don't have it
-#if (!defined(INT64_C))
-#define INT64_C(value)  value ## LL
-#endif
 
 
 using namespace log4cxx;
@@ -46,7 +41,6 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
              CPPUNIT_TEST(test3);
      CPPUNIT_TEST_SUITE_END();
 
-#define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
 
   public:
 
@@ -54,8 +48,8 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
   *   Convert 2 Jan 2004
   */
   void test1() {
-    apr_time_t jan2 = MICROSECONDS_PER_DAY * 12419;
-    apr_time_t preStartTime = LoggingEvent::getStartTime();
+    log4cxx_time_t jan2 = Date::getMicrosecondsPerDay() * 12419;
+    log4cxx_time_t preStartTime = LoggingEvent::getStartTime();
 
     RelativeTimeDateFormat formatter;
 
@@ -65,7 +59,7 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
 
     formatter.format(actual, jan2, p);
 
-    apr_time_t elapsed = log4cxx::helpers::StringHelper::toInt64(actual);
+    log4cxx_time_t elapsed = log4cxx::helpers::StringHelper::toInt64(actual);
 
 
     CPPUNIT_ASSERT(preStartTime + elapsed*1000 > jan2 - 2000);

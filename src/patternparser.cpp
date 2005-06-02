@@ -56,7 +56,9 @@ int PatternParser::extractConverter(
   logchar lastChar, const LogString& pattern,
   int i, LogString& convBuf,
   LogString& currentLiteral) {
-  convBuf.erase(convBuf.begin(), convBuf.end());
+  if (!convBuf.empty()) { 
+    convBuf.erase(convBuf.begin(), convBuf.end());
+  }
 
   // When this method is called, lastChar points to the first character of the
   // conversion word. For example:
@@ -138,13 +140,13 @@ void PatternParser::parse(
 
         default:
 
-          if (currentLiteral.length() != 0) {
+          if (!currentLiteral.empty()) {
             patternConverters.push_back(
               LiteralPatternConverter::newInstance(currentLiteral));
             formattingInfos.push_back(FormattingInfo::getDefault());
+            currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
           }
 
-          currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
           currentLiteral.append(1, c); // append %
           state = CONVERTER_STATE;
           formattingInfo = FormattingInfo::getDefault();
@@ -188,7 +190,9 @@ void PatternParser::parse(
           // Next pattern is assumed to be a literal.
           state = LITERAL_STATE;
           formattingInfo = FormattingInfo::getDefault();
-          currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+          if (!currentLiteral.empty()) {
+            currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+          }
         }
       } // switch
 
@@ -211,7 +215,9 @@ void PatternParser::parse(
             rules, patternConverters, formattingInfos);
         state = LITERAL_STATE;
         formattingInfo = FormattingInfo::getDefault();
-        currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+        if (!currentLiteral.empty()) {
+            currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+        }
       }
 
       break;
@@ -247,7 +253,9 @@ void PatternParser::parse(
             rules, patternConverters, formattingInfos);
         state = LITERAL_STATE;
         formattingInfo = FormattingInfo::getDefault();
-        currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+        if (!currentLiteral.empty()) {
+            currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+        }
       }
 
       break;
@@ -295,44 +303,44 @@ int PatternParser::finalizeConverter(
   std::vector<FormattingInfoPtr>&  formattingInfos) {
   LogString convBuf;
   i = extractConverter(c, pattern, i, convBuf, currentLiteral);
-
-  LogString converterId(convBuf);
-
-  std::vector<LogString> options;
-  i = extractOptions(pattern, i, options);
-
-  PatternConverterPtr pc(
-    createConverter(
-      converterId, currentLiteral, rules, options));
-
-  if (pc == NULL) {
-    LogString msg;
-
-    if (converterId.length() == 0) {
-      msg = LOG4CXX_STR("Empty conversion specifier starting at position ");
-    } else {
-      msg = LOG4CXX_STR("Unrecognized conversion specifier [");
-      msg.append(converterId);
-      msg.append(LOG4CXX_STR("] in conversion pattern."));
-    }
-
-    LogLog::error(msg);
-
-    patternConverters.push_back(
-      LiteralPatternConverter::newInstance(currentLiteral));
-    formattingInfos.push_back(FormattingInfo::getDefault());
+  if (convBuf.empty()) {
+     LogLog::error(LOG4CXX_STR("Empty conversion specifier"));
+     patternConverters.push_back(
+         LiteralPatternConverter::newInstance(currentLiteral));
+     formattingInfos.push_back(FormattingInfo::getDefault());
   } else {
-    patternConverters.push_back(pc);
-    formattingInfos.push_back(formattingInfo);
+     LogString converterId(convBuf);
 
-    if (currentLiteral.length() > 0) {
-      patternConverters.push_back(
-        LiteralPatternConverter::newInstance(currentLiteral));
-      formattingInfos.push_back(FormattingInfo::getDefault());
-    }
+     std::vector<LogString> options;
+     i = extractOptions(pattern, i, options);
+
+     PatternConverterPtr pc(
+        createConverter(
+            converterId, currentLiteral, rules, options));
+
+     if (pc == NULL) {
+        LogString msg(LOG4CXX_STR("Unrecognized conversion specifier ["));
+        msg.append(converterId);
+        msg.append(LOG4CXX_STR("] in conversion pattern."));
+        LogLog::error(msg);
+        patternConverters.push_back(
+           LiteralPatternConverter::newInstance(currentLiteral));
+        formattingInfos.push_back(FormattingInfo::getDefault());
+     } else {
+        patternConverters.push_back(pc);
+        formattingInfos.push_back(formattingInfo);
+
+        if (currentLiteral.length() > 0) {
+           patternConverters.push_back(
+              LiteralPatternConverter::newInstance(currentLiteral));
+           formattingInfos.push_back(FormattingInfo::getDefault());
+        }
+     }
   }
 
-  currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+  if (!currentLiteral.empty()) {
+    currentLiteral.erase(currentLiteral.begin(), currentLiteral.end());
+  }
 
   return i;
 }

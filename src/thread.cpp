@@ -77,3 +77,8 @@ void Thread::join() {
 void Thread::ending() {
         finished = true;
 }
+
+
+void Thread::sleep(log4cxx_time_t duration) {
+    apr_sleep(duration);
+}

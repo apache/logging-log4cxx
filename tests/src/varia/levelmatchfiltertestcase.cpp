@@ -24,7 +24,6 @@
 #include <log4cxx/filter/levelmatchfilter.h>
 #include <log4cxx/filter/denyallfilter.h>
 #include <log4cxx/helpers/pool.h>
-#include <apr_strings.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggerrepository.h>

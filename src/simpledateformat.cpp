@@ -200,7 +200,7 @@ public:
     if ( locale != NULL )
     {
       tm time;
-      memset( & time, sizeof( time ), 0 );
+      memset( & time, 0, sizeof( time ));
       std::basic_ostringstream < localechar > buffer;
       size_t start = 0;
       for ( int imon = 0; imon < 12; imon++ )

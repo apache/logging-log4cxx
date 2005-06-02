@@ -19,12 +19,12 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/nt/nteventlogappender.h>
 #include "../appenderskeletontestcase.h"
-#include <apr_time.h>
 #include "windows.h"
 #include <log4cxx/logger.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/patternlayout.h>
 #include "../insertwide.h"
+#include <log4cxx/helpers/date.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -67,7 +67,8 @@ public:
 
 
             Pool p;
-            DWORD expectedTime = apr_time_sec(apr_time_now());
+            Date now;
+            DWORD expectedTime = now.getTime() / Date::getMicrosecondsPerSecond();
             {
                 NTEventLogAppenderPtr appender(new NTEventLogAppender());
                 appender->setSource(LOG4CXX_STR("log4cxx_test"));

@@ -19,7 +19,6 @@
 
 #include "../util/compare.h"
 #include "../insertwide.h"
-#include <apr_time.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/patternlayout.h>
@@ -110,7 +109,6 @@ private:
 
     // Write exactly 10 bytes with each log
     for (int i = 0; i < 25; i++) {
-//      Thread.sleep(100);
 
       char msg[10];
       strcpy(msg, "Hello---?");

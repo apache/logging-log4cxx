@@ -53,6 +53,8 @@ namespace log4cxx
 
                         inline bool isActive() { return thread != 0; }
 
+                        static void sleep(log4cxx_time_t duration);
+
                 private:
                         log4cxx_thread_t* thread;
                         volatile bool finished;
