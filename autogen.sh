@@ -10,6 +10,5 @@ $LIBTOOLIZE --force --automake --copy
 rm -f config.cache
 rm -f config.log
 aclocal -I .
-autoheader
 autoconf
 automake -a --copy
