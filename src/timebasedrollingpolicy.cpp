@@ -16,11 +16,17 @@
 
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <log4cxx/pattern/filedatepatternconverter.h>
-#include <apr_time.h>
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/rolling/filerenameaction.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/exception.h>
+
+#ifndef INT64_C
+#define INT64_C(x) x ## LL
+#endif
+
+#include <apr_time.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;

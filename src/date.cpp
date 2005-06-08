@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
- #include <log4cxx/helpers/date.h>
+#include <log4cxx/helpers/date.h>
+
+
+#ifndef INT64_C
+#define INT64_C(x) x ## LL
+#endif
+
+
 #include <apr_time.h>
 using namespace log4cxx;
 using namespace log4cxx::helpers;

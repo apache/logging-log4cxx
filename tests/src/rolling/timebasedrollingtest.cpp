@@ -23,10 +23,17 @@
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <log4cxx/helpers/simpledateformat.h>
-#include <apr_time.h>
 #include <iostream>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../util/compare.h"
+
+
+#ifndef INT64_C
+#define INT64_C(x) x ## LL
+#endif
+#include <apr_time.h>
+
+
 
 
 using namespace log4cxx;
