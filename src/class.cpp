@@ -59,7 +59,9 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
+#ifdef _WIN32
 using namespace log4cxx::nt;
+#endif
 using namespace log4cxx::filter;
 using namespace log4cxx::xml;
 using namespace log4cxx::rolling;
@@ -140,7 +142,8 @@ void Class::registerClasses() {
 #endif
         RollingFileAppender::registerClass();
 #ifdef LOG4CXX_HAVE_SMTP
-        SMTPAppender::registerClass();
+//  TODO:
+//        SMTPAppender::registerClass();
 #endif
         SocketAppender::registerClass();
         SocketHubAppender::registerClass();
