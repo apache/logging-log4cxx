@@ -28,6 +28,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/defaultconfigurator.h>
+#include <apr_atomic.h>
 
 
 using namespace log4cxx;
@@ -219,14 +220,12 @@ bool Hierarchy::isDisabled(int level) const
    //   if repository hasn't been configured,
    //     do default configuration
    //
-   if (!configured) {
-     synchronized sync(mutex);
-      if (!configured) {
-         DefaultConfigurator::configure(const_cast<Hierarchy*>(this));
-      } 
+   if (apr_atomic_xchg32(const_cast<volatile unsigned int*>(&configured), 1) == 0) {
+        DefaultConfigurator::configure(
+            const_cast<Hierarchy*>(this));
    }
 
-    return thresholdInt > level;
+   return thresholdInt > level;
 }
 
 
@@ -350,9 +349,9 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr& logger)
 }
 
 void Hierarchy::setConfigured(bool newValue) {
-   configured = newValue;
+    apr_atomic_set32(&configured, newValue ? 1 : 0);
 }
 
 bool Hierarchy::isConfigured() {
-   return configured;
+    return configured ? true : false;
 }

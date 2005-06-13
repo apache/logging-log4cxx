@@ -21,10 +21,48 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/private/log4cxx_private.h>
 
+
+#include <log4cxx/asyncappender.h>
+#include <log4cxx/consoleappender.h>
+#include <log4cxx/fileappender.h>
+#ifdef LOG4CXX_HAVE_ODBC
+#include <log4cxx/db/odbcappender.h>
+#endif
+#if defined(WIN32) || defined(_WIN32)
+#include <log4cxx/nt/nteventlogappender.h>
+#include <log4cxx/nt/outputdebugstringappender.h>
+#endif
+#include <log4cxx/rolling/rollingfileappender.h>
+#ifdef LOG4CXX_HAVE_SMTP
+#include <log4cxx/net/smtpappender.h>
+#endif
+#include <log4cxx/net/socketappender.h>
+#include <log4cxx/net/sockethubappender.h>
+#include <log4cxx/helpers/datagramsocket.h>
+#include <log4cxx/net/syslogappender.h>
+#include <log4cxx/net/telnetappender.h>
+#include <log4cxx/writerappender.h>
+#include <log4cxx/net/xmlsocketappender.h>
+#include <log4cxx/layout.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/htmllayout.h>
+#include <log4cxx/simplelayout.h>
+#include <log4cxx/xml/xmllayout.h>
+#include <log4cxx/ttcclayout.h>
+
+#include <log4cxx/filter/levelmatchfilter.h>
+#include <log4cxx/filter/levelrangefilter.h>
+#include <log4cxx/filter/stringmatchfilter.h>
+
+
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
-
-
+using namespace log4cxx::net;
+using namespace log4cxx::nt;
+using namespace log4cxx::filter;
+using namespace log4cxx::xml;
+using namespace log4cxx::rolling;
 
 Class::Class() {
 }
@@ -47,6 +85,7 @@ ObjectPtr Class::newInstance() const
 }
 
 
+
 Class::ClassMap& Class::getRegistry() {
     static ClassMap registry;
     return registry;
@@ -64,12 +103,19 @@ const Class& Class::forName(const LogString& className)
         {
                 strippedClassName.assign(className);
         }
+        strippedClassName = StringHelper::toLowerCase(strippedClassName);
 
-        const Class * clazz = getRegistry()[StringHelper::toLowerCase(strippedClassName)];
+        const Class * clazz = getRegistry()[strippedClassName];
 
-        if (clazz == 0)
-        {
+        if (clazz == 0) {
+            //
+            //   make sure all well-known classes are registered
+            //
+            registerClasses();
+            clazz = getRegistry()[strippedClassName];
+            if (clazz == 0) {
                 throw ClassNotFoundException(className);
+            }
         }
 
         return *clazz;
@@ -80,3 +126,35 @@ bool Class::registerClass(const Class& newClass)
         getRegistry()[StringHelper::toLowerCase(newClass.getName())] = &newClass;
         return true;
 }
+
+void Class::registerClasses() {
+        AsyncAppender::registerClass();
+        ConsoleAppender::registerClass();
+        FileAppender::registerClass();
+#ifdef LOG4CXX_HAVE_ODBC
+        ODBCAppender::registerClass();
+#endif
+#if defined(WIN32) || defined(_WIN32)
+        NTEventLogAppender::registerClass();
+        OutputDebugStringAppender::registerClass();
+#endif
+        RollingFileAppender::registerClass();
+#ifdef LOG4CXX_HAVE_SMTP
+        SMTPAppender::registerClass();
+#endif
+        SocketAppender::registerClass();
+        SocketHubAppender::registerClass();
+        SyslogAppender::registerClass();
+        TelnetAppender::registerClass();
+        XMLSocketAppender::registerClass();
+ //       DateLayout::registerClass();
+        HTMLLayout::registerClass();
+        PatternLayout::registerClass();
+        SimpleLayout::registerClass();
+        TTCCLayout::registerClass();
+        XMLLayout::registerClass();
+        LevelMatchFilter::registerClass();
+        LevelRangeFilter::registerClass();
+        StringMatchFilter::registerClass();
+}
+

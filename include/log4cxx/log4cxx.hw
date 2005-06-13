@@ -13,7 +13,6 @@
  * limitations under the License.
  */
 
-
 #ifndef LOG4CXX_LOG4CXX_H
 #define LOG4CXX_LOG4CXX_H
 
@@ -22,7 +21,6 @@
  * Edit log4cxx_private.h.in instead
  *
  */
-
 
 #define LOG4CXX_LOGCHAR_IS_UTF8 0
 #if LOG4CXX_LOGCHAR_IS_UTF8
@@ -33,7 +31,6 @@
 
 #define LOG4CXX_HAS_WCHAR_T 1
 
-
 #if defined(_MSC_VER)
 typedef __int64 log4cxx_int64_t;
 #else
@@ -42,6 +39,7 @@ typedef long long log4cxx_int64_t;
 
 typedef log4cxx_int64_t log4cxx_time_t;
 typedef int log4cxx_status_t;
+typedef unsigned int log4cxx_uint32_t;
 
 #if defined(LOG4CXX_STATIC)
 #define LOG4CXX_EXPORT
@@ -58,3 +56,4 @@ typedef int log4cxx_status_t;
 #define LOG4CXX_LOCALE_ENCODING_US_ASCII 0
 
 #endif
+

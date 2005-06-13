@@ -31,6 +31,7 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
+
 FileAppender::FileAppender()
 : fileAppend(true), fileName(), bufferedIO(false), bufferSize(8*1024),
   fileClosed(1)

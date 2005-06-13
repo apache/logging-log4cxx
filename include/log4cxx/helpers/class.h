@@ -47,6 +47,7 @@ namespace log4cxx
                         Class& operator=(const Class&);
                         typedef std::map<LogString, const Class *> ClassMap;
                         static ClassMap& getRegistry();
+                        static void registerClasses();
                 };
         }  // namespace log4cxx
 } // namespace helper

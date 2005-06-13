@@ -942,6 +942,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
      build-simplesocketserver, build-performance"
      description="Builds all artifacts"/>
 
+<target name="clean-output" depends="init">
+     <delete>
+         <fileset dir="${tests.dir}/output"/>
+     </delete>
+</target>
+
 <target name="run-defaultinit-unittest" depends="build-defaultinit-unittest"
     description="Runs default init unit tests">
 
@@ -1023,7 +1029,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 </target>
 
-<target name="run-unittest" depends="build-unittest, run-defaultinit-unittest"
+<target name="run-unittest" depends="build-unittest, run-defaultinit-unittest, clean-output"
     description="Runs unit test">
     <property environment="env"/>
     <mkdir dir="${tests.dir}/output"/>
@@ -1047,7 +1053,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="run-standalone-unittest"
-   depends="build-standalone-unittest"
+   depends="build-standalone-unittest, clean-output"
    description="Runs standalone unit test">
     <property environment="env"/>
     <mkdir dir="${tests.dir}/output"/>
@@ -1149,6 +1155,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <include name="*.xml"/>
             <include name="examples/*.cpp"/>
             <include name="include/**/*.h"/>
+            <include name="include/**/*.h.in"/>
+            <include name="include/**/*.hw"/>
             <include name="mock/*"/>
             <include name="performance/*.cpp"/>
             <include name="performance/*.h"/>
@@ -1167,6 +1175,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <include name="**/*.in"/>
             <include name="**/*.patch"/>
             <exclude name="**/.cvsignore"/>
+            <exclude name="lib/**"/>
         </tarfileset>
     </tar>
 </target>

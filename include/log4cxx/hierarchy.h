@@ -277,7 +277,7 @@ namespace log4cxx
 
             void updateChildren(ProvisionNode& pn, LoggerPtr& logger);
             log4cxx::helpers::Mutex mutex;
-            bool configured;
+            volatile log4cxx_uint32_t configured;
         };
 
 }  //namespace log4cxx

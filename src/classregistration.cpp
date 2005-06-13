@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2004 The Apache Software Foundation.
+ * Copyright 2003-2005 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-#include <log4cxx/spi/configurator.h>
-#include <assert.h>
+#include <log4cxx/helpers/classregistration.h>
+#include <log4cxx/helpers/class.h>
 
 using namespace log4cxx;
-using namespace log4cxx::spi;
+using namespace log4cxx::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(Configurator);
-
-
-
-
-Configurator::Configurator() {
+ClassRegistration::ClassRegistration(ClassAccessor accessor) {
+    Class::registerClass((*accessor)());
 }
+
+

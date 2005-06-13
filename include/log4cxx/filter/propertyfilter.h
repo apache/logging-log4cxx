@@ -42,34 +42,34 @@ import org.apache.log4j.spi.LoggingEvent;
  * @since 1.3
  */
 public class PropertyFilter extends Filter {
-	private Hashtable properties;
-	public void setProperties(String props) {
-		properties = parseProperties(props);
-	}
-	
-	public int decide(LoggingEvent event) {
-		Map eventProps = event.getProperties();
-		if (eventProps == null) {
-			event.setProperties(new Hashtable(properties));
-		} else {
-		    //only add properties that don't already exist
-		    for (Iterator iter = properties.keySet().iterator();iter.hasNext();) {
-		        Object key = iter.next();
-		        if (!(eventProps.containsKey(key))) {
-		            eventProps.put(key, properties.get(key));
-		        }
-		    }
-		}
-		return Filter.NEUTRAL;
-	}
-	
-	private Hashtable parseProperties(String props) {
-		Hashtable hashTable = new Hashtable();
-		StringTokenizer pairs = new StringTokenizer(props, ",");
-		while (pairs.hasMoreTokens()) {
-			StringTokenizer entry = new StringTokenizer(pairs.nextToken(), "=");
-			hashTable.put(entry.nextElement().toString().trim(), entry.nextElement().toString().trim());
-		}
-		return hashTable;
-	}
+   private Hashtable properties;
+   public void setProperties(String props) {
+      properties = parseProperties(props);
+   }
+   
+   public int decide(LoggingEvent event) {
+      Map eventProps = event.getProperties();
+      if (eventProps == null) {
+         event.setProperties(new Hashtable(properties));
+      } else {
+          //only add properties that don't already exist
+          for (Iterator iter = properties.keySet().iterator();iter.hasNext();) {
+              Object key = iter.next();
+              if (!(eventProps.containsKey(key))) {
+                  eventProps.put(key, properties.get(key));
+              }
+          }
+      }
+      return Filter.NEUTRAL;
+   }
+   
+   private Hashtable parseProperties(String props) {
+      Hashtable hashTable = new Hashtable();
+      StringTokenizer pairs = new StringTokenizer(props, ",");
+      while (pairs.hasMoreTokens()) {
+         StringTokenizer entry = new StringTokenizer(pairs.nextToken(), "=");
+         hashTable.put(entry.nextElement().toString().trim(), entry.nextElement().toString().trim());
+      }
+      return hashTable;
+   }
 }

@@ -38,5 +38,7 @@
 typedef long long log4cxx_int64_t;
 typedef log4cxx_int64_t log4cxx_time_t;
 typedef int log4cxx_status_t;
+typedef unsigned int log4cxx_uint32_t;
+
 
 #endif

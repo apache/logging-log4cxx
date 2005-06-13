@@ -76,8 +76,8 @@ public class LocationInfoFilter extends Filter {
   public int decide(LoggingEvent event) {
     if (!event.locationInformationExists()) {
       if (expressionRule.evaluate(event)) {
-	      Throwable t = new Exception();
-	      event.setLocationInformation(new LocationInfo(t, className));
+         Throwable t = new Exception();
+         event.setLocationInformation(new LocationInfo(t, className));
       }
     }
     return Filter.NEUTRAL;
