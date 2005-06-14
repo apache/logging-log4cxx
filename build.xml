@@ -409,6 +409,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
            dest="${lib.dir}" compression="gzip"/>
     <chmod file="${lib.dir}/${module}-${module.version}/configure"
            perm="u+x"/>
+    <chmod file="${lib.dir}/${module}-${module.version}/build/get-version.sh"
+           perm="u+x"/>
 </target>
 
 <target name="get-apr-src" unless="apr-src-available">
@@ -426,8 +428,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <patch patchfile="${base.dir}/apr-${apr.version}.patch"
            dir="${lib.dir}/apr-${apr.version}"
            strip="0"/>
-    <chmod file="${lib.dir}/apr-${apr.version}/build/get-version.sh"
-           perm="u+x"/>
 </target>
 
 <target name="build-apr" depends="init" unless="apr-available">
@@ -1179,6 +1179,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <include name="**/*.patch"/>
             <exclude name="**/.cvsignore"/>
             <exclude name="lib/**"/>
+            <exclude name="include/log4cxx/log4cxx.h"/>
+            <exclude name="include/log4cxx/private/log4cxx_private.h"/>
         </tarfileset>
     </tar>
 </target>
