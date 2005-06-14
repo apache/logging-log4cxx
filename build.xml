@@ -953,6 +953,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="run-defaultinit-unittest" depends="build-defaultinit-unittest"
     description="Runs default init unit tests">
 
+    <mkdir dir="${tests.dir}/output"/>
+
     <!--  test use of log4j.configuration -->
     <property name="defaultInit3.properties"
          location="${tests.dir}/input/defaultInit3.properties"/>
