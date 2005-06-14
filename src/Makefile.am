@@ -17,6 +17,7 @@ liblog4cxx_la_SOURCES = \
         charsetencoder.cpp \
         class.cpp \
         classnamepatternconverter.cpp \
+        classregistration.cpp \
         condition.cpp \
         configurator.cpp \
         consoleappender.cpp \

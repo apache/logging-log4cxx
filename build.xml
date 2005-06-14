@@ -1155,7 +1155,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <include name="*.xml"/>
             <include name="examples/*.cpp"/>
             <include name="include/**/*.h"/>
-            <include name="include/**/*.h.in"/>
             <include name="include/**/*.hw"/>
             <include name="mock/*"/>
             <include name="performance/*.cpp"/>
@@ -1164,12 +1163,14 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <include name="simplesocketserver/*.cpp"/>
             <include name="src/*.cpp"/>
             <include name="tests/**/*.properties"/>
-            <include name="tests/input/xml/*.xml"/>
-            <include name="tests/input/xml/*.dtd"/>
+            <include name="tests/input/**/*.xml"/>
+            <include name="tests/input/**/*.dtd"/>
             <include name="tests/src/**/*.cpp"/>
             <include name="tests/src/**/*.h"/>
             <include name="tests/witness/*"/>
             <include name="tests/witness/ndc/*"/>
+            <include name="tests/witness/encoding/*"/>
+            <include name="tests/witness/rolling/*"/>
             <include name="tests/log4j.dtd"/>
             <include name="**/*.am"/>
             <include name="**/*.in"/>
