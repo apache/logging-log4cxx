@@ -39,10 +39,8 @@ IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 Hierarchy::Hierarchy(const LoggerPtr& root) : root(root), 
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
-mutex(), configured(false)
+mutex(), configured(false), thresholdInt(Level::ALL_INT), threshold(Level::getAll())
 {
-        // Enable all level levels by default.
-        setThreshold(Level::getAll());
         this->root->setHierarchy(this);
         defaultFactory = new DefaultCategoryFactory();
 }
@@ -103,6 +101,9 @@ void Hierarchy::setThreshold(const LevelPtr& l)
         {
                 thresholdInt = l->toInt();
                 threshold = l;
+				if (thresholdInt != Level::ALL_INT) {
+					setConfigured(true);
+				}
         }
 }
 
