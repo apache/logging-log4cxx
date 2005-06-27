@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#ifndef _LOG4CXX_DAILYROLLINGFILEAPPENDER_H
+#define _LOG4CXX_DAILYROLLINGFILEAPPENDER_H
+
 #include <log4cxx/appender.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/spi/optionhandler.h>
@@ -275,3 +278,4 @@ typedef log4cxx::helpers::ObjectPtrT<DailyRollingFileAppender> DailyRollingFileA
 
 }
 
+#endif

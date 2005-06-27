@@ -212,7 +212,8 @@ Use CVS HEAD or Feb 2005 or later release from
 http://ant-contrib.sourceforge.net.
 </fail>
 
-        <available classname="net.sf.antcontrib.cpptasks.ide.ProjectDef" property="cctask-project-available"/>
+        <available classname="net.sf.antcontrib.cpptasks.ide.ProjectDef"
+            property="cctask-project-available"/>
         <fail unless="cctask-project-available">later version of cpptasks required
 
 Required features not present in cpptasks releases prior to Feb 2005</fail>
@@ -282,13 +283,18 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </condition>
         <property name="lib-suffix" value=""/>
 
-        <available property="apr-available" file="${apr.lib.dir}/${lib.prefix}apr-1${lib-suffix}${lib.extension}"/>
-        <available property="aprutil-available" file="${aprutil.lib.dir}/${lib.prefix}aprutil-1${lib-suffix}${lib.extension}"/>
-        <available property="cppunit-available" file="${cppunit.lib.dir}/${lib.prefix}cppunit${lib-suffix}${lib.extension}"/>
+        <available property="apr-available"
+           file="${apr.lib.dir}/${lib.prefix}apr-1${lib-suffix}${lib.extension}"/>
+        <available property="aprutil-available"
+           file="${aprutil.lib.dir}/${lib.prefix}aprutil-1${lib-suffix}${lib.extension}"/>
+        <available property="cppunit-available"
+           file="${cppunit.lib.dir}/${lib.prefix}cppunit${lib-suffix}${lib.extension}"/>
 
         <available property="apr-src-available" file="${lib.dir}/apr-${apr.version}.tar.gz"/>
-        <available property="aprutil-src-available" file="${lib.dir}/apr-util-${aprutil.version}.tar.gz"/>
-        <available property="cppunit-src-available" file="${lib.dir}/cppunit-${cppunit.version}.tar.gz"/>
+        <available property="aprutil-src-available"
+           file="${lib.dir}/apr-util-${aprutil.version}.tar.gz"/>
+        <available property="cppunit-src-available"
+           file="${lib.dir}/cppunit-${cppunit.version}.tar.gz"/>
 
         <available property="apr-src-expanded" file="${lib.dir}/apr-${apr.version}"/>
         <available property="aprutil-src-expanded" file="${lib.dir}/apr-util-${aprutil.version}"/>
@@ -647,12 +653,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
-        <defineset if="is-utf8">
-            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
-        </defineset>
-        <defineset>
-            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
-        </defineset>
 
         <compilerarg value="${pic-option}" if="pic-option"/>
 
@@ -748,12 +748,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <includepath path="${apr.include.dir}"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
-        <defineset if="is-utf8">
-            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
-        </defineset>
-        <defineset>
-            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
-        </defineset>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         &libsets;
         <project outfile="${project.dir}/shortsocketserver" type="${project.type}" if="project.if"/>
@@ -786,12 +780,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
-        <defineset if="is-utf8">
-            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
-        </defineset>
-        <defineset>
-            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
-        </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
@@ -829,12 +817,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
-        <defineset if="is-utf8">
-            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
-        </defineset>
-        <defineset>
-            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
-        </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
@@ -843,7 +825,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="dl" if="is-unix"/>
         &libsets;
 
-        <project outfile="${project.dir}/log4cxx-defaultinit-test" type="${project.type}" if="project.if"/>
+        <project outfile="${project.dir}/log4cxx-defaultinit-test"
+                 type="${project.type}"
+                 if="project.if"/>
     </cc>
 </target>
 
@@ -872,12 +856,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
-        <defineset if="is-utf8">
-            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
-        </defineset>
-        <defineset>
-            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
-        </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
@@ -916,12 +894,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
         <defineset define="WIN32" if="is-windows"/>
-        <defineset if="is-utf8">
-            <define name="LOG4CXX_LOGCHAR_IS_UTF8" value="1"/>
-        </defineset>
-        <defineset>
-            <define name="LOG4CXX_HAS_WCHAR_T" value="${has.wchar_t}"/>
-        </defineset>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
         <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
@@ -936,7 +908,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <libset libs="cw32mt" if="is-bcc"/>
 
 
-        <project outfile="${projects.dir}/log4cxx-standalone-test" type="${project.type}" if="project.if"/>
+        <project outfile="${projects.dir}/log4cxx-standalone-test"
+                 type="${project.type}"
+                 if="project.if"/>
     </cc>
 </target>
 
