@@ -1,85 +1,86 @@
 /*
- * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ * Copyright 1999,2005 The Apache Software Foundation.
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef _LOG4CXX_FILTER_LOCATIONINFOFILTER_H
+#define _LOG4CXX_FILTER_LOCATIONINFOFILTER_H
 
-package org.apache.log4j.filter;
+#include <log4cxx/spi/filter.h>
 
-import org.apache.log4j.rule.ExpressionRule;
-import org.apache.log4j.rule.Rule;
-import org.apache.log4j.spi.Filter;
-import org.apache.log4j.spi.LoggingEvent;
-import org.apache.log4j.spi.location.LocationInfo;
+namespace log4cxx
+{
+    namespace rule
+    {
+        class ExpressionRule;
+        class Rule;
+        typedef helpers::ObjectPtrT < Rule > RulePtr;
+        typedef helpers::ObjectPtrT < ExpressionRule > ExpressionRulePtr;
+    }
 
-
+    namespace filter
+    {
 /**
- * Location information is usually specified at the appender level - all events associated 
+ * Location information is usually specified at the appender level - all events associated
  * with an appender either create and parse stack traces or they do not.  This is
  * an expensive operation and in some cases not needed for all events associated with
  * an appender.
- * 
+ *
  * This filter creates event-level location information only if the provided expression evaluates to true.
- * 
+ *
  * For information on expression syntax, see org.apache.log4j.rule.ExpressionRule
- * 
+ *
  * @author Scott Deboy sdeboy@apache.org
  */
-public class LocationInfoFilter extends Filter {
-  boolean convertInFixToPostFix = true;
-  String expression;
-  Rule expressionRule;
-  //HACK: Category is the last of the internal layers - pass this in as the class name
-  //in order for parsing to work correctly
-  private String className = "org.apache.log4j.Category";
+        class LOG4CXX_EXPORT LocationInfoFilter:public log4cxx::spi::Filter
+        {
+            bool convertInFixToPostFix;
+            LogString expression;
+                      log4cxx::rule::RulePtr expressionRule;
+            //HACK: Category is the last of the internal layers - pass this in as the class name
+            //in order for parsing to work correctly
+            LogString className;
 
-  public void activateOptions() {
-    expressionRule =
-      ExpressionRule.getRule(expression, !convertInFixToPostFix);
-  }
+          public:
+                      DECLARE_LOG4CXX_OBJECT(LocationInfoFilter)
+                      BEGIN_LOG4CXX_CAST_MAP()
+                      LOG4CXX_CAST_ENTRY(log4cxx::spi::Filter)
+                      END_LOG4CXX_CAST_MAP()
 
-  public void setExpression(String expression) {
-    this.expression = expression;
-  }
+                      LocationInfoFilter();
 
-  public String getExpression() {
-    return expression;
-  }
+            void activateOptions(log4cxx::helpers::Pool &);
 
-  public void setConvertInFixToPostFix(boolean convertInFixToPostFix) {
-    this.convertInFixToPostFix = convertInFixToPostFix;
-  }
+            void setExpression(const LogString & expression);
 
-  public boolean getConvertInFixToPostFix() {
-    return convertInFixToPostFix;
-  }
+            LogString getExpression() const;
+
+            void setConvertInFixToPostFix(bool convertInFixToPostFix);
+
+            bool getConvertInFixToPostFix() const;
 
   /**
-   * If this event does not already contain location information, 
+   * If this event does not already contain location information,
    * evaluate the event against the expression.
-   * 
-   * If the expression evaluates to true, generate a LocationInfo instance 
+   *
+   * If the expression evaluates to true, generate a LocationInfo instance
    * by creating an exception and set this LocationInfo on the event.
-   * 
+   *
    * Returns {@link Filter#NEUTRAL}
    */
-  public int decide(LoggingEvent event) {
-    if (!event.locationInformationExists()) {
-      if (expressionRule.evaluate(event)) {
-         Throwable t = new Exception();
-         event.setLocationInformation(new LocationInfo(t, className));
-      }
+            FilterDecision decide(const spi::LoggingEventPtr & event) const;
+
+        };
     }
-    return Filter.NEUTRAL;
-  }
 }
+#endif
