@@ -741,11 +741,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 projectsOnly="${projectsOnly}">
         <fileset dir="${tests.dir}/src">
            <include name="shortsocketserver.cpp"/>
-           <include name="xml/xlevel.cpp"/>
            <include name="net/socketservertestcase.h"/>
         </fileset>
         <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
