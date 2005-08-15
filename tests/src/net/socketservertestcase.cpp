@@ -48,7 +48,7 @@
 #endif
 
 #if defined(WIN32) || defined(_WIN32)
-        #include <windows.h>
+#include <windows.h>
 #endif
 
 using namespace log4cxx;

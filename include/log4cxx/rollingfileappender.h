@@ -23,8 +23,8 @@
 #ifndef _LOG4CXX_ROLLING_FILE_APPENDER_H
   #define _LOG4CXX_ROLLING_FILE_APPENDER_H
 
-  #include <log4cxx/fileappender.h>
-  #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/fileappender.h>
+#include <log4cxx/helpers/optionconverter.h>
 
 namespace log4cxx
 {

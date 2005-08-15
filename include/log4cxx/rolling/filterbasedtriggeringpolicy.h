@@ -17,8 +17,8 @@
  #if !defined(_LOG4CXX_ROLLING_FILTER_BASED_TRIGGERING_POLICY_H)
  #define _LOG4CXX_ROLLING_FILTER_BASED_TRIGGERING_POLICY_H
 
- #include <log4cxx/rolling/triggeringpolicy.h>
- #include <log4cxx/spi/filter.h>
+#include <log4cxx/rolling/triggeringpolicy.h>
+#include <log4cxx/spi/filter.h>
 
  namespace log4cxx {
 

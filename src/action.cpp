@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
- #include <log4cxx/rolling/action.h>
- #include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/rolling/action.h>
+#include <log4cxx/helpers/synchronized.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;

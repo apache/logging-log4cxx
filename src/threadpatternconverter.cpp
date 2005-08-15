@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
- #include <log4cxx/pattern/threadpatternconverter.h>
- #include <log4cxx/spi/loggingevent.h>
- #include <log4cxx/spi/location/locationinfo.h>
+#include <log4cxx/pattern/threadpatternconverter.h>
+#include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/spi/location/locationinfo.h>
 
  using namespace log4cxx;
  using namespace log4cxx::pattern;

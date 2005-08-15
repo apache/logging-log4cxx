@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- #include <log4cxx/rolling/rollingpolicybase.h>
+#include <log4cxx/rolling/rollingpolicybase.h>
 #include <log4cxx/pattern/formattinginfo.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/loglog.h>

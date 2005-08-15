@@ -21,7 +21,7 @@ using namespace log4cxx::helpers;
 using namespace std;
 
 #if LOG4CXX_HAS_STD_LOCALE
-  #include <locale>
+#include <locale>
 #endif
 
 #if LOG4CXX_HAS_STD_WLOCALE && LOG4CXX_HAS_WCHAR_T

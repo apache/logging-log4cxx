@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- #include <cppunit/TestFixture.h>
- #include <cppunit/extensions/HelperMacros.h>
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
 
- #include "../util/compare.h"
- #include "../insertwide.h"
- #include <apr_time.h>
- #include <log4cxx/logmanager.h>
- #include <log4cxx/xml/domconfigurator.h>
- #include <log4cxx/patternlayout.h>
- #include <log4cxx/rolling/rollingfileappender.h>
- #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
- #include <log4cxx/rolling/filterbasedtriggeringpolicy.h>
- #include <log4cxx/filter/levelrangefilter.h>
- #include <log4cxx/helpers/pool.h>
- #include <log4cxx/logger.h>
- #include <log4cxx/propertyconfigurator.h>
- #include <log4cxx/rollingfileappender.h>
- #include <log4cxx/helpers/stringhelper.h>
-
+#include "../util/compare.h"
+#include "../insertwide.h"
+#include <apr_time.h>
+#include <log4cxx/logmanager.h>
+#include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/patternlayout.h>
+#include <log4cxx/rolling/rollingfileappender.h>
+#include <log4cxx/rolling/fixedwindowrollingpolicy.h>
+#include <log4cxx/rolling/filterbasedtriggeringpolicy.h>
+#include <log4cxx/filter/levelrangefilter.h>
+#include <log4cxx/helpers/pool.h>
+#include <log4cxx/logger.h>
+#include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/rollingfileappender.h>
+#include <log4cxx/helpers/stringhelper.h>
 
  using namespace log4cxx;
  using namespace log4cxx::rolling;

@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/transcoder.h>
 
 #ifdef LOG4CXX_HAVE_SYSLOG
-        #include <syslog.h>
+#include <syslog.h>
 #else
         /* facility codes */
         #define   LOG_KERN (0<<3)   /* kernel messages */

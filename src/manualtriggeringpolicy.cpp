@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
- #include <log4cxx/rolling/manualtriggeringpolicy.h>
- #include <log4cxx/helpers/stringhelper.h>
- #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/rolling/manualtriggeringpolicy.h>
+#include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/optionconverter.h>
 
  using namespace log4cxx;
  using namespace log4cxx::rolling;

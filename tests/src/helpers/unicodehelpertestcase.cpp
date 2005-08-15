@@ -80,8 +80,8 @@ public:
         unsigned int sv = UnicodeHelper::decodeWide(iter, src + 1);
         CPPUNIT_ASSERT_EQUAL((unsigned int) 0x61, sv);
         CPPUNIT_ASSERT(iter == src + 1);
-#endif
     }
+#endif
 
 };
 

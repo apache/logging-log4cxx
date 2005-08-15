@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- #include <log4cxx/rolling/filerenameaction.h>
+#include <log4cxx/rolling/filerenameaction.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;

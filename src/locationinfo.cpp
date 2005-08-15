@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
- #include <log4cxx/spi/location/locationinfo.h>
- #include <sstream>
+#include <log4cxx/spi/location/locationinfo.h>
+#include <sstream>
 
  using namespace ::log4cxx::spi;
    /**

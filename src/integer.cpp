@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
- #include <log4cxx/helpers/integer.h>
+#include <log4cxx/helpers/integer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
