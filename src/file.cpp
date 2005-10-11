@@ -88,7 +88,7 @@ std::string File::convertBackSlashes(const std::string& src) {
   std::string mod(src);
   while(pos != std::string::npos) {
     mod[pos] = '/';
-    pos = src.find('\\');
+    pos = mod.find('\\');
   }
   return mod;
 }

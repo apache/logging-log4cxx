@@ -39,6 +39,7 @@ class FileTestCase : public CppUnit::TestFixture
 #endif
                 CPPUNIT_TEST(copyConstructor);
                 CPPUNIT_TEST(assignment);
+                CPPUNIT_TEST(deleteBackslashedFileName);
         CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -129,6 +130,16 @@ public:
 
           LogString reply(outFile.read(pool));
           CPPUNIT_ASSERT_EQUAL(greeting, reply);
+        }
+        
+        /**
+         *  Tests conversion of backslash containing file names.  
+         *  Would cause infinite loop due to bug LOGCXX-105. 
+         */
+        void deleteBackslashedFileName() {
+          File file("output\\bogus.txt");
+          Pool pool;
+          bool deleted = file.deleteFile(pool);
         }
 };
 
