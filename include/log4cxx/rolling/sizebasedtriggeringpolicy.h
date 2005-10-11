@@ -44,7 +44,7 @@ namespace log4cxx {
           END_LOG4CXX_CAST_MAP()
 
         protected:
-          long maxFileSize;
+          size_t maxFileSize;
 
         public:
             SizeBasedTriggeringPolicy();
