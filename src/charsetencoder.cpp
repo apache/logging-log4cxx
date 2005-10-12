@@ -476,8 +476,10 @@ CharsetEncoder* CharsetEncoder::createDefaultEncoder() {
    return new USASCIICharsetEncoder();
 #elif LOG4CXX_HAS_WCHAR_T
   return new WcstombsCharsetEncoder();
-#else
+#elif APR_HAS_XLATE
   return new APRCharsetEncoder(APR_LOCALE_CHARSET);
+#else
+#error No default encoder available
 #endif
 }
 

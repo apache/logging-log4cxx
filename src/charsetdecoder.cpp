@@ -424,8 +424,10 @@ CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
      return new USASCIICharsetDecoder();
 #elif LOG4CXX_HAS_WCHAR_T
     return new MbstowcsCharsetDecoder();
-#else
+#elif APR_HAS_XLATE
     return new APRCharsetDecoder(APR_LOCALE_CHARSET);
+#else
+#error No default charset decoder available
 #endif
 }
 

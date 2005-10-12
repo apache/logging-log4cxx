@@ -101,9 +101,9 @@ void Hierarchy::setThreshold(const LevelPtr& l)
         {
                 thresholdInt = l->toInt();
                 threshold = l;
-				if (thresholdInt != Level::ALL_INT) {
-					setConfigured(true);
-				}
+            if (thresholdInt != Level::ALL_INT) {
+               setConfigured(true);
+            }
         }
 }
 

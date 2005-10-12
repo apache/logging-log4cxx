@@ -91,7 +91,7 @@ unsigned int UnicodeHelper::decodeUTF8(const char*& src,
 }
 
 
-
+#if LOG4CXX_HAS_WCHAR_T
 #if defined(_WIN32)
 unsigned int UnicodeHelper::decodeWide(const wchar_t*& src, const wchar_t* srcEnd) {
     unsigned int sv = *(src++);
@@ -140,7 +140,7 @@ int UnicodeHelper::lengthUTF8(wchar_t ch) {
 #endif
 
 
-#if LOG4CXX_HAS_WCHAR_T && defined(__STDC_ISO_10646__)
+#if defined(__STDC_ISO_10646__)
 int UnicodeHelper::encodeWide(unsigned int ch, wchar_t* dst) {
    *dst = ch;
    return 1;
@@ -164,7 +164,7 @@ int UnicodeHelper::lengthUTF8(wchar_t ch) {
 }
 
 #endif
-
+#endif
 
 
 int UnicodeHelper::encodeUTF8(unsigned int ch, char* dst) {
