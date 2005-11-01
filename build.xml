@@ -61,11 +61,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 
-<property name="apr.version" value="1.1.0"/>
+<property name="apr.version" value="1.2.2"/>
 <property name="apr.lib.name" value="apr-1"/>
 <property name="apr.lib.type" value="static"/>
 
-<property name="aprutil.version" value="1.1.0"/>
+<property name="aprutil.version" value="1.2.2"/>
 <property name="aprutil.lib.name" value="aprutil-1"/>
 <property name="aprutil.lib.type" value="static"/>
 
