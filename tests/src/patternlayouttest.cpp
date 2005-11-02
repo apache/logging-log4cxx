@@ -283,7 +283,7 @@ public:
                 //
                 //   combo of relative time and thread identifier
                 //     (the \\\\1 preserve a leading space)
-                Filter filter2(".*0x[0-9A-F]*]", "[main]");
+                Filter filter2(".*0x[0-9A-Fa-f]*]", "[main]");
 
                 std::vector<Filter *> filters;
 

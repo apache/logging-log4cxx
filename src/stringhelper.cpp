@@ -279,18 +279,3 @@ void StringHelper::toString(size_t n, Pool& pool, std::wstring& ws) {
   toString((log4cxx_int64_t) n, pool, ws);
 }
 #endif
-
-
-
-LogString StringHelper::formatHex(const void* ptr) {
-    const logchar* hexdigits = LOG4CXX_STR("0123456789ABCDEF");
-    log4cxx_intptr_t iptr = (log4cxx_intptr_t) ptr;
-    int width = sizeof(ptr)*2 + 2;
-    LogString s(width, LOG4CXX_STR('x'));
-    s[0] = LOG4CXX_STR('0');
-    for(int i = width - 1; i >= 2; i--) {
-      s[i] = hexdigits[iptr & 0x0F];
-      iptr = iptr >> 4;
-    }
-    return s;
-}

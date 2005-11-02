@@ -53,8 +53,6 @@ namespace log4cxx
 
             static LogString toString(bool val);
 
-            static LogString formatHex(const void* handle);
-
             static std::string toLowerCase(const std::string& s);
 
             static bool getline(std::string& buf, std::string& line);

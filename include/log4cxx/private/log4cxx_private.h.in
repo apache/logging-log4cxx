@@ -43,10 +43,6 @@ typedef long long log4cxx_int64_t;
 typedef log4cxx_int64_t log4cxx_time_t;
 typedef int log4cxx_status_t;
 
-//
-//   unsigned int same size as void*
-//
-typedef unsigned int log4cxx_intptr_t;
 
 #define LOG4CXX_LOCALE_ENCODING_UTF8 0
 #define LOG4CXX_LOCALE_ENCODING_ISO_8859_1 0

@@ -66,11 +66,5 @@
 #endif
 #endif
 
-#if defined(_WIN64)
-typedef unsigned long long log4cxx_intptr_t;
-#else
-typedef unsigned int log4cxx_intptr_t;
-#endif
-
 
 #endif

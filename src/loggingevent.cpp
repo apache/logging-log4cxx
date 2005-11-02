@@ -26,9 +26,11 @@
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/threadspecificdata.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include <apr_time.h>
 #include <apr_portable.h>
+#include <apr_strings.h>
 #include <log4cxx/helpers/stringhelper.h>
 
 using namespace log4cxx;
@@ -192,7 +194,17 @@ std::set<LogString> LoggingEvent::getPropertyKeySet() const
 
 const LogString LoggingEvent::getCurrentThreadName() {
 #if APR_HAS_THREADS
-   return StringHelper::formatHex((const void*) apr_os_thread_current());
+   apr_os_thread_t threadId = apr_os_thread_current();
+
+   // apr_os_thread_t encoded in HEX takes needs as many characters
+   // as two times the size of the type, plus an additional null byte
+   char result[sizeof(apr_os_thread_t) * 2 + 10];
+   result[0] = '0';
+   result[1] = 'x';
+   apr_snprintf(result+2, (sizeof result) - 2, "%pt", &threadId);
+
+   LOG4CXX_DECODE_CHAR(str, result);
+   return str;
 #else
    return LOG4CXX_STR("0x00000000");
 #endif
