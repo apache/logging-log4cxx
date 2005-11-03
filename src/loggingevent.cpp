@@ -203,7 +203,7 @@ const LogString LoggingEvent::getCurrentThreadName() {
    result[1] = 'x';
    apr_snprintf(result+2, (sizeof result) - 2, "%pt", &threadId);
 
-   LOG4CXX_DECODE_CHAR(str, result);
+   LOG4CXX_DECODE_CHAR(str, (const char*) result);
    return str;
 #else
    return LOG4CXX_STR("0x00000000");
