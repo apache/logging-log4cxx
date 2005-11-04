@@ -89,10 +89,10 @@ int main(int argc, const char * const argv[])
         try
         {
                 Pool pool;
-                LoggerPtr logger = Logger::getLogger(L"SimpleSocketServer");
+                LoggerPtr logger = Logger::getLogger("SimpleSocketServer");
                 log4cxx::logstream logstream(logger, Level::INFO);
 
-                logstream << L"Listening on port " << port;
+                logstream << "Listening on port " << port;
 
 
                 ServerSocket serverSocket(port);
