@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/object.h>
 #include <map>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/log4cxx.h>
 #include <log4cxx/private/log4cxx_private.h>
 
 
@@ -134,7 +135,7 @@ void Class::registerClasses() {
         ConsoleAppender::registerClass();
         FileAppender::registerClass();
 #ifdef LOG4CXX_HAVE_ODBC
-        ODBCAppender::registerClass();
+      log4cxx::db::ODBCAppender::registerClass();
 #endif
 #if defined(WIN32) || defined(_WIN32)
         NTEventLogAppender::registerClass();

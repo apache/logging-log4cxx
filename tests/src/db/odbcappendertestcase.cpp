@@ -45,7 +45,7 @@ class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 public:
 
         AppenderSkeleton* createAppenderSkeleton() const {
-          return new log4cxx::db::ODBCAppender();
+         return new log4cxx::db::ODBCAppender();
         }
 };
 

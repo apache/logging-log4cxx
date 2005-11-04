@@ -16,7 +16,7 @@
 
 #ifndef _LOG4CXX_DB_ODBC_APPENDER_H
 #define _LOG4CXX_DB_ODBC_APPENDER_H
-
+#include <log4cxx/log4cxx.h>
 
 #ifdef LOG4CXX_HAVE_ODBC
 
@@ -25,7 +25,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <list>
 
-#ifdef LOG4CXX_HAVE_MS_ODBC
+#ifdef _WIN32
 #include <windows.h>
 #endif
 
@@ -38,17 +38,12 @@ namespace log4cxx
                 class LOG4CXX_EXPORT SQLException : public helpers::Exception
                 {
                 public:
-                        SQLException(int code) : code(code) {}
-                        SQLException(const SQLException& src) : Exception(src), code(src.code) {
+                   SQLException(const std::string& msg) : Exception(msg) {}
+                        SQLException(const SQLException& src) : Exception(src) {
                         }
-                        const char* what() const throw() {
-                                return "SQLException";
-                        }
-                        virtual ~SQLException() throw() {}
 
                 private:
                         SQLException& operator=(const SQLException&);
-                        int code;
                 };
 
                 class ODBCAppender;
@@ -168,7 +163,7 @@ namespace log4cxx
                         /**
                         * Adds the event to the buffer.  When full the buffer is flushed.
                         */
-                        void append(const spi::LoggingEventPtr& event);
+                  void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool&);
 
                         /**
                         * By default getLogStatement sends the event to the required Layout object.
@@ -179,7 +174,8 @@ namespace log4cxx
                         *
                         */
                 protected:
-                        LogString getLogStatement(const spi::LoggingEventPtr& event) const;
+                        LogString getLogStatement(const spi::LoggingEventPtr& event,
+                     helpers::Pool& p) const;
 
                         /**
                         *
@@ -189,7 +185,7 @@ namespace log4cxx
                         * end.  I use a connection pool outside of ODBCAppender which is
                         * accessed in an override of this method.
                         * */
-                        void execute(const LogString& sql) /*throw(SQLException)*/;
+                        virtual void execute(const LogString& sql) /*throw(SQLException)*/;
 
                         /**
                         * Override this to return the connection to a pool, or to clean up the
@@ -199,6 +195,8 @@ namespace log4cxx
                         * is closed (typically when garbage collected).
                         */
                         virtual void closeConnection(SQLHDBC con);
+
+                  virtual std::string GetErrorMessage( SQLSMALLINT fHandleType, SQLHANDLE hInput, const char* szMsg );
 
                         /**
                         * Override this to link with your connection pooling system.
@@ -222,7 +220,7 @@ namespace log4cxx
                         *
                         * If a statement fails the LoggingEvent stays in the buffer!
                         */
-                        void flushBuffer();
+                        virtual void flushBuffer();
 
                         /**
                         * ODBCAppender requires a layout.
