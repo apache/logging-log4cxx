@@ -27,9 +27,8 @@ Connection to internet
    - or -
 
 The following files placed in the lib directory:
-    apr-1.1.0.tar.gz
-    apr-util-1.1.0.tar.gz
-    apr-iconv-1.0.1.tar.gz
+    apr-1.2.2.tar.gz
+    apr-util-1.2.2.tar.gz
     cppunit-1.10.2.gz
 
     http://apr.apache.org
