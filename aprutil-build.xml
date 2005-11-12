@@ -26,7 +26,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <project name="aprutil" default="check">
 
 <property name="debug" value="true"/>
-<property name="version" value="1.1.0"/>
+<property name="version" value="1.2.2"/>
 <property name="aprutil.dir" location="."/>
 <property name="build.dir" location="${aprutil.dir}/build"/>
 <property name="aprutil.include.dir" location="${aprutil.dir}/include"/>
@@ -38,7 +38,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
 
-<property name="apr.dir" location="${aprutil.dir}/../apr-1.1.0"/>
+<property name="apr.dir" location="${aprutil.dir}/../apr-${version}"/>
 <property name="apr.include.dir" location="${apr.dir}/include"/>
 
 <target name="usage" description="Displays usage notes">
