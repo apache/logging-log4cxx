@@ -67,3 +67,6 @@ clean-local:
 	$(RM) -r latex
 	$(RM) -r html man @PACKAGE@.ps @PACKAGE@.pdf
 
+dist-hook:
+	-rm -f $(distdir)/Doxyfile
+

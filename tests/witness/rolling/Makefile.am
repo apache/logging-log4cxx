@@ -1,1 +1,3 @@
-EXTRA_DIST = *
+EXTRA_DIST = sbr-test* \
+             tbr-test*
+
