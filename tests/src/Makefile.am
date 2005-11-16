@@ -23,7 +23,8 @@ testsuite_SOURCES = \
         consoleappendertestcase.cpp\
         fileappendertestcase.cpp\
         rollingfileappendertestcase.cpp\
-        writerappendertestcase.cpp
+        writerappendertestcase.cpp \
+        ndctestcase.cpp
 
 
 testsuite_LDADD = \
