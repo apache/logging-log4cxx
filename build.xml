@@ -52,8 +52,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="optimize" value="none"/>
 <property name="lib.type" value="shared"/>
 <property name="has.wchar_t" value="1"/>
-<!--  utf-8 will be used if -Dhas.wchar_t=0 or -Dlogchar=utf-8   -->
-<property name="logchar" value="wchar_t"/>
+
 <property name="apache.mirror" value="http://apache.mirrors.pair.com"/>
 <property name="cppunit.mirror" value="http://unc.dl.sourceforge.net/sourceforge"/>
 
@@ -109,6 +108,10 @@ Common command line options:
 -Doptimize=[speed|size|none]
 -Dversion=n.n.n
 -Dlib.type=[shared|static]
+-Dapr.dir=PATH
+-Daprutil.dir=PATH
+-Dhas.wchar_t=[0|1] (default=1)
+-Dlogchar=[utf-8|wchar_t|cfstring] (default=wchar_t)
 
 </echo>
 </target>
@@ -153,6 +156,10 @@ Common command line options:
     <property name="project.type" value="msvc6"/>
     <property name="project.dir" value="msvc"/>
     <property name="compiler" value="msvc"/>
+
+    <!-- Default value for logchar on windows -->
+    <property name="logchar" value="wchar_t"/>
+
     <condition property="is-bcc" value="true">
         <or>
            <equals arg1="${compiler}" arg2="bcc"/>
@@ -168,6 +175,9 @@ Common command line options:
     <property name="project.type" value="xcode"/>
     <property name="project.dir" value="xcode"/>
     <property name="has-iconv" value="true"/>
+
+    <!-- Default value for logchar on mac -->
+    <property name="logchar" value="wchar_t"/>
 
     <condition property="mac_osx_wchar_not_supported_yet" value="true">
         <equals arg1="${has.wchar_t}" arg2="1"/>
@@ -193,6 +203,10 @@ specify -Dhas.wchar_t=0 on Ant command line for UTF-8 build as work-around
     <property name="project.dir" value="cbx"/>
     <property name="compiler" value="g++"/>
     <property name="lib-suffix" value=""/>
+
+    <!-- Default value for logchar on Unix -->
+    <property name="logchar" value="utf-8"/>
+
     <condition property="has-expat" value="true">
          <not><isset property="is-mac"/></not>
     </condition>
@@ -239,11 +253,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 <istrue value="${debug}"/>
         </condition>
 
-        <condition property="is-utf8" value="true">
-                <or>
-                   <not><equals arg1="${has.wchar_t}" arg2="1"/></not>
-                   <equals arg1="${logchar}" arg2="utf-8"/>
-                </or>
+        <condition property="logchar_type" value="utf-8">
+                <not><equals arg1="${has.wchar_t}" arg2="1"/></not>
+        </condition>
+
+        <condition property="logchar_type" value="${logchar}">
+                <equals arg1="${has.wchar_t}" arg2="1"/>
         </condition>
 
         <condition property="debug.release" value="debug">
@@ -370,23 +385,42 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-
-<target name="configure" depends="unix-configure,
+<target name="configure" depends="init,
+                                  unix-configure,
                                   win-configure">
+    <echo message="Configuring with has.wchar_t=${has.wchar_t}"/>
+    <echo message="Configuring with logchar_type=${logchar_type}" />
+
     <condition property="logchar_is_utf8" value="1">
-        <isset property="is-utf8"/>
+	    <equals arg1="${logchar_type}" arg2="utf-8"/>
     </condition>
     <property name="logchar_is_utf8" value="0"/>
 
+    <condition property="logchar_is_cfstring" value="1">
+	    <equals arg1="${logchar_type}" arg2="cfstring"/>
+    </condition>
+    <property name="logchar_is_cfstring" value="0"/>
+
+    <condition property="logchar_is_wchar" value="1">
+	    <equals arg1="${logchar_type}" arg2="wchar_t"/>
+    </condition>
+    <property name="logchar_is_wchar" value="0"/>
+
     <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
-       match="#define LOG4CXX_LOGCHAR_IS_UTF8.*"
-       replace="#define LOG4CXX_LOGCHAR_IS_UTF8 ${logchar_is_utf8}"/>
+       match="@LOGCHAR_IS_CFSTRING@"
+       replace="${logchar_is_cfstring}"/>
+
+    <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
+       match="@LOGCHAR_IS_UTF8@"
+       replace="${logchar_is_utf8}"/>
+
+    <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
+       match="@LOGCHAR_IS_WCHAR@"
+       replace="${logchar_is_wchar}"/>
 
     <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
        match="#define LOG4CXX_HAS_WCHAR_T.*"
        replace="#define LOG4CXX_HAS_WCHAR_T ${has.wchar_t}"/>
-
-
 </target>
 
 <target name="get-apr-module">

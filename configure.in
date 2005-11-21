@@ -271,14 +271,6 @@ esac
 AC_SUBST(LIBS_XML)
 AC_SUBST(CPPFLAGS_XML)
 
-#for UNICODE
-AC_MSG_CHECKING(for UTF-16 Unicode support)
-AC_ARG_ENABLE(unicode,
-        AC_HELP_STRING(--enable-unicode, [UTF-16 Unicode support (default=no)]),
-        AC_DEFINE(UNICODE, 1, UTF-16 Unicode support.)
-        AC_MSG_RESULT(yes),
-        AC_MSG_RESULT(no))
-
 #for ODBCAppender
 AC_MSG_CHECKING(for ODBC support)
 AC_ARG_WITH(ODBC,
@@ -368,6 +360,54 @@ case "$host" in
 esac
 
 CPPFLAGS="-DLOG4CXX $CPPFLAGS"
+
+#for wchar_t
+AC_MSG_CHECKING([for wchar_t])
+AC_COMPILE_IFELSE(AC_LANG_SOURCE(wchar_t* w;), [have_wchar_t=yes], [have_wchar_t=no])
+AC_MSG_RESULT($have_wchar_t)
+
+if test "$have_wchar_t" = "yes"
+then
+    AC_SUBST(HAS_WCHAR_T, 1)
+else
+    AC_SUBST(HAS_WCHAR_T, 0)
+fi
+
+#determine logchar type
+AC_MSG_CHECKING([logchar type])
+AC_ARG_WITH(logchar,
+        AC_HELP_STRING(--with-logchar=TYPE, [type for logchar.
+                Accepted TYPE variants: utf-8, wchar_t, cfstring (default=utf-8)]),
+        [ac_with_logchar=$withval],
+        [ac_with_logchar=utf-8])
+
+case "$ac_with_logchar" in
+    utf-8)
+        AC_MSG_RESULT(utf-8)
+        AC_SUBST(LOGCHAR_IS_UTF8, 1)
+        AC_SUBST(LOGCHAR_IS_WCHAR, 0)
+        AC_SUBST(LOGCHAR_IS_CFSTRING, 0)
+        ;;
+
+    wchar_t)
+        AC_MSG_RESULT(wchar_t)
+        AC_SUBST(LOGCHAR_IS_UTF8, 0)
+        AC_SUBST(LOGCHAR_IS_WCHAR, 1)
+        AC_SUBST(LOGCHAR_IS_CFSTRING, 0)
+        ;;
+
+    cfstring)
+        AC_MSG_RESULT(cfstring)
+        AC_SUBST(LOGCHAR_IS_UTF8, 0)
+        AC_SUBST(LOGCHAR_IS_WCHAR, 0)
+        AC_SUBST(LOGCHAR_IS_CFSTRING, 1)
+        ;;
+
+    *)
+        AC_MSG_RESULT(???)
+        AC_MSG_ERROR(Invalid logchar type: $ac_with_logchar)
+        ;;
+esac
 
 # Create files
 # ----------------------------------------------------------------------------
