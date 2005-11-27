@@ -101,40 +101,39 @@ namespace log4cxx
         <tr> <td align=center><b>d</b></td> <td>Used to output the date of
         the logging event. The date conversion specifier may be
         followed by a <em>date format specifier</em> enclosed between
-        braces. For example, <b>\%d{\%H:\%M:\%S}</b> or
-        <b>\%d{\%d&nbsp;\%b&nbsp;\%Y&nbsp;\%H:\%M:\%S}</b>.  If no
+        braces. For example, <b>\%d{HH:mm:ss,SSS}</b> or
+        <b>\%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>.  If no
         date format specifier is given then {@link helpers::ISO8601DateFormat
         ISO8601 format} is assumed.
 
-        <p>The Following format options are possible:
-        - \%a -- Abbreviated weekday name
-        - \%A -- Full weekday name
-        - \%b -- Abbreviated month name
-        - \%B -- Full month name
-        - \%c -- Standard date and time string
-        - \%d -- Day of month as a decimal(1-31)
-        - \%H -- Hour(0-23)
-        - \%I -- Hour(1-12)
-        - \%j -- Day of year as a decimal(1-366)
-        - \%m -- Month as decimal(1-12)
-        - \%M -- Minute as decimal(00-59)
-        - \%p -- Locale's equivalent of AM or PM
-        - \%Q -- Millisecond as decimal (000-999)
-        - \%S -- Second as decimal(00-59)
-        - \%U -- Week of year, Sunday being first day(0-53)
-        - \%w -- Weekday as a decimal(0-6, Sunday being 0)
-        - \%W -- Week of year, Monday being first day(0-53)
-        - \%x -- Standard date string
-        - \%X -- Standard time string
-        - \%y -- Year in decimal without century(0-99)
-        - \%Y -- Year including century as decimal
-        - \%Z -- Time zone name
-        - \%\% -- The percent sign
+        <p>The following format options are possible:
+        - G -- Era designator (AD)
+        - y -- Year (e.g. 2005 or 05)
+        - M -- Month in year (e.g. July or Jul or 07)
+        - w -- Week in year (e.g. 29)
+        - W -- Week in month (e.g. 4)
+        - D -- Day in year (e.g. 199)
+        - d -- Day in month (e.g. 18)
+        - F -- Day of week in month (e.g. 2)
+        - E -- Day in week (e.g. Tuesday or Tue)
+        - a -- Am/pm marker (e.g. PM)
+        - H -- Hour in day (0-23)
+        - k -- Hour in day (1-24)
+        - K -- Hour in am/pm (0-11)
+        - h -- Hour in am/pm (1-12)
+        - m -- Minute in hour (0-59)
+        - s -- Second in minute (0-59)
+        - S -- Millisecond (0-999)
+        - z -- Time zone (e.g. "Pacific Standard Time" or "PST" or "GMT-08:00")
+        - Z -- RFC 822 Time zone (e.g. "-0800")
 
-        <p>Lookup the documentation for the <code>strftime()</code> function
-        found in the <code>&lt;ctime&gt;</code> header for more information.
+        <p>Note that each format option can be repeated one or more times to get 
+        different renderings of the value. For example, "M" results in values 
+        "1" to "12", while "MM" results in values "00" to "12", "MMM" 
+        results in the abbreviated month name and "MMMM" results in the full 
+        month name.
 
-        <p>You can alos use the log4cxx predefined date
+        <p>You can also use the log4cxx predefined date
         formatters. These can be specified using one of the strings
         "ABSOLUTE", "DATE" and "ISO8601" for specifying {@link
         helpers::AbsoluteTimeDateFormat
