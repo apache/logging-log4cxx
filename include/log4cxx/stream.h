@@ -20,7 +20,6 @@
 #include <log4cxx/logger.h>
 #include <sstream>
 #include <log4cxx/spi/location/locationinfo.h>
-#include <log4cxx/helpers/transcoder.h>
 
 namespace log4cxx
 {
@@ -147,58 +146,30 @@ typedef char logstream_char;
 
 }  // namespace log4cxx
 
-#if LOG4CXX_HAS_WCHAR_T
-log4cxx::logstream& operator<<(
+
+LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
   ::log4cxx::logstream& lhs,
-  const char* rhs) {
-  LOG4CXX_DECODE_CHAR(tmp, rhs);
-  LOG4CXX_ENCODE_WCHAR(msg, tmp);
-  lhs.getStream() << msg;
-  return lhs;
-}
-#else
-log4cxx::logstream& operator<<(
-  ::log4cxx::logstream& lhs,
-  const char* rhs) {
-  LOG4CXX_DECODE_CHAR(tmp, rhs);
-  LOG4CXX_ENCODE_CHAR(msg, tmp);
-  lhs.getStream() << msg;
-  return lhs;
-}
-#endif
+  const char* rhs);
 
 
-::log4cxx::logstream& operator<<(
+LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
-   const ::log4cxx::spi::LocationInfo& rhs) {
-   lhs.setLocation(rhs);
-   return lhs;
-}
+   const ::log4cxx::spi::LocationInfo& rhs);
 
 
-::log4cxx::logstream& operator<<(
+LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
-   const ::log4cxx::spi::LocationFlush& rhs) {
-   lhs.flush(rhs);
-   return lhs;
-}
+   const ::log4cxx::spi::LocationFlush& rhs);
 
-::log4cxx::logstream& operator<<(
+
+LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
-   const ::log4cxx::LevelPtr& rhs) {
-   lhs.setLevel(rhs);
-   return lhs;
-}
+   const ::log4cxx::LevelPtr& rhs);
 
 
-::log4cxx::logstream& operator<<(
+LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
-   ::std::ios_base& (*manip)(::std::ios_base&)) {
-     (*manip)(lhs);
-   return lhs;
-}
-
-
+   ::std::ios_base& (*manip)(::std::ios_base&));
 
 
 //
@@ -213,6 +184,7 @@ template<class ArbitraryType>
    }
    return lhs;
 }
+
 
 #if !defined(LOG4CXX_ENDMSG)
 #define LOG4CXX_ENDMSG LOG4CXX_LOCATION_FLUSH

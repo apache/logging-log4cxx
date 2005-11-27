@@ -68,6 +68,7 @@ liblog4cxx_la_SOURCES = \
         loggingevent.cpp \
         loglog.cpp \
         logmanager.cpp \
+        logstream.cpp \
         manualtriggeringpolicy.cpp \
         messagepatternconverter.cpp \
         methodlocationpatternconverter.cpp \
