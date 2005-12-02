@@ -86,6 +86,7 @@ liblog4cxx_la_SOURCES = \
         odbcappender.cpp \
         onlyonceerrorhandler.cpp \
         optionconverter.cpp \
+        outputdebugstringappender.cpp \
         outputstream.cpp \
         outputstreamwriter.cpp \
         patternconverter.cpp \
