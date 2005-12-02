@@ -122,12 +122,6 @@ else
                 enable_tests=no)
 fi
 
-AC_HAVE_LIBRARY([boost_regex],,
-        enable_tests=no)
-
-AC_CHECK_HEADERS([boost/regex.hpp],,
-        enable_tests=no)
-
 AM_CONDITIONAL(TESTS, test x$enable_tests = xyes)
 
 
