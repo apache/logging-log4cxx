@@ -3,6 +3,15 @@ EXTRA_DIST = log4j.dtd L7D_en_US.properties L7D_fr_CH.properties L7D_fr.properti
 
 if TESTS
 
+# if we are building in a separate build tree, then copy all necessary files
+all-local:
+	@if test "$(top_srcdir)" != "$(top_builddir)"; then \
+	  echo "Copying test suite data files ..." ; \
+	  list='$(EXTRA_DIST)'; for file in $$list; do \
+	    find $(srcdir) -name "$$file" -exec cp {} . ';' ; \
+	  done \
+	fi
+
 prepare:
 	@if test ! -d "output"; then \
 		mkdir output; \
@@ -15,7 +24,13 @@ build: check-recursive prepare
 cleanOutputDir:
 	@rm -f output/*
 	
-check: regression longUnit
+check: prepare run-unittest
+
+run-unittest: cleanOutputDir
+	@export TOTO=wonderful; \
+	export key1=value1; \
+	export key2=value2; \
+	src/testsuite +TestCase1
 
 regression: Minimum Logger DOM CustomLevel \
 	CustomLogger PatternLayout \

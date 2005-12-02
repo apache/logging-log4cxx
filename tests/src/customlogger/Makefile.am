@@ -5,7 +5,7 @@ if TESTS
 
 noinst_LIBRARIES = libcustomlogger.a
 
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
 
 libcustomlogger_a_SOURCES = \
 	xlogger.cpp\

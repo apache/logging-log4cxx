@@ -4,7 +4,8 @@ if TESTS
 
 noinst_LIBRARIES = libvaria.a
 
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
+
 
 libvaria_a_SOURCES = \
 	errorhandlertestcase.cpp \

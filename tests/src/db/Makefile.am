@@ -3,7 +3,8 @@ EXTRA_DIST = $(top_srcdir)/tests/src/db/*.cpp
 if TESTS
 
 noinst_LIBRARIES = libdb.a
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
+
 
 libdb_a_SOURCES = \
 	odbcappendertestcase.cpp

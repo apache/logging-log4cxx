@@ -5,11 +5,13 @@ noinst_HEADERS= $(top_srcdir)/tests/src/*.h
 
 if TESTS
 
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
+
 noinst_PROGRAMS = testsuite shortsocketserver
 
 testsuite_SOURCES = \
         asyncappendertestcase.cpp\
+        encodingtest.cpp\
         filetestcase.cpp \
         hierarchythresholdtestcase.cpp\
         l7dtestcase.cpp\
@@ -23,6 +25,7 @@ testsuite_SOURCES = \
         consoleappendertestcase.cpp\
         fileappendertestcase.cpp\
         rollingfileappendertestcase.cpp\
+        streamtestcase.cpp\
         writerappendertestcase.cpp \
         ndctestcase.cpp
 
@@ -41,7 +44,7 @@ testsuite_LDFLAGS = \
         -Wl,--whole-archive,xml/libxml.a,--no-whole-archive\
         -Wl,--whole-archive,db/libdb.a,--no-whole-archive\
         -Wl,--whole-archive,nt/libnt.a,--no-whole-archive\
-        @LIBS_CPPUNIT@ -lboost_regex
+        @LIBS_CPPUNIT@
 
 AM_CPPFLAGS = @CPPFLAGS_CPPUNIT@
 
@@ -67,7 +70,7 @@ shortsocketserver_LDADD = \
 shortsocketserver_LDFLAGS = \
         -Wl,--whole-archive,util/libutil.a,--no-whole-archive\
         -Wl,--whole-archive,xml/libxml.a,--no-whole-archive\
-        @LIBS_CPPUNIT@ -lboost_regex
+        @LIBS_CPPUNIT@
 
 shortsocketserver_DEPENDENCIES = \
         util/libutil.a\

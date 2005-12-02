@@ -5,7 +5,7 @@ if TESTS
 
 noinst_LIBRARIES = libpattern.a
 
-INCLUDES = -I$(top_srcdir)/include
+INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
 
 libpattern_a_SOURCES = \
 	num343patternconverter.cpp \
