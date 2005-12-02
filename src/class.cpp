@@ -34,7 +34,7 @@
 #include <log4cxx/nt/outputdebugstringappender.h>
 #endif
 #include <log4cxx/rolling/rollingfileappender.h>
-#ifdef LOG4CXX_HAVE_SMTP
+#if LOG4CXX_HAVE_SMTP
 #include <log4cxx/net/smtpappender.h>
 #endif
 #include <log4cxx/net/socketappender.h>
@@ -142,7 +142,7 @@ void Class::registerClasses() {
         OutputDebugStringAppender::registerClass();
 #endif
         RollingFileAppender::registerClass();
-#ifdef LOG4CXX_HAVE_SMTP
+#if LOG4CXX_HAVE_SMTP
 //  TODO:
 //        SMTPAppender::registerClass();
 #endif
