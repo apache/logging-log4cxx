@@ -357,7 +357,9 @@ CPPFLAGS="-DLOG4CXX $CPPFLAGS"
 
 #for wchar_t
 AC_MSG_CHECKING([for wchar_t])
-AC_COMPILE_IFELSE(AC_LANG_SOURCE(wchar_t* w;), [have_wchar_t=yes], [have_wchar_t=no])
+AC_COMPILE_IFELSE(AC_LANG_SOURCE([[
+           #include <string>
+           std::wstring w;]]), [have_wchar_t=yes], [have_wchar_t=no])
 AC_MSG_RESULT($have_wchar_t)
 
 if test "$have_wchar_t" = "yes"
