@@ -29,7 +29,7 @@
    * @param maxLength maximum length.
    */
 FormattingInfo::FormattingInfo(
-    bool leftAlign, int minLength, int maxLength) :
+    const bool leftAlign, const int minLength, const int maxLength) :
     leftAlign(leftAlign),
     minLength(minLength),
     maxLength(maxLength) {
@@ -50,7 +50,7 @@ FormattingInfoPtr FormattingInfo::getDefault() {
    * @param fieldStart start of field in buffer.
    * @param buffer buffer to be modified.
    */
-void FormattingInfo::format(int fieldStart, LogString& buffer) const {
+void FormattingInfo::format(const int fieldStart, LogString& buffer) const {
     int rawLength = buffer.length() - fieldStart;
 
     if (rawLength > maxLength) {
