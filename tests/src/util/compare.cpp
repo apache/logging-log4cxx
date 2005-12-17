@@ -137,7 +137,9 @@ void Compare::emit(const std::string& s1) {
   std::cout << s1;
 }
 
+#if LOG4CXX_HAS_WCHAR_T
 void Compare::emit(const std::wstring& s1) {
   std::wcout << s1;
 }
+#endif
 

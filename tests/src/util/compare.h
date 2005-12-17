@@ -37,7 +37,11 @@ namespace log4cxx
                 static void outputFile(const File& file,
                       const LogString& contents,
                       log4cxx::helpers::Pool& pool);
+
                 static void emit(const std::string &line);
+
+#if LOG4CXX_HAS_WCHAR_T
                 static void emit(const std::wstring &line);
+#endif
         };
 }
