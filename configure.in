@@ -438,17 +438,6 @@ tests/input/ndc/Makefile
 tests/input/rolling/Makefile
 tests/input/xml/Makefile
 tests/src/Makefile
-tests/src/customlogger/Makefile
-tests/src/db/Makefile
-tests/src/defaultinit/Makefile
-tests/src/helpers/Makefile
-tests/src/net/Makefile
-tests/src/nt/Makefile
-tests/src/pattern/Makefile
-tests/src/rolling/Makefile
-tests/src/util/Makefile
-tests/src/xml/Makefile
-tests/src/varia/Makefile
 tests/witness/Makefile
 tests/witness/encoding/Makefile
 tests/witness/ndc/Makefile
