@@ -47,7 +47,14 @@ NDC::DiagnosticContext& NDC::DiagnosticContext::operator=(
         return *this;
 }
 
-NDC::NDC(const LogString& message)
+#if LOG4CXX_HAS_WCHAR_T
+NDC::NDC(const std::wstring& message)
+{
+        push(message);
+}
+#endif
+
+NDC::NDC(const std::string& message)
 {
         push(message);
 }

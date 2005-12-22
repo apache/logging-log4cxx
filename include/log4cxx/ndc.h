@@ -112,7 +112,28 @@ namespace log4cxx
         public:
                 typedef std::stack<DiagnosticContext> Stack;
 
-                NDC(const LogString& message);
+                /**
+                 Creates a nested diagnostic context.
+                 Since java performs no automatic cleanup of objects when a
+                 scope is left, in log4j push() and pop() must be used
+                 to manage the NDC. For convenience, log4cxx provides 
+                 an NDC constructor and destructor which simply call the push() and
+                 pop() methods, allowing for automatic cleanup when the current
+                 scope ends.
+
+                 @param message The new diagnostic context information.
+                 @see The #push method.
+                 */
+#if LOG4CXX_HAS_WCHAR_T
+                NDC(const std::wstring& message);
+#endif
+                NDC(const std::string& message);
+
+                /**
+                Removes the topmost element from the NDC stack.
+
+                @see The #pop method.
+                */
                 ~NDC();
 
                 /**
