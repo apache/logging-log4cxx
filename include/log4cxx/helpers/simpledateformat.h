@@ -27,21 +27,21 @@ namespace log4cxx
 {
         namespace helpers
         {
+          class PatternToken;
 
           /**
-          Concrete class for formatting and parsing dates in a
-          locale-sensitive manner.
-
-          */
+           * Concrete class for formatting and parsing dates in a
+           * locale-sensitive manner.
+           */
           class LOG4CXX_EXPORT SimpleDateFormat : public DateFormat
           {
           public:
                   /**
-                  Constructs a DateFormat using the given pattern and the default
-                  time zone.
-
-                  @param pattern the pattern describing the date and time format
-                  */
+                   * Constructs a DateFormat using the given pattern and the default
+                   * time zone.
+                   *
+                   * @param pattern the pattern describing the date and time format
+                   */
                   SimpleDateFormat(const LogString& pattern);
                   SimpleDateFormat(const LogString& pattern, const std::locale* locale);
                   ~SimpleDateFormat();
@@ -51,67 +51,22 @@ namespace log4cxx
                                       log4cxx::helpers::Pool& p) const;
 
                   /**
-                  *    Set time zone.
-                  * @param zone new time zone.
-                  */
+                   * Set time zone.
+                   * @param zone new time zone.
+                   */
                   void setTimeZone(const TimeZonePtr& zone);
-
-
-                  /**
-                  * Abstract inner class representing one format token
-                  * (one or more instances of a character).
-                  */
-                  class PatternToken {
-                  public:
-                       /**
-                        *   Constructor.
-                        */
-                       PatternToken();
-                       /**
-                       * Destructor.
-                       */
-                       virtual ~PatternToken();
-
-                       /**
-                       * Sets the time zone.
-                       * @param zone new time zone.
-                       */
-                       virtual void setTimeZone(const TimeZonePtr& zone);
-
-                      /**
-                      * Appends the formatted content to the string.
-                      * @param s string to which format contribution is appended.
-                      * @param date exploded date/time.
-                      * @param p memory pool.
-                      */
-                       virtual void format(LogString& s,
-                                           const apr_time_exp_t& date,
-                                           log4cxx::helpers::Pool& p) const = 0;
-
-
-
-                  private:
-                      /**
-                      *    Private copy constructor.
-                      */
-                       PatternToken(const PatternToken&);
-                       /**
-                       * Private assignment operator.
-                       */
-                       PatternToken& operator=(const PatternToken&);
-                  };
-
-
 
           private:
                   /**
-                  *    Time zone.
-                  */
+                   * Time zone.
+                   */
                   TimeZonePtr timeZone;
+
                   /**
-                  * List of tokens.
-                  */
+                   * List of tokens.
+                   */
                   typedef std::vector<PatternToken*> PatternTokenList;
+
                   PatternTokenList pattern;
           };
 

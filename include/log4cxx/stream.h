@@ -151,6 +151,10 @@ LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
   ::log4cxx::logstream& lhs,
   const char* rhs);
 
+LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
+   ::log4cxx::logstream& lhs,
+   const ::log4cxx::LogString& rhs);
+
 
 LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,

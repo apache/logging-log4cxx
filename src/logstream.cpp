@@ -37,6 +37,26 @@ log4cxx::logstream& operator<<(
 }
 #endif
 
+#if LOG4CXX_HAS_WCHAR_T
+log4cxx::logstream& operator<<(
+  ::log4cxx::logstream& lhs,
+  const ::log4cxx::LogString& rhs) {
+  LOG4CXX_DECODE_CHAR(tmp, rhs);
+  LOG4CXX_ENCODE_WCHAR(msg, tmp);
+  lhs.getStream() << msg;
+  return lhs;
+}
+#else
+log4cxx::logstream& operator<<(
+  ::log4cxx::logstream& lhs,
+  const ::log4cxx::LogString& rhs) {
+  LOG4CXX_DECODE_CHAR(tmp, rhs);
+  LOG4CXX_ENCODE_CHAR(msg, tmp);
+  lhs.getStream() << msg;
+  return lhs;
+}
+#endif
+
 ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
    const ::log4cxx::spi::LocationInfo& rhs) {

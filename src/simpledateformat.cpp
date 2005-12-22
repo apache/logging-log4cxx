@@ -24,29 +24,20 @@ using namespace std;
 #include <locale>
 #endif
 
+
+/*
+ * implementation works on localechar sequences to avoid too many calls
+ * to Transformer::decode() when the date is formatted.
+ */
 #if LOG4CXX_HAS_STD_WLOCALE && LOG4CXX_HAS_WCHAR_T
-typedef wchar_t localechar;
-    #define LOG4CXX_LOCALE_STR(str) L ## str
-  #else
-typedef char localechar;
-    #define LOG4CXX_LOCALE_STR(str) str
+  typedef wchar_t localechar;
+  #define LOG4CXX_LOCALE_STR(str) L ## str
+#else
+  typedef char localechar;
+  #define LOG4CXX_LOCALE_STR(str) str
 #endif
 
-
-
-SimpleDateFormat::PatternToken::PatternToken()
-{
-}
-
-SimpleDateFormat::PatternToken::~PatternToken()
-{
-}
-
-void SimpleDateFormat::PatternToken::setTimeZone( const TimeZonePtr & zone )
-{
-}
-
-
+typedef std::basic_string < localechar > LocaleString;
 
 
 namespace log4cxx
@@ -56,25 +47,34 @@ namespace log4cxx
     namespace SimpleDateFormatImpl
     {
 
-
-
-
 #if LOG4CXX_HAS_STD_LOCALE
-      void renderFacet( const std::locale & locale, std::basic_ostream < localechar > & buffer, const tm * time,
-           const localechar spec )
+     /**
+      * Renders a time structure according to a specific format.
+      *
+      * @param locale The locale to use for the formatting.
+      * @param buffer The buffer which retrieves the result.
+      * @param time The time structure to render.
+      * @param spec The format for rendering the structure.
+      */
+     void renderFacet( const std::locale & locale, std::basic_ostream < localechar > & buffer, 
+                       const tm * time, const localechar spec )
            {
-
        #if defined(_USEFAC)
              _USEFAC( locale, std::time_put < localechar > ).put( buffer, buffer, time, spec );
        #else
              std::use_facet < std::time_put < localechar > > ( locale ).put( buffer, buffer, buffer.fill(), time, spec );
        #endif
-
       }
 #endif
 
-
-      void renderFacet( LogString & result, apr_time_exp_t * tm, const char * format )
+      /**
+       * Renders an APR time structure according to a specific format.
+       *
+       * @param result The LogString which retrieves the result.
+       * @param tm The APR time structure to render.
+       * @param format The format for rendering the structure.
+       */
+      void renderFacet( LocaleString & res, apr_time_exp_t * tm, const char * format )
       {
         enum
         {
@@ -89,25 +89,78 @@ namespace log4cxx
           buf[0] = '?';
           retsize = 1;
         }
+        LogString result;
         Transcoder::decode( buf, retsize, result );
+        Transcoder::encode( result, res );
       }
 
     }
+
+    /**
+     * Abstract inner class representing one format token
+     * (one or more instances of a character).
+     */
+    class PatternToken {
+    public:
+          PatternToken();
+
+          virtual ~PatternToken();
+
+          /**
+           * Sets the time zone.
+           * @param zone new time zone.
+           */
+          virtual void setTimeZone(const TimeZonePtr& zone);
+
+          /**
+           * Appends the formatted content to the string.
+           * @param s string to which format contribution is appended.
+           * @param date exploded date/time.
+           * @param p memory pool.
+           */
+          virtual void format(LocaleString& s,
+                              const apr_time_exp_t& date,
+                              log4cxx::helpers::Pool& p) const = 0;
+
+    private:
+          /**
+           * Private copy constructor.
+           */
+          PatternToken(const PatternToken&);
+
+          /**
+           * Private assignment operator.
+           */
+          PatternToken& operator=(const PatternToken&);
+    };
+
   }
 }
 
 using namespace log4cxx::helpers::SimpleDateFormatImpl;
+using namespace log4cxx::helpers;
+
+PatternToken::PatternToken()
+{
+}
+
+PatternToken::~PatternToken()
+{
+}
+
+void PatternToken::setTimeZone( const TimeZonePtr & zone )
+{
+}
 
 
-
-class LiteralToken : public SimpleDateFormat::PatternToken
+class LiteralToken : public PatternToken
 {
 public:
   LiteralToken( localechar ch, int count ) : ch( ch ), count( count )
   {
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     s.append( count, ch );
   }
@@ -119,14 +172,14 @@ private:
 
 
 
-class EraToken : public SimpleDateFormat::PatternToken
+class EraToken : public PatternToken
 {
 public:
   EraToken( int count, const std::locale * locale )
   {
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     s.append( LOG4CXX_LOCALE_STR( "AD" ) );
   }
@@ -134,7 +187,7 @@ public:
 
 
 
-class NumericToken : public SimpleDateFormat::PatternToken
+class NumericToken : public PatternToken
 {
 public:
   NumericToken( size_t width ) : width( width )
@@ -143,7 +196,7 @@ public:
 
   virtual int getField( const apr_time_exp_t & tm ) const = 0;
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     size_t initialLength = s.length();
     StringHelper::toString( getField( tm ), p, s );
@@ -191,7 +244,7 @@ public:
 
 
 
-class AbbreviatedMonthNameToken : public SimpleDateFormat::PatternToken
+class AbbreviatedMonthNameToken : public PatternToken
 {
 public:
   AbbreviatedMonthNameToken( int width, const std::locale * locale ) : names( 12 )
@@ -207,7 +260,7 @@ public:
       {
         time.tm_mon = imon;
         renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'b' ) );
-        std::basic_string < localechar > monthnames( buffer.str() );
+        LocaleString monthnames( buffer.str() );
         names[imon] = monthnames.substr( start );
         start = monthnames.length();
       }
@@ -223,19 +276,19 @@ public:
     }
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     s.append( names[tm.tm_mon] );
   }
 
 private:
-  std::vector < std::basic_string < localechar > > names;
+  std::vector < LocaleString > names;
 
 };
 
 
 
-class FullMonthNameToken : public SimpleDateFormat::PatternToken
+class FullMonthNameToken : public PatternToken
 {
 public:
   FullMonthNameToken( int width, const std::locale * locale ) : names( 12 )
@@ -251,7 +304,7 @@ public:
       {
         time.tm_mon = imon;
         renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'B' ) );
-        std::basic_string < localechar > monthnames( buffer.str() );
+        LocaleString monthnames( buffer.str() );
         names[imon] = monthnames.substr( start );
         start = monthnames.length();
       }
@@ -267,14 +320,13 @@ public:
     }
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     s.append( names[tm.tm_mon] );
   }
 
 private:
-  std::vector < std::basic_string < localechar > > names;
-
+  std::vector < LocaleString > names;
 };
 
 
@@ -354,7 +406,7 @@ public:
 
 
 
-class AbbreviatedDayNameToken : public SimpleDateFormat::PatternToken
+class AbbreviatedDayNameToken : public PatternToken
 {
 public:
   AbbreviatedDayNameToken( int width, const std::locale * locale ) : names( 7 )
@@ -370,7 +422,7 @@ public:
       {
         time.tm_wday = iday;
         renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'a' ) );
-        std::basic_string < localechar > daynames( buffer.str() );
+        LocaleString daynames( buffer.str() );
         names[iday] = daynames.substr( start );
         start = daynames.length();
       }
@@ -386,19 +438,19 @@ public:
     }
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     s.append( names[tm.tm_wday] );
   }
 
 private:
-  std::vector < std::basic_string < localechar > > names;
+  std::vector < LocaleString > names;
 
 };
 
 
 
-class FullDayNameToken : public SimpleDateFormat::PatternToken
+class FullDayNameToken : public PatternToken
 {
 public:
   FullDayNameToken( int width, const std::locale * locale ) : names( 7 )
@@ -414,7 +466,7 @@ public:
       {
         time.tm_wday = iday;
         renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'A' ) );
-        std::basic_string < localechar > daynames( buffer.str() );
+        LocaleString daynames( buffer.str() );
         names[iday] = daynames.substr( start );
         start = daynames.length();
       }
@@ -430,13 +482,13 @@ public:
     }
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     s.append( names[tm.tm_wday] );
   }
 
 private:
-  std::vector < std::basic_string < localechar > > names;
+  std::vector < LocaleString > names;
 
 };
 
@@ -523,7 +575,7 @@ public:
 
 
 
-class AMPMToken : public SimpleDateFormat::PatternToken
+class AMPMToken : public PatternToken
 {
 public:
   AMPMToken( int width, const std::locale * locale ) : names( 2 )
@@ -539,7 +591,7 @@ public:
       {
         time.tm_hour = i * 12;
         renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'p' ) );
-        std::basic_string < localechar > ampm = buffer.str();
+        LocaleString ampm = buffer.str();
         names[i] = ampm.substr( start );
         start = ampm.length();
       }
@@ -555,27 +607,27 @@ public:
     }
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     s.append( names[tm.tm_hour / 12] );
   }
 
 private:
-  std::vector < std::basic_string < localechar > > names;
+  std::vector < LocaleString > names;
 };
 
 
 
-class GeneralTimeZoneToken : public SimpleDateFormat::PatternToken
+class GeneralTimeZoneToken : public PatternToken
 {
 public:
   GeneralTimeZoneToken( int width )
   {
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
-    std::basic_string < localechar > tzID;
+    LocaleString tzID;
     Transcoder::encode( timeZone->getID(), tzID );
     s.append( tzID );
   }
@@ -591,14 +643,14 @@ private:
 
 
 
-class RFC822TimeZoneToken : public SimpleDateFormat::PatternToken
+class RFC822TimeZoneToken : public PatternToken
 {
 public:
   RFC822TimeZoneToken( int width )
   {
   }
 
-  void format( std::basic_string < localechar > & s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     if ( tm.tm_gmtoff == 0 )
     {
@@ -614,7 +666,7 @@ public:
         s[basePos] = LOG4CXX_LOCALE_STR( '-' );
         off = -off;
       }
-      std::basic_string < localechar > hours;
+      LocaleString hours;
       StringHelper::toString( off / 3600, p, hours );
       size_t hourPos = basePos + 2;
       //
@@ -624,7 +676,7 @@ public:
       {
         s[hourPos--] = hours[i];
       }
-      std::basic_string < localechar > min;
+      LocaleString min;
       StringHelper::toString( ( off % 3600 ) / 60, p, min );
       size_t minPos = basePos + 4;
       //
@@ -650,9 +702,9 @@ namespace log4cxx
 
 
       void addToken( const localechar spec, const int repeat, const std::locale * locale,
-           std::vector < SimpleDateFormat::PatternToken * > & pattern )
+           std::vector < PatternToken * > & pattern )
            {
-             SimpleDateFormat::PatternToken * token = NULL;
+             PatternToken * token = NULL;
              switch ( spec )
              {
                case LOG4CXX_LOCALE_STR( 'G' ):
@@ -757,7 +809,7 @@ namespace log4cxx
       }
 
       void parsePattern( const LogString & fmt, const std::locale * locale,
-           std::vector < SimpleDateFormat::PatternToken * > & pattern )
+           std::vector < PatternToken * > & pattern )
            {
              if ( !fmt.empty() )
              {
@@ -826,7 +878,7 @@ void SimpleDateFormat::format( LogString & s, log4cxx_time_t time, Pool & p ) co
   apr_status_t stat = timeZone->explode( & exploded, time );
   if ( stat == APR_SUCCESS )
   {
-    std::basic_string < localechar > formatted;
+    LocaleString formatted;
     for ( PatternTokenList::const_iterator iter = pattern.begin(); iter != pattern.end(); iter++ )
     {
       ( * iter )->format( formatted, exploded, p );
