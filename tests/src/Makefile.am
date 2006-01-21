@@ -113,6 +113,7 @@ testsuite_SOURCES = \
         asyncappendertestcase.cpp\
         encodingtest.cpp\
         filetestcase.cpp \
+        hierarchytest.cpp\
         hierarchythresholdtestcase.cpp\
         l7dtestcase.cpp\
         leveltestcase.cpp \
