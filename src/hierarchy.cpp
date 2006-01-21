@@ -297,7 +297,7 @@ void Hierarchy::updateParents(LoggerPtr& logger)
                 LogString substr = name.substr(0, i);
                 //tcout << _T("UpdateParents processing ") << substr << std::endl;
 
-                                LoggerMap::iterator it = loggers.find(substr);
+                LoggerMap::iterator it = loggers.find(substr);
                 if(it != loggers.end())
                 {
                         parentFound = true;
@@ -306,7 +306,7 @@ void Hierarchy::updateParents(LoggerPtr& logger)
                 }
                 else
                 {
-                        ProvisionNodeMap::iterator it2 = provisionNodes.find(name);
+                        ProvisionNodeMap::iterator it2 = provisionNodes.find(substr);
                         if (it2 != provisionNodes.end())
                         {
                                 it2->second.push_back(logger);

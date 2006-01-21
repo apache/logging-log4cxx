@@ -392,17 +392,17 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <echo message="Configuring with logchar_type=${logchar_type}" />
 
     <condition property="logchar_is_utf8" value="1">
-	    <equals arg1="${logchar_type}" arg2="utf-8"/>
+       <equals arg1="${logchar_type}" arg2="utf-8"/>
     </condition>
     <property name="logchar_is_utf8" value="0"/>
 
     <condition property="logchar_is_cfstring" value="1">
-	    <equals arg1="${logchar_type}" arg2="cfstring"/>
+       <equals arg1="${logchar_type}" arg2="cfstring"/>
     </condition>
     <property name="logchar_is_cfstring" value="0"/>
 
     <condition property="logchar_is_wchar" value="1">
-	    <equals arg1="${logchar_type}" arg2="wchar_t"/>
+       <equals arg1="${logchar_type}" arg2="wchar_t"/>
     </condition>
     <property name="logchar_is_wchar" value="0"/>
 
