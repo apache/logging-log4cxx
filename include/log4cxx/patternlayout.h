@@ -98,64 +98,23 @@ namespace log4cxx
         </td>
         </tr>
 
-        <tr> <td align=center><b>d</b></td> <td>Used to output the date of
-        the logging event. The date conversion specifier may be
-        followed by a <em>date format specifier</em> enclosed between
-        braces. For example, <b>\%d{HH:mm:ss,SSS}</b> or
-        <b>\%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b>.  If no
-        date format specifier is given then {@link helpers::ISO8601DateFormat
-        ISO8601 format} is assumed.
-
-        <p>The following format options are possible:
-        - G -- Era designator (AD)
-        - y -- Year (e.g. 2005 or 05)
-        - M -- Month in year (e.g. July or Jul or 07)
-        - w -- Week in year (e.g. 29)
-        - W -- Week in month (e.g. 4)
-        - D -- Day in year (e.g. 199)
-        - d -- Day in month (e.g. 18)
-        - F -- Day of week in month (e.g. 2)
-        - E -- Day in week (e.g. Tuesday or Tue)
-        - a -- Am/pm marker (e.g. PM)
-        - H -- Hour in day (0-23)
-        - k -- Hour in day (1-24)
-        - K -- Hour in am/pm (0-11)
-        - h -- Hour in am/pm (1-12)
-        - m -- Minute in hour (0-59)
-        - s -- Second in minute (0-59)
-        - S -- Millisecond (0-999)
-        - z -- Time zone (e.g. "Pacific Standard Time" or "PST" or "GMT-08:00")
-        - Z -- RFC 822 Time zone (e.g. "-0800")
-
-        <p>Note that each format option can be repeated one or more times to get 
-        different renderings of the value. For example, "M" results in values 
-        "1" to "12", while "MM" results in values "00" to "12", "MMM" 
-        results in the abbreviated month name and "MMMM" results in the full 
-        month name.
-
-        <p>You can also use the log4cxx predefined date
-        formatters. These can be specified using one of the strings
-        "ABSOLUTE", "DATE" and "ISO8601" for specifying {@link
-        helpers::AbsoluteTimeDateFormat
-        AbsoluteTimeDateFormat}, {@link
-        helpers::DateTimeDateFormat DateTimeDateFormat}
-        and respectively {@link
-        helpers::ISO8601DateFormat
-        ISO8601DateFormat}. For example, <b>\%d{ISO8601}</b> or
-        <b>\%d{ABSOLUTE}</b>.
-
-        </td>
-        </tr>
+   <tr> <td align=center><b>d</b></td> <td>Used to output the date of
+         the logging event. The date conversion specifier may be
+         followed by a set of braces containing a
+         date and time pattern string compatible with java.text.SimpleDateFormat,
+         <em>ABSOLUTE</em>, <em>DATE</em> or <em>ISO8601</em>.
+         For example, <b>%d{HH:mm:ss,SSS}</b>,
+         <b>%d{dd&nbsp;MMM&nbsp;yyyy&nbsp;HH:mm:ss,SSS}</b> or
+         <b>%d{DATE}</b>.  If no date format specifier is given then
+         ISO8601 format is assumed.
+     </td>
+   </tr>
 
         <tr>
         <td align=center><b>F</b></td>
 
         <td>Used to output the file name where the logging request was
         issued.
-
-        <p><b>WARNING</b> Generating caller location information is
-        extremely slow. It's use should be avoided unless execution speed
-        is not an issue.
 
         </tr>
 
@@ -165,10 +124,6 @@ namespace log4cxx
         <td>Used to output location information of the caller which generated
         the logging event.
 
-        <p>The location information can be very useful. However, it's
-        generation is <em>extremely</em> slow. It's use should be avoided
-        unless execution speed is not an issue.
-
         </td>
         </tr>
 
@@ -177,11 +132,6 @@ namespace log4cxx
 
         <td>Used to output the line number from where the logging request
         was issued.
-
-        <p><b>WARNING</b> Generating caller location information is
-        extremely slow. It's use should be avoided unless execution speed
-        is not an issue.
-
         </tr>
 
 
