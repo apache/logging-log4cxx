@@ -464,6 +464,14 @@ CharsetEncoder::~CharsetEncoder() {
 
 CharsetEncoderPtr CharsetEncoder::getDefaultEncoder() {
   static CharsetEncoderPtr encoder(createDefaultEncoder());
+  //
+  //  if invoked after static variable destruction
+  //     (if logging is called in the destructor of a static object)
+  //     then create a new decoder.
+  // 
+  if (encoder == 0) {
+       return createDefaultEncoder();
+  }
   return encoder;
 }
 
@@ -497,14 +505,27 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
 
 
 #if LOG4CXX_HAS_WCHAR_T
-CharsetEncoderPtr CharsetEncoder::getWideEncoder() {
+CharsetEncoder* CharsetEncoder::createWideEncoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
-  static CharsetEncoderPtr encoder(new TrivialCharsetEncoder());
+  return new TrivialCharsetEncoder();
 #endif
 #if LOG4CXX_LOGCHAR_IS_UTF8
-  static CharsetEncoderPtr encoder(new WideCharsetEncoder());
+  return new WideCharsetEncoder();
 #endif
-   return encoder;
+}
+
+
+CharsetEncoderPtr CharsetEncoder::getWideEncoder() {
+  static CharsetEncoderPtr encoder(createWideEncoder());
+  //
+  //  if invoked after static variable destruction
+  //     (if logging is called in the destructor of a static object)
+  //     then create a new decoder.
+  // 
+  if (encoder == 0) {
+       return createWideEncoder();
+  }
+  return encoder;
 }
 #endif
 

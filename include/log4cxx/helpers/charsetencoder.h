@@ -135,7 +135,13 @@ namespace log4cxx
                   CharsetEncoder& operator=(const CharsetEncoder&);
 
               static CharsetEncoder* createDefaultEncoder();
-          };
+#if LOG4CXX_HAS_WCHAR_T
+              /**
+               *  Create encoder for wchar_t type.
+               */
+              static CharsetEncoder* createWideEncoder();
+#endif
+		  };
 
         } // namespace helpers
 

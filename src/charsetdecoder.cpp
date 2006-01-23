@@ -433,18 +433,39 @@ CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
 
 CharsetDecoderPtr CharsetDecoder::getDefaultDecoder() {
     static CharsetDecoderPtr decoder(createDefaultDecoder());
+    //
+    //  if invoked after static variable destruction
+    //     (if logging is called in the destructor of a static object)
+    //     then create a new decoder.
+    // 
+    if (decoder == 0) {
+       return createDefaultDecoder();
+    }
     return decoder;
 }
 
 #if LOG4CXX_HAS_WCHAR_T
-CharsetDecoderPtr CharsetDecoder::getWideDecoder() {
+CharsetDecoder* CharsetDecoder::createWideDecoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
-  static CharsetDecoderPtr decoder(new TrivialCharsetDecoder());
+  return new TrivialCharsetDecoder();
 #elif defined(_WIN32) || defined(__STDC_ISO_10646__)
-  static CharsetDecoderPtr decoder(new WideToUTF8CharsetDecoder());
+  return new WideToUTF8CharsetDecoder();
 #else
-  static CharsetDecoderPtr decoder(new APRCharsetDecoder("WCHAR_T"));
+  return new APRCharsetDecoder("WCHAR_T");
 #endif
+}
+
+  
+CharsetDecoderPtr CharsetDecoder::getWideDecoder() {
+  static CharsetDecoderPtr decoder(createWideDecoder());
+    //
+    //  if invoked after static variable destruction
+    //     (if logging is called in the destructor of a static object)
+    //     then create a new decoder.
+    // 
+  if (decoder == 0) {
+     return createWideDecoder();
+  }
   return decoder;
 }
 #endif

@@ -91,7 +91,13 @@ namespace log4cxx
                *  Creates a new decoder for the default charset.
                */
                   static CharsetDecoder* createDefaultDecoder();
-          };
+#if LOG4CXX_HAS_WCHAR_T
+              /**
+               *  Creates a new decoder for the default charset.
+               */
+                  static CharsetDecoder* createWideDecoder();
+#endif
+		  };
 
         } // namespace helpers
 
