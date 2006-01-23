@@ -1,5 +1,5 @@
 /*
- * Copyright 2003-2005 The Apache Software Foundation.
+ * Copyright 2003-2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,7 +59,9 @@ void Logger::addAppender(const AppenderPtr& newAppender)
                   aai = new AppenderAttachableImpl();
         }
         aai->addAppender(newAppender);
-        repository->fireAddAppenderEvent(this, newAppender);
+		if (repository != 0) {
+           repository->fireAddAppenderEvent(this, newAppender);
+		}
 }
 
 
@@ -83,7 +85,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p)
                 }
         }
 
-        if(writes == 0)
+        if(writes == 0 && repository != 0)
         {
                 repository->emitNoAppenderWarning(this);
         }
@@ -261,7 +263,7 @@ bool Logger::isAttached(const AppenderPtr& appender) const
 
 bool Logger::isDebugEnabled() const
 {
-        if(repository->isDisabled(Level::DEBUG_INT))
+        if(repository == 0 || repository->isDisabled(Level::DEBUG_INT))
         {
                 return false;
         }
@@ -271,7 +273,7 @@ bool Logger::isDebugEnabled() const
 
 bool Logger::isEnabledFor(const LevelPtr& level) const
 {
-        if(repository->isDisabled(level->toInt()))
+        if(repository == 0 || repository->isDisabled(level->toInt()))
         {
                 return false;
         }
@@ -282,7 +284,7 @@ bool Logger::isEnabledFor(const LevelPtr& level) const
 
 bool Logger::isInfoEnabled() const
 {
-        if(repository->isDisabled(Level::INFO_INT))
+        if(repository == 0 || repository->isDisabled(Level::INFO_INT))
         {
                 return false;
         }
@@ -292,7 +294,7 @@ bool Logger::isInfoEnabled() const
 
 bool Logger::isErrorEnabled() const
 {
-        if(repository->isDisabled(Level::ERROR_INT))
+        if(repository == 0 || repository->isDisabled(Level::ERROR_INT))
         {
                 return false;
         }
@@ -302,7 +304,7 @@ bool Logger::isErrorEnabled() const
 
 bool Logger::isWarnEnabled() const
 {
-        if(repository->isDisabled(Level::WARN_INT))
+        if(repository == 0 || repository->isDisabled(Level::WARN_INT))
         {
                 return false;
         }
@@ -312,7 +314,7 @@ bool Logger::isWarnEnabled() const
 
 bool Logger::isFatalEnabled() const
 {
-        if(repository->isDisabled(Level::FATAL_INT))
+        if(repository == 0 || repository->isDisabled(Level::FATAL_INT))
         {
                 return false;
         }
@@ -323,7 +325,7 @@ bool Logger::isFatalEnabled() const
 /*void Logger::l7dlog(const LevelPtr& level, const String& key,
                         const char* file, int line)
 {
-        if (repository->isDisabled(level->level))
+        if (repository == 0 || repository->isDisabled(level->level))
         {
                 return;
         }
@@ -346,7 +348,7 @@ bool Logger::isFatalEnabled() const
 void Logger::l7dlog(const LevelPtr& level, const std::string& key,
                         const LocationInfo& location, ...)
 {
-        if (repository->isDisabled(level->toInt()))
+        if (repository == 0 || repository->isDisabled(level->toInt()))
         {
                 return;
         }
@@ -378,7 +380,7 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
 void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
                         const LocationInfo& location, ...)
 {
-        if (repository->isDisabled(level->toInt()))
+        if (repository == 0 || repository->isDisabled(level->toInt()))
         {
                 return;
         }
