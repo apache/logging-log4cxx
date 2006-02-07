@@ -38,6 +38,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 -->
 <project name="log4cxx" default="check">
 
+<property environment="env"/>
 <property name="debug" value="true"/>
 <property name="base.dir" location="."/>
 <property name="src.dir" location="${base.dir}/src"/>
