@@ -734,6 +734,14 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </antcall>
 </target>
 
+<target name="build-console" depends="build">
+    <antcall target="build-example">
+       <param name="example.src.dir" value="${examples.dir}"/>
+       <param name="example.name" value="console"/>
+       <param name="example.includes" value="console.cpp"/>
+    </antcall>
+</target>
+
 <target name="build-stream" depends="build">
     <antcall target="build-example">
        <param name="example.src.dir" value="${examples.dir}"/>
@@ -743,7 +751,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 <target name="build-examples"
-    depends="build-delayedloop, build-trivial, build-stream"
+    depends="build-delayedloop, build-trivial, build-stream, build-console"
     description="Builds example programs"/>
 
 <target name="build-simplesocketserver" depends="build">
