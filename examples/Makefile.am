@@ -1,4 +1,4 @@
-noinst_PROGRAMS = trivial delayedloop stream
+noinst_PROGRAMS = trivial delayedloop stream console
 
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
 
@@ -11,5 +11,7 @@ delayedloop_LDADD = $(top_builddir)/src/liblog4cxx.la
 stream_SOURCES = stream.cpp
 stream_LDADD = $(top_builddir)/src/liblog4cxx.la
 
+console_SOURCES = console.cpp
+console_LDADD = $(top_builddir)/src/liblog4cxx.la
 
 

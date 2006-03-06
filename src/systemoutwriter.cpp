@@ -38,10 +38,14 @@ void SystemOutWriter::flush(Pool& p) {
 
 void SystemOutWriter::write(const LogString& str, Pool& p) {
 #if LOG4CXX_HAS_WCHAR_T
-    LOG4CXX_ENCODE_WCHAR(msg, str);
-    std::wcout << msg << std::flush;
+    if (fwide(stdout, 0) > 0) {
+    	LOG4CXX_ENCODE_WCHAR(msg, str);
+        fputws(msg.c_str(), stdout);
+    } else {
 #else
-    LOG4CXX_ENCODE_CHAR(msg, str);
-    std::cout << msg << std::flush;
+    {
 #endif
+    	LOG4CXX_ENCODE_CHAR(msg, str);
+        fputs(msg.c_str(), stdout);
+    }
 }

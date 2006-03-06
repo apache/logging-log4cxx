@@ -37,10 +37,14 @@ void SystemErrWriter::flush(Pool& p) {
 
 void SystemErrWriter::write(const LogString& str, Pool& p) {
 #if LOG4CXX_HAS_WCHAR_T
-    LOG4CXX_ENCODE_WCHAR(msg, str);
-    std::wcerr << msg << std::flush;
+    if (fwide(stderr, 0) > 0) {
+    	LOG4CXX_ENCODE_WCHAR(msg, str);
+        fputws(msg.c_str(), stderr);
+    } else {
 #else
-    LOG4CXX_ENCODE_CHAR(msg, str);
-    std::cerr << msg << std::flush;
+    {
 #endif
+    	LOG4CXX_ENCODE_CHAR(msg, str);
+        fputs(msg.c_str(), stderr);
+    }
 }
