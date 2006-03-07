@@ -38,7 +38,14 @@ void SystemOutWriter::flush(Pool& p) {
 
 void SystemOutWriter::write(const LogString& str, Pool& p) {
 #if LOG4CXX_HAS_WCHAR_T
+#if defined(_MSC_VER)
+    //  MSC_VER has fwide, but since all supported versions
+    //   allow intermixing of wide and byte output
+    //   use wide to support widest range of languages
+    if (true) {
+#else
     if (fwide(stdout, 0) > 0) {
+#endif
     	LOG4CXX_ENCODE_WCHAR(msg, str);
         fputws(msg.c_str(), stdout);
     } else {
