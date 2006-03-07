@@ -45,7 +45,6 @@ liblog4cxx_la_SOURCES = \
         fixedwindowrollingpolicy.cpp \
         formattinginfo.cpp \
         fulllocationpatternconverter.cpp \
-        gnomexml.cpp \
         hierarchy.cpp \
         htmllayout.cpp \
         inetaddress.cpp \
@@ -73,7 +72,6 @@ liblog4cxx_la_SOURCES = \
         messagepatternconverter.cpp \
         methodlocationpatternconverter.cpp \
         mdc.cpp \
-        msxml.cpp \
         mutex.cpp \
         nameabbreviator.cpp \
         namepatternconverter.cpp \

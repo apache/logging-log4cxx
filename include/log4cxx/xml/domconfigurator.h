@@ -27,6 +27,9 @@
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/spi/configurator.h>
 
+struct apr_xml_doc;
+struct apr_xml_elem;
+
 namespace log4cxx
 {
         class File;
@@ -46,14 +49,6 @@ namespace log4cxx
                 typedef helpers::ObjectPtrT<OptionHandler> OptionHandlerPtr;
         }
 
-        namespace helpers
-        {
-                class XMLDOMDocument;
-                typedef helpers::ObjectPtrT<XMLDOMDocument> XMLDOMDocumentPtr;
-
-                class XMLDOMElement;
-                typedef helpers::ObjectPtrT<XMLDOMElement> XMLDOMElementPtr;
-        }
 
         namespace config
         {
@@ -73,15 +68,6 @@ namespace log4cxx
 
         namespace xml
         {
-                class AppenderMap
-                {
-                public:
-                        AppenderPtr get(const LogString& appenderName);
-                        void put(const LogString& appenderName, AppenderPtr appender);
-
-                protected:
-                        std::map<LogString, AppenderPtr> map;
-                };
 
               /**
               Use this class to initialize the log4cxx environment using a DOM tree.
@@ -103,77 +89,93 @@ namespace log4cxx
                         virtual public helpers::ObjectImpl
                 {
                 protected:
+                        typedef std::map<LogString, AppenderPtr> AppenderMap;
                         /**
                         Used internally to parse appenders by IDREF name.
                         */
-                        AppenderPtr findAppenderByName(helpers::XMLDOMDocumentPtr doc,
-                                const LogString& appenderName);
+                        AppenderPtr findAppenderByName(apr_xml_elem* elem,
+                                const LogString& appenderName,
+                                AppenderMap& appenders);
 
                         /**
                         Used internally to parse appenders by IDREF element.
                         */
                         AppenderPtr findAppenderByReference(
-                                helpers::XMLDOMElementPtr appenderRef);
+                                apr_xml_elem* appenderRef,
+                                apr_xml_doc* doc,
+                                AppenderMap& appenders);
 
                         /**
                         Used internally to parse an appender element.
                         */
-                        AppenderPtr parseAppender(helpers::XMLDOMElementPtr appenderElement);
+                        AppenderPtr parseAppender(apr_xml_elem* appenderElement,
+                            apr_xml_doc* doc,
+                            AppenderMap& appenders);
 
                         /**
                         Used internally to parse an {@link spi::ErrorHandler ErrorHandler } element.
                         */
-                        void parseErrorHandler(helpers::XMLDOMElementPtr element, AppenderPtr appender);
+                        void parseErrorHandler(apr_xml_elem*, 
+                            AppenderPtr& appender,
+                            apr_xml_doc* doc,
+                            AppenderMap& appenders);
 
                         /**
                          Used internally to parse a filter element.
                         */
-                        void parseFilters(helpers::XMLDOMElementPtr element,
+                        void parseFilters(apr_xml_elem* element,
                            std::vector<log4cxx::spi::FilterPtr>& filters);
 
                         /**
                         Used internally to parse a logger element.
                         */
-                        void parseLogger(helpers::XMLDOMElementPtr loggerElement);
+                        void parseLogger(apr_xml_elem* loggerElement,
+                            apr_xml_doc* doc,
+                            AppenderMap& appenders);
 
                         /**
                          Used internally to parse the logger factory element.
                         */
-                        void parseLoggerFactory(helpers::XMLDOMElementPtr factoryElement);
+                        void parseLoggerFactory(apr_xml_elem* factoryElement);
 
                         /**
                          Used internally to parse the logger factory element.
                         */
-                        log4cxx::rolling::TriggeringPolicyPtr parseTriggeringPolicy(helpers::XMLDOMElementPtr factoryElement);
+                        log4cxx::rolling::TriggeringPolicyPtr parseTriggeringPolicy(
+                            apr_xml_elem* factoryElement);
 
                         /**
                          Used internally to parse the logger factory element.
                         */
-                        log4cxx::rolling::RollingPolicyPtr parseRollingPolicy(helpers::XMLDOMElementPtr factoryElement);
+                        log4cxx::rolling::RollingPolicyPtr parseRollingPolicy(
+                            apr_xml_elem* factoryElement);
 
                         /**
                          Used internally to parse the roor category element.
                         */
-                        void parseRoot(helpers::XMLDOMElementPtr rootElement);
+                        void parseRoot(apr_xml_elem* rootElement, apr_xml_doc* doc, AppenderMap& appenders);
 
                         /**
                          Used internally to parse the children of a category element.
                         */
-                        void parseChildrenOfLoggerElement(helpers::XMLDOMElementPtr catElement,
-                                LoggerPtr logger, bool isRoot);
+                        void parseChildrenOfLoggerElement(
+                                apr_xml_elem* catElement,
+                                LoggerPtr logger, bool isRoot,
+                                apr_xml_doc* doc,
+                                AppenderMap& appenders);
 
                         /**
                          Used internally to parse a layout element.
                         */
-                        LayoutPtr parseLayout(helpers::XMLDOMElementPtr layout_element);
+                        LayoutPtr parseLayout(apr_xml_elem* layout_element);
 
                         /**
                          Used internally to parse a level  element.
                         */
-                        void parseLevel(helpers::XMLDOMElementPtr element,
+                        void parseLevel(apr_xml_elem* element,
                                 LoggerPtr logger, bool isRoot);
 
-                        void setParameter(helpers::XMLDOMElementPtr elem,
+                        void setParameter(apr_xml_elem* elem,
                                 config::PropertySetter& propSetter);
 
                         /**
@@ -182,7 +184,9 @@ namespace log4cxx
                          href="docs/log4j.dtd">log4j.dtd</a>.
 
                         */
-                        void parse(helpers::XMLDOMElementPtr element);
+                        void parse(apr_xml_elem* element, 
+                            apr_xml_doc* doc,
+                            AppenderMap& appenders);
 
                 public:
                         DOMConfigurator();
@@ -240,11 +244,11 @@ namespace log4cxx
                                 spi::LoggerRepositoryPtr& repository);
 
                 protected:
+                        static LogString getAttribute(apr_xml_elem*, 
+                            const std::string& attrName); 
                         LogString DOMConfigurator::subst(const LogString& value);
 
                 protected:
-                        void * appenderBag;
-
                         helpers::Properties props;
                         spi::LoggerRepositoryPtr repository;
                         spi::LoggerFactoryPtr loggerFactory;
@@ -253,6 +257,7 @@ namespace log4cxx
                         //   prevent assignment or copy statements
                         DOMConfigurator(const DOMConfigurator&);
                         DOMConfigurator& operator=(const DOMConfigurator&);
+
                 };
         }  // namespace xml
 } // namespace log4cxx

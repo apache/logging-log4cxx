@@ -17,7 +17,6 @@
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
 
-#ifdef LOG4CXX_HAVE_XML
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -63,4 +62,3 @@ CPPUNIT_NS::Test* createTestCase2() {
 }
 
 
-#endif //LOG4CXX_HAVE_XML

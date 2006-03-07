@@ -444,6 +444,19 @@ CharsetDecoderPtr CharsetDecoder::getDefaultDecoder() {
     return decoder;
 }
 
+CharsetDecoderPtr CharsetDecoder::getUTF8Decoder() {
+    static CharsetDecoderPtr decoder(new UTF8CharsetDecoder());
+    //
+    //  if invoked after static variable destruction
+    //     (if logging is called in the destructor of a static object)
+    //     then create a new decoder.
+    // 
+    if (decoder == 0) {
+       return new UTF8CharsetDecoder();
+    }
+    return decoder;
+}
+
 #if LOG4CXX_HAS_WCHAR_T
 CharsetDecoder* CharsetDecoder::createWideDecoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR

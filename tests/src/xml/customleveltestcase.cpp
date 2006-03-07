@@ -18,7 +18,6 @@
 #include <log4cxx/private/log4cxx_private.h>
 
 
-#ifdef LOG4CXX_HAVE_XML
 
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
@@ -125,5 +124,3 @@ CPPUNIT_TEST_SUITE_REGISTRATION(CustomLevelTestCase);
 
 const File CustomLevelTestCase::TEMP("output/temp");
 
-
-#endif //HAVE_XML

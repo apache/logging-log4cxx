@@ -60,6 +60,10 @@ namespace log4cxx
                    */
                   static CharsetDecoderPtr getWideDecoder();
 #endif
+              /**
+               *   Get decoder for UTF-8.
+               */
+                  static CharsetDecoderPtr getUTF8Decoder();
 
               /**
                *  Decodes as many bytes as possible from the given

@@ -15,14 +15,6 @@
  */
 
 #include <log4cxx/private/log4cxx_private.h>
-#ifdef LOG4CXX_HAVE_XML
-
-#if defined(_WIN32)
-#include <windows.h>
-#include <log4cxx/helpers/msxml.h>
-#else
-#include <log4cxx/helpers/gnomexml.h>
-#endif
 
 
 #include <log4cxx/xml/domconfigurator.h>
@@ -49,6 +41,9 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/rolling/filterbasedtriggeringpolicy.h>
+#include <apr_xml.h>
+#include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/charsetdecoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::xml;
@@ -56,6 +51,7 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::config;
 using namespace log4cxx::rolling;
+
 
 class XMLWatchdog  : public FileWatchdog
 {
@@ -75,125 +71,111 @@ public:
         }
 };
 
-AppenderPtr AppenderMap::get(const LogString& appenderName)
-{
-        AppenderPtr appender;
-        std::map<LogString, AppenderPtr>::iterator it;
-        it = map.find(appenderName);
-
-        if (it != map.end())
-        {
-                appender = it->second;
-        }
-
-        return appender;
-}
-
-void AppenderMap::put(const LogString& appenderName, AppenderPtr appender)
-{
-        map.insert(std::map<LogString, AppenderPtr>::value_type(appenderName, appender));
-}
 
 IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 
-#define CONFIGURATION_TAG LOG4CXX_STR("log4j:configuration")
-#define OLD_CONFIGURATION_TAG LOG4CXX_STR("configuration")
-#define APPENDER_TAG LOG4CXX_STR("appender")
-#define APPENDER_REF_TAG LOG4CXX_STR("appender-ref")
-#define PARAM_TAG LOG4CXX_STR("param")
-#define LAYOUT_TAG LOG4CXX_STR("layout")
-#define ROLLING_POLICY_TAG LOG4CXX_STR("rollingPolicy")
-#define TRIGGERING_POLICY_TAG LOG4CXX_STR("triggeringPolicy")
-#define CATEGORY LOG4CXX_STR("category")
-#define LOGGER LOG4CXX_STR("logger")
-#define LOGGER_REF LOG4CXX_STR("logger-ref")
-#define CATEGORY_FACTORY_TAG LOG4CXX_STR("categoryFactory")
-#define NAME_ATTR LOG4CXX_STR("name")
-#define CLASS_ATTR LOG4CXX_STR("class")
-#define VALUE_ATTR LOG4CXX_STR("value")
-#define ROOT_TAG LOG4CXX_STR("root")
-#define ROOT_REF LOG4CXX_STR("root-ref")
-#define LEVEL_TAG LOG4CXX_STR("level")
-#define PRIORITY_TAG LOG4CXX_STR("priority")
-#define FILTER_TAG LOG4CXX_STR("filter")
-#define ERROR_HANDLER_TAG LOG4CXX_STR("errorHandler")
-#define REF_ATTR LOG4CXX_STR("ref")
-#define ADDITIVITY_ATTR LOG4CXX_STR("additivity")
-#define THRESHOLD_ATTR LOG4CXX_STR("threshold")
-#define CONFIG_DEBUG_ATTR LOG4CXX_STR("configDebug")
-#define INTERNAL_DEBUG_ATTR LOG4CXX_STR("debug")
+#define CONFIGURATION_TAG "log4j:configuration"
+#define OLD_CONFIGURATION_TAG "configuration"
+#define APPENDER_TAG "appender"
+#define APPENDER_REF_TAG "appender-ref"
+#define PARAM_TAG "param"
+#define LAYOUT_TAG "layout"
+#define ROLLING_POLICY_TAG "rollingPolicy"
+#define TRIGGERING_POLICY_TAG "triggeringPolicy"
+#define CATEGORY "category"
+#define LOGGER "logger"
+#define LOGGER_REF "logger-ref"
+#define CATEGORY_FACTORY_TAG "categoryFactory"
+#define NAME_ATTR "name"
+#define CLASS_ATTR "class"
+#define VALUE_ATTR "value"
+#define ROOT_TAG "root"
+#define ROOT_REF "root-ref"
+#define LEVEL_TAG "level"
+#define PRIORITY_TAG "priority"
+#define FILTER_TAG "filter"
+#define ERROR_HANDLER_TAG "errorHandler"
+#define REF_ATTR "ref"
+#define ADDITIVITY_ATTR "additivity"
+#define THRESHOLD_ATTR "threshold"
+#define CONFIG_DEBUG_ATTR "configDebug"
+#define INTERNAL_DEBUG_ATTR "debug"
 
 DOMConfigurator::DOMConfigurator()
-   : appenderBag(), props(), repository() {
+   : props(), repository() {
 }
+
 
 /**
 Used internally to parse appenders by IDREF name.
 */
-AppenderPtr DOMConfigurator::findAppenderByName(XMLDOMDocumentPtr doc, const LogString& appenderName)
-{
-    AppenderPtr appender = ((AppenderMap *)appenderBag)->get(appenderName);
-
-    if (appender != 0)
-        {
-                return appender;
+AppenderPtr DOMConfigurator::findAppenderByName(apr_xml_elem* element, 
+                                                const LogString& appenderName,
+                                                AppenderMap& appenders) {
+    AppenderPtr appender;
+    std::string tagName(element->name);
+    if (tagName == APPENDER_TAG) {
+        if (appenderName == getAttribute(element, NAME_ATTR)) {
+              appender = parseAppender(element, 0, appenders);
+        }
     }
-        else
-        {
-                XMLDOMElementPtr element = doc->getElementById(APPENDER_TAG, appenderName);
-
-                if(element == 0)
-                {
-                        LogLog::error(LOG4CXX_STR("No appender named [")+
-                                appenderName+LOG4CXX_STR("] could be found."));
-                        return 0;
-                }
-                else
-                {
-                        appender = parseAppender(element);
-                        ((AppenderMap *)appenderBag)->put(appenderName, appender);
-                        return appender;
-                }
+    if (element->first_child && !appender) {
+         appender = findAppenderByName(element->first_child, appenderName, appenders);
     }
+    if (element->next && !appender) {
+        appender = findAppenderByName(element->next, appenderName, appenders);
+    }
+    return appender;
 }
 
 /**
  Used internally to parse appenders by IDREF element.
 */
-AppenderPtr DOMConfigurator::findAppenderByReference(XMLDOMElementPtr appenderRef)
+AppenderPtr DOMConfigurator::findAppenderByReference(apr_xml_elem* appenderRef,
+                                                     apr_xml_doc* doc,
+                                                     AppenderMap& appenders)
 {
-        LogString appenderName = subst(appenderRef->getAttribute(REF_ATTR));
-        XMLDOMDocumentPtr doc = appenderRef->getOwnerDocument();
-        return findAppenderByName(doc, appenderName);
+        LogString appenderName(subst(getAttribute(appenderRef, REF_ATTR)));
+        AppenderMap::const_iterator match = appenders.find(appenderName);
+        AppenderPtr appender;
+        if (match != appenders.end()) {
+            appender = match->second;
+        } else if (doc) {
+            appender = findAppenderByName(doc->root, appenderName, appenders);
+            if (appender) {
+                appenders.insert(AppenderMap::value_type(appenderName, appender));
+            }
+        }
+        if (!appender) {
+                 LogLog::error(LOG4CXX_STR("No appender named [")+
+                                appenderName+LOG4CXX_STR("] could be found."));
+        }
+        return appender;
 }
 
 /**
 Used internally to parse an appender element.
 */
-AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
+AppenderPtr DOMConfigurator::parseAppender(apr_xml_elem* appenderElement,
+                                           apr_xml_doc* doc,
+                                           AppenderMap& appenders)
 {
-    LogString className = subst(appenderElement->getAttribute(CLASS_ATTR));
-        LogLog::debug(LOG4CXX_STR("Class name: [") + className+LOG4CXX_STR("]"));
+
+    LogString className(subst(getAttribute(appenderElement, CLASS_ATTR)));
+    LogLog::debug(LOG4CXX_STR("Class name: [") + className+LOG4CXX_STR("]"));
     try
         {
                 ObjectPtr instance = Loader::loadClass(className).newInstance();
                 AppenderPtr appender = instance;
                 PropertySetter propSetter(appender);
 
-                appender->setName(subst(appenderElement->getAttribute(NAME_ATTR)));
+                appender->setName(subst(getAttribute(appenderElement, NAME_ATTR)));
 
-                XMLDOMNodeListPtr children = appenderElement->getChildNodes();
-                int length = children->getLength();
+                for(apr_xml_elem* currentElement = appenderElement->first_child;
+                     currentElement;
+                     currentElement = currentElement->next) {
 
-                for (int loop = 0; loop < length; loop++)
-                {
-                        XMLDOMNodePtr currentNode = children->item(loop);
-
-                        /* We're only interested in Elements */
-                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                        {
-                                XMLDOMElementPtr currentElement = currentNode;
-                                LogString tagName = currentElement->getTagName();
+                                std::string tagName(currentElement->name);
 
                                 // Parse appender parameters
                                 if (tagName == PARAM_TAG)
@@ -218,7 +200,7 @@ AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
                                 }
                                 else if (tagName == ERROR_HANDLER_TAG)
                                 {
-                                        parseErrorHandler(currentElement, appender);
+                                        parseErrorHandler(currentElement, appender, doc, appenders);
                                 }
                                 else if (tagName == ROLLING_POLICY_TAG)
                                 {
@@ -238,14 +220,14 @@ AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
                                 }
                                 else if (tagName == APPENDER_REF_TAG)
                                 {
-                                        LogString refName = subst(currentElement->getAttribute(REF_ATTR));
+                                        LogString refName = subst(getAttribute(currentElement, REF_ATTR));
                                         if(appender->instanceof(AppenderAttachable::getStaticClass()))
                                         {
                                                 AppenderAttachablePtr aa = appender;
                                                 LogLog::debug(LOG4CXX_STR("Attaching appender named [")+
                                                         refName+LOG4CXX_STR("] to appender named [")+
                                                         appender->getName()+LOG4CXX_STR("]."));
-                                                aa->addAppender(findAppenderByReference(currentElement));
+                                                aa->addAppender(findAppenderByReference(currentElement, doc, appenders));
                                         }
                                         else
                                         {
@@ -254,9 +236,8 @@ AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
                                                         LOG4CXX_STR("] which does not implement AppenderAttachable."));
                                         }
                                 }
-                        }
                 }
-        Pool p;
+                Pool p;
                 propSetter.activate(p);
                 return appender;
     }
@@ -273,10 +254,13 @@ AppenderPtr DOMConfigurator::parseAppender(XMLDOMElementPtr appenderElement)
 /**
 Used internally to parse an {@link ErrorHandler} element.
 */
-void DOMConfigurator::parseErrorHandler(XMLDOMElementPtr element, AppenderPtr appender)
+void DOMConfigurator::parseErrorHandler(apr_xml_elem* element, 
+                                        AppenderPtr& appender,
+                                        apr_xml_doc* doc,
+                                        AppenderMap& appenders)
 {
     ErrorHandlerPtr eh = OptionConverter::instantiateByClassName(
-                subst(element->getAttribute(CLASS_ATTR)),
+                subst(getAttribute(element, CLASS_ATTR)),
                 ErrorHandler::getStaticClass(),
                 0);
 
@@ -285,27 +269,22 @@ void DOMConfigurator::parseErrorHandler(XMLDOMElementPtr element, AppenderPtr ap
                 eh->setAppender(appender);
 
                 PropertySetter propSetter(eh);
-                XMLDOMNodeListPtr children = element->getChildNodes();
-                int length = children->getLength();
 
-                for (int loop = 0; loop < length; loop++)
-                {
-                        XMLDOMNodePtr currentNode = children->item(loop);
-                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                        {
-                                XMLDOMElementPtr currentElement = currentNode;
-                                LogString tagName = currentElement->getTagName();
+                for (apr_xml_elem* currentElement = element->first_child;
+                     currentElement;
+                     currentElement = currentElement->next) {
+                                std::string tagName(currentElement->name);
                                 if(tagName == PARAM_TAG)
                                 {
                                         setParameter(currentElement, propSetter);
                                 }
                                 else if(tagName == APPENDER_REF_TAG)
                                 {
-                                        eh->setBackupAppender(findAppenderByReference(currentElement));
+                                        eh->setBackupAppender(findAppenderByReference(currentElement, doc, appenders));
                                 }
                                 else if(tagName == LOGGER_REF)
                                 {
-                                        LogString loggerName = currentElement->getAttribute(REF_ATTR);
+                                        LogString loggerName(getAttribute(currentElement, REF_ATTR));
                                         LoggerPtr logger = repository->getLogger(loggerName, loggerFactory);
                                         eh->setLogger(logger);
                                 }
@@ -314,7 +293,6 @@ void DOMConfigurator::parseErrorHandler(XMLDOMElementPtr element, AppenderPtr ap
                                         LoggerPtr root = repository->getRootLogger();
                                         eh->setLogger(root);
                                 }
-                        }
                 }
                 Pool p;
                 propSetter.activate(p);
@@ -325,30 +303,25 @@ void DOMConfigurator::parseErrorHandler(XMLDOMElementPtr element, AppenderPtr ap
 /**
  Used internally to parse a filter element.
 */
-void DOMConfigurator::parseFilters(XMLDOMElementPtr element, std::vector<log4cxx::spi::FilterPtr>& filters)
+void DOMConfigurator::parseFilters(apr_xml_elem* element, std::vector<log4cxx::spi::FilterPtr>& filters)
 {
-        LogString clazz = subst(element->getAttribute(CLASS_ATTR));
+        LogString clazz = subst(getAttribute(element, CLASS_ATTR));
         FilterPtr filter = OptionConverter::instantiateByClassName(clazz,
                 Filter::getStaticClass(), 0);
 
         if(filter != 0)
         {
                 PropertySetter propSetter(filter);
-                XMLDOMNodeListPtr children = element->getChildNodes();
-                int length = children->getLength();
 
-                for (int loop = 0; loop < length; loop++)
+                for (apr_xml_elem* currentElement = element->first_child;
+                     currentElement;
+                     currentElement = currentElement->next)
                 {
-                        XMLDOMNodePtr currentNode = children->item(loop);
-                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                        {
-                                XMLDOMElementPtr currentElement = currentNode;
-                                LogString tagName = currentElement->getTagName();
+                                std::string tagName(currentElement->name);
                                 if(tagName == PARAM_TAG)
                                 {
                                         setParameter(currentElement, propSetter);
                                 }
-                        }
                 }
                 Pool p;
                 propSetter.activate(p);
@@ -359,10 +332,12 @@ void DOMConfigurator::parseFilters(XMLDOMElementPtr element, std::vector<log4cxx
 /**
 Used internally to parse an category element.
 */
-void DOMConfigurator::parseLogger(XMLDOMElementPtr loggerElement)
+void DOMConfigurator::parseLogger(apr_xml_elem* loggerElement, 
+                                  apr_xml_doc* doc,
+                                  AppenderMap& appenders)
 {
         // Create a new org.apache.log4j.Category object from the <category> element.
-        LogString loggerName = subst(loggerElement->getAttribute(NAME_ATTR));
+        LogString loggerName = subst(getAttribute(loggerElement, NAME_ATTR));
 
         LogLog::debug(LOG4CXX_STR("Retreiving an instance of Logger."));
         LoggerPtr logger = repository->getLogger(loggerName, loggerFactory);
@@ -372,26 +347,25 @@ void DOMConfigurator::parseLogger(XMLDOMElementPtr loggerElement)
         // configuration is in progress.
         synchronized sync(logger->getMutex());
         bool additivity = OptionConverter::toBoolean(
-                subst(loggerElement->getAttribute(ADDITIVITY_ATTR)),
+                subst(getAttribute(loggerElement, ADDITIVITY_ATTR)),
                 true);
 
         LogLog::debug(LOG4CXX_STR("Setting [")+logger->getName()+LOG4CXX_STR("] additivity to [")+
                 (additivity ? LogString(LOG4CXX_STR("true")) : LogString(LOG4CXX_STR("false")))+LOG4CXX_STR("]."));
         logger->setAdditivity(additivity);
-        parseChildrenOfLoggerElement(loggerElement, logger, false);
+        parseChildrenOfLoggerElement(loggerElement, logger, false, doc, appenders);
 }
 
 /**
  Used internally to parse the logger factory element.
 */
-void DOMConfigurator::parseLoggerFactory(XMLDOMElementPtr factoryElement)
+void DOMConfigurator::parseLoggerFactory(apr_xml_elem* factoryElement)
 {
-        LogString className = subst(factoryElement->getAttribute(CLASS_ATTR));
+        LogString className(subst(getAttribute(factoryElement, CLASS_ATTR)));
 
         if(className.empty())
         {
-                LogLog::error(LOG4CXX_STR("Logger Factory tag ") + LogString(CLASS_ATTR) +
-                        LOG4CXX_STR(" attribute not found."));
+                LogLog::error(LOG4CXX_STR("Logger Factory tag class attribute not found."));
                 LogLog::debug(LOG4CXX_STR("No Category Logger configured."));
         }
         else
@@ -403,22 +377,13 @@ void DOMConfigurator::parseLoggerFactory(XMLDOMElementPtr factoryElement)
                         0);
                 PropertySetter propSetter(loggerFactory);
 
-                XMLDOMElementPtr currentElement = 0;
-                XMLDOMNodePtr currentNode = 0;
-                XMLDOMNodeListPtr children = factoryElement->getChildNodes();
-                int length = children->getLength();
-
-                for (int loop=0; loop < length; loop++)
-                {
-                        currentNode = children->item(loop);
-                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                        {
-                                currentElement = currentNode;
-                                if (currentElement->getTagName() == PARAM_TAG)
-                                {
-                                        setParameter(currentElement, propSetter);
-                                }
-                        }
+                for (apr_xml_elem* currentElement = factoryElement->first_child;
+                     currentElement;
+                     currentElement = currentElement->next) {
+                     std::string tagName(currentElement->name);
+                     if (tagName == PARAM_TAG) {
+                            setParameter(currentElement, propSetter);
+                    }
                 }
         }
 }
@@ -426,19 +391,20 @@ void DOMConfigurator::parseLoggerFactory(XMLDOMElementPtr factoryElement)
 /**
  Used internally to parse the roor category element.
 */
-void DOMConfigurator::parseRoot(XMLDOMElementPtr rootElement)
+void DOMConfigurator::parseRoot(apr_xml_elem* rootElement, apr_xml_doc* doc, AppenderMap& appenders)
 {
         LoggerPtr root = repository->getRootLogger();
         // category configuration needs to be atomic
         synchronized sync(root->getMutex());
-        parseChildrenOfLoggerElement(rootElement, root, true);
+        parseChildrenOfLoggerElement(rootElement, root, true, doc, appenders);
 }
 
 /**
  Used internally to parse the children of a logger element.
 */
 void DOMConfigurator::parseChildrenOfLoggerElement(
-        XMLDOMElementPtr loggerElement, LoggerPtr logger, bool isRoot)
+        apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot,
+        apr_xml_doc* doc, AppenderMap& appenders)
 {
 
     PropertySetter propSetter(logger);
@@ -448,22 +414,15 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
     logger->removeAllAppenders();
 
 
-    XMLDOMNodeListPtr children = loggerElement->getChildNodes();
-    int length = children->getLength();
-
-    for (int loop = 0; loop < length; loop++)
-        {
-                XMLDOMNodePtr currentNode = children->item(loop);
-
-                if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                {
-                        XMLDOMElementPtr currentElement = currentNode;
-                        LogString tagName = currentElement->getTagName();
+    for (apr_xml_elem* currentElement = loggerElement->first_child;
+         currentElement;
+         currentElement = currentElement->next) {
+                        std::string tagName(currentElement->name);
 
                         if (tagName == APPENDER_REF_TAG)
                         {
-                                AppenderPtr appender = findAppenderByReference(currentElement);
-                                LogString refName =  subst(currentElement->getAttribute(REF_ATTR));
+                                AppenderPtr appender = findAppenderByReference(currentElement, doc, appenders);
+                                LogString refName =  subst(getAttribute(currentElement, REF_ATTR));
                                 if(appender != 0)
                                 {
                                         LogLog::debug(LOG4CXX_STR("Adding appender named [")+ refName+
@@ -490,7 +449,6 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
                         {
                                 setParameter(currentElement, propSetter);
                         }
-                }
     }
     Pool p;
     propSetter.activate(p);
@@ -499,9 +457,9 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 /**
  Used internally to parse a layout element.
 */
-LayoutPtr DOMConfigurator::parseLayout (XMLDOMElementPtr layout_element)
+LayoutPtr DOMConfigurator::parseLayout (apr_xml_elem* layout_element)
 {
-        LogString className = subst(layout_element->getAttribute(CLASS_ATTR));
+        LogString className(subst(getAttribute(layout_element, CLASS_ATTR)));
         LogLog::debug(LOG4CXX_STR("Parsing layout of class: \"")+className+LOG4CXX_STR("\""));
         try
         {
@@ -509,24 +467,17 @@ LayoutPtr DOMConfigurator::parseLayout (XMLDOMElementPtr layout_element)
                 LayoutPtr layout = instance;
                 PropertySetter propSetter(layout);
 
-                XMLDOMNodeListPtr params  = layout_element->getChildNodes();
-                int length    = params->getLength();
-
-                for (int loop = 0; loop < length; loop++)
-                {
-                        XMLDOMNodePtr currentNode = params->item(loop);
-                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                        {
-                                XMLDOMElementPtr currentElement = currentNode;
-                                LogString tagName = currentElement->getTagName();
+                for(apr_xml_elem* currentElement = layout_element->first_child;
+                    currentElement;
+                    currentElement = currentElement->next) {
+                                std::string tagName(currentElement->name);
                                 if(tagName == PARAM_TAG)
                                 {
                                         setParameter(currentElement, propSetter);
                                 }
-                        }
                 }
 
-        Pool p;
+                Pool p;
                 propSetter.activate(p);
                 return layout;
         }
@@ -541,9 +492,9 @@ LayoutPtr DOMConfigurator::parseLayout (XMLDOMElementPtr layout_element)
 /**
  Used internally to parse a triggering policy
 */
-TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (XMLDOMElementPtr layout_element)
+TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (apr_xml_elem* layout_element)
 {
-        LogString className = subst(layout_element->getAttribute(CLASS_ATTR));
+        LogString className = subst(getAttribute(layout_element, CLASS_ATTR));
         LogLog::debug(LOG4CXX_STR("Parsing triggering policy of class: \"")+className+LOG4CXX_STR("\""));
         try
         {
@@ -551,16 +502,10 @@ TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (XMLDOMElementPtr lay
                 TriggeringPolicyPtr layout = instance;
                 PropertySetter propSetter(layout);
 
-                XMLDOMNodeListPtr params  = layout_element->getChildNodes();
-                int length    = params->getLength();
-
-                for (int loop = 0; loop < length; loop++)
-                {
-                        XMLDOMNodePtr currentNode = params->item(loop);
-                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                        {
-                                XMLDOMElementPtr currentElement = currentNode;
-                                LogString tagName = currentElement->getTagName();
+                for (apr_xml_elem* currentElement = layout_element->first_child;
+                     currentElement;
+                     currentElement = currentElement->next) {
+                                std::string tagName(currentElement->name);
                                 if(tagName == PARAM_TAG)
                                 {
                                         setParameter(currentElement, propSetter);
@@ -577,7 +522,6 @@ TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (XMLDOMElementPtr lay
                                     }
                                   }
                                 }
-                        }
                 }
 
                 Pool p;
@@ -595,9 +539,9 @@ TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (XMLDOMElementPtr lay
 /**
  Used internally to parse a triggering policy
 */
-RollingPolicyPtr DOMConfigurator::parseRollingPolicy (XMLDOMElementPtr layout_element)
+RollingPolicyPtr DOMConfigurator::parseRollingPolicy (apr_xml_elem* layout_element)
 {
-        LogString className = subst(layout_element->getAttribute(CLASS_ATTR));
+        LogString className = subst(getAttribute(layout_element, CLASS_ATTR));
         LogLog::debug(LOG4CXX_STR("Parsing rolling policy of class: \"")+className+LOG4CXX_STR("\""));
         try
         {
@@ -605,20 +549,13 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (XMLDOMElementPtr layout_el
                 RollingPolicyPtr layout = instance;
                 PropertySetter propSetter(layout);
 
-                XMLDOMNodeListPtr params  = layout_element->getChildNodes();
-                int length    = params->getLength();
-
-                for (int loop = 0; loop < length; loop++)
-                {
-                        XMLDOMNodePtr currentNode = params->item(loop);
-                        if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                        {
-                                XMLDOMElementPtr currentElement = currentNode;
-                                LogString tagName = currentElement->getTagName();
+                for(apr_xml_elem* currentElement = layout_element->first_child;
+                    currentElement;
+                    currentElement = currentElement->next) {
+                                std::string tagName(currentElement->name);
                                 if(tagName == PARAM_TAG)
                                 {
                                         setParameter(currentElement, propSetter);
-                                }
                         }
                 }
 
@@ -639,7 +576,7 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (XMLDOMElementPtr layout_el
 /**
  Used internally to parse a level  element.
 */
-void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, bool isRoot)
+void DOMConfigurator::parseLevel(apr_xml_elem* element, LoggerPtr logger, bool isRoot)
 {
     LogString loggerName = logger->getName();
     if(isRoot)
@@ -647,7 +584,7 @@ void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, boo
                 loggerName = LOG4CXX_STR("root");
     }
 
-    LogString levelStr = subst(element->getAttribute(VALUE_ATTR));
+    LogString levelStr(subst(getAttribute(element, VALUE_ATTR)));
         LogLog::debug(LOG4CXX_STR("Level value for ")+loggerName+LOG4CXX_STR(" is [")+levelStr+LOG4CXX_STR("]."));
 
     if (StringHelper::equalsIgnoreCase(levelStr,LOG4CXX_STR("INHERITED"), LOG4CXX_STR("inherited"))
@@ -664,7 +601,7 @@ void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, boo
     }
         else
         {
-                LogString className = subst(element->getAttribute(CLASS_ATTR));
+                LogString className(subst(getAttribute(element, CLASS_ATTR)));
 
                 if (className.empty())
                 {
@@ -704,10 +641,10 @@ void DOMConfigurator::parseLevel(XMLDOMElementPtr element, LoggerPtr logger, boo
                 logger->getEffectiveLevel()->toString());
 }
 
-void DOMConfigurator::setParameter(XMLDOMElementPtr elem, PropertySetter& propSetter)
+void DOMConfigurator::setParameter(apr_xml_elem* elem, PropertySetter& propSetter)
 {
-        LogString name = subst(elem->getAttribute(NAME_ATTR));
-        LogString value = elem->getAttribute(VALUE_ATTR);
+        LogString name(subst(getAttribute(elem, NAME_ATTR)));
+        LogString value(subst(getAttribute(elem, VALUE_ATTR)));
         Pool p;
         value = subst(value);
         propSetter.setProperty(name, value, p);
@@ -717,32 +654,44 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 {
        repository->setConfigured(true);
         this->repository = repository;
-        std::basic_ostringstream<logchar> os(LOG4CXX_STR("DOMConfigurator configuring file "));
-        os << filename.getName() << LOG4CXX_STR("...");
-        LogLog::debug(os.str());
+        LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
+        msg.append(filename.getName());
+        msg.append(LOG4CXX_STR("..."));
+        LogLog::debug(msg);
 
-        appenderBag = new AppenderMap();
         loggerFactory = new DefaultCategoryFactory();
 
-        try
-        {
-#ifdef _WIN32
-                XMLDOMDocumentPtr doc = new MsXMLDOMDocument();
-#else
-                XMLDOMDocumentPtr doc = new GnomeXMLDOMDocument();
-#endif
-                doc->load(filename);
-                parse(doc->getDocumentElement());
-    }
-        catch (Exception& e)
-        {
-                // I know this is miserable..
-        std::basic_ostringstream<logchar> os(LOG4CXX_STR("Could not parse input source ["));
-        os << filename.getName() << LOG4CXX_STR("].");
-                LogLog::error(os.str(), e);
-    }
+        Pool p;
+        apr_file_t *fd;
 
-        delete (AppenderMap *)appenderBag;
+        log4cxx_status_t rv = filename.open(&fd, APR_READ, APR_OS_DEFAULT, p);
+        if (rv != APR_SUCCESS) {
+            LogString msg(LOG4CXX_STR("Could not open file ["));
+            msg.append(filename.getName());
+            msg.append(LOG4CXX_STR("]."));
+            LogLog::error(msg);
+        } else {
+            apr_xml_parser *parser;
+            apr_xml_doc *doc;
+            rv = apr_xml_parse_file((apr_pool_t*) p.getAPRPool(), &parser, &doc, fd, 2000);
+            if (rv != APR_SUCCESS) {
+                char errbuf[2000];
+                char errbufXML[2000];
+                LogString msg(LOG4CXX_STR("Error parsing file ["));
+                msg.append(filename.getName());
+                msg.append(LOG4CXX_STR("], "));
+                apr_strerror(rv, errbuf, sizeof(errbuf));
+                LOG4CXX_DECODE_CHAR(lerrbuf, errbuf);
+                apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
+                LOG4CXX_DECODE_CHAR(lerrbufXML, errbufXML);
+                msg.append(lerrbuf);
+                msg.append(lerrbufXML);
+                LogLog::error(msg);
+            } else {
+                AppenderMap appenders;
+                parse(doc->root, doc, appenders);
+            }
+        }
 }
 
 void DOMConfigurator::configure(const std::string& filename)
@@ -780,7 +729,6 @@ void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
         xdog->setDelay(delay);
         xdog->start();
 }
-
 #if LOG4CXX_HAS_WCHAR_T
 void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
 {
@@ -797,9 +745,11 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
  href="doc-files/log4j.dtd">log4j.dtd</a>.
 
 */
-void DOMConfigurator::parse(XMLDOMElementPtr element)
+void DOMConfigurator::parse(apr_xml_elem* element,
+                            apr_xml_doc* doc,
+                            AppenderMap& appenders)
 {
-    LogString rootElementName = element->getTagName();
+    std::string rootElementName(element->name);
 
     if (rootElementName != CONFIGURATION_TAG)
         {
@@ -812,13 +762,12 @@ void DOMConfigurator::parse(XMLDOMElementPtr element)
                 }
                 else
                 {
-                        LogLog::error(LOG4CXX_STR("DOM element is - not a <")+
-                                LogString(CONFIGURATION_TAG)+LOG4CXX_STR("> element."));
+                        LogLog::error(LOG4CXX_STR("DOM element is - not a <configuration> element."));
                         return;
                 }
     }
 
-    LogString debugAttrib = subst(element->getAttribute(INTERNAL_DEBUG_ATTR));
+    LogString debugAttrib = subst(getAttribute(element, INTERNAL_DEBUG_ATTR));
 
     static const LogString NuLL(LOG4CXX_STR("NULL"));
     LogLog::debug(LOG4CXX_STR("debug attribute= \"") + debugAttrib +LOG4CXX_STR("\"."));
@@ -830,67 +779,50 @@ void DOMConfigurator::parse(XMLDOMElementPtr element)
     }
         else
         {
-                LogLog::debug(LOG4CXX_STR("Ignoring ") + LogString(INTERNAL_DEBUG_ATTR)
-                        + LOG4CXX_STR(" attribute."));
+                LogLog::debug(LOG4CXX_STR("Ignoring internalDebug attribute."));
     }
 
 
-    LogString confDebug = subst(element->getAttribute(CONFIG_DEBUG_ATTR));
+    LogString confDebug = subst(getAttribute(element, CONFIG_DEBUG_ATTR));
     if(!confDebug.empty() && confDebug != NuLL)
         {
-                LogLog::warn(LOG4CXX_STR("The \"")+LogString(CONFIG_DEBUG_ATTR)+
-                        LOG4CXX_STR("\" attribute is deprecated."));
-                LogLog::warn(LOG4CXX_STR("Use the \"")+LogString(INTERNAL_DEBUG_ATTR)+
-                        LOG4CXX_STR("\" attribute instead."));
+                LogLog::warn(LOG4CXX_STR("The \"configDebug\" attribute is deprecated."));
+                LogLog::warn(LOG4CXX_STR("Use the \"internalDebug\" attribute instead."));
                 LogLog::setInternalDebugging(OptionConverter::toBoolean(confDebug, true));
     }
 
-    LogString thresholdStr = subst(element->getAttribute(THRESHOLD_ATTR));
+    LogString thresholdStr = subst(getAttribute(element, THRESHOLD_ATTR));
     LogLog::debug(LOG4CXX_STR("Threshold =\"") + thresholdStr +LOG4CXX_STR("\"."));
     if(!thresholdStr.empty() && thresholdStr != NuLL)
         {
                 repository->setThreshold(thresholdStr);
     }
 
-    LogString tagName;
-    XMLDOMElementPtr currentElement;
-    XMLDOMNodePtr currentNode;
-    XMLDOMNodeListPtr children = element->getChildNodes();
-    int length = children->getLength();
-        int loop;
-
-    for (loop = 0; loop < length; loop++)
-        {
-                currentNode = children->item(loop);
-                if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                {
-                        currentElement = currentNode;
-                        tagName = currentElement->getTagName();
+    apr_xml_elem* currentElement;
+    for(currentElement = element->first_child;
+        currentElement;
+        currentElement = currentElement->next) {
+                        std::string tagName(currentElement->name);
 
                         if (tagName == CATEGORY_FACTORY_TAG)
                         {
                                 parseLoggerFactory(currentElement);
                         }
-                }
     }
 
-    for (loop = 0; loop < length; loop++)
-        {
-                currentNode = children->item(loop);
-                if (currentNode->getNodeType() == XMLDOMNode::ELEMENT_NODE)
-                {
-                        currentElement =  currentNode;
-                        tagName = currentElement->getTagName();
+    for(currentElement = element->first_child;
+        currentElement;
+        currentElement = currentElement->next) {
+                        std::string tagName(currentElement->name);
 
                         if (tagName == CATEGORY || tagName == LOGGER)
                         {
-                                parseLogger(currentElement);
+                                parseLogger(currentElement, doc, appenders);
                         }
                         else if (tagName == ROOT_TAG)
                         {
-                                parseRoot(currentElement);
+                                parseRoot(currentElement, doc, appenders);
                         }
-                }
     }
 }
 
@@ -907,4 +839,17 @@ LogString DOMConfigurator::subst(const LogString& value)
     }
 }
 
-#endif // LOG4CXX_HAVE_XML
+
+LogString DOMConfigurator::getAttribute(apr_xml_elem* element, 
+                                        const std::string& attrName) {
+    LogString attrValue;
+    for(apr_xml_attr* attr = element->attr;
+        attr;
+        attr = attr->next) {
+        if (attrName == attr->name) {
+            ByteBuffer buf((char*) attr->value, strlen(attr->value));
+            CharsetDecoder::getUTF8Decoder()->decode(buf, attrValue);
+        }
+    }
+    return attrValue;
+}

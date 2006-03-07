@@ -43,10 +43,8 @@
 extern CPPUNIT_NS::Test* createTestCase1();
 extern CPPUNIT_NS::Test* createTestCase3();
 
-#if LOG4CXX_HAVE_XML
 extern CPPUNIT_NS::Test* createTestCase2();
 extern CPPUNIT_NS::Test* createTestCase4();
-#endif
 
 //
 //  initializing a logger will cause the APR used by log4cxx library to be initialized
@@ -90,14 +88,12 @@ int main( int argc, const char * const * argv)
                      case '3':
                         runner.addTest(createTestCase3());
                         break;
-#if LOG4CXX_HAVE_XML
                      case '2':
                         runner.addTest(createTestCase2());
                         break;
                      case '4':
                         runner.addTest(createTestCase4());
                         break;
-#endif
                      default:
                         break;
                   }

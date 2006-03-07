@@ -61,14 +61,12 @@ public:
 
         static void init(const std::string& configFile)
         {
-#ifdef LOG4CXX_HAVE_XML
                 if(configFile.length() > 4 &&
                      configFile.substr(configFile.length() - 4) == ".xml")
                 {
                         xml::DOMConfigurator::configureAndWatch(configFile, 3000);
                 }
                 else
-#endif
                 {
                         PropertyConfigurator::configureAndWatch(configFile, 3000);
                 }
