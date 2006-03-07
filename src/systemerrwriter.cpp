@@ -37,10 +37,7 @@ void SystemErrWriter::flush(Pool& p) {
 
 void SystemErrWriter::write(const LogString& str, Pool& p) {
 #if LOG4CXX_HAS_WCHAR_T
-#if defined(_MSC_VER)
-    //  MSC_VER has fwide, but since all supported versions
-    //   allow intermixing of wide and byte output
-    //   use wide to support widest range of languages
+#if LOG4CXX_FORCE_WIDE_CONSOLE
     if (true) {
 #else
     if (fwide(stderr, 0) > 0) {
@@ -48,8 +45,6 @@ void SystemErrWriter::write(const LogString& str, Pool& p) {
     	LOG4CXX_ENCODE_WCHAR(msg, str);
         fputws(msg.c_str(), stderr);
     } else {
-#else
-    {
 #endif
     	LOG4CXX_ENCODE_CHAR(msg, str);
         fputs(msg.c_str(), stderr);

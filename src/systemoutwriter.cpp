@@ -38,10 +38,7 @@ void SystemOutWriter::flush(Pool& p) {
 
 void SystemOutWriter::write(const LogString& str, Pool& p) {
 #if LOG4CXX_HAS_WCHAR_T
-#if defined(_MSC_VER)
-    //  MSC_VER has fwide, but since all supported versions
-    //   allow intermixing of wide and byte output
-    //   use wide to support widest range of languages
+#if LOG4CXX_FORCE_WIDE_CONSOLE
     if (true) {
 #else
     if (fwide(stdout, 0) > 0) {
