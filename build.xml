@@ -6,7 +6,7 @@
         <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
         <libset libs="iconv" if="has-iconv"/>
-        <libset libs="xml2 pthread" if="is-unix"/>
+        <libset libs="pthread" if="is-unix"/>
         <libset libs="expat" if="has-expat"/>
         <libset libs="advapi32 odbc32 ws2_32 mswsock" if="is-windows"/>
         <libset libs="stdc++" if="is-gcc"/>
@@ -656,7 +656,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <fileset dir="${src.dir}" includes="*.cpp" excludes="**/iconv_module.cpp"/>
         <fileset dir="${include.dir}" includes="**/*.h"/>
         <includepath path="${include.dir}"/>
-        <includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${aprutil.include.dir}"/>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
@@ -945,10 +944,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         &libsets;
 
         <includepath path="${include.dir}"/>
-        <includepath path="/usr/include/libxml2" if="is-unix"/>
         <includepath path="${apr.include.dir}"/>
         <defineset define="LOG4CXX"/>
-        <libset libs="xml2" if="is-unix"/>
         <libset libs="cw32mt" if="is-bcc"/>
 
 

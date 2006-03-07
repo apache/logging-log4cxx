@@ -681,9 +681,9 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
                 msg.append(filename.getName());
                 msg.append(LOG4CXX_STR("], "));
                 apr_strerror(rv, errbuf, sizeof(errbuf));
-                LOG4CXX_DECODE_CHAR(lerrbuf, errbuf);
+                LOG4CXX_DECODE_CHAR(lerrbuf, std::string(errbuf));
                 apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
-                LOG4CXX_DECODE_CHAR(lerrbufXML, errbufXML);
+                LOG4CXX_DECODE_CHAR(lerrbufXML, std::string(errbufXML));
                 msg.append(lerrbuf);
                 msg.append(lerrbufXML);
                 LogLog::error(msg);
