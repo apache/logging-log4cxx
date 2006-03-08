@@ -95,7 +95,7 @@ namespace log4cxx {
             *   @param ch wchar_t value
             *   @return number of bytes required.
             */
-              static int UnicodeHelper::lengthUTF8(wchar_t ch);
+              static int lengthUTF8(wchar_t ch);
 
 #endif
 

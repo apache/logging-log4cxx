@@ -245,8 +245,9 @@ namespace log4cxx
 
                 protected:
                         static LogString getAttribute(apr_xml_elem*, 
-                            const std::string& attrName); 
-                        LogString DOMConfigurator::subst(const LogString& value);
+                            const std::string& attrName);
+
+                        LogString subst(const LogString& value);
 
                 protected:
                         helpers::Properties props;
