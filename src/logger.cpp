@@ -570,57 +570,57 @@ void Logger::error(const std::string& msg) {
 
 #if LOG4CXX_HAS_WCHAR_T
 void Logger::fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
-  if (isEnabledFor(log4cxx::Level::FATAL)) {
-    forcedLog(log4cxx::Level::FATAL, msg, location);
+  if (isEnabledFor(log4cxx::Level::getFatal())) {
+    forcedLog(log4cxx::Level::getFatal(), msg, location);
   }
 }
 #endif
 
 void Logger::fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
-  if (isEnabledFor(log4cxx::Level::FATAL)) {
-    forcedLog(log4cxx::Level::FATAL, msg, location);
+  if (isEnabledFor(log4cxx::Level::getFatal())) {
+    forcedLog(log4cxx::Level::getFatal(), msg, location);
   }
 }
 
 #if LOG4CXX_HAS_WCHAR_T
 void Logger::fatal(const std::wstring& msg) {
-  if (isEnabledFor(log4cxx::Level::FATAL)) {
-    forcedLog(log4cxx::Level::FATAL, msg);
+  if (isEnabledFor(log4cxx::Level::getFatal())) {
+    forcedLog(log4cxx::Level::getFatal(), msg);
   }
 }
 #endif
 
 void Logger::fatal(const std::string& msg) {
-  if (isEnabledFor(log4cxx::Level::FATAL)) {
-    forcedLog(log4cxx::Level::FATAL, msg);
+  if (isEnabledFor(log4cxx::Level::getFatal())) {
+    forcedLog(log4cxx::Level::getFatal(), msg);
   }
 }
 
 #if LOG4CXX_HAS_WCHAR_T
 void Logger::info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
-  if (isEnabledFor(log4cxx::Level::INFO)) {
-    forcedLog(log4cxx::Level::INFO, msg, location);
+  if (isEnabledFor(log4cxx::Level::getInfo())) {
+    forcedLog(log4cxx::Level::getInfo(), msg, location);
   }
 }
 #endif
 
 void Logger::info(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
-  if (isEnabledFor(log4cxx::Level::INFO)) {
-    forcedLog(log4cxx::Level::INFO, msg, location);
+  if (isEnabledFor(log4cxx::Level::getInfo())) {
+    forcedLog(log4cxx::Level::getInfo(), msg, location);
   }
 }
 
 #if LOG4CXX_HAS_WCHAR_T
 void Logger::info(const std::wstring& msg) {
-  if (isEnabledFor(log4cxx::Level::INFO)) {
-    forcedLog(log4cxx::Level::INFO, msg);
+  if (isEnabledFor(log4cxx::Level::getInfo())) {
+    forcedLog(log4cxx::Level::getInfo(), msg);
   }
 }
 #endif
 
 void Logger::info(const std::string& msg) {
-  if (isEnabledFor(log4cxx::Level::INFO)) {
-    forcedLog(log4cxx::Level::INFO, msg);
+  if (isEnabledFor(log4cxx::Level::getInfo())) {
+    forcedLog(log4cxx::Level::getInfo(), msg);
   }
 }
 
@@ -656,28 +656,28 @@ void Logger::log(const LevelPtr& level, const std::string& message) {
 
 #if LOG4CXX_HAS_WCHAR_T
 void Logger::warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
-  if (isEnabledFor(log4cxx::Level::WARN)) {
-    forcedLog(log4cxx::Level::WARN, msg, location);
+  if (isEnabledFor(log4cxx::Level::getWarn())) {
+    forcedLog(log4cxx::Level::getWarn(), msg, location);
   }
 }
 #endif
 
 void Logger::warn(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
-  if (isEnabledFor(log4cxx::Level::WARN)) {
-    forcedLog(log4cxx::Level::WARN, msg, location);
+  if (isEnabledFor(log4cxx::Level::getWarn())) {
+    forcedLog(log4cxx::Level::getWarn(), msg, location);
   }
 }
 
 #if LOG4CXX_HAS_WCHAR_T
 void Logger::warn(const std::wstring& msg) {
-  if (isEnabledFor(log4cxx::Level::WARN)) {
-    forcedLog(log4cxx::Level::WARN, msg);
+  if (isEnabledFor(log4cxx::Level::getWarn())) {
+    forcedLog(log4cxx::Level::getWarn(), msg);
   }
 }
 #endif
 
 void Logger::warn(const std::string& msg) {
-  if (isEnabledFor(log4cxx::Level::WARN)) {
-    forcedLog(log4cxx::Level::WARN, msg);
+  if (isEnabledFor(log4cxx::Level::getWarn())) {
+    forcedLog(log4cxx::Level::getWarn(), msg);
   }
 }
