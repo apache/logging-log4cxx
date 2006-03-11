@@ -133,57 +133,6 @@ log4cxx_time_t File::lastModified(Pool& pool) const {
 //   Current implementation is limited to MBCS files
 //
 //
-LogString File::read(Pool& p) const {
-  LogString output;
-  apr_file_t* f = NULL;
-  apr_status_t rv = open(&f, APR_READ, APR_OS_DEFAULT, p);
-  if (rv != APR_SUCCESS) {
-      throw IOException(rv);
-  } else {
-    const size_t BUFSIZE = 4096;
-    char* buf = p.palloc(BUFSIZE);
-    char* contents = buf;
-    apr_size_t contentLength = 0;
-    do {
-      apr_size_t bytesRead = BUFSIZE;
-      rv = apr_file_read(f, buf, &bytesRead);
-      contentLength += bytesRead;
-      if (APR_STATUS_IS_EOF(rv)  || (rv == APR_SUCCESS && bytesRead < BUFSIZE)) {
-          //
-          //     finished file
-          //        transcode and exit
-          Transcoder::decode(contents, contentLength, output);
-//
-//          TODO - assertion here when called from Compare
-//
-//          rv = apr_file_close(f);
-//          assert(rv == APR_SUCCESS);
-          return output;
-      } else if (rv == APR_SUCCESS) {
-         //
-         //   file was larger than the buffer
-         //      realloc a bigger buffer
-         char* newContents = p.palloc(contentLength + BUFSIZE);
-         buf = newContents + contentLength;
-         memcpy(newContents, contents, contentLength);
-         //
-         //   we would free contents here if you did that sort of thing
-         //
-         contents = newContents;
-      }
-    } while(rv == APR_SUCCESS);
-    rv = apr_file_close(f);
-    assert(rv == APR_SUCCESS);
-  }
-  return output;
-}
-
-
-
-//
-//   Current implementation is limited to MBCS files
-//
-//
 log4cxx_status_t File::write(const LogString& src, Pool& p) const {
   LogString output;
   apr_file_t* f = NULL;

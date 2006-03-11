@@ -57,8 +57,7 @@ namespace log4cxx
                        return osName;
                     }
 
-                    LogString read(log4cxx::helpers::Pool& pool) const;
-
+                    // @deprecated Use FileOutputStream instead
                     log4cxx_status_t write(const LogString& src, log4cxx::helpers::Pool& p) const;
 
                     log4cxx_status_t open(apr_file_t** file, int flags,

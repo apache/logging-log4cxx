@@ -37,6 +37,7 @@ liblog4cxx_la_SOURCES = \
         file.cpp \
         fileappender.cpp \
         filedatepatternconverter.cpp \
+        fileinputstream.cpp \
         filelocationpatternconverter.cpp \
         fileoutputstream.cpp \
         filerenameaction.cpp \
@@ -48,6 +49,8 @@ liblog4cxx_la_SOURCES = \
         hierarchy.cpp \
         htmllayout.cpp \
         inetaddress.cpp \
+        inputstream.cpp \
+        inputstreamreader.cpp \
         integer.cpp \
         integerpatternconverter.cpp \
         layout.cpp\
@@ -96,6 +99,7 @@ liblog4cxx_la_SOURCES = \
         propertyconfigurator.cpp \
         propertyresourcebundle.cpp \
         propertysetter.cpp \
+        reader.cpp \
         relativetimedateformat.cpp \
         relativetimepatternconverter.cpp \
         resourcebundle.cpp \

@@ -19,6 +19,7 @@
 
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/properties.h>
+#include <log4cxx/helpers/inputstream.h>
 
 namespace log4cxx
 {
@@ -47,7 +48,7 @@ namespace log4cxx
                         @throw IOException if an error occurred when reading from the
                         input stream.
                         */
-                        PropertyResourceBundle(LogString& inStream);
+                        PropertyResourceBundle(InputStreamPtr inStream);
 
                         virtual LogString getString(const LogString& key) const;
 

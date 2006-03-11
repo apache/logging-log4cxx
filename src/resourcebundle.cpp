@@ -56,19 +56,16 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
    }
 
    bundlesNames.push_back(baseName);
-        Pool pool;
 
    for (std::vector<LogString>::iterator it = bundlesNames.begin();
       it != bundlesNames.end(); it++)
    {
-#if 0
-// TODO
 
-                LogString bundleStream;
       bundleName = *it;
 
       PropertyResourceBundlePtr current;
 
+      // Try loading a class which implements ResourceBundle
       try
       {
          const Class& classObj = Loader::loadClass(bundleName);
@@ -79,29 +76,27 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
          current = 0;
       }
 
+      // No class found, then try to create a PropertyResourceBundle from a file
       if (current == 0)
       {
-                        apr_size_t bytes = 0;
-                        void* buf = Loader::getResourceAsStream(
-                           bundleName + LOG4CXX_STR(".properties"),
-                           &bytes, pool);
-                        if (bytes == 0 || buf == NULL) {
-                          continue;
-                        }
-                        log4cxx::helpers::Transcoder::decode(buf, bytes, pool, bundleStream);
+        InputStreamPtr bundleStream =
+                  Loader::getResourceAsStream(
+                                bundleName + LOG4CXX_STR(".properties"));
+        if (bundleStream == 0) {
+          continue;
+        }
+
+        try
+        {
+          current = new PropertyResourceBundle(bundleStream);
+        }
+        catch(Exception&)
+        {
+          throw;
+        }
       }
 
-      try
-      {
-         current = new PropertyResourceBundle(bundleStream);
-      }
-      catch(Exception&)
-      {
-         throw;
-      }
-
-      bundleStream.erase(bundleStream.begin(), bundleStream.end());
-
+      // Add the new resource bundle to the hierarchy
       if (resourceBundle == 0)
       {
          resourceBundle = current;
@@ -112,9 +107,9 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
          previous->setParent(current);
          previous = current;
       }
-#endif
    }
 
+   // no resource bundle found at all, then throw exception
    if (resourceBundle == 0)
    {
       throw MissingResourceException(

@@ -20,6 +20,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/inputstream.h>
 #include <map>
 #include <vector>
 #include <istream>
@@ -112,7 +113,7 @@ cheeses
                         @throw IOException if an error occurred when reading from the input
                         stream.
                         */
-                        void load(LogString& inStream);
+                        void load(InputStreamPtr inStream);
 
                         /**
                         Calls the Hashtable method put. Provided for parallelism with the

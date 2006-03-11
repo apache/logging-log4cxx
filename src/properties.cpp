@@ -15,7 +15,9 @@
  */
 
 #include <log4cxx/helpers/properties.h>
+#include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -324,11 +326,13 @@ LogString Properties::getProperty(const LogString& key) const
         return (it != properties.end()) ? it->second : LogString();
 }
 
-void Properties::load(LogString& inStream)
-{
+void Properties::load(InputStreamPtr inStream) {
+        Pool pool;
+        InputStreamReaderPtr lineReader = new InputStreamReader(inStream);
+        LogString contents = lineReader->read(pool);
         properties.clear();
         PropertyParser parser;
-        parser.parse(inStream, *this);
+        parser.parse(contents, *this);
 }
 
 std::vector<LogString> Properties::propertyNames() const

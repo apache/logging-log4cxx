@@ -20,6 +20,12 @@
 #include <log4cxx/helpers/pool.h>
 #include <apr_errno.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/fileinputstream.h>
+
+#include <log4cxx/helpers/outputstreamwriter.h>
+#include <log4cxx/helpers/fileoutputstream.h>
+#include <log4cxx/helpers/inputstreamreader.h>
+#include <log4cxx/helpers/fileinputstream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -57,17 +63,19 @@ public:
           CPPUNIT_ASSERT_EQUAL(false, exists);
         }
 
-
+        // check default constructor. read() throws an exception
+        // if no file name was given.
         void defaultRead() {
           File defFile;
           Pool pool;
           try {
-            LogString contents(defFile.read(pool));
+            InputStreamPtr defInput = new FileInputStream(defFile);
+            InputStreamReaderPtr inputReader = new InputStreamReader(defInput);
+            LogString contents(inputReader->read(pool));
             CPPUNIT_ASSERT(false);
           } catch(IOException &ex) {
           }
         }
-
 
         void defaultWrite() {
           File defFile;
@@ -106,7 +114,9 @@ public:
         void propertyRead() {
           File propFile("input/patternLayout1.properties");
           Pool pool;
-          LogString props(propFile.read(pool));
+          InputStreamPtr propStream = new FileInputStream(propFile);
+          InputStreamReaderPtr propReader = new InputStreamReader(propStream);
+          LogString props(propReader->read(pool));
           LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender"));
           CPPUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
           LogString tail(LOG4CXX_STR("%-5p - %m%n"));
@@ -120,18 +130,23 @@ public:
           CPPUNIT_ASSERT_EQUAL(true, exists);
         }
 
-
         void fileWrite1() {
-          File outFile("output/fileWrite1.txt");
+          OutputStreamPtr fos = 
+                      new FileOutputStream(LOG4CXX_STR("output/fileWrite1.txt"));
+          OutputStreamWriterPtr osw = new OutputStreamWriter(fos);
+
           Pool pool;
           LogString greeting(LOG4CXX_STR("Hello, World") LOG4CXX_EOL);
-          apr_status_t stat = outFile.write(greeting, pool);
-          CPPUNIT_ASSERT_EQUAL(0, stat);
+          osw->write(greeting, pool);
 
-          LogString reply(outFile.read(pool));
+          InputStreamPtr is = 
+                      new FileInputStream(LOG4CXX_STR("output/fileWrite1.txt"));
+          InputStreamReaderPtr isr = new InputStreamReader(is);
+          LogString reply = isr->read(pool);
+
           CPPUNIT_ASSERT_EQUAL(greeting, reply);
         }
-        
+
         /**
          *  Tests conversion of backslash containing file names.  
          *  Would cause infinite loop due to bug LOGCXX-105. 

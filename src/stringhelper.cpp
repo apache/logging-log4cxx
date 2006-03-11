@@ -279,3 +279,23 @@ void StringHelper::toString(size_t n, Pool& pool, std::wstring& ws) {
   toString((log4cxx_int64_t) n, pool, ws);
 }
 #endif
+
+
+LogString StringHelper::format(const LogString& pattern, const std::vector<LogString>& params) {
+
+  LogString result;
+  int i = 0;
+  while(pattern[i] != LOG4CXX_STR('\0')) {
+    if (pattern[i] == LOG4CXX_STR('{') && pattern[i + 1] >= LOG4CXX_STR('0') &&
+        pattern[i + 1] <= LOG4CXX_STR('9') && pattern[i + 2] == LOG4CXX_STR('}')) {
+      int arg = pattern[i + 1] - LOG4CXX_STR('0');
+      result = result + params[arg];
+      i += 3;
+    } else {
+      result = result + pattern[i];
+      i++;
+    }
+  }
+
+  return result;
+}

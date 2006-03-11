@@ -30,6 +30,7 @@
 #include <sys/stat.h>
 #include <fstream>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/fileinputstream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -80,29 +81,20 @@ File Loader::getResource(const LogString& name)
 }
 #endif
 
+
+InputStreamPtr Loader::getResourceAsStream(const LogString& name) {
 #if 0
-istream * Loader::getResourceAsStream(const LogString& name)
-{
-   String path = getResource(name);
-   if (path.empty())
-   {
-      return 0;
-   }
-
-#ifdef LOG4CXX_UNICODE
-      std::wifstream * stream = new std::wifstream();
-#else
-      std::ifstream * stream = new std::ifstream();
+  String path = getResource(name);
+  if (path.empty())
+  {
+    return 0;
+  }
 #endif
 
-   USES_CONVERSION;
-   stream->open(T2A(name.c_str()));
-   if (stream->fail())
-   {
-      delete stream;
-      return 0;
-   }
+  try {
+    return new FileInputStream(name);
+  } catch(const IOException& ioex) {
+  }
 
-   return stream;
+  return 0;
 }
-#endif

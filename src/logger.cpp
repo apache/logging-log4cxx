@@ -25,7 +25,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <stdarg.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/aprinitializer.h>
@@ -208,8 +207,8 @@ ResourceBundlePtr Logger::getResourceBundle() const
         return 0;
 }
 
-#if 0
-String Logger::getResourceBundleString(const String& key) const
+
+LogString Logger::getResourceBundleString(const LogString& key) const
 {
         ResourceBundlePtr rb = getResourceBundle();
 
@@ -217,7 +216,7 @@ String Logger::getResourceBundleString(const String& key) const
         // to report errors from within log4j.
         if (rb == 0)
         {
-                return String();
+                return LogString();
         }
         else
         {
@@ -227,14 +226,14 @@ String Logger::getResourceBundleString(const String& key) const
                 }
                 catch (MissingResourceException&)
                 {
-                        ((Logger *)this)->error(LOG4CXX_WSTR("No resource is associated with key \"") +
-                                key + LOG4CXX_WSTR("\"."));
+                        ((Logger *)this)->error(LOG4CXX_STR("No resource is associated with key \"") +
+                                key + LOG4CXX_STR("\"."));
 
-                        return String();
+                        return LogString();
                 }
         }
 }
-#endif
+
 
 const LoggerPtr& Logger::getParent() const
 {
@@ -345,8 +344,9 @@ bool Logger::isFatalEnabled() const
         }
 }*/
 
-void Logger::l7dlog(const LevelPtr& level, const std::string& key,
-                        const LocationInfo& location, ...)
+
+void Logger::l7dlog(const LevelPtr& level, const LogString& key,
+                    const LocationInfo& location, const std::vector<LogString>& params)
 {
         if (repository == 0 || repository->isDisabled(level->toInt()))
         {
@@ -355,10 +355,8 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
 
         if (level->isGreaterOrEqual(getEffectiveLevel()))
         {
-#if 0
-//    TODO
-                String pattern = getResourceBundleString(key);
-                String msg;
+                LogString pattern = getResourceBundleString(key);
+                LogString msg;
 
                 if (pattern.empty())
                 {
@@ -366,47 +364,119 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
                 }
                 else
                 {
-                        va_list params;
-                        va_start (params, line);
                         msg = StringHelper::format(pattern, params);
-                        va_end (params);
                 }
-#endif
-                forcedLog(level, key, location);
+
+                forcedLog(level, msg, location);
         }
 }
+
+void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+                    const LocationInfo& location) {
+  LogString lkey;
+  Transcoder::decode(key.c_str(), strlen(key.c_str()), lkey);
+
+  std::vector<LogString> values(0);
+  l7dlog(level, lkey, location, values);
+}
+
+void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+                    const LocationInfo& location, const std::string& val1) {
+  LogString lval1;
+  Transcoder::decode(val1.c_str(), strlen(val1.c_str()), lval1);
+  LogString lkey;
+  Transcoder::decode(key.c_str(), strlen(key.c_str()), lkey);
+
+  std::vector<LogString> values(1);
+  values[0] = lval1;
+  l7dlog(level, lkey, location, values);
+}
+
+void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+                    const LocationInfo& location, 
+                    const std::string& val1, const std::string& val2) {
+  LogString lval1;
+  LogString lval2;
+  Transcoder::decode(val1.c_str(), strlen(val1.c_str()), lval1);
+  Transcoder::decode(val2.c_str(), strlen(val2.c_str()), lval2);
+  LogString lkey;
+  Transcoder::decode(key.c_str(), strlen(key.c_str()), lkey);
+
+  std::vector<LogString> values(2);
+  values[0] = lval1;
+  values[1] = lval2;
+  l7dlog(level, lkey, location, values);
+}
+
+void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+                    const LocationInfo& location, 
+                    const std::string& val1, const std::string& val2, const std::string& val3) {
+  LogString lval1;
+  LogString lval2;
+  LogString lval3;
+  Transcoder::decode(val1.c_str(), strlen(val1.c_str()), lval1);
+  Transcoder::decode(val2.c_str(), strlen(val2.c_str()), lval2);
+  Transcoder::decode(val3.c_str(), strlen(val3.c_str()), lval3);
+  LogString lkey;
+  Transcoder::decode(key.c_str(), strlen(key.c_str()), lkey);
+
+  std::vector<LogString> values(3);
+  values[0] = lval1;
+  values[1] = lval2;
+  values[3] = lval3;
+  l7dlog(level, lkey, location, values);
+}
+
 
 #if LOG4CXX_HAS_WCHAR_T
+
 void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
-                        const LocationInfo& location, ...)
-{
-        if (repository == 0 || repository->isDisabled(level->toInt()))
-        {
-                return;
-        }
+                    const LocationInfo& location) {
+  LOG4CXX_DECODE_WCHAR(lkey, key);
 
-        if (level->isGreaterOrEqual(getEffectiveLevel()))
-        {
-#if 0
-//    TODO
-                String pattern = getResourceBundleString(key);
-                String msg;
-
-                if (pattern.empty())
-                {
-                        msg = key;
-                }
-                else
-                {
-                        va_list params;
-                        va_start (params, line);
-                        msg = StringHelper::format(pattern, params);
-                        va_end (params);
-                }
-#endif
-                forcedLog(level, key, location);
-        }
+  std::vector<LogString> values(0);
+  l7dlog(level, lkey, location, values);
 }
+
+void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const LocationInfo& location,
+                    const std::wstring& val1) {
+  LOG4CXX_DECODE_WCHAR(lval1, val1);
+  LOG4CXX_DECODE_WCHAR(lkey, key);
+
+  std::vector<LogString> values(1);
+  values[0] = lval1;
+  l7dlog(level, lkey, location, values);
+}
+
+void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const LocationInfo& location,
+                    const std::wstring& val1, const std::wstring& val2) {
+  LOG4CXX_DECODE_WCHAR(lval1, val1);
+  LOG4CXX_DECODE_WCHAR(lval2, val2);
+  LOG4CXX_DECODE_WCHAR(lkey, key);
+
+  std::vector<LogString> values(2);
+  values[0] = lval1;
+  values[1] = lval2;
+  l7dlog(level, lkey, location, values);
+}
+
+void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const LocationInfo& location,
+                    const std::wstring& val1, const std::wstring& val2, const std::wstring& val3) {
+  LOG4CXX_DECODE_WCHAR(lval1, val1);
+  LOG4CXX_DECODE_WCHAR(lval2, val2);
+  LOG4CXX_DECODE_WCHAR(lval3, val3);
+  LOG4CXX_DECODE_WCHAR(lkey, key);
+
+  std::vector<LogString> values(3);
+  values[0] = lval1;
+  values[1] = lval2;
+  values[2] = lval3;
+  l7dlog(level, lkey, location, values);
+}
+
 #endif
 
 void Logger::removeAllAppenders()

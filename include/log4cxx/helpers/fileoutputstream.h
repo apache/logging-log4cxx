@@ -43,7 +43,7 @@ namespace log4cxx
                           LOG4CXX_CAST_ENTRY_CHAIN(OutputStream)
                   END_LOG4CXX_CAST_MAP()
 
-                  FileOutputStream(const LogString& filename, bool append);
+                  FileOutputStream(const LogString& filename, bool append = false);
                   virtual ~FileOutputStream();
 
                   virtual void close(Pool& p);

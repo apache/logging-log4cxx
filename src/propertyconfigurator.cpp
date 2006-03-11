@@ -35,6 +35,7 @@
 #include <apr_file_info.h>
 #include <apr_pools.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/fileinputstream.h>
 
 
 using namespace log4cxx;
@@ -80,22 +81,23 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
         spi::LoggerRepositoryPtr& hierarchy)
 {
        hierarchy->setConfigured(true);
-        Pool pool;
-        LogString config(configFileName.read(pool));
-        if (config.length() == 0) {
-            LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
-                + configFileName.getName() + LOG4CXX_STR("]."));
-        } else {
-            // If we reach here, then the config file is alright.
-            Properties props;
-            props.load(config);
-            try {
-              doConfigure(props, hierarchy);
-            } catch(const std::exception& ex) {
-              LogLog::error(((LogString) LOG4CXX_STR("Could not parse configuration file ["))
-                  + configFileName.getName() + LOG4CXX_STR("]."), ex);
-            }
-        }
+
+       Properties props;
+       try {
+          InputStreamPtr inputStream = new FileInputStream(configFileName);
+          props.load(inputStream);
+       } catch(const IOException& ie) {
+          LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
+                        + configFileName.getName() + LOG4CXX_STR("]."));
+          return;
+       }
+
+       try {
+          doConfigure(props, hierarchy);
+       } catch(const std::exception& ex) {
+          LogLog::error(((LogString) LOG4CXX_STR("Could not parse configuration file ["))
+                        + configFileName.getName() + LOG4CXX_STR("]."), ex);
+       }
 }
 
 void PropertyConfigurator::configure(const File& configFilename)

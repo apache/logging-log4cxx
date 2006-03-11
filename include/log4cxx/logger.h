@@ -452,23 +452,44 @@ namespace log4cxx
         First, the user supplied
         <code>key</code> is searched in the resource bundle. Next, the resulting
         pattern is formatted using helpers::StringHelper::format method with the user
-        supplied object array <code>params</code>.
+        supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #resourceBundle.
-        @param file The source file of the logging request, may be null.
-        @param line The number line of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param values The values for the placeholders <code>{0}</code>,
+                      <code>{1}</code> etc. within the pattern.
 
         @see #setResourceBundle
         */
+        void l7dlog(const LevelPtr& level, const LogString& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::vector<LogString>& values);
+
 #if LOG4CXX_HAS_WCHAR_T
         void l7dlog(const LevelPtr& level, const std::wstring& key,
-                                const log4cxx::spi::LocationInfo& locationInfo,
-                                ...);
+                    const log4cxx::spi::LocationInfo& locationInfo);
+        void l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::wstring& val1);
+        void l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::wstring& val1, const std::wstring& val2);
+        void l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::wstring& val1, const std::wstring& val2, const std::wstring& val3);
 #endif
         void l7dlog(const LevelPtr& level, const std::string& key,
-                                const log4cxx::spi::LocationInfo& locationInfo,
-                                ...);
+                    const log4cxx::spi::LocationInfo& locationInfo);
+        void l7dlog(const LevelPtr& level, const std::string& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::string& val1);
+        void l7dlog(const LevelPtr& level, const std::string& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::string& val1, const std::string& val2);
+        void l7dlog(const LevelPtr& level, const std::string& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::string& val1, const std::string& val2, const std::string& val3);
 
           /**
         This is the most generic printing method. It is intended to be

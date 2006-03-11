@@ -16,6 +16,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/properties.h>
+#include <log4cxx/helpers/fileinputstream.h>
 #include "../insertwide.h"
 
 using namespace log4cxx;
@@ -31,10 +32,11 @@ class PropertiesTestCase : public CppUnit::TestFixture
 public:
         void testLoad1() {
           //
-          //    line from patternLayout1.properties
-          LogString line(LOG4CXX_STR("log4j.appender.testAppender.layout.ConversionPattern=%-5p - %m%n"));
+          //    read patternLayout1.properties
+          FileInputStreamPtr propFile = 
+            new FileInputStream(LOG4CXX_STR("input/patternLayout1.properties"));
           Properties properties;
-          properties.load(line);
+          properties.load(propFile);
           LogString pattern(properties.getProperty(LOG4CXX_STR("log4j.appender.testAppender.layout.ConversionPattern")));
           CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("%-5p - %m%n"), pattern);
         }

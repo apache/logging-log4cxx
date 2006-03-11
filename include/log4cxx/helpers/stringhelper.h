@@ -18,7 +18,7 @@
 #define _LOG4CXX_HELPERS_STRING_HELPER_H
 
 #include <log4cxx/logstring.h>
-#include <stdarg.h>
+#include <vector>
 
 
 namespace log4cxx
@@ -56,6 +56,8 @@ namespace log4cxx
             static std::string toLowerCase(const std::string& s);
 
             static bool getline(std::string& buf, std::string& line);
+
+            static LogString format(const LogString& pattern, const std::vector<LogString>& params);
 
 #if LOG4CXX_HAS_WCHAR_T
             static std::wstring trim(const std::wstring& s);

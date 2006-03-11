@@ -23,7 +23,8 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyResourceBundle)
 
-PropertyResourceBundle::PropertyResourceBundle(LogString& inStream)
+
+PropertyResourceBundle::PropertyResourceBundle(InputStreamPtr inStream)
 {
    properties.load(inStream);
 }

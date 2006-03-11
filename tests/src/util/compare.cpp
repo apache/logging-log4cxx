@@ -21,6 +21,8 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/fileinputstream.h>
+#include <log4cxx/helpers/inputstreamreader.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -28,10 +30,14 @@ using namespace log4cxx::helpers;
 bool Compare::compare(const File& file1, const File& file2)
 {
     Pool pool;
+    InputStreamPtr fileIn1 = new FileInputStream(file1);
+    InputStreamReaderPtr reader1 = new InputStreamReader(fileIn1);
+    LogString in1(reader1->read(pool));
 
-    LogString in1(file1.read(pool));
     Pool pool2;
-    LogString in2(file2.read(pool2));
+    InputStreamPtr fileIn2 = new FileInputStream(file2);
+    InputStreamReaderPtr reader2 = new InputStreamReader(fileIn2);
+    LogString in2(reader2->read(pool2));
 
     LogString back1(in1);
     LogString back2(in2);

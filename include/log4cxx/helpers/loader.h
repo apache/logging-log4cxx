@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/inputstream.h>
 
 
 namespace log4cxx
@@ -34,8 +35,9 @@ namespace log4cxx
                         static const Class& loadClass(const LogString& clazz);
 //  TODO
 //       static LogString getResource(const LogString& name);
-//       static void* getResourceAsStream(const LogString& name,
-//                            apr_size_t* size, log4cxx::helpers::Pool& pool);
+
+                        static InputStreamPtr getResourceAsStream(
+                                                         const LogString& name);
                 };
         }  // namespace helpers
 } // namespace log4cxx
