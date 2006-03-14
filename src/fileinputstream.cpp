@@ -65,15 +65,15 @@ void FileInputStream::close() {
 
 int FileInputStream::read(ByteBuffer& buf) {
   apr_size_t bytesRead = buf.remaining();
-  apr_status_t stat = apr_file_read(fileptr, buf.current(), &bytesRead); 
-  if (APR_STATUS_IS_EOF(stat)) {
-    bytesRead = -1;
-  } else {
+  apr_status_t stat = apr_file_read(fileptr, buf.current(), &bytesRead);
+  int retval = -1; 
+  if (!APR_STATUS_IS_EOF(stat)) {
     if (stat != APR_SUCCESS) {
       throw IOException(stat);
     }
     buf.position(buf.position() + bytesRead);
+    retval = bytesRead;
   }
 
-  return bytesRead;
+  return retval;
 }

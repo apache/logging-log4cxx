@@ -24,14 +24,14 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(InputStreamReader)
 
-InputStreamReader::InputStreamReader(InputStreamPtr& in)
+InputStreamReader::InputStreamReader(const InputStreamPtr& in)
    : in(in), dec(CharsetDecoder::getDefaultDecoder()) {
    if (in == 0) {
       throw NullPointerException("in parameter may not be null.");
    }
 }
 
-InputStreamReader::InputStreamReader(InputStreamPtr& in, CharsetDecoderPtr &dec) 
+InputStreamReader::InputStreamReader(const InputStreamPtr& in, const CharsetDecoderPtr &dec) 
     : in(in), dec(dec) {
     if (in == 0) {
        throw NullPointerException("in parameter may not be null.");

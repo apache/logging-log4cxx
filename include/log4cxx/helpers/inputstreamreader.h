@@ -49,7 +49,7 @@ namespace log4cxx
                    *
                    * @param in The input stream to decorate.
                    */
-                  InputStreamReader(InputStreamPtr& in);
+                  InputStreamReader(const InputStreamPtr& in);
 
                   /**
                    * Creates an InputStreamReader that uses the given charset decoder.
@@ -57,7 +57,7 @@ namespace log4cxx
                    * @param in The input stream to decorate.
                    * @param enc The charset decoder to use for the conversion.
                    */
-                  InputStreamReader(InputStreamPtr& in, CharsetDecoderPtr &enc);
+                  InputStreamReader(const InputStreamPtr& in, const CharsetDecoderPtr &enc);
 
                   ~InputStreamReader();
 
