@@ -328,7 +328,8 @@ LogString Properties::getProperty(const LogString& key) const
 
 void Properties::load(InputStreamPtr inStream) {
         Pool pool;
-        InputStreamReaderPtr lineReader = new InputStreamReader(inStream);
+        InputStreamReaderPtr lineReader(
+            new InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()));
         LogString contents = lineReader->read(pool);
         properties.clear();
         PropertyParser parser;

@@ -373,8 +373,7 @@ void Logger::l7dlog(const LevelPtr& level, const LogString& key,
 
 void Logger::l7dlog(const LevelPtr& level, const std::string& key,
                     const LocationInfo& location) {
-  LogString lkey;
-  Transcoder::decode(key.c_str(), strlen(key.c_str()), lkey);
+  LOG4CXX_DECODE_CHAR(lkey, key);
 
   std::vector<LogString> values(0);
   l7dlog(level, lkey, location, values);
@@ -382,10 +381,8 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
 
 void Logger::l7dlog(const LevelPtr& level, const std::string& key,
                     const LocationInfo& location, const std::string& val1) {
-  LogString lval1;
-  Transcoder::decode(val1.c_str(), strlen(val1.c_str()), lval1);
-  LogString lkey;
-  Transcoder::decode(key.c_str(), strlen(key.c_str()), lkey);
+  LOG4CXX_DECODE_CHAR(lkey, key);
+  LOG4CXX_DECODE_CHAR(lval1, val1);
 
   std::vector<LogString> values(1);
   values[0] = lval1;
@@ -395,12 +392,9 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
 void Logger::l7dlog(const LevelPtr& level, const std::string& key,
                     const LocationInfo& location, 
                     const std::string& val1, const std::string& val2) {
-  LogString lval1;
-  LogString lval2;
-  Transcoder::decode(val1.c_str(), strlen(val1.c_str()), lval1);
-  Transcoder::decode(val2.c_str(), strlen(val2.c_str()), lval2);
-  LogString lkey;
-  Transcoder::decode(key.c_str(), strlen(key.c_str()), lkey);
+  LOG4CXX_DECODE_CHAR(lkey, key);
+  LOG4CXX_DECODE_CHAR(lval1, val1);
+  LOG4CXX_DECODE_CHAR(lval2, val2);
 
   std::vector<LogString> values(2);
   values[0] = lval1;
@@ -411,14 +405,10 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
 void Logger::l7dlog(const LevelPtr& level, const std::string& key,
                     const LocationInfo& location, 
                     const std::string& val1, const std::string& val2, const std::string& val3) {
-  LogString lval1;
-  LogString lval2;
-  LogString lval3;
-  Transcoder::decode(val1.c_str(), strlen(val1.c_str()), lval1);
-  Transcoder::decode(val2.c_str(), strlen(val2.c_str()), lval2);
-  Transcoder::decode(val3.c_str(), strlen(val3.c_str()), lval3);
-  LogString lkey;
-  Transcoder::decode(key.c_str(), strlen(key.c_str()), lkey);
+  LOG4CXX_DECODE_CHAR(lkey, key);
+  LOG4CXX_DECODE_CHAR(lval1, val1);
+  LOG4CXX_DECODE_CHAR(lval2, val2);
+  LOG4CXX_DECODE_CHAR(lval3, val3);
 
   std::vector<LogString> values(3);
   values[0] = lval1;

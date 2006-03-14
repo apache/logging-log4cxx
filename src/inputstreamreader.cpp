@@ -50,40 +50,23 @@ void InputStreamReader::close(Pool& ) {
 
 LogString InputStreamReader::read(Pool& p) {
     const size_t BUFSIZE = 4096;
-    char* buf = p.palloc(BUFSIZE);
-    char* contents = buf;
-    int contentLength = 0;
-    int bytesRead = 0;
+    ByteBuffer buf(p.palloc(BUFSIZE), BUFSIZE);
+    LogString output;
 
     // read whole file
-    do {
-      bytesRead = in->read(buf, 0, BUFSIZE);
-      if (bytesRead > 0) {
-        contentLength += bytesRead;
-      }
-      if (bytesRead < BUFSIZE) {
-        bytesRead = -1;
-      }
+    while(in->read(buf) >= 0) {
+         buf.flip();
+         log4cxx_status_t stat = dec->decode(buf, output);
+         if (stat != 0) {
+             throw IOException(stat);
+         }
+         if (buf.remaining() > 0) {
+             memmove(buf.data(), buf.current(), buf.remaining());
+             buf.limit(buf.remaining());
+         } else {
+             buf.clear();
+         }
+    }
 
-      if (bytesRead != -1) {
-         //
-         //   file was larger than the buffer
-         //      realloc a bigger buffer
-         char* newContents = p.palloc(contentLength + BUFSIZE);
-         buf = newContents + contentLength;
-         memcpy(newContents, contents, contentLength);
-         //
-         //   we would free contents here if you did that sort of thing
-         //
-         contents = newContents;
-      }
-    } while(bytesRead != -1);
-
-    //
-    //     finished file
-    //        transcode and exit
-    LogString output;
-    ByteBuffer input(contents, contentLength);
-    dec->decode(input, output);
     return output;
 }

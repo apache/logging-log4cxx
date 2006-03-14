@@ -1,5 +1,5 @@
 /*
- * Copyright 2003,2005 The Apache Software Foundation.
+ * Copyright 2006 The Apache Software Foundation.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef _LOG4CXX_HELPERS_FILEINPUTSTREAM_H
-#define _LOG4CXX_HELPERS_FILEINPUTSTREAM_H
+#ifndef _LOG4CXX_HELPERS_BYTEARRAYINPUTSTREAM_H
+#define _LOG4CXX_HELPERS_BYTEARRAYNPUTSTREAM_H
 
+#include <vector>
 #include <log4cxx/helpers/inputstream.h>
-#include <log4cxx/file.h>
-#include <log4cxx/helpers/pool.h>
 
 
 namespace log4cxx
@@ -28,39 +27,31 @@ namespace log4cxx
         namespace helpers {
 
           /**
-           * InputStream implemented on top of APR file IO.
+           * InputStream implemented on top of a byte array.
            * @since 0.9.8
            */
-          class LOG4CXX_EXPORT FileInputStream : public InputStream
+          class LOG4CXX_EXPORT ByteArrayInputStream : public InputStream
           {
           private:
-                  Pool pool;
-                  apr_file_t* fileptr;
+              typedef std::vector<unsigned char> ByteArray;
+              ByteArray buf;
+              ByteArray::size_type pos;
 
           public:
-                  DECLARE_ABSTRACT_LOG4CXX_OBJECT(FileInputStream)
+                  DECLARE_ABSTRACT_LOG4CXX_OBJECT(ByteArrayInputStream)
                   BEGIN_LOG4CXX_CAST_MAP()
-                          LOG4CXX_CAST_ENTRY(FileInputStream)
+                          LOG4CXX_CAST_ENTRY(ByteArrayInputStream)
                           LOG4CXX_CAST_ENTRY_CHAIN(InputStream)
                   END_LOG4CXX_CAST_MAP()
 
                   /**
-                   * Creates a FileInputStream by opening a connection to an actual
-                   * file, the file named by the path name name in the file system.
+                   * Creates a ByteArrayInputStream.
                    *
-                   * @param filename The system-dependent file name.
+                   * @param bytes array of bytes to copy into stream.
                    */
-                  FileInputStream(const LogString& filename);
+                   ByteArrayInputStream(const std::vector<unsigned char>& bytes);
 
-                  /**
-                   * Creates a FileInputStream by opening a connection to an actual 
-                   * file, the file named by the File object file in the file system.
-                   *
-                   * @param aFile The file to be opened for reading.
-                   */
-                  FileInputStream(const File& aFile);
-
-                  virtual ~FileInputStream();
+                   virtual ~ByteArrayInputStream();
 
                   /**
                    * Closes this file input stream and releases any system 
@@ -79,13 +70,13 @@ namespace log4cxx
 
           private:
 
-                  FileInputStream(const FileInputStream&);
+                  ByteArrayInputStream(const ByteArrayInputStream&);
 
-                  FileInputStream& operator=(const FileInputStream&);
+                  ByteArrayInputStream& operator=(const ByteArrayInputStream&);
 
           };
 
-          typedef helpers::ObjectPtrT<FileInputStream> FileInputStreamPtr;
+          typedef helpers::ObjectPtrT<ByteArrayInputStream> ByteArrayInputStreamPtr;
         } // namespace helpers
 
 }  //namespace log4cxx

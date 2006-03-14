@@ -64,6 +64,10 @@ namespace log4cxx
                *   Get decoder for UTF-8.
                */
                   static CharsetDecoderPtr getUTF8Decoder();
+              /**
+               *   Get decoder for ISO-8859-1.
+               */
+                  static CharsetDecoderPtr getISOLatinDecoder();
 
               /**
                *  Decodes as many bytes as possible from the given

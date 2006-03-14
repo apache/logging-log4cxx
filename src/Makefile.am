@@ -11,6 +11,7 @@ liblog4cxx_la_SOURCES = \
         asyncappender.cpp \
         basicconfigurator.cpp \
         bufferedwriter.cpp \
+        bytearrayinputstream.cpp \
         bytebuffer.cpp \
         cacheddateformat.cpp \
         charsetdecoder.cpp \

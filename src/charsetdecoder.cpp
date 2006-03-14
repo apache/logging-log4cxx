@@ -315,7 +315,7 @@ private:
 
 
 /**
-*    Converts from ISO-8859-1 to LogString.
+*    Converts from US-ASCII to LogString.
 *
 */
 class USASCIICharsetDecoder : public CharsetDecoder
@@ -455,6 +455,10 @@ CharsetDecoderPtr CharsetDecoder::getUTF8Decoder() {
        return new UTF8CharsetDecoder();
     }
     return decoder;
+}
+
+CharsetDecoderPtr CharsetDecoder::getISOLatinDecoder() {
+    return new ISOLatinCharsetDecoder();
 }
 
 #if LOG4CXX_HAS_WCHAR_T

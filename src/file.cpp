@@ -129,27 +129,6 @@ log4cxx_time_t File::lastModified(Pool& pool) const {
 }
 
 
-//
-//   Current implementation is limited to MBCS files
-//
-//
-log4cxx_status_t File::write(const LogString& src, Pool& p) const {
-  LogString output;
-  apr_file_t* f = NULL;
-  apr_status_t rv = open(&f,
-       APR_WRITE | APR_TRUNCATE | APR_CREATE, APR_OS_DEFAULT, p);
-  if (rv == APR_SUCCESS) {
-    std::string encoded;
-    Transcoder::encode(src, encoded);
-    size_t len = encoded.length();
-    rv = apr_file_write(f, encoded.data(), &len);
-    apr_status_t close = apr_file_close(f);
-    assert(close == APR_SUCCESS);
-  }
-  return rv;
-}
-
-
 std::vector<LogString> File::list(Pool& p) const {
   return std::vector<LogString>();
   //

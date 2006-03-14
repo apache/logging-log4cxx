@@ -29,9 +29,7 @@ IMPLEMENT_LOG4CXX_OBJECT(FileInputStream)
 FileInputStream::FileInputStream(const LogString& filename) {
     apr_fileperms_t perm = APR_OS_DEFAULT;
     apr_int32_t flags = APR_READ;
-    LOG4CXX_ENCODE_CHAR(fn, filename);
-    apr_status_t stat = apr_file_open((apr_file_t**) &fileptr,
-        fn.c_str(), flags, perm, (apr_pool_t*) pool.getAPRPool());
+    apr_status_t stat = File(filename).open(&fileptr, flags, perm, pool);
     if (stat != APR_SUCCESS) {
       throw IOException(stat);
     }
@@ -41,9 +39,7 @@ FileInputStream::FileInputStream(const LogString& filename) {
 FileInputStream::FileInputStream(const File& aFile) {
     apr_fileperms_t perm = APR_OS_DEFAULT;
     apr_int32_t flags = APR_READ;
-    LOG4CXX_ENCODE_CHAR(fn, aFile.getName());
-    apr_status_t stat = apr_file_open((apr_file_t**) &fileptr,
-        fn.c_str(), flags, perm, (apr_pool_t*) pool.getAPRPool());
+    apr_status_t stat = aFile.open(&fileptr, flags, perm, pool);
     if (stat != APR_SUCCESS) {
       throw IOException(stat);
     }
@@ -52,13 +48,13 @@ FileInputStream::FileInputStream(const File& aFile) {
 
 FileInputStream::~FileInputStream() {
   if (fileptr != NULL && !APRInitializer::isDestructed) {
-    apr_file_close((apr_file_t*) fileptr);
+    apr_file_close(fileptr);
   }
 }
 
 
 void FileInputStream::close() {
-  apr_status_t stat = apr_file_close((apr_file_t*) fileptr);
+  apr_status_t stat = apr_file_close(fileptr);
   if (stat == APR_SUCCESS) {
     fileptr = NULL;
   } else {
@@ -67,15 +63,16 @@ void FileInputStream::close() {
 }
 
 
-int FileInputStream::read(char* buf, int off, int len) const {
-  apr_size_t bytesRead = len;
-  apr_status_t stat = apr_file_read((apr_file_t*) fileptr, buf + off, &bytesRead); 
+int FileInputStream::read(ByteBuffer& buf) {
+  apr_size_t bytesRead = buf.remaining();
+  apr_status_t stat = apr_file_read(fileptr, buf.current(), &bytesRead); 
   if (APR_STATUS_IS_EOF(stat)) {
     bytesRead = -1;
   } else {
     if (stat != APR_SUCCESS) {
       throw IOException(stat);
     }
+    buf.position(buf.position() + bytesRead);
   }
 
   return bytesRead;

@@ -44,16 +44,13 @@ namespace log4cxx
 
           public:
                   /**
-                   * Reads up to len bytes of data from this input stream 
-                   * into an array of chars.
+                   * Reads a sequence of bytes into the given buffer.
                    *
-                   * @param b   The buffer into which the data is read.
-                   * @param off The start offset of the data.
-                   * @param len The maximum number of bytes to read.
+                   * @param dst The buffer into which bytes are to be transferred.
                    * @return the total number of bytes read into the buffer, or -1 if there
                    *         is no more data because the end of the stream has been reached.
                    */
-                  virtual int read(char* buf, int off, int len) const = 0;
+                  virtual int read(ByteBuffer& dst) = 0;
 
                   /**
                    * Closes this input stream and releases any system 

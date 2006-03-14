@@ -77,14 +77,6 @@ public:
           }
         }
 
-        void defaultWrite() {
-          File defFile;
-          Pool pool;
-          LogString greeting(LOG4CXX_STR("Hello, World"));
-          apr_status_t stat = defFile.write(greeting, pool);
-          CPPUNIT_ASSERT(stat != APR_SUCCESS);
-        }
-
 
 #if LOG4CXX_HAS_WCHAR_T
         void wcharConstructor() {
