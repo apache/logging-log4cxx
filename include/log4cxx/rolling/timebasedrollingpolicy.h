@@ -137,7 +137,7 @@ namespace log4cxx {
          */
         class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
              public TriggeringPolicy {
-          DECLARE_ABSTRACT_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
+          DECLARE_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
           BEGIN_LOG4CXX_CAST_MAP()
                   LOG4CXX_CAST_ENTRY(TimeBasedRollingPolicy)
                   LOG4CXX_CAST_ENTRY_CHAIN(RollingPolicyBase)
