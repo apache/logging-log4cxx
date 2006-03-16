@@ -16,7 +16,7 @@
 
 #include <log4cxx/helpers/systemerrwriter.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <iostream>
+#include <stdio.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
