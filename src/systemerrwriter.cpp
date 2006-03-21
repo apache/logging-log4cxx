@@ -45,6 +45,8 @@ void SystemErrWriter::write(const LogString& str, Pool& p) {
     	LOG4CXX_ENCODE_WCHAR(msg, str);
         fputws(msg.c_str(), stderr);
     } else {
+#else
+    {
 #endif
     	LOG4CXX_ENCODE_CHAR(msg, str);
         fputs(msg.c_str(), stderr);
