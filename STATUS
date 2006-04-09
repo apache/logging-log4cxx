@@ -25,8 +25,7 @@ carnold: I believe this is satisified.
 
           o No non ASL or ASL compatable dependencies in the code base
           
-carnold: log4cxx currently depends on libxml2 (LGPL) or MSXML for XML configuration.
-Migration to Apache Portable Runtime in progress.
+carnold: Migration to Apache Portable Runtime in progress.
           
           o License grant complete          
           o CLAs on file.
@@ -38,7 +37,7 @@ Migration to Apache Portable Runtime in progress.
           (there's at least 3 legally independent committers and there 
           is no single company or entity that is vital to the success of the project)
 
-carnold: 3 current committers, carnold, mcatan, cdevienne.  I'm independent of the other committers.
+carnold: 4 current committers, carnold, mcatan, cdevienne, afester.  I'm independent of the other committers.
 
           o The above implies that new committers are admitted according to ASF practices
           o ASF style voting has been adopted and is standard practice
