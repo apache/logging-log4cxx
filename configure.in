@@ -227,44 +227,6 @@ AC_CHECK_FUNCS(gethostbyname,,
         [AC_CHECK_LIB(socket,gethostbyname)])])
 AC_CHECK_FUNCS(setsockopt,,[AC_CHECK_LIB(socket,setsockopt)])
 
-# for DOMConfigurator
-AC_MSG_CHECKING(for XML support)
-AC_ARG_WITH(XML,
-        AC_HELP_STRING(--with-XML, [XML support. Accepted arguments :
-                libxml2, Microsoft, no (default=libxml2)]),
-        [ac_with_xml=$withval],
-        [ac_with_xml=libxml2]
-        )
-case "$ac_with_xml" in
-    Microsoft)
-        AC_DEFINE(HAVE_MS_XML, 1, ODBC support through Microsoft XML.)
-        AC_DEFINE(HAVE_XML, 1, XML support)
-        AC_MSG_RESULT(Microsoft)
-        ;;
-    libxml2)
-        AC_MSG_RESULT(libxml2)
-        AC_CHECK_PROG(XML2_CONFIG, xml2-config, yes, no)
-        if test "x$XML2_CONFIG" = "xyes"
-        then
-                AC_DEFINE(HAVE_LIBXML2, 1, XML support through libxml2.)
-                AC_DEFINE(HAVE_XML, 1, XML support)
-                LIBS_XML="`xml2-config --libs`"
-                CPPFLAGS_XML="`xml2-config --cflags`"
-        else
-                AC_MSG_WARN(libxml2 not found !)
-        fi
-        ;;
-        no)
-        AC_MSG_RESULT(no)
-        ;;
-    *)
-        AC_MSG_RESULT(???)
-        AC_MSG_ERROR(Unknown option : $ac_with_xml)
-        ;;
-esac
-AC_SUBST(LIBS_XML)
-AC_SUBST(CPPFLAGS_XML)
-
 #for ODBCAppender
 AC_MSG_CHECKING(for ODBC support)
 AC_ARG_WITH(ODBC,

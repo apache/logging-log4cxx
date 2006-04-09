@@ -35,11 +35,6 @@
 
 #define LOG4CXX_HAVE_SYSLOG 0
 
-
-#if defined(_MSC_VER)
-#define LOG4CXX_HAVE_XML 1
-#endif
-
 #if !defined(__BORLANDC__)
 #define LOG4CXX_RETURN_AFTER_THROW 1
 #else

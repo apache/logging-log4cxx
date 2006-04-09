@@ -13,17 +13,11 @@
 /* thread support through Microsoft threads. */
 #define LOG4CXX_HAVE_MS_THREAD 1
 
-/* XML support through Microsoft XML. */
-#define LOG4CXX_HAVE_MS_XML 1
-
 /* ODBC support */
 #define LOG4CXX_HAVE_ODBC 1
 
 /* thread support */
 #define LOG4CXX_HAVE_THREAD 1
-
-/* XML support */
-#define LOG4CXX_HAVE_XML 1
 
 typedef __int64 int64_t;
 

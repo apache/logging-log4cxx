@@ -224,9 +224,6 @@ Optional Features
 With --enable-unicode, the library will be compiled with UTF16 Unicode support
 (2 bytes wide characters instead of 1 byte wide characters)
 
-If the libXML2 library (http://xmlsoft.org) is detected, the DOMConfigurator
-class will be compiled.
-
 Threading support can be added through option -with-thread
         * "pthread" (default): pthread library
         * "Microsoft" : native microsoft library
@@ -242,11 +239,6 @@ SMTP support (SMTPAppender) can be added through option -with-SMTP
         * "libsmtp" : libsmtp library (http://libsmtp.berlios.de)
         * "CDO" : Microsoft CDO library (no yet implemented !)
         * "no" (default) : no SMTP support
-
-XML support (DOMConfigurator) can be added through option -with-XML
-        * "libxm2" (default) : gnome xml library (http://xmlsoft.org)
-        * "Microsoft" : MSXML library
-        * "no" : no XML support
 
 
 Specifying the System Type

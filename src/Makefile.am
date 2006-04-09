@@ -149,6 +149,6 @@ liblog4cxx_la_SOURCES = \
         xmllayout.cpp\
         xmlsocketappender.cpp
 
-AM_CPPFLAGS = @CPPFLAGS_XML@ @CPPFLAGS_ODBC@
-liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_XML@ @LIBS_ODBC@ -@APR_LIBS@
+AM_CPPFLAGS = @CPPFLAGS_ODBC@
+liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_ODBC@ -@APR_LIBS@
 

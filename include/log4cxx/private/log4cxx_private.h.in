@@ -53,7 +53,6 @@ typedef int log4cxx_status_t;
 //   Capabilities should be checked in client code by
 //       attempting creation of the corresponding appender.
 //
-#define LOG4CXX_HAVE_XML 1
 #define LOG4CXX_HAVE_SMTP 0
 #define LOG4CXX_HAVE_SYSLOG 1
 
