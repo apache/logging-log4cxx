@@ -678,7 +678,7 @@ Logs a error if the condition is not true.
 @param message the message string to log.
 */
 #define LOG4CXX_ASSERT(logger, condition, message) { \
-        if (!condition && logger->isErrorEnabled()) {\
+        if (!(condition) && logger->isErrorEnabled()) {\
              logger->forcedLog(::log4cxx::Level::getError(), message, LOG4CXX_LOCATION); }}
 
 
