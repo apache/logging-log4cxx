@@ -15,7 +15,7 @@
  */
 
 #ifndef _LOG4CXX_HELPERS_BYTEARRAYINPUTSTREAM_H
-#define _LOG4CXX_HELPERS_BYTEARRAYNPUTSTREAM_H
+#define _LOG4CXX_HELPERS_BYTEARRAYINPUTSTREAM_H
 
 #include <vector>
 #include <log4cxx/helpers/inputstream.h>
@@ -33,9 +33,8 @@ namespace log4cxx
           class LOG4CXX_EXPORT ByteArrayInputStream : public InputStream
           {
           private:
-              typedef std::vector<unsigned char> ByteArray;
-              ByteArray buf;
-              ByteArray::size_type pos;
+              std::vector<unsigned char> buf;
+              size_t pos;
 
           public:
                   DECLARE_ABSTRACT_LOG4CXX_OBJECT(ByteArrayInputStream)
