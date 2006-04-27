@@ -16,6 +16,7 @@
 
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/exception.h>
+#include <apr_atomic.h>
 
 using namespace log4cxx::helpers;
 
@@ -25,5 +26,9 @@ void ObjectPtrBase::checkNull(const int& null) {
 
                 throw IllegalArgumentException("Attempt to set pointer to a non-zero numeric value.");
         }
+}
+
+void* ObjectPtrBase::exchange(volatile void** destination, void* newValue) {
+   return apr_atomic_casptr(destination, newValue, (const void*) *destination);
 }
 

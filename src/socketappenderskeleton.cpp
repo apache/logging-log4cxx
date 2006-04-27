@@ -200,7 +200,7 @@ void SocketAppenderSkeleton::fireConnector()
 {
         synchronized sync(mutex);
         if (thread.isActive()) {
-                thread.run(pool, monitor, this);
+                thread.run(monitor, this);
         }
 }
 

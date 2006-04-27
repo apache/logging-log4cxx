@@ -79,7 +79,7 @@ LoggingEvent::~LoggingEvent()
         }
 }
 
-const LogString& LoggingEvent::getLoggerName() const
+const LogString LoggingEvent::getLoggerName() const
 {
         return logger->getName();
 }

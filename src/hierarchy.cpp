@@ -37,7 +37,7 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
-Hierarchy::Hierarchy(const LoggerPtr& root) : root(root), 
+Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
 mutex(), configured(false), thresholdInt(Level::ALL_INT), threshold(Level::getAll())
 {
@@ -256,6 +256,8 @@ void Hierarchy::resetConfiguration()
 
 void Hierarchy::shutdown()
 {
+      synchronized sync(mutex);
+
       setConfigured(false);
 
         LoggerPtr root = getRootLogger();
@@ -284,15 +286,16 @@ void Hierarchy::shutdown()
 
 void Hierarchy::updateParents(LoggerPtr& logger)
 {
-        const LogString& name = logger->getName();
+        const LogString name(logger->getName());
         int length = name.size();
         bool parentFound = false;
 
         //tcout << _T("UpdateParents called for ") << name << std::endl;
 
         // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
-        for(size_t i = name.find_last_of(L'.', length-1); i != LogString::npos;
-        i = name.find_last_of(L'.', i-1))
+        for(size_t i = name.find_last_of(LOG4CXX_STR('.'), length-1);
+            i != LogString::npos;
+            i = name.find_last_of(LOG4CXX_STR('.'), i-1))
         {
                 LogString substr = name.substr(0, i);
                 //tcout << _T("UpdateParents processing ") << substr << std::endl;

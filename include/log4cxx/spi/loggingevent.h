@@ -92,7 +92,7 @@ namespace log4cxx
                                 { return level; }
 
                         /**  Return the name of the #logger. */
-                        const LogString& getLoggerName() const;
+                        const LogString getLoggerName() const;
 
                         /** Return the #message for this logging event. */
                         inline const LogString& getMessage() const

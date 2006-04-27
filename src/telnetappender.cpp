@@ -55,7 +55,7 @@ void TelnetAppender::activateOptions(Pool& p)
         if (serverSocket == NULL) {
                 serverSocket = new ServerSocket(port);
         }
-        sh.run(pool, acceptConnections, this);
+        sh.run(acceptConnections, this);
 }
 
 void TelnetAppender::setOption(const LogString& option,

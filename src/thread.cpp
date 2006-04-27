@@ -22,20 +22,19 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
-Thread::Thread() : thread(NULL), finished(false) {
+Thread::Thread() : thread(NULL), alive(false) {
 }
 
 Thread::~Thread() {
-#if APR_HAS_THREADS    
+#if APR_HAS_THREADS
     join();
 #endif
 }
 
 #if APR_HAS_THREADS
-void Thread::run(log4cxx::helpers::Pool& p,
-        void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
+void Thread::run(void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
         void* data) {
-        if (thread != NULL && !finished) {
+        if (thread != NULL && alive) {
                 throw ThreadException(0);
         }
         apr_threadattr_t* attrs;
@@ -43,7 +42,8 @@ void Thread::run(log4cxx::helpers::Pool& p,
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
-        stat = apr_thread_create((apr_thread_t**) &thread, attrs, 
+        alive = true;
+        stat = apr_thread_create((apr_thread_t**) &thread, attrs,
             (apr_thread_start_t) start, data, (apr_pool_t*) p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
@@ -51,9 +51,9 @@ void Thread::run(log4cxx::helpers::Pool& p,
 }
 
 void Thread::stop() {
-    if (thread != NULL && !finished) {
+    if (thread != NULL && alive) {
                 apr_status_t stat = apr_thread_exit((apr_thread_t*) thread, 0);
-                finished = true;
+                alive = false;
                 thread = NULL;
                 if (stat != APR_SUCCESS) {
                         throw ThreadException(stat);
@@ -62,10 +62,10 @@ void Thread::stop() {
 }
 
 void Thread::join() {
-        if (thread != NULL && !finished) {
+        if (thread != NULL && alive) {
                 apr_status_t startStat;
                 apr_status_t stat = apr_thread_join(&startStat, (apr_thread_t*) thread);
-                finished = true;
+                alive = false;
                 thread = NULL;
                 if (stat != APR_SUCCESS) {
                         throw ThreadException(stat);
@@ -75,7 +75,7 @@ void Thread::join() {
 #endif
 
 void Thread::ending() {
-        finished = true;
+        alive = false;
 }
 
 

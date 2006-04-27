@@ -84,7 +84,7 @@ void FileWatchdog::start()
 {
    checkAndConfigure();
 
-   thread.run(pool, run, this);
+   thread.run(run, this);
 }
 
 #endif

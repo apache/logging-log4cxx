@@ -18,6 +18,7 @@
 #define _LOG4CXX_HELPERS_THREAD_H
 
 #include <log4cxx/log4cxx.h>
+#include <log4cxx/helpers/pool.h>
 
 #if !defined(LOG4CXX_THREAD_FUNC)
 #if defined(_WIN32)
@@ -41,8 +42,7 @@ namespace log4cxx
                         Thread();
                         ~Thread();
 
-                        void run(log4cxx::helpers::Pool& pool,
-                                void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
+                        void run(void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
                                 void* data);
                         void stop();
                         void join();
@@ -56,8 +56,9 @@ namespace log4cxx
                         static void sleep(log4cxx_time_t duration);
 
                 private:
+                        Pool p;
                         log4cxx_thread_t* thread;
-                        volatile bool finished;
+                        volatile bool alive;
                         Thread(const Thread&);
                         Thread& operator=(const Thread&);
                 };

@@ -45,7 +45,7 @@ AsyncAppender::AsyncAppender()
   thread(),
   locationInfo(true),
   aai(new AppenderAttachableImpl()) {
-  thread.run(pool, dispatch, this);
+  thread.run(dispatch, this);
 }
 
 AsyncAppender::~AsyncAppender()

@@ -39,7 +39,7 @@ helpers = \
         helpers/stringhelpertestcase.cpp \
         helpers/timezonetestcase.cpp \
         helpers/transcodertestcase.cpp \
-        helpers/unicodehelpertestcase.cpp 
+        helpers/unicodehelpertestcase.cpp
 
 net_tests = \
 	net/smtpappendertestcase.cpp \
@@ -128,7 +128,8 @@ testsuite_SOURCES = \
         rollingfileappendertestcase.cpp\
         streamtestcase.cpp\
         writerappendertestcase.cpp \
-        ndctestcase.cpp
+        ndctestcase.cpp \
+        threadtest.cpp
 
 testsuite_LDADD = \
         $(top_builddir)/src/liblog4cxx.la

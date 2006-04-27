@@ -27,6 +27,7 @@ namespace log4cxx
         class LOG4CXX_EXPORT ObjectPtrBase {
         public:
             static void checkNull(const int& null);
+            static void* exchange(volatile void** destination, void* newValue);
         };
 
 
@@ -37,23 +38,9 @@ namespace log4cxx
          template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p)
             : p(0)
          {
-            cast(p);
+             cast(p);
          }
 
-         // Disable conversion using ObjectPtrT* specialization of
-         // template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p)
-/*       template<> explicit ObjectPtrT(ObjectPtrT* const & p) throw(IllegalArgumentException)
-         {
-            if (p == 0)
-            {
-               throw IllegalArgumentException(String());
-            }
-            else
-            {
-               this->p = p->p;
-                    this->p->addRef();
-            }
-         }*/
 
          ObjectPtrT(const int& null) //throw(IllegalArgumentException)
                 : p(0)
@@ -87,35 +74,27 @@ namespace log4cxx
                 {
                     this->p->releaseRef();
                 }
-				this->p = 0;
+                this->p = 0;
             }
 
             // Operators
          template<typename InterfacePtr> ObjectPtrT& operator=(const InterfacePtr& p)
          {
-            cast(p);
-            return *this;
+           cast(p);
+           return *this;
          }
 
-         ObjectPtrT& operator=(const ObjectPtrT& p)
-            {
-                if (this->p != p.p)
-                {
-                    if (this->p != 0)
-                    {
-                        this->p->releaseRef();
-                    }
-
-                    this->p = p.p;
-
-                    if (this->p != 0)
-                    {
-                        this->p->addRef();
-                    }
-                }
-
+         ObjectPtrT& operator=(const ObjectPtrT& p) {
+             T* newPtr = (T*) p.p;
+             if (newPtr != 0) {
+                 newPtr->addRef();
+             }
+             void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, newPtr);
+             if (oldPtr != 0) {
+                 ((T*) oldPtr)->releaseRef();
+             }
             return *this;
-            }
+         }
 
          ObjectPtrT& operator=(const int& null) //throw(IllegalArgumentException)
          {
@@ -123,65 +102,45 @@ namespace log4cxx
                 //   throws IllegalArgumentException if null != 0
                 //
                 ObjectPtrBase::checkNull(null);
-
-            if (this->p != 0)
-                {
-                    this->p->releaseRef();
-               this->p = 0;
+                void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, 0);
+                if (oldPtr != 0) {
+                   ((T*) oldPtr)->releaseRef();
                 }
-
-            return *this;
+                return *this;
          }
 
-            ObjectPtrT& operator=(T* p)
-            {
-                if (this->p != p)
-                {
-                    if (this->p != 0)
-                    {
-                        this->p->releaseRef();
-                    }
-
-                    this->p = p;
-
-                    if (this->p != 0)
-                    {
-                        this->p->addRef();
-                    }
-                }
-
-            return *this;
+         ObjectPtrT& operator=(T* p) {
+              if (p != 0) {
+                p->addRef();
+              }
+              void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, p);
+              if (oldPtr != 0) {
+                 ((T*)oldPtr)->releaseRef();
+              }
+              return *this;
             }
 
             bool operator==(const ObjectPtrT& p) const { return (this->p == p.p); }
             bool operator!=(const ObjectPtrT& p) const { return (this->p != p.p); }
             bool operator==(const T* p) const { return (this->p == p); }
             bool operator!=(const T* p) const { return (this->p != p); }
-            T* operator->() {return p; }
-            const T* operator->() const {return p; }
-            T& operator*() const {return *p; }
-            operator T*() const {return p; }
+            T* operator->() {return (T*) p; }
+            const T* operator->() const {return (const T*) p; }
+            T& operator*() const {return (T&) *p; }
+            operator T*() const {return (T*) p; }
 
-         template<typename InterfacePtr> void cast(const InterfacePtr& p)
-         {
-            if (this->p != 0)
-                {
-                    this->p->releaseRef();
-               this->p = 0;
-                }
-
-            if (p != 0)
+            template<typename InterfacePtr> void cast(const InterfacePtr& p)
             {
-               this->p = (T*)p->cast(T::getStaticClass());
-               if (this->p != 0)
+               T* newPtr = 0;
+               if (p != 0)
                {
-                  this->p->addRef();
+                  newPtr = (T*)p->cast(T::getStaticClass());
                }
+               operator=(newPtr);
             }
-         }
 
 
-        public:
+        private:
             T * p;
         };
     }

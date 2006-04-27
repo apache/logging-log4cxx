@@ -148,7 +148,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void SocketHubAppender::startServer()
 {
-        thread.run(pool, monitor, this);
+        thread.run(monitor, this);
 }
 
 void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* thread, void* data) {

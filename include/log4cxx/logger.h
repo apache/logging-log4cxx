@@ -258,8 +258,7 @@ namespace log4cxx
 
         /**
         Return the logger name.  */
-        inline const LogString& getName() const
-                        { return name; }
+        const LogString getName() const { return name; }
         void getName(std::string& name) const;
 #if LOG4CXX_HAS_WCHAR_T
         void getName(std::wstring& name) const;
