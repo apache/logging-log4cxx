@@ -72,8 +72,10 @@ public:
       configure();
 
       Thread threads[NUM_THREADS];
-      for(int t = 0; t < NUM_THREADS; t++) {
-          threads[t].run(runStatic, 0);
+      { 
+          for(int t = 0; t < NUM_THREADS; t++) {
+            threads[t].run(runStatic, 0);
+          }
       }
 
       for(int t = 0; t < NUM_THREADS; t++) {
@@ -9099,6 +9101,7 @@ public:
            meth_997();
            meth_998();
            meth_999();
+           return 0;
        }
 
 
