@@ -21,7 +21,6 @@
 
 #include <log4cxx/logger.h>
 #include <log4cxx/helpers/serversocket.h>
-#include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/net/socketnode.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -84,7 +83,6 @@ int main(int argc, const char * const argv[])
 
         try
         {
-                Pool pool;
                 LoggerPtr logger = Logger::getLogger("SimpleSocketServer");
                 log4cxx::logstream logstream(logger, Level::INFO);
 
@@ -105,7 +103,7 @@ int main(int argc, const char * const argv[])
                         Thread * thread = new Thread();
                         SocketNode* node = new SocketNode(socket,
                                 LogManager::getLoggerRepository());
-                        thread->run(pool, runSocket, node);
+                        thread->run(runSocket, node);
                 }
         }
         catch(SocketException& e)
