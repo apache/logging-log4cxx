@@ -18,6 +18,8 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/unicodehelper.h>
+#include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/synchronized.h>
 #include <apr_xlate.h>
 
 
@@ -80,8 +82,11 @@ namespace log4cxx
                   apr_status_t stat = APR_SUCCESS;
                   if (in.remaining() == 0) {
                     size_t outbytes_left = initial_outbytes_left;
-                    stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
+                    {
+                      synchronized sync(mutex);
+                      stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
                         NULL, NULL, (char*) buf, &outbytes_left);
+                    }
                     out.append(buf, (initial_outbytes_left - outbytes_left)/sizeof(logchar));
                   } else {
                     while(in.remaining() > 0 && stat == APR_SUCCESS) {
@@ -89,11 +94,14 @@ namespace log4cxx
                       size_t initial_inbytes_left = inbytes_left;
                       size_t pos = in.position();
                       apr_size_t outbytes_left = initial_outbytes_left;
-                      stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
+                      {
+                        synchronized sync(mutex);
+                        stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
                            in.data() + pos,
                            &inbytes_left,
                            (char*) buf,
                            &outbytes_left);
+                      }
                       out.append(buf, (initial_outbytes_left - outbytes_left)/sizeof(logchar));
                       in.position(pos + (initial_inbytes_left - inbytes_left));
                     }
@@ -105,6 +113,7 @@ namespace log4cxx
                   APRCharsetDecoder(const APRCharsetDecoder&);
                   APRCharsetDecoder& operator=(const APRCharsetDecoder&);
                   apr_pool_t* pool;
+                  Mutex mutex;
                   apr_xlate_t *convset;
           };
 #endif
@@ -437,7 +446,7 @@ CharsetDecoderPtr CharsetDecoder::getDefaultDecoder() {
     //  if invoked after static variable destruction
     //     (if logging is called in the destructor of a static object)
     //     then create a new decoder.
-    // 
+    //
     if (decoder == 0) {
        return createDefaultDecoder();
     }
@@ -450,7 +459,7 @@ CharsetDecoderPtr CharsetDecoder::getUTF8Decoder() {
     //  if invoked after static variable destruction
     //     (if logging is called in the destructor of a static object)
     //     then create a new decoder.
-    // 
+    //
     if (decoder == 0) {
        return new UTF8CharsetDecoder();
     }
@@ -472,14 +481,14 @@ CharsetDecoder* CharsetDecoder::createWideDecoder() {
 #endif
 }
 
-  
+
 CharsetDecoderPtr CharsetDecoder::getWideDecoder() {
   static CharsetDecoderPtr decoder(createWideDecoder());
     //
     //  if invoked after static variable destruction
     //     (if logging is called in the destructor of a static object)
     //     then create a new decoder.
-    // 
+    //
   if (decoder == 0) {
      return createWideDecoder();
   }
