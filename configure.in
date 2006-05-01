@@ -184,7 +184,7 @@ case "$ac_with_thread" in
 
         case "$host" in
                 *freebsd*)
-                CPPFLAGS="$CPPLAGS -D_THREAD_SAFE"
+                CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE"
                 LIBS="-pthread $LIBS"
                 ;;
                 *solaris*)
