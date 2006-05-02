@@ -21,6 +21,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 #ifdef LOG4CXX_HAVE_SYSLOG
 #include <syslog.h>

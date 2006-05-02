@@ -420,8 +420,15 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
        replace="${logchar_is_wchar}"/>
 
     <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
-       match="#define LOG4CXX_HAS_WCHAR_T.*"
-       replace="#define LOG4CXX_HAS_WCHAR_T ${has.wchar_t}"/>
+       match="@HAS_WCHAR_T@"
+       replace="${has.wchar_t}"/>
+
+    <!-- The MS Windows template for log4cxx_private.h contains a hard coded
+         "0" for LOG4CXX_HAVE_SYSLOG. Therefore the following replacement
+         only applies to the UNIX template. -->
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@HAS_SYSLOG@"
+       replace="1"/>
 </target>
 
 <target name="get-apr-module">

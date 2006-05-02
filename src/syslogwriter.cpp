@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/helpers/datagrampacket.h>
 #include <log4cxx/helpers/socketimpl.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #define SYSLOG_PORT 514
 
@@ -50,18 +51,14 @@ SyslogWriter::SyslogWriter(const LogString& syslogHost)
    }
 }
 
-void SyslogWriter::write(const LogString&)
-{
-#if 0
-//  TODO
-   USES_CONVERSION;
-   const char * bytes = T2A(string.c_str());
-   DatagramPacketPtr packet = new DatagramPacket((void *)bytes, string.length() + 1,
-                  address, SYSLOG_PORT);
+void SyslogWriter::write(const LogString& source) {
+   LOG4CXX_ENCODE_CHAR(data, source);
 
-   if(this->ds != 0)
-   {
+   DatagramPacketPtr packet = 
+          new DatagramPacket((void*) data.c_str(), data.length() + 1,
+                             address, SYSLOG_PORT);
+
+   if(this->ds != 0) {
       ds->send(packet);
    }
-#endif
 }

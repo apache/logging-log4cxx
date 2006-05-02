@@ -154,9 +154,15 @@ LDFLAGS="$LDFLAGS $APU_LIBS"
 
 AC_CHECK_FUNCS(swprintf)
 
-# for SysLogAppender
-
-AC_CHECK_FUNCS(syslog)
+# for local syslog() function for SyslogAppender
+AC_CHECK_FUNCS(syslog, [have_syslog=yes], [have_syslog=no])
+if test "$have_syslog" = "yes"
+then
+ AC_SUBST(HAS_SYSLOG, 1)
+else
+ AC_SUBST(HAS_SYSLOG, 0)
+fi
+					   
 
 # Checks for libraries
 # ----------------------------------------------------------------------------
