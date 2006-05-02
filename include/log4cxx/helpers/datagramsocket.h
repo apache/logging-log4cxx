@@ -20,6 +20,10 @@
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/inetaddress.h>
+#include <log4cxx/helpers/pool.h>
+
+
+extern "C" { struct apr_socket_t; }
 
 namespace log4cxx
 {
@@ -91,7 +95,7 @@ namespace log4cxx
 
                         /** Returns wether the socket is closed or not. */
                         inline bool isClosed() const
-                                { return fd != 0; }
+                                { return socket != 0; }
 
                         /** Returns the connection state of the socket. */
                         inline bool isConnected() const
@@ -103,12 +107,17 @@ namespace log4cxx
                         /** Sends a datagram packet from this socket. */
                         void  send(DatagramPacketPtr& p);
 
-                protected:
-                        /** The file descriptor object for this socket. */
-                        int fd;
+                private:
+                        /** The APR socket */
+                        apr_socket_t *socket;
+
+                        /** The memory pool for the socket */
+                        Pool socketPool;
 
                         InetAddress address;
+
                         InetAddress localAddress;
+
                         int port;
 
                         /** The local port number to which this socket is connected. */

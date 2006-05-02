@@ -14,38 +14,27 @@
  * limitations under the License.
  */
 
-
-#if defined(_WIN32)
-#include <windows.h>
-#include <winsock.h>
-#else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#endif
-
 #include <log4cxx/helpers/datagrampacket.h>
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/helpers/loglog.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/socketimpl.h>
+
+#include "apr_network_io.h"
+#include "apr_lib.h"
 
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(DatagramSocket);
 
 DatagramSocket::DatagramSocket()
- : fd(0), address(), localAddress(), port(0), localPort(0)
+ : socket(0), address(), localAddress(), port(0), localPort(0)
 {
    create();
 }
 
 DatagramSocket::DatagramSocket(int localPort)
- : fd(0), address(), localAddress(), port(0), localPort(0)
+ : socket(0), address(), localAddress(), port(0), localPort(0)
 {
    InetAddress bindAddr;
    bindAddr.address = INADDR_ANY;
@@ -55,7 +44,7 @@ DatagramSocket::DatagramSocket(int localPort)
 }
 
 DatagramSocket::DatagramSocket(int localPort, InetAddress localAddress)
- : fd(0), address(), localAddress(), port(0), localPort(0)
+ : socket(0), address(), localAddress(), port(0), localPort(0)
 {
    create();
    bind(localPort, localAddress);
@@ -75,16 +64,22 @@ DatagramSocket::~DatagramSocket()
 /**  Binds a datagram socket to a local port and address.*/
 void DatagramSocket::bind(int localPort, InetAddress localAddress)
 {
-   struct sockaddr_in server_addr;
-   int server_len = sizeof(server_addr);
+   Pool addrPool;
 
-   server_addr.sin_family = AF_INET;
-   server_addr.sin_addr.s_addr = htonl(localAddress.address);
-   server_addr.sin_port = htons(localPort);
+   // Create server socket address
+   LOG4CXX_ENCODE_CHAR(hostAddr, localAddress.getHostAddress());
+   apr_sockaddr_t *server_addr;
+   apr_status_t status = 
+       apr_sockaddr_info_get(&server_addr, hostAddr.c_str(), APR_INET,
+                             localPort, 0, (apr_pool_t*) addrPool.getAPRPool());
+   if (status != APR_SUCCESS) {
+     throw BindException(status);
+   }
 
-   if (::bind(fd, (sockaddr *)&server_addr, server_len) == -1)
-   {
-      throw BindException();
+   // bind the socket to the address
+   status = apr_socket_bind(socket, server_addr);
+   if (status != APR_SUCCESS) {
+     throw BindException(status);
    }
 
    this->localPort = localPort;
@@ -94,97 +89,100 @@ void DatagramSocket::bind(int localPort, InetAddress localAddress)
 /** Close the socket.*/
 void DatagramSocket::close()
 {
-   if (fd != 0)
-   {
+   if (socket != 0) {
       LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
-#if defined(WIN32) || defined(_WIN32)
-      if (::closesocket(fd) == -1)
-#else
-      if (::close(fd) == -1)
-#endif
-      {
-         throw SocketException();
+      apr_status_t status = apr_socket_close(socket);
+      if (status != APR_SUCCESS) {
+        throw SocketException(status);
       }
 
-      fd = 0;
+      socket = 0;
       localPort = 0;
    }
 }
 
 void DatagramSocket::connect(InetAddress address, int port)
 {
-   sockaddr_in client_addr;
-   int client_len = sizeof(client_addr);
-
-   client_addr.sin_family = AF_INET;
-   client_addr.sin_addr.s_addr = htonl(address.address);
-   client_addr.sin_port = htons(port);
-
-   if (::connect(fd, (sockaddr *)&client_addr, client_len) == -1)
-   {
-      throw ConnectException();
-   }
 
    this->address = address;
    this->port = port;
+
+   Pool addrPool;
+
+   // create socket address
+   LOG4CXX_ENCODE_CHAR(hostAddr, address.getHostAddress());
+   apr_sockaddr_t *client_addr;
+   apr_status_t status = 
+       apr_sockaddr_info_get(&client_addr, hostAddr.c_str(), APR_INET,
+                             port, 0, (apr_pool_t*) addrPool.getAPRPool());
+   if (status != APR_SUCCESS) {
+     throw ConnectException(status);
+   }
+
+   // connect the socket
+   status = apr_socket_connect(socket, client_addr);
+   if (status != APR_SUCCESS) {
+     throw ConnectException();
+   }
 }
 
 /** Creates a datagram socket.*/
 void DatagramSocket::create()
 {
-   if ((fd = ::socket(AF_INET, SOCK_DGRAM, 0)) == -1)
-   {
-      throw SocketException();
-   }
+  apr_socket_t* newSocket;
+  apr_status_t status =
+    apr_socket_create(&newSocket, APR_INET, SOCK_DGRAM, 
+                      APR_PROTO_UDP, (apr_pool_t*) socketPool.getAPRPool());
+  socket = newSocket;
+  if (status != APR_SUCCESS) {
+    throw SocketException(status);
+  }
 }
 
 /** Receive the datagram packet.*/
 void DatagramSocket::receive(DatagramPacketPtr& p)
 {
-   sockaddr_in addr;
-   int addr_len = sizeof(addr);
+   Pool addrPool;
 
-   addr.sin_family = AF_INET;
-   addr.sin_addr.s_addr = htonl(p->getAddress().address);
-   addr.sin_port = htons(p->getPort());
-
-#if defined(WIN32) || defined(_WIN32)
-   if (::recvfrom(fd, (char *)p->getData(), p->getLength(), 0,
-      (sockaddr *)&addr, &addr_len) == -1)
-#elif defined(__hpux)
-   if (::recvfrom(fd, p->getData(), p->getLength(), 0,
-      (sockaddr *)&addr, &addr_len) == -1)
-#else
-   if (::recvfrom(fd, p->getData(), p->getLength(), 0,
-      (sockaddr *)&addr, (socklen_t *)&addr_len) == -1)
-#endif
-   {
-      throw IOException();
+   // Create the address from which to receive the datagram packet
+   LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress().getHostAddress());
+   apr_sockaddr_t *addr;
+   apr_status_t status =
+       apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET,
+                             p->getPort(), 0, (apr_pool_t*) addrPool.getAPRPool());
+   if (status != APR_SUCCESS) {
+     throw SocketException(status);
    }
 
+   // receive the datagram packet
+   apr_size_t len = p->getLength();
+   status = apr_socket_recvfrom(addr, socket, 0,
+                                (char *)p->getData(), &len);
+   if (status != APR_SUCCESS) {
+     throw IOException(status);
+   }
 }
 
 /**  Sends a datagram packet.*/
 void DatagramSocket::send(DatagramPacketPtr& p)
 {
-   sockaddr_in addr;
-   int addr_len = sizeof(addr);
+   Pool addrPool;
 
-   addr.sin_family = AF_INET;
-   addr.sin_addr.s_addr = htonl(p->getAddress().address);
-   addr.sin_port = htons(p->getPort());
+   // create the adress to which to send the datagram packet
+   LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress().getHostAddress());
+   apr_sockaddr_t *addr;
+   apr_status_t status =
+       apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET, p->getPort(),
+                             0, (apr_pool_t*) addrPool.getAPRPool());
+   if (status != APR_SUCCESS) {
+     throw SocketException(status);
+   }
 
-#if defined(WIN32) || defined(_WIN32)
-   if (::sendto(fd, (const char *)p->getData(), p->getLength(), 0,
-      (sockaddr *)&addr, addr_len) == -1)
-#else
-   if (::sendto(fd, p->getData(), p->getLength(), 0,
-      (sockaddr *)&addr, addr_len) == -1)
-#endif
-   {
-      throw IOException();
+   // send the datagram packet
+   apr_size_t len = p->getLength();
+   status = apr_socket_sendto(socket, addr, 0,
+                              (char *)p->getData(), &len);
+   if (status != APR_SUCCESS) {
+     throw IOException(status);
    }
 }
-
-
-
