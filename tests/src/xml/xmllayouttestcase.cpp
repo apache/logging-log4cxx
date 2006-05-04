@@ -83,8 +83,11 @@ public:
 
         void basic()
         {
+                const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.1"));
+                const File filteredFile("output/filtered.xmlLayout.1");
+
                 XMLLayoutPtr xmlLayout = new XMLLayout();
-                AppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                AppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
                 common();
 
@@ -97,7 +100,7 @@ public:
 
                 try
                 {
-                        Transformer::transform(TEMP, FILTERED, filters);
+                        Transformer::transform(tempFileName, filteredFile, filters);
                 }
                 catch(UnexpectedFormatException& e)
                 {
@@ -105,14 +108,17 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.1")));
+                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.1")));
         }
 
         void locationInfo()
         {
+                const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.2"));
+                const File filteredFile("output/filtered.xmlLayout.2");
+
                 XMLLayoutPtr xmlLayout = new XMLLayout();
                 xmlLayout->setLocationInfo(true);
-                root->addAppender(new FileAppender(xmlLayout, TEMP, false));
+                root->addAppender(new FileAppender(xmlLayout, tempFileName, false));
                 common();
 
                 XMLTimestampFilter xmlTimestampFilter;
@@ -131,7 +137,7 @@ public:
 
                 try
                 {
-                        Transformer::transform(TEMP, FILTERED, filters);
+                        Transformer::transform(tempFileName, filteredFile, filters);
                 }
                 catch(UnexpectedFormatException& e)
                 {
@@ -139,7 +145,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.2")));
+                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.2")));
         }
 
 #if _MSC_VER < 1300
@@ -149,9 +155,12 @@ public:
 
         void testCDATA()
         {
+                const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.3"));
+                const File filteredFile("output/filtered.xmlLayout.3");
+
                 XMLLayoutPtr xmlLayout = new XMLLayout();
                 xmlLayout->setLocationInfo(true);
-                FileAppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
 
                 LOG4CXX_DEBUG(logger,
@@ -170,7 +179,7 @@ public:
 
                 try
                 {
-                        Transformer::transform(TEMP, FILTERED, filters);
+                        Transformer::transform(tempFileName, filteredFile, filters);
                 }
                 catch(UnexpectedFormatException& e)
                 {
@@ -178,13 +187,16 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.3")));
+                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.3")));
         }
 
         void testNULL()
         {
+                const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.null"));
+                const File filteredFile("output/filtered.xmlLayout.null");
+
                 XMLLayoutPtr xmlLayout = new XMLLayout();
-                FileAppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
 
                 LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("hi"));
@@ -199,7 +211,7 @@ public:
 
                 try
                 {
-                        Transformer::transform(TEMP, FILTERED, filters);
+                        Transformer::transform(tempFileName, filteredFile, filters);
                 }
                 catch(UnexpectedFormatException& e)
                 {
@@ -207,13 +219,16 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.null")));
+                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.null")));
         }
 
         void testMDC()
         {
+                const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.mdc.1"));
+                const File filteredFile("output/filtered.xmlLayout.mdc.1");
+
                 XMLLayoutPtr xmlLayout = new XMLLayout();
-                FileAppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
 
                 MDC::clear();
@@ -233,7 +248,7 @@ public:
 
                 try
                 {
-                        Transformer::transform(TEMP, FILTERED, filters);
+                        Transformer::transform(tempFileName, filteredFile, filters);
                 }
                 catch(UnexpectedFormatException& e)
                 {
@@ -241,14 +256,17 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.1")));
+                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.mdc.1")));
         }
 
         // not incuded in the tests for the moment !
         void holdTestMDCEscaped()
         {
+                const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.mdc.2"));
+                const File filteredFile("output/filtered.xmlLayout.mdc.2");
+
                 XMLLayoutPtr xmlLayout = new XMLLayout();
-                FileAppenderPtr appender(new FileAppender(xmlLayout, TEMP, false));
+                FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
 
                 MDC::clear();
@@ -268,7 +286,7 @@ public:
 
                 try
                 {
-                        Transformer::transform(TEMP, FILTERED, filters);
+                        Transformer::transform(tempFileName, filteredFile, filters);
                 }
                 catch(UnexpectedFormatException& e)
                 {
@@ -276,7 +294,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
+                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
         }
 
 
@@ -308,12 +326,6 @@ public:
                 LOG4CXX_FATAL(logger, msg + StringHelper::toString(++i, p));
                 LOG4CXX_FATAL(root, msg + StringHelper::toString(i, p));
         }
-        private:
-        static const LogString TEMP;
-        static const File FILTERED;
 };
-
-const LogString XMLLayoutTestCase::TEMP(LOG4CXX_STR("output/temp"));
-const File XMLLayoutTestCase::FILTERED("output/filtered");
 
 CPPUNIT_TEST_SUITE_REGISTRATION(XMLLayoutTestCase);
