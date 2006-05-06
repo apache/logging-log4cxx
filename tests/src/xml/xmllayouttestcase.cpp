@@ -95,8 +95,8 @@ public:
                 XMLThreadFilter xmlThreadFilter;
 
                 std::vector<Filter *> filters;
-                filters.push_back(&xmlTimestampFilter);
                 filters.push_back(&xmlThreadFilter);
+                filters.push_back(&xmlTimestampFilter);
 
                 try
                 {
@@ -129,9 +129,8 @@ public:
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlFilenameFilter);
-                filters.push_back(&xmlTimestampFilter);
-
                 filters.push_back(&xmlThreadFilter);
+                filters.push_back(&xmlTimestampFilter);
                 filters.push_back(&line2XX);
                 filters.push_back(&line5X);
 
@@ -173,8 +172,8 @@ public:
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlFilenameFilter);
-                filters.push_back(&xmlTimestampFilter);
                 filters.push_back(&xmlThreadFilter);
+                filters.push_back(&xmlTimestampFilter);
                 filters.push_back(&line1xx);
 
                 try
@@ -206,8 +205,8 @@ public:
                 XMLThreadFilter xmlThreadFilter;
 
                 std::vector<Filter *> filters;
-                filters.push_back(&xmlTimestampFilter);
                 filters.push_back(&xmlThreadFilter);
+                filters.push_back(&xmlTimestampFilter);
 
                 try
                 {
@@ -243,8 +242,8 @@ public:
                 XMLThreadFilter xmlThreadFilter;
 
                 std::vector<Filter *> filters;
-                filters.push_back(&xmlTimestampFilter);
                 filters.push_back(&xmlThreadFilter);
+                filters.push_back(&xmlTimestampFilter);
 
                 try
                 {
@@ -281,8 +280,8 @@ public:
                 XMLThreadFilter xmlThreadFilter;
 
                 std::vector<Filter *> filters;
-                filters.push_back(&xmlTimestampFilter);
                 filters.push_back(&xmlThreadFilter);
+                filters.push_back(&xmlTimestampFilter);
 
                 try
                 {
