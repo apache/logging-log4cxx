@@ -1,4 +1,4 @@
-SUBDIRS = input src witness
+SUBDIRS = input witness src
 EXTRA_DIST = log4j.dtd L7D_en_US.properties L7D_fr_CH.properties L7D_fr.properties
 
 if TESTS
@@ -8,7 +8,7 @@ all-local:
 	@if test "$(top_srcdir)" != "$(top_builddir)"; then \
 	  echo "Copying test suite data files ..." ; \
 	  list='$(EXTRA_DIST)'; for file in $$list; do \
-	    find $(srcdir) -name "$$file" -exec cp {} . ';' ; \
+	    cp -p $(srcdir)/$$file . ; \
 	  done \
 	fi
 

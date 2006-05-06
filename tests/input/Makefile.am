@@ -6,6 +6,6 @@ all-local:
 	@if test "$(top_srcdir)" != "$(top_builddir)"; then \
 	  echo "Copying test suite data files ..." ; \
 	  list='$(EXTRA_DIST)'; for file in $$list; do \
-	    find $(srcdir) -name "$$file" -exec cp {} . ';' ; \
+	    cp -p $(srcdir)/$$file . ; \
 	  done \
 	fi
