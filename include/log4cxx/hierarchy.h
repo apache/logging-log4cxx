@@ -256,7 +256,7 @@ namespace log4cxx
 
             We add 'cat' to the list of children for this potential parent.
             */
-            void updateParents(LoggerPtr& logger);
+            void updateParents(LoggerPtr logger);
 
             /**
             We update the links for all the children that placed themselves
@@ -275,7 +275,7 @@ namespace log4cxx
             Hierarchy(const Hierarchy&);
             Hierarchy& operator=(const Hierarchy&);
 
-            void updateChildren(ProvisionNode& pn, LoggerPtr& logger);
+            void updateChildren(ProvisionNode& pn, LoggerPtr logger);
             log4cxx::helpers::Mutex mutex;
             volatile log4cxx_uint32_t configured;
         };

@@ -70,11 +70,10 @@ namespace log4cxx
 
             ~ObjectPtrT()
             {
-                if (this->p != 0)
-                {
-                    this->p->releaseRef();
-                }
-                this->p = 0;
+              void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, 0);
+              if (oldPtr != 0) {
+                  ((T*) oldPtr)->releaseRef();
+              }
             }
 
             // Operators

@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <apr_atomic.h>
+#include "assert.h"
 
 
 using namespace log4cxx;
@@ -160,23 +161,17 @@ LoggerPtr Hierarchy::getLogger(const LogString& name)
 LoggerPtr Hierarchy::getLogger(const LogString& name,
      const spi::LoggerFactoryPtr& factory)
 {
-        // Synchronize to prevent write conflicts. Read conflicts (in
-        // getEffectiveLevel method) are possible only if variable
-        // assignments are non-atomic.
-        LoggerPtr logger;
-
         synchronized sync(mutex);
 
         LoggerMap::iterator it = loggers.find(name);
 
         if (it != loggers.end())
         {
-                logger = it->second;
+                return it->second;
         }
         else
         {
-                logger = factory->makeNewLoggerInstance(name);
-
+                LoggerPtr logger(factory->makeNewLoggerInstance(name));
                 logger->setHierarchy(this);
                 loggers.insert(LoggerMap::value_type(name, logger));
 
@@ -188,10 +183,9 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
                 }
 
                 updateParents(logger);
+                return logger;
         }
 
-
-        return logger;
 }
 
 LoggerList Hierarchy::getCurrentLoggers() const
@@ -284,8 +278,9 @@ void Hierarchy::shutdown()
 }
 
 
-void Hierarchy::updateParents(LoggerPtr& logger)
+void Hierarchy::updateParents(LoggerPtr logger)
 {
+        synchronized sync(mutex);
         const LogString name(logger->getName());
         int length = name.size();
         bool parentFound = false;
@@ -331,7 +326,7 @@ void Hierarchy::updateParents(LoggerPtr& logger)
         }
 }
 
-void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr& logger)
+void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 {
         //tcout << _T("updateChildren called for ") << logger->name << std::endl;
 
