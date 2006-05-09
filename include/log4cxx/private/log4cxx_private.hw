@@ -33,7 +33,6 @@
 #endif
 
 
-#define LOG4CXX_HAVE_SYSLOG 0
 
 #if !defined(__BORLANDC__)
 #define LOG4CXX_RETURN_AFTER_THROW 1
