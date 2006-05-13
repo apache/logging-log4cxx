@@ -29,6 +29,10 @@ void ObjectPtrBase::checkNull(const int& null) {
 }
 
 void* ObjectPtrBase::exchange(volatile void** destination, void* newValue) {
+#if defined(_WIN32)
+    return InterlockedExchangePointer(destination, newValue);
+#else
    return apr_atomic_casptr(destination, newValue, (const void*) *destination);
+#endif
 }
 
