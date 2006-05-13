@@ -40,7 +40,7 @@ namespace log4cxx
 
                         and local IP address to bind to.
                         */
-                        ServerSocket(int port, int backlog, InetAddress bindAddr);
+                        ServerSocket(int port, int backlog, InetAddressPtr bindAddr);
 
                         ~ServerSocket();
 
@@ -56,7 +56,7 @@ namespace log4cxx
 
                         /** Returns the local address of this server socket.
                         */
-                        inline InetAddress getInetAddress() const
+                        inline InetAddressPtr getInetAddress() const
                                 { return socketImpl->getInetAddress(); }
 
                         /** Returns the port on which this socket is listening.

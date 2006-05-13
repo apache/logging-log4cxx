@@ -55,13 +55,13 @@ namespace log4cxx
 
                         /**  Creates a datagram socket, bound to the specified local
                         address. */
-                        DatagramSocket(int port, InetAddress laddr);
+                        DatagramSocket(int port, InetAddressPtr laddr);
 
                         /** ensure the socket is closed. */
                         ~DatagramSocket();
 
                         /**  Binds a datagram socket to a local port and address.*/
-                        void bind(int lport, InetAddress laddress);
+                        void bind(int lport, InetAddressPtr laddress);
 
                         /** Creates a datagram socket.*/
                         void create();
@@ -70,14 +70,14 @@ namespace log4cxx
                         void close();
 
                         /** Connects the socket to a remote address for this socket. */
-                        void connect(InetAddress address, int port);
+                        void connect(InetAddressPtr address, int port);
 
                         /** Returns the address to which this socket is connected. */
-                        inline InetAddress getInetAddress() const
+                        inline InetAddressPtr getInetAddress() const
                                 { return address; }
 
                         /** Gets the local address to which the socket is bound. */
-                        inline InetAddress getLocalAddress() const
+                        inline InetAddressPtr getLocalAddress() const
                                 { return localAddress; }
 
                         /**  Returns the port number on the local host to which this
@@ -114,9 +114,9 @@ namespace log4cxx
                         /** The memory pool for the socket */
                         Pool socketPool;
 
-                        InetAddress address;
+                        InetAddressPtr address;
 
-                        InetAddress localAddress;
+                        InetAddressPtr localAddress;
 
                         int port;
 

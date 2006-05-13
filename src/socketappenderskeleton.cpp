@@ -45,18 +45,17 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnection
    thread() {
 }
 
-SocketAppenderSkeleton::SocketAppenderSkeleton(unsigned long address, int port, int delay)
+SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address, int port, int delay)
 :
    pool(),
    remoteHost(),
-   address(),
+   address(address),
    port(port),
    os(),
    reconnectionDelay(delay),
    locationInfo(false),
    thread() {
-    this->address.address = address;
-    remoteHost = this->address.getHostName();
+    remoteHost = this->address->getHostName();
 }
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port, int delay)
@@ -107,7 +106,7 @@ void SocketAppenderSkeleton::setOption(const LogString& option,
 
 void SocketAppenderSkeleton::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-        if(address.address == 0)
+        if(address == 0)
         {
                 errorHandler->error(
                         LOG4CXX_STR("No remote host is set for appender named \"") +
@@ -165,7 +164,7 @@ void SocketAppenderSkeleton::cleanUp()
 
 void SocketAppenderSkeleton::connect()
 {
-        if(address.address == 0)
+        if(address == 0)
         {
                 return;
         }
@@ -182,7 +181,7 @@ void SocketAppenderSkeleton::connect()
         {
                 LogString msg = LOG4CXX_STR("Could not connect to remote log4cxx server at [")
 
-                        +address.getHostName()+LOG4CXX_STR("].");
+                        +address->getHostName()+LOG4CXX_STR("].");
 
                 if(reconnectionDelay > 0)
                 {
@@ -214,7 +213,7 @@ void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* thread, 
                 {
                         apr_sleep(APR_INT64_C(1000) * socketAppender->reconnectionDelay);
                         LogLog::debug(LOG4CXX_STR("Attempting connection to ")
-                                +socketAppender->address.getHostName());
+                                +socketAppender->address->getHostName());
                         socket = new Socket(socketAppender->address, socketAppender->port);
 
                         synchronized sync(socketAppender->mutex);
@@ -228,7 +227,7 @@ void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* thread, 
                 catch(ConnectException&)
                 {
                         LogLog::debug(LOG4CXX_STR("Remote host ")
-                                +socketAppender->address.getHostName()
+                                +socketAppender->address->getHostName()
                                 +LOG4CXX_STR(" refused connection."));
                 }
                 catch(IOException& e)
@@ -237,7 +236,7 @@ void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* thread, 
                         log4cxx::helpers::Transcoder::decode(e.what(), exmsg);
 
                         LogLog::debug(((LogString) LOG4CXX_STR("Could not connect to "))
-                                 + socketAppender->address.getHostName()
+                                 + socketAppender->address->getHostName()
                                  + LOG4CXX_STR(". Exception is ")
                                  + exmsg);
                 }

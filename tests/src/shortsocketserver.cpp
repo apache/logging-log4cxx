@@ -77,7 +77,7 @@ public:
          PropertyConfigurator::configure(sbuf.str());
          LOG4CXX_INFO(logger, "Waiting to accept a new client.");
          SocketPtr socket = serverSocket.accept();
-       LogString msg(socket->getInetAddress().toString());
+       LogString msg(socket->getInetAddress()->toString());
        msg.insert(0, LOG4CXX_STR("Connected to client at "));
        LOG4CXX_INFO(logger, msg);
          LOG4CXX_INFO(logger, "Starting new socket node.");

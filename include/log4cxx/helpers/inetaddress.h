@@ -17,6 +17,8 @@
 #ifndef _LOG4CXX_HELPER_INETADDRESS_H
 #define _LOG4CXX_HELPER_INETADDRESS_H
 
+#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/logstring.h>
 #include <vector>
 #include <log4cxx/helpers/exception.h>
@@ -33,22 +35,27 @@ namespace log4cxx
                       UnknownHostException& operator=(const UnknownHostException& src);
                 };
 
-                class LOG4CXX_EXPORT InetAddress
+
+                class InetAddress;
+                typedef ObjectPtrT<InetAddress> InetAddressPtr;
+
+                class LOG4CXX_EXPORT InetAddress : public ObjectImpl
                 {
                 public:
-                        InetAddress();
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(InetAddress)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(InetAddress)
+                        END_LOG4CXX_CAST_MAP()
 
-                        /** Returns the raw IP address of this InetAddress  object.
-                        */
-                        int getAddress() const;
+                        InetAddress(const LogString& hostName, const LogString& hostAddr);
 
                         /** Determines all the IP addresses of a host, given the host's name.
                         */
-                        static std::vector<InetAddress> getAllByName(const LogString& host);
+                        static std::vector<InetAddressPtr> getAllByName(const LogString& host);
 
                         /** Determines the IP address of a host, given the host's name.
                         */
-                        static InetAddress getByName(const LogString& host);
+                        static InetAddressPtr getByName(const LogString& host);
 
                         /** Returns the IP address string "%d.%d.%d.%d".
                         */
@@ -60,19 +67,26 @@ namespace log4cxx
 
                         /** Returns the local host.
                         */
-                        static InetAddress  getLocalHost();
+                        static InetAddressPtr  getLocalHost();
 
-                        /** Utility routine to check if the InetAddress is an IP multicast address.
-                        */
-                        bool isMulticastAddress() const;
+                        /** Returns an InetAddress which can be used as any
+                         *  address, for example when listening on a port from any
+                         *  remote addresss.
+                         */
+                        static InetAddressPtr anyAddress();
 
                         /** Converts this IP address to a String.
                         */
                         LogString toString() const;
 
-                        int address;
+                private:
+                        LogString ipAddrString;
+
+                        LogString hostNameString;
+
                 }; // class InetAddress
         }  // namespace helpers
 } // namespace log4cxx
 
 #endif // _LOG4CXX_HELPER_INETADDRESS_H
+

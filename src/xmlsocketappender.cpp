@@ -50,7 +50,7 @@ XMLSocketAppender::XMLSocketAppender()
         memset(zeroBuffer, 0, MAX_EVENT_LEN);
 }
 
-XMLSocketAppender::XMLSocketAppender(unsigned long address, int port)
+XMLSocketAppender::XMLSocketAppender(InetAddressPtr address, int port)
 : SocketAppenderSkeleton(address, port, DEFAULT_RECONNECTION_DELAY)
 {
         layout = new XMLLayout();

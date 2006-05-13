@@ -46,7 +46,7 @@ SocketAppender::SocketAppender()
 : SocketAppenderSkeleton(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY) {
 }
 
-SocketAppender::SocketAppender(unsigned long address, int port)
+SocketAppender::SocketAppender(InetAddressPtr& address, int port)
 : SocketAppenderSkeleton(address, port, DEFAULT_RECONNECTION_DELAY) {
         connect();
 }

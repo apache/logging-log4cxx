@@ -48,7 +48,7 @@ namespace log4cxx
                 /**
                 IP address
                 */
-                helpers::InetAddress address;
+                helpers::InetAddressPtr address;
 
                 int port;
                 helpers::SocketOutputStreamPtr os;
@@ -62,7 +62,7 @@ namespace log4cxx
                 /**
                 Connects to remote server at <code>address</code> and <code>port</code>.
                 */
-                SocketAppenderSkeleton(unsigned long address, int port, int reconnectionDelay);
+                SocketAppenderSkeleton(helpers::InetAddressPtr address, int port, int reconnectionDelay);
 
                 /**
                 Connects to remote server at <code>host</code> and <code>port</code>.

@@ -110,7 +110,7 @@ namespace log4cxx
                 /**
                 Connects to remote server at <code>address</code> and <code>port</code>.
                 */
-                SocketAppender(unsigned long address, int port);
+                SocketAppender(helpers::InetAddressPtr& address, int port);
 
                 /**
                 Connects to remote server at <code>host</code> and <code>port</code>.

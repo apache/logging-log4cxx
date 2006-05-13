@@ -62,13 +62,13 @@ namespace log4cxx
                         /** Creates a stream socket and connects it to the specified port
                         number at the specified IP address.
                         */
-                        Socket(InetAddress address, int port);
+                        Socket(InetAddressPtr address, int port);
 
                         /** Creates a socket and connects it to the specified remote
                         address on the specified remote port.
                         */
-                        Socket(InetAddress address, int port,
-                                InetAddress localAddr, int localPort);
+                        Socket(InetAddressPtr address, int port,
+                                InetAddressPtr localAddr, int localPort);
 
                 protected:
                         /** Creates an unconnected Socket
@@ -86,7 +86,7 @@ namespace log4cxx
                         host on the specified remote port.
                         */
                         Socket(const LogString& host, int port,
-                                InetAddress localAddr, int localPort);
+                                InetAddressPtr localAddr, int localPort);
 
                         size_t read(void * buf, size_t len) const
                                 { return socketImpl->read(buf, len); }
@@ -99,7 +99,7 @@ namespace log4cxx
                                 { socketImpl->close(); }
 
                         /** Returns the value of this socket's address field. */
-                        inline InetAddress getInetAddress() const
+                        inline InetAddressPtr getInetAddress() const
                                 { return socketImpl->getInetAddress(); }
 
                         /** Returns the value of this socket's localport field. */

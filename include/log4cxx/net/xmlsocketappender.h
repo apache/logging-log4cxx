@@ -118,7 +118,7 @@ namespace log4cxx
                 /**
                 Connects to remote server at <code>address</code> and <code>port</code>.
                 */
-                XMLSocketAppender(unsigned long address, int port);
+                XMLSocketAppender(helpers::InetAddressPtr address, int port);
 
                 /**
                 Connects to remote server at <code>host</code> and <code>port</code>.

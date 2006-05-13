@@ -30,7 +30,7 @@ DatagramPacket::DatagramPacket(void * buf, int length)
 /** Constructs a datagram packet for sending packets of length
 <code>length/<code> to the specified port number on the specified
 host. */
-DatagramPacket::DatagramPacket(void * buf, int length, InetAddress address,
+DatagramPacket::DatagramPacket(void * buf, int length, InetAddressPtr address,
 int port)
 : buf(buf), offset(0), length(length), address(address), port(port)
 {
@@ -46,7 +46,7 @@ DatagramPacket::DatagramPacket(void * buf, int offset, int length)
 <code>length</code> with offset <code>offset</code> to the
 specified port number on the specified host. */
 DatagramPacket::DatagramPacket(void * buf, int offset, int length,
-InetAddress address, int port)
+InetAddressPtr address, int port)
 : buf(buf), offset(offset), length(length), address(address), port(port)
 {
 }

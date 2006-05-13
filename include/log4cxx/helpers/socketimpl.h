@@ -170,7 +170,7 @@ namespace log4cxx
                 {
                 protected:
                         /** The IP address of the remote end of this socket. */
-                        InetAddress address;
+                        InetAddressPtr address;
 
                         /** The APR memory pool to use for this socket */
                         Pool memoryPool;
@@ -216,7 +216,7 @@ namespace log4cxx
                                                 @param port the port number.
                         @exception BindException if an I/O error occurs when binding this socket.
                         */
-                        void bind(InetAddress host, int port);
+                        void bind(InetAddressPtr host, int port);
 
                         /** Closes this socket. */
                         void close();
@@ -224,7 +224,7 @@ namespace log4cxx
                         /**  Connects this socket to the specified port number
                         on the specified host.
                         */
-                        void connect(InetAddress address, int port);
+                        void connect(InetAddressPtr address, int port);
 
                         /** Connects this socket to the specified port on the named host. */
                         void connect(const LogString& host, int port);
@@ -233,7 +233,7 @@ namespace log4cxx
                         void create(bool stream);
 
                         /** Returns the value of this socket's address field. */
-                        inline InetAddress getInetAddress() const
+                        inline InetAddressPtr getInetAddress() const
                                 { return address; }
 
                         /** Returns the value of this socket's localport field. */

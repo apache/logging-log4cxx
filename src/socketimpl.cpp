@@ -177,7 +177,7 @@ void SocketImpl::accept(SocketImplPtr s)
       // Accept new connection
       apr_socket_t *clientSocket = 0;
       apr_status_t status = 
-          apr_socket_accept(&clientSocket, (apr_socket_t*) socket, (apr_pool_t*) memoryPool.getAPRPool());
+          apr_socket_accept(&clientSocket, (apr_socket_t*) socket, (apr_pool_t*) s->memoryPool.getAPRPool());
       if (status != APR_SUCCESS) {
         throw SocketException(status);
       }
@@ -189,7 +189,19 @@ void SocketImpl::accept(SocketImplPtr s)
         throw SocketException(status);
       }
 
-      s->address.address =  *((int*) client_addr->ipaddr_ptr);
+      // retrieve the IP address from the client socket's apr_sockaddr_t
+      LogString ipAddrString;
+      char *ipAddr;
+      apr_sockaddr_ip_get(&ipAddr, client_addr);
+      Transcoder::decode(ipAddr, strlen(ipAddr), ipAddrString);
+
+      // retrieve the host name from the client socket's apr_sockaddr_t
+      LogString hostNameString;
+      char *hostName;
+      apr_getnameinfo(&hostName, client_addr, 0);
+      Transcoder::decode(hostName, strlen(hostName), hostNameString);
+
+      s->address = new InetAddress(hostNameString, ipAddrString);
       s->socket = clientSocket;
       s->port = client_addr->port;
 }
@@ -206,11 +218,11 @@ int SocketImpl::available()
 /** Binds this socket to the specified port number
 on the specified host.
 */
-void SocketImpl::bind(InetAddress address, int port)
+void SocketImpl::bind(InetAddressPtr address, int port)
 {
-        LOG4CXX_ENCODE_CHAR(host, address.getHostAddress());
+        LOG4CXX_ENCODE_CHAR(host, address->getHostAddress());
 
-        // Create server socket address
+        // Create server socket address (including port number)
         apr_sockaddr_t *server_addr;
         apr_status_t status = 
             apr_sockaddr_info_get(&server_addr, host.c_str(), APR_INET,
@@ -238,7 +250,7 @@ void SocketImpl::close()
             throw SocketException(status);
           }
 
-          address.address = 0;
+          address = 0;
           socket = 0;
           port = 0;
           localport = -1;
@@ -248,11 +260,11 @@ void SocketImpl::close()
 /**  Connects this socket to the specified port number
 on the specified host.
 */
-void SocketImpl::connect(InetAddress address, int port)
+void SocketImpl::connect(InetAddressPtr address, int port)
 {
-        LOG4CXX_ENCODE_CHAR(host, address.getHostAddress());
+        LOG4CXX_ENCODE_CHAR(host, address->getHostAddress());
 
-        // create socket address
+        // create socket address (including port)
         apr_sockaddr_t *client_addr;
         apr_status_t status = 
             apr_sockaddr_info_get(&client_addr, host.c_str(), APR_INET,
@@ -306,7 +318,7 @@ void SocketImpl::listen(int backlog)
 */
 LogString SocketImpl::toString() const
 {
-        LogString oss(address.getHostAddress());
+        LogString oss(address->getHostAddress());
         oss.append(1, LOG4CXX_STR(':'));
         Pool p;
         oss.append(StringHelper::toString(port, p));

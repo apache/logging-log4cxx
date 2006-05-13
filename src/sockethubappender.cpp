@@ -194,11 +194,11 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* thread, void*
                 {
                         try
                         {
-                                InetAddress remoteAddress = socket->getInetAddress();
+                                InetAddressPtr remoteAddress = socket->getInetAddress();
                                 LogLog::debug(LOG4CXX_STR("accepting connection from ")
-                                       + remoteAddress.getHostName()
+                                       + remoteAddress->getHostName()
                                        + LOG4CXX_STR(" (")
-                                       + remoteAddress.getHostAddress()
+                                       + remoteAddress->getHostAddress()
                                        + LOG4CXX_STR(")"));
 
                                 // create an ObjectOutputStream

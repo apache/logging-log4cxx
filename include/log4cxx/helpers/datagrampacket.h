@@ -48,7 +48,7 @@ namespace log4cxx
                         int length;
 
                         /** The IP address for this packet. */
-                        InetAddress address;
+                        InetAddressPtr address;
 
                         /** The UDP port number of the remote host. */
                         int port;
@@ -66,7 +66,7 @@ namespace log4cxx
                         /** Constructs a datagram packet for sending packets of length
                         <code>length</code> to the specified port number on the specified
                         host. */
-                        DatagramPacket(void * buf, int length, InetAddress address, int port);
+                        DatagramPacket(void * buf, int length, InetAddressPtr address, int port);
 
                         /** Constructs a DatagramPacket for receiving packets of length
                         <code>length</code>, specifying an offset into the buffer. */
@@ -75,14 +75,14 @@ namespace log4cxx
                         /** Constructs a datagram packet for sending packets of length
                         <code>length</code> with offset <code>offset</code> to the
                         specified port number on the specified host. */
-                        DatagramPacket(void * buf, int offset, int length, InetAddress address,
+                        DatagramPacket(void * buf, int offset, int length, InetAddressPtr address,
                                 int port);
 
                         ~DatagramPacket();
 
                         /** Returns the IP address of the machine to which this datagram
                         is being sent or from which the datagram was received. */
-                        inline InetAddress getAddress() const
+                        inline InetAddressPtr getAddress() const
                                 { return address; }
 
                         /** Returns the data received or the data to be sent. */
@@ -104,7 +104,7 @@ namespace log4cxx
                         inline int getPort() const
                                 { return port; }
 
-                        inline void setAddress(InetAddress address)
+                        inline void setAddress(InetAddressPtr address)
                                 { this->address = address; }
 
                         /** Set the data buffer for this packet. */

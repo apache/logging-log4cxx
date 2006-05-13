@@ -97,7 +97,7 @@ int main(int argc, const char * const argv[])
                         SocketPtr socket = serverSocket.accept();
 
                         logstream << "Connected to client at "
-                                << socket->getInetAddress().toString();
+                                << socket->getInetAddress()->toString();
                         logstream << "Starting new socket node.";
 
                         Thread * thread = new Thread();

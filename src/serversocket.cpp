@@ -14,14 +14,6 @@
  * limitations under the License.
  */
 
-#if defined(_WIN32)
-#include <windows.h>
-#include <winsock.h>
-#else
-#include <sys/types.h>
-#include <netinet/in.h>
-#endif
-
 #include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/helpers/socket.h>
 
@@ -33,8 +25,7 @@ using namespace log4cxx::helpers;
 */
 ServerSocket::ServerSocket(int port)
 {
-   InetAddress bindAddr;
-   bindAddr.address = INADDR_ANY;
+   InetAddressPtr bindAddr = InetAddress::anyAddress();
 
    socketImpl = new SocketImpl();
    socketImpl->create(true);
@@ -47,8 +38,7 @@ port number, with the specified backlog.
 */
 ServerSocket::ServerSocket(int port, int backlog)
 {
-   InetAddress bindAddr;
-   bindAddr.address = INADDR_ANY;
+   InetAddressPtr bindAddr = InetAddress::anyAddress();
 
    socketImpl = new SocketImpl();
    socketImpl->create(true);
@@ -59,7 +49,7 @@ ServerSocket::ServerSocket(int port, int backlog)
 /** Create a server with the specified port, listen backlog,
 and local IP address to bind to.
 */
-ServerSocket::ServerSocket(int port, int backlog, InetAddress bindAddr)
+ServerSocket::ServerSocket(int port, int backlog, InetAddressPtr bindAddr)
 {
    socketImpl = new SocketImpl();
    socketImpl->create(true);

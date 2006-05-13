@@ -36,14 +36,13 @@ DatagramSocket::DatagramSocket()
 DatagramSocket::DatagramSocket(int localPort)
  : socket(0), address(), localAddress(), port(0), localPort(0)
 {
-   InetAddress bindAddr;
-   bindAddr.address = INADDR_ANY;
+   InetAddressPtr bindAddr = InetAddress::anyAddress();
 
    create();
    bind(localPort, bindAddr);
 }
 
-DatagramSocket::DatagramSocket(int localPort, InetAddress localAddress)
+DatagramSocket::DatagramSocket(int localPort, InetAddressPtr localAddress)
  : socket(0), address(), localAddress(), port(0), localPort(0)
 {
    create();
@@ -62,12 +61,12 @@ DatagramSocket::~DatagramSocket()
 }
 
 /**  Binds a datagram socket to a local port and address.*/
-void DatagramSocket::bind(int localPort, InetAddress localAddress)
+void DatagramSocket::bind(int localPort, InetAddressPtr localAddress)
 {
    Pool addrPool;
 
-   // Create server socket address
-   LOG4CXX_ENCODE_CHAR(hostAddr, localAddress.getHostAddress());
+   // Create server socket address (including port number)
+   LOG4CXX_ENCODE_CHAR(hostAddr, localAddress->getHostAddress());
    apr_sockaddr_t *server_addr;
    apr_status_t status = 
        apr_sockaddr_info_get(&server_addr, hostAddr.c_str(), APR_INET,
@@ -101,7 +100,7 @@ void DatagramSocket::close()
    }
 }
 
-void DatagramSocket::connect(InetAddress address, int port)
+void DatagramSocket::connect(InetAddressPtr address, int port)
 {
 
    this->address = address;
@@ -110,7 +109,7 @@ void DatagramSocket::connect(InetAddress address, int port)
    Pool addrPool;
 
    // create socket address
-   LOG4CXX_ENCODE_CHAR(hostAddr, address.getHostAddress());
+   LOG4CXX_ENCODE_CHAR(hostAddr, address->getHostAddress());
    apr_sockaddr_t *client_addr;
    apr_status_t status = 
        apr_sockaddr_info_get(&client_addr, hostAddr.c_str(), APR_INET,
@@ -145,7 +144,7 @@ void DatagramSocket::receive(DatagramPacketPtr& p)
    Pool addrPool;
 
    // Create the address from which to receive the datagram packet
-   LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress().getHostAddress());
+   LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress()->getHostAddress());
    apr_sockaddr_t *addr;
    apr_status_t status =
        apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET,
@@ -169,7 +168,7 @@ void DatagramSocket::send(DatagramPacketPtr& p)
    Pool addrPool;
 
    // create the adress to which to send the datagram packet
-   LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress().getHostAddress());
+   LOG4CXX_ENCODE_CHAR(hostAddr, p->getAddress()->getHostAddress());
    apr_sockaddr_t *addr;
    apr_status_t status =
        apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET, p->getPort(),

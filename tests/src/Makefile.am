@@ -30,6 +30,7 @@ helpers = \
         helpers/charsetencodertestcase.cpp \
         helpers/cyclicbuffertestcase.cpp\
         helpers/datetimedateformattestcase.cpp \
+        helpers/inetaddresstestcase.cpp \
         helpers/iso8601dateformattestcase.cpp \
         helpers/localechanger.cpp\
         helpers/optionconvertertestcase.cpp       \

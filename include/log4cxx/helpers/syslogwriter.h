@@ -40,7 +40,7 @@
 
                 private:
                         LogString syslogHost;
-                        InetAddress address;
+                        InetAddressPtr address;
                         DatagramSocketPtr ds;
                 };
         }  // namespace helpers

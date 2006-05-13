@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-#if defined(WIN32) || defined(_WIN32)
-#include <windows.h>
-#include <winsock.h>
-#else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <string.h>
-#endif
-
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/pool.h>
+
+#include "apr_network_io.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+
+IMPLEMENT_LOG4CXX_OBJECT(InetAddress)
 
 UnknownHostException::UnknownHostException(const std::string& msg)
      : Exception(msg) {
@@ -48,133 +40,88 @@ UnknownHostException& UnknownHostException::operator=(const UnknownHostException
 }
 
 
-InetAddress::InetAddress() : address(0)
-{
+InetAddress::InetAddress(const LogString& hostName, const LogString& hostAddr) 
+    : hostNameString(hostName), ipAddrString(hostAddr) {
 }
 
-/** Returns the raw IP address of this InetAddress  object.
-*/
-int InetAddress::getAddress() const
-{
-        return address;
-}
 
 /** Determines all the IP addresses of a host, given the host's name.
 */
-std::vector<InetAddress> InetAddress::getAllByName(const LogString& host)
-{
-        struct hostent * hostinfo;
+std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host) {
+    LOG4CXX_ENCODE_CHAR(encodedHost, host);
 
-        std::string hostname;
-        Transcoder::encode(host, hostname);
-        hostinfo = ::gethostbyname(hostname.c_str());
+    // retrieve information about the given host
+    Pool addrPool;
 
-        if (hostinfo == 0)
-        {
-                LogLog::error(
-                   ((LogString) LOG4CXX_STR("Cannot get information about host :"))
-                    + host);
-                return std::vector<InetAddress>();
-        }
-        else
-        {
-                std::vector<InetAddress> addresses;
-                InetAddress address;
-                char ** addrs = hostinfo->h_addr_list;
+    apr_sockaddr_t *address;
+    apr_status_t status = 
+        apr_sockaddr_info_get(&address, encodedHost.c_str(),
+                              APR_INET, 0, 0, (apr_pool_t*) addrPool.getAPRPool());
+    if (status != APR_SUCCESS) {
+       LogString msg(LOG4CXX_STR("Cannot get information about host: "));
+       msg.append(host);
+       LogLog::error(msg);
+       std::string s;
+       Transcoder::encode(msg, s);
+       throw UnknownHostException(s);
+    }
 
-                while(*addrs != 0)
-                {
-                        address.address = ntohl(((in_addr *)*addrs)->s_addr);
-                        addresses.push_back(address);
-                }
+    std::vector<InetAddressPtr> result;
+    apr_sockaddr_t *currentAddr = address;
+    while(currentAddr != NULL) {
+        // retrieve the IP address of this InetAddress.
+        LogString ipAddrString;
+        char *ipAddr;
+        apr_sockaddr_ip_get(&ipAddr, currentAddr);
+        Transcoder::decode(ipAddr, strlen(ipAddr), ipAddrString);
+    
+        // retrieve the host name of this InetAddress.
+        LogString hostNameString;
+        char *hostName;
+        apr_getnameinfo(&hostName, currentAddr, 0);
+        Transcoder::decode(hostName, strlen(hostName), hostNameString);
 
-                return addresses;
-        }
+        result.push_back(new InetAddress(hostNameString, ipAddrString));
+        currentAddr = currentAddr->next;
+    }
 
+    return result;
 }
+
 
 /** Determines the IP address of a host, given the host's name.
 */
-InetAddress InetAddress::getByName(const LogString& host)
-{
-        struct hostent * hostinfo;
-        InetAddress address;
-
-        std::string hostname;
-        Transcoder::encode(host, hostname);
-        hostinfo = ::gethostbyname(hostname.c_str());
-
-        if (hostinfo == 0)
-        {
-                LogString msg(LOG4CXX_STR("Cannot get information about host: "));
-                msg.append(host);
-                LogLog::error(msg);
-                std::string s;
-                Transcoder::encode(msg, s);
-                throw UnknownHostException(s);
-        }
-        else
-        {
-                address.address = ntohl(((in_addr *)*hostinfo->h_addr_list)->s_addr);
-        }
-
-        return address;
+InetAddressPtr InetAddress::getByName(const LogString& host) {
+    return getAllByName(host)[0];
 }
 
 /** Returns the IP address string "%d.%d.%d.%d".
 */
 LogString InetAddress::getHostAddress() const
 {
-        in_addr addr;
-        addr.s_addr = htonl(address);
-        const char* rv = ::inet_ntoa(addr);
-        LOG4CXX_DECODE_CHAR(wrv, rv);
-        return wrv;
+    return ipAddrString;
 }
 
 /** Gets the host name for this IP address.
 */
 LogString InetAddress::getHostName() const
 {
-        LogString hostName;
-        struct hostent * hostinfo;
-
-        in_addr addr;
-        addr.s_addr = htonl(address);
-        hostinfo = ::gethostbyaddr((const char *)&addr, sizeof(addr), AF_INET);
-
-        if (hostinfo != 0)
-        {
-                Transcoder::decode(hostinfo->h_name, strlen(hostinfo->h_name), hostName);
-        }
-        else
-        {
-                LogString msg(LOG4CXX_STR("Cannot get host name: "));
-//  TODO:
-//                msg += address->toString();
-                LogLog::error(msg);
-        }
-
-        return hostName;
+    return hostNameString;
 }
 
 /** Returns the local host.
 */
-InetAddress InetAddress::getLocalHost()
+InetAddressPtr InetAddress::getLocalHost()
 {
-        InetAddress address;
-        address.address = ntohl(inet_addr("127.0.0.1"));
-        return address;
+    return getByName(LOG4CXX_STR("127.0.0.1"));
 }
 
-/** Utility routine to check if the InetAddress is an IP multicast address.
-IP multicast address is a Class D address
-i.e first four bits of the address are 1110.
-*/
-bool InetAddress::isMulticastAddress() const
-{
-        return (address & 0xF000) == 0xE000;
+
+InetAddressPtr InetAddress::anyAddress() {
+    // APR_ANYADDR does not work with the LOG4CXX_STR macro
+    return getByName(LOG4CXX_STR("0.0.0.0"));
 }
+
 
 /** Converts this IP address to a String.
 */
@@ -185,3 +132,4 @@ LogString InetAddress::toString() const
         rv.append(getHostAddress());
         return rv;
 }
+

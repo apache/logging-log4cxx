@@ -14,24 +14,10 @@
  * limitations under the License.
  */
 
-#if defined(_WIN32)
-#include <windows.h>
-#include <winsock.h>
-#else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <netdb.h>
-#endif
-
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/socketinputstream.h>
-
-#include <string.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -47,7 +33,7 @@ Socket::Socket() : socketImpl()
 /** Creates a stream socket and connects it to the specified port
 number at the specified IP address.
 */
-Socket::Socket(InetAddress address, int port) : socketImpl(new SocketImpl())
+Socket::Socket(InetAddressPtr address, int port) : socketImpl(new SocketImpl())
 {
    socketImpl->create(true);
    socketImpl->connect(address, port);
@@ -56,8 +42,8 @@ Socket::Socket(InetAddress address, int port) : socketImpl(new SocketImpl())
 /** Creates a socket and connects it to the specified remote
 address on the specified remote port.
 */
-Socket::Socket(InetAddress address, int port,
-   InetAddress localAddr, int localPort) : socketImpl(new SocketImpl())
+Socket::Socket(InetAddressPtr address, int port,
+   InetAddressPtr localAddr, int localPort) : socketImpl(new SocketImpl())
 {
    socketImpl->create(true);
    socketImpl->connect(address, port);
@@ -86,7 +72,7 @@ Socket::Socket(const LogString& host, int port)
 host on the specified remote port.
 */
 Socket::Socket(const LogString& host, int port,
-   InetAddress localAddr, int localPort)
+   InetAddressPtr localAddr, int localPort)
         : socketImpl(new SocketImpl())
 {
    socketImpl->create(true);
