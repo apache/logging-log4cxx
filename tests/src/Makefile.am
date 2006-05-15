@@ -129,8 +129,7 @@ testsuite_SOURCES = \
         rollingfileappendertestcase.cpp\
         streamtestcase.cpp\
         writerappendertestcase.cpp \
-        ndctestcase.cpp \
-        threadtest.cpp
+        ndctestcase.cpp
 
 testsuite_LDADD = \
         $(top_builddir)/src/liblog4cxx.la
