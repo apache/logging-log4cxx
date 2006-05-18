@@ -54,10 +54,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="lib.type" value="shared"/>
 <property name="has.wchar_t" value="1"/>
 
-<property name="apache.mirror" value="http://apache.mirrors.pair.com"/>
-<property name="cppunit.mirror" value="http://unc.dl.sourceforge.net/sourceforge"/>
+<property name="apache.mirror" value="http://archive.apache.org/dist"/>
+<property name="cppunit.mirror" value="http://easynews.dl.sourceforge.net/sourceforge"/>
 
-<property name="apache.dist" value="http://www.apache.org/dist"/>
+<property name="apache.dist" value="http://archive.apache.org/dist"/>
 
 
 
@@ -77,6 +77,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
+
+
 
 <target name="usage" description="Describes usage of the build script">
         <echo>
