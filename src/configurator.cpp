@@ -20,7 +20,7 @@
 using namespace log4cxx;
 using namespace log4cxx::spi;
 
-IMPLEMENT_LOG4CXX_OBJECT(Configurator);
+IMPLEMENT_LOG4CXX_OBJECT(Configurator)
 
 
 

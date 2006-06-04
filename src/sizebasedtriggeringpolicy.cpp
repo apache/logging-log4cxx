@@ -18,11 +18,11 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 
- using namespace log4cxx;
- using namespace log4cxx::rolling;
- using namespace log4cxx::helpers;
+using namespace log4cxx;
+using namespace log4cxx::rolling;
+using namespace log4cxx::helpers;
 
- IMPLEMENT_LOG4CXX_OBJECT(SizeBasedTriggeringPolicy);
+IMPLEMENT_LOG4CXX_OBJECT(SizeBasedTriggeringPolicy)
 
 SizeBasedTriggeringPolicy::SizeBasedTriggeringPolicy()
       : maxFileSize(10 * 1024 * 1024) {

@@ -60,7 +60,7 @@ namespace log4cxx {
       typedef log4cxx::helpers::ObjectPtrT<Date> DatePtr;
 
    }
-};
+}
 
 
 #endif

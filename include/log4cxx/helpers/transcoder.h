@@ -97,7 +97,7 @@ namespace log4cxx {
 
       };
    }
-};
+}
 
 #define LOG4CXX_ENCODE_CHAR(var, src) \
 std::string var;                      \

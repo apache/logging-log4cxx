@@ -25,7 +25,7 @@
 
 using namespace log4cxx::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(DatagramSocket);
+IMPLEMENT_LOG4CXX_OBJECT(DatagramSocket)
 
 DatagramSocket::DatagramSocket()
  : socket(0), address(), localAddress(), port(0), localPort(0)
