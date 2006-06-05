@@ -61,10 +61,10 @@ public:
       //
       //   using the stream interface since it knows
       //      numeric and encoding conversion
-      LoggerPtr logger(Logger::getLogger("shortsocketserver"));
+      LoggerPtr log(Logger::getLogger("shortsocketserver"));
      std::ostringstream os("Listening on port ");
      os << PORT;
-     LOG4CXX_INFO(logger, os.str());
+     LOG4CXX_INFO(log, os.str());
 
      ServerSocket serverSocket(PORT);
 
@@ -75,12 +75,12 @@ public:
          std::ostringstream sbuf(prefix);
          sbuf <<  i  << ".properties";
          PropertyConfigurator::configure(sbuf.str());
-         LOG4CXX_INFO(logger, "Waiting to accept a new client.");
+         LOG4CXX_INFO(log, "Waiting to accept a new client.");
          SocketPtr socket = serverSocket.accept();
        LogString msg(socket->getInetAddress()->toString());
        msg.insert(0, LOG4CXX_STR("Connected to client at "));
-       LOG4CXX_INFO(logger, msg);
-         LOG4CXX_INFO(logger, "Starting new socket node.");
+       LOG4CXX_INFO(log, msg);
+         LOG4CXX_INFO(log, "Starting new socket node.");
          SocketNode sn(socket, LogManager::getLoggerRepository());
          sn.run();
       }

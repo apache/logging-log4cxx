@@ -67,7 +67,7 @@ namespace log4cxx
                 /**
                         Just calls the parent constuctor.
                 */
-                XLogger(const LogString& name) : Logger(name) {}
+                XLogger(const LogString& name1) : Logger(name1) {}
 
                 /**
                         Nothing to activate.
@@ -92,8 +92,8 @@ namespace log4cxx
                 LogString getSuffix() const
                         { return suffix; }
 
-                void setSuffix(const LogString& suffix)
-                        { this->suffix = suffix; }
+                void setSuffix(const LogString& suffix1)
+                        { this->suffix = suffix1; }
 
                 /**
                         We introduce a new printing method that takes the TRACE level.

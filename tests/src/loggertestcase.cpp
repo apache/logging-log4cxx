@@ -392,8 +392,8 @@ public:
                 CPPUNIT_ASSERT(a0->getLevel() == 0);
                 CPPUNIT_ASSERT(Level::ERROR == a0->getEffectiveLevel());
 
-                LoggerPtr a1 = h->getLogger(LOG4CXX_STR("a"));
-                CPPUNIT_ASSERT_EQUAL(a0, a1);
+                LoggerPtr a11 = h->getLogger(LOG4CXX_STR("a"));
+                CPPUNIT_ASSERT_EQUAL(a0, a11);
         }
 
 protected:

@@ -127,10 +127,10 @@ public:
 
    void varSubstTest5()
    {
-      Properties props;
-      props.setProperty(LOG4CXX_STR("p1"), LOG4CXX_STR("x1"));
-      props.setProperty(LOG4CXX_STR("p2"), LOG4CXX_STR("${p1}"));
-      LogString res = OptionConverter::substVars(LOG4CXX_STR("${p2}"), props);
+      Properties props1;
+      props1.setProperty(LOG4CXX_STR("p1"), LOG4CXX_STR("x1"));
+      props1.setProperty(LOG4CXX_STR("p2"), LOG4CXX_STR("${p1}"));
+      LogString res = OptionConverter::substVars(LOG4CXX_STR("${p2}"), props1);
       CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("x1"), res);
    }
 

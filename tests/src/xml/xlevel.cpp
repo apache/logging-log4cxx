@@ -26,8 +26,8 @@ const LevelPtr XLevel::TRACE(XLevel::getTrace());
 const LevelPtr XLevel::LETHAL(XLevel::getLethal());
 
 
-XLevel::XLevel(int level, const logchar* name, int syslogEquivalent)
-: Level(level, name, syslogEquivalent)
+XLevel::XLevel(int level1, const logchar* name1, int syslogEquivalent1)
+: Level(level1, name1, syslogEquivalent1)
 {
 }
 

@@ -61,9 +61,9 @@ public:
    {
       root->getLoggerRepository()->resetConfiguration();
 
-      LoggerPtr logger = Logger::getLogger(LOG4CXX_TEST_STR("LOG4J"));
-      logger->setAdditivity(false);
-      logger->addAppender(
+      LoggerPtr logger1 = Logger::getLogger(LOG4CXX_TEST_STR("LOG4J"));
+      logger1->setAdditivity(false);
+      logger1->addAppender(
          new ConsoleAppender(new PatternLayout(LOG4CXX_STR("log4j: %-22c{2} - %m%n"))));
    }
 
