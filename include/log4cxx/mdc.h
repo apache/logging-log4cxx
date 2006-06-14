@@ -35,9 +35,6 @@ namespace log4cxx
         child thread automatically inherits a <em>copy</em> of the mapped
         diagnostic context of its parent.
 
-        <p>The MDC class requires JDK 1.2 or above. Under JDK 1.1 the MDC
-        will always return empty values but otherwise will not affect or
-        harm your application.
         */
         class LOG4CXX_EXPORT MDC
         {
