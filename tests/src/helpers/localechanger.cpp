@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#define LOG4CXX_TEST
+#include <log4cxx/private/log4cxx_private.h>
+#if LOG4CXX_HAS_STD_LOCALE
 
 #include "localechanger.h"
 #include <stdexcept>
@@ -43,3 +46,4 @@ LocaleChanger::~LocaleChanger() {
       }
   }
 
+#endif

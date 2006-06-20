@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/pattern/patternparser.h>
 #include <log4cxx/pattern/literalpatternconverter.h>
 #include <log4cxx/helpers/loglog.h>

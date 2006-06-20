@@ -51,9 +51,30 @@ extern CPPUNIT_NS::Test* createTestCase4();
 //
 log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("log4cxx_unittest"));
 
-int main( int argc, const char * const * argv)
-{
+#if defined(_WIN32_WCE)
+#define LOG4CXX_USE_WMAIN 1
+#endif
+
+#if defined(LOG4CXX_USE_WMAIN)
+int wmain(int argc, const wchar_t* const * wargv) {
+    char** argv = new char*[argc];
+    {
+        for(int i = 0; i < argc; i++) {
+            size_t len = wcslen(wargv[i]) + 1;
+            argv[i] = new char[len];
+            //
+            //   truncate characters since argument names should 
+            //      only be ASCII
+            for(size_t j = 0; j < len; j++) {
+                argv[i][j] = (char) wargv[i][j];
+            }
+        }
+    }
+    apr_app_initialize(&argc, (const char* const **) &argv, NULL);
+#else
+int main(int argc, const char* const * argv) {
         apr_app_initialize(&argc, &argv, NULL);
+#endif
         CppUnit::TextUi::TestRunner runner;
 
         CppUnit::TestFactoryRegistry &registry =
@@ -122,6 +143,12 @@ int main( int argc, const char * const * argv)
         }
 
         apr_terminate();
+#if defined(LOG4CXX_USE_WMAIN)
+    for(int i = 0; i < argc; i++) {
+        delete [] (argv[i]);
+    }
+    delete [] argv;
+#endif
         return wasSuccessful ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 #if LOG4CXX_HAS_WCHAR_T

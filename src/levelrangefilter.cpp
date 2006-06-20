@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/filter/levelrangefilter.h>
+#include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <cppunit/extensions/HelperMacros.h>

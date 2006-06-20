@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 #define __STDC_CONSTANT_MACROS
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/loglog.h>
-#include <sys/stat.h>
-#include <errno.h>
 #include <apr_time.h>
 #include <apr_thread_proc.h>
 #include <apr_atomic.h>

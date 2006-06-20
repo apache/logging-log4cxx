@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <cppunit/extensions/HelperMacros.h>
+#if LOG4CXX_HAS_STD_LOCALE
 #include <locale>
+#endif
 #include "../insertwide.h"
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/date.h>

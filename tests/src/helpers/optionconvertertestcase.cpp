@@ -21,12 +21,14 @@
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/pool.h>
 #include "../testchar.h"
 #include "../insertwide.h"
 #include <stdlib.h>
 #include <apr_pools.h>
 #include <apr_file_io.h>
 #include <apr_user.h>
+#include <apr_env.h>
 
 
 using namespace log4cxx;
@@ -68,14 +70,21 @@ public:
    * before invoking tests.  ::putenv not reliable.
    */
    void envCheck() {
-     const char* toto = ::getenv("TOTO");
-     CPPUNIT_ASSERT(toto != NULL);
+     Pool p;
+     char* toto;
+     apr_status_t stat = apr_env_get(&toto, "TOTO", 
+         (apr_pool_t*) p.getAPRPool());
+     CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
      CPPUNIT_ASSERT_EQUAL(std::string("wonderful"), (std::string) toto);
-     const char* key1 = ::getenv("key1");
-     CPPUNIT_ASSERT(key1 != NULL);
+     char* key1;
+     stat = apr_env_get(&key1, "key1", 
+         (apr_pool_t*) p.getAPRPool());
+     CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
      CPPUNIT_ASSERT_EQUAL(std::string("value1"), (std::string) key1);
-     const char* key2 = ::getenv("key2");
-     CPPUNIT_ASSERT(key2 != NULL);
+     char* key2;
+     stat = apr_env_get(&key2, "key2", 
+         (apr_pool_t*) p.getAPRPool());
+     CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
      CPPUNIT_ASSERT_EQUAL(std::string("value2"), (std::string) key2);
    }
 

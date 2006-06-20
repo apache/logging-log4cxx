@@ -30,9 +30,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="version" value="1.10.2"/>
 <property name="include.dir" location="${base.dir}/include"/>
 <property name="lib.type" value="static"/>
+<property name="project.dir" value="${build.dir}"/>
 
 
-<taskdef resource="cpptasks.tasks"/>
+  <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
 
 <target name="usage">
@@ -83,6 +84,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <condition property="is-shared" value="true">
             <equals arg1="${lib.type}" arg2="shared"/>
         </condition>
+        <condition property="project.if" value="true">
+            <istrue value="${project.if.value}"/>
+        </condition>
 
 </target>
 
@@ -121,16 +125,35 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         objdir="${executable.dir}/${lib.type}/cppunit_obj"
         debug="${debug}">
         <fileset dir="${base.dir}/src/cppunit" includes="**/*.cpp" excludes="DllMain.cpp"/>
+        <fileset dir="${base.dir}/include/cppunit" includes="**/*.h"/>
         <includepath path="${include.dir}"/>
         <defineset define="CPPUNIT_BUILD_DLL" if="is-shared"/>
         <defineset define="CPPUNIT_BUILD_STATIC" unless="is-shared"/>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
-
+        <project type="${project.type}" outfile="${project.dir}/cppunit" if="project.if"/>
     </cc>
 </target>
 
 <target name="build-check" depends="build">
+  <mkdir dir="${executable.dir}/${lib.type}/cppunittest_obj"/>
+  <cc name="${compiler}"
+      outfile="${executable.dir}/${lib.type}/cppunittest"
+      subsystem="console"
+      multithreaded="true"
+      outtype="executable"
+      rtti="true"
+      exceptions="true"
+      objdir="${executable.dir}/${lib.type}/cppunittest_obj"
+      debug="${debug}">
+    <fileset dir="${base.dir}/examples/cppunittest" includes="**/*.cpp, **/*.h"/>
+    <includepath path="${include.dir}"/>
+    <defineset define="CPPUNIT_DLL" if="is-shared"/>
+    <defineset define="CPPUNIT_STATIC" unless="is-shared"/>
+    <defineset define="WIN32" if="is-windows"/>
+    <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+    <project type="${project.type}" outfile="${project.dir}/cppunittest" if="project.if"/>
+  </cc>
 </target>
 
 

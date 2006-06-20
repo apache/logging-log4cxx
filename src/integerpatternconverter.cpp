@@ -15,6 +15,7 @@
  */
 
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/pattern/integerpatternconverter.h>
 #include <log4cxx/helpers/integer.h>
 #include <log4cxx/helpers/stringhelper.h>

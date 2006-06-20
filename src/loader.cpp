@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/loader.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/spi/filter.h>
@@ -27,7 +28,6 @@
 #include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/helpers/xml.h>
 #include <log4cxx/spi/triggeringeventevaluator.h>
-#include <sys/stat.h>
 #include <fstream>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/fileinputstream.h>

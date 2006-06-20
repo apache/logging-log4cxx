@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/filter/levelmatchfilter.h>
 #include <log4cxx/helpers/stringhelper.h>

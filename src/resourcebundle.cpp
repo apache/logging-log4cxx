@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
 #include <log4cxx/helpers/loader.h>

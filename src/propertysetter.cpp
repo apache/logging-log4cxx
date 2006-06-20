@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/object.h>
+#include <log4cxx/logstring.h>
 #include <log4cxx/config/propertysetter.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/spi/optionhandler.h>

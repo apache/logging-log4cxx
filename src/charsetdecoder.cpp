@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
@@ -118,7 +118,7 @@ namespace log4cxx
           };
 #endif
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_HAS_WCHAR_T && !defined(_WIN32_WCE)
           /**
           *    Converts from the default multi-byte string to
           *        LogString using mbstowcs.
@@ -427,7 +427,7 @@ CharsetDecoder::~CharsetDecoder() {
 CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
 #if LOG4CXX_LOCALE_ENCODING_UTF8
      return new UTF8CharsetDecoder();
-#elif LOG4CXX_LOCALE_ENCODING_ISO_8859_1
+#elif LOG4CXX_LOCALE_ENCODING_ISO_8859_1 || defined(_WIN32_WCE)
      return new ISOLatinCharsetDecoder();
 #elif LOG4CXX_LOCALE_ENCODING_US_ASCII
      return new USASCIICharsetDecoder();

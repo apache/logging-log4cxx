@@ -13,8 +13,7 @@
  * limitations under the License.
  */
 
-#include <log4cxx/portability.h>
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/socketimpl.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>

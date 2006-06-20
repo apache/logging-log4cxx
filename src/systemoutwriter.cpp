@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/systemoutwriter.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <stdio.h>

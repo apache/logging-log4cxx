@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/rolling/rolloverdescription.h>
 
 using namespace log4cxx;

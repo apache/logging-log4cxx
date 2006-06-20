@@ -163,10 +163,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outputfileproperty="apr-1.dll"
         debug="${debug}">
         <fileset dir="${src.dir}" includes="**/${arch}/*.c" excludes="**/apr_app.c"/>
+        <fileset dir="${src.dir}" includes="**/${arch}/apr_app.c" if="is-static"/>
         <fileset dir="${src.dir}/file_io/unix"
             includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"/>
         <fileset dir="${src.dir}/memory/unix" includes="*.c"/>
-        <fileset dir="${src.dir}/misc/${arch}" includes="*.c"/>
         <fileset dir="${src.dir}/misc/unix"
             includes="errorcodes.c getopt.c otherchild.c version.c"/>
         <fileset dir="${src.dir}/mmap/unix" includes="common.c"/>
@@ -214,6 +214,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
@@ -346,6 +347,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
@@ -386,6 +388,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>

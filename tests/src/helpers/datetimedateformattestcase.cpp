@@ -15,14 +15,13 @@
  */
 
 #define __STDC_CONSTANT_MACROS
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/datetimedateformat.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/pool.h>
-#include <locale>
 #include "../insertwide.h"
 #include <apr.h>
 #include <apr_time.h>
-#include "localechanger.h"
 #include <sstream>
 
 using namespace log4cxx;
@@ -42,6 +41,8 @@ using namespace std;
 
 
 #if LOG4CXX_HAS_STD_LOCALE
+#include <locale>
+#include "localechanger.h"
 #define MAKE_LOCALE(ptr, id)     \
 std::locale loco(id);            \
 std::locale* ptr = &loco;

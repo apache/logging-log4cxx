@@ -40,7 +40,12 @@
 #define LOG4CXX_RETURN_AFTER_THROW 0
 #endif
 
+#if defined(_WIN32_WCE)
+#define LOG4CXX_HAS_STD_LOCALE 0
+#else
 #define LOG4CXX_HAS_STD_LOCALE 1
+#endif
+
 #if defined(__GNUC__)
 #define LOG4CXX_HAS_STD_WLOCALE 0
 #else

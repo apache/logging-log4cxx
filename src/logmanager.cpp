@@ -25,7 +25,6 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/loglog.h>
-#include <sys/stat.h>
 
 #include <apr_general.h>
 

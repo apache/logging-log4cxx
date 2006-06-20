@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #define __STDC_CONSTANT_MACROS
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/timezone.h>
 #include <stdlib.h>
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <apr_atomic.h>
 #include <log4cxx/helpers/aprinitializer.h>

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/thread.h>
 #include <log4cxx/helpers/exception.h>
 #include <apr_thread_proc.h>

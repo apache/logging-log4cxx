@@ -55,7 +55,9 @@ typedef unsigned int log4cxx_uint32_t;
 #define LOG4CXX_LOCALE_ENCODING_ISO_8859_1 0
 #define LOG4CXX_LOCALE_ENCODING_US_ASCII 0
 
+#if !defined(_WIN32_WCE)
 #define LOG4CXX_HAVE_ODBC 1
+#endif
 
 #endif
 

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/pattern/filedatepatternconverter.h>
 #include <log4cxx/pattern/datepatternconverter.h>
 

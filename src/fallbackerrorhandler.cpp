@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>

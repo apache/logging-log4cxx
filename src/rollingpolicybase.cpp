@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/rolling/rollingpolicybase.h>
 #include <log4cxx/pattern/formattinginfo.h>
 #include <log4cxx/helpers/stringhelper.h>

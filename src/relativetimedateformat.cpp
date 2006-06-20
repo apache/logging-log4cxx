@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 #define __STDC_CONSTANT_MACROS
-#include <apr.h>
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/spi/loggingevent.h>
 
-
+#include <apr.h>
 #include <apr_time.h>
 #include <log4cxx/helpers/stringhelper.h>
 

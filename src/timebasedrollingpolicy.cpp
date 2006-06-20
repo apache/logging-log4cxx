@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <log4cxx/pattern/filedatepatternconverter.h>
 #include <log4cxx/helpers/date.h>

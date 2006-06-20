@@ -15,7 +15,7 @@
  */
 
 
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/pattern/propertiespatternconverter.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/spi/location/locationinfo.h>

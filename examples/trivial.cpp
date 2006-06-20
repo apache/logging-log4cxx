@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <log4cxx/logstring.h>
 #include <stdlib.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>

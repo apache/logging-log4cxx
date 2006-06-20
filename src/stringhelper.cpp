@@ -15,11 +15,11 @@
  */
 
 #define __STDC_CONSTANT_MACROS
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <algorithm>
 #include <vector>
-#include <locale>
 #include <apr_strings.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/private/log4cxx_private.h>

@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/system.h>
 
-#if defined(LOG4CXX_HAVE_FTIME)
-#include <sys/timeb.h>
-#endif
-
-#if defined(LOG4CXX_HAVE_GETTIMEOFDAY)
-#include <sys/time.h>
-#endif
-
-#include <time.h>
-#include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <stdlib.h>
 #include <log4cxx/helpers/pool.h>
 #include <apr_file_io.h>
 #include <apr_user.h>
+#include <apr_env.h>
 
 
 using namespace log4cxx;
@@ -92,9 +83,12 @@ LogString System::getProperty(const LogString& lkey)
 #endif
 
         LOG4CXX_ENCODE_CHAR(key, lkey);
-        const char * value = ::getenv(key.c_str());
-        if (value != 0) {
-                Transcoder::decode(value, rv);
+        Pool p;
+        char* value = NULL;
+        apr_status_t stat = apr_env_get(&value, key.c_str(), 
+            (apr_pool_t*) p.getAPRPool());
+        if (stat == APR_SUCCESS) {
+             Transcoder::decode((const char*) value, rv);
         }
         return rv;
 }

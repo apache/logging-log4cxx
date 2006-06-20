@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/class.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/object.h>
@@ -29,8 +29,10 @@
 #ifdef LOG4CXX_HAVE_ODBC
 #include <log4cxx/db/odbcappender.h>
 #endif
-#if defined(WIN32) || defined(_WIN32)
+#if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
 #include <log4cxx/nt/nteventlogappender.h>
+#endif
+#if defined(WIN32) || defined(_WIN32)
 #include <log4cxx/nt/outputdebugstringappender.h>
 #endif
 #include <log4cxx/rolling/rollingfileappender.h>
@@ -137,8 +139,10 @@ void Class::registerClasses() {
 #ifdef LOG4CXX_HAVE_ODBC
       log4cxx::db::ODBCAppender::registerClass();
 #endif
-#if defined(WIN32) || defined(_WIN32)
+#if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
         NTEventLogAppender::registerClass();
+#endif
+#if (defined(WIN32) || defined(_WIN32))
         OutputDebugStringAppender::registerClass();
 #endif
         RollingFileAppender::registerClass();

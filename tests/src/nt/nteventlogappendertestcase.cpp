@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#if defined(_WIN32)
+#if defined(_WIN32) && !defined(_WIN32_WCE)
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/nt/nteventlogappender.h>
