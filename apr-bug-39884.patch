@@ -1,0 +1,26 @@
+Index: include/arch/win32/apr_private.h
+===================================================================
+--- include/arch/win32/apr_private.h	(revision 408977)
++++ include/arch/win32/apr_private.h	(working copy)
+@@ -145,7 +145,7 @@
+ #endif
+ 
+ /* MSVC 7.0 introduced _strtoi64 */
+-#if _MSC_VER >= 1300 && _INTEGRAL_MAX_BITS >= 64
++#if _MSC_VER >= 1300 && _INTEGRAL_MAX_BITS >= 64 && !defined(_WIN32_WCE)
+ #define APR_INT64_STRFN	      _strtoi64
+ #endif
+ 
+@@ -156,8 +156,12 @@
+ #define APR_OFF_T_STRFN         apr_strtoi64
+ #endif
+ #else
++#if defined(_WIN32_WCE)
++#define APR_OFF_T_STRFN         strtol
++#else
+ #define APR_OFF_T_STRFN         strtoi
+ #endif
++#endif
+ 
+ /* used to check for DWORD overflow in 64bit compiles */
+ #define APR_DWORD_MAX 0xFFFFFFFFUL

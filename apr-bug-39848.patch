@@ -1,0 +1,60 @@
+Index: test/testrand2.c
+===================================================================
+--- test/testrand2.c	(revision 415827)
++++ test/testrand2.c	(working copy)
+@@ -17,7 +17,6 @@
+ #include "apr_general.h"
+ #include "apr_random.h"
+ #include "apr_thread_proc.h"
+-#include <errno.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include "testutil.h"
+Index: test/testprocmutex.c
+===================================================================
+--- test/testprocmutex.c	(revision 415827)
++++ test/testprocmutex.c	(working copy)
+@@ -21,7 +21,6 @@
+ #include "apr_errno.h"
+ #include "apr_general.h"
+ #include "apr_getopt.h"
+-#include "errno.h"
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include "testutil.h"
+Index: test/testthread.c
+===================================================================
+--- test/testthread.c	(revision 415827)
++++ test/testthread.c	(working copy)
+@@ -17,7 +17,6 @@
+ #include "apr_thread_proc.h"
+ #include "apr_errno.h"
+ #include "apr_general.h"
+-#include "errno.h"
+ #include "apr_time.h"
+ #include "testutil.h"
+ 
+Index: test/testrand.c
+===================================================================
+--- test/testrand.c	(revision 415827)
++++ test/testrand.c	(working copy)
+@@ -15,7 +15,6 @@
+  */
+ 
+ #include "apr_general.h"
+-#include <errno.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include "testutil.h"
+Index: test/testsleep.c
+===================================================================
+--- test/testsleep.c	(revision 415827)
++++ test/testsleep.c	(working copy)
+@@ -19,7 +19,6 @@
+ #include "apr_errno.h"
+ #include "apr_general.h"
+ #include "apr_lib.h"
+-#include <errno.h>
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include "testutil.h"

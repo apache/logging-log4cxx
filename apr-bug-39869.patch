@@ -1,0 +1,22 @@
+Index: threadproc/win32/proc.c
+===================================================================
+--- threadproc/win32/proc.c	(revision 408977)
++++ threadproc/win32/proc.c	(working copy)
+@@ -499,6 +499,9 @@
+     else 
+ #endif
+     {
++#if defined(_WIN32_WCE)
++        {
++#else
+         /* Win32 is _different_ than unix.  While unix will find the given
+          * program since it's already chdir'ed, Win32 cannot since the parent
+          * attempts to open the program with it's own path.
+@@ -556,6 +559,7 @@
+             }
+         }
+         else {
++#endif
+             /* A simple command we are directly invoking.  Do not pass
+              * the first arg to CreateProc() for APR_PROGRAM_PATH
+              * invocation, since it would need to be a literal and

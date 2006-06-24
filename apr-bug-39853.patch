@@ -1,0 +1,13 @@
+Index: include/arch/win32/apr_private.h
+===================================================================
+--- include/arch/win32/apr_private.h	(revision 408977)
++++ include/arch/win32/apr_private.h	(working copy)
+@@ -137,6 +137,8 @@
+ #if !APR_HAVE_ERRNO_H
+ APR_DECLARE_DATA int errno;
+ #define ENOSPC 1
++#define EINVAL 22
++#define ERANGE 34
+ #endif
+ 
+ #if APR_HAVE_IPV6

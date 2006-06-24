@@ -8,9 +8,9 @@
         <libset libs="iconv" if="has-iconv"/>
         <libset libs="pthread" if="is-unix"/>
         <libset libs="expat" if="has-expat"/>
-        <libset libs="advapi32 odbc32 ws2_32 mswsock" if="is-windows"/>
-        <libset libs="stdc++" if="is-gcc"/>
-        <libset libs="cw32mt" if="is-bcc"/>
+        <syslibset libs="advapi32 odbc32 ws2_32 mswsock" if="is-windows"/>
+        <syslibset libs="stdc++" if="is-gcc"/>
+        <syslibset libs="cw32mt" if="is-bcc"/>
 '>]>
 <!--
  Copyright 2004-2005 The Apache Software Foundation.
@@ -61,11 +61,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 
-<property name="apr.version" value="1.2.2"/>
+<property name="apr.version" value="1.2.7"/>
 <property name="apr.lib.name" value="apr-1"/>
 <property name="apr.lib.type" value="static"/>
 
-<property name="aprutil.version" value="1.2.2"/>
+<property name="aprutil.version" value="1.2.7"/>
 <property name="aprutil.lib.name" value="aprutil-1"/>
 <property name="aprutil.lib.type" value="static"/>
 
@@ -100,6 +100,7 @@ Builds and tests log4cxx using installed APR and cppunit
 Displays available targets
 
 > ant build-projects-vc6
+> ant build-projects-vc8
 
 Builds Microsoft Visual Studio projects.
 -xcode and -cbx for Apple Xcode and Borland CBuilderX for Linux
@@ -475,9 +476,23 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <param name="module" value="apr"/>
         <param name="module.version" value="${apr.version}"/>
     </antcall>
-    <patch patchfile="${base.dir}/apr-${apr.version}.patch"
-           dir="${lib.dir}/apr-${apr.version}"
-           strip="0"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39848.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39852.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39853.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39856.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39857.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39858.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39859.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39867.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39868.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39869.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39884.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39886.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39888.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39889.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39892.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39895.patch"/>
+  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39896.patch"/>
 </target>
 
 <target name="build-apr" depends="init" unless="apr-available">
@@ -522,9 +537,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <param name="module" value="apr-util"/>
         <param name="module.version" value="${aprutil.version}"/>
     </antcall>
-    <patch patchfile="${base.dir}/apr-util-${aprutil.version}.patch"
-           dir="${lib.dir}/apr-util-${aprutil.version}"
-           strip="0"/>
     <chmod file="${lib.dir}/apr-util-${aprutil.version}/xml/expat/configure"
            perm="u+x"/>
 
@@ -680,7 +692,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="build-example">
+<target name="build-example-static" if="is-static">
     <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>
     <cc name="${compiler}"
                 exceptions="true"
@@ -693,23 +705,76 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 projectsOnly="${projectsOnly}">
         <fileset dir="${example.src.dir}" includes="${example.includes}"/>
         <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
 
         <defineset define="WIN32" if="is-windows"/>
-        <defineset define="LOG4CXX_STATIC" if="is-static"/>
-        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
-        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
+        <defineset define="LOG4CXX_STATIC"/>
 
         <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
         &libsets;
 
-        <project outfile="${project.dir}/${example.name}" type="${project.type}" if="project.if"/>
+      <project outfile="${project.dir}/${example.name}" type="${project.type}" if="project.if"/>
     </cc>
 </target>
 
-<target name="run-example">
+  <target name="build-example-shared" unless="is-static">
+    <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>
+    <cc name="${compiler}"
+                exceptions="true"
+                outfile="${log4cxx.lib.dir}/${example.name}"
+                subsystem="console"
+                multithreaded="true"
+                outtype="executable"
+                objdir="${log4cxx.lib.dir}/${example.name}_obj"
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
+      <fileset dir="${example.src.dir}" includes="${example.includes}"/>
+      <includepath path="${include.dir}"/>
+
+      <defineset define="WIN32" if="is-windows"/>
+
+      <compilerarg value="${pic-option}" if="pic-option"/>
+
+      <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
+
+      <project outfile="${project.dir}/${example.name}" type="${project.type}" if="project.if"/>
+    </cc>
+  </target>
+
+  <target name="build-apr-example">
+    <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>
+    <cc name="${compiler}"
+                exceptions="true"
+                outfile="${log4cxx.lib.dir}/${example.name}"
+                subsystem="console"
+                multithreaded="true"
+                outtype="executable"
+                objdir="${log4cxx.lib.dir}/${example.name}_obj"
+                debug="${debug}"
+                projectsOnly="${projectsOnly}">
+      <fileset dir="${example.src.dir}" includes="${example.includes}"/>
+      <includepath path="${include.dir}"/>
+      <includepath path="${apr.include.dir}"/>
+
+      <defineset define="WIN32" if="is-windows"/>
+      <defineset define="LOG4CXX_STATIC" if="is-static"/>
+      <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
+      <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
+
+      <compilerarg value="${pic-option}" if="pic-option"/>
+
+      <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
+      &libsets;
+
+      <project outfile="${project.dir}/${example.name}" type="${project.type}" if="project.if"/>
+    </cc>
+  </target>
+
+
+  <target name="build-example" depends="build-example-static, build-example-shared"/>
+  
+  <target name="run-example">
     <!--  remove any stray configuration files  -->
     <delete>
         <fileset dir="${log4cxx.lib.dir}" includes="log4*.properties log4*.xml"/>
@@ -727,7 +792,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 
 <target name="build-delayedloop" depends="build">
-    <antcall target="build-example">
+    <antcall target="build-apr-example">
        <param name="example.src.dir" value="${examples.dir}"/>
        <param name="example.name" value="delayedloop"/>
        <param name="example.includes" value="delayedloop.cpp"/>
@@ -763,7 +828,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     description="Builds example programs"/>
 
 <target name="build-simplesocketserver" depends="build">
-    <antcall target="build-example">
+    <antcall target="build-apr-example">
        <param name="example.src.dir" value="${base.dir}/simplesocketserver"/>
        <param name="example.name" value="simplesocketserver"/>
        <param name="example.includes" value="simplesocketserver.cpp"/>
@@ -772,7 +837,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 
 <target name="build-performance" depends="build" description="Builds performance test">
-    <antcall target="build-example">
+    <antcall target="build-apr-example">
        <param name="example.src.dir" value="${performance.dir}"/>
        <param name="example.name" value="performance"/>
        <param name="example.includes" value="**/*.cpp"/>
@@ -1140,7 +1205,14 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </antcall>
 </target>
 
-<target name="build-projects-xcode" description="Builds project files for Apple Xcode">
+<target name="build-projects-vc8" description="Builds project files for Microsoft Visual C++ 2005">
+    <antcall target="build-projects">
+      <param name="project.dir" value="msvc8"/>
+      <param name="project.type" value="msvc8"/>
+    </antcall>
+</target>
+
+  <target name="build-projects-xcode" description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
         <param name="project.dir" value="xcode"/>
         <param name="project.type" value="xcode"/>
