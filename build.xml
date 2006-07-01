@@ -341,6 +341,41 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         </condition>
         <property name="executable.dir" value="${build.dir}/release"/>
 
+        <condition property="apr-shared.lib.dir" value="${apr.lib.dir}">
+              <and>
+                   <not>
+                   		<isset property="apr-static"/>
+                   </not>
+                   <isset property="apr.lib.dir"/>
+              </and>
+        </condition>
+        <condition property="apr-shared.no-dir" value="true">
+              <not>
+              	   <or>
+                       <isset property="apr-static"/>
+                   	   <isset property="apr.lib.dir"/>
+                   </or>
+              </not>
+        </condition>
+
+        <condition property="aprutil-shared.lib.dir" value="${aprutil.lib.dir}">
+              <and>
+                   <not>
+                   		<isset property="aprutil-static"/>
+                   </not>
+                   <isset property="aprutil.lib.dir"/>
+              </and>
+        </condition>
+        <condition property="aprutil-shared.no-dir" value="true">
+              <not>
+              	   <or>
+                       <isset property="aprutil-static"/>
+                   	   <isset property="aprutil.lib.dir"/>
+                   </or>
+              </not>
+        </condition>
+
+        	            
         <property name="log4cxx.lib.dir" value="${executable.dir}/${lib.type}"/>
         <mkdir dir="${log4cxx.lib.dir}"/>
 
@@ -737,6 +772,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
       <compilerarg value="${pic-option}" if="pic-option"/>
 
       <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
+      <libset libs="${apr.lib.name}" dir="${apr-shared.lib.dir}" if="apr-shared.lib.dir"/>
+      <libset libs="${apr.lib.name}" if="apr-shared.no-dir"/>
+      <libset libs="${aprutil.lib.name}" dir="${aprutil-shared.lib.dir}" if="aprutil-shared.lib.dir"/>
+      <libset libs="${aprutil.lib.name}" if="aprutil-shared.no-dir"/>
 
       <project outfile="${project.dir}/${example.name}" type="${project.type}" if="project.if"/>
     </cc>
