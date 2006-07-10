@@ -28,9 +28,9 @@ NullAppender::NullAppender()
 {
 }
 
-NullAppender::NullAppender(const LayoutPtr& layout)
+NullAppender::NullAppender(const LayoutPtr& layout1)
 {
-        this->layout = layout;
+        this->layout = layout1;
 }
 
 void NullAppender::close()
