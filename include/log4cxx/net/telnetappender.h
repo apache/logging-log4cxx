@@ -104,8 +104,8 @@ servlet.
                                                 The <b>Port</b> option takes a positive integer representing
                                                 the port where the server is waiting for connections.
                                                 */
-                        void setPort(int port)
-                        { this->port = port; }
+                        void setPort(int port1)
+                        { this->port = port1; }
 
 
                         /** shuts down the appender. */

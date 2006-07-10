@@ -60,8 +60,8 @@ namespace log4cxx
                 {@link net::SMTPAppender SMTPAppender} then make sure
                 to set the <b>LocationInfo</b> option of that appender as well.
                 */
-                inline void setLocationInfo(bool flocationInfoag)
-                        { this->locationInfo = locationInfo; }
+                inline void setLocationInfo(bool locationInfoFlag)
+                        { this->locationInfo = locationInfoFlag; }
 
                 /**
                 Returns the current value of the <b>LocationInfo</b> option.
@@ -74,8 +74,8 @@ namespace log4cxx
                 document title of the generated HTML document.
                 <p>Defaults to 'Log4cxx Log Messages'.
                 */
-                inline void setTitle(const LogString& title)
-                        { this->title.assign(title); }
+                inline void setTitle(const LogString& title1)
+                        { this->title.assign(title1); }
 
                 /**
                 Returns the current value of the <b>Title</b> option.

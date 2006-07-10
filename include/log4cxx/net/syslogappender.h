@@ -114,8 +114,8 @@ namespace log4cxx
                         message will include the facility name of the application. It is
                         <em>false</em> by default.
                         */
-                        inline void setFacilityPrinting(bool facilityPrinting)
-                                { this->facilityPrinting = facilityPrinting; }
+                        inline void setFacilityPrinting(bool facilityPrinting1)
+                                { this->facilityPrinting = facilityPrinting1; }
 
                         /**
                         Returns the value of the <b>FacilityPrinting</b> option.

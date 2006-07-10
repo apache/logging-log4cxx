@@ -117,10 +117,10 @@ namespace log4cxx
         *       location info for current code site and
         *       flush a logging stream
         */
-        LocationFlush( const char * const fileName,
-                      const char * const methodName,
-                      int lineNumber )
-             : LocationInfo( fileName, methodName, lineNumber ) {
+        LocationFlush( const char * const fileName1,
+                      const char * const methodName1,
+                      int lineNumber1 )
+             : LocationInfo( fileName1, methodName1, lineNumber1 ) {
         }
 
       };

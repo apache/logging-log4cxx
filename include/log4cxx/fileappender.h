@@ -185,13 +185,8 @@ namespace log4cxx
                 <p>Note: Actual opening of the file is made when
                 #activateOptions is called, not when the options are set.
                 */
-                inline void setAppend(bool fileAppend)
-                                { this->fileAppend = fileAppend; }
-
-
-                inline void getAppend(bool append)  {
-                  fileAppend = append;
-                }
+                inline void setAppend(bool fileAppend1)
+                                { this->fileAppend = fileAppend1; }
 
                 /**
                 The <b>BufferedIO</b> option takes a boolean value. It is set to
@@ -207,7 +202,7 @@ namespace log4cxx
                 /**
                 Set the size of the IO buffer.
                 */
-                void setBufferSize(int bufferSize) { this->bufferSize = bufferSize; }
+                void setBufferSize(int bufferSize1) { this->bufferSize = bufferSize1; }
 
                 /**
                  *   Replaces double backslashes with single backslashes

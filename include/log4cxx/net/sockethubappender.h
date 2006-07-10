@@ -157,8 +157,8 @@ namespace log4cxx
                         /**
                         The <b>Port</b> option takes a positive integer representing
                         the port where the server is waiting for connections. */
-                        inline void setPort(int port)
-                                { this->port = port; }
+                        inline void setPort(int port1)
+                                { this->port = port1; }
 
                         /**
                         Returns value of the <b>Port</b> option. */
@@ -169,8 +169,8 @@ namespace log4cxx
                         The <b>LocationInfo</b> option takes a boolean value. If true,
                         the information sent to the remote host will include location
                         information. By default no location information is sent to the server. */
-                        inline void setLocationInfo(bool locationInfo)
-                                {  this->locationInfo = locationInfo; }
+                        inline void setLocationInfo(bool locationInfo1)
+                                {  this->locationInfo = locationInfo1; }
 
                         /**
                         Returns value of the <b>LocationInfo</b> option. */

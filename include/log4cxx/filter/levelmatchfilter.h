@@ -67,8 +67,8 @@ namespace log4cxx
 
                         const LogString& getLevelToMatch() const;
 
-                        inline void setAcceptOnMatch(bool acceptOnMatch)
-                                { this->acceptOnMatch = acceptOnMatch; }
+                        inline void setAcceptOnMatch(bool acceptOnMatch1)
+                                { this->acceptOnMatch = acceptOnMatch1; }
 
                         inline bool getAcceptOnMatch() const
                                 { return acceptOnMatch; }

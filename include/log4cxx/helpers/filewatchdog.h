@@ -64,8 +64,8 @@ namespace log4cxx
                         /**
                         Set the delay to observe between each check of the file changes.
                         */
-                        void setDelay(long delay)
-                                { this->delay = delay; }
+                        void setDelay(long delay1)
+                                { this->delay = delay1; }
 
                         void start();
 

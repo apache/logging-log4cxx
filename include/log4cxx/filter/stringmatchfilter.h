@@ -69,14 +69,14 @@ namespace log4cxx
                         virtual void setOption(const LogString& option,
                                 const LogString& value);
 
-                        inline void setStringToMatch(const LogString& stringToMatch)
-                                { this->stringToMatch.assign(stringToMatch); }
+                        inline void setStringToMatch(const LogString& stringToMatch1)
+                                { this->stringToMatch.assign(stringToMatch1); }
 
                         inline const LogString& getStringToMatch() const
                                 { return stringToMatch; }
 
-                        inline void setAcceptOnMatch(bool acceptOnMatch)
-                                { this->acceptOnMatch = acceptOnMatch; }
+                        inline void setAcceptOnMatch(bool acceptOnMatch1)
+                                { this->acceptOnMatch = acceptOnMatch1; }
 
                         inline bool getAcceptOnMatch() const
                                 { return acceptOnMatch; }

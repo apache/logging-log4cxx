@@ -122,8 +122,8 @@ namespace log4cxx
                 The <b>Port</b> option takes a positive integer representing
                 the port where the server is waiting for connections.
                 */
-                void setPort(int port)
-                        { this->port = port; }
+                void setPort(int port1)
+                        { this->port = port1; }
 
                 /**
                 Returns value of the <b>Port</b> option.
@@ -136,8 +136,8 @@ namespace log4cxx
                 the information sent to the remote host will include location
                 information. By default no location information is sent to the server.
                 */
-                void setLocationInfo(bool locationInfo)
-                        { this->locationInfo = locationInfo; }
+                void setLocationInfo(bool locationInfo1)
+                        { this->locationInfo = locationInfo1; }
 
                 /**
                 Returns value of the <b>LocationInfo</b> option.
@@ -154,8 +154,8 @@ namespace log4cxx
                 <p>Setting this option to zero turns off reconnection
                 capability.
                 */
-                void setReconnectionDelay(int reconnectionDelay)
-                        { this->reconnectionDelay = reconnectionDelay; }
+                void setReconnectionDelay(int reconnectionDelay1)
+                        { this->reconnectionDelay = reconnectionDelay1; }
 
                 /**
                 Returns value of the <b>ReconnectionDelay</b> option.

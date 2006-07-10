@@ -101,8 +101,8 @@ namespace log4cxx
         The <b>ThreadPrinting</b> option specifies whether the name of the
         current thread is part of log output or not. This is true by default.
         */
-                inline void setThreadPrinting(bool threadPrinting)
-                        { this->threadPrinting = threadPrinting; }
+                inline void setThreadPrinting(bool threadPrinting1)
+                        { this->threadPrinting = threadPrinting1; }
 
         /**
         Returns value of the <b>ThreadPrinting</b> option.
@@ -114,8 +114,8 @@ namespace log4cxx
         The <b>CategoryPrefixing</b> option specifies whether Logger
         name is part of log output or not. This is true by default.
         */
-                inline void setCategoryPrefixing(bool categoryPrefixing)
-                        { this->categoryPrefixing = categoryPrefixing; }
+                inline void setCategoryPrefixing(bool categoryPrefixing1)
+                        { this->categoryPrefixing = categoryPrefixing1; }
 
         /**
         Returns value of the <b>CategoryPrefixing</b> option.
@@ -128,8 +128,8 @@ namespace log4cxx
         the nested context information belonging to the current thread.
         This is true by default.
         */
-                inline void setContextPrinting(bool contextPrinting)
-                        { this->contextPrinting = contextPrinting; }
+                inline void setContextPrinting(bool contextPrinting1)
+                        { this->contextPrinting = contextPrinting1; }
 
         /**
         Returns value of the <b>ContextPrinting</b> option.
@@ -141,8 +141,8 @@ namespace log4cxx
         The <b>FilePrinting</b> option specifies log output will include
         the file and the line where the log statement was written.
         */
-                inline void setFilePrinting(bool filePrinting)
-                        { this->filePrinting = filePrinting; }
+                inline void setFilePrinting(bool filePrinting1)
+                        { this->filePrinting = filePrinting1; }
 
         /**
         Returns value of the <b>ContextPrinting</b> option.

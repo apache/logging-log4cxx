@@ -172,12 +172,12 @@ namespace log4cxx
                 {@link net::SocketAppender SocketAppender} ignores the layout set
                 here.
                 */
-                void setLayout(const LayoutPtr& layout) { this->layout = layout; }
+                void setLayout(const LayoutPtr& layout1) { this->layout = layout1; }
 
                 /**
                 Set the name of this Appender.
                 */
-                void setName(const LogString& name) { this->name.assign(name); }
+                void setName(const LogString& name1) { this->name.assign(name1); }
 
 
                 /**

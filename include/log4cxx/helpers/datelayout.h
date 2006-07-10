@@ -51,8 +51,8 @@ namespace log4cxx
                         the strings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
                         <b>"DATE"</b> or <b>"ISO8601</b>.
                         */
-                        inline void setDateFormat(const LogString& dateFormat)
-                          { this->dateFormatOption.assign(dateFormat); }
+                        inline void setDateFormat(const LogString& dateFormat1)
+                          { this->dateFormatOption.assign(dateFormat1); }
 
                         /**
                         Returns value of the <b>DateFormat</b> option.

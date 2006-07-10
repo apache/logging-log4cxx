@@ -180,11 +180,11 @@ namespace log4cxx
                 */
                 virtual bool equals(const LevelPtr& level) const;
 
-                inline bool operator==(const Level& level) const
-                        { return (this->level == level.level); }
+                inline bool operator==(const Level& level1) const
+                        { return (this->level == level1.level); }
 
-                inline bool operator!=(const Level& level) const
-                        { return (this->level != level.level); }
+                inline bool operator!=(const Level& level1) const
+                        { return (this->level != level1.level); }
 
                 /**
                 Return the syslog equivalent of this level as an integer.

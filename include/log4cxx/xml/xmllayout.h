@@ -79,8 +79,8 @@ namespace log4cxx
                         then make sure to set the
                         <b>LocationInfo</b> option of that appender as well.
                         */
-                        inline void setLocationInfo(bool locationInfo)
-                                { this->locationInfo = locationInfo; }
+                        inline void setLocationInfo(bool locationInfo1)
+                                { this->locationInfo = locationInfo1; }
 
                                 /**
                         Returns the current value of the <b>LocationInfo</b> option.

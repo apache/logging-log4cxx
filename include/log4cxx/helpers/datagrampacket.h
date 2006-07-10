@@ -104,23 +104,23 @@ namespace log4cxx
                         inline int getPort() const
                                 { return port; }
 
-                        inline void setAddress(InetAddressPtr address)
-                                { this->address = address; }
+                        inline void setAddress(InetAddressPtr address1)
+                                { this->address = address1; }
 
                         /** Set the data buffer for this packet. */
-                        inline void setData(void * buf)
-                                { this->buf = buf; }
+                        inline void setData(void * buf1)
+                                { this->buf = buf1; }
 
                         /** Set the data buffer for this packet. */
-                        inline void setData(void * buf, int offset, int length)
-                                { this->buf = buf; this->offset = offset; this->length = length; }
+                        inline void setData(void * buf1, int offset1, int length1)
+                                { this->buf = buf1; this->offset = offset1; this->length = length1; }
 
                         /** Set the length for this packet. */
-                        inline void setLength(int length)
-                                { this->length = length; }
+                        inline void setLength(int length1)
+                                { this->length = length1; }
 
-                        inline void setPort(int port)
-                                { this->port = port; }
+                        inline void setPort(int port1)
+                                { this->port = port1; }
 
                 private:
                         //

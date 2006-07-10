@@ -35,10 +35,10 @@ namespace log4cxx
         template<typename T> class ObjectPtrT
         {
         public:
-         template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p)
+         template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p1)
             : p(0)
          {
-             cast(p);
+             cast(p1);
          }
 
 
@@ -52,7 +52,7 @@ namespace log4cxx
          {
          }
 
-         ObjectPtrT(T * p) : p(p)
+         ObjectPtrT(T * p1) : p(p1)
             {
                 if (this->p != 0)
                 {
@@ -60,7 +60,7 @@ namespace log4cxx
                 }
             }
 
-            ObjectPtrT(const ObjectPtrT& p) : p(p.p)
+            ObjectPtrT(const ObjectPtrT& p1) : p(p1.p)
             {
                 if (this->p != 0)
                 {
@@ -77,14 +77,14 @@ namespace log4cxx
             }
 
             // Operators
-         template<typename InterfacePtr> ObjectPtrT& operator=(const InterfacePtr& p)
+         template<typename InterfacePtr> ObjectPtrT& operator=(const InterfacePtr& p1)
          {
-           cast(p);
+           cast(p1);
            return *this;
          }
 
-         ObjectPtrT& operator=(const ObjectPtrT& p) {
-             T* newPtr = (T*) p.p;
+         ObjectPtrT& operator=(const ObjectPtrT& p1) {
+             T* newPtr = (T*) p1.p;
              if (newPtr != 0) {
                  newPtr->addRef();
              }
@@ -108,32 +108,32 @@ namespace log4cxx
                 return *this;
          }
 
-         ObjectPtrT& operator=(T* p) {
-              if (p != 0) {
-                p->addRef();
+         ObjectPtrT& operator=(T* p1) {
+              if (p1 != 0) {
+                p1->addRef();
               }
-              void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, p);
+              void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, p1);
               if (oldPtr != 0) {
                  ((T*)oldPtr)->releaseRef();
               }
               return *this;
             }
 
-            bool operator==(const ObjectPtrT& p) const { return (this->p == p.p); }
-            bool operator!=(const ObjectPtrT& p) const { return (this->p != p.p); }
-            bool operator==(const T* p) const { return (this->p == p); }
-            bool operator!=(const T* p) const { return (this->p != p); }
+            bool operator==(const ObjectPtrT& p1) const { return (this->p == p1.p); }
+            bool operator!=(const ObjectPtrT& p1) const { return (this->p != p1.p); }
+            bool operator==(const T* p1) const { return (this->p == p1); }
+            bool operator!=(const T* p1) const { return (this->p != p1); }
             T* operator->() {return (T*) p; }
             const T* operator->() const {return (const T*) p; }
             T& operator*() const {return (T&) *p; }
             operator T*() const {return (T*) p; }
 
-            template<typename InterfacePtr> void cast(const InterfacePtr& p)
+            template<typename InterfacePtr> void cast(const InterfacePtr& p1)
             {
                T* newPtr = 0;
-               if (p != 0)
+               if (p1 != 0)
                {
-                  newPtr = (T*)p->cast(T::getStaticClass());
+                  newPtr = (T*)p1->cast(T::getStaticClass());
                }
                operator=(newPtr);
             }

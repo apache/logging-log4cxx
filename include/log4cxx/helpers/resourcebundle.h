@@ -70,8 +70,8 @@ namespace log4cxx
                         Parameters:
                         parent - this bundle's parent bundle.
                         */
-                        inline void setParent(const ResourceBundlePtr& parent)
-                                { this->parent = parent; }
+                        inline void setParent(const ResourceBundlePtr& parent1)
+                                { this->parent = parent1; }
 
                         /**
                         The parent bundle of this bundle.
