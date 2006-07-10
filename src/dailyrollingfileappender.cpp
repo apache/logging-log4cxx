@@ -39,9 +39,9 @@ DailyRollingFileAppender::DailyRollingFileAppender()
 DailyRollingFileAppender::DailyRollingFileAppender(
   const LayoutPtr& layout,
   const LogString& filename,
-  const LogString& datePattern)
-  : rfa(new log4cxx::rolling::RollingFileAppender()),
-    datePattern(datePattern) {
+  const LogString& datePattern1)
+  : datePattern(datePattern1),
+    rfa(new log4cxx::rolling::RollingFileAppender()) {
     rfa->setLayout(layout);
     rfa->setFile(filename);
     Pool p;

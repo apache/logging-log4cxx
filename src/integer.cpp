@@ -26,7 +26,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Integer)
 Integer::Integer() : val(0){
 }
 
-Integer::Integer(int val) : val(val) {
+Integer::Integer(int val1) : val(val1) {
 }
 
 Integer::~Integer() {

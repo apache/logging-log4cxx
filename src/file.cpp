@@ -29,16 +29,16 @@ using namespace log4cxx::helpers;
 File::File() {
 }
 
-File::File(const std::string& name)
+File::File(const std::string& name1)
   : name(), osName() {
-  Transcoder::decode(name, this->name);
+  Transcoder::decode(name1, this->name);
   Transcoder::encode(this->name, osName);
 }
 
 #if LOG4CXX_HAS_WCHAR_T
-File::File(const std::wstring& name)
+File::File(const std::wstring& name1)
    : name(), osName() {
-  Transcoder::decode(name, this->name);
+  Transcoder::decode(name1, this->name);
   Transcoder::encode(this->name, osName);
 }
 #endif

@@ -73,18 +73,18 @@ void FallbackErrorHandler::error(const LogString& message,
         }
 }
 
-void FallbackErrorHandler::setAppender(const AppenderPtr& primary)
+void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)
 {
         LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting primary appender to ["))
-           + primary->getName() + LOG4CXX_STR("]."));
-        this->primary = primary;
+           + primary1->getName() + LOG4CXX_STR("]."));
+        this->primary = primary1;
 }
 
-void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup)
+void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 {
         LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting backup appender to ["))
-            + backup->getName() + LOG4CXX_STR("]."));
-        this->backup = backup;
+            + backup1->getName() + LOG4CXX_STR("]."));
+        this->backup = backup1;
 }
 
 void FallbackErrorHandler::activateOptions(Pool&)

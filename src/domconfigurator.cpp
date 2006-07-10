@@ -651,10 +651,10 @@ void DOMConfigurator::setParameter(apr_xml_elem* elem, PropertySetter& propSette
         propSetter.setProperty(name, value, p);
 }
 
-void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr& repository)
+void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr& repository1)
 {
-       repository->setConfigured(true);
-        this->repository = repository;
+       repository1->setConfigured(true);
+        this->repository = repository1;
         LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
         msg.append(filename.getName());
         msg.append(LOG4CXX_STR("..."));
@@ -667,10 +667,10 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 
         log4cxx_status_t rv = filename.open(&fd, APR_READ, APR_OS_DEFAULT, p);
         if (rv != APR_SUCCESS) {
-            LogString msg(LOG4CXX_STR("Could not open file ["));
-            msg.append(filename.getName());
-            msg.append(LOG4CXX_STR("]."));
-            LogLog::error(msg);
+            LogString msg2(LOG4CXX_STR("Could not open file ["));
+            msg2.append(filename.getName());
+            msg2.append(LOG4CXX_STR("]."));
+            LogLog::error(msg2);
         } else {
             apr_xml_parser *parser;
             apr_xml_doc *doc;
@@ -678,16 +678,16 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
             if (rv != APR_SUCCESS) {
                 char errbuf[2000];
                 char errbufXML[2000];
-                LogString msg(LOG4CXX_STR("Error parsing file ["));
-                msg.append(filename.getName());
-                msg.append(LOG4CXX_STR("], "));
+                LogString msg2(LOG4CXX_STR("Error parsing file ["));
+                msg2.append(filename.getName());
+                msg2.append(LOG4CXX_STR("], "));
                 apr_strerror(rv, errbuf, sizeof(errbuf));
                 LOG4CXX_DECODE_CHAR(lerrbuf, std::string(errbuf));
                 apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
                 LOG4CXX_DECODE_CHAR(lerrbufXML, std::string(errbufXML));
-                msg.append(lerrbuf);
-                msg.append(lerrbufXML);
-                LogLog::error(msg);
+                msg2.append(lerrbuf);
+                msg2.append(lerrbufXML);
+                LogLog::error(msg2);
             } else {
                 AppenderMap appenders;
                 parse(doc->root, doc, appenders);

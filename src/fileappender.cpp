@@ -39,26 +39,26 @@ FileAppender::FileAppender()
 {
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const LogString& fileName,
-        bool append, bool bufferedIO, int bufferSize)
-: WriterAppender(layout), fileAppend(append), fileName(fileName), bufferedIO(bufferedIO), bufferSize(bufferSize),
+FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
+        bool append1, bool bufferedIO1, int bufferSize1)
+: WriterAppender(layout1), fileAppend(append1), fileName(fileName1), bufferedIO(bufferedIO1), bufferSize(bufferSize1),
   fileClosed(1)
 {
         Pool p;
         activateOptions(p);
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const LogString& fileName,
-        bool append)
-: WriterAppender(layout), fileAppend(append), fileName(fileName), bufferedIO(false), bufferSize(8*1024),
+FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
+        bool append1)
+: WriterAppender(layout1), fileAppend(append1), fileName(fileName1), bufferedIO(false), bufferSize(8*1024),
   fileClosed(1)
 {
         Pool p;
         activateOptions(p);
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout, const LogString& fileName)
-: WriterAppender(layout), fileAppend(true), fileName(fileName),
+FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
+: WriterAppender(layout1), fileAppend(true), fileName(fileName1),
   bufferedIO(false), bufferSize(8*1024), fileClosed(1)
 {
         Pool p;
@@ -76,10 +76,10 @@ void FileAppender::setFile(const LogString& file)
 
 
 
-void FileAppender::setBufferedIO(bool bufferedIO)
+void FileAppender::setBufferedIO(bool bufferedIO1)
 {
-        this->bufferedIO = bufferedIO;
-        if(bufferedIO)
+        this->bufferedIO = bufferedIO1;
+        if(bufferedIO1)
         {
                 setImmediateFlush(false);
         }
@@ -202,14 +202,14 @@ LogString FileAppender::stripDuplicateBackslashes(const LogString& src) {
  */
 void FileAppender::setFile(
   const LogString& filename,
-      bool append,
-      bool bufferedIO,
-      size_t bufferSize,
+      bool append1,
+      bool bufferedIO1,
+      size_t bufferSize1,
       Pool& p) {
   synchronized sync(mutex);
 
   // It does not make sense to have immediate flush and bufferedIO.
-  if (bufferedIO) {
+  if (bufferedIO1) {
     setImmediateFlush(false);
   }
 
@@ -221,7 +221,7 @@ void FileAppender::setFile(
       //
       //    don't want to write a byte order mark if the file exists
       //
-      if (append) {
+      if (append1) {
         File outFile(filename);
         writeBOM = !outFile.exists(p);
       } else {
@@ -229,7 +229,7 @@ void FileAppender::setFile(
       }
   }
 
-  OutputStreamPtr outStream(new FileOutputStream(filename, append));
+  OutputStreamPtr outStream(new FileOutputStream(filename, append1));
   //
   //   if a new file and UTF-16, then write a BOM
   //
@@ -241,15 +241,15 @@ void FileAppender::setFile(
 
   WriterPtr newWriter(createWriter(outStream));
 
-  if (bufferedIO) {
-    newWriter = new BufferedWriter(newWriter, bufferSize);
+  if (bufferedIO1) {
+    newWriter = new BufferedWriter(newWriter, bufferSize1);
   }
   setWriter(newWriter);
 
-  this->fileAppend = append;
-  this->bufferedIO = bufferedIO;
+  this->fileAppend = append1;
+  this->bufferedIO = bufferedIO1;
   this->fileName = filename;
-  this->bufferSize = bufferSize;
+  this->bufferSize = bufferSize1;
   writeHeader(p);
 
 }

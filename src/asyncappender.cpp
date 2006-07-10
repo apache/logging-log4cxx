@@ -125,10 +125,10 @@ AppenderList AsyncAppender::getAllAppenders() const
         return aai->getAllAppenders();
 }
 
-AppenderPtr AsyncAppender::getAppender(const LogString& name) const
+AppenderPtr AsyncAppender::getAppender(const LogString& name1) const
 {
         synchronized sync(aai->getMutex());
-        return aai->getAppender(name);
+        return aai->getAppender(name1);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr& appender) const
@@ -137,12 +137,12 @@ bool AsyncAppender::isAttached(const AppenderPtr& appender) const
         return aai->isAttached(appender);
 }
 
-void AsyncAppender::setBufferSize(int size)
+void AsyncAppender::setBufferSize(int size1)
 {
-    if (size < 0) {
+    if (size1 < 0) {
           throw IllegalArgumentException("size argument must be non-negative");
     }
-    this->size = size;
+    this->size = size1;
 }
 
 int AsyncAppender::getBufferSize() const

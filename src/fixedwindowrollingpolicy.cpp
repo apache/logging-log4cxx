@@ -37,12 +37,12 @@ FixedWindowRollingPolicy::FixedWindowRollingPolicy() :
     minIndex(1), maxIndex(7) {
 }
 
-void FixedWindowRollingPolicy::setMaxIndex(int maxIndex) {
-    this->maxIndex = maxIndex;
+void FixedWindowRollingPolicy::setMaxIndex(int maxIndex1) {
+    this->maxIndex = maxIndex1;
 }
 
-void FixedWindowRollingPolicy::setMinIndex(int minIndex) {
-    this->minIndex = minIndex;
+void FixedWindowRollingPolicy::setMinIndex(int minIndex1) {
+    this->minIndex = minIndex1;
 }
 
 

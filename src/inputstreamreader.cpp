@@ -25,19 +25,19 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(InputStreamReader)
 
-InputStreamReader::InputStreamReader(const InputStreamPtr& in)
-   : in(in), dec(CharsetDecoder::getDefaultDecoder()) {
-   if (in == 0) {
+InputStreamReader::InputStreamReader(const InputStreamPtr& in1)
+   : in(in1), dec(CharsetDecoder::getDefaultDecoder()) {
+   if (in1 == 0) {
       throw NullPointerException("in parameter may not be null.");
    }
 }
 
-InputStreamReader::InputStreamReader(const InputStreamPtr& in, const CharsetDecoderPtr &dec) 
-    : in(in), dec(dec) {
-    if (in == 0) {
+InputStreamReader::InputStreamReader(const InputStreamPtr& in1, const CharsetDecoderPtr &dec1) 
+    : in(in1), dec(dec1) {
+    if (in1 == 0) {
        throw NullPointerException("in parameter may not be null.");
     }
-    if (dec == 0) {
+    if (dec1 == 0) {
        throw NullPointerException("dec parameter may not be null.");
     }
 }

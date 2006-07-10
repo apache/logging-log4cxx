@@ -46,8 +46,8 @@ const char* Exception::what() const throw() {
 }
 
 
-RuntimeException::RuntimeException(const std::string& msg)
-     : Exception(msg) {
+RuntimeException::RuntimeException(const std::string& msg1)
+     : Exception(msg1) {
 }
 
 RuntimeException::RuntimeException(const RuntimeException& src)
@@ -59,8 +59,8 @@ RuntimeException& RuntimeException::operator=(const RuntimeException& src) {
       return *this;
 }
 
-NullPointerException::NullPointerException(const std::string& msg)
-     : RuntimeException(msg) {
+NullPointerException::NullPointerException(const std::string& msg1)
+     : RuntimeException(msg1) {
 }
 
 NullPointerException::NullPointerException(const NullPointerException& src)
@@ -72,8 +72,8 @@ NullPointerException& NullPointerException::operator=(const NullPointerException
       return *this;
 }
 
-IllegalArgumentException::IllegalArgumentException(const std::string& msg)
-     : RuntimeException(msg) {
+IllegalArgumentException::IllegalArgumentException(const std::string& msg1)
+     : RuntimeException(msg1) {
 }
 
 IllegalArgumentException::IllegalArgumentException(const IllegalArgumentException& src)
@@ -94,8 +94,8 @@ IOException::IOException(log4cxx_status_t stat)
 }
 
 
-IOException::IOException(const std::string& msg)
-     : Exception(msg) {
+IOException::IOException(const std::string& msg1)
+     : Exception(msg1) {
 }
 
 IOException::IOException(const IOException& src)
@@ -232,8 +232,8 @@ std::string ThreadException::formatMessage(log4cxx_status_t stat) {
        return s;
 }
 
-IllegalMonitorStateException::IllegalMonitorStateException(const std::string& msg)
-      : Exception(msg) {
+IllegalMonitorStateException::IllegalMonitorStateException(const std::string& msg1)
+      : Exception(msg1) {
 }
 
 IllegalMonitorStateException::IllegalMonitorStateException(const IllegalMonitorStateException& src)
@@ -245,8 +245,8 @@ IllegalMonitorStateException& IllegalMonitorStateException::operator=(const Ille
        return *this;
 }
 
-InstantiationException::InstantiationException(const std::string& msg)
-      : Exception(msg) {
+InstantiationException::InstantiationException(const std::string& msg1)
+      : Exception(msg1) {
 }
 
 InstantiationException::InstantiationException(const InstantiationException& src)

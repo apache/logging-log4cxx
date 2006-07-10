@@ -22,12 +22,12 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(BufferedWriter)
 
-BufferedWriter::BufferedWriter(WriterPtr& out)
-    : out(out), sz(1024) {
+BufferedWriter::BufferedWriter(WriterPtr& out1)
+    : out(out1), sz(1024) {
 }
 
-BufferedWriter::BufferedWriter(WriterPtr& out, size_t sz)
-    : out(out), sz(sz) {
+BufferedWriter::BufferedWriter(WriterPtr& out1, size_t sz1)
+    : out(out1), sz(sz1) {
 }
 
 BufferedWriter::~BufferedWriter() {

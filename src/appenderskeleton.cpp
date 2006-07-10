@@ -41,8 +41,8 @@ AppenderSkeleton::AppenderSkeleton()
 {
 }
 
-AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout)
-: layout(layout),
+AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
+: layout(layout1),
   name(),
   threshold(Level::getAll()),
   errorHandler(new OnlyOnceErrorHandler()),
@@ -125,11 +125,11 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool)
         append(event, pool);
 }
 
-void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler)
+void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1)
 {
         synchronized sync(mutex);
 
-        if(errorHandler == 0)
+        if(errorHandler1 == 0)
         {
                 // We do not throw exception here since the cause is probably a
                 // bad config file.
@@ -137,13 +137,13 @@ void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler)
         }
         else
         {
-                this->errorHandler = errorHandler;
+                this->errorHandler = errorHandler1;
         }
 }
 
-void AppenderSkeleton::setThreshold(const LevelPtr& threshold)
+void AppenderSkeleton::setThreshold(const LevelPtr& threshold1)
 {
-        this->threshold = threshold;
+        this->threshold = threshold1;
 }
 
 void AppenderSkeleton::setOption(const LogString& option,

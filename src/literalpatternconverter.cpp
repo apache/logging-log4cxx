@@ -20,39 +20,39 @@
 #include <log4cxx/spi/location/locationinfo.h>
 
 
- using namespace log4cxx;
- using namespace log4cxx::pattern;
- using namespace log4cxx::spi;
- using namespace log4cxx::helpers;
+using namespace log4cxx;
+using namespace log4cxx::pattern;
+using namespace log4cxx::spi;
+using namespace log4cxx::helpers;
 
- IMPLEMENT_LOG4CXX_OBJECT(LiteralPatternConverter)
+IMPLEMENT_LOG4CXX_OBJECT(LiteralPatternConverter)
 
- LiteralPatternConverter::LiteralPatternConverter(const LogString& literal) :
-    LoggingEventPatternConverter(LOG4CXX_STR("Literal"),LOG4CXX_STR("literal")),
-    literal(literal) {
+LiteralPatternConverter::LiteralPatternConverter(const LogString& literal1) :
+   LoggingEventPatternConverter(LOG4CXX_STR("Literal"),LOG4CXX_STR("literal")),
+   literal(literal1) {
+}
+
+PatternConverterPtr LiteralPatternConverter::newInstance(
+   const LogString& literal) {
+   if (literal.length() == 1 && literal[0] == LOG4CXX_STR(' ')) {
+     static PatternConverterPtr blank(new LiteralPatternConverter(literal));
+     return blank;
+   }
+   PatternConverterPtr pattern(new LiteralPatternConverter(literal));
+   return pattern;
+}
+
+void LiteralPatternConverter::format(
+  const LoggingEventPtr& event,
+  LogString& toAppendTo,
+  Pool& p) const {
+  toAppendTo.append(literal);
  }
 
- PatternConverterPtr LiteralPatternConverter::newInstance(
-    const LogString& literal) {
-    if (literal.length() == 1 && literal[0] == LOG4CXX_STR(' ')) {
-      static PatternConverterPtr blank(new LiteralPatternConverter(literal));
-      return blank;
-    }
-    PatternConverterPtr pattern(new LiteralPatternConverter(literal));
-    return pattern;
+void LiteralPatternConverter::format(
+  const ObjectPtr& event,
+  LogString& toAppendTo,
+  Pool& p) const {
+  toAppendTo.append(literal);
  }
-
- void LiteralPatternConverter::format(
-   const LoggingEventPtr& event,
-   LogString& toAppendTo,
-   Pool& p) const {
-   toAppendTo.append(literal);
-  }
-
- void LiteralPatternConverter::format(
-   const ObjectPtr& event,
-   LogString& toAppendTo,
-   Pool& p) const {
-   toAppendTo.append(literal);
-  }
 

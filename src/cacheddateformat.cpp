@@ -66,17 +66,17 @@ const logchar* const CachedDateFormat::zeroString = LOG4CXX_STR("000");
  *      caching or 1 to only use cache for duplicate requests.
  */
 CachedDateFormat::CachedDateFormat(const DateFormatPtr& dateFormat,
-        int expiration) :
+        int expiration1) :
        formatter(dateFormat),
        millisecondStart(0),
        slotBegin(std::numeric_limits<log4cxx_time_t>::min()),
        cache(50, LOG4CXX_STR(' ')),
-       expiration(expiration),
+       expiration(expiration1),
        previousTime(std::numeric_limits<log4cxx_time_t>::min()) {
   if (dateFormat == NULL) {
     throw IllegalArgumentException("dateFormat cannot be null");
   }
-  if (expiration < 0) {
+  if (expiration1 < 0) {
     throw IllegalArgumentException("expiration must be non-negative");
   }
 }

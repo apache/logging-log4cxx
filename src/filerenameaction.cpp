@@ -25,8 +25,8 @@ IMPLEMENT_LOG4CXX_OBJECT(FileRenameAction)
 
 FileRenameAction::FileRenameAction(const File& toRename,
     const File& renameTo,
-    bool renameEmptyFile)
-   : source(toRename), destination(renameTo), renameEmptyFile(renameEmptyFile) {
+    bool renameEmptyFile1)
+   : source(toRename), destination(renameTo), renameEmptyFile(renameEmptyFile1) {
 }
 
 bool FileRenameAction::execute(log4cxx::helpers::Pool& pool) const {

@@ -30,14 +30,14 @@ Instantiate a new CyclicBuffer of at most <code>maxSize</code> events.
 The <code>maxSize</code> argument must a positive integer.
 @param maxSize The maximum number of elements in the buffer.
 */
-CyclicBuffer::CyclicBuffer(int maxSize)
-: ea(maxSize), first(0), last(0), numElems(0), maxSize(maxSize)
+CyclicBuffer::CyclicBuffer(int maxSize1)
+: ea(maxSize1), first(0), last(0), numElems(0), maxSize(maxSize1)
 {
-        if(maxSize < 1)
+        if(maxSize1 < 1)
         {
             std::string msg("The maxSize argument (");
             Pool p;
-            StringHelper::toString(maxSize, p, msg);
+            StringHelper::toString(maxSize1, p, msg);
             msg.append(") is not a positive integer.");
             throw IllegalArgumentException(msg);
         }

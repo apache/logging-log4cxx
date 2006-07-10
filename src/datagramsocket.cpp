@@ -33,20 +33,20 @@ DatagramSocket::DatagramSocket()
    create();
 }
 
-DatagramSocket::DatagramSocket(int localPort)
+DatagramSocket::DatagramSocket(int localPort1)
  : socket(0), address(), localAddress(), port(0), localPort(0)
 {
    InetAddressPtr bindAddr = InetAddress::anyAddress();
 
    create();
-   bind(localPort, bindAddr);
+   bind(localPort1, bindAddr);
 }
 
-DatagramSocket::DatagramSocket(int localPort, InetAddressPtr localAddress)
+DatagramSocket::DatagramSocket(int localPort1, InetAddressPtr localAddress1)
  : socket(0), address(), localAddress(), port(0), localPort(0)
 {
    create();
-   bind(localPort, localAddress);
+   bind(localPort1, localAddress1);
 }
 
 DatagramSocket::~DatagramSocket()
@@ -61,16 +61,16 @@ DatagramSocket::~DatagramSocket()
 }
 
 /**  Binds a datagram socket to a local port and address.*/
-void DatagramSocket::bind(int localPort, InetAddressPtr localAddress)
+void DatagramSocket::bind(int localPort1, InetAddressPtr localAddress1)
 {
    Pool addrPool;
 
    // Create server socket address (including port number)
-   LOG4CXX_ENCODE_CHAR(hostAddr, localAddress->getHostAddress());
+   LOG4CXX_ENCODE_CHAR(hostAddr, localAddress1->getHostAddress());
    apr_sockaddr_t *server_addr;
-   apr_status_t status = 
+   apr_status_t status =
        apr_sockaddr_info_get(&server_addr, hostAddr.c_str(), APR_INET,
-                             localPort, 0, (apr_pool_t*) addrPool.getAPRPool());
+                             localPort1, 0, (apr_pool_t*) addrPool.getAPRPool());
    if (status != APR_SUCCESS) {
      throw BindException(status);
    }
@@ -81,8 +81,8 @@ void DatagramSocket::bind(int localPort, InetAddressPtr localAddress)
      throw BindException(status);
    }
 
-   this->localPort = localPort;
-   this->localAddress = localAddress;
+   this->localPort = localPort1;
+   this->localAddress = localAddress1;
 }
 
 /** Close the socket.*/
@@ -100,18 +100,18 @@ void DatagramSocket::close()
    }
 }
 
-void DatagramSocket::connect(InetAddressPtr address, int port)
+void DatagramSocket::connect(InetAddressPtr address1, int port1)
 {
 
-   this->address = address;
-   this->port = port;
+   this->address = address1;
+   this->port = port1;
 
    Pool addrPool;
 
    // create socket address
-   LOG4CXX_ENCODE_CHAR(hostAddr, address->getHostAddress());
+   LOG4CXX_ENCODE_CHAR(hostAddr, address1->getHostAddress());
    apr_sockaddr_t *client_addr;
-   apr_status_t status = 
+   apr_status_t status =
        apr_sockaddr_info_get(&client_addr, hostAddr.c_str(), APR_INET,
                              port, 0, (apr_pool_t*) addrPool.getAPRPool());
    if (status != APR_SUCCESS) {
@@ -130,7 +130,7 @@ void DatagramSocket::create()
 {
   apr_socket_t* newSocket;
   apr_status_t status =
-    apr_socket_create(&newSocket, APR_INET, SOCK_DGRAM, 
+    apr_socket_create(&newSocket, APR_INET, SOCK_DGRAM,
                       APR_PROTO_UDP, (apr_pool_t*) socketPool.getAPRPool());
   socket = newSocket;
   if (status != APR_SUCCESS) {

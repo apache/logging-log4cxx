@@ -18,10 +18,10 @@
 #include <log4cxx/pattern/formattinginfo.h>
 #include <limits.h>
 
- using namespace log4cxx;
- using namespace log4cxx::pattern;
+using namespace log4cxx;
+using namespace log4cxx::pattern;
 
- IMPLEMENT_LOG4CXX_OBJECT(FormattingInfo)
+IMPLEMENT_LOG4CXX_OBJECT(FormattingInfo)
 
   /**
    * Creates new instance.
@@ -30,10 +30,10 @@
    * @param maxLength maximum length.
    */
 FormattingInfo::FormattingInfo(
-    const bool leftAlign, const int minLength, const int maxLength) :
-    leftAlign(leftAlign),
-    minLength(minLength),
-    maxLength(maxLength) {
+    const bool leftAlign1, const int minLength1, const int maxLength1) :
+    minLength(minLength1),
+    maxLength(maxLength1),
+    leftAlign(leftAlign1) {
 }
 
   /**

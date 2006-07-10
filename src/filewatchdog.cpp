@@ -31,8 +31,8 @@ using namespace log4cxx::helpers;
 
 long FileWatchdog::DEFAULT_DELAY = 60000;
 
-FileWatchdog::FileWatchdog(const File& file)
- : file(file), delay(DEFAULT_DELAY), lastModif(0),
+FileWatchdog::FileWatchdog(const File& file1)
+ : file(file1), delay(DEFAULT_DELAY), lastModif(0),
 warnedAlready(false), interrupted(0), thread()
 {
 }
@@ -43,8 +43,8 @@ FileWatchdog::~FileWatchdog() {
 
 void FileWatchdog::checkAndConfigure()
 {
-    Pool pool;
-   if (!file.exists(pool))
+    Pool pool1;
+   if (!file.exists(pool1))
    {
               if(!warnedAlready)
               {
@@ -56,7 +56,7 @@ void FileWatchdog::checkAndConfigure()
    }
    else
    {
-        apr_time_t thisMod = file.lastModified(pool);
+        apr_time_t thisMod = file.lastModified(pool1);
       if (thisMod > lastModif)
       {
          lastModif = thisMod;

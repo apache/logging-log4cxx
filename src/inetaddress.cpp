@@ -27,8 +27,8 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(InetAddress)
 
-UnknownHostException::UnknownHostException(const std::string& msg)
-     : Exception(msg) {
+UnknownHostException::UnknownHostException(const std::string& msg1)
+     : Exception(msg1) {
 }
 
 UnknownHostException::UnknownHostException(const UnknownHostException& src)

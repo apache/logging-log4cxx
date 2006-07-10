@@ -62,9 +62,9 @@ const LevelPtr& Level::getAll() {
 
 
 
-Level::Level(int level,
-    const logchar* name, int syslogEquivalent)
-: level(level), name(name), syslogEquivalent(syslogEquivalent)
+Level::Level(int level1,
+    const logchar* name1, int syslogEquivalent1)
+: level(level1), name(name1), syslogEquivalent(syslogEquivalent1)
 {
    APRInitializer::initialize();
 }
@@ -178,14 +178,14 @@ const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& default
 }
 #endif
 
-bool Level::equals(const LevelPtr& level) const
+bool Level::equals(const LevelPtr& level1) const
 {
-        return (this->level == level->level);
+        return (this->level == level1->level);
 }
 
-bool Level::isGreaterOrEqual(const LevelPtr& level) const
+bool Level::isGreaterOrEqual(const LevelPtr& level1) const
 {
-    return this->level >= level->level;
+    return this->level >= level1->level;
 }
 
 void Level::toString(std::string& str) const {

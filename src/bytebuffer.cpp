@@ -22,8 +22,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-ByteBuffer::ByteBuffer(char* data, size_t capacity)
-   : base(data), cap(capacity), lim(capacity), pos(0) {
+ByteBuffer::ByteBuffer(char* data1, size_t capacity)
+   : base(data1), pos(0), lim(capacity), cap(capacity) {
 }
 
 ByteBuffer::~ByteBuffer() {
