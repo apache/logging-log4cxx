@@ -109,9 +109,12 @@ private:
 
     // Write exactly 10 bytes with each log
     for (int i = 0; i < 25; i++) {
-
       char msg[10];
+#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
+      strcpy_s(msg, sizeof msg, "Hello---?");
+#else
       strcpy(msg, "Hello---?");
+#endif
       if (i < 10) {
         msg[8] = (char) ('0' + i);
         LOG4CXX_DEBUG(logger, msg);

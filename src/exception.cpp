@@ -33,11 +33,19 @@ Exception::Exception(const std::string& msg) {
 }
 
 Exception::Exception(const Exception& src) {
-  strcpy(msg, src.msg);
+#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
+      strcpy_s(msg, sizeof msg, src.msg);
+#else
+      strcpy(msg, src.msg);
+#endif
 }
 
 Exception& Exception::operator=(const Exception& src) {
-  strcpy(msg, src.msg);
+#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
+      strcpy_s(msg, sizeof msg, src.msg);
+#else
+      strcpy(msg, src.msg);
+#endif
   return *this;
 }
 

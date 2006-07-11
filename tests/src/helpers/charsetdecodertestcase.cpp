@@ -65,7 +65,12 @@ public:
         void decode2() {
           char buf[BUFSIZE + 6];
           memset(buf, 'A', BUFSIZE);
-          strcpy(buf + BUFSIZE - 3, "Hello");
+          buf[BUFSIZE - 3] = 0;
+#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
+          strcat_s(buf, sizeof buf, "Hello");
+#else
+          strcat(buf, "Hello");
+#endif
           ByteBuffer src(buf, strlen(buf));
 
           CharsetDecoderPtr dec(CharsetDecoder::getDefaultDecoder());
@@ -108,7 +113,12 @@ public:
           for(int i = 0; i < BUFSIZE; i++) {
             buf[i] = L'A';
           }
-          wcscpy(buf + BUFSIZE - 3, L"Hello");
+          buf[BUFSIZE - 3] = 0;
+#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
+          wcscat_s(buf, (sizeof buf)/sizeof(wchar_t), L"Hello");
+#else
+          wcscat(buf, L"Hello");
+#endif
           ByteBuffer src((char*) buf, wcslen(buf) * sizeof(wchar_t));
 
           CharsetDecoderPtr dec(CharsetDecoder::getWideDecoder());
