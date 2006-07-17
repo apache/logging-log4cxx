@@ -39,7 +39,7 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
-Hierarchy::Hierarchy(const LoggerPtr& root) : root(root),
+Hierarchy::Hierarchy(const LoggerPtr& root1) : root(root1),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
 mutex(), configured(false), thresholdInt(Level::ALL_INT), threshold(Level::getAll())
 {
@@ -235,10 +235,10 @@ void Hierarchy::resetConfiguration()
 
         shutdown(); // nested locks are OK
 
-        LoggerList loggers = getCurrentLoggers();
-        LoggerList::iterator it, itEnd = loggers.end();
+        LoggerList loggers1 = getCurrentLoggers();
+        LoggerList::iterator it, itEnd = loggers1.end();
 
-        for (it = loggers.begin(); it != itEnd; it++)
+        for (it = loggers1.begin(); it != itEnd; it++)
         {
                 LoggerPtr& logger = *it;
                 logger->setLevel(0);
@@ -255,23 +255,23 @@ void Hierarchy::shutdown()
 
       setConfigured(false);
 
-        LoggerPtr root = getRootLogger();
+        LoggerPtr root1 = getRootLogger();
 
         // begin by closing nested appenders
-        root->closeNestedAppenders();
+        root1->closeNestedAppenders();
 
-        LoggerList loggers = getCurrentLoggers();
-        LoggerList::iterator it, itEnd = loggers.end();
+        LoggerList loggers1 = getCurrentLoggers();
+        LoggerList::iterator it, itEnd = loggers1.end();
 
-        for (it = loggers.begin(); it != itEnd; it++)
+        for (it = loggers1.begin(); it != itEnd; it++)
         {
                 LoggerPtr& logger = *it;
                 logger->closeNestedAppenders();
         }
 
         // then, remove all appenders
-        root->removeAllAppenders();
-        for (it = loggers.begin(); it != itEnd; it++)
+        root1->removeAllAppenders();
+        for (it = loggers1.begin(); it != itEnd; it++)
         {
                 LoggerPtr& logger = *it;
                 logger->removeAllAppenders();

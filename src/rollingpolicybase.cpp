@@ -39,9 +39,9 @@ void RollingPolicyBase::activateOptions(log4cxx::helpers::Pool& pool) {
     parseFileNamePattern();
   } else {
     LogString msg(LOG4CXX_STR("The FileNamePattern option must be set before using FixedWindowRollingPolicy."));
-    LogString ref(LOG4CXX_STR("See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set"));
+    LogString ref1(LOG4CXX_STR("See also http://logging.apache.org/log4j/codes.html#tbr_fnp_not_set"));
     LogLog::warn(msg);
-    LogLog::warn(ref);
+    LogLog::warn(ref1);
     throw IllegalStateException();
   }
 }

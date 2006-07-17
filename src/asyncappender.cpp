@@ -162,10 +162,10 @@ void AsyncAppender::removeAppender(const AppenderPtr& appender)
         aai->removeAppender(appender);
 }
 
-void AsyncAppender::removeAppender(const LogString& name)
+void AsyncAppender::removeAppender(const LogString& name1)
 {
     synchronized sync(aai->getMutex());
-        aai->removeAppender(name);
+        aai->removeAppender(name1);
 }
 
 void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* thread, void* data) {

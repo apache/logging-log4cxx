@@ -61,10 +61,10 @@ SocketAppender::~SocketAppender()
 }
 
 void SocketAppender::renderEvent(const spi::LoggingEventPtr& event,
-     helpers::SocketOutputStreamPtr& os,
+     helpers::SocketOutputStreamPtr& os1,
      Pool& p)
 {
-        event->write(os);
+        event->write(os1);
 }
 
 #endif

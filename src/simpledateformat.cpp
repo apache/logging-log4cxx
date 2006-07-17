@@ -56,7 +56,7 @@ namespace log4cxx
       * @param time The time structure to render.
       * @param spec The format for rendering the structure.
       */
-     void renderFacet( const std::locale & locale, std::basic_ostream < localechar > & buffer, 
+     void renderFacet( const std::locale & locale, std::basic_ostream < localechar > & buffer,
                        const tm * time, const localechar spec )
            {
        #if defined(_USEFAC)
@@ -156,7 +156,7 @@ void PatternToken::setTimeZone( const TimeZonePtr & zone )
 class LiteralToken : public PatternToken
 {
 public:
-  LiteralToken( localechar ch, int count ) : ch( ch ), count( count )
+  LiteralToken( localechar ch1, int count1 ) : ch( ch1 ), count( count1 )
   {
   }
 
@@ -190,7 +190,7 @@ public:
 class NumericToken : public PatternToken
 {
 public:
-  NumericToken( size_t width ) : width( width )
+  NumericToken( size_t width1 ) : width( width1 )
   {
   }
 
@@ -217,7 +217,7 @@ private:
 class YearToken : public NumericToken
 {
 public:
-  YearToken( int width ) : NumericToken( width )
+  YearToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -232,7 +232,7 @@ public:
 class MonthToken : public NumericToken
 {
 public:
-  MonthToken( int width ) : NumericToken( width )
+  MonthToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -334,7 +334,7 @@ private:
 class WeekInYearToken : public NumericToken
 {
 public:
-  WeekInYearToken( int width ) : NumericToken( width )
+  WeekInYearToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -349,7 +349,7 @@ public:
 class WeekInMonthToken : public NumericToken
 {
 public:
-  WeekInMonthToken( int width ) : NumericToken( width )
+  WeekInMonthToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -364,7 +364,7 @@ public:
 class DayInMonthToken : public NumericToken
 {
 public:
-  DayInMonthToken( int width ) : NumericToken( width )
+  DayInMonthToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -379,7 +379,7 @@ public:
 class DayInYearToken : public NumericToken
 {
 public:
-  DayInYearToken( int width ) : NumericToken( width )
+  DayInYearToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -394,7 +394,7 @@ public:
 class DayOfWeekInMonthToken : public NumericToken
 {
 public:
-  DayOfWeekInMonthToken( int width ) : NumericToken( width )
+  DayOfWeekInMonthToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -497,7 +497,7 @@ private:
 class MilitaryHourToken : public NumericToken
 {
 public:
-  MilitaryHourToken( int width, int offset ) : NumericToken( width ), offset( offset )
+  MilitaryHourToken( int width1, int offset1 ) : NumericToken( width1 ), offset( offset1 )
   {
   }
 
@@ -515,7 +515,7 @@ private:
 class HourToken : public NumericToken
 {
 public:
-  HourToken( int width, int offset ) : NumericToken( width )
+  HourToken( int width1, int offset1 ) : NumericToken( width1 )
   {
   }
 
@@ -533,7 +533,7 @@ private:
 class MinuteToken : public NumericToken
 {
 public:
-  MinuteToken( int width ) : NumericToken( width )
+  MinuteToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -548,7 +548,7 @@ public:
 class SecondToken : public NumericToken
 {
 public:
-  SecondToken( int width ) : NumericToken( width )
+  SecondToken( int width1 ) : NumericToken( width1 )
   {
   }
 
@@ -563,7 +563,7 @@ public:
 class MillisecondToken : public NumericToken
 {
 public:
-  MillisecondToken( int width ) : NumericToken( width )
+  MillisecondToken( int width1 ) : NumericToken( width1 )
   {
   }
 

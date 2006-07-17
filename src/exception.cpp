@@ -25,10 +25,10 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-Exception::Exception(const std::string& msg) {
-  size_t msgLen = msg.length();
+Exception::Exception(const std::string& msg1) {
+  size_t msgLen = msg1.length();
   if (msgLen > MSG_SIZE) msgLen = MSG_SIZE;
-  memcpy(this->msg, (char*) msg.data(), msgLen);
+  memcpy(this->msg, (char*) msg1.data(), msgLen);
   this->msg[msgLen] = 0;
 }
 
