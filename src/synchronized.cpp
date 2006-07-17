@@ -24,8 +24,8 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
-synchronized::synchronized(const Mutex& mutex)
-: mutex(mutex.getAPRMutex())
+synchronized::synchronized(const Mutex& mutex1)
+: mutex(mutex1.getAPRMutex())
 {
 #if APR_HAS_THREADS
         apr_status_t stat = apr_thread_mutex_lock(

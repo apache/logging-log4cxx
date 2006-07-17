@@ -107,8 +107,8 @@ void RollingFileAppender::setMaxBackupIndex(int maxBackups) {
   maxBackupIndex = maxBackups;
 }
 
-void RollingFileAppender::setMaximumFileSize(int maxFileSize) {
-  RollingFileAppender::maxFileSize = maxFileSize;
+void RollingFileAppender::setMaximumFileSize(int maxFileSize1) {
+  RollingFileAppender::maxFileSize = maxFileSize1;
 }
 
 void RollingFileAppender::setMaxFileSize(const LogString& value) {

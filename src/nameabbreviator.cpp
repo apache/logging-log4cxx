@@ -77,7 +77,7 @@ END_LOG4CXX_CAST_MAP()
      * Create new instance.
      * @param count maximum number of path elements to output.
      */
-    MaxElementAbbreviator(const int count) : count(count) {
+    MaxElementAbbreviator(const int count1) : count(count1) {
     }
 
     /**
@@ -129,8 +129,8 @@ public:
      *    '\0' if no ellipsis is desired.
      */
     PatternAbbreviatorFragment(
-      const int charCount, const logchar ellipsis)
-          : charCount(charCount), ellipsis(ellipsis) {
+      const int charCount1, const logchar ellipsis1)
+          : charCount(charCount1), ellipsis(ellipsis1) {
     }
     PatternAbbreviatorFragment() : charCount(0), ellipsis(0) {
     }
@@ -194,9 +194,9 @@ END_LOG4CXX_CAST_MAP()
      *
      * @param fragments element abbreviation patterns.
      */
-    PatternAbbreviator(const std::vector<PatternAbbreviatorFragment>& fragments) :
-        fragments(fragments) {
-      if (fragments.size() == 0) {
+    PatternAbbreviator(const std::vector<PatternAbbreviatorFragment>& fragments1) :
+        fragments(fragments1) {
+      if (fragments1.size() == 0) {
         throw IllegalArgumentException("fragments parameter must contain at least one element");
       }
     }

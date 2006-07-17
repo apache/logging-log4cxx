@@ -23,9 +23,9 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-RootCategory::RootCategory(const LevelPtr& level) : Logger(LOG4CXX_STR("root"))
+RootCategory::RootCategory(const LevelPtr& level1) : Logger(LOG4CXX_STR("root"))
 {
-   setLevel(level);
+   setLevel(level1);
 }
 
 const LevelPtr& RootCategory::getEffectiveLevel() const
@@ -33,16 +33,16 @@ const LevelPtr& RootCategory::getEffectiveLevel() const
    return level;
 }
 
-void RootCategory::setLevel(const LevelPtr& level)
+void RootCategory::setLevel(const LevelPtr& level1)
 {
-   if(level == 0)
+   if(level1 == 0)
    {
       LogLog::error(LOG4CXX_STR("You have tried to set a null level to root."));
    }
    else
    {
 
-      this->level = level;
+      this->level = level1;
    }
 }
 

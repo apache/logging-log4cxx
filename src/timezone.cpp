@@ -130,7 +130,7 @@ namespace log4cxx
       class FixedTimeZone : public TimeZone
       {
       public:
-        FixedTimeZone( const LogString & name, apr_int32_t offset ) : TimeZone( name ), offset( offset )
+        FixedTimeZone( const LogString & name, apr_int32_t offset1 ) : TimeZone( name ), offset( offset1 )
         {
         }
 
@@ -161,7 +161,7 @@ namespace log4cxx
 
 
 
-TimeZone::TimeZone( const LogString & id ) : id( id )
+TimeZone::TimeZone( const LogString & id1 ) : id( id1 )
 {
 }
 

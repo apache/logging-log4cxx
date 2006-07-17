@@ -29,10 +29,10 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(ThrowableInformationPatternConverter)
 
-ThrowableInformationPatternConverter::ThrowableInformationPatternConverter(bool shortReport) :
+ThrowableInformationPatternConverter::ThrowableInformationPatternConverter(bool shortReport1) :
    LoggingEventPatternConverter(LOG4CXX_STR("Throwable"),
       LOG4CXX_STR("throwable")),
-      shortReport(shortReport) {
+      shortReport(shortReport1) {
 }
 
 PatternConverterPtr ThrowableInformationPatternConverter::newInstance(

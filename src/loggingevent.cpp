@@ -57,17 +57,17 @@ LoggingEvent::LoggingEvent() :
 }
 
 LoggingEvent::LoggingEvent(
-        const LoggerPtr& logger, const LevelPtr& level,
-        const LogString& message, const LocationInfo& locationInfo) :
-   logger(logger),
-   level(level),
+        const LoggerPtr& logger1, const LevelPtr& level1,
+        const LogString& message1, const LocationInfo& locationInfo1) :
+   logger(logger1),
+   level(level1),
    ndc(LOG4CXX_STR("null")),
    properties(0),
    ndcLookupRequired(true),
    mdcCopyLookupRequired(true),
-   message(message),
+   message(message1),
    timeStamp(apr_time_now()),
-   locationInfo(locationInfo),
+   locationInfo(locationInfo1),
    threadName(getCurrentThreadName()) {
 }
 

@@ -22,8 +22,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-StringTokenizer::StringTokenizer(const LogString& str, const LogString& delim)
-: src(str), delim(delim), pos(0)
+StringTokenizer::StringTokenizer(const LogString& str, const LogString& delim1)
+: src(str), delim(delim1), pos(0)
 {
 }
 

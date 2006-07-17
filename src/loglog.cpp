@@ -26,9 +26,9 @@ using namespace log4cxx::helpers;
 bool LogLog::debugEnabled = false;
 bool LogLog::quietMode = false;
 
-void LogLog::setInternalDebugging(bool debugEnabled)
+void LogLog::setInternalDebugging(bool debugEnabled1)
 {
-        LogLog::debugEnabled = debugEnabled;
+        LogLog::debugEnabled = debugEnabled1;
 }
 
 void LogLog::debug(const LogString& msg)
@@ -59,9 +59,9 @@ void LogLog::error(const LogString& msg, const std::exception& e)
         emit(e.what());
 }
 
-void LogLog::setQuietMode(bool quietMode)
+void LogLog::setQuietMode(bool quietMode1)
 {
-        LogLog::quietMode = quietMode;
+        LogLog::quietMode = quietMode1;
 }
 
 void LogLog::warn(const LogString& msg)

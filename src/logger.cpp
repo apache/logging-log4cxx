@@ -37,8 +37,8 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
-Logger::Logger(const LogString& name)
-: name(name), level(), parent(), resourceBundle(),
+Logger::Logger(const LogString& name1)
+: name(name1), level(), parent(), resourceBundle(),
 repository(0), aai(), additive(true),  mutex()
 {
 }
@@ -101,41 +101,41 @@ void Logger::closeNestedAppenders()
 }
 
 
-void Logger::forcedLog(const LevelPtr& level, const std::string& message,
+void Logger::forcedLog(const LevelPtr& level1, const std::string& message,
         const LocationInfo& location)
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level, msg, location));
+        LoggingEventPtr event(new LoggingEvent(this, level1, msg, location));
         callAppenders(event, p);
 }
 
 #if LOG4CXX_HAS_WCHAR_T
-void Logger::forcedLog(const LevelPtr& level, const std::wstring& message,
+void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message,
         const LocationInfo& location)
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level, msg, location));
+        LoggingEventPtr event(new LoggingEvent(this, level1, msg, location));
         callAppenders(event, p);
 }
 #endif
 
-void Logger::forcedLog(const LevelPtr& level, const std::string& message)
+void Logger::forcedLog(const LevelPtr& level1, const std::string& message)
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level, msg,
+        LoggingEventPtr event(new LoggingEvent(this, level1, msg,
               LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
 
 #if LOG4CXX_HAS_WCHAR_T
-void Logger::forcedLog(const LevelPtr& level, const std::wstring& message)
+void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message)
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level, msg,
+        LoggingEventPtr event(new LoggingEvent(this, level1, msg,
            LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
@@ -161,16 +161,16 @@ AppenderList Logger::getAllAppenders() const
         }
 }
 
-AppenderPtr Logger::getAppender(const LogString& name) const
+AppenderPtr Logger::getAppender(const LogString& name1) const
 {
         synchronized sync(mutex);
 
-        if (aai == 0 || name.empty())
+        if (aai == 0 || name1.empty())
         {
                 return 0;
         }
 
-        return aai->getAppender(name);
+        return aai->getAppender(name1);
 }
 
 const LevelPtr& Logger::getEffectiveLevel() const
@@ -271,14 +271,14 @@ bool Logger::isDebugEnabled() const
         return Level::getDebug()->isGreaterOrEqual(getEffectiveLevel());
 }
 
-bool Logger::isEnabledFor(const LevelPtr& level) const
+bool Logger::isEnabledFor(const LevelPtr& level1) const
 {
-        if(repository == 0 || repository->isDisabled(level->toInt()))
+        if(repository == 0 || repository->isDisabled(level1->toInt()))
         {
                 return false;
         }
 
-        return level->isGreaterOrEqual(getEffectiveLevel());
+        return level1->isGreaterOrEqual(getEffectiveLevel());
 }
 
 
@@ -346,15 +346,15 @@ bool Logger::isFatalEnabled() const
 }*/
 
 
-void Logger::l7dlog(const LevelPtr& level, const LogString& key,
+void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
                     const LocationInfo& location, const std::vector<LogString>& params)
 {
-        if (repository == 0 || repository->isDisabled(level->toInt()))
+        if (repository == 0 || repository->isDisabled(level1->toInt()))
         {
                 return;
         }
 
-        if (level->isGreaterOrEqual(getEffectiveLevel()))
+        if (level1->isGreaterOrEqual(getEffectiveLevel()))
         {
                 LogString pattern = getResourceBundleString(key);
                 LogString msg;
@@ -368,29 +368,29 @@ void Logger::l7dlog(const LevelPtr& level, const LogString& key,
                         msg = StringHelper::format(pattern, params);
                 }
 
-                forcedLog(level, msg, location);
+                forcedLog(level1, msg, location);
         }
 }
 
-void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
                     const LocationInfo& location) {
   LOG4CXX_DECODE_CHAR(lkey, key);
 
   std::vector<LogString> values(0);
-  l7dlog(level, lkey, location, values);
+  l7dlog(level1, lkey, location, values);
 }
 
-void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
                     const LocationInfo& location, const std::string& val1) {
   LOG4CXX_DECODE_CHAR(lkey, key);
   LOG4CXX_DECODE_CHAR(lval1, val1);
 
   std::vector<LogString> values(1);
   values[0] = lval1;
-  l7dlog(level, lkey, location, values);
+  l7dlog(level1, lkey, location, values);
 }
 
-void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
                     const LocationInfo& location, 
                     const std::string& val1, const std::string& val2) {
   LOG4CXX_DECODE_CHAR(lkey, key);
@@ -400,10 +400,10 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
   std::vector<LogString> values(2);
   values[0] = lval1;
   values[1] = lval2;
-  l7dlog(level, lkey, location, values);
+  l7dlog(level1, lkey, location, values);
 }
 
-void Logger::l7dlog(const LevelPtr& level, const std::string& key,
+void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
                     const LocationInfo& location, 
                     const std::string& val1, const std::string& val2, const std::string& val3) {
   LOG4CXX_DECODE_CHAR(lkey, key);
@@ -415,21 +415,21 @@ void Logger::l7dlog(const LevelPtr& level, const std::string& key,
   values[0] = lval1;
   values[1] = lval2;
   values[3] = lval3;
-  l7dlog(level, lkey, location, values);
+  l7dlog(level1, lkey, location, values);
 }
 
 
 #if LOG4CXX_HAS_WCHAR_T
 
-void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
+void Logger::l7dlog(const LevelPtr& level1, const std::wstring& key,
                     const LocationInfo& location) {
   LOG4CXX_DECODE_WCHAR(lkey, key);
 
   std::vector<LogString> values(0);
-  l7dlog(level, lkey, location, values);
+  l7dlog(level1, lkey, location, values);
 }
 
-void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
+void Logger::l7dlog(const LevelPtr& level1, const std::wstring& key,
                     const LocationInfo& location,
                     const std::wstring& val1) {
   LOG4CXX_DECODE_WCHAR(lval1, val1);
@@ -437,10 +437,10 @@ void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
 
   std::vector<LogString> values(1);
   values[0] = lval1;
-  l7dlog(level, lkey, location, values);
+  l7dlog(level1, lkey, location, values);
 }
 
-void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
+void Logger::l7dlog(const LevelPtr& level1, const std::wstring& key,
                     const LocationInfo& location,
                     const std::wstring& val1, const std::wstring& val2) {
   LOG4CXX_DECODE_WCHAR(lval1, val1);
@@ -450,10 +450,10 @@ void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
   std::vector<LogString> values(2);
   values[0] = lval1;
   values[1] = lval2;
-  l7dlog(level, lkey, location, values);
+  l7dlog(level1, lkey, location, values);
 }
 
-void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
+void Logger::l7dlog(const LevelPtr& level1, const std::wstring& key,
                     const LocationInfo& location,
                     const std::wstring& val1, const std::wstring& val2, const std::wstring& val3) {
   LOG4CXX_DECODE_WCHAR(lval1, val1);
@@ -465,7 +465,7 @@ void Logger::l7dlog(const LevelPtr& level, const std::wstring& key,
   values[0] = lval1;
   values[1] = lval2;
   values[2] = lval3;
-  l7dlog(level, lkey, location, values);
+  l7dlog(level1, lkey, location, values);
 }
 
 #endif
@@ -493,31 +493,31 @@ void Logger::removeAppender(const AppenderPtr& appender)
         aai->removeAppender(appender);
 }
 
-void Logger::removeAppender(const LogString& name)
+void Logger::removeAppender(const LogString& name1)
 {
         synchronized sync(mutex);
 
-        if(name.empty() || aai == 0)
+        if(name1.empty() || aai == 0)
         {
                 return;
         }
 
-        aai->removeAppender(name);
+        aai->removeAppender(name1);
 }
 
-void Logger::setAdditivity(bool additive)
+void Logger::setAdditivity(bool additive1)
 {
-        this->additive = additive;
+        this->additive = additive1;
 }
 
-void Logger::setHierarchy(spi::LoggerRepository * repository)
+void Logger::setHierarchy(spi::LoggerRepository * repository1)
 {
-        this->repository = repository;
+        this->repository = repository1;
 }
 
-void Logger::setLevel(const LevelPtr& level)
+void Logger::setLevel(const LevelPtr& level1)
 {
-        this->level = level;
+        this->level = level1;
 }
 
 
@@ -686,32 +686,32 @@ void Logger::info(const std::string& msg) {
 }
 
 #if LOG4CXX_HAS_WCHAR_T
-void Logger::log(const LevelPtr& level, const std::wstring& message,
+void Logger::log(const LevelPtr& level1, const std::wstring& message,
     const log4cxx::spi::LocationInfo& location) {
-    if (isEnabledFor(level)) {
-      forcedLog(level, message, location);
+    if (isEnabledFor(level1)) {
+      forcedLog(level1, message, location);
     }
 }
 #endif
 
-void Logger::log(const LevelPtr& level, const std::string& message,
+void Logger::log(const LevelPtr& level1, const std::string& message,
     const log4cxx::spi::LocationInfo& location) {
-    if (isEnabledFor(level)) {
-      forcedLog(level, message, location);
+    if (isEnabledFor(level1)) {
+      forcedLog(level1, message, location);
     }
 }
 
 #if LOG4CXX_HAS_WCHAR_T
-void Logger::log(const LevelPtr& level, const std::wstring& message) {
-    if (isEnabledFor(level)) {
-      forcedLog(level, message);
+void Logger::log(const LevelPtr& level1, const std::wstring& message) {
+    if (isEnabledFor(level1)) {
+      forcedLog(level1, message);
     }
 }
 #endif
 
-void Logger::log(const LevelPtr& level, const std::string& message) {
-    if (isEnabledFor(level)) {
-      forcedLog(level, message);
+void Logger::log(const LevelPtr& level1, const std::string& message) {
+    if (isEnabledFor(level1)) {
+      forcedLog(level1, message);
     }
 }
 

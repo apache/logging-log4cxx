@@ -27,15 +27,15 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketInputStream)
 
 size_t SocketInputStream::DEFAULT_BUFFER_SIZE = 32;
 
-SocketInputStream::SocketInputStream(SocketPtr socket)
-: socket(socket), bufferSize(DEFAULT_BUFFER_SIZE),
+SocketInputStream::SocketInputStream(SocketPtr socket1)
+: socket(socket1), bufferSize(DEFAULT_BUFFER_SIZE),
   memBuffer(), currentPos(0), maxPos(0)
 {
 // memBuffer = new unsigned char[bufferSize];
 }
 
-SocketInputStream::SocketInputStream(SocketPtr socket, size_t bufferSize)
-: socket(socket), bufferSize(bufferSize),
+SocketInputStream::SocketInputStream(SocketPtr socket1, size_t bufferSize1)
+: socket(socket1), bufferSize(bufferSize1),
   memBuffer(), currentPos(0), maxPos(0)
 {
 // memBuffer = new unsigned char[bufferSize];
@@ -48,9 +48,9 @@ SocketInputStream::~SocketInputStream()
 
 void SocketInputStream::read(void * buf, size_t len) const
 {
-   size_t read = socket->read(buf, len);
+   size_t read1 = socket->read(buf, len);
 
-   if (read == 0)
+   if (read1 == 0)
    {
       throw EOFException();
    }

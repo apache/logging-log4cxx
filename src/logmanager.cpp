@@ -53,9 +53,9 @@ RepositorySelectorPtr& LogManager::getRepositorySelector() {
 }
 
 void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
-        void * guard)
+        void * guard1)
 {
-        if((LogManager::guard != 0) && (LogManager::guard != guard))
+        if((LogManager::guard != 0) && (LogManager::guard != guard1))
         {
           throw IllegalArgumentException("Attempted to reset the LoggerFactory without possessing the guard.");
         }
@@ -65,7 +65,7 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
                 throw IllegalArgumentException("RepositorySelector must be non-null.");
         }
 
-        LogManager::guard = guard;
+        LogManager::guard = guard1;
         LogManager::getRepositorySelector() = selector;
 }
 

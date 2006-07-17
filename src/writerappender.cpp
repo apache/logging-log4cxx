@@ -30,15 +30,15 @@ WriterAppender::WriterAppender()
 : immediateFlush(true) {
 }
 
-WriterAppender::WriterAppender(const LayoutPtr& layout,
-               log4cxx::helpers::WriterPtr& writer)
-    : AppenderSkeleton(layout), writer(writer), immediateFlush(true) {
+WriterAppender::WriterAppender(const LayoutPtr& layout1,
+               log4cxx::helpers::WriterPtr& writer1)
+    : AppenderSkeleton(layout1), writer(writer1), immediateFlush(true) {
       Pool p;
       activateOptions(p);
 }
 
-WriterAppender::WriterAppender(const LayoutPtr& layout)
-    : AppenderSkeleton(layout), immediateFlush(true) {
+WriterAppender::WriterAppender(const LayoutPtr& layout1)
+    : AppenderSkeleton(layout1), immediateFlush(true) {
 }
 
 

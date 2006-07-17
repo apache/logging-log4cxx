@@ -66,21 +66,21 @@ SyslogAppender::SyslogAppender()
 
 }
 
-SyslogAppender::SyslogAppender(const LayoutPtr& layout,
-        int syslogFacility)
-: syslogFacility(syslogFacility), facilityPrinting(false), sw(0)
+SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
+        int syslogFacility1)
+: syslogFacility(syslogFacility1), facilityPrinting(false), sw(0)
 {
-        this->layout = layout;
+        this->layout = layout1;
         this->initSyslogFacilityStr();
 }
 
-SyslogAppender::SyslogAppender(const LayoutPtr& layout,
-        const LogString& syslogHost, int syslogFacility)
-: syslogFacility(syslogFacility), facilityPrinting(false), sw(0)
+SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
+        const LogString& syslogHost1, int syslogFacility1)
+: syslogFacility(syslogFacility1), facilityPrinting(false), sw(0)
 {
-        this->layout = layout;
+        this->layout = layout1;
         this->initSyslogFacilityStr();
-        setSyslogHost(syslogHost);
+        setSyslogHost(syslogHost1);
 }
 
 SyslogAppender::~SyslogAppender()
@@ -313,7 +313,7 @@ void SyslogAppender::setOption(const LogString& option, const LogString& value)
         }
 }
 
-void SyslogAppender::setSyslogHost(const LogString& syslogHost)
+void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
 {
         if (this->sw != 0)
         {
@@ -324,12 +324,12 @@ void SyslogAppender::setSyslogHost(const LogString& syslogHost)
 // On the local host, we can directly use the system function 'syslog'
 // if it is available (cf. append)
 #ifdef LOG4CXX_HAVE_SYSLOG
-        if (syslogHost != LOG4CXX_STR("localhost") && syslogHost != LOG4CXX_STR("127.0.0.1")
-        && !syslogHost.empty())
+        if (syslogHost1 != LOG4CXX_STR("localhost") && syslogHost1 != LOG4CXX_STR("127.0.0.1")
+        && !syslogHost1.empty())
 #endif
-                this->sw = new SyslogWriter(syslogHost);
+                this->sw = new SyslogWriter(syslogHost1);
 
-        this->syslogHost = syslogHost;
+        this->syslogHost = syslogHost1;
 }
 
 

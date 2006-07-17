@@ -47,8 +47,8 @@ SocketHubAppender::SocketHubAppender()
 {
 }
 
-SocketHubAppender::SocketHubAppender(int port)
- : port(port), oosList(), locationInfo(false), thread()
+SocketHubAppender::SocketHubAppender(int port1)
+ : port(port1), oosList(), locationInfo(false), thread()
 {
         startServer();
 }

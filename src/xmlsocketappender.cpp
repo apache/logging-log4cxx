@@ -50,16 +50,16 @@ XMLSocketAppender::XMLSocketAppender()
         memset(zeroBuffer, 0, MAX_EVENT_LEN);
 }
 
-XMLSocketAppender::XMLSocketAppender(InetAddressPtr address, int port)
-: SocketAppenderSkeleton(address, port, DEFAULT_RECONNECTION_DELAY)
+XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
+: SocketAppenderSkeleton(address1, port1, DEFAULT_RECONNECTION_DELAY)
 {
         layout = new XMLLayout();
         memset(zeroBuffer, 0, MAX_EVENT_LEN);
         connect();
 }
 
-XMLSocketAppender::XMLSocketAppender(const LogString& host, int port)
-: SocketAppenderSkeleton(host, port, DEFAULT_RECONNECTION_DELAY)
+XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
+: SocketAppenderSkeleton(host, port1, DEFAULT_RECONNECTION_DELAY)
 {
         layout = new XMLLayout();
         memset(zeroBuffer, 0, MAX_EVENT_LEN);

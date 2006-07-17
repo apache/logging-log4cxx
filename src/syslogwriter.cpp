@@ -28,16 +28,16 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-SyslogWriter::SyslogWriter(const LogString& syslogHost)
-: syslogHost(syslogHost)
+SyslogWriter::SyslogWriter(const LogString& syslogHost1)
+: syslogHost(syslogHost1)
 {
    try
    {
-      this->address = InetAddress::getByName(syslogHost);
+      this->address = InetAddress::getByName(syslogHost1);
    }
    catch(UnknownHostException& e)
    {
-      LogLog::error(((LogString) LOG4CXX_STR("Could not find ")) + syslogHost +
+      LogLog::error(((LogString) LOG4CXX_STR("Could not find ")) + syslogHost1 +
          LOG4CXX_STR(". All logging will FAIL."), e);
    }
 
@@ -47,7 +47,7 @@ SyslogWriter::SyslogWriter(const LogString& syslogHost)
    }
    catch (SocketException& e)
    {
-      LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate DatagramSocket to ")) + syslogHost +
+      LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate DatagramSocket to ")) + syslogHost1 +
             LOG4CXX_STR(". All logging will FAIL."), e);
    }
 }

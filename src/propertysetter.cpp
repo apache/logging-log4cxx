@@ -30,7 +30,7 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::config;
 
-PropertySetter::PropertySetter(const helpers::ObjectPtr& obj) : obj(obj)
+PropertySetter::PropertySetter(const helpers::ObjectPtr& obj1) : obj(obj1)
 {
 }
 

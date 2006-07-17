@@ -27,9 +27,9 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertiesPatternConverter)
 
-PropertiesPatternConverter::PropertiesPatternConverter(const LogString& name,
+PropertiesPatternConverter::PropertiesPatternConverter(const LogString& name1,
       const LogString& propertyName) :
-   LoggingEventPatternConverter(name,LOG4CXX_STR("property")),
+   LoggingEventPatternConverter(name1,LOG4CXX_STR("property")),
    option(propertyName) {
 }
 

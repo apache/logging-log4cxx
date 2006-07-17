@@ -26,8 +26,8 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketOutputStream)
 
 #define INCREMENT 512
 
-SocketOutputStream::SocketOutputStream(SocketPtr socket)
-: socket(socket), beg(0), cur(0), end(0)
+SocketOutputStream::SocketOutputStream(SocketPtr socket1)
+: socket(socket1), beg(0), cur(0), end(0)
 {
 }
 

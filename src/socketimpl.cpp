@@ -39,13 +39,13 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketImpl)
 SocketException::SocketException() : errorNumber(0), msg("SocketException") {
 }
 
-SocketException::SocketException(const char *what, apr_status_t status) :
+SocketException::SocketException(const char *what1, apr_status_t status) :
   errorNumber(status) {
 
   // build the error message text
   char buffer[200];
   apr_strerror(status, buffer, sizeof buffer);
-  msg = std::string(what) + std::string(": ") + buffer;
+  msg = std::string(what1) + std::string(": ") + buffer;
 }
 
 SocketException::SocketException(apr_status_t status) :
@@ -72,8 +72,8 @@ apr_status_t SocketException::getErrorNumber() const {
   return errorNumber;
 }
 
-PlatformSocketException::PlatformSocketException(const char* what, apr_status_t status) :
-   SocketException(what, status) {
+PlatformSocketException::PlatformSocketException(const char* what1, apr_status_t status) :
+   SocketException(what1, status) {
 }
 
 PlatformSocketException::PlatformSocketException(const PlatformSocketException& src)
@@ -217,15 +217,15 @@ int SocketImpl::available()
 /** Binds this socket to the specified port number
 on the specified host.
 */
-void SocketImpl::bind(InetAddressPtr address, int port)
+void SocketImpl::bind(InetAddressPtr address1, int port1)
 {
-        LOG4CXX_ENCODE_CHAR(host, address->getHostAddress());
+        LOG4CXX_ENCODE_CHAR(host, address1->getHostAddress());
 
         // Create server socket address (including port number)
         apr_sockaddr_t *server_addr;
-        apr_status_t status = 
+        apr_status_t status =
             apr_sockaddr_info_get(&server_addr, host.c_str(), APR_INET,
-                                  port, 0, (apr_pool_t*) memoryPool.getAPRPool());
+                                  port1, 0, (apr_pool_t*) memoryPool.getAPRPool());
         if (status != APR_SUCCESS) {
           throw ConnectException(status);
         }
@@ -236,7 +236,7 @@ void SocketImpl::bind(InetAddressPtr address, int port)
           throw BindException(status);
         }
 
-        this->localport = port;
+        this->localport = port1;
 }
 
 /** Closes this socket. */
@@ -259,15 +259,15 @@ void SocketImpl::close()
 /**  Connects this socket to the specified port number
 on the specified host.
 */
-void SocketImpl::connect(InetAddressPtr address, int port)
+void SocketImpl::connect(InetAddressPtr address1, int port1)
 {
-        LOG4CXX_ENCODE_CHAR(host, address->getHostAddress());
+        LOG4CXX_ENCODE_CHAR(host, address1->getHostAddress());
 
         // create socket address (including port)
         apr_sockaddr_t *client_addr;
-        apr_status_t status = 
+        apr_status_t status =
             apr_sockaddr_info_get(&client_addr, host.c_str(), APR_INET,
-                                  port, 0, (apr_pool_t*) memoryPool.getAPRPool());
+                                  port1, 0, (apr_pool_t*) memoryPool.getAPRPool());
         if (status != APR_SUCCESS) {
           throw ConnectException(status);
         }
@@ -278,14 +278,14 @@ void SocketImpl::connect(InetAddressPtr address, int port)
           throw ConnectException();
         }
 
-        this->address = address;
-        this->port = port;
+        this->address = address1;
+        this->port = port1;
 }
 
 /** Connects this socket to the specified port on the named host. */
-void SocketImpl::connect(const LogString& host, int port)
+void SocketImpl::connect(const LogString& host, int port1)
 {
-        connect(InetAddress::getByName(host), port);
+        connect(InetAddress::getByName(host), port1);
 }
 
 /** Creates either a stream or a datagram socket. */

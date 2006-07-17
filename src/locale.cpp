@@ -20,19 +20,19 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-Locale::Locale(const LogString& language)
- : language(language)
+Locale::Locale(const LogString& language1)
+ : language(language1)
 {
 }
 
-Locale::Locale(const LogString& language, const LogString& country)
- : language(language), country(country)
+Locale::Locale(const LogString& language1, const LogString& country1)
+ : language(language1), country(country1)
 {
 }
 
-Locale::Locale(const LogString& language, const LogString& country,
-   const LogString& variant)
-: language(language), country(country), variant(variant)
+Locale::Locale(const LogString& language1, const LogString& country1,
+   const LogString& variant1)
+: language(language1), country(country1), variant(variant1)
 {
 }
 

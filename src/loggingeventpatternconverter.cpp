@@ -27,7 +27,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEventPatternConverter)
 
 
 LoggingEventPatternConverter::LoggingEventPatternConverter(
-    const LogString& name, const LogString& style) : PatternConverter(name, style) {
+    const LogString& name1, const LogString& style1) : PatternConverter(name1, style1) {
   }
 
 void LoggingEventPatternConverter::format(const ObjectPtr& obj,

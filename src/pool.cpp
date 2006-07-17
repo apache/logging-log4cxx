@@ -34,7 +34,7 @@ Pool::Pool() : pool(0), release(true) {
     pool = aprPool;
 }
 
-Pool::Pool(log4cxx_pool_t* p, bool release) : pool((apr_pool_t*) p), release(release) {
+Pool::Pool(log4cxx_pool_t* p, bool release1) : pool((apr_pool_t*) p), release(release1) {
     assert(p != NULL);
 }
 

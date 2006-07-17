@@ -34,23 +34,23 @@ using namespace log4cxx::net;
 
 #if APR_HAS_THREADS
 
-SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay)
+SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay1)
 :  pool(),
    remoteHost(),
    address(),
    port(defaultPort),
    os(),
-   reconnectionDelay(reconnectionDelay),
+   reconnectionDelay(reconnectionDelay1),
    locationInfo(false),
    thread() {
 }
 
-SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address, int port, int delay)
+SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address1, int port1, int delay)
 :
    pool(),
    remoteHost(),
-   address(address),
-   port(port),
+   address(address1),
+   port(port1),
    os(),
    reconnectionDelay(delay),
    locationInfo(false),
@@ -58,11 +58,11 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address, int port,
     remoteHost = this->address->getHostName();
 }
 
-SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port, int delay)
+SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1, int delay)
 :   pool(),
     remoteHost(host),
     address(InetAddress::getByName(host)),
-        port(port),
+        port(port1),
     os(),
     reconnectionDelay(delay),
         locationInfo(false),

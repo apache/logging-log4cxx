@@ -17,7 +17,8 @@
 #include <log4cxx/spi/location/locationinfo.h>
 #include <sstream>
 
- using namespace ::log4cxx::spi;
+using namespace ::log4cxx::spi;
+
    /**
      When location information is not available the constant
      <code>NA</code> is returned. Current value of this string
@@ -35,12 +36,12 @@
 *   @remarks Used by LOG4CXX_LOCATION to generate
 *       location info for current code site
 */
- LocationInfo::LocationInfo( const char * const fileName,
-              const char * const methodName,
-              int lineNumber )
-     :  lineNumber( lineNumber ),
-        fileName( fileName ),
-        methodName( methodName ) {
+ LocationInfo::LocationInfo( const char * const fileName1,
+              const char * const methodName1,
+              int lineNumber1 )
+     :  lineNumber( lineNumber1 ),
+        fileName( fileName1 ),
+        methodName( methodName1 ) {
 }
 
 /**

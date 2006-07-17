@@ -46,13 +46,13 @@ SocketAppender::SocketAppender()
 : SocketAppenderSkeleton(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY) {
 }
 
-SocketAppender::SocketAppender(InetAddressPtr& address, int port)
-: SocketAppenderSkeleton(address, port, DEFAULT_RECONNECTION_DELAY) {
+SocketAppender::SocketAppender(InetAddressPtr& address1, int port1)
+: SocketAppenderSkeleton(address1, port1, DEFAULT_RECONNECTION_DELAY) {
         connect();
 }
 
-SocketAppender::SocketAppender(const LogString& host, int port)
-: SocketAppenderSkeleton(host, port, DEFAULT_RECONNECTION_DELAY) {
+SocketAppender::SocketAppender(const LogString& host, int port1)
+: SocketAppenderSkeleton(host, port1, DEFAULT_RECONNECTION_DELAY) {
         connect();
 }
 

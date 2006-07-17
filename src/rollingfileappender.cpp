@@ -67,19 +67,19 @@ void RollingFileAppender::activateOptions(Pool &p) {
      rollingPolicy->activateOptions(p);
 
      try {
-      RolloverDescriptionPtr rollover =
+      RolloverDescriptionPtr rollover1 =
         rollingPolicy->initialize(getFile(), getAppend(), p);
 
-      if (rollover != NULL) {
-        ActionPtr syncAction(rollover->getSynchronous());
+      if (rollover1 != NULL) {
+        ActionPtr syncAction(rollover1->getSynchronous());
 
         if (syncAction != NULL) {
           syncAction->execute(p);
         }
 
-        setFile(rollover->getActiveFileName());
-        setAppend(rollover->getAppend());
-        lastRolloverAsyncAction = rollover->getAsynchronous();
+        setFile(rollover1->getActiveFileName());
+        setAppend(rollover1->getAppend());
+        lastRolloverAsyncAction = rollover1->getAsynchronous();
 
         if (lastRolloverAsyncAction != NULL) {
 //          Thread runner = new Thread(lastRolloverAsyncAction);
@@ -144,72 +144,72 @@ bool RollingFileAppender::rollover(Pool& p) {
       }
 
       try {
-        RolloverDescriptionPtr rollover(rollingPolicy->rollover(getFile(), p));
+        RolloverDescriptionPtr rollover1(rollingPolicy->rollover(getFile(), p));
 
-        if (rollover != NULL) {
-          if (rollover->getActiveFileName() == getFile()) {
+        if (rollover1 != NULL) {
+          if (rollover1->getActiveFileName() == getFile()) {
             closeWriter();
 
             bool success = true;
 
-            if (rollover->getSynchronous() != NULL) {
+            if (rollover1->getSynchronous() != NULL) {
               success = false;
 
               try {
-                success = rollover->getSynchronous()->execute(p);
+                success = rollover1->getSynchronous()->execute(p);
               } catch (std::exception& ex) {
                 LogLog::warn(LOG4CXX_STR("Exception on rollover"));
               }
             }
 
             if (success) {
-              if (rollover->getAppend()) {
-                fileLength = File(rollover->getActiveFileName()).length(p);
+              if (rollover1->getAppend()) {
+                fileLength = File(rollover1->getActiveFileName()).length(p);
               } else {
                 fileLength = 0;
               }
 
-              if (rollover->getAsynchronous() != NULL) {
-                lastRolloverAsyncAction = rollover->getAsynchronous();
+              if (rollover1->getAsynchronous() != NULL) {
+                lastRolloverAsyncAction = rollover1->getAsynchronous();
 //                new Thread(lastRolloverAsyncAction).start();
               }
 
               setFile(
-                rollover->getActiveFileName(), rollover->getAppend(),
+                rollover1->getActiveFileName(), rollover1->getAppend(),
                 bufferedIO, bufferSize, p);
             } else {
               setFile(
-                rollover->getActiveFileName(), true, bufferedIO, bufferSize, p);
+                rollover1->getActiveFileName(), true, bufferedIO, bufferSize, p);
             }
           } else {
             OutputStreamPtr os(new FileOutputStream(
-                  rollover->getActiveFileName(), rollover->getAppend()));
+                  rollover1->getActiveFileName(), rollover1->getAppend()));
             WriterPtr newWriter(createWriter(os));
             closeWriter();
-            setFile(rollover->getActiveFileName());
+            setFile(rollover1->getActiveFileName());
             setWriter(newWriter);
 
             bool success = true;
 
-            if (rollover->getSynchronous() != NULL) {
+            if (rollover1->getSynchronous() != NULL) {
               success = false;
 
               try {
-                success = rollover->getSynchronous()->execute(p);
+                success = rollover1->getSynchronous()->execute(p);
               } catch (std::exception& ex) {
                 LogLog::warn(LOG4CXX_STR("Exception during rollover"));
               }
             }
 
             if (success) {
-              if (rollover->getAppend()) {
-                fileLength = File(rollover->getActiveFileName()).length(p);
+              if (rollover1->getAppend()) {
+                fileLength = File(rollover1->getActiveFileName()).length(p);
               } else {
                 fileLength = 0;
               }
 
-              if (rollover->getAsynchronous() != NULL) {
-                lastRolloverAsyncAction = rollover->getAsynchronous();
+              if (rollover1->getAsynchronous() != NULL) {
+                lastRolloverAsyncAction = rollover1->getAsynchronous();
 //                new Thread(lastRolloverAsyncAction).start();
               }
             }
@@ -323,8 +323,8 @@ class CountingOutputStream : public OutputStream {
    * @param rfa rolling file appender to inform.
    */
   CountingOutputStream(
-    OutputStreamPtr& os, RollingFileAppender* rfa) :
-      os(os), rfa(rfa) {
+    OutputStreamPtr& os1, RollingFileAppender* rfa1) :
+      os(os1), rfa(rfa1) {
   }
 
   /**

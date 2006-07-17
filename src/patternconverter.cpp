@@ -24,8 +24,8 @@ using namespace log4cxx::pattern;
 IMPLEMENT_LOG4CXX_OBJECT(PatternConverter)
 
 PatternConverter::PatternConverter(
-   const LogString& name, const LogString& style) :
-   name(name), style(style) {
+   const LogString& name1, const LogString& style1) :
+   name(name1), style(style1) {
 }
 
 PatternConverter::~PatternConverter() {

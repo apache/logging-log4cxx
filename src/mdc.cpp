@@ -21,9 +21,9 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-MDC::MDC(const LogString& key, const LogString& value) : key(key)
+MDC::MDC(const LogString& key1, const LogString& value) : key(key1)
 {
-        put(key, value);
+        put(key1, value);
 }
 
 MDC::~MDC()

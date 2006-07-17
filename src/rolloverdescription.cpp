@@ -28,14 +28,14 @@ RolloverDescription::RolloverDescription() {
 }
 
 RolloverDescription::RolloverDescription(
-    const LogString& activeFileName,
-    const bool append,
-    const ActionPtr& synchronous,
-    const ActionPtr& asynchronous)
-       : activeFileName(activeFileName),
-         append(append),
-         synchronous(synchronous),
-         asynchronous(asynchronous) {
+    const LogString& activeFileName1,
+    const bool append1,
+    const ActionPtr& synchronous1,
+    const ActionPtr& asynchronous1)
+       : activeFileName(activeFileName1),
+         append(append1),
+         synchronous(synchronous1),
+         asynchronous(asynchronous1) {
 }
 
 LogString RolloverDescription::getActiveFileName() const {

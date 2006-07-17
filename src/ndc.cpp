@@ -21,9 +21,9 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-NDC::DiagnosticContext::DiagnosticContext(const LogString& message,
+NDC::DiagnosticContext::DiagnosticContext(const LogString& message1,
         const DiagnosticContext * parent)
-        : fullMessage(message), message(message)
+        : fullMessage(message1), message(message1)
 {
         if (parent != 0)
         {

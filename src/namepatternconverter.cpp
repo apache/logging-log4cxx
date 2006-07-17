@@ -25,10 +25,10 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(NamePatternConverter)
 
 NamePatternConverter::NamePatternConverter(
-    const LogString& name,
-    const LogString& style,
+    const LogString& name1,
+    const LogString& style1,
     const std::vector<LogString>& options) :
-    LoggingEventPatternConverter(name, style),
+    LoggingEventPatternConverter(name1, style1),
     abbreviator(getAbbreviator(options)) {
 }
 
