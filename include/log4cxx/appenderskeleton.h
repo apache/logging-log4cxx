@@ -89,7 +89,7 @@ namespace log4cxx
                 Derived appenders should override this method if option structure
                 requires it.
                 */
-                virtual void activateOptions(log4cxx::helpers::Pool& pool) {}
+                virtual void activateOptions(log4cxx::helpers::Pool& /* pool */) {}
                 virtual void setOption(const LogString& option, const LogString& value);
 
                 /**

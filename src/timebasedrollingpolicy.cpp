@@ -181,9 +181,9 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 
 
 bool TimeBasedRollingPolicy::isTriggeringEvent(
-  Appender* appender,
-  const log4cxx::spi::LoggingEventPtr& event,
-  const LogString& filename,
-  size_t fileLength)  {
+  Appender* /* appender */,
+  const log4cxx::spi::LoggingEventPtr& /* event */,
+  const LogString& /* filename */,
+  size_t /* fileLength */)  {
     return apr_time_now() > nextCheck;
 }

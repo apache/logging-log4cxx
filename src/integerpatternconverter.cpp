@@ -32,7 +32,7 @@ IntegerPatternConverter::IntegerPatternConverter() :
 }
 
 PatternConverterPtr IntegerPatternConverter::newInstance(
-   const std::vector<LogString>& options) {
+   const std::vector<LogString>& /* options */) {
    static PatternConverterPtr instance(new IntegerPatternConverter());
    return instance;
 }

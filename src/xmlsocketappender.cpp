@@ -78,7 +78,7 @@ void XMLSocketAppender::setLocationInfo(bool locationInfo1) {
 
 
 void XMLSocketAppender::renderEvent(const spi::LoggingEventPtr& event,
-    helpers::SocketOutputStreamPtr& os1, Pool& p)
+    helpers::SocketOutputStreamPtr& /*os1*/, Pool& p)
 {
         LogString output;
 

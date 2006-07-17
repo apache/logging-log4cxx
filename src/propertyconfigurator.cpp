@@ -282,7 +282,7 @@ void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
         This method must work for the root category as well.
 */
 void PropertyConfigurator::parseCategory(
-        helpers::Properties& props, LoggerPtr& logger, const LogString& optionKey,
+        helpers::Properties& props, LoggerPtr& logger, const LogString& /* optionKey */,
         const LogString& loggerName, const LogString& value)
 {
         LogLog::debug(((LogString) LOG4CXX_STR("Parsing for ["))

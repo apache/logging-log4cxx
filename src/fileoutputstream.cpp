@@ -50,7 +50,7 @@ FileOutputStream::~FileOutputStream() {
   }
 }
 
-void FileOutputStream::close(Pool& p) {
+void FileOutputStream::close(Pool& /* p */) {
   apr_status_t stat = apr_file_close((apr_file_t*) fileptr);
   if (stat == APR_SUCCESS) {
     fileptr = NULL;
@@ -59,10 +59,10 @@ void FileOutputStream::close(Pool& p) {
   }
 }
 
-void FileOutputStream::flush(Pool& p) {
+void FileOutputStream::flush(Pool& /* p */) {
 }
 
-void FileOutputStream::write(ByteBuffer& buf, Pool& p) {
+void FileOutputStream::write(ByteBuffer& buf, Pool& /* p */ ) {
   if (fileptr == NULL) {
      throw IOException(-1);
   }

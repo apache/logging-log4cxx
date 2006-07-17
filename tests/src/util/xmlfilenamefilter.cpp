@@ -19,7 +19,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-XMLFilenameFilter::XMLFilenameFilter(const std::string& actual, const std::string& expected) {
+XMLFilenameFilter::XMLFilenameFilter(const std::string& /*actual*/, const std::string& expected) {
     std::string pattern(" file=\\(.\\).*");
     pattern += expected;
 

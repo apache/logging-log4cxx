@@ -32,7 +32,7 @@
  }
 
  PatternConverterPtr ThreadPatternConverter::newInstance(
-    const std::vector<LogString>& options) {
+    const std::vector<LogString>& /* options */) {
       static PatternConverterPtr def(new ThreadPatternConverter());
       return def;
  }
@@ -40,7 +40,7 @@
  void ThreadPatternConverter::format(
    const LoggingEventPtr& event,
    LogString& toAppendTo,
-   Pool& p) const {
+   Pool& /* p */) const {
     toAppendTo.append(event->getThreadName());
   }
 

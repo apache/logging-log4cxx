@@ -50,7 +50,7 @@ TelnetAppender::~TelnetAppender()
         delete serverSocket;
 }
 
-void TelnetAppender::activateOptions(Pool& p)
+void TelnetAppender::activateOptions(Pool& /* p */)
 {
         if (serverSocket == NULL) {
                 serverSocket = new ServerSocket(port);
@@ -108,7 +108,7 @@ void TelnetAppender::close()
         activeConnections = 0;
 }
 
-void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& /* p */)
 {
         apr_uint32_t count = apr_atomic_read32(&activeConnections);
         if (count > 0) {
@@ -141,7 +141,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
         }
 }
 
-void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* thread, void* data) {
+void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* /* thread */, void* data) {
     TelnetAppender* pThis = (TelnetAppender*) data;
 
     // main loop; is left when This->closed is != 0 after an accept()

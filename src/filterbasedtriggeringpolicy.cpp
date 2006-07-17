@@ -33,10 +33,10 @@ FilterBasedTriggeringPolicy::~FilterBasedTriggeringPolicy() {
 
 
 bool FilterBasedTriggeringPolicy::isTriggeringEvent(
-  Appender* appender,
+  Appender* /* appender */,
   const log4cxx::spi::LoggingEventPtr& event,
-  const LogString& filename,
-  size_t fileLength) {
+  const LogString& /* filename */,
+  size_t /* fileLength */ ) {
   if (headFilter == NULL) {
     return false;
   }
@@ -85,7 +85,7 @@ void FilterBasedTriggeringPolicy::activateOptions(log4cxx::helpers::Pool& p) {
   }
 }
 
-void FilterBasedTriggeringPolicy::setOption(const LogString& option, const LogString& value) {
+void FilterBasedTriggeringPolicy::setOption(const LogString& /* option */, const LogString& /* value */ ) {
 }
 
 

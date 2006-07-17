@@ -174,7 +174,7 @@ void HTMLLayout::appendHeader(LogString& output, Pool& pool)
         output.append(LOG4CXX_STR("</tr>") LOG4CXX_EOL);
 }
 
-void HTMLLayout::appendFooter(LogString& output, Pool& pool)
+void HTMLLayout::appendFooter(LogString& output, Pool& /* pool */ )
 {
         output.append(LOG4CXX_STR("</table>") LOG4CXX_EOL);
         output.append(LOG4CXX_STR("<br>") LOG4CXX_EOL);

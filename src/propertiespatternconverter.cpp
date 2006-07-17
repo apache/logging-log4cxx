@@ -51,7 +51,7 @@ PatternConverterPtr PropertiesPatternConverter::newInstance(
 void PropertiesPatternConverter::format(
   const LoggingEventPtr& event,
   LogString& toAppendTo,
-  Pool& p) const {
+  Pool& /* p */) const {
     if (option.length() == 0) {
       toAppendTo.append(1, LOG4CXX_STR('{'));
 

@@ -123,7 +123,7 @@ public:
         }
 
         void fileWrite1() {
-          OutputStreamPtr fos = 
+          OutputStreamPtr fos =
                       new FileOutputStream(LOG4CXX_STR("output/fileWrite1.txt"));
           OutputStreamWriterPtr osw = new OutputStreamWriter(fos);
 
@@ -131,7 +131,7 @@ public:
           LogString greeting(LOG4CXX_STR("Hello, World") LOG4CXX_EOL);
           osw->write(greeting, pool);
 
-          InputStreamPtr is = 
+          InputStreamPtr is =
                       new FileInputStream(LOG4CXX_STR("output/fileWrite1.txt"));
           InputStreamReaderPtr isr = new InputStreamReader(is);
           LogString reply = isr->read(pool);
@@ -140,13 +140,13 @@ public:
         }
 
         /**
-         *  Tests conversion of backslash containing file names.  
-         *  Would cause infinite loop due to bug LOGCXX-105. 
+         *  Tests conversion of backslash containing file names.
+         *  Would cause infinite loop due to bug LOGCXX-105.
          */
         void deleteBackslashedFileName() {
           File file("output\\bogus.txt");
           Pool pool;
-          bool deleted = file.deleteFile(pool);
+          /*bool deleted = */file.deleteFile(pool);
         }
 };
 

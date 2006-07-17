@@ -34,7 +34,7 @@ RollingPolicyBase::RollingPolicyBase() {
 RollingPolicyBase::~RollingPolicyBase() {
 }
 
-void RollingPolicyBase::activateOptions(log4cxx::helpers::Pool& pool) {
+void RollingPolicyBase::activateOptions(log4cxx::helpers::Pool& /* pool */) {
   if (fileNamePatternStr.length() > 0) {
     parseFileNamePattern();
   } else {

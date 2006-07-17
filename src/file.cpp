@@ -130,7 +130,7 @@ log4cxx_time_t File::lastModified(Pool& pool) const {
 }
 
 
-std::vector<LogString> File::list(Pool& p) const {
+std::vector<LogString> File::list(Pool& /* p */ ) const {
   return std::vector<LogString>();
   //
   //  TODO:

@@ -53,7 +53,7 @@ END_LOG4CXX_CAST_MAP()
     /**
      * {@inheritDoc}
      */
-    void abbreviate(LogString::size_type nameStart, LogString& buf) const {
+    void abbreviate(LogString::size_type /* nameStart */, LogString& /* buf */) const {
     }
 };
 
@@ -86,8 +86,6 @@ END_LOG4CXX_CAST_MAP()
      * @param nameStart start of name to abbreviate.
      */
     void abbreviate(LogString::size_type nameStart, LogString& buf) const {
-      LogString::size_type len = buf.length() - nameStart;
-
       // We substract 1 from 'len' when assigning to 'end' to avoid out of
       // bounds exception in return r.substring(end+1, len). This can happen if
       // precision is 1 and the category name ends with a dot.

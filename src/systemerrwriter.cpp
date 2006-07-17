@@ -30,13 +30,13 @@ SystemErrWriter::SystemErrWriter() {
 SystemErrWriter::~SystemErrWriter() {
 }
 
-void SystemErrWriter::close(Pool& p) {
+void SystemErrWriter::close(Pool& /* p */) {
 }
 
-void SystemErrWriter::flush(Pool& p) {
+void SystemErrWriter::flush(Pool& /* p */) {
 }
 
-void SystemErrWriter::write(const LogString& str, Pool& p) {
+void SystemErrWriter::write(const LogString& str, Pool& /* p */) {
 #if LOG4CXX_HAS_WCHAR_T
 #if LOG4CXX_FORCE_WIDE_CONSOLE
     if (true) {

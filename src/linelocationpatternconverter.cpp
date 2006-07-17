@@ -33,7 +33,7 @@ LineLocationPatternConverter::LineLocationPatternConverter() :
 }
 
 PatternConverterPtr LineLocationPatternConverter::newInstance(
-   const std::vector<LogString>& options) {
+   const std::vector<LogString>& /* options */) {
    static PatternConverterPtr instance(new LineLocationPatternConverter());
    return instance;
 }

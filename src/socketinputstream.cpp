@@ -148,7 +148,7 @@ void SocketInputStream::read(long& value) const
 // LOGLOG_DEBUG(_T("long read:") << value);
 }
 
-void SocketInputStream::read(LogString& value) const
+void SocketInputStream::read(LogString& /* value */) const
 {
    LogString::size_type size = 0;
 

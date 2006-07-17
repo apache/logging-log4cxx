@@ -146,7 +146,7 @@ int UnicodeHelper::encodeWide(unsigned int ch, wchar_t* dst) {
    return 1;
 }
 
-unsigned int UnicodeHelper::decodeWide(const wchar_t*& src, const wchar_t* srcEnd) {
+unsigned int UnicodeHelper::decodeWide(const wchar_t*& src, const wchar_t* /* srcEnd */) {
     return *(src++);
 }
 

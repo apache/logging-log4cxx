@@ -68,5 +68,5 @@ bool Action::isComplete() const {
  *
  * @param ex exception.
  */
-void Action::reportException(const std::exception& ex) {
+void Action::reportException(const std::exception& /* ex */) {
 }

@@ -65,13 +65,13 @@ namespace log4cxx
                 Append the header for the layout format. The base class does
                 nothing.
                 */
-                virtual void appendHeader(LogString& output, log4cxx::helpers::Pool& p) {}
+                virtual void appendHeader(LogString& /* output */, log4cxx::helpers::Pool& /* p */) {}
 
                 /**
                 Append the footer for the layout format. The base class does
                 nothing.
                 */
-                virtual void appendFooter(LogString& output, log4cxx::helpers::Pool& p) {}
+                virtual void appendFooter(LogString& /* output */, log4cxx::helpers::Pool& /* p */) {}
 
                 /**
                 If the layout handles the throwable object contained within

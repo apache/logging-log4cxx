@@ -210,7 +210,7 @@ const LogString LoggingEvent::getCurrentThreadName() {
 #endif
 }
 
-void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)
+void LoggingEvent::read(const helpers::SocketInputStreamPtr& /* is */)
 {
 #if 0
         // fqnOfCategoryClass
@@ -274,7 +274,7 @@ void LoggingEvent::read(const helpers::SocketInputStreamPtr& is)
 #endif
 }
 
-void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& is)
+void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& /* is */)
 {
   #if 0
         int levelInt;
@@ -318,7 +318,7 @@ void LoggingEvent::setProperty(const LogString& key, const LogString& value)
         (*properties)[key] = value;
 }
 
-void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
+void LoggingEvent::write(helpers::SocketOutputStreamPtr& /* os */) const
 {
   #if 0
         // fqnOfCategoryClass
@@ -380,7 +380,7 @@ void LoggingEvent::write(helpers::SocketOutputStreamPtr& os) const
 #endif
 }
 
-void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& os) const
+void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& /* os */) const
 {
 #if 0
         os->write(level->toInt());

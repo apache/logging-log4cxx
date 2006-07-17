@@ -133,7 +133,7 @@ void Compare::outputFile(const File& file,
         }
 }
 
-bool Compare::gzCompare(const File& file1, const File& file2)
+bool Compare::gzCompare(const File& /*file1*/, const File& /*file2*/)
 {
     return false;
 }

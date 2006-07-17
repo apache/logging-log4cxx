@@ -34,7 +34,7 @@ MethodLocationPatternConverter::MethodLocationPatternConverter() :
 }
 
 PatternConverterPtr MethodLocationPatternConverter::newInstance(
-   const std::vector<LogString>& options) {
+   const std::vector<LogString>& /* options */ ) {
    static PatternConverterPtr def(new MethodLocationPatternConverter());
    return def;
 }
@@ -42,7 +42,6 @@ PatternConverterPtr MethodLocationPatternConverter::newInstance(
 void MethodLocationPatternConverter::format(
   const LoggingEventPtr& event,
   LogString& toAppendTo,
-  Pool& p) const {
-   int initialLength = toAppendTo.length();
+  Pool& /* p */ ) const {
    append(toAppendTo, event->getLocationInformation().getMethodName());
  }

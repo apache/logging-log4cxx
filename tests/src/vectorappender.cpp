@@ -22,7 +22,7 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(VectorAppender)
 
-void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& /*p*/)
 {
         try
         {

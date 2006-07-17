@@ -34,7 +34,7 @@ MessagePatternConverter::MessagePatternConverter() :
 }
 
 PatternConverterPtr MessagePatternConverter::newInstance(
-   const std::vector<LogString>& options) {
+   const std::vector<LogString>& /* options */) {
      static PatternConverterPtr def(new MessagePatternConverter());
      return def;
 }
@@ -42,7 +42,7 @@ PatternConverterPtr MessagePatternConverter::newInstance(
 void MessagePatternConverter::format(
   const LoggingEventPtr& event,
   LogString& toAppendTo,
-  Pool& p) const {
+  Pool& /* p */) const {
    toAppendTo.append(event->getRenderedMessage());
  }
 

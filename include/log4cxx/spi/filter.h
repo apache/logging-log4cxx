@@ -115,8 +115,8 @@ namespace log4cxx
 
             default do-nothing implementation for convenience.
             */
-            void activateOptions(log4cxx::helpers::Pool& p) {}
-            void setOption(const LogString& option, const LogString& value) {}
+            void activateOptions(log4cxx::helpers::Pool& /* p */) {}
+            void setOption(const LogString& /* option */, const LogString& /* value */) {}
 
             /**
             <p>If the decision is <code>DENY</code>, then the event will be

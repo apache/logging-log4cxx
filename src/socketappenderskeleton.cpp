@@ -74,7 +74,7 @@ SocketAppenderSkeleton::~SocketAppenderSkeleton()
         finalize();
 }
 
-void SocketAppenderSkeleton::activateOptions(Pool& p)
+void SocketAppenderSkeleton::activateOptions(Pool& /* p */ )
 {
         connect();
 }
@@ -203,7 +203,7 @@ void SocketAppenderSkeleton::fireConnector()
         }
 }
 
-void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* thread, void* data) {
+void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* /* thread */, void* data) {
         SocketAppenderSkeleton* socketAppender = (SocketAppenderSkeleton*) data;
         SocketPtr socket;
         apr_uint32_t isClosed = apr_atomic_read32(&socketAppender->closed);

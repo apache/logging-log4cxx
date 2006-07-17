@@ -61,7 +61,7 @@ void init(const std::string& portStr, const std::string& configFile)
         }
 }
 
-void* LOG4CXX_THREAD_FUNC runSocket(log4cxx_thread_t* thread, void* data) {
+void* LOG4CXX_THREAD_FUNC runSocket(log4cxx_thread_t* /* thread */, void* data) {
   SocketNode* node = (SocketNode*) data;
   node->run();
   delete node;

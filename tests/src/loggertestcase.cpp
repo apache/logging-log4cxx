@@ -49,7 +49,7 @@ public:
         void close()
                 {}
 
-        void append(const spi::LoggingEventPtr& event, Pool& p)
+        void append(const spi::LoggingEventPtr& /*event*/, Pool& /*p*/)
                 { counter++; }
 
         bool requiresLayout() const

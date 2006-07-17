@@ -118,11 +118,8 @@ namespace log4cxx
 
                       if (iter != in.end()) {
                          size_t outbytes_left = out.remaining();
-                         size_t initial_outbytes_left = outbytes_left;
                          size_t position = out.position();
                          std::wstring::size_type inOffset = (iter - in.begin());
-                         size_t inchars_left = (in.size() - inOffset);
-                         apr_size_t initial_inchars_left = inchars_left;
                          enum { BUFSIZE = 256 };
                          wchar_t buf[BUFSIZE];
                          size_t chunkSize = BUFSIZE - 1;
@@ -557,7 +554,7 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::string& charset) {
 void CharsetEncoder::reset() {
 }
 
-void CharsetEncoder::flush(ByteBuffer& out) {
+void CharsetEncoder::flush(ByteBuffer& /* out */ ) {
 }
 
 

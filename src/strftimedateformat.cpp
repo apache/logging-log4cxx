@@ -33,7 +33,7 @@ StrftimeDateFormat::~StrftimeDateFormat() {
 }
 
 
-void StrftimeDateFormat::format(LogString& s, log4cxx_time_t time, Pool& p) const  {
+void StrftimeDateFormat::format(LogString& s, log4cxx_time_t time, Pool& /* p */ ) const  {
   apr_time_exp_t exploded;
   apr_status_t stat = timeZone->explode(&exploded, time);
   if (stat == APR_SUCCESS) {

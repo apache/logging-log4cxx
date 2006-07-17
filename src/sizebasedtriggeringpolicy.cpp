@@ -28,9 +28,9 @@ SizeBasedTriggeringPolicy::SizeBasedTriggeringPolicy()
       : maxFileSize(10 * 1024 * 1024) {
 }
 
-bool SizeBasedTriggeringPolicy::isTriggeringEvent(Appender* appender,
-          const log4cxx::spi::LoggingEventPtr& event,
-          const LogString& file,
+bool SizeBasedTriggeringPolicy::isTriggeringEvent(Appender* /* appender */,
+          const log4cxx::spi::LoggingEventPtr& /* event */,
+          const LogString& /* file */,
           size_t fileLength) {
   return (fileLength >= maxFileSize);
 }
@@ -43,7 +43,7 @@ void SizeBasedTriggeringPolicy::setMaxFileSize(size_t l) {
   maxFileSize = l;
 }
 
-void SizeBasedTriggeringPolicy::activateOptions(Pool& p) {
+void SizeBasedTriggeringPolicy::activateOptions(Pool& /* p */) {
 }
 
 void SizeBasedTriggeringPolicy::setOption(const LogString& option, const LogString& value) {

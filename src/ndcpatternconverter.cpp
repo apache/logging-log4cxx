@@ -35,7 +35,7 @@ NDCPatternConverter::NDCPatternConverter() :
 }
 
 PatternConverterPtr NDCPatternConverter::newInstance(
-   const std::vector<LogString>& options) {
+   const std::vector<LogString>& /* options */) {
    static PatternConverterPtr def(new NDCPatternConverter());
    return def;
 }
@@ -43,7 +43,6 @@ PatternConverterPtr NDCPatternConverter::newInstance(
 void NDCPatternConverter::format(
   const LoggingEventPtr& event,
   LogString& toAppendTo,
-  Pool& p) const {
-   int initialLength = toAppendTo.length();
+  Pool& /* p */) const {
    toAppendTo.append(event->getNDC());
  }

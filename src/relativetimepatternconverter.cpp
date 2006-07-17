@@ -34,7 +34,7 @@ RelativeTimePatternConverter::RelativeTimePatternConverter() :
 }
 
 PatternConverterPtr RelativeTimePatternConverter::newInstance(
-   const std::vector<LogString>& options) {
+   const std::vector<LogString>& /* options */) {
    static PatternConverterPtr def(new RelativeTimePatternConverter());
    return def;
 }

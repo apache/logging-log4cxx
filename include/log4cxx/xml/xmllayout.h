@@ -89,7 +89,7 @@ namespace log4cxx
                                 { return locationInfo; }
 
                         /** No options to activate. */
-                        void activateOptions(log4cxx::helpers::Pool& p) { }
+                        void activateOptions(log4cxx::helpers::Pool& /* p */) { }
 
                         /**
                         Set options

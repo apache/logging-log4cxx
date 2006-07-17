@@ -59,7 +59,7 @@ void AsyncAppender::addAppender(const AppenderPtr& newAppender)
         aai->addAppender(newAppender);
 }
 
-void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& /* p */ )
 {
         // Set the NDC and thread name for the calling thread as these
         // LoggingEvent fields were not set at event creation time.
@@ -168,7 +168,7 @@ void AsyncAppender::removeAppender(const LogString& name1)
         aai->removeAppender(name1);
 }
 
-void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* thread, void* data) {
+void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* /* thread */ , void* data) {
         AsyncAppender* pThis = (AsyncAppender*) data;
         LoggingEventPtr event;
         while(true) {

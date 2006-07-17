@@ -87,7 +87,7 @@ namespace log4cxx
                         Print a the error message passed as parameter on
                         <code>System.err</code>.
                         */
-                        void error(const LogString& message) const {}
+                        void error(const LogString& /* message */) const {}
 
                         /**
                         Return the backup appender.

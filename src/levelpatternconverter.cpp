@@ -34,7 +34,7 @@ LevelPatternConverter::LevelPatternConverter() :
 }
 
 PatternConverterPtr LevelPatternConverter::newInstance(
-   const std::vector<LogString>& options) {
+   const std::vector<LogString>& /* options */) {
    static PatternConverterPtr def(new LevelPatternConverter());
    return def;
 }
@@ -42,7 +42,7 @@ PatternConverterPtr LevelPatternConverter::newInstance(
 void LevelPatternConverter::format(
   const LoggingEventPtr& event,
   LogString& toAppendTo,
-  log4cxx::helpers::Pool& p) const {
+  log4cxx::helpers::Pool& /* p */) const {
    toAppendTo.append(event->getLevel()->toString());
  }
 

@@ -53,7 +53,7 @@ SocketHubAppender::SocketHubAppender(int port1)
         startServer();
 }
 
-void SocketHubAppender::activateOptions(Pool& p)
+void SocketHubAppender::activateOptions(Pool& /* p */ )
 {
         startServer();
 }
@@ -108,7 +108,7 @@ void SocketHubAppender::close()
               + getName() + LOG4CXX_STR(" closed"));
 }
 
-void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
+void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& /* p */ )
 {
 
         // if no open connections, exit now
@@ -151,7 +151,7 @@ void SocketHubAppender::startServer()
         thread.run(monitor, this);
 }
 
-void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* thread, void* data) {
+void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* /* thread */, void* data) {
         SocketHubAppender* pThis = (SocketHubAppender*) data;
 
         ServerSocket * serverSocket = 0;

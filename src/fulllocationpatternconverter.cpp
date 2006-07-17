@@ -33,7 +33,7 @@ FullLocationPatternConverter::FullLocationPatternConverter() :
 }
 
 PatternConverterPtr FullLocationPatternConverter::newInstance(
-   const std::vector<LogString>& options) {
+   const std::vector<LogString>& /* options */) {
    static PatternConverterPtr instance(new FullLocationPatternConverter());
    return instance;
 }

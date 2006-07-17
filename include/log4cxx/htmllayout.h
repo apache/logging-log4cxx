@@ -91,7 +91,7 @@ namespace log4cxx
                 /**
                 No options to activate.
                 */
-                virtual void activateOptions(log4cxx::helpers::Pool& p) {}
+                virtual void activateOptions(log4cxx::helpers::Pool& /* p */) {}
 
                 /**
                 Set options

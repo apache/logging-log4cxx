@@ -1,9 +1,17 @@
-/* * Copyright 2003,2005 The Apache Software Foundation. * * Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License. * You may obtain a copy of the License at *
-*      http://www.apache.org/licenses/LICENSE-2.0 * * Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and * limitations under the License. */
+/*
+ * Copyright 2003,2005 The Apache Software Foundation. *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/simpledateformat.h>
 
@@ -148,7 +156,7 @@ PatternToken::~PatternToken()
 {
 }
 
-void PatternToken::setTimeZone( const TimeZonePtr & zone )
+void PatternToken::setTimeZone( const TimeZonePtr & /* zone */ )
 {
 }
 
@@ -160,7 +168,7 @@ public:
   {
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & , Pool & /* p */ ) const
   {
     s.append( count, ch );
   }
@@ -175,11 +183,11 @@ private:
 class EraToken : public PatternToken
 {
 public:
-  EraToken( int count, const std::locale * locale )
+  EraToken( int /* count */ , const std::locale * /* locale */  )
   {
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & /* tm */, Pool & /* p */ ) const
   {
     s.append( LOG4CXX_LOCALE_STR( "AD" ) );
   }
@@ -247,7 +255,15 @@ public:
 class AbbreviatedMonthNameToken : public PatternToken
 {
 public:
-  AbbreviatedMonthNameToken( int width, const std::locale * locale ) : names( 12 )
+  AbbreviatedMonthNameToken( int
+#if LOG4CXX_HAS_STD_LOCALE
+                             width
+#endif
+                             , const std::locale *
+#if LOG4CXX_HAS_STD_LOCALE
+                             locale
+#endif
+                             ) : names( 12 )
   {
 #if LOG4CXX_HAS_STD_LOCALE
     if ( locale != NULL )
@@ -276,7 +292,7 @@ public:
     }
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_mon] );
   }
@@ -291,7 +307,15 @@ private:
 class FullMonthNameToken : public PatternToken
 {
 public:
-  FullMonthNameToken( int width, const std::locale * locale ) : names( 12 )
+  FullMonthNameToken( int
+#if LOG4CXX_HAS_STD_LOCALE
+                      width
+#endif
+                      , const std::locale *
+#if LOG4CXX_HAS_STD_LOCALE
+                      locale
+#endif
+                       ) : names( 12 )
   {
 #if LOG4CXX_HAS_STD_LOCALE
     if ( locale != NULL )
@@ -320,7 +344,7 @@ public:
     }
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_mon] );
   }
@@ -398,7 +422,7 @@ public:
   {
   }
 
-  int getField( const apr_time_exp_t & tm ) const
+  int getField( const apr_time_exp_t & /* tm */ ) const
   {
     return -1;
   }
@@ -409,7 +433,15 @@ public:
 class AbbreviatedDayNameToken : public PatternToken
 {
 public:
-  AbbreviatedDayNameToken( int width, const std::locale * locale ) : names( 7 )
+  AbbreviatedDayNameToken( int
+#if LOG4CXX_HAS_STD_LOCALE
+                           width
+#endif
+                           , const std::locale *
+#if LOG4CXX_HAS_STD_LOCALE
+                           locale
+#endif
+                           ) : names( 7 )
   {
 #if LOG4CXX_HAS_STD_LOCALE
     if ( locale != NULL )
@@ -438,7 +470,7 @@ public:
     }
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_wday] );
   }
@@ -453,7 +485,15 @@ private:
 class FullDayNameToken : public PatternToken
 {
 public:
-  FullDayNameToken( int width, const std::locale * locale ) : names( 7 )
+  FullDayNameToken( int
+#if LOG4CXX_HAS_STD_LOCALE
+                    width
+#endif
+                    , const std::locale *
+#if LOG4CXX_HAS_STD_LOCALE
+                    locale
+#endif
+                    ) : names( 7 )
   {
 #if LOG4CXX_HAS_STD_LOCALE
     if ( locale != NULL )
@@ -482,7 +522,7 @@ public:
     }
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_wday] );
   }
@@ -515,7 +555,7 @@ private:
 class HourToken : public NumericToken
 {
 public:
-  HourToken( int width1, int offset1 ) : NumericToken( width1 )
+  HourToken( int width1, int /* offset1 */ ) : NumericToken( width1 )
   {
   }
 
@@ -578,7 +618,15 @@ public:
 class AMPMToken : public PatternToken
 {
 public:
-  AMPMToken( int width, const std::locale * locale ) : names( 2 )
+  AMPMToken( int
+#if LOG4CXX_HAS_STD_LOCALE
+             width
+#endif
+             , const std::locale *
+#if LOG4CXX_HAS_STD_LOCALE
+             locale
+#endif
+              ) : names( 2 )
   {
 #if LOG4CXX_HAS_STD_LOCALE
     if ( locale != NULL )
@@ -607,7 +655,7 @@ public:
     }
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_hour / 12] );
   }
@@ -621,11 +669,11 @@ private:
 class GeneralTimeZoneToken : public PatternToken
 {
 public:
-  GeneralTimeZoneToken( int width )
+  GeneralTimeZoneToken( int /* width */ )
   {
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LocaleString& s, const apr_time_exp_t & , Pool & /* p */ ) const
   {
     LocaleString tzID;
     Transcoder::encode( timeZone->getID(), tzID );
@@ -646,7 +694,7 @@ private:
 class RFC822TimeZoneToken : public PatternToken
 {
 public:
-  RFC822TimeZoneToken( int width )
+  RFC822TimeZoneToken( int /* width */ )
   {
   }
 

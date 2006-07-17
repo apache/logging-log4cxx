@@ -31,7 +31,7 @@ FileLocationPatternConverter::FileLocationPatternConverter() :
 }
 
 PatternConverterPtr FileLocationPatternConverter::newInstance(
-    const std::vector<LogString>& options) {
+    const std::vector<LogString>& /* options */ ) {
     static PatternConverterPtr instance(new FileLocationPatternConverter());
     return instance;
 }
@@ -39,6 +39,6 @@ PatternConverterPtr FileLocationPatternConverter::newInstance(
 void FileLocationPatternConverter::format(
    const LoggingEventPtr& event,
    LogString& toAppendTo,
-   Pool& p) const {
+   Pool& /* p */ ) const {
     append(toAppendTo, event->getLocationInformation().getFileName());
 }

@@ -35,7 +35,7 @@ LogString PatternConverter::getName() const {
     return name;
 }
 
-LogString PatternConverter::getStyleClass(const log4cxx::helpers::ObjectPtr& e) const {
+LogString PatternConverter::getStyleClass(const log4cxx::helpers::ObjectPtr& /* e */) const {
     return style;
   }
 

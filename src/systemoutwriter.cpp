@@ -31,13 +31,13 @@ SystemOutWriter::SystemOutWriter() {
 SystemOutWriter::~SystemOutWriter() {
 }
 
-void SystemOutWriter::close(Pool& p) {
+void SystemOutWriter::close(Pool& /* p */ ) {
 }
 
-void SystemOutWriter::flush(Pool& p) {
+void SystemOutWriter::flush(Pool& /* p */ ) {
 }
 
-void SystemOutWriter::write(const LogString& str, Pool& p) {
+void SystemOutWriter::write(const LogString& str, Pool& /* p */ ) {
 #if LOG4CXX_HAS_WCHAR_T
 #if LOG4CXX_FORCE_WIDE_CONSOLE
     if (true) {
