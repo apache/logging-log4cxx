@@ -111,7 +111,7 @@ END_LOG4CXX_CAST_MAP()
     /**
      * Count of initial characters of element to output.
      */
-    int charCount;
+    LogString::size_type charCount;
 
     /**
      *  Character used to represent dropped characters.
@@ -266,7 +266,7 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern) {
       LogString::size_type pos = 0;
 
       while ((pos < trimmed.length()) && (pos >= 0)) {
-        int ellipsisPos = pos;
+        LogString::size_type ellipsisPos = pos;
 
         if (trimmed[pos] == LOG4CXX_STR('*')) {
           charCount = INT_MAX;

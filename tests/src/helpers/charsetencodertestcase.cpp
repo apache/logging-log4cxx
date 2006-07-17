@@ -159,7 +159,7 @@ public:
 
           out.flip();
           CPPUNIT_ASSERT_EQUAL((size_t) 13, out.limit());
-          for(int i = 0; i < out.limit(); i++) {
+          for(size_t i = 0; i < out.limit(); i++) {
              CPPUNIT_ASSERT_EQUAL((int) utf8_greet[i], (int) out.data()[i]);
           }
           CPPUNIT_ASSERT(iter == greeting.end());

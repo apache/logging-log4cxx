@@ -55,9 +55,9 @@ bool PatternParser::isUnicodeIdentifierPart(logchar ch) {
 
 int PatternParser::extractConverter(
   logchar lastChar, const LogString& pattern,
-  int i, LogString& convBuf,
+  LogString::size_type i, LogString& convBuf,
   LogString& currentLiteral) {
-  if (!convBuf.empty()) { 
+  if (!convBuf.empty()) {
     convBuf.erase(convBuf.begin(), convBuf.end());
   }
 
@@ -86,7 +86,7 @@ int PatternParser::extractConverter(
 }
 
 
-int PatternParser::extractOptions(const LogString& pattern, int i,
+int PatternParser::extractOptions(const LogString& pattern, LogString::size_type i,
    std::vector<LogString>& options) {
   while ((i < pattern.length()) && (pattern[i] == LOG4CXX_STR('{'))) {
     int end = pattern.find(LOG4CXX_STR('}'), i);

@@ -86,7 +86,7 @@ private:
    */
   static int extractConverter(
     logchar lastChar, const LogString& pattern,
-    int i, LogString& convBuf,
+    LogString::size_type i, LogString& convBuf,
     LogString& currentLiteral);
 
   /**
@@ -96,7 +96,7 @@ private:
    * @param options array to receive extracted options
    * @return position in pattern after options.
    */
-  static int extractOptions(const LogString& pattern, int i,
+  static int extractOptions(const LogString& pattern, LogString::size_type i,
      std::vector<LogString>& options);
 
 public:

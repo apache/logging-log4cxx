@@ -122,7 +122,7 @@ private:
     std::vector<LogString> files(File(dir).list(p));
     int count = 0;
 
-    for (int i = 0; i < files.size(); i++) {
+    for (size_t i = 0; i < files.size(); i++) {
       if (StringHelper::startsWith(files[i], initial)) {
         count++;
       }

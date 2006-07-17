@@ -62,7 +62,7 @@ void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
   bool inLiteral = false;
   bool inPattern = false;
 
-  for (int i = 0; i < datePattern.length(); i++) {
+  for (size_t i = 0; i < datePattern.length(); i++) {
     if (datePattern[i] == LOG4CXX_STR('\'')) {
       inLiteral = !inLiteral;
 
