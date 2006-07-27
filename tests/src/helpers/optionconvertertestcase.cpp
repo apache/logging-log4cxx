@@ -171,20 +171,21 @@ public:
       apr_uid_t userid;
       apr_gid_t groupid;
       stat = apr_uid_current(&userid, &groupid, p);
-      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-
-      char* username = NULL;
-      stat = apr_uid_name_get(&username, userid, p);
-      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-
-      char* dirname = NULL;
-      stat = apr_uid_homepath_get(&dirname, username, p);
-
-      LogString expected;
-      Transcoder::decode(dirname, strlen(dirname), expected);
+      if (stat == APR_SUCCESS) {
+      	char* username = NULL;
+      	stat = apr_uid_name_get(&username, userid, p);
+      	if (stat == APR_SUCCESS) {
+      		char* dirname = NULL;
+      		stat = apr_uid_homepath_get(&dirname, username, p);
+      		if (stat == APR_SUCCESS) {
+      			LogString expected;
+      			Transcoder::decode(dirname, strlen(dirname), expected);
+      			CPPUNIT_ASSERT_EQUAL(expected, actual);
+      	    }
+      	 }
+      }	 
       apr_pool_destroy(p);
 
-      CPPUNIT_ASSERT_EQUAL(expected, actual);
     }
 
     void testUserName() {
@@ -197,17 +198,16 @@ public:
        apr_uid_t userid;
        apr_gid_t groupid;
        stat = apr_uid_current(&userid, &groupid, p);
-       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-
-       char* username = NULL;
-       stat = apr_uid_name_get(&username, userid, p);
-       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-
-       LogString expected;
-       Transcoder::decode(username, strlen(username), expected);
+       if (stat == APR_SUCCESS) {
+       	  char* username = NULL;
+          stat = apr_uid_name_get(&username, userid, p);
+          if (stat == APR_SUCCESS) {
+       		 LogString expected;
+             Transcoder::decode(username, strlen(username), expected);
+             CPPUNIT_ASSERT_EQUAL(expected, actual);
+          }
+       }
        apr_pool_destroy(p);
-
-       CPPUNIT_ASSERT_EQUAL(expected, actual);
    }
 #endif
 
