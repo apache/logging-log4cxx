@@ -72,8 +72,8 @@ namespace log4cxx {
                   LOG4CXX_CAST_ENTRY_CHAIN(RollingPolicyBase)
           END_LOG4CXX_CAST_MAP()
 
-          int maxIndex;
           int minIndex;
+          int maxIndex;
           bool explicitActiveFile;
 
           /**
