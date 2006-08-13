@@ -47,6 +47,9 @@ bool FilterBasedTriggeringPolicy::isTriggeringEvent(
 
       case Filter::ACCEPT:
          return true;
+
+      case Filter::NEUTRAL:
+         break;
     }
   }
   return true;
