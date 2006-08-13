@@ -536,9 +536,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <param name="module" value="apr-util"/>
         <param name="module.version" value="${aprutil.version}"/>
     </antcall>
-    <patch patchfile="${base.dir}/apr-util-${aprutil.version}.patch"
-           dir="${lib.dir}/apr-util-${aprutil.version}"
-           strip="0"/>
     <chmod file="${lib.dir}/apr-util-${aprutil.version}/xml/expat/configure"
            perm="u+x"/>
 
