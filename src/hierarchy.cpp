@@ -40,8 +40,9 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 Hierarchy::Hierarchy(const LoggerPtr& root1) : root(root1),
+thresholdInt(Level::ALL_INT), threshold(Level::getAll()),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
-mutex(), configured(false), thresholdInt(Level::ALL_INT), threshold(Level::getAll())
+mutex(), configured(false)
 {
         this->root->setHierarchy(this);
         defaultFactory = new DefaultCategoryFactory();

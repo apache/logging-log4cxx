@@ -39,17 +39,16 @@ namespace log4cxx { namespace classes {
 
 
 RollingFileAppender::RollingFileAppender()
-   : rfa(new log4cxx::rolling::RollingFileAppender()),
-     maxFileSize(10*1024*1024), maxBackupIndex(1) {
+   : maxFileSize(10*1024*1024), maxBackupIndex(1),
+     rfa(new log4cxx::rolling::RollingFileAppender()) {
 }
 
 RollingFileAppender::RollingFileAppender(
   const LayoutPtr& layout,
   const LogString& filename,
   bool append)
-  : rfa(new log4cxx::rolling::RollingFileAppender()),
-  maxFileSize(10*1024*1024),
-  maxBackupIndex(1)  {
+  : maxFileSize(10*1024*1024), maxBackupIndex(1),
+    rfa(new log4cxx::rolling::RollingFileAppender()) {
   rfa->setLayout(layout);
   rfa->setFile(filename);
   rfa->setAppend(append);
@@ -59,9 +58,8 @@ RollingFileAppender::RollingFileAppender(
 
 RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
    const LogString& filename)
-   : rfa(new log4cxx::rolling::RollingFileAppender()),
-   maxFileSize(10*1024*1024),
-   maxBackupIndex(1) {
+   : maxFileSize(10*1024*1024), maxBackupIndex(1),
+     rfa(new log4cxx::rolling::RollingFileAppender()) {
   rfa->setLayout(layout);
   rfa->setFile(filename);
   Pool pool;

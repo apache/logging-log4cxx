@@ -32,7 +32,7 @@ WriterAppender::WriterAppender()
 
 WriterAppender::WriterAppender(const LayoutPtr& layout1,
                log4cxx::helpers::WriterPtr& writer1)
-    : AppenderSkeleton(layout1), writer(writer1), immediateFlush(true) {
+    : AppenderSkeleton(layout1), immediateFlush(true), writer(writer1) {
       Pool p;
       activateOptions(p);
 }

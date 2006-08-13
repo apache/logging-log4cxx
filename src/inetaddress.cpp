@@ -42,7 +42,7 @@ UnknownHostException& UnknownHostException::operator=(const UnknownHostException
 
 
 InetAddress::InetAddress(const LogString& hostName, const LogString& hostAddr) 
-    : hostNameString(hostName), ipAddrString(hostAddr) {
+    : ipAddrString(hostAddr), hostNameString(hostName) {
 }
 
 
