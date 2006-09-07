@@ -59,7 +59,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="doxygen.exe" value="doxygen"/>
 <property name="enable_dot" value="YES"/>
 
-<property name="version" value="0.9.8"/>
+<property name="version" value="0.10.0"/>
 <property name="rtti" value="false"/>
 <property name="optimize" value="none"/>
 <property name="lib.type" value="shared"/>
@@ -697,7 +697,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="build" depends="build-aprutil, configure" description="Build log4cxx library">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx_obj"/>
 
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/log4cxx${lib-suffix}"
                 subsystem="console"
@@ -726,7 +727,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="build-example">
     <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/${example.name}"
                 subsystem="console"
@@ -828,7 +830,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
     <mkdir dir="${log4cxx.lib.dir}/shortsocketserver_obj"/>
 
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${tests.dir}/src/shortsocketserver"
                 subsystem="console"
@@ -855,7 +858,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     description="Builds unit test app">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
 
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/log4cxx-test"
                 subsystem="console"
@@ -892,7 +896,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     description="Builds test of default init">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
 
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/log4cxx-defaultinit-test"
                 subsystem="console"
@@ -931,7 +936,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="make-unittest">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
 
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/${outfile.name}"
                 subsystem="console"
@@ -967,7 +973,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     depends="build-shortsocketserver, build-cppunit"
     description="Builds a unit tests + log4cxx executable">
     <mkdir dir="${executable.dir}/static/log4cxx-standalone-test_obj"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${executable.dir}/static/log4cxx-standalone-test"
                 subsystem="console"
@@ -1148,30 +1155,35 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <antcall target="build">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
+                <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-unittest">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
+                <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-standalone-unittest">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
+                <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-examples">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
+                <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-performance">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
+                <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
@@ -1181,13 +1193,24 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <antcall target="build-projects">
         <param name="project.dir" value="msvc"/>
         <param name="project.type" value="msvc6"/>
+        <param name="project.compiler" value="msvc"/>
     </antcall>
+    <echo file="msvc/configure.bat">
+copy ..\lib\apr-${apr.version}\include\apr.hw ..\lib\apr-${apr.version}\include\apr.h
+copy ..\lib\apr-util-${aprutil.version}\include\apu.hw ..\lib\apr-util-${aprutil.version}\include\apu.h
+copy ..\lib\apr-util-${aprutil.version}\include\aprldap.hw ..\lib\apr-util-${aprutil.version}\include\aprldap.h
+copy ..\lib\apr-util-${aprutil.version}\include\apuwant.hw ..\lib\apr-util-${aprutil.version}\include\apuwant.h
+copy ..\include\log4cxx\log4cxx.hw ..\include\log4cxx.h
+copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_private.h
+    </echo>
+    <chmod file="msvc/configure.bat" perm="ugo+rwx"/>
 </target>
 
 <target name="build-projects-vc8" description="Builds project files for Microsoft Visual C++ 2005">
     <antcall target="build-projects">
       <param name="project.dir" value="msvc8"/>
       <param name="project.type" value="msvc8"/>
+      <param name="project.compiler" value="msvc"/>
     </antcall>
 </target>
 
@@ -1195,6 +1218,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <antcall target="build-projects">
         <param name="project.dir" value="xcode"/>
         <param name="project.type" value="xcode"/>
+        <param name="project.compiler" value="${compiler}"/>
     </antcall>
 </target>
 
@@ -1202,6 +1226,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <antcall target="build-projects">
         <param name="project.dir" value="cbx"/>
         <param name="project.type" value="cbuilderx"/>
+        <param name="project.compiler" value="${compiler}"/>
     </antcall>
 </target>
 
