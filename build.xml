@@ -1380,7 +1380,6 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
             <include name="INSTALL"/>
             <include name="NOTICE"/>
             <include name="LICENSE"/>
-            <include name="Makefile.am"/>
             <include name="NEWS"/>
             <include name="README"/>
             <include name="STATUS"/>
@@ -1421,6 +1420,9 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
             <exclude name="lib/apr-util-${aprutil.version}/include/apuwant.h"/>
             <exclude name="lib/apr-util-${aprutil.version}/include/private/*.h"/>
             <exclude name="**/.svn"/>
+            <exclude name="**/*.m4"/>
+            <exclude name="**/*.am"/>
+            <exclude name="**/*.in"/>
         </tarfileset>
         <tarfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
           <include name="**/*.m4"/>
@@ -1439,7 +1441,6 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
         <include name="INSTALL"/>
         <include name="NOTICE"/>
         <include name="LICENSE"/>
-        <include name="Makefile.am"/>
         <include name="NEWS"/>
         <include name="README"/>
         <include name="STATUS"/>
@@ -1480,6 +1481,9 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
         <exclude name="lib/apr-util-${aprutil.version}/include/apuwant.h"/>
         <exclude name="lib/apr-util-${aprutil.version}/include/private/*.h"/>
         <exclude name="**/.svn"/>
+        <exclude name="**/*.m4"/>
+        <exclude name="**/*.am"/>
+        <exclude name="**/*.in"/>
       </zipfileset>
       <zipfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
         <include name="**/*.m4"/>
