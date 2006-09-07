@@ -336,15 +336,29 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <available property="cppunit-available"
            file="${cppunit.lib.dir}/${lib.prefix}cppunit${lib-suffix}${lib.extension}"/>
 
-        <available property="apr-src-available" file="${lib.dir}/apr-${apr.version}.tar.gz"/>
-        <available property="aprutil-src-available"
-           file="${lib.dir}/apr-util-${aprutil.version}.tar.gz"/>
-        <available property="cppunit-src-available"
-           file="${lib.dir}/cppunit-${cppunit.version}.tar.gz"/>
 
         <available property="apr-src-expanded" file="${lib.dir}/apr-${apr.version}"/>
         <available property="aprutil-src-expanded" file="${lib.dir}/apr-util-${aprutil.version}"/>
         <available property="cppunit-src-expanded" file="${lib.dir}/cppunit-${cppunit.version}"/>
+
+        <condition property="apr-src-available" value="">
+          <or>
+            <isset property="apr-src-expanded"/>
+            <available file="${lib.dir}/apr-${apr.version}.tar.gz"/>
+          </or>
+        </condition>
+        <condition property="aprutil-src-available" value="">
+          <or>
+            <isset property="aprutil-src-expanded"/>
+            <available file="${lib.dir}/apr-util-${aprutil.version}.tar.gz"/>
+          </or>
+        </condition>
+        <condition property="cppunit-src-available" value="">
+          <or>
+            <isset property="cppunit-src-expanded"/>
+            <available file="${lib.dir}/cppunit-${cppunit.version}.tar.gz"/>
+          </or>
+        </condition>
 
         <condition property="is-static" value="true">
               <equals arg1="${lib.type}" arg2="static"/>
@@ -1369,6 +1383,7 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
             <include name="Makefile.am"/>
             <include name="NEWS"/>
             <include name="README"/>
+            <include name="STATUS"/>
             <include name="*.xml"/>
             <include name="examples/*.cpp"/>
             <include name="include/**/*.h"/>
@@ -1380,6 +1395,7 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
             <include name="simplesocketserver/*.cpp"/>
             <include name="src/*.cpp"/>
             <include name="msvc/**"/>
+            <include name="tests/performance.xml"/>
             <include name="tests/**/*.properties"/>
             <include name="tests/input/**/*.xml"/>
             <include name="tests/input/**/*.dtd"/>
@@ -1392,9 +1408,8 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
             <include name="tests/log4j.dtd"/>
             <include name="lib/apr-${apr.version}/**"/>
             <include name="lib/apr-util-${aprutil.version}/**"/>
-            <include name="**/*.am"/>
-            <include name="**/*.in"/>
-            <include name="**/*.patch"/>
+            <include name="include/log4cxx/nt/EventLogCategories.mc"/>
+            <include name="*.patch"/>
             <include name="docs/**"/>
             <include name="xdocs/**"/>
             <exclude name="include/log4cxx/log4cxx.h"/>
@@ -1405,6 +1420,13 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
             <exclude name="lib/apr-util-${aprutil.version}/include/apu.h"/>
             <exclude name="lib/apr-util-${aprutil.version}/include/apuwant.h"/>
             <exclude name="lib/apr-util-${aprutil.version}/include/private/*.h"/>
+            <exclude name="**/.svn"/>
+        </tarfileset>
+        <tarfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
+          <include name="**/*.m4"/>
+          <include name="**/*.am"/>
+          <include name="**/*.in"/>
+          <exclude name="lib/**"/>
         </tarfileset>
     </tar>
 
@@ -1420,6 +1442,7 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
         <include name="Makefile.am"/>
         <include name="NEWS"/>
         <include name="README"/>
+        <include name="STATUS"/>
         <include name="*.xml"/>
         <include name="examples/*.cpp"/>
         <include name="include/**/*.h"/>
@@ -1431,6 +1454,7 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
         <include name="simplesocketserver/*.cpp"/>
         <include name="src/*.cpp"/>
         <include name="msvc/**"/>
+        <include name="tests/performance.xml"/>
         <include name="tests/**/*.properties"/>
         <include name="tests/input/**/*.xml"/>
         <include name="tests/input/**/*.dtd"/>
@@ -1443,9 +1467,8 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
         <include name="tests/log4j.dtd"/>
         <include name="lib/apr-${apr.version}/**"/>
         <include name="lib/apr-util-${aprutil.version}/**"/>
-        <include name="**/*.am"/>
-        <include name="**/*.in"/>
-        <include name="**/*.patch"/>
+        <include name="include/log4cxx/nt/EventLogCategories.mc"/>
+        <include name="*.patch"/>
         <include name="docs/**"/>
         <include name="xdocs/**"/>
         <exclude name="include/log4cxx/log4cxx.h"/>
@@ -1456,6 +1479,13 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
         <exclude name="lib/apr-util-${aprutil.version}/include/apu.h"/>
         <exclude name="lib/apr-util-${aprutil.version}/include/apuwant.h"/>
         <exclude name="lib/apr-util-${aprutil.version}/include/private/*.h"/>
+        <exclude name="**/.svn"/>
+      </zipfileset>
+      <zipfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
+        <include name="**/*.m4"/>
+        <include name="**/*.am"/>
+        <include name="**/*.in"/>
+        <exclude name="lib/**"/>
       </zipfileset>
     </zip>
 </target>
