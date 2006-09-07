@@ -197,14 +197,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
        <replacefilter token="XML_MICRO_VERSION" value="1"/>
        <replacefilter token="VERSION" value='"expat_1.95.1"'/>
     </replace>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
         outfile="${aprutil.lib.dir}/aprutil-1${lib-suffix}"
         subsystem="console"
         multithreaded="true"
         outtype="${aprutil.lib.type}"
         objdir="${aprutil.lib.dir}/aprutil_obj"
         warnings="none"
-        debug="${debug}">
+        debug="${debug}"
+        projectsOnly="${projectsOnly}">
         <fileset dir="${aprutil.dir}" includes="**/*.c"
             excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
         <fileset dir="${aprutil.dir}/xml/expat/lib"
@@ -240,13 +242,15 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="build-test">
     <mkdir dir="${aprutil.lib.dir}/apr_obj"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
         outfile="${aprutil.lib.dir}/${test}"
         subsystem="console"
         multithreaded="true"
         outtype="executable"
         objdir="${aprutil.lib.dir}/apr_obj"
-        debug="${debug}">
+        debug="${debug}"
+        projectsOnly="${projectsOnly}">
         <fileset dir="${aprutil.dir}/test" includes="${testfiles}"/>
         <includepath path="${aprutil.include.dir}"/>
         <includepath path="${apr.include.dir}"/>
@@ -393,13 +397,15 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="build-testall" depends="build">
     <mkdir dir="${aprutil.lib.dir}/apr_obj"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
         outfile="${aprutil.lib.dir}/testall"
         subsystem="console"
         multithreaded="true"
         outtype="executable"
         objdir="${aprutil.lib.dir}/apr_obj"
-        debug="${debug}">
+        debug="${debug}"
+        projectsOnly="${projectsOnly}">
         <fileset dir="${aprutil.dir}/test" includes="*.c">
             <exclude name="nw_misc.c"/>
             <exclude name="testdbm.c"/>
@@ -465,6 +471,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <antcall target="build">
                     <param name="project.if" value="true"/>
                     <param name="project.type" value="${project.type}"/>
+                    <param name="project.compiler" value="${project.compiler}"/>
                     <param name="projects.dir" value="${project.dir}"/>
                     <param name="projectsOnly" value="true"/>
             </antcall>
@@ -474,13 +481,23 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <antcall target="build-projects">
             <param name="project.dir" value="msvc"/>
             <param name="project.type" value="msvc6"/>
+            <param name="project.compiler" value="msvc"/>
         </antcall>
     </target>
 
+    <target name="build-projects-vc8" description="Builds project files for Microsoft Visual C++ 2005">
+      <antcall target="build-projects">
+        <param name="project.dir" value="msvc"/>
+        <param name="project.type" value="msvc8"/>
+        <param name="project.compiler" value="msvc"/>
+      </antcall>
+    </target>
+    
     <target name="build-projects-xcode" description="Builds project files for Apple Xcode">
         <antcall target="build-projects">
             <param name="project.dir" value="xcode"/>
             <param name="project.type" value="xcode"/>
+            <param name="project.compiler" value="${compiler}"/>
         </antcall>
     </target>
 
@@ -488,6 +505,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <antcall target="build-projects">
             <param name="project.dir" value="cbx"/>
             <param name="project.type" value="cbuilderx"/>
+            <param name="project.compiler" value="${compiler}"/>
         </antcall>
     </target>
 

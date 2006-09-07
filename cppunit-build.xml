@@ -115,7 +115,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="build" depends="configure" description="Build library">
     <mkdir dir="${executable.dir}/${lib.type}/cppunit_obj"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
         outfile="${executable.dir}/${lib.type}/cppunit${lib-suffix}"
         subsystem="console"
         multithreaded="true"
@@ -123,7 +124,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         rtti="true"
         exceptions="true"
         objdir="${executable.dir}/${lib.type}/cppunit_obj"
-        debug="${debug}">
+        debug="${debug}"
+        projectsOnly="${projectsOnly}">
         <fileset dir="${base.dir}/src/cppunit" includes="**/*.cpp" excludes="DllMain.cpp"/>
         <fileset dir="${base.dir}/include/cppunit" includes="**/*.h"/>
         <includepath path="${include.dir}"/>
@@ -137,7 +139,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="build-check" depends="build">
   <mkdir dir="${executable.dir}/${lib.type}/cppunittest_obj"/>
-  <cc name="${compiler}"
+  <property name="project.compiler" value="${compiler}"/>
+  <cc name="${project.compiler}"
       outfile="${executable.dir}/${lib.type}/cppunittest"
       subsystem="console"
       multithreaded="true"
@@ -145,7 +148,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
       rtti="true"
       exceptions="true"
       objdir="${executable.dir}/${lib.type}/cppunittest_obj"
-      debug="${debug}">
+      debug="${debug}"
+      projectsOnly="${projectsOnly}">
     <fileset dir="${base.dir}/examples/cppunittest" includes="**/*.cpp, **/*.h"/>
     <includepath path="${include.dir}"/>
     <defineset define="CPPUNIT_DLL" if="is-shared"/>

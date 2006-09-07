@@ -4,7 +4,7 @@
 
   <title>log4cxx</title>
   <!-- <logo href="images/logo.jpg">Apache Logging Services</logo> -->
-  <copyright year="2004" />
+  <copyright year="2004-2006" />
   
   <body>
     
@@ -17,11 +17,9 @@
      <item name="Introduction" href="/index.html"/>
      <item name="Download" href="/download.html"/>
      <item name="Documentation" href="/manual/Introduction.html"/>
-     <item name="CVS Repositories" href="http://logging.apache.org/site/cvs-repositories.html"/>
+     <item name="SVN Repositories" href="http://logging.apache.org/site/cvs-repositories.html"/>
      <item name="Mailing Lists" href="http://logging.apache.org/site/mailing-lists.html"/>
      <item name="Bug Reporting" href="http://logging.apache.org/site/bugreport.html"/>
-     <item name="Gump" href="http://brutus.apache.org/gump/public/logging-log4cxx/logging-log4cxx-ant/gump_work/build_logging-log4cxx_logging-log4cxx-ant.html"/>
-     
    </menu>
 
    </body>

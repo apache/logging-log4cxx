@@ -1,6 +1,0 @@
-base referer
-rect $classlog4cxx_1_1helpers_1_1DateFormat.html 17,79 97,102
-rect $classlog4cxx_1_1helpers_1_1AbsoluteTimeDateFormat.html 145,7 308,31
-rect $classlog4cxx_1_1helpers_1_1DateTimeDateFormat.html 159,55 294,79
-rect $classlog4cxx_1_1helpers_1_1ISO8601DateFormat.html 160,102 293,126
-rect $classlog4cxx_1_1helpers_1_1RelativeTimeDateFormat.html 148,150 305,174

@@ -39,6 +39,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <project name="log4cxx" default="check">
 
 <property environment="env"/>
+<!-- The build.properties file defines the parth to local jar files -->
+<property file="build.properties"/>
+
 <property name="debug" value="true"/>
 <property name="base.dir" location="."/>
 <property name="src.dir" location="${base.dir}/src"/>
@@ -48,6 +51,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="examples.dir" location="${base.dir}/examples"/>
 <property name="tests.dir" location="${base.dir}/tests"/>
 <property name="performance.dir" location="${base.dir}/performance"/>
+<!-- Destination for documentation files -->
+<property name="docs.dest" value="${base.dir}/docs"/>
+<property name="manual.dest" value="${docs.dest}/manual"/>
+<!-- Source directory for xml docs -->
+<property name="xdocs.src" value="${base.dir}/xdocs/src"/>
+<property name="doxygen.exe" value="doxygen"/>
+<property name="enable_dot" value="YES"/>
+
 <property name="version" value="0.9.8"/>
 <property name="rtti" value="false"/>
 <property name="optimize" value="none"/>
@@ -58,7 +69,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="cppunit.mirror" value="http://easynews.dl.sourceforge.net/sourceforge"/>
 
 <property name="apache.dist" value="http://archive.apache.org/dist"/>
-
+<!-- property name="apache.doc_dest" value="/www/logging.apache.org/log4cxx"/ -->
+<property name="apache.doc_dest" value="/home/${apache.user}/public_html/test"/>
+<property name="apache.manual_dest" value="${apache.doc_dest}/manual"/>
+<property name="apache.host" value="people.apache.org"/>
 
 
 <property name="apr.version" value="1.2.7"/>
@@ -78,6 +92,20 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
 
+
+<!-- Velocity's Anakia task is used in the generation of the documentation
+     download from http://jakarta.apache.org   -->
+<property name="velocity.jar" location="${lib.home.dir}/velocity-1.4/velocity-dep-1.4.jar"/>
+<!-- Velocity's Anakia task requires JDOM, 
+  but Velocity 1.4 is not compatible with JDOM 1.0, but beta 8 works okay
+  download for http://www.jdom.org/dist/binary/archive  -->
+<property name="jdom.jar" location="${lib.home.dir}/jdom-b8/build/jdom.jar"/>
+
+<!-- Construct classpath for building the html pages-->
+<path id="site.classpath">
+  <pathelement location="${velocity.jar}"/>
+  <pathelement location="${jdom.jar}"/>
+</path>
 
 
 <target name="usage" description="Describes usage of the build script">
@@ -349,11 +377,16 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="clean" depends="init" description="Removes built files">
         <delete dir="${build.dir}"/>
+        <delete dir="${docs.dest}/manual"/>
+        <delete dir="${docs.dest}/css"/>
         <delete>
             <fileset dir="${tests.dir}/src" includes="shortsocket*" excludes="*.cpp"/>
             <fileset dir="${tests.dir}" includes="output/*"/>
             <fileset dir="${include.dir}/log4cxx" includes="**/log4cxx.h"/>
+            <fileset dir="${docs.dest}" includes="Doxyfile, *.html"/>
+            <fileset dir="${base.dir}" includes="velocity.log"/>
         </delete>
+        
 </target>
 
 <target name="config-check" depends="os-detect">
@@ -1184,17 +1217,130 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 </target>
 
 
-<target name="dist" depends="init"
+<!-- ============================================== -->
+<!-- Build the site files using Anakia              -->
+<!-- ============================================== -->
+<target name="prepareSite">
+  <available classname="org.apache.velocity.anakia.AnakiaTask"
+             property="AnakiaTask.present">
+    <classpath refid="site.classpath"/>
+  </available>
+</target>
+
+<target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
+  <fail>
+    AnakiaTask is not present! Please check to make sure that
+    the velocity.jar property is specified and contains the correct path. 
+  </fail>
+</target>
+
+<target name="site" depends="checkSite" if="AnakiaTask.present" description="build log4cxx website">
+  <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
+    <classpath refid="site.classpath"/>
+  </taskdef>
+  
+  <mkdir dir="${docs.dest}/css"/>  
+  <copy file="${xdocs.src}/stylesheets/site.css" tofile="${docs.dest}/css/site.css"/>
+  <copy file="${base.dir}/ChangeLog" tofile="${docs.dest}/ChangeLog"/>
+  
+  <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
+          extension=".html"
+          style="site.vsl"
+          projectFile="stylesheets/project.xml"
+          excludes="**/stylesheets/**, empty.xml"
+          includes="**/*.xml"
+          lastModifiedCheck="true"
+          templatePath="${xdocs.src}/stylesheets">
+  </anakia>
+</target>
+
+<target name="deploy-site" depends="site" description="Deploy log4cxx website">
+    <fail unless="apache.user">-Dapache.user=USERNAME must be specified.</fail>
+    <tar destfile="${build.dir}/apache-log4cxx-site.tar.gz" compression="gzip">
+         <tarfileset dir="${docs.dest}">
+             <include name="*.html"/>
+             <include name="ChangeLog"/>
+             <include name="css/*.css"/>
+         </tarfileset>
+    </tar>
+    <exec executable="scp" dir="${build.dir}">
+         <arg value="apache-log4cxx-site.tar.gz"/>
+         <arg value="${apache.user}@${apache.host}:"/>
+    </exec>
+    <exec executable="ssh">
+         <arg value="-l"/>
+         <arg value="${apache.user}"/>
+         <arg value="${apache.host}"/>
+         <arg value="tar"/>
+         <arg value="--directory=${apache.doc_dest}"/>
+         <arg value="-xvzf"/>
+         <arg value="apache-log4cxx-site.tar.gz"/>
+    </exec>
+    <exec executable="ssh">
+      <arg value="-l"/>
+      <arg value="${apache.user}"/>
+      <arg value="${apache.host}"/>
+      <arg value="chmod"/>
+      <arg value="-R"/>
+      <arg value="g+w"/>
+      <arg value="${apache.doc_dest}"/>
+    </exec>
+</target>
+
+<target name="manual" depends="init" description="Build log4cxx manual">
+  <copy file="${base.dir}/docs/Doxyfile.in" tofile="${base.dir}/docs/Doxyfile" overwrite="true"/>
+  <replace file="${base.dir}/docs/Doxyfile">
+    <replacefilter token="@VERSION@" value="${version}"/>
+    <replacefilter token="@top_srcdir@" value="${base.dir}"/>
+    <replacefilter token="@enable_dot@" value="${enable_dot}"/>
+    <replacefilter token="@manual_dest@" value="${manual.dest}"/>
+  </replace>
+  <exec executable="${doxygen.exe}" dir="${base.dir}/docs"/>
+</target>
+
+
+<target name="deploy-manual" depends="manual" description="Deploy log4cxx manual to website">
+  <fail unless="apache.user">-Dapache.user=USERNAME must be specified.</fail>
+  <tar destfile="${build.dir}/apache-log4cxx-manual.tar.gz" compression="gzip">
+    <tarfileset dir="${manual.dest}"/>
+  </tar>
+  <exec executable="scp" dir="${build.dir}">
+    <arg value="apache-log4cxx-manual.tar.gz"/>
+    <arg value="${apache.user}@${apache.host}:"/>
+  </exec>
+  <exec executable="ssh">
+    <arg value="-l"/>
+    <arg value="${apache.user}"/>
+    <arg value="${apache.host}"/>
+    <arg value="tar"/>
+    <arg value="--directory=${apache.manual_dest}"/>
+    <arg value="-xvzf"/>
+    <arg value="apache-log4cxx-manual.tar.gz"/>
+  </exec>
+  <exec executable="ssh">
+    <arg value="-l"/>
+    <arg value="${apache.user}"/>
+    <arg value="${apache.host}"/>
+    <arg value="chmod"/>
+    <arg value="-R"/>
+    <arg value="g+w"/>
+    <arg value="${apache.manual_dest}"/>
+  </exec>
+</target>
+
+
+<target name="dist" depends="init, site, build-projects-vc6, manual"
     description="Builds a source distribution">
-    <tar destfile="${build.dir}/log4cxx-${version}.tar.gz"
+    <tar destfile="${build.dir}/apache-log4cxx-${version}.tar.gz"
          compression="gzip">
-         <tarfileset dir="${base.dir}" prefix="log4cxx-${version}">
+         <tarfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
             <include name="AUTHORS"/>
             <include name="autogen.sh"/>
             <include name="ChangeLog"/>
             <include name="COPYING"/>
             <include name="INSTALL"/>
-            <include name="license.apl"/>
+            <include name="NOTICE"/>
+            <include name="LICENSE"/>
             <include name="Makefile.am"/>
             <include name="NEWS"/>
             <include name="README"/>
@@ -1208,6 +1354,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <include name="performance/**/*.xml"/>
             <include name="simplesocketserver/*.cpp"/>
             <include name="src/*.cpp"/>
+            <include name="msvc/**"/>
             <include name="tests/**/*.properties"/>
             <include name="tests/input/**/*.xml"/>
             <include name="tests/input/**/*.dtd"/>
@@ -1218,15 +1365,74 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
             <include name="tests/witness/encoding/*"/>
             <include name="tests/witness/rolling/*"/>
             <include name="tests/log4j.dtd"/>
+            <include name="lib/apr-${apr.version}/**"/>
+            <include name="lib/apr-util-${aprutil.version}/**"/>
             <include name="**/*.am"/>
             <include name="**/*.in"/>
             <include name="**/*.patch"/>
-            <exclude name="**/.cvsignore"/>
-            <exclude name="lib/**"/>
+            <include name="docs/**"/>
+            <include name="xdocs/**"/>
             <exclude name="include/log4cxx/log4cxx.h"/>
             <exclude name="include/log4cxx/private/log4cxx_private.h"/>
+            <exclude name="docs/Doxyfile"/>
+            <exclude name="lib/apr-${apr.version}/include/apr.h"/>
+            <exclude name="lib/apr-util-${aprutil.version}/include/aprldap.h"/>
+            <exclude name="lib/apr-util-${aprutil.version}/include/apu.h"/>
+            <exclude name="lib/apr-util-${aprutil.version}/include/apuwant.h"/>
+            <exclude name="lib/apr-util-${aprutil.version}/include/private/*.h"/>
         </tarfileset>
     </tar>
+
+    <zip destfile="${build.dir}/apache-log4cxx-${version}.zip">
+      <zipfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
+        <include name="AUTHORS"/>
+        <include name="autogen.sh"/>
+        <include name="ChangeLog"/>
+        <include name="COPYING"/>
+        <include name="INSTALL"/>
+        <include name="NOTICE"/>
+        <include name="LICENSE"/>
+        <include name="Makefile.am"/>
+        <include name="NEWS"/>
+        <include name="README"/>
+        <include name="*.xml"/>
+        <include name="examples/*.cpp"/>
+        <include name="include/**/*.h"/>
+        <include name="include/**/*.hw"/>
+        <include name="mock/*"/>
+        <include name="performance/*.cpp"/>
+        <include name="performance/*.h"/>
+        <include name="performance/**/*.xml"/>
+        <include name="simplesocketserver/*.cpp"/>
+        <include name="src/*.cpp"/>
+        <include name="msvc/**"/>
+        <include name="tests/**/*.properties"/>
+        <include name="tests/input/**/*.xml"/>
+        <include name="tests/input/**/*.dtd"/>
+        <include name="tests/src/**/*.cpp"/>
+        <include name="tests/src/**/*.h"/>
+        <include name="tests/witness/*"/>
+        <include name="tests/witness/ndc/*"/>
+        <include name="tests/witness/encoding/*"/>
+        <include name="tests/witness/rolling/*"/>
+        <include name="tests/log4j.dtd"/>
+        <include name="lib/apr-${apr.version}/**"/>
+        <include name="lib/apr-util-${aprutil.version}/**"/>
+        <include name="**/*.am"/>
+        <include name="**/*.in"/>
+        <include name="**/*.patch"/>
+        <include name="docs/**"/>
+        <include name="xdocs/**"/>
+        <exclude name="include/log4cxx/log4cxx.h"/>
+        <exclude name="include/log4cxx/private/log4cxx_private.h"/>
+        <exclude name="docs/Doxyfile"/>
+        <exclude name="lib/apr-${apr.version}/include/apr.h"/>
+        <exclude name="lib/apr-util-${aprutil.version}/include/aprldap.h"/>
+        <exclude name="lib/apr-util-${aprutil.version}/include/apu.h"/>
+        <exclude name="lib/apr-util-${aprutil.version}/include/apuwant.h"/>
+        <exclude name="lib/apr-util-${aprutil.version}/include/private/*.h"/>
+      </zipfileset>
+    </zip>
 </target>
 
 <target name="gump" depends="check, header-check"/>

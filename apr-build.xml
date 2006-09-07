@@ -154,14 +154,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="build" depends="configure" description="Build library">
     <mkdir dir="${apr.lib.dir}/apr_obj"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
         outfile="${apr.lib.dir}/apr-1${lib-suffix}"
         subsystem="console"
         multithreaded="true"
         outtype="${apr.lib.type}"
         objdir="${apr.lib.dir}/apr_obj"
         outputfileproperty="apr-1.dll"
-        debug="${debug}">
+        debug="${debug}"
+        projectsOnly="${projectsOnly}">
         <fileset dir="${src.dir}" includes="**/${arch}/*.c" excludes="**/apr_app.c"/>
         <fileset dir="${src.dir}" includes="**/${arch}/apr_app.c" if="is-static"/>
         <fileset dir="${src.dir}/file_io/unix"
@@ -201,13 +203,15 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="build-test">
     <mkdir dir="${apr.lib.dir}/apr_obj"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
         outfile="${apr.lib.dir}/${test}"
         subsystem="console"
         multithreaded="true"
         outtype="executable"
         objdir="${apr.lib.dir}/apr_obj"
-        debug="${debug}">
+        debug="${debug}"
+        projectsOnly="${projectsOnly}">
         <fileset dir="${test.dir}" includes="${testfiles}"/>
         <includepath path="${apr.include.dir}"/>
         <defineset if="is-windows">
@@ -333,14 +337,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-mod_test" depends="build">
     <mkdir dir="${apr.lib.dir}/apr_obj"/>
     <mkdir dir="${apr.lib.dir}/.libs"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
         outfile="${apr.lib.dir}/.libs/mod_test"
         subsystem="console"
         multithreaded="true"
         outtype="shared"
         objdir="${apr.lib.dir}/apr_obj"
         outputfileproperty="libmod_test.so"
-        debug="${debug}">
+        debug="${debug}"
+        projectsOnly="${projectsOnly}">
         <fileset dir="${test.dir}" includes="mod_test.c"/>
         <includepath path="${apr.include.dir}"/>
         <defineset if="is-windows">
@@ -360,13 +366,15 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="build-testall" depends="build">
     <mkdir dir="${apr.lib.dir}/apr_obj"/>
-    <cc name="${compiler}"
+    <property name="project.compiler" value="${compiler}"/>
+    <cc name="${project.compiler}"
         outfile="${apr.lib.dir}/testall"
         subsystem="console"
         multithreaded="true"
         outtype="executable"
         objdir="${apr.lib.dir}/apr_obj"
-        debug="${debug}">
+        debug="${debug}"
+        projectsOnly="${projectsOnly}">
         <fileset dir="${test.dir}" includes="*.c">
             <exclude name="nw_misc.c"/>
             <exclude name="testlockperf.c"/>
@@ -434,12 +442,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <antcall target="build">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
+                <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-check">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
+                <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
@@ -449,13 +459,23 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <antcall target="build-projects">
         <param name="project.dir" value="msvc"/>
         <param name="project.type" value="msvc6"/>
+        <param name="project.compiler" value="msvc"/>
     </antcall>
+</target>
+
+<target name="build-projects-vc8" description="Builds project files for Microsoft Visual C++ 2005">
+  <antcall target="build-projects">
+    <param name="project.dir" value="msvc"/>
+    <param name="project.type" value="msvc8"/>
+    <param name="project.compiler" value="msvc"/>
+  </antcall>
 </target>
 
 <target name="build-projects-xcode" description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
         <param name="project.dir" value="xcode"/>
         <param name="project.type" value="xcode"/>
+        <param name="project.compiler" value="${compiler}"/>
     </antcall>
 </target>
 
@@ -463,6 +483,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <antcall target="build-projects">
         <param name="project.dir" value="cbx"/>
         <param name="project.type" value="cbuilderx"/>
+        <param name="project.compiler" value="${compiler}"/>
     </antcall>
 </target>
 
