@@ -34,6 +34,7 @@ void SystemErrWriter::close(Pool& /* p */) {
 }
 
 void SystemErrWriter::flush(Pool& /* p */) {
+    fflush(stderr);
 }
 
 void SystemErrWriter::write(const LogString& str, Pool& /* p */) {

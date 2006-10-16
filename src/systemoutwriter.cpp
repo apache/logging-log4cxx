@@ -35,6 +35,7 @@ void SystemOutWriter::close(Pool& /* p */ ) {
 }
 
 void SystemOutWriter::flush(Pool& /* p */ ) {
+    fflush(stdout);
 }
 
 void SystemOutWriter::write(const LogString& str, Pool& /* p */ ) {

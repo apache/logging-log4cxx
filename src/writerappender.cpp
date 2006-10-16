@@ -197,6 +197,9 @@ void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
         LogString msg;
         layout->format(msg, event, p);
         writer->write(msg, p);
+        if (immediateFlush) {
+	        writer->flush(p);
+        }
 }
 
 
