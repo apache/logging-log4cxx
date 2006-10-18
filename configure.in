@@ -92,9 +92,13 @@ if test x$DOT = x; then
 else
         enable_dot=yes
 fi
+
+manual_dest="manual"
+
 AC_SUBST(enable_dot)
 AC_SUBST(enable_html_docs)
 AC_SUBST(enable_latex_docs)
+AC_SUBST(manual_dest)
 
 # CppUnit
 

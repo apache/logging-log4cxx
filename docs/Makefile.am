@@ -6,18 +6,17 @@ EXTRA_DIST = Doxyfile mainpage.dox introduction.dox
 if DOC
 
 htmldir = $(pkgdatadir)/html
-#html_DATA = html/index.html
 
 install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(htmldir)
-	cp -dpR html/* $(DESTDIR)$(htmldir)
+	cp -dpR @manual_dest@/* $(DESTDIR)$(htmldir)
 
 # Automake's "distcheck" is sensitive to having files left over
 # after "make uninstall", so we have to clean up the install hook.
 uninstall-local:
 	rm -rf $(DESTDIR)$(htmldir)
 
-dox: html/index.html
+dox: @manual_dest@/index.html
 
 if LATEX_DOC
 
@@ -47,7 +46,7 @@ endif
 all-local: dox
 
 
-html/index.html: Doxyfile introduction.dox mainpage.dox
+@manual_dest@/index.html: Doxyfile introduction.dox mainpage.dox
 	"@DOXYGEN@"
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)
@@ -58,14 +57,14 @@ doc-dist: dox
 	mkdir $(distdir)
 	mkdir $(distdir)/docs
 	mkdir $(distdir)/docs/html
-	cp html/* $(distdir)/docs/html
+	cp @manual_dest@/* $(distdir)/docs/html
 	tar -czf $(top_builddir)/$(PACKAGE)-docs-$(VERSION).tar.gz -C $(distdir) docs
 	rm -rf $(distdir)
 
 
 clean-local:
 	$(RM) -r latex
-	$(RM) -r html man @PACKAGE@.ps @PACKAGE@.pdf
+	$(RM) -r @manual_dest@ man @PACKAGE@.ps @PACKAGE@.pdf
 
 dist-hook:
 	-rm -f $(distdir)/Doxyfile
