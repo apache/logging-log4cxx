@@ -55,7 +55,13 @@ namespace log4cxx
                      frompage,
                      pool);
                   if (stat != APR_SUCCESS) {
-                    throw IllegalArgumentException(topage);
+                     if (topage == APR_DEFAULT_CHARSET) {
+                         throw IllegalArgumentException("APR_DEFAULT_CHARSET");
+                     else if (topage == APR_LOCALE_CHARSET) {
+                         throw IllegalArgumentException("APR_LOCALE_CHARSET");
+                     } else {
+                         throw IllegalArgumentException(topage);
+                     }
                   }
               }
 
