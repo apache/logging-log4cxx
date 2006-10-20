@@ -64,7 +64,7 @@ namespace log4cxx
                 if (stat != APR_SUCCESS) {
                      if (frompage == APR_DEFAULT_CHARSET) {
                          throw IllegalArgumentException("APR_DEFAULT_CHARSET");
-                     if (frompage == APR_LOCALE_CHARSET) {
+                     } else if (frompage == APR_LOCALE_CHARSET) {
                          throw IllegalArgumentException("APR_LOCALE_CHARSET");
                      } else {
                          throw IllegalArgumentException(frompage);
