@@ -67,6 +67,7 @@ XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
 }
 
 XMLSocketAppender::~XMLSocketAppender() {
+    finalize();
 }
 
 

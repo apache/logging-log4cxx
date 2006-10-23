@@ -58,6 +58,7 @@ SocketAppender::SocketAppender(const LogString& host, int port1)
 
 SocketAppender::~SocketAppender()
 {
+    finalize();
 }
 
 void SocketAppender::renderEvent(const spi::LoggingEventPtr& event,

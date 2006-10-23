@@ -44,6 +44,7 @@ WriterAppender::WriterAppender(const LayoutPtr& layout1)
 
 WriterAppender::~WriterAppender()
 {
+    finalize();
 }
 
 void WriterAppender::activateOptions(Pool& p)

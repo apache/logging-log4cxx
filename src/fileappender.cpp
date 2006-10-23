@@ -67,6 +67,7 @@ FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
 
 FileAppender::~FileAppender()
 {
+    finalize();
 }
 
 void FileAppender::setFile(const LogString& file)
