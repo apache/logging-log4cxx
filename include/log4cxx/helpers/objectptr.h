@@ -133,7 +133,7 @@ namespace log4cxx
                T* newPtr = 0;
                if (p1 != 0)
                {
-                  newPtr = (T*)p1->cast(T::getStaticClass());
+                  newPtr = reinterpret_cast<T*>(const_cast<void*>(p1->cast(T::getStaticClass())));
                }
                operator=(newPtr);
             }
