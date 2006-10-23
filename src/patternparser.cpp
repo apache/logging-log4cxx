@@ -113,7 +113,7 @@ void PatternParser::parse(
 
   int patternLength = pattern.length();
   int state = LITERAL_STATE;
-  char c;
+  logchar c;
   int i = 0;
   FormattingInfoPtr formattingInfo(FormattingInfo::getDefault());
 
