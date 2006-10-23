@@ -194,15 +194,18 @@ std::set<LogString> LoggingEvent::getPropertyKeySet() const
 
 const LogString LoggingEvent::getCurrentThreadName() {
 #if APR_HAS_THREADS
-   apr_os_thread_t threadId = apr_os_thread_current();
-
+#if defined(_WIN32)
+   char result[20];
+   DWORD threadId = GetCurrentThreadId();
+   apr_snprintf(result, sizeof(result), "0x%.8x", threadId);
+#else
    // apr_os_thread_t encoded in HEX takes needs as many characters
    // as two times the size of the type, plus an additional null byte
    char result[sizeof(apr_os_thread_t) * 2 + 10];
    result[0] = '0';
-   result[1] = 'x';
+   result[1] = 'x';   apr_os_thread_t threadId = apr_os_thread_current();
    apr_snprintf(result+2, (sizeof result) - 2, "%pt", &threadId);
-
+#endif
    LOG4CXX_DECODE_CHAR(str, (const char*) result);
    return str;
 #else
