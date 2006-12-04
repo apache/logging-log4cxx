@@ -39,6 +39,7 @@ class CharsetDecoderTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(decode6);
                 CPPUNIT_TEST(decode7);
 #endif
+                CPPUNIT_TEST(decode8);
         CPPUNIT_TEST_SUITE_END();
 
         enum { BUFSIZE = 256 };
@@ -169,6 +170,24 @@ public:
         }
 
 #endif
+
+        void decode8() {
+          char buf[] = { 'H', 'e', 'l', 'l', 'o', ',', 0, 'W', 'o', 'r', 'l', 'd'};
+          ByteBuffer src(buf, 12);
+
+          CharsetDecoderPtr dec(CharsetDecoder::getDefaultDecoder());
+          LogString greeting;
+          log4cxx_status_t stat = dec->decode(src, greeting);
+          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+
+          stat = dec->decode(src, greeting);
+          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          CPPUNIT_ASSERT_EQUAL((size_t) 12, src.position());
+
+          LogString expected(LOG4CXX_STR("Hello,\0World"), 12);
+          CPPUNIT_ASSERT_EQUAL(expected, greeting);
+        }
+
 
 
 };

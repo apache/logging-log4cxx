@@ -181,17 +181,22 @@ namespace log4cxx
 
                       memset(buf, 0, BUFSIZE*sizeof(wchar_t));
                       const char* src = in.current();
-                      size_t converted = mbsrtowcs(buf,
-                           &src,
-                           requested,
-                           &mbstate);
-                      if (converted == (size_t) -1) {
-                          stat = APR_BADARG;
-                          in.position(src - in.data());
-                          break;
+                      if(*src == 0) {
+                           out.append(1, 0);
+                           in.position(in.position() + 1);
                       } else {
-                         stat = append(out, buf);
-                         in.position(in.position() + converted);
+                           size_t converted = mbsrtowcs(buf,
+                               &src,
+                               requested,
+                               &mbstate);
+                           if (converted == (size_t) -1) {
+                               stat = APR_BADARG;
+                               in.position(src - in.data());
+                               break;
+                           } else {
+                               stat = append(out, buf);
+                               in.position(in.position() + converted);
+                           }
                       }
                   }
                   return stat;
