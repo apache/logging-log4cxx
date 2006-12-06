@@ -24,7 +24,7 @@
 #include <log4cxx/helpers/transform.h>
 #include <apr_time.h>
 #include <log4cxx/helpers/synchronized.h>
-
+#include <log4cxx/helpers/transcoder.h>
 
 #if APR_HAS_THREADS
 
@@ -79,16 +79,14 @@ void XMLSocketAppender::setLocationInfo(bool locationInfo1) {
 
 
 void XMLSocketAppender::renderEvent(const spi::LoggingEventPtr& event,
-    helpers::SocketOutputStreamPtr& /*os1*/, Pool& p)
+    helpers::SocketOutputStreamPtr& os1, Pool& p)
 {
         LogString output;
 
         layout->format(output, event, p);
 
-//      TODO
-//
-//      USES_CONVERSION;
-//      os->write((void *)T2A(sz.c_str()), sz.length());
+        LOG4CXX_ENCODE_CHAR(sz, output);
+        os1->write(sz.c_str(), sz.length());
 }
 
 void XMLSocketAppender::setOption(const LogString& option,
