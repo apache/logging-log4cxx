@@ -52,6 +52,7 @@ class DailyRollingFileAppender : public log4cxx::helpers::ObjectImpl, Appender {
   BEGIN_LOG4CXX_CAST_MAP()
           LOG4CXX_CAST_ENTRY(DailyRollingFileAppender)
           LOG4CXX_CAST_ENTRY(Appender)
+          LOG4CXX_CAST_ENTRY(spi::OptionHandler)
   END_LOG4CXX_CAST_MAP()
 
   /**

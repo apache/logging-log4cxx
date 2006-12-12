@@ -132,6 +132,5 @@ private:
   }
 };
 
-//  TODO:
-//CPPUNIT_TEST_SUITE_REGISTRATION(ObsoleteDailyRollingFileAppenderTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(ObsoleteDailyRollingFileAppenderTest);
 

@@ -130,8 +130,24 @@ log4cxx_time_t File::lastModified(Pool& pool) const {
 }
 
 
-std::vector<LogString> File::list(Pool& /* p */ ) const {
-  return std::vector<LogString>();
-  //
-  //  TODO:
+std::vector<LogString> File::list(Pool& p) const {
+    apr_dir_t *dir;
+    apr_finfo_t entry;
+    std::vector<LogString> filenames;
+
+    apr_status_t stat = apr_dir_open(&dir, 
+        convertBackSlashes(osName).c_str(), 
+        (apr_pool_t*) p.getAPRPool());
+    if(stat == APR_SUCCESS) {
+        stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
+        while(stat == APR_SUCCESS) {
+            if (entry.name != NULL) {
+               LOG4CXX_DECODE_CHAR(filename, entry.name);
+               filenames.push_back(filename);
+            }
+            stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
+        }
+        stat = apr_dir_close(dir);
+    }
+    return filenames;
 }

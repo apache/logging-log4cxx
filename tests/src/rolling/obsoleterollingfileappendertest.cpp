@@ -33,7 +33,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 
  using namespace log4cxx;
- using namespace log4cxx::rolling;
  using namespace log4cxx::xml;
  using namespace log4cxx::filter;
  using namespace log4cxx::helpers;
@@ -48,8 +47,9 @@
    CPPUNIT_TEST_SUITE(ObsoleteRollingFileAppenderTest);
 //    TODO: Property configurator isn't able to distinguish between
 //        obsolete and o.a.l.rolling.RollingFileAppender
-//           CPPUNIT_TEST(test1);
+//         CPPUNIT_TEST(test1);
            CPPUNIT_TEST(test2);
+           CPPUNIT_TEST(testIsOptionHandler);
    CPPUNIT_TEST_SUITE_END();
 
 
@@ -126,6 +126,15 @@
 
     CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log").exists(p));
     CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log.1").exists(p));
+  }
+
+  /**
+   *  Tests if class is declared to support the OptionHandler interface.
+   *  See LOGCXX-136.
+   */
+  void testIsOptionHandler() {
+      RollingFileAppenderPtr rfa(new RollingFileAppender());
+      CPPUNIT_ASSERT_EQUAL(true, rfa->instanceof(log4cxx::spi::OptionHandler::getStaticClass()));
   }
 };
 

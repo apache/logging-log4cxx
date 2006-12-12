@@ -58,6 +58,7 @@ namespace log4cxx
     BEGIN_LOG4CXX_CAST_MAP()
          LOG4CXX_CAST_ENTRY( RollingFileAppender )
          LOG4CXX_CAST_ENTRY( Appender )
+         LOG4CXX_CAST_ENTRY( spi::OptionHandler)
     END_LOG4CXX_CAST_MAP()
     /** The default constructor simply calls its {@link FileAppender#FileAppender parents constructor}. */
     RollingFileAppender();
