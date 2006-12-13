@@ -47,7 +47,7 @@ namespace log4cxx {
   *  @author Curt Arnold
   * @deprecated Replaced by {@link org.apache.log4j.rolling.RollingFileAppender}
 */
-class DailyRollingFileAppender : public log4cxx::helpers::ObjectImpl, Appender {
+class LOG4CXX_EXPORT DailyRollingFileAppender : public log4cxx::helpers::ObjectImpl, Appender {
   DECLARE_LOG4CXX_OBJECT(DailyRollingFileAppender)
   BEGIN_LOG4CXX_CAST_MAP()
           LOG4CXX_CAST_ENTRY(DailyRollingFileAppender)

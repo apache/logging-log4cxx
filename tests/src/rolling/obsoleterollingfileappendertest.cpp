@@ -45,11 +45,10 @@
  */
  class ObsoleteRollingFileAppenderTest : public CppUnit::TestFixture  {
    CPPUNIT_TEST_SUITE(ObsoleteRollingFileAppenderTest);
-//    TODO: Property configurator isn't able to distinguish between
-//        obsolete and o.a.l.rolling.RollingFileAppender
-//         CPPUNIT_TEST(test1);
+           CPPUNIT_TEST(test1);
            CPPUNIT_TEST(test2);
            CPPUNIT_TEST(testIsOptionHandler);
+           CPPUNIT_TEST(testClassForName);
    CPPUNIT_TEST_SUITE_END();
 
 
@@ -135,6 +134,12 @@
   void testIsOptionHandler() {
       RollingFileAppenderPtr rfa(new RollingFileAppender());
       CPPUNIT_ASSERT_EQUAL(true, rfa->instanceof(log4cxx::spi::OptionHandler::getStaticClass()));
+  }
+
+  void testClassForName() {
+      LogString className(LOG4CXX_STR("org.apache.log4j.RollingFileAppender"));
+      const Class& myclass = Class::forName(className);
+      CPPUNIT_ASSERT_EQUAL(className, LogString(myclass.getName()));
   }
 };
 

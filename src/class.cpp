@@ -98,29 +98,30 @@ Class::ClassMap& Class::getRegistry() {
 
 const Class& Class::forName(const LogString& className)
 {
-        LogString strippedClassName;
-        LogString::size_type pos = className.find_last_of(LOG4CXX_STR('.'));
-        if (pos != LogString::npos)
-        {
-                strippedClassName.assign(className.substr(pos + 1));
-        }
-        else
-        {
-                strippedClassName.assign(className);
-        }
-        strippedClassName = StringHelper::toLowerCase(strippedClassName);
-
-        const Class * clazz = getRegistry()[strippedClassName];
-
+        LogString lowerName(StringHelper::toLowerCase(className));
+        //
+        //  check registry using full class name
+        //
+        const Class* clazz = getRegistry()[lowerName];
         if (clazz == 0) {
-            //
-            //   make sure all well-known classes are registered
-            //
-            registerClasses();
-            clazz = getRegistry()[strippedClassName];
-            if (clazz == 0) {
-                throw ClassNotFoundException(className);
+            LogString::size_type pos = className.find_last_of(LOG4CXX_STR('.'));
+            if (pos != LogString::npos) {
+                LogString terminalName(lowerName, pos + 1, LogString::npos);
+                clazz = getRegistry()[terminalName];
+                if (clazz == 0) {
+                    registerClasses();
+                    clazz = getRegistry()[lowerName];
+                    if (clazz == 0) {
+                        clazz = getRegistry()[terminalName];
+                    }
+                }
+            } else {
+                registerClasses();
+                clazz = getRegistry()[lowerName];
             }
+        }
+        if (clazz == 0) {
+            throw ClassNotFoundException(className);
         }
 
         return *clazz;

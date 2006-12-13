@@ -28,14 +28,34 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+namespace log4cxx {
+    class ClassRollingFileAppender : public Class 
+    {
+    public:
+        ClassRollingFileAppender() : helpers::Class() {}
+        virtual const log4cxx::logchar* getName() const {
+            return LOG4CXX_STR("org.apache.log4j.RollingFileAppender");
+        }
+        virtual ObjectPtr newInstance() const {
+            return new RollingFileAppender();
+        }
+    };
+}
+
 const log4cxx::helpers::Class& RollingFileAppender::getClass() const { return getStaticClass(); }
-const log4cxx::helpers::Class& RollingFileAppender::getStaticClass() {
+const log4cxx::helpers::Class& RollingFileAppender::getStaticClass() { 
    static ClassRollingFileAppender theClass;
    return theClass;
+}                                                        
+const log4cxx::helpers::ClassRegistration& RollingFileAppender::registerClass() {
+    static log4cxx::helpers::ClassRegistration classReg(RollingFileAppender::getStaticClass);
+    return classReg;
 }
 namespace log4cxx { namespace classes {
-   bool ObsoleteRollingFileAppenderIsRegistered = false;
- /*      log4cxx::helpers::Class::registerClass(RollingFileAppender::getStaticClass()); */} }
+const log4cxx::helpers::ClassRegistration& ObsoleteRollingFileAppenderRegistration = 
+        RollingFileAppender::registerClass();
+} }
+
 
 
 RollingFileAppender::RollingFileAppender()

@@ -54,7 +54,10 @@ namespace log4cxx
     log4cxx::rolling::RollingFileAppenderPtr rfa;
 
   public:
-    DECLARE_LOG4CXX_OBJECT( RollingFileAppender )
+    //
+    //   Use custom class to use non-default name to avoid
+    //       conflict with log4cxx::rolling::RollingFileAppender
+    DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS( RollingFileAppender, ClassRollingFileAppender )
     BEGIN_LOG4CXX_CAST_MAP()
          LOG4CXX_CAST_ENTRY( RollingFileAppender )
          LOG4CXX_CAST_ENTRY( Appender )
