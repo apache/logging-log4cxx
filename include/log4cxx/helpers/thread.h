@@ -36,14 +36,14 @@ namespace log4cxx
                 class Pool;
                 typedef void log4cxx_thread_t;
 
+				typedef void* (LOG4CXX_THREAD_FUNC *Runnable)(log4cxx_thread_t* thread, void* data);
                 class LOG4CXX_EXPORT Thread
                 {
                 public:
                         Thread();
                         ~Thread();
 
-                        void run(void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
-                                void* data);
+                        void run(Runnable start, void* data);
                         void stop();
                         void join();
                         //

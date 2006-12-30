@@ -33,8 +33,7 @@ Thread::~Thread() {
 }
 
 #if APR_HAS_THREADS
-void Thread::run(void* (LOG4CXX_THREAD_FUNC *start)(log4cxx_thread_t* thread, void* data),
-        void* data) {
+void Thread::run(Runnable start, void* data) {
         if (thread != NULL && alive) {
                 throw ThreadException(0);
         }
