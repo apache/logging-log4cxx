@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/private/log4cxx_private.h>
 
-#ifdef LOG4CXX_HAVE_SYSLOG
+#if LOG4CXX_HAVE_SYSLOG
 #include <syslog.h>
 #else
         /* facility codes */
@@ -259,7 +259,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 // On the local host, we can directly use the system function 'syslog'
 // if it is available
-#ifdef LOG4CXX_HAVE_SYSLOG
+#if LOG4CXX_HAVE_SYSLOG
         if (sw == 0)
         {
                 std::string sbuf;
@@ -323,7 +323,7 @@ void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
 
 // On the local host, we can directly use the system function 'syslog'
 // if it is available (cf. append)
-#ifdef LOG4CXX_HAVE_SYSLOG
+#if LOG4CXX_HAVE_SYSLOG
         if (syslogHost1 != LOG4CXX_STR("localhost") && syslogHost1 != LOG4CXX_STR("127.0.0.1")
         && !syslogHost1.empty())
 #endif
