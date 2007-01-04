@@ -173,63 +173,6 @@ fi
 
 AC_PROG_RANLIB
 
-# for threads
-AC_MSG_CHECKING(for thread support)
-AC_ARG_WITH(thread,
-        AC_HELP_STRING(--with-thread, [thread support. Accepted arguments :
-                pthread, Microsoft, no (default=pthread)]),
-        [ac_with_thread=$withval],
-        [ac_with_thread=pthread])
-case "$ac_with_thread" in
-    Microsoft)
-        AC_DEFINE(HAVE_MS_THREAD, 1, thread support through Microsoft threads.)
-        AC_DEFINE(HAVE_THREAD, 1, thread support)
-        AC_MSG_RESULT(Microsoft)
-        ;;
-    pthread)
-        AC_MSG_RESULT(pthread)
-        AC_CHECK_HEADER(pthread.h,, AC_MSG_ERROR(pthread library not found !))
-        AC_DEFINE(HAVE_PTHREAD, 1, thread support through pthread library.)
-        AC_DEFINE(HAVE_THREAD, 1, thread support)
-
-        case "$host" in
-                *freebsd*)
-                CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE"
-                LIBS="-pthread $LIBS"
-                ;;
-                *solaris*)
-                AC_COMPILE_IFELSE(
-                AC_LANG_PROGRAM(,[
-                #if defined(sparc) && defined(__SUNPRO_CC)
-                        char c;
-                #endif
-                        c = 0;]),
-                        sunpro_cc=yes,
-                        sunpro_cc=no)
-                if test "x$sunpro_cc" = "xyes"
-                then
-                CPPFLAGS="$CPPFLAGS -D_REENTRANT -features=%all,no%iddollar,extensions -xarch=v8plus"
-                LIBS="-lpthread -lrt -xarch=v8plus $LIBS"
-                else
-                CPPFLAGS="$CPPFLAGS -D_REENTRANT"
-                LIBS="-lpthread -lrt $LIBS"
-                fi
-                ;;
-                *)
-                CPPFLAGS="$CPPFLAGS -D_REENTRANT"
-                LIBS="-lpthread $LIBS"
-                ;;
-        esac
-
-        ;;
-        no)
-        AC_MSG_RESULT(no)
-        ;;
-    *)
-        AC_MSG_RESULT(???)
-        AC_MSG_ERROR(Unknown option : $ac_with_thread)
-        ;;
-esac
 
 # for SocketAppender
 AC_CHECK_FUNCS(gethostbyname,,
