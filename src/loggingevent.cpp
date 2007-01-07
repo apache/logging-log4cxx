@@ -204,7 +204,7 @@ const LogString LoggingEvent::getCurrentThreadName() {
    char result[sizeof(apr_os_thread_t) * 2 + 10];
    result[0] = '0';
    result[1] = 'x';   apr_os_thread_t threadId = apr_os_thread_current();
-   apr_snprintf(result+2, (sizeof result) - 2, "%pt", &threadId);
+   apr_snprintf(result+2, (sizeof result) - 2, "%pt", (void*) &threadId);
 #endif
    LOG4CXX_DECODE_CHAR(str, (const char*) result);
    return str;
