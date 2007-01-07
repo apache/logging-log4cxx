@@ -182,7 +182,7 @@ namespace log4cxx
                       memset(buf, 0, BUFSIZE*sizeof(wchar_t));
                       const char* src = in.current();
                       if(*src == 0) {
-                           out.append(1, 0);
+                           out.append(1, (logchar) 0);
                            in.position(in.position() + 1);
                       } else {
                            size_t converted = mbsrtowcs(buf,
