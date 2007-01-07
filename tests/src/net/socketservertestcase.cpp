@@ -115,7 +115,7 @@ public:
                         if(!::fork())
                         {
                                 ::execl("src/shortsocketserver", "shortsocketserver",
-                                        "8", "input/socketServer", 0);
+                                        "8", "input/socketServer", NULL);
                                 ::perror("execl() failed");
                                 ::exit(1);
                         }
