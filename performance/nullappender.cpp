@@ -45,7 +45,7 @@ void NullAppender::doAppend(const LoggingEventPtr& event, Pool& p)
         }
 }
 
-void NullAppender::append(const LoggingEventPtr& event, Pool& p)
+void NullAppender::append(const LoggingEventPtr& /* event */, Pool& /*p*/)
 {
 }
 

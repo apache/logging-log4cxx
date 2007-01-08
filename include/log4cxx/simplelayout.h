@@ -66,9 +66,9 @@ namespace log4cxx
                 */
                 bool ignoresThrowable() const { return true; }
 
-                virtual void activateOptions(log4cxx::helpers::Pool& p) {}
-                virtual void setOption(const LogString& option,
-                     const LogString& value) {}
+                virtual void activateOptions(log4cxx::helpers::Pool& /* p */) {}
+                virtual void setOption(const LogString& /* option */,
+                     const LogString& /* value */) {}
         };
 }  // namespace log4cxx
 

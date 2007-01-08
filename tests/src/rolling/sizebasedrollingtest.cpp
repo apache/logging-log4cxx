@@ -75,7 +75,7 @@ using namespace log4cxx::rolling;
     LogManager::shutdown();
   }
 
-  void common(LoggerPtr& logger1, int sleep) {
+  void common(LoggerPtr& logger1, int /*sleep*/) {
     char msg[] = { 'H', 'e', 'l', 'l', 'o', '-', '-', '-', 'N', 0 };
 
     // Write exactly 10 bytes with each log
