@@ -38,9 +38,11 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
+#ifdef _MSC_VER
 #if _MSC_VER < 1300
 #undef __LOG4CXX_FUNC__
 #define __LOG4CXX_FUNC__ "X::X()"
+#endif
 #endif
 
 class X
@@ -125,7 +127,7 @@ public:
                 XMLThreadFilter xmlThreadFilter;
                 FilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
                 Filter line2XX("[23][0-9][0-9]", "X");
-                Filter line5X("53", "X");
+                Filter line5X("55", "X");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlFilenameFilter);
@@ -147,9 +149,11 @@ public:
                 CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.2")));
         }
 
+#ifdef _MSC_VER
 #if _MSC_VER < 1300
 #undef __LOG4CXX_FUNC__
 #define __LOG4CXX_FUNC__ "void XMLLayoutTestCase::testCDATA()"
+#endif
 #endif
 
         void testCDATA()
@@ -296,10 +300,11 @@ public:
                 CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
         }
 
-
+#ifdef _MSC_VER
 #if _MSC_VER < 1300
 #undef __LOG4CXX_FUNC__
 #define __LOG4CXX_FUNC__ "void XMLLayoutTestCase::common()"
+#endif
 #endif
 
         void common()

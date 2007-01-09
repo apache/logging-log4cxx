@@ -38,6 +38,7 @@
 
 #define LOG4CXX_HAS_STD_WCOUT 1
 #define LOG4CXX_HAS_STD_WLOCALE 1
+#define LOG4CXX_FORCE_WIDE_CONSOLE 0
 
 typedef long long log4cxx_int64_t;
 typedef log4cxx_int64_t log4cxx_time_t;
