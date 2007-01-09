@@ -32,7 +32,7 @@ Exception::Exception(const std::string& msg1) {
   this->msg[msgLen] = 0;
 }
 
-Exception::Exception(const Exception& src) {
+Exception::Exception(const Exception& src) : std::exception() {
 #if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
       strcpy_s(msg, sizeof msg, src.msg);
 #else
