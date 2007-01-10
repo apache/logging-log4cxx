@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/defaultconfigurator.h>
+#include <log4cxx/spi/rootcategory.h>
 #include <apr_atomic.h>
 #include "assert.h"
 
@@ -39,12 +40,14 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
-Hierarchy::Hierarchy(const LoggerPtr& root1) : root(root1),
+Hierarchy::Hierarchy() : 
 thresholdInt(Level::ALL_INT), threshold(Level::getAll()),
 emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
-mutex(), configured(false)
+pool(),
+mutex(pool), configured(false)
 {
-        this->root->setHierarchy(this);
+        root = new RootCategory(pool, Level::getDebug());
+        root->setHierarchy(this);
         defaultFactory = new DefaultCategoryFactory();
 }
 
@@ -173,7 +176,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
         }
         else
         {
-                LoggerPtr logger(factory->makeNewLoggerInstance(name));
+                LoggerPtr logger(factory->makeNewLoggerInstance(pool, name));
                 logger->setHierarchy(this);
                 loggers.insert(LoggerMap::value_type(name, logger));
 

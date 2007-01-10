@@ -20,6 +20,7 @@
 #include <log4cxx/portability.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/pool.h>
 
 namespace log4cxx {
     namespace rolling {
@@ -40,6 +41,7 @@ namespace log4cxx {
          */
         bool interrupted;
 
+        log4cxx::helpers::Pool pool;
         log4cxx::helpers::Mutex mutex;
 
 

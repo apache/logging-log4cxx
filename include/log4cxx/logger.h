@@ -103,9 +103,10 @@ namespace log4cxx
         <p>It is intended to be used by sub-classes only. You should not
         create categories directly.
 
+        @param pool, lifetime of pool must be longer than logger.
         @param name The name of the logger.
         */
-        Logger(const LogString& name);
+        Logger(log4cxx::helpers::Pool& pool, const LogString& name);
 
     public:
         ~Logger();

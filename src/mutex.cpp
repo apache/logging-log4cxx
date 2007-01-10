@@ -37,18 +37,6 @@ Mutex::Mutex(Pool& p) {
 #endif
 }
 
-Mutex::Mutex() {
-#if APR_HAS_THREADS
-        apr_thread_mutex_t* aprMutex = NULL;
-        apr_status_t stat = apr_thread_mutex_create(&aprMutex,
-                APR_THREAD_MUTEX_NESTED, APRInitializer::getRootPool());
-        if (stat != APR_SUCCESS) {
-                throw MutexException(stat);
-        }
-        mutex = aprMutex;
-#endif
-}
-
 
 Mutex::~Mutex() {
 #if APR_HAS_THREADS

@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/unicodehelper.h>
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_xlate.h>
 #include <log4cxx/private/log4cxx_private.h>
 
@@ -47,21 +48,17 @@ namespace log4cxx
             *  Creates a new instance.
             *  @param frompage name of source encoding.
             */
-              APRCharsetDecoder(const char* frompage) {
+              APRCharsetDecoder(const char* frompage) : pool(), mutex(pool) {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
                 const char* topage = "WCHAR_T";
 #endif
 #if LOG4CXX_LOGCHAR_IS_UTF8
                 const char* topage = "UTF-8";
 #endif
-                apr_status_t stat = apr_pool_create(&pool, NULL);
-                if (stat != APR_SUCCESS) {
-                    throw PoolException(stat);
-                }
-                stat = apr_xlate_open(&convset,
+                apr_status_t stat = apr_xlate_open(&convset,
                     topage,
                     frompage,
-                    pool);
+                    (apr_pool_t*) pool.getAPRPool());
                 if (stat != APR_SUCCESS) {
                      if (frompage == APR_DEFAULT_CHARSET) {
                          throw IllegalArgumentException("APR_DEFAULT_CHARSET");
@@ -77,8 +74,6 @@ namespace log4cxx
             *  Destructor.
             */
               virtual ~APRCharsetDecoder() {
-                apr_xlate_close(convset);
-                apr_pool_destroy(pool);
               }
 
               virtual log4cxx_status_t decode(ByteBuffer& in,
@@ -119,7 +114,7 @@ namespace log4cxx
           private:
                   APRCharsetDecoder(const APRCharsetDecoder&);
                   APRCharsetDecoder& operator=(const APRCharsetDecoder&);
-                  apr_pool_t* pool;
+                  log4cxx::helpers::Pool pool;
                   Mutex mutex;
                   apr_xlate_t *convset;
           };

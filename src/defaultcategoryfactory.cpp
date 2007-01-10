@@ -21,7 +21,9 @@ using namespace log4cxx;
 
 IMPLEMENT_LOG4CXX_OBJECT(DefaultCategoryFactory)
 
-LoggerPtr DefaultCategoryFactory::makeNewLoggerInstance(const LogString& name) const
+LoggerPtr DefaultCategoryFactory::makeNewLoggerInstance(
+    log4cxx::helpers::Pool& pool,
+    const LogString& name) const
 {
-    return new Logger(name);
+    return new Logger(pool, name);
 }

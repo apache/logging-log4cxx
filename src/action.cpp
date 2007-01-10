@@ -25,7 +25,9 @@ IMPLEMENT_LOG4CXX_OBJECT(Action)
 
 Action::Action() :
    complete(false),
-   interrupted(false) {
+   interrupted(false),
+   pool(),
+   mutex(pool) {
 }
 
 Action::~Action() {

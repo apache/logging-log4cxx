@@ -75,8 +75,7 @@ LoggerRepositoryPtr& LogManager::getLoggerRepository()
 {
         if (getRepositorySelector() == 0)
         {
-                LoggerPtr root(new RootCategory(Level::getDebug()));
-                LoggerRepositoryPtr hierarchy(new Hierarchy(root));
+                LoggerRepositoryPtr hierarchy(new Hierarchy());
                 RepositorySelectorPtr selector(new DefaultRepositorySelector(hierarchy));
                 getRepositorySelector() = selector;
         }

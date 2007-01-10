@@ -39,7 +39,7 @@ namespace log4cxx
             The root logger names itself as "root". However, the root
             logger cannot be retrieved by name.
             */
-            RootCategory(const LevelPtr& level);
+            RootCategory(log4cxx::helpers::Pool& pool, const LevelPtr& level);
 
             /**
             Return the assigned level value without walking the category

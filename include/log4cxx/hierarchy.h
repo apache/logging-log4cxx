@@ -93,9 +93,8 @@ namespace log4cxx
 
             /**
             Create a new logger hierarchy.
-            @param root The root of the new hierarchy.
             */
-            Hierarchy(const LoggerPtr& root);
+            Hierarchy();
 
             ~Hierarchy();
 
@@ -276,6 +275,7 @@ namespace log4cxx
             Hierarchy& operator=(const Hierarchy&);
 
             void updateChildren(ProvisionNode& pn, LoggerPtr logger);
+            log4cxx::helpers::Pool pool;
             log4cxx::helpers::Mutex mutex;
             volatile log4cxx_uint32_t configured;
         };

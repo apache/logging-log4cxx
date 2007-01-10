@@ -23,7 +23,8 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-RootCategory::RootCategory(const LevelPtr& level1) : Logger(LOG4CXX_STR("root"))
+RootCategory::RootCategory(Pool& pool, const LevelPtr& level1) : 
+    Logger(pool, LOG4CXX_STR("root"))
 {
    setLevel(level1);
 }

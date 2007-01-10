@@ -30,7 +30,6 @@ namespace log4cxx
                 class LOG4CXX_EXPORT Mutex
                 {
                 public:
-                        Mutex();
                         Mutex(log4cxx::helpers::Pool& p);
                         ~Mutex();
                         const log4cxx_thread_mutex_t* getAPRMutex() const;

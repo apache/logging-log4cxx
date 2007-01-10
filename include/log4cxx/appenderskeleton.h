@@ -68,6 +68,7 @@ namespace log4cxx
                 */
                 volatile unsigned int closed;
 
+                log4cxx::helpers::Pool pool;
                 log4cxx::helpers::Mutex mutex;
 
         public:

@@ -100,6 +100,7 @@ namespace log4cxx
             inline const log4cxx::helpers::Mutex& getMutex() const { return mutex; }
 
         private:
+            log4cxx::helpers::Pool pool;
             log4cxx::helpers::Mutex mutex;
             AppenderAttachableImpl(const AppenderAttachableImpl&);
             AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);

@@ -37,9 +37,9 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
-Logger::Logger(const LogString& name1)
+Logger::Logger(Pool& pool, const LogString& name1)
 : name(name1), level(), parent(), resourceBundle(),
-repository(0), aai(), additive(true),  mutex()
+repository(0), aai(), additive(true),  mutex(pool)
 {
 }
 

@@ -30,7 +30,8 @@ IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
 AppenderAttachableImpl::AppenderAttachableImpl()
    : appenderList(),
-     mutex() {
+     pool(), 
+     mutex(pool) {
 }
 
 

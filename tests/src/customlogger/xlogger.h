@@ -40,7 +40,9 @@ namespace log4cxx
                 END_LOG4CXX_CAST_MAP()
 
                 XFactory();
-                virtual LoggerPtr makeNewLoggerInstance(const LogString& name) const;
+                virtual LoggerPtr makeNewLoggerInstance(
+                   log4cxx::helpers::Pool& pool,
+                   const LogString& name) const;
         };
 
         typedef helpers::ObjectPtrT<XFactory> XFactoryPtr;
@@ -67,7 +69,8 @@ namespace log4cxx
                 /**
                         Just calls the parent constuctor.
                 */
-                XLogger(const LogString& name1) : Logger(name1) {}
+                XLogger(log4cxx::helpers::Pool& pool,
+                        const LogString& name1) : Logger(pool, name1) {}
 
                 /**
                         Nothing to activate.

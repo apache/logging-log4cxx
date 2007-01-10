@@ -37,7 +37,8 @@ AppenderSkeleton::AppenderSkeleton()
     headFilter(),
     tailFilter(),
     closed(0),
-    mutex()
+    pool(), 
+    mutex(pool)
 {
 }
 
@@ -49,7 +50,8 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
   headFilter(),
   tailFilter(),
   closed(0),
-  mutex()
+  pool(),
+  mutex(pool)
 {
 }
 
