@@ -110,10 +110,8 @@ public:
           InputStreamPtr propStream = new FileInputStream(propFile);
           InputStreamReaderPtr propReader = new InputStreamReader(propStream);
           LogString props(propReader->read(pool));
-          LogString line1(LOG4CXX_STR("log4j.rootCategory=DEBUG, testAppender"));
+          LogString line1(LOG4CXX_STR("# Licensed to the Apache Software Foundation (ASF) under one or more"));
           CPPUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
-          LogString tail(LOG4CXX_STR("%-5p - %m%n"));
-          CPPUNIT_ASSERT_EQUAL(tail, props.substr(props.length() - tail.length()));
         }
 
         void propertyExists() {

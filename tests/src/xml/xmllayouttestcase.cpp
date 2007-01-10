@@ -128,7 +128,7 @@ public:
                 XMLThreadFilter xmlThreadFilter;
                 FilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
                 Filter line2XX("[23][0-9][0-9]", "X");
-                Filter line5X("55", "X");
+                Filter line5X("56", "X");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlFilenameFilter);
