@@ -91,7 +91,7 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
         return ((level == 0) || level->isGreaterOrEqual(threshold));
 }
 
-void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool)
+void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
         synchronized sync(mutex);
 
@@ -125,7 +125,7 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool)
                  }
         }
 
-        append(event, pool);
+        append(event, pool1);
 }
 
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1)

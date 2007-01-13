@@ -30,6 +30,6 @@ FileRenameAction::FileRenameAction(const File& toRename,
    : source(toRename), destination(renameTo), renameEmptyFile(renameEmptyFile1) {
 }
 
-bool FileRenameAction::execute(log4cxx::helpers::Pool& pool) const {
-  return source.renameTo(destination, pool);
+bool FileRenameAction::execute(log4cxx::helpers::Pool& pool1) const {
+  return source.renameTo(destination, pool1);
 }

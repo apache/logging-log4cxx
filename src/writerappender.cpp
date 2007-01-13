@@ -72,7 +72,7 @@ void WriterAppender::activateOptions(Pool& p)
 
 
 
-void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool)
+void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool1)
 {
 
         if(!checkEntryConditions())
@@ -80,7 +80,7 @@ void WriterAppender::append(const spi::LoggingEventPtr& event, Pool& pool)
                 return;
         }
 
-        subAppend(event, pool);
+        subAppend(event, pool1);
 }
 
 /**

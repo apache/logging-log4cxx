@@ -37,11 +37,11 @@ Action::~Action() {
 /**
  * {@inheritDoc}
  */
-void Action::run(log4cxx::helpers::Pool& pool) {
+void Action::run(log4cxx::helpers::Pool& pool1) {
   synchronized sync(mutex);
   if (!interrupted) {
       try {
-         execute(pool);
+         execute(pool1);
       } catch(std::exception& ex) {
          reportException(ex);
       }
