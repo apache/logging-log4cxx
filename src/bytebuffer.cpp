@@ -49,7 +49,7 @@ void ByteBuffer::position(size_t newPosition) {
 }
 
 void ByteBuffer::limit(size_t newLimit) {
-  if (newLimit < 0 || newLimit > cap) {
+  if (newLimit > cap) {
     throw IllegalArgumentException("newLimit");
   }
   lim = newLimit;

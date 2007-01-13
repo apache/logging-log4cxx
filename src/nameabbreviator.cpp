@@ -222,7 +222,7 @@ END_LOG4CXX_CAST_MAP()
       PatternAbbreviatorFragment terminalFragment =
         fragments[fragments.size() - 1];
 
-      while ((pos < buf.length()) && (pos >= 0)) {
+      while (pos < buf.length()) {
         pos = terminalFragment.abbreviate(buf, pos);
       }
     }
@@ -266,7 +266,7 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern) {
       int charCount;
       LogString::size_type pos = 0;
 
-      while ((pos < trimmed.length()) && (pos >= 0)) {
+      while (pos < trimmed.length()) {
         LogString::size_type ellipsisPos = pos;
 
         if (trimmed[pos] == LOG4CXX_STR('*')) {
