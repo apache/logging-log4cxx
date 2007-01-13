@@ -89,8 +89,8 @@ const LogString& LoggingEvent::getNDC() const
 {
         if(ndcLookupRequired)
         {
-                ((LoggingEvent *)this)->ndcLookupRequired = false;
-                ((LoggingEvent *)this)->ndc = NDC::get();
+                ndcLookupRequired = false;
+                ndc = NDC::get();
         }
 
         return ndc;
@@ -148,9 +148,9 @@ void LoggingEvent::getMDCCopy() const
 {
         if(mdcCopyLookupRequired)
         {
-                ((LoggingEvent *)this)->mdcCopyLookupRequired = false;
+                mdcCopyLookupRequired = false;
                 // the clone call is required for asynchronous logging.
-                ((LoggingEvent *)this)->mdcCopy = ThreadSpecificData::getCurrentThreadMap();
+                mdcCopy = ThreadSpecificData::getCurrentThreadMap();
         }
 }
 

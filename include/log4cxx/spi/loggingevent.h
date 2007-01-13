@@ -206,10 +206,10 @@ namespace log4cxx
                         LevelPtr level;
 
                         /** The nested diagnostic context (NDC) of logging event. */
-                        LogString ndc;
+                        mutable LogString ndc;
 
                         /** The mapped diagnostic context (MDC) of logging event. */
-                        MDC::Map mdcCopy;
+                        mutable MDC::Map mdcCopy;
 
                         /**
                         * A map of String keys and String values.
@@ -221,14 +221,14 @@ namespace log4cxx
                         *  serialized. Thus, a receiving SocketNode will never use it's own
                         *  (incorrect) NDC. See also writeObject method.
                         */
-                        bool ndcLookupRequired;
+                        mutable bool ndcLookupRequired;
 
                         /**
                         * Have we tried to do an MDC lookup? If we did, there is no need to do it
                         * again.  Note that its value is always false when serialized. See also
                         * the getMDC and getMDCCopy methods.
                         */
-                        bool mdcCopyLookupRequired;
+                        mutable bool mdcCopyLookupRequired;
 
                         /** The application supplied message of logging event. */
                         LogString message;
