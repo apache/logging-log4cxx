@@ -39,11 +39,11 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
-#ifdef _MSC_VER
-#if _MSC_VER < 1300
+#if defined(__LOG4CXX_FUNC__)
 #undef __LOG4CXX_FUNC__
 #define __LOG4CXX_FUNC__ "X::X()"
-#endif
+#else
+#error __LOG4CXX_FUNC__ expected to be defined
 #endif
 
 class X
@@ -150,12 +150,12 @@ public:
                 CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.2")));
         }
 
-#ifdef _MSC_VER
-#if _MSC_VER < 1300
+
+
 #undef __LOG4CXX_FUNC__
 #define __LOG4CXX_FUNC__ "void XMLLayoutTestCase::testCDATA()"
-#endif
-#endif
+
+
 
         void testCDATA()
         {
@@ -301,12 +301,12 @@ public:
                 CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
         }
 
-#ifdef _MSC_VER
-#if _MSC_VER < 1300
+
+
 #undef __LOG4CXX_FUNC__
 #define __LOG4CXX_FUNC__ "void XMLLayoutTestCase::common()"
-#endif
-#endif
+
+
 
         void common()
         {
