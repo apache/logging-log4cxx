@@ -64,6 +64,10 @@ namespace log4cxx
                 public virtual helpers::ObjectImpl
         {
         private:
+            log4cxx::helpers::Pool pool;
+            log4cxx::helpers::Mutex mutex;
+            volatile log4cxx_uint32_t configured;
+
             spi::LoggerFactoryPtr defaultFactory;
             spi::HierarchyEventListenerList listeners;
 
@@ -276,9 +280,6 @@ namespace log4cxx
             Hierarchy& operator=(const Hierarchy&);
 
             void updateChildren(ProvisionNode& pn, LoggerPtr logger);
-            log4cxx::helpers::Pool pool;
-            log4cxx::helpers::Mutex mutex;
-            volatile log4cxx_uint32_t configured;
         };
 
 }  //namespace log4cxx

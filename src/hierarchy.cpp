@@ -42,10 +42,10 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 Hierarchy::Hierarchy() : 
-thresholdInt(Level::ALL_INT), threshold(Level::getAll()),
-emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false),
 pool(),
-mutex(pool), configured(false)
+mutex(pool), configured(false),
+thresholdInt(Level::ALL_INT), threshold(Level::getAll()),
+emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false)
 {
         root = new RootCategory(pool, Level::getDebug());
         root->setHierarchy(this);
