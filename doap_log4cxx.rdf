@@ -27,7 +27,7 @@
     <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
     <name>Apache log4cxx</name>
     <homepage rdf:resource="http://logging.apache.org/log4cxx" />
-    <asfext:pmc rdf:resource="http://svn.apache.org/repos/asf/logging/site/trunk/doap_loggingservices.rdf" />
+    <asfext:pmc rdf:resource="http://logging.apache.org" />
     <shortdesc>Apache log4cxx provides logging services for C++.</shortdesc>
     <bug-database rdf:resource="http://issues.apache.org/jira" />
     <mailing-list rdf:resource="http://logging.apache.org/site/mailing-lists.html" />
