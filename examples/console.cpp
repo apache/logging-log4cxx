@@ -72,9 +72,17 @@ int main(int argc, char** argv)
             }
         } else if (strcmp("wcout", argv[i]) == 0) {
             if (err) {
+            #if LOG4CXX_HAS_STD_WCOUT
                 std::wcerr << L"Hello, wcout" << std::endl;
+            #else
+                std::cerr << "Log4cxx has not wcout" << std::endl;
+            #endif
             } else {
+            #if LOG4CXX_HAS_STD_WCOUT
                 std::wcout << L"Hello, wcout" << std::endl;
+            #else
+                std::cout << "Log4cxx has not wcout" << std::endl;
+            #endif
             }
         } else if (strcmp("configure", argv[i]) == 0) {
             configure(err);
