@@ -24,7 +24,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <apr_xlate.h>
 #include <log4cxx/private/log4cxx_private.h>
-#include <langinfo.h>
+#include <locale.h>
 #include <apr_portable.h>
 
 

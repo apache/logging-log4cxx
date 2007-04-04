@@ -201,7 +201,7 @@ unsigned int UnicodeHelper::decode(const LogString& in, LogString::const_iterato
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 #if defined(_WIN32)
-int UnicodeHelper::encode(unsigned int sv, logchar* out) {
+int UnicodeHelper::encode(unsigned int ch, logchar* dst) {
   if (ch <= 0xFFFF) {
       *dst = (wchar_t) ch;
       return 1;

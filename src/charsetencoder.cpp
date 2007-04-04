@@ -303,7 +303,7 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                       const logchar* const srcEnd = srcBase + in.length();
                       const logchar* src = in.data() + (iter - in.begin());
                       while(out.remaining() >= 8 && src < srcEnd) {
-                           unsigned int sv = UnicodeHelper::decode(src, srcEnd);
+                           unsigned int sv = decodeWide(src, srcEnd);
                            if (sv == 0xFFFF) {
                                stat = APR_BADARG;
                                break;
@@ -311,7 +311,7 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                            int bytes = UnicodeHelper::encodeUTF8(sv, out.data() + out.position());
                            out.position(out.position() + bytes);
                       }
-                 iter = in.begin() + (src - srcBase);
+                      iter = in.begin() + (src - srcBase);
                   }
                   return APR_SUCCESS;
               }
@@ -319,6 +319,26 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
           private:
                   UTF8CharsetEncoder(const UTF8CharsetEncoder&);
                   UTF8CharsetEncoder& operator=(const UTF8CharsetEncoder&);
+
+#if defined(_WIN32)
+				  unsigned int decodeWide(const wchar_t*& src, const wchar_t* srcEnd) {
+                       unsigned int sv = *(src++);
+                       if (sv < 0xDC00 || sv >= 0xDC00) {
+                          return sv;
+					   }
+                       if (src < srcEnd) {
+                           unsigned short ls = *(src++);
+                           unsigned char w = (unsigned char) ((sv >> 6) & 0x0F);
+                           return ((w + 1) << 16) + ((sv & 0x3F) << 10) + (ls & 0x3FF);
+					   }
+                       return 0xFFFF;
+				  }
+#endif
+#if defined(__STDC_ISO_10646__)
+                  unsigned int decodeWide(const wchar_t*& src, const wchar_t* /* srcEnd */) {
+						return *(src++);
+				  }
+#endif
           };
 #else
 #error logchar cannot be wchar_t unless _WIN32 or __STDC_ISO_10646___ is defined          
