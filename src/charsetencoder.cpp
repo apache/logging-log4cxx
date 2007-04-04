@@ -446,8 +446,8 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
 CharsetEncoder* CharsetEncoder::createWideEncoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
   return new TrivialCharsetEncoder();
-#elif LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__))
-  return new WideCharsetEncoder();
+//#elif LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__))
+//  return new WideCharsetEncoder();
 #else
   return new APRCharsetEncoder("WCHAR_T");
 #endif
