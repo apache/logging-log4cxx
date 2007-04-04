@@ -24,6 +24,8 @@
 #include <log4cxx/helpers/pool.h>
 #include <apr_xlate.h>
 #include <log4cxx/private/log4cxx_private.h>
+#include <langinfo.h>
+#include <apr_portable.h>
 
 
 using namespace log4cxx;
@@ -64,7 +66,19 @@ namespace log4cxx
                      if (frompage == APR_DEFAULT_CHARSET) {
                          throw IllegalArgumentException("APR_DEFAULT_CHARSET");
                      } else if (frompage == APR_LOCALE_CHARSET) {
-                         throw IllegalArgumentException("APR_LOCALE_CHARSET");
+                         Pool subpool;
+                         const char* localeEncoding = 
+                            apr_os_locale_encoding((apr_pool_t*) subpool.getAPRPool());
+                         // Solaris likes returning 646 if nl_langinfo has not been called
+                         if(localeEncoding != NULL && strcmp("646", localeEncoding) == 0) {
+                             stat = apr_xlate_open(&convset,
+                                 topage, 
+                                 "ASCII",
+                                 (apr_pool_t*) pool.getAPRPool());
+                         }
+                         if (stat != APR_SUCCESS) {
+                            throw IllegalArgumentException("APR_LOCALE_CHARSET");
+                         } 
                      } else {
                          throw IllegalArgumentException(frompage);
                      }
@@ -121,7 +135,7 @@ namespace log4cxx
           };
 #endif
 
-#if LOG4CXX_HAS_WCHAR_T && !defined(_WIN32_WCE)
+#if LOG4CXX_LOGCHAR_IS_WCHAR && !defined(_WIN32_WCE)
           /**
           *    Converts from the default multi-byte string to
           *        LogString using mbstowcs.
@@ -137,29 +151,10 @@ namespace log4cxx
               }
 
           private:
-#if LOG4CXX_LOGCHAR_IS_WCHAR
               inline log4cxx_status_t append(LogString& out, const wchar_t* buf) {
                   out.append(buf);
                   return APR_SUCCESS;
               }
-#endif
-
-#if LOG4CXX_LOGCHAR_IS_UTF8
-              log4cxx_status_t append(LogString& out, const wchar_t* buf) {
-                  char utf8[8];
-                  const wchar_t* current = buf;
-                  const wchar_t* end = wcschr(buf, 0);
-                  while(current < end) {
-                      unsigned int sv = UnicodeHelper::decodeWide(current, end);
-                      if (sv == 0xFFFF) {
-                          return APR_BADARG;
-                      }
-                      int bytes = UnicodeHelper::encodeUTF8(sv, utf8);
-                      out.append(utf8, bytes);
-                  }
-                  return APR_SUCCESS;
-              }
-#endif
 
               virtual log4cxx_status_t decode(ByteBuffer& in,
                   LogString& out) {
@@ -275,7 +270,7 @@ private:
                 stat = APR_BADARG;
                 break;
              }
-             int wchars = UnicodeHelper::encodeWide(sv, buf);
+             int wchars = UnicodeHelper::encode(sv, buf);
              out.append(buf, wchars);
           }
           in.position(src - in.data());
@@ -378,7 +373,7 @@ private:
 };
 
 
-#if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_HAS_WCHAR_T && (defined(_WIN32) || defined(__STDC_ISO_10646__))
           /**
           *    Decoder to convert array of wchar_t to UTF-8 bytes.
           *
@@ -391,6 +386,22 @@ private:
 
               virtual ~WideToUTF8CharsetDecoder() {
               }
+              
+#if defined(_WIN32)
+			  unsigned int decodeWide(const wchar_t*& src, const wchar_t* srcEnd) {
+    			unsigned int sv = *(src++);
+    			if (sv < 0xDC00 || sv >= 0xDC00) {
+        			return sv;
+    			}
+    			if (src < srcEnd) {
+        			unsigned short ls = *(src++);
+        			unsigned char w = (unsigned char) ((sv >> 6) & 0x0F);
+        			return ((w + 1) << 16) + ((sv & 0x3F) << 10) + (ls & 0x3FF);
+    			}
+    			return 0xFFFF;
+			  }
+#endif
+
 
 
               virtual log4cxx_status_t decode(ByteBuffer& in,
@@ -400,7 +411,11 @@ private:
                   out.reserve(out.length() + in.remaining()/sizeof(wchar_t));
                   char utf8[8];
                   while(src < srcEnd) {
-                      unsigned int sv = UnicodeHelper::decodeWide(src, srcEnd);
+#if defined(__STDC_ISO_10646__)                  
+                      unsigned int sv = *(src++);
+#else
+    				  unsigned int sv = decodeWide(src, srcEnd);
+#endif    				  
                       if (sv == 0xFFFF) {
                           return APR_BADARG;
                       }
@@ -439,7 +454,7 @@ CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
      return new ISOLatinCharsetDecoder();
 #elif LOG4CXX_LOCALE_ENCODING_US_ASCII
      return new USASCIICharsetDecoder();
-#elif LOG4CXX_HAS_WCHAR_T
+#elif LOG4CXX_LOGCHAR_IS_WCHAR
     return new MbstowcsCharsetDecoder();
 #elif APR_HAS_XLATE
     return new APRCharsetDecoder(APR_LOCALE_CHARSET);

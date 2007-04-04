@@ -92,80 +92,6 @@ unsigned int UnicodeHelper::decodeUTF8(const char*& src,
 }
 
 
-#if LOG4CXX_HAS_WCHAR_T
-#if defined(_WIN32)
-unsigned int UnicodeHelper::decodeWide(const wchar_t*& src, const wchar_t* srcEnd) {
-    unsigned int sv = *(src++);
-    if (sv < 0xDC00 || sv >= 0xDC00) {
-        return sv;
-    }
-    if (src < srcEnd) {
-        unsigned short ls = *(src++);
-        unsigned char w = (unsigned char) ((sv >> 6) & 0x0F);
-        return ((w + 1) << 16) + ((sv & 0x3F) << 10) + (ls & 0x3FF);
-    }
-    return 0xFFFF;
-}
-
-
-int UnicodeHelper::encodeWide(unsigned int ch, wchar_t* dst) {
-  if (ch <= 0xFFFF) {
-      *dst = (wchar_t) ch;
-      return 1;
-  }
-  unsigned char u = (unsigned char) (ch >> 16);
-  unsigned char w = (unsigned char) (u - 1);
-  wchar_t hs = (wchar_t) (0xD800 + ((w & 0xF) << 6) + ((ch & 0xFFFF) >> 10));
-  wchar_t ls = (wchar_t) (0xDC00 + (ch && 0x3FF));
-  dst[0] = hs;
-  dst[1] = ls;
-  return 2;
-}
-
-int UnicodeHelper::lengthUTF8(wchar_t ch) {
-  if (ch <= 0x7F) {
-      return 1;
-  }
-  if(ch <= 0x7FF) {
-      return 2;
-  }
-  //
-  //   if low surrogate, only add 1 which in combination with
-  //   three from high surrogate makes 4 total UTF-8 bytes
-  if (ch >= 0xDC00 && ch <= 0xDFFF) {
-      return 1;
-  }
-  return 3;
-}
-
-#endif
-
-
-#if defined(__STDC_ISO_10646__)
-int UnicodeHelper::encodeWide(unsigned int ch, wchar_t* dst) {
-   *dst = ch;
-   return 1;
-}
-
-unsigned int UnicodeHelper::decodeWide(const wchar_t*& src, const wchar_t* /* srcEnd */) {
-    return *(src++);
-}
-
-int UnicodeHelper::lengthUTF8(wchar_t ch) {
-  if (ch <= 0x7F) {
-      return 1;
-  }
-  if(ch <= 0x7FF) {
-      return 2;
-  }
-  if (ch <= 0xFFFF) {
-      return 3;
-  }
-  return 4;
-}
-
-#endif
-#endif
 
 
 int UnicodeHelper::encodeUTF8(unsigned int ch, char* dst) {
@@ -240,7 +166,22 @@ int UnicodeHelper::encodeUTF16LE(unsigned int ch, char* dst) {
 unsigned int UnicodeHelper::decode(const LogString& in, LogString::const_iterator& iter) {
     const wchar_t* src = in.data() + (iter - in.begin());
     const wchar_t* srcEnd = in.data() + in.length();
-    unsigned int sv = decodeWide(src, srcEnd);
+#if defined(__STDC_ISO_10646__)
+    unsigned int sv = *(src++);
+#elif defined(_WIN32)
+    unsigned int sv = *(src++);
+    if (!(sv < 0xDC00 || sv >= 0xDC00)) {
+    	if (src < srcEnd) {
+        	unsigned short ls = *(src++);
+        	unsigned char w = (unsigned char) ((sv >> 6) & 0x0F);
+        	sv = ((w + 1) << 16) + ((sv & 0x3F) << 10) + (ls & 0x3FF);
+    	} else {
+            sv = 0xFFFF;
+        }
+    }
+#else
+#error logchar cannot be wchar_t unless _WIN32 or __STDC_ISO_10646__ is defined
+#endif
     iter = in.begin() + (src - in.data());
     return sv;
 }
@@ -259,9 +200,28 @@ unsigned int UnicodeHelper::decode(const LogString& in, LogString::const_iterato
 
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
+#if defined(_WIN32)
 int UnicodeHelper::encode(unsigned int sv, logchar* out) {
-    return encodeWide(sv, out);
+  if (ch <= 0xFFFF) {
+      *dst = (wchar_t) ch;
+      return 1;
+  }
+  unsigned char u = (unsigned char) (ch >> 16);
+  unsigned char w = (unsigned char) (u - 1);
+  wchar_t hs = (wchar_t) (0xD800 + ((w & 0xF) << 6) + ((ch & 0xFFFF) >> 10));
+  wchar_t ls = (wchar_t) (0xDC00 + (ch && 0x3FF));
+  dst[0] = hs;
+  dst[1] = ls;
+  return 2;
 }
+#elif defined(__STDC_ISO_10646__)
+int UnicodeHelper::encode(unsigned int sv, logchar* out) {
+   *dst = ch;
+   return 1;
+}
+#else
+#error logchar cannot be wchar_t unless _WIN32 or __STDC_ISO_10646__ is defined
+#endif
 #endif
 
 

@@ -71,35 +71,6 @@ namespace log4cxx {
                */
               static int encodeUTF16LE(unsigned int ch, char* dst);
 
-
-#if LOG4CXX_HAS_WCHAR_T
-              /**
-               *   Decodes next character from a sequence of wchar_t values.
-               *   @param src start of character, will be modified to point at next character.
-               *   @param srcEnd end of sequence.
-               *   @return scalar value (UCS-4) or 0xFFFF if invalid sequence.
-               */
-              static unsigned int decodeWide(const wchar_t*& src, const wchar_t* srcEnd);
-
-
-              /**
-               *   Encodes a character to wchar_t.
-               *   @param ch UCS-4 value.
-               *   @param dst buffer to receive wchar_t (must be at least 2 wchar_t)
-               *   @return number of wchar_t needed to represent character
-               */
-              static int encodeWide(unsigned int ch, wchar_t* str);
-
-           /**
-            *   Determines the number of UTF-8 bytes required to express
-            *   the wchar_t value.
-            *   @param ch wchar_t value
-            *   @return number of bytes required.
-            */
-              static int lengthUTF8(wchar_t ch);
-
-#endif
-
               /**
                *   Decodes next character from a LogString.
                *   @param in string from which the character is extracted.

@@ -44,9 +44,11 @@ namespace log4cxx
               APRCharsetEncoder(const char* topage) {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
                   const char* frompage = "WCHAR_T";
+#define FROMPAGE "WCHAR_T"
 #endif
 #if LOG4CXX_LOGCHAR_IS_UTF8
                   const char* frompage = "UTF-8";
+#define FROMPAGE "UTF-8"
 #endif
                   apr_status_t stat = apr_pool_create(&pool, NULL);
                   if (stat != APR_SUCCESS) {
@@ -60,7 +62,7 @@ namespace log4cxx
                      if (topage == APR_DEFAULT_CHARSET) {
                          throw IllegalArgumentException("APR_DEFAULT_CHARSET");
                      } else if (topage == APR_LOCALE_CHARSET) {
-                         throw IllegalArgumentException("APR_LOCALE_CHARSET");
+                         throw IllegalArgumentException("APRCharsetEncoder(" FROMPAGE ",APR_LOCALE_CHARSET)");
                      } else {
                          throw IllegalArgumentException(topage);
                      }
@@ -106,7 +108,7 @@ namespace log4cxx
           };
 #endif
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_LOGCHAR_IS_WCHAR
           /**
            *  A character encoder implemented using wcstombs.
           */
@@ -119,8 +121,8 @@ namespace log4cxx
            /**
             *   Converts a wchar_t to the default external multibyte encoding.
             */
-              log4cxx_status_t encode(const std::wstring& in,
-                  std::wstring::const_iterator& iter,
+              log4cxx_status_t encode(const LogString& in,
+                    LogString::const_iterator& iter,
                     ByteBuffer& out) {
                       log4cxx_status_t stat = APR_SUCCESS;
 
@@ -168,46 +170,6 @@ namespace log4cxx
                       return stat;
               }
 
-#if LOG4CXX_LOGCHAR_IS_UTF8
-           /**
-            *    Performs encoding by converting UTF-8 LogString into a wstring
-            *      and delegating to the other encode method.
-            */
-              virtual log4cxx_status_t encode(const std::string& in,
-                  std::string::const_iterator& iter,
-                  ByteBuffer& out) {
-                  log4cxx_status_t stat = APR_SUCCESS;
-                  if (iter != in.end()) {
-                    std::wstring wideIn;
-                    wideIn.reserve(in.length());
-                    const char* src = in.data() + (iter - in.begin());
-                    const char* srcEnd = in.data() + in.length();
-                    wchar_t tmp[2];
-                    while(src < srcEnd) {
-                        unsigned int sv = UnicodeHelper::decodeUTF8(src, srcEnd);
-                        if (sv == 0xFFFF) {
-                            iter = in.begin() + (src - in.data());
-                            return APR_BADARG;
-                        }
-
-                        int wcharCount = UnicodeHelper::encodeWide(sv, tmp);
-                        wideIn.append(tmp, wcharCount);
-                    }
-                    std::wstring::const_iterator wideIter(wideIn.begin());
-                    stat = encode(wideIn, wideIter, out);
-                    if (wideIter == wideIn.end()) {
-                        iter = in.end();
-                    } else {
-                        for(std::wstring::const_iterator i = wideIn.begin();
-                            i != wideIter;
-                            i++) {
-                            iter += UnicodeHelper::lengthUTF8(*i);
-                        }
-                    }
-                  }
-                  return stat;
-              }
-#endif
 
 
           private:
@@ -322,6 +284,7 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
+#if defined(_WIN32) || defined(__STDC_ISO_10646__)
           /**
          *  Converts a wstring to UTF-8.
           */
@@ -334,16 +297,16 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
                     ByteBuffer& out) {
-              log4cxx_status_t stat = APR_SUCCESS;
-                  if (iter != in.end()) {
+                    log4cxx_status_t stat = APR_SUCCESS;
+                    if (iter != in.end()) {
                       const logchar* const srcBase = in.data();
                       const logchar* const srcEnd = srcBase + in.length();
                       const logchar* src = in.data() + (iter - in.begin());
                       while(out.remaining() >= 8 && src < srcEnd) {
-                           unsigned int sv = UnicodeHelper::decodeWide(src, srcEnd);
+                           unsigned int sv = UnicodeHelper::decode(src, srcEnd);
                            if (sv == 0xFFFF) {
                                stat = APR_BADARG;
-                        break;
+                               break;
                            }
                            int bytes = UnicodeHelper::encodeUTF8(sv, out.data() + out.position());
                            out.position(out.position() + bytes);
@@ -357,8 +320,10 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                   UTF8CharsetEncoder(const UTF8CharsetEncoder&);
                   UTF8CharsetEncoder& operator=(const UTF8CharsetEncoder&);
           };
+#else
+#error logchar cannot be wchar_t unless _WIN32 or __STDC_ISO_10646___ is defined          
 #endif
-
+#endif
 
           /**
           *   Encodes a LogString to UTF16-BE.
@@ -421,38 +386,6 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                   UTF16LECharsetEncoder& operator=(const UTF16LECharsetEncoder&);
           };
 
-#if LOG4CXX_HAS_WCHAR_T
-          /**
-          *   Converts a LogString to an array of wchar_t.
-          */
-          class WideCharsetEncoder : public CharsetEncoder
-          {
-          public:
-              WideCharsetEncoder() {
-              }
-
-
-              virtual log4cxx_status_t encode(const LogString& in,
-                    LogString::const_iterator& iter,
-                    ByteBuffer& out) {
-                  log4cxx_status_t stat = APR_SUCCESS;
-                  while(iter != in.end() && out.remaining() >= 4) {
-                      unsigned int sv = UnicodeHelper::decode(in, iter);
-                      if (sv == 0xFFFF) {
-                          stat = APR_BADARG;
-                          break;
-                      }
-                      int count = UnicodeHelper::encodeWide(sv, (wchar_t*) out.current());
-                      out.position(out.position() + count * sizeof(wchar_t));
-                  }
-                  return stat;
-              }
-
-          private:
-                  WideCharsetEncoder(const WideCharsetEncoder&);
-                  WideCharsetEncoder& operator=(const WideCharsetEncoder&);
-          };
-#endif
 
 
         } // namespace helpers
@@ -487,7 +420,7 @@ CharsetEncoder* CharsetEncoder::createDefaultEncoder() {
    return new ISOLatinCharsetEncoder();
 #elif LOG4CXX_LOCALE_ENCODING_US_ASCII
    return new USASCIICharsetEncoder();
-#elif LOG4CXX_HAS_WCHAR_T
+#elif LOG4CXX_LOGCHAR_IS_WCHAR
   return new WcstombsCharsetEncoder();
 #elif APR_HAS_XLATE
   return new APRCharsetEncoder(APR_LOCALE_CHARSET);
@@ -513,10 +446,12 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
 CharsetEncoder* CharsetEncoder::createWideEncoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
   return new TrivialCharsetEncoder();
-#endif
-#if LOG4CXX_LOGCHAR_IS_UTF8
+#elif LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__))
   return new WideCharsetEncoder();
+#else
+  return new APRCharsetEncoder("WCHAR_T");
 #endif
+
 }
 
 
