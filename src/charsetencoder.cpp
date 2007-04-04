@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/unicodehelper.h>
 #include <log4cxx/private/log4cxx_private.h>
+#include <apr_portable.h>
 
 
 using namespace log4cxx;
@@ -44,11 +45,9 @@ namespace log4cxx
               APRCharsetEncoder(const char* topage) {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
                   const char* frompage = "WCHAR_T";
-#define FROMPAGE "WCHAR_T"
 #endif
 #if LOG4CXX_LOGCHAR_IS_UTF8
                   const char* frompage = "UTF-8";
-#define FROMPAGE "UTF-8"
 #endif
                   apr_status_t stat = apr_pool_create(&pool, NULL);
                   if (stat != APR_SUCCESS) {
@@ -62,7 +61,18 @@ namespace log4cxx
                      if (topage == APR_DEFAULT_CHARSET) {
                          throw IllegalArgumentException("APR_DEFAULT_CHARSET");
                      } else if (topage == APR_LOCALE_CHARSET) {
-                         throw IllegalArgumentException("APRCharsetEncoder(" FROMPAGE ",APR_LOCALE_CHARSET)");
+                         const char* localeEncoding = 
+                            apr_os_locale_encoding(pool);
+                         // Solaris likes returning 646 if nl_langinfo has not been called
+                         if(localeEncoding != NULL && strcmp("646", localeEncoding) == 0) {
+                             stat = apr_xlate_open(&convset,
+                                 "ASCII", 
+                                 frompage,
+                                 pool);
+                         }
+                         if (stat != APR_SUCCESS) {
+                            throw IllegalArgumentException("APR_LOCALE_CHARSET");
+                         } 
                      } else {
                          throw IllegalArgumentException(topage);
                      }

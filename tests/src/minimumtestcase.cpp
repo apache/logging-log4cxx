@@ -128,8 +128,8 @@ public:
                 // In the lines below, the category names are chosen as an aid in
                 // remembering their level values. In general, the category names
                 // have no bearing to level values.
-                LoggerPtr ERR = Logger::getLogger(LOG4CXX_TEST_STR("ERR"));
-                ERR->setLevel(Level::getError());
+                LoggerPtr ERRlogger = Logger::getLogger(LOG4CXX_TEST_STR("ERR"));
+                ERRlogger->setLevel(Level::getError());
 
                 LoggerPtr INF = Logger::getLogger(LOG4CXX_TEST_STR("INF"));
                 INF->setLevel(Level::INFO);
@@ -150,9 +150,9 @@ public:
                 Pool pool;
 
                 // These should all log.----------------------------
-                LOG4CXX_FATAL(ERR, createMessage(i, pool));
+                LOG4CXX_FATAL(ERRlogger, createMessage(i, pool));
                 i++; //0
-                LOG4CXX_ERROR(ERR, createMessage(i, pool));
+                LOG4CXX_ERROR(ERRlogger, createMessage(i, pool));
                 i++;
 
                 LOG4CXX_FATAL(INF, createMessage(i, pool));
@@ -208,11 +208,11 @@ public:
 
                 // -------------------------------------------------
                 // The following should not log
-                LOG4CXX_WARN(ERR, createMessage(i, pool));
+                LOG4CXX_WARN(ERRlogger, createMessage(i, pool));
                 i++;
-                LOG4CXX_INFO(ERR, createMessage(i, pool));
+                LOG4CXX_INFO(ERRlogger, createMessage(i, pool));
                 i++;
-                LOG4CXX_DEBUG(ERR, createMessage(i, pool));
+                LOG4CXX_DEBUG(ERRlogger, createMessage(i, pool));
                 i++;
 
                 LOG4CXX_DEBUG(INF, createMessage(i, pool));
