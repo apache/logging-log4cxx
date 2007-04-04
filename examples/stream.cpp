@@ -20,12 +20,14 @@
 #include <log4cxx/basicconfigurator.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/ndc.h>
+#include <locale.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 int main()
 {
+    setlocale(LC_ALL, "");
     int result = EXIT_SUCCESS;
     try
     {

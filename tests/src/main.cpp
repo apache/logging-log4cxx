@@ -36,6 +36,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <log4cxx/basicconfigurator.h>
+#include <locale.h>
 
 #include <log4cxx/log4cxx.h>
 #define LOG4CXX_TEST 1
@@ -60,6 +61,7 @@ log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("log4cxx_unittest"));
 int wmain(int argc, const wchar_t* const * wargv) {
     char** argv = new char*[argc];
     {
+        setlocale(LC_ALL, "");
         for(int i = 0; i < argc; i++) {
             size_t len = wcslen(wargv[i]) + 1;
             argv[i] = new char[len];
@@ -74,6 +76,7 @@ int wmain(int argc, const wchar_t* const * wargv) {
     apr_app_initialize(&argc, (const char* const **) &argv, NULL);
 #else
 int main(int argc, const char* const * argv) {
+        setlocale(LC_ALL, "");
         apr_app_initialize(&argc, &argv, NULL);
 #endif
         CppUnit::TextUi::TestRunner runner;

@@ -23,6 +23,7 @@
 #include <iostream>
 #include <log4cxx/stream.h>
 #include <exception>
+#include <locale.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -90,6 +91,13 @@ public:
                 }
         }
 };
+
+static class LocaleSetter {
+    public:
+    LocaleSetter() {
+       setlocale(LC_ALL, "");
+    }
+} localeSetter;
 
 LoggerPtr DelayedLoop::logger = Logger::getLogger("DelayedLoop");
 

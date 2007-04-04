@@ -29,6 +29,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/stream.h>
+#include <locale.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -191,6 +192,7 @@ Loop::loopFunc Loop::loop = Loop::loopChar;
 
 int main(int argc, const char* const argv[])
 {
+        setlocale(LC_ALL, "");
         apr_app_initialize(&argc, &argv, NULL);
         std::vector<LogString> args(argc - 1);
         for (int i = 1; i < argc; i++) {
