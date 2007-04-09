@@ -36,9 +36,6 @@ class UnicodeHelperTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(testDecodeUTF8_2);
                 CPPUNIT_TEST(testDecodeUTF8_3);
                 CPPUNIT_TEST(testDecodeUTF8_4);
-#if LOG4CXX_HAS_WCHAR_T
-                CPPUNIT_TEST(testDecodeWide_1);
-#endif
         CPPUNIT_TEST_SUITE_END();
 
 
@@ -73,16 +70,6 @@ public:
         unsigned int sv = UnicodeHelper::decodeUTF8(iter, src + 2);
         CPPUNIT_ASSERT_EQUAL((unsigned int) 0xA9, sv);
     }
-
-#if LOG4CXX_HAS_WCHAR_T
-    void testDecodeWide_1() {
-        const wchar_t* const src = L"a";
-        const wchar_t* iter = src;
-        unsigned int sv = UnicodeHelper::decodeWide(iter, src + 1);
-        CPPUNIT_ASSERT_EQUAL((unsigned int) 0x61, sv);
-        CPPUNIT_ASSERT(iter == src + 1);
-    }
-#endif
 
 };
 
