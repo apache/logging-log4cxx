@@ -416,6 +416,63 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                   UTF16LECharsetEncoder& operator=(const UTF16LECharsetEncoder&);
           };
 
+#if LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__))
+
+          /**
+          *   Converts a LogString to an array of wchar_t.
+          */
+          class WideCharsetEncoder : public CharsetEncoder
+          {
+          public:
+              WideCharsetEncoder() {
+              }
+
+
+              virtual log4cxx_status_t encode(const LogString& in,
+                    LogString::const_iterator& iter,
+                    ByteBuffer& out) {
+                  log4cxx_status_t stat = APR_SUCCESS;
+                  while(iter != in.end() && out.remaining() >= 4) {
+                      unsigned int sv = UnicodeHelper::decode(in, iter);
+                      if (sv == 0xFFFF) {
+                          stat = APR_BADARG;
+                          break;
+                      }
+                      int count = encodeWide(sv, (wchar_t*) out.current());
+                      out.position(out.position() + count * sizeof(wchar_t));
+                  }
+                  return stat;
+              }
+
+          private:
+                  WideCharsetEncoder(const WideCharsetEncoder&);
+                  WideCharsetEncoder& operator=(const WideCharsetEncoder&);
+
+#if defined(_WIN32)
+				  int encodeWide(unsigned int ch, wchar_t* dst) {
+						if (ch <= 0xFFFF) {
+							*dst = (wchar_t) ch;
+							return 1;
+						}
+						unsigned char u = (unsigned char) (ch >> 16);
+						unsigned char w = (unsigned char) (u - 1);
+						wchar_t hs = (wchar_t) (0xD800 + ((w & 0xF) << 6) + ((ch & 0xFFFF) >> 10));
+						wchar_t ls = (wchar_t) (0xDC00 + (ch && 0x3FF));
+						dst[0] = hs;
+						dst[1] = ls;
+						return 2;
+					}
+#endif
+
+#if defined(__STDC_ISO_10646__)
+				    int encodeWide(unsigned int ch, wchar_t* dst) {
+						*dst = ch;
+						return 1;
+					}
+#endif
+
+          };
+#endif
 
 
         } // namespace helpers
@@ -476,8 +533,8 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
 CharsetEncoder* CharsetEncoder::createWideEncoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
   return new TrivialCharsetEncoder();
-//#elif LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__))
-//  return new WideCharsetEncoder();
+#elif LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__))
+  return new WideCharsetEncoder();
 #else
   return new APRCharsetEncoder("WCHAR_T");
 #endif
