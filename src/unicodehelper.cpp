@@ -165,11 +165,12 @@ int UnicodeHelper::encodeUTF16LE(unsigned int ch, char* dst) {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 unsigned int UnicodeHelper::decode(const LogString& in, LogString::const_iterator& iter) {
     const wchar_t* src = in.data() + (iter - in.begin());
-    const wchar_t* srcEnd = in.data() + in.length();
 #if defined(__STDC_ISO_10646__)
     unsigned int sv = *(src++);
 #elif defined(_WIN32)
+    const wchar_t* srcEnd = in.data() + in.length();
     unsigned int sv = *(src++);
+
     if (!(sv < 0xDC00 || sv >= 0xDC00)) {
     	if (src < srcEnd) {
         	unsigned short ls = *(src++);
@@ -215,7 +216,7 @@ int UnicodeHelper::encode(unsigned int ch, logchar* dst) {
   return 2;
 }
 #elif defined(__STDC_ISO_10646__)
-int UnicodeHelper::encode(unsigned int sv, logchar* out) {
+int UnicodeHelper::encode(unsigned int ch, logchar* dst) {
    *dst = ch;
    return 1;
 }
