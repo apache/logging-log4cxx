@@ -350,6 +350,21 @@ case "$ac_with_logchar" in
         ;;
 esac
 
+#for wide streams
+AC_MSG_CHECKING(for wcout)
+AC_COMPILE_IFELSE(AC_LANG_SOURCE([[
+                  #include <iostream>
+                  int main() { std::wcout << L"Hello"; } ]]), [have_wcout=yes], [have_wcout=no])
+AC_MSG_RESULT($have_wcout)
+
+if test "$have_wcout" = "yes"
+then
+    AC_SUBST(HAS_STD_WCOUT, 1)
+else
+    AC_SUBST(HAS_STD_WCOUT, 0)
+fi
+
+
 # Create files
 # ----------------------------------------------------------------------------
 

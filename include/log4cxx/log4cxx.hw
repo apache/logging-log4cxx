@@ -31,6 +31,7 @@
 #endif
 
 #define LOG4CXX_HAS_WCHAR_T 1
+#define LOG4CXX_HAS_STD_WCOUT 1
 
 #if defined(_MSC_VER)
 typedef __int64 log4cxx_int64_t;

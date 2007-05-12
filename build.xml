@@ -65,6 +65,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="optimize" value="none"/>
 <property name="lib.type" value="shared"/>
 <property name="has.wchar_t" value="1"/>
+<property name="has.wcout" value="1"/>
 
 <property name="apache.mirror" value="http://archive.apache.org/dist"/>
 <property name="cppunit.mirror" value="http://easynews.dl.sourceforge.net/sourceforge"/>
@@ -143,6 +144,7 @@ Common command line options:
 -Dapr.dir=PATH
 -Daprutil.dir=PATH
 -Dhas.wchar_t=[0|1] (default=1)
+-Dhas.wcout=[0|1] (default=1)
 -Dlogchar=[utf-8|wchar_t|cfstring] (default=wchar_t)
 
 </echo>
@@ -440,6 +442,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                                   unix-configure,
                                   win-configure">
     <echo message="Configuring with has.wchar_t=${has.wchar_t}"/>
+    <echo message="Configuring with has.wcout=${has.wcout}"/>
     <echo message="Configuring with logchar_type=${logchar_type}" />
 
     <condition property="logchar_is_utf8" value="1">
@@ -472,6 +475,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
        match="@HAS_WCHAR_T@"
        replace="${has.wchar_t}"/>
+
+    <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
+       match="@HAS_STD_WCOUT@"
+       replace="${has.wcout}"/>
 
     <!-- The MS Windows template for log4cxx_private.h contains a hard coded
          "0" for LOG4CXX_HAVE_SYSLOG. Therefore the following replacement
