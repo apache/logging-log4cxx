@@ -66,7 +66,7 @@ void Logger::addAppender(const AppenderPtr& newAppender)
 }
 
 
-void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p)
+void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 {
         int writes = 0;
 
@@ -122,7 +122,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message,
 }
 #endif
 
-void Logger::forcedLog(const LevelPtr& level1, const std::string& message)
+void Logger::forcedLog(const LevelPtr& level1, const std::string& message) const
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
@@ -132,7 +132,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message)
 }
 
 #if LOG4CXX_HAS_WCHAR_T
-void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message)
+void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message) const
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
@@ -228,7 +228,7 @@ LogString Logger::getResourceBundleString(const LogString& key) const
                 }
                 catch (MissingResourceException&)
                 {
-                        ((Logger *)this)->error(LOG4CXX_STR("No resource is associated with key \"") +
+                        error(LOG4CXX_STR("No resource is associated with key \"") +
                                 key + LOG4CXX_STR("\"."));
 
                         return LogString();
@@ -617,14 +617,14 @@ void Logger::error(const std::string& msg, const log4cxx::spi::LocationInfo& loc
 }
 
 #if LOG4CXX_HAS_WCHAR_T
-void Logger::error(const std::wstring& msg) {
+void Logger::error(const std::wstring& msg) const {
   if (isEnabledFor(log4cxx::Level::getError())) {
      forcedLog(log4cxx::Level::getError(), msg);
   }
 }
 #endif
 
-void Logger::error(const std::string& msg) {
+void Logger::error(const std::string& msg) const {
   if (isEnabledFor(log4cxx::Level::getError())) {
      forcedLog(log4cxx::Level::getError(), msg);
   }

@@ -132,7 +132,7 @@ namespace log4cxx
         to log the particular log request.
 
         @param event the event to log.  */
-        void callAppenders(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+        void callAppenders(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
 
         /**
         Close all attached appenders implementing the AppenderAttachable
@@ -176,9 +176,9 @@ namespace log4cxx
         @param line the line where the log statement was written.
         */
         void error(const std::string& msg, const log4cxx::spi::LocationInfo& location);
-        void error(const std::string& msg);
+        void error(const std::string& msg) const;
 #if LOG4CXX_HAS_WCHAR_T
-        void error(const std::wstring& msg);
+        void error(const std::wstring& msg) const;
         void error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
 #endif
 
@@ -211,14 +211,12 @@ namespace log4cxx
         */
         void forcedLog(const LevelPtr& level, const std::string& message,
                         const log4cxx::spi::LocationInfo& location);
-        void forcedLog(const LevelPtr& level, const std::string& message);
+        void forcedLog(const LevelPtr& level, const std::string& message) const;
 
 #if LOG4CXX_HAS_WCHAR_T
         void forcedLog(const LevelPtr& level, const std::wstring& message,
                         const log4cxx::spi::LocationInfo& location);
-
-
-        void forcedLog(const LevelPtr& level, const std::wstring& message);
+        void forcedLog(const LevelPtr& level, const std::wstring& message) const;
 #endif
 
         /**
