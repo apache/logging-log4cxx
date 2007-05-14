@@ -46,7 +46,7 @@ Pool::~Pool() {
 }
 
 
-const log4cxx_pool_t* Pool::getAPRPool() {
+log4cxx_pool_t* Pool::getAPRPool() {
    return pool;
 }
 

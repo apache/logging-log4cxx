@@ -32,7 +32,7 @@ namespace log4cxx
                 public:
                         Pool();
                         Pool(log4cxx_pool_t* pool, bool release);
-                        const log4cxx_pool_t* getAPRPool();
+                        log4cxx_pool_t* getAPRPool();
                         ~Pool();
 
                         char* palloc(size_t length);
