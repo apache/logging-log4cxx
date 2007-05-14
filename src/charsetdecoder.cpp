@@ -422,7 +422,7 @@ private:
                       int bytes = UnicodeHelper::encodeUTF8(sv, utf8);
                       out.append(utf8, bytes);
                   }
-                  in.position(((char*) src) - in.data());
+                  in.position(((const char*) src) - in.data());
                   return APR_SUCCESS;
               }
 
