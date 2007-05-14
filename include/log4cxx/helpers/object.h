@@ -121,7 +121,7 @@ namespace log4cxx
 const void * cast(const helpers::Class& clazz) const\
 {\
         const void * object = 0;\
-        if (&clazz == &helpers::Object::getStaticClass()) return (helpers::Object *)this;
+        if (&clazz == &helpers::Object::getStaticClass()) return (const helpers::Object *)this;
 
 #define END_LOG4CXX_CAST_MAP()\
         return object;\
@@ -130,7 +130,7 @@ bool instanceof(const helpers::Class& clazz) const\
 { return cast(clazz) != 0; }
 
 #define LOG4CXX_CAST_ENTRY(Interface)\
-if (&clazz == &Interface::getStaticClass()) return (Interface *)this;
+if (&clazz == &Interface::getStaticClass()) return (const Interface *)this;
 
 #define LOG4CXX_CAST_ENTRY2(Interface, interface2)\
 if (&clazz == &Interface::getStaticClass()) return (Interface *)(interface2 *)this;
