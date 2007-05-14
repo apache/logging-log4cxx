@@ -117,9 +117,9 @@ int UnicodeHelper::encodeUTF8(unsigned int ch, char* dst) {
         //
         //  output UTF-8 encoding of 0xFFFF
         //
-        dst[0] = 0xEF;
-        dst[1] = 0xBF;
-        dst[2] = 0xBF;
+        dst[0] = (char) 0xEF;
+        dst[1] = (char) 0xBF;
+        dst[2] = (char) 0xBF;
         return 3;
     }
 }
@@ -140,7 +140,7 @@ int UnicodeHelper::encodeUTF16BE(unsigned int ch, char* dst) {
         dst[3] = (char) (ch & 0xFF);
         return 4;
     }
-    dst[0] = dst[1] = 0xFF;
+    dst[0] = dst[1] = (char) 0xFF;
     return 2;
 }
 
@@ -158,7 +158,7 @@ int UnicodeHelper::encodeUTF16LE(unsigned int ch, char* dst) {
         dst[2] = (char) (ch & 0xFF);
         return 4;
     }
-    dst[0] = dst[1] = 0xFF;
+    dst[0] = dst[1] = (char) 0xFF;
     return 2;
 }
 

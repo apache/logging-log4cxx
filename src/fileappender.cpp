@@ -236,7 +236,7 @@ void FileAppender::setFile(
   //   if a new file and UTF-16, then write a BOM
   //
   if (writeBOM) {
-      char bom[] = { 0xFE, 0xFF };
+      char bom[] = { (char) 0xFE, (char) 0xFF };
       ByteBuffer buf(bom, 2);
       outStream->write(buf, p);
   }

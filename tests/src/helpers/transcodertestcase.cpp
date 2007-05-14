@@ -174,11 +174,11 @@ public:
 
 #if LOG4CXX_LOGCHAR_IS_UTF8
           const char greeting[] = { 'A',
-                                    0xD8, 0x85,
-                                    0xD4, 0xB0,
-                                    0xE0, 0xCC, 0x84,
-                                    0xE8, 0x87, 0x83,
-                                    0xD0, 0x80,
+                                    (char) 0xD8, (char) 0x85,
+                                    (char) 0xD4, (char) 0xB0,
+                                    (char) 0xE0, (char) 0xCC, (char) 0x84,
+                                    (char) 0xE8, (char) 0x87, (char) 0x83,
+                                    (char) 0xD0, (char) 0x80,
                                     0 };
 #endif
 

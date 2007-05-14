@@ -51,21 +51,21 @@ public:
     }
 
     void testDecodeUTF8_2() {
-        const char src[] = { 0x80};
+        const char src[] = { (char) 0x80};
         const char* iter = src;
         unsigned int sv = UnicodeHelper::decodeUTF8(iter, src + 1);
         CPPUNIT_ASSERT_EQUAL((unsigned int) 0xFFFF, sv);
     }
 
     void testDecodeUTF8_3() {
-        const char src[] = { 0xC2, 0xA9};
+        const char src[] = { (char) 0xC2, (char) 0xA9};
         const char* iter = src;
         unsigned int sv = UnicodeHelper::decodeUTF8(iter, src + 1);
         CPPUNIT_ASSERT_EQUAL((unsigned int) 0xFFFF, sv);
     }
 
     void testDecodeUTF8_4() {
-        const char src[] = { 0xC2, 0xA9};
+        const char src[] = { (char) 0xC2, (char) 0xA9};
         const char* iter = src;
         unsigned int sv = UnicodeHelper::decodeUTF8(iter, src + 2);
         CPPUNIT_ASSERT_EQUAL((unsigned int) 0xA9, sv);
