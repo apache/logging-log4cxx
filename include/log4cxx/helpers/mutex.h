@@ -33,12 +33,12 @@ namespace log4cxx
                 public:
                         Mutex(log4cxx::helpers::Pool& p);
                         ~Mutex();
-                        const log4cxx_thread_mutex_t* getAPRMutex() const;
+                        log4cxx_thread_mutex_t* getAPRMutex() const;
 
                 private:
                         Mutex(const Mutex&);
                         Mutex& operator=(const Mutex&);
-                        const log4cxx_thread_mutex_t* mutex;
+                        log4cxx_thread_mutex_t* mutex;
                 };
         } // namespace helpers
 } // namespace log4cxx

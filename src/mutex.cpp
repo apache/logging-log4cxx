@@ -45,6 +45,6 @@ Mutex::~Mutex() {
 #endif
 }
 
-const log4cxx_thread_mutex_t* Mutex::getAPRMutex() const {
+log4cxx_thread_mutex_t* Mutex::getAPRMutex() const {
     return mutex;
 }

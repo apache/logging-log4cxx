@@ -33,7 +33,7 @@ namespace log4cxx
 
 
                 private:
-                const void* mutex;
+                void* mutex;
                 //  prevent use of copy and assignment
                 synchronized(const synchronized&);
                 synchronized& operator=(const synchronized&);

@@ -36,8 +36,8 @@ namespace log4cxx
                         void wait();
 
                 private:
-                        const void* condition;
-                        const void* mutex;
+                        void* condition;
+                        void* mutex;
                         Condition(const Condition&);
                         Condition& operator=(const Condition&);
                 };
