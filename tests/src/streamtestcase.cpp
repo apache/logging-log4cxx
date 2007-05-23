@@ -84,21 +84,21 @@ public:
 
         void testConstructor() {
           LoggerPtr root(Logger::getRootLogger());
-          log4cxx::logstream stream(root, log4cxx::Level::INFO);
+          log4cxx::logstream stream(root, log4cxx::Level::getInfo());
           CPPUNIT_ASSERT_EQUAL(0, (int) stream.width());
           CPPUNIT_ASSERT_EQUAL(6, (int) stream.precision());
         }
 
         void testSimple() {
             LoggerPtr root(Logger::getRootLogger());
-            log4cxx::logstream stream(root, log4cxx::Level::INFO);
+            log4cxx::logstream stream(root, log4cxx::Level::getInfo());
             stream << "This is a test" << LOG4CXX_ENDMSG;
             CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
         }
 
         void testSimpleWithFlush() {
            LoggerPtr root(Logger::getRootLogger());
-           log4cxx::logstream stream(root, log4cxx::Level::INFO);
+           log4cxx::logstream stream(root, log4cxx::Level::getInfo());
            stream << "This is a test\n";
            stream.flush();
            CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
@@ -106,14 +106,14 @@ public:
 
         void testSimpleWithoutFlush() {
           LoggerPtr root(Logger::getRootLogger());
-          log4cxx::logstream stream(root, log4cxx::Level::INFO);
+          log4cxx::logstream stream(root, log4cxx::Level::getInfo());
           stream << "This is a test\n";
           CPPUNIT_ASSERT_EQUAL((size_t) 0, vectorAppender->getVector().size());
         }
 
         void testMultiple() {
            LoggerPtr root(Logger::getRootLogger());
-           log4cxx::logstream stream(root, log4cxx::Level::INFO);
+           log4cxx::logstream stream(root, log4cxx::Level::getInfo());
            stream << "This is a test" << LOG4CXX_ENDMSG;
            stream << "This is another test message" << LOG4CXX_ENDMSG;
            CPPUNIT_ASSERT_EQUAL((size_t) 2, vectorAppender->getVector().size());
@@ -121,8 +121,8 @@ public:
 
        void testShortCircuit() {
          LoggerPtr logger(Logger::getLogger("StreamTestCase.shortCircuit"));
-         logger->setLevel(log4cxx::Level::INFO);
-         log4cxx::logstream stream(logger, log4cxx::Level::DEBUG);
+         logger->setLevel(log4cxx::Level::getInfo());
+         log4cxx::logstream stream(logger, log4cxx::Level::getDebug());
          ExceptionOnInsert someObj;
          stream << someObj << LOG4CXX_ENDMSG;
          CPPUNIT_ASSERT_EQUAL((size_t) 0, vectorAppender->getVector().size());
@@ -130,7 +130,7 @@ public:
 
        void testScientific() {
            LoggerPtr root(Logger::getRootLogger());
-           log4cxx::logstream stream(root, log4cxx::Level::INFO);
+           log4cxx::logstream stream(root, log4cxx::Level::getInfo());
            stream //<< std::scientific
                   << 0.000001115
                   << LOG4CXX_ENDMSG;
@@ -142,7 +142,7 @@ public:
 
        void testPrecision() {
           LoggerPtr root(Logger::getRootLogger());
-          log4cxx::logstream stream(root, log4cxx::Level::INFO);
+          log4cxx::logstream stream(root, log4cxx::Level::getInfo());
           stream.precision(4);
           stream << std::fixed
               << 1.000001
@@ -155,7 +155,7 @@ public:
 
       void testWidth() {
           LoggerPtr root(Logger::getRootLogger());
-          log4cxx::logstream stream(root, log4cxx::Level::INFO);
+          log4cxx::logstream stream(root, log4cxx::Level::getInfo());
           stream.width(5);
           stream.precision(2);
           stream << std::fixed
@@ -178,7 +178,7 @@ public:
 
        void testGetStream() {
          LoggerPtr root(Logger::getRootLogger());
-         log4cxx::logstream stream(root, log4cxx::Level::INFO);
+         log4cxx::logstream stream(root, log4cxx::Level::getInfo());
          addMessage(stream.getStream());
          stream << LOG4CXX_ENDMSG;
          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
@@ -189,8 +189,8 @@ public:
 
        void testGetStreamDebug() {
           LoggerPtr logger(Logger::getLogger("StreamTestCase.getStreamDebug"));
-          logger->setLevel(log4cxx::Level::INFO);
-          log4cxx::logstream stream(logger, log4cxx::Level::DEBUG);
+          logger->setLevel(log4cxx::Level::getInfo());
+          log4cxx::logstream stream(logger, log4cxx::Level::getDebug());
           addMessage(stream.getStream());
           stream << LOG4CXX_ENDMSG;
           CPPUNIT_ASSERT_EQUAL((size_t) 0, vectorAppender->getVector().size());
@@ -199,10 +199,10 @@ public:
 
        void testInsertLevel() {
           LoggerPtr logger(Logger::getLogger("StreamTestCase.insertLevel"));
-          logger->setLevel(log4cxx::Level::INFO);
-          log4cxx::logstream stream(logger, log4cxx::Level::DEBUG);
+          logger->setLevel(log4cxx::Level::getInfo());
+          log4cxx::logstream stream(logger, log4cxx::Level::getDebug());
           stream
-              << log4cxx::Level::WARN
+              << log4cxx::Level::getWarn()
               << "This message must get through"
               << LOG4CXX_ENDMSG;
           CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
@@ -210,7 +210,7 @@ public:
 
        void testInsertLocation() {
           LoggerPtr logger(Logger::getRootLogger());
-          log4cxx::logstream stream(logger, log4cxx::Level::DEBUG);
+          log4cxx::logstream stream(logger, log4cxx::Level::getDebug());
           stream << LOG4CXX_LOCATION;
        }
 

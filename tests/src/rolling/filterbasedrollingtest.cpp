@@ -79,7 +79,7 @@ public:
     FilterBasedTriggeringPolicyPtr fbtp(new FilterBasedTriggeringPolicy());
 
     LevelRangeFilterPtr rf(new LevelRangeFilter());
-    rf->setLevelMin(Level::INFO);
+    rf->setLevelMin(Level::getInfo());
     fbtp->addFilter(rf);
 
     Pool p;
@@ -96,7 +96,7 @@ public:
     rfa->setTriggeringPolicy(fbtp);
     rfa->activateOptions(p);
     Logger::getRootLogger()->addAppender(rfa);
-    Logger::getRootLogger()->setLevel(Level::DEBUG);
+    Logger::getRootLogger()->setLevel(Level::getDebug());
 
     common(LOG4CXX_STR("output/filterBased-test2"));
   }

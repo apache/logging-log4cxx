@@ -647,7 +647,7 @@ Logs a message to a specified logger with the INFO level.
 */
 #define LOG4CXX_INFO(logger, message) { \
         if (logger->isInfoEnabled()) {\
-            logger->forcedLog(::log4cxx::Level::INFO, message, LOG4CXX_LOCATION); }}
+            logger->forcedLog(::log4cxx::Level::getInfo(), message, LOG4CXX_LOCATION); }}
 
 /**
 Logs a message to a specified logger with the WARN level.
@@ -657,7 +657,7 @@ Logs a message to a specified logger with the WARN level.
 */
 #define LOG4CXX_WARN(logger, message) { \
         if (logger->isWarnEnabled()) {\
-            logger->forcedLog(::log4cxx::Level::WARN, message, LOG4CXX_LOCATION); }}
+            logger->forcedLog(::log4cxx::Level::getWarn(), message, LOG4CXX_LOCATION); }}
 
 /**
 Logs a message to a specified logger with the ERROR level.
@@ -689,7 +689,7 @@ Logs a message to a specified logger with the FATAL level.
 */
 #define LOG4CXX_FATAL(logger, message) { \
         if (logger->isFatalEnabled()) {\
-            logger->forcedLog(::log4cxx::Level::FATAL, message, LOG4CXX_LOCATION); }}
+            logger->forcedLog(::log4cxx::Level::getFatal(), message, LOG4CXX_LOCATION); }}
 
 /**
 Logs a localized message with no parameter.

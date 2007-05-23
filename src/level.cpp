@@ -199,18 +199,3 @@ void Level::toString(std::wstring& str) const {
 }
 #endif
 
-//
-//   may be declared by some platform headers
-//
-#undef ERROR
-#undef DEBUG
-
-const LevelPtr Level::OFF(Level::getOff());
-const LevelPtr Level::FATAL(Level::getFatal());
-const LevelPtr Level::ERROR(Level::getError());
-const LevelPtr Level::WARN(Level::getWarn());
-const LevelPtr Level::INFO(Level::getInfo());
-const LevelPtr Level::DEBUG(Level::getDebug());
-const LevelPtr Level::ALL(Level::getAll());
-
-

@@ -132,13 +132,13 @@ public:
                 ERRlogger->setLevel(Level::getError());
 
                 LoggerPtr INF = Logger::getLogger(LOG4CXX_TEST_STR("INF"));
-                INF->setLevel(Level::INFO);
+                INF->setLevel(Level::getInfo());
 
                 LoggerPtr INF_ERR = Logger::getLogger(LOG4CXX_TEST_STR("INF.ERR"));
                 INF_ERR->setLevel(Level::getError());
 
                 LoggerPtr DEB = Logger::getLogger(LOG4CXX_TEST_STR("DEB"));
-                DEB->setLevel(Level::DEBUG);
+                DEB->setLevel(Level::getDebug());
 
                 // Note: categories with undefined level
                 LoggerPtr INF_UNDEF = Logger::getLogger(LOG4CXX_TEST_STR("INF.UNDEF"));

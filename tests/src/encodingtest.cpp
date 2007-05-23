@@ -143,7 +143,7 @@ public:
         appender->setLayout(layout);
         appender->activateOptions(p);
         logger->addAppender(appender);
-        logger->setLevel(Level::INFO);
+        logger->setLevel(Level::getInfo());
     }
 
     /**

@@ -84,7 +84,7 @@ public:
       logger = Logger::getLogger(LOG4CXX_TEST_STR("org.foobar"));
 
       event = new LoggingEvent(
-         logger, Level::INFO, LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION);
+         logger, Level::getInfo(), LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION);
    }
 
    void tearDown()

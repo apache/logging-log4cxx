@@ -77,7 +77,7 @@ public:
         static void test()
         {
                 int i = 0;
-                logstream log(logger, Level::DEBUG);
+                logstream log(logger, Level::getDebug());
                 while(true)
                 {
                         log << L"MSG " << i++ << LOG4CXX_ENDMSG;

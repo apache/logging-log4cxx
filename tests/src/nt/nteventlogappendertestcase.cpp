@@ -79,7 +79,7 @@ public:
                 LoggerPtr logger(Logger::getLogger("org.foobar"));
 
                 LoggingEventPtr event(new LoggingEvent(
-                    logger, Level::INFO, LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));
+                    logger, Level::getInfo(), LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));
                 appender->doAppend(event, p);
             }
             hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");

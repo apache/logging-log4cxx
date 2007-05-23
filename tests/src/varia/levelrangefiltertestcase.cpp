@@ -78,7 +78,7 @@ public:
 
                 // set appender on root and set level to debug
                 root->addAppender(appender);
-                root->setLevel(Level::DEBUG);
+                root->setLevel(Level::getDebug());
 
                 int passCount = 0;
                 LogString sbuf(LOG4CXX_STR("pass "));
@@ -91,7 +91,7 @@ public:
                 passCount++;
 
                 // test with a min set
-                rangeFilter->setLevelMin(Level::WARN);
+                rangeFilter->setLevelMin(Level::getWarn());
                 sbuf.assign(LOG4CXX_STR("pass "));
                 sbuf.append(StringHelper::toString(passCount, pool));
                 sbuf.append(LOG4CXX_STR("; min set to WARN, max not set"));
@@ -104,7 +104,7 @@ public:
                 appender->addFilter(rangeFilter);
 
                 //test with max set
-                rangeFilter->setLevelMax(Level::WARN);
+                rangeFilter->setLevelMax(Level::getWarn());
                 sbuf.assign(LOG4CXX_STR("pass "));
                 sbuf.append(StringHelper::toString(passCount, pool));
                 sbuf.append(LOG4CXX_STR("; min not set, max set to WARN"));
@@ -163,7 +163,7 @@ public:
 
                 // set appender on root and set level to debug
                 root->addAppender(appender);
-                root->setLevel(Level::DEBUG);
+                root->setLevel(Level::getDebug());
 
                 int passCount = 0;
                 LogString sbuf(LOG4CXX_STR("pass "));
@@ -177,7 +177,7 @@ public:
                 passCount++;
 
                 // test with a min set
-                rangeFilter->setLevelMin(Level::WARN);
+                rangeFilter->setLevelMin(Level::getWarn());
                 sbuf.assign(LOG4CXX_STR("pass "));
 
                 sbuf.append(StringHelper::toString(passCount, pool));
@@ -191,7 +191,7 @@ public:
                 appender->addFilter(rangeFilter);
 
                 //test with max set
-                rangeFilter->setLevelMax(Level::WARN);
+                rangeFilter->setLevelMax(Level::getWarn());
                 sbuf.assign(LOG4CXX_STR("pass "));
 
                 sbuf.append(StringHelper::toString(passCount, pool));

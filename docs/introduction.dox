@@ -273,7 +273,7 @@ log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("com.foo"));
 // Now set its level. Normally you do not need to set the
 // level of a logger programmatically. This is usually done
 // in configuration files.
-logger->setLevel(log4cxx::Level::INFO);
+logger->setLevel(log4cxx::Level::getInfo());
 
 log4cxx::LoggerPtr barlogger(Logger::getLogger(("com.foo.Bar"));
 

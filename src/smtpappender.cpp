@@ -39,7 +39,7 @@ IMPLEMENT_LOG4CXX_OBJECT(SMTPAppender)
 
 bool DefaultEvaluator::isTriggeringEvent(const spi::LoggingEventPtr& event)
 {
-   return event->getLevel()->isGreaterOrEqual(Level::ERROR);
+   return event->getLevel()->isGreaterOrEqual(Level::getError());
 }
 
 SMTPAppender::SMTPAppender()

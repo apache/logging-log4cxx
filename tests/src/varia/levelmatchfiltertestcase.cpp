@@ -79,10 +79,10 @@ public:
 
                 // set appender on root and set level to debug
                 root->addAppender(appender);
-                root->setLevel(Level::DEBUG);
+                root->setLevel(Level::getDebug());
 
                 LevelPtr levelArray[] =
-                        { Level::DEBUG, Level::INFO, Level::WARN, Level::getError(), Level::FATAL };
+                        { Level::getDebug(), Level::getInfo(), Level::getWarn(), Level::getError(), Level::getFatal() };
 
                 int length = sizeof(levelArray)/sizeof(levelArray[0]);
 
@@ -117,10 +117,10 @@ public:
 
                 // set appender on root and set level to debug
                 root->addAppender(appender);
-                root->setLevel(Level::DEBUG);
+                root->setLevel(Level::getDebug());
 
                 LevelPtr levelArray[] =
-                        { Level::DEBUG, Level::INFO, Level::WARN, Level::getError(), Level::FATAL };
+                        { Level::getDebug(), Level::getInfo(), Level::getWarn(), Level::getError(), Level::getFatal() };
 
                 int length = sizeof(levelArray)/sizeof(levelArray[0]);
 

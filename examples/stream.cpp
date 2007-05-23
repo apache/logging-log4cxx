@@ -36,21 +36,21 @@ int main()
 
                 NDC::push("trivial context");
 
-                log4cxx::logstream logstream(rootLogger, Level::DEBUG);
+                log4cxx::logstream logstream(rootLogger, Level::getDebug());
                 logstream << "debug message " << 1 << LOG4CXX_ENDMSG;
-                logstream.setLevel(Level::INFO);
+                logstream.setLevel(Level::getInfo());
 #if LOG4CXX_HAS_WCHAR_T
                 logstream << L"info message" << LOG4CXX_ENDMSG;
 #else
                 logstream << "info message" << LOG4CXX_ENDMSG;
 #endif
-                logstream << Level::WARN << "warn message" << LOG4CXX_ENDMSG;
+                logstream << Level::getWarn() << "warn message" << LOG4CXX_ENDMSG;
 #if LOG4CXX_HAS_WCHAR_T
-                logstream << Level::ERROR << L"error message" << LOG4CXX_ENDMSG;
+                logstream << Level::getError() << L"error message" << LOG4CXX_ENDMSG;
 #else
-                logstream << Level::ERROR << "error message" << LOG4CXX_ENDMSG;
+                logstream << Level::getError() << "error message" << LOG4CXX_ENDMSG;
 #endif
-                logstream << Level::FATAL << "fatal message" << LOG4CXX_ENDMSG;
+                logstream << Level::getFatal() << "fatal message" << LOG4CXX_ENDMSG;
 
 
                 NDC::pop();

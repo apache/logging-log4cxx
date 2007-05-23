@@ -25,21 +25,6 @@
 #include <log4cxx/helpers/objectptr.h>
 
 
-//
-//   ERROR and DEBUG may be defined by Microsoft Platform headers and will conflict
-//      with the defintion of log4cxx::Level::ERROR and log4cxx::Level::DEBUG below.
-//      log4cxx::level::getError() can be used in place of log4cxx::Level::ERROR.
-#if defined(ERROR)
-#define LOGCXX_PLATFORM_ERROR ERROR
-#undef ERROR
-#endif
-
-#if defined(DEBUG)
-#define LOGCXX_PLATFORM_DEBUG DEBUG
-#undef DEBUG
-#endif
-
-
 namespace log4cxx
 {
     class Level;
@@ -129,43 +114,6 @@ namespace log4cxx
                     ALL_INT = INT_MIN
                 };
 
-                /**
-                The <code>ALL</code> level designates all the levels
-                */
-                static const LevelPtr ALL;
-
-                /**
-                The <code>FATAL</code> level designates very severe error
-                events that will presumably lead the application to abort.
-                */
-                static const LevelPtr FATAL;
-
-                /**
-                The <code>ERROR</code> level designates error events that
-                might still allow the application to continue running.  */
-                static const LevelPtr ERROR;
-
-                /**
-                The <code>WARN</code> level designates potentially harmful situations.
-                */
-                static const LevelPtr WARN;
-
-                /**
-                The <code>INFO</code> level designates informational messages
-                that highlight the progress of the application at coarse-grained
-                level.  */
-                static const LevelPtr INFO;
-
-                /**
-                The <code>DEBUG</code> level designates fine-grained
-                informational events that are most useful to debug an
-                application.  */
-                static const LevelPtr DEBUG;
-
-                /**
-                The <code>OFF</code> level designates not set level
-                */
-                static const LevelPtr OFF;
 
                 static const LevelPtr& getAll();
                 static const LevelPtr& getFatal();

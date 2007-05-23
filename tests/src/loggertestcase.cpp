@@ -226,59 +226,59 @@ public:
                 LoggerRepositoryPtr h = LogManager::getLoggerRepository();
 
                 //h.disableDebug();
-                h->setThreshold(Level::INFO);
+                h->setThreshold(Level::getInfo());
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 0);
 
                 root->debug(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 0);
                 root->info(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 1);
-                root->log(Level::WARN, MSG);
+                root->log(Level::getWarn(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 2);
                 root->warn(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 3);
 
                 //h.disableInfo();
-                h->setThreshold(Level::WARN);
+                h->setThreshold(Level::getWarn());
                 root->debug(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 3);
                 root->info(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 3);
-                root->log(Level::WARN, MSG);
+                root->log(Level::getWarn(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 4);
                 root->error(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 5);
-                root->log(Level::ERROR, MSG);
+                root->log(Level::getError(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
 
                 //h.disableAll();
-                h->setThreshold(Level::OFF);
+                h->setThreshold(Level::getOff());
                 root->debug(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->info(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
-                root->log(Level::WARN, MSG);
+                root->log(Level::getWarn(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->error(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
-                root->log(Level::FATAL, MSG);
+                root->log(Level::getFatal(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
-                root->log(Level::FATAL, MSG);
+                root->log(Level::getFatal(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
 
                 //h.disable(Level::getFatalLevel());
-                h->setThreshold(Level::OFF);
+                h->setThreshold(Level::getOff());
                 root->debug(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->info(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
-                root->log(Level::WARN, MSG);
+                root->log(Level::getWarn(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->error(MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
-                root->log(Level::WARN, MSG);
+                root->log(Level::getWarn(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
-                root->log(Level::FATAL, MSG);
+                root->log(Level::getFatal(), MSG);
                 CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
         }
 
@@ -392,7 +392,7 @@ public:
                 LoggerPtr a0 = h->getLogger(LOG4CXX_STR("a"));
                 CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("a"), a0->getName());
                 CPPUNIT_ASSERT(a0->getLevel() == 0);
-                CPPUNIT_ASSERT(Level::ERROR == a0->getEffectiveLevel());
+                CPPUNIT_ASSERT(Level::getError() == a0->getEffectiveLevel());
 
                 LoggerPtr a11 = h->getLogger(LOG4CXX_STR("a"));
                 CPPUNIT_ASSERT_EQUAL(a0, a11);

@@ -85,7 +85,7 @@ int main(int argc, const char * const argv[])
         try
         {
                 LoggerPtr logger = Logger::getLogger("SimpleSocketServer");
-                log4cxx::logstream logstream(logger, Level::INFO);
+                log4cxx::logstream logstream(logger, Level::getInfo());
 
                 logstream << "Listening on port " << port;
 

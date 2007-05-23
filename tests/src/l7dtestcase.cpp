@@ -82,20 +82,20 @@ public:
                 {
                         root->setResourceBundle(bundles[i]);
 
-                        LOG4CXX_L7DLOG(root, Level::DEBUG, LOG4CXX_TEST_STR("bogus1"));
-                        LOG4CXX_L7DLOG(root, Level::INFO, LOG4CXX_TEST_STR("test"));
-                        LOG4CXX_L7DLOG(root, Level::WARN, LOG4CXX_TEST_STR("hello_world"));
+                        LOG4CXX_L7DLOG(root, Level::getDebug(), LOG4CXX_TEST_STR("bogus1"));
+                        LOG4CXX_L7DLOG(root, Level::getInfo(), LOG4CXX_TEST_STR("test"));
+                        LOG4CXX_L7DLOG(root, Level::getWarn(), LOG4CXX_TEST_STR("hello_world"));
 
 
                         StringBuffer os;
                         os << (i + 1);
-                        LOG4CXX_L7DLOG2(root, Level::DEBUG, LOG4CXX_TEST_STR("msg1"), os.str().c_str(),
+                        LOG4CXX_L7DLOG2(root, Level::getDebug(), LOG4CXX_TEST_STR("msg1"), os.str().c_str(),
                                  LOG4CXX_TEST_STR("log4j"));
                         LOG4CXX_L7DLOG2(root, Level::getError(), LOG4CXX_TEST_STR("bogusMsg"), os.str().c_str(),
                                  LOG4CXX_TEST_STR("log4j"));
                         LOG4CXX_L7DLOG2(root, Level::getError(), LOG4CXX_TEST_STR("msg1"), os.str().c_str(),
                                  LOG4CXX_TEST_STR("log4j"));
-                        LOG4CXX_L7DLOG(root, Level::INFO, LOG4CXX_TEST_STR("bogus2"));
+                        LOG4CXX_L7DLOG(root, Level::getInfo(), LOG4CXX_TEST_STR("bogus2"));
                 }
 
                 CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),

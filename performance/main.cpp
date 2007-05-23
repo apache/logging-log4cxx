@@ -53,7 +53,7 @@ public:
   static int main(std::vector<LogString>& args)  {
     LoggerPtr j(Logger::getLogger("org.apache.log4j.joran"));
     j->setAdditivity(false);
-    j->setLevel(Level::WARN);
+    j->setLevel(Level::getWarn());
     AppenderPtr a(new ConsoleAppender());
     a->setLayout(new PatternLayout(LOG4CXX_STR("%d %level %c - %m%n")));
     a->setName(LOG4CXX_STR("console"));
@@ -142,7 +142,7 @@ public:
   static long loopStream(long len, LoggerPtr& logger1) {
     const char* msg = "Some fix message of medium length.";
     apr_time_t before = apr_time_now();
-    logstream ls(logger1, Level::DEBUG);
+    logstream ls(logger1, Level::getDebug());
     for (int i = 0; i < len; i++) {
       ls << msg << LOG4CXX_ENDMSG;
     }
@@ -153,7 +153,7 @@ public:
    static long loopWideStream(long len, LoggerPtr& logger1) {
     const wchar_t* msg = L"Some fix message of medium length.";
     apr_time_t before = apr_time_now();
-    logstream ls(logger1, Level::DEBUG);
+    logstream ls(logger1, Level::getDebug());
     for (int i = 0; i < len; i++) {
       ls << msg << LOG4CXX_ENDMSG;
     }
@@ -165,7 +165,7 @@ public:
     const char* msg = "Some fix message of medium length.";
     apr_time_t before = apr_time_now();
     for (int i = 0; i < len; i++) {
-      logstream ls(logger1, Level::DEBUG);
+      logstream ls(logger1, Level::getDebug());
       ls << msg << LOG4CXX_ENDMSG;
     }
     return (apr_time_now() - before) / 1000;
@@ -176,7 +176,7 @@ public:
     const wchar_t* msg = L"Some fix message of medium length.";
     apr_time_t before = apr_time_now();
     for (int i = 0; i < len; i++) {
-      logstream ls(logger1, Level::DEBUG);
+      logstream ls(logger1, Level::getDebug());
       ls << msg << LOG4CXX_ENDMSG;
     }
     return (apr_time_now() - before) / 1000;
