@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-EXTRA_DIST = Doxyfile mainpage.dox introduction.dox
+EXTRA_DIST = Doxyfile mainpage.dox introduction.dox simplesocketserver.1
 
 # DOC is defined if installer requests doc generation.
 
