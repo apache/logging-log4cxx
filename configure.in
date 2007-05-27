@@ -370,6 +370,7 @@ fi
 
 AC_CONFIG_FILES([
 Makefile
+liblog4cxx.pc
 docs/Makefile
 docs/Doxyfile
 src/Makefile
