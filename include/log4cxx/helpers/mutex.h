@@ -20,6 +20,7 @@
 
 #include <log4cxx/log4cxx.h>
 
+typedef void log4cxx_pool_t;
 typedef void log4cxx_thread_mutex_t;
 
 namespace log4cxx
@@ -32,6 +33,7 @@ namespace log4cxx
                 {
                 public:
                         Mutex(log4cxx::helpers::Pool& p);
+                        Mutex(log4cxx_pool_t* p);
                         ~Mutex();
                         log4cxx_thread_mutex_t* getAPRMutex() const;
 

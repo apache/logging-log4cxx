@@ -19,6 +19,7 @@
 #define _LOG4CXX_HELPERS_LOG_LOG_H
 
 #include <log4cxx/logstring.h>
+#include <log4cxx/helpers/mutex.h>
 #include <exception>
 
 namespace log4cxx
@@ -40,13 +41,19 @@ namespace log4cxx
                 */
                 class LOG4CXX_EXPORT LogLog
                 {
-                protected:
-                        static bool debugEnabled;
+                private:
+                        bool debugEnabled;
 
                   /**
                          In quietMode not even errors generate any output.
                    */
-                        static bool quietMode;
+                        bool quietMode;
+                        Mutex mutex;
+                        LogLog();
+                        LogLog(const LogLog&);
+                        LogLog& operator=(const LogLog&);
+      			static LogLog& getInstance();
+ 
 
                 public:
                         /**
@@ -72,12 +79,12 @@ namespace log4cxx
 
 
                         /**
-                        In quite mode LogLog generates strictly no output, not even
+                        In quiet mode LogLog generates strictly no output, not even
                         for errors.
 
                         @param quietMode <code>true</code> for no output.
                         */
-                        static void setQuietMode(bool quietMode);
+                        static void setQuietMode(bool quietMode);     
 
                         /**
                         This method is used to output log4cxx internal warning

@@ -38,6 +38,18 @@ Mutex::Mutex(Pool& p) {
 #endif
 }
 
+Mutex::Mutex(log4cxx_pool_t* p) {
+#if APR_HAS_THREADS
+        apr_thread_mutex_t* aprMutex = NULL;
+        apr_status_t stat = apr_thread_mutex_create(&aprMutex,
+                APR_THREAD_MUTEX_NESTED, (apr_pool_t*) p);
+        if (stat != APR_SUCCESS) {
+                throw MutexException(stat);
+        }
+        mutex = aprMutex;
+#endif
+}
+
 
 Mutex::~Mutex() {
 #if APR_HAS_THREADS

@@ -20,21 +20,34 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <iostream>
 #include <log4cxx/private/log4cxx_private.h>
+#include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-bool LogLog::debugEnabled = false;
-bool LogLog::quietMode = false;
+LogLog::LogLog() : mutex((log4cxx_pool_t*) APRInitializer::getRootPool()) {
+    synchronized sync(mutex);
+    debugEnabled = false;
+    quietMode = false;
+}
+
+LogLog& LogLog::getInstance() {
+    static LogLog internalLogger;
+    return internalLogger;
+}
+
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
-        LogLog::debugEnabled = debugEnabled1;
+        synchronized sync(getInstance().mutex);
+        getInstance().debugEnabled = debugEnabled1;
 }
 
 void LogLog::debug(const LogString& msg)
 {
-        if(debugEnabled && !quietMode)
+        synchronized sync(getInstance().mutex);
+        if(getInstance().debugEnabled && !getInstance().quietMode)
         {
                 emit(msg);
         }
@@ -42,6 +55,7 @@ void LogLog::debug(const LogString& msg)
 
 void LogLog::debug(const LogString& msg, const std::exception& e)
 {
+        synchronized sync(getInstance().mutex);
         debug(msg);
         emit(e.what());
 }
@@ -49,32 +63,36 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 
 void LogLog::error(const LogString& msg)
 {
-        if(quietMode)
-                return;
-        emit(msg);
+        synchronized sync(getInstance().mutex);
+        if(!getInstance().quietMode) {
+            emit(msg);
+        }
 }
 
 void LogLog::error(const LogString& msg, const std::exception& e)
 {
+        synchronized sync(getInstance().mutex);
         error(msg);
         emit(e.what());
 }
 
 void LogLog::setQuietMode(bool quietMode1)
 {
-        LogLog::quietMode = quietMode1;
+        synchronized sync(getInstance().mutex);
+        getInstance().quietMode = quietMode1;
 }
 
 void LogLog::warn(const LogString& msg)
 {
-        if(quietMode)
-                return;
-
-        emit(msg);
+        synchronized sync(getInstance().mutex);
+        if(!getInstance().quietMode) {
+           emit(msg);
+        }
 }
 
 void LogLog::warn(const LogString& msg, const std::exception& e)
 {
+        synchronized sync(getInstance().mutex);
         warn(msg);
         emit(e.what());
 }
