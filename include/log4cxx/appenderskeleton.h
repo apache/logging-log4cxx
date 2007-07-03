@@ -67,7 +67,7 @@ namespace log4cxx
                 /**
                 Is this appender closed?
                 */
-                volatile unsigned int closed;
+                bool closed;
 
                 log4cxx::helpers::Pool pool;
                 log4cxx::helpers::Mutex mutex;

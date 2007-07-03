@@ -43,13 +43,17 @@ IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 Hierarchy::Hierarchy() : 
 pool(),
-mutex(pool), configured(false),
-thresholdInt(Level::ALL_INT), threshold(Level::getAll()),
-emittedNoAppenderWarning(false), emittedNoResourceBundleWarning(false)
+mutex(pool)
 {
+        synchronized sync(mutex);
         root = new RootCategory(pool, Level::getDebug());
         root->setHierarchy(this);
         defaultFactory = new DefaultCategoryFactory();
+        emittedNoAppenderWarning = false;
+        configured = false;
+        thresholdInt = Level::ALL_INT;
+        threshold = Level::getAll();
+        emittedNoResourceBundleWarning = false;
 }
 
 Hierarchy::~Hierarchy()
@@ -58,6 +62,7 @@ Hierarchy::~Hierarchy()
 
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
+        synchronized sync(mutex);
         if (std::find(listeners.begin(), listeners.end(), listener) != listeners.end())
         {
                 LogLog::warn(LOG4CXX_STR("Ignoring attempt to add an existent listener."));
@@ -76,13 +81,19 @@ void Hierarchy::clear()
 
 void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
 {
+       bool emitWarning = false;
+       { 
+           synchronized sync(mutex);
+           emitWarning = !emittedNoAppenderWarning;
+           emittedNoAppenderWarning = true;
+       }
+          
         // No appender in hierarchy, warn user only once.
-        if(!this->emittedNoAppenderWarning)
+        if(emitWarning)
         {
                 LogLog::warn(((LogString) LOG4CXX_STR("No appender could be found for logger ("))
                    + logger->getName() + LOG4CXX_STR(")."));
                 LogLog::warn(LOG4CXX_STR("Please initialize the log4cxx system properly."));
-                this->emittedNoAppenderWarning = true;
         }
 }
 
@@ -106,8 +117,9 @@ void Hierarchy::setThreshold(const LevelPtr& l)
 {
         if (l != 0)
         {
-                thresholdInt = l->toInt();
-                threshold = l;
+            synchronized sync(mutex);
+            thresholdInt = l->toInt();
+            threshold = l;
             if (thresholdInt != Level::ALL_INT) {
                setConfigured(true);
             }
@@ -130,11 +142,17 @@ void Hierarchy::setThreshold(const LogString& levelStr) {
 
 void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
 {
-   setConfigured(true);
-    HierarchyEventListenerList::iterator it, itEnd = listeners.end();
+    setConfigured(true);
+    HierarchyEventListenerList clonedList;
+    { 
+       synchronized sync(mutex);
+       clonedList = listeners;
+    }
+
+    HierarchyEventListenerList::iterator it, itEnd = clonedList.end();
     HierarchyEventListenerPtr listener;
 
-    for(it = listeners.begin(); it != itEnd; it++)
+    for(it = clonedList.begin(); it != itEnd; it++)
         {
                 listener = *it;
                 listener->addAppenderEvent(logger, appender);
@@ -144,10 +162,15 @@ void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr&
 void Hierarchy::fireRemoveAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
 
 {
-    HierarchyEventListenerList::iterator it, itEnd = listeners.end();
+    HierarchyEventListenerList clonedList;
+    { 
+       synchronized sync(mutex);
+       clonedList = listeners;
+    }
+    HierarchyEventListenerList::iterator it, itEnd = clonedList.end();
     HierarchyEventListenerPtr listener;
 
-    for(it = listeners.begin(); it != itEnd; it++)
+    for(it = clonedList.begin(); it != itEnd; it++)
         {
                 listener = *it;
                 listener->removeAppenderEvent(logger, appender);
@@ -217,13 +240,12 @@ LoggerPtr Hierarchy::getRootLogger() const
 
 bool Hierarchy::isDisabled(int level) const
 {
-   //
-   //   if repository hasn't been configured,
-   //     do default configuration
-   //
-   if (apr_atomic_xchg32(const_cast<volatile unsigned int*>(&configured), 1) == 0) {
+   if(!configured) {
+      synchronized sync(mutex);
+      if (!configured) {
         DefaultConfigurator::configure(
             const_cast<Hierarchy*>(this));
+      }
    }
 
    return thresholdInt > level;
@@ -354,9 +376,10 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 }
 
 void Hierarchy::setConfigured(bool newValue) {
-    apr_atomic_set32(&configured, newValue ? 1 : 0);
+    synchronized sync(mutex);
+    configured = newValue;
 }
 
 bool Hierarchy::isConfigured() {
-    return configured ? true : false;
+    return configured;
 }

@@ -79,11 +79,16 @@ void SocketHubAppender::setOption(const LogString& option,
 
 void SocketHubAppender::close()
 {
-        apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
-        if (wasClosed) return;
+        {
+            synchronized sync(mutex);
+            if (closed) {
+                return;
+            }
+            closed = true;
+        }
 
         LogLog::debug(LOG4CXX_STR("closing SocketHubAppender ") + getName());
-    //
+        //
         //  wait until the server thread completes
         //
         thread.join();
@@ -168,7 +173,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* /* thread */,
                 return NULL;
         }
 
-        apr_uint32_t stopRunning = apr_atomic_read32(&pThis->closed);
+        bool stopRunning = pThis->closed;
         while (!stopRunning)
         {
                 SocketPtr socket;
@@ -183,7 +188,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* /* thread */,
                 catch (SocketException& e)
                 {
                         LogLog::error(LOG4CXX_STR("exception accepting socket, shutting down server socket."), e);
-                        stopRunning = 1;
+                        stopRunning = true;
                 }
                 catch (IOException& e)
                 {

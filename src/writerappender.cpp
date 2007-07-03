@@ -27,19 +27,24 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(WriterAppender)
 
-WriterAppender::WriterAppender()
-: immediateFlush(true) {
+WriterAppender::WriterAppender() {
+   synchronized sync(mutex);
+   immediateFlush = true;
 }
 
 WriterAppender::WriterAppender(const LayoutPtr& layout1,
                log4cxx::helpers::WriterPtr& writer1)
-    : AppenderSkeleton(layout1), immediateFlush(true), writer(writer1) {
+    : AppenderSkeleton(layout1), writer(writer1) {
       Pool p;
+      synchronized sync(mutex);
+      immediateFlush = true;
       activateOptions(p);
 }
 
 WriterAppender::WriterAppender(const LayoutPtr& layout1)
-    : AppenderSkeleton(layout1), immediateFlush(true) {
+    : AppenderSkeleton(layout1) {
+    synchronized sync(mutex);
+    immediateFlush = true;
 }
 
 
@@ -198,9 +203,12 @@ void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
 {
         LogString msg;
         layout->format(msg, event, p);
-        writer->write(msg, p);
-        if (immediateFlush) {
+        {
+           synchronized sync(mutex);
+           writer->write(msg, p);
+           if (immediateFlush) {
 	        writer->flush(p);
+           }
         }
 }
 
@@ -210,6 +218,7 @@ void WriterAppender::writeFooter(Pool& p)
         if (layout != NULL) {
           LogString foot;
           layout->appendFooter(foot, p);
+          synchronized sync(mutex);
           writer->write(foot, p);
         }
 }
@@ -219,12 +228,14 @@ void WriterAppender::writeHeader(Pool& p)
         if(layout != NULL) {
           LogString header;
           layout->appendHeader(header, p);
+          synchronized sync(mutex);
           writer->write(header, p);
         }
 }
 
 
-void WriterAppender::setWriter(WriterPtr& newWriter) {
+void WriterAppender::setWriter(const WriterPtr& newWriter) {
+   synchronized sync(mutex);
    writer = newWriter;
 }
 
@@ -239,4 +250,10 @@ void WriterAppender::setOption(const LogString& option, const LogString& value) 
     } else {
       AppenderSkeleton::setOption(option, value);
     }
+}
+
+
+void WriterAppender::setImmediateFlush(bool value) { 
+    synchronized sync(mutex);
+    immediateFlush = value; 
 }

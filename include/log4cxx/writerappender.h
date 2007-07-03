@@ -100,8 +100,7 @@ namespace log4cxx
                 be recorded on disk when the application exits. This is a high
                 price to pay even for a 20% performance gain.
                 */
-                void setImmediateFlush(bool value) { immediateFlush = value; }
-
+                void setImmediateFlush(bool value);
                 /**
                 Returns value of the <b>ImmediateFlush</b> option.
                 */
@@ -174,7 +173,7 @@ namespace log4cxx
                   <p><b>WARNING:</b> Logging to an unopened Writer will fail.
                   <p>
                   @param writer An already opened Writer.  */
-                void setWriter(log4cxx::helpers::WriterPtr& writer);
+                void setWriter(const log4cxx::helpers::WriterPtr& writer);
 
                 virtual bool requiresLayout() const;
 

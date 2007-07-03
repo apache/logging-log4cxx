@@ -18,19 +18,29 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/helpers/synchronized.h>
 #include <apr_atomic.h>
 
 using namespace log4cxx::helpers;
 
 void ObjectPtrBase::checkNull(const int& null) {
-        if (null != 0)
-        {
-
-                throw IllegalArgumentException("Attempt to set pointer to a non-zero numeric value.");
-        }
+    if (null != 0) {
+       throw IllegalArgumentException("Attempt to set pointer to a non-zero numeric value.");
+    }
 }
 
-void* ObjectPtrBase::exchange(volatile void** destination, void* newValue) {
-   return apr_atomic_casptr(destination, newValue, (const void*) *destination);
+void* ObjectPtrBase::exchange(void** destination, void* newValue) {
+   static Mutex mutex(APRInitializer::getRootPool());
+   synchronized sync(mutex);
+   void* oldValue = *destination;
+   *destination = newValue;
+   return oldValue;
 }
 
+void* ObjectPtrBase::unsynchronizedExchange(void** destination, void* newValue) {
+   void* oldValue = *destination;
+   *destination = newValue;
+   return oldValue;
+}

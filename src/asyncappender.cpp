@@ -109,7 +109,8 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& /* p */ )
 
 void AsyncAppender::close()
 {
-        apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
+        bool wasClosed = closed;
+        closed = true;
         if (!wasClosed) {
                 pending.broadcast();
                 thread.join();

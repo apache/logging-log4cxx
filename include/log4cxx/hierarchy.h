@@ -66,7 +66,7 @@ namespace log4cxx
         private:
             log4cxx::helpers::Pool pool;
             log4cxx::helpers::Mutex mutex;
-            volatile log4cxx_uint32_t configured;
+            bool configured;
 
             spi::LoggerFactoryPtr defaultFactory;
             spi::HierarchyEventListenerList listeners;
@@ -84,11 +84,6 @@ namespace log4cxx
 
             bool emittedNoAppenderWarning;
             bool emittedNoResourceBundleWarning;
-
-            /**
-            Map synchronization
-            */
-            mutable apr_thread_mutex_t* mapCs;
 
         public:
             DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)

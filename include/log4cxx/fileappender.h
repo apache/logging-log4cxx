@@ -61,8 +61,6 @@ namespace log4cxx
                 How big should the IO buffer be? Default is 8K. */
                 int bufferSize;
 
-                volatile unsigned int fileClosed;
-
         public:
                 DECLARE_LOG4CXX_OBJECT(FileAppender)
                 BEGIN_LOG4CXX_CAST_MAP()
@@ -186,8 +184,7 @@ namespace log4cxx
                 <p>Note: Actual opening of the file is made when
                 #activateOptions is called, not when the options are set.
                 */
-                inline void setAppend(bool fileAppend1)
-                                { this->fileAppend = fileAppend1; }
+                void setAppend(bool fileAppend1);
 
                 /**
                 The <b>BufferedIO</b> option takes a boolean value. It is set to

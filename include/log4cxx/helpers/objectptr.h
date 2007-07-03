@@ -28,7 +28,8 @@ namespace log4cxx
         class LOG4CXX_EXPORT ObjectPtrBase {
         public:
             static void checkNull(const int& null);
-            static void* exchange(volatile void** destination, void* newValue);
+            static void* exchange(void** destination, void* newValue);
+            static void* unsynchronizedExchange(void** destination, void* newValue);
         };
 
 
@@ -37,32 +38,35 @@ namespace log4cxx
         {
         public:
          template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p1)
-            : p(0)
          {
+             ObjectPtrBase::exchange((void**) &p, 0);
              cast(p1);
          }
 
 
          ObjectPtrT(const int& null) //throw(IllegalArgumentException)
-                : p(0)
          {
+                ObjectPtrBase::exchange((void**) &p, 0);
                 ObjectPtrBase::checkNull(null);
          }
 
-         ObjectPtrT() : p(0)
+         ObjectPtrT()
          {
+                ObjectPtrBase::exchange((void**) &p, 0);
          }
 
-         ObjectPtrT(T * p1) : p(p1)
+         ObjectPtrT(T * p1)
             {
+                ObjectPtrBase::exchange((void**) &p, p1);
                 if (this->p != 0)
                 {
                     this->p->addRef();
                 }
             }
 
-            ObjectPtrT(const ObjectPtrT& p1) : p(p1.p)
+            ObjectPtrT(const ObjectPtrT& p1)
             {
+                ObjectPtrBase::exchange((void**) &p, p1.p);
                 if (this->p != 0)
                 {
                     this->p->addRef();
@@ -71,7 +75,7 @@ namespace log4cxx
 
             ~ObjectPtrT()
             {
-              void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, 0);
+              void* oldPtr = ObjectPtrBase::exchange((void**) &p, 0);
               if (oldPtr != 0) {
                   ((T*) oldPtr)->releaseRef();
               }
@@ -89,7 +93,7 @@ namespace log4cxx
              if (newPtr != 0) {
                  newPtr->addRef();
              }
-             void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, newPtr);
+             void* oldPtr = ObjectPtrBase::exchange((void**) &p, newPtr);
              if (oldPtr != 0) {
                  ((T*) oldPtr)->releaseRef();
              }
@@ -102,7 +106,7 @@ namespace log4cxx
                 //   throws IllegalArgumentException if null != 0
                 //
                 ObjectPtrBase::checkNull(null);
-                void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, 0);
+                void* oldPtr = ObjectPtrBase::exchange((void**) &p, 0);
                 if (oldPtr != 0) {
                    ((T*) oldPtr)->releaseRef();
                 }
@@ -113,7 +117,7 @@ namespace log4cxx
               if (p1 != 0) {
                 p1->addRef();
               }
-              void* oldPtr = ObjectPtrBase::exchange((volatile void**) &this->p, p1);
+              void* oldPtr = ObjectPtrBase::exchange((void**) &p, p1);
               if (oldPtr != 0) {
                  ((T*)oldPtr)->releaseRef();
               }
@@ -143,6 +147,7 @@ namespace log4cxx
         private:
             T * p;
         };
+
     }
 }
 

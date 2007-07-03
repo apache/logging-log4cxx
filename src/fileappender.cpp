@@ -26,6 +26,7 @@
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <log4cxx/helpers/bufferedwriter.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/synchronized.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -34,34 +35,50 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
 
-FileAppender::FileAppender()
-: fileAppend(true), fileName(), bufferedIO(false), bufferSize(8*1024),
-  fileClosed(1)
-{
+FileAppender::FileAppender() {
+    synchronized sync(mutex);
+    fileAppend = true;
+    bufferedIO = false;
+    bufferSize = 8 * 1024;
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
-        bool append1, bool bufferedIO1, int bufferSize1)
-: WriterAppender(layout1), fileAppend(append1), fileName(fileName1), bufferedIO(bufferedIO1), bufferSize(bufferSize1),
-  fileClosed(1)
-{
+        bool append1, bool bufferedIO1, int bufferSize1) 
+           : WriterAppender(layout1) {
+        {  
+            synchronized sync(mutex);
+            fileAppend = append1;
+            fileName = fileName1;
+            bufferedIO = bufferedIO1;
+            bufferSize = bufferSize1;
+         }
         Pool p;
         activateOptions(p);
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
         bool append1)
-: WriterAppender(layout1), fileAppend(append1), fileName(fileName1), bufferedIO(false), bufferSize(8*1024),
-  fileClosed(1)
-{
+: WriterAppender(layout1) {
+        {
+            synchronized sync(mutex);
+            fileAppend = append1;
+            fileName = fileName1;
+            bufferedIO = false;
+            bufferSize = 8 * 1024;
+         }
         Pool p;
         activateOptions(p);
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
-: WriterAppender(layout1), fileAppend(true), fileName(fileName1),
-  bufferedIO(false), bufferSize(8*1024), fileClosed(1)
-{
+: WriterAppender(layout1) {
+        {
+            synchronized sync(mutex);
+            fileAppend = true;
+            fileName = fileName1;
+            bufferedIO = false;
+            bufferSize = 8 * 1024;
+        }
         Pool p;
         activateOptions(p);
 }
@@ -71,8 +88,14 @@ FileAppender::~FileAppender()
     finalize();
 }
 
+void FileAppender::setAppend(bool fileAppend1) { 
+    synchronized sync(mutex);
+    this->fileAppend = fileAppend1; 
+}
+
 void FileAppender::setFile(const LogString& file)
 {
+        synchronized sync(mutex);
         fileName = file;
 }
 
@@ -80,6 +103,7 @@ void FileAppender::setFile(const LogString& file)
 
 void FileAppender::setBufferedIO(bool bufferedIO1)
 {
+        synchronized sync(mutex);
         this->bufferedIO = bufferedIO1;
         if(bufferedIO1)
         {
@@ -93,22 +117,27 @@ void FileAppender::setOption(const LogString& option,
         if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
                 || StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
         {
+                synchronized sync(mutex);
                 fileName = stripDuplicateBackslashes(value);
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
         {
+                synchronized sync(mutex);
                 fileAppend = OptionConverter::toBoolean(value, true);
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDIO"), LOG4CXX_STR("bufferedio")))
         {
+                synchronized sync(mutex);
                 bufferedIO = OptionConverter::toBoolean(value, true);
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("IMMEDIATEFLUSH"), LOG4CXX_STR("immediateflush")))
         {
+                synchronized sync(mutex);
                 bufferedIO = !OptionConverter::toBoolean(value, false);
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
         {
+                synchronized sync(mutex);
                 bufferSize = OptionConverter::toFileSize(value, 8*1024);
         }
         else
@@ -119,6 +148,7 @@ void FileAppender::setOption(const LogString& option,
 
 void FileAppender::activateOptions(Pool& p)
 {
+  synchronized sync(mutex);
   int errors = 0;
   if (!fileName.empty()) {
     try {

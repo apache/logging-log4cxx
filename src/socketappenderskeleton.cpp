@@ -139,9 +139,10 @@ void SocketAppenderSkeleton::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-    apr_uint32_t wasClosed = apr_atomic_xchg32(&closed, 1);
-        if (wasClosed) return;
-        cleanUp();
+    synchronized sync(mutex);
+    if (closed) return;
+    closed = true;
+    cleanUp();
 }
 
 void SocketAppenderSkeleton::cleanUp()
@@ -207,7 +208,7 @@ void SocketAppenderSkeleton::fireConnector()
 void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* /* thread */, void* data) {
         SocketAppenderSkeleton* socketAppender = (SocketAppenderSkeleton*) data;
         SocketPtr socket;
-        apr_uint32_t isClosed = apr_atomic_read32(&socketAppender->closed);
+        bool isClosed = socketAppender->closed;
         while(!isClosed)
         {
                 try
@@ -241,7 +242,7 @@ void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* /* threa
                                  + LOG4CXX_STR(". Exception is ")
                                  + exmsg);
                 }
-            isClosed = apr_atomic_read32(&socketAppender->closed);
+            isClosed = socketAppender->closed;
         }
 
         LogLog::debug(LOG4CXX_STR("Exiting Connector.run() method."));
