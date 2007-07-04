@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/synchronized.h>
+#include <apr.h>
 #include <apr_atomic.h>
 
 using namespace log4cxx::helpers;
@@ -32,15 +33,14 @@ void ObjectPtrBase::checkNull(const int& null) {
 }
 
 void* ObjectPtrBase::exchange(void** destination, void* newValue) {
+#if APR_SIZEOF_VOIDP == 4
+   return (void*) apr_atomic_xchg32((volatile apr_uint32_t*) destination,
+                          (apr_uint32_t) newValue);
+#else
    static Mutex mutex(APRInitializer::getRootPool());
    synchronized sync(mutex);
    void* oldValue = *destination;
    *destination = newValue;
    return oldValue;
-}
-
-void* ObjectPtrBase::unsynchronizedExchange(void** destination, void* newValue) {
-   void* oldValue = *destination;
-   *destination = newValue;
-   return oldValue;
+#endif
 }

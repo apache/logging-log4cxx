@@ -29,7 +29,6 @@ namespace log4cxx
         public:
             static void checkNull(const int& null);
             static void* exchange(void** destination, void* newValue);
-            static void* unsynchronizedExchange(void** destination, void* newValue);
         };
 
 
