@@ -77,11 +77,11 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="apache.host" value="people.apache.org"/>
 
 
-<property name="apr.version" value="1.2.7"/>
+<property name="apr.version" value="1.2.9"/>
 <property name="apr.lib.name" value="apr-1"/>
 <property name="apr.lib.type" value="static"/>
 
-<property name="aprutil.version" value="1.2.7"/>
+<property name="aprutil.version" value="1.2.8"/>
 <property name="aprutil.lib.name" value="aprutil-1"/>
 <property name="aprutil.lib.type" value="static"/>
 
@@ -530,23 +530,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <param name="module" value="apr"/>
         <param name="module.version" value="${apr.version}"/>
     </antcall>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39848.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39852.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39853.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39856.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39857.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39858.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39859.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39867.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39868.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39869.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39884.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39886.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39888.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39889.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39892.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39895.patch"/>
-  <patch dir="${lib.dir}/apr-${apr.version}" strip="0" patchfile="${base.dir}/apr-bug-39896.patch"/>
 </target>
 
 <target name="build-apr" depends="init" unless="apr-available">
