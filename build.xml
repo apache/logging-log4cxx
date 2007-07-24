@@ -455,26 +455,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
        replace="1"/>
 </target>
 
-<target name="untar-apr-module">
-    <untar src="src/${module}/${module}-${module.version}.tar.gz"
-           dest="${lib.dir}" compression="gzip"/>
-    <chmod file="${lib.dir}/${module}-${module.version}/configure"
-           perm="u+x"/>
-    <chmod file="${lib.dir}/${module}-${module.version}/build/get-version.sh"
-           perm="u+x"/>
-</target>
-
-<target name="untar-apr-src" unless="apr-src-expanded">
-    <antcall target="untar-apr-module">
-        <param name="module" value="apr"/>
-        <param name="module.version" value="${apr.version}"/>
-    </antcall>
-</target>
-
 <target name="build-apr" depends="init" unless="apr-available">
-    <antcall target="untar-apr-src"/>
-
-    <property name="apr.dir" location="${lib.dir}/apr-${apr.version}"/>
+    <property name="apr.dir" location="src/apr/apr-${apr.version}"/>
     <property name="apr.include.dir" location="${apr.dir}/include"/>
     <property name="apr.lib.dir" location="${executable.dir}/${apr.lib.type}"/>
 
@@ -501,22 +483,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
 </target>
 
 
-<target name="untar-aprutil-src" unless="aprutil-src-expanded">
-    <antcall target="untar-apr-module">
-        <param name="module" value="apr-util"/>
-        <param name="module.version" value="${aprutil.version}"/>
-    </antcall>
-    <chmod file="${lib.dir}/apr-util-${aprutil.version}/xml/expat/configure"
-           perm="u+x"/>
-
-</target>
-
-
-
 <target name="build-aprutil" depends="build-apr" unless="aprutil-available">
-    <antcall target="untar-aprutil-src"/>
 
-    <property name="aprutil.dir" location="${lib.dir}/apr-util-${aprutil.version}"/>
+    <property name="aprutil.dir" location="src/apr-util/apr-util-${aprutil.version}"/>
     <property name="aprutil.include.dir" location="${aprutil.dir}/include"/>
     <property name="aprutil.lib.dir" location="${executable.dir}/${aprutil.lib.type}"/>
 
