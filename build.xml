@@ -52,7 +52,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="tests.dir" location="${base.dir}/src/test"/>
 <property name="tests.cpp.dir" location="${tests.dir}/cpp"/>
 <property name="tests.resources.dir" location="${tests.dir}/resources"/>
-<property name="tests.output.dir" location="${tests.resources.dir}/outputs"/>
+<property name="tests.output.dir" location="${tests.resources.dir}/output"/>
 <property name="performance.dir" location="${base.dir}/src/performance"/>
 <property name="performance.src.dir" location="${performance.dir}/cpp"/>
 <property name="performance.include.dir" location="${performance.dir}/include"/>
@@ -329,18 +329,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
         <available property="aprutil-src-expanded" file="${lib.dir}/apr-util-${aprutil.version}"/>
         <available property="cppunit-src-expanded" file="${lib.dir}/cppunit-${cppunit.version}"/>
 
-        <condition property="apr-src-available" value="">
-          <or>
-            <isset property="apr-src-expanded"/>
-            <available file="${lib.dir}/apr-${apr.version}.tar.gz"/>
-          </or>
-        </condition>
-        <condition property="aprutil-src-available" value="">
-          <or>
-            <isset property="aprutil-src-expanded"/>
-            <available file="${lib.dir}/apr-util-${aprutil.version}.tar.gz"/>
-          </or>
-        </condition>
         <condition property="cppunit-src-available" value="">
           <or>
             <isset property="cppunit-src-expanded"/>
@@ -467,29 +455,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
        replace="1"/>
 </target>
 
-<target name="get-apr-module">
-    <mkdir dir="${lib.dir}"/>
-    <get src="${apache.mirror}/apr/${module}-${module.version}.tar.gz"
-         dest="${lib.dir}/${module}-${module.version}.tar.gz"
-         usetimestamp="true"/>
-    <get src="${apache.dist}/apr/${module}-${module.version}.tar.gz.asc"
-         dest="${lib.dir}/${module}-${module.version}.tar.gz.asc"
-         usetimestamp="true"/>
-    <exec executable="gpg" dir="${lib.dir}" failifexecutionfails="false">
-        <arg value="--verify"/>
-        <arg value="${module}-${module.version}.tar.gz.asc"/>
-    </exec>
-    <untar src="${lib.dir}/${module}-${module.version}.tar.gz"
-           dest="${lib.dir}" compression="gzip"/>
-    <chmod file="${lib.dir}/${module}-${module.version}/configure"
-           perm="u+x"/>
-    <chmod file="${lib.dir}/${module}-${module.version}/build/get-version.sh"
-           perm="u+x"/>
-
-</target>
-
 <target name="untar-apr-module">
-    <untar src="${lib.dir}/${module}-${module.version}.tar.gz"
+    <untar src="src/${module}/${module}-${module.version}.tar.gz"
            dest="${lib.dir}" compression="gzip"/>
     <chmod file="${lib.dir}/${module}-${module.version}/configure"
            perm="u+x"/>
@@ -497,14 +464,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
            perm="u+x"/>
 </target>
 
-<target name="get-apr-src" unless="apr-src-available">
-    <antcall target="get-apr-module">
-        <param name="module" value="apr"/>
-        <param name="module.version" value="${apr.version}"/>
-    </antcall>
-</target>
-
-<target name="untar-apr-src" depends="get-apr-src" unless="apr-src-expanded">
+<target name="untar-apr-src" unless="apr-src-expanded">
     <antcall target="untar-apr-module">
         <param name="module" value="apr"/>
         <param name="module.version" value="${apr.version}"/>
@@ -541,14 +501,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
 </target>
 
 
-<target name="get-aprutil-src" unless="aprutil-src-available">
-    <antcall target="get-apr-module">
-        <param name="module" value="apr-util"/>
-        <param name="module.version" value="${aprutil.version}"/>
-    </antcall>
-</target>
-
-<target name="untar-aprutil-src" depends="get-aprutil-src" unless="aprutil-src-expanded">
+<target name="untar-aprutil-src" unless="aprutil-src-expanded">
     <antcall target="untar-apr-module">
         <param name="module" value="apr-util"/>
         <param name="module.version" value="${aprutil.version}"/>

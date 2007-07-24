@@ -21,44 +21,22 @@
 		<format>zip</format>
 		<format>tar.gz</format>
 	</formats>
-	<baseDirectory>apache-log4j-${project.version}</baseDirectory>
+	<baseDirectory>apache-log4cxx-${project.version}</baseDirectory>
 	<includeSiteDirectory>true</includeSiteDirectory>
 	<fileSets>
 		<fileSet>
 			<includes>
-				<include>*.txt</include>
-				<include>*.sample</include>
+                                <include>*.sh</include>
+                                <include>*.in</include>
+                                <include>*.m4</include>
 				<include>*.xml</include>
 				<include>INSTALL</include>
 				<include>KEYS</include>
 				<include>LICENSE</include>
 				<include>NOTICE</include>
-				<include>contribs/**</include>
-				<include>examples/**</include>
-				<include>src/assembly/**</include>
-				<include>src/changes/**</include>
-				<include>src/main/**</include>
-				<include>src/ntdll/**</include>
-				<include>src/performance/**</include>
-				<include>src/site/**</include>
-				<include>tests/README</include>
-				<include>tests/*.xml</include>
-				<include>tests/*.sample</include>
-				<include>tests/*.bat</include>
-				<include>tests/input/**</include>
-				<include>tests/resources/**</include>
-				<include>tests/src/**</include>
-				<include>tests/witness/**</include>
+				<include>src/**</include>
+                                <exclude>src/test/resources/output</exclude>
 			</includes>
 		</fileSet>
 	</fileSets>
-        <files>
-        	<file>
-		   <source>target/log4j-${project.version}.jar</source>
-                </file>
-                <file>
-                   <source>target/NTEventLogAppender.dll</source>
-                   <fileMode>0755</fileMode>
-                </file>
-        </files>
 </assembly>
