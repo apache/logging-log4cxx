@@ -31,7 +31,6 @@
 -->
 
 <!--
-
 This file builds log4cxx using Apache Ant (http://ant.apache.org)
 and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
@@ -45,18 +44,19 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <property name="debug" value="true"/>
 <property name="base.dir" location="."/>
-<property name="src.dir" location="${base.dir}/src"/>
-<property name="lib.dir" location="${base.dir}/lib"/>
-<property name="include.dir" location="${base.dir}/include"/>
-<property name="build.dir" location="${base.dir}/build"/>
-<property name="examples.dir" location="${base.dir}/examples"/>
-<property name="tests.dir" location="${base.dir}/tests"/>
-<property name="performance.dir" location="${base.dir}/performance"/>
-<!-- Destination for documentation files -->
-<property name="docs.dest" value="${base.dir}/docs"/>
-<property name="manual.dest" value="${docs.dest}/manual"/>
-<!-- Source directory for xml docs -->
-<property name="xdocs.src" value="${base.dir}/xdocs/src"/>
+<property name="src.dir" location="${base.dir}/src/main/cpp"/>
+<property name="include.dir" location="${base.dir}/src/main/include"/>
+<property name="build.dir" location="${base.dir}/target"/>
+<property name="lib.dir" location="${build.dir}/lib"/>
+<property name="examples.dir" location="${base.dir}/src/examples/cpp"/>
+<property name="tests.dir" location="${base.dir}/src/test"/>
+<property name="tests.cpp.dir" location="${tests.dir}/cpp"/>
+<property name="tests.resources.dir" location="${tests.dir}/resources"/>
+<property name="tests.output.dir" location="${tests.resources.dir}/outputs"/>
+<property name="performance.dir" location="${base.dir}/src/performance"/>
+<property name="performance.src.dir" location="${performance.dir}/cpp"/>
+<property name="performance.include.dir" location="${performance.dir}/include"/>
+
 <property name="doxygen.exe" value="doxygen"/>
 <property name="enable_dot" value="YES"/>
 
@@ -73,8 +73,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="apache.dist" value="http://archive.apache.org/dist"/>
 <!-- property name="apache.doc_dest" value="/www/logging.apache.org/log4cxx"/ -->
 <property name="apache.doc_dest" value="/home/${apache.user}/public_html/test"/>
-<property name="apache.manual_dest" value="${apache.doc_dest}/manual"/>
-<property name="apache.host" value="people.apache.org"/>
 
 
 <property name="apr.version" value="1.2.9"/>
@@ -90,24 +88,14 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="cppunit.lib.name" value="cppunit"/>
 <property name="cppunit.lib.type" value="static"/>
 
+<property name="svnrepo.url" value="https://svn.apache.org/repos/asf"/>
+<property name="svnsite.url" value="${svnrepo.url}/logging/site/trunk/docs/log4cxx"/>
+<available property="svn-available" file="target/site-deploy/.svn"/>
+
 
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
 
-
-<!-- Velocity's Anakia task is used in the generation of the documentation
-     download from http://jakarta.apache.org   -->
-<property name="velocity.jar" location="${lib.home.dir}/velocity-1.4/velocity-dep-1.4.jar"/>
-<!-- Velocity's Anakia task requires JDOM, 
-  but Velocity 1.4 is not compatible with JDOM 1.0, but beta 8 works okay
-  download for http://www.jdom.org/dist/binary/archive  -->
-<property name="jdom.jar" location="${lib.home.dir}/jdom-b8/build/jdom.jar"/>
-
-<!-- Construct classpath for building the html pages-->
-<path id="site.classpath">
-  <pathelement location="${velocity.jar}"/>
-  <pathelement location="${jdom.jar}"/>
-</path>
 
 
 <target name="usage" description="Describes usage of the build script">
@@ -262,9 +250,9 @@ http://ant-contrib.sourceforge.net.
 
         <available classname="net.sf.antcontrib.cpptasks.ide.ProjectDef"
             property="cctask-project-available"/>
-        <fail unless="cctask-project-available">later version of cpptasks required
+        <!-- fail unless="cctask-project-available">later version of cpptasks required
 
-Required features not present in cpptasks releases prior to Feb 2005</fail>
+Required features not present in cpptasks releases prior to Feb 2005</fail -->
 
         <mkdir dir="${build.dir}"/>
 
@@ -306,9 +294,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
         <condition property="apr.lib.dir" value="${apr.dir}/lib">
             <isset property="apr.dir"/>
         </condition>
-
-
-
 
         <condition property="aprutil.dir" value="${apr.dir}">
             <isset property="apr.dir"/>
@@ -394,14 +379,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="clean" depends="init" description="Removes built files">
         <delete dir="${build.dir}"/>
-        <delete dir="${docs.dest}/manual"/>
-        <delete dir="${docs.dest}/css"/>
         <delete>
-            <fileset dir="${tests.dir}/src" includes="shortsocket*" excludes="*.cpp"/>
-            <fileset dir="${tests.dir}" includes="output/*"/>
             <fileset dir="${include.dir}/log4cxx" includes="**/log4cxx.h"/>
-            <fileset dir="${docs.dest}" includes="Doxyfile, *.html"/>
-            <fileset dir="${base.dir}" includes="velocity.log"/>
         </delete>
         
 </target>
@@ -539,7 +518,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <property name="apr.include.dir" location="${apr.dir}/include"/>
     <property name="apr.lib.dir" location="${executable.dir}/${apr.lib.type}"/>
 
-    <ant antfile="apr-build.xml" target="build" inheritAll="false">
+    <ant antfile="src/apr/ant/build.xml" target="build" inheritAll="false">
         <property name="version" value="${apr.version}"/>
         <property name="debug" value="${debug}"/>
         <property name="lib-suffix" value="${lib-suffix}"/>
@@ -588,7 +567,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <property name="aprutil.include.dir" location="${aprutil.dir}/include"/>
     <property name="aprutil.lib.dir" location="${executable.dir}/${aprutil.lib.type}"/>
 
-    <ant antfile="aprutil-build.xml" target="build" inheritAll="false">
+    <ant antfile="src/apr-util/ant/build.xml" target="build" inheritAll="false">
         <property name="version" value="${aprutil.version}"/>
         <property name="aprutil.dir" value="${aprutil.dir}"/>
         <property name="debug" value="${debug}"/>
@@ -628,7 +607,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
     <property name="cppunit.dir" value="${lib.dir}/cppunit-${cppunit.version}"/>
 
-    <ant antfile="cppunit-build.xml" target="build" inheritAll="false">
+    <ant antfile="src/cppunit/ant/build.xml" target="build" inheritAll="false">
         <property name="base.dir" value="${cppunit.dir}"/>
         <property name="cppunit.version" value="${cppunit.version}"/>
         <property name="debug" value="${debug}"/>
@@ -687,8 +666,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 <fileset dir="${build.dir}/header-check"
                      includes="**/*.cpp"
                      excludes="log4cxx/private/*.cpp **/aprinitializer.h.cpp"/>
-                <includepath path="mock"/>
-                <includepath path="include"/>
+                <includepath path="src/mock/include"/>
+                <includepath path="${include.dir}"/>
                 <project outfile="${project.dir}/header-check"
                     type="${project.type}" if="project.if"/>
          </cc>
@@ -733,6 +712,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="build-example">
     <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>
     <property name="project.compiler" value="${compiler}"/>
+    <property name="example.include.dir" value="${example.src.dir}"/>
     <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/${example.name}"
@@ -744,6 +724,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 projectsOnly="${projectsOnly}">
         <fileset dir="${example.src.dir}" includes="${example.includes}"/>
         <includepath path="${include.dir}"/>
+        <includepath path="${example.include.dir}"/>
         <includepath path="${apr.include.dir}"/>
 
         <defineset define="WIN32" if="is-windows"/>
@@ -815,7 +796,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="build-simplesocketserver" depends="build">
     <antcall target="build-example">
-       <param name="example.src.dir" value="${base.dir}/simplesocketserver"/>
+       <param name="example.src.dir" value="${base.dir}/src/simplesocketserver/main"/>
        <param name="example.name" value="simplesocketserver"/>
        <param name="example.includes" value="simplesocketserver.cpp"/>
     </antcall>
@@ -824,7 +805,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
 <target name="build-performance" depends="build" description="Builds performance test">
     <antcall target="build-example">
-       <param name="example.src.dir" value="${performance.dir}"/>
+       <param name="example.src.dir" value="${performance.src.dir}"/>
+       <param name="example.include.dir" value="${performance.include.dir}"/>
        <param name="example.name" value="performance"/>
        <param name="example.includes" value="**/*.cpp"/>
     </antcall>
@@ -838,14 +820,14 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     <property name="project.compiler" value="${compiler}"/>
     <cc name="${project.compiler}"
                 exceptions="true"
-                outfile="${tests.dir}/src/shortsocketserver"
+                outfile="${build.dir}/shortsocketserver"
                 subsystem="console"
                 multithreaded="true"
                 outtype="executable"
                 objdir="${log4cxx.lib.dir}/shortsocketserver_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
-        <fileset dir="${tests.dir}/src">
+        <fileset dir="${tests.cpp.dir}">
            <include name="shortsocketserver.cpp"/>
            <include name="net/socketservertestcase.h"/>
         </fileset>
@@ -874,7 +856,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 objdir="${log4cxx.lib.dir}/log4cxx-test_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
-        <fileset dir="${tests.dir}/src" includes="**/*.cpp **/*.h">
+        <fileset dir="${tests.cpp.dir}" includes="**/*.cpp **/*.h">
              <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
@@ -912,7 +894,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 objdir="${log4cxx.lib.dir}/log4cxx-test_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
-        <fileset dir="${tests.dir}/src" includes="defaultinit/*.cpp main.cpp">
+        <fileset dir="${tests.cpp.dir}" includes="defaultinit/*.cpp main.cpp">
              <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
@@ -952,7 +934,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 objdir="${log4cxx.lib.dir}/log4cxx-test_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
-        <fileset dir="${tests.dir}/src" includes="${src.pattern}">
+        <fileset dir="${tests.cpp.dir}" includes="${src.pattern}">
              <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
@@ -991,7 +973,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                 projectsOnly="${projectsOnly}">
         <fileset dir="${src.dir}" includes="*.cpp" excludes="**/iconv_module.cpp"/>
         <fileset dir="${include.dir}" includes="**/*.h"/>
-        <fileset dir="${tests.dir}/src" includes="**/*.cpp **/*.h">
+        <fileset dir="${tests.cpp.dir}" includes="**/*.cpp **/*.h">
              <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
@@ -1033,18 +1015,17 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="run-defaultinit-unittest" depends="build-defaultinit-unittest"
     description="Runs default init unit tests">
 
-    <mkdir dir="${tests.dir}/output"/>
+    <mkdir dir="${tests.output.dir}"/>
 
     <!--  test use of log4j.configuration -->
     <property name="defaultInit3.properties"
-         location="${tests.dir}/input/defaultInit3.properties"/>
+         location="${tests.resources.dir}/input/defaultInit3.properties"/>
 
     <property name="defaultInit.xml"
-         location="${tests.dir}/input/xml/defaultInit.xml"/>
+         location="${tests.resources.dir}/input/xml/defaultInit.xml"/>
 
 
     <!--  test of log4j.properties -->
-    <mkdir dir="${log4cxx.lib.dir}/output"/>
     <delete file="${log4cxx.lib.dir}/log4*.properties"/>
     <delete file="${log4cxx.lib.dir}/log4*.xml"/>
     <copy tofile="${log4cxx.lib.dir}/log4j.properties"
@@ -1076,7 +1057,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 
     <copy tofile="${log4cxx.lib.dir}/log4j.xml"
        file="${defaultInit.xml}"/>
-    <copy todir="${log4cxx.lib.dir}" file="${tests.dir}/input/xml/log4j.dtd"/>
+    <copy todir="${log4cxx.lib.dir}" file="${tests.resources.dir}/input/xml/log4j.dtd"/>
     <exec executable="${log4cxx-defaultinit-test.exe}" dir="${log4cxx.lib.dir}"
               failonerror="true">
             <arg value="TestCase4"/>
@@ -1086,8 +1067,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
                    value="${log4cxx.lib.dir}:${apr.lib.dir}:${aprutil.lib.dir}:${cppunit.lib.dir}:${env.DYLD_LIBRARY_PATH}"/>
     </exec>
 
+    <mkdir dir="${tests.resources.dir}/output"/>
+    <delete>
+	<fileset dir="${tests.resources.dir}/output"/>
+    </delete>
 
-    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.dir}"
+    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.resources.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
@@ -1099,7 +1084,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
     </exec>
 
     <!--  test of LOG4CXX_CONFIGURATION -->
-    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.dir}"
+    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.resources.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
@@ -1116,11 +1101,11 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
 <target name="run-unittest" depends="build-unittest, run-defaultinit-unittest, clean-output"
     description="Runs unit test">
     <property environment="env"/>
-    <mkdir dir="${tests.dir}/output"/>
+    <mkdir dir="${tests.output.dir}"/>
     <delete>
-         <fileset dir="${tests.dir}/output" includes="*"/>
+         <fileset dir="${tests.output.dir}" includes="*"/>
     </delete>
-    <exec executable="${log4cxx-test.exe}" dir="${tests.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${tests.resources.dir}"
               failonerror="true">
             <arg value="+TestCase1"/>
             <env key="TOTO" value="wonderful"/>
@@ -1140,8 +1125,11 @@ Required features not present in cpptasks releases prior to Feb 2005</fail>
    depends="build-standalone-unittest, clean-output"
    description="Runs standalone unit test">
     <property environment="env"/>
-    <mkdir dir="${tests.dir}/output"/>
-    <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.dir}"
+    <mkdir dir="${tests.output.dir}"/>
+    <delete>
+         <fileset dir="${tests.output.dir}" includes="*"/>
+    </delete>
+    <exec executable="${log4cxx-standalone-test.exe}" dir="${tests.resources.dir}"
               failonerror="true">
             <env key="TOTO" value="wonderful"/>
             <env key="key1" value="value1"/>
@@ -1235,6 +1223,8 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
     </antcall>
 </target>
 
+<target name="test-compile" depends="build-unittest, build-examples, build-performance"/>
+
 
 <target name="check" depends="run-unittest, build-examples, build-performance"
      description="Runs all diagnostic tests">
@@ -1247,242 +1237,17 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
 </target>
 
 
-<!-- ============================================== -->
-<!-- Build the site files using Anakia              -->
-<!-- ============================================== -->
-<target name="prepareSite">
-  <available classname="org.apache.velocity.anakia.AnakiaTask"
-             property="AnakiaTask.present">
-    <classpath refid="site.classpath"/>
-  </available>
-</target>
-
-<target name="checkSite" depends="prepareSite" unless="AnakiaTask.present">
-  <fail>
-    AnakiaTask is not present! Please check to make sure that
-    the velocity.jar property is specified and contains the correct path. 
-  </fail>
-</target>
-
-<target name="site" depends="checkSite" if="AnakiaTask.present" description="build log4cxx website">
-  <taskdef name="anakia" classname="org.apache.velocity.anakia.AnakiaTask">
-    <classpath refid="site.classpath"/>
-  </taskdef>
-  
-  <mkdir dir="${docs.dest}/css"/>  
-  <copy file="${xdocs.src}/stylesheets/site.css" tofile="${docs.dest}/css/site.css"/>
-  <copy file="${base.dir}/ChangeLog" tofile="${docs.dest}/ChangeLog"/>
-  
-  <anakia basedir="${xdocs.src}" destdir="${docs.dest}/"
-          extension=".html"
-          style="site.vsl"
-          projectFile="stylesheets/project.xml"
-          excludes="**/stylesheets/**, empty.xml"
-          includes="**/*.xml"
-          lastModifiedCheck="true"
-          templatePath="${xdocs.src}/stylesheets">
-  </anakia>
-</target>
-
-<target name="deploy-site" depends="site" description="Deploy log4cxx website">
-    <fail unless="apache.user">-Dapache.user=USERNAME must be specified.</fail>
-    <tar destfile="${build.dir}/apache-log4cxx-site.tar.gz" compression="gzip">
-         <tarfileset dir="${docs.dest}">
-             <include name="*.html"/>
-             <include name="ChangeLog"/>
-             <include name="css/*.css"/>
-         </tarfileset>
-    </tar>
-    <exec executable="scp" dir="${build.dir}">
-         <arg value="apache-log4cxx-site.tar.gz"/>
-         <arg value="${apache.user}@${apache.host}:"/>
-    </exec>
-    <exec executable="ssh">
-         <arg value="-l"/>
-         <arg value="${apache.user}"/>
-         <arg value="${apache.host}"/>
-         <arg value="tar"/>
-         <arg value="--directory=${apache.doc_dest}"/>
-         <arg value="-xvzf"/>
-         <arg value="apache-log4cxx-site.tar.gz"/>
-    </exec>
-    <exec executable="ssh">
-      <arg value="-l"/>
-      <arg value="${apache.user}"/>
-      <arg value="${apache.host}"/>
-      <arg value="chmod"/>
-      <arg value="-R"/>
-      <arg value="g+w"/>
-      <arg value="${apache.doc_dest}"/>
-    </exec>
-</target>
-
-<target name="manual" depends="init" description="Build log4cxx manual">
-  <copy file="${base.dir}/docs/Doxyfile.in" tofile="${base.dir}/docs/Doxyfile" overwrite="true"/>
-  <replace file="${base.dir}/docs/Doxyfile">
+<target name="apidocs" depends="init" description="Build log4cxx manual">
+  <copy file="src/site/doxy/Doxyfile.in" tofile="${build.dir}/Doxyfile" 
+     overwrite="true"/>
+  <replace file="${build.dir}/Doxyfile">
     <replacefilter token="@VERSION@" value="${version}"/>
-    <replacefilter token="@top_srcdir@" value="${base.dir}"/>
+    <replacefilter token="@base_dir@" value="${base.dir}"/>
     <replacefilter token="@enable_dot@" value="${enable_dot}"/>
-    <replacefilter token="@manual_dest@" value="${manual.dest}"/>
+    <replacefilter token="@manual_dest@" value="${base.dir}/target/site/apidocs"/>
   </replace>
-  <exec executable="${doxygen.exe}" dir="${base.dir}/docs"/>
-</target>
-
-
-<target name="deploy-manual" depends="manual" description="Deploy log4cxx manual to website">
-  <fail unless="apache.user">-Dapache.user=USERNAME must be specified.</fail>
-  <tar destfile="${build.dir}/apache-log4cxx-manual.tar.gz" compression="gzip">
-    <tarfileset dir="${manual.dest}"/>
-  </tar>
-  <exec executable="scp" dir="${build.dir}">
-    <arg value="apache-log4cxx-manual.tar.gz"/>
-    <arg value="${apache.user}@${apache.host}:"/>
-  </exec>
-  <exec executable="ssh">
-    <arg value="-l"/>
-    <arg value="${apache.user}"/>
-    <arg value="${apache.host}"/>
-    <arg value="tar"/>
-    <arg value="--directory=${apache.manual_dest}"/>
-    <arg value="-xvzf"/>
-    <arg value="apache-log4cxx-manual.tar.gz"/>
-  </exec>
-  <exec executable="ssh">
-    <arg value="-l"/>
-    <arg value="${apache.user}"/>
-    <arg value="${apache.host}"/>
-    <arg value="chmod"/>
-    <arg value="-R"/>
-    <arg value="g+w"/>
-    <arg value="${apache.manual_dest}"/>
-  </exec>
-</target>
-
-
-<target name="dist" depends="init, site, build-projects-vc6, manual"
-    description="Builds a source distribution">
-    <tar destfile="${build.dir}/apache-log4cxx-${version}.tar.gz"
-         compression="gzip">
-         <tarfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
-            <include name="AUTHORS"/>
-            <include name="autogen.sh"/>
-            <include name="ChangeLog"/>
-            <include name="COPYING"/>
-            <include name="INSTALL"/>
-            <include name="NOTICE"/>
-            <include name="LICENSE"/>
-            <include name="NEWS"/>
-            <include name="README"/>
-            <include name="STATUS"/>
-            <include name="*.xml"/>
-            <include name="examples/*.cpp"/>
-            <include name="include/**/*.h"/>
-            <include name="include/**/*.hw"/>
-            <include name="mock/*"/>
-            <include name="performance/*.cpp"/>
-            <include name="performance/*.h"/>
-            <include name="performance/**/*.xml"/>
-            <include name="simplesocketserver/*.cpp"/>
-            <include name="src/*.cpp"/>
-            <include name="msvc/**"/>
-            <include name="tests/performance.xml"/>
-            <include name="tests/**/*.properties"/>
-            <include name="tests/input/**/*.xml"/>
-            <include name="tests/input/**/*.dtd"/>
-            <include name="tests/src/**/*.cpp"/>
-            <include name="tests/src/**/*.h"/>
-            <include name="tests/witness/*"/>
-            <include name="tests/witness/ndc/*"/>
-            <include name="tests/witness/encoding/*"/>
-            <include name="tests/witness/rolling/*"/>
-            <include name="tests/log4j.dtd"/>
-            <include name="lib/apr-${apr.version}/**"/>
-            <include name="lib/apr-util-${aprutil.version}/**"/>
-            <include name="include/log4cxx/nt/EventLogCategories.mc"/>
-            <include name="*.patch"/>
-            <include name="docs/**"/>
-            <include name="xdocs/**"/>
-            <exclude name="include/log4cxx/log4cxx.h"/>
-            <exclude name="include/log4cxx/private/log4cxx_private.h"/>
-            <exclude name="docs/Doxyfile"/>
-            <exclude name="lib/apr-${apr.version}/include/apr.h"/>
-            <exclude name="lib/apr-util-${aprutil.version}/include/aprldap.h"/>
-            <exclude name="lib/apr-util-${aprutil.version}/include/apu.h"/>
-            <exclude name="lib/apr-util-${aprutil.version}/include/apuwant.h"/>
-            <exclude name="lib/apr-util-${aprutil.version}/include/private/*.h"/>
-            <exclude name="**/.svn"/>
-            <exclude name="**/*.m4"/>
-            <exclude name="**/*.am"/>
-            <exclude name="**/*.in"/>
-        </tarfileset>
-        <tarfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
-          <include name="**/*.m4"/>
-          <include name="**/*.am"/>
-          <include name="**/*.in"/>
-          <exclude name="lib/**"/>
-        </tarfileset>
-    </tar>
-
-    <zip destfile="${build.dir}/apache-log4cxx-${version}.zip">
-      <zipfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
-        <include name="AUTHORS"/>
-        <include name="autogen.sh"/>
-        <include name="ChangeLog"/>
-        <include name="COPYING"/>
-        <include name="INSTALL"/>
-        <include name="NOTICE"/>
-        <include name="LICENSE"/>
-        <include name="NEWS"/>
-        <include name="README"/>
-        <include name="STATUS"/>
-        <include name="*.xml"/>
-        <include name="examples/*.cpp"/>
-        <include name="include/**/*.h"/>
-        <include name="include/**/*.hw"/>
-        <include name="mock/*"/>
-        <include name="performance/*.cpp"/>
-        <include name="performance/*.h"/>
-        <include name="performance/**/*.xml"/>
-        <include name="simplesocketserver/*.cpp"/>
-        <include name="src/*.cpp"/>
-        <include name="msvc/**"/>
-        <include name="tests/performance.xml"/>
-        <include name="tests/**/*.properties"/>
-        <include name="tests/input/**/*.xml"/>
-        <include name="tests/input/**/*.dtd"/>
-        <include name="tests/src/**/*.cpp"/>
-        <include name="tests/src/**/*.h"/>
-        <include name="tests/witness/*"/>
-        <include name="tests/witness/ndc/*"/>
-        <include name="tests/witness/encoding/*"/>
-        <include name="tests/witness/rolling/*"/>
-        <include name="tests/log4j.dtd"/>
-        <include name="lib/apr-${apr.version}/**"/>
-        <include name="lib/apr-util-${aprutil.version}/**"/>
-        <include name="include/log4cxx/nt/EventLogCategories.mc"/>
-        <include name="*.patch"/>
-        <include name="docs/**"/>
-        <include name="xdocs/**"/>
-        <exclude name="include/log4cxx/log4cxx.h"/>
-        <exclude name="include/log4cxx/private/log4cxx_private.h"/>
-        <exclude name="docs/Doxyfile"/>
-        <exclude name="lib/apr-${apr.version}/include/apr.h"/>
-        <exclude name="lib/apr-util-${aprutil.version}/include/aprldap.h"/>
-        <exclude name="lib/apr-util-${aprutil.version}/include/apu.h"/>
-        <exclude name="lib/apr-util-${aprutil.version}/include/apuwant.h"/>
-        <exclude name="lib/apr-util-${aprutil.version}/include/private/*.h"/>
-        <exclude name="**/.svn"/>
-        <exclude name="**/*.m4"/>
-        <exclude name="**/*.am"/>
-        <exclude name="**/*.in"/>
-      </zipfileset>
-      <zipfileset dir="${base.dir}" prefix="apache-log4cxx-${version}">
-        <include name="**/*.m4"/>
-        <include name="**/*.am"/>
-        <include name="**/*.in"/>
-        <exclude name="lib/**"/>
-      </zipfileset>
-    </zip>
+  <mkdir dir="target/site/apidocs"/>
+  <exec executable="${doxygen.exe}" dir="${build.dir}"/>
 </target>
 
 <target name="gump" depends="check, header-check"/>
@@ -1491,5 +1256,70 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
    <fixcrlf srcDir="${base.dir}" tab="remove" tablength="3"
        eof="remove" fixlast="true" eol="unix" includes="*.xml **/*.cpp **/*.h" excludes="lib/**/*"/>
 </target>
+
+        <target name="prepare-changes" description="Prepares changes.xml from a JIRA issues list">
+            <xslt style="src/changes/changes.xslt" 
+                  in="issues.xml" 
+                  out="src/changes/changes.xml"/>
+        </target>
+
+	<target name="checkout-site" unless="svn-available">
+		<exec executable="svn">
+			<arg value="co"/>
+			<arg value="${svnsite.url}"/>
+			<arg value="target/site-deploy"/>
+		</exec>
+	</target>
+
+	<target name="update-site" if="svn-available">
+		<exec executable="svn" dir="target/site-deploy" failonerror="true">
+			<arg value="update"/>
+		</exec>
+	</target>
+
+	<target name="post-site" depends="checkout-site, update-site"/>
+	
+
+        <target name="mime=html">
+            <exec executable="svn">
+		<arg value="propset"/>
+                <arg value="svn:mime-type"/>
+                <arg value="text/html"/>
+                <arg value="${src.html}"/>
+            </exec>
+        </target>
+
+        <target name="mime=css">
+            <exec executable="svn">
+		<arg value="propset"/>
+                <arg value="svn:mime-type"/>
+                <arg value="text/css"/>
+                <arg value="${src.css}"/>
+            </exec>
+        </target>
+	
+
+	<target name="site-deploy">
+		<!-- Add any new files (and generate innocuous warnings for the existing content)  -->
+                <delete file="target/site-deploy/svn-commit.tmp~"/>
+		<exec executable="bash" dir="target/site-deploy" failonerror="true">
+			<arg line='-c "svn add --force *"'/>
+		</exec>
+                <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
+                <foreach target="mime=html" param="src.html">
+                        <path>
+                                <fileset dir="target/site-deploy" includes="**/*.html"/>
+                        </path>
+                </foreach>
+                <foreach target="mime=css" param="src.css">
+                        <path>
+                                <fileset dir="target/site-deploy" includes="**/*.css"/>
+                        </path>
+                </foreach>
+		<!--  requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description -->
+		<exec executable="svn" dir="target/site-deploy" failonerror="true">
+		    <arg value="commit"/>
+		</exec>
+	</target>
 
 </project>

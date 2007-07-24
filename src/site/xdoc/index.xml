@@ -36,35 +36,9 @@
 
                                 <p>
                                         Main concepts of the logging framework are exposed in the
-                                        <a href="manual/Introduction.html">short introduction to log4cxx</a>.
+                                        <a href="manual.html">short introduction to log4cxx</a>.
                                 </p>
 
-                        <h2>Versions:</h2>
-                                <p>log4cxx-0.9.7 can be downloaded from 
-                                       <a href="http://logging.apache.org/site/binindex.html">http://logging.apache.org/site/binindex.html</a>.
-                                      At this point, log4cxx-0.9.7 is substantially out of date, has known
-                                      serious deficiencies that have been resolved in the CVS, and should be avoided
-                                      for new code.  Bug reports are available from 
-                                      <a href="http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10550">http://issues.apache.org/jira/secure/BrowseProject.jspa?id=10550</a>.                                      
-                                      Bugs <a href="http://issues.apache.org/jira/browse/LOGCXX-4">LOG4CXX-4</a> and  
-                                      <a href="http://issues.apache.org/jira/browse/LOGCXX-11">LOG4CXX-11</a> are 
-                                      the most likely to encountered by new users.  Due to the substantial architectural
-                                      differences between 0.9.7 and the CVS HEAD, new bug reports against 0.9.7 will be
-                                      given very low priority. 
-                                </p>
-                                
-                                 <p>A new release, tenatively designated 0.9.8, is forthcoming from the CVS HEAD.
-                                     Bug <a href="http://issues.apache.org/jira/browse/LOGCXX-62">LOGCXX-62</a> is
-                                     tracking the remaining blocking issues.  In general, the core 
-                                     has substantially improved of log4cxx-0.9.7 but several appenders have not been
-                                     adapted to the new architecture.  Major changes from log4cxx-0.9.7 include
-                                     use of <a href="http://apr.apache.org">Apache Portable Runtime</a> (APR) for
-                                     threading, networking and other services (<a href="http://issues.apache.org/jira/browse/LOGCXX-36">LOGCXX-36</a>,
-                                       <a href="http://issues.apache.org/jira/browse/LOGCXX-64">LOGCXX-64</a>),
-                                    and simultaneous support for both wide and multibyte messages (
-                                     <a href="http://issues.apache.org/jira/browse/LOGCXX-10">LOGCXX-10</a>).
-                                </p>
-                                
 
                         <h2>Platforms:</h2>
                                 <p>The CVS HEAD is automatically built and tested using the Ant build script

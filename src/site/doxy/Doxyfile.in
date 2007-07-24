@@ -209,7 +209,7 @@ MULTILINE_CPP_IS_BRIEF = NO
 # If set to NO, the detailed description appears after the member 
 # documentation.
 
-DETAILS_AT_TOP         = NO
+DETAILS_AT_TOP         = YES
 
 # If the INHERIT_DOCS tag is set to YES (the default) then an undocumented 
 # member inherits the documentation from any documented member that it 
@@ -352,10 +352,9 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = \
-			@top_srcdir@/include \ 
-			@top_srcdir@/src \
-			@top_srcdir@/docs/mainpage.dox \
-			@top_srcdir@/docs/introduction.dox
+			@base_dir@/src/main/include \ 
+			@base_dir@/src/main/cpp \
+			@base_dir@/src/site/doxy/mainpage.dox
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
@@ -437,7 +436,7 @@ FILTER_SOURCE_FILES    = NO
 # If the SOURCE_BROWSER tag is set to YES then a list of source files will 
 # be generated. Documented entities will be cross-referenced with these sources.
 
-SOURCE_BROWSER         = NO
+SOURCE_BROWSER         = YES
 
 # Setting the INLINE_SOURCES tag to YES will include the body 
 # of functions and classes directly in the documentation.
