@@ -13,13 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
+INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 AM_CPPFLAGS = @CPPFLAGS_ODBC@
 
 bin_PROGRAMS = simplesocketserver
 simplesocketserver_SOURCES = simplesocketserver.cpp
-simplesocketserver_LDADD = $(top_builddir)/src/liblog4cxx.la
-
-
+simplesocketserver_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
 

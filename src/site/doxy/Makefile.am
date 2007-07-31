@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-EXTRA_DIST = Doxyfile mainpage.dox introduction.dox simplesocketserver.1
+EXTRA_DIST = Doxyfile mainpage.dox simplesocketserver.1
 
 # DOC is defined if installer requests doc generation.
 
@@ -61,7 +61,7 @@ endif
 all-local: dox
 
 
-@manual_dest@/index.html: Doxyfile introduction.dox mainpage.dox
+@manual_dest@/index.html: Doxyfile mainpage.dox
 	"@DOXYGEN@"
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)

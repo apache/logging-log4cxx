@@ -14,17 +14,17 @@
 # limitations under the License.
 #
 noinst_HEADERS = \
-	$(top_srcdir)/tests/src/customlogger/*.h \
-	$(top_srcdir)/tests/src/helpers/*.h \
-	$(top_srcdir)/tests/src/net/*.h \
-	$(top_srcdir)/tests/src/pattern/*.h \
-	$(top_srcdir)/tests/src/util/*.h \
-	$(top_srcdir)/tests/src/xml/*.h \
-	$(top_srcdir)/tests/src/*.h
+	$(top_srcdir)/src/test/cpp/customlogger/*.h \
+	$(top_srcdir)/src/test/cpp/helpers/*.h \
+	$(top_srcdir)/src/test/cpp/net/*.h \
+	$(top_srcdir)/src/test/cpp/pattern/*.h \
+	$(top_srcdir)/src/test/cpp/util/*.h \
+	$(top_srcdir)/src/test/cpp/xml/*.h \
+	$(top_srcdir)/src/test/cpp/*.h
 
 if TESTS
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
+INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 noinst_PROGRAMS = testsuite shortsocketserver
 
@@ -147,7 +147,7 @@ testsuite_SOURCES = \
         ndctestcase.cpp
 
 testsuite_LDADD = \
-        $(top_builddir)/src/liblog4cxx.la
+        $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 testsuite_LDFLAGS = \
         @LIBS_CPPUNIT@
@@ -156,7 +156,7 @@ AM_CPPFLAGS = \
         @CPPFLAGS_CPPUNIT@
 
 testsuite_DEPENDENCIES = \
-        $(top_builddir)/src/liblog4cxx.la
+        $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 shortsocketserver_SOURCES = \
         $(util) \
@@ -164,13 +164,13 @@ shortsocketserver_SOURCES = \
         shortsocketserver.cpp
 
 shortsocketserver_LDADD = \
-        $(top_builddir)/src/liblog4cxx.la
+        $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 shortsocketserver_LDFLAGS = \
         @LIBS_CPPUNIT@
 
 shortsocketserver_DEPENDENCIES = \
-        $(top_builddir)/src/liblog4cxx.la
+        $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 check: testsuite shortsocketserver
 

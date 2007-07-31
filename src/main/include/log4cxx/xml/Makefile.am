@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 xmlincdir = $(includedir)/log4cxx/xml
-xmlinc_HEADERS= $(top_srcdir)/include/log4cxx/xml/*.h
+xmlinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/xml/*.h
 

@@ -15,18 +15,17 @@
 #
 noinst_PROGRAMS = trivial delayedloop stream console
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
+INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 trivial_SOURCES = trivial.cpp
-trivial_LDADD = $(top_builddir)/src/liblog4cxx.la
+trivial_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 delayedloop_SOURCES = delayedloop.cpp
-delayedloop_LDADD = $(top_builddir)/src/liblog4cxx.la
+delayedloop_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 stream_SOURCES = stream.cpp
-stream_LDADD = $(top_builddir)/src/liblog4cxx.la
+stream_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 console_SOURCES = console.cpp
-console_LDADD = $(top_builddir)/src/liblog4cxx.la
-
+console_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
 

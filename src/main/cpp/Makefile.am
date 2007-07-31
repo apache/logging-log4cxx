@@ -15,7 +15,7 @@
 #
 lib_LTLIBRARIES = liblog4cxx.la
 
-INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
+INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 
 liblog4cxx_la_SOURCES = \

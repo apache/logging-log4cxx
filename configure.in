@@ -1,4 +1,4 @@
-AC_INIT(src/logger.cpp)
+AC_INIT(src/main/cpp/logger.cpp)
 
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
@@ -109,11 +109,13 @@ else
 fi
 
 manual_dest="manual"
+base_dir=${ac_abs_confdir}
 
 AC_SUBST(enable_dot)
 AC_SUBST(enable_html_docs)
 AC_SUBST(enable_latex_docs)
 AC_SUBST(manual_dest)
+AC_SUBST(base_dir)
 
 # CppUnit
 
@@ -189,7 +191,6 @@ then
 else
  AC_SUBST(HAS_SYSLOG, 0)
 fi
-					   
 
 # Checks for libraries
 # ----------------------------------------------------------------------------
@@ -371,40 +372,47 @@ fi
 AC_CONFIG_FILES([
 Makefile
 liblog4cxx.pc
-docs/Makefile
-docs/Doxyfile
 src/Makefile
-include/Makefile
-include/log4cxx/log4cxx.h
-include/log4cxx/private/log4cxx_private.h
-include/log4cxx/private/Makefile
-include/log4cxx/Makefile
-include/log4cxx/helpers/Makefile
-include/log4cxx/net/Makefile
-include/log4cxx/nt/Makefile
-include/log4cxx/spi/Makefile
-include/log4cxx/spi/location/Makefile
-include/log4cxx/varia/Makefile
-include/log4cxx/xml/Makefile
-include/log4cxx/config/Makefile
-include/log4cxx/db/Makefile
-include/log4cxx/rolling/Makefile
-include/log4cxx/pattern/Makefile
-include/log4cxx/filter/Makefile
-simplesocketserver/Makefile
-tests/Makefile
-tests/input/Makefile
-tests/input/performance/Makefile
-tests/input/ndc/Makefile
-tests/input/rolling/Makefile
-tests/input/xml/Makefile
-tests/src/Makefile
-tests/witness/Makefile
-tests/witness/encoding/Makefile
-tests/witness/ndc/Makefile
-tests/witness/rolling/Makefile
-performance/Makefile
-performance/xml/Makefile
-examples/Makefile
+src/main/Makefile
+src/main/cpp/Makefile
+src/main/include/Makefile
+src/main/include/log4cxx/log4cxx.h
+src/main/include/log4cxx/private/log4cxx_private.h
+src/main/include/log4cxx/private/Makefile
+src/main/include/log4cxx/Makefile
+src/main/include/log4cxx/helpers/Makefile
+src/main/include/log4cxx/net/Makefile
+src/main/include/log4cxx/nt/Makefile
+src/main/include/log4cxx/spi/Makefile
+src/main/include/log4cxx/spi/location/Makefile
+src/main/include/log4cxx/varia/Makefile
+src/main/include/log4cxx/xml/Makefile
+src/main/include/log4cxx/config/Makefile
+src/main/include/log4cxx/db/Makefile
+src/main/include/log4cxx/rolling/Makefile
+src/main/include/log4cxx/pattern/Makefile
+src/main/include/log4cxx/filter/Makefile
+src/site/Makefile
+src/site/doxy/Makefile
+src/site/doxy/Doxyfile
+src/test/Makefile
+src/test/resources/Makefile
+src/test/resources/input/Makefile
+src/test/resources/input/performance/Makefile
+src/test/resources/input/ndc/Makefile
+src/test/resources/input/rolling/Makefile
+src/test/resources/input/xml/Makefile
+src/test/cpp/Makefile
+src/test/resources/witness/Makefile
+src/test/resources/witness/encoding/Makefile
+src/test/resources/witness/ndc/Makefile
+src/test/resources/witness/rolling/Makefile
+src/simplesocketserver/Makefile
+src/simplesocketserver/cpp/Makefile
+src/performance/Makefile
+src/performance/cpp/Makefile
+src/performance/cpp/xml/Makefile
+src/examples/Makefile
+src/examples/cpp/Makefile
 ])
 AC_OUTPUT

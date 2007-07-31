@@ -15,5 +15,5 @@
 #
 SUBDIRS = location
 spiincdir = $(includedir)/log4cxx/spi
-spiinc_HEADERS= $(top_srcdir)/include/log4cxx/spi/*.h
+spiinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/spi/*.h
 

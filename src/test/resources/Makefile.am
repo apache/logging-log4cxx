@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-SUBDIRS = input witness src
+SUBDIRS = input witness
 EXTRA_DIST = log4j.dtd L7D_en_US.properties L7D_fr_CH.properties L7D_fr.properties
 
 if TESTS

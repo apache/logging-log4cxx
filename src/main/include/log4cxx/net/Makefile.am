@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 netincdir = $(includedir)/log4cxx/net
-netinc_HEADERS= $(top_srcdir)/include/log4cxx/net/*.h
+netinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/net/*.h
 

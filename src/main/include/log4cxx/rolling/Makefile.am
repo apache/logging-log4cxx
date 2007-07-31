@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 rollingincdir = $(includedir)/log4cxx/rolling
-rollinginc_HEADERS= $(top_srcdir)/include/log4cxx/rolling/*.h
+rollinginc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/rolling/*.h
 

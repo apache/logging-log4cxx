@@ -13,6 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-configincdir = $(includedir)/log4cxx/config
-configinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/config/*.h
-
+SUBDIRS = cpp include

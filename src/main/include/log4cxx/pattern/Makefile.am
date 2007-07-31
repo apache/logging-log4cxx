@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 patternincdir = $(includedir)/log4cxx/pattern
-patterninc_HEADERS= $(top_srcdir)/include/log4cxx/pattern/*.h
+patterninc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/pattern/*.h
 

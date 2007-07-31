@@ -13,6 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+AUTOMAKE_OPTIONS = foreign
+
 SUBDIRS = src
 EXTRA_DIST = autogen.sh aclocal.m4 find_apr.m4 find_apu.m4 build.xml pom.xml NOTICE LICENSE
 
