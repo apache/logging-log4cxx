@@ -112,7 +112,7 @@ void TelnetAppender::close()
 
 void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& /* p */)
 {
-        int count = activeConnections;
+        size_t count = activeConnections;
         if (count > 0) {
                 LogString os;
 
@@ -161,7 +161,7 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* /* thr
                         return NULL;
                 }
 
-                int count = pThis->activeConnections;
+                size_t count = pThis->activeConnections;
                 if (count >= pThis->connections.size()) {
                         os->writeRaw(LOG4CXX_STR("Too many connections.\r\n"));
                         os->flush();

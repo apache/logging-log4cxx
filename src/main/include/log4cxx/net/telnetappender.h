@@ -130,7 +130,7 @@ servlet.
                         ConnectionList connections;
                         helpers::ServerSocket* serverSocket;
                         helpers::Thread sh;
-                        int activeConnections;
+                        size_t activeConnections;
                         static void* LOG4CXX_THREAD_FUNC acceptConnections(helpers::log4cxx_thread_t* thread, void* data);
                 }; // class TelnetAppender
     } // namespace net
