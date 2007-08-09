@@ -34,7 +34,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="src.dir" location="${apr.dir}"/>
 <property name="test.dir" location="${apr.dir}/test"/>
 <property name="apr.lib.type" value="shared"/>
-<property name="project.dir" value="${build.dir}"/>
+<property name="project.dir" location="${build.dir}"/>
 
 <taskdef resource="cpptasks.tasks"/>
 <typedef resource="cpptasks.types"/>
@@ -45,6 +45,12 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="os-detect">
+        <condition property="is-mac" value="true">
+             <and>
+                 <os family="mac"/>
+                 <not><isset property="is-windows"/></not>
+             </and>
+        </condition>
         <condition property="is-unix" value="true">
              <and>
                   <not>
@@ -194,6 +200,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <define name="WIN32" value="1"/>
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <defineset define="HAVE_CONFIG_H DARWIN SIGPROCMASK_SETS_THREAD_MASK" if="is-mac"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <libset libs="pthread dl" if="is-unix"/>
@@ -220,6 +227,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
+        <defineset define="HAVE_CONFIG_H DARWIN SIGPROCMASK_SETS_THREAD_MASK" if="is-mac"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
@@ -355,6 +363,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
+        <defineset define="HAVE_CONFIG_H DARWIN SIGPROCMASK_SETS_THREAD_MASK" if="is-mac"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
@@ -381,6 +390,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             <exclude name="testlockperf.c"/>
             <exclude name="occhild.c"/>
             <exclude name="sockchild.c"/>
+            <exclude name="sockperf.c"/>
+            <exclude name="echod.c"/>
             <exclude name="mockchild.c"/>
             <exclude name="readchild.c"/>
             <exclude name="globalmutexchild.c"/>
@@ -398,6 +409,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </defineset>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
+        <defineset define="HAVE_CONFIG_H DARWIN SIGPROCMASK_SETS_THREAD_MASK" if="is-mac"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
