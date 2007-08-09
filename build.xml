@@ -1071,35 +1071,35 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
-                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projects.dir" location="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-unittest">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
-                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projects.dir" location="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-standalone-unittest">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
-                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projects.dir" location="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-examples">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
-                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projects.dir" location="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
         <antcall target="build-performance">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
-                <param name="projects.dir" value="${project.dir}"/>
+                <param name="projects.dir" location="${project.dir}"/>
                 <param name="projectsOnly" value="true"/>
         </antcall>
 </target>
@@ -1123,7 +1123,7 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
 
 <target name="build-projects-vc8" description="Builds project files for Microsoft Visual C++ 2005">
     <antcall target="build-projects">
-      <param name="project.dir" value="msvc8"/>
+      <param name="project.dir" location="msvc8"/>
       <param name="project.type" value="msvc8"/>
       <param name="project.compiler" value="msvc"/>
     </antcall>
@@ -1131,7 +1131,7 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
 
 <target name="build-projects-xcode" description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
-        <param name="project.dir" value="xcode"/>
+        <param name="project.dir" location="xcode"/>
         <param name="project.type" value="xcode"/>
         <param name="project.compiler" value="${compiler}"/>
     </antcall>
@@ -1139,7 +1139,7 @@ copy ..\include\log4cxx\private\log4cxx_private.hw ..\include\private\log4cxx_pr
 
 <target name="build-projects-cbx" description="Builds project files for Borland CBuilderX">
     <antcall target="build-projects">
-        <param name="project.dir" value="cbx"/>
+        <param name="project.dir" location="cbx"/>
         <param name="project.type" value="cbuilderx"/>
         <param name="project.compiler" value="${compiler}"/>
     </antcall>
