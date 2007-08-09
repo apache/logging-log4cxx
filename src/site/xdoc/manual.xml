@@ -18,54 +18,31 @@
 <document>
 
   <properties>
-    <author email="not@disclosed">Ceki G&#xfc;lc&#xfc;</author>
-    <title>Short introduction to log4j</title>
+    <title>Short introduction to log4cxx</title>
   </properties>
   <body>
-<section name="Short introduction to log4j: Ceki G&#xfc;lc&#xfc;, March 2002">
-    <p>
-      Copyright &#xa9; 2000-2002 The Apache Software Foundation. All
-      rights reserved.  This software is published under the terms of
-      the Apache Software License version 2.0, a copy of which has
-      been included in the LICENSE file shipped with the log4j
-      distribution. This document is based on the article <a
-      href="http://www.javaworld.com/jw-11-2000/jw-1122-log4j.html">"Log4j
-      delivers control over logging"</a> published in November 2000
-      edition of JavaWorld. However, the present article contains more
-      detailed and up to date information. The present short manual
-      also borrows some text from <a
-      href="https://www.qos.ch/shop/products/eclm/">"<em>The
-      complete log4j manual</em>"</a> by the same author (yours
-      truly).</p>
+<section name="Short introduction to log4cxx">
 
 <h2>Abstract</h2>
 
-<p>This document describes the log4j API, its unique features and
-design rationale. Log4j is an open source project based on the work of
+<p>This document describes the log4cxx API, its unique features and
+design rationale. Log4cxx is an open source project based on the work of
 many authors.  It allows the developer to control which log statements
 are output with arbitrary granularity. It is fully configurable at
-runtime using external configuration files.  Best of all, log4j has a
+runtime using external configuration files.  Best of all, log4cxx has a
 gentle learning curve. Beware: judging from user feedback, it is also
 quite addictive.</p>
 
 <h2>Introduction</h2>
 
-<p>Almost every large application includes its own logging or tracing
-API. In conformance with this rule, the E.U.  <a
-href="http://www.semper.org">SEMPER</a> project decided to write its
-own tracing API. This was in early 1996. After countless enhancements,
-several incarnations and much work that API has evolved to become
-log4j, a popular logging package for Java. The package is distributed
-under the <a href="../LICENSE">Apache Software License</a>, a
-fully-fledged open source license certified by the <a
-href="http://www.opensource.org">open source</a> initiative. The
-latest log4j version, including full-source code, class files and
-documentation can be found at <a
-href="http://logging.apache.org/log4j/"><b>http://logging.apache.org/log4j/</b></a>.
-By the way, log4j has been ported to the C, C++, C#, Perl, Python,
-Ruby, and Eiffel languages.</p>
+The log4cxx framework is patterned after <a href="http://logging.apache.org/log4j">log4j</a>.
+log4cxx is licensed under the 
+<a href="http://www.apache.org/legal/licenses.html">Apache License</a>,
+an open source license certified by the 
+<a href="http://www.opensource.org/">Open Source Initiative</a>.
 
-<p>Inserting log statements into code is a low-tech method for
+<p>Almost every large application includes its own logging or tracing
+API.   Inserting log statements into code is a low-tech method for
 debugging it. It may also be the only way because debuggers are not
 always available or applicable. This is usually the case for
 multithreaded applications and distributed applications at large.</p>
@@ -79,31 +56,15 @@ to be studied at a later time. In addition to its use in the
 development cycle, a sufficiently rich logging package can also be
 viewed as an auditing tool.</p>
 
-<p>As Brian W. Kernighan and Rob Pike put it in their truly excellent
-book <i>"The Practice of Programming"</i>
-<pre>
-  As personal choice, we tend not to use debuggers beyond getting a
-  stack trace or the value of a variable or two. One reason is that it
-  is easy to get lost in details of complicated data structures and
-  control flow; we find stepping through a program less productive
-  than thinking harder and adding output statements and self-checking
-  code at critical places. Clicking over statements takes longer than
-  scanning the output of judiciously-placed displays. It takes less
-  time to decide where to put print statements than to single-step to
-  the critical section of code, even assuming we know where that
-  is. More important, debugging statements stay with the program;
-  debugging sessions are transient.
-</pre></p>
-
 <p>Logging does have its drawbacks. It can slow down an
 application. If too verbose, it can cause scrolling blindness. To
-alleviate these concerns, log4j is designed to be reliable, fast and
+alleviate these concerns, log4cxx is designed to be reliable, fast and
 extensible. Since logging is rarely the main focus of an application,
-the log4j API strives to be simple to understand and to use.</p>
+the log4cxx API strives to be simple to understand and to use.</p>
 
 <h2>Loggers, Appenders and Layouts</h2>
 
-<p>Log4j has three main components: <em>loggers</em>,
+<p>Log4cxx has three main components: <em>loggers</em>,
 <em>appenders</em> and <em>layouts</em>. These three types of
 components work together to enable developers to log messages according
 to message type and level, and to control at runtime how these
@@ -112,16 +73,11 @@ messages are formatted and where they are reported.</p>
 <h3>Logger hierarchy</h3>
 
 <p>The first and foremost advantage of any logging API over plain
-<code>System.out.println</code> resides in its ability to disable
+<code>std::cout</code> resides in its ability to disable
 certain log statements while allowing others to print unhindered. This
 capability assumes that the logging space, that is, the space of all
 possible logging statements, is categorized according to some
-developer-chosen criteria. This observation had previously led us to
-choose <em>category</em> as the central concept of the
-package. However, since log4j version 1.2, <code>Logger</code> class
-has replaced the <code>Category</code> class. For those familiar with
-earlier versions of log4j, the <code>Logger</code> class can be
-considered as a mere alias to the <code>Category</code> class.</p>
+developer-chosen criteria.</p>
 
 <p>Loggers are named entities. Logger names are case-sensitive and
 they follow the hierarchical naming rule:</p>
@@ -158,10 +114,10 @@ is exceptional in two ways:
 <li> it cannot be retrieved by name.</li>
 </ol></p>
 <p>Invoking the class static <a
-href="apidocs/org/apache/log4j/Logger.html#getRootLogger()">Logger.getRootLogger</a>
+href="apidocs/classlog4cxx_1_1Logger.html#21327bbf0a7b4dc06c7c23c616283eb7">log4cxx::Logger::getRootLogger</a>
 method retrieves it. All other loggers are instantiated and
 retrieved with the class static <a
-href="apidocs/org/apache/log4j/Logger.html#getLogger()">Logger.getLogger</a>
+href="apidocs/classlog4cxx_1_1Logger.html#107444682629e5bdc96827896f056037">log4cxx::Logger::getLogger</a>
 method. This method takes the name of the desired logger as a
 parameter. Some of the basic methods in the Logger class are listed
 below.</p>
@@ -170,46 +126,36 @@ below.</p>
 <tr bgcolor="CCCCCC">
 <td>
 <pre>
-  package org.apache.log4j;
+  namespace log4cxx {
 
-  public class <b>Logger</b> {
+    class <b>Logger</b> {
+       public:
+       // Creation &amp; retrieval methods:
+       static LoggerPtr getRootLogger();
+       static LoggerPtr getLogger(const std::string&amp; name);
+       static LoggerPtr getLogger(const std::wstring&amp; name);
 
-    // Creation &amp; retrieval methods:
-    public static Logger getRootLogger();
-    public static Logger getLogger(String name);
-
-    // printing methods:
-    public void trace(Object message);
-    public void debug(Object message);
-    public void info(Object message);
-    public void warn(Object message);
-    public void error(Object message);
-    public void fatal(Object message);
-
-    // generic printing method:
-    public void log(Level l, Object message);
-}
+     }
+   }
+//
+//   Use these macros instead of calling Logger methods directly.
+//   Macros will accept char and wchar_t pointers and strings.
+//   
+#define LOG4CXX_TRACE(logger, msg) ...   
+#define LOG4CXX_DEBUG(logger, msg) ...   
+#define LOG4CXX_INFO(logger, msg) ...   
+#define LOG4CXX_WARN(logger, msg) ...   
+#define LOG4CXX_ERROR(logger, msg) ...   
+#define LOG4CXX_FATAL(logger, msg) ...   
 </pre>
 </td>
 </tr>
 </table></p>
 
-<p>Loggers <em>may</em> be assigned levels. The set of possible
-levels, that is:<br/><br/>
-
-<a href="apidocs/org/apache/log4j/Level.html#TRACE">TRACE</a>,<br/>
-<a href="apidocs/org/apache/log4j/Level.html#DEBUG">DEBUG</a>,<br/>
-<a href="apidocs/org/apache/log4j/Level.html#INFO">INFO</a>,<br/>
-<a href="apidocs/org/apache/log4j/Level.html#WARN">WARN</a>,<br/>
-<a href="apidocs/org/apache/log4j/Level.html#ERROR">ERROR</a> and<br/>
-<a href="apidocs/org/apache/log4j/Level.html#FATAL">FATAL</a><br/>
-<br/>
-
-are defined in the <code><a
-href="apidocs/org/apache/log4j/Level.html">org.apache.log4j.Level</a></code>
-class. Although we do not encourage you to do so, you may define
-your own levels by sub-classing the <code>Level</code> class. A
-perhaps better approach will be explained later on.</p>
+<p>Loggers <em>may</em> be assigned levels. The pre-defined
+levels: TRACE, DEBUG, INFO, WARN, ERROR and FATAL are defined in the <code><a
+href="apidocs/classlog4cxx_1_1Level.html">log4cxx::Level</a></code>
+class which provides accessor functions.</p>
 
 <p>If a given logger is not assigned a level, then it inherits
 one from its closest ancestor with an assigned level. More
@@ -303,24 +249,9 @@ inherits their level value from their nearest parent <code>X</code>
 having an assigned level..</p>
 
 
-<p>Logging requests are made by invoking one of the printing methods
-of a logger instance. These printing methods are
-
-<code>
-<a href="apidocs/org/apache/log4j/Logger.html#debug(java.lang.Object)">debug</a>,
-
-<a href="apidocs/org/apache/log4j/Logger.html#info(java.lang.Object)">info</a>,
-
-<a href="apidocs/org/apache/log4j/Logger.html#warn(java.lang.Object)">warn</a>,
-<a href="apidocs/org/apache/log4j//Logger.html#error(java.lang.Object)">error</a>,
-<a href="apidocs/org/apache/log4j/Logger.html#fatal(java.lang.Object)">fatal</a>
- and <a href="apidocs/org/apache/log4j/Logger.html#log(org.apache.log4j.Level, java.lang.Object)">log</a></code>.</p>
-
-
-<p>By definition, the printing method determines the level of a
-logging request. For example, if <code>c</code> is a logger
-instance, then the statement <code>c.info("..")</code> is a logging
-request of level INFO.</p>
+<p>Logging requests are made by invoking a method of
+a logger instance, preferrably through the use of LOG4CXX_INFO or similar
+macros.  Each request specifies the level of the logging request.</p>
 
 <p>A logging request is said to be <em>enabled</em> if its level is
 higher than or equal to the level of its logger. Otherwise, the
@@ -342,8 +273,8 @@ summarized below.</p>
       </dl>
 </td></tr></table></p>
 
-<p>This rule is at the heart of log4j. It assumes that levels are
-ordered. For the standard levels, we have <code>DEBUG &lt; INFO
+<p>This rule is at the heart of log4cxx. It assumes that levels are
+ordered. For the standard levels, we have <code>TRACE &lt; DEBUG &lt; INFO
 &lt; WARN &lt; ERROR &lt; FATAL</code>.</p>
 
 <p>Here is an example of this rule.</p>
@@ -353,30 +284,30 @@ ordered. For the standard levels, we have <code>DEBUG &lt; INFO
 <pre>
 
    // get a logger instance named "com.foo"
-   Logger  logger = Logger.getLogger(<strong>"com.foo"</strong>);
+   log4cxx::LoggerPtr  logger(log4cxx::Logger::getLogger(<strong>"com.foo"</strong>));
 
    // Now set its level. Normally you do not need to set the
    // level of a logger programmatically. This is usually done
    // in configuration files.
-   <strong>logger</strong>.setLevel(<font
-   color="0000AA"><strong>Level.INFO</strong></font>);
+   <strong>logger</strong>->setLevel(<font
+   color="0000AA"><strong>log4cxx::Level::getInfo()</strong></font>);
 
-   Logger barlogger = Logger.getLogger(<strong>"com.foo.Bar"</strong>);
+   log4cxx::LoggerPtr barlogger(log4cxx::Logger::getLogger(<strong>"com.foo.Bar"</strong>);
 
    // This request is enabled, because <font color="00AA00"><strong>WARN</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.
-   logger.<font color="00AA00"><strong>warn</strong></font>("Low fuel level.");
+   LOG4CXX_WARN(logger, "Low fuel level.");
 
    // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
-   logger.<font color="00AA00"><strong>debug</strong></font>("Starting search for nearest gas station.");
+   LOG4CXX_DEBUG(logger, "Starting search for nearest gas station.");
 
    // The logger instance barlogger, named "com.foo.Bar",
    // will inherit its level from the logger named
    // "com.foo" Thus, the following request is enabled
    // because <font color="00AA00"><strong>INFO</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.
-   barlogger.<font color="00AA00"><strong>info</strong></font>("Located nearest gas station.");
+   LOG4CXX_INFO(barlogger. "Located nearest gas station.");
 
    // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
-   barlogger.<font color="00AA00"><strong>debug</strong></font>("Exiting gas station search");
+   LOG4CXX_DEBUG(barlogger, "Exiting gas station search");
 </pre>
 </td></tr>
 </table></p>
@@ -389,8 +320,8 @@ always return a reference to the exact same logger object.</p>
 <table bgcolor="CCCCCC">
 <tr><td>
 <pre>
-   Logger x = Logger.getLogger("wombat");
-   Logger y = Logger.getLogger("wombat");</pre>
+   log4cxx::LoggerPtr x = log4cxx::Logger::getLogger("wombat");
+   log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");</pre>
 </td></tr>
 </table>
 <code>x</code> and <code>y</code> refer to <em>exactly</em> the same
@@ -399,23 +330,23 @@ logger object.</p>
 <p>Thus, it is possible to configure a logger and then to retrieve
 the same instance somewhere else in the code without passing around
 references. In fundamental contradiction to biological parenthood,
-where parents always preceed their children, log4j loggers can be
+where parents always preceed their children, log4cxx loggers can be
 created and configured in any order. In particular, a "parent"
 logger will find and link to its descendants even if it is
 instantiated after them.</p>
 
-<p>Configuration of the log4j environment is typically done at
+<p>Configuration of the log4cxx environment is typically done at
 application initialization. The preferred way is by reading a
 configuration file. This approach will be discussed shortly.</p>
 
-<p>Log4j makes it easy to name loggers by <em>software
+<p>Log4cxx makes it easy to name loggers by <em>software
 component</em>.  This can be accomplished by statically instantiating
 a logger in each class, with the logger name equal to the fully
 qualified name of the class. This is a useful and straightforward
 method of defining loggers. As the log output bears the name of the
 generating logger, this naming strategy makes it easy to identify
 the origin of a log message.  However, this is only one possible,
-albeit common, strategy for naming loggers. Log4j does not restrict
+albeit common, strategy for naming loggers. Log4cxx does not restrict
 the possible set of loggers. The developer is free to name the
 loggers as desired.</p>
 
@@ -425,25 +356,22 @@ located seems to be the best strategy known so far.</p>
 <h2>Appenders and Layouts</h2>
 
 <p>The ability to selectively enable or disable logging requests based
-on their logger is only part of the picture. Log4j allows logging
-requests to print to multiple destinations. In log4j speak, an output
+on their logger is only part of the picture. Log4cxx allows logging
+requests to print to multiple destinations. In log4cxx speak, an output
 destination is called an <em>appender</em>. Currently, appenders exist
-for the <a href="apidocs/org/apache/log4j/ConsoleAppender.html">console</a>, <a
-href="apidocs/org/apache/log4j/FileAppender.html">files</a>, GUI
+for the <a href="apidocs/classlog4cxx_1_1ConsoleAppender.html">console</a>, <a
+href="apidocs/classlog4cxx_1_1FileAppender.html">files</a>, GUI
 components, <a
-href="apidocs/org/apache/log4j/net/SocketAppender.html">remote socket</a>
-servers,  <a
-href="apidocs/org/apache/log4j/net/JMSAppender.html">JMS</a>,
-
-<a href="apidocs/org/apache/log4j/nt/NTEventLogAppender.html"> NT
+href="apidocs/classlog4cxx_1_1net_1_1SocketAppender.html">remote socket</a>
+servers,  <a href="apidocs/classlog4cxx_1_1nt_1_1NTEventLogAppender.html"> NT
 Event Loggers</a>, and remote UNIX <a
-href="apidocs/org/apache/log4j/net/SyslogAppender.html">Syslog</a>
-daemons. It is also possible to log <a href="apidocs/org/apache/log4j/AsyncAppender.html">asynchronously</a>.</p>
+href="apidocs/classlog4cxx_1_1net_1_1SyslogAppender.html">Syslog</a>
+daemons. It is also possible to log <a href="apidocs/classlog4cxx_1_1AsyncAppender.html">asynchronously</a>.</p>
 
 <p>More than one appender can be attached to a logger.</p>
 
 <p>The <a
-href="apidocs/org/apache/log4j/Logger.html#addAppender(org.apache.log4j.Appender)">addAppender</a>
+href="apidocs/classlog4cxx_1_1Logger.html#d1aff470bf79a972a9240069e721340a">addAppender</a>
 method adds an appender to a given logger.
 
 <b>Each enabled logging
@@ -457,7 +385,7 @@ console. If in addition a file appender is added to a logger, say
 <em>C</em>'s children will print on a file <em>and</em> on the
 console. It is possible to override this default behavior so that
 appender accumulation is no longer additive by <a
-href="apidocs/org/apache/log4j/Logger.html#setAdditivity(boolean)">setting
+href="apidocs/classlog4cxx_1_1Logger.html#80f9397947dba9071ad485f178257c17">setting
 the additivity flag</a> to <code>false</code>.</p>
 
 <p>The rules governing appender additivity are summarized below.</p>
@@ -494,7 +422,7 @@ the additivity flag</a> to <code>false</code>.</p>
 <tr><td>root    </td><td>A1         </td><td>not applicable </td><td>A1</td>
 
     <td>The root logger is anonymous but can be accessed with the
-        Logger.getRootLogger() method. There is no default appender
+        log4cxx::Logger::getRootLogger() method. There is no default appender
         attached to root.</td></tr>
 
 <tr><td>x       </td><td>A-x1, A-x2 </td><td>true </td><td>A1, A-x1, A-x2</td>
@@ -527,8 +455,8 @@ wishes, whereas an appender takes care of sending the formatted output
 to its destination.</p>
 
 The <a
-href="apidocs/org/apache/log4j/PatternLayout.html">PatternLayout</a>, part
-of the standard log4j distribution, lets the user specify the output
+href="apidocs/classlog4cxx_1_1PatternLayout.html">PatternLayout</a>, part
+of the standard log4cxx distribution, lets the user specify the output
 format according to conversion patterns similar to the C language
 <code>printf</code> function.</p>
 
@@ -545,23 +473,6 @@ request.  The third field is the level of the log statement. The
 fourth field is the name of the logger associated with the log
 request. The text after the '-' is the message of the statement.</p>
 
-<p>Just as importantly, log4j will render the content of the log
-message according to user specified criteria. For example, if you
-frequently need to log <code>Oranges</code>, an object type used in
-your current project, then you can register an
-<code>OrangeRenderer</code> that will be invoked whenever an orange
-needs to be logged.</p>
-
-<p>Object rendering follows the class hierarchy. For example, assuming
-oranges are fruits, if you register an <code>FruitRenderer</code>, all
-fruits including oranges will be rendered by the
-<code>FruitRenderer</code>, unless of course you registered an orange
-specific <code>OrangeRenderer</code>.</p>
-
-<p>Object renderers have to implement the
-<a href="apidocs/org/apache/log4j/or/ObjectRenderer.html">ObjectRenderer</a>
-interface.</p>
-
 
 <h2>Configuration</h2>
 
@@ -572,107 +483,112 @@ sized applications will have thousands of logging statements embedded
 within their code.  Given their number, it becomes imperative to
 manage these log statements without the need to modify them manually.</p>
 
-<p>The log4j environment is fully configurable programmatically.
-However, it is far more flexible to configure log4j using
+<p>The log4cxx environment is fully configurable programmatically.
+However, it is far more flexible to configure log4cxx using
 configuration files.  Currently, configuration files can be written in
 XML or in Java properties (key=value) format.</p>
 
 <p>Let us give a taste of how this is done with the help of an
-imaginary application <code>MyApp</code> that uses log4j.</p>
+imaginary application <code>MyApp</code> that uses log4cxx.</p>
 
 <p><table bgcolor="CCCCCC"><tr><td>
 <pre>
- import com.foo.Bar;
+#include "com/foo/bar.h"
+using namespace com::foo;
 
- // Import log4j classes.
- <b>import org.apache.log4j.Logger;
- import org.apache.log4j.BasicConfigurator;</b>
+// include log4cxx header files.
+#include "log4cxx/logger.h"
+#include "log4cxx/basicconfigurator.h"
+#include "log4cxx/helpers/exception.h"
 
- public class MyApp {
+using namespace log4cxx;
+using namespace log4cxx::helpers;
 
-   // Define a static logger variable so that it references the
-   // Logger instance named "MyApp".
-   <strong>static</strong> Logger logger = <strong>Logger.getLogger(MyApp.class);</strong>
+LoggerPtr logger(Logger::getLogger("MyApp"));
 
-   public static void main(String[] args) {
+int main(int argc, char **argv)
+{
+        int result = EXIT_SUCCESS;
+        try
+        {
+                // Set up a simple configuration that logs on the console.
+                BasicConfigurator::configure();
 
-     // Set up a simple configuration that logs on the console.
-     <strong>BasicConfigurator.configure();</strong>
+                LOG4CXX_INFO(logger, "Entering application.");
+                Bar bar;
+                bar.doIt();
+                LOG4CXX_INFO(logger, "Exiting application.");
+        }
+        catch(Exception&amp;)
+        {
+                result = EXIT_FAILURE;
+        }
 
-     logger.info("Entering application.");
-     Bar bar = new Bar();
-     bar.doIt();
-     logger.info("Exiting application.");
-   }
- }
+        return result;
+}
 </pre>
 </td></tr>
 </table></p>
 
-<p><code>MyApp</code> begins by importing log4j related classes.  It
+<p><code>MyApp</code> begins by including log4cxx headers.  It
 then defines a static logger variable with the name
 <code>MyApp</code> which happens to be the fully qualified name of the
 class.</p>
 
-<p><code>MyApp</code> uses the <code>Bar</code> class defined in the
-package <code>com.foo</code>.</p>
+<p><code>MyApp</code> uses the <code>Bar</code> class defined in header
+file <code>com/foo/bar.h</code>.</p>
 
 <p><table bgcolor="CCCCCC"><tr><td>
 <pre>
- <b>package com.foo;</b>
- import org.apache.log4j.Logger;
+//  file com/foo/bar.h
+#include "log4cxx/logger.h"
 
- public class Bar {
-   <strong>static</strong> Logger logger = <strong>Logger.getLogger(Bar.class);</strong>
+namespace com {
+   namespace foo {
+      class Bar {
+          static log4cxx::LoggerPtr logger;
+          
+      public:
+          void doIt();
+       }
+    }
+}
+</pre>
 
-   public void doIt() {
-     logger.debug("Did it again!");
-   }
- }
+<pre>
+// file bar.cpp
+#include "com/foo/bar.h"
+
+using namespace com::foo;
+using namespace log4cxx;
+
+LoggerPtr Bar::logger(Logger::getLogger("com.foo.bar"));
+
+void Bar::doIt() {
+   LOG4CXX_DEBUG(logger, "Did it again!");
+}
 </pre>
 </td></tr>
 </table></p>
 
 <p>The invocation of the <a
-href="apidocs/org/apache/log4j/BasicConfigurator.html#configure()">BasicConfigurator.configure</a>
-method creates a rather simple log4j setup. This method is hardwired
+href="apidocs/classlog4cxx_1_1BasicConfigurator.html#e369b3765489ee8bd0ea791c1843630f">BasicConfigurator::configure</a>
+method creates a rather simple log4cxx setup. This method is hardwired
 to add to the root logger a <a
-href="apidocs/org/apache/log4j/ConsoleAppender.html">
+href="apidocs/classlog4cxx_1_1ConsoleAppender.html">
 ConsoleAppender</a>. The output will be formatted using a <a
-href="apidocs/org/apache/log4j/PatternLayout.html">PatternLayout</a> set
+href="apidocs/classlog4cxx_1_1PatternLayout.html">PatternLayout</a> set
 to the pattern "%-4r [%t] %-5p %c %x - %m%n".</p>
 
 <p>Note that by default, the root logger is assigned to
-<code>Level.DEBUG</code>.</p>
+<code>Level::getDebug()</code>.</p>
 
 <p>The output of MyApp is:
 <pre>
-0    [main] INFO  MyApp  - Entering application.
-36   [main] DEBUG com.foo.Bar  - Did it again!
-51   [main] INFO  MyApp  - Exiting application.
+0    [12345] INFO  MyApp  - Entering application.
+36   [12345] DEBUG com.foo.Bar  - Did it again!
+51   [12345] INFO  MyApp  - Exiting application.
 </pre></p>
-
-<p>The figure below depicts the object diagram of <code>MyApp</code>
-after just having called the <code>BasicConfigurator.configure</code>
-method.</p>
-
-<p>
-<center>
-<img src="images/od.gif" align="center" />
-</center></p>
-
-<p>As a side note, let me mention that in log4j child loggers link
-only to their existing ancestors. In particular, the logger named
-<code>com.foo.Bar</code> is linked directly to the <code>root</code>
-logger, thereby circumventing the unused <code>com</code> or
-<code>com.foo</code> loggers. This significantly increases
-performance and reduces log4j's memory footprint.</p>
-
-
-<p>The <code>MyApp</code> class configures log4j by invoking
-<code>BasicConfigurator.configure</code> method.  Other classes only
-need to import the <code>org.apache.log4j.Logger</code> class,
-retrieve the loggers they wish to use, and log away.</p>
 
 <p>The previous example always outputs the same log information.
 Fortunately, it is easy to modify <code>MyApp</code> so that the log
@@ -681,27 +597,50 @@ version.</p>
 
 <p><table bgcolor="CCCCCC"><tr><td>
 <pre>
- import com.foo.Bar;
+// file MyApp2.cpp
 
- import org.apache.log4j.Logger;
- <b>import org.apache.log4j.PropertyConfigurator;</b>
+#include "com/foo/bar.h"
+using namespace com::foo;
 
- public class MyApp {
+// include log4cxx header files.
+#include "log4cxx/logger.h"
+#include "log4cxx/basicconfigurator.h"
+#include "log4cxx/propertyconfigurator.h"
+#include "log4cxx/helpers/exception.h"
 
-   static Logger logger = Logger.getLogger(MyApp.class.getName());
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+// Define a static logger variable so that it references the
+// Logger instance named "MyApp".
+LoggerPtr logger(Logger::getLogger("MyApp"));
 
-   public static void main(String[] args) {
+int main(int argc, char **argv)
+{
+        int result = EXIT_SUCCESS;
+        try
+        {
+                if (argc > 1)
+                {
+                        // BasicConfigurator replaced with PropertyConfigurator.
+                        PropertyConfigurator::configure(argv[1]);
+                }
+                else
+                {
+                        BasicConfigurator::configure();
+                }
 
+                LOG4CXX_INFO(logger, "Entering application.");
+                Bar bar
+                bar.doIt();
+                LOG4CXX_INFO(logger, "Exiting application.");
+        }
+        catch(Exception&amp;)
+        {
+                result = EXIT_FAILURE;
+        }
 
-     // BasicConfigurator replaced with PropertyConfigurator.
-     <strong>PropertyConfigurator.configure(args[0]);</strong>
-
-     logger.info("Entering application.");
-     Bar bar = new Bar();
-     bar.doIt();
-     logger.info("Exiting application.");
-   }
- }
+        return result;
+}
 </pre>
 </td></tr>
 </table>
@@ -726,14 +665,11 @@ log4j.appender.A1.layout=org.apache.log4j.PatternLayout
 log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
 </pre>
 </td></tr></table></p>
-<!-- <p>Please note that if you copy and paste the examples, then result is
-likely to include trailing spaces on some lines. These trailing spaces
-are not trimmed out but interpreted by the PropertyConfigurator.  By
-the time you read this article the problem should be corrected.
--->
+
+<p>It can be noticed that the PropertyConfigurator file format is the same as log4j.</p>
 
 <p>Suppose we are no longer interested in seeing the output of any
-component belonging to the <code>com.foo</code> package. The following
+component belonging to the <code>com::foo</code> package. The following
 configuration file shows one possible way of achieving this.</p>
 
 <p><table bgcolor="CCAAAA"><tr><td>
@@ -753,14 +689,14 @@ log4j.appender.A1.layout.ConversionPattern=<strong>%d</strong> [%t] %-5p %c - %m
 <p>The output of <code>MyApp</code> configured with this file is shown below.</p>
 
 <pre>
-<strong>2000-09-07 14:07:41,508</strong> [main] INFO  MyApp - Entering application.
-<strong>2000-09-07 14:07:41,529</strong> [main] INFO  MyApp - Exiting application.
+<strong>2000-09-07 14:07:41,508</strong> [12345] INFO  MyApp - Entering application.
+<strong>2000-09-07 14:07:41,529</strong> [12345] INFO  MyApp - Exiting application.
 </pre>
 
 <p>As the logger <code>com.foo.Bar</code> does not have an assigned
 level, it inherits its level from <code>com.foo</code>, which
 was set to WARN in the configuration file. The log statement from the
-<code>Bar.doIt</code> method has the level DEBUG, lower than the
+<code>Bar::doIt</code> method has the level DEBUG, lower than the
 logger level WARN. Consequently, <code>doIt()</code> method's log
 request is suppressed.</p>
 
@@ -792,9 +728,9 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
 output the following on the console.</p>
 
 <pre>
- INFO [main] <strong>(MyApp2.java:12)</strong> - Entering application.
-DEBUG [main] (Bar.java:8) - Doing it again!
- INFO [main] (MyApp2.java:15) - Exiting application.
+ INFO [12345] <strong>(MyApp2.cpp:31)</strong> - Entering application.
+DEBUG [12345] (Bar.h:16) - Doing it again!
+ INFO [12345] (MyApp2.cpp:34) - Exiting application.
 </pre></p>
 
 <p>In addition, as the root logger has been allocated a second
@@ -806,223 +742,41 @@ automatically moved to <code>example.log.1</code>.</p>
 <p>Note that to obtain these different logging behaviors we did not
 need to recompile code. We could just as easily have logged to a UNIX
 Syslog daemon, redirected all <code>com.foo</code> output to an NT
-Event logger, or forwarded logging events to a remote log4j server,
+Event logger, or forwarded logging events to a remote log4cxx server,
 which would log according to local server policy, for example by
-forwarding the log event to a second log4j server.</p>
+forwarding the log event to a second log4cxx server.</p>
 
 <a name="defaultInit"/><h2>Default Initialization Procedure</h2>
 
-<p>The log4j library does not make any assumptions about its
-environment. In particular, there are no default log4j
+<p>The log4cxx library does not make any assumptions about its
+environment. In particular, there are no default log4cxx
 appenders. Under certain well-defined circumstances however, the
 static inializer of the <code>Logger</code> class will attempt to
-automatically configure log4j. The Java language guarantees that the
-static initializer of a class is called once and only once during the
-loading of a class into memory. It is important to remember that
-different classloaders may load distinct copies of the same
-class. These copies of the same class are considered as totally
-unrelated by the JVM.</p>
-
-<p>The default initialization is very useful in environments where the
-exact entry point to the application depends on the runtime
-environment. For example, the same application can be used as a
-stand-alone application, as an applet, or as a servlet under the
-control of a web-server.</p>
+automatically configure log4cxx.</p>
 
 <p>The exact default initialization algorithm is defined as follows:</p>
 
 <ol>
 
- <li>Setting the <b>log4j.defaultInitOverride</b> system property to
- any other value then "false" will cause log4j to skip the default
- initialization procedure (this procedure).</li>
+  <li><p>Set the configurationOptionStr string variable to the value of the 
+  <b>LOG4CXX_CONFIGURATION</b> environment variable if set, otherwise 
+  the value of the <b>log4j.configuration</b> environment variable if set, 
+  otherwise the first of the following file names which exist in the 
+  current working directory, "log4cxx.properties", "log4j.properties", 
+  "log4cxx.xml" and "log4j.xml". 
+  If configurationOptionStr has not been set, then disable logging.</p> 
 
- <li>Set the <code>resource</code> string variable to the value of
- the <b>log4j.configuration</b> system property.  <em>The preferred
- way to specify the default initialization file is through the
- <b>log4j.configuration</b> system property.</em> In case the system
- property <b>log4j.configuration</b> is not defined, then set the
- string variable <code>resource</code> to its default value
- "log4j.properties".</li>
-
- <li>Attempt to convert the <code>resource</code> variable to a
- URL.</li>
-
- <li>If the resource variable cannot be converted to a URL, for
- example due to a <code>MalformedURLException</code>, then search for
- the <code>resource</code> from the classpath by calling
- <code>org.apache.log4j.helpers.Loader.getResource(resource,
- Logger.class)</code> which returns a URL.  Note that the string
- "log4j.properties" constitutes a malformed URL.
-
- <p>See <a
- href="apidocs/org/apache/log4j/helpers/Loader.html#getResource(java.lang.String)">Loader.getResource(java.lang.String)</a>
- for the list of searched locations.</p></li>
-
- <li>If no URL could not be found, abort default
- initialization. Otherwise, configure log4j from the URL.
-
- <p>The <a
-  href="apidocs/org/apache/log4j/PropertyConfigurator.html">PropertyConfigurator</a>
-  will be used to parse the URL to configure log4j unless the URL ends
-  with the ".xml" extension, in which case the <a
-  href="apidocs/org/apache/log4j/xml/DOMConfigurator.html">DOMConfigurator</a>
-  will be used. You can optionaly specify a custom configurator. The
-  value of the <b>log4j.configuratorClass</b> system property is taken
-  as the fully qualified class name of your custom configurator. The
-  custom configurator you specify <em>must</em> implement the <a
-  href="apidocs/org/apache/log4j/spi/Configurator.html">Configurator</a>
-  interface.</p></li>
+  <p>Unless a custom configurator is specified using the 
+  <b>LOG4CXX_CONFIGURATOR_CLASS</b> or <b>log4j.configuratorClass</b>
+  environment variable, the PropertyConfigurator will be used to configure
+  log4cxx unless the file name ends with the ".xml" extension, 
+  in which case the DOMConfigurator will be used. 
+  If a custom configurator is specified, the environment variable 
+  should contain a fully qualified class name of a class that 
+  implements the Configurator interface.</p>
+  </li>
 
 </ol>
-
-<h2>Example Configurations</h2>
-
-
-
-<h2>Default Initialization under Tomcat</h2>
-
-<p>The default log4j initialization is particularly useful in
-web-server environments. Under Tomcat 3.x and 4.x, you should place
-the <code>log4j.properties</code> under the
-<code>WEB-INF/classes</code> directory of your web-applications. Log4j
-will find the properties file and initialize itself. This is easy to
-do and it works.</p>
-
-<p>You can also choose to set the system property
-<b>log4j.configuration</b> before starting Tomcat. For Tomcat 3.x The
-<code>TOMCAT_OPTS</code> environment variable is used to set command
-line options. For Tomcat 4.0, set the <code>CATALINA_OPTS</code>
-environment variable instead of <code>TOMCAT_OPTS</code>.</p>
-
-<p><b>Example 1</b></p>
-
-<p>The Unix shell command
-<pre>
-   export TOMCAT_OPTS="-Dlog4j.configuration=foobar.txt"
-</pre>
-
-tells log4j to use the file <code>foobar.txt</code> as the default
-configuration file. This file should be place under the
-<code>WEB-INF/classes</code> directory of your web-application. The
-file will be read using the <a
-href="apidocs/org/apache/log4j/xml/PropertyConfigurator.html">PropertyConfigurator</a>. Each
-web-application will use a different default configuration file because
-each file is relative to a web-application.</p>
-
-
-<p><b>Example 2</b></p>
-
-<p>The Unix shell command
-<pre>
-   export TOMCAT_OPTS="-Dlog4j.debug -Dlog4j.configuration=foobar.xml"
-</pre>
-
-tells log4j to output log4j-internal debugging information and to use
-the file <code>foobar.xml</code> as the default configuration
-file. This file should be place under the <code>WEB-INF/classes</code>
-directory of your web-application. Since the file ends with a
-<code>.xml</code> extension, it will read using the <a
-href="apidocs/org/apache/log4j/xml/DOMConfigurator.html">DOMConfigurator</a>. Each
-web-application will use a different default configuration file because
-each file is relative to a web-application.</p>
-
-<p><b>Example 3</b></p>
-
-<p>The Windows shell command
-<pre>
-   set TOMCAT_OPTS=-Dlog4j.configuration=foobar.lcf -Dlog4j.configuratorClass=com.foo.BarConfigurator
-</pre>
-
-tells log4j to use the file <code>foobar.lcf</code> as the default
-configuration file. This file should be place under the
-<code>WEB-INF/classes</code> directory of your web-application. Due to
-the definition of the <b>log4j.configuratorClass</b> system property,
-the file will be read using the <code>com.foo.BarConfigurator</code>
-custom configurator.  Each web-application will use a different
-default configuration file because each file is relative to a
-web-application.</p>
-
-<p><b>Example 4</b></p>
-
-<p>The Windows shell command
-<pre>
-   set TOMCAT_OPTS=-Dlog4j.configuration=file:/c:/foobar.lcf</pre>
-
-tells log4j to use the file <code>c:\foobar.lcf</code> as the default
-configuration file. The configuration file is fully specified by the
-URL <code>file:/c:/foobar.lcf</code>. Thus, the same configuration
-file will be used for all web-applications.</p>
-
-
-<p>Different web-applications will load the log4j classes through
-their respective classloaderss. Thus, each image of the log4j
-environment will act independetly and without any mutual
-synchronization. For example, <code>FileAppenders</code> defined
-exactly the same way in multiple web-application configurations will
-all attempt to write the same file. The results are likely to be less
-than satisfactory. You must make sure that log4j configurations of
-different web-applications do not use the same underlying system
-resource.</p>
-
-
-<p><b>Initialization servlet</b></p>
-
-<p>It is also possible to use a special servlet for log4j
-initialization. Here is an example,</p>
-
-<p><table bgcolor="CCCCCC"><tr><td>
-<pre>
-package com.foo;
-
-import org.apache.log4j.PropertyConfigurator;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
-import java.io.IOException;
-
-public class Log4jInit extends HttpServlet {
-
-  public
-  void <b>init()</b> {
-    String prefix =  getServletContext().getRealPath("/");
-    String file = getInitParameter("log4j-init-file");
-    // if the log4j-init-file is not set, then no point in trying
-    if(file != null) {
-      PropertyConfigurator.configure(prefix+file);
-    }
-  }
-
-  public
-  void doGet(HttpServletRequest req, HttpServletResponse res) {
-  }
-}
-</pre>
-</td></tr></table></p>
-
-<p>Define the following servlet in the web.xml file for your web-application.</p>
-
-<p><table bgcolor="CCAAAA"><tr><td>
-<pre>
-  &lt;servlet&gt;
-    &lt;servlet-name&gt;log4j-init&lt;/servlet-name&gt;
-    &lt;servlet-class&gt;com.foo.Log4jInit&lt;/servlet-class&gt;
-
-    &lt;init-param&gt;
-      &lt;param-name&gt;log4j-init-file&lt;/param-name&gt;
-      &lt;param-value&gt;WEB-INF/classes/log4j.lcf&lt;/param-value&gt;
-    &lt;/init-param&gt;
-
-    <b>&lt;load-on-startup&gt;1&lt;/load-on-startup&gt;</b>
-  &lt;/servlet&gt;
-</pre>
-</td></tr></table></p>
-
-<p>Writing an initialization servlet is the most flexible way for
-initializing log4j. There are no constraints on the code you can place
-in the <code>init()</code> method of the servlet.</p>
-
 
 
 <h2> Nested Diagnostic Contexts</h2>
@@ -1049,25 +803,28 @@ user pushes contextual information into the NDC, the abbreviation of
 <em>Nested Diagnostic Context</em>. The NDC class is shown below.
 
 <pre>
-  public class NDC {
+namespace log4cxx {
+  class NDC {
+  public:
     // Used when printing the diagnostic
-    public <strong>static</strong> String get();
+    <strong>static</strong> LogString get();
 
     // Remove the top of the context from the NDC.
-    public <strong>static</strong> String pop();
+    <strong>static</strong> LogString pop();
 
     // Add diagnostic context for the current thread.
-    public <strong>static</strong> void push(String message);
+    <strong>static</strong> void push(const std::string&amp; message);
+    <strong>static</strong> void push(const std::wstring&amp; message);
 
     // Remove the diagnostic context for this thread.
-    public <strong>static</strong> void remove();
+    <strong>static</strong> void remove();
   }
 </pre></p>
 
 <p>The NDC is managed per thread as a <em>stack</em> of contextual
-information. Note that all methods of the <code>org.apache.log4j.NDC</code>
+information. Note that all methods of the <code>log4cxx::NDC</code>
 class are static. Assuming that NDC printing is turned on, every time
-a log request is made, the appropriate log4j component will include
+a log request is made, the appropriate log4cxx component will include
 the <em>entire</em> NDC stack for the current thread in the log
 output. This is done without the intervention of the user, who is
 responsible only for placing the correct information in the NDC by
@@ -1090,7 +847,7 @@ exercised during the client's request.</p>
 <p>Nevertheless, some sophisticated applications, such as virtual
 hosting web servers, must log differently depending on the virtual
 host context and also depending on the software component issuing the
-request. Recent log4j releases support multiple hierarchy trees. This
+request. Recent log4cxx releases support multiple hierarchy trees. This
 enhancement allows each virtual host to possess its own copy of the
 logger hierarchy.</p>
 
@@ -1100,7 +857,7 @@ logger hierarchy.</p>
 <p>One of the often-cited arguments against logging is its
 computational cost. This is a legitimate concern as even moderately
 sized applications can generate thousands of log requests.  Much
-effort was spent measuring and tweaking logging performance. Log4j
+effort was spent measuring and tweaking logging performance. Log4cxx
 claims to be fast and flexible: speed first, flexibility second.</p>
 
 <p>The user should be aware of the following performance issues.</p>
@@ -1110,57 +867,11 @@ claims to be fast and flexible: speed first, flexibility second.</p>
 
    <p>When logging is turned
    off entirely or just for a <a
-   href="apidocs/org/apache/log4j/Hierarchy.html#setThreshold(java.lang.String)">set
+   href="apidocs/classlog4cxx_1_1Hierarchy.html#d868dcebe2b8e135985d6f5e57dd2387">set
    of levels</a>, the cost of a log request consists of a method
-   invocation plus an integer comparison.  On a 233 MHz Pentium II
-   machine this cost is typically in the 5 to 50 nanosecond range.</p>
-
-   <p>However, The method invocation involves the "hidden" cost of
-   parameter construction.</p>
-
-   <p>For example, for some logger <code>cat</code>, writing,
-    <pre>
-     logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
-    </pre>
-
-      incurs the cost of constructing the message parameter, i.e.
-      converting both integer <code>i</code> and <code>entry[i]</code>
-      to a String, and concatenating intermediate strings,
-      regardless of whether the message will be logged or not.
-
-      This cost of parameter construction can be quite high and it
-      depends on the size of the parameters involved.</p>
-
-
-      <p>To avoid the parameter construction cost write:
-    <pre>
-      if(logger.isDebugEnabled() {
-        logger.debug("Entry number: " + i + " is " + String.valueOf(entry[i]));
-      }
-   </pre></p>
-
-      <p>This will not incur the cost of parameter
-      construction if debugging is disabled.  On the other hand, if
-      the logger is debug-enabled, it will incur twice the cost of
-      evaluating whether the logger is enabled or not: once
-      in <code>debugEnabled</code> and once in
-      <code>debug</code>. This is an insignificant
-      overhead because evaluating a logger takes about 1%
-      of the time it takes to actually log.</p>
-
-   <p>In log4j, logging requests are made to instances of the Logger
-   class. Logger is a class and not an interface. This measurably
-   reduces the cost of method invocation at the cost of some
-   flexibility.</p>
-
-
-   <p>Certain users resort to preprocessing or compile-time
-   techniques to compile out all log statements. This leads to perfect
-   performance efficiency with respect to logging. However, since the
-   resulting application binary does not contain any log statements,
-   logging cannot be turned on for that binary. In my opinion this is
-   a disproportionate price to pay in exchange for a small performance
-   gain.</p></li>
+   invocation plus an integer comparison.  The LOG4CXX_DEBUG and similar
+   macros suppress unnecessary expression evaluation if the
+   request is not enabled.</p></li>
 
    <li><b>The performance of deciding whether to log or not to log when
        logging is turned on.</b><br/>
@@ -1190,50 +901,37 @@ hierarchies.</p>
    <p>This is the cost of formatting the log output and sending it to
    its target destination. Here again, a serious effort was made to
    make layouts (formatters) perform as quickly as possible. The same
-   is true for appenders. The typical cost of actually logging is
-   about 100 to 300 microseconds.</p>
+   is true for appenders.</p>
 
-   See <a
-   href="apidocs/org/apache/log4j/performance/Logging.html">org.apache.log4.performance.Logging</a>
-   for actual figures.
    </li>
 
 </ol>
 
-<p>Although log4j has many features, its first design goal was speed.
-Some log4j components have been rewritten many times to improve
+<p>Although log4cxx has many features, its first design goal was speed.
+Some log4cxx components have been rewritten many times to improve
 performance.  Nevertheless, contributors frequently come up with new
 optimizations. You should be pleased to know that when configured with
 the <a
-href="apidocs/org/apache/log4j/SimpleLayout.html">SimpleLayout</a>
+href="apidocs/classlog4cxx_1_1SimpleLayout.html">SimpleLayout</a>
 performance tests have shown log4j to log as quickly as
-<code>System.out.println</code>.</p>
+<code>std::cout</code>.</p>
 
 <h2>Conclusions</h2>
 
-<p>Log4j is a popular logging package written in Java.  One of its
+<p>Log4cxx is a popular logging package written in C++.  One of its
 distinctive features is the notion of inheritance in loggers. Using
 a logger hierarchy it is possible to control which log statements
 are output at arbitrary granularity. This helps reduce the volume of
 logged output and minimize the cost of logging.</p>
 
-<p>One of the advantages of the log4j API is its manageability. Once
+<p>One of the advantages of the log4cxx API is its manageability. Once
 the log statements have been inserted into the code, they can be
 controlled with configuration files. They can be selectively enabled
 or disabled, and sent to different and multiple output targets in
-user-chosen formats. The log4j package is designed so that log
+user-chosen formats. The log4cxx package is designed so that log
 statements can remain in shipped code without incurring a heavy
 performance cost.</p>
 
-<h2>Acknowledgments</h2>
-
-Many thanks to N. Asokan for reviewing the article. He is also one of
-the originators of the logger concept. I am indebted to Nelson Minar
-for encouraging me to write this article. He has also made many useful
-suggestions and corrections to this article. Log4j is the result of a
-collective effort. My special thanks go to all the authors who have
-contributed to the project.  Without exception, the best features in
-the package have all originated in the user community.
 </section>
 </body>
 </document>
