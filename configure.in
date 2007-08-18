@@ -109,7 +109,7 @@ else
 fi
 
 manual_dest="manual"
-base_dir=${ac_abs_confdir}
+base_dir=`(cd $srcdir && pwd)`
 
 AC_SUBST(enable_dot)
 AC_SUBST(enable_html_docs)
