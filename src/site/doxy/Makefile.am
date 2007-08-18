@@ -20,16 +20,16 @@ EXTRA_DIST = Doxyfile mainpage.dox simplesocketserver.1
 
 if DOC
 
-htmldir = $(pkgdatadir)/html
+htmldest = $(pkgdatadir)/html
 
 install-data-hook:
-	$(mkinstalldirs) $(DESTDIR)$(htmldir)
-	cp -dpR @manual_dest@/* $(DESTDIR)$(htmldir)
+	$(mkinstalldirs) $(DESTDIR)$(htmldest)
+	cp -dpR @manual_dest@/* $(DESTDIR)$(htmldest)
 
 # Automake's "distcheck" is sensitive to having files left over
 # after "make uninstall", so we have to clean up the install hook.
 uninstall-local:
-	rm -rf $(DESTDIR)$(htmldir)
+	rm -rf $(DESTDIR)$(htmldest)
 
 dox: @manual_dest@/index.html
 
