@@ -22,7 +22,7 @@
 <title>Apache log4cxx</title>
 </properties>
 <body>
-<release version="0.10.0" date="2007-07-30" description="First Apache release">
+<release version="0.10.0" date="TDB" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>
 <action issue="LOGCXX-3">Missing #else</action>
 <action issue="LOGCXX-4">initialization not working on many OS's</action>

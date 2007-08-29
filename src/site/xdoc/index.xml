@@ -41,7 +41,7 @@
 
 
                         <h2>Platforms:</h2>
-                                <p>The CVS HEAD is automatically built and tested using the Ant build script
+                                <p>The SVN HEAD is automatically built and tested using the Ant build script
                                 several times daily by <a href="http://gump.apache.org">Gump</a>
                                 currently using GCC 3.3.5 on Debian Linux i386.  It has been observed or reported 
                                 to build and pass tests on

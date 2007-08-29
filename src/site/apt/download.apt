@@ -20,25 +20,10 @@ Download Apache log4cxx 0.10.0
 
 Download Apache log4cxx 0.10.0
 
-  Apache log4cxx 0.10.0 is distributed under the {{{http://www.apache.org/licenses/LICENSE-2.0.html} Apache License, version 2.0}}.
+  Apache log4cxx is distributed under the {{{http://www.apache.org/licenses/LICENSE-2.0.html} Apache License, version 2.0}}.
 
-  The link in the Mirrors column should display a list of available mirrors with a
-  default selection based on your inferred location.  If you do not see that page,
-  try a different browser.  The checksum and signature are links to
-  the originals on the main distribution server.
+  There has not yet been an Apache release of log4cxx.  Users are encouraged to use the SVN HEAD for 
+  new development pending the release of log4cxx 0.10.0.
   
-*-------------------------+---------+----------+-----------+
-|                         | Mirrors | Checksum | Signature |
-*-------------------------+---------+----------+-----------+
-| Apache log4cxx 0.10.0 (tar.gz)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4cxx/0.10.0/apache-log4cxx-0.10.0.tar.gz} apache-log4cxx-0.10.0.tar.gz}} | {{{http://www.apache.org/dist/logging/log4cxx/0.10.0/apache-log4cxx-0.10.0.tar.gz.md5} apache-log4cxx-0.10.0.tar.gz.md5}} | {{{http://www.apache.org/dist/logging/log4cxx/0.10.0/apache-log4cxx-0.10.0.tar.gz.asc} apache-log4cxx-0.10.0.tar.gz.asc}} |
-*-------------------------+---------+----------+-----------+
-| Apache log4cxx 0.10.0 (zip)      | {{{http://www.apache.org/dyn/closer.cgi/logging/log4cxx/0.10.0/apache-log4cxx-0.10.0.zip} apache-log4cxx-0.10.0.zip}} | {{{http://www.apache.org/dist/logging/log4cxx/0.10.0/apache-log4cxx-0.10.0.zip.md5} apache-log4cxx-0.10.0.zip.md5}} | {{{http://www.apache.org/dist/logging/log4cxx/0.10.0/apache-log4cxx-0.10.0.zip.asc} apache-log4cxx-0.10.0.zip.asc}} |
-*-------------------------+---------+----------+-----------+
-
-  Please read {{{http://httpd.apache.org/dev/verification.html}Verifying Apache HTTP Server Releases}}
-   for more information on why you should verify our releases.
-
-
-* Previous Releases
-
-  All previous releases of Apache log4cxx can be found in the {{{http://archive.apache.org/dist/logging/log4cxx}archive repository}}.
+  The last release of log4cxx prior to its move to the Apache Software Foundation is
+  available in the {{{http://archive.apache.org/dist/logging/log4cxx}archive repository}}.
