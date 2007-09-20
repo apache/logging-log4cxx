@@ -741,12 +741,6 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
 }
 #endif
 
-/**
- Used internally to configure the log4j framework by parsing a DOM
- tree of XML elements based on <a
- href="doc-files/log4j.dtd">log4j.dtd</a>.
-
-*/
 void DOMConfigurator::parse(apr_xml_elem* element,
                             apr_xml_doc* doc,
                             AppenderMap& appenders)

@@ -29,8 +29,7 @@ namespace log4cxx
 
                 /**
                 The output of the XMLLayout consists of a series of log4j:event
-                elements as defined in the <a
-                href="doc-files/log4j.dtd">log4j.dtd</a>. It does not output a
+                elements. It does not output a
                  complete well-formed XML file. The output is designed to be
                 included as an <em>external entity</em> in a separate file to form
                 a correct XML file.
@@ -41,7 +40,7 @@ namespace log4cxx
                 <code>
                 <?xml version="1.0" ?>
 
-                <!DOCTYPE log4j:eventSet SYSTEM "log4j.dtd" [<!ENTITY data SYSTEM "abc">]>
+                <!DOCTYPE log4j:eventSet [<!ENTITY data SYSTEM "abc">]>
 
                 <log4j:eventSet version="1.2" xmlns:log4j="http://jakarta.apache.org/log4j/">
 

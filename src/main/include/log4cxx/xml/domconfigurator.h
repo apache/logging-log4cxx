@@ -180,10 +180,8 @@ namespace log4cxx
                                 config::PropertySetter& propSetter);
 
                         /**
-                         Used internally to configure the log4cxx framework by parsing a DOM
-                         tree of XML elements based on <a
-                         href="docs/log4j.dtd">log4j.dtd</a>.
-
+                         Used internally to configure the log4cxx framework from
+                         an in-memory representation of an XML document.
                         */
                         void parse(apr_xml_elem* element, 
                             apr_xml_doc* doc,
