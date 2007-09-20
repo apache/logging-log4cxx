@@ -29,6 +29,13 @@ class LevelTestCase : public CppUnit::TestFixture
 {
         CPPUNIT_TEST_SUITE(LevelTestCase);
                 CPPUNIT_TEST(testToLevelFatal);
+                CPPUNIT_TEST(testTraceInt);
+                CPPUNIT_TEST(testTrace);
+                CPPUNIT_TEST(testIntToTrace);
+                CPPUNIT_TEST(testStringToTrace);
+#if LOG4CXX_HAS_WCHAR_T
+                CPPUNIT_TEST(testWideStringToTrace);
+#endif                
         CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -37,6 +44,49 @@ public:
                 LevelPtr level(Level::toLevel(LOG4CXX_TEST_STR("fATal")));
                 CPPUNIT_ASSERT_EQUAL((int) Level::FATAL_INT, level->toInt());
         }
+        
+    /**
+     * Tests Level::TRACE_INT.
+     */
+  void testTraceInt() {
+      CPPUNIT_ASSERT_EQUAL(5000, (int) Level::TRACE_INT);
+  }
+
+    /**
+     * Tests Level.TRACE.
+     */
+  void testTrace() {
+      CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("TRACE")), Level::getTrace()->toString());
+      CPPUNIT_ASSERT_EQUAL(5000, Level::getTrace()->toInt());
+      CPPUNIT_ASSERT_EQUAL(7, Level::getTrace()->getSyslogEquivalent());
+  }
+
+    /**
+     * Tests Level.toLevel(Level.TRACE_INT).
+     */
+  void testIntToTrace() {
+      LevelPtr trace(Level::toLevel(5000));
+      CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("TRACE")), trace->toString());
+  }
+
+    /**
+     * Tests Level.toLevel("TRACE");
+     */
+  void testStringToTrace() {
+        LevelPtr trace(Level::toLevel("TRACE"));
+        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("TRACE")), trace->toString());
+  }
+
+#if LOG4CXX_HAS_WCHAR_T
+    /**
+     * Tests Level.toLevel(L"TRACE");
+     */
+  void testWideStringToTrace() {
+        LevelPtr trace(Level::toLevel(L"TRACE"));
+        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("TRACE")), trace->toString());
+  }
+#endif  
+        
 
 };
 

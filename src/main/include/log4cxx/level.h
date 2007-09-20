@@ -121,6 +121,7 @@ namespace log4cxx
                 static const LevelPtr& getWarn();
                 static const LevelPtr& getInfo();
                 static const LevelPtr& getDebug();
+                static const LevelPtr& getTrace();
                 static const LevelPtr& getOff();
 
 

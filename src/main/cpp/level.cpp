@@ -56,6 +56,12 @@ const LevelPtr& Level::getDebug() {
    return level;
 }
 
+const LevelPtr& Level::getTrace() {
+   static LevelPtr level(new Level(Level::TRACE_INT, LOG4CXX_STR("TRACE"), 7));
+   return level;
+}
+
+
 const LevelPtr& Level::getAll() {
    static LevelPtr level(new Level(Level::ALL_INT, LOG4CXX_STR("ALL"), 7));
    return level;
@@ -94,6 +100,7 @@ const LevelPtr& Level::toLevel(int val, const LevelPtr& defaultLevel)
     {
     case ALL_INT: return getAll();
     case DEBUG_INT: return getDebug();
+    case TRACE_INT: return getTrace();
     case INFO_INT: return getInfo();
     case WARN_INT: return getWarn();
     case ERROR_INT: return getError();
@@ -118,6 +125,9 @@ const LevelPtr& Level::toLevel(const std::string& sArg, const LevelPtr& defaultL
       if (len == 5) {
         if (StringHelper::equalsIgnoreCase(sArg, "DEBUG", "debug")) {
           return getDebug();
+        }
+        if (StringHelper::equalsIgnoreCase(sArg, "TRACE", "trace")) {
+          return getTrace();
         }
         if (StringHelper::equalsIgnoreCase(sArg, "ERROR", "error")) {
           return getError();
@@ -156,6 +166,9 @@ const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& default
       if (len == 5) {
         if (StringHelper::equalsIgnoreCase(sArg, L"DEBUG", L"debug")) {
           return getDebug();
+        }
+        if (StringHelper::equalsIgnoreCase(sArg, L"TRACE", L"trace")) {
+          return getTrace();
         }
         if (StringHelper::equalsIgnoreCase(sArg, L"ERROR", L"error")) {
           return getError();

@@ -445,6 +445,15 @@ namespace log4cxx
         bool isFatalEnabled() const;
 
         /**
+        Check whether this logger is enabled for the trace level.
+        See also #isDebugEnabled.
+
+        @return bool - <code>true</code> if this logger is enabled
+        for level trace, <code>false</code> otherwise.
+        */
+        bool isTraceEnabled() const;
+
+        /**
         Log a localized and parameterized message.
 
         First, the user supplied
@@ -539,14 +548,9 @@ namespace log4cxx
 
         public:
         /**
-        Set the level of this Logger. If you are passing any of
-        <code>Level#DEBUG</code>, <code>Level#INFO</code>,
-        <code>Level#WARN</code>, <code>Level#ERROR</code>,
-        <code>Level#FATAL</code> as a parameter, you need to case them as
-        Level.
+        Set the level of this Logger.
 
         <p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::getDebug()); </pre>
-
 
         <p>Null values are admitted.  */
         virtual void setLevel(const LevelPtr& level);
@@ -578,7 +582,26 @@ namespace log4cxx
         void warn(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void warn(const std::string& msg);
 
+        /**
+        Log a message string with the {@link Level#TRACE TRACE} level.
 
+        <p>This method first checks if this logger is <code>TRACE</code>
+        enabled by comparing the level of this logger with the {@link
+        Level#TRACE TRACE} level. If this logger is
+        <code>TRACE</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param message the message string to log.
+        @param file the file where the log statement was written.
+        @param line the line where the log statement was written.
+        */
+#if LOG4CXX_HAS_WCHAR_T
+        void trace(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
+        void trace(const std::wstring& msg);
+#endif
+        void trace(const std::string& msg, const log4cxx::spi::LocationInfo& location);
+        void trace(const std::string& msg);
 
         inline const log4cxx::helpers::Mutex& getMutex() const { return mutex; }
 
@@ -637,6 +660,17 @@ Logs a message to a specified logger with the DEBUG level.
 #define LOG4CXX_DEBUG(logger, message) { \
         if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
            logger->forcedLog(::log4cxx::Level::getDebug(), message, LOG4CXX_LOCATION); }}
+
+/**
+Logs a message to a specified logger with the TRACE level.
+
+@param logger the logger to be used.
+@param message the message string to log.
+*/
+#define LOG4CXX_TRACE(logger, message) { \
+        if (LOG4CXX_UNLIKELY(logger->isTraceEnabled())) {\
+           logger->forcedLog(::log4cxx::Level::getTrace(), message, LOG4CXX_LOCATION); }}
+
 
 /**
 Logs a message to a specified logger with the INFO level.
