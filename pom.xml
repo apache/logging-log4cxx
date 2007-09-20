@@ -29,28 +29,28 @@
     <url>http://issues.apache.org/jira/</url>
   </issueManagement>
 <mailingLists>
-	<mailingList>
-		<name>log4cxx-user : log4cxx usage</name>
-		<subscribe>log4cxx-user-subscribe@logging.apache.org</subscribe>
-		<unsubscribe>log4cxx-user-unsubscribe@logging.apache.org</unsubscribe>
-		<post>log4cxx-user@logging.apache.org</post>
-		<archive>http://mail-archives.apache.org/mod_mbox/logging-log4cxx-user/</archive>
-		<otherArchives>
-			<otherArchive>http://marc.info/?l=log4cxx-user</otherArchive>
-		    <otherArchive>http://dir.gmane.org/gmane.comp.apache.logging.log4cxx.user</otherArchive>
-		</otherArchives>
-	</mailingList>
-	<mailingList>
-		<name>log4cxx-dev : log4cxx development</name>
-		<subscribe>log4cxx-dev-subscribe@logging.apache.org</subscribe>
-		<unsubscribe>log4cxx-dev-unsubscribe@logging.apache.org</unsubscribe>
-		<post>log4cxx-dev@logging.apache.org</post>
-		<archive>http://mail-archives.apache.org/mod_mbox/logging-log4cxx-dev/</archive>
-		<otherArchives>
-		    <otherArchive>http://marc.info/?l=log4cxx-dev</otherArchive>
-		    <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
-		</otherArchives>
-	</mailingList>
+   <mailingList>
+      <name>log4cxx-user : log4cxx usage</name>
+      <subscribe>log4cxx-user-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>log4cxx-user-unsubscribe@logging.apache.org</unsubscribe>
+      <post>log4cxx-user@logging.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4cxx-user/</archive>
+      <otherArchives>
+         <otherArchive>http://marc.info/?l=log4cxx-user</otherArchive>
+          <otherArchive>http://dir.gmane.org/gmane.comp.apache.logging.log4cxx.user</otherArchive>
+      </otherArchives>
+   </mailingList>
+   <mailingList>
+      <name>log4cxx-dev : log4cxx development</name>
+      <subscribe>log4cxx-dev-subscribe@logging.apache.org</subscribe>
+      <unsubscribe>log4cxx-dev-unsubscribe@logging.apache.org</unsubscribe>
+      <post>log4cxx-dev@logging.apache.org</post>
+      <archive>http://mail-archives.apache.org/mod_mbox/logging-log4cxx-dev/</archive>
+      <otherArchives>
+          <otherArchive>http://marc.info/?l=log4cxx-dev</otherArchive>
+          <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
+      </otherArchives>
+   </mailingList>
 </mailingLists>
 <licenses>
         <license>
@@ -119,7 +119,7 @@
                    <replaceregexp file="target/site/source-repository.html" match="/tags/[^ &quot;&apos;&lt;]*" replace="/trunk" flags="g"/>
                 <replaceregexp match="Generated on .* for " replace="Generated for " flags="g">
                     <fileset dir="target/site/apidocs" includes="**/*.html"/>
-		</replaceregexp>
+      </replaceregexp>
                 </tasks>
             </configuration>
             <goals>
@@ -188,6 +188,12 @@
     </plugins>
 </build>
   <dependencies>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>3.8.1</version>
+        <scope>test</scope>
+      </dependency>      
   </dependencies>
   <reporting>
     <excludeDefaults>true</excludeDefaults>  

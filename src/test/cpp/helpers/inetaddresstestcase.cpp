@@ -29,7 +29,7 @@ class InetAddressTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(testByNameLocal);
                 CPPUNIT_TEST(testAllByNameLocal);
                 CPPUNIT_TEST_EXCEPTION(testUnknownHost, UnknownHostException);
-//                CPPUNIT_TEST(testByNameRemote);
+                CPPUNIT_TEST(testUnreachable);
         CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -68,20 +68,18 @@ public:
          * Tests the UnknownHostException.
          */
         void testUnknownHost() {
-           InetAddressPtr addr = InetAddress::getByName(LOG4CXX_STR("unknown.host.local"));
+           InetAddressPtr addr = InetAddress::getByName(LOG4CXX_STR("unknown.invalid"));
         }
+      
+    /**
+    * Tests an (likely) unreachable address.
+    */
+      void testUnreachable()  {
+       InetAddressPtr addr(InetAddress::getByName(LOG4CXX_STR("192.168.10.254")));
+      LogString addrStr(addr->toString());
+      CPPUNIT_ASSERT_EQUAL(addrStr.size() - 15, addrStr.find(LOG4CXX_STR("/192.168.10.254")));
+   }
 
-        /**
-         * Tests resolving a remote host name.
-         * This test is usually disabled in the test suite because it
-         * probably produces volatile data.
-         */
-        void testByNameRemote() {
-            InetAddressPtr addr = InetAddress::getByName(LOG4CXX_STR("www.apache.org"));
-
-            CPPUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("209.237.227.195"));
-            CPPUNIT_ASSERT(addr->getHostName() == LOG4CXX_STR("minotaur-2.apache.org"));
-        }
 };
 
 

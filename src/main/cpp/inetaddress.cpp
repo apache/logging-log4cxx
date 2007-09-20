@@ -74,14 +74,18 @@ std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host) {
         // retrieve the IP address of this InetAddress.
         LogString ipAddrString;
         char *ipAddr;
-        apr_sockaddr_ip_get(&ipAddr, currentAddr);
-        Transcoder::decode(ipAddr, strlen(ipAddr), ipAddrString);
+        status = apr_sockaddr_ip_get(&ipAddr, currentAddr);
+      if (status == APR_SUCCESS) {
+         Transcoder::decode(ipAddr, strlen(ipAddr), ipAddrString);
+       }
     
         // retrieve the host name of this InetAddress.
         LogString hostNameString;
         char *hostName;
-        apr_getnameinfo(&hostName, currentAddr, 0);
-        Transcoder::decode(hostName, strlen(hostName), hostNameString);
+        status = apr_getnameinfo(&hostName, currentAddr, 0);
+      if (status == APR_SUCCESS) {
+         Transcoder::decode(hostName, strlen(hostName), hostNameString);
+      }
 
         result.push_back(new InetAddress(hostNameString, ipAddrString));
         currentAddr = currentAddr->next;
