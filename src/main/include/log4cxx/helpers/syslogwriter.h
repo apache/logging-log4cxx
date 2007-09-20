@@ -21,14 +21,12 @@
 
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/inetaddress.h>
+#include <log4cxx/helpers/datagramsocket.h>
 
  namespace log4cxx
 {
         namespace helpers
         {
-                class DatagramSocket;
-                typedef helpers::ObjectPtrT<DatagramSocket> DatagramSocketPtr;
-
                 /**
                 SyslogWriter is a wrapper around the DatagramSocket class
                 it writes text to the specified host on the port 514 (UNIX syslog)

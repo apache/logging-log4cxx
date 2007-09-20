@@ -54,13 +54,13 @@ SyslogWriter::SyslogWriter(const LogString& syslogHost1)
 }
 
 void SyslogWriter::write(const LogString& source) {
-   LOG4CXX_ENCODE_CHAR(data, source);
+  if (this->ds != 0 && this->address != 0) {
+      LOG4CXX_ENCODE_CHAR(data, source);
 
-   DatagramPacketPtr packet = 
+      DatagramPacketPtr packet( 
           new DatagramPacket((void*) data.c_str(), data.length() + 1,
-                             address, SYSLOG_PORT);
+                             address, SYSLOG_PORT));
 
-   if(this->ds != 0) {
       ds->send(packet);
    }
 }

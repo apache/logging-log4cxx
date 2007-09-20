@@ -53,6 +53,7 @@ helpers = \
         helpers/relativetimedateformattestcase.cpp \
         helpers/stringtokenizertestcase.cpp \
         helpers/stringhelpertestcase.cpp \
+        helpers/syslogwritertest.cpp \
         helpers/timezonetestcase.cpp \
         helpers/transcodertestcase.cpp \
         helpers/unicodehelpertestcase.cpp
