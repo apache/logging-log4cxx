@@ -261,7 +261,24 @@ void FileAppender::setFile(
       }
   }
 
-  OutputStreamPtr outStream(new FileOutputStream(filename, append1));
+  OutputStreamPtr outStream;
+  try {
+      outStream = new FileOutputStream(filename, append1);
+  } catch(IOException& ex) {
+      LogString parentName = File(filename).getParent(p);
+      if (!parentName.empty()) {
+          File parentDir(parentName);
+          if(!parentDir.exists(p) && parentDir.mkdirs(p)) {
+             outStream = new FileOutputStream(filename, append1);
+          } else {
+             throw ex;
+          }
+      } else {
+        throw ex;
+      }
+  }
+  
+  
   //
   //   if a new file and UTF-16, then write a BOM
   //

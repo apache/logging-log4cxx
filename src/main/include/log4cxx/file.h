@@ -65,6 +65,9 @@ namespace log4cxx
 
                     bool deleteFile(log4cxx::helpers::Pool& p) const;
                     bool renameTo(const File& dest, log4cxx::helpers::Pool& p) const;
+                    
+                    LogString getParent(log4cxx::helpers::Pool& p) const;
+                    bool mkdirs(log4cxx::helpers::Pool& p) const;
 
                 private:
                     LogString name;

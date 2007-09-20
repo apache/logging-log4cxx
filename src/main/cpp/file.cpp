@@ -152,3 +152,26 @@ std::vector<LogString> File::list(Pool& p) const {
     }
     return filenames;
 }
+
+LogString File::getParent(Pool&) const {
+     LogString::size_type slashPos = name.rfind(LOG4CXX_STR('/'));
+     LogString::size_type backPos = name.rfind(LOG4CXX_STR('\\'));
+     if (slashPos == LogString::npos) {
+         slashPos = backPos;
+     } else {
+         if (backPos != LogString::npos && backPos > slashPos) {
+             slashPos = backPos;
+         }
+     }
+     LogString parent;
+     if (slashPos != LogString::npos && slashPos > 0) {
+          parent.assign(name, 0, slashPos);
+     }
+     return parent;
+}
+
+bool File::mkdirs(Pool& p) const {
+     apr_status_t stat = apr_dir_make_recursive(convertBackSlashes(osName).c_str(),
+          APR_OS_DEFAULT, (apr_pool_t*) p.getAPRPool());
+     return stat == APR_SUCCESS;
+}
