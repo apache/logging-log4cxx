@@ -49,13 +49,12 @@
                                 GCC on SuSE 9.1 x86_64 and i386, Fedora Core 3 i386 and Mac OS X 10.3.</p>
 
                         <h2>Building log4cxx:</h2>
-                                <p>Build instructions are contained in the <a href="http://cvs.apache.org/viewcvs.cgi/logging-log4cxx/INSTALL?rev=1.8&amp;view=log">INSTALL</a>.
-                                An <a href="http://ant.apache.org">Ant</a> build which uses the <a href="http://ant-contrib.sourceforge.net/cc.html">&lt;cc&gt;</a> and
+                                <p>Build instructions are contained in <a href="http://svn.apache.org/repos/asf/logging/log4cxx/trunk/INSTALL">INSTALL</a>.
+                                log4cxx can be build with autotools on most POSIX-style environments or with 
+                                <a href="http://ant.apache.org">Ant</a> using the <a href="http://ant-contrib.sourceforge.net/cc.html">&lt;cc&gt;</a> and
                                 &lt;foreach&gt; tasks from the <a href="http://ant-contrib.sourceforge.net">Ant-Contrib Project</a>
-                                is used for most day-to-day development.  The Ant build can produce IDE project files for Microsoft Visual
-                                Studio 6, Borland CBuilderX and Apple XCode on request.  The Ant build can also download and build 
-                                APR and <a href="http://cppunit.sourceforge.net/cgi-bin/moin.cgi">CppUnit</a>.  An autotools build file is also provided but at this moment
-                                is incompatible with some versions of autotools (<a href="http://issues.apache.org/jira/browse/LOGCXX-44">LOGCXX-44</a>).</p>  
+                                for both POSIX and non-POSIX style builds.  The Ant build can produce IDE project files 
+                                for several common IDEs for development and debugging purposes.</p>  
         </body>
 </document>
 

@@ -37,7 +37,7 @@ quite addictive.</p>
 
 The log4cxx framework is patterned after <a href="http://logging.apache.org/log4j">log4j</a>.
 log4cxx is licensed under the 
-<a href="http://www.apache.org/legal/licenses.html">Apache License</a>,
+<a href="http://www.apache.org/licenses/">Apache License</a>,
 an open source license certified by the 
 <a href="http://www.opensource.org/">Open Source Initiative</a>.
 
@@ -47,7 +47,7 @@ debugging it. It may also be the only way because debuggers are not
 always available or applicable. This is usually the case for
 multithreaded applications and distributed applications at large.</p>
 
-<p>Experience indicates that logging was an important component of the
+<p>Experience indicates that logging is an important component of the
 development cycle. It offeres several advantages. It provides precise
 <em>context</em> about a run of the application. Once inserted into
 the code, the generation of logging output requires no human
@@ -764,9 +764,9 @@ automatically configure log4cxx.</p>
   otherwise the first of the following file names which exist in the 
   current working directory, "log4cxx.properties", "log4j.properties", 
   "log4cxx.xml" and "log4j.xml". 
-  If configurationOptionStr has not been set, then disable logging.</p> 
+  If configurationOptionStr has not been set, then disable logging.</p></li> 
 
-  <p>Unless a custom configurator is specified using the 
+  <li><p>Unless a custom configurator is specified using the 
   <b>LOG4CXX_CONFIGURATOR_CLASS</b> or <b>log4j.configuratorClass</b>
   environment variable, the PropertyConfigurator will be used to configure
   log4cxx unless the file name ends with the ".xml" extension, 
@@ -893,7 +893,7 @@ nonexistent <code>com</code> or <code>com.foo</code> loggers. This
 significantly improves the speed of the walk, especially in "sparse"
 hierarchies.</p>
 
-       <p>The typical cost of walking the hierarchy is typically 3
+       <p>The cost of walking the hierarchy is typically 3
        times slower than when logging is turned off entirely.</p></li>
 
    <li><b>Actually outputting log messages</b><br/>
