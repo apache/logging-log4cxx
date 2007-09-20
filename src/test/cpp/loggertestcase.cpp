@@ -26,7 +26,7 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/level.h>
 #include <log4cxx/hierarchy.h>
-#include <log4cxx/spi/rootcategory.h>
+#include <log4cxx/spi/rootlogger.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
 #include "insertwide.h"
 #include "testchar.h"

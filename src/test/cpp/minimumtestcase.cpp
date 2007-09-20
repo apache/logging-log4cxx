@@ -125,8 +125,8 @@ public:
         {
                 int i = 0;
 
-                // In the lines below, the category names are chosen as an aid in
-                // remembering their level values. In general, the category names
+                // In the lines below, the logger names are chosen as an aid in
+                // remembering their level values. In general, the logger names
                 // have no bearing to level values.
                 LoggerPtr ERRlogger = Logger::getLogger(LOG4CXX_TEST_STR("ERR"));
                 ERRlogger->setLevel(Level::getError());

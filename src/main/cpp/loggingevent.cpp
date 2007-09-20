@@ -217,8 +217,8 @@ const LogString LoggingEvent::getCurrentThreadName() {
 void LoggingEvent::read(const helpers::SocketInputStreamPtr& /* is */)
 {
 #if 0
-        // fqnOfCategoryClass
-        is->read(fqnOfCategoryClass);
+        // fqnOfLoggerClass
+        is->read(fqnOfLoggerClass);
 
         // name
         LogString name;
@@ -325,8 +325,8 @@ void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 void LoggingEvent::write(helpers::SocketOutputStreamPtr& /* os */) const
 {
   #if 0
-        // fqnOfCategoryClass
-        os->write(fqnOfCategoryClass);
+        // fqnOfLoggerClass
+        os->write(fqnOfLoggerClass);
 
         // name
         os->write(logger->getName());

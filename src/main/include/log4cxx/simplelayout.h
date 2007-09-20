@@ -52,8 +52,6 @@ namespace log4cxx
                 <code>message</code>. For example, <pre> INFO - "A message"
                 </pre>
 
-                <p>The <code>category</code> parameter is ignored.
-                <p>
                 @return A byte array in SimpleLayout format.
                 */
                 virtual void format(LogString& output,

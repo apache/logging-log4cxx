@@ -94,7 +94,7 @@ namespace log4cxx
                 bool additive;
 
     protected:
-        friend class DefaultCategoryFactory;
+        friend class DefaultLoggerFactory;
 
         /**
         This constructor created a new <code>logger</code> instance and
@@ -325,7 +325,7 @@ namespace log4cxx
         protected:
         /**
         Returns the string resource coresponding to <code>key</code> in this
-        category's inherited resource bundle.
+        logger's inherited resource bundle.
 
         If the resource cannot be found, then an {@link #error error} message
         will be logged complaining about the missing resource.
@@ -357,7 +357,7 @@ namespace log4cxx
        void info(const std::string& msg);
 
         /**
-        Is the appender passed as parameter attached to this category?
+        Is the appender passed as parameter attached to this logger?
         */
         bool isAttached(const AppenderPtr& appender) const;
 

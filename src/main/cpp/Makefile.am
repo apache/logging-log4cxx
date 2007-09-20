@@ -45,7 +45,7 @@ liblog4cxx_la_SOURCES = \
         dateformat.cpp \
         datelayout.cpp \
         datepatternconverter.cpp \
-        defaultcategoryfactory.cpp \
+        defaultloggerfactory.cpp \
         defaultconfigurator.cpp \
         domconfigurator.cpp \
         exception.cpp \
@@ -123,7 +123,7 @@ liblog4cxx_la_SOURCES = \
         rollingpolicy.cpp \
         rollingpolicybase.cpp \
         rolloverdescription.cpp \
-        rootcategory.cpp \
+        rootlogger.cpp \
         serversocket.cpp \
         simpledateformat.cpp \
         simplelayout.cpp \

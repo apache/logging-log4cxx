@@ -101,7 +101,7 @@ void HTMLLayout::format(LogString& output,
 
         output.append(LOG4CXX_STR("<td title=\""));
         output.append(event->getLoggerName());
-        output.append(LOG4CXX_STR(" category\">"));
+        output.append(LOG4CXX_STR(" logger\">"));
         Transform::appendEscapingTags(output, event->getLoggerName());
         output.append(LOG4CXX_STR("</td>") LOG4CXX_EOL);
 
@@ -166,7 +166,7 @@ void HTMLLayout::appendHeader(LogString& output, Pool& pool)
         output.append(LOG4CXX_STR("<th>Time</th>") LOG4CXX_EOL);
         output.append(LOG4CXX_STR("<th>Thread</th>") LOG4CXX_EOL);
         output.append(LOG4CXX_STR("<th>Level</th>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<th>Category</th>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<th>Logger</th>") LOG4CXX_EOL);
         if(locationInfo)
         {
                 output.append(LOG4CXX_STR("<th>File:Line</th>") LOG4CXX_EOL);

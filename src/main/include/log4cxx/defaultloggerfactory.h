@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef _LOG4CXX_DEFAULT_CATEGORY_FACTORY_H
-#define _LOG4CXX_DEFAULT_CATEGORY_FACTORY_H
+#ifndef _LOG4CXX_DEFAULT_LOGGER_FACTORY_H
+#define _LOG4CXX_DEFAULT_LOGGER_FACTORY_H
 
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/helpers/objectimpl.h>
@@ -26,12 +26,12 @@ namespace log4cxx
         class Logger;
         typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
-        class LOG4CXX_EXPORT DefaultCategoryFactory :
+        class LOG4CXX_EXPORT DefaultLoggerFactory :
                 public virtual spi::LoggerFactory,
                 public virtual helpers::ObjectImpl
         {
         public:
-                DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultCategoryFactory)
+                DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultLoggerFactory)
                 BEGIN_LOG4CXX_CAST_MAP()
                         LOG4CXX_CAST_ENTRY(spi::LoggerFactory)
                 END_LOG4CXX_CAST_MAP()
@@ -42,4 +42,4 @@ namespace log4cxx
         };
 }  // namespace log4cxx
 
-#endif //_LOG4CXX_DEFAULT_CATEGORY_FACTORY_H
+#endif //_LOG4CXX_DEFAULT_LOGGER_FACTORY_H

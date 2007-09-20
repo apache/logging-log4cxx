@@ -47,7 +47,7 @@ namespace log4cxx
         <p>Each conversion specifier starts with a percent sign (\%) and is
         followed by optional <em>format modifiers</em> and a <em>conversion
         character</em>. The conversion character specifies the type of
-        data, e.g. logger, priority, date, thread name. The format
+        data, e.g. logger, level, date, thread name. The format
         modifiers control such things as field width, padding, left and
         right justification. The following is a simple example.
 
@@ -69,7 +69,7 @@ namespace log4cxx
         conversion specifiers. The pattern parser knows when it has reached
         the end of a conversion specifier when it reads a conversion
         character. In the example above the conversion specifier
-        <b>\%-5p</b> means the priority of the logging event should be left
+        <b>\%-5p</b> means the level of the logging event should be left
         justified to a width of five characters.
 
         The recognized conversion characters are
@@ -158,7 +158,7 @@ namespace log4cxx
 
         <tr>
         <td align=center><b>p</b></td>
-        <td>Used to output the level(priority) of the logging event.</td>
+        <td>Used to output the level of the logging event.</td>
         </tr>
 
         <tr>

@@ -343,7 +343,7 @@ protected:
       */
       void configureLoggerFactory(helpers::Properties& props);
 
-      void configureRootCategory(helpers::Properties& props,
+      void configureRootLogger(helpers::Properties& props,
          spi::LoggerRepositoryPtr& hierarchy);
 
       /**
@@ -361,7 +361,7 @@ protected:
       /**
       This method must work for the root logger as well.
       */
-      void parseCategory(
+      void parseLogger(
          helpers::Properties& props, LoggerPtr& logger,
          const LogString& optionKey, const LogString& loggerName,
          const LogString& value);

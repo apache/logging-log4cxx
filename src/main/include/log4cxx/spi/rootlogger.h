@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#ifndef _LOG4CXX_SPI_ROOT_CATEGORY_H
-#define _LOG4CXX_SPI_ROOT_CATEGORY_H
+#ifndef _LOG4CXX_SPI_ROOT_LOGGER_H
+#define _LOG4CXX_SPI_ROOT_LOGGER_H
 
 #include <log4cxx/logger.h>
 
@@ -25,7 +25,7 @@ namespace log4cxx
         namespace spi
         {
         /**
-        RootCategory sits at the top of the logger hierachy. It is a
+        RootLogger sits at the top of the logger hierachy. It is a
         regular logger except that it provides several guarantees.
 
         <p>First, it cannot be assigned a null
@@ -33,23 +33,23 @@ namespace log4cxx
         #getEffectiveLevel method always returns the value of the
         level field without walking the hierarchy.
         */
-        class LOG4CXX_EXPORT RootCategory : public Logger
+        class LOG4CXX_EXPORT RootLogger : public Logger
                 {
                 public:
             /**
             The root logger names itself as "root". However, the root
             logger cannot be retrieved by name.
             */
-            RootCategory(log4cxx::helpers::Pool& pool, const LevelPtr& level);
+            RootLogger(log4cxx::helpers::Pool& pool, const LevelPtr& level);
 
             /**
-            Return the assigned level value without walking the category
+            Return the assigned level value without walking the logger
             hierarchy.
             */
             virtual const LevelPtr& getEffectiveLevel() const;
 
             /**
-                        Setting a null value to the level of the root category may have catastrophic
+                        Setting a null value to the level of the root logger may have catastrophic
                         results. We prevent this here.
                         */
             void setLevel(const LevelPtr& level);
@@ -57,4 +57,4 @@ namespace log4cxx
         }  // namespace spi
 } // namespace log4cxx
 
-#endif //_LOG4CXX_SPI_ROOT_CATEGORY_H
+#endif //_LOG4CXX_SPI_ROOT_LOGGER_H

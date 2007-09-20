@@ -89,7 +89,7 @@ END_LOG4CXX_CAST_MAP()
     void abbreviate(LogString::size_type nameStart, LogString& buf) const {
       // We substract 1 from 'len' when assigning to 'end' to avoid out of
       // bounds exception in return r.substring(end+1, len). This can happen if
-      // precision is 1 and the category name ends with a dot.
+      // precision is 1 and the logger name ends with a dot.
       LogString::size_type end = buf.length() - 1;
 
       for (LogString::size_type i = count; i > 0; i--) {

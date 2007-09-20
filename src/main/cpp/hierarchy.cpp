@@ -18,7 +18,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/hierarchy.h>
-#include <log4cxx/defaultcategoryfactory.h>
+#include <log4cxx/defaultloggerfactory.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/spi/hierarchyeventlistener.h>
 #include <log4cxx/level.h>
@@ -30,7 +30,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/defaultconfigurator.h>
-#include <log4cxx/spi/rootcategory.h>
+#include <log4cxx/spi/rootlogger.h>
 #include <apr_atomic.h>
 #include "assert.h"
 
@@ -46,9 +46,9 @@ pool(),
 mutex(pool)
 {
         synchronized sync(mutex);
-        root = new RootCategory(pool, Level::getDebug());
+        root = new RootLogger(pool, Level::getDebug());
         root->setHierarchy(this);
-        defaultFactory = new DefaultCategoryFactory();
+        defaultFactory = new DefaultLoggerFactory();
         emittedNoAppenderWarning = false;
         configured = false;
         thresholdInt = Level::ALL_INT;

@@ -77,7 +77,7 @@ namespace log4cxx
         context for the current thread without any user intervention.
         hence, even if a servlet is serving multiple clients
         simultaneously, the logs emanating from the same code (belonging to
-        the same category) can still be distinguished because each client
+        the same logger) can still be distinguished because each client
         request will have a different ndc tag.
 
         <p>heavy duty systems should call the #remove method when

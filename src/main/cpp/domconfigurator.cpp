@@ -33,7 +33,7 @@
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/loggerfactory.h>
-#include <log4cxx/defaultcategoryfactory.h>
+#include <log4cxx/defaultloggerfactory.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/spi/loggerrepository.h>
@@ -332,20 +332,20 @@ void DOMConfigurator::parseFilters(apr_xml_elem* element, std::vector<log4cxx::s
 }
 
 /**
-Used internally to parse an category element.
+Used internally to parse an category or logger element.
 */
 void DOMConfigurator::parseLogger(apr_xml_elem* loggerElement, 
                                   apr_xml_doc* doc,
                                   AppenderMap& appenders)
 {
-        // Create a new org.apache.log4j.Category object from the <category> element.
+        // Create a new Logger object from the <category> element.
         LogString loggerName = subst(getAttribute(loggerElement, NAME_ATTR));
 
         LogLog::debug(LOG4CXX_STR("Retreiving an instance of Logger."));
         LoggerPtr logger = repository->getLogger(loggerName, loggerFactory);
 
-        // Setting up a category needs to be an atomic operation, in order
-        // to protect potential log operations while category
+        // Setting up a logger needs to be an atomic operation, in order
+        // to protect potential log operations while logger
         // configuration is in progress.
         synchronized sync(logger->getMutex());
         bool additivity = OptionConverter::toBoolean(
@@ -368,7 +368,7 @@ void DOMConfigurator::parseLoggerFactory(apr_xml_elem* factoryElement)
         if(className.empty())
         {
                 LogLog::error(LOG4CXX_STR("Logger Factory tag class attribute not found."));
-                LogLog::debug(LOG4CXX_STR("No Category Logger configured."));
+                LogLog::debug(LOG4CXX_STR("No Logger Factory configured."));
         }
         else
         {
@@ -391,12 +391,12 @@ void DOMConfigurator::parseLoggerFactory(apr_xml_elem* factoryElement)
 }
 
 /**
- Used internally to parse the roor category element.
+ Used internally to parse the root logger element.
 */
 void DOMConfigurator::parseRoot(apr_xml_elem* rootElement, apr_xml_doc* doc, AppenderMap& appenders)
 {
         LoggerPtr root = repository->getRootLogger();
-        // category configuration needs to be atomic
+        // logger configuration needs to be atomic
         synchronized sync(root->getMutex());
         parseChildrenOfLoggerElement(rootElement, root, true, doc, appenders);
 }
@@ -661,7 +661,7 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
         msg.append(LOG4CXX_STR("..."));
         LogLog::debug(msg);
 
-        loggerFactory = new DefaultCategoryFactory();
+        loggerFactory = new DefaultLoggerFactory();
 
         Pool p;
         apr_file_t *fd;

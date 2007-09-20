@@ -28,7 +28,7 @@ namespace log4cxx
           }
         }
         // Any sub-class of Logger must also have its own implementation of
-        // CategoryFactory.
+        // LoggerFactory.
         class XFactory :
                 public virtual spi::LoggerFactory,
                 public virtual helpers::ObjectImpl

@@ -15,38 +15,16 @@
  * limitations under the License.
  */
 #include <log4cxx/logstring.h>
-#include <log4cxx/spi/rootcategory.h>
-#include <log4cxx/helpers/loglog.h>
-#include <log4cxx/level.h>
-#include <log4cxx/appender.h>
+#include <log4cxx/defaultloggerfactory.h>
+#include <log4cxx/logger.h>
 
 using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
 
-RootCategory::RootCategory(Pool& pool, const LevelPtr& level1) : 
-    Logger(pool, LOG4CXX_STR("root"))
+IMPLEMENT_LOG4CXX_OBJECT(DefaultLoggerFactory)
+
+LoggerPtr DefaultLoggerFactory::makeNewLoggerInstance(
+    log4cxx::helpers::Pool& pool,
+    const LogString& name) const
 {
-   setLevel(level1);
+    return new Logger(pool, name);
 }
-
-const LevelPtr& RootCategory::getEffectiveLevel() const
-{
-   return level;
-}
-
-void RootCategory::setLevel(const LevelPtr& level1)
-{
-   if(level1 == 0)
-   {
-      LogLog::error(LOG4CXX_STR("You have tried to set a null level to root."));
-   }
-   else
-   {
-
-      this->level = level1;
-   }
-}
-
-
-

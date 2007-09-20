@@ -26,7 +26,7 @@ namespace log4cxx
         typedef helpers::ObjectPtrT<TTCCLayout> TTCCLayoutPtr;
 
     /**
-    TTCC layout format consists of time, thread, category and nested
+    TTCC layout format consists of time, thread, logger name and nested
     diagnostic context information, hence the name.
 
     <p>Each of the four fields can be individually enabled or
@@ -53,7 +53,7 @@ namespace log4cxx
     <p>The first field is the number of milliseconds elapsed since the
     start of the program. The second field is the thread outputting the
     log statement. The third field is the level, the fourth field is
-    the category to which the statement belongs.
+    the logger to which the statement belongs.
 
     <p>The fifth field (just before the '-') is the nested diagnostic
     context.  Note the nested diagnostic context may be empty as in the
@@ -153,10 +153,10 @@ namespace log4cxx
 
         /**
         In addition to the level of the statement and message, this function
-        writes to the ouput stream time, thread, category and NDC
+        writes to the ouput stream time, thread, logger and NDC
         information.
 
-        <p>Time, thread, category and diagnostic context are printed
+        <p>Time, thread, logger and diagnostic context are printed
         depending on options.
 
         @param output

@@ -187,9 +187,9 @@ namespace log4cxx
 
                 public:
                         /**
-                        * Fully qualified name of the calling category class.
+                        * Fully qualified name of the calling logger class.
                         */
-                        LogString fqnOfCategoryClass;
+                        LogString fqnOfLoggerClass;
 
                 private:
                         /**

@@ -152,12 +152,12 @@ namespace log4cxx
                             apr_xml_elem* factoryElement);
 
                         /**
-                         Used internally to parse the roor category element.
+                         Used internally to parse the root logger element.
                         */
                         void parseRoot(apr_xml_elem* rootElement, apr_xml_doc* doc, AppenderMap& appenders);
 
                         /**
-                         Used internally to parse the children of a category element.
+                         Used internally to parse the children of a logger element.
                         */
                         void parseChildrenOfLoggerElement(
                                 apr_xml_elem* catElement,

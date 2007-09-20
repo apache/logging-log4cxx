@@ -18,7 +18,7 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/spi/defaultrepositoryselector.h>
 #include <log4cxx/hierarchy.h>
-#include <log4cxx/spi/rootcategory.h>
+#include <log4cxx/spi/rootlogger.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <stdexcept>
 #include <log4cxx/level.h>

@@ -24,7 +24,7 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/level.h>
-#include <log4cxx/defaultcategoryfactory.h>
+#include <log4cxx/defaultloggerfactory.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/logger.h>
@@ -74,7 +74,7 @@ IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
 
 PropertyConfigurator::PropertyConfigurator()
-: loggerFactory(new DefaultCategoryFactory())
+: loggerFactory(new DefaultLoggerFactory())
 {
 }
 
@@ -154,7 +154,7 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
                     + LOG4CXX_STR("]."));
         }
 
-        configureRootCategory(properties, hierarchy);
+        configureRootLogger(properties, hierarchy);
         configureLoggerFactory(properties);
         parseCatsAndRenderers(properties, hierarchy);
 
@@ -174,7 +174,7 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 
         if (!factoryClassName.empty())
         {
-                LogString msg(LOG4CXX_STR("Setting category factory to ["));
+                LogString msg(LOG4CXX_STR("Setting logger factory to ["));
                 msg += factoryClassName;
                 msg += LOG4CXX_STR("].");
                 LogLog::debug(msg);
@@ -187,7 +187,7 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
         }
 }
 
-void PropertyConfigurator::configureRootCategory(helpers::Properties& props,
+void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
                         spi::LoggerRepositoryPtr& hierarchy)
 {
      static const LogString ROOT_CATEGORY_PREFIX(LOG4CXX_STR("log4j.rootCategory"));
@@ -214,7 +214,7 @@ void PropertyConfigurator::configureRootCategory(helpers::Properties& props,
 
                 synchronized sync(root->getMutex());
                 static const LogString INTERNAL_ROOT_NAME(LOG4CXX_STR("root"));
-                parseCategory(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
+                parseLogger(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
         }
 }
 
@@ -249,7 +249,7 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
                         LoggerPtr logger = hierarchy->getLogger(loggerName, loggerFactory);
 
                         synchronized sync(logger->getMutex());
-                        parseCategory(props, logger, key, loggerName, value);
+                        parseLogger(props, logger, key, loggerName, value);
                         parseAdditivityForLogger(props, logger, loggerName);
                 }
         }
@@ -280,9 +280,9 @@ void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 }
 
 /**
-        This method must work for the root category as well.
+        This method must work for the root logger as well.
 */
-void PropertyConfigurator::parseCategory(
+void PropertyConfigurator::parseLogger(
         helpers::Properties& props, LoggerPtr& logger, const LogString& /* optionKey */,
         const LogString& loggerName, const LogString& value)
 {
@@ -309,9 +309,9 @@ void PropertyConfigurator::parseCategory(
                     + levelStr +  LOG4CXX_STR("]."));
 
 
-                // If the level value is inherited, set category level value to
+                // If the level value is inherited, set logger level value to
                 // null. We also check that the user has not specified inherited for the
-                // root category.
+                // root logger.
                 if (StringHelper::equalsIgnoreCase(levelStr, LOG4CXX_STR("INHERITED"), LOG4CXX_STR("inherited"))
                         || StringHelper::equalsIgnoreCase(levelStr, LOG4CXX_STR("NULL"), LOG4CXX_STR("null")))
                 {
