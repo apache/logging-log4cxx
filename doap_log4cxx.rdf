@@ -29,9 +29,9 @@
     <homepage rdf:resource="http://logging.apache.org/log4cxx" />
     <asfext:pmc rdf:resource="http://logging.apache.org" />
     <shortdesc>Apache log4cxx provides logging services for C++.</shortdesc>
-    <bug-database rdf:resource="http://issues.apache.org/jira" />
-    <mailing-list rdf:resource="http://logging.apache.org/site/mailing-lists.html" />
-    <download-page rdf:resource="http://logging.apache.org/site/binindex.cgi" />
+    <bug-database rdf:resource="http://issues.apache.org/jira/browse/JIRA" />
+    <mailing-list rdf:resource="http://logging.apache.org/log4cxx/mail-lists.html" />
+    <download-page rdf:resource="http://logging.apache.org/log4cxx/download.html" />
     <programming-language>C</programming-language>
     <category rdf:resource="http://projects.apache.org/category/library" />
     <repository>
