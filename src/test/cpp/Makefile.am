@@ -48,6 +48,7 @@ helpers = \
         helpers/inetaddresstestcase.cpp \
         helpers/iso8601dateformattestcase.cpp \
         helpers/localechanger.cpp\
+        helpers/messagebuffertest.cpp \
         helpers/optionconvertertestcase.cpp       \
         helpers/propertiestestcase.cpp \
         helpers/relativetimedateformattestcase.cpp \
