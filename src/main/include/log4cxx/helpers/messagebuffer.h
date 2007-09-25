@@ -86,8 +86,22 @@ namespace log4cxx {
         WideMessageBuffer& operator<<(const wchar_t* msg);
         WideMessageBuffer& operator<<(const wchar_t msg);
 
+        CharMessageBuffer& operator<<(const std::string& msg);
+        CharMessageBuffer& operator<<(const char* msg);
+        CharMessageBuffer& operator<<(const char msg);
+
         const std::wstring& str(const WideMessageBuffer&) const;
         std::wstring str(const std::wostream&) const;
+        const std::string& str(const CharMessageBuffer&) const;
+        std::string str(const std::ostream&) const;
+
+        template<class T> 
+        std::ostream& operator<<(T arg) {
+           return CharMessageBuffer::operator<<(arg);
+        }
+
+
+
 
    private:
         WideMessageBuffer* wbuf;        

@@ -46,7 +46,7 @@ CharMessageBuffer& CharMessageBuffer::operator<<(const char msg) {
     return *this;
 }
         
-const std::string& CharMessageBuffer::str(const MessageBuffer&) const {
+const std::string& CharMessageBuffer::str(const CharMessageBuffer&) const {
     return buf;
 }
 
@@ -64,12 +64,12 @@ MessageBuffer::~MessageBuffer() {
     delete wbuf;
 }
         
-WideMessageBuffer& MessageBuffer::operator+(const std::wstring& msg) {
+WideMessageBuffer& MessageBuffer::operator<<(const std::wstring& msg) {
    wbuf = new WideMessageBuffer(msg);
    return *wbuf;
 }
    
-WideMessageBuffer& MessageBuffer::operator+(const wchar_t* msg) {
+WideMessageBuffer& MessageBuffer::operator<<(const wchar_t* msg) {
    if (0 == msg) {
        wbuf = new WideMessageBuffer(L"null");
    } else {
@@ -78,7 +78,7 @@ WideMessageBuffer& MessageBuffer::operator+(const wchar_t* msg) {
    return *wbuf;
 }
 
-WideMessageBuffer& MessageBuffer::operator+(const wchar_t msg) {
+WideMessageBuffer& MessageBuffer::operator<<(const wchar_t msg) {
    wbuf = new WideMessageBuffer(msg);
    return *wbuf;
 }
@@ -129,6 +129,26 @@ WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t* msg) {
 WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t msg) {
     buf.append(1, msg);
     return *this;
+}
+
+CharMessageBuffer& MessageBuffer::operator<<(const std::string& msg) {
+    return CharMessageBuffer::operator<<(msg);
+}
+
+CharMessageBuffer& MessageBuffer::operator<<(const char* msg) {
+    return CharMessageBuffer::operator<<(msg);
+}
+
+CharMessageBuffer& MessageBuffer::operator<<(const char msg) {
+    return CharMessageBuffer::operator<<(msg);
+}
+
+const std::string& MessageBuffer::str(const CharMessageBuffer& msg) const {
+    return CharMessageBuffer::str(msg);
+}
+
+std::string MessageBuffer::str(const std::ostream& msg) const {
+    return CharMessageBuffer::str(msg);
 }
 
 

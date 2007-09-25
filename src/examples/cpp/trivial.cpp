@@ -1,60 +1,53 @@
-#include <iostream>
-#include <pthread.h>
-#include <sstream>
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include <log4cxx/logstring.h>
+#include <stdlib.h>
 #include <log4cxx/logger.h>
-#include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/basicconfigurator.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/ndc.h>
+#include <locale.h>
 
-struct Data
+using namespace log4cxx;
+using namespace log4cxx::helpers;
+
+int main()
 {
-    int count;
-};
-
-void* LogThread(void* args)
-{
-    Data* d = (Data*)args;
-
-    // Build Logger Name
-    std::ostringstream temp;
-    temp << "TestLogger" << d->count;
-    std::string loggerName(temp.str());
-    std::cout << "getting logger = " << loggerName << std::endl;
-
-    log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger(loggerName));
-
-    while(1)
+    setlocale(LC_ALL, "");
+    int result = EXIT_SUCCESS;
+    try
     {
-        logger->debug(loggerName);
-        logger->debug("This is a test of the emergency broadcast system.  This is only a test");
-        logger->debug("This is a test of the emergency broadcast system. This is only a test");
-        logger->debug("This is a test of the emergency broadcast system.  This is only a test");
-        logger->debug("This is a test of the emergency broadcast system.  This is only a test");
-        logger->debug("This is a test of the emergency broadcast system.  This is only a test");
-        logger->debug("This is a test of the emergency broadcast system.  This is only a test");
-        logger->debug("This is a test of the emergency broadcast system.  This is only a test");
+                BasicConfigurator::configure();
+                LoggerPtr rootLogger = Logger::getRootLogger();
 
-        usleep(5);
-    }
+                NDC::push("trivial context");
 
-    return 0;
-}
+                LOG4CXX_DEBUG(rootLogger, "debug message");
+                LOG4CXX_INFO(rootLogger, "info message");
+                LOG4CXX_WARN(rootLogger, "warn message");
+                LOG4CXX_ERROR(rootLogger, "error message");
+                LOG4CXX_FATAL(rootLogger, "fatal message");
 
-int main(void)
-{
-    log4cxx::LoggerPtr logger(log4cxx::Logger::getRootLogger());
-    for(int count = 0; count < 10; count++)
-    {
-        Data* d = new Data();
-        d->count = count;
+                NDC::pop();
+        }
+        catch(std::exception&)
+        {
+                result = EXIT_FAILURE;
+        }
 
-        pthread_t newThread;
-        pthread_create(&newThread, NULL, &LogThread, d);
-        sleep(1);
-    }
-
-    std::string input;
-    std::cout << "Waiting for input to exit" << std::endl;
-    std::cin >> input;
-
-    return 0;
+    return result;
 }
