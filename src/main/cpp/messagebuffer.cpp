@@ -19,45 +19,20 @@
 
 using namespace log4cxx::helpers;
 
-MessageBuffer::MessageBuffer() {
+CharMessageBuffer::CharMessageBuffer() {
     stream = 0;
-#if LOG4CXX_HAS_WCHAR_T    
-    wbuf = 0;
-#endif    
 }
 
-MessageBuffer::~MessageBuffer() {
+CharMessageBuffer::~CharMessageBuffer() {
     delete stream;
-#if LOG4CXX_HAS_WCHAR_T    
-    delete wbuf;
-#endif
-}
-        
-MessageBuffer& MessageBuffer::operator+(const std::string& msg) {
-    buf.assign(msg);
-    return *this;
 }
 
-MessageBuffer& MessageBuffer::operator+(const char* msg) {
-    if (0 == msg) {
-       buf.assign("null");
-    } else {
-        buf.assign(msg);
-    }
-    return *this;
-}
-
-MessageBuffer& MessageBuffer::operator+(const char msg) {
-    buf.assign(1, msg);
-    return *this;
-}
-        
-MessageBuffer& MessageBuffer::operator<<(const std::string& msg) {
+CharMessageBuffer& CharMessageBuffer::operator<<(const std::string& msg) {
     buf.append(msg);
     return *this;
 }
 
-MessageBuffer& MessageBuffer::operator<<(const char* msg) {
+CharMessageBuffer& CharMessageBuffer::operator<<(const char* msg) {
     if (0 == msg) {
        buf.append("null");
     } else {
@@ -66,20 +41,29 @@ MessageBuffer& MessageBuffer::operator<<(const char* msg) {
     return *this;
 }
 
-MessageBuffer& MessageBuffer::operator<<(const char msg) {
+CharMessageBuffer& CharMessageBuffer::operator<<(const char msg) {
     buf.append(1, msg);
     return *this;
 }
         
-const std::string& MessageBuffer::str(const MessageBuffer&) const {
+const std::string& CharMessageBuffer::str(const MessageBuffer&) const {
     return buf;
 }
 
-std::string MessageBuffer::str(const std::ostream&) const {
+std::string CharMessageBuffer::str(const std::ostream&) const {
     return stream->str();
 }
 
+
 #if LOG4CXX_HAS_WCHAR_T
+MessageBuffer::MessageBuffer() {
+    wbuf = 0;
+}
+
+MessageBuffer::~MessageBuffer() {
+    delete wbuf;
+}
+        
 WideMessageBuffer& MessageBuffer::operator+(const std::wstring& msg) {
    wbuf = new WideMessageBuffer(msg);
    return *wbuf;

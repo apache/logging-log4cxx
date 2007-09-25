@@ -25,6 +25,31 @@
 
 namespace log4cxx {
    namespace helpers {
+   
+   class LOG4CXX_EXPORT CharMessageBuffer {
+   public:
+        CharMessageBuffer();
+        ~CharMessageBuffer();
+        
+        CharMessageBuffer& operator<<(const std::string& msg);
+        CharMessageBuffer& operator<<(const char* msg);
+        CharMessageBuffer& operator<<(const char msg);
+        
+        template<class T> 
+        std::ostream& operator<<(T arg) {
+           stream = new std::ostringstream();
+           return *stream << buf << arg;
+        }
+
+        const std::string& str(const CharMessageBuffer&) const;
+        std::string str(const std::ostream&) const;
+        
+   private:
+        std::string buf;
+        std::ostringstream* stream;
+   };
+
+   
 
 #if LOG4CXX_HAS_WCHAR_T           
    class LOG4CXX_EXPORT WideMessageBuffer {
@@ -51,51 +76,25 @@ namespace log4cxx {
          std::wstring buf;
          std::wostringstream* stream;
    };
-#endif   
-   
-   class LOG4CXX_EXPORT MessageBuffer {
+
+   class LOG4CXX_EXPORT MessageBuffer : public CharMessageBuffer {
    public:
         MessageBuffer();
         ~MessageBuffer();
         
-        MessageBuffer& operator+(const std::string& msg);
-        MessageBuffer& operator+(const char* msg);
-        MessageBuffer& operator+(const char msg);
-        
-        MessageBuffer& operator<<(const std::string& msg);
-        MessageBuffer& operator<<(const char* msg);
-        MessageBuffer& operator<<(const char msg);
-        
-        template<class T> 
-        std::ostream& operator<<(T arg) {
-           stream = new std::ostringstream();
-           return *stream << buf << arg;
-        }
-
-        template<class T> 
-        std::ostream& operator+(T arg) {
-           return operator<<(arg);
-        }
-        
-        const std::string& str(const MessageBuffer&) const;
-        std::string str(const std::ostream&) const;
-        
-#if LOG4CXX_HAS_WCHAR_T        
-        WideMessageBuffer& operator+(const std::wstring& msg);
-        WideMessageBuffer& operator+(const wchar_t* msg);
-        WideMessageBuffer& operator+(const wchar_t msg);
+        WideMessageBuffer& operator<<(const std::wstring& msg);
+        WideMessageBuffer& operator<<(const wchar_t* msg);
+        WideMessageBuffer& operator<<(const wchar_t msg);
 
         const std::wstring& str(const WideMessageBuffer&) const;
         std::wstring str(const std::wostream&) const;
-#endif
 
    private:
-        std::string buf;
-        std::ostringstream* stream;
-#if LOG4CXX_HAS_WCHAR_T
         WideMessageBuffer* wbuf;        
-#endif
    };
+#else
+typedef class CharMessageBuffer MessageBuffer;
+#endif
 
 }
 }
