@@ -54,16 +54,42 @@ std::string CharMessageBuffer::str(const std::ostream&) const {
     return stream->str();
 }
 
-
+MessageBuffer::MessageBuffer()  
 #if LOG4CXX_HAS_WCHAR_T
-MessageBuffer::MessageBuffer() {
-    wbuf = 0;
+    : wbuf(0)
+#endif 
+{
 }
 
 MessageBuffer::~MessageBuffer() {
+#if LOG4CXX_HAS_WCHAR_T
     delete wbuf;
+#endif
 }
-        
+
+
+CharMessageBuffer& MessageBuffer::operator<<(const std::string& msg) {
+    return CharMessageBuffer::operator<<(msg);
+}
+
+CharMessageBuffer& MessageBuffer::operator<<(const char* msg) {
+    return CharMessageBuffer::operator<<(msg);
+}
+
+CharMessageBuffer& MessageBuffer::operator<<(const char msg) {
+    return CharMessageBuffer::operator<<(msg);
+}
+
+const std::string& MessageBuffer::str(const CharMessageBuffer& msg) const {
+    return CharMessageBuffer::str(msg);
+}
+
+std::string MessageBuffer::str(const std::ostream& msg) const {
+    return CharMessageBuffer::str(msg);
+}
+
+
+#if LOG4CXX_HAS_WCHAR_T
 WideMessageBuffer& MessageBuffer::operator<<(const std::wstring& msg) {
    wbuf = new WideMessageBuffer(msg);
    return *wbuf;
@@ -131,25 +157,6 @@ WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t msg) {
     return *this;
 }
 
-CharMessageBuffer& MessageBuffer::operator<<(const std::string& msg) {
-    return CharMessageBuffer::operator<<(msg);
-}
-
-CharMessageBuffer& MessageBuffer::operator<<(const char* msg) {
-    return CharMessageBuffer::operator<<(msg);
-}
-
-CharMessageBuffer& MessageBuffer::operator<<(const char msg) {
-    return CharMessageBuffer::operator<<(msg);
-}
-
-const std::string& MessageBuffer::str(const CharMessageBuffer& msg) const {
-    return CharMessageBuffer::str(msg);
-}
-
-std::string MessageBuffer::str(const std::ostream& msg) const {
-    return CharMessageBuffer::str(msg);
-}
 
 
 #endif
