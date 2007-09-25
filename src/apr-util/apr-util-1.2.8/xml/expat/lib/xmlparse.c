@@ -1331,16 +1331,16 @@ const XML_LChar *XML_ErrorString(int code)
 
 const XML_LChar *
 XML_ExpatVersion(void) {
-  return VERSION;
+  return "expat_1.95.1";
 }
 
 XML_Expat_Version
 XML_ExpatVersionInfo(void) {
   XML_Expat_Version version;
 
-  version.major = XML_MAJOR_VERSION;
-  version.minor = XML_MINOR_VERSION;
-  version.micro = XML_MICRO_VERSION;
+  version.major = 1;
+  version.minor = 95;
+  version.micro = 1;
 
   return version;
 }

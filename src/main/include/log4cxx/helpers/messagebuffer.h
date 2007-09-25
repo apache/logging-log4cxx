@@ -85,8 +85,8 @@ namespace log4cxx {
         WideMessageBuffer& operator+(const wchar_t* msg);
         WideMessageBuffer& operator+(const wchar_t msg);
 
-        static std::wstring str(const WideMessageBuffer&);
-        static std::wstring str(const std::wostring&);
+        const std::wstring& str(const WideMessageBuffer&) const;
+        std::wstring str(const std::wostream&) const;
 #endif
 
    private:

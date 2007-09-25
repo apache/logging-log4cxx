@@ -62,7 +62,7 @@ class StreamTestCase : public CppUnit::TestFixture
 #if LOG4CXX_HAS_WCHAR_T
                 CPPUNIT_TEST(testWide);
                 CPPUNIT_TEST(testWideAppend);
-                CPPUNIT_TEST(testWideScientific);
+                CPPUNIT_TEST(testWideWidth);
 #endif
         CPPUNIT_TEST_SUITE_END();
 

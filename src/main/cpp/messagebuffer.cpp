@@ -87,7 +87,7 @@ WideMessageBuffer& MessageBuffer::operator+(const std::wstring& msg) {
    
 WideMessageBuffer& MessageBuffer::operator+(const wchar_t* msg) {
    if (0 == msg) {
-       wbuf = new WideMessageBuffer(L"null"):
+       wbuf = new WideMessageBuffer(L"null");
    } else {
        wbuf = new WideMessageBuffer(msg);
    }
@@ -113,7 +113,11 @@ WideMessageBuffer::WideMessageBuffer(const wchar_t msg) : buf(1, msg), stream(0)
 WideMessageBuffer::WideMessageBuffer(const wchar_t* msg) : buf(msg), stream(0) {
 }
 
-WideMessageBuffer::WideMessageBuffer(const std::wstream& msg) : buf(msg), stream(0) {
+WideMessageBuffer::WideMessageBuffer(const std::wstring& msg) : buf(msg), stream(0) {
+}
+
+WideMessageBuffer::~WideMessageBuffer()  {
+    delete stream;
 }
 
 const std::wstring& WideMessageBuffer::str(const WideMessageBuffer&) const {
