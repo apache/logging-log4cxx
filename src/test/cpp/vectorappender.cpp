@@ -27,7 +27,7 @@ void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& /*p*/)
 {
         try
         {
-            Thread::sleep(5000);
+            Thread::sleep(100);
         }
         catch (Exception&)
         {

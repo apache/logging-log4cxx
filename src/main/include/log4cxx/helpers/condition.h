@@ -19,7 +19,10 @@
 #define _LOG4CXX_HELPERS_CONDITION_H
 
 #include <log4cxx/log4cxx.h>
+#include <log4cxx/helpers/mutex.h>
 
+typedef void log4cxx_pool_t;
+typedef void log4cxx_thread_cond_t;
 
 namespace log4cxx
 {
@@ -27,17 +30,39 @@ namespace log4cxx
         {
                 class Pool;
 
+                /**
+                 *   This class provides a means for one thread to suspend exception until
+                 *   notified by another thread to result.  This class should have 
+                 *   similar semantics to java.util.concurrent.locks.Condition.
+                 */
                 class LOG4CXX_EXPORT Condition
                 {
                 public:
+                        /**
+                         *  Create new instance.
+                         *  @param p pool on which condition will be created.  Needs to be
+                         *  longer-lived than created instance.
+                         */
                         Condition(log4cxx::helpers::Pool& p);
+                        /**
+                         *  Destructor.
+                         */
                         ~Condition();
-                        void broadcast();
-                        void wait();
+                        /**
+                         *   Signal all waiting threads.
+                         */
+                        log4cxx_status_t signalAll();
+                        /**
+                         *  Await signaling of condition.
+                         *  @param lock lock associated with condition, calling thread must
+                         *  own lock.  Lock will be released while waiting and reacquired
+                         *  before returning from wait.
+                         *  @throws InterruptedException if thread is interrupted.
+                         */
+                        void await(Mutex& lock);
 
                 private:
-                        void* condition;
-                        void* mutex;
+                        log4cxx_thread_cond_t* condition;
                         Condition(const Condition&);
                         Condition& operator=(const Condition&);
                 };

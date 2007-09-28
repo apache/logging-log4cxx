@@ -54,6 +54,9 @@ const char* Exception::what() const throw() {
   return msg;
 }
 
+RuntimeException::RuntimeException(log4cxx_status_t stat)
+     : Exception(formatMessage(stat)) {
+}
 
 RuntimeException::RuntimeException(const std::string& msg1)
      : Exception(msg1) {
@@ -66,6 +69,13 @@ RuntimeException::RuntimeException(const RuntimeException& src)
 RuntimeException& RuntimeException::operator=(const RuntimeException& src) {
       Exception::operator=(src);
       return *this;
+}
+
+std::string RuntimeException::formatMessage(log4cxx_status_t stat) {
+   std::string s("RuntimeException: return code = ");
+   Pool p;
+   StringHelper::toString(stat, p, s);
+   return s;
 }
 
 NullPointerException::NullPointerException(const std::string& msg1)
@@ -201,21 +211,24 @@ std::string MutexException::formatMessage(log4cxx_status_t stat) {
       return s;
 }
 
-ConditionException::ConditionException(log4cxx_status_t stat)
+InterruptedException::InterruptedException() : Exception("Thread was interrupted") {
+}
+
+InterruptedException::InterruptedException(log4cxx_status_t stat)
      : Exception(formatMessage(stat)) {
 }
 
-ConditionException::ConditionException(const ConditionException &src)
+InterruptedException::InterruptedException(const InterruptedException &src)
      : Exception(src) {
 }
 
-ConditionException& ConditionException::operator=(const MutexException& src) {
+InterruptedException& InterruptedException::operator=(const InterruptedException& src) {
       Exception::operator=(src);
       return *this;
 }
 
-std::string ConditionException::formatMessage(log4cxx_status_t stat) {
-      std::string s("Condition exception: stat = ");
+std::string InterruptedException::formatMessage(log4cxx_status_t stat) {
+      std::string s("InterruptedException: stat = ");
       Pool p;
       StringHelper::toString(stat, p, s);
       return s;

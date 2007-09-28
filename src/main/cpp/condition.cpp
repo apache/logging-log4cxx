@@ -21,6 +21,7 @@
 #include <apr_thread_cond.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/thread.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
@@ -31,18 +32,10 @@ using namespace log4cxx;
 Condition::Condition(Pool& p)
 {
         apr_pool_t* aprPool = (apr_pool_t*) p.getAPRPool();
-        apr_thread_mutex_t* aprMutex = NULL;
-        apr_status_t stat = apr_thread_mutex_create(&aprMutex,
-                APR_THREAD_MUTEX_DEFAULT, aprPool);
-        if (stat != APR_SUCCESS) {
-                throw ConditionException(stat);
-        }
-        mutex = aprMutex;
         apr_thread_cond_t* aprCondition = NULL;
-        stat = apr_thread_cond_create(&aprCondition, aprPool);
+        apr_status_t stat = apr_thread_cond_create(&aprCondition, aprPool);
         if (stat != APR_SUCCESS) {
-                stat = apr_thread_mutex_destroy(aprMutex);
-                throw ConditionException(stat);
+                throw RuntimeException(stat);
         }
         condition = aprCondition;
 }
@@ -50,33 +43,23 @@ Condition::Condition(Pool& p)
 Condition::~Condition()
 {
         apr_thread_cond_destroy((apr_thread_cond_t*) condition);
-        apr_thread_mutex_destroy((apr_thread_mutex_t*)mutex);
 }
 
-void Condition::broadcast()
+log4cxx_status_t Condition::signalAll()
 {
-        apr_status_t stat = apr_thread_cond_broadcast((apr_thread_cond_t*) condition);
-        if (stat != APR_SUCCESS) {
-                throw ConditionException(stat);
-        }
+        return apr_thread_cond_broadcast((apr_thread_cond_t*) condition);
 }
 
-
-void Condition::wait()
+void Condition::await(Mutex& mutex)
 {
-        apr_status_t stat = apr_thread_mutex_lock((apr_thread_mutex_t*) mutex);
-        if (stat != APR_SUCCESS) {
-           throw MutexException(stat);
+        if (Thread::interrupted()) {
+             throw InterruptedException();
         }
-        stat = apr_thread_cond_wait(
+        apr_status_t stat = apr_thread_cond_wait(
              (apr_thread_cond_t*) condition,
-             (apr_thread_mutex_t*) mutex);
+             (apr_thread_mutex_t*) mutex.getAPRMutex());
         if (stat != APR_SUCCESS) {
-                throw ConditionException(stat);
-        }
-        stat = apr_thread_mutex_unlock((apr_thread_mutex_t*) mutex);
-        if (stat != APR_SUCCESS) {
-           throw MutexException(stat);
+                throw InterruptedException(stat);
         }
 }
 

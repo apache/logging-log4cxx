@@ -95,6 +95,7 @@ namespace log4cxx
                         Used internally to parse appenders by IDREF name.
                         */
                         AppenderPtr findAppenderByName(apr_xml_elem* elem,
+                                apr_xml_doc* doc,
                                 const LogString& appenderName,
                                 AppenderMap& appenders);
 

@@ -111,21 +111,22 @@ DOMConfigurator::DOMConfigurator()
 /**
 Used internally to parse appenders by IDREF name.
 */
-AppenderPtr DOMConfigurator::findAppenderByName(apr_xml_elem* element, 
+AppenderPtr DOMConfigurator::findAppenderByName(apr_xml_elem* element,
+                                                apr_xml_doc* doc,
                                                 const LogString& appenderName,
                                                 AppenderMap& appenders) {
     AppenderPtr appender;
     std::string tagName(element->name);
     if (tagName == APPENDER_TAG) {
         if (appenderName == getAttribute(element, NAME_ATTR)) {
-              appender = parseAppender(element, 0, appenders);
+              appender = parseAppender(element, doc, appenders);
         }
     }
     if (element->first_child && !appender) {
-         appender = findAppenderByName(element->first_child, appenderName, appenders);
+         appender = findAppenderByName(element->first_child, doc, appenderName, appenders);
     }
     if (element->next && !appender) {
-        appender = findAppenderByName(element->next, appenderName, appenders);
+        appender = findAppenderByName(element->next, doc, appenderName, appenders);
     }
     return appender;
 }
@@ -143,7 +144,7 @@ AppenderPtr DOMConfigurator::findAppenderByReference(apr_xml_elem* appenderRef,
         if (match != appenders.end()) {
             appender = match->second;
         } else if (doc) {
-            appender = findAppenderByName(doc->root, appenderName, appenders);
+            appender = findAppenderByName(doc->root, doc, appenderName, appenders);
             if (appender) {
                 appenders.insert(AppenderMap::value_type(appenderName, appender));
             }

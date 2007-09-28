@@ -47,9 +47,12 @@ namespace log4cxx
                 class LOG4CXX_EXPORT RuntimeException : public Exception
                 {
                 public:
+                        RuntimeException(log4cxx_status_t stat);
                         RuntimeException(const std::string& msg);
                         RuntimeException(const RuntimeException& msg);
                         RuntimeException& operator=(const RuntimeException& src);
+                private:
+                        static std::string formatMessage(log4cxx_status_t stat);
                 }; // class RuntimeException
 
                 /** Thrown when an application attempts to use null in a case where an
@@ -120,12 +123,13 @@ namespace log4cxx
                       static std::string formatMessage(log4cxx_status_t stat);
                 };
 
-                class LOG4CXX_EXPORT ConditionException : public Exception
+                class LOG4CXX_EXPORT InterruptedException : public Exception
                 {
                 public:
-                      ConditionException(log4cxx_status_t stat);
-                      ConditionException(const ConditionException &src);
-                      ConditionException& operator=(const MutexException&);
+                      InterruptedException();
+                      InterruptedException(log4cxx_status_t stat);
+                      InterruptedException(const InterruptedException &src);
+                      InterruptedException& operator=(const InterruptedException&);
                 private:
                       static std::string formatMessage(log4cxx_status_t stat);
                 };

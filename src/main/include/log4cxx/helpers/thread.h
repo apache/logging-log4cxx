@@ -35,33 +35,138 @@ namespace log4cxx
         namespace helpers
         {
                 class Pool;
+                class ThreadLocal;
                 typedef void log4cxx_thread_t;
 
 				typedef void* (LOG4CXX_THREAD_FUNC *Runnable)(log4cxx_thread_t* thread, void* data);
+                /**
+                 *  This class implements an approximation of java.util.Thread.
+                 */
                 class LOG4CXX_EXPORT Thread
                 {
                 public:
+                        /**
+                         *  Create new instance.
+                         */
                         Thread();
+                        /**
+                         *  Destructor.
+                         */
                         ~Thread();
 
+                        /**
+                         *  Runs the specified method on a newly created thread.
+                         */
                         void run(Runnable start, void* data);
                         void stop();
                         void join();
-                        //
-                        //  called on the worker thread to indicate
-                        //    immediate exit from the start method
-                        void ending();
 
                         inline bool isActive() { return thread != 0; }
 
-                        static void sleep(log4cxx_time_t duration);
+                        /**
+                         * Causes the currently executing thread to sleep for the
+                         * specified number of milliseconds.
+                         * @param millis milliseconds.
+                         * @throws Interrupted Exception if the thread is interrupted.
+                         */
+                        static void sleep(int millis);
+                        /**
+                         *  Sets interrupted status for current thread to true.  
+                         */
+                        static void currentThreadInterrupt();
+                        /**
+                         *  Sets interrupted status to true.  
+                         */
+                        void interrupt();
+                        /**
+                         *  Tests if the current thread has been interrupted and
+                         *  sets the interrupted status to false.
+                         */
+                        static bool interrupted();
+                        
+                        bool isAlive();
+                        bool isCurrentThread() const;
+                        void ending();
+                        
 
                 private:
                         Pool p;
                         log4cxx_thread_t* thread;
-                        volatile bool alive;
+                        volatile unsigned int alive;
+                        volatile unsigned int interruptedStatus;
                         Thread(const Thread&);
                         Thread& operator=(const Thread&);
+                        
+                        /**
+                         *   This class is used to encapsulate the parameters to
+                         *   Thread::run when they are passed to Thread::launcher.
+                         *
+                         */
+                        class LaunchPackage {
+                        public:
+                            /**
+                             *  Placement new to create LaunchPackage in specified pool.
+                             *  LaunchPackage needs to be dynamically allocated since
+                             *  since a stack allocated instance may go out of scope
+                             *  before thread is launched.
+                             */
+                            static void* operator new(size_t, Pool& p);
+                            /**
+                             *  Create new instance.
+                             */
+                            LaunchPackage(Thread* thread, Runnable runnable, void* data);
+                            /**
+                             * Gets thread parameter.
+                             * @return thread.
+                             */
+                            Thread* getThread() const;
+                            /**
+                             *  Gets runnable parameter.
+                             *  @return runnable.
+                             */
+                            Runnable getRunnable() const;
+                            /**
+                             *  gets data parameter.
+                             *  @return thread.
+                             */
+                            void* getData() const;
+                        private:
+                            Thread* thread;
+                            Runnable runnable; 
+                            void* data;
+                        };
+                        
+                        /**
+                         *  This object atomically sets the specified memory location
+                         *  to non-zero on construction and to zero on destruction.  
+                         *  Used to maintain Thread.alive.
+                         */
+                        class LaunchStatus {
+                        public:
+                            /*
+                             *  Construct new instance.
+                             *  @param p address of memory to set to non-zero on construction, zero on destruction.
+                             */
+                            LaunchStatus(volatile unsigned int* p);
+                            /**
+                             *  Destructor.
+                             */
+                            ~LaunchStatus();
+                        private:
+                            volatile unsigned int* alive;
+                        };
+                        
+                        /**
+                         *  This method runs on the created thread and sets up thread-local storage
+                         *  used to keep the reference to the corresponding Thread object and
+                         *  is responsible for maintaining Thread.alive.
+                         */
+                        static void* LOG4CXX_THREAD_FUNC launcher(log4cxx_thread_t* thread, void* data);
+                        /**
+                         *   Get a key to the thread local storage used to hold the reference to
+                         *   the corresponding Thread object.
+                         */                        
+                        static ThreadLocal& getThreadLocal();
                 };
         } // namespace helpers
 } // namespace log4cxx

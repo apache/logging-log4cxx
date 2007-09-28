@@ -150,6 +150,7 @@ liblog4cxx_la_SOURCES = \
         systemoutwriter.cpp \
         telnetappender.cpp \
         thread.cpp \
+        threadlocal.cpp \
         threadspecificdata.cpp \
         threadpatternconverter.cpp \
         throwableinformationpatternconverter.cpp \

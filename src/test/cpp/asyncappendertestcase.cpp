@@ -28,12 +28,78 @@
 #include <apr_strings.h>
 #include "testchar.h"
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/spi/location/locationinfo.h>
+#include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/file.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::spi;
+
+class NullPointerAppender : public AppenderSkeleton {
+public:
+    NullPointerAppender() {
+    }
+
+
+    /**
+     * @{inheritDoc}
+     */
+    void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&) {
+         throw NullPointerException("Intentional NullPointerException");
+    }
+
+    void close() {
+    }
+
+    bool requiresLayout() const {
+            return false;
+    }
+};
+
+    /**
+     * Vector appender that can be explicitly blocked.
+     */
+class BlockableVectorAppender : public VectorAppender {
+private:
+      Mutex blocker;
+public:
+      /**
+       * Create new instance.
+       */
+      BlockableVectorAppender() : blocker(pool) {
+      }
+
+      /**
+       * {@inheritDoc}
+       */
+    void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) {
+          synchronized sync(blocker);
+          VectorAppender::append(event, p);
+            //
+            //   if fatal, echo messages for testLoggingInDispatcher
+            //
+            if (event->getLevel() == Level::getInfo()) {
+                LoggerPtr logger = Logger::getLogger(event->getLoggerName());
+                LOG4CXX_ERROR(logger, event->getMessage());
+                LOG4CXX_WARN(logger, event->getMessage());
+                LOG4CXX_INFO(logger, event->getMessage());
+                LOG4CXX_DEBUG(logger, event->getMessage());
+            }
+      }
+      
+      Mutex& getBlocker() {
+          return blocker;
+      }
+
+    };
+
+typedef helpers::ObjectPtrT<BlockableVectorAppender> BlockableVectorAppenderPtr;
+
 
 /**
-   A superficial but general test of log4j.
+ * Tests of AsyncAppender.
  */
 class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 {
@@ -46,10 +112,10 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 
                 CPPUNIT_TEST(closeTest);
                 CPPUNIT_TEST(test2);
-//  TODO: deadlocks on Win32, will debug on Linux
-#if !defined(_WIN32)
                 CPPUNIT_TEST(test3);
-#endif
+                CPPUNIT_TEST(testBadAppender);
+                CPPUNIT_TEST(testLocationInfoTrue);
+                CPPUNIT_TEST(testConfiguration);
         CPPUNIT_TEST_SUITE_END();
 
 
@@ -69,7 +135,7 @@ public:
         }
 
         // this test checks whether it is possible to write to a closed AsyncAppender
-        void closeTest() throw(Exception)
+        void closeTest() 
         {
                 LoggerPtr root = Logger::getRootLogger();
                 LayoutPtr layout = new SimpleLayout();
@@ -84,7 +150,7 @@ public:
                 root->debug(LOG4CXX_TEST_STR("m2"));
 
                 const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
-                CPPUNIT_ASSERT(v.size() == 1);
+                CPPUNIT_ASSERT_EQUAL((size_t) 1, v.size());
         }
 
         // this test checks whether appenders embedded within an AsyncAppender are also
@@ -104,7 +170,7 @@ public:
                 root->debug(LOG4CXX_TEST_STR("m2"));
 
                 const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
-                CPPUNIT_ASSERT(v.size() == 1);
+                CPPUNIT_ASSERT_EQUAL((size_t) 1, v.size());
                 CPPUNIT_ASSERT(vectorAppender->isClosed());
         }
 
@@ -112,23 +178,16 @@ public:
         // closed
         void test3()
         {
-                typedef std::vector<spi::LoggingEventPtr>::size_type size_type;
                 size_t LEN = 200;
                 LoggerPtr root = Logger::getRootLogger();
-                LayoutPtr layout = new SimpleLayout();
                 VectorAppenderPtr vectorAppender = new VectorAppender();
                 AsyncAppenderPtr asyncAppender = new AsyncAppender();
                 asyncAppender->setName(LOG4CXX_STR("async-test3"));
                 asyncAppender->addAppender(vectorAppender);
                 root->addAppender(asyncAppender);
 
-                Pool pool;
-                std::string msg("message");
-
                 for (size_t i = 0; i < LEN; i++) {
-                        msg.erase(msg.begin() + 7, msg.end());
-                        StringHelper::toString(i, pool, msg);
-                        LOG4CXX_DEBUG(root, msg);
+                        LOG4CXX_DEBUG(root, "message" << i);
                 }
 
                 asyncAppender->close();
@@ -138,6 +197,89 @@ public:
                 CPPUNIT_ASSERT_EQUAL(LEN, v.size());
                 CPPUNIT_ASSERT_EQUAL(true, vectorAppender->isClosed());
         }
+        
+    /**
+     * Tests that a bad appender will switch async back to sync.
+     */
+    void testBadAppender() {
+        AppenderPtr nullPointerAppender = new NullPointerAppender();
+        AsyncAppenderPtr asyncAppender = new AsyncAppender();
+        asyncAppender->addAppender(nullPointerAppender);
+        asyncAppender->setBufferSize(5);
+        Pool p;
+        asyncAppender->activateOptions(p);
+        LoggerPtr root = Logger::getRootLogger();
+        root->addAppender(asyncAppender);
+        LOG4CXX_INFO(root, "Message");
+        Thread::sleep(10);
+        try {
+           LOG4CXX_INFO(root, "Message");
+           CPPUNIT_FAIL("Should have thrown exception");
+        } catch(NullPointerException& ex) {
+        }
+    }
+    
+    /**
+     * Tests non-blocking behavior.
+     */
+    void testLocationInfoTrue() {
+        BlockableVectorAppenderPtr blockableAppender = new BlockableVectorAppender();
+        AsyncAppenderPtr async = new AsyncAppender();
+        async->addAppender(blockableAppender);
+        async->setBufferSize(5);
+        async->setLocationInfo(true);
+        async->setBlocking(false);
+        Pool p;
+        async->activateOptions(p);
+        LoggerPtr rootLogger = Logger::getRootLogger();
+        rootLogger->addAppender(async);
+        {
+            synchronized sync(blockableAppender->getBlocker());
+            for (int i = 0; i < 100; i++) {
+                   LOG4CXX_INFO(rootLogger, "Hello, World");
+                   Thread::sleep(1);
+            }
+            LOG4CXX_ERROR(rootLogger, "That's all folks.");
+        }
+        async->close();
+        const std::vector<spi::LoggingEventPtr>& events = blockableAppender->getVector();
+        LoggingEventPtr initialEvent = events[0];
+        LoggingEventPtr discardEvent = events[events.size() - 1];
+        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Hello, World")), initialEvent->getMessage());
+        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Discarded ")), discardEvent->getMessage().substr(0,10));
+        CPPUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(), 
+            discardEvent->getLocationInformation().getClassName()); 
+    }
+    
+        void testConfiguration() {
+              log4cxx::xml::DOMConfigurator::configure("input/xml/asyncAppender1.xml");
+              AsyncAppenderPtr asyncAppender(Logger::getRootLogger()->getAppender(LOG4CXX_STR("ASYNC")));
+              CPPUNIT_ASSERT(0 != asyncAppender);
+              CPPUNIT_ASSERT_EQUAL(100, asyncAppender->getBufferSize());
+              CPPUNIT_ASSERT_EQUAL(false, asyncAppender->getBlocking());
+              CPPUNIT_ASSERT_EQUAL(true, asyncAppender->getLocationInfo());
+              AppenderList nestedAppenders(asyncAppender->getAllAppenders());
+              //   TODO:
+              //   test seems to work okay, but have not found a working way to 
+              //      get a reference to the nested vector appender 
+              //
+//              CPPUNIT_ASSERT_EQUAL((size_t) 1, nestedAppenders.size());
+//              VectorAppenderPtr vectorAppender(nestedAppenders[0]);
+//              CPPUNIT_ASSERT(0 != vectorAppender);
+              LoggerPtr root(Logger::getRootLogger()); 
+              
+              size_t LEN = 20;
+              for (size_t i = 0; i < LEN; i++) {
+                        LOG4CXX_DEBUG(root, "message" << i);
+              }
+              
+              asyncAppender->close();
+//              const std::vector<spi::LoggingEventPtr>& v = vectorAppender->getVector();
+//              CPPUNIT_ASSERT_EQUAL(LEN, v.size());
+//              CPPUNIT_ASSERT_EQUAL(true, vectorAppender->isClosed());
+        }
+
+        
 };
 
-//CPPUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);
+CPPUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);

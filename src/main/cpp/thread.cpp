@@ -19,12 +19,14 @@
 #include <log4cxx/helpers/thread.h>
 #include <log4cxx/helpers/exception.h>
 #include <apr_thread_proc.h>
+#include <apr_atomic.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/threadlocal.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
-Thread::Thread() : thread(NULL), alive(false) {
+Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0) {
 }
 
 Thread::~Thread() {
@@ -33,28 +35,69 @@ Thread::~Thread() {
 #endif
 }
 
-#if APR_HAS_THREADS
+Thread::LaunchPackage::LaunchPackage(Thread* t, Runnable r, void* d) : thread(t), runnable(r), data(d) {
+}
+
+Thread* Thread::LaunchPackage::getThread() const {
+    return thread;
+}
+
+Runnable Thread::LaunchPackage::getRunnable() const {
+    return runnable;
+}
+
+void* Thread::LaunchPackage::getData() const {
+    return data;
+}
+
+void* Thread::LaunchPackage::operator new(size_t sz, Pool& p) {
+    return p.palloc(sz);
+}
+
 void Thread::run(Runnable start, void* data) {
-        if (thread != NULL && alive) {
-                throw ThreadException(0);
+        //
+        //    if attempting a second run method on the same Thread object
+        //         throw an exception
+        //
+        if (thread != NULL) {
+            throw IllegalStateException();
         }
         apr_threadattr_t* attrs;
         apr_status_t stat = apr_threadattr_create(&attrs, (apr_pool_t*) p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
-        alive = true;
+        
+        //   create LaunchPackage on the thread's memory pool
+        LaunchPackage* package = new(p) LaunchPackage(this, start, data);
         stat = apr_thread_create((apr_thread_t**) &thread, attrs,
-            (apr_thread_start_t) start, data, (apr_pool_t*) p.getAPRPool());
+            (apr_thread_start_t) launcher, package, (apr_pool_t*) p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
 }
 
+
+Thread::LaunchStatus::LaunchStatus(volatile unsigned int* p) : alive(p) {
+    apr_atomic_set32(alive, 0xFFFFFFFF);
+}
+
+Thread::LaunchStatus::~LaunchStatus() {
+    apr_atomic_set32(alive, 0);
+}
+    
+
+void* Thread::launcher(log4cxx_thread_t* thread, void* data) {
+    LaunchPackage* package = (LaunchPackage*) data;
+    ThreadLocal& tls = getThreadLocal();
+    tls.set(package->getThread());
+    LaunchStatus alive(&package->getThread()->alive);
+    return (package->getRunnable())(thread, package->getData());
+}
+
 void Thread::stop() {
-    if (thread != NULL && alive) {
+    if (thread != NULL) {
                 apr_status_t stat = apr_thread_exit((apr_thread_t*) thread, 0);
-                alive = false;
                 thread = NULL;
                 if (stat != APR_SUCCESS) {
                         throw ThreadException(stat);
@@ -63,23 +106,59 @@ void Thread::stop() {
 }
 
 void Thread::join() {
-        if (thread != NULL && alive) {
+        if (thread != NULL) {
                 apr_status_t startStat;
                 apr_status_t stat = apr_thread_join(&startStat, (apr_thread_t*) thread);
-                alive = false;
                 thread = NULL;
                 if (stat != APR_SUCCESS) {
                         throw ThreadException(stat);
                 }
         }
 }
-#endif
+
+ThreadLocal& Thread::getThreadLocal() {
+     static ThreadLocal tls;
+     return tls;
+}
+
+void Thread::currentThreadInterrupt() {
+   void* tls = getThreadLocal().get();
+   if (tls != 0) {
+       ((Thread*) tls)->interrupt();
+   }
+}
+
+void Thread::interrupt() {
+    apr_atomic_set32(&interruptedStatus, 0xFFFFFFFF);
+}
+
+bool Thread::interrupted() {
+   void* tls = getThreadLocal().get();
+   if (tls != 0) {
+       return apr_atomic_xchg32(&(((Thread*) tls)->interruptedStatus), 0) != 0;
+   }
+   return false;
+}
+
+bool Thread::isCurrentThread() const {
+    void* tls = getThreadLocal().get();
+    return (tls == this);
+}
+
+bool Thread::isAlive() {
+    return apr_atomic_read32(&alive) != 0;
+}
 
 void Thread::ending() {
-        alive = false;
+    apr_atomic_set32(&alive, 0);
 }
 
 
-void Thread::sleep(log4cxx_time_t duration) {
-    apr_sleep(duration);
+void Thread::sleep(int duration) {
+    if(interrupted()) {
+         throw InterruptedException();
+    }
+    if (duration > 0) {
+        apr_sleep(duration*1000);
+    }
 }
