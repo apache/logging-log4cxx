@@ -247,8 +247,8 @@ public:
         const std::vector<spi::LoggingEventPtr>& events = blockableAppender->getVector();
         LoggingEventPtr initialEvent = events[0];
         LoggingEventPtr discardEvent = events[events.size() - 1];
-        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Hello, World")), initialEvent->getMessage());
-        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Discarded ")), discardEvent->getMessage().substr(0,10));
+		CPPUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
+		CPPUNIT_ASSERT(discardEvent->getMessage().substr(0,10) == LOG4CXX_STR("Discarded "));
         CPPUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(), 
             discardEvent->getLocationInformation().getClassName()); 
     }

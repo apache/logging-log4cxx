@@ -130,7 +130,7 @@ public:
           LOG4CXX_INFO(root, '[' << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill('_') << 10.0 << ']');
           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
           LogString msg(event->getMessage());
-          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
+          CPPUNIT_ASSERT(msg == LOG4CXX_STR("[__10.00]"));
        }
 
 #if LOG4CXX_HAS_WCHAR_T
@@ -151,7 +151,7 @@ public:
           LOG4CXX_INFO(root, L'[' << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill(L'_') << 10.0 << L']');
           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
           LogString msg(event->getMessage());
-          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
+          CPPUNIT_ASSERT(msg == LOG4CXX_STR("[__10.00]"));
        }
 #endif
 };

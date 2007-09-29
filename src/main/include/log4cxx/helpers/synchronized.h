@@ -25,7 +25,7 @@ namespace log4cxx
                 class Mutex;
 
                 /** utility class for objects multi-thread synchronization.*/
-                class synchronized
+                class LOG4CXX_EXPORT synchronized
                 {
                 public:
                 synchronized(const Mutex& mutex);

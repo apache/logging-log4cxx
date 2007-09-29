@@ -56,7 +56,7 @@ public:
      * Tests Level.TRACE.
      */
   void testTrace() {
-      CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("TRACE")), Level::getTrace()->toString());
+      CPPUNIT_ASSERT(Level::getTrace()->toString() == LOG4CXX_STR("TRACE"));
       CPPUNIT_ASSERT_EQUAL(5000, Level::getTrace()->toInt());
       CPPUNIT_ASSERT_EQUAL(7, Level::getTrace()->getSyslogEquivalent());
   }
@@ -66,7 +66,7 @@ public:
      */
   void testIntToTrace() {
       LevelPtr trace(Level::toLevel(5000));
-      CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("TRACE")), trace->toString());
+      CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 
     /**
@@ -74,7 +74,7 @@ public:
      */
   void testStringToTrace() {
         LevelPtr trace(Level::toLevel("TRACE"));
-        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("TRACE")), trace->toString());
+		CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 
 #if LOG4CXX_HAS_WCHAR_T
@@ -83,7 +83,7 @@ public:
      */
   void testWideStringToTrace() {
         LevelPtr trace(Level::toLevel(L"TRACE"));
-        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("TRACE")), trace->toString());
+        CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 #endif  
         

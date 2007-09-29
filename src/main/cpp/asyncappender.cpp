@@ -167,9 +167,9 @@ void AsyncAppender::close() {
     
     try {
         dispatcher.join();
-    } catch(InterruptedException& e) {
+	} catch(InterruptedException& e) {
         Thread::currentThreadInterrupt();
-        LogLog::error("Got an InterruptedException while waiting for the dispatcher to finish,", e);
+        LogLog::error(LOG4CXX_STR("Got an InterruptedException while waiting for the dispatcher to finish,"), e);
     }
     
     {
