@@ -314,7 +314,17 @@ protected:
         LexemType;
 };
 
-LogString Properties::setProperty(const LogString& key, const LogString& value)
+Properties::Properties() {
+}
+
+Properties::~Properties() {
+}
+
+LogString Properties::setProperty(const LogString& key, const LogString& value) {
+    return put(key, value);
+}
+
+LogString Properties::put(const LogString& key, const LogString& value)
 {
         LogString oldValue(properties[key]);
         properties[key] = value;
@@ -322,7 +332,11 @@ LogString Properties::setProperty(const LogString& key, const LogString& value)
         return oldValue;
 }
 
-LogString Properties::getProperty(const LogString& key) const
+LogString Properties::getProperty(const LogString& key) const {
+    return get(key);
+}
+
+LogString Properties::get(const LogString& key) const
 {
         std::map<LogString, LogString>::const_iterator it = properties.find(key);
         return (it != properties.end()) ? it->second : LogString();

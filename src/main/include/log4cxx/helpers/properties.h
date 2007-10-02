@@ -35,8 +35,18 @@ namespace log4cxx
                 private:
                         typedef std::map<LogString, LogString> PropertyMap;
                         PropertyMap properties;
+                        Properties(const Properties&);
+                        Properties& operator=(const Properties&);
 
                 public:
+                        /**
+                         *  Create new instance.
+                         */
+                        Properties();
+                        /**
+                         * Destructor.
+                         */
+                        ~Properties();
                         /**
                         Reads a property list (key and element pairs) from the input stream.
                         The stream is assumed to be using the ISO 8859-1 character encoding.
@@ -117,28 +127,37 @@ cheeses
                         void load(InputStreamPtr inStream);
 
                         /**
-                        Calls the Hashtable method put. Provided for parallelism with the
-                        getProperty method. Enforces use of strings for property keys and
-                        values. The value returned is the result of the Hashtable call to
-                        put.
-                        @param key the key to be placed into this property list.
-                @param value the value corresponding to key.
-                @return the previous value of the specified key in this
-                        property list, or an empty string if it did not have one.
+                         *  Calls Properties::put.
+                         *   @param key the key to be placed into this property list.
+                         *   @param value the value corresponding to key.
+                         *   @return the previous value of the specified key in this
+                         *   property list, or an empty string if it did not have one.
                         */
                         LogString setProperty(const LogString& key, const LogString& value);
+                        /**
+                         *  Puts a property value into the collection.
+                         *   @param key the key to be placed into this property list.
+                         *   @param value the value corresponding to key.
+                         *   @return the previous value of the specified key in this
+                         *   property list, or an empty string if it did not have one.
+                        */
+                        LogString put(const LogString& key, const LogString& value);
 
 
                         /**
-                        Searches for the property with the specified key in this property
-                        list. If the key is not found in this property list, the default
-                        property list, and its defaults, recursively, are then checked.
-                        The method returns an empty string if the property is not found.
-                    @param key the property key.
-                @return the value in this property list with the specified
-                        key value.
+                         * Calls Properties::get.
+                         * @param key the property key.
+                         * @return the value in this property list with the specified
+                         *   key value or empty string.
                         */
                         LogString getProperty(const LogString& key) const;
+                        /**
+                         * Gets a property value.
+                         * @param key the property key.
+                         * @return the value in this property list with the specified
+                         *   key value or empty string.
+                        */
+                        LogString get(const LogString& key) const;
 
                         /**
                         Returns an enumeration of all the keys in this property list,

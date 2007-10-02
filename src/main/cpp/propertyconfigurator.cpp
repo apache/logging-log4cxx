@@ -323,16 +323,19 @@ void PropertyConfigurator::parseLogger(
                         else
                         {
                                 logger->setLevel(0);
+                                LogLog::debug((LogString) LOG4CXX_STR("Logger ")
+                                    + loggerName + LOG4CXX_STR(" set to null"));
                         }
                 }
                 else
                 {
                         logger->setLevel(OptionConverter::toLevel(levelStr, Level::getDebug()));
+
+                        LogLog::debug((LogString) LOG4CXX_STR("Logger ")
+                            + loggerName + LOG4CXX_STR(" set to ")
+                            + logger->getLevel()->toString());
                 }
 
-                LogLog::debug((LogString) LOG4CXX_STR("Logger ")
-                    + loggerName + LOG4CXX_STR(" set to ")
-                    + logger->getLevel()->toString());
         }
 
         // Begin by removing all existing appenders.
