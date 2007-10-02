@@ -109,6 +109,8 @@ namespace log4cxx
                         void  send(DatagramPacketPtr& p);
 
                 private:
+                        DatagramSocket(const DatagramSocket&);
+                        DatagramSocket& operator=(const DatagramSocket&);
                         /** The APR socket */
                         apr_socket_t *socket;
 

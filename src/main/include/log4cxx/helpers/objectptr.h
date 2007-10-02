@@ -20,6 +20,19 @@
 
 #include <log4cxx/log4cxx.h>
 
+//
+// Note:
+// The LOG4CXX_HELGRIND conditional sections are due to conflicting
+// demands of two diagnostic tools.  The -Weffc++ option for the GCC
+// compiler wants the wrapped pointer to be initialized in
+// the member initialization list.
+// However, the Helgrind race condition tool for Valgrind will report
+// that the wrapped pointer written outside of a synchronization
+// block.  The member initialization approach is more efficient
+// and should be safe since existing usage patterns should prevent
+// the pointer to be available to other threads until after 
+// construction is complete.
+//
 namespace log4cxx
 {
     namespace helpers
@@ -37,26 +50,42 @@ namespace log4cxx
         {
         public:
          template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p1)
+#if LOG4CXX_HELGRIND
          {
              ObjectPtrBase::exchange((void**) &p, 0);
+#else
+         : p(0) {
+#endif
              cast(p1);
          }
 
 
          ObjectPtrT(const int& null) //throw(IllegalArgumentException)
+#if LOG4CXX_HELGRIND
          {
                 ObjectPtrBase::exchange((void**) &p, 0);
+#else
+         : p(0) {
+#endif
                 ObjectPtrBase::checkNull(null);
          }
 
          ObjectPtrT()
+#if LOG4CXX_HELGRIND
          {
                 ObjectPtrBase::exchange((void**) &p, 0);
+#else
+         : p(0) {
+#endif
          }
 
          ObjectPtrT(T * p1)
+#if LOG4CXX_HELGRIND
             {
                 ObjectPtrBase::exchange((void**) &p, p1);
+#else
+         : p(p1) {
+#endif
                 if (this->p != 0)
                 {
                     this->p->addRef();
@@ -64,8 +93,12 @@ namespace log4cxx
             }
 
             ObjectPtrT(const ObjectPtrT& p1)
+#if LOG4CXX_HELGRIND
             {
                 ObjectPtrBase::exchange((void**) &p, p1.p);
+#else
+            : p(p1.p) {
+#endif
                 if (this->p != 0)
                 {
                     this->p->addRef();
