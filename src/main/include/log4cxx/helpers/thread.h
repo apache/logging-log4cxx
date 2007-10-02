@@ -112,6 +112,10 @@ namespace log4cxx
                              */
                             static void* operator new(size_t, Pool& p);
                             /**
+                            *  operator delete would be called if exception during construction.
+							*/
+                            static void operator delete(void*, Pool& p);
+                            /**
                              *  Create new instance.
                              */
                             LaunchPackage(Thread* thread, Runnable runnable, void* data);

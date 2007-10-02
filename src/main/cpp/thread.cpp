@@ -54,6 +54,9 @@ void* Thread::LaunchPackage::operator new(size_t sz, Pool& p) {
     return p.palloc(sz);
 }
 
+void Thread::LaunchPackage::operator delete(void* mem, Pool& p) {
+}
+
 void Thread::run(Runnable start, void* data) {
         //
         //    if attempting a second run method on the same Thread object
@@ -92,7 +95,9 @@ void* Thread::launcher(log4cxx_thread_t* thread, void* data) {
     ThreadLocal& tls = getThreadLocal();
     tls.set(package->getThread());
     LaunchStatus alive(&package->getThread()->alive);
-    return (package->getRunnable())(thread, package->getData());
+    void* retval = (package->getRunnable())(thread, package->getData());
+	apr_thread_exit((apr_thread_t*) thread, 0);
+	return retval;
 }
 
 void Thread::stop() {

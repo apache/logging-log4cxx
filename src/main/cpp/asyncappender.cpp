@@ -338,7 +338,6 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* thread, void
             Thread::currentThreadInterrupt();
     } catch(...) {
     }
-	apr_thread_exit((apr_thread_t*) thread, 0);
     return 0;
 }
                 
