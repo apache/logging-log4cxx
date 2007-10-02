@@ -131,6 +131,8 @@ namespace log4cxx
                              */
                             void* getData() const;
                         private:
+                            LaunchPackage(const LaunchPackage&);
+                            LaunchPackage& operator=(const LaunchPackage&);
                             Thread* thread;
                             Runnable runnable; 
                             void* data;
@@ -153,6 +155,8 @@ namespace log4cxx
                              */
                             ~LaunchStatus();
                         private:
+                            LaunchStatus(const LaunchStatus&);
+                            LaunchStatus& operator=(const LaunchStatus&);
                             volatile unsigned int* alive;
                         };
                         

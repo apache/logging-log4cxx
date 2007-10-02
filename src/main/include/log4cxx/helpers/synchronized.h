@@ -17,7 +17,7 @@
 
 #ifndef _LOG4CXX_HELPERS_SYNCHRONIZED_H
 #define _LOG4CXX_HELPERS_SYNCHRONIZED_H
-
+#include <log4cxx/log4cxx.h>
 
 namespace log4cxx
 {

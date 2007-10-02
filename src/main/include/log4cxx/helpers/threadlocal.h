@@ -63,6 +63,15 @@ namespace log4cxx
                     void* get();
                
                 private:
+                    /**
+                     * Prevent use of default copy constructor.
+                     */
+                     ThreadLocal(const ThreadLocal&);
+                    /**
+                     *   Prevent use of default assignment operator.  
+                     */
+                     ThreadLocal& operator=(const ThreadLocal&);
+
                     log4cxx_pool_t* pool;
                     log4cxx_threadkey_t* key;
                 };
