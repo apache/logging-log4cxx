@@ -20,7 +20,6 @@
 
 #include <string>
 #include <log4cxx/log4cxx.h>
-#include <ostream>
 #include <sstream>
 
 namespace log4cxx {
@@ -92,6 +91,14 @@ namespace log4cxx {
         std::string str(const std::ostream& expression) const;
         
    private:
+        /**
+         * Prevent use of default copy constructor.
+         */
+        CharMessageBuffer(const CharMessageBuffer&);
+        /**
+         *   Prevent use of default assignment operator.  
+         */
+        CharMessageBuffer& operator=(const CharMessageBuffer&);
         /**
          * Encapsulated std::string.
          */
@@ -183,6 +190,14 @@ namespace log4cxx {
          
    private:
         /**
+         * Prevent use of default copy constructor.
+         */
+        WideMessageBuffer(const WideMessageBuffer&);
+        /**
+         *   Prevent use of default assignment operator.  
+         */
+        WideMessageBuffer& operator=(const WideMessageBuffer&);
+        /**
          * Encapsulated std::wstring.
          */
         std::wstring buf;
@@ -198,7 +213,20 @@ namespace log4cxx {
     *   macros to support insertion operators in the message parameter.
     *   The class is not intended for use outside of that context.
     */
-   class LOG4CXX_EXPORT MessageBuffer : public CharMessageBuffer {
+   class LOG4CXX_EXPORT MessageBuffer {
+   private:
+        /**
+         * Prevent use of default copy constructor.
+         */
+        MessageBuffer(const MessageBuffer&);
+        /**
+         *   Prevent use of default assignment operator.  
+         */
+        MessageBuffer& operator=(const MessageBuffer&);
+        /**
+         *  Character message buffer.
+         */
+        CharMessageBuffer cbuf;
    public:
         /**
          *  Creates a new instance.
@@ -257,7 +285,7 @@ namespace log4cxx {
          */
         template<class T> 
         std::ostream& operator<<(T arg) {
-           return CharMessageBuffer::operator<<(arg);
+           return cbuf.operator<<(arg);
         }
         
         
@@ -300,8 +328,7 @@ namespace log4cxx {
          *  @return content of encapsulated std::wostringstream.
          */
         std::wstring str(const std::wostream&) const;
-
-   private:
+private:
         /**
          * Encapsulated wide message buffer, created on demand.
          */

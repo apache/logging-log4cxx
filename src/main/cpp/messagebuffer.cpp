@@ -69,23 +69,23 @@ MessageBuffer::~MessageBuffer() {
 
 
 CharMessageBuffer& MessageBuffer::operator<<(const std::string& msg) {
-    return CharMessageBuffer::operator<<(msg);
+    return cbuf.operator<<(msg);
 }
 
 CharMessageBuffer& MessageBuffer::operator<<(const char* msg) {
-    return CharMessageBuffer::operator<<(msg);
+    return cbuf.operator<<(msg);
 }
 
 CharMessageBuffer& MessageBuffer::operator<<(const char msg) {
-    return CharMessageBuffer::operator<<(msg);
+    return cbuf.operator<<(msg);
 }
 
 const std::string& MessageBuffer::str(const CharMessageBuffer& msg) const {
-    return CharMessageBuffer::str(msg);
+    return cbuf.str(msg);
 }
 
 std::string MessageBuffer::str(const std::ostream& msg) const {
-    return CharMessageBuffer::str(msg);
+    return cbuf.str(msg);
 }
 
 

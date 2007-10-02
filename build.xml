@@ -564,9 +564,9 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
         <mkdir dir="${build.dir}/header-check"/>
         <copy todir="${build.dir}/header-check" overwrite="true">
              <fileset dir="${include.dir}" includes="**/*.h">
-                    <exclude name="**/gnomexml.h"/>
+                    <!-- obsolete header with #error directive to eliminate its use -->
                     <exclude name="**/tchar.h"/>
-                    <exclude name="**/config_msvc.h"/>
+                    <!--  excluded due to conflict between log4cxx/rfa.h and log4cxx/rolling/rfa.h  -->
                     <exclude name="log4cxx/rollingfileappender.h"/>
              </fileset>
         </copy>
@@ -588,7 +588,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
                 <fileset dir="${build.dir}/header-check"
                      includes="**/*.cpp"
                      excludes="log4cxx/private/*.cpp **/aprinitializer.h.cpp"/>
-                <includepath path="src/mock/include"/>
                 <includepath path="${include.dir}"/>
                 <project outfile="${project.dir}/header-check"
                     type="${project.type}" if="project.if"/>
