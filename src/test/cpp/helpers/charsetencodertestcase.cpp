@@ -226,22 +226,23 @@ public:
         
         static void* LOG4CXX_THREAD_FUNC thread1Action(log4cxx_thread_t* thread, void* data) {
             ThreadPackage* package = (ThreadPackage*) data;
-            const char utf8_greet[] = { 'A',
-                                    (char) 0xD8, (char) 0x85,
-                                    (char) 0xD4, (char) 0xB0,
-                                    (char) 0xE0, (char) 0xA6, (char) 0x86,
-                                    (char) 0xE4, (char) 0xB8, (char) 0x83,
-                                    (char) 0xD0, (char) 0x80,
+#if LOG4CXX_LOGCHAR_IS_UTF8
+            const logchar greet[] = { 'H', 'e', 'l', 'l', 'o', ' ',
+                                    (char) 0xC2, (char) 0xA2,  //  cent sign
+                                    (char) 0xC2, (char) 0xA9,  //  copyright
+                                    (char) 0xc3, (char) 0xb4,  //  latin small letter o with circumflex
                                     0 };
+#endif
 #if LOG4CXX_LOGCHAR_IS_WCHAR
             //   arbitrary, hopefully meaningless, characters from
             //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
-            const logchar greet[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
+            const logchar greet[] = { L'H', L'e', L'l', L'l', L'o', L' ',
+                0x00A2, 0x00A9, 0x00F4 , 0 };
 #endif
+          
+          const char expected[] =  { 'H', 'e', 'l', 'l', 'o', ' ',
+                (char) 0x00A2, (char) 0x00A9, (char) 0x00F4 };
 
-#if LOG4CXX_LOGCHAR_IS_UTF8
-            const logchar *greet = utf8_greet;
-#endif
           LogString greeting(greet);
 
           package->await();
@@ -257,9 +258,9 @@ public:
                 pass = (false == CharsetEncoder::isError(stat));
                 if (pass) {
                     out.flip();
-                    pass = (13 == out.limit());
+                    pass = (sizeof(expected) == out.limit());
                     for(size_t i = 0; i < out.limit() && pass; i++) {
-                        pass = (utf8_greet[i] == out.data()[i]);
+                        pass = (expected[i] == out.data()[i]);
                     }
                     pass = pass && (iter == greeting.end());
                 }
