@@ -90,7 +90,6 @@ void DatagramSocket::bind(int localPort1, InetAddressPtr localAddress1)
 void DatagramSocket::close()
 {
    if (socket != 0) {
-      LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
       apr_status_t status = apr_socket_close(socket);
       if (status != APR_SUCCESS) {
         throw SocketException(status);
