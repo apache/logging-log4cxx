@@ -23,7 +23,8 @@
 #include <log4cxx/helpers/unicodehelper.h>
 #include <log4cxx/private/log4cxx_private.h>
 #include <apr_portable.h>
-
+#include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/synchronized.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -42,33 +43,29 @@ namespace log4cxx
           class APRCharsetEncoder : public CharsetEncoder
           {
           public:
-              APRCharsetEncoder(const char* topage) {
+              APRCharsetEncoder(const char* topage) : pool(), mutex(pool) {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
                   const char* frompage = "WCHAR_T";
 #endif
 #if LOG4CXX_LOGCHAR_IS_UTF8
                   const char* frompage = "UTF-8";
 #endif
-                  apr_status_t stat = apr_pool_create(&pool, NULL);
-                  if (stat != APR_SUCCESS) {
-                      throw PoolException(stat);
-                  }
-                  stat = apr_xlate_open(&convset,
+                  apr_status_t stat = apr_xlate_open(&convset,
                      topage,
                      frompage,
-                     pool);
+                     (apr_pool_t*) pool.getAPRPool());
                   if (stat != APR_SUCCESS) {
                      if (topage == APR_DEFAULT_CHARSET) {
                          throw IllegalArgumentException("APR_DEFAULT_CHARSET");
                      } else if (topage == APR_LOCALE_CHARSET) {
                          const char* localeEncoding = 
-                            apr_os_locale_encoding(pool);
+                            apr_os_locale_encoding((apr_pool_t*) pool.getAPRPool());
                          // Solaris likes returning 646 if nl_langinfo has not been called
                          if(localeEncoding != NULL && strcmp("646", localeEncoding) == 0) {
                              stat = apr_xlate_open(&convset,
                                  "ASCII", 
                                  frompage,
-                                 pool);
+                                 (apr_pool_t*) pool.getAPRPool());
                          }
                          if (stat != APR_SUCCESS) {
                             throw IllegalArgumentException("APR_LOCALE_CHARSET");
@@ -80,8 +77,6 @@ namespace log4cxx
               }
 
               virtual ~APRCharsetEncoder() {
-                    apr_xlate_close(convset);
-                    apr_pool_destroy(pool);
               }
 
               virtual log4cxx_status_t encode(const LogString& in,
@@ -92,6 +87,7 @@ namespace log4cxx
                       size_t initial_outbytes_left = outbytes_left;
                       size_t position = out.position();
                       if (iter == in.end()) {
+                        synchronized sync(mutex);
                         stat = apr_xlate_conv_buffer(convset, NULL, NULL,
                            out.data() + position, &outbytes_left);
                       } else {
@@ -99,11 +95,14 @@ namespace log4cxx
                         apr_size_t inbytes_left =
                             (in.size() - inOffset) * sizeof(LogString::value_type);
                         apr_size_t initial_inbytes_left = inbytes_left;
-                        stat = apr_xlate_conv_buffer(convset,
-                             (const char*) (in.data() + inOffset),
-                             &inbytes_left,
-                             out.data() + position,
-                             &outbytes_left);
+                        {
+                             synchronized sync(mutex);
+                             stat = apr_xlate_conv_buffer(convset,
+                                (const char*) (in.data() + inOffset),
+                                &inbytes_left,
+                                out.data() + position,
+                                &outbytes_left);
+                        }
                         iter += ((initial_inbytes_left - inbytes_left) / sizeof(LogString::value_type));
                       }
                       out.position(out.position() + (initial_outbytes_left - outbytes_left));
@@ -113,7 +112,8 @@ namespace log4cxx
           private:
                   APRCharsetEncoder(const APRCharsetEncoder&);
                   APRCharsetEncoder& operator=(const APRCharsetEncoder&);
-                  apr_pool_t* pool;
+                  Pool pool;
+                  Mutex mutex;
                   apr_xlate_t *convset;
           };
 #endif
