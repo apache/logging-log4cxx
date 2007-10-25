@@ -21,18 +21,18 @@
 #include <log4cxx/log4cxx.h>
 
 //
-// Note:
-// The LOG4CXX_HELGRIND conditional sections are due to conflicting
-// demands of two diagnostic tools.  The -Weffc++ option for the GCC
-// compiler wants the wrapped pointer to be initialized in
-// the member initialization list.
-// However, the Helgrind race condition tool for Valgrind will report
-// that the wrapped pointer written outside of a synchronization
-// block.  The member initialization approach is more efficient
-// and should be safe since existing usage patterns should prevent
-// the pointer to be available to other threads until after 
-// construction is complete.
+//   Helgrind (race detection tool for Valgrind) will complain if pointer
+//   is not initialized in an atomic operation.  Static analysis tools
+//   (gcc's -Weffc++, for example) will complain if pointer is not initialized
+//   in member initialization list.  The use of a macro allows quick
+//   switching between the initialization styles.
 //
+#if LOG4CXX_HELGRIND
+#define _LOG4CXX_OBJECTPTR_INIT(x) { T** pp = &p; ObjectPtrBase::exchange((void**) pp, x); 
+#else
+#define _LOG4CXX_OBJECTPTR_INIT(x) : p(x) {
+#endif
+
 namespace log4cxx
 {
     namespace helpers
@@ -50,55 +50,30 @@ namespace log4cxx
         {
         public:
          template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p1)
-#if LOG4CXX_HELGRIND
-         {
-             ObjectPtrBase::exchange((void**) &p, 0);
-#else
-         : p(0) {
-#endif
+            _LOG4CXX_OBJECTPTR_INIT(0)             
              cast(p1);
          }
 
 
-         ObjectPtrT(const int& null) //throw(IllegalArgumentException)
-#if LOG4CXX_HELGRIND
-         {
-                ObjectPtrBase::exchange((void**) &p, 0);
-#else
-         : p(0) {
-#endif
+         ObjectPtrT(const int& null) 
+                _LOG4CXX_OBJECTPTR_INIT(0)
                 ObjectPtrBase::checkNull(null);
          }
 
          ObjectPtrT()
-#if LOG4CXX_HELGRIND
-         {
-                ObjectPtrBase::exchange((void**) &p, 0);
-#else
-         : p(0) {
-#endif
+                _LOG4CXX_OBJECTPTR_INIT(0)
          }
 
          ObjectPtrT(T * p1)
-#if LOG4CXX_HELGRIND
-            {
-                ObjectPtrBase::exchange((void**) &p, p1);
-#else
-         : p(p1) {
-#endif
+                _LOG4CXX_OBJECTPTR_INIT(p1)
                 if (this->p != 0)
                 {
                     this->p->addRef();
                 }
             }
 
-            ObjectPtrT(const ObjectPtrT& p1)
-#if LOG4CXX_HELGRIND
-            {
-                ObjectPtrBase::exchange((void**) &p, p1.p);
-#else
-            : p(p1.p) {
-#endif
+         ObjectPtrT(const ObjectPtrT& p1)
+                _LOG4CXX_OBJECTPTR_INIT(p1.p)
                 if (this->p != 0)
                 {
                     this->p->addRef();
@@ -107,9 +82,8 @@ namespace log4cxx
 
             ~ObjectPtrT()
             {
-              void* oldPtr = ObjectPtrBase::exchange((void**) &p, 0);
-              if (oldPtr != 0) {
-                  ((T*) oldPtr)->releaseRef();
+              if (p != 0) {
+                  p->releaseRef();
               }
             }
 
@@ -125,7 +99,8 @@ namespace log4cxx
              if (newPtr != 0) {
                  newPtr->addRef();
              }
-             void* oldPtr = ObjectPtrBase::exchange((void**) &p, newPtr);
+             T** pp = &p;
+             void* oldPtr = ObjectPtrBase::exchange((void**) pp, newPtr);
              if (oldPtr != 0) {
                  ((T*) oldPtr)->releaseRef();
              }
@@ -138,7 +113,8 @@ namespace log4cxx
                 //   throws IllegalArgumentException if null != 0
                 //
                 ObjectPtrBase::checkNull(null);
-                void* oldPtr = ObjectPtrBase::exchange((void**) &p, 0);
+                T** pp = &p;
+                void* oldPtr = ObjectPtrBase::exchange((void**) pp, 0);
                 if (oldPtr != 0) {
                    ((T*) oldPtr)->releaseRef();
                 }
@@ -149,7 +125,8 @@ namespace log4cxx
               if (p1 != 0) {
                 p1->addRef();
               }
-              void* oldPtr = ObjectPtrBase::exchange((void**) &p, p1);
+              T** pp = &p;
+              void* oldPtr = ObjectPtrBase::exchange((void**) pp, p1);
               if (oldPtr != 0) {
                  ((T*)oldPtr)->releaseRef();
               }

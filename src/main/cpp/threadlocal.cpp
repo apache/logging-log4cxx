@@ -23,11 +23,13 @@ using namespace log4cxx::helpers;
 using namespace log4cxx;
 
 ThreadLocal::ThreadLocal() {
-    apr_status_t stat = apr_pool_create((apr_pool_t**) &pool, 0);
+    apr_pool_t** ppool = reinterpret_cast<apr_pool_t**>(&pool);
+    apr_status_t stat = apr_pool_create(ppool, 0);
     if (stat != APR_SUCCESS) {
         throw RuntimeException(stat);
     }
-    stat = apr_threadkey_private_create((apr_threadkey_t**) &key, 0, (apr_pool_t*) pool);
+    apr_threadkey_t** pkey = reinterpret_cast<apr_threadkey_t**>(&key);
+    stat = apr_threadkey_private_create(pkey, 0, (apr_pool_t*) pool);
     if (stat != APR_SUCCESS) {
          throw RuntimeException(stat);
     }

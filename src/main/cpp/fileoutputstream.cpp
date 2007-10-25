@@ -38,7 +38,8 @@ FileOutputStream::FileOutputStream(const LogString& filename,
         flags |= APR_TRUNCATE;
     }
     LOG4CXX_ENCODE_CHAR(fn, filename);
-    log4cxx_status_t stat = apr_file_open((apr_file_t**) &fileptr,
+    apr_file_t** pfileptr = reinterpret_cast<apr_file_t**>(&fileptr);
+    log4cxx_status_t stat = apr_file_open(pfileptr,
         fn.c_str(), flags, perm, (apr_pool_t*) pool.getAPRPool());
     if (stat != APR_SUCCESS) {
       throw IOException(stat);

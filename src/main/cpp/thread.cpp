@@ -73,7 +73,8 @@ void Thread::run(Runnable start, void* data) {
         
         //   create LaunchPackage on the thread's memory pool
         LaunchPackage* package = new(p) LaunchPackage(this, start, data);
-        stat = apr_thread_create((apr_thread_t**) &thread, attrs,
+        apr_thread_t** pthread = (apr_thread_t**) &thread;
+        stat = apr_thread_create(pthread, attrs,
             (apr_thread_start_t) launcher, package, (apr_pool_t*) p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
