@@ -163,16 +163,9 @@ SocketImpl::~SocketImpl()
 /** Accepts a connection. */
 void SocketImpl::accept(SocketImplPtr s)
 {
-      // If a timeout is set then wait at most for the specified timeout
-      if (getSoTimeout() > 0) {
-        apr_status_t status = apr_wait_for_io_or_timeout(NULL, (apr_socket_t*) socket, 0);
-        if (status == APR_TIMEUP) {
-          throw SocketTimeoutException();
-        }
-        if (status != APR_SUCCESS) {
-          throw SocketException(status);
-        }
-      }
+      //
+      //   Socket timeout is ignored.  See bug LOGCXX-177.
+      //
 
       // Accept new connection
       apr_socket_t *clientSocket = 0;
