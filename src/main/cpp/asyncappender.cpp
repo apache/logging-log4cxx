@@ -48,7 +48,7 @@ AsyncAppender::AsyncAppender()
   bufferNotEmpty(pool),
   discardMap(),
   bufferSize(DEFAULT_BUFFER_SIZE),
-  appenders(new AppenderAttachableImpl()),
+  appenders(new AppenderAttachableImpl(pool)),
   dispatcher(),
   locationInfo(false),
   blocking(true) {

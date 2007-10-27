@@ -45,10 +45,14 @@ namespace log4cxx
             /** Array of appenders. */
             AppenderList  appenderList;
 
-        public:
-            AppenderAttachableImpl();
+        public:            
+            /**
+             *   Create new instance.
+             *   @param pool pool, must be longer-lived than instance. 
+             */
+            AppenderAttachableImpl(Pool& pool);
 
-            DECLARE_LOG4CXX_OBJECT(AppenderAttachableImpl)
+            DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachableImpl)
             BEGIN_LOG4CXX_CAST_MAP()
                 LOG4CXX_CAST_ENTRY(AppenderAttachableImpl)
                 LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
@@ -101,7 +105,6 @@ namespace log4cxx
             inline const log4cxx::helpers::Mutex& getMutex() const { return mutex; }
 
         private:
-            log4cxx::helpers::Pool pool;
             log4cxx::helpers::Mutex mutex;
             AppenderAttachableImpl(const AppenderAttachableImpl&);
             AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);

@@ -29,9 +29,8 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
 
-AppenderAttachableImpl::AppenderAttachableImpl()
+AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool)
    : appenderList(),
-     pool(), 
      mutex(pool) {
 }
 

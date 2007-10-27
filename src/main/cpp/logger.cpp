@@ -38,9 +38,9 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
-Logger::Logger(Pool& pool, const LogString& name1)
-: name(), level(), parent(), resourceBundle(),
-repository(), aai(), mutex(pool)
+Logger::Logger(Pool& p, const LogString& name1)
+: pool(&p), name(), level(), parent(), resourceBundle(),
+repository(), aai(), mutex(p)
 {
     synchronized sync(mutex);
     name = name1;
@@ -60,7 +60,7 @@ void Logger::addAppender(const AppenderPtr& newAppender)
 
         if (aai == 0)
         {
-                  aai = new AppenderAttachableImpl();
+                  aai = new AppenderAttachableImpl(*pool);
         }
         aai->addAppender(newAppender);
 	if (repository != 0) {

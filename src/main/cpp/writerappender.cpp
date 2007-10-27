@@ -150,9 +150,12 @@ void WriterAppender::closeWriter() {
   if (writer != NULL) {
     try {
       // before closing we have to output out layout's footer
-      Pool p;
-      writeFooter(p);
-      writer->close(p);
+      //
+      //   Using the object's pool since this is a one-shot operation
+      //    and pool is likely to be reclaimed soon when appender is destructed.
+      //
+      writeFooter(pool);
+      writer->close(pool);
       writer = 0;
     } catch (IOException& e) {
       LogLog::error(LogString(LOG4CXX_STR("Could not close writer for WriterAppener named "))+name, e);

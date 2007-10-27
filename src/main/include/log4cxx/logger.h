@@ -55,6 +55,12 @@ namespace log4cxx
                 LOG4CXX_CAST_ENTRY(Logger)
                 LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
         END_LOG4CXX_CAST_MAP()
+        
+    private:
+        /**
+         *   Reference to memory pool.
+         */
+        helpers::Pool* pool;
 
     protected:
         /**
