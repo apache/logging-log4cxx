@@ -22,6 +22,8 @@
 #include <log4cxx/rolling/filerenameaction.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/rolling/gzcompressaction.h>
+#include <log4cxx/rolling/zipcompressaction.h>
 
 #ifndef INT64_C
 #define INT64_C(x) x ## LL
@@ -156,22 +158,17 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
     nextActiveFile = currentActiveFile;
   }
 
-  //
-  //  TODO:
-  //
-#if 0
   if (suffixLength == 3) {
     compressAction =
       new GZCompressAction(
-        new File(lastBaseName), new File(lastFileName), true, getLogger());
+        File(lastBaseName), File(lastFileName), true);
   }
 
   if (suffixLength == 4) {
     compressAction =
       new ZipCompressAction(
-        new File(lastBaseName), new File(lastFileName), true, getLogger());
+        File(lastBaseName), File(lastFileName), true);
   }
-#endif
 
   lastFileName = newFileName;
 

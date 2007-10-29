@@ -53,10 +53,10 @@ using namespace log4cxx::rolling;
    CPPUNIT_TEST_SUITE(SizeBasedRollingTest);
            CPPUNIT_TEST(test1);
            CPPUNIT_TEST(test2);
-//           TODO: Compression not yet implemented
-//           CPPUNIT_TEST(test3);
+           CPPUNIT_TEST(test3);
            CPPUNIT_TEST(test4);
            CPPUNIT_TEST(test5);
+           CPPUNIT_TEST(test6);
    CPPUNIT_TEST_SUITE_END();
 
    LoggerPtr root;
@@ -203,8 +203,8 @@ using namespace log4cxx::rolling;
     CPPUNIT_ASSERT_EQUAL(true, File("output/sbr-test3.1.gz").exists(p));
 
     CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sbr-test3.log"),  File("witness/rolling/sbr-test3.log")));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::gzCompare(File("output/sbr-test3.0.gz"), File("witness/rolling/sbr-test3.0.gz")));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::gzCompare(File("output/sbr-test3.1.gz"), File("witness/rolling/sbr-test3.1.gz")));
+    CPPUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.0.gz").length(p), File("output/sbr-test3.0.gz").length(p));
+    CPPUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.1.gz").length(p), File("output/sbr-test3.1.gz").length(p));
   }
 
   /**
@@ -314,6 +314,39 @@ using namespace log4cxx::rolling;
           File("witness/rolling/sbr-test4.log")));
     }
   }
+  
+  /**
+   * Same as testBasic but also with GZ compression.
+   */
+  void test6() {
+    PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%m\n"));
+    RollingFileAppenderPtr rfa = new RollingFileAppender();
+    rfa->setAppend(false);
+    rfa->setLayout(layout);
+
+    FixedWindowRollingPolicyPtr  fwrp = new FixedWindowRollingPolicy();
+    SizeBasedTriggeringPolicyPtr sbtp = new SizeBasedTriggeringPolicy();
+
+    sbtp->setMaxFileSize(100);
+    fwrp->setMinIndex(0);
+    rfa->setFile(LOG4CXX_STR("output/sbr-test6.log"));
+    fwrp->setFileNamePattern(LOG4CXX_STR("output/sbr-test6.%i.zip"));
+    Pool p;
+    fwrp->activateOptions(p);
+    rfa->setRollingPolicy(fwrp);
+    rfa->setTriggeringPolicy(sbtp);
+    rfa->activateOptions(p);
+    root->addAppender(rfa);
+
+    common(logger, 100);
+
+    CPPUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.log").exists(p));
+    CPPUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.0.zip").exists(p));
+    CPPUNIT_ASSERT_EQUAL(true, File("output/sbr-test6.1.zip").exists(p));
+
+    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/sbr-test6.log"),  File("witness/rolling/sbr-test3.log")));
+  }
+  
 };
 
 

@@ -66,8 +66,10 @@ class TimeBasedRollingTest  : public CppUnit::TestFixture {
         CPPUNIT_TEST_SUITE(TimeBasedRollingTest);
            CPPUNIT_TEST(test1);
            CPPUNIT_TEST(test2);
+           CPPUNIT_TEST(test3);
            CPPUNIT_TEST(test4);
            CPPUNIT_TEST(test5);
+           CPPUNIT_TEST(test6);
         CPPUNIT_TEST_SUITE_END();
 
     static LoggerPtr logger;
@@ -198,56 +200,53 @@ public:
     }
   }
 
-#if 0
   /**
    * With compression, activeFileName left blank, no stop/restart
    */
-  public void test3() throws Exception {
-    PatternLayout layout = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa = new RollingFileAppender();
-    rfa.setLayout(layout);
+  void test3() {
+    Pool p;
+    PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
+    RollingFileAppenderPtr rfa = new RollingFileAppender();
+    rfa->setAppend(false);
+    rfa->setLayout(layout);
 
-    String datePattern = "yyyy-MM-dd_HH_mm_ss";
+    LogString datePattern = LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss");
 
-    TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-    tbrp.setFileNamePattern("output/test3-%d{" + datePattern + "}.gz");
-    tbrp.activateOptions();
-    rfa.setRollingPolicy(tbrp);
-    rfa.activateOptions();
-    logger.addAppender(rfa);
+    TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
+    tbrp->setFileNamePattern(LogString(LOG4CXX_STR("output/test3-%d{")) + datePattern + LogString(LOG4CXX_STR("}.gz")));
+    tbrp->activateOptions(p);
+    rfa->setRollingPolicy(tbrp);
+    rfa->activateOptions(p);
+    logger->addAppender(rfa);
 
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[4];
+    DateFormatPtr sdf = new SimpleDateFormat(datePattern);
+    LogString filenames[4];
 
-    Calendar cal = Calendar.getInstance();
+    apr_time_t now = apr_time_now();
+    { for (int i = 0; i < 4; i++) {
+      filenames[i] = LOG4CXX_STR("output/test3-");
+      sdf->format(filenames[i], now, p);
+      filenames[i].append(LOG4CXX_STR(".gz"));
+      now += APR_USEC_PER_SEC;
+    } }
 
-    for (int i = 0; i < 3; i++) {
-      filenames[i] = "output/test3-" + sdf.format(cal.getTime()) + ".gz";
-      cal.add(Calendar.SECOND, 1);
-    }
+    filenames[3].resize(filenames[3].size() - 3);
 
-    filenames[3] = "output/test3-" + sdf.format(cal.getTime());
-
-    System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
-    System.out.println("Done waiting.");
 
-    for (int i = 0; i < 5; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
+    { for (int i = 0; i < 5; i++) {
+        std::string message("Hello---");
+        StringHelper::toString(i, p, message);
+        LOG4CXX_DEBUG(logger, message);
+        apr_sleep(APR_USEC_PER_SEC/2);
+    } }
 
-    for (int i = 0; i < 4; i++) {
-      //System.out.println(i + " expected filename [" + filenames[i] + "].");
-    }
+    CPPUNIT_ASSERT_EQUAL(true, File(filenames[0]).exists(p));
+    CPPUNIT_ASSERT_EQUAL(true, File(filenames[1]).exists(p));
+    CPPUNIT_ASSERT_EQUAL(true, File(filenames[2]).exists(p));
 
-    for (int i = 0; i < 3; i++) {
-      assertTrue(Compare.gzCompare(filenames[i], "witness/rolling/tbr-test3." + i + ".gz"));
-    }
-
-    assertTrue(Compare.compare(filenames[3], "witness/rolling/tbr-test3.3"));
+    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test3.3"))));
   }
-#endif
 
   /**
    * Without compression, activeFileName set,  with stop/restart
@@ -369,119 +368,55 @@ public:
     }
   }
 
-#if 0
   /**
    * With compression, activeFileName set, no stop/restart,
    */
-  public void test6() throws Exception {
-    PatternLayout layout = new PatternLayout("%c{1} - %m%n");
-    RollingFileAppender rfa = new RollingFileAppender();
-    rfa.setLayout(layout);
+  void test6() {
+    Pool p;
+    PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
+    RollingFileAppenderPtr rfa = new RollingFileAppender();
+    rfa->setAppend(false);
+    rfa->setLayout(layout);
 
-    String datePattern = "yyyy-MM-dd_HH_mm_ss";
+    LogString datePattern = LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss");
 
-    TimeBasedRollingPolicy tbrp = new TimeBasedRollingPolicy();
-    tbrp.setFileNamePattern("output/test6-%d{" + datePattern + "}.gz");
-    tbrp.setActiveFileName("output/test6.log");
-    tbrp.activateOptions();
-    rfa.setRollingPolicy(tbrp);
-    rfa.activateOptions();
-    logger.addAppender(rfa);
+    TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
+    tbrp->setFileNamePattern(LogString(LOG4CXX_STR("output/test6-%d{")) + datePattern + LogString(LOG4CXX_STR("}.gz")));
+    rfa->setFile(LOG4CXX_STR("output/test6.log"));
+    tbrp->activateOptions(p);
+    rfa->setRollingPolicy(tbrp);
+    rfa->activateOptions(p);
+    logger->addAppender(rfa);
 
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[4];
+    DateFormatPtr sdf = new SimpleDateFormat(datePattern);
+    LogString filenames[4];
 
-    Calendar cal = Calendar.getInstance();
-
-    for (int i = 0; i < 3; i++) {
-      filenames[i] = "output/test6-" + sdf.format(cal.getTime()) + ".gz";
-      cal.add(Calendar.SECOND, 1);
-    }
+    apr_time_t now = apr_time_now();
+    { for (int i = 0; i < 3; i++) {
+      filenames[i] = LOG4CXX_STR("output/test6-");
+      sdf->format(filenames[i], now, p);
+      filenames[i].append(LOG4CXX_STR(".gz"));
+      now += APR_USEC_PER_SEC;
+    } }
 
     filenames[3] = "output/test6.log";
 
-    System.out.println("Waiting until next second and 100 millis.");
     delayUntilNextSecond(100);
-    System.out.println("Done waiting.");
 
-    for (int i = 0; i < 5; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
+    { for (int i = 0; i < 5; i++) {
+        std::string message("Hello---");
+        StringHelper::toString(i, p, message);
+        LOG4CXX_DEBUG(logger, message);
+        apr_sleep(APR_USEC_PER_SEC/2);
+    } }
 
-    for (int i = 0; i < 4; i++) {
-      //System.out.println(i + " expected filename [" + filenames[i] + "].");
-    }
+    CPPUNIT_ASSERT_EQUAL(true, File(filenames[0]).exists(p));
+    CPPUNIT_ASSERT_EQUAL(true, File(filenames[1]).exists(p));
+    CPPUNIT_ASSERT_EQUAL(true, File(filenames[2]).exists(p));
 
-    for (int i = 0; i < 3; i++) {
-      assertTrue(Compare.gzCompare(filenames[i], "witness/rolling/tbr-test6." + i + ".gz"));
-    }
-
-    assertTrue(Compare.compare(filenames[3], "witness/rolling/tbr-test6.3"));
-  }
-
-  public void testWithJoran1() throws Exception {
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure("./input/rolling/time1.xml", LogManager.getLoggerRepository());
-    jc.dumpErrors();
-
-    String datePattern = "yyyy-MM-dd_HH_mm_ss";
-
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[4];
-
-    Calendar cal = Calendar.getInstance();
-
-    for (int i = 0; i < 4; i++) {
-      filenames[i] = "output/test1-" + sdf.format(cal.getTime());
-      cal.add(Calendar.SECOND, 1);
-    }
-
-    System.out.println("Waiting until next second and 100 millis.");
-    delayUntilNextSecond(100);
-    System.out.println("Done waiting.");
-
-    for (int i = 0; i < 5; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
-
-    for (int i = 0; i < 4; i++) {
-      //System.out.println(i + " expected filename [" + filenames[i] + "].");
-    }
-
-    for (int i = 0; i < 4; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test1." + i));
-    }
+    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test6.3"))));
 
   }
-
-  public void XXXtestWithJoran10() throws Exception {
-    JoranConfigurator jc = new JoranConfigurator();
-    jc.doConfigure("./input/rolling/time2.xml", LogManager.getLoggerRepository());
-    jc.dumpErrors();
-
-    String datePattern = "yyyy-MM-dd";
-
-    SimpleDateFormat sdf = new SimpleDateFormat(datePattern);
-    String[] filenames = new String[0];
-
-    Calendar cal = Calendar.getInstance();
-
-    filenames[0] = "output/test1-" + sdf.format(cal.getTime());
-
-    for (int i = 0; i < 5; i++) {
-      logger.debug("Hello---" + i);
-      Thread.sleep(500);
-    }
-
-
-    for (int i = 0; i < 1; i++) {
-      assertTrue(Compare.compare(filenames[i], "witness/rolling/tbr-test10." + i));
-    }
-
-  }
-#endif
 
   void delayUntilNextSecond(int millis) {
     apr_time_t now = apr_time_now();

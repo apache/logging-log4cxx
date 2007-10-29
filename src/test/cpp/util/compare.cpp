@@ -134,12 +134,6 @@ void Compare::outputFile(const File& file,
         }
 }
 
-bool Compare::gzCompare(const File& /*file1*/, const File& /*file2*/)
-{
-    return false;
-}
-
-
 void Compare::emit(const std::string& s1) {
   std::cout << s1;
 }

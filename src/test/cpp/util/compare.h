@@ -30,9 +30,6 @@ namespace log4cxx
                 static bool compare(const File& file1,
                   const File& file2);
 
-                static bool gzCompare(const File& file1,
-                  const File& file2);
-
         private:
                 /// Prints file on the console.
                 static void outputFile(const File& file,

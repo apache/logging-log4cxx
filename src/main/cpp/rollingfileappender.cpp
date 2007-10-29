@@ -83,8 +83,10 @@ void RollingFileAppender::activateOptions(Pool &p) {
         lastRolloverAsyncAction = rollover1->getAsynchronous();
 
         if (lastRolloverAsyncAction != NULL) {
-//          Thread runner = new Thread(lastRolloverAsyncAction);
-//          runner.start();
+            //
+            //  TODO: compression not asynchronous
+            //
+            lastRolloverAsyncAction->execute(p);
         }
       }
 
@@ -172,7 +174,10 @@ bool RollingFileAppender::rollover(Pool& p) {
 
               if (rollover1->getAsynchronous() != NULL) {
                 lastRolloverAsyncAction = rollover1->getAsynchronous();
-//                new Thread(lastRolloverAsyncAction).start();
+                //
+                //   TODO: compression not currently asynchronous
+                //
+                lastRolloverAsyncAction->execute(p);
               }
 
               setFile(
@@ -211,7 +216,10 @@ bool RollingFileAppender::rollover(Pool& p) {
 
               if (rollover1->getAsynchronous() != NULL) {
                 lastRolloverAsyncAction = rollover1->getAsynchronous();
-//                new Thread(lastRolloverAsyncAction).start();
+                //
+                //  TODO: compression not asynchronous
+                //
+                lastRolloverAsyncAction->execute(p);
               }
             }
 

@@ -186,8 +186,8 @@ using namespace log4cxx::rolling;
     CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test3.1.gz").exists(p));
 
     CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test3.log"),  File("witness/rolling/sbr-test3.log")));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::gzCompare(File("output/manual-test3.0.gz"), File("witness/rolling/sbr-test3.0.gz")));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::gzCompare(File("output/manual-test3.1.gz"), File("witness/rolling/sbr-test3.1.gz")));
+    CPPUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.0.gz").length(p), File("output/manual-test3.0.gz").length(p));
+    CPPUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.1.gz").length(p), File("output/manual-test3.1.gz").length(p));
   }
 
   /**

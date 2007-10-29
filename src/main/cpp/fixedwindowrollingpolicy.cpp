@@ -24,6 +24,8 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/rolling/rolloverdescription.h>
 #include <log4cxx/rolling/filerenameaction.h>
+#include <log4cxx/rolling/gzcompressaction.h>
+#include <log4cxx/rolling/zipcompressaction.h>
 #include <log4cxx/pattern/integerpatternconverter.h>
 
 using namespace log4cxx;
@@ -137,22 +139,17 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
     LogString compressedName(renameTo);
     ActionPtr compressAction ;
 
-//
-//   TODO
-//
-#if 0
     if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz"))) {
-      renameTo.erase(renameTo.end() - 3);
+      renameTo.resize(renameTo.size() - 3);
       compressAction =
         new GZCompressAction(
           renameTo, compressedName, true);
-    } else if (renameTo.endsWith(".zip")) {
-      renameTo.erase(renameTo.end() - 4);
+    } else if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".zip"))) {
+      renameTo.resize(renameTo.size() - 4);
       compressAction =
         new ZipCompressAction(
           renameTo, compressedName, true);
     }
-#endif
 
     FileRenameActionPtr renameAction =
       new FileRenameAction(

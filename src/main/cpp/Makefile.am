@@ -62,6 +62,7 @@ liblog4cxx_la_SOURCES = \
         fixedwindowrollingpolicy.cpp \
         formattinginfo.cpp \
         fulllocationpatternconverter.cpp \
+        gzcompressaction.cpp \
         hierarchy.cpp \
         htmllayout.cpp \
         inetaddress.cpp \
@@ -164,7 +165,8 @@ liblog4cxx_la_SOURCES = \
         writer.cpp \
         writerappender.cpp \
         xmllayout.cpp\
-        xmlsocketappender.cpp
+        xmlsocketappender.cpp \
+        zipcompressaction.cpp
 
 AM_CPPFLAGS = @CPPFLAGS_ODBC@
 liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_ODBC@ -@APR_LIBS@
