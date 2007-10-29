@@ -23,7 +23,6 @@
 #include <log4cxx/helpers/socketinputstream.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/system.h>
-#include <log4cxx/helpers/loader.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/threadspecificdata.h>

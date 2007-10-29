@@ -59,38 +59,8 @@ const Class& Loader::loadClass(const LogString& clazz)
    return Class::forName(clazz);
 }
 
-#if 0
-File Loader::getResource(const LogString& name)
-{
-        File path(name);
-        if (path.exists()) {
-          return path;
-        }
-        return File();
-   std::wstring path;
-        std::string name;
-   struct stat buff;
-
-        Transcoder::append(wname.data(), wname.length(), name);
-
-   if (stat(name.c_str(), &buff) == 0)
-   {
-      path = wname;
-   }
-
-   return path;
-}
-#endif
-
 
 InputStreamPtr Loader::getResourceAsStream(const LogString& name) {
-#if 0
-  String path = getResource(name);
-  if (path.empty())
-  {
-    return 0;
-  }
-#endif
 
   try {
     return new FileInputStream(name);

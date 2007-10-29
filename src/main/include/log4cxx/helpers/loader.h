@@ -34,8 +34,6 @@ namespace log4cxx
                 {
                 public:
                         static const Class& loadClass(const LogString& clazz);
-//  TODO
-//       static LogString getResource(const LogString& name);
 
                         static InputStreamPtr getResourceAsStream(
                                                          const LogString& name);
