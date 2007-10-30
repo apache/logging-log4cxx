@@ -399,7 +399,7 @@ public:
       now += APR_USEC_PER_SEC;
     } }
 
-    filenames[3] = "output/test6.log";
+    filenames[3] = LOG4CXX_STR("output/test6.log");
 
     delayUntilNextSecond(100);
 
