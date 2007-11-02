@@ -147,7 +147,7 @@ bool Thread::interrupted() {
 }
 
 bool Thread::isCurrentThread() const {
-    void* tls = getThreadLocal().get();
+    const void* tls = getThreadLocal().get();
     return (tls == this);
 }
 
