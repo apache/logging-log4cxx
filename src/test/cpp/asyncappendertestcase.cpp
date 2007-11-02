@@ -256,7 +256,7 @@ public:
         void testConfiguration() {
               log4cxx::xml::DOMConfigurator::configure("input/xml/asyncAppender1.xml");
               AsyncAppenderPtr asyncAppender(Logger::getRootLogger()->getAppender(LOG4CXX_STR("ASYNC")));
-              CPPUNIT_ASSERT(0 != asyncAppender);
+              CPPUNIT_ASSERT(!(asyncAppender == 0));
               CPPUNIT_ASSERT_EQUAL(100, asyncAppender->getBufferSize());
               CPPUNIT_ASSERT_EQUAL(false, asyncAppender->getBlocking());
               CPPUNIT_ASSERT_EQUAL(true, asyncAppender->getLocationInfo());
