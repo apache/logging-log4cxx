@@ -279,9 +279,9 @@ public:
               Thread threads[THREAD_COUNT];
               CharsetEncoderPtr enc(CharsetEncoder::getEncoder(LOG4CXX_STR("ISO-8859-1")));
               ThreadPackage* package = new ThreadPackage(enc, THREAD_REPS);
-              for(int i = 0; i < THREAD_COUNT; i++) {
+              { for(int i = 0; i < THREAD_COUNT; i++) {
                   threads[i].run(thread1Action, package);
-              }
+              } }
               //
               //   give time for all threads to be launched so
               //      we don't signal before everybody is waiting.

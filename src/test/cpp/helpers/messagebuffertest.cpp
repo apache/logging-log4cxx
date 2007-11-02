@@ -50,21 +50,33 @@ public:
     void testInsertCStr() {
         MessageBuffer buf;
         std::string greeting("Hello, World");
+#if LOG4CXX_SUPPORTS_MULTIPLE_OP_RETVAL		
         CharMessageBuffer& retval = buf << "Hello" << ", World";
+#else
+		std::ostream& retval = buf << "Hello" << ", World";
+#endif
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
     }
 
     void testInsertString() {
         MessageBuffer buf;
         std::string greeting("Hello, World");
+#if LOG4CXX_SUPPORTS_MULTIPLE_OP_RETVAL		
         CharMessageBuffer& retval = buf << std::string("Hello") << std::string(", World");
+#else
+        std::ostream& retval = buf << std::string("Hello") << std::string(", World");
+#endif
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
     }
     
     void testInsertNull() {
         MessageBuffer buf;
         std::string greeting("Hello, null");
+#if LOG4CXX_SUPPORTS_MULTIPLE_OP_RETVAL		
         CharMessageBuffer& retval = buf << "Hello, " << (const char*) 0;
+#else
+        std::ostream& retval = buf << "Hello, " << (const char*) 0;
+#endif
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
     }
     
