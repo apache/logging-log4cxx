@@ -108,23 +108,6 @@ namespace log4cxx
 
 
       };
-
-
-      class LOG4CXX_EXPORT LocationFlush : public LocationInfo {
-        public:
-       /**
-        *   Constructor.
-        *   @remarks Used by LOG4CXX_LOCATION_FLUSH to generate
-        *       location info for current code site and
-        *       flush a logging stream
-        */
-        LocationFlush( const char * const fileName1,
-                      const char * const methodName1,
-                      int lineNumber1 )
-             : LocationInfo( fileName1, methodName1, lineNumber1 ) {
-        }
-
-      };
   }
 }
 
@@ -142,9 +125,6 @@ namespace log4cxx
 #define __LOG4CXX_FUNC__ ""
 #endif
       #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__, \
-           __LOG4CXX_FUNC__,                                                         \
-           __LINE__)
-      #define LOG4CXX_LOCATION_FLUSH ::log4cxx::spi::LocationFlush(__FILE__, \
            __LOG4CXX_FUNC__,                                                         \
            __LINE__)
   #endif

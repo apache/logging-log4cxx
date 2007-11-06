@@ -128,13 +128,7 @@ const LogString& file, const bool append, log4cxx::helpers::Pool& p);
 virtual RolloverDescriptionPtr rollover(const LogString& activeFile, log4cxx::helpers::Pool& p);
 
 protected:
-             const log4cxx::pattern::PatternMap& getFormatSpecifiers() const;
-
-private:
-             class FileNamePatternMap : public log4cxx::pattern::PatternMap {
-             public:
-                  FileNamePatternMap();
-             };
+             log4cxx::pattern::PatternMap getFormatSpecifiers() const;
 
         };
 

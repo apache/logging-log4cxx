@@ -128,56 +128,53 @@ void PatternLayout::activateOptions(Pool&)
        }
 }
 
-#define RULES_PUT(spec, cls) \
-insert(value_type(LOG4CXX_STR(spec), cls ::newInstance))
 
-PatternLayout::PatternLayoutMap::PatternLayoutMap() {
-  RULES_PUT("c", LoggerPatternConverter);
-  RULES_PUT("logger", LoggerPatternConverter);
+using namespace log4cxx::pattern;
 
-  RULES_PUT("C", ClassNamePatternConverter);
-  RULES_PUT("class", ClassNamePatternConverter);
+PatternMap PatternLayout::getFormatSpecifiers() {
+   PatternMap specs;
+   insertSpecifier<LoggerPatternConverter>(specs, LOG4CXX_STR("c"));
+   insertSpecifier<LoggerPatternConverter>(specs, LOG4CXX_STR("logger"));
 
-  RULES_PUT("d", DatePatternConverter);
-  RULES_PUT("date", DatePatternConverter);
+   insertSpecifier<ClassNamePatternConverter>(specs, LOG4CXX_STR("C"));
+   insertSpecifier<ClassNamePatternConverter>(specs, LOG4CXX_STR("class"));
 
-  RULES_PUT("F", FileLocationPatternConverter);
-  RULES_PUT("file", FileLocationPatternConverter);
+   insertSpecifier<DatePatternConverter>(specs, LOG4CXX_STR("d"));
+   insertSpecifier<DatePatternConverter>(specs, LOG4CXX_STR("date"));
 
-  RULES_PUT("l", FullLocationPatternConverter);
+   insertSpecifier<FileLocationPatternConverter>(specs, LOG4CXX_STR("F"));
+   insertSpecifier<FileLocationPatternConverter>(specs, LOG4CXX_STR("file"));
 
-  RULES_PUT("L", LineLocationPatternConverter);
-  RULES_PUT("line", LineLocationPatternConverter);
+   insertSpecifier<FullLocationPatternConverter>(specs, LOG4CXX_STR("l"));
 
-  RULES_PUT("m", MessagePatternConverter);
-  RULES_PUT("message", MessagePatternConverter);
+   insertSpecifier<LineLocationPatternConverter>(specs, LOG4CXX_STR("L"));
+   insertSpecifier<LineLocationPatternConverter>(specs, LOG4CXX_STR("line"));
 
-  RULES_PUT("n", LineSeparatorPatternConverter);
+   insertSpecifier<MessagePatternConverter>(specs, LOG4CXX_STR("m"));
+   insertSpecifier<MessagePatternConverter>(specs, LOG4CXX_STR("message"));
 
-  RULES_PUT("M", MethodLocationPatternConverter);
-  RULES_PUT("method", MethodLocationPatternConverter);
+   insertSpecifier<LineSeparatorPatternConverter>(specs, LOG4CXX_STR("n"));
 
-  RULES_PUT("p", LevelPatternConverter);
-  RULES_PUT("level", LevelPatternConverter);
+   insertSpecifier<MethodLocationPatternConverter>(specs, LOG4CXX_STR("M"));
+   insertSpecifier<MethodLocationPatternConverter>(specs, LOG4CXX_STR("method"));
 
-  RULES_PUT("r", RelativeTimePatternConverter);
-  RULES_PUT("relative", RelativeTimePatternConverter);
+   insertSpecifier<LevelPatternConverter>(specs, LOG4CXX_STR("p"));
+   insertSpecifier<LevelPatternConverter>(specs, LOG4CXX_STR("level"));
 
-  RULES_PUT("t", ThreadPatternConverter);
-  RULES_PUT("thread", ThreadPatternConverter);
+   insertSpecifier<RelativeTimePatternConverter>(specs, LOG4CXX_STR("r"));
+   insertSpecifier<RelativeTimePatternConverter>(specs, LOG4CXX_STR("relative"));
 
-  RULES_PUT("x", NDCPatternConverter);
-  RULES_PUT("ndc", NDCPatternConverter);
+   insertSpecifier<ThreadPatternConverter>(specs, LOG4CXX_STR("t"));
+   insertSpecifier<ThreadPatternConverter>(specs, LOG4CXX_STR("thread"));
 
-  RULES_PUT("X", PropertiesPatternConverter);
-  RULES_PUT("properties", PropertiesPatternConverter);
+   insertSpecifier<NDCPatternConverter>(specs, LOG4CXX_STR("x"));
+   insertSpecifier<NDCPatternConverter>(specs, LOG4CXX_STR("ndc"));
 
-  RULES_PUT("throwable", ThrowableInformationPatternConverter);
-}
+   insertSpecifier<PropertiesPatternConverter>(specs, LOG4CXX_STR("X"));
+   insertSpecifier<PropertiesPatternConverter>(specs, LOG4CXX_STR("properties"));
 
-const log4cxx::pattern::PatternMap& PatternLayout::getFormatSpecifiers() {
-   static PatternLayoutMap map;
-   return map;
+   insertSpecifier<ThrowableInformationPatternConverter>(specs, LOG4CXX_STR("throwable"));
+   return specs;
 }
 
 

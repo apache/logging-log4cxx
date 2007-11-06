@@ -164,11 +164,6 @@ LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
 
 LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
-   const ::log4cxx::spi::LocationFlush& rhs);
-
-
-LOG4CXX_EXPORT ::log4cxx::logstream& operator<<(
-   ::log4cxx::logstream& lhs,
    const ::log4cxx::LevelPtr& rhs);
 
 

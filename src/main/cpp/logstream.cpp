@@ -69,13 +69,6 @@ log4cxx::logstream& operator<<(
 
 ::log4cxx::logstream& operator<<(
    ::log4cxx::logstream& lhs,
-   const ::log4cxx::spi::LocationFlush& rhs) {
-   lhs.flush(rhs);
-   return lhs;
-}
-
-::log4cxx::logstream& operator<<(
-   ::log4cxx::logstream& lhs,
    const ::log4cxx::LevelPtr& rhs) {
    lhs.setLevel(rhs);
    return lhs;

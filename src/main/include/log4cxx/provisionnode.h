@@ -27,14 +27,9 @@ namespace log4cxx
     class Logger;
     typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
-    class ProvisionNode : public std::vector<LoggerPtr>
-    {
-    public:
-      ProvisionNode(const LoggerPtr& logger)
-      {
-         push_back(logger);
-      }
-    }; // class LogManager
+    
+    typedef std::vector<LoggerPtr> ProvisionNode;
+
 }  // namespace log4cxx
 
 #endif //_LOG4CXX_PROVISION_NODE_H

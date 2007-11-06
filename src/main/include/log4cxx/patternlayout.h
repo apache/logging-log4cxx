@@ -389,13 +389,7 @@ namespace log4cxx
                      const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;
 
         protected:
-                virtual const log4cxx::pattern::PatternMap& getFormatSpecifiers();
-
-        private:
-                class PatternLayoutMap : public log4cxx::pattern::PatternMap {
-                public:
-                    PatternLayoutMap();
-                };
+                virtual log4cxx::pattern::PatternMap getFormatSpecifiers();
         };
 }  // namespace log4cxx
 

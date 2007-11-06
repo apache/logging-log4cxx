@@ -70,7 +70,7 @@ namespace log4cxx {
            * {@inheritDoc}
            */
           virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
-          virtual const log4cxx::pattern::PatternMap& getFormatSpecifiers() const = 0;
+          virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
 
           virtual void setOption(const LogString& option,
                const LogString& value);

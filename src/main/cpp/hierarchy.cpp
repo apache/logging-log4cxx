@@ -340,7 +340,7 @@ void Hierarchy::updateParents(LoggerPtr logger)
                         else
                         {
                                 //tcout << _T("Inserting ProvisionNode for ") << substr << std::endl;
-                                ProvisionNode node(logger);
+                                ProvisionNode node(1, logger);
                                 provisionNodes.insert(
                                         ProvisionNodeMap::value_type(substr, node));
                         }

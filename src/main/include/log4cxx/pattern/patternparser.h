@@ -31,6 +31,11 @@ namespace log4cxx {
 typedef PatternConverterPtr (*PatternConstructor)(const std::vector<LogString>& options);
 typedef std::map<LogString, PatternConstructor> PatternMap;
 
+template<class Converter>
+void insertSpecifier(PatternMap& map, const LogString& specifier) {
+    map.insert(PatternMap::value_type(specifier, Converter::newInstance));
+} 
+
 
 // Contributors:   Nelson Minar <(nelson@monkey.org>
 //                 Igor E. Poteryaev <jah@mail.ru>

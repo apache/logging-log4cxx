@@ -210,13 +210,7 @@ virtual bool isTriggeringEvent(
   size_t fileLength);
 
   protected:
-               const log4cxx::pattern::PatternMap& getFormatSpecifiers() const;
-
-  private:
-               class FileNamePatternMap : public log4cxx::pattern::PatternMap {
-               public:
-                    FileNamePatternMap();
-               };
+               log4cxx::pattern::PatternMap getFormatSpecifiers() const;
 
         };
 
