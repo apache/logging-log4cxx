@@ -82,10 +82,10 @@ public:
             //
             if (event->getLevel() == Level::getInfo()) {
                 LoggerPtr logger = Logger::getLogger(event->getLoggerName());
-                LOG4CXX_ERROR(logger, event->getMessage());
-                LOG4CXX_WARN(logger, event->getMessage());
-                LOG4CXX_INFO(logger, event->getMessage());
-                LOG4CXX_DEBUG(logger, event->getMessage());
+                LOG4CXX_LOGLS(logger, Level::getError(), event->getMessage());
+                LOG4CXX_LOGLS(logger, Level::getWarn(), event->getMessage());
+                LOG4CXX_LOGLS(logger, Level::getInfo(), event->getMessage());
+                LOG4CXX_LOGLS(logger, Level::getDebug(), event->getMessage());
             }
       }
       

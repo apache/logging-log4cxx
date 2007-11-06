@@ -213,7 +213,7 @@ namespace log4cxx
         without further checks.
         @param level the level to log.
         @param message the message string to log.
-        @param locaion location of the logging statement.
+        @param location location of the logging statement.
         */
         void forcedLog(const LevelPtr& level, const std::string& message,
                         const log4cxx::spi::LocationInfo& location);
@@ -224,6 +224,15 @@ namespace log4cxx
                         const log4cxx::spi::LocationInfo& location);
         void forcedLog(const LevelPtr& level, const std::wstring& message) const;
 #endif
+        /**
+        This method creates a new logging event and logs the event
+        without further checks.
+        @param level the level to log.
+        @param message the message string to log.
+        @param location location of the logging statement.
+        */
+        void forcedLogLS(const LevelPtr& level, const LogString& message,
+                        const log4cxx::spi::LocationInfo& location);
 
         /**
         Get the additivity flag for this Logger instance.
@@ -521,6 +530,8 @@ namespace log4cxx
         void log(const LevelPtr& level, const std::string& message,
             const log4cxx::spi::LocationInfo& location);
         void log(const LevelPtr& level, const std::string& message);
+        void logLS(const LevelPtr& level, const LogString& message,
+            const log4cxx::spi::LocationInfo& location);
 
 
 
@@ -658,6 +669,18 @@ Logs a message to a specified logger with a specified level.
 #define LOG4CXX_LOG(logger, level, message) { \
         if (logger->isEnabledFor(level)) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
+           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); } }
+
+/**
+Logs a message to a specified logger with a specified level.
+
+@param logger the logger to be used.
+@param level the level to log.
+@param message the message string to log in the internal encoding.
+*/
+#define LOG4CXX_LOGLS(logger, level, message) { \
+        if (logger->isEnabledFor(level)) {\
+           ::log4cxx::helpers::LogCharMessageBuffer oss_; \
            logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); } }
 
 /**

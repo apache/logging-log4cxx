@@ -145,6 +145,14 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message) cons
 }
 #endif
 
+void Logger::forcedLogLS(const LevelPtr& level1, const LogString& message,
+        const LocationInfo& location)
+{
+        Pool p;
+        LoggingEventPtr event(new LoggingEvent(this, level1, message, location));
+        callAppenders(event, p);
+}
+
 
 bool Logger::getAdditivity() const
 {
@@ -720,6 +728,13 @@ void Logger::log(const LevelPtr& level1, const std::string& message) {
     }
 }
 
+void Logger::logLS(const LevelPtr& level1, const LogString& message,
+    const log4cxx::spi::LocationInfo& location) {
+    if (isEnabledFor(level1)) {
+      forcedLogLS(level1, message, location);
+    }
+}
+
 #if LOG4CXX_HAS_WCHAR_T
 void Logger::warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::getWarn())) {
@@ -747,3 +762,4 @@ void Logger::warn(const std::string& msg) {
     forcedLog(log4cxx::Level::getWarn(), msg);
   }
 }
+

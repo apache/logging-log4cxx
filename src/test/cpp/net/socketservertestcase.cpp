@@ -458,23 +458,21 @@ public:
                 int i = -1;
                 NDC::push(dc);
                 MDC::put(key, val);
-                Pool p;
 
                 i++;
-                LogString msg(LOG4CXX_STR("Message "));
+				std::string msg("Message ");
 
-                LOG4CXX_LOG(logger, XLevel::TRACE,
-                     msg + StringHelper::toString(i, p));
+                LOG4CXX_LOG(logger, XLevel::TRACE, msg << i);
                 i++;
-                LOG4CXX_DEBUG(logger, msg + StringHelper::toString(i, p));
+                LOG4CXX_DEBUG(logger, msg << i);
                 i++;
-                LOG4CXX_DEBUG(root, msg + StringHelper::toString(i, p));
+                LOG4CXX_DEBUG(root, msg << i);
                 i++;
-                LOG4CXX_INFO(logger, msg + StringHelper::toString(i, p));
+                LOG4CXX_INFO(logger, msg  << i);
                 i++;
-                LOG4CXX_WARN(logger, msg + StringHelper::toString(i, p));
+                LOG4CXX_WARN(logger, msg << i);
                 i++;
-                LOG4CXX_LOG(logger, XLevel::LETHAL, msg + StringHelper::toString(i, p)); //5
+                LOG4CXX_LOG(logger, XLevel::LETHAL, msg << i); //5
 
                 NDC::pop();
                 MDC::remove(key);

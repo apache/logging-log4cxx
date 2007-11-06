@@ -23,6 +23,7 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/spi/loggingevent.h>
+#include "insertwide.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -130,7 +131,7 @@ public:
           LOG4CXX_INFO(root, '[' << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill('_') << 10.0 << ']');
           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
           LogString msg(event->getMessage());
-          CPPUNIT_ASSERT(msg == LOG4CXX_STR("[__10.00]"));
+          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
        }
 
 #if LOG4CXX_HAS_WCHAR_T
@@ -148,10 +149,10 @@ public:
        
       void testWideWidth() {
           LoggerPtr root(Logger::getRootLogger());
-          LOG4CXX_INFO(root, L'[' << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill(L'_') << 10.0 << L']');
+          LOG4CXX_INFO(root, L'[' << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill(L'_') << 10.0 << L"]");
           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
           LogString msg(event->getMessage());
-          CPPUNIT_ASSERT(msg == LOG4CXX_STR("[__10.00]"));
+          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
        }
 #endif
 };

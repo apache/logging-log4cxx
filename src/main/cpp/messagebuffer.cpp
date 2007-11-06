@@ -16,150 +16,136 @@
  */
 
 #include <log4cxx/helpers/messagebuffer.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx::helpers;
 
-CharMessageBuffer::CharMessageBuffer() {
-    stream = 0;
-}
+CharMessageBuffer::CharMessageBuffer() : stream(0) {}
 
 CharMessageBuffer::~CharMessageBuffer() {
-    delete stream;
+	delete stream;
 }
 
-CharMessageBuffer& CharMessageBuffer::operator<<(const std::string& msg) {
-    buf.append(msg);
-    return *this;
+CharMessageBuffer& CharMessageBuffer::operator<<(const std::basic_string<char>& msg) {
+	if (stream == 0) {
+		buf.append(msg);
+	} else {
+		*stream << msg;
+	}
+	return *this;
 }
 
 CharMessageBuffer& CharMessageBuffer::operator<<(const char* msg) {
-    if (0 == msg) {
-       buf.append("null");
-    } else {
-       buf.append(msg);
-    }
-    return *this;
+	const char* actualMsg = msg;
+	if (actualMsg == 0) {
+		actualMsg = "null";
+	}
+	if (stream == 0) {
+		buf.append(actualMsg);
+	} else {
+		*stream << actualMsg;
+	}
+	return *this;
 }
 
 CharMessageBuffer& CharMessageBuffer::operator<<(const char msg) {
-    buf.append(1, msg);
-    return *this;
-}
-        
-const std::string& CharMessageBuffer::str(const CharMessageBuffer&) const {
-    return buf;
-}
-
-std::string CharMessageBuffer::str(const std::ostream&) const {
-    return stream->str();
+	if (stream == 0) {
+		buf.append(1, msg);
+	} else {
+		buf.assign(1, msg);
+		*stream << buf;
+	}
+	return *this;
 }
 
-MessageBuffer::MessageBuffer()  
-#if LOG4CXX_HAS_WCHAR_T
-    : wbuf(0)
-#endif 
-{
+CharMessageBuffer::operator std::basic_ostream<char>&() {
+	if (stream == 0) {
+	  stream = new std::basic_ostringstream<char>();
+	  if (!buf.empty()) {
+		  *stream << buf;
+	  }
+	}
+	return *stream;
 }
 
-MessageBuffer::~MessageBuffer() {
-#if LOG4CXX_HAS_WCHAR_T
-    delete wbuf;
-#endif
+const std::basic_string<char>& CharMessageBuffer::str(std::basic_ostream<char>&) {
+	buf = stream->str();
+	return buf;
+}
+
+const std::basic_string<char>& CharMessageBuffer::str(CharMessageBuffer&) {
+	return buf;
 }
 
 
-CharMessageBuffer& MessageBuffer::operator<<(const std::string& msg) {
-    return cbuf.operator<<(msg);
-}
-
-CharMessageBuffer& MessageBuffer::operator<<(const char* msg) {
-    return cbuf.operator<<(msg);
-}
-
-CharMessageBuffer& MessageBuffer::operator<<(const char msg) {
-    return cbuf.operator<<(msg);
-}
-
-const std::string& MessageBuffer::str(const CharMessageBuffer& msg) const {
-    return cbuf.str(msg);
-}
-
-std::string MessageBuffer::str(const std::ostream& msg) const {
-    return cbuf.str(msg);
-}
 
 
 #if LOG4CXX_HAS_WCHAR_T
-WideMessageBuffer& MessageBuffer::operator<<(const std::wstring& msg) {
-   wbuf = new WideMessageBuffer(msg);
-   return *wbuf;
-}
-   
-WideMessageBuffer& MessageBuffer::operator<<(const wchar_t* msg) {
-   if (0 == msg) {
-       wbuf = new WideMessageBuffer(L"null");
-   } else {
-       wbuf = new WideMessageBuffer(msg);
-   }
-   return *wbuf;
+WideMessageBuffer::WideMessageBuffer() : stream(0) {}
+
+WideMessageBuffer::~WideMessageBuffer() {
+	delete stream;
 }
 
-WideMessageBuffer& MessageBuffer::operator<<(const wchar_t msg) {
-   wbuf = new WideMessageBuffer(msg);
-   return *wbuf;
-}
-
-const std::wstring& MessageBuffer::str(const WideMessageBuffer& wide) const {
-    return wbuf->str(wide);
-}
-
-std::wstring MessageBuffer::str(const std::wostream& wstr) const {
-    return wbuf->str(wstr);
-}
-
-WideMessageBuffer::WideMessageBuffer(const wchar_t msg) : buf(1, msg), stream(0) {
-}
-
-WideMessageBuffer::WideMessageBuffer(const wchar_t* msg) : buf(msg), stream(0) {
-}
-
-WideMessageBuffer::WideMessageBuffer(const std::wstring& msg) : buf(msg), stream(0) {
-}
-
-WideMessageBuffer::~WideMessageBuffer()  {
-    delete stream;
-}
-
-const std::wstring& WideMessageBuffer::str(const WideMessageBuffer&) const {
-    return buf;
-}
-
-std::wstring WideMessageBuffer::str(const std::wostream&) const {
-    return stream->str();
-}
-
-WideMessageBuffer& WideMessageBuffer::operator<<(const std::wstring& msg) {
-    buf.append(msg);
-    return *this;
+WideMessageBuffer& WideMessageBuffer::operator<<(const std::basic_string<wchar_t>& msg) {
+	if (stream == 0) {
+		buf.append(msg);
+	} else {
+		*stream << msg;
+	}
+	return *this;
 }
 
 WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t* msg) {
-    if (0 == msg) {
-        buf.append(L"null");
-    } else {
-        buf.append(msg);
-    }
-    return *this;
+	const wchar_t* actualMsg = msg;
+	if (actualMsg == 0) {
+		actualMsg = L"null";
+	}
+	if (stream == 0) {
+		buf.append(actualMsg);
+	} else {
+		*stream << actualMsg;
+	}
+	return *this;
 }
 
 WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t msg) {
-    buf.append(1, msg);
-    return *this;
+	if (stream == 0) {
+		buf.append(1, msg);
+	} else {
+		buf.assign(1, msg);
+		*stream << buf;
+	}
+	return *this;
+}
+
+WideMessageBuffer::operator std::basic_ostream<wchar_t>&() {
+	if (stream == 0) {
+	  stream = new std::basic_ostringstream<wchar_t>();
+	  if (!buf.empty()) {
+		  *stream << buf;
+	  }
+	}
+	return *stream;
+}
+
+const std::basic_string<wchar_t>& WideMessageBuffer::str(std::basic_ostream<wchar_t>&) {
+	buf = stream->str();
+	return buf;
+}
+
+const std::basic_string<wchar_t>& WideMessageBuffer::str(WideMessageBuffer&) {
+	return buf;
 }
 
 
 
+
+MessageBuffer::MessageBuffer()  : wbuf(0){
+}
+
+MessageBuffer::~MessageBuffer() {
+    delete wbuf;
+}
+
 #endif
-
-
-

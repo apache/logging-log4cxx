@@ -313,23 +313,22 @@ public:
                 int i = -1;
                 X x;
 
-                Pool p;
-                LogString msg(LOG4CXX_STR("Message "));
+				std::string msg("Message ");
 
-                LOG4CXX_DEBUG(logger, msg + StringHelper::toString(++i, p));
-                LOG4CXX_DEBUG(root, msg + StringHelper::toString(i, p));
+                LOG4CXX_DEBUG(logger, msg << ++i);
+                LOG4CXX_DEBUG(root, msg << i);
 
-                LOG4CXX_INFO(logger, msg + StringHelper::toString(++i, p));
-                LOG4CXX_INFO(root, msg + StringHelper::toString(i,p));
+                LOG4CXX_INFO(logger, msg << ++i);
+                LOG4CXX_INFO(root, msg << i);
 
-                LOG4CXX_WARN(logger, msg + StringHelper::toString(++i, p));
-                LOG4CXX_WARN(root, msg + StringHelper::toString(i, p));
+                LOG4CXX_WARN(logger, msg << ++i);
+                LOG4CXX_WARN(root, msg << i);
 
-                LOG4CXX_ERROR(logger, msg + StringHelper::toString(++i, p));
-                LOG4CXX_ERROR(root, msg + StringHelper::toString(i, p));
+                LOG4CXX_ERROR(logger, msg << ++i);
+                LOG4CXX_ERROR(root, msg << i);
 
-                LOG4CXX_FATAL(logger, msg + StringHelper::toString(++i, p));
-                LOG4CXX_FATAL(root, msg + StringHelper::toString(i, p));
+                LOG4CXX_FATAL(logger, msg << ++i);
+                LOG4CXX_FATAL(root, msg << i);
         }
 };
 
