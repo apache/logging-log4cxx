@@ -60,7 +60,7 @@ using namespace log4cxx::spi;
 using namespace log4cxx::pattern;
 
 #define RULES_PUT(spec, cls) \
-map.insert(PatternMap::value_type(LOG4CXX_STR(spec), cls ::newInstance))
+map.insert(PatternMap::value_type(LOG4CXX_STR(spec), (PatternConstructor) cls ::newInstance))
 
 
 class PatternParserTestCase : public CppUnit::TestFixture
@@ -165,7 +165,7 @@ public:
      PatternMap testRules(getFormatSpecifiers());
      testRules.insert(
         PatternMap::value_type(LOG4CXX_STR("z343"),
-            Num343PatternConverter::newInstance));
+            (PatternConstructor) Num343PatternConverter::newInstance));
      assertFormattedEquals(LOG4CXX_STR("%z343"), testRules, LOG4CXX_STR("343"));
    }
 
@@ -177,7 +177,7 @@ public:
      PatternMap testRules(getFormatSpecifiers());
      testRules.insert(
         PatternMap::value_type(LOG4CXX_STR("n343"),
-            Num343PatternConverter::newInstance));
+            (PatternConstructor) Num343PatternConverter::newInstance));
      assertFormattedEquals(LOG4CXX_STR("%n343"), testRules, LOG4CXX_STR("343"));
    }
 

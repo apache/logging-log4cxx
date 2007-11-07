@@ -69,8 +69,8 @@ public:
         std::vector<PatternConverterPtr> converters;
         std::vector<FormattingInfoPtr> fields;
         PatternMap rules;
-        rules.insert(PatternMap::value_type(LOG4CXX_STR("d"), FileDatePatternConverter::newInstance));
-        rules.insert(PatternMap::value_type(LOG4CXX_STR("i"), IntegerPatternConverter::newInstance));
+        rules.insert(PatternMap::value_type(LOG4CXX_STR("d"), (PatternConstructor) FileDatePatternConverter::newInstance));
+        rules.insert(PatternMap::value_type(LOG4CXX_STR("i"), (PatternConstructor) IntegerPatternConverter::newInstance));
         PatternParser::parse(pattern, converters, fields, rules);
         LogString result;
         Pool pool;

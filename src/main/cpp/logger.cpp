@@ -380,7 +380,7 @@ void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
                         msg = StringHelper::format(pattern, params);
                 }
 
-                forcedLog(level1, msg, location);
+                forcedLogLS(level1, msg, location);
         }
 }
 

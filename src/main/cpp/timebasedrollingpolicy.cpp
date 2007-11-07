@@ -76,15 +76,15 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool) {
 }
 
 
-using namespace log4cxx::pattern;
+#define RULES_PUT(spec, cls) \
+specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), (PatternConstructor) cls ::newInstance))
 
-PatternMap TimeBasedRollingPolicy::getFormatSpecifiers() const {
+log4cxx::pattern::PatternMap TimeBasedRollingPolicy::getFormatSpecifiers() const {
   PatternMap specs;
-  insertSpecifier<FileDatePatternConverter>(specs, LOG4CXX_STR("d"));
-  insertSpecifier<FileDatePatternConverter>(specs, LOG4CXX_STR("date"));
+  RULES_PUT("d", FileDatePatternConverter);
+  RULES_PUT("date", FileDatePatternConverter);
   return specs;
 }
-
 
 /**
  * {@inheritDoc}

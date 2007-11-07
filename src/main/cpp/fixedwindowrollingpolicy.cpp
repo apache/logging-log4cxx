@@ -276,12 +276,13 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
   return true;
 }
 
+#define RULES_PUT(spec, cls) \
+specs.insert(PatternMap::value_type(LogString(LOG4CXX_STR(spec)), (PatternConstructor) cls ::newInstance))
 
-using namespace log4cxx::pattern;
 
-PatternMap FixedWindowRollingPolicy::getFormatSpecifiers() const {
+log4cxx::pattern::PatternMap FixedWindowRollingPolicy::getFormatSpecifiers() const {
   PatternMap specs;
-  insertSpecifier<IntegerPatternConverter>(specs, LOG4CXX_STR("i"));
-  insertSpecifier<IntegerPatternConverter>(specs, LOG4CXX_STR("index"));
+  RULES_PUT("i", IntegerPatternConverter);
+  RULES_PUT("index", IntegerPatternConverter);
   return specs;
 }

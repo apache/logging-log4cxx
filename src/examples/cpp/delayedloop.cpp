@@ -77,10 +77,9 @@ public:
         static void test()
         {
                 int i = 0;
-                logstream log(logger, Level::getDebug());
                 while(true)
                 {
-                        log << L"MSG " << i++ << LOG4CXX_ENDMSG;
+					    LOG4CXX_DEBUG(logger, "MSG " << i++);
                         try
                         {
                                 apr_sleep(1000000);
@@ -107,12 +106,12 @@ int main(int argc, const char * const argv[])
     int result = EXIT_SUCCESS;
     try
     {
-                DelayedLoop::main(argc, argv);
-        }
-        catch(std::exception&)
-        {
-                result = EXIT_FAILURE;
-        }
+        DelayedLoop::main(argc, argv);
+    }
+    catch(std::exception&)
+    {
+        result = EXIT_FAILURE;
+    }
 
     apr_terminate();
     return result;
