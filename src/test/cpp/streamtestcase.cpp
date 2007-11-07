@@ -24,9 +24,11 @@
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/spi/loggingevent.h>
 #include "insertwide.h"
+#include <log4cxx/stream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace std;
 
 class ExceptionOnInsert {
 public:
@@ -65,6 +67,18 @@ class StreamTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(testWideAppend);
                 CPPUNIT_TEST(testWideWidth);
 #endif
+                CPPUNIT_TEST(testBaseFlags);
+                CPPUNIT_TEST(testBasePrecisionAndWidth);
+                CPPUNIT_TEST(testLogStreamSimple);
+                CPPUNIT_TEST(testLogStreamMultiple);
+                CPPUNIT_TEST(testLogStreamShortCircuit);
+                CPPUNIT_TEST_EXCEPTION(testLogStreamInsertException, std::exception);
+                CPPUNIT_TEST(testLogStreamScientific);
+                CPPUNIT_TEST(testLogStreamPrecision);
+                CPPUNIT_TEST(testLogStreamWidth);
+                CPPUNIT_TEST(testLogStreamDelegate);
+                CPPUNIT_TEST(testLogStreamFormattingPersists);
+                CPPUNIT_TEST(testSetWidthInsert);
         CPPUNIT_TEST_SUITE_END();
 
         VectorAppenderPtr vectorAppender;
@@ -155,6 +169,135 @@ public:
           CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
        }
 #endif
+       void testBaseFlags() {
+           logstream base1(Logger::getRootLogger(), Level::getInfo());
+           logstream base2(Logger::getRootLogger(), Level::getInfo());
+           base1 << std::boolalpha;
+           base2 << std::noboolalpha;
+           std::ostringstream os1a, os1b, os2a, os2b;
+           os1a << std::boolalpha;
+           int fillchar;
+           if (base1.set_stream_state(os1b, fillchar)) {
+               os1b.fill(fillchar);
+            }
+           CPPUNIT_ASSERT_EQUAL(os1a.flags(), os1b.flags());
+           os2a << std::noboolalpha;
+           if (base2.set_stream_state(os2b, fillchar)) {
+               os2b.fill(fillchar);
+            }
+           CPPUNIT_ASSERT_EQUAL(os2a.flags(), os2b.flags());
+       }
+
+
+       void testBasePrecisionAndWidth() {
+           logstream base(Logger::getRootLogger(), Level::getInfo());
+           base.precision(2);
+           base.width(5);
+           std::ostringstream os1, os2;
+           os1.precision(2);
+           os1.width(5);
+           os1 << 3.1415926;
+           int fillchar;
+           if (base.set_stream_state(os2, fillchar)) {
+               os2.fill(fillchar);
+            }
+           os2 << 3.1415926;
+           string expected(os1.str());
+           string actual(os2.str());
+           CPPUNIT_ASSERT_EQUAL(expected, actual);
+       }
+       
+        void testLogStreamSimple() {
+            logstream root(Logger::getRootLogger(), Level::getInfo());
+            root << "This is a test" << LOG4CXX_ENDMSG;
+            CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
+        }
+
+        void testLogStreamMultiple() {
+           logstream root(Logger::getRootLogger(), Level::getInfo());
+           root << "This is a test" << ": Details to follow" << LOG4CXX_ENDMSG;
+           CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
+       }
+
+       void testLogStreamShortCircuit() {
+         LoggerPtr logger(Logger::getLogger("StreamTestCase.shortCircuit"));
+         logger->setLevel(Level::getInfo());
+         logstream os(logger, Level::getDebug());
+         ExceptionOnInsert someObj;
+         os << someObj << LOG4CXX_ENDMSG;
+         CPPUNIT_ASSERT_EQUAL((size_t) 0, vectorAppender->getVector().size());
+       }
+
+       void testLogStreamInsertException() {
+         LoggerPtr logger(Logger::getLogger("StreamTestCase.insertException"));
+         ExceptionOnInsert someObj;
+         logstream os(logger, Level::getInfo());
+         os << someObj << LOG4CXX_ENDMSG;
+       }
+
+       void testLogStreamScientific() {
+           LoggerPtr root(Logger::getRootLogger());
+           logstream os(root, Level::getInfo());
+           os << std::scientific << 0.000001115 << LOG4CXX_ENDMSG;
+           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
+           LogString msg(event->getMessage());
+           CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("e-")) != LogString::npos ||
+                msg.find(LOG4CXX_STR("E-")) != LogString::npos);
+       }
+
+       void testLogStreamPrecision() {
+          LoggerPtr root(Logger::getRootLogger());
+          logstream os(root, Level::getInfo());
+          os << std::setprecision(4) << 1.000001 << LOG4CXX_ENDMSG;
+          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
+          LogString msg(event->getMessage());
+          CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("1.00000")) == LogString::npos);
+      }
+
+
+      void testLogStreamWidth() {
+          LoggerPtr root(Logger::getRootLogger());
+          logstream os(root, Level::getInfo());
+          os << '[' << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill('_') << 10.0 << ']' << LOG4CXX_ENDMSG;
+          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
+          LogString msg(event->getMessage());
+          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
+       }
+       
+       void report(std::ostream& os) {
+          os << "This just in: \n";
+          os << "Use logstream in places that expect a std::ostream.\n";
+       }
+       
+        void testLogStreamDelegate() {
+            logstream root(Logger::getRootLogger(), Level::getInfo());
+            report(root);
+            root << LOG4CXX_ENDMSG;
+            CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
+        }
+        
+        void testLogStreamFormattingPersists() {
+          LoggerPtr root(Logger::getRootLogger());
+          root->setLevel(Level::getInfo());
+          logstream os(root, Level::getDebug());
+          os << std::hex << 20 << LOG4CXX_ENDMSG;
+          os << Level::getInfo() << 16 << LOG4CXX_ENDMSG;
+          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
+          LogString msg(event->getMessage());
+          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("10")), msg);
+        }
+
+        void testSetWidthInsert() {
+          LoggerPtr root(Logger::getRootLogger());
+          root->setLevel(Level::getInfo());
+          logstream os(root, Level::getInfo());
+          os << std::setw(5);
+          CPPUNIT_ASSERT_EQUAL(5, os.width());
+        }
+        
+        
+        
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(StreamTestCase);

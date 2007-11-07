@@ -25,7 +25,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-int main()
+int xmain()
 {
     setlocale(LC_ALL, "");
     int result = EXIT_SUCCESS;
@@ -37,7 +37,7 @@ int main()
                 NDC::push("trivial context");
 
                 log4cxx::logstream logstream(rootLogger, Level::getDebug());
-                logstream << "debug message " << 1 << LOG4CXX_ENDMSG;
+                logstream << "debug message " << 1 << LOG4CXX_LOCATION << LOG4CXX_ENDMSG;
                 logstream.setLevel(Level::getInfo());
 #if LOG4CXX_HAS_WCHAR_T
                 logstream << L"info message" << LOG4CXX_ENDMSG;
@@ -62,3 +62,4 @@ int main()
 
     return result;
 }
+
