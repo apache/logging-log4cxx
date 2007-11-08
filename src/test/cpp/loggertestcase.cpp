@@ -397,6 +397,19 @@ public:
                 LoggerPtr a11 = h->getLogger(LOG4CXX_STR("a"));
                 CPPUNIT_ASSERT_EQUAL(a0, a11);
         }
+        
+        void compileTestForLOGCXX202() const {
+           //
+           //   prior to fix, these line would compile. 
+           //
+           (*logger).info("Hello, World.");
+           ((Logger*) logger)->info("Hello, World.");
+           //
+           //   this one would not.
+           //
+           logger->info("Hello, World.");
+        }
+        
 
 protected:
         static LogString MSG;
