@@ -23,7 +23,13 @@ using namespace log4cxx;
 
 logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags initval, 
                     int initsize) {
+#if defined(_MSC_VER)
+	//
+	//    the destructor for std::ios_base in the MSVC STL
+	//        releases a pointer that was not initialized in the constructor.
+	//
     memset(this, 0, sizeof(*this));
+#endif
     flags(initval);
     precision(initsize);
     width(initsize);
@@ -74,10 +80,6 @@ void logstream_base::end_message() {
      erase();
 }
 
-
-logstream_base& logstream_base::nop(logstream_base& stream) {
-     return stream;
-}
 
 
 int log4cxx::logstream_base::precision(int p) {
@@ -199,13 +201,6 @@ logstream& logstream::operator<<(const log4cxx::spi::LocationInfo& newlocation) 
    setLocation(newlocation);
    return *this;
 }
-
-logstream& logstream::operator>>(const log4cxx::spi::LocationInfo& newlocation) {
-   setLocation(newlocation);
-   return *this;
-}
-
-
 
              
 logstream& logstream::operator<<(std::ios_base& (*manip)(std::ios_base&)) {

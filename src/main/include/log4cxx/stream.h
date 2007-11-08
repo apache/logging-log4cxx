@@ -105,10 +105,6 @@ namespace log4cxx
               */
              void end_message();
 
-              /**
-              *  no operation manipulator, used to workaround compiler defects.
-              */
-             static logstream_base& nop(logstream_base&);
 
             
              /**
@@ -262,24 +258,6 @@ namespace log4cxx
              */
              logstream& operator<<(const log4cxx::spi::LocationInfo& location);
             
-            /**
-             *   Alias for insertion operator for location.  Kludge to avoid
-			 *      inappropriate compiler ambiguity.
-             */
-             logstream& operator>>(const log4cxx::spi::LocationInfo& location);
-            
-            /**
-             *  Template to allow any class with an std::basic_ostream inserter
-             *    to be applied to this class.
-             */
-            template <class V>
-            inline logstream& operator<<(const V& val) {
-                 if (LOG4CXX_UNLIKELY(isEnabled())) {
-                     ((std::basic_ostream<Ch>&) *this) << val;
-                 }
-                 return *this;
-            }
-            
 
             /**
              *   Cast operator to provide access to embedded std::basic_ostream.
@@ -375,18 +353,6 @@ namespace log4cxx
              */
              wlogstream& operator>>(const log4cxx::spi::LocationInfo& location);
             
-            /**
-             *  Template to allow any class with an std::basic_ostream inserter
-             *    to be applied to this class.
-             */
-            template <class V>
-            inline wlogstream& operator<<(const V& val) {
-                 if (LOG4CXX_UNLIKELY(isEnabled())) {
-                     ((std::basic_ostream<Ch>&) *this) << val;
-                 }
-                 return *this;
-            }
-            
 
             /**
              *   Cast operator to provide access to embedded std::basic_ostream.
@@ -429,12 +395,34 @@ namespace log4cxx
 }  // namespace log4cxx
 
 
-#if !defined(LOG4CXX_ENDMSG)
-#if defined(_MSC_VER) && _MSC_VER <= 1200
-#define LOG4CXX_ENDMSG LOG4CXX_LOCATION << (log4cxx::logstream_manipulator) log4cxx::logstream_base::endmsg;
-#else
-#define LOG4CXX_ENDMSG LOG4CXX_LOCATION << log4cxx::logstream_base::endmsg;
+/**
+ *  Template to allow any class with an std::basic_ostream inserter
+ *    to be applied to this class.
+ */
+template <class V>
+inline log4cxx::logstream& operator<<(log4cxx::logstream& os, const V& val) {
+     if (LOG4CXX_UNLIKELY(os.isEnabled())) {
+         ((std::basic_ostream<char>&) os) << val;
+     }
+     return os;
+}
+
+#if LOG4CXX_HAS_WCHAR_T            
+/**
+ *  Template to allow any class with an std::basic_ostream inserter
+ *    to be applied to this class.
+ */
+template <class V>
+inline log4cxx::wlogstream& operator<<(log4cxx::wlogstream& os, const V& val) {
+     if (LOG4CXX_UNLIKELY(os.isEnabled())) {
+         ((std::basic_ostream<wchar_t>&) os) << val;
+     }
+     return os;
+}
 #endif
+
+#if !defined(LOG4CXX_ENDMSG)
+#define LOG4CXX_ENDMSG LOG4CXX_LOCATION << (log4cxx::logstream_manipulator) log4cxx::logstream_base::endmsg;
 #endif
 
 
