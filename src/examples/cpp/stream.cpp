@@ -25,7 +25,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-int xmain()
+int main()
 {
     setlocale(LC_ALL, "");
     int result = EXIT_SUCCESS;
