@@ -263,6 +263,21 @@ namespace log4cxx
              *   Cast operator to provide access to embedded std::basic_ostream.
              */
              operator std::basic_ostream<Ch>&();
+
+#if !(LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE)             
+            /**
+              *  Template to allow any class with an std::basic_ostream inserter
+              *    to be applied to this class.
+             */
+             template <class V>
+             inline log4cxx::logstream& operator<<(const V& val) {
+                 if (LOG4CXX_UNLIKELY(isEnabled())) {
+                      ((std::basic_ostream<char>&) *this) << val;
+                 }
+                 return *this;
+              }
+#endif              
+             
             
         protected:
               /**
@@ -359,6 +374,20 @@ namespace log4cxx
              */
              operator std::basic_ostream<Ch>&();
             
+#if !(LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE)             
+            /**
+              *  Template to allow any class with an std::basic_ostream inserter
+              *    to be applied to this class.
+             */
+             template <class V>
+             inline log4cxx::wlogstream& operator<<(const V& val) {
+                 if (LOG4CXX_UNLIKELY(isEnabled())) {
+                      ((std::basic_ostream<wchar_t>&) *this) << val;
+                 }
+                 return *this;
+              }
+#endif              
+            
         protected:
               /**
                *   {@inheritDoc}
@@ -395,6 +424,13 @@ namespace log4cxx
 }  // namespace log4cxx
 
 
+#if LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE
+//
+//  VC6 will fail to compile if class-scope templates
+//     are used to handle arbitrary insertion operations.
+//     However, using global namespace insertion operations 
+//     run into LOGCXX-150.
+
 /**
  *  Template to allow any class with an std::basic_ostream inserter
  *    to be applied to this class.
@@ -419,6 +455,7 @@ inline log4cxx::wlogstream& operator<<(log4cxx::wlogstream& os, const V& val) {
      }
      return os;
 }
+#endif
 #endif
 
 #if !defined(LOG4CXX_ENDMSG)

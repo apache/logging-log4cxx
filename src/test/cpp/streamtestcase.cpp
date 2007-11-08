@@ -403,3 +403,37 @@ public:
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(StreamTestCase);
+
+
+//
+//   The following code tests compilation errors
+//      around bug LOGCXX-150 and is not intended to be executed.
+//
+
+namespace foo
+{
+  class Bar
+  {
+    void fn();
+  };
+  
+std::ostream &operator<<(std::ostream &o, Bar const &b)
+  {
+    return o << "Bar";
+  }
+}
+
+
+using namespace foo;
+
+namespace
+{
+  log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("foo"));
+  log4cxx::logstream lout(logger, log4cxx::Level::getDebug());
+}
+
+void Bar::fn()
+{
+  lout << "hi" << LOG4CXX_ENDMSG;
+}
+

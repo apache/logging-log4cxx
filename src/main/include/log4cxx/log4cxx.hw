@@ -35,6 +35,9 @@
 
 #if defined(_MSC_VER)
 typedef __int64 log4cxx_int64_t;
+#if _MSC_VER < 1300
+#define LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE 1
+#endif
 #else
 typedef long long log4cxx_int64_t;
 #endif
