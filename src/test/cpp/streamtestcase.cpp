@@ -79,7 +79,19 @@ class StreamTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(testLogStreamDelegate);
                 CPPUNIT_TEST(testLogStreamFormattingPersists);
                 CPPUNIT_TEST(testSetWidthInsert);
-        CPPUNIT_TEST_SUITE_END();
+#if LOG4CXX_HAS_WCHAR_T
+                CPPUNIT_TEST(testWLogStreamSimple);
+                CPPUNIT_TEST(testWLogStreamMultiple);
+                CPPUNIT_TEST(testWLogStreamShortCircuit);
+                CPPUNIT_TEST_EXCEPTION(testWLogStreamInsertException, std::exception);
+                CPPUNIT_TEST(testWLogStreamScientific);
+                CPPUNIT_TEST(testWLogStreamPrecision);
+                CPPUNIT_TEST(testWLogStreamWidth);
+                CPPUNIT_TEST(testWLogStreamDelegate);
+                CPPUNIT_TEST(testWLogStreamFormattingPersists);
+                CPPUNIT_TEST(testWSetWidthInsert);
+#endif
+			CPPUNIT_TEST_SUITE_END();
 
         VectorAppenderPtr vectorAppender;
 
@@ -296,7 +308,97 @@ public:
         }
         
         
+
+#if LOG4CXX_HAS_WCHAR_T
+        void testWLogStreamSimple() {
+            wlogstream root(Logger::getRootLogger(), Level::getInfo());
+            root << L"This is a test" << LOG4CXX_ENDMSG;
+            CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
+        }
+
+        void testWLogStreamMultiple() {
+           wlogstream root(Logger::getRootLogger(), Level::getInfo());
+           root << L"This is a test" << L": Details to follow" << LOG4CXX_ENDMSG;
+           CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
+       }
+
+       void testWLogStreamShortCircuit() {
+         LoggerPtr logger(Logger::getLogger("StreamTestCase.shortCircuit"));
+         logger->setLevel(Level::getInfo());
+         wlogstream os(logger, Level::getDebug());
+         ExceptionOnInsert someObj;
+         os << someObj << LOG4CXX_ENDMSG;
+         CPPUNIT_ASSERT_EQUAL((size_t) 0, vectorAppender->getVector().size());
+       }
+
+       void testWLogStreamInsertException() {
+         LoggerPtr logger(Logger::getLogger("StreamTestCase.insertException"));
+         ExceptionOnInsert someObj;
+         wlogstream os(logger, Level::getInfo());
+         os << someObj << LOG4CXX_ENDMSG;
+       }
+
+       void testWLogStreamScientific() {
+           LoggerPtr root(Logger::getRootLogger());
+           wlogstream os(root, Level::getInfo());
+           os << std::scientific << 0.000001115 << LOG4CXX_ENDMSG;
+           spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
+           LogString msg(event->getMessage());
+           CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("e-")) != LogString::npos ||
+                msg.find(LOG4CXX_STR("E-")) != LogString::npos);
+       }
+
+       void testWLogStreamPrecision() {
+          LoggerPtr root(Logger::getRootLogger());
+          wlogstream os(root, Level::getInfo());
+          os << std::setprecision(4) << 1.000001 << LOG4CXX_ENDMSG;
+          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
+          LogString msg(event->getMessage());
+          CPPUNIT_ASSERT(msg.find(LOG4CXX_STR("1.00000")) == LogString::npos);
+      }
+
+
+      void testWLogStreamWidth() {
+          LoggerPtr root(Logger::getRootLogger());
+          wlogstream os(root, Level::getInfo());
+          os << L"[" << std::fixed << std::setprecision(2) << std::setw(7) << std::right << std::setfill(L'_') << 10.0 << L"]" << LOG4CXX_ENDMSG;
+          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
+          LogString msg(event->getMessage());
+          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
+       }
+       
+       void wreport(std::wostream& os) {
+          os << L"This just in: \n";
+          os << L"Use logstream in places that expect a std::ostream.\n";
+       }
+       
+        void testWLogStreamDelegate() {
+            wlogstream root(Logger::getRootLogger(), Level::getInfo());
+            wreport(root);
+            root << LOG4CXX_ENDMSG;
+            CPPUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
+        }
         
+        void testWLogStreamFormattingPersists() {
+          LoggerPtr root(Logger::getRootLogger());
+          root->setLevel(Level::getInfo());
+          wlogstream os(root, Level::getDebug());
+          os << std::hex << 20 << LOG4CXX_ENDMSG;
+          os << Level::getInfo() << 16 << LOG4CXX_ENDMSG;
+          spi::LoggingEventPtr event(vectorAppender->getVector()[0]);
+          LogString msg(event->getMessage());
+          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("10")), msg);
+        }
+
+        void testWSetWidthInsert() {
+          LoggerPtr root(Logger::getRootLogger());
+          root->setLevel(Level::getInfo());
+          wlogstream os(root, Level::getInfo());
+          os << std::setw(5);
+          CPPUNIT_ASSERT_EQUAL(5, os.width());
+        }
+        
+#endif        
 
 };
 
