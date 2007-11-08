@@ -405,11 +405,12 @@ public:
 CPPUNIT_TEST_SUITE_REGISTRATION(StreamTestCase);
 
 
+#if !LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE
 //
 //   The following code tests compilation errors
 //      around bug LOGCXX-150 and is not intended to be executed.
-//
-
+//      Skipped for VC6 since it can't handle having the
+//      templated operator<< in class scope.s
 namespace foo
 {
   class Bar
@@ -436,4 +437,5 @@ void Bar::fn()
 {
   lout << "hi" << LOG4CXX_ENDMSG;
 }
+#endif
 
