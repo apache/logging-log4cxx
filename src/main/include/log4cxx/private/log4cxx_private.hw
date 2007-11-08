@@ -66,5 +66,9 @@
 #endif
 #endif
 
+#if defined(_MSC_VER)
+#define LOG4CXX_MEMSET_IOS_BASE 1
+#endif
+
 
 #endif

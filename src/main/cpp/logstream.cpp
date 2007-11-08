@@ -23,7 +23,7 @@ using namespace log4cxx;
 
 logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags initval, 
                     int initsize) {
-#if defined(_MSC_VER)
+#if LOG4CXX_MEMSET_IOS_BASE
 	//
 	//    the destructor for std::ios_base in the MSVC STL
 	//        releases a pointer that was not initialized in the constructor.
