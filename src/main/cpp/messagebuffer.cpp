@@ -81,6 +81,11 @@ bool CharMessageBuffer::hasStream() const {
     return (stream != 0);
 }
 
+std::ostream& CharMessageBuffer::operator<<(ios_base_manip manip) {
+	std::ostream& s = *this;
+	(*manip)(s);
+	return s;
+}
 
 
 
@@ -146,6 +151,11 @@ bool WideMessageBuffer::hasStream() const {
     return (stream != 0);
 }
 
+std::wostream& WideMessageBuffer::operator<<(ios_base_manip manip) {
+	std::wostream& s = *this;
+	(*manip)(s);
+	return s;
+}
 
 
 MessageBuffer::MessageBuffer()  : wbuf(0){
@@ -157,6 +167,58 @@ MessageBuffer::~MessageBuffer() {
 
 bool MessageBuffer::hasStream() const {
     return cbuf.hasStream() || (wbuf != 0 && wbuf->hasStream());
+}
+
+std::ostream& MessageBuffer::operator<<(ios_base_manip manip) {
+	std::ostream& s = *this;
+	(*manip)(s);
+	return s;
+}
+
+MessageBuffer::operator std::ostream&() {
+	return (std::ostream&) cbuf;
+}
+
+CharMessageBuffer& MessageBuffer::operator<<(const std::string& msg) {
+	return cbuf.operator<<(msg);
+}
+
+CharMessageBuffer& MessageBuffer::operator<<(const char* msg) {
+	return cbuf.operator<<(msg);
+}
+
+CharMessageBuffer& MessageBuffer::operator<<(const char msg) {
+	return cbuf.operator<<(msg);
+}
+
+const std::string& MessageBuffer::str(CharMessageBuffer& buf) {
+	return cbuf.str(buf);
+}
+
+const std::string& MessageBuffer::str(std::ostream& os) {
+	return cbuf.str(os);
+}
+
+WideMessageBuffer& MessageBuffer::operator<<(const std::wstring& msg) {
+	wbuf = new WideMessageBuffer();
+	return (*wbuf) << msg;
+}
+
+WideMessageBuffer& MessageBuffer::operator<<(const wchar_t* msg) {
+	wbuf = new WideMessageBuffer();
+	return (*wbuf) << msg;
+}
+WideMessageBuffer& MessageBuffer::operator<<(const wchar_t msg) {
+	wbuf = new WideMessageBuffer();
+	return (*wbuf) << msg;
+}
+
+const std::wstring& MessageBuffer::str(WideMessageBuffer& buf) {
+	return wbuf->str(buf);
+}
+
+const std::wstring& MessageBuffer::str(std::wostream& os) {
+	return wbuf->str(os);
 }
 
 #endif

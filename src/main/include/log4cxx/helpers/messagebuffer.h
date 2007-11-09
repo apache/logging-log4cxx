@@ -27,6 +27,7 @@ namespace log4cxx {
 
    namespace helpers {
    
+   typedef std::ios_base& (*ios_base_manip)(std::ios_base&);
 
    /**
     *   This class is used by the LOG4CXX_INFO and similar
@@ -64,6 +65,13 @@ namespace log4cxx {
          *   @return this buffer.
          */
         CharMessageBuffer& operator<<(const char msg);
+
+        /**
+         *   Insertion operator for STL manipulators such as std::fixed.
+         *   @param manip manipulator.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(ios_base_manip manip);
 
 		/**
 		 *  Cast to ostream.
@@ -115,13 +123,6 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
 	return ((std::basic_ostream<char>&) os) << val;
 }
 
-inline std::basic_ostream<char>& operator<<(CharMessageBuffer& os, std::ios_base& (*manip)(std::ios_base& s)) {
-	std::basic_ostream<char>& s = os;
-	(*manip)(s);
-	return s;
-}
-
-
 #if LOG4CXX_HAS_WCHAR_T
    /**
     *   This class is designed to support insertion operations
@@ -160,7 +161,14 @@ inline std::basic_ostream<char>& operator<<(CharMessageBuffer& os, std::ios_base
          */
         WideMessageBuffer& operator<<(const wchar_t msg);
 
-		/**
+        /**
+         *   Insertion operator for STL manipulators such as std::fixed.
+         *   @param manip manipulator.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(ios_base_manip manip);
+
+        /**
 		 *  Cast to ostream.
 		 */
 		operator std::basic_ostream<wchar_t>&();
@@ -210,13 +218,6 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
 	return ((std::basic_ostream<wchar_t>&) os) << val;
 }
 
-inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_base& (*manip)(std::ios_base& s)) {
-	std::basic_ostream<wchar_t>& s = os;
-	(*manip)(s);
-	return s;
-}
-
-
 
    /**
     *   This class is used by the LOG4CXX_INFO and similar
@@ -237,9 +238,7 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
 		/**
 		 *  Cast to ostream.
 		 */
-		inline operator std::ostream&() {
-			return (std::ostream&) cbuf;
-        }
+		operator std::ostream&();
 
 	   /**
          *   Appends a string into the buffer and
@@ -247,18 +246,14 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
          *   @param msg message to append.
          *   @return encapsulated CharMessageBuffer.
          */
-        inline CharMessageBuffer& operator<<(const std::string& msg) {
-			return cbuf.operator<<(msg);
-		}
+        CharMessageBuffer& operator<<(const std::string& msg);
         /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
          *   @param msg message to append.
          *   @return encapsulated CharMessageBuffer.
          */
-        inline CharMessageBuffer& operator<<(const char* msg) {
-			return cbuf.operator<<(msg);
-		}
+        CharMessageBuffer& operator<<(const char* msg);
 
         /**
          *   Appends a string into the buffer and
@@ -266,9 +261,7 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
          *   @param msg message to append.
          *   @return encapsulated CharMessageBuffer.
          */
-        inline CharMessageBuffer& operator<<(const char msg) {
-			return cbuf.operator<<(msg);
-		}
+        CharMessageBuffer& operator<<(const char msg);
 
 		/**
 		 *   Get content of buffer.
@@ -276,9 +269,7 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
 		 *       the character type and that
 		 *       the embedded stream was not used.
 		 */
-		inline const std::string& str(CharMessageBuffer& buf) {
-			return cbuf.str(buf);
-		}
+		const std::string& str(CharMessageBuffer& buf);
 
 		/**
 		 *   Get content of buffer.
@@ -286,9 +277,7 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
 		 *       the character type and that
 		 *       the embedded stream was used.
 		 */
-		inline const std::string& str(std::ostream& os) {
-			return cbuf.str(os);
-		}
+		const std::string& str(std::ostream& os);
 
 	   /**
          *   Appends a string into the buffer and
@@ -296,30 +285,28 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
          *   @param msg message to append.
          *   @return encapsulated CharMessageBuffer.
          */
-        inline WideMessageBuffer& operator<<(const std::wstring& msg) {
-			wbuf = new WideMessageBuffer();
-			return (*wbuf) << msg;
-		}
+        WideMessageBuffer& operator<<(const std::wstring& msg);
         /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
          *   @param msg message to append.
          *   @return encapsulated CharMessageBuffer.
          */
-        inline WideMessageBuffer& operator<<(const wchar_t* msg) {
-			wbuf = new WideMessageBuffer();
-			return (*wbuf) << msg;
-		}
+        WideMessageBuffer& operator<<(const wchar_t* msg);
         /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
          *   @param msg message to append.
          *   @return encapsulated CharMessageBuffer.
          */
-        inline WideMessageBuffer& operator<<(const wchar_t msg) {
-			wbuf = new WideMessageBuffer();
-			return (*wbuf) << msg;
-		}
+        WideMessageBuffer& operator<<(const wchar_t msg);
+
+        /**
+         *   Insertion operator for STL manipulators such as std::fixed.
+         *   @param manip manipulator.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(ios_base_manip manip);
 
 		/**
 		 *   Get content of buffer.
@@ -327,9 +314,7 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
 		 *       the character type and that
 		 *       the embedded stream was not used.
 		 */
-		inline const std::wstring& str(WideMessageBuffer& buf) {
-			return wbuf->str(buf);
-		}
+		const std::wstring& str(WideMessageBuffer& buf);
 
 		/**
 		 *   Get content of buffer.
@@ -337,9 +322,7 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
 		 *       the character type and that
 		 *       the embedded stream was used.
 		 */
-		inline const std::wstring& str(std::wostream& os) {
-			return wbuf->str(os);
-		}
+		const std::wstring& str(std::wostream& os);
 
         /**
          *  Returns true if buffer has an encapsulated STL stream.
@@ -371,12 +354,6 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
 template<class V>
 std::ostream& operator<<(MessageBuffer& os, const V& val) {
 	return ((std::ostream&) os) << val;
-}
-
-inline std::ostream& operator<<(MessageBuffer& os, std::ios_base& (*manip)(std::ios_base& s)) {
-	std::ostream& s = os;
-	(*manip)(s);
-	return s;
 }
 
 #if LOG4CXX_LOGCHAR_IS_UTF8
