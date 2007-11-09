@@ -55,7 +55,7 @@ std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host) {
     // retrieve information about the given host
     Pool addrPool;
 
-    apr_sockaddr_t *address;
+    apr_sockaddr_t *address = 0;
     apr_status_t status = 
         apr_sockaddr_info_get(&address, encodedHost.c_str(),
                               APR_INET, 0, 0, (apr_pool_t*) addrPool.getAPRPool());
