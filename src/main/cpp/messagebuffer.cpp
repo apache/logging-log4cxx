@@ -77,6 +77,10 @@ const std::basic_string<char>& CharMessageBuffer::str(CharMessageBuffer&) {
 	return buf;
 }
 
+bool CharMessageBuffer::hasStream() const {
+    return (stream != 0);
+}
+
 
 
 
@@ -138,6 +142,9 @@ const std::basic_string<wchar_t>& WideMessageBuffer::str(WideMessageBuffer&) {
 	return buf;
 }
 
+bool WideMessageBuffer::hasStream() const {
+    return (stream != 0);
+}
 
 
 
@@ -146,6 +153,10 @@ MessageBuffer::MessageBuffer()  : wbuf(0){
 
 MessageBuffer::~MessageBuffer() {
     delete wbuf;
+}
+
+bool MessageBuffer::hasStream() const {
+    return cbuf.hasStream() || (wbuf != 0 && wbuf->hasStream());
 }
 
 #endif

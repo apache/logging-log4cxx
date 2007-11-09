@@ -45,39 +45,31 @@ public:
         std::string greeting("Hello, World");
         CharMessageBuffer& retval = buf << "Hello, Worl" << 'd';
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertCStr() {
         MessageBuffer buf;
         std::string greeting("Hello, World");
-#if LOG4CXX_SUPPORTS_MULTIPLE_OP_RETVAL		
         CharMessageBuffer& retval = buf << "Hello" << ", World";
-#else
-		std::ostream& retval = buf << "Hello" << ", World";
-#endif
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertString() {
         MessageBuffer buf;
         std::string greeting("Hello, World");
-#if LOG4CXX_SUPPORTS_MULTIPLE_OP_RETVAL		
         CharMessageBuffer& retval = buf << std::string("Hello") << std::string(", World");
-#else
-        std::ostream& retval = buf << std::string("Hello") << std::string(", World");
-#endif
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
     
     void testInsertNull() {
         MessageBuffer buf;
         std::string greeting("Hello, null");
-#if LOG4CXX_SUPPORTS_MULTIPLE_OP_RETVAL		
         CharMessageBuffer& retval = buf << "Hello, " << (const char*) 0;
-#else
-        std::ostream& retval = buf << "Hello, " << (const char*) 0;
-#endif
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
     
     void testInsertInt() {
@@ -85,6 +77,7 @@ public:
         std::string greeting("Hello, 5");
         std::ostream& retval = buf << "Hello, " << 5;
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval));
+        CPPUNIT_ASSERT_EQUAL(true, buf.hasStream());
     }
         
     void testInsertManipulator() {
@@ -92,6 +85,7 @@ public:
         std::string greeting("pi=3.142");
         std::ostream& retval = buf << "pi=" << std::setprecision(4) << 3.1415926;
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval));
+        CPPUNIT_ASSERT_EQUAL(true, buf.hasStream());
     }
 
 

@@ -84,6 +84,12 @@ namespace log4cxx {
 		 */
 		const std::basic_string<char>& str(CharMessageBuffer& buf);
 
+        /**
+         *  Returns true if buffer has an encapsulated STL stream.
+         *  @return true if STL stream was created.
+         */
+        bool hasStream() const;
+
    private:
         /**
          * Prevent use of default copy constructor.
@@ -172,6 +178,12 @@ inline std::basic_ostream<char>& operator<<(CharMessageBuffer& os, std::ios_base
 		 *       the embedded stream was not used.
 		 */
 		const std::basic_string<wchar_t>& str(WideMessageBuffer& buf);
+
+        /**
+         *  Returns true if buffer has an encapsulated STL stream.
+         *  @return true if STL stream was created.
+         */
+        bool hasStream() const;
 
    private:
         /**
@@ -329,6 +341,11 @@ inline std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, std::ios_b
 			return wbuf->str(os);
 		}
 
+        /**
+         *  Returns true if buffer has an encapsulated STL stream.
+         *  @return true if STL stream was created.
+         */
+        bool hasStream() const;
 
    private:
         /**
