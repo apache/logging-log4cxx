@@ -72,6 +72,67 @@ namespace log4cxx {
          *   @return encapsulated STL stream.
          */
         std::ostream& operator<<(ios_base_manip manip);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(bool val);
+
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(short val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(int val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(unsigned int val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(long val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(unsigned long val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(float val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(double val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(long double val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(void* val);
 
 		/**
 		 *  Cast to ostream.
@@ -167,6 +228,68 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
          *   @return encapsulated STL stream.
          */
         std::wostream& operator<<(ios_base_manip manip);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(bool val);
+
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(short val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(int val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(unsigned int val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(long val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(unsigned long val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(float val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(double val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(long double val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::wostream& operator<<(void* val);
+
 
         /**
 		 *  Cast to ostream.
@@ -217,7 +340,6 @@ template<class V>
 std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
 	return ((std::basic_ostream<wchar_t>&) os) << val;
 }
-
 
    /**
     *   This class is used by the LOG4CXX_INFO and similar
@@ -308,6 +430,67 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
          */
         std::ostream& operator<<(ios_base_manip manip);
 
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(bool val);
+
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(short val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(int val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(unsigned int val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(long val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(unsigned long val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(float val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(double val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(long double val);
+        /**
+         *   Insertion operator for built-in type.
+         *   @param val build in type.
+         *   @return encapsulated STL stream.
+         */
+        std::ostream& operator<<(void* val);
 		/**
 		 *   Get content of buffer.
 		 *   @param buf used only to signal
