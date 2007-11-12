@@ -306,6 +306,8 @@ namespace log4cxx
               
             
         private:
+            logstream(const logstream&);
+            logstream& operator=(const logstream&);        
             std::basic_stringstream<Ch>* stream;
              
         };
@@ -415,6 +417,8 @@ namespace log4cxx
               
             
         private:
+            wlogstream(const wlogstream&);
+            wlogstream& operator=(const wlogstream&);
             std::basic_stringstream<Ch>* stream;
              
         };
