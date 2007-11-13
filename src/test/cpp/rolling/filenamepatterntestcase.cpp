@@ -183,4 +183,9 @@ public:
 
 };
 
+//
+//   See bug LOGCXX-204
+//
+#if !defined(_MSC_VER) || _MSC_VER > 1200
 CPPUNIT_TEST_SUITE_REGISTRATION(FileNamePatternTestCase);
+#endif
