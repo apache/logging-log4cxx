@@ -52,6 +52,12 @@ namespace log4cxx
             *  @param frompage name of source encoding.
             */
               APRCharsetDecoder(const char* frompage) : pool(), mutex(pool) {
+                if (frompage == APR_LOCALE_CHARSET) {
+                    throw IllegalArgumentException("APRCharsetDecoder does not support APR_LOCALE_CHARSET.");
+                }
+                if (frompage == APR_DEFAULT_CHARSET) {
+                    throw IllegalArgumentException("APRCharsetDecoder does not support APR_DEFAULT_CHARSET.");
+                }
 #if LOG4CXX_LOGCHAR_IS_WCHAR
                 const char* topage = "WCHAR_T";
 #endif
@@ -63,25 +69,7 @@ namespace log4cxx
                     frompage,
                     (apr_pool_t*) pool.getAPRPool());
                 if (stat != APR_SUCCESS) {
-                     if (frompage == APR_DEFAULT_CHARSET) {
-                         throw IllegalArgumentException("APR_DEFAULT_CHARSET");
-                     } else if (frompage == APR_LOCALE_CHARSET) {
-                         Pool subpool;
-                         const char* localeEncoding = 
-                            apr_os_locale_encoding((apr_pool_t*) subpool.getAPRPool());
-                         // Solaris likes returning 646 if nl_langinfo has not been called
-                         if(localeEncoding != NULL && strcmp("646", localeEncoding) == 0) {
-                             stat = apr_xlate_open(&convset,
-                                 topage, 
-                                 "ASCII",
-                                 (apr_pool_t*) pool.getAPRPool());
-                         }
-                         if (stat != APR_SUCCESS) {
-                            throw IllegalArgumentException("APR_LOCALE_CHARSET");
-                         } 
-                     } else {
-                         throw IllegalArgumentException(frompage);
-                     }
+                    throw IllegalArgumentException(frompage);
                 }
               }
 
@@ -133,6 +121,7 @@ namespace log4cxx
                   Mutex mutex;
                   apr_xlate_t *convset;
           };
+          
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR && !defined(_WIN32_WCE)
@@ -372,6 +361,65 @@ private:
         USASCIICharsetDecoder& operator=(const USASCIICharsetDecoder&);
 };
 
+#if APR_HAS_XLATE
+          /**
+           *    Charset decoder that uses an embedded APRCharsetDecoder consistent
+           *     with current locale settings.
+           */
+          class APRLocaleCharsetDecoder : public CharsetDecoder {
+          public:
+               APRLocaleCharsetDecoder() : pool(), mutex(pool), decoder(), encoding() {
+               }
+               virtual ~APRLocaleCharsetDecoder() {
+               }
+               virtual log4cxx_status_t decode(ByteBuffer& in,
+                  LogString& out) {
+                  //
+                  //   assuming that all default locales are US-ASCII based (sorry no EBCDIC for now)
+                  //     scan byte array for any non US-ASCII
+                  const char* p = in.current();
+                  size_t i = in.position();
+                  for (; i < in.limit(); i++, p++) {
+                      if (*((unsigned char*) p) > 127) {
+                           Pool subpool;
+                           const char* enc = apr_os_locale_encoding((apr_pool_t*) subpool.getAPRPool());
+                           {
+                                synchronized sync(mutex);
+                                if (encoding != enc) {
+                                    encoding = enc;
+                                    try {
+                                        decoder = new APRCharsetDecoder(enc);
+                                    } catch(IllegalArgumentException ex) {
+                                        decoder = new USASCIICharsetDecoder();
+                                    }
+                                }
+                            }
+                            return decoder->decode(in, out);        
+                      }
+                  }
+                  //
+                  //    Straight US-ASCII, append bytes as characters.
+                  //
+#if LOG4CXX_LOGCHAR_IS_UTF8
+                  out.append(in.current(), in.remaining());
+#else
+                  p = in.current();
+                  i = in.position();
+                  for (; i < in.limit(); i++, p++) {
+                      out.append(1, *p);
+                  }                  
+#endif                               
+                  in.position(in.limit());   
+                  return APR_SUCCESS;  
+               }
+          private:
+               Pool pool;
+               Mutex mutex;
+               CharsetDecoderPtr decoder;
+               std::string encoding;
+          };
+#endif
+
 
 #if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_HAS_WCHAR_T && (defined(_WIN32) || defined(__STDC_ISO_10646__))
           /**
@@ -457,7 +505,7 @@ CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
 #elif LOG4CXX_LOGCHAR_IS_WCHAR
     return new MbstowcsCharsetDecoder();
 #elif APR_HAS_XLATE
-    return new APRCharsetDecoder(APR_LOCALE_CHARSET);
+    return new APRLocaleCharsetDecoder();
 #else
 #error No default charset decoder available
 #endif

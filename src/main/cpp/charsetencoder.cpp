@@ -44,6 +44,12 @@ namespace log4cxx
           {
           public:
               APRCharsetEncoder(const char* topage) : pool(), mutex(pool) {
+                if (topage == APR_LOCALE_CHARSET) {
+                    throw IllegalArgumentException("APRCharsetEncoder does not support APR_LOCALE_CHARSET.");
+                }
+                if (topage == APR_DEFAULT_CHARSET) {
+                    throw IllegalArgumentException("APRCharsetEncoder does not support APR_DEFAULT_CHARSET.");
+                }
 #if LOG4CXX_LOGCHAR_IS_WCHAR
                   const char* frompage = "WCHAR_T";
 #endif
@@ -55,24 +61,7 @@ namespace log4cxx
                      frompage,
                      (apr_pool_t*) pool.getAPRPool());
                   if (stat != APR_SUCCESS) {
-                     if (topage == APR_DEFAULT_CHARSET) {
-                         throw IllegalArgumentException("APR_DEFAULT_CHARSET");
-                     } else if (topage == APR_LOCALE_CHARSET) {
-                         const char* localeEncoding = 
-                            apr_os_locale_encoding((apr_pool_t*) pool.getAPRPool());
-                         // Solaris likes returning 646 if nl_langinfo has not been called
-                         if(localeEncoding != NULL && strcmp("646", localeEncoding) == 0) {
-                             stat = apr_xlate_open(&convset,
-                                 "ASCII", 
-                                 frompage,
-                                 (apr_pool_t*) pool.getAPRPool());
-                         }
-                         if (stat != APR_SUCCESS) {
-                            throw IllegalArgumentException("APR_LOCALE_CHARSET");
-                         } 
-                     } else {
-                         throw IllegalArgumentException(topage);
-                     }
+                     throw IllegalArgumentException(topage);
                   }
               }
 
@@ -258,7 +247,7 @@ namespace log4cxx
           };
 
           /**
-          *   Encodes a LogString to a byte array when the encodings are indentical.
+          *   Encodes a LogString to a byte array when the encodings are identical.
           */
           class TrivialCharsetEncoder : public CharsetEncoder
           {
@@ -474,6 +463,67 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
           };
 #endif
 
+#if APR_HAS_XLATE
+          /**
+           *    Charset encoder that uses an embedded APRCharsetEncoder consistent
+           *     with current locale settings.
+           */
+          class APRLocaleCharsetEncoder : public CharsetEncoder {
+          public:
+               APRLocaleCharsetEncoder() : pool(), mutex(pool), encoder(), encoding() {
+               }
+               virtual ~APRLocaleCharsetEncoder() {
+               }
+              virtual log4cxx_status_t encode(const LogString& in,
+                    LogString::const_iterator& iter,
+                    ByteBuffer& out) {
+                  log4cxx_status_t stat = APR_SUCCESS;
+                  if (iter != in.end()) {  
+                    for(LogString::const_iterator i(iter);
+                        i != in.end();
+                        i++) {
+                        //
+                        //    non-ASCII character, delegate to APRCharsetEncoder.
+                        //
+#if LOG4CXX_LOGCHAR_IS_UTF8
+                       if (((unsigned char) *i) > 127) {
+#else
+                       if (*i > 127) {
+#endif                        
+                           Pool subpool;
+                           const char* enc = apr_os_locale_encoding((apr_pool_t*) subpool.getAPRPool());
+                           {
+                                synchronized sync(mutex);
+                                if (encoding != enc) {
+                                    encoding = enc;
+                                    try {
+                                        encoder = new APRCharsetEncoder(enc);
+                                    } catch(IllegalArgumentException ex) {
+                                        encoder = new USASCIICharsetEncoder();
+                                    }
+                                }
+                            }
+                            return encoder->encode(in, iter, out);        
+                      }
+                 }
+                 size_t limit = out.limit();
+                 size_t pos = out.position();
+                 char* current = out.current();
+                 for (; iter != in.end() && pos < limit; pos++, iter++, current++) {
+                     *current = (char) *iter;
+                 }
+                 out.position(pos);
+                 }
+                 return stat;  
+               }
+          private:
+               Pool pool;
+               Mutex mutex;
+               CharsetEncoderPtr encoder;
+               std::string encoding;
+          };
+#endif
+
 
         } // namespace helpers
 
@@ -510,7 +560,7 @@ CharsetEncoder* CharsetEncoder::createDefaultEncoder() {
 #elif LOG4CXX_LOGCHAR_IS_WCHAR
   return new WcstombsCharsetEncoder();
 #elif APR_HAS_XLATE
-  return new APRCharsetEncoder(APR_LOCALE_CHARSET);
+  return new APRLocaleCharsetEncoder();
 #else
 #error No default encoder available
 #endif
