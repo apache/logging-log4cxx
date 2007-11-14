@@ -28,6 +28,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+
 /**
 This test program sits in a loop and logs things. Its logging is
 configured by a configuration file. Changes to this configuration
@@ -66,11 +67,19 @@ public:
                 if(configFile.length() > 4 &&
                      configFile.substr(configFile.length() - 4) == ".xml")
                 {
-                        xml::DOMConfigurator::configureAndWatch(configFile, 3000);
+#if APR_HAS_THREADS
+					xml::DOMConfigurator::configureAndWatch(configFile, 3000);
+#else
+					xml::DOMConfigurator::configure(configFile);
+#endif
                 }
                 else
                 {
+#if APR_HAS_THREADS
                         PropertyConfigurator::configureAndWatch(configFile, 3000);
+#else
+                        PropertyConfigurator::configure(configFile);
+#endif
                 }
         }
 

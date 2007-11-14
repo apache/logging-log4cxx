@@ -64,8 +64,10 @@ int main(int argc, char** argv)
             err = true;
         } else if (strcmp("puts", argv[i]) == 0) {
             fputs("Hello, fputs\n", err ? stderr : stdout);
+#if LOG4CXX_HAS_WCHAR_T
         } else if (strcmp("putws", argv[i]) == 0) {
             fputws(L"Hello, fputws\n", err ? stderr : stdout);
+#endif
         } else if (strcmp("cout", argv[i]) == 0) {
             if (err) {
                 std::cerr << "Hello, cout" << std::endl;
@@ -95,10 +97,12 @@ int main(int argc, char** argv)
                 configured = true;
             }
             log4cxx::Logger::getRootLogger()->info("Hello, log4cxx");
+#if LOG4CXX_HAS_WCHAR_T
         } else if (strcmp("wide", argv[i]) == 0) {
             fwide(err ? stderr : stdout, 1);
         } else if (strcmp("byte", argv[i]) == 0) {
             fwide(err ? stderr : stdout, -1);
+#endif
         } else {
             fputs("Unrecognized option: ", stderr);
             fputs(argv[i], stderr);

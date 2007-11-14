@@ -72,6 +72,7 @@ void* LOG4CXX_THREAD_FUNC runSocket(log4cxx_thread_t* /* thread */, void* data) 
 int main(int argc, const char * const argv[])
 {
         apr_app_initialize(&argc, &argv, NULL);
+#if APR_HAS_THREADS
         if(argc == 3)
         {
                 init(argv[1], argv[2]);
@@ -111,7 +112,9 @@ int main(int argc, const char * const argv[])
         {
                 std::cout << "SocketException: " << e.what() << std::endl;
         }
-
+#else
+		std::cout << "simplesocketserver requires APR threads";
+#endif
         apr_terminate();
         return 0;
 }
