@@ -493,7 +493,12 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                            const char* enc = apr_os_locale_encoding((apr_pool_t*) subpool.getAPRPool());
                            {
                                 synchronized sync(mutex);
-                                if (encoding != enc) {
+                                if (enc == 0) {
+                                   if (encoder == 0) {
+                                       encoding = "C";
+                                       encoder = new USASCIICharsetEncoder();
+                                   }
+                                } else if (encoding != enc) {
                                     encoding = enc;
                                     try {
                                         encoder = CharsetEncoder::getEncoder(encoding);

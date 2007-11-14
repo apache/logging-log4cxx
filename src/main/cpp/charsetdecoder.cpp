@@ -385,9 +385,11 @@ private:
                            const char* enc = apr_os_locale_encoding((apr_pool_t*) subpool.getAPRPool());
                            {
                                 synchronized sync(mutex);
-                                if (enc == 0 && decoder == 0) {
-                                    encoding = "C";
-                                    decoder = new USASCIICharsetDecoder();
+                                if (enc == 0) {
+                                    if (decoder == 0) {
+                                        encoding = "C";
+                                        decoder = new USASCIICharsetDecoder();
+                                    }
                                 } else if (encoding != enc) {
                                     encoding = enc;
                                     try {
