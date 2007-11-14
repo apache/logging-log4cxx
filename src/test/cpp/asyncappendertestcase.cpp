@@ -97,7 +97,7 @@ public:
 
 typedef helpers::ObjectPtrT<BlockableVectorAppender> BlockableVectorAppenderPtr;
 
-
+#if APR_HAS_THREADS
 /**
  * Tests of AsyncAppender.
  */
@@ -285,3 +285,4 @@ public:
 };
 
 //CPPUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);
+#endif

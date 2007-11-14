@@ -26,13 +26,12 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
+#if APR_HAS_THREADS
 Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0) {
 }
 
 Thread::~Thread() {
-#if APR_HAS_THREADS
     join();
-#endif
 }
 
 Thread::LaunchPackage::LaunchPackage(Thread* t, Runnable r, void* d) : thread(t), runnable(r), data(d) {
@@ -90,7 +89,6 @@ Thread::LaunchStatus::~LaunchStatus() {
     apr_atomic_set32(alive, 0);
 }
     
-
 void* Thread::launcher(log4cxx_thread_t* thread, void* data) {
     LaunchPackage* package = (LaunchPackage*) data;
     ThreadLocal& tls = getThreadLocal();
@@ -158,12 +156,14 @@ bool Thread::isAlive() {
 void Thread::ending() {
     apr_atomic_set32(&alive, 0);
 }
-
+#endif
 
 void Thread::sleep(int duration) {
+#if APR_HAS_THREADS
     if(interrupted()) {
          throw InterruptedException();
     }
+#endif    
     if (duration > 0) {
         apr_sleep(duration*1000);
     }

@@ -22,6 +22,7 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
+#if APR_HAS_THREADS
 ThreadLocal::ThreadLocal() {
     apr_pool_t** ppool = reinterpret_cast<apr_pool_t**>(&pool);
     apr_status_t stat = apr_pool_create(ppool, 0);
@@ -54,4 +55,4 @@ void* ThreadLocal::get() {
     }
     return retval;
 }
-
+#endif

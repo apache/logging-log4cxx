@@ -144,7 +144,9 @@ bool Class::registerClass(const Class& newClass)
 }
 
 void Class::registerClasses() {
+#if APR_HAS_THREADS
         AsyncAppender::registerClass();
+#endif        
         ConsoleAppender::registerClass();
         FileAppender::registerClass();
 #ifdef LOG4CXX_HAVE_ODBC
@@ -161,12 +163,16 @@ void Class::registerClasses() {
 //  TODO:
 //        SMTPAppender::registerClass();
 #endif
+#if APR_HAS_THREADS
         SocketAppender::registerClass();
         SocketHubAppender::registerClass();
+#endif        
         SyslogAppender::registerClass();
+#if APR_HAS_THREADS
         TelnetAppender::registerClass();
         XMLSocketAppender::registerClass();
- //       DateLayout::registerClass();
+#endif
+//       DateLayout::registerClass();
         HTMLLayout::registerClass();
         PatternLayout::registerClass();
         SimpleLayout::registerClass();

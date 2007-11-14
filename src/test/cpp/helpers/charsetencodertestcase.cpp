@@ -36,7 +36,9 @@ using namespace log4cxx::helpers;
 class CharsetEncoderTestCase : public CppUnit::TestFixture
 {
         CPPUNIT_TEST_SUITE(CharsetEncoderTestCase);
+#if APR_HAS_THREADS        
                 CPPUNIT_TEST(thread1);
+#endif                
                 CPPUNIT_TEST(encode1);
                 CPPUNIT_TEST(encode2);
                 CPPUNIT_TEST(encode3);
@@ -172,6 +174,7 @@ public:
           CPPUNIT_ASSERT(iter == greeting.end());
         }
         
+#if APR_HAS_THREADS        
         class ThreadPackage {
         public:
             ThreadPackage(CharsetEncoderPtr& enc, int repetitions) : 
@@ -294,7 +297,7 @@ public:
               CPPUNIT_ASSERT_EQUAL((apr_uint32_t) THREAD_COUNT * THREAD_REPS, package->getPass());
               delete package;
         }
-
+#endif
 
 };
 
