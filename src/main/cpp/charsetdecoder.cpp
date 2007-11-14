@@ -26,6 +26,7 @@
 #include <log4cxx/private/log4cxx_private.h>
 #include <locale.h>
 #include <apr_portable.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 
 using namespace log4cxx;
@@ -361,16 +362,15 @@ private:
         USASCIICharsetDecoder& operator=(const USASCIICharsetDecoder&);
 };
 
-#if APR_HAS_XLATE
           /**
-           *    Charset decoder that uses an embedded APRCharsetDecoder consistent
+           *    Charset decoder that uses an embedded CharsetDecoder consistent
            *     with current locale settings.
            */
-          class APRLocaleCharsetDecoder : public CharsetDecoder {
+          class LocaleCharsetDecoder : public CharsetDecoder {
           public:
-               APRLocaleCharsetDecoder() : pool(), mutex(pool), decoder(), encoding() {
+               LocaleCharsetDecoder() : pool(), mutex(pool), decoder(), encoding() {
                }
-               virtual ~APRLocaleCharsetDecoder() {
+               virtual ~LocaleCharsetDecoder() {
                }
                virtual log4cxx_status_t decode(ByteBuffer& in,
                   LogString& out) {
@@ -385,12 +385,15 @@ private:
                            const char* enc = apr_os_locale_encoding((apr_pool_t*) subpool.getAPRPool());
                            {
                                 synchronized sync(mutex);
-                                if (encoding != enc) {
+                                if (enc == 0 && decoder == 0) {
+                                    encoding = "C";
+                                    decoder = new USASCIICharsetDecoder();
+                                } else if (encoding != enc) {
                                     encoding = enc;
                                     try {
-                                        decoder = new APRCharsetDecoder(enc);
-                                    } catch(IllegalArgumentException ex) {
-                                        decoder = new USASCIICharsetDecoder();
+                                       decoder = getDecoder(encoding);
+                                    } catch (IllegalArgumentException& ex) {
+                                       decoder = new USASCIICharsetDecoder();
                                     }
                                 }
                             }
@@ -409,7 +412,7 @@ private:
                       out.append(1, *p);
                   }                  
 #endif                               
-                  in.position(in.limit());   
+                  in.position(in.limit()); 
                   return APR_SUCCESS;  
                }
           private:
@@ -418,8 +421,6 @@ private:
                CharsetDecoderPtr decoder;
                std::string encoding;
           };
-#endif
-
 
 #if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_HAS_WCHAR_T && (defined(_WIN32) || defined(__STDC_ISO_10646__))
           /**
@@ -504,10 +505,8 @@ CharsetDecoder* CharsetDecoder::createDefaultDecoder() {
      return new USASCIICharsetDecoder();
 #elif LOG4CXX_LOGCHAR_IS_WCHAR
     return new MbstowcsCharsetDecoder();
-#elif APR_HAS_XLATE
-    return new APRLocaleCharsetDecoder();
 #else
-#error No default charset decoder available
+    return new LocaleCharsetDecoder();
 #endif
 }
 
@@ -541,6 +540,30 @@ CharsetDecoderPtr CharsetDecoder::getISOLatinDecoder() {
     return new ISOLatinCharsetDecoder();
 }
 
+
+CharsetDecoderPtr CharsetDecoder::getDecoder(const std::string& charset) {
+    if (StringHelper::equalsIgnoreCase(charset, "UTF-8", "utf-8") ||
+        StringHelper::equalsIgnoreCase(charset, "UTF8", "utf8")) {
+        return new UTF8CharsetDecoder();
+    } else if (StringHelper::equalsIgnoreCase(charset, "C", "c") ||
+        charset == "646" ||
+        StringHelper::equalsIgnoreCase(charset, "US-ASCII", "us-ascii") ||
+        StringHelper::equalsIgnoreCase(charset, "ISO646-US", "iso646-US") ||
+        StringHelper::equalsIgnoreCase(charset, "ANSI_X3.4-1968", "ansi_x3.4-1968")) {
+        return new USASCIICharsetDecoder();
+    } else if (StringHelper::equalsIgnoreCase(charset, "ISO-8859-1", "iso-8859-1") ||
+        StringHelper::equalsIgnoreCase(charset, "ISO-LATIN-1", "iso-latin-1")) {
+        return new ISOLatinCharsetDecoder();
+    }
+#if APR_HAS_XLATE || !defined(_WIN32)
+    return new APRCharsetDecoder(charset.c_str());
+#else    
+    throw IllegalArgumentException(charset);
+#endif
+}
+
+
+
 #if LOG4CXX_HAS_WCHAR_T
 CharsetDecoder* CharsetDecoder::createWideDecoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
@@ -565,5 +588,16 @@ CharsetDecoderPtr CharsetDecoder::getWideDecoder() {
   }
   return decoder;
 }
+
+CharsetDecoderPtr CharsetDecoder::getDecoder(const std::wstring& charset) {
+   std::string cs(charset.size(), ' ');
+   for(std::wstring::size_type i = 0;
+      i < charset.length();
+     i++) {
+      cs[i] = (char) charset[i];
+   }
+   return getDecoder(cs);
+}
+
 #endif
 

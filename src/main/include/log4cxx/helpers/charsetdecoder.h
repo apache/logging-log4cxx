@@ -54,12 +54,30 @@ namespace log4cxx
                *   Get decoder for default charset.
                */
                   static CharsetDecoderPtr getDefaultDecoder();
+              /**
+               *  Get decoder for specified character set.
+               *  @param charset, the following values should be recognized:
+               *     "US-ASCII", "ISO-8859-1", "UTF-8",
+               *     "UTF-16BE", "UTF-16LE".
+               *  @return decoder
+               *  @throws IllegalArgumentException if charset is not recognized.
+               */
+              static CharsetDecoderPtr getDecoder(const std::string& charset);
 
 #if LOG4CXX_HAS_WCHAR_T
               /**
                *   Get decoder for a byte array containing wchar_t values.
                    */
                   static CharsetDecoderPtr getWideDecoder();
+              /**
+               *  Get decoder for specified character set.
+               *  @param charset, the following values should be recognized:
+               *     "US-ASCII", "ISO-8859-1", "UTF-8",
+               *     "UTF-16BE", "UTF-16LE".
+               *  @return decoder
+               *  @throws IllegalArgumentException if charset is not recognized.
+               */
+              static CharsetDecoderPtr getDecoder(const std::wstring& charset);
 #endif
               /**
                *   Get decoder for UTF-8.
@@ -69,6 +87,8 @@ namespace log4cxx
                *   Get decoder for ISO-8859-1.
                */
                   static CharsetDecoderPtr getISOLatinDecoder();
+                  
+                  
 
               /**
                *  Decodes as many bytes as possible from the given

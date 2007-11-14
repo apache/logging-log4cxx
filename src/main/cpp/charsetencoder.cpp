@@ -463,16 +463,15 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
           };
 #endif
 
-#if APR_HAS_XLATE
           /**
-           *    Charset encoder that uses an embedded APRCharsetEncoder consistent
+           *    Charset encoder that uses an embedded CharsetEncoder consistent
            *     with current locale settings.
            */
-          class APRLocaleCharsetEncoder : public CharsetEncoder {
+          class LocaleCharsetEncoder : public CharsetEncoder {
           public:
-               APRLocaleCharsetEncoder() : pool(), mutex(pool), encoder(), encoding() {
+               LocaleCharsetEncoder() : pool(), mutex(pool), encoder(), encoding() {
                }
-               virtual ~APRLocaleCharsetEncoder() {
+               virtual ~LocaleCharsetEncoder() {
                }
               virtual log4cxx_status_t encode(const LogString& in,
                     LogString::const_iterator& iter,
@@ -497,7 +496,7 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                                 if (encoding != enc) {
                                     encoding = enc;
                                     try {
-                                        encoder = new APRCharsetEncoder(enc);
+                                        encoder = CharsetEncoder::getEncoder(encoding);
                                     } catch(IllegalArgumentException ex) {
                                         encoder = new USASCIICharsetEncoder();
                                     }
@@ -522,7 +521,6 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                CharsetEncoderPtr encoder;
                std::string encoding;
           };
-#endif
 
 
         } // namespace helpers
@@ -559,10 +557,8 @@ CharsetEncoder* CharsetEncoder::createDefaultEncoder() {
    return new USASCIICharsetEncoder();
 #elif LOG4CXX_LOGCHAR_IS_WCHAR
   return new WcstombsCharsetEncoder();
-#elif APR_HAS_XLATE
-  return new APRLocaleCharsetEncoder();
 #else
-#error No default encoder available
+  return new LocaleCharsetEncoder();
 #endif
 }
 
@@ -608,25 +604,27 @@ CharsetEncoderPtr CharsetEncoder::getWideEncoder() {
 
 
 CharsetEncoderPtr CharsetEncoder::getEncoder(const std::string& charset) {
-    if (StringHelper::equalsIgnoreCase(charset, "US-ASCII", "us-ascii") ||
+    if (StringHelper::equalsIgnoreCase(charset, "UTF-8", "utf-8")) {
+        return new UTF8CharsetEncoder();
+    } else if (StringHelper::equalsIgnoreCase(charset, "C", "c") ||
+        charset == "646" ||
+        StringHelper::equalsIgnoreCase(charset, "US-ASCII", "us-ascii") ||
         StringHelper::equalsIgnoreCase(charset, "ISO646-US", "iso646-US") ||
         StringHelper::equalsIgnoreCase(charset, "ANSI_X3.4-1968", "ansi_x3.4-1968")) {
         return new USASCIICharsetEncoder();
     } else if (StringHelper::equalsIgnoreCase(charset, "ISO-8859-1", "iso-8859-1") ||
         StringHelper::equalsIgnoreCase(charset, "ISO-LATIN-1", "iso-latin-1")) {
         return new ISOLatinCharsetEncoder();
-    } else if (StringHelper::equalsIgnoreCase(charset, "UTF-8", "utf-8")) {
-        return new UTF8CharsetEncoder();
     } else if (StringHelper::equalsIgnoreCase(charset, "UTF-16BE", "utf-16be")
         || StringHelper::equalsIgnoreCase(charset, "UTF-16", "utf-16")) {
         return new UTF16BECharsetEncoder();
     } else if (StringHelper::equalsIgnoreCase(charset, "UTF-16LE", "utf-16le")) {
         return new UTF16LECharsetEncoder();
     }
-#if defined(_WIN32)
-    throw IllegalArgumentException(charset);
-#else
+#if APR_HAS_XLATE || !defined(_WIN32)
     return new APRCharsetEncoder(charset.c_str());
+#else    
+    throw IllegalArgumentException(charset);
 #endif
 }
 

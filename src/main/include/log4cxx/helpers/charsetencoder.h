@@ -63,7 +63,8 @@ namespace log4cxx
                *  @param charset, the following values should be recognized:
                *     "US-ASCII", "ISO-8859-1", "UTF-8",
                *     "UTF-16BE", "UTF-16LE".
-               *  @return encoder, may be null if charset was not recognized.
+               *  @return encoder.
+               *  @throws IllegalArgumentException if encoding is not recognized.
                */
                   static CharsetEncoderPtr getEncoder(const std::string& charset);
 
@@ -78,7 +79,8 @@ namespace log4cxx
                *  @param charset, the following values should be recognized:
                *     "US-ASCII", "ISO-8859-1", "UTF-8",
                *     "UTF-16BE", "UTF-16LE".
-               *  @return encoder, may be null if charset was not recognized.
+               *  @return encoder.
+               *  @throws IllegalArgumentException if encoding is not recognized.
                */
               static CharsetEncoderPtr getEncoder(const std::wstring& charset);
 #endif
