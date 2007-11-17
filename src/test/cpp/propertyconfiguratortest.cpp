@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/logmanager.h>
+#include "vectorappender.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -29,6 +30,7 @@ class PropertyConfiguratorTest : public CppUnit::TestFixture
         CPPUNIT_TEST_SUITE(PropertyConfiguratorTest);
                 CPPUNIT_TEST(testInherited);
                 CPPUNIT_TEST(testNull);
+                CPPUNIT_TEST(testAppenderThreshold);
         CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -63,6 +65,23 @@ public:
                 logger->getEffectiveLevel()->toInt());
         LogManager::resetConfiguration();
     }
+
+    void testAppenderThreshold() {
+        Properties props;
+        props.put(LOG4CXX_STR("log4j.rootLogger"), LOG4CXX_STR("ALL,VECTOR1"));
+        props.put(LOG4CXX_STR("log4j.appender.VECTOR1"), LOG4CXX_STR("org.apache.log4j.VectorAppender"));
+        props.put(LOG4CXX_STR("log4j.appender.VECTOR1.threshold"), LOG4CXX_STR("WARN"));
+        PropertyConfigurator::configure(props);
+        LoggerPtr root(Logger::getRootLogger());
+        VectorAppenderPtr appender(root->getAppender("VECTOR1"));
+        CPPUNIT_ASSERT_EQUAL((int) Level::WARN_INT, appender->getThreshold()->toInt());
+        LOG4CXX_INFO(root, "Info message");
+        LOG4CXX_WARN(root, "Warn message");
+        LOG4CXX_WARN(root, "Error message");
+        CPPUNIT_ASSERT_EQUAL((size_t) 2, appender->vector.size());        
+        LogManager::resetConfiguration();
+    }
+
 };
 
 
