@@ -47,6 +47,9 @@ CharMessageBuffer& CharMessageBuffer::operator<<(const char* msg) {
 	}
 	return *this;
 }
+CharMessageBuffer& CharMessageBuffer::operator<<(char* msg) {
+	return operator<<((const char*) msg);
+}
 
 CharMessageBuffer& CharMessageBuffer::operator<<(const char msg) {
 	if (stream == 0) {
@@ -128,6 +131,10 @@ WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t* msg) {
 	return *this;
 }
 
+WideMessageBuffer& WideMessageBuffer::operator<<(wchar_t* msg) {
+	return operator<<((const wchar_t*) msg);
+}
+
 WideMessageBuffer& WideMessageBuffer::operator<<(const wchar_t msg) {
 	if (stream == 0) {
 		buf.append(1, msg);
@@ -207,6 +214,9 @@ CharMessageBuffer& MessageBuffer::operator<<(const std::string& msg) {
 CharMessageBuffer& MessageBuffer::operator<<(const char* msg) {
 	return cbuf.operator<<(msg);
 }
+CharMessageBuffer& MessageBuffer::operator<<(char* msg) {
+	return cbuf.operator<<((const char*) msg);
+}
 
 CharMessageBuffer& MessageBuffer::operator<<(const char msg) {
 	return cbuf.operator<<(msg);
@@ -229,6 +239,11 @@ WideMessageBuffer& MessageBuffer::operator<<(const wchar_t* msg) {
 	wbuf = new WideMessageBuffer();
 	return (*wbuf) << msg;
 }
+WideMessageBuffer& MessageBuffer::operator<<(wchar_t* msg) {
+	wbuf = new WideMessageBuffer();
+	return (*wbuf) << (const wchar_t*) msg;
+}
+
 WideMessageBuffer& MessageBuffer::operator<<(const wchar_t msg) {
 	wbuf = new WideMessageBuffer();
 	return (*wbuf) << msg;

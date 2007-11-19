@@ -58,6 +58,12 @@ namespace log4cxx {
          *   @return this buffer.
          */
         CharMessageBuffer& operator<<(const char* msg);
+        /**
+         *   Appends string to buffer.
+         *   @param msg string to append.
+         *   @return this buffer.
+         */
+        CharMessageBuffer& operator<<(char* msg);
 
         /**
          *   Appends character to buffer.
@@ -214,6 +220,12 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
          *   @return this buffer.
          */
         WideMessageBuffer& operator<<(const wchar_t* msg);
+        /**
+         *   Appends string to buffer.
+         *   @param msg string to append.
+         *   @return this buffer.
+         */
+        WideMessageBuffer& operator<<(wchar_t* msg);
 
         /**
          *   Appends character to buffer.
@@ -376,6 +388,13 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
          *   @return encapsulated CharMessageBuffer.
          */
         CharMessageBuffer& operator<<(const char* msg);
+        /**
+         *   Appends a string into the buffer and
+         *   fixes the buffer to use char characters.
+         *   @param msg message to append.
+         *   @return encapsulated CharMessageBuffer.
+         */
+        CharMessageBuffer& operator<<(char* msg);
 
         /**
          *   Appends a string into the buffer and
@@ -415,6 +434,13 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
          *   @return encapsulated CharMessageBuffer.
          */
         WideMessageBuffer& operator<<(const wchar_t* msg);
+        /**
+         *   Appends a string into the buffer and
+         *   fixes the buffer to use char characters.
+         *   @param msg message to append.
+         *   @return encapsulated CharMessageBuffer.
+         */
+        WideMessageBuffer& operator<<(wchar_t* msg);
         /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
