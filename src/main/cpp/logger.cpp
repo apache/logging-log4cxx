@@ -273,6 +273,16 @@ bool Logger::isAttached(const AppenderPtr& appender) const
         }
 }
 
+bool Logger::isTraceEnabled() const
+{
+        if(repository == 0 || repository->isDisabled(Level::TRACE_INT))
+        {
+                return false;
+        }
+
+        return Level::getTrace()->isGreaterOrEqual(getEffectiveLevel());
+}
+
 bool Logger::isDebugEnabled() const
 {
         if(repository == 0 || repository->isDisabled(Level::DEBUG_INT))

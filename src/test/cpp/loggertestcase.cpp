@@ -31,6 +31,7 @@
 #include "insertwide.h"
 #include "testchar.h"
 #include <log4cxx/helpers/locale.h>
+#include "vectorappender.h"
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -71,6 +72,8 @@ class LoggerTestCase : public CppUnit::TestFixture
 //    CPPUNIT_TEST(testRB3);
                 CPPUNIT_TEST(testExists);
                 CPPUNIT_TEST(testHierarchy1);
+                CPPUNIT_TEST(testTrace);
+                CPPUNIT_TEST(testIsTraceEnabled);
         CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -410,6 +413,47 @@ public:
            logger->info("Hello, World.");
         }
         
+        
+  /**
+   * Tests logger.trace(Object).
+   * @since 1.2.12
+   */
+  void testTrace() {
+      VectorAppenderPtr appender = new VectorAppender();
+      LoggerPtr root = Logger::getRootLogger();
+      root->addAppender(appender);
+      root->setLevel(Level::getInfo());
+
+      LoggerPtr tracer = Logger::getLogger("com.example.Tracer");
+      tracer->setLevel(Level::getTrace());
+
+      LOG4CXX_TRACE(tracer, "Message 1");
+      LOG4CXX_TRACE(root, "Discarded Message");
+      LOG4CXX_TRACE(root, "Discarded Message");
+
+      std::vector<LoggingEventPtr> msgs(appender->vector);
+      CPPUNIT_ASSERT_EQUAL((size_t) 1, msgs.size());
+      LoggingEventPtr event = msgs[0];
+      CPPUNIT_ASSERT_EQUAL((int) Level::TRACE_INT, event->getLevel()->toInt());
+      CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Message 1")), event->getMessage());
+  }
+
+    /**
+     * Tests isTraceEnabled.
+     * @since 1.2.12
+     */
+    void testIsTraceEnabled() {
+        VectorAppenderPtr appender = new VectorAppender();
+        LoggerPtr root = Logger::getRootLogger();
+        root->addAppender(appender);
+        root->setLevel(Level::getInfo());
+
+        LoggerPtr tracer = Logger::getLogger("com.example.Tracer");
+        tracer->setLevel(Level::getTrace());
+
+        CPPUNIT_ASSERT_EQUAL(true, tracer->isTraceEnabled());
+        CPPUNIT_ASSERT_EQUAL(false, root->isTraceEnabled());
+    }
 
 protected:
         static LogString MSG;
