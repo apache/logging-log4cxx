@@ -66,13 +66,13 @@ public:
     void testInsertStr() {
         MessageBuffer buf;
         std::string greeting("Hello, World");
-		char* part1 = (char*) malloc(20);
-		strcpy(part1, "Hello");
-		char* part2 = (char*) malloc(20);
-		strcpy(part2, ", World");
+	char* part1 = (char*) malloc(10*sizeof(wchar_t));
+	strcpy(part1, "Hello");
+	char* part2 = (char*) malloc(10*sizeof(wchar_t));
+	strcpy(part2, ", World");
         CharMessageBuffer& retval = buf << part1 << part2;
-		free(part1);
-		free(part2);
+	free(part1);
+	free(part2);
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
         CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
@@ -129,13 +129,13 @@ public:
     void testInsertWStr() {
         MessageBuffer buf;
         std::wstring greeting(L"Hello, World");
-		wchar_t* part1 = (wchar_t*) malloc(20);
-		wcscpy(part1, L"Hello");
-		wchar_t* part2 = (wchar_t*) malloc(20);
-		wcscpy(part2, L", World");
+	wchar_t* part1 = (wchar_t*) malloc(10*sizeof(wchar_t));
+	wcscpy(part1, L"Hello");
+	wchar_t* part2 = (wchar_t*) malloc(10*sizeof(wchar_t));
+	wcscpy(part2, L", World");
         WideMessageBuffer& retval = buf << part1 << part2;
-		free(part1);
-		free(part2);
+	free(part1);
+	free(part2);
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
         CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
