@@ -33,12 +33,12 @@ void ObjectPtrBase::checkNull(const int& null) {
 }
 
 void* ObjectPtrBase::exchange(void** destination, void* newValue) {
-#if APR_SIZEOF_VOIDP == 4
+#if _WIN32 && (!defined(_MSC_VER) || _MSC_VER >= 1300)
+    return InterlockedExchangePointer(destination, newValue);
+#elif APR_SIZEOF_VOIDP == 4
    return (void*) apr_atomic_xchg32((volatile apr_uint32_t*) destination,
                           (apr_uint32_t) newValue);
 #else
-   static Mutex mutex(APRInitializer::getRootPool());
-   synchronized sync(mutex);
    void* oldValue = *destination;
    *destination = newValue;
    return oldValue;
