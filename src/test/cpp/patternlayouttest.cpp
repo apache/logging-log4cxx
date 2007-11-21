@@ -88,11 +88,13 @@ public:
         void setUp()
         {
                 root = Logger::getRootLogger();
+                MDC::clear();
                 logger = Logger::getLogger(LOG4CXX_TEST_STR("java.org.apache.log4j.PatternLayoutTest"));
         }
 
         void tearDown()
         {
+                MDC::clear();
                 root->getLoggerRepository()->resetConfiguration();
         }
 

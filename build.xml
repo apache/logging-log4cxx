@@ -733,36 +733,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     </antcall>
 </target>
 
-<target name="build-shortsocketserver" depends="build"
-   description="builds a socket server used by unit tests">
 
-    <mkdir dir="${log4cxx.lib.dir}/shortsocketserver_obj"/>
-
-    <property name="project.compiler" value="${compiler}"/>
-    <cc name="${project.compiler}"
-                exceptions="true"
-                outfile="${build.dir}/shortsocketserver"
-                subsystem="console"
-                multithreaded="true"
-                outtype="executable"
-                objdir="${log4cxx.lib.dir}/shortsocketserver_obj"
-                debug="${debug}"
-                projectsOnly="${projectsOnly}">
-        <fileset dir="${tests.cpp.dir}">
-           <include name="shortsocketserver.cpp"/>
-           <include name="net/socketservertestcase.h"/>
-        </fileset>
-        <includepath path="${include.dir}"/>
-        <compilerarg value="${pic-option}" if="pic-option"/>
-        <defineset define="LOG4CXX_STATIC" if="is-static"/>
-        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
-        &libsets;
-        <project outfile="${project.dir}/shortsocketserver" type="${project.type}" if="project.if"/>
-    </cc>
-
-</target>
-
-<target name="build-unittest" depends="build, build-shortsocketserver, build-cppunit"
+<target name="build-unittest" depends="build, build-cppunit"
     description="Builds unit test app">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
 
@@ -778,7 +750,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
         <fileset dir="${tests.cpp.dir}" includes="**/*.cpp **/*.h">
-             <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
@@ -816,7 +787,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
         <fileset dir="${tests.cpp.dir}" includes="defaultinit/*.cpp main.cpp">
-             <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
@@ -856,7 +826,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
         <fileset dir="${tests.cpp.dir}" includes="${src.pattern}">
-             <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>
@@ -878,7 +847,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
 </target>
 
 <target name="build-standalone-unittest"
-    depends="build-shortsocketserver, build-cppunit"
+    depends="build-cppunit"
     description="Builds a unit tests + log4cxx executable">
     <mkdir dir="${executable.dir}/static/log4cxx-standalone-test_obj"/>
     <property name="project.compiler" value="${compiler}"/>
@@ -895,7 +864,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
         <fileset dir="${src.dir}" includes="*.cpp" excludes="**/iconv_module.cpp"/>
         <fileset dir="${include.dir}" includes="**/*.h"/>
         <fileset dir="${tests.cpp.dir}" includes="**/*.cpp **/*.h">
-             <exclude name="shortsocketserver.cpp"/>
         </fileset>
         <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
         <includepath path="${include.dir}"/>

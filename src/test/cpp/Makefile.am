@@ -26,7 +26,7 @@ if TESTS
 
 INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
-noinst_PROGRAMS = testsuite shortsocketserver
+noinst_PROGRAMS = testsuite
 
 customlogger_tests = \
 	customlogger/xlogger.cpp\
@@ -162,20 +162,6 @@ AM_CPPFLAGS = \
 testsuite_DEPENDENCIES = \
         $(top_builddir)/src/main/cpp/liblog4cxx.la
 
-shortsocketserver_SOURCES = \
-        $(util) \
-        $(xml_tests) \
-        shortsocketserver.cpp
-
-shortsocketserver_LDADD = \
-        $(top_builddir)/src/main/cpp/liblog4cxx.la
-
-shortsocketserver_LDFLAGS = \
-        @LIBS_CPPUNIT@
-
-shortsocketserver_DEPENDENCIES = \
-        $(top_builddir)/src/main/cpp/liblog4cxx.la
-
-check: testsuite shortsocketserver
+check: testsuite
 
 endif
