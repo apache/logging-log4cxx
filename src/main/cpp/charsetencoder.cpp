@@ -283,7 +283,7 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
-#if defined(_WIN32) || defined(__STDC_ISO_10646__)
+#if defined(_WIN32) || defined(__STDC_ISO_10646__) || defined(__APPLE__)
           /**
          *  Converts a wstring to UTF-8.
           */
@@ -333,14 +333,14 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                        return 0xFFFF;
 				  }
 #endif
-#if defined(__STDC_ISO_10646__)
+#if defined(__STDC_ISO_10646__) || defined(__APPLE__)
                   unsigned int decodeWide(const wchar_t*& src, const wchar_t* /* srcEnd */) {
 						return *(src++);
 				  }
 #endif
           };
 #else
-#error logchar cannot be wchar_t unless _WIN32 or __STDC_ISO_10646___ is defined          
+#error logchar cannot be wchar_t unless _WIN32, __STDC_ISO_10646___ or __APPLE__ is defined          
 #endif
 #endif
 
@@ -405,7 +405,7 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
                   UTF16LECharsetEncoder& operator=(const UTF16LECharsetEncoder&);
           };
 
-#if LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__))
+#if LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__) || defined(__APPLE__))
 
           /**
           *   Converts a LogString to an array of wchar_t.
@@ -453,7 +453,7 @@ typedef TrivialCharsetEncoder UTF8CharsetEncoder;
 					}
 #endif
 
-#if defined(__STDC_ISO_10646__)
+#if defined(__STDC_ISO_10646__) || defined(__APPLE__)
 				    int encodeWide(unsigned int ch, wchar_t* dst) {
 						*dst = ch;
 						return 1;
@@ -579,12 +579,16 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const std::wstring& charset) {
 }
 #endif
 
+CharsetEncoderPtr CharsetEncoder::getUTF8Encoder() {
+    return new UTF8CharsetEncoder();
+}
+
 
 #if LOG4CXX_HAS_WCHAR_T
 CharsetEncoder* CharsetEncoder::createWideEncoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
   return new TrivialCharsetEncoder();
-#elif LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__))
+#elif LOG4CXX_LOGCHAR_IS_UTF8 && (defined(_WIN32) || defined(__STDC_ISO_10646__) || defined(__APPLE__))
   return new WideCharsetEncoder();
 #else
   return new APRCharsetEncoder("WCHAR_T");

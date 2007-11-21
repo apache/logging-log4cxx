@@ -424,7 +424,7 @@ private:
                std::string encoding;
           };
 
-#if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_HAS_WCHAR_T && (defined(_WIN32) || defined(__STDC_ISO_10646__))
+#if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_HAS_WCHAR_T && (defined(_WIN32) || defined(__STDC_ISO_10646__) || defined(__APPLE__))
           /**
           *    Decoder to convert array of wchar_t to UTF-8 bytes.
           *
@@ -462,7 +462,7 @@ private:
                   out.reserve(out.length() + in.remaining()/sizeof(wchar_t));
                   char utf8[8];
                   while(src < srcEnd) {
-#if defined(__STDC_ISO_10646__)                  
+#if defined(__STDC_ISO_10646__) || defined(__APPLE__)                  
                       unsigned int sv = *(src++);
 #else
     				  unsigned int sv = decodeWide(src, srcEnd);
@@ -570,7 +570,7 @@ CharsetDecoderPtr CharsetDecoder::getDecoder(const std::string& charset) {
 CharsetDecoder* CharsetDecoder::createWideDecoder() {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
   return new TrivialCharsetDecoder();
-#elif defined(_WIN32) || defined(__STDC_ISO_10646__)
+#elif defined(_WIN32) || defined(__STDC_ISO_10646__) || defined(__APPLE__)
   return new WideToUTF8CharsetDecoder();
 #else
   return new APRCharsetDecoder("WCHAR_T");

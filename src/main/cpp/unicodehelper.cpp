@@ -165,7 +165,7 @@ int UnicodeHelper::encodeUTF16LE(unsigned int ch, char* dst) {
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 unsigned int UnicodeHelper::decode(const LogString& in, LogString::const_iterator& iter) {
     const wchar_t* src = in.data() + (iter - in.begin());
-#if defined(__STDC_ISO_10646__)
+#if defined(__STDC_ISO_10646__) || defined(__APPLE__)
     unsigned int sv = *(src++);
 #elif defined(_WIN32)
     const wchar_t* srcEnd = in.data() + in.length();
@@ -181,7 +181,7 @@ unsigned int UnicodeHelper::decode(const LogString& in, LogString::const_iterato
         }
     }
 #else
-#error logchar cannot be wchar_t unless _WIN32 or __STDC_ISO_10646__ is defined
+#error logchar cannot be wchar_t unless _WIN32, __STDC_ISO_10646__ or __APPLE__ is defined
 #endif
     iter = in.begin() + (src - in.data());
     return sv;
@@ -215,13 +215,13 @@ int UnicodeHelper::encode(unsigned int ch, logchar* dst) {
   dst[1] = ls;
   return 2;
 }
-#elif defined(__STDC_ISO_10646__)
+#elif defined(__STDC_ISO_10646__) || defined(__APPLE__)
 int UnicodeHelper::encode(unsigned int ch, logchar* dst) {
    *dst = ch;
    return 1;
 }
 #else
-#error logchar cannot be wchar_t unless _WIN32 or __STDC_ISO_10646__ is defined
+#error logchar cannot be wchar_t unless _WIN32, __STDC_ISO_10646__ or __APPLE__ is defined
 #endif
 #endif
 
