@@ -715,15 +715,6 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     depends="build-delayedloop, build-trivial, build-stream, build-console"
     description="Builds example programs"/>
 
-<target name="build-simplesocketserver" depends="build">
-    <antcall target="build-example">
-       <param name="example.src.dir" value="${base.dir}/src/simplesocketserver/main"/>
-       <param name="example.name" value="simplesocketserver"/>
-       <param name="example.includes" value="simplesocketserver.cpp"/>
-    </antcall>
-</target>
-
-
 <target name="build-performance" depends="build" description="Builds performance test">
     <antcall target="build-example">
        <param name="example.src.dir" value="${performance.src.dir}"/>
@@ -891,8 +882,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     </cc>
 </target>
 
-<target name="build-all" depends="build-examples, build-unittest,
-     build-simplesocketserver, build-performance"
+<target name="build-all" depends="build-examples, build-unittest, build-performance"
      description="Builds all artifacts"/>
 
 <target name="clean-output" depends="init">

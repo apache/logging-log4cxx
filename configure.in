@@ -407,8 +407,6 @@ src/test/resources/witness/Makefile
 src/test/resources/witness/encoding/Makefile
 src/test/resources/witness/ndc/Makefile
 src/test/resources/witness/rolling/Makefile
-src/simplesocketserver/Makefile
-src/simplesocketserver/cpp/Makefile
 src/performance/Makefile
 src/performance/cpp/Makefile
 src/performance/cpp/xml/Makefile

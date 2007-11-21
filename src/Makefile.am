@@ -13,4 +13,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-SUBDIRS = main test simplesocketserver examples performance site
+SUBDIRS = main test examples performance site
