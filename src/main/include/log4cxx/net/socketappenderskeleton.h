@@ -27,8 +27,8 @@ namespace log4cxx
 {
         namespace helpers
         {
-                class SocketOutputStream;
-                typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
+                class OutputStream;
+                typedef helpers::ObjectPtrT<OutputStream> OutputStreamPtr;
         }
 
         namespace net
@@ -40,7 +40,6 @@ namespace log4cxx
         class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
         {
         private:
-                log4cxx::helpers::Pool pool;
                 /**
                 host name
                 */
@@ -52,7 +51,7 @@ namespace log4cxx
                 helpers::InetAddressPtr address;
 
                 int port;
-                helpers::SocketOutputStreamPtr os;
+                helpers::SocketPtr socket;
                 int reconnectionDelay;
                 bool locationInfo;
 
@@ -174,7 +173,7 @@ namespace log4cxx
                                 const LogString& value, int defaultPort, int defaultDelay);
 
                         virtual void renderEvent(const spi::LoggingEventPtr& event,
-                                helpers::SocketOutputStreamPtr& os,
+                                const helpers::OutputStreamPtr& os,
                                 log4cxx::helpers::Pool& p) = 0;
 
        private:

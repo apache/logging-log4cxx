@@ -18,7 +18,6 @@
 #define __STDC_CONSTANT_MACROS
 #include <log4cxx/net/socketappenderskeleton.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggingevent.h>
@@ -27,6 +26,7 @@
 #include <apr_atomic.h>
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/bytearrayoutputstream.h>
 
 
 using namespace log4cxx;
@@ -36,11 +36,10 @@ using namespace log4cxx::net;
 #if APR_HAS_THREADS
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay1)
-:  pool(),
-   remoteHost(),
+:  remoteHost(),
    address(),
    port(defaultPort),
-   os(),
+   socket(),
    reconnectionDelay(reconnectionDelay1),
    locationInfo(false),
    thread() {
@@ -48,11 +47,10 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnection
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address1, int port1, int delay)
 :
-   pool(),
    remoteHost(),
    address(address1),
    port(port1),
-   os(),
+   socket(),
    reconnectionDelay(delay),
    locationInfo(false),
    thread() {
@@ -60,11 +58,10 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address1, int port
 }
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1, int delay)
-:   pool(),
-    remoteHost(host),
+:   remoteHost(host),
     address(InetAddress::getByName(host)),
         port(port1),
-    os(),
+    socket(),
     reconnectionDelay(delay),
         locationInfo(false),
         thread() {
@@ -115,23 +112,22 @@ void SocketAppenderSkeleton::append(const spi::LoggingEventPtr& event, Pool& p)
                 return;
         }
 
-        if(os != 0) try
-        {
+        if(socket != 0) {
+            try {
+                ByteArrayOutputStreamPtr byteStream(new ByteArrayOutputStream());
+                OutputStreamPtr os(byteStream);
                 renderEvent(event, os, p);
-
-                // flush to socket
-                os->flush();
-        }
-        catch(SocketException& e)
-        {
-                os = 0;
+                std::vector<unsigned char> bytes(byteStream->toByteArray());
+                socket->write(&bytes[0], bytes.size());
+            }
+            catch(SocketException& e) {
+                socket = 0;
                 LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
 
-                if(reconnectionDelay > 0)
-                {
+                if(reconnectionDelay > 0) {
                         fireConnector();
                 }
-
+            }
         }
 }
 
@@ -147,18 +143,18 @@ void SocketAppenderSkeleton::close()
 
 void SocketAppenderSkeleton::cleanUp()
 {
-        if(os != 0)
+        if(socket != 0)
         {
                 try
                 {
-                        os->close();
+                        socket->close();
                 }
                 catch(IOException& e)
                 {
                         LogLog::error(LOG4CXX_STR("Could not close socket :"), e);
                 }
 
-                os = 0;
+                socket = 0;
         }
 
         thread.join();
@@ -176,8 +172,7 @@ void SocketAppenderSkeleton::connect()
                 // First, close the previous connection if any.
                 cleanUp();
 
-                SocketPtr socket = new Socket(address, port);
-                os = socket->getOutputStream();
+                socket = new Socket(address, port);
         }
         catch(SocketException& e)
         {
@@ -220,7 +215,7 @@ void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* /* threa
 
                         synchronized sync(socketAppender->mutex);
                         {
-                                socketAppender->os = socket->getOutputStream();
+                                socketAppender->socket = socket;
                                 LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
                                 socketAppender->thread.ending();
                                 return NULL;

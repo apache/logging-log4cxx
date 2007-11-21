@@ -22,10 +22,12 @@
 
 namespace log4cxx
 {
+        namespace helpers {
+                class CharsetEncoder;
+                typedef helpers::ObjectPtrT<CharsetEncoder> CharsetEncoderPtr;
+        }
         namespace net
         {
-                class XMLSocketAppender;
-                typedef helpers::ObjectPtrT<XMLSocketAppender> XMLSocketAppenderPtr;
 
         /**
         Sends {@link spi::LoggingEvent LoggingEvent} objects in XML format
@@ -100,7 +102,6 @@ namespace log4cxx
                 static int DEFAULT_RECONNECTION_DELAY;
 
                 bool locationInfo;
-                char zeroBuffer[1024];
 
                 /**
                 An event XML stream cannot exceed 1024 bytes.
@@ -149,7 +150,8 @@ namespace log4cxx
 
       protected:
                 void renderEvent(const spi::LoggingEventPtr& event,
-                helpers::SocketOutputStreamPtr& os, log4cxx::helpers::Pool& p);
+                    const helpers::OutputStreamPtr& os, 
+                    log4cxx::helpers::Pool& p);
 
 
 
@@ -157,8 +159,15 @@ namespace log4cxx
                 //  prevent copy and assignment statements
                 XMLSocketAppender(const XMLSocketAppender&);
                 XMLSocketAppender& operator=(const XMLSocketAppender&);
+                
+#if !LOG4CXX_LOGCHAR_IS_UTF8
+                log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
+#endif                
 
         }; // class XMLSocketAppender
+        
+        typedef helpers::ObjectPtrT<XMLSocketAppender> XMLSocketAppenderPtr;
+        
     } // namespace net
 } // namespace log4cxx
 

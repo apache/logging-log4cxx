@@ -36,11 +36,7 @@ namespace log4cxx
 
         namespace helpers
         {
-                class SocketOutputStream;
-                typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-
-                class SocketInputStream;
-                typedef helpers::ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
+                class ObjectOutputStream;
         }
 
         namespace spi
@@ -128,15 +124,11 @@ namespace log4cxx
                         * should <em>never</em> be called directly.  */
                         const LogString& getNDC() const;
 
-                        /** Write this event to a helpers::SocketOutputStream. */
-                        void write(helpers::SocketOutputStreamPtr& os) const;
-
-                        void writeLevel(helpers::SocketOutputStreamPtr& os) const;
-
-                        /** Read this event from a helpers::SocketOutputStream. */
-                        void read(const helpers::SocketInputStreamPtr& is);
-
-                        void readLevel(const helpers::SocketInputStreamPtr& is);
+                        /**
+                         *  Writes the content of the LoggingEvent 
+                         *  in a format compatible with log4j's serialized form.
+                         */ 
+                        void write(helpers::ObjectOutputStream& os, helpers::Pool& p) const;
 
                         /**
                         * Returns the the context corresponding to the <code>key</code> parameter.
@@ -253,6 +245,9 @@ namespace log4cxx
                        LoggingEvent(const LoggingEvent&);
                        LoggingEvent& operator=(const LoggingEvent&);
                        static const LogString getCurrentThreadName();
+                       
+                       static void writeClassDesc(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p);
+                       
                 };
         }
 }

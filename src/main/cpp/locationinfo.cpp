@@ -16,9 +16,13 @@
  */
 
 #include <log4cxx/spi/location/locationinfo.h>
-#include <sstream>
+#include <log4cxx/helpers/objectoutputstream.h>
+#include <log4cxx/helpers/pool.h>
+#include "apr_pools.h"
+#include "apr_strings.h"
 
 using namespace ::log4cxx::spi;
+using namespace log4cxx::helpers;
 
    /**
      When location information is not available the constant
@@ -139,4 +143,35 @@ const std::string LocationInfo::getClassName() const {
         tmp.erase(0, tmp.length() );
         return tmp;
 }
+
+void LocationInfo::write(ObjectOutputStream& os, Pool& p) const {
+    if (lineNumber == -1 && fileName == NA && methodName == NA_METHOD) {
+         os.writeByte(ObjectOutputStream::TC_NULL, p);
+    } else {
+        char prolog[] = {
+			0x73, 0x72, 0x00, 0x21, 0x6F, 0x72, 0x67, 0x2E, 
+			0x61, 0x70, 0x61, 0x63, 0x68, 0x65, 0x2E, 0x6C, 
+			0x6F, 0x67, 0x34, 0x6A, 0x2E, 0x73, 0x70, 0x69, 
+			0x2E, 0x4C, 0x6F, 0x63, 0x61, 0x74, 0x69, 0x6F, 
+			0x6E, 0x49, 0x6E, 0x66, 0x6F, 0xED, 0x99, 0xBB, 
+			0xE1, 0x4A, 0x91, 0xA5, 0x7C, 0x02, 0x00, 0x01, 
+			0x4C, 0x00, 0x08, 0x66, 0x75, 0x6C, 0x6C, 0x49, 
+			0x6E, 0x66, 0x6F, 0x71, 0x00, 0x7E, 0x00, 0x01, 
+			0x78, 0x70, 0x74 };
+		os.writeBytes(prolog, sizeof(prolog), p);
+        char* line = apr_itoa((apr_pool_t*) p.getAPRPool(), lineNumber);
+        size_t len = strlen(methodName) + strlen(fileName) + 3 + strlen(line);
+        char lenBytes[2];
+        lenBytes[1] = len & 0xFF;
+        lenBytes[0] = (len >> 8) & 0xFF;
+        os.writeBytes(lenBytes, sizeof(lenBytes), p);
+        os.writeBytes(methodName, strlen(methodName), p);
+        os.writeByte('(', p);
+        os.writeBytes(fileName, strlen(fileName), p);
+        os.writeByte(':', p);
+        os.writeBytes(line, strlen(line), p);
+        os.writeByte(')', p); 
+    }
+}
+
 

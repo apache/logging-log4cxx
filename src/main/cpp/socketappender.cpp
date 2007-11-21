@@ -17,14 +17,15 @@
 
 #include <log4cxx/net/socketappender.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/helpers/objectoutputstream.h>
 #include <apr_time.h>
 #include <apr_atomic.h>
 #include <apr_thread_proc.h>
+#include <log4cxx/helpers/bytearrayoutputstream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -63,10 +64,10 @@ SocketAppender::~SocketAppender()
 }
 
 void SocketAppender::renderEvent(const spi::LoggingEventPtr& event,
-     helpers::SocketOutputStreamPtr& os1,
-     Pool& /* p */)
-{
-        event->write(os1);
+     const helpers::OutputStreamPtr& os1,
+     Pool& p) {
+        ObjectOutputStream os(os1, p);
+        event->write(os, p);
 }
 
 #endif

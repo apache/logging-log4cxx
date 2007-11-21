@@ -17,8 +17,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/socketoutputstream.h>
-#include <log4cxx/helpers/socketinputstream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -80,17 +78,4 @@ Socket::Socket(const LogString& host, int port,
    socketImpl->connect(host, port);
    socketImpl->bind(localAddr, localPort);
 }
-
-/**  Returns an output stream for this socket. */
-SocketOutputStreamPtr Socket::getOutputStream()
-{
-   return new SocketOutputStream(this);
-}
-
-/**  Returns an input stream for this socket. */
-SocketInputStreamPtr Socket::getInputStream()
-{
-   return new SocketInputStream(this);
-}
-
 

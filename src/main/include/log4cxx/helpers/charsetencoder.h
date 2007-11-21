@@ -85,6 +85,11 @@ namespace log4cxx
               static CharsetEncoderPtr getEncoder(const std::wstring& charset);
 #endif
 
+              /**
+               *   Get encoder for UTF-8.
+               */
+                  static CharsetEncoderPtr getUTF8Encoder();
+
                   /**
                   * Encodes a string replacing unmappable
                   * characters with escape sequences.

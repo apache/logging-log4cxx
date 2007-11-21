@@ -27,12 +27,11 @@
 
 namespace log4cxx
 {
-        namespace helpers
-        {
-                class SocketOutputStream;
-                typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
+        namespace helpers {
+             class CharsetEncoder;
+             typedef helpers::ObjectPtrT<CharsetEncoder> CharsetEncoderPtr;
+             class ByteBuffer;
         }
-
         namespace net
         {
 /**
@@ -65,7 +64,6 @@ servlet.
                 class SocketHandler;
                 friend class SocketHandler;
                 private:
-                        log4cxx::helpers::Pool pool;
                         static const int DEFAULT_PORT;
                         static const int MAX_CONNECTIONS;
                         int port;
@@ -85,6 +83,10 @@ servlet.
                         attached client(s). */
                         virtual bool requiresLayout() const
                                 { return true; }
+                                
+                        LogString getEncoding() const;
+                        void setEncoding(const LogString& value);
+        
 
                         /** all of the options have been set, create the socket handler and
                         wait for connections. */
@@ -120,14 +122,18 @@ servlet.
                         //---------------------------------------------------------- SocketHandler:
 
                 private:
-                                                //   prevent copy and assignment statements
-                                                TelnetAppender(const TelnetAppender&);
-                                                TelnetAppender& operator=(const TelnetAppender&);
+                        //   prevent copy and assignment statements
+                        TelnetAppender(const TelnetAppender&);
+                        TelnetAppender& operator=(const TelnetAppender&);
 
-                        typedef std::pair<helpers::SocketPtr, helpers::SocketOutputStreamPtr> Connection;
+                        typedef log4cxx::helpers::SocketPtr Connection;
                         typedef std::vector<Connection> ConnectionList;
-
+                        
+                        void write(log4cxx::helpers::ByteBuffer&);
+                        void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
                         ConnectionList connections;
+                        LogString encoding;
+                        log4cxx::helpers::CharsetEncoderPtr encoder;
                         helpers::ServerSocket* serverSocket;
                         helpers::Thread sh;
                         size_t activeConnections;

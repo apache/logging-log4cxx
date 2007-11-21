@@ -27,6 +27,7 @@ liblog4cxx_la_SOURCES = \
         basicconfigurator.cpp \
         bufferedwriter.cpp \
         bytearrayinputstream.cpp \
+        bytearrayoutputstream.cpp \
         bytebuffer.cpp \
         cacheddateformat.cpp \
         charsetdecoder.cpp \
@@ -101,6 +102,7 @@ liblog4cxx_la_SOURCES = \
         nteventlogappender.cpp \
         objectimpl.cpp \
         objectptr.cpp \
+        objectoutputstream.cpp \
         obsoleterollingfileappender.cpp \
         odbcappender.cpp \
         onlyonceerrorhandler.cpp \
@@ -136,9 +138,6 @@ liblog4cxx_la_SOURCES = \
         socketappenderskeleton.cpp \
         sockethubappender.cpp \
         socketimpl.cpp \
-        socketinputstream.cpp \
-        socketnode.cpp \
-        socketoutputstream.cpp \
         strftimedateformat.cpp \
         stringhelper.cpp \
         stringmatchfilter.cpp \

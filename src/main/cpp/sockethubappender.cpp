@@ -18,7 +18,6 @@
 #include <log4cxx/net/sockethubappender.h>
 
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/serversocket.h>
@@ -26,6 +25,8 @@
 #include <log4cxx/helpers/synchronized.h>
 #include <apr_atomic.h>
 #include <apr_thread_proc.h>
+#include <log4cxx/helpers/objectoutputstream.h>
+#include <log4cxx/helpers/bytearrayoutputstream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -44,12 +45,12 @@ SocketHubAppender::~SocketHubAppender()
 }
 
 SocketHubAppender::SocketHubAppender()
- : port(DEFAULT_PORT), oosList(), locationInfo(false), thread()
+ : port(DEFAULT_PORT), sockets(), locationInfo(false), thread()
 {
 }
 
 SocketHubAppender::SocketHubAppender(int port1)
- : port(port1), oosList(), locationInfo(false), thread()
+ : port(port1), sockets(), locationInfo(false), thread()
 {
         startServer();
 }
@@ -96,57 +97,58 @@ void SocketHubAppender::close()
         synchronized sync(mutex);
         // close all of the connections
         LogLog::debug(LOG4CXX_STR("closing client connections"));
-        for (std::vector<helpers::SocketOutputStreamPtr>::iterator iter = oosList.begin();
-             iter != oosList.end();
+        for (std::vector<helpers::SocketPtr>::iterator iter = sockets.begin();
+             iter != sockets.end();
                  iter++) {
                  if ( (*iter) != NULL) {
                          try {
                                 (*iter)->close();
                          } catch(SocketException& e) {
-                                LogLog::error(LOG4CXX_STR("could not close oos: "), e);
+                                LogLog::error(LOG4CXX_STR("could not close socket: "), e);
                          }
                  }
          }
-        oosList.erase(oosList.begin(), oosList.end());
+        sockets.erase(sockets.begin(), sockets.end());
 
 
         LogLog::debug(LOG4CXX_STR("SocketHubAppender ")
               + getName() + LOG4CXX_STR(" closed"));
 }
 
-void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& /* p */ )
+void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
 
         // if no open connections, exit now
-        if(oosList.empty())
+        if(sockets.empty())
         {
                 return;
         }
 
+        ByteArrayOutputStreamPtr os(new ByteArrayOutputStream());
+        ObjectOutputStream objStream(os, p);
+        event->write(objStream, p);
+        std::vector<unsigned char> bytes(os->toByteArray());
 
         // loop through the current set of open connections, appending the event to each
-        std::vector<SocketOutputStreamPtr>::iterator it = oosList.begin();
-        std::vector<SocketOutputStreamPtr>::iterator itEnd = oosList.end();
+        std::vector<SocketPtr>::iterator it = sockets.begin();
+        std::vector<SocketPtr>::iterator itEnd = sockets.end();
         while(it != itEnd)
         {
-                SocketOutputStreamPtr oos = *it;
-
                 // list size changed unexpectedly? Just exit the append.
-                if (oos == 0)
+                if (*it == 0)
                 {
                         break;
                 }
 
                 try
                 {
-                        event->write(oos);
-                        oos->flush();
+                        (*it)->write(&bytes[0], bytes.size());
                         it++;
                 }
                 catch(SocketException&)
                 {
                         // there was an io exception so just drop the connection
-                        it = oosList.erase(it);
+                        it = sockets.erase(it);
                         LogLog::debug(LOG4CXX_STR("dropped connection"));
                 }
         }
@@ -207,12 +209,9 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* /* thread */,
                                        + remoteAddress->getHostAddress()
                                        + LOG4CXX_STR(")"));
 
-                                // create an ObjectOutputStream
-                                SocketOutputStreamPtr oos = socket->getOutputStream();
-
                                 // add it to the oosList.
                                 synchronized sync(pThis->mutex);
-                                pThis->oosList.push_back(oos);
+                                pThis->sockets.push_back(socket);
                         }
                         catch (IOException& e)
                         {

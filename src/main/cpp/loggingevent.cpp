@@ -19,8 +19,6 @@
 #include <log4cxx/ndc.h>
 
 #include <log4cxx/level.h>
-#include <log4cxx/helpers/socketoutputstream.h>
-#include <log4cxx/helpers/socketinputstream.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/socket.h>
@@ -32,6 +30,8 @@
 #include <apr_portable.h>
 #include <apr_strings.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/objectoutputstream.h>
+#include <log4cxx/helpers/bytebuffer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -213,103 +213,6 @@ const LogString LoggingEvent::getCurrentThreadName() {
 #endif
 }
 
-void LoggingEvent::read(const helpers::SocketInputStreamPtr& /* is */)
-{
-#if 0
-        // fqnOfLoggerClass
-        is->read(fqnOfLoggerClass);
-
-        // name
-        LogString name;
-        is->read(name);
-        logger = Logger::getLogger(name);
-
-        // level
-        readLevel(is);
-
-        // message
-        is->read(message);
-
-        // timeStamp
-        is->read(&timeStamp, sizeof(timeStamp));
-
-        // file
-        String buffer;
-        is->read(buffer);
-
-        if (!buffer.empty())
-        {
-                USES_CONVERSION;
-                fileFromStream = T2A(buffer.c_str());
-                file = (char *)fileFromStream.c_str();
-        }
-
-        // line
-        is->read(line);
-
-        // ndc
-        is->read(ndc);
-        ndcLookupRequired = false;
-
-        // mdc
-        String key, value;
-        int n, size;
-        is->read(size);
-        for (n = 0; n < size; n++)
-        {
-                is->read(key);
-                is->read(value);
-                mdcCopy[key] = value;
-        }
-        mdcCopyLookupRequired = false;
-
-        // properties
-        is->read(size);
-        for (n = 0; n < size; n++)
-        {
-                is->read(key);
-                is->read(value);
-                setProperty(key, value);
-        }
-
-        // threadId
-        is->read(threadId);
-#endif
-}
-
-void LoggingEvent::readLevel(const helpers::SocketInputStreamPtr& /* is */)
-{
-  #if 0
-        int levelInt;
-        is->read(levelInt);
-
-    String className;
-        is->read(className);
-
-        if (className.empty())
-        {
-                level = Level::toLevel(levelInt);
-        }
-        else try
-        {
-                Level::LevelClass& levelClass =
-                        (Level::LevelClass&)Loader::loadClass(className);
-                level = levelClass.toLevel(levelInt);
-        }
-        catch (Exception& oops)
-        {
-                LogLog::warn(
-                        _T("Level deserialization failed, reverting to default."), oops);
-                level = Level::toLevel(levelInt);
-        }
-        catch (...)
-        {
-                LogLog::warn(
-                        _T("Level deserialization failed, reverting to default."));
-                level = Level::toLevel(levelInt);
-        }
-#endif
-}
 
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
@@ -321,83 +224,86 @@ void LoggingEvent::setProperty(const LogString& key, const LogString& value)
         (*properties)[key] = value;
 }
 
-void LoggingEvent::write(helpers::SocketOutputStreamPtr& /* os */) const
-{
-  #if 0
-        // fqnOfLoggerClass
-        os->write(fqnOfLoggerClass);
 
-        // name
-        os->write(logger->getName());
 
-        // level
-        writeLevel(os);
+void LoggingEvent::writeClassDesc(ObjectOutputStream& os, Pool& p) {
+     char classDesc[] = {
+        0x72, 0x00, 0x21, 
+        0x6F, 0x72, 0x67, 0x2E, 0x61, 0x70, 0x61, 0x63, 
+        0x68, 0x65, 0x2E, 0x6C, 0x6F, 0x67, 0x34, 0x6A, 
+        0x2E, 0x73, 0x70, 0x69, 0x2E, 0x4C, 0x6F, 0x67, 
+        0x67, 0x69, 0x6E, 0x67, 0x45, 0x76, 0x65, 0x6E, 
+        0x74, 0xF3, 0xF2, 0xB9, 0x23, 0x74, 0x0B, 0xB5, 
+        0x3F, 0x03, 0x00, 0x0A, 0x5A, 0x00, 0x15, 0x6D, 
+        0x64, 0x63, 0x43, 0x6F, 0x70, 0x79, 0x4C, 0x6F, 
+        0x6F, 0x6B, 0x75, 0x70, 0x52, 0x65, 0x71, 0x75, 
+        0x69, 0x72, 0x65, 0x64, 0x5A, 0x00, 0x11, 0x6E, 
+        0x64, 0x63, 0x4C, 0x6F, 0x6F, 0x6B, 0x75, 0x70, 
+        0x52, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64, 
+        0x4A, 0x00, 0x09, 0x74, 0x69, 0x6D, 0x65, 0x53, 
+        0x74, 0x61, 0x6D, 0x70, 0x4C, 0x00, 0x0C, 0x63, 
+        0x61, 0x74, 0x65, 0x67, 0x6F, 0x72, 0x79, 0x4E, 
+        0x61, 0x6D, 0x65, 0x74, 0x00, 0x12, 0x4C, 0x6A, 
+        0x61, 0x76, 0x61, 0x2F, 0x6C, 0x61, 0x6E, 0x67, 
+        0x2F, 0x53, 0x74, 0x72, 0x69, 0x6E, 0x67, 0x3B, 
+        0x4C, 0x00, 0x0C, 0x6C, 0x6F, 0x63, 0x61, 0x74, 
+        0x69, 0x6F, 0x6E, 0x49, 0x6E, 0x66, 0x6F, 0x74, 
+        0x00, 0x23, 0x4C, 0x6F, 0x72, 0x67, 0x2F, 0x61, 
+        0x70, 0x61, 0x63, 0x68, 0x65, 0x2F, 0x6C, 0x6F, 
+        0x67, 0x34, 0x6A, 0x2F, 0x73, 0x70, 0x69, 0x2F, 
+        0x4C, 0x6F, 0x63, 0x61, 0x74, 0x69, 0x6F, 0x6E, 
+        0x49, 0x6E, 0x66, 0x6F, 0x3B, 0x4C, 0x00, 0x07, 
+        0x6D, 0x64, 0x63, 0x43, 0x6F, 0x70, 0x79, 0x74, 
+        0x00, 0x15, 0x4C, 0x6A, 0x61, 0x76, 0x61, 0x2F, 
+        0x75, 0x74, 0x69, 0x6C, 0x2F, 0x48, 0x61, 0x73, 
+        0x68, 0x74, 0x61, 0x62, 0x6C, 0x65, 0x3B, 0x4C, 
+        0x00, 0x03, 0x6E, 0x64, 0x63, 0x71, 0x00, 0x7E, 
+        0x00, 0x01, 0x4C, 0x00, 0x0F, 0x72, 0x65, 0x6E, 
+        0x64, 0x65, 0x72, 0x65, 0x64, 0x4D, 0x65, 0x73, 
+        0x73, 0x61, 0x67, 0x65, 0x71, 0x00, 0x7E, 0x00, 
+        0x01, 0x4C, 0x00, 0x0A, 0x74, 0x68, 0x72, 0x65, 
+        0x61, 0x64, 0x4E, 0x61, 0x6D, 0x65, 0x71, 0x00, 
+        0x7E, 0x00, 0x01, 0x4C, 0x00, 0x0D, 0x74, 0x68, 
+        0x72, 0x6F, 0x77, 0x61, 0x62, 0x6C, 0x65, 0x49, 
+        0x6E, 0x66, 0x6F, 0x74, 0x00, 0x2B, 0x4C, 0x6F, 
+        0x72, 0x67, 0x2F, 0x61, 0x70, 0x61, 0x63, 0x68, 
+        0x65, 0x2F, 0x6C, 0x6F, 0x67, 0x34, 0x6A, 0x2F, 
+        0x73, 0x70, 0x69, 0x2F, 0x54, 0x68, 0x72, 0x6F, 
+        0x77, 0x61, 0x62, 0x6C, 0x65, 0x49, 0x6E, 0x66, 
+        0x6F, 0x72, 0x6D, 0x61, 0x74, 0x69, 0x6F, 0x6E, 
+        0x3B, 0x78, 0x70 }; 
 
-        // message
-        os->write(message);
-
-        // timeStamp
-        os->write(&timeStamp, sizeof(timeStamp));
-
-        // file
-        String buffer;
-        if (file != 0)
-        {
-                USES_CONVERSION;
-                buffer = A2T(file);
-        }
-        os->write(buffer);
-
-        // line
-        os->write(line);
-
-        // ndc
-        os->write(getNDC());
-
-        // mdc
-        getMDCCopy();
-        os->write((int)mdcCopy.size());
-        MDC::Map::const_iterator it;
-        for (it = mdcCopy.begin(); it != mdcCopy.end(); it++)
-        {
-                os->write(it->first);
-                os->write(it->second);
-        }
-
-        // properties
-        int size = (properties != 0) ? (int)properties->size() : 0;
-        os->write(size);
-
-        if (size > 0)
-        {
-                std::map<String, String>::const_iterator it;
-                for (it = properties->begin(); it != properties->end(); it++)
-                {
-                        os->write(it->first);
-                        os->write(it->second);
-                }
-        }
-
-        // threadId
-        os->write(threadId);
-#endif
+     os.writeBytes(classDesc, sizeof(classDesc), p);
+     
 }
 
-void LoggingEvent::writeLevel(helpers::SocketOutputStreamPtr& /* os */) const
-{
-#if 0
-        os->write(level->toInt());
-
-        const Class& clazz = level->getClass();
-
-        if (&clazz == &Level::getStaticClass())
-        {
-                os->write(String());
-        }
-        else
-        {
-                os->write(clazz.getName());
-        }
-#endif
+void LoggingEvent::write(helpers::ObjectOutputStream& os, Pool& p) const {
+      os.writeByte(ObjectOutputStream::TC_OBJECT, p);
+      writeClassDesc(os, p);
+      // mdc and ndc lookup required should always be false
+      char lookupsRequired[] = { 0, 0 };
+      os.writeBytes(lookupsRequired, sizeof(lookupsRequired), p);
+      os.writeLong(timeStamp/1000, p);
+      os.writeObject(logger->getName(), p);
+      locationInfo.write(os, p);
+      if (mdcCopy.size() == 0) {
+          os.writeByte(ObjectOutputStream::TC_NULL, p);
+      } else {
+          os.writeObject(mdcCopy, p);
+      }
+      if (ndc.size() == 0) {
+          os.writeByte(ObjectOutputStream::TC_NULL, p);
+      } else {
+          os.writeObject(ndc, p);
+      }
+      os.writeObject(message, p);
+      os.writeObject(threadName, p);
+      //  throwable
+      os.writeByte(ObjectOutputStream::TC_NULL, p);
+      os.writeByte(ObjectOutputStream::TC_BLOCKDATA, p);
+      os.writeByte(0x04, p);
+      os.writeInt(level->toInt(), p);
+      os.writeByte(ObjectOutputStream::TC_NULL, p);
+      os.writeByte(ObjectOutputStream::TC_ENDBLOCKDATA, p);
 }
 

@@ -15,36 +15,38 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-#include <log4cxx/net/socketappender.h>
-#include "../appenderskeletontestcase.h"
+#include <log4cxx/logstring.h>
+#include <log4cxx/helpers/bytearrayoutputstream.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/bytebuffer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-#if APR_HAS_THREADS
-/**
-   Unit tests of log4cxx::SocketAppender
- */
-class SocketAppenderTestCase : public AppenderSkeletonTestCase
-{
-   CPPUNIT_TEST_SUITE(SocketAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                CPPUNIT_TEST(testDefaultThreshold);
-                CPPUNIT_TEST(testSetOptionThreshold);
+IMPLEMENT_LOG4CXX_OBJECT(ByteArrayOutputStream)
 
-   CPPUNIT_TEST_SUITE_END();
+ByteArrayOutputStream::ByteArrayOutputStream() {
+}
+
+ByteArrayOutputStream::~ByteArrayOutputStream() {
+}
+
+void ByteArrayOutputStream::close(Pool& /* p */) {
+}
+
+void ByteArrayOutputStream::flush(Pool& /* p */) {
+}
+
+void ByteArrayOutputStream::write(ByteBuffer& buf, Pool& /* p */ ) {
+  size_t sz = array.size();
+  array.resize(sz + buf.remaining());
+  memcpy(&array[sz], buf.current(), buf.remaining());
+  buf.position(buf.limit());
+}
+
+std::vector<unsigned char> ByteArrayOutputStream::toByteArray() const {
+  return array;
+}
 
 
-public:
 
-        AppenderSkeleton* createAppenderSkeleton() const {
-          return new log4cxx::net::SocketAppender();
-        }
-};
-
-CPPUNIT_TEST_SUITE_REGISTRATION(SocketAppenderTestCase);
-#endif

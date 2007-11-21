@@ -23,6 +23,10 @@
 
 namespace log4cxx
 {
+  namespace helpers {
+      class ObjectOutputStream;
+      class Pool;
+  }
   namespace spi
   {
       /**
@@ -96,6 +100,9 @@ namespace log4cxx
         /** Returns the method name of the caller. */
         const std::string getMethodName() const;
 
+        void write(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p) const;
+
+
         private:
         /** Caller's line number. */
         int lineNumber;
@@ -105,7 +112,7 @@ namespace log4cxx
 
         /** Caller's method name. */
         const char * methodName;
-
+        
 
       };
   }

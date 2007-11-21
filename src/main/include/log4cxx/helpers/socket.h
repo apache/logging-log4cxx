@@ -20,8 +20,6 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/socketimpl.h>
-#include <log4cxx/helpers/socketinputstream.h>
-#include <log4cxx/helpers/socketoutputstream.h>
 
 namespace log4cxx
 {
@@ -29,14 +27,6 @@ namespace log4cxx
         {
                 class ServerSocker;
 
-                class Socket;
-                typedef helpers::ObjectPtrT<Socket> SocketPtr;
-
-                class SocketOutputStream;
-                typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-
-                class SocketInputStream;
-                typedef helpers::ObjectPtrT<SocketInputStream> SocketInputStreamPtr;
 
                 /**
                 <p>This class implements client sockets (also called just "sockets"). A socket
@@ -111,15 +101,16 @@ namespace log4cxx
                         inline int getPort() const
                                 { return socketImpl->getPort(); }
 
-                        /**  Returns an output stream for this socket. */
-                        SocketOutputStreamPtr getOutputStream();
-
-                        /**  Returns an input stream for this socket. */
-                        SocketInputStreamPtr getInputStream();
-
-  protected:
+                private:
+                        Socket(const Socket&);
+                        Socket& operator=(const Socket&);
                         SocketImplPtr socketImpl;
                 };
+                
+                class Socket;
+                typedef helpers::ObjectPtrT<Socket> SocketPtr;
+
+                
         } // namespace helpers
 } // namespace log4cxx
 

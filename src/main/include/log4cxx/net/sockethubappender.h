@@ -27,12 +27,6 @@
 
 namespace log4cxx
 {
-        namespace helpers
-        {
-                class SocketOutputStream;
-                typedef helpers::ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
-        }
-
         namespace net
         {
                 /**
@@ -103,14 +97,13 @@ namespace log4cxx
                 class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
                 {
                 private:
-                        log4cxx::helpers::Pool pool;
                         /**
                         The default port number of the ServerSocket will be created on.
                         */
                         static int DEFAULT_PORT;
 
                         int port;
-                        std::vector<helpers::SocketOutputStreamPtr> oosList;
+                        std::vector<helpers::SocketPtr> sockets;
                         bool locationInfo;
 
                 public:

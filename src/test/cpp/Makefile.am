@@ -92,6 +92,7 @@ util = \
 	util/iso8601filter.cpp\
 	util/linenumberfilter.cpp\
 	util/relativetimefilter.cpp\
+    util/serializationtesthelper.cpp \
 	util/threadfilter.cpp\
 	util/transformer.cpp\
 	util/xmlfilenamefilter.cpp \
