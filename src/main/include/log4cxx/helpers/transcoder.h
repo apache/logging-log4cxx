@@ -40,21 +40,10 @@ namespace log4cxx {
       //
       //   convienience wrappers
       //
-      inline static void decode(const char* src, LogString& dst) {
-        decode(src, strlen(src), dst);
-      }
+      static void decode(const std::string& src, LogString& dst);
+      static void decode(const char* src, LogString& dst);
 
-      template<class SRC>
-      inline static void decode(const SRC& src, LogString& dst) {
-        decode(src.data(), src.length(), dst);
-      }
-
-
-      static LogString decode(const std::string& src) {
-        LogString dst;
-        decode(src, dst);
-        return dst;
-      }
+      static LogString decode(const std::string& src);
 
 
       /**
@@ -69,15 +58,11 @@ namespace log4cxx {
 #if LOG4CXX_HAS_WCHAR_T
       static void decode(const wchar_t* src, size_t len, LogString& dst);
 
-      inline static void decode(const wchar_t* src, LogString& dst) {
-        decode(src, wcslen(src), dst);
-      }
+      static void decode(const wchar_t* src, LogString& dst);
 
-      static LogString decode(const std::wstring& src) {
-        LogString dst;
-        decode(src, dst);
-        return dst;
-      }
+      static void decode(const std::wstring& src, LogString& dst);
+
+      static LogString decode(const std::wstring& src);
 
       static void encode(const LogString& src, std::wstring& dst);
 

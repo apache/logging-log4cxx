@@ -154,6 +154,38 @@ void Transcoder::encode(const LogString& src, std::wstring& dst) {
 }
 #endif
 
+void Transcoder::decode(const char* src, LogString& dst) {
+     decode(src, strlen(src), dst);
+}
+
+void Transcoder::decode(const std::string& src, LogString& dst) {
+     decode(src.data(), src.length(), dst);
+}
+
+LogString Transcoder::decode(const std::string& src) {
+     LogString dst;
+     decode(src.data(), src.length(), dst);
+     return dst;
+}
+
+#if LOG4CXX_HAS_WCHAR_T
+void Transcoder::decode(const wchar_t* src, LogString& dst) {
+     decode(src, wcslen(src), dst);
+}
+
+void Transcoder::decode(const std::wstring& src, LogString& dst) {
+     decode(src.data(), src.length(), dst);
+}
+
+LogString Transcoder::decode(const std::wstring& src) {
+     LogString dst;
+     decode(src.data(), src.length(), dst);
+     return dst;
+}
+#endif
+
+
+
 
 
 

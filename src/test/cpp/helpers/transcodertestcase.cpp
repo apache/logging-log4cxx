@@ -38,6 +38,7 @@ class TranscoderTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(decode4);
 #endif
                 CPPUNIT_TEST(decode7);
+                CPPUNIT_TEST(decode8);
 #if LOG4CXX_HAS_WCHAR_T
                 CPPUNIT_TEST(encode1);
 #endif
@@ -102,6 +103,13 @@ public:
                   decoded.substr(0, BUFSIZE - 2));
             CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Hello"),
                   decoded.substr(BUFSIZE -2 ));
+        }
+
+        void decode8() {
+            std::string msg("Hello, World.");
+            LogString actual(Transcoder::decode(msg));
+            LogString expected(LOG4CXX_STR("Hello, World."));
+            CPPUNIT_ASSERT_EQUAL(expected, actual);
         }
 
 
