@@ -53,11 +53,12 @@ FileOutputStream::~FileOutputStream() {
 }
 
 void FileOutputStream::close(Pool& /* p */) {
-  apr_status_t stat = apr_file_close((apr_file_t*) fileptr);
-  if (stat == APR_SUCCESS) {
+  if (fileptr != NULL) {
+    apr_status_t stat = apr_file_close((apr_file_t*) fileptr);
+    if (stat != APR_SUCCESS) {
+        throw IOException(stat);
+    }
     fileptr = NULL;
-  } else {
-    throw IOException(stat);
   }
 }
 
