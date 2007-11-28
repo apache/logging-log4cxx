@@ -473,9 +473,9 @@ inline log4cxx::wlogstream& operator<<(log4cxx::wlogstream& os, const V& val) {
 
 #if !defined(LOG4CXX_ENDMSG)
 #if LOG4CXX_LOGSTREAM_ADD_NOP
-#define LOG4CXX_ENDMSG (log4cxx::logstream_manipulator) log4cxx::logstream_base::nop >> LOG4CXX_LOCATION << (log4cxx::logstream_manipulator) log4cxx::logstream_base::endmsg;
+#define LOG4CXX_ENDMSG (log4cxx::logstream_manipulator) log4cxx::logstream_base::nop >> LOG4CXX_LOCATION << (log4cxx::logstream_manipulator) log4cxx::logstream_base::endmsg
 #else
-#define LOG4CXX_ENDMSG LOG4CXX_LOCATION << (log4cxx::logstream_manipulator) log4cxx::logstream_base::endmsg;
+#define LOG4CXX_ENDMSG LOG4CXX_LOCATION << (log4cxx::logstream_manipulator) log4cxx::logstream_base::endmsg
 #endif
 #endif
 
