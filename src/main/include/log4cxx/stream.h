@@ -99,6 +99,10 @@ namespace log4cxx
               */
              static logstream_base& endmsg(logstream_base&);
 
+             /**
+              *  no-operation manipulator,  Used to avoid ambiguity with VC6.
+              */
+             static logstream_base& nop(logstream_base&);
              
              /**
               *   end of message action.
@@ -258,6 +262,11 @@ namespace log4cxx
              */
              logstream& operator<<(const log4cxx::spi::LocationInfo& location);
             
+            /**
+             *   Alias for insertion operator for location.  Kludge to avoid
+			 *      inappropriate compiler ambiguity.
+             */
+             logstream& operator>>(const log4cxx::spi::LocationInfo& location);
 
             /**
              *   Cast operator to provide access to embedded std::basic_ostream.
@@ -351,9 +360,9 @@ namespace log4cxx
              wlogstream& operator<<(std::ios_base& (*manip)(std::ios_base&));
             
              /**
-              *   Insertion operator for wlogstream_base::endmsg.
+              *   Insertion operator for logstream_base::endmsg.
               */
-              wlogstream& operator<<(logstream_base& (*manip)(logstream_base&));
+              wlogstream& operator<<(logstream_manipulator manip);
             
               /**
                *   Insertion operator for level.
@@ -463,7 +472,11 @@ inline log4cxx::wlogstream& operator<<(log4cxx::wlogstream& os, const V& val) {
 #endif
 
 #if !defined(LOG4CXX_ENDMSG)
+#if LOG4CXX_LOGSTREAM_ADD_NOP
+#define LOG4CXX_ENDMSG (log4cxx::logstream_manipulator) log4cxx::logstream_base::nop >> LOG4CXX_LOCATION << (log4cxx::logstream_manipulator) log4cxx::logstream_base::endmsg;
+#else
 #define LOG4CXX_ENDMSG LOG4CXX_LOCATION << (log4cxx::logstream_manipulator) log4cxx::logstream_base::endmsg;
+#endif
 #endif
 
 

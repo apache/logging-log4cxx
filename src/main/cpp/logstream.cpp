@@ -74,6 +74,10 @@ logstream_base& logstream_base::endmsg(logstream_base& stream) {
      return stream;
 }
 
+logstream_base& logstream_base::nop(logstream_base& stream) {
+     return stream;
+}
+
 void logstream_base::end_message() {
      if (isEnabled()) {
          log(logger, level, location);
@@ -203,6 +207,10 @@ logstream& logstream::operator<<(const log4cxx::spi::LocationInfo& newlocation) 
    return *this;
 }
 
+logstream& logstream::operator>>(const log4cxx::spi::LocationInfo& newlocation) {
+   setLocation(newlocation);
+   return *this;
+}
              
 logstream& logstream::operator<<(std::ios_base& (*manip)(std::ios_base&)) {
       logstream_base::insert(manip);
