@@ -209,6 +209,9 @@ void Transformer::transform(const File& in, const File& out,
 
         apr_proc_t pid;
         stat = apr_proc_create(&pid,"sed", args, NULL, attr, pool);
+        if (stat != APR_SUCCESS) {
+            puts("Error invoking sed, sed must be on the path in order to run unit tests");
+        }
         assert(stat == APR_SUCCESS);
 
         apr_proc_wait(&pid, NULL, NULL, APR_WAIT);

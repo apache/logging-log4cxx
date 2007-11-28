@@ -35,7 +35,7 @@ have not been tested.
 
 GNU patch on command path.
 
-GNU sed on command path (required for tests)
+GNU sed, gzip and zip on command path (required for tests)
 
 Connection to internet
 
