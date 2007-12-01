@@ -237,7 +237,6 @@ void SocketImpl::bind(InetAddressPtr address1, int port1)
 void SocketImpl::close()
 {
         if (socket != 0) {
-          LOGLOG_DEBUG(LOG4CXX_STR("closing socket"));
           apr_status_t status = apr_socket_close((apr_socket_t*) socket);
           if (status != APR_SUCCESS) {
             throw SocketException(status);
@@ -322,7 +321,6 @@ LogString SocketImpl::toString() const
 size_t SocketImpl::read(void * buf, size_t len) const
 {
 
-// LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::reading ") << len << LOG4CXX_STR(" bytes."));
         char * p = (char *)buf;
 
         while ((size_t)(p - (char *)buf) < len)
@@ -345,7 +343,6 @@ size_t SocketImpl::read(void * buf, size_t len) const
 // thanks to Yves Mettier (ymettier@libertysurf.fr) for this routine
 size_t SocketImpl::write(const void * buf, size_t len)
 {
-// LOGLOG_DEBUG(LOG4CXX_STR("SocketImpl::write ") << len << LOG4CXX_STR(" bytes."));
 
         const char * p = (const char *)buf;
 

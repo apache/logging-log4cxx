@@ -22,10 +22,12 @@
 
 namespace log4cxx
 {
+        namespace helpers {
+                class ObjectOutputStream;
+                typedef ObjectPtrT<ObjectOutputStream> ObjectOutputStreamPtr;
+        }
         namespace net
         {
-                class LOG4CXX_EXPORT SocketAppender;
-                typedef helpers::ObjectPtrT<SocketAppender> SocketAppenderPtr;
 
         /**
         Sends {@link spi::LoggingEvent LoggingEvent} objects to a remote a log server,
@@ -99,14 +101,14 @@ namespace log4cxx
                 */
                 static int DEFAULT_RECONNECTION_DELAY;
 
-                        DECLARE_LOG4CXX_OBJECT(SocketAppender)
-                        BEGIN_LOG4CXX_CAST_MAP()
-                                LOG4CXX_CAST_ENTRY(SocketAppender)
-                                LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-                        END_LOG4CXX_CAST_MAP()
+                DECLARE_LOG4CXX_OBJECT(SocketAppender)
+                BEGIN_LOG4CXX_CAST_MAP()
+                        LOG4CXX_CAST_ENTRY(SocketAppender)
+                        LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+                END_LOG4CXX_CAST_MAP()
 
                 SocketAppender();
-                        ~SocketAppender();
+                ~SocketAppender();
 
                 /**
                 Connects to remote server at <code>address</code> and <code>port</code>.
@@ -119,30 +121,24 @@ namespace log4cxx
                 SocketAppender(const LogString& host, int port);
 
 
-                        /**
-                     *Set options
-                     */
-                        virtual void setOption(const LogString& option,
-                                const LogString& value) {
-                                SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
-                        }
+        protected:
+                virtual void setSocket(log4cxx::helpers::SocketPtr& socket, log4cxx::helpers::Pool& p);
+                
+                virtual void cleanUp(log4cxx::helpers::Pool& p);
+                
+                virtual int getDefaultDelay() const;
+                
+                virtual int getDefaultPort() const;
 
+                void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
 
-                /**
-                * The SocketAppender does not use a layout. Hence, this method
-                * returns <code>false</code>.
-                * */
-                bool requiresLayout() const
-                        { return false; }
-
-                protected:
-                        virtual void renderEvent(const spi::LoggingEventPtr& event,
-                                const helpers::OutputStreamPtr& os,
-                                log4cxx::helpers::Pool& p);
-
-
+        private:
+                log4cxx::helpers::ObjectOutputStreamPtr oos;
 
         }; // class SocketAppender
+        
+        typedef helpers::ObjectPtrT<SocketAppender> SocketAppenderPtr;
+        
     } // namespace net
 } // namespace log4cxx
 

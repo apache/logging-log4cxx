@@ -27,10 +27,8 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(ObjectOutputStream)
 
-ObjectOutputStream::ObjectOutputStream(OutputStreamPtr outputStream, Pool& p) : os(outputStream) 
-#if !LOG4CXX_LOGCHAR_IS_UTF8
-     , utf8Encoder(CharsetEncoder::getUTF8Encoder())
-#endif
+ObjectOutputStream::ObjectOutputStream(OutputStreamPtr outputStream, Pool& p)
+     : os(outputStream) , utf8Encoder(CharsetEncoder::getUTF8Encoder())
 {
    char start[] = { 0xAC, 0xED, 0x00, 0x05 };
    ByteBuffer buf(start, sizeof(start));
@@ -42,6 +40,10 @@ ObjectOutputStream::~ObjectOutputStream() {
 
 void ObjectOutputStream::close(Pool& p) {
     os->close(p);
+}
+
+void ObjectOutputStream::flush(Pool& p) {
+    os->flush(p);
 }
 
 void ObjectOutputStream::writeObject(const LogString& val, Pool& p) {

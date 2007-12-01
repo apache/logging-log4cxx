@@ -26,7 +26,7 @@
 #include <apr_atomic.h>
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/objectoutputstream.h>
-#include <log4cxx/helpers/bytearrayoutputstream.h>
+#include <log4cxx/helpers/socketoutputstream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -45,12 +45,12 @@ SocketHubAppender::~SocketHubAppender()
 }
 
 SocketHubAppender::SocketHubAppender()
- : port(DEFAULT_PORT), sockets(), locationInfo(false), thread()
+ : port(DEFAULT_PORT), streams(), locationInfo(false), thread()
 {
 }
 
 SocketHubAppender::SocketHubAppender(int port1)
- : port(port1), sockets(), locationInfo(false), thread()
+ : port(port1), streams(), locationInfo(false), thread()
 {
         startServer();
 }
@@ -97,18 +97,18 @@ void SocketHubAppender::close()
         synchronized sync(mutex);
         // close all of the connections
         LogLog::debug(LOG4CXX_STR("closing client connections"));
-        for (std::vector<helpers::SocketPtr>::iterator iter = sockets.begin();
-             iter != sockets.end();
-                 iter++) {
+        for (std::vector<helpers::ObjectOutputStreamPtr>::iterator iter = streams.begin();
+             iter != streams.end();
+             iter++) {
                  if ( (*iter) != NULL) {
                          try {
-                                (*iter)->close();
+                                (*iter)->close(pool);
                          } catch(SocketException& e) {
                                 LogLog::error(LOG4CXX_STR("could not close socket: "), e);
                          }
                  }
          }
-        sockets.erase(sockets.begin(), sockets.end());
+        streams.erase(streams.begin(), streams.end());
 
 
         LogLog::debug(LOG4CXX_STR("SocketHubAppender ")
@@ -119,19 +119,14 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
 
         // if no open connections, exit now
-        if(sockets.empty())
+        if(streams.empty())
         {
                 return;
         }
 
-        ByteArrayOutputStreamPtr os(new ByteArrayOutputStream());
-        ObjectOutputStream objStream(os, p);
-        event->write(objStream, p);
-        std::vector<unsigned char> bytes(os->toByteArray());
-
         // loop through the current set of open connections, appending the event to each
-        std::vector<SocketPtr>::iterator it = sockets.begin();
-        std::vector<SocketPtr>::iterator itEnd = sockets.end();
+        std::vector<ObjectOutputStreamPtr>::iterator it = streams.begin();
+        std::vector<ObjectOutputStreamPtr>::iterator itEnd = streams.end();
         while(it != itEnd)
         {
                 // list size changed unexpectedly? Just exit the append.
@@ -142,14 +137,14 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
                 try
                 {
-                        (*it)->write(&bytes[0], bytes.size());
+                        event->write(**it, p);
                         it++;
                 }
-                catch(SocketException&)
+                catch(std::exception& e)
                 {
                         // there was an io exception so just drop the connection
-                        it = sockets.erase(it);
-                        LogLog::debug(LOG4CXX_STR("dropped connection"));
+                        it = streams.erase(it);
+                        LogLog::debug(LOG4CXX_STR("dropped connection"), e);
                 }
         }
 }
@@ -162,7 +157,7 @@ void SocketHubAppender::startServer()
 void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* /* thread */, void* data) {
         SocketHubAppender* pThis = (SocketHubAppender*) data;
 
-        ServerSocket * serverSocket = 0;
+        ServerSocket* serverSocket = 0;
 
         try
         {
@@ -211,7 +206,10 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* /* thread */,
 
                                 // add it to the oosList.
                                 synchronized sync(pThis->mutex);
-                                pThis->sockets.push_back(socket);
+                                OutputStreamPtr os(new SocketOutputStream(socket));
+                                Pool p;
+                                ObjectOutputStreamPtr oos(new ObjectOutputStream(os, p));
+                                pThis->streams.push_back(oos);
                         }
                         catch (IOException& e)
                         {
@@ -219,7 +217,6 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* /* thread */,
                         }
                 }
         }
-
         delete serverSocket;
         return NULL;
 }

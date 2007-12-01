@@ -27,7 +27,6 @@ namespace log4cxx
         namespace helpers {
           class OutputStream;
           typedef helpers::ObjectPtrT<OutputStream> OutputStreamPtr;
-          class ByteBuffer;
           class CharsetEncoder;
           typedef helpers::ObjectPtrT<CharsetEncoder> CharsetEncoderPtr;
 
@@ -46,6 +45,7 @@ namespace log4cxx
                   virtual ~ObjectOutputStream();
 
                   void close(Pool& p);
+                  void flush(Pool& p);
                   void writeUTF(const LogString&, Pool& p);
                   void writeObject(const LogString&, Pool& p);
                   void writeObject(const std::map<LogString, LogString>& mdc, Pool& p);
@@ -74,10 +74,10 @@ namespace log4cxx
                   ObjectOutputStream& operator=(const ObjectOutputStream&);
                      
                   OutputStreamPtr os;
-#if !LOG4CXX_LOGCHAR_IS_UTF8
                   log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
-#endif                 
           };
+          
+          typedef helpers::ObjectPtrT<ObjectOutputStream> ObjectOutputStreamPtr;          
 
         } // namespace helpers
 

@@ -25,13 +25,11 @@
 #include <apr_time.h>
 #include <apr_atomic.h>
 #include <apr_thread_proc.h>
-#include <log4cxx/helpers/bytearrayoutputstream.h>
+#include <log4cxx/helpers/socketoutputstream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
-
-#if APR_HAS_THREADS
 
 IMPLEMENT_LOG4CXX_OBJECT(SocketAppender)
 
@@ -50,12 +48,14 @@ SocketAppender::SocketAppender()
 
 SocketAppender::SocketAppender(InetAddressPtr& address1, int port1)
 : SocketAppenderSkeleton(address1, port1, DEFAULT_RECONNECTION_DELAY) {
-        connect();
+    Pool p;
+    activateOptions(p);
 }
 
 SocketAppender::SocketAppender(const LogString& host, int port1)
 : SocketAppenderSkeleton(host, port1, DEFAULT_RECONNECTION_DELAY) {
-        connect();
+    Pool p;
+    activateOptions(p);
 }
 
 SocketAppender::~SocketAppender()
@@ -63,11 +63,41 @@ SocketAppender::~SocketAppender()
     finalize();
 }
 
-void SocketAppender::renderEvent(const spi::LoggingEventPtr& event,
-     const helpers::OutputStreamPtr& os1,
-     Pool& p) {
-        ObjectOutputStream os(os1, p);
-        event->write(os, p);
+int SocketAppender::getDefaultDelay() const {
+    return DEFAULT_RECONNECTION_DELAY;
 }
 
-#endif
+int SocketAppender::getDefaultPort() const {
+    return DEFAULT_PORT;
+}
+
+void SocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p) {
+    synchronized sync(mutex);
+    oos = new ObjectOutputStream(new SocketOutputStream(socket), p);
+}
+
+void SocketAppender::cleanUp(Pool& p) {
+    if (oos != 0) {
+        try {
+            oos->close(p);
+            oos = 0;
+        } catch(std::exception& e) {
+        }
+    }
+}
+
+
+void SocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) {
+    if (oos != 0) {
+        try {
+           event->write(*oos, p);
+           oos->flush(p);
+        } catch(std::exception& e) {
+           oos = 0;
+           LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
+           if (getReconnectionDelay() > 0) {
+               fireConnector();
+           }
+        }
+    }
+}

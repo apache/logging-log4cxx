@@ -51,7 +51,6 @@ namespace log4cxx
                 helpers::InetAddressPtr address;
 
                 int port;
-                helpers::SocketPtr socket;
                 int reconnectionDelay;
                 bool locationInfo;
 
@@ -73,23 +72,9 @@ namespace log4cxx
                 Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
                 */
                 void activateOptions(log4cxx::helpers::Pool& p);
-
-
-                /**
-                * Close this appender.
-                *
-                * <p>This will mark the appender as closed and call then
-                * #cleanUp method.
-                * */
+                
                 void close();
 
-                /**
-                * Drop the connection to the remote host and release the underlying
-                * connector thread if it has been created
-                * */
-                void cleanUp();
-
-                void connect();
 
                    /**
                 * This appender does not use a layout. Hence, this method
@@ -98,10 +83,6 @@ namespace log4cxx
                         */
                 bool requiresLayout() const
                         { return false; }
-
-
-                                void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
-
 
                 /**
                 * The <b>RemoteHost</b> option takes a string value which should be
@@ -163,20 +144,23 @@ namespace log4cxx
                 int getReconnectionDelay() const
                         { return reconnectionDelay; }
 
-                    void fireConnector();
+                void fireConnector();
+
+                void setOption(const LogString& option,
+                                const LogString& value);
 
            protected:
-                    /**
-                    Set options
-                    */
-                        void setOption(const LogString& option,
-                                const LogString& value, int defaultPort, int defaultDelay);
 
-                        virtual void renderEvent(const spi::LoggingEventPtr& event,
-                                const helpers::OutputStreamPtr& os,
-                                log4cxx::helpers::Pool& p) = 0;
+                virtual void setSocket(log4cxx::helpers::SocketPtr& socket, log4cxx::helpers::Pool& p) = 0;
+                
+                virtual void cleanUp(log4cxx::helpers::Pool& p) = 0;
+                
+                virtual int getDefaultDelay() const = 0;
+                
+                virtual int getDefaultPort() const = 0;
 
-       private:
+           private:
+                void connect(log4cxx::helpers::Pool& p);
                    /**
                         The Connector will reconnect when the server becomes available
                         again.  It does this by attempting to open a new connection every

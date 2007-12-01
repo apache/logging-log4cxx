@@ -19,14 +19,16 @@
 #define _LOG4CXX_NET_SOCKET_HUB_APPENDER_H
 
 #include <log4cxx/appenderskeleton.h>
-#include <log4cxx/helpers/socket.h>
-#include <log4cxx/helpers/thread.h>
-#include <log4cxx/helpers/mutex.h>
 #include <vector>
+#include <log4cxx/helpers/thread.h>
 
 
 namespace log4cxx
 {
+        namespace helpers {
+                class ObjectOutputStream;
+                typedef ObjectPtrT<ObjectOutputStream> ObjectOutputStreamPtr;
+        }
         namespace net
         {
                 /**
@@ -103,7 +105,7 @@ namespace log4cxx
                         static int DEFAULT_PORT;
 
                         int port;
-                        std::vector<helpers::SocketPtr> sockets;
+                        std::vector<helpers::ObjectOutputStreamPtr> streams;
                         bool locationInfo;
 
                 public:
@@ -180,6 +182,7 @@ namespace log4cxx
                         static void* LOG4CXX_THREAD_FUNC monitor(helpers::log4cxx_thread_t* thread, void* data);
 
                 }; // class SocketHubAppender
+                typedef helpers::ObjectPtrT<SocketHubAppender> SocketHubAppenderPtr;
         }  // namespace net
 } // namespace log4cxx
 

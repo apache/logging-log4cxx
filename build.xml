@@ -204,14 +204,14 @@ Common command line options:
     <condition property="mac_osx_wchar_not_supported_yet" value="true">
         <equals arg1="${has.wchar_t}" arg2="1"/>
     </condition>
-    <fail if="mac_osx_wchar_not_supported_yet">
+    <!-- fail if="mac_osx_wchar_not_supported_yet">
 
 wchar_t is not supported in Mac OS/X yet,
 cppunit fails to link
 LogString may become CFString, see bug LOGCXX-85
 
 specify -Dhas.wchar_t=0 on Ant command line for UTF-8 build as work-around
-</fail>
+</fail-->
 </target>
 
 

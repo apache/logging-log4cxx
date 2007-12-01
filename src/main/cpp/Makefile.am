@@ -138,6 +138,7 @@ liblog4cxx_la_SOURCES = \
         socketappenderskeleton.cpp \
         sockethubappender.cpp \
         socketimpl.cpp \
+        socketoutputstream.cpp \
         strftimedateformat.cpp \
         stringhelper.cpp \
         stringmatchfilter.cpp \

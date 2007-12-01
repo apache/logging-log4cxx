@@ -22,9 +22,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/synchronized.h>
-#include <apr_time.h>
-#include <apr_atomic.h>
-#include <apr_thread_proc.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/bytearrayoutputstream.h>
 
@@ -33,13 +30,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
-#if APR_HAS_THREADS
-
 SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay1)
 :  remoteHost(),
    address(),
    port(defaultPort),
-   socket(),
    reconnectionDelay(reconnectionDelay1),
    locationInfo(false),
    thread() {
@@ -50,7 +44,6 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address1, int port
    remoteHost(),
    address(address1),
    port(port1),
-   socket(),
    reconnectionDelay(delay),
    locationInfo(false),
    thread() {
@@ -60,11 +53,10 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address1, int port
 SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1, int delay)
 :   remoteHost(host),
     address(InetAddress::getByName(host)),
-        port(port1),
-    socket(),
+    port(port1),
     reconnectionDelay(delay),
-        locationInfo(false),
-        thread() {
+    locationInfo(false),
+    thread() {
 }
 
 SocketAppenderSkeleton::~SocketAppenderSkeleton()
@@ -72,13 +64,43 @@ SocketAppenderSkeleton::~SocketAppenderSkeleton()
         finalize();
 }
 
-void SocketAppenderSkeleton::activateOptions(Pool& /* p */ )
+void SocketAppenderSkeleton::activateOptions(Pool& p)
 {
-        connect();
+        AppenderSkeleton::activateOptions(p);
+        connect(p);
 }
 
-void SocketAppenderSkeleton::setOption(const LogString& option,
-        const LogString& value, int defaultPort, int defaultDelay)
+void SocketAppenderSkeleton::close() {
+    synchronized sync(mutex);
+    if (closed) return;
+    closed = true;
+    cleanUp(pool);
+    thread.interrupt();
+}
+
+void SocketAppenderSkeleton::connect(Pool& p) {
+    if (address == 0) {
+        LogLog::error(LogString(LOG4CXX_STR("No remote host is set for Appender named \"")) +
+             name + LOG4CXX_STR("\"."));
+    } else {
+        cleanUp(p);
+        try {
+            SocketPtr socket(new Socket(address, port));
+            setSocket(socket, p);
+        } catch(SocketException& e) {
+                LogString msg = LOG4CXX_STR("Could not connect to remote log4cxx server at [")
+                        +address->getHostName()+LOG4CXX_STR("].");
+                if(reconnectionDelay > 0)
+                {
+                        msg += LOG4CXX_STR(" We will try again later. ");
+                }
+                fireConnector(); // fire the connector thread
+                LogLog::error(msg, e);
+        }
+    }
+}
+
+void SocketAppenderSkeleton::setOption(const LogString& option, const LogString& value)
 {
         if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("REMOTEHOST"), LOG4CXX_STR("remotehost")))
         {
@@ -86,7 +108,7 @@ void SocketAppenderSkeleton::setOption(const LogString& option,
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("PORT"), LOG4CXX_STR("port")))
         {
-                setPort(OptionConverter::toInt(value, defaultPort));
+                setPort(OptionConverter::toInt(value, getDefaultPort()));
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOCATIONINFO"), LOG4CXX_STR("locationinfo")))
         {
@@ -94,103 +116,13 @@ void SocketAppenderSkeleton::setOption(const LogString& option,
         }
         else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("RECONNECTIONDELAY"), LOG4CXX_STR("reconnectiondelay")))
         {
-                setReconnectionDelay(OptionConverter::toInt(value, defaultDelay));
+                setReconnectionDelay(OptionConverter::toInt(value, getDefaultDelay()));
         }
         else
         {
                 AppenderSkeleton::setOption(option, value);
         }
 }
-
-void SocketAppenderSkeleton::append(const spi::LoggingEventPtr& event, Pool& p)
-{
-        if(address == 0)
-        {
-                errorHandler->error(
-                        LOG4CXX_STR("No remote host is set for appender named \"") +
-                        name+LOG4CXX_STR("\"."));
-                return;
-        }
-
-        if(socket != 0) {
-            try {
-                ByteArrayOutputStreamPtr byteStream(new ByteArrayOutputStream());
-                OutputStreamPtr os(byteStream);
-                renderEvent(event, os, p);
-                std::vector<unsigned char> bytes(byteStream->toByteArray());
-                socket->write(&bytes[0], bytes.size());
-            }
-            catch(SocketException& e) {
-                socket = 0;
-                LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
-
-                if(reconnectionDelay > 0) {
-                        fireConnector();
-                }
-            }
-        }
-}
-
-
-
-void SocketAppenderSkeleton::close()
-{
-    synchronized sync(mutex);
-    if (closed) return;
-    closed = true;
-    cleanUp();
-}
-
-void SocketAppenderSkeleton::cleanUp()
-{
-        if(socket != 0)
-        {
-                try
-                {
-                        socket->close();
-                }
-                catch(IOException& e)
-                {
-                        LogLog::error(LOG4CXX_STR("Could not close socket :"), e);
-                }
-
-                socket = 0;
-        }
-
-        thread.join();
-}
-
-void SocketAppenderSkeleton::connect()
-{
-        if(address == 0)
-        {
-                return;
-        }
-
-        try
-        {
-                // First, close the previous connection if any.
-                cleanUp();
-
-                socket = new Socket(address, port);
-        }
-        catch(SocketException& e)
-        {
-                LogString msg = LOG4CXX_STR("Could not connect to remote log4cxx server at [")
-
-                        +address->getHostName()+LOG4CXX_STR("].");
-
-                if(reconnectionDelay > 0)
-                {
-                        msg += LOG4CXX_STR(" We will try again later. ");
-                }
-
-                fireConnector(); // fire the connector thread
-
-                LogLog::error(msg, e);
-        }
-}
-
 
 void SocketAppenderSkeleton::fireConnector()
 {
@@ -200,7 +132,7 @@ void SocketAppenderSkeleton::fireConnector()
         }
 }
 
-void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* /* thread */, void* data) {
+void* LOG4CXX_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* /* thread */, void* data) {
         SocketAppenderSkeleton* socketAppender = (SocketAppenderSkeleton*) data;
         SocketPtr socket;
         bool isClosed = socketAppender->closed;
@@ -208,18 +140,14 @@ void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* /* threa
         {
                 try
                 {
-                        apr_sleep(APR_INT64_C(1000) * socketAppender->reconnectionDelay);
-                        LogLog::debug(LOG4CXX_STR("Attempting connection to ")
-                                +socketAppender->address->getHostName());
+                        Thread::sleep(socketAppender->reconnectionDelay);
+                        LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
+                                + socketAppender->address->getHostName());
                         socket = new Socket(socketAppender->address, socketAppender->port);
-
-                        synchronized sync(socketAppender->mutex);
-                        {
-                                socketAppender->socket = socket;
-                                LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
-                                socketAppender->thread.ending();
-                                return NULL;
-                        }
+                        Pool p;
+                        socketAppender->setSocket(socket, p);
+                        LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
+                        return NULL;
                 }
                 catch(ConnectException&)
                 {
@@ -237,11 +165,9 @@ void* APR_THREAD_FUNC SocketAppenderSkeleton::monitor(log4cxx_thread_t* /* threa
                                  + LOG4CXX_STR(". Exception is ")
                                  + exmsg);
                 }
-            isClosed = socketAppender->closed;
+                isClosed = socketAppender->closed;
         }
 
         LogLog::debug(LOG4CXX_STR("Exiting Connector.run() method."));
         return NULL;
 }
-
-#endif

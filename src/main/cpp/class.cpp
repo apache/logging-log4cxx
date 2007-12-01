@@ -66,7 +66,7 @@
 
 #include <log4cxx/rollingfileappender.h>
 #include <log4cxx/dailyrollingfileappender.h>
-
+#include <apr.h>
 
 
 using namespace log4cxx;
@@ -163,15 +163,13 @@ void Class::registerClasses() {
 //  TODO:
 //        SMTPAppender::registerClass();
 #endif
-#if APR_HAS_THREADS
         SocketAppender::registerClass();
         SocketHubAppender::registerClass();
-#endif        
         SyslogAppender::registerClass();
 #if APR_HAS_THREADS
         TelnetAppender::registerClass();
-        XMLSocketAppender::registerClass();
 #endif
+        XMLSocketAppender::registerClass();
 //       DateLayout::registerClass();
         HTMLLayout::registerClass();
         PatternLayout::registerClass();

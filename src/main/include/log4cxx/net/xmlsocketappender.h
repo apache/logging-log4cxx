@@ -23,8 +23,8 @@
 namespace log4cxx
 {
         namespace helpers {
-                class CharsetEncoder;
-                typedef helpers::ObjectPtrT<CharsetEncoder> CharsetEncoderPtr;
+                class Writer;
+                typedef helpers::ObjectPtrT<Writer> WriterPtr;
         }
         namespace net
         {
@@ -101,8 +101,6 @@ namespace log4cxx
                 */
                 static int DEFAULT_RECONNECTION_DELAY;
 
-                bool locationInfo;
-
                 /**
                 An event XML stream cannot exceed 1024 bytes.
                 */
@@ -128,42 +126,22 @@ namespace log4cxx
                 XMLSocketAppender(const LogString& host, int port);
 
 
-                /**
-                 *Set options
-                 */
-                virtual void setOption(const LogString& option,
-                      const LogString& value);
-
-
-                /**
-                The <b>LocationInfo</b> option takes a boolean value. If true,
-                the information sent to the remote host will include location
-                information. By default no location information is sent to the server.
-                */
-                void setLocationInfo(bool locationInfo);
-
-                /**
-                Returns value of the <b>LocationInfo</b> option.
-                */
-                bool getLocationInfo() const
-                        { return locationInfo; }
-
       protected:
-                void renderEvent(const spi::LoggingEventPtr& event,
-                    const helpers::OutputStreamPtr& os, 
-                    log4cxx::helpers::Pool& p);
+                virtual void setSocket(log4cxx::helpers::SocketPtr& socket, log4cxx::helpers::Pool& p);
+                
+                virtual void cleanUp(log4cxx::helpers::Pool& p);
+                
+                virtual int getDefaultDelay() const;
+                
+                virtual int getDefaultPort() const;
 
-
+                void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
 
        private:
+                log4cxx::helpers::WriterPtr writer;
                 //  prevent copy and assignment statements
                 XMLSocketAppender(const XMLSocketAppender&);
                 XMLSocketAppender& operator=(const XMLSocketAppender&);
-                
-#if !LOG4CXX_LOGCHAR_IS_UTF8
-                log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
-#endif                
-
         }; // class XMLSocketAppender
         
         typedef helpers::ObjectPtrT<XMLSocketAppender> XMLSocketAppenderPtr;

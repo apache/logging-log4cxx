@@ -17,8 +17,7 @@
 
 #include <log4cxx/net/xmlsocketappender.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/bytearrayoutputstream.h>
-#include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/outputstreamwriter.h>
 #include <log4cxx/helpers/charsetencoder.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
@@ -28,8 +27,7 @@
 #include <apr_time.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/transcoder.h>
-
-#if APR_HAS_THREADS
+#include <log4cxx/helpers/socketoutputstream.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -48,31 +46,24 @@ const int XMLSocketAppender::MAX_EVENT_LEN          = 1024;
 
 XMLSocketAppender::XMLSocketAppender()
 : SocketAppenderSkeleton(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY)
-#if !LOG4CXX_LOGCHAR_IS_UTF8
-    , utf8Encoder(CharsetEncoder::getUTF8Encoder())
-#endif
 {
         layout = new XMLLayout();
 }
 
 XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
 : SocketAppenderSkeleton(address1, port1, DEFAULT_RECONNECTION_DELAY)
-#if !LOG4CXX_LOGCHAR_IS_UTF8
-    , utf8Encoder(CharsetEncoder::getUTF8Encoder())
-#endif
 {
         layout = new XMLLayout();
-        connect();
+        Pool p;
+        activateOptions(p);
 }
 
 XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
 : SocketAppenderSkeleton(host, port1, DEFAULT_RECONNECTION_DELAY)
-#if !LOG4CXX_LOGCHAR_IS_UTF8
-    , utf8Encoder(CharsetEncoder::getUTF8Encoder())
-#endif
 {
         layout = new XMLLayout();
-        connect();
+        Pool p;
+        activateOptions(p);
 }
 
 XMLSocketAppender::~XMLSocketAppender() {
@@ -80,35 +71,48 @@ XMLSocketAppender::~XMLSocketAppender() {
 }
 
 
-void XMLSocketAppender::setLocationInfo(bool locationInfo1) {
-        this->locationInfo = locationInfo1;
-        XMLLayoutPtr xmlLayout(layout);
-        xmlLayout->setLocationInfo(locationInfo1);
+int XMLSocketAppender::getDefaultDelay() const {
+    return DEFAULT_RECONNECTION_DELAY;
 }
 
+int XMLSocketAppender::getDefaultPort() const {
+    return DEFAULT_PORT;
+}
 
-void XMLSocketAppender::renderEvent(const spi::LoggingEventPtr& event,
-    const helpers::OutputStreamPtr& os1, Pool& p)
-{
+void XMLSocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p) {
+    OutputStreamPtr os(new SocketOutputStream(socket));
+    CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
+    synchronized sync(mutex);
+    writer = new OutputStreamWriter(os, charset);
+}
+
+void XMLSocketAppender::cleanUp(Pool& p) {
+    if (writer != 0) {
+        try {
+            writer->close(p);
+            writer = 0;
+        } catch(std::exception &e) {
+        }
+    }
+}
+
+void XMLSocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) {
+    if (writer != 0) {
         LogString output;
         layout->format(output, event, p);
-#if LOG4CXX_LOGCHAR_IS_UTF8
-        ByteBuffer buf(const_cast<char*>(output.data()), output.size());
-#else
-        size_t maxSize = output.size() * 6;
-        char* bytes = (char*) apr_palloc((apr_pool_t*) p.getAPRPool(), maxSize);
-        ByteBuffer buf(bytes, maxSize);
-        LogString::const_iterator iter(output.begin());
-        utf8Encoder->encode(output, iter, buf);
-        buf.flip();  
-#endif
-        os1->write(buf, p);
+        try {
+            writer->write(output, p);
+            writer->flush(p);
+        } catch(std::exception& e) {
+           writer = 0;
+           LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
+           if (getReconnectionDelay() > 0) {
+               fireConnector();
+           }
+        }
+    }
 }
 
-void XMLSocketAppender::setOption(const LogString& option,
-      const LogString& value) {
-        SocketAppenderSkeleton::setOption(option, value, DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY);
-}
 
-#endif
+
 
