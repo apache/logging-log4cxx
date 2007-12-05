@@ -96,7 +96,8 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
 
         // Set the NDC and thread name for the calling thread as these
         // LoggingEvent fields were not set at event creation time.
-        event->getNDC();
+        LogString ndcVal;
+        event->getNDC(ndcVal);
         event->getThreadName();
         // Get a copy of this thread's MDC.
         event->getMDCCopy();

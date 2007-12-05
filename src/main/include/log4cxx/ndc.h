@@ -24,9 +24,6 @@
 
 namespace log4cxx
 {
-        class DiagnosticContext;
-        typedef std::stack<DiagnosticContext> Stack;
-
         /**
         the ndc class implements <i>nested diagnostic contexts</i> as
         defined by neil harrison in the article "patterns for logging
@@ -146,41 +143,15 @@ namespace log4cxx
                 */
                 static void clear();
 
-                /**
-                Clone the diagnostic context for the current thread.
-                <p>Internally a diagnostic context is represented as a stack.  A
-                given thread can supply the stack (i.e. diagnostic context) to a
-                child thread so that the child can inherit the parent thread's
-                diagnostic context.
-                <p>The child thread uses the #inherit method to
-                inherit the parent's diagnostic context.
-                @return Stack A clone of the current thread's  diagnostic context.
-                */
-//                static Stack * cloneStack();
-
-                /**
-                Inherit the diagnostic context of another thread.
-                <p>The parent thread can obtain a reference to its diagnostic
-                context using the #cloneStack method.  It should
-                communicate this information to its child so that it may inherit
-                the parent's diagnostic context.
-                <p>The parent's diagnostic context is cloned before being
-                inherited. In other words, once inherited, the two diagnostic
-                contexts can be managed independently.
-                <p>In java, a child thread cannot obtain a reference to its
-                parent, unless it is directly handed the reference. Consequently,
-                there is no client-transparent way of inheriting diagnostic
-                contexts. Do you know any solution to this problem?
-                @param stack The diagnostic context of the parent thread.
-                */
-//                static void inherit(Stack * stack);
 
                 /**
                 <b>Never use this method directly, use the
                 {@link spi::LoggingEvent#getNDC LoggingEvent::getNDC}
                 method instead.</b>
+                * @param dest destination to which to append content of NDC.
+                * @return true if NDC is set.
                 */
-                static LogString get();
+                static bool get(LogString& dest);
 
                 /**
                 Get the current nesting depth of this diagnostic context.
@@ -198,7 +169,7 @@ namespace log4cxx
                 context.
                 <p>The returned value is the value that was pushed last. If no
                 context is available, then the empty string "" is returned.
-                @return String The innermost diagnostic context.
+                @return The innermost diagnostic context.
                 */
                 static LogString pop();
 
@@ -240,19 +211,6 @@ namespace log4cxx
                 memory.
                 */
                 static void remove();
-
-
-                /**
-                 *  Tests if the specified string is the value
-                 *  (usually "null") returned when the NDC is empty.
-                 */
-                static bool isNull(const LogString& str);
-
-        private:
-                 /**
-                  *  Get the string returned when the NDC is empty.
-                  */
-                 static const LogString& getNull();
         }; // class NDC;
 }  // namespace log4cxx
 

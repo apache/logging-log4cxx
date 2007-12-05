@@ -74,7 +74,13 @@ namespace log4cxx
                 static std::wstring get(const std::wstring& key);
 #endif
                 static std::string get(const std::string& key);
-                static bool get(const LogString& key, LogString& value);
+                /**
+                 *  Gets the context identified by the <code>key</code> parameter.
+                 *  @param key context key.
+                 *  @param dest destination to which value is appended.
+                 *  @return true if key has associated value.
+                 */
+                static bool get(const LogString& key, LogString& dest);
 
                 /**
                 * Remove the the context identified by the <code>key</code>
@@ -89,14 +95,6 @@ namespace log4cxx
                 * Clear all entries in the MDC.
                 */
                 static void clear();
-
-                /**
-                * Get the current thread's MDC as a Map. This method is
-                * intended to be used internally.
-                * */
-//                static const Map getContext();
-
-//                static void setContext(Map& map);
 
         }; // class MDC;
 }  // namespace log4cxx

@@ -64,14 +64,14 @@ void PropertiesPatternConverter::format(
           toAppendTo.append(1, LOG4CXX_STR('{'));
           toAppendTo.append(*iter);
           toAppendTo.append(1, LOG4CXX_STR(','));
-          toAppendTo.append(event->getMDC(*iter));
+          event->getMDC(*iter, toAppendTo);
           toAppendTo.append(1, LOG4CXX_STR('}'));
       }
 
       toAppendTo.append(1, LOG4CXX_STR('}'));
 
     } else {
-      toAppendTo.append(event->getMDC(option));
+      event->getMDC(option, toAppendTo);
     }
  }
 

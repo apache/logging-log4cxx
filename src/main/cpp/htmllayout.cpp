@@ -125,13 +125,14 @@ void HTMLLayout::format(LogString& output,
         output.append(LOG4CXX_STR("</td>") LOG4CXX_EOL);
         output.append(LOG4CXX_STR("</tr>") LOG4CXX_EOL);
 
-        if (event->getNDC().length() != 0)
+        LogString ndcVal;
+        if (event->getNDC(ndcVal))
         {
                 output.append(LOG4CXX_STR("<tr><td bgcolor=\"#EEEEEE\" "));
                 output.append(LOG4CXX_STR("style=\"font-size : xx-small;\" colspan=\"6\" "));
                 output.append(LOG4CXX_STR("title=\"Nested Diagnostic Context\">"));
                 output.append(LOG4CXX_STR("NDC: "));
-                Transform::appendEscapingTags(output, event->getNDC());
+                Transform::appendEscapingTags(output, ndcVal);
                 output.append(LOG4CXX_STR("</td></tr>") LOG4CXX_EOL);
         }
 }

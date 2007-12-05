@@ -45,5 +45,7 @@ void NDCPatternConverter::format(
   const LoggingEventPtr& event,
   LogString& toAppendTo,
   Pool& /* p */) const {
-   toAppendTo.append(event->getNDC());
+   if(!event->getNDC(toAppendTo)) {
+       toAppendTo.append(LOG4CXX_STR("null"));
+   }
  }

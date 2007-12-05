@@ -60,7 +60,7 @@ bool MDC::get(const LogString& key, LogString& value)
 
         Map::iterator it = map.find(key);
         if (it != map.end()) {
-                value = it->second;
+                value.append(it->second);
                 return true;
         }
         return false;

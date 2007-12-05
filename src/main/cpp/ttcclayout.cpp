@@ -65,15 +65,8 @@ void TTCCLayout::format(LogString& output,
                 output.append(1, LOG4CXX_STR(' '));
         }
 
-        if(contextPrinting)
-        {
-                LogString ndc = event->getNDC();
-
-                if(!NDC::isNull(ndc))
-                {
-                        output.append(ndc);
-                        output.append(1, LOG4CXX_STR(' '));
-                }
+        if(contextPrinting && event->getNDC(output)) {
+                output.append(1, LOG4CXX_STR(' '));
         }
 
         output.append(LOG4CXX_STR("- "));

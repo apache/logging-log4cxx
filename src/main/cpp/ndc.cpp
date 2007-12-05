@@ -74,37 +74,15 @@ void NDC::clear()
         }
 }
 
-#if 0
-NDC::Stack * NDC::cloneStack()
-{
-        Stack * stack = getCurrentThreadStack();
-        if(stack != 0)
-        {
-                return new Stack(*stack);
-        }
-        else
-        {
-                return new Stack();
-        }
-}
-
-void NDC::inherit(NDC::Stack * stack)
-{
-        if(stack != 0)
-        {
-                setCurrentThreadStack(stack);
-        }
-}
-
-#endif
-LogString NDC::get()
+bool NDC::get(LogString& dest)
 {
         Stack& stack = ThreadSpecificData::getCurrentThreadStack();
         if(!stack.empty())
         {
-                return stack.top().fullMessage;
+                dest.append(stack.top().fullMessage);
+                return true;
         }
-        return getNull();
+        return false;
 }
 
 int NDC::getDepth()
@@ -121,7 +99,7 @@ LogString NDC::pop()
                 stack.pop();
                 return value;
         }
-        return getNull();
+        return LOG4CXX_STR("");
 }
 
 LogString NDC::peek()
@@ -131,7 +109,7 @@ LogString NDC::peek()
         {
                 return stack.top().message;
         }
-        return getNull();
+        return LOG4CXX_STR("");
 }
 
 void NDC::pushLogString(const LogString& message)
@@ -173,12 +151,3 @@ bool NDC::empty() {
     return stack.empty();
 }
 
-bool NDC::isNull(const LogString& str) {
-    return str == getNull();
-}
-
-
-const LogString& NDC::getNull() {
-    static LogString nullStr(LOG4CXX_STR("null"));
-    return nullStr;
-}

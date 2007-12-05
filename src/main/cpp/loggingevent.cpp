@@ -48,7 +48,7 @@ log4cxx_time_t LoggingEvent::getStartTime() {
 }
 
 LoggingEvent::LoggingEvent() :
-   ndc(LOG4CXX_STR("null")),
+   ndc(0),
    properties(0),
    ndcLookupRequired(true),
    mdcCopyLookupRequired(true),
@@ -61,7 +61,7 @@ LoggingEvent::LoggingEvent(
         const LogString& message1, const LocationInfo& locationInfo1) :
    logger(logger1),
    level(level1),
-   ndc(LOG4CXX_STR("null")),
+   ndc(0),
    properties(0),
    ndcLookupRequired(true),
    mdcCopyLookupRequired(true),
@@ -73,10 +73,8 @@ LoggingEvent::LoggingEvent(
 
 LoggingEvent::~LoggingEvent()
 {
-        if (properties != 0)
-        {
-                delete properties;
-        }
+        delete ndc;
+        delete properties;
 }
 
 const LogString LoggingEvent::getLoggerName() const
@@ -84,18 +82,24 @@ const LogString LoggingEvent::getLoggerName() const
         return logger->getName();
 }
 
-const LogString& LoggingEvent::getNDC() const
+bool LoggingEvent::getNDC(LogString& dest) const
 {
         if(ndcLookupRequired)
         {
                 ndcLookupRequired = false;
-                ndc = NDC::get();
+                LogString val;
+                if(NDC::get(val)) {
+                     ndc = new LogString(val);
+                }
         }
-
-        return ndc;
+        if (ndc) {
+            dest.append(*ndc);
+            return true;
+        }
+        return false;
 }
 
-LogString LoggingEvent::getMDC(const LogString& key) const
+bool LoggingEvent::getMDC(const LogString& key, LogString& dest) const
 {
    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
     // that is associated with the thread.
@@ -107,12 +111,13 @@ LogString LoggingEvent::getMDC(const LogString& key) const
                 {
                         if (!it->second.empty())
                         {
-                                return it->second;
+                                dest.append(it->second);
+                                return true;
                         }
                 }
     }
 
-    return MDC::get(key);
+    return MDC::get(key, dest);
 
 }
 
@@ -153,26 +158,22 @@ void LoggingEvent::getMDCCopy() const
         }
 }
 
-LogString LoggingEvent::getProperty(const LogString& key) const
+bool LoggingEvent::getProperty(const LogString& key, LogString& dest) const
 {
         if (properties == 0)
         {
-                return LogString();
+                return false;
         }
 
         std::map<LogString, LogString>::const_iterator  it = properties->find(key);
 
         if (it != properties->end())
         {
-                const LogString& p = it->second;
-
-                if (!p.empty())
-                {
-                        return p;
-                }
+                dest.append(it->second);
+                return true;
         }
 
-        return LogString();
+        return false;
 }
 
 std::set<LogString> LoggingEvent::getPropertyKeySet() const
@@ -291,10 +292,10 @@ void LoggingEvent::write(helpers::ObjectOutputStream& os, Pool& p) const {
       } else {
           os.writeObject(mdcCopy, p);
       }
-      if (ndc.size() == 0) {
+      if (ndc == 0) {
           os.writeByte(ObjectOutputStream::TC_NULL, p);
       } else {
-          os.writeObject(ndc, p);
+          os.writeObject(*ndc, p);
       }
       os.writeObject(message, p);
       os.writeObject(threadName, p);

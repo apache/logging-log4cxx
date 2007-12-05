@@ -118,11 +118,15 @@ namespace log4cxx
                                 { return locationInfo; }
 
                         /**
-                        * This method returns the NDC for this event. It will return the
+                        * This method appends the NDC for this event to passed string. It will return the
                         * correct content even if the event was generated in a different
                         * thread or even on a different machine. The NDC#get method
-                        * should <em>never</em> be called directly.  */
-                        const LogString& getNDC() const;
+                        * should <em>never</em> be called directly.
+                        *
+                        * @param dest destination for NDC, unchanged if NDC is not set.
+                        * @return true if NDC is set.  
+                        */
+                        bool getNDC(LogString& dest) const;
 
                         /**
                          *  Writes the content of the LoggingEvent 
@@ -131,7 +135,7 @@ namespace log4cxx
                         void write(helpers::ObjectOutputStream& os, helpers::Pool& p) const;
 
                         /**
-                        * Returns the the context corresponding to the <code>key</code> parameter.
+                        * Appends the the context corresponding to the <code>key</code> parameter.
                         * If there is a local MDC copy, possibly because we are in a logging
                         * server or running inside AsyncAppender, then we search for the key in
                         * MDC copy, if a value is found it is returned. Otherwise, if the search
@@ -142,8 +146,11 @@ namespace log4cxx
                         * Note that <em>both</em> the local MDC copy and the current thread's MDC
                         * are searched.
                         * </p>
+                        * @param key key.
+                        * @param dest string to which value, if any, is appended.
+                        * @return true if key had a corresponding value.
                         */
-                        LogString getMDC(const LogString& key) const;
+                        bool getMDC(const LogString& key, LogString& dest) const;
 
                         /**
                         * Returns the set of of the key values in the MDC for the event.
@@ -161,9 +168,12 @@ namespace log4cxx
                         void getMDCCopy() const;
 
                         /**
-                        * Return a previously set property. The return value can be null.
+                        * Return a previously set property.
+                        * @param key key.
+                        * @param dest string to which value, if any, is appended.
+                        * @return true if key had a corresponding value.
                         */
-                        LogString getProperty(const LogString& key) const;
+                        bool getProperty(const LogString& key, LogString& dest) const;
                         /**
                         * Returns the set of of the key values in the properties
                         * for the event. The returned set is unmodifiable by the caller.
@@ -198,7 +208,7 @@ namespace log4cxx
                         LevelPtr level;
 
                         /** The nested diagnostic context (NDC) of logging event. */
-                        mutable LogString ndc;
+                        mutable LogString* ndc;
 
                         /** The mapped diagnostic context (MDC) of logging event. */
                         mutable MDC::Map mdcCopy;

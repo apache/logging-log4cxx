@@ -68,9 +68,8 @@ void XMLLayout::format(LogString& output,
         Transform::appendEscapingCDATA(output, event->getRenderedMessage());
         output.append(LOG4CXX_STR("]]></log4j:message>") LOG4CXX_EOL);
 
-        const LogString& ndc = event->getNDC();
-        if(!NDC::isNull(ndc))
-        {
+        LogString ndc;
+        if(event->getNDC(ndc)) {
                 output.append(LOG4CXX_STR("<log4j:NDC><![CDATA["));
                 output.append(ndc);
                 output.append(LOG4CXX_STR("]]></log4j:NDC>") LOG4CXX_EOL);
@@ -95,12 +94,14 @@ void XMLLayout::format(LogString& output,
                         i != mdcKeySet.end(); i++)
                 {
                         LogString propName = *i;
-                        LogString propValue = event->getMDC(propName);
-                        output.append(LOG4CXX_STR("    <log4j:data name=\""));
-                        output.append(propName);
-                        output.append(LOG4CXX_STR("\" value=\""));
-                        output.append(propValue);
-                        output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
+                        LogString propValue;
+                        if(event->getMDC(propName, propValue)) {
+                            output.append(LOG4CXX_STR("    <log4j:data name=\""));
+                            output.append(propName);
+                            output.append(LOG4CXX_STR("\" value=\""));
+                            output.append(propValue);
+                            output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
+                        }
                 }
                 output.append(LOG4CXX_STR("</log4j:MDC>") LOG4CXX_EOL);
     }
@@ -131,12 +132,14 @@ void XMLLayout::format(LogString& output,
                         i != propertySet.end(); i++)
                 {
                         LogString propName = *i;
-                        output .append(LOG4CXX_STR("<log4j:data name=\""));
-                        output.append(propName);
-                        LogString propValue = event->getProperty(propName);
-                        output.append(LOG4CXX_STR("\" value=\""));
-                        output.append(propValue);
-                        output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
+                        LogString propValue;
+                        if(event->getProperty(propName, propValue)) {
+                            output.append(LOG4CXX_STR("<log4j:data name=\""));
+                            output.append(propName);
+                            output.append(LOG4CXX_STR("\" value=\""));
+                            output.append(propValue);
+                            output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
+                        }
                 }
                 output.append(LOG4CXX_STR("</log4j:properties>") LOG4CXX_EOL);
     }
