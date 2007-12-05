@@ -596,6 +596,34 @@ void Logger::getName(std::wstring& rv) const {
 }
 #endif
 
+void Logger::trace(const std::string& msg, const log4cxx::spi::LocationInfo& location) { 
+  if (isEnabledFor(log4cxx::Level::getTrace())) { 
+    forcedLog(log4cxx::Level::getTrace(), msg, location); 
+  } 
+} 
+
+#if LOG4CXX_HAS_WCHAR_T 
+void Logger::trace(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) { 
+  if (isEnabledFor(log4cxx::Level::getTrace())) { 
+    forcedLog(log4cxx::Level::getTrace(), msg, location); 
+  } 
+} 
+#endif 
+
+void Logger::trace(const std::string& msg) { 
+  if (isEnabledFor(log4cxx::Level::getTrace())) { 
+    forcedLog(log4cxx::Level::getTrace(), msg); 
+  } 
+} 
+
+#if LOG4CXX_HAS_WCHAR_T 
+void Logger::trace(const std::wstring& msg) { 
+  if (isEnabledFor(log4cxx::Level::getTrace())) { 
+    forcedLog(log4cxx::Level::getTrace(), msg); 
+  } 
+} 
+#endif 
+
 void Logger::debug(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
   if (isEnabledFor(log4cxx::Level::getDebug())) {
     forcedLog(log4cxx::Level::getDebug(), msg, location);
