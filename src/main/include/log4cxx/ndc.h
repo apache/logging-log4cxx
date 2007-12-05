@@ -211,6 +211,9 @@ namespace log4cxx
                 memory.
                 */
                 static void remove();
+        private:
+                NDC(const NDC&);
+                NDC& operator=(const NDC&);
         }; // class NDC;
 }  // namespace log4cxx
 

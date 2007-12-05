@@ -40,14 +40,17 @@ namespace log4cxx
         class LOG4CXX_EXPORT MDC
         {
         public:
-                /** String to string stl mp
+                /** String to string stl map.
                 */
                 typedef std::map<LogString, LogString> Map;
 
-        private:
-                const LogString& key;
-
-        public:
+                /**
+                 *  Places a key/value pair in the MDC for the current thread
+                 *    which will be removed during the corresponding destructor.  Both
+                 *    construction and destruction are expected to be on the same thread.
+                 *    @param key key
+                 *    @param value value.
+                 */
                 MDC(const LogString& key, const LogString& value);
                 ~MDC();
 
@@ -96,6 +99,10 @@ namespace log4cxx
                 */
                 static void clear();
 
+        private:
+                MDC(const MDC&);
+                MDC& operator=(const MDC&);
+                const LogString key;                
         }; // class MDC;
 }  // namespace log4cxx
 
