@@ -25,6 +25,8 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/stringtokenizer.h>
+#include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/synchronized.h>
 
 #include <libsmtp.h>
 #include <libsmtp_mime.h>
@@ -37,6 +39,9 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(DefaultEvaluator)
 IMPLEMENT_LOG4CXX_OBJECT(SMTPAppender)
 
+DefaultEvaluator::DefaultEvaluator() {
+}
+
 bool DefaultEvaluator::isTriggeringEvent(const spi::LoggingEventPtr& event)
 {
    return event->getLevel()->isGreaterOrEqual(Level::getError());
@@ -45,7 +50,7 @@ bool DefaultEvaluator::isTriggeringEvent(const spi::LoggingEventPtr& event)
 SMTPAppender::SMTPAppender()
 : bufferSize(512), locationInfo(false), cb(bufferSize),
 evaluator(new DefaultEvaluator()), session(0),
-encoding(_T("7bit")), charset(_T("us-ascii"))
+encoding(LOG4CXX_STR("7bit")), charset(LOG4CXX_STR("us-ascii"))
 {
 }
 
@@ -55,7 +60,7 @@ TriggeringEventEvaluator for this SMTPAppender.  */
 SMTPAppender::SMTPAppender(spi::TriggeringEventEvaluatorPtr evaluator)
 : bufferSize(512), locationInfo(false), cb(bufferSize),
 evaluator(evaluator), session(0),
-encoding(_T("7bit")), charset(_T("us-ascii"))
+encoding(LOG4CXX_STR("7bit")), charset(LOG4CXX_STR("us-ascii"))
 {
 }
 
@@ -64,38 +69,38 @@ SMTPAppender::~SMTPAppender()
    finalize();
 }
 
-void SMTPAppender::setOption(const String& option,
-   const String& value)
+void SMTPAppender::setOption(const LogString& option,
+   const LogString& value)
 {
-   if (StringHelper::equalsIgnoreCase(option, _T("buffersize")))
+   if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
    {
       setBufferSize(OptionConverter::toInt(value, 512));
    }
-   else if (StringHelper::equalsIgnoreCase(option, _T("evaluatorclass")))
+   else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("EVALUATORCLASS"), LOG4CXX_STR("evaluatorclass")))
    {
       setEvaluatorClass(value);
    }
-   else if (StringHelper::equalsIgnoreCase(option, _T("from")))
+   else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FROM"), LOG4CXX_STR("from")))
    {
       setFrom(value);
    }
-   else if (StringHelper::equalsIgnoreCase(option, _T("smtphost")))
+   else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SMTPHOST"), LOG4CXX_STR("smtphost")))
    {
       setSMTPHost(value);
    }
-   else if (StringHelper::equalsIgnoreCase(option, _T("subject")))
+   else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SUBJECT"), LOG4CXX_STR("subject")))
    {
       setSubject(value);
    }
-   else if (StringHelper::equalsIgnoreCase(option, _T("to")))
+   else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("TO"), LOG4CXX_STR("to")))
    {
       setTo(value);
    }
-   else if (StringHelper::equalsIgnoreCase(option, _T("charset")))
+   else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("CHARSET"), LOG4CXX_STR("charset")))
    {
       setCharset(value);
    }
-   else if (StringHelper::equalsIgnoreCase(option, _T("encoding")))
+   else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ENCODING"), LOG4CXX_STR("encoding")))
    {
       setEncoding(value);
    }
@@ -108,34 +113,33 @@ void SMTPAppender::setOption(const String& option,
 /**
 Activate the specified options, such as the smtp host, the
 recipient, from, etc. */
-void SMTPAppender::activateOptions()
+void SMTPAppender::activateOptions(Pool& p)
 {
-   USES_CONVERSION;
-
    session = ::libsmtp_session_initialize();
    if (session == 0)
    {
-      LogLog::error(_T("Could not intialize session."));
+      LogLog::error(LOG4CXX_STR("Could not intialize session."));
       return;
    }
 
-   char * ansiFrom = T2A((TCHAR *)from.c_str());
-   char * ansiSubject = T2A((TCHAR *)subject.c_str());
+   LOG4CXX_ENCODE_CHAR(ansiFrom, from);
+   LOG4CXX_ENCODE_CHAR(ansiSubject, subject);
    ::libsmtp_set_environment(
-      ansiFrom,
-      ansiSubject,
+      const_cast<char*>(ansiFrom.c_str()),
+      const_cast<char*>(ansiSubject.c_str()),
       0,
       (libsmtp_session_struct *)session);
 
-   std::vector<String> recipients = parseAddress(to);
-   std::vector<String>::iterator i;
+   std::vector<LogString> recipients = parseAddress(to);
+   std::vector<LogString>::iterator i;
    for (i = recipients.begin(); i != recipients.end(); i++)
    {
+      LOG4CXX_ENCODE_CHAR(ansiTo, *i);
       if (::libsmtp_add_recipient(LIBSMTP_REC_TO,
-         (TCHAR *)T2A(i->c_str()),
+         const_cast<char*>(ansiTo.c_str()),
          (libsmtp_session_struct *)session) != 0)
       {
-         LogLog::error(_T("Could not add recipient ")+*i+_T("."));
+         LogLog::error(LOG4CXX_STR("Could not add recipient ")+ *i + LOG4CXX_STR("."));
          return;
       }
    }
@@ -144,68 +148,68 @@ void SMTPAppender::activateOptions()
    if (layout != 0)
    {
       int mimeType = 0;
-      String contentType = layout->getContentType();
-      if (contentType == _T("text/plain"))
+      LogString contentType(layout->getContentType());
+      if (contentType == LOG4CXX_STR("text/plain"))
       {
          mimeType = LIBSMTP_MIME_SUB_PLAIN;
       }
-      else if (contentType == _T("text/html"))
+      else if (contentType == LOG4CXX_STR("text/html"))
       {
          mimeType = LIBSMTP_MIME_SUB_HTML;
       }
       else
       {
-         LogLog::error(_T("invalid layout content type: ")+contentType+_T("."));
+         LogLog::error(LOG4CXX_STR("invalid layout content type: ")+contentType+LOG4CXX_STR("."));
          return;
       }
 
       int charset = 0;
-      if (this->charset == _T("us-ascii"))
+      if (this->charset == LOG4CXX_STR("us-ascii"))
       {
           charset = LIBSMTP_CHARSET_USASCII;
       }
-      else if (this->charset == _T("iso8859_1"))
+      else if (this->charset == LOG4CXX_STR("iso8859_1"))
       {
           charset = LIBSMTP_CHARSET_ISO8859_1;
       }
-      else if (this->charset == _T("iso8859_2"))
+      else if (this->charset == LOG4CXX_STR("iso8859_2"))
       {
           charset = LIBSMTP_CHARSET_ISO8859_2;
       }
-      else if (this->charset == _T("iso8859_3"))
+      else if (this->charset == LOG4CXX_STR("iso8859_3"))
       {
           charset = LIBSMTP_CHARSET_ISO8859_3;
       }
       else
       {
-         LogLog::error(_T("invalid charset: ")+this->charset+_T("."));
+         LogLog::error(LOG4CXX_STR("invalid charset: ")+this->charset+LOG4CXX_STR("."));
          return;
       }
 
       int encoding = 0;
-      if (this->encoding == _T("7bit"))
+      if (this->encoding == LOG4CXX_STR("7bit"))
       {
          encoding = LIBSMTP_ENC_7BIT;
       }
-      else if (this->encoding == _T("8bit"))
+      else if (this->encoding == LOG4CXX_STR("8bit"))
       {
          encoding = LIBSMTP_ENC_8BIT;
       }
-      else if (this->encoding == _T("binary"))
+      else if (this->encoding == LOG4CXX_STR("binary"))
       {
          encoding = LIBSMTP_ENC_BINARY;
       }
-      else if (this->encoding == _T("base64"))
+      else if (this->encoding == LOG4CXX_STR("base64"))
       {
          encoding = LIBSMTP_ENC_BASE64;
       }
-      else if (this->encoding == _T("quoted"))
+      else if (this->encoding == LOG4CXX_STR("quoted"))
       {
          encoding = LIBSMTP_ENC_QUOTED;
       }
       else
       {
-         LogLog::error(_T("invalid encoding: ")+this->encoding+_T("."));
+         LogLog::error(LOG4CXX_STR("invalid encoding: ")+this->encoding+LOG4CXX_STR("."));
          return;
       }
 
@@ -220,12 +224,12 @@ void SMTPAppender::activateOptions()
          (libsmtp_session_struct *)session);
       if (part == 0)
       {
-         LogLog::error(_T("Error adding part."));
+         LogLog::error(LOG4CXX_STR("Error adding part."));
       }
    }
    else
    {
-      LogLog::error(_T("Layout not set !"));
+      LogLog::error(LOG4CXX_STR("Layout not set !"));
    }
 }
 
@@ -233,7 +237,7 @@ void SMTPAppender::activateOptions()
 Perform SMTPAppender specific appending actions, mainly adding
 the event to a cyclic buffer and checking if the event triggers
 an e-mail to be sent. */
-void SMTPAppender::append(const spi::LoggingEventPtr& event)
+void SMTPAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
    if(!checkEntryConditions())
    {
@@ -251,7 +255,7 @@ void SMTPAppender::append(const spi::LoggingEventPtr& event)
 
    if(evaluator->isTriggeringEvent(event))
    {
-      sendBuffer();
+      sendBuffer(p);
    }
 }
 
@@ -264,21 +268,21 @@ bool SMTPAppender::checkEntryConditions()
 {
    if(to.empty() || from.empty() || subject.empty() || smtpHost.empty())
    {
-      errorHandler->error(_T("Message not configured."));
+      errorHandler->error(LOG4CXX_STR("Message not configured."));
       return false;
    }
 
    if(evaluator == 0)
    {
-      errorHandler->error(_T("No TriggeringEventEvaluator is set for appender [")+
-         name+_T("]."));
+      errorHandler->error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [")+
+         name+ LOG4CXX_STR("]."));
       return false;
    }
 
 
    if(layout == 0)
    {
-      errorHandler->error(_T("No layout set for appender named [")+name+_T("]."));
+      errorHandler->error(LOG4CXX_STR("No layout set for appender named [")+name+LOG4CXX_STR("]."));
       return false;
    }
    return true;
@@ -296,11 +300,11 @@ void SMTPAppender::close()
    this->closed = true;
 }
 
-std::vector<String> SMTPAppender::parseAddress(const String& addressStr)
+std::vector<LogString> SMTPAppender::parseAddress(const LogString& addressStr)
 {
-   std::vector<String> addresses;
+   std::vector<LogString> addresses;
 
-   StringTokenizer st(addressStr, _T(","));
+   StringTokenizer st(addressStr, LOG4CXX_STR(","));
    while (st.hasMoreTokens())
    {
       addresses.push_back(st.nextToken());
@@ -312,93 +316,95 @@ std::vector<String> SMTPAppender::parseAddress(const String& addressStr)
 /**
 Send the contents of the cyclic buffer as an e-mail message.
 */
-void SMTPAppender::sendBuffer()
+void SMTPAppender::sendBuffer(Pool& p)
 {
    // Note: this code already owns the monitor for this
    // appender. This frees us from needing to synchronize on 'cb'.
    try
    {
-      StringBuffer sbuf;
-      layout->appendHeader(sbuf);
+      LogString sbuf;
+      layout->appendHeader(sbuf, p);
 
       int len = cb.length();
       for(int i = 0; i < len; i++)
       {
             //sbuf.append(MimeUtility.encodeText(layout.format(cb.get())));
          LoggingEventPtr event = cb.get();
-         layout->format(sbuf, event);
+         layout->format(sbuf, event, p);
       }
 
-      layout->appendFooter(sbuf);
+      layout->appendFooter(sbuf, p);
+
+      LOG4CXX_ENCODE_CHAR(aSmtpHost, smtpHost);
 
       /* This starts the SMTP connection */
       if (::libsmtp_connect(
-         T2A((TCHAR *)smtpHost.c_str()),
+         const_cast<char*>(aSmtpHost.c_str()),
          0,
          0,
          (libsmtp_session_struct *)session) != 0)
       {
-         LogLog::error(_T("Error occured while starting the SMTP connection."));
+         LogLog::error(LOG4CXX_STR("Error occured while starting the SMTP connection."));
          return;
       }
 
       /* This will conduct the SMTP dialogue */
       if (::libsmtp_dialogue((libsmtp_session_struct *)session) != 0)
       {
-         LogLog::error(_T("Error occured while conducting the SMTP dialogue."));
+         LogLog::error(LOG4CXX_STR("Error occured while conducting the SMTP dialogue."));
          return;
       }
 
       /* Now lets send the headers */
       if (::libsmtp_headers((libsmtp_session_struct *)session) != 0)
       {
-         LogLog::error(_T("Error occured while sending the headers."));
+         LogLog::error(LOG4CXX_STR("Error occured while sending the headers."));
          return;
       }
 
       /* Now lets send the MIME headers */
       if (::libsmtp_mime_headers((libsmtp_session_struct *)session) != 0)
       {
-         LogLog::error(_T("Error occured while sending the MIME headers."));
+         LogLog::error(LOG4CXX_STR("Error occured while sending the MIME headers."));
          return;
       }
 
-      String s = sbuf.str();
+      LOG4CXX_ENCODE_CHAR(s, sbuf);
       if (::libsmtp_part_send(
-         T2A((TCHAR *)s.c_str()),
+         const_cast<char*>(s.c_str()),
          s.length(),
          (libsmtp_session_struct *)session) != 0)
       {
-         LogLog::error(_T("Error occured while sending the message body."));
+         LogLog::error(LOG4CXX_STR("Error occured while sending the message body."));
       }
 
       /* This ends the body part */
       if (::libsmtp_body_end((libsmtp_session_struct *)session) != 0)
       {
-         LogLog::error(_T("Error occured while ending the body part."));
+         LogLog::error(LOG4CXX_STR("Error occured while ending the body part."));
          return;
       }
 
       /* This ends the connection gracefully */
       if (::libsmtp_quit((libsmtp_session_struct *)session) != 0)
       {
-         LogLog::error(_T("Error occured while ending the connection."));
+         LogLog::error(LOG4CXX_STR("Error occured while ending the connection."));
          return;
       }
 
    }
-   catch(Exception& e)
+   catch(std::exception& e)
    {
-      LogLog::error(_T("Error occured while sending e-mail notification."), e);
+      LogLog::error(LOG4CXX_STR("Error occured while sending e-mail notification."), e);
    }
 }
 
 /**
 Returns value of the <b>EvaluatorClass</b> option.
 */
-String SMTPAppender::getEvaluatorClass()
+LogString SMTPAppender::getEvaluatorClass()
 {
-   return evaluator == 0 ? String() : evaluator->getClass().getName();
+   return evaluator == 0 ? LogString() : evaluator->getClass().getName();
 }
 
 /**
@@ -421,7 +427,7 @@ TriggeringEventEvaluator} interface. A corresponding object will
 be instantiated and assigned as the triggering event evaluator
 for the SMTPAppender.
 */
-void SMTPAppender::setEvaluatorClass(const String& value)
+void SMTPAppender::setEvaluatorClass(const LogString& value)
 {
    evaluator = OptionConverter::instantiateByClassName(value,
       TriggeringEventEvaluator::getStaticClass(), evaluator);

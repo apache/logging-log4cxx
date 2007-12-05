@@ -123,7 +123,7 @@ namespace log4cxx
                         /**
                         Send the contents of the cyclic buffer as an e-mail message.
                         */
-                        void sendBuffer();
+                        void sendBuffer(log4cxx::helpers::Pool& p);
 
                         /**
                         Returns value of the <b>Charset</b> option.
@@ -265,7 +265,6 @@ namespace log4cxx
                         END_LOG4CXX_CAST_MAP()
 
                         DefaultEvaluator();
-                        DefaultEvaluator(log4cxx::helpers::Pool& p);
 
                         /**
                         Is this <code>event</code> the e-mail triggering event?
@@ -274,6 +273,9 @@ namespace log4cxx
                         <code>false</code>.
                         */
                         virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event);
+                private:
+                         DefaultEvaluator(const DefaultEvaluator&);
+                         DefaultEvaluator& operator=(const DefaultEvaluator&);
                 }; // class DefaultEvaluator
         }  // namespace net
 } // namespace log4cxx
