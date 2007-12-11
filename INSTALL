@@ -13,6 +13,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 
+Maven 2:
+==================
+
+Maven 2  used to prepare site documentation and will be used to package the release.
+TODO: add more documentation.
+
+
 Ant + cpptasks build:
 ==================
 
@@ -122,26 +129,6 @@ Build targets:
 autotools
 ==================
 
-    autoconf.sh is known to be incompatible with some versions
-of autotools.  The autotools make has not been kept up to date
-with development.  See Bug LOGCXX-43 for details on this issue.
-The following description has not been changed since log4cxx-0.9.7.
-
-    The `configure' shell script attempts to guess correct values for
-various system-dependent variables used during compilation.  It uses
-those values to create a `Makefile' in each directory of the package.
-It also create a `config_auto.h' file containing system-dependent
-definitions.  Finally, it creates a shell script `config.status' that
-you can run in the future to recreate the current configuration, a file
-`config.cache' that saves the results of its tests to speed up
-reconfiguring, and a file `config.log' containing compiler output
-(useful mainly for debugging `configure').
-
-   If you need to do unusual things to compile the package, please try
-to figure out how `configure' could check whether to do them, and mail
-diffs or instructions to the address given in the `AUTHORS' so they can
-be considered for the next release.  If at some point `config.cache'
-contains results you don't want to keep, you may remove or edit it.
 
    The file `configure.in' is used to create `configure' by a program
 called `autoconf'.
@@ -165,10 +152,9 @@ The simplest way to compile this package is:
 
   4. Type `make' to compile the package.
 
-  5. Optionally, type `make check' to run any self-tests that come with
-     the package.
+  5. Optionally, type `make check' to run self-tests.
 
-  6. Type `make install' to install the programs and any data files and
+  6. Type `sudo make install' to install the programs and any data files and
      documentation.
 
   7. You can remove the program binaries and object files from the
@@ -233,27 +219,31 @@ you can set and what kinds of files go in them.
 with an extra prefix or suffix on their names by giving `configure' the
 option `--program-prefix=PREFIX' or `--program-suffix=SUFFIX'.
 
-Optional Features
+Configure options
 =================
 
-With --enable-unicode, the library will be compiled with UTF16 Unicode support
-(2 bytes wide characters instead of 1 byte wide characters)
+--with-apr : Specify non-default location for apr.
+--with-aprutil: Specify non-default location for apr-util.
+--enable-cppunit=no: Disable building CppUnit unit tests.
+--enable-wchar_t: Enable wchar_t API methods.
+--with-logchar= utf-8 | wchar_t: Specify internal character type. 
 
-Threading support can be added through option -with-thread
-        * "pthread" (default): pthread library
-        * "Microsoft" : native microsoft library
-        * "no" : no threading support
 
+SMTP support (SMTPAppender) can be disabled through option -with-SMTP
+        * "libesmtp": libesmtp library (http://www.stafford.uklinux.net/libesmtp/)
+        * "no" (default): no SMTP support
+
+--enable-doxygen : generate documentation using Doxygen
+--enable-dot : use Dot to generate class diagrams for Doxygen
+--enable-html-docs: generate HTML documentation with doxygen
+--enable-latex-docs: generate Latex documentation with doxygen
+ 
 ODBC support (ODBCAppender) can be added through option -with-ODBC
         * "unixODBC" : unixODBC library (http://www.unixodbc.org)
         * "iODBC" : iODBC library (http://www.iodbc.org)
         * "Microsoft" : Microsoft ODBC library
         * "no" (default) : no ODBC support
 
-SMTP support (SMTPAppender) can be added through option -with-SMTP
-        * "libsmtp" : libsmtp library (http://libsmtp.berlios.de)
-        * "CDO" : Microsoft CDO library (no yet implemented !)
-        * "no" (default) : no SMTP support
 
 
 Specifying the System Type
