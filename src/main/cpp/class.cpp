@@ -31,10 +31,10 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/db/odbcappender.h>
-#if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
+#if defined(WIN32) || defined(_WIN32)
+#if !defined(_WIN32_WCE)
 #include <log4cxx/nt/nteventlogappender.h>
 #endif
-#if defined(WIN32) || defined(_WIN32)
 #include <log4cxx/nt/outputdebugstringappender.h>
 #endif
 #include <log4cxx/rolling/rollingfileappender.h>
@@ -71,9 +71,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
-#ifdef _WIN32
-using namespace log4cxx::nt;
-#endif
 using namespace log4cxx::filter;
 using namespace log4cxx::xml;
 using namespace log4cxx::rolling;
@@ -148,20 +145,15 @@ void Class::registerClasses() {
 #endif        
         ConsoleAppender::registerClass();
         FileAppender::registerClass();
-#ifdef LOG4CXX_HAVE_ODBC
       log4cxx::db::ODBCAppender::registerClass();
-#endif
-#if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
-        NTEventLogAppender::registerClass();
-#endif
 #if (defined(WIN32) || defined(_WIN32))
-        OutputDebugStringAppender::registerClass();
+#if !defined(_WIN32_WCE)
+        log4cxx::nt::NTEventLogAppender::registerClass();
+#endif
+        log4cxx::nt::OutputDebugStringAppender::registerClass();
 #endif
         RollingFileAppender::registerClass();
-#if LOG4CXX_HAVE_SMTP
-//  TODO:
-//        SMTPAppender::registerClass();
-#endif
+        SMTPAppender::registerClass();
         SocketAppender::registerClass();
         SocketHubAppender::registerClass();
         SyslogAppender::registerClass();
@@ -169,7 +161,7 @@ void Class::registerClasses() {
         TelnetAppender::registerClass();
 #endif
         XMLSocketAppender::registerClass();
-//       DateLayout::registerClass();
+        DateLayout::registerClass();
         HTMLLayout::registerClass();
         PatternLayout::registerClass();
         SimpleLayout::registerClass();
