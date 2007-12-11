@@ -247,8 +247,7 @@ ODBC support (ODBCAppender) can be added through option --with-ODBC
 SMTP and ODBC support involving compiling and linking with
 that are not licensed under the Apache Software License.
 You should review the corresponding licenses and understand
-there implications before distributing derived works with
-those features enabled.
+their implications before using those options.
 
 
 
