@@ -207,16 +207,14 @@ AC_ARG_WITH(ODBC,
         [ac_with_odbc=no])
 case "$ac_with_odbc" in
     Microsoft)
-        AC_DEFINE(HAVE_MS_ODBC, 1, ODBC support through Microsoft ODBC.)
-        AC_DEFINE(HAVE_ODBC, 1, ODBC support)
+        AC_SUBST(HAS_ODBC, 1, ODBC support)
         AC_MSG_RESULT(Microsoft)
         LIBS_ODBC="-lodbc32"
         ;;
     unixODBC)
         AC_MSG_RESULT(unixODBC)
         AC_CHECK_HEADER(sqlext.h,, AC_MSG_ERROR(unixODBC not found !))
-        AC_DEFINE(HAVE_UNIX_ODBC, 1, ODBC support through unixODBC.)
-        AC_DEFINE(HAVE_ODBC, 1, ODBC support)
+        AC_SUBST(HAS_ODBC, 1, ODBC support)
         LIBS_ODBC="-lodbc"
         ;;
     iODBC)
@@ -224,8 +222,7 @@ case "$ac_with_odbc" in
         AC_CHECK_PROG(IODBC_CONFIG, iodbc-config, yes, no)
         if test "x$IODBC_CONFIG" = "xyes"
         then
-                AC_DEFINE(HAVE_I_ODBC, 1, ODBC support through iODBC.)
-                AC_DEFINE(HAVE_ODBC, 1, ODBC support)
+                AC_SUBST(HAS_ODBC, 1, ODBC support)
                 LIBS_ODBC="`iodbc-config --libs`"
                 CPPFLAGS_ODBC="`iodbc-config --cflags`"
         else
@@ -233,6 +230,7 @@ case "$ac_with_odbc" in
         fi
         ;;
         no)
+        AC_SUBST(HAS_ODBC, 0, No ODBC support)
         AC_MSG_RESULT(no)
         ;;
     *)

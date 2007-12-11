@@ -30,9 +30,7 @@
 #include <log4cxx/asyncappender.h>
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/fileappender.h>
-#ifdef LOG4CXX_HAVE_ODBC
 #include <log4cxx/db/odbcappender.h>
-#endif
 #if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
 #include <log4cxx/nt/nteventlogappender.h>
 #endif
@@ -40,9 +38,7 @@
 #include <log4cxx/nt/outputdebugstringappender.h>
 #endif
 #include <log4cxx/rolling/rollingfileappender.h>
-#if LOG4CXX_HAVE_SMTP
 #include <log4cxx/net/smtpappender.h>
-#endif
 #include <log4cxx/net/socketappender.h>
 #include <log4cxx/net/sockethubappender.h>
 #include <log4cxx/helpers/datagramsocket.h>

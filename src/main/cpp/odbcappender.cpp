@@ -14,21 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-#if defined(WIN32) || defined(_WIN32)
-#include <windows.h>
-#endif
-
 #include <log4cxx/db/odbcappender.h>
-
-#ifdef LOG4CXX_HAVE_ODBC
-
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/patternlayout.h>
+
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
+#include <log4cxx/private/log4cxx_private.h>
+#if LOG4CXX_HAVE_ODBC
+#if defined(WIN32) || defined(_WIN32)
+#include <windows.h>
+#endif
+#include <sqlext.h>
+#endif
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -40,7 +43,7 @@ IMPLEMENT_LOG4CXX_OBJECT(ODBCAppender)
 
 
 ODBCAppender::ODBCAppender()
-: connection(SQL_NULL_HDBC), env(SQL_NULL_HENV), bufferSize(1)
+: connection(0), env(0), bufferSize(1)
 {
 }
 
@@ -79,12 +82,21 @@ void ODBCAppender::setOption(const LogString& option, const LogString& value)
    }
 }
 
+void ODBCAppender::activateOptions(log4cxx::helpers::Pool&) {
+#if !LOG4CXX_HAVE_ODBC
+    LogLog::error(LOG4CXX_STR("Can not activate ODBCAppender unless compiled with ODBC support."));
+#endif
+}
+
+
 void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
 {
+#if LOG4CXX_HAVE_ODBC
    buffer.push_back(event);
 
    if (buffer.size() >= bufferSize)
       flushBuffer();
+#endif      
 }
 
 LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const
@@ -96,6 +108,7 @@ LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, log4c
 
 void ODBCAppender::execute(const LogString& sql)
 {
+#if LOG4CXX_HAVE_ODBC
    SQLRETURN ret;
    SQLHDBC con = SQL_NULL_HDBC;
    SQLHSTMT stmt = SQL_NULL_HSTMT;
@@ -129,20 +142,22 @@ void ODBCAppender::execute(const LogString& sql)
    }
    SQLFreeHandle(SQL_HANDLE_STMT, stmt);
    closeConnection(con);
-
-   //tcout << LOG4CXX_STR("Execute: ") << sql << std::endl;
+#else
+    throw SQLException("log4cxx build without ODBC support");
+#endif
 }
 
 /* The default behavior holds a single connection open until the appender
 is closed (typically when garbage collected).*/
-void ODBCAppender::closeConnection(SQLHDBC con)
+void ODBCAppender::closeConnection(ODBCAppender::SQLHDBC con)
 {
 }
 
-std::string ODBCAppender::GetErrorMessage(SQLSMALLINT fHandleType, SQLHANDLE hInput, const char* szMsg )
+std::string ODBCAppender::GetErrorMessage(ODBCAppender::SQLSMALLINT fHandleType, 
+    ODBCAppender::SQLHANDLE hInput, const char* szMsg )
 {
+#if LOG4CXX_HAVE_ODBC
    SQLCHAR       SqlState[6];
-   SQLCHAR       SQLStmt[100];
    SQLCHAR       Msg[SQL_MAX_MESSAGE_LENGTH];
    SQLINTEGER    NativeError;
    SQLSMALLINT   i;
@@ -162,13 +177,17 @@ std::string ODBCAppender::GetErrorMessage(SQLSMALLINT fHandleType, SQLHANDLE hIn
    }
 
    return strReturn;
+#else
+   return "log4cxx built without ODBC support";
+#endif   
 }
 
 
 
 
-SQLHDBC ODBCAppender::getConnection()
+ODBCAppender::SQLHDBC ODBCAppender::getConnection()
 {
+#if LOG4CXX_HAVE_ODBC
    SQLRETURN ret;
 
    if (env == SQL_NULL_HENV)
@@ -225,6 +244,9 @@ SQLHDBC ODBCAppender::getConnection()
    }
 
    return connection;
+#else
+   return 0;
+#endif   
 }
 
 void ODBCAppender::close()
@@ -241,7 +263,7 @@ void ODBCAppender::close()
       errorHandler->error(LOG4CXX_STR("Error closing connection"),
          e, ErrorCode::GENERIC_FAILURE);
    }
-
+#if LOG4CXX_HAVE_ODBC
    if (connection != SQL_NULL_HDBC)
    {
       SQLDisconnect(connection);
@@ -252,7 +274,7 @@ void ODBCAppender::close()
    {
       SQLFreeHandle(SQL_HANDLE_ENV, env);
    }
-
+#endif
    this->closed = true;
 }
 
@@ -299,5 +321,3 @@ void ODBCAppender::setSql(const LogString& s)
       }
    }
 }
-
-#endif //LOG4CXX_HAVE_ODBC

@@ -50,11 +50,8 @@ typedef int log4cxx_status_t;
 #define LOG4CXX_LOCALE_ENCODING_US_ASCII 0
 
 
-//
-//   Capabilities should be checked in client code by
-//       attempting creation of the corresponding appender.
-//
 #define LOG4CXX_HAVE_LIBESMTP @HAS_LIBESMTP@
 #define LOG4CXX_HAVE_SYSLOG @HAS_SYSLOG@
+#define LOG4CXX_HAVE_ODBC @HAS_ODBC@
 
 #endif

@@ -19,18 +19,10 @@
 #define _LOG4CXX_DB_ODBC_APPENDER_H
 #include <log4cxx/log4cxx.h>
 
-#ifdef LOG4CXX_HAVE_ODBC
-
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <list>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-#include <sqlext.h>
 
 namespace log4cxx
 {
@@ -48,7 +40,6 @@ namespace log4cxx
                 };
 
                 class ODBCAppender;
-                typedef helpers::ObjectPtrT<ODBCAppender> ODBCAppenderPtr;
 
                 /**
                 <p><b>WARNING: This version of ODBCAppender
@@ -114,6 +105,11 @@ namespace log4cxx
                         */
                         LogString databasePassword;
 
+                        typedef void* SQLHDBC;
+                        typedef void* SQLHENV;
+                        typedef void* SQLHANDLE;
+                        typedef short SQLSMALLINT;
+
                         /**
                         * Connection used by default.  The connection is opened the first time it
                         * is needed and then held open until the appender is closed (usually at
@@ -136,7 +132,7 @@ namespace log4cxx
                         LogString sqlStatement;
 
                         /**
-                        * size of LoggingEvent buffer before writting to the database.
+                        * size of LoggingEvent buffer before writing to the database.
                         * Default is 1.
                         */
                         size_t bufferSize;
@@ -160,6 +156,11 @@ namespace log4cxx
                     Set options
                     */
                         virtual void setOption(const LogString& option, const LogString& value);
+
+                        /**
+                        Activate the specified options.
+                        */
+                        virtual void activateOptions(log4cxx::helpers::Pool& p);
 
                         /**
                         * Adds the event to the buffer.  When full the buffer is flushed.
@@ -269,9 +270,13 @@ namespace log4cxx
 
                         inline size_t getBufferSize() const
                                 { return bufferSize; }
+                private:
+                        ODBCAppender(const ODBCAppender&);
+                        ODBCAppender& operator=(const ODBCAppender&);
                 }; // class ODBCAppender
+                typedef helpers::ObjectPtrT<ODBCAppender> ODBCAppenderPtr;
+                
     } // namespace db
 } // namespace log4cxx
 
-#endif // LOG4CXX_HAVE_ODBC
-#endif // _LOG4CXX_NET_SOCKET_APPENDER_H
+#endif // _LOG4CXX_DB_ODBC_APPENDER_H

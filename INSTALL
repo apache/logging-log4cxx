@@ -229,7 +229,7 @@ Configure options
 --with-logchar= utf-8 | wchar_t: Specify internal character type. 
 
 
-SMTP support (SMTPAppender) can be disabled through option -with-SMTP
+SMTP support (SMTPAppender) can be disabled through option --with-SMTP
         * "libesmtp": libesmtp library (http://www.stafford.uklinux.net/libesmtp/)
         * "no" (default): no SMTP support
 
@@ -238,11 +238,17 @@ SMTP support (SMTPAppender) can be disabled through option -with-SMTP
 --enable-html-docs: generate HTML documentation with doxygen
 --enable-latex-docs: generate Latex documentation with doxygen
  
-ODBC support (ODBCAppender) can be added through option -with-ODBC
+ODBC support (ODBCAppender) can be added through option --with-ODBC
         * "unixODBC" : unixODBC library (http://www.unixodbc.org)
         * "iODBC" : iODBC library (http://www.iodbc.org)
         * "Microsoft" : Microsoft ODBC library
         * "no" (default) : no ODBC support
+        
+SMTP and ODBC support involving compiling and linking with
+that are not licensed under the Apache Software License.
+You should review the corresponding licenses and understand
+there implications before distributing derived works with
+those features enabled.
 
 
 
