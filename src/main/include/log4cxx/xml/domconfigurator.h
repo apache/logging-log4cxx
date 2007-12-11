@@ -168,7 +168,7 @@ namespace log4cxx
                         /**
                          Used internally to parse the logger factory element.
                         */
-                        log4cxx::rolling::TriggeringPolicyPtr parseTriggeringPolicy(
+                        log4cxx::helpers::ObjectPtr parseTriggeringPolicy(
                             log4cxx::helpers::Pool& p,
                             log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                             apr_xml_elem* factoryElement);

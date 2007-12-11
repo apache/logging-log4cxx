@@ -23,14 +23,10 @@
 #include <log4cxx/helpers/cyclicbuffer.h>
 #include <log4cxx/spi/triggeringeventevaluator.h>
 
-
 namespace log4cxx
 {
         namespace net
         {
-                class SMTPAppender;
-                typedef helpers::ObjectPtrT<SMTPAppender> SMTPAppenderPtr;
-
                 /**
                 Send an e-mail when a specific logging event occurs, typically on
                 errors or fatal errors.
@@ -44,18 +40,30 @@ namespace log4cxx
                 class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
                 {
                 private:
+
+                private:
+                        SMTPAppender(const SMTPAppender&);
+                        SMTPAppender& operator=(const SMTPAppender&);
+                        static bool asciiCheck(const LogString&, const logchar*);
+                        /**
+                        This method determines if there is a sense in attempting to append.
+                        <p>It checks whether there is a set output target and also if
+                        there is a set layout. If these checks fail, then the boolean
+                        value <code>false</code> is returned. */
+                        bool checkEntryConditions();
+
                         LogString to;
+                        LogString cc;
+                        LogString bcc;
                         LogString from;
                         LogString subject;
                         LogString smtpHost;
+                        LogString smtpUsername;
+                        LogString smtpPassword;
+                        int smtpPort;
                         int bufferSize; // 512
                         bool locationInfo;
                         helpers::CyclicBuffer cb;
-                        void * session;
-                        LogString encoding;
-                        LogString charset;
-
-                protected:
                         spi::TriggeringEventEvaluatorPtr evaluator;
 
                 public:
@@ -97,45 +105,35 @@ namespace log4cxx
                         an e-mail to be sent. */
                         virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
-                        /**
-                        This method determines if there is a sense in attempting to append.
-                        <p>It checks whether there is a set output target and also if
-                        there is a set layout. If these checks fail, then the boolean
-                        value <code>false</code> is returned. */
-                        bool checkEntryConditions();
 
                         virtual void close();
-
-                        std::vector<LogString> parseAddress(const LogString& addressStr);
 
                         /**
                         Returns value of the <b>To</b> option.
                         */
-                        inline const LogString& getTo() const
-                                { return to; }
+                        LogString getTo() const;
+
+                        /**
+                        Returns value of the <b>cc</b> option.
+                        */
+                        LogString getCc() const;
+
+                        /**
+                        Returns value of the <b>bcc</b> option.
+                        */
+                        LogString getBcc() const;
+
 
                         /**
                         The <code>SMTPAppender</code> requires a {@link
                         Layout layout}.  */
-                        virtual bool requiresLayout() const
-                                { return true; }
+                        virtual bool requiresLayout() const;
 
                         /**
                         Send the contents of the cyclic buffer as an e-mail message.
                         */
                         void sendBuffer(log4cxx::helpers::Pool& p);
 
-                        /**
-                        Returns value of the <b>Charset</b> option.
-                        */
-                        inline const LogString& getCharset() const
-                                { return charset; }
-
-                        /**
-                        Returns value of the <b>Encoding</b> option.
-                        */
-                        inline const LogString& getEncoding() const
-                                { return encoding; }
 
                         /**
                         Returns value of the <b>EvaluatorClass</b> option.
@@ -145,44 +143,25 @@ namespace log4cxx
                         /**
                         Returns value of the <b>From</b> option.
                         */
-                        inline const LogString& getFrom() const
-                                { return from; }
+                        LogString getFrom() const;
 
                         /**
                         Returns value of the <b>Subject</b> option.
                         */
-                        inline const LogString& getSubject() const
-                                { return subject; }
+                        LogString getSubject() const;
 
-                        /**
-                        The <b>Charset</b> option takes a string value which should be the
-                        charset of the mail (<code>us-ascii</code>, <code>iso8859_1</code>,
-                        <code>iso8859_2</code>, <code>iso8859_3</code>).
-                        */
-                        inline void setCharset(const LogString& charset)
-                                { this->charset.assign(charset); }
-
-                        /**
-                        The <b>Encoding</b> option takes a string value which should be the
-                        encoding type of the mail (<code>7bit</code>, <code>8bit</code>,
-                        <code>base64</code>, <code>binary</code>, <code>quoted</code>).
-                        */
-                        inline void setEncoding(const LogString& charset)
-                                { this->encoding.assign(encoding); }
 
                         /**
                         The <b>From</b> option takes a string value which should be a
                         e-mail address of the sender.
                         */
-                        inline void setFrom(const LogString& from)
-                                { this->from.assign(from); }
+                        void setFrom(const LogString& from);
 
                         /**
                         The <b>Subject</b> option takes a string value which should be a
                         the subject of the e-mail message.
                         */
-                        inline void setSubject(const LogString& subject)
-                                { this->subject.assign(subject); }
+                        void setSubject(const LogString& subject);
 
                         /**
                         The <b>BufferSize</b> option takes a positive integer
@@ -197,27 +176,83 @@ namespace log4cxx
                         The <b>SMTPHost</b> option takes a string value which should be a
                         the host name of the SMTP server that will send the e-mail message.
                         */
-                        inline void setSMTPHost(const LogString& smtpHost)
-                                { this->smtpHost.assign(smtpHost); }
+                        void setSMTPHost(const LogString& smtpHost);
 
                         /**
                         Returns value of the <b>SMTPHost</b> option.
                         */
-                        inline const LogString& getSMTPHost() const
-                                { return smtpHost; }
+                        LogString getSMTPHost() const;
+
+                        /**
+                        The <b>SMTPPort</b> option takes a string value which should be a
+                        the port of the SMTP server that will send the e-mail message.
+                        */
+                        void setSMTPPort(int port);
+
+                        /**
+                        Returns value of the <b>SMTPHost</b> option.
+                        */
+                        int getSMTPPort() const;
 
                         /**
                         The <b>To</b> option takes a string value which should be a
                         comma separated list of e-mail address of the recipients.
                         */
-                        inline void setTo(const LogString& to)
-                                { this->to.assign(to); }
+                        void setTo(const LogString& to);
+
+                        /**
+                        The <b>Cc</b> option takes a string value which should be a
+                        comma separated list of e-mail address of the cc'd recipients.
+                        */
+                        void setCc(const LogString& to);
+
+                        /**
+                        The <b>Bcc</b> option takes a string value which should be a
+                        comma separated list of e-mail address of the bcc'd recipients.
+                        */
+                        void setBcc(const LogString& to);
+
+
+                        /**
+                        The <b>SMTPUsername</b> option takes a string value which should be a
+                        the user name for the SMTP server.
+                        */
+                        void setSMTPUsername(const LogString& newVal);
+
+                        /**
+                        Returns value of the <b>SMTPUsername</b> option.
+                        */
+                        LogString getSMTPUsername() const;
+
+                        /**
+                        The <b>SMTPPassword</b> option takes a string value which should be a
+                        the password for the SMTP server.
+                        */
+                        void setSMTPPassword(const LogString& newVal);
+
+                        /**
+                        Returns value of the <b>SMTPPassword</b> option.
+                        */
+                        LogString getSMTPPassword() const;
 
                         /**
                         Returns value of the <b>BufferSize</b> option.
                         */
                         inline int getBufferSize() const
                                 { return bufferSize; }
+
+                   
+                        /**
+                         *   Gets the current triggering evaluator.
+                         *   @return triggering evaluator.
+                         */     
+                        log4cxx::spi::TriggeringEventEvaluatorPtr getEvaluator() const;
+
+                        /**
+                         *   Sets the triggering evaluator.
+                         *   @param trigger triggering evaluator.
+                         */     
+                        void setEvaluator(log4cxx::spi::TriggeringEventEvaluatorPtr& trigger);
 
                         /**
                         The <b>EvaluatorClass</b> option takes a string value
@@ -227,56 +262,21 @@ namespace log4cxx
                         for the SMTPAppender.
                         */
                         void setEvaluatorClass(const LogString& value);
-
+                 
                         /**
-                        The <b>LocationInfo</b> option takes a boolean value. By
-                        default, it is set to false which means there will be no effort
-                        to extract the location information related to the event. As a
-                        result, the layout that formats the events as they are sent out
-                        in an e-mail is likely to place the wrong location information
-                        (if present in the format).
-
-                        <p>Location information extraction is comparatively very slow and
-                        should be avoided unless performance is not a concern.
+                        The <b>LocationInfo</b> option is provided for compatibility with log4j
+                        and has no effect in log4cxx.
                         */
-                        inline void setLocationInfo(bool locationInfo)
-                                { this->locationInfo = locationInfo; }
+                        void setLocationInfo(bool locationInfo);
 
                         /**
                         Returns value of the <b>LocationInfo</b> option.
                         */
-                        inline bool getLocationInfo() const
-                                { return locationInfo; }
-
-                private:
-                        SMTPAppender(const SMTPAppender&);
-                        SMTPAppender& operator=(const SMTPAppender&);
-
+                        bool getLocationInfo() const;
                 }; // class SMTPAppender
+                
+                typedef helpers::ObjectPtrT<SMTPAppender> SMTPAppenderPtr;                
 
-                class LOG4CXX_EXPORT DefaultEvaluator :
-                        public virtual spi::TriggeringEventEvaluator,
-                        public virtual helpers::ObjectImpl
-                {
-                public:
-                        DECLARE_LOG4CXX_OBJECT(DefaultEvaluator)
-                        BEGIN_LOG4CXX_CAST_MAP()
-                                LOG4CXX_CAST_ENTRY(spi::TriggeringEventEvaluator)
-                        END_LOG4CXX_CAST_MAP()
-
-                        DefaultEvaluator();
-
-                        /**
-                        Is this <code>event</code> the e-mail triggering event?
-                        <p>This method returns <code>true</code>, if the event level
-                        has ERROR level or higher. Otherwise it returns
-                        <code>false</code>.
-                        */
-                        virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event);
-                private:
-                         DefaultEvaluator(const DefaultEvaluator&);
-                         DefaultEvaluator& operator=(const DefaultEvaluator&);
-                }; // class DefaultEvaluator
         }  // namespace net
 } // namespace log4cxx
 

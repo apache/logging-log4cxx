@@ -114,7 +114,7 @@ const Class& Class::forName(const LogString& className)
         //
         const Class* clazz = getRegistry()[lowerName];
         if (clazz == 0) {
-            LogString::size_type pos = className.find_last_of(LOG4CXX_STR('.'));
+            LogString::size_type pos = className.find_last_of(LOG4CXX_STR(".$"));
             if (pos != LogString::npos) {
                 LogString terminalName(lowerName, pos + 1, LogString::npos);
                 clazz = getRegistry()[terminalName];

@@ -69,6 +69,7 @@ void PropertySetter::setProperties(helpers::Properties& properties,
                         LogString value = OptionConverter::findAndSubst(key, properties);
                         key = key.substr(len);
                         if (key == LOG4CXX_STR("layout")
+                                && obj != 0
                                 && obj->instanceof(Appender::getStaticClass()))
                         {
                                 continue;
@@ -86,7 +87,7 @@ void PropertySetter::setProperty(const LogString& option,
         if (value.empty())
                 return;
 
-        if (obj->instanceof(OptionHandler::getStaticClass()))
+        if (obj != 0 && obj->instanceof(OptionHandler::getStaticClass()))
         {
                 LogLog::debug(LOG4CXX_STR("Setting option name=[") +
                         option + LOG4CXX_STR("], value=[") + value + LOG4CXX_STR("]"));
@@ -96,7 +97,7 @@ void PropertySetter::setProperty(const LogString& option,
 
 void PropertySetter::activate(Pool& p)
 {
-        if (obj->instanceof(OptionHandler::getStaticClass()))
+        if (obj != 0 && obj->instanceof(OptionHandler::getStaticClass()))
         {
                 OptionHandlerPtr(obj)->activateOptions(p);
         }

@@ -46,6 +46,7 @@
 #include <apr_xml.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/charsetdecoder.h>
+#include <log4cxx/net/smtpappender.h>
 
 using namespace log4cxx;
 using namespace log4cxx::xml;
@@ -224,10 +225,16 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
                                 }
                                 else if (tagName == TRIGGERING_POLICY_TAG)
                                 {
-                                        TriggeringPolicyPtr triggerPolicy(parseTriggeringPolicy(p, utf8Decoder, currentElement));
+                                        ObjectPtr policy(parseTriggeringPolicy(p, utf8Decoder, currentElement));
                                         RollingFileAppenderPtr rfa(appender);
                                         if (rfa != NULL) {
-                                           rfa->setTriggeringPolicy(triggerPolicy);
+                                           rfa->setTriggeringPolicy(policy);
+                                        } else {
+                                            log4cxx::net::SMTPAppenderPtr smtpa(appender);
+                                            if (smtpa != NULL) {
+                                                log4cxx::spi::TriggeringEventEvaluatorPtr evaluator(policy);
+                                                smtpa->setEvaluator(evaluator);
+                                            }
                                         }
                                 }
                                 else if (tagName == APPENDER_REF_TAG)
@@ -521,7 +528,7 @@ LayoutPtr DOMConfigurator::parseLayout (
 /**
  Used internally to parse a triggering policy
 */
-TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (
+ObjectPtr DOMConfigurator::parseTriggeringPolicy (
                                   log4cxx::helpers::Pool& p,
                                   log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
                                   apr_xml_elem* layout_element)
@@ -531,8 +538,7 @@ TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (
         try
         {
                 ObjectPtr instance = Loader::loadClass(className).newInstance();
-                TriggeringPolicyPtr layout = instance;
-                PropertySetter propSetter(layout);
+                PropertySetter propSetter(instance);
 
                 for (apr_xml_elem* currentElement = layout_element->first_child;
                      currentElement;
@@ -557,7 +563,7 @@ TriggeringPolicyPtr DOMConfigurator::parseTriggeringPolicy (
                 }
 
                 propSetter.activate(p);
-                return layout;
+                return instance;
         }
         catch (Exception& oops)
         {

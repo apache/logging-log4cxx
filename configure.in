@@ -121,7 +121,7 @@ AC_SUBST(base_dir)
 
 AC_ARG_ENABLE(cppunit,
         AC_HELP_STRING(--enable-cppunit,
-                [enable test excution with cppunit (auto)]))
+                [enable test execution with cppunit (auto)]))
 
 enable_tests=yes
 
@@ -198,12 +198,6 @@ fi
 AC_PROG_RANLIB
 
 
-# for SocketAppender
-AC_CHECK_FUNCS(gethostbyname,,
-        [AC_CHECK_LIB(nsl,gethostbyname,,
-        [AC_CHECK_LIB(socket,gethostbyname)])])
-AC_CHECK_FUNCS(setsockopt,,[AC_CHECK_LIB(socket,setsockopt)])
-
 #for ODBCAppender
 AC_MSG_CHECKING(for ODBC support)
 AC_ARG_WITH(ODBC,
@@ -256,43 +250,27 @@ AC_CHECK_FUNCS(gettimeofday ftime setenv mbsnrtowcs wcsnrtombs)
 AC_MSG_CHECKING(for SMTP support)
 AC_ARG_WITH(SMTP,
         AC_HELP_STRING(--with-SMTP, [SMTP support. Accepted arguments :
-                libsmtp, CDO, no (default=no)]),
+                libesmtp, no (default=no)]),
         [ac_with_smtp=$withval],
         [ac_with_smtp=no])
 case "$ac_with_smtp" in
-    CDO)
-        AC_MSG_RESULT(CDO)
-        AC_DEFINE(HAVE_CDO_SMTP, 1, SMTP support through Microsoft CDO.)
-        AC_DEFINE(HAVE_SMTP, 1, SMTP support)
-        ;;
-    libsmtp)
-        AC_MSG_RESULT(libsmtp)
-        AC_CHECK_LIB([smtp_mime], [libsmtp_session_initialize],,
-                AC_MSG_ERROR(libsmtp library not found !),
-                `glib-config --libs` -lsmtp)
-        AC_DEFINE(HAVE_LIBSMTP, 1, SMTP support through libsmtp library.)
-        AC_DEFINE(HAVE_SMTP, 1, SMTP support)
-        LIBS="`glib-config --libs` -lsmtp $LIBS"
-        CPPFLAGS="`glib-config --cflags` $CPPFLAGS"
+    libesmtp)
+        AC_MSG_RESULT(libesmtp)
+        AC_CHECK_LIB([esmtp], [smtp_create_session],,
+                AC_MSG_ERROR(libesmtp library not found !),
+                -lesmtp)
+        AC_SUBST(HAS_LIBESMTP, 1, SMTP support through libesmtp library.)
+        LIBS="-lesmtp $LIBS"
         ;;
         no)
         AC_MSG_RESULT(no)
+        AC_SUBST(HAS_LIBESMTP, 0, SMTP support through libesmtp library.)
         ;;
     *)
         AC_MSG_RESULT(???)
         AC_MSG_ERROR(Unknown option : $ac_with_smtp)
         ;;
 esac
-
-#for _T
-
-case "$host" in
-        *apple-darwin*)
-        AC_DEFINE(MUST_UNDEF_T, 1, Defined to 1 if macro _T has to be undefined)
-        ;;
-esac
-
-CPPFLAGS="-DLOG4CXX $CPPFLAGS"
 
 #for wchar_t
 AC_ARG_ENABLE(wchar_t,

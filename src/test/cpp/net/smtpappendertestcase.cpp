@@ -24,9 +24,45 @@
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/net/smtpappender.h>
 #include "../appenderskeletontestcase.h"
+#include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/logmanager.h>
+#include <log4cxx/ttcclayout.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::net;
+using namespace log4cxx::xml;
+using namespace log4cxx::spi;
+
+namespace log4cxx {
+    namespace net {
+
+                class MockTriggeringEventEvaluator :
+                        public virtual spi::TriggeringEventEvaluator,
+                        public virtual helpers::ObjectImpl
+                {
+                public:
+                        DECLARE_LOG4CXX_OBJECT(MockTriggeringEventEvaluator)
+                        BEGIN_LOG4CXX_CAST_MAP()
+                                LOG4CXX_CAST_ENTRY(MockTriggeringEventEvaluator)
+                                LOG4CXX_CAST_ENTRY(spi::TriggeringEventEvaluator)
+                        END_LOG4CXX_CAST_MAP()
+
+                        MockTriggeringEventEvaluator() {
+                        }
+
+                        virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event) {
+                            return true;
+                        }
+                private:
+                         MockTriggeringEventEvaluator(const MockTriggeringEventEvaluator&);
+                         MockTriggeringEventEvaluator& operator=(const MockTriggeringEventEvaluator&);
+                };
+    }
+}
+
+IMPLEMENT_LOG4CXX_OBJECT(MockTriggeringEventEvaluator)
+
 
 /**
    Unit tests of log4cxx::SocketAppender
@@ -39,7 +75,8 @@ class SMTPAppenderTestCase : public AppenderSkeletonTestCase
                 //
                 CPPUNIT_TEST(testDefaultThreshold);
                 CPPUNIT_TEST(testSetOptionThreshold);
-
+                CPPUNIT_TEST(testTrigger);
+                CPPUNIT_TEST(testInvalid);
    CPPUNIT_TEST_SUITE_END();
 
 
@@ -48,6 +85,38 @@ public:
         AppenderSkeleton* createAppenderSkeleton() const {
           return new log4cxx::net::SMTPAppender();
         }
+        
+   void setUp() {
+   }
+   
+   void tearDown() {
+       LogManager::resetConfiguration();
+   }
+
+    /**
+     * Tests that triggeringPolicy element will set evaluator.
+     */
+  void testTrigger() {
+      DOMConfigurator::configure("input/xml/smtpAppender1.xml");
+      SMTPAppenderPtr appender(Logger::getRootLogger()->getAppender(LOG4CXX_STR("A1")));
+      TriggeringEventEvaluatorPtr evaluator(appender->getEvaluator());
+      CPPUNIT_ASSERT_EQUAL(true, evaluator->instanceof(MockTriggeringEventEvaluator::getStaticClass()));
+  }
+  
+  void testInvalid() {
+      SMTPAppenderPtr appender(new SMTPAppender());
+      appender->setSMTPHost(LOG4CXX_STR("smtp.invalid"));
+      appender->setTo(LOG4CXX_STR("you@example.invalid"));
+      appender->setFrom(LOG4CXX_STR("me@example.invalid"));
+      appender->setLayout(new TTCCLayout());
+      Pool p;
+      appender->activateOptions(p);
+      LoggerPtr root(Logger::getRootLogger());
+      root->addAppender(appender);
+      LOG4CXX_INFO(root, "Hello, World.");
+      LOG4CXX_ERROR(root, "Sending Message");
+  }
+
 };
 
 CPPUNIT_TEST_SUITE_REGISTRATION(SMTPAppenderTestCase);
