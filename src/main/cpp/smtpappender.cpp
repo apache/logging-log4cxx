@@ -14,9 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include <log4cxx/private/log4cxx_private.h>
-
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/loglog.h>
@@ -26,6 +23,11 @@
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/synchronized.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
+#include <log4cxx/private/log4cxx_private.h>
+
 
 
 #include <apr_strings.h>

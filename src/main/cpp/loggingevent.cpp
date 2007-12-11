@@ -22,6 +22,9 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/socket.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <log4cxx/helpers/transcoder.h>

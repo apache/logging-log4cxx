@@ -28,6 +28,9 @@
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/stringhelper.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/spi/rootlogger.h>

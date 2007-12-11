@@ -20,6 +20,9 @@
 #include <log4cxx/helpers/exception.h>
 #include <apr_thread_mutex.h>
 #include <assert.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
 #include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx::helpers;

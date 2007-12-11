@@ -18,9 +18,12 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/aprinitializer.h>
 #include <apr_pools.h>
 #include <assert.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;

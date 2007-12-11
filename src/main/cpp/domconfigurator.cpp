@@ -16,9 +16,6 @@
  */
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/private/log4cxx_private.h>
-
-
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>

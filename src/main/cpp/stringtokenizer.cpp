@@ -18,6 +18,9 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/exception.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
 #include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;

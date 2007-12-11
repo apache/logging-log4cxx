@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 #include <log4cxx/logstring.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <apr_pools.h>
 #include <apr_atomic.h>

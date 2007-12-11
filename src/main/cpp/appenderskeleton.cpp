@@ -23,7 +23,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <apr_atomic.h>
-#include <log4cxx/helpers/aprinitializer.h>
 
 
 using namespace log4cxx;

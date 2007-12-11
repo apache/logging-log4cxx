@@ -21,6 +21,9 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <apr_file_io.h>
 #include <log4cxx/helpers/transcoder.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
 #include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;

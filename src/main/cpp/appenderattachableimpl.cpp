@@ -19,7 +19,6 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <algorithm>
-#include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;

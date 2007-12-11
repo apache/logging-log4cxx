@@ -15,13 +15,8 @@
  * limitations under the License.
  */
 
-#include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/mutex.h>
-#include <log4cxx/helpers/aprinitializer.h>
-#include <log4cxx/helpers/synchronized.h>
-#include <apr.h>
 #include <apr_atomic.h>
 
 using namespace log4cxx::helpers;

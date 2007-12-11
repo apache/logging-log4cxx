@@ -21,6 +21,9 @@
 #include <map>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/log4cxx.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
 #include <log4cxx/private/log4cxx_private.h>
 
 

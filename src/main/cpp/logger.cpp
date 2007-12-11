@@ -29,8 +29,11 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/aprinitializer.h>
+#if !defined(LOG4CXX)
+#define LOG4CXX 1
+#endif
 #include <log4cxx/private/log4cxx_private.h>
+#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

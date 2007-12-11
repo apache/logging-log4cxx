@@ -20,7 +20,6 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <apr_file_io.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <log4cxx/helpers/aprinitializer.h>
 #include <algorithm>
 
 using namespace log4cxx;
