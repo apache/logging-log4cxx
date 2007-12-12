@@ -453,6 +453,12 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
        match="@HAS_SYSLOG@"
        replace="1"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@HAS_LIBESMTP@"
+       replace="0"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@HAS_ODBC@"
+       replace="0"/>
 </target>
 
 <target name="build-apr" depends="init" unless="apr-available">
