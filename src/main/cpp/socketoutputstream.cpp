@@ -38,15 +38,19 @@ void SocketOutputStream::close(Pool& p) {
 }
 
 void SocketOutputStream::flush(Pool& p) {
-   socket->write(&array[0], array.size());
-   array.resize(0);
+   if (array.size() > 0) {
+     socket->write(&array[0], array.size());
+     array.resize(0);
+   }
 }
 
 void SocketOutputStream::write(ByteBuffer& buf, Pool& /* p */ ) {
-  size_t sz = array.size();
-  array.resize(sz + buf.remaining());
-  memcpy(&array[sz], buf.current(), buf.remaining());
-  buf.position(buf.limit());
+  if (buf.remaining() > 0) {
+    size_t sz = array.size();
+    array.resize(sz + buf.remaining());
+    memcpy(&array[sz], buf.current(), buf.remaining());
+    buf.position(buf.limit());
+  }
 }
 
 
