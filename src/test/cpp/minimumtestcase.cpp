@@ -37,7 +37,7 @@
 #include "testchar.h"
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringhelper.h>
-
+#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -116,9 +116,9 @@ public:
         }
 
         std::string createMessage(int i, Pool& pool) {
-          std::string msg("Message ");
-          StringHelper::toString(i, pool, msg);
-          return msg;
+             std::string msg("Message ");
+             msg.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
+             return msg;
         }
 
         void common()

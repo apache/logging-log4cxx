@@ -34,7 +34,7 @@ namespace log4cxx {
     {
     public:
         ClassRollingFileAppender() : helpers::Class() {}
-        virtual const log4cxx::logchar* getName() const {
+        virtual LogString getName() const {
             return LOG4CXX_STR("org.apache.log4j.RollingFileAppender");
         }
         virtual ObjectPtr newInstance() const {

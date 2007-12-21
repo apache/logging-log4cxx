@@ -157,7 +157,6 @@ AM_CONDITIONAL(TESTS, test x$enable_tests = xyes)
 
 # Checks header files
 # ----------------------------------------------------------------------------
-AC_CHECK_HEADERS(unistd.h io.h alloca.h)
 APR_FIND_APR( , , 1, 1)
 if test "$apr_found" = "no"; then
   AC_MSG_ERROR(APR could not be located. Please use the --with-apr option.)
@@ -181,7 +180,22 @@ LDFLAGS="$LDFLAGS $APU_LIBS"
 # Checks local idioms
 # ----------------------------------------------------------------------------
 
-AC_CHECK_FUNCS(swprintf)
+# for local syslog() function for SyslogAppender
+AC_CHECK_FUNCS(mbsrtowcs, [have_mbsrtowcs=yes], [have_mbsrtowcs=no])
+if test "$have_mbsrtowcs" = "yes"
+then
+ AC_SUBST(HAS_MBSRTOWCS, 1)
+else
+ AC_SUBST(HAS_MBSRTOWCS, 0)
+fi
+
+AC_CHECK_FUNCS(wcstombs, [have_wcstombs=yes], [have_wcstombs=no])
+if test "$have_wcstombs" = "yes"
+then
+ AC_SUBST(HAS_WCSTOMBS, 1)
+else
+ AC_SUBST(HAS_WCSTOMBS, 0)
+fi
 
 # for local syslog() function for SyslogAppender
 AC_CHECK_FUNCS(syslog, [have_syslog=yes], [have_syslog=no])
@@ -191,6 +205,27 @@ then
 else
  AC_SUBST(HAS_SYSLOG, 0)
 fi
+
+AC_CHECK_HEADER([locale],have_locale=yes,have_locale=no)
+if test "$have_locale" = "yes"
+then
+ AC_SUBST(HAS_STD_LOCALE, 1)
+else
+ AC_SUBST(HAS_STD_LOCALE, 0)
+fi
+
+AC_MSG_CHECKING([for wchar_t])
+AC_COMPILE_IFELSE(AC_LANG_SOURCE([[
+                   #include <string>
+                   std::wstring w;]]), [have_wchar_t=yes], [have_wchar_t=no])
+AC_MSG_RESULT($have_wchar_t)
+if test "$have_wchar_t" = "yes"
+then
+ AC_SUBST(HAS_WCHAR_T, 1)
+else
+ AC_SUBST(HAS_WCHAR_T, 0)
+fi
+
 
 # Checks for libraries
 # ----------------------------------------------------------------------------
@@ -241,8 +276,6 @@ esac
 AC_SUBST(LIBS_ODBC)
 AC_SUBST(CPPFLAGS_ODBC)
 
-#for System
-AC_CHECK_FUNCS(gettimeofday ftime setenv mbsnrtowcs wcsnrtombs)
 
 #for SMTPAppender
 AC_MSG_CHECKING(for SMTP support)
@@ -270,32 +303,140 @@ case "$ac_with_smtp" in
         ;;
 esac
 
-#for wchar_t
-AC_ARG_ENABLE(wchar_t,
-        AC_HELP_STRING(--enable-wchar_t,
-	        [enable wchar_t interfaces (auto)]))
-if test "x$enable_wchar_t" = xno; then
-        have_wchar_t=no
+#for char api
+AC_ARG_ENABLE(char,
+        AC_HELP_STRING(--enable-char,
+	        [enable char API (yes)]))
+if test "x$enable_char" = xno; then
+        have_char_api=no
 else
-        AC_MSG_CHECKING([for wchar_t])
-        AC_COMPILE_IFELSE(AC_LANG_SOURCE([[
-                   #include <string>
-                   std::wstring w;]]), [have_wchar_t=yes], [have_wchar_t=no])
-        AC_MSG_RESULT($have_wchar_t)
+        have_char_api=yes
 fi
 
-if test "$have_wchar_t" = "yes"
+if test "$have_char_api" = "yes"
 then
-    AC_SUBST(HAS_WCHAR_T, 1)
+    AC_SUBST(CHAR_API, 1)
 else
-    AC_SUBST(HAS_WCHAR_T, 0)
+    AC_SUBST(CHAR_API, 0)
 fi
+
+#for wchar_t api
+AC_ARG_ENABLE(wchar_t,
+        AC_HELP_STRING(--enable-wchar_t,
+	        [enable wchar_t API (yes if wchar_t available)]))
+if test "x$enable_wchar_t" = xno; then
+        have_wchar_t_api=no
+else
+    if test "$have_wchar_t" = "yes"
+    then
+        have_wchar_t_api=yes
+    else
+        have_wchar_t_api=no
+    fi
+fi
+
+if test "$have_wchar_t_api" = "yes"
+then
+    AC_SUBST(WCHAR_T_API, 1)
+else
+    AC_SUBST(WCHAR_T_API, 0)
+fi
+
+#for unichar api
+AC_ARG_ENABLE(unichar,
+        AC_HELP_STRING(--enable-unichar,
+	        [enable unichar API (no)]))
+if test "x$enable_unichar" = "yes"
+then
+    AC_SUBST(UNICHAR_API, 1)
+else
+    AC_SUBST(UNICHAR_API, 0)
+fi
+
+#for cfstring api
+AC_ARG_ENABLE(cfstring,
+        AC_HELP_STRING(--enable-cfstring,
+	        [enable cfstring API (no)]))
+if test "x$enable_cfstring" = xyes; then
+        AC_MSG_CHECKING([for cfstring])
+        CPPFLAGS="$CPPFLAGS -framework CoreFoundation"
+        AC_COMPILE_IFELSE(AC_LANG_SOURCE([[
+                   #include <CoreFoundation/CFString.h>
+                   CFStringRef x = CFSTR("Hello");]]), [have_cfstring_api=yes], [have_cfstring_api=no])
+        AC_MSG_RESULT($have_cfstring_api)
+else
+        have_cfstring_api=no
+fi
+
+if test "$have_cfstring_api" = "yes"
+then
+    AC_SUBST(CFSTRING_API, 1)
+else
+    AC_SUBST(CFSTRING_API, 0)
+fi
+
+#determine charset type
+AC_MSG_CHECKING([charset type])
+AC_ARG_WITH(charset,
+        AC_HELP_STRING(--with-charset=TYPE, [locale charset.
+                Accepted TYPE variants: auto, utf-8, iso-8859-1, usascii, ebcdic (default=auto)]),
+        [ac_with_charset=$withval],
+        [ac_with_charset=auto])
+
+case "$ac_with_charset" in
+    utf-8)
+        AC_MSG_RESULT(utf-8)
+        AC_SUBST(CHARSET_UTF8, 1)
+        AC_SUBST(CHARSET_ISO88591, 0)
+        AC_SUBST(CHARSET_USASCII, 0)
+        AC_SUBST(CHARSET_EBCDIC, 0)
+        ;;
+
+    iso-8859-1)
+        AC_MSG_RESULT(iso-8859-1)
+        AC_SUBST(CHARSET_UTF8, 0)
+        AC_SUBST(CHARSET_ISO88591, 1)
+        AC_SUBST(CHARSET_USASCII, 0)
+        AC_SUBST(CHARSET_EBCDIC, 0)
+        ;;
+
+    usascii)
+        AC_MSG_RESULT(usascii)
+        AC_SUBST(CHARSET_UTF8, 0)
+        AC_SUBST(CHARSET_ISO88591, 0)
+        AC_SUBST(CHARSET_USASCII, 1)
+        AC_SUBST(CHARSET_EBCDIC, 0)
+        ;;
+
+    ebcdic)
+        AC_MSG_RESULT(usascii)
+        AC_SUBST(CHARSET_UTF8, 0)
+        AC_SUBST(CHARSET_ISO88591, 0)
+        AC_SUBST(CHARSET_USASCII, 0)
+        AC_SUBST(CHARSET_EBCDIC, 1)
+        ;;
+
+    auto)
+        AC_MSG_RESULT(auto)
+        AC_SUBST(CHARSET_UTF8, 0)
+        AC_SUBST(CHARSET_ISO88591, 0)
+        AC_SUBST(CHARSET_USASCII, 0)
+        AC_SUBST(CHARSET_EBCDIC, 0)
+        ;;
+
+    *)
+        AC_MSG_RESULT(???)
+        AC_MSG_ERROR(Invalid charset type: $ac_with_charset)
+        ;;
+esac
+
+
 
 #determine logchar type
 AC_MSG_CHECKING([logchar type])
 AC_ARG_WITH(logchar,
         AC_HELP_STRING(--with-logchar=TYPE, [type for logchar.
-                Accepted TYPE variants: utf-8, wchar_t, cfstring (default=utf-8)]),
+                Accepted TYPE variants: utf-8, wchar_t, unichar (default=utf-8)]),
         [ac_with_logchar=$withval],
         [ac_with_logchar=utf-8])
 
@@ -304,21 +445,21 @@ case "$ac_with_logchar" in
         AC_MSG_RESULT(utf-8)
         AC_SUBST(LOGCHAR_IS_UTF8, 1)
         AC_SUBST(LOGCHAR_IS_WCHAR, 0)
-        AC_SUBST(LOGCHAR_IS_CFSTRING, 0)
+        AC_SUBST(LOGCHAR_IS_UNICHAR, 0)
         ;;
 
     wchar_t)
         AC_MSG_RESULT(wchar_t)
         AC_SUBST(LOGCHAR_IS_UTF8, 0)
         AC_SUBST(LOGCHAR_IS_WCHAR, 1)
-        AC_SUBST(LOGCHAR_IS_CFSTRING, 0)
+        AC_SUBST(LOGCHAR_IS_UNICHAR, 0)
         ;;
 
-    cfstring)
-        AC_MSG_RESULT(cfstring)
+    unichar)
+        AC_MSG_RESULT(unichar)
         AC_SUBST(LOGCHAR_IS_UTF8, 0)
         AC_SUBST(LOGCHAR_IS_WCHAR, 0)
-        AC_SUBST(LOGCHAR_IS_CFSTRING, 1)
+        AC_SUBST(LOGCHAR_IS_UNICHAR, 1)
         ;;
 
     *)
@@ -327,19 +468,6 @@ case "$ac_with_logchar" in
         ;;
 esac
 
-#for wide streams
-AC_MSG_CHECKING(for wcout)
-AC_COMPILE_IFELSE(AC_LANG_SOURCE([[
-                  #include <iostream>
-                  int main() { std::wcout << L"Hello"; } ]]), [have_wcout=yes], [have_wcout=no])
-AC_MSG_RESULT($have_wcout)
-
-if test "$have_wcout" = "yes"
-then
-    AC_SUBST(HAS_STD_WCOUT, 1)
-else
-    AC_SUBST(HAS_STD_WCOUT, 0)
-fi
 
 
 # Create files

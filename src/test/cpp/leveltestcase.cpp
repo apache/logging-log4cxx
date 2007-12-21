@@ -22,6 +22,9 @@
 #include <log4cxx/level.h>
 #include "testchar.h"
 
+#if LOG4CXX_CFSTRING_API
+#include <CoreFoundation/CFString.h>
+#endif
 
 using namespace log4cxx;
 
@@ -33,8 +36,14 @@ class LevelTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(testTrace);
                 CPPUNIT_TEST(testIntToTrace);
                 CPPUNIT_TEST(testStringToTrace);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                 CPPUNIT_TEST(testWideStringToTrace);
+#endif                
+#if LOG4CXX_UNICHAR_API
+                CPPUNIT_TEST(testUniCharStringToTrace);
+#endif                
+#if LOG4CXX_CFSTRING_API
+                CPPUNIT_TEST(testCFStringToTrace);
 #endif                
         CPPUNIT_TEST_SUITE_END();
 
@@ -77,12 +86,33 @@ public:
 		CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
     /**
      * Tests Level.toLevel(L"TRACE");
      */
   void testWideStringToTrace() {
         LevelPtr trace(Level::toLevel(L"TRACE"));
+        CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+  }
+#endif  
+
+#if LOG4CXX_UNICHAR_API
+    /**
+     * Tests Level.toLevel("TRACE");
+     */
+  void testUniCharStringToTrace() {
+        const UniChar name[] = { 'T', 'R', 'A', 'C', 'E', 0 };
+        LevelPtr trace(Level::toLevel(name));
+        CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+  }
+#endif  
+
+#if LOG4CXX_CFSTRING_API
+    /**
+     * Tests Level.toLevel(CFSTR("TRACE"));
+     */
+  void testCFStringToTrace() {
+        LevelPtr trace(Level::toLevel(CFSTR("TRACE")));
         CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 #endif  

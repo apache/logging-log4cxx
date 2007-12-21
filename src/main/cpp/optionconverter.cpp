@@ -51,42 +51,28 @@ LogString OptionConverter::convertSpecialChars(const LogString& s)
     while(i != s.end())
         {
                 c = *i++;
-                if (c == LOG4CXX_STR('\\'))
+                if (c == 0x5C /* '\\' */)
                 {
                         c =  *i++;
 
                         switch (c)
                         {
-                        case LOG4CXX_STR('n'):
-                                c = LOG4CXX_STR('\n');
+                        case 0x6E: //'n'
+                                c = 0x0A;
                                 break;
 
-                        case LOG4CXX_STR('r'):
-                                c = LOG4CXX_STR('\r');
+                        case 0x72: //'r'
+                                c = 0x0D;
                                 break;
 
-                        case LOG4CXX_STR('t'):
-                                c = LOG4CXX_STR('\t');
+                        case 0x74: //'t'
+                                c = 0x09;
                                 break;
 
-                        case LOG4CXX_STR('f'):
-                                c = LOG4CXX_STR('\f');
+                        case 0x66: //'f'
+                                c = 0x0C;
                                 break;
-
-                        case LOG4CXX_STR('\b'):
-                                c = LOG4CXX_STR('\b');
-                                break;
-
-                        case LOG4CXX_STR('\"'):
-                                c = LOG4CXX_STR('\"');
-                                break;
-
-                        case LOG4CXX_STR('\''):
-                                c = LOG4CXX_STR('\'');
-                                break;
-
-                        case LOG4CXX_STR('\\'):
-                                c = LOG4CXX_STR('\\');
+                        default:
                                 break;
                         }
                 }
@@ -138,11 +124,11 @@ long OptionConverter::toFileSize(const LogString& s, long dEfault)
         if (index != LogString::npos && index > 0) {
           long multiplier = 1;
           index--;
-          if (s[index] == LOG4CXX_STR('k') || s[index] == LOG4CXX_STR('K')) {
+          if (s[index] == 0x6B /* 'k' */ || s[index] == 0x4B /* 'K' */) {
                 multiplier = 1024;
-          } else if(s[index] == LOG4CXX_STR('m') || s[index] == LOG4CXX_STR('M')) {
+          } else if(s[index] == 0x6D /* 'm' */ || s[index] == 0x4D /* 'M' */) {
                 multiplier = 1024*1024;
-          } else if(s[index] == LOG4CXX_STR('g') || s[index] == LOG4CXX_STR('G')) {
+          } else if(s[index] == 0x67 /* 'g'*/ || s[index] == 0x47 /* 'G' */) {
                 multiplier = 1024*1024*1024;
           }
           return toInt(s.substr(0, index), 1) * multiplier;
@@ -173,8 +159,9 @@ LogString OptionConverter::findAndSubst(const LogString& key, Properties& props)
 LogString OptionConverter::substVars(const LogString& val, Properties& props)
 {
         LogString sbuf;
-        static const LogString delimStart(LOG4CXX_STR("${"));
-        const logchar delimStop = LOG4CXX_STR('}');
+        const logchar delimStartArray[] = { 0x24, 0x7B, 0 };
+        const LogString delimStart(delimStartArray);
+        const logchar delimStop = 0x7D; // '}';
         const size_t DELIM_START_LEN = 2;
         const size_t DELIM_STOP_LEN = 1;
 
@@ -203,12 +190,12 @@ LogString OptionConverter::substVars(const LogString& val, Properties& props)
                         k = val.find(delimStop, j);
                         if(k == -1)
                         {
-                            std::string msg(1, '\"');
-                            Transcoder::encode(val, msg);
-                            msg.append("\" has no closing brace. Opening brace at position ");
+                            LogString msg(1, 0x22 /* '\"' */);
+                            msg.append(val);
+                            msg.append(LOG4CXX_STR("\" has no closing brace. Opening brace at position "));
                             Pool p;
                             StringHelper::toString(j, p, msg);
-                            msg.append(1, '.');
+                            msg.append(1, 0x2E /* '.' */);
                             throw IllegalArgumentException(msg);
                         }
                         else
@@ -216,7 +203,7 @@ LogString OptionConverter::substVars(const LogString& val, Properties& props)
                                 j += DELIM_START_LEN;
                                 LogString key = val.substr(j, k - j);
                                 // first try in System properties
-                                LogString replacement = getSystemProperty(key, LOG4CXX_STR(""));
+                                LogString replacement = getSystemProperty(key, LogString());
                                 // then try props parameter
                                 if(replacement.empty())
                                 {
@@ -253,7 +240,7 @@ LogString OptionConverter::getSystemProperty(const LogString& key, const LogStri
         return def;
 }
 
-const LevelPtr& OptionConverter::toLevel(const LogString& value,
+LevelPtr OptionConverter::toLevel(const LogString& value,
         const LevelPtr& defaultValue)
 {
     size_t hashIndex = value.find(LOG4CXX_STR("#"));
@@ -349,7 +336,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
                 }
                 catch (Exception& e)
                 {
-                        LogLog::error(((LogString) LOG4CXX_STR("Could not instantiate class [")) +
+                        LogLog::error(LOG4CXX_STR("Could not instantiate class [") +
                                 className + LOG4CXX_STR("]."), e);
                 }
         }
@@ -374,15 +361,13 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 
         if(!clazz.empty())
         {
-                LogLog::debug(
-                   ((LogString) LOG4CXX_STR("Preferred configurator class: ")) + clazz);
+                LogLog::debug(LOG4CXX_STR("Preferred configurator class: ") + clazz);
                 configurator = instantiateByClassName(clazz,
                         Configurator::getStaticClass(),
                         0);
                 if(configurator == 0)
                 {
-                        LogLog::error(
-                                ((LogString) LOG4CXX_STR("Could not instantiate configurator ["))
+                        LogLog::error(LOG4CXX_STR("Could not instantiate configurator [")
                                  + clazz + LOG4CXX_STR("]."));
                         return;
                 }

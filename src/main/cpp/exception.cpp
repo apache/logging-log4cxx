@@ -26,11 +26,19 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-Exception::Exception(const std::string& msg1) {
-  size_t msgLen = msg1.length();
-  if (msgLen > MSG_SIZE) msgLen = MSG_SIZE;
-  memcpy(this->msg, (char*) msg1.data(), msgLen);
-  this->msg[msgLen] = 0;
+Exception::Exception(const LogString& msg1) {
+  std::string m;
+  Transcoder::encode(msg1, m);
+  size_t len = m.size();
+  if (len > MSG_SIZE) {
+      len = MSG_SIZE;
+  }
+#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
+  memcpy_s(msg, sizeof msg, m.data(), len);
+#else
+  memcpy(msg, m.data(), len);
+#endif
+  msg[len] = 0;
 }
 
 Exception::Exception(const Exception& src) : std::exception() {
@@ -58,7 +66,7 @@ RuntimeException::RuntimeException(log4cxx_status_t stat)
      : Exception(formatMessage(stat)) {
 }
 
-RuntimeException::RuntimeException(const std::string& msg1)
+RuntimeException::RuntimeException(const LogString& msg1)
      : Exception(msg1) {
 }
 
@@ -71,14 +79,14 @@ RuntimeException& RuntimeException::operator=(const RuntimeException& src) {
       return *this;
 }
 
-std::string RuntimeException::formatMessage(log4cxx_status_t stat) {
-   std::string s("RuntimeException: return code = ");
+LogString RuntimeException::formatMessage(log4cxx_status_t stat) {
+   LogString s(LOG4CXX_STR("RuntimeException: return code = "));
    Pool p;
    StringHelper::toString(stat, p, s);
    return s;
 }
 
-NullPointerException::NullPointerException(const std::string& msg1)
+NullPointerException::NullPointerException(const LogString& msg1)
      : RuntimeException(msg1) {
 }
 
@@ -91,7 +99,7 @@ NullPointerException& NullPointerException::operator=(const NullPointerException
       return *this;
 }
 
-IllegalArgumentException::IllegalArgumentException(const std::string& msg1)
+IllegalArgumentException::IllegalArgumentException(const LogString& msg1)
      : RuntimeException(msg1) {
 }
 
@@ -105,7 +113,7 @@ IllegalArgumentException& IllegalArgumentException::operator=(const IllegalArgum
 }
 
 IOException::IOException()
-     : Exception("IO exception") {
+     : Exception(LOG4CXX_STR("IO exception")) {
 }
 
 IOException::IOException(log4cxx_status_t stat)
@@ -113,7 +121,7 @@ IOException::IOException(log4cxx_status_t stat)
 }
 
 
-IOException::IOException(const std::string& msg1)
+IOException::IOException(const LogString& msg1)
      : Exception(msg1) {
 }
 
@@ -126,8 +134,8 @@ IOException& IOException::operator=(const IOException& src) {
       return *this;
 }
 
-std::string IOException::formatMessage(log4cxx_status_t stat) {
-   std::string s("IO Exception : status code = ");
+LogString IOException::formatMessage(log4cxx_status_t stat) {
+   LogString s(LOG4CXX_STR("IO Exception : status code = "));
    Pool p;
    StringHelper::toString(stat, p, s);
    return s;
@@ -148,10 +156,10 @@ MissingResourceException& MissingResourceException::operator=(const MissingResou
       return *this;
 }
 
-std::string MissingResourceException::formatMessage(const LogString& key) {
-   std::string s("MissingResourceException: resource key = \"");
-   Transcoder::encode(key, s);
-   s.append("\".");
+LogString MissingResourceException::formatMessage(const LogString& key) {
+   LogString s(LOG4CXX_STR("MissingResourceException: resource key = \""));
+   s.append(key);
+   s.append(LOG4CXX_STR("\"."));
    return s;
 }
 
@@ -168,8 +176,8 @@ PoolException& PoolException::operator=(const PoolException& src) {
      return *this;
 }
 
-std::string PoolException::formatMessage(log4cxx_status_t) {
-     return "Pool exception";
+LogString PoolException::formatMessage(log4cxx_status_t) {
+     return LOG4CXX_STR("Pool exception");
 }
 
 
@@ -186,8 +194,8 @@ TranscoderException& TranscoderException::operator=(const TranscoderException& s
      return *this;
 }
 
-std::string TranscoderException::formatMessage(log4cxx_status_t) {
-     return "Transcoder exception";
+LogString TranscoderException::formatMessage(log4cxx_status_t) {
+     return LOG4CXX_STR("Transcoder exception");
 }
 
 
@@ -204,14 +212,14 @@ MutexException& MutexException::operator=(const MutexException& src) {
       return *this;
 }
 
-std::string MutexException::formatMessage(log4cxx_status_t stat) {
-      std::string s("Mutex exception: stat = ");
+LogString MutexException::formatMessage(log4cxx_status_t stat) {
+      LogString s(LOG4CXX_STR("Mutex exception: stat = "));
       Pool p;
       StringHelper::toString(stat, p, s);
       return s;
 }
 
-InterruptedException::InterruptedException() : Exception("Thread was interrupted") {
+InterruptedException::InterruptedException() : Exception(LOG4CXX_STR("Thread was interrupted")) {
 }
 
 InterruptedException::InterruptedException(log4cxx_status_t stat)
@@ -227,8 +235,8 @@ InterruptedException& InterruptedException::operator=(const InterruptedException
       return *this;
 }
 
-std::string InterruptedException::formatMessage(log4cxx_status_t stat) {
-      std::string s("InterruptedException: stat = ");
+LogString InterruptedException::formatMessage(log4cxx_status_t stat) {
+      LogString s(LOG4CXX_STR("InterruptedException: stat = "));
       Pool p;
       StringHelper::toString(stat, p, s);
       return s;
@@ -247,14 +255,14 @@ ThreadException& ThreadException::operator=(const ThreadException& src) {
        return *this;
 }
 
-std::string ThreadException::formatMessage(log4cxx_status_t stat) {
-       std::string s("Thread exception: stat = ");
+LogString ThreadException::formatMessage(log4cxx_status_t stat) {
+       LogString s(LOG4CXX_STR("Thread exception: stat = "));
        Pool p;
        StringHelper::toString(stat, p, s);
        return s;
 }
 
-IllegalMonitorStateException::IllegalMonitorStateException(const std::string& msg1)
+IllegalMonitorStateException::IllegalMonitorStateException(const LogString& msg1)
       : Exception(msg1) {
 }
 
@@ -267,7 +275,7 @@ IllegalMonitorStateException& IllegalMonitorStateException::operator=(const Ille
        return *this;
 }
 
-InstantiationException::InstantiationException(const std::string& msg1)
+InstantiationException::InstantiationException(const LogString& msg1)
       : Exception(msg1) {
 }
 
@@ -294,15 +302,15 @@ ClassNotFoundException& ClassNotFoundException::operator=(const ClassNotFoundExc
       return *this;
 }
 
-std::string ClassNotFoundException::formatMessage(const LogString& className) {
-      std::string s("Class not found: ");
-      Transcoder::encode(className, s);
+LogString ClassNotFoundException::formatMessage(const LogString& className) {
+      LogString s(LOG4CXX_STR("Class not found: "));
+      s.append(className);
       return s;
 }
 
 
 NoSuchElementException::NoSuchElementException()
-     : Exception("No such element") {
+     : Exception(LOG4CXX_STR("No such element")) {
 }
 
 NoSuchElementException::NoSuchElementException(const NoSuchElementException& src)
@@ -316,7 +324,7 @@ NoSuchElementException& NoSuchElementException::operator=(const NoSuchElementExc
 
 
 IllegalStateException::IllegalStateException()
-     : Exception("Illegal state") {
+     : Exception(LOG4CXX_STR("Illegal state")) {
 }
 
 IllegalStateException::IllegalStateException(const IllegalStateException& src)

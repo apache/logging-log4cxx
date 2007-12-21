@@ -149,20 +149,20 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
   if (currentActiveFile != lastBaseName) {
     renameAction =
       new FileRenameAction(
-        File(currentActiveFile), File(lastBaseName), true);
+        File().setName(currentActiveFile), File().setName(lastBaseName), true);
     nextActiveFile = currentActiveFile;
   }
 
   if (suffixLength == 3) {
     compressAction =
       new GZCompressAction(
-        File(lastBaseName), File(lastFileName), true);
+        File().setName(lastBaseName), File().setName(lastFileName), true);
   }
 
   if (suffixLength == 4) {
     compressAction =
       new ZipCompressAction(
-        File(lastBaseName), File(lastFileName), true);
+        File().setName(lastBaseName), File().setName(lastFileName), true);
   }
 
   lastFileName = newFileName;

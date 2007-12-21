@@ -36,10 +36,8 @@ namespace log4cxx
                       const LogString& contents,
                       log4cxx::helpers::Pool& pool);
 
-                static void emit(const std::string &line);
+                static void emit(const LogString &line);
+                static bool getline(LogString& buf, LogString& line);
 
-#if LOG4CXX_HAS_WCHAR_T
-                static void emit(const std::wstring &line);
-#endif
         };
 }

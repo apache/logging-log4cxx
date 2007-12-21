@@ -155,10 +155,12 @@ void FileAppender::activateOptions(Pool& p)
       setFile(fileName, fileAppend, bufferedIO, bufferSize, p);
     } catch (IOException& e) {
       errors++;
-      LogLog::error(
-        LogString(LOG4CXX_STR("setFile(")) + fileName
-           + LOG4CXX_STR(",") + StringHelper::toString(fileAppend) +
-           LOG4CXX_STR(") call failed."), e);
+      LogString msg(LOG4CXX_STR("setFile("));
+      msg.append(fileName);
+      msg.append(1, 0x2C /* ',' */);
+      StringHelper::toString(fileAppend, msg);
+      msg.append(LOG4CXX_STR(") call failed."));
+      LogLog::error(msg, e);
     }
   } else {
     errors++;
@@ -184,7 +186,7 @@ void FileAppender::activateOptions(Pool& p)
  *
  */
 LogString FileAppender::stripDuplicateBackslashes(const LogString& src) {
-    logchar backslash = LOG4CXX_STR('\\');
+    logchar backslash = 0x5C; // '\\'
     LogString::size_type i = src.find_last_of(backslash);
     if (i != LogString::npos) {
         LogString tmp(src);
@@ -254,7 +256,8 @@ void FileAppender::setFile(
       //    don't want to write a byte order mark if the file exists
       //
       if (append1) {
-        File outFile(filename);
+        File outFile;
+        outFile.setName(filename);
         writeBOM = !outFile.exists(p);
       } else {
         writeBOM = true;
@@ -265,9 +268,10 @@ void FileAppender::setFile(
   try {
       outStream = new FileOutputStream(filename, append1);
   } catch(IOException& ex) {
-      LogString parentName = File(filename).getParent(p);
+      LogString parentName = File().setName(filename).getParent(p);
       if (!parentName.empty()) {
-          File parentDir(parentName);
+          File parentDir;
+          parentDir.setName(parentName);
           if(!parentDir.exists(p) && parentDir.mkdirs(p)) {
              outStream = new FileOutputStream(filename, append1);
           } else {

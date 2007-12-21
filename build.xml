@@ -133,7 +133,7 @@ Common command line options:
 -Daprutil.dir=PATH
 -Dhas.wchar_t=[0|1] (default=1)
 -Dhas.wcout=[0|1] (default=1)
--Dlogchar=[utf-8|wchar_t|cfstring] (default=wchar_t)
+-Dlogchar=[utf-8|wchar_t|unichar] (default=utf-8 on Unix, wchar_t on Windows)
 
 </echo>
 </target>
@@ -417,10 +417,10 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     </condition>
     <property name="logchar_is_utf8" value="0"/>
 
-    <condition property="logchar_is_cfstring" value="1">
-       <equals arg1="${logchar_type}" arg2="cfstring"/>
+    <condition property="logchar_is_unichar" value="1">
+       <equals arg1="${logchar_type}" arg2="unichar"/>
     </condition>
-    <property name="logchar_is_cfstring" value="0"/>
+    <property name="logchar_is_unichar" value="0"/>
 
     <condition property="logchar_is_wchar" value="1">
        <equals arg1="${logchar_type}" arg2="wchar_t"/>
@@ -428,8 +428,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     <property name="logchar_is_wchar" value="0"/>
 
     <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
-       match="@LOGCHAR_IS_CFSTRING@"
-       replace="${logchar_is_cfstring}"/>
+       match="@LOGCHAR_IS_UNICHAR@"
+       replace="${logchar_is_unichar}"/>
 
     <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
        match="@LOGCHAR_IS_UTF8@"
@@ -440,25 +440,57 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
        replace="${logchar_is_wchar}"/>
 
     <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
-       match="@HAS_WCHAR_T@"
+       match="@WCHAR_T_API@"
        replace="${has.wchar_t}"/>
 
     <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
-       match="@HAS_STD_WCOUT@"
-       replace="${has.wcout}"/>
+       match="@UNICHAR_API@"
+       replace="0"/>
 
-    <!-- The MS Windows template for log4cxx_private.h contains a hard coded
-         "0" for LOG4CXX_HAVE_SYSLOG. Therefore the following replacement
-         only applies to the UNIX template. -->
+    <replaceregexp file="${include.dir}/log4cxx/log4cxx.h"
+       match="@CFSTRING_API@"
+       replace="0"/>
+
+
     <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
        match="@HAS_SYSLOG@"
        replace="1"/>
+<<<<<<< .mine
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@HAS_STD_LOCALE@"
+       replace="1"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@HAS_MBSRTOWCS@"
+       replace="1"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@HAS_WCSTOMBS@"
+       replace="1"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@CHARSET_UTF8@"
+       replace="0"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@CHARSET_ISO88591@"
+       replace="0"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@CHARSET_USASCII@"
+       replace="0"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@CHARSET_EBCDIC@"
+       replace="0"/>
     <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
        match="@HAS_LIBESMTP@"
        replace="0"/>
     <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
        match="@HAS_ODBC@"
        replace="0"/>
+=======
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@HAS_LIBESMTP@"
+       replace="0"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.h"
+       match="@HAS_ODBC@"
+       replace="0"/>
+>>>>>>> .r606088
 </target>
 
 <target name="build-apr" depends="init" unless="apr-available">

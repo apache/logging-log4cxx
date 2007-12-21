@@ -25,6 +25,7 @@
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/aprinitializer.h>
+#include <log4cxx/helpers/systemerrwriter.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -60,7 +61,7 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 {
         synchronized sync(getInstance().mutex);
         debug(msg);
-        emit(e.what());
+        emit(e);
 }
 
 
@@ -76,7 +77,7 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 {
         synchronized sync(getInstance().mutex);
         error(msg);
-        emit(e.what());
+        emit(e);
 }
 
 void LogLog::setQuietMode(bool quietMode1)
@@ -97,21 +98,22 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 {
         synchronized sync(getInstance().mutex);
         warn(msg);
-        emit(e.what());
+        emit(e);
 }
 
-
-void LogLog::emit(const std::string& msg) {
-    std::cerr << "log4cxx: " << msg << std::endl;
+void LogLog::emit(const LogString& msg) {
+    LogString out(LOG4CXX_STR("log4cxx: "));
+    out.append(msg);
+    SystemErrWriter::write(out);
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-void LogLog::emit(const std::wstring& msg) {
-#if LOG4CXX_HAS_STD_WCOUT
-    std::wcerr << L"log4cxx: " << msg << std::endl;
-#else
-    LOG4CXX_ENCODE_CHAR(encoded, msg);
-    std::cerr << "log4cxx: " << encoded << std::endl;
-#endif
+void LogLog::emit(const std::exception& ex) {
+    LogString out(LOG4CXX_STR("log4cxx: "));
+    const char* raw = ex.what();
+    if (raw != 0) {
+        Transcoder::decode(raw, out);
+    } else {
+        out.append(LOG4CXX_STR("std::exception::what() == null"));
+    }
+    SystemErrWriter::write(out);
 }
-#endif

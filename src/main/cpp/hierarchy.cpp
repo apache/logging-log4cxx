@@ -316,15 +316,13 @@ void Hierarchy::updateParents(LoggerPtr logger)
         int length = name.size();
         bool parentFound = false;
 
-        //tcout << _T("UpdateParents called for ") << name << std::endl;
 
         // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
-        for(size_t i = name.find_last_of(LOG4CXX_STR('.'), length-1);
+        for(size_t i = name.find_last_of(0x2E /* '.' */, length-1);
             i != LogString::npos;
-            i = name.find_last_of(LOG4CXX_STR('.'), i-1))
+            i = name.find_last_of(0x2E /* '.' */, i-1))
         {
                 LogString substr = name.substr(0, i);
-                //tcout << _T("UpdateParents processing ") << substr << std::endl;
 
                 LoggerMap::iterator it = loggers.find(substr);
                 if(it != loggers.end())
@@ -342,7 +340,6 @@ void Hierarchy::updateParents(LoggerPtr logger)
                         }
                         else
                         {
-                                //tcout << _T("Inserting ProvisionNode for ") << substr << std::endl;
                                 ProvisionNode node(1, logger);
                                 provisionNodes.insert(
                                         ProvisionNodeMap::value_type(substr, node));
@@ -359,14 +356,12 @@ void Hierarchy::updateParents(LoggerPtr logger)
 
 void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 {
-        //tcout << _T("updateChildren called for ") << logger->name << std::endl;
 
         ProvisionNode::iterator it, itEnd = pn.end();
 
         for(it = pn.begin(); it != itEnd; it++)
         {
                 LoggerPtr& l = *it;
-                //tcout << _T("Updating child ") << l->name << std::endl;
 
                 // Unless this child already points to a correct (lower) parent,
                 // make cat.parent point to l.parent and l.parent to cat.

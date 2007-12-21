@@ -31,7 +31,7 @@ class Class##object : public helpers::Class\
 public:\
         Class##object() : helpers::Class() {}\
         virtual ~Class##object() {}\
-        virtual const log4cxx::logchar* getName() const { return LOG4CXX_STR(#object); } \
+        virtual log4cxx::LogString getName() const { return LOG4CXX_STR(#object); } \
 };\
 virtual const helpers::Class& getClass() const;\
 static const helpers::Class& getStaticClass(); \
@@ -44,7 +44,7 @@ class Class##object : public helpers::Class\
 public:\
         Class##object() : helpers::Class() {}\
         virtual ~Class##object() {}\
-        virtual const log4cxx::logchar* getName() const { return LOG4CXX_STR(#object); } \
+        virtual log4cxx::LogString getName() const { return LOG4CXX_STR(#object); } \
         virtual helpers::ObjectPtr newInstance() const\
         {\
                 return new object();\

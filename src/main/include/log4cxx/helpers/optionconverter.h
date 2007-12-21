@@ -63,7 +63,7 @@ namespace log4cxx
                         static bool toBoolean(const LogString& value, bool dEfault);
                         static int toInt(const LogString& value, int dEfault);
                         static long toFileSize(const LogString& value, long dEfault);
-                        static const LevelPtr& toLevel(const LogString& value,
+                        static LevelPtr toLevel(const LogString& value,
                                 const LevelPtr& defaultValue);
 
                         /**

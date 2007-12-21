@@ -28,7 +28,9 @@ namespace log4cxx
 {
         namespace helpers
         {
-          class PatternToken;
+          namespace SimpleDateFormatImpl {
+            class PatternToken;
+        }
 
           /**
            * Concrete class for formatting and parsing dates in a
@@ -66,9 +68,12 @@ namespace log4cxx
                   /**
                    * List of tokens.
                    */
-                  typedef std::vector<PatternToken*> PatternTokenList;
+                  typedef std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*> PatternTokenList;
 
                   PatternTokenList pattern;
+                  
+                  static void addToken(const logchar spec, const int repeat, const std::locale* locale, PatternTokenList& pattern);
+                  static void parsePattern(const LogString& spec, const std::locale* locale, PatternTokenList& pattern);
           };
 
 

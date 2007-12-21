@@ -32,7 +32,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT Exception : public ::std::exception
                 {
                 public:
-                        Exception(const std::string& msg);
+                        Exception(const LogString& msg);
                         Exception(const Exception& src);
                         Exception& operator=(const Exception& src);
                         const char* what() const throw();
@@ -48,11 +48,11 @@ namespace log4cxx
                 {
                 public:
                         RuntimeException(log4cxx_status_t stat);
-                        RuntimeException(const std::string& msg);
+                        RuntimeException(const LogString& msg);
                         RuntimeException(const RuntimeException& msg);
                         RuntimeException& operator=(const RuntimeException& src);
                 private:
-                        static std::string formatMessage(log4cxx_status_t stat);
+                        static LogString formatMessage(log4cxx_status_t stat);
                 }; // class RuntimeException
 
                 /** Thrown when an application attempts to use null in a case where an
@@ -61,7 +61,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT  NullPointerException : public RuntimeException
                 {
                 public:
-                        NullPointerException(const std::string& msg);
+                        NullPointerException(const LogString& msg);
                         NullPointerException(const NullPointerException& msg);
                         NullPointerException& operator=(const NullPointerException& src);
                 }; // class NullPointerException
@@ -71,7 +71,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT IllegalArgumentException : public RuntimeException
                 {
                 public:
-                   IllegalArgumentException(const std::string& msg);
+                   IllegalArgumentException(const LogString& msg);
                    IllegalArgumentException(const IllegalArgumentException&);
                    IllegalArgumentException& operator=(const IllegalArgumentException&);
                 }; // class IllegalArgumentException
@@ -85,11 +85,11 @@ namespace log4cxx
                 public:
                     IOException();
                     IOException(log4cxx_status_t stat);
-                    IOException(const std::string& msg);
+                    IOException(const LogString& msg);
                     IOException(const IOException &src);
                     IOException& operator=(const IOException&);
                 private:
-                    static std::string formatMessage(log4cxx_status_t stat);
+                    static LogString formatMessage(log4cxx_status_t stat);
                 };
 
                 class LOG4CXX_EXPORT MissingResourceException : public Exception
@@ -99,7 +99,7 @@ namespace log4cxx
                     MissingResourceException(const MissingResourceException &src);
                     MissingResourceException& operator=(const MissingResourceException&);
                 private:
-                    static std::string formatMessage(const LogString& key);
+                    static LogString formatMessage(const LogString& key);
                 };
 
                 class LOG4CXX_EXPORT PoolException : public Exception
@@ -109,7 +109,7 @@ namespace log4cxx
                       PoolException(const PoolException &src);
                       PoolException& operator=(const PoolException&);
                 private:
-                      static std::string formatMessage(log4cxx_status_t stat);
+                      static LogString formatMessage(log4cxx_status_t stat);
                 };
 
 
@@ -120,7 +120,7 @@ namespace log4cxx
                       MutexException(const MutexException &src);
                       MutexException& operator=(const MutexException&);
                 private:
-                      static std::string formatMessage(log4cxx_status_t stat);
+                      static LogString formatMessage(log4cxx_status_t stat);
                 };
 
                 class LOG4CXX_EXPORT InterruptedException : public Exception
@@ -131,7 +131,7 @@ namespace log4cxx
                       InterruptedException(const InterruptedException &src);
                       InterruptedException& operator=(const InterruptedException&);
                 private:
-                      static std::string formatMessage(log4cxx_status_t stat);
+                      static LogString formatMessage(log4cxx_status_t stat);
                 };
 
                 class LOG4CXX_EXPORT ThreadException
@@ -141,7 +141,7 @@ namespace log4cxx
                       ThreadException(const ThreadException &src);
                       ThreadException& operator=(const ThreadException&);
                 private:
-                      static std::string formatMessage(log4cxx_status_t stat);
+                      static LogString formatMessage(log4cxx_status_t stat);
                 };
 
                 class LOG4CXX_EXPORT TranscoderException : public Exception
@@ -151,13 +151,13 @@ namespace log4cxx
                       TranscoderException(const TranscoderException &src);
                       TranscoderException& operator=(const TranscoderException&);
                 private:
-                      static std::string formatMessage(log4cxx_status_t stat);
+                      static LogString formatMessage(log4cxx_status_t stat);
                 };
 
                 class LOG4CXX_EXPORT IllegalMonitorStateException
                       : public Exception {
                 public:
-                      IllegalMonitorStateException(const std::string& msg);
+                      IllegalMonitorStateException(const LogString& msg);
                       IllegalMonitorStateException(const IllegalMonitorStateException& msg);
                       IllegalMonitorStateException& operator=(const IllegalMonitorStateException& msg);
                 };
@@ -170,7 +170,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT InstantiationException : public Exception
                 {
                 public:
-                        InstantiationException(const std::string& msg);
+                        InstantiationException(const LogString& msg);
                         InstantiationException(const InstantiationException& msg);
                         InstantiationException& operator=(const InstantiationException& msg);
                 };
@@ -187,7 +187,7 @@ namespace log4cxx
                     ClassNotFoundException(const ClassNotFoundException& msg);
                     ClassNotFoundException& operator=(const ClassNotFoundException& msg);
                 private:
-                    static std::string formatMessage(const LogString& className);
+                    static LogString formatMessage(const LogString& className);
                 };
 
 

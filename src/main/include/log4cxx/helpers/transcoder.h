@@ -23,6 +23,8 @@
 
 namespace log4cxx {
    namespace helpers {
+     class ByteBuffer;
+     class Pool;
      /**
      *    Simple transcoder for converting between
      *      external char and wchar_t strings and
@@ -31,46 +33,131 @@ namespace log4cxx {
      */
       class LOG4CXX_EXPORT Transcoder {
       public:
-      /**
-      *   Appends an external string to an
-      *     internal string.
-      */
-      static void decode(const char* src, size_t len, LogString& dst);
 
-      //
-      //   convienience wrappers
-      //
+      
+      /**
+       *   Appends this specified string of UTF-8 characters to LogString.
+       */
+      static void decodeUTF8(const std::string& src, LogString& dst);
+      /**
+       *    Converts the LogString to a UTF-8 string.
+       */
+      static void encodeUTF8(const LogString& src, std::string& dst);
+      /**
+       *    Append UCS-4 code point to a byte buffer as UTF-8.
+       */
+      static void encodeUTF8(unsigned int sv, ByteBuffer& dst);
+      /**
+       *    Append UCS-4 code point to a byte buffer as UTF-16LE.
+       */
+      static void encodeUTF16LE(unsigned int sv, ByteBuffer& dst);
+      /**
+       *    Append UCS-4 code point to a byte buffer as UTF-16BE.
+       */
+      static void encodeUTF16BE(unsigned int sv, ByteBuffer& dst);
+      
+
+      /**
+       *   Decodes next character from a UTF-8 string.
+       *   @param in string from which the character is extracted.
+       *   @param iter iterator addressing start of character, will be
+       *   advanced to next character if successful.
+       *   @return scalar value (UCS-4) or 0xFFFF if invalid sequence.
+       */
+      static unsigned int decode(const std::string& in,
+           std::string::const_iterator& iter);
+
+      /**
+        *   Appends UCS-4 value to a UTF-8 string.
+        *   @param ch UCS-4 value.
+        *   @param dst destination.
+        */
+      static void encode(unsigned int ch, std::string& dst);
+
+      /**
+       *    Appends string in the current code-page
+       *       to a LogString.
+       */
       static void decode(const std::string& src, LogString& dst);
-      static void decode(const char* src, LogString& dst);
-
-      static LogString decode(const std::string& src);
-
-
       /**
-      *   Appends an internal string to an
-      *     external string.
+       *     Appends a LogString to a string in the current
+       *        code-page.  Unrepresentable characters may be 
+       *        replaced with loss characters.
       */
       static void encode(const LogString& src, std::string& dst);
 
 
-      static bool equals(const char* str1, size_t len, const LogString& str2);
 
-#if LOG4CXX_HAS_WCHAR_T
-      static void decode(const wchar_t* src, size_t len, LogString& dst);
-
-      static void decode(const wchar_t* src, LogString& dst);
-
+#if LOG4CXX_WCHAR_T_API
       static void decode(const std::wstring& src, LogString& dst);
-
-      static LogString decode(const std::wstring& src);
-
       static void encode(const LogString& src, std::wstring& dst);
 
-      static bool equals(const wchar_t* str1, size_t len, const LogString& str2);
+      /**
+       *   Decodes next character from a wstring.
+       *   @param in string from which the character is extracted.
+       *   @param iter iterator addressing start of character, will be
+       *   advanced to next character if successful.
+       *   @return scalar value (UCS-4) or 0xFFFF if invalid sequence.
+       */
+      static unsigned int decode(const std::wstring& in,
+           std::wstring::const_iterator& iter);
+
+      /**
+        *   Appends UCS-4 value to a UTF-8 string.
+        *   @param ch UCS-4 value.
+        *   @param dst destination.
+        */
+      static void encode(unsigned int ch, std::wstring& dst);
 
 #endif
 
 
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+      static void decode(const std::basic_string<UniChar>& src, LogString& dst);
+      static void encode(const LogString& src, std::basic_string<UniChar>& dst);
+      
+      /**
+       *   Decodes next character from a UniChar string.
+       *   @param in string from which the character is extracted.
+       *   @param iter iterator addressing start of character, will be
+       *   advanced to next character if successful.
+       *   @return scalar value (UCS-4) or 0xFFFF if invalid sequence.
+       */
+      static unsigned int decode(const std::basic_string<UniChar>& in,
+           std::basic_string<UniChar>::const_iterator& iter);
+
+      /**
+        *   Appends UCS-4 value to a UTF-8 string.
+        *   @param ch UCS-4 value.
+        *   @param dst destination.
+        */
+      static void encode(unsigned int ch, std::basic_string<UniChar>& dst);
+
+#endif
+
+#if LOG4CXX_CFSTRING_API
+      static void decode(const CFStringRef& src, LogString& dst);
+      static CFStringRef encode(const LogString& src);
+#endif
+
+      enum { LOSSCHAR = 0x3F };
+      
+      /**
+       *   Returns a logchar value given a character literal in the ASCII charset.
+       *   Used to implement the LOG4CXX_STR macro for EBCDIC and UNICHAR.
+       */
+      static logchar decode(char v);
+      /**
+       *   Returns a LogString given a string literal in the ASCII charset.
+       *   Used to implement the LOG4CXX_STR macro for EBCDIC and UNICHAR.
+       */
+      static LogString decode(const char* v);
+
+      /**
+       *   Encodes a charset name in the default encoding 
+       *      without using a CharsetEncoder (which could trigger recursion).
+       */
+      static std::string encodeCharsetName(const LogString& charsetName);
 
       private:
 
@@ -79,8 +166,10 @@ namespace log4cxx {
       Transcoder(const Transcoder&);
       Transcoder& operator=(const Transcoder&);
       enum { BUFSIZE = 256 };
-      static const Transcoder& detect(unsigned char byte0, unsigned char byte1, size_t* offset);
-
+      static size_t encodeUTF8(unsigned int ch, char* dst);
+      static size_t encodeUTF16BE(unsigned int ch, char* dst);
+      static size_t encodeUTF16LE(unsigned int ch, char* dst);
+      
       };
    }
 }
@@ -93,8 +182,12 @@ log4cxx::helpers::Transcoder::encode(src, var)
 log4cxx::LogString var;                      \
 log4cxx::helpers::Transcoder::decode(src, var)
 
-#define LOG4CXX_DECODE_CHAR_1PARAM(src) \
-log4cxx::helpers::Transcoder::decode(src)
+#define LOG4CXX_DECODE_CFSTRING(var, src) \
+log4cxx::LogString var;                      \
+log4cxx::helpers::Transcoder::decode(src, var)
+
+#define LOG4CXX_ENCODE_CFSTRING(var, src) \
+CFStringRef var = log4cxx::helpers::Transcoder::encode(src)
 
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR
@@ -105,13 +198,7 @@ const std::wstring& var = src
 #define LOG4CXX_DECODE_WCHAR(var, src) \
 const log4cxx::LogString& var = src
 
-#define LOG4CXX_DECODE_WCHAR_1PARAM(src) \
-src
-
-#endif
-
-
-#if LOG4CXX_LOGCHAR_IS_UTF8
+#else
 
 #define LOG4CXX_ENCODE_WCHAR(var, src) \
 std::wstring var;                      \
@@ -121,11 +208,26 @@ log4cxx::helpers::Transcoder::encode(src, var)
 log4cxx::LogString var;                      \
 log4cxx::helpers::Transcoder::decode(src, var)
 
-#define LOG4CXX_DECODE_WCHAR_1PARAM(src) \
-log4cxx::helpers::Transcoder::decode(src)
-
-
 #endif
 
+#if LOG4CXX_LOGCHAR_IS_UNICHAR
+
+#define LOG4CXX_ENCODE_UNICHAR(var, src) \
+const std::basic_string<UniChar>& var = src
+
+#define LOG4CXX_DECODE_UNICHAR(var, src) \
+const log4cxx::LogString& var = src
+
+#else
+
+#define LOG4CXX_ENCODE_UNICHAR(var, src) \
+std::basic_string<UniChar> var;          \
+log4cxx::helpers::Transcoder::encode(src, var)
+
+#define LOG4CXX_DECODE_UNICHAR(var, src) \
+log4cxx::LogString var;                      \
+log4cxx::helpers::Transcoder::decode(src, var)
+
+#endif
 
 #endif //_LOG4CXX_HELPERS_TRANSCODER_H

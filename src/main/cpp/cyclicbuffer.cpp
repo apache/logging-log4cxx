@@ -36,10 +36,10 @@ CyclicBuffer::CyclicBuffer(int maxSize1)
 {
         if(maxSize1 < 1)
         {
-            std::string msg("The maxSize argument (");
+            LogString msg(LOG4CXX_STR("The maxSize argument ("));
             Pool p;
             StringHelper::toString(maxSize1, p, msg);
-            msg.append(") is not a positive integer.");
+            msg.append(LOG4CXX_STR(") is not a positive integer."));
             throw IllegalArgumentException(msg);
         }
  }
@@ -111,10 +111,10 @@ void CyclicBuffer::resize(int newSize)
 {
         if(newSize < 0)
         {
-             std::string msg("Negative array size [");
+             LogString msg(LOG4CXX_STR("Negative array size ["));
              Pool p;
              StringHelper::toString(newSize, p, msg);
-             msg.append("] not allowed.");
+             msg.append(LOG4CXX_STR("] not allowed."));
              throw IllegalArgumentException(msg);
         }
         if(newSize == numElems)

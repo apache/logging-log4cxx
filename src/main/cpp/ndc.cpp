@@ -48,12 +48,6 @@ NDC::DiagnosticContext& NDC::DiagnosticContext::operator=(
         return *this;
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-NDC::NDC(const std::wstring& message)
-{
-        push(message);
-}
-#endif
 
 NDC::NDC(const std::string& message)
 {
@@ -99,7 +93,19 @@ LogString NDC::pop()
                 stack.pop();
                 return value;
         }
-        return LOG4CXX_STR("");
+        return LogString();
+}
+
+bool NDC::pop(std::string& dst)
+{
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                Transcoder::encode(stack.top().message, dst);
+                stack.pop();
+                return true;
+        }
+        return false;
 }
 
 LogString NDC::peek()
@@ -109,10 +115,21 @@ LogString NDC::peek()
         {
                 return stack.top().message;
         }
-        return LOG4CXX_STR("");
+        return LogString();
 }
 
-void NDC::pushLogString(const LogString& message)
+bool NDC::peek(std::string& dst)
+{
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                Transcoder::encode(stack.top().message, dst);
+                return true;
+        }
+        return false;
+}
+
+void NDC::pushLS(const LogString& message)
 {
         Stack& stack = ThreadSpecificData::getCurrentThreadStack();
 
@@ -130,16 +147,8 @@ void NDC::pushLogString(const LogString& message)
 void NDC::push(const std::string& message)
 {
    LOG4CXX_DECODE_CHAR(msg, message);
-   pushLogString(msg);
+   pushLS(msg);
 }
-
-#if LOG4CXX_HAS_WCHAR_T
-void NDC::push(const std::wstring& message)
-{
-   LOG4CXX_DECODE_WCHAR(msg, message);
-   pushLogString(msg);
-}
-#endif
 
 void NDC::remove()
 {
@@ -150,4 +159,117 @@ bool NDC::empty() {
     Stack& stack = ThreadSpecificData::getCurrentThreadStack();
     return stack.empty();
 }
+
+#if LOG4CXX_WCHAR_T_API
+NDC::NDC(const std::wstring& message)
+{
+        push(message);
+}
+
+void NDC::push(const std::wstring& message)
+{
+   LOG4CXX_DECODE_WCHAR(msg, message);
+   pushLS(msg);
+}
+
+bool NDC::pop(std::wstring& dst)
+{
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                Transcoder::encode(stack.top().message, dst);
+                stack.pop();
+                return true;
+        }
+        return false;
+}
+
+bool NDC::peek(std::wstring& dst)
+{
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                Transcoder::encode(stack.top().message, dst);
+                return true;
+        }
+        return false;
+}
+
+#endif
+
+
+#if LOG4CXX_UNICHAR_API
+NDC::NDC(const std::basic_string<UniChar>& message)
+{
+        push(message);
+}
+
+void NDC::push(const std::basic_string<UniChar>& message)
+{
+   LOG4CXX_DECODE_UNICHAR(msg, message);
+   pushLS(msg);
+}
+
+bool NDC::pop(std::basic_string<UniChar>& dst)
+{
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                Transcoder::encode(stack.top().message, dst);
+                stack.pop();
+                return true;
+        }
+        return false;
+}
+
+bool NDC::peek(std::basic_string<UniChar>& dst)
+{
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                Transcoder::encode(stack.top().message, dst);
+                return true;
+        }
+        return false;
+}
+
+#endif
+
+
+#if LOG4CXX_CFSTRING_API
+NDC::NDC(const CFStringRef& message)
+{
+        push(message);
+}
+
+void NDC::push(const CFStringRef& message)
+{
+   LOG4CXX_DECODE_CFSTRING(msg, message);
+   pushLS(msg);
+}
+
+bool NDC::pop(CFStringRef& dst)
+{
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                dst = Transcoder::encode(stack.top().message);
+                stack.pop();
+                return true;
+        }
+        return false;
+}
+
+bool NDC::peek(CFStringRef& dst)
+{
+        Stack& stack = ThreadSpecificData::getCurrentThreadStack();
+        if(!stack.empty())
+        {
+                dst = Transcoder::encode(stack.top().message);
+                return true;
+        }
+        return false;
+}
+
+#endif
 

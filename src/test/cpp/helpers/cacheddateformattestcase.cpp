@@ -30,11 +30,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::pattern;
 
+#define LOCALE_US "C"
 #if defined(_WIN32)
-#define LOCALE_US "English_us"
 #define LOCALE_JP "Japanese_japan"
 #else
-#define LOCALE_US "en_US"
 #define LOCALE_JP "ja_JP"
 #endif
 
@@ -354,7 +353,7 @@ void test9() {
  */
 void test10() {
 #if LOG4CXX_HAS_STD_LOCALE
-  std::locale loco(LOCALE_US);
+  std::locale loco("C");
   std::locale* localeUS = &loco;
 #else
   std::locale* localeUS = NULL;

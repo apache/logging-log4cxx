@@ -47,7 +47,7 @@ public:
      * @{inheritDoc}
      */
     void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&) {
-         throw NullPointerException("Intentional NullPointerException");
+         throw NullPointerException(LOG4CXX_STR("Intentional NullPointerException"));
     }
 
     void close() {
@@ -81,7 +81,7 @@ public:
             //   if fatal, echo messages for testLoggingInDispatcher
             //
             if (event->getLevel() == Level::getInfo()) {
-                LoggerPtr logger = Logger::getLogger(event->getLoggerName());
+                LoggerPtr logger = Logger::getLoggerLS(event->getLoggerName());
                 LOG4CXX_LOGLS(logger, Level::getError(), event->getMessage());
                 LOG4CXX_LOGLS(logger, Level::getWarn(), event->getMessage());
                 LOG4CXX_LOGLS(logger, Level::getInfo(), event->getMessage());

@@ -31,7 +31,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT UnknownHostException : public Exception
                 {
                 public:
-                      UnknownHostException(const std::string& msg);
+                      UnknownHostException(const LogString& msg);
                       UnknownHostException(const UnknownHostException& src);
                       UnknownHostException& operator=(const UnknownHostException& src);
                 };

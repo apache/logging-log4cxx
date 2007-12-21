@@ -90,7 +90,8 @@ void RollingFileAppender::activateOptions(Pool &p) {
         }
       }
 
-      File activeFile(getFile());
+      File activeFile;
+      activeFile.setName(getFile());
 
       if (getAppend()) {
         fileLength = activeFile.length(p);
@@ -167,7 +168,7 @@ bool RollingFileAppender::rollover(Pool& p) {
 
             if (success) {
               if (rollover1->getAppend()) {
-                fileLength = File(rollover1->getActiveFileName()).length(p);
+                fileLength = File().setName(rollover1->getActiveFileName()).length(p);
               } else {
                 fileLength = 0;
               }
@@ -209,7 +210,7 @@ bool RollingFileAppender::rollover(Pool& p) {
 
             if (success) {
               if (rollover1->getAppend()) {
-                fileLength = File(rollover1->getActiveFileName()).length(p);
+                fileLength = File().setName(rollover1->getActiveFileName()).length(p);
               } else {
                 fileLength = 0;
               }

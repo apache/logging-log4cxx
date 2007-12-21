@@ -82,14 +82,14 @@ Class::~Class()
 {
 }
 
-const LogString Class::toString() const
+LogString Class::toString() const
 {
         return getName();
 }
 
 ObjectPtr Class::newInstance() const
 {
-        throw InstantiationException("Cannot create new instances of Class.");
+        throw InstantiationException(LOG4CXX_STR("Cannot create new instances of Class."));
 #if LOG4CXX_RETURN_AFTER_THROW
         return 0;
 #endif
@@ -145,7 +145,7 @@ void Class::registerClasses() {
 #endif        
         ConsoleAppender::registerClass();
         FileAppender::registerClass();
-      log4cxx::db::ODBCAppender::registerClass();
+        log4cxx::db::ODBCAppender::registerClass();
 #if (defined(WIN32) || defined(_WIN32))
 #if !defined(_WIN32_WCE)
         log4cxx::nt::NTEventLogAppender::registerClass();

@@ -29,11 +29,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace std;
 
+#define LOCALE_US "C"
 #if defined(_WIN32)
-#define LOCALE_US "English_us"
 #define LOCALE_FR "French_france"
 #else
-#define LOCALE_US "en_US"
 #define LOCALE_FR "fr_FR"
 #endif
 

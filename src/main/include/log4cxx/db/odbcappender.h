@@ -31,7 +31,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT SQLException : public helpers::Exception
                 {
                 public:
-                   SQLException(const std::string& msg) : Exception(msg) {}
+                   SQLException(const LogString& msg) : Exception(msg) {}
                         SQLException(const SQLException& src) : Exception(src) {
                         }
 

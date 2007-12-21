@@ -46,16 +46,16 @@ public:
                         case BEGIN:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR(' '):
-                                case LOG4CXX_STR('\t'):
-                                case LOG4CXX_STR('\n'):
-                                case LOG4CXX_STR('\r'):
+                                case 0x20: // ' '
+                                case 0x08: // '\t'
+                                case 0x0A: // '\n'
+                                case 0x0D: // '\r'
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
 
-                                case LOG4CXX_STR('#'):
-                                case LOG4CXX_STR('!'):
+                                case 0x23: // '#'
+                                case 0x21: // '!'
                                         lexemType = COMMENT;
                                         if (!get(in, c))
                                                 finished = true;
@@ -70,25 +70,25 @@ public:
                         case KEY:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR('\\'):
+                                case 0x5C: // '\\'
                                         lexemType = KEY_ESCAPE;
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
 
-                                case LOG4CXX_STR('\t'):
-                                case LOG4CXX_STR(' '):
-                                case LOG4CXX_STR(':'):
-                                case LOG4CXX_STR('='):
+                                case 0x08: // '\t'
+                                case 0x20: // ' '
+                                case 0x3A: // ':'
+                                case 0x3D: // '='
                                         lexemType = DELIMITER;
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
 
-                                case LOG4CXX_STR('\n'):
-                                case LOG4CXX_STR('\r'):
+                                case 0x0A:
+                                case 0x0D:
                                         // key associated with an empty string element
-                                        properties.setProperty(key, LOG4CXX_STR(""));
+                                        properties.setProperty(key, LogString());
                                         key.erase(key.begin(), key.end());
                                         lexemType = BEGIN;
                                         if (!get(in, c))
@@ -106,24 +106,24 @@ public:
                         case KEY_ESCAPE:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR('\t'):
-                                case LOG4CXX_STR(' '):
-                                case LOG4CXX_STR(':'):
-                                case LOG4CXX_STR('='):
-                                case LOG4CXX_STR('\\'):
+                                case 0x08: // '\t'
+                                case 0x20: // ' '
+                                case 0x3A: // ':'
+                                case 0x3D: // '='
+                                case 0x5C: // '\\'
                                         key.append(1, c);
                                         lexemType = KEY;
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
 
-                                case LOG4CXX_STR('\n'):
+                                case 0x0A: // '\n'
                                         lexemType = KEY_CONTINUE;
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
 
-                                case LOG4CXX_STR('\r'):
+                                case 0x0D: // '\r'
                                         lexemType = KEY_CONTINUE2;
                                         if (!get(in, c))
                                                 finished = true;
@@ -134,8 +134,8 @@ public:
                         case KEY_CONTINUE:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR(' '):
-                                case LOG4CXX_STR('\t'):
+                                case 0x20:  // ' '
+                                case 0x08: //  '\t'
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
@@ -149,7 +149,7 @@ public:
                         case KEY_CONTINUE2:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR('\n'):
+                                case 0x0A: // '\n'
                                         if (!get(in, c))
                                                 finished = true;
                                         lexemType = KEY_CONTINUE;
@@ -164,10 +164,10 @@ public:
                         case DELIMITER:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR('\t'):
-                                case LOG4CXX_STR(' '):
-                                case LOG4CXX_STR(':'):
-                                case LOG4CXX_STR('='):
+                                case 0x08: // '\t'
+                                case 0x20: // ' '
+                                case 0x3A: // ':'
+                                case 0x3D: // '='
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
@@ -181,14 +181,14 @@ public:
                         case ELEMENT:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR('\\'):
+                                case 0x5C: // '\\'
                                         lexemType = ELEMENT_ESCAPE;
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
 
-                                case LOG4CXX_STR('\n'):
-                                case LOG4CXX_STR('\r'):
+                                case 0x0A: // '\n'
+                                case 0x0D: // '\r'
                                         // key associated with an empty string element
                                         properties.setProperty(key, element);
                                         key.erase(key.begin(), key.end());
@@ -209,14 +209,14 @@ public:
                         case ELEMENT_ESCAPE:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR('t'):
-                                case LOG4CXX_STR(' '):
-                                case LOG4CXX_STR('n'):
-                                case LOG4CXX_STR('r'):
-                                case LOG4CXX_STR('\''):
-                                case LOG4CXX_STR('\\'):
-                                case LOG4CXX_STR('\"'):
-                                case LOG4CXX_STR(':'):
+                                case 0x08: // '\t'
+                                case 0x20: // ' '
+                                case 0x6E: // 'n'
+                                case 0x72: // 'r'
+                                case 0x27: // '\''
+                                case 0x5C: // '\\'
+                                case 0x22: // '\"'
+                                case 0x3A: // ':'
                                 default:
                                         element.append(1, c);
                                         lexemType = ELEMENT;
@@ -224,13 +224,13 @@ public:
                                                 finished = true;
                                         break;
 
-                                case LOG4CXX_STR('\n'):
+                                case 0x0A: // '\n'
                                         lexemType = ELEMENT_CONTINUE;
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
 
-                                case LOG4CXX_STR('\r'):
+                                case 0x0D: // '\r'
                                         lexemType = ELEMENT_CONTINUE2;
                                         if (!get(in, c))
                                                 finished = true;
@@ -241,8 +241,8 @@ public:
                         case ELEMENT_CONTINUE:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR(' '):
-                                case LOG4CXX_STR('\t'):
+                                case 0x20: // ' '
+                                case 0x08: // '\t'
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
@@ -256,7 +256,7 @@ public:
                         case ELEMENT_CONTINUE2:
                                 switch(c)
                                 {
-                                case LOG4CXX_STR('\n'):
+                                case 0x20: // '\n'
                                         if (!get(in, c))
                                                 finished = true;
                                         lexemType = ELEMENT_CONTINUE;
@@ -269,7 +269,7 @@ public:
                                 break;
 
                         case COMMENT:
-                                if (c == LOG4CXX_STR('\n') || c == LOG4CXX_STR('\r'))
+                                if (c == 0x0A || c == 0x0D)
                                 {
                                         lexemType = BEGIN;
                                 }
@@ -328,7 +328,7 @@ LogString Properties::put(const LogString& key, const LogString& value)
 {
         LogString oldValue(properties[key]);
         properties[key] = value;
-        //tcout << LOG4CXX_STR("setting property key=") << key << LOG4CXX_STR(", value=") << value << std::endl;
+        //tcout << ASCII_STR("setting property key=") << key << ASCII_STR(", value=") << value << std::endl;
         return oldValue;
 }
 

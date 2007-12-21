@@ -110,10 +110,10 @@ void SyslogAppender::initSyslogFacilityStr()
         if (facilityStr.empty())
         {
                 Pool p;
-                LogLog::error(
-                    ((LogString) LOG4CXX_STR("\""))
-                    + StringHelper::toString(syslogFacility, p)
-                    + LOG4CXX_STR("\" is an unknown syslog facility. Defaulting to \"USER\"."));
+                LogString msg(LOG4CXX_STR("\""));
+                StringHelper::toString(syslogFacility, p, msg);
+                msg.append(LOG4CXX_STR("\" is an unknown syslog facility. Defaulting to \"USER\"."));
+                LogLog::error(msg);
                 this->syslogFacility = LOG_USER;
                 facilityStr = LOG4CXX_STR("user:");
         }
@@ -285,10 +285,9 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                 return;
         }
 
-        LogString sbuf(1, LOG4CXX_STR('<'));
-        StringHelper::toString((syslogFacility | event->getLevel()->getSyslogEquivalent()),
-                  p, sbuf);
-        sbuf.append(1, LOG4CXX_STR('>'));
+        LogString sbuf(1, 0x3C /* '<' */);
+        StringHelper::toString((syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
+        sbuf.append(1, 0x3E /* '>' */);
         if (facilityPrinting)
         {
                 sbuf.append(facilityStr);

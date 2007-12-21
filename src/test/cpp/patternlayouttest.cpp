@@ -509,7 +509,7 @@ public:
 
        std::string createMessage(Pool& pool, int i) {
          std::string msg("Message ");
-         StringHelper::toString(i, pool, msg);
+         msg.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
          return msg;
        }
 

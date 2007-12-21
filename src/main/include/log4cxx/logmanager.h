@@ -76,23 +76,41 @@ namespace log4cxx
         Retrieve the appropriate Logger instance.
         */
         static LoggerPtr getLogger(const std::string& name);
-        static LoggerPtr getLogger(const char* const name);
-
-#if LOG4CXX_HAS_WCHAR_T
+        static LoggerPtr getLogger(const std::string& name,
+                        const spi::LoggerFactoryPtr& factory);
+        static LoggerPtr exists(const std::string& name);
+#if LOG4CXX_WCHAR_T_API
         static LoggerPtr getLogger(const std::wstring& name);
-        static LoggerPtr getLogger(const wchar_t* const name);
+        static LoggerPtr getLogger(const std::wstring& name,
+                        const spi::LoggerFactoryPtr& factory);
+        static LoggerPtr exists(const std::wstring& name);
 #endif
+#if LOG4CXX_UNICHAR_API
+        static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
+        static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
+                        const spi::LoggerFactoryPtr& factory);
+        static LoggerPtr exists(const std::basic_string<UniChar>& name);
+#endif
+#if LOG4CXX_CFSTRING_API
+        static LoggerPtr getLogger(const CFStringRef& name);
+        static LoggerPtr getLogger(const CFStringRef& name,
+                        const spi::LoggerFactoryPtr& factory);
+        static LoggerPtr exists(const CFStringRef& name);
+#endif
+
 
         /**
         Retrieve the appropriate Logger instance.
         */
-        static LoggerPtr getLogger(const LogString& name,
+        static LoggerPtr getLoggerLS(const LogString& name);
+        /**
+        Retrieve the appropriate Logger instance.
+        */
+        static LoggerPtr getLoggerLS(const LogString& name,
                         const spi::LoggerFactoryPtr& factory);
 
-        static LoggerPtr exists(const std::string& name);
-#if LOG4CXX_HAS_WCHAR_T
-        static LoggerPtr exists(const std::wstring& name);
-#endif
+        static LoggerPtr existsLS(const LogString& name);
+
         static LoggerList getCurrentLoggers();
 
         /**

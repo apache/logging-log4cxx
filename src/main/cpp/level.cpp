@@ -29,43 +29,43 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
-const LevelPtr& Level::getOff() {
+LevelPtr Level::getOff() {
    static LevelPtr level(new Level(Level::OFF_INT, LOG4CXX_STR("OFF"), 0));
    return level;
 }
 
-const LevelPtr& Level::getFatal() {
+LevelPtr Level::getFatal() {
    static LevelPtr level(new Level(Level::FATAL_INT, LOG4CXX_STR("FATAL"), 0));
    return level;
 }
 
-const LevelPtr& Level::getError() {
+LevelPtr Level::getError() {
    static LevelPtr level(new Level(Level::ERROR_INT, LOG4CXX_STR("ERROR"), 3));
    return level;
 }
 
-const LevelPtr& Level::getWarn() {
+LevelPtr Level::getWarn() {
    static LevelPtr level(new Level(Level::WARN_INT, LOG4CXX_STR("WARN"), 4));
    return level;
 }
 
-const LevelPtr& Level::getInfo() {
+LevelPtr Level::getInfo() {
    static LevelPtr level(new Level(Level::INFO_INT, LOG4CXX_STR("INFO"), 6));
    return level;
 }
 
-const LevelPtr& Level::getDebug() {
+LevelPtr Level::getDebug() {
    static LevelPtr level(new Level(Level::DEBUG_INT, LOG4CXX_STR("DEBUG"), 7));
    return level;
 }
 
-const LevelPtr& Level::getTrace() {
+LevelPtr Level::getTrace() {
    static LevelPtr level(new Level(Level::TRACE_INT, LOG4CXX_STR("TRACE"), 7));
    return level;
 }
 
 
-const LevelPtr& Level::getAll() {
+LevelPtr Level::getAll() {
    static LevelPtr level(new Level(Level::ALL_INT, LOG4CXX_STR("ALL"), 7));
    return level;
 }
@@ -73,31 +73,29 @@ const LevelPtr& Level::getAll() {
 
 
 Level::Level(int level1,
-    const logchar* name1, int syslogEquivalent1)
+    const LogString& name1, int syslogEquivalent1)
 : level(level1), name(name1), syslogEquivalent(syslogEquivalent1)
 {
    APRInitializer::initialize();
 }
 
 
-const LevelPtr& Level::toLevel(const std::string& sArg)
+LevelPtr Level::toLevelLS(const LogString& sArg)
 {
-    return toLevel(sArg, Level::getDebug());
+    return toLevelLS(sArg, Level::getDebug());
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-const LevelPtr& Level::toLevel(const std::wstring& sArg)
-{
-    return toLevel(sArg, Level::getDebug());
+LogString Level::toString() const {
+    return name;
 }
-#endif
 
-const LevelPtr& Level::toLevel(int val)
+
+LevelPtr Level::toLevel(int val)
 {
     return toLevel(val, Level::getDebug());
 }
 
-const LevelPtr& Level::toLevel(int val, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevel(int val, const LevelPtr& defaultLevel)
 {
     switch(val)
     {
@@ -113,87 +111,116 @@ const LevelPtr& Level::toLevel(int val, const LevelPtr& defaultLevel)
     }
 }
 
-const LevelPtr& Level::toLevel(const std::string& sArg, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevel(const std::string& sArg)
 {
-    const size_t len = sArg.length();
-
-    if (len == 4) {
-      if (StringHelper::equalsIgnoreCase(sArg, "INFO", "info")) {
-        return getInfo();
-      }
-      if (StringHelper::equalsIgnoreCase(sArg, "WARN", "warn")) {
-        return getWarn();
-      }
-    } else {
-      if (len == 5) {
-        if (StringHelper::equalsIgnoreCase(sArg, "DEBUG", "debug")) {
-          return getDebug();
-        }
-        if (StringHelper::equalsIgnoreCase(sArg, "TRACE", "trace")) {
-          return getTrace();
-        }
-        if (StringHelper::equalsIgnoreCase(sArg, "ERROR", "error")) {
-          return getError();
-        }
-        if (StringHelper::equalsIgnoreCase(sArg, "FATAL", "fatal")) {
-          return getFatal();
-        }
-      } else {
-        if (len == 3) {
-          if (StringHelper::equalsIgnoreCase(sArg, "OFF", "off")) {
-            return getOff();
-          }
-          if (StringHelper::equalsIgnoreCase(sArg, "ALL", "all")) {
-            return getAll();
-          }
-        }
-      }
-    }
-
-    return defaultLevel;
+    return toLevel(sArg, Level::getDebug());
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevel(const std::string& sArg, const LevelPtr& defaultLevel)
 {
-    const size_t len = sArg.length();
+    LOG4CXX_DECODE_CHAR(s, sArg);
+    return toLevelLS(s, defaultLevel);
+}
 
-    if (len == 4) {
-      if (StringHelper::equalsIgnoreCase(sArg, L"INFO", L"info")) {
-        return getInfo();
-      }
-      if (StringHelper::equalsIgnoreCase(sArg, L"WARN", L"warn")) {
-        return getWarn();
-      }
-    } else {
-      if (len == 5) {
-        if (StringHelper::equalsIgnoreCase(sArg, L"DEBUG", L"debug")) {
-          return getDebug();
-        }
-        if (StringHelper::equalsIgnoreCase(sArg, L"TRACE", L"trace")) {
-          return getTrace();
-        }
-        if (StringHelper::equalsIgnoreCase(sArg, L"ERROR", L"error")) {
-          return getError();
-        }
-        if (StringHelper::equalsIgnoreCase(sArg, L"FATAL", L"fatal")) {
-          return getFatal();
-        }
-      } else {
-        if (len == 3) {
-          if (StringHelper::equalsIgnoreCase(sArg, L"OFF", L"off")) {
-            return getOff();
-          }
-          if (StringHelper::equalsIgnoreCase(sArg, L"ALL", L"all")) {
-            return getAll();
-          }
-        }
-      }
-    }
+void Level::toString(std::string& dst) const {
+    Transcoder::encode(name, dst);
+}
 
-    return defaultLevel;
+#if LOG4CXX_WCHAR_T_API
+LevelPtr Level::toLevel(const std::wstring& sArg)
+{
+    return toLevel(sArg, Level::getDebug());
+}
+
+LevelPtr Level::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
+{
+    LOG4CXX_DECODE_WCHAR(s, sArg);
+    return toLevelLS(s, defaultLevel);
+}
+
+void Level::toString(std::wstring& dst) const {
+    Transcoder::encode(name, dst);
+}
+
+#endif
+
+#if LOG4CXX_UNICHAR_API
+LevelPtr Level::toLevel(const std::basic_string<UniChar>& sArg)
+{
+    return toLevel(sArg, Level::getDebug());
+}
+
+LevelPtr Level::toLevel(const std::basic_string<UniChar>& sArg, const LevelPtr& defaultLevel)
+{
+    LOG4CXX_DECODE_UNICHAR(s, sArg);
+    return toLevelLS(s, defaultLevel);
+}
+
+void Level::toString(std::basic_string<UniChar>& dst) const {
+    Transcoder::encode(name, dst);
+}
+
+#endif
+
+#if LOG4CXX_CFSTRING_API
+LevelPtr Level::toLevel(const CFStringRef& sArg)
+{
+    return toLevel(sArg, Level::getDebug());
+}
+
+LevelPtr Level::toLevel(const CFStringRef& sArg, const LevelPtr& defaultLevel)
+{
+    LogString s;
+    Transcoder::decode(sArg, s);
+    return toLevelLS(s, defaultLevel);
+}
+
+void Level::toString(CFStringRef& dst) const {
+    dst = Transcoder::encode(name);
 }
 #endif
+
+
+LevelPtr Level::toLevelLS(const LogString& sArg, const LevelPtr& defaultLevel)
+{
+    const size_t len = sArg.length();
+
+    if (len == 4) {
+      if (StringHelper::equalsIgnoreCase(sArg, LOG4CXX_STR("INFO"), LOG4CXX_STR("info"))) {
+        return getInfo();
+      }
+      if (StringHelper::equalsIgnoreCase(sArg, LOG4CXX_STR("WARN"), LOG4CXX_STR("warn"))) {
+        return getWarn();
+      }
+    } else {
+      if (len == 5) {
+        if (StringHelper::equalsIgnoreCase(sArg, LOG4CXX_STR("DEBUG"), LOG4CXX_STR("debug"))) {
+          return getDebug();
+        }
+        if (StringHelper::equalsIgnoreCase(sArg, LOG4CXX_STR("TRACE"), LOG4CXX_STR("trace"))) {
+          return getTrace();
+        }
+        if (StringHelper::equalsIgnoreCase(sArg, LOG4CXX_STR("ERROR"), LOG4CXX_STR("error"))) {
+          return getError();
+        }
+        if (StringHelper::equalsIgnoreCase(sArg, LOG4CXX_STR("FATAL"), LOG4CXX_STR("fatal"))) {
+          return getFatal();
+        }
+      } else {
+        if (len == 3) {
+          if (StringHelper::equalsIgnoreCase(sArg, LOG4CXX_STR("OFF"), LOG4CXX_STR("off"))) {
+            return getOff();
+          }
+          if (StringHelper::equalsIgnoreCase(sArg, LOG4CXX_STR("ALL"), LOG4CXX_STR("all"))) {
+            return getAll();
+          }
+        }
+      }
+    }
+
+    return defaultLevel;
+}
+
 
 bool Level::equals(const LevelPtr& level1) const
 {
@@ -204,14 +231,4 @@ bool Level::isGreaterOrEqual(const LevelPtr& level1) const
 {
     return this->level >= level1->level;
 }
-
-void Level::toString(std::string& str) const {
-    Transcoder::encode(name, str);
-}
-
-#if LOG4CXX_HAS_WCHAR_T
-void Level::toString(std::wstring& str) const {
-    Transcoder::encode(name, str);
-}
-#endif
 

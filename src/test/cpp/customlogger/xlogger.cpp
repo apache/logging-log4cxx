@@ -37,9 +37,9 @@ void XLogger::lethal(const LogString& message, const LocationInfo& locationInfo)
                 return;
         }
 
-        if (XLevel::LETHAL->isGreaterOrEqual(this->getEffectiveLevel()))
+        if (XLevel::getLethal()->isGreaterOrEqual(this->getEffectiveLevel()))
         {
-                forcedLog(XLevel::LETHAL, message, locationInfo);
+                forcedLog(XLevel::getLethal(), message, locationInfo);
         }
 }
 
@@ -50,9 +50,9 @@ void XLogger::lethal(const LogString& message)
                 return;
         }
 
-        if (XLevel::LETHAL->isGreaterOrEqual(this->getEffectiveLevel()))
+        if (XLevel::getLethal()->isGreaterOrEqual(this->getEffectiveLevel()))
         {
-                forcedLog(XLevel::LETHAL, message, LocationInfo::getLocationUnavailable());
+                forcedLog(XLevel::getLethal(), message, LocationInfo::getLocationUnavailable());
         }
 }
 
@@ -73,9 +73,9 @@ void XLogger::trace(const LogString& message, const LocationInfo& locationInfo)
                 return;
         }
 
-        if (XLevel::TRACE->isGreaterOrEqual(this->getEffectiveLevel()))
+        if (XLevel::getTrace()->isGreaterOrEqual(this->getEffectiveLevel()))
         {
-                forcedLog(XLevel::TRACE, message, locationInfo);
+                forcedLog(XLevel::getTrace(), message, locationInfo);
         }
 }
 
@@ -86,9 +86,9 @@ void XLogger::trace(const LogString& message)
                 return;
         }
 
-        if (XLevel::TRACE->isGreaterOrEqual(this->getEffectiveLevel()))
+        if (XLevel::getTrace()->isGreaterOrEqual(this->getEffectiveLevel()))
         {
-                forcedLog(XLevel::TRACE, message, LocationInfo::getLocationUnavailable());
+                forcedLog(XLevel::getTrace(), message, LocationInfo::getLocationUnavailable());
         }
 }
 

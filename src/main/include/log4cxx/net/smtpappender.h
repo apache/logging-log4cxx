@@ -44,7 +44,7 @@ namespace log4cxx
                 private:
                         SMTPAppender(const SMTPAppender&);
                         SMTPAppender& operator=(const SMTPAppender&);
-                        static bool asciiCheck(const LogString&, const logchar*);
+                        static bool asciiCheck(const LogString& value, const LogString& label);
                         /**
                         This method determines if there is a sense in attempting to append.
                         <p>It checks whether there is a set output target and also if

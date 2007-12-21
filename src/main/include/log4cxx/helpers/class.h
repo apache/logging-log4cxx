@@ -35,8 +35,8 @@ namespace log4cxx
                 public:
                         virtual ~Class();
                         virtual ObjectPtr newInstance() const;
-                        const LogString toString() const;
-                        virtual const logchar* getName() const = 0;
+                        LogString toString() const;
+                        virtual LogString getName() const = 0;
                         static const Class& forName(const LogString& className);
                         static bool registerClass(const Class& newClass);
 

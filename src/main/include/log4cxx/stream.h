@@ -321,7 +321,7 @@ namespace log4cxx
              
         };
         
-#if LOG4CXX_HAS_WCHAR_T        
+#if LOG4CXX_WCHAR_T_API        
         /**
          *  An STL-like stream API for log4cxx using wchar_t as the character type.
 		 *. Instances of log4cxx::logstream
@@ -433,6 +433,125 @@ namespace log4cxx
         };
 #endif
 
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API        
+        /**
+         *  An STL-like stream API for log4cxx using UniChar as the character type.
+		 *. Instances of log4cxx::logstream
+         *  are not  designedfor use by multiple threads and in general should be short-lived
+         *  function scoped objects.  Using log4cxx::basic_logstream as a class member or 
+         *  static instance should be avoided in the same manner as you would avoid placing a std::ostringstream
+         *  in those locations.  Insertion operations are generally short-circuited if the 
+         *  level for the stream is not the same of higher that the level of the associated logger.
+         */
+        class LOG4CXX_EXPORT ulogstream : public logstream_base {
+			 typedef UniChar Ch;
+        public:
+            /**
+             *   Constructor.
+             */
+             ulogstream(const log4cxx::LoggerPtr& logger,
+                 const log4cxx::LevelPtr& level);
+             
+#if LOG4CXX_UNICHAR_API             
+            /**
+             *   Constructor.
+             */
+             ulogstream(const Ch* loggerName, 
+                const log4cxx::LevelPtr& level);
+
+            /**
+             *   Constructor.
+             */
+             ulogstream(const std::basic_string<Ch>& loggerName, 
+                const log4cxx::LevelPtr& level);
+#endif
+
+#if LOG4CXX_CFSTRING_API
+             ulogstream(const CFStringRef& loggerName,
+                   const log4cxx::LevelPtr& level);
+#endif             
+             
+             ~ulogstream();
+             
+             /**
+              *   Insertion operator for std::fixed and similar manipulators.
+              */
+             ulogstream& operator<<(std::ios_base& (*manip)(std::ios_base&));
+            
+             /**
+              *   Insertion operator for logstream_base::endmsg.
+              */
+              ulogstream& operator<<(logstream_manipulator manip);
+            
+              /**
+               *   Insertion operator for level.
+               */
+              ulogstream& operator<<(const log4cxx::LevelPtr& level);
+            /**
+             *   Insertion operator for location.
+             */
+            ulogstream& operator<<(const log4cxx::spi::LocationInfo& location);
+            
+            /**
+             *   Alias for insertion operator for location.  Kludge to avoid
+			 *      inappropriate compiler ambiguity.
+             */
+             ulogstream& operator>>(const log4cxx::spi::LocationInfo& location);
+            
+
+            /**
+             *   Cast operator to provide access to embedded std::basic_ostream.
+             */
+             operator std::basic_ostream<Ch>&();
+            
+#if !(LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE)             
+            /**
+              *  Template to allow any class with an std::basic_ostream inserter
+              *    to be applied to this class.
+             */
+             template <class V>
+             inline ulogstream& operator<<(const V& val) {
+                 if (LOG4CXX_UNLIKELY(isEnabled())) {
+                      ((std::basic_ostream<Ch>&) *this) << val;
+                 }
+                 return *this;
+              }
+#endif              
+            
+        protected:
+              /**
+               *   {@inheritDoc}
+               */
+              virtual void log(LoggerPtr& logger,
+                               const LevelPtr& level,
+                               const log4cxx::spi::LocationInfo& location);
+              
+              /**
+               *   {@inheritDoc}
+               */
+              virtual void erase();
+              
+              /**
+               *   {@inheritDoc}
+               */
+              virtual void get_stream_state(std::ios_base& base,
+                                            std::ios_base& mask,
+                                            int& fill,
+                                            bool& fillSet) const;
+              /**
+               *   {@inheritDoc}
+               */
+              virtual void refresh_stream_state();
+              
+            
+        private:
+            ulogstream(const ulogstream&);
+            ulogstream& operator=(const ulogstream&);
+            std::basic_stringstream<Ch>* stream;
+             
+        };
+#endif
+
 
 }  // namespace log4cxx
 
@@ -456,7 +575,7 @@ inline log4cxx::logstream& operator<<(log4cxx::logstream& os, const V& val) {
      return os;
 }
 
-#if LOG4CXX_HAS_WCHAR_T            
+#if LOG4CXX_WCHAR_T_API            
 /**
  *  Template to allow any class with an std::basic_ostream inserter
  *    to be applied to this class.

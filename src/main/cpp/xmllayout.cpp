@@ -55,24 +55,27 @@ void XMLLayout::format(LogString& output,
         output.append(LOG4CXX_STR("<log4j:event logger=\""));
         output.append(event->getLoggerName());
         output.append(LOG4CXX_STR("\" timestamp=\""));
-        output.append(StringHelper::toString(event->getTimeStamp()/1000L, p));
+        StringHelper::toString(event->getTimeStamp()/1000L, p, output);
         output.append(LOG4CXX_STR("\" level=\""));
         output.append(event->getLevel()->toString());
         output.append(LOG4CXX_STR("\" thread=\""));
         output.append(event->getThreadName());
-        output.append(LOG4CXX_STR("\">") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("\">"));
+        output.append(LOG4CXX_EOL);
 
         output.append(LOG4CXX_STR("<log4j:message><![CDATA["));
         // Append the rendered message. Also make sure to escape any
         // existing CDATA sections.
         Transform::appendEscapingCDATA(output, event->getRenderedMessage());
-        output.append(LOG4CXX_STR("]]></log4j:message>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("]]></log4j:message>"));
+        output.append(LOG4CXX_EOL);
 
         LogString ndc;
         if(event->getNDC(ndc)) {
                 output.append(LOG4CXX_STR("<log4j:NDC><![CDATA["));
                 output.append(ndc);
-                output.append(LOG4CXX_STR("]]></log4j:NDC>") LOG4CXX_EOL);
+                output.append(LOG4CXX_STR("]]></log4j:NDC>"));
+                output.append(LOG4CXX_EOL);
         }
 
         //
@@ -89,7 +92,8 @@ void XMLLayout::format(LogString& output,
                 * of the keys is kinda nice..
                 */
 
-                output.append(LOG4CXX_STR("<log4j:MDC>") LOG4CXX_EOL);
+                output.append(LOG4CXX_STR("<log4j:MDC>"));
+                output.append(LOG4CXX_EOL);
                 for (std::set<LogString>::iterator i = mdcKeySet.begin();
                         i != mdcKeySet.end(); i++)
                 {
@@ -100,10 +104,12 @@ void XMLLayout::format(LogString& output,
                             output.append(propName);
                             output.append(LOG4CXX_STR("\" value=\""));
                             output.append(propValue);
-                            output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
+                            output.append(LOG4CXX_STR("\"/>"));
+                            output.append(LOG4CXX_EOL);
                         }
                 }
-                output.append(LOG4CXX_STR("</log4j:MDC>") LOG4CXX_EOL);
+                output.append(LOG4CXX_STR("</log4j:MDC>"));
+                output.append(LOG4CXX_EOL);
     }
 
         if(locationInfo)
@@ -119,15 +125,17 @@ void XMLLayout::format(LogString& output,
                 LOG4CXX_DECODE_CHAR(fileName, locInfo.getFileName());
                 output.append(fileName);
                 output.append(LOG4CXX_STR("\" line=\""));
-                output.append(StringHelper::toString(locInfo.getLineNumber(), p));
-                output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
+                StringHelper::toString(locInfo.getLineNumber(), p, output);
+                output.append(LOG4CXX_STR("\"/>"));
+                output.append(LOG4CXX_EOL);
         }
 
     std::set<LogString> propertySet = event->getPropertyKeySet();
 
     if (!propertySet.empty())
         {
-                output.append(LOG4CXX_STR("<log4j:properties>") LOG4CXX_EOL);
+                output.append(LOG4CXX_STR("<log4j:properties>"));
+                output.append(LOG4CXX_EOL);
                 for (std::set<LogString>::iterator i = propertySet.begin();
                         i != propertySet.end(); i++)
                 {
@@ -138,12 +146,15 @@ void XMLLayout::format(LogString& output,
                             output.append(propName);
                             output.append(LOG4CXX_STR("\" value=\""));
                             output.append(propValue);
-                            output.append(LOG4CXX_STR("\"/>") LOG4CXX_EOL);
+                            output.append(LOG4CXX_STR("\"/>"));
+                            output.append(LOG4CXX_EOL);
                         }
                 }
-                output.append(LOG4CXX_STR("</log4j:properties>") LOG4CXX_EOL);
+                output.append(LOG4CXX_STR("</log4j:properties>"));
+                output.append(LOG4CXX_EOL);
     }
 
-        output.append(LOG4CXX_STR("</log4j:event>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</log4j:event>"));
+        output.append(LOG4CXX_EOL);
 }
 

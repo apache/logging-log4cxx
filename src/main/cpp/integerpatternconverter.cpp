@@ -44,8 +44,6 @@ void IntegerPatternConverter::format(
   Pool& p) const {
    IntegerPtr i(obj);
    if (i != NULL) {
-      toAppendTo.append(StringHelper::toString(
-        i->intValue(),
-        p));
+      StringHelper::toString(i->intValue(), p, toAppendTo);
    }
 }

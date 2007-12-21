@@ -41,22 +41,25 @@ namespace log4cxx
                 public:
                     File();
                     File(const std::string& name);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                     File(const std::wstring& name);
+#endif
+#if LOG4CXX_UNICHAR_API
+                    File(const std::basic_string<UniChar>& name);
+#endif
+#if LOG4CXX_CFSTRING_API
+                    File(const CFStringRef& name);
 #endif
                     File(const File& src);
                     File& operator=(const File& src);
                     ~File();
-
+                    
                     bool exists(log4cxx::helpers::Pool& p) const;
                     size_t length(log4cxx::helpers::Pool& p) const;
                     log4cxx_time_t lastModified(log4cxx::helpers::Pool& p) const;
-                    inline const LogString& getName() const {
-                       return name;
-                    }
-                    inline const std::string& getOSName() const {
-                       return osName;
-                    }
+                    LogString getName() const;
+                    File& setName(const LogString&);
+                    std::string getOSName() const;
 
                     log4cxx_status_t open(apr_file_t** file, int flags,
                           int perm, log4cxx::helpers::Pool& p) const;
@@ -77,6 +80,6 @@ namespace log4cxx
 } // namespace log4cxx
 
 
-#define LOG4CXX_FILE(name) log4cxx::File(LOG4CXX_STR(name))
+#define LOG4CXX_FILE(name) log4cxx::File(name)
 
 #endif // _LOG4CXX_FILE_H

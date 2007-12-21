@@ -60,9 +60,9 @@ void FormattingInfo::format(const int fieldStart, LogString& buffer) const {
                    buffer.begin() + fieldStart + (rawLength - maxLength));
     } else if (rawLength < minLength) {
       if (leftAlign) {
-        buffer.append(minLength - rawLength, LOG4CXX_STR(' '));
+        buffer.append(minLength - rawLength, 0x20 /* ' ' */);
       } else {
-        buffer.insert(fieldStart, minLength - rawLength, LOG4CXX_STR(' '));
+        buffer.insert(fieldStart, minLength - rawLength, 0x20 /* ' ' */);
       }
     }
   }

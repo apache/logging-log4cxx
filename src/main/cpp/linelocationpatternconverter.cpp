@@ -43,7 +43,7 @@ void LineLocationPatternConverter::format(
   const LoggingEventPtr& event,
   LogString& toAppendTo,
   Pool& p) const {
-   toAppendTo.append(StringHelper::toString(
+   StringHelper::toString(
        event->getLocationInformation().getLineNumber(),
-       p));
+       p, toAppendTo);
 }

@@ -57,7 +57,7 @@ void LevelMatchFilter::setLevelToMatch(const LogString& levelToMatch1)
    this->levelToMatch = OptionConverter::toLevel(levelToMatch1, this->levelToMatch);
 }
 
-const LogString& LevelMatchFilter::getLevelToMatch() const
+LogString LevelMatchFilter::getLevelToMatch() const
 {
    return levelToMatch->toString();
 }

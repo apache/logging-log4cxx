@@ -50,7 +50,7 @@ void ByteBuffer::position(size_t newPosition) {
 
 void ByteBuffer::limit(size_t newLimit) {
   if (newLimit > cap) {
-    throw IllegalArgumentException("newLimit");
+    throw IllegalArgumentException(LOG4CXX_STR("newLimit"));
   }
   lim = newLimit;
 }

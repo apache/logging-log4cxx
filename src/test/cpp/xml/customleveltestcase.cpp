@@ -117,7 +117,7 @@ public:
       LOG4CXX_ERROR(logger, os.str());
         os.str("");
         os << "Message " <<  ++i;
-      LOG4CXX_LOG(logger, XLevel::TRACE, os.str());
+      LOG4CXX_LOG(logger, XLevel::getTrace(), os.str());
    }
 };
 

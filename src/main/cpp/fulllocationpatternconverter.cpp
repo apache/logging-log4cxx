@@ -44,9 +44,9 @@ void FullLocationPatternConverter::format(
   LogString& toAppendTo,
   Pool& p) const {
    append(toAppendTo, event->getLocationInformation().getFileName());
-   toAppendTo.append(1, LOG4CXX_STR('('));
-   toAppendTo.append(StringHelper::toString(
+   toAppendTo.append(1, 0x28 /* '(' */);
+   StringHelper::toString(
        event->getLocationInformation().getLineNumber(),
-       p));
-   toAppendTo.append(1, LOG4CXX_STR(')'));
+       p, toAppendTo);
+   toAppendTo.append(1, 0x29 /* ')' */);
 }

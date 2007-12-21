@@ -172,7 +172,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                     write(buf);
                     buf.clear();
                     if (CharsetEncoder::isError(stat)) {
-                        LogString unrepresented(1, LOG4CXX_STR('?'));
+                        LogString unrepresented(1, 0x3F /* '?' */);
                         LogString::const_iterator unrepresentedIter(unrepresented.begin());
                         stat = encoder->encode(unrepresented, unrepresentedIter, buf);
                         buf.flip();
@@ -223,7 +223,7 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* /* thr
 
                         Pool p;
                         LogString oss(LOG4CXX_STR("TelnetAppender v1.0 ("));
-                        oss += StringHelper::toString((int) count+1, p);
+                        StringHelper::toString((int) count+1, p, oss);
                         oss += LOG4CXX_STR(" active connections)\r\n\r\n");
                         pThis->writeStatus(newClient, oss, p);
                 }

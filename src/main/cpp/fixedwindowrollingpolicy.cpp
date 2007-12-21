@@ -143,17 +143,17 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
       renameTo.resize(renameTo.size() - 3);
       compressAction =
         new GZCompressAction(
-          renameTo, compressedName, true);
+          File().setName(renameTo), File().setName(compressedName), true);
     } else if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".zip"))) {
       renameTo.resize(renameTo.size() - 4);
       compressAction =
         new ZipCompressAction(
-          renameTo, compressedName, true);
+          File().setName(renameTo), File().setName(compressedName), true);
     }
 
     FileRenameActionPtr renameAction =
       new FileRenameAction(
-        currentFileName, renameTo, false);
+        File().setName(currentFileName), File().setName(renameTo), false);
 
     desc = new RolloverDescription(
       currentFileName, false, renameAction, compressAction);
@@ -203,8 +203,10 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
   }
 
   for (int i = lowIndex; i <= highIndex; i++) {
-    File toRenameCompressed(lowFilename);
-    File toRenameBase(lowFilename.substr(0, lowFilename.length() - suffixLength));
+    File toRenameCompressed;
+    toRenameCompressed.setName(lowFilename);
+    File toRenameBase;
+    toRenameBase.setName(lowFilename.substr(0, lowFilename.length() - suffixLength));
     File* toRename = &toRenameCompressed;
     bool isBase = false;
     bool exists = toRenameCompressed.exists(p);
@@ -249,7 +251,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
           highFilename.substr(0, highFilename.length() - suffixLength);
       }
 
-      renames.push_back(new FileRenameAction(*toRename, File(renameTo), true));
+      renames.push_back(new FileRenameAction(*toRename, File().setName(renameTo), true));
       lowFilename = highFilename;
     } else {
       break;

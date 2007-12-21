@@ -143,7 +143,7 @@ void ODBCAppender::execute(const LogString& sql)
    SQLFreeHandle(SQL_HANDLE_STMT, stmt);
    closeConnection(con);
 #else
-    throw SQLException("log4cxx build without ODBC support");
+    throw SQLException(LOG4CXX_STR("log4cxx build without ODBC support"));
 #endif
 }
 

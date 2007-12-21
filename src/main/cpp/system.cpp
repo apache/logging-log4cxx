@@ -33,7 +33,7 @@ LogString System::getProperty(const LogString& lkey)
 {
         if (lkey.empty())
         {
-                throw IllegalArgumentException("key is empty");
+                throw IllegalArgumentException(LOG4CXX_STR("key is empty"));
         }
 
         LogString rv;
@@ -42,7 +42,7 @@ LogString System::getProperty(const LogString& lkey)
           const char* dir = NULL;
           apr_status_t stat = apr_temp_dir_get(&dir, (apr_pool_t*) p.getAPRPool());
           if (stat == APR_SUCCESS) {
-            Transcoder::decode(dir, strlen(dir), rv);
+            Transcoder::decode(dir, rv);
           }
           return rv;
         }
@@ -53,7 +53,7 @@ LogString System::getProperty(const LogString& lkey)
           apr_status_t stat = apr_filepath_get(&dir, APR_FILEPATH_NATIVE,
               (apr_pool_t*) p.getAPRPool());
           if (stat == APR_SUCCESS) {
-            Transcoder::decode(dir, strlen(dir), rv);
+            Transcoder::decode(dir, rv);
           }
           return rv;
         }
@@ -69,12 +69,12 @@ LogString System::getProperty(const LogString& lkey)
             stat = apr_uid_name_get(&username, userid, p);
             if (stat == APR_SUCCESS) {
               if (lkey == LOG4CXX_STR("user.name")) {
-                Transcoder::decode(username, strlen(username), rv);
+                Transcoder::decode(username, rv);
               } else {
                 char* dirname = NULL;
                 stat = apr_uid_homepath_get(&dirname, username, p);
                 if (stat == APR_SUCCESS) {
-                  Transcoder::decode(dirname, strlen(dirname), rv);
+                  Transcoder::decode(dirname, rv);
                 }
               }
             }

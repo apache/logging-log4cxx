@@ -186,13 +186,13 @@ void SocketImpl::accept(SocketImplPtr s)
       LogString ipAddrString;
       char *ipAddr;
       apr_sockaddr_ip_get(&ipAddr, client_addr);
-      Transcoder::decode(ipAddr, strlen(ipAddr), ipAddrString);
+      Transcoder::decode(ipAddr, ipAddrString);
 
       // retrieve the host name from the client socket's apr_sockaddr_t
       LogString hostNameString;
       char *hostName;
       apr_getnameinfo(&hostName, client_addr, 0);
-      Transcoder::decode(hostName, strlen(hostName), hostNameString);
+      Transcoder::decode(hostName, hostNameString);
 
       s->address = new InetAddress(hostNameString, ipAddrString);
       s->socket = clientSocket;
@@ -311,9 +311,9 @@ void SocketImpl::listen(int backlog)
 LogString SocketImpl::toString() const
 {
         LogString oss(address->getHostAddress());
-        oss.append(1, LOG4CXX_STR(':'));
+        oss.append(1, 0x3A /* ':' */);
         Pool p;
-        oss.append(StringHelper::toString(port, p));
+        StringHelper::toString(port, p, oss);
         return oss;
 }
 

@@ -32,25 +32,11 @@ using namespace log4cxx::helpers;
 class StringHelperTestCase : public CppUnit::TestFixture
    {
      CPPUNIT_TEST_SUITE( StringHelperTestCase );
-#if LOG4CXX_HAS_WCHAR_T
-     CPPUNIT_TEST( testWideStartsWith1 );
-     CPPUNIT_TEST( testWideStartsWith2 );
-     CPPUNIT_TEST( testWideStartsWith3 );
-     CPPUNIT_TEST( testWideStartsWith4 );
-     CPPUNIT_TEST( testWideStartsWith5 );
-#endif
      CPPUNIT_TEST( testStartsWith1 );
      CPPUNIT_TEST( testStartsWith2 );
      CPPUNIT_TEST( testStartsWith3 );
      CPPUNIT_TEST( testStartsWith4 );
      CPPUNIT_TEST( testStartsWith5 );
-#if LOG4CXX_HAS_WCHAR_T
-     CPPUNIT_TEST( testWideEndsWith1 );
-     CPPUNIT_TEST( testWideEndsWith2 );
-     CPPUNIT_TEST( testWideEndsWith3 );
-     CPPUNIT_TEST( testWideEndsWith4 );
-     CPPUNIT_TEST( testWideEndsWith5 );
-#endif
      CPPUNIT_TEST( testEndsWith1 );
      CPPUNIT_TEST( testEndsWith2 );
      CPPUNIT_TEST( testEndsWith3 );
@@ -60,149 +46,77 @@ class StringHelperTestCase : public CppUnit::TestFixture
 
 
 public:
-#if LOG4CXX_HAS_WCHAR_T
-  /**
-   * Check that startsWith("foobar", "foo") returns true.
-   */
-  void testWideStartsWith1() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith(L"foobar", L"foo"));
-  }
-
-  /**
-   * Check that startsWith("foo", "foobar") returns false.
-   */
-  void testWideStartsWith2() {
-    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(L"foo", L"foobar"));
-  }
-
-  /**
-   * Check that startsWith("foobar", "foobar") returns true.
-   */
-  void testWideStartsWith3() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith(L"foobar", L"foobar"));
-  }
-
-  /**
-   * Check that startsWith("foobar", "") returns true.
-   */
-  void testWideStartsWith4() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith(L"foobar", L""));
-  }
-
-  /**
-   * Check that startsWith("foobar", "abc") returns false.
-   */
-  void testWideStartsWith5() {
-    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(L"foobar", L"abc"));
-  }
-#endif
 
   /**
    * Check that startsWith("foobar", "foo") returns true.
    */
   void testStartsWith1() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith("foobar", "foo"));
+    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("foo")));
   }
 
   /**
    * Check that startsWith("bar", "foobar") returns false.
    */
   void testStartsWith2() {
-    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith("foo", "foobar"));
+    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(LOG4CXX_STR("foo"), LOG4CXX_STR("foobar")));
   }
 
   /**
    * Check that startsWith("foobar", "foobar") returns true.
    */
   void testStartsWith3() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith("foobar", "foobar"));
+    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("foobar")));
   }
 
   /**
    * Check that startsWith("foobar", "") returns true.
    */
   void testStartsWith4() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith("foobar", ""));
+    CPPUNIT_ASSERT_EQUAL(true, StringHelper::startsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("")));
   }
 
   /**
    * Check that startsWith("foobar", "abc") returns false.
    */
   void testStartsWith5() {
-    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith("foobar", "abc"));
+    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("abc")));
   }
 
 
-#if LOG4CXX_HAS_WCHAR_T
-  /**
-   * Check that endsWith("foobar", "bar") returns true.
-   */
-  void testWideEndsWith1() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith(L"foobar", L"bar"));
-  }
-
-  /**
-   * Check that endsWith("bar", "foobar") returns false.
-   */
-  void testWideEndsWith2() {
-    CPPUNIT_ASSERT_EQUAL(false, StringHelper::endsWith(L"bar", L"foobar"));
-  }
-
-  /**
-   * Check that endsWith("foobar", "foobar") returns true.
-   */
-  void testWideEndsWith3() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith(L"foobar", L"foobar"));
-  }
-
-  /**
-   * Check that endsWith("foobar", "") returns true.
-   */
-  void testWideEndsWith4() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith(L"foobar", L""));
-  }
-
-  /**
-   * Check that endsWith("foobar", "abc") returns false.
-   */
-  void testWideEndsWith5() {
-    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(L"foobar", L"abc"));
-  }
-#endif
 
   /**
    * Check that endsWith("foobar", "bar") returns true.
    */
   void testEndsWith1() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith("foobar", "bar"));
+    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("bar")));
   }
 
   /**
    * Check that endsWith("bar", "foobar") returns false.
    */
   void testEndsWith2() {
-    CPPUNIT_ASSERT_EQUAL(false, StringHelper::endsWith("bar", "foobar"));
+    CPPUNIT_ASSERT_EQUAL(false, StringHelper::endsWith(LOG4CXX_STR("bar"), LOG4CXX_STR("foobar")));
   }
 
   /**
    * Check that endsWith("foobar", "foobar") returns true.
    */
   void testEndsWith3() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith("foobar", "foobar"));
+    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("foobar")));
   }
 
   /**
    * Check that endsWith("foobar", "") returns true.
    */
   void testEndsWith4() {
-    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith("foobar", ""));
+    CPPUNIT_ASSERT_EQUAL(true, StringHelper::endsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("")));
   }
 
   /**
    * Check that endsWith("foobar", "abc") returns false.
    */
   void testEndsWith5() {
-    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith("foobar", "abc"));
+    CPPUNIT_ASSERT_EQUAL(false, StringHelper::startsWith(LOG4CXX_STR("foobar"), LOG4CXX_STR("abc")));
   }
 
 

@@ -61,7 +61,7 @@ void PropertySetter::setProperties(helpers::Properties& properties,
                 if (key.find(prefix) == 0)
                 {
                         // ignore key if it contains dots after the prefix
-                        if (key.find(LOG4CXX_STR('.'), len + 1) != LogString::npos)
+                        if (key.find(0x2E /* '.' */, len + 1) != LogString::npos)
                         {
                                 continue;
                         }

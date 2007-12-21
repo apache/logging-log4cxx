@@ -227,16 +227,16 @@ namespace log4cxx {
                    //   replace non-ASCII characters with '?'
                    //
                    if (c > 0x7F) {
-                      *current++ = '?';
-                   } else if (c == '\n' || c == '\r') {
+                      *current++ = 0x3F; // '?'
+                   } else if (c == 0x0A || c == 0x0D) {
                       //
                       //   replace any stray CR or LF with CRLF
                       //      reset start of line
-                      *current++ = '\r';
-                      *current++ = '\n';
+                      *current++ = 0x0D;
+                      *current++ = 0x0A;
                       startOfLine = current;
                       LogString::const_iterator next = iter + 1;
-                      if (next != str.end() && (*next == '\n' || *next == '\r')) {
+                      if (next != str.end() && (*next == 0x0A || *next == 0x0D)) {
                          iter++;
                       }
                    } else {
@@ -454,12 +454,12 @@ void SMTPAppender::setOption(const LogString& option,
 }
 
 
-bool SMTPAppender::asciiCheck(const LogString& value, const logchar* field) {
+bool SMTPAppender::asciiCheck(const LogString& value, const LogString& field) {
      for(LogString::const_iterator iter = value.begin();
          iter != value.end();
          iter++) {
          if (0x7F < (unsigned int) *iter) {
-            LogLog::warn(LogString(field) + LOG4CXX_STR(" contains non-ASCII character"));
+            LogLog::warn(field + LOG4CXX_STR(" contains non-ASCII character"));
             return false;
          } 
      }

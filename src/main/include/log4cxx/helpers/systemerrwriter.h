@@ -43,6 +43,9 @@ namespace log4cxx
                   virtual void flush(Pool& p);
                   virtual void write(const LogString& str, Pool& p);
 
+                  static void write(const LogString& str);
+                  static void flush();
+
           private:
                   SystemErrWriter(const SystemErrWriter&);
                   SystemErrWriter& operator=(const SystemErrWriter&);

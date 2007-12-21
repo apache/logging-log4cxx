@@ -159,7 +159,7 @@ void AppenderSkeleton::setOption(const LogString& option,
         if (StringHelper::equalsIgnoreCase(option,
               LOG4CXX_STR("THRESHOLD"), LOG4CXX_STR("threshold")))
         {
-                setThreshold(Level::toLevel(value));
+                setThreshold(Level::toLevelLS(value));
         }
 }
 

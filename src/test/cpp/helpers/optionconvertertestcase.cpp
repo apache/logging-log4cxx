@@ -155,7 +155,7 @@ public:
        stat = apr_temp_dir_get(&tmpdir, p);
        CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
        LogString expected;
-       Transcoder::decode(tmpdir, strlen(tmpdir), expected);
+       Transcoder::decode(tmpdir, expected);
        apr_pool_destroy(p);
 
        CPPUNIT_ASSERT_EQUAL(expected, actual);
@@ -180,7 +180,7 @@ public:
       		stat = apr_uid_homepath_get(&dirname, username, p);
       		if (stat == APR_SUCCESS) {
       			LogString expected;
-      			Transcoder::decode(dirname, strlen(dirname), expected);
+      			Transcoder::decode(dirname, expected);
       			CPPUNIT_ASSERT_EQUAL(expected, actual);
       	    }
       	 }
@@ -204,7 +204,7 @@ public:
           stat = apr_uid_name_get(&username, userid, p);
           if (stat == APR_SUCCESS) {
        		 LogString expected;
-             Transcoder::decode(username, strlen(username), expected);
+             Transcoder::decode(username, expected);
              CPPUNIT_ASSERT_EQUAL(expected, actual);
           }
        }
@@ -224,7 +224,7 @@ public:
       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
       LogString expected;
-      Transcoder::decode(dirname, strlen(dirname), expected);
+      Transcoder::decode(dirname, expected);
       apr_pool_destroy(p);
 
       CPPUNIT_ASSERT_EQUAL(expected, actual);

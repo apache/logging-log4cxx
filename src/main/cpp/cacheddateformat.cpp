@@ -37,24 +37,24 @@ using namespace log4cxx::pattern;
 *  will not be recognized and duplicate requests
 *  will use the cache.
 */
-const logchar* const CachedDateFormat::digits = LOG4CXX_STR("0123456789");
+const logchar CachedDateFormat::digits[] = { 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0 };
 
 /**
  *  Expected representation of first magic number.
  */
-const logchar* const CachedDateFormat::magicString1 = LOG4CXX_STR("654");
+const logchar CachedDateFormat::magicString1[] = { 0x36, 0x35, 0x34, 0 };
 
 
 /**
  *  Expected representation of second magic number.
  */
-const logchar* const CachedDateFormat::magicString2 = LOG4CXX_STR("987");
+const logchar CachedDateFormat::magicString2[] = { 0x39, 0x38, 0x37, 0};
 
 
 /**
  *  Expected representation of 0 milliseconds.
  */
-const logchar* const CachedDateFormat::zeroString = LOG4CXX_STR("000");
+const logchar CachedDateFormat::zeroString[] = { 0x30, 0x30, 0x30, 0 };
 
 #undef min
 
@@ -71,14 +71,14 @@ CachedDateFormat::CachedDateFormat(const DateFormatPtr& dateFormat,
        formatter(dateFormat),
        millisecondStart(0),
        slotBegin(std::numeric_limits<log4cxx_time_t>::min()),
-       cache(50, LOG4CXX_STR(' ')),
+       cache(50, 0x20),
        expiration(expiration1),
        previousTime(std::numeric_limits<log4cxx_time_t>::min()) {
   if (dateFormat == NULL) {
-    throw IllegalArgumentException("dateFormat cannot be null");
+    throw IllegalArgumentException(LOG4CXX_STR("dateFormat cannot be null"));
   }
   if (expiration1 < 0) {
-    throw IllegalArgumentException("expiration must be non-negative");
+    throw IllegalArgumentException(LOG4CXX_STR("expiration must be non-negative"));
   }
 }
 
@@ -125,7 +125,8 @@ int CachedDateFormat::findMillisecondStart(
         if (formatted[i] != plusMagic[i]) {
            //
            //   determine the expected digits for the base time
-           LogString formattedMillis(LOG4CXX_STR("ABC"));
+           const logchar abc[] = { 0x41, 0x42, 0x43, 0 };
+           LogString formattedMillis(abc);
            millisecondFormat(millis, formattedMillis, 0);
 
            LogString plusZero;
@@ -270,16 +271,18 @@ int CachedDateFormat::getMaximumCacheValidity(const LogString& pattern) {
    //      (for example, "HH:mm:ss,SSS SSS"), then set the expiration to
    //      one millisecond which should only perform duplicate request caching.
    //
-   size_t firstS = pattern.find(LOG4CXX_STR('S'));
+   const logchar S = 0x53;
+   const logchar SSS[] = { 0x53, 0x53, 0x53, 0 };
+   size_t firstS = pattern.find(S);
    size_t len = pattern.length();
    //
    //   if there are no S's or
    //      three that start with the first S and no fourth S in the string
    //
    if (firstS == LogString::npos ||
-       (len >= firstS + 3 && pattern.compare(firstS, 3, LOG4CXX_STR("SSS")) == 0
+       (len >= firstS + 3 && pattern.compare(firstS, 3, SSS) == 0
            && (len == firstS + 3 ||
-                pattern.find(LOG4CXX_STR('S'), firstS + 3) == LogString::npos))) {
+                pattern.find(S, firstS + 3) == LogString::npos))) {
            return 1000000;
    }
    return 1000;

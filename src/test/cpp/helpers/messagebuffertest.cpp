@@ -18,9 +18,13 @@
 #include <cppunit/TestFixture.h>
 #include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/messagebuffer.h>
-#include <log4cxx/helpers/messagebuffer.h>
 #include <iomanip>
 #include "../insertwide.h"
+#include <log4cxx/logstring.h>
+
+#if LOG4CXX_CFSTRING_API
+#include <CoreFoundation/CFString.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -38,10 +42,17 @@ class MessageBufferTest : public CppUnit::TestFixture
       CPPUNIT_TEST(testInsertNull);
       CPPUNIT_TEST(testInsertInt);
       CPPUNIT_TEST(testInsertManipulator);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
       CPPUNIT_TEST(testInsertConstWStr);
       CPPUNIT_TEST(testInsertWString);
       CPPUNIT_TEST(testInsertWStr);
+#endif
+#if LOG4CXX_UNICHAR_API
+      CPPUNIT_TEST(testInsertConstUStr);
+      CPPUNIT_TEST(testInsertUString);
+#endif
+#if LOG4CXX_CFSTRING_API
+      CPPUNIT_TEST(testInsertCFString);
 #endif
    CPPUNIT_TEST_SUITE_END();
 
@@ -109,7 +120,7 @@ public:
         CPPUNIT_ASSERT_EQUAL(true, buf.hasStream());
     }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
     void testInsertConstWStr() {
         MessageBuffer buf;
         std::wstring greeting(L"Hello, World");
@@ -129,14 +140,52 @@ public:
     void testInsertWStr() {
         MessageBuffer buf;
         std::wstring greeting(L"Hello, World");
-	wchar_t* part1 = (wchar_t*) malloc(10*sizeof(wchar_t));
-	wcscpy(part1, L"Hello");
-	wchar_t* part2 = (wchar_t*) malloc(10*sizeof(wchar_t));
-	wcscpy(part2, L", World");
+	    wchar_t* part1 = (wchar_t*) malloc(10*sizeof(wchar_t));
+	    wcscpy(part1, L"Hello");
+	    wchar_t* part2 = (wchar_t*) malloc(10*sizeof(wchar_t));
+	    wcscpy(part2, L", World");
         WideMessageBuffer& retval = buf << part1 << part2;
-	free(part1);
-	free(part2);
+	    free(part1);
+	    free(part2);
         CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+    }
+#endif
+
+#if LOG4CXX_UNICHAR_API
+    void testInsertConstUStr() {
+        MessageBuffer buf;
+        const UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
+        const UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+        const UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', 
+                                  ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+        UniCharMessageBuffer& retval = buf << hello << world;
+        CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), buf.str(retval)); 
+        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+    }
+
+    void testInsertUString() {
+        MessageBuffer buf;
+        const UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
+        const UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+        const UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', 
+                                  ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+        UniCharMessageBuffer& retval = buf << std::basic_string<UniChar>(hello) 
+                                           << std::basic_string<UniChar>(world);
+        CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), buf.str(retval)); 
+        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+    }
+
+#endif
+
+#if LOG4CXX_CFSTRING_API
+    void testInsertCFString() {
+        MessageBuffer buf;
+        const log4cxx::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', 
+                                  ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+        UniCharMessageBuffer& retval = buf << CFSTR("Hello") 
+                                           << CFSTR(", World");
+        CPPUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval)); 
         CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 

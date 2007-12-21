@@ -164,7 +164,7 @@ void NTEventLogAppender::activateOptions(Pool&)
 
         addRegistryInfo();
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         LOG4CXX_ENCODE_WCHAR(wsource, source);
         LOG4CXX_ENCODE_WCHAR(wserver, server);
         hEventLog = ::RegisterEventSourceW(
@@ -197,7 +197,7 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 
         LogString oss;
         layout->format(oss, event, p);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         LOG4CXX_ENCODE_WCHAR(s, oss);
         const wchar_t* msgs[1];
         msgs[0] = s.c_str() ;
@@ -237,7 +237,7 @@ NTEventLogAppender::HKEY NTEventLogAppender::regGetKey(
      const LogString& subkey, DWORD *disposition)
 {
         ::HKEY hkey = 0;
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         LOG4CXX_ENCODE_WCHAR(wstr, subkey);
         RegCreateKeyExW((::HKEY) HKEY_LOCAL_MACHINE, wstr.c_str(), 0, NULL,
                 REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL,
@@ -272,7 +272,7 @@ void NTEventLogAppender::addRegistryInfo()
         ::HKEY hkey = 0;
         LogString subkey(LOG4CXX_STR("SYSTEM\\CurrentControlSet\\Services\\EventLog\\"));
         subkey.append(log);
-        subkey.append(1, LOG4CXX_STR('\\'));
+        subkey.append(1, 0x5C /* '\\' */);
         subkey.append(source);
 
         hkey = (::HKEY) regGetKey(subkey, &disposition);
@@ -343,7 +343,7 @@ LogString NTEventLogAppender::getErrorString(const LogString& function)
     Pool p;
     enum { MSGSIZE = 5000 };
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
     wchar_t* lpMsgBuf = (wchar_t*) p.palloc(MSGSIZE * sizeof(wchar_t));
     DWORD dw = GetLastError();
 

@@ -51,7 +51,7 @@ namespace log4cxx
                  *    @param key key
                  *    @param value value.
                  */
-                MDC(const LogString& key, const LogString& value);
+                MDC(const std::string& key, const std::string& value);
                 ~MDC();
 
                 /**
@@ -62,20 +62,14 @@ namespace log4cxx
                 * <p>If the current thread does not have a context map it is
                 * created as a side effect.
                 * */
-#if LOG4CXX_HAS_WCHAR_T
-                static void put(const std::wstring& key, const std::wstring& value);
-#endif
                 static void put(const std::string& key, const std::string& value);
-                static void putLogString(const LogString& key, const LogString& value);
+                static void putLS(const LogString& key, const LogString& value);
 
                 /**
                 * Get the context identified by the <code>key</code> parameter.
                 *
                 *  <p>This method has no side effects.
                 * */
-#if LOG4CXX_HAS_WCHAR_T
-                static std::wstring get(const std::wstring& key);
-#endif
                 static std::string get(const std::string& key);
                 /**
                  *  Gets the context identified by the <code>key</code> parameter.
@@ -89,8 +83,23 @@ namespace log4cxx
                 * Remove the the context identified by the <code>key</code>
                 * parameter. */
                 static std::string remove(const std::string& key);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
+                MDC(const std::wstring& key, const std::wstring& value);
+                static void put(const std::wstring& key, const std::wstring& value);
+                static std::wstring get(const std::wstring& key);
                 static std::wstring remove(const std::wstring& key);
+#endif
+#if LOG4CXX_UNICHAR_API
+                MDC(const std::basic_string<UniChar>& key, const std::basic_string<UniChar>& value);
+                static void put(const std::basic_string<UniChar>& key, const std::basic_string<UniChar>& value);
+                static std::basic_string<UniChar> get(const std::basic_string<UniChar>& key);
+                static std::basic_string<UniChar> remove(const std::basic_string<UniChar>& key);
+#endif
+#if LOG4CXX_CFSTRING_API
+                MDC(const CFStringRef& key, const CFStringRef& value);
+                static void put(const CFStringRef& key, const CFStringRef& value);
+                static CFStringRef get(const CFStringRef& key);
+                static CFStringRef remove(const CFStringRef& key);
 #endif
                 static bool remove(const LogString& key, LogString& prevValue);
 
@@ -102,7 +111,7 @@ namespace log4cxx
         private:
                 MDC(const MDC&);
                 MDC& operator=(const MDC&);
-                const LogString key;                
+                LogString key;                
         }; // class MDC;
 }  // namespace log4cxx
 

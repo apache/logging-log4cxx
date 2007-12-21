@@ -28,75 +28,61 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <cctype>
+#include <apr.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-std::string StringHelper::toLowerCase(const std::string& s)
+bool StringHelper::equalsIgnoreCase(const LogString& s1, const logchar* upper, const logchar* lower) {
+  for (LogString::const_iterator iter = s1.begin();
+       iter != s1.end();
+       iter++, upper++, lower++) {
+       if (*iter != *upper && *iter != * lower) return false;
+  }
+  return (*upper == 0);
+}
+
+bool StringHelper::equalsIgnoreCase(const LogString& s1, const LogString& upper, const LogString& lower) {
+  LogString::const_iterator u = upper.begin();
+  LogString::const_iterator l = lower.begin();
+  LogString::const_iterator iter = s1.begin();
+  for (;
+       iter != s1.end() && u != upper.end() && l != lower.end();
+       iter++, u++, l++) {
+       if (*iter != *u && *iter != *l) return false;
+  }
+  return u == upper.end() && iter == s1.end();
+}
+
+
+
+LogString StringHelper::toLowerCase(const LogString& s)
 {
-        std::string d;
+        LogString d;
         std::transform(s.begin(), s.end(),
-                std::insert_iterator<std::string>(d, d.begin()), tolower);
+                std::insert_iterator<LogString>(d, d.begin()), tolower);
         return d;
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-std::wstring StringHelper::toLowerCase(const std::wstring& s)
+LogString StringHelper::trim(const LogString& s)
 {
-        std::wstring d;
-#if defined(_MSC_VER)
-        std::transform(s.begin(), s.end(),
-                std::insert_iterator<std::wstring>(d, d.begin()),
-                towlower);
-#else
-        std::transform(s.begin(), s.end(),
-                std::insert_iterator<std::wstring>(d, d.begin()),
-                (int(*)(int)) std::tolower);
-#endif
-        return d;
-}
-#endif
-std::string StringHelper::trim(const std::string& s)
-{
-        std::string::size_type pos = s.find_first_not_of(' ');
+        LogString::size_type pos = s.find_first_not_of(' ');
         if (pos == std::string::npos)
         {
-                return std::string();
+                return LogString();
         }
 
-        std::string::size_type n = s.find_last_not_of(' ') - pos + 1;
+        LogString::size_type n = s.find_last_not_of(' ') - pos + 1;
         return s.substr(pos, n);
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-std::wstring StringHelper::trim(const std::wstring& s)
-{
-        std::wstring::size_type pos = s.find_first_not_of(L' ');
-        if (pos == std::wstring::npos)
-        {
-                return std::wstring();
-        }
-
-        std::wstring::size_type n = s.find_last_not_of(L' ') - pos + 1;
-        return s.substr(pos, n);
-}
-#endif
-
-
-bool StringHelper::startsWith(const std::string& s, const std::string& prefix)
+bool StringHelper::startsWith(const LogString& s, const LogString& prefix)
 {
     return s.compare(0, prefix.length(), prefix) == 0;
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-bool StringHelper::startsWith(const std::wstring& s, const std::wstring& prefix)
-{
-    return s.compare(0, prefix.length(), prefix) == 0;
-}
-#endif
-
-
-bool StringHelper::endsWith(const std::string& s, const std::string& suffix)
+bool StringHelper::endsWith(const LogString& s, const LogString& suffix)
 {
     if (suffix.length() <= s.length()) {
       return s.compare(s.length() - suffix.length(), suffix.length(), suffix) == 0;
@@ -104,196 +90,62 @@ bool StringHelper::endsWith(const std::string& s, const std::string& suffix)
     return false;
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-bool StringHelper::endsWith(const std::wstring& s, const std::wstring& suffix)
-{
-    if (suffix.length() <= s.length()) {
-      return s.compare(s.length() - suffix.length(), suffix.length(), suffix) == 0;
-    }
-    return false;
-}
-#endif
 
-bool StringHelper::equalsIgnoreCase(const std::string& s1, const char* upper, const char* lower) {
-  for (std::string::const_iterator iter = s1.begin();
-       iter != s1.end();
-       iter++, upper++, lower++) {
-       if (*iter != *upper && *iter != * lower) return false;
-  }
-  return (*upper == 0);
+int StringHelper::toInt(const LogString& s) {
+    std::string as;
+    Transcoder::encode(s, as);
+    return atoi(as.c_str());
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-bool StringHelper::equalsIgnoreCase(const std::wstring& s1, const wchar_t* upper, const wchar_t* lower) {
-  for (std::wstring::const_iterator iter = s1.begin();
-       iter != s1.end();
-       iter++, upper++, lower++) {
-       if (*iter != *upper && *iter != * lower) return false;
-  }
-  return (*upper == 0);
-}
-#endif
-
-bool StringHelper::getline(std::string& in, std::string& line) {
-  if (in.empty()) {
-    return false;
-  }
-  size_t nl = in.find('\n');
-  if (nl == std::string::npos) {
-    line = in;
-    in.erase(in.begin(), in.end());
-  } else {
-      //
-      //  if the file has CR-LF then
-      //    drop the carriage return alse
-      //
-      if(nl > 0 && in[nl -1] == '\x0D') {
-          line.assign(in, 0, nl - 1);
-      } else {
-          line.assign(in, 0, nl);
-      }
-      in.erase(in.begin(), in.begin() + nl + 1);
-  }
-  return true;
+log4cxx_int64_t StringHelper::toInt64(const LogString& s) {
+    std::string as;
+    Transcoder::encode(s, as);
+    return apr_atoi64(as.c_str());
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-bool StringHelper::getline(std::wstring& in, std::wstring& line) {
-  if (in.empty()) {
-    return false;
-  }
-  size_t nl = in.find(L'\n');
-  if (nl == std::wstring::npos) {
-    line = in;
-    in.erase(in.begin(), in.end());
-  } else {
-      //
-      //  if the file has CR-LF then
-      //    drop the carriage return alse
-      //
-      if(nl > 0 && in[nl -1] == L'\x0D') {
-          line.assign(in, 0, nl - 1);
-      } else {
-          line.assign(in, 0, nl);
-      }
-      in.erase(in.begin(), in.begin() + nl + 1);
-  }
-  return true;
-}
-#endif
-
-int StringHelper::toInt(const std::string& s) {
-  return atoi(s.c_str());
-}
-
-#if LOG4CXX_HAS_WCHAR_T
-int StringHelper::toInt(const std::wstring& s) {
-  LOG4CXX_DECODE_WCHAR(logstr, s);
-  LOG4CXX_ENCODE_CHAR(charstr, logstr);
-  return atoi(charstr.c_str());
-}
-#endif
-
-log4cxx_int64_t StringHelper::toInt64(const std::string& s) {
-  return apr_atoi64(s.c_str());
-}
-
-#if LOG4CXX_HAS_WCHAR_T
-log4cxx_int64_t StringHelper::toInt64(const std::wstring& s) {
-  LOG4CXX_DECODE_WCHAR(logstr, s);
-  LOG4CXX_ENCODE_CHAR(charstr, logstr);
-  return apr_atoi64(charstr.c_str());
-}
-#endif
-
-LogString StringHelper::toString(int n, Pool& pool) {
+void StringHelper::toString(int n, Pool& pool, LogString& s) {
   char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
-  LogString str;
-  log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), str);
-  return str;
+  Transcoder::decode(fmt, s);
 }
 
-LogString StringHelper::toString(bool val) {
+void StringHelper::toString(bool val, LogString& dst) {
   if (val) {
-    return LOG4CXX_STR("true");
+    dst.append(LOG4CXX_STR("true"));
+  } else {
+    dst.append(LOG4CXX_STR("false"));
   }
-  return LOG4CXX_STR("false");
 }
 
-void StringHelper::toString(int n, Pool& pool, std::string& str) {
-  char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
-  str.append(fmt);
-}
 
-#if LOG4CXX_HAS_WCHAR_T
-void StringHelper::toString(int n, Pool& pool, std::wstring& str) {
-  char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
-#if LOG4CXX_LOGCHAR_IS_UTF8
-  LogString ls;
-  log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), ls);
-  log4cxx::helpers::Transcoder::encode(ls, str);
-#else
-  log4cxx::helpers::Transcoder::decode(fmt, strlen(fmt), str);
-#endif
-}
-#endif
-
-
-LogString StringHelper::toString(log4cxx_int64_t n, Pool& pool) {
-  std::string s;
-  toString(n, pool, s);
-  LOG4CXX_DECODE_CHAR(rv, s);
-  return rv;
-}
-
-void StringHelper::toString(log4cxx_int64_t n, Pool& pool, std::string& s) {
+void StringHelper::toString(log4cxx_int64_t n, Pool& pool, LogString& dst) {
   if (n >= INT_MIN && n <= INT_MAX) {
-    s.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), (int) n));
+    toString((int) n, pool, dst);
   } else {
     const log4cxx_int64_t BILLION = APR_INT64_C(1000000000);
     int billions = (int) (n / BILLION);
-    s.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), billions));
+    char* upper = apr_itoa((apr_pool_t*) pool.getAPRPool(), billions);
     int remain = (int) (n - billions * BILLION);
     if (remain < 0) remain *= -1;
     char* lower = apr_itoa((apr_pool_t*) pool.getAPRPool(), remain);
-    int fill = 9 - strlen(lower);
-    s.append(fill, LOG4CXX_STR('0'));
-    s.append(lower);
+    Transcoder::decode(upper, dst);
+    dst.append(9 - strlen(lower), 0x30 /* '0' */);
+    Transcoder::decode(lower, dst);
   }
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-void StringHelper::toString(log4cxx_int64_t n, Pool& pool, std::wstring& ws) {
-    std::string s;
-    toString(n, pool, s);
-    LOG4CXX_DECODE_CHAR(ls, s);
-    Transcoder::encode(ls, ws);
-}
-#endif
 
-LogString StringHelper::toString(size_t n, Pool& pool) {
-  return toString((log4cxx_int64_t) n, pool);
-}
-
-void StringHelper::toString(size_t n, Pool& pool, std::string& s) {
+void StringHelper::toString(size_t n, Pool& pool, LogString& s) {
   toString((log4cxx_int64_t) n, pool, s);
 }
-
-#if LOG4CXX_HAS_WCHAR_T
-void StringHelper::toString(size_t n, Pool& pool, std::wstring& ws) {
-  toString((log4cxx_int64_t) n, pool, ws);
-}
-#endif
-
 
 LogString StringHelper::format(const LogString& pattern, const std::vector<LogString>& params) {
 
   LogString result;
   int i = 0;
-  while(pattern[i] != LOG4CXX_STR('\0')) {
-    if (pattern[i] == LOG4CXX_STR('{') && pattern[i + 1] >= LOG4CXX_STR('0') &&
-        pattern[i + 1] <= LOG4CXX_STR('9') && pattern[i + 2] == LOG4CXX_STR('}')) {
-      int arg = pattern[i + 1] - LOG4CXX_STR('0');
+  while(pattern[i] != 0) {
+    if (pattern[i] == 0x7B /* '{' */ && pattern[i + 1] >= 0x30 /* '0' */ &&
+        pattern[i + 1] <= 0x39 /* '9' */ && pattern[i + 2] == 0x7D /* '}' */) {
+      int arg = pattern[i + 1] - 0x30 /* '0' */;
       result = result + params[arg];
       i += 3;
     } else {
@@ -304,3 +156,4 @@ LogString StringHelper::format(const LogString& pattern, const std::vector<LogSt
 
   return result;
 }
+

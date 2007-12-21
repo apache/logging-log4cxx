@@ -30,7 +30,7 @@ IMPLEMENT_LOG4CXX_OBJECT(OutputStreamWriter)
 OutputStreamWriter::OutputStreamWriter(OutputStreamPtr& out1)
    : out(out1), enc(CharsetEncoder::getDefaultEncoder()) {
    if (out1 == 0) {
-      throw NullPointerException("out parameter may not be null.");
+      throw NullPointerException(LOG4CXX_STR("out parameter may not be null."));
    }
 }
 
@@ -38,10 +38,10 @@ OutputStreamWriter::OutputStreamWriter(OutputStreamPtr& out1,
      CharsetEncoderPtr &enc1)
     : out(out1), enc(enc1) {
     if (out1 == 0) {
-       throw NullPointerException("out parameter may not be null.");
+       throw NullPointerException(LOG4CXX_STR("out parameter may not be null."));
     }
     if (enc1 == 0) {
-       throw NullPointerException("enc parameter may not be null.");
+       throw NullPointerException(LOG4CXX_STR("enc parameter may not be null."));
     }
 }
 

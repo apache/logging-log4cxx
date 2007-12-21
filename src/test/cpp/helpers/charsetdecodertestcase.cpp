@@ -35,11 +35,6 @@ class CharsetDecoderTestCase : public CppUnit::TestFixture
         CPPUNIT_TEST_SUITE(CharsetDecoderTestCase);
                 CPPUNIT_TEST(decode1);
                 CPPUNIT_TEST(decode2);
-#if LOG4CXX_HAS_WCHAR_T
-                CPPUNIT_TEST(decode5);
-                CPPUNIT_TEST(decode6);
-                CPPUNIT_TEST(decode7);
-#endif
                 CPPUNIT_TEST(decode8);
         CPPUNIT_TEST_SUITE_END();
 
@@ -93,85 +88,6 @@ public:
 
 
 
-#if LOG4CXX_HAS_WCHAR_T
-        void decode5() {
-          wchar_t buf[] = L"Hello, World";
-          ByteBuffer src((char*) buf, wcslen(buf) * sizeof(wchar_t));
-
-          CharsetDecoderPtr dec(CharsetDecoder::getWideDecoder());
-
-          LogString greeting;
-          log4cxx_status_t stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-
-          stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Hello, World"), greeting);
-        }
-
-        void decode6() {
-          wchar_t buf[BUFSIZE + 6];
-          for(int i = 0; i < BUFSIZE; i++) {
-            buf[i] = L'A';
-          }
-          buf[BUFSIZE - 3] = 0;
-#if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
-          wcscat_s(buf, (sizeof buf)/sizeof(wchar_t), L"Hello");
-#else
-          wcscat(buf, L"Hello");
-#endif
-          ByteBuffer src((char*) buf, wcslen(buf) * sizeof(wchar_t));
-
-          CharsetDecoderPtr dec(CharsetDecoder::getWideDecoder());
-
-          LogString greeting;
-          log4cxx_status_t stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-          CPPUNIT_ASSERT_EQUAL((size_t) 0, src.remaining());
-
-
-          stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-
-          LogString manyAs(BUFSIZE - 3, LOG4CXX_STR('A'));
-          CPPUNIT_ASSERT_EQUAL(manyAs, greeting.substr(0, BUFSIZE - 3));
-          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Hello")), greeting.substr(BUFSIZE - 3));
-        }
-
-        void decode7() {
-          //   arbitrary, hopefully meaningless, characters from
-          //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
-          const wchar_t wide_greet[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
-#if LOG4CXX_LOGCHAR_IS_WCHAR
-          const logchar* greet = wide_greet;
-#endif
-
-#if LOG4CXX_LOGCHAR_IS_UTF8
-          const logchar greet[] = { 'A',
-                                    (char) 0xD8, (char) 0x85,
-                                    (char) 0xD4, (char) 0xB0,
-                                    (char) 0xE0, (char) 0xA6, (char) 0x86,
-                                    (char) 0xE4, (char) 0xB8, (char) 0x83,
-                                    (char) 0xD0, (char) 0x80,
-                                    0 };
-
-#endif
-          ByteBuffer src((char*) wide_greet, wcslen(wide_greet) * sizeof(wchar_t));
-
-          CharsetDecoderPtr dec(CharsetDecoder::getWideDecoder());
-
-          LogString greeting;
-          log4cxx_status_t stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(false, CharsetDecoder::isError(stat));
-          stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(false, CharsetDecoder::isError(stat));
-
-          CPPUNIT_ASSERT_EQUAL((LogString) greet, greeting);
-        }
-
-#endif
-
         void decode8() {
           char buf[] = { 'H', 'e', 'l', 'l', 'o', ',', 0, 'W', 'o', 'r', 'l', 'd'};
           ByteBuffer src(buf, 12);
@@ -185,8 +101,8 @@ public:
           CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
           CPPUNIT_ASSERT_EQUAL((size_t) 12, src.position());
 
-          LogString expected(LOG4CXX_STR("Hello,\0World"), 12);
-          CPPUNIT_ASSERT_EQUAL(expected, greeting);
+          const logchar expected[] = { 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x2C, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64 };
+          CPPUNIT_ASSERT_EQUAL(LogString(expected, 12), greeting);
         }
 
 

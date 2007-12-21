@@ -57,7 +57,7 @@ using namespace log4cxx::rolling;
 class XMLWatchdog  : public FileWatchdog
 {
 public:
-        XMLWatchdog(const LogString& filename) : FileWatchdog(filename)
+        XMLWatchdog(const File& filename) : FileWatchdog(filename)
         {
         }
 
@@ -738,61 +738,111 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 
 void DOMConfigurator::configure(const std::string& filename)
 {
-    LOG4CXX_DECODE_CHAR(fn, filename);
-    DOMConfigurator().doConfigure(fn, LogManager::getLoggerRepository());
+    File file(filename);
+    DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
 void DOMConfigurator::configure(const std::wstring& filename)
 {
-    LOG4CXX_DECODE_WCHAR(fn, filename);
-    DOMConfigurator().doConfigure(fn, LogManager::getLoggerRepository());
+    File file(filename);
+    DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 }
 #endif
+
+#if LOG4CXX_UNICHAR_API
+void DOMConfigurator::configure(const std::basic_string<UniChar>& filename)
+{
+    File file(filename);
+    DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+}
+#endif
+
+#if LOG4CXX_CFSTRING_API
+void DOMConfigurator::configure(const CFStringRef& filename)
+{
+    File file(filename);
+    DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
+}
+#endif
+
 
 void DOMConfigurator::configureAndWatch(const std::string& filename)
 {
-#if APR_HAS_THREADS
-  LOG4CXX_DECODE_CHAR(fn, filename);
-  configureAndWatch(fn, FileWatchdog::DEFAULT_DELAY);
-#else
-  configure(filename);
-#endif  
+  configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
 }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
 void DOMConfigurator::configureAndWatch(const std::wstring& filename)
 {
-#if APR_HAS_THREADS
-  LOG4CXX_DECODE_WCHAR(fn, filename);
-  configureAndWatch(fn, FileWatchdog::DEFAULT_DELAY);
-#else
-  configure(fn);
+  configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+}
 #endif
+
+#if LOG4CXX_UNICHAR_API
+void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename)
+{
+  configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
+}
+#endif
+
+#if LOG4CXX_CFSTRING_API
+void DOMConfigurator::configureAndWatch(const CFStringRef& filename)
+{
+  configureAndWatch(filename, FileWatchdog::DEFAULT_DELAY);
 }
 #endif
 
 void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 {
+        File file(filename);
 #if APR_HAS_THREADS
-  LOG4CXX_DECODE_CHAR(fn, filename);
-        XMLWatchdog * xdog = new XMLWatchdog(fn);
+        XMLWatchdog * xdog = new XMLWatchdog(file);
         xdog->setDelay(delay);
         xdog->start();
 #else
-     configure(filename);
+     configure(file);
 #endif        
 }
-#if LOG4CXX_HAS_WCHAR_T
+
+#if LOG4CXX_WCHAR_T_API
 void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay)
 {
+        File file(filename);
 #if APR_HAS_THREADS
-  LOG4CXX_DECODE_WCHAR(fn, filename);
-        XMLWatchdog * xdog = new XMLWatchdog(fn);
+        XMLWatchdog * xdog = new XMLWatchdog(file);
         xdog->setDelay(delay);
         xdog->start();
 #else
-    configure(filename);
+     configure(file);
+#endif        
+}
+#endif
+
+#if LOG4CXX_UNICHAR_API
+void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filename, long delay)
+{
+        File file(filename);
+#if APR_HAS_THREADS
+        XMLWatchdog * xdog = new XMLWatchdog(file);
+        xdog->setDelay(delay);
+        xdog->start();
+#else
+     configure(file);
+#endif        
+}
+#endif
+
+#if LOG4CXX_CFSTRING_API
+void DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
+{
+        File file(filename);
+#if APR_HAS_THREADS
+        XMLWatchdog * xdog = new XMLWatchdog(file);
+        xdog->setDelay(delay);
+        xdog->start();
+#else
+     configure(file);
 #endif        
 }
 #endif

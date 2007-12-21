@@ -462,7 +462,7 @@ public:
                 i++;
 				std::string msg("Message ");
 
-                LOG4CXX_LOG(logger, XLevel::TRACE, msg << i);
+                LOG4CXX_LOG(logger, XLevel::getTrace(), msg << i);
                 i++;
                 LOG4CXX_DEBUG(logger, msg << i);
                 i++;
@@ -472,7 +472,7 @@ public:
                 i++;
                 LOG4CXX_WARN(logger, msg << i);
                 i++;
-                LOG4CXX_LOG(logger, XLevel::LETHAL, msg << i); //5
+                LOG4CXX_LOG(logger, XLevel::getLethal(), msg << i); //5
 
                 NDC::pop();
                 MDC::remove(key);

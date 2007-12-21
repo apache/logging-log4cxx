@@ -105,7 +105,7 @@ public:
 
 
         void encode3() {
-#if LOG4CXX_LOGCHAR_IS_WCHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
           //   arbitrary, hopefully meaningless, characters from
           //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
           const logchar greet[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
@@ -145,7 +145,7 @@ public:
                                     (char) 0xE4, (char) 0xB8, (char) 0x83,
                                     (char) 0xD0, (char) 0x80,
                                     0 };
-#if LOG4CXX_LOGCHAR_IS_WCHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
           //   arbitrary, hopefully meaningless, characters from
           //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
           const logchar greet[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
@@ -236,7 +236,7 @@ public:
                                     (char) 0xc3, (char) 0xb4,  //  latin small letter o with circumflex
                                     0 };
 #endif
-#if LOG4CXX_LOGCHAR_IS_WCHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
             //   arbitrary, hopefully meaningless, characters from
             //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
             const logchar greet[] = { L'H', L'e', L'l', L'l', L'o', L' ',

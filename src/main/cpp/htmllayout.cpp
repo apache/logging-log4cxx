@@ -25,7 +25,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 
-#include <apr_pools.h>
 #include <apr_time.h>
 #include <apr_strings.h>
 #include <string.h>
@@ -63,21 +62,26 @@ void HTMLLayout::setOption(const LogString& option,
 
 void HTMLLayout::format(LogString& output,
      const spi::LoggingEventPtr& event,
-     Pool& pool) const
+     Pool& p) const
 {
-        output.append(LOG4CXX_EOL LOG4CXX_STR("<tr>") LOG4CXX_EOL LOG4CXX_STR("<td>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<tr>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<td>"));
 
-        dateFormat.format(output, event->getTimeStamp(), pool);
+        dateFormat.format(output, event->getTimeStamp(), p);
 
 
-        output.append(LOG4CXX_STR("</td>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</td>"));
+        output.append(LOG4CXX_EOL);
 
         output.append(LOG4CXX_STR("<td title=\""));
         LogString threadName(event->getThreadName());
         output.append(threadName);
         output.append(LOG4CXX_STR(" thread\">"));
         output.append(threadName);
-        output.append(LOG4CXX_STR("</td>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</td>"));
+        output.append(LOG4CXX_EOL);
 
         output.append(LOG4CXX_STR("<td title=\"Level\">"));
         if (event->getLevel()->equals(Level::getDebug()))
@@ -97,13 +101,15 @@ void HTMLLayout::format(LogString& output,
                 output.append(event->getLevel()->toString());
         }
 
-        output.append(LOG4CXX_STR("</td>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</td>"));
+        output.append(LOG4CXX_EOL);
 
         output.append(LOG4CXX_STR("<td title=\""));
         output.append(event->getLoggerName());
         output.append(LOG4CXX_STR(" logger\">"));
         Transform::appendEscapingTags(output, event->getLoggerName());
-        output.append(LOG4CXX_STR("</td>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</td>"));
+        output.append(LOG4CXX_EOL);
 
         if(locationInfo)
         {
@@ -111,19 +117,22 @@ void HTMLLayout::format(LogString& output,
                 const LocationInfo& locInfo = event->getLocationInformation();
                 LOG4CXX_DECODE_CHAR(fileName, locInfo.getFileName());
                 Transform::appendEscapingTags(output, fileName);
-                output.append(1, LOG4CXX_STR(':'));
+                output.append(1, 0x3A /* ':' */);
                 int line = event->getLocationInformation().getLineNumber();
                 if (line != 0)
                 {
-                        output.append(StringHelper::toString(line, pool));
+                        StringHelper::toString(line, p, output);
                 }
-                output.append(LOG4CXX_STR("</td>") LOG4CXX_EOL);
+                output.append(LOG4CXX_STR("</td>"));
+                output.append(LOG4CXX_EOL);
         }
 
         output.append(LOG4CXX_STR("<td title=\"Message\">"));
         Transform::appendEscapingTags(output, event->getRenderedMessage());
-        output.append(LOG4CXX_STR("</td>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("</tr>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</td>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</tr>"));
+        output.append(LOG4CXX_EOL);
 
         LogString ndcVal;
         if (event->getNDC(ndcVal))
@@ -133,52 +142,79 @@ void HTMLLayout::format(LogString& output,
                 output.append(LOG4CXX_STR("title=\"Nested Diagnostic Context\">"));
                 output.append(LOG4CXX_STR("NDC: "));
                 Transform::appendEscapingTags(output, ndcVal);
-                output.append(LOG4CXX_STR("</td></tr>") LOG4CXX_EOL);
+                output.append(LOG4CXX_STR("</td></tr>"));
+                output.append(LOG4CXX_EOL);
         }
 }
 
-void HTMLLayout::appendHeader(LogString& output, Pool& pool)
+void HTMLLayout::appendHeader(LogString& output, Pool& p)
 {
         output.append(LOG4CXX_STR("<!DOCTYPE HTML PUBLIC "));
         output.append(LOG4CXX_STR("\"-//W3C//DTD HTML 4.01 Transitional//EN\" "));
-        output.append(LOG4CXX_STR("\"http://www.w3.org/TR/html4/loose.dtd\">") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<html>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<head>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("\"http://www.w3.org/TR/html4/loose.dtd\">"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<html>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<head>"));
+        output.append(LOG4CXX_EOL);
         output.append(LOG4CXX_STR("<title>"));
         output.append(title);
-        output.append(LOG4CXX_STR("</title>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<style type=\"text/css\">") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<!--") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("body, table {font-family: arial,sans-serif; font-size: x-small;}") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("th {background: #336699; color: #FFFFFF; text-align: left;}") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("-->") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("</style>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("</head>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<hr size=\"1\" noshade>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</title>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<style type=\"text/css\">"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<!--"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("body, table {font-family: arial,sans-serif; font-size: x-small;}"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("th {background: #336699; color: #FFFFFF; text-align: left;}"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("-->"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</style>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</head>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<body bgcolor=\"#FFFFFF\" topmargin=\"6\" leftmargin=\"6\">"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<hr size=\"1\" noshade>"));
+        output.append(LOG4CXX_EOL);
         output.append(LOG4CXX_STR("Log session start time "));
 
-        dateFormat.format(output, apr_time_now(), pool);
+        dateFormat.format(output, apr_time_now(), p);
 
-        output.append(LOG4CXX_STR("<br>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<br>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<tr>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<th>Time</th>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<th>Thread</th>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<th>Level</th>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<th>Logger</th>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<br>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<br>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<table cellspacing=\"0\" cellpadding=\"4\" border=\"1\" bordercolor=\"#224466\" width=\"100%\">"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<tr>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<th>Time</th>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<th>Thread</th>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<th>Level</th>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<th>Logger</th>"));
+        output.append(LOG4CXX_EOL);
         if(locationInfo)
         {
-                output.append(LOG4CXX_STR("<th>File:Line</th>") LOG4CXX_EOL);
+                output.append(LOG4CXX_STR("<th>File:Line</th>"));
+                output.append(LOG4CXX_EOL);
         }
-        output.append(LOG4CXX_STR("<th>Message</th>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("</tr>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<th>Message</th>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</tr>"));
+        output.append(LOG4CXX_EOL);
 }
 
 void HTMLLayout::appendFooter(LogString& output, Pool& /* pool */ )
 {
-        output.append(LOG4CXX_STR("</table>") LOG4CXX_EOL);
-        output.append(LOG4CXX_STR("<br>") LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("</table>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_STR("<br>"));
+        output.append(LOG4CXX_EOL);
         output.append(LOG4CXX_STR("</body></html>"));
 }

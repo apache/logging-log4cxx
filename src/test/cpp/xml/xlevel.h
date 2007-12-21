@@ -30,34 +30,29 @@ namespace log4cxx
          LETHAL_INT = Level::FATAL_INT + 1
         };
 
-      static const LevelPtr& getTrace();
-      static const LevelPtr& getLethal();
+      static LevelPtr getTrace();
+      static LevelPtr getLethal();
 
-        static const LevelPtr TRACE;
-        static const LevelPtr LETHAL;
 
-      XLevel(int level, const logchar* name, int syslogEquivalent);
+      XLevel(int level, const LogString& name, int syslogEquivalent);
       /**
       Convert the string passed as argument to a level. If the
       conversion fails, then this method returns #DEBUG.
       */
-        static const LevelPtr& toLevel(const std::string& sArg);
-#if LOG4CXX_HAS_WCHAR_T
-        static const LevelPtr& toLevel(const std::wstring& sArg);
-#endif
+      static LevelPtr toLevelLS(const LogString& sArg);
 
       /**
       Convert an integer passed as argument to a level. If the
       conversion fails, then this method returns #DEBUG.
 
       */
-      static const LevelPtr& toLevel(int val);
+      static LevelPtr toLevel(int val);
 
       /**
       Convert an integer passed as argument to a level. If the
       conversion fails, then this method returns the specified default.
       */
-      static const LevelPtr& toLevel(int val, const LevelPtr& defaultLevel);
+      static LevelPtr toLevel(int val, const LevelPtr& defaultLevel);
 
 
       /**
@@ -65,11 +60,7 @@ namespace log4cxx
       conversion fails, then this method returns the value of
       <code>defaultLevel</code>.
       */
-        static const LevelPtr& toLevel(const std::string& sArg,
+        static LevelPtr toLevelLS(const LogString& sArg,
          const LevelPtr& defaultLevel);
-#if LOG4CXX_HAS_WCHAR_T
-        static const LevelPtr& toLevel(const std::wstring& sArg,
-         const LevelPtr& defaultLevel);
-#endif
    };
 }

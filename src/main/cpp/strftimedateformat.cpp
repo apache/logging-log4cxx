@@ -43,7 +43,7 @@ void StrftimeDateFormat::format(LogString& s, log4cxx_time_t time, Pool& /* p */
     apr_size_t bufLen;
     stat = apr_strftime(buf, &bufLen, bufSize, pattern.c_str(), &exploded);
     if (stat == APR_SUCCESS) {
-      log4cxx::helpers::Transcoder::decode(buf, bufLen, s);
+      log4cxx::helpers::Transcoder::decode(std::string(buf, bufLen), s);
     }
   }
 }

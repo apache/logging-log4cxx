@@ -35,7 +35,7 @@ LiteralPatternConverter::LiteralPatternConverter(const LogString& literal1) :
 
 PatternConverterPtr LiteralPatternConverter::newInstance(
    const LogString& literal) {
-   if (literal.length() == 1 && literal[0] == LOG4CXX_STR(' ')) {
+   if (literal.length() == 1 && literal[0] == 0x20 /* ' ' */) {
      static PatternConverterPtr blank(new LiteralPatternConverter(literal));
      return blank;
    }

@@ -29,17 +29,17 @@ IMPLEMENT_LOG4CXX_OBJECT(InputStreamReader)
 InputStreamReader::InputStreamReader(const InputStreamPtr& in1)
    : in(in1), dec(CharsetDecoder::getDefaultDecoder()) {
    if (in1 == 0) {
-      throw NullPointerException("in parameter may not be null.");
+      throw NullPointerException(LOG4CXX_STR("in parameter may not be null."));
    }
 }
 
 InputStreamReader::InputStreamReader(const InputStreamPtr& in1, const CharsetDecoderPtr &dec1) 
     : in(in1), dec(dec1) {
     if (in1 == 0) {
-       throw NullPointerException("in parameter may not be null.");
+       throw NullPointerException(LOG4CXX_STR("in parameter may not be null."));
     }
     if (dec1 == 0) {
-       throw NullPointerException("dec parameter may not be null.");
+       throw NullPointerException(LOG4CXX_STR("dec parameter may not be null."));
     }
 }
 

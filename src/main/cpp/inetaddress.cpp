@@ -28,7 +28,7 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(InetAddress)
 
-UnknownHostException::UnknownHostException(const std::string& msg1)
+UnknownHostException::UnknownHostException(const LogString& msg1)
      : Exception(msg1) {
 }
 
@@ -63,9 +63,7 @@ std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host) {
        LogString msg(LOG4CXX_STR("Cannot get information about host: "));
        msg.append(host);
        LogLog::error(msg);
-       std::string s;
-       Transcoder::encode(msg, s);
-       throw UnknownHostException(s);
+       throw UnknownHostException(msg);
     }
 
     std::vector<InetAddressPtr> result;
@@ -75,17 +73,19 @@ std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host) {
         LogString ipAddrString;
         char *ipAddr;
         status = apr_sockaddr_ip_get(&ipAddr, currentAddr);
-      if (status == APR_SUCCESS) {
-         Transcoder::decode(ipAddr, strlen(ipAddr), ipAddrString);
-       }
+        if (status == APR_SUCCESS) {
+            std::string ip(ipAddr);
+            Transcoder::decode(ip, ipAddrString);
+        }
     
         // retrieve the host name of this InetAddress.
         LogString hostNameString;
         char *hostName;
         status = apr_getnameinfo(&hostName, currentAddr, 0);
-      if (status == APR_SUCCESS) {
-         Transcoder::decode(hostName, strlen(hostName), hostNameString);
-      }
+        if (status == APR_SUCCESS) {
+            std::string host(hostName);
+            Transcoder::decode(host, hostNameString);
+        }
 
         result.push_back(new InetAddress(hostNameString, ipAddrString));
         currentAddr = currentAddr->next;

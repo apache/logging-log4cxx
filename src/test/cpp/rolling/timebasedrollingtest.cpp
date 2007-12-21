@@ -27,6 +27,7 @@
 #include <iostream>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../util/compare.h"
+#include <apr_strings.h>
 
 
 #ifndef INT64_C
@@ -122,7 +123,7 @@ public:
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
-        StringHelper::toString(i, pool, message);
+        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -166,7 +167,7 @@ public:
 
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
-        StringHelper::toString(i, pool, message);
+        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -188,7 +189,7 @@ public:
 
     { for (int i = 3; i <= 4; i++) {
         std::string message("Hello---");
-        StringHelper::toString(i, pool, message);
+        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -236,7 +237,7 @@ public:
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
-        StringHelper::toString(i, p, message);
+        message.append(apr_itoa((apr_pool_t*) p.getAPRPool(), i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -285,7 +286,7 @@ public:
 
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
-        StringHelper::toString(i, pool, message);
+        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -307,7 +308,7 @@ public:
 
     { for (int i = 3; i <= 4; i++) {
         std::string message("Hello---");
-        StringHelper::toString(i, pool, message);
+        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -356,7 +357,7 @@ public:
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
-        StringHelper::toString(i, pool, message);
+        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -405,7 +406,7 @@ public:
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
-        StringHelper::toString(i, p, message);
+        message.append(apr_itoa((apr_pool_t*) p.getAPRPool(), i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }

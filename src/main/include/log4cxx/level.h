@@ -47,14 +47,14 @@ namespace log4cxx
                 public:
                         LevelClass() : helpers::Class() {}
 
-                        virtual const log4cxx::logchar* getName() const {
+                        virtual LogString getName() const {
                             return LOG4CXX_STR("Level");
                         }
 
-                        virtual const LevelPtr& toLevel(const LogString& sArg) const
-                        { return Level::toLevel(sArg); }
+                        virtual LevelPtr toLevel(const LogString& sArg) const
+                        { return Level::toLevelLS(sArg); }
 
-                        virtual const LevelPtr& toLevel(int val) const
+                        virtual LevelPtr toLevel(int val) const
                         { return Level::toLevel(val); }
                 };
 
@@ -67,41 +67,60 @@ namespace log4cxx
                 Instantiate a Level object.
                 */
                 Level(int level,
-                       const logchar* name,
+                       const LogString& name,
                        int syslogEquivalent);
 
                 /**
                 Convert the string passed as argument to a level. If the
                 conversion fails, then this method returns #DEBUG.
                 */
-                static const LevelPtr& toLevel(const std::string& sArg);
-#if LOG4CXX_HAS_WCHAR_T
-                static const LevelPtr& toLevel(const std::wstring& sArg);
-#endif
-
-                /**
-                Convert an integer passed as argument to a level. If the
-                conversion fails, then this method returns #DEBUG.
-                */
-                static const LevelPtr& toLevel(int val);
-
-                /**
-                Convert an integer passed as argument to a level. If the
-                conversion fails, then this method returns the specified default.
-                */
-                static const LevelPtr& toLevel(int val, const LevelPtr& defaultLevel);
-
+                static LevelPtr toLevel(const std::string& sArg);
                 /**
                 Convert the string passed as argument to a level. If the
                 conversion fails, then this method returns the value of
                 <code>defaultLevel</code>.
                 */
-                static const LevelPtr& toLevel(const std::string& sArg,
+                static LevelPtr toLevel(const std::string& sArg,
                         const LevelPtr& defaultLevel);
-#if LOG4CXX_HAS_WCHAR_T
-                static const LevelPtr& toLevel(const std::wstring& sArg,
+                void toString(std::string& name) const;
+
+#if LOG4CXX_WCHAR_T_API
+                static LevelPtr toLevel(const std::wstring& sArg);
+                static LevelPtr toLevel(const std::wstring& sArg,
                         const LevelPtr& defaultLevel);
+                void toString(std::wstring& name) const;
 #endif
+#if LOG4CXX_UNICHAR_API
+                static LevelPtr toLevel(const std::basic_string<UniChar>& sArg);
+                static LevelPtr toLevel(const std::basic_string<UniChar>& sArg,
+                        const LevelPtr& defaultLevel);
+                void toString(std::basic_string<UniChar>& name) const;
+#endif
+#if LOG4CXX_CFSTRING_API
+                static LevelPtr toLevel(const CFStringRef& sArg);
+                static LevelPtr toLevel(const CFStringRef& sArg,
+                        const LevelPtr& defaultLevel);
+                void toString(CFStringRef& name) const;
+#endif
+                static LevelPtr toLevelLS(const LogString& sArg);
+                static LevelPtr toLevelLS(const LogString& sArg,
+                        const LevelPtr& defaultLevel);
+                /**
+                Returns the string representation of this priority.
+                */
+                LogString toString() const;
+
+                /**
+                Convert an integer passed as argument to a level. If the
+                conversion fails, then this method returns #DEBUG.
+                */
+                static LevelPtr toLevel(int val);
+
+                /**
+                Convert an integer passed as argument to a level. If the
+                conversion fails, then this method returns the specified default.
+                */
+                static LevelPtr toLevel(int val, const LevelPtr& defaultLevel);
 
                 enum {
                     OFF_INT = INT_MAX,
@@ -115,14 +134,14 @@ namespace log4cxx
                 };
 
 
-                static const LevelPtr& getAll();
-                static const LevelPtr& getFatal();
-                static const LevelPtr& getError();
-                static const LevelPtr& getWarn();
-                static const LevelPtr& getInfo();
-                static const LevelPtr& getDebug();
-                static const LevelPtr& getTrace();
-                static const LevelPtr& getOff();
+                static LevelPtr getAll();
+                static LevelPtr getFatal();
+                static LevelPtr getError();
+                static LevelPtr getWarn();
+                static LevelPtr getInfo();
+                static LevelPtr getDebug();
+                static LevelPtr getTrace();
+                static LevelPtr getOff();
 
 
                 /**
@@ -155,16 +174,6 @@ namespace log4cxx
                 */
                 virtual bool isGreaterOrEqual(const LevelPtr& level) const;
 
-                /**
-                Returns the string representation of this priority.
-                */
-                inline const LogString& toString() const {
-                  return name;
-                }
-                void toString(std::string& name) const;
-#if LOG4CXX_HAS_WCHAR_T
-                void toString(std::wstring& name) const;
-#endif
 
                 /**
                 Returns the integer representation of this level.
@@ -188,10 +197,10 @@ public:\
 {\
 public:\
         Class##level() : Level::LevelClass() {}\
-        virtual const log4cxx::logchar* getName() const { return LOG4CXX_STR(#level); } \
-        virtual const LevelPtr& toLevel(const LogString& sArg) const\
-        { return level::toLevel(sArg); }\
-        virtual const LevelPtr& toLevel(int val) const\
+        virtual LogString getName() const { return LOG4CXX_STR(#level); } \
+        virtual LevelPtr toLevel(const LogString& sArg) const\
+        { return level::toLevelLS(sArg); }\
+        virtual LevelPtr toLevel(int val) const\
         { return level::toLevel(val); }\
 };\
 DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)

@@ -56,8 +56,7 @@ helpers = \
         helpers/stringhelpertestcase.cpp \
         helpers/syslogwritertest.cpp \
         helpers/timezonetestcase.cpp \
-        helpers/transcodertestcase.cpp \
-        helpers/unicodehelpertestcase.cpp
+        helpers/transcodertestcase.cpp
 
 net_tests = \
 	net/smtpappendertestcase.cpp \

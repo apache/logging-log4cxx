@@ -28,6 +28,10 @@
 #include <log4cxx/helpers/inputstreamreader.h>
 #include <log4cxx/helpers/fileinputstream.h>
 
+#if LOG4CXX_CFSTRING_API
+#include <CoreFoundation/CFString.h>
+#endif
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
@@ -41,8 +45,14 @@ class FileTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(propertyRead);
                 CPPUNIT_TEST(propertyExists);
                 CPPUNIT_TEST(fileWrite1);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                 CPPUNIT_TEST(wcharConstructor);
+#endif
+#if LOG4CXX_UNICHAR_API
+                CPPUNIT_TEST(unicharConstructor);
+#endif
+#if LOG4CXX_CFSTRING_API
+                CPPUNIT_TEST(cfstringConstructor);
 #endif
                 CPPUNIT_TEST(copyConstructor);
                 CPPUNIT_TEST(assignment);
@@ -79,9 +89,30 @@ public:
         }
 
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void wcharConstructor() {
             File propFile(L"input/patternLayout1.properties");
+            Pool pool;
+            bool exists = propFile.exists(pool);
+            CPPUNIT_ASSERT_EQUAL(true, exists);
+       }
+#endif
+
+#if LOG4CXX_UNICHAR_API
+        void unicharConstructor() {
+            const UniChar filename[] = { 'i', 'n', 'p', 'u', 't', '/', 
+               'p', 'a', 't', 't', 'e', 'r', 'n', 'L', 'a', 'y', 'o', 'u', 't', '1', '.', 
+               'p', 'r', 'o', 'p', 'e', 'r', 't', 'i', 'e', 's', 0 };
+            File propFile(filename);
+            Pool pool;
+            bool exists = propFile.exists(pool);
+            CPPUNIT_ASSERT_EQUAL(true, exists);
+       }
+#endif
+
+#if LOG4CXX_CFSTRING_API
+        void cfstringConstructor() {
+            File propFile(CFSTR("input/patternLayout.properties"));
             Pool pool;
             bool exists = propFile.exists(pool);
             CPPUNIT_ASSERT_EQUAL(true, exists);
@@ -127,7 +158,8 @@ public:
           OutputStreamWriterPtr osw = new OutputStreamWriter(fos);
 
           Pool pool;
-          LogString greeting(LOG4CXX_STR("Hello, World") LOG4CXX_EOL);
+          LogString greeting(LOG4CXX_STR("Hello, World"));
+          greeting.append(LOG4CXX_EOL);
           osw->write(greeting, pool);
 
           InputStreamPtr is =

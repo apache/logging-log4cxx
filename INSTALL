@@ -226,7 +226,10 @@ Configure options
 --with-aprutil: Specify non-default location for apr-util.
 --enable-cppunit=no: Disable building CppUnit unit tests.
 --enable-wchar_t: Enable wchar_t API methods.
---with-logchar= utf-8 | wchar_t: Specify internal character type. 
+--enable-unichar: Enable UniChar API methods, UniChar is an unsigned short containing UTF-16.
+--enable-cfstring: Enable CFString API methods, CFString is Mac OS/X CoreFoundation's string.
+--with-logchar= utf-8 | wchar_t | unichar: Specify internal character type. 
+--with-charset = utf-8 | iso-8859-1 | usascii | ebcdic | auto: Specified fixed encoding.
 
 
 SMTP support (SMTPAppender) can be disabled through option --with-SMTP

@@ -16,14 +16,12 @@
  */
 
 #include "compare.h"
-#include <fstream>
-#include <iostream>
-#include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/inputstreamreader.h>
+#include <log4cxx/helpers/systemoutwriter.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -47,11 +45,11 @@ bool Compare::compare(const File& file1, const File& file2)
     LogString s2;
         int lineCounter = 0;
 
-        while (StringHelper::getline(in1, s1))
+        while (getline(in1, s1))
         {
                 lineCounter++;
 
-        if(!StringHelper::getline(in2, s2)) {
+        if(!getline(in2, s2)) {
           s2.erase(s2.begin(), s2.end());
         }
 
@@ -61,14 +59,16 @@ bool Compare::compare(const File& file1, const File& file2)
             msg += LOG4CXX_STR("] and [");
             msg += file2.getName();
             msg += LOG4CXX_STR("] differ on line ");
-            msg += StringHelper::toString(lineCounter, pool);
+            StringHelper::toString(lineCounter, pool, msg);
             msg += LOG4CXX_EOL;
             msg += LOG4CXX_STR("One reads:  [");
             msg += s1;
-            msg += LOG4CXX_STR("].") LOG4CXX_EOL;
+            msg += LOG4CXX_STR("].");
+            msg += LOG4CXX_EOL;
             msg += LOG4CXX_STR("Other reads:[");
             msg += s2;
-            msg += LOG4CXX_STR("].") LOG4CXX_EOL;
+            msg += LOG4CXX_STR("].");
+            msg += LOG4CXX_EOL;
             emit(msg);
 
             outputFile(file1, back1, pool);
@@ -79,12 +79,13 @@ bool Compare::compare(const File& file1, const File& file2)
         }
 
         // the second file is longer
-    if (StringHelper::getline(in2, s2)) {
+    if (getline(in2, s2)) {
         LogString msg(LOG4CXX_STR("File ["));
         msg += file2.getName();
         msg += LOG4CXX_STR("] longer than file [");
         msg += file1.getName();
-        msg += LOG4CXX_STR("].") LOG4CXX_EOL;
+        msg += LOG4CXX_STR("].");
+        msg += LOG4CXX_EOL;
         emit(msg);
                 outputFile(file1, back1, pool);
                 outputFile(file2, back2, pool);
@@ -100,18 +101,22 @@ void Compare::outputFile(const File& file,
                         log4cxx::helpers::Pool& pool)
 {
         int lineCounter = 0;
-        emit(LOG4CXX_STR("--------------------------------") LOG4CXX_EOL);
+        emit(LOG4CXX_STR("--------------------------------"));
+        emit(LOG4CXX_EOL);
         LogString msg(LOG4CXX_STR("Contents of "));
         msg += file.getName();
-        msg += LOG4CXX_STR(":") LOG4CXX_EOL;
+        msg += LOG4CXX_STR(":");
+        msg += LOG4CXX_EOL;
         emit(msg);
         LogString in1(contents);
         LogString s1;
 
-        while (StringHelper::getline(in1, s1))
+        while (getline(in1, s1))
         {
                 lineCounter++;
-                emit(StringHelper::toString(lineCounter, pool));
+                LogString line;
+                StringHelper::toString(lineCounter, pool, line);
+                emit(line);
 
                 if (lineCounter < 10)
                 {
@@ -134,13 +139,32 @@ void Compare::outputFile(const File& file,
         }
 }
 
-void Compare::emit(const std::string& s1) {
-  std::cout << s1;
+void Compare::emit(const LogString& s1) {
+  SystemOutWriter::write(s1);
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-void Compare::emit(const std::wstring& s1) {
-  std::wcout << s1;
+
+bool Compare::getline(LogString& in, LogString& line) {
+  if (in.empty()) {
+    return false;
+  }
+  size_t nl = in.find(0x0A);
+  if (nl == std::string::npos) {
+    line = in;
+    in.erase(in.begin(), in.end());
+  } else {
+      //
+      //  if the file has CR-LF then
+      //    drop the carriage return alse
+      //
+      if(nl > 0 && in[nl -1] ==  0x0D) {
+          line.assign(in, 0, nl - 1);
+      } else {
+          line.assign(in, 0, nl);
+      }
+      in.erase(in.begin(), in.begin() + nl + 1);
+  }
+  return true;
 }
-#endif
+
 

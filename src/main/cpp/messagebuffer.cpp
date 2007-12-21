@@ -102,7 +102,7 @@ std::ostream& CharMessageBuffer::operator<<(long double val) { return ((std::ost
 std::ostream& CharMessageBuffer::operator<<(void* val) { return ((std::ostream&) *this).operator<<(val); }
 
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
 WideMessageBuffer::WideMessageBuffer() : stream(0) {}
 
 WideMessageBuffer::~WideMessageBuffer() {
@@ -186,15 +186,26 @@ std::wostream& WideMessageBuffer::operator<<(long double val) { return ((std::wo
 std::wostream& WideMessageBuffer::operator<<(void* val) { return ((std::wostream&) *this).operator<<(val); }
 
 
-MessageBuffer::MessageBuffer()  : wbuf(0){
+MessageBuffer::MessageBuffer()  : wbuf(0)
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+   , ubuf(0)
+#endif   
+{
 }
 
 MessageBuffer::~MessageBuffer() {
     delete wbuf;
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+    delete ubuf;
+#endif   
 }
 
 bool MessageBuffer::hasStream() const {
-    return cbuf.hasStream() || (wbuf != 0 && wbuf->hasStream());
+    bool retval = cbuf.hasStream() || (wbuf != 0 && wbuf->hasStream());
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+    retval = retval || (ubuf != 0 && ubuf->hasStream());    
+#endif   
+    return retval;
 }
 
 std::ostream& MessageBuffer::operator<<(ios_base_manip manip) {
@@ -270,3 +281,150 @@ std::ostream& MessageBuffer::operator<<(void* val) { return cbuf.operator<<(val)
 
 
 #endif
+
+
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+UniCharMessageBuffer& MessageBuffer::operator<<(const std::basic_string<log4cxx::UniChar>& msg) {
+	ubuf = new UniCharMessageBuffer();
+	return (*ubuf) << msg;
+}
+
+UniCharMessageBuffer& MessageBuffer::operator<<(const log4cxx::UniChar* msg) {
+	ubuf = new UniCharMessageBuffer();
+	return (*ubuf) << msg;
+}
+UniCharMessageBuffer& MessageBuffer::operator<<(log4cxx::UniChar* msg) {
+	ubuf = new UniCharMessageBuffer();
+	return (*ubuf) << (const log4cxx::UniChar*) msg;
+}
+
+UniCharMessageBuffer& MessageBuffer::operator<<(const log4cxx::UniChar msg) {
+	ubuf = new UniCharMessageBuffer();
+	return (*ubuf) << msg;
+}
+
+const std::basic_string<log4cxx::UniChar>& MessageBuffer::str(UniCharMessageBuffer& buf) {
+	return ubuf->str(buf);
+}
+
+const std::basic_string<log4cxx::UniChar>& MessageBuffer::str(std::basic_ostream<log4cxx::UniChar>& os) {
+	return ubuf->str(os);
+}
+
+
+UniCharMessageBuffer::UniCharMessageBuffer() : stream(0) {}
+
+UniCharMessageBuffer::~UniCharMessageBuffer() {
+	delete stream;
+}
+
+
+UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const std::basic_string<log4cxx::UniChar>& msg) {
+	if (stream == 0) {
+        buf.append(msg);
+	} else {
+		*stream << buf;
+	}
+	return *this;
+}
+
+UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const log4cxx::UniChar* msg) {
+	const log4cxx::UniChar* actualMsg = msg;
+    static log4cxx::UniChar nullLiteral[] = { 0x6E, 0x75, 0x6C, 0x6C, 0};
+	if (actualMsg == 0) {
+		actualMsg = nullLiteral;
+	}
+	if (stream == 0) {
+        buf.append(actualMsg);
+	} else {
+		*stream << actualMsg;
+	}
+	return *this;
+}
+
+UniCharMessageBuffer& UniCharMessageBuffer::operator<<(log4cxx::UniChar* msg) {
+	return operator<<((const log4cxx::UniChar*) msg);
+}
+
+UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const log4cxx::UniChar msg) {
+	if (stream == 0) {
+        buf.append(1, msg);
+	} else {
+		*stream << msg;
+	}
+	return *this;
+}
+
+UniCharMessageBuffer::operator UniCharMessageBuffer::uostream&() {
+	if (stream == 0) {
+	  stream = new std::basic_ostringstream<UniChar>();
+	  if (!buf.empty()) {
+		  *stream << buf;
+	  }
+	}
+	return *stream;
+}
+
+const std::basic_string<log4cxx::UniChar>& UniCharMessageBuffer::str(UniCharMessageBuffer::uostream&) {
+    buf = stream->str();
+	return buf;
+}
+
+const std::basic_string<log4cxx::UniChar>& UniCharMessageBuffer::str(UniCharMessageBuffer&) {
+	return buf;
+}
+
+bool UniCharMessageBuffer::hasStream() const {
+    return (stream != 0);
+}
+
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(ios_base_manip manip) {
+	UniCharMessageBuffer::uostream& s = *this;
+	(*manip)(s);
+	return s;
+}
+
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(bool val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(short val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(int val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(unsigned int val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(long val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(unsigned long val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(float val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(double val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(long double val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+UniCharMessageBuffer::uostream& UniCharMessageBuffer::operator<<(void* val) { return ((UniCharMessageBuffer::uostream&) *this).operator<<(val); }
+
+
+
+#endif
+
+#if LOG4CXX_CFSTRING_API
+#include <CoreFoundation/CFString.h>
+#include <vector>
+
+UniCharMessageBuffer& UniCharMessageBuffer::operator<<(const CFStringRef& msg) {
+    const log4cxx::UniChar* chars = CFStringGetCharactersPtr(msg);
+    if (chars != 0) {
+         return operator<<(chars);
+    } else {
+         size_t length = CFStringGetLength(msg);
+         std::vector<log4cxx::UniChar> tmp(length);
+         CFStringGetCharacters(msg, CFRangeMake(0, length), &tmp[0]);
+         if (stream) {
+            std::basic_string<UniChar> s(&tmp[0], tmp.size());
+            *stream << s;
+         } else {
+            buf.append(&tmp[0], tmp.size());
+        }
+    }
+	return *this;
+}
+
+
+UniCharMessageBuffer& MessageBuffer::operator<<(const CFStringRef& msg) {
+	ubuf = new UniCharMessageBuffer();
+	return (*ubuf) << msg;
+}
+#endif
+

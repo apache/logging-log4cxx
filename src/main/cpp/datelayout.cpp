@@ -115,7 +115,7 @@ void DateLayout::formatDate(LogString &s,
         if(dateFormat != 0)
         {
                 dateFormat->format(s, event->getTimeStamp(), p);
-                s.append(1, LOG4CXX_STR(' '));
+                s.append(1, 0x20 /* ' ' */);
         }
 }
 

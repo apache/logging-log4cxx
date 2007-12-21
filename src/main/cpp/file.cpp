@@ -36,8 +36,24 @@ File::File(const std::string& name1)
   Transcoder::encode(this->name, osName);
 }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
 File::File(const std::wstring& name1)
+   : name(), osName() {
+  Transcoder::decode(name1, this->name);
+  Transcoder::encode(this->name, osName);
+}
+#endif
+
+#if LOG4CXX_UNICHAR_API
+File::File(const std::basic_string<UniChar>& name1)
+   : name(), osName() {
+  Transcoder::decode(name1, this->name);
+  Transcoder::encode(this->name, osName);
+}
+#endif
+
+#if LOG4CXX_CFSTRING_API
+File::File(const CFStringRef& name1)
    : name(), osName() {
   Transcoder::decode(name1, this->name);
   Transcoder::encode(this->name, osName);
@@ -61,6 +77,20 @@ File& File::operator=(const File& src) {
 File::~File() {
 }
 
+
+LogString File::getName() const {
+    return name;
+}
+
+File& File::setName(const LogString& newName) {
+    name.assign(newName);
+    Transcoder::encode(newName, osName);
+    return *this;
+}
+
+std::string File::getOSName() const {
+    return osName;
+}
 
 log4cxx_status_t File::open(apr_file_t** file, int flags,
       int perm, Pool& p) const {

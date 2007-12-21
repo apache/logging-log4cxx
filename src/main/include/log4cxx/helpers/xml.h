@@ -43,7 +43,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT DOMException : public RuntimeException
                 {
                 public:
-                    DOMException() : RuntimeException("DOM exception") {}
+                    DOMException() : RuntimeException(LOG4CXX_STR("DOM exception")) {}
                 };
 
 

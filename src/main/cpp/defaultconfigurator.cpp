@@ -33,7 +33,8 @@ void DefaultConfigurator::configure(LoggerRepository* repository)
         const LogString configuratorClassName(getConfiguratorClass());
 
         LogString configurationOptionStr(getConfigurationFileName());
-        File configuration(configurationOptionStr);
+        File configuration;
+        configuration.setName(configurationOptionStr);
 
         if (configurationOptionStr.empty())
         {

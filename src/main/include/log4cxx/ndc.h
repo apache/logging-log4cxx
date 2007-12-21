@@ -122,9 +122,6 @@ namespace log4cxx
                  @param message The new diagnostic context information.
                  @see The #push method.
                  */
-#if LOG4CXX_HAS_WCHAR_T
-                NDC(const std::wstring& message);
-#endif
                 NDC(const std::string& message);
 
                 /**
@@ -172,6 +169,7 @@ namespace log4cxx
                 @return The innermost diagnostic context.
                 */
                 static LogString pop();
+                static bool pop(std::string&);
 
                 /**
                 Looks at the last diagnostic context at the top of this NDC
@@ -181,6 +179,7 @@ namespace log4cxx
                 @return String The innermost diagnostic context.
                 */
                 static LogString peek();
+                static bool peek(std::string&);
 
                 /**
                 Push new diagnostic context information for the current thread.
@@ -188,11 +187,8 @@ namespace log4cxx
                 determined solely by the client.
                 @param message The new diagnostic context information.
                 */
-#if LOG4CXX_HAS_WCHAR_T
-                static void push(const std::wstring& message);
-#endif
                 static void push(const std::string& message);
-                static void pushLogString(const LogString& message);
+                static void pushLS(const LogString& message);
 
                 /**
                 Remove the diagnostic context for this thread.
@@ -211,6 +207,56 @@ namespace log4cxx
                 memory.
                 */
                 static void remove();
+                
+#if LOG4CXX_WCHAR_T_API
+                NDC(const std::wstring& message);
+                static void push(const std::wstring& message);
+                /**
+                 *   Appends the current NDC content to the provided string.
+                 *   @param dst destination.
+                 *   @return true if NDC value set. 
+                 */
+                static bool peek(std::wstring& dst);
+                /**
+                 *   Appends the current NDC content to the provided string and removes the value from the NDC.
+                 *   @param dst destination.
+                 *   @return true if NDC value set. 
+                 */
+                static bool pop(std::wstring& dst);
+#endif
+#if LOG4CXX_UNICHAR_API
+                NDC(const std::basic_string<UniChar>& message);
+                static void push(const std::basic_string<UniChar>& message);
+                /**
+                 *   Appends the current NDC content to the provided string.
+                 *   @param dst destination.
+                 *   @return true if NDC value set. 
+                 */
+                static bool peek(std::basic_string<UniChar>& dst);
+                /**
+                 *   Appends the current NDC content to the provided string and removes the value from the NDC.
+                 *   @param dst destination.
+                 *   @return true if NDC value set. 
+                 */
+                static bool pop(std::basic_string<UniChar>& dst);
+#endif
+#if LOG4CXX_CFSTRING_API
+                NDC(const CFStringRef& message);
+                static void push(const CFStringRef& message);
+                /**
+                 *   Gets the current NDC value.
+                 *   @param dst destination.
+                 *   @return true if NDC value set. 
+                 */
+                static bool peek(CFStringRef& dst);
+                /**
+                 *  Gets and removes the current NDC value.
+                 *   @param dst destination.
+                 *   @return true if NDC value set. 
+                 */
+                static bool pop(CFStringRef& dst);
+#endif
+                
         private:
                 NDC(const NDC&);
                 NDC& operator=(const NDC&);

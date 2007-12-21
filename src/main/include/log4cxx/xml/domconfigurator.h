@@ -247,8 +247,14 @@ namespace log4cxx
                         A static version of #doConfigure.
                         */
                         static void configure(const std::string& filename);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                         static void configure(const std::wstring& filename);
+#endif
+#if LOG4CXX_UNICHAR_API
+                        static void configure(const std::basic_string<UniChar>& filename);
+#endif
+#if LOG4CXX_CFSTRING_API
+                        static void configure(const CFStringRef& filename);
 #endif
                         /**
                         Like #configureAndWatch(const String& configFilename, long delay)
@@ -257,8 +263,14 @@ namespace log4cxx
                         @param configFilename A log4j configuration file in XML format.
                         */
                         static void configureAndWatch(const std::string& configFilename);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                         static void configureAndWatch(const std::wstring& configFilename);
+#endif
+#if LOG4CXX_UNICHAR_API
+                        static void configureAndWatch(const std::basic_string<UniChar>& configFilename);
+#endif
+#if LOG4CXX_CFSTRING_API
+                        static void configureAndWatch(const CFStringRef& configFilename);
 #endif
                         /**
                         Read the configuration file <code>configFilename</code> if it
@@ -273,8 +285,16 @@ namespace log4cxx
                         */
                         static void configureAndWatch(const std::string& configFilename,
                                 long delay);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                         static void configureAndWatch(const std::wstring& configFilename,
+                                long delay);
+#endif
+#if LOG4CXX_UNICHAR_API
+                        static void configureAndWatch(const std::basic_string<UniChar>& configFilename,
+                                long delay);
+#endif
+#if LOG4CXX_CFSTRING_API
+                        static void configureAndWatch(const CFStringRef& configFilename,
                                 long delay);
 #endif
 

@@ -93,7 +93,7 @@ END_LOG4CXX_CAST_MAP()
       LogString::size_type end = buf.length() - 1;
 
       for (LogString::size_type i = count; i > 0; i--) {
-        end = buf.rfind(LOG4CXX_STR('.'), end - 1);
+        end = buf.rfind(0x2E /* '.' */, end - 1);
 
         if ((end == LogString::npos) || (end < nameStart)) {
           return;
@@ -151,14 +151,14 @@ public:
      * @return starting index of next element.
      */
     LogString::size_type abbreviate(LogString& buf, LogString::size_type startPos) const {
-      LogString::size_type nextDot = buf.find(LOG4CXX_STR('.'), startPos);
+      LogString::size_type nextDot = buf.find(0x2E /* '.' */, startPos);
 
       if (nextDot != LogString::npos) {
         if ((nextDot - startPos) > charCount) {
           buf.erase(buf.begin() + (startPos + charCount), buf.begin() + nextDot);
           nextDot = startPos + charCount;
 
-          if (ellipsis != LOG4CXX_STR('\0')) {
+          if (ellipsis != 0x00) {
             buf.insert(nextDot, 1, ellipsis);
             nextDot++;
           }
@@ -196,7 +196,7 @@ END_LOG4CXX_CAST_MAP()
     PatternAbbreviator(const std::vector<PatternAbbreviatorFragment>& fragments1) :
         fragments(fragments1) {
       if (fragments1.size() == 0) {
-        throw IllegalArgumentException("fragments parameter must contain at least one element");
+        throw IllegalArgumentException(LOG4CXX_STR("fragments parameter must contain at least one element"));
       }
     }
 
@@ -249,8 +249,8 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern) {
       LogString::size_type i = 0;
 
       while (
-        (i < trimmed.length()) && (trimmed[i] >= LOG4CXX_STR('0'))
-          && (trimmed[i] <= LOG4CXX_STR('9'))) {
+        (i < trimmed.length()) && (trimmed[i] >= 0x30 /* '0' */)
+          && (trimmed[i] <= 0x39 /* '9' */)) {
         i++;
       }
 
@@ -269,13 +269,13 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern) {
       while (pos < trimmed.length()) {
         LogString::size_type ellipsisPos = pos;
 
-        if (trimmed[pos] == LOG4CXX_STR('*')) {
+        if (trimmed[pos] == 0x2A /* '*' */) {
           charCount = INT_MAX;
           ellipsisPos++;
         } else {
-          if ((trimmed[pos] >= LOG4CXX_STR('0'))
-               && (trimmed[pos] <= LOG4CXX_STR('9'))) {
-            charCount = trimmed[pos] - LOG4CXX_STR('0');
+          if ((trimmed[pos] >= 0x30 /* '0' */)
+               && (trimmed[pos] <= 0x39 /* '9' */)) {
+            charCount = trimmed[pos] - 0x30 /* '0' */;
             ellipsisPos++;
           } else {
             charCount = 0;
@@ -287,13 +287,13 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern) {
         if (ellipsisPos < trimmed.length()) {
           ellipsis = trimmed[ellipsisPos];
 
-          if (ellipsis == LOG4CXX_STR('.')) {
+          if (ellipsis == 0x2E /* '.' */) {
             ellipsis = 0;
           }
         }
 
         fragments.push_back(PatternAbbreviatorFragment(charCount, ellipsis));
-        pos = trimmed.find(LOG4CXX_STR('.'), pos);
+        pos = trimmed.find(0x2E /* '.' */, pos);
 
         if (pos == LogString::npos) {
           break;

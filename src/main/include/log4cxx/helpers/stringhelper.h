@@ -33,48 +33,27 @@ namespace log4cxx
         class LOG4CXX_EXPORT StringHelper
         {
            public:
-            static std::string trim(const std::string& s);
-            static bool startsWith(const std::string& s, const std::string& suffix);
-            static bool endsWith(const std::string& s, const std::string& suffix);
-            static bool equalsIgnoreCase(const std::string& s1,
-                 const char* upper, const char* lower);
+            static LogString trim(const LogString& s);
+            static bool startsWith(const LogString& s, const LogString& suffix);
+            static bool endsWith(const LogString& s, const LogString& suffix);
+            static bool equalsIgnoreCase(const LogString& s1,
+                 const logchar* upper, const logchar* lower);
+            static bool equalsIgnoreCase(const LogString& s1,
+                 const LogString& upper, const LogString& lower);
 
 
-            static int toInt(const std::string& s);
-            static log4cxx_int64_t toInt64(const std::string& s);
+            static int toInt(const LogString& s);
+            static log4cxx_int64_t toInt64(const LogString& s);
 
-            static LogString toString(int i, log4cxx::helpers::Pool& pool);
-            static void toString(int i, Pool& pool, std::string& s);
+            static void toString(int i, log4cxx::helpers::Pool& pool, LogString& dst);
+            static void toString(log4cxx_int64_t i, log4cxx::helpers::Pool& pool, LogString& dst);
+            static void toString(size_t i, log4cxx::helpers::Pool& pool, LogString& dst);
 
-            static LogString toString(log4cxx_int64_t i, log4cxx::helpers::Pool& pool);
-            static void toString(log4cxx_int64_t i, Pool& pool, std::string& s);
+            static void toString(bool val, LogString& dst);
 
-            static LogString toString(size_t i, log4cxx::helpers::Pool& pool);
-            static void toString(size_t i, Pool& pool, std::string& s);
-
-            static LogString toString(bool val);
-
-            static std::string toLowerCase(const std::string& s);
-
-            static bool getline(std::string& buf, std::string& line);
+            static LogString toLowerCase(const LogString& s);
 
             static LogString format(const LogString& pattern, const std::vector<LogString>& params);
-
-#if LOG4CXX_HAS_WCHAR_T
-            static std::wstring trim(const std::wstring& s);
-            static bool startsWith(const std::wstring& s, const std::wstring& suffix);
-            static bool endsWith(const std::wstring& s, const std::wstring& suffix);
-            static bool equalsIgnoreCase(const std::wstring& s1,
-                  const wchar_t* upper, const wchar_t* lower);
-            static int toInt(const std::wstring& s);
-            static log4cxx_int64_t toInt64(const std::wstring& s);
-            static void toString(int i, Pool& pool, std::wstring& s);
-            static void toString(log4cxx_int64_t i, Pool& pool, std::wstring& s);
-            static void toString(size_t i, Pool& pool, std::wstring& s);
-            static std::wstring toLowerCase(const std::wstring& s);
-            static bool getline(std::wstring& buf, std::wstring& line);
-#endif
-
         };
     }
 }

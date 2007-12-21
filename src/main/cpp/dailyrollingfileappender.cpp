@@ -64,16 +64,17 @@ void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
   bool inPattern = false;
 
   for (size_t i = 0; i < datePattern.length(); i++) {
-    if (datePattern[i] == LOG4CXX_STR('\'')) {
+    if (datePattern[i] == 0x27 /* '\'' */) {
       inLiteral = !inLiteral;
 
       if (inLiteral && inPattern) {
-        pattern.append(1, LOG4CXX_STR('}'));
+        pattern.append(1, 0x7D /* '}' */);
         inPattern = false;
       }
     } else {
       if (!inLiteral && !inPattern) {
-        pattern.append(LOG4CXX_STR("%d{"));
+        const logchar dbrace[] = { 0x25, 0x64, 0x7B, 0 }; // "%d{"
+        pattern.append(dbrace);
         inPattern = true;
       }
 
@@ -82,7 +83,7 @@ void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
   }
 
   if (inPattern) {
-    pattern.append(1, LOG4CXX_STR('}'));
+    pattern.append(1, 0x7D /* '}' */);
   }
 
   policy->setFileNamePattern(pattern);

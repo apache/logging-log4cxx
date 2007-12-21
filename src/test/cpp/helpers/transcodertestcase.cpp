@@ -30,27 +30,39 @@ class TranscoderTestCase : public CppUnit::TestFixture
 {
         CPPUNIT_TEST_SUITE(TranscoderTestCase);
                 CPPUNIT_TEST(decode1);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                 CPPUNIT_TEST(decode2);
 #endif
                 CPPUNIT_TEST(decode3);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                 CPPUNIT_TEST(decode4);
 #endif
                 CPPUNIT_TEST(decode7);
                 CPPUNIT_TEST(decode8);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                 CPPUNIT_TEST(encode1);
 #endif
                 CPPUNIT_TEST(encode2);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                 CPPUNIT_TEST(encode3);
 #endif
                 CPPUNIT_TEST(encode4);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
                 CPPUNIT_TEST(encode5);
 #endif
                 CPPUNIT_TEST(encode6);
+                CPPUNIT_TEST(testDecodeUTF8_1);
+                CPPUNIT_TEST(testDecodeUTF8_2);
+                CPPUNIT_TEST(testDecodeUTF8_3);
+                CPPUNIT_TEST(testDecodeUTF8_4);
+#if LOG4CXX_UNICHAR_API
+                CPPUNIT_TEST(udecode2);
+                CPPUNIT_TEST(udecode4);
+                CPPUNIT_TEST(uencode1);
+                CPPUNIT_TEST(uencode3);
+                CPPUNIT_TEST(uencode5);
+#endif
+                
         CPPUNIT_TEST_SUITE_END();
 
 
@@ -62,7 +74,7 @@ public:
           CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
         }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void decode2() {
           const wchar_t* greeting = L"Hello, World";
           LogString decoded(LOG4CXX_STR("foo\n"));
@@ -78,7 +90,7 @@ public:
            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
         }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void decode4() {
             const wchar_t* nothing = L"";
             LogString decoded(LOG4CXX_STR("foo\n"));
@@ -107,13 +119,14 @@ public:
 
         void decode8() {
             std::string msg("Hello, World.");
-            LogString actual(Transcoder::decode(msg));
+            LogString actual;
+            Transcoder::decode(msg, actual);
             LogString expected(LOG4CXX_STR("Hello, World."));
             CPPUNIT_ASSERT_EQUAL(expected, actual);
         }
 
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void encode1() {
           const LogString greeting(LOG4CXX_STR("Hello, World"));
           std::wstring encoded;
@@ -129,7 +142,7 @@ public:
           CPPUNIT_ASSERT_EQUAL((std::string) "Hello, World", encoded);
         }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void encode3() {
           LogString greeting(BUFSIZE - 3, LOG4CXX_STR('A'));
           greeting.append(LOG4CXX_STR("Hello"));
@@ -151,7 +164,7 @@ public:
           CPPUNIT_ASSERT_EQUAL(std::string("Hello"), encoded.substr(BUFSIZE - 3));
         }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void encode5() {
           //   arbitrary, hopefully meaningless, characters from
           //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
@@ -160,7 +173,7 @@ public:
           //  decode to LogString (UTF-16 or UTF-8)
           //
           LogString decoded;
-          Transcoder::decode(greeting, 6, decoded);
+          Transcoder::decode(greeting, decoded);
           //
           //  decode to wstring
           //
@@ -174,10 +187,10 @@ public:
 #endif
 
         void encode6() {
-#if LOG4CXX_LOGCHAR_IS_WCHAR
+#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
           //   arbitrary, hopefully meaningless, characters from
           //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
-          const wchar_t greeting[] = { L'A', 0x0605, 0x0530, 0x984, 0x40E3, 0x400, 0 };
+          const logchar greeting[] = { L'A', 0x0605, 0x0530, 0x984, 0x40E3, 0x400, 0 };
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_UTF8
@@ -194,7 +207,7 @@ public:
           //  decode to LogString (UTF-16 or UTF-8)
           //
           LogString decoded;
-          Transcoder::decode(greeting, 6, decoded);
+          Transcoder::decode(greeting, decoded);
           //
           //  decode to wstring
           //
@@ -204,6 +217,93 @@ public:
           //
           Transcoder::encode(decoded, encoded);
         }
+
+    void testDecodeUTF8_1() {
+        std::string src("a");
+        LogString out;
+        Transcoder::decodeUTF8(src, out);
+        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("a")), out);
+    }
+
+    void testDecodeUTF8_2() {
+        std::string src(1, 0x80);
+        LogString out;
+        Transcoder::decodeUTF8(src, out);
+        CPPUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);
+    }
+
+    void testDecodeUTF8_3() {
+        std::string src("\xC2");
+        LogString out;
+        Transcoder::decodeUTF8(src, out);
+        CPPUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);
+    }
+
+    void testDecodeUTF8_4() {
+        std::string src("\xC2\xA9");
+        LogString out;
+        Transcoder::decodeUTF8(src, out);
+        LogString::const_iterator iter = out.begin();
+        unsigned int sv = Transcoder::decode(out, iter);
+        CPPUNIT_ASSERT_EQUAL((unsigned int) 0xA9, sv);
+        CPPUNIT_ASSERT_EQUAL(true, iter == out.end());
+    }
+
+
+#if LOG4CXX_UNICHAR_API
+        void udecode2() {
+          const UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+          LogString decoded(LOG4CXX_STR("foo\n"));
+          Transcoder::decode(greeting, decoded);
+          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
+        }
+
+        void udecode4() {
+            const UniChar nothing[] = { 0 };
+            LogString decoded(LOG4CXX_STR("foo\n"));
+            Transcoder::decode(nothing, decoded);
+            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
+        }
+
+        void uencode1() {
+          const LogString greeting(LOG4CXX_STR("Hello, World"));
+          std::basic_string<UniChar> encoded;
+          Transcoder::encode(greeting, encoded);
+          const UniChar expected[] = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+          CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(expected), encoded);
+        }
+
+        void uencode3() {
+          LogString greeting(BUFSIZE - 3, LOG4CXX_STR('A'));
+          greeting.append(LOG4CXX_STR("Hello"));
+          std::basic_string<UniChar> encoded;
+          Transcoder::encode(greeting, encoded);
+          std::basic_string<UniChar> manyAs(BUFSIZE - 3, 'A');
+          CPPUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
+          const UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
+          CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(hello), encoded.substr(BUFSIZE - 3));
+        }
+
+        void uencode5() {
+          //   arbitrary, hopefully meaningless, characters from
+          //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
+          const UniChar greeting[] = { L'A', 0x0605, 0x0530, 0x984, 0x40E3, 0x400, 0 };
+          //
+          //  decode to LogString (UTF-16 or UTF-8)
+          //
+          LogString decoded;
+          Transcoder::decode(greeting, decoded);
+          //
+          //  decode to basic_string<UniChar>
+          //
+          std::basic_string<UniChar> encoded;
+          Transcoder::encode(decoded, encoded);
+          //
+          //   should be lossless
+          //
+          CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), encoded);
+        }
+#endif
 
 
 };

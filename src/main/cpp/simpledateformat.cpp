@@ -27,6 +27,7 @@
 #define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
+#include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -38,21 +39,6 @@ using namespace std;
 #endif
 
 
-/*
- * implementation works on localechar sequences to avoid too many calls
- * to Transformer::decode() when the date is formatted.
- */
-#if LOG4CXX_HAS_STD_WLOCALE && LOG4CXX_HAS_WCHAR_T
-  typedef wchar_t localechar;
-  #define LOG4CXX_LOCALE_STR(str) L ## str
-#else
-  typedef char localechar;
-  #define LOG4CXX_LOCALE_STR(str) str
-#endif
-
-typedef std::basic_string < localechar > LocaleString;
-
-
 namespace log4cxx
 {
   namespace helpers
@@ -60,70 +46,24 @@ namespace log4cxx
     namespace SimpleDateFormatImpl
     {
 
-#if LOG4CXX_HAS_STD_LOCALE
-     /**
-      * Renders a time structure according to a specific format.
-      *
-      * @param locale The locale to use for the formatting.
-      * @param buffer The buffer which retrieves the result.
-      * @param time The time structure to render.
-      * @param spec The format for rendering the structure.
-      */
-     void renderFacet( const std::locale & locale, std::basic_ostream < localechar > & buffer,
-                       const tm * time, const localechar spec )
-           {
-       #if defined(_USEFAC)
-             _USEFAC( locale, std::time_put < localechar > ).put( buffer, buffer, time, spec );
-       #else
-             std::use_facet < std::time_put < localechar > > ( locale ).put( buffer, buffer, buffer.fill(), time, spec );
-       #endif
-      }
-#endif
-
-      /**
-       * Renders an APR time structure according to a specific format.
-       *
-       * @param result The LogString which retrieves the result.
-       * @param tm The APR time structure to render.
-       * @param format The format for rendering the structure.
-       */
-      void renderFacet( LocaleString & res, apr_time_exp_t * tm, const char * format )
-      {
-        enum
-        {
-          BUFSIZE = 256
-        };
-        char buf[BUFSIZE];
-        memset(buf, 0, BUFSIZE);
-        apr_size_t retsize = 0;
-        apr_status_t stat = apr_strftime( buf, & retsize, BUFSIZE, format, tm );
-        if ( stat != APR_SUCCESS )
-        {
-          buf[0] = '?';
-          retsize = 1;
-        }
-        LogString result;
-        Transcoder::decode( buf, retsize, result );
-        Transcoder::encode( result, res );
-      }
-
-    }
-
     /**
      * Abstract inner class representing one format token
      * (one or more instances of a character).
      */
     class PatternToken {
     public:
-          PatternToken();
+          PatternToken() {
+          }
 
-          virtual ~PatternToken();
+          virtual ~PatternToken() {
+          }
 
           /**
            * Sets the time zone.
            * @param zone new time zone.
            */
-          virtual void setTimeZone(const TimeZonePtr& zone);
+          virtual void setTimeZone(const TimeZonePtr& zone) {
+          }
 
           /**
            * Appends the formatted content to the string.
@@ -131,10 +71,82 @@ namespace log4cxx
            * @param date exploded date/time.
            * @param p memory pool.
            */
-          virtual void format(LocaleString& s,
+          virtual void format(LogString& s,
                               const apr_time_exp_t& date,
                               log4cxx::helpers::Pool& p) const = 0;
+                              
+    protected:
+           typedef static void (*incrementFunction)(tm& time, apr_time_exp_t& apr_time);
+           
+           static void incrementMonth(tm& time, apr_time_exp_t& aprtime) {
+               time.tm_mon++;
+               aprtime.tm_mon++;
+           }
 
+           static void incrementDay(tm& time, apr_time_exp_t& aprtime) {
+               time.tm_wday++;
+               aprtime.tm_wday++;
+           }
+
+           static void incrementHalfDay(tm& time, apr_time_exp_t& aprtime) {
+               time.tm_hour += 12;
+               aprtime.tm_hour += 12;
+           }
+           
+           static void renderFacet(const std::locale* locale, 
+                incrementFunction inc, 
+                char spec, 
+                unsigned int wspec, 
+                const char* aprspec, 
+                std::vector<LogString>& values) {
+                std::vector<LogString>::iterator valueIter = values.begin();
+                tm time;
+                memset(&time, 0, sizeof(time));
+                apr_time_exp_t aprtime;
+                memset(&aprtime, 0, sizeof(aprtime));
+#if LOG4CXX_HAS_STD_LOCALE
+                if (locale != NULL) {
+#if LOG4CXX_WCHAR_T_API
+                    if (std::has_facet< std::time_put<wchar_t> >(*locale)) {
+                        const std::time_put<wchar_t>& facet = std::use_facet< std::time_put<wchar_t> >(*locale);
+                        size_t start = 0;
+                        std::wostringstream os;
+                        for(; valueIter != values.end(); valueIter++) {
+                            facet.put(os, os, os.fill(), &time, (wchar_t) wspec);
+                            Transcoder::decode(os.str().substr(start), *valueIter);
+                            start = os.str().length();
+                            (*inc)(time, aprtime);
+                        }
+                    } else 
+#endif
+                    if (std::has_facet< std::time_put<char> >(*locale)) {
+                        const std::time_put<char>& facet = std::use_facet< std::time_put<char> >(*locale);
+                        size_t start = 0;
+                        std::ostringstream os;
+                        for(; valueIter != values.end(); valueIter++) {
+                            facet.put(os, os, os.fill(), &time, spec);
+                            Transcoder::decode(os.str().substr(start), *valueIter);
+                            start = os.str().length();
+                            (*inc)(time, aprtime);
+                        }
+                    }
+                }
+#endif          
+                const size_t BUFSIZE = 256; 
+                char buf[BUFSIZE];
+                memset(buf, 0, BUFSIZE);
+                apr_size_t retsize = 0;
+                for(; valueIter != values.end(); valueIter++) {
+                    apr_status_t stat = apr_strftime(buf, &retsize, BUFSIZE, aprspec, &aprtime);
+                    (*inc)(time, aprtime);
+                    if (stat == APR_SUCCESS) {
+                        Transcoder::decode(std::string(buf, retsize), *valueIter);
+                    } else {
+                        valueIter->append(1, 0x3F);
+                    }
+                }
+            }
+                              
     private:
           /**
            * Private copy constructor.
@@ -147,39 +159,21 @@ namespace log4cxx
           PatternToken& operator=(const PatternToken&);
     };
 
-  }
-}
-
-using namespace log4cxx::helpers::SimpleDateFormatImpl;
-using namespace log4cxx::helpers;
-
-PatternToken::PatternToken()
-{
-}
-
-PatternToken::~PatternToken()
-{
-}
-
-void PatternToken::setTimeZone( const TimeZonePtr & /* zone */ )
-{
-}
-
 
 class LiteralToken : public PatternToken
 {
 public:
-  LiteralToken( localechar ch1, int count1 ) : ch( ch1 ), count( count1 )
+  LiteralToken( logchar ch1, int count1 ) : ch( ch1 ), count( count1 )
   {
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & , Pool & /* p */ ) const
+  void format( LogString& s, const apr_time_exp_t & , Pool & /* p */ ) const
   {
     s.append( count, ch );
   }
 
 private:
-  localechar ch;
+  logchar ch;
   int count;
 };
 
@@ -192,9 +186,10 @@ public:
   {
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & /* tm */, Pool & /* p */ ) const
+  void format(LogString& s, const apr_time_exp_t & /* tm */, Pool & /* p */ ) const
   {
-    s.append( LOG4CXX_LOCALE_STR( "AD" ) );
+    s.append(1, 0x41 /* 'A' */);
+    s.append(1, 0x44 /* 'D' */);
   }
 };
 
@@ -209,14 +204,15 @@ public:
 
   virtual int getField( const apr_time_exp_t & tm ) const = 0;
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LogString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     size_t initialLength = s.length();
+    
     StringHelper::toString( getField( tm ), p, s );
     size_t finalLength = s.length();
     if ( initialLength + width > finalLength )
     {
-      s.insert( initialLength, ( initialLength + width ) - finalLength, LOG4CXX_LOCALE_STR( '0' ) );
+      s.insert( initialLength, ( initialLength + width ) - finalLength, 0x30 /* '0' */);
     }
   }
 
@@ -260,51 +256,17 @@ public:
 class AbbreviatedMonthNameToken : public PatternToken
 {
 public:
-  AbbreviatedMonthNameToken( int
-#if LOG4CXX_HAS_STD_LOCALE
-                             width
-#endif
-                             , const std::locale *
-#if LOG4CXX_HAS_STD_LOCALE
-                             locale
-#endif
-                             ) : names( 12 )
-  {
-#if LOG4CXX_HAS_STD_LOCALE
-    if ( locale != NULL )
-    {
-      tm time;
-      memset( & time, 0, sizeof( time ));
-      std::basic_ostringstream < localechar > buffer;
-      size_t start = 0;
-      for ( int imon = 0; imon < 12; imon++ )
-      {
-        time.tm_mon = imon;
-        renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'b' ) );
-        LocaleString monthnames( buffer.str() );
-        names[imon] = monthnames.substr( start );
-        start = monthnames.length();
-      }
-      return;
-    }
-#endif
-    apr_time_exp_t time;
-    memset( & time, 0, sizeof( time ));
-    for ( int imon = 0; imon < 12; imon++ )
-    {
-      time.tm_mon = imon;
-      renderFacet( names[imon], & time, "%b" );
-    }
+  AbbreviatedMonthNameToken(int, const std::locale *locale) : names( 12 ) {
+      renderFacet(locale, PatternToken::incrementMonth, 'b', 0x62, "%b", names);
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
+  void format(LogString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_mon] );
   }
 
 private:
-  std::vector < LocaleString > names;
-
+  std::vector < LogString > names;
 };
 
 
@@ -312,50 +274,18 @@ private:
 class FullMonthNameToken : public PatternToken
 {
 public:
-  FullMonthNameToken( int
-#if LOG4CXX_HAS_STD_LOCALE
-                      width
-#endif
-                      , const std::locale *
-#if LOG4CXX_HAS_STD_LOCALE
-                      locale
-#endif
-                       ) : names( 12 )
+  FullMonthNameToken( int width, const std::locale *locale) : names( 12 )
   {
-#if LOG4CXX_HAS_STD_LOCALE
-    if ( locale != NULL )
-    {
-      tm time;
-      memset( & time, 0, sizeof( time ));
-      std::basic_ostringstream < localechar > buffer;
-      size_t start = 0;
-      for ( int imon = 0; imon < 12; imon++ )
-      {
-        time.tm_mon = imon;
-        renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'B' ) );
-        LocaleString monthnames( buffer.str() );
-        names[imon] = monthnames.substr( start );
-        start = monthnames.length();
-      }
-      return;
-    }
-#endif
-    apr_time_exp_t time;
-    memset( & time, 0, sizeof( time ));
-    for ( int imon = 0; imon < 12; imon++ )
-    {
-      time.tm_mon = imon;
-      renderFacet( names[imon], & time, "%B" );
-    }
+      renderFacet(locale, PatternToken::incrementMonth, 'B', 0x42, "%B", names);
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
+  void format( LogString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_mon] );
   }
 
 private:
-  std::vector < LocaleString > names;
+  std::vector < LogString > names;
 };
 
 
@@ -438,50 +368,17 @@ public:
 class AbbreviatedDayNameToken : public PatternToken
 {
 public:
-  AbbreviatedDayNameToken( int
-#if LOG4CXX_HAS_STD_LOCALE
-                           width
-#endif
-                           , const std::locale *
-#if LOG4CXX_HAS_STD_LOCALE
-                           locale
-#endif
-                           ) : names( 7 )
-  {
-#if LOG4CXX_HAS_STD_LOCALE
-    if ( locale != NULL )
-    {
-      tm time;
-      memset( & time, 0, sizeof( time ));
-      std::basic_ostringstream < localechar > buffer;
-      size_t start = 0;
-      for ( int iday = 0; iday < 7; iday++ )
-      {
-        time.tm_wday = iday;
-        renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'a' ) );
-        LocaleString daynames( buffer.str() );
-        names[iday] = daynames.substr( start );
-        start = daynames.length();
-      }
-      return;
-    }
-#endif
-    apr_time_exp_t time;
-    memset( & time, 0, sizeof( time ));
-    for ( int iday = 0; iday < 7; iday++ )
-    {
-      time.tm_wday = iday;
-      renderFacet( names[iday], & time, "%a" );
-    }
+  AbbreviatedDayNameToken( int width, const std::locale *locale) : names( 7 ) {
+      renderFacet(locale, PatternToken::incrementDay, 'a', 0x61, "%a", names);
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
+  void format( LogString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_wday] );
   }
 
 private:
-  std::vector < LocaleString > names;
+  std::vector < LogString > names;
 
 };
 
@@ -490,50 +387,17 @@ private:
 class FullDayNameToken : public PatternToken
 {
 public:
-  FullDayNameToken( int
-#if LOG4CXX_HAS_STD_LOCALE
-                    width
-#endif
-                    , const std::locale *
-#if LOG4CXX_HAS_STD_LOCALE
-                    locale
-#endif
-                    ) : names( 7 )
-  {
-#if LOG4CXX_HAS_STD_LOCALE
-    if ( locale != NULL )
-    {
-      tm time;
-      memset( & time, 0, sizeof( time ));
-      std::basic_ostringstream < localechar > buffer;
-      size_t start = 0;
-      for ( int iday = 0; iday < 7; iday++ )
-      {
-        time.tm_wday = iday;
-        renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'A' ) );
-        LocaleString daynames( buffer.str() );
-        names[iday] = daynames.substr( start );
-        start = daynames.length();
-      }
-      return;
-    }
-#endif
-    apr_time_exp_t time;
-    memset( & time, 0, sizeof( time ));
-    for ( int iday = 0; iday < 7; iday++ )
-    {
-      time.tm_wday = iday;
-      renderFacet( names[iday], & time, "%A" );
-    }
+  FullDayNameToken( int width, const std::locale *locale) : names( 7 ) {
+      renderFacet(locale, PatternToken::incrementDay, 'A', 0x41, "%A", names);
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
+  void format( LogString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_wday] );
   }
 
 private:
-  std::vector < LocaleString > names;
+  std::vector < LogString > names;
 
 };
 
@@ -623,50 +487,17 @@ public:
 class AMPMToken : public PatternToken
 {
 public:
-  AMPMToken( int
-#if LOG4CXX_HAS_STD_LOCALE
-             width
-#endif
-             , const std::locale *
-#if LOG4CXX_HAS_STD_LOCALE
-             locale
-#endif
-              ) : names( 2 )
-  {
-#if LOG4CXX_HAS_STD_LOCALE
-    if ( locale != NULL )
-    {
-      tm time;
-      memset( & time, 0, sizeof( time ));
-      std::basic_ostringstream < localechar > buffer;
-      size_t start = 0;
-      for ( int i = 0; i < 2; i++ )
-      {
-        time.tm_hour = i * 12;
-        renderFacet( * locale, buffer, & time, LOG4CXX_LOCALE_STR( 'p' ) );
-        LocaleString ampm = buffer.str();
-        names[i] = ampm.substr( start );
-        start = ampm.length();
-      }
-      return;
-    }
-#endif
-    apr_time_exp_t time;
-    memset( & time, 0, sizeof( time ));
-    for ( int i = 0; i < 2; i++ )
-    {
-      time.tm_hour = i * 12;
-      renderFacet( names[i], & time, "%p" );
-    }
+  AMPMToken( int width, const std::locale *locale) : names( 2 ) {
+      renderFacet(locale, PatternToken::incrementHalfDay, 'p', 0x70, "%p", names);
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
+  void format( LogString& s, const apr_time_exp_t & tm, Pool & /* p */ ) const
   {
     s.append( names[tm.tm_hour / 12] );
   }
 
 private:
-  std::vector < LocaleString > names;
+  std::vector < LogString > names;
 };
 
 
@@ -678,11 +509,8 @@ public:
   {
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & , Pool & /* p */ ) const
-  {
-    LocaleString tzID;
-    Transcoder::encode( timeZone->getID(), tzID );
-    s.append( tzID );
+  void format( LogString& s, const apr_time_exp_t & , Pool & /* p */ ) const {
+    s.append(timeZone->getID());
   }
 
   void setTimeZone( const TimeZonePtr & zone )
@@ -703,23 +531,23 @@ public:
   {
   }
 
-  void format( LocaleString& s, const apr_time_exp_t & tm, Pool & p ) const
+  void format( LogString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     if ( tm.tm_gmtoff == 0 )
     {
-      s.append( 1, LOG4CXX_LOCALE_STR( 'Z' ) );
+      s.append( 1, 0x5A /* 'Z'  */ );
     }
     else
     {
       apr_int32_t off = tm.tm_gmtoff;
       size_t basePos = s.length();
-      s.append( LOG4CXX_LOCALE_STR( "+0000" ) );
+      s.append( LOG4CXX_STR( "+0000" ) );
       if ( off < 0 )
       {
-        s[basePos] = LOG4CXX_LOCALE_STR( '-' );
+        s[basePos] = 0x2D; // '-'
         off = -off;
       }
-      LocaleString hours;
+      LogString hours;
       StringHelper::toString( off / 3600, p, hours );
       size_t hourPos = basePos + 2;
       //
@@ -729,7 +557,7 @@ public:
       {
         s[hourPos--] = hours[i];
       }
-      LocaleString min;
+      LogString min;
       StringHelper::toString( ( off % 3600 ) / 60, p, min );
       size_t minPos = basePos + 4;
       //
@@ -746,29 +574,28 @@ public:
 
 
 
-namespace log4cxx
-{
-  namespace helpers
-  {
-    namespace SimpleDateFormatImpl
-    {
+  }
+}
+}
 
 
-      void addToken( const localechar spec, const int repeat, const std::locale * locale,
+using namespace log4cxx::helpers::SimpleDateFormatImpl;
+
+void SimpleDateFormat::addToken(const logchar spec, const int repeat, const std::locale * locale,
            std::vector < PatternToken * > & pattern )
            {
              PatternToken * token = NULL;
              switch ( spec )
              {
-               case LOG4CXX_LOCALE_STR( 'G' ):
+               case 0x47: // 'G' 
                  token = ( new EraToken( repeat, locale ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'y' ):
+               case 0x79: // 'y'
                  token = ( new YearToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'M' ):
+               case 0x4D: // 'M'
                  if ( repeat <= 2 )
                  {
                    token = ( new MonthToken( repeat ) );
@@ -783,27 +610,27 @@ namespace log4cxx
                  }
                break;
 
-               case LOG4CXX_LOCALE_STR( 'w' ):
+               case 0x77: // 'w'
                  token = ( new WeekInYearToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'W' ):
+               case 0x57: // 'W'
                  token = ( new WeekInMonthToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'D' ):
+               case 0x44: // 'D'
                  token = ( new DayInYearToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'd' ):
+               case 0x64: // 'd'
                  token = ( new DayInMonthToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'F' ):
+               case 0x46: // 'F'
                  token = ( new DayOfWeekInMonthToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'E' ):
+               case 0x45: // 'E'
                  if ( repeat <= 3 )
                  {
                    token = ( new AbbreviatedDayNameToken( repeat, locale ) );
@@ -814,43 +641,43 @@ namespace log4cxx
                  }
                break;
 
-               case LOG4CXX_LOCALE_STR( 'a' ):
+               case 0x61: // 'a'
                  token = ( new AMPMToken( repeat, locale ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'H' ):
+               case 0x48: // 'H'
                  token = ( new MilitaryHourToken( repeat, 0 ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'k' ):
+               case 0x6B: // 'k'
                  token = ( new MilitaryHourToken( repeat, 1 ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'K' ):
+               case 0x4B: // 'K'
                  token = ( new HourToken( repeat, 0 ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'h' ):
+               case 0x68: // 'h'
                  token = ( new HourToken( repeat, 1 ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'm' ):
+               case 0x6D: // 'm' 
                  token = ( new MinuteToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 's' ):
+               case 0x73: // 's' 
                  token = ( new SecondToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'S' ):
+               case 0x53: // 'S'
                  token = ( new MillisecondToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'z' ):
+               case 0x7A: // 'z'
                  token = ( new GeneralTimeZoneToken( repeat ) );
                break;
 
-               case LOG4CXX_LOCALE_STR( 'Z' ):
+               case 0x5A: // 'Z'
                  token = ( new RFC822TimeZoneToken( repeat ) );
                break;
 
@@ -859,16 +686,17 @@ namespace log4cxx
              }
              assert( token != NULL );
              pattern.push_back( token );
-      }
+}
 
-      void parsePattern( const LogString & fmt, const std::locale * locale,
+
+void SimpleDateFormat::parsePattern( const LogString & fmt, const std::locale * locale,
            std::vector < PatternToken * > & pattern )
-           {
+{
              if ( !fmt.empty() )
              {
                LogString::const_iterator iter = fmt.begin();
                int repeat = 1;
-               localechar prevChar = * iter;
+               logchar prevChar = * iter;
                for ( iter++; iter != fmt.end(); iter++ )
                {
                  if ( * iter == prevChar )
@@ -884,12 +712,7 @@ namespace log4cxx
                }
                addToken( prevChar, repeat, locale, pattern );
              }
-      }
-    }
-  }
 }
-
-
 
 
 SimpleDateFormat::SimpleDateFormat( const LogString & fmt ) : timeZone( TimeZone::getDefault() )
@@ -931,12 +754,10 @@ void SimpleDateFormat::format( LogString & s, log4cxx_time_t time, Pool & p ) co
   apr_status_t stat = timeZone->explode( & exploded, time );
   if ( stat == APR_SUCCESS )
   {
-    LocaleString formatted;
     for ( PatternTokenList::const_iterator iter = pattern.begin(); iter != pattern.end(); iter++ )
     {
-      ( * iter )->format( formatted, exploded, p );
+      ( * iter )->format( s, exploded, p );
     }
-    log4cxx::helpers::Transcoder::decode( formatted, s );
   }
 }
 

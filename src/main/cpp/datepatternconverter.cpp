@@ -61,7 +61,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options) {
           LOG4CXX_STR("DATE"), LOG4CXX_STR("date"))) {
           df = new DateTimeDateFormat();
      } else {
-       if (dateFormatStr.find(LOG4CXX_STR('%')) == std::string::npos) {
+       if (dateFormatStr.find(0x25 /*'%'*/) == std::string::npos) {
           try {
              df = new SimpleDateFormat(dateFormatStr);
              maximumCacheValidity =

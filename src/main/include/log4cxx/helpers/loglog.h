@@ -52,7 +52,7 @@ namespace log4cxx
                         LogLog();
                         LogLog(const LogLog&);
                         LogLog& operator=(const LogLog&);
-      			static LogLog& getInstance();
+                        static LogLog& getInstance();
  
 
                 public:
@@ -95,10 +95,8 @@ namespace log4cxx
                         static void warn(const LogString&  msg, const std::exception& e);
 
                         private:
-                        static void emit(const std::string& msg);
-#if LOG4CXX_HAS_WCHAR_T
-                        static void emit(const std::wstring& msg);
-#endif
+                        static void emit(const LogString& msg);
+                        static void emit(const std::exception& ex);
                 };
         }  // namespace helpers
 } // namespace log4cxx

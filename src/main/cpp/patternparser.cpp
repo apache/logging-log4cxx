@@ -24,7 +24,7 @@ using namespace log4cxx;
 using namespace log4cxx::pattern;
 using namespace log4cxx::helpers;
 
-const logchar PatternParser::ESCAPE_CHAR = LOG4CXX_STR('%');
+const logchar PatternParser::ESCAPE_CHAR = 0x25; // '%'
 
 
 /**
@@ -38,9 +38,9 @@ bool PatternParser::isUnicodeIdentifierStart(logchar ch) {
   //   greatly simplified version checks if
   //     character is USACII alpha or number
   //
-  return (ch >= LOG4CXX_STR('A') && ch <= LOG4CXX_STR('Z')) ||
-         (ch >= LOG4CXX_STR('a') && ch <= LOG4CXX_STR('z')) ||
-         (ch >= LOG4CXX_STR('0') && ch <= LOG4CXX_STR('9'));
+  return (ch >= 0x41 /* 'A' */ && ch <= 0x5A /* 'Z' */) ||
+         (ch >= 0x61 /* 'a' */ && ch <= 0x7A /* 'z' */) ||
+         (ch >= 0x30 /* '0' */ && ch <= 0x39 /* '9' */);
 }
 
 bool PatternParser::isUnicodeIdentifierPart(logchar ch) {
@@ -48,10 +48,8 @@ bool PatternParser::isUnicodeIdentifierPart(logchar ch) {
   //   greatly simplified version checks if
   //     character is USACII alpha or number
   //
-  return (ch >= LOG4CXX_STR('A') && ch <= LOG4CXX_STR('Z')) ||
-         (ch >= LOG4CXX_STR('a') && ch <= LOG4CXX_STR('z')) ||
-         (ch >= LOG4CXX_STR('0') && ch <= LOG4CXX_STR('9')) ||
-         (ch == LOG4CXX_STR('_'));
+  return isUnicodeIdentifierStart(ch)
+         || (ch == 0x5F /* '_' */);
 }
 
 int PatternParser::extractConverter(
@@ -89,8 +87,8 @@ int PatternParser::extractConverter(
 
 int PatternParser::extractOptions(const LogString& pattern, LogString::size_type i,
    std::vector<LogString>& options) {
-  while ((i < pattern.length()) && (pattern[i] == LOG4CXX_STR('{'))) {
-    int end = pattern.find(LOG4CXX_STR('}'), i);
+  while ((i < pattern.length()) && (pattern[i] == 0x7B /* '{' */)) {
+    int end = pattern.find(0x7D /* '}' */, i);
 
     if (end == -1) {
       break;
@@ -133,15 +131,10 @@ void PatternParser::parse(
 
       if (c == ESCAPE_CHAR) {
         // peek at the next char.
-        switch (pattern[i]) {
-        case ESCAPE_CHAR:
+        if(pattern[i] == ESCAPE_CHAR) {
           currentLiteral.append(1, c);
           i++; // move pointer
-
-          break;
-
-        default:
-
+        } else {
           if (!currentLiteral.empty()) {
             patternConverters.push_back(
               LiteralPatternConverter::newInstance(currentLiteral));
@@ -163,7 +156,7 @@ void PatternParser::parse(
       currentLiteral.append(1, c);
 
       switch (c) {
-      case '-':
+      case 0x2D: // '-'
         formattingInfo =
           new FormattingInfo(
             true, formattingInfo->getMinLength(),
@@ -171,17 +164,17 @@ void PatternParser::parse(
 
         break;
 
-      case '.':
+      case 0x2E: // '.'
         state = DOT_STATE;
 
         break;
 
       default:
 
-        if ((c >= LOG4CXX_STR('0')) && (c <= LOG4CXX_STR('9'))) {
+        if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */)) {
           formattingInfo =
             new FormattingInfo(
-              formattingInfo->isLeftAligned(), c - LOG4CXX_STR('0'),
+              formattingInfo->isLeftAligned(), c - 0x30 /* '0' */,
               formattingInfo->getMaxLength());
           state = MIN_STATE;
         } else {
@@ -203,13 +196,13 @@ void PatternParser::parse(
     case MIN_STATE:
       currentLiteral.append(1, c);
 
-      if ((c >= LOG4CXX_STR('0')) && (c <= LOG4CXX_STR('9'))) {
+      if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */)) {
         formattingInfo =
           new FormattingInfo(
             formattingInfo->isLeftAligned(),
-            (formattingInfo->getMinLength() * 10) + (c - LOG4CXX_STR('0')),
+            (formattingInfo->getMinLength() * 10) + (c - 0x30 /* '0' */),
             formattingInfo->getMaxLength());
-      } else if (c == LOG4CXX_STR('.')) {
+      } else if (c == 0x2E /* '.' */) {
         state = DOT_STATE;
       } else {
         i = finalizeConverter(
@@ -227,11 +220,11 @@ void PatternParser::parse(
     case DOT_STATE:
       currentLiteral.append(1, c);
 
-      if ((c >= LOG4CXX_STR('0')) && (c <= LOG4CXX_STR('9'))) {
+      if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */)) {
         formattingInfo =
           new FormattingInfo(
             formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
-            c - LOG4CXX_STR('0'));
+            c - 0x30 /* '0' */);
         state = MAX_STATE;
       } else {
           LogLog::error(LOG4CXX_STR("Error in pattern, was expecting digit."));
@@ -244,11 +237,11 @@ void PatternParser::parse(
     case MAX_STATE:
       currentLiteral.append(1, c);
 
-      if ((c >= LOG4CXX_STR('0')) && (c <= LOG4CXX_STR('9'))) {
+      if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */)) {
         formattingInfo =
           new FormattingInfo(
             formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
-            (formattingInfo->getMaxLength() * 10) + (c - LOG4CXX_STR('0')));
+            (formattingInfo->getMaxLength() * 10) + (c - 0x30 /* '0' */));
       } else {
         i = finalizeConverter(
             c, pattern, i, currentLiteral, formattingInfo,

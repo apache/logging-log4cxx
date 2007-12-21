@@ -46,7 +46,7 @@ namespace log4cxx
               *  will not be recognized and duplicate requests
               *  will use the cache.
               */
-               static const logchar* const digits;
+               static const logchar digits[];
 
               enum {
                /**
@@ -62,19 +62,19 @@ namespace log4cxx
               /**
                *  Expected representation of first magic number.
                */
-              static const logchar* const magicString1;
+              static const logchar magicString1[];
 
 
               /**
                *  Expected representation of second magic number.
                */
-              static const logchar* const magicString2;
+              static const logchar magicString2[];
 
 
               /**
                *  Expected representation of 0 milliseconds.
                */
-             static const logchar* const zeroString;
+             static const logchar zeroString[];
 
             /**
              *   Wrapped formatter.

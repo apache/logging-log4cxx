@@ -38,14 +38,16 @@ namespace log4cxx
 
                   SystemOutWriter();
                   ~SystemOutWriter();
+                  
+                  SystemOutWriter(const SystemOutWriter&);
+                  SystemOutWriter& operator=(const SystemOutWriter&);
 
                   virtual void close(Pool& p);
                   virtual void flush(Pool& p);
                   virtual void write(const LogString& str, Pool& p);
-
-          private:
-                  SystemOutWriter(const SystemOutWriter&);
-                  SystemOutWriter& operator=(const SystemOutWriter&);
+                  
+                  static void write(const LogString& str);
+                  static void flush();
           };
 
         } // namespace helpers

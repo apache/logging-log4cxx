@@ -105,7 +105,7 @@ public:
         loop = Loop::loopStream;
       } else if (args[2] == LOG4CXX_STR("bad-stream")) {
         loop = Loop::loopBadStream;
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
        } else if (args[2] == LOG4CXX_STR("wide")) {
         loop = Loop::loopWide;
       } else if (args[2] == LOG4CXX_STR("wide-stream")) {
@@ -128,7 +128,7 @@ public:
     return (apr_time_now() - before) / 1000;
   }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
   static long loopWide(long len, LoggerPtr& logger1) {
     const wchar_t* msg = L"Some fix message of medium length.";
     apr_time_t before = apr_time_now();
@@ -149,7 +149,7 @@ public:
     return (apr_time_now() - before) / 1000;
   }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
    static long loopWideStream(long len, LoggerPtr& logger1) {
     const wchar_t* msg = L"Some fix message of medium length.";
     apr_time_t before = apr_time_now();
@@ -171,7 +171,7 @@ public:
     return (apr_time_now() - before) / 1000;
   }
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
    static long loopBadWideStream(long len, LoggerPtr& logger1) {
     const wchar_t* msg = L"Some fix message of medium length.";
     apr_time_t before = apr_time_now();

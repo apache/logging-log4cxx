@@ -21,23 +21,41 @@
 #include <string>
 #include <log4cxx/log4cxx.h>
 
-#if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_LOGCHAR_IS_UTF8
-#error only one of LOG4CXX_LOGCHAR_IS_WCHAR and LOG4CXX_LOGCHAR_IS_UTF8 may be true
+#if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_LOGCHAR_IS_UNICHAR
+#error only one of LOG4CXX_LOGCHAR_IS_WCHAR, LOG4CXX_LOGCHAR_IS_UTF8 or LOG4CXX_LOGCHAR_IS_UNICHAR may be true
 #endif
+
+#if LOG4CXX_CFSTRING_API
+extern "C" {
+typedef const struct __CFString* CFStringRef;
+}
+#endif
+
 
 
 namespace log4cxx {
 
+#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+typedef unsigned short UniChar;
+#endif
+
 #if LOG4CXX_LOGCHAR_IS_WCHAR
    typedef wchar_t logchar;
 #define LOG4CXX_STR(str) L ## str
-
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_UTF8
    typedef char logchar;
+#if LOG4CXX_CHARSET_EBCDIC
+#define LOG4CXX_STR(str) log4cxx::helpers::Transcoder::decode(str)
+#else   
 #define LOG4CXX_STR(str) str
+#endif
+#endif
 
+#if LOG4CXX_LOGCHAR_IS_UNICHAR
+   typedef UniChar logchar;
+#define LOG4CXX_STR(str) log4cxx::helpers::Transcoder::decode(str)   
 #endif
 
    typedef std::basic_string<logchar> LogString;
@@ -54,5 +72,9 @@ namespace log4cxx {
 #endif
 #endif
 
+
+#if LOG4CXX_LOGCHAR_IS_UNICHAR || (LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_CHARSET_EBCDIC)
+#include <log4cxx/helpers/transcoder.h>
+#endif
 
 #endif //_LOG4CXX_STRING_H

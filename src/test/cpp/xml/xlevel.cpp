@@ -23,43 +23,34 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_LEVEL(XLevel)
 
-const LevelPtr XLevel::TRACE(XLevel::getTrace());
-const LevelPtr XLevel::LETHAL(XLevel::getLethal());
 
-
-XLevel::XLevel(int level1, const logchar* name1, int syslogEquivalent1)
+XLevel::XLevel(int level1, const LogString& name1, int syslogEquivalent1)
 : Level(level1, name1, syslogEquivalent1)
 {
 }
 
-const LevelPtr& XLevel::getTrace() {
+LevelPtr XLevel::getTrace() {
   static const LevelPtr trace(new XLevel(XLevel::TRACE_INT, LOG4CXX_STR("TRACE"), 7));
   return trace;
 }
 
-const LevelPtr& XLevel::getLethal() {
+LevelPtr XLevel::getLethal() {
   static const LevelPtr lethal(new XLevel(XLevel::LETHAL_INT, LOG4CXX_STR("LETHAL"), 0));
   return lethal;
 }
 
-const LevelPtr& XLevel::toLevel(const std::string& sArg)
+LevelPtr XLevel::toLevelLS(const LogString& sArg)
 {
-   return toLevel(sArg, getTrace());
+   return toLevelLS(sArg, getTrace());
 }
 
-#if LOG4CXX_HAS_WCHAR_T
-const LevelPtr& XLevel::toLevel(const std::wstring& sArg)
-{
-   return toLevel(sArg, getTrace());
-}
-#endif
 
-const LevelPtr& XLevel::toLevel(int val)
+LevelPtr XLevel::toLevel(int val)
 {
    return toLevel(val, getTrace());
 }
 
-const LevelPtr& XLevel::toLevel(int val, const LevelPtr& defaultLevel)
+LevelPtr XLevel::toLevel(int val, const LevelPtr& defaultLevel)
 {
    switch(val)
    {
@@ -69,9 +60,7 @@ const LevelPtr& XLevel::toLevel(int val, const LevelPtr& defaultLevel)
    }
 }
 
-
-#if LOG4CXX_HAS_WCHAR_T
-const LevelPtr& XLevel::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
+LevelPtr XLevel::toLevelLS(const LogString& sArg, const LevelPtr& defaultLevel)
 {
    if (sArg.empty())
     {
@@ -79,35 +68,15 @@ const LevelPtr& XLevel::toLevel(const std::wstring& sArg, const LevelPtr& defaul
     }
 
     if (StringHelper::equalsIgnoreCase(sArg,
-          L"TRACE", L"trace")) {
+          LOG4CXX_STR("TRACE"), LOG4CXX_STR("trace"))) {
       return getTrace();
     }
 
     if (StringHelper::equalsIgnoreCase(sArg,
-           L"LETHAL", L"lethal")) {
+           LOG4CXX_STR("LETHAL"), LOG4CXX_STR("lethal"))) {
       return getLethal();
     }
 
     return Level::toLevel(sArg, defaultLevel);
 }
-#endif
 
-const LevelPtr& XLevel::toLevel(const std::string& sArg, const LevelPtr& defaultLevel)
-{
-   if (sArg.empty())
-    {
-       return defaultLevel;
-    }
-
-    if (StringHelper::equalsIgnoreCase(sArg,
-          "TRACE", "trace")) {
-      return getTrace();
-    }
-
-    if (StringHelper::equalsIgnoreCase(sArg,
-           "LETHAL", "lethal")) {
-      return getLethal();
-    }
-
-    return Level::toLevel(sArg, defaultLevel);
-}

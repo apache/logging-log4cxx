@@ -40,11 +40,11 @@ void Transform::appendEscapingTags(
    while(it != itEnd)
    {
       ch = *it++;
-      if(ch == LOG4CXX_STR('<'))
+      if(ch == 0x3C /* '<' */)
       {
          buf.append(LOG4CXX_STR("&lt;"));
       }
-      else if(ch == LOG4CXX_STR('>'))
+      else if(ch == 0x3E /* '>' */)
       {
          buf.append(LOG4CXX_STR("&gt;"));
       }

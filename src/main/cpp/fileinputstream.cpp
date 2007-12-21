@@ -34,7 +34,7 @@ IMPLEMENT_LOG4CXX_OBJECT(FileInputStream)
 FileInputStream::FileInputStream(const LogString& filename) {
     apr_fileperms_t perm = APR_OS_DEFAULT;
     apr_int32_t flags = APR_READ;
-    apr_status_t stat = File(filename).open(&fileptr, flags, perm, pool);
+    apr_status_t stat = File().setName(filename).open(&fileptr, flags, perm, pool);
     if (stat != APR_SUCCESS) {
       throw IOException(stat);
     }

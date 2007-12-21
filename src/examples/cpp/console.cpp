@@ -64,7 +64,7 @@ int main(int argc, char** argv)
             err = true;
         } else if (strcmp("puts", argv[i]) == 0) {
             fputs("Hello, fputs\n", err ? stderr : stdout);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         } else if (strcmp("putws", argv[i]) == 0) {
             fputws(L"Hello, fputws\n", err ? stderr : stdout);
 #endif
@@ -97,7 +97,7 @@ int main(int argc, char** argv)
                 configured = true;
             }
             log4cxx::Logger::getRootLogger()->info("Hello, log4cxx");
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         } else if (strcmp("wide", argv[i]) == 0) {
             fwide(err ? stderr : stdout, 1);
         } else if (strcmp("byte", argv[i]) == 0) {

@@ -209,7 +209,8 @@ public:
       expected.append(event->getThreadName());
       expected.append(LOG4CXX_STR("] "));
       expected.append(logger->getName());
-      expected.append(LOG4CXX_STR(" - msg 1") LOG4CXX_EOL);
+      expected.append(LOG4CXX_STR(" - msg 1"));
+      expected.append(LOG4CXX_EOL);
 
       assertFormattedEquals(LOG4CXX_STR("%relative %-5level [%thread] %logger - %m%n"),
         getFormatSpecifiers(),

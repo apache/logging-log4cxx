@@ -236,7 +236,7 @@ void AsyncAppender::setLocationInfo(bool flag) {
 void AsyncAppender::setBufferSize(int size)
 {
     if (size < 0) {
-          throw IllegalArgumentException("size argument must be non-negative");
+          throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
     }
     synchronized sync(bufferMutex);
     bufferSize = (size < 1) ? 1 : size;
@@ -285,7 +285,7 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p) {
     msg.append(LOG4CXX_STR(" messages due to a full event buffer including: "));
     msg.append(maxEvent->getMessage()); 
     return new LoggingEvent(   
-              Logger::getLogger(maxEvent->getLoggerName()),
+              Logger::getLoggerLS(maxEvent->getLoggerName()),
               maxEvent->getLevel(),
               msg,
               LocationInfo::getLocationUnavailable());

@@ -118,9 +118,9 @@ namespace log4cxx
             apr_strftime(tzName, &tzLength, MAX_TZ_LENGTH, "%z", &tm);
           }
           tzName[tzLength] = 0;
-          LogString rv;
-          log4cxx::helpers::Transcoder::decode(tzName, tzLength, rv);
-          return rv;
+          LogString retval;
+          log4cxx::helpers::Transcoder::decode(tzName, retval);
+          return retval;
         }
 
       };
@@ -182,22 +182,23 @@ const TimeZonePtr & TimeZone::getGMT()
 
 const TimeZonePtr TimeZone::getTimeZone( const LogString & id )
 {
-  if ( id == LOG4CXX_STR("GMT") )
+  const logchar gmt[] = { 0x47, 0x4D, 0x54, 0 };
+  if ( id == gmt )
   {
     return log4cxx::helpers::TimeZoneImpl::GMTTimeZone::getInstance();
   }
-  if ( id.length() >= 5 && id.substr( 0, 3 ) == LOG4CXX_STR("GMT") )
+  if ( id.length() >= 5 && id.substr( 0, 3 ) == gmt )
   {
     int hours = 0;
     int minutes = 0;
     int sign = 1;
-    if (id[3] == '-') {
+    if (id[3] == 0x2D /* '-' */) {
       sign = -1;
     }
     LogString off( id.substr( 4 ) );
     if ( id.length() >= 7 )
     {
-      size_t colonPos = off.find( LOG4CXX_STR(':') );
+      size_t colonPos = off.find( 0x3A /* ':' */);
       if ( colonPos == LogString::npos )
       {
         minutes = StringHelper::toInt(off.substr(off.length() - 2));
@@ -211,22 +212,24 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString & id )
     } else {
       hours = StringHelper::toInt(off);
     }
-    LogString s(LOG4CXX_STR("GMT"));
+    LogString s(gmt);
     Pool p;
-    LogString hh = StringHelper::toString(hours, p);
+    LogString hh;
+    StringHelper::toString(hours, p, hh);
     if (sign > 0) {
-      s.append(1, LOG4CXX_STR('+'));
+      s.append(1, 0x2B /* '+' */);
     } else {
-      s.append(1, LOG4CXX_STR('-'));
+      s.append(1, 0x2D /* '-' */);
     }
     if (hh.length() == 1) {
-      s.append(1, LOG4CXX_STR('0'));
+      s.append(1, 0x30 /* '0' */);
     }
     s.append(hh);
-    s.append(1, LOG4CXX_STR(':'));
-    LogString mm(StringHelper::toString(minutes, p));
+    s.append(1, 0x3A /*' :' */);
+    LogString mm;
+    StringHelper::toString(minutes, p, mm);
     if (mm.length() == 1) {
-      s.append(1, LOG4CXX_STR('0'));
+      s.append(1, 0x30 /* '0' */);
     }
     s.append(mm);
     apr_int32_t offset = sign * (hours * 3600 + minutes * 60);

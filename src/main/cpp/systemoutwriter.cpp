@@ -40,11 +40,15 @@ void SystemOutWriter::close(Pool& /* p */ ) {
 }
 
 void SystemOutWriter::flush(Pool& /* p */ ) {
-    fflush(stdout);
+    flush();
 }
 
 void SystemOutWriter::write(const LogString& str, Pool& /* p */ ) {
-#if LOG4CXX_HAS_WCHAR_T
+    write(str);
+}
+
+void SystemOutWriter::write(const LogString& str) {
+#if LOG4CXX_WCHAR_T_API
 #if LOG4CXX_FORCE_WIDE_CONSOLE
     if (true) {
 #else
@@ -59,4 +63,8 @@ void SystemOutWriter::write(const LogString& str, Pool& /* p */ ) {
     	LOG4CXX_ENCODE_CHAR(msg, str);
         fputs(msg.c_str(), stdout);
     }
+}
+
+void SystemOutWriter::flush() {
+    fflush(stdout);
 }

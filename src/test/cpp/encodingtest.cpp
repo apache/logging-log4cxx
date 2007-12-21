@@ -25,7 +25,7 @@
 //  If there is no support for wchar_t logging then
 //     there is not a consistent way to get the test characters logged
 //
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
 
 
 #include <log4cxx/patternlayout.h>
@@ -131,7 +131,7 @@ public:
      */
     private:
     void configure(LoggerPtr& logger,
-        const logchar* filename, const logchar* encoding) {
+        const LogString& filename, const LogString& encoding) {
         PatternLayoutPtr layout(new PatternLayout());
         layout->setConversionPattern(LOG4CXX_STR("%p - %m\n"));
         Pool p;

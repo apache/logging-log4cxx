@@ -29,9 +29,12 @@
 #else
 #define LOG4CXX_LOGCHAR_IS_WCHAR 1
 #endif
+#define LOG4CXX_LOGCHAR_IS_UNICHAR 0
 
-#define LOG4CXX_HAS_WCHAR_T 1
-#define LOG4CXX_HAS_STD_WCOUT 1
+#define LOG4CXX_CHAR_API 1
+#define LOG4CXX_WCHAR_T_API 1
+#define LOG4CXX_UNICHAR_API 0
+#define LOG4CXX_CFSTRING_API 0
 
 #if defined(_MSC_VER)
 typedef __int64 log4cxx_int64_t;

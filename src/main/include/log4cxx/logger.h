@@ -162,9 +162,17 @@ namespace log4cxx
         */
         void debug(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void debug(const std::string& msg);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void debug(const std::wstring& msg);
+#endif
+#if LOG4CXX_UNICHAR_API
+        void debug(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location);
+        void debug(const std::basic_string<UniChar>& msg);
+#endif
+#if LOG4CXX_CFSTRING_API
+        void debug(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location);
+        void debug(const CFStringRef& msg);
 #endif
 
         /**
@@ -183,9 +191,17 @@ namespace log4cxx
         */
         void error(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void error(const std::string& msg) const;
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void error(const std::wstring& msg) const;
         void error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
+#endif
+#if LOG4CXX_UNICHAR_API
+        void error(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location);
+        void error(const std::basic_string<UniChar>& msg);
+#endif
+#if LOG4CXX_CFSTRING_API
+        void error(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location);
+        void error(const CFStringRef& msg);
 #endif
 
         /**
@@ -204,9 +220,17 @@ namespace log4cxx
         */
         void fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void fatal(const std::string& msg);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void fatal(const std::wstring& msg);
+#endif
+#if LOG4CXX_UNICHAR_API
+        void fatal(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location);
+        void fatal(const std::basic_string<UniChar>& msg);
+#endif
+#if LOG4CXX_CFSTRING_API
+        void fatal(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location);
+        void fatal(const CFStringRef& msg);
 #endif
         /**
         This method creates a new logging event and logs the event
@@ -219,10 +243,20 @@ namespace log4cxx
                         const log4cxx::spi::LocationInfo& location);
         void forcedLog(const LevelPtr& level, const std::string& message) const;
 
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void forcedLog(const LevelPtr& level, const std::wstring& message,
                         const log4cxx::spi::LocationInfo& location);
         void forcedLog(const LevelPtr& level, const std::wstring& message) const;
+#endif
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+        void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message,
+                        const log4cxx::spi::LocationInfo& location);
+        void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message) const;
+#endif
+#if LOG4CXX_CFSTRING_API
+        void forcedLog(const LevelPtr& level, const CFStringRef& message,
+                        const log4cxx::spi::LocationInfo& location);
+        void forcedLog(const LevelPtr& level, const CFStringRef& message) const;
 #endif
         /**
         This method creates a new logging event and logs the event
@@ -237,7 +271,6 @@ namespace log4cxx
         /**
         Get the additivity flag for this Logger instance.
         */
-    public:
         bool getAdditivity() const;
 
         /**
@@ -275,8 +308,14 @@ namespace log4cxx
         Return the logger name.  */
         const LogString getName() const { return name; }
         void getName(std::string& name) const;
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void getName(std::wstring& name) const;
+#endif
+#if LOG4CXX_UNICHAR_API
+        void getName(std::basic_string<UniChar>& name) const;
+#endif
+#if LOG4CXX_CFSTRING_API
+        void getName(CFStringRef& name) const;
 #endif
 
         /**
@@ -285,7 +324,7 @@ namespace log4cxx
 
         <p>The root logger will return <code>0</code>.
         */
-        const LoggerPtr& getParent() const;
+        LoggerPtr getParent() const;
 
 
         /**
@@ -293,17 +332,24 @@ namespace log4cxx
 
         @return Level - the assigned Level, can be null.
         */
-        const LevelPtr& getLevel() const;
+        LevelPtr getLevel() const;
 
         /**
         Retrieve a logger by name.
         */
         static LoggerPtr getLogger(const std::string& name);
         static LoggerPtr getLogger(const char* const name);
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         static LoggerPtr getLogger(const std::wstring& name);
         static LoggerPtr getLogger(const wchar_t* const name);
 #endif
+#if LOG4CXX_UNICHAR_API
+        static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
+#endif
+#if LOG4CXX_CFSTRING_API
+        static LoggerPtr getLogger(const CFStringRef& name);
+#endif
+        static LoggerPtr getLoggerLS(const LogString& name);
 
         /**
         Retrieve the root logger.
@@ -322,10 +368,23 @@ namespace log4cxx
 
         @param factory A LoggerFactory implementation that will
         actually create a new Instance.
-                */
-        static LoggerPtr getLogger(const LogString& name,
+        */
+        static LoggerPtr getLoggerLS(const LogString& name,
                         const spi::LoggerFactoryPtr& factory);
-
+        static LoggerPtr getLogger(const std::string& name,
+                        const spi::LoggerFactoryPtr& factory);
+#if LOG4CXX_WCHAR_T_API
+        static LoggerPtr getLogger(const std::wstring& name,
+                        const spi::LoggerFactoryPtr& factory);
+#endif
+#if LOG4CXX_UNICHAR_API
+        static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
+                        const spi::LoggerFactoryPtr& factory);
+#endif
+#if LOG4CXX_CFSTRING_API
+        static LoggerPtr getLogger(const CFStringRef& name,
+                        const spi::LoggerFactoryPtr& factory);
+#endif
 
         /**
         Return the <em>inherited</em> ResourceBundle for this logger.
@@ -348,7 +407,7 @@ namespace log4cxx
 
         @see #getResourceBundle.
         */
-        LogString getResourceBundleString(const LogString& key) const;
+        LogString getResourceBundleString(const LogString& key) /* const */;
 
         public:
         /**
@@ -365,12 +424,20 @@ namespace log4cxx
                 @param file the file where the log statement was written.
                 @param line the line where the log statement was written.
                 */
-#if LOG4CXX_HAS_WCHAR_T
+       void info(const std::string& msg, const log4cxx::spi::LocationInfo& location);
+       void info(const std::string& msg);
+#if LOG4CXX_WCHAR_T_API
        void info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
        void info(const std::wstring& msg);
 #endif
-       void info(const std::string& msg, const log4cxx::spi::LocationInfo& location);
-       void info(const std::string& msg);
+#if LOG4CXX_UNICHAR_API
+        void info(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location);
+        void info(const std::basic_string<UniChar>& msg);
+#endif
+#if LOG4CXX_CFSTRING_API
+        void info(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location);
+        void info(const CFStringRef& msg);
+#endif
 
         /**
         Is the appender passed as parameter attached to this logger?
@@ -488,20 +555,6 @@ namespace log4cxx
         void l7dlog(const LevelPtr& level, const LogString& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::vector<LogString>& values);
-
-#if LOG4CXX_HAS_WCHAR_T
-        void l7dlog(const LevelPtr& level, const std::wstring& key,
-                    const log4cxx::spi::LocationInfo& locationInfo);
-        void l7dlog(const LevelPtr& level, const std::wstring& key,
-                    const log4cxx::spi::LocationInfo& locationInfo,
-                    const std::wstring& val1);
-        void l7dlog(const LevelPtr& level, const std::wstring& key,
-                    const log4cxx::spi::LocationInfo& locationInfo,
-                    const std::wstring& val1, const std::wstring& val2);
-        void l7dlog(const LevelPtr& level, const std::wstring& key,
-                    const log4cxx::spi::LocationInfo& locationInfo,
-                    const std::wstring& val1, const std::wstring& val2, const std::wstring& val3);
-#endif
         void l7dlog(const LevelPtr& level, const std::string& key,
                     const log4cxx::spi::LocationInfo& locationInfo);
         void l7dlog(const LevelPtr& level, const std::string& key,
@@ -514,22 +567,73 @@ namespace log4cxx
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::string& val1, const std::string& val2, const std::string& val3);
 
+#if LOG4CXX_WCHAR_T_API
+        void l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const log4cxx::spi::LocationInfo& locationInfo);
+        void l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::wstring& val1);
+        void l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::wstring& val1, const std::wstring& val2);
+        void l7dlog(const LevelPtr& level, const std::wstring& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::wstring& val1, const std::wstring& val2, const std::wstring& val3);
+#endif
+#if LOG4CXX_UNICHAR_API
+        void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
+                    const log4cxx::spi::LocationInfo& locationInfo);
+        void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::basic_string<UniChar>& val1);
+        void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2);
+        void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2, 
+                    const std::basic_string<UniChar>& val3);
+#endif
+#if LOG4CXX_CFSTRING_API
+        void l7dlog(const LevelPtr& level, const CFStringRef& key,
+                    const log4cxx::spi::LocationInfo& locationInfo);
+        void l7dlog(const LevelPtr& level, const CFStringRef& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const CFStringRef& val1);
+        void l7dlog(const LevelPtr& level, const CFStringRef& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const CFStringRef& val1, const CFStringRef& val2);
+        void l7dlog(const LevelPtr& level, const CFStringRef& key,
+                    const log4cxx::spi::LocationInfo& locationInfo,
+                    const CFStringRef& val1, const CFStringRef& val2, 
+                    const CFStringRef& val3);
+#endif
+
           /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
         @param level The level of the logging request.
         @param message The message of the logging request.
-        @param file The source file of the logging request, may be null.
-        @param line The number line of the logging request.  */
-#if LOG4CXX_HAS_WCHAR_T
+        @param location The source file of the logging request, may be null. */
+        void log(const LevelPtr& level, const std::string& message,
+            const log4cxx::spi::LocationInfo& location);
+        void log(const LevelPtr& level, const std::string& message);
+#if LOG4CXX_WCHAR_T_API
         void log(const LevelPtr& level, const std::wstring& message,
             const log4cxx::spi::LocationInfo& location);
         void log(const LevelPtr& level, const std::wstring& message);
 #endif
-        void log(const LevelPtr& level, const std::string& message,
+#if LOG4CXX_UNICHAR_API
+        void log(const LevelPtr& level, const std::basic_string<UniChar>& message,
             const log4cxx::spi::LocationInfo& location);
-        void log(const LevelPtr& level, const std::string& message);
+        void log(const LevelPtr& level, const std::basic_string<UniChar>& message);
+#endif
+#if LOG4CXX_CFSTRING_API
+        void log(const LevelPtr& level, const CFStringRef& message,
+            const log4cxx::spi::LocationInfo& location);
+        void log(const LevelPtr& level, const CFStringRef& message);
+#endif
         void logLS(const LevelPtr& level, const LogString& message,
             const log4cxx::spi::LocationInfo& location);
 
@@ -593,9 +697,17 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void warn(const std::wstring& msg);
+#endif
+#if LOG4CXX_UNICHAR_API
+        void warn(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location);
+        void warn(const std::basic_string<UniChar>& msg);
+#endif
+#if LOG4CXX_CFSTRING_API
+        void warn(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location);
+        void warn(const CFStringRef& msg);
 #endif
         void warn(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void warn(const std::string& msg);
@@ -614,9 +726,17 @@ namespace log4cxx
         @param file the file where the log statement was written.
         @param line the line where the log statement was written.
         */
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
         void trace(const std::wstring& msg, const log4cxx::spi::LocationInfo& location);
         void trace(const std::wstring& msg);
+#endif
+#if LOG4CXX_UNICHAR_API
+        void trace(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location);
+        void trace(const std::basic_string<UniChar>& msg);
+#endif
+#if LOG4CXX_CFSTRING_API
+        void trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location);
+        void trace(const CFStringRef& msg);
 #endif
         void trace(const std::string& msg, const log4cxx::spi::LocationInfo& location);
         void trace(const std::string& msg);

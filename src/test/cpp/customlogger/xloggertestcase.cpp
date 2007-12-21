@@ -70,8 +70,8 @@ public:
         int i = -1;
         std::ostringstream os;
         os << "Message " << ++i;
-        if (logger->isEnabledFor(log4cxx::XLevel::TRACE)) {
-           logger->forcedLog(log4cxx::XLevel::TRACE, os.str(), LOG4CXX_LOCATION);
+        if (logger->isEnabledFor(log4cxx::XLevel::getTrace())) {
+           logger->forcedLog(log4cxx::XLevel::getTrace(), os.str(), LOG4CXX_LOCATION);
         }
 
         os.str("");

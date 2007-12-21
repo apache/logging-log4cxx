@@ -155,10 +155,20 @@ int main(int argc, const char* const * argv) {
 #endif
         return wasSuccessful ? EXIT_SUCCESS : EXIT_FAILURE;
 }
-#if LOG4CXX_HAS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API
 std::ostream& operator<<(std::ostream& os,
                                const std::wstring& str) {
     LOG4CXX_DECODE_WCHAR(tmp, str);
+    LOG4CXX_ENCODE_CHAR(encoded, tmp);
+    os << encoded;
+    return os;
+}
+#endif
+
+#if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+std::ostream& operator<<(std::ostream& os,
+                               const std::basic_string<log4cxx::UniChar>& str) {
+    LOG4CXX_DECODE_UNICHAR(tmp, str);
     LOG4CXX_ENCODE_CHAR(encoded, tmp);
     os << encoded;
     return os;

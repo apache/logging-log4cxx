@@ -23,7 +23,7 @@ using namespace log4cxx::helpers;
 
 void ObjectPtrBase::checkNull(const int& null) {
     if (null != 0) {
-       throw IllegalArgumentException("Attempt to set pointer to a non-zero numeric value.");
+       throw IllegalArgumentException(LOG4CXX_STR("Attempt to set pointer to a non-zero numeric value."));
     }
 }
 
