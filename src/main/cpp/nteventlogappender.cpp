@@ -354,7 +354,6 @@ LogString NTEventLogAppender::getErrorString(const LogString& function)
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
         lpMsgBuf,
         MSGSIZE, NULL );
-    size_t msgLen = wcslen(lpMsgBuf);
 #else
     char* lpMsgBuf = (char*) p.palloc(MSGSIZE);
     DWORD dw = GetLastError();
@@ -367,14 +366,13 @@ LogString NTEventLogAppender::getErrorString(const LogString& function)
         lpMsgBuf,
         MSGSIZE, NULL );
 
-    size_t msgLen = strlen(lpMsgBuf);
 #endif
 
     LogString msg(function);
     msg.append(LOG4CXX_STR(" failed with error "));
     StringHelper::toString((size_t) dw, p, msg);
     msg.append(LOG4CXX_STR(": "));
-    Transcoder::decode(lpMsgBuf, msgLen, msg);
+    Transcoder::decode(lpMsgBuf, msg);
 
     return msg;
 }

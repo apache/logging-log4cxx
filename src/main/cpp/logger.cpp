@@ -219,8 +219,8 @@ LogString Logger::getResourceBundleString(const LogString& key)
                 }
                 catch (MissingResourceException&)
                 {
-                        error(LOG4CXX_STR("No resource is associated with key \"") +
-                                key + LOG4CXX_STR("\"."));
+					logLS(Level::getError(), LOG4CXX_STR("No resource is associated with key \"") +
+						key + LOG4CXX_STR("\"."), LocationInfo::getLocationUnavailable());
 
                         return LogString();
                 }
@@ -478,8 +478,7 @@ void Logger::setLevel(const LevelPtr& level1)
 
 LoggerPtr Logger::getLogger(const std::string& name)
 {
-        LOG4CXX_DECODE_CHAR(lname, name);
-        return LogManager::getLogger(lname);
+        return LogManager::getLogger(name);
 }
 
 
@@ -494,10 +493,10 @@ LoggerPtr Logger::getRootLogger() {
         return LogManager::getRootLogger();
 }
 
-LoggerPtr Logger::getLogger(const LogString& name,
+LoggerPtr Logger::getLoggerLS(const LogString& name,
         const spi::LoggerFactoryPtr& factory)
 {
-        return LogManager::getLogger(name, factory);
+        return LogManager::getLoggerLS(name, factory);
 }
 
 void Logger::getName(std::string& rv) const {

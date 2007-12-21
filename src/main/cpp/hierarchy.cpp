@@ -130,7 +130,7 @@ void Hierarchy::setThreshold(const LevelPtr& l)
 }
 
 void Hierarchy::setThreshold(const LogString& levelStr) {
-        const LevelPtr& l = Level::toLevel(levelStr, 0);
+        LevelPtr l(Level::toLevelLS(levelStr, 0));
 
         if(l != 0)
         {

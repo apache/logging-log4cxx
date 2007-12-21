@@ -258,7 +258,7 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
                          + value
                          +LOG4CXX_STR("]"));
                         // no class name specified : use standard Level class
-                        return Level::toLevel(value, defaultValue);
+                        return Level::toLevelLS(value, defaultValue);
                 }
         }
 
@@ -270,7 +270,7 @@ LevelPtr OptionConverter::toLevel(const LogString& value,
         // This is degenerate case but you never know.
         if (levelName.empty())
         {
-                return Level::toLevel(value, defaultValue);
+                return Level::toLevelLS(value, defaultValue);
         }
 
         try

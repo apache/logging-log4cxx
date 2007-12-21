@@ -120,7 +120,8 @@ void ODBCAppender::execute(const LogString& sql)
       ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &stmt);
       if (ret < 0)
       {
-         throw SQLException( GetErrorMessage( SQL_HANDLE_DBC, con, "Failed to allocate sql handle.") );
+		 LOG4CXX_DECODE_CHAR(msg, GetErrorMessage( SQL_HANDLE_DBC, con, "Failed to allocate sql handle."));
+         throw SQLException( msg );
       }
 
       LOG4CXX_ENCODE_CHAR( strEncodedSql, sql );
@@ -128,7 +129,8 @@ void ODBCAppender::execute(const LogString& sql)
 
      if (ret < 0)
       {
-         throw SQLException( GetErrorMessage( SQL_HANDLE_STMT, stmt, "Failed to execute sql statement.") );
+		 LOG4CXX_DECODE_CHAR(msg, GetErrorMessage( SQL_HANDLE_STMT, stmt, "Failed to execute sql statement."));
+         throw SQLException( msg );
       }
    }
    catch (SQLException& e)
@@ -195,7 +197,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection()
       ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &env);
       if (ret < 0)
       {
-        std::string strErr = GetErrorMessage(SQL_HANDLE_ENV, env, "Failed to allocate SQL handle.");
+         LOG4CXX_DECODE_CHAR(strErr, GetErrorMessage(SQL_HANDLE_ENV, env, "Failed to allocate SQL handle."));
          env = SQL_NULL_HENV;
          throw SQLException( strErr );
       }
@@ -203,7 +205,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection()
       ret = SQLSetEnvAttr(env, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_INTEGER);
       if (ret < 0)
       {
-       std::string strErr = GetErrorMessage(SQL_HANDLE_ENV, env, "Failed to set odbc version.");
+         LOG4CXX_DECODE_CHAR(strErr, GetErrorMessage(SQL_HANDLE_ENV, env, "Failed to set odbc version."));
          SQLFreeHandle(SQL_HANDLE_ENV, env);
          env = SQL_NULL_HENV;
          throw SQLException( strErr );
@@ -215,7 +217,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection()
       ret = SQLAllocHandle(SQL_HANDLE_DBC, env, &connection);
       if (ret < 0)
       {
-       std::string strErr = GetErrorMessage(SQL_HANDLE_DBC, connection, "Failed to allocate sql handle.");
+         LOG4CXX_DECODE_CHAR(strErr, GetErrorMessage(SQL_HANDLE_DBC, connection, "Failed to allocate sql handle."));
          connection = SQL_NULL_HDBC;
          throw SQLException( strErr );
       }
@@ -236,7 +238,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection()
 
      if (ret < 0)
       {
-       std::string strErr = GetErrorMessage( SQL_HANDLE_DBC, connection, "Failed to connect to database.");
+         LOG4CXX_DECODE_CHAR(strErr, GetErrorMessage( SQL_HANDLE_DBC, connection, "Failed to connect to database."));
          SQLFreeHandle(SQL_HANDLE_DBC, connection);
          connection = SQL_NULL_HDBC;
          throw SQLException( strErr );

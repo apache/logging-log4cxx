@@ -30,6 +30,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="esmtp.version" value="1.0.4"/>
 <property name="esmtp.dir" location="${ant.file}/../../../../../libesmtp-${esmtp.version}"/>
 <property name="esmtp.include.dir" location="${esmtp.dir}"/>
+<property name="esmtp.win.include.dir" location="${ant.file}/../win32"/>
 <property name="build.dir" location="${user.dir}/target"/>
 <property name="src.dir" location="${esmtp.dir}"/>
 <property name="esmtp.lib.type" value="shared"/>
@@ -170,7 +171,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outputfileproperty="esmtp.dll"
         debug="${debug}"
         projectsOnly="${projectsOnly}">
-        <fileset dir="${src.dir}" includes="*.c" excludes="getaddrinfo.c"/>
+        <fileset dir="${src.dir}">
+            <include name="*.c"/>
+            <exclude name="getaddrinfo.c"/>
+            <exclude name="gethostbyname.c" if="is-windows"/>
+            <exclude name="strdup.c" if="is-windows"/>
+            <exclude name="snprintf.c" if="is-windows"/>
+            <exclude name="auth-client.c" if="is-windows"/>
+            <!-- exclude name="siobuf.c" if="is-windows"/ -->
+        </fileset>
+        <includepath path="${esmtp.win.include.dir}" if="is-windows"/>
         <includepath path="${esmtp.include.dir}"/>
         <defineset define="HAVE_CONFIG_H"/>
         <defineset>

@@ -88,7 +88,7 @@ namespace log4cxx {
 
 
 
-#if LOG4CXX_WCHAR_T_API
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T
       static void decode(const std::wstring& src, LogString& dst);
       static void encode(const LogString& src, std::wstring& dst);
 
@@ -112,7 +112,7 @@ namespace log4cxx {
 #endif
 
 
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
       static void decode(const std::basic_string<UniChar>& src, LogString& dst);
       static void encode(const LogString& src, std::basic_string<UniChar>& dst);
       

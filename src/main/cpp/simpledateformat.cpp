@@ -39,12 +39,24 @@ using namespace std;
 #endif
 
 
+#if !defined(_HAS)
+#define _HAS(locale, type) std::has_facet< type >(locale)
+#endif
+
+#if !defined(_USE)
+#define _USE(locale, type) std::use_facet < type >(locale)
+#define _PUT(facet,os, time, spec) facet.put(os, os, os.fill(), time, spec)
+#else
+#define _PUT(facet, os, time, spec) facet.put(os, os, time, spec)
+#endif
+
 namespace log4cxx
 {
   namespace helpers
   {
     namespace SimpleDateFormatImpl
     {
+    typedef void (*incrementFunction)(tm& time, apr_time_exp_t& apr_time);
 
     /**
      * Abstract inner class representing one format token
@@ -76,7 +88,6 @@ namespace log4cxx
                               log4cxx::helpers::Pool& p) const = 0;
                               
     protected:
-           typedef static void (*incrementFunction)(tm& time, apr_time_exp_t& apr_time);
            
            static void incrementMonth(tm& time, apr_time_exp_t& aprtime) {
                time.tm_mon++;
@@ -107,24 +118,24 @@ namespace log4cxx
 #if LOG4CXX_HAS_STD_LOCALE
                 if (locale != NULL) {
 #if LOG4CXX_WCHAR_T_API
-                    if (std::has_facet< std::time_put<wchar_t> >(*locale)) {
-                        const std::time_put<wchar_t>& facet = std::use_facet< std::time_put<wchar_t> >(*locale);
+                    if (_HAS(*locale, std::time_put<wchar_t>)) {
+                        const std::time_put<wchar_t>& facet = _USE(*locale, std::time_put<wchar_t>);
                         size_t start = 0;
                         std::wostringstream os;
                         for(; valueIter != values.end(); valueIter++) {
-                            facet.put(os, os, os.fill(), &time, (wchar_t) wspec);
+                            _PUT(facet, os, &time, (wchar_t) wspec);
                             Transcoder::decode(os.str().substr(start), *valueIter);
                             start = os.str().length();
                             (*inc)(time, aprtime);
                         }
                     } else 
 #endif
-                    if (std::has_facet< std::time_put<char> >(*locale)) {
-                        const std::time_put<char>& facet = std::use_facet< std::time_put<char> >(*locale);
+                    if (_HAS(*locale,  std::time_put<char>)) {
+                        const std::time_put<char>& facet = _USE(*locale, std::time_put<char> );
                         size_t start = 0;
                         std::ostringstream os;
                         for(; valueIter != values.end(); valueIter++) {
-                            facet.put(os, os, os.fill(), &time, spec);
+                            _PUT(facet, os, &time, spec);
                             Transcoder::decode(os.str().substr(start), *valueIter);
                             start = os.str().length();
                             (*inc)(time, aprtime);
