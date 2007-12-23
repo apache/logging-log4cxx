@@ -801,7 +801,7 @@ void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
         xdog->setDelay(delay);
         xdog->start();
 #else
-     configure(file);
+    DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif        
 }
 
@@ -814,7 +814,7 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
         xdog->setDelay(delay);
         xdog->start();
 #else
-     configure(file);
+    DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif        
 }
 #endif
@@ -828,7 +828,7 @@ void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filena
         xdog->setDelay(delay);
         xdog->start();
 #else
-     configure(file);
+    DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif        
 }
 #endif
@@ -842,7 +842,7 @@ void DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
         xdog->setDelay(delay);
         xdog->start();
 #else
-     configure(file);
+    DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
 #endif        
 }
 #endif
