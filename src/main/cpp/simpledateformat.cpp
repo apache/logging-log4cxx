@@ -38,16 +38,14 @@ using namespace std;
 #include <locale>
 #endif
 
-
-#if !defined(_HAS)
-#define _HAS(locale, type) std::has_facet< type >(locale)
-#endif
-
-#if !defined(_USE)
-#define _USE(locale, type) std::use_facet < type >(locale)
-#define _PUT(facet,os, time, spec) facet.put(os, os, os.fill(), time, spec)
+#if _MSC_VER < 1300
+#define HAS_FACET(locale, type) _HAS(locale, type)
+#define USE_FACET(locale, type) _USE(locale, type)
+#define PUT_FACET(facet, os, time, spec) facet.put(os, os, time, spec)
 #else
-#define _PUT(facet, os, time, spec) facet.put(os, os, time, spec)
+#define HAS_FACET(locale, type) std::has_facet < type >(locale)
+#define USE_FACET(locale, type) std::use_facet < type >(locale)
+#define PUT_FACET(facet, os, time, spec) facet.put(os, os, os.fill(), time, spec)
 #endif
 
 namespace log4cxx
@@ -118,24 +116,24 @@ namespace log4cxx
 #if LOG4CXX_HAS_STD_LOCALE
                 if (locale != NULL) {
 #if LOG4CXX_WCHAR_T_API
-                    if (_HAS(*locale, std::time_put<wchar_t>)) {
-                        const std::time_put<wchar_t>& facet = _USE(*locale, std::time_put<wchar_t>);
+                    if (HAS_FACET(*locale, std::time_put<wchar_t>)) {
+                        const std::time_put<wchar_t>& facet = USE_FACET(*locale, std::time_put<wchar_t>);
                         size_t start = 0;
                         std::wostringstream os;
                         for(; valueIter != values.end(); valueIter++) {
-                            _PUT(facet, os, &time, (wchar_t) wspec);
+                            PUT_FACET(facet, os, &time, (wchar_t) wspec);
                             Transcoder::decode(os.str().substr(start), *valueIter);
                             start = os.str().length();
                             (*inc)(time, aprtime);
                         }
                     } else 
 #endif
-                    if (_HAS(*locale,  std::time_put<char>)) {
-                        const std::time_put<char>& facet = _USE(*locale, std::time_put<char> );
+                    if (HAS_FACET(*locale,  std::time_put<char>)) {
+                        const std::time_put<char>& facet = USE_FACET(*locale, std::time_put<char> );
                         size_t start = 0;
                         std::ostringstream os;
                         for(; valueIter != values.end(); valueIter++) {
-                            _PUT(facet, os, &time, spec);
+                            PUT_FACET(facet, os, &time, spec);
                             Transcoder::decode(os.str().substr(start), *valueIter);
                             start = os.str().length();
                             (*inc)(time, aprtime);
