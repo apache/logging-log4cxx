@@ -38,7 +38,7 @@ using namespace std;
 #include <locale>
 #endif
 
-#if _MSC_VER < 1300
+#if defined(_MSC_VER) && _MSC_VER < 1300
 #define HAS_FACET(locale, type) _HAS(locale, type)
 #define USE_FACET(locale, type) _USE(locale, type)
 #define PUT_FACET(facet, os, time, spec) facet.put(os, os, time, spec)
