@@ -155,7 +155,9 @@ void Class::registerClasses() {
         RollingFileAppender::registerClass();
         SMTPAppender::registerClass();
         SocketAppender::registerClass();
+#if APR_HAS_THREADS
         SocketHubAppender::registerClass();
+#endif
         SyslogAppender::registerClass();
 #if APR_HAS_THREADS
         TelnetAppender::registerClass();

@@ -246,6 +246,10 @@ ThreadException::ThreadException(log4cxx_status_t stat)
      : Exception(formatMessage(stat)) {
 }
 
+ThreadException::ThreadException(const LogString& msg)
+     : Exception(msg) {
+}
+
 ThreadException::ThreadException(const ThreadException &src)
       : Exception(src) {
 }

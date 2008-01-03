@@ -22,8 +22,8 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
-#if APR_HAS_THREADS
 ThreadLocal::ThreadLocal() {
+#if APR_HAS_THREADS
     apr_pool_t** ppool = reinterpret_cast<apr_pool_t**>(&pool);
     apr_status_t stat = apr_pool_create(ppool, 0);
     if (stat != APR_SUCCESS) {
@@ -34,25 +34,31 @@ ThreadLocal::ThreadLocal() {
     if (stat != APR_SUCCESS) {
          throw RuntimeException(stat);
     }
+#endif
 }
               
 ThreadLocal::~ThreadLocal() {
+#if APR_HAS_THREADS
     apr_pool_destroy((apr_pool_t*) pool);
+#endif
 }
               
 void ThreadLocal::set(void* priv) {
+#if APR_HAS_THREADS
     apr_status_t stat = apr_threadkey_private_set(priv, (apr_threadkey_t*) key);
     if (stat != APR_SUCCESS) {
         throw RuntimeException(stat);
     }
+#endif
 }
                
 void* ThreadLocal::get() {
     void* retval = 0;
+#if APR_HAS_THREADS
     apr_status_t stat = apr_threadkey_private_get(&retval, (apr_threadkey_t*) key);
     if (stat != APR_SUCCESS) {
         throw RuntimeException(stat);
     }
+#endif
     return retval;
 }
-#endif

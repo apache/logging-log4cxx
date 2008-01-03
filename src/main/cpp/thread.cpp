@@ -26,7 +26,6 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
-#if APR_HAS_THREADS
 Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0) {
 }
 
@@ -57,6 +56,7 @@ void Thread::LaunchPackage::operator delete(void* mem, Pool& p) {
 }
 
 void Thread::run(Runnable start, void* data) {
+#if APR_HAS_THREADS
         //
         //    if attempting a second run method on the same Thread object
         //         throw an exception
@@ -78,6 +78,9 @@ void Thread::run(Runnable start, void* data) {
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
+#else
+        throw ThreadException(LOG4CXX_STR("APR_HAS_THREADS is not true"));
+#endif
 }
 
 
@@ -89,6 +92,7 @@ Thread::LaunchStatus::~LaunchStatus() {
     apr_atomic_set32(alive, 0);
 }
     
+#if APR_HAS_THREADS
 void* Thread::launcher(log4cxx_thread_t* thread, void* data) {
     LaunchPackage* package = (LaunchPackage*) data;
     ThreadLocal& tls = getThreadLocal();
@@ -98,8 +102,10 @@ void* Thread::launcher(log4cxx_thread_t* thread, void* data) {
 	apr_thread_exit((apr_thread_t*) thread, 0);
 	return retval;
 }
+#endif
 
 void Thread::stop() {
+#if APR_HAS_THREADS
     if (thread != NULL) {
                 apr_status_t stat = apr_thread_exit((apr_thread_t*) thread, 0);
                 thread = NULL;
@@ -107,9 +113,11 @@ void Thread::stop() {
                         throw ThreadException(stat);
                 }
         }
+#endif
 }
 
 void Thread::join() {
+#if APR_HAS_THREADS
         if (thread != NULL) {
                 apr_status_t startStat;
                 apr_status_t stat = apr_thread_join(&startStat, (apr_thread_t*) thread);
@@ -118,6 +126,7 @@ void Thread::join() {
                         throw ThreadException(stat);
                 }
         }
+#endif
 }
 
 ThreadLocal& Thread::getThreadLocal() {
@@ -126,10 +135,12 @@ ThreadLocal& Thread::getThreadLocal() {
 }
 
 void Thread::currentThreadInterrupt() {
+#if APR_HAS_THREADS
    void* tls = getThreadLocal().get();
    if (tls != 0) {
        ((Thread*) tls)->interrupt();
    }
+#endif
 }
 
 void Thread::interrupt() {
@@ -137,16 +148,22 @@ void Thread::interrupt() {
 }
 
 bool Thread::interrupted() {
+#if APR_HAS_THREADS
    void* tls = getThreadLocal().get();
    if (tls != 0) {
        return apr_atomic_xchg32(&(((Thread*) tls)->interruptedStatus), 0) != 0;
    }
+#endif
    return false;
 }
 
 bool Thread::isCurrentThread() const {
+#if APR_HAS_THREADS
     const void* tls = getThreadLocal().get();
     return (tls == this);
+#else
+    return true;
+#endif
 }
 
 bool Thread::isAlive() {
@@ -156,7 +173,7 @@ bool Thread::isAlive() {
 void Thread::ending() {
     apr_atomic_set32(&alive, 0);
 }
-#endif
+
 
 void Thread::sleep(int duration) {
 #if APR_HAS_THREADS

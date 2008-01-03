@@ -138,6 +138,7 @@ namespace log4cxx
                       : public Exception {
                 public:
                       ThreadException(log4cxx_status_t stat);
+                      ThreadException(const LogString& msg);
                       ThreadException(const ThreadException &src);
                       ThreadException& operator=(const ThreadException&);
                 private:

@@ -23,14 +23,13 @@
 #include <apr_atomic.h>
 #include <log4cxx/helpers/transcoder.h>
 
-#if APR_HAS_THREADS
-
-
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 long FileWatchdog::DEFAULT_DELAY = 60000;
+
+#if APR_HAS_THREADS
 
 FileWatchdog::FileWatchdog(const File& file1)
  : file(file1), delay(DEFAULT_DELAY), lastModif(0),
