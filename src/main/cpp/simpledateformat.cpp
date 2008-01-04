@@ -119,7 +119,7 @@ namespace log4cxx
                     if (HAS_FACET(*locale, std::time_put<wchar_t>)) {
                         const std::time_put<wchar_t>& facet = USE_FACET(*locale, std::time_put<wchar_t>);
                         size_t start = 0;
-                        std::wostringstream os;
+                        std::basic_ostringstream<wchar_t> os;
                         for(; valueIter != values.end(); valueIter++) {
                             PUT_FACET(facet, os, &time, (wchar_t) wspec);
                             Transcoder::decode(os.str().substr(start), *valueIter);

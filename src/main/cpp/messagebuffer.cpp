@@ -168,22 +168,22 @@ bool WideMessageBuffer::hasStream() const {
     return (stream != 0);
 }
 
-std::wostream& WideMessageBuffer::operator<<(ios_base_manip manip) {
-	std::wostream& s = *this;
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(ios_base_manip manip) {
+	std::basic_ostream<wchar_t>& s = *this;
 	(*manip)(s);
 	return s;
 }
 
-std::wostream& WideMessageBuffer::operator<<(bool val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(short val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(int val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(unsigned int val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(long val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(unsigned long val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(float val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(double val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(long double val) { return ((std::wostream&) *this).operator<<(val); }
-std::wostream& WideMessageBuffer::operator<<(void* val) { return ((std::wostream&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(bool val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(short val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(int val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(unsigned int val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(long val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(unsigned long val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(float val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(double val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(long double val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
+std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(void* val) { return ((std::basic_ostream<wchar_t>&) *this).operator<<(val); }
 
 
 MessageBuffer::MessageBuffer()  : wbuf(0)
@@ -264,7 +264,7 @@ const std::wstring& MessageBuffer::str(WideMessageBuffer& buf) {
 	return wbuf->str(buf);
 }
 
-const std::wstring& MessageBuffer::str(std::wostream& os) {
+const std::wstring& MessageBuffer::str(std::basic_ostream<wchar_t>& os) {
 	return wbuf->str(os);
 }
 

@@ -391,7 +391,7 @@ public:
           CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("[__10.00]")), msg);
        }
        
-       void wreport(std::wostream& os) {
+       void wreport(std::basic_ostream<wchar_t>& os) {
           os << L"This just in: \n";
           os << L"Use logstream in places that expect a std::ostream.\n";
        }

@@ -415,68 +415,68 @@ UniCharMessageBuffer::uostream& operator<<(UniCharMessageBuffer& os, const V& va
          *   @param manip manipulator.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(ios_base_manip manip);
+        std::basic_ostream<wchar_t>& operator<<(ios_base_manip manip);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(bool val);
+        std::basic_ostream<wchar_t>& operator<<(bool val);
 
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(short val);
+        std::basic_ostream<wchar_t>& operator<<(short val);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(int val);
+        std::basic_ostream<wchar_t>& operator<<(int val);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(unsigned int val);
+        std::basic_ostream<wchar_t>& operator<<(unsigned int val);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(long val);
+        std::basic_ostream<wchar_t>& operator<<(long val);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(unsigned long val);
+        std::basic_ostream<wchar_t>& operator<<(unsigned long val);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(float val);
+        std::basic_ostream<wchar_t>& operator<<(float val);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(double val);
+        std::basic_ostream<wchar_t>& operator<<(double val);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(long double val);
+        std::basic_ostream<wchar_t>& operator<<(long double val);
         /**
          *   Insertion operator for built-in type.
          *   @param val build in type.
          *   @return encapsulated STL stream.
          */
-        std::wostream& operator<<(void* val);
+        std::basic_ostream<wchar_t>& operator<<(void* val);
 
 
         /**
@@ -748,7 +748,7 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
 		 *       the character type and that
 		 *       the embedded stream was used.
 		 */
-		const std::wstring& str(std::wostream& os);
+		const std::wstring& str(std::basic_ostream<wchar_t>& os);
         
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
 		/**
