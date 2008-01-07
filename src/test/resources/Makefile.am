@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 SUBDIRS = input witness
-EXTRA_DIST = log4j.dtd L7D_en_US.properties L7D_fr_CH.properties L7D_fr.properties
+EXTRA_DIST = L7D_en_US.properties L7D_fr_CH.properties L7D_fr.properties
 
 if TESTS
 
