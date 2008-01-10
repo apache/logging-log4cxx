@@ -208,10 +208,12 @@ void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
         layout->format(msg, event, p);
         {
            synchronized sync(mutex);
-           writer->write(msg, p);
-           if (immediateFlush) {
-	        writer->flush(p);
-           }
+		   if (writer != NULL) {
+			  writer->write(msg, p);
+              if (immediateFlush) {
+	            writer->flush(p);
+              }
+		   }
         }
 }
 

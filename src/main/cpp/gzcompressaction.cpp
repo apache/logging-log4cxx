@@ -17,6 +17,7 @@
 
 #include <log4cxx/rolling/gzcompressaction.h>
 #include <apr_thread_proc.h>
+#include <apr_strings.h>
 #include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
@@ -71,7 +72,7 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
         int i = 0;
         args[i++] = "gzip";
         args[i++] = "-c";
-        args[i++] = source.getOSName().c_str();
+        args[i++] = apr_pstrdup(pool, source.getOSName().c_str());
         args[i++] = NULL;
     
 

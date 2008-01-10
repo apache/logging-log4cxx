@@ -17,6 +17,7 @@
 
 #include <log4cxx/rolling/zipcompressaction.h>
 #include <apr_thread_proc.h>
+#include <apr_strings.h>
 #include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
@@ -55,11 +56,12 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const {
         if (stat != APR_SUCCESS) throw IOException(stat);
 
         const char** args = (const char**) 
-            apr_palloc(pool, 4 *sizeof(*args));
+            apr_palloc(pool, 5 *sizeof(*args));
         int i = 0;
         args[i++] = "zip";
-        args[i++] = destination.getOSName().c_str();
-        args[i++] = source.getOSName().c_str();
+		args[i++] = "-q";
+        args[i++] = apr_pstrdup(pool, destination.getOSName().c_str());
+        args[i++] = apr_pstrdup(pool, source.getOSName().c_str());
         args[i++] = NULL;
     
         if (destination.exists(p)) {

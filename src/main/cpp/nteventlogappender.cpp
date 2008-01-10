@@ -26,6 +26,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
+#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -199,8 +200,10 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
         layout->format(oss, event, p);
 #if LOG4CXX_WCHAR_T_API
         LOG4CXX_ENCODE_WCHAR(s, oss);
-        const wchar_t* msgs[1];
-        msgs[0] = s.c_str() ;
+        wchar_t* msgs = (wchar_t*) 
+			apr_palloc((apr_pool_t*) p.getAPRPool(), (s.length() + 1) * sizeof(wchar_t));
+		memcpy(msgs, s.data(), s.length() * sizeof(wchar_t));
+		msgs[s.length()] = 0;
         BOOL bSuccess = ::ReportEventW(
                 hEventLog,
                 getEventType(event),
@@ -209,12 +212,11 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
                 pCurrentUserSID,
                 1,
                 0,
-                msgs,
+                (LPCWSTR*) &msgs,
                 NULL);
 #else
         LOG4CXX_ENCODE_CHAR(s, oss);
-        const char* msgs[1];
-        msgs[0] = s.c_str() ;
+        const char* msgs = apr_pstrdup((apr_pool_t*) pool.getAPRPool(), s.c_str());
         BOOL bSuccess = ::ReportEventA(
                 hEventLog,
                 getEventType(event),
@@ -223,7 +225,7 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
                 pCurrentUserSID,
                 1,
                 0,
-                msgs,
+                &msgs,
                 NULL);
 #endif
 
