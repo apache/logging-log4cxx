@@ -20,6 +20,7 @@
 #include <apr_thread_proc.h>
 #include <apr_pools.h>
 #include <apr_file_io.h>
+#include <apr_strings.h>
 #include <assert.h>
 #include <iostream>
 
@@ -174,11 +175,11 @@ void Transformer::transform(const File& in, const File& out,
 
         std::string regexArg("-f");
         regexArg.append(regexName);
-        args[i++] = regexArg.c_str();
+        args[i++] = apr_pstrdup(pool, regexArg.c_str());
 
         //
         //    specify the input file
-        args[i++] = in.getOSName().c_str();
+        args[i++] = apr_pstrdup(pool, in.getOSName().c_str());
         args[i] = NULL;
 
 
