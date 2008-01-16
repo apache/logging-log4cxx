@@ -53,8 +53,8 @@ typedef unsigned int log4cxx_uint32_t;
 //  definitions used when using static library
 #if defined(LOG4CXX_STATIC)
 #define LOG4CXX_EXPORT
-#define LOG4CXX_PTR_DEF(T) typedef log4cxx::helpers::ObjectPtrT<T> T##Ptr
-#define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N
+#define LOG4CXX_PTR_DEF(T) typedef log4cxx::helpers::ObjectPtrT<T> T##Ptr;
+#define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N;
 
 //   definitions used when building DLL
 #elif defined(LOG4CXX)
