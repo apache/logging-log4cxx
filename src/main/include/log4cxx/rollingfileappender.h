@@ -59,6 +59,8 @@ namespace log4cxx
     END_LOG4CXX_CAST_MAP()
     /** The default constructor simply calls its {@link FileAppender#FileAppender parents constructor}. */
     RollingFileAppender();
+	void addRef() const;
+	void releaseRef() const;
 
     /**
                     Instantiate a RollingFileAppender and open the file designated by

@@ -54,6 +54,9 @@ namespace log4cxx
                         END_LOG4CXX_CAST_MAP()
 
                         FallbackErrorHandler();
+                        void addRef() const;
+                        void releaseRef() const;
+
 
                         /**
                         <em>Adds</em> the logger passed as parameter to the list of

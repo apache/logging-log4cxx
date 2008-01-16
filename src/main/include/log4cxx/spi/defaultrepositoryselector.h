@@ -40,6 +40,8 @@ namespace log4cxx
                          : repository(repository1)
                         {
                         }
+                        void addRef() const { ObjectImpl::addRef(); }
+                        void releaseRef() const { ObjectImpl::releaseRef(); }
 
                         virtual LoggerRepositoryPtr& getLoggerRepository()
                         {

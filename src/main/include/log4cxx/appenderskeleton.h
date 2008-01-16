@@ -73,6 +73,7 @@ namespace log4cxx
                 log4cxx::helpers::Mutex mutex;
 
         public:
+                DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderSkeleton)
                 BEGIN_LOG4CXX_CAST_MAP()
                         LOG4CXX_CAST_ENTRY(Appender)
                         LOG4CXX_CAST_ENTRY(spi::OptionHandler)
@@ -80,6 +81,9 @@ namespace log4cxx
 
                 AppenderSkeleton();
                 AppenderSkeleton(const LayoutPtr& layout);
+
+                void addRef() const;
+                void releaseRef() const;
 
                 /**
                 Finalize this appender by calling the derived class'

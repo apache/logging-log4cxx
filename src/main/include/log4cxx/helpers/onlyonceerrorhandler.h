@@ -52,11 +52,13 @@ namespace log4cxx
                         END_LOG4CXX_CAST_MAP()
 
                         OnlyOnceErrorHandler();
+                        void addRef() const;
+                        void releaseRef() const;
 
                         /**
                          Does not do anything.
                          */
-            void setLogger(const LoggerPtr& logger);
+                        void setLogger(const LoggerPtr& logger);
 
 
             /**

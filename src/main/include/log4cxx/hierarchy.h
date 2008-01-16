@@ -98,6 +98,9 @@ namespace log4cxx
 
             ~Hierarchy();
 
+            void addRef() const;
+            void releaseRef() const;
+
             void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
 
             /**

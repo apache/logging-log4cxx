@@ -52,7 +52,9 @@ namespace log4cxx {
                       LOG4CXX_CAST_ENTRY(spi::OptionHandler)
               END_LOG4CXX_CAST_MAP()
         public:
-             virtual ~TriggeringPolicy() {}
+             virtual ~TriggeringPolicy();
+             void addRef() const;
+             void releaseRef() const;
 
             /**
              * Determines if a rollover may be appropriate at this time.  If

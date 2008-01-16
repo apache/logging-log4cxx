@@ -49,6 +49,14 @@ DailyRollingFileAppender::DailyRollingFileAppender(
     activateOptions(p);
 }
 
+void DailyRollingFileAppender::addRef() const {
+    ObjectImpl::addRef();
+}
+
+void DailyRollingFileAppender::releaseRef() const {
+    ObjectImpl::releaseRef();
+}
+
 void DailyRollingFileAppender::setDatePattern(const LogString& pattern) {
    datePattern = pattern;
 }

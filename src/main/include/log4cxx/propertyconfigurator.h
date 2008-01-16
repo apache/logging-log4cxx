@@ -105,6 +105,8 @@ example, if <code>java.home</code> system property is set to
       END_LOG4CXX_CAST_MAP()
 
       PropertyConfigurator();
+      void addRef() const;
+      void releaseRef() const;
 
 /**
 Read configuration from a file. <b>The existing configuration is

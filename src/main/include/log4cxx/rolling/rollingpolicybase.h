@@ -40,6 +40,7 @@ namespace log4cxx {
            public virtual RollingPolicy,
            public virtual helpers::ObjectImpl {
         protected:
+          DECLARE_ABSTRACT_LOG4CXX_OBJECT(RollingPolicyBase)
           BEGIN_LOG4CXX_CAST_MAP()
                   LOG4CXX_CAST_ENTRY(RollingPolicy)
                   LOG4CXX_CAST_ENTRY(spi::OptionHandler)
@@ -66,6 +67,8 @@ namespace log4cxx {
           public:
           RollingPolicyBase();
           virtual ~RollingPolicyBase();
+          void addRef() const;
+          void releaseRef() const;
           /**
            * {@inheritDoc}
            */

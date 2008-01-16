@@ -243,6 +243,9 @@ namespace log4cxx
 
                         DOMConfigurator(log4cxx::helpers::Pool& p);
 
+                        void addRef() const;
+                        void releaseRef() const;
+
                         /**
                         A static version of #doConfigure.
                         */

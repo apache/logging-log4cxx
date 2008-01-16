@@ -90,6 +90,14 @@ RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
 RollingFileAppender::~RollingFileAppender() {
 }
 
+void RollingFileAppender::addRef() const {
+    ObjectImpl::addRef();
+}
+
+void RollingFileAppender::releaseRef() const {
+    ObjectImpl::releaseRef();
+}
+
 void RollingFileAppender::setOption(const LogString& option,
         const LogString& value)
 {

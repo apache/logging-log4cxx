@@ -21,13 +21,9 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/spi/optionhandler.h>
+#include <log4cxx/rolling/rollingfileappender.h>
 
 namespace log4cxx {
-  namespace rolling {
-    class RollingFileAppender;
-    typedef log4cxx::helpers::ObjectPtrT<RollingFileAppender> RollingFileAppenderPtr;
-  }
-
   namespace helpers {
     class Pool;
   }
@@ -48,7 +44,7 @@ namespace log4cxx {
   *  @author Curt Arnold
   * @deprecated Replaced by {@link org.apache.log4j.rolling.RollingFileAppender}
 */
-class LOG4CXX_EXPORT DailyRollingFileAppender : public log4cxx::helpers::ObjectImpl, Appender {
+class LOG4CXX_EXPORT DailyRollingFileAppender : public Appender, log4cxx::helpers::ObjectImpl {
   DECLARE_LOG4CXX_OBJECT(DailyRollingFileAppender)
   BEGIN_LOG4CXX_CAST_MAP()
           LOG4CXX_CAST_ENTRY(DailyRollingFileAppender)
@@ -82,6 +78,9 @@ public:
     const LayoutPtr& layout,
     const LogString& filename,
     const LogString& datePattern);
+
+  void addRef() const;
+  void releaseRef() const;
 
   /**
      The <b>DatePattern</b> takes a string in the same format as

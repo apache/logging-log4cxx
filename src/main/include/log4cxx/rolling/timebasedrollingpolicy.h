@@ -163,6 +163,8 @@ namespace log4cxx {
 
         public:
             TimeBasedRollingPolicy();
+            void addRef() const;
+            void releaseRef() const;
             void activateOptions(log4cxx::helpers::Pool& );
             /**
            * Initialize the policy and return any initial actions for rolling file appender..

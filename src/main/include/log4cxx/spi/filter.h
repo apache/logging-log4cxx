@@ -78,6 +78,9 @@ namespace log4cxx
                         Filter() : next() {
                         }
 
+                        void addRef() const { ObjectImpl::addRef(); }
+                        void releaseRef() const { ObjectImpl::releaseRef(); }
+
                         DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
                         BEGIN_LOG4CXX_CAST_MAP()
                                 LOG4CXX_CAST_ENTRY(Filter)

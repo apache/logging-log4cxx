@@ -47,8 +47,11 @@ namespace log4cxx
                         LOG4CXX_CAST_ENTRY(Layout)
                         LOG4CXX_CAST_ENTRY(spi::OptionHandler)
                 END_LOG4CXX_CAST_MAP()
+    
+                virtual ~Layout();
+                void addRef() const;
+                void releaseRef() const;
 
-                virtual ~Layout() {}
 
                 /**
                 Implement this method to create your own layout format.
@@ -60,19 +63,19 @@ namespace log4cxx
                 Returns the content type output by this layout. The base class
                 returns "text/plain".
                 */
-                virtual LogString getContentType() const { return LOG4CXX_STR("text/plain"); }
+                virtual LogString getContentType() const;
 
                 /**
                 Append the header for the layout format. The base class does
                 nothing.
                 */
-                virtual void appendHeader(LogString& /* output */, log4cxx::helpers::Pool& /* p */) {}
+                virtual void appendHeader(LogString& output, log4cxx::helpers::Pool& p);
 
                 /**
                 Append the footer for the layout format. The base class does
                 nothing.
                 */
-                virtual void appendFooter(LogString& /* output */, log4cxx::helpers::Pool& /* p */) {}
+                virtual void appendFooter(LogString& output, log4cxx::helpers::Pool& p);
 
                 /**
                 If the layout handles the throwable object contained within

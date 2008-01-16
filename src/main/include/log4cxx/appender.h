@@ -55,6 +55,7 @@ namespace log4cxx
     {
     public:
         DECLARE_ABSTRACT_LOG4CXX_OBJECT(Appender)
+
         virtual ~Appender() {}
 
         /**

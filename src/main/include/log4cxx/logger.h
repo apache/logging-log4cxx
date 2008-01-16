@@ -118,6 +118,10 @@ namespace log4cxx
     public:
         ~Logger();
 
+
+        void addRef() const;
+        void releaseRef() const;
+
         /**
         Add <code>newAppender</code> to the list of appenders of this
         Logger instance.

@@ -29,6 +29,9 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+IMPLEMENT_LOG4CXX_OBJECT(AppenderSkeleton)
+
+
 AppenderSkeleton::AppenderSkeleton()
 :   layout(),
     name(),
@@ -55,6 +58,14 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
 {
   synchronized sync(mutex);
   closed = false;
+}
+
+void AppenderSkeleton::addRef() const {
+    ObjectImpl::addRef();
+}
+
+void AppenderSkeleton::releaseRef() const {
+    ObjectImpl::releaseRef();
 }
 
 void AppenderSkeleton::finalize()

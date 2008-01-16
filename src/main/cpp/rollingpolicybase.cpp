@@ -29,10 +29,20 @@ using namespace log4cxx::rolling;
 using namespace log4cxx::helpers;
 using namespace log4cxx::pattern;
 
+IMPLEMENT_LOG4CXX_OBJECT(RollingPolicyBase)
+
 RollingPolicyBase::RollingPolicyBase() {
 }
 
 RollingPolicyBase::~RollingPolicyBase() {
+}
+
+void RollingPolicyBase::addRef() const {
+    ObjectImpl::addRef();
+}
+
+void RollingPolicyBase::releaseRef() const {
+    ObjectImpl::releaseRef();
 }
 
 void RollingPolicyBase::activateOptions(log4cxx::helpers::Pool& /* pool */) {
