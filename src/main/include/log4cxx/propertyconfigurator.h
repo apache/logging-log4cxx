@@ -91,7 +91,7 @@ example, if <code>java.home</code> system property is set to
       /**
       Used internally to keep track of configured appenders.
       */
-      std::map<LogString, AppenderPtr> registry;
+      std::map<LogString, AppenderPtr>* registry;
 
       /**
       Used to create new instances of logger
@@ -105,6 +105,7 @@ example, if <code>java.home</code> system property is set to
       END_LOG4CXX_CAST_MAP()
 
       PropertyConfigurator();
+      virtual ~PropertyConfigurator();
       void addRef() const;
       void releaseRef() const;
 

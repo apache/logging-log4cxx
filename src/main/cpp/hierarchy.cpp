@@ -46,7 +46,9 @@ IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 Hierarchy::Hierarchy() : 
 pool(),
-mutex(pool)
+mutex(pool),
+loggers(new LoggerMap()),
+provisionNodes(new ProvisionNodeMap())
 {
         synchronized sync(mutex);
         root = new RootLogger(pool, Level::getDebug());
@@ -61,6 +63,8 @@ mutex(pool)
 
 Hierarchy::~Hierarchy()
 {
+    delete loggers;
+    delete provisionNodes;
 }
 
 void Hierarchy::addRef() const {
@@ -87,7 +91,7 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 void Hierarchy::clear()
 {
         synchronized sync(mutex);
-        loggers.clear();
+        loggers->clear();
 }
 
 void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
@@ -114,8 +118,8 @@ LoggerPtr Hierarchy::exists(const LogString& name)
         synchronized sync(mutex);
 
         LoggerPtr logger;
-        LoggerMap::iterator it = loggers.find(name);
-        if (it != loggers.end())
+        LoggerMap::iterator it = loggers->find(name);
+        if (it != loggers->end())
         {
                 logger = it->second;
         }
@@ -203,9 +207,9 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 {
         synchronized sync(mutex);
 
-        LoggerMap::iterator it = loggers.find(name);
+        LoggerMap::iterator it = loggers->find(name);
 
-        if (it != loggers.end())
+        if (it != loggers->end())
         {
                 return it->second;
         }
@@ -213,13 +217,13 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
         {
                 LoggerPtr logger(factory->makeNewLoggerInstance(pool, name));
                 logger->setHierarchy(this);
-                loggers.insert(LoggerMap::value_type(name, logger));
+                loggers->insert(LoggerMap::value_type(name, logger));
 
-                ProvisionNodeMap::iterator it2 = provisionNodes.find(name);
-                if (it2 != provisionNodes.end())
+                ProvisionNodeMap::iterator it2 = provisionNodes->find(name);
+                if (it2 != provisionNodes->end())
                 {
                         updateChildren(it2->second, logger);
-                        provisionNodes.erase(it2);
+                        provisionNodes->erase(it2);
                 }
 
                 updateParents(logger);
@@ -233,9 +237,9 @@ LoggerList Hierarchy::getCurrentLoggers() const
         synchronized sync(mutex);
 
         LoggerList v;
-        LoggerMap::const_iterator it, itEnd = loggers.end();
+        LoggerMap::const_iterator it, itEnd = loggers->end();
 
-        for (it = loggers.begin(); it != itEnd; it++)
+        for (it = loggers->begin(); it != itEnd; it++)
         {
                 v.push_back(it->second);
         }
@@ -332,8 +336,8 @@ void Hierarchy::updateParents(LoggerPtr logger)
         {
                 LogString substr = name.substr(0, i);
 
-                LoggerMap::iterator it = loggers.find(substr);
-                if(it != loggers.end())
+                LoggerMap::iterator it = loggers->find(substr);
+                if(it != loggers->end())
                 {
                         parentFound = true;
                         logger->parent = it->second;
@@ -341,15 +345,15 @@ void Hierarchy::updateParents(LoggerPtr logger)
                 }
                 else
                 {
-                        ProvisionNodeMap::iterator it2 = provisionNodes.find(substr);
-                        if (it2 != provisionNodes.end())
+                        ProvisionNodeMap::iterator it2 = provisionNodes->find(substr);
+                        if (it2 != provisionNodes->end())
                         {
                                 it2->second.push_back(logger);
                         }
                         else
                         {
                                 ProvisionNode node(1, logger);
-                                provisionNodes.insert(
+                                provisionNodes->insert(
                                         ProvisionNodeMap::value_type(substr, node));
                         }
                 }

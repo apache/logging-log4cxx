@@ -25,10 +25,9 @@ namespace log4cxx
 {
 
         namespace helpers {
-          class CharsetEncoder;
-          typedef helpers::ObjectPtrT<CharsetEncoder> CharsetEncoderPtr;
           class ByteBuffer;
-
+          class CharsetEncoder;
+          LOG4CXX_PTR_DEF(CharsetEncoder)
 
           /**
           *   An engine to transform LogStrings into bytes

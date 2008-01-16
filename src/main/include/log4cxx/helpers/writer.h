@@ -50,7 +50,7 @@ namespace log4cxx
                   Writer& operator=(const Writer&);
           };
 
-          typedef helpers::ObjectPtrT<Writer> WriterPtr;
+          LOG4CXX_PTR_DEF(Writer);
         } // namespace helpers
 
 }  //namespace log4cxx

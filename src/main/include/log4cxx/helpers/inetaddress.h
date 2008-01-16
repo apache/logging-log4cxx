@@ -38,7 +38,8 @@ namespace log4cxx
 
 
                 class InetAddress;
-                typedef ObjectPtrT<InetAddress> InetAddressPtr;
+                LOG4CXX_PTR_DEF(InetAddress)
+                LOG4CXX_LIST_DEF(InetAddressList, InetAddressPtr)
 
                 class LOG4CXX_EXPORT InetAddress : public ObjectImpl
                 {
@@ -52,7 +53,7 @@ namespace log4cxx
 
                         /** Determines all the IP addresses of a host, given the host's name.
                         */
-                        static std::vector<InetAddressPtr> getAllByName(const LogString& host);
+                        static InetAddressList getAllByName(const LogString& host);
 
                         /** Determines the IP address of a host, given the host's name.
                         */

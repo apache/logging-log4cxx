@@ -19,18 +19,12 @@
 #define _LOG4CXX_SPI_ERROR_HANDLER_H
 
 #include <log4cxx/spi/optionhandler.h>
-#include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/appender.h>
+#include <log4cxx/spi/loggingevent.h>
 
 namespace log4cxx
 {
-    class Appender;
-    typedef log4cxx::helpers::ObjectPtrT<Appender> AppenderPtr;
-
-    class Logger;
-    typedef helpers::ObjectPtrT<Logger> LoggerPtr;
-
     namespace spi
         {
                 class ErrorCode
@@ -48,11 +42,6 @@ namespace log4cxx
                         };
                 };
 
-                class LoggingEvent;
-                typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-
-                class ErrorHandler;
-                typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
 
                 /**
                 Appenders may delegate their error handling to
@@ -120,6 +109,8 @@ namespace log4cxx
                         */
                         virtual void setBackupAppender(const AppenderPtr& appender) = 0;
                 };
+
+                LOG4CXX_PTR_DEF(ErrorHandler)
         }  //namespace spi
 } //namespace log4cxx
 

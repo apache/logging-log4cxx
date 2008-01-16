@@ -74,8 +74,12 @@ IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
 
 PropertyConfigurator::PropertyConfigurator()
-: loggerFactory(new DefaultLoggerFactory())
+: loggerFactory(new DefaultLoggerFactory()), registry(new std::map<LogString, AppenderPtr>())
 {
+}
+
+PropertyConfigurator::~PropertyConfigurator() {
+    delete registry;
 }
 
 void PropertyConfigurator::addRef() const {
@@ -169,7 +173,7 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 
         // We don't want to hold references to appenders preventing their
         // destruction.
-        registry.clear();
+        registry->clear();
 }
 
 void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
@@ -438,10 +442,10 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 void PropertyConfigurator::registryPut(const AppenderPtr& appender)
 {
-        registry[appender->getName()] = appender;
+        (*registry)[appender->getName()] = appender;
 }
 
 AppenderPtr PropertyConfigurator::registryGet(const LogString& name)
 {
-        return registry[name];
+        return (*registry)[name];
 }

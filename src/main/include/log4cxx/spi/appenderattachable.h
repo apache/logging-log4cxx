@@ -26,10 +26,6 @@
 
 namespace log4cxx
 {
-    // Forward Declarations
-    class Appender;
-    typedef helpers::ObjectPtrT<Appender> AppenderPtr;
-    typedef std::vector<AppenderPtr> AppenderList;
 
     namespace spi
     {

@@ -211,7 +211,7 @@ namespace log4cxx
                         mutable LogString* ndc;
 
                         /** The mapped diagnostic context (MDC) of logging event. */
-                        mutable MDC::Map mdcCopy;
+                        mutable MDC::Map* mdcCopy;
 
                         /**
                         * A map of String keys and String values.

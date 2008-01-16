@@ -22,15 +22,11 @@
 
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/appender.h>
 
 namespace log4cxx {
     class File;
-    class Appender;
-    typedef log4cxx::helpers::ObjectPtrT<Appender> AppenderPtr;
-    namespace spi {
-      class LoggingEvent;
-      typedef log4cxx::helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-    }
 
     namespace rolling {
 
@@ -75,7 +71,7 @@ namespace log4cxx {
 
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<TriggeringPolicy> TriggeringPolicyPtr;
+        LOG4CXX_PTR_DEF(TriggeringPolicy)
 
 
     }

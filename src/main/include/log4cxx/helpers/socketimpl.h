@@ -161,7 +161,7 @@ namespace log4cxx
 
 
                 class SocketImpl;
-                typedef helpers::ObjectPtrT<SocketImpl> SocketImplPtr;
+                LOG4CXX_PTR_DEF(SocketImpl)
 
                 /** @brief Default Socket Implementation.
 

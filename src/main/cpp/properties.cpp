@@ -314,10 +314,11 @@ protected:
         LexemType;
 };
 
-Properties::Properties() {
+Properties::Properties() : properties(new PropertyMap()) {
 }
 
 Properties::~Properties() {
+    delete properties;
 }
 
 LogString Properties::setProperty(const LogString& key, const LogString& value) {
@@ -326,8 +327,8 @@ LogString Properties::setProperty(const LogString& key, const LogString& value) 
 
 LogString Properties::put(const LogString& key, const LogString& value)
 {
-        LogString oldValue(properties[key]);
-        properties[key] = value;
+        LogString oldValue((*properties)[key]);
+        (*properties)[key] = value;
         //tcout << ASCII_STR("setting property key=") << key << ASCII_STR(", value=") << value << std::endl;
         return oldValue;
 }
@@ -338,8 +339,8 @@ LogString Properties::getProperty(const LogString& key) const {
 
 LogString Properties::get(const LogString& key) const
 {
-        std::map<LogString, LogString>::const_iterator it = properties.find(key);
-        return (it != properties.end()) ? it->second : LogString();
+        std::map<LogString, LogString>::const_iterator it = properties->find(key);
+        return (it != properties->end()) ? it->second : LogString();
 }
 
 void Properties::load(InputStreamPtr inStream) {
@@ -347,7 +348,7 @@ void Properties::load(InputStreamPtr inStream) {
         InputStreamReaderPtr lineReader(
             new InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()));
         LogString contents = lineReader->read(pool);
-        properties.clear();
+        properties->clear();
         PropertyParser parser;
         parser.parse(contents, *this);
 }
@@ -355,10 +356,10 @@ void Properties::load(InputStreamPtr inStream) {
 std::vector<LogString> Properties::propertyNames() const
 {
         std::vector<LogString> names;
-        names.reserve(properties.size());
+        names.reserve(properties->size());
 
         std::map<LogString, LogString>::const_iterator it;
-        for (it = properties.begin(); it != properties.end(); it++)
+        for (it = properties->begin(); it != properties->end(); it++)
         {
                 const LogString& key = it->first;
                 names.push_back(key);

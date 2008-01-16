@@ -21,19 +21,11 @@
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/spi/optionhandler.h>
+#include <log4cxx/spi/loggingevent.h>
 
 
 namespace log4cxx
 {
-    class Layout;
-    typedef helpers::ObjectPtrT<Layout> LayoutPtr;
-
-    namespace spi
-    {
-                class LoggingEvent;
-        typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-    }
-
         /**
         Extend this abstract class to create your own log layout format.
         */
@@ -89,6 +81,7 @@ namespace log4cxx
                 */
                 virtual bool ignoresThrowable() const = 0;
         };
+        LOG4CXX_PTR_DEF(Layout)
 }
 
 #endif // _LOG4CXX_LAYOUT_H

@@ -18,6 +18,11 @@
 #ifndef _LOG4CXX_LOGGER_H
 #define _LOG4CXX_LOGGER_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4231 )
+#endif
+
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/level.h>
@@ -38,7 +43,7 @@ namespace log4cxx
 
     class Logger;
     /** smart pointer to a Logger class */
-    typedef helpers::ObjectPtrT<Logger> LoggerPtr;
+    LOG4CXX_PTR_DEF(Logger)
 
 
     /**
@@ -755,6 +760,7 @@ namespace log4cxx
         log4cxx::helpers::Mutex mutex;
         friend class log4cxx::helpers::synchronized;
    };
+   LOG4CXX_LIST_DEF(LoggerList, LoggerPtr)
    
 }
 
@@ -938,5 +944,10 @@ Logs a localized message with three parameters.
         logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }}
 
 /**@}*/
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
 
 #endif //_LOG4CXX_LOGGER_H

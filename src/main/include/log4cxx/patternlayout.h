@@ -329,12 +329,14 @@ namespace log4cxx
                 /**
                  * Pattern converters.
                  */
-                std::vector<log4cxx::pattern::LoggingEventPatternConverterPtr> patternConverters;
+                LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, log4cxx::pattern::LoggingEventPatternConverterPtr)
+                LoggingEventPatternConverterList patternConverters;
 
                /**
                 * Field widths and alignment corresponding to pattern converters.
                 */
-                std::vector<log4cxx::pattern::FormattingInfoPtr> patternFields;
+                LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr)
+                FormattingInfoList patternFields;
 
 
         public:

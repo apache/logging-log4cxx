@@ -50,14 +50,36 @@ typedef log4cxx_int64_t log4cxx_time_t;
 typedef int log4cxx_status_t;
 typedef unsigned int log4cxx_uint32_t;
 
+//  definitions used when using static library
 #if defined(LOG4CXX_STATIC)
 #define LOG4CXX_EXPORT
+#define LOG4CXX_PTR_DEF(T) typedef log4cxx::helpers::ObjectPtrT<T> T##Ptr
+#define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N
+
+//   definitions used when building DLL
+#elif defined(LOG4CXX)
+#define LOG4CXX_EXPORT __declspec(dllexport)
+#define LOG4CXX_PTR_DEF(T) \
+template class LOG4CXX_EXPORT log4cxx::helpers::ObjectPtrT<T>; \
+typedef log4cxx::helpers::ObjectPtrT<T> T##Ptr;
+
+#define LOG4CXX_LIST_DEF(N, T) \
+template class LOG4CXX_EXPORT std::allocator<T>; \
+template class LOG4CXX_EXPORT std::vector<T>; \
+typedef std::vector<T> N;
+
 #else
-#ifdef LOG4CXX
-        #define LOG4CXX_EXPORT __declspec(dllexport)
-#else
-        #define LOG4CXX_EXPORT __declspec(dllimport)
-#endif
+//    definitions used when using DLL
+#define LOG4CXX_EXPORT __declspec(dllimport)
+#define LOG4CXX_PTR_DEF(T) \
+extern template class LOG4CXX_EXPORT log4cxx::helpers::ObjectPtrT<T>; \
+typedef log4cxx::helpers::ObjectPtrT<T> T##Ptr;
+
+#define LOG4CXX_LIST_DEF(N, T) \
+extern template class LOG4CXX_EXPORT std::allocator<T>; \
+extern template class LOG4CXX_EXPORT std::vector<T>; \
+typedef std::vector<T> N;
+
 #endif
 
 #define LOG4CXX_LOCALE_ENCODING_UTF8 0

@@ -52,6 +52,7 @@ log4cxx_time_t LoggingEvent::getStartTime() {
 
 LoggingEvent::LoggingEvent() :
    ndc(0),
+   mdcCopy(0),
    properties(0),
    ndcLookupRequired(true),
    mdcCopyLookupRequired(true),
@@ -65,6 +66,7 @@ LoggingEvent::LoggingEvent(
    logger(logger1),
    level(level1),
    ndc(0),
+   mdcCopy(0),
    properties(0),
    ndcLookupRequired(true),
    mdcCopyLookupRequired(true),
@@ -77,6 +79,7 @@ LoggingEvent::LoggingEvent(
 LoggingEvent::~LoggingEvent()
 {
         delete ndc;
+        delete mdcCopy;
         delete properties;
 }
 
@@ -106,11 +109,11 @@ bool LoggingEvent::getMDC(const LogString& key, LogString& dest) const
 {
    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
     // that is associated with the thread.
-    if (!mdcCopy.empty())
+    if (mdcCopy != 0 && !mdcCopy->empty())
         {
-                MDC::Map::const_iterator it = mdcCopy.find(key);
+                MDC::Map::const_iterator it = mdcCopy->find(key);
 
-                if (it != mdcCopy.end())
+                if (it != mdcCopy->end())
                 {
                         if (!it->second.empty())
                         {
@@ -128,10 +131,10 @@ std::set<LogString> LoggingEvent::getMDCKeySet() const
 {
         std::set<LogString> set;
 
-        if (!mdcCopy.empty())
+        if (mdcCopy != 0 && !mdcCopy->empty())
         {
                 MDC::Map::const_iterator it;
-                for (it = mdcCopy.begin(); it != mdcCopy.end(); it++)
+                for (it = mdcCopy->begin(); it != mdcCopy->end(); it++)
                 {
                         set.insert(it->first);
 
@@ -157,7 +160,7 @@ void LoggingEvent::getMDCCopy() const
         {
                 mdcCopyLookupRequired = false;
                 // the clone call is required for asynchronous logging.
-                mdcCopy = ThreadSpecificData::getCurrentThreadMap();
+                mdcCopy = new MDC::Map(ThreadSpecificData::getCurrentThreadMap());
         }
 }
 
@@ -290,10 +293,10 @@ void LoggingEvent::write(helpers::ObjectOutputStream& os, Pool& p) const {
       os.writeLong(timeStamp/1000, p);
       os.writeObject(logger->getName(), p);
       locationInfo.write(os, p);
-      if (mdcCopy.size() == 0) {
+      if (mdcCopy == 0 || mdcCopy->size() == 0) {
           os.writeByte(ObjectOutputStream::TC_NULL, p);
       } else {
-          os.writeObject(mdcCopy, p);
+          os.writeObject(*mdcCopy, p);
       }
       if (ndc == 0) {
           os.writeByte(ObjectOutputStream::TC_NULL, p);

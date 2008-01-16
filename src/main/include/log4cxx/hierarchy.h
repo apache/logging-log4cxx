@@ -72,10 +72,10 @@ namespace log4cxx
             spi::HierarchyEventListenerList listeners;
 
             typedef std::map<LogString, LoggerPtr> LoggerMap;
-            LoggerMap loggers;
+            LoggerMap* loggers;
 
             typedef std::map<LogString, ProvisionNode> ProvisionNodeMap;
-            ProvisionNodeMap provisionNodes;
+            ProvisionNodeMap* provisionNodes;
 
             LoggerPtr root;
 

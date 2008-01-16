@@ -18,32 +18,16 @@
 #ifndef _LOG4CXX_SPI_LOG_REPOSITORY_H
 #define _LOG4CXX_SPI_LOG_REPOSITORY_H
 
-#include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/helpers/object.h>
-#include <log4cxx/logstring.h>
-#include <vector>
+#include <log4cxx/appender.h>
 #include <log4cxx/spi/loggerfactory.h>
+#include <log4cxx/spi/hierarchyeventlistener.h>
+#include <log4cxx/level.h>
 
 namespace log4cxx
 {
-        class Level;
-        typedef helpers::ObjectPtrT<Level> LevelPtr;
-
-        class Logger;
-        typedef helpers::ObjectPtrT<Logger> LoggerPtr;
-
-        typedef std::vector<LoggerPtr> LoggerList;
-
-        class Appender;
-        typedef log4cxx::helpers::ObjectPtrT<Appender> AppenderPtr;
-
-        namespace spi
+    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr)
+    namespace spi
         {
-             class HierarchyEventListener;
-             typedef log4cxx::helpers::ObjectPtrT<HierarchyEventListener>
-                        HierarchyEventListenerPtr;
-
-
             /**
             A <code>LoggerRepository</code> is used to create and retrieve
             <code>Loggers</code>. The relation between loggers in a repository
@@ -115,7 +99,7 @@ namespace log4cxx
 
             }; // class LoggerRepository
 
-            typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
+            LOG4CXX_PTR_DEF(LoggerRepository)
 
         }  // namespace spi
 } // namespace log4cxx

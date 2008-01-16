@@ -21,16 +21,15 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/spi/optionhandler.h>
+#include <log4cxx/spi/loggingevent.h>
 
 namespace log4cxx
 {
         namespace spi
         {
                 class Filter;
-                typedef helpers::ObjectPtrT<Filter> FilterPtr;
+                LOG4CXX_PTR_DEF(Filter);
 
-                class LoggingEvent;
-        typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
 
         /**
         Users should extend this class to implement customized logging

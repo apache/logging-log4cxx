@@ -18,23 +18,12 @@
 #ifndef _LOG4CXX_SPI_HIERARCHY_EVENT_LISTENER_H
 #define _LOG4CXX_SPI_HIERARCHY_EVENT_LISTENER_H
 
-#include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/objectptr.h>
-#include <vector>
+#include <log4cxx/appender.h>
 
 namespace log4cxx
 {
-        class Logger;
-        typedef helpers::ObjectPtrT<Logger> LoggerPtr;
-        class Appender;
-        typedef helpers::ObjectPtrT<Appender> AppenderPtr;
-
         namespace spi
         {
-                class HierarchyEventListener;
-                typedef log4cxx::helpers::ObjectPtrT<HierarchyEventListener>
-                        HierarchyEventListenerPtr;
-                typedef std::vector<HierarchyEventListenerPtr> HierarchyEventListenerList;
 
                 /** Listen to events occuring within a Hierarchy.*/
                 class LOG4CXX_EXPORT HierarchyEventListener :
@@ -49,6 +38,8 @@ namespace log4cxx
                         virtual void removeAppenderEvent(const LoggerPtr& logger,
                                 const AppenderPtr& appender) = 0;
                 };
+                LOG4CXX_PTR_DEF(HierarchyEventListener)
+                LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr)
         }  // namespace spi
 } // namespace log4cxx
 

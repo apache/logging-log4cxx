@@ -42,9 +42,6 @@ namespace log4cxx
     class Layout;
     typedef log4cxx::helpers::ObjectPtrT<Layout> LayoutPtr;
 
-    class Appender;
-    typedef log4cxx::helpers::ObjectPtrT<Appender> AppenderPtr;
-    typedef std::vector<AppenderPtr> AppenderList;
 
         /**
         Implement this interface for your own strategies for outputting log
@@ -132,6 +129,10 @@ namespace log4cxx
        */
        virtual bool requiresLayout() const = 0;
    };
+
+    LOG4CXX_PTR_DEF(Appender)
+    LOG4CXX_LIST_DEF(AppenderList, AppenderPtr)
+
 }
 
 #endif //_LOG4CXX_APPENDER_H

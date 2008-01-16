@@ -34,7 +34,7 @@ namespace log4cxx
                 {
                 private:
                         typedef std::map<LogString, LogString> PropertyMap;
-                        PropertyMap properties;
+                        PropertyMap* properties;
                         Properties(const Properties&);
                         Properties& operator=(const Properties&);
 

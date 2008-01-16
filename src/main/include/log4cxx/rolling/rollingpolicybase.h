@@ -51,12 +51,14 @@ namespace log4cxx {
           /**
            * File name pattern converters.
            */
-          std::vector<log4cxx::pattern::PatternConverterPtr> patternConverters;
+          LOG4CXX_LIST_DEF(PatternConverterList, log4cxx::pattern::PatternConverterPtr)
+          PatternConverterList patternConverters;
 
           /**
            * File name field specifiers.
            */
-          std::vector<log4cxx::pattern::FormattingInfoPtr> patternFields;
+          LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr)
+          FormattingInfoList patternFields;
 
           /**
            * File name pattern.

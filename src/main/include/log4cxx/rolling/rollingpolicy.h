@@ -72,7 +72,7 @@ namespace log4cxx {
           log4cxx::helpers::Pool& p) = 0;
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<RollingPolicy> RollingPolicyPtr;
+      LOG4CXX_PTR_DEF(RollingPolicy)
 
     }
 }

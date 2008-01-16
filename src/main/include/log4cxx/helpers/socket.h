@@ -107,9 +107,7 @@ namespace log4cxx
                         SocketImplPtr socketImpl;
                 };
                 
-                class Socket;
-                typedef helpers::ObjectPtrT<Socket> SocketPtr;
-
+                LOG4CXX_PTR_DEF(Socket)
                 
         } // namespace helpers
 } // namespace log4cxx

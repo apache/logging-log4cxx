@@ -178,7 +178,7 @@ namespace log4cxx
              *   Minimal extension of std::ios_base to allow creation
              *     of embedded IO states.
              */
-            class logstream_ios_base : public std::ios_base {
+            class LOG4CXX_EXPORT logstream_ios_base : public std::ios_base {
             public:
                 logstream_ios_base(std::ios_base::fmtflags initval, 
                     int initsize);

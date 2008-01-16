@@ -82,7 +82,7 @@ namespace log4cxx {
 
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<Action> ActionPtr;
+        LOG4CXX_PTR_DEF(Action)
 
     }
 }

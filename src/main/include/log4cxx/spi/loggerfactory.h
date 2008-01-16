@@ -43,7 +43,7 @@ namespace log4cxx
                             const LogString& name) const = 0;
                 };
 
-                typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
+                LOG4CXX_PTR_DEF(LoggerFactory)
 
 
         }  // namespace spi

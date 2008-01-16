@@ -186,7 +186,7 @@ namespace log4cxx {
 
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<RollingFileAppender> RollingFileAppenderPtr;
+        LOG4CXX_PTR_DEF(RollingFileAppender)
 
     }
 }
