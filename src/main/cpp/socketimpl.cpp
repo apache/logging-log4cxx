@@ -311,7 +311,7 @@ void SocketImpl::listen(int backlog)
 LogString SocketImpl::toString() const
 {
         LogString oss(address->getHostAddress());
-        oss.append(1, 0x3A /* ':' */);
+        oss.append(1, (logchar) 0x3A /* ':' */);
         Pool p;
         StringHelper::toString(port, p, oss);
         return oss;

@@ -195,7 +195,7 @@ LogString OptionConverter::substVars(const LogString& val, Properties& props)
                             msg.append(LOG4CXX_STR("\" has no closing brace. Opening brace at position "));
                             Pool p;
                             StringHelper::toString(j, p, msg);
-                            msg.append(1, 0x2E /* '.' */);
+                            msg.append(1, (logchar) 0x2E /* '.' */);
                             throw IllegalArgumentException(msg);
                         }
                         else

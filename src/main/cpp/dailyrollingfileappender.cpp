@@ -76,7 +76,7 @@ void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
       inLiteral = !inLiteral;
 
       if (inLiteral && inPattern) {
-        pattern.append(1, 0x7D /* '}' */);
+        pattern.append(1, (logchar) 0x7D /* '}' */);
         inPattern = false;
       }
     } else {
@@ -91,7 +91,7 @@ void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
   }
 
   if (inPattern) {
-    pattern.append(1, 0x7D /* '}' */);
+    pattern.append(1, (logchar) 0x7D /* '}' */);
   }
 
   policy->setFileNamePattern(pattern);

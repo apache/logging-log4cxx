@@ -117,7 +117,7 @@ void HTMLLayout::format(LogString& output,
                 const LocationInfo& locInfo = event->getLocationInformation();
                 LOG4CXX_DECODE_CHAR(fileName, locInfo.getFileName());
                 Transform::appendEscapingTags(output, fileName);
-                output.append(1, 0x3A /* ':' */);
+                output.append(1, (logchar) 0x3A /* ':' */);
                 int line = event->getLocationInformation().getLineNumber();
                 if (line != 0)
                 {

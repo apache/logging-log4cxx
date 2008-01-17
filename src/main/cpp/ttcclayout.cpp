@@ -52,26 +52,26 @@ void TTCCLayout::format(LogString& output,
 
         if(threadPrinting)
         {
-                output.append(1, 0x5B /* '[' */);
+                output.append(1, (logchar) 0x5B /* '[' */);
                 output.append(event->getThreadName());
-                output.append(1, 0x5D /* ']' */);
-                output.append(1, 0x20 /* ' ' */);
+                output.append(1, (logchar) 0x5D /* ']' */);
+                output.append(1, (logchar) 0x20 /* ' ' */);
         }
 
         output.append(event->getLevel()->toString());
-        output.append(1, 0x20 /* ' ' */);
+        output.append(1, (logchar) 0x20 /* ' ' */);
         if(categoryPrefixing)
         {
                 output.append(event->getLoggerName());
-                output.append(1, 0x20 /* ' ' */);
+                output.append(1, (logchar) 0x20 /* ' ' */);
         }
 
         if(contextPrinting && event->getNDC(output)) {
-                output.append(1, 0x20 /* ' ' */);
+                output.append(1, (logchar) 0x20 /* ' ' */);
         }
 
-        output.append(1, 0x2D /* '-' */);
-        output.append(1, 0x20 /* ' ' */);
+        output.append(1, (logchar) 0x2D /* '-' */);
+        output.append(1, (logchar) 0x20 /* ' ' */);
         output.append(event->getRenderedMessage());
         output.append(LOG4CXX_EOL);
 }

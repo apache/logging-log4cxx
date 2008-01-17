@@ -54,21 +54,21 @@ void PropertiesPatternConverter::format(
   LogString& toAppendTo,
   Pool& /* p */) const {
     if (option.length() == 0) {
-      toAppendTo.append(1, 0x7B /* '{' */);
+      toAppendTo.append(1, (logchar) 0x7B /* '{' */);
 
       std::set<LogString> keySet(event->getMDCKeySet());
 
       for(std::set<LogString>::const_iterator iter = keySet.begin();
           iter != keySet.end();
           iter++) {
-          toAppendTo.append(1, 0x7B /* '{' */);
+          toAppendTo.append(1, (logchar) 0x7B /* '{' */);
           toAppendTo.append(*iter);
-          toAppendTo.append(1, 0x2C /* ',' */);
+          toAppendTo.append(1, (logchar) 0x2C /* ',' */);
           event->getMDC(*iter, toAppendTo);
-          toAppendTo.append(1, 0x7D /* '}' */);
+          toAppendTo.append(1, (logchar) 0x7D /* '}' */);
       }
 
-      toAppendTo.append(1, 0x7D /* '}' */);
+      toAppendTo.append(1, (logchar) 0x7D /* '}' */);
 
     } else {
       event->getMDC(option, toAppendTo);

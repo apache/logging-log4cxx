@@ -287,7 +287,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
         LogString sbuf(1, 0x3C /* '<' */);
         StringHelper::toString((syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
-        sbuf.append(1, 0x3E /* '>' */);
+        sbuf.append(1, (logchar) 0x3E /* '>' */);
         if (facilityPrinting)
         {
                 sbuf.append(facilityStr);

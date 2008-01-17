@@ -157,7 +157,7 @@ void FileAppender::activateOptions(Pool& p)
       errors++;
       LogString msg(LOG4CXX_STR("setFile("));
       msg.append(fileName);
-      msg.append(1, 0x2C /* ',' */);
+      msg.append(1, (logchar) 0x2C /* ',' */);
       StringHelper::toString(fileAppend, msg);
       msg.append(LOG4CXX_STR(") call failed."));
       LogLog::error(msg, e);

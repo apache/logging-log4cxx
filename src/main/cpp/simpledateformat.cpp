@@ -151,7 +151,7 @@ namespace log4cxx
                     if (stat == APR_SUCCESS) {
                         Transcoder::decode(std::string(buf, retsize), *valueIter);
                     } else {
-                        valueIter->append(1, 0x3F);
+                        valueIter->append(1, (logchar) 0x3F);
                     }
                 }
             }
@@ -197,8 +197,8 @@ public:
 
   void format(LogString& s, const apr_time_exp_t & /* tm */, Pool & /* p */ ) const
   {
-    s.append(1, 0x41 /* 'A' */);
-    s.append(1, 0x44 /* 'D' */);
+    s.append(1, (logchar) 0x41 /* 'A' */);
+    s.append(1, (logchar) 0x44 /* 'D' */);
   }
 };
 
@@ -221,7 +221,7 @@ public:
     size_t finalLength = s.length();
     if ( initialLength + width > finalLength )
     {
-      s.insert( initialLength, ( initialLength + width ) - finalLength, 0x30 /* '0' */);
+      s.insert( initialLength, ( initialLength + width ) - finalLength, (logchar) 0x30 /* '0' */);
     }
   }
 
@@ -544,7 +544,7 @@ public:
   {
     if ( tm.tm_gmtoff == 0 )
     {
-      s.append( 1, 0x5A /* 'Z'  */ );
+      s.append( 1, (logchar) 0x5A /* 'Z'  */ );
     }
     else
     {

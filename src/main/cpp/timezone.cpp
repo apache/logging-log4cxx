@@ -217,19 +217,19 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString & id )
     LogString hh;
     StringHelper::toString(hours, p, hh);
     if (sign > 0) {
-      s.append(1, 0x2B /* '+' */);
+      s.append(1, (logchar) 0x2B /* '+' */);
     } else {
-      s.append(1, 0x2D /* '-' */);
+      s.append(1, (logchar) 0x2D /* '-' */);
     }
     if (hh.length() == 1) {
-      s.append(1, 0x30 /* '0' */);
+      s.append(1, (logchar) 0x30 /* '0' */);
     }
     s.append(hh);
-    s.append(1, 0x3A /*' :' */);
+    s.append(1, (logchar) 0x3A /*' :' */);
     LogString mm;
     StringHelper::toString(minutes, p, mm);
     if (mm.length() == 1) {
-      s.append(1, 0x30 /* '0' */);
+      s.append(1, (logchar) 0x30 /* '0' */);
     }
     s.append(mm);
     apr_int32_t offset = sign * (hours * 3600 + minutes * 60);
