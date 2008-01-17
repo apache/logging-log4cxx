@@ -18,6 +18,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
 #include <assert.h>
+#include <log4cxx/logger.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;

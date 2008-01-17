@@ -120,7 +120,7 @@ void CyclicBuffer::resize(int newSize)
         if(newSize == numElems)
                 return; // nothing to do
 
-        std::vector<LoggingEventPtr> temp(newSize);
+        LoggingEventList temp(newSize);
 
         int loopLen = newSize < numElems ? newSize : numElems;
         int i;

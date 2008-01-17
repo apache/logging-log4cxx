@@ -275,7 +275,7 @@ public:
 
 };
 
-typedef log4cxx::helpers::ObjectPtrT<DailyRollingFileAppender> DailyRollingFileAppenderPtr;
+LOG4CXX_PTR_DEF(DailyRollingFileAppender)
 
 }
 

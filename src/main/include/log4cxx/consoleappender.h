@@ -22,9 +22,7 @@
 
 namespace log4cxx
 {
-        class ConsoleAppender;
-        typedef helpers::ObjectPtrT<ConsoleAppender> ConsoleAppenderPtr;
-
+ 
         /**
         * ConsoleAppender appends log events to <code>stdout</code> or
         * <code>stderr</code> using a layout specified by the user. The
@@ -74,6 +72,7 @@ namespace log4cxx
                 static log4cxx::helpers::WriterPtr createWriter(const LogString& target);
 
         };
+        LOG4CXX_PTR_DEF(ConsoleAppender)
 }  //namespace log4cxx
 
 #endif //_LOG4CXX_CONSOLE_APPENDER_H

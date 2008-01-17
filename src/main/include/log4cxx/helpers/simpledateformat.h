@@ -68,7 +68,7 @@ namespace log4cxx
                   /**
                    * List of tokens.
                    */
-                  typedef std::vector<log4cxx::helpers::SimpleDateFormatImpl::PatternToken*> PatternTokenList;
+                  LOG4CXX_LIST_DEF(PatternTokenList, log4cxx::helpers::SimpleDateFormatImpl::PatternToken*)
 
                   PatternTokenList pattern;
                   

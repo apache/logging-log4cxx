@@ -19,16 +19,14 @@
 #define _LOG4CXX_HELPERS_OBJECTOUTPUTSTREAM_H
 
 #include <log4cxx/helpers/objectimpl.h>
-#include <map>
+#include <log4cxx/mdc.h>
+#include <log4cxx/helpers/outputstream.h>
+#include <log4cxx/helpers/charsetencoder.h>
 
 namespace log4cxx
 {
 
         namespace helpers {
-          class OutputStream;
-          typedef helpers::ObjectPtrT<OutputStream> OutputStreamPtr;
-          class CharsetEncoder;
-          typedef helpers::ObjectPtrT<CharsetEncoder> CharsetEncoderPtr;
 
           /**
           *  Emulates java serialization.
@@ -48,7 +46,7 @@ namespace log4cxx
                   void flush(Pool& p);
                   void writeUTF(const LogString&, Pool& p);
                   void writeObject(const LogString&, Pool& p);
-                  void writeObject(const std::map<LogString, LogString>& mdc, Pool& p);
+                  void writeObject(const MDC::Map& mdc, Pool& p);
                   void writeInt(int val, Pool& p);
                   void writeLong(log4cxx_time_t val, Pool& p);
                   void writeByte(char val, Pool& p);
@@ -77,7 +75,7 @@ namespace log4cxx
                   log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
           };
           
-          typedef helpers::ObjectPtrT<ObjectOutputStream> ObjectOutputStreamPtr;          
+          LOG4CXX_PTR_DEF(ObjectOutputStream)          
 
         } // namespace helpers
 

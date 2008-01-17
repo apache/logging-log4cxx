@@ -25,8 +25,6 @@ namespace log4cxx
 {
         namespace helpers
         {
-                class DateFormat;
-                typedef helpers::ObjectPtrT<DateFormat> DateFormatPtr;
 
                 /**
                 *  DateFormat is an abstract class for date/time formatting
@@ -85,7 +83,7 @@ namespace log4cxx
                    */
                    DateFormat& operator=(const DateFormat&);
                 };
-
+                LOG4CXX_PTR_DEF(DateFormat)
 
 
         }  // namespace helpers

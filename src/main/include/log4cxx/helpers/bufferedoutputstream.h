@@ -55,7 +55,7 @@ namespace log4cxx
                   BufferedOutputStream& operator=(const BufferedOutputStream&);
           };
 
-          typedef helpers::ObjectPtrT<BufferedOutputStream> BufferedOutputStreamPtr;
+          LOG4CXX_PTR_DEF(BufferedOutputStream)
         } // namespace helpers
 
 }  //namespace log4cxx

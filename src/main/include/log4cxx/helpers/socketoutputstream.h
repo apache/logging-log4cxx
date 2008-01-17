@@ -20,15 +20,12 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/outputstream.h>
-#include <vector>
+#include <log4cxx/helpers/socket.h>
 
 namespace log4cxx
 {
         namespace helpers
         {
-                class Socket;
-                typedef ObjectPtrT<Socket> SocketPtr;
-
 
                 class LOG4CXX_EXPORT SocketOutputStream : public OutputStream
                 {
@@ -47,7 +44,8 @@ namespace log4cxx
                         virtual void write(ByteBuffer& buf, Pool& p);
 
                 protected:
-                        std::vector<unsigned char> array;
+                        LOG4CXX_LIST_DEF(ByteList, unsigned char)
+                        ByteList array;
                         SocketPtr socket;
 
                 private:
@@ -58,7 +56,7 @@ namespace log4cxx
 
                 };
                 
-                typedef ObjectPtrT<SocketOutputStream> SocketOutputStreamPtr;
+                LOG4CXX_PTR_DEF(SocketOutputStream)
                 
         }  // namespace helpers
 } // namespace log4cxx

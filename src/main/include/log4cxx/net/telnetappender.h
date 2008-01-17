@@ -23,13 +23,11 @@
 #include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/helpers/thread.h>
 #include <vector>
-
+#include <log4cxx/helpers/charsetencoder.h>
 
 namespace log4cxx
 {
         namespace helpers {
-             class CharsetEncoder;
-             typedef helpers::ObjectPtrT<CharsetEncoder> CharsetEncoderPtr;
              class ByteBuffer;
         }
         namespace net
@@ -127,7 +125,7 @@ servlet.
                         TelnetAppender& operator=(const TelnetAppender&);
 
                         typedef log4cxx::helpers::SocketPtr Connection;
-                        typedef std::vector<Connection> ConnectionList;
+                        LOG4CXX_LIST_DEF(ConnectionList, Connection)
                         
                         void write(log4cxx::helpers::ByteBuffer&);
                         void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);

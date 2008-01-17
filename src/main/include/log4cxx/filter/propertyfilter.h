@@ -44,9 +44,10 @@ namespace log4cxx
  *
  * @since 1.3
  */
-        class LOG4CXX_EXPORT PropertyFilter:public log4cxx::spi::Filter
+        class LOG4CXX_EXPORT PropertyFilter : public log4cxx::spi::Filter
         {
-            std::map < LogString, LogString > properties;
+            typedef std::map < LogString, LogString > PropertyMap;
+            PropertyMap* properties;
             PropertyFilter(const PropertyFilter &);
                   PropertyFilter & operator=(const PropertyFilter &);
 
@@ -57,6 +58,7 @@ namespace log4cxx
                   END_LOG4CXX_CAST_MAP()
 
                   PropertyFilter();
+                  ~PropertyFilter();
             void setProperties(const LogString & props);
 
             FilterDecision decide(const spi::LoggingEventPtr & event) const;

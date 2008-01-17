@@ -25,6 +25,7 @@
 #include <log4cxx/mdc.h>
 #include <set>
 #include <log4cxx/spi/location/locationinfo.h>
+#include <vector>
 
 
 namespace log4cxx
@@ -33,6 +34,7 @@ namespace log4cxx
         typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
         class Level;
+        typedef helpers::ObjectPtrT<Level> LevelPtr;
 
         namespace helpers
         {
@@ -41,9 +43,6 @@ namespace log4cxx
 
         namespace spi
         {
-                class LoggingEvent;
-                /** smart pointer to a LoggingEvent class */
-                typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
 
                 /**
                 The internal representation of logging events. When an affirmative
@@ -259,6 +258,9 @@ namespace log4cxx
                        static void writeClassDesc(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p);
                        
                 };
+
+                LOG4CXX_PTR_DEF(LoggingEvent)
+                LOG4CXX_LIST_DEF(LoggingEventList, LoggingEventPtr)
         }
 }
 

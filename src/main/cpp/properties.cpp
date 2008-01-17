@@ -339,7 +339,7 @@ LogString Properties::getProperty(const LogString& key) const {
 
 LogString Properties::get(const LogString& key) const
 {
-        std::map<LogString, LogString>::const_iterator it = properties->find(key);
+        PropertyMap::const_iterator it = properties->find(key);
         return (it != properties->end()) ? it->second : LogString();
 }
 
@@ -358,7 +358,7 @@ std::vector<LogString> Properties::propertyNames() const
         std::vector<LogString> names;
         names.reserve(properties->size());
 
-        std::map<LogString, LogString>::const_iterator it;
+        PropertyMap::const_iterator it;
         for (it = properties->begin(); it != properties->end(); it++)
         {
                 const LogString& key = it->first;

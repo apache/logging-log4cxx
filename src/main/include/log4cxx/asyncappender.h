@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_ASYNC_APPENDER_H
 #define _LOG4CXX_ASYNC_APPENDER_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4231 )
+#endif
+
+
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <deque>
@@ -29,8 +35,6 @@
 
 namespace log4cxx
 {
-        class AsyncAppender;
-        typedef helpers::ObjectPtrT<AsyncAppender> AsyncAppenderPtr;
 
         /**
         The AsyncAppender lets users log events asynchronously. It uses a
@@ -67,6 +71,9 @@ namespace log4cxx
                  *  Destructor.
                  */
                 virtual ~AsyncAppender();
+
+                void addRef() const;
+                void releaseRef() const;
 
                 /**
                  * Add appender.
@@ -191,7 +198,7 @@ namespace log4cxx
                 /**
                  * Event buffer.
                 */
-                typedef std::vector<log4cxx::spi::LoggingEventPtr> LoggingEventList;
+                LOG4CXX_LIST_DEF(LoggingEventList, log4cxx::spi::LoggingEventPtr)
                 LoggingEventList buffer;
 
                 /**
@@ -244,7 +251,7 @@ namespace log4cxx
                   * Map of DiscardSummary objects keyed by logger name.
                 */
                 typedef std::map<LogString, DiscardSummary> DiscardMap;
-                DiscardMap discardMap;
+                DiscardMap* discardMap;
                 
                 /**
                  * Buffer size.
@@ -277,8 +284,13 @@ namespace log4cxx
                 static void* LOG4CXX_THREAD_FUNC dispatch(helpers::log4cxx_thread_t* thread, void* data);
 
         }; // class AsyncAppender
-
+        LOG4CXX_PTR_DEF(AsyncAppender)
 }  //  namespace log4cxx
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
 
 #endif//  _LOG4CXX_ASYNC_APPENDER_H
 

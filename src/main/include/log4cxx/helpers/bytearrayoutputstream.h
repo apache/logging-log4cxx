@@ -34,7 +34,8 @@ namespace log4cxx
           class LOG4CXX_EXPORT ByteArrayOutputStream : public OutputStream
           {
           private:
-                 std::vector<unsigned char> array;
+                 LOG4CXX_LIST_DEF(ByteList, unsigned char)
+                 ByteList array;
 
           public:
                   DECLARE_ABSTRACT_LOG4CXX_OBJECT(ByteArrayOutputStream)
@@ -49,14 +50,14 @@ namespace log4cxx
                   virtual void close(Pool& p);
                   virtual void flush(Pool& p);
                   virtual void write(ByteBuffer& buf, Pool& p);
-                  std::vector<unsigned char> toByteArray() const;
+                  ByteList toByteArray() const;
 
           private:
                   ByteArrayOutputStream(const ByteArrayOutputStream&);
                   ByteArrayOutputStream& operator=(const ByteArrayOutputStream&);
           };
 
-          typedef helpers::ObjectPtrT<ByteArrayOutputStream> ByteArrayOutputStreamPtr;
+          LOG4CXX_PTR_DEF(ByteArrayOutputStream)
         } // namespace helpers
 
 }  //namespace log4cxx

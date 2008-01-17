@@ -46,7 +46,7 @@ AsyncAppender::AsyncAppender()
   bufferMutex(pool),
   bufferNotFull(pool),
   bufferNotEmpty(pool),
-  discardMap(),
+  discardMap(new DiscardMap()),
   bufferSize(DEFAULT_BUFFER_SIZE),
   appenders(new AppenderAttachableImpl(pool)),
   dispatcher(),
@@ -58,6 +58,15 @@ AsyncAppender::AsyncAppender()
 AsyncAppender::~AsyncAppender()
 {
         finalize();
+        delete discardMap;
+}
+
+void AsyncAppender::addRef() const {
+    ObjectImpl::addRef();
+}
+
+void AsyncAppender::releaseRef() const {
+    ObjectImpl::releaseRef();
 }
 
 void AsyncAppender::addAppender(const AppenderPtr& newAppender)
@@ -144,10 +153,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
                 //
                 if (discard) {
                     LogString loggerName = event->getLoggerName();
-                    DiscardMap::iterator iter = discardMap.find(loggerName);
-                    if (iter == discardMap.end()) {
+                    DiscardMap::iterator iter = discardMap->find(loggerName);
+                    if (iter == discardMap->end()) {
                         DiscardSummary summary(event);
-                        discardMap.insert(DiscardMap::value_type(loggerName, summary));
+                        discardMap->insert(DiscardMap::value_type(loggerName, summary));
                     } else {
                         (*iter).second.add(event);
                     }
@@ -318,13 +327,13 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* thread, void
                        eventIter++) {
                        events.push_back(*eventIter);
                    }
-                   for(DiscardMap::iterator discardIter = pThis->discardMap.begin();
-                       discardIter != pThis->discardMap.end();
+                   for(DiscardMap::iterator discardIter = pThis->discardMap->begin();
+                       discardIter != pThis->discardMap->end();
                        discardIter++) {
                        events.push_back(discardIter->second.createEvent(p));
                    }
                    pThis->buffer.clear();
-                   pThis->discardMap.clear();
+                   pThis->discardMap->clear();
                    pThis->bufferNotFull.signalAll();
             }
             

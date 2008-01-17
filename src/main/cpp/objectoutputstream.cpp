@@ -52,7 +52,7 @@ void ObjectOutputStream::writeObject(const LogString& val, Pool& p) {
 }
 
 
-void ObjectOutputStream::writeObject(const std::map<LogString, LogString>& val, Pool& p) {
+void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p) {
     //
     //  TC_OBJECT and the classDesc for java.util.Hashtable
     //
@@ -81,7 +81,7 @@ void ObjectOutputStream::writeObject(const std::map<LogString, LogString>& val, 
     size[0] = (sz >> 24) & 0xFF;
     ByteBuffer sizeBuf(size, sizeof(size));
     os->write(sizeBuf, p);
-    for(std::map<LogString, LogString>::const_iterator iter = val.begin();
+    for(MDC::Map::const_iterator iter = val.begin();
         iter != val.end();
         iter++) {
         writeObject(iter->first, p);

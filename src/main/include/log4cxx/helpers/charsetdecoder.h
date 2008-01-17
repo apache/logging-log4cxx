@@ -24,7 +24,7 @@ namespace log4cxx
 {
         namespace helpers {
           class CharsetDecoder;
-          typedef helpers::ObjectPtrT<CharsetDecoder> CharsetDecoderPtr;
+          LOG4CXX_PTR_DEF(CharsetDecoder)
           class ByteBuffer;
 
 
@@ -108,7 +108,6 @@ namespace log4cxx
 		  };
 
         } // namespace helpers
-
 }  //namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_CHARSETENCODER_H

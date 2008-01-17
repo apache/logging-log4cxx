@@ -122,7 +122,7 @@ protected:
 };
 
 
-typedef helpers::ObjectPtrT<PatternConverter> PatternConverterPtr;
+LOG4CXX_PTR_DEF(PatternConverter)
 
   }
 }

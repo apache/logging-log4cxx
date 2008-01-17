@@ -29,8 +29,6 @@ namespace log4cxx
 
     namespace spi
     {
-      class AppenderAttachable;
-      typedef helpers::ObjectPtrT<AppenderAttachable> AppenderAttachablePtr;
 
         /**
          * This Interface is for attaching Appenders to objects.
@@ -82,7 +80,7 @@ namespace log4cxx
         };
 
 
-        typedef helpers::ObjectPtrT<AppenderAttachable> AppenderAttachablePtr;
+        LOG4CXX_PTR_DEF(AppenderAttachable)
         
     }
 }

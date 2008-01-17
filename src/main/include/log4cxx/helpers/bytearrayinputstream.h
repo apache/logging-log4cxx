@@ -34,7 +34,8 @@ namespace log4cxx
           class LOG4CXX_EXPORT ByteArrayInputStream : public InputStream
           {
           private:
-              std::vector<unsigned char> buf;
+              LOG4CXX_LIST_DEF(ByteList, unsigned char)
+              ByteList buf;
               size_t pos;
 
           public:
@@ -49,7 +50,7 @@ namespace log4cxx
                    *
                    * @param bytes array of bytes to copy into stream.
                    */
-                   ByteArrayInputStream(const std::vector<unsigned char>& bytes);
+                   ByteArrayInputStream(const ByteList& bytes);
 
                    virtual ~ByteArrayInputStream();
 
@@ -76,7 +77,7 @@ namespace log4cxx
 
           };
 
-          typedef helpers::ObjectPtrT<ByteArrayInputStream> ByteArrayInputStreamPtr;
+          LOG4CXX_PTR_DEF(ByteArrayInputStream)
         } // namespace helpers
 
 }  //namespace log4cxx

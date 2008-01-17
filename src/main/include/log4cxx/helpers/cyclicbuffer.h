@@ -19,7 +19,6 @@
 #define _LOG4CXX_HELPERS_CYCLICBUFFER_H
 
 #include <log4cxx/spi/loggingevent.h>
-#include <vector>
 
 namespace log4cxx
 {
@@ -33,7 +32,7 @@ namespace log4cxx
                 */
                 class LOG4CXX_EXPORT CyclicBuffer
                 {
-                        std::vector<spi::LoggingEventPtr> ea;
+                        log4cxx::spi::LoggingEventList ea;
                         int first;
                         int last;
                         int numElems;

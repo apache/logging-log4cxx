@@ -35,6 +35,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/logger.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;

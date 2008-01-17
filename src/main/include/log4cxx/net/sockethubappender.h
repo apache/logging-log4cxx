@@ -21,6 +21,7 @@
 #include <log4cxx/appenderskeleton.h>
 #include <vector>
 #include <log4cxx/helpers/thread.h>
+#include <log4cxx/helpers/objectoutputstream.h>
 
 
 namespace log4cxx
@@ -105,7 +106,8 @@ namespace log4cxx
                         static int DEFAULT_PORT;
 
                         int port;
-                        std::vector<helpers::ObjectOutputStreamPtr> streams;
+                        LOG4CXX_LIST_DEF(ObjectOutputStreamList, log4cxx::helpers::ObjectOutputStreamPtr)
+                        ObjectOutputStreamList streams;
                         bool locationInfo;
 
                 public:
