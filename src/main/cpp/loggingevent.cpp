@@ -36,6 +36,7 @@
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/private/log4cxx_private.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -205,14 +206,13 @@ const LogString LoggingEvent::getCurrentThreadName() {
 #if defined(_WIN32)
    char result[20];
    DWORD threadId = GetCurrentThreadId();
-   apr_snprintf(result, sizeof(result), "0x%.8x", threadId);
+   apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
 #else
    // apr_os_thread_t encoded in HEX takes needs as many characters
-   // as two times the size of the type, plus an additional null byte
-   char result[sizeof(apr_os_thread_t) * 2 + 10];
-   result[0] = '0';
-   result[1] = 'x';   apr_os_thread_t threadId = apr_os_thread_current();
-   apr_snprintf(result+2, (sizeof result) - 2, "%pt", (void*) &threadId);
+   // as two times the size of the type, plus an additional null byte.
+   char result[sizeof(apr_os_thread_t) * 3 + 10];
+   apr_os_thread_t threadId = apr_os_thread_current();
+   apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif
    LOG4CXX_DECODE_CHAR(str, (const char*) result);
    return str;

@@ -21,5 +21,5 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 XMLThreadFilter::XMLThreadFilter()
-     : Filter("0x[0-9A-Fa-f]*", "main") {
+     : Filter("thread=\\\"0\\?x\\?[0-9A-Fa-f]\\+", "thread=\\\"main") {
 }

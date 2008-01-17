@@ -20,4 +20,4 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-ThreadFilter::ThreadFilter() : Filter("\\[0x[0-9A-Fa-f]*]", "\\[main]") {}
+ThreadFilter::ThreadFilter() : Filter("\\[0\\?x\\?[0-9A-Fa-f]\\+]", "\\[main]") {}
