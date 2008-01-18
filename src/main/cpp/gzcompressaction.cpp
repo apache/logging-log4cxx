@@ -63,9 +63,10 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
         //
         apr_file_t* child_err;
         stat = apr_file_open_stderr(&child_err, pool);
-        if (stat != APR_SUCCESS) throw IOException(stat);
-        stat =  apr_procattr_child_err_set(attr, child_err, NULL);
-        if (stat != APR_SUCCESS) throw IOException(stat);
+        if (stat == APR_SUCCESS) {
+        	stat =  apr_procattr_child_err_set(attr, child_err, NULL);
+        	if (stat != APR_SUCCESS) throw IOException(stat);
+        }
 
         const char** args = (const char**) 
             apr_palloc(pool, 4 *sizeof(*args));
