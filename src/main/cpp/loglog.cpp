@@ -104,6 +104,7 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 void LogLog::emit(const LogString& msg) {
     LogString out(LOG4CXX_STR("log4cxx: "));
     out.append(msg);
+	out.append(1, (logchar) 0x0A);
     SystemErrWriter::write(out);
 }
 
@@ -115,5 +116,6 @@ void LogLog::emit(const std::exception& ex) {
     } else {
         out.append(LOG4CXX_STR("std::exception::what() == null"));
     }
+	out.append(1, (logchar) 0x0A);
     SystemErrWriter::write(out);
 }

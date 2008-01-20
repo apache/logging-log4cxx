@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_STRING_H
 #define _LOG4CXX_STRING_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
 #include <string>
 #include <log4cxx/log4cxx.h>
 
@@ -75,6 +81,10 @@ typedef unsigned short UniChar;
 
 #if LOG4CXX_LOGCHAR_IS_UNICHAR || (LOG4CXX_LOGCHAR_IS_UTF8 || LOG4CXX_CHARSET_EBCDIC)
 #include <log4cxx/helpers/transcoder.h>
+#endif
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
 #endif
 
 #endif //_LOG4CXX_STRING_H

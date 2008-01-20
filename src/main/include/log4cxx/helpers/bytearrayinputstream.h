@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_HELPERS_BYTEARRAYINPUTSTREAM_H
 #define _LOG4CXX_HELPERS_BYTEARRAYINPUTSTREAM_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
 #include <vector>
 #include <log4cxx/helpers/inputstream.h>
 
@@ -82,4 +88,8 @@ namespace log4cxx
 
 }  //namespace log4cxx
 
-#endif //_LOG4CXX_HELPERS_FILEINPUTSTREAM_H
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
+#endif //_LOG4CXX_HELPERS_BYTEARRAYINPUTSTREAM_H

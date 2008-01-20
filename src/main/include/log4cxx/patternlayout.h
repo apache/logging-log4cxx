@@ -18,6 +18,13 @@
 #ifndef _LOG4CXX_PATTERN_LAYOUT_H
 #define _LOG4CXX_PATTERN_LAYOUT_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
+
 #include <log4cxx/layout.h>
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include <log4cxx/pattern/formattinginfo.h>
@@ -393,6 +400,12 @@ namespace log4cxx
         protected:
                 virtual log4cxx::pattern::PatternMap getFormatSpecifiers();
         };
+		LOG4CXX_PTR_DEF(PatternLayout)
 }  // namespace log4cxx
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
 
 #endif //_LOG4CXX_PATTERN_LAYOUT_H

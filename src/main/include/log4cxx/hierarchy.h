@@ -18,6 +18,11 @@
 #ifndef _LOG4CXX_HIERARCHY_H
 #define _LOG4CXX_HIERARCHY_H
 
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable: 4786 4231)
+#endif
+
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <vector>
@@ -281,5 +286,10 @@ namespace log4cxx
         };
 
 }  //namespace log4cxx
+
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #endif //_LOG4CXX_HIERARCHY_H

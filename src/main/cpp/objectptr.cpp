@@ -21,6 +21,12 @@
 
 using namespace log4cxx::helpers;
 
+ObjectPtrBase::ObjectPtrBase() {
+}
+
+ObjectPtrBase::~ObjectPtrBase() {
+}
+
 void ObjectPtrBase::checkNull(const int& null) {
     if (null != 0) {
        throw IllegalArgumentException(LOG4CXX_STR("Attempt to set pointer to a non-zero numeric value."));

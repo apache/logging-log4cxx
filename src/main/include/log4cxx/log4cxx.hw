@@ -82,9 +82,5 @@ typedef std::vector<T> N;
 
 #endif
 
-#define LOG4CXX_LOCALE_ENCODING_UTF8 0
-#define LOG4CXX_LOCALE_ENCODING_ISO_8859_1 0
-#define LOG4CXX_LOCALE_ENCODING_US_ASCII 0
-
 #endif
 

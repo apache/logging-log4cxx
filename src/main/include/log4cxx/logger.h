@@ -20,7 +20,7 @@
 
 #if defined(_MSC_VER)
 #pragma warning ( push )
-#pragma warning ( disable: 4231 )
+#pragma warning ( disable: 4786 4231 )
 #endif
 
 #include <log4cxx/helpers/appenderattachableimpl.h>

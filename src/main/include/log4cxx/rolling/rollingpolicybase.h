@@ -18,6 +18,12 @@
 #if !defined(_LOG4CXX_ROLLING_ROLLING_POLICY_BASE_H)
 #define _LOG4CXX_ROLLING_ROLLING_POLICY_BASE_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
@@ -116,5 +122,9 @@ namespace log4cxx {
     }
 }
 
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
 
 #endif

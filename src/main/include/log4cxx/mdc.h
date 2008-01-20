@@ -18,6 +18,11 @@
 #ifndef _LOG4CXX_MDC_H
 #define _LOG4CXX_MDC_H
 
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable: 4786 4231)
+#endif
+
 #include <log4cxx/log4cxx.h>
 #include <log4cxx/logstring.h>
 #include <map>
@@ -114,5 +119,10 @@ namespace log4cxx
                 LogString key;                
         }; // class MDC;
 }  // namespace log4cxx
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
+
 
 #endif // _LOG4CXX_MDC_H

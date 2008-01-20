@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_HELPERS_CLASS_H
 #define _LOG4CXX_HELPERS_CLASS_H
 
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable: 4786 4231)
+#endif
+
+
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <map>
@@ -52,5 +58,10 @@ namespace log4cxx
                 };
         }  // namespace log4cxx
 } // namespace helper
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
+
 
 #endif //_LOG4CXX_HELPERS_CLASS_H

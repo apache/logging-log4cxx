@@ -20,13 +20,10 @@
 
 #include <log4cxx/log4cxx.h>
 #include <string>
+#include <log4cxx/helpers/objectoutputstream.h>
 
 namespace log4cxx
 {
-  namespace helpers {
-      class ObjectOutputStream;
-      class Pool;
-  }
   namespace spi
   {
       /**

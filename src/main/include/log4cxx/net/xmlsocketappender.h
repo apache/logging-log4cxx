@@ -19,13 +19,10 @@
 #define _LOG4CXX_NET_XML_SOCKET_APPENDER_H
 
 #include <log4cxx/net/socketappenderskeleton.h>
+#include <log4cxx/helpers/writer.h>
 
 namespace log4cxx
 {
-        namespace helpers {
-                class Writer;
-                typedef helpers::ObjectPtrT<Writer> WriterPtr;
-        }
         namespace net
         {
 

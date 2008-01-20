@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 
+#if defined(_MSC_VER)
+#pragma warning ( disable: 4786 4231 )
+#endif
+
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/synchronized.h>
@@ -43,7 +47,7 @@ RollingFileAppender::RollingFileAppender() {
  */
 void RollingFileAppender::activateOptions(Pool &p) {
   if (rollingPolicy == NULL) {
-    FixedWindowRollingPolicyPtr fwrp(new FixedWindowRollingPolicy());
+	FixedWindowRollingPolicy* fwrp = new FixedWindowRollingPolicy();
     fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
     rollingPolicy = fwrp;
   }

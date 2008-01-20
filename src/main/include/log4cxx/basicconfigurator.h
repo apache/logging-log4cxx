@@ -23,7 +23,6 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
-#include <map>
 
 namespace log4cxx
 {

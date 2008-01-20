@@ -29,11 +29,11 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/aprinitializer.h>
 #if !defined(LOG4CXX)
 #define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
-#include <log4cxx/helpers/aprinitializer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -81,7 +81,9 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 {
         int writes = 0;
 
-        for(LoggerPtr logger = this; logger != 0; logger = logger->parent)
+        for(LoggerPtr logger(this); 
+		    logger != 0; 
+			logger = logger->parent)
         {
                 // Protected against simultaneous call to addAppender, removeAppender,...
                 synchronized sync(logger->mutex);

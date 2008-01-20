@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_NET_SOCKET_HUB_APPENDER_H
 #define _LOG4CXX_NET_SOCKET_HUB_APPENDER_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
 #include <log4cxx/appenderskeleton.h>
 #include <vector>
 #include <log4cxx/helpers/thread.h>
@@ -187,5 +193,10 @@ namespace log4cxx
                 typedef helpers::ObjectPtrT<SocketHubAppender> SocketHubAppenderPtr;
         }  // namespace net
 } // namespace log4cxx
+
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
 
 #endif // _LOG4CXX_NET_SOCKET_HUB_APPENDER_H

@@ -19,6 +19,12 @@
 #ifndef _LOG4CXX_FILTER_PROPERTYFILTER_H
 #define _LOG4CXX_FILTER_PROPERTYFILTER_H
 
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable: 4786 4231)
+#endif
+
+
 #include <log4cxx/spi/filter.h>
 #include <map>
 
@@ -67,4 +73,9 @@ namespace log4cxx
 
     }
 }
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
+
 #endif

@@ -37,24 +37,22 @@ namespace log4cxx
 {
     namespace helpers
     {
+		class Class;
 
         class LOG4CXX_EXPORT ObjectPtrBase {
         public:
+			ObjectPtrBase();
+			virtual ~ObjectPtrBase();
             static void checkNull(const int& null);
             static void* exchange(void** destination, void* newValue);
+			virtual void* cast(const Class& cls) const = 0;
         };
 
 
       /** smart pointer to a Object descendant */
-        template<typename T> class ObjectPtrT
+        template<typename T> class ObjectPtrT : public ObjectPtrBase
         {
         public:
-         template<typename InterfacePtr> ObjectPtrT(const InterfacePtr& p1)
-            _LOG4CXX_OBJECTPTR_INIT(0)             
-             cast(p1);
-         }
-
-
          ObjectPtrT(const int& null) 
                 _LOG4CXX_OBJECTPTR_INIT(0)
                 ObjectPtrBase::checkNull(null);
@@ -72,6 +70,14 @@ namespace log4cxx
                 }
             }
 
+         ObjectPtrT(const T * p1)
+                _LOG4CXX_OBJECTPTR_INIT(const_cast<T*>(p1))
+                if (this->p != 0)
+                {
+                    this->p->addRef();
+                }
+            }
+
          ObjectPtrT(const ObjectPtrT& p1)
                 _LOG4CXX_OBJECTPTR_INIT(p1.p)
                 if (this->p != 0)
@@ -80,19 +86,27 @@ namespace log4cxx
                 }
             }
 
+		 ObjectPtrT(const ObjectPtrBase& p1) 
+			 _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
+             if (this->p != 0) {
+                    this->p->addRef();
+             }
+		 }
+
+		 ObjectPtrT(ObjectPtrBase& p1) 
+			 _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
+             if (this->p != 0) {
+                    this->p->addRef();
+             }
+		 }
+
+
             ~ObjectPtrT()
             {
               if (p != 0) {
                   p->releaseRef();
               }
             }
-
-            // Operators
-         template<typename InterfacePtr> ObjectPtrT& operator=(const InterfacePtr& p1)
-         {
-           cast(p1);
-           return *this;
-         }
 
          ObjectPtrT& operator=(const ObjectPtrT& p1) {
              T* newPtr = (T*) p1.p;
@@ -133,28 +147,51 @@ namespace log4cxx
               return *this;
             }
 
+        ObjectPtrT& operator=(const T* p1) {
+              if (p1 != 0) {
+                p1->addRef();
+              }
+              T** pp = &p;
+              void* oldPtr = ObjectPtrBase::exchange((void**) pp, const_cast<T*>(p1));
+              if (oldPtr != 0) {
+                 ((T*)oldPtr)->releaseRef();
+              }
+              return *this;
+            }
+
+		ObjectPtrT& operator=(ObjectPtrBase& p1) {
+			T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
+			return operator=(newPtr);
+		}
+
+		ObjectPtrT& operator=(const ObjectPtrBase& p1) {
+			T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
+			return operator=(newPtr);
+		}
+
             bool operator==(const ObjectPtrT& p1) const { return (this->p == p1.p); }
             bool operator!=(const ObjectPtrT& p1) const { return (this->p != p1.p); }
+			bool operator<(const ObjectPtrT& p1) const { return (this->p < p1.p); } 
             bool operator==(const T* p1) const { return (this->p == p1); }
             bool operator!=(const T* p1) const { return (this->p != p1); }
+			bool operator<(const T* p1) const { return (this->p < p1); } 
             T* operator->() const {return (T*) p; }
             T& operator*() const {return (T&) *p; }
             operator T*() const {return (T*) p; }
 
-            template<typename InterfacePtr> void cast(const InterfacePtr& p1)
-            {
-               T* newPtr = 0;
-               if (p1 != 0)
-               {
-                  newPtr = reinterpret_cast<T*>(const_cast<void*>(p1->cast(T::getStaticClass())));
-               }
-               operator=(newPtr);
-            }
 
 
         private:
             T * p;
+			virtual void* cast(const Class& cls) const {
+				if (p != 0) {
+					return const_cast<void*>(p->cast(cls));
+				}
+				return 0;
+			}
+
         };
+
 
     }
 }

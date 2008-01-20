@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
+#if defined(_MSC_VER)
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
 #include <log4cxx/ndc.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/threadspecificdata.h>

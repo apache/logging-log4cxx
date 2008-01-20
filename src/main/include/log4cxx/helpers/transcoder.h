@@ -18,6 +18,11 @@
 #ifndef _LOG4CXX_HELPERS_TRANSCODER_H
 #define _LOG4CXX_HELPERS_TRANSCODER_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
 #include <log4cxx/logstring.h>
 
 
@@ -228,6 +233,10 @@ log4cxx::helpers::Transcoder::encode(src, var)
 log4cxx::LogString var;                      \
 log4cxx::helpers::Transcoder::decode(src, var)
 
+#endif
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
 #endif
 
 #endif //_LOG4CXX_HELPERS_TRANSCODER_H

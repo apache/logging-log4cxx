@@ -18,6 +18,13 @@
 #ifndef _LOG4CXX_NET_TELNET_APPENDER_H
 #define _LOG4CXX_NET_TELNET_APPENDER_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
+
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/serversocket.h>
@@ -139,6 +146,11 @@ servlet.
                 }; // class TelnetAppender
     } // namespace net
 } // namespace log4cxx
+
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
 
 #endif // _LOG4CXX_NET_TELNET_APPENDER_H
 
