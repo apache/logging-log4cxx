@@ -46,23 +46,26 @@ void SystemErrWriter::write(const LogString& str, Pool& /* p */) {
    write(str);
 }
 
+bool SystemErrWriter::isWide() {
+#if LOG4CXX_FORCE_WIDE_CONSOLE
+	return true;
+#elif LOG4CXX_FORCE_BYTE_CONSOLE
+	return false;
+#else
+	return fwide(stderr, 0) > 0
+#endif
+}
 
 void SystemErrWriter::write(const LogString& str) {
 #if LOG4CXX_WCHAR_T_API
-#if LOG4CXX_FORCE_WIDE_CONSOLE
-    if (true) {
-#else
-    if (fwide(stderr, 0) > 0) {
-#endif
+    if (isWide()) {
     	LOG4CXX_ENCODE_WCHAR(msg, str);
         fputws(msg.c_str(), stderr);
-    } else {
-#else
-    {
-#endif
-    	LOG4CXX_ENCODE_CHAR(msg, str);
-        fputs(msg.c_str(), stderr);
+		return;
     }
+#endif
+    LOG4CXX_ENCODE_CHAR(msg, str);
+    fputs(msg.c_str(), stderr);
 }
 
 void SystemErrWriter::flush() {

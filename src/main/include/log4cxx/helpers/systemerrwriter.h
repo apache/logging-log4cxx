@@ -49,6 +49,7 @@ namespace log4cxx
           private:
                   SystemErrWriter(const SystemErrWriter&);
                   SystemErrWriter& operator=(const SystemErrWriter&);
+				  static bool isWide();
           };
 
         } // namespace helpers
