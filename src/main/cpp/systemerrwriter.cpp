@@ -52,7 +52,7 @@ bool SystemErrWriter::isWide() {
 #elif LOG4CXX_FORCE_BYTE_CONSOLE
 	return false;
 #else
-	return fwide(stderr, 0) > 0
+	return fwide(stderr, 0) > 0;
 #endif
 }
 
