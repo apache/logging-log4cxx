@@ -89,6 +89,11 @@ void SocketAppender::cleanUp(Pool& p) {
 
 void SocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) {
     if (oos != 0) {
+        LogString ndcVal;
+        event->getNDC(ndcVal);
+        event->getThreadName();
+        // Get a copy of this thread's MDC.
+        event->getMDCCopy();
         try {
            event->write(*oos, p);
            oos->flush(p);

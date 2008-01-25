@@ -160,17 +160,29 @@ void LocationInfo::write(ObjectOutputStream& os, Pool& p) const {
 			0x78, 0x70, 0x74 };
 		os.writeBytes(prolog, sizeof(prolog), p);
         char* line = apr_itoa((apr_pool_t*) p.getAPRPool(), lineNumber);
-        size_t len = strlen(methodName) + strlen(fileName) + 3 + strlen(line);
+        //
+        //   construct Java-like fullInfo (replace "::" with ".")
+        //
+        std::string fullInfo(methodName);
+        size_t classSep = fullInfo.find("::");
+        if (classSep != std::string::npos) {
+            fullInfo.replace(classSep, 2, ".");
+            size_t space = fullInfo.rfind(' ', classSep);
+            if (space != std::string::npos) {
+                fullInfo.erase(0, space + 1);
+            }
+        }
+        fullInfo.append(1, '(');
+        fullInfo.append(fileName);
+        fullInfo.append(1, ':');
+        fullInfo.append(line);
+        fullInfo.append(1, ')');
+        size_t len = fullInfo.length();
         char lenBytes[2];
         lenBytes[1] = len & 0xFF;
         lenBytes[0] = (len >> 8) & 0xFF;
         os.writeBytes(lenBytes, sizeof(lenBytes), p);
-        os.writeBytes(methodName, strlen(methodName), p);
-        os.writeByte('(', p);
-        os.writeBytes(fileName, strlen(fileName), p);
-        os.writeByte(':', p);
-        os.writeBytes(line, strlen(line), p);
-        os.writeByte(')', p); 
+        os.writeBytes(fullInfo.data(), len, p);
     }
 }
 

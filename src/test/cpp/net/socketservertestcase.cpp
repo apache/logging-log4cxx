@@ -28,11 +28,9 @@
 #include "socketservertestcase.h"
 #include "../util/compare.h"
 #include "../util/transformer.h"
-#include "../util/linenumberfilter.h"
 #include "../util/controlfilter.h"
 #include "../util/absolutedateandtimefilter.h"
 #include "../util/threadfilter.h"
-#include "../xml/xlevel.h"
 #include "../util/filenamefilter.h"
 #include <apr_time.h>
 #include <log4cxx/file.h>
@@ -93,49 +91,13 @@ using namespace log4cxx::net;
         REGEX_STR("^(DEBUG| INFO| WARN|ERROR|FATAL|LETHAL) some8 T8 shortSocketServer") \
         REGEX_STR(" MDC-TEST8 \\[0x[0-9A-F]*]\\ (root|SocketServerTestCase) - Message [0-9]\\{1,2\\}")
 
-class ShortSocketServerLauncher
-{
-public:
-        ShortSocketServerLauncher()
-        {
-                if (!launched)
-                {
-                        //
-                        //   should be replaced with apr_proc calls
-#ifdef WIN32
-                        PROCESS_INFORMATION pi;
-                        STARTUPINFO si;
-                        ZeroMemory( &si, sizeof(si) );
-                        si.cb = sizeof(si);
-                        ZeroMemory( &pi, sizeof(pi) );
-                        char commandLine[] = "src\\shortsocketserver 8 input/socketServer";
-
-                        BOOL bResult = ::CreateProcessA(NULL, commandLine, NULL, NULL,
-                                TRUE, 0, NULL, NULL, &si, &pi);
-#else
-                        if(!::fork())
-                        {
-                                ::execl("src/shortsocketserver", "shortsocketserver",
-                                        "8", "input/socketServer", NULL);
-                                ::perror("execl() failed");
-                                ::exit(1);
-                        }
-                        else
-                        {
-                                sleep(1);
-                        }
-#endif
-                        launched = true;
-                }
-        }
-
-        static bool launched;
-
-};
-
-bool ShortSocketServerLauncher::launched = false;
 
 
+/**
+ *  This test checks receipt of SocketAppender messages by the ShortSocketServer
+ *  class from log4j.  That class must be started externally to this class
+ *  for this test to succeed. 
+ */
 class SocketServerTestCase : public CppUnit::TestFixture
 {
         CPPUNIT_TEST_SUITE(SocketServerTestCase);
@@ -153,11 +115,16 @@ class SocketServerTestCase : public CppUnit::TestFixture
         LoggerPtr logger;
         LoggerPtr root;
 
+        class LineNumberFilter : public Filter {
+        public:
+                LineNumberFilter() {
+                    patterns.push_back(PatternReplacement("cpp:[0-9]*", "cpp:XXX"));
+                }
+        };
 
 public:
         void setUp()
         {
-                ShortSocketServerLauncher();
                 logger = Logger::getLogger(LOG4CXX_STR("org.apache.log4j.net.SocketServerTestCase"));
                 root = Logger::getRootLogger();
         }
@@ -180,7 +147,7 @@ public:
                 SocketAppenderPtr socketAppender1 =
                         new SocketAppender(LOG4CXX_STR("localhost"), PORT);
                 root->addAppender(socketAppender1);
-                common(LOG4CXX_STR("T1"), LOG4CXX_STR("key1"), LOG4CXX_STR("MDC-TEST1"));
+                common("test1", LOG4CXX_STR("T1"), LOG4CXX_STR("key1"), LOG4CXX_STR("MDC-TEST1"));
                 delay(1);
 
                 ControlFilter cf;
@@ -210,7 +177,7 @@ public:
                 SocketAppenderPtr socketAppender1 =
                         new SocketAppender(LOG4CXX_STR("localhost"), PORT);
                 root->addAppender(socketAppender1);
-                common(LOG4CXX_STR("T2"), LOG4CXX_STR("key2"), LOG4CXX_STR("MDC-TEST2"));
+                common("test2", LOG4CXX_STR("T2"), LOG4CXX_STR("key2"), LOG4CXX_STR("MDC-TEST2"));
                 delay(1);
 
                 ControlFilter cf;
@@ -245,7 +212,7 @@ public:
                 SocketAppenderPtr socketAppender1 =
                         new SocketAppender(LOG4CXX_STR("localhost"), PORT);
                 root->addAppender(socketAppender1);
-                common(LOG4CXX_STR("T3"), LOG4CXX_STR("key3"), LOG4CXX_STR("MDC-TEST3"));
+                common("test3", LOG4CXX_STR("T3"), LOG4CXX_STR("key3"), LOG4CXX_STR("MDC-TEST3"));
                 delay(1);
 
                 ControlFilter cf;
@@ -281,7 +248,7 @@ public:
                         new SocketAppender(LOG4CXX_STR("localhost"), PORT);
                 root->addAppender(socketAppender1);
                 NDC::push(LOG4CXX_TEST_STR("some"));
-                common(LOG4CXX_STR("T4"), LOG4CXX_STR("key4"), LOG4CXX_STR("MDC-TEST4"));
+                common("test4", LOG4CXX_STR("T4"), LOG4CXX_STR("key4"), LOG4CXX_STR("MDC-TEST4"));
                 NDC::pop();
                 delay(1);
 
@@ -317,7 +284,7 @@ public:
                 root->addAppender(asyncAppender);
 
                 NDC::push(LOG4CXX_TEST_STR("some5"));
-                common(LOG4CXX_STR("T5"), LOG4CXX_STR("key5"), LOG4CXX_STR("MDC-TEST5"));
+                common("test5", LOG4CXX_STR("T5"), LOG4CXX_STR("key5"), LOG4CXX_STR("MDC-TEST5"));
                 NDC::pop();
                 delay(2);
 
@@ -354,7 +321,7 @@ public:
 
                 NDC::push(LOG4CXX_TEST_STR("some6"));
                 MDC::put(LOG4CXX_TEST_STR("hostID"), LOG4CXX_TEST_STR("client-test6"));
-                common(LOG4CXX_STR("T6"), LOG4CXX_STR("key6"), LOG4CXX_STR("MDC-TEST6"));
+                common("test6", LOG4CXX_STR("T6"), LOG4CXX_STR("key6"), LOG4CXX_STR("MDC-TEST6"));
                 NDC::pop();
                 MDC::remove(LOG4CXX_TEST_STR("hostID"));
                 delay(2);
@@ -392,7 +359,7 @@ public:
 
                 NDC::push(LOG4CXX_TEST_STR("some7"));
                 MDC::put(LOG4CXX_TEST_STR("hostID"), LOG4CXX_TEST_STR("client-test7"));
-                common(LOG4CXX_STR("T7"), LOG4CXX_STR("key7"), LOG4CXX_STR("MDC-TEST7"));
+                common("test7", LOG4CXX_STR("T7"), LOG4CXX_STR("key7"), LOG4CXX_STR("MDC-TEST7"));
                 NDC::pop();
                 MDC::remove(LOG4CXX_TEST_STR("hostID"));
                 delay(2);
@@ -427,7 +394,7 @@ public:
                 root->addAppender(socketAppender1);
 
                 NDC::push(LOG4CXX_TEST_STR("some8"));
-                common(LOG4CXX_STR("T8"), LOG4CXX_STR("key8"), LOG4CXX_STR("MDC-TEST8"));
+                common("test8", LOG4CXX_STR("T8"), LOG4CXX_STR("key8"), LOG4CXX_STR("MDC-TEST8"));
                 NDC::pop();
                 delay(2);
 
@@ -453,26 +420,48 @@ public:
                 CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.8")));
         }
 
-        void common(const LogString& dc, const LogString& key, const LogString& val)
+        void common(const std::string& testName, const LogString& dc, const LogString& key, const LogString& val)
         {
                 int i = -1;
                 NDC::push(dc);
                 MDC::put(key, val);
+                
+                logger->setLevel(Level::getDebug());
+                root->setLevel(Level::getDebug());
 
+                LOG4CXX_TRACE(logger, "Message " << i);
                 i++;
-				std::string msg("Message ");
 
-                LOG4CXX_LOG(logger, XLevel::getTrace(), msg << i);
-                i++;
-                LOG4CXX_DEBUG(logger, msg << i);
-                i++;
-                LOG4CXX_DEBUG(root, msg << i);
-                i++;
-                LOG4CXX_INFO(logger, msg  << i);
-                i++;
-                LOG4CXX_WARN(logger, msg << i);
-                i++;
-                LOG4CXX_LOG(logger, XLevel::getLethal(), msg << i); //5
+                logger->setLevel(Level::getTrace());
+                root->setLevel(Level::getTrace());
+                
+                LOG4CXX_TRACE(logger, "Message " << ++i);
+                LOG4CXX_TRACE(root, "Message " << ++i);
+
+                LOG4CXX_DEBUG(logger, "Message " << ++i);
+                LOG4CXX_DEBUG(root, "Message " << ++i);
+                
+                LOG4CXX_INFO(logger, "Message "  << ++i);
+                LOG4CXX_WARN(logger, "Message " << ++i);
+                LOG4CXX_FATAL(logger, "Message " << ++i); //5
+                
+                std::string exceptionMsg("\njava.lang.Exception: Just testing\n"
+                    "\tat org.apache.log4j.net.SocketServerTestCase.common(SocketServerTestCase.java:XXX)\n"
+                    "\tat org.apache.log4j.net.SocketServerTestCase.");
+                exceptionMsg.append(testName);
+                exceptionMsg.append("(SocketServerTestCase.java:XXX)\n"
+                    "\tat junit.framework.TestCase.runTest(TestCase.java:XXX)\n"
+                    "\tat junit.framework.TestCase.runBare(TestCase.java:XXX)\n"
+                    "\tat junit.framework.TestResult$1.protect(TestResult.java:XXX)\n"
+                    "\tat junit.framework.TestResult.runProtected(TestResult.java:XXX)\n"
+                    "\tat junit.framework.TestResult.run(TestResult.java:XXX)\n"
+                    "\tat junit.framework.TestCase.run(TestCase.java:XXX)\n"
+                    "\tat junit.framework.TestSuite.runTest(TestSuite.java:XXX)\n"
+                    "\tat junit.framework.TestSuite.run(TestSuite.java:XXX)");
+
+                
+                LOG4CXX_DEBUG(logger, "Message " << ++i << exceptionMsg);
+                LOG4CXX_ERROR(root, "Message " << ++i << exceptionMsg);
 
                 NDC::pop();
                 MDC::remove(key);
@@ -492,7 +481,6 @@ const File SocketServerTestCase::TEMP("output/temp");
 const File SocketServerTestCase::FILTERED("output/filtered");
 
 
-//
-//   Tests off line until implementation is APR'd
-//
-//CPPUNIT_TEST_SUITE_REGISTRATION(SocketServerTestCase);
+CPPUNIT_NS::Test* createSocketServerTestCase() {
+   return SocketServerTestCase::suite();
+}

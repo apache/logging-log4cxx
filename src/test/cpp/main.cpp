@@ -47,6 +47,7 @@ extern CPPUNIT_NS::Test* createTestCase3();
 
 extern CPPUNIT_NS::Test* createTestCase2();
 extern CPPUNIT_NS::Test* createTestCase4();
+extern CPPUNIT_NS::Test* createSocketServerTestCase();
 
 //
 //  initializing a logger will cause the APR used by log4cxx library to be initialized
@@ -122,6 +123,10 @@ int main(int argc, const char* const * argv) {
                      default:
                         break;
                   }
+               }
+               
+               if (testName == "SocketServerTestCase") {
+                    runner.addTest(createSocketServerTestCase());
                }
 
                if (runAll) {
