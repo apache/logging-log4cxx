@@ -164,12 +164,20 @@ void LocationInfo::write(ObjectOutputStream& os, Pool& p) const {
         //   construct Java-like fullInfo (replace "::" with ".")
         //
         std::string fullInfo(methodName);
-        size_t classSep = fullInfo.find("::");
-        if (classSep != std::string::npos) {
-            fullInfo.replace(classSep, 2, ".");
-            size_t space = fullInfo.rfind(' ', classSep);
-            if (space != std::string::npos) {
+        size_t openParen = fullInfo.find('(');
+        if (openParen != std::string::npos) {
+            size_t space = fullInfo.find(' ');
+            if (space != std::string::npos && space < openParen) {
                 fullInfo.erase(0, space + 1);
+            }
+        }
+        openParen = fullInfo.find('(');
+        if (openParen != std::string::npos) {
+            size_t classSep = fullInfo.rfind("::", openParen);
+            if (classSep != std::string::npos) {
+                fullInfo.replace(classSep, 2, ".");
+            } else {
+                fullInfo.insert(0, ".");
             }
         }
         fullInfo.append(1, '(');
