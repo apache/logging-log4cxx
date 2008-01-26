@@ -796,80 +796,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     </cc>
 </target>
 
-<target name="build-defaultinit-unittest" depends="build, build-cppunit"
-    description="Builds test of default init">
-    <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
-
-    <property name="project.compiler" value="${compiler}"/>
-    <cc name="${project.compiler}"
-                exceptions="true"
-                outfile="${log4cxx.lib.dir}/log4cxx-defaultinit-test"
-                subsystem="console"
-                multithreaded="true"
-                outputfileproperty="log4cxx-defaultinit-test.exe"
-                outtype="executable"
-                objdir="${log4cxx.lib.dir}/log4cxx-test_obj"
-                debug="${debug}"
-                projectsOnly="${projectsOnly}">
-        <fileset dir="${tests.cpp.dir}" includes="defaultinit/*.cpp main.cpp">
-        </fileset>
-        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
-        <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
-        <includepath path="${aprutil.include.dir}"/>
-        <defineset define="LOG4CXX_STATIC" if="is-static"/>
-        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
-        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
-        <defineset define="WIN32" if="is-windows"/>
-        <compilerarg value="${pic-option}" if="pic-option"/>
-
-        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
-        <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
-        <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
-        <libset libs="dl" if="is-unix"/>
-        &libsets;
-
-        <project outfile="${project.dir}/log4cxx-defaultinit-test"
-                 type="${project.type}"
-                 if="project.if"/>
-    </cc>
-</target>
 
 
-<target name="make-unittest">
-    <mkdir dir="${log4cxx.lib.dir}/log4cxx-test_obj"/>
-
-    <property name="project.compiler" value="${compiler}"/>
-    <cc name="${project.compiler}"
-                exceptions="true"
-                outfile="${log4cxx.lib.dir}/${outfile.name}"
-                subsystem="console"
-                multithreaded="true"
-                outputfileproperty="${outfile.property}"
-                outtype="executable"
-                objdir="${log4cxx.lib.dir}/log4cxx-test_obj"
-                debug="${debug}"
-                projectsOnly="${projectsOnly}">
-        <fileset dir="${tests.cpp.dir}" includes="${src.pattern}">
-        </fileset>
-        <includepath path="${cppunit.include.dir}" if="cppunit.include.dir"/>
-        <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
-        <includepath path="${aprutil.include.dir}"/>
-        <defineset define="LOG4CXX_STATIC" if="is-static"/>
-        <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
-        <defineset define="APU_DECLARE_STATIC" if="aprutil-static"/>
-        <defineset define="WIN32" if="is-windows"/>
-        <compilerarg value="${pic-option}" if="pic-option"/>
-
-        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
-        <libset libs="${cppunit.lib.name}${lib-suffix}" dir="${cppunit.lib.dir}" if="cppunit.lib.dir"/>
-        <libset libs="${cppunit.lib.name}${lib-suffix}" unless="cppunit.lib.dir"/>
-        &libsets;
-
-        <project outfile="${project.dir}/log4cxx-test" type="${project.type}" if="project.if"/>
-    </cc>
-</target>
 
 <target name="build-standalone-unittest"
     depends="build-cppunit"
@@ -925,7 +853,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
      </delete>
 </target>
 
-<target name="run-defaultinit-unittest" depends="build-defaultinit-unittest"
+<target name="run-defaultinit-unittest" depends="build-unittest"
     description="Runs default init unit tests">
 
     <mkdir dir="${tests.output.dir}"/>
@@ -943,7 +871,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     <delete file="${log4cxx.lib.dir}/log4*.xml"/>
     <copy tofile="${log4cxx.lib.dir}/log4j.properties"
        file="${defaultInit3.properties}" overwrite="true"/>
-    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${log4cxx.lib.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="DYLD_LIBRARY_PATH"
@@ -956,7 +884,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     <replace file="${log4cxx.lib.dir}/log4j.properties" token="D3" value="D4"/>
     <copy tofile="${log4cxx.lib.dir}/log4cxx.properties"
        file="${defaultInit3.properties}"/>
-    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${log4cxx.lib.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="DYLD_LIBRARY_PATH"
@@ -971,7 +899,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     <copy tofile="${log4cxx.lib.dir}/log4j.xml"
        file="${defaultInit.xml}"/>
     <copy todir="${log4cxx.lib.dir}" file="${tests.resources.dir}/input/xml/log4j.dtd"/>
-    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${log4cxx.lib.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${log4cxx.lib.dir}"
               failonerror="true">
             <arg value="TestCase4"/>
             <env key="LD_LIBRARY_PATH"
@@ -985,7 +913,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
 	<fileset dir="${tests.resources.dir}/output"/>
     </delete>
 
-    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.resources.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${tests.resources.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"
@@ -997,7 +925,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
     </exec>
 
     <!--  test of LOG4CXX_CONFIGURATION -->
-    <exec executable="${log4cxx-defaultinit-test.exe}" dir="${tests.resources.dir}"
+    <exec executable="${log4cxx-test.exe}" dir="${tests.resources.dir}"
               failonerror="true">
             <arg value="TestCase3"/>
             <env key="LD_LIBRARY_PATH"

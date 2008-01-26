@@ -44,13 +44,17 @@ namespace log4cxx
 
                   void close(Pool& p);
                   void flush(Pool& p);
-                  void writeUTF(const LogString&, Pool& p);
                   void writeObject(const LogString&, Pool& p);
+                  void writeUTFString(const std::string&, Pool& p);
                   void writeObject(const MDC::Map& mdc, Pool& p);
                   void writeInt(int val, Pool& p);
                   void writeLong(log4cxx_time_t val, Pool& p);
-                  void writeByte(char val, Pool& p);
-                  void writeBytes(const char* bytes, size_t len, Pool& p);
+                  void writeProlog(const char* className,
+                        int classDescIncrement,
+                        char* bytes,
+                        size_t len,
+                        Pool& p);
+                  void writeNull(Pool& p);
 
                   enum { STREAM_MAGIC = 0xACED };
                   enum { STREAM_VERSION = 5 };
@@ -67,12 +71,18 @@ namespace log4cxx
                      SC_WRITE_METHOD = 0x01,
                      SC_SERIALIZABLE = 0x02 };
 
+                  void writeByte(char val, Pool& p);
+                  void writeBytes(const char* bytes, size_t len, Pool& p);
+
           private:
                   ObjectOutputStream(const ObjectOutputStream&);
                   ObjectOutputStream& operator=(const ObjectOutputStream&);
                      
                   OutputStreamPtr os;
                   log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
+                  unsigned int objectHandle;
+                  typedef std::map<std::string, unsigned int> ClassDescriptionMap;
+                  ClassDescriptionMap* classDescriptions;
           };
           
           LOG4CXX_PTR_DEF(ObjectOutputStream)          

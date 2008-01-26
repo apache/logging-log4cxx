@@ -28,7 +28,10 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(ObjectOutputStream)
 
 ObjectOutputStream::ObjectOutputStream(OutputStreamPtr outputStream, Pool& p)
-     : os(outputStream) , utf8Encoder(CharsetEncoder::getUTF8Encoder())
+     : os(outputStream) , 
+       utf8Encoder(CharsetEncoder::getUTF8Encoder()), 
+       objectHandle(0x7E0000),
+       classDescriptions(new ClassDescriptionMap())
 {
    char start[] = { 0xAC, 0xED, 0x00, 0x05 };
    ByteBuffer buf(start, sizeof(start));
@@ -36,6 +39,7 @@ ObjectOutputStream::ObjectOutputStream(OutputStreamPtr outputStream, Pool& p)
 }
 
 ObjectOutputStream::~ObjectOutputStream() {
+    delete classDescriptions;
 }
 
 void ObjectOutputStream::close(Pool& p) {
@@ -47,8 +51,26 @@ void ObjectOutputStream::flush(Pool& p) {
 }
 
 void ObjectOutputStream::writeObject(const LogString& val, Pool& p) {
+   objectHandle++;
    writeByte(TC_STRING, p);
-   writeUTF(val, p);
+   char bytes[2];
+#if LOG4CXX_LOGCHAR_IS_UTF8
+    size_t len = val.size();
+    ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size()); 
+#else
+    size_t maxSize = 6 * val.size();
+    char* data = (char*) apr_palloc((apr_pool_t*) p.getAPRPool(), maxSize);
+    ByteBuffer dataBuf(data, maxSize);
+    LogString::const_iterator iter(val.begin());
+    utf8Encoder->encode(val, iter, dataBuf); 
+    dataBuf.flip();
+    size_t len = dataBuf.limit();
+#endif
+   bytes[1] = len & 0xFF;
+   bytes[0] = (len >> 8) & 0xFF;
+   ByteBuffer lenBuf(bytes, sizeof(bytes));
+   os->write(lenBuf, p);
+   os->write(dataBuf, p);
 }
 
 
@@ -57,7 +79,7 @@ void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p) {
     //  TC_OBJECT and the classDesc for java.util.Hashtable
     //
     char prolog[] = {
-        0x73, 0x72, 0x00, 0x13, 0x6A, 0x61, 0x76, 0x61, 
+        0x72, 0x00, 0x13, 0x6A, 0x61, 0x76, 0x61, 
         0x2E, 0x75, 0x74, 0x69, 0x6C, 0x2E, 0x48, 0x61, 
         0x73, 0x68, 0x74, 0x61, 0x62, 0x6C, 0x65, 0x13, 
         0xBB, 0x0F, 0x25, 0x21, 0x4A, 0xE4, 0xB8, 0x03, 
@@ -65,8 +87,7 @@ void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p) {
         0x64, 0x46, 0x61, 0x63, 0x74, 0x6F, 0x72, 0x49, 
         0x00, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 
         0x6F, 0x6C, 0x64, 0x78, 0x70  };
-    ByteBuffer prologBuf(prolog, sizeof(prolog));
-    os->write(prologBuf, p);
+    writeProlog("java.util.Hashtable", 1, prolog, sizeof(prolog), p);
     //
     //   loadFactor = 0.75, threshold = 5, blockdata start, buckets.size = 7
     char data[] = { 0x3F, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 
@@ -90,26 +111,20 @@ void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p) {
     writeByte(TC_ENDBLOCKDATA, p);
 }
 
-void ObjectOutputStream::writeUTF(const LogString& val, Pool& p) {
-    char bytes[2];
-#if LOG4CXX_LOGCHAR_IS_UTF8
+void ObjectOutputStream::writeUTFString(const std::string& val, Pool& p) {
+    char bytes[3];
     size_t len = val.size();
     ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size()); 
-#else
-    size_t maxSize = 6 * val.size();
-    char* data = (char*) apr_palloc((apr_pool_t*) p.getAPRPool(), maxSize);
-    ByteBuffer dataBuf(data, maxSize);
-    LogString::const_iterator iter(val.begin());
-    utf8Encoder->encode(val, iter, dataBuf); 
-    dataBuf.flip();
-    size_t len = dataBuf.limit();
-#endif
-   bytes[1] = len & 0xFF;
-   bytes[0] = (len >> 8) & 0xFF;
+   objectHandle++;
+   bytes[0] = 0x74;
+   bytes[1] = (len >> 8) & 0xFF;
+   bytes[2] = len & 0xFF;
    ByteBuffer lenBuf(bytes, sizeof(bytes));
    os->write(lenBuf, p);
    os->write(dataBuf, p);
 }
+
+
 
 void ObjectOutputStream::writeByte(char val, Pool& p) {
    ByteBuffer buf(&val, 1);
@@ -144,3 +159,33 @@ void ObjectOutputStream::writeBytes(const char* bytes, size_t len, Pool& p) {
    ByteBuffer buf(const_cast<char*>(bytes), len);
    os->write(buf, p);
 }
+
+void ObjectOutputStream::writeNull(Pool& p) {
+   writeByte(TC_NULL, p);
+}
+
+void ObjectOutputStream::writeProlog(const char* className,
+                        int classDescIncrement,
+                        char* classDesc,
+                        size_t len,
+                        Pool& p) {
+    ClassDescriptionMap::const_iterator match = classDescriptions->find(className);
+    if (match != classDescriptions->end()) {
+        char bytes[6];
+        bytes[0] = TC_OBJECT;
+        bytes[1] = TC_REFERENCE;
+        bytes[2] = (match->second >> 24) & 0xFF;
+        bytes[3] = (match->second >> 16) & 0xFF;
+        bytes[4] = (match->second >> 8) & 0xFF;
+        bytes[5] = match->second & 0xFF;
+        ByteBuffer buf(bytes, sizeof(bytes));
+        os->write(buf, p);
+        objectHandle++;
+    } else {
+        classDescriptions->insert(ClassDescriptionMap::value_type(className, objectHandle));
+        writeByte(TC_OBJECT, p);
+        ByteBuffer buf(classDesc, len);
+        os->write(buf, p);
+        objectHandle += (classDescIncrement + 1);
+    }
+} 

@@ -262,7 +262,7 @@ namespace log4cxx
                        LoggingEvent& operator=(const LoggingEvent&);
                        static const LogString getCurrentThreadName();
                        
-                       static void writeClassDesc(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p);
+                       static void writeProlog(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p);
                        
                 };
 
