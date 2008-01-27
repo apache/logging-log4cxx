@@ -64,19 +64,22 @@ void XMLLayout::format(LogString& output,
         Transform::appendEscapingTags(output, event->getLevel()->toString());
         output.append(LOG4CXX_STR("\" thread=\""));
         Transform::appendEscapingTags(output, event->getThreadName());
-        output.append(LOG4CXX_STR("\">\r\n"));
+        output.append(LOG4CXX_STR("\">"));
+        output.append(LOG4CXX_EOL);
 
         output.append(LOG4CXX_STR("<log4j:message><![CDATA["));
         // Append the rendered message. Also make sure to escape any
         // existing CDATA sections.
         Transform::appendEscapingCDATA(output, event->getRenderedMessage());
-        output.append(LOG4CXX_STR("]]></log4j:message>\r\n"));
+        output.append(LOG4CXX_STR("]]></log4j:message>"));
+        output.append(LOG4CXX_EOL);
 
         LogString ndc;
         if(event->getNDC(ndc)) {
                 output.append(LOG4CXX_STR("<log4j:NDC><![CDATA["));
                 Transform::appendEscapingCDATA(output, ndc);
-                output.append(LOG4CXX_STR("]]></log4j:NDC>\r\n"));
+                output.append(LOG4CXX_STR("]]></log4j:NDC>"));
+                output.append(LOG4CXX_EOL);
         }
 
         if(locationInfo)
@@ -93,14 +96,16 @@ void XMLLayout::format(LogString& output,
                 Transform::appendEscapingTags(output, fileName);
                 output.append(LOG4CXX_STR("\" line=\""));
                 StringHelper::toString(locInfo.getLineNumber(), p, output);
-                output.append(LOG4CXX_STR("\"/>\r\n"));
+                output.append(LOG4CXX_STR("\"/>"));
+                output.append(LOG4CXX_EOL);
         }
         
         if (properties) {
             LoggingEvent::KeySet propertySet(event->getPropertyKeySet());
             LoggingEvent::KeySet keySet(event->getMDCKeySet());
             if (!(keySet.empty() && propertySet.empty())) {
-                output.append(LOG4CXX_STR("<log4j:properties>\r\n"));
+                output.append(LOG4CXX_STR("<log4j:properties>"));
+                output.append(LOG4CXX_EOL);
                 for (LoggingEvent::KeySet::const_iterator i = keySet.begin();
                         i != keySet.end(); 
                         i++) {
@@ -111,7 +116,8 @@ void XMLLayout::format(LogString& output,
                             Transform::appendEscapingTags(output, key);
                             output.append(LOG4CXX_STR("\" value=\""));
                             Transform::appendEscapingTags(output, value);
-                            output.append(LOG4CXX_STR("\"/>\r\n"));
+                            output.append(LOG4CXX_STR("\"/>"));
+                            output.append(LOG4CXX_EOL);
                         }
                 }
                 for (LoggingEvent::KeySet::const_iterator i = propertySet.begin();
@@ -124,13 +130,17 @@ void XMLLayout::format(LogString& output,
                             Transform::appendEscapingTags(output, key);
                             output.append(LOG4CXX_STR("\" value=\""));
                             Transform::appendEscapingTags(output, value);
-                            output.append(LOG4CXX_STR("\"/>\r\n"));
+                            output.append(LOG4CXX_STR("\"/>"));
+                            output.append(LOG4CXX_EOL);
                         }
                 }
-                output.append(LOG4CXX_STR("</log4j:properties>\r\n"));
+                output.append(LOG4CXX_STR("</log4j:properties>"));
+                output.append(LOG4CXX_EOL);
             }
         }
 
-        output.append(LOG4CXX_STR("</log4j:event>\r\n\r\n"));
+        output.append(LOG4CXX_STR("</log4j:event>"));
+        output.append(LOG4CXX_EOL);
+        output.append(LOG4CXX_EOL);        
 }
 
