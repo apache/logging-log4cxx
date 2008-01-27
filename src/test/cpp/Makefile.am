@@ -111,7 +111,8 @@ xml_tests = \
 	xml/customleveltestcase.cpp \
 	xml/domtestcase.cpp \
 	xml/xlevel.cpp \
-	xml/xmllayouttestcase.cpp
+	xml/xmllayouttestcase.cpp \
+    xml/xmllayouttest.cpp
 
 nt_tests = \
 	nt/nteventlogappendertestcase.cpp

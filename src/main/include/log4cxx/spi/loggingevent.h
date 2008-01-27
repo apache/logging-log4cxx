@@ -158,6 +158,7 @@ namespace log4cxx
                         */
                         bool getMDC(const LogString& key, LogString& dest) const;
 
+                        LOG4CXX_SET_DEF(KeySet, LogString)
                         /**
                         * Returns the set of of the key values in the MDC for the event.
                         * The returned set is unmodifiable by the caller.
@@ -165,7 +166,7 @@ namespace log4cxx
                         * @return Set an unmodifiable set of the MDC keys.
                         * @since 1.3
                         */
-                        std::set<LogString> getMDCKeySet() const;
+                        KeySet getMDCKeySet() const;
 
                         /**
                         Obtain a copy of this thread's MDC prior to serialization
@@ -186,7 +187,7 @@ namespace log4cxx
                         *
                         * @return Set an unmodifiable set of the property keys.
                         */
-                        std::set<LogString> getPropertyKeySet() const;
+                        KeySet getPropertyKeySet() const;
 
                         /**
                         * Set a string property using a key and a string value.  since 1.3

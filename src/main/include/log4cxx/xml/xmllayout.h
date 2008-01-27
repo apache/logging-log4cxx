@@ -58,6 +58,7 @@ namespace log4cxx
 
                         // Print no location info by default
                         bool locationInfo; //= false
+                        bool properties; // = false
 
                 public:
                         DECLARE_LOG4CXX_OBJECT(XMLLayout)
@@ -87,6 +88,25 @@ namespace log4cxx
                         */
                         inline bool getLocationInfo() const
                                 { return locationInfo; }
+                                
+                        /**
+                         * Sets whether MDC key-value pairs should be output, default false.
+                         * @param flag new value.
+                         * @since 0.10
+                        */
+                        inline void setProperties(bool flag) {
+                            properties = flag;
+                        }
+
+                        /**
+                        * Gets whether MDC key-value pairs should be output.
+                        * @return true if MDC key-value pairs are output.
+                        * @since 0.10
+                        */
+                        inline bool getProperties() {
+                            return properties;
+                        }
+                              
 
                         /** No options to activate. */
                         void activateOptions(log4cxx::helpers::Pool& /* p */) { }

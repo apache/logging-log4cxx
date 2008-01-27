@@ -65,8 +65,9 @@ class XMLLayoutTestCase : public CppUnit::TestFixture
                 CPPUNIT_TEST(basic);
                 CPPUNIT_TEST(locationInfo);
                 CPPUNIT_TEST(testCDATA);
-                CPPUNIT_TEST(testNULL);
+                CPPUNIT_TEST(testNull);
                 CPPUNIT_TEST(testMDC);
+                CPPUNIT_TEST(testMDCEscaped);
         CPPUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
@@ -76,7 +77,9 @@ public:
         void setUp()
         {
                 root = Logger::getRootLogger();
+                root->setLevel(Level::getTrace());
                 logger = Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.XMLLayoutTestCase"));
+                logger->setLevel(Level::getTrace());
         }
 
         void tearDown()
@@ -126,7 +129,7 @@ public:
 
                 XMLTimestampFilter xmlTimestampFilter;
                 XMLThreadFilter xmlThreadFilter;
-                FilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
+                FilenameFilter xmlFilenameFilter(__FILE__, "XMLLayoutTestCase.java");
                 Filter line2XX("[23][0-9][0-9]", "X");
                 Filter line5X("56", "X");
 
@@ -167,12 +170,14 @@ public:
                 FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
 
+                LOG4CXX_TRACE(logger,
+                        LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
                 LOG4CXX_DEBUG(logger,
                         LOG4CXX_TEST_STR("Message with embedded <![CDATA[<hello>hi</hello>]]>."));
 
                 XMLTimestampFilter xmlTimestampFilter;
                 XMLThreadFilter xmlThreadFilter;
-                FilenameFilter xmlFilenameFilter(__FILE__, "xmllayouttestcase.cpp");
+                FilenameFilter xmlFilenameFilter(__FILE__, "XMLLayoutTestCase.java");
                 Filter line1xx("1[0-9][0-9]", "X");
 
                 std::vector<Filter *> filters;
@@ -194,7 +199,7 @@ public:
                 CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.3")));
         }
 
-        void testNULL()
+        void testNull()
         {
                 const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.null"));
                 const File filteredFile("output/filtered.xmlLayout.null");
@@ -204,7 +209,8 @@ public:
                 root->addAppender(appender);
 
                 LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("hi"));
-                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR(""));
+                LOG4CXX_DEBUG(logger, (char*) 0);
+                LOG4CXX_DEBUG(logger, "hi");
 
                 XMLTimestampFilter xmlTimestampFilter;
                 XMLThreadFilter xmlThreadFilter;
@@ -232,6 +238,7 @@ public:
                 const File filteredFile("output/filtered.xmlLayout.mdc.1");
 
                 XMLLayoutPtr xmlLayout = new XMLLayout();
+                xmlLayout->setProperties(true);
                 FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
 
@@ -264,18 +271,19 @@ public:
         }
 
         // not incuded in the tests for the moment !
-        void holdTestMDCEscaped()
+        void testMDCEscaped()
         {
                 const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.mdc.2"));
                 const File filteredFile("output/filtered.xmlLayout.mdc.2");
 
                 XMLLayoutPtr xmlLayout = new XMLLayout();
+                xmlLayout->setProperties(true);
                 FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
 
                 MDC::clear();
-                MDC::put(LOG4CXX_TEST_STR("blahAttribute"), LOG4CXX_TEST_STR("<blah value=\"blah\">"));
-                MDC::put(LOG4CXX_TEST_STR("<blahKey value=\"blah\"/>"), LOG4CXX_TEST_STR("blahValue"));
+                MDC::put(LOG4CXX_TEST_STR("blahAttribute"), LOG4CXX_TEST_STR("<blah value='blah'>"));
+                MDC::put(LOG4CXX_TEST_STR("<blahKey value='blah'/>"), LOG4CXX_TEST_STR("blahValue"));
 
                 LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
 
@@ -310,25 +318,41 @@ public:
 
         void common()
         {
-                int i = -1;
+                int i = 0;
                 X x;
 
 				std::string msg("Message ");
 
-                LOG4CXX_DEBUG(logger, msg << ++i);
+                LOG4CXX_TRACE(logger, msg << i);
+                LOG4CXX_TRACE(root, msg << i);
+
+                i++;
+                LOG4CXX_DEBUG(logger, msg << i);
                 LOG4CXX_DEBUG(root, msg << i);
 
-                LOG4CXX_INFO(logger, msg << ++i);
+                i++;
+                LOG4CXX_INFO(logger, msg << i);
                 LOG4CXX_INFO(root, msg << i);
 
-                LOG4CXX_WARN(logger, msg << ++i);
+                i++;
+                LOG4CXX_WARN(logger, msg << i);
                 LOG4CXX_WARN(root, msg << i);
 
-                LOG4CXX_ERROR(logger, msg << ++i);
+                i++;
+                LOG4CXX_ERROR(logger, msg << i);
                 LOG4CXX_ERROR(root, msg << i);
 
-                LOG4CXX_FATAL(logger, msg << ++i);
+                i++;
+                LOG4CXX_FATAL(logger, msg << i);
                 LOG4CXX_FATAL(root, msg << i);
+
+                i++;
+                LOG4CXX_DEBUG(logger, "Message " << i);
+                LOG4CXX_DEBUG(root, "Message " << i);
+
+                i++;
+                LOG4CXX_ERROR(logger, "Message " << i);
+                LOG4CXX_ERROR(root, "Message " << i);
         }
 };
 

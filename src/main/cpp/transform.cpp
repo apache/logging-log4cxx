@@ -33,26 +33,42 @@ void Transform::appendEscapingTags(
    {
       return;
    }
-
-   LogString::const_iterator it = input.begin();
-   LogString::const_iterator itEnd = input.end();
-   logchar ch;
-   while(it != itEnd)
-   {
-      ch = *it++;
-      if(ch == 0x3C /* '<' */)
-      {
-         buf.append(LOG4CXX_STR("&lt;"));
-      }
-      else if(ch == 0x3E /* '>' */)
-      {
-         buf.append(LOG4CXX_STR("&gt;"));
-      }
-      else
-      {
-         buf.append(1, ch);
-      }
+   
+   logchar specials[] = { 0x22 /* " */, 0x26 /* & */, 0x3C /* < */, 0x3E /* > */ };
+   size_t start = 0;
+   size_t special = input.find_first_of(specials, start);
+   while(special != LogString::npos) {
+        if (special > start) {
+            buf.append(input, start, special - start);
+        }
+        switch(input[special]) {
+            case 0x22:
+            buf.append(LOG4CXX_STR("&quot;"));
+            break;
+            
+            case 0x26:
+            buf.append(LOG4CXX_STR("&amp;"));
+            break;
+            
+            case 0x3C:
+            buf.append(LOG4CXX_STR("&lt;"));
+            break;
+            
+            default:
+            buf.append(LOG4CXX_STR("&gt;"));
+            break;
+        }
+        start = special+1;
+        if (special < input.size()) {
+            special = input.find_first_of(specials, start);
+        } else {
+            special = LogString::npos;
+        }
    }
+   
+   if (start < input.size()) {
+        buf.append(input, start, input.size() - start);
+    }
 }
 
 void Transform::appendEscapingCDATA(

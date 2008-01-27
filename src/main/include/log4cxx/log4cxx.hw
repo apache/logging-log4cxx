@@ -55,6 +55,7 @@ typedef unsigned int log4cxx_uint32_t;
 #define LOG4CXX_EXPORT
 #define LOG4CXX_PTR_DEF(T) typedef log4cxx::helpers::ObjectPtrT<T> T##Ptr;
 #define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N;
+#define LOG4CXX_SET_DEF(N, T) typedef std::set<T> N;
 
 //   definitions used when building DLL
 #elif defined(LOG4CXX)
@@ -68,6 +69,11 @@ template class LOG4CXX_EXPORT std::allocator<T>; \
 template class LOG4CXX_EXPORT std::vector<T>; \
 typedef std::vector<T> N;
 
+#define LOG4CXX_SET_DEF(N, T) \
+template class LOG4CXX_EXPORT std::allocator<T>; \
+template class LOG4CXX_EXPORT std::set<T>; \
+typedef std::set<T> N;
+
 #else
 //    definitions used when using DLL
 #define LOG4CXX_EXPORT __declspec(dllimport)
@@ -79,6 +85,11 @@ typedef log4cxx::helpers::ObjectPtrT<T> T##Ptr;
 extern template class LOG4CXX_EXPORT std::allocator<T>; \
 extern template class LOG4CXX_EXPORT std::vector<T>; \
 typedef std::vector<T> N;
+
+#define LOG4CXX_SET_DEF(N, T) \
+extern template class LOG4CXX_EXPORT std::allocator<T>; \
+extern template class LOG4CXX_EXPORT std::set<T>; \
+typedef std::set<T> N;
 
 #endif
 
