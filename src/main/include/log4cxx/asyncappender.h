@@ -190,6 +190,8 @@ namespace log4cxx
 
 
         private:
+                AsyncAppender(const AsyncAppender&);
+                AsyncAppender& operator=(const AsyncAppender&);
                 /**
                  * The default buffer size is set to 128 events.
                 */

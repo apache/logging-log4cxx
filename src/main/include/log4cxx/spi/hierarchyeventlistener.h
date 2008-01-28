@@ -26,6 +26,7 @@
 
 
 #include <log4cxx/appender.h>
+#include <log4cxx/logger.h>
 
 namespace log4cxx
 {

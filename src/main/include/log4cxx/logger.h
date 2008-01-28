@@ -24,13 +24,11 @@
 #endif
 
 #include <log4cxx/helpers/appenderattachableimpl.h>
-#include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/helpers/resourcebundle.h>
-#include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/messagebuffer.h>
 
 
@@ -40,10 +38,18 @@ namespace log4cxx
     namespace helpers {
             class synchronized;
     }
+    
+    namespace spi {
+        class LoggerRepository;
+        LOG4CXX_PTR_DEF(LoggerRepository)
+        class LoggerFactory;
+        LOG4CXX_PTR_DEF(LoggerFactory)
+    }
 
     class Logger;
     /** smart pointer to a Logger class */
     LOG4CXX_PTR_DEF(Logger)
+    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr)
 
 
     /**
@@ -51,7 +57,7 @@ namespace log4cxx
     operations, except configuration, are done through this class.
     */
     class LOG4CXX_EXPORT Logger :
-                public virtual spi::AppenderAttachable,
+                public virtual log4cxx::spi::AppenderAttachable,
                 public virtual helpers::ObjectImpl
     {
     public:
@@ -92,7 +98,7 @@ namespace log4cxx
 
 
         // Loggers need to know what Hierarchy they are in
-        spi::LoggerRepository * repository;
+        log4cxx::spi::LoggerRepository * repository;
 
         helpers::AppenderAttachableImplPtr aai;
 
@@ -147,7 +153,7 @@ namespace log4cxx
         to log the particular log request.
 
         @param event the event to log.  */
-        void callAppenders(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
+        void callAppenders(const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
 
         /**
         Close all attached appenders implementing the AppenderAttachable
@@ -310,7 +316,7 @@ namespace log4cxx
         Return the the LoggerRepository where this
         <code>Logger</code> is attached.
         */
-        spi::LoggerRepositoryPtr getLoggerRepository() const;
+        log4cxx::spi::LoggerRepositoryPtr getLoggerRepository() const;
 
 
         /**
@@ -379,20 +385,20 @@ namespace log4cxx
         actually create a new Instance.
         */
         static LoggerPtr getLoggerLS(const LogString& name,
-                        const spi::LoggerFactoryPtr& factory);
+                        const log4cxx::spi::LoggerFactoryPtr& factory);
         static LoggerPtr getLogger(const std::string& name,
-                        const spi::LoggerFactoryPtr& factory);
+                        const log4cxx::spi::LoggerFactoryPtr& factory);
 #if LOG4CXX_WCHAR_T_API
         static LoggerPtr getLogger(const std::wstring& name,
-                        const spi::LoggerFactoryPtr& factory);
+                        const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 #if LOG4CXX_UNICHAR_API
         static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
-                        const spi::LoggerFactoryPtr& factory);
+                        const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 #if LOG4CXX_CFSTRING_API
         static LoggerPtr getLogger(const CFStringRef& name,
-                        const spi::LoggerFactoryPtr& factory);
+                        const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 
         /**
@@ -910,7 +916,7 @@ Logs a localized message with one parameter.
 @param logger the logger to be used.
 @param level the level to log.
 @param key the key to be searched in the resourceBundle of the logger.
-@param p1 the unique parameter. Must be of type (TCHAR *).
+@param p1 the unique parameter.
 */
 #define LOG4CXX_L7DLOG1(logger, level, key, p1) { \
         if (logger->isEnabledFor(level)) {\
@@ -922,8 +928,8 @@ Logs a localized message with two parameters.
 @param logger the logger to be used.
 @param level the level to log.
 @param key the key to be searched in the resourceBundle of the logger.
-@param p1 the first parameter. Must be of type (TCHAR *).
-@param p2 the second parameter. Must be of type (TCHAR *).
+@param p1 the first parameter.
+@param p2 the second parameter.
 */
 #define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) { \
         if (logger->isEnabledFor(level)) {\
@@ -935,9 +941,9 @@ Logs a localized message with three parameters.
 @param logger the logger to be used.
 @param level the level to log.
 @param key the key to be searched in the resourceBundle of the logger.
-@param p1 the first parameter. Must be of type (TCHAR *).
-@param p2 the second parameter. Must be of type (TCHAR *).
-@param p3 the third parameter. Must be of type (TCHAR *).
+@param p1 the first parameter.
+@param p2 the second parameter.
+@param p3 the third parameter.
 */
 #define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) { \
         if (logger->isEnabledFor(level)) {\
@@ -949,5 +955,6 @@ Logs a localized message with three parameters.
 #pragma warning ( pop )
 #endif
 
+#include <log4cxx/spi/loggerrepository.h>
 
 #endif //_LOG4CXX_LOGGER_H

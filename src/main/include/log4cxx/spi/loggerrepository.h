@@ -26,14 +26,17 @@
 
 #include <log4cxx/appender.h>
 #include <log4cxx/spi/loggerfactory.h>
-#include <log4cxx/spi/hierarchyeventlistener.h>
 #include <log4cxx/level.h>
 
 namespace log4cxx
 {
-    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr)
     namespace spi
         {
+            class HierarchyEventListener;
+            LOG4CXX_PTR_DEF(HierarchyEventListener)
+            LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr)
+            
+            
             /**
             A <code>LoggerRepository</code> is used to create and retrieve
             <code>Loggers</code>. The relation between loggers in a repository
@@ -104,8 +107,6 @@ namespace log4cxx
             virtual void setConfigured(bool configured) = 0;
 
             }; // class LoggerRepository
-
-            LOG4CXX_PTR_DEF(LoggerRepository)
 
         }  // namespace spi
 } // namespace log4cxx

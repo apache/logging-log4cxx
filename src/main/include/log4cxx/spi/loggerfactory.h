@@ -18,14 +18,10 @@
 #ifndef _LOG4CXX_SPI_LOGGERFACTORY_H
 #define _LOG4CXX_SPI_LOGGERFACTORY_H
 
-#include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/logstring.h>
+#include <log4cxx/logger.h>
 
 namespace log4cxx
 {
-        class Logger;
-        typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
         namespace spi
         {
@@ -42,8 +38,6 @@ namespace log4cxx
                             log4cxx::helpers::Pool& pool, 
                             const LogString& name) const = 0;
                 };
-
-                LOG4CXX_PTR_DEF(LoggerFactory)
 
 
         }  // namespace spi
