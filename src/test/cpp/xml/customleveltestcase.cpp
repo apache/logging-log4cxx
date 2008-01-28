@@ -20,8 +20,7 @@
 
 
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "../logunit.h"
 
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -38,7 +37,7 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
 
 
-class CustomLevelTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(CustomLevelTestCase)
 {
    CPPUNIT_TEST_SUITE(CustomLevelTestCase);
       CPPUNIT_TEST(test1);

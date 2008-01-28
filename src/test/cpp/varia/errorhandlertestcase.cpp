@@ -18,13 +18,9 @@
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
 
-
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/domconfigurator.h>
-
+#include "../logunit.h"
 #include "../util/transformer.h"
 #include "../util/compare.h"
 #include "../util/controlfilter.h"
@@ -43,11 +39,11 @@ using namespace log4cxx::xml;
         "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " \
         "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]"
 
-class ErrorHandlerTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(ErrorHandlerTestCase)
 {
-        CPPUNIT_TEST_SUITE(ErrorHandlerTestCase);
-                CPPUNIT_TEST(test1);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(ErrorHandlerTestCase);
+                LOGUNIT_TEST(test1);
+        LOGUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
         LoggerPtr logger;
@@ -97,7 +93,7 @@ public:
                 }
 
         const File witness("witness/fallback");
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, witness));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, witness));
         }
 
         void common()
@@ -134,7 +130,7 @@ public:
 //TODO: Not sure this test ever worked.  0.9.7 didn't call common
 //   had nothing that attempted to dispatch any log events
 
-//CPPUNIT_TEST_SUITE_REGISTRATION(ErrorHandlerTestCase);
+//LOGUNIT_TEST_SUITE_REGISTRATION(ErrorHandlerTestCase);
 
 const File ErrorHandlerTestCase::TEMP("output/temp");
 const File ErrorHandlerTestCase::FILTERED("output/filtered");

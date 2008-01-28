@@ -15,33 +15,21 @@
  * limitations under the License.
  */
 
-#include <log4cxx/consoleappender.h>
-#include "logunit.h"
-#include "writerappendertestcase.h"
+#if !defined(_LOG4CXX_LOGUNIT_H)
+#define _LOG4CXX_LOGUNIT_H
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
+#include <cppunit/TestFixture.h>
+#include <cppunit/extensions/HelperMacros.h>
 
-/**
-   Unit tests of log4cxx::nt::NTEventLogAppender
- */
-class ConsoleAppenderTestCase : public WriterAppenderTestCase
-{
-   LOGUNIT_TEST_SUITE(ConsoleAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
+#define LOGUNIT_TEST_SUITE(x) CPPUNIT_TEST_SUITE(x)
+#define LOGUNIT_TEST(x) CPPUNIT_TEST(x)
+#define LOGUNIT_TEST_SUITE_END(x) CPPUNIT_TEST_SUITE_END(x)
+#define LOGUNIT_ASSERT(x) CPPUNIT_ASSERT(x)
+#define LOGUNIT_ASSERT_EQUAL(x, y) CPPUNIT_ASSERT_EQUAL(x, y)
+#define LOGUNIT_CLASS(x) class x : public CppUnit::TestFixture
+#define LOGUNIT_TEST_SUITE_REGISTRATION(x) CPPUNIT_TEST_SUITE_REGISTRATION(x)
+#define LOGUNIT_TEST_SUITE_REGISTRATION_NO_AUTO_RUN(x) CPPUNIT_NS::Test* create ## x () { return x :: suite(); }
+#define LOGUNIT_FAIL(msg) CPPUNIT_FAIL(msg)
+#define LOGUNIT_TEST_EXCEPTION(t, x) CPPUNIT_TEST_EXCEPTION(t, x)
 
-   LOGUNIT_TEST_SUITE_END();
-
-
-public:
-
-        WriterAppender* createWriterAppender() const {
-          return new log4cxx::ConsoleAppender();
-        }
-};
-
-LOGUNIT_TEST_SUITE_REGISTRATION(ConsoleAppenderTestCase);
+#endif

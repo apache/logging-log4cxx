@@ -16,8 +16,8 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/timezone.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <apr_time.h>
 
 using namespace log4cxx;
@@ -33,17 +33,17 @@ using namespace log4cxx::helpers;
    Unit test {@link TimeZone}.
    @author Curt Arnold
    @since 0.98 */
-class TimeZoneTestCase : public CppUnit::TestFixture {
-  CPPUNIT_TEST_SUITE(TimeZoneTestCase);
-          CPPUNIT_TEST(test1);
-          CPPUNIT_TEST(test2);
+LOGUNIT_CLASS(TimeZoneTestCase) {
+  LOGUNIT_TEST_SUITE(TimeZoneTestCase);
+          LOGUNIT_TEST(test1);
+          LOGUNIT_TEST(test2);
 #if !defined(__BORLANDC__)
-          CPPUNIT_TEST(test3);
+          LOGUNIT_TEST(test3);
 #endif
-          CPPUNIT_TEST(test4);
-          CPPUNIT_TEST(test5);
-          CPPUNIT_TEST(test6);
-  CPPUNIT_TEST_SUITE_END();
+          LOGUNIT_TEST(test4);
+          LOGUNIT_TEST(test5);
+          LOGUNIT_TEST(test6);
+  LOGUNIT_TEST_SUITE_END();
 
 #define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
 
@@ -54,7 +54,7 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
    */
   void test1() {
     TimeZonePtr tz(TimeZone::getGMT());
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
   }
 
   /**
@@ -62,13 +62,13 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
    */
   void test2() {
     TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT-06:00"), tz->getID());
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT-06:00"), tz->getID());
 
     apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
     apr_time_exp_t exploded;
     tz->explode(&exploded, jan2);
-    CPPUNIT_ASSERT_EQUAL(-6 * 3600, exploded.tm_gmtoff);
-    CPPUNIT_ASSERT_EQUAL(18, exploded.tm_hour);
+    LOGUNIT_ASSERT_EQUAL(-6 * 3600, exploded.tm_gmtoff);
+    LOGUNIT_ASSERT_EQUAL(18, exploded.tm_hour);
   }
 
   /**
@@ -77,7 +77,7 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
   void test3() {
     TimeZonePtr tz(TimeZone::getDefault());
     LogString tzName(tz->getID());
-    CPPUNIT_ASSERT(tzName.length() > 0);
+    LOGUNIT_ASSERT(tzName.length() > 0);
   }
 
 
@@ -86,14 +86,14 @@ class TimeZoneTestCase : public CppUnit::TestFixture {
  */
 void test4() {
   TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT+0010")));
-  CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+00:10"), tz->getID());
+  LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+00:10"), tz->getID());
 
   apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
   apr_time_exp_t exploded;
   tz->explode(&exploded, jan2);
-  CPPUNIT_ASSERT_EQUAL(600, exploded.tm_gmtoff);
-  CPPUNIT_ASSERT_EQUAL(0, exploded.tm_hour);
-  CPPUNIT_ASSERT_EQUAL(10, exploded.tm_min);
+  LOGUNIT_ASSERT_EQUAL(600, exploded.tm_gmtoff);
+  LOGUNIT_ASSERT_EQUAL(0, exploded.tm_hour);
+  LOGUNIT_ASSERT_EQUAL(10, exploded.tm_min);
 }
 
 
@@ -102,13 +102,13 @@ void test4() {
  */
 void test5() {
   TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT+6")));
-  CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+06:00"), tz->getID());
+  LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+06:00"), tz->getID());
 
   apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
   apr_time_exp_t exploded;
   tz->explode(&exploded, jan2);
-  CPPUNIT_ASSERT_EQUAL(6 * 3600, exploded.tm_gmtoff);
-  CPPUNIT_ASSERT_EQUAL(6, exploded.tm_hour);
+  LOGUNIT_ASSERT_EQUAL(6 * 3600, exploded.tm_gmtoff);
+  LOGUNIT_ASSERT_EQUAL(6, exploded.tm_hour);
 }
 
 /**
@@ -116,11 +116,11 @@ void test5() {
  */
 void test6() {
   TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT")));
-  CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
+  LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
 }
 
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TimeZoneTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(TimeZoneTestCase);
 

@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include "util/compare.h"
 #include "xml/xlevel.h"
+#include "logunit.h"
 #include "testchar.h"
 #include <log4cxx/spi/loggerrepository.h>
 
@@ -30,18 +28,18 @@ using namespace log4cxx;
 /**
 Test the configuration of the hierarchy-wide threshold.
 */
-class HierarchyThresholdTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(HierarchyThresholdTestCase)
 {
-   CPPUNIT_TEST_SUITE(HierarchyThresholdTestCase);
-      CPPUNIT_TEST(test1);
-      CPPUNIT_TEST(test2);
-      CPPUNIT_TEST(test3);
-      CPPUNIT_TEST(test4);
-      CPPUNIT_TEST(test5);
-      CPPUNIT_TEST(test6);
-      CPPUNIT_TEST(test7);
-      CPPUNIT_TEST(test8);
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE(HierarchyThresholdTestCase);
+      LOGUNIT_TEST(test1);
+      LOGUNIT_TEST(test2);
+      LOGUNIT_TEST(test3);
+      LOGUNIT_TEST(test4);
+      LOGUNIT_TEST(test5);
+      LOGUNIT_TEST(test6);
+      LOGUNIT_TEST(test7);
+      LOGUNIT_TEST(test8);
+   LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -58,56 +56,56 @@ public:
    {
       PropertyConfigurator::configure(LOG4CXX_FILE("input/hierarchyThreshold1.properties"));
       common();
-      CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.1")));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.1")));
    }
 
    void test2()
    {
       PropertyConfigurator::configure(LOG4CXX_FILE("input/hierarchyThreshold2.properties"));
       common();
-      CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.2")));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.2")));
    }
 
    void test3()
    {
       PropertyConfigurator::configure(LOG4CXX_FILE("input/hierarchyThreshold3.properties"));
       common();
-      CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.3")));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.3")));
    }
 
    void test4()
    {
       PropertyConfigurator::configure(LOG4CXX_FILE("input/hierarchyThreshold4.properties"));
       common();
-      CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.4")));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.4")));
    }
 
    void test5()
    {
       PropertyConfigurator::configure(LOG4CXX_FILE("input/hierarchyThreshold5.properties"));
       common();
-      CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.5")));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.5")));
    }
 
    void test6()
    {
       PropertyConfigurator::configure(LOG4CXX_FILE("input/hierarchyThreshold6.properties"));
       common();
-      CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.6")));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.6")));
    }
 
    void test7()
    {
       PropertyConfigurator::configure(LOG4CXX_FILE("input/hierarchyThreshold7.properties"));
       common();
-      CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.7")));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.7")));
    }
 
    void test8()
    {
       PropertyConfigurator::configure(LOG4CXX_FILE("input/hierarchyThreshold8.properties"));
       common();
-      CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.8")));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/hierarchyThreshold.8")));
    }
 
    static void common()
@@ -130,4 +128,4 @@ File HierarchyThresholdTestCase::TEMP(LOG4CXX_FILE("output/temp"));
 LoggerPtr HierarchyThresholdTestCase::logger =
    Logger::getLogger(LOG4CXX_TEST_STR("HierarchyThresholdTestCase"));
 
-CPPUNIT_TEST_SUITE_REGISTRATION(HierarchyThresholdTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(HierarchyThresholdTestCase);

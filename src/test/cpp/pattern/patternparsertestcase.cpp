@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/system.h>
@@ -26,6 +23,7 @@
 #include "num343patternconverter.h"
 #include "../testchar.h"
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/pattern/patternparser.h>
 #include <log4cxx/pattern/patternconverter.h>
@@ -63,17 +61,17 @@ using namespace log4cxx::pattern;
 map.insert(PatternMap::value_type(LOG4CXX_STR(spec), (PatternConstructor) cls ::newInstance))
 
 
-class PatternParserTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(PatternParserTestCase)
 {
-   CPPUNIT_TEST_SUITE(PatternParserTestCase);
-      CPPUNIT_TEST(testNewWord);
-      CPPUNIT_TEST(testNewWord2);
-      CPPUNIT_TEST(testBogusWord1);
-      CPPUNIT_TEST(testBogusWord2);
-      CPPUNIT_TEST(testBasic1);
-      CPPUNIT_TEST(testBasic2);
-      CPPUNIT_TEST(testMultiOption);
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE(PatternParserTestCase);
+      LOGUNIT_TEST(testNewWord);
+      LOGUNIT_TEST(testNewWord2);
+      LOGUNIT_TEST(testBogusWord1);
+      LOGUNIT_TEST(testBogusWord2);
+      LOGUNIT_TEST(testBasic1);
+      LOGUNIT_TEST(testBasic2);
+      LOGUNIT_TEST(testMultiOption);
+   LOGUNIT_TEST_SUITE_END();
 
    LoggerPtr logger;
    LoggingEventPtr event;
@@ -157,7 +155,7 @@ public:
           (*converterIter)->format(event, actual, p);
           (*fieldIter)->format(fieldStart, actual);
       }
-      CPPUNIT_ASSERT_EQUAL(expected, actual);
+      LOGUNIT_ASSERT_EQUAL(expected, actual);
    }
 
 
@@ -245,5 +243,5 @@ public:
 //   See bug LOGCXX-204
 //
 #if !defined(_MSC_VER) || _MSC_VER > 1200
-CPPUNIT_TEST_SUITE_REGISTRATION(PatternParserTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(PatternParserTestCase);
 #endif

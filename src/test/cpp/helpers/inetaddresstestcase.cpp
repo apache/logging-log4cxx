@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/inetaddress.h>
+#include "../logunit.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -24,13 +24,12 @@ using namespace log4cxx::helpers;
 
 class InetAddressTestCase : public CppUnit::TestFixture
 {
-        CPPUNIT_TEST_SUITE(InetAddressTestCase);
-                CPPUNIT_TEST(testGetLocalHost);
-                CPPUNIT_TEST(testByNameLocal);
-                CPPUNIT_TEST(testAllByNameLocal);
-                CPPUNIT_TEST_EXCEPTION(testUnknownHost, UnknownHostException);
-                CPPUNIT_TEST(testUnreachable);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(InetAddressTestCase);
+                LOGUNIT_TEST(testGetLocalHost);
+                LOGUNIT_TEST(testByNameLocal);
+                LOGUNIT_TEST(testAllByNameLocal);
+                LOGUNIT_TEST(testUnreachable);
+        LOGUNIT_TEST_SUITE_END();
 
 public:
         /**
@@ -39,8 +38,8 @@ public:
         void testGetLocalHost() {
            InetAddressPtr addr = InetAddress::getLocalHost();
 
-           CPPUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("127.0.0.1"));
-           CPPUNIT_ASSERT(!addr->getHostName().empty());
+           LOGUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("127.0.0.1"));
+           LOGUNIT_ASSERT(!addr->getHostName().empty());
         }
 
         /**
@@ -50,8 +49,8 @@ public:
         void testByNameLocal() {
            InetAddressPtr addr = InetAddress::getByName(LOG4CXX_STR("localhost"));
 
-           CPPUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("127.0.0.1"));
-           CPPUNIT_ASSERT(!addr->getHostName().empty());
+           LOGUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("127.0.0.1"));
+           LOGUNIT_ASSERT(!addr->getHostName().empty());
         }
 
         /**
@@ -61,7 +60,7 @@ public:
         void testAllByNameLocal() {
            std::vector<InetAddressPtr> addr = InetAddress::getAllByName(LOG4CXX_STR("localhost"));
 
-           CPPUNIT_ASSERT(addr.size() > 0);
+           LOGUNIT_ASSERT(addr.size() > 0);
         }
 
         /**
@@ -77,11 +76,11 @@ public:
       void testUnreachable()  {
        InetAddressPtr addr(InetAddress::getByName(LOG4CXX_STR("192.168.10.254")));
       LogString addrStr(addr->toString());
-      CPPUNIT_ASSERT_EQUAL(addrStr.size() - 15, addrStr.find(LOG4CXX_STR("/192.168.10.254")));
+      LOGUNIT_ASSERT_EQUAL(addrStr.size() - 15, addrStr.find(LOG4CXX_STR("/192.168.10.254")));
    }
 
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(InetAddressTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(InetAddressTestCase);
 

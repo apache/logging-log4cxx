@@ -14,9 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "../logunit.h" 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/absolutetimedateformat.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include "../insertwide.h"
 #include <apr.h>
 #include <apr_time.h>
@@ -37,17 +37,17 @@ using namespace log4cxx::helpers;
    Unit test {@link AbsoluteTimeDateFormat}.
    @author Curt Arnold
    @since 1.3.0 */
-class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
-  CPPUNIT_TEST_SUITE(AbsoluteTimeDateFormatTestCase);
-          CPPUNIT_TEST(test1);
-          CPPUNIT_TEST(test2);
-          CPPUNIT_TEST(test3);
-          CPPUNIT_TEST(test4);
-          CPPUNIT_TEST(test5);
-          CPPUNIT_TEST(test6);
-          CPPUNIT_TEST(test7);
-          CPPUNIT_TEST(test8);
-  CPPUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(AbsoluteTimeDateFormatTestCase) {
+  LOGUNIT_TEST_SUITE(AbsoluteTimeDateFormatTestCase);
+          LOGUNIT_TEST(test1);
+          LOGUNIT_TEST(test2);
+          LOGUNIT_TEST(test3);
+          LOGUNIT_TEST(test4);
+          LOGUNIT_TEST(test5);
+          LOGUNIT_TEST(test6);
+          LOGUNIT_TEST(test7);
+          LOGUNIT_TEST(test8);
+  LOGUNIT_TEST_SUITE_END();
 
   public:
 
@@ -68,7 +68,7 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
     LogString actual;
     Pool p;
     formatter.format(actual, date, p);
-    CPPUNIT_ASSERT_EQUAL(expected, actual);
+    LOGUNIT_ASSERT_EQUAL(expected, actual);
   }
 
 #define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
@@ -170,10 +170,10 @@ class AbsoluteTimeDateFormatTestCase : public CppUnit::TestFixture {
     LogString numb;
     AbsoluteTimeDateFormat formatter;
     formatter.numberFormat(numb, 87, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
   }
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(AbsoluteTimeDateFormatTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(AbsoluteTimeDateFormatTestCase);
 

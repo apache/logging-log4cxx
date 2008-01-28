@@ -15,15 +15,14 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
 #include <log4cxx/appenderskeleton.h>
-
+#include "logunit.h"
 
 /**
    An abstract set of tests for inclusion in concrete
    appender test case
  */
-class AppenderSkeletonTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(AppenderSkeletonTestCase)
 {
 
 public:

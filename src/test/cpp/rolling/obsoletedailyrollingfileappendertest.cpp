@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include "../util/compare.h"
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <apr_time.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -48,11 +46,11 @@ using namespace log4cxx::helpers;
  * @author Curt Arnold
  *
  */
-class ObsoleteDailyRollingFileAppenderTest : public CppUnit::TestFixture  {
-  CPPUNIT_TEST_SUITE(ObsoleteDailyRollingFileAppenderTest);
-          CPPUNIT_TEST(test1);
-          CPPUNIT_TEST(test2);
-  CPPUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(ObsoleteDailyRollingFileAppenderTest)  {
+  LOGUNIT_TEST_SUITE(ObsoleteDailyRollingFileAppenderTest);
+          LOGUNIT_TEST(test1);
+          LOGUNIT_TEST(test2);
+  LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -81,7 +79,7 @@ public:
     }
 
     int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test1.log."));
-    CPPUNIT_ASSERT_EQUAL(true, postCount > preCount);
+    LOGUNIT_ASSERT_EQUAL(true, postCount > preCount);
   }
 
   /**
@@ -114,7 +112,7 @@ public:
     }
 
     int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test2.log."));
-    CPPUNIT_ASSERT_EQUAL(true, postCount > preCount);
+    LOGUNIT_ASSERT_EQUAL(true, postCount > preCount);
   }
 
 private:
@@ -133,5 +131,5 @@ private:
   }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ObsoleteDailyRollingFileAppenderTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(ObsoleteDailyRollingFileAppenderTest);
 

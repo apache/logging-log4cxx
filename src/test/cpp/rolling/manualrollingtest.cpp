@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include "../util/compare.h"
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <apr_time.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -48,15 +46,15 @@ using namespace log4cxx::rolling;
  * @author Curt Arnold
  *
  */
- class ManualRollingTest  : public CppUnit::TestFixture  {
-   CPPUNIT_TEST_SUITE(ManualRollingTest);
-           CPPUNIT_TEST(test1);
-           CPPUNIT_TEST(test2);
+LOGUNIT_CLASS(ManualRollingTest)  {
+   LOGUNIT_TEST_SUITE(ManualRollingTest);
+           LOGUNIT_TEST(test1);
+           LOGUNIT_TEST(test2);
 //           TODO: Compression not yet implemented
-//           CPPUNIT_TEST(test3);
-           CPPUNIT_TEST(test4);
-           CPPUNIT_TEST(test5);
-   CPPUNIT_TEST_SUITE_END();
+//           LOGUNIT_TEST(test3);
+           LOGUNIT_TEST(test4);
+           LOGUNIT_TEST(test5);
+   LOGUNIT_TEST_SUITE_END();
 
    LoggerPtr root;
    LoggerPtr logger;
@@ -119,14 +117,14 @@ using namespace log4cxx::rolling;
 
     common(rfa, p, logger);
 
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test1.0").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test1.1").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test1.2").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test1.0"),
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test1.0").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test1.1").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test1.2").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test1.0"),
      File("witness/rolling/sbr-test2.log")));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test1.1"),
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test1.1"),
      File("witness/rolling/sbr-test2.0")));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test1.2"),
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test1.2"),
      File("witness/rolling/sbr-test2.1")));
   }
 
@@ -147,15 +145,15 @@ using namespace log4cxx::rolling;
 
     common(rfa, p, logger);
 
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log.1").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log.2").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log.1").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test2.log.2").exists(p));
 
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test2.log"),
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test2.log"),
      File("witness/rolling/sbr-test2.log")));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test2.log.1"),
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test2.log.1"),
      File("witness/rolling/sbr-test2.0")));
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test2.log.2"),
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test2.log.2"),
      File("witness/rolling/sbr-test2.1")));
   }
 
@@ -181,13 +179,13 @@ using namespace log4cxx::rolling;
 
     common(rfa, p, logger);
 
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test3.log").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test3.0.gz").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test3.1.gz").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test3.log").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test3.0.gz").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test3.1.gz").exists(p));
 
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test3.log"),  File("witness/rolling/sbr-test3.log")));
-    CPPUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.0.gz").length(p), File("output/manual-test3.0.gz").length(p));
-    CPPUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.1.gz").length(p), File("output/manual-test3.1.gz").length(p));
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test3.log"),  File("witness/rolling/sbr-test3.log")));
+    LOGUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.0.gz").length(p), File("output/manual-test3.0.gz").length(p));
+    LOGUNIT_ASSERT_EQUAL(File("witness/rolling/sbr-test3.1.gz").length(p), File("output/manual-test3.1.gz").length(p));
   }
 
   /**
@@ -218,9 +216,9 @@ using namespace log4cxx::rolling;
 
     common(rfa, p, logger);
 
-    CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test4.log").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test4.log").exists(p));
 
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test4.log"),
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test4.log"),
      File("witness/rolling/sbr-test4.log")));
   }
 
@@ -264,17 +262,17 @@ using namespace log4cxx::rolling;
       //
       //    looks like platform where open files can be renamed
       //
-      CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test5.log").exists(p));
-      CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test5.0").exists(p));
-      CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test5.1").exists(p));
-      CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test5.2").exists(p));
-      CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test5.3").exists(p));
+      LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test5.log").exists(p));
+      LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test5.0").exists(p));
+      LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test5.1").exists(p));
+      LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test5.2").exists(p));
+      LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test5.3").exists(p));
 
-      CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.log"),
+      LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.log"),
        File("witness/rolling/sbr-test2.log")));
-      CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.0"),
+      LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.0"),
        File("witness/rolling/sbr-test2.0")));
-      CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.1"),
+      LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.1"),
        File("witness/rolling/sbr-test2.1")));
 
     } else {
@@ -283,11 +281,11 @@ using namespace log4cxx::rolling;
       //    so initial log file should have all log content
       //    open file should be unaffected
       //    stray file should have only been moved one slot.
-      CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test5.log").exists(p));
-      CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test5.0").exists(p));
-      CPPUNIT_ASSERT_EQUAL(true, File("output/manual-test5.2").exists(p));
+      LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test5.log").exists(p));
+      LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test5.0").exists(p));
+      LOGUNIT_ASSERT_EQUAL(true, File("output/manual-test5.2").exists(p));
 
-      CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.log"),
+      LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.log"),
           File("witness/rolling/sbr-test4.log")));
     }
   }
@@ -295,4 +293,4 @@ using namespace log4cxx::rolling;
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ManualRollingTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(ManualRollingTest);

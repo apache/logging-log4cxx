@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "../logunit.h"
 
 #include <log4cxx/logger.h>
 #include <log4cxx/simplelayout.h>
@@ -37,12 +36,12 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::filter;
 
-class LevelMatchFilterTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(LevelMatchFilterTestCase)
 {
-        CPPUNIT_TEST_SUITE(LevelMatchFilterTestCase);
-                CPPUNIT_TEST(accept);
-                CPPUNIT_TEST(deny);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(LevelMatchFilterTestCase);
+                LOGUNIT_TEST(accept);
+                LOGUNIT_TEST(deny);
+        LOGUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
         LoggerPtr logger;
@@ -99,7 +98,7 @@ public:
                         common(sbuf);
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(ACCEPT_FILE, ACCEPT_WITNESS));
+                LOGUNIT_ASSERT(Compare::compare(ACCEPT_FILE, ACCEPT_WITNESS));
         }
 
         void deny()
@@ -139,7 +138,7 @@ public:
                         common(sbuf);
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(DENY_FILE, DENY_WITNESS));
+                LOGUNIT_ASSERT(Compare::compare(DENY_FILE, DENY_WITNESS));
         }
 
         void common(const LogString& msg)
@@ -166,4 +165,4 @@ const LogString LevelMatchFilterTestCase::DENY_FILE(LOG4CXX_STR("output/LevelMat
 const LogString LevelMatchFilterTestCase::DENY_WITNESS(LOG4CXX_STR("witness/LevelMatchFilter_deny"));
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(LevelMatchFilterTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(LevelMatchFilterTestCase);

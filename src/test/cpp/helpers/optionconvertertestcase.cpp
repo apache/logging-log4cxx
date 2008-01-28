@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/system.h>
@@ -25,6 +22,7 @@
 #include <log4cxx/helpers/pool.h>
 #include "../testchar.h"
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <stdlib.h>
 #include <apr_pools.h>
 #include <apr_file_io.h>
@@ -38,21 +36,21 @@ using namespace log4cxx::spi;
 
 #define MAX 1000
 
-class OptionConverterTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(OptionConverterTestCase)
 {
-   CPPUNIT_TEST_SUITE(OptionConverterTestCase);
-      CPPUNIT_TEST(varSubstTest1);
-      CPPUNIT_TEST(varSubstTest2);
-      CPPUNIT_TEST(varSubstTest3);
-      CPPUNIT_TEST(varSubstTest4);
-      CPPUNIT_TEST(varSubstTest5);
-      CPPUNIT_TEST(testTmpDir);
+   LOGUNIT_TEST_SUITE(OptionConverterTestCase);
+      LOGUNIT_TEST(varSubstTest1);
+      LOGUNIT_TEST(varSubstTest2);
+      LOGUNIT_TEST(varSubstTest3);
+      LOGUNIT_TEST(varSubstTest4);
+      LOGUNIT_TEST(varSubstTest5);
+      LOGUNIT_TEST(testTmpDir);
 #if APR_HAS_USER
-      CPPUNIT_TEST(testUserHome);
-      CPPUNIT_TEST(testUserName);
+      LOGUNIT_TEST(testUserHome);
+      LOGUNIT_TEST(testUserName);
 #endif
-      CPPUNIT_TEST(testUserDir);
-   CPPUNIT_TEST_SUITE_END();
+      LOGUNIT_TEST(testUserDir);
+   LOGUNIT_TEST_SUITE_END();
 
    Properties props;
    Properties nullProperties;
@@ -75,29 +73,29 @@ public:
      char* toto;
      apr_status_t stat = apr_env_get(&toto, "TOTO", 
          (apr_pool_t*) p.getAPRPool());
-     CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-     CPPUNIT_ASSERT_EQUAL(std::string("wonderful"), (std::string) toto);
+     LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+     LOGUNIT_ASSERT_EQUAL(std::string("wonderful"), (std::string) toto);
      char* key1;
      stat = apr_env_get(&key1, "key1", 
          (apr_pool_t*) p.getAPRPool());
-     CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-     CPPUNIT_ASSERT_EQUAL(std::string("value1"), (std::string) key1);
+     LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+     LOGUNIT_ASSERT_EQUAL(std::string("value1"), (std::string) key1);
      char* key2;
      stat = apr_env_get(&key2, "key2", 
          (apr_pool_t*) p.getAPRPool());
-     CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-     CPPUNIT_ASSERT_EQUAL(std::string("value2"), (std::string) key2);
+     LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+     LOGUNIT_ASSERT_EQUAL(std::string("value2"), (std::string) key2);
    }
 
    void varSubstTest1()
    {
       envCheck();
       LogString r(OptionConverter::substVars(LOG4CXX_STR("hello world."), nullProperties));
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("hello world."), r);
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("hello world."), r);
 
       r = OptionConverter::substVars(LOG4CXX_STR("hello ${TOTO} world."), nullProperties);
 
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("hello wonderful world."), r);
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("hello wonderful world."), r);
    }
 
 
@@ -106,7 +104,7 @@ public:
      envCheck();
       LogString r(OptionConverter::substVars(LOG4CXX_STR("Test2 ${key1} mid ${key2} end."),
          nullProperties));
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Test2 value1 mid value2 end."), r);
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Test2 value1 mid value2 end."), r);
    }
 
 
@@ -115,7 +113,7 @@ public:
      envCheck();
       LogString r(OptionConverter::substVars(
          LOG4CXX_STR("Test3 ${unset} mid ${key1} end."), nullProperties));
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Test3  mid value1 end."), r);
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Test3  mid value1 end."), r);
    }
 
 
@@ -130,7 +128,7 @@ public:
       catch(IllegalArgumentException& e)
       {
          std::string witness("\"Test4 ${incomplete \" has no closing brace. Opening brace at position 6.");
-         CPPUNIT_ASSERT_EQUAL(witness, (std::string) e.what());
+         LOGUNIT_ASSERT_EQUAL(witness, (std::string) e.what());
       }
    }
 
@@ -141,7 +139,7 @@ public:
       props1.setProperty(LOG4CXX_STR("p1"), LOG4CXX_STR("x1"));
       props1.setProperty(LOG4CXX_STR("p2"), LOG4CXX_STR("${p1}"));
       LogString res = OptionConverter::substVars(LOG4CXX_STR("${p2}"), props1);
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("x1"), res);
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("x1"), res);
    }
 
     void testTmpDir()
@@ -150,15 +148,15 @@ public:
           LOG4CXX_STR("${java.io.tmpdir}"), nullProperties));
        apr_pool_t* p;
        apr_status_t stat = apr_pool_create(&p, NULL);
-       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+       LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
        const char* tmpdir = NULL;
        stat = apr_temp_dir_get(&tmpdir, p);
-       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+       LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
        LogString expected;
        Transcoder::decode(tmpdir, expected);
        apr_pool_destroy(p);
 
-       CPPUNIT_ASSERT_EQUAL(expected, actual);
+       LOGUNIT_ASSERT_EQUAL(expected, actual);
     }
 
 #if APR_HAS_USER
@@ -167,7 +165,7 @@ public:
          LOG4CXX_STR("${user.home}"), nullProperties));
       apr_pool_t* p;
       apr_status_t stat = apr_pool_create(&p, NULL);
-      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
       apr_uid_t userid;
       apr_gid_t groupid;
@@ -181,7 +179,7 @@ public:
       		if (stat == APR_SUCCESS) {
       			LogString expected;
       			Transcoder::decode(dirname, expected);
-      			CPPUNIT_ASSERT_EQUAL(expected, actual);
+      			LOGUNIT_ASSERT_EQUAL(expected, actual);
       	    }
       	 }
       }	 
@@ -194,7 +192,7 @@ public:
            LOG4CXX_STR("${user.name}"), nullProperties));
        apr_pool_t* p;
        apr_status_t stat = apr_pool_create(&p, NULL);
-       CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+       LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
        apr_uid_t userid;
        apr_gid_t groupid;
@@ -205,7 +203,7 @@ public:
           if (stat == APR_SUCCESS) {
        		 LogString expected;
              Transcoder::decode(username, expected);
-             CPPUNIT_ASSERT_EQUAL(expected, actual);
+             LOGUNIT_ASSERT_EQUAL(expected, actual);
           }
        }
        apr_pool_destroy(p);
@@ -217,18 +215,18 @@ public:
           LOG4CXX_STR("${user.dir}"), nullProperties));
       apr_pool_t* p;
       apr_status_t stat = apr_pool_create(&p, NULL);
-      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
       char* dirname = NULL;
       stat = apr_filepath_get(&dirname, APR_FILEPATH_NATIVE, p);
-      CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
       LogString expected;
       Transcoder::decode(dirname, expected);
       apr_pool_destroy(p);
 
-      CPPUNIT_ASSERT_EQUAL(expected, actual);
+      LOGUNIT_ASSERT_EQUAL(expected, actual);
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(OptionConverterTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(OptionConverterTestCase);

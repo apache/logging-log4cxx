@@ -15,55 +15,53 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/helpers/transcoder.h>
 #include "../insertwide.h"
+#include "../logunit.h"
 
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-class TranscoderTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(TranscoderTestCase)
 {
-        CPPUNIT_TEST_SUITE(TranscoderTestCase);
-                CPPUNIT_TEST(decode1);
+        LOGUNIT_TEST_SUITE(TranscoderTestCase);
+                LOGUNIT_TEST(decode1);
 #if LOG4CXX_WCHAR_T_API
-                CPPUNIT_TEST(decode2);
+                LOGUNIT_TEST(decode2);
 #endif
-                CPPUNIT_TEST(decode3);
+                LOGUNIT_TEST(decode3);
 #if LOG4CXX_WCHAR_T_API
-                CPPUNIT_TEST(decode4);
+                LOGUNIT_TEST(decode4);
 #endif
-                CPPUNIT_TEST(decode7);
-                CPPUNIT_TEST(decode8);
+                LOGUNIT_TEST(decode7);
+                LOGUNIT_TEST(decode8);
 #if LOG4CXX_WCHAR_T_API
-                CPPUNIT_TEST(encode1);
+                LOGUNIT_TEST(encode1);
 #endif
-                CPPUNIT_TEST(encode2);
+                LOGUNIT_TEST(encode2);
 #if LOG4CXX_WCHAR_T_API
-                CPPUNIT_TEST(encode3);
+                LOGUNIT_TEST(encode3);
 #endif
-                CPPUNIT_TEST(encode4);
+                LOGUNIT_TEST(encode4);
 #if LOG4CXX_WCHAR_T_API
-                CPPUNIT_TEST(encode5);
+                LOGUNIT_TEST(encode5);
 #endif
-                CPPUNIT_TEST(encode6);
-                CPPUNIT_TEST(testDecodeUTF8_1);
-                CPPUNIT_TEST(testDecodeUTF8_2);
-                CPPUNIT_TEST(testDecodeUTF8_3);
-                CPPUNIT_TEST(testDecodeUTF8_4);
+                LOGUNIT_TEST(encode6);
+                LOGUNIT_TEST(testDecodeUTF8_1);
+                LOGUNIT_TEST(testDecodeUTF8_2);
+                LOGUNIT_TEST(testDecodeUTF8_3);
+                LOGUNIT_TEST(testDecodeUTF8_4);
 #if LOG4CXX_UNICHAR_API
-                CPPUNIT_TEST(udecode2);
-                CPPUNIT_TEST(udecode4);
-                CPPUNIT_TEST(uencode1);
-                CPPUNIT_TEST(uencode3);
-                CPPUNIT_TEST(uencode5);
+                LOGUNIT_TEST(udecode2);
+                LOGUNIT_TEST(udecode4);
+                LOGUNIT_TEST(uencode1);
+                LOGUNIT_TEST(uencode3);
+                LOGUNIT_TEST(uencode5);
 #endif
                 
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -71,7 +69,7 @@ public:
           const char* greeting = "Hello, World";
           LogString decoded(LOG4CXX_STR("foo\n"));
           Transcoder::decode(greeting, decoded);
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
+          LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
         }
 
 #if LOG4CXX_WCHAR_T_API
@@ -79,7 +77,7 @@ public:
           const wchar_t* greeting = L"Hello, World";
           LogString decoded(LOG4CXX_STR("foo\n"));
           Transcoder::decode(greeting, decoded);
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
+          LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
         }
 #endif
 
@@ -87,7 +85,7 @@ public:
            const char* nothing = "";
            LogString decoded(LOG4CXX_STR("foo\n"));
            Transcoder::decode(nothing, decoded);
-           CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
+           LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
         }
 
 #if LOG4CXX_WCHAR_T_API
@@ -95,7 +93,7 @@ public:
             const wchar_t* nothing = L"";
             LogString decoded(LOG4CXX_STR("foo\n"));
             Transcoder::decode(nothing, decoded);
-            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
+            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
         }
 #endif
 
@@ -110,10 +108,10 @@ public:
             longMsg.append("Hello");
             LogString decoded;
             Transcoder::decode(longMsg, decoded);
-            CPPUNIT_ASSERT_EQUAL((size_t) BUFSIZE + 3, decoded.length());
-            CPPUNIT_ASSERT_EQUAL(LogString(BUFSIZE -2, LOG4CXX_STR('A')),
+            LOGUNIT_ASSERT_EQUAL((size_t) BUFSIZE + 3, decoded.length());
+            LOGUNIT_ASSERT_EQUAL(LogString(BUFSIZE -2, LOG4CXX_STR('A')),
                   decoded.substr(0, BUFSIZE - 2));
-            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Hello"),
+            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Hello"),
                   decoded.substr(BUFSIZE -2 ));
         }
 
@@ -122,7 +120,7 @@ public:
             LogString actual;
             Transcoder::decode(msg, actual);
             LogString expected(LOG4CXX_STR("Hello, World."));
-            CPPUNIT_ASSERT_EQUAL(expected, actual);
+            LOGUNIT_ASSERT_EQUAL(expected, actual);
         }
 
 
@@ -131,7 +129,7 @@ public:
           const LogString greeting(LOG4CXX_STR("Hello, World"));
           std::wstring encoded;
           Transcoder::encode(greeting, encoded);
-          CPPUNIT_ASSERT_EQUAL((std::wstring) L"Hello, World", encoded);
+          LOGUNIT_ASSERT_EQUAL((std::wstring) L"Hello, World", encoded);
         }
 #endif
 
@@ -139,7 +137,7 @@ public:
           const LogString greeting(LOG4CXX_STR("Hello, World"));
           std::string encoded;
           Transcoder::encode(greeting, encoded);
-          CPPUNIT_ASSERT_EQUAL((std::string) "Hello, World", encoded);
+          LOGUNIT_ASSERT_EQUAL((std::string) "Hello, World", encoded);
         }
 
 #if LOG4CXX_WCHAR_T_API
@@ -149,8 +147,8 @@ public:
           std::wstring encoded;
           Transcoder::encode(greeting, encoded);
           std::wstring manyAs(BUFSIZE - 3, L'A');
-          CPPUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
-          CPPUNIT_ASSERT_EQUAL(std::wstring(L"Hello"), encoded.substr(BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(std::wstring(L"Hello"), encoded.substr(BUFSIZE - 3));
         }
 #endif
 
@@ -160,8 +158,8 @@ public:
           std::string encoded;
           Transcoder::encode(greeting, encoded);
           std::string manyAs(BUFSIZE - 3, 'A');
-          CPPUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
-          CPPUNIT_ASSERT_EQUAL(std::string("Hello"), encoded.substr(BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(std::string("Hello"), encoded.substr(BUFSIZE - 3));
         }
 
 #if LOG4CXX_WCHAR_T_API
@@ -182,7 +180,7 @@ public:
           //
           //   should be lossless
           //
-          CPPUNIT_ASSERT_EQUAL((std::wstring) greeting, encoded);
+          LOGUNIT_ASSERT_EQUAL((std::wstring) greeting, encoded);
         }
 #endif
 
@@ -222,21 +220,21 @@ public:
         std::string src("a");
         LogString out;
         Transcoder::decodeUTF8(src, out);
-        CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("a")), out);
+        LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("a")), out);
     }
 
     void testDecodeUTF8_2() {
         std::string src(1, 0x80);
         LogString out;
         Transcoder::decodeUTF8(src, out);
-        CPPUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);
+        LOGUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);
     }
 
     void testDecodeUTF8_3() {
         std::string src("\xC2");
         LogString out;
         Transcoder::decodeUTF8(src, out);
-        CPPUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);
+        LOGUNIT_ASSERT_EQUAL(LogString(1, Transcoder::LOSSCHAR), out);
     }
 
     void testDecodeUTF8_4() {
@@ -245,8 +243,8 @@ public:
         Transcoder::decodeUTF8(src, out);
         LogString::const_iterator iter = out.begin();
         unsigned int sv = Transcoder::decode(out, iter);
-        CPPUNIT_ASSERT_EQUAL((unsigned int) 0xA9, sv);
-        CPPUNIT_ASSERT_EQUAL(true, iter == out.end());
+        LOGUNIT_ASSERT_EQUAL((unsigned int) 0xA9, sv);
+        LOGUNIT_ASSERT_EQUAL(true, iter == out.end());
     }
 
 
@@ -255,14 +253,14 @@ public:
           const UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
           LogString decoded(LOG4CXX_STR("foo\n"));
           Transcoder::decode(greeting, decoded);
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
+          LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\nHello, World"), decoded);
         }
 
         void udecode4() {
             const UniChar nothing[] = { 0 };
             LogString decoded(LOG4CXX_STR("foo\n"));
             Transcoder::decode(nothing, decoded);
-            CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
+            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("foo\n"), decoded);
         }
 
         void uencode1() {
@@ -270,7 +268,7 @@ public:
           std::basic_string<UniChar> encoded;
           Transcoder::encode(greeting, encoded);
           const UniChar expected[] = { 'H', 'e', 'l', 'l', 'o', ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
-          CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(expected), encoded);
+          LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(expected), encoded);
         }
 
         void uencode3() {
@@ -279,9 +277,9 @@ public:
           std::basic_string<UniChar> encoded;
           Transcoder::encode(greeting, encoded);
           std::basic_string<UniChar> manyAs(BUFSIZE - 3, 'A');
-          CPPUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
           const UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
-          CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(hello), encoded.substr(BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(hello), encoded.substr(BUFSIZE - 3));
         }
 
         void uencode5() {
@@ -301,11 +299,11 @@ public:
           //
           //   should be lossless
           //
-          CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), encoded);
+          LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), encoded);
         }
 #endif
 
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TranscoderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(TranscoderTestCase);

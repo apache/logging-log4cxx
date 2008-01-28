@@ -14,11 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include "../util/compare.h"
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <apr_time.h>
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -44,13 +42,13 @@
  * @author Curt Arnold
  *
  */
- class ObsoleteRollingFileAppenderTest : public CppUnit::TestFixture  {
-   CPPUNIT_TEST_SUITE(ObsoleteRollingFileAppenderTest);
-           CPPUNIT_TEST(test1);
-           CPPUNIT_TEST(test2);
-           CPPUNIT_TEST(testIsOptionHandler);
-           CPPUNIT_TEST(testClassForName);
-   CPPUNIT_TEST_SUITE_END();
+ LOGUNIT_CLASS(ObsoleteRollingFileAppenderTest)  {
+   LOGUNIT_TEST_SUITE(ObsoleteRollingFileAppenderTest);
+           LOGUNIT_TEST(test1);
+           LOGUNIT_TEST(test2);
+           LOGUNIT_TEST(testIsOptionHandler);
+           LOGUNIT_TEST(testClassForName);
+   LOGUNIT_TEST_SUITE_END();
 
 
  public:
@@ -83,8 +81,8 @@
     }
 
     Pool p;
-    CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test1.log").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test1.log.1").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test1.log").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test1.log.1").exists(p));
   }
 
   /**
@@ -122,8 +120,8 @@
       }
     }
 
-    CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log").exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log.1").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log").exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File("output/obsoleteRFA-test2.log.1").exists(p));
   }
 
   /**
@@ -132,15 +130,15 @@
    */
   void testIsOptionHandler() {
       RollingFileAppenderPtr rfa(new RollingFileAppender());
-      CPPUNIT_ASSERT_EQUAL(true, rfa->instanceof(log4cxx::spi::OptionHandler::getStaticClass()));
+      LOGUNIT_ASSERT_EQUAL(true, rfa->instanceof(log4cxx::spi::OptionHandler::getStaticClass()));
   }
 
   void testClassForName() {
       LogString className(LOG4CXX_STR("org.apache.log4j.RollingFileAppender"));
       const Class& myclass = Class::forName(className);
-      CPPUNIT_ASSERT_EQUAL(className, LogString(myclass.getName()));
+      LOGUNIT_ASSERT_EQUAL(className, LogString(myclass.getName()));
   }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ObsoleteRollingFileAppenderTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(ObsoleteRollingFileAppenderTest);
 

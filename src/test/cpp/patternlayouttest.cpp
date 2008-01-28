@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/mdc.h>
@@ -40,6 +37,7 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/pool.h>
 #include "testchar.h"
+#include "logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringhelper.h>
 
@@ -62,24 +60,24 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-class PatternLayoutTest : public CppUnit::TestFixture
+LOGUNIT_CLASS(PatternLayoutTest)
 {
-        CPPUNIT_TEST_SUITE(PatternLayoutTest);
-                CPPUNIT_TEST(test1);
-                CPPUNIT_TEST(test2);
-                CPPUNIT_TEST(test3);
-                CPPUNIT_TEST(test4);
-                CPPUNIT_TEST(test5);
-                CPPUNIT_TEST(test6);
-                CPPUNIT_TEST(test7);
-                CPPUNIT_TEST(test8);
-                CPPUNIT_TEST(test9);
-                CPPUNIT_TEST(test10);
-                CPPUNIT_TEST(test11);
-                CPPUNIT_TEST(test12);
-                CPPUNIT_TEST(testMDC1);
-                CPPUNIT_TEST(testMDC2);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(PatternLayoutTest);
+                LOGUNIT_TEST(test1);
+                LOGUNIT_TEST(test2);
+                LOGUNIT_TEST(test3);
+                LOGUNIT_TEST(test4);
+                LOGUNIT_TEST(test5);
+                LOGUNIT_TEST(test6);
+                LOGUNIT_TEST(test7);
+                LOGUNIT_TEST(test8);
+                LOGUNIT_TEST(test9);
+                LOGUNIT_TEST(test10);
+                LOGUNIT_TEST(test11);
+                LOGUNIT_TEST(test12);
+                LOGUNIT_TEST(testMDC1);
+                LOGUNIT_TEST(testMDC2);
+        LOGUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
         LoggerPtr logger;
@@ -102,7 +100,7 @@ public:
         {
                 PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout1.properties"));
                 common();
-                CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.1")));
+                LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.1")));
         }
 
         void test2()
@@ -130,7 +128,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.2")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.2")));
         }
 
         void test3()
@@ -158,7 +156,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.3")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.3")));
         }
 
         // Output format:
@@ -188,7 +186,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.4")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.4")));
         }
 
         void test5()
@@ -216,7 +214,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.5")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.5")));
         }
 
         void test6()
@@ -244,7 +242,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.6")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.6")));
         }
 
         void test7()
@@ -272,7 +270,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.7")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.7")));
         }
 
         void test8()
@@ -303,7 +301,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.8")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.8")));
         }
 
         void test9()
@@ -329,7 +327,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.9")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.9")));
         }
 
         void test10()
@@ -361,7 +359,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.10")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.10")));
         }
 
         void test11()
@@ -387,7 +385,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.11")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.11")));
         }
 
         void test12()
@@ -417,7 +415,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.12")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.12")));
         }
 
         void testMDC1()
@@ -428,7 +426,7 @@ public:
                 logger->debug(LOG4CXX_TEST_STR("Hello World"));
                 MDC::clear();
 
-                CPPUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.mdc.1")));
+                LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.mdc.1")));
         }
 
         void testMDC2()
@@ -504,7 +502,7 @@ public:
                 layout->activateOptions(pool);
                 root->debug(LOG4CXX_TEST_STR("finished mdc pattern test"));
 
-                CPPUNIT_ASSERT(Compare::compare(OUTPUT_FILE, WITNESS_FILE));
+                LOGUNIT_ASSERT(Compare::compare(OUTPUT_FILE, WITNESS_FILE));
         }
 
        std::string createMessage(Pool& pool, int i) {
@@ -546,4 +544,4 @@ const LogString PatternLayoutTest::TEMP(LOG4CXX_STR("output/temp"));
 const LogString PatternLayoutTest::FILTERED(LOG4CXX_STR("output/filtered"));
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(PatternLayoutTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(PatternLayoutTest);

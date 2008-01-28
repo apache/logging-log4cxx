@@ -14,10 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
+#include "logunit.h"
 #include <log4cxx/logger.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/ttcclayout.h>
@@ -53,12 +50,12 @@ using namespace log4cxx::helpers;
         "Messages should bear numbers 0 through 23\\."
 
 
-class MinimumTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(MinimumTestCase)
 {
-        CPPUNIT_TEST_SUITE(MinimumTestCase);
-                CPPUNIT_TEST(simple);
-                CPPUNIT_TEST(ttcc);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(MinimumTestCase);
+                LOGUNIT_TEST(simple);
+                LOGUNIT_TEST(ttcc);
+        LOGUNIT_TEST_SUITE_END();
 
 public:
         void setUp()
@@ -79,7 +76,7 @@ public:
                 root->addAppender(appender);
                 common();
 
-                CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/simple"), LOG4CXX_FILE("witness/simple")));
+                LOGUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/simple"), LOG4CXX_FILE("witness/simple")));
         }
 
         void ttcc()
@@ -112,7 +109,7 @@ public:
                 }
 
                 const File witness("witness/ttcc");
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, witness));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, witness));
         }
 
         std::string createMessage(int i, Pool& pool) {
@@ -248,4 +245,4 @@ private:
 const File MinimumTestCase::FILTERED("output/filtered");
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(MinimumTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(MinimumTestCase);

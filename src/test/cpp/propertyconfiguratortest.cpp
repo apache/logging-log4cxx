@@ -15,23 +15,23 @@
  * limitations under the License.
  */
 
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/logmanager.h>
 #include "vectorappender.h"
+#include "logunit.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-class PropertyConfiguratorTest : public CppUnit::TestFixture
+LOGUNIT_CLASS(PropertyConfiguratorTest)
 {
-        CPPUNIT_TEST_SUITE(PropertyConfiguratorTest);
-                CPPUNIT_TEST(testInherited);
-                CPPUNIT_TEST(testNull);
-                CPPUNIT_TEST(testAppenderThreshold);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(PropertyConfiguratorTest);
+                LOGUNIT_TEST(testInherited);
+                LOGUNIT_TEST(testNull);
+                LOGUNIT_TEST(testAppenderThreshold);
+        LOGUNIT_TEST_SUITE_END();
 
 public:
     void testInherited() {
@@ -42,10 +42,10 @@ public:
         props.put(LOG4CXX_STR("log4j.appender.VECTOR2"), LOG4CXX_STR("org.apache.log4j.VectorAppender"));
         PropertyConfigurator::configure(props);
         LoggerPtr logger = Logger::getLogger("org.apache.log4j.PropertyConfiguratorTest");
-        CPPUNIT_ASSERT_EQUAL((int) Level::DEBUG_INT,
+        LOGUNIT_ASSERT_EQUAL((int) Level::DEBUG_INT,
                 logger->getEffectiveLevel()->toInt());
         Logger::getRootLogger()->setLevel(Level::getError());
-        CPPUNIT_ASSERT_EQUAL((int) Level::ERROR_INT,
+        LOGUNIT_ASSERT_EQUAL((int) Level::ERROR_INT,
                 logger->getEffectiveLevel()->toInt());
         LogManager::resetConfiguration();
     }
@@ -58,10 +58,10 @@ public:
         props.put(LOG4CXX_STR("log4j.appender.VECTOR2"), LOG4CXX_STR("org.apache.log4j.VectorAppender"));
         PropertyConfigurator::configure(props);
         LoggerPtr logger = Logger::getLogger("org.apache.log4j.PropertyConfiguratorTest");
-        CPPUNIT_ASSERT_EQUAL((int) Level::DEBUG_INT,
+        LOGUNIT_ASSERT_EQUAL((int) Level::DEBUG_INT,
                 logger->getEffectiveLevel()->toInt());
         Logger::getRootLogger()->setLevel(Level::getError());
-        CPPUNIT_ASSERT_EQUAL((int) Level::ERROR_INT,
+        LOGUNIT_ASSERT_EQUAL((int) Level::ERROR_INT,
                 logger->getEffectiveLevel()->toInt());
         LogManager::resetConfiguration();
     }
@@ -74,15 +74,15 @@ public:
         PropertyConfigurator::configure(props);
         LoggerPtr root(Logger::getRootLogger());
         VectorAppenderPtr appender(root->getAppender(LOG4CXX_STR("VECTOR1")));
-        CPPUNIT_ASSERT_EQUAL((int) Level::WARN_INT, appender->getThreshold()->toInt());
+        LOGUNIT_ASSERT_EQUAL((int) Level::WARN_INT, appender->getThreshold()->toInt());
         LOG4CXX_INFO(root, "Info message");
         LOG4CXX_WARN(root, "Warn message");
         LOG4CXX_WARN(root, "Error message");
-        CPPUNIT_ASSERT_EQUAL((size_t) 2, appender->vector.size());        
+        LOGUNIT_ASSERT_EQUAL((size_t) 2, appender->vector.size());        
         LogManager::resetConfiguration();
     }
 
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(PropertyConfiguratorTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(PropertyConfiguratorTest);

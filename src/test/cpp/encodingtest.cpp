@@ -16,11 +16,8 @@
  */
 
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
-
+#include "logunit.h"
 //
 //  If there is no support for wchar_t logging then
 //     there is not a consistent way to get the test characters logged
@@ -45,15 +42,15 @@ using namespace log4cxx::helpers;
  * @author Curt Arnold
  * @since 0.9.8
  */
-class EncodingTest : public CppUnit::TestFixture {
-  CPPUNIT_TEST_SUITE(EncodingTest);
-          CPPUNIT_TEST(testASCII);
-          CPPUNIT_TEST(testLatin1);
-          CPPUNIT_TEST(testUtf8);
-          CPPUNIT_TEST(testUtf16);
-          CPPUNIT_TEST(testUtf16LE);
-          CPPUNIT_TEST(testUtf16BE);
-  CPPUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(EncodingTest) {
+  LOGUNIT_TEST_SUITE(EncodingTest);
+          LOGUNIT_TEST(testASCII);
+          LOGUNIT_TEST(testLatin1);
+          LOGUNIT_TEST(testUtf8);
+          LOGUNIT_TEST(testUtf16);
+          LOGUNIT_TEST(testUtf16LE);
+          LOGUNIT_TEST(testUtf16BE);
+  LOGUNIT_TEST_SUITE_END();
 public:
     /**
      * Resets configuration after each test.
@@ -163,7 +160,7 @@ public:
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(EncodingTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(EncodingTest);
 
 #endif
 

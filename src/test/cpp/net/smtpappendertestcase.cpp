@@ -20,8 +20,6 @@
 
 #if LOG4CXX_HAVE_SMTP
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/net/smtpappender.h>
 #include "../appenderskeletontestcase.h"
 #include <log4cxx/xml/domconfigurator.h>
@@ -69,15 +67,15 @@ IMPLEMENT_LOG4CXX_OBJECT(MockTriggeringEventEvaluator)
  */
 class SMTPAppenderTestCase : public AppenderSkeletonTestCase
 {
-   CPPUNIT_TEST_SUITE(SMTPAppenderTestCase);
+   LOGUNIT_TEST_SUITE(SMTPAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
-                CPPUNIT_TEST(testDefaultThreshold);
-                CPPUNIT_TEST(testSetOptionThreshold);
-                CPPUNIT_TEST(testTrigger);
-                CPPUNIT_TEST(testInvalid);
-   CPPUNIT_TEST_SUITE_END();
+                LOGUNIT_TEST(testDefaultThreshold);
+                LOGUNIT_TEST(testSetOptionThreshold);
+                LOGUNIT_TEST(testTrigger);
+                LOGUNIT_TEST(testInvalid);
+   LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -100,7 +98,7 @@ public:
       DOMConfigurator::configure("input/xml/smtpAppender1.xml");
       SMTPAppenderPtr appender(Logger::getRootLogger()->getAppender(LOG4CXX_STR("A1")));
       TriggeringEventEvaluatorPtr evaluator(appender->getEvaluator());
-      CPPUNIT_ASSERT_EQUAL(true, evaluator->instanceof(MockTriggeringEventEvaluator::getStaticClass()));
+      LOGUNIT_ASSERT_EQUAL(true, evaluator->instanceof(MockTriggeringEventEvaluator::getStaticClass()));
   }
   
   void testInvalid() {
@@ -119,6 +117,6 @@ public:
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(SMTPAppenderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(SMTPAppenderTestCase);
 
 #endif

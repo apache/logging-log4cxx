@@ -18,10 +18,10 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/spi/loggingevent.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <log4cxx/helpers/date.h>
 
 
@@ -35,12 +35,12 @@ using namespace log4cxx::spi;
    Unit test {@link RelativeTimeDateFormat} class.
    @author Curt Arnold
    @since 1.3.0 */
-class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
-     CPPUNIT_TEST_SUITE(RelativeTimeDateFormatTestCase);
-             CPPUNIT_TEST(test1);
-             CPPUNIT_TEST(test2);
-             CPPUNIT_TEST(test3);
-     CPPUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(RelativeTimeDateFormatTestCase) {
+     LOGUNIT_TEST_SUITE(RelativeTimeDateFormatTestCase);
+             LOGUNIT_TEST(test1);
+             LOGUNIT_TEST(test2);
+             LOGUNIT_TEST(test3);
+     LOGUNIT_TEST_SUITE_END();
 
 
   public:
@@ -63,8 +63,8 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
     log4cxx_time_t elapsed = log4cxx::helpers::StringHelper::toInt64(actual);
 
 
-    CPPUNIT_ASSERT(preStartTime + elapsed*1000 > jan2 - 2000);
-    CPPUNIT_ASSERT(preStartTime + elapsed*1000 < jan2 + 2000);
+    LOGUNIT_ASSERT(preStartTime + elapsed*1000 > jan2 - 2000);
+    LOGUNIT_ASSERT(preStartTime + elapsed*1000 < jan2 + 2000);
   }
 
 
@@ -76,7 +76,7 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
       Pool p;
       RelativeTimeDateFormat formatter;
       formatter.numberFormat(numb, 87, p);
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
     }
 
 
@@ -90,5 +90,5 @@ class RelativeTimeDateFormatTestCase  : public CppUnit::TestFixture {
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RelativeTimeDateFormatTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(RelativeTimeDateFormatTestCase);
 

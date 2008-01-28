@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include "../util/compare.h"
+#include "../logunit.h"
 #include "../insertwide.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx/xml/domconfigurator.h>
@@ -44,11 +42,11 @@ using namespace log4cxx::helpers;
  * @since 1.3
  *
  */
-class FilterBasedRollingTest  : public CppUnit::TestFixture {
-  CPPUNIT_TEST_SUITE(FilterBasedRollingTest);
-          CPPUNIT_TEST(test1);
-          CPPUNIT_TEST(test2);
-  CPPUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(FilterBasedRollingTest) {
+  LOGUNIT_TEST_SUITE(FilterBasedRollingTest);
+          LOGUNIT_TEST(test1);
+          LOGUNIT_TEST(test2);
+  LOGUNIT_TEST_SUITE_END();
 
 public:
   void tearDown() {
@@ -133,14 +131,14 @@ private:
     //
     //  test was constructed to mimic SizeBasedRollingTest.test2
     //
-    CPPUNIT_ASSERT_EQUAL(true,
+    LOGUNIT_ASSERT_EQUAL(true,
       Compare::compare(baseName + LOG4CXX_STR(".log"), LogString(LOG4CXX_STR("witness/rolling/sbr-test2.log"))));
-    CPPUNIT_ASSERT_EQUAL(true,
+    LOGUNIT_ASSERT_EQUAL(true,
       Compare::compare(baseName + LOG4CXX_STR(".0"), LogString(LOG4CXX_STR("witness/rolling/sbr-test2.0"))));
-    CPPUNIT_ASSERT_EQUAL(true,
+    LOGUNIT_ASSERT_EQUAL(true,
       Compare::compare(baseName + LOG4CXX_STR(".1"), LogString(LOG4CXX_STR("witness/rolling/sbr-test2.1"))));
   }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(FilterBasedRollingTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(FilterBasedRollingTest);
 

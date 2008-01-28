@@ -18,7 +18,7 @@
 #define __STDC_CONSTANT_MACROS
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/datetimedateformat.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "../logunit.h"
 #include <log4cxx/helpers/pool.h>
 #include "../insertwide.h"
 #include <apr.h>
@@ -57,20 +57,20 @@ std::locale* ptr = NULL;
    @author Curt Arnold
    @since 0.9.8
 */
-class DateTimeDateFormatTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(DateTimeDateFormatTestCase)
 {
-  CPPUNIT_TEST_SUITE( DateTimeDateFormatTestCase );
-  CPPUNIT_TEST( test1 );
-  CPPUNIT_TEST( test2 );
-  CPPUNIT_TEST( test3 );
-  CPPUNIT_TEST( test4 );
-  CPPUNIT_TEST( test5 );
-  CPPUNIT_TEST( test6 );
+  LOGUNIT_TEST_SUITE( DateTimeDateFormatTestCase );
+  LOGUNIT_TEST( test1 );
+  LOGUNIT_TEST( test2 );
+  LOGUNIT_TEST( test3 );
+  LOGUNIT_TEST( test4 );
+  LOGUNIT_TEST( test5 );
+  LOGUNIT_TEST( test6 );
 #if LOG4CXX_HAS_STD_LOCALE
-  CPPUNIT_TEST( test7 );
-  CPPUNIT_TEST( test8 );
+  LOGUNIT_TEST( test7 );
+  LOGUNIT_TEST( test8 );
 #endif
-  CPPUNIT_TEST_SUITE_END();
+  LOGUNIT_TEST_SUITE_END();
 
 
 
@@ -94,7 +94,7 @@ private:
          LogString actual;
          Pool p;
          formatter.format(actual, date, p);
-         CPPUNIT_ASSERT_EQUAL( expected, actual );
+         LOGUNIT_ASSERT_EQUAL( expected, actual );
   }
 
   /** Convert 02 Jan 2004 00:00:00 GMT for GMT. */
@@ -205,7 +205,7 @@ private:
         struct tm avr11tm = { 0, 0, 0, 11, 03, 104 };
         LogString expected(formatDate(localeFR, avr11tm, LOG4CXX_STR("%b")));
 
-        CPPUNIT_ASSERT_EQUAL(expected, formatted);
+        LOGUNIT_ASSERT_EQUAL(expected, formatted);
     }
   }
 
@@ -225,12 +225,12 @@ private:
         struct tm apr11tm = { 0, 0, 0, 11, 03, 104 };
         LogString expected(formatDate(localeUS, apr11tm, LOG4CXX_STR("%b")));
 
-        CPPUNIT_ASSERT_EQUAL(expected, formatted);
+        LOGUNIT_ASSERT_EQUAL(expected, formatted);
     }
   }
 #endif
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(DateTimeDateFormatTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(DateTimeDateFormatTestCase);
 

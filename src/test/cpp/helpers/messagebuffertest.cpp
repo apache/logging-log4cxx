@@ -15,11 +15,10 @@
  * limitations under the License.
  */
  
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/messagebuffer.h>
 #include <iomanip>
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <log4cxx/logstring.h>
 
 #if LOG4CXX_CFSTRING_API
@@ -32,29 +31,29 @@ using namespace log4cxx::helpers;
 /**
  *  Test MessageBuffer.
  */
-class MessageBufferTest : public CppUnit::TestFixture
+LOGUNIT_CLASS(MessageBufferTest)
 {
-   CPPUNIT_TEST_SUITE(MessageBufferTest);
-      CPPUNIT_TEST(testInsertChar);
-      CPPUNIT_TEST(testInsertConstStr);
-      CPPUNIT_TEST(testInsertStr);
-      CPPUNIT_TEST(testInsertString);
-      CPPUNIT_TEST(testInsertNull);
-      CPPUNIT_TEST(testInsertInt);
-      CPPUNIT_TEST(testInsertManipulator);
+   LOGUNIT_TEST_SUITE(MessageBufferTest);
+      LOGUNIT_TEST(testInsertChar);
+      LOGUNIT_TEST(testInsertConstStr);
+      LOGUNIT_TEST(testInsertStr);
+      LOGUNIT_TEST(testInsertString);
+      LOGUNIT_TEST(testInsertNull);
+      LOGUNIT_TEST(testInsertInt);
+      LOGUNIT_TEST(testInsertManipulator);
 #if LOG4CXX_WCHAR_T_API
-      CPPUNIT_TEST(testInsertConstWStr);
-      CPPUNIT_TEST(testInsertWString);
-      CPPUNIT_TEST(testInsertWStr);
+      LOGUNIT_TEST(testInsertConstWStr);
+      LOGUNIT_TEST(testInsertWString);
+      LOGUNIT_TEST(testInsertWStr);
 #endif
 #if LOG4CXX_UNICHAR_API
-      CPPUNIT_TEST(testInsertConstUStr);
-      CPPUNIT_TEST(testInsertUString);
+      LOGUNIT_TEST(testInsertConstUStr);
+      LOGUNIT_TEST(testInsertUString);
 #endif
 #if LOG4CXX_CFSTRING_API
-      CPPUNIT_TEST(testInsertCFString);
+      LOGUNIT_TEST(testInsertCFString);
 #endif
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -62,16 +61,16 @@ public:
         MessageBuffer buf;
         std::string greeting("Hello, World");
         CharMessageBuffer& retval = buf << "Hello, Worl" << 'd';
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertConstStr() {
         MessageBuffer buf;
         std::string greeting("Hello, World");
         CharMessageBuffer& retval = buf << "Hello" << ", World";
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertStr() {
@@ -84,40 +83,40 @@ public:
         CharMessageBuffer& retval = buf << part1 << part2;
 	free(part1);
 	free(part2);
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertString() {
         MessageBuffer buf;
         std::string greeting("Hello, World");
         CharMessageBuffer& retval = buf << std::string("Hello") << std::string(", World");
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
     
     void testInsertNull() {
         MessageBuffer buf;
         std::string greeting("Hello, null");
         CharMessageBuffer& retval = buf << "Hello, " << (const char*) 0;
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
     
     void testInsertInt() {
         MessageBuffer buf;
         std::string greeting("Hello, 5");
         std::ostream& retval = buf << "Hello, " << 5;
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval));
-        CPPUNIT_ASSERT_EQUAL(true, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval));
+        LOGUNIT_ASSERT_EQUAL(true, buf.hasStream());
     }
         
     void testInsertManipulator() {
         MessageBuffer buf;
         std::string greeting("pi=3.142");
         std::ostream& retval = buf << "pi=" << std::setprecision(4) << 3.1415926;
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval));
-        CPPUNIT_ASSERT_EQUAL(true, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval));
+        LOGUNIT_ASSERT_EQUAL(true, buf.hasStream());
     }
 
 #if LOG4CXX_WCHAR_T_API
@@ -125,16 +124,16 @@ public:
         MessageBuffer buf;
         std::wstring greeting(L"Hello, World");
         WideMessageBuffer& retval = buf << L"Hello" << L", World";
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertWString() {
         MessageBuffer buf;
         std::wstring greeting(L"Hello, World");
         WideMessageBuffer& retval = buf << std::wstring(L"Hello") << std::wstring(L", World");
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertWStr() {
@@ -147,8 +146,8 @@ public:
         WideMessageBuffer& retval = buf << part1 << part2;
 	    free(part1);
 	    free(part2);
-        CPPUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(greeting, buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 #endif
 
@@ -160,8 +159,8 @@ public:
         const UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', 
                                   ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
         UniCharMessageBuffer& retval = buf << hello << world;
-        CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertUString() {
@@ -172,8 +171,8 @@ public:
                                   ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
         UniCharMessageBuffer& retval = buf << std::basic_string<UniChar>(hello) 
                                            << std::basic_string<UniChar>(world);
-        CPPUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
 #endif
@@ -185,13 +184,13 @@ public:
                                   ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
         UniCharMessageBuffer& retval = buf << CFSTR("Hello") 
                                            << CFSTR(", World");
-        CPPUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval)); 
-        CPPUNIT_ASSERT_EQUAL(false, buf.hasStream());
+        LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
 #endif
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(MessageBufferTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(MessageBufferTest);
 

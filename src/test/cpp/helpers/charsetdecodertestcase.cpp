@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/helpers/charsetdecoder.h>
+#include "../logunit.h"
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
 
@@ -30,13 +28,13 @@ using namespace log4cxx::helpers;
 
 
 
-class CharsetDecoderTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(CharsetDecoderTestCase)
 {
-        CPPUNIT_TEST_SUITE(CharsetDecoderTestCase);
-                CPPUNIT_TEST(decode1);
-                CPPUNIT_TEST(decode2);
-                CPPUNIT_TEST(decode8);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(CharsetDecoderTestCase);
+                LOGUNIT_TEST(decode1);
+                LOGUNIT_TEST(decode2);
+                LOGUNIT_TEST(decode8);
+        LOGUNIT_TEST_SUITE_END();
 
         enum { BUFSIZE = 256 };
 
@@ -50,13 +48,13 @@ public:
           CharsetDecoderPtr dec(CharsetDecoder::getDefaultDecoder());
           LogString greeting;
           log4cxx_status_t stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
           stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-          CPPUNIT_ASSERT_EQUAL((size_t) 12, src.position());
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL((size_t) 12, src.position());
 
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Hello, World"), greeting);
+          LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("Hello, World"), greeting);
         }
 
         void decode2() {
@@ -74,16 +72,16 @@ public:
 
           LogString greeting;
           log4cxx_status_t stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-          CPPUNIT_ASSERT_EQUAL((size_t) 0, src.remaining());
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL((size_t) 0, src.remaining());
 
 
           stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
           LogString manyAs(BUFSIZE - 3, LOG4CXX_STR('A'));
-          CPPUNIT_ASSERT_EQUAL(manyAs, greeting.substr(0, BUFSIZE - 3));
-          CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Hello")), greeting.substr(BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(manyAs, greeting.substr(0, BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Hello")), greeting.substr(BUFSIZE - 3));
         }
 
 
@@ -95,18 +93,18 @@ public:
           CharsetDecoderPtr dec(CharsetDecoder::getDefaultDecoder());
           LogString greeting;
           log4cxx_status_t stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
           stat = dec->decode(src, greeting);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-          CPPUNIT_ASSERT_EQUAL((size_t) 12, src.position());
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL((size_t) 12, src.position());
 
           const logchar expected[] = { 0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x2C, 0x00, 0x57, 0x6F, 0x72, 0x6C, 0x64 };
-          CPPUNIT_ASSERT_EQUAL(LogString(expected, 12), greeting);
+          LOGUNIT_ASSERT_EQUAL(LogString(expected, 12), greeting);
         }
 
 
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CharsetDecoderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(CharsetDecoderTestCase);

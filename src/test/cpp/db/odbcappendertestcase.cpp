@@ -15,10 +15,9 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/db/odbcappender.h>
 #include "../appenderskeletontestcase.h"
+#include "../logunit.h"
 
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
@@ -33,14 +32,14 @@ using namespace log4cxx::helpers;
  */
 class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 {
-   CPPUNIT_TEST_SUITE(ODBCAppenderTestCase);
+   LOGUNIT_TEST_SUITE(ODBCAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
-                CPPUNIT_TEST(testDefaultThreshold);
-                CPPUNIT_TEST(testSetOptionThreshold);
+                LOGUNIT_TEST(testDefaultThreshold);
+                LOGUNIT_TEST(testSetOptionThreshold);
 
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -50,6 +49,6 @@ public:
         }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ODBCAppenderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(ODBCAppenderTestCase);
 
 #endif

@@ -15,20 +15,18 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
 #include "../insertwide.h"
+#include "../logunit.h"
 
 using namespace log4cxx;
 
-class TestCase3 : public CppUnit::TestFixture
+LOGUNIT_CLASS(TestCase3)
 {
-   CPPUNIT_TEST_SUITE(TestCase3);
-      CPPUNIT_TEST(testProperties);
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE(TestCase3);
+      LOGUNIT_TEST(testProperties);
+   LOGUNIT_TEST_SUITE_END();
 
 public:
    void setUp()
@@ -45,15 +43,13 @@ public:
       LoggerPtr root = Logger::getRootLogger();
      LOG4CXX_DEBUG(root, "Hello, world");
       bool rootIsConfigured = !root->getAllAppenders().empty();
-      CPPUNIT_ASSERT(rootIsConfigured);
+      LOGUNIT_ASSERT(rootIsConfigured);
 
       AppenderList list = root->getAllAppenders();
       AppenderPtr appender = list.front();
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D3"), appender->getName());
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D3"), appender->getName());
    }
 
 };
 
-CPPUNIT_NS::Test* createTestCase3() {
-   return TestCase3::suite();
-}
+LOGUNIT_TEST_SUITE_REGISTRATION_NO_AUTO_RUN(TestCase3)

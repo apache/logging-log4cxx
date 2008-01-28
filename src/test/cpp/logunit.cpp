@@ -15,33 +15,5 @@
  * limitations under the License.
  */
 
-#include <log4cxx/consoleappender.h>
 #include "logunit.h"
-#include "writerappendertestcase.h"
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-
-/**
-   Unit tests of log4cxx::nt::NTEventLogAppender
- */
-class ConsoleAppenderTestCase : public WriterAppenderTestCase
-{
-   LOGUNIT_TEST_SUITE(ConsoleAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
-
-   LOGUNIT_TEST_SUITE_END();
-
-
-public:
-
-        WriterAppender* createWriterAppender() const {
-          return new log4cxx::ConsoleAppender();
-        }
-};
-
-LOGUNIT_TEST_SUITE_REGISTRATION(ConsoleAppenderTestCase);

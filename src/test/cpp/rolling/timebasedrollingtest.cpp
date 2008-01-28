@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/consoleappender.h>
@@ -27,6 +25,7 @@
 #include <iostream>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../util/compare.h"
+#include "../logunit.h"
 #include <apr_strings.h>
 
 
@@ -62,16 +61,16 @@ using namespace log4cxx::rolling;
  * </pre>
  * @author Ceki G&uuml;lc&uuml;
  */
-class TimeBasedRollingTest  : public CppUnit::TestFixture {
+LOGUNIT_CLASS(TimeBasedRollingTest) {
 
-        CPPUNIT_TEST_SUITE(TimeBasedRollingTest);
-           CPPUNIT_TEST(test1);
-           CPPUNIT_TEST(test2);
-           CPPUNIT_TEST(test3);
-           CPPUNIT_TEST(test4);
-           CPPUNIT_TEST(test5);
-           CPPUNIT_TEST(test6);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(TimeBasedRollingTest);
+           LOGUNIT_TEST(test1);
+           LOGUNIT_TEST(test2);
+           LOGUNIT_TEST(test3);
+           LOGUNIT_TEST(test4);
+           LOGUNIT_TEST(test5);
+           LOGUNIT_TEST(test6);
+        LOGUNIT_TEST_SUITE_END();
 
     static LoggerPtr logger;
 
@@ -131,7 +130,7 @@ public:
     for (int i = 0; i < 4; i++) {
       LogString witness(LOG4CXX_STR("witness/rolling/tbr-test1."));
       StringHelper::toString(i, pool, witness);
-      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
+      LOGUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
     }
   }
 
@@ -197,7 +196,7 @@ public:
     for (int i = 0; i < 4; i++) {
       LogString witness(LOG4CXX_STR("witness/rolling/tbr-test2."));
       StringHelper::toString(i, pool, witness);
-      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
+      LOGUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
     }
   }
 
@@ -242,11 +241,11 @@ public:
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
-    CPPUNIT_ASSERT_EQUAL(true, File(filenames[0]).exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File(filenames[1]).exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File(filenames[2]).exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File(filenames[0]).exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File(filenames[1]).exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File(filenames[2]).exists(p));
 
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test3.3"))));
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test3.3"))));
   }
 
   /**
@@ -316,7 +315,7 @@ public:
     for (int i = 0; i < 4; i++) {
       LogString witness(LOG4CXX_STR("witness/rolling/tbr-test4."));
       StringHelper::toString(i, pool, witness);
-      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
+      LOGUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
     }
   }
 
@@ -365,7 +364,7 @@ public:
     for (int i = 0; i < 4; i++) {
       LogString witness(LOG4CXX_STR("witness/rolling/tbr-test5."));
       StringHelper::toString(i, pool, witness);
-      CPPUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
+      LOGUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
     }
   }
 
@@ -411,11 +410,11 @@ public:
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
-    CPPUNIT_ASSERT_EQUAL(true, File(filenames[0]).exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File(filenames[1]).exists(p));
-    CPPUNIT_ASSERT_EQUAL(true, File(filenames[2]).exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File(filenames[0]).exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File(filenames[1]).exists(p));
+    LOGUNIT_ASSERT_EQUAL(true, File(filenames[2]).exists(p));
 
-    CPPUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test6.3"))));
+    LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test6.3"))));
 
   }
 
@@ -440,4 +439,4 @@ public:
 
 LoggerPtr TimeBasedRollingTest::logger(Logger::getLogger("org.apache.log4j.TimeBasedRollingTest"));
 
-//CPPUNIT_TEST_SUITE_REGISTRATION(TimeBasedRollingTest);
+//LOGUNIT_TEST_SUITE_REGISTRATION(TimeBasedRollingTest);

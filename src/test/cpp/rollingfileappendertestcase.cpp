@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/rolling/rollingfileappender.h>
 #include "fileappendertestcase.h"
 
@@ -28,14 +26,14 @@ using namespace log4cxx::helpers;
  */
 class RollingFileAppenderTestCase : public FileAppenderAbstractTestCase
 {
-   CPPUNIT_TEST_SUITE(RollingFileAppenderTestCase);
+   LOGUNIT_TEST_SUITE(RollingFileAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
-                CPPUNIT_TEST(testDefaultThreshold);
-                CPPUNIT_TEST(testSetOptionThreshold);
+                LOGUNIT_TEST(testDefaultThreshold);
+                LOGUNIT_TEST(testSetOptionThreshold);
 
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -45,4 +43,4 @@ public:
         }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(RollingFileAppenderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(RollingFileAppenderTestCase);

@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/patternlayout.h>
+#include "logunit.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -29,12 +27,12 @@ using namespace log4cxx::helpers;
  *
  * FileAppender tests.
  */
-class FileAppenderTest : public CppUnit::TestFixture {
-  CPPUNIT_TEST_SUITE(FileAppenderTest);
-          CPPUNIT_TEST(testDirectoryCreation);
-          CPPUNIT_TEST(testgetSetThreshold);
-          CPPUNIT_TEST(testIsAsSevereAsThreshold);
-  CPPUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(FileAppenderTest) {
+  LOGUNIT_TEST_SUITE(FileAppenderTest);
+          LOGUNIT_TEST(testDirectoryCreation);
+          LOGUNIT_TEST(testgetSetThreshold);
+          LOGUNIT_TEST(testIsAsSevereAsThreshold);
+  LOGUNIT_TEST_SUITE_END();
 public:
   /**
    * Tests that any necessary directories are attempted to
@@ -54,7 +52,7 @@ public:
       wa->setLayout(new PatternLayout(LOG4CXX_STR("%m%n")));
       wa->activateOptions(p);
 
-      CPPUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists(p));
+      LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists(p));
   }
 
   /**
@@ -66,9 +64,9 @@ public:
     //
     //  different from log4j where threshold is null.
     //
-    CPPUNIT_ASSERT_EQUAL(Level::getAll(), appender->getThreshold());
+    LOGUNIT_ASSERT_EQUAL(Level::getAll(), appender->getThreshold());
     appender->setThreshold(debug);
-    CPPUNIT_ASSERT_EQUAL(debug, appender->getThreshold());
+    LOGUNIT_ASSERT_EQUAL(debug, appender->getThreshold());
   }
 
   /**
@@ -77,9 +75,9 @@ public:
   void testIsAsSevereAsThreshold() {
     FileAppenderPtr appender = new FileAppender();
     LevelPtr debug = Level::getDebug();
-    CPPUNIT_ASSERT(appender->isAsSevereAsThreshold(debug));
+    LOGUNIT_ASSERT(appender->isAsSevereAsThreshold(debug));
   }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(FileAppenderTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(FileAppenderTest);
 

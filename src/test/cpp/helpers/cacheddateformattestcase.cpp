@@ -16,9 +16,9 @@
  */
 
 #include <log4cxx/helpers/cacheddateformat.h>
+#include "../logunit.h"
 #include <log4cxx/helpers/absolutetimedateformat.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/pool.h>
 #include <locale>
 #include "../insertwide.h"
@@ -51,33 +51,33 @@ using namespace log4cxx::pattern;
    Unit test {@link CachedDateFormat}.
    @author Curt Arnold
    @since 0.9.8 */
-   class CachedDateFormatTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(CachedDateFormatTestCase)
    {
-     CPPUNIT_TEST_SUITE( CachedDateFormatTestCase );
-     CPPUNIT_TEST( test1 );
-     CPPUNIT_TEST( test2 );
-     CPPUNIT_TEST( test3 );
-     CPPUNIT_TEST( test4 );
+     LOGUNIT_TEST_SUITE( CachedDateFormatTestCase );
+     LOGUNIT_TEST( test1 );
+     LOGUNIT_TEST( test2 );
+     LOGUNIT_TEST( test3 );
+     LOGUNIT_TEST( test4 );
 #if LOG4CXX_HAS_STD_LOCALE
-     CPPUNIT_TEST( test5 );
+     LOGUNIT_TEST( test5 );
 #endif
-     CPPUNIT_TEST( test6 );
-     CPPUNIT_TEST( test8 );
+     LOGUNIT_TEST( test6 );
+     LOGUNIT_TEST( test8 );
 //   Gump doesn't like this test
-//     CPPUNIT_TEST( test9 );
-     CPPUNIT_TEST( test10 );
-     CPPUNIT_TEST( test11);
-     CPPUNIT_TEST( test12 );
-     CPPUNIT_TEST( test13 );
-     CPPUNIT_TEST( test14 );
-     CPPUNIT_TEST( test15 );
-     CPPUNIT_TEST( test16 );
-     CPPUNIT_TEST( test17);
-     CPPUNIT_TEST( test18);
-     CPPUNIT_TEST( test19);
-     CPPUNIT_TEST( test20);
-     CPPUNIT_TEST( test21);
-     CPPUNIT_TEST_SUITE_END();
+//     LOGUNIT_TEST( test9 );
+     LOGUNIT_TEST( test10 );
+     LOGUNIT_TEST( test11);
+     LOGUNIT_TEST( test12 );
+     LOGUNIT_TEST( test13 );
+     LOGUNIT_TEST( test14 );
+     LOGUNIT_TEST( test15 );
+     LOGUNIT_TEST( test16 );
+     LOGUNIT_TEST( test17);
+     LOGUNIT_TEST( test18);
+     LOGUNIT_TEST( test19);
+     LOGUNIT_TEST( test20);
+     LOGUNIT_TEST( test21);
+     LOGUNIT_TEST_SUITE_END();
 
 
 #define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
@@ -101,23 +101,23 @@ using namespace log4cxx::pattern;
     LogString actual;
 
     gmtFormat.format(actual, jul1, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul1 + 8000, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,008"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,008"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul1 + 17000, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,017"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,017"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul1 + 237000, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, jul1 + 1415000, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:01,415"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:01,415"), actual);
     actual.erase(actual.begin(), actual.end());
 
   }
@@ -139,15 +139,15 @@ using namespace log4cxx::pattern;
      Pool p;
      LogString actual;
      gmtFormat.format(actual, jul2, p);
-     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
+     LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
 
      actual.erase(actual.begin(), actual.end());
      chicagoFormat.format(actual, jul2, p);
-     CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("19:00:00,000"), actual);
+     LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("19:00:00,000"), actual);
 
       actual.erase(actual.begin(), actual.end());
       gmtFormat.format(actual, jul2, p);
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
   }
 
   /**
@@ -169,26 +169,26 @@ using namespace log4cxx::pattern;
 
 
     gmtFormat.format(actual, ticks, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
     actual.erase(actual.begin(), actual.end());
 
    //
    //   APR's explode_time method does not properly calculate tm_usec
    //     prior to 1 Jan 1970 on Unix
    gmtFormat.format(actual, ticks + 8000, p);
-   CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,008"), actual);
+   LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,008"), actual);
    actual.erase(actual.begin(), actual.end());
 
    gmtFormat.format(actual, ticks + 17000, p);
-   CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,017"), actual);
+   LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,017"), actual);
    actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, ticks + 237000, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,237"), actual);
     actual.erase(actual.begin(), actual.end());
 
     gmtFormat.format(actual, ticks + 1423000, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:01,423"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:01,423"), actual);
   }
 
   void assertFormattedEquals(
@@ -203,7 +203,7 @@ using namespace log4cxx::pattern;
         cachedFormat.format(actual, date, p);
 
 
-        CPPUNIT_ASSERT_EQUAL(expected, actual);
+        LOGUNIT_ASSERT_EQUAL(expected, actual);
   }
 
   void test4() {
@@ -266,7 +266,7 @@ using namespace log4cxx::pattern;
     Pool p;
     AbsoluteTimeDateFormat formatter;
     formatter.numberFormat(numb, 87, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), numb);
   }
 
 
@@ -283,13 +283,13 @@ using namespace log4cxx::pattern;
 
     LogString actual;
     cachedFormat.format(actual, jul4, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-04 00:00:00,000"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-04 00:00:00,000"), actual);
 
     cachedFormat.setTimeZone(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
     actual.erase(actual.begin(), actual.end());
     cachedFormat.format(actual, jul4, p);
 
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-03 18:00:00,000"), actual);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("2004-07-03 18:00:00,000"), actual);
   }
 
 
@@ -318,14 +318,14 @@ void test9() {
    apr_time_t dec12;
    apr_status_t stat = apr_time_exp_gmt_get(&dec12, &c);
    const apr_status_t statOK = 0;
-   CPPUNIT_ASSERT_EQUAL(statOK, stat);
+   LOGUNIT_ASSERT_EQUAL(statOK, stat);
 
    Pool p;
 
    LogString s;
    cachedFormat->format(s, dec12, p);
 
-   CPPUNIT_ASSERT_EQUAL(
+   LOGUNIT_ASSERT_EQUAL(
        (LogString) LOG4CXX_STR("2004-December-12 20:00:37,23 +0100"), s);
 
     memset(&c, 0, sizeof(c));
@@ -338,12 +338,12 @@ void test9() {
 
     apr_time_t jan1;
     stat = apr_time_exp_gmt_get(&jan1, &c);
-    CPPUNIT_ASSERT_EQUAL(statOK, stat);
+    LOGUNIT_ASSERT_EQUAL(statOK, stat);
 
     s.erase(s.begin(), s.end());
     cachedFormat->format(s, jan1, p);
 
-    CPPUNIT_ASSERT_EQUAL(
+    LOGUNIT_ASSERT_EQUAL(
        (LogString) LOG4CXX_STR("2005-January-01 00:00:13,905 +0100"), s);
 }
 
@@ -376,14 +376,14 @@ void test10() {
   apr_time_t oct5;
   apr_status_t stat = apr_time_exp_gmt_get(&oct5, &c);
   const apr_status_t statOK = 0;
-  CPPUNIT_ASSERT_EQUAL(statOK, stat);
+  LOGUNIT_ASSERT_EQUAL(statOK, stat);
 
   Pool p;
 
   LogString s;
   cachedFormat->format(s, oct5, p);
 
-  CPPUNIT_ASSERT_EQUAL(
+  LOGUNIT_ASSERT_EQUAL(
     (LogString) LOG4CXX_STR("October 023 Tuesday"), s);
 
   memset(&c, 0, sizeof(c));
@@ -394,19 +394,19 @@ void test10() {
 
   apr_time_t nov1;
   stat = apr_time_exp_gmt_get(&nov1, &c);
-  CPPUNIT_ASSERT_EQUAL(statOK, stat);
+  LOGUNIT_ASSERT_EQUAL(statOK, stat);
 
   s.erase(s.begin(), s.end());
   cachedFormat->format(s, nov1, p);
 
-  CPPUNIT_ASSERT_EQUAL(
+  LOGUNIT_ASSERT_EQUAL(
      (LogString) LOG4CXX_STR("November 023 Monday"), s);
 
    nov1 += 961000;
    s.erase(s.begin(), s.end());
    cachedFormat->format(s, nov1, p);
 
-   CPPUNIT_ASSERT_EQUAL(
+   LOGUNIT_ASSERT_EQUAL(
       (LogString) LOG4CXX_STR("November 984 Monday"), s);
 }
 
@@ -434,7 +434,7 @@ void test11() {
    LogString s;
    gmtFormat->format(s, jul2, p);
 
-   CPPUNIT_ASSERT_EQUAL(
+   LOGUNIT_ASSERT_EQUAL(
       (LogString) LOG4CXX_STR("00,1200"), s);
 
    jul2 = ticks + 87000;
@@ -442,7 +442,7 @@ void test11() {
    s.erase(s.begin(), s.end());
    gmtFormat->format(s, jul2, p);
 
-   CPPUNIT_ASSERT_EQUAL(
+   LOGUNIT_ASSERT_EQUAL(
       (LogString) LOG4CXX_STR("00,870"), s);
 }
 
@@ -460,7 +460,7 @@ void test12() {
 
    int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
        formatted, df, p);
-   CPPUNIT_ASSERT_EQUAL(20, millisecondStart);
+   LOGUNIT_ASSERT_EQUAL(20, millisecondStart);
 }
 
 /**
@@ -477,7 +477,7 @@ void test13() {
 
    int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
        formatted, df, p);
-   CPPUNIT_ASSERT_EQUAL((int) CachedDateFormat::NO_MILLISECONDS, millisecondStart);
+   LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::NO_MILLISECONDS, millisecondStart);
 }
 
 /**
@@ -493,7 +493,7 @@ void test14() {
 
    int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
       formatted, df, p);
-   CPPUNIT_ASSERT_EQUAL(9, millisecondStart);
+   LOGUNIT_ASSERT_EQUAL(9, millisecondStart);
 }
 
 /**
@@ -509,7 +509,7 @@ void test15() {
 
    int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
       formatted, df, p);
-   CPPUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
+   LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
 }
 
 /**
@@ -525,7 +525,7 @@ void test16() {
 
    int millisecondStart =
       CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
-   CPPUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
+   LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
 }
 
 
@@ -543,20 +543,20 @@ void test17() {
     LogString s;
     cachedFormat->format(s, jul2, p);
 
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000 00:00:00,000"), s);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000 00:00:00,000"), s);
     jul2 += 120000;
 
     s.erase(s.begin(), s.end());
     simpleFormat->format(s, jul2, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s);
 
     s.erase(s.begin(), s.end());
     cachedFormat->format(s, jul2, p);
 
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s) ;
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s) ;
 
     int maxValid = CachedDateFormat::getMaximumCacheValidity(badPattern);
-    CPPUNIT_ASSERT_EQUAL(1000, maxValid);
+    LOGUNIT_ASSERT_EQUAL(1000, maxValid);
 }
 
 /**
@@ -568,7 +568,7 @@ void test18() {
     int maxValid =
        CachedDateFormat::getMaximumCacheValidity(
           LOG4CXX_STR("yyyy-MM-dd"));
-    CPPUNIT_ASSERT_EQUAL(1000000, maxValid);
+    LOGUNIT_ASSERT_EQUAL(1000000, maxValid);
 }
 
 /**
@@ -580,7 +580,7 @@ void test19() {
     int maxValid =
        CachedDateFormat::getMaximumCacheValidity(
           LOG4CXX_STR("yyyy-MM-dd SSS"));
-    CPPUNIT_ASSERT_EQUAL(1000000, maxValid);
+    LOGUNIT_ASSERT_EQUAL(1000000, maxValid);
 }
 
 /**
@@ -592,7 +592,7 @@ void test20() {
     int maxValid =
        CachedDateFormat::getMaximumCacheValidity(
           LOG4CXX_STR("yyyy-MM-dd SS"));
-    CPPUNIT_ASSERT_EQUAL(1000, maxValid);
+    LOGUNIT_ASSERT_EQUAL(1000, maxValid);
 }
 
 /**
@@ -604,10 +604,10 @@ void test21() {
     int maxValid =
        CachedDateFormat::getMaximumCacheValidity(
           LOG4CXX_STR("yyyy-MM-dd SSS SSS"));
-    CPPUNIT_ASSERT_EQUAL(1000, maxValid);
+    LOGUNIT_ASSERT_EQUAL(1000, maxValid);
 }
 
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CachedDateFormatTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(CachedDateFormatTestCase);

@@ -16,9 +16,6 @@
  */
 
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/net/socketappender.h>
 #include <log4cxx/ndc.h>
@@ -38,6 +35,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../testchar.h"
+#include "../logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
 
 
@@ -98,18 +96,18 @@ using namespace log4cxx::net;
  *  class from log4j.  That class must be started externally to this class
  *  for this test to succeed. 
  */
-class SocketServerTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(SocketServerTestCase)
 {
-        CPPUNIT_TEST_SUITE(SocketServerTestCase);
-                CPPUNIT_TEST(test1);
-                CPPUNIT_TEST(test2);
-                CPPUNIT_TEST(test3);
-                CPPUNIT_TEST(test4);
-                CPPUNIT_TEST(test5);
-                CPPUNIT_TEST(test6);
-                CPPUNIT_TEST(test7);
-                CPPUNIT_TEST(test8);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(SocketServerTestCase);
+                LOGUNIT_TEST(test1);
+                LOGUNIT_TEST(test2);
+                LOGUNIT_TEST(test3);
+                LOGUNIT_TEST(test4);
+                LOGUNIT_TEST(test5);
+                LOGUNIT_TEST(test6);
+                LOGUNIT_TEST(test7);
+                LOGUNIT_TEST(test8);
+        LOGUNIT_TEST_SUITE_END();
 
         SocketAppenderPtr socketAppender;
         LoggerPtr logger;
@@ -169,7 +167,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.1")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.1")));
         }
 
         void test2()
@@ -204,7 +202,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.2")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.2")));
         }
 
         void test3()
@@ -239,7 +237,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.3")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.3")));
         }
 
         void test4()
@@ -271,7 +269,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.4")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.4")));
         }
 
         void test5()
@@ -307,7 +305,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.5")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.5")));
         }
 
         void test6()
@@ -345,7 +343,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.6")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.6")));
         }
 
         void test7()
@@ -383,7 +381,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.7")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.7")));
         }
 
         void test8()
@@ -417,7 +415,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.8")));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/socketServer.8")));
         }
 
         void common(const std::string& testName, const LogString& dc, const LogString& key, const LogString& val)
@@ -480,7 +478,4 @@ public:
 const File SocketServerTestCase::TEMP("output/temp");
 const File SocketServerTestCase::FILTERED("output/filtered");
 
-
-CPPUNIT_NS::Test* createSocketServerTestCase() {
-   return SocketServerTestCase::suite();
-}
+LOGUNIT_TEST_SUITE_REGISTRATION_NO_AUTO_RUN(SocketServerTestCase)

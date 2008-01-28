@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/net/telnetappender.h>
 #include "../appenderskeletontestcase.h"
 
@@ -29,14 +27,14 @@ using namespace log4cxx::helpers;
  */
 class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 {
-   CPPUNIT_TEST_SUITE(TelnetAppenderTestCase);
+   LOGUNIT_TEST_SUITE(TelnetAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
-                CPPUNIT_TEST(testDefaultThreshold);
-                CPPUNIT_TEST(testSetOptionThreshold);
+                LOGUNIT_TEST(testDefaultThreshold);
+                LOGUNIT_TEST(testSetOptionThreshold);
 
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -46,5 +44,5 @@ public:
         }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(TelnetAppenderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(TelnetAppenderTestCase);
 #endif

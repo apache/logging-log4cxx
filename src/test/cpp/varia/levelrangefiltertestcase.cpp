@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/fileappender.h>
@@ -30,6 +27,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include "../testchar.h"
+#include "../logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
 
 using namespace log4cxx;
@@ -38,12 +36,12 @@ using namespace log4cxx::filter;
 
 
 
-class LevelRangeFilterTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(LevelRangeFilterTestCase)
 {
-        CPPUNIT_TEST_SUITE(LevelRangeFilterTestCase);
-                CPPUNIT_TEST(accept);
-                CPPUNIT_TEST(neutral);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(LevelRangeFilterTestCase);
+                LOGUNIT_TEST(accept);
+                LOGUNIT_TEST(neutral);
+        LOGUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
         LoggerPtr logger;
@@ -143,7 +141,7 @@ public:
                 }
 
 
-                CPPUNIT_ASSERT(Compare::compare(ACCEPT_FILE, ACCEPT_WITNESS));
+                LOGUNIT_ASSERT(Compare::compare(ACCEPT_FILE, ACCEPT_WITNESS));
         }
 
         void neutral()
@@ -230,7 +228,7 @@ public:
                         }
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(NEUTRAL_FILE, NEUTRAL_WITNESS));
+                LOGUNIT_ASSERT(Compare::compare(NEUTRAL_FILE, NEUTRAL_WITNESS));
         }
 
         void common(const LogString& msg)
@@ -256,4 +254,4 @@ const LogString LevelRangeFilterTestCase::ACCEPT_WITNESS(LOG4CXX_STR("witness/Le
 const LogString LevelRangeFilterTestCase::NEUTRAL_FILE(LOG4CXX_STR("output/LevelRangeFilter_neutral"));
 const LogString LevelRangeFilterTestCase::NEUTRAL_WITNESS(LOG4CXX_STR("witness/LevelRangeFilter_neutral"));
 
-CPPUNIT_TEST_SUITE_REGISTRATION(LevelRangeFilterTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(LevelRangeFilterTestCase);

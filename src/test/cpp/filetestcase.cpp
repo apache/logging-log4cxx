@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/file.h>
+#include "logunit.h"
 #include "insertwide.h"
 #include <log4cxx/helpers/pool.h>
 #include <apr_errno.h>
@@ -36,33 +36,33 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-class FileTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(FileTestCase)
 {
-        CPPUNIT_TEST_SUITE(FileTestCase);
-                CPPUNIT_TEST(defaultConstructor);
-                CPPUNIT_TEST(defaultExists);
-                CPPUNIT_TEST(defaultRead);
-                CPPUNIT_TEST(propertyRead);
-                CPPUNIT_TEST(propertyExists);
-                CPPUNIT_TEST(fileWrite1);
+        LOGUNIT_TEST_SUITE(FileTestCase);
+                LOGUNIT_TEST(defaultConstructor);
+                LOGUNIT_TEST(defaultExists);
+                LOGUNIT_TEST(defaultRead);
+                LOGUNIT_TEST(propertyRead);
+                LOGUNIT_TEST(propertyExists);
+                LOGUNIT_TEST(fileWrite1);
 #if LOG4CXX_WCHAR_T_API
-                CPPUNIT_TEST(wcharConstructor);
+                LOGUNIT_TEST(wcharConstructor);
 #endif
 #if LOG4CXX_UNICHAR_API
-                CPPUNIT_TEST(unicharConstructor);
+                LOGUNIT_TEST(unicharConstructor);
 #endif
 #if LOG4CXX_CFSTRING_API
-                CPPUNIT_TEST(cfstringConstructor);
+                LOGUNIT_TEST(cfstringConstructor);
 #endif
-                CPPUNIT_TEST(copyConstructor);
-                CPPUNIT_TEST(assignment);
-                CPPUNIT_TEST(deleteBackslashedFileName);
-        CPPUNIT_TEST_SUITE_END();
+                LOGUNIT_TEST(copyConstructor);
+                LOGUNIT_TEST(assignment);
+                LOGUNIT_TEST(deleteBackslashedFileName);
+        LOGUNIT_TEST_SUITE_END();
 
 public:
         void defaultConstructor() {
           File defFile;
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), defFile.getName());
+          LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR(""), defFile.getName());
         }
 
 
@@ -71,7 +71,7 @@ public:
           File defFile;
           Pool pool;
           bool exists = defFile.exists(pool);
-          CPPUNIT_ASSERT_EQUAL(false, exists);
+          LOGUNIT_ASSERT_EQUAL(false, exists);
         }
 
         // check default constructor. read() throws an exception
@@ -83,7 +83,7 @@ public:
             InputStreamPtr defInput = new FileInputStream(defFile);
             InputStreamReaderPtr inputReader = new InputStreamReader(defInput);
             LogString contents(inputReader->read(pool));
-            CPPUNIT_ASSERT(false);
+            LOGUNIT_ASSERT(false);
           } catch(IOException &ex) {
           }
         }
@@ -94,7 +94,7 @@ public:
             File propFile(L"input/patternLayout1.properties");
             Pool pool;
             bool exists = propFile.exists(pool);
-            CPPUNIT_ASSERT_EQUAL(true, exists);
+            LOGUNIT_ASSERT_EQUAL(true, exists);
        }
 #endif
 
@@ -106,7 +106,7 @@ public:
             File propFile(filename);
             Pool pool;
             bool exists = propFile.exists(pool);
-            CPPUNIT_ASSERT_EQUAL(true, exists);
+            LOGUNIT_ASSERT_EQUAL(true, exists);
        }
 #endif
 
@@ -115,7 +115,7 @@ public:
             File propFile(CFSTR("input/patternLayout.properties"));
             Pool pool;
             bool exists = propFile.exists(pool);
-            CPPUNIT_ASSERT_EQUAL(true, exists);
+            LOGUNIT_ASSERT_EQUAL(true, exists);
        }
 #endif
 
@@ -124,7 +124,7 @@ public:
             File copy(propFile);
             Pool pool;
             bool exists = copy.exists(pool);
-            CPPUNIT_ASSERT_EQUAL(true, exists);
+            LOGUNIT_ASSERT_EQUAL(true, exists);
         }
 
         void assignment() {
@@ -132,7 +132,7 @@ public:
             File copy = propFile;
             Pool pool;
             bool exists = copy.exists(pool);
-            CPPUNIT_ASSERT_EQUAL(true, exists);
+            LOGUNIT_ASSERT_EQUAL(true, exists);
         }
 
         void propertyRead() {
@@ -142,14 +142,14 @@ public:
           InputStreamReaderPtr propReader = new InputStreamReader(propStream);
           LogString props(propReader->read(pool));
           LogString line1(LOG4CXX_STR("# Licensed to the Apache Software Foundation (ASF) under one or more"));
-          CPPUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
+          LOGUNIT_ASSERT_EQUAL(line1, props.substr(0, line1.length()));
         }
 
         void propertyExists() {
           File propFile("input/patternLayout1.properties");
           Pool pool;
           bool exists = propFile.exists(pool);
-          CPPUNIT_ASSERT_EQUAL(true, exists);
+          LOGUNIT_ASSERT_EQUAL(true, exists);
         }
 
         void fileWrite1() {
@@ -167,7 +167,7 @@ public:
           InputStreamReaderPtr isr = new InputStreamReader(is);
           LogString reply = isr->read(pool);
 
-          CPPUNIT_ASSERT_EQUAL(greeting, reply);
+          LOGUNIT_ASSERT_EQUAL(greeting, reply);
         }
 
         /**
@@ -182,4 +182,4 @@ public:
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(FileTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(FileTestCase);

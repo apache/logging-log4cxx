@@ -15,20 +15,20 @@
  * limitations under the License.
  */
 
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/helpers/fileinputstream.h>
 #include "../insertwide.h"
+#include "../logunit.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-class PropertiesTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(PropertiesTestCase)
 {
-        CPPUNIT_TEST_SUITE(PropertiesTestCase);
-                CPPUNIT_TEST(testLoad1);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(PropertiesTestCase);
+                LOGUNIT_TEST(testLoad1);
+        LOGUNIT_TEST_SUITE_END();
 
 public:
         void testLoad1() {
@@ -39,9 +39,9 @@ public:
           Properties properties;
           properties.load(propFile);
           LogString pattern(properties.getProperty(LOG4CXX_STR("log4j.appender.testAppender.layout.ConversionPattern")));
-          CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("%-5p - %m%n"), pattern);
+          LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("%-5p - %m%n"), pattern);
         }
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(PropertiesTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(PropertiesTestCase);

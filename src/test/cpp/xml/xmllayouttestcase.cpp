@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "../logunit.h"
 
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/xmllayout.h>
@@ -58,17 +57,16 @@ public:
 };
 
 
-
-class XMLLayoutTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(XMLLayoutTestCase)
 {
-        CPPUNIT_TEST_SUITE(XMLLayoutTestCase);
-                CPPUNIT_TEST(basic);
-                CPPUNIT_TEST(locationInfo);
-                CPPUNIT_TEST(testCDATA);
-                CPPUNIT_TEST(testNull);
-                CPPUNIT_TEST(testMDC);
-                CPPUNIT_TEST(testMDCEscaped);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(XMLLayoutTestCase);
+                LOGUNIT_TEST(basic);
+                LOGUNIT_TEST(locationInfo);
+                LOGUNIT_TEST(testCDATA);
+                LOGUNIT_TEST(testNull);
+                LOGUNIT_TEST(testMDC);
+                LOGUNIT_TEST(testMDCEscaped);
+        LOGUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
         LoggerPtr logger;
@@ -114,7 +112,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.1")));
+                LOGUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.1")));
         }
 
         void locationInfo()
@@ -131,7 +129,7 @@ public:
                 XMLThreadFilter xmlThreadFilter;
                 FilenameFilter xmlFilenameFilter(__FILE__, "XMLLayoutTestCase.java");
                 Filter line2XX("[23][0-9][0-9]", "X");
-                Filter line5X("56", "X");
+                Filter line5X("5[0-9]", "X");
 
                 std::vector<Filter *> filters;
                 filters.push_back(&xmlFilenameFilter);
@@ -150,7 +148,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.2")));
+                LOGUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.2")));
         }
 
 
@@ -196,7 +194,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.3")));
+                LOGUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.3")));
         }
 
         void testNull()
@@ -229,7 +227,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.null")));
+                LOGUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.null")));
         }
 
         void testMDC()
@@ -267,7 +265,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.mdc.1")));
+                LOGUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.mdc.1")));
         }
 
         // not incuded in the tests for the moment !
@@ -306,7 +304,7 @@ public:
                         throw;
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
+                LOGUNIT_ASSERT(Compare::compare(filteredFile, LOG4CXX_FILE("witness/xmlLayout.mdc.2")));
         }
 
 
@@ -356,4 +354,4 @@ public:
         }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(XMLLayoutTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(XMLLayoutTestCase);

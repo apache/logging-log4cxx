@@ -1,8 +1,7 @@
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
+ * this work for additional information regarding copyright ownership. * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
@@ -18,7 +17,7 @@
 #include "binarycompare.h"
 #include <apr_file_io.h>
 #include <log4cxx/helpers/pool.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "../logunit.h"
 #include <apr_pools.h>
 #include <apr_strings.h>
 
@@ -36,14 +35,14 @@ void BinaryCompare::compare(const char* filename1,
     apr_status_t stat1 = apr_file_open(&file1,
         filename1, flags, perm, (apr_pool_t*) pool);
     if (stat1 != APR_SUCCESS) {
-      CPPUNIT_FAIL(std::string("Unable to open ") + filename1);
+      LOGUNIT_FAIL(std::string("Unable to open ") + filename1);
     }
 
     apr_file_t* file2;
     apr_status_t stat2 = apr_file_open(&file2,
         filename2, flags, perm, (apr_pool_t*) pool);
     if (stat2 != APR_SUCCESS) {
-      CPPUNIT_FAIL(std::string("Unable to open ") + filename2);
+      LOGUNIT_FAIL(std::string("Unable to open ") + filename2);
     }
 
     enum { BUFSIZE = 1024 };
@@ -56,12 +55,12 @@ void BinaryCompare::compare(const char* filename1,
 
     stat1 = apr_file_read(file1, contents1, &bytesRead1);
     if (stat1 != APR_SUCCESS) {
-      CPPUNIT_FAIL(std::string("Unable to read ") + filename1);
+      LOGUNIT_FAIL(std::string("Unable to read ") + filename1);
     }
 
     stat2 = apr_file_read(file2, contents2, &bytesRead2);
     if (stat2 != APR_SUCCESS) {
-      CPPUNIT_FAIL(std::string("Unable to read ") + filename2);
+      LOGUNIT_FAIL(std::string("Unable to read ") + filename2);
     }
 
     for (int i = 0; i < BUFSIZE; i++) {
@@ -77,7 +76,7 @@ void BinaryCompare::compare(const char* filename1,
          msg += "] has ";
          msg += apr_itoa(pool, contents2[i]);
          msg += ".";
-         CPPUNIT_FAIL(msg);
+         LOGUNIT_FAIL(msg);
        }
     }
 }

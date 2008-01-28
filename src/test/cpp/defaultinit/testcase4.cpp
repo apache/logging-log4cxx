@@ -19,20 +19,18 @@
 #include <log4cxx/private/log4cxx_private.h>
 
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
 #include "../insertwide.h"
+#include "../logunit.h"
 
 using namespace log4cxx;
 
-class TestCase4 : public CppUnit::TestFixture
+LOGUNIT_CLASS(TestCase4)
 {
-   CPPUNIT_TEST_SUITE(TestCase4);
-      CPPUNIT_TEST(combinedTest);
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE(TestCase4);
+      LOGUNIT_TEST(combinedTest);
+   LOGUNIT_TEST_SUITE_END();
 
 public:
    void setUp()
@@ -49,17 +47,15 @@ public:
       LoggerPtr root = Logger::getRootLogger();
      LOG4CXX_DEBUG(root, "Hello, world");
       bool rootIsConfigured = !root->getAllAppenders().empty();
-      CPPUNIT_ASSERT(rootIsConfigured);
+      LOGUNIT_ASSERT(rootIsConfigured);
 
       AppenderList list = root->getAllAppenders();
-      CPPUNIT_ASSERT_EQUAL((size_t) 1, list.size());
+      LOGUNIT_ASSERT_EQUAL((size_t) 1, list.size());
       AppenderPtr appender = list.front();
-      CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D1"), appender->getName());
+      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("D1"), appender->getName());
    }
 
 };
 
-CPPUNIT_NS::Test* createTestCase4() {
-   return TestCase4::suite();
-}
+LOGUNIT_TEST_SUITE_REGISTRATION_NO_AUTO_RUN(TestCase4)
 

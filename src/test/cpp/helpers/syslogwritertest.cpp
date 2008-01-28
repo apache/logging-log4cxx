@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-#include <cppunit/extensions/HelperMacros.h>
+#include "../logunit.h"
 #include <log4cxx/helpers/syslogwriter.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-class SyslogWriterTest : public CppUnit::TestFixture
+LOGUNIT_CLASS(SyslogWriterTest)
 {
-        CPPUNIT_TEST_SUITE(SyslogWriterTest);
-                CPPUNIT_TEST(testUnknownHost);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(SyslogWriterTest);
+                LOGUNIT_TEST(testUnknownHost);
+        LOGUNIT_TEST_SUITE_END();
 
 public:
         /**
@@ -40,5 +40,5 @@ public:
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(SyslogWriterTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(SyslogWriterTest);
 

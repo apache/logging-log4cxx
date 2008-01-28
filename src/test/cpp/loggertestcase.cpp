@@ -16,9 +16,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/appenderskeleton.h>
@@ -30,6 +27,7 @@
 #include <log4cxx/helpers/propertyresourcebundle.h>
 #include "insertwide.h"
 #include "testchar.h"
+#include "logunit.h"
 #include <log4cxx/helpers/locale.h>
 #include "vectorappender.h"
 
@@ -58,23 +56,23 @@ public:
                 { return true; }
 };
 
-class LoggerTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(LoggerTestCase)
 {
-        CPPUNIT_TEST_SUITE(LoggerTestCase);
-                CPPUNIT_TEST(testAppender1);
-                CPPUNIT_TEST(testAppender2);
-                CPPUNIT_TEST(testAdditivity1);
-                CPPUNIT_TEST(testAdditivity2);
-                CPPUNIT_TEST(testAdditivity3);
-                CPPUNIT_TEST(testDisable1);
-//    CPPUNIT_TEST(testRB1);
-//    CPPUNIT_TEST(testRB2);  //TODO restore
-//    CPPUNIT_TEST(testRB3);
-                CPPUNIT_TEST(testExists);
-                CPPUNIT_TEST(testHierarchy1);
-                CPPUNIT_TEST(testTrace);
-                CPPUNIT_TEST(testIsTraceEnabled);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(LoggerTestCase);
+                LOGUNIT_TEST(testAppender1);
+                LOGUNIT_TEST(testAppender2);
+                LOGUNIT_TEST(testAdditivity1);
+                LOGUNIT_TEST(testAdditivity2);
+                LOGUNIT_TEST(testAdditivity3);
+                LOGUNIT_TEST(testDisable1);
+//    LOGUNIT_TEST(testRB1);
+//    LOGUNIT_TEST(testRB2);  //TODO restore
+//    LOGUNIT_TEST(testRB3);
+                LOGUNIT_TEST(testExists);
+                LOGUNIT_TEST(testHierarchy1);
+                LOGUNIT_TEST(testTrace);
+                LOGUNIT_TEST(testIsTraceEnabled);
+        LOGUNIT_TEST_SUITE_END();
 
 public:
         void setUp()
@@ -101,7 +99,7 @@ public:
 
                 AppenderList list = logger->getAllAppenders();
                 AppenderPtr aHat = list.front();
-                CPPUNIT_ASSERT_EQUAL(a1, aHat);
+                LOGUNIT_ASSERT_EQUAL(a1, aHat);
         }
 
         /**
@@ -122,8 +120,8 @@ public:
 
                 AppenderList list = logger->getAllAppenders();
                 AppenderPtr aHat = list.front();
-                CPPUNIT_ASSERT_EQUAL(a2, aHat);
-                CPPUNIT_ASSERT(list.size() == 1);
+                LOGUNIT_ASSERT_EQUAL(a2, aHat);
+                LOGUNIT_ASSERT(list.size() == 1);
         }
 
         /**
@@ -136,15 +134,15 @@ public:
                 CountingAppenderPtr ca = new CountingAppender();
                 a->addAppender(ca);
 
-                CPPUNIT_ASSERT_EQUAL(ca->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(ca->counter, 0);
                 ab->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(ca->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(ca->counter, 1);
                 ab->info(MSG);
-                CPPUNIT_ASSERT_EQUAL(ca->counter, 2);
+                LOGUNIT_ASSERT_EQUAL(ca->counter, 2);
                 ab->warn(MSG);
-                CPPUNIT_ASSERT_EQUAL(ca->counter, 3);
+                LOGUNIT_ASSERT_EQUAL(ca->counter, 3);
                 ab->error(MSG);
-                CPPUNIT_ASSERT_EQUAL(ca->counter, 4);
+                LOGUNIT_ASSERT_EQUAL(ca->counter, 4);
         }
 
         /**
@@ -163,20 +161,20 @@ public:
                 a->addAppender(ca1);
                 abc->addAppender(ca2);
 
-                CPPUNIT_ASSERT_EQUAL(ca1->counter, 0);
-                CPPUNIT_ASSERT_EQUAL(ca2->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(ca1->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(ca2->counter, 0);
 
                 ab->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(ca1->counter, 1);
-                CPPUNIT_ASSERT_EQUAL(ca2->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(ca1->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(ca2->counter, 0);
 
                 abc->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(ca1->counter, 2);
-                CPPUNIT_ASSERT_EQUAL(ca2->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(ca1->counter, 2);
+                LOGUNIT_ASSERT_EQUAL(ca2->counter, 1);
 
                 x->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(ca1->counter, 2);
-                CPPUNIT_ASSERT_EQUAL(ca2->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(ca1->counter, 2);
+                LOGUNIT_ASSERT_EQUAL(ca2->counter, 1);
         }
 
         /**
@@ -198,26 +196,26 @@ public:
                 a->addAppender(caA);
                 abc->addAppender(caABC);
 
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 0);
-                CPPUNIT_ASSERT_EQUAL(caA->counter, 0);
-                CPPUNIT_ASSERT_EQUAL(caABC->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(caA->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(caABC->counter, 0);
 
                 ab->setAdditivity(false);
 
                 a->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 1);
-                CPPUNIT_ASSERT_EQUAL(caA->counter, 1);
-                CPPUNIT_ASSERT_EQUAL(caABC->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(caA->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(caABC->counter, 0);
 
                 ab->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 1);
-                CPPUNIT_ASSERT_EQUAL(caA->counter, 1);
-                CPPUNIT_ASSERT_EQUAL(caABC->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(caA->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(caABC->counter, 0);
 
                 abc->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 1);
-                CPPUNIT_ASSERT_EQUAL(caA->counter, 1);
-                CPPUNIT_ASSERT_EQUAL(caABC->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(caA->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(caABC->counter, 1);
         }
 
         void testDisable1()
@@ -230,59 +228,59 @@ public:
 
                 //h.disableDebug();
                 h->setThreshold(Level::getInfo());
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 0);
 
                 root->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 0);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 0);
                 root->info(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 1);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 1);
                 root->log(Level::getWarn(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 2);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 2);
                 root->warn(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 3);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 3);
 
                 //h.disableInfo();
                 h->setThreshold(Level::getWarn());
                 root->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 3);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 3);
                 root->info(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 3);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 3);
                 root->log(Level::getWarn(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 4);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 4);
                 root->error(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 5);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 5);
                 root->log(Level::getError(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
 
                 //h.disableAll();
                 h->setThreshold(Level::getOff());
                 root->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->info(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->log(Level::getWarn(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->error(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->log(Level::getFatal(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->log(Level::getFatal(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
 
                 //h.disable(Level::getFatalLevel());
                 h->setThreshold(Level::getOff());
                 root->debug(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->info(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->log(Level::getWarn(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->error(MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->log(Level::getWarn(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
                 root->log(Level::getFatal(), MSG);
-                CPPUNIT_ASSERT_EQUAL(caRoot->counter, 6);
+                LOGUNIT_ASSERT_EQUAL(caRoot->counter, 6);
         }
 
 
@@ -291,7 +289,7 @@ public:
              Locale l(lang, region);
              ResourceBundlePtr bundle(
                  PropertyResourceBundle::getBundle(LOG4CXX_STR("L7D"),l));
-             CPPUNIT_ASSERT(bundle != 0);
+             LOGUNIT_ASSERT(bundle != 0);
              return bundle;
         }
 
@@ -305,18 +303,18 @@ public:
                 root->setResourceBundle(rbUS);
 
                 ResourceBundlePtr t = root->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbUS);
+                LOGUNIT_ASSERT(t == rbUS);
 
                 LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
                 LoggerPtr x_y = Logger::getLogger(LOG4CXX_TEST_STR("x.y"));
                 LoggerPtr x_y_z = Logger::getLogger(LOG4CXX_TEST_STR("x.y.z"));
 
                 t = x->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbUS);
+                LOGUNIT_ASSERT(t == rbUS);
                 t = x_y->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbUS);
+                LOGUNIT_ASSERT(t == rbUS);
                 t = x_y_z->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbUS);
+                LOGUNIT_ASSERT(t == rbUS);
         }
 
         void testRB2()
@@ -329,7 +327,7 @@ public:
                 root->setResourceBundle(rbUS);
 
                 ResourceBundlePtr t = root->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbUS);
+                LOGUNIT_ASSERT(t == rbUS);
 
                 LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
                 LoggerPtr x_y = Logger::getLogger(LOG4CXX_TEST_STR("x.y"));
@@ -337,11 +335,11 @@ public:
 
                 x_y->setResourceBundle(rbFR);
                 t = x->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbUS);
+                LOGUNIT_ASSERT(t == rbUS);
                 t = x_y->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbFR);
+                LOGUNIT_ASSERT(t == rbFR);
                 t = x_y_z->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbFR);
+                LOGUNIT_ASSERT(t == rbFR);
         }
 
         void testRB3()
@@ -354,7 +352,7 @@ public:
                 root->setResourceBundle(rbUS);
 
                 ResourceBundlePtr t = root->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbUS);
+                LOGUNIT_ASSERT(t == rbUS);
 
                 LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
                 LoggerPtr x_y = Logger::getLogger(LOG4CXX_TEST_STR("x.y"));
@@ -363,11 +361,11 @@ public:
                 x_y->setResourceBundle(rbFR);
                 x_y_z->setResourceBundle(rbCH);
                 t = x->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbUS);
+                LOGUNIT_ASSERT(t == rbUS);
                 t = x_y->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbFR);
+                LOGUNIT_ASSERT(t == rbFR);
                 t = x_y_z->getResourceBundle();
-                CPPUNIT_ASSERT(t == rbCH);
+                LOGUNIT_ASSERT(t == rbCH);
         }
 
         void testExists()
@@ -378,13 +376,13 @@ public:
 
                 LoggerPtr t;
                 t = LogManager::exists(LOG4CXX_TEST_STR("xx"));
-                CPPUNIT_ASSERT(t == 0);
+                LOGUNIT_ASSERT(t == 0);
                 t = LogManager::exists(LOG4CXX_TEST_STR("a"));
-                CPPUNIT_ASSERT_EQUAL(a, t);
+                LOGUNIT_ASSERT_EQUAL(a, t);
                 t = LogManager::exists(LOG4CXX_TEST_STR("a.b"));
-                CPPUNIT_ASSERT_EQUAL(a_b, t);
+                LOGUNIT_ASSERT_EQUAL(a_b, t);
                 t = LogManager::exists(LOG4CXX_TEST_STR("a.b.c"));
-                CPPUNIT_ASSERT_EQUAL(a_b_c, t);
+                LOGUNIT_ASSERT_EQUAL(a_b_c, t);
         }
 
         void testHierarchy1()
@@ -393,12 +391,12 @@ public:
                 LoggerPtr root(h->getRootLogger());
                 root->setLevel(Level::getError());
                 LoggerPtr a0 = h->getLogger(LOG4CXX_STR("a"));
-                CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("a"), a0->getName());
-                CPPUNIT_ASSERT(a0->getLevel() == 0);
-                CPPUNIT_ASSERT(Level::getError() == a0->getEffectiveLevel());
+                LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("a"), a0->getName());
+                LOGUNIT_ASSERT(a0->getLevel() == 0);
+                LOGUNIT_ASSERT(Level::getError() == a0->getEffectiveLevel());
 
                 LoggerPtr a11 = h->getLogger(LOG4CXX_STR("a"));
-                CPPUNIT_ASSERT_EQUAL(a0, a11);
+                LOGUNIT_ASSERT_EQUAL(a0, a11);
         }
         
         void compileTestForLOGCXX202() const {
@@ -432,10 +430,10 @@ public:
       LOG4CXX_TRACE(root, "Discarded Message");
 
       std::vector<LoggingEventPtr> msgs(appender->vector);
-      CPPUNIT_ASSERT_EQUAL((size_t) 1, msgs.size());
+      LOGUNIT_ASSERT_EQUAL((size_t) 1, msgs.size());
       LoggingEventPtr event = msgs[0];
-      CPPUNIT_ASSERT_EQUAL((int) Level::TRACE_INT, event->getLevel()->toInt());
-      CPPUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Message 1")), event->getMessage());
+      LOGUNIT_ASSERT_EQUAL((int) Level::TRACE_INT, event->getLevel()->toInt());
+      LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("Message 1")), event->getMessage());
   }
 
     /**
@@ -451,8 +449,8 @@ public:
         LoggerPtr tracer = Logger::getLogger("com.example.Tracer");
         tracer->setLevel(Level::getTrace());
 
-        CPPUNIT_ASSERT_EQUAL(true, tracer->isTraceEnabled());
-        CPPUNIT_ASSERT_EQUAL(false, root->isTraceEnabled());
+        LOGUNIT_ASSERT_EQUAL(true, tracer->isTraceEnabled());
+        LOGUNIT_ASSERT_EQUAL(false, root->isTraceEnabled());
     }
 
 protected:
@@ -464,4 +462,4 @@ protected:
 
 LogString LoggerTestCase::MSG(LOG4CXX_STR("M"));
 
-CPPUNIT_TEST_SUITE_REGISTRATION(LoggerTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(LoggerTestCase);

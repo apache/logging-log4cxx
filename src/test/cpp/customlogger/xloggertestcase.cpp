@@ -18,9 +18,7 @@
 #define LOG4CXX_TEST 1
 #include <log4cxx/private/log4cxx_private.h>
 
-
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "../logunit.h"
 #include "xlogger.h"
 #include <log4cxx/xml/domconfigurator.h>
 #include "../util/transformer.h"
@@ -36,12 +34,12 @@ using namespace log4cxx::xml;
 /**
    Tests handling of custom loggers.
 */
-class XLoggerTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(XLoggerTestCase)
 {
-   CPPUNIT_TEST_SUITE(XLoggerTestCase);
-      CPPUNIT_TEST(test1);
-      CPPUNIT_TEST(test2);
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE(XLoggerTestCase);
+      LOGUNIT_TEST(test1);
+      LOGUNIT_TEST(test2);
+   LOGUNIT_TEST_SUITE_END();
 
    XLoggerPtr logger;
 
@@ -67,37 +65,27 @@ public:
         fn.append(".xml");
         DOMConfigurator::configure(fn);
 
-        int i = -1;
-        std::ostringstream os;
-        os << "Message " << ++i;
-        if (logger->isEnabledFor(log4cxx::XLevel::getTrace())) {
-           logger->forcedLog(log4cxx::XLevel::getTrace(), os.str(), LOG4CXX_LOCATION);
-        }
+        int i = 0;
+        LOG4CXX_LOG(logger, log4cxx::XLevel::getTrace(), "Message " << i);
 
-        os.str("");
-        os << "Message " << ++ i;
-      LOG4CXX_DEBUG(logger, os.str());
-        os.str("");
-        os << "Message " << ++ i;
-      LOG4CXX_WARN(logger, os.str());
-        os.str("");
-        os << "Message " << ++ i;
-      LOG4CXX_ERROR(logger, os.str());
-        os.str("");
-        os << "Message " << ++ i;
-      LOG4CXX_FATAL(logger, os.str());
-        os.str("");
-        os << "Message " << ++ i;
-      LOG4CXX_DEBUG(logger, os.str());
+        i++;
+        LOG4CXX_DEBUG(logger, "Message " << i);
+        i++;
+        LOG4CXX_WARN(logger, "Message " << i);
+        i++;
+        LOG4CXX_ERROR(logger, "Message " << i);
+        i++;
+        LOG4CXX_FATAL(logger, "Message " << i);
+        i++;
+        LOG4CXX_DEBUG(logger, "Message " << i);
 
         const File OUTPUT("output/temp");
         std::string witness("witness/customLogger.");
         witness.append(number);
         const File WITNESS(witness);
-      CPPUNIT_ASSERT(Compare::compare(OUTPUT, WITNESS));
-//#endif
+      LOGUNIT_ASSERT(Compare::compare(OUTPUT, WITNESS));
     }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(XLoggerTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(XLoggerTestCase);
 

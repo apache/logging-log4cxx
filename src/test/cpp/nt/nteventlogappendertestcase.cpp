@@ -16,8 +16,6 @@
  */
 
 #if defined(_WIN32) && !defined(_WIN32_WCE)
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
 #include <log4cxx/nt/nteventlogappender.h>
 #include "../appenderskeletontestcase.h"
 #include "windows.h"
@@ -25,6 +23,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/patternlayout.h>
 #include "../insertwide.h"
+#include "../logunit.h"
 #include <log4cxx/helpers/date.h>
 
 using namespace log4cxx;
@@ -37,15 +36,15 @@ using namespace log4cxx::spi;
  */
 class NTEventLogAppenderTestCase : public AppenderSkeletonTestCase
 {
-   CPPUNIT_TEST_SUITE(NTEventLogAppenderTestCase);
+   LOGUNIT_TEST_SUITE(NTEventLogAppenderTestCase);
                 //
                 //    tests inherited from AppenderSkeletonTestCase
                 //
-                CPPUNIT_TEST(testDefaultThreshold);
-                CPPUNIT_TEST(testSetOptionThreshold);
-                CPPUNIT_TEST(testHelloWorld);
+                LOGUNIT_TEST(testDefaultThreshold);
+                LOGUNIT_TEST(testSetOptionThreshold);
+                LOGUNIT_TEST(testHelloWorld);
 
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE_END();
 
 
 public:
@@ -62,7 +61,7 @@ public:
                DWORD oldest;
                if(stat) stat = GetOldestEventLogRecord(hEventLog, &oldest);
                CloseEventLog(hEventLog);
-               CPPUNIT_ASSERT(stat);
+               LOGUNIT_ASSERT(stat);
                expectedId += oldest;
            }
 
@@ -83,7 +82,7 @@ public:
                 appender->doAppend(event, p);
             }
             hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");
-            CPPUNIT_ASSERT(hEventLog != NULL);
+            LOGUNIT_ASSERT(hEventLog != NULL);
             DWORD actualId;
             BOOL stat = GetNumberOfEventLogRecords(hEventLog, &actualId);
             DWORD oldest;
@@ -91,10 +90,10 @@ public:
             actualId += oldest;
             actualId--;
             CloseEventLog(hEventLog);
-            CPPUNIT_ASSERT(stat);
-            CPPUNIT_ASSERT_EQUAL(expectedId, actualId);
+            LOGUNIT_ASSERT(stat);
+            LOGUNIT_ASSERT_EQUAL(expectedId, actualId);
         }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(NTEventLogAppenderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(NTEventLogAppenderTestCase);
 #endif

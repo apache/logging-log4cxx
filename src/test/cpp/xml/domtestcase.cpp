@@ -16,12 +16,9 @@
  */
 
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/domconfigurator.h>
-
+#include "../logunit.h"
 #include "../util/compare.h"
 #include "xlevel.h"
 #include "../util/controlfilter.h"
@@ -48,14 +45,14 @@ using namespace log4cxx::xml;
 #define TEST1_2_PAT "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " \
         "\\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]"
 
-class DOMTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(DOMTestCase)
 {
-        CPPUNIT_TEST_SUITE(DOMTestCase);
-                CPPUNIT_TEST(test1);
+        LOGUNIT_TEST_SUITE(DOMTestCase);
+                LOGUNIT_TEST(test1);
 #if defined(_WIN32)
-                CPPUNIT_TEST(test2);
+                LOGUNIT_TEST(test2);
 #endif
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
         LoggerPtr logger;
@@ -118,8 +115,8 @@ public:
                 const File witness2(LOG4CXX_TEST_STR("witness/dom.A2.1"));
                 //   TODO: A1 doesn't contain duplicate entries
                 //
-                //                CPPUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
-                CPPUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
+                //                LOGUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
         }
 
         //
@@ -153,8 +150,8 @@ public:
                 const File witness2(LOG4CXX_TEST_STR("witness/dom.A2.2"));
                 //   TODO: A1 doesn't contain duplicate entries
                 //
-                //                CPPUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
-                CPPUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
+                //                LOGUNIT_ASSERT(Compare::compare(FILTERED_A1, witness1));
+                LOGUNIT_ASSERT(Compare::compare(FILTERED_A2, witness2));
         }
 
 
@@ -190,7 +187,7 @@ public:
         }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(DOMTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(DOMTestCase);
 
 const File DOMTestCase::TEMP_A1(LOG4CXX_TEST_STR("output/temp.A1"));
 const File DOMTestCase::TEMP_A2(LOG4CXX_TEST_STR("output/temp.A2"));

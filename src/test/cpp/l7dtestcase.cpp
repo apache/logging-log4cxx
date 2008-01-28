@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/helpers/propertyresourcebundle.h>
@@ -29,6 +26,7 @@
 #include <sstream>
 
 #include "testchar.h"
+#include "logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
 
 
@@ -37,11 +35,11 @@ typedef std::basic_ostringstream<testchar> StringBuffer;
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-class L7dTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(L7dTestCase)
 {
-        CPPUNIT_TEST_SUITE(L7dTestCase);
-                CPPUNIT_TEST(test1);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(L7dTestCase);
+                LOGUNIT_TEST(test1);
+        LOGUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
         ResourceBundlePtr bundles[3];
@@ -52,17 +50,17 @@ public:
                 Locale localeUS(LOG4CXX_STR("en"), LOG4CXX_STR("US"));
                 bundles[0] =
                         ResourceBundle::getBundle(LOG4CXX_STR("L7D"), localeUS);
-                CPPUNIT_ASSERT(bundles[0] != 0);
+                LOGUNIT_ASSERT(bundles[0] != 0);
  
                 Locale localeFR(LOG4CXX_STR("fr"), LOG4CXX_STR("FR"));
                 bundles[1] =
                         ResourceBundle::getBundle(LOG4CXX_STR("L7D"), localeFR);
-                CPPUNIT_ASSERT(bundles[1] != 0);
+                LOGUNIT_ASSERT(bundles[1] != 0);
 
                 Locale localeCH(LOG4CXX_STR("fr"), LOG4CXX_STR("CH"));
                 bundles[2] =
                         ResourceBundle::getBundle(LOG4CXX_STR("L7D"), localeCH);
-                CPPUNIT_ASSERT(bundles[2] != 0);
+                LOGUNIT_ASSERT(bundles[2] != 0);
 
                 root = Logger::getRootLogger();
         }
@@ -98,10 +96,10 @@ public:
                         LOG4CXX_L7DLOG(root, Level::getInfo(), LOG4CXX_TEST_STR("bogus2"));
                 }
 
-                CPPUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),
+                LOGUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),
                 LOG4CXX_FILE("witness/l7d.1")));
         }
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(L7dTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(L7dTestCase);

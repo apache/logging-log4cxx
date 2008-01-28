@@ -14,14 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/spi/loggingevent.h>
 #include "../util/serializationtesthelper.h"
 #include <log4cxx/logmanager.h>
 #include <log4cxx/ndc.h>
 #include <log4cxx/mdc.h>
+#include "../logunit.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -33,14 +31,14 @@ using namespace std;
 /**
    Unit tests for LoggingEvent
  */
-class LoggingEventTest : public CppUnit::TestFixture
+LOGUNIT_CLASS(LoggingEventTest)
 {
-        CPPUNIT_TEST_SUITE(LoggingEventTest);
-                CPPUNIT_TEST(testSerializationSimple);
-                CPPUNIT_TEST(testSerializationWithLocation);
-                CPPUNIT_TEST(testSerializationNDC);
-                CPPUNIT_TEST(testSerializationMDC);
-			CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(LoggingEventTest);
+                LOGUNIT_TEST(testSerializationSimple);
+                LOGUNIT_TEST(testSerializationWithLocation);
+                LOGUNIT_TEST(testSerializationNDC);
+                LOGUNIT_TEST(testSerializationMDC);
+			LOGUNIT_TEST_SUITE_END();
 
 public:
         void setUp() {
@@ -67,7 +65,7 @@ public:
       new LoggingEvent(
         root, Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
         
-    CPPUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
+    LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
       "witness/serialization/simple.bin", event, 237));
   }
 
@@ -84,7 +82,7 @@ public:
       new LoggingEvent(
         root, Level::getInfo(), LOG4CXX_STR("Hello, world."), LOG4CXX_LOCATION);
 
-    CPPUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
+    LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
       "witness/serialization/location.bin", event, 237));
   }
 
@@ -101,7 +99,7 @@ public:
       new LoggingEvent(
         root, Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
 
-    CPPUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
+    LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
       "witness/serialization/ndc.bin", event, 237));
     }
 
@@ -118,10 +116,10 @@ public:
       new LoggingEvent(
         root, Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
 
-    CPPUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
+    LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
       "witness/serialization/mdc.bin", event, 237));
   }
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(LoggingEventTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(LoggingEventTest);

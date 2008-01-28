@@ -16,29 +16,27 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/ndc.h>
 #include <log4cxx/file.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/propertyconfigurator.h>
 #include "insertwide.h"
+#include "logunit.h"
 #include "util/compare.h"
 
 
 
 using namespace log4cxx;
 
-class NDCTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(NDCTestCase)
 {
          static File TEMP;
          static LoggerPtr logger;
 
-        CPPUNIT_TEST_SUITE(NDCTestCase);
-                CPPUNIT_TEST(testPushPop);
-                CPPUNIT_TEST(test1);
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE(NDCTestCase);
+                LOGUNIT_TEST(testPushPop);
+                LOGUNIT_TEST(test1);
+        LOGUNIT_TEST_SUITE_END();
 
 public:
 
@@ -56,14 +54,14 @@ public:
         {
                 NDC::push("trivial context");
                 LogString actual(NDC::pop());
-                CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("trivial context"), actual);
+                LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("trivial context"), actual);
         }
 
 
         void test1()  {
             PropertyConfigurator::configure(File("input/ndc/NDC1.properties"));
             common();
-            CPPUNIT_ASSERT(Compare::compare(TEMP, File("witness/ndc/NDC.1")));
+            LOGUNIT_ASSERT(Compare::compare(TEMP, File("witness/ndc/NDC.1")));
         }
 
         static void common() {
@@ -93,4 +91,4 @@ public:
 File NDCTestCase::TEMP("output/temp");
 LoggerPtr NDCTestCase::logger(Logger::getLogger("org.apache.log4j.NDCTestCase"));
 
-CPPUNIT_TEST_SUITE_REGISTRATION(NDCTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(NDCTestCase);

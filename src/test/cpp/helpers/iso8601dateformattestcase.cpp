@@ -16,7 +16,7 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include "../logunit.h"
 #define LOG4CXX_TEST
 #include <log4cxx/private/log4cxx_private.h>
 #if LOG4CXX_HAS_STD_LOCALE
@@ -35,17 +35,16 @@ using namespace log4cxx::helpers;
    Unit test {@link ISO8601DateFormat}.
    @author Curt Arnold
    @since 1.3.0 */
-   class ISO8601DateFormatTestCase : public CppUnit::TestFixture
-   {
-     CPPUNIT_TEST_SUITE( ISO8601DateFormatTestCase );
-     CPPUNIT_TEST( test1 );
-     CPPUNIT_TEST( test2 );
-     CPPUNIT_TEST( test3 );
-     CPPUNIT_TEST( test4 );
-     CPPUNIT_TEST( test5 );
-     CPPUNIT_TEST( test6 );
-     CPPUNIT_TEST( test7 );
-     CPPUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(ISO8601DateFormatTestCase) {
+     LOGUNIT_TEST_SUITE( ISO8601DateFormatTestCase );
+     LOGUNIT_TEST( test1 );
+     LOGUNIT_TEST( test2 );
+     LOGUNIT_TEST( test3 );
+     LOGUNIT_TEST( test4 );
+     LOGUNIT_TEST( test5 );
+     LOGUNIT_TEST( test6 );
+     LOGUNIT_TEST( test7 );
+     LOGUNIT_TEST_SUITE_END();
 
   /**
    * Asserts that formatting the provided date results
@@ -63,7 +62,7 @@ using namespace log4cxx::helpers;
     LogString actual;
     Pool p;
     formatter.format(actual, date, p);
-    CPPUNIT_ASSERT_EQUAL(expected, actual);
+    LOGUNIT_ASSERT_EQUAL(expected, actual);
   }
 
 
@@ -151,7 +150,7 @@ public:
     ISO8601DateFormat formatter;
     Pool p;
     formatter.numberFormat(number, 87, p);
-    CPPUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), number);
+    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("87"), number);
   }
 
 
@@ -159,4 +158,4 @@ public:
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(ISO8601DateFormatTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(ISO8601DateFormatTestCase);

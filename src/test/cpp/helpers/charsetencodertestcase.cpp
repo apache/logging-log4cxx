@@ -15,10 +15,8 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/helpers/charsetencoder.h>
+#include "../logunit.h"
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/thread.h>
@@ -35,15 +33,15 @@ using namespace log4cxx::helpers;
 
 class CharsetEncoderTestCase : public CppUnit::TestFixture
 {
-        CPPUNIT_TEST_SUITE(CharsetEncoderTestCase);
+        LOGUNIT_TEST_SUITE(CharsetEncoderTestCase);
 #if APR_HAS_THREADS        
-                CPPUNIT_TEST(thread1);
+                LOGUNIT_TEST(thread1);
 #endif                
-                CPPUNIT_TEST(encode1);
-                CPPUNIT_TEST(encode2);
-                CPPUNIT_TEST(encode3);
-                CPPUNIT_TEST(encode4);
-        CPPUNIT_TEST_SUITE_END();
+                LOGUNIT_TEST(encode1);
+                LOGUNIT_TEST(encode2);
+                LOGUNIT_TEST(encode3);
+                LOGUNIT_TEST(encode4);
+        LOGUNIT_TEST_SUITE_END();
 
         enum { BUFSIZE = 256 };
 
@@ -57,17 +55,17 @@ public:
           ByteBuffer out(buf, BUFSIZE);
           LogString::const_iterator iter = greeting.begin();
           log4cxx_status_t stat = enc->encode(greeting, iter, out);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-          CPPUNIT_ASSERT(iter == greeting.end());
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT(iter == greeting.end());
 
           stat = enc->encode(greeting, iter, out);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-          CPPUNIT_ASSERT_EQUAL((size_t) 12, out.position());
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL((size_t) 12, out.position());
 
           out.flip();
           std::string encoded((const char*) out.data(), out.limit());
-          CPPUNIT_ASSERT_EQUAL((std::string) "Hello, World", encoded);
-          CPPUNIT_ASSERT(iter == greeting.end());
+          LOGUNIT_ASSERT_EQUAL((std::string) "Hello, World", encoded);
+          LOGUNIT_ASSERT(iter == greeting.end());
         }
 
         void encode2() {
@@ -80,27 +78,27 @@ public:
           ByteBuffer out(buf, BUFSIZE);
           LogString::const_iterator iter = greeting.begin();
           log4cxx_status_t stat = enc->encode(greeting, iter, out);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-          CPPUNIT_ASSERT_EQUAL((size_t) 0, out.remaining());
-          CPPUNIT_ASSERT_EQUAL(LOG4CXX_STR('o'), *(iter+1));
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL((size_t) 0, out.remaining());
+          LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR('o'), *(iter+1));
 
           out.flip();
           std::string encoded((char*) out.data(), out.limit());
           out.clear();
 
           stat = enc->encode(greeting, iter, out);
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-          CPPUNIT_ASSERT_EQUAL((size_t) 2, out.position());
-          CPPUNIT_ASSERT(iter == greeting.end());
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL((size_t) 2, out.position());
+          LOGUNIT_ASSERT(iter == greeting.end());
 
           stat = enc->encode(greeting, iter, out);
           out.flip();
-          CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+          LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
           encoded.append(out.data(), out.limit());
 
           std::string manyAs(BUFSIZE - 3, 'A');
-          CPPUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
-          CPPUNIT_ASSERT_EQUAL(std::string("Hello"), encoded.substr(BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
+          LOGUNIT_ASSERT_EQUAL(std::string("Hello"), encoded.substr(BUFSIZE - 3));
         }
 
 
@@ -130,10 +128,10 @@ public:
           LogString::const_iterator iter = greeting.begin();
           log4cxx_status_t stat = enc->encode(greeting, iter, out);
           out.flip();
-          CPPUNIT_ASSERT_EQUAL(true, CharsetEncoder::isError(stat));
-          CPPUNIT_ASSERT_EQUAL((size_t) 1, out.limit());
-          CPPUNIT_ASSERT_EQUAL(greet[1], *iter);
-          CPPUNIT_ASSERT_EQUAL('A', out.data()[0]);
+          LOGUNIT_ASSERT_EQUAL(true, CharsetEncoder::isError(stat));
+          LOGUNIT_ASSERT_EQUAL((size_t) 1, out.limit());
+          LOGUNIT_ASSERT_EQUAL(greet[1], *iter);
+          LOGUNIT_ASSERT_EQUAL('A', out.data()[0]);
         }
 
 
@@ -162,16 +160,16 @@ public:
           ByteBuffer out(buf, BUFSIZE);
           LogString::const_iterator iter = greeting.begin();
           log4cxx_status_t stat = enc->encode(greeting, iter, out);
-          CPPUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
+          LOGUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
           stat = enc->encode(greeting, iter, out);
-          CPPUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
+          LOGUNIT_ASSERT_EQUAL(false, CharsetEncoder::isError(stat));
 
           out.flip();
-          CPPUNIT_ASSERT_EQUAL((size_t) 13, out.limit());
+          LOGUNIT_ASSERT_EQUAL((size_t) 13, out.limit());
           for(size_t i = 0; i < out.limit(); i++) {
-             CPPUNIT_ASSERT_EQUAL((int) utf8_greet[i], (int) out.data()[i]);
+             LOGUNIT_ASSERT_EQUAL((int) utf8_greet[i], (int) out.data()[i]);
           }
-          CPPUNIT_ASSERT(iter == greeting.end());
+          LOGUNIT_ASSERT(iter == greeting.end());
         }
         
 #if APR_HAS_THREADS        
@@ -293,12 +291,12 @@ public:
               for(int i = 0; i < THREAD_COUNT; i++) {
                   threads[i].join();
               }
-              CPPUNIT_ASSERT_EQUAL((apr_uint32_t) 0, package->getFail());
-              CPPUNIT_ASSERT_EQUAL((apr_uint32_t) THREAD_COUNT * THREAD_REPS, package->getPass());
+              LOGUNIT_ASSERT_EQUAL((apr_uint32_t) 0, package->getFail());
+              LOGUNIT_ASSERT_EQUAL((apr_uint32_t) THREAD_COUNT * THREAD_REPS, package->getPass());
               delete package;
         }
 #endif
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CharsetEncoderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(CharsetEncoderTestCase);

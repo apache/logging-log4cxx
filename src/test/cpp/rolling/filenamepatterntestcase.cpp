@@ -16,9 +16,6 @@
  */
 
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/pattern/filedatepatternconverter.h>
 #include <log4cxx/pattern/integerpatternconverter.h>
 #include <log4cxx/pattern/patternparser.h>
@@ -26,6 +23,7 @@
 #include <log4cxx/helpers/date.h>
 #include <log4cxx/helpers/integer.h>
 #include "../util/compare.h"
+#include "../logunit.h"
 #include "../insertwide.h"
 #include <apr_time.h>
 
@@ -42,26 +40,26 @@ using namespace log4cxx::pattern;
  *
  */
 class FileNamePatternTestCase  : public CppUnit::TestFixture {
-  CPPUNIT_TEST_SUITE(FileNamePatternTestCase);
-  CPPUNIT_TEST(testFormatInteger1);
-  CPPUNIT_TEST(testFormatInteger2);
-  CPPUNIT_TEST(testFormatInteger3);
-  CPPUNIT_TEST(testFormatInteger4);
-  CPPUNIT_TEST(testFormatInteger5);
-  CPPUNIT_TEST(testFormatInteger6);
-  CPPUNIT_TEST(testFormatInteger7);
-  CPPUNIT_TEST(testFormatInteger8);
-  CPPUNIT_TEST(testFormatInteger9);
-  CPPUNIT_TEST(testFormatInteger10);
-  CPPUNIT_TEST(testFormatInteger11);
-  CPPUNIT_TEST(testFormatDate1);
+  LOGUNIT_TEST_SUITE(FileNamePatternTestCase);
+  LOGUNIT_TEST(testFormatInteger1);
+  LOGUNIT_TEST(testFormatInteger2);
+  LOGUNIT_TEST(testFormatInteger3);
+  LOGUNIT_TEST(testFormatInteger4);
+  LOGUNIT_TEST(testFormatInteger5);
+  LOGUNIT_TEST(testFormatInteger6);
+  LOGUNIT_TEST(testFormatInteger7);
+  LOGUNIT_TEST(testFormatInteger8);
+  LOGUNIT_TEST(testFormatInteger9);
+  LOGUNIT_TEST(testFormatInteger10);
+  LOGUNIT_TEST(testFormatInteger11);
+  LOGUNIT_TEST(testFormatDate1);
 //
 //   TODO: Problem with timezone offset
-//  CPPUNIT_TEST(testFormatDate2);
-//  CPPUNIT_TEST(testFormatDate3);
-  CPPUNIT_TEST(testFormatDate4);
-  CPPUNIT_TEST(testFormatDate5);
-  CPPUNIT_TEST_SUITE_END();
+//  LOGUNIT_TEST(testFormatDate2);
+//  LOGUNIT_TEST(testFormatDate3);
+  LOGUNIT_TEST(testFormatDate4);
+  LOGUNIT_TEST(testFormatDate5);
+  LOGUNIT_TEST_SUITE_END();
 
 public:
     LogString format(const LogString& pattern,
@@ -103,13 +101,13 @@ public:
         apr_time_t n;
         /*apr_status_t stat = */apr_time_exp_get(&n, &tm);
         ObjectPtr obj(new Date(n));
-        CPPUNIT_ASSERT_EQUAL(expected, format(pattern, obj));
+        LOGUNIT_ASSERT_EQUAL(expected, format(pattern, obj));
     }
 
     void assertIntegerPattern(const LogString& pattern, int value,
         const LogString& expected) {
         ObjectPtr obj(new Integer(value));
-        CPPUNIT_ASSERT_EQUAL(expected, format(pattern, obj));
+        LOGUNIT_ASSERT_EQUAL(expected, format(pattern, obj));
     }
 
     void testFormatInteger1() {
@@ -187,5 +185,5 @@ public:
 //   See bug LOGCXX-204
 //
 #if !defined(_MSC_VER) || _MSC_VER > 1200
-CPPUNIT_TEST_SUITE_REGISTRATION(FileNamePatternTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(FileNamePatternTestCase);
 #endif

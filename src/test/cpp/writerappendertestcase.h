@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
 #include <log4cxx/writerappender.h>
 #include "appenderskeletontestcase.h"
 

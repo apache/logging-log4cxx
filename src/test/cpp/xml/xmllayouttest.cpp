@@ -15,9 +15,7 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
+#include "../logunit.h"
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/xmllayout.h>
 #include <log4cxx/fileappender.h>
@@ -56,30 +54,20 @@ using namespace log4cxx::spi;
  * Test for XMLLayout.
  *
  */
-class XMLLayoutTest : public CppUnit::TestFixture {
-        CPPUNIT_TEST_SUITE(XMLLayoutTest);
-                CPPUNIT_TEST(testGetContentType);
-                CPPUNIT_TEST(testIgnoresThrowable);
-                CPPUNIT_TEST(testGetHeader);
-                CPPUNIT_TEST(testGetFooter);
-                CPPUNIT_TEST(testFormat);
-                CPPUNIT_TEST(testFormatWithNDC);
-                CPPUNIT_TEST(testGetSetLocationInfo);
-                CPPUNIT_TEST(testActivateOptions);
-                CPPUNIT_TEST(testProblemCharacters);
-                CPPUNIT_TEST(testNDCWithCDATA);
-        CPPUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(XMLLayoutTest) {
+        LOGUNIT_TEST_SUITE(XMLLayoutTest);
+                LOGUNIT_TEST(testGetContentType);
+                LOGUNIT_TEST(testIgnoresThrowable);
+                LOGUNIT_TEST(testGetHeader);
+                LOGUNIT_TEST(testGetFooter);
+                LOGUNIT_TEST(testFormat);
+                LOGUNIT_TEST(testFormatWithNDC);
+                LOGUNIT_TEST(testGetSetLocationInfo);
+                LOGUNIT_TEST(testActivateOptions);
+                LOGUNIT_TEST(testProblemCharacters);
+                LOGUNIT_TEST(testNDCWithCDATA);
+        LOGUNIT_TEST_SUITE_END();
 
-#if 0
-  /**
-   * Construct new instance of XMLLayoutTest.
-   *
-   * @param testName test name.
-   */
-  public XMLLayoutTest(final String testName) {
-    super(testName, "text/plain", false, null, null);
-  }
-#endif  
   
 public:  
     /**
@@ -105,14 +93,14 @@ public:
   void testGetContentType() {
     LogString expected(LOG4CXX_STR("text/plain"));
     LogString actual(XMLLayout().getContentType());
-    CPPUNIT_ASSERT(expected == actual);
+    LOGUNIT_ASSERT(expected == actual);
   }
 
   /**
    * Tests ignoresThrowable.
    */
   void testIgnoresThrowable() {
-    CPPUNIT_ASSERT_EQUAL(false, XMLLayout().ignoresThrowable());
+    LOGUNIT_ASSERT_EQUAL(false, XMLLayout().ignoresThrowable());
   }
 
   /**
@@ -122,7 +110,7 @@ public:
     Pool p;
     LogString header;
     XMLLayout().appendHeader(header, p);
-    CPPUNIT_ASSERT_EQUAL((size_t) 0, header.size());
+    LOGUNIT_ASSERT_EQUAL((size_t) 0, header.size());
   }
 
   /**
@@ -132,7 +120,7 @@ public:
     Pool p;
     LogString footer;
     XMLLayout().appendFooter(footer, p);
-    CPPUNIT_ASSERT_EQUAL((size_t) 0, footer.size());
+    LOGUNIT_ASSERT_EQUAL((size_t) 0, footer.size());
   }
 
 private:
@@ -149,26 +137,26 @@ private:
     LogString header(LOG4CXX_STR("<log4j:eventSet xmlns:log4j='http://jakarta.apache.org/log4j/'>"));
     LogString::const_iterator iter(header.begin());
     encoder->encode(header, iter, buf);
-    CPPUNIT_ASSERT(iter == header.end());
+    LOGUNIT_ASSERT(iter == header.end());
     iter = source.begin();
     encoder->encode(source, iter, buf);
-    CPPUNIT_ASSERT(iter == source.end());
+    LOGUNIT_ASSERT(iter == source.end());
     LogString footer(LOG4CXX_STR("</log4j:eventSet>"));
     iter = footer.begin();
     encoder->encode(footer, iter, buf);
     buf.flip();
     apr_pool_t* apr_pool = (apr_pool_t*) p.getAPRPool();
     apr_xml_parser* parser = apr_xml_parser_create(apr_pool);
-    CPPUNIT_ASSERT(parser != 0);
+    LOGUNIT_ASSERT(parser != 0);
     apr_status_t stat = apr_xml_parser_feed(parser, buf.data(), buf.remaining());
-    CPPUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+    LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
     apr_xml_doc* doc = 0;
     stat = apr_xml_parser_done(parser, &doc);
-    CPPUNIT_ASSERT(doc != 0);
+    LOGUNIT_ASSERT(doc != 0);
     apr_xml_elem* eventSet = doc->root;
-    CPPUNIT_ASSERT(eventSet != 0);
+    LOGUNIT_ASSERT(eventSet != 0);
     apr_xml_elem* event = eventSet->first_child;
-    CPPUNIT_ASSERT(event != 0);
+    LOGUNIT_ASSERT(event != 0);
     return event;    
   }
 
@@ -200,11 +188,11 @@ private:
   void checkEventElement(
     apr_xml_elem* element, LoggingEventPtr& event) {
     std::string tagName("event");
-    CPPUNIT_ASSERT_EQUAL(tagName, (std::string) element->name);
+    LOGUNIT_ASSERT_EQUAL(tagName, (std::string) element->name);
     LOG4CXX_ENCODE_CHAR(cLoggerName, event->getLoggerName());
-    CPPUNIT_ASSERT_EQUAL(cLoggerName, getAttribute(element, "logger"));
+    LOGUNIT_ASSERT_EQUAL(cLoggerName, getAttribute(element, "logger"));
     LOG4CXX_ENCODE_CHAR(cLevelName, event->getLevel()->toString());
-    CPPUNIT_ASSERT_EQUAL(cLevelName, getAttribute(element, "level"));
+    LOGUNIT_ASSERT_EQUAL(cLevelName, getAttribute(element, "level"));
   }
 
   /**
@@ -215,8 +203,8 @@ private:
   void checkMessageElement(
     apr_xml_elem* element, std::string message) {
     std::string tagName = "message";
-    CPPUNIT_ASSERT_EQUAL(tagName, (std::string) element->name);
-    CPPUNIT_ASSERT_EQUAL(message, getText(element));
+    LOGUNIT_ASSERT_EQUAL(tagName, (std::string) element->name);
+    LOGUNIT_ASSERT_EQUAL(message, getText(element));
   }
 
   /**
@@ -226,9 +214,9 @@ private:
    */
   void checkNDCElement(apr_xml_elem* element, std::string message) {
     std::string tagName = "NDC";
-    CPPUNIT_ASSERT_EQUAL(tagName, (std::string) element->name);
+    LOGUNIT_ASSERT_EQUAL(tagName, (std::string) element->name);
     std::string dMessage = getText(element);
-    CPPUNIT_ASSERT_EQUAL(message, dMessage);
+    LOGUNIT_ASSERT_EQUAL(message, dMessage);
   }
 
 
@@ -243,16 +231,16 @@ private:
     std::string tagName = "properties";
     std::string dataTag = "data";
     int childNodeCount = 0;
-    CPPUNIT_ASSERT_EQUAL(tagName, (std::string) element->name);
+    LOGUNIT_ASSERT_EQUAL(tagName, (std::string) element->name);
     for(apr_xml_elem* child = element->first_child;
         child != NULL;
         child = child->next) {
-            CPPUNIT_ASSERT_EQUAL(dataTag, (std::string) child->name);
-            CPPUNIT_ASSERT_EQUAL(key, getAttribute(child, "name"));
-            CPPUNIT_ASSERT_EQUAL(value, getAttribute(child, "value"));
+            LOGUNIT_ASSERT_EQUAL(dataTag, (std::string) child->name);
+            LOGUNIT_ASSERT_EQUAL(key, getAttribute(child, "name"));
+            LOGUNIT_ASSERT_EQUAL(value, getAttribute(child, "value"));
             childNodeCount++;        
     }
-    CPPUNIT_ASSERT_EQUAL(1, childNodeCount);
+    LOGUNIT_ASSERT_EQUAL(1, childNodeCount);
     }
 
 public:
@@ -281,7 +269,7 @@ public:
         checkMessageElement(node, "Hello, World");
     }
 
-    CPPUNIT_ASSERT_EQUAL(1, childElementCount);
+    LOGUNIT_ASSERT_EQUAL(1, childElementCount);
   }
 
 
@@ -319,7 +307,7 @@ public:
         }
     }
 
-    CPPUNIT_ASSERT_EQUAL(2, childElementCount);
+    LOGUNIT_ASSERT_EQUAL(2, childElementCount);
   }
 
   /**
@@ -327,11 +315,11 @@ public:
    */
  void testGetSetLocationInfo() {
     XMLLayout layout;
-    CPPUNIT_ASSERT_EQUAL(false, layout.getLocationInfo());
+    LOGUNIT_ASSERT_EQUAL(false, layout.getLocationInfo());
     layout.setLocationInfo(true);
-    CPPUNIT_ASSERT_EQUAL(true, layout.getLocationInfo());
+    LOGUNIT_ASSERT_EQUAL(true, layout.getLocationInfo());
     layout.setLocationInfo(false);
-    CPPUNIT_ASSERT_EQUAL(false, layout.getLocationInfo());
+    LOGUNIT_ASSERT_EQUAL(false, layout.getLocationInfo());
   }
 
   /**
@@ -391,7 +379,7 @@ public:
           }
 
       }
-      CPPUNIT_ASSERT_EQUAL(3, childElementCount);
+      LOGUNIT_ASSERT_EQUAL(3, childElementCount);
     }
 
     /**
@@ -417,14 +405,14 @@ public:
             node = node->next) {
             if (strcmp(node->name, "NDC") == 0) {
                 ndcCount++;
-                CPPUNIT_ASSERT_EQUAL(ndcMessage, getText(node));
+                LOGUNIT_ASSERT_EQUAL(ndcMessage, getText(node));
             }
         }
-        CPPUNIT_ASSERT_EQUAL(1, ndcCount);
+        LOGUNIT_ASSERT_EQUAL(1, ndcCount);
    }
 
 };
 
 
-CPPUNIT_TEST_SUITE_REGISTRATION(XMLLayoutTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(XMLLayoutTest);
 

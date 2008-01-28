@@ -16,11 +16,9 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
-
 #include <log4cxx/level.h>
 #include "testchar.h"
+#include "logunit.h"
 
 #if LOG4CXX_CFSTRING_API
 #include <CoreFoundation/CFString.h>
@@ -28,46 +26,46 @@
 
 using namespace log4cxx;
 
-class LevelTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(LevelTestCase)
 {
-        CPPUNIT_TEST_SUITE(LevelTestCase);
-                CPPUNIT_TEST(testToLevelFatal);
-                CPPUNIT_TEST(testTraceInt);
-                CPPUNIT_TEST(testTrace);
-                CPPUNIT_TEST(testIntToTrace);
-                CPPUNIT_TEST(testStringToTrace);
+        LOGUNIT_TEST_SUITE(LevelTestCase);
+                LOGUNIT_TEST(testToLevelFatal);
+                LOGUNIT_TEST(testTraceInt);
+                LOGUNIT_TEST(testTrace);
+                LOGUNIT_TEST(testIntToTrace);
+                LOGUNIT_TEST(testStringToTrace);
 #if LOG4CXX_WCHAR_T_API
-                CPPUNIT_TEST(testWideStringToTrace);
+                LOGUNIT_TEST(testWideStringToTrace);
 #endif                
 #if LOG4CXX_UNICHAR_API
-                CPPUNIT_TEST(testUniCharStringToTrace);
+                LOGUNIT_TEST(testUniCharStringToTrace);
 #endif                
 #if LOG4CXX_CFSTRING_API
-                CPPUNIT_TEST(testCFStringToTrace);
+                LOGUNIT_TEST(testCFStringToTrace);
 #endif                
-        CPPUNIT_TEST_SUITE_END();
+        LOGUNIT_TEST_SUITE_END();
 
 public:
         void testToLevelFatal()
         {
                 LevelPtr level(Level::toLevel(LOG4CXX_TEST_STR("fATal")));
-                CPPUNIT_ASSERT_EQUAL((int) Level::FATAL_INT, level->toInt());
+                LOGUNIT_ASSERT_EQUAL((int) Level::FATAL_INT, level->toInt());
         }
         
     /**
      * Tests Level::TRACE_INT.
      */
   void testTraceInt() {
-      CPPUNIT_ASSERT_EQUAL(5000, (int) Level::TRACE_INT);
+      LOGUNIT_ASSERT_EQUAL(5000, (int) Level::TRACE_INT);
   }
 
     /**
      * Tests Level.TRACE.
      */
   void testTrace() {
-      CPPUNIT_ASSERT(Level::getTrace()->toString() == LOG4CXX_STR("TRACE"));
-      CPPUNIT_ASSERT_EQUAL(5000, Level::getTrace()->toInt());
-      CPPUNIT_ASSERT_EQUAL(7, Level::getTrace()->getSyslogEquivalent());
+      LOGUNIT_ASSERT(Level::getTrace()->toString() == LOG4CXX_STR("TRACE"));
+      LOGUNIT_ASSERT_EQUAL(5000, Level::getTrace()->toInt());
+      LOGUNIT_ASSERT_EQUAL(7, Level::getTrace()->getSyslogEquivalent());
   }
 
     /**
@@ -75,7 +73,7 @@ public:
      */
   void testIntToTrace() {
       LevelPtr trace(Level::toLevel(5000));
-      CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+      LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 
     /**
@@ -83,7 +81,7 @@ public:
      */
   void testStringToTrace() {
         LevelPtr trace(Level::toLevel("TRACE"));
-		CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+		LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 
 #if LOG4CXX_WCHAR_T_API
@@ -92,7 +90,7 @@ public:
      */
   void testWideStringToTrace() {
         LevelPtr trace(Level::toLevel(L"TRACE"));
-        CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+        LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 #endif  
 
@@ -103,7 +101,7 @@ public:
   void testUniCharStringToTrace() {
         const UniChar name[] = { 'T', 'R', 'A', 'C', 'E', 0 };
         LevelPtr trace(Level::toLevel(name));
-        CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+        LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 #endif  
 
@@ -113,11 +111,11 @@ public:
      */
   void testCFStringToTrace() {
         LevelPtr trace(Level::toLevel(CFSTR("TRACE")));
-        CPPUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+        LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 #endif  
         
 
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(LevelTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(LevelTestCase);

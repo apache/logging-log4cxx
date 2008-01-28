@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-#include <cppunit/TestFixture.h>
-#include <cppunit/extensions/HelperMacros.h>
+#include <log4cxx/helpers/cyclicbuffer.h>
+#include "../logunit.h"
 
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
-#include <log4cxx/helpers/cyclicbuffer.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include "../testchar.h"
@@ -31,13 +30,13 @@ using namespace log4cxx::spi;
 
 #define MAX 1000
 
-class CyclicBufferTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(CyclicBufferTestCase)
 {
-   CPPUNIT_TEST_SUITE(CyclicBufferTestCase);
-      CPPUNIT_TEST(test0);
-      CPPUNIT_TEST(test1);
-      CPPUNIT_TEST(testResize);
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE(CyclicBufferTestCase);
+      LOGUNIT_TEST(test0);
+      LOGUNIT_TEST(test1);
+      LOGUNIT_TEST(testResize);
+   LOGUNIT_TEST_SUITE_END();
 
    LoggerPtr logger;
    std::vector<LoggingEventPtr> e;
@@ -66,25 +65,25 @@ public:
       int size = 2;
 
       CyclicBuffer cb(size);
-      CPPUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
+      LOGUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
 
       cb.add(e[0]);
-      CPPUNIT_ASSERT_EQUAL(1, cb.length());
-      CPPUNIT_ASSERT_EQUAL(e[0], cb.get());
-      CPPUNIT_ASSERT_EQUAL(0, cb.length());
-      CPPUNIT_ASSERT(cb.get() == 0);
-      CPPUNIT_ASSERT_EQUAL(0, cb.length());
+      LOGUNIT_ASSERT_EQUAL(1, cb.length());
+      LOGUNIT_ASSERT_EQUAL(e[0], cb.get());
+      LOGUNIT_ASSERT_EQUAL(0, cb.length());
+      LOGUNIT_ASSERT(cb.get() == 0);
+      LOGUNIT_ASSERT_EQUAL(0, cb.length());
 
       CyclicBuffer cb2(size);
       cb2.add(e[0]);
       cb2.add(e[1]);
-      CPPUNIT_ASSERT_EQUAL(2, cb2.length());
-      CPPUNIT_ASSERT_EQUAL(e[0], cb2.get());
-      CPPUNIT_ASSERT_EQUAL(1, cb2.length());
-      CPPUNIT_ASSERT_EQUAL(e[1], cb2.get());
-      CPPUNIT_ASSERT_EQUAL(0, cb2.length());
-      CPPUNIT_ASSERT(cb2.get() == 0);
-      CPPUNIT_ASSERT_EQUAL(0, cb2.length());
+      LOGUNIT_ASSERT_EQUAL(2, cb2.length());
+      LOGUNIT_ASSERT_EQUAL(e[0], cb2.get());
+      LOGUNIT_ASSERT_EQUAL(1, cb2.length());
+      LOGUNIT_ASSERT_EQUAL(e[1], cb2.get());
+      LOGUNIT_ASSERT_EQUAL(0, cb2.length());
+      LOGUNIT_ASSERT(cb2.get() == 0);
+      LOGUNIT_ASSERT_EQUAL(0, cb2.length());
    }
 
    void test1()
@@ -98,13 +97,13 @@ public:
       //System.out.println("Doing test with size = "+size);
       CyclicBuffer cb(size);
 
-      CPPUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
+      LOGUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
 
       int i;
 
       for (i = -(size + 10); i < (size + 10); i++)
       {
-         CPPUNIT_ASSERT(cb.get(i) == 0);
+         LOGUNIT_ASSERT(cb.get(i) == 0);
       }
 
       for (i = 0; i < MAX; i++)
@@ -117,11 +116,11 @@ public:
          for (int j = limit; j >= 0; j--)
          {
             //System.out.println("i= "+i+", j="+j);
-            CPPUNIT_ASSERT_EQUAL(e[i - (limit - j)], cb.get(j));
+            LOGUNIT_ASSERT_EQUAL(e[i - (limit - j)], cb.get(j));
          }
 
-         CPPUNIT_ASSERT(cb.get(-1) == 0);
-         CPPUNIT_ASSERT(cb.get(limit + 1) == 0);
+         LOGUNIT_ASSERT(cb.get(-1) == 0);
+         LOGUNIT_ASSERT(cb.get(limit + 1) == 0);
       }
    }
 
@@ -163,9 +162,9 @@ public:
       //System.out.println("Len = "+len+", offset="+offset);
       for (int j = 0; j < len; j++)
       {
-         CPPUNIT_ASSERT_EQUAL(e[offset + j], cb.get(j));
+         LOGUNIT_ASSERT_EQUAL(e[offset + j], cb.get(j));
       }
    }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CyclicBufferTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(CyclicBufferTestCase);
