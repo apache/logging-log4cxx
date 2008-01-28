@@ -22,7 +22,7 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-class InetAddressTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(InetAddressTestCase)
 {
         LOGUNIT_TEST_SUITE(InetAddressTestCase);
                 LOGUNIT_TEST(testGetLocalHost);

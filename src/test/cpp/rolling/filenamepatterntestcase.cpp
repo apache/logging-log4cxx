@@ -39,7 +39,7 @@ using namespace log4cxx::pattern;
  * @author Curt Arnold
  *
  */
-class FileNamePatternTestCase  : public CppUnit::TestFixture {
+LOGUNIT_CLASS(FileNamePatternTestCase) {
   LOGUNIT_TEST_SUITE(FileNamePatternTestCase);
   LOGUNIT_TEST(testFormatInteger1);
   LOGUNIT_TEST(testFormatInteger2);

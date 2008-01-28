@@ -39,12 +39,12 @@ using namespace log4cxx::xml;
 
 LOGUNIT_CLASS(CustomLevelTestCase)
 {
-   CPPUNIT_TEST_SUITE(CustomLevelTestCase);
-      CPPUNIT_TEST(test1);
-      CPPUNIT_TEST(test2);
-      CPPUNIT_TEST(test3);
-      CPPUNIT_TEST(test4);
-   CPPUNIT_TEST_SUITE_END();
+   LOGUNIT_TEST_SUITE(CustomLevelTestCase);
+      LOGUNIT_TEST(test1);
+      LOGUNIT_TEST(test2);
+      LOGUNIT_TEST(test3);
+      LOGUNIT_TEST(test4);
+   LOGUNIT_TEST_SUITE_END();
 
    LoggerPtr root;
    LoggerPtr logger;
@@ -72,7 +72,7 @@ public:
       DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel1.xml"));
       common();
         const File witness("witness/customLevel.1");
-      CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
    }
 
    void test2()
@@ -80,7 +80,7 @@ public:
       DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel2.xml"));
       common();
         const File witness("witness/customLevel.2");
-      CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
    }
 
    void test3()
@@ -88,7 +88,7 @@ public:
       DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel3.xml"));
       common();
         const File witness("witness/customLevel.3");
-      CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
    }
 
    void test4()
@@ -96,7 +96,7 @@ public:
       DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel4.xml"));
       common();
         const File witness("witness/customLevel.4");
-      CPPUNIT_ASSERT(Compare::compare(TEMP, witness));
+      LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
    }
 
    void common()
@@ -120,7 +120,7 @@ public:
    }
 };
 
-CPPUNIT_TEST_SUITE_REGISTRATION(CustomLevelTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(CustomLevelTestCase);
 
 const File CustomLevelTestCase::TEMP("output/temp");
 

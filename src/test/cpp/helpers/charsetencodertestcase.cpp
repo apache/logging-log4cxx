@@ -31,7 +31,7 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 
-class CharsetEncoderTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(CharsetEncoderTestCase)
 {
         LOGUNIT_TEST_SUITE(CharsetEncoderTestCase);
 #if APR_HAS_THREADS        
