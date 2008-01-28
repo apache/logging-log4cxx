@@ -29,7 +29,7 @@ using namespace log4cxx::helpers;
    @author Curt Arnold
    @since 0.9.8
 */
-class StringHelperTestCase : public CppUnit::TestFixture
+LOGUNIT_CLASS(StringHelperTestCase)
    {
      LOGUNIT_TEST_SUITE( StringHelperTestCase );
      LOGUNIT_TEST( testStartsWith1 );
