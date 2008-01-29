@@ -478,4 +478,4 @@ public:
 const File SocketServerTestCase::TEMP("output/temp");
 const File SocketServerTestCase::FILTERED("output/filtered");
 
-LOGUNIT_TEST_SUITE_REGISTRATION_NO_AUTO_RUN(SocketServerTestCase)
+LOGUNIT_TEST_SUITE_REGISTRATION_DISABLED(SocketServerTestCase)

@@ -22,8 +22,6 @@ noinst_HEADERS = \
 	$(top_srcdir)/src/test/cpp/xml/*.h \
 	$(top_srcdir)/src/test/cpp/*.h
 
-if TESTS
-
 INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 noinst_PROGRAMS = testsuite
@@ -129,6 +127,7 @@ testsuite_SOURCES = \
         $(db_tests) \
         $(xml_tests) \
         $(nt_tests) \
+        abts.c \
         asyncappendertestcase.cpp\
         encodingtest.cpp\
         filetestcase.cpp \
@@ -136,8 +135,8 @@ testsuite_SOURCES = \
         hierarchythresholdtestcase.cpp\
         l7dtestcase.cpp\
         leveltestcase.cpp \
+        logunit.cpp \
         loggertestcase.cpp\
-        main.cpp\
         minimumtestcase.cpp\
         patternlayouttest.cpp\
         vectorappender.cpp\
@@ -153,15 +152,9 @@ testsuite_SOURCES = \
 testsuite_LDADD = \
         $(top_builddir)/src/main/cpp/liblog4cxx.la
 
-testsuite_LDFLAGS = \
-        @LIBS_CPPUNIT@
-
-AM_CPPFLAGS = \
-        @CPPFLAGS_CPPUNIT@
 
 testsuite_DEPENDENCIES = \
         $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 check: testsuite
 
-endif

@@ -16,7 +16,7 @@
 SUBDIRS = input witness
 EXTRA_DIST = L7D_en_US.properties L7D_fr_CH.properties L7D_fr.properties
 
-if TESTS
+
 
 # if we are building in a separate build tree, then copy all necessary files
 all-local:
@@ -37,11 +37,11 @@ prepare:
 build: check-recursive prepare
 
 cleanOutputDir:
-	@rm -f output/*
+	@rm -rf output/*
 	
 check: prepare run-unittest
 
-run-unittest: cleanOutputDir
+run-unittest: build cleanOutputDir
 	@export TOTO=wonderful; \
 	export key1=value1; \
 	export key2=value2; \
@@ -127,4 +127,3 @@ PatternParser: build cleanOutputDir
 L7d: build cleanOutputDir
 	../cpp/testsuite L7dTestCase
 
-endif

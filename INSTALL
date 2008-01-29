@@ -30,7 +30,7 @@ and Borland C++ 5.5 and produce IDE project files for Microsoft Visual Studio
 
 Prerequisites:
 
-Apache Ant 1.6.1 or later (1.6.2 preferred)
+Apache Ant 1.6.1 or later
    http://ant.apache.org
 
 cpptasks.jar and ant-contrib.jar on CLASSPATH
@@ -51,11 +51,9 @@ Connection to internet
 The following files placed in the lib directory:
     apr-1.2.2.tar.gz
     apr-util-1.2.2.tar.gz
-    cppunit-1.10.2.gz
-
+ 
     http://apr.apache.org
-    http://cppunit.sourceforge.net
-
+ 
 
 
 Building:
@@ -93,7 +91,6 @@ Build options:
      -Dlib.type=[shared | static | dylib]
      -Drtti=[false | true]
      -Dapache.mirror=URL
-     -Dcppunit.mirror=URL
      -Dapr.lib.type=[static | shared]
      -Daprutil.lib.type=[static | shared]
      -Dapriconv.lib.type=[static | shared]
@@ -224,7 +221,6 @@ Configure options
 
 --with-apr : Specify non-default location for apr.
 --with-aprutil: Specify non-default location for apr-util.
---enable-cppunit=no: Disable building CppUnit unit tests.
 --enable-wchar_t: Enable wchar_t API methods.
 --enable-unichar: Enable UniChar API methods, UniChar is an unsigned short containing UTF-16.
 --enable-cfstring: Enable CFString API methods, CFString is Mac OS/X CoreFoundation's string.

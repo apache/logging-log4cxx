@@ -149,7 +149,7 @@ private:
     apr_xml_parser* parser = apr_xml_parser_create(apr_pool);
     LOGUNIT_ASSERT(parser != 0);
     apr_status_t stat = apr_xml_parser_feed(parser, buf.data(), buf.remaining());
-    LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+    LOGUNIT_ASSERT(stat == APR_SUCCESS);
     apr_xml_doc* doc = 0;
     stat = apr_xml_parser_done(parser, &doc);
     LOGUNIT_ASSERT(doc != 0);
