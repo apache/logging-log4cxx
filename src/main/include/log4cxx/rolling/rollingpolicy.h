@@ -34,7 +34,7 @@ namespace log4cxx {
          * that is the live file where logging output will be directed.
          *
          * @author Ceki G&uuml;lc&uuml;
-         * @since 1.3
+         * 
          *
         */
         class LOG4CXX_EXPORT RollingPolicy :

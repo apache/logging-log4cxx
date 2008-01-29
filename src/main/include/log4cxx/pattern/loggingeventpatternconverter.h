@@ -34,7 +34,7 @@ namespace log4cxx {
     *
     * @author Curt Arnold
     *
-    * @since 0.9.8
+    * 
     */
 class LOG4CXX_EXPORT LoggingEventPatternConverter : public PatternConverter {
 protected:

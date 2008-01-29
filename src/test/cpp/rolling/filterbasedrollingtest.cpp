@@ -39,7 +39,7 @@ using namespace log4cxx::helpers;
  * Tests of rolling file appender with a filter based triggering policy.
  *
  * @author Curt Arnold
- * @since 1.3
+ * 
  *
  */
 LOGUNIT_CLASS(FilterBasedRollingTest) {

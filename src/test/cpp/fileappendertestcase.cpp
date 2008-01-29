@@ -65,7 +65,7 @@ public:
           /**
            * Tests that double backslashes in filespecs are stripped
            *  on calls to setOption.
-           * @since 0.9.8
+           * 
            */
         void testStripDoubleBackslashes() {
 
@@ -78,7 +78,7 @@ public:
           /**
            * Tests stripDuplicateBackslashes
            *
-           * @since 0.9.8
+           * 
            */
         void testStripDuplicateBackslashes() {
              LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo"), 

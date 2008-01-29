@@ -28,7 +28,7 @@ namespace log4cxx { namespace pattern {
  * unless this converter's option is 'short', where it just outputs the first line of the trace.
  *
  * @author Curt Arnold
- * @since 0.9.8
+ * 
  *
  */
 class LOG4CXX_EXPORT ThrowableInformationPatternConverter

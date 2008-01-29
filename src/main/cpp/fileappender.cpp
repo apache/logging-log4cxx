@@ -182,7 +182,7 @@ void FileAppender::activateOptions(Pool& p)
  *
  * @param src source string
  * @return modified string
- * @since 0.9.8
+ * 
  *
  */
 LogString FileAppender::stripDuplicateBackslashes(const LogString& src) {

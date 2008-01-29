@@ -32,7 +32,7 @@ using namespace log4cxx::helpers;
 /**
    Unit test {@link TimeZone}.
    @author Curt Arnold
-   @since 0.98 */
+   */
 LOGUNIT_CLASS(TimeZoneTestCase) {
   LOGUNIT_TEST_SUITE(TimeZoneTestCase);
           LOGUNIT_TEST(test1);

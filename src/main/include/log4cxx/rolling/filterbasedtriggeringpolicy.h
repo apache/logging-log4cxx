@@ -39,7 +39,7 @@
  * filter rejects a message, a rolling event will be triggered.
  *
  * @author Curt Arnold
- * @since 1.3
+ * 
  *
  */
 class LOG4CXX_EXPORT FilterBasedTriggeringPolicy : public TriggeringPolicy {

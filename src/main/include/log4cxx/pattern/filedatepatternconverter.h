@@ -29,7 +29,7 @@ namespace log4cxx { namespace pattern {
  * the %d pattern in pattern layout.
  *
  * @author Curt Arnold
- * @since 0.9.8
+ * 
  */
 class LOG4CXX_EXPORT FileDatePatternConverter {
   /**

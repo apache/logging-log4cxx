@@ -36,7 +36,7 @@ using namespace log4cxx::helpers;
 /**
    Unit test {@link AbsoluteTimeDateFormat}.
    @author Curt Arnold
-   @since 1.3.0 */
+   */
 LOGUNIT_CLASS(AbsoluteTimeDateFormatTestCase) {
   LOGUNIT_TEST_SUITE(AbsoluteTimeDateFormatTestCase);
           LOGUNIT_TEST(test1);

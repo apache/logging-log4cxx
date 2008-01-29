@@ -40,7 +40,7 @@ namespace log4cxx {
          * policies.
          *
          * @author Curt Arnold
-         * @since 0.9.8
+         * 
          */
         class LOG4CXX_EXPORT RollingPolicyBase :
            public virtual RollingPolicy,

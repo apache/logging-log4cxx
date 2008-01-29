@@ -35,7 +35,6 @@ namespace log4cxx
 
           /**
            * InputStream implemented on top of a byte array.
-           * @since 0.9.8
            */
           class LOG4CXX_EXPORT ByteArrayInputStream : public InputStream
           {

@@ -31,7 +31,7 @@ namespace log4cxx {
  * Convert and format the event's date in a StringBuffer.
  *
  * @author Curt Arnold
- * @since 0.9.8
+ * 
  */
 class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter {
   /**

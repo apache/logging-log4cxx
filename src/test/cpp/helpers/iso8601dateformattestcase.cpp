@@ -34,7 +34,7 @@ using namespace log4cxx::helpers;
 /**
    Unit test {@link ISO8601DateFormat}.
    @author Curt Arnold
-   @since 1.3.0 */
+   */
 LOGUNIT_CLASS(ISO8601DateFormatTestCase) {
      LOGUNIT_TEST_SUITE( ISO8601DateFormatTestCase );
      LOGUNIT_TEST( test1 );

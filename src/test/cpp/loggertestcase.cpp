@@ -414,7 +414,7 @@ public:
         
   /**
    * Tests logger.trace(Object).
-   * @since 1.2.12
+   * 
    */
   void testTrace() {
       VectorAppenderPtr appender = new VectorAppender();
@@ -438,7 +438,7 @@ public:
 
     /**
      * Tests isTraceEnabled.
-     * @since 1.2.12
+     * 
      */
     void testIsTraceEnabled() {
         VectorAppenderPtr appender = new VectorAppender();

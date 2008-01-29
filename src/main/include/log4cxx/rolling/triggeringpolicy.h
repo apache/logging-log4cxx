@@ -36,7 +36,7 @@ namespace log4cxx {
          * external event or a combination thereof.
          *
          * @author Ceki G&uuml;lc&uuml;
-         * @since 1.3
+         * 
          * */
 
         class LOG4CXX_EXPORT TriggeringPolicy :

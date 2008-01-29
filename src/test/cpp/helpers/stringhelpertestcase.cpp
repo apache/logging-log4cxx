@@ -27,7 +27,7 @@ using namespace log4cxx::helpers;
 /**
    Unit test for StringHelper.
    @author Curt Arnold
-   @since 0.9.8
+   
 */
 LOGUNIT_CLASS(StringHelperTestCase)
    {

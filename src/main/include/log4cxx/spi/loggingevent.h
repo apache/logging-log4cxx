@@ -164,7 +164,7 @@ namespace log4cxx
                         * The returned set is unmodifiable by the caller.
                         *
                         * @return Set an unmodifiable set of the MDC keys.
-                        * @since 1.3
+                        * 
                         */
                         KeySet getMDCKeySet() const;
 

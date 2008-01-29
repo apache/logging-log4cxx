@@ -40,7 +40,7 @@ using namespace log4cxx::helpers;
 /**
  * Tests support for encoding specification.
  * @author Curt Arnold
- * @since 0.9.8
+ * 
  */
 LOGUNIT_CLASS(EncodingTest) {
   LOGUNIT_TEST_SUITE(EncodingTest);

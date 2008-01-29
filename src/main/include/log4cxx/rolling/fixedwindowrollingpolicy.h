@@ -53,7 +53,7 @@
  *
  *
  * @author Ceki G&uuml;lc&uuml;
- * @since 1.3
+ * 
  * */
 
 namespace log4cxx {

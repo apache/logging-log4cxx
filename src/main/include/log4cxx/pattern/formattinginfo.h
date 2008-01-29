@@ -36,7 +36,7 @@ typedef helpers::ObjectPtrT<FormattingInfo> FormattingInfoPtr;
  *
  *  @author Curt Arnold
  *
- *  @since 0.9.8
+ *  
  */
 class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::ObjectImpl {
 

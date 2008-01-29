@@ -134,7 +134,7 @@ namespace log4cxx {
          * <code>RollingFileAppender</code>.
          *
          * @author Ceki G&uuml;lc&uuml;
-         * @since 1.3
+         * 
          */
         class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
              public TriggeringPolicy {

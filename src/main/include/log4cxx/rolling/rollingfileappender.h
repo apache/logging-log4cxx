@@ -72,7 +72,7 @@ namespace log4cxx {
          *
          * @author Heinz Richter
          * @author Ceki G&uuml;lc&uuml;
-         * @since  1.3
+         * 
          * */
         class LOG4CXX_EXPORT RollingFileAppender : public FileAppender {
           DECLARE_LOG4CXX_OBJECT(RollingFileAppender)

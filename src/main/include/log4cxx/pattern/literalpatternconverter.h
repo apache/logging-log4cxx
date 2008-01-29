@@ -27,7 +27,7 @@ namespace log4cxx {
  * Formats a string literal.
  *
  * @author Curt Arnold
- * @since 0.9.8
+ * 
  *
  */
 class LOG4CXX_EXPORT LiteralPatternConverter : public LoggingEventPatternConverter {

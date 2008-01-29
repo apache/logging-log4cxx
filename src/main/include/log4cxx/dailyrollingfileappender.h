@@ -100,7 +100,7 @@ public:
   /**
    * Add a filter to the end of the filter list.
    *
-   * @since 0.9.0
+   * 
    */
   void addFilter(const log4cxx::spi::FilterPtr& newFilter);
 
@@ -110,14 +110,14 @@ public:
    *
    * @return the head Filter or null, if no Filters are present
    *
-   * @since 1.1
+   * 
    */
   log4cxx::spi::FilterPtr getFilter() const;
 
   /**
    * Clear the list of filters by removing all the filters in it.
    *
-   * @since 0.9.0
+   * 
    */
   void clearFilters();
 
@@ -129,21 +129,21 @@ public:
    * It is a programming error to append to a closed appender.
    * </p>
    *
-   * @since 0.8.4
+   * 
    */
   void close();
 
   /**
    * Is this appender closed?
    *
-   * @since 1.3
+   * 
    */
   bool isClosed() const;
 
   /**
    * Is this appender in working order?
    *
-   * @since 1.3
+   * 
    */
   bool isActive() const;
 
@@ -162,14 +162,14 @@ public:
   /**
    * Set the {@link Layout} for this appender.
    *
-   * @since 0.8.1
+   * 
    */
   void setLayout(const LayoutPtr& layout);
 
   /**
    * Returns this appenders layout.
    *
-   * @since 1.1
+   * 
    */
   LayoutPtr getLayout() const;
 
@@ -177,7 +177,7 @@ public:
    * Set the name of this appender. The name is used by other components to
    * identify this appender.
    *
-   * @since 0.8.1
+   * 
    */
   void setName(const LogString& name);
 

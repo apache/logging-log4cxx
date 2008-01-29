@@ -92,7 +92,7 @@ namespace log4cxx
                         /**
                          * Sets whether MDC key-value pairs should be output, default false.
                          * @param flag new value.
-                         * @since 0.10
+                         * 
                         */
                         inline void setProperties(bool flag) {
                             properties = flag;
@@ -101,7 +101,7 @@ namespace log4cxx
                         /**
                         * Gets whether MDC key-value pairs should be output.
                         * @return true if MDC key-value pairs are output.
-                        * @since 0.10
+                        * 
                         */
                         inline bool getProperties() {
                             return properties;

@@ -49,7 +49,7 @@ namespace log4cxx {
    @author Chris Nokes
    @author Curt Arnold
 
-   @since 1.3
+   
  */
 class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::ObjectImpl {
 

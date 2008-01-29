@@ -34,7 +34,7 @@ using namespace log4cxx::spi;
 /**
    Unit test {@link RelativeTimeDateFormat} class.
    @author Curt Arnold
-   @since 1.3.0 */
+   */
 LOGUNIT_CLASS(RelativeTimeDateFormatTestCase) {
      LOGUNIT_TEST_SUITE(RelativeTimeDateFormatTestCase);
              LOGUNIT_TEST(test1);

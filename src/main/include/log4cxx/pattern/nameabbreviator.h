@@ -32,7 +32,7 @@ namespace log4cxx {
  * NameAbbreviator generates abbreviated logger and class names.
  *
  * @author Curt Arnold
- * @since 0.9.8
+ * 
  */
 class LOG4CXX_EXPORT NameAbbreviator : public log4cxx::helpers::ObjectImpl {
 public:

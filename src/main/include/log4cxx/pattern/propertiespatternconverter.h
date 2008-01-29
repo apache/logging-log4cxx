@@ -31,7 +31,7 @@ namespace log4cxx { namespace pattern {
  * when this pattern converter has the option set.
  *
  * @author Curt Arnold
- * @since 0.9.8
+ * 
  */
 class LOG4CXX_EXPORT PropertiesPatternConverter
   : public LoggingEventPatternConverter {

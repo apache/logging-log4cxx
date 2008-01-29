@@ -129,7 +129,7 @@ bool WriterAppender::checkEntryConditions() const {
    <p>Closed appenders cannot be reused.
 
    @see #setWriter
-   @since 0.8.4 */
+   */
 void WriterAppender::close()
 {
         synchronized sync(mutex);

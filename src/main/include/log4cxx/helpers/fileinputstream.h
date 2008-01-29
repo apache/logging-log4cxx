@@ -30,7 +30,7 @@ namespace log4cxx
 
           /**
            * InputStream implemented on top of APR file IO.
-           * @since 0.9.8
+           * 
            */
           class LOG4CXX_EXPORT FileInputStream : public InputStream
           {

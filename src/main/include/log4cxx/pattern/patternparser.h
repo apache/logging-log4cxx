@@ -55,7 +55,7 @@ typedef std::map<LogString, PatternConstructor> PatternMap;
  * @author Paul Smith
  * @author Curt Arnold
  *
- * @since 1.3
+ * 
 */
 class LOG4CXX_EXPORT PatternParser {
   /**
