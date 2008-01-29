@@ -29,36 +29,29 @@ using namespace log4cxx::helpers;
 
 void DefaultConfigurator::configure(LoggerRepository* repository)
 {
-   repository->setConfigured(true);
+        repository->setConfigured(true);
         const LogString configuratorClassName(getConfiguratorClass());
 
         LogString configurationOptionStr(getConfigurationFileName());
         File configuration;
-        configuration.setName(configurationOptionStr);
-
-        if (configurationOptionStr.empty())
-        {
-                Pool pool;
-                configuration = LOG4CXX_FILE("log4cxx.properties");
-                if (!configuration.exists(pool)) {
-                    File tmp = LOG4CXX_FILE("log4cxx.xml");
-                    if (tmp.exists(pool)) {
-                        configuration = tmp;
-                    } else {
-                        tmp = LOG4CXX_FILE("log4j.properties");
-                        if (tmp.exists(pool)) {
-                        configuration = tmp;
-                        } else {
-                        tmp = LOG4CXX_FILE("log4j.xml");
-                        if (tmp.exists(pool)) {
-                            configuration = tmp;
-                        }
-                        }
-                    }
-                    }
-        }
 
         Pool pool;
+        if (configurationOptionStr.empty())
+        {
+                configuration.setName(LOG4CXX_STR("log4cxx.xml"));
+                if (!configuration.exists(pool)) {
+                    configuration.setName(LOG4CXX_STR("log4cxx.properties"));
+                    if (!configuration.exists(pool)) {
+                        configuration.setName(LOG4CXX_STR("log4j.xml"));
+                        if (!configuration.exists(pool)) {
+                            configuration.setName(LOG4CXX_STR("log4j.properties"));
+                        }
+                    }
+                }
+        } else {
+            configuration.setName(configurationOptionStr);
+        }
+
         if (configuration.exists(pool))
         {
                 LogString msg(LOG4CXX_STR("Using configuration file ["));
@@ -74,9 +67,14 @@ void DefaultConfigurator::configure(LoggerRepository* repository)
         }
         else
         {
-                LogString msg(LOG4CXX_STR("Could not find configuration file: ["));
-                msg += configuration.getName();
-                msg += LOG4CXX_STR("].");
+                if (configurationOptionStr.empty()) {
+                    LogLog::debug(LOG4CXX_STR("Could not find default configuration file."));
+                } else {
+                    LogString msg(LOG4CXX_STR("Could not find configuration file: ["));
+                    msg += configurationOptionStr;
+                    msg += LOG4CXX_STR("].");
+                    LogLog::debug(msg);
+                }
         }
 
 }
