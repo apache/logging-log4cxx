@@ -33,97 +33,36 @@ prepare:
 	fi;
 	@rm -rf log4j.xml
 	@rm -rf log4j.properties
+	@rm -rf log4cxx.xml
+	@rm -rf log4cxx.properties
 	
 build: check-recursive prepare
 
 cleanOutputDir:
 	@rm -rf output/*
 	
-check: prepare run-unittest
+check: prepare run-unittest DefaultInit
 
 run-unittest: build cleanOutputDir
 	@export TOTO=wonderful; \
 	export key1=value1; \
 	export key2=value2; \
-	../cpp/testsuite +TestCase1
-
-regression: Minimum Logger DOM CustomLevel \
-	CustomLogger PatternLayout \
-	HierarchyThreshold DefaultInit SocketServer \
-	XMLLayout AsyncAppender ErrorHandler \
-	OptionConverter BoundedFIFO \
-	CyclicBuffer DRFA LevelMatchFilter \
-	LevelRangeFilter PatternParser L7d
-
-longUnit:
-
-Minimum: build cleanOutputDir
-	../cpp/testsuite MinimumTestCase
-	
-Logger: build cleanOutputDir
-	../cpp/testsuite LoggerTestCase
-	
-PatternLayout: build cleanOutputDir
-	../cpp/testsuite PatternLayoutTest
-
-HierarchyThreshold: build cleanOutputDir
-	../cpp/testsuite HierarchyThresholdTestCase
-	
-DOM: build cleanOutputDir
-	../cpp/testsuite DOMTestCase
-
-CustomLevel: build cleanOutputDir
-	../cpp/testsuite CustomLevelTestCase
-
-CustomLogger: build cleanOutputDir
-	../cpp/testsuite XLoggerTestCase
+	../cpp/testsuite -v
 	
 DefaultInit: build cleanOutputDir
-	../cpp/testsuite TestCase1
+	../cpp/testsuite -v testcase1
 	@cp input/xml/defaultInit.xml log4j.xml
-	../cpp/testsuite TestCase2
+	../cpp/testsuite -v testcase2
 	@rm -f log4j.xml
 	@cp input/defaultInit3.properties log4j.properties
-	../cpp/testsuite TestCase3
+	../cpp/testsuite -v testcase3
 	@rm -f log4j.properties
 	@cp input/defaultInit3.properties log4j.properties
 	@cp input/xml/defaultInit.xml log4j.xml
-	../cpp/testsuite TestCase4
+	../cpp/testsuite -v testcase4
 	@rm -f log4j.xml
 	@rm -f log4j.properties
 
 SocketServer: build cleanOutputDir
-	../cpp/testsuite SocketServerTestCase
-
-XMLLayout: build cleanOutputDir
-	../cpp/testsuite XMLLayoutTestCase
-
-AsyncAppender: build cleanOutputDir
-	../cpp/testsuite AsyncAppenderTestCase
-
-LevelMatchFilter: build cleanOutputDir
-	../cpp/testsuite LevelMatchFilterTestCase
-
-LevelRangeFilter: build cleanOutputDir
-	../cpp/testsuite LevelRangeFilterTestCase
-
-ErrorHandler: build cleanOutputDir
-	../cpp/testsuite ErrorHandlerTestCase
-
-OptionConverter: build cleanOutputDir
-	../cpp/testsuite OptionConverterTestCase
-
-BoundedFIFO: build cleanOutputDir
-	../cpp/testsuite BoundedFIFOTestCase
-
-CyclicBuffer: build cleanOutputDir
-	../cpp/testsuite CyclicBufferTestCase
-	
-DRFA: build cleanOutputDir
-	../cpp/testsuite DRFATestCase
-
-PatternParser: build cleanOutputDir
-
-L7d: build cleanOutputDir
-	../cpp/testsuite L7dTestCase
+	../cpp/testsuite -v socketservertestcase
 
