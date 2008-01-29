@@ -59,7 +59,7 @@ void Transform::appendEscapingTags(
             break;
             
             default:
-            buf.append(input[special]);
+            buf.append(1, input[special]);
             break;
         }
         start = special+1;
