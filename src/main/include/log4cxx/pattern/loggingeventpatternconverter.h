@@ -32,7 +32,7 @@ namespace log4cxx {
     * LoggingEventPatternConverter is a base class for pattern converters
     * that can format information from instances of LoggingEvent.
     *
-    * @author Curt Arnold
+    * 
     *
     * 
     */

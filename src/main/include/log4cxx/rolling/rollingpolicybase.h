@@ -39,7 +39,7 @@ namespace log4cxx {
          * Implements methods common to most, it not all, rolling
          * policies.
          *
-         * @author Curt Arnold
+         * 
          * 
          */
         class LOG4CXX_EXPORT RollingPolicyBase :

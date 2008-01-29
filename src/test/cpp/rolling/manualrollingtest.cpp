@@ -43,7 +43,7 @@ using namespace log4cxx::rolling;
 /**
  *   Tests of explicit manual rolling of RollingFileAppenders.
  *
- * @author Curt Arnold
+ * 
  *
  */
 LOGUNIT_CLASS(ManualRollingTest)  {

@@ -35,8 +35,8 @@ using namespace log4cxx::pattern;
 /**
  * Tests for FileNamePattern.
  *
- * @author Ceki
- * @author Curt Arnold
+ * 
+ * 
  *
  */
 LOGUNIT_CLASS(FileNamePatternTestCase) {

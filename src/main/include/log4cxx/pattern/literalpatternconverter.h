@@ -26,7 +26,7 @@ namespace log4cxx {
 /**
  * Formats a string literal.
  *
- * @author Curt Arnold
+ * 
  * 
  *
  */

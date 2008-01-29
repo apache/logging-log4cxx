@@ -44,10 +44,10 @@ namespace log4cxx {
    individual PatternConverters. Each of which is responsible for
    converting an object in a converter specific manner.
 
-   @author <a href="mailto:cakalijp@Maritz.com">James P. Cakalic</a>
-   @author Ceki G&uuml;lc&uuml;
-   @author Chris Nokes
-   @author Curt Arnold
+   
+   
+   
+   
 
    
  */

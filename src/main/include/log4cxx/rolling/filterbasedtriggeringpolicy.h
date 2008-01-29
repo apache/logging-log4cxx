@@ -38,7 +38,7 @@
  * by evaluating the current message against a set of filters.  Unless a
  * filter rejects a message, a rolling event will be triggered.
  *
- * @author Curt Arnold
+ * 
  * 
  *
  */

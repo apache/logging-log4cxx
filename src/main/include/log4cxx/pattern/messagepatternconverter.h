@@ -26,7 +26,7 @@ namespace log4cxx { namespace pattern {
 /**
  * Formats the message of an logging event.
  *
- * @author Curt Arnold
+ * 
  * 
  */
 class LOG4CXX_EXPORT MessagePatternConverter : public LoggingEventPatternConverter {

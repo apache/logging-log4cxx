@@ -44,7 +44,7 @@ using namespace log4cxx::rolling;
  *
  * Do not forget to call activateOptions when configuring programatically.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * 
  *
  */
 LOGUNIT_CLASS(SizeBasedRollingTest)  {

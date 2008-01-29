@@ -59,7 +59,7 @@ using namespace log4cxx::rolling;
  Test5      NO                SET          NO
  Test6      YES               SET          NO
  * </pre>
- * @author Ceki G&uuml;lc&uuml;
+ * 
  */
 LOGUNIT_CLASS(TimeBasedRollingTest) {
 

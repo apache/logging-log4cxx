@@ -70,8 +70,8 @@ namespace log4cxx {
          * automatic compression of the archived files. See
          * {@link TimeBasedRollingPolicy} for more details.
          *
-         * @author Heinz Richter
-         * @author Ceki G&uuml;lc&uuml;
+         * 
+         * 
          * 
          * */
         class LOG4CXX_EXPORT RollingFileAppender : public FileAppender {

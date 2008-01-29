@@ -33,7 +33,7 @@ namespace log4cxx {
          * is also responsible for providing the <em>active log file</em>,
          * that is the live file where logging output will be directed.
          *
-         * @author Ceki G&uuml;lc&uuml;
+         * 
          * 
          *
         */

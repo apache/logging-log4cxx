@@ -28,7 +28,7 @@ namespace log4cxx {
 /**
  * Formats the class name of the site of the logging request.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * 
  * 
  */
 class LOG4CXX_EXPORT ClassNamePatternConverter : public NamePatternConverter {

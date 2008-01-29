@@ -49,7 +49,7 @@ static void configure(bool err) {
  *
  *    See bug LOGCXX_126.
  *
- *    @author Curt Arnold
+ *    
  */
 int main(int argc, char** argv)
 {

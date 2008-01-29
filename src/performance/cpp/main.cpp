@@ -41,7 +41,7 @@ using namespace log4cxx::xml;
 /**
  * Logs in a loop a number of times and measure the elapsed time.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * 
  */
 class Loop {
   static int runLength;

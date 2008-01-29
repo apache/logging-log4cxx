@@ -49,11 +49,11 @@ typedef std::map<LogString, PatternConstructor> PatternMap;
  * <p>It is this class that parses conversion patterns and creates
  * a chained list of {@link PatternConverter PatternConverters}.
  *
- * @author James P. Cakalic
- * @author Ceki G&uuml;lc&uuml;
- * @author Anders Kristensen
- * @author Paul Smith
- * @author Curt Arnold
+ * 
+ * 
+ * 
+ * 
+ * 
  *
  * 
 */

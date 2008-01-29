@@ -34,7 +34,7 @@ typedef helpers::ObjectPtrT<FormattingInfo> FormattingInfoPtr;
  * Modifies the output of a pattern converter for a specified minimum
  * and maximum width and alignment.
  *
- *  @author Curt Arnold
+ *  
  *
  *  
  */

@@ -54,7 +54,7 @@ std::locale* ptr = NULL;
 
 /**
    Unit test {@link DateTimeDateFormat}.
-   @author Curt Arnold
+   
    
 */
 LOGUNIT_CLASS(DateTimeDateFormatTestCase)

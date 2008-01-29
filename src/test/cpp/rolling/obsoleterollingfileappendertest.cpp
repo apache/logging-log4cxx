@@ -39,7 +39,7 @@
 /**
  * Tests the emulation of org.apache.log4j.RollingFileAppender
  *
- * @author Curt Arnold
+ * 
  *
  */
  LOGUNIT_CLASS(ObsoleteRollingFileAppenderTest)  {

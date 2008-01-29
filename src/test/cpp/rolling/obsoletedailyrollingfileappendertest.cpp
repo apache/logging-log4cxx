@@ -43,7 +43,7 @@ using namespace log4cxx::helpers;
 /**
  * Tests the emulation of org.apache.log4j.DailyRollingFileAppender
  *
- * @author Curt Arnold
+ * 
  *
  */
 LOGUNIT_CLASS(ObsoleteDailyRollingFileAppenderTest)  {

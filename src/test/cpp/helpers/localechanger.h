@@ -25,7 +25,7 @@ namespace log4cxx {
     /**
     *   Utility class to change the locale for the duration of a test.
     *
-    * @author Curt Arnold
+    * 
     * 
     *
     */

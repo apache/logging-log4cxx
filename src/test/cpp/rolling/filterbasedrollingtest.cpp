@@ -38,7 +38,7 @@ using namespace log4cxx::helpers;
  *
  * Tests of rolling file appender with a filter based triggering policy.
  *
- * @author Curt Arnold
+ * 
  * 
  *
  */

@@ -30,7 +30,7 @@ namespace log4cxx { namespace pattern {
  * within the property bundle
  * when this pattern converter has the option set.
  *
- * @author Curt Arnold
+ * 
  * 
  */
 class LOG4CXX_EXPORT PropertiesPatternConverter

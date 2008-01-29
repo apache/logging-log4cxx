@@ -27,7 +27,7 @@ namespace log4cxx { namespace pattern {
  * Outputs the ThrowableInformation portion of the LoggingiEvent as a full stacktrace
  * unless this converter's option is 'short', where it just outputs the first line of the trace.
  *
- * @author Curt Arnold
+ * 
  * 
  *
  */

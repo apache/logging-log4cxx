@@ -73,7 +73,7 @@ namespace log4cxx
  *
  * If there is no match, {@link Filter#NEUTRAL} is returned.
  *
- * @author Scott Deboy sdeboy@apache.org
+ * 
  */
         class LOG4CXX_EXPORT ExpressionFilter:public log4cxx::spi::Filter
         {

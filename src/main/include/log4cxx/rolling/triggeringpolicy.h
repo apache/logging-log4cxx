@@ -35,7 +35,7 @@ namespace log4cxx {
          * occurs. Such conditions include time of day, file size, an
          * external event or a combination thereof.
          *
-         * @author Ceki G&uuml;lc&uuml;
+         * 
          * 
          * */
 

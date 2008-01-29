@@ -25,7 +25,7 @@ using namespace log4cxx;
 
 /**
  * Tests hierarchy.
- * @author Curt Arnold
+ * 
  */
 LOGUNIT_CLASS(HierarchyTest) {
   LOGUNIT_TEST_SUITE(HierarchyTest);

@@ -41,7 +41,7 @@ namespace log4cxx
  *
  * For information on expression syntax, see org.apache.log4j.rule.ExpressionRule
  *
- * @author Scott Deboy sdeboy@apache.org
+ * 
  */
         class LOG4CXX_EXPORT LocationInfoFilter:public log4cxx::spi::Filter
         {

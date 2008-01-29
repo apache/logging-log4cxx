@@ -41,7 +41,7 @@ namespace log4cxx {
   *  existing code and should not be used except when compatibility with version
   * of log4j prior to 1.3 is a concern.
   *
-  *  @author Curt Arnold
+  *  
   * @deprecated Replaced by {@link org.apache.log4j.rolling.RollingFileAppender}
 */
 class LOG4CXX_EXPORT DailyRollingFileAppender : public Appender, log4cxx::helpers::ObjectImpl {

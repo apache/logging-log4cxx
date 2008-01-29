@@ -27,7 +27,7 @@ namespace log4cxx {
 /**
  * Return the event's line location information in a StringBuffer.
  *
- * @author Ceki G&uuml;lc&uuml;
+ * 
  * 
  */
 class LOG4CXX_EXPORT FileLocationPatternConverter

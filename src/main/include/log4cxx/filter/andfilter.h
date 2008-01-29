@@ -66,7 +66,7 @@ namespace log4cxx
  * or
  * ! ( LEVEL == DEBUG && MSG ~= 'test' )
  *
- * @author Scott Deboy sdeboy@apache.org
+ * 
  */
         class LOG4CXX_EXPORT AndFilter:public log4cxx::spi::Filter
         {

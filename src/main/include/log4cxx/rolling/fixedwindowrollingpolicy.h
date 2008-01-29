@@ -52,7 +52,7 @@
  * larger values are specified by the user.
  *
  *
- * @author Ceki G&uuml;lc&uuml;
+ * 
  * 
  * */
 

@@ -49,7 +49,7 @@ using namespace log4cxx::pattern;
 
 /**
    Unit test {@link CachedDateFormat}.
-   @author Curt Arnold
+   
    */
 LOGUNIT_CLASS(CachedDateFormatTestCase)
    {

@@ -27,7 +27,7 @@ namespace pattern {
 /**
  * Format the event's line location information.
  *
- * @author Curt Arnold
+ * 
  * 
  */
 class LOG4CXX_EXPORT FullLocationPatternConverter
