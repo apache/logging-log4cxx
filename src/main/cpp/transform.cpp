@@ -34,7 +34,7 @@ void Transform::appendEscapingTags(
       return;
    }
    
-   logchar specials[] = { 0x22 /* " */, 0x26 /* & */, 0x3C /* < */, 0x3E /* > */ };
+   logchar specials[] = { 0x22 /* " */, 0x26 /* & */, 0x3C /* < */, 0x3E /* > */, 0x00 };
    size_t start = 0;
    size_t special = input.find_first_of(specials, start);
    while(special != LogString::npos) {
@@ -54,8 +54,12 @@ void Transform::appendEscapingTags(
             buf.append(LOG4CXX_STR("&lt;"));
             break;
             
-            default:
+            case 0x3E:
             buf.append(LOG4CXX_STR("&gt;"));
+            break;
+            
+            default:
+            buf.append(input[special]);
             break;
         }
         start = special+1;
