@@ -1,0 +1,352 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+
+
+<property file="build.properties"/>
+<property name="debug" value="true"/>
+<property name="rtti" value="false"/>
+<property name="optimize" value="none"/>
+<property name="lib.type" value="shared"/>
+
+<taskdef resource="cpptasks.tasks"/>
+<typedef resource="cpptasks.types"/>
+
+<target name="os-detect">
+        <condition property="is-mac" value="true">
+             <and>
+                 <os family="mac"/>
+                 <not><isset property="is-windows"/></not>
+             </and>
+        </condition>
+        <condition property="is-unix" value="true">
+             <or>
+                  <isset property="is-mac"/>
+                  <equals arg1="${os.family}" arg2="cygwin"/>
+                  <and>
+                     <os family="unix"/>
+                     <not><isset property="is-windows"/></not>
+                  </and>
+             </or>
+        </condition>
+        <condition property="is-windows" value="true">
+             <and>
+                <os family="windows"/>
+                <not><isset property="is-unix"/></not>
+             </and>
+        </condition>
+        <condition property="os.family" value="windows">
+            <isset property="is-windows"/>
+        </condition>
+        <condition property="os.family" value="unix">
+            <isset property="is-unix"/>
+        </condition>
+
+
+</target>
+
+
+<target name="win-init" depends="os-detect" if="is-windows">
+    <property name="lib.prefix" value=""/>
+    <property name="lib.extension" value=".lib"/>
+    <property name="project.type" value="msvc6"/>
+    <property name="compiler" value="msvc"/>
+
+    <condition property="is-bcc" value="true">
+        <or>
+           <equals arg1="${compiler}" arg2="bcc"/>
+        </or>
+    </condition>
+
+    <condition property="is-mingw" value="true">
+        <isset property="is-gcc"/>
+    </condition>
+</target>
+
+<target name="mac-init" depends="os-detect" if="is-mac">
+    <property name="project.type" value="xcode"/>
+</target>
+
+
+<target name="unix-init" depends="mac-init" if="is-unix">
+
+    <property name="compiler" value="gcc"/>
+
+    <property name="lib.prefix" value="lib"/>
+    <property name="lib.extension" value=".a"/>
+    <property name="project.type" value="cbuilderx"/>
+    <property name="compiler" value="g++"/>
+    <property name="lib-suffix" value=""/>
+
+    <condition property="has-expat" value="true">
+         <not><isset property="is-mac"/></not>
+    </condition>
+    <condition property="is-cygwin" value="true">
+        <os family="windows"/>
+    </condition>
+</target>
+
+
+<target name="common-init" depends="win-init, unix-init">
+        <available classname="net.sf.antcontrib.cpptasks.CCTask" property="cctask-available"/>
+        <fail unless="cctask-available">cpptasks required
+
+Use CVS HEAD or Feb 2005 or later release from
+http://ant-contrib.sourceforge.net.
+</fail>
+
+        <available classname="net.sf.antcontrib.cpptasks.ide.ProjectDef"
+            property="cctask-project-available"/>
+        <!-- fail unless="cctask-project-available">later version of cpptasks required
+
+Required features not present in cpptasks releases prior to Feb 2005</fail -->
+
+        <mkdir dir="${target.dir}"/>
+        <mkdir dir="${projects.dir}"/>
+
+        <condition property="is-gcc" value="true">
+            <or>
+               <equals arg1="${compiler}" arg2="gcc"/>
+               <equals arg1="${compiler}" arg2="g++"/>
+            </or>
+        </condition>
+
+         <condition property="pic-option" value="-fPIC">
+            <and>
+                     <isset property="is-gcc"/>
+                     <istrue value="${use-pic}"/>
+            </and>
+         </condition>
+
+
+        <condition property="is-debug" value="true">
+                <istrue value="${debug}"/>
+        </condition>
+
+        <condition property="debug.release" value="debug">
+            <isset property="is-debug"/>
+        </condition>
+        <property name="debug.release" value="release"/>
+
+
+        <condition property="lib-suffix" value="d">
+            <isset property="is-debug"/>
+        </condition>
+        <property name="lib-suffix" value=""/>
+
+
+        <condition property="is-static" value="1">
+              <equals arg1="${lib.type}" arg2="static"/>
+        </condition>
+        <condition property="is-shared" value="1">
+              <equals arg1="${lib.type}" arg2="shared"/>
+        </condition>
+        <condition property="static.shared" value="static">
+              <equals arg1="${lib.type}" arg2="static"/>
+        </condition>
+        <property name="static.shared" value="shared"/>
+
+        <property name="executable.dir" value="${target.dir}/${debug.release}/${static.shared}"/>
+
+        <property name="projectsOnly" value="false"/>
+        
+</target>
+
+
+<target name="copy-if-changed-checksum" unless="force-copy">
+    <condition property="force-copy" value="2">
+         <not><filesmatch file1="${tofile}" file2="${file}"/></not>
+    </condition>
+</target>
+
+<target name="copy-if-changed" depends="copy-if-changed-checksum" if="force-copy">
+    <copy tofile="${tofile}" file="${file}" overwrite="true"/>
+</target>
+
+
+<target name="find-apr" depends="init">
+    <condition property="apr.dir" value="${with-apr}">
+        <available file="${with-apr}"/>
+    </condition>
+    <property name="apr.lib.name" value="apr-1"/>
+    <condition property="apr.dir" value="/usr">
+        <or>
+            <available file="/usr/lib/lib${apr.lib.name}.a"/>
+            <available file="/usr/lib/lib${apr.lib.name}.la"/>
+        </or>
+    </condition>
+    <condition property="apr.dir" value="/usr/local/apr">
+        <available file="/usr/local/apr"/>
+    </condition>
+    <property name="relative-apr" location="../apr"/>
+    <condition property="apr.dir" value="${relative-apr}">
+        <available file="${relative-apr}"/>
+    </condition>
+    <fail unless="apr.dir">Unable to locate APR base directory.</fail>
+    
+    <condition property="apr.include.dir" value="${apr.dir}/include/apr-1.0">
+        <available file="${apr.dir}/include/apr-1.0/apr_pools.h"/>
+    </condition>
+    <condition property="apr.include.dir" value="${apr.dir}/include/apr-1">
+        <available file="${apr.dir}/include/apr-1/apr_pools.h"/>
+    </condition>
+    <condition property="apr.include.dir" value="${apr.dir}/include">
+        <available file="${apr.dir}/include/apr_pools.h"/>
+    </condition>
+    <fail unless="apr.include.dir">Unable to locate APR include directory.</fail>
+
+    <condition property="apr.lib.dir" value="${apr.dir}/lib">
+        <and>
+            <not><equals arg1="${apr.dir}" arg2="/usr"/></not>
+            <or>
+                <available file="${apr.dir}/lib/lib${apr.lib.name}.a"/>
+                <available file="${apr.dir}/lib/lib${apr.lib.name}.la"/>
+                <available file="${apr.dir}/lib/${apr.lib.name}.lib"/>
+                <available file="${apr.dir}/lib/${apr.lib.name}d.lib"/>
+            </or>
+        </and>
+    </condition>
+    <condition property="apr.lib.dir" value="${apr.dir}/.libs">
+        <and>
+            <not><equals arg1="${apr.dir}" arg2="/usr"/></not>
+            <or>
+                <available file="${apr.dir}/.libs/lib${apr.lib.name}.a"/>
+                <available file="${apr.dir}/.libs/lib${apr.lib.name}.la"/>
+                <available file="${apr.dir}/.libs/${apr.lib.name}.lib"/>
+                <available file="${apr.dir}/.libs/${apr.lib.name}d.lib"/>
+            </or>
+        </and>
+    </condition>
+    <condition property="apr.lib.dir" value="${apr.dir}/target/${debug.release}/static">
+            <or>
+                <available file="${apr.dir}/target/${debug.release}/static/lib${apr.lib.name}${lib-suffix}.a"/>
+                <available file="${apr.dir}/target/${debug.release}/static/lib${apr.lib.name}${lib-suffix}.la"/>
+                <available file="${apr.dir}/target/${debug.release}/static/${apr.lib.name}${lib-suffix}.lib"/>
+            </or>
+    </condition>    
+    <condition property="apr.lib.dir" value="${apr.dir}/target/${debug.release}/shared">
+            <or>
+                <available file="${apr.dir}/target/${debug.release}/shared/lib${apr.lib.name}${lib-suffix}.a"/>
+                <available file="${apr.dir}/target/${debug.release}/shared/lib${apr.lib.name}${lib-suffix}.la"/>
+                <available file="${apr.dir}/target/${debug.release}/shared/${apr.lib.name}${lib-suffix}.lib"/>
+            </or>
+    </condition>    
+    
+    <condition property="apr-available" value="1">
+        <or>
+            <equals arg1="${apr.dir}" arg2="/usr"/>
+            <isset property="apr.lib.dir"/>
+        </or>
+    </condition>
+        
+    <condition property="apr.src.dir" value="${with-apr}">
+        <available file="${with-apr}/file_io/unix/dir.c"/>
+    </condition>
+    
+    <condition property="apr.src.dir" value="${relative-apr}">
+        <available file="${relative-apr}/file_io/unix/dir.c"/>
+    </condition>
+</target>
+
+
+
+
+<target name="find-apr-util" depends="init">
+    <condition property="apr-util.dir" value="${with-apr-util}">
+        <available file="${with-apr-util}"/>
+    </condition>
+    <property name="apr-util.lib.name" value="aprutil-1"/>
+    <condition property="apr-util.dir" value="/usr">
+        <or>
+            <available file="/usr/lib/lib${apr-util.lib.name}.a"/>
+            <available file="/usr/lib/lib${apr-util.lib.name}.la"/>
+        </or>
+    </condition>
+    <condition property="apr-util.dir" value="/usr/local/apr">
+        <available file="/usr/local/apr"/>
+    </condition>
+    <property name="relative-apr-util" location="../apr-util"/>
+    <condition property="apr-util.dir" value="${relative-apr-util}">
+        <available file="${relative-apr-util}"/>
+    </condition>
+    <fail unless="apr.dir">Unable to locate APR-Util base directory.</fail>
+    
+    <condition property="apr-util.include.dir" value="${apr-util.dir}/include/apr-1.0">
+        <available file="${apr-util.dir}/include/apr-1.0/apr_xml.h"/>
+    </condition>
+    <condition property="apr-util.include.dir" value="${apr-util.dir}/include/apr-1">
+        <available file="${apr-util.dir}/include/apr-1/apr_xml.h"/>
+    </condition>
+    <condition property="apr-util.include.dir" value="${apr-util.dir}/include">
+        <available file="${apr-util.dir}/include/apr_xml.h"/>
+    </condition>
+    <fail unless="apr-util.include.dir">Unable to locate APR include directory.</fail>
+
+    <condition property="apr-util.lib.dir" value="${apr-util.dir}/lib">
+       <and>
+            <not><equals arg1="${apr-util.dir}" arg2="/usr"/></not>
+            <or>
+                <available file="${apr-util.dir}/lib/lib${apr-util.lib.name}.a"/>
+                <available file="${apr-util.dir}/lib/lib${apr-util.lib.name}.la"/>
+                <available file="${apr-util.dir}/lib/${apr-util.lib.name}.lib"/>
+                <available file="${apr-util.dir}/lib/${apr-util.lib.name}d.lib"/>
+            </or>
+        </and>
+    </condition>
+    <condition property="apr-util.lib.dir" value="${apr-util.dir}/.libs">
+       <and>
+            <not><equals arg1="${apr-util.dir}" arg2="/usr"/></not>
+            <or>
+                <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a"/>
+                <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la"/>
+                <available file="${apr-util.dir}/.libs/${apr-util.lib.name}.lib"/>
+                <available file="${apr-util.dir}/.libs/${apr-util.lib.name}d.lib"/>
+            </or>
+        </and>
+    </condition>
+    <condition property="apr-util.lib.dir" value="${apr-util.dir}/target/${debug.release}/static">
+            <or>
+                <available file="${apr-util.dir}/target/${debug.release}/static/lib${apr-util.lib.name}${lib-suffix}.a"/>
+                <available file="${apr-util.dir}/target/${debug.release}/static/lib${apr-util.lib.name}${lib-suffix}.la"/>
+                <available file="${apr-util.dir}/target/${debug.release}/static/${apr-util.lib.name}${lib-suffix}.lib"/>
+            </or>
+    </condition>    
+    <condition property="apr-util.lib.dir" value="${apr-util.dir}/target/${debug.release}/shared">
+            <or>
+                <available file="${apr-util.dir}/target/${debug.release}/shared/lib${apr-util.lib.name}${lib-suffix}.a"/>
+                <available file="${apr-util.dir}/target/${debug.release}/shared/lib${apr-util.lib.name}${lib-suffix}.la"/>
+                <available file="${apr-util.dir}/target/${debug.release}/shared/${apr-util.lib.name}${lib-suffix}.lib"/>
+            </or>
+    </condition>    
+    
+    
+    <condition property="apr-util-available" value="1">
+        <or>
+            <equals arg1="${apr-util.dir}" arg2="/usr"/>
+            <isset property="apr-util.lib.dir"/>
+        </or>
+    </condition>
+
+    <condition property="apr-util.src.dir" value="${with-apr-util}">
+        <available file="${with-apr-util}/xml/apr_xml.c"/>
+    </condition>
+    
+    <condition property="apr-util.src.dir" value="${relative-apr-util}">
+        <available file="${relative-apr-util}/xml/apr_xml.c"/>
+    </condition>
+</target>
+

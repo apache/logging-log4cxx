@@ -36,7 +36,8 @@
       <post>log4cxx-user@logging.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/logging-log4cxx-user/</archive>
       <otherArchives>
-         <otherArchive>http://marc.info/?l=log4cxx-user</otherArchive>
+          <otherArchive>http://markmail.org/search/list:org.apache.logging.log4cxx-user</otherArchive>
+          <otherArchive>http://marc.info/?l=log4cxx-user</otherArchive>
           <otherArchive>http://dir.gmane.org/gmane.comp.apache.logging.log4cxx.user</otherArchive>
       </otherArchives>
    </mailingList>
@@ -47,6 +48,7 @@
       <post>log4cxx-dev@logging.apache.org</post>
       <archive>http://mail-archives.apache.org/mod_mbox/logging-log4cxx-dev/</archive>
       <otherArchives>
+          <otherArchive>http://markmail.org/search/list:org.apache.logging.log4cxx-dev</otherArchive>
           <otherArchive>http://marc.info/?l=log4cxx-dev</otherArchive>
           <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
       </otherArchives>
@@ -173,7 +175,7 @@
          <artifactId>maven-assembly-plugin</artifactId>
          <configuration>
            <descriptors>
-              <descriptor>src/assembly/bin.xml</descriptor>
+              <descriptor>src/assembly/source.xml</descriptor>
            </descriptors>
            <appendAssemblyId>false</appendAssemblyId>
         </configuration>
@@ -185,6 +187,10 @@
             </execution>
         </executions>
          </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>rat-maven-plugin</artifactId>
+      </plugin>             
     </plugins>
 </build>
   <dependencies>
