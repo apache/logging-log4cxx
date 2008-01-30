@@ -187,6 +187,8 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
         <or>
             <available file="/usr/lib/lib${apr.lib.name}.a"/>
             <available file="/usr/lib/lib${apr.lib.name}.la"/>
+            <available file="/usr/lib/lib${apr.lib.name}.la"/>
+            <available file="/usr/lib/lib${apr.lib.name}.dylib"/>
         </or>
     </condition>
     <condition property="apr.dir" value="/usr/local/apr">
@@ -215,6 +217,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
             <or>
                 <available file="${apr.dir}/lib/lib${apr.lib.name}.a"/>
                 <available file="${apr.dir}/lib/lib${apr.lib.name}.la"/>
+                <available file="${apr.dir}/lib/lib${apr.lib.name}.dylib"/>
                 <available file="${apr.dir}/lib/${apr.lib.name}.lib"/>
                 <available file="${apr.dir}/lib/${apr.lib.name}d.lib"/>
             </or>
@@ -226,6 +229,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
             <or>
                 <available file="${apr.dir}/.libs/lib${apr.lib.name}.a"/>
                 <available file="${apr.dir}/.libs/lib${apr.lib.name}.la"/>
+                <available file="${apr.dir}/.libs/lib${apr.lib.name}.dylib"/>
                 <available file="${apr.dir}/.libs/${apr.lib.name}.lib"/>
                 <available file="${apr.dir}/.libs/${apr.lib.name}d.lib"/>
             </or>
@@ -235,6 +239,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
             <or>
                 <available file="${apr.dir}/target/${debug.release}/static/lib${apr.lib.name}${lib-suffix}.a"/>
                 <available file="${apr.dir}/target/${debug.release}/static/lib${apr.lib.name}${lib-suffix}.la"/>
+                <available file="${apr.dir}/target/${debug.release}/static/lib${apr.lib.name}${lib-suffix}.dylib"/>
                 <available file="${apr.dir}/target/${debug.release}/static/${apr.lib.name}${lib-suffix}.lib"/>
             </or>
     </condition>    
@@ -242,6 +247,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
             <or>
                 <available file="${apr.dir}/target/${debug.release}/shared/lib${apr.lib.name}${lib-suffix}.a"/>
                 <available file="${apr.dir}/target/${debug.release}/shared/lib${apr.lib.name}${lib-suffix}.la"/>
+                <available file="${apr.dir}/target/${debug.release}/shared/lib${apr.lib.name}${lib-suffix}.dylib"/>
                 <available file="${apr.dir}/target/${debug.release}/shared/${apr.lib.name}${lib-suffix}.lib"/>
             </or>
     </condition>    
@@ -274,6 +280,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
         <or>
             <available file="/usr/lib/lib${apr-util.lib.name}.a"/>
             <available file="/usr/lib/lib${apr-util.lib.name}.la"/>
+            <available file="/usr/lib/lib${apr-util.lib.name}.dylib"/>
         </or>
     </condition>
     <condition property="apr-util.dir" value="/usr/local/apr">
@@ -302,6 +309,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
             <or>
                 <available file="${apr-util.dir}/lib/lib${apr-util.lib.name}.a"/>
                 <available file="${apr-util.dir}/lib/lib${apr-util.lib.name}.la"/>
+                <available file="${apr-util.dir}/lib/lib${apr-util.lib.name}.dylib"/>
                 <available file="${apr-util.dir}/lib/${apr-util.lib.name}.lib"/>
                 <available file="${apr-util.dir}/lib/${apr-util.lib.name}d.lib"/>
             </or>
@@ -313,6 +321,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
             <or>
                 <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a"/>
                 <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la"/>
+                <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib"/>
                 <available file="${apr-util.dir}/.libs/${apr-util.lib.name}.lib"/>
                 <available file="${apr-util.dir}/.libs/${apr-util.lib.name}d.lib"/>
             </or>
@@ -322,6 +331,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
             <or>
                 <available file="${apr-util.dir}/target/${debug.release}/static/lib${apr-util.lib.name}${lib-suffix}.a"/>
                 <available file="${apr-util.dir}/target/${debug.release}/static/lib${apr-util.lib.name}${lib-suffix}.la"/>
+                <available file="${apr-util.dir}/target/${debug.release}/static/lib${apr-util.lib.name}${lib-suffix}.dylib"/>
                 <available file="${apr-util.dir}/target/${debug.release}/static/${apr-util.lib.name}${lib-suffix}.lib"/>
             </or>
     </condition>    
@@ -329,6 +339,7 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
             <or>
                 <available file="${apr-util.dir}/target/${debug.release}/shared/lib${apr-util.lib.name}${lib-suffix}.a"/>
                 <available file="${apr-util.dir}/target/${debug.release}/shared/lib${apr-util.lib.name}${lib-suffix}.la"/>
+                <available file="${apr-util.dir}/target/${debug.release}/shared/lib${apr-util.lib.name}${lib-suffix}.dylib"/>
                 <available file="${apr-util.dir}/target/${debug.release}/shared/${apr-util.lib.name}${lib-suffix}.lib"/>
             </or>
     </condition>    

@@ -350,7 +350,7 @@ Command line options:
 </target>
 
 
-<target name="build-apr-util" depends="build-apr, find-apr-util" unless="apr-util.lib.dir">
+<target name="build-apr-util" depends="build-apr, find-apr-util" unless="apr-util-available">
     <fail unless="apr-util.src.dir">Could not locate apr-util library or source.</fail>
 
     <ant antfile="src/ant/apr-util-build.xml" target="build" inheritAll="false">
