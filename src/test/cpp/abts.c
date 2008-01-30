@@ -386,7 +386,11 @@ int main(int argc, const char *const argv[]) {
    
     initialize();
 
+#if defined(_MSC_VER)
+	quiet = 1;
+#else
     quiet = !isatty(STDOUT_FILENO);
+#endif
 
     for (i = 1; i < argc; i++) {
         if (!strcmp(argv[i], "-v")) {

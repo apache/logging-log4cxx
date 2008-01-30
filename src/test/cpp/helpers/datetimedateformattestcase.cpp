@@ -70,7 +70,7 @@ LOGUNIT_CLASS(DateTimeDateFormatTestCase)
   LOGUNIT_TEST( test7 );
   LOGUNIT_TEST( test8 );
 #endif
-  LOGUNIT_TEST_SUITE_END();
+  LOGUNIT_TEST_SUITE_END(DateTimeDateFormatTestCase);
 
 
 
@@ -96,6 +96,7 @@ private:
          formatter.format(actual, date, p);
          LOGUNIT_ASSERT_EQUAL( expected, actual );
   }
+public:
 
   /** Convert 02 Jan 2004 00:00:00 GMT for GMT. */
   void test1()

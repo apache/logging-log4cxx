@@ -14,6 +14,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#if defined(_MSC_VER)
+#pragma warning ( disable: 4786 4231 )
+#endif
 
 #include "logunit.h"
 
@@ -32,7 +35,10 @@ bool suite_sort(const LogUnit::SuiteList::value_type& lhs, const LogUnit::SuiteL
 
 abts_suite* abts_run_suites(abts_suite* suite) {
     LogUnit::SuiteList sorted(LogUnit::getAllSuites());
+
+#if !defined(_MSC_VER)
     std::sort(sorted.begin(), sorted.end(), suite_sort);
+#endif
     
     for(LogUnit::SuiteList::const_iterator iter = sorted.begin();
         iter != sorted.end();
@@ -50,14 +56,14 @@ abts_suite* abts_run_suites(abts_suite* suite) {
 }
 
 using namespace LogUnit;
-
+using namespace std;
 
 TestException::TestException() {}
 TestException::TestException(const TestException& src) : std::exception(src) {
 }
 
 TestException& TestException::operator=(const TestException& src) {
-    std::exception::operator=(src);
+    exception::operator=(src);
     return *this;
 }
 
@@ -82,7 +88,7 @@ AssertException::~AssertException() throw() {
 }
 
 AssertException& AssertException::operator=(const AssertException& src) {
-    std::exception::operator=(src);
+    exception::operator=(src);
     msg = src.msg;
     lineno = src.lineno;
     return *this;
@@ -118,6 +124,19 @@ void TestFixture::assertEquals(const std::string expected,
     }
 }
 
+template<class Ch>
+static transcode(std::string& dst, const std::basic_string<Ch>& src) {
+        for(std::basic_string<Ch>::const_iterator iter = src.begin();
+            iter != src.end();
+            iter++) {
+            if (*iter <= 0x7F) {
+                dst.append(1, (char) *iter);
+             } else {
+                dst.append(1, '?');
+            }
+        }
+}
+
 #if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_WCHAR_T_API       
 void TestFixture::assertEquals(const std::wstring expected, 
     const std::wstring actual, 
@@ -125,26 +144,9 @@ void TestFixture::assertEquals(const std::wstring expected,
     const char* actualExpr,
     int lineno) {
     if (expected != actual) {
-        std::string exp;
-        std::string act;
-        for(std::wstring::const_iterator iter = expected.begin();
-            iter != expected.end();
-            iter++) {
-            if (*iter <= 0x7F) {
-               exp.append(1, (char) *iter);
-             } else {
-                exp.append(1, '?');
-            }
-        }
-        for(std::wstring::const_iterator iter = actual.begin();
-            iter != actual.end();
-            iter++) {
-            if (*iter <= 0x7F) {
-                act.append(1, (char) *iter);
-             } else {
-                act.append(1, '?');
-            }
-        }
+        std::string exp, act;
+		transcode(exp, expected);
+		transcode(act, actual);
         abts_str_equal(tc, exp.c_str(), act.c_str(), lineno);
         throw TestException();
     }
@@ -157,26 +159,9 @@ void TestFixture::assertEquals(const std::basic_string<UniChar> expected,
      const char* actualExpr,
 int lineno) {
     if (expected != actual) {
-        std::string exp;
-        std::string act;
-        for(std::basic_string<UniChar>::const_iterator iter = expected.begin();
-            iter != expected.end();
-            iter++) {
-            if (*iter <= 0x7F) {
-               exp.append(1, (char) *iter);
-             } else {
-                exp.append(1, '?');
-            }
-        }
-        for(std::basic_string<UniChar>::const_iterator iter = actual.begin();
-            iter != actual.end();
-            iter++) {
-            if (*iter <= 0x7F) {
-                act.append(1, (char) *iter);
-             } else {
-                act.append(1, '?');
-            }
-        }
+        std::string exp, act;
+		transcode(exp, expected);
+		transcode(act, actual);
         abts_str_equal(tc, exp.c_str(), act.c_str(), lineno);
         throw TestException();
     }
