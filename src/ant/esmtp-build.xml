@@ -111,7 +111,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <target name="build-projects">
-        <mkdir dir="${project.dir}"/>
+        <mkdir dir="${projects.dir}"/>
         <antcall target="build">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>

@@ -127,7 +127,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <libset libs="pthread dl" if="is-unix"/>
         <libset libs="cw32mt" if="is-bcc"/>
-        <project type="${project.type}" outfile="${projects.dir}/apr" if="project.if"/>
+        <project type="${project.type}" outfile="${projects.dir}/apr-1" if="project.if"/>
     </cc>
     <property name="apr.lib.dir" location="${executable.dir}"/>
 </target>
@@ -391,21 +391,24 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </antcall>
 </target>
 
-<target name="build-projects-vc6" description="Builds project files for Microsoft Visual C++ 6">
+<target name="build-projects-vc6" depends="init"
+     description="Builds project files for Microsoft Visual C++ 6">
     <antcall target="build-projects">
         <param name="project.type" value="msvc6"/>
         <param name="project.compiler" value="msvc"/>
     </antcall>
 </target>
 
-<target name="build-projects-vc8" description="Builds project files for Microsoft Visual C++ 2005">
+<target name="build-projects-vc8" depends="init"
+     description="Builds project files for Microsoft Visual C++ 2005">
   <antcall target="build-projects">
     <param name="project.type" value="msvc8"/>
     <param name="project.compiler" value="msvc"/>
   </antcall>
 </target>
 
-<target name="build-projects-xcode" description="Builds project files for Apple Xcode">
+<target name="build-projects-xcode" depends="init" 
+      description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
         <param name="project.type" value="xcode"/>
         <param name="project.compiler" value="${compiler}"/>

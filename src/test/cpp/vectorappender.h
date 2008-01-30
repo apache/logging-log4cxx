@@ -21,8 +21,6 @@
 
 namespace log4cxx
 {
-        class VectorAppender;
-        typedef helpers::ObjectPtrT<VectorAppender> VectorAppenderPtr;
 
 
         /**
@@ -57,4 +55,5 @@ namespace log4cxx
                 bool requiresLayout() const
                         { return false;   }
         };
+        typedef helpers::ObjectPtrT<VectorAppender> VectorAppenderPtr;
 }

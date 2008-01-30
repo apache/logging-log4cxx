@@ -64,9 +64,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="log4j.version" value="1.2.15"/>
 <property name="log4j.jar" 
        location="${m2_repo}/log4j/log4j/${log4j.version}/log4j-${log4j.version}.jar"/>
-<property name="apr.lib.type" value="static"/>
-<property name="apr-util.lib.type" value="static"/>
-<property name="libesmtp.lib.type" value="static"/>
 
 
 <property name="doxygen.exe" value="doxygen"/>
@@ -195,6 +192,7 @@ Command line options:
               file="${include.dir}/log4cxx/log4cxx.hw" overwrite="true"/>
         <copy tofile="${include.dir}/log4cxx/private/log4cxx_private.tmp"
               file="${include.dir}/log4cxx/private/log4cxx_private.hw" overwrite="true"/>
+		<property name="has-MSODBC" value="1"/>
 </target>
 
 
@@ -328,7 +326,7 @@ Command line options:
 
 <target name="build-apr" depends="find-apr" unless="apr-available">
     <fail unless="apr.src.dir">Could not locate apr library or source.</fail>
-    
+    <property name="apr.lib.type" value="static"/>
     <ant antfile="src/ant/apr-build.xml" target="build" inheritAll="false">
         <property name="basedir" value="${apr.src.dir}"/>
         <property name="target.dir" value="${target.dir}"/>
@@ -352,6 +350,7 @@ Command line options:
 
 <target name="build-apr-util" depends="build-apr, find-apr-util" unless="apr-util-available">
     <fail unless="apr-util.src.dir">Could not locate apr-util library or source.</fail>
+    <property name="apr-util.lib.type" value="static"/>
 
     <ant antfile="src/ant/apr-util-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
@@ -379,6 +378,7 @@ Command line options:
 
 <target name="build-libesmtp" depends="find-libesmtp" if="has-libesmtp" unless="libesmtp.lib.dir">
     <fail unless="libesmtp.src.dir">Could not locate libesmtp library or source.</fail>
+    <property name="libesmtp.lib.type" value="static"/>
 
     <ant antfile="src/ant/esmtp-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
@@ -450,6 +450,14 @@ Command line options:
 
 <target name="build" depends="build-apr-util, configure" description="Build log4cxx library">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx_obj"/>
+
+	<condition property="apr-static" value="1">
+		<equals arg1="${apr.lib.type}" arg2="static"/>
+	</condition>
+		
+	<condition property="apr-util-static" value="1">
+		<equals arg1="${apr-util.lib.type}" arg2="static"/>
+	</condition>
 
     <property name="project.compiler" value="${compiler}"/>
     <cc name="${project.compiler}"
@@ -818,7 +826,7 @@ Command line options:
 </target>
 
 <target name="build-projects">
-        <mkdir dir="${project.dir}"/>
+        <mkdir dir="${projects.dir}"/>
         <antcall target="build">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
@@ -851,21 +859,24 @@ Command line options:
         </antcall>
 </target>
 
-<target name="build-projects-vc6" description="Builds project files for Microsoft Visual C++ 6">
+<target name="build-projects-vc6" depends="init" 
+          description="Builds project files for Microsoft Visual C++ 6">
     <antcall target="build-projects">
         <param name="project.type" value="msvc6"/>
         <param name="project.compiler" value="msvc"/>
     </antcall>
 </target>
 
-<target name="build-projects-vc8" description="Builds project files for Microsoft Visual C++ 2005">
+<target name="build-projects-vc8" depends="init"
+         description="Builds project files for Microsoft Visual C++ 2005">
     <antcall target="build-projects">
       <param name="project.type" value="msvc8"/>
       <param name="project.compiler" value="msvc"/>
     </antcall>
 </target>
 
-<target name="build-projects-xcode" description="Builds project files for Apple Xcode">
+<target name="build-projects-xcode" depends="init" 
+          description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
         <param name="project.type" value="xcode"/>
         <param name="project.compiler" value="g++"/>

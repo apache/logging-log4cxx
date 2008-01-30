@@ -21,18 +21,12 @@
 #include <log4cxx/portability.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/appenderskeleton.h>
-
+#include <log4cxx/layout.h>
 
 namespace log4cxx
 {
-        class Layout;
-        typedef helpers::ObjectPtrT<Layout> LayoutPtr;
-
         namespace performance
         {
-                class NullAppender;
-                typedef helpers::ObjectPtrT<NullAppender> NullAppenderPtr;
-
                 /**
                 * A bogus appender which calls the format method of its layout object
                 * but does not write the result anywhere.
@@ -61,6 +55,7 @@ namespace log4cxx
                         */
                         bool requiresLayout() const;
                 }; // NullAppender
+				typedef log4cxx::helpers::ObjectPtrT<NullAppender> NullAppenderPtr;
         }  // namespace performance
 } // namespace log4cxx
 

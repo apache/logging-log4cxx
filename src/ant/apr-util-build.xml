@@ -154,7 +154,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset if="is-bcc">
             <define name="EILSEQ" value="50"/>
         </defineset>
-        <project type="${project.type}" outfile="${projects.dir}/aprutil" if="project.if"/>
+        <project type="${project.type}" outfile="${projects.dir}/aprutil-1" if="project.if"/>
     </cc>
     <property name="apr.lib.dir" location="${executable.dir}"/>
 </target>
@@ -288,7 +288,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             </antcall>
     </target>
 
-    <target name="build-projects-vc6" description="Builds project files for Microsoft Visual C++ 6">
+    <target name="build-projects-vc6" depends="init"
+        description="Builds project files for Microsoft Visual C++ 6">
         <antcall target="build-projects">
             <param name="projects.dir" value="${projects.dir}"/>
             <param name="project.type" value="msvc6"/>
@@ -296,7 +297,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         </antcall>
     </target>
 
-    <target name="build-projects-vc8" description="Builds project files for Microsoft Visual C++ 2005">
+    <target name="build-projects-vc8" depends="init"
+          description="Builds project files for Microsoft Visual C++ 2005">
       <antcall target="build-projects">
         <param name="projects.dir" value="${projects.dir}"/>
         <param name="project.type" value="msvc8"/>
@@ -304,7 +306,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
       </antcall>
     </target>
     
-    <target name="build-projects-xcode" description="Builds project files for Apple Xcode">
+    <target name="build-projects-xcode" depends="init"
+         description="Builds project files for Apple Xcode">
         <antcall target="build-projects">
             <param name="projects.dir" value="${projects.dir}"/>
             <param name="project.type" value="xcode"/>

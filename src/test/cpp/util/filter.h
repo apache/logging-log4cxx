@@ -18,6 +18,11 @@
 #ifndef _LOG4CXX_TESTS_UTIL_FILTER_H
 #define _LOG4CXX_TESTS_UTIL_FILTER_H
 
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable: 4786 4231)
+#endif
+
 #include <string>
 #include <vector>
 #include <map>
@@ -55,5 +60,9 @@ namespace log4cxx
             PatternList patterns;
         };
 }
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #endif //_LOG4CXX_TESTS_UTIL_FILTER_H

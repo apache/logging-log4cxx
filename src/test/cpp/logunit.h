@@ -18,6 +18,12 @@
 #if !defined(_LOG4CXX_LOGUNIT_H)
 #define _LOG4CXX_LOGUNIT_H
 
+
+#if defined(_MSC_VER)
+#pragma warning (push)
+#pragma warning (disable: 4786 4231)
+#endif
+
 #include "abts.h"
 #include <exception>
 #include <map>
@@ -215,6 +221,11 @@ static LogUnit::RegisterDisabledSuite<TF> registration;
 #define LOGUNIT_ASSERT(x) { if (!(x)) throw LogUnit::AssertException(true, #x, __LINE__); }
 #define LOGUNIT_ASSERT_EQUAL(expected, actual) assertEquals(expected, actual, #expected, #actual, __LINE__)
 #define LOGUNIT_FAIL(msg) throw LogUnit::AssertException(msg, __LINE__)
+
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #endif
 
