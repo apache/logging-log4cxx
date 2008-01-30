@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <!DOCTYPE project [
 <!ENTITY libsets '
-        <libset libs="${apr-util.lib.name}${lib-suffix}" dir="${apr-util.lib.dir}" if="apr-util.lib.dir"/>
-        <libset libs="${apr-util.lib.name}${lib-suffix}" unless="apr-util.lib.dir"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.name}${lib-suffix}" unless="apr.lib.dir"/>
+        <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" dir="${apr-util.lib.dir}" if="apr-util.lib.dir"/>
+        <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" unless="apr-util.lib.dir"/>
+        <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.prefix}${apr.lib.name}${spr.lib.suffix}" unless="apr.lib.dir"/>
         <libset libs="esmtp" if="has-libesmtp"/>
         <libset libs="iodbc" if="has-iODBC"/>
         <libset libs="unixodbc" if="has-unixODBC"/>
@@ -12,11 +12,14 @@
         <libset libs="iconv" if="has-iconv"/>
         <libset libs="pthread" if="is-unix"/>
         <libset libs="expat" if="has-expat"/>
-        <syslibset libs="advapi32 ws2_32 mswsock" if="is-windows"/>
+        <syslibset libs="advapi32 ws2_32 mswsock shell32" if="is-windows"/>
         <syslibset libs="stdc++" if="is-gcc"/>
         <syslibset libs="cw32mt" if="is-bcc"/>
 '>
 <!ENTITY common SYSTEM 'src/ant/common.xml'>
+<!ENTITY find-apr SYSTEM 'src/ant/find-apr.xml'>
+<!ENTITY find-apr-util SYSTEM 'src/ant/find-apr-util.xml'>
+<!ENTITY find-libesmtp SYSTEM 'src/ant/find-libesmtp.xml'>
 ]>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -45,6 +48,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <project name="log4cxx" default="check">
 
 &common;
+&find-apr;
+&find-apr-util;
+&find-libesmtp;
 
 <property name="base.dir" location="."/>
 <property name="src.dir" location="${base.dir}/src/main/cpp"/>
@@ -69,6 +75,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="doxygen.exe" value="doxygen"/>
 <property name="enable_dot" value="YES"/>
 
+<property name="lib.name" value="log4cxx"/>
+<property name="lib.prefix" value=""/>
 <property name="version" value="0.10.0"/>
 <property name="enable-char" value="1"/>
 <property name="enable-wchar_t" value="1"/>
@@ -170,6 +178,11 @@ Command line options:
             </or>
         </condition>
         <property name="has-ODBC" value="0"/>
+
+		<condition property="lib.suffix" value="d">
+			<istrue value="${debug}"/>
+		</condition>
+		<property name="lib.suffix" value=""/>
 </target>
 
 <target name="clean" depends="init" description="Removes built files">
@@ -324,14 +337,18 @@ Command line options:
 </target>
 
 
-<target name="build-apr" depends="find-apr" unless="apr-available">
+<target name="build-apr" depends="find-apr" unless="apr.lib.file">
     <fail unless="apr.src.dir">Could not locate apr library or source.</fail>
     <property name="apr.lib.type" value="static"/>
+	<property name="apr.lib.prefix" value=""/>
+	<property name="apr.lib.suffix" value=""/>
+	<property name="project.type" value="msvc6"/>
     <ant antfile="src/ant/apr-build.xml" target="build" inheritAll="false">
         <property name="basedir" value="${apr.src.dir}"/>
         <property name="target.dir" value="${target.dir}"/>
         <property name="debug" value="${debug}"/>
-        <property name="lib-suffix" value="${lib-suffix}"/>
+        <property name="lib.prefix" value="${apr.lib.prefix}"/>
+        <property name="lib.suffix" value="${apr.lib.suffix}"/>
         <property name="compiler" value="${compiler}"/>
         <property name="lib.type" value="${apr.lib.type}"/>
         <property name="project.type" value="${project.type}"/>
@@ -348,15 +365,19 @@ Command line options:
 </target>
 
 
-<target name="build-apr-util" depends="build-apr, find-apr-util" unless="apr-util-available">
+<target name="build-apr-util" depends="build-apr, find-apr-util" unless="apr-util.lib.file">
     <fail unless="apr-util.src.dir">Could not locate apr-util library or source.</fail>
-    <property name="apr-util.lib.type" value="static"/>
+    <property name="apr-util.lib.type" value="${apr.lib.type}"/>
+	<property name="apr-util.lib.prefix" value=""/>
+	<property name="apr-util.lib.suffix" value=""/>
+	<property name="project.type" value="msvc6"/>
 
     <ant antfile="src/ant/apr-util-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
         <property name="basedir" value="${apr-util.src.dir}"/>
         <property name="debug" value="${debug}"/>
-        <property name="lib-suffix" value="${lib-suffix}"/>
+        <property name="lib.prefix" value="${apr-util.lib.prefix}"/>
+        <property name="lib.suffix" value="${apr-util.lib.suffix}"/>
         <property name="compiler" value="${compiler}"/>
         <property name="apr.include.dir" value="${apr.include.dir}"/>
         <property name="apr.lib.dir" value="${apr.lib.dir}"/>
@@ -376,15 +397,19 @@ Command line options:
     <property name="apr-util.project.file" location="${projects.dir}/apr-util"/>
 </target>
 
-<target name="build-libesmtp" depends="find-libesmtp" if="has-libesmtp" unless="libesmtp.lib.dir">
+<target name="build-libesmtp" depends="find-esmtp" if="has-libesmtp" unless="esmtp.lib.file">
     <fail unless="libesmtp.src.dir">Could not locate libesmtp library or source.</fail>
     <property name="libesmtp.lib.type" value="static"/>
+    <property name="libesmtp.lib.prefix" value=""/>
+    <property name="libesmtp.lib.suffix" value=""/>
+	<property name="project.type" value="msvc6"/>
 
     <ant antfile="src/ant/esmtp-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
         <property name="basedir" value="${libesmtp.src.dir}"/>
         <property name="debug" value="${debug}"/>
-        <property name="lib-suffix" value="${lib-suffix}"/>
+        <property name="lib.prefix" value="${libesmtp.lib.prefix}"/>
+        <property name="lib.suffix" value="${libesmtp.lib.suffix}"/>
         <property name="compiler" value="${compiler}"/>
         <property name="lib.type" value="${libesmtp.lib.type}"/>
         <property name="project.type" value="${project.type}"/>
@@ -427,6 +452,7 @@ Command line options:
         <foreach target="make-header-check" param="header">
                 <path><fileset dir="${target.dir}/header-check" includes="**/*.h"/></path>
         </foreach>
+	    <property name="project.type" value="msvc6"/>
         <cc objdir="${target.dir}/header-check"
                 name="gcc"
                 exceptions="true"
@@ -459,10 +485,21 @@ Command line options:
 		<equals arg1="${apr-util.lib.type}" arg2="static"/>
 	</condition>
 
+	<condition property="apr-libs-match" value="1">
+		<equals arg1="${apr.lib.type}" arg2="${apr-util.lib.type}"/>
+	</condition>
+
+	<fail unless="apr-libs-match">apr is ${apr.lib.type} and apr-util is ${apr-util.lib.type}, must be same type.</fail>
+	<property name="lib.name" value="log4cxx"/>
+	<property name="lib.suffix" value=""/>
+	<property name="lib.suffix" value=""/>
+
+
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
                 exceptions="true"
-                outfile="${log4cxx.lib.dir}/log4cxx${lib-suffix}"
+                outfile="${log4cxx.lib.dir}/${lib.prefix}${lib.name}${lib.suffix}"
                 subsystem="console"
                 multithreaded="true"
                 outtype="${lib.type}"
@@ -490,6 +527,7 @@ Command line options:
 <target name="build-example">
     <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <property name="example.include.dir" value="${example.src.dir}"/>
     <cc name="${project.compiler}"
                 exceptions="true"
@@ -511,7 +549,7 @@ Command line options:
 
         <compilerarg value="${pic-option}" if="pic-option"/>
 
-        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
+        <libset libs="${lib.prefix}${lib.name}${lib.suffix}" dir="${log4cxx.lib.dir}"/>
         &libsets;
 
         <project outfile="${projects.dir}/${example.name}" type="${project.type}" if="project.if"/>
@@ -586,6 +624,7 @@ Command line options:
     <mkdir dir="${log4cxx.lib.dir}/testsuite_obj"/>
 
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/testsuite"
@@ -606,7 +645,7 @@ Command line options:
         <defineset define="WIN32" if="is-windows"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
 
-        <libset libs="log4cxx${lib-suffix}" dir="${log4cxx.lib.dir}"/>
+        <libset libs="${lib.prefix}${lib.name}${lib.suffix}" dir="${log4cxx.lib.dir}"/>
         <libset libs="dl" if="is-unix"/>
         &libsets;
 
@@ -621,6 +660,7 @@ Command line options:
     description="Builds a unit tests + log4cxx executable">
     <mkdir dir="${executable.dir}/static/testsuite-standalone_obj"/>
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${executable.dir}/static/testsuite-standalone"
@@ -827,6 +867,7 @@ Command line options:
 
 <target name="build-projects">
         <mkdir dir="${projects.dir}"/>
+	    <property name="project.type" value="msvc6"/>
         <antcall target="build">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
@@ -984,80 +1025,6 @@ Command line options:
 	</target>
 
 
-<target name="find-libesmtp" depends="init" if="has-libesmtp">
-    <property name="libesmtp.lib.name" value="esmtp"/>
-    <condition property="libesmtp.dir" value="/usr">
-        <or>
-            <available file="/usr/lib/lib${libesmtp.lib.name}.a"/>
-            <available file="/usr/lib/lib${libesmtp.lib.name}.la"/>
-        </or>
-    </condition>
-    <condition property="libesmtp.dir" value="/usr/local">
-        <or>
-            <available file="/usr/local/lib/lib${libesmtp.lib.name}.a"/>
-            <available file="/usr/local/lib/lib${libesmtp.lib.name}.la"/>
-        </or>
-    </condition>
-    <property name="relative-libesmtp" location="../libesmtp"/>
-    <condition property="libesmtp.dir" value="${relative-libesmtp}">
-        <available file="${relative-libesmtp}"/>
-    </condition>
-    <fail unless="libesmtp.dir">Unable to locate libesmtp base directory.</fail>
-    
-    <condition property="libesmtp.include.dir" value="${libesmtp.dir}/include">
-        <available file="${libesmtp.dir}/include/libesmtp.h"/>
-    </condition>
-    <condition property="libesmtp.include.dir" value="${libesmtp.dir}">
-        <available file="${libesmtp.dir}/libesmtp.h"/>
-    </condition>
-    <fail unless="libesmtp.include.dir">Unable to locate libesmtp include directory.</fail>
-
-    <condition property="libesmtp.lib.dir" value="${libesmtp.dir}/lib">
-       <and>
-            <not><equals arg1="${libesmtp.dir}" arg2="/usr"/></not>
-            <or>
-                <available file="${libesmtp.dir}/lib/lib${libesmtp.lib.name}.a"/>
-                <available file="${libesmtp.dir}/lib/lib${libesmtp.lib.name}.la"/>
-                <available file="${libesmtp.dir}/lib/${libesmtp.lib.name}.lib"/>
-                <available file="${libesmtp.dir}/lib/${libesmtp.lib.name}d.lib"/>
-            </or>
-        </and>
-    </condition>
-    <condition property="libesmtp.lib.dir" value="${libesmtp.dir}/.libs">
-            <or>
-                <available file="${libesmtp.dir}/.libs/lib${libesmtp.lib.name}.a"/>
-                <available file="${libesmtp.dir}/.libs/lib${libesmtp.lib.name}.la"/>
-                <available file="${libesmtp.dir}/.libs/${libesmtp.lib.name}.lib"/>
-                <available file="${libesmtp.dir}/.libs/${libesmtp.lib.name}d.lib"/>
-            </or>
-    </condition>
-    <condition property="libesmtp.lib.dir" value="${libesmtp.dir}/target/${debug.release}/static">
-            <or>
-                <available file="${libesmtp.dir}/target/${debug.release}/static/lib${libesmtp.lib.name}${lib-suffix}.a"/>
-                <available file="${libesmtp.dir}/target/${debug.release}/static/lib${libesmtp.lib.name}${lib-suffix}.la"/>
-                <available file="${libesmtp.dir}/target/${debug.release}/static/${libesmtp.lib.name}${lib-suffix}.lib"/>
-            </or>
-    </condition>    
-    <condition property="libesmtp.lib.dir" value="${libesmtp.dir}/target/${debug.release}/shared">
-            <or>
-                <available file="${libesmtp.dir}/target/${debug.release}/shared/lib${libesmtp.lib.name}${lib-suffix}.a"/>
-                <available file="${libesmtp.dir}/target/${debug.release}/shared/lib${libesmtp.lib.name}${lib-suffix}.la"/>
-                <available file="${libesmtp.dir}/target/${debug.release}/shared/${libesmtp.lib.name}${lib-suffix}.lib"/>
-            </or>
-    </condition>    
-    
-    
-    <condition property="libesmtp-available" value="1">
-        <or>
-            <equals arg1="${libesmtp.dir}" arg2="/usr"/>
-            <isset property="libesmtp.lib.dir"/>
-        </or>
-    </condition>
-
-    <condition property="libesmtp.src.dir" value="${libesmtp-util}">
-        <available file="${relative-libesmtp}/smtpauth.c"/>
-    </condition>
-</target>
 
 
 </project>

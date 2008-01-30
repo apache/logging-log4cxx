@@ -18,6 +18,7 @@
 -->
 <!DOCTYPE project [
 <!ENTITY common SYSTEM 'common.xml'>
+<!ENTITY find-apr SYSTEM 'find-apr.xml'>
 ]>
 
 <!--
@@ -30,6 +31,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <project name="aprutil" default="check" basedir=".">
 
 &common;
+&find-apr;
 
 <property name="src.dir" location="${basedir}"/>
 <property name="include.dir" location="${src.dir}/include"/>
@@ -117,6 +119,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
        <replacefilter token="VERSION" value='"expat_1.95.1"'/>
     </replace>
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
         outfile="${executable.dir}/aprutil-1${lib-suffix}"
         subsystem="console"
@@ -162,6 +165,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-test">
     <mkdir dir="${executable.dir}/apr-util-test-ofiles"/>
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
         outfile="${executable.dir}/${test}"
         subsystem="console"

@@ -36,6 +36,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="target.dir" location="${basedir}/target"/>
 <property name="lib.type" value="shared"/>
 <property name="projects.dir" location="${target.dir}"/>
+<property name="lib.name" value="apr-1"/>
+<property name="lib.prefix" value=""/>
 
 <target name="usage" description="Displays usage notes on build">
         <echo>
@@ -84,8 +86,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build" depends="configure" description="Build library">
     <mkdir dir="${executable.dir}/apr-ofiles"/>
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
-        outfile="${executable.dir}/apr-1${lib-suffix}"
+        outfile="${executable.dir}/${lib.prefix}${lib.name}${lib.suffix}"
         subsystem="console"
         multithreaded="true"
         outtype="${lib.type}"
@@ -135,6 +138,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-test">
     <mkdir dir="${executable.dir}/apr-test-ofiles"/>
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
         outfile="${executable.dir}/${test}"
         subsystem="console"
@@ -152,7 +156,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="APR_DECLARE_STATIC" unless="is-shared"/>
         <defineset define="HAVE_CONFIG_H DARWIN SIGPROCMASK_SETS_THREAD_MASK" if="is-mac"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
-        <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
+        <libset dir="${apr.lib.dir}" libs="${lib.prefix}${lib.name}${lib.suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl" if="is-unix"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
@@ -270,6 +274,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <mkdir dir="${executable.dir}/test-ofiles"/>
     <mkdir dir="${executable.dir}/.libs"/>
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
         outfile="${executable.dir}/.libs/mod_test"
         subsystem="console"
@@ -288,7 +293,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="APR_DECLARE_STATIC" unless="is-shared"/>
         <defineset define="HAVE_CONFIG_H DARWIN SIGPROCMASK_SETS_THREAD_MASK" if="is-mac"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
-        <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
+        <libset dir="${apr.lib.dir}" libs="${lib.prefix}${lib.name}${lib.suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <project type="${project.type}" outfile="${projects.dir}/mod_test" if="project.if"/>
@@ -300,6 +305,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <target name="build-testall" depends="build">
     <mkdir dir="${executable.dir}/test-ofiles"/>
     <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
         outfile="${executable.dir}/testall"
         subsystem="console"
@@ -334,7 +340,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="APR_DECLARE_STATIC" unless="is-shared"/>
         <defineset define="HAVE_CONFIG_H DARWIN SIGPROCMASK_SETS_THREAD_MASK" if="is-mac"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
-        <libset dir="${apr.lib.dir}" libs="apr-1${lib-suffix}"/>
+        <libset dir="${apr.lib.dir}" libs="${lib.prefix}${lib.name}${lib.suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl" if="is-unix"/>
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
