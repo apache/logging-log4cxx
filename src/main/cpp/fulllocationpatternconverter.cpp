@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
 #include <log4cxx/logstring.h>
 #include <log4cxx/pattern/fulllocationpatternconverter.h>
 #include <log4cxx/spi/loggingevent.h>

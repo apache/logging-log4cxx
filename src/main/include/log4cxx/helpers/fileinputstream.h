@@ -86,7 +86,7 @@ namespace log4cxx
 
           };
 
-          typedef helpers::ObjectPtrT<FileInputStream> FileInputStreamPtr;
+          LOG4CXX_PTR_DEF(FileInputStream);
         } // namespace helpers
 
 }  //namespace log4cxx

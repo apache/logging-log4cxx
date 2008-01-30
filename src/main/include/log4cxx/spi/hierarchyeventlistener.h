@@ -25,11 +25,12 @@
 
 
 
-#include <log4cxx/appender.h>
-#include <log4cxx/logger.h>
-
 namespace log4cxx
 {
+	    class Logger;
+		class Appender;
+
+
         namespace spi
         {
 
@@ -40,12 +41,17 @@ namespace log4cxx
                 public:
                         virtual ~HierarchyEventListener() {}
 
-                        virtual void addAppenderEvent(const LoggerPtr& logger, const AppenderPtr&
-                                appender) = 0;
+                        virtual void addAppenderEvent(
+							const log4cxx::helpers::ObjectPtrT<Logger>& logger, 
+							const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
 
-                        virtual void removeAppenderEvent(const LoggerPtr& logger,
-                                const AppenderPtr& appender) = 0;
+                        virtual void removeAppenderEvent(
+							const log4cxx::helpers::ObjectPtrT<Logger>& logger, 
+							const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
                 };
+                LOG4CXX_PTR_DEF(HierarchyEventListener)
+                LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr)
+
         }  // namespace spi
 } // namespace log4cxx
 

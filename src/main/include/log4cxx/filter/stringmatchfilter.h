@@ -45,9 +45,6 @@ namespace log4cxx
                 seeting up a <code>StringMatchFilter</code>.
                 */
 
-                class StringMatchFilter;
-                typedef helpers::ObjectPtrT<StringMatchFilter> StringMatchFilterPtr;
-
                 class LOG4CXX_EXPORT StringMatchFilter : public spi::Filter
                 {
                 private:
@@ -88,6 +85,7 @@ namespace log4cxx
                         */
                         FilterDecision decide(const spi::LoggingEventPtr& event) const;
                }; // class StringMatchFilter
+			   LOG4CXX_PTR_DEF(StringMatchFilter);
         }  // namespace filter
 } // namespace log4cxx
 

@@ -19,13 +19,9 @@
 #define _LOG4CXX_PATTERN_LOGGING_EVENT_PATTERN_CONVERTER_H
 
 #include <log4cxx/pattern/patternconverter.h>
+#include <log4cxx/spi/loggingevent.h>
 
 namespace log4cxx {
-  namespace spi {
-    class LoggingEvent;
-
-    typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-  }
 
   namespace pattern {
     /**
@@ -82,7 +78,7 @@ END_LOG4CXX_CAST_MAP()
   virtual bool handlesThrowable() const;
 };
 
-typedef helpers::ObjectPtrT<LoggingEventPatternConverter> LoggingEventPatternConverterPtr;
+LOG4CXX_PTR_DEF(LoggingEventPatternConverter);
 
   }
 }

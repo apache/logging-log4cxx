@@ -84,7 +84,7 @@ LogString File::getName() const {
 
 File& File::setName(const LogString& newName) {
     name.assign(newName);
-    osName.clear();
+    osName.erase();
     Transcoder::encode(newName, osName);
     return *this;
 }

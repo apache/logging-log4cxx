@@ -21,15 +21,10 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/thread.h>
-
+#include <log4cxx/helpers/objectoutputstream.h>
 
 namespace log4cxx
 {
-        namespace helpers
-        {
-                class OutputStream;
-                typedef helpers::ObjectPtrT<OutputStream> OutputStreamPtr;
-        }
 
         namespace net
         {

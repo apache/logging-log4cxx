@@ -201,7 +201,7 @@ namespace log4cxx
                 WriterAppender& operator=(const WriterAppender&);
         };
 
-        typedef helpers::ObjectPtrT<WriterAppender> WriterAppenderPtr;
+        LOG4CXX_PTR_DEF(WriterAppender);
 
 }  //namespace log4cxx
 

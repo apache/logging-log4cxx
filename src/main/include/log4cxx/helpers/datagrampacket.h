@@ -26,8 +26,6 @@ namespace log4cxx
 {
         namespace helpers
         {
-                class DatagramPacket;
-                typedef helpers::ObjectPtrT<DatagramPacket> DatagramPacketPtr;
 
                 /** This class represents a datagram packet.
                 <p>Datagram packets are used to implement a connectionless packet
@@ -129,8 +127,9 @@ namespace log4cxx
                         DatagramPacket(const DatagramPacket&);
                         DatagramPacket& operator=(const DatagramPacket&);
 
-                }; // class DatagramSocketImpl
+                }; // class DatagramPacket
+				LOG4CXX_PTR_DEF(DatagramPacket);
         }  // namespace helpers
 } // namespace log4cxx
 
-#endif // _LOG4CXX_HELPERS_DATAGRAM_SOCKET_IMPL
+#endif // _LOG4CXX_HELPERS_DATAGRAM_PACKET

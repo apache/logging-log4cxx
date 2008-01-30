@@ -132,7 +132,7 @@ protected:
 
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<FixedWindowRollingPolicy> FixedWindowRollingPolicyPtr;
+        LOG4CXX_PTR_DEF(FixedWindowRollingPolicy);
 
      }
 }

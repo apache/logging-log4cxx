@@ -74,7 +74,7 @@ namespace log4cxx {
             void setOption(const LogString& option, const LogString& value);
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<SizeBasedTriggeringPolicy> SizeBasedTriggeringPolicyPtr;
+        LOG4CXX_PTR_DEF(SizeBasedTriggeringPolicy);
 
     }
 }

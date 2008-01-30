@@ -55,7 +55,7 @@ namespace log4cxx
                                 { return spi::Filter::DENY; }
                 }; // class DenyAllFilter
 
-                typedef helpers::ObjectPtrT<DenyAllFilter> DenyAllFilterPtr;
+                LOG4CXX_PTR_DEF(DenyAllFilter);
         }  // namespace filter
 } // namespace log4cxx
 

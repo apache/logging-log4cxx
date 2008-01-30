@@ -22,8 +22,6 @@
 
 namespace log4cxx
 {
-        class TTCCLayout;
-        typedef helpers::ObjectPtrT<TTCCLayout> TTCCLayoutPtr;
 
     /**
     TTCC layout format consists of time, thread, logger name and nested
@@ -172,6 +170,7 @@ namespace log4cxx
         */
         virtual bool ignoresThrowable() const { return true; }
         };
+		LOG4CXX_PTR_DEF(TTCCLayout);
 }
 
 #endif

@@ -26,58 +26,26 @@
 
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/helpers/objectimpl.h>
 #include <map>
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/helpers/properties.h>
 #include <log4cxx/spi/configurator.h>
+#include <log4cxx/helpers/charsetdecoder.h>
+#include <log4cxx/spi/filter.h>
+#include <log4cxx/rolling/triggeringpolicy.h>
+#include <log4cxx/rolling/rollingpolicy.h>
+#include <log4cxx/file.h>
+#include <log4cxx/config/propertysetter.h>
 
-struct apr_xml_doc;
-struct apr_xml_elem;
+extern "C" {
+	struct apr_xml_doc;
+	struct apr_xml_elem;
+}
 
 namespace log4cxx
 {
-        class File;
-        
-        namespace helpers {
-                class CharsetDecoder;
-                typedef helpers::ObjectPtrT<CharsetDecoder> CharsetDecoderPtr;
-        }
-
-        namespace spi
-        {
-                class LoggerRepository;
-                typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
-
-                class Filter;
-                typedef helpers::ObjectPtrT<Filter> FilterPtr;
-
-                class AppenderAttachable;
-                typedef helpers::ObjectPtrT<AppenderAttachable> AppenderAttachablePtr;
-
-                class OptionHandler;
-                typedef helpers::ObjectPtrT<OptionHandler> OptionHandlerPtr;
-        }
-
-
-        namespace config
-        {
-                class PropertySetter;
-        }
-
-        namespace rolling
-        {
-                class RollingPolicy;
-                typedef helpers::ObjectPtrT<RollingPolicy> RollingPolicyPtr;
-
-                class TriggeringPolicy;
-                typedef helpers::ObjectPtrT<TriggeringPolicy> TriggeringPolicyPtr;
-        }
-
-
 
         namespace xml
         {
@@ -227,7 +195,7 @@ namespace log4cxx
                                 log4cxx::helpers::Pool& p,
                                 log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                                 apr_xml_elem* elem,
-                                config::PropertySetter& propSetter);
+								log4cxx::config::PropertySetter& propSetter);
 
                         /**
                          Used internally to configure the log4cxx framework from
@@ -337,6 +305,7 @@ namespace log4cxx
                         DOMConfigurator& operator=(const DOMConfigurator&);
 
                 };
+				LOG4CXX_PTR_DEF(DOMConfigurator);
         }  // namespace xml
 } // namespace log4cxx
 

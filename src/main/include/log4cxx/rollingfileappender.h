@@ -17,23 +17,10 @@
 #ifndef _LOG4CXX_ROLLING_FILE_APPENDER_H
 #define _LOG4CXX_ROLLING_FILE_APPENDER_H
 
-#include <log4cxx/fileappender.h>
-#include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/rolling/rollingfileappender.h>
 
 namespace log4cxx
 {
-
-  class RollingFileAppender;
-
-  typedef log4cxx::helpers::ObjectPtrT < RollingFileAppender > RollingFileAppenderPtr;
-
-  namespace rolling
-  {
-    class RollingFileAppender;
-    typedef log4cxx::helpers::ObjectPtrT < RollingFileAppender > RollingFileAppenderPtr;
-  }
-
-
 
   /** RollingFileAppender extends FileAppender to backup the log files when they reach a certain size. */
   class LOG4CXX_EXPORT RollingFileAppender : public log4cxx::helpers::ObjectImpl, public Appender
@@ -257,6 +244,8 @@ namespace log4cxx
         bool requiresLayout() const;
 
       }; // class RollingFileAppender
+      LOG4CXX_PTR_DEF(RollingFileAppender)
+
     } // namespace log4cxx
 
 #endif //_LOG4CXX_ROLLING_FILE_APPENDER_H

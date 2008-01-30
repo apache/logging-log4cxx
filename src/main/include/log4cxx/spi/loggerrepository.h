@@ -27,15 +27,12 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/level.h>
+#include <log4cxx/spi/hierarchyeventlistener.h>
 
 namespace log4cxx
 {
     namespace spi
         {
-            class HierarchyEventListener;
-            LOG4CXX_PTR_DEF(HierarchyEventListener)
-            LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr)
-            
             
             /**
             A <code>LoggerRepository</code> is used to create and retrieve

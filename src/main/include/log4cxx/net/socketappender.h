@@ -19,13 +19,10 @@
 #define _LOG4CXX_NET_SOCKET_APPENDER_H
 
 #include <log4cxx/net/socketappenderskeleton.h>
+#include <log4cxx/helpers/objectoutputstream.h>
 
 namespace log4cxx
 {
-        namespace helpers {
-                class ObjectOutputStream;
-                typedef ObjectPtrT<ObjectOutputStream> ObjectOutputStreamPtr;
-        }
         namespace net
         {
 
@@ -137,7 +134,7 @@ namespace log4cxx
 
         }; // class SocketAppender
         
-        typedef helpers::ObjectPtrT<SocketAppender> SocketAppenderPtr;
+        LOG4CXX_PTR_DEF(SocketAppender);
         
     } // namespace net
 } // namespace log4cxx

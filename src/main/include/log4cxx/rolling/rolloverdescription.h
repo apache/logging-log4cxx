@@ -96,7 +96,7 @@ namespace log4cxx {
           ActionPtr getAsynchronous() const;
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<RolloverDescription> RolloverDescriptionPtr;
+        LOG4CXX_PTR_DEF(RolloverDescription);
 
     }
 }

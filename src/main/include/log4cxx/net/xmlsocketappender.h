@@ -141,7 +141,7 @@ namespace log4cxx
                 XMLSocketAppender& operator=(const XMLSocketAppender&);
         }; // class XMLSocketAppender
         
-        typedef helpers::ObjectPtrT<XMLSocketAppender> XMLSocketAppenderPtr;
+        LOG4CXX_PTR_DEF(XMLSocketAppender);
         
     } // namespace net
 } // namespace log4cxx

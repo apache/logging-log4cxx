@@ -275,7 +275,7 @@ namespace log4cxx
                         bool getLocationInfo() const;
                 }; // class SMTPAppender
                 
-                typedef helpers::ObjectPtrT<SMTPAppender> SMTPAppenderPtr;                
+                LOG4CXX_PTR_DEF(SMTPAppender);                
 
         }  // namespace net
 } // namespace log4cxx

@@ -53,8 +53,6 @@ namespace log4cxx
                 AppenderSkeleton for a more convenient way to
                 filter out events by level.
                 */
-                class LevelRangeFilter;
-                typedef helpers::ObjectPtrT<LevelRangeFilter> LevelRangeFilterPtr;
 
                 class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
                 {
@@ -131,7 +129,8 @@ namespace log4cxx
                         <b>AcceptOnMatch</b> property is set to false.
                         */
                         FilterDecision decide(const spi::LoggingEventPtr& event) const;
-                }; // class LevelMatchFilter
+                }; // class LevelRangeFilter
+				LOG4CXX_PTR_DEF(LevelRangeFilter);
         }  // namespace filter
 } // namespace log4cxx
 

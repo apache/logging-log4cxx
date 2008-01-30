@@ -216,7 +216,7 @@ virtual bool isTriggeringEvent(
 
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<TimeBasedRollingPolicy> TimeBasedRollingPolicyPtr;
+        LOG4CXX_PTR_DEF(TimeBasedRollingPolicy);
 
     }
 }

@@ -109,7 +109,7 @@ inline int getMaxLength() const {
    */
 void format(const int fieldStart, LogString& buffer) const;
 };
-
+LOG4CXX_PTR_DEF(FormattingInfo);
   }
 }
 

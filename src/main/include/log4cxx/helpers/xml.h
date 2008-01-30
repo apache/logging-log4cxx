@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_HELPERS_XML_H
 #define _LOG4CXX_HELPERS_XML_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>
@@ -33,9 +39,6 @@ namespace log4cxx
 
                 class XMLDOMDocument;
                 typedef helpers::ObjectPtrT<XMLDOMDocument> XMLDOMDocumentPtr;
-
-                class XMLDOMElement;
-                typedef helpers::ObjectPtrT<XMLDOMElement> XMLDOMElementPtr;
 
                 class XMLDOMNodeList;
                 typedef helpers::ObjectPtrT<XMLDOMNodeList> XMLDOMNodeListPtr;
@@ -66,6 +69,20 @@ namespace log4cxx
                         virtual XMLDOMNodeType getNodeType() = 0;
                         virtual XMLDOMDocumentPtr getOwnerDocument() = 0;
                 };
+				LOG4CXX_PTR_DEF(XMLDOMNode);
+
+
+                /**
+                The XMLDOMElement interface represents an element in an XML document
+                */
+                class LOG4CXX_EXPORT XMLDOMElement : virtual public XMLDOMNode
+                {
+                public:
+                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMElement)
+                        virtual LogString getTagName() = 0;
+                        virtual LogString getAttribute(const LogString& name) = 0;
+                };
+				LOG4CXX_PTR_DEF(XMLDOMElement);
 
                 /**
                 The XMLDOMDocument interface represents an entire XML document.
@@ -82,17 +99,7 @@ namespace log4cxx
                         virtual XMLDOMElementPtr getElementById(const LogString& tagName,
                                 const LogString& elementId) = 0;
                 };
-
-                /**
-                The XMLDOMElement interface represents an element in an XML document
-                */
-                class LOG4CXX_EXPORT XMLDOMElement : virtual public XMLDOMNode
-                {
-                public:
-                        DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMElement)
-                        virtual LogString getTagName() = 0;
-                        virtual LogString getAttribute(const LogString& name) = 0;
-                };
+				LOG4CXX_PTR_DEF(XMLDOMDocument);
 
                 /**
                 The XMLDOMNodeList interface provides the abstraction of an ordered
@@ -111,8 +118,14 @@ namespace log4cxx
                         virtual int getLength() = 0;
                         virtual XMLDOMNodePtr item(int index) = 0;
                 };
+				LOG4CXX_PTR_DEF(XMLDOMNodeList);
         }  // namespace helpers
 } // namespace log4cxx
+
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
 
 #endif // _LOG4CXX_HELPERS_XML_H
 

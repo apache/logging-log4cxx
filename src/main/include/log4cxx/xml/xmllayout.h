@@ -24,8 +24,6 @@ namespace log4cxx
 {
         namespace xml
         {
-                class XMLLayout;
-                typedef helpers::ObjectPtrT<XMLLayout> XMLLayoutPtr;
 
                 /**
                 The output of the XMLLayout consists of a series of log4j:event
@@ -133,6 +131,7 @@ namespace log4cxx
                                 { return false; }
 
                 };  // class XMLLayout
+				LOG4CXX_PTR_DEF(XMLLayout);
         }  // namespace xml
 } // namespace log4cxx
 

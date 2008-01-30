@@ -215,7 +215,7 @@ namespace log4cxx
                 FileAppender& operator=(const FileAppender&);
 
         }; // class FileAppender
-        typedef helpers::ObjectPtrT<FileAppender> FileAppenderPtr;
+        LOG4CXX_PTR_DEF(FileAppender);
 
 }  // namespace log4cxx
 

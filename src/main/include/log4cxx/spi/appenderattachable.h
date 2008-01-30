@@ -18,6 +18,11 @@
 #ifndef _LOG4CXX_SPI_APPENDER_ATTACHABLE_H_
 #define _LOG4CXX_SPI_APPENDER_ATTACHABLE_H_
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
 #include <log4cxx/logstring.h>
 #include <vector>
 #include <log4cxx/helpers/objectptr.h>
@@ -84,5 +89,10 @@ namespace log4cxx
         
     }
 }
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
 
 #endif //_LOG4CXX_SPI_APPENDER_ATTACHABLE_H_

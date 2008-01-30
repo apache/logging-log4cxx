@@ -86,7 +86,7 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter 
      log4cxx::helpers::Pool& p) const;
 };
 
-typedef helpers::ObjectPtrT<DatePatternConverter> DatePatternConverterPtr;
+LOG4CXX_PTR_DEF(DatePatternConverter);
 
   }
 }

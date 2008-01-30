@@ -18,20 +18,12 @@
 #ifndef _LOG4CXX_SPI_TRIGGERING_EVENT_EVALUATOR_H
 #define _LOG4CXX_SPI_TRIGGERING_EVENT_EVALUATOR_H
 
-#include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/spi/loggingevent.h>
 
 namespace log4cxx
 {
         namespace spi
         {
-                class TriggeringEventEvaluator;
-                typedef helpers::ObjectPtrT<TriggeringEventEvaluator>
-                        TriggeringEventEvaluatorPtr;
-
-                class LoggingEvent;
-                typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
-
                 /**
                 Implementions of this interface allow certain appenders to decide
                 when to perform an appender specific action.
@@ -51,6 +43,7 @@ namespace log4cxx
                         */
                         virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event) = 0;
                 };
+				LOG4CXX_PTR_DEF(TriggeringEventEvaluator);
         }
 }
 

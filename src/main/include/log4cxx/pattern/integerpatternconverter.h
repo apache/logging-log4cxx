@@ -60,7 +60,7 @@ public:
       log4cxx::helpers::Pool& p) const;
 };
 
-typedef helpers::ObjectPtrT<IntegerPatternConverter> IntegerPatternConverterPtr;
+LOG4CXX_PTR_DEF(IntegerPatternConverter);
 
 }
 }

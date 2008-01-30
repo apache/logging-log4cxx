@@ -58,7 +58,7 @@ namespace log4cxx {
 
       };
 
-      typedef log4cxx::helpers::ObjectPtrT<Date> DatePtr;
+      LOG4CXX_PTR_DEF(Date);
 
    }
 }

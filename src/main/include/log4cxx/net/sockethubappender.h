@@ -190,7 +190,7 @@ namespace log4cxx
                         static void* LOG4CXX_THREAD_FUNC monitor(helpers::log4cxx_thread_t* thread, void* data);
 
                 }; // class SocketHubAppender
-                typedef helpers::ObjectPtrT<SocketHubAppender> SocketHubAppenderPtr;
+                LOG4CXX_PTR_DEF(SocketHubAppender);
         }  // namespace net
 } // namespace log4cxx
 

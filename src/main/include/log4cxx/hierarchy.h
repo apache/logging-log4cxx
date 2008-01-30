@@ -32,20 +32,8 @@
 #include <log4cxx/spi/hierarchyeventlistener.h>
 #include <log4cxx/helpers/pool.h>
 
-extern "C" {
-struct apr_thread_mutex_t;
-}
-
 namespace log4cxx
 {
-        namespace spi
-        {
-                class HierarchyEventListener;
-                typedef log4cxx::helpers::ObjectPtrT<HierarchyEventListener>
-                        HierarchyEventListenerPtr;
-                typedef std::vector<HierarchyEventListenerPtr> HierarchyEventListenerList;
-        }
-
         /**
         This class is specialized in retrieving loggers by name and also
         maintaining the logger hierarchy.

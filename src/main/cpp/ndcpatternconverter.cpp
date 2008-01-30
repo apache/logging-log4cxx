@@ -15,6 +15,10 @@
  * limitations under the License.
  */
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
 
 
 

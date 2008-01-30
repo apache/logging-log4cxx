@@ -51,7 +51,7 @@ namespace log4cxx {
         virtual bool execute(log4cxx::helpers::Pool& pool) const;
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<FileRenameAction> FileRenameActionPtr;
+        LOG4CXX_PTR_DEF(FileRenameAction);
 
     }
 }

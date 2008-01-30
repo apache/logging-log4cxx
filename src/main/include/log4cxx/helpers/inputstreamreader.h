@@ -86,7 +86,7 @@ namespace log4cxx
                   InputStreamReader& operator=(const InputStreamReader&);
           };
 
-          typedef helpers::ObjectPtrT<InputStreamReader> InputStreamReaderPtr;
+          LOG4CXX_PTR_DEF(InputStreamReader);
         } // namespace helpers
 
 }  //namespace log4cxx

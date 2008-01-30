@@ -22,9 +22,6 @@
 
 namespace log4cxx
 {
-        class SimpleLayout;
-        typedef helpers::ObjectPtrT<SimpleLayout> SimpleLayoutPtr;
-
         /**
         SimpleLayout consists of the level of the log statement,
         followed by " - " and then the log message itself. For example,
@@ -69,6 +66,7 @@ namespace log4cxx
                 virtual void setOption(const LogString& /* option */,
                      const LogString& /* value */) {}
         };
+		LOG4CXX_PTR_DEF(SimpleLayout);
 }  // namespace log4cxx
 
 #endif //_LOG4CXX_SIMPLE_LAYOUT_H

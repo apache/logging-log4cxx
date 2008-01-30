@@ -18,6 +18,12 @@
 #if !defined(_LOG4CXX_ROLLING_ZIP_COMPRESS_ACTION_H)
 #define _LOG4CXX_ROLLING_ZIP_COMPRESS_ACTION_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
+
 #include <log4cxx/rolling/action.h>
 #include <log4cxx/file.h>
 
@@ -55,9 +61,14 @@ namespace log4cxx {
         ZipCompressAction& operator=(const ZipCompressAction&);
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<ZipCompressAction> ZipCompressActionPtr;
+        LOG4CXX_PTR_DEF(ZipCompressAction);
         
     }
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
 }
 #endif
 

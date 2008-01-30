@@ -25,9 +25,6 @@ namespace log4cxx
 {
         namespace net
         {
-                class SyslogAppender;
-                typedef helpers::ObjectPtrT<SyslogAppender> SyslogAppenderPtr;
-
                 /** Use SyslogAppender to send log messages to a remote syslog daemon.*/
                 class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
                 {
@@ -136,6 +133,7 @@ namespace log4cxx
                         SyslogAppender(const SyslogAppender&);
                         SyslogAppender& operator=(const SyslogAppender&);
                 }; // class SyslogAppender
+				LOG4CXX_PTR_DEF(SyslogAppender);
     } // namespace net
 } // namespace log4cxx
 

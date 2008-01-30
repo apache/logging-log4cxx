@@ -39,8 +39,6 @@ namespace log4cxx
                 then {@link spi::Filter#DENY DENY} is returned. If there is no match,
                 {@link spi::Filter#NEUTRAL NEUTRAL} is returned.
                 */
-                class LevelMatchFilter;
-                typedef helpers::ObjectPtrT<LevelMatchFilter> LevelMatchFilterPtr;
 
                 class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
                 {
@@ -87,6 +85,7 @@ namespace log4cxx
                         */
                         FilterDecision decide(const spi::LoggingEventPtr& event) const;
                 }; // class LevelMatchFilter
+				LOG4CXX_PTR_DEF(LevelMatchFilter);
         }  // namespace filter
 } // namespace log4cxx
 

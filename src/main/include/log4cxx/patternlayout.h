@@ -33,8 +33,6 @@
 namespace log4cxx
 {
 
-        class PatternLayout;
-        typedef helpers::ObjectPtrT<PatternLayout> PatternLayoutPtr;
         /**
 
         A flexible layout configurable with pattern string.

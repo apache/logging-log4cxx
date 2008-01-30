@@ -22,7 +22,7 @@
 #include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/pool.h>
-
+#include <log4cxx/helpers/datagrampacket.h>
 
 extern "C" { struct apr_socket_t; }
 
@@ -30,12 +30,6 @@ namespace log4cxx
 {
         namespace helpers
         {
-                class DatagramPacket;
-                typedef helpers::ObjectPtrT<DatagramPacket> DatagramPacketPtr;
-
-                class DatagramSocket;
-                typedef helpers::ObjectPtrT<DatagramSocket> DatagramSocketPtr;
-
                 /** This class represents a socket for sending and receiving
                 datagram packets.*/
                 class LOG4CXX_EXPORT DatagramSocket : public helpers::ObjectImpl
@@ -127,6 +121,7 @@ namespace log4cxx
                         int localPort;
 
                 };
+				LOG4CXX_PTR_DEF(DatagramSocket);
         }  // namespace helpers
 } // namespace log4cxx
 

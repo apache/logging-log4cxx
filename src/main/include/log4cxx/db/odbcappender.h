@@ -274,7 +274,7 @@ namespace log4cxx
                         ODBCAppender(const ODBCAppender&);
                         ODBCAppender& operator=(const ODBCAppender&);
                 }; // class ODBCAppender
-                typedef helpers::ObjectPtrT<ODBCAppender> ODBCAppenderPtr;
+                LOG4CXX_PTR_DEF(ODBCAppender);
                 
     } // namespace db
 } // namespace log4cxx

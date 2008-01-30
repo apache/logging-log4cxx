@@ -28,9 +28,6 @@ namespace log4cxx
                 class LoggerRepository;
                 typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
 
-                class RepositorySelector;
-                typedef helpers::ObjectPtrT<RepositorySelector> RepositorySelectorPtr;
-
        /**
        The <code>LogManager</code> uses one (and only one)
        <code>RepositorySelector</code> implementation to select the
@@ -50,6 +47,7 @@ namespace log4cxx
                         virtual ~RepositorySelector() {}
                         virtual LoggerRepositoryPtr& getLoggerRepository() = 0;
                 };
+				LOG4CXX_PTR_DEF(RepositorySelector);
         }  //namespace spi
 } //namespace log4cxx
 

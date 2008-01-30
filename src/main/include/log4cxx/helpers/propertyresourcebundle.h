@@ -26,8 +26,6 @@ namespace log4cxx
 {
         namespace helpers
         {
-                class PropertyResourceBundle;
-                typedef ObjectPtrT<PropertyResourceBundle> PropertyResourceBundlePtr;
 
                 /**
                 PropertyResourceBundle is a concrete subclass of ResourceBundle that
@@ -56,6 +54,7 @@ namespace log4cxx
                 protected:
                         Properties properties;
                 }; // class PropertyResourceBundle
+				LOG4CXX_PTR_DEF(PropertyResourceBundle);
         }  // namespace helpers
 } // namespace log4cxx
 

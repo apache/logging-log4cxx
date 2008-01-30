@@ -120,10 +120,10 @@ void XMLLayout::format(LogString& output,
                             output.append(LOG4CXX_EOL);
                         }
                 }
-                for (LoggingEvent::KeySet::const_iterator i = propertySet.begin();
-                        i != propertySet.end(); 
-                        i++) {
-                        LogString key(*i);
+				for (LoggingEvent::KeySet::const_iterator i2 = propertySet.begin();
+                        i2 != propertySet.end(); 
+                        i2++) {
+                        LogString key(*i2);
                         LogString value;
                         if(event->getProperty(key, value)) {
                             output.append(LOG4CXX_STR("<log4j:data name=\""));

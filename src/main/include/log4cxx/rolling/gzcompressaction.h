@@ -18,6 +18,11 @@
 #if !defined(_LOG4CXX_ROLLING_GZ_COMPRESS_ACTION_H)
 #define _LOG4CXX_ROLLING_GZ_COMPRESS_ACTION_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4786 4231 )
+#endif
+
 #include <log4cxx/rolling/action.h>
 #include <log4cxx/file.h>
 
@@ -55,9 +60,14 @@ namespace log4cxx {
         GZCompressAction& operator=(const GZCompressAction&);
         };
 
-        typedef log4cxx::helpers::ObjectPtrT<GZCompressAction> GZCompressActionPtr;
+        LOG4CXX_PTR_DEF(GZCompressAction);
 
     }
 }
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
 #endif
 

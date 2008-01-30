@@ -107,7 +107,7 @@ namespace log4cxx
                         NTEventLogAppender& operator=(const NTEventLogAppender&);
                 }; // class NTEventLogAppender
 
-                typedef helpers::ObjectPtrT<NTEventLogAppender> NTEventLogAppenderPtr;
+                LOG4CXX_PTR_DEF(NTEventLogAppender);
 
     }  // namespace nt
 } // namespace log4cxx

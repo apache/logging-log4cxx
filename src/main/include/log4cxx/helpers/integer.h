@@ -41,7 +41,7 @@ namespace log4cxx {
 
       };
 
-      typedef log4cxx::helpers::ObjectPtrT<Integer> IntegerPtr;
+      LOG4CXX_PTR_DEF(Integer);
 
    }
 }

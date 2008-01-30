@@ -25,9 +25,6 @@
 
 namespace log4cxx
 {
-        class HTMLLayout;
-        typedef helpers::ObjectPtrT<HTMLLayout> HTMLLayoutPtr;
-
         /**
         This layout outputs events in a HTML table.
         */
@@ -119,6 +116,7 @@ namespace log4cxx
                         { return false; }
 
         }; // class HtmlLayout
+		LOG4CXX_PTR_DEF(HTMLLayout);
 }  // namespace log4cxx
 
 #endif // _LOG4CXX_HTML_LAYOUT_H

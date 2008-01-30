@@ -110,7 +110,7 @@ virtual bool isTriggeringEvent(
   void setOption(const LogString& option, const LogString& value);
   };
 
-  typedef helpers::ObjectPtrT<FilterBasedTriggeringPolicy> FilterBasedTriggeringPolicyPtr;
+  LOG4CXX_PTR_DEF(FilterBasedTriggeringPolicy);
 
 }
  }

@@ -64,7 +64,7 @@ namespace log4cxx
                   Reader& operator=(const Reader&);
           };
 
-          typedef helpers::ObjectPtrT<Reader> ReaderPtr;
+          LOG4CXX_PTR_DEF(Reader);
         } // namespace helpers
 
 }  //namespace log4cxx
