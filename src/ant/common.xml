@@ -155,25 +155,21 @@ Required features not present in cpptasks releases prior to Feb 2005</fail -->
         <condition property="is-shared" value="1">
               <equals arg1="${lib.type}" arg2="shared"/>
         </condition>
-        <condition property="static.shared" value="static">
-              <equals arg1="${lib.type}" arg2="static"/>
-        </condition>
-        <property name="static.shared" value="shared"/>
 
-        <property name="executable.dir" value="${target.dir}/${debug.release}/${static.shared}"/>
+        <property name="executable.dir" value="${target.dir}/${debug.release}/${lib.type}"/>
 
         <property name="projectsOnly" value="false"/>
         
 </target>
 
 
-<target name="copy-if-changed-checksum" unless="force-copy">
+<target name="copy-if-changed-compare" unless="force-copy">
     <condition property="force-copy" value="2">
          <not><filesmatch file1="${tofile}" file2="${file}"/></not>
     </condition>
 </target>
 
-<target name="copy-if-changed" depends="copy-if-changed-checksum" if="force-copy">
+<target name="copy-if-changed" depends="copy-if-changed-compare" if="force-copy">
     <copy tofile="${tofile}" file="${file}" overwrite="true"/>
 </target>
 

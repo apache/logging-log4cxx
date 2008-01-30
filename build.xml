@@ -141,7 +141,7 @@ Command line options:
 
 <target name="init" depends="common-init">
 
-        <property name="log4cxx.lib.dir" value="${executable.dir}/${lib.type}"/>
+        <property name="log4cxx.lib.dir" value="${executable.dir}"/>
         <mkdir dir="${log4cxx.lib.dir}"/>
 
         <condition property="with-logchar" value="wchar_t">
