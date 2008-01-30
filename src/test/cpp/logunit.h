@@ -217,3 +217,4 @@ static LogUnit::RegisterDisabledSuite<TF> registration;
 #define LOGUNIT_FAIL(msg) throw LogUnit::AssertException(msg, __LINE__)
 
 #endif
+
