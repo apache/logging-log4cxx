@@ -6,12 +6,9 @@
         <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.prefix}${apr.lib.name}${spr.lib.suffix}" unless="apr.lib.dir"/>
         <libset libs="esmtp" if="has-libesmtp"/>
-        <libset libs="iodbc" if="has-iODBC"/>
-        <libset libs="unixodbc" if="has-unixODBC"/>
-        <libset libs="odbc32" if="has-MSODBC"/>
-        <libset libs="iconv" if="has-iconv"/>
+		<libset libs="${odbc.lib}" if="odbc.lib"/>
+		<libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
         <libset libs="pthread" if="is-unix"/>
-        <libset libs="expat" if="has-expat"/>
         <syslibset libs="advapi32 ws2_32 mswsock shell32" if="is-windows"/>
         <syslibset libs="stdc++" if="is-gcc"/>
         <syslibset libs="cw32mt" if="is-bcc"/>
@@ -158,31 +155,23 @@ Command line options:
             <equals arg1="${with-SMTP}" arg2="libesmtp"/>
         </condition>
 
-        <condition property="has-unixODBC" value="1">
-            <equals arg1="${with-ODBC}" arg2="unixODBC"/>
-        </condition>
-
-        <condition property="has-iODBC" value="1">
-            <equals arg1="${with-ODBC}" arg2="iODBC"/>
-        </condition>
-
-        <condition property="has-MSODBC" value="1">
-            <equals arg1="${with-ODBC}" arg2="Microsoft"/>
-        </condition>
-        
-        <condition property="has-ODBC" value="1">
-            <or>
-                <isset property="has-unixODBC"/>
-                <isset property="has-iODBC"/>
-                <isset property="has-MSODBC"/>
-            </or>
-        </condition>
-        <property name="has-ODBC" value="0"/>
-
-		<condition property="lib.suffix" value="d">
-			<istrue value="${debug}"/>
+		<condition property="odbc.lib" value="iodbc">
+			 <equals arg1="${with-ODBC}" arg2="iODBC"/>
 		</condition>
-		<property name="lib.suffix" value=""/>
+
+		<condition property="odbc.lib" value="unixodbc">
+			 <equals arg1="${with-ODBC}" arg2="unixODBC"/>
+		</condition>
+
+		<condition property="odbc.lib" value="odbc32">
+			 <equals arg1="${with-ODBC}" arg2="Microsoft"/>
+		</condition>
+
+		<condition property="has-ODBC" value="1">
+			 <isset property="odbc.lib"/>
+		</condition>
+		<property name="has-ODBC" value="0"/>
+
 </target>
 
 <target name="clean" depends="init" description="Removes built files">
@@ -205,7 +194,7 @@ Command line options:
               file="${include.dir}/log4cxx/log4cxx.hw" overwrite="true"/>
         <copy tofile="${include.dir}/log4cxx/private/log4cxx_private.tmp"
               file="${include.dir}/log4cxx/private/log4cxx_private.hw" overwrite="true"/>
-		<property name="has-MSODBC" value="1"/>
+		<property name="odbc.lib" value="odbc32"/>
 </target>
 
 
@@ -491,8 +480,15 @@ Command line options:
 
 	<fail unless="apr-libs-match">apr is ${apr.lib.type} and apr-util is ${apr-util.lib.type}, must be same type.</fail>
 	<property name="lib.name" value="log4cxx"/>
+	<property name="lib.prefix" value=""/>
+	<condition property="lib.suffix" value="d">
+		<istrue value="${debug}"/>
+	</condition>
 	<property name="lib.suffix" value=""/>
-	<property name="lib.suffix" value=""/>
+
+	<condition property="apr-util.dependencies" value="expat iconv">
+		<equals arg1="${apr-util.lib.type}" arg2="static"/>
+	</condition>
 
 
     <property name="project.compiler" value="${compiler}"/>
@@ -519,7 +515,7 @@ Command line options:
         <defineset define="WIN32" if="is-windows"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         &libsets;
-        <project type="${project.type}" outfile="${projects.dir}/log4cxx" if="project.if"/>
+        <project type="${project.type}" outfile="${projects.dir}/${lib.name}" if="project.if"/>
     </cc>
 </target>
 

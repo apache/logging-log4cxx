@@ -15,10 +15,21 @@
  limitations under the License.
 
 -->
-<target name="find-apr" depends="init">
+
+<target name="find-apr-src" depends="init">
     <condition property="apr.dir" value="${with-apr}">
         <available file="${with-apr}"/>
     </condition>
+	<condition property="apr.src.dir" value="${apr.dir}">
+		<available file="${apr.dir}/${apr.sample.c}"/>
+	</condition>
+	<condition property="apr.src.dir" value="../apr">
+		<available file="../apr/${apr.sample.c}"/>
+	</condition>
+</target>
+
+
+<target name="find-apr-lib" depends="find-apr-src" unless="force-ant">
 	<available property="apr.lib.file" 
 	     value="${apr.dir}/lib${apr.lib.name}.la"
 	     file="${apr.dir}/lib${apr.lib.name}.la"/>
@@ -138,60 +149,7 @@
 	</condition>
     <fail unless="apr.dir">Unable to locate apr base directory.</fail>
     
-	<!--   use character ref to prevent directory name from
-	          being changed on global search and replacements -->
-    <condition property="apr.include.dir" value="${apr.dir}/include/ap&#x72;-1.0">
-        <available file="${apr.dir}/include/ap&#x72;-1.0/${apr.sample.h}"/>
-    </condition>
-    <condition property="apr.include.dir" value="${apr.dir}/include/ap&#x72;-1">
-        <available file="${apr.dir}/include/ap&#x72;-1/${apr.sample.h}"/>
-    </condition>
-    <condition property="apr.include.dir" value="${apr.dir}/include">
-        <available file="${apr.dir}/include/${apr.sample.h}"/>
-    </condition>
-    <fail unless="apr.include.dir">Unable to locate apr include directory.</fail>
 
-
-	<!--   Static debug libraries in Ant's typical location (ignored unless debug build)   -->
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/static/lib${apr.lib.name}.a">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/static/lib${apr.lib.name}.a"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/static/${apr.lib.name}.lib">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/static/${apr.lib.name}.lib"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/static/${apr.lib.name}d.lib">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/static/${apr.lib.name}d.lib"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/static/lib${apr.lib.name}.lib">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/static/lib${apr.lib.name}.lib"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/static/lib${apr.lib.name}d.lib">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/static/lib${apr.lib.name}d.lib"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file.dir"
-		value="${apr.dir}/target/debug/static">
-			<isset property="apr.lib.file"/>
-	</condition>
 
 
 	<!--   Static debug libraries in APR's VC6 projects typical location (ignored unless debug build)   -->
@@ -208,46 +166,6 @@
 	</condition>
 
 
-	<!--   Shared debug libraries in Ant's typical location (ignored unless debug build)   -->
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/shared/lib${apr.lib.name}.la">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/shared/lib${apr.lib.name}.la"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/shared/${apr.lib.name}.lib">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/shared/${apr.lib.name}.lib"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/shared/${apr.lib.name}d.lib">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/shared/${apr.lib.name}d.lib"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/shared/lib${apr.lib.name}.lib">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/shared/lib${apr.lib.name}.lib"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/debug/shared/lib${apr.lib.name}d.lib">
-		<and>
-			<isset property="is-debug"/>
-			<available file="${apr.dir}/target/debug/shared/lib${apr.lib.name}d.lib"/>
-		</and>
-	</condition>
-	<condition property="apr.lib.file.dir"
-		value="${apr.dir}/target/debug/shared">
-			<isset property="apr.lib.file"/>
-	</condition>
 
 
 	<!--   Shared debug libraries in APR's VC6 projects typical location (ignored unless debug build)   -->
@@ -265,30 +183,6 @@
 
 
 
-	<!--   Static release libraries in Ant's typical location   -->
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/release/static/lib${apr.lib.name}.a">
-			<available file="${apr.dir}/target/release/static/lib${apr.lib.name}.a"/>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/release/static/${apr.lib.name}.lib">
-			<available file="${apr.dir}/target/release/static/${apr.lib.name}.lib"/>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/release/static/lib${apr.lib.name}.lib">
-			<available file="${apr.dir}/target/release/static/lib${apr.lib.name}.lib"/>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/release/static/lib${apr.lib.name}d.lib">
-			<available file="${apr.dir}/target/release/static/lib${apr.lib.name}d.lib"/>
-	</condition>
-	<condition property="apr.lib.file.dir"
-		value="${apr.dir}/target/release/static">
-			<isset property="apr.lib.file"/>
-	</condition>
-
-
-
 	<!--   Static release libraries in APR's VC6 projects typical location (ignored unless debug build)   -->
 	<condition property="apr.lib.file"
 		value="${apr.dir}/LibR/${apr.lib.name}.lib">
@@ -299,24 +193,6 @@
 			<isset property="apr.lib.file"/>
 	</condition>
 
-
-	<!--   Shared release libraries in Ant's typical location (ignored unless debug build)   -->
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/release/shared/lib${apr.lib.name}.la">
-			<available file="${apr.dir}/target/release/shared/lib${apr.lib.name}.la"/>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/release/shared/${apr.lib.name}.lib">
-			<available file="${apr.dir}/target/release/shared/${apr.lib.name}.lib"/>
-	</condition>
-	<condition property="apr.lib.file"
-		value="${apr.dir}/target/release/shared/lib${apr.lib.name}.lib">
-			<available file="${apr.dir}/target/release/shared/lib${apr.lib.name}.lib"/>
-	</condition>
-	<condition property="apr.lib.file.dir"
-		value="${apr.dir}/target/release/shared">
-			<isset property="apr.lib.file"/>
-	</condition>
 
 
 
@@ -397,19 +273,28 @@
 	<condition property="apr.lib.type" value="static">
 		<isset property="apr.lib.file"/>
 	</condition>
+</target>
 
-        
-    <condition property="apr.src.dir" value="${with-apr}">
-        <available file="${with-apr}/${apr.sample.c}"/>
+<target name="find-apr" depends="find-apr-lib">
+	<!--   use character ref to prevent directory name from
+	          being changed on global search and replacements -->
+    <condition property="apr.include.dir" value="${apr.dir}/include/ap&#x72;-1.0">
+        <available file="${apr.dir}/include/ap&#x72;-1.0/${apr.sample.h}"/>
     </condition>
-    
-    <condition property="apr.src.dir" value="${apr.dir}">
-        <available file="${apr.dir}/${apr.sample.c}"/>
+    <condition property="apr.include.dir" value="${apr.dir}/include/ap&#x72;-1">
+        <available file="${apr.dir}/include/ap&#x72;-1/${apr.sample.h}"/>
+    </condition>
+    <condition property="apr.include.dir" value="${apr.dir}/include">
+        <available file="${apr.dir}/include/${apr.sample.h}"/>
+    </condition>
+    <condition property="apr.include.dir" value="${apr.src.dir}/include">
+        <available file="${apr.src.dir}/include/${apr.sample.h}"/>
     </condition>
 
-    <condition property="apr.src.dir" value="${relative-apr}">
-        <available file="${relative-apr}/${apr.sample.c}"/>
-    </condition>
+	<condition property="apr.dir" value="${apr.src.dir}">
+		<isset property="apr.src.dir"/>
+	</condition>
+
 
 	<echo>apr-find:
 apr.dir=${apr.dir}

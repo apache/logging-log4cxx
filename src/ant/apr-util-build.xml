@@ -118,6 +118,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
        <replacefilter token="XML_MICRO_VERSION" value="1"/>
        <replacefilter token="VERSION" value='"expat_1.95.1"'/>
     </replace>
+	<property name="apr.lib.prefix" value=""/>
+	<property name="apr.lib.name" value="apr-1"/>
+	<property name="apr.lib.suffix" value=""/>
     <property name="project.compiler" value="${compiler}"/>
 	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
@@ -149,7 +152,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
 
-        <libset dir="${executable.dir}" libs="apr-1${lib-suffix}"/>
+        <libset dir="${executable.dir}" libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl" if="is-unix"/>
         <libset libs="iconv" if="has-iconv"/>
