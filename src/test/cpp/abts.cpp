@@ -20,6 +20,8 @@
 #include "abts_tests.h"
 #include "testutil.h"
 
+
+
 #define ABTS_STAT_SIZE 6
 static char status[ABTS_STAT_SIZE] = {'|', '/', '-', '|', '\\', '-'};
 static int curr_char;
@@ -29,6 +31,8 @@ static int quiet = 0;
 static int list_tests = 0;
 
 const char **testlist = NULL;
+//  defined in logunit.cpp
+abts_suite* abts_run_suites(abts_suite*);
 
 static int find_test_name(const char *testname) {
     int i;
@@ -101,7 +105,7 @@ abts_suite *abts_add_suite(abts_suite *suite, const char *suite_name_full)
         end_suite(suite);
     }
 
-    subsuite = malloc(sizeof(*subsuite));
+    subsuite = (sub_suite*) malloc(sizeof(*subsuite));
     subsuite->num_test = 0;
     subsuite->failed = 0;
     subsuite->next = NULL;
@@ -115,7 +119,7 @@ abts_suite *abts_add_suite(abts_suite *suite, const char *suite_name_full)
     }
     p = strrchr(suite_name, '.');
     if (p) {
-        subsuite->name = memcpy(calloc(p - suite_name + 1, 1),
+        subsuite->name = (const char*) memcpy(calloc(p - suite_name + 1, 1),
                                 suite_name, p - suite_name);
     }
     else {
@@ -129,7 +133,7 @@ abts_suite *abts_add_suite(abts_suite *suite, const char *suite_name_full)
     subsuite->not_run = 0;
 
     if (suite == NULL) {
-        suite = malloc(sizeof(*suite));
+        suite = (abts_suite*) malloc(sizeof(*suite));
         suite->head = subsuite;
         suite->tail = subsuite;
     }
@@ -420,7 +424,7 @@ int main(int argc, const char *const argv[]) {
         /* Waste a little space here, because it is easier than counting the
          * number of tests listed.  Besides it is at most three char *.
          */
-        testlist = calloc(argc + 1, sizeof(char *));
+        testlist = (const char**) calloc(argc + 1, sizeof(char *));
         for (i = 1; i < argc; i++) {
             testlist[i - 1] = argv[i];
         }
@@ -435,4 +439,3 @@ int main(int argc, const char *const argv[]) {
     }
     return rv;
 }
-       

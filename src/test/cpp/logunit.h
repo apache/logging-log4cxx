@@ -203,7 +203,7 @@ public:                                               \
     } register ## testName;
 
 
-#define LOGUNIT_TEST_SUITE_END(TF) \
+#define LOGUNIT_TEST_SUITE_END() \
     };                             \
     public:                        \
     static void populateSuite() {         \

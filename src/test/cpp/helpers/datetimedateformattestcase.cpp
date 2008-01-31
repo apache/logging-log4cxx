@@ -70,7 +70,7 @@ LOGUNIT_CLASS(DateTimeDateFormatTestCase)
   LOGUNIT_TEST( test7 );
   LOGUNIT_TEST( test8 );
 #endif
-  LOGUNIT_TEST_SUITE_END(DateTimeDateFormatTestCase);
+  LOGUNIT_TEST_SUITE_END();
 
 
 

@@ -22,14 +22,13 @@
 
 #include <apr_general.h>
 
-extern "C" {
 void initialize() {
     apr_initialize();
 }
 
 extern const char** testlist;
 
-bool suite_sort(const LogUnit::SuiteList::value_type& lhs, const LogUnit::SuiteList::value_type& rhs) {
+static bool suite_sort(const LogUnit::SuiteList::value_type& lhs, const LogUnit::SuiteList::value_type& rhs) {
     return lhs.first < rhs.first;
 }
 
@@ -52,7 +51,6 @@ abts_suite* abts_run_suites(abts_suite* suite) {
     }
     apr_terminate();
     return suite;
-}
 }
 
 using namespace LogUnit;
@@ -124,9 +122,9 @@ void TestFixture::assertEquals(const std::string expected,
     }
 }
 
-template<class Ch>
-static transcode(std::string& dst, const std::basic_string<Ch>& src) {
-        for(std::basic_string<Ch>::const_iterator iter = src.begin();
+template<class S>
+static void transcode(std::string& dst, const S& src) {
+        for(typename S::const_iterator iter = src.begin();
             iter != src.end();
             iter++) {
             if (*iter <= 0x7F) {
