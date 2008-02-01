@@ -30,7 +30,6 @@
 #include <time.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/mdc.h>
-#include <set>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <vector>
 
@@ -158,7 +157,7 @@ namespace log4cxx
                         */
                         bool getMDC(const LogString& key, LogString& dest) const;
 
-                        LOG4CXX_SET_DEF(KeySet, LogString)
+                        LOG4CXX_LIST_DEF(KeySet, LogString)
                         /**
                         * Returns the set of of the key values in the MDC for the event.
                         * The returned set is unmodifiable by the caller.

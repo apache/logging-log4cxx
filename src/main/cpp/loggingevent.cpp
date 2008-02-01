@@ -138,7 +138,7 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
                 MDC::Map::const_iterator it;
                 for (it = mdcCopy->begin(); it != mdcCopy->end(); it++)
                 {
-                        set.insert(it->first);
+                        set.push_back(it->first);
 
                 }
         }
@@ -149,7 +149,7 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
                 MDC::Map::const_iterator it;
                 for (it = m.begin(); it != m.end(); it++)
                 {
-                        set.insert(it->first);
+                        set.push_back(it->first);
                 }
         }
 
@@ -193,7 +193,7 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
                 std::map<LogString, LogString>::const_iterator it;
                 for (it = properties->begin(); it != properties->end(); it++)
                 {
-                        set.insert(it->first);
+                        set.push_back(it->first);
                 }
         }
 

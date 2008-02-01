@@ -30,25 +30,48 @@ using namespace log4cxx::helpers;
 File::File() {
 }
 
+template<class S> 
+static LogString decodeLS(const S& src) {
+    LogString dst;
+    Transcoder::decode(src, dst);
+    return dst;
+}
+
+template<class S> 
+static std::string decodeOS(const S& src) {
+    LogString ls;
+    std::string os;
+    Transcoder::decode(src, ls);
+    Transcoder::encode(ls, os);
+    return os;
+}
+
+
 File::File(const std::string& name1)
-  : name(), osName() {
-  Transcoder::decode(name1, this->name);
-  Transcoder::encode(this->name, osName);
+  : name(decodeLS(name1)), osName(decodeOS(name1)) {
+}
+
+File::File(const char* name1)
+  : name(decodeLS(name1)), osName(decodeOS(name1)) {
 }
 
 #if LOG4CXX_WCHAR_T_API
 File::File(const std::wstring& name1)
-   : name(), osName() {
-  Transcoder::decode(name1, this->name);
-  Transcoder::encode(this->name, osName);
+   : name(decodeLS(name1)), osName(decodeOS(name1)) {
+}
+
+File::File(const wchar_t* name1)
+   : name(decodeLS(name1)), osName(decodeOS(name1)) {
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API
 File::File(const std::basic_string<UniChar>& name1)
-   : name(), osName() {
-  Transcoder::decode(name1, this->name);
-  Transcoder::encode(this->name, osName);
+   : name(decodeLS(name1)), osName(decodeOS(name1)) {
+}
+
+File::File(const UniChar* name1)
+   : name(decodeLS(name1)), osName(decodeOS(name1)) {
 }
 #endif
 

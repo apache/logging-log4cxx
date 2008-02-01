@@ -34,13 +34,13 @@ using namespace log4cxx::helpers;
 LOGUNIT_CLASS(CharsetEncoderTestCase)
 {
         LOGUNIT_TEST_SUITE(CharsetEncoderTestCase);
-#if APR_HAS_THREADS        
-                LOGUNIT_TEST(thread1);
-#endif                
                 LOGUNIT_TEST(encode1);
                 LOGUNIT_TEST(encode2);
                 LOGUNIT_TEST(encode3);
                 LOGUNIT_TEST(encode4);
+#if APR_HAS_THREADS        
+                LOGUNIT_TEST(thread1);
+#endif                
         LOGUNIT_TEST_SUITE_END();
 
         enum { BUFSIZE = 256 };

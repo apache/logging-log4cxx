@@ -33,6 +33,17 @@ IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 
 FileOutputStream::FileOutputStream(const LogString& filename,
     bool append) {
+    open(filename, append);
+}
+
+FileOutputStream::FileOutputStream(const logchar* filename,
+    bool append) {
+    LogString fn(filename);
+    open(fn, append);
+}
+
+void FileOutputStream::open(const LogString& filename,
+    bool append) {
     apr_fileperms_t perm = APR_OS_DEFAULT;
     apr_int32_t flags = APR_WRITE | APR_CREATE;
     if (append) {

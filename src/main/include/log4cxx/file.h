@@ -40,11 +40,14 @@ namespace log4cxx
                 {
                 public:
                     File();
+                    File(const char* name);
                     File(const std::string& name);
 #if LOG4CXX_WCHAR_T_API
+                    File(const wchar_t* name);
                     File(const std::wstring& name);
 #endif
 #if LOG4CXX_UNICHAR_API
+                    File(const UniChar* name);
                     File(const std::basic_string<UniChar>& name);
 #endif
 #if LOG4CXX_CFSTRING_API

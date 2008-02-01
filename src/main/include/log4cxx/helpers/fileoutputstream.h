@@ -45,6 +45,7 @@ namespace log4cxx
                   END_LOG4CXX_CAST_MAP()
 
                   FileOutputStream(const LogString& filename, bool append = false);
+                  FileOutputStream(const logchar* filename, bool append = false);
                   virtual ~FileOutputStream();
 
                   virtual void close(Pool& p);
@@ -54,6 +55,7 @@ namespace log4cxx
           private:
                   FileOutputStream(const FileOutputStream&);
                   FileOutputStream& operator=(const FileOutputStream&);
+                  void open(const LogString& fn, bool append);
           };
 
           LOG4CXX_PTR_DEF(FileOutputStream);

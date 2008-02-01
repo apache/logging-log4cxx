@@ -60,9 +60,9 @@ void PropertiesPatternConverter::format(
     if (option.length() == 0) {
       toAppendTo.append(1, (logchar) 0x7B /* '{' */);
 
-      std::set<LogString> keySet(event->getMDCKeySet());
+      LoggingEvent::KeySet keySet(event->getMDCKeySet());
 
-      for(std::set<LogString>::const_iterator iter = keySet.begin();
+      for(LoggingEvent::KeySet::const_iterator iter = keySet.begin();
           iter != keySet.end();
           iter++) {
           toAppendTo.append(1, (logchar) 0x7B /* '{' */);

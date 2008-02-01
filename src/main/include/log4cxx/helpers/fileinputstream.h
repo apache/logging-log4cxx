@@ -52,6 +52,7 @@ namespace log4cxx
                    * @param filename The system-dependent file name.
                    */
                   FileInputStream(const LogString& filename);
+                  FileInputStream(const logchar* filename);
 
                   /**
                    * Creates a FileInputStream by opening a connection to an actual 
@@ -83,6 +84,7 @@ namespace log4cxx
                   FileInputStream(const FileInputStream&);
 
                   FileInputStream& operator=(const FileInputStream&);
+                  void open(const LogString&);
 
           };
 
