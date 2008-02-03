@@ -515,7 +515,10 @@ Command line options:
         <defineset define="WIN32" if="is-windows"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
         &libsets;
-        <project type="${project.type}" outfile="${projects.dir}/${lib.name}" if="project.if"/>
+        <project type="${project.type}" outfile="${projects.dir}/${lib.name}" if="project.if">
+            <dependency file="${projects.dir}/apr-1"/>
+            <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+        </project>
     </cc>
 </target>
 
@@ -548,7 +551,12 @@ Command line options:
         <libset libs="${lib.prefix}${lib.name}${lib.suffix}" dir="${log4cxx.lib.dir}"/>
         &libsets;
 
-        <project outfile="${projects.dir}/${example.name}" type="${project.type}" if="project.if"/>
+        <project outfile="${projects.dir}/${example.name}" type="${project.type}" if="project.if">
+            <dependency file="${projects.dir}/apr-1"/>
+            <dependency name="${projects.dir}/aprutil-1"/>
+            <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
+        </project>
+        
     </cc>
 </target>
 
@@ -645,7 +653,11 @@ Command line options:
         <libset libs="dl" if="is-unix"/>
         &libsets;
 
-        <project outfile="${projects.dir}/testsuite" type="${project.type}" if="project.if"/>
+        <project outfile="${projects.dir}/testsuite" type="${project.type}" if="project.if">
+            <dependency file="${projects.dir}/apr-1"/>
+            <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+            <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
+        </project>
     </cc>
 </target>
 
@@ -653,7 +665,8 @@ Command line options:
 
 
 <target name="build-standalone-unittest"
-    description="Builds a unit tests + log4cxx executable">
+    description="Builds a unit tests + log4cxx executable"
+    depends="build-apr-util,configure">
     <mkdir dir="${executable.dir}/static/testsuite-standalone_obj"/>
     <property name="project.compiler" value="${compiler}"/>
 	<property name="project.type" value="msvc6"/>
@@ -689,7 +702,10 @@ Command line options:
 
         <project outfile="${projects.dir}/testsuite-standalone"
                  type="${project.type}"
-                 if="project.if"/>
+                 if="project.if">
+            <dependency file="${projects.dir}/apr-1"/>
+            <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+        </project>
     </cc>
 </target>
 
@@ -864,35 +880,33 @@ Command line options:
 <target name="build-projects">
         <mkdir dir="${projects.dir}"/>
 	    <property name="project.type" value="msvc6"/>
-        <antcall target="build">
-                <param name="project.if" value="true"/>
-                <param name="project.type" value="${project.type}"/>
-                <param name="project.compiler" value="${project.compiler}"/>
-                <param name="projectsOnly" value="true"/>
-        </antcall>
         <antcall target="build-unittest">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projectsOnly" value="true"/>
+                <param name="os.family" value="${os.family}"/>
         </antcall>
         <antcall target="build-standalone-unittest">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projectsOnly" value="true"/>
+                <param name="os.family" value="${os.family}"/>
         </antcall>
         <antcall target="build-examples">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projectsOnly" value="true"/>
+                <param name="os.family" value="${os.family}"/>
         </antcall>
         <antcall target="build-performance">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projectsOnly" value="true"/>
+                <param name="os.family" value="${os.family}"/>
         </antcall>
 </target>
 
@@ -901,6 +915,7 @@ Command line options:
     <antcall target="build-projects">
         <param name="project.type" value="msvc6"/>
         <param name="project.compiler" value="msvc"/>
+        <param name="os.family" value="windows"/>
     </antcall>
 </target>
 
@@ -909,6 +924,7 @@ Command line options:
     <antcall target="build-projects">
       <param name="project.type" value="msvc8"/>
       <param name="project.compiler" value="msvc"/>
+        <param name="os.family" value="windows"/>
     </antcall>
 </target>
 
@@ -917,6 +933,7 @@ Command line options:
     <antcall target="build-projects">
         <param name="project.type" value="xcode"/>
         <param name="project.compiler" value="g++"/>
+        <param name="os.family" value="mac"/>
     </antcall>
 </target>
 

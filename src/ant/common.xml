@@ -26,36 +26,26 @@
 <typedef resource="cpptasks.types"/>
 
 <target name="os-detect">
-        <condition property="is-mac" value="true">
-             <and>
-                 <os family="mac"/>
-                 <not><isset property="is-windows"/></not>
-             </and>
-        </condition>
-        <condition property="is-unix" value="true">
-             <or>
-                  <isset property="is-mac"/>
-                  <equals arg1="${os.family}" arg2="cygwin"/>
-                  <and>
-                     <os family="unix"/>
-                     <not><isset property="is-windows"/></not>
-                  </and>
-             </or>
-        </condition>
-        <condition property="is-windows" value="true">
-             <and>
-                <os family="windows"/>
-                <not><isset property="is-unix"/></not>
-             </and>
+        <condition property="os.family" value="mac">
+            <os family="mac"/>
         </condition>
         <condition property="os.family" value="windows">
-            <isset property="is-windows"/>
+            <os family="windows"/>
         </condition>
-        <condition property="os.family" value="unix">
-            <isset property="is-unix"/>
+        <property name="os.family" value="unix"/>
+        <condition property="is-mac" value="1">
+            <equals arg1="${os.family}" arg2="mac"/>
         </condition>
-
-
+        <condition property="is-windows" value="1">
+            <equals arg1="${os.family}" arg2="windows"/>
+        </condition>
+        <condition property="is-unix" value="1">
+            <or>
+                <equals arg1="${os.family}" arg2="unix"/>
+                <equals arg1="${os.family}" arg2="mac"/>
+                <equals arg1="${os.family}" arg2="cygwin"/>
+            </or>
+        </condition>
 </target>
 
 

@@ -70,13 +70,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <target name="init" depends="common-init">
-    <condition property="arch" value="unix">
-        <isset property="is-unix"/>
-    </condition>
     <condition property="arch" value="win32">
         <isset property="is-windows"/>
     </condition>
-    
+    <property name="arch" value="unix"/>
 </target>
 
 <target name="configure" depends="init, unix-configure, win-configure"/>
@@ -387,6 +384,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${projects.dir}"/>
                 <param name="projectsOnly" value="true"/>
+                <param name="arch" value="${arch}"/>
         </antcall>
         <antcall target="build-check">
                 <param name="project.if" value="true"/>
@@ -394,6 +392,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${projects.dir}"/>
                 <param name="projectsOnly" value="true"/>
+                <param name="arch" value="${arch}"/>
         </antcall>
 </target>
 
@@ -402,14 +401,16 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <antcall target="build-projects">
         <param name="project.type" value="msvc6"/>
         <param name="project.compiler" value="msvc"/>
+        <param name="arch" value="win32"/>
     </antcall>
 </target>
 
 <target name="build-projects-vc8" depends="init"
      description="Builds project files for Microsoft Visual C++ 2005">
   <antcall target="build-projects">
-    <param name="project.type" value="msvc8"/>
-    <param name="project.compiler" value="msvc"/>
+        <param name="project.type" value="msvc8"/>
+        <param name="project.compiler" value="msvc"/>
+        <param name="arch" value="win32"/>
   </antcall>
 </target>
 
@@ -418,6 +419,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <antcall target="build-projects">
         <param name="project.type" value="xcode"/>
         <param name="project.compiler" value="${compiler}"/>
+        <param name="arch" value="unix"/>
     </antcall>
 </target>
 

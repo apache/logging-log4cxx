@@ -45,6 +45,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="init" depends="common-init">
+    <condition property="arch" value="win32">
+        <isset property="is-windows"/>
+    </condition>
+    <property name="arch" value="unix"/>
 </target>
 
 <target name="clean" description="Deletes build products">
@@ -160,7 +164,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset if="is-bcc">
             <define name="EILSEQ" value="50"/>
         </defineset>
-        <project type="${project.type}" outfile="${projects.dir}/aprutil-1" if="project.if"/>
+        <project type="${project.type}" outfile="${projects.dir}/aprutil-1" if="project.if">
+            <dependency file="${projects.dir}/apr-1"/>
+        </project>
     </cc>
     <property name="apr.lib.dir" location="${executable.dir}"/>
 </target>
@@ -194,7 +200,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="pthread dl" if="is-unix"/>
         <libset libs="iconv" if="has-iconv"/>
         <libset libs="sqlite3" if="has-sqlite3"/>
-        <project type="${project.type}" outfile="${projects.dir}/${test}" if="project.if"/>
+        <project type="${project.type}" outfile="${projects.dir}/${test}" if="project.if">
+            <dependency file="${projects.dir}/apr-1"/>
+            <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+        </project>
     </cc>
 </target>
 
