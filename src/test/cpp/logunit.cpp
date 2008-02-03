@@ -111,6 +111,19 @@ void TestFixture::setCase(abts_case* tc) {
 void TestFixture::setUp() {}
 void TestFixture::tearDown() {}
 
+void TestFixture::assertEquals(const char* expected, 
+     const char* actual, 
+     const char* expectedExpr,
+     const char* actualExpr,
+     int lineno) {
+    abts_str_equal(tc, expected, actual, lineno);
+    if ((expected == 0 || actual != 0) ||
+        (expected != 0 || actual == 0) ||
+        (expected != 0 && strcmp(expected, actual) != 0)) {
+        throw TestException();
+    }
+}
+
 void TestFixture::assertEquals(const std::string expected, 
      const std::string actual, 
      const char* expectedExpr,

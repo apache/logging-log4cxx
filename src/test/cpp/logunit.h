@@ -65,6 +65,11 @@ namespace LogUnit {
             const char* expectedExpr, 
             const char* actualExpr, 
             int lineno);
+        void assertEquals(const char* expected, 
+            const char* actual, 
+            const char* expectedExpr, 
+            const char* actualExpr, 
+            int lineno);
 #if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_WCHAR_T_API       
         void assertEquals(const std::wstring expected, 
             const std::wstring actual, 

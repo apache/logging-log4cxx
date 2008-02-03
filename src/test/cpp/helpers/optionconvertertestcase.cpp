@@ -74,17 +74,17 @@ public:
      apr_status_t stat = apr_env_get(&toto, "TOTO", 
          (apr_pool_t*) p.getAPRPool());
      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-     LOGUNIT_ASSERT_EQUAL(std::string("wonderful"), (std::string) toto);
+     LOGUNIT_ASSERT_EQUAL("wonderful", toto);
      char* key1;
      stat = apr_env_get(&key1, "key1", 
          (apr_pool_t*) p.getAPRPool());
      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-     LOGUNIT_ASSERT_EQUAL(std::string("value1"), (std::string) key1);
+     LOGUNIT_ASSERT_EQUAL("value1", key1);
      char* key2;
      stat = apr_env_get(&key2, "key2", 
          (apr_pool_t*) p.getAPRPool());
      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-     LOGUNIT_ASSERT_EQUAL(std::string("value2"), (std::string) key2);
+     LOGUNIT_ASSERT_EQUAL("value2", key2);
    }
 
    void varSubstTest1()
