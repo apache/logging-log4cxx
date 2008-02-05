@@ -401,7 +401,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <antcall target="build-projects">
         <param name="project.type" value="msvc6"/>
         <param name="project.compiler" value="msvc"/>
-        <param name="arch" value="win32"/>
+        <param name="os.family" value="windows"/>
     </antcall>
 </target>
 
@@ -410,16 +410,25 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
   <antcall target="build-projects">
         <param name="project.type" value="msvc8"/>
         <param name="project.compiler" value="msvc"/>
-        <param name="arch" value="win32"/>
+        <param name="os.family" value="windows"/>
   </antcall>
 </target>
 
-<target name="build-projects-xcode" depends="init" 
+  <target name="build-projects-vc9" depends="init"
+       description="Builds project files for Microsoft Visual C++ 2008">
+    <antcall target="build-projects">
+      <param name="project.type" value="msvc9"/>
+      <param name="project.compiler" value="msvc"/>
+      <param name="os.family" value="windows"/>
+    </antcall>
+  </target>
+
+  <target name="build-projects-xcode" depends="init" 
       description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
         <param name="project.type" value="xcode"/>
         <param name="project.compiler" value="${compiler}"/>
-        <param name="arch" value="unix"/>
+        <param name="os.family" value="mac"/>
     </antcall>
 </target>
 

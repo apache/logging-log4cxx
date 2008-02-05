@@ -116,7 +116,7 @@ Displays available targets
 > ant build-projects-vc6
 
 Builds Microsoft Visual Studio 6 projects.
--vc8 and -xcode for Visual Studio 8 and Apple Xcode 2 and later.
+-vc8, -vc9 and -xcode for Visual Studio 2005, 2008 and Apple Xcode 2 and later.
 respectively.
 
 Command line options:
@@ -928,7 +928,17 @@ Command line options:
     </antcall>
 </target>
 
-<target name="build-projects-xcode" depends="init" 
+
+<target name="build-projects-vc9" depends="init"
+           description="Builds project files for Microsoft Visual C++ 2008">
+    <antcall target="build-projects">
+      <param name="project.type" value="msvc9"/>
+      <param name="project.compiler" value="msvc"/>
+      <param name="os.family" value="windows"/>
+    </antcall>
+</target>
+
+  <target name="build-projects-xcode" depends="init" 
           description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
         <param name="project.type" value="xcode"/>
