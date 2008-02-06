@@ -1,23 +1,4 @@
 <?xml version="1.0"?>
-<!DOCTYPE project [
-<!ENTITY libsets '
-        <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" dir="${apr-util.lib.dir}" if="apr-util.lib.dir"/>
-        <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" unless="apr-util.lib.dir"/>
-        <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.prefix}${apr.lib.name}${spr.lib.suffix}" unless="apr.lib.dir"/>
-        <libset libs="esmtp" if="has-libesmtp"/>
-		<libset libs="${odbc.lib}" if="odbc.lib"/>
-		<libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
-        <libset libs="pthread" if="is-unix"/>
-        <syslibset libs="advapi32 ws2_32 mswsock shell32" if="is-windows"/>
-        <syslibset libs="stdc++" if="is-gcc"/>
-        <syslibset libs="cw32mt" if="is-bcc"/>
-'>
-<!ENTITY common SYSTEM 'src/ant/common.xml'>
-<!ENTITY find-apr SYSTEM 'src/ant/find-apr.xml'>
-<!ENTITY find-apr-util SYSTEM 'src/ant/find-apr-util.xml'>
-<!ENTITY find-libesmtp SYSTEM 'src/ant/find-libesmtp.xml'>
-]>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -35,6 +16,41 @@
  limitations under the License.
 
 -->
+<!DOCTYPE project [
+<!ENTITY libsets '
+        <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" dir="${apr-util.lib.dir}" if="apr-util.lib.dir"/>
+        <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" unless="apr-util.lib.dir"/>
+        <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
+        <libset libs="${apr.lib.prefix}${apr.lib.name}${spr.lib.suffix}" unless="apr.lib.dir"/>
+        <libset libs="esmtp" if="has-libesmtp"/>
+		<libset libs="${odbc.lib}" if="odbc.lib"/>
+		<libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
+        <libset libs="pthread" if="is-unix"/>
+        <syslibset libs="advapi32 ws2_32 mswsock shell32" if="is-windows"/>
+        <syslibset libs="stdc++" if="is-gcc"/>
+        <syslibset libs="cw32mt" if="is-bcc"/>
+'>
+<!ENTITY license '
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+'>
+<!ENTITY common SYSTEM 'src/ant/common.xml'>
+<!ENTITY find-apr SYSTEM 'src/ant/find-apr.xml'>
+<!ENTITY find-apr-util SYSTEM 'src/ant/find-apr-util.xml'>
+<!ENTITY find-libesmtp SYSTEM 'src/ant/find-libesmtp.xml'>
+]>
 
 <!--
 This file builds log4cxx using Apache Ant (http://ant.apache.org)
@@ -116,7 +132,7 @@ Displays available targets
 > ant build-projects-vc6
 
 Builds Microsoft Visual Studio 6 projects.
--vc8, -vc9 and -xcode for Visual Studio 2005, 2008 and Apple Xcode 2 and later.
+-vc7, -vc8, -vc9 and -xcode for Visual Studio .NET, 2005, 2008 and Apple Xcode 2 and later.
 respectively.
 
 Command line options:
@@ -516,6 +532,7 @@ Command line options:
         <compilerarg value="${pic-option}" if="pic-option"/>
         &libsets;
         <project type="${project.type}" outfile="${projects.dir}/${lib.name}" if="project.if">
+			<comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
         </project>
@@ -552,6 +569,7 @@ Command line options:
         &libsets;
 
         <project outfile="${projects.dir}/${example.name}" type="${project.type}" if="project.if">
+			<comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency name="${projects.dir}/aprutil-1"/>
             <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
@@ -654,6 +672,7 @@ Command line options:
         &libsets;
 
         <project outfile="${projects.dir}/testsuite" type="${project.type}" if="project.if">
+			<comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
             <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
@@ -703,6 +722,7 @@ Command line options:
         <project outfile="${projects.dir}/testsuite-standalone"
                  type="${project.type}"
                  if="project.if">
+			<comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
         </project>
@@ -914,6 +934,15 @@ Command line options:
           description="Builds project files for Microsoft Visual C++ 6">
     <antcall target="build-projects">
         <param name="project.type" value="msvc6"/>
+        <param name="project.compiler" value="msvc"/>
+        <param name="os.family" value="windows"/>
+    </antcall>
+</target>
+
+<target name="build-projects-vc7" depends="init" 
+          description="Builds project files for Microsoft Visual Studio .NET">
+    <antcall target="build-projects">
+        <param name="project.type" value="msvc7"/>
         <param name="project.compiler" value="msvc"/>
         <param name="os.family" value="windows"/>
     </antcall>
