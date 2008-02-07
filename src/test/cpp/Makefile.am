@@ -127,7 +127,7 @@ testsuite_SOURCES = \
         $(db_tests) \
         $(xml_tests) \
         $(nt_tests) \
-        abts.c \
+        abts.cpp \
         asyncappendertestcase.cpp\
         encodingtest.cpp\
         filetestcase.cpp \
