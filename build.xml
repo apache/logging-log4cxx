@@ -76,9 +76,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="tests.cpp.dir" location="${tests.dir}/cpp"/>
 <property name="tests.resources.dir" location="${tests.dir}/resources"/>
 <property name="tests.output.dir" location="${tests.resources.dir}/output"/>
-<property name="performance.dir" location="${base.dir}/src/performance"/>
-<property name="performance.src.dir" location="${performance.dir}/cpp"/>
-<property name="performance.include.dir" location="${performance.dir}/include"/>
 <property name="m2_repo" location="${user.home}/.m2/repository"/>
 <property name="log4j.version" value="1.2.15"/>
 <property name="log4j.jar" 
@@ -631,14 +628,6 @@ Command line options:
     depends="build-delayedloop, build-trivial, build-stream, build-console"
     description="Builds example programs"/>
 
-<target name="build-performance" depends="build" description="Builds performance test">
-    <antcall target="build-example">
-       <param name="example.src.dir" value="${performance.src.dir}"/>
-       <param name="example.include.dir" value="${performance.include.dir}"/>
-       <param name="example.name" value="performance"/>
-       <param name="example.includes" value="**/*.cpp"/>
-    </antcall>
-</target>
 
 
 <target name="build-unittest" depends="build"
@@ -729,7 +718,7 @@ Command line options:
     </cc>
 </target>
 
-<target name="build-all" depends="build-examples, build-unittest, build-performance"
+<target name="build-all" depends="build-examples, build-unittest"
      description="Builds all artifacts"/>
 
 <target name="clean-output" depends="init">
@@ -921,13 +910,6 @@ Command line options:
                 <param name="projectsOnly" value="true"/>
                 <param name="os.family" value="${os.family}"/>
         </antcall>
-        <antcall target="build-performance">
-                <param name="project.if" value="true"/>
-                <param name="project.type" value="${project.type}"/>
-                <param name="project.compiler" value="${project.compiler}"/>
-                <param name="projectsOnly" value="true"/>
-                <param name="os.family" value="${os.family}"/>
-        </antcall>
 </target>
 
 <target name="build-projects-vc6" depends="init" 
@@ -977,10 +959,10 @@ Command line options:
 </target>
 
 
-<target name="test-compile" depends="build-unittest, build-examples, build-performance"/>
+<target name="test-compile" depends="build-unittest, build-examples"/>
 
 
-<target name="check" depends="run-unittest, build-examples, build-performance"
+<target name="check" depends="run-unittest, build-examples"
      description="Runs all diagnostic tests">
     <antcall target="run-example">
         <param name="example.name" value="trivial"/>
