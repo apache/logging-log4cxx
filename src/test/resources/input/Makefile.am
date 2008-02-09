@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-SUBDIRS = ndc performance xml rolling
+SUBDIRS = ndc xml rolling
 EXTRA_DIST = *.properties
 
 # if we are building in a separate build tree, then copy all necessary files

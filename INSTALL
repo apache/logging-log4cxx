@@ -108,7 +108,6 @@ Build targets:
  build                      Build log4cxx library
  build-all                  Builds all artifacts
  build-examples             Builds example programs
- build-performance          Builds performance test
  build-projects-cbx         Builds project files for Borland CBuilderX
  build-projects-vc6         Builds project files for Microsoft Visual C++ 6
  build-projects-xcode       Builds project files for Apple Xcode

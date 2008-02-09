@@ -467,7 +467,6 @@ src/site/doxy/Doxyfile
 src/test/Makefile
 src/test/resources/Makefile
 src/test/resources/input/Makefile
-src/test/resources/input/performance/Makefile
 src/test/resources/input/ndc/Makefile
 src/test/resources/input/rolling/Makefile
 src/test/resources/input/xml/Makefile
@@ -476,9 +475,6 @@ src/test/resources/witness/Makefile
 src/test/resources/witness/encoding/Makefile
 src/test/resources/witness/ndc/Makefile
 src/test/resources/witness/rolling/Makefile
-src/performance/Makefile
-src/performance/cpp/Makefile
-src/performance/cpp/xml/Makefile
 src/examples/Makefile
 src/examples/cpp/Makefile
 ])
