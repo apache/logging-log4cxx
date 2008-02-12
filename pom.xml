@@ -116,7 +116,7 @@
             <id>site</id>
             <configuration>
                 <tasks>
-                    <ant target="apidocs"/>
+                    <ant target="site"/>
                     <taskdef name="replaceregexp" classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp" />                
                    <replaceregexp file="target/site/source-repository.html" match="/tags/[^ &quot;&apos;&lt;]*" replace="/trunk" flags="g"/>
                 <replaceregexp match="Generated on .* for " replace="Generated for " flags="g">
@@ -167,7 +167,7 @@
           <dependency>
             <groupId>ant-contrib</groupId>
             <artifactId>cpptasks</artifactId>
-            <version>1.0b3</version>
+            <version>1.0b5-SNAPSHOT</version>
           </dependency>
         </dependencies>
       </plugin>  
@@ -198,12 +198,6 @@
         <groupId>log4j</groupId>
         <artifactId>log4j</artifactId>
         <version>1.2.15</version>
-        <scope>test</scope>
-      </dependency>      
-      <dependency>
-        <groupId>junit</groupId>
-        <artifactId>junit</artifactId>
-        <version>3.8.1</version>
         <scope>test</scope>
       </dependency>      
   </dependencies>

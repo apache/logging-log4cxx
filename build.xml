@@ -21,7 +21,7 @@
         <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" dir="${apr-util.lib.dir}" if="apr-util.lib.dir"/>
         <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" unless="apr-util.lib.dir"/>
         <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
-        <libset libs="${apr.lib.prefix}${apr.lib.name}${spr.lib.suffix}" unless="apr.lib.dir"/>
+        <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" unless="apr.lib.dir"/>
         <libset libs="esmtp" if="has-libesmtp"/>
 		<libset libs="${odbc.lib}" if="odbc.lib"/>
 		<libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
@@ -69,7 +69,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="src.dir" location="${base.dir}/src/main/cpp"/>
 <property name="include.dir" location="${base.dir}/src/main/include"/>
 <property name="target.dir" location="${base.dir}/target"/>
-<property name="projects.dir" location="${target.dir}"/>
 <property name="lib.dir" location="${target.dir}/lib"/>
 <property name="examples.dir" location="${base.dir}/src/examples/cpp"/>
 <property name="tests.dir" location="${base.dir}/src/test"/>
@@ -78,6 +77,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="tests.output.dir" location="${tests.resources.dir}/output"/>
 <property name="m2_repo" location="${user.home}/.m2/repository"/>
 <property name="log4j.version" value="1.2.15"/>
+<available property="log4j.jar"
+           value="/usr/share/java/log4j-1.2.jar"
+           file="/usr/share/java/log4j-1.2.jar"/>
 <property name="log4j.jar" 
        location="${m2_repo}/log4j/log4j/${log4j.version}/log4j-${log4j.version}.jar"/>
 
@@ -184,6 +186,11 @@ Command line options:
 			 <isset property="odbc.lib"/>
 		</condition>
 		<property name="has-ODBC" value="0"/>
+        
+        <condition property="force-ant" value="1">
+            <equals arg1="${find}" arg2="false"/>
+        </condition>
+        <echo>force-ant: ${force-ant}</echo>
 
 </target>
 
@@ -336,6 +343,7 @@ Command line options:
         <param name="file" value="${include.dir}/log4cxx/private/log4cxx_private.tmp"/>
     </antcall>
     <delete file="${include.dir}/log4cxx/private/log4cxx_private.tmp"/>
+    
 </target>
 
 
@@ -494,9 +502,6 @@ Command line options:
 	<fail unless="apr-libs-match">apr is ${apr.lib.type} and apr-util is ${apr-util.lib.type}, must be same type.</fail>
 	<property name="lib.name" value="log4cxx"/>
 	<property name="lib.prefix" value=""/>
-	<condition property="lib.suffix" value="d">
-		<istrue value="${debug}"/>
-	</condition>
 	<property name="lib.suffix" value=""/>
 
 	<condition property="apr-util.dependencies" value="expat iconv">
@@ -506,6 +511,7 @@ Command line options:
 
     <property name="project.compiler" value="${compiler}"/>
 	<property name="project.type" value="msvc6"/>
+    
     <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/${lib.prefix}${lib.name}${lib.suffix}"
@@ -657,7 +663,6 @@ Command line options:
         <compilerarg value="${pic-option}" if="pic-option"/>
 
         <libset libs="${lib.prefix}${lib.name}${lib.suffix}" dir="${log4cxx.lib.dir}"/>
-        <libset libs="dl" if="is-unix"/>
         &libsets;
 
         <project outfile="${projects.dir}/testsuite" type="${project.type}" if="project.if">
@@ -893,22 +898,28 @@ Command line options:
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
+                <param name="debug" value="${debug}"/>
                 <param name="projectsOnly" value="true"/>
                 <param name="os.family" value="${os.family}"/>
+                <param name="find" value="${find}"/>
         </antcall>
         <antcall target="build-standalone-unittest">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
+                <param name="debug" value="${debug}"/>
                 <param name="projectsOnly" value="true"/>
                 <param name="os.family" value="${os.family}"/>
+                <param name="find" value="${find}"/>
         </antcall>
         <antcall target="build-examples">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
+                <param name="debug" value="${debug}"/>
                 <param name="projectsOnly" value="true"/>
                 <param name="os.family" value="${os.family}"/>
+                <param name="find" value="${find}"/>
         </antcall>
 </target>
 
@@ -918,6 +929,8 @@ Command line options:
         <param name="project.type" value="msvc6"/>
         <param name="project.compiler" value="msvc"/>
         <param name="os.family" value="windows"/>
+        <param name="debug" value="${debug}"/>
+        <param name="find" value="${find}"/>
     </antcall>
 </target>
 
@@ -927,6 +940,8 @@ Command line options:
         <param name="project.type" value="msvc7"/>
         <param name="project.compiler" value="msvc"/>
         <param name="os.family" value="windows"/>
+        <param name="debug" value="${debug}"/>
+        <param name="find" value="${find}"/>
     </antcall>
 </target>
 
@@ -935,7 +950,9 @@ Command line options:
     <antcall target="build-projects">
       <param name="project.type" value="msvc8"/>
       <param name="project.compiler" value="msvc"/>
-        <param name="os.family" value="windows"/>
+      <param name="os.family" value="windows"/>
+      <param name="debug" value="${debug}"/>
+      <param name="find" value="${find}"/>
     </antcall>
 </target>
 
@@ -946,6 +963,8 @@ Command line options:
       <param name="project.type" value="msvc9"/>
       <param name="project.compiler" value="msvc"/>
       <param name="os.family" value="windows"/>
+      <param name="debug" value="${debug}"/>
+      <param name="find" value="${find}"/>
     </antcall>
 </target>
 
@@ -955,6 +974,8 @@ Command line options:
         <param name="project.type" value="xcode"/>
         <param name="project.compiler" value="g++"/>
         <param name="os.family" value="mac"/>
+        <param name="debug" value="${debug}"/>
+        <param name="find" value="${find}"/>
     </antcall>
 </target>
 
@@ -973,6 +994,7 @@ Command line options:
 </target>
 
 
+
 <target name="apidocs" depends="init" description="Build log4cxx manual">
   <copy file="src/site/doxy/Doxyfile.in" tofile="${target.dir}/Doxyfile" 
      overwrite="true"/>
@@ -984,6 +1006,75 @@ Command line options:
   </replace>
   <mkdir dir="target/site/apidocs"/>
   <exec executable="${doxygen.exe}" dir="${target.dir}"/>
+</target>
+
+<target name="patch-vc6-log4cxx">
+    <exec executable="sed">
+        <arg value="-i"/>
+        <arg value="-e"/>
+        <arg value="s~ADD LINK32 .*/NOLOGO~ADD LINK32 static\\aprutil-1.lib static\\apr-1.lib ADVAPI32.LIB MSWSOCK.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB /NOLOGO~g"/>
+        <arg value="${project.dsp}"/>
+    </exec>
+</target>
+
+<target name="patch-vc6-sample">
+    <exec executable="sed">
+        <arg value="-i"/>
+        <arg value="-e"/>
+        <arg value="s~ADD LINK32 .*/NOLOGO~ADD LINK32 shared\\log4cxx.lib static\\aprutil-1.lib static\\apr-1.lib ADVAPI32.LIB MSWSOCK.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB /NOLOGO~g"/>
+        <arg value="${project.dsp}"/>
+    </exec>
+</target>
+
+<target name="patch-vc7-log4cxx">
+    <exec executable="sed">
+        <arg value="-i"/>
+        <arg value=".bak"/>
+        <arg value="-e"/>
+        <arg value='s~AdditionalDependencies=".*"~~'/>
+        <arg value="-e"/>
+        <arg value='s~Name="VCLinkerTool"~Name="VCLinkerTool" AdditionalDependencies="static\\aprutil-1.lib static\\apr-1.lib ADVAPI32.LIB MSWSOCK.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB"~'/>
+        <arg value="${project.dsp}"/>
+    </exec>
+</target>
+
+<target name="patch-vc7-sample">
+    <exec executable="sed">
+        <arg value="-i"/>
+        <arg value=".bak"/>
+        <arg value="-e"/>
+        <arg value='s~AdditionalDependencies=".*"~~'/>
+        <arg value="-e"/>
+        <arg value='s~Name="VCLinkerTool"~Name="VCLinkerTool" AdditionalDependencies="shared\\log4cxx.lib static\\aprutil-1.lib static\\apr-1.lib ADVAPI32.LIB MSWSOCK.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB"~'/>
+        <arg value="${project.dsp}"/>
+    </exec>
+</target>
+
+
+<target name="site" depends="apidocs">
+    <!-- generate Visual Studio and XCode project files -->
+    <antcall target="build-projects-vc6">
+        <param name="find" value="false"/>
+    </antcall>
+    <antcall target="build-projects-vc7">
+        <param name="find" value="false"/>
+    </antcall>
+    <antcall target="build-projects-xcode"/>
+    <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
+    
+    <foreach target="patch-vc6-sample" param="project.dsp">
+        <path><fileset dir="${target.dir}" includes="**/*.dsp"/></path>
+    </foreach>
+    <foreach target="patch-vc6-log4cxx" param="project.dsp">
+        <path><fileset dir="${target.dir}" includes="**/log4cxx.dsp **/testsuite-standalone.dsp"/></path>
+    </foreach>
+    <foreach target="patch-vc7-sample" param="project.dsp">
+        <path><fileset dir="${target.dir}" includes="**/*.vcproj"/></path>
+    </foreach>
+    <foreach target="patch-vc7-log4cxx" param="project.dsp">
+        <path><fileset dir="${target.dir}" includes="**/log4cxx.vcproj **/testsuite-standalone.vcproj"/></path>
+    </foreach>
+    
 </target>
 
 <target name="gump" depends="check, header-check"/>

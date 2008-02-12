@@ -51,7 +51,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="test.dir" location="${src.dir}/test"/>
 <property name="target.dir" location="${basedir}/target"/>
 <property name="lib.type" value="shared"/>
-<property name="projects.dir" location="${target.dir}"/>
 <property name="lib.name" value="apr-1"/>
 <property name="lib.prefix" value=""/>
 
@@ -100,6 +99,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     <mkdir dir="${executable.dir}/apr-ofiles"/>
     <property name="project.compiler" value="${compiler}"/>
 	<property name="project.type" value="msvc6"/>
+    
     <cc name="${project.compiler}"
         outfile="${executable.dir}/${lib.prefix}${lib.name}${lib.suffix}"
         subsystem="console"
@@ -412,6 +412,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${projects.dir}"/>
+                <param name="debug" value="${debug}"/>
                 <param name="projectsOnly" value="true"/>
                 <param name="arch" value="${arch}"/>
         </antcall>
@@ -420,6 +421,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
                 <param name="project.type" value="${project.type}"/>
                 <param name="project.compiler" value="${project.compiler}"/>
                 <param name="projects.dir" value="${projects.dir}"/>
+                <param name="debug" value="${debug}"/>
                 <param name="projectsOnly" value="true"/>
                 <param name="arch" value="${arch}"/>
         </antcall>
@@ -431,6 +433,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <param name="project.type" value="msvc6"/>
         <param name="project.compiler" value="msvc"/>
         <param name="os.family" value="windows"/>
+        <param name="debug" value="${debug}"/>
+        <param name="projects.dir" value="${projects.dir}"/>        
     </antcall>
 </target>
 
@@ -441,6 +445,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <param name="project.type" value="msvc7"/>
         <param name="project.compiler" value="msvc"/>
         <param name="os.family" value="windows"/>
+        <param name="debug" value="${debug}"/>
+        <param name="projects.dir" value="${projects.dir}"/>        
     </antcall>
 </target>
 
@@ -450,6 +456,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <param name="project.type" value="msvc8"/>
         <param name="project.compiler" value="msvc"/>
         <param name="os.family" value="windows"/>
+        <param name="debug" value="${debug}"/>
+        <param name="projects.dir" value="${projects.dir}"/>        
   </antcall>
 </target>
 
@@ -459,6 +467,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
       <param name="project.type" value="msvc9"/>
       <param name="project.compiler" value="msvc"/>
       <param name="os.family" value="windows"/>
+      <param name="debug" value="${debug}"/>
+      <param name="projects.dir" value="${projects.dir}"/>
     </antcall>
   </target>
 
@@ -468,6 +478,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <param name="project.type" value="xcode"/>
         <param name="project.compiler" value="${compiler}"/>
         <param name="os.family" value="mac"/>
+        <param name="debug" value="${debug}"/>
+        <param name="projects.dir" value="${projects.dir}"/>
     </antcall>
 </target>
 

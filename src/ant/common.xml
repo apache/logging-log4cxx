@@ -17,7 +17,7 @@
 -->
 
 <property file="build.properties"/>
-<property name="debug" value="true"/>
+<property name="debug" value="false"/>
 <property name="rtti" value="false"/>
 <property name="optimize" value="none"/>
 <property name="lib.type" value="shared"/>
@@ -85,7 +85,7 @@
         <available classname="net.sf.antcontrib.cpptasks.CCTask" property="cctask-available"/>
         <fail unless="cctask-available">cpptasks required
 
-Use CVS HEAD or Feb 2005 or later release from
+Use cpptasks 1.0b5 or later from
 http://ant-contrib.sourceforge.net.
 </fail>
 
@@ -96,6 +96,7 @@ http://ant-contrib.sourceforge.net.
 Required features not present in cpptasks releases prior to Feb 2005</fail -->
 
         <mkdir dir="${target.dir}"/>
+        <property name="projects.dir" value="${target.dir}"/>
         <mkdir dir="${projects.dir}"/>
 
         <condition property="is-gcc" value="true">

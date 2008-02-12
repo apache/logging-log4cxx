@@ -48,6 +48,14 @@
         <menu name="Development">
                 <item name="Repository" href="/source-repository.html"/>
         </menu>
+        
+    <menu name="Building">
+        <item name="autotools" href="/building/autotools.html"/>
+        <item name="Apache Ant" href="/building/ant.html"/>
+        <item name="Apache Maven 2" href="/building/maven.html"/>
+        <item name="Microsoft Visual Studio" href="/building/vstudio.html"/>
+        <item name="Apple Xcode" href="/building/xcode.html"/>
+    </menu>
 
 	<menu name="Documentation">
 		<item name="Introduction" href="/manual.html"/>
