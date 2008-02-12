@@ -1,0 +1,161 @@
+~~ Licensed to the Apache Software Foundation (ASF) under one or more
+~~ contributor license agreements.  See the NOTICE file distributed with
+~~ this work for additional information regarding copyright ownership.
+~~ The ASF licenses this file to You under the Apache License, Version 2.0
+~~ (the "License"); you may not use this file except in compliance with
+~~ the License.  You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+ ------
+ Building Apache log4cxx with Apache Ant
+ ------
+ ------
+ ------
+
+
+Building Apache log4cxx with Apache Ant
+
+   Apache Ant with cpptasks from the Ant-Contrib project can be used to build log4cxx
+   with supported compilers and is also used to generate the IDE project files included
+   in the releases.  The Apache Maven build which is used to generate the site documentation
+   and release packaging delegates to this build.  The Ant build can build APR and APR-Util
+   if source is available.
+
+* Quick start:
+  
+  *Install {{{http://ant.apache.org}Apache Ant}} 1.6.5 or later.
+
+  *Install cpptasks 1.0b5 or later from the {{{http://ant-contrib.sourceforge.net}Ant-Contrib Project}}.
+     ant-contribs 1.0b3 or later is needed for some less frequent build targets.
+
+  *Install APR and APR-Util or place source in apr and apr-util directories in same parent directory
+      as log4cxx directory.
+
+        
+   Building and testing log4cxx on a Unix platform with packaged APR and APR-Util.  
+
++----+
+ sudo apt-get install libapr1-dev libaprutil1-dev ant ant-optional liblog4j1.2-java # or platform equivalent
+ export CLASSPATH=/home/myself/cpptasks-1.0b5/cpptasks.jar:/home/myself/ant-contrib/ant-contrib-1.0b3.jar
+ cd apache-log4cxx-0.10.0
+ ant
++----+  
+
+   Building and testing log4cxx on a Unix platform with APR and APR-Util built from source.  
+
++----+
+ sudo apt-get install ant ant-optional liblog4j1.2-java # or platform equivalent
+ export CLASSPATH=/home/myself/cpptasks-1.0b5/cpptasks.jar:/home/myself/ant-contrib/ant-contrib-1.0b3.jar
+ tar -xvzf apr-1.2.12.tar.gz
+ mv apr-1.2.12 apr
+ tar -xvzf apr-util-1.2.12.tar.gz
+ mv apr-util-1.2.12 apr-util
+ cd apache-log4cxx-0.10.0
+ ant
++----+  
+
+   Building and testing log4cxx on a Microsoft Windows with APR and APR-Util built from source.  
+
++----+
+ set PATH=\apache-ant-1.7.0\bin;%PATH%
+ set CLASSPATH=\cpptasks-1.0b5\cpptasks.jar;\ant-contrib\ant-contrib-1.0b3.jar
+ tar -xvzf apr-1.2.12.tar.gz
+ rename apr-1.2.12 apr
+ tar -xvzf apr-util-1.2.12.tar.gz
+ rename apr-util-1.2.12 apr-util
+ cd apache-log4cxx-0.10.0
+ ant
++----+  
+
+
+
+
+
+* Common ant targets
+
+*-----------------------+---------------------------------------------------------------------------------------------+
+| build                 | build log4cxx library.                                                                      |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| check                 | build logcxx library and build and run unit tests and examples.                             |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| clean                 | Delete all generated files.                                                                 |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| build-unittest        | build log4cxx library and unit test.                                                        |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| run-socketserver      | Tests SocketAppender with Java-based receiver.                                              |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| build-projects-vc6    | Build Microsoft Visual Studio 6 project files.                                              |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| build-projects-vc7    | Build Microsoft Visual Studio .NET project files.                                           |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| build-projects-vc8    | Build Microsoft Visual Studio 2005 project files.                                           |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| build-projects-vc9    | Build Microsoft Visual Studio 2008 project files.                                           |
+*-----------------------+---------------------------------------------------------------------------------------------+
+| build-projects-xcode  | Build Apple Xcode project files.                                                            |
+*---------------------+-----------------------------------------------------------------------------------------------+
+
+   All build products will be placed in the target subdirectory.  
+   
+   Project files should be generated after successfully building the library, however it is possible
+   to generate Microsoft Visual Studio project files on other platforms.  The project
+   files will typically be missing references to the Platform SDK libraries.
+   The Maven project modifies the generated project files for release preparation.  Generation
+   of Xcode projects from Microsoft Windows is not supported.
+
+
+* ant options
+
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dcompiler        | Compiler, see cpptasks documentation for full list.                                         |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Ddebug           |  Build for debugging, yes (default), no.                                                    |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dwith-apr        | path to non-default location for APR.                                                       |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dwith-apr-util   | path to non-default location for APR-Util.                                                  |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Denable-wchar_t  | Enable wchar_t API methods, choice of yes (default), no.                                    |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Denable-unichar  | Enable UniChar API methods, choice of yes, no (default).                                    |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Denable-cfstring | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dwith-logchar    | Interal character representation, choice of utf-8 (default), wchar_t , unichar.             | 
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dwith-charset    | Exteral character encoding, choice of utf-8, iso-8859-1, usascii, ebcdic,  auto (default).  |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dwith-SMTP       | SMTP implementation for SMTPAppender, choice of libesmtp, no (default).                     |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dwith-ODBC       | OBDC implementation for ODBCAppender, choice of unixODBC, iODBC, Microsoft, no (default).   |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dlog4j.jar       | Path to log4j.jar for run-socketserver.                                                     |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Dprojects.dir    | Location for generated IDE projects.                                                        |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -p                | Display available targets and quit.                                                         |
+*-------------------+---------------------------------------------------------------------------------------------+
+
+        
+   SMTP and ODBC support may depend on libraries that are 
+   that are not licensed under the Apache Software License.
+   You should review the corresponding licenses and understand
+   the implications before redistribution.
+   
+   Properties may also be placed in a build.properties file in the log4cxx directory.
+
+* Platform specific notes:
+
+  ** Mac OS/X:
+  
+  APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.
+  
+  ** Cygwin:
+  
+  ** MinGW:

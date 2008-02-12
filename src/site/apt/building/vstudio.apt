@@ -1,0 +1,75 @@
+~~ Licensed to the Apache Software Foundation (ASF) under one or more
+~~ contributor license agreements.  See the NOTICE file distributed with
+~~ this work for additional information regarding copyright ownership.
+~~ The ASF licenses this file to You under the Apache License, Version 2.0
+~~ (the "License"); you may not use this file except in compliance with
+~~ the License.  You may obtain a copy of the License at
+~~
+~~      http://www.apache.org/licenses/LICENSE-2.0
+~~
+~~ Unless required by applicable law or agreed to in writing, software
+~~ distributed under the License is distributed on an "AS IS" BASIS,
+~~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~~ See the License for the specific language governing permissions and
+~~ limitations under the License.
+ ------
+ Building Apache log4cxx with Microsoft Visual Studio
+ ------
+ ------
+ ------
+
+Building Apache log4cxx with Microsoft Visual Studio (TODO)
+
+
+* Quick start:
+
++------------+
+ sudo apt-get install libapr1-dev libaprutil1-dev # or platform equivalent
+ cd apache-log4cxx-0.10.0
+ ./autoconf.sh
+ ./configure
+ make
+ make check
+ sudo make install
++------------+
+
+
+* configure options
+
+*-------------------+---------------------------------------------------------------------------------------------+
+| --with-apr        |  path to non-default location for APR.                                                      |
+*-------------------+---------------------------------------------------------------------------------------------+
+| --with-apr-util   | path to non-default location for APR-Util.                                                  |
+*-------------------+---------------------------------------------------------------------------------------------+
+| --enable-wchar_t  | Enable wchar_t API methods, choice of yes (default), no.                                    |
+*-------------------+---------------------------------------------------------------------------------------------+
+| --enable-unichar  | Enable UniChar API methods, choice of yes, no (default).                                    |
+*-------------------+---------------------------------------------------------------------------------------------+
+| --enable-cfstring | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
+*-------------------+---------------------------------------------------------------------------------------------+
+| --with-logchar    | Interal character representation, choice of utf-8 (default), wchar_t , unichar.             | 
+*-------------------+---------------------------------------------------------------------------------------------+
+| --with-charset    | Exteral character encoding, choice of utf-8, iso-8859-1, usascii, ebcdic,  auto (default).  |
+*-------------------+---------------------------------------------------------------------------------------------+
+| --with-SMTP       | SMTP implementation for SMTPAppender, choice of libesmtp, no (default).                     |
+*-------------------+---------------------------------------------------------------------------------------------+
+| --with-ODBC       | OBDC implementation for ODBCAppender, choice of unixODBC, iODBC, Microsoft, no (default).   |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -help             | Display help showing all options and exit.                                                  |
+*-------------------+---------------------------------------------------------------------------------------------+
+
+        
+   SMTP and ODBC support may depend on libraries that are 
+   that are not licensed under the Apache Software License.
+   You should review the corresponding licenses and understand
+   the implications before redistribution.
+
+* Platform specific notes:
+
+  ** Mac OS/X:
+  
+  APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.
+  
+  ** Cygwin:
+  
+  ** MinGW:
