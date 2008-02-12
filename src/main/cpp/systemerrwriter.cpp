@@ -48,20 +48,20 @@ void SystemErrWriter::write(const LogString& str, Pool& /* p */) {
 
 bool SystemErrWriter::isWide() {
 #if LOG4CXX_FORCE_WIDE_CONSOLE
-	return true;
-#elif LOG4CXX_FORCE_BYTE_CONSOLE
-	return false;
+   return true;
+#elif LOG4CXX_FORCE_BYTE_CONSOLE || !LOG4CXX_HAS_FWIDE
+   return false;
 #else
-	return fwide(stderr, 0) > 0;
+   return fwide(stderr, 0) > 0;
 #endif
 }
 
 void SystemErrWriter::write(const LogString& str) {
 #if LOG4CXX_WCHAR_T_API
     if (isWide()) {
-    	LOG4CXX_ENCODE_WCHAR(msg, str);
+      LOG4CXX_ENCODE_WCHAR(msg, str);
         fputws(msg.c_str(), stderr);
-		return;
+      return;
     }
 #endif
     LOG4CXX_ENCODE_CHAR(msg, str);

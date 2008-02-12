@@ -38,8 +38,6 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-#if APR_HAS_THREADS
-
 
 IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 
@@ -56,7 +54,9 @@ AsyncAppender::AsyncAppender()
   dispatcher(),
   locationInfo(false),
   blocking(true) {
+#if APR_HAS_THREADS
   dispatcher.run(dispatch, this);
+#endif
 }
 
 AsyncAppender::~AsyncAppender()
@@ -97,7 +97,8 @@ void AsyncAppender::setOption(const LogString& option,
 
 
 void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
-        //
+#if APR_HAS_THREADS
+       //
         //   if dispatcher has died then
         //      append subsequent events synchronously
         //
@@ -168,6 +169,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
                 }
             }
         }
+#else
+        synchronized sync(appenders->getMutex());
+        appenders->appendLoopOnAppenders(event, p);
+#endif
   }
   
 
@@ -179,12 +184,14 @@ void AsyncAppender::close() {
         bufferNotFull.signalAll();
     }
     
+#if APR_HAS_THREADS
     try {
         dispatcher.join();
-	} catch(InterruptedException& e) {
+   } catch(InterruptedException& e) {
         Thread::currentThreadInterrupt();
         LogLog::error(LOG4CXX_STR("Got an InterruptedException while waiting for the dispatcher to finish,"), e);
     }
+#endif
     
     {
         synchronized sync(appenders->getMutex());
@@ -305,7 +312,7 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p) {
 }
 
 
-
+#if APR_HAS_THREADS
 void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* thread, void* data) {
     AsyncAppender* pThis = (AsyncAppender*) data;
     bool isActive = true;
@@ -354,5 +361,4 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* thread, void
     }
     return 0;
 }
-                
-#endif
+#endif                

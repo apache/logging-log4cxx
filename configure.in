@@ -191,6 +191,14 @@ else
  AC_SUBST(HAS_WCHAR_T, 0)
 fi
 
+AC_CHECK_FUNCS(fwide, [have_fwide=yes], [have_fwide=no])
+if test "$have_fwide" = "yes"
+then
+ AC_SUBST(HAS_FWIDE, 1)
+else
+ AC_SUBST(HAS_FWIDE, 0)
+fi
+
 
 # Checks for libraries
 # ----------------------------------------------------------------------------
