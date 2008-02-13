@@ -25,7 +25,7 @@
 
 #ifdef _MSC_VER
 //   disable identifier too wide for debugging warning
-#pragma warning (disable : 4786)
+#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #define DECLARE_LOG4CXX_PATTERN(cls) DECLARE_ABSTRACT_LOG4CXX_OBJECT(cls)

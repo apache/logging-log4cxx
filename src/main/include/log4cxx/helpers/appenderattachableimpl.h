@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_HELPERS_APPENDER_ATTACHABLE_IMPL_H
 #define _LOG4CXX_HELPERS_APPENDER_ATTACHABLE_IMPL_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4231 4251 4275 4786 )
+#endif
+
+
 #include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/mutex.h>
@@ -114,5 +120,9 @@ namespace log4cxx
 
     }
 }
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
 
 #endif //_LOG4CXX_HELPERS_APPENDER_ATTACHABLE_IMPL_H

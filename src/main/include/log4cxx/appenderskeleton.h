@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_APPENDER_SKELETON_H
 #define _LOG4CXX_APPENDER_SKELETON_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4231 4251 4275 4786 )
+#endif
+
+
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/spi/errorhandler.h>
@@ -198,5 +204,10 @@ namespace log4cxx
 
         }; // class AppenderSkeleton
 }  // namespace log4cxx
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
 
 #endif //_LOG4CXX_APPENDER_SKELETON_H

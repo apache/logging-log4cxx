@@ -18,6 +18,12 @@
 #ifndef _LOG4CXX_HTML_LAYOUT_H
 #define _LOG4CXX_HTML_LAYOUT_H
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4231 4251 4275 4786 )
+#endif
+
+
 #include <log4cxx/layout.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 
@@ -118,5 +124,10 @@ namespace log4cxx
         }; // class HtmlLayout
       LOG4CXX_PTR_DEF(HTMLLayout);
 }  // namespace log4cxx
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
+
 
 #endif // _LOG4CXX_HTML_LAYOUT_H

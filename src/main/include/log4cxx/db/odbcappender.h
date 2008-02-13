@@ -17,6 +17,13 @@
 
 #ifndef _LOG4CXX_DB_ODBC_APPENDER_H
 #define _LOG4CXX_DB_ODBC_APPENDER_H
+
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4231 4251 4275 4786 )
+#endif
+
+
 #include <log4cxx/log4cxx.h>
 
 #include <log4cxx/helpers/exception.h>
@@ -278,5 +285,9 @@ namespace log4cxx
                 
     } // namespace db
 } // namespace log4cxx
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
 
 #endif // _LOG4CXX_DB_ODBC_APPENDER_H
