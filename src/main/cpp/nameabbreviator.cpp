@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <vector>
+#include <limits.h>
 
 using namespace log4cxx;
 using namespace log4cxx::pattern;

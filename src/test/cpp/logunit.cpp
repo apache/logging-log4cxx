@@ -21,6 +21,7 @@
 #include "logunit.h"
 
 #include <apr_general.h>
+#include <algorithm>
 
 void initialize() {
     apr_initialize();

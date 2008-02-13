@@ -23,6 +23,7 @@
 #include <iostream>
 #include <log4cxx/stream.h>
 #include <exception>
+#include <stdlib.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
