@@ -113,10 +113,9 @@ namespace log4cxx
              if (newPtr != 0) {
                  newPtr->addRef();
              }
-             T** pp = &p;
-             void* oldPtr = ObjectPtrBase::exchange((void**) pp, newPtr);
+             T* oldPtr = exchange(newPtr);
              if (oldPtr != 0) {
-                 ((T*) oldPtr)->releaseRef();
+                 oldPtr->releaseRef();
              }
             return *this;
          }
@@ -127,10 +126,9 @@ namespace log4cxx
                 //   throws IllegalArgumentException if null != 0
                 //
                 ObjectPtrBase::checkNull(null);
-                T** pp = &p;
-                void* oldPtr = ObjectPtrBase::exchange((void**) pp, 0);
+                T* oldPtr = exchange(0);
                 if (oldPtr != 0) {
-                   ((T*) oldPtr)->releaseRef();
+                   oldPtr->releaseRef();
                 }
                 return *this;
          }
@@ -139,10 +137,9 @@ namespace log4cxx
               if (p1 != 0) {
                 p1->addRef();
               }
-              T** pp = &p;
-              void* oldPtr = ObjectPtrBase::exchange((void**) pp, p1);
+              T* oldPtr = exchange(p1);
               if (oldPtr != 0) {
-                 ((T*)oldPtr)->releaseRef();
+                 oldPtr->releaseRef();
               }
               return *this;
             }
@@ -151,10 +148,9 @@ namespace log4cxx
               if (p1 != 0) {
                 p1->addRef();
               }
-              T** pp = &p;
-              void* oldPtr = ObjectPtrBase::exchange((void**) pp, const_cast<T*>(p1));
+              T* oldPtr = exchange(p1);
               if (oldPtr != 0) {
-                 ((T*)oldPtr)->releaseRef();
+                 oldPtr->releaseRef();
               }
               return *this;
             }
@@ -189,6 +185,11 @@ namespace log4cxx
             }
             return 0;
          }
+		 T* exchange(const T* newValue) {
+             return static_cast<T*>(ObjectPtrBase::exchange(
+                 reinterpret_cast<void**>(&p), 
+                 const_cast<T*>(newValue)));
+		 }
 
         };
 
