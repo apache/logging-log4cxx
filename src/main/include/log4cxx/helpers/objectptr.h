@@ -28,7 +28,7 @@
 //   switching between the initialization styles.
 //
 #if LOG4CXX_HELGRIND
-#define _LOG4CXX_OBJECTPTR_INIT(x) { T** pp = &p; ObjectPtrBase::exchange((void**) pp, x); 
+#define _LOG4CXX_OBJECTPTR_INIT(x) { exchange(x); 
 #else
 #define _LOG4CXX_OBJECTPTR_INIT(x) : p(x) {
 #endif
