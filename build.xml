@@ -320,6 +320,13 @@ Command line options:
     <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.tmp"
        match="@HAS_WCSTOMBS@"
        replace="1"/>
+    <condition property="has-fwide" value="0">
+        <isset property="is-cygwin"/>
+    </condition>
+    <property name="has-fwide" value="1"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.tmp"
+       match="@HAS_FWIDE@"
+       replace="${has-fwide}"/>
 
     <condition property="has-libesmtp-value" value="1">
         <isset property="has-libesmtp"/>
