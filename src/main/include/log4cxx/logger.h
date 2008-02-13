@@ -255,7 +255,7 @@ namespace log4cxx
         @param location location of the logging statement.
         */
         void forcedLog(const LevelPtr& level, const std::string& message,
-                        const log4cxx::spi::LocationInfo& location);
+                        const log4cxx::spi::LocationInfo& location) const;
         void forcedLog(const LevelPtr& level, const std::string& message) const;
 
 #if LOG4CXX_WCHAR_T_API
@@ -265,12 +265,12 @@ namespace log4cxx
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
         void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message,
-                        const log4cxx::spi::LocationInfo& location);
+                        const log4cxx::spi::LocationInfo& location) const;
         void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message) const;
 #endif
 #if LOG4CXX_CFSTRING_API
         void forcedLog(const LevelPtr& level, const CFStringRef& message,
-                        const log4cxx::spi::LocationInfo& location);
+                        const log4cxx::spi::LocationInfo& location) const;
         void forcedLog(const LevelPtr& level, const CFStringRef& message) const;
 #endif
         /**
@@ -281,7 +281,7 @@ namespace log4cxx
         @param location location of the logging statement.
         */
         void forcedLogLS(const LevelPtr& level, const LogString& message,
-                        const log4cxx::spi::LocationInfo& location);
+                        const log4cxx::spi::LocationInfo& location) const;
 
         /**
         Get the additivity flag for this Logger instance.

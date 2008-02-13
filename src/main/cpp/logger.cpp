@@ -81,7 +81,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 {
         int writes = 0;
 
-        for(LoggerPtr logger(this); 
+        for(LoggerPtr logger(const_cast<Logger*>(this)); 
           logger != 0; 
          logger = logger->parent)
         {
@@ -101,7 +101,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 
         if(writes == 0 && repository != 0)
         {
-                repository->emitNoAppenderWarning(this);
+                repository->emitNoAppenderWarning(const_cast<Logger*>(this));
         }
 }
 
@@ -116,11 +116,11 @@ void Logger::closeNestedAppenders()
 
 
 void Logger::forcedLog(const LevelPtr& level1, const std::string& message,
-        const LocationInfo& location)
+        const LocationInfo& location) const
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level1, msg, location));
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg, location));
         callAppenders(event, p);
 }
 
@@ -129,16 +129,16 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message) const
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level1, msg,
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg,
               LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
 
 void Logger::forcedLogLS(const LevelPtr& level1, const LogString& message,
-        const LocationInfo& location)
+        const LocationInfo& location) const
 {
         Pool p;
-        LoggingEventPtr event(new LoggingEvent(this, level1, message, location));
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, message, location));
         callAppenders(event, p);
 }
 
@@ -197,7 +197,7 @@ LoggerRepositoryPtr Logger::getLoggerRepository() const
 
 ResourceBundlePtr Logger::getResourceBundle() const
 {
-        for (LoggerPtr l = this; l != 0; l = l->parent)
+        for (LoggerPtr l(const_cast<Logger*>(this)); l != 0; l = l->parent)
         {
                 if (l->resourceBundle != 0)
                 {
@@ -629,7 +629,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message) cons
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level1, msg,
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg,
            LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }

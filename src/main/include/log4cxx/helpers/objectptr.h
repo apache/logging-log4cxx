@@ -70,13 +70,6 @@ namespace log4cxx
                 }
             }
 
-         ObjectPtrT(const T * p1)
-                _LOG4CXX_OBJECTPTR_INIT(const_cast<T*>(p1))
-                if (this->p != 0)
-                {
-                    this->p->addRef();
-                }
-            }
 
          ObjectPtrT(const ObjectPtrT& p1)
                 _LOG4CXX_OBJECTPTR_INIT(p1.p)
@@ -144,16 +137,6 @@ namespace log4cxx
               return *this;
             }
 
-        ObjectPtrT& operator=(const T* p1) {
-              if (p1 != 0) {
-                p1->addRef();
-              }
-              T* oldPtr = exchange(p1);
-              if (oldPtr != 0) {
-                 oldPtr->releaseRef();
-              }
-              return *this;
-            }
 
       ObjectPtrT& operator=(ObjectPtrBase& p1) {
          T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));

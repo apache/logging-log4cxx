@@ -36,7 +36,7 @@ PropertyResourceBundle::PropertyResourceBundle(InputStreamPtr inStream)
 LogString PropertyResourceBundle::getString(const LogString& key) const
 {
    LogString resource;
-   PropertyResourceBundlePtr resourceBundle(this);
+   PropertyResourceBundlePtr resourceBundle(const_cast<PropertyResourceBundle*>(this));
 
    do
    {
