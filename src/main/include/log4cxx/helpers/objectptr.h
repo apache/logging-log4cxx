@@ -109,7 +109,7 @@ namespace log4cxx
             }
 
          ObjectPtrT& operator=(const ObjectPtrT& p1) {
-             T* newPtr = (T*) p1.p;
+             T* newPtr = p1.p;
              if (newPtr != 0) {
                  newPtr->addRef();
              }
@@ -175,9 +175,9 @@ namespace log4cxx
             bool operator==(const T* p1) const { return (this->p == p1); }
             bool operator!=(const T* p1) const { return (this->p != p1); }
          bool operator<(const T* p1) const { return (this->p < p1); } 
-            T* operator->() const {return (T*) p; }
-            T& operator*() const {return (T&) *p; }
-            operator T*() const {return (T*) p; }
+            T* operator->() const {return p; }
+            T& operator*() const {return *p; }
+            operator T*() const {return p; }
 
 
 
