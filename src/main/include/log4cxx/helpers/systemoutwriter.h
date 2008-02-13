@@ -45,10 +45,10 @@ namespace log4cxx
                   
                   static void write(const LogString& str);
                   static void flush();
-		  private:
+        private:
                   SystemOutWriter(const SystemOutWriter&);
                   SystemOutWriter& operator=(const SystemOutWriter&);
-				  static bool isWide();
+              static bool isWide();
           };
 
         } // namespace helpers

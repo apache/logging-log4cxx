@@ -201,9 +201,9 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 #if LOG4CXX_WCHAR_T_API
         LOG4CXX_ENCODE_WCHAR(s, oss);
         wchar_t* msgs = (wchar_t*) 
-			apr_palloc((apr_pool_t*) p.getAPRPool(), (s.length() + 1) * sizeof(wchar_t));
-		memcpy(msgs, s.data(), s.length() * sizeof(wchar_t));
-		msgs[s.length()] = 0;
+         apr_palloc((apr_pool_t*) p.getAPRPool(), (s.length() + 1) * sizeof(wchar_t));
+      memcpy(msgs, s.data(), s.length() * sizeof(wchar_t));
+      msgs[s.length()] = 0;
         BOOL bSuccess = ::ReportEventW(
                 hEventLog,
                 getEventType(event),

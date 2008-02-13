@@ -67,9 +67,9 @@ public:
                      configFile.substr(configFile.length() - 4) == ".xml")
                 {
 #if APR_HAS_THREADS
-					xml::DOMConfigurator::configureAndWatch(configFile, 3000);
+               xml::DOMConfigurator::configureAndWatch(configFile, 3000);
 #else
-					xml::DOMConfigurator::configure(configFile);
+               xml::DOMConfigurator::configure(configFile);
 #endif
                 }
                 else
@@ -87,7 +87,7 @@ public:
                 int i = 0;
                 while(true)
                 {
-					    LOG4CXX_DEBUG(logger, "MSG " << i++);
+                   LOG4CXX_DEBUG(logger, "MSG " << i++);
                         try
                         {
                                 apr_sleep(1000000);

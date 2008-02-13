@@ -133,7 +133,7 @@ namespace log4cxx
                         SyslogAppender(const SyslogAppender&);
                         SyslogAppender& operator=(const SyslogAppender&);
                 }; // class SyslogAppender
-				LOG4CXX_PTR_DEF(SyslogAppender);
+            LOG4CXX_PTR_DEF(SyslogAppender);
     } // namespace net
 } // namespace log4cxx
 

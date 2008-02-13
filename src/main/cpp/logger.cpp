@@ -71,9 +71,9 @@ void Logger::addAppender(const AppenderPtr& newAppender)
                   aai = new AppenderAttachableImpl(*pool);
         }
         aai->addAppender(newAppender);
-	if (repository != 0) {
+   if (repository != 0) {
            repository->fireAddAppenderEvent(this, newAppender);
-	}
+   }
 }
 
 
@@ -82,8 +82,8 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
         int writes = 0;
 
         for(LoggerPtr logger(this); 
-		    logger != 0; 
-			logger = logger->parent)
+          logger != 0; 
+         logger = logger->parent)
         {
                 // Protected against simultaneous call to addAppender, removeAppender,...
                 synchronized sync(logger->mutex);
@@ -228,8 +228,8 @@ LogString Logger::getResourceBundleString(const LogString& key)
                 }
                 catch (MissingResourceException&)
                 {
-					logLS(Level::getError(), LOG4CXX_STR("No resource is associated with key \"") +
-						key + LOG4CXX_STR("\"."), LocationInfo::getLocationUnavailable());
+               logLS(Level::getError(), LOG4CXX_STR("No resource is associated with key \"") +
+                  key + LOG4CXX_STR("\"."), LocationInfo::getLocationUnavailable());
 
                         return LogString();
                 }

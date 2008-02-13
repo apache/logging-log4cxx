@@ -115,7 +115,7 @@ LOGUNIT_CLASS(StreamTestCase)
                 LOGUNIT_TEST(testULogStreamCFString);
                 LOGUNIT_TEST(testULogStreamCFString2);
 #endif
-			LOGUNIT_TEST_SUITE_END();
+         LOGUNIT_TEST_SUITE_END();
 
         VectorAppenderPtr vectorAppender;
 

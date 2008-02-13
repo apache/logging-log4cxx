@@ -47,7 +47,7 @@ namespace log4cxx
                         virtual ~RepositorySelector() {}
                         virtual LoggerRepositoryPtr& getLoggerRepository() = 0;
                 };
-				LOG4CXX_PTR_DEF(RepositorySelector);
+            LOG4CXX_PTR_DEF(RepositorySelector);
         }  //namespace spi
 } //namespace log4cxx
 

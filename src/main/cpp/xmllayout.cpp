@@ -120,7 +120,7 @@ void XMLLayout::format(LogString& output,
                             output.append(LOG4CXX_EOL);
                         }
                 }
-				for (LoggingEvent::KeySet::const_iterator i2 = propertySet.begin();
+            for (LoggingEvent::KeySet::const_iterator i2 = propertySet.begin();
                         i2 != propertySet.end(); 
                         i2++) {
                         LogString key(*i2);

@@ -81,7 +81,7 @@ public:
      */
   void testStringToTrace() {
         LevelPtr trace(Level::toLevel("TRACE"));
-		LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+      LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
 
 #if LOG4CXX_WCHAR_T_API

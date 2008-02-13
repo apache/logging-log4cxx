@@ -126,7 +126,7 @@ namespace log4cxx
                   CharsetEncoder& operator=(const CharsetEncoder&);
 
               static CharsetEncoder* createDefaultEncoder();
-		  };
+        };
 
         } // namespace helpers
 

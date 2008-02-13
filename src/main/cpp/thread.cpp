@@ -99,8 +99,8 @@ void* Thread::launcher(log4cxx_thread_t* thread, void* data) {
     tls.set(package->getThread());
     LaunchStatus alive(&package->getThread()->alive);
     void* retval = (package->getRunnable())(thread, package->getData());
-	apr_thread_exit((apr_thread_t*) thread, 0);
-	return retval;
+   apr_thread_exit((apr_thread_t*) thread, 0);
+   return retval;
 }
 #endif
 

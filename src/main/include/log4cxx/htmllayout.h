@@ -116,7 +116,7 @@ namespace log4cxx
                         { return false; }
 
         }; // class HtmlLayout
-		LOG4CXX_PTR_DEF(HTMLLayout);
+      LOG4CXX_PTR_DEF(HTMLLayout);
 }  // namespace log4cxx
 
 #endif // _LOG4CXX_HTML_LAYOUT_H

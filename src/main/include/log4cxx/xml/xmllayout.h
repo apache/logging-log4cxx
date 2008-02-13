@@ -131,7 +131,7 @@ namespace log4cxx
                                 { return false; }
 
                 };  // class XMLLayout
-				LOG4CXX_PTR_DEF(XMLLayout);
+            LOG4CXX_PTR_DEF(XMLLayout);
         }  // namespace xml
 } // namespace log4cxx
 

@@ -69,7 +69,7 @@ namespace log4cxx
                         virtual XMLDOMNodeType getNodeType() = 0;
                         virtual XMLDOMDocumentPtr getOwnerDocument() = 0;
                 };
-				LOG4CXX_PTR_DEF(XMLDOMNode);
+            LOG4CXX_PTR_DEF(XMLDOMNode);
 
 
                 /**
@@ -82,7 +82,7 @@ namespace log4cxx
                         virtual LogString getTagName() = 0;
                         virtual LogString getAttribute(const LogString& name) = 0;
                 };
-				LOG4CXX_PTR_DEF(XMLDOMElement);
+            LOG4CXX_PTR_DEF(XMLDOMElement);
 
                 /**
                 The XMLDOMDocument interface represents an entire XML document.
@@ -99,7 +99,7 @@ namespace log4cxx
                         virtual XMLDOMElementPtr getElementById(const LogString& tagName,
                                 const LogString& elementId) = 0;
                 };
-				LOG4CXX_PTR_DEF(XMLDOMDocument);
+            LOG4CXX_PTR_DEF(XMLDOMDocument);
 
                 /**
                 The XMLDOMNodeList interface provides the abstraction of an ordered
@@ -118,7 +118,7 @@ namespace log4cxx
                         virtual int getLength() = 0;
                         virtual XMLDOMNodePtr item(int index) = 0;
                 };
-				LOG4CXX_PTR_DEF(XMLDOMNodeList);
+            LOG4CXX_PTR_DEF(XMLDOMNodeList);
         }  // namespace helpers
 } // namespace log4cxx
 

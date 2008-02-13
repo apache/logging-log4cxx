@@ -319,7 +319,7 @@ public:
                 int i = 0;
                 X x;
 
-				std::string msg("Message ");
+            std::string msg("Message ");
 
                 LOG4CXX_TRACE(logger, msg << i);
                 LOG4CXX_TRACE(root, msg << i);

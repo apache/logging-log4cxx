@@ -130,7 +130,7 @@ namespace log4cxx
                         */
                         FilterDecision decide(const spi::LoggingEventPtr& event) const;
                 }; // class LevelRangeFilter
-				LOG4CXX_PTR_DEF(LevelRangeFilter);
+            LOG4CXX_PTR_DEF(LevelRangeFilter);
         }  // namespace filter
 } // namespace log4cxx
 

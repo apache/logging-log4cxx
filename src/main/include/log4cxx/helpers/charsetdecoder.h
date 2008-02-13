@@ -105,7 +105,7 @@ namespace log4cxx
                *  Creates a new decoder for the default charset.
                */
                   static CharsetDecoder* createDefaultDecoder();
-		  };
+        };
 
         } // namespace helpers
 }  //namespace log4cxx

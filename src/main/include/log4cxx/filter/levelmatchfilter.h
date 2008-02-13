@@ -85,7 +85,7 @@ namespace log4cxx
                         */
                         FilterDecision decide(const spi::LoggingEventPtr& event) const;
                 }; // class LevelMatchFilter
-				LOG4CXX_PTR_DEF(LevelMatchFilter);
+            LOG4CXX_PTR_DEF(LevelMatchFilter);
         }  // namespace filter
 } // namespace log4cxx
 

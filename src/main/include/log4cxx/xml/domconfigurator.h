@@ -40,8 +40,8 @@
 #include <log4cxx/config/propertysetter.h>
 
 extern "C" {
-	struct apr_xml_doc;
-	struct apr_xml_elem;
+   struct apr_xml_doc;
+   struct apr_xml_elem;
 }
 
 namespace log4cxx
@@ -195,7 +195,7 @@ namespace log4cxx
                                 log4cxx::helpers::Pool& p,
                                 log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                                 apr_xml_elem* elem,
-								log4cxx::config::PropertySetter& propSetter);
+                        log4cxx::config::PropertySetter& propSetter);
 
                         /**
                          Used internally to configure the log4cxx framework from
@@ -305,7 +305,7 @@ namespace log4cxx
                         DOMConfigurator& operator=(const DOMConfigurator&);
 
                 };
-				LOG4CXX_PTR_DEF(DOMConfigurator);
+            LOG4CXX_PTR_DEF(DOMConfigurator);
         }  // namespace xml
 } // namespace log4cxx
 

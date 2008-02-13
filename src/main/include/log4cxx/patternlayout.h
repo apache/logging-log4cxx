@@ -398,7 +398,7 @@ namespace log4cxx
         protected:
                 virtual log4cxx::pattern::PatternMap getFormatSpecifiers();
         };
-		LOG4CXX_PTR_DEF(PatternLayout)
+      LOG4CXX_PTR_DEF(PatternLayout)
 }  // namespace log4cxx
 
 #if defined(_MSC_VER)

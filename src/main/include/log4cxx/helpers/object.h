@@ -96,7 +96,7 @@ namespace log4cxx
 
         namespace helpers
         {
-				class Pool;
+            class Pool;
 
                 /** base class for java-like objects.*/
                 class LOG4CXX_EXPORT Object
@@ -109,7 +109,7 @@ namespace log4cxx
                         virtual bool instanceof(const Class& clazz) const = 0;
                         virtual const void * cast(const Class& clazz) const = 0;
                 };
-				LOG4CXX_PTR_DEF(Object);
+            LOG4CXX_PTR_DEF(Object);
         }
 }
 

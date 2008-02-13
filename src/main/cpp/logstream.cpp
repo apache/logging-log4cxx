@@ -28,10 +28,10 @@ using namespace log4cxx;
 logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags initval, 
                     int initsize) {
 #if LOG4CXX_MEMSET_IOS_BASE
-	//
-	//    the destructor for std::ios_base in the MSVC STL
-	//        releases a pointer that was not initialized in the constructor.
-	//
+   //
+   //    the destructor for std::ios_base in the MSVC STL
+   //        releases a pointer that was not initialized in the constructor.
+   //
     memset(this, 0, sizeof(*this));
 #endif
     flags(initval);
@@ -183,7 +183,7 @@ logstream::logstream(const log4cxx::LoggerPtr& logger,
              
 logstream::logstream(const Ch* loggerName, 
                 const log4cxx::LevelPtr& level) 
-				: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
+            : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 
 
@@ -268,12 +268,12 @@ void logstream::get_stream_state(std::ios_base& base,
 }
 
 void logstream::refresh_stream_state() {
-	if (stream != 0) {
-		int fillchar;
-		if(logstream_base::set_stream_state(*stream, fillchar)) {
-			stream->fill(fillchar);
-		}
-	}
+   if (stream != 0) {
+      int fillchar;
+      if(logstream_base::set_stream_state(*stream, fillchar)) {
+         stream->fill(fillchar);
+      }
+   }
 }
               
 
@@ -285,7 +285,7 @@ wlogstream::wlogstream(const log4cxx::LoggerPtr& logger,
              
 wlogstream::wlogstream(const Ch* loggerName, 
                 const log4cxx::LevelPtr& level) 
-				: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
+            : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 
 
@@ -373,19 +373,19 @@ void wlogstream::get_stream_state(std::ios_base& base,
 }
 
 void wlogstream::refresh_stream_state() {
-	if (stream != 0) {
-		int fillchar;
-		if(logstream_base::set_stream_state(*stream, fillchar)) {
-			stream->fill(fillchar);
-		}
-	}
+   if (stream != 0) {
+      int fillchar;
+      if(logstream_base::set_stream_state(*stream, fillchar)) {
+         stream->fill(fillchar);
+      }
+   }
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API
 ulogstream::ulogstream(const Ch* loggerName, 
                 const log4cxx::LevelPtr& level) 
-				: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
+            : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 
 
@@ -397,7 +397,7 @@ ulogstream::ulogstream(const std::basic_string<Ch>& loggerName,
 #if LOG4CXX_CFSTRING_API
 ulogstream::ulogstream(const CFStringRef& loggerName, 
                 const log4cxx::LevelPtr& level) 
-				: logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
+            : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 
 #endif
@@ -492,12 +492,12 @@ void ulogstream::get_stream_state(std::ios_base& base,
 }
 
 void ulogstream::refresh_stream_state() {
-	if (stream != 0) {
-		int fillchar;
-		if(logstream_base::set_stream_state(*stream, fillchar)) {
-			stream->fill(fillchar);
-		}
-	}
+   if (stream != 0) {
+      int fillchar;
+      if(logstream_base::set_stream_state(*stream, fillchar)) {
+         stream->fill(fillchar);
+      }
+   }
 }
 #endif
               

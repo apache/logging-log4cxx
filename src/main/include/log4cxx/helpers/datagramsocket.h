@@ -121,7 +121,7 @@ namespace log4cxx
                         int localPort;
 
                 };
-				LOG4CXX_PTR_DEF(DatagramSocket);
+            LOG4CXX_PTR_DEF(DatagramSocket);
         }  // namespace helpers
 } // namespace log4cxx
 

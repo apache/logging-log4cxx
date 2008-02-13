@@ -209,11 +209,11 @@ namespace log4cxx
             log4cxx::spi::LocationInfo location;
         };
         
- 	   typedef logstream_base& (*logstream_manipulator)(logstream_base&);
+      typedef logstream_base& (*logstream_manipulator)(logstream_base&);
        
         /**
          *  An STL-like stream API for log4cxx using char as the character type.
-		 *. Instances of log4cxx::logstream
+       *. Instances of log4cxx::logstream
          *  are not  designedfor use by multiple threads and in general should be short-lived
          *  function scoped objects.  Using log4cxx::basic_logstream as a class member or 
          *  static instance should be avoided in the same manner as you would avoid placing a std::ostringstream
@@ -221,7 +221,7 @@ namespace log4cxx
          *  level for the stream is not the same of higher that the level of the associated logger.
          */
         class LOG4CXX_EXPORT logstream : public logstream_base {
-			 typedef char Ch;
+          typedef char Ch;
         public:
             /**
              *   Constructor.
@@ -264,7 +264,7 @@ namespace log4cxx
             
             /**
              *   Alias for insertion operator for location.  Kludge to avoid
-			 *      inappropriate compiler ambiguity.
+          *      inappropriate compiler ambiguity.
              */
              logstream& operator>>(const log4cxx::spi::LocationInfo& location);
 
@@ -324,7 +324,7 @@ namespace log4cxx
 #if LOG4CXX_WCHAR_T_API        
         /**
          *  An STL-like stream API for log4cxx using wchar_t as the character type.
-		 *. Instances of log4cxx::logstream
+       *. Instances of log4cxx::logstream
          *  are not  designedfor use by multiple threads and in general should be short-lived
          *  function scoped objects.  Using log4cxx::basic_logstream as a class member or 
          *  static instance should be avoided in the same manner as you would avoid placing a std::ostringstream
@@ -332,7 +332,7 @@ namespace log4cxx
          *  level for the stream is not the same of higher that the level of the associated logger.
          */
         class LOG4CXX_EXPORT wlogstream : public logstream_base {
-			 typedef wchar_t Ch;
+          typedef wchar_t Ch;
         public:
             /**
              *   Constructor.
@@ -375,7 +375,7 @@ namespace log4cxx
             
             /**
              *   Alias for insertion operator for location.  Kludge to avoid
-			 *      inappropriate compiler ambiguity.
+          *      inappropriate compiler ambiguity.
              */
              wlogstream& operator>>(const log4cxx::spi::LocationInfo& location);
             
@@ -436,7 +436,7 @@ namespace log4cxx
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API        
         /**
          *  An STL-like stream API for log4cxx using UniChar as the character type.
-		 *. Instances of log4cxx::logstream
+       *. Instances of log4cxx::logstream
          *  are not  designedfor use by multiple threads and in general should be short-lived
          *  function scoped objects.  Using log4cxx::basic_logstream as a class member or 
          *  static instance should be avoided in the same manner as you would avoid placing a std::ostringstream
@@ -444,7 +444,7 @@ namespace log4cxx
          *  level for the stream is not the same of higher that the level of the associated logger.
          */
         class LOG4CXX_EXPORT ulogstream : public logstream_base {
-			 typedef UniChar Ch;
+          typedef UniChar Ch;
         public:
             /**
              *   Constructor.
@@ -494,7 +494,7 @@ namespace log4cxx
             
             /**
              *   Alias for insertion operator for location.  Kludge to avoid
-			 *      inappropriate compiler ambiguity.
+          *      inappropriate compiler ambiguity.
              */
              ulogstream& operator>>(const log4cxx::spi::LocationInfo& location);
             

@@ -478,17 +478,17 @@ void SMTPAppender::activateOptions(Pool& p)
    }
    if(evaluator == 0) {
       LogLog::error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [")+
-			 name+LOG4CXX_STR("]."));
+          name+LOG4CXX_STR("]."));
       activate = false;
    }
    if(smtpHost.empty()) {
       LogLog::error(LOG4CXX_STR("No smtpHost is set for appender [")+
-			 name+LOG4CXX_STR("]."));
+          name+LOG4CXX_STR("]."));
       activate = false;
    }
    if(to.empty() && cc.empty() && bcc.empty()) {
       LogLog::error(LOG4CXX_STR("No recipient address is set for appender [")+
-			 name+LOG4CXX_STR("]."));
+          name+LOG4CXX_STR("]."));
       activate = false;
    }
    activate &= asciiCheck(to, LOG4CXX_STR("to"));

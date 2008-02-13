@@ -38,7 +38,7 @@ namespace log4cxx
                 class ThreadLocal;
                 typedef void log4cxx_thread_t;
 
-				typedef void* (LOG4CXX_THREAD_FUNC *Runnable)(log4cxx_thread_t* thread, void* data);
+            typedef void* (LOG4CXX_THREAD_FUNC *Runnable)(log4cxx_thread_t* thread, void* data);
                 /**
                  *  This class implements an approximation of java.util.Thread.
                  */
@@ -113,7 +113,7 @@ namespace log4cxx
                             static void* operator new(size_t, Pool& p);
                             /**
                             *  operator delete would be called if exception during construction.
-							*/
+                     */
                             static void operator delete(void*, Pool& p);
                             /**
                              *  Create new instance.

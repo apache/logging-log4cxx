@@ -33,11 +33,11 @@ ERROR_PREFIX(LOG4CXX_STR("log4cxx error: ")), firstTime(true)
 }
 
  void OnlyOnceErrorHandler::addRef() const {
-	 ObjectImpl::addRef();
+    ObjectImpl::addRef();
  }
 
  void OnlyOnceErrorHandler::releaseRef() const {
-	 ObjectImpl::releaseRef();
+    ObjectImpl::releaseRef();
  }
 
 void OnlyOnceErrorHandler::setLogger(const LoggerPtr&)

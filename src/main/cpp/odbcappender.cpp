@@ -120,7 +120,7 @@ void ODBCAppender::execute(const LogString& sql)
       ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &stmt);
       if (ret < 0)
       {
-		 LOG4CXX_DECODE_CHAR(msg, GetErrorMessage( SQL_HANDLE_DBC, con, "Failed to allocate sql handle."));
+       LOG4CXX_DECODE_CHAR(msg, GetErrorMessage( SQL_HANDLE_DBC, con, "Failed to allocate sql handle."));
          throw SQLException( msg );
       }
 
@@ -129,7 +129,7 @@ void ODBCAppender::execute(const LogString& sql)
 
      if (ret < 0)
       {
-		 LOG4CXX_DECODE_CHAR(msg, GetErrorMessage( SQL_HANDLE_STMT, stmt, "Failed to execute sql statement."));
+       LOG4CXX_DECODE_CHAR(msg, GetErrorMessage( SQL_HANDLE_STMT, stmt, "Failed to execute sql statement."));
          throw SQLException( msg );
       }
    }

@@ -23,8 +23,8 @@
         <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" unless="apr.lib.dir"/>
         <libset libs="esmtp" if="has-libesmtp"/>
-		<libset libs="${odbc.lib}" if="odbc.lib"/>
-		<libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
+      <libset libs="${odbc.lib}" if="odbc.lib"/>
+      <libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
         <libset libs="pthread" if="is-unix"/>
         <syslibset libs="advapi32 ws2_32 mswsock shell32" if="is-windows"/>
         <syslibset libs="stdc++" if="is-gcc"/>
@@ -170,22 +170,22 @@ Command line options:
             <equals arg1="${with-SMTP}" arg2="libesmtp"/>
         </condition>
 
-		<condition property="odbc.lib" value="iodbc">
-			 <equals arg1="${with-ODBC}" arg2="iODBC"/>
-		</condition>
+      <condition property="odbc.lib" value="iodbc">
+          <equals arg1="${with-ODBC}" arg2="iODBC"/>
+      </condition>
 
-		<condition property="odbc.lib" value="unixodbc">
-			 <equals arg1="${with-ODBC}" arg2="unixODBC"/>
-		</condition>
+      <condition property="odbc.lib" value="unixodbc">
+          <equals arg1="${with-ODBC}" arg2="unixODBC"/>
+      </condition>
 
-		<condition property="odbc.lib" value="odbc32">
-			 <equals arg1="${with-ODBC}" arg2="Microsoft"/>
-		</condition>
+      <condition property="odbc.lib" value="odbc32">
+          <equals arg1="${with-ODBC}" arg2="Microsoft"/>
+      </condition>
 
-		<condition property="has-ODBC" value="1">
-			 <isset property="odbc.lib"/>
-		</condition>
-		<property name="has-ODBC" value="0"/>
+      <condition property="has-ODBC" value="1">
+          <isset property="odbc.lib"/>
+      </condition>
+      <property name="has-ODBC" value="0"/>
         
         <condition property="force-ant" value="1">
             <equals arg1="${find}" arg2="false"/>
@@ -214,7 +214,7 @@ Command line options:
               file="${include.dir}/log4cxx/log4cxx.hw" overwrite="true"/>
         <copy tofile="${include.dir}/log4cxx/private/log4cxx_private.tmp"
               file="${include.dir}/log4cxx/private/log4cxx_private.hw" overwrite="true"/>
-		<property name="odbc.lib" value="odbc32"/>
+      <property name="odbc.lib" value="odbc32"/>
 </target>
 
 
@@ -357,9 +357,9 @@ Command line options:
 <target name="build-apr" depends="find-apr" unless="apr.lib.file">
     <fail unless="apr.src.dir">Could not locate apr library or source.</fail>
     <property name="apr.lib.type" value="static"/>
-	<property name="apr.lib.prefix" value=""/>
-	<property name="apr.lib.suffix" value=""/>
-	<property name="project.type" value="msvc6"/>
+   <property name="apr.lib.prefix" value=""/>
+   <property name="apr.lib.suffix" value=""/>
+   <property name="project.type" value="msvc6"/>
     <ant antfile="src/ant/apr-build.xml" target="build" inheritAll="false">
         <property name="basedir" value="${apr.src.dir}"/>
         <property name="target.dir" value="${target.dir}"/>
@@ -385,9 +385,9 @@ Command line options:
 <target name="build-apr-util" depends="build-apr, find-apr-util" unless="apr-util.lib.file">
     <fail unless="apr-util.src.dir">Could not locate apr-util library or source.</fail>
     <property name="apr-util.lib.type" value="${apr.lib.type}"/>
-	<property name="apr-util.lib.prefix" value=""/>
-	<property name="apr-util.lib.suffix" value=""/>
-	<property name="project.type" value="msvc6"/>
+   <property name="apr-util.lib.prefix" value=""/>
+   <property name="apr-util.lib.suffix" value=""/>
+   <property name="project.type" value="msvc6"/>
 
     <ant antfile="src/ant/apr-util-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
@@ -419,7 +419,7 @@ Command line options:
     <property name="libesmtp.lib.type" value="static"/>
     <property name="libesmtp.lib.prefix" value=""/>
     <property name="libesmtp.lib.suffix" value=""/>
-	<property name="project.type" value="msvc6"/>
+   <property name="project.type" value="msvc6"/>
 
     <ant antfile="src/ant/esmtp-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
@@ -469,7 +469,7 @@ Command line options:
         <foreach target="make-header-check" param="header">
                 <path><fileset dir="${target.dir}/header-check" includes="**/*.h"/></path>
         </foreach>
-	    <property name="project.type" value="msvc6"/>
+       <property name="project.type" value="msvc6"/>
         <cc objdir="${target.dir}/header-check"
                 name="gcc"
                 exceptions="true"
@@ -494,30 +494,30 @@ Command line options:
 <target name="build" depends="build-apr-util, configure" description="Build log4cxx library">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx_obj"/>
 
-	<condition property="apr-static" value="1">
-		<equals arg1="${apr.lib.type}" arg2="static"/>
-	</condition>
-		
-	<condition property="apr-util-static" value="1">
-		<equals arg1="${apr-util.lib.type}" arg2="static"/>
-	</condition>
+   <condition property="apr-static" value="1">
+      <equals arg1="${apr.lib.type}" arg2="static"/>
+   </condition>
+      
+   <condition property="apr-util-static" value="1">
+      <equals arg1="${apr-util.lib.type}" arg2="static"/>
+   </condition>
 
-	<condition property="apr-libs-match" value="1">
-		<equals arg1="${apr.lib.type}" arg2="${apr-util.lib.type}"/>
-	</condition>
+   <condition property="apr-libs-match" value="1">
+      <equals arg1="${apr.lib.type}" arg2="${apr-util.lib.type}"/>
+   </condition>
 
-	<fail unless="apr-libs-match">apr is ${apr.lib.type} and apr-util is ${apr-util.lib.type}, must be same type.</fail>
-	<property name="lib.name" value="log4cxx"/>
-	<property name="lib.prefix" value=""/>
-	<property name="lib.suffix" value=""/>
+   <fail unless="apr-libs-match">apr is ${apr.lib.type} and apr-util is ${apr-util.lib.type}, must be same type.</fail>
+   <property name="lib.name" value="log4cxx"/>
+   <property name="lib.prefix" value=""/>
+   <property name="lib.suffix" value=""/>
 
-	<condition property="apr-util.dependencies" value="expat iconv">
-		<equals arg1="${apr-util.lib.type}" arg2="static"/>
-	</condition>
+   <condition property="apr-util.dependencies" value="expat iconv">
+      <equals arg1="${apr-util.lib.type}" arg2="static"/>
+   </condition>
 
 
     <property name="project.compiler" value="${compiler}"/>
-	<property name="project.type" value="msvc6"/>
+   <property name="project.type" value="msvc6"/>
     
     <cc name="${project.compiler}"
                 exceptions="true"
@@ -542,7 +542,7 @@ Command line options:
         <compilerarg value="${pic-option}" if="pic-option"/>
         &libsets;
         <project type="${project.type}" outfile="${projects.dir}/${lib.name}" if="project.if">
-			<comment>&license;</comment>
+         <comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
         </project>
@@ -553,7 +553,7 @@ Command line options:
 <target name="build-example">
     <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>
     <property name="project.compiler" value="${compiler}"/>
-	<property name="project.type" value="msvc6"/>
+   <property name="project.type" value="msvc6"/>
     <property name="example.include.dir" value="${example.src.dir}"/>
     <cc name="${project.compiler}"
                 exceptions="true"
@@ -579,7 +579,7 @@ Command line options:
         &libsets;
 
         <project outfile="${projects.dir}/${example.name}" type="${project.type}" if="project.if">
-			<comment>&license;</comment>
+         <comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency name="${projects.dir}/aprutil-1"/>
             <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
@@ -648,7 +648,7 @@ Command line options:
     <mkdir dir="${log4cxx.lib.dir}/testsuite_obj"/>
 
     <property name="project.compiler" value="${compiler}"/>
-	<property name="project.type" value="msvc6"/>
+   <property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/testsuite"
@@ -673,7 +673,7 @@ Command line options:
         &libsets;
 
         <project outfile="${projects.dir}/testsuite" type="${project.type}" if="project.if">
-			<comment>&license;</comment>
+         <comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
             <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
@@ -689,7 +689,7 @@ Command line options:
     depends="build-apr-util,configure">
     <mkdir dir="${executable.dir}/static/testsuite-standalone_obj"/>
     <property name="project.compiler" value="${compiler}"/>
-	<property name="project.type" value="msvc6"/>
+   <property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${executable.dir}/static/testsuite-standalone"
@@ -723,7 +723,7 @@ Command line options:
         <project outfile="${projects.dir}/testsuite-standalone"
                  type="${project.type}"
                  if="project.if">
-			<comment>&license;</comment>
+         <comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
         </project>
@@ -900,7 +900,7 @@ Command line options:
 
 <target name="build-projects">
         <mkdir dir="${projects.dir}"/>
-	    <property name="project.type" value="msvc6"/>
+       <property name="project.type" value="msvc6"/>
         <antcall target="build-unittest">
                 <param name="project.if" value="true"/>
                 <param name="project.type" value="${project.type}"/>
@@ -1097,26 +1097,26 @@ Command line options:
                   out="src/changes/changes.xml"/>
         </target>
 
-	<target name="checkout-site" unless="svn-available">
-		<exec executable="svn">
-			<arg value="co"/>
-			<arg value="${svnsite.url}"/>
-			<arg value="target/site-deploy"/>
-		</exec>
-	</target>
+   <target name="checkout-site" unless="svn-available">
+      <exec executable="svn">
+         <arg value="co"/>
+         <arg value="${svnsite.url}"/>
+         <arg value="target/site-deploy"/>
+      </exec>
+   </target>
 
-	<target name="update-site" if="svn-available">
-		<exec executable="svn" dir="target/site-deploy" failonerror="true">
-			<arg value="update"/>
-		</exec>
-	</target>
+   <target name="update-site" if="svn-available">
+      <exec executable="svn" dir="target/site-deploy" failonerror="true">
+         <arg value="update"/>
+      </exec>
+   </target>
 
-	<target name="post-site" depends="checkout-site, update-site"/>
-	
+   <target name="post-site" depends="checkout-site, update-site"/>
+   
 
         <target name="mime=html">
             <exec executable="svn">
-		<arg value="propset"/>
+      <arg value="propset"/>
                 <arg value="svn:mime-type"/>
                 <arg value="text/html"/>
                 <arg value="${src.html}"/>
@@ -1125,20 +1125,20 @@ Command line options:
 
         <target name="mime=css">
             <exec executable="svn">
-		<arg value="propset"/>
+      <arg value="propset"/>
                 <arg value="svn:mime-type"/>
                 <arg value="text/css"/>
                 <arg value="${src.css}"/>
             </exec>
         </target>
-	
+   
 
-	<target name="site-deploy">
-		<!-- Add any new files (and generate innocuous warnings for the existing content)  -->
+   <target name="site-deploy">
+      <!-- Add any new files (and generate innocuous warnings for the existing content)  -->
                 <delete file="target/site-deploy/svn-commit.tmp~"/>
-		<exec executable="bash" dir="target/site-deploy" failonerror="true">
-			<arg line='-c "svn add --force *"'/>
-		</exec>
+      <exec executable="bash" dir="target/site-deploy" failonerror="true">
+         <arg line='-c "svn add --force *"'/>
+      </exec>
                 <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
                 <foreach target="mime=html" param="src.html">
                         <path>
@@ -1150,11 +1150,11 @@ Command line options:
                                 <fileset dir="target/site-deploy" includes="**/*.css"/>
                         </path>
                 </foreach>
-		<!--  requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description -->
-		<exec executable="svn" dir="target/site-deploy" failonerror="true">
-		    <arg value="commit"/>
-		</exec>
-	</target>
+      <!--  requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description -->
+      <exec executable="svn" dir="target/site-deploy" failonerror="true">
+          <arg value="commit"/>
+      </exec>
+   </target>
 
 
 

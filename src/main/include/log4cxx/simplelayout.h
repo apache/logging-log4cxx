@@ -66,7 +66,7 @@ namespace log4cxx
                 virtual void setOption(const LogString& /* option */,
                      const LogString& /* value */) {}
         };
-		LOG4CXX_PTR_DEF(SimpleLayout);
+      LOG4CXX_PTR_DEF(SimpleLayout);
 }  // namespace log4cxx
 
 #endif //_LOG4CXX_SIMPLE_LAYOUT_H

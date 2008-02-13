@@ -37,15 +37,15 @@ namespace log4cxx
 {
     namespace helpers
     {
-		class Class;
+      class Class;
 
         class LOG4CXX_EXPORT ObjectPtrBase {
         public:
-			ObjectPtrBase();
-			virtual ~ObjectPtrBase();
+         ObjectPtrBase();
+         virtual ~ObjectPtrBase();
             static void checkNull(const int& null);
             static void* exchange(void** destination, void* newValue);
-			virtual void* cast(const Class& cls) const = 0;
+         virtual void* cast(const Class& cls) const = 0;
         };
 
 
@@ -86,19 +86,19 @@ namespace log4cxx
                 }
             }
 
-		 ObjectPtrT(const ObjectPtrBase& p1) 
-			 _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
+       ObjectPtrT(const ObjectPtrBase& p1) 
+          _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
              if (this->p != 0) {
                     this->p->addRef();
              }
-		 }
+       }
 
-		 ObjectPtrT(ObjectPtrBase& p1) 
-			 _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
+       ObjectPtrT(ObjectPtrBase& p1) 
+          _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
              if (this->p != 0) {
                     this->p->addRef();
              }
-		 }
+       }
 
 
             ~ObjectPtrT()
@@ -159,22 +159,22 @@ namespace log4cxx
               return *this;
             }
 
-		ObjectPtrT& operator=(ObjectPtrBase& p1) {
-			T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
-			return operator=(newPtr);
-		}
+      ObjectPtrT& operator=(ObjectPtrBase& p1) {
+         T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
+         return operator=(newPtr);
+      }
 
-		ObjectPtrT& operator=(const ObjectPtrBase& p1) {
-			T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
-			return operator=(newPtr);
-		}
+      ObjectPtrT& operator=(const ObjectPtrBase& p1) {
+         T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
+         return operator=(newPtr);
+      }
 
             bool operator==(const ObjectPtrT& p1) const { return (this->p == p1.p); }
             bool operator!=(const ObjectPtrT& p1) const { return (this->p != p1.p); }
-			bool operator<(const ObjectPtrT& p1) const { return (this->p < p1.p); } 
+         bool operator<(const ObjectPtrT& p1) const { return (this->p < p1.p); } 
             bool operator==(const T* p1) const { return (this->p == p1); }
             bool operator!=(const T* p1) const { return (this->p != p1); }
-			bool operator<(const T* p1) const { return (this->p < p1); } 
+         bool operator<(const T* p1) const { return (this->p < p1); } 
             T* operator->() const {return (T*) p; }
             T& operator*() const {return (T&) *p; }
             operator T*() const {return (T*) p; }
@@ -183,12 +183,12 @@ namespace log4cxx
 
         private:
             T * p;
-			virtual void* cast(const Class& cls) const {
-				if (p != 0) {
-					return const_cast<void*>(p->cast(cls));
-				}
-				return 0;
-			}
+         virtual void* cast(const Class& cls) const {
+            if (p != 0) {
+               return const_cast<void*>(p->cast(cls));
+            }
+            return 0;
+         }
 
         };
 

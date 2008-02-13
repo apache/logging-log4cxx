@@ -38,7 +38,7 @@ LOGUNIT_CLASS(LoggingEventTest)
                 LOGUNIT_TEST(testSerializationWithLocation);
                 LOGUNIT_TEST(testSerializationNDC);
                 LOGUNIT_TEST(testSerializationMDC);
-			LOGUNIT_TEST_SUITE_END();
+         LOGUNIT_TEST_SUITE_END();
 
 public:
         void setUp() {

@@ -83,11 +83,11 @@ PropertyConfigurator::~PropertyConfigurator() {
 }
 
 void PropertyConfigurator::addRef() const {
-	ObjectImpl::addRef();
+   ObjectImpl::addRef();
 }
 
 void PropertyConfigurator::releaseRef() const {
-	ObjectImpl::releaseRef();
+   ObjectImpl::releaseRef();
 }
 
 void PropertyConfigurator::doConfigure(const File& configFileName,

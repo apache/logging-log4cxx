@@ -128,7 +128,7 @@ namespace log4cxx
                         DatagramPacket& operator=(const DatagramPacket&);
 
                 }; // class DatagramPacket
-				LOG4CXX_PTR_DEF(DatagramPacket);
+            LOG4CXX_PTR_DEF(DatagramPacket);
         }  // namespace helpers
 } // namespace log4cxx
 

@@ -108,11 +108,11 @@ DOMConfigurator::DOMConfigurator()
 }
 
 void DOMConfigurator::addRef() const {
-	ObjectImpl::addRef();
+   ObjectImpl::addRef();
 }
 
 void DOMConfigurator::releaseRef() const {
-	ObjectImpl::releaseRef();
+   ObjectImpl::releaseRef();
 }
 
 /**

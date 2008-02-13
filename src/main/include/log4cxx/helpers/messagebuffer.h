@@ -39,7 +39,7 @@ namespace log4cxx {
         /**
          *  Creates a new instance.
          */
-	    CharMessageBuffer();
+       CharMessageBuffer();
         /**
          *  Destructor.
          */
@@ -140,24 +140,24 @@ namespace log4cxx {
          */
         std::ostream& operator<<(void* val);
 
-		/**
-		 *  Cast to ostream.
-		 */
-		operator std::basic_ostream<char>&();
+      /**
+       *  Cast to ostream.
+       */
+      operator std::basic_ostream<char>&();
 
-		/**
-		 *   Get content of buffer.
-		 *   @param os used only to signal that
-		 *       the embedded stream was used.
-		 */
-		const std::basic_string<char>& str(std::basic_ostream<char>& os);
+      /**
+       *   Get content of buffer.
+       *   @param os used only to signal that
+       *       the embedded stream was used.
+       */
+      const std::basic_string<char>& str(std::basic_ostream<char>& os);
 
-		/**
-		 *   Get content of buffer.
-		 *   @param buf used only to signal that
-		 *       the embedded stream was not used.
-		 */
-		const std::basic_string<char>& str(CharMessageBuffer& buf);
+      /**
+       *   Get content of buffer.
+       *   @param buf used only to signal that
+       *       the embedded stream was not used.
+       */
+      const std::basic_string<char>& str(CharMessageBuffer& buf);
 
         /**
          *  Returns true if buffer has an encapsulated STL stream.
@@ -169,13 +169,13 @@ namespace log4cxx {
         /**
          * Prevent use of default copy constructor.
          */
-	   CharMessageBuffer(const CharMessageBuffer&);
+      CharMessageBuffer(const CharMessageBuffer&);
         /**
          *   Prevent use of default assignment operator.  
          */
-	   CharMessageBuffer& operator=(const CharMessageBuffer&);
+      CharMessageBuffer& operator=(const CharMessageBuffer&);
 
-	   /**
+      /**
          * Encapsulated std::string.
          */
         std::basic_string<char> buf;
@@ -187,21 +187,21 @@ namespace log4cxx {
 
 template<class V>
 std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
-	return ((std::basic_ostream<char>&) os) << val;
+   return ((std::basic_ostream<char>&) os) << val;
 }
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
    /**
     *   This class is designed to support insertion operations
-	*   in the message argument to the LOG4CXX_INFO and similar
-	*   macros and is not designed for general purpose use.
-	*/
+   *   in the message argument to the LOG4CXX_INFO and similar
+   *   macros and is not designed for general purpose use.
+   */
    class LOG4CXX_EXPORT UniCharMessageBuffer {
    public:
         /**
          *  Creates a new instance.
          */
-	    UniCharMessageBuffer();
+       UniCharMessageBuffer();
         /**
          *  Destructor.
          */
@@ -237,7 +237,7 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
         UniCharMessageBuffer& operator<<(const UniChar msg);
         
 #if LOG4CXX_CFSTRING_API
-	   /**
+      /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
          *   @param msg message to append.
@@ -316,23 +316,23 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
 
 
         /**
-		 *  Cast to ostream.
-		 */
-		operator uostream&();
+       *  Cast to ostream.
+       */
+      operator uostream&();
 
-		/**
-		 *   Get content of buffer.
-		 *   @param os used only to signal that
-		 *       the embedded stream was used.
-		 */
-		const std::basic_string<UniChar>& str(uostream& os);
+      /**
+       *   Get content of buffer.
+       *   @param os used only to signal that
+       *       the embedded stream was used.
+       */
+      const std::basic_string<UniChar>& str(uostream& os);
 
-		/**
-		 *   Get content of buffer.
-		 *   @param buf used only to signal that
-		 *       the embedded stream was not used.
-		 */
-		const std::basic_string<UniChar>& str(UniCharMessageBuffer& buf);
+      /**
+       *   Get content of buffer.
+       *   @param buf used only to signal that
+       *       the embedded stream was not used.
+       */
+      const std::basic_string<UniChar>& str(UniCharMessageBuffer& buf);
 
         /**
          *  Returns true if buffer has an encapsulated STL stream.
@@ -344,13 +344,13 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
         /**
          * Prevent use of default copy constructor.
          */
-	   UniCharMessageBuffer(const UniCharMessageBuffer&);
+      UniCharMessageBuffer(const UniCharMessageBuffer&);
         /**
          *   Prevent use of default assignment operator.  
          */
-	   UniCharMessageBuffer& operator=(const UniCharMessageBuffer&);
+      UniCharMessageBuffer& operator=(const UniCharMessageBuffer&);
 
-	   /**
+      /**
          * Encapsulated std::string.
          */
         std::basic_string<UniChar> buf;
@@ -362,22 +362,22 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
 
 template<class V>
 UniCharMessageBuffer::uostream& operator<<(UniCharMessageBuffer& os, const V& val) {
-	return ((UniCharMessageBuffer::uostream&) os) << val;
+   return ((UniCharMessageBuffer::uostream&) os) << val;
 }
 #endif
 
 #if LOG4CXX_WCHAR_T_API
    /**
     *   This class is designed to support insertion operations
-	*   in the message argument to the LOG4CXX_INFO and similar
-	*   macros and is not designed for general purpose use.
-	*/
+   *   in the message argument to the LOG4CXX_INFO and similar
+   *   macros and is not designed for general purpose use.
+   */
    class LOG4CXX_EXPORT WideMessageBuffer {
    public:
         /**
          *  Creates a new instance.
          */
-	    WideMessageBuffer();
+       WideMessageBuffer();
         /**
          *  Destructor.
          */
@@ -480,23 +480,23 @@ UniCharMessageBuffer::uostream& operator<<(UniCharMessageBuffer& os, const V& va
 
 
         /**
-		 *  Cast to ostream.
-		 */
-		operator std::basic_ostream<wchar_t>&();
+       *  Cast to ostream.
+       */
+      operator std::basic_ostream<wchar_t>&();
 
-		/**
-		 *   Get content of buffer.
-		 *   @param os used only to signal that
-		 *       the embedded stream was used.
-		 */
-		const std::basic_string<wchar_t>& str(std::basic_ostream<wchar_t>& os);
+      /**
+       *   Get content of buffer.
+       *   @param os used only to signal that
+       *       the embedded stream was used.
+       */
+      const std::basic_string<wchar_t>& str(std::basic_ostream<wchar_t>& os);
 
-		/**
-		 *   Get content of buffer.
-		 *   @param buf used only to signal that
-		 *       the embedded stream was not used.
-		 */
-		const std::basic_string<wchar_t>& str(WideMessageBuffer& buf);
+      /**
+       *   Get content of buffer.
+       *   @param buf used only to signal that
+       *       the embedded stream was not used.
+       */
+      const std::basic_string<wchar_t>& str(WideMessageBuffer& buf);
 
         /**
          *  Returns true if buffer has an encapsulated STL stream.
@@ -508,13 +508,13 @@ UniCharMessageBuffer::uostream& operator<<(UniCharMessageBuffer& os, const V& va
         /**
          * Prevent use of default copy constructor.
          */
-	   WideMessageBuffer(const WideMessageBuffer&);
+      WideMessageBuffer(const WideMessageBuffer&);
         /**
          *   Prevent use of default assignment operator.  
          */
-	   WideMessageBuffer& operator=(const WideMessageBuffer&);
+      WideMessageBuffer& operator=(const WideMessageBuffer&);
 
-	   /**
+      /**
          * Encapsulated std::string.
          */
         std::basic_string<wchar_t> buf;
@@ -526,7 +526,7 @@ UniCharMessageBuffer::uostream& operator<<(UniCharMessageBuffer& os, const V& va
 
 template<class V>
 std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
-	return ((std::basic_ostream<wchar_t>&) os) << val;
+   return ((std::basic_ostream<wchar_t>&) os) << val;
 }
 
    /**
@@ -539,18 +539,18 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
         /**
          *  Creates a new instance.
          */
-	   MessageBuffer();
-	   /**
+      MessageBuffer();
+      /**
          * Destructor.
          */
-	   ~MessageBuffer();
+      ~MessageBuffer();
 
-		/**
-		 *  Cast to ostream.
-		 */
-		operator std::ostream&();
+      /**
+       *  Cast to ostream.
+       */
+      operator std::ostream&();
 
-	   /**
+      /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
          *   @param msg message to append.
@@ -580,23 +580,23 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
          */
         CharMessageBuffer& operator<<(const char msg);
 
-		/**
-		 *   Get content of buffer.
-		 *   @param buf used only to signal
-		 *       the character type and that
-		 *       the embedded stream was not used.
-		 */
-		const std::string& str(CharMessageBuffer& buf);
+      /**
+       *   Get content of buffer.
+       *   @param buf used only to signal
+       *       the character type and that
+       *       the embedded stream was not used.
+       */
+      const std::string& str(CharMessageBuffer& buf);
 
-		/**
-		 *   Get content of buffer.
-		 *   @param os used only to signal 
-		 *       the character type and that
-		 *       the embedded stream was used.
-		 */
-		const std::string& str(std::ostream& os);
+      /**
+       *   Get content of buffer.
+       *   @param os used only to signal 
+       *       the character type and that
+       *       the embedded stream was used.
+       */
+      const std::string& str(std::ostream& os);
 
-	   /**
+      /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
          *   @param msg message to append.
@@ -626,7 +626,7 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
         WideMessageBuffer& operator<<(const wchar_t msg);
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
-	   /**
+      /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
          *   @param msg message to append.
@@ -657,7 +657,7 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
 #endif
 
 #if LOG4CXX_CFSTRING_API
-	   /**
+      /**
          *   Appends a string into the buffer and
          *   fixes the buffer to use char characters.
          *   @param msg message to append.
@@ -734,38 +734,38 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
          *   @return encapsulated STL stream.
          */
         std::ostream& operator<<(void* val);
-		/**
-		 *   Get content of buffer.
-		 *   @param buf used only to signal
-		 *       the character type and that
-		 *       the embedded stream was not used.
-		 */
-		const std::wstring& str(WideMessageBuffer& buf);
+      /**
+       *   Get content of buffer.
+       *   @param buf used only to signal
+       *       the character type and that
+       *       the embedded stream was not used.
+       */
+      const std::wstring& str(WideMessageBuffer& buf);
 
-		/**
-		 *   Get content of buffer.
-		 *   @param os used only to signal 
-		 *       the character type and that
-		 *       the embedded stream was used.
-		 */
-		const std::wstring& str(std::basic_ostream<wchar_t>& os);
+      /**
+       *   Get content of buffer.
+       *   @param os used only to signal 
+       *       the character type and that
+       *       the embedded stream was used.
+       */
+      const std::wstring& str(std::basic_ostream<wchar_t>& os);
         
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
-		/**
-		 *   Get content of buffer.
-		 *   @param buf used only to signal
-		 *       the character type and that
-		 *       the embedded stream was not used.
-		 */
-		const std::basic_string<UniChar>& str(UniCharMessageBuffer& buf);
+      /**
+       *   Get content of buffer.
+       *   @param buf used only to signal
+       *       the character type and that
+       *       the embedded stream was not used.
+       */
+      const std::basic_string<UniChar>& str(UniCharMessageBuffer& buf);
 
-		/**
-		 *   Get content of buffer.
-		 *   @param os used only to signal 
-		 *       the character type and that
-		 *       the embedded stream was used.
-		 */
-		const std::basic_string<UniChar>& str(UniCharMessageBuffer::uostream& os);
+      /**
+       *   Get content of buffer.
+       *   @param os used only to signal 
+       *       the character type and that
+       *       the embedded stream was used.
+       */
+      const std::basic_string<UniChar>& str(UniCharMessageBuffer::uostream& os);
 #endif        
 
         /**
@@ -803,7 +803,7 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
 
 template<class V>
 std::ostream& operator<<(MessageBuffer& os, const V& val) {
-	return ((std::ostream&) os) << val;
+   return ((std::ostream&) os) << val;
 }
 
 #if LOG4CXX_LOGCHAR_IS_UTF8

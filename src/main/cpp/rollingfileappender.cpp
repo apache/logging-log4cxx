@@ -47,7 +47,7 @@ RollingFileAppender::RollingFileAppender() {
  */
 void RollingFileAppender::activateOptions(Pool &p) {
   if (rollingPolicy == NULL) {
-	FixedWindowRollingPolicy* fwrp = new FixedWindowRollingPolicy();
+   FixedWindowRollingPolicy* fwrp = new FixedWindowRollingPolicy();
     fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
     rollingPolicy = fwrp;
   }

@@ -36,11 +36,11 @@ FallbackErrorHandler::FallbackErrorHandler()
 }
 
 void FallbackErrorHandler::addRef() const {
-	ObjectImpl::addRef();
+   ObjectImpl::addRef();
 }
 
 void FallbackErrorHandler::releaseRef() const {
-	ObjectImpl::releaseRef();
+   ObjectImpl::releaseRef();
 }
 
 void FallbackErrorHandler::setLogger(const LoggerPtr& logger)

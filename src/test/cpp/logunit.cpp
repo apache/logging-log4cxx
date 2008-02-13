@@ -156,8 +156,8 @@ void TestFixture::assertEquals(const std::wstring expected,
     int lineno) {
     if (expected != actual) {
         std::string exp, act;
-		transcode(exp, expected);
-		transcode(act, actual);
+      transcode(exp, expected);
+      transcode(act, actual);
         abts_str_equal(tc, exp.c_str(), act.c_str(), lineno);
         throw TestException();
     }
@@ -171,8 +171,8 @@ void TestFixture::assertEquals(const std::basic_string<UniChar> expected,
 int lineno) {
     if (expected != actual) {
         std::string exp, act;
-		transcode(exp, expected);
-		transcode(act, actual);
+      transcode(exp, expected);
+      transcode(act, actual);
         abts_str_equal(tc, exp.c_str(), act.c_str(), lineno);
         throw TestException();
     }

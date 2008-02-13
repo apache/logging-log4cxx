@@ -170,7 +170,7 @@ namespace log4cxx
         */
         virtual bool ignoresThrowable() const { return true; }
         };
-		LOG4CXX_PTR_DEF(TTCCLayout);
+      LOG4CXX_PTR_DEF(TTCCLayout);
 }
 
 #endif

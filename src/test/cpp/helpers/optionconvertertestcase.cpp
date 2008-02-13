@@ -171,18 +171,18 @@ public:
       apr_gid_t groupid;
       stat = apr_uid_current(&userid, &groupid, p);
       if (stat == APR_SUCCESS) {
-      	char* username = NULL;
-      	stat = apr_uid_name_get(&username, userid, p);
-      	if (stat == APR_SUCCESS) {
-      		char* dirname = NULL;
-      		stat = apr_uid_homepath_get(&dirname, username, p);
-      		if (stat == APR_SUCCESS) {
-      			LogString expected;
-      			Transcoder::decode(dirname, expected);
-      			LOGUNIT_ASSERT_EQUAL(expected, actual);
-      	    }
-      	 }
-      }	 
+         char* username = NULL;
+         stat = apr_uid_name_get(&username, userid, p);
+         if (stat == APR_SUCCESS) {
+            char* dirname = NULL;
+            stat = apr_uid_homepath_get(&dirname, username, p);
+            if (stat == APR_SUCCESS) {
+               LogString expected;
+               Transcoder::decode(dirname, expected);
+               LOGUNIT_ASSERT_EQUAL(expected, actual);
+             }
+          }
+      }   
       apr_pool_destroy(p);
 
     }
@@ -198,10 +198,10 @@ public:
        apr_gid_t groupid;
        stat = apr_uid_current(&userid, &groupid, p);
        if (stat == APR_SUCCESS) {
-       	  char* username = NULL;
+           char* username = NULL;
           stat = apr_uid_name_get(&username, userid, p);
           if (stat == APR_SUCCESS) {
-       		 LogString expected;
+             LogString expected;
              Transcoder::decode(username, expected);
              LOGUNIT_ASSERT_EQUAL(expected, actual);
           }
