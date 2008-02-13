@@ -333,6 +333,9 @@ Command line options:
     </condition>
     <property name="has-libesmtp-value" value="0"/>
     <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.tmp"
+       match="LOG4CXX_HAVE_LIBESMTP 0"
+       replace="LOG4CXX_HAVE_LIBESMTP ${has-libesmtp-value}"/>
+    <replaceregexp file="${include.dir}/log4cxx/private/log4cxx_private.tmp"
        match="@HAS_LIBESMTP@"
        replace="${has-libesmtp-value}"/>
 
@@ -415,20 +418,20 @@ Command line options:
 </target>
 
 <target name="build-libesmtp" depends="find-esmtp" if="has-libesmtp" unless="esmtp.lib.file">
-    <fail unless="libesmtp.src.dir">Could not locate libesmtp library or source.</fail>
-    <property name="libesmtp.lib.type" value="static"/>
-    <property name="libesmtp.lib.prefix" value=""/>
-    <property name="libesmtp.lib.suffix" value=""/>
+    <fail unless="esmtp.src.dir">Could not locate libesmtp library or source.</fail>
+    <property name="esmtp.lib.type" value="static"/>
+    <property name="esmtp.lib.prefix" value=""/>
+    <property name="esmtp.lib.suffix" value=""/>
    <property name="project.type" value="msvc6"/>
 
     <ant antfile="src/ant/esmtp-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
-        <property name="basedir" value="${libesmtp.src.dir}"/>
+        <property name="basedir" value="${esmtp.src.dir}"/>
         <property name="debug" value="${debug}"/>
-        <property name="lib.prefix" value="${libesmtp.lib.prefix}"/>
-        <property name="lib.suffix" value="${libesmtp.lib.suffix}"/>
+        <property name="lib.prefix" value="${esmtp.lib.prefix}"/>
+        <property name="lib.suffix" value="${esmtp.lib.suffix}"/>
         <property name="compiler" value="${compiler}"/>
-        <property name="lib.type" value="${libesmtp.lib.type}"/>
+        <property name="lib.type" value="${esmtp.lib.type}"/>
         <property name="project.type" value="${project.type}"/>
         <property name="projects.dir" value="${projects.dir}"/>
         <property name="project.if.value" value="${project.if}"/>
@@ -436,11 +439,11 @@ Command line options:
         <property name="os.family" value="${os.family}"/>
     </ant>
 
-    <condition property="libesmtp.lib.dir" value="${target.dir}/${debug.release}/shared">
-        <equals arg1="${libesmtp.lib.type}" arg2="shared"/>
+    <condition property="esmtp.lib.dir" value="${target.dir}/${debug.release}/shared">
+        <equals arg1="${esmtp.lib.type}" arg2="shared"/>
     </condition>
-    <property name="libesmtp.lib.dir" location="${target.dir}/${debug.release}/static"/>
-    <property name="libesmtp.project.file" location="${projects.dir}/libesmtp"/>
+    <property name="esmtp.lib.dir" location="${target.dir}/${debug.release}/static"/>
+    <property name="esmtp.project.file" location="${projects.dir}/libesmtp"/>
 </target>
 
 

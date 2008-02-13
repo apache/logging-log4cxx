@@ -23,8 +23,8 @@
 	<condition property="esmtp.src.dir" value="${esmtp.dir}">
 		<available file="${esmtp.dir}/${esmtp.sample.c}"/>
 	</condition>
-	<condition property="esmtp.src.dir" value="../esmtp">
-		<available file="../esmtp/${esmtp.sample.c}"/>
+	<condition property="esmtp.src.dir" value="../libesmtp">
+		<available file="../libesmtp/${esmtp.sample.c}"/>
 	</condition>
 </target>
 
@@ -109,7 +109,7 @@
 	</condition>
 
 
-    <property name="relative-esmtp" location="../esmtp"/>
+    <property name="relative-esmtp" location="../libesmtp"/>
     <condition property="esmtp.dir" value="${relative-esmtp}">
         <available file="${relative-esmtp}"/>
     </condition>
@@ -278,19 +278,19 @@
 <target name="find-esmtp" depends="find-esmtp-lib">
 	<!--   use character ref to prevent directory name from
 	          being changed on global search and replacements -->
-    <condition property="esmtp.include.dir" value="${esmtp.dir}/include/ap&#x72;-1.0">
-        <available file="${esmtp.dir}/include/ap&#x72;-1.0/${esmtp.sample.h}"/>
-    </condition>
-    <condition property="esmtp.include.dir" value="${esmtp.dir}/include/ap&#x72;-1">
-        <available file="${esmtp.dir}/include/ap&#x72;-1/${esmtp.sample.h}"/>
-    </condition>
     <condition property="esmtp.include.dir" value="${esmtp.dir}/include">
         <available file="${esmtp.dir}/include/${esmtp.sample.h}"/>
+    </condition>
+    <condition property="esmtp.include.dir" value="${esmtp.dir}">
+        <available file="${esmtp.dir}/${esmtp.sample.h}"/>
     </condition>
     <condition property="esmtp.include.dir" value="${esmtp.dir}/../usr/include">
         <available file="${esmtp.dir}/../usr/include/${esmtp.sample.h}"/>
     </condition>
     <condition property="esmtp.include.dir" value="${esmtp.src.dir}/include">
+        <available file="${esmtp.src.dir}/include/${esmtp.sample.h}"/>
+    </condition>
+    <condition property="esmtp.include.dir" value="${esmtp.src.dir}">
         <available file="${esmtp.src.dir}/include/${esmtp.sample.h}"/>
     </condition>
 
