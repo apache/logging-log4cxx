@@ -74,7 +74,7 @@ IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
 
 
 PropertyConfigurator::PropertyConfigurator()
-: loggerFactory(new DefaultLoggerFactory()), registry(new std::map<LogString, AppenderPtr>())
+: registry(new std::map<LogString, AppenderPtr>()), loggerFactory(new DefaultLoggerFactory())
 {
 }
 

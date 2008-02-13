@@ -315,8 +315,8 @@ bool DefaultEvaluator::isTriggeringEvent(const spi::LoggingEventPtr& event)
 }
 
 SMTPAppender::SMTPAppender()
-: bufferSize(512), locationInfo(false), cb(bufferSize),
-evaluator(new DefaultEvaluator()), smtpPort(25)
+: smtpPort(25), bufferSize(512), locationInfo(false), cb(bufferSize),
+evaluator(new DefaultEvaluator())
 {
 }
 
@@ -324,8 +324,8 @@ evaluator(new DefaultEvaluator()), smtpPort(25)
 Use <code>evaluator</code> passed as parameter as the
 TriggeringEventEvaluator for this SMTPAppender.  */
 SMTPAppender::SMTPAppender(spi::TriggeringEventEvaluatorPtr evaluator)
-: bufferSize(512), locationInfo(false), cb(bufferSize),
-evaluator(evaluator), smtpPort(25)
+: smtpPort(25), bufferSize(512), locationInfo(false), cb(bufferSize),
+evaluator(evaluator)
 {
 }
 

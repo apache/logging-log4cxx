@@ -43,7 +43,7 @@ logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags i
 
 logstream_base::logstream_base(const LoggerPtr& log,
      const LevelPtr& lvl) : initset((std::ios_base::fmtflags) -1, 1), 
-     initclear((std::ios_base::fmtflags) 0, 0), logger(log), level(lvl), location(), fillchar(0), fillset(false) {
+     initclear((std::ios_base::fmtflags) 0, 0), fillchar(0), fillset(false), logger(log), level(lvl), location() {
      enabled = logger->isEnabledFor(level);
 }
 
