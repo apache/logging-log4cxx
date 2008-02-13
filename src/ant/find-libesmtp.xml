@@ -287,6 +287,9 @@
     <condition property="esmtp.include.dir" value="${esmtp.dir}/include">
         <available file="${esmtp.dir}/include/${esmtp.sample.h}"/>
     </condition>
+    <condition property="esmtp.include.dir" value="${esmtp.dir}/../usr/include">
+        <available file="${esmtp.dir}/../usr/include/${esmtp.sample.h}"/>
+    </condition>
     <condition property="esmtp.include.dir" value="${esmtp.src.dir}/include">
         <available file="${esmtp.src.dir}/include/${esmtp.sample.h}"/>
     </condition>

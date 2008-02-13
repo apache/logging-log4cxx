@@ -287,6 +287,9 @@
     <condition property="apr-util.include.dir" value="${apr-util.dir}/include">
         <available file="${apr-util.dir}/include/${apr-util.sample.h}"/>
     </condition>
+    <condition property="apr-util.include.dir" value="${apr-util.dir}/../usr/include/ap&#x72;-1">
+        <available file="${apr-util.dir}/../usr/include/ap&#x72;-1/${apr-util.sample.h}"/>
+    </condition>
     <condition property="apr-util.include.dir" value="${apr-util.src.dir}/include">
         <available file="${apr-util.src.dir}/include/${apr-util.sample.h}"/>
     </condition>

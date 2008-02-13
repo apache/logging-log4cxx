@@ -152,10 +152,31 @@ Building Apache log4cxx with Apache Ant
 
 * Platform specific notes:
 
+  ** Microsoft Windows
+
+  A GNU sed command is required to be on the path to complete the unit tests.
+  Cygwin's implementation is known to work.
+
+  
+  *** Cygwin:
+  
+  The Ant build will successfully complete for static libary builds when started from a 
+  Windows Command Prompt.  Shared library builds will create liblog4cxx.so, but
+  the unit tests will fail reporting that they could not find the log4cxx library
+  (likely missing a step to create an import library from the .so).  From a cygwin
+  command prompt, the unit tests will fail, possibly due to an issue spawning sed.
+  Cygwin does not provide wchar_t support which needs to be explicitly disabled.
+  The location of the APR libraries need to be provided (CYGWIN_HOME/lib).
+  
+  +-----+
+  cd apache-log4cxx-0.10.0
+  ant -Dos.family=cygwin -Dwith-apr=/cygwin/lib -Dwith-apr-util=/cygwin/lib \
+      -Denable-wchar_t=0 -Dlib.type=static
+  +-----+  
+    
+
+  *** MinGW:
+
   ** Mac OS/X:
   
   APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.
-  
-  ** Cygwin:
-  
-  ** MinGW:
