@@ -210,7 +210,7 @@ ResourceBundlePtr Logger::getResourceBundle() const
 }
 
 
-LogString Logger::getResourceBundleString(const LogString& key) 
+LogString Logger::getResourceBundleString(const LogString& key) const 
 {
         ResourceBundlePtr rb = getResourceBundle();
 
@@ -359,7 +359,7 @@ bool Logger::isFatalEnabled() const
 
 
 void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
-                    const LocationInfo& location, const std::vector<LogString>& params)
+                    const LocationInfo& location, const std::vector<LogString>& params) const
 {
         if (repository == 0 || repository->isDisabled(level1->toInt()))
         {
@@ -385,7 +385,7 @@ void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
 }
 
 void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
-                    const LocationInfo& location) {
+                    const LocationInfo& location) const {
   LOG4CXX_DECODE_CHAR(lkey, key);
 
   std::vector<LogString> values(0);
@@ -393,7 +393,7 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 }
 
 void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
-                    const LocationInfo& location, const std::string& val1) {
+                    const LocationInfo& location, const std::string& val1) const {
   LOG4CXX_DECODE_CHAR(lkey, key);
   LOG4CXX_DECODE_CHAR(lval1, val1);
 
@@ -404,7 +404,7 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
                     const LocationInfo& location, 
-                    const std::string& val1, const std::string& val2) {
+                    const std::string& val1, const std::string& val2) const {
   LOG4CXX_DECODE_CHAR(lkey, key);
   LOG4CXX_DECODE_CHAR(lval1, val1);
   LOG4CXX_DECODE_CHAR(lval2, val2);
@@ -417,7 +417,7 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
                     const LocationInfo& location, 
-                    const std::string& val1, const std::string& val2, const std::string& val3) {
+                    const std::string& val1, const std::string& val2, const std::string& val3) const {
   LOG4CXX_DECODE_CHAR(lkey, key);
   LOG4CXX_DECODE_CHAR(lval1, val1);
   LOG4CXX_DECODE_CHAR(lval2, val2);
@@ -513,33 +513,33 @@ void Logger::getName(std::string& rv) const {
 }
 
 
-void Logger::trace(const std::string& msg, const log4cxx::spi::LocationInfo& location) { 
+void Logger::trace(const std::string& msg, const log4cxx::spi::LocationInfo& location) const { 
   if (isTraceEnabled()) { 
     forcedLog(log4cxx::Level::getTrace(), msg, location); 
   } 
 } 
 
 
-void Logger::trace(const std::string& msg) { 
+void Logger::trace(const std::string& msg) const { 
   if (isTraceEnabled()) { 
     forcedLog(log4cxx::Level::getTrace(), msg); 
   } 
 } 
 
-void Logger::debug(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::debug(const std::string& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isDebugEnabled()) {
     forcedLog(log4cxx::Level::getDebug(), msg, location);
   }
 }
 
-void Logger::debug(const std::string& msg) {
+void Logger::debug(const std::string& msg) const {
   if (isDebugEnabled()) {
     forcedLog(log4cxx::Level::getDebug(), msg);
   }
 }
 
 
-void Logger::error(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::error(const std::string& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isErrorEnabled()) {
      forcedLog(log4cxx::Level::getError(), msg, location);
   }
@@ -552,57 +552,57 @@ void Logger::error(const std::string& msg) const {
   }
 }
 
-void Logger::fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isFatalEnabled()) {
     forcedLog(log4cxx::Level::getFatal(), msg, location);
   }
 }
 
-void Logger::fatal(const std::string& msg) {
+void Logger::fatal(const std::string& msg) const {
   if (isFatalEnabled()) {
     forcedLog(log4cxx::Level::getFatal(), msg);
   }
 }
 
-void Logger::info(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::info(const std::string& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isInfoEnabled()) {
     forcedLog(log4cxx::Level::getInfo(), msg, location);
   }
 }
 
-void Logger::info(const std::string& msg) {
+void Logger::info(const std::string& msg) const {
   if (isInfoEnabled()) {
     forcedLog(log4cxx::Level::getInfo(), msg);
   }
 }
 
 void Logger::log(const LevelPtr& level1, const std::string& message,
-    const log4cxx::spi::LocationInfo& location) {
+    const log4cxx::spi::LocationInfo& location) const {
     if (isEnabledFor(level1)) {
       forcedLog(level1, message, location);
     }
 }
 
-void Logger::log(const LevelPtr& level1, const std::string& message) {
+void Logger::log(const LevelPtr& level1, const std::string& message) const {
     if (isEnabledFor(level1)) {
       forcedLog(level1, message);
     }
 }
 
 void Logger::logLS(const LevelPtr& level1, const LogString& message,
-    const log4cxx::spi::LocationInfo& location) {
+    const log4cxx::spi::LocationInfo& location) const {
     if (isEnabledFor(level1)) {
       forcedLogLS(level1, message, location);
     }
 }
 
-void Logger::warn(const std::string& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::warn(const std::string& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isWarnEnabled()) {
     forcedLog(log4cxx::Level::getWarn(), msg, location);
   }
 }
 
-void Logger::warn(const std::string& msg) {
+void Logger::warn(const std::string& msg) const {
   if (isWarnEnabled()) {
     forcedLog(log4cxx::Level::getWarn(), msg);
   }
@@ -617,11 +617,11 @@ LoggerPtr Logger::getLoggerLS(const LogString& name) {
 
 #if LOG4CXX_WCHAR_T_API
 void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message,
-        const LocationInfo& location)
+        const LocationInfo& location) const
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level1, msg, location));
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg, location));
         callAppenders(event, p);
 }
 
@@ -648,32 +648,32 @@ LoggerPtr Logger::getLogger(const wchar_t* const name)
         return LogManager::getLogger(name);
 }
 
-void Logger::trace(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) { 
+void Logger::trace(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const { 
   if (isTraceEnabled()) { 
     forcedLog(log4cxx::Level::getTrace(), msg, location); 
   } 
 } 
 
 
-void Logger::trace(const std::wstring& msg) { 
+void Logger::trace(const std::wstring& msg) const { 
   if (isTraceEnabled()) { 
     forcedLog(log4cxx::Level::getTrace(), msg); 
   } 
 } 
 
-void Logger::debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isDebugEnabled()) {
     forcedLog(log4cxx::Level::getDebug(), msg, location);
   }
 }
 
-void Logger::debug(const std::wstring& msg) {
+void Logger::debug(const std::wstring& msg) const {
   if (isDebugEnabled()) {
     forcedLog(log4cxx::Level::getDebug(), msg);
   }
 }
 
-void Logger::error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isErrorEnabled()) {
      forcedLog(log4cxx::Level::getError(), msg, location);
   }
@@ -685,50 +685,50 @@ void Logger::error(const std::wstring& msg) const {
   }
 }
 
-void Logger::fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isFatalEnabled()) {
     forcedLog(log4cxx::Level::getFatal(), msg, location);
   }
 }
 
-void Logger::fatal(const std::wstring& msg) {
+void Logger::fatal(const std::wstring& msg) const {
   if (isFatalEnabled()) {
     forcedLog(log4cxx::Level::getFatal(), msg);
   }
 }
 
-void Logger::info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isInfoEnabled()) {
     forcedLog(log4cxx::Level::getInfo(), msg, location);
   }
 }
 
-void Logger::info(const std::wstring& msg) {
+void Logger::info(const std::wstring& msg) const {
   if (isInfoEnabled()) {
     forcedLog(log4cxx::Level::getInfo(), msg);
   }
 }
 
 void Logger::log(const LevelPtr& level1, const std::wstring& message,
-    const log4cxx::spi::LocationInfo& location) {
+    const log4cxx::spi::LocationInfo& location) const {
     if (isEnabledFor(level1)) {
       forcedLog(level1, message, location);
     }
 }
 
-void Logger::log(const LevelPtr& level1, const std::wstring& message) {
+void Logger::log(const LevelPtr& level1, const std::wstring& message) const {
     if (isEnabledFor(level1)) {
       forcedLog(level1, message);
     }
 }
 
-void Logger::warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isWarnEnabled()) {
     forcedLog(log4cxx::Level::getWarn(), msg, location);
   }
 }
 
-void Logger::warn(const std::wstring& msg) {
+void Logger::warn(const std::wstring& msg) const {
   if (isWarnEnabled()) {
     forcedLog(log4cxx::Level::getWarn(), msg);
   }
@@ -739,11 +739,11 @@ void Logger::warn(const std::wstring& msg) {
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
 void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>& message,
-        const LocationInfo& location)
+        const LocationInfo& location) const
 {
         Pool p;
         LOG4CXX_DECODE_UNICHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level1, msg, location));
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg, location));
         callAppenders(event, p);
 }
 
@@ -751,7 +751,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 {
         Pool p;
         LOG4CXX_DECODE_UNICHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level1, msg,
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg,
            LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
@@ -767,87 +767,87 @@ LoggerPtr Logger::getLogger(const std::basic_string<UniChar>& name)
         return LogManager::getLogger(name);
 }
 
-void Logger::trace(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) { 
+void Logger::trace(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const { 
   if (isTraceEnabled()) { 
     forcedLog(log4cxx::Level::getTrace(), msg, location); 
   } 
 } 
 
 
-void Logger::trace(const std::basic_string<UniChar>& msg) { 
+void Logger::trace(const std::basic_string<UniChar>& msg) const { 
   if (isTraceEnabled()) { 
     forcedLog(log4cxx::Level::getTrace(), msg); 
   } 
 } 
 
-void Logger::debug(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::debug(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isDebugEnabled()) {
     forcedLog(log4cxx::Level::getDebug(), msg, location);
   }
 }
 
-void Logger::debug(const std::basic_string<UniChar>& msg) {
+void Logger::debug(const std::basic_string<UniChar>& msg) const {
   if (isDebugEnabled()) {
     forcedLog(log4cxx::Level::getDebug(), msg);
   }
 }
 
-void Logger::error(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::error(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isErrorEnabled()) {
      forcedLog(log4cxx::Level::getError(), msg, location);
   }
 }
 
-void Logger::error(const std::basic_string<UniChar>& msg)  {
+void Logger::error(const std::basic_string<UniChar>& msg) const {
   if (isErrorEnabled()) {
      forcedLog(log4cxx::Level::getError(), msg);
   }
 }
 
-void Logger::fatal(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::fatal(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isFatalEnabled()) {
     forcedLog(log4cxx::Level::getFatal(), msg, location);
   }
 }
 
-void Logger::fatal(const std::basic_string<UniChar>& msg) {
+void Logger::fatal(const std::basic_string<UniChar>& msg) const {
   if (isFatalEnabled()) {
     forcedLog(log4cxx::Level::getFatal(), msg);
   }
 }
 
-void Logger::info(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::info(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isInfoEnabled()) {
     forcedLog(log4cxx::Level::getInfo(), msg, location);
   }
 }
 
-void Logger::info(const std::basic_string<UniChar>& msg) {
+void Logger::info(const std::basic_string<UniChar>& msg) const {
   if (isInfoEnabled()) {
     forcedLog(log4cxx::Level::getInfo(), msg);
   }
 }
 
 void Logger::log(const LevelPtr& level1, const std::basic_string<UniChar>& message,
-    const log4cxx::spi::LocationInfo& location) {
+    const log4cxx::spi::LocationInfo& location) const {
     if (isEnabledFor(level1)) {
       forcedLog(level1, message, location);
     }
 }
 
-void Logger::log(const LevelPtr& level1, const std::basic_string<UniChar>& message) {
+void Logger::log(const LevelPtr& level1, const std::basic_string<UniChar>& message) const {
     if (isEnabledFor(level1)) {
       forcedLog(level1, message);
     }
 }
 
-void Logger::warn(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::warn(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isWarnEnabled()) {
     forcedLog(log4cxx::Level::getWarn(), msg, location);
   }
 }
 
-void Logger::warn(const std::basic_string<UniChar>& msg) {
+void Logger::warn(const std::basic_string<UniChar>& msg) const {
   if (isWarnEnabled()) {
     forcedLog(log4cxx::Level::getWarn(), msg);
   }
@@ -858,11 +858,11 @@ void Logger::warn(const std::basic_string<UniChar>& msg) {
 
 #if LOG4CXX_CFSTRING_API
 void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message,
-        const LocationInfo& location)
+        const LocationInfo& location) const
 {
         Pool p;
         LOG4CXX_DECODE_CFSTRING(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level1, msg, location));
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg, location));
         callAppenders(event, p);
 }
 
@@ -870,7 +870,7 @@ void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message) const
 {
         Pool p;
         LOG4CXX_DECODE_CFSTRING(msg, message);
-        LoggingEventPtr event(new LoggingEvent(this, level1, msg,
+        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg,
            LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
@@ -884,87 +884,87 @@ LoggerPtr Logger::getLogger(const CFStringRef& name)
         return LogManager::getLogger(name);
 }
 
-void Logger::trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) { 
+void Logger::trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const { 
   if (isTraceEnabled()) { 
     forcedLog(log4cxx::Level::getTrace(), msg, location); 
   } 
 } 
 
 
-void Logger::trace(const CFStringRef& msg) { 
+void Logger::trace(const CFStringRef& msg) const { 
   if (isTraceEnabled()) { 
     forcedLog(log4cxx::Level::getTrace(), msg); 
   } 
 } 
 
-void Logger::debug(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::debug(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isDebugEnabled()) {
     forcedLog(log4cxx::Level::getDebug(), msg, location);
   }
 }
 
-void Logger::debug(const CFStringRef& msg) {
+void Logger::debug(const CFStringRef& msg) const {
   if (isDebugEnabled()) {
     forcedLog(log4cxx::Level::getDebug(), msg);
   }
 }
 
-void Logger::error(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::error(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isErrorEnabled()) {
      forcedLog(log4cxx::Level::getError(), msg, location);
   }
 }
 
-void Logger::error(const CFStringRef& msg)  {
+void Logger::error(const CFStringRef& msg) const {
   if (isErrorEnabled()) {
      forcedLog(log4cxx::Level::getError(), msg);
   }
 }
 
-void Logger::fatal(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::fatal(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isFatalEnabled()) {
     forcedLog(log4cxx::Level::getFatal(), msg, location);
   }
 }
 
-void Logger::fatal(const CFStringRef& msg) {
+void Logger::fatal(const CFStringRef& msg) const {
   if (isFatalEnabled()) {
     forcedLog(log4cxx::Level::getFatal(), msg);
   }
 }
 
-void Logger::info(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::info(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isInfoEnabled()) {
     forcedLog(log4cxx::Level::getInfo(), msg, location);
   }
 }
 
-void Logger::info(const CFStringRef& msg) {
+void Logger::info(const CFStringRef& msg) const {
   if (isInfoEnabled()) {
     forcedLog(log4cxx::Level::getInfo(), msg);
   }
 }
 
 void Logger::log(const LevelPtr& level1, const CFStringRef& message,
-    const log4cxx::spi::LocationInfo& location) {
+    const log4cxx::spi::LocationInfo& location) const {
     if (isEnabledFor(level1)) {
       forcedLog(level1, message, location);
     }
 }
 
-void Logger::log(const LevelPtr& level1, const CFStringRef& message) {
+void Logger::log(const LevelPtr& level1, const CFStringRef& message) const {
     if (isEnabledFor(level1)) {
       forcedLog(level1, message);
     }
 }
 
-void Logger::warn(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) {
+void Logger::warn(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const {
   if (isWarnEnabled()) {
     forcedLog(log4cxx::Level::getWarn(), msg, location);
   }
 }
 
-void Logger::warn(const CFStringRef& msg) {
+void Logger::warn(const CFStringRef& msg) const {
   if (isWarnEnabled()) {
     forcedLog(log4cxx::Level::getWarn(), msg);
   }
