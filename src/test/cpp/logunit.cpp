@@ -189,13 +189,21 @@ void TestFixture::assertEquals(const int expected, const int actual, int lineno)
 }
 
 
-LogUnit::TestSuite::TestSuite(const char* fname) : filename(fname), disabled(false) {}
+LogUnit::TestSuite::TestSuite(const char* fname) : filename(fname), disabled(false) {
+#if defined(_WIN32)
+    for(size_t i = filename.find('\\');
+        i != std::string::npos;
+        i = filename.find('\\', i+1)) {
+        filename.replace(i, 1, 1, '/');
+    }
+#endif
+}
 
 void LogUnit::TestSuite::addTest(const char*, test_func func) {
    test_funcs.push_back(func);
 }
 
-const char* LogUnit::TestSuite::getName() const {
+std::string LogUnit::TestSuite::getName() const {
    return filename;
 }
 
@@ -208,7 +216,7 @@ bool LogUnit::TestSuite::isDisabled() const {
 }
 
 abts_suite* TestSuite::run(abts_suite* suite) const {
-    suite = abts_add_suite(suite, filename);
+    suite = abts_add_suite(suite, filename.c_str());
     for(TestList::const_iterator iter = test_funcs.begin();
         iter != test_funcs.end();
         iter++) {

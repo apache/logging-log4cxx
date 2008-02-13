@@ -137,7 +137,7 @@ namespace LogUnit {
         TestSuite(const char* filename);
         void addTest(const char* testName, test_func func);
         abts_suite* run(abts_suite* suite) const;
-        const char* getName() const;
+        std::string getName() const;
         void setDisabled(bool newVal);
         bool isDisabled() const;
     private:
@@ -145,7 +145,7 @@ namespace LogUnit {
         TestSuite& operator=(const TestSuite&);
         typedef std::vector<test_func> TestList;
         TestList test_funcs;
-        const char* filename;
+        std::string filename;
         bool disabled;
     };
     typedef std::vector< std::pair<std::string, const TestSuite*> > SuiteList;
