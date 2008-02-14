@@ -14,29 +14,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+#include <log4cxx/logstring.h>
+#include <stdlib.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/basicconfigurator.h>
+#include <log4cxx/helpers/exception.h>
+#include <log4cxx/ndc.h>
+#include <locale.h>
 
 using namespace log4cxx;
+using namespace log4cxx::helpers;
 
-struct Foo {
-  Foo(const char *prefix):
-    logger (Logger::getLogger ("foo")), prefix (prefix)
-    {}
-  ~Foo()
-    {
-      LOG4CXX_DEBUG (logger, "dtor");
-    }
-  LoggerPtr logger;
-  const char *prefix;
-};
-
-
-Foo global ("global: ");
 int main()
 {
-  BasicConfigurator::configure();
-  Foo local ("local: ");
-  return 0;
+    setlocale(LC_ALL, "");
+    int result = EXIT_SUCCESS;
+    try
+    {
+                BasicConfigurator::configure();
+                LoggerPtr rootLogger = Logger::getRootLogger();
+
+                NDC::push("trivial context");
+
+                LOG4CXX_DEBUG(rootLogger, "debug message");
+                LOG4CXX_INFO(rootLogger, "info message");
+                LOG4CXX_WARN(rootLogger, "warn message");
+                LOG4CXX_ERROR(rootLogger, "error message");
+                LOG4CXX_FATAL(rootLogger, "fatal message");
+
+                NDC::pop();
+        }
+        catch(std::exception&)
+        {
+                result = EXIT_FAILURE;
+        }
+
+    return result;
 }
