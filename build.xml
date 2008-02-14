@@ -22,7 +22,8 @@
         <libset libs="${apr-util.lib.prefix}${apr-util.lib.name}${apr-util.lib.suffix}" unless="apr-util.lib.dir"/>
         <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" dir="${apr.lib.dir}" if="apr.lib.dir"/>
         <libset libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}" unless="apr.lib.dir"/>
-        <libset libs="esmtp" if="has-libesmtp"/>
+        <libset libs="esmtp" dir="${esmtp.lib.dir}" if="esmtp.lib.dir"/>
+        <libset libs="esmtp" if="has-libesmtp" unless="esmtp.lib.dir"/>
       <libset libs="${odbc.lib}" if="odbc.lib"/>
       <libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
         <libset libs="pthread" if="is-unix"/>
@@ -494,7 +495,7 @@ Command line options:
          </cc>
 </target>
 
-<target name="build" depends="build-apr-util, configure" description="Build log4cxx library">
+<target name="build" depends="build-apr-util, build-libesmtp, configure" description="Build log4cxx library">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx_obj"/>
 
    <condition property="apr-static" value="1">
@@ -534,8 +535,9 @@ Command line options:
         <fileset dir="${src.dir}" includes="*.cpp"/>
         <fileset dir="${include.dir}" includes="**/*.h"/>
         <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
-        <includepath path="${apr-util.include.dir}"/>
+        <includepath path="${apr.include.dir}" if="apr.include.dir"/>
+        <includepath path="${apr-util.include.dir}" if="apr-util.include.dir"/>
+        <includepath path="${esmtp.include.dir}" if="esmtp.include.dir"/>
         <defineset define="_USRDLL DLL_EXPORTS" if="is-windows"/>
         <defineset define="LOG4CXX"/>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
@@ -548,6 +550,7 @@ Command line options:
          <comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+            <dependency name="${projects.dir}/libesmtp"/>
         </project>
     </cc>
 </target>
@@ -570,7 +573,7 @@ Command line options:
         <fileset dir="${example.src.dir}" includes="${example.includes}"/>
         <includepath path="${include.dir}"/>
         <includepath path="${example.include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
+        <includepath path="${apr.include.dir}" if="apr.include.dir"/>
 
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
@@ -585,6 +588,7 @@ Command line options:
          <comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency name="${projects.dir}/aprutil-1"/>
+            <dependency name="${projects.dir}/libesmtp"/>
             <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
         </project>
         
@@ -664,8 +668,8 @@ Command line options:
                 projectsOnly="${projectsOnly}">
         <fileset dir="${tests.cpp.dir}" includes="**/*.cpp **/*.c **/*.h"/>
         <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
-        <includepath path="${apr-util.include.dir}"/>
+        <includepath path="${apr.include.dir}" if="apr.include.dir"/>
+        <includepath path="${apr-util.include.dir}" if="apr-util.include.dir"/>
         <defineset define="LOG4CXX_STATIC" if="is-static"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="apr-util-static"/>
@@ -679,7 +683,8 @@ Command line options:
          <comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
-            <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
+            <dependency name="${projects.dir}/libesmtp"/>
+            <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1,libesmtp"/>
         </project>
     </cc>
 </target>
@@ -689,7 +694,7 @@ Command line options:
 
 <target name="build-standalone-unittest"
     description="Builds a unit tests + log4cxx executable"
-    depends="build-apr-util,configure">
+    depends="build-apr-util, build-libesmtp, configure">
     <mkdir dir="${executable.dir}/static/testsuite-standalone_obj"/>
     <property name="project.compiler" value="${compiler}"/>
    <property name="project.type" value="msvc6"/>
@@ -707,8 +712,9 @@ Command line options:
         <fileset dir="${include.dir}" includes="**/*.h"/>
         <fileset dir="${tests.cpp.dir}" includes="**/*.cpp **/*.c **/*.h"/>
         <includepath path="${include.dir}"/>
-        <includepath path="${apr.include.dir}"/>
-        <includepath path="${apr-util.include.dir}"/>
+         <includepath path="${apr.include.dir}" if="apr.include.dir"/>
+        <includepath path="${apr-util.include.dir}" if="apr-util.include.dir"/>
+        <includepath path="${esmtp.include.dir}" if="esmtp.include.dir"/>
         <defineset define="LOG4CXX"/>
         <defineset define="APR_DECLARE_STATIC" if="apr-static"/>
         <defineset define="APU_DECLARE_STATIC" if="apr-util-static"/>
@@ -729,6 +735,7 @@ Command line options:
          <comment>&license;</comment>
             <dependency file="${projects.dir}/apr-1"/>
             <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+            <dependency name="${projects.dir}/libesmtp"/>
         </project>
     </cc>
 </target>
@@ -982,7 +989,7 @@ Command line options:
           description="Builds project files for Apple Xcode">
     <antcall target="build-projects">
         <param name="project.type" value="xcode"/>
-        <param name="project.compiler" value="g++"/>
+        <param name="project.compiler" value="gcc"/>
         <param name="os.family" value="mac"/>
         <param name="debug" value="${debug}"/>
         <param name="find" value="${find}"/>

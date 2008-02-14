@@ -55,7 +55,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <target name="configure-check" depends="init">
         <condition property="esmtp-configure-available" value="true">
-              <available file="${include.dir}/libesmtp.h"/>
+              <available file="${include.dir}/config.h"/>
         </condition>
 </target>
 
