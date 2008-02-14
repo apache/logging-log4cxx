@@ -156,6 +156,9 @@ Building Apache log4cxx with Apache Ant
 
   A GNU sed command is required to be on the path to complete the unit tests.
   Cygwin's implementation is known to work.
+  
+  If -Dwith-SMTP=libesmtp is specified, the build will attempt to build
+  libesmtp from source, unfortunately libesmtp depends on poll.h and will not build.
 
   
   *** Cygwin:

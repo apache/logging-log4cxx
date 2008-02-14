@@ -70,7 +70,7 @@
 
 <target name="unix-init" depends="mac-init" if="is-unix">
 
-    <property name="compiler" value="gcc"/>
+    <property name="compiler" value="g++"/>
 
     <condition property="has-expat" value="true">
          <not><isset property="is-mac"/></not>

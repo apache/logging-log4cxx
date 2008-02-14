@@ -423,7 +423,11 @@ Command line options:
     <property name="esmtp.lib.type" value="static"/>
     <property name="esmtp.lib.prefix" value=""/>
     <property name="esmtp.lib.suffix" value=""/>
-   <property name="project.type" value="msvc6"/>
+    <property name="project.type" value="msvc6"/>
+    <condition property="esmtp.compiler" value="gcc">
+        <equals arg1="${compiler}" arg2="g++"/>
+    </condition>
+    <property name="esmtp.compiler" value="${compiler}"/>
 
     <ant antfile="src/ant/esmtp-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
@@ -431,7 +435,7 @@ Command line options:
         <property name="debug" value="${debug}"/>
         <property name="lib.prefix" value="${esmtp.lib.prefix}"/>
         <property name="lib.suffix" value="${esmtp.lib.suffix}"/>
-        <property name="compiler" value="${compiler}"/>
+        <property name="compiler" value="${esmtp.compiler}"/>
         <property name="lib.type" value="${esmtp.lib.type}"/>
         <property name="project.type" value="${project.type}"/>
         <property name="projects.dir" value="${projects.dir}"/>
