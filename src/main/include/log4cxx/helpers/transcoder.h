@@ -91,6 +91,15 @@ namespace log4cxx {
       */
       static void encode(const LogString& src, std::string& dst);
 
+      /**
+        *     Encodes the specified LogString to the current
+        *       character set. 
+        *      @param src string to encode.
+        *      @param p pool from which to allocate return value.
+        *      @return pool allocated string.
+        */
+      static char* encode(const LogString& src, log4cxx::helpers::Pool& p);
+
 
 
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T

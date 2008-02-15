@@ -51,8 +51,7 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
         apr_file_t* child_out;
         apr_int32_t flags = APR_FOPEN_READ | APR_FOPEN_WRITE |
             APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-        stat = apr_file_open(&child_out, destination.getOSName().c_str(),
-            flags, APR_OS_DEFAULT, pool);
+        stat = destination.open(&child_out, flags, APR_OS_DEFAULT, p);
         if (stat != APR_SUCCESS) throw IOException(stat);
 
         stat =  apr_procattr_child_out_set(attr, child_out, NULL);
@@ -73,7 +72,7 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
         int i = 0;
         args[i++] = "gzip";
         args[i++] = "-c";
-        args[i++] = apr_pstrdup(pool, source.getOSName().c_str());
+        args[i++] = Transcoder::encode(source.getPath(), p);
         args[i++] = NULL;
     
 

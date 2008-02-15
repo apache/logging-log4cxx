@@ -61,8 +61,8 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const {
         int i = 0;
         args[i++] = "zip";
       args[i++] = "-q";
-        args[i++] = apr_pstrdup(pool, destination.getOSName().c_str());
-        args[i++] = apr_pstrdup(pool, source.getOSName().c_str());
+        args[i++] = Transcoder::encode(destination.getPath(), p);
+        args[i++] = Transcoder::encode(source.getPath(), p);
         args[i++] = NULL;
     
         if (destination.exists(p)) {

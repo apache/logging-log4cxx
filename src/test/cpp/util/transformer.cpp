@@ -61,8 +61,8 @@ void Transformer::transform(const File& in, const File& out,
 
 
 void Transformer::copyFile(const File& in, const File& out) {
-       apr_pool_t* pool;
-       apr_status_t stat = apr_pool_create(&pool, NULL);
+       Pool p;
+       apr_pool_t* pool = reinterpret_cast<apr_pool_t*>(p.getAPRPool());
 
 
         //
@@ -71,13 +71,11 @@ void Transformer::copyFile(const File& in, const File& out) {
         //
         apr_file_t* child_out;
         apr_int32_t flags = APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-        stat = apr_file_open(&child_out, out.getOSName().c_str(),
-          flags, APR_OS_DEFAULT, pool);
+        apr_status_t stat = out.open(&child_out, flags, APR_OS_DEFAULT, p);
         assert(stat == APR_SUCCESS);
 
         apr_file_t* in_file;
-        stat = apr_file_open(&in_file, in.getOSName().c_str(),
-           APR_FOPEN_READ, APR_OS_DEFAULT, pool);
+        stat = in.open(&in_file, APR_FOPEN_READ, APR_OS_DEFAULT, p);
         assert(stat == APR_SUCCESS);
         apr_size_t bufsize = 32000;
         void* buf = apr_palloc(pool, bufsize);
@@ -92,7 +90,6 @@ void Transformer::copyFile(const File& in, const File& out) {
         }
         stat = apr_file_close(child_out);
         assert(stat == APR_SUCCESS);
-        apr_pool_destroy(pool);
 }
 
 void Transformer::createSedCommandFile(const std::string& regexName,
@@ -128,14 +125,15 @@ void Transformer::transform(const File& in, const File& out,
     if (patterns.size() == 0) {
         copyFile(in, out);
     } else {
-       apr_pool_t* pool;
-        apr_status_t stat = apr_pool_create(&pool, NULL);
-
+	Pool p;
+        apr_pool_t* pool = reinterpret_cast<apr_pool_t*>(p.getAPRPool());
+ 
         //
         //   write the regex's to a temporary file since they
         //      may get mangled if passed as parameters
         //
-        std::string regexName(in.getOSName());
+        std::string regexName;
+        Transcoder::encode(in.getPath(), regexName);
         regexName.append(".sed");
         createSedCommandFile(regexName, patterns, pool);
 
@@ -145,7 +143,7 @@ void Transformer::transform(const File& in, const File& out,
         //
         //
         apr_procattr_t* attr = NULL;
-        stat = apr_procattr_create(&attr, pool);
+        apr_status_t stat = apr_procattr_create(&attr, pool);
         assert(stat == APR_SUCCESS);
 
         stat = apr_procattr_io_set(attr, APR_NO_PIPE, APR_FULL_BLOCK,
@@ -179,7 +177,7 @@ void Transformer::transform(const File& in, const File& out,
 
         //
         //    specify the input file
-        args[i++] = apr_pstrdup(pool, in.getOSName().c_str());
+        args[i++] = Transcoder::encode(in.getPath(), p);
         args[i] = NULL;
 
 
@@ -190,8 +188,7 @@ void Transformer::transform(const File& in, const File& out,
         apr_file_t* child_out;
         apr_int32_t flags = APR_FOPEN_READ | APR_FOPEN_WRITE |
             APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-        stat = apr_file_open(&child_out, out.getOSName().c_str(),
-          flags, APR_OS_DEFAULT, pool);
+        stat = out.open(&child_out, flags, APR_OS_DEFAULT, p);
         assert(stat == APR_SUCCESS);
 
         stat =  apr_procattr_child_out_set(attr, child_out, NULL);
@@ -218,9 +215,6 @@ void Transformer::transform(const File& in, const File& out,
         apr_proc_wait(&pid, NULL, NULL, APR_WAIT);
         stat = apr_file_close(child_out);
         assert(stat == APR_SUCCESS);
-
-        apr_pool_destroy(pool);
-
      }
 
 

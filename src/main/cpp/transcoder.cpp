@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/charsetencoder.h>
 #include <vector>
 #include <apr.h>
+#include <apr_strings.h>
 #define LOG4CXX 1
 #include <log4cxx/private/log4cxx_private.h>
 
@@ -258,6 +259,18 @@ void Transcoder::decode(const std::string& src, LogString& dst) {
   }
 #endif  
 }
+
+char* Transcoder::encode(const LogString& src, Pool& p) {
+#if LOG4CXX_CHARSET_UTF8 && LOG4CXX_LOGCHAR_IS_UTF8
+   return apr_pstrndup((apr_pool_t*) p.getAPRPool(), src.data(), src.length());
+#else
+   std::string tmp;
+   encode(src, tmp);
+   return apr_pstrndup((apr_pool_t*) p.getAPRPool(), tmp.data(), tmp.length());
+#endif
+}
+
+
 
 void Transcoder::encode(const LogString& src, std::string& dst) {
 #if LOG4CXX_CHARSET_UTF8 && LOG4CXX_LOGCHAR_IS_UTF8

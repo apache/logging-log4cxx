@@ -63,7 +63,6 @@ namespace log4cxx
                     LogString getName() const;
                     LogString getPath() const;
                     File& setPath(const LogString&);
-                    std::string getOSName() const;
 
                     log4cxx_status_t open(apr_file_t** file, int flags,
                           int perm, log4cxx::helpers::Pool& p) const;
@@ -80,6 +79,7 @@ namespace log4cxx
                     LogString name;
                     std::string osName;
                     static std::string convertBackSlashes(const std::string& src);
+                    std::string getOSName() const;
                 };
 } // namespace log4cxx
 
