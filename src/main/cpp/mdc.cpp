@@ -154,7 +154,7 @@ MDC::MDC(const std::basic_string<UniChar>& key1, const std::basic_string<UniChar
         putLS(key, v);
 }
 
-std::basic_string<UniChar> MDC::get(const std::basic_string<UniChar>& key)
+std::basic_string<log4cxx::UniChar> MDC::get(const std::basic_string<log4cxx::UniChar>& key)
 {
         LOG4CXX_DECODE_UNICHAR(lkey, key);
         LogString lvalue;
@@ -165,7 +165,7 @@ std::basic_string<UniChar> MDC::get(const std::basic_string<UniChar>& key)
         return std::basic_string<UniChar>();
 }
 
-void MDC::put(const std::basic_string<UniChar>& key, const std::basic_string<UniChar>& value)
+void MDC::put(const std::basic_string<UniChar>& key, const std::basic_string<log4cxx::UniChar>& value)
 {
         LOG4CXX_DECODE_UNICHAR(lkey, key);
         LOG4CXX_DECODE_UNICHAR(lvalue, value);
@@ -173,7 +173,7 @@ void MDC::put(const std::basic_string<UniChar>& key, const std::basic_string<Uni
 }
 
 
-std::basic_string<UniChar> MDC::remove(const std::basic_string<UniChar>& key)
+std::basic_string<log4cxx::UniChar> MDC::remove(const std::basic_string<log4cxx::UniChar>& key)
 {
         LOG4CXX_DECODE_UNICHAR(lkey, key);
         LogString lvalue;

@@ -99,7 +99,7 @@ public:
      * Tests Level.toLevel("TRACE");
      */
   void testUniCharStringToTrace() {
-        const UniChar name[] = { 'T', 'R', 'A', 'C', 'E', 0 };
+        const log4cxx::UniChar name[] = { 'T', 'R', 'A', 'C', 'E', 0 };
         LevelPtr trace(Level::toLevel(name));
         LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }

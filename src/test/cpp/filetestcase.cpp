@@ -100,7 +100,7 @@ public:
 
 #if LOG4CXX_UNICHAR_API
         void unicharConstructor() {
-            const UniChar filename[] = { 'i', 'n', 'p', 'u', 't', '/', 
+            const log4cxx::UniChar filename[] = { 'i', 'n', 'p', 'u', 't', '/', 
                'p', 'a', 't', 't', 'e', 'r', 'n', 'L', 'a', 'y', 'o', 'u', 't', '1', '.', 
                'p', 'r', 'o', 'p', 'e', 'r', 't', 'i', 'e', 's', 0 };
             File propFile(filename);

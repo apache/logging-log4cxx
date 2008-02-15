@@ -154,24 +154,24 @@ public:
 #if LOG4CXX_UNICHAR_API
     void testInsertConstUStr() {
         MessageBuffer buf;
-        const UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
-        const UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
-        const UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', 
+        const log4cxx::UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
+        const log4cxx::UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+        const log4cxx::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', 
                                   ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
         UniCharMessageBuffer& retval = buf << hello << world;
-        LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), buf.str(retval)); 
+        LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval)); 
         LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
     void testInsertUString() {
         MessageBuffer buf;
-        const UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
-        const UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
-        const UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', 
+        const log4cxx::UniChar hello[] = { 'H', 'e', 'l', 'l', 'o', 0 };
+        const log4cxx::UniChar world[] = { ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
+        const log4cxx::UniChar greeting[] = { 'H', 'e', 'l', 'l', 'o', 
                                   ',', ' ', 'W', 'o', 'r', 'l', 'd', 0 };
-        UniCharMessageBuffer& retval = buf << std::basic_string<UniChar>(hello) 
-                                           << std::basic_string<UniChar>(world);
-        LOGUNIT_ASSERT_EQUAL(std::basic_string<UniChar>(greeting), buf.str(retval)); 
+        UniCharMessageBuffer& retval = buf << std::basic_string<log4cxx::UniChar>(hello) 
+                                           << std::basic_string<log4cxx::UniChar>(world);
+        LOGUNIT_ASSERT_EQUAL(std::basic_string<log4cxx::UniChar>(greeting), buf.str(retval)); 
         LOGUNIT_ASSERT_EQUAL(false, buf.hasStream());
     }
 
