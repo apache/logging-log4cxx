@@ -35,7 +35,7 @@ namespace log4cxx
           {
           private:
                   Pool pool;
-                  void* fileptr;
+                  apr_file_t* fileptr;
 
           public:
                   DECLARE_ABSTRACT_LOG4CXX_OBJECT(FileOutputStream)
@@ -55,7 +55,8 @@ namespace log4cxx
           private:
                   FileOutputStream(const FileOutputStream&);
                   FileOutputStream& operator=(const FileOutputStream&);
-                  void open(const LogString& fn, bool append);
+                  static apr_file_t* open(const LogString& fn, bool append, 
+			log4cxx::helpers::Pool& p);
           };
 
           LOG4CXX_PTR_DEF(FileOutputStream);

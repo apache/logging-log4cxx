@@ -32,18 +32,15 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 
 FileOutputStream::FileOutputStream(const LogString& filename,
-    bool append) {
-    open(filename, append);
+    bool append) : pool(), fileptr(open(filename, append, pool)) {
 }
 
 FileOutputStream::FileOutputStream(const logchar* filename,
-    bool append) {
-    LogString fn(filename);
-    open(fn, append);
+    bool append) : pool(), fileptr(open(filename, append, pool)) {
 }
 
-void FileOutputStream::open(const LogString& filename,
-    bool append) {
+apr_file_t* FileOutputStream::open(const LogString& filename,
+    bool append, Pool& pool) {
     apr_fileperms_t perm = APR_OS_DEFAULT;
     apr_int32_t flags = APR_WRITE | APR_CREATE;
     if (append) {
@@ -51,24 +48,25 @@ void FileOutputStream::open(const LogString& filename,
     } else {
         flags |= APR_TRUNCATE;
     }
-    LOG4CXX_ENCODE_CHAR(fn, filename);
-    apr_file_t** pfileptr = reinterpret_cast<apr_file_t**>(&fileptr);
-    log4cxx_status_t stat = apr_file_open(pfileptr,
-        fn.c_str(), flags, perm, (apr_pool_t*) pool.getAPRPool());
+    File fn;
+    fn.setPath(filename);
+    apr_file_t* fileptr = 0;
+    apr_status_t stat = fn.open(&fileptr, flags, perm, pool);
     if (stat != APR_SUCCESS) {
       throw IOException(stat);
     }
+    return fileptr;
 }
 
 FileOutputStream::~FileOutputStream() {
   if (fileptr != NULL && !APRInitializer::isDestructed) {
-    apr_file_close((apr_file_t*) fileptr);
+    apr_file_close(fileptr);
   }
 }
 
 void FileOutputStream::close(Pool& /* p */) {
   if (fileptr != NULL) {
-    apr_status_t stat = apr_file_close((apr_file_t*) fileptr);
+    apr_status_t stat = apr_file_close(fileptr);
     if (stat != APR_SUCCESS) {
         throw IOException(stat);
     }
@@ -88,7 +86,7 @@ void FileOutputStream::write(ByteBuffer& buf, Pool& /* p */ ) {
   const char* data = buf.data();
   while(nbytes > 0) {
     apr_status_t stat = apr_file_write(
-      (apr_file_t*) fileptr, data + pos, &nbytes);
+      fileptr, data + pos, &nbytes);
     if (stat != APR_SUCCESS) {
       throw IOException(stat);
     }
