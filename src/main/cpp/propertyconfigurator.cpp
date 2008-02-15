@@ -101,7 +101,7 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
           props.load(inputStream);
        } catch(const IOException& ie) {
           LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
-                        + configFileName.getName() + LOG4CXX_STR("]."));
+                        + configFileName.getPath() + LOG4CXX_STR("]."));
           return;
        }
 
@@ -109,7 +109,7 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
           doConfigure(props, hierarchy);
        } catch(const std::exception& ex) {
           LogLog::error(((LogString) LOG4CXX_STR("Could not parse configuration file ["))
-                        + configFileName.getName() + LOG4CXX_STR("]."), ex);
+                        + configFileName.getPath() + LOG4CXX_STR("]."), ex);
        }
 }
 

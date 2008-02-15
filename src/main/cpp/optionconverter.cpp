@@ -349,7 +349,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
         ConfiguratorPtr configurator;
         LogString clazz = _clazz;
 
-        LogString filename(configFileName.getName());
+        LogString filename(configFileName.getPath());
         if(clazz.empty() 
                 && filename.length() > 4
                 && StringHelper::equalsIgnoreCase(

@@ -33,29 +33,26 @@ void DefaultConfigurator::configure(LoggerRepository* repository)
         const LogString configuratorClassName(getConfiguratorClass());
 
         LogString configurationOptionStr(getConfigurationFileName());
-        File configuration;
-
         Pool pool;
+        File configuration;
         if (configurationOptionStr.empty())
         {
-                configuration.setName(LOG4CXX_STR("log4cxx.xml"));
-                if (!configuration.exists(pool)) {
-                    configuration.setName(LOG4CXX_STR("log4cxx.properties"));
-                    if (!configuration.exists(pool)) {
-                        configuration.setName(LOG4CXX_STR("log4j.xml"));
-                        if (!configuration.exists(pool)) {
-                            configuration.setName(LOG4CXX_STR("log4j.properties"));
-                        }
-                    }
+            const char* names[] = { "log4cxx.xml", "log4cxx.properties", "log4j.xml", "log4j.properties", 0 };
+            for (int i = 0; names[i] != 0; i++) {
+                File candidate(names[i]);
+                if (candidate.exists(pool)) {
+                    configuration = candidate;
+                    break;
                 }
+            }
         } else {
-            configuration.setName(configurationOptionStr);
+            configuration.setPath(configurationOptionStr);
         }
 
         if (configuration.exists(pool))
         {
                 LogString msg(LOG4CXX_STR("Using configuration file ["));
-                msg += configuration.getName();
+                msg += configuration.getPath();
                 msg += LOG4CXX_STR("] for automatic log4cxx configuration");
                 LogLog::debug(msg);
 

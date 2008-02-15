@@ -61,7 +61,7 @@ namespace log4cxx
                     size_t length(log4cxx::helpers::Pool& p) const;
                     log4cxx_time_t lastModified(log4cxx::helpers::Pool& p) const;
                     LogString getName() const;
-                    File& setName(const LogString&);
+                    LogString getPath() const;
                     File& setPath(const LogString&);
                     std::string getOSName() const;
 

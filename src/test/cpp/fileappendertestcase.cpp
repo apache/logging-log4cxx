@@ -59,7 +59,7 @@ public:
             FileAppender appender;
             appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
             const File& file = appender.getFile();
-            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getName()); 
+            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getPath()); 
         }
 
           /**
@@ -72,7 +72,7 @@ public:
             FileAppender appender;
             appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
             const File& file = appender.getFile();
-            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getName()); 
+            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getPath()); 
         }
 
           /**

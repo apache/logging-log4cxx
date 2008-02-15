@@ -703,7 +703,7 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
        repository1->setConfigured(true);
         this->repository = repository1;
         LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
-        msg.append(filename.getName());
+        msg.append(filename.getPath());
         msg.append(LOG4CXX_STR("..."));
         LogLog::debug(msg);
 
@@ -715,7 +715,7 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
         log4cxx_status_t rv = filename.open(&fd, APR_READ, APR_OS_DEFAULT, p);
         if (rv != APR_SUCCESS) {
             LogString msg2(LOG4CXX_STR("Could not open file ["));
-            msg2.append(filename.getName());
+            msg2.append(filename.getPath());
             msg2.append(LOG4CXX_STR("]."));
             LogLog::error(msg2);
         } else {
@@ -726,7 +726,7 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
                 char errbuf[2000];
                 char errbufXML[2000];
                 LogString msg2(LOG4CXX_STR("Error parsing file ["));
-                msg2.append(filename.getName());
+                msg2.append(filename.getPath());
                 msg2.append(LOG4CXX_STR("], "));
                 apr_strerror(rv, errbuf, sizeof(errbuf));
                 LOG4CXX_DECODE_CHAR(lerrbuf, std::string(errbuf));

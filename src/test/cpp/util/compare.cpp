@@ -55,9 +55,9 @@ bool Compare::compare(const File& file1, const File& file2)
 
         if (s1 != s2) {
             LogString msg(LOG4CXX_STR("Files ["));
-            msg += file1.getName();
+            msg += file1.getPath();
             msg += LOG4CXX_STR("] and [");
-            msg += file2.getName();
+            msg += file2.getPath();
             msg += LOG4CXX_STR("] differ on line ");
             StringHelper::toString(lineCounter, pool, msg);
             msg += LOG4CXX_EOL;
@@ -81,9 +81,9 @@ bool Compare::compare(const File& file1, const File& file2)
         // the second file is longer
     if (getline(in2, s2)) {
         LogString msg(LOG4CXX_STR("File ["));
-        msg += file2.getName();
+        msg += file2.getPath();
         msg += LOG4CXX_STR("] longer than file [");
-        msg += file1.getName();
+        msg += file1.getPath();
         msg += LOG4CXX_STR("].");
         msg += LOG4CXX_EOL;
         emit(msg);
@@ -104,7 +104,7 @@ void Compare::outputFile(const File& file,
         emit(LOG4CXX_STR("--------------------------------"));
         emit(LOG4CXX_EOL);
         LogString msg(LOG4CXX_STR("Contents of "));
-        msg += file.getName();
+        msg += file.getPath();
         msg += LOG4CXX_STR(":");
         msg += LOG4CXX_EOL;
         emit(msg);

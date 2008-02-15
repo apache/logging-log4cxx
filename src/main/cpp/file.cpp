@@ -101,7 +101,7 @@ File::~File() {
 }
 
 
-LogString File::getName() const {
+LogString File::getPath() const {
     return name;
 }
 
@@ -112,8 +112,8 @@ File& File::setPath(const LogString& newName) {
     return *this;
 }
 
-File& File::setName(const LogString& newName) {
-    return setPath(newName);
+LogString File::getName() const {
+    return name;
 }
 
 std::string File::getOSName() const {

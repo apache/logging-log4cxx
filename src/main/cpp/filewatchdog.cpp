@@ -49,7 +49,7 @@ void FileWatchdog::checkAndConfigure()
               if(!warnedAlready)
               {
                       LogLog::debug(((LogString) LOG4CXX_STR("["))
-                         + file.getName()
+                         + file.getPath()
                          + LOG4CXX_STR("] does not exist."));
                       warnedAlready = true;
               }
