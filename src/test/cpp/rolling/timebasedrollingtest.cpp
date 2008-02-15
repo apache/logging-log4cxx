@@ -439,4 +439,4 @@ public:
 
 LoggerPtr TimeBasedRollingTest::logger(Logger::getLogger("org.apache.log4j.TimeBasedRollingTest"));
 
-//LOGUNIT_TEST_SUITE_REGISTRATION(TimeBasedRollingTest);
+LOGUNIT_TEST_SUITE_REGISTRATION(TimeBasedRollingTest);

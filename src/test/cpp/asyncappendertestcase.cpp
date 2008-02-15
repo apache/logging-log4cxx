@@ -283,5 +283,5 @@ public:
         
 };
 
-//LOGUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);
 #endif
