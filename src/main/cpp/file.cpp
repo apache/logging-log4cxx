@@ -77,7 +77,7 @@ File::File(const UniChar* name1)
 
 #if LOG4CXX_CFSTRING_API
 File::File(const CFStringRef& name1)
-   : path(name1) {
+   : path(decodeLS(name1)) {
 }
 #endif
 
