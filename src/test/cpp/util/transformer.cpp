@@ -63,7 +63,7 @@ void Transformer::transform(const File& in, const File& out,
 
 void Transformer::copyFile(const File& in, const File& out) {
        Pool p;
-       apr_pool_t* pool = reinterpret_cast<apr_pool_t*>(p.getAPRPool());
+       apr_pool_t* pool = p.getAPRPool();
 
 
         //
@@ -127,7 +127,7 @@ void Transformer::transform(const File& in, const File& out,
         copyFile(in, out);
     } else {
 	Pool p;
-        apr_pool_t* pool = reinterpret_cast<apr_pool_t*>(p.getAPRPool());
+        apr_pool_t* pool = p.getAPRPool();
  
         //
         //   write the regex's to a temporary file since they

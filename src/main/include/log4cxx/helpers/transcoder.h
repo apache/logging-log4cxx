@@ -109,6 +109,7 @@ namespace log4cxx {
 #if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T
       static void decode(const std::wstring& src, LogString& dst);
       static void encode(const LogString& src, std::wstring& dst);
+      static wchar_t* wencode(const LogString& src, log4cxx::helpers::Pool& p);
 
       /**
        *   Decodes next character from a wstring.

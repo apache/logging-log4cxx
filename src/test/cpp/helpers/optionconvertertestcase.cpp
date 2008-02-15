@@ -72,17 +72,17 @@ public:
      Pool p;
      char* toto;
      apr_status_t stat = apr_env_get(&toto, "TOTO", 
-         (apr_pool_t*) p.getAPRPool());
+         p.getAPRPool());
      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
      LOGUNIT_ASSERT_EQUAL("wonderful", toto);
      char* key1;
      stat = apr_env_get(&key1, "key1", 
-         (apr_pool_t*) p.getAPRPool());
+         p.getAPRPool());
      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
      LOGUNIT_ASSERT_EQUAL("value1", key1);
      char* key2;
      stat = apr_env_get(&key2, "key2", 
-         (apr_pool_t*) p.getAPRPool());
+         p.getAPRPool());
      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
      LOGUNIT_ASSERT_EQUAL("value2", key2);
    }
@@ -146,15 +146,12 @@ public:
     {
        LogString actual(OptionConverter::substVars(
           LOG4CXX_STR("${java.io.tmpdir}"), nullProperties));
-       apr_pool_t* p;
-       apr_status_t stat = apr_pool_create(&p, NULL);
-       LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+       Pool p;
        const char* tmpdir = NULL;
-       stat = apr_temp_dir_get(&tmpdir, p);
+       apr_status_t stat = apr_temp_dir_get(&tmpdir, p.getAPRPool());
        LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
        LogString expected;
        Transcoder::decode(tmpdir, expected);
-       apr_pool_destroy(p);
 
        LOGUNIT_ASSERT_EQUAL(expected, actual);
     }
@@ -163,19 +160,17 @@ public:
     void testUserHome() {
       LogString actual(OptionConverter::substVars(
          LOG4CXX_STR("${user.home}"), nullProperties));
-      apr_pool_t* p;
-      apr_status_t stat = apr_pool_create(&p, NULL);
-      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+      Pool p;
 
       apr_uid_t userid;
       apr_gid_t groupid;
-      stat = apr_uid_current(&userid, &groupid, p);
+      apr_status_t stat = apr_uid_current(&userid, &groupid, p.getAPRPool());
       if (stat == APR_SUCCESS) {
          char* username = NULL;
-         stat = apr_uid_name_get(&username, userid, p);
+         stat = apr_uid_name_get(&username, userid, p.getAPRPool());
          if (stat == APR_SUCCESS) {
             char* dirname = NULL;
-            stat = apr_uid_homepath_get(&dirname, username, p);
+            stat = apr_uid_homepath_get(&dirname, username, p.getAPRPool());
             if (stat == APR_SUCCESS) {
                LogString expected;
                Transcoder::decode(dirname, expected);
@@ -183,47 +178,39 @@ public:
              }
           }
       }   
-      apr_pool_destroy(p);
 
     }
 
     void testUserName() {
        LogString actual(OptionConverter::substVars(
            LOG4CXX_STR("${user.name}"), nullProperties));
-       apr_pool_t* p;
-       apr_status_t stat = apr_pool_create(&p, NULL);
-       LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
-
+       Pool p;
        apr_uid_t userid;
        apr_gid_t groupid;
-       stat = apr_uid_current(&userid, &groupid, p);
+       apr_status_t stat = apr_uid_current(&userid, &groupid, p.getAPRPool());
        if (stat == APR_SUCCESS) {
            char* username = NULL;
-          stat = apr_uid_name_get(&username, userid, p);
+          stat = apr_uid_name_get(&username, userid, p.getAPRPool());
           if (stat == APR_SUCCESS) {
              LogString expected;
              Transcoder::decode(username, expected);
              LOGUNIT_ASSERT_EQUAL(expected, actual);
           }
        }
-       apr_pool_destroy(p);
    }
 #endif
 
     void testUserDir() {
       LogString actual(OptionConverter::substVars(
           LOG4CXX_STR("${user.dir}"), nullProperties));
-      apr_pool_t* p;
-      apr_status_t stat = apr_pool_create(&p, NULL);
-      LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
+      Pool p;
 
       char* dirname = NULL;
-      stat = apr_filepath_get(&dirname, APR_FILEPATH_NATIVE, p);
+      apr_status_t stat = apr_filepath_get(&dirname, APR_FILEPATH_NATIVE, p.getAPRPool());
       LOGUNIT_ASSERT_EQUAL(APR_SUCCESS, stat);
 
       LogString expected;
       Transcoder::decode(dirname, expected);
-      apr_pool_destroy(p);
 
       LOGUNIT_ASSERT_EQUAL(expected, actual);
     }

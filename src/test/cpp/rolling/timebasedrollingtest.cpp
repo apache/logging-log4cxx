@@ -122,7 +122,7 @@ public:
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
-        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
+        message.append(pool.itoa(i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -166,7 +166,7 @@ public:
 
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
-        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
+        message.append(pool.itoa(i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -188,7 +188,7 @@ public:
 
     { for (int i = 3; i <= 4; i++) {
         std::string message("Hello---");
-        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
+        message.append(pool.itoa(i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -236,7 +236,7 @@ public:
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
-        message.append(apr_itoa((apr_pool_t*) p.getAPRPool(), i));
+        message.append(p.itoa(i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -285,7 +285,7 @@ public:
 
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
-        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
+        message.append(pool.itoa(i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -307,7 +307,7 @@ public:
 
     { for (int i = 3; i <= 4; i++) {
         std::string message("Hello---");
-        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
+        message.append(pool.itoa(i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -356,7 +356,7 @@ public:
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
-        message.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
+        message.append(pool.itoa(i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
@@ -405,7 +405,7 @@ public:
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
-        message.append(apr_itoa((apr_pool_t*) p.getAPRPool(), i));
+        message.append(p.itoa(i));
         LOG4CXX_DEBUG(logger, message);
         apr_sleep(APR_USEC_PER_SEC/2);
     } }

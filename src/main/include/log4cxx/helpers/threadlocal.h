@@ -30,12 +30,14 @@
 #endif
 
 
+extern "C" {
+    struct apr_threadkey_t;
+}
+
 namespace log4cxx
 {
         namespace helpers
         {
-                typedef void log4cxx_threadkey_t;
-                typedef void log4cxx_pool_t;
 
                 /**
                  *  This class provides thread-local variables.  This class is similar in function
@@ -71,9 +73,11 @@ namespace log4cxx
                      *   Prevent use of default assignment operator.  
                      */
                      ThreadLocal& operator=(const ThreadLocal&);
+                     
+                     static apr_threadkey_t* create(Pool& p);
 
-                    log4cxx_pool_t* pool;
-                    log4cxx_threadkey_t* key;
+					 Pool p;
+                     apr_threadkey_t* key;
                 };
         } // namespace helpers
 } // namespace log4cxx

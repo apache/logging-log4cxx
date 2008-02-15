@@ -63,7 +63,7 @@ void ObjectOutputStream::writeObject(const LogString& val, Pool& p) {
     ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size()); 
 #else
     size_t maxSize = 6 * val.size();
-    char* data = (char*) apr_palloc((apr_pool_t*) p.getAPRPool(), maxSize);
+    char* data = p.pstralloc(maxSize);
     ByteBuffer dataBuf(data, maxSize);
     LogString::const_iterator iter(val.begin());
     utf8Encoder->encode(val, iter, dataBuf); 

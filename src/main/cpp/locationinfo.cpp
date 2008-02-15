@@ -162,7 +162,7 @@ void LocationInfo::write(ObjectOutputStream& os, Pool& p) const {
                 0x2F, 0x53, 0x74, 0x72, 0x69, 0x6E, 0x67, 0x3B,
          0x78, 0x70 };
       os.writeProlog("org.apache.log4j.spi.LocationInfo", 2, prolog, sizeof(prolog), p);
-        char* line = apr_itoa((apr_pool_t*) p.getAPRPool(), lineNumber);
+        char* line = p.itoa(lineNumber);
         //
         //   construct Java-like fullInfo (replace "::" with ".")
         //

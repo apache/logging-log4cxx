@@ -21,8 +21,9 @@
 #include <log4cxx/log4cxx.h>
 #include <log4cxx/helpers/mutex.h>
 
-typedef void log4cxx_pool_t;
-typedef void log4cxx_thread_cond_t;
+extern "C" {
+   struct apr_thread_cond_t;
+}
 
 namespace log4cxx
 {
@@ -62,7 +63,7 @@ namespace log4cxx
                         void await(Mutex& lock);
 
                 private:
-                        log4cxx_thread_cond_t* condition;
+                        apr_thread_cond_t* condition;
                         Condition(const Condition&);
                         Condition& operator=(const Condition&);
                 };

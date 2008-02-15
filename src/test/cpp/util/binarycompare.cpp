@@ -28,19 +28,19 @@ using namespace log4cxx::helpers;
 void BinaryCompare::compare(const char* filename1,
                             const char* filename2) {
     Pool p;
-    apr_pool_t* pool = (apr_pool_t*) p.getAPRPool();
+    apr_pool_t* pool = p.getAPRPool();
     apr_file_t* file1;
     apr_int32_t flags = APR_FOPEN_READ;
     apr_fileperms_t perm = APR_OS_DEFAULT;
     apr_status_t stat1 = apr_file_open(&file1,
-        filename1, flags, perm, (apr_pool_t*) pool);
+        filename1, flags, perm, pool);
     if (stat1 != APR_SUCCESS) {
       LOGUNIT_FAIL(std::string("Unable to open ") + filename1);
     }
 
     apr_file_t* file2;
     apr_status_t stat2 = apr_file_open(&file2,
-        filename2, flags, perm, (apr_pool_t*) pool);
+        filename2, flags, perm, pool);
     if (stat2 != APR_SUCCESS) {
       LOGUNIT_FAIL(std::string("Unable to open ") + filename2);
     }

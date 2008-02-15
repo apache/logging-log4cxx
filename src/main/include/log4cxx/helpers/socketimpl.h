@@ -25,6 +25,10 @@
 #include <log4cxx/helpers/pool.h>
 
 
+extern "C" {
+	struct apr_socket_t;
+}
+
 namespace log4cxx
 {
         namespace helpers
@@ -177,7 +181,7 @@ namespace log4cxx
                         Pool memoryPool;
 
                         /** The APR socket */
-                        void *socket;
+                        apr_socket_t* socket;
 
                         /** The local port number to which this socket is connected. */
                         int localport;

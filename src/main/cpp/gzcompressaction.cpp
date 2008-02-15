@@ -35,7 +35,7 @@ GZCompressAction::GZCompressAction(const File& src,
 
 bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
     if (source.exists(p)) {
-        apr_pool_t* pool = reinterpret_cast<apr_pool_t*>(p.getAPRPool());
+        apr_pool_t* pool = p.getAPRPool();
         apr_procattr_t* attr;
         apr_status_t stat = apr_procattr_create(&attr, pool);
         if (stat != APR_SUCCESS) throw IOException(stat);

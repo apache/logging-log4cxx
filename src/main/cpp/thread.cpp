@@ -65,7 +65,7 @@ void Thread::run(Runnable start, void* data) {
             throw IllegalStateException();
         }
         apr_threadattr_t* attrs;
-        apr_status_t stat = apr_threadattr_create(&attrs, (apr_pool_t*) p.getAPRPool());
+        apr_status_t stat = apr_threadattr_create(&attrs, p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
@@ -74,7 +74,7 @@ void Thread::run(Runnable start, void* data) {
         LaunchPackage* package = new(p) LaunchPackage(this, start, data);
         apr_thread_t** pthread = (apr_thread_t**) &thread;
         stat = apr_thread_create(pthread, attrs,
-            (apr_thread_start_t) launcher, package, (apr_pool_t*) p.getAPRPool());
+            (apr_thread_start_t) launcher, package, p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }

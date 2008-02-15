@@ -68,7 +68,7 @@ namespace log4cxx
                 apr_status_t stat = apr_xlate_open(&convset,
                     topage,
                     fpage.c_str(),
-                    (apr_pool_t*) pool.getAPRPool());
+                    pool.getAPRPool());
                 if (stat != APR_SUCCESS) {
                     throw IllegalArgumentException(frompage);
                 }
@@ -373,7 +373,7 @@ private:
 #endif                  
                   if (i < in.limit()) {
                            Pool subpool;
-                           const char* enc = apr_os_locale_encoding((apr_pool_t*) subpool.getAPRPool());
+                           const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
                            {
                                 synchronized sync(mutex);
                                 if (enc == 0) {

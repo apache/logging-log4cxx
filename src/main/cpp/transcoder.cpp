@@ -38,9 +38,6 @@ using namespace log4cxx::helpers;
 
 
 void Transcoder::decodeUTF8(const std::string& src, LogString& dst) {
-#if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_CHARSET_UTF8
-     dst.append(src);
-#else
      std::string::const_iterator iter = src.begin();
      while(iter != src.end()) {
          unsigned int sv = decode(src, iter);
@@ -51,11 +48,10 @@ void Transcoder::decodeUTF8(const std::string& src, LogString& dst) {
             iter++;
         }
      }
-#endif
 }
 
 void Transcoder::encodeUTF8(const LogString& src, std::string& dst) {
-#if LOG4CXX_LOGCHAR_IS_UTF8 && LOG4CXX_CHARSET_UTF8
+#if LOG4CXX_LOGCHAR_IS_UTF8
      dst.append(src);
 #else
      LogString::const_iterator iter = src.begin();
@@ -73,11 +69,11 @@ void Transcoder::encodeUTF8(const LogString& src, std::string& dst) {
 
 char* Transcoder::encodeUTF8(const LogString& src, Pool& p) {
 #if LOG4CXX_LOGCHAR_IS_UTF8
-     return apr_pstrndup(reinterpret_cast<apr_pool_t*>(p.getAPRPool()), src.data(), src.length());
+     return p.pstrdup(src);
 #else
      std::string tmp;
      encodeUTF8(src, tmp);
-     return apr_pstrndup(reinterpret_cast<apr_pool_t*>(p.getAPRPool()), tmp.data(), tmp.length());
+     return p.pstrdup(tmp);
 #endif     
 }
 
@@ -273,12 +269,12 @@ void Transcoder::decode(const std::string& src, LogString& dst) {
 
 char* Transcoder::encode(const LogString& src, Pool& p) {
 #if LOG4CXX_CHARSET_UTF8 && LOG4CXX_LOGCHAR_IS_UTF8
-   return apr_pstrndup((apr_pool_t*) p.getAPRPool(), src.data(), src.length());
+   std::string& tmp = src;
 #else
    std::string tmp;
    encode(src, tmp);
-   return apr_pstrndup((apr_pool_t*) p.getAPRPool(), tmp.data(), tmp.length());
 #endif
+   return p.pstrdup(tmp);
 }
 
 
@@ -395,6 +391,19 @@ void Transcoder::encode(const LogString& src, std::wstring& dst) {
   }
 #endif
 }
+
+wchar_t* Transcoder::wencode(const LogString& src, Pool& p) {
+#if LOG4CXX_LOGCHAR_IS_WCHAR_T
+    std::wstring& tmp = src;
+#else
+    std::wstring tmp;
+    encode(src, tmp);
+#endif
+    wchar_t* dst = (wchar_t*) p.palloc((tmp.length() + 1) * sizeof(wchar_t));
+    dst[tmp.length()] = 0;
+    memcpy(dst, tmp.data(), tmp.length() * sizeof(wchar_t));
+    return dst;
+}    
 
 
 unsigned int Transcoder::decode(const std::wstring& in,

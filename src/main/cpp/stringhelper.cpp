@@ -104,7 +104,7 @@ log4cxx_int64_t StringHelper::toInt64(const LogString& s) {
 }
 
 void StringHelper::toString(int n, Pool& pool, LogString& s) {
-  char* fmt = apr_itoa((apr_pool_t*) pool.getAPRPool(), n);
+  char* fmt = pool.itoa(n);
   Transcoder::decode(fmt, s);
 }
 
@@ -123,10 +123,10 @@ void StringHelper::toString(log4cxx_int64_t n, Pool& pool, LogString& dst) {
   } else {
     const log4cxx_int64_t BILLION = APR_INT64_C(1000000000);
     int billions = (int) (n / BILLION);
-    char* upper = apr_itoa((apr_pool_t*) pool.getAPRPool(), billions);
+    char* upper = pool.itoa(billions);
     int remain = (int) (n - billions * BILLION);
     if (remain < 0) remain *= -1;
-    char* lower = apr_itoa((apr_pool_t*) pool.getAPRPool(), remain);
+    char* lower = pool.itoa(remain);
     Transcoder::decode(upper, dst);
     dst.append(9 - strlen(lower), 0x30 /* '0' */);
     Transcoder::decode(lower, dst);

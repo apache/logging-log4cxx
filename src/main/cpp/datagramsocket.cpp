@@ -71,7 +71,7 @@ void DatagramSocket::bind(int localPort1, InetAddressPtr localAddress1)
    apr_sockaddr_t *server_addr;
    apr_status_t status =
        apr_sockaddr_info_get(&server_addr, hostAddr.c_str(), APR_INET,
-                             localPort1, 0, (apr_pool_t*) addrPool.getAPRPool());
+                             localPort1, 0, addrPool.getAPRPool());
    if (status != APR_SUCCESS) {
      throw BindException(status);
    }
@@ -113,7 +113,7 @@ void DatagramSocket::connect(InetAddressPtr address1, int port1)
    apr_sockaddr_t *client_addr;
    apr_status_t status =
        apr_sockaddr_info_get(&client_addr, hostAddr.c_str(), APR_INET,
-                             port, 0, (apr_pool_t*) addrPool.getAPRPool());
+                             port, 0, addrPool.getAPRPool());
    if (status != APR_SUCCESS) {
      throw ConnectException(status);
    }
@@ -131,7 +131,7 @@ void DatagramSocket::create()
   apr_socket_t* newSocket;
   apr_status_t status =
     apr_socket_create(&newSocket, APR_INET, SOCK_DGRAM,
-                      APR_PROTO_UDP, (apr_pool_t*) socketPool.getAPRPool());
+                      APR_PROTO_UDP, socketPool.getAPRPool());
   socket = newSocket;
   if (status != APR_SUCCESS) {
     throw SocketException(status);
@@ -148,7 +148,7 @@ void DatagramSocket::receive(DatagramPacketPtr& p)
    apr_sockaddr_t *addr;
    apr_status_t status =
        apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET,
-                             p->getPort(), 0, (apr_pool_t*) addrPool.getAPRPool());
+                             p->getPort(), 0, addrPool.getAPRPool());
    if (status != APR_SUCCESS) {
      throw SocketException(status);
    }
@@ -172,7 +172,7 @@ void DatagramSocket::send(DatagramPacketPtr& p)
    apr_sockaddr_t *addr;
    apr_status_t status =
        apr_sockaddr_info_get(&addr, hostAddr.c_str(), APR_INET, p->getPort(),
-                             0, (apr_pool_t*) addrPool.getAPRPool());
+                             0, addrPool.getAPRPool());
    if (status != APR_SUCCESS) {
      throw SocketException(status);
    }

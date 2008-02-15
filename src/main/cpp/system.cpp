@@ -40,7 +40,7 @@ LogString System::getProperty(const LogString& lkey)
         if (lkey == LOG4CXX_STR("java.io.tmpdir")) {
           Pool p;
           const char* dir = NULL;
-          apr_status_t stat = apr_temp_dir_get(&dir, (apr_pool_t*) p.getAPRPool());
+          apr_status_t stat = apr_temp_dir_get(&dir, p.getAPRPool());
           if (stat == APR_SUCCESS) {
             Transcoder::decode(dir, rv);
           }
@@ -51,7 +51,7 @@ LogString System::getProperty(const LogString& lkey)
           Pool p;
           char* dir = NULL;
           apr_status_t stat = apr_filepath_get(&dir, APR_FILEPATH_NATIVE,
-              (apr_pool_t*) p.getAPRPool());
+              p.getAPRPool());
           if (stat == APR_SUCCESS) {
             Transcoder::decode(dir, rv);
           }
@@ -62,7 +62,7 @@ LogString System::getProperty(const LogString& lkey)
           Pool pool;
           apr_uid_t userid;
           apr_gid_t groupid;
-          apr_pool_t* p = (apr_pool_t*) pool.getAPRPool();
+          apr_pool_t* p = pool.getAPRPool();
           apr_status_t stat = apr_uid_current(&userid, &groupid, p);
           if (stat == APR_SUCCESS) {
             char* username = NULL;
@@ -87,7 +87,7 @@ LogString System::getProperty(const LogString& lkey)
         Pool p;
         char* value = NULL;
         apr_status_t stat = apr_env_get(&value, key.c_str(), 
-            (apr_pool_t*) p.getAPRPool());
+            p.getAPRPool());
         if (stat == APR_SUCCESS) {
              Transcoder::decode((const char*) value, rv);
         }

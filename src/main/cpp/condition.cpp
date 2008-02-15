@@ -30,27 +30,24 @@ using namespace log4cxx;
 Condition::Condition(Pool& p)
 {
 #if APR_HAS_THREADS
-       apr_pool_t* aprPool = (apr_pool_t*) p.getAPRPool();
-        apr_thread_cond_t* aprCondition = NULL;
-        apr_status_t stat = apr_thread_cond_create(&aprCondition, aprPool);
+        apr_status_t stat = apr_thread_cond_create(&condition, p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw RuntimeException(stat);
         }
-        condition = aprCondition;
 #endif
 }
 
 Condition::~Condition()
 {
 #if APR_HAS_THREADS
-        apr_thread_cond_destroy((apr_thread_cond_t*) condition);
+        apr_thread_cond_destroy(condition);
 #endif
 }
 
 log4cxx_status_t Condition::signalAll()
 {
 #if APR_HAS_THREADS
-        return apr_thread_cond_broadcast((apr_thread_cond_t*) condition);
+        return apr_thread_cond_broadcast(condition);
 #else
       return APR_SUCCESS;
 #endif
@@ -63,8 +60,8 @@ void Condition::await(Mutex& mutex)
              throw InterruptedException();
         }
         apr_status_t stat = apr_thread_cond_wait(
-             (apr_thread_cond_t*) condition,
-             (apr_thread_mutex_t*) mutex.getAPRMutex());
+             condition,
+             mutex.getAPRMutex());
         if (stat != APR_SUCCESS) {
                 throw InterruptedException(stat);
         }

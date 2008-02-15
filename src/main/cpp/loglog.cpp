@@ -30,7 +30,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogLog::LogLog() : mutex((log4cxx_pool_t*) APRInitializer::getRootPool()) {
+LogLog::LogLog() : mutex(APRInitializer::getRootPool()) {
     synchronized sync(mutex);
     debugEnabled = false;
     quietMode = false;

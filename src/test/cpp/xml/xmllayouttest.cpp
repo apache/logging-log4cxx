@@ -145,7 +145,7 @@ private:
     iter = footer.begin();
     encoder->encode(footer, iter, buf);
     buf.flip();
-    apr_pool_t* apr_pool = (apr_pool_t*) p.getAPRPool();
+    apr_pool_t* apr_pool = p.getAPRPool();
     apr_xml_parser* parser = apr_xml_parser_create(apr_pool);
     LOGUNIT_ASSERT(parser != 0);
     apr_status_t stat = apr_xml_parser_feed(parser, buf.data(), buf.remaining());

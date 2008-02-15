@@ -114,7 +114,7 @@ public:
 
         std::string createMessage(int i, Pool& pool) {
              std::string msg("Message ");
-             msg.append(apr_itoa((apr_pool_t*) pool.getAPRPool(), i));
+             msg.append(pool.itoa(i));
              return msg;
         }
 

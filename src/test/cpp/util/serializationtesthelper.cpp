@@ -53,7 +53,7 @@ bool SerializationTestHelper::compare(
     size_t endCompare, Pool& p) {
     File witnessFile(witness);
 
-      char* expected = (char *) apr_palloc((apr_pool_t*) p.getAPRPool(), actual.size());
+      char* expected = p.pstralloc(actual.size());
       FileInputStreamPtr is(new FileInputStream(witnessFile));
       ByteBuffer readBuffer(expected, actual.size());
       int bytesRead = is->read(readBuffer);

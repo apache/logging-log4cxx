@@ -74,7 +74,7 @@ namespace log4cxx {
                 }
                 std::string host(toAscii(smtpHost, p));
                 host.append(1, ':');
-                host.append(apr_itoa((apr_pool_t*) p.getAPRPool(), smtpPort));
+                host.append(p.itoa(smtpPort));
                 smtp_set_server(session, host.c_str());
    
                 authctx = auth_create_context();
@@ -95,7 +95,7 @@ namespace log4cxx {
                  int status = smtp_start_session(session);
                  if (!status) {
                      size_t bufSize = 128;
-                     char* buf = (char*) apr_palloc((apr_pool_t*) p.getAPRPool(), bufSize);
+                     char* buf = p.pstralloc(bufSize);
                      smtp_strerror(smtp_errno(), buf, bufSize);
                      throw Exception(buf);
                  }
@@ -106,7 +106,7 @@ namespace log4cxx {
             }
 
             static char* toAscii(const LogString& str, Pool& p) {
-                char* buf = (char*) apr_palloc((apr_pool_t*) p.getAPRPool(), str.length() + 1);
+                char* buf = p.pstralloc(str.length() + 1);
                 char* current = buf;
                 for(LogString::const_iterator iter = str.begin();
                     iter != str.end();
@@ -183,7 +183,7 @@ namespace log4cxx {
            const char* current;
            void addRecipients(const LogString& addresses, const char* field, Pool& p) {
               if (!addresses.empty()) {
-                char* str = apr_pstrdup((apr_pool_t*) p.getAPRPool(), toAscii(addresses, p));;
+                char* str = p.pstrdup(toAscii(addresses, p));;
                 smtp_set_header(message, field, NULL, str);
                 char* last;
                 for(char* next = apr_strtok(str, ",", &last);
@@ -213,7 +213,7 @@ namespace log4cxx {
                }
                //
                //   allocate sufficient space for the modified message
-               char* retval = (char*) apr_palloc((apr_pool_t*) p.getAPRPool(), str.length() + feedCount + 1);
+               char* retval = p.pstralloc(str.length() + feedCount + 1);
                char* current = retval;
                char* startOfLine = current;
                //

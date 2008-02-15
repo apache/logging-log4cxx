@@ -721,7 +721,7 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
         } else {
             apr_xml_parser *parser;
             apr_xml_doc *doc;
-            rv = apr_xml_parse_file((apr_pool_t*) p.getAPRPool(), &parser, &doc, fd, 2000);
+            rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
             if (rv != APR_SUCCESS) {
                 char errbuf[2000];
                 char errbufXML[2000];

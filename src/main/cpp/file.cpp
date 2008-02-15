@@ -117,9 +117,8 @@ LogString File::getName() const {
 }
 
 char* File::getPath(Pool& p) const {
-    apr_pool_t* pool = reinterpret_cast<apr_pool_t*>(p.getAPRPool());
     int style = APR_FILEPATH_ENCODING_UNKNOWN;
-    apr_filepath_encoding(&style, pool);
+    apr_filepath_encoding(&style, p.getAPRPool());
     char* retval = NULL;
     if (style == APR_FILEPATH_ENCODING_UTF8) {
         retval = Transcoder::encodeUTF8(path, p);
@@ -131,7 +130,7 @@ char* File::getPath(Pool& p) const {
 
 log4cxx_status_t File::open(apr_file_t** file, int flags,
       int perm, Pool& p) const {
-    return apr_file_open(file, getPath(p), flags, perm, (apr_pool_t*) p.getAPRPool());
+    return apr_file_open(file, getPath(p), flags, perm, p.getAPRPool());
 }
 
 
@@ -139,7 +138,7 @@ log4cxx_status_t File::open(apr_file_t** file, int flags,
 bool File::exists(Pool& p) const {
   apr_finfo_t finfo;
   apr_status_t rv = apr_stat(&finfo, getPath(p),
-        0, (apr_pool_t*) p.getAPRPool());
+        0, p.getAPRPool());
   return rv == APR_SUCCESS;
 }
 
@@ -154,14 +153,14 @@ char* File::convertBackSlashes(char* src) {
 
 bool File::deleteFile(Pool& p) const {
   apr_status_t rv = apr_file_remove(convertBackSlashes(getPath(p)),
-        (apr_pool_t*) p.getAPRPool());
+        p.getAPRPool());
   return rv == APR_SUCCESS;
 }
 
 bool File::renameTo(const File& dest, Pool& p) const {
   apr_status_t rv = apr_file_rename(convertBackSlashes(getPath(p)),
         convertBackSlashes(dest.getPath(p)),
-        (apr_pool_t*) p.getAPRPool());
+        p.getAPRPool());
   return rv == APR_SUCCESS;
 }
 
@@ -169,7 +168,7 @@ bool File::renameTo(const File& dest, Pool& p) const {
 size_t File::length(Pool& pool) const {
   apr_finfo_t finfo;
   apr_status_t rv = apr_stat(&finfo, getPath(pool),
-        APR_FINFO_SIZE, (apr_pool_t*) pool.getAPRPool());
+        APR_FINFO_SIZE, pool.getAPRPool());
   if (rv == APR_SUCCESS) {
     return (size_t) finfo.size;
   }
@@ -180,7 +179,7 @@ size_t File::length(Pool& pool) const {
 log4cxx_time_t File::lastModified(Pool& pool) const {
   apr_finfo_t finfo;
   apr_status_t rv = apr_stat(&finfo, getPath(pool),
-        APR_FINFO_MTIME, (apr_pool_t*) pool.getAPRPool());
+        APR_FINFO_MTIME, pool.getAPRPool());
   if (rv == APR_SUCCESS) {
     return finfo.mtime;
   }
@@ -195,10 +194,10 @@ std::vector<LogString> File::list(Pool& p) const {
 
     apr_status_t stat = apr_dir_open(&dir, 
         convertBackSlashes(getPath(p)), 
-        (apr_pool_t*) p.getAPRPool());
+        p.getAPRPool());
     if(stat == APR_SUCCESS) {
         int style = APR_FILEPATH_ENCODING_UNKNOWN;
-        apr_filepath_encoding(&style, (apr_pool_t*) p.getAPRPool());
+        apr_filepath_encoding(&style, p.getAPRPool());
         stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
         while(stat == APR_SUCCESS) {
             if (entry.name != NULL) {
@@ -236,6 +235,6 @@ LogString File::getParent(Pool&) const {
 
 bool File::mkdirs(Pool& p) const {
      apr_status_t stat = apr_dir_make_recursive(convertBackSlashes(getPath(p)),
-          APR_OS_DEFAULT, (apr_pool_t*) p.getAPRPool());
+          APR_OS_DEFAULT, p.getAPRPool());
      return stat == APR_SUCCESS;
 }

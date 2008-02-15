@@ -19,9 +19,11 @@
 #define _LOG4CXX_HELPERS_POOL_H
 
 #include <log4cxx/log4cxx.h>
-#include <string.h>
+#include <string>
 
-typedef void log4cxx_pool_t;
+extern "C" {
+   struct apr_pool_t;
+}
 
 namespace log4cxx
 {
@@ -31,14 +33,20 @@ namespace log4cxx
                 {
                 public:
                         Pool();
-                        Pool(log4cxx_pool_t* pool, bool release);
-                        log4cxx_pool_t* getAPRPool();
+                        Pool(apr_pool_t* pool, bool release);
                         ~Pool();
 
-                        char* palloc(size_t length);
+                        apr_pool_t* getAPRPool();
+                        apr_pool_t* create();
+                        void* palloc(size_t length);
+                        char* pstralloc(size_t length);
+                        char* itoa(int n);
+                        char* pstrndup(const char* s, size_t len);
+                        char* pstrdup(const char*s);
+                        char* pstrdup(const std::string&);
 
                 protected:
-                        log4cxx_pool_t* pool;
+                        apr_pool_t* pool;
                         const bool release;
 
                 private:

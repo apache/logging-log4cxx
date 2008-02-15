@@ -31,35 +31,31 @@ using namespace log4cxx;
 
 Mutex::Mutex(Pool& p) {
 #if APR_HAS_THREADS
-        apr_thread_mutex_t* aprMutex = NULL;
-        apr_status_t stat = apr_thread_mutex_create(&aprMutex,
-                APR_THREAD_MUTEX_NESTED, (apr_pool_t*) p.getAPRPool());
+        apr_status_t stat = apr_thread_mutex_create(&mutex,
+                APR_THREAD_MUTEX_NESTED, p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw MutexException(stat);
         }
-        mutex = aprMutex;
 #endif
 }
 
-Mutex::Mutex(log4cxx_pool_t* p) {
+Mutex::Mutex(apr_pool_t* p) {
 #if APR_HAS_THREADS
-        apr_thread_mutex_t* aprMutex = NULL;
-        apr_status_t stat = apr_thread_mutex_create(&aprMutex,
-                APR_THREAD_MUTEX_NESTED, (apr_pool_t*) p);
+        apr_status_t stat = apr_thread_mutex_create(&mutex,
+                APR_THREAD_MUTEX_NESTED, p);
         if (stat != APR_SUCCESS) {
                 throw MutexException(stat);
         }
-        mutex = aprMutex;
 #endif
 }
 
 
 Mutex::~Mutex() {
 #if APR_HAS_THREADS
-        apr_thread_mutex_destroy((apr_thread_mutex_t*) mutex);
+        apr_thread_mutex_destroy(mutex);
 #endif
 }
 
-log4cxx_thread_mutex_t* Mutex::getAPRMutex() const {
+apr_thread_mutex_t* Mutex::getAPRMutex() const {
     return mutex;
 }

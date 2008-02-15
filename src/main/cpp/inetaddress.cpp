@@ -62,7 +62,7 @@ std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host) {
     apr_sockaddr_t *address = 0;
     apr_status_t status = 
         apr_sockaddr_info_get(&address, encodedHost.c_str(),
-                              APR_INET, 0, 0, (apr_pool_t*) addrPool.getAPRPool());
+                              APR_INET, 0, 0, addrPool.getAPRPool());
     if (status != APR_SUCCESS) {
        LogString msg(LOG4CXX_STR("Cannot get information about host: "));
        msg.append(host);

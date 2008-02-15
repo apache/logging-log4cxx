@@ -139,10 +139,10 @@ void TelnetAppender::write(ByteBuffer& buf) {
 
 void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, Pool& p) {
         size_t bytesSize = msg.size() * 2;
-        void* bytes = apr_palloc((apr_pool_t*) p.getAPRPool(), bytesSize);
+        char* bytes = p.pstralloc(bytesSize);
                 
         LogString::const_iterator msgIter(msg.begin());
-        ByteBuffer buf((char*) bytes, bytesSize);
+        ByteBuffer buf(bytes, bytesSize);
 
         while(msgIter != msg.end()) {
             encoder->encode(msg, msgIter, buf);
@@ -160,10 +160,10 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                 this->layout->format(msg, event, pool);
                 msg.append(LOG4CXX_STR("\r\n"));
                 size_t bytesSize = msg.size() * 2;
-                void* bytes = apr_palloc((apr_pool_t*) p.getAPRPool(), bytesSize);
+                char* bytes = p.pstralloc(bytesSize);
                 
                 LogString::const_iterator msgIter(msg.begin());
-                ByteBuffer buf((char*) bytes, bytesSize);
+                ByteBuffer buf(bytes, bytesSize);
 
                 synchronized sync(this->mutex);
                 while(msgIter != msg.end()) {
