@@ -19,6 +19,7 @@
 #include <apr_thread_proc.h>
 #include <apr_strings.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;

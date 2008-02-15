@@ -204,9 +204,9 @@ std::vector<LogString> File::list(Pool& p) const {
             if (entry.name != NULL) {
                LogString filename;
                if(style == APR_FILEPATH_ENCODING_UTF8) {
-		   Transcoder::encodeUTF8(entry.name, filename);
+		           Transcoder::decodeUTF8(entry.name, filename);
                } else {
-                   Transcoder::encode(entry.name, filename);
+                   Transcoder::decode(entry.name, filename);
                }
                filenames.push_back(filename);
             }

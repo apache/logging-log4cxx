@@ -190,12 +190,10 @@ public:
                 DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase3.xml"));
                 LOG4CXX_INFO(logger, "File name is expected to end with a superscript 3");
 #if LOG4CXX_LOGCHAR_IS_UTF8
-                const logchar end[] = { 0xC2, 0xB3, 0 };
+                const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, 0xC2, 0xB3, 0 };
 #else
-                const logchar end[] = { 0xB3, 0 };
+                const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, 0xB3, 0 };
 #endif
-                LogString fname("output/dom");
-                fname.append(end);
                 File file;
                 file.setPath(fname);
                 Pool p;
@@ -204,19 +202,17 @@ public:
         }
 
         /**
-         *   Creates a output file that ends with a superscript 3.
+         *   Creates a output file that ends with a ideographic 4.
          *   Output file is checked by build.xml after completion.
          */  
         void test4() {
                 DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase4.xml"));
                 LOG4CXX_INFO(logger, "File name is expected to end with an ideographic 4");
 #if LOG4CXX_LOGCHAR_IS_UTF8
-                const logchar end[] = { 0xE3, 0x86, 0x95, 0 };
+                const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, 0xE3, 0x86, 0x95, 0 };
 #else
-                const logchar end[] = { 0x3195, 0 };
+                const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, 0x3195, 0 };
 #endif
-                LogString fname("output/dom");
-                fname.append(end);
                 File file;
                 file.setPath(fname);
                 Pool p;

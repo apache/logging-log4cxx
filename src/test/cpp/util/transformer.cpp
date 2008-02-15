@@ -17,6 +17,7 @@
 
 #include "transformer.h"
 #include <log4cxx/file.h>
+#include <log4cxx/helpers/transcoder.h>
 #include <apr_thread_proc.h>
 #include <apr_pools.h>
 #include <apr_file_io.h>
