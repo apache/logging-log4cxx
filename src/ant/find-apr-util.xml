@@ -30,57 +30,57 @@
 
 
 <target name="find-apr-util-lib" depends="find-apr-util-src" unless="force-ant">
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/lib${apr-util.lib.name}.la"
-	     file="${apr-util.dir}/lib${apr-util.lib.name}.la"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/lib${apr-util.lib.name}.dylib"
-	     file="${apr-util.dir}/lib${apr-util.lib.name}.dylib"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/lib${apr-util.lib.name}.so"
-	     file="${apr-util.dir}/lib${apr-util.lib.name}.so"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/lib${apr-util.lib.name}.a"
-	     file="${apr-util.dir}/lib${apr-util.lib.name}.a"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/${apr-util.lib.name}.lib"
-	     file="${apr-util.dir}/${apr-util.lib.name}.lib"/>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/lib${apr-util.lib.name}.la">
+	     <available file="${apr-util.dir}/lib${apr-util.lib.name}.la"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/lib${apr-util.lib.name}.dylib">
+	     <available file="${apr-util.dir}/lib${apr-util.lib.name}.dylib"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/lib${apr-util.lib.name}.so">
+	     <available file="${apr-util.dir}/lib${apr-util.lib.name}.so"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/lib${apr-util.lib.name}.a">
+	     <available file="${apr-util.dir}/lib${apr-util.lib.name}.a"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/${apr-util.lib.name}.lib">
+	     <available file="${apr-util.dir}/${apr-util.lib.name}.lib"/></condition>
 	<condition property="apr-util.lib.file.dir" value="${apr-util.dir}">
 		<isset property="apr-util.lib.file"/>
 	</condition>
 
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la"
-	     file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib"
-	     file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.so"
-	     file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.so"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a"
-	     file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/${apr-util.lib.name}.lib"
-	     file="${apr-util.dir}/.libs/${apr-util.lib.name}.lib"/>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la">
+	     <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib">
+	     <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.so">
+	     <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.so"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a">
+	     <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/${apr-util.lib.name}.lib">
+	     <available file="${apr-util.dir}/.libs/${apr-util.lib.name}.lib"/></condition>
 	<condition property="apr-util.lib.file.dir" value="${apr-util.dir}/.libs">
 		<isset property="apr-util.lib.file"/>
 	</condition>
 
 	<!--  start looking at candidates  in /usr -->
-	<available property="apr-util.lib.file" 
-	     value="/usr/lib/lib${apr-util.lib.name}.la"
-	     file="/usr/lib/lib${apr-util.lib.name}.la"/>
-	<available property="apr-util.lib.file" 
-	     value="/usr/lib/lib${apr-util.lib.name}.dylib"
-	     file="/usr/lib/lib${apr-util.lib.name}.dylib"/>
-	<available property="apr-util.lib.file" 
-	     value="/usr/lib/lib${apr-util.lib.name}.so"
-	     file="/usr/lib/lib${apr-util.lib.name}.so"/>
-	<available property="apr-util.lib.file" 
-	     value="/usr/lib/lib${apr-util.lib.name}.a"
-	     file="/usr/lib/lib${apr-util.lib.name}.a"/>
+	<condition property="apr-util.lib.file"
+	     value="/usr/lib/lib${apr-util.lib.name}.la">
+	     <available file="/usr/lib/lib${apr-util.lib.name}.la"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="/usr/lib/lib${apr-util.lib.name}.dylib">
+	     <available file="/usr/lib/lib${apr-util.lib.name}.dylib"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="/usr/lib/lib${apr-util.lib.name}.so">
+	     <available file="/usr/lib/lib${apr-util.lib.name}.so"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="/usr/lib/lib${apr-util.lib.name}.a">
+	     <available file="/usr/lib/lib${apr-util.lib.name}.a"/></condition>
 	<condition property="apr-util.dir" value="/usr">
 		<isset property="apr-util.lib.file"/>
 	</condition>
@@ -89,18 +89,18 @@
 	</condition>
 
 	<!--  start looking at candidates  in /usr/local -->
-	<available property="apr-util.lib.file" 
-	     value="/usr/local/lib/lib${apr-util.lib.name}.la"
-	     file="/usr/local/lib/lib${apr-util.lib.name}.la"/>
-	<available property="apr-util.lib.file" 
-	     value="/usr/local/lib/lib${apr-util.lib.name}.dylib"
-	     file="/usr/local/lib/lib${apr-util.lib.name}.dylib"/>
-	<available property="apr-util.lib.file" 
-	     value="/usr/local/lib/lib${apr-util.lib.name}.so"
-	     file="/usr/local/lib/lib${apr-util.lib.name}.so"/>
-	<available property="apr-util.lib.file" 
-	     value="/usr/local/lib/lib${apr-util.lib.name}.a"
-	     file="/usr/local/lib/lib${apr-util.lib.name}.a"/>
+	<condition property="apr-util.lib.file"
+	     value="/usr/local/lib/lib${apr-util.lib.name}.la">
+	     <available file="/usr/local/lib/lib${apr-util.lib.name}.la"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="/usr/local/lib/lib${apr-util.lib.name}.dylib">
+	     <available file="/usr/local/lib/lib${apr-util.lib.name}.dylib"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="/usr/local/lib/lib${apr-util.lib.name}.so">
+	     <available file="/usr/local/lib/lib${apr-util.lib.name}.so"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="/usr/local/lib/lib${apr-util.lib.name}.a">
+	     <available file="/usr/local/lib/lib${apr-util.lib.name}.a"/></condition>
 	<condition property="apr-util.dir" value="/usr/local">
 		<isset property="apr-util.lib.file"/>
 	</condition>
@@ -113,37 +113,37 @@
     <condition property="apr-util.dir" value="${relative-apr-util}">
         <available file="${relative-apr-util}"/>
     </condition>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/lib${apr-util.lib.name}.la"
-	     file="${apr-util.dir}/lib${apr-util.lib.name}.la"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/lib${apr-util.lib.name}.dylib"
-	     file="${apr-util.dir}/lib${apr-util.lib.name}.dylib"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/lib${apr-util.lib.name}.so"
-	     file="${apr-util.dir}/lib${apr-util.lib.name}.so"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/lib${apr-util.lib.name}.a"
-	     file="${apr-util.dir}/lib${apr-util.lib.name}.a"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/${apr-util.lib.name}.lib"
-	     file="${apr-util.dir}/${apr-util.lib.name}.lib"/>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/lib${apr-util.lib.name}.la">
+	     <available file="${apr-util.dir}/lib${apr-util.lib.name}.la"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/lib${apr-util.lib.name}.dylib">
+	     <available file="${apr-util.dir}/lib${apr-util.lib.name}.dylib"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/lib${apr-util.lib.name}.so">
+	     <available file="${apr-util.dir}/lib${apr-util.lib.name}.so"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/lib${apr-util.lib.name}.a">
+	     <available file="${apr-util.dir}/lib${apr-util.lib.name}.a"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/${apr-util.lib.name}.lib">
+	     <available file="${apr-util.dir}/${apr-util.lib.name}.lib"/></condition>
 	<condition property="apr-util.lib.file.dir" value="${apr-util.dir}">
 		<isset property="apr-util.lib.file"/>
 	</condition>
 
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la"
-	     file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib"
-	     file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.so"
-	     file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.so"/>
-	<available property="apr-util.lib.file" 
-	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a"
-	     file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a"/>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la">
+	     <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.la"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib">
+	     <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.dylib"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.so">
+	     <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.so"/></condition>
+	<condition property="apr-util.lib.file"
+	     value="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a">
+	     <available file="${apr-util.dir}/.libs/lib${apr-util.lib.name}.a"/></condition>
 	<condition property="apr-util.lib.file.dir" value="${apr-util.dir}/.libs">
 		<isset property="apr-util.lib.file"/>
 	</condition>

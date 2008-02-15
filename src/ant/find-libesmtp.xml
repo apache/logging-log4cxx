@@ -30,57 +30,57 @@
 
 
 <target name="find-esmtp-lib" depends="find-esmtp-src" if="has-libesmtp" unless="force-ant">
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/lib${esmtp.lib.name}.la"
-	     file="${esmtp.dir}/lib${esmtp.lib.name}.la"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/lib${esmtp.lib.name}.dylib"
-	     file="${esmtp.dir}/lib${esmtp.lib.name}.dylib"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/lib${esmtp.lib.name}.so"
-	     file="${esmtp.dir}/lib${esmtp.lib.name}.so"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/lib${esmtp.lib.name}.a"
-	     file="${esmtp.dir}/lib${esmtp.lib.name}.a"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/${esmtp.lib.name}.lib"
-	     file="${esmtp.dir}/${esmtp.lib.name}.lib"/>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/lib${esmtp.lib.name}.la">
+	     <available file="${esmtp.dir}/lib${esmtp.lib.name}.la"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/lib${esmtp.lib.name}.dylib">
+	     <available file="${esmtp.dir}/lib${esmtp.lib.name}.dylib"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/lib${esmtp.lib.name}.so">
+	     <available file="${esmtp.dir}/lib${esmtp.lib.name}.so"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/lib${esmtp.lib.name}.a">
+	     <available file="${esmtp.dir}/lib${esmtp.lib.name}.a"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/${esmtp.lib.name}.lib">
+	     <available file="${esmtp.dir}/${esmtp.lib.name}.lib"/></condition>
 	<condition property="esmtp.lib.file.dir" value="${esmtp.dir}">
 		<isset property="esmtp.lib.file"/>
 	</condition>
 
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.la"
-	     file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.la"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.dylib"
-	     file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.dylib"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.so"
-	     file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.so"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.a"
-	     file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.a"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/${esmtp.lib.name}.lib"
-	     file="${esmtp.dir}/.libs/${esmtp.lib.name}.lib"/>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.la">
+	     <available file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.la"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.dylib">
+	     <available file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.dylib"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.so">
+	     <available file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.so"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.a">
+	     <available file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.a"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/${esmtp.lib.name}.lib">
+	     <available file="${esmtp.dir}/.libs/${esmtp.lib.name}.lib"/></condition>
 	<condition property="esmtp.lib.file.dir" value="${esmtp.dir}/.libs">
 		<isset property="esmtp.lib.file"/>
 	</condition>
 
 	<!--  start looking at candidates  in /usr -->
-	<available property="esmtp.lib.file" 
-	     value="/usr/lib/lib${esmtp.lib.name}.la"
-	     file="/usr/lib/lib${esmtp.lib.name}.la"/>
-	<available property="esmtp.lib.file" 
-	     value="/usr/lib/lib${esmtp.lib.name}.dylib"
-	     file="/usr/lib/lib${esmtp.lib.name}.dylib"/>
-	<available property="esmtp.lib.file" 
-	     value="/usr/lib/lib${esmtp.lib.name}.so"
-	     file="/usr/lib/lib${esmtp.lib.name}.so"/>
-	<available property="esmtp.lib.file" 
-	     value="/usr/lib/lib${esmtp.lib.name}.a"
-	     file="/usr/lib/lib${esmtp.lib.name}.a"/>
+	<condition property="esmtp.lib.file" 
+	     value="/usr/lib/lib${esmtp.lib.name}.la">
+	     <available file="/usr/lib/lib${esmtp.lib.name}.la"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="/usr/lib/lib${esmtp.lib.name}.dylib">
+	     <available file="/usr/lib/lib${esmtp.lib.name}.dylib"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="/usr/lib/lib${esmtp.lib.name}.so">
+	     <available file="/usr/lib/lib${esmtp.lib.name}.so"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="/usr/lib/lib${esmtp.lib.name}.a">
+	     <available file="/usr/lib/lib${esmtp.lib.name}.a"/></condition>
 	<condition property="esmtp.dir" value="/usr">
 		<isset property="esmtp.lib.file"/>
 	</condition>
@@ -89,18 +89,18 @@
 	</condition>
 
 	<!--  start looking at candidates  in /usr/local -->
-	<available property="esmtp.lib.file" 
-	     value="/usr/local/lib/lib${esmtp.lib.name}.la"
-	     file="/usr/local/lib/lib${esmtp.lib.name}.la"/>
-	<available property="esmtp.lib.file" 
-	     value="/usr/local/lib/lib${esmtp.lib.name}.dylib"
-	     file="/usr/local/lib/lib${esmtp.lib.name}.dylib"/>
-	<available property="esmtp.lib.file" 
-	     value="/usr/local/lib/lib${esmtp.lib.name}.so"
-	     file="/usr/local/lib/lib${esmtp.lib.name}.so"/>
-	<available property="esmtp.lib.file" 
-	     value="/usr/local/lib/lib${esmtp.lib.name}.a"
-	     file="/usr/local/lib/lib${esmtp.lib.name}.a"/>
+	<condition property="esmtp.lib.file" 
+	     value="/usr/local/lib/lib${esmtp.lib.name}.la">
+	     <available file="/usr/local/lib/lib${esmtp.lib.name}.la"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="/usr/local/lib/lib${esmtp.lib.name}.dylib">
+	     <available file="/usr/local/lib/lib${esmtp.lib.name}.dylib"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="/usr/local/lib/lib${esmtp.lib.name}.so">
+	     <available file="/usr/local/lib/lib${esmtp.lib.name}.so"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="/usr/local/lib/lib${esmtp.lib.name}.a">
+	     <available file="/usr/local/lib/lib${esmtp.lib.name}.a"/></condition>
 	<condition property="esmtp.dir" value="/usr/local">
 		<isset property="esmtp.lib.file"/>
 	</condition>
@@ -113,37 +113,37 @@
     <condition property="esmtp.dir" value="${relative-esmtp}">
         <available file="${relative-esmtp}"/>
     </condition>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/lib${esmtp.lib.name}.la"
-	     file="${esmtp.dir}/lib${esmtp.lib.name}.la"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/lib${esmtp.lib.name}.dylib"
-	     file="${esmtp.dir}/lib${esmtp.lib.name}.dylib"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/lib${esmtp.lib.name}.so"
-	     file="${esmtp.dir}/lib${esmtp.lib.name}.so"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/lib${esmtp.lib.name}.a"
-	     file="${esmtp.dir}/lib${esmtp.lib.name}.a"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/${esmtp.lib.name}.lib"
-	     file="${esmtp.dir}/${esmtp.lib.name}.lib"/>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/lib${esmtp.lib.name}.la">
+	     <available file="${esmtp.dir}/lib${esmtp.lib.name}.la"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/lib${esmtp.lib.name}.dylib">
+	     <available file="${esmtp.dir}/lib${esmtp.lib.name}.dylib"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/lib${esmtp.lib.name}.so">
+	     <available file="${esmtp.dir}/lib${esmtp.lib.name}.so"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/lib${esmtp.lib.name}.a">
+	     <available file="${esmtp.dir}/lib${esmtp.lib.name}.a"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/${esmtp.lib.name}.lib">
+	     <available file="${esmtp.dir}/${esmtp.lib.name}.lib"/></condition>
 	<condition property="esmtp.lib.file.dir" value="${esmtp.dir}">
 		<isset property="esmtp.lib.file"/>
 	</condition>
 
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.la"
-	     file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.la"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.dylib"
-	     file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.dylib"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.so"
-	     file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.so"/>
-	<available property="esmtp.lib.file" 
-	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.a"
-	     file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.a"/>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.la">
+	     <available file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.la"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.dylib">
+	     <available file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.dylib"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.so">
+	     <available file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.so"/></condition>
+	<condition property="esmtp.lib.file" 
+	     value="${esmtp.dir}/.libs/lib${esmtp.lib.name}.a">
+	     <available file="${esmtp.dir}/.libs/lib${esmtp.lib.name}.a"/></condition>
 	<condition property="esmtp.lib.file.dir" value="${esmtp.dir}/.libs">
 		<isset property="esmtp.lib.file"/>
 	</condition>
