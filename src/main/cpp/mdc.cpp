@@ -42,8 +42,7 @@ MDC::~MDC()
 
 void MDC::putLS(const LogString& key, const LogString& value)
 {
-        Map& map = ThreadSpecificData::getCurrentThreadMap();
-        map[key] = value;
+        ThreadSpecificData::put(key, value);
 }
 
 void MDC::put(const std::string& key, const std::string& value)
@@ -55,12 +54,16 @@ void MDC::put(const std::string& key, const std::string& value)
 
 bool MDC::get(const LogString& key, LogString& value)
 {
-        Map& map = ThreadSpecificData::getCurrentThreadMap();
+        ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+        if (data != 0) {
+            Map& map = data->getMap();
 
-        Map::iterator it = map.find(key);
-        if (it != map.end()) {
+            Map::iterator it = map.find(key);
+            if (it != map.end()) {
                 value.append(it->second);
                 return true;
+            }
+            data->recycle();
         }
         return false;
 }
@@ -78,13 +81,16 @@ std::string MDC::get(const std::string& key)
 
 bool MDC::remove(const LogString& key, LogString& value)
 {
-        Map::iterator it;
-        Map& map = ThreadSpecificData::getCurrentThreadMap();
-        if ((it = map.find(key)) != map.end())
-        {
+        ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+        if (data != 0) {
+            Map& map = data->getMap();
+            Map::iterator it;
+            if ((it = map.find(key)) != map.end()) {
                 value = it->second;
                 map.erase(it);
+                data->recycle();
                 return true;
+            }
         }
         return false;
 }
@@ -103,8 +109,12 @@ std::string MDC::remove(const std::string& key)
 
 void MDC::clear()
 {
-        Map& map = ThreadSpecificData::getCurrentThreadMap();
-        map.erase(map.begin(), map.end());
+        ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+        if (data != 0) {
+            Map& map = data->getMap();
+            map.erase(map.begin(), map.end());
+            data->recycle();
+        }
 }
 
 

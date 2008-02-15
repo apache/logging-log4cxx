@@ -34,33 +34,85 @@ ThreadSpecificData::~ThreadSpecificData() {
 }
 
 
-log4cxx::NDC::Stack& ThreadSpecificData::getCurrentThreadStack() {
-  return getCurrentData().ndcStack;
+log4cxx::NDC::Stack& ThreadSpecificData::getStack() {
+  return ndcStack;
 }
 
-log4cxx::MDC::Map& ThreadSpecificData::getCurrentThreadMap() {
-  return getCurrentData().mdcMap;
+log4cxx::MDC::Map& ThreadSpecificData::getMap() {
+  return mdcMap;
 }
 
-ThreadSpecificData& ThreadSpecificData::getCurrentData() {
+ThreadSpecificData& ThreadSpecificData::getDataNoThreads() {
+    static ThreadSpecificData noThreadData;
+    return noThreadData;
+}
+
+ThreadSpecificData* ThreadSpecificData::getCurrentData() {
 #if APR_HAS_THREADS
   void* pData = NULL;
-  apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
-  if (stat != APR_SUCCESS) {
-    throw ThreadException(stat);
-  }
-  if (pData == NULL) {
+  apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
+  return (ThreadSpecificData*) pData;
+#else
+  return &getDataNoThreads();  
+#endif
+}
+
+void ThreadSpecificData::recycle() {
+    if(ndcStack.empty() && mdcMap.empty()) {
+        void* pData = NULL;
+        apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
+        if (stat == APR_SUCCESS && pData == this) {
+            stat = apr_threadkey_private_set(0, APRInitializer::getTlsKey());
+            if (stat == APR_SUCCESS) {
+                delete this;
+            }
+        }
+    }
+}
+
+void ThreadSpecificData::put(const LogString& key, const LogString& val) {
+    ThreadSpecificData* data = getCurrentData();
+    if (data == 0) {
+        data = createCurrentData();
+    }
+    if (data != 0) {
+        data->getMap().insert(log4cxx::MDC::Map::value_type(key, val));
+    }
+}
+
+
+
+
+void ThreadSpecificData::push(const LogString& val) {
+    ThreadSpecificData* data = getCurrentData();
+    if (data == 0) {
+        data = createCurrentData();
+    }
+    if (data != 0) {
+        NDC::Stack& stack = data->getStack();
+        if(stack.empty()) {
+            stack.push(NDC::DiagnosticContext(val, val));
+        } else {
+            LogString fullMessage(stack.top().second);
+            fullMessage.append(1, (logchar) 0x20);
+            fullMessage.append(val);
+            stack.push(NDC::DiagnosticContext(val, fullMessage));
+        }
+    }
+}
+
+
+
+ThreadSpecificData* ThreadSpecificData::createCurrentData() {
+#if APR_HAS_THREADS
     ThreadSpecificData* newData = new ThreadSpecificData();
-    stat = apr_threadkey_private_set(newData, APRInitializer::getTlsKey());
+    apr_status_t stat = apr_threadkey_private_set(newData, APRInitializer::getTlsKey());
     if (stat != APR_SUCCESS) {
       delete newData;
-      throw ThreadException(stat);
+      newData = NULL;
     }
-    return *newData;
-  }
-  return *((ThreadSpecificData*) pData);
+    return newData;
 #else
-  static ThreadSpecificData data;
-  return data;
+    return 0;
 #endif
 }

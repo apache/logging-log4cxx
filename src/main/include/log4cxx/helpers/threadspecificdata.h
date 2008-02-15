@@ -36,11 +36,26 @@ namespace log4cxx
                         ThreadSpecificData();
                         ~ThreadSpecificData();
 
-                        static log4cxx::NDC::Stack& getCurrentThreadStack();
-                        static log4cxx::MDC::Map& getCurrentThreadMap();
+                        /**
+                         *  Gets current thread specific data.
+                         *  @return thread specific data, may be null.
+                         */
+                        static ThreadSpecificData* getCurrentData();
+                        /**
+                         *  Release this ThreadSpecficData if empty.
+                         */
+                        void recycle();
+                        
+                        static void put(const LogString& key, const LogString& val);
+                        static void push(const LogString& val);
+                        
+                        log4cxx::NDC::Stack& getStack();
+                        log4cxx::MDC::Map& getMap();
+                        
 
                 private:
-                        static ThreadSpecificData& getCurrentData();
+                        static ThreadSpecificData& getDataNoThreads();
+                        static ThreadSpecificData* createCurrentData();
                         log4cxx::NDC::Stack ndcStack;
                         log4cxx::MDC::Map mdcMap;
                 };

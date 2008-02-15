@@ -98,21 +98,11 @@ namespace log4cxx
         */
         class LOG4CXX_EXPORT NDC
         {
-        private:
-                class DiagnosticContext
-                {
-                public:
-                        LogString fullMessage;
-                        LogString message;
-
-                        DiagnosticContext(const LogString& message,
-                                const DiagnosticContext * parent);
-                        virtual ~DiagnosticContext();
-                        DiagnosticContext(const DiagnosticContext& src);
-                        DiagnosticContext& operator=(const DiagnosticContext& src);
-                };
-
         public:
+                /**
+                 *  Pair of Message and FullMessage.
+                 */
+                typedef std::pair<LogString, LogString> DiagnosticContext;
                 typedef std::stack<DiagnosticContext> Stack;
 
                 /**
@@ -265,6 +255,8 @@ namespace log4cxx
         private:
                 NDC(const NDC&);
                 NDC& operator=(const NDC&);
+                static LogString& getMessage(DiagnosticContext& ctx);
+                static LogString& getFullMessage(DiagnosticContext& ctx);
         }; // class NDC;
 }  // namespace log4cxx
 

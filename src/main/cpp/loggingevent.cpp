@@ -144,12 +144,13 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
         }
         else
         {
-                MDC::Map& m = ThreadSpecificData::getCurrentThreadMap();
+                ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+                if (data != 0) {
+                    MDC::Map& m = data->getMap();
 
-                MDC::Map::const_iterator it;
-                for (it = m.begin(); it != m.end(); it++)
-                {
+                    for(MDC::Map::const_iterator it = m.begin(); it != m.end(); it++) {
                         set.push_back(it->first);
+                    }
                 }
         }
 
@@ -162,8 +163,13 @@ void LoggingEvent::getMDCCopy() const
         {
                 mdcCopyLookupRequired = false;
                 // the clone call is required for asynchronous logging.
-                mdcCopy = new MDC::Map(ThreadSpecificData::getCurrentThreadMap());
-        }
+                ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+                if (data != 0) {
+                    mdcCopy = new MDC::Map(data->getMap());
+                } else {
+                    mdcCopy = new MDC::Map();
+                }
+       }
 }
 
 bool LoggingEvent::getProperty(const LogString& key, LogString& dest) const
