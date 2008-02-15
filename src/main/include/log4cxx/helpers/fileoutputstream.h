@@ -56,7 +56,7 @@ namespace log4cxx
                   FileOutputStream(const FileOutputStream&);
                   FileOutputStream& operator=(const FileOutputStream&);
                   static apr_file_t* open(const LogString& fn, bool append, 
-			log4cxx::helpers::Pool& p);
+         log4cxx::helpers::Pool& p);
           };
 
           LOG4CXX_PTR_DEF(FileOutputStream);

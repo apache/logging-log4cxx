@@ -76,7 +76,7 @@ namespace log4cxx
                      
                      static apr_threadkey_t* create(Pool& p);
 
-					 Pool p;
+                Pool p;
                      apr_threadkey_t* key;
                 };
         } // namespace helpers

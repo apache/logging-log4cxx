@@ -126,7 +126,7 @@ void Transformer::transform(const File& in, const File& out,
     if (patterns.size() == 0) {
         copyFile(in, out);
     } else {
-	Pool p;
+   Pool p;
         apr_pool_t* pool = p.getAPRPool();
  
         //

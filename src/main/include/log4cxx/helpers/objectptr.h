@@ -168,11 +168,11 @@ namespace log4cxx
             }
             return 0;
          }
-		 T* exchange(const T* newValue) {
+       T* exchange(const T* newValue) {
              return static_cast<T*>(ObjectPtrBase::exchange(
                  reinterpret_cast<void**>(&p), 
                  const_cast<T*>(newValue)));
-		 }
+       }
 
         };
 

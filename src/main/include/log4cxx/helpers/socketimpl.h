@@ -26,7 +26,7 @@
 
 
 extern "C" {
-	struct apr_socket_t;
+   struct apr_socket_t;
 }
 
 namespace log4cxx

@@ -34,7 +34,7 @@ template<class S>
 static LogString decodeLS(const S* src) {
     LogString dst;
     if (src != 0) {
-    	Transcoder::decode(src, dst);
+      Transcoder::decode(src, dst);
     }
     return dst;
 }
@@ -144,9 +144,9 @@ bool File::exists(Pool& p) const {
 
 char* File::convertBackSlashes(char* src) {
   for(char* c = src; *c != 0; c++) {
-	if(*c == '\\') {
-		*c = '/';
-	}
+   if(*c == '\\') {
+      *c = '/';
+   }
   }
   return src;
 }
@@ -203,7 +203,7 @@ std::vector<LogString> File::list(Pool& p) const {
             if (entry.name != NULL) {
                LogString filename;
                if(style == APR_FILEPATH_ENCODING_UTF8) {
-		           Transcoder::decodeUTF8(entry.name, filename);
+                 Transcoder::decodeUTF8(entry.name, filename);
                } else {
                    Transcoder::decode(entry.name, filename);
                }
