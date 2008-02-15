@@ -21,7 +21,7 @@
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
   <appender name="A1" class="org.apache.log4j.FileAppender">
     
-    <param name="File"   value="output/dom&#xB3;" />
+    <param name="File"   value="output/dom&#x3195;" />
     <param name="Append" value="false" />	    
     
     <layout class="org.apache.log4j.PatternLayout">

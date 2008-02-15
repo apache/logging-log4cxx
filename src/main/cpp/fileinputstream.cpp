@@ -31,11 +31,11 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(FileInputStream)
 
-FileInputStream::FileInputStream(const LogString& filename) {
+FileInputStream::FileInputStream(const LogString& filename) : fileptr(0) {
     open(filename);
 }
 
-FileInputStream::FileInputStream(const logchar* filename) {
+FileInputStream::FileInputStream(const logchar* filename) : fileptr(0) {
     LogString fn(filename);
     open(fn);
 }

@@ -22,8 +22,15 @@
 
 #include <apr_general.h>
 #include <algorithm>
+#include <stdlib.h>
 
 void initialize() {
+    const char* ctype = setlocale(LC_CTYPE, "");
+    if (ctype == 0) {
+        puts("LC_CTYPE: NULL");
+    } else {
+        printf("LC_CTYPE: %s\n", ctype);
+    }
     apr_initialize();
 }
 

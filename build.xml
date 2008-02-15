@@ -850,7 +850,12 @@ Command line options:
             <env key="Path"
                    value="${log4cxx.lib.dir};${env.Path}"/>
     </exec>
-
+    <available property="dom3-status" value="" file="src/test/resources/output/dom&#xB3;"/>
+    <available property="dom4-status" value="" file="src/test/resources/output/dom&#x3195;"/>
+    <property name="dom3-status" value="NOT"/>
+    <property name="dom4-status" value="NOT"/>
+    <echo>output/dom&#xB3; was ${dom3-status} created in DOMTestCase::test3</echo>
+    <echo>output/dom&#x3195; was ${dom4-status} created in DOMTestCase::test4</echo>
 </target>
 
 <target name="run-standalone-unittest"
@@ -874,6 +879,12 @@ Command line options:
             <env key="Path"
                    value="${log4cxx.lib.dir};${env.Path}"/>
     </exec>
+    <available property="dom3-status" value="" file="src/test/resources/output/dom&#xB3;"/>
+    <available property="dom4-status" value="" file="src/test/resources/output/dom&#x3195;"/>
+    <property name="dom3-status" value="NOT"/>
+    <property name="dom4-status" value="NOT"/>
+    <echo>output/dom&#xB3; was ${dom3-status} created in DOMTestCase::test3</echo>
+    <echo>output/dom&#x3195; was ${dom4-status} created in DOMTestCase::test4</echo>
 </target>
 
 <target name="run-socketserver" depends="build-unittest, clean-output"

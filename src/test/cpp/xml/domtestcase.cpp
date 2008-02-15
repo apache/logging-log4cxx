@@ -52,6 +52,8 @@ LOGUNIT_CLASS(DOMTestCase)
 #if defined(_WIN32)
                 LOGUNIT_TEST(test2);
 #endif
+                LOGUNIT_TEST(test3);
+                LOGUNIT_TEST(test4);                
         LOGUNIT_TEST_SUITE_END();
 
         LoggerPtr root;
@@ -157,34 +159,71 @@ public:
 
         void common()
         {
-                int i = -1;
-                std::ostringstream os;
-                os << "Message " << ++i;
+                int i = 0;
 
-                LOG4CXX_DEBUG(logger, os.str());
-                LOG4CXX_DEBUG(root, os.str());
+                LOG4CXX_DEBUG(logger, "Message " << i);
+                LOG4CXX_DEBUG(root, "Message " << i);
 
-                os.str("");
-                os << "Message " << ++i;
-                LOG4CXX_INFO(logger,os.str());
-                LOG4CXX_INFO(root, os.str());
+                i++;
+                LOG4CXX_INFO(logger, "Message " << i);
+                LOG4CXX_INFO(root, "Message " << i);
 
-                os.str("");
-                os << "Message " << ++i;
-                LOG4CXX_WARN(logger, os.str());
-                LOG4CXX_WARN(root, os.str());
+                i++;
+                LOG4CXX_WARN(logger, "Message " << i);
+                LOG4CXX_WARN(root, "Message " << i);
 
-                os.str("");
-                os << "Message " << ++i;
-                LOG4CXX_ERROR(logger, os.str());
-                LOG4CXX_ERROR(root, os.str());
+                i++;
+                LOG4CXX_ERROR(logger, "Message " << i);
+                LOG4CXX_ERROR(root, "Message " << i);
 
-                os.str("");
-                os << "Message " << ++i;
-                LOG4CXX_FATAL(logger, os.str());
-                LOG4CXX_FATAL(root, os.str());
+                i++;
+                LOG4CXX_FATAL(logger, "Message " << i);
+                LOG4CXX_FATAL(root, "Message " << i);
 
         }
+      
+        /**
+         *   Creates a output file that ends with a superscript 3.
+         *   Output file is checked by build.xml after completion.
+         */  
+        void test3() {
+                DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase3.xml"));
+                LOG4CXX_INFO(logger, "File name is expected to end with a superscript 3");
+#if LOG4CXX_LOGCHAR_IS_UTF8
+                const logchar end[] = { 0xC2, 0xB3, 0 };
+#else
+                const logchar end[] = { 0xB3, 0 };
+#endif
+                LogString fname("output/dom");
+                fname.append(end);
+                File file;
+                file.setPath(fname);
+                Pool p;
+                bool exists = file.exists(p);
+                LOGUNIT_ASSERT(exists);
+        }
+
+        /**
+         *   Creates a output file that ends with a superscript 3.
+         *   Output file is checked by build.xml after completion.
+         */  
+        void test4() {
+                DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase4.xml"));
+                LOG4CXX_INFO(logger, "File name is expected to end with an ideographic 4");
+#if LOG4CXX_LOGCHAR_IS_UTF8
+                const logchar end[] = { 0xE3, 0x86, 0x95, 0 };
+#else
+                const logchar end[] = { 0x3195, 0 };
+#endif
+                LogString fname("output/dom");
+                fname.append(end);
+                File file;
+                file.setPath(fname);
+                Pool p;
+                bool exists = file.exists(p);
+                LOGUNIT_ASSERT(exists);
+        }
+        
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(DOMTestCase);

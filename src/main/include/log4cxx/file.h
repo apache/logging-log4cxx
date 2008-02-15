@@ -62,6 +62,7 @@ namespace log4cxx
                     log4cxx_time_t lastModified(log4cxx::helpers::Pool& p) const;
                     LogString getName() const;
                     File& setName(const LogString&);
+                    File& setPath(const LogString&);
                     std::string getOSName() const;
 
                     log4cxx_status_t open(apr_file_t** file, int flags,

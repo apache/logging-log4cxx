@@ -105,11 +105,15 @@ LogString File::getName() const {
     return name;
 }
 
-File& File::setName(const LogString& newName) {
+File& File::setPath(const LogString& newName) {
     name.assign(newName);
     osName.erase();
     Transcoder::encode(newName, osName);
     return *this;
+}
+
+File& File::setName(const LogString& newName) {
+    return setPath(newName);
 }
 
 std::string File::getOSName() const {
