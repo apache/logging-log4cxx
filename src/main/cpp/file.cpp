@@ -31,67 +31,64 @@ File::File() {
 }
 
 template<class S> 
-static LogString decodeLS(const S& src) {
+static LogString decodeLS(const S* src) {
+    LogString dst;
+    if (src != 0) {
+    	Transcoder::decode(src, dst);
+    }
+    return dst;
+}
+
+template<class S> 
+static LogString decodeLS(const std::basic_string<S>& src) {
     LogString dst;
     Transcoder::decode(src, dst);
     return dst;
 }
 
-template<class S> 
-static std::string decodeOS(const S& src) {
-    LogString ls;
-    std::string os;
-    Transcoder::decode(src, ls);
-    Transcoder::encode(ls, os);
-    return os;
-}
-
 
 File::File(const std::string& name1)
-  : name(decodeLS(name1)), osName(decodeOS(name1)) {
+  : path(decodeLS(name1)) {
 }
 
 File::File(const char* name1)
-  : name(decodeLS(name1)), osName(decodeOS(name1)) {
+  : path(decodeLS(name1)) {
 }
 
 #if LOG4CXX_WCHAR_T_API
 File::File(const std::wstring& name1)
-   : name(decodeLS(name1)), osName(decodeOS(name1)) {
+   : path(decodeLS(name1)) {
 }
 
 File::File(const wchar_t* name1)
-   : name(decodeLS(name1)), osName(decodeOS(name1)) {
+   : path(decodeLS(name1)) {
 }
 #endif
 
 #if LOG4CXX_UNICHAR_API
 File::File(const std::basic_string<UniChar>& name1)
-   : name(decodeLS(name1)), osName(decodeOS(name1)) {
+   : path(decodeLS(name1)) {
 }
 
 File::File(const UniChar* name1)
-   : name(decodeLS(name1)), osName(decodeOS(name1)) {
+   : path(decodeLS(name1)) {
 }
 #endif
 
 #if LOG4CXX_CFSTRING_API
 File::File(const CFStringRef& name1)
-   : name(), osName() {
-  Transcoder::decode(name1, this->name);
-  Transcoder::encode(this->name, osName);
+   : path(name1) {
 }
 #endif
 
 File::File(const File& src)
-  : name(src.name), osName(src.osName) {
+  : path(src.path) {
 }
 
 File& File::operator=(const File& src) {
   if (this == &src) return *this;
 
-  name.assign(src.name);
-  osName.assign(src.osName);
+  path.assign(src.path);
 
   return *this;
 }
@@ -102,66 +99,68 @@ File::~File() {
 
 
 LogString File::getPath() const {
-    return name;
+    return path;
 }
 
 File& File::setPath(const LogString& newName) {
-    name.assign(newName);
-    osName.erase();
-    Transcoder::encode(newName, osName);
+    path.assign(newName);
     return *this;
 }
 
 LogString File::getName() const {
-    return name;
+    const logchar slashes[] = { 0x2F, 0x5C, 0 };
+    size_t lastSlash = path.find_last_of(slashes);
+    if (lastSlash != LogString::npos) {
+        return path.substr(lastSlash+1);
+    }
+    return path;
 }
 
-std::string File::getOSName() const {
-    return osName;
+char* File::getPath(Pool& p) const {
+    apr_pool_t* pool = reinterpret_cast<apr_pool_t*>(p.getAPRPool());
+    int style = APR_FILEPATH_ENCODING_UNKNOWN;
+    apr_filepath_encoding(&style, pool);
+    char* retval = NULL;
+    if (style == APR_FILEPATH_ENCODING_UTF8) {
+        retval = Transcoder::encodeUTF8(path, p);
+    } else {
+        retval = Transcoder::encode(path, p);
+    }
+    return retval;
 }
 
 log4cxx_status_t File::open(apr_file_t** file, int flags,
       int perm, Pool& p) const {
-    //
-    //   The trunction to MBCS can corrupt filenames
-    //       would be nice to be able to do something about
-    //       it here since we have both Unicode
-    //          and local code page file names
-    //
-    return apr_file_open(file, osName.c_str(), flags, perm, (apr_pool_t*) p.getAPRPool());
+    return apr_file_open(file, getPath(p), flags, perm, (apr_pool_t*) p.getAPRPool());
 }
 
 
 
 bool File::exists(Pool& p) const {
   apr_finfo_t finfo;
-  apr_status_t rv = apr_stat(&finfo, osName.c_str(),
+  apr_status_t rv = apr_stat(&finfo, getPath(p),
         0, (apr_pool_t*) p.getAPRPool());
   return rv == APR_SUCCESS;
 }
 
-std::string File::convertBackSlashes(const std::string& src) {
-  std::string::size_type pos = src.find('\\');
-  if (pos == std::string::npos) {
-    return src;
+char* File::convertBackSlashes(char* src) {
+  for(char* c = src; *c != 0; c++) {
+	if(*c == '\\') {
+		*c = '/';
+	}
   }
-  std::string mod(src);
-  while(pos != std::string::npos) {
-    mod[pos] = '/';
-    pos = mod.find('\\');
-  }
-  return mod;
+  return src;
 }
 
 bool File::deleteFile(Pool& p) const {
-  apr_status_t rv = apr_file_remove(convertBackSlashes(osName).c_str(),
+  apr_status_t rv = apr_file_remove(convertBackSlashes(getPath(p)),
         (apr_pool_t*) p.getAPRPool());
   return rv == APR_SUCCESS;
 }
 
 bool File::renameTo(const File& dest, Pool& p) const {
-  apr_status_t rv = apr_file_rename(convertBackSlashes(osName).c_str(),
-        convertBackSlashes(dest.getOSName()).c_str(),
+  apr_status_t rv = apr_file_rename(convertBackSlashes(getPath(p)),
+        convertBackSlashes(dest.getPath(p)),
         (apr_pool_t*) p.getAPRPool());
   return rv == APR_SUCCESS;
 }
@@ -169,7 +168,7 @@ bool File::renameTo(const File& dest, Pool& p) const {
 
 size_t File::length(Pool& pool) const {
   apr_finfo_t finfo;
-  apr_status_t rv = apr_stat(&finfo, osName.c_str(),
+  apr_status_t rv = apr_stat(&finfo, getPath(pool),
         APR_FINFO_SIZE, (apr_pool_t*) pool.getAPRPool());
   if (rv == APR_SUCCESS) {
     return (size_t) finfo.size;
@@ -180,7 +179,7 @@ size_t File::length(Pool& pool) const {
 
 log4cxx_time_t File::lastModified(Pool& pool) const {
   apr_finfo_t finfo;
-  apr_status_t rv = apr_stat(&finfo, osName.c_str(),
+  apr_status_t rv = apr_stat(&finfo, getPath(pool),
         APR_FINFO_MTIME, (apr_pool_t*) pool.getAPRPool());
   if (rv == APR_SUCCESS) {
     return finfo.mtime;
@@ -195,13 +194,20 @@ std::vector<LogString> File::list(Pool& p) const {
     std::vector<LogString> filenames;
 
     apr_status_t stat = apr_dir_open(&dir, 
-        convertBackSlashes(osName).c_str(), 
+        convertBackSlashes(getPath(p)), 
         (apr_pool_t*) p.getAPRPool());
     if(stat == APR_SUCCESS) {
+        int style = APR_FILEPATH_ENCODING_UNKNOWN;
+        apr_filepath_encoding(&style, (apr_pool_t*) p.getAPRPool());
         stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
         while(stat == APR_SUCCESS) {
             if (entry.name != NULL) {
-               LOG4CXX_DECODE_CHAR(filename, entry.name);
+               LogString filename;
+               if(style == APR_FILEPATH_ENCODING_UTF8) {
+		   Transcoder::encodeUTF8(entry.name, filename);
+               } else {
+                   Transcoder::encode(entry.name, filename);
+               }
                filenames.push_back(filename);
             }
             stat = apr_dir_read(&entry, APR_FINFO_DIRENT, dir);
@@ -212,8 +218,8 @@ std::vector<LogString> File::list(Pool& p) const {
 }
 
 LogString File::getParent(Pool&) const {
-     LogString::size_type slashPos = name.rfind(LOG4CXX_STR('/'));
-     LogString::size_type backPos = name.rfind(LOG4CXX_STR('\\'));
+     LogString::size_type slashPos = path.rfind(LOG4CXX_STR('/'));
+     LogString::size_type backPos = path.rfind(LOG4CXX_STR('\\'));
      if (slashPos == LogString::npos) {
          slashPos = backPos;
      } else {
@@ -223,13 +229,13 @@ LogString File::getParent(Pool&) const {
      }
      LogString parent;
      if (slashPos != LogString::npos && slashPos > 0) {
-          parent.assign(name, 0, slashPos);
+          parent.assign(path, 0, slashPos);
      }
      return parent;
 }
 
 bool File::mkdirs(Pool& p) const {
-     apr_status_t stat = apr_dir_make_recursive(convertBackSlashes(osName).c_str(),
+     apr_status_t stat = apr_dir_make_recursive(convertBackSlashes(getPath(p)),
           APR_OS_DEFAULT, (apr_pool_t*) p.getAPRPool());
      return stat == APR_SUCCESS;
 }

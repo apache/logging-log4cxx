@@ -49,6 +49,10 @@ namespace log4cxx {
        */
       static void encodeUTF8(const LogString& src, std::string& dst);
       /**
+       *    Converts the LogString to a UTF-8 string.
+       */
+      static char* encodeUTF8(const LogString& src, log4cxx::helpers::Pool& p);
+      /**
        *    Append UCS-4 code point to a byte buffer as UTF-8.
        */
       static void encodeUTF8(unsigned int sv, ByteBuffer& dst);

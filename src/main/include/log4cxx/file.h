@@ -76,10 +76,9 @@ namespace log4cxx
                     bool mkdirs(log4cxx::helpers::Pool& p) const;
 
                 private:
-                    LogString name;
-                    std::string osName;
-                    static std::string convertBackSlashes(const std::string& src);
-                    std::string getOSName() const;
+                    LogString path;
+                    static char* convertBackSlashes(char*);
+                    char* getPath(log4cxx::helpers::Pool& p) const;
                 };
 } // namespace log4cxx
 

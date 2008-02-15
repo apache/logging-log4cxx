@@ -25,7 +25,8 @@
 #include <stdlib.h>
 
 void initialize() {
-    const char* ctype = setlocale(LC_CTYPE, "");
+    setlocale(LC_CTYPE, "");
+    const char* ctype = setlocale(LC_CTYPE, 0);
     if (ctype == 0) {
         puts("LC_CTYPE: NULL");
     } else {

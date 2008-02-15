@@ -71,6 +71,17 @@ void Transcoder::encodeUTF8(const LogString& src, std::string& dst) {
 #endif     
 }
 
+char* Transcoder::encodeUTF8(const LogString& src, Pool& p) {
+#if LOG4CXX_LOGCHAR_IS_UTF8
+     return apr_pstrndup(reinterpret_cast<apr_pool_t*>(p.getAPRPool()), src.data(), src.length());
+#else
+     std::string tmp;
+     encodeUTF8(src, tmp);
+     return apr_pstrndup(reinterpret_cast<apr_pool_t*>(p.getAPRPool()), tmp.data(), tmp.length());
+#endif     
+}
+
+
 void Transcoder::encodeUTF8(unsigned int sv, ByteBuffer& dst) {
     size_t bytes = encodeUTF8(sv, dst.current());
     dst.position(dst.position() + bytes);
