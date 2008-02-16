@@ -32,7 +32,6 @@ IMPLEMENT_LOG4CXX_OBJECT(DailyRollingFileAppender)
 
 
 DailyRollingFileAppender::DailyRollingFileAppender()
-    : rfa(new log4cxx::rolling::RollingFileAppender())
 {
 }
 
@@ -41,20 +40,11 @@ DailyRollingFileAppender::DailyRollingFileAppender(
   const LayoutPtr& layout,
   const LogString& filename,
   const LogString& datePattern1)
-  : datePattern(datePattern1),
-    rfa(new log4cxx::rolling::RollingFileAppender()) {
-    rfa->setLayout(layout);
-    rfa->setFile(filename);
+  : datePattern(datePattern1) {
+    setLayout(layout);
+    setFile(filename);
     Pool p;
     activateOptions(p);
-}
-
-void DailyRollingFileAppender::addRef() const {
-    ObjectImpl::addRef();
-}
-
-void DailyRollingFileAppender::releaseRef() const {
-    ObjectImpl::releaseRef();
 }
 
 void DailyRollingFileAppender::setDatePattern(const LogString& pattern) {
@@ -67,7 +57,7 @@ LogString DailyRollingFileAppender::getDatePattern() {
 
 void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
   TimeBasedRollingPolicyPtr policy = new TimeBasedRollingPolicy();
-  LogString pattern(rfa->getFile());
+  LogString pattern(getFile());
   bool inLiteral = false;
   bool inPattern = false;
 
@@ -96,89 +86,12 @@ void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
 
   policy->setFileNamePattern(pattern);
   policy->activateOptions(pool);
-  rfa->setTriggeringPolicy(policy);
-  rfa->setRollingPolicy(policy);
+  setTriggeringPolicy(policy);
+  setRollingPolicy(policy);
 
-  rfa->activateOptions(pool);
+  RollingFileAppenderSkeleton::activateOptions(pool);
 }
 
-void DailyRollingFileAppender::addFilter(const log4cxx::spi::FilterPtr& newFilter) {
-  rfa->addFilter(newFilter);
-}
-
-log4cxx::spi::FilterPtr DailyRollingFileAppender::getFilter() const {
-  return rfa->getFilter();
-}
-
-void DailyRollingFileAppender::clearFilters() {
-  rfa->clearFilters();
-}
-
-void DailyRollingFileAppender::close() {
-  rfa->close();
-}
-
-bool DailyRollingFileAppender::isClosed() const {
-  return false;
-}
-
-bool DailyRollingFileAppender::isActive() const {
-  return true;
-}
-
-void DailyRollingFileAppender::doAppend(const log4cxx::spi::LoggingEventPtr& event,
-   log4cxx::helpers::Pool& pool) {
-  rfa->doAppend(event, pool);
-}
-
-LogString DailyRollingFileAppender::getName() const {
-  return rfa->getName();
-}
-
-void DailyRollingFileAppender::setLayout(const LayoutPtr& layout) {
-  rfa->setLayout(layout);
-}
-
-LayoutPtr DailyRollingFileAppender::getLayout() const {
-  return rfa->getLayout();
-}
-
-void DailyRollingFileAppender::setName(const LogString& name) {
-  rfa->setName(name);
-}
-
-
-void DailyRollingFileAppender::setFile(const LogString& file) {
-  rfa->setFile(file);
-}
-
-bool DailyRollingFileAppender::getAppend() const {
-  return rfa->getAppend();
-}
-
-LogString DailyRollingFileAppender::getFile() const {
-  return rfa->getFile();
-}
-
-bool DailyRollingFileAppender::getBufferedIO() const {
-  return rfa->getBufferedIO();
-}
-
-int DailyRollingFileAppender::getBufferSize() const {
-  return rfa->getBufferSize();
-}
-
-void DailyRollingFileAppender::setAppend(bool flag) {
-  rfa->setAppend(flag);
-}
-
-void DailyRollingFileAppender::setBufferedIO(bool bufferedIO) {
-  rfa->setBufferedIO(bufferedIO);
-}
-
-void DailyRollingFileAppender::setBufferSize(int bufferSize) {
-  rfa->setBufferSize(bufferSize);
-}
 
 void DailyRollingFileAppender::setOption(const LogString& option,
    const LogString& value) {
@@ -186,21 +99,10 @@ void DailyRollingFileAppender::setOption(const LogString& option,
                      LOG4CXX_STR("DATEPATTERN"), LOG4CXX_STR("datepattern"))) {
              setDatePattern(value);
      } else {
-         rfa->setOption(option, value);
+         RollingFileAppenderSkeleton::setOption(option, value);
      }
 }
 
-void DailyRollingFileAppender::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler) {
-   rfa->setErrorHandler(errorHandler);
-}
-
-const spi::ErrorHandlerPtr& DailyRollingFileAppender::getErrorHandler() const {
-  return rfa->getErrorHandler();
-}
-
-bool DailyRollingFileAppender::requiresLayout() const {
-  return rfa->requiresLayout();
-}
 
 
 

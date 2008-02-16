@@ -25,6 +25,8 @@
 #define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
+#include <log4cxx/rollingfileappender.h>
+#include <log4cxx/dailyrollingfileappender.h>
 
 
 #include <log4cxx/asyncappender.h>
@@ -37,7 +39,6 @@
 #endif
 #include <log4cxx/nt/outputdebugstringappender.h>
 #endif
-#include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/net/socketappender.h>
 #include <log4cxx/net/sockethubappender.h>
@@ -63,8 +64,6 @@
 #include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 
-#include <log4cxx/rollingfileappender.h>
-#include <log4cxx/dailyrollingfileappender.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
 #include <apr.h>
@@ -154,7 +153,7 @@ void Class::registerClasses() {
 #endif
         log4cxx::nt::OutputDebugStringAppender::registerClass();
 #endif
-        RollingFileAppender::registerClass();
+        log4cxx::RollingFileAppender::registerClass();
         SMTPAppender::registerClass();
         SocketAppender::registerClass();
 #if APR_HAS_THREADS

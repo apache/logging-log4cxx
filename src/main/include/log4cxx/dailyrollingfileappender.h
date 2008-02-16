@@ -27,7 +27,7 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/spi/optionhandler.h>
-#include <log4cxx/rolling/rollingfileappender.h>
+#include <log4cxx/rolling/rollingfileappenderskeleton.h>
 
 namespace log4cxx {
   namespace helpers {
@@ -50,12 +50,11 @@ namespace log4cxx {
   *  
   * @deprecated Replaced by {@link org.apache.log4j.rolling.RollingFileAppender}
 */
-class LOG4CXX_EXPORT DailyRollingFileAppender : public Appender, log4cxx::helpers::ObjectImpl {
+  class LOG4CXX_EXPORT DailyRollingFileAppender : public log4cxx::rolling::RollingFileAppenderSkeleton {
   DECLARE_LOG4CXX_OBJECT(DailyRollingFileAppender)
   BEGIN_LOG4CXX_CAST_MAP()
           LOG4CXX_CAST_ENTRY(DailyRollingFileAppender)
-          LOG4CXX_CAST_ENTRY(Appender)
-          LOG4CXX_CAST_ENTRY(spi::OptionHandler)
+          LOG4CXX_CAST_ENTRY_CHAIN(FileAppender)
   END_LOG4CXX_CAST_MAP()
 
   /**
@@ -63,10 +62,6 @@ class LOG4CXX_EXPORT DailyRollingFileAppender : public Appender, log4cxx::helper
   */
   LogString datePattern;
 
-  /**
-   *  Nested new rolling file appender.
-   */
-  log4cxx::rolling::RollingFileAppenderPtr rfa;
 
 public:
   /**
@@ -85,8 +80,6 @@ public:
     const LogString& filename,
     const LogString& datePattern);
 
-  void addRef() const;
-  void releaseRef() const;
 
   /**
      The <b>DatePattern</b> takes a string in the same format as
@@ -98,186 +91,13 @@ public:
   /** Returns the value of the <b>DatePattern</b> option. */
   LogString getDatePattern();
 
+  void setOption(const LogString& option,
+   const LogString& value);
+
   /**
    * Prepares DailyRollingFileAppender for use.
    */
   void activateOptions(log4cxx::helpers::Pool&);
-
-  /**
-   * Add a filter to the end of the filter list.
-   *
-   * 
-   */
-  void addFilter(const log4cxx::spi::FilterPtr& newFilter);
-
-  /**
-   * Returns the head Filter. The Filters are organized in a linked list and
-   * so all Filters on this Appender are available through the result.
-   *
-   * @return the head Filter or null, if no Filters are present
-   *
-   * 
-   */
-  log4cxx::spi::FilterPtr getFilter() const;
-
-  /**
-   * Clear the list of filters by removing all the filters in it.
-   *
-   * 
-   */
-  void clearFilters();
-
-  /**
-   * Release any resources allocated within the appender such as file handles,
-   * network connections, etc.
-   *
-   * <p>
-   * It is a programming error to append to a closed appender.
-   * </p>
-   *
-   * 
-   */
-  void close();
-
-  /**
-   * Is this appender closed?
-   *
-   * 
-   */
-  bool isClosed() const;
-
-  /**
-   * Is this appender in working order?
-   *
-   * 
-   */
-  bool isActive() const;
-
-  /**
-   * Log in <code>Appender</code> specific way. When appropriate, Loggers will
-   * call the <code>doAppend</code> method of appender implementations in
-   * order to log.
-   */
-  void doAppend(const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool&);
-
-  /**
-   * Get the name of this appender. The name uniquely identifies the appender.
-   */
-  LogString getName() const;
-
-  /**
-   * Set the {@link Layout} for this appender.
-   *
-   * 
-   */
-  void setLayout(const LayoutPtr& layout);
-
-  /**
-   * Returns this appenders layout.
-   *
-   * 
-   */
-  LayoutPtr getLayout() const;
-
-  /**
-   * Set the name of this appender. The name is used by other components to
-   * identify this appender.
-   *
-   * 
-   */
-  void setName(const LogString& name);
-
-
-  /**
-     The <b>File</b> property takes a string value which should be the
-     name of the file to append to.
-
-     <p><font color="#DD0044"><b>Note that the special values
-     "System.out" or "System.err" are no longer honored.</b></font>
-
-     <p>Note: Actual opening of the file is made when {@link
-     #activateOptions} is called, not when the options are set.  */
-  void setFile(const LogString& file);
-
-  /**
-      Returns the value of the <b>Append</b> option.
-   */
-  bool getAppend() const;
-
-  /** Returns the value of the <b>File</b> option. */
-  LogString getFile() const;
-
-  /**
-     Get the value of the <b>BufferedIO</b> option.
-
-     <p>BufferedIO will significatnly increase performance on heavily
-     loaded systems.
-
-  */
-  bool getBufferedIO() const;
-
-  /**
-     Get the size of the IO buffer.
-  */
-  int getBufferSize() const;
-
-  /**
-     The <b>Append</b> option takes a boolean value. It is set to
-     <code>true</code> by default. If true, then <code>File</code>
-     will be opened in append mode by {@link #setFile setFile} (see
-     above). Otherwise, {@link #setFile setFile} will open
-     <code>File</code> in truncate mode.
-
-     <p>Note: Actual opening of the file is made when {@link
-     #activateOptions} is called, not when the options are set.
-   */
-  void setAppend(bool flag);
-
-  /**
-     The <b>BufferedIO</b> option takes a boolean value. It is set to
-     <code>false</code> by default. If true, then <code>File</code>
-     will be opened and the resulting {@link java.io.Writer} wrapped
-     around a {@link java.io.BufferedWriter}.
-
-     BufferedIO will significatnly increase performance on heavily
-     loaded systems.
-
-  */
-  void setBufferedIO(bool bufferedIO);
-
-  /**
-     Set the size of the IO buffer.
-  */
-  void setBufferSize(int bufferSize);
-
-  void setOption(const LogString&, const LogString&);
-
-  /**
-   Set the {@link spi::ErrorHandler ErrorHandler} for this appender.
-  */
-  void setErrorHandler(const spi::ErrorHandlerPtr& errorHandler);
-
-  /**
-   Returns the {@link spi::ErrorHandler ErrorHandler} for this appender.
- */
-  const spi::ErrorHandlerPtr& getErrorHandler() const;
-
-  /**
-   Configurators call this method to determine if the appender
-   requires a layout. If this method returns <code>true</code>,
-   meaning that layout is required, then the configurator will
-   configure an layout using the configuration information at its
-   disposal.  If this method returns <code>false</code>, meaning that
-   a layout is not required, then layout configuration will be
-   skipped even if there is available layout configuration
-   information at the disposal of the configurator..
-
-   <p>In the rather exceptional case, where the appender
-   implementation admits a layout but can also work without it, then
-   the appender should return <code>true</code>.
-  */
-  bool requiresLayout() const;
-
 
 };
 

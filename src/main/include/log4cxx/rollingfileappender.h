@@ -22,7 +22,7 @@
 #pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
-#include <log4cxx/rolling/rollingfileappender.h>
+#include <log4cxx/rolling/rollingfileappenderskeleton.h>
 
 namespace log4cxx
 {
@@ -44,7 +44,7 @@ namespace log4cxx
     DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS( RollingFileAppender, ClassRollingFileAppender )
     BEGIN_LOG4CXX_CAST_MAP()
          LOG4CXX_CAST_ENTRY( RollingFileAppender )
-         LOG4CXX_CAST_ENTRY_CHAIN( log4cxx::rolling::RollingFileAppenderSkeleton )
+         LOG4CXX_CAST_ENTRY_CHAIN( FileAppender )
     END_LOG4CXX_CAST_MAP()
     /** The default constructor simply calls its {@link FileAppender#FileAppender parents constructor}. */
     RollingFileAppender();

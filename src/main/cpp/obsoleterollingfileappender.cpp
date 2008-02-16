@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/rolling/rollingfileappender.h>
+#include <log4cxx/rolling/rollingfileappenderskeleton.h>
 #include <log4cxx/rolling/sizebasedtriggeringpolicy.h>
 #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
 
@@ -107,7 +107,8 @@ void RollingFileAppender::setOption(const LogString& option,
         }
         else
         {
-                log4cxx::rolling::RollingFileAppenderSkeleton::setOption(option, value);
+                using namespace log4cxx::rolling;
+                RollingFileAppenderSkeleton::setOption(option, value);
         }
 }
 
@@ -147,7 +148,8 @@ void RollingFileAppender::activateOptions(Pool& pool) {
   rolling->activateOptions(pool);
   setRollingPolicy(rolling);
 
-  log4cxx::rolling::RollingFileAppenderSkeleton::activateOptions(pool);
+  using namespace log4cxx::rolling;
+  RollingFileAppenderSkeleton::activateOptions(pool);
 }
 
 
