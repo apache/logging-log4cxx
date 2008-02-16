@@ -63,7 +63,7 @@ LoggingEvent::LoggingEvent() :
 }
 
 LoggingEvent::LoggingEvent(
-        const LoggerPtr& logger1, const LevelPtr& level1,
+        const LogString& logger1, const LevelPtr& level1,
         const LogString& message1, const LocationInfo& locationInfo1) :
    logger(logger1),
    level(level1),
@@ -83,11 +83,6 @@ LoggingEvent::~LoggingEvent()
         delete ndc;
         delete mdcCopy;
         delete properties;
-}
-
-const LogString LoggingEvent::getLoggerName() const
-{
-        return logger->getName();
 }
 
 bool LoggingEvent::getNDC(LogString& dest) const
@@ -306,7 +301,7 @@ void LoggingEvent::write(helpers::ObjectOutputStream& os, Pool& p) const {
       char lookupsRequired[] = { 0, 0 };
       os.writeBytes(lookupsRequired, sizeof(lookupsRequired), p);
       os.writeLong(timeStamp/1000, p);
-      os.writeObject(logger->getName(), p);
+      os.writeObject(logger, p);
       locationInfo.write(os, p);
       if (mdcCopy == 0 || mdcCopy->size() == 0) {
           os.writeNull(p);

@@ -120,7 +120,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message,
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg, location));
+        LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
         callAppenders(event, p);
 }
 
@@ -129,7 +129,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message) const
 {
         Pool p;
         LOG4CXX_DECODE_CHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg,
+        LoggingEventPtr event(new LoggingEvent(name, level1, msg,
               LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
@@ -138,7 +138,7 @@ void Logger::forcedLogLS(const LevelPtr& level1, const LogString& message,
         const LocationInfo& location) const
 {
         Pool p;
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, message, location));
+        LoggingEventPtr event(new LoggingEvent(name, level1, message, location));
         callAppenders(event, p);
 }
 
@@ -621,7 +621,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message,
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg, location));
+        LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
         callAppenders(event, p);
 }
 
@@ -629,7 +629,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message) cons
 {
         Pool p;
         LOG4CXX_DECODE_WCHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg,
+        LoggingEventPtr event(new LoggingEvent(name, level1, msg,
            LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
@@ -743,7 +743,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 {
         Pool p;
         LOG4CXX_DECODE_UNICHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg, location));
+        LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
         callAppenders(event, p);
 }
 
@@ -751,7 +751,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 {
         Pool p;
         LOG4CXX_DECODE_UNICHAR(msg, message);
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg,
+        LoggingEventPtr event(new LoggingEvent(name, level1, msg,
            LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }
@@ -862,7 +862,7 @@ void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message,
 {
         Pool p;
         LOG4CXX_DECODE_CFSTRING(msg, message);
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg, location));
+        LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
         callAppenders(event, p);
 }
 
@@ -870,7 +870,7 @@ void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message) const
 {
         Pool p;
         LOG4CXX_DECODE_CFSTRING(msg, message);
-        LoggingEventPtr event(new LoggingEvent(const_cast<Logger*>(this), level1, msg,
+        LoggingEventPtr event(new LoggingEvent(name, level1, msg,
            LocationInfo::getLocationUnavailable()));
         callAppenders(event, p);
 }

@@ -36,12 +36,6 @@
 
 namespace log4cxx
 {
-        class Logger;
-        typedef helpers::ObjectPtrT<Logger> LoggerPtr;
-
-        class Level;
-        typedef helpers::ObjectPtrT<Level> LevelPtr;
-
         namespace helpers
         {
                 class ObjectOutputStream;
@@ -83,7 +77,7 @@ namespace log4cxx
                         @param file The file where this log statement was written.
                         @param line The line where this log statement was written.
                         */
-                        LoggingEvent(const LoggerPtr& logger,
+                        LoggingEvent(const LogString& logger,
                                 const LevelPtr& level,   const LogString& message,
                                 const log4cxx::spi::LocationInfo& location);
 
@@ -94,7 +88,9 @@ namespace log4cxx
                                 { return level; }
 
                         /**  Return the name of the #logger. */
-                        const LogString getLoggerName() const;
+                        inline const LogString& getLoggerName() const {
+                               return logger;
+                        }
 
                         /** Return the #message for this logging event. */
                         inline const LogString& getMessage() const
@@ -193,22 +189,11 @@ namespace log4cxx
                         */
                         void setProperty(const LogString& key, const LogString& value);
 
-                public:
-                        /**
-                        * Fully qualified name of the calling logger class.
-                        */
-                        LogString fqnOfLoggerClass;
-
                 private:
                         /**
-                        * The logger of the logging event. This field is not serialized for
-                        * performance reasons.
-                        *
-                        * <p>
-                        * It is set by the LoggingEvent constructor or set by a remote
-                        * entity after deserialization.
+                        * The logger of the logging event.
                         **/
-                        LoggerPtr logger;
+                        LogString logger;
 
                         /** level of logging event. */
                         LevelPtr level;

@@ -60,10 +60,9 @@ public:
    * @throws Exception if exception during test.
    */
   void testSerializationSimple() {
-    LoggerPtr root = Logger::getRootLogger();
     LoggingEventPtr event =
       new LoggingEvent(
-        root, Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
+        LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
         
     LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
       "witness/serialization/simple.bin", event, 237));
@@ -77,10 +76,9 @@ public:
    *
    */
   void testSerializationWithLocation() {
-    LoggerPtr root = Logger::getRootLogger();
     LoggingEventPtr event =
       new LoggingEvent(
-        root, Level::getInfo(), LOG4CXX_STR("Hello, world."), LOG4CXX_LOCATION);
+        LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LOG4CXX_LOCATION);
 
     LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
       "witness/serialization/location.bin", event, 237));
@@ -92,12 +90,11 @@ public:
    *
    */
   void testSerializationNDC() {
-    LoggerPtr root = Logger::getRootLogger();
     NDC::push("ndc test");
 
     LoggingEventPtr event =
       new LoggingEvent(
-        root, Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
+        LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
 
     LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
       "witness/serialization/ndc.bin", event, 237));
@@ -109,12 +106,11 @@ public:
    *
    */
   void testSerializationMDC() {
-    LoggerPtr root = Logger::getRootLogger();
     MDC::put("mdckey", "mdcvalue");
  
     LoggingEventPtr event =
       new LoggingEvent(
-        root, Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
+        LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
 
     LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
       "witness/serialization/mdc.bin", event, 237));

@@ -44,12 +44,11 @@ LOGUNIT_CLASS(CyclicBufferTestCase)
 public:
    void setUp()
    {
-      logger = Logger::getLogger(LOG4CXX_TEST_STR("x"));
       e.reserve(1000);
       LoggingEventPtr event;
       for (int i = 0; i < MAX; i++)
       {
-         event = new LoggingEvent(logger, Level::getDebug(), LOG4CXX_STR("e"),
+         event = new LoggingEvent(LOG4CXX_STR("x"), Level::getDebug(), LOG4CXX_STR("e"),
                           log4cxx::spi::LocationInfo::getLocationUnavailable());
          e.push_back(event);
       }

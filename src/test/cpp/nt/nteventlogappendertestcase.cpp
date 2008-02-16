@@ -75,10 +75,9 @@ public:
                 LayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c - %m%n")));
                 appender->setLayout(layout);
                 appender->activateOptions(p);
-                LoggerPtr logger(Logger::getLogger("org.foobar"));
 
                 LoggingEventPtr event(new LoggingEvent(
-                    logger, Level::getInfo(), LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));
+                    LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));
                 appender->doAppend(event, p);
             }
             hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");

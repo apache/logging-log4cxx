@@ -73,21 +73,17 @@ LOGUNIT_CLASS(PatternParserTestCase)
       LOGUNIT_TEST(testMultiOption);
    LOGUNIT_TEST_SUITE_END();
 
-   LoggerPtr logger;
    LoggingEventPtr event;
 
 public:
    void setUp()
    {
-      logger = Logger::getLogger(LOG4CXX_TEST_STR("org.foobar"));
-
       event = new LoggingEvent(
-         logger, Level::getInfo(), LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION);
+         LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION);
    }
 
    void tearDown()
    {
-      logger->getLoggerRepository()->resetConfiguration();
    }
 
 
@@ -205,9 +201,7 @@ public:
 
       expected.append(LOG4CXX_STR(" INFO  ["));
       expected.append(event->getThreadName());
-      expected.append(LOG4CXX_STR("] "));
-      expected.append(logger->getName());
-      expected.append(LOG4CXX_STR(" - msg 1"));
+      expected.append(LOG4CXX_STR("] org.foobar - msg 1"));
       expected.append(LOG4CXX_EOL);
 
       assertFormattedEquals(LOG4CXX_STR("%relative %-5level [%thread] %logger - %m%n"),

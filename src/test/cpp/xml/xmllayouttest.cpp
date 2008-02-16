@@ -249,7 +249,7 @@ public:
    * @throws Exception if parser can not be constructed or source is not a valid XML document.
    */
   void testFormat() {
-    LoggerPtr logger = Logger::getLogger("org.apache.log4j.xml.XMLLayoutTest");
+    LogString logger = LOG4CXX_STR("org.apache.log4j.xml.XMLLayoutTest");
     LoggingEventPtr event =
       new LoggingEvent(
         logger, Level::getInfo(), LOG4CXX_STR("Hello, World"), LOG4CXX_LOCATION);
@@ -278,7 +278,7 @@ public:
    * @throws Exception if parser can not be constructed or source is not a valid XML document.
    */
   void testFormatWithNDC() {
-    LoggerPtr logger = Logger::getLogger("org.apache.log4j.xml.XMLLayoutTest");
+    LogString logger = LOG4CXX_STR("org.apache.log4j.xml.XMLLayoutTest");
     NDC::push("NDC goes here");
 
     LoggingEventPtr event =
@@ -338,13 +338,12 @@ public:
     void testProblemCharacters()  {
       std::string problemName = "com.example.bar<>&\"'";
       LogString problemNameLS = LOG4CXX_STR("com.example.bar<>&\"'");
-      LoggerPtr logger = Logger::getLogger(problemName);
       LevelPtr level = new XLevel(6000, problemNameLS, 7);
       NDC::push(problemName);
       MDC::clear();
       MDC::put(problemName, problemName);
       LoggingEventPtr event =
-        new LoggingEvent(logger, level, problemNameLS, LOG4CXX_LOCATION);
+        new LoggingEvent(problemNameLS, level, problemNameLS, LOG4CXX_LOCATION);
       XMLLayout layout;
       layout.setProperties(true);
       Pool p;
@@ -386,7 +385,7 @@ public:
       * Tests CDATA element within NDC content.  See bug 37560.
       */
     void testNDCWithCDATA() {
-        LoggerPtr logger = Logger::getLogger("com.example.bar");
+        LogString logger = LOG4CXX_STR("com.example.bar");
         LevelPtr level = Level::getInfo();
         std::string ndcMessage ="<envelope><faultstring><![CDATA[The EffectiveDate]]></faultstring><envelope>";
         NDC::push(ndcMessage);
