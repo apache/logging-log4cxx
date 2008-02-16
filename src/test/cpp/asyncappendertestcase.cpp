@@ -244,10 +244,11 @@ public:
         }
         async->close();
         const std::vector<spi::LoggingEventPtr>& events = blockableAppender->getVector();
+        LOGUNIT_ASSERT(events.size() > 0);
         LoggingEventPtr initialEvent = events[0];
         LoggingEventPtr discardEvent = events[events.size() - 1];
-      LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
-      LOGUNIT_ASSERT(discardEvent->getMessage().substr(0,10) == LOG4CXX_STR("Discarded "));
+        LOGUNIT_ASSERT(initialEvent->getMessage() == LOG4CXX_STR("Hello, World"));
+        LOGUNIT_ASSERT(discardEvent->getMessage().substr(0,10) == LOG4CXX_STR("Discarded "));
         LOGUNIT_ASSERT_EQUAL(log4cxx::spi::LocationInfo::getLocationUnavailable().getClassName(), 
             discardEvent->getLocationInformation().getClassName()); 
     }

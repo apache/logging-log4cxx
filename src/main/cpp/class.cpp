@@ -65,6 +65,8 @@
 
 #include <log4cxx/rollingfileappender.h>
 #include <log4cxx/dailyrollingfileappender.h>
+#include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/propertyconfigurator.h>
 #include <apr.h>
 
 
@@ -180,5 +182,7 @@ void Class::registerClasses() {
         log4cxx::rolling::ManualTriggeringPolicy::registerClass();
         log4cxx::rolling::FixedWindowRollingPolicy::registerClass();
         log4cxx::rolling::FilterBasedTriggeringPolicy::registerClass();
+        log4cxx::xml::DOMConfigurator::registerClass();
+        log4cxx::PropertyConfigurator::registerClass();
 }
 
