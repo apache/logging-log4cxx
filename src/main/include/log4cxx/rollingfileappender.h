@@ -28,7 +28,7 @@ namespace log4cxx
 {
 
   /** RollingFileAppender extends FileAppender to backup the log files when they reach a certain size. */
-  class LOG4CXX_EXPORT RollingFileAppender : public log4cxx::helpers::ObjectImpl, public Appender
+  class LOG4CXX_EXPORT RollingFileAppender : public log4cxx::rolling::RollingFileAppenderSkeleton
   {
   private:
     /** The default maximum file size is 10MB. */
@@ -37,8 +37,6 @@ namespace log4cxx
     /** There is one backup file by default. */
     int maxBackupIndex;
 
-    log4cxx::rolling::RollingFileAppenderPtr rfa;
-
   public:
     //
     //   Use custom class to use non-default name to avoid
@@ -46,13 +44,10 @@ namespace log4cxx
     DECLARE_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS( RollingFileAppender, ClassRollingFileAppender )
     BEGIN_LOG4CXX_CAST_MAP()
          LOG4CXX_CAST_ENTRY( RollingFileAppender )
-         LOG4CXX_CAST_ENTRY( Appender )
-         LOG4CXX_CAST_ENTRY( spi::OptionHandler)
+         LOG4CXX_CAST_ENTRY_CHAIN( log4cxx::rolling::RollingFileAppenderSkeleton )
     END_LOG4CXX_CAST_MAP()
     /** The default constructor simply calls its {@link FileAppender#FileAppender parents constructor}. */
     RollingFileAppender();
-   void addRef() const;
-   void releaseRef() const;
 
     /**
                     Instantiate a RollingFileAppender and open the file designated by
@@ -78,17 +73,6 @@ namespace log4cxx
     /** Get the maximum size that the output file is allowed to reach before being rolled over to backup files. */
     long getMaximumFileSize() const;
 
-    /**
-                    Implements the usual roll over behaviour.
-
-    <p>If <code>MaxBackupIndex</code> is positive, then files {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
-     are renamed to {<code>File.2</code>, ..., <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
-     renamed <code>File.1</code> and closed. A new <code>File</code> is created to receive further log output.
-
-    <p>If <code>MaxBackupIndex</code> is equal to zero, then the <code>File</code> is truncated with no backup files created.
-    */
-    // synchronization not necessary since doAppend is alreasy synched
-    void rollOver();
 
     /**
                     Set the maximum number of backup files to keep around.
@@ -118,135 +102,6 @@ namespace log4cxx
     /** Prepares RollingFileAppender for use. */
     void activateOptions( log4cxx::helpers::Pool & pool );
 
-
-    /**
-     Add a filter to the end of the filter list.
-
-    
-    */
-    void addFilter( const log4cxx::spi::FilterPtr & newFilter );
-
-    /**
-     Returns the head Filter. The Filters are organized in a linked list and
-     so all Filters on this Appender are available through the result.
-
-     @return the head Filter or null, if no Filters are present
-
-    
-    */
-    log4cxx::spi::FilterPtr getFilter() const;
-
-    /**
-     Clear the list of filters by removing all the filters in it.
-
-    
-    */
-    void clearFilters();
-
-    /**
-     Release any resources allocated within the appender such as file handles, network connections, etc.
-
-    <p> It is a programming error to append to a closed appender. </p>
-
-    
-    */
-    void close();
-
-    /**
-     Is this appender closed?
-
-    
-    */
-    bool isClosed() const;
-
-    /**
-     Is this appender in working order?
-
-    
-    */
-    bool isActive() const;
-
-    /**
-     Log in <code>Appender</code> specific way. When appropriate, Loggers will
-     call the <code>doAppend</code> method of appender implementations in order to log.
-    */
-    void doAppend( const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p );
-
-    /** Get the name of this appender. The name uniquely identifies the appender. */
-    LogString getName() const;
-
-    /**
-     Set the {@link Layout} for this appender.
-
-    
-    */
-    void setLayout( const LayoutPtr & layout );
-
-    /**
-     Returns this appenders layout.
-
-    
-    */
-    LayoutPtr getLayout() const;
-
-    /**
-     Set the name of this appender. The name is used by other components to identify this appender.
-
-    
-    */
-    void setName( const LogString & name );
-
-
-    /**
-       The <b>File</b> property takes a string value which should be the name of the file to append to.
-
-    <p><font color="#DD0044"><b>Note that the special values "System.out" or "System.err" are no longer honored.</b></font>
-
-    <p>Note: Actual opening of the file is made when {@link #activateOptions} is called, not when the options are set.
-    */
-    void setFile( const LogString & file );
-
-    /** Returns the value of the <b>Append</b> option. */
-    bool getAppend() const;
-
-      /** Returns the value of the <b>File</b> option. */
-      LogString getFile() const;
-
-      /**
-         Get the value of the <b>BufferedIO</b> option.
-
-      <p>BufferedIO will significatnly increase performance on heavily loaded systems.
-
-       */
-      bool getBufferedIO() const;
-
-      /** Get the size of the IO buffer. */
-      int getBufferSize() const;
-
-        /**
-           The <b>Append</b> option takes a boolean value. It is set to
-         <code>true</code> by default. If true, then <code>File</code>
-         will be opened in append mode by {@link #setFile setFile} (see above). Otherwise, {@link #setFile setFile} will open
-         <code>File</code> in truncate mode.
-
-        <p>Note: Actual opening of the file is made when {@link #activateOptions} is called, not when the options are set.
-         */
-        void setAppend( bool flag );
-
-        /**
-           The <b>BufferedIO</b> option takes a boolean value. It is set to
-         <code>false</code> by default. If true, then <code>File</code>
-         will be opened and the resulting {@link java.io.Writer} wrapped around a {@link java.io.BufferedWriter}.
-
-        BufferedIO will significatnly increase performance on heavily loaded systems.
-
-         */
-        void setBufferedIO( bool bufferedIO );
-
-        /** Set the size of the IO buffer. */
-        void setBufferSize( int bufferSize );
-
-        bool requiresLayout() const;
 
       }; // class RollingFileAppender
       LOG4CXX_PTR_DEF(RollingFileAppender)

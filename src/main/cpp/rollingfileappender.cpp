@@ -33,19 +33,24 @@ using namespace log4cxx::rolling;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+
+IMPLEMENT_LOG4CXX_OBJECT(RollingFileAppenderSkeleton)
 IMPLEMENT_LOG4CXX_OBJECT(RollingFileAppender)
 
 
 /**
  * Construct a new instance.
  */
+RollingFileAppenderSkeleton::RollingFileAppenderSkeleton() {
+}
+
 RollingFileAppender::RollingFileAppender() {
 }
 
 /**
  * Prepare instance of use.
  */
-void RollingFileAppender::activateOptions(Pool &p) {
+void RollingFileAppenderSkeleton::activateOptions(Pool &p) {
   if (rollingPolicy == NULL) {
    FixedWindowRollingPolicy* fwrp = new FixedWindowRollingPolicy();
     fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
@@ -128,7 +133,7 @@ void RollingFileAppender::activateOptions(Pool &p) {
 
  * @return true if rollover performed.
  */
-bool RollingFileAppender::rollover(Pool& p) {
+bool RollingFileAppenderSkeleton::rollover(Pool& p) {
   //
   //   can't roll without a policy
   //
@@ -246,7 +251,7 @@ bool RollingFileAppender::rollover(Pool& p) {
 /**
  * {@inheritDoc}
 */
-void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p) {
+void RollingFileAppenderSkeleton::subAppend(const LoggingEventPtr& event, Pool& p) {
   // The rollover check must precede actual writing. This is the
   // only correct behavior for time driven triggers.
   if (
@@ -270,7 +275,7 @@ void RollingFileAppender::subAppend(const LoggingEventPtr& event, Pool& p) {
  * Get rolling policy.
  * @return rolling policy.
  */
-RollingPolicyPtr RollingFileAppender::getRollingPolicy() const {
+RollingPolicyPtr RollingFileAppenderSkeleton::getRollingPolicy() const {
   return rollingPolicy;
 }
 
@@ -278,7 +283,7 @@ RollingPolicyPtr RollingFileAppender::getRollingPolicy() const {
  * Get triggering policy.
  * @return triggering policy.
  */
-TriggeringPolicyPtr RollingFileAppender::getTriggeringPolicy() const {
+TriggeringPolicyPtr RollingFileAppenderSkeleton::getTriggeringPolicy() const {
   return triggeringPolicy;
 }
 
@@ -286,7 +291,7 @@ TriggeringPolicyPtr RollingFileAppender::getTriggeringPolicy() const {
  * Sets the rolling policy.
  * @param policy rolling policy.
  */
-void RollingFileAppender::setRollingPolicy(const RollingPolicyPtr& policy) {
+void RollingFileAppenderSkeleton::setRollingPolicy(const RollingPolicyPtr& policy) {
   rollingPolicy = policy;
 }
 
@@ -294,14 +299,14 @@ void RollingFileAppender::setRollingPolicy(const RollingPolicyPtr& policy) {
  * Set triggering policy.
  * @param policy triggering policy.
  */
-void RollingFileAppender::setTriggeringPolicy(const TriggeringPolicyPtr& policy) {
+void RollingFileAppenderSkeleton::setTriggeringPolicy(const TriggeringPolicyPtr& policy) {
   triggeringPolicy = policy;
 }
 
 /**
  * Close appender.  Waits for any asynchronous file compression actions to be completed.
  */
-void RollingFileAppender::close() {
+void RollingFileAppenderSkeleton::close() {
   {
   synchronized sync (mutex);
     if (lastRolloverAsyncAction != NULL) {
@@ -328,7 +333,7 @@ class CountingOutputStream : public OutputStream {
   /**
    * Rolling file appender to inform of stream writes.
    */
-  RollingFileAppenderPtr rfa;
+  RollingFileAppenderSkeletonPtr rfa;
 
   public:
   /**
@@ -337,7 +342,7 @@ class CountingOutputStream : public OutputStream {
    * @param rfa rolling file appender to inform.
    */
   CountingOutputStream(
-    OutputStreamPtr& os1, RollingFileAppender* rfa1) :
+    OutputStreamPtr& os1, RollingFileAppenderSkeleton* rfa1) :
       os(os1), rfa(rfa1) {
   }
 
@@ -376,7 +381,7 @@ class CountingOutputStream : public OutputStream {
  @param os output stream, may not be null.
  @return new writer.
  */
-WriterPtr RollingFileAppender::createWriter(OutputStreamPtr& os) {
+WriterPtr RollingFileAppenderSkeleton::createWriter(OutputStreamPtr& os) {
   OutputStreamPtr cos(new CountingOutputStream(os, this));
   return FileAppender::createWriter(cos);
 }
@@ -385,7 +390,7 @@ WriterPtr RollingFileAppender::createWriter(OutputStreamPtr& os) {
  * Get byte length of current active log file.
  * @return byte length of current active log file.
  */
-size_t RollingFileAppender::getFileLength() const {
+size_t RollingFileAppenderSkeleton::getFileLength() const {
   return fileLength;
 }
 
@@ -393,6 +398,6 @@ size_t RollingFileAppender::getFileLength() const {
  * Increments estimated byte length of current active log file.
  * @param increment additional bytes written to log file.
  */
-void RollingFileAppender::incrementFileLength(size_t increment) {
+void RollingFileAppenderSkeleton::incrementFileLength(size_t increment) {
   fileLength += increment;
 }

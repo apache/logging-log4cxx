@@ -60,29 +60,26 @@ const log4cxx::helpers::ClassRegistration& ObsoleteRollingFileAppenderRegistrati
 
 
 RollingFileAppender::RollingFileAppender()
-   : maxFileSize(10*1024*1024), maxBackupIndex(1),
-     rfa(new log4cxx::rolling::RollingFileAppender()) {
+   : maxFileSize(10*1024*1024), maxBackupIndex(1) {
 }
 
 RollingFileAppender::RollingFileAppender(
   const LayoutPtr& layout,
   const LogString& filename,
   bool append)
-  : maxFileSize(10*1024*1024), maxBackupIndex(1),
-    rfa(new log4cxx::rolling::RollingFileAppender()) {
-  rfa->setLayout(layout);
-  rfa->setFile(filename);
-  rfa->setAppend(append);
+  : maxFileSize(10*1024*1024), maxBackupIndex(1) {
+  setLayout(layout);
+  setFile(filename);
+  setAppend(append);
   Pool pool;
   activateOptions(pool);
 }
 
 RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
    const LogString& filename)
-   : maxFileSize(10*1024*1024), maxBackupIndex(1),
-     rfa(new log4cxx::rolling::RollingFileAppender()) {
-  rfa->setLayout(layout);
-  rfa->setFile(filename);
+   : maxFileSize(10*1024*1024), maxBackupIndex(1) {
+  setLayout(layout);
+  setFile(filename);
   Pool pool;
   activateOptions(pool);
 }
@@ -90,13 +87,6 @@ RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
 RollingFileAppender::~RollingFileAppender() {
 }
 
-void RollingFileAppender::addRef() const {
-    ObjectImpl::addRef();
-}
-
-void RollingFileAppender::releaseRef() const {
-    ObjectImpl::releaseRef();
-}
 
 void RollingFileAppender::setOption(const LogString& option,
         const LogString& value)
@@ -117,7 +107,7 @@ void RollingFileAppender::setOption(const LogString& option,
         }
         else
         {
-                rfa->setOption(option, value);
+                log4cxx::rolling::RollingFileAppenderSkeleton::setOption(option, value);
         }
 }
 
@@ -135,7 +125,7 @@ void RollingFileAppender::setMaxBackupIndex(int maxBackups) {
 }
 
 void RollingFileAppender::setMaximumFileSize(int maxFileSize1) {
-  RollingFileAppender::maxFileSize = maxFileSize1;
+  maxFileSize = maxFileSize1;
 }
 
 void RollingFileAppender::setMaxFileSize(const LogString& value) {
@@ -147,88 +137,17 @@ void RollingFileAppender::activateOptions(Pool& pool) {
       new log4cxx::rolling::SizeBasedTriggeringPolicy());
   trigger->setMaxFileSize(maxFileSize);
   trigger->activateOptions(pool);
-  rfa->setTriggeringPolicy(trigger);
+  setTriggeringPolicy(trigger);
 
   log4cxx::rolling::FixedWindowRollingPolicyPtr rolling(
       new log4cxx::rolling::FixedWindowRollingPolicy());
   rolling->setMinIndex(1);
   rolling->setMaxIndex(maxBackupIndex);
-  rolling->setFileNamePattern(rfa->getFile() + LOG4CXX_STR(".%i"));
+  rolling->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
   rolling->activateOptions(pool);
-  rfa->setRollingPolicy(rolling);
+  setRollingPolicy(rolling);
 
-  rfa->activateOptions(pool);
+  log4cxx::rolling::RollingFileAppenderSkeleton::activateOptions(pool);
 }
 
-
-void RollingFileAppender::addFilter(const FilterPtr& newFilter) {
-  rfa->addFilter(newFilter);
-}
-
-FilterPtr RollingFileAppender::getFilter() const {
-  return rfa->getFilter();
-}
-
-void RollingFileAppender::clearFilters() {
-  rfa->clearFilters();
-}
-
-void RollingFileAppender::close() {
-  rfa->close();
-}
-
-bool RollingFileAppender::isClosed() const {
-  return false;
-}
-
-bool RollingFileAppender::isActive() const {
-//  return rfa->isActive();
-  return true;
-}
-
-void RollingFileAppender::doAppend(const LoggingEventPtr& event, Pool& p) {
-  rfa->doAppend(event, p);
-}
-
-LogString RollingFileAppender::getName() const {
-  return rfa->getName();
-}
-
-void RollingFileAppender::setLayout(const LayoutPtr& layout) {
-  rfa->setLayout(layout);
-}
-
-LayoutPtr RollingFileAppender::getLayout() const {
-  return rfa->getLayout();
-}
-
-void RollingFileAppender::setName(const LogString& name) {
-  rfa->setName(name);
-}
-
-void RollingFileAppender::setFile(const LogString& file) {
-  rfa->setFile(file);
-}
-
-bool RollingFileAppender::getAppend() const {
-  return rfa->getAppend();
-}
-
-void RollingFileAppender::setBufferedIO(bool bufferedIO) {
-  rfa->setBufferedIO(bufferedIO);
-}
-
-void RollingFileAppender::setBufferSize(int bufferSize) {
-  rfa->setBufferSize(bufferSize);
-}
-
-
-void RollingFileAppender::rollOver() {
-      Pool p;
-      rfa->rollover(p);
-}
-
-bool RollingFileAppender::requiresLayout() const {
-     return true;
-}
 
