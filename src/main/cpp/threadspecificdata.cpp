@@ -59,6 +59,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData() {
 }
 
 void ThreadSpecificData::recycle() {
+#if APR_HAS_THREADS
     if(ndcStack.empty() && mdcMap.empty()) {
         void* pData = NULL;
         apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
@@ -69,6 +70,7 @@ void ThreadSpecificData::recycle() {
             }
         }
     }
+#endif    
 }
 
 void ThreadSpecificData::put(const LogString& key, const LogString& val) {
