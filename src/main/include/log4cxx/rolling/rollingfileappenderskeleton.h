@@ -57,11 +57,6 @@ namespace log4cxx {
            */
           size_t fileLength;
 
-          /**
-           * Asynchronous action (like compression) from previous rollover.
-           */
-          ActionPtr lastRolloverAsyncAction;
-
         public:
           /**
            * The default constructor simply calls its {@link

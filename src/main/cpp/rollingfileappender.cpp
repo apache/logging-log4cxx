@@ -89,13 +89,13 @@ void RollingFileAppenderSkeleton::activateOptions(Pool &p) {
 
         setFile(rollover1->getActiveFileName());
         setAppend(rollover1->getAppend());
-        lastRolloverAsyncAction = rollover1->getAsynchronous();
 
-        if (lastRolloverAsyncAction != NULL) {
-            //
-            //  TODO: compression not asynchronous
-            //
-            lastRolloverAsyncAction->execute(p);
+        //
+        //  async action not yet implemented
+        //
+        ActionPtr asyncAction(rollover1->getAsynchronous());
+        if (asyncAction != NULL) {
+            asyncAction->execute(p);
         }
       }
 
@@ -141,21 +141,6 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
 
 {
     synchronized sync(mutex);
-      //
-      //   if a previous async task is still running
-      //}
-      if (lastRolloverAsyncAction != NULL) {
-        //
-        //  block until complete
-        //
-        lastRolloverAsyncAction->close();
-
-        //
-        //    or don't block and return to rollover later
-        //
-        //if (!lastRolloverAsyncAction.isComplete()) return false;
-      }
-
       try {
         RolloverDescriptionPtr rollover1(rollingPolicy->rollover(getFile(), p));
 
@@ -182,12 +167,12 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
                 fileLength = 0;
               }
 
-              if (rollover1->getAsynchronous() != NULL) {
-                lastRolloverAsyncAction = rollover1->getAsynchronous();
-                //
-                //   TODO: compression not currently asynchronous
-                //
-                lastRolloverAsyncAction->execute(p);
+              //
+              //  async action not yet implemented
+              //
+              ActionPtr asyncAction(rollover1->getAsynchronous());
+              if (asyncAction != NULL) {
+                asyncAction->execute(p);
               }
 
               setFile(
@@ -224,12 +209,12 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
                 fileLength = 0;
               }
 
-              if (rollover1->getAsynchronous() != NULL) {
-                lastRolloverAsyncAction = rollover1->getAsynchronous();
-                //
-                //  TODO: compression not asynchronous
-                //
-                lastRolloverAsyncAction->execute(p);
+              //
+              //   async action not yet implemented
+              //
+              ActionPtr asyncAction(rollover1->getAsynchronous());
+              if (asyncAction != NULL) {
+                asyncAction->execute(p);
               }
             }
 
@@ -307,13 +292,6 @@ void RollingFileAppenderSkeleton::setTriggeringPolicy(const TriggeringPolicyPtr&
  * Close appender.  Waits for any asynchronous file compression actions to be completed.
  */
 void RollingFileAppenderSkeleton::close() {
-  {
-  synchronized sync (mutex);
-    if (lastRolloverAsyncAction != NULL) {
-      lastRolloverAsyncAction->close();
-    }
-  }
-
   FileAppender::close();
 }
 
@@ -333,7 +311,7 @@ class CountingOutputStream : public OutputStream {
   /**
    * Rolling file appender to inform of stream writes.
    */
-  RollingFileAppenderSkeletonPtr rfa;
+  RollingFileAppenderSkeleton* rfa;
 
   public:
   /**
@@ -351,6 +329,7 @@ class CountingOutputStream : public OutputStream {
    */
   void close(Pool& p)  {
     os->close(p);
+    rfa = 0;
   }
 
   /**
@@ -365,7 +344,9 @@ class CountingOutputStream : public OutputStream {
    */
   void write(ByteBuffer& buf, Pool& p) {
     os->write(buf, p);
-    rfa->incrementFileLength(buf.limit());
+    if (rfa != 0) {
+        rfa->incrementFileLength(buf.limit());
+    }
   }
 
 };
