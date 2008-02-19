@@ -68,6 +68,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <property name="base.dir" location="."/>
 <property name="src.dir" location="${base.dir}/src/main/cpp"/>
+<property name="resources.dir" location="${base.dir}/src/main/resources"/>
 <property name="include.dir" location="${base.dir}/src/main/include"/>
 <property name="target.dir" location="${base.dir}/target"/>
 <property name="lib.dir" location="${target.dir}/lib"/>
@@ -526,6 +527,11 @@ Command line options:
 
     <property name="project.compiler" value="${compiler}"/>
    <property name="project.type" value="msvc6"/>
+
+  <condition property="resource.compiler" value="windres">
+    <isset property="is-gcc"/>
+  </condition>
+  <property name="resource.compiler" value="msrc"/>
     
     <cc name="${project.compiler}"
                 exceptions="true"
@@ -536,6 +542,10 @@ Command line options:
                 objdir="${log4cxx.lib.dir}/log4cxx_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
+        <compiler name="${resource.compiler}" if="is-windows">
+          <includepath path="${resources.dir}"/>
+          <fileset dir="${resources.dir}" includes="*.rc"/>
+        </compiler>
         <fileset dir="${src.dir}" includes="*.cpp"/>
         <fileset dir="${include.dir}" includes="**/*.h"/>
         <includepath path="${include.dir}"/>
@@ -702,7 +712,12 @@ Command line options:
     <mkdir dir="${executable.dir}/static/testsuite-standalone_obj"/>
     <property name="project.compiler" value="${compiler}"/>
    <property name="project.type" value="msvc6"/>
-    <cc name="${project.compiler}"
+  <condition property="resource.compiler" value="windres">
+    <isset property="is-gcc"/>
+  </condition>
+  <property name="resource.compiler" value="msrc"/>
+
+  <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${executable.dir}/static/testsuite-standalone"
                 subsystem="console"
@@ -712,6 +727,10 @@ Command line options:
                 objdir="${executable.dir}/static/testsuite-standalone_obj"
                 debug="${debug}"
                 projectsOnly="${projectsOnly}">
+        <compiler name="${resource.compiler}" if="is-windows">
+          <includepath path="${resources.dir}"/>
+          <fileset dir="${resources.dir}" includes="*.rc"/>
+        </compiler>
         <fileset dir="${src.dir}" includes="*.cpp" excludes="**/iconv_module.cpp"/>
         <fileset dir="${include.dir}" includes="**/*.h"/>
         <fileset dir="${tests.cpp.dir}" includes="**/*.cpp **/*.c **/*.h"/>

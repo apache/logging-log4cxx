@@ -165,19 +165,11 @@ void NTEventLogAppender::activateOptions(Pool&)
 
         addRegistryInfo();
 
-#if LOG4CXX_WCHAR_T_API
         LOG4CXX_ENCODE_WCHAR(wsource, source);
         LOG4CXX_ENCODE_WCHAR(wserver, server);
         hEventLog = ::RegisterEventSourceW(
             wserver.empty() ? NULL : wserver.c_str(),
             wsource.c_str());
-#else
-        LOG4CXX_ENCODE_CHAR(wsource, source);
-        LOG4CXX_ENCODE_CHAR(wserver, server);
-        hEventLog = ::RegisterEventSourceA(
-            wserver.empty() ? NULL : wserver.c_str(),
-            wsource.c_str());
-#endif
         if (hEventLog == NULL) {
             LogString msg(LOG4CXX_STR("Cannot register NT EventLog -- server: '"));
             msg.append(server);
@@ -198,7 +190,6 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 
         LogString oss;
         layout->format(oss, event, p);
-#if LOG4CXX_WCHAR_T_API
         wchar_t* msgs = Transcoder::wencode(oss, p);
         BOOL bSuccess = ::ReportEventW(
                 hEventLog,
@@ -210,19 +201,6 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
                 0,
                 (LPCWSTR*) &msgs,
                 NULL);
-#else
-        char* msgs = Transcoder::encode(oss, p);
-        BOOL bSuccess = ::ReportEventA(
-                hEventLog,
-                getEventType(event),
-                getEventCategory(event),
-                0x1000,
-                pCurrentUserSID,
-                1,
-                0,
-                &msgs,
-                NULL);
-#endif
 
         if (!bSuccess)
         {
@@ -230,55 +208,42 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
         }
 }
 
-NTEventLogAppender::HKEY NTEventLogAppender::regGetKey(
-     const LogString& subkey, DWORD *disposition)
-{
-        ::HKEY hkey = 0;
-#if LOG4CXX_WCHAR_T_API
-        LOG4CXX_ENCODE_WCHAR(wstr, subkey);
-        RegCreateKeyExW((::HKEY) HKEY_LOCAL_MACHINE, wstr.c_str(), 0, NULL,
-                REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL,
-                &hkey, disposition);
-#else
-        LOG4CXX_ENCODE_CHAR(str, subkey);
-        RegCreateKeyExA((::HKEY) HKEY_LOCAL_MACHINE, str.c_str(), 0, NULL,
-                REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL,
-                &hkey, disposition);
-#endif
-        return hkey;
-}
-
-void NTEventLogAppender::regSetString(HKEY hkey, const wchar_t*  name,
-                                       const wchar_t* value)
-{
-        RegSetValueExW((::HKEY) hkey, name, 0, REG_SZ, (LPBYTE) value,
-        wcslen(value)*sizeof(wchar_t));
-}
-
-void NTEventLogAppender::regSetDword(HKEY hkey, const wchar_t* name, DWORD value)
-{
-        RegSetValueExW((::HKEY) hkey, name, 0, REG_DWORD, (LPBYTE)&value, sizeof(DWORD));
-}
-
 /*
  * Add this source with appropriate configuration keys to the registry.
  */
 void NTEventLogAppender::addRegistryInfo()
 {
-        DWORD disposition;
+        DWORD disposition = 0;
         ::HKEY hkey = 0;
         LogString subkey(LOG4CXX_STR("SYSTEM\\CurrentControlSet\\Services\\EventLog\\"));
         subkey.append(log);
         subkey.append(1, 0x5C /* '\\' */);
         subkey.append(source);
+        LOG4CXX_ENCODE_WCHAR(wsource, source);
 
-        hkey = (::HKEY) regGetKey(subkey, &disposition);
-        if (disposition == REG_CREATED_NEW_KEY)
-        {
-                regSetString(hkey, L"EventMessageFile", L"NTEventLogAppender.dll");
-                regSetString(hkey, L"CategoryMessageFile", L"NTEventLogAppender.dll");
-                regSetDword(hkey,  L"TypesSupported", (DWORD)7);
-                regSetDword(hkey,  L"CategoryCount", (DWORD)5);
+        long stat = RegCreateKeyExW(HKEY_LOCAL_MACHINE, wsource.c_str(), 0, NULL,
+                REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL,
+                &hkey, &disposition);
+        if (stat == ERROR_SUCCESS && disposition == REG_CREATED_NEW_KEY) {
+            HMODULE hmodule = GetModuleHandleW(L"log4cxx");
+            if (hmodule == NULL) {
+                hmodule = GetModuleHandleW(0);
+            }
+            wchar_t modpath[_MAX_PATH];
+            DWORD modlen = GetModuleFileNameW(hmodule, modpath, _MAX_PATH - 1);
+            if (modlen > 0) {
+                modpath[modlen] = 0;
+                RegSetValueExW(hkey, L"EventMessageFile", 0, REG_SZ, 
+                        (LPBYTE) modpath, wcslen(modpath) * sizeof(wchar_t));
+                RegSetValueExW(hkey, L"CategoryMessageFile", 0, REG_SZ, 
+                        (LPBYTE) modpath, wcslen(modpath) * sizeof(wchar_t));
+                    DWORD typesSupported = 7;
+                    DWORD categoryCount = 6;
+                RegSetValueExW(hkey, L"TypesSupported", 0, REG_DWORD, 
+                           (LPBYTE)&typesSupported, sizeof(DWORD));
+                RegSetValueExW(hkey, L"CategoryCount", 0, REG_DWORD, 
+                           (LPBYTE)&categoryCount, sizeof(DWORD));
+            }
         }
 
         RegCloseKey(hkey);
@@ -287,52 +252,40 @@ void NTEventLogAppender::addRegistryInfo()
 
 WORD NTEventLogAppender::getEventType(const LoggingEventPtr& event)
 {
-        WORD ret_val;
-
-        switch (event->getLevel()->toInt())
-        {
-        case Level::FATAL_INT:
-        case Level::ERROR_INT:
-                ret_val = EVENTLOG_ERROR_TYPE;
-                break;
-        case Level::WARN_INT:
-                ret_val = EVENTLOG_WARNING_TYPE;
-                break;
-        case Level::INFO_INT:
-        case Level::DEBUG_INT:
-        default:
-                ret_val = EVENTLOG_INFORMATION_TYPE;
-                break;
-        }
-
-        return ret_val;
+  int priority = event->getLevel()->toInt();
+  WORD type = EVENTLOG_SUCCESS;
+  if (priority >= Level::INFO_INT) {
+      type = EVENTLOG_INFORMATION_TYPE;
+      if (priority >= Level::WARN_INT) {
+          type = EVENTLOG_WARNING_TYPE;
+          if (priority >= Level::ERROR_INT) {
+             type = EVENTLOG_ERROR_TYPE;
+          }
+      }
+  }
+  return type;
 }
 
 WORD NTEventLogAppender::getEventCategory(const LoggingEventPtr& event)
 {
-        WORD ret_val;
-
-        switch (event->getLevel()->toInt())
-        {
-        case Level::FATAL_INT:
-                ret_val = 1;
-                break;
-        case Level::ERROR_INT:
-                ret_val = 2;
-                break;
-        case Level::WARN_INT:
-                ret_val = 3;
-                break;
-        case Level::INFO_INT:
-                ret_val = 4;
-                break;
-        case Level::DEBUG_INT:
-        default:
-                ret_val = 5;
-                break;
-        }
-
-        return ret_val;
+  int priority = event->getLevel()->toInt();
+  WORD category = 1;
+  if (priority >= Level::DEBUG_INT) {
+      category = 2;
+      if (priority >= Level::INFO_INT) {
+          category = 3;
+          if (priority >= Level::WARN_INT) {
+             category = 4;
+             if (priority >= Level::ERROR_INT) {
+                category = 5;
+                if (priority >= Level::FATAL_INT) {
+                    category = 6;
+                }
+             }
+          }
+      }
+  }
+  return category;
 }
 
 LogString NTEventLogAppender::getErrorString(const LogString& function)
@@ -340,7 +293,6 @@ LogString NTEventLogAppender::getErrorString(const LogString& function)
     Pool p;
     enum { MSGSIZE = 5000 };
 
-#if LOG4CXX_WCHAR_T_API
     wchar_t* lpMsgBuf = (wchar_t*) p.palloc(MSGSIZE * sizeof(wchar_t));
     DWORD dw = GetLastError();
 
@@ -351,19 +303,6 @@ LogString NTEventLogAppender::getErrorString(const LogString& function)
         MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
         lpMsgBuf,
         MSGSIZE, NULL );
-#else
-    char* lpMsgBuf = (char*) p.palloc(MSGSIZE);
-    DWORD dw = GetLastError();
-
-    FormatMessageA(
-        FORMAT_MESSAGE_FROM_SYSTEM,
-        NULL,
-        dw,
-        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-        lpMsgBuf,
-        MSGSIZE, NULL );
-
-#endif
 
     LogString msg(function);
     msg.append(LOG4CXX_STR(" failed with error "));

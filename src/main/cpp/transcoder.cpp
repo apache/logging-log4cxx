@@ -362,7 +362,7 @@ static void encodeUTF16(unsigned int sv, String& dst) {
 
 
 
-#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T
+#if LOG4CXX_WCHAR_T_API || LOG4CXX_LOGCHAR_IS_WCHAR_T || defined(WIN32) || defined(_WIN32)
 void Transcoder::decode(const std::wstring& src, LogString& dst) {
 #if LOG4CXX_LOGCHAR_IS_WCHAR_T
   dst.append(src, len);

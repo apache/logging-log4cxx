@@ -79,16 +79,12 @@ namespace log4cxx
                         //   these typedef are proxies for the real Win32 definitions
                         //     and need to be cast to the global definitions before
                         //     use with a Win32 API call
-                        typedef void* HKEY;
                         typedef void SID;
                         typedef void* HANDLE;
 
                         virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
-                        static HKEY regGetKey(const LogString& subkey, unsigned long *disposition);
-                        static void regSetString(HKEY hkey, const wchar_t* name, const wchar_t* value);
-                        static void regSetDword(HKEY hkey, const wchar_t* name, unsigned long value);
-                        unsigned short getEventType(const spi::LoggingEventPtr& event);
-                        unsigned short getEventCategory(const spi::LoggingEventPtr& event);
+                        static unsigned short getEventType(const spi::LoggingEventPtr& event);
+                        static unsigned short getEventCategory(const spi::LoggingEventPtr& event);
                         /*
                          * Add this source with appropriate configuration keys to the registry.
                          */
