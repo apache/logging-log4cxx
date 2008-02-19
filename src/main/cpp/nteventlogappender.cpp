@@ -219,9 +219,9 @@ void NTEventLogAppender::addRegistryInfo()
         subkey.append(log);
         subkey.append(1, 0x5C /* '\\' */);
         subkey.append(source);
-        LOG4CXX_ENCODE_WCHAR(wsource, source);
+        LOG4CXX_ENCODE_WCHAR(wsubkey, subkey);
 
-        long stat = RegCreateKeyExW(HKEY_LOCAL_MACHINE, wsource.c_str(), 0, NULL,
+        long stat = RegCreateKeyExW(HKEY_LOCAL_MACHINE, wsubkey.c_str(), 0, NULL,
                 REG_OPTION_NON_VOLATILE, KEY_SET_VALUE, NULL,
                 &hkey, &disposition);
         if (stat == ERROR_SUCCESS && disposition == REG_CREATED_NEW_KEY) {
