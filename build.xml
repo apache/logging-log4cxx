@@ -27,7 +27,7 @@
       <libset libs="${odbc.lib}" if="odbc.lib"/>
       <libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
         <libset libs="pthread" if="is-unix"/>
-        <syslibset libs="advapi32 ws2_32 shell32" if="is-windows"/>
+        <syslibset libs="advapi32 mswsock ws2_32 shell32" if="is-windows"/>
         <syslibset libs="stdc++" if="is-gcc"/>
         <syslibset libs="cw32mt" if="is-bcc"/>
 '>
