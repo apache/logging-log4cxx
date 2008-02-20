@@ -1035,7 +1035,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param values The values for the placeholders <code>{0}</code>,
                       <code>{1}</code> etc. within the pattern.
@@ -1054,7 +1054,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
 
         @see #setResourceBundle
@@ -1070,7 +1070,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The first value for the placeholders within the pattern.
 
@@ -1088,7 +1088,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The first value for the placeholders within the pattern.
         @param val2 The second value for the placeholders within the pattern.
@@ -1107,7 +1107,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
         @param val2 The value for the second placeholder within the pattern.
@@ -1129,7 +1129,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
 
         @see #setResourceBundle
@@ -1145,7 +1145,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
 
@@ -1163,7 +1163,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
         @param val2 The value for the second placeholder within the pattern.
@@ -1182,7 +1182,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
         @param val2 The value for the second placeholder within the pattern.
@@ -1204,7 +1204,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
 
         @see #setResourceBundle
@@ -1220,7 +1220,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
 
@@ -1238,7 +1238,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
         @param val2 The value for the second placeholder within the pattern.
@@ -1257,7 +1257,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
         @param val2 The value for the second placeholder within the pattern.
@@ -1280,7 +1280,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
 
         @see #setResourceBundle
@@ -1296,7 +1296,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
 
@@ -1314,7 +1314,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
         @param val2 The value for the second placeholder within the pattern.
@@ -1333,7 +1333,7 @@ namespace log4cxx
         supplied string array <code>params</code>.
 
         @param level The level of the logging request.
-        @param key The key to be searched in the #ResourceBundle.
+        @param key The key to be searched in the ResourceBundle.
         @param locationInfo The location info of the logging request.
         @param val1 The value for the first placeholder within the pattern.
         @param val2 The value for the second placeholder within the pattern.
@@ -1472,7 +1472,7 @@ namespace log4cxx
         virtual void setLevel(const LevelPtr& level);
 
         /**
-        Set the resource bundle to be used with localized logging method #l7dlog.
+        Set the resource bundle to be used with localized logging methods.
         */
         inline void setResourceBundle(const helpers::ResourceBundlePtr& bundle)
                 { resourceBundle = bundle; }

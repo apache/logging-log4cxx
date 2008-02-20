@@ -235,9 +235,9 @@ namespace log4cxx
                         static void configure(const CFStringRef& filename);
 #endif
                         /**
-                        Like #configureAndWatch(const String& configFilename, long delay)
+                        Like #configureAndWatch(const std::string& configFilename, long delay)
                         except that the default delay as defined by
-                        helpers::FileWatchdog#DEFAULT_DELAY is used.
+                        log4cxx::helpers::FileWatchdog#DEFAULT_DELAY is used.
                         @param configFilename A log4j configuration file in XML format.
                         */
                         static void configureAndWatch(const std::string& configFilename);

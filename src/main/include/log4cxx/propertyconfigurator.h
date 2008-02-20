@@ -52,7 +52,7 @@ namespace log4cxx
 
 /**
 Allows the configuration of log4cxx from an external file.  See
-<b>{@link #doConfigure(const File&, spi::LoggerRepositoryPtr&)}</b>
+<b>{@link #doConfigure(const File&, log4cxx::spi::LoggerRepositoryPtr&)}</b>
 for the expected format.
 
 <p>It is sometimes useful to see how log4cxx is reading configuration
@@ -324,14 +324,14 @@ configuration information is stored.
 
       /**
       Read configuration options from <code>properties</code>.
-      See #doConfigure(const string&, spi::LoggerRepositoryPtr&)
+      See #doConfigure(const File&, log4cxx::spi::LoggerRepositoryPtr&)
       for the expected format.
       */
       static void configure(helpers::Properties& properties);
 
       /**
       Read configuration options from <code>properties</code>.
-      See #doConfigure(const String&, spi::LoggerRepositoryPtr&)
+      See #doConfigure(const File&, log4cxx::spi::LoggerRepositoryPtr&)
       for the expected format.
       */
       void doConfigure(helpers::Properties& properties,
@@ -344,7 +344,7 @@ protected:
       /**
       Check the provided <code>Properties</code> object for a
       #loggerFactory
-      entry specified by #LOGGER_FACTORY_KEY.  If such an entry
+      entry specified by LOGGER_FACTORY_KEY.  If such an entry
       exists, an attempt is made to create an instance using the default
       constructor.  This instance is used for subsequent Logger creations
       within this configurator.

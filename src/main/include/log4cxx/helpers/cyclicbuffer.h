@@ -25,8 +25,9 @@ namespace log4cxx
         namespace helpers
         {
                 /**
-                CyclicBuffer is used by other appenders to hold {@link spi::LoggingEvent
-                LoggingEvents} for immediate or differed display.
+                CyclicBuffer is used by other appenders to hold instances of
+                {@link log4cxx::spi::LoggingEvent LoggingEvent} for immediate 
+                or deferred display.
                 <p>This buffer gives read access to any element in the buffer not
                 just the first or last element.
                 */

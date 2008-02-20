@@ -47,14 +47,14 @@ namespace log4cxx
 
 
                 /**
-                *  Sets the value of the <b>#target</b> property. Recognized values
+                *  Sets the value of the <b>target</b> property. Recognized values
                 *  are "System.out" and "System.err". Any other value will be
                 *  ignored.
                 * */
                 void setTarget(const LogString& value);
 
                 /**
-                * Returns the current value of the <b>#target</b> property. The
+                * Returns the current value of the <b>target</b> property. The
                 * default value of the option is "System.out".
                 *
                 * See also #setTarget.

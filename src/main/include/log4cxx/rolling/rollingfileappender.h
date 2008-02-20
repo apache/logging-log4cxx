@@ -26,14 +26,14 @@ namespace log4cxx {
 
         
         /**
-         * <code>RollingFileAppender</code> extends {@link FileAppender} to backup the log files
-         * depending on {@link RollingPolicy} and {@link TriggeringPolicy}.
+         * <code>RollingFileAppender</code> extends {@link log4cxx::FileAppender} to backup the log files
+         * depending on {@link log4cxx::rolling::RollingPolicy RollingPolicy} and {@link log4cxx::rolling::TriggeringPolicy TriggeringPolicy}.
          * <p>
          * To be of any use, a <code>RollingFileAppender</code> instance must have both
          * a <code>RollingPolicy</code> and a <code>TriggeringPolicy</code> set up.
          * However, if its <code>RollingPolicy</code> also implements the
          * <code>TriggeringPolicy</code> interface, then only the former needs to be
-         * set up. For example, {@link TimeBasedRollingPolicy} acts both as a
+         * set up. For example, {@link log4cxx::rolling::TimeBasedRollingPolicy TimeBasedRollingPolicy} acts both as a
          * <code>RollingPolicy</code> and a <code>TriggeringPolicy</code>.
          *
          * <p><code>RollingFileAppender</code> can be configured programattically or

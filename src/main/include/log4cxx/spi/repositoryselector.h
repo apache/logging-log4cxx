@@ -31,7 +31,7 @@ namespace log4cxx
        /**
        The <code>LogManager</code> uses one (and only one)
        <code>RepositorySelector</code> implementation to select the
-       {@link LoggerRepository LoggerRepository}
+       {@link log4cxx::spi::LoggerRepository LoggerRepository}
            for a particular application context.
 
        <p>It is the responsability of the <code>RepositorySelector</code>

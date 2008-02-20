@@ -31,9 +31,9 @@ namespace log4cxx
                 <b>AcceptOnMatch</b>. If there is a match between the value of the
                 StringToMatch option and the message of the {@link spi::LoggingEvent
                 LoggingEvent}, then the #decide method returns
-                {@link spi::Filter#ACCEPT ACCEPT} if the <b>AcceptOnMatch</b> option
-                value is true, if it is false then {@link spi::Filter#DENY DENY} is
-                returned. If there is no match, {@link spi::Filter#NEUTRAL NEUTRAL}
+                {@link log4cxx::spi::Filter#ACCEPT ACCEPT} if the <b>AcceptOnMatch</b> option
+                value is true, if it is false then {@link log4cxx::spi::Filter#DENY DENY} is
+                returned. If there is no match, {@link log4cxx::spi::Filter#NEUTRAL NEUTRAL}
                 is returned.
 
                 <p>See configuration files <a
@@ -80,7 +80,7 @@ namespace log4cxx
                                 { return acceptOnMatch; }
 
                         /**
-                        Returns {@link spi::Filter#NEUTRAL NEUTRAL}
+                        Returns {@link log4cxx::spi::Filter#NEUTRAL NEUTRAL}
                         is there is no string match.
                         */
                         FilterDecision decide(const spi::LoggingEventPtr& event) const;

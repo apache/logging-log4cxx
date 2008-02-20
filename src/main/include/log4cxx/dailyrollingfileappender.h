@@ -41,7 +41,7 @@ namespace log4cxx {
 
 
 /**
-   DailyRollingFileAppender extends {@link FileAppender} so that the
+   DailyRollingFileAppender extends {@link log4cxx::FileAppender FileAppender} so that the
    underlying file is rolled over at a user chosen frequency.
 
    <p>The rolling schedule is specified by the <b>DatePattern</b>

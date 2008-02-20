@@ -35,8 +35,9 @@ namespace log4cxx
 
     /**
     * Use the <code>LogManager</code> class to retreive Logger
-    * instances or to operate on the current {@link spi::LoggerRepository
-        * LoggerRepository}. When the <code>LogManager</code> class is loaded
+    * instances or to operate on the current 
+    * {@link log4cxx::spi::LoggerRepository LoggerRepository}. 
+    * When the <code>LogManager</code> class is loaded
     * into memory the default initialization procedure is inititated.
         */
     class LOG4CXX_EXPORT LogManager

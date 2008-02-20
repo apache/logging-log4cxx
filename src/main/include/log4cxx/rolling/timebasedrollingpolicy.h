@@ -167,7 +167,7 @@ namespace log4cxx {
             void releaseRef() const;
             void activateOptions(log4cxx::helpers::Pool& );
             /**
-           * Initialize the policy and return any initial actions for rolling file appender..
+           * Initialize the policy and return any initial actions for rolling file appender.
            *
            * @param file current value of RollingFileAppender.getFile().
            * @param append current value of RollingFileAppender.getAppend().

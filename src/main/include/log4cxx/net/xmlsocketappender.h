@@ -27,7 +27,7 @@ namespace log4cxx
         {
 
         /**
-        Sends {@link spi::LoggingEvent LoggingEvent} objects in XML format
+        Sends {@link log4cxx::spi::LoggingEvent LoggingEvent} objects in XML format
                 to a remote a log server, usually a XMLSocketNode.
 
         <p>The XMLSocketAppender has the following properties:

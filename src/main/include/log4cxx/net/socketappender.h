@@ -27,7 +27,7 @@ namespace log4cxx
         {
 
         /**
-        Sends {@link spi::LoggingEvent LoggingEvent} objects to a remote a log server,
+        Sends {@link log4cxx::spi::LoggingEvent LoggingEvent} objects to a remote a log server,
         usually Apache Chainsaw.
 
         <p>The SocketAppender has the following properties:

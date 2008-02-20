@@ -44,16 +44,10 @@ typedef std::map<LogString, PatternConstructor> PatternMap;
 //                 Reinhard Deschler <reinhard.deschler@web.de>
 
 /**
- * Most of the work of the {@link PatternLayout} class
+ * Most of the work of the {@link log4cxx::PatternLayout PatternLayout} class
  * is delegated to the PatternParser class.
  * <p>It is this class that parses conversion patterns and creates
  * a chained list of {@link PatternConverter PatternConverters}.
- *
- * 
- * 
- * 
- * 
- * 
  *
  * 
 */

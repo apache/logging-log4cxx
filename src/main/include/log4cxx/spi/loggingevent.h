@@ -68,7 +68,7 @@ namespace log4cxx
                         /**
                         Instantiate a LoggingEvent from the supplied parameters.
 
-                        <p>Except #timeStamp all the other fields of
+                        <p>Except timeStamp all the other fields of
                         <code>LoggingEvent</code> are filled when actually needed.
                         <p>
                         @param logger The logger of this event.
@@ -82,20 +82,20 @@ namespace log4cxx
 
                         ~LoggingEvent();
 
-                        /** Return the #level of this event. */
+                        /** Return the level of this event. */
                         inline const LevelPtr& getLevel() const
                                 { return level; }
 
-                        /**  Return the name of the #logger. */
+                        /**  Return the name of the logger. */
                         inline const LogString& getLoggerName() const {
                                return logger;
                         }
 
-                        /** Return the #message for this logging event. */
+                        /** Return the message for this logging event. */
                         inline const LogString& getMessage() const
                                 { return message; }
 
-                        /** Return the #message for this logging event. */
+                        /** Return the message for this logging event. */
                         inline const LogString& getRenderedMessage() const
                                 { return message; }
 
@@ -104,12 +104,12 @@ namespace log4cxx
                         */
                         static log4cxx_time_t getStartTime();
 
-                        /** Return the #threadName of this event. */
+                        /** Return the threadName of this event. */
                         inline const LogString& getThreadName() const {
                              return threadName;
                         }
 
-                        /** Return the #timeStamp of this event. */
+                        /** Return the timeStamp of this event. */
                         inline log4cxx_time_t getTimeStamp() const
                                 { return timeStamp; }
 

@@ -39,7 +39,7 @@ namespace log4cxx
         namespace net
         {
                 /**
-                Sends {@link spi::LoggingEvent LoggingEvent} objects to a set of remote log
+                Sends {@link log4cxx::spi::LoggingEvent LoggingEvent} objects to a set of remote log
                 servers, usually a SocketNode.
 
                 <p>Acts just like SocketAppender except that instead of
@@ -141,11 +141,6 @@ namespace log4cxx
                     */
                         virtual void setOption(const LogString& option, const LogString& value);
 
-                        /**
-                        Close this appender.
-                        <p>This will mark the appender as closed and
-                        call then #cleanUp method.
-                        */
                         virtual void close();
 
                         /**

@@ -72,7 +72,7 @@ namespace log4cxx
 
                 /**
                 Convert the string passed as argument to a level. If the
-                conversion fails, then this method returns #DEBUG.
+                conversion fails, then this method returns DEBUG.
                 * @param sArg level name.
                 */
                 static LevelPtr toLevel(const std::string& sArg);
@@ -95,7 +95,7 @@ namespace log4cxx
 #if LOG4CXX_WCHAR_T_API
                 /**
                 Convert the string passed as argument to a level. If the
-                conversion fails, then this method returns #DEBUG.
+                conversion fails, then this method returns DEBUG.
                 * @param sArg level name.
                 */
                 static LevelPtr toLevel(const std::wstring& sArg);
@@ -118,7 +118,7 @@ namespace log4cxx
 #if LOG4CXX_UNICHAR_API
                 /**
                 Convert the string passed as argument to a level. If the
-                conversion fails, then this method returns #DEBUG.
+                conversion fails, then this method returns DEBUG.
                 * @param sArg level name.
                 */
                 static LevelPtr toLevel(const std::basic_string<UniChar>& sArg);
@@ -141,7 +141,7 @@ namespace log4cxx
 #if LOG4CXX_CFSTRING_API
                 /**
                 Convert the string passed as argument to a level. If the
-                conversion fails, then this method returns #DEBUG.
+                conversion fails, then this method returns DEBUG.
                 * @param sArg level name.
                 */
                 static LevelPtr toLevel(const CFStringRef& sArg);
@@ -163,7 +163,7 @@ namespace log4cxx
 #endif
                 /**
                 Convert the string passed as argument to a level. If the
-                conversion fails, then this method returns #DEBUG.
+                conversion fails, then this method returns DEBUG.
                 * @param sArg level name.
                 */
                 static LevelPtr toLevelLS(const LogString& sArg);
@@ -185,7 +185,7 @@ namespace log4cxx
 
                 /**
                 Convert an integer passed as argument to a level. If the
-                conversion fails, then this method returns #DEBUG.
+                conversion fails, then this method returns DEBUG.
                 */
                 static LevelPtr toLevel(int val);
 

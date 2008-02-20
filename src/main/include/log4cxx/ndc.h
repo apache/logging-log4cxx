@@ -90,11 +90,6 @@ namespace log4cxx
         and sometimes forget to call #remove before exiting a
         thread.
 
-        <p>a thread may inherit the nested diagnostic context of another
-        (possibly parent) thread using the #inherit
-        method. a thread may obtain a copy of its ndc with the
-        #clonestack method and pass the reference to any other
-        thread, in particular to a child.
         */
         class LOG4CXX_EXPORT NDC
         {
@@ -130,16 +125,13 @@ namespace log4cxx
                 Clear any nested diagnostic information if any. This method is
                 useful in cases where the same thread can be potentially used
                 over and over in different unrelated contexts.
-                <p>This method is equivalent to calling the #setMaxDepth
-                method with a zero <code>maxDepth</code> argument.
                 */
                 static void clear();
 
 
                 /**
-                <b>Never use this method directly, use the
-                {@link spi::LoggingEvent#getNDC LoggingEvent::getNDC}
-                method instead.</b>
+                 *   Get the current value of the NDC of the
+                 *   currrent thread.
                 * @param dest destination to which to append content of NDC.
                 * @return true if NDC is set.
                 */
