@@ -74,8 +74,7 @@ namespace log4cxx
                         @param logger The logger of this event.
                         @param level The level of this event.
                         @param message  The message of this event.
-                        @param file The file where this log statement was written.
-                        @param line The line where this log statement was written.
+                        @param location location of logging request.
                         */
                         LoggingEvent(const LogString& logger,
                                 const LevelPtr& level,   const LogString& message,

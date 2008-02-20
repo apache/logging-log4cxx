@@ -52,7 +52,7 @@ namespace log4cxx
 
 /**
 Allows the configuration of log4cxx from an external file.  See
-<b>{@link #doConfigure(const String&, spi::LoggerRepositoryPtr&)}</b>
+<b>{@link #doConfigure(const File&, spi::LoggerRepositoryPtr&)}</b>
 for the expected format.
 
 <p>It is sometimes useful to see how log4cxx is reading configuration
@@ -63,7 +63,7 @@ files. You can enable log4cxx internal logging by defining the
 the file <b>log4j.properties</b> will be searched in the current directory.
 If the file can be found, then it will
 be fed to the
-{@link PropertyConfigurator#configure(const String& configFilename)}
+{@link PropertyConfigurator#configure(const File& configFilename)}
 method.
 
 <p>The <code>PropertyConfigurator</code> does not handle the
@@ -300,7 +300,7 @@ configuration information is stored.
       static void configure(const File& configFilename);
 
       /**
-      Like {@link #configureAndWatch(const String& configFilename, long delay)}
+      Like {@link #configureAndWatch(const File& configFilename, long delay)}
       except that the
       default delay as defined by helpers::FileWatchdog#DEFAULT_DELAY
       is used.

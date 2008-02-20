@@ -21,7 +21,8 @@
 
 Building Apache log4cxx with Apache Ant
 
-   Apache Ant with cpptasks from the Ant-Contrib project can be used to build log4cxx
+   {{{http://ant.apache.org}Apache Ant}} with cpptasks from the 
+   {{{http://ant-contrib.sourceforge.net}Ant-Contrib}} project can be used to build log4cxx
    with supported compilers and is also used to generate the IDE project files included
    in the releases.  The Apache Maven build which is used to generate the site documentation
    and release packaging delegates to this build.  The Ant build can build APR and APR-Util
@@ -70,7 +71,7 @@ Building Apache log4cxx with Apache Ant
  tar -xvzf apr-util-1.2.12.tar.gz
  rename apr-util-1.2.12 apr-util
  cd apache-log4cxx-0.10.0
- ant
+ ant -Dfind=false
 +----+  
 
 
@@ -117,6 +118,8 @@ Building Apache log4cxx with Apache Ant
 *-------------------+---------------------------------------------------------------------------------------------+
 | -Ddebug           |  Build for debugging, yes (default), no.                                                    |
 *-------------------+---------------------------------------------------------------------------------------------+
+| -Dfind            |  Attempt to locate APR and APR-Util at expected locations, yes (default), no.               |
+*-------------------+---------------------------------------------------------------------------------------------+
 | -Dwith-apr        | path to non-default location for APR.                                                       |
 *-------------------+---------------------------------------------------------------------------------------------+
 | -Dwith-apr-util   | path to non-default location for APR-Util.                                                  |
@@ -142,9 +145,8 @@ Building Apache log4cxx with Apache Ant
 | -p                | Display available targets and quit.                                                         |
 *-------------------+---------------------------------------------------------------------------------------------+
 
-        
-   SMTP and ODBC support may depend on libraries that are 
-   that are not licensed under the Apache Software License.
+   SMTP and ODBC options can depend on libraries that 
+   that have different licenses.
    You should review the corresponding licenses and understand
    the implications before redistribution.
    
@@ -171,11 +173,11 @@ Building Apache log4cxx with Apache Ant
   Cygwin does not provide wchar_t support which needs to be explicitly disabled.
   The location of the APR libraries need to be provided (CYGWIN_HOME/lib).
   
-  +-----+
-  cd apache-log4cxx-0.10.0
-  ant -Dos.family=cygwin -Dwith-apr=/cygwin/lib -Dwith-apr-util=/cygwin/lib \
-      -Denable-wchar_t=0 -Dlib.type=static
-  +-----+  
++-----+
+cd apache-log4cxx-0.10.0
+ant -Dos.family=cygwin -Dwith-apr=/cygwin/lib -Dwith-apr-util=/cygwin/lib \
+   -Denable-wchar_t=0 -Dlib.type=static
++-----+  
     
 
   *** MinGW:
@@ -183,3 +185,11 @@ Building Apache log4cxx with Apache Ant
   ** Mac OS/X:
   
   APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.
+  
+  Site generation requires "doxygen" command on path which can be provided
+  by installing Doxygen.app and then setting the path like:
+  
++---+
+setenv PATH /Applications/Doxygen.app/Content/Resources:$PATH
++---+
+  

@@ -21,8 +21,8 @@
 
 Building Apache log4cxx with Apache Maven 2
 
-   Apache Maven 2 is used to generate the release assemblies and generate
-   product documentation.  It delegates to the Apache Ant build to build
+   {{{http://maven.apache.org}Apache Maven 2}} is used to generate the release assemblies and generate
+   product documentation.  It delegates to the {{{ant.html}Apache Ant build}} to build
    and test log4cxx and can be used as an alternate front end to the Ant 
    build process since it can automatically download and use ant-contrib,
    cpptasks and log4j.
@@ -83,25 +83,13 @@ Building Apache log4cxx with Apache Maven 2
    It is not possible to directly pass options to the Ant build, however the ant build will read
    any build.properties file in the log4cxx directory.
         
-   SMTP and ODBC support may depend on libraries that are 
-   that are not licensed under the Apache Software License.
+   SMTP and ODBC options can depend on libraries that 
+   that have different licenses.
    You should review the corresponding licenses and understand
    the implications before redistribution.
 
 * Platform specific notes:
 
-  ** Mac OS/X:
+  See the {{{ant.html}Apache Ant build}} for platform specific notes.  
   
-  APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.  
-  
-  Site generation requires "doxygen" command on path which can be provided
-  by installing Doxygen.app and then setting the path like:
-  
-  +---+
-  setenv PATH /Applications/Doxygen.app/Content/Resources:$PATH
-  +---+
-      
-  
-  ** Cygwin:
-  
-  ** MinGW:
+   

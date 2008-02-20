@@ -150,7 +150,7 @@ liblog4cxx_la_SOURCES = \
         systemerrwriter.cpp \
         systemoutwriter.cpp \
         telnetappender.cpp \
-        thread.cpp \
+        threadcxx.cpp \
         threadlocal.cpp \
         threadspecificdata.cpp \
         threadpatternconverter.cpp \

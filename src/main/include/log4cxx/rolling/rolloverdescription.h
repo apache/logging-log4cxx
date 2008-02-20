@@ -74,9 +74,6 @@ namespace log4cxx {
            */
           LogString getActiveFileName() const;
 
-          /**
-           * {@inheritDoc}
-           */
           bool getAppend() const;
 
           /**

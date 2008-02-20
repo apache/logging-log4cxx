@@ -72,6 +72,7 @@ namespace log4cxx
                         @param obj The object to configure.
                         @param properties A java.util.Properties containing keys and values.
                         @param prefix Only keys having the specified prefix will be set.
+                        @param p pool to use for any allocations required during call.
                         */
                         static void setProperties(const helpers::ObjectPtr& obj,
                                 helpers::Properties& properties,
@@ -91,8 +92,9 @@ namespace log4cxx
                         Object supports the spi::OptionHandler interface, the
                         {@link spi::OptionHandler#setOption setOption} method is called.
 
-                        @param name    name of the property
+                        @param option   name of the property
                         @param value   String value of the property
+                        @param p pool to use for any allocations required during call.
                         */
                         void setProperty(const LogString& option,
                             const LogString& value,

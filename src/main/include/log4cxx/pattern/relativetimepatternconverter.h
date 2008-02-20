@@ -45,15 +45,11 @@ END_LOG4CXX_CAST_MAP()
   /**
    * Obtains an instance of RelativeTimePatternConverter.
    * @param options options, currently ignored, may be null.
-   * @param logger  logger, current ignored, may be null.
    * @return instance of RelativeTimePatternConverter.
    */
   static PatternConverterPtr newInstance(
     const std::vector<LogString>& options);
 
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::spi::LoggingEventPtr& event,
       LogString& toAppendTo,
       log4cxx::helpers::Pool& p) const;

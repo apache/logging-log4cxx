@@ -56,7 +56,7 @@ namespace log4cxx
                   static CharsetDecoderPtr getDefaultDecoder();
               /**
                *  Get decoder for specified character set.
-               *  @param charset, the following values should be recognized:
+               *  @param charset the following values should be recognized:
                *     "US-ASCII", "ISO-8859-1", "UTF-8",
                *     "UTF-16BE", "UTF-16LE".
                *  @return decoder

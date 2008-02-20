@@ -57,14 +57,10 @@ class LOG4CXX_EXPORT PropertiesPatternConverter
   /**
    * Obtains an instance of PropertiesPatternConverter.
    * @param options options, may be null or first element contains name of property to format.
-   * @param logger  logger, current ignored, may be null.
    * @return instance of PropertiesPatternConverter.
    */
   static PatternConverterPtr newInstance(
     const std::vector<LogString>& options);
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::spi::LoggingEventPtr& event,
      LogString& toAppendTo,
      log4cxx::helpers::Pool& p) const;

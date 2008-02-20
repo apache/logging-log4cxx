@@ -50,17 +50,11 @@ public:
   /**
    * Gets an instance of ClassNamePatternConverter.
    * @param options options, may be null.
-   * @param logger logger for diagnostic messages, may be null.
    * @return instance of pattern converter.
    */
   static PatternConverterPtr newInstance(
     const std::vector<LogString>& options);
 
-  /**
-   * Format a logging event.
-    * @param event event to format.
-   * @param toAppendTo string buffer to which class name will be appended.
-   */
   void format(const log4cxx::spi::LoggingEventPtr&event,
      LogString& toAppendTo,
      log4cxx::helpers::Pool& p) const;

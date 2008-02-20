@@ -147,7 +147,7 @@ namespace log4cxx
 
         protected:
                 /**
-                 * Close the underlying {@link java.io.Writer}.
+                 * Close the underlying {@link log4cxx::helpers::Writer}.
                  * */
                 void closeWriter();
 

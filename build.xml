@@ -27,7 +27,7 @@
       <libset libs="${odbc.lib}" if="odbc.lib"/>
       <libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
         <libset libs="pthread" if="is-unix"/>
-        <syslibset libs="advapi32 ws2_32 mswsock shell32" if="is-windows"/>
+        <syslibset libs="advapi32 ws2_32 shell32" if="is-windows"/>
         <syslibset libs="stdc++" if="is-gcc"/>
         <syslibset libs="cw32mt" if="is-bcc"/>
 '>
@@ -1063,7 +1063,7 @@ Command line options:
     <exec executable="sed">
         <arg value="-i"/>
         <arg value="-e"/>
-        <arg value="s~ADD LINK32 .*/NOLOGO~ADD LINK32 static\\aprutil-1.lib static\\apr-1.lib ADVAPI32.LIB MSWSOCK.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB /NOLOGO~g"/>
+        <arg value="s~ADD LINK32 .*/NOLOGO~ADD LINK32 ADVAPI32.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB /NOLOGO~g"/>
         <arg value="${project.dsp}"/>
     </exec>
 </target>
@@ -1072,32 +1072,23 @@ Command line options:
     <exec executable="sed">
         <arg value="-i"/>
         <arg value="-e"/>
-        <arg value="s~ADD LINK32 .*/NOLOGO~ADD LINK32 shared\\log4cxx.lib static\\aprutil-1.lib static\\apr-1.lib ADVAPI32.LIB MSWSOCK.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB /NOLOGO~g"/>
+        <arg value="s~ADD LINK32 .*/NOLOGO~ADD LINK32 ADVAPI32.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB /NOLOGO~g"/>
         <arg value="${project.dsp}"/>
     </exec>
 </target>
 
-<target name="patch-vc7-log4cxx">
+<target name="patch-vc6-dsw">
     <exec executable="sed">
         <arg value="-i"/>
-        <arg value=".bak"/>
         <arg value="-e"/>
-        <arg value='s~AdditionalDependencies=".*"~~'/>
-        <arg value="-e"/>
-        <arg value='s~Name="VCLinkerTool"~Name="VCLinkerTool" AdditionalDependencies="static\\aprutil-1.lib static\\apr-1.lib ADVAPI32.LIB MSWSOCK.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB"~'/>
-        <arg value="${project.dsp}"/>
+        <arg value="s~.\apr.dsp~..\..\apr\apr.dsp~g"/>
+        <arg value="${project.dsw}"/>
     </exec>
-</target>
-
-<target name="patch-vc7-sample">
     <exec executable="sed">
         <arg value="-i"/>
-        <arg value=".bak"/>
         <arg value="-e"/>
-        <arg value='s~AdditionalDependencies=".*"~~'/>
-        <arg value="-e"/>
-        <arg value='s~Name="VCLinkerTool"~Name="VCLinkerTool" AdditionalDependencies="shared\\log4cxx.lib static\\aprutil-1.lib static\\apr-1.lib ADVAPI32.LIB MSWSOCK.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB"~'/>
-        <arg value="${project.dsp}"/>
+        <arg value="s~.\apr-util.dsp~..\..\apr-util\apr-util.dsp~g"/>
+        <arg value="${project.dsw}"/>
     </exec>
 </target>
 
@@ -1105,9 +1096,6 @@ Command line options:
 <target name="site" depends="apidocs">
     <!-- generate Visual Studio and XCode project files -->
     <antcall target="build-projects-vc6">
-        <param name="find" value="false"/>
-    </antcall>
-    <antcall target="build-projects-vc7">
         <param name="find" value="false"/>
     </antcall>
     <antcall target="build-projects-xcode"/>
@@ -1119,11 +1107,8 @@ Command line options:
     <foreach target="patch-vc6-log4cxx" param="project.dsp">
         <path><fileset dir="${target.dir}" includes="**/log4cxx.dsp **/testsuite-standalone.dsp"/></path>
     </foreach>
-    <foreach target="patch-vc7-sample" param="project.dsp">
-        <path><fileset dir="${target.dir}" includes="**/*.vcproj"/></path>
-    </foreach>
-    <foreach target="patch-vc7-log4cxx" param="project.dsp">
-        <path><fileset dir="${target.dir}" includes="**/log4cxx.vcproj **/testsuite-standalone.vcproj"/></path>
+    <foreach target="patch-vc6-dsw" param="project.dsw">
+        <path><fileset dir="${target.dir}" includes="**/*.dsw"/></path>
     </foreach>
     
 </target>

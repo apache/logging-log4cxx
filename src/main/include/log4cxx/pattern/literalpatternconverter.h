@@ -52,16 +52,10 @@ public:
 
   static PatternConverterPtr newInstance(const LogString& literal);
 
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::spi::LoggingEventPtr& event,
      LogString& toAppendTo,
      log4cxx::helpers::Pool& p) const;
 
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::helpers::ObjectPtr& obj,
      LogString& toAppendTo,
      log4cxx::helpers::Pool& p) const;

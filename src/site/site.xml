@@ -36,33 +36,27 @@
 
 	<menu name="About log4cxx">
 	   <item name="What is log4cxx?" href="/index.html"/>
+		<item name="API Documentation" href="/apidocs/index.html"/>
 	   <item name="FAQ" href="/faq.html"/>
-	   <item name="Roadmap" href="/roadmap.html"/>
 	</menu>
 
         <menu name="Community">
                 <item name="Mailing Lists" href="/mail-lists.html"/>
                 <item name="Issue Tracking" href="/issue-tracking.html"/>
+                <item name="Wiki" href="http://wiki.apache.org/logging-log4cxx"/>
         </menu>
         
         <menu name="Development">
                 <item name="Repository" href="/source-repository.html"/>
-        </menu>
         
-    <menu name="Building">
+    <item name="Building">
         <item name="autotools" href="/building/autotools.html"/>
         <item name="Apache Ant" href="/building/ant.html"/>
         <item name="Apache Maven 2" href="/building/maven.html"/>
         <item name="Microsoft Visual Studio" href="/building/vstudio.html"/>
         <item name="Apple Xcode" href="/building/xcode.html"/>
+    </item>
     </menu>
-
-	<menu name="Documentation">
-		<item name="Introduction" href="/manual.html"/>
-		<item name="API Documentation" href="/apidocs/index.html"/>
-		<item name="Wiki" href="http://wiki.apache.org/logging-log4cxx"/>
-	</menu>
-
 
 	<menu name="Apache">
 		<item name="Home" href="http://www.apache.org"/>	

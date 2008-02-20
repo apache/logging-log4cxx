@@ -38,28 +38,29 @@ Building Apache log4cxx with Apple Xcode
      TOTO=wonderful, key1=value1 and key2=value2.
    
    Individual tests can be specified by specifying the test name in 
-      "Arguments to be passed on launch".
+      "Arguments to be passed on launch"  Specifying "-v" as an argument
+      will run the tests in a verbose mode.
 
 *Issues
 
-  [[1]] Xcode fails when linking to apr and aprutil dylibs in /usr/lib,
+  Xcode fails when linking to apr and aprutil dylibs in /usr/lib,
   however it will succeed linking to symbolic links to the same files. 
   As a workaround until a resolution is found:
   
-  Create symbolic links to the libraries in some arbitary directory:
+  Create symbolic links to the libraries in some arbitrary directory:
   
-   +-----+
-   mkdir ~/apr-dylib
-   cd ~/apr-dylib
-   ln -s /usr/lib/libapr-1.dylib libapr-1.dylib
-   ln -s /usr/lib/libaprutil-1.dylib libaprutil-1.dylib
-   +------+
++-----+
+mkdir ~/apr-dylib
+cd ~/apr-dylib
+ln -s /usr/lib/libapr-1.dylib libapr-1.dylib
+ln -s /usr/lib/libaprutil-1.dylib libaprutil-1.dylib
++------+
    
    Then add the arbitary directory to the Library Search Paths 
    (Build tab of the Get Info page for the project).
     
     
-   [[2]] The project file generation does does not 
+   The project file generation does does not 
    properly create an entry in the "Link Binary with Libraries"
    build phase for projects that depend on log4cxx.  To
    work around the problem, open the project in Xcode and

@@ -49,22 +49,15 @@ END_LOG4CXX_CAST_MAP()
   /**
    * Obtains an instance of pattern converter.
    * @param options options, may be null.
-   * @param logger  logger, current ignored, may be null.
    * @return instance of pattern converter.
    */
   static PatternConverterPtr newInstance(
     const std::vector<LogString>& options);
 
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::spi::LoggingEventPtr& event,
       LogString& toAppendTo,
       log4cxx::helpers::Pool& p) const;
 
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::helpers::ObjectPtr& obj,
       LogString& toAppendTo,
       log4cxx::helpers::Pool& p) const;

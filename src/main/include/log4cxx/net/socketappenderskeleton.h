@@ -82,7 +82,7 @@ namespace log4cxx
                 /**
                 * The <b>RemoteHost</b> option takes a string value which should be
                 * the host name of the server where a
-                        * {@link net::SocketNode SocketNode} is running.
+                * Apache Chainsaw or compatible is running.
                 * */
                 inline void setRemoteHost(const LogString& host)
                         { address = helpers::InetAddress::getByName(host);

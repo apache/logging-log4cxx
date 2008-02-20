@@ -46,13 +46,12 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter 
    */
   DatePatternConverter(const OptionsList& options);
 
-  static log4cxx::helpers::DateFormatPtr getDateFormat(const OptionsList& options);
   /**
    * Obtains an instance of pattern converter.
    * @param options options, may be null.
-   * @param logger  logger, current ignored, may be null.
    * @return instance of pattern converter.
    */
+  static log4cxx::helpers::DateFormatPtr getDateFormat(const OptionsList& options);
   public:
   DECLARE_LOG4CXX_PATTERN(DatePatternConverter)
   BEGIN_LOG4CXX_CAST_MAP()
@@ -63,24 +62,13 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter 
 
  static PatternConverterPtr newInstance(
     const std::vector<LogString>& options);
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::spi::LoggingEventPtr& event,
      LogString& output,
      log4cxx::helpers::Pool& p) const;
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::helpers::ObjectPtr& obj,
      LogString& output,
      log4cxx::helpers::Pool& p) const;
 
-  /**
-   * Append formatted date to string buffer.
-   * @param date date
-   * @param toAppendTo buffer to which formatted date is appended.
-   */
   void format(const log4cxx::helpers::DatePtr& date,
      LogString& toAppendTo,
      log4cxx::helpers::Pool& p) const;

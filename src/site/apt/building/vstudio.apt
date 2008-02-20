@@ -18,58 +18,31 @@
  ------
  ------
 
-Building Apache log4cxx with Microsoft Visual Studio (TODO)
+Building Apache log4cxx with Microsoft Visual Studio
 
+*Building log4cxx.dll
 
-* Quick start:
+   Extract APR and APR-util into neigboring directories to log4cxx and 
+   rename to apr and apr-util.  Open projects/log4cxx.dsw with Microsoft
+   Visual Studio 6 or later.  You will be prompted to convert the
+   project to the current format with all versions later than 
+   Microsoft Visual Studio 6.
+   
+   
+*Running unit tests
 
-+------------+
- sudo apt-get install libapr1-dev libaprutil1-dev # or platform equivalent
- cd apache-log4cxx-0.10.0
- ./autoconf.sh
- ./configure
- make
- make check
- sudo make install
-+------------+
+   Prepare APR and APR-Util as previously discussed.
+   Open projects/testsuite.dsw or projects/testsuite-standalone.dsw
+   (test suite and implementation in one project) in Microsoft Visual
+   Studio.
 
+   On the Debug Tab of the Project/Settings dialog,
+   set the Working Directory to "../src/test/resources".
+   Individual tests can be specified in Program Arguments
+   and "-v" can be specified to output verbose test results.
+   
+   Three optionconvertertestcase tests will likely fail
+   since they expect 3 environment variables to have been
+   previously set.
 
-* configure options
-
-*-------------------+---------------------------------------------------------------------------------------------+
-| --with-apr        |  path to non-default location for APR.                                                      |
-*-------------------+---------------------------------------------------------------------------------------------+
-| --with-apr-util   | path to non-default location for APR-Util.                                                  |
-*-------------------+---------------------------------------------------------------------------------------------+
-| --enable-wchar_t  | Enable wchar_t API methods, choice of yes (default), no.                                    |
-*-------------------+---------------------------------------------------------------------------------------------+
-| --enable-unichar  | Enable UniChar API methods, choice of yes, no (default).                                    |
-*-------------------+---------------------------------------------------------------------------------------------+
-| --enable-cfstring | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
-*-------------------+---------------------------------------------------------------------------------------------+
-| --with-logchar    | Interal character representation, choice of utf-8 (default), wchar_t , unichar.             | 
-*-------------------+---------------------------------------------------------------------------------------------+
-| --with-charset    | Exteral character encoding, choice of utf-8, iso-8859-1, usascii, ebcdic,  auto (default).  |
-*-------------------+---------------------------------------------------------------------------------------------+
-| --with-SMTP       | SMTP implementation for SMTPAppender, choice of libesmtp, no (default).                     |
-*-------------------+---------------------------------------------------------------------------------------------+
-| --with-ODBC       | OBDC implementation for ODBCAppender, choice of unixODBC, iODBC, Microsoft, no (default).   |
-*-------------------+---------------------------------------------------------------------------------------------+
-| -help             | Display help showing all options and exit.                                                  |
-*-------------------+---------------------------------------------------------------------------------------------+
-
-        
-   SMTP and ODBC support may depend on libraries that are 
-   that are not licensed under the Apache Software License.
-   You should review the corresponding licenses and understand
-   the implications before redistribution.
-
-* Platform specific notes:
-
-  ** Mac OS/X:
-  
-  APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.
-  
-  ** Cygwin:
-  
-  ** MinGW:
+   

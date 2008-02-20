@@ -127,6 +127,7 @@ namespace log4cxx
              * @param time long time, must be integral number of seconds
              * @param formatted String corresponding formatted string
              * @param formatter DateFormat date format
+             * @param pool pool.
              * @return int position in string of first digit of milliseconds,
              *    -1 indicates no millisecond field, -2 indicates unrecognized
              *    field (likely RelativeTimeDateFormat)
@@ -141,7 +142,7 @@ namespace log4cxx
              *
              *  @param date the date to format.
              *  @param sbuf the string buffer to write to.
-             *  @param pool memory pool.
+             *  @param p memory pool.
              */
                virtual void format(LogString &sbuf,
                    log4cxx_time_t date,
@@ -166,7 +167,7 @@ namespace log4cxx
                 *
                 * @remarks Setting the timezone using getCalendar().setTimeZone()
                 * will likely cause caching to misbehave.
-                * @param timeZone TimeZone new timezone
+                * @param zone TimeZone new timezone
                 */
                virtual void setTimeZone(const log4cxx::helpers::TimeZonePtr& zone);
 

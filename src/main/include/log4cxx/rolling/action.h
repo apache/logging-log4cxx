@@ -27,6 +27,9 @@ namespace log4cxx {
     namespace rolling {
 
 
+        /**
+         *  A file system action performed as part of a rollover event.
+         */
         class Action : public virtual log4cxx::helpers::ObjectImpl {
           DECLARE_ABSTRACT_LOG4CXX_OBJECT(Action)
           BEGIN_LOG4CXX_CAST_MAP()
@@ -61,14 +64,8 @@ namespace log4cxx {
          */
         virtual bool execute(log4cxx::helpers::Pool& pool) const = 0;
 
-        /**
-         * {@inheritDoc}
-         */
         void run(log4cxx::helpers::Pool& pool);
 
-          /**
-           * {@inheritDoc}
-           */
         void close();
 
           /**

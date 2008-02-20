@@ -137,6 +137,7 @@ namespace log4cxx
                 truncate fileName.
                 @param bufferedIO Do we do bufferedIO?
                 @param bufferSize How big should the IO buffer be?
+                @param p memory pool for operation.
                 */
                 virtual void setFile(const LogString& file, bool append,
                         bool bufferedIO, size_t bufferSize,

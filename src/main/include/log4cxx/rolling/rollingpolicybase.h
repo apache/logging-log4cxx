@@ -77,9 +77,6 @@ namespace log4cxx {
           virtual ~RollingPolicyBase();
           void addRef() const;
           void releaseRef() const;
-          /**
-           * {@inheritDoc}
-           */
           virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
           virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
 
@@ -110,6 +107,7 @@ namespace log4cxx {
            *
            * @param obj object to be evaluted in formatting, may not be null.
            * @param buf string buffer to which formatted file name is appended, may not be null.
+           * @param p memory pool.
            */
           void formatFileName(log4cxx::helpers::ObjectPtr& obj,
              LogString& buf, log4cxx::helpers::Pool& p) const;

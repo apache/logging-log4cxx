@@ -58,8 +58,8 @@ Building Apache log4cxx with autotools
 *-------------------+---------------------------------------------------------------------------------------------+
 
         
-   SMTP and ODBC support may depend on libraries that are 
-   that are not licensed under the Apache Software License.
+   SMTP and ODBC options can depend on libraries that 
+   that have different licenses.
    You should review the corresponding licenses and understand
    the implications before redistribution.
 
@@ -71,7 +71,11 @@ Building Apache log4cxx with autotools
   
 ** Cygwin:
   
-  Install sed which is required by the unit tests.
+  Install sed which is required by the unit tests.  The prepackaged
+  APR currently available from Cygwin has APR_HAS_THREADS == 0.
+  Some appenders will not be available and some may operate
+  with reduced functionality.  There have been reports of
+  building APR on Cygwin with threads enabled.
 
 
 ** MinGW:

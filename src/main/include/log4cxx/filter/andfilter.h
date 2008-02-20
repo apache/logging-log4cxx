@@ -34,31 +34,31 @@ namespace log4cxx
 /**
  * A filter that 'and's the results of any number of contained filters together.
  *
- * For the filter to process events, all contained filters must return Filter.ACCEPT.
+ * For the filter to process events, all contained filters must return Filter::ACCEPT.
  *
- * If the contained filters do not return Filter.ACCEPT, Filter.NEUTRAL is returned.
+ * If the contained filters do not return Filter::ACCEPT, Filter::NEUTRAL is returned.
  *
- * If acceptOnMatch is set to true, Filter.ACCEPT is returned.
- * If acceptOnMatch is set to false, Filter.DENY is returned.
+ * If acceptOnMatch is set to true, Filter::ACCEPT is returned.
+ * If acceptOnMatch is set to false, Filter::DENY is returned.
  *
  * Here is an example config that will accept only events that contain BOTH
  * a DEBUG level AND 'test' in the message:
  *
- *<appender name="STDOUT" class="org.apache.log4j.ConsoleAppender">
- * <filter class="org.apache.log4j.filter.AndFilter">
- *  <filter class="org.apache.log4j.filter.LevelMatchFilter">
- *        <param name="levelToMatch" value="DEBUG" />
- *        <param name="acceptOnMatch" value="true" />
- *  </filter>
- *  <filter class="org.apache.log4j.filter.StringMatchFilter">
- *        <param name="stringToMatch" value="test" />
- *        <param name="acceptOnMatch" value="true" />
- *  </filter>
- *  <param name="acceptOnMatch" value="false"/>
- * </filter>
- * <filter class="org.apache.log4j.filter.DenyAllFilter"/>
- *<layout class="org.apache.log4j.SimpleLayout"/>
- *</appender>
+ *&lt;appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"&gt;
+ * &lt;filter class="org.apache.log4j.filter.AndFilter"&gt;
+ *  &lt;filter class="org.apache.log4j.filter.LevelMatchFilter"&gt;
+ *        &lt;param name="levelToMatch" value="DEBUG" /&gt;
+ *        &lt;param name="acceptOnMatch" value="true" /&gt;
+ *  &lt;/filter>
+ *  &lt;filter class="org.apache.log4j.filter.StringMatchFilter"&gt;
+ *        &lt;param name="stringToMatch" value="test" /&gt;
+ *        &lt;param name="acceptOnMatch" value="true" /&gt;
+ *  &lt;/filter>
+ *  &lt;param name="acceptOnMatch" value="false"/&gt;
+ * &lt;/filter&gt;
+ * &lt;filter class="org.apache.log4j.filter.DenyAllFilter"/&gt;
+ *&lt;layout class="org.apache.log4j.SimpleLayout"/&gt;
+ *&lt;/appender&gt;
  *
  * To accept all events EXCEPT those events that contain a
  * DEBUG level and 'test' in the message:
@@ -96,15 +96,6 @@ namespace log4cxx
 
             void setAcceptOnMatch(bool acceptOnMatch);
 
-  /**
-   * If this event does not already contain location information,
-   * evaluate the event against the expression.
-   *
-   * If the expression evaluates to true, generate a LocationInfo instance
-   * by creating an exception and set this LocationInfo on the event.
-   *
-   * Returns {@link Filter#NEUTRAL}
-   */
             FilterDecision decide(const spi::LoggingEventPtr & event) const;
         };
 

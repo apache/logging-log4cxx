@@ -71,7 +71,6 @@
             <includes>
             <include>*.dsw</include>
             <include>*.dsp</include>
-            <include>*.vsproj</include>
             <include>*.xcodeproj/**</include>
             </includes>
         </fileSet>

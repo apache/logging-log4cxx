@@ -38,7 +38,7 @@ namespace log4cxx {
          * rolled log files. The value <code>FileNamePattern</code> should consist of
          * the name of the file, plus a suitably placed <code>%d</code> conversion
          * specifier. The <code>%d</code> conversion specifier may contain a date and
-         * time pattern as specified by the {@link java.text.SimpleDateFormat} class. If
+         * time pattern as specified by the {@link log4cxx::helpers::SimpleDateFormat} class. If
          * the date and time pattern is ommitted, then the default pattern of
          * "yyyy-MM-dd" is assumed. The following examples should clarify the point.
          *
@@ -171,6 +171,7 @@ namespace log4cxx {
            *
            * @param file current value of RollingFileAppender.getFile().
            * @param append current value of RollingFileAppender.getAppend().
+           * @param pool pool for any required allocations.
            * @return Description of the initialization, may be null to indicate
            * no initialization needed.
            * @throws SecurityException if denied access to log files.
@@ -187,6 +188,7 @@ namespace log4cxx {
            * after close of current log file.
            *
            * @param activeFile file name for current active log file.
+           * @param pool pool for any required allocations.
            * @return Description of pending rollover, may be null to indicate no rollover
            * at this time.
            * @throws SecurityException if denied access to log files.

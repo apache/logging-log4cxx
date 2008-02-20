@@ -1,5 +1,4 @@
-<?xml version="1.0"?>
-<!--
+/*
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
  this work for additional information regarding copyright ownership.
@@ -15,16 +14,4 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
--->
-
-<document>
-    <properties>
-        <author email="mcatan at apache dot org">Michael CATANZARITI</author>
-        <title>News</title>
-    </properties>
-    <meta name="keywords" content="log4cxx performance"/>
-    <body>
-        <h1>Performance of logging</h1>
-        <p>Performance benchmarks will be updated before release of log4cxx-0.9.8.</p>
-    </body>
-</document>
+*/

@@ -48,6 +48,7 @@ namespace log4cxx {
        *
        * @param file current value of RollingFileAppender.getFile().
        * @param append current value of RollingFileAppender.getAppend().
+       * @param p pool for memory allocations during call.
        * @return Description of the initialization, may be null to indicate
        * no initialization needed.
        * @throws SecurityException if denied access to log files.
@@ -64,6 +65,7 @@ namespace log4cxx {
        * after close of current log file.
        *
        * @param activeFile file name for current active log file.
+       * @param p pool for memory allocations during call.
        * @return Description of pending rollover, may be null to indicate no rollover
        * at this time.
        * @throws SecurityException if denied access to log files.

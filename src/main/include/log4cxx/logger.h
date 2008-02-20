@@ -121,7 +121,7 @@ namespace log4cxx
         <p>It is intended to be used by sub-classes only. You should not
         create categories directly.
 
-        @param pool, lifetime of pool must be longer than logger.
+        @param pool lifetime of pool must be longer than logger.
         @param name The name of the logger.
         */
         Logger(log4cxx::helpers::Pool& pool, const LogString& name);
@@ -152,7 +152,9 @@ namespace log4cxx
         hierarchy circumventing any evaluation of whether to log or not
         to log the particular log request.
 
-        @param event the event to log.  */
+        @param event the event to log.  
+        @param p memory pool for any allocations needed to process request.
+        */
         void callAppenders(const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
 
         /**
@@ -162,115 +164,419 @@ namespace log4cxx
         void closeNestedAppenders();
 
         /**
-        Log a message string with the {@link Level#DEBUG DEBUG} level.
+        Log a message string with the DEBUG level.
 
         <p>This method first checks if this logger is <code>DEBUG</code>
-        enabled by comparing the level of this logger with the {@link
-        Level#DEBUG DEBUG} level. If this logger is
+        enabled by comparing the level of this logger with the
+        DEBUG level. If this logger is
         <code>DEBUG</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
         hierarchy depending on the value of the additivity flag.
 
-        @param message the message string to log.
-        @param file the file where the log statement was written.
-        @param line the line where the log statement was written.
+        @param msg the message string to log.
+        @param location location of source of logging request.
         */
         void debug(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the DEBUG level.
+
+        <p>This method first checks if this logger is <code>DEBUG</code>
+        enabled by comparing the level of this logger with the
+        DEBUG level. If this logger is
+        <code>DEBUG</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void debug(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
+        /**
+        Log a message string with the DEBUG level.
+
+        <p>This method first checks if this logger is <code>DEBUG</code>
+        enabled by comparing the level of this logger with the
+        DEBUG level. If this logger is
+        <code>DEBUG</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void debug(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the DEBUG level.
+
+        <p>This method first checks if this logger is <code>DEBUG</code>
+        enabled by comparing the level of this logger with the
+        DEBUG level. If this logger is
+        <code>DEBUG</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void debug(const std::wstring& msg) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        Log a message string with the DEBUG level.
+
+        <p>This method first checks if this logger is <code>DEBUG</code>
+        enabled by comparing the level of this logger with the
+        DEBUG level. If this logger is
+        <code>DEBUG</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void debug(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the DEBUG level.
+
+        <p>This method first checks if this logger is <code>DEBUG</code>
+        enabled by comparing the level of this logger with the
+        DEBUG level. If this logger is
+        <code>DEBUG</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void debug(const std::basic_string<UniChar>& msg) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        Log a message string with the DEBUG level.
+
+        <p>This method first checks if this logger is <code>DEBUG</code>
+        enabled by comparing the level of this logger with the
+        DEBUG level. If this logger is
+        <code>DEBUG</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void debug(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the DEBUG level.
+
+        <p>This method first checks if this logger is <code>DEBUG</code>
+        enabled by comparing the level of this logger with the
+        DEBUG level. If this logger is
+        <code>DEBUG</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void debug(const CFStringRef& msg) const;
 #endif
 
         /**
-        Log a message string with the {@link Level#ERROR ERROR} level.
+        Log a message string with the ERROR level.
 
         <p>This method first checks if this logger is <code>ERROR</code>
-        enabled by comparing the level of this logger with the {@link
-        Level#ERROR ERROR} level. If this logger is
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
         <code>ERROR</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
         hierarchy depending on the value of the additivity flag.
 
-        @param message the message string to log.
-        @param file the file where the log statement was written.
-        @param line the line where the log statement was written.
+        @param msg the message string to log.
+        @param location location of source of logging request.
         */
         void error(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void error(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void error(const std::wstring& msg) const;
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void error(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void error(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void error(const std::basic_string<UniChar>& msg) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void error(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void error(const CFStringRef& msg) const;
 #endif
 
         /**
-        Log a message string with the {@link Level#FATAL FATAL} level.
+        Log a message string with the FATAL level.
 
         <p>This method first checks if this logger is <code>FATAL</code>
-        enabled by comparing the level of this logger with the {@link
-        Level#FATAL FATAL} level. If this logger is
+        enabled by comparing the level of this logger with the
+        FATAL level. If this logger is
         <code>FATAL</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
         hierarchy depending on the value of the additivity flag.
 
-        @param message the message string to log.
-        @param file the file where the log statement was written.
-        @param line the line where the log statement was written.
+        @param msg the message string to log.
+        @param location location of source of logging request.
         */
         void fatal(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void fatal(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void fatal(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void fatal(const std::wstring& msg) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void fatal(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void fatal(const std::basic_string<UniChar>& msg) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void fatal(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the ERROR level.
+
+        <p>This method first checks if this logger is <code>ERROR</code>
+        enabled by comparing the level of this logger with the
+        ERROR level. If this logger is
+        <code>ERROR</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void fatal(const CFStringRef& msg) const;
 #endif
+
         /**
         This method creates a new logging event and logs the event
         without further checks.
         @param level the level to log.
-        @param message the message string to log.
-        @param location location of the logging statement.
+        @param message message.
+        @param location location of source of logging request.
         */
         void forcedLog(const LevelPtr& level, const std::string& message,
                         const log4cxx::spi::LocationInfo& location) const;
+        /**
+        This method creates a new logging event and logs the event
+        without further checks.
+        @param level the level to log.
+        @param message message.
+        */
         void forcedLog(const LevelPtr& level, const std::string& message) const;
 
 #if LOG4CXX_WCHAR_T_API
+        /**
+        This method creates a new logging event and logs the event
+        without further checks.
+        @param level the level to log.
+        @param message message.
+        @param location location of source of logging request.
+        */
         void forcedLog(const LevelPtr& level, const std::wstring& message,
                         const log4cxx::spi::LocationInfo& location) const;
+        /**
+        This method creates a new logging event and logs the event
+        without further checks.
+        @param level the level to log.
+        @param message message.
+        */
         void forcedLog(const LevelPtr& level, const std::wstring& message) const;
 #endif
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
+        /**
+        This method creates a new logging event and logs the event
+        without further checks.
+        @param level the level to log.
+        @param message message.
+        @param location location of source of logging request.
+        */
         void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message,
                         const log4cxx::spi::LocationInfo& location) const;
+        /**
+        This method creates a new logging event and logs the event
+        without further checks.
+        @param level the level to log.
+        @param message message.
+        */
         void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        This method creates a new logging event and logs the event
+        without further checks.
+        @param level the level to log.
+        @param message message.
+        @param location location of source of logging request.
+        */
         void forcedLog(const LevelPtr& level, const CFStringRef& message,
                         const log4cxx::spi::LocationInfo& location) const;
+        /**
+        This method creates a new logging event and logs the event
+        without further checks.
+        @param level the level to log.
+        @param message message.
+        */
         void forcedLog(const LevelPtr& level, const CFStringRef& message) const;
 #endif
         /**
@@ -320,16 +626,34 @@ namespace log4cxx
 
 
         /**
-        Return the logger name.  */
+        * Get the logger name.
+        * @return logger name as LogString.  
+        */
         const LogString getName() const { return name; }
+        /**
+        * Get logger name in current encoding.
+        * @param name buffer to which name is appended.  
+        */
         void getName(std::string& name) const;
 #if LOG4CXX_WCHAR_T_API
+        /**
+        * Get logger name.
+        * @param name buffer to which name is appended.  
+        */
         void getName(std::wstring& name) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        * Get logger name.
+        * @param name buffer to which name is appended.  
+        */
         void getName(std::basic_string<UniChar>& name) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        * Get logger name.
+        * @param name buffer to which name is appended.  
+        */
         void getName(CFStringRef& name) const;
 #endif
 
@@ -350,20 +674,45 @@ namespace log4cxx
         LevelPtr getLevel() const;
 
         /**
-        Retrieve a logger by name.
+        * Retrieve a logger by name in current encoding.
+        * @param name logger name. 
         */
         static LoggerPtr getLogger(const std::string& name);
+        /**
+        * Retrieve a logger by name in current encoding.
+        * @param name logger name. 
+        */
         static LoggerPtr getLogger(const char* const name);
 #if LOG4CXX_WCHAR_T_API
+        /**
+        * Retrieve a logger by name.
+        * @param name logger name. 
+        */
         static LoggerPtr getLogger(const std::wstring& name);
+        /**
+        * Retrieve a logger by name.
+        * @param name logger name. 
+        */
         static LoggerPtr getLogger(const wchar_t* const name);
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        * Retrieve a logger by name.
+        * @param name logger name. 
+        */
         static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        * Retrieve a logger by name.
+        * @param name logger name. 
+        */
         static LoggerPtr getLogger(const CFStringRef& name);
 #endif
+        /**
+        * Retrieve a logger by name in Unicode.
+        * @param name logger name. 
+        */
         static LoggerPtr getLoggerLS(const LogString& name);
 
         /**
@@ -386,17 +735,69 @@ namespace log4cxx
         */
         static LoggerPtr getLoggerLS(const LogString& name,
                         const log4cxx::spi::LoggerFactoryPtr& factory);
+        /**
+        Like #getLogger except that the type of logger
+        instantiated depends on the type returned by the
+        LoggerFactory#makeNewLoggerInstance method of the
+        <code>factory</code> parameter.
+
+        <p>This method is intended to be used by sub-classes.
+
+        @param name The name of the logger to retrieve.
+
+        @param factory A LoggerFactory implementation that will
+        actually create a new Instance.
+        */
         static LoggerPtr getLogger(const std::string& name,
                         const log4cxx::spi::LoggerFactoryPtr& factory);
 #if LOG4CXX_WCHAR_T_API
+        /**
+        Like #getLogger except that the type of logger
+        instantiated depends on the type returned by the
+        LoggerFactory#makeNewLoggerInstance method of the
+        <code>factory</code> parameter.
+
+        <p>This method is intended to be used by sub-classes.
+
+        @param name The name of the logger to retrieve.
+
+        @param factory A LoggerFactory implementation that will
+        actually create a new Instance.
+        */
         static LoggerPtr getLogger(const std::wstring& name,
                         const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        Like #getLogger except that the type of logger
+        instantiated depends on the type returned by the
+        LoggerFactory#makeNewLoggerInstance method of the
+        <code>factory</code> parameter.
+
+        <p>This method is intended to be used by sub-classes.
+
+        @param name The name of the logger to retrieve.
+
+        @param factory A LoggerFactory implementation that will
+        actually create a new Instance.
+        */
         static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
                         const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        Like #getLogger except that the type of logger
+        instantiated depends on the type returned by the
+        LoggerFactory#makeNewLoggerInstance method of the
+        <code>factory</code> parameter.
+
+        <p>This method is intended to be used by sub-classes.
+
+        @param name The name of the logger to retrieve.
+
+        @param factory A LoggerFactory implementation that will
+        actually create a new Instance.
+        */
         static LoggerPtr getLogger(const CFStringRef& name,
                         const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
@@ -426,31 +827,105 @@ namespace log4cxx
 
         public:
         /**
-        Log a message string with the {@link Level#INFO INFO} level.
+        Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the {@link
-        Level#INFO INFO} level. If this logger is
+        enabled by comparing the level of this logger with the 
+        INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
         hierarchy depending on the value of the additivity flag.
 
-        @param message the message string to log.
-                @param file the file where the log statement was written.
-                @param line the line where the log statement was written.
+        @param msg the message string to log.
+        @param location location of source of logging request.
                 */
        void info(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
        void info(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
+        /**
+        Log a message string with the INFO level.
+
+        <p>This method first checks if this logger is <code>INFO</code>
+        enabled by comparing the level of this logger with the 
+        INFO level. If this logger is
+        <code>INFO</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+                */
        void info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the INFO level.
+
+        <p>This method first checks if this logger is <code>INFO</code>
+        enabled by comparing the level of this logger with the 
+        INFO level. If this logger is
+        <code>INFO</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+                */
        void info(const std::wstring& msg) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        Log a message string with the INFO level.
+
+        <p>This method first checks if this logger is <code>INFO</code>
+        enabled by comparing the level of this logger with the 
+        INFO level. If this logger is
+        <code>INFO</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+                */
         void info(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the INFO level.
+
+        <p>This method first checks if this logger is <code>INFO</code>
+        enabled by comparing the level of this logger with the 
+        INFO level. If this logger is
+        <code>INFO</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+                */
         void info(const std::basic_string<UniChar>& msg) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        Log a message string with the INFO level.
+
+        <p>This method first checks if this logger is <code>INFO</code>
+        enabled by comparing the level of this logger with the 
+        INFO level. If this logger is
+        <code>INFO</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+                */
         void info(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the INFO level.
+
+        <p>This method first checks if this logger is <code>INFO</code>
+        enabled by comparing the level of this logger with the 
+        INFO level. If this logger is
+        <code>INFO</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+                */
         void info(const CFStringRef& msg) const;
 #endif
 
@@ -570,54 +1045,302 @@ namespace log4cxx
         void l7dlog(const LevelPtr& level, const LogString& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::vector<LogString>& values) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::string& key,
                     const log4cxx::spi::LocationInfo& locationInfo) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The first value for the placeholders within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::string& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::string& val1) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The first value for the placeholders within the pattern.
+        @param val2 The second value for the placeholders within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::string& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::string& val1, const std::string& val2) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+        @param val2 The value for the second placeholder within the pattern.
+        @param val3 The value for the third placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::string& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::string& val1, const std::string& val2, const std::string& val3) const;
 
 #if LOG4CXX_WCHAR_T_API
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::wstring& key,
                     const log4cxx::spi::LocationInfo& locationInfo) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::wstring& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::wstring& val1) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+        @param val2 The value for the second placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::wstring& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::wstring& val1, const std::wstring& val2) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+        @param val2 The value for the second placeholder within the pattern.
+        @param val3 The value for the third placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::wstring& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::wstring& val1, const std::wstring& val2, const std::wstring& val3) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
                     const log4cxx::spi::LocationInfo& locationInfo) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::basic_string<UniChar>& val1) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+        @param val2 The value for the second placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+        @param val2 The value for the second placeholder within the pattern.
+        @param val3 The value for the third placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2, 
                     const std::basic_string<UniChar>& val3) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const CFStringRef& key,
                     const log4cxx::spi::LocationInfo& locationInfo) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const CFStringRef& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const CFStringRef& val1) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+        @param val2 The value for the second placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const CFStringRef& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const CFStringRef& val1, const CFStringRef& val2) const;
+        /**
+        Log a localized and parameterized message.
+
+        First, the user supplied
+        <code>key</code> is searched in the resource bundle. Next, the resulting
+        pattern is formatted using helpers::StringHelper::format method with the user
+        supplied string array <code>params</code>.
+
+        @param level The level of the logging request.
+        @param key The key to be searched in the #ResourceBundle.
+        @param locationInfo The location info of the logging request.
+        @param val1 The value for the first placeholder within the pattern.
+        @param val2 The value for the second placeholder within the pattern.
+        @param val3 The value for the third placeholder within the pattern.
+
+        @see #setResourceBundle
+        */
         void l7dlog(const LevelPtr& level, const CFStringRef& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
                     const CFStringRef& val1, const CFStringRef& val2, 
@@ -633,22 +1356,78 @@ namespace log4cxx
         @param location The source file of the logging request, may be null. */
         void log(const LevelPtr& level, const std::string& message,
             const log4cxx::spi::LocationInfo& location) const;
+          /**
+        This is the most generic printing method. It is intended to be
+        invoked by <b>wrapper</b> classes.
+
+        @param level The level of the logging request.
+        @param message The message of the logging request.
+        */
         void log(const LevelPtr& level, const std::string& message) const;
 #if LOG4CXX_WCHAR_T_API
+          /**
+        This is the most generic printing method. It is intended to be
+        invoked by <b>wrapper</b> classes.
+
+        @param level The level of the logging request.
+        @param message The message of the logging request.
+        @param location The source file of the logging request, may be null. */
         void log(const LevelPtr& level, const std::wstring& message,
             const log4cxx::spi::LocationInfo& location) const;
+          /**
+        This is the most generic printing method. It is intended to be
+        invoked by <b>wrapper</b> classes.
+
+        @param level The level of the logging request.
+        @param message The message of the logging request.
+        */
         void log(const LevelPtr& level, const std::wstring& message) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+          /**
+        This is the most generic printing method. It is intended to be
+        invoked by <b>wrapper</b> classes.
+
+        @param level The level of the logging request.
+        @param message The message of the logging request.
+        @param location The source file of the logging request, may be null. */
         void log(const LevelPtr& level, const std::basic_string<UniChar>& message,
             const log4cxx::spi::LocationInfo& location) const;
+          /**
+        This is the most generic printing method. It is intended to be
+        invoked by <b>wrapper</b> classes.
+
+        @param level The level of the logging request.
+        @param message The message of the logging request.
+        */
         void log(const LevelPtr& level, const std::basic_string<UniChar>& message) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+          /**
+        This is the most generic printing method. It is intended to be
+        invoked by <b>wrapper</b> classes.
+
+        @param level The level of the logging request.
+        @param message The message of the logging request.
+        @param location The source file of the logging request, may be null. */
         void log(const LevelPtr& level, const CFStringRef& message,
             const log4cxx::spi::LocationInfo& location) const;
+          /**
+        This is the most generic printing method. It is intended to be
+        invoked by <b>wrapper</b> classes.
+
+        @param level The level of the logging request.
+        @param message The message of the logging request.
+        */
         void log(const LevelPtr& level, const CFStringRef& message) const;
 #endif
+          /**
+        This is the most generic printing method. It is intended to be
+        invoked by <b>wrapper</b> classes.
+
+        @param level The level of the logging request.
+        @param message The message of the logging request.
+        @param location The source file of the logging request, may be null. */
         void logLS(const LevelPtr& level, const LogString& message,
             const log4cxx::spi::LocationInfo& location) const;
 
@@ -698,62 +1477,234 @@ namespace log4cxx
         inline void setResourceBundle(const helpers::ResourceBundlePtr& bundle)
                 { resourceBundle = bundle; }
 
+#if LOG4CXX_WCHAR_T_API
         /**
-        Log a message string with the {@link Level#WARN WARN} level.
+        Log a message string with the WARN level.
 
         <p>This method first checks if this logger is <code>WARN</code>
-        enabled by comparing the level of this logger with the {@link
-        Level#WARN WARN} level. If this logger is
+        enabled by comparing the level of this logger with the
+        WARN level. If this logger is
         <code>WARN</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
         hierarchy depending on the value of the additivity flag.
 
-        @param message the message string to log.
-        @param file the file where the log statement was written.
-        @param line the line where the log statement was written.
+        @param msg the message string to log.
+        @param location location of source of logging request.
         */
-#if LOG4CXX_WCHAR_T_API
         void warn(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the WARN level.
+
+        <p>This method first checks if this logger is <code>WARN</code>
+        enabled by comparing the level of this logger with the
+        WARN level. If this logger is
+        <code>WARN</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void warn(const std::wstring& msg) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        Log a message string with the WARN level.
+
+        <p>This method first checks if this logger is <code>WARN</code>
+        enabled by comparing the level of this logger with the
+        WARN level. If this logger is
+        <code>WARN</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void warn(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the WARN level.
+
+        <p>This method first checks if this logger is <code>WARN</code>
+        enabled by comparing the level of this logger with the
+        WARN level. If this logger is
+        <code>WARN</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void warn(const std::basic_string<UniChar>& msg) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        Log a message string with the WARN level.
+
+        <p>This method first checks if this logger is <code>WARN</code>
+        enabled by comparing the level of this logger with the
+        WARN level. If this logger is
+        <code>WARN</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void warn(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the WARN level.
+
+        <p>This method first checks if this logger is <code>WARN</code>
+        enabled by comparing the level of this logger with the
+        WARN level. If this logger is
+        <code>WARN</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void warn(const CFStringRef& msg) const;
 #endif
+        /**
+        Log a message string with the WARN level.
+
+        <p>This method first checks if this logger is <code>WARN</code>
+        enabled by comparing the level of this logger with the
+        WARN level. If this logger is
+        <code>WARN</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void warn(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the WARN level.
+
+        <p>This method first checks if this logger is <code>WARN</code>
+        enabled by comparing the level of this logger with the
+        WARN level. If this logger is
+        <code>WARN</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void warn(const std::string& msg) const;
 
+#if LOG4CXX_WCHAR_T_API
         /**
-        Log a message string with the {@link Level#TRACE TRACE} level.
+        Log a message string with the TRACE level.
 
         <p>This method first checks if this logger is <code>TRACE</code>
-        enabled by comparing the level of this logger with the {@link
-        Level#TRACE TRACE} level. If this logger is
+        enabled by comparing the level of this logger with the
+        TRACE level. If this logger is
         <code>TRACE</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
         hierarchy depending on the value of the additivity flag.
 
-        @param message the message string to log.
-        @param file the file where the log statement was written.
-        @param line the line where the log statement was written.
+        @param msg the message string to log.
+        @param location location of source of logging request.
         */
-#if LOG4CXX_WCHAR_T_API
         void trace(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the TRACE level.
+
+        <p>This method first checks if this logger is <code>TRACE</code>
+        enabled by comparing the level of this logger with the
+        TRACE level. If this logger is
+        <code>TRACE</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void trace(const std::wstring& msg) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+        /**
+        Log a message string with the TRACE level.
+
+        <p>This method first checks if this logger is <code>TRACE</code>
+        enabled by comparing the level of this logger with the
+        TRACE level. If this logger is
+        <code>TRACE</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void trace(const std::basic_string<UniChar>& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the TRACE level.
+
+        <p>This method first checks if this logger is <code>TRACE</code>
+        enabled by comparing the level of this logger with the
+        TRACE level. If this logger is
+        <code>TRACE</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void trace(const std::basic_string<UniChar>& msg) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+        /**
+        Log a message string with the TRACE level.
+
+        <p>This method first checks if this logger is <code>TRACE</code>
+        enabled by comparing the level of this logger with the
+        TRACE level. If this logger is
+        <code>TRACE</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void trace(const CFStringRef& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the TRACE level.
+
+        <p>This method first checks if this logger is <code>TRACE</code>
+        enabled by comparing the level of this logger with the
+        TRACE level. If this logger is
+        <code>TRACE</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void trace(const CFStringRef& msg) const;
 #endif
+        /**
+        Log a message string with the TRACE level.
+
+        <p>This method first checks if this logger is <code>TRACE</code>
+        enabled by comparing the level of this logger with the
+        TRACE level. If this logger is
+        <code>TRACE</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        @param location location of source of logging request.
+        */
         void trace(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
+        /**
+        Log a message string with the TRACE level.
+
+        <p>This method first checks if this logger is <code>TRACE</code>
+        enabled by comparing the level of this logger with the
+        TRACE level. If this logger is
+        <code>TRACE</code> enabled, it proceeds to call all the
+        registered appenders in this logger and also higher in the
+        hierarchy depending on the value of the additivity flag.
+
+        @param msg the message string to log.
+        */
         void trace(const std::string& msg) const;
 
         inline const log4cxx::helpers::Mutex& getMutex() const { return mutex; }

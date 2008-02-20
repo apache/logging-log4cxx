@@ -39,7 +39,7 @@ namespace log4cxx
              /**
               *  Create new instance.
               *  @param logger logger logger used in log requests.
-              *  @level level indicates level that will be used in log requests.  Can
+              *  @param level indicates level that will be used in log requests.  Can
               *      be modified later by inserting a level or calling setLevel.
               */
              logstream_base(const log4cxx::LoggerPtr& logger,
@@ -289,28 +289,16 @@ namespace log4cxx
              
             
         protected:
-              /**
-               *   {@inheritDoc}
-               */
               virtual void log(LoggerPtr& logger,
                                const LevelPtr& level,
                                const log4cxx::spi::LocationInfo& location);
               
-              /**
-               *   {@inheritDoc}
-               */
               virtual void erase();
               
-              /**
-               *   {@inheritDoc}
-               */
               virtual void get_stream_state(std::ios_base& base,
                                             std::ios_base& mask,
                                             int& fill,
                                             bool& fillSet) const;
-              /**
-               *   {@inheritDoc}
-               */
               virtual void refresh_stream_state();
               
             
@@ -400,28 +388,16 @@ namespace log4cxx
 #endif              
             
         protected:
-              /**
-               *   {@inheritDoc}
-               */
               virtual void log(LoggerPtr& logger,
                                const LevelPtr& level,
                                const log4cxx::spi::LocationInfo& location);
               
-              /**
-               *   {@inheritDoc}
-               */
               virtual void erase();
               
-              /**
-               *   {@inheritDoc}
-               */
               virtual void get_stream_state(std::ios_base& base,
                                             std::ios_base& mask,
                                             int& fill,
                                             bool& fillSet) const;
-              /**
-               *   {@inheritDoc}
-               */
               virtual void refresh_stream_state();
               
             
@@ -519,28 +495,16 @@ namespace log4cxx
 #endif              
             
         protected:
-              /**
-               *   {@inheritDoc}
-               */
               virtual void log(LoggerPtr& logger,
                                const LevelPtr& level,
                                const log4cxx::spi::LocationInfo& location);
               
-              /**
-               *   {@inheritDoc}
-               */
               virtual void erase();
               
-              /**
-               *   {@inheritDoc}
-               */
               virtual void get_stream_state(std::ios_base& base,
                                             std::ios_base& mask,
                                             int& fill,
                                             bool& fillSet) const;
-              /**
-               *   {@inheritDoc}
-               */
               virtual void refresh_stream_state();
               
             

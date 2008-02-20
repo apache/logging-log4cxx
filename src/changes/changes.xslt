@@ -46,7 +46,7 @@
   </properties>
   <body>
   
-    <release version="0.10.0" date="2007-07-30" description="First Apache release">
+    <release version="0.10.0" date="2008-02-29" description="First Apache release">
        <xsl:apply-templates select='/rss/channel/item'>
            <xsl:sort select="substring-after(key, '-')" data-type="number"/>
        </xsl:apply-templates>

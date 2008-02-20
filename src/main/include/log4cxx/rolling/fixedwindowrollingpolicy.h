@@ -22,6 +22,16 @@
 
 
 
+
+namespace log4cxx {
+
+    namespace helpers {
+      class Pool;
+    }
+
+    namespace rolling {
+
+
 /**
  * When rolling over, <code>FixedWindowRollingPolicy</code> renames files
  * according to a fixed window algorithm as described below.
@@ -55,17 +65,6 @@
  * 
  * 
  * */
-
-namespace log4cxx {
-
-    namespace helpers {
-      class Pool;
-    }
-
-    namespace rolling {
-
-
-
         class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase {
           DECLARE_LOG4CXX_OBJECT(FixedWindowRollingPolicy)
           BEGIN_LOG4CXX_CAST_MAP()
@@ -107,6 +106,7 @@ namespace log4cxx {
 *
 * @param file current value of RollingFileAppender.getFile().
 * @param append current value of RollingFileAppender.getAppend().
+* @param p pool used for any required memory allocations.
 * @return Description of the initialization, may be null to indicate
 * no initialization needed.
 * @throws SecurityException if denied access to log files.
@@ -121,6 +121,7 @@ const LogString& file, const bool append, log4cxx::helpers::Pool& p);
 * after close of current log file.
 *
 * @param activeFile file name for current active log file.
+* @param p pool used for any required memory allocations.
 * @return Description of pending rollover, may be null to indicate no rollover
 * at this time.
 * @throws SecurityException if denied access to log files.

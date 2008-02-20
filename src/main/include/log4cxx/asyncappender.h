@@ -82,9 +82,6 @@ namespace log4cxx
                 */
                 void addAppender(const AppenderPtr& newAppender);
 
-                /**
-                 * {@inheritDoc}
-                 */
                 void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
                 /**
@@ -122,9 +119,6 @@ namespace log4cxx
                 */
                 bool isAttached(const AppenderPtr& appender) const;
 
-                /**
-                 * {@inheritDoc}
-                */
                 virtual bool requiresLayout() const;
                     
                 /**

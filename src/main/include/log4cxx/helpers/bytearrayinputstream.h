@@ -68,7 +68,7 @@ namespace log4cxx
                   /**
                    * Reads a sequence of bytes into the given buffer.
                    *
-                   * @param dst The buffer into which bytes are to be transferred.
+                   * @param buf The buffer into which bytes are to be transferred.
                    * @return the total number of bytes read into the buffer, or -1 if there
                    *         is no more data because the end of the stream has been reached.
                    */

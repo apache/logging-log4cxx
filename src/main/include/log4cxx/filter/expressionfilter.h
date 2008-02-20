@@ -47,7 +47,7 @@ namespace log4cxx
  * <p>See <code>org.apache.log4j.chainsaw.LoggingEventFieldResolver.java</code>
  * for the correct names for logging event fields used when building expressions.
  *
- * <p>See <org.apache.log4j.chainsaw.rule</code> package for a list of available
+ * <p>See <code>org.apache.log4j.chainsaw.rule</code> package for a list of available
  * rules which can be applied using the expression syntax.
  *
  * <p>See <code>org.apache.log4j.chainsaw.RuleFactory</code> for the symbols
@@ -70,14 +70,14 @@ namespace log4cxx
  *
  * Meaning of <b>AcceptToMatch</b>:
  * If there is a match between the value of the
- * Expression option and the {@link LoggingEvent} and AcceptOnMatch is true,
- * the {@link #decide} method returns {@link Filter#ACCEPT}.
+ * Expression option and the {@link log4cxx::spi::LoggingEvent} and AcceptOnMatch is true,
+ * the {@link #decide} method returns {@link log4cxx::spi::Filter#ACCEPT}.
  *
  * If there is a match between the value of the
- * Expression option and the {@link LoggingEvent} and AcceptOnMatch is false,
- * {@link Filter#DENY} is returned.
+ * Expression option and the {@link log4cxx::spi::LoggingEvent} and AcceptOnMatch is false,
+ * {@link log4cxx::spi::Filter#DENY} is returned.
  *
- * If there is no match, {@link Filter#NEUTRAL} is returned.
+ * If there is no match, {@link log4cxx::spi::Filter#NEUTRAL} is returned.
  *
  * 
  */
@@ -115,7 +115,7 @@ namespace log4cxx
             bool getAcceptOnMatch() const;
 
   /**
-     Returns {@link Filter#NEUTRAL} is there is no string match.
+     Returns {@link log4cxx::spi::Filter#NEUTRAL} is there is no string match.
    */
             FilterDecision decide(const spi::LoggingEventPtr & event) const;
         };

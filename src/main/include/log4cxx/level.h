@@ -73,40 +73,113 @@ namespace log4cxx
                 /**
                 Convert the string passed as argument to a level. If the
                 conversion fails, then this method returns #DEBUG.
+                * @param sArg level name.
                 */
                 static LevelPtr toLevel(const std::string& sArg);
                 /**
                 Convert the string passed as argument to a level. If the
                 conversion fails, then this method returns the value of
                 <code>defaultLevel</code>.
+                * @param sArg level name.
+                * @param defaultLevel level to return if no match.
+                * @return 
                 */
                 static LevelPtr toLevel(const std::string& sArg,
                         const LevelPtr& defaultLevel);
+                /**
+                 *  Get the name of the level in the current encoding.
+                 *  @param name buffer to which name is appended.
+                 */
                 void toString(std::string& name) const;
 
 #if LOG4CXX_WCHAR_T_API
+                /**
+                Convert the string passed as argument to a level. If the
+                conversion fails, then this method returns #DEBUG.
+                * @param sArg level name.
+                */
                 static LevelPtr toLevel(const std::wstring& sArg);
+                /**
+                Convert the string passed as argument to a level. If the
+                conversion fails, then this method returns the value of
+                <code>defaultLevel</code>.
+                * @param sArg level name.
+                * @param defaultLevel level to return if no match.
+                * @return 
+                */
                 static LevelPtr toLevel(const std::wstring& sArg,
                         const LevelPtr& defaultLevel);
+                /**
+                 *  Get the name of the level.
+                 *  @param name buffer to which name is appended.
+                 */
                 void toString(std::wstring& name) const;
 #endif
 #if LOG4CXX_UNICHAR_API
+                /**
+                Convert the string passed as argument to a level. If the
+                conversion fails, then this method returns #DEBUG.
+                * @param sArg level name.
+                */
                 static LevelPtr toLevel(const std::basic_string<UniChar>& sArg);
+                /**
+                Convert the string passed as argument to a level. If the
+                conversion fails, then this method returns the value of
+                <code>defaultLevel</code>.
+                * @param sArg level name.
+                * @param defaultLevel level to return if no match.
+                * @return 
+                */
                 static LevelPtr toLevel(const std::basic_string<UniChar>& sArg,
                         const LevelPtr& defaultLevel);
+                /**
+                 *  Get the name of the level.
+                 *  @param name buffer to which name is appended.
+                 */
                 void toString(std::basic_string<UniChar>& name) const;
 #endif
 #if LOG4CXX_CFSTRING_API
+                /**
+                Convert the string passed as argument to a level. If the
+                conversion fails, then this method returns #DEBUG.
+                * @param sArg level name.
+                */
                 static LevelPtr toLevel(const CFStringRef& sArg);
+                /**
+                Convert the string passed as argument to a level. If the
+                conversion fails, then this method returns the value of
+                <code>defaultLevel</code>.
+                * @param sArg level name.
+                * @param defaultLevel level to return if no match.
+                * @return 
+                */
                 static LevelPtr toLevel(const CFStringRef& sArg,
                         const LevelPtr& defaultLevel);
+                /**
+                 *  Get the name of the level.
+                 *  @param name buffer to which name is appended.
+                 */
                 void toString(CFStringRef& name) const;
 #endif
+                /**
+                Convert the string passed as argument to a level. If the
+                conversion fails, then this method returns #DEBUG.
+                * @param sArg level name.
+                */
                 static LevelPtr toLevelLS(const LogString& sArg);
+                /**
+                Convert the string passed as argument to a level. If the
+                conversion fails, then this method returns the value of
+                <code>defaultLevel</code>.
+                * @param sArg level name.
+                * @param defaultLevel level to return if no match.
+                * @return 
+                */
                 static LevelPtr toLevelLS(const LogString& sArg,
                         const LevelPtr& defaultLevel);
                 /**
-                Returns the string representation of this priority.
+                Returns the string representation of this level.
+                * @return level name.
                 */
                 LogString toString() const;
 

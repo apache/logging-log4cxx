@@ -28,18 +28,18 @@ namespace log4cxx
 
         /**
         Sends {@link spi::LoggingEvent LoggingEvent} objects to a remote a log server,
-        usually a {@link net::SocketNode SocketNode}.
+        usually Apache Chainsaw.
 
         <p>The SocketAppender has the following properties:
 
-        - If sent to a {@link net::SocketNode SocketNode}, remote logging
+        - If sent to Apache Chainsaw, remote logging
                 is non-intrusive as far as the log event is concerned. In other
         words, the event will be logged with the same time stamp, {@link
         NDC NDC}, location info as if it were logged locally by
         the client.
 
         - SocketAppenders do not use a layout. They ship a
-        serialized {@link spi::LoggingEvent LoggingEvent} object
+        serialized {@link log4cxx::spi::LoggingEvent LoggingEvent} object
                 to the server side.
 
         - Remote logging uses the TCP protocol. Consequently, if

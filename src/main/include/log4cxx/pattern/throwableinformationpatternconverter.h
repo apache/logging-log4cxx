@@ -40,8 +40,6 @@ class LOG4CXX_EXPORT ThrowableInformationPatternConverter
 
   /**
    * Private constructor.
-   * @param options options, may be null.
-   * @param logger logger for diagnostic messages, may be null.
    */
   ThrowableInformationPatternConverter(bool shortReport);
 
@@ -57,14 +55,10 @@ END_LOG4CXX_CAST_MAP()
    * Gets an instance of the class.
     * @param options pattern options, may be null.  If first element is "short",
    * only the first line of the throwable will be formatted.
-   * @param logger logger, unused and may be null.
    * @return instance of class.
    */
   static PatternConverterPtr newInstance(
     const std::vector<LogString>& options);
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::spi::LoggingEventPtr& event,
      LogString& toAppendTo,
      log4cxx::helpers::Pool& p) const;

@@ -64,14 +64,6 @@ class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::ObjectI
   const LogString style;
 
 
-public:
-  DECLARE_LOG4CXX_PATTERN(PatternConverter)
-  BEGIN_LOG4CXX_CAST_MAP()
-          LOG4CXX_CAST_ENTRY(PatternConverter)
-  END_LOG4CXX_CAST_MAP()
-
-
-protected:
   /**
    * Create a new pattern converter.
    * @param name name for pattern converter.
@@ -83,10 +75,16 @@ protected:
   virtual ~PatternConverter();
 
 public:
+  DECLARE_LOG4CXX_PATTERN(PatternConverter)
+  BEGIN_LOG4CXX_CAST_MAP()
+          LOG4CXX_CAST_ENTRY(PatternConverter)
+  END_LOG4CXX_CAST_MAP()
+
   /**
    * Formats an object into a string buffer.
    * @param obj event to format, may not be null.
    * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
+   * @param p pool for any allocations necessary during formatting.
    */
   virtual void format(const log4cxx::helpers::ObjectPtr& obj,
       LogString& toAppendTo,

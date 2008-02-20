@@ -77,7 +77,7 @@ namespace log4cxx
    * If the expression evaluates to true, generate a LocationInfo instance
    * by creating an exception and set this LocationInfo on the event.
    *
-   * Returns {@link Filter#NEUTRAL}
+   * Returns {@link log4cxx::spi::Filter#NEUTRAL}
    */
             FilterDecision decide(const spi::LoggingEventPtr & event) const;
 

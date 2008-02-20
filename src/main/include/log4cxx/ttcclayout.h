@@ -162,8 +162,9 @@ namespace log4cxx
         <p>Time, thread, logger and diagnostic context are printed
         depending on options.
 
-        @param output
-        @param event
+        @param output destination to receive formatted output.
+        @param event event to format.
+        @param pool pool used to allocate memory needed during formatting.
         */
         virtual void format(LogString& output,
             const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool) const;

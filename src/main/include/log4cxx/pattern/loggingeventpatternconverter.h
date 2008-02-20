@@ -53,15 +53,13 @@ END_LOG4CXX_CAST_MAP()
    * Formats an event into a string buffer.
    * @param event event to format, may not be null.
    * @param toAppendTo string buffer to which the formatted event will be appended.  May not be null.
+   * @param p pool for memory allocations needing during format.
    */
   virtual void format(
     const log4cxx::spi::LoggingEventPtr& event,
     LogString& toAppendTo,
     log4cxx::helpers::Pool& p) const = 0;
 
-  /**
-   * {@inheritDoc}
-   */
   void format(const log4cxx::helpers::ObjectPtr& obj,
      LogString& toAppendTo,
      log4cxx::helpers::Pool& p) const;

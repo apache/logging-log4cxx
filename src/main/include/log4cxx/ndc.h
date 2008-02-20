@@ -157,14 +157,16 @@ namespace log4cxx
                 static bool empty();
 
                 /**
-                Clients should call this method before leaving a diagnostic
-                context.
-                <p>The returned value is the value that was pushed last. If no
-                context is available, then the empty string "" is returned.
-                @return The innermost diagnostic context.
+                Pop top value off stack.
+                @return top value.
                 */
                 static LogString pop();
-                static bool pop(std::string&);
+                /**
+                Pop top value off stack.
+                @param buf to which top value is appended.
+                @return true if NDC contained at least one value.
+                */
+                static bool pop(std::string& buf);
 
                 /**
                 Looks at the last diagnostic context at the top of this NDC
@@ -174,7 +176,12 @@ namespace log4cxx
                 @return String The innermost diagnostic context.
                 */
                 static LogString peek();
-                static bool peek(std::string&);
+                /**
+                Get top value without removing value.
+                @param buf to which top value is appended.
+                @return true if NDC contained at least one value.
+                */
+                static bool peek(std::string& buf);
 
                 /**
                 Push new diagnostic context information for the current thread.
@@ -183,6 +190,12 @@ namespace log4cxx
                 @param message The new diagnostic context information.
                 */
                 static void push(const std::string& message);
+                /**
+                Push new diagnostic context information for the current thread.
+                <p>The contents of the <code>message</code> parameter is
+                determined solely by the client.
+                @param message The new diagnostic context information.
+                */
                 static void pushLS(const LogString& message);
 
                 /**
@@ -204,8 +217,26 @@ namespace log4cxx
                 static void remove();
                 
 #if LOG4CXX_WCHAR_T_API
-                NDC(const std::wstring& message);
-                static void push(const std::wstring& message);
+               /**
+                 Creates a nested diagnostic context.
+                 Since java performs no automatic cleanup of objects when a
+                 scope is left, in log4j push() and pop() must be used
+                 to manage the NDC. For convenience, log4cxx provides 
+                 an NDC constructor and destructor which simply call the push() and
+                 pop() methods, allowing for automatic cleanup when the current
+                 scope ends.
+
+                 @param message The new diagnostic context information.
+                 @see The #push method.
+                 */
+                 NDC(const std::wstring& message);
+                 /**
+                Push new diagnostic context information for the current thread.
+                <p>The contents of the <code>message</code> parameter is
+                determined solely by the client.
+                @param message The new diagnostic context information.
+                */
+               static void push(const std::wstring& message);
                 /**
                  *   Appends the current NDC content to the provided string.
                  *   @param dst destination.
@@ -220,7 +251,25 @@ namespace log4cxx
                 static bool pop(std::wstring& dst);
 #endif
 #if LOG4CXX_UNICHAR_API
-                NDC(const std::basic_string<UniChar>& message);
+               /**
+                 Creates a nested diagnostic context.
+                 Since java performs no automatic cleanup of objects when a
+                 scope is left, in log4j push() and pop() must be used
+                 to manage the NDC. For convenience, log4cxx provides 
+                 an NDC constructor and destructor which simply call the push() and
+                 pop() methods, allowing for automatic cleanup when the current
+                 scope ends.
+
+                 @param message The new diagnostic context information.
+                 @see The #push method.
+                 */
+                 NDC(const std::basic_string<UniChar>& message);
+                /**
+                Push new diagnostic context information for the current thread.
+                <p>The contents of the <code>message</code> parameter is
+                determined solely by the client.
+                @param message The new diagnostic context information.
+                */
                 static void push(const std::basic_string<UniChar>& message);
                 /**
                  *   Appends the current NDC content to the provided string.
@@ -236,7 +285,25 @@ namespace log4cxx
                 static bool pop(std::basic_string<UniChar>& dst);
 #endif
 #if LOG4CXX_CFSTRING_API
-                NDC(const CFStringRef& message);
+               /**
+                 Creates a nested diagnostic context.
+                 Since java performs no automatic cleanup of objects when a
+                 scope is left, in log4j push() and pop() must be used
+                 to manage the NDC. For convenience, log4cxx provides 
+                 an NDC constructor and destructor which simply call the push() and
+                 pop() methods, allowing for automatic cleanup when the current
+                 scope ends.
+
+                 @param message The new diagnostic context information.
+                 @see The #push method.
+                 */
+                 NDC(const CFStringRef& message);
+                /**
+                Push new diagnostic context information for the current thread.
+                <p>The contents of the <code>message</code> parameter is
+                determined solely by the client.
+                @param message The new diagnostic context information.
+                */
                 static void push(const CFStringRef& message);
                 /**
                  *   Gets the current NDC value.

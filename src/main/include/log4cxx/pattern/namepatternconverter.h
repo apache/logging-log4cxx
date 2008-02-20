@@ -26,7 +26,11 @@
 namespace log4cxx {
   namespace pattern {
 
-
+/**
+ *
+ * Base class for other pattern converters which can return only parts of their name.
+ *
+ */
 class LOG4CXX_EXPORT NamePatternConverter : public LoggingEventPatternConverter {
   /**
    * Abbreviator.

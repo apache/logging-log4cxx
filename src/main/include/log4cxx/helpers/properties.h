@@ -59,7 +59,7 @@ namespace log4cxx
 
                         <p>Every property occupies one line of the input stream.
                         Each line is terminated by a line terminator (<code>\\n</code> or
-                        <code>\r</code> or <code>\r\\n</code>).
+                        <code>\\r</code> or <code>\\r\\n</code>).
                         Lines from the input stream are processed until end of file is reached
                         on the input stream.
 
@@ -81,10 +81,10 @@ namespace log4cxx
                         <code>:</code>, then it is ignored
                         and any whitespace characters after it are also skipped. All remaining
                         characters on the line become part of the associated element string.
-                        Within the element string, the ASCII escape sequences <code>\t</code>,
-                        <code>\\n</code>, <code>\r</code>, <code>\\</code>, <code>\"</code>,
-                        <code>\'</code>, <code>\\</code> (a backslash and a space), and
-                        <code>\uxxxx</code> are recognized
+                        Within the element string, the ASCII escape sequences <code>\\t</code>,
+                        <code>\\n</code>, <code>\\r</code>, <code>\\</code>, <code>\\"</code>,
+                        <code>\\'</code>, <code>\\</code> (a backslash and a space), and
+                        <code>\\uxxxx</code> are recognized
                         and converted to single characters. Moreover, if the last character on
                         the line is <code>\\</code>, then the next line is treated as a
                         continuation of the

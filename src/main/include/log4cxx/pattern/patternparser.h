@@ -44,7 +44,7 @@ typedef std::map<LogString, PatternConstructor> PatternMap;
 //                 Reinhard Deschler <reinhard.deschler@web.de>
 
 /**
- * Most of the work of the {@link org.apache.log4j.PatternLayout} class
+ * Most of the work of the {@link PatternLayout} class
  * is delegated to the PatternParser class.
  * <p>It is this class that parses conversion patterns and creates
  * a chained list of {@link PatternConverter PatternConverters}.
@@ -113,9 +113,7 @@ public:
    * @param pattern pattern to parse.
    * @param patternConverters list to receive pattern converters.
    * @param formattingInfos list to receive field specifiers corresponding to pattern converters.
-   * @param converterRegistry map of user-supported pattern converters keyed by format specifier, may be null.
    * @param rules map of stock pattern converters keyed by format specifier.
-   * @param logger logger to receive parser warnings, may be null.
    */
   static void parse(
     const LogString& pattern,
@@ -131,9 +129,7 @@ private:
    * @param converterId converterId.
    * @param currentLiteral literal to be used if converter is unrecognized or following converter
    *    if converterId contains extra characters.
-   * @param converterRegistry map of user-supported pattern converters keyed by format specifier, may be null.
    * @param rules map of stock pattern converters keyed by format specifier.
-   * @param logger logger to receive parser warnings, may be null.
    * @param options converter options.
    * @return  converter or null.
    */
@@ -149,10 +145,8 @@ private:
    * @param c initial character of format specifier.
    * @param pattern conversion pattern
    * @param i current position in conversion pattern.
-   * @param logger logger to receive warnings, may be null.
    * @param currentLiteral current literal.
    * @param formattingInfo current field specifier.
-   * @param converterRegistry map of user-provided pattern converters keyed by format specifier, may be null.
    * @param rules map of stock pattern converters keyed by format specifier.
    * @param patternConverters list to receive parsed pattern converter.
    * @param formattingInfos list to receive corresponding field specifier.

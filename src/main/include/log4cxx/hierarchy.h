@@ -195,7 +195,7 @@ namespace log4cxx
             default.  This removes all appenders from all categories, sets
             the level of all non-root categories to <code>null</code>,
             sets their additivity flag to <code>true</code> and sets the level
-            of the root logger to {@link Level#DEBUG DEBUG}.  Moreover,
+            of the root logger to DEBUG.  Moreover,
             message disabling is set its default "off" value.
 
             <p>Existing categories are not removed. They are just reset.

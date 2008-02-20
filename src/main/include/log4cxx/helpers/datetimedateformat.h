@@ -25,7 +25,7 @@ namespace log4cxx
         namespace helpers
         {
                 /**
-                Formats a date in the format <b>\dd MMM yyyy HH:mm:ss,SSS</b> for example,
+                Formats a date in the format <b>dd MMM yyyy HH:mm:ss,SSS</b> for example,
            "06 Nov 1994 15:49:37,459".
                 */
                 class LOG4CXX_EXPORT DateTimeDateFormat : public SimpleDateFormat

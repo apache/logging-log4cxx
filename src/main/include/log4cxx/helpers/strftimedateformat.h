@@ -43,7 +43,7 @@ namespace log4cxx
                   ~StrftimeDateFormat();
 
                   virtual void format(LogString& s,
-                                      log4cxx_time_t time,
+                                      log4cxx_time_t tm,
                                       log4cxx::helpers::Pool& p) const;
 
                   /**

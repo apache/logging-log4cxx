@@ -45,10 +45,10 @@ namespace log4cxx
                    /**
                    * Formats an log4cxx_time_t into a date/time string.
                    * @param s string to which the date/time string is appended.
-                   * @param date date to be formatted.
+                   * @param tm date to be formatted.
                    * @param p memory pool used during formatting.
                    */
-                   virtual void format(LogString &s, log4cxx_time_t date, log4cxx::helpers::Pool& p) const = 0;
+                   virtual void format(LogString &s, log4cxx_time_t tm, log4cxx::helpers::Pool& p) const = 0;
 
                    /**
                    * Sets the time zone.

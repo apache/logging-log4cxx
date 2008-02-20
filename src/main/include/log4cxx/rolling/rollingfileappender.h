@@ -37,7 +37,7 @@ namespace log4cxx {
          * <code>RollingPolicy</code> and a <code>TriggeringPolicy</code>.
          *
          * <p><code>RollingFileAppender</code> can be configured programattically or
-         * using {@link org.apache.log4j.joran.JoranConfigurator}. Here is a sample
+         * using {@link log4cxx::xml::DOMConfigurator}. Here is a sample
          * configration file:
 
         <pre>&lt;?xml version="1.0" encoding="UTF-8" ?>
