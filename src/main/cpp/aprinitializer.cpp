@@ -42,14 +42,7 @@ APRInitializer::APRInitializer() {
 }
 
 APRInitializer::~APRInitializer() {
-//
-//   If we are using a static APR then
-//       we need to clean up after ourselves
-//   otherwise the main executable should terminate APR
-//
-#if defined(APR_DECLARE_STATIC) && !defined(LOG4CXX_DECLARE_STATIC)
     apr_terminate();
-#endif
     isDestructed = true;
 }
 
