@@ -167,7 +167,7 @@
           <dependency>
             <groupId>ant-contrib</groupId>
             <artifactId>cpptasks</artifactId>
-            <version>1.0b5-SNAPSHOT</version>
+            <version>1.0b5</version>
           </dependency>
         </dependencies>
       </plugin>  

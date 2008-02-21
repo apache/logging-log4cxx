@@ -578,6 +578,7 @@ Command line options:
         <and>
             <isset property="is-mingw"/>
             <equals arg1="${lib.type}" arg2="shared"/>
+            <isset property="log4cxx.lib.file"/>
          </and>
     </condition>
 </target>
@@ -1074,39 +1075,16 @@ Command line options:
   </replace>
   <mkdir dir="target/site/apidocs"/>
   <exec executable="${doxygen.exe}" dir="${target.dir}"/>
-</target>
 
-<target name="patch-vc6-log4cxx">
-    <exec executable="sed">
-        <arg value="-i"/>
-        <arg value="-e"/>
-        <arg value="s~ADD LINK32 .*/NOLOGO~ADD LINK32 ADVAPI32.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB /NOLOGO~g"/>
-        <arg value="${project.dsp}"/>
-    </exec>
-</target>
+    <!--  doxygen.css is GPL'd, looks better with it, but not intolerable without it -->
+    <echo file="${target.dir}/site/apidocs/doxygen.css">
+/*
+&license;
+*/
+/*  Minimal replacement for GPL'd doxygen.css  */
+</echo>
 
-<target name="patch-vc6-sample">
-    <exec executable="sed">
-        <arg value="-i"/>
-        <arg value="-e"/>
-        <arg value="s~ADD LINK32 .*/NOLOGO~ADD LINK32 ADVAPI32.LIB WS2_32.LIB SHELL32.LIB ODBC32.LIB /NOLOGO~g"/>
-        <arg value="${project.dsp}"/>
-    </exec>
-</target>
 
-<target name="patch-vc6-dsw">
-    <exec executable="sed">
-        <arg value="-i"/>
-        <arg value="-e"/>
-        <arg value="s~.\apr.dsp~..\..\apr\apr.dsp~g"/>
-        <arg value="${project.dsw}"/>
-    </exec>
-    <exec executable="sed">
-        <arg value="-i"/>
-        <arg value="-e"/>
-        <arg value="s~.\apr-util.dsp~..\..\apr-util\apr-util.dsp~g"/>
-        <arg value="${project.dsw}"/>
-    </exec>
 </target>
 
 
@@ -1118,15 +1096,36 @@ Command line options:
     <antcall target="build-projects-xcode"/>
     <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
     
-    <foreach target="patch-vc6-sample" param="project.dsp">
-        <path><fileset dir="${target.dir}" includes="**/*.dsp"/></path>
-    </foreach>
-    <foreach target="patch-vc6-log4cxx" param="project.dsp">
-        <path><fileset dir="${target.dir}" includes="**/log4cxx.dsp **/testsuite-standalone.dsp"/></path>
-    </foreach>
-    <foreach target="patch-vc6-dsw" param="project.dsw">
-        <path><fileset dir="${target.dir}" includes="**/*.dsw"/></path>
-    </foreach>
+    <replaceregexp flags="i"
+        match="ADD LINK32 .*/NOLOGO"
+        replace="ADD LINK32 ADVAPI32.LIB WS2_32.LIB MSWSOCK.LIB SHELL32.LIB ODBC32.LIB /NOLOGO">
+        <fileset dir="${target.dir}" includes="**/*.dsp"/>        
+    </replaceregexp>
+    <replaceregexp flags="g"
+        match=".\\apr(.*)-1.dsp"
+        replace="..\\\\..\\\\apr\1\\\\apr\1.dsp">
+        <fileset dir="${target.dir}" includes="**/*.dsw"/>        
+    </replaceregexp>
+    <replace dir="${target.dir}/site" includes="**/*.html">
+        <replacetoken>&lt;html</replacetoken>
+        <replacevalue>&lt;!--
+&license;
+--&gt;&lt;html</replacevalue>
+    </replace>
+    <replace dir="${target.dir}/site/css" includes="maven*.css">
+        <replacetoken>body {</replacetoken>
+        <replacevalue>/*
+&license;
+*/
+body {</replacevalue>
+    </replace>
+    <replace dir="${target.dir}/site/css" includes="print.css">
+        <replacetoken>#banner</replacetoken>
+        <replacevalue>/*
+&license;
+*/
+#banner</replacevalue>
+    </replace>
     
 </target>
 

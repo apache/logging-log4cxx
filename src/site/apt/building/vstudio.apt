@@ -24,12 +24,19 @@ Building Apache log4cxx with Microsoft Visual Studio
 
    Extract APR and APR-util into neigboring directories to log4cxx and 
    rename to apr and apr-util.  Open projects/log4cxx.dsw with Microsoft
-   Visual Studio 6 or later.  You will be prompted to convert the
-   project to the current format with all versions later than 
-   Microsoft Visual Studio 6.
+   Visual Studio 6 or later at which time you may be prompted to
+   upgrade the projects to the format used by your version
+   of Microsoft Visual Studio.
    
    
 *Running unit tests
+
+   To pass the unit tests, sed must be on the path to
+   normalize the generated output files.  Also three
+   environment variables need to be defined: TOTO=wonderful,
+   key1=value1 and key2=value2.  These must be done outside
+   of Microsoft Visual Studio, either in the Control Panel or
+   in a Command Prompt uses to launch Microsoft Visual Studio.
 
    Prepare APR and APR-Util as previously discussed.
    Open projects/testsuite.dsw or projects/testsuite-standalone.dsw
@@ -40,9 +47,3 @@ Building Apache log4cxx with Microsoft Visual Studio
    set the Working Directory to "../src/test/resources".
    Individual tests can be specified in Program Arguments
    and "-v" can be specified to output verbose test results.
-   
-   Three optionconvertertestcase tests will likely fail
-   since they expect 3 environment variables to have been
-   previously set.
-
-   

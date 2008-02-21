@@ -71,7 +71,7 @@
             <includes>
             <include>*.dsw</include>
             <include>*.dsp</include>
-            <include>*.xcodeproj/**</include>
+            <include>*.xcodeproj/project.pbxproj</include>
             </includes>
         </fileSet>
 	</fileSets>

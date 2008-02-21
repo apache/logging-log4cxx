@@ -22,7 +22,7 @@ Building Apache log4cxx with Apple Xcode
 
 *Building log4cxx.dylib
 
-   Open projects/log4cxx.xcodeproj with Xcode, address issues described below
+   Open projects/log4cxx.xcodeproj with Xcode 2.4 or later, address issues described below
    and build as normal. 
 
 *Running unit tests
@@ -67,3 +67,5 @@ ln -s /usr/lib/libaprutil-1.dylib libaprutil-1.dylib
    in the Groups & Files pane, drag log4cxx.dylib
    and drop on the "Link Binary with Libraries" folder
    under Targets.
+
+   See issue {{{http://issues.apache.org/jira/browse/LOGCXX-245}LOGCXX-245}} for further information.
