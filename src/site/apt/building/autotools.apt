@@ -79,3 +79,34 @@ Building Apache log4cxx with autotools
 
 
 ** MinGW:
+
+   Recent APR 1.2.x releases fail ./configure with a error
+   of "decision on anonymous shared memory failed".  That issue
+   has been fixed in the current APR SVN HEAD.  The follow
+   sequence worked with MSYS (with Python on Path):
+
++----+
+cd expat-2.0.1
+./configure
+make install
+cd ..
+svn co https://svn.apache.org/repos/asf/apr/apr/trunk apr
+cd apr
+./buildconf.sh
+./configure 
+make install
+cd ..
+svn co https://svn.apache.org/repos/asf/apr/apr-util/trunk apr-util
+cd apr-util
+./buildconf.sh
+./configure --with-apr=/usr/local --with-expat=/usr/local
+make install
+cd ../apache-log4cxx-0.10.0
+./autogen.sh
+./configure --with-apr=/usr/local --with-apr-util=/usr/local --with-logchar=wchar_t
+make install
++----+
+
+   Running "make check" was observed to fail with unexpected exceptions
+   in streamtestcase and datetimedateformattestcase.
+   See {{http://issues.apache.org/jira/browse/LOGCXX-244}LOGCXX-244}}.

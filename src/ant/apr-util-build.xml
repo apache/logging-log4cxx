@@ -167,6 +167,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="APU_DECLARE_EXPORT" if="is-shared"/>
         <defineset define="APU_DECLARE_STATIC" unless="is-shared"/>
         <defineset define="APR_DECLARE_STATIC" unless="is-apr-shared"/>
+        <defineset>
+            <define name="XMLPARSEAPI" value=" "/>
+        </defineset>
         <defineset define="WIN32" if="is-windows"/>
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <compilerarg value="${pic-option}" if="pic-option"/>

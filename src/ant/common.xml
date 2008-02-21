@@ -58,8 +58,17 @@
         </or>
     </condition>
 
+    <condition property="is-msvc" value="true">
+        <or>
+           <equals arg1="${compiler}" arg2="msvc"/>
+        </or>
+    </condition>
+
     <condition property="is-mingw" value="true">
-        <isset property="is-gcc"/>
+        <or>
+            <equals arg1="${compiler}" arg2="gcc"/>
+            <equals arg1="${compiler}" arg2="g++"/>
+        </or>
     </condition>
 </target>
 

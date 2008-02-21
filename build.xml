@@ -25,7 +25,7 @@
         <libset libs="esmtp" dir="${esmtp.lib.dir}" if="esmtp.lib.dir"/>
         <libset libs="esmtp" if="has-libesmtp" unless="esmtp.lib.dir"/>
       <libset libs="${odbc.lib}" if="odbc.lib"/>
-      <libset libs="${apr-util.dependencies}" if="apr-util.dependencies"/>
+      <libset libs="${apr-util.dependencies}" if="apr-util.dependencies" unless="apr-util-includes-dependencies"/>
         <libset libs="pthread" if="is-unix"/>
         <syslibset libs="advapi32 mswsock ws2_32 shell32" if="is-windows"/>
         <syslibset libs="stdc++" if="is-gcc"/>
@@ -393,6 +393,8 @@ Command line options:
    <property name="apr-util.lib.prefix" value=""/>
    <property name="apr-util.lib.suffix" value=""/>
    <property name="project.type" value="msvc6"/>
+   <!--  built this way, apr-util will include expat and doesn't need an external reference  -->
+   <property name="apr-util-includes-dependencies" value="1"/>
 
     <ant antfile="src/ant/apr-util-build.xml" target="build" inheritAll="false">
         <property name="target.dir" value="${target.dir}"/>
@@ -500,7 +502,7 @@ Command line options:
          </cc>
 </target>
 
-<target name="build" depends="build-apr-util, build-libesmtp, configure" description="Build log4cxx library">
+<target name="build-lib" depends="build-apr-util, build-libesmtp, configure" description="Build log4cxx library">
     <mkdir dir="${log4cxx.lib.dir}/log4cxx_obj"/>
 
    <condition property="apr-static" value="1">
@@ -536,6 +538,7 @@ Command line options:
     <cc name="${project.compiler}"
                 exceptions="true"
                 outfile="${log4cxx.lib.dir}/${lib.prefix}${lib.name}${lib.suffix}"
+                outputfileproperty="log4cxx.lib.file"
                 subsystem="console"
                 multithreaded="true"
                 outtype="${lib.type}"
@@ -567,8 +570,19 @@ Command line options:
             <dependency name="${projects.dir}/libesmtp"/>
         </project>
     </cc>
+
+    <condition property="copy.log4cxx" value="${log4cxx.lib.dir}/${lib.prefix}${lib.name}${lib.suffix}.dll">
+        <and>
+            <isset property="is-mingw"/>
+            <equals arg1="${lib.type}" arg2="shared"/>
+         </and>
+    </condition>
 </target>
 
+<target name="build" depends="build-lib" if="copy.log4cxx">
+    <copy file="${log4cxx.lib.file}" tofile="${copy.log4cxx}" 
+       overwrite="true" preservelastmodified="true"/>
+</target>
 
 <target name="build-example">
     <mkdir dir="${log4cxx.lib.dir}/${example.name}_obj"/>

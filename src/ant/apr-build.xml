@@ -70,6 +70,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
     </antcall>
 </target>
 
+
 <target name="check-configure" if="is-unix">
     <condition property="force-configure" value="1">
         <not><available file="${include.dir}/apr.h"/></not>
@@ -109,7 +110,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         outputfileproperty="apr-1.dll"
         debug="${debug}"
         projectsOnly="${projectsOnly}">
-        <fileset dir="${src.dir}" includes="**/${arch}/*.c" excludes="**/apr_app.c"/>
+        <!--  suppressing misc/win32/rand.c since it needs to include rpc.h  -->
+        <fileset dir="${src.dir}" includes="**/${arch}/*.c" excludes="**/apr_app.c misc/win32/rand.c"/>
         <fileset dir="${src.dir}" includes="**/${arch}/apr_app.c" if="is-static"/>
         <fileset dir="${src.dir}/file_io/unix"
             includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"/>

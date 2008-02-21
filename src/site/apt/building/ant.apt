@@ -182,6 +182,24 @@ ant -Dos.family=cygwin -Dwith-apr=/cygwin/lib -Dwith-apr-util=/cygwin/lib \
 
   *** MinGW:
 
++----+
+cd apache-log4cxx-0.10.0
+path c:\mingw\bin;%PATH%
+ant -Dcompiler=gcc -Dfind=false build-all
+cd src\test\resources
+set TOTO=wonderful
+set key1=value1
+set key2=value2
+..\..\..\target\release\shared\testsuite -v 
+..\..\..\target\release\shared\trivial
+..\..\..\target\release\shared\stream 
++----+
+
+   Running "ant check" was observed to fail with unexpected exceptions
+   in streamtestcase and datetimedateformattestcase.
+   See {{http://issues.apache.org/jira/browse/LOGCXX-244}LOGCXX-244}}.
+
+
   ** Mac OS/X:
   
   APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.
