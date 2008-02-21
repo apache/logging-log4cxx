@@ -64,8 +64,13 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 <target name="win-configure" if="is-windows">
+    <copy file="${include.dir}/apr.hw" tofile="${include.dir}/apr.tmp" overwrite="true"/>
+    <replaceregexp file="${include.dir}/apr.tmp"
+         match="typedef *int *uid_t;" replace="/* typedef int uid_t */"/>  
+    <replaceregexp file="${include.dir}/apr.tmp"
+         match="typedef *int *gid_t;" replace="/* typedef int gid_t */"/>  
     <antcall target="copy-if-changed">
-        <param name="file" value="${include.dir}/apr.hw"/>
+        <param name="file" value="${include.dir}/apr.tmp"/>
         <param name="tofile" value="${include.dir}/apr.h"/>
     </antcall>
 </target>

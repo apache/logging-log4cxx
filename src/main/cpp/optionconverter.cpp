@@ -190,7 +190,7 @@ LogString OptionConverter::substVars(const LogString& val, Properties& props)
                         k = val.find(delimStop, j);
                         if(k == -1)
                         {
-                            LogString msg(1, 0x22 /* '\"' */);
+                            LogString msg(1, (logchar) 0x22 /* '\"' */);
                             msg.append(val);
                             msg.append(LOG4CXX_STR("\" has no closing brace. Opening brace at position "));
                             Pool p;
@@ -203,7 +203,7 @@ LogString OptionConverter::substVars(const LogString& val, Properties& props)
                                 j += DELIM_START_LEN;
                                 LogString key = val.substr(j, k - j);
                                 // first try in System properties
-                                LogString replacement = getSystemProperty(key, LogString());
+                                LogString replacement(getSystemProperty(key, LogString()));
                                 // then try props parameter
                                 if(replacement.empty())
                                 {

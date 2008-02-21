@@ -93,7 +93,7 @@ Thread::LaunchStatus::~LaunchStatus() {
 }
     
 #if APR_HAS_THREADS
-void* Thread::launcher(log4cxx_thread_t* thread, void* data) {
+void* LOG4CXX_THREAD_FUNC Thread::launcher(log4cxx_thread_t* thread, void* data) {
     LaunchPackage* package = (LaunchPackage*) data;
     ThreadLocal& tls = getThreadLocal();
     tls.set(package->getThread());

@@ -42,6 +42,8 @@ typedef __int64 log4cxx_int64_t;
 #define LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE 1
 #define LOG4CXX_LOGSTREAM_ADD_NOP 1
 #endif
+#elif defined(__BORLANDC__)
+typedef __int64 log4cxx_int64_t;
 #else
 typedef long long log4cxx_int64_t;
 #endif

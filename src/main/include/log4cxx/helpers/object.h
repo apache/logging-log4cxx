@@ -26,11 +26,11 @@
 
 #define DECLARE_ABSTRACT_LOG4CXX_OBJECT(object)\
 public:\
-class Class##object : public helpers::Class\
+class Clazz##object : public helpers::Class\
 {\
 public:\
-        Class##object() : helpers::Class() {}\
-        virtual ~Class##object() {}\
+        Clazz##object() : helpers::Class() {}\
+        virtual ~Clazz##object() {}\
         virtual log4cxx::LogString getName() const { return LOG4CXX_STR(#object); } \
 };\
 virtual const helpers::Class& getClass() const;\
@@ -39,11 +39,11 @@ static const log4cxx::helpers::ClassRegistration& registerClass();
 
 #define DECLARE_LOG4CXX_OBJECT(object)\
 public:\
-class Class##object : public helpers::Class\
+class Clazz##object : public helpers::Class\
 {\
 public:\
-        Class##object() : helpers::Class() {}\
-        virtual ~Class##object() {}\
+        Clazz##object() : helpers::Class() {}\
+        virtual ~Clazz##object() {}\
         virtual log4cxx::LogString getName() const { return LOG4CXX_STR(#object); } \
         virtual helpers::ObjectPtr newInstance() const\
         {\
@@ -63,7 +63,7 @@ static const log4cxx::helpers::ClassRegistration&  registerClass();
 #define IMPLEMENT_LOG4CXX_OBJECT(object)\
 const log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
 const log4cxx::helpers::Class& object::getStaticClass() { \
-   static Class##object theClass;                         \
+   static Clazz##object theClass;                         \
    return theClass;                                       \
 }                                                                      \
 const log4cxx::helpers::ClassRegistration& object::registerClass() {   \

@@ -217,7 +217,7 @@ void NTEventLogAppender::addRegistryInfo()
         ::HKEY hkey = 0;
         LogString subkey(LOG4CXX_STR("SYSTEM\\CurrentControlSet\\Services\\EventLog\\"));
         subkey.append(log);
-        subkey.append(1, 0x5C /* '\\' */);
+        subkey.append(1, (logchar) 0x5C /* '\\' */);
         subkey.append(source);
         LOG4CXX_ENCODE_WCHAR(wsubkey, subkey);
 

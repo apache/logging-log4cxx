@@ -56,7 +56,11 @@
 
 #if !defined(_WIN32_WCE)
 #define LOG4CXX_HAVE_ODBC 1
+#if defined(__BORLANDC__)
+#define LOG4CXX_HAS_MBSRTOWCS 0
+#else
 #define LOG4CXX_HAS_MBSRTOWCS 1
+#endif
 #else
 #define LOG4CXX_HAVE_ODBC 0
 #define LOG4CXX_HAS_MBSRTOWCS 0

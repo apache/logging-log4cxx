@@ -533,6 +533,9 @@ Command line options:
   <condition property="resource.compiler" value="windres">
     <isset property="is-gcc"/>
   </condition>
+  <condition property="resource.compiler" value="brc">
+    <isset property="is-bcc"/>
+  </condition>
   <property name="resource.compiler" value="msrc"/>
     
     <cc name="${project.compiler}"

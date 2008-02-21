@@ -26,9 +26,9 @@ TriggeringPolicy::~TriggeringPolicy() {
 }
 
 void TriggeringPolicy::addRef() const {
-    ObjectImpl::addRef();
+    log4cxx::helpers::ObjectImpl::addRef();
 }
 
 void TriggeringPolicy::releaseRef() const {
-    ObjectImpl::releaseRef();
+    log4cxx::helpers::ObjectImpl::releaseRef();
 }

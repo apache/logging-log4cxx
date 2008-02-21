@@ -37,7 +37,7 @@ void SocketOutputStream::close(Pool& p) {
     socket->close();
 }
 
-void SocketOutputStream::flush(Pool& p) {
+void SocketOutputStream::flush(Pool& /* p */) {
    if (array.size() > 0) {
      socket->write(&array[0], array.size());
      array.resize(0);

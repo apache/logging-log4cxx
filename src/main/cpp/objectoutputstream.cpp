@@ -70,8 +70,8 @@ void ObjectOutputStream::writeObject(const LogString& val, Pool& p) {
     dataBuf.flip();
     size_t len = dataBuf.limit();
 #endif
-   bytes[1] = len & 0xFF;
-   bytes[0] = (len >> 8) & 0xFF;
+   bytes[1] = (char) (len & 0xFF);
+   bytes[0] = (char) ((len >> 8) & 0xFF);
    ByteBuffer lenBuf(bytes, sizeof(bytes));
    os->write(lenBuf, p);
    os->write(dataBuf, p);
@@ -100,10 +100,10 @@ void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p) {
     os->write(dataBuf, p);
     char size[4];
     size_t sz = val.size();
-    size[3] = sz & 0xFF;
-    size[2] = (sz >> 8) & 0xFF;
-    size[1] = (sz >> 16) & 0xFF;
-    size[0] = (sz >> 24) & 0xFF;
+    size[3] = (char) (sz & 0xFF);
+    size[2] = (char) ((sz >> 8) & 0xFF);
+    size[1] = (char) ((sz >> 16) & 0xFF);
+    size[0] = (char) ((sz >> 24) & 0xFF);
     ByteBuffer sizeBuf(size, sizeof(size));
     os->write(sizeBuf, p);
     for(MDC::Map::const_iterator iter = val.begin();
@@ -121,8 +121,8 @@ void ObjectOutputStream::writeUTFString(const std::string& val, Pool& p) {
     ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size()); 
    objectHandle++;
    bytes[0] = 0x74;
-   bytes[1] = (len >> 8) & 0xFF;
-   bytes[2] = len & 0xFF;
+   bytes[1] = (char) ((len >> 8) & 0xFF);
+   bytes[2] = (char) (len & 0xFF);
    ByteBuffer lenBuf(bytes, sizeof(bytes));
    os->write(lenBuf, p);
    os->write(dataBuf, p);
@@ -137,24 +137,24 @@ void ObjectOutputStream::writeByte(char val, Pool& p) {
 
 void ObjectOutputStream::writeInt(int val, Pool& p) {
    char bytes[4];
-   bytes[3] = val & 0xFF;
-   bytes[2] = (val >> 8) & 0xFF;
-   bytes[1] = (val >> 16) & 0xFF;
-   bytes[0] = (val >> 24) & 0xFF;
+   bytes[3] = (char) (val & 0xFF);
+   bytes[2] = (char) ((val >> 8) & 0xFF);
+   bytes[1] = (char) ((val >> 16) & 0xFF);
+   bytes[0] = (char) ((val >> 24) & 0xFF);
    ByteBuffer buf(bytes, sizeof(bytes));
    os->write(buf, p);
 }
 
 void ObjectOutputStream::writeLong(log4cxx_time_t val, Pool& p) {
    char bytes[8];
-   bytes[7] = val & 0xFF;
-   bytes[6] = (val >> 8) & 0xFF;
-   bytes[5] = (val >> 16) & 0xFF;
-   bytes[4] = (val >> 24) & 0xFF;
-   bytes[3] = (val >> 32) & 0xFF;
-   bytes[2] = (val >> 40) & 0xFF;
-   bytes[1] = (val >> 48) & 0xFF;
-   bytes[0] = (val >> 56) & 0xFF;
+   bytes[7] = (char) (val & 0xFF);
+   bytes[6] = (char) ((val >> 8) & 0xFF);
+   bytes[5] = (char) ((val >> 16) & 0xFF);
+   bytes[4] = (char) ((val >> 24) & 0xFF);
+   bytes[3] = (char) ((val >> 32) & 0xFF);
+   bytes[2] = (char) ((val >> 40) & 0xFF);
+   bytes[1] = (char) ((val >> 48) & 0xFF);
+   bytes[0] = (char) ((val >> 56) & 0xFF);
    ByteBuffer buf(bytes, sizeof(bytes));
    os->write(buf, p);
 }
@@ -178,10 +178,10 @@ void ObjectOutputStream::writeProlog(const char* className,
         char bytes[6];
         bytes[0] = TC_OBJECT;
         bytes[1] = TC_REFERENCE;
-        bytes[2] = (match->second >> 24) & 0xFF;
-        bytes[3] = (match->second >> 16) & 0xFF;
-        bytes[4] = (match->second >> 8) & 0xFF;
-        bytes[5] = match->second & 0xFF;
+        bytes[2] = (char) ((match->second >> 24) & 0xFF);
+        bytes[3] = (char) ((match->second >> 16) & 0xFF);
+        bytes[4] = (char) ((match->second >> 8) & 0xFF);
+        bytes[5] = (char) (match->second & 0xFF);
         ByteBuffer buf(bytes, sizeof(bytes));
         os->write(buf, p);
         objectHandle++;

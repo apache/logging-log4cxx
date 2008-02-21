@@ -26,7 +26,6 @@
 #include <vector>
 #include <apr.h>
 #include <apr_strings.h>
-#define LOG4CXX 1
 #include <log4cxx/private/log4cxx_private.h>
 
 #if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_CFSTRING_API || LOG4CXX_UNICHAR_API

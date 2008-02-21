@@ -89,7 +89,7 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&) {
 }
 
 
-void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
+void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& /* p */)
 {
 #if LOG4CXX_HAVE_ODBC
    buffer.push_back(event);
@@ -151,7 +151,7 @@ void ODBCAppender::execute(const LogString& sql)
 
 /* The default behavior holds a single connection open until the appender
 is closed (typically when garbage collected).*/
-void ODBCAppender::closeConnection(ODBCAppender::SQLHDBC con)
+void ODBCAppender::closeConnection(ODBCAppender::SQLHDBC /* con */)
 {
 }
 

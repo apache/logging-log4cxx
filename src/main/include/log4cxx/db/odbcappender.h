@@ -35,15 +35,16 @@ namespace log4cxx
 {
         namespace db
         {
-                class LOG4CXX_EXPORT SQLException : public helpers::Exception
+            class LOG4CXX_EXPORT SQLException : public log4cxx::helpers::Exception
                 {
                 public:
-                   SQLException(const LogString& msg) : Exception(msg) {}
-                        SQLException(const SQLException& src) : Exception(src) {
-                        }
+                SQLException(const LogString& msg) : log4cxx::helpers::Exception(msg) {
+                }
+                SQLException(const SQLException& src) : log4cxx::helpers::Exception(src) {
+                }
 
                 private:
-                        SQLException& operator=(const SQLException&);
+                SQLException& operator=(const SQLException&);
                 };
 
                 class ODBCAppender;
