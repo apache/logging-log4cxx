@@ -441,9 +441,9 @@ int main(int argc, const char *const argv[]) {
         //
         sub_suite* next;
         for(sub_suite* head = suite->head; head != NULL; head = next) {
-	   next = head->next;
+      next = head->next;
            free((void*) head->name);
-	   free(head);
+      free(head);
          }
          free(suite);
     }
