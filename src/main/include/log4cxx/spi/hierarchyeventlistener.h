@@ -24,6 +24,9 @@
 #endif
 
 
+#include <log4cxx/helpers/object.h>
+#include <log4cxx/helpers/objectptr.h>
+#include <vector>
 
 namespace log4cxx
 {
