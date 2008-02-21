@@ -15,6 +15,11 @@
  * limitations under the License.
  */
 
+
+#if defined(_MSC_VER)
+#pragma warning ( disable: 4231 4251 4275 4786 )
+#endif
+
 #include <log4cxx/logmanager.h>
 #include <log4cxx/spi/defaultrepositoryselector.h>
 #include <log4cxx/hierarchy.h>

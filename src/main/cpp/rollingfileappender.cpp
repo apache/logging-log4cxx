@@ -16,7 +16,7 @@
  */
 
 #if defined(_MSC_VER)
-#pragma warning ( disable: 4786 4231 )
+#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #include <log4cxx/rolling/rollingfileappender.h>
