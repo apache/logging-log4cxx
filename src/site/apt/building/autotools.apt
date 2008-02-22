@@ -23,7 +23,7 @@ Building Apache log4cxx with autotools
 * Quick start:
 
 +------------+
- sudo apt-get install libapr1-dev libaprutil1-dev # or platform equivalent
+ sudo apt-get install libapr1.0-dev libaprutil1.0-dev
  cd apache-log4cxx-0.10.0
  ./autoconf.sh
  ./configure
@@ -103,7 +103,8 @@ cd apr-util
 make install
 cd ../apache-log4cxx-0.10.0
 ./autogen.sh
-./configure --with-apr=/usr/local --with-apr-util=/usr/local --with-logchar=wchar_t
+./configure --with-apr=/usr/local \
+   --with-apr-util=/usr/local --with-logchar=wchar_t
 make install
 +----+
 

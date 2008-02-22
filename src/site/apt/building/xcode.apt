@@ -40,15 +40,14 @@ cd apache-log4cxx-0.10.0
    (test suite and implementation in one project) in Xcode and address issues
    described below.  
    
-   Select the executable in Groups & Files and press Info and
+   Select the executable in Groups & Files and press Info and:
    
    * In the General pane, set Working Directory to Custom with path "../src/test/resources".
+
    * In the Arguments pane, add following key value pairs to "Variables to be set in the environment":
      TOTO=wonderful, key1=value1 and key2=value2.
    
-   Individual tests can be specified by specifying the test name in 
-      "Arguments to be passed on launch"  Specifying "-v" as an argument
-      will run the tests in a verbose mode.
+   * In the Arguments pane, add "-v" for verbose output, or individual test names in "Arguments to be passed on launch".
 
 *Issues
 

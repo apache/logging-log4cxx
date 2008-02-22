@@ -101,12 +101,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="with-ODBC" value="no"/>
 
 
-<property name="apache.mirror" value="http://archive.apache.org/dist"/>
-
-<property name="apache.dist" value="http://archive.apache.org/dist"/>
-<!-- property name="apache.doc_dest" value="/www/logging.apache.org/log4cxx"/ -->
-<property name="apache.doc_dest" value="/home/${apache.user}/public_html/test"/>
-
+<property name="svnsite.url" value="https://svn.apache.org/repos/asf/logging/site/trunk/docs/log4cxx"/>
 
 
 
@@ -1099,7 +1094,6 @@ Command line options:
     </antcall>
     <antcall target="build-projects-xcode">
     </antcall>
-    <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
     
     <replaceregexp flags="ig"
         match="ADD LINK32 .*/NOLOGO"
@@ -1121,11 +1115,15 @@ Command line options:
         replace="..\\\\..\\\\apr-util\\\\xml\\\\expat\\\\lib\\\\xml.dsp">
         <fileset dir="${target.dir}" includes="**/*.dsw"/>        
     </replaceregexp>
-    <!-- drop our build path out of library search path -->
-    <replace dir="${target.dir}" includes="**/*.pbxproj">
-        <replacetoken>&lt;string&gt;debug/shared&lt;/string&gt;</replacetoken>
-        <replacevalue></replacevalue>
-    </replace>
+    <!-- drop library search path -->
+    <replaceregexp flags="g"
+        match="&lt;string&gt;[\./]*/usr/lib&lt;/string&gt;"
+        replace="">
+        <fileset dir="${target.dir}" includes="**/*.pbxproj"/>
+    </replaceregexp>
+    <replace dir="${target.dir}" includes="**/*.pbxproj"
+        token="/usr/include/apr-1.0"
+        value="/usr/include/apr-1"/>
     <replace dir="${target.dir}/site" includes="**/*.html">
         <replacetoken>&lt;html</replacetoken>
         <replacevalue>&lt;!--

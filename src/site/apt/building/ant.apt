@@ -41,8 +41,10 @@ Building Apache log4cxx with Apache Ant
    Building and testing log4cxx on a Unix platform with packaged APR and APR-Util.  
 
 +----+
- sudo apt-get install libapr1-dev libaprutil1-dev ant ant-optional liblog4j1.2-java # or platform equivalent
- export CLASSPATH=/home/myself/cpptasks-1.0b5/cpptasks.jar:/home/myself/ant-contrib/ant-contrib-1.0b3.jar
+ sudo apt-get install libapr1.0-dev libaprutil1.0-dev \
+      ant ant-optional liblog4j1.2-java
+ export CLASSPATH=~/cpptasks/cpptasks-1.0b5.jar: \
+      ~/ant-contrib/ant-contrib-1.0b3.jar
  cd apache-log4cxx-0.10.0
  ant
 +----+  
@@ -50,8 +52,9 @@ Building Apache log4cxx with Apache Ant
    Building and testing log4cxx on a Unix platform with APR and APR-Util built from source.  
 
 +----+
- sudo apt-get install ant ant-optional liblog4j1.2-java # or platform equivalent
- export CLASSPATH=/home/myself/cpptasks-1.0b5/cpptasks.jar:/home/myself/ant-contrib/ant-contrib-1.0b3.jar
+ sudo apt-get install ant ant-optional liblog4j1.2-java
+ export CLASSPATH=~/cpptasks/cpptasks-1.0b5.jar: \
+     ~/ant-contrib/ant-contrib-1.0b3.jar
  tar -xvzf apr-1.2.12.tar.gz
  mv apr-1.2.12 apr
  tar -xvzf apr-util-1.2.12.tar.gz
@@ -64,7 +67,7 @@ Building Apache log4cxx with Apache Ant
 
 +----+
  set PATH=\apache-ant-1.7.0\bin;%PATH%
- set CLASSPATH=\cpptasks-1.0b5\cpptasks.jar;\ant-contrib\ant-contrib-1.0b3.jar
+ set CLASSPATH=\cpptasks\cpptasks-1.0b5.jar;\ant-contrib\ant-contrib-1.0b3.jar
  tar -xvzf apr-1.2.12.tar.gz
  rename apr-1.2.12 apr
  tar -xvzf apr-util-1.2.12.tar.gz
