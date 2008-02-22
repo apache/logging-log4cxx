@@ -18,6 +18,7 @@
 #include <log4cxx/layout.h>
 
 using namespace log4cxx;
+using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Layout)
 
@@ -25,11 +26,11 @@ IMPLEMENT_LOG4CXX_OBJECT(Layout)
 Layout::~Layout() {}
 
 void Layout::addRef() const {
-    log4cxx::helpers::ObjectImpl::addRef();
+    ObjectImpl::addRef();
 }
 
 void Layout::releaseRef() const {
-    log4cxx::helpers::ObjectImpl::releaseRef();
+    ObjectImpl::releaseRef();
 }
 
 LogString Layout::getContentType() const { return LOG4CXX_STR("text/plain"); }

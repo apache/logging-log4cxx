@@ -74,11 +74,10 @@ namespace log4cxx
                   */
                   FilterPtr next;
                 public:
-                        Filter() : next() {
-                        }
+                        Filter();
 
-                        void addRef() const { log4cxx::helpers::ObjectImpl::addRef(); }
-                        void releaseRef() const { log4cxx::helpers::ObjectImpl::releaseRef(); }
+                        void addRef() const;
+                        void releaseRef() const;
 
                         DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
                         BEGIN_LOG4CXX_CAST_MAP()
@@ -86,13 +85,9 @@ namespace log4cxx
                                 LOG4CXX_CAST_ENTRY(spi::OptionHandler)
                         END_LOG4CXX_CAST_MAP()
 
-                        log4cxx::spi::FilterPtr getNext() const {
-                            return next;
-                        }
-                        void setNext(const log4cxx::spi::FilterPtr& newNext) {
-                           next = newNext;
-                        }
-
+                        log4cxx::spi::FilterPtr getNext() const;
+                        void setNext(const log4cxx::spi::FilterPtr& newNext);
+ 
             enum FilterDecision
             {
             /**
@@ -118,8 +113,8 @@ namespace log4cxx
 
             default do-nothing implementation for convenience.
             */
-            void activateOptions(log4cxx::helpers::Pool& /* p */) {}
-            void setOption(const LogString& /* option */, const LogString& /* value */) {}
+            void activateOptions(log4cxx::helpers::Pool& p);
+            void setOption(const LogString& option, const LogString& value);
 
             /**
             <p>If the decision is <code>DENY</code>, then the event will be

@@ -15,21 +15,26 @@
  * limitations under the License.
  */
 
-#include <log4cxx/rolling/triggeringpolicy.h>
+#include <log4cxx/spi/defaultrepositoryselector.h>
 
 using namespace log4cxx;
-using namespace log4cxx::rolling;
+using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(TriggeringPolicy)
 
-TriggeringPolicy::~TriggeringPolicy() {
+DefaultRepositorySelector::DefaultRepositorySelector(const LoggerRepositoryPtr& repository1)
+     : repository(repository1) {
 }
 
-void TriggeringPolicy::addRef() const {
-    ObjectImpl::addRef();
+void DefaultRepositorySelector::addRef() const { 
+    ObjectImpl::addRef(); 
 }
 
-void TriggeringPolicy::releaseRef() const {
-    ObjectImpl::releaseRef();
+
+void DefaultRepositorySelector::releaseRef() const { 
+    ObjectImpl::releaseRef(); 
+}
+
+LoggerRepositoryPtr& DefaultRepositorySelector::getLoggerRepository() {
+    return repository;
 }

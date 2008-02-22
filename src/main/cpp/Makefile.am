@@ -48,6 +48,7 @@ liblog4cxx_la_SOURCES = \
         datepatternconverter.cpp \
         defaultloggerfactory.cpp \
         defaultconfigurator.cpp \
+        defaultrepositoryselector.cpp \
         domconfigurator.cpp \
         exception.cpp \
         fallbackerrorhandler.cpp \
@@ -59,6 +60,7 @@ liblog4cxx_la_SOURCES = \
         fileoutputstream.cpp \
         filerenameaction.cpp \
         filewatchdog.cpp \
+        filter.cpp \
         filterbasedtriggeringpolicy.cpp \
         fixedwindowrollingpolicy.cpp \
         formattinginfo.cpp \

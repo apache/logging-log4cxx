@@ -15,21 +15,35 @@
  * limitations under the License.
  */
 
-#include <log4cxx/rolling/triggeringpolicy.h>
+#include <log4cxx/logstring.h>
+#include <log4cxx/spi/filter.h>
 
 using namespace log4cxx;
-using namespace log4cxx::rolling;
+using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-IMPLEMENT_LOG4CXX_OBJECT(TriggeringPolicy)
-
-TriggeringPolicy::~TriggeringPolicy() {
+Filter::Filter() : next() {
 }
 
-void TriggeringPolicy::addRef() const {
+void Filter::addRef() const {
     ObjectImpl::addRef();
 }
 
-void TriggeringPolicy::releaseRef() const {
+void Filter::releaseRef() const {
     ObjectImpl::releaseRef();
 }
+
+FilterPtr Filter::getNext() const {
+   return next;
+}
+
+void Filter::setNext(const FilterPtr& newNext) {
+    next = newNext;
+}
+
+void Filter::activateOptions(Pool&) {
+}
+
+void Filter::setOption(const LogString&, const LogString&) {
+}
+
