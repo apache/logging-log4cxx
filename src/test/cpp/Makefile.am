@@ -85,7 +85,7 @@ util = \
 	util/compare.cpp\
 	util/controlfilter.cpp\
 	util/filenamefilter.cpp \
-	util/filter.cpp\
+	util/utilfilter.cpp\
 	util/iso8601filter.cpp\
 	util/linenumberfilter.cpp\
 	util/relativetimefilter.cpp\
