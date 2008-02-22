@@ -570,9 +570,11 @@ Command line options:
         </project>
     </cc>
 
+    <!-- copy liblog4cxx.so to log4cxx.dll for MinGW and Cygwin -->
     <condition property="copy.log4cxx" value="${log4cxx.lib.dir}/${lib.prefix}${lib.name}${lib.suffix}.dll">
         <and>
-            <isset property="is-mingw"/>
+            <os family="windows"/>
+            <isset property="is-gcc"/>
             <equals arg1="${lib.type}" arg2="shared"/>
             <isset property="log4cxx.lib.file"/>
          </and>

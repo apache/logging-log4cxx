@@ -22,16 +22,16 @@ Building Apache log4cxx with Apple Xcode
 
 *Building log4cxx.dylib
 
-   Run configure to generate log4cxx.h and log4cxx_private.h.
+   Run configure to generate log4cxx.h and log4cxx_private.h
+   then launch Xcode.
    
 +----+
 cd apache-log4cxx-0.10.0
 ./autogen.sh
 ./configure
+open projects/log4cxx.xcodeproj
 +----+   
 
-   Open projects/log4cxx.xcodeproj with Xcode 2.4 or later, address issues described below
-   and build as normal. 
 
 *Running unit tests
 

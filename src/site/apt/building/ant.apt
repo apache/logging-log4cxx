@@ -172,18 +172,13 @@ Building Apache log4cxx with Apache Ant
   
   *** Cygwin:
   
-  The Ant build will successfully complete for static libary builds when started from a 
-  Windows Command Prompt.  Shared library builds will create liblog4cxx.so, but
-  the unit tests will fail reporting that they could not find the log4cxx library
-  (likely missing a step to create an import library from the .so).  From a cygwin
-  command prompt, the unit tests will fail, possibly due to an issue spawning sed.
-  Cygwin does not provide wchar_t support which needs to be explicitly disabled.
-  The location of the APR libraries need to be provided (CYGWIN_HOME/lib).
+  gcc 3.x does not provide wchar_t support which needs to be explicitly disabled.
+  The Win32 path to the APR libraries need to be provided (CYGWIN_HOME/lib) if compiling against an installed APR and APR-Util.
   
 +-----+
 cd apache-log4cxx-0.10.0
 ant -Dos.family=cygwin -Dwith-apr=/cygwin/lib -Dwith-apr-util=/cygwin/lib \
-   -Denable-wchar_t=0 -Dlib.type=static
+   -Denable-wchar_t=0
 +-----+  
     
 
@@ -197,9 +192,9 @@ cd src\test\resources
 set TOTO=wonderful
 set key1=value1
 set key2=value2
-..\..\..\target\release\shared\testsuite -v 
-..\..\..\target\release\shared\trivial
-..\..\..\target\release\shared\stream 
+..\..\..\target\debug\shared\testsuite -v 
+..\..\..\target\debug\shared\trivial
+..\..\..\target\debug\shared\stream 
 +----+
 
    Running "ant check" was observed to fail with unexpected exceptions
@@ -209,12 +204,12 @@ set key2=value2
 
   ** Mac OS/X:
   
-  APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.
+  APR, APR-Util and iODBC are preinstalled in Mac OS/X.
   
   Site generation requires "doxygen" command on path which can be provided
   by installing Doxygen.app and then setting the path like:
   
 +---+
-setenv PATH /Applications/Doxygen.app/Content/Resources:$PATH
+setenv PATH /Applications/Doxygen.app/Contents/Resources:$PATH
 +---+
   
