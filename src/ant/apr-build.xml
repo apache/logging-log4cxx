@@ -150,7 +150,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <libset libs="pthread dl" if="is-unix"/>
         <libset libs="cw32mt" if="is-bcc"/>
-        <project type="${project.type}" outfile="${projects.dir}/apr-1" if="project.if">
+        <project type="${project.type}" outfile="${projects.dir}/apr" if="project.if">
 			<comment>&license;</comment>
 		</project>
 
@@ -185,7 +185,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="advapi32 ws2_32 mswsock rpcrt4" if="is-windows"/>
         <project type="${project.type}" outfile="${projects.dir}/${test}" if="project.if">
 			<comment>&license;</comment>
-			<dependency file="${projects.dir}/apr-1"/>
+			<dependency file="${projects.dir}/apr"/>
 		</project>
     </cc>
 </target>

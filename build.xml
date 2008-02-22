@@ -568,8 +568,9 @@ Command line options:
         &libsets;
         <project type="${project.type}" outfile="${projects.dir}/${lib.name}" if="project.if">
          <comment>&license;</comment>
-            <dependency file="${projects.dir}/apr-1"/>
-            <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+            <dependency file="${projects.dir}/apr"/>
+            <dependency file="${projects.dir}/xml"/>
+            <dependency file="${projects.dir}/aprutil" depends="apr,xml"/>
             <dependency name="${projects.dir}/libesmtp"/>
         </project>
     </cc>
@@ -618,10 +619,11 @@ Command line options:
 
         <project outfile="${projects.dir}/${example.name}" type="${project.type}" if="project.if">
          <comment>&license;</comment>
-            <dependency file="${projects.dir}/apr-1"/>
-            <dependency name="${projects.dir}/aprutil-1"/>
+            <dependency file="${projects.dir}/apr"/>
+            <dependency file="${projects.dir}/xml"/>
+            <dependency name="${projects.dir}/aprutil" depends="apr,xml"/>
             <dependency name="${projects.dir}/libesmtp"/>
-            <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1"/>
+            <dependency file="${projects.dir}/log4cxx" depends="apr,aprutil,xml"/>
         </project>
         
     </cc>
@@ -713,10 +715,11 @@ Command line options:
 
         <project outfile="${projects.dir}/testsuite" type="${project.type}" if="project.if">
          <comment>&license;</comment>
-            <dependency file="${projects.dir}/apr-1"/>
-            <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+            <dependency file="${projects.dir}/apr"/>
+            <dependency file="${projects.dir}/xml"/>
+            <dependency file="${projects.dir}/aprutil" depends="apr,xml"/>
             <dependency name="${projects.dir}/libesmtp"/>
-            <dependency file="${projects.dir}/log4cxx" depends="apr-1,aprutil-1,libesmtp"/>
+            <dependency file="${projects.dir}/log4cxx" depends="apr,aprutil,libesmtp"/>
         </project>
     </cc>
 </target>
@@ -774,8 +777,9 @@ Command line options:
                  type="${project.type}"
                  if="project.if">
          <comment>&license;</comment>
-            <dependency file="${projects.dir}/apr-1"/>
-            <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+            <dependency file="${projects.dir}/apr"/>
+            <dependency file="${projects.dir}/xml"/>
+            <dependency file="${projects.dir}/aprutil" depends="apr,xml"/>
             <dependency name="${projects.dir}/libesmtp"/>
         </project>
     </cc>
@@ -1093,19 +1097,35 @@ Command line options:
     <antcall target="build-projects-vc6">
         <param name="find" value="false"/>
     </antcall>
-    <antcall target="build-projects-xcode"/>
+    <antcall target="build-projects-xcode">
+    </antcall>
     <taskdef name="foreach" classname="net.sf.antcontrib.logic.ForEach" />
     
-    <replaceregexp flags="i"
+    <replaceregexp flags="ig"
         match="ADD LINK32 .*/NOLOGO"
         replace="ADD LINK32 ADVAPI32.LIB WS2_32.LIB MSWSOCK.LIB SHELL32.LIB ODBC32.LIB /NOLOGO">
         <fileset dir="${target.dir}" includes="**/*.dsp"/>        
     </replaceregexp>
     <replaceregexp flags="g"
-        match=".\\apr(.*)-1.dsp"
-        replace="..\\\\..\\\\apr\1\\\\apr\1.dsp">
+        match=".\\apr.dsp"
+        replace="..\\\\..\\\\apr\\\\apr.dsp">
         <fileset dir="${target.dir}" includes="**/*.dsw"/>        
     </replaceregexp>
+    <replaceregexp flags="g"
+        match=".\\aprutil.dsp"
+        replace="..\\\\..\\\\apr-util\\\\aprutil.dsp">
+        <fileset dir="${target.dir}" includes="**/*.dsw"/>        
+    </replaceregexp>
+    <replaceregexp flags="g"
+        match=".\\xml.dsp"
+        replace="..\\\\..\\\\apr-util\\\\xml\\\\expat\\\\lib\\\\xml.dsp">
+        <fileset dir="${target.dir}" includes="**/*.dsw"/>        
+    </replaceregexp>
+    <!-- drop our build path out of library search path -->
+    <replace dir="${target.dir}" includes="**/*.pbxproj">
+        <replacetoken>&lt;string&gt;debug/shared&lt;/string&gt;</replacetoken>
+        <replacevalue></replacevalue>
+    </replace>
     <replace dir="${target.dir}/site" includes="**/*.html">
         <replacetoken>&lt;html</replacetoken>
         <replacevalue>&lt;!--

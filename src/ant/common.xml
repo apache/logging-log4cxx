@@ -17,7 +17,7 @@
 -->
 
 <property file="build.properties"/>
-<property name="debug" value="false"/>
+<property name="debug" value="true"/>
 <property name="rtti" value="false"/>
 <property name="optimize" value="none"/>
 <property name="lib.type" value="shared"/>

@@ -24,6 +24,15 @@
 	<baseDirectory>apache-log4cxx-${project.version}</baseDirectory>
 	<includeSiteDirectory>true</includeSiteDirectory>
 	<fileSets>
+        <!-- autogen.sh is executable -->
+		<fileSet>
+			<includes>
+               <include>autogen.sh</include>
+               <include>configure.bat</include>
+               <include>configure-aprutil.bat</include>
+           </includes>
+            <fileMode>0755</fileMode>
+        </fileSet>
 		<fileSet>
 			<includes>
 				<include>INSTALL</include>
@@ -31,8 +40,7 @@
 				<include>LICENSE</include>
                <include>Makefile.am</include>
 				<include>NOTICE</include>
-               <include>autogen.sh</include>
-				<include>build.xml</include>
+ 				<include>build.xml</include>
                <include>configure.in</include>
                <include>find_apr.m4</include>
                <include>find_apu.m4</include>
@@ -67,12 +75,17 @@
 		</fileSet>
         <fileSet>
             <directory>target</directory>
+            <lineEnding>keep</lineEnding>
             <outputDirectory>projects</outputDirectory>
             <includes>
-            <include>*.dsw</include>
-            <include>*.dsp</include>
-            <include>*.xcodeproj/project.pbxproj</include>
+                <include>*.dsw</include>
+                <include>*.dsp</include>
+                <include>*.xcodeproj/project.pbxproj</include>
             </includes>
+            <excludes>
+                <exclude>apr*.ds*</exclude>
+                <exclude>xml.ds*</exclude>
+            </excludes>
         </fileSet>
 	</fileSets>
 </assembly>

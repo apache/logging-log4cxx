@@ -127,8 +127,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 </target>
 
 
-<target name="build" depends="configure, find-apr" description="Build library">
-    <mkdir dir="${executable.dir}/apr-util-ofiles"/>
+<target name="build-xml" depends="configure" description="Builds Expat">
     <!--   uses replace instead of preprocessor since
               the quotes on VERSION cause problems with cpptasks  -->
     <replace file="${src.dir}/xml/expat/lib/xmlparse.c">
@@ -137,11 +136,47 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
        <replacefilter token="XML_MICRO_VERSION" value="1"/>
        <replacefilter token="VERSION" value='"expat_1.95.1"'/>
     </replace>
+
+    <mkdir dir="${executable.dir}/apr-util-ofiles"/>
+    <property name="project.compiler" value="${compiler}"/>
+	<property name="project.type" value="msvc6"/>
+    
+    <!--   this only generate a project file necessary to mimic
+              this visual studio project provided with APR -->
+    <cc name="${project.compiler}"
+        outfile="${executable.dir}/expat"
+        subsystem="console"
+        multithreaded="true"
+        outtype="static"
+        objdir="${executable.dir}/apr-util-ofiles"
+        warnings="none"
+        debug="${debug}"
+        projectsOnly="true">
+        <fileset dir="${src.dir}/xml/expat/lib"
+            includes="xmlparse.c xmlrole.c xmltok.c"/>
+        <fileset dir="${src.dir}/xml/expat/lib" includes="*.h"/>
+        <fileset dir="${src.dir}/xml/expat" includes="*.h"/>
+        <includepath path="${src.dir}/xml/expat/lib"/>
+        <includepath path="${src.dir}/xml/expat"/>
+        <defineset>
+            <define name="XMLPARSEAPI" value=" "/>
+        </defineset>
+        <defineset define="WIN32" if="is-windows"/>
+        <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
+        <compilerarg value="${pic-option}" if="pic-option"/>
+
+        <libset libs="cw32mt" if="is-bcc"/>
+        <project type="${project.type}" outfile="${projects.dir}/xml" if="project.if">
+			<comment>&license;</comment>
+        </project>
+    </cc>
+
+</target>
+
+<target name="build" depends="build-xml, find-apr" description="Build library">
 	<property name="apr.lib.prefix" value=""/>
 	<property name="apr.lib.name" value="apr-1"/>
 	<property name="apr.lib.suffix" value=""/>
-    <property name="project.compiler" value="${compiler}"/>
-	<property name="project.type" value="msvc6"/>
     <cc name="${project.compiler}"
         outfile="${executable.dir}/aprutil-1${lib-suffix}"
         subsystem="console"
@@ -155,10 +190,10 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
             excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
         <fileset dir="${src.dir}/xml/expat/lib"
             includes="xmlparse.c xmlrole.c xmltok.c"/>
-        <fileset dir="${include.dir}" includes="*.h"/>
-        <fileset dir="${include.dir}/private" includes="*.h"/>
         <fileset dir="${src.dir}/xml/expat/lib" includes="*.h"/>
         <fileset dir="${src.dir}/xml/expat" includes="*.h"/>
+        <fileset dir="${include.dir}" includes="*.h"/>
+        <fileset dir="${include.dir}/private" includes="*.h"/>
         <includepath path="${apr.include.dir}"/>
         <includepath path="${include.dir}"/>
         <includepath path="${include.dir}/private"/>
@@ -174,7 +209,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE" if="is-gcc"/>
         <compilerarg value="${pic-option}" if="pic-option"/>
 
-        <libset dir="${executable.dir}" libs="${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}"/>
+        <libset dir="${executable.dir}" libs="xml ${apr.lib.prefix}${apr.lib.name}${apr.lib.suffix}"/>
         <libset libs="cw32mt" if="is-bcc"/>
         <libset libs="pthread dl" if="is-unix"/>
         <libset libs="iconv" if="has-iconv"/>
@@ -182,9 +217,9 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <defineset if="is-bcc">
             <define name="EILSEQ" value="50"/>
         </defineset>
-        <project type="${project.type}" outfile="${projects.dir}/aprutil-1" if="project.if">
+        <project type="${project.type}" outfile="${projects.dir}/aprutil" if="project.if">
 			<comment>&license;</comment>
-            <dependency file="${projects.dir}/apr-1"/>
+            <dependency file="${projects.dir}/apr"/>
         </project>
     </cc>
     <property name="apr.lib.dir" location="${executable.dir}"/>
@@ -221,8 +256,8 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         <libset libs="sqlite3" if="has-sqlite3"/>
         <project type="${project.type}" outfile="${projects.dir}/${test}" if="project.if">
 			<comment>&license;</comment>
-            <dependency file="${projects.dir}/apr-1"/>
-            <dependency file="${projects.dir}/aprutil-1" depends="apr-1"/>
+            <dependency file="${projects.dir}/apr"/>
+            <dependency file="${projects.dir}/aprutil" depends="apr"/>
         </project>
     </cc>
 </target>

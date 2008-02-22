@@ -35,9 +35,8 @@ Building Apache log4cxx with Apache Ant
   *Install cpptasks 1.0b5 or later from the {{{http://ant-contrib.sourceforge.net}Ant-Contrib Project}}.
      ant-contribs 1.0b3 or later is needed for some less frequent build targets.
 
-  *Install APR and APR-Util or place source in apr and apr-util directories in same parent directory
-      as log4cxx directory.
-
+  *Install APR and APR-Util or place source in apr and apr-util directories as a 
+  sibling to the log4cxx directory.
         
    Building and testing log4cxx on a Unix platform with packaged APR and APR-Util.  
 
@@ -100,7 +99,7 @@ Building Apache log4cxx with Apache Ant
 | build-projects-vc9    | Build Microsoft Visual Studio 2008 project files.                                           |
 *-----------------------+---------------------------------------------------------------------------------------------+
 | build-projects-xcode  | Build Apple Xcode project files.                                                            |
-*---------------------+-----------------------------------------------------------------------------------------------+
+*-----------------------+---------------------------------------------------------------------------------------------+
 
    All build products will be placed in the target subdirectory.  
    
@@ -118,7 +117,7 @@ Building Apache log4cxx with Apache Ant
 *-------------------+---------------------------------------------------------------------------------------------+
 | -Ddebug           |  Build for debugging, yes (default), no.                                                    |
 *-------------------+---------------------------------------------------------------------------------------------+
-| -Dfind            |  Attempt to locate APR and APR-Util at expected locations, yes (default), no.               |
+| -Dfind            |  Attempt to locate compiled APR and APR-Util, yes (default), no.                            |
 *-------------------+---------------------------------------------------------------------------------------------+
 | -Dwith-apr        | path to non-default location for APR.                                                       |
 *-------------------+---------------------------------------------------------------------------------------------+
@@ -161,6 +160,11 @@ Building Apache log4cxx with Apache Ant
   
   If -Dwith-SMTP=libesmtp is specified, the build will attempt to build
   libesmtp from source, unfortunately libesmtp depends on poll.h and will not build.
+  
+  APR 1.2.12 has a known issue that will prevent
+  compilation with Visual Studio 6 unless a later Platform SDK is installed.
+  See APR bug {{{http://issues.apache.org/bugzilla/show_bug.cgi?44327}44327}}.
+  APR 1.2.11 and the corresponding APR-Util 1.2.10 will compile with Visual Studio 6.  
 
   
   *** Cygwin:
