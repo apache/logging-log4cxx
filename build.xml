@@ -78,7 +78,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 <property name="tests.resources.dir" location="${tests.dir}/resources"/>
 <property name="tests.output.dir" location="${tests.resources.dir}/output"/>
 <property name="m2_repo" location="${user.home}/.m2/repository"/>
-<property name="log4j.version" value="1.2.15"/>
+<property name="log4j.version" value="1.2.14"/>
 <available property="log4j.jar"
            value="/usr/share/java/log4j-1.2.jar"
            file="/usr/share/java/log4j-1.2.jar"/>
@@ -87,7 +87,6 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 
 <property name="doxygen.exe" value="doxygen"/>
-<property name="enable_dot" value="YES"/>
 
 <property name="lib.name" value="log4cxx"/>
 <property name="lib.prefix" value=""/>
@@ -1071,7 +1070,6 @@ Command line options:
   <replace file="${target.dir}/Doxyfile">
     <replacefilter token="@VERSION@" value="${version}"/>
     <replacefilter token="@base_dir@" value="${base.dir}"/>
-    <replacefilter token="@enable_dot@" value="${enable_dot}"/>
     <replacefilter token="@manual_dest@" value="${base.dir}/target/site/apidocs"/>
   </replace>
   <mkdir dir="target/site/apidocs"/>
@@ -1084,7 +1082,19 @@ Command line options:
 */
 /*  Minimal replacement for GPL'd doxygen.css  */
 </echo>
-
+    <echo file="${target.dir}/site/apidocs/tabs.css">
+/*
+&license;
+*/
+/*  Minimal replacement for GPL'd tabs.css  */
+DIV.tabs {
+    display : none ;
+}
+</echo>
+     <!--   fix for issue http://jira.codehaus.org/browse/MSKINS-2  -->
+     <replace file="${target.dir}/site/css/maven-theme.css"
+           token="font-size: normal;"
+           value="font-size: medium;"/>
 
 </target>
 
