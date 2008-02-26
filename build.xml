@@ -1136,6 +1136,9 @@ DIV.tabs {
     <replace dir="${target.dir}" includes="**/*.pbxproj"
         token="/usr/include/apr-1.0"
         value="/usr/include/apr-1"/>
+    <replace dir="${target.dir}" includes="**/*.pbxproj"
+        token="MacOSX10.4u.sdk"
+        value="MacOSX10.5.sdk"/>
     <replace dir="${target.dir}/site" includes="**/*.html">
         <replacetoken>&lt;html</replacetoken>
         <replacevalue>&lt;!--

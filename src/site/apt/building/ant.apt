@@ -204,7 +204,7 @@ set key2=value2
 
   ** Mac OS/X:
   
-  APR, APR-Util and iODBC are preinstalled in Mac OS/X.
+  APR and APR-Util are provided by the platform in Mac OS/X 10.5 and iODBC in 10.4.
   
   Site generation requires "doxygen" command on path which can be provided
   by installing Doxygen.app and then setting the path like:

@@ -67,7 +67,7 @@ Building Apache log4cxx with autotools
 
 ** Mac OS/X:
   
-  APR, APR-Util and iODBC are preinstalled in Mac OS/X 10.5 and later.
+  APR and APR-Util are provided by the platform in Mac OS/X 10.5 and iODBC in 10.4.
   
 ** Cygwin:
   
