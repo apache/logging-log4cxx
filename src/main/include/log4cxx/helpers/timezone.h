@@ -29,7 +29,7 @@ namespace log4cxx
    namespace helpers
    {
       class TimeZone;
-      LOG4CXX_PTR_DEF(TimeZone)
+      LOG4CXX_PTR_DEF(TimeZone);
 
       class LOG4CXX_EXPORT TimeZone : public helpers::ObjectImpl
       {

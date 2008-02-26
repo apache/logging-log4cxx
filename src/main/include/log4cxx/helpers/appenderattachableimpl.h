@@ -116,7 +116,7 @@ namespace log4cxx
             AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);
         };
 
-        LOG4CXX_PTR_DEF(AppenderAttachableImpl)
+        LOG4CXX_PTR_DEF(AppenderAttachableImpl);
 
     }
 }

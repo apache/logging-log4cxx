@@ -57,7 +57,7 @@ namespace log4cxx
                   OutputStreamWriter& operator=(const OutputStreamWriter&);
           };
 
-          LOG4CXX_PTR_DEF(OutputStreamWriter)
+          LOG4CXX_PTR_DEF(OutputStreamWriter);
         } // namespace helpers
 
 }  //namespace log4cxx

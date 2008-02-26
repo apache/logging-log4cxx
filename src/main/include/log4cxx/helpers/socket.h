@@ -107,7 +107,7 @@ namespace log4cxx
                         SocketImplPtr socketImpl;
                 };
                 
-                LOG4CXX_PTR_DEF(Socket)
+                LOG4CXX_PTR_DEF(Socket);
                 
         } // namespace helpers
 } // namespace log4cxx

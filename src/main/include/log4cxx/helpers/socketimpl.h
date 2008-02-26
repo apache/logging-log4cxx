@@ -165,7 +165,7 @@ namespace log4cxx
 
 
                 class SocketImpl;
-                LOG4CXX_PTR_DEF(SocketImpl)
+                LOG4CXX_PTR_DEF(SocketImpl);
 
                 /** @brief Default Socket Implementation.
 

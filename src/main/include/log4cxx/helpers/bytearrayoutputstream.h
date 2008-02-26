@@ -41,7 +41,7 @@ namespace log4cxx
           class LOG4CXX_EXPORT ByteArrayOutputStream : public OutputStream
           {
           private:
-                 LOG4CXX_LIST_DEF(ByteList, unsigned char)
+                 LOG4CXX_LIST_DEF(ByteList, unsigned char);
                  ByteList array;
 
           public:
@@ -64,7 +64,7 @@ namespace log4cxx
                   ByteArrayOutputStream& operator=(const ByteArrayOutputStream&);
           };
 
-          LOG4CXX_PTR_DEF(ByteArrayOutputStream)
+          LOG4CXX_PTR_DEF(ByteArrayOutputStream);
         } // namespace helpers
 
 }  //namespace log4cxx

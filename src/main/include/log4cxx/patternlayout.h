@@ -334,13 +334,13 @@ namespace log4cxx
                 /**
                  * Pattern converters.
                  */
-                LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, log4cxx::pattern::LoggingEventPatternConverterPtr)
+                LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, log4cxx::pattern::LoggingEventPatternConverterPtr);
                 LoggingEventPatternConverterList patternConverters;
 
                /**
                 * Field widths and alignment corresponding to pattern converters.
                 */
-                LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr)
+                LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
                 FormattingInfoList patternFields;
 
 
@@ -398,7 +398,7 @@ namespace log4cxx
         protected:
                 virtual log4cxx::pattern::PatternMap getFormatSpecifiers();
         };
-      LOG4CXX_PTR_DEF(PatternLayout)
+      LOG4CXX_PTR_DEF(PatternLayout);
 }  // namespace log4cxx
 
 #if defined(_MSC_VER)

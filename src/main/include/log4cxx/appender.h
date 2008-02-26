@@ -136,8 +136,8 @@ namespace log4cxx
        virtual bool requiresLayout() const = 0;
    };
 
-    LOG4CXX_PTR_DEF(Appender)
-    LOG4CXX_LIST_DEF(AppenderList, AppenderPtr)
+    LOG4CXX_PTR_DEF(Appender);
+    LOG4CXX_LIST_DEF(AppenderList, AppenderPtr);
 
 }
 

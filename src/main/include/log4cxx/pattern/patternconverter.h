@@ -115,7 +115,7 @@ protected:
 };
 
 
-LOG4CXX_PTR_DEF(PatternConverter)
+LOG4CXX_PTR_DEF(PatternConverter);
 
   }
 }

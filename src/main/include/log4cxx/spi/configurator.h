@@ -54,7 +54,7 @@ namespace log4cxx
          bool initialized;
       };
 
-      LOG4CXX_PTR_DEF(Configurator)
+      LOG4CXX_PTR_DEF(Configurator);
    }
 }
 

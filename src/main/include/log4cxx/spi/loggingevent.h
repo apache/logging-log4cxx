@@ -152,7 +152,7 @@ namespace log4cxx
                         */
                         bool getMDC(const LogString& key, LogString& dest) const;
 
-                        LOG4CXX_LIST_DEF(KeySet, LogString)
+                        LOG4CXX_LIST_DEF(KeySet, LogString);
                         /**
                         * Returns the set of of the key values in the MDC for the event.
                         * The returned set is unmodifiable by the caller.
@@ -250,8 +250,8 @@ namespace log4cxx
                        
                 };
 
-                LOG4CXX_PTR_DEF(LoggingEvent)
-                LOG4CXX_LIST_DEF(LoggingEventList, LoggingEventPtr)
+                LOG4CXX_PTR_DEF(LoggingEvent);
+                LOG4CXX_LIST_DEF(LoggingEventList, LoggingEventPtr);
         }
 }
 

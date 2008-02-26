@@ -28,7 +28,7 @@ namespace log4cxx
                 class Locale;
 
                 class ResourceBundle;
-                LOG4CXX_PTR_DEF(ResourceBundle)
+                LOG4CXX_PTR_DEF(ResourceBundle);
 
                 /**
                 Resource bundles contain locale-specific objects

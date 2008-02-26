@@ -52,8 +52,8 @@ namespace log4cxx
                      const log4cxx::helpers::ObjectPtrT<Logger>& logger, 
                      const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
                 };
-                LOG4CXX_PTR_DEF(HierarchyEventListener)
-                LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr)
+                LOG4CXX_PTR_DEF(HierarchyEventListener);
+                LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr);
 
         }  // namespace spi
 } // namespace log4cxx

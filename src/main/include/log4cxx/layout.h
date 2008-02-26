@@ -87,7 +87,7 @@ namespace log4cxx
                 */
                 virtual bool ignoresThrowable() const = 0;
         };
-        LOG4CXX_PTR_DEF(Layout)
+        LOG4CXX_PTR_DEF(Layout);
 }
 
 #if defined(_MSC_VER)

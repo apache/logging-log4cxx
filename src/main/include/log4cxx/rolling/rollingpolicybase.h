@@ -57,13 +57,13 @@ namespace log4cxx {
           /**
            * File name pattern converters.
            */
-          LOG4CXX_LIST_DEF(PatternConverterList, log4cxx::pattern::PatternConverterPtr)
+          LOG4CXX_LIST_DEF(PatternConverterList, log4cxx::pattern::PatternConverterPtr);
           PatternConverterList patternConverters;
 
           /**
            * File name field specifiers.
            */
-          LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr)
+          LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
           FormattingInfoList patternFields;
 
           /**

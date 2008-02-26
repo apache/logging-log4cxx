@@ -26,7 +26,7 @@ namespace log4cxx {
   namespace pattern {
 
     class NameAbbreviator;
-    LOG4CXX_PTR_DEF(NameAbbreviator)
+    LOG4CXX_PTR_DEF(NameAbbreviator);
 
 /**
  * NameAbbreviator generates abbreviated logger and class names.

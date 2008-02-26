@@ -112,7 +112,7 @@ namespace log4cxx
                         static int DEFAULT_PORT;
 
                         int port;
-                        LOG4CXX_LIST_DEF(ObjectOutputStreamList, log4cxx::helpers::ObjectOutputStreamPtr)
+                        LOG4CXX_LIST_DEF(ObjectOutputStreamList, log4cxx::helpers::ObjectOutputStreamPtr);
                         ObjectOutputStreamList streams;
                         bool locationInfo;
 

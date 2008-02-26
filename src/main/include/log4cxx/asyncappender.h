@@ -194,7 +194,7 @@ namespace log4cxx
                 /**
                  * Event buffer.
                 */
-                LOG4CXX_LIST_DEF(LoggingEventList, log4cxx::spi::LoggingEventPtr)
+                LOG4CXX_LIST_DEF(LoggingEventList, log4cxx::spi::LoggingEventPtr);
                 LoggingEventList buffer;
 
                 /**
@@ -280,7 +280,7 @@ namespace log4cxx
                 static void* LOG4CXX_THREAD_FUNC dispatch(helpers::log4cxx_thread_t* thread, void* data);
 
         }; // class AsyncAppender
-        LOG4CXX_PTR_DEF(AsyncAppender)
+        LOG4CXX_PTR_DEF(AsyncAppender);
 }  //  namespace log4cxx
 
 #if defined(_MSC_VER)

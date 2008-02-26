@@ -41,15 +41,15 @@ namespace log4cxx
     
     namespace spi {
         class LoggerRepository;
-        LOG4CXX_PTR_DEF(LoggerRepository)
+        LOG4CXX_PTR_DEF(LoggerRepository);
         class LoggerFactory;
-        LOG4CXX_PTR_DEF(LoggerFactory)
+        LOG4CXX_PTR_DEF(LoggerFactory);
     }
 
     class Logger;
     /** smart pointer to a Logger class */
-    LOG4CXX_PTR_DEF(Logger)
-    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr)
+    LOG4CXX_PTR_DEF(Logger);
+    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 
 
     /**
@@ -1717,7 +1717,7 @@ namespace log4cxx
         log4cxx::helpers::Mutex mutex;
         friend class log4cxx::helpers::synchronized;
    };
-   LOG4CXX_LIST_DEF(LoggerList, LoggerPtr)
+   LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
    
 }
 

@@ -39,7 +39,7 @@ namespace log4cxx
           class LOG4CXX_EXPORT ByteArrayInputStream : public InputStream
           {
           private:
-              LOG4CXX_LIST_DEF(ByteList, unsigned char)
+              LOG4CXX_LIST_DEF(ByteList, unsigned char);
               ByteList buf;
               size_t pos;
 
@@ -82,7 +82,7 @@ namespace log4cxx
 
           };
 
-          LOG4CXX_PTR_DEF(ByteArrayInputStream)
+          LOG4CXX_PTR_DEF(ByteArrayInputStream);
         } // namespace helpers
 
 }  //namespace log4cxx

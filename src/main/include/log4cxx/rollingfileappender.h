@@ -104,7 +104,7 @@ namespace log4cxx
 
 
       }; // class RollingFileAppender
-      LOG4CXX_PTR_DEF(RollingFileAppender)
+      LOG4CXX_PTR_DEF(RollingFileAppender);
 
     } // namespace log4cxx
 

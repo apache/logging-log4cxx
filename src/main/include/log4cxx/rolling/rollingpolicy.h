@@ -74,7 +74,7 @@ namespace log4cxx {
           log4cxx::helpers::Pool& p) = 0;
         };
 
-      LOG4CXX_PTR_DEF(RollingPolicy)
+      LOG4CXX_PTR_DEF(RollingPolicy);
 
     }
 }

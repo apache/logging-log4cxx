@@ -50,7 +50,7 @@ namespace log4cxx
                         virtual void write(ByteBuffer& buf, Pool& p);
 
                 protected:
-                        LOG4CXX_LIST_DEF(ByteList, unsigned char)
+                        LOG4CXX_LIST_DEF(ByteList, unsigned char);
                         ByteList array;
                         SocketPtr socket;
 
@@ -62,7 +62,7 @@ namespace log4cxx
 
                 };
                 
-                LOG4CXX_PTR_DEF(SocketOutputStream)
+                LOG4CXX_PTR_DEF(SocketOutputStream);
                 
         }  // namespace helpers
 } // namespace log4cxx

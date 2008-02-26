@@ -51,7 +51,7 @@ namespace log4cxx
                   OutputStream& operator=(const OutputStream&);
           };
 
-          LOG4CXX_PTR_DEF(OutputStream)
+          LOG4CXX_PTR_DEF(OutputStream);
         } // namespace helpers
 
 }  //namespace log4cxx

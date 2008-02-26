@@ -75,7 +75,7 @@ namespace log4cxx
                   /**
                    * List of tokens.
                    */
-                  LOG4CXX_LIST_DEF(PatternTokenList, log4cxx::helpers::SimpleDateFormatImpl::PatternToken*)
+                  LOG4CXX_LIST_DEF(PatternTokenList, log4cxx::helpers::SimpleDateFormatImpl::PatternToken*);
 
                   PatternTokenList pattern;
                   

@@ -45,8 +45,8 @@ namespace log4cxx
 
 
                 class InetAddress;
-                LOG4CXX_PTR_DEF(InetAddress)
-                LOG4CXX_LIST_DEF(InetAddressList, InetAddressPtr)
+                LOG4CXX_PTR_DEF(InetAddress);
+                LOG4CXX_LIST_DEF(InetAddressList, InetAddressPtr);
 
                 class LOG4CXX_EXPORT InetAddress : public ObjectImpl
                 {

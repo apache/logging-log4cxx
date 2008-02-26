@@ -191,7 +191,7 @@ public:
 
 };
 
-LOG4CXX_PTR_DEF(DailyRollingFileAppender)
+LOG4CXX_PTR_DEF(DailyRollingFileAppender);
 
 }
 

@@ -29,7 +29,7 @@ namespace log4cxx
 {
     class Level;
     /** smart pointer to a Level instance */
-    LOG4CXX_PTR_DEF(Level)
+    LOG4CXX_PTR_DEF(Level);
 
         /**
         Defines the minimum set of levels recognized by the system, that is

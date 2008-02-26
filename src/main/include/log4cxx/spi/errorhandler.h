@@ -116,7 +116,7 @@ namespace log4cxx
                         virtual void setBackupAppender(const AppenderPtr& appender) = 0;
                 };
 
-                LOG4CXX_PTR_DEF(ErrorHandler)
+                LOG4CXX_PTR_DEF(ErrorHandler);
         }  //namespace spi
 } //namespace log4cxx
 

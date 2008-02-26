@@ -85,7 +85,7 @@ namespace log4cxx
                   ClassDescriptionMap* classDescriptions;
           };
           
-          LOG4CXX_PTR_DEF(ObjectOutputStream)          
+          LOG4CXX_PTR_DEF(ObjectOutputStream);          
 
         } // namespace helpers
 
