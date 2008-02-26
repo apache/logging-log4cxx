@@ -23,17 +23,8 @@
 	<condition property="apr.src.dir" value="${apr.dir}">
 		<available file="${apr.dir}/${apr.sample.c}"/>
 	</condition>
-        <property name="apr.cwd.parent" location=".."/>
-	<condition property="apr.src.dir" value="${apr.cwd.parent}/apr">
-		<available file="${apr.cwd.parent}/apr/${apr.sample.c}"/>
-	</condition>
-        <property name="apr.cwd.grand" location="../.."/>
-	<condition property="apr.src.dir" value="${apr.cwd.grand}/apr">
-		<available file="${apr.cwd.grand}/apr/${apr.sample.c}"/>
-	</condition>
-        <property name="apr.cwd.great" location="../../.."/>
-	<condition property="apr.src.dir" value="${apr.cwd.great}/apr">
-		<available file="${apr.cwd.great}/apr/${apr.sample.c}"/>
+	<condition property="apr.src.dir" value="../apr">
+		<available file="../apr/${apr.sample.c}"/>
 	</condition>
 </target>
 
