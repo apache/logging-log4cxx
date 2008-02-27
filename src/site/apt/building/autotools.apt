@@ -71,7 +71,8 @@ Building Apache log4cxx with autotools
   
 ** Cygwin:
   
-  Install sed which is required by the unit tests.  The prepackaged
+  Install zip (used by RollingFileAppender) and sed (used to normalize
+  output files for comparison in the unit tests).  The prepackaged
   APR currently available from Cygwin has APR_HAS_THREADS == 0.
   Some appenders will not be available and some may operate
   with reduced functionality.  There have been reports of

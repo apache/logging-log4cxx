@@ -37,6 +37,9 @@ Building Apache log4cxx with Apache Ant
 
   *Install APR and APR-Util or place source in apr and apr-util directories as a 
   sibling to the log4cxx directory.
+  
+  *Install gzip and zip (used for compression by RollingFileAppender) and 
+   sed (used to normalize output files for comparison in unit tests). 
         
    Building and testing log4cxx on a Unix platform with packaged APR and APR-Util.  
 
@@ -158,9 +161,10 @@ Building Apache log4cxx with Apache Ant
 
   ** Microsoft Windows
 
-  A GNU sed command is required to be on the path to complete the unit tests.
-  Cygwin's implementation is known to work.
-  
+  {{{http://gnuwin32.sourceforge.net}GnuWin32}}
+  provides binary versions of sed, gzip and zip.  Alternative,
+  the bin directory of {{{http://www.cygwin.com}Cygwin}} may be placed on the path.
+
   If -Dwith-SMTP=libesmtp is specified, the build will attempt to build
   libesmtp from source, unfortunately libesmtp depends on poll.h and will not build.
   
