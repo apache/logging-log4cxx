@@ -25,7 +25,7 @@ Building Apache log4cxx with autotools
 +------------+
  sudo apt-get install libapr1.0-dev libaprutil1.0-dev
  cd apache-log4cxx-0.10.0
- ./autoconf.sh
+ ./autogen.sh
  ./configure
  make
  make check
