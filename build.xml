@@ -1234,7 +1234,11 @@ body {</replacevalue>
       </exec>
    </target>
 
-
+   <target name="autogen" depends="init" if="is-unix">
+	<exec executable="sh">
+		<arg value="autogen.sh"/>
+	</exec>
+   </target>
 
 
 </project>

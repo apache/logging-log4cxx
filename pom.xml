@@ -3,7 +3,7 @@
   <groupId>log4cxx</groupId>
   <artifactId>apache-log4cxx</artifactId>
   <packaging>pom</packaging>
-  <version>0.10.1-SNAPSHOT</version>
+  <version>0.10.0-SNAPSHOT</version>
   <name>Apache log4cxx</name>
   <description>Logging framework for C++.</description>
   <url>http://logging.apache.org:80/log4cxx</url>
@@ -88,6 +88,18 @@
             <configuration>
                 <tasks>
                     <ant target="check" />
+                </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <phase>package</phase>
+            <id>autogen</id>
+            <configuration>
+                <tasks>
+                   <ant target="autogen" />
                 </tasks>
             </configuration>
             <goals>
