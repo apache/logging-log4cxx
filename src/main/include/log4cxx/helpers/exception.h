@@ -32,6 +32,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT Exception : public ::std::exception
                 {
                 public:
+                        Exception(const std::string& msg);
                         Exception(const LogString& msg);
                         Exception(const Exception& src);
                         Exception& operator=(const Exception& src);
