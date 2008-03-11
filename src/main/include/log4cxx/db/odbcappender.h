@@ -38,12 +38,14 @@ namespace log4cxx
             class LOG4CXX_EXPORT SQLException : public log4cxx::helpers::Exception {
             public:
                 SQLException(short fHandleType, 
-                            void* hInput, const char* prolog);
-                SQLException(const std::string& msg);
+                            void* hInput, const char* prolog,
+                            log4cxx::helpers::Pool& p);
+                SQLException(const char* msg);
                 SQLException(const SQLException& src);
             private:
-                std::string formatMessage(short fHandleType,
-                    void* hInput, const char* prolog);
+                const char* formatMessage(short fHandleType,
+                    void* hInput, const char* prolog,
+                    log4cxx::helpers::Pool& p);
             };
 
                 /**

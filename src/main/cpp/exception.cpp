@@ -41,17 +41,13 @@ Exception::Exception(const LogString& msg1) {
   msg[len] = 0;
 }
 
-Exception::Exception(const std::string& m) {
-  size_t len = m.size();
-  if (len > MSG_SIZE) {
-      len = MSG_SIZE;
-  }
+Exception::Exception(const char* m) {
 #if defined(__STDC_LIB_EXT1__) || defined(__STDC_SECURE_LIB__)
-  memcpy_s(msg, sizeof msg, m.data(), len);
+  strncpy_s(msg, sizeof msg, m, MSG_SIZE);
 #else
-  memcpy(msg, m.data(), len);
+  strncpy(msg, m, MSG_SIZE);
 #endif
-  msg[len] = 0;
+  msg[MSG_SIZE] = 0;
 }
 
 

@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/patternlayout.h>
+#include <apr_strings.h>
 
 #if !defined(LOG4CXX)
 #define LOG4CXX 1
@@ -39,12 +40,13 @@ using namespace log4cxx::db;
 using namespace log4cxx::spi;
 
 SQLException::SQLException(short fHandleType, 
-                           void* hInput, const char* prolog) 
-                           : Exception(formatMessage(fHandleType, hInput, prolog)) {
+                           void* hInput, const char* prolog,
+                           log4cxx::helpers::Pool& p) 
+                           : Exception(formatMessage(fHandleType, hInput, prolog, p)) {
 }
 
 
-SQLException::SQLException(const std::string& msg) 
+SQLException::SQLException(const char* msg) 
    : Exception(msg) {
 }
 
@@ -52,8 +54,8 @@ SQLException::SQLException(const SQLException& src)
    : Exception(src) {
 }
 
-std::string SQLException::formatMessage(short fHandleType,
-                          void* hInput, const char* prolog) {
+const char* SQLException::formatMessage(short fHandleType,
+                          void* hInput, const char* prolog, log4cxx::helpers::Pool& p) {
    std::string strReturn(prolog);
    strReturn.append(" - ");
 #if LOG4CXX_HAVE_ODBC
@@ -76,7 +78,7 @@ std::string SQLException::formatMessage(short fHandleType,
    strReturn.append("log4cxx built without ODBC support");
 #endif
 
-   return strReturn;
+   return apr_pstrdup((apr_pool_t*) p.getAPRPool(), strReturn.c_str());
 }
 
 
@@ -162,7 +164,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
       ret = SQLAllocHandle( SQL_HANDLE_STMT, con, &stmt);
       if (ret < 0)
       {
-         throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate sql handle.");
+         throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate sql handle.", p);
       }
 
       SQLWCHAR* wsql = Transcoder::wencode(sql, p); 
@@ -170,7 +172,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
 
      if (ret < 0)
       {
-         throw SQLException(SQL_HANDLE_STMT, stmt, "Failed to execute sql statement.");
+         throw SQLException(SQL_HANDLE_STMT, stmt, "Failed to execute sql statement.", p);
       }
    }
    catch (SQLException& e)
@@ -209,7 +211,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
       ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &env);
       if (ret < 0)
       {
-         SQLException ex(SQL_HANDLE_ENV, env, "Failed to allocate SQL handle.");
+         SQLException ex(SQL_HANDLE_ENV, env, "Failed to allocate SQL handle.", p);
          env = SQL_NULL_HENV;
          throw ex;
       }
@@ -217,7 +219,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
       ret = SQLSetEnvAttr(env, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_INTEGER);
       if (ret < 0)
       {
-         SQLException ex(SQL_HANDLE_ENV, env, "Failed to set odbc version.");
+         SQLException ex(SQL_HANDLE_ENV, env, "Failed to set odbc version.", p);
          SQLFreeHandle(SQL_HANDLE_ENV, env);
          env = SQL_NULL_HENV;
          throw ex;
@@ -229,7 +231,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
       ret = SQLAllocHandle(SQL_HANDLE_DBC, env, &connection);
       if (ret < 0)
       {
-         SQLException ex(SQL_HANDLE_DBC, connection, "Failed to allocate sql handle.");
+         SQLException ex(SQL_HANDLE_DBC, connection, "Failed to allocate sql handle.", p);
          connection = SQL_NULL_HDBC;
          throw ex;
       }
@@ -248,7 +250,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 
      if (ret < 0)
       {
-         SQLException ex(SQL_HANDLE_DBC, connection, "Failed to connect to database.");
+         SQLException ex(SQL_HANDLE_DBC, connection, "Failed to connect to database.", p);
          SQLFreeHandle(SQL_HANDLE_DBC, connection);
          connection = SQL_NULL_HDBC;
          throw ex;
