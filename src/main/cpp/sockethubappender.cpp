@@ -164,7 +164,7 @@ void SocketHubAppender::startServer()
         thread.run(monitor, this);
 }
 
-void* APR_THREAD_FUNC SocketHubAppender::monitor(log4cxx_thread_t* /* thread */, void* data) {
+void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, void* data) {
         SocketHubAppender* pThis = (SocketHubAppender*) data;
 
         ServerSocket* serverSocket = 0;

@@ -67,7 +67,7 @@ void FileWatchdog::checkAndConfigure()
    }
 }
 
-void* APR_THREAD_FUNC FileWatchdog::run(log4cxx_thread_t* /* thread */, void* data) {
+void* APR_THREAD_FUNC FileWatchdog::run(apr_thread_t* /* thread */, void* data) {
    FileWatchdog* pThis = (FileWatchdog*) data;
 
    unsigned int interrupted = apr_atomic_read32(&pThis->interrupted);

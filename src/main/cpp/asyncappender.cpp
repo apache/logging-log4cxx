@@ -313,7 +313,7 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p) {
 
 
 #if APR_HAS_THREADS
-void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(log4cxx_thread_t* thread, void* data) {
+void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) {
     AsyncAppender* pThis = (AsyncAppender*) data;
     bool isActive = true;
     try {
