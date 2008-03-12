@@ -144,6 +144,8 @@ servlet.
                         size_t activeConnections;
                         static void* LOG4CXX_THREAD_FUNC acceptConnections(helpers::log4cxx_thread_t* thread, void* data);
                 }; // class TelnetAppender
+                
+                LOG4CXX_PTR_DEF(TelnetAppender);
     } // namespace net
 } // namespace log4cxx
 

@@ -216,6 +216,7 @@
 <action issue="LOGCXX-241">Non-ascii named files have names mangled</action>
 <action issue="LOGCXX-242">Eliminate log4cxx proxies for APR types</action>
 <action issue="LOGCXX-243">Problem Compile in Doxy</action>
+<action issue="LOGCXX-246">Config refresh hangs a client application that uses TelnetAppender</action>
 <action issue="LOGCXX-247">MSVC project has wrong additional include directories</action>
 <action issue="LOGCXX-248">ODBCAppender has unicode issues</action>
 </release>

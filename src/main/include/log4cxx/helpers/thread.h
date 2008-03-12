@@ -58,7 +58,6 @@ namespace log4cxx
                          *  Runs the specified method on a newly created thread.
                          */
                         void run(Runnable start, void* data);
-                        void stop();
                         void join();
 
                         inline bool isActive() { return thread != 0; }

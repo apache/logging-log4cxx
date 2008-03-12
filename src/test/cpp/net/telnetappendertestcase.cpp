@@ -16,10 +16,14 @@
  */
 
 #include <log4cxx/net/telnetappender.h>
+#include <log4cxx/ttcclayout.h>
 #include "../appenderskeletontestcase.h"
+#include <apr_thread_proc.h>
+#include <apr_time.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::net;
 
 #if APR_HAS_THREADS
 /**
@@ -33,14 +37,29 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
                 //
                 LOGUNIT_TEST(testDefaultThreshold);
                 LOGUNIT_TEST(testSetOptionThreshold);
+                LOGUNIT_TEST(testActivateClose);
 
    LOGUNIT_TEST_SUITE_END();
 
+   enum { TEST_PORT = 1723 };
 
 public:
 
         AppenderSkeleton* createAppenderSkeleton() const {
           return new log4cxx::net::TelnetAppender();
+        }
+        
+        void testActivateClose() {
+            TelnetAppenderPtr appender(new TelnetAppender());
+            appender->setLayout(new TTCCLayout());
+            appender->setPort(TEST_PORT);
+            Pool p;
+            appender->activateOptions(p);
+            //
+            //   TODO: without the Thread::sleep, SocketImpl will NPE when trying to accept
+            //      connections on a closed socket.
+            Thread::sleep(1000);
+            appender->close();
         }
 };
 

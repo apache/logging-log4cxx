@@ -104,17 +104,6 @@ void* LOG4CXX_THREAD_FUNC Thread::launcher(log4cxx_thread_t* thread, void* data)
 }
 #endif
 
-void Thread::stop() {
-#if APR_HAS_THREADS
-    if (thread != NULL) {
-                apr_status_t stat = apr_thread_exit((apr_thread_t*) thread, 0);
-                thread = NULL;
-                if (stat != APR_SUCCESS) {
-                        throw ThreadException(stat);
-                }
-        }
-#endif
-}
 
 void Thread::join() {
 #if APR_HAS_THREADS

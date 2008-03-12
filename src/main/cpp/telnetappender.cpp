@@ -98,7 +98,6 @@ void TelnetAppender::close()
         synchronized sync(mutex);
         if (closed) return;
         closed = true;
-        sh.stop();
 
         SocketPtr nullSocket;
         for(ConnectionList::iterator iter = connections.begin();
@@ -116,6 +115,8 @@ void TelnetAppender::close()
                 } catch(Exception&) {
                 }
         }
+        
+        sh.join();
 
         activeConnections = 0;
 }
@@ -228,7 +229,11 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(log4cxx_thread_t* /* thr
                         pThis->writeStatus(newClient, oss, p);
                 }
         } catch(Exception& e) {
-                LogLog::error(LOG4CXX_STR("Encountered error while in SocketHandler loop."), e);
+                if (!pThis->closed) {
+                    LogLog::error(LOG4CXX_STR("Encountered error while in SocketHandler loop."), e);
+                } else {
+                    return NULL;
+                }
         }
     }
 
