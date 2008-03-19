@@ -220,6 +220,7 @@
 <action issue="LOGCXX-247">MSVC project has wrong additional include directories</action>
 <action issue="LOGCXX-248">ODBCAppender has unicode issues</action>
 <action issue="LOGCXX-251">NDC::cloneStack and NDC::inherit missing in 0.10.0 RC2</action>
+<action issue="LOGCXX-252">Add documentation for use of operator&lt;&lt; in logging requests</action>
 </release>
 <release version="0.9.7" date="2004-05-10">
 <action type="fix">Fixed examples source code in the "Short introduction to log4cxx".</action>
