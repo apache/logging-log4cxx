@@ -144,6 +144,12 @@ ant -Dfind=false
 *-------------------+---------------------------------------------------------------------------------------------+
 | -Dprojects.dir    | Location for generated IDE projects.                                                        |
 *-------------------+---------------------------------------------------------------------------------------------+
+| -Dlib.type        | Library type to create, choice of shared (default), static.                                 |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Druntime         | Type of C runtime library to use, choice of dynamic (default), static.                      |
+*-------------------+---------------------------------------------------------------------------------------------+
+| -Doptimization    | Optimization: none (default), size, minimal, speed, full, aggressive, extreme, unsafe.      |
+*-------------------+---------------------------------------------------------------------------------------------+
 | -p                | Display available targets and quit.                                                         |
 *-------------------+---------------------------------------------------------------------------------------------+
 
@@ -151,6 +157,8 @@ ant -Dfind=false
    that have different licenses.
    You should review the corresponding licenses and understand
    the implications before redistribution.
+
+   Combining -Dlib.type=shared and -Druntime=static is unsafe.
    
    Properties may also be placed in a build.properties file in the log4cxx directory.
 
