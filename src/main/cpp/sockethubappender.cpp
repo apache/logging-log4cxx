@@ -148,6 +148,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                 try
                 {
                         event->write(**it, p);
+                        (*it)->flush(p);
                         it++;
                 }
                 catch(std::exception& e)
@@ -177,6 +178,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, voi
         catch (SocketException& e)
         {
                 LogLog::error(LOG4CXX_STR("exception setting timeout, shutting down server socket."), e);
+                delete serverSocket;
                 return NULL;
         }
 
@@ -191,6 +193,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, voi
                 catch (InterruptedIOException&)
                 {
                         // timeout occurred, so just loop
+                        Thread::sleep(1000);
                 }
                 catch (SocketException& e)
                 {
@@ -226,6 +229,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, voi
                                 LogLog::error(LOG4CXX_STR("exception creating output stream on socket."), e);
                         }
                 }
+                stopRunning = (stopRunning || pThis->closed);
         }
         delete serverSocket;
         return NULL;

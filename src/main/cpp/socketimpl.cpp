@@ -171,6 +171,9 @@ void SocketImpl::accept(SocketImplPtr s)
       apr_socket_t *clientSocket = 0;
       apr_status_t status = 
           apr_socket_accept(&clientSocket, socket, s->memoryPool.getAPRPool());
+      if (APR_STATUS_IS_EAGAIN(status)) {
+         throw InterruptedIOException();
+      }
       if (status != APR_SUCCESS) {
         throw SocketException(status);
       }
@@ -284,11 +287,9 @@ void SocketImpl::connect(const LogString& host, int port1)
 /** Creates either a stream or a datagram socket. */
 void SocketImpl::create(bool stream)
 {
-  apr_socket_t* newSocket;
   apr_status_t status =
-    apr_socket_create(&newSocket, APR_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 
+    apr_socket_create(&socket, APR_INET, stream ? SOCK_STREAM : SOCK_DGRAM, 
                       APR_PROTO_TCP, memoryPool.getAPRPool());
-  socket = newSocket;
   if (status != APR_SUCCESS) {
     throw SocketException(status);
   }
