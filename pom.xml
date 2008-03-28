@@ -235,6 +235,10 @@
     </plugins>
   </reporting>
  <distributionManagement>
+    <repository>
+	<id>logging.repo</id>
+	<url>scp://people.apache.org/www/people.apache.org/builds/logging/repo</url>
+    </repository>
     <site>
       <id>logging.site</id>
       <url>file:///${user.dir}/target/site-deploy</url>
