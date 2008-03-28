@@ -189,7 +189,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
         debug="${debug}"
         projectsOnly="${projectsOnly}">
         <fileset dir="${src.dir}" includes="**/*.c"
-            excludes="test/*.c ldap/*.c xml/expat/lib/*"/>
+            excludes="test/*.c *.c ldap/*.c xml/expat/lib/*"/>
         <fileset dir="${src.dir}/xml/expat/lib"
             includes="xmlparse.c xmlrole.c xmltok.c"/>
         <fileset dir="${src.dir}/xml/expat/lib" includes="*.h"/>
