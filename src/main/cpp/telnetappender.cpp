@@ -60,6 +60,7 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 {
         if (serverSocket == NULL) {
                 serverSocket = new ServerSocket(port);
+                serverSocket->setSoTimeout(1000);                
         }
         sh.run(acceptConnections, this);
 }
@@ -131,7 +132,8 @@ void TelnetAppender::write(ByteBuffer& buf) {
              iter++) {
              if (*iter != 0) {
                 try {
-                    (*iter)->write(buf.current(), buf.remaining());
+                    ByteBuffer b(buf.current(), buf.remaining());
+                    (*iter)->write(b);
                 } catch(Exception& ex) {
                     // The client has closed the connection, remove it from our list:
                     *iter = 0;
@@ -151,7 +153,7 @@ void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, 
         while(msgIter != msg.end()) {
             encoder->encode(msg, msgIter, buf);
             buf.flip();
-            socket->write(buf.current(), buf.remaining());
+            socket->write(buf);
             buf.clear();
         }
 }
@@ -230,6 +232,10 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
                         StringHelper::toString((int) count+1, p, oss);
                         oss += LOG4CXX_STR(" active connections)\r\n\r\n");
                         pThis->writeStatus(newClient, oss, p);
+                }
+        } catch(InterruptedIOException &e) {
+                if (pThis->closed) {
+                    return NULL;
                 }
         } catch(Exception& e) {
                 if (!pThis->closed) {

@@ -224,6 +224,7 @@
 <action issue="LOGCXX-253">Transcoder compilation error with utf-8 charset</action>
 <action issue="LOGCXX-254">Add build option for static C RTL</action>
 <action issue="LOGCXX-256">SocketHubAppender fails after accepting connection</action>
+<action issue="LOGCXX-257">ServerSocket::accept hangs on Unix</action>
 </release>
 <release version="0.9.7" date="2004-05-10">
 <action type="fix">Fixed examples source code in the "Short introduction to log4cxx".</action>

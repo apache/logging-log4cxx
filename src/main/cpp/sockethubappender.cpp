@@ -30,6 +30,7 @@
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/socketoutputstream.h>
+#include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -193,7 +194,6 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, voi
                 catch (InterruptedIOException&)
                 {
                         // timeout occurred, so just loop
-                        Thread::sleep(1000);
                 }
                 catch (SocketException& e)
                 {

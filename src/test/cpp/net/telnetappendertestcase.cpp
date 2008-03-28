@@ -37,9 +37,9 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
                 //
                 LOGUNIT_TEST(testDefaultThreshold);
                 LOGUNIT_TEST(testSetOptionThreshold);
-//
-//   TODO: test hangs on Ubuntu
-//                LOGUNIT_TEST(testActivateClose);
+                LOGUNIT_TEST(testActivateClose);
+                LOGUNIT_TEST(testActivateSleepClose);
+                LOGUNIT_TEST(testActivateWriteClose);
 
    LOGUNIT_TEST_SUITE_END();
 
@@ -57,12 +57,33 @@ public:
             appender->setPort(TEST_PORT);
             Pool p;
             appender->activateOptions(p);
-            //
-            //   TODO: without the Thread::sleep, SocketImpl will NPE when trying to accept
-            //      connections on a closed socket.
+            appender->close();
+        }
+
+        void testActivateSleepClose() {
+            TelnetAppenderPtr appender(new TelnetAppender());
+            appender->setLayout(new TTCCLayout());
+            appender->setPort(TEST_PORT);
+            Pool p;
+            appender->activateOptions(p);
             Thread::sleep(1000);
             appender->close();
         }
+
+        void testActivateWriteClose() {
+            TelnetAppenderPtr appender(new TelnetAppender());
+            appender->setLayout(new TTCCLayout());
+            appender->setPort(TEST_PORT);
+            Pool p;
+            appender->activateOptions(p);
+            LoggerPtr root(Logger::getRootLogger());
+            root->addAppender(appender);
+            for (int i = 0; i < 50; i++) {
+                LOG4CXX_INFO(root, "Hello, World " << i);
+            }
+            appender->close();
+        }
+
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(TelnetAppenderTestCase);
