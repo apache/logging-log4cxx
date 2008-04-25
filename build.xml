@@ -90,7 +90,7 @@ and the C++ compilation tasks from http://ant-contrib.sourceforge.net.
 
 <property name="lib.name" value="log4cxx"/>
 <property name="lib.prefix" value=""/>
-<property name="version" value="0.10.0"/>
+<property name="version" value="0.10.1"/>
 <property name="enable-char" value="1"/>
 <property name="enable-wchar_t" value="1"/>
 <property name="enable-unichar" value="0"/>
