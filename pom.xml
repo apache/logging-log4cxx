@@ -33,7 +33,7 @@
       <otherArchives>
           <otherArchive>http://markmail.org/search/list:org.apache.logging.log4cxx-dev</otherArchive>
           <otherArchive>http://marc.info/?l=log4cxx-dev</otherArchive>
-          <otherArchive>http://dir.gmane.org/gmane.comp.jakarta.log4j.devel</otherArchive>
+          <otherArchive>http://dir.gmane.org/gmane.comp.apache.logging.log4cxx.devel</otherArchive>
       </otherArchives>
    </mailingList>
 </mailingLists>
