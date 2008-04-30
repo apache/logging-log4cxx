@@ -27,6 +27,7 @@
 <action issue="LOGCXX-263">Bad link to log4cxx-dev archive</action>
 <action issue="LOGCXX-271">MDC::put will not overwrite existing key value pair</action>
 <action issue="LOGCXX-272">Apache log4cxx 0.10.1 release</action>
+<action issue="LOGCXX-275">Headers cannot be included with very strict warning settings</action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>
