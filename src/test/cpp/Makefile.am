@@ -147,7 +147,8 @@ testsuite_SOURCES = \
         streamtestcase.cpp\
         writerappendertestcase.cpp \
         ndctestcase.cpp \
-        propertyconfiguratortest.cpp 
+        propertyconfiguratortest.cpp \
+        mdctestcase.cpp
 
 testsuite_LDADD = \
         $(top_builddir)/src/main/cpp/liblog4cxx.la

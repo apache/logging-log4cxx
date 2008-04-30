@@ -79,7 +79,7 @@ void ThreadSpecificData::put(const LogString& key, const LogString& val) {
         data = createCurrentData();
     }
     if (data != 0) {
-        data->getMap().insert(log4cxx::MDC::Map::value_type(key, val));
+        data->getMap()[key] = val;
     }
 }
 
