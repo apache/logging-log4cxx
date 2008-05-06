@@ -184,7 +184,7 @@ public:                                               \
      private:                                         \
      class RegisterSuite {                            \
      public:                                          \
-        typedef TF ThisFixture;                       
+        typedef TF ThisFixture                       
         
 #define LOGUNIT_TEST(testName)          \
      class testName ## Registration {   \
@@ -195,7 +195,7 @@ public:                                               \
         static void run(abts_case* tc, void*) { \
             LogUnit::runTest<ThisFixture>(tc, &ThisFixture::testName); \
         }                                       \
-    } register ## testName;
+    } register ## testName
 
 #define LOGUNIT_TEST_EXCEPTION(testName, Exception)  \
      class testName ## Registration {   \
@@ -206,7 +206,7 @@ public:                                               \
         static void run(abts_case* tc, void*) { \
             LogUnit::runTestWithException<ThisFixture, Exception>(tc, &ThisFixture::testName); \
         }                                       \
-    } register ## testName;
+    } register ## testName
 
 
 #define LOGUNIT_TEST_SUITE_END() \
@@ -214,7 +214,9 @@ public:                                               \
     public:                        \
     static void populateSuite() {         \
         static RegisterSuite registration; \
-    }
+    }                                      \
+    private:                               \
+    void nop()
     
 
 #define LOGUNIT_TEST_SUITE_REGISTRATION(TF) \
