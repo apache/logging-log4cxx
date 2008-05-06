@@ -31,8 +31,10 @@ using namespace log4cxx;
 bool APRInitializer::isDestructed = false;
 
 
-static void tlsDestruct(void* ptr) {
-  delete ((ThreadSpecificData*) ptr);
+namespace {
+ 	void tlsDestruct(void* ptr) {
+  		delete ((ThreadSpecificData*) ptr);
+	}
 }
 
 APRInitializer::APRInitializer() {

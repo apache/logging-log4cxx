@@ -26,6 +26,115 @@
 using namespace log4cxx::helpers;
 using namespace log4cxx;
 
+#if APR_HAS_THREADS
+namespace {
+                        /**
+                         *   This class is used to encapsulate the parameters to
+                         *   Thread::run when they are passed to Thread::launcher.
+                         *
+                         */
+                        class LaunchPackage {
+                        public:
+                            /**
+                             *  Placement new to create LaunchPackage in specified pool.
+                             *  LaunchPackage needs to be dynamically allocated since
+                             *  since a stack allocated instance may go out of scope
+                             *  before thread is launched.
+                             */
+                            static void* operator new(size_t sz, Pool& p) {
+    				return p.palloc(sz);
+			    }
+                            /**
+                            *  operator delete would be called if exception during construction.
+                            */
+                            static void operator delete(void*, Pool& p) {
+                            }
+                            /**
+                             *  Create new instance.
+                             */
+			    LaunchPackage(Thread* t, Runnable r, void* d) : thread(t), runnable(r), data(d) {
+                            }
+                            /**
+                             * Gets thread parameter.
+                             * @return thread.
+                             */
+                            Thread* getThread() const {
+				  return thread;
+			    }
+
+                            /**
+                             *  Gets runnable parameter.
+                             *  @return runnable.
+                             */
+                            Runnable getRunnable() const {
+                                  return runnable;
+                            }
+                            /**
+                             *  gets data parameter.
+                             *  @return thread.
+                             */
+                            void* getData() const {
+                                  return data;
+                            }
+                        private:
+                            LaunchPackage(const LaunchPackage&);
+                            LaunchPackage& operator=(const LaunchPackage&);
+                            Thread* thread;
+                            Runnable runnable; 
+                            void* data;
+                        };
+                        
+                        /**
+                         *  This object atomically sets the specified memory location
+                         *  to non-zero on construction and to zero on destruction.  
+                         *  Used to maintain Thread.alive.
+                         */
+                        class LaunchStatus {
+                        public:
+                            /*
+                             *  Construct new instance.
+                             *  @param p address of memory to set to non-zero on construction, zero on destruction.
+                             */
+			    LaunchStatus(volatile unsigned int* p) : alive(p) {
+    				apr_atomic_set32(alive, 0xFFFFFFFF);
+			    }
+                            /**
+                             *  Destructor.
+                             */
+                            ~LaunchStatus() {
+				 apr_atomic_set32(alive, 0);
+                             }
+
+                        private:
+                            LaunchStatus(const LaunchStatus&);
+                            LaunchStatus& operator=(const LaunchStatus&);
+                            volatile unsigned int* alive;
+                        };
+
+                        /**
+                         *   Get a key to the thread local storage used to hold the reference to
+                         *   the corresponding Thread object.
+                         */                        
+			ThreadLocal& getThreadLocal() {
+     				static ThreadLocal tls;
+     				return tls;
+			}
+
+}
+
+void* LOG4CXX_THREAD_FUNC ThreadLaunch::launcher(apr_thread_t* thread, void* data) {
+	LaunchPackage* package = (LaunchPackage*) data;
+	ThreadLocal& tls = getThreadLocal();
+	tls.set(package->getThread());
+	LaunchStatus alive(&package->getThread()->alive);
+	void* retval = (package->getRunnable())(thread, package->getData());
+	apr_thread_exit(thread, 0);
+	return retval;
+}                        
+#endif
+
+
+
 Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0) {
 }
 
@@ -33,27 +142,7 @@ Thread::~Thread() {
     join();
 }
 
-Thread::LaunchPackage::LaunchPackage(Thread* t, Runnable r, void* d) : thread(t), runnable(r), data(d) {
-}
 
-Thread* Thread::LaunchPackage::getThread() const {
-    return thread;
-}
-
-Runnable Thread::LaunchPackage::getRunnable() const {
-    return runnable;
-}
-
-void* Thread::LaunchPackage::getData() const {
-    return data;
-}
-
-void* Thread::LaunchPackage::operator new(size_t sz, Pool& p) {
-    return p.palloc(sz);
-}
-
-void Thread::LaunchPackage::operator delete(void* mem, Pool& p) {
-}
 
 void Thread::run(Runnable start, void* data) {
 #if APR_HAS_THREADS
@@ -73,7 +162,7 @@ void Thread::run(Runnable start, void* data) {
         //   create LaunchPackage on the thread's memory pool
         LaunchPackage* package = new(p) LaunchPackage(this, start, data);
         stat = apr_thread_create(&thread, attrs,
-            launcher, package, p.getAPRPool());
+            ThreadLaunch::launcher, package, p.getAPRPool());
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
@@ -82,26 +171,7 @@ void Thread::run(Runnable start, void* data) {
 #endif
 }
 
-
-Thread::LaunchStatus::LaunchStatus(volatile unsigned int* p) : alive(p) {
-    apr_atomic_set32(alive, 0xFFFFFFFF);
-}
-
-Thread::LaunchStatus::~LaunchStatus() {
-    apr_atomic_set32(alive, 0);
-}
-    
-#if APR_HAS_THREADS
-void* LOG4CXX_THREAD_FUNC Thread::launcher(apr_thread_t* thread, void* data) {
-    LaunchPackage* package = (LaunchPackage*) data;
-    ThreadLocal& tls = getThreadLocal();
-    tls.set(package->getThread());
-    LaunchStatus alive(&package->getThread()->alive);
-    void* retval = (package->getRunnable())(thread, package->getData());
-    apr_thread_exit(thread, 0);
-    return retval;
-}
-#endif
+   
 
 
 void Thread::join() {
@@ -117,10 +187,6 @@ void Thread::join() {
 #endif
 }
 
-ThreadLocal& Thread::getThreadLocal() {
-     static ThreadLocal tls;
-     return tls;
-}
 
 void Thread::currentThreadInterrupt() {
 #if APR_HAS_THREADS
