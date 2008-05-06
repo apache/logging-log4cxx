@@ -13,10 +13,6 @@
  * limitations under the License.
  */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,7 +97,4 @@ abts_suite *run_tests1(abts_suite *suite);
 
 #endif
 
-#ifdef __cplusplus
-}
-#endif
 
