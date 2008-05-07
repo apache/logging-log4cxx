@@ -653,10 +653,10 @@ cyclic buffer. When the <code>BufferSize</code> is reached,
 oldest events are deleted as new events are added to the
 buffer. By default the size of the cyclic buffer is 512 events.
 */
-void SMTPAppender::setBufferSize(int bufferSize)
+void SMTPAppender::setBufferSize(int sz)
 {
-   this->bufferSize = bufferSize;
-   cb.resize(bufferSize);
+   this->bufferSize = sz;
+   cb.resize(sz);
 }
 
 /**

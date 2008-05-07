@@ -29,7 +29,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Socket)
 /** Creates a stream socket and connects it to the specified port
 number at the specified IP address.
 */
-Socket::Socket(InetAddressPtr& address, int port) : pool(), socket(0), address(address), port(port) 
+Socket::Socket(InetAddressPtr& addr, int prt) : pool(), socket(0), address(addr), port(prt) 
 {
   apr_status_t status =
     apr_socket_create(&socket, APR_INET, SOCK_STREAM, 
@@ -38,13 +38,13 @@ Socket::Socket(InetAddressPtr& address, int port) : pool(), socket(0), address(a
     throw SocketException(status);
   }
   
-  LOG4CXX_ENCODE_CHAR(host, address->getHostAddress());
+  LOG4CXX_ENCODE_CHAR(host, addr->getHostAddress());
 
   // create socket address (including port)
   apr_sockaddr_t *client_addr;
   status =
       apr_sockaddr_info_get(&client_addr, host.c_str(), APR_INET,
-                                  port, 0, pool.getAPRPool());
+                                  prt, 0, pool.getAPRPool());
   if (status != APR_SUCCESS) {
       throw ConnectException(status);
   }
@@ -56,10 +56,10 @@ Socket::Socket(InetAddressPtr& address, int port) : pool(), socket(0), address(a
   }
 }
 
-Socket::Socket(apr_socket_t* socket, apr_pool_t* pool) :
-    pool(pool, true), socket(socket) {
+Socket::Socket(apr_socket_t* s, apr_pool_t* p) :
+    pool(p, true), socket(s) {
     apr_sockaddr_t* sa;
-    apr_status_t status = apr_socket_addr_get(&sa, APR_REMOTE, socket);
+    apr_status_t status = apr_socket_addr_get(&sa, APR_REMOTE, s);
     if (status == APR_SUCCESS) {
         port = sa->port;
         LogString remotename;

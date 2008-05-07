@@ -35,9 +35,9 @@ GZCompressAction::GZCompressAction(const File& src,
 
 bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
     if (source.exists(p)) {
-        apr_pool_t* pool = p.getAPRPool();
+        apr_pool_t* aprpool = p.getAPRPool();
         apr_procattr_t* attr;
-        apr_status_t stat = apr_procattr_create(&attr, pool);
+        apr_status_t stat = apr_procattr_create(&attr, aprpool);
         if (stat != APR_SUCCESS) throw IOException(stat);
     
         stat = apr_procattr_io_set(attr, APR_NO_PIPE, APR_FULL_BLOCK, APR_FULL_BLOCK);
@@ -62,14 +62,14 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
         //   redirect the child's error stream to this processes' error stream
         //
         apr_file_t* child_err;
-        stat = apr_file_open_stderr(&child_err, pool);
+        stat = apr_file_open_stderr(&child_err, aprpool);
         if (stat == APR_SUCCESS) {
          stat =  apr_procattr_child_err_set(attr, child_err, NULL);
          if (stat != APR_SUCCESS) throw IOException(stat);
         }
 
         const char** args = (const char**) 
-            apr_palloc(pool, 4 *sizeof(*args));
+            apr_palloc(aprpool, 4 *sizeof(*args));
         int i = 0;
         args[i++] = "gzip";
         args[i++] = "-c";
@@ -78,7 +78,7 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
     
 
         apr_proc_t pid;
-        stat = apr_proc_create(&pid, "gzip", args, NULL, attr, pool);
+        stat = apr_proc_create(&pid, "gzip", args, NULL, attr, aprpool);
         if (stat != APR_SUCCESS) throw IOException(stat);
 
         apr_proc_wait(&pid, NULL, NULL, APR_WAIT);

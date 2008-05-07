@@ -47,15 +47,15 @@ DailyRollingFileAppender::DailyRollingFileAppender(
     activateOptions(p);
 }
 
-void DailyRollingFileAppender::setDatePattern(const LogString& pattern) {
-   datePattern = pattern;
+void DailyRollingFileAppender::setDatePattern(const LogString& newPattern) {
+   datePattern = newPattern;
 }
 
 LogString DailyRollingFileAppender::getDatePattern() {
   return datePattern;
 }
 
-void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
+void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& p) {
   TimeBasedRollingPolicyPtr policy = new TimeBasedRollingPolicy();
   LogString pattern(getFile());
   bool inLiteral = false;
@@ -85,11 +85,11 @@ void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& pool) {
   }
 
   policy->setFileNamePattern(pattern);
-  policy->activateOptions(pool);
+  policy->activateOptions(p);
   setTriggeringPolicy(policy);
   setRollingPolicy(policy);
 
-  RollingFileAppenderSkeleton::activateOptions(pool);
+  RollingFileAppenderSkeleton::activateOptions(p);
 }
 
 
