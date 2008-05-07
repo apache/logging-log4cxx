@@ -32,7 +32,7 @@ bool APRInitializer::isDestructed = false;
 
 
 namespace {
- 	void tlsDestruct(void* ptr) {
+ 	extern "C" void tlsDestruct(void* ptr) {
   		delete ((ThreadSpecificData*) ptr);
 	}
 }
