@@ -24,7 +24,7 @@ noinst_HEADERS = \
 
 INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
-noinst_PROGRAMS = testsuite
+check_PROGRAMS = testsuite
 
 customlogger_tests = \
 	customlogger/xlogger.cpp\
