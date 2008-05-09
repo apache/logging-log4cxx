@@ -35,6 +35,7 @@
 <action issue="LOGCXX-278">Threads for reconnecting sockets do not end cleanly when program exits</action>
 <action issue="LOGCXX-280">tests and sample code unnecessarily compiled during default make target</action>
 <action issue="LOGCXX-281">Sun Studio 11 reports function hides base virtual function warning</action>
+<action issue="LOGCXX-283">Suspicious, but harmless, reuse of LOCAL1 in SyslogAppender</action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>
