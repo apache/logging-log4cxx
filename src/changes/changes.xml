@@ -31,6 +31,7 @@
 <action issue="LOGCXX-272">Apache log4cxx 0.10.1 release</action>
 <action issue="LOGCXX-275">Headers cannot be included with very strict warning settings</action>
 <action issue="LOGCXX-280">tests and sample code unnecessarily compiled during default make target</action>
+<action issue="LOGCXX-281">Sun Studio 11 reports function hides virtual function warning</action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>
