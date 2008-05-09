@@ -130,7 +130,7 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 void SocketAppenderSkeleton::fireConnector()
 {
         synchronized sync(mutex);
-        if (thread.isActive()) {
+        if (!thread.isActive()) {
                 thread.run(monitor, this);
         }
 }
