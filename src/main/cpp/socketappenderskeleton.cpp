@@ -79,6 +79,7 @@ void SocketAppenderSkeleton::close() {
     closed = true;
     cleanUp(pool);
     thread.interrupt();
+    thread.join();
 }
 
 void SocketAppenderSkeleton::connect(Pool& p) {
@@ -144,12 +145,14 @@ void* LOG4CXX_THREAD_FUNC SocketAppenderSkeleton::monitor(apr_thread_t* /* threa
                 try
                 {
                         Thread::sleep(socketAppender->reconnectionDelay);
-                        LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
+                        if(!socketAppender->closed) {
+                            LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
                                 + socketAppender->address->getHostName());
-                        socket = new Socket(socketAppender->address, socketAppender->port);
-                        Pool p;
-                        socketAppender->setSocket(socket, p);
-                        LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
+                            socket = new Socket(socketAppender->address, socketAppender->port);
+                            Pool p;
+                            socketAppender->setSocket(socket, p);
+                            LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
+                        }
                         return NULL;
                 }
                 catch(ConnectException&)
