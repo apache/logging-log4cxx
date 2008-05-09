@@ -302,8 +302,8 @@ wlogstream& wlogstream::operator<<(logstream_base& (*manip)(logstream_base&)) {
     return *this;
 }
 
-wlogstream& wlogstream::operator<<(const LevelPtr& level) {
-    setLevel(level);
+wlogstream& wlogstream::operator<<(const LevelPtr& l) {
+    setLevel(l);
     return *this;
 }
 

@@ -64,11 +64,11 @@ RollingFileAppender::RollingFileAppender()
 }
 
 RollingFileAppender::RollingFileAppender(
-  const LayoutPtr& layout,
+  const LayoutPtr& newLayout,
   const LogString& filename,
   bool append)
   : maxFileSize(10*1024*1024), maxBackupIndex(1) {
-  setLayout(layout);
+  setLayout(newLayout);
   setFile(filename);
   setAppend(append);
   Pool p;

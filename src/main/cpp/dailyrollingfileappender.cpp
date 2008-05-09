@@ -37,11 +37,11 @@ DailyRollingFileAppender::DailyRollingFileAppender()
 
 
 DailyRollingFileAppender::DailyRollingFileAppender(
-  const LayoutPtr& layout,
+  const LayoutPtr& l,
   const LogString& filename,
   const LogString& datePattern1)
   : datePattern(datePattern1) {
-    setLayout(layout);
+    setLayout(l);
     setFile(filename);
     Pool p;
     activateOptions(p);
