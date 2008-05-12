@@ -181,7 +181,7 @@ public:
         //  output the using STL
         //
         std::basic_ostringstream<logchar> buffer;
-#if defined(_USEFAC)
+#if defined(_MSC_VER) && _MSC_VER < 1300
          _USEFAC(locale, std::time_put<logchar>)
              .put(buffer, buffer, &date, fmt.c_str(), fmt.c_str() + fmt.length());
 #else

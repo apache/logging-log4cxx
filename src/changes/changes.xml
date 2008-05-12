@@ -36,6 +36,7 @@
 <action issue="LOGCXX-280">tests and sample code unnecessarily compiled during default make target</action>
 <action issue="LOGCXX-281">Sun Studio 11 reports function hides base virtual function warning</action>
 <action issue="LOGCXX-283">Suspicious, but harmless, reuse of LOCAL1 in SyslogAppender</action>
+<action issue="LOGCXX-284">Unit tests fail to compile with xlc_r on AIX</action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>
