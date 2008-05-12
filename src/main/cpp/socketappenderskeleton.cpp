@@ -65,6 +65,11 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1,
 SocketAppenderSkeleton::~SocketAppenderSkeleton()
 {
         finalize();
+        try {
+            thread.join();
+        } catch(ThreadException& ex) {
+            LogLog::error(LOG4CXX_STR("Error closing socket appender connection thread"), ex);
+        }
 }
 
 void SocketAppenderSkeleton::activateOptions(Pool& p)
@@ -79,7 +84,6 @@ void SocketAppenderSkeleton::close() {
     closed = true;
     cleanUp(pool);
     thread.interrupt();
-    thread.join();
 }
 
 void SocketAppenderSkeleton::connect(Pool& p) {
