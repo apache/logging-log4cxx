@@ -35,6 +35,14 @@ defaultinit_tests = \
 	defaultinit/testcase2.cpp\
 	defaultinit/testcase3.cpp\
 	defaultinit/testcase4.cpp
+    
+filter_tests = \
+    filter/andfiltertest.cpp\
+    filter/denyallfiltertest.cpp\
+    filter/levelmatchfiltertest.cpp\
+    filter/levelrangefiltertest.cpp\
+    filter/loggermatchfiltertest.cpp\
+    filter/stringmatchfiltertest.cpp
 
 helpers = \
         helpers/absolutetimedateformattestcase.cpp \
@@ -118,6 +126,7 @@ nt_tests = \
 testsuite_SOURCES = \
         $(customlogger_tests) \
         $(defaultinit_tests) \
+        $(filter_tests) \
         $(helpers) \
         $(net_tests) \
         $(pattern_tests) \

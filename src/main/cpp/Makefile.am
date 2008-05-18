@@ -20,6 +20,7 @@ INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 liblog4cxx_la_SOURCES = \
         action.cpp \
+        andfilter.cpp \
         appenderattachableimpl.cpp \
         appenderskeleton.cpp \
         aprinitializer.cpp \
@@ -81,6 +82,7 @@ liblog4cxx_la_SOURCES = \
         linelocationpatternconverter.cpp \
         lineseparatorpatternconverter.cpp \
         literalpatternconverter.cpp \
+        loggermatchfilter.cpp \
         loggerpatternconverter.cpp \
         loggingeventpatternconverter.cpp \
         loader.cpp\
