@@ -31,7 +31,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LevelRangeFilter)
 
 
 LevelRangeFilter::LevelRangeFilter()
-: acceptOnMatch(true), levelMin(Level::getAll()), levelMax(Level::getOff())
+: acceptOnMatch(false), levelMin(Level::getAll()), levelMax(Level::getOff())
 {
 }
 
