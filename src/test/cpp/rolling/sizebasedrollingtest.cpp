@@ -85,7 +85,7 @@ LOGUNIT_CLASS(SizeBasedRollingTest)  {
         msg[7] = '0' + i / 10;
         msg[8] = '0' + i % 10;
       }
-      LOG4CXX_DEBUG(logger1, msg);
+      LOG4CXX_DEBUG(logger1, msg)
     }
   }
 

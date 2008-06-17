@@ -147,91 +147,91 @@ public:
                 Pool pool;
 
                 // These should all log.----------------------------
-                LOG4CXX_FATAL(ERRlogger, createMessage(i, pool));
+                LOG4CXX_FATAL(ERRlogger, createMessage(i, pool))
                 i++; //0
-                LOG4CXX_ERROR(ERRlogger, createMessage(i, pool));
+                LOG4CXX_ERROR(ERRlogger, createMessage(i, pool))
                 i++;
 
-                LOG4CXX_FATAL(INF, createMessage(i, pool));
+                LOG4CXX_FATAL(INF, createMessage(i, pool))
                 i++; // 2
-                LOG4CXX_ERROR(INF, createMessage(i, pool));
+                LOG4CXX_ERROR(INF, createMessage(i, pool))
                 i++;
-                LOG4CXX_WARN(INF, createMessage(i, pool));
+                LOG4CXX_WARN(INF, createMessage(i, pool))
                 i++;
-                LOG4CXX_INFO(INF, createMessage(i, pool));
+                LOG4CXX_INFO(INF, createMessage(i, pool))
                 i++;
 
-                LOG4CXX_FATAL(INF_UNDEF, createMessage(i, pool));
+                LOG4CXX_FATAL(INF_UNDEF, createMessage(i, pool))
                 i++; //6
-                LOG4CXX_ERROR(INF_UNDEF, createMessage(i, pool));
+                LOG4CXX_ERROR(INF_UNDEF, createMessage(i, pool))
                 i++;
-                LOG4CXX_WARN(INF_UNDEF, createMessage(i, pool));
+                LOG4CXX_WARN(INF_UNDEF, createMessage(i, pool))
                 i++;
-                LOG4CXX_INFO(INF_UNDEF, createMessage(i, pool));
+                LOG4CXX_INFO(INF_UNDEF, createMessage(i, pool))
                 i++;
 
-                LOG4CXX_FATAL(INF_ERR, createMessage(i, pool));
+                LOG4CXX_FATAL(INF_ERR, createMessage(i, pool))
                 i++; // 10
-                LOG4CXX_ERROR(INF_ERR, createMessage(i, pool));
+                LOG4CXX_ERROR(INF_ERR, createMessage(i, pool))
                 i++;
 
-                LOG4CXX_FATAL(INF_ERR_UNDEF, createMessage(i, pool));
+                LOG4CXX_FATAL(INF_ERR_UNDEF, createMessage(i, pool))
                 i++;
-                LOG4CXX_ERROR(INF_ERR_UNDEF, createMessage(i, pool));
+                LOG4CXX_ERROR(INF_ERR_UNDEF, createMessage(i, pool))
                 i++;
 
-                LOG4CXX_FATAL(DEB, createMessage(i, pool));
+                LOG4CXX_FATAL(DEB, createMessage(i, pool))
                 i++; //14
-                LOG4CXX_ERROR(DEB, createMessage(i, pool));
+                LOG4CXX_ERROR(DEB, createMessage(i, pool))
                 i++;
-                LOG4CXX_WARN(DEB, createMessage(i, pool));
+                LOG4CXX_WARN(DEB, createMessage(i, pool))
                 i++;
-                LOG4CXX_INFO(DEB, createMessage(i, pool));
+                LOG4CXX_INFO(DEB, createMessage(i, pool))
                 i++;
-                LOG4CXX_DEBUG(DEB, createMessage(i, pool));
+                LOG4CXX_DEBUG(DEB, createMessage(i, pool))
                 i++;
 
                 // defaultLevel=DEBUG
-                LOG4CXX_FATAL(UNDEF, createMessage(i, pool));
+                LOG4CXX_FATAL(UNDEF, createMessage(i, pool))
                 i++; // 19
-                LOG4CXX_ERROR(UNDEF, createMessage(i, pool));
+                LOG4CXX_ERROR(UNDEF, createMessage(i, pool))
                 i++;
-                LOG4CXX_WARN(UNDEF, createMessage(i, pool));
+                LOG4CXX_WARN(UNDEF, createMessage(i, pool))
                 i++;
-                LOG4CXX_INFO(UNDEF, createMessage(i, pool));
+                LOG4CXX_INFO(UNDEF, createMessage(i, pool))
                 i++;
-                LOG4CXX_DEBUG(UNDEF, createMessage(i, pool));
+                LOG4CXX_DEBUG(UNDEF, createMessage(i, pool))
                 i++;
 
                 // -------------------------------------------------
                 // The following should not log
-                LOG4CXX_WARN(ERRlogger, createMessage(i, pool));
+                LOG4CXX_WARN(ERRlogger, createMessage(i, pool))
                 i++;
-                LOG4CXX_INFO(ERRlogger, createMessage(i, pool));
+                LOG4CXX_INFO(ERRlogger, createMessage(i, pool))
                 i++;
-                LOG4CXX_DEBUG(ERRlogger, createMessage(i, pool));
-                i++;
-
-                LOG4CXX_DEBUG(INF, createMessage(i, pool));
-                i++;
-                LOG4CXX_DEBUG(INF_UNDEF, createMessage(i, pool));
+                LOG4CXX_DEBUG(ERRlogger, createMessage(i, pool))
                 i++;
 
-                LOG4CXX_WARN(INF_ERR, createMessage(i, pool));
+                LOG4CXX_DEBUG(INF, createMessage(i, pool))
                 i++;
-                LOG4CXX_INFO(INF_ERR, createMessage(i, pool));
+                LOG4CXX_DEBUG(INF_UNDEF, createMessage(i, pool))
                 i++;
-                LOG4CXX_DEBUG(INF_ERR, createMessage(i, pool));
+
+                LOG4CXX_WARN(INF_ERR, createMessage(i, pool))
                 i++;
-                LOG4CXX_WARN(INF_ERR_UNDEF, createMessage(i, pool));
+                LOG4CXX_INFO(INF_ERR, createMessage(i, pool))
                 i++;
-                LOG4CXX_INFO(INF_ERR_UNDEF, createMessage(i, pool));
+                LOG4CXX_DEBUG(INF_ERR, createMessage(i, pool))
                 i++;
-                LOG4CXX_DEBUG(INF_ERR_UNDEF, createMessage(i, pool));
+                LOG4CXX_WARN(INF_ERR_UNDEF, createMessage(i, pool))
+                i++;
+                LOG4CXX_INFO(INF_ERR_UNDEF, createMessage(i, pool))
+                i++;
+                LOG4CXX_DEBUG(INF_ERR_UNDEF, createMessage(i, pool))
                 i++;
 
                 // -------------------------------------------------
-                LOG4CXX_INFO(INF, LOG4CXX_TEST_STR("Messages should bear numbers 0 through 23."));
+                LOG4CXX_INFO(INF, LOG4CXX_TEST_STR("Messages should bear numbers 0 through 23."))
    }
 
    LoggerPtr root;

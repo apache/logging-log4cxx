@@ -72,11 +72,11 @@
 
       if (i < 10) {
         msg[8] = (char) ('0' + i);
-        LOG4CXX_DEBUG(logger, msg);
+        LOG4CXX_DEBUG(logger, msg)
       } else if (i < 100) {
         msg[7] = (char) ('0' + i / 10);
         msg[8] = (char) ('0' + i % 10);
-        LOG4CXX_DEBUG(logger, msg);
+        LOG4CXX_DEBUG(logger, msg)
       }
     }
 
@@ -112,11 +112,11 @@
 
       if (i < 10) {
         msg[8] = (char) ('0' + i);
-        LOG4CXX_DEBUG(logger, msg);
+        LOG4CXX_DEBUG(logger, msg)
       } else if (i < 100) {
         msg[7] = (char) ('0' + i / 10);
         msg[8] = (char) ('0' + i % 10);
-        LOG4CXX_DEBUG(logger, msg);
+        LOG4CXX_DEBUG(logger, msg)
       }
     }
 

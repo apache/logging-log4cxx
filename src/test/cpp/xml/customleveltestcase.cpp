@@ -104,16 +104,16 @@ public:
       int i = 0;
         std::ostringstream os;
         os << "Message " << ++i;
-      LOG4CXX_DEBUG(logger, os.str());
+      LOG4CXX_DEBUG(logger, os.str())
         os.str("");
         os << "Message " <<  ++i;
-      LOG4CXX_INFO(logger, os.str());
+      LOG4CXX_INFO(logger, os.str())
         os.str("");
         os << "Message " <<  ++i;
-      LOG4CXX_WARN(logger, os.str());
+      LOG4CXX_WARN(logger, os.str())
         os.str("");
         os << "Message " <<  ++i;
-      LOG4CXX_ERROR(logger, os.str());
+      LOG4CXX_ERROR(logger, os.str())
         os.str("");
         os << "Message " <<  ++i;
       LOG4CXX_LOG(logger, XLevel::getTrace(), os.str());

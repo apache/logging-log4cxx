@@ -69,15 +69,15 @@ public:
         LOG4CXX_LOG(logger, log4cxx::XLevel::getTrace(), "Message " << i);
 
         i++;
-        LOG4CXX_DEBUG(logger, "Message " << i);
+        LOG4CXX_DEBUG(logger, "Message " << i)
         i++;
-        LOG4CXX_WARN(logger, "Message " << i);
+        LOG4CXX_WARN(logger, "Message " << i)
         i++;
-        LOG4CXX_ERROR(logger, "Message " << i);
+        LOG4CXX_ERROR(logger, "Message " << i)
         i++;
-        LOG4CXX_FATAL(logger, "Message " << i);
+        LOG4CXX_FATAL(logger, "Message " << i)
         i++;
-        LOG4CXX_DEBUG(logger, "Message " << i);
+        LOG4CXX_DEBUG(logger, "Message " << i)
 
         const File OUTPUT("output/temp");
         std::string witness("witness/customLogger.");

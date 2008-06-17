@@ -116,14 +116,14 @@ private:
 #endif
       if (i < 10) {
         msg[8] = (char) ('0' + i);
-        LOG4CXX_DEBUG(logger, msg);
+        LOG4CXX_DEBUG(logger, msg)
       } else if (i < 100) {
         msg[7] = (char) ('0' + (i / 10));
         msg[8] = (char) ('0' + (i % 10));
         if ((i % 10) == 0) {
-          LOG4CXX_WARN(logger, msg);
+          LOG4CXX_WARN(logger, msg)
         } else {
-          LOG4CXX_DEBUG(logger, msg);
+          LOG4CXX_DEBUG(logger, msg)
         }
       }
     }

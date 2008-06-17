@@ -86,7 +86,7 @@ LOGUNIT_CLASS(ManualRollingTest)  {
         msg[7] = '0' + i / 10;
         msg[8] = '0' + digit;
       }
-      LOG4CXX_DEBUG(logger1, msg);
+      LOG4CXX_DEBUG(logger1, msg)
     }
   }
 

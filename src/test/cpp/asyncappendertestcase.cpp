@@ -188,7 +188,7 @@ public:
                 root->addAppender(asyncAppender);
 
                 for (size_t i = 0; i < LEN; i++) {
-                        LOG4CXX_DEBUG(root, "message" << i);
+                        LOG4CXX_DEBUG(root, "message" << i)
                 }
 
                 asyncAppender->close();
@@ -211,10 +211,10 @@ public:
         asyncAppender->activateOptions(p);
         LoggerPtr root = Logger::getRootLogger();
         root->addAppender(asyncAppender);
-        LOG4CXX_INFO(root, "Message");
+        LOG4CXX_INFO(root, "Message")
         Thread::sleep(10);
         try {
-           LOG4CXX_INFO(root, "Message");
+           LOG4CXX_INFO(root, "Message")
            LOGUNIT_FAIL("Should have thrown exception");
         } catch(NullPointerException& ex) {
         }
@@ -237,10 +237,10 @@ public:
         {
             synchronized sync(blockableAppender->getBlocker());
             for (int i = 0; i < 100; i++) {
-                   LOG4CXX_INFO(rootLogger, "Hello, World");
+                   LOG4CXX_INFO(rootLogger, "Hello, World")
                    Thread::sleep(1);
             }
-            LOG4CXX_ERROR(rootLogger, "That's all folks.");
+            LOG4CXX_ERROR(rootLogger, "That's all folks.")
         }
         async->close();
         const std::vector<spi::LoggingEventPtr>& events = blockableAppender->getVector();
@@ -272,7 +272,7 @@ public:
               
               size_t LEN = 20;
               for (size_t i = 0; i < LEN; i++) {
-                        LOG4CXX_DEBUG(root, "message" << i);
+                        LOG4CXX_DEBUG(root, "message" << i)
               }
               
               asyncAppender->close();

@@ -52,7 +52,7 @@ public:
         {
                 LoggerPtr logger =
                         Logger::getLogger(LOG4CXX_TEST_STR("org.apache.log4j.xml.XMLLayoutTestCase$X"));
-                LOG4CXX_INFO(logger, LOG4CXX_TEST_STR("in X() constructor"));
+                LOG4CXX_INFO(logger, LOG4CXX_TEST_STR("in X() constructor"))
         }
 };
 
@@ -206,9 +206,9 @@ public:
                 FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
                 root->addAppender(appender);
 
-                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("hi"));
-                LOG4CXX_DEBUG(logger, (char*) 0);
-                LOG4CXX_DEBUG(logger, "hi");
+                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("hi"))
+                LOG4CXX_DEBUG(logger, (char*) 0)
+                LOG4CXX_DEBUG(logger, "hi")
 
                 XMLTimestampFilter xmlTimestampFilter;
                 XMLThreadFilter xmlThreadFilter;
@@ -244,7 +244,7 @@ public:
                 MDC::put(LOG4CXX_TEST_STR("key1"), LOG4CXX_TEST_STR("val1"));
                 MDC::put(LOG4CXX_TEST_STR("key2"), LOG4CXX_TEST_STR("val2"));
 
-                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
+                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"))
 
                 MDC::clear();
 
@@ -283,7 +283,7 @@ public:
                 MDC::put(LOG4CXX_TEST_STR("blahAttribute"), LOG4CXX_TEST_STR("<blah value='blah'>"));
                 MDC::put(LOG4CXX_TEST_STR("<blahKey value='blah'/>"), LOG4CXX_TEST_STR("blahValue"));
 
-                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"));
+                LOG4CXX_DEBUG(logger, LOG4CXX_TEST_STR("Hello"))
 
                 MDC::clear();
 
@@ -321,36 +321,36 @@ public:
 
             std::string msg("Message ");
 
-                LOG4CXX_TRACE(logger, msg << i);
-                LOG4CXX_TRACE(root, msg << i);
+                LOG4CXX_TRACE(logger, msg << i)
+                LOG4CXX_TRACE(root, msg << i)
 
                 i++;
-                LOG4CXX_DEBUG(logger, msg << i);
-                LOG4CXX_DEBUG(root, msg << i);
+                LOG4CXX_DEBUG(logger, msg << i)
+                LOG4CXX_DEBUG(root, msg << i)
 
                 i++;
-                LOG4CXX_INFO(logger, msg << i);
-                LOG4CXX_INFO(root, msg << i);
+                LOG4CXX_INFO(logger, msg << i)
+                LOG4CXX_INFO(root, msg << i)
 
                 i++;
-                LOG4CXX_WARN(logger, msg << i);
-                LOG4CXX_WARN(root, msg << i);
+                LOG4CXX_WARN(logger, msg << i)
+                LOG4CXX_WARN(root, msg << i)
 
                 i++;
-                LOG4CXX_ERROR(logger, msg << i);
-                LOG4CXX_ERROR(root, msg << i);
+                LOG4CXX_ERROR(logger, msg << i)
+                LOG4CXX_ERROR(root, msg << i)
 
                 i++;
-                LOG4CXX_FATAL(logger, msg << i);
-                LOG4CXX_FATAL(root, msg << i);
+                LOG4CXX_FATAL(logger, msg << i)
+                LOG4CXX_FATAL(root, msg << i)
 
                 i++;
-                LOG4CXX_DEBUG(logger, "Message " << i);
-                LOG4CXX_DEBUG(root, "Message " << i);
+                LOG4CXX_DEBUG(logger, "Message " << i)
+                LOG4CXX_DEBUG(root, "Message " << i)
 
                 i++;
-                LOG4CXX_ERROR(logger, "Message " << i);
-                LOG4CXX_ERROR(root, "Message " << i);
+                LOG4CXX_ERROR(logger, "Message " << i)
+                LOG4CXX_ERROR(root, "Message " << i)
         }
 };
 

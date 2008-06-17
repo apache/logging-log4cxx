@@ -36,11 +36,11 @@ int main()
 
                 NDC::push("trivial context");
 
-                LOG4CXX_DEBUG(rootLogger, "debug message");
-                LOG4CXX_INFO(rootLogger, "info message");
-                LOG4CXX_WARN(rootLogger, "warn message");
-                LOG4CXX_ERROR(rootLogger, "error message");
-                LOG4CXX_FATAL(rootLogger, "fatal message");
+                LOG4CXX_DEBUG(rootLogger, "debug message")
+                LOG4CXX_INFO(rootLogger, "info message")
+                LOG4CXX_WARN(rootLogger, "warn message")
+                LOG4CXX_ERROR(rootLogger, "error message")
+                LOG4CXX_FATAL(rootLogger, "fatal message")
 
                 NDC::pop();
         }

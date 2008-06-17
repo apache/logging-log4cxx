@@ -79,7 +79,7 @@ public:
             LoggerPtr root(Logger::getRootLogger());
             root->addAppender(appender);
             for (int i = 0; i < 50; i++) {
-                LOG4CXX_INFO(root, "Hello, World " << i);
+                LOG4CXX_INFO(root, "Hello, World " << i)
             }
             appender->close();
         }

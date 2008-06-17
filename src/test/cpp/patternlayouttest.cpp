@@ -518,20 +518,20 @@ public:
                 Pool pool;
 
 
-                LOG4CXX_DEBUG(logger, createMessage(pool, ++i));
-                LOG4CXX_DEBUG(root, createMessage(pool, i));
+                LOG4CXX_DEBUG(logger, createMessage(pool, ++i))
+                LOG4CXX_DEBUG(root, createMessage(pool, i))
 
-                LOG4CXX_INFO(logger, createMessage(pool, ++i));
-                LOG4CXX_INFO(root, createMessage(pool, i));
+                LOG4CXX_INFO(logger, createMessage(pool, ++i))
+                LOG4CXX_INFO(root, createMessage(pool, i))
 
-                LOG4CXX_WARN(logger, createMessage(pool, ++i));
-                LOG4CXX_WARN(root, createMessage(pool, i));
+                LOG4CXX_WARN(logger, createMessage(pool, ++i))
+                LOG4CXX_WARN(root, createMessage(pool, i))
 
-                LOG4CXX_ERROR(logger, createMessage(pool, ++i));
-                LOG4CXX_ERROR(root, createMessage(pool, i));
+                LOG4CXX_ERROR(logger, createMessage(pool, ++i))
+                LOG4CXX_ERROR(root, createMessage(pool, i))
 
-                LOG4CXX_FATAL(logger, createMessage(pool, ++i));
-                LOG4CXX_FATAL(root, createMessage(pool, i));
+                LOG4CXX_FATAL(logger, createMessage(pool, ++i))
+                LOG4CXX_FATAL(root, createMessage(pool, i))
         }
 
 private:

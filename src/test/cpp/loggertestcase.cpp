@@ -425,9 +425,9 @@ public:
       LoggerPtr tracer = Logger::getLogger("com.example.Tracer");
       tracer->setLevel(Level::getTrace());
 
-      LOG4CXX_TRACE(tracer, "Message 1");
-      LOG4CXX_TRACE(root, "Discarded Message");
-      LOG4CXX_TRACE(root, "Discarded Message");
+      LOG4CXX_TRACE(tracer, "Message 1")
+      LOG4CXX_TRACE(root, "Discarded Message")
+      LOG4CXX_TRACE(root, "Discarded Message")
 
       std::vector<LoggingEventPtr> msgs(appender->vector);
       LOGUNIT_ASSERT_EQUAL((size_t) 1, msgs.size());

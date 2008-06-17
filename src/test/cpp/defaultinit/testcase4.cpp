@@ -45,7 +45,7 @@ public:
    void combinedTest()
    {
       LoggerPtr root = Logger::getRootLogger();
-     LOG4CXX_DEBUG(root, "Hello, world");
+     LOG4CXX_DEBUG(root, "Hello, world")
       bool rootIsConfigured = !root->getAllAppenders().empty();
       LOGUNIT_ASSERT(rootIsConfigured);
 

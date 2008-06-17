@@ -123,7 +123,7 @@ public:
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
         message.append(pool.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
+        LOG4CXX_DEBUG(logger, message)
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
@@ -167,7 +167,7 @@ public:
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
         message.append(pool.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
+        LOG4CXX_DEBUG(logger, message)
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
@@ -189,7 +189,7 @@ public:
     { for (int i = 3; i <= 4; i++) {
         std::string message("Hello---");
         message.append(pool.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
+        LOG4CXX_DEBUG(logger, message)
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
@@ -237,7 +237,7 @@ public:
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
         message.append(p.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
+        LOG4CXX_DEBUG(logger, message)
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
@@ -286,7 +286,7 @@ public:
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
         message.append(pool.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
+        LOG4CXX_DEBUG(logger, message)
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
@@ -308,7 +308,7 @@ public:
     { for (int i = 3; i <= 4; i++) {
         std::string message("Hello---");
         message.append(pool.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
+        LOG4CXX_DEBUG(logger, message)
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
@@ -357,7 +357,7 @@ public:
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
         message.append(pool.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
+        LOG4CXX_DEBUG(logger, message)
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 
@@ -406,7 +406,7 @@ public:
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
         message.append(p.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
+        LOG4CXX_DEBUG(logger, message)
         apr_sleep(APR_USEC_PER_SEC/2);
     } }
 

@@ -75,7 +75,7 @@ public:
       apr_sleep(100000);
       msg[8] = (char) ('0' + (i / 10));
       msg[9] = (char) ('0' + (i % 10));
-      LOG4CXX_DEBUG(logger, msg);
+      LOG4CXX_DEBUG(logger, msg)
     }
 
     int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test1.log."));
@@ -108,7 +108,7 @@ public:
       apr_sleep(100000);
       msg[8] = (char) ('0' + i / 10);
       msg[9] = (char) ('0' + i % 10);
-      LOG4CXX_DEBUG(logger, msg);
+      LOG4CXX_DEBUG(logger, msg)
     }
 
     int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test2.log."));

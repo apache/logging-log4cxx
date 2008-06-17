@@ -427,21 +427,21 @@ public:
                 logger->setLevel(Level::getDebug());
                 root->setLevel(Level::getDebug());
 
-                LOG4CXX_TRACE(logger, "Message " << i);
+                LOG4CXX_TRACE(logger, "Message " << i)
                 i++;
 
                 logger->setLevel(Level::getTrace());
                 root->setLevel(Level::getTrace());
                 
-                LOG4CXX_TRACE(logger, "Message " << ++i);
-                LOG4CXX_TRACE(root, "Message " << ++i);
+                LOG4CXX_TRACE(logger, "Message " << ++i)
+                LOG4CXX_TRACE(root, "Message " << ++i)
 
-                LOG4CXX_DEBUG(logger, "Message " << ++i);
-                LOG4CXX_DEBUG(root, "Message " << ++i);
+                LOG4CXX_DEBUG(logger, "Message " << ++i)
+                LOG4CXX_DEBUG(root, "Message " << ++i)
                 
-                LOG4CXX_INFO(logger, "Message "  << ++i);
-                LOG4CXX_WARN(logger, "Message " << ++i);
-                LOG4CXX_FATAL(logger, "Message " << ++i); //5
+                LOG4CXX_INFO(logger, "Message "  << ++i)
+                LOG4CXX_WARN(logger, "Message " << ++i)
+                LOG4CXX_FATAL(logger, "Message " << ++i) //5
                 
                 std::string exceptionMsg("\njava.lang.Exception: Just testing\n"
                     "\tat org.apache.log4j.net.SocketServerTestCase.common(SocketServerTestCase.java:XXX)\n"
@@ -458,8 +458,8 @@ public:
                     "\tat junit.framework.TestSuite.run(TestSuite.java:XXX)");
 
                 
-                LOG4CXX_DEBUG(logger, "Message " << ++i << exceptionMsg);
-                LOG4CXX_ERROR(root, "Message " << ++i << exceptionMsg);
+                LOG4CXX_DEBUG(logger, "Message " << ++i << exceptionMsg)
+                LOG4CXX_ERROR(root, "Message " << ++i << exceptionMsg)
 
                 NDC::pop();
                 MDC::remove(key);

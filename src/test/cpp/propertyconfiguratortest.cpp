@@ -75,9 +75,9 @@ public:
         LoggerPtr root(Logger::getRootLogger());
         VectorAppenderPtr appender(root->getAppender(LOG4CXX_STR("VECTOR1")));
         LOGUNIT_ASSERT_EQUAL((int) Level::WARN_INT, appender->getThreshold()->toInt());
-        LOG4CXX_INFO(root, "Info message");
-        LOG4CXX_WARN(root, "Warn message");
-        LOG4CXX_WARN(root, "Error message");
+        LOG4CXX_INFO(root, "Info message")
+        LOG4CXX_WARN(root, "Warn message")
+        LOG4CXX_WARN(root, "Error message")
         LOGUNIT_ASSERT_EQUAL((size_t) 2, appender->vector.size());        
         LogManager::resetConfiguration();
     }

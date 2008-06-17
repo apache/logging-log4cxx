@@ -71,7 +71,7 @@ public:
             LoggerPtr root(Logger::getRootLogger());
             root->addAppender(hubAppender);
             for(int i = 0; i < 50; i++) {
-                LOG4CXX_INFO(root, "Hello, World " << i);
+                LOG4CXX_INFO(root, "Hello, World " << i)
             }
             hubAppender->close();
         }

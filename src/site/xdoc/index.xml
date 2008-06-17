@@ -252,14 +252,14 @@ and use of the insertion operator (&lt;&lt;) in the message parameter.</p>
 <p><table bgcolor="CCCCCC"><tr><td><pre>
    log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger(<strong>"com.foo"</strong>));
    const char* region = "World";
-   LOG4CXX_INFO(logger, "Simple message text.");
-   LOG4CXX_INFO(logger, "Hello, " &lt;&lt; region);
-   LOG4CXX_DEBUG(logger, L"Iteration " &lt;&lt; i);
-   LOG4CXX_DEBUG(logger, "e^10 = " &lt;&lt; std::scientific &lt;&lt; exp(10.0));
+   LOG4CXX_INFO(logger, "Simple message text.")
+   LOG4CXX_INFO(logger, "Hello, " &lt;&lt; region)
+   LOG4CXX_DEBUG(logger, L"Iteration " &lt;&lt; i)
+   LOG4CXX_DEBUG(logger, "e^10 = " &lt;&lt; std::scientific &lt;&lt; exp(10.0))
    //
    //  Use a wchar_t first operand to force use of wchar_t based stream.    
    //
-   LOG4CXX_WARN(logger, L"" &lt;&lt; i &lt;&lt; L" is the number of the iteration.");
+   LOG4CXX_WARN(logger, L"" &lt;&lt; i &lt;&lt; L" is the number of the iteration.")
 </pre></td></tr></table></p>
 
 <p>A logging request is said to be <em>enabled</em> if its level is
@@ -304,19 +304,19 @@ ordered. For the standard levels, we have <code>TRACE &lt; DEBUG &lt; INFO
    log4cxx::LoggerPtr barlogger(log4cxx::Logger::getLogger(<strong>"com.foo.Bar"</strong>);
 
    // This request is enabled, because <font color="00AA00"><strong>WARN</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.
-   LOG4CXX_WARN(logger, "Low fuel level.");
+   LOG4CXX_WARN(logger, "Low fuel level.")
 
    // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
-   LOG4CXX_DEBUG(logger, "Starting search for nearest gas station.");
+   LOG4CXX_DEBUG(logger, "Starting search for nearest gas station.")
 
    // The logger instance barlogger, named "com.foo.Bar",
    // will inherit its level from the logger named
    // "com.foo" Thus, the following request is enabled
    // because <font color="00AA00"><strong>INFO</strong></font> &gt;= <font color="0000AA"><strong>INFO</strong></font>.
-   LOG4CXX_INFO(barlogger. "Located nearest gas station.");
+   LOG4CXX_INFO(barlogger. "Located nearest gas station.")
 
    // This request is disabled, because <font color="00AA00"><strong>DEBUG</strong></font> &lt; <font color="0000AA"><strong>INFO</strong></font>.
-   LOG4CXX_DEBUG(barlogger, "Exiting gas station search");
+   LOG4CXX_DEBUG(barlogger, "Exiting gas station search")
 </pre>
 </td></tr>
 </table></p>
@@ -523,10 +523,10 @@ int main(int argc, char **argv)
                 // Set up a simple configuration that logs on the console.
                 BasicConfigurator::configure();
 
-                LOG4CXX_INFO(logger, "Entering application.");
+                LOG4CXX_INFO(logger, "Entering application.")
                 Bar bar;
                 bar.doIt();
-                LOG4CXX_INFO(logger, "Exiting application.");
+                LOG4CXX_INFO(logger, "Exiting application.")
         }
         catch(Exception&amp;)
         {
@@ -574,7 +574,7 @@ using namespace log4cxx;
 LoggerPtr Bar::logger(Logger::getLogger("com.foo.bar"));
 
 void Bar::doIt() {
-   LOG4CXX_DEBUG(logger, "Did it again!");
+   LOG4CXX_DEBUG(logger, "Did it again!")
 }
 </pre>
 </td></tr>
@@ -638,10 +638,10 @@ int main(int argc, char **argv)
                         BasicConfigurator::configure();
                 }
 
-                LOG4CXX_INFO(logger, "Entering application.");
+                LOG4CXX_INFO(logger, "Entering application.")
                 Bar bar
                 bar.doIt();
-                LOG4CXX_INFO(logger, "Exiting application.");
+                LOG4CXX_INFO(logger, "Exiting application.")
         }
         catch(Exception&amp;)
         {

@@ -79,11 +79,11 @@ public:
         }
 
         static void commonLog() {
-            LOG4CXX_DEBUG(logger, "m1");
-            LOG4CXX_INFO(logger, "m2");
-            LOG4CXX_WARN(logger, "m3");
-            LOG4CXX_ERROR(logger, "m4");
-            LOG4CXX_FATAL(logger, "m5");
+            LOG4CXX_DEBUG(logger, "m1")
+            LOG4CXX_INFO(logger, "m2")
+            LOG4CXX_WARN(logger, "m3")
+            LOG4CXX_ERROR(logger, "m4")
+            LOG4CXX_FATAL(logger, "m5")
         }
         
         void testInherit() {

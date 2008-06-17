@@ -161,24 +161,24 @@ public:
         {
                 int i = 0;
 
-                LOG4CXX_DEBUG(logger, "Message " << i);
-                LOG4CXX_DEBUG(root, "Message " << i);
+                LOG4CXX_DEBUG(logger, "Message " << i)
+                LOG4CXX_DEBUG(root, "Message " << i)
 
                 i++;
-                LOG4CXX_INFO(logger, "Message " << i);
-                LOG4CXX_INFO(root, "Message " << i);
+                LOG4CXX_INFO(logger, "Message " << i)
+                LOG4CXX_INFO(root, "Message " << i)
 
                 i++;
-                LOG4CXX_WARN(logger, "Message " << i);
-                LOG4CXX_WARN(root, "Message " << i);
+                LOG4CXX_WARN(logger, "Message " << i)
+                LOG4CXX_WARN(root, "Message " << i)
 
                 i++;
-                LOG4CXX_ERROR(logger, "Message " << i);
-                LOG4CXX_ERROR(root, "Message " << i);
+                LOG4CXX_ERROR(logger, "Message " << i)
+                LOG4CXX_ERROR(root, "Message " << i)
 
                 i++;
-                LOG4CXX_FATAL(logger, "Message " << i);
-                LOG4CXX_FATAL(root, "Message " << i);
+                LOG4CXX_FATAL(logger, "Message " << i)
+                LOG4CXX_FATAL(root, "Message " << i)
 
         }
       
@@ -188,7 +188,7 @@ public:
          */  
         void test3() {
                 DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase3.xml"));
-                LOG4CXX_INFO(logger, "File name is expected to end with a superscript 3");
+                LOG4CXX_INFO(logger, "File name is expected to end with a superscript 3")
 #if LOG4CXX_LOGCHAR_IS_UTF8
                 const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, 0xC2, 0xB3, 0 };
 #else
@@ -207,7 +207,7 @@ public:
          */  
         void test4() {
                 DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase4.xml"));
-                LOG4CXX_INFO(logger, "File name is expected to end with an ideographic 4");
+                LOG4CXX_INFO(logger, "File name is expected to end with an ideographic 4")
 #if LOG4CXX_LOGCHAR_IS_UTF8
                 const logchar fname[] = { 0x6F, 0x75, 0x74, 0x70, 0x75, 0x74, 0x2F, 0x64, 0x6F, 0x6D, 0xE3, 0x86, 0x95, 0 };
 #else

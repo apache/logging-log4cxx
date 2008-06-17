@@ -102,28 +102,28 @@ public:
 
         std::ostringstream os;
         os << "Message " << ++ i;
-                LOG4CXX_DEBUG(logger, os.str());
-                LOG4CXX_DEBUG(root, os.str());
+                LOG4CXX_DEBUG(logger, os.str())
+                LOG4CXX_DEBUG(root, os.str())
 
         os.str("");
         os << "Message " << ++i;
-                LOG4CXX_INFO(logger, os.str());
-                LOG4CXX_INFO(root, os.str());
+                LOG4CXX_INFO(logger, os.str())
+                LOG4CXX_INFO(root, os.str())
 
         os.str("");
         os << "Message " << ++i;
-                LOG4CXX_WARN(logger, os.str());
-                LOG4CXX_WARN(root, os.str());
+                LOG4CXX_WARN(logger, os.str())
+                LOG4CXX_WARN(root, os.str())
 
         os.str("");
         os << "Message " << ++i;
-                LOG4CXX_ERROR(logger, os.str());
-                LOG4CXX_ERROR(root, os.str());
+                LOG4CXX_ERROR(logger, os.str())
+                LOG4CXX_ERROR(root, os.str())
 
         os.str("");
         os << "Message " << ++i;
-                LOG4CXX_FATAL(logger, os.str());
-                LOG4CXX_FATAL(root, os.str());
+                LOG4CXX_FATAL(logger, os.str())
+                LOG4CXX_FATAL(root, os.str())
         }
 };
 
