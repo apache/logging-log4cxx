@@ -47,7 +47,7 @@ public:
                                 switch(c)
                                 {
                                 case 0x20: // ' '
-                                case 0x08: // '\t'
+                                case 0x09: // '\t'
                                 case 0x0A: // '\n'
                                 case 0x0D: // '\r'
                                         if (!get(in, c))
@@ -76,7 +76,7 @@ public:
                                                 finished = true;
                                         break;
 
-                                case 0x08: // '\t'
+                                case 0x09: // '\t'
                                 case 0x20: // ' '
                                 case 0x3A: // ':'
                                 case 0x3D: // '='
@@ -106,7 +106,7 @@ public:
                         case KEY_ESCAPE:
                                 switch(c)
                                 {
-                                case 0x08: // '\t'
+                                case 0x09: // '\t'
                                 case 0x20: // ' '
                                 case 0x3A: // ':'
                                 case 0x3D: // '='
@@ -135,7 +135,7 @@ public:
                                 switch(c)
                                 {
                                 case 0x20:  // ' '
-                                case 0x08: //  '\t'
+                                case 0x09: //  '\t'
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
@@ -164,7 +164,7 @@ public:
                         case DELIMITER:
                                 switch(c)
                                 {
-                                case 0x08: // '\t'
+                                case 0x09: // '\t'
                                 case 0x20: // ' '
                                 case 0x3A: // ':'
                                 case 0x3D: // '='
@@ -209,7 +209,7 @@ public:
                         case ELEMENT_ESCAPE:
                                 switch(c)
                                 {
-                                case 0x08: // '\t'
+                                case 0x09: // '\t'
                                 case 0x20: // ' '
                                 case 0x6E: // 'n'
                                 case 0x72: // 'r'
@@ -242,7 +242,7 @@ public:
                                 switch(c)
                                 {
                                 case 0x20: // ' '
-                                case 0x08: // '\t'
+                                case 0x09: // '\t'
                                         if (!get(in, c))
                                                 finished = true;
                                         break;
