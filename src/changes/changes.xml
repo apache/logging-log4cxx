@@ -41,7 +41,8 @@
 <action issue="LOGCXX-285">LevelRangeFilter has default value for acceptOnMatch that is different from log4j</action>
 <action issue="LOGCXX-286">gcc 4.3 requires #include &lt;cstring&gt; when using memcpy and related.</action> 
 <action issue="LOGCXX-288">Unnecessary trailing semi-colons after LOG4CXX_INFO et al in docs, examples and tests.<action>
-<action issue="LOGCXX-291">Tab characters are not recognized in properties files.<action>
+<action issue="LOGCXX-291">Tab characters are not recognized in property files.<action>
+<action issue="LOGCXX-292">Value continuation does not properly handle CRLF in property files.<action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>

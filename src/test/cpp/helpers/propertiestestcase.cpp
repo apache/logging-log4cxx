@@ -35,6 +35,7 @@ LOGUNIT_CLASS(PropertiesTestCase)
                 LOGUNIT_TEST(testTab5);
                 LOGUNIT_TEST(testTab6);
                 LOGUNIT_TEST(testTab7);
+                LOGUNIT_TEST(testCRLF1);
         LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -134,6 +135,18 @@ public:
           Properties properties;
           properties.load(propFile);
           LogString actual(properties.getProperty(LOG4CXX_STR("propertiestestcase.tab7")));
+          LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("continuedvalue")), actual);
+        }
+
+        /**
+         *  Test tab in value continuation, see LOGCXX-291.
+        */
+        void testCRLF1() {
+          FileInputStreamPtr propFile(
+            new FileInputStream(LOG4CXX_STR("input/propertiestestcase.properties")));
+          Properties properties;
+          properties.load(propFile);
+          LogString actual(properties.getProperty(LOG4CXX_STR("propertiestestcase.crlf1")));
           LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("continuedvalue")), actual);
         }
 

@@ -256,7 +256,7 @@ public:
                         case ELEMENT_CONTINUE2:
                                 switch(c)
                                 {
-                                case 0x20: // '\n'
+                                case 0x0A: // '\n'
                                         if (!get(in, c))
                                                 finished = true;
                                         lexemType = ELEMENT_CONTINUE;
