@@ -23,6 +23,7 @@
 </properties>
 <body>
 <release version="0.10.1" date="2008-XX-XX" description="Maintenance release">
+<action issue="LOGCXX-249">Console appender crashes if layout is not set</action>
 <action issue="LOGCXX-262">socketappendertestcase and xmlsocketappendertestcase not run</action>
 <action issue="LOGCXX-263">Bad link to log4cxx-dev archive</action>
 <action issue="LOGCXX-265">Eliminate anachronism warnings</action>

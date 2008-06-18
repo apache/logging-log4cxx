@@ -115,6 +115,10 @@ bool WriterAppender::checkEntryConditions() const {
 
     return false;
   }
+  
+  if (layout == 0) {
+    return false;
+  }
 
   return true;
 }
