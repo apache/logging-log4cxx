@@ -106,28 +106,35 @@ public:
                         case KEY_ESCAPE:
                                 switch(c)
                                 {
-                                case 0x09: // '\t'
-                                case 0x20: // ' '
-                                case 0x3A: // ':'
-                                case 0x3D: // '='
-                                case 0x5C: // '\\'
-                                        key.append(1, c);
+                                case 0x74: // 't'
+                                        key.append(1, 0x09);
                                         lexemType = KEY;
-                                        if (!get(in, c))
-                                                finished = true;
                                         break;
 
+                                case 0x6E: // 'n'
+                                        key.append(1, 0x0A);
+                                        lexemType = KEY;
+                                        break;
+
+                                case 0x72: // 'r'
+                                        key.append(1, 0x0D);
+                                        lexemType = KEY;
+                                        break;
+                                
                                 case 0x0A: // '\n'
                                         lexemType = KEY_CONTINUE;
-                                        if (!get(in, c))
-                                                finished = true;
                                         break;
 
                                 case 0x0D: // '\r'
                                         lexemType = KEY_CONTINUE2;
-                                        if (!get(in, c))
-                                                finished = true;
                                         break;
+                                        
+                                default:
+                                        key.append(1, c);
+                                        lexemType = KEY;
+                                }
+                                if (!get(in, c)) {
+                                    finished = true;
                                 }
                                 break;
 
@@ -209,32 +216,35 @@ public:
                         case ELEMENT_ESCAPE:
                                 switch(c)
                                 {
-                                case 0x09: // '\t'
-                                case 0x20: // ' '
-                                case 0x6E: // 'n'
-                                case 0x72: // 'r'
-                                case 0x27: // '\''
-                                case 0x5C: // '\\'
-                                case 0x22: // '\"'
-                                case 0x3A: // ':'
-                                default:
-                                        element.append(1, c);
+                                case 0x74: // 't'
+                                        element.append(1, 0x09);
                                         lexemType = ELEMENT;
-                                        if (!get(in, c))
-                                                finished = true;
+                                        break;
+
+                                case 0x6E: // 'n'
+                                        element.append(1, 0x0A);
+                                        lexemType = ELEMENT;
+                                        break;
+
+                                case 0x72: // 'r'
+                                        element.append(1, 0x0D);
+                                        lexemType = ELEMENT;
                                         break;
 
                                 case 0x0A: // '\n'
                                         lexemType = ELEMENT_CONTINUE;
-                                        if (!get(in, c))
-                                                finished = true;
                                         break;
 
                                 case 0x0D: // '\r'
                                         lexemType = ELEMENT_CONTINUE2;
-                                        if (!get(in, c))
-                                                finished = true;
                                         break;
+                                default:
+                                        element.append(1, c);
+                                        lexemType = ELEMENT;
+                                        break;
+                                }
+                                if (!get(in, c)) {
+                                    finished = true;
                                 }
                                 break;
 
@@ -329,7 +339,6 @@ LogString Properties::put(const LogString& key, const LogString& value)
 {
         LogString oldValue((*properties)[key]);
         (*properties)[key] = value;
-        //tcout << ASCII_STR("setting property key=") << key << ASCII_STR(", value=") << value << std::endl;
         return oldValue;
 }
 

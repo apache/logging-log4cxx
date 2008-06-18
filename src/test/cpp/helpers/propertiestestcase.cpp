@@ -36,6 +36,12 @@ LOGUNIT_CLASS(PropertiesTestCase)
                 LOGUNIT_TEST(testTab6);
                 LOGUNIT_TEST(testTab7);
                 LOGUNIT_TEST(testCRLF1);
+                LOGUNIT_TEST(testEscT1);
+                LOGUNIT_TEST(testEscT2);
+                LOGUNIT_TEST(testEscN1);
+                LOGUNIT_TEST(testEscN2);
+                LOGUNIT_TEST(testEscR1);
+                LOGUNIT_TEST(testEscR2);
         LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -139,7 +145,7 @@ public:
         }
 
         /**
-         *  Test tab in value continuation, see LOGCXX-291.
+         *  Test tab in value continuation, see LOGCXX-292.
         */
         void testCRLF1() {
           FileInputStreamPtr propFile(
@@ -149,6 +155,97 @@ public:
           LogString actual(properties.getProperty(LOG4CXX_STR("propertiestestcase.crlf1")));
           LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("continuedvalue")), actual);
         }
+
+    /**
+     *  Test tab as escaped within key, see LOGCXX-293.
+    */
+    void testEscT1()  {
+      FileInputStreamPtr propFile(
+        new FileInputStream(LOG4CXX_STR("input/propertiestestcase.properties")));
+      Properties properties;
+      properties.load(propFile);
+      LogString key(LOG4CXX_STR("propertiestestcase.esct1"));
+      key.append(1, 0x09);
+      LogString actual(properties.getProperty(key));
+      LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("key contains tab")), actual);
+    }
+
+
+
+    /**
+     *  Test tab escaped in value, see LOGCXX-293.
+    */
+    void testEscT2()  {
+      FileInputStreamPtr propFile(
+        new FileInputStream(LOG4CXX_STR("input/propertiestestcase.properties")));
+      Properties properties;
+      properties.load(propFile);
+      LogString actual(properties.getProperty(LOG4CXX_STR("propertiestestcase.esct2")));
+      LogString expected(1, 0x09);
+      expected.append(LOG4CXX_STR(" in value"));
+      LOGUNIT_ASSERT_EQUAL(expected, actual);
+    }
+
+    /**
+     *  Test \n within key, see LOGCXX-293.
+    */
+    void testEscN1()  {
+      FileInputStreamPtr propFile(
+        new FileInputStream(LOG4CXX_STR("input/propertiestestcase.properties")));
+      Properties properties;;
+      properties.load(propFile);
+      LogString key(LOG4CXX_STR("propertiestestcase.escn1"));
+      key.append(1, 0x0A);
+      LogString actual(properties.getProperty(key));
+      LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("key contains lf")), actual);
+    }
+
+
+
+    /**
+     *  Test \n in value, see LOGCXX-293.
+    */
+    void testEscN2()  {
+      FileInputStreamPtr propFile(
+        new FileInputStream(LOG4CXX_STR("input/propertiestestcase.properties")));
+      Properties properties;
+      properties.load(propFile);
+      LogString actual(properties.getProperty(LOG4CXX_STR("propertiestestcase.escn2")));
+      LogString expected(1, 0x0A);
+      expected.append(LOG4CXX_STR(" in value"));
+      LOGUNIT_ASSERT_EQUAL(expected, actual);
+    }
+
+    /**
+     *  Test \r within key, see LOGCXX-293.
+    */
+    void testEscR1()  {
+      FileInputStreamPtr propFile(
+        new FileInputStream(LOG4CXX_STR("input/propertiestestcase.properties")));
+      Properties properties;
+      properties.load(propFile);
+      LogString key(LOG4CXX_STR("propertiestestcase.escr1"));
+      key.append(1, 0x0D);
+      LogString actual(properties.getProperty(key));
+      LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("key contains cr")), actual);
+    }
+
+
+
+    /**
+     *  Test \r in value, see LOGCXX-293.
+    */
+    void testEscR2()  {
+      FileInputStreamPtr propFile(
+        new FileInputStream(LOG4CXX_STR("input/propertiestestcase.properties")));
+      Properties properties;
+      properties.load(propFile);
+      LogString actual(properties.getProperty(LOG4CXX_STR("propertiestestcase.escr2")));
+      LogString expected(1, 0x0D);
+      expected.append(LOG4CXX_STR(" in value"));
+      LOGUNIT_ASSERT_EQUAL(expected, actual);
+    }
+
 
 };
 
