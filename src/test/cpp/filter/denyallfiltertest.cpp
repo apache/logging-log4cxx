@@ -34,6 +34,7 @@ LOGUNIT_CLASS(DenyAllFilterTest) {
        LOGUNIT_TEST(test1);
     LOGUNIT_TEST_SUITE_END();
 
+public:
     /**
      * Check that DenyAllFilter.decide() returns Filter.DENY.
      */
