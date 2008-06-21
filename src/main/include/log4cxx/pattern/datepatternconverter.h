@@ -64,7 +64,6 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter 
     const std::vector<LogString>& options);
 
 
-  using PatternConverter::format;
   using LoggingEventPatternConverter::format;
 
 

@@ -54,7 +54,6 @@ END_LOG4CXX_CAST_MAP()
   static PatternConverterPtr newInstance(
     const std::vector<LogString>& options);
 
-  using PatternConverter::format;
   using LoggingEventPatternConverter::format;
 
   void format(const log4cxx::spi::LoggingEventPtr& event,
