@@ -51,6 +51,7 @@ helpers = \
         helpers/charsetencodertestcase.cpp \
         helpers/cyclicbuffertestcase.cpp\
         helpers/datetimedateformattestcase.cpp \
+        helpers/filewatchdogtest.cpp \
         helpers/inetaddresstestcase.cpp \
         helpers/iso8601dateformattestcase.cpp \
         helpers/localechanger.cpp\
@@ -61,6 +62,7 @@ helpers = \
         helpers/stringtokenizertestcase.cpp \
         helpers/stringhelpertestcase.cpp \
         helpers/syslogwritertest.cpp \
+        helpers/threadtestcase.cpp \
         helpers/timezonetestcase.cpp \
         helpers/transcodertestcase.cpp
 

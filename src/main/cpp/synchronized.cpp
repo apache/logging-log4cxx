@@ -37,6 +37,18 @@ synchronized::synchronized(const Mutex& mutex1)
 #endif
 }
 
+synchronized::synchronized(apr_thread_mutex_t* mutex1)
+: mutex(mutex1)
+{
+#if APR_HAS_THREADS
+        apr_status_t stat = apr_thread_mutex_lock(
+            (apr_thread_mutex_t*) this->mutex);
+        if (stat != APR_SUCCESS) {
+                throw MutexException(stat);
+        }
+#endif
+}
+
 synchronized::~synchronized()
 {
 #if APR_HAS_THREADS

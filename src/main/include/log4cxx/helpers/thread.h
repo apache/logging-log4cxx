@@ -31,6 +31,8 @@
 
 extern "C" {
     typedef struct apr_thread_t apr_thread_t;
+    typedef struct apr_thread_cond_t apr_thread_cond_t;
+    typedef struct apr_thread_mutex_t apr_thread_mutex_t;
 }
 
 
@@ -100,6 +102,8 @@ namespace log4cxx
                         apr_thread_t* thread;
                         volatile unsigned int alive;
                         volatile unsigned int interruptedStatus;
+                        apr_thread_mutex_t* interruptedMutex;
+                        apr_thread_cond_t* interruptedCondition;
                         Thread(const Thread&);
                         Thread& operator=(const Thread&);
                         friend void* LOG4CXX_THREAD_FUNC ThreadLaunch::launcher(apr_thread_t* thread, void* data); 

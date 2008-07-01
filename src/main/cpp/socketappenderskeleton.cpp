@@ -159,6 +159,10 @@ void* LOG4CXX_THREAD_FUNC SocketAppenderSkeleton::monitor(apr_thread_t* /* threa
                         }
                         return NULL;
                 }
+                catch(InterruptedException&) {
+                    LogLog::debug(LOG4CXX_STR("Connector interrupted.  Leaving loop."));
+                    return NULL;
+                }
                 catch(ConnectException&)
                 {
                         LogLog::debug(LOG4CXX_STR("Remote host ")

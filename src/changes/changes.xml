@@ -22,7 +22,7 @@
 <title>Apache log4cxx</title>
 </properties>
 <body>
-<release version="0.10.1" date="2008-XX-XX" description="Maintenance release">
+<release version="0.11.0" date="2008-XX-XX" description="Maintenance release">
 <action issue="LOGCXX-249">Console appender crashes if layout is not set</action>
 <action issue="LOGCXX-262">socketappendertestcase and xmlsocketappendertestcase not run</action>
 <action issue="LOGCXX-263">Bad link to log4cxx-dev archive</action>
@@ -31,13 +31,14 @@
 <action issue="LOGCXX-267">Local variables hide member variables</action>
 <action issue="LOGCXX-270">Add ability to compile out logging by logging level.</action>
 <action issue="LOGCXX-271">MDC::put will not overwrite existing key value pair</action>
-<action issue="LOGCXX-272">Apache log4cxx 0.10.1 release</action>
+<action issue="LOGCXX-272">Apache log4cxx 0.11.0 release</action>
 <action issue="LOGCXX-275">Headers cannot be included with very strict warning settings</action>
 <action issue="LOGCXX-276">AndFilter and others defined but not implemented</action>
 <action issue="LOGCXX-277">Reconnection not working for sockets</action>
 <action issue="LOGCXX-278">Threads for reconnecting sockets do not end cleanly when program exits</action>
 <action issue="LOGCXX-280">tests and sample code unnecessarily compiled during default make target</action>
 <action issue="LOGCXX-281">Sun Studio 11 reports function hides base virtual function warning</action>
+<action issue="LOGCXX-282">Thread::sleep not affected by Thread::interrupt.</action>
 <action issue="LOGCXX-283">Suspicious, but harmless, reuse of LOCAL1 in SyslogAppender</action>
 <action issue="LOGCXX-284">Unit tests fail to compile with xlc_r on AIX</action>
 <action issue="LOGCXX-285">LevelRangeFilter has default value for acceptOnMatch that is different from log4j</action>
