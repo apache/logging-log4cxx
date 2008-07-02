@@ -51,7 +51,6 @@ helpers = \
         helpers/charsetencodertestcase.cpp \
         helpers/cyclicbuffertestcase.cpp\
         helpers/datetimedateformattestcase.cpp \
-        helpers/filewatchdogtest.cpp \
         helpers/inetaddresstestcase.cpp \
         helpers/iso8601dateformattestcase.cpp \
         helpers/localechanger.cpp\
