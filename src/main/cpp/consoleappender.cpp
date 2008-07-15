@@ -37,6 +37,8 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout1)
 {
     setLayout(layout1);
     Pool p;
+    WriterPtr writer1(new SystemOutWriter());
+    setWriter(writer1);
     WriterAppender::activateOptions(p);
 }
 
@@ -44,9 +46,8 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout1, const LogString& targ
  : target(target1)
 {
       setLayout(layout1);
-      LogString v = StringHelper::trim(target1);
       Pool p;
-      WriterAppender::activateOptions(p);
+      ConsoleAppender::activateOptions(p);
 }
 
 ConsoleAppender::~ConsoleAppender()
