@@ -167,7 +167,8 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
          throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate sql handle.", p);
       }
 
-      SQLWCHAR* wsql = Transcoder::wencode(sql, p); 
+      SQLWCHAR* wsql;
+      encode(&wsql, sql, p); 
       ret = SQLExecDirectW(stmt, wsql, SQL_NTS);
 
      if (ret < 0)
@@ -237,9 +238,10 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
       }
 
 
-     SQLWCHAR* wURL = Transcoder::wencode(databaseURL, p);
+     SQLWCHAR* wURL;
+     encode(&wURL, databaseURL, p);
 
-     wchar_t szOutConnectionString[1024];
+     SQLWCHAR szOutConnectionString[1024];
      SQLSMALLINT nOutConnctionLength = 0;
 
      ret = SQLDriverConnectW( connection, NULL, 
@@ -331,3 +333,31 @@ void ODBCAppender::setSql(const LogString& s)
       }
    }
 }
+
+void ODBCAppender::encode(wchar_t** dest, const LogString& src, Pool& p) {
+   *dest = Transcoder::wencode(src, p);
+}
+
+void ODBCAppender::encode(unsigned short** dest, 
+    const LogString& src, Pool& p) {
+   //  worst case double number of characters from UTF-8 or wchar_t
+   *dest = (unsigned short*) 
+        p.palloc((src.size() + 1) * 2 * sizeof(unsigned short));
+   unsigned short* current = *dest;
+   for(LogString::const_iterator i = src.begin();
+      i != src.end();) {
+      unsigned int sv = Transcoder::decode(src, i);
+      if (sv < 0x10000) {
+	 *current++ = (unsigned short) sv;
+      } else {
+        unsigned char u = (unsigned char) (sv >> 16);
+        unsigned char w = (unsigned char) (u - 1);
+        unsigned short hs = (0xD800 + ((w & 0xF) << 6) + ((sv & 0xFFFF) >> 10));
+        unsigned short ls = (0xDC00 + (sv && 0x3FF));
+	*current++ = (unsigned short) hs;
+	*current++ = (unsigned short) ls;
+      }
+  }
+  *current = 0;
+}
+
