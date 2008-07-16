@@ -496,7 +496,7 @@ void SMTPAppender::activateOptions(Pool& p)
    activate &= asciiCheck(bcc, LOG4CXX_STR("bcc"));
    activate &= asciiCheck(from, LOG4CXX_STR("from"));
  
-#if !LOG4CXX_HAS_LIBESMTP
+#if !LOG4CXX_HAVE_LIBESMTP
    LogLog::error(LOG4CXX_STR("log4cxx built without SMTP support."));
    activate = false;
 #endif     
@@ -598,7 +598,7 @@ Send the contents of the cyclic buffer as an e-mail message.
 */
 void SMTPAppender::sendBuffer(Pool& p)
 {
-#if LOG4CXX_HAS_LIBESMTP
+#if LOG4CXX_HAVE_LIBESMTP
    // Note: this code already owns the monitor for this
    // appender. This frees us from needing to synchronize on 'cb'.
    try
