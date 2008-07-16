@@ -238,16 +238,15 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
       }
 
 
-     SQLWCHAR* wURL;
+     SQLWCHAR *wURL, *wUser, *wPwd;
      encode(&wURL, databaseURL, p);
+     encode(&wUser, databaseUser, p);
+     encode(&wPwd, databasePassword, p);
 
-     SQLWCHAR szOutConnectionString[1024];
-     SQLSMALLINT nOutConnctionLength = 0;
-
-     ret = SQLDriverConnectW( connection, NULL, 
+     ret = SQLConnectW( connection, 
             wURL, SQL_NTS, 
-            szOutConnectionString, sizeof( szOutConnectionString ),
-            &nOutConnctionLength, SQL_DRIVER_NOPROMPT );
+            wUser, SQL_NTS,
+            wPwd, SQL_NTS);
 
 
      if (ret < 0)
