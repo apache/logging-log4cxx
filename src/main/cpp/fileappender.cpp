@@ -160,7 +160,7 @@ void FileAppender::activateOptions(Pool& p)
       msg.append(1, (logchar) 0x2C /* ',' */);
       StringHelper::toString(fileAppend, msg);
       msg.append(LOG4CXX_STR(") call failed."));
-      LogLog::error(msg, e);
+      errorHandler->error(msg, e, ErrorCode::FILE_OPEN_FAILURE);
     }
   } else {
     errors++;

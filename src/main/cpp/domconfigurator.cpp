@@ -283,11 +283,12 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
                                         apr_xml_doc* doc,
                                         AppenderMap& appenders)
 {
+
     ErrorHandlerPtr eh = OptionConverter::instantiateByClassName(
                 subst(getAttribute(utf8Decoder, element, CLASS_ATTR)),
                 ErrorHandler::getStaticClass(),
                 0);
-
+                
     if(eh != 0)
         {
                 eh->setAppender(appender);
@@ -319,7 +320,10 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
                                 }
                 }
                 propSetter.activate(p);
-//                appender->setErrorHandler(eh);
+                ObjectPtrT<AppenderSkeleton> appSkeleton(appender);
+                if (appSkeleton != 0) {
+                    appSkeleton->setErrorHandler(eh);
+                }
     }
 }
 

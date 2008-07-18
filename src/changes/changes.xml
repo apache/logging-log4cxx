@@ -47,9 +47,10 @@
 <action issue="LOGCXX-291">Tab characters are not recognized in property files.<action>
 <action issue="LOGCXX-292">Value continuation does not properly handle CRLF in property files.<action>
 <action issue="LOGCXX-293">Escape sequences not recognized in property files.<action>
-<action issue="LOGCXXX-298">SMTPAppender does not build properly with autotools.</action>
+<action issue="LOGCXX-298">SMTPAppender does not build properly with autotools.</action>
 <action issue="LOGCXX-299">odbcappender.cpp does not compile with unixODBC on linux.</action>
 <action issue="LOGCXX-300">ODBCAppender connection settings broken (or just have changed).</action>
+<action issue="LOGCXX-303">DOMConfigurator does not set ErrorHandler.</action>
 <action issue="LOGCXX-304">BasicConfigurator::configure results in writer not set warning.</action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">

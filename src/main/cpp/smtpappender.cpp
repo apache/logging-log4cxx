@@ -473,21 +473,21 @@ void SMTPAppender::activateOptions(Pool& p)
 {
    bool activate = true;
    if (layout == 0) {
-      LogLog::error(LOG4CXX_STR("No layout set for appender named [") +name+ LOG4CXX_STR("]."));
+      errorHandler->error(LOG4CXX_STR("No layout set for appender named [") +name+ LOG4CXX_STR("]."));
       activate = false;
    }
    if(evaluator == 0) {
-      LogLog::error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [")+
+      errorHandler->error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [")+
           name+LOG4CXX_STR("]."));
       activate = false;
    }
    if(smtpHost.empty()) {
-      LogLog::error(LOG4CXX_STR("No smtpHost is set for appender [")+
+      errorHandler->error(LOG4CXX_STR("No smtpHost is set for appender [")+
           name+LOG4CXX_STR("]."));
       activate = false;
    }
    if(to.empty() && cc.empty() && bcc.empty()) {
-      LogLog::error(LOG4CXX_STR("No recipient address is set for appender [")+
+      errorHandler->error(LOG4CXX_STR("No recipient address is set for appender [")+
           name+LOG4CXX_STR("]."));
       activate = false;
    }
@@ -497,7 +497,7 @@ void SMTPAppender::activateOptions(Pool& p)
    activate &= asciiCheck(from, LOG4CXX_STR("from"));
  
 #if !LOG4CXX_HAVE_LIBESMTP
-   LogLog::error(LOG4CXX_STR("log4cxx built without SMTP support."));
+   errorHandler->error(LOG4CXX_STR("log4cxx built without SMTP support."));
    activate = false;
 #endif     
    if (activate) {
