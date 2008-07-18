@@ -24,7 +24,7 @@ EXTRA_DIST = LevelMatchFilter* \
              patternLayout.* \
              socketServer.* \
              xmlLayout.* \
-             fallback \
+             fallback1 \
              simple \
              ttcc
 
