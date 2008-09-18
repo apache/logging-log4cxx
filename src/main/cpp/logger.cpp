@@ -426,7 +426,7 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
   std::vector<LogString> values(3);
   values[0] = lval1;
   values[1] = lval2;
-  values[3] = lval3;
+  values[2] = lval3;
   l7dlog(level1, lkey, location, values);
 }
 

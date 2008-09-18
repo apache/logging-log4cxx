@@ -94,6 +94,9 @@ public:
                         LOG4CXX_L7DLOG2(root, Level::getError(), LOG4CXX_TEST_STR("msg1"), os.str().c_str(),
                                  LOG4CXX_TEST_STR("log4j"));
                         LOG4CXX_L7DLOG(root, Level::getInfo(), LOG4CXX_TEST_STR("bogus2"));
+
+                        LOG4CXX_L7DLOG3(root, Level::getError(), LOG4CXX_TEST_STR("msg3"), os.str().c_str(),
+                                 LOG4CXX_TEST_STR("log4j"), LOG4CXX_TEST_STR("log4cxx"));
                 }
 
                 LOGUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),
