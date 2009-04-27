@@ -23,6 +23,8 @@
 #include <iostream>
 #include <locale.h>
 #include <cstring>
+#include <cstdio>
+#include <stdint.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
