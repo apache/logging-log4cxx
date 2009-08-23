@@ -22,7 +22,7 @@
 <title>Apache log4cxx</title>
 </properties>
 <body>
-<release version="0.11.0" date="2008-XX-XX" description="Maintenance release">
+<release version="0.11.0" date="2009-XX-XX" description="Maintenance release">
 <action issue="LOGCXX-249">Console appender crashes if layout is not set</action>
 <action issue="LOGCXX-262">socketappendertestcase and xmlsocketappendertestcase not run</action>
 <action issue="LOGCXX-263">Bad link to log4cxx-dev archive</action>
@@ -52,6 +52,7 @@
 <action issue="LOGCXX-300">ODBCAppender connection settings broken (or just have changed).</action>
 <action issue="LOGCXX-303">DOMConfigurator does not set ErrorHandler.</action>
 <action issue="LOGCXX-304">BasicConfigurator::configure results in writer not set warning.</action>
+<action issue="LOGCXX-340">Transcoder::encodeCharsetName bungles encoding</action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>
