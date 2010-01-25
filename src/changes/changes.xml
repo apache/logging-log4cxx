@@ -53,7 +53,6 @@
 <action issue="LOGCXX-303">DOMConfigurator does not set ErrorHandler.</action>
 <action issue="LOGCXX-304">BasicConfigurator::configure results in writer not set warning.</action>
 <action issue="LOGCXX-340">Transcoder::encodeCharsetName bungles encoding</action>
-<action issue="LOGCXX-350">Issue tracking page does not link to project</action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>
