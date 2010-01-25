@@ -43,16 +43,17 @@
 <action issue="LOGCXX-284">Unit tests fail to compile with xlc_r on AIX</action>
 <action issue="LOGCXX-285">LevelRangeFilter has default value for acceptOnMatch that is different from log4j</action>
 <action issue="LOGCXX-286">gcc 4.3 requires #include &lt;cstring&gt; when using memcpy and related.</action> 
-<action issue="LOGCXX-288">Unnecessary trailing semi-colons after LOG4CXX_INFO et al in docs, examples and tests.<action>
-<action issue="LOGCXX-291">Tab characters are not recognized in property files.<action>
-<action issue="LOGCXX-292">Value continuation does not properly handle CRLF in property files.<action>
-<action issue="LOGCXX-293">Escape sequences not recognized in property files.<action>
+<action issue="LOGCXX-288">Unnecessary trailing semi-colons after LOG4CXX_INFO et al in docs, examples and tests.</action>
+<action issue="LOGCXX-291">Tab characters are not recognized in property files.</action>
+<action issue="LOGCXX-292">Value continuation does not properly handle CRLF in property files.</action>
+<action issue="LOGCXX-293">Escape sequences not recognized in property files.</action>
 <action issue="LOGCXX-298">SMTPAppender does not build properly with autotools.</action>
 <action issue="LOGCXX-299">odbcappender.cpp does not compile with unixODBC on linux.</action>
 <action issue="LOGCXX-300">ODBCAppender connection settings broken (or just have changed).</action>
 <action issue="LOGCXX-303">DOMConfigurator does not set ErrorHandler.</action>
 <action issue="LOGCXX-304">BasicConfigurator::configure results in writer not set warning.</action>
 <action issue="LOGCXX-340">Transcoder::encodeCharsetName bungles encoding</action>
+<action issue="LOGCXX-351">Download page does not have link to KEYS file</action>
 </release>
 <release version="0.10.0" date="2008-04-03" description="First Apache release">
 <action issue="LOGCXX-2">logger.h includes config.h</action>
