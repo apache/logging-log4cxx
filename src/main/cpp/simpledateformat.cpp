@@ -497,6 +497,21 @@ public:
 
 
 
+class MicrosecondToken : public NumericToken
+{
+public:
+  MicrosecondToken( int width1 ) : NumericToken( width1 )
+  {
+  }
+
+  int getField( const apr_time_exp_t & tm ) const
+  {
+    return tm.tm_usec;
+  }
+};
+
+
+
 class AMPMToken : public PatternToken
 {
 public:
@@ -683,7 +698,21 @@ void SimpleDateFormat::addToken(const logchar spec, const int repeat, const std:
                break;
 
                case 0x53: // 'S'
-                 token = ( new MillisecondToken( repeat ) );
+                 if ( repeat == 3 )
+                 {
+                   token = ( new MillisecondToken( repeat ) );
+                 }
+                 else if ( repeat == 6 )
+                 {
+                   token = ( new MicrosecondToken( repeat ) );
+                 }
+                 else
+                 {
+                   // It would be nice to support patterns with arbitrary
+                   // subsecond precision (like "s.S" or "s.SSSS"), but we
+                   // don't; make sure the user is not misled.
+                   token = ( new LiteralToken( spec, repeat ) );
+                 }
                break;
 
                case 0x7A: // 'z'
