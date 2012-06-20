@@ -185,7 +185,47 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>rat-maven-plugin</artifactId>
-      </plugin>             
+      </plugin>  
+      <plugin>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.0</version>
+        <configuration>
+          <templateFile>${basedir}/src/site/maven-site.vm</templateFile>
+          <reportPlugins>
+            <plugin>
+              <artifactId>maven-project-info-reports-plugin</artifactId>
+              <version>2.4</version>
+              <reportSets>
+                <reportSet>
+                  <reports>
+                   <report>scm</report>
+              <report>dependencies</report>
+              <report>issue-tracking</report>
+              <report>mailing-list</report>
+              <report>license</report>
+                  </reports>
+                </reportSet>
+              </reportSets>
+            </plugin>
+              <plugin>
+              <artifactId>maven-changes-plugin</artifactId>
+              <reportSets>
+                <reportSet>
+                  <reports>
+                    <report>changes-report</report>
+                  </reports>
+                </reportSet>
+              </reportSets>
+              <configuration>
+                 <issueLinkTemplate>%URL%/browse/%ISSUE%</issueLinkTemplate>
+
+              </configuration>
+            </plugin>
+
+             </reportPlugins>
+        
+        </configuration>
+      </plugin>
     </plugins>
 </build>
   <dependencies>
