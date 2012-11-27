@@ -53,6 +53,11 @@
     <name>Apache Software Foundation</name>
     <url>http://www.apache.org</url>
 </organization>
+<contributors>
+    <contributor>
+        <name>Andrew Lazarus</name>
+    </contributor>
+</contributors> 
 <build>
     <plugins>
     <!--
