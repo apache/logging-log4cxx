@@ -43,6 +43,7 @@ namespace log4cxx
 
         namespace spi
         {
+                LOG4CXX_LIST_DEF(KeySet, LogString);
 
                 /**
                 The internal representation of logging events. When an affirmative
@@ -152,7 +153,6 @@ namespace log4cxx
                         */
                         bool getMDC(const LogString& key, LogString& dest) const;
 
-                        LOG4CXX_LIST_DEF(KeySet, LogString);
                         /**
                         * Returns the set of of the key values in the MDC for the event.
                         * The returned set is unmodifiable by the caller.
@@ -168,6 +168,7 @@ namespace log4cxx
                         */
                         void getMDCCopy() const;
 
+                        typedef spi::KeySet KeySet;
                         /**
                         * Return a previously set property.
                         * @param key key.

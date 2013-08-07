@@ -28,6 +28,7 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <cctype>
+#include <iterator>
 #include <apr.h>
 
 

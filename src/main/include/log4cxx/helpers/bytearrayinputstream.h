@@ -32,6 +32,7 @@ namespace log4cxx
 {
 
         namespace helpers {
+          LOG4CXX_LIST_DEF(ByteList, unsigned char);
 
           /**
            * InputStream implemented on top of a byte array.
@@ -39,7 +40,6 @@ namespace log4cxx
           class LOG4CXX_EXPORT ByteArrayInputStream : public InputStream
           {
           private:
-              LOG4CXX_LIST_DEF(ByteList, unsigned char);
               ByteList buf;
               size_t pos;
 

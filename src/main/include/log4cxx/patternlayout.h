@@ -32,6 +32,8 @@
 
 namespace log4cxx
 {
+        LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, log4cxx::pattern::LoggingEventPatternConverterPtr);
+        LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
 
         /**
 
@@ -334,13 +336,11 @@ namespace log4cxx
                 /**
                  * Pattern converters.
                  */
-                LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, log4cxx::pattern::LoggingEventPatternConverterPtr);
                 LoggingEventPatternConverterList patternConverters;
 
                /**
                 * Field widths and alignment corresponding to pattern converters.
                 */
-                LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
                 FormattingInfoList patternFields;
 
 

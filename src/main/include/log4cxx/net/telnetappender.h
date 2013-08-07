@@ -39,6 +39,9 @@ namespace log4cxx
         }
         namespace net
         {
+            typedef log4cxx::helpers::SocketPtr Connection;
+            LOG4CXX_LIST_DEF(ConnectionList, Connection);
+
 /**
 <p>The TelnetAppender is a log4cxx appender that specializes in
 writing to a read-only socket.  The output is provided in a
@@ -131,9 +134,6 @@ servlet.
                         TelnetAppender(const TelnetAppender&);
                         TelnetAppender& operator=(const TelnetAppender&);
 
-                        typedef log4cxx::helpers::SocketPtr Connection;
-                        LOG4CXX_LIST_DEF(ConnectionList, Connection);
-                        
                         void write(log4cxx::helpers::ByteBuffer&);
                         void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
                         ConnectionList connections;
