@@ -23,6 +23,7 @@
 </properties>
 <body>
 <release version="0.11.0" date="2010-XX-XX" description="Maintenance release">
+<action issue="LOGCXX-413">log4cxx doesn't compile on openembedded (due to Alex Zbarcea)</action>
 <action issue="LOGCXX-249">Console appender crashes if layout is not set</action>
 <action issue="LOGCXX-262">socketappendertestcase and xmlsocketappendertestcase not run</action>
 <action issue="LOGCXX-263">Bad link to log4cxx-dev archive</action>
