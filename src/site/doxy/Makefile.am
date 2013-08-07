@@ -20,7 +20,7 @@ EXTRA_DIST = Doxyfile mainpage.dox license_notice_footer.txt
 
 if DOC
 
-htmldest = $(pkgdatadir)/html
+htmldest = $(docdir)/html
 
 install-data-hook:
 	$(mkinstalldirs) $(DESTDIR)$(htmldest)
@@ -40,7 +40,7 @@ pdf: @PACKAGE@.pdf
 	$(MAKE) -C ./latex pdf
 	ln -s ./latex/refman.ps	 @PACKAGE@.ps
 	ln -s ./latex/refman.pdf @PACKAGE@.pdf
-	
+
 endif
 
 else
