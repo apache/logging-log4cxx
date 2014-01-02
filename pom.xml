@@ -53,6 +53,18 @@
     <name>Apache Software Foundation</name>
     <url>http://www.apache.org</url>
 </organization>
+<!-- Developers listed by PMC Chair, PMC, Committers, Contributers, all alphabetical-->
+<developers>
+    <developer>
+        <id>rhys</id>
+        <name>Rhys Ulerich</name>
+        <email>rhys@apache.org</email>
+        <timezone>America/Chicago</timezone>
+        <roles>
+            <role>Committer</role>
+        </roles>
+    </developer>
+</developers>
 <contributors>
     <contributor>
         <name>Andrew Lazarus</name>
