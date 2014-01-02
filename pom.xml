@@ -53,13 +53,15 @@
     <name>Apache Software Foundation</name>
     <url>http://www.apache.org</url>
 </organization>
-<!-- Developers listed by PMC Chair, PMC, Committers, Contributers, all alphabetical-->
+<!-- Developers listed by PMC, Committers, alphabetical by id-->
 <developers>
-    <developer>
-        <id>rhys</id>
-        <name>Rhys Ulerich</name>
-        <email>rhys@apache.org</email>
-        <timezone>America/Chicago</timezone>
+    <!--Begin PMC-->
+    <!--End PMC, Begin Committers-->
+	<developer>
+        <id>chand</id>
+        <name>Chand Priyankara</name>
+        <email>chand@apache.org</email>
+        <timezone>Sri Lanka/Kadawathe</timezone>
         <roles>
             <role>Committer</role>
         </roles>
@@ -73,21 +75,51 @@
             <role>Committer</role>
         </roles>
     </developer>
-	<developer>
-        <id>Chand</id>
-        <name>Chand Priyankara</name>
-        <email>chand@apache.org</email>
-        <timezone>Sri Lanka/Kadawathe</timezone>
+    <developer>
+        <id>rhys</id>
+        <name>Rhys Ulerich</name>
+        <email>rhys@apache.org</email>
+        <timezone>America/Chicago</timezone>
         <roles>
             <role>Committer</role>
         </roles>
     </developer>
+    <!--End Committers, Begin Emeritus-->
+    <developer>
+        <id>afester</id>
+        <name>Andreas Fester</name>
+        <roles>
+            <role>Emeritus</role>
+        </roles>
+    </developer>
+    <developer>
+        <id>carnold</id>
+        <name>Curtis Arnold</name>
+        <roles>
+            <role>Emeritus</role>
+        </roles>
+    </developer>
+    <developer>
+        <id>cdevienne</id>
+        <name>Christophe de Vienne</name>
+        <roles>
+            <role>Emeritus</role>
+        </roles>
+    </developer>
+    <developer>
+        <id>mcatan</id>
+        <name>Michael Catanzariti</name>
+        <roles>
+            <role>Emeritus</role>
+        </roles>
+    </developer>
+    <!--End Emeritus-->
 </developers>
 <contributors>
     <contributor>
         <name>Andrew Lazarus</name>
     </contributor>
-</contributors> 
+</contributors>
 <build>
     <plugins>
     <!--
