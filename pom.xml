@@ -84,6 +84,15 @@
             <role>Committer</role>
         </roles>
     </developer>
+    <developer>
+        <id>alexz</id>
+        <name>Alex Zbarcea</name>
+        <email>alexz@apache.org</email>
+        <timezone>America/New York</timezone>
+        <roles>
+            <role>Committer</role>
+        </roles>
+    </developer>
     <!--End Committers, Begin Emeritus-->
     <developer>
         <id>afester</id>
