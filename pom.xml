@@ -73,6 +73,15 @@
             <role>Committer</role>
         </roles>
     </developer>
+	<developer>
+        <id>Chand</id>
+        <name>Chand Priyankara</name>
+        <email>chand@apache.org</email>
+        <timezone>Sri Lanka/Kadawathe</timezone>
+        <roles>
+            <role>Committer</role>
+        </roles>
+    </developer>
 </developers>
 <contributors>
     <contributor>
