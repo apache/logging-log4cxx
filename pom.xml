@@ -64,6 +64,15 @@
             <role>Committer</role>
         </roles>
     </developer>
+    <developer>
+        <id>joseph</id>
+        <name>Joseph Southwell</name>
+        <email>joseph@apache.org</email>
+        <timezone>America/Chicago</timezone>
+        <roles>
+            <role>Committer</role>
+        </roles>
+    </developer>
 </developers>
 <contributors>
     <contributor>
