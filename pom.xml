@@ -297,6 +297,7 @@
             </plugin>
               <plugin>
               <artifactId>maven-changes-plugin</artifactId>
+              <version>2.9</version>
               <reportSets>
                 <reportSet>
                   <reports>
@@ -349,6 +350,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-changes-plugin</artifactId>
+        <version>2.9</version>
         <reportSets>
           <reportSet>
             <reports>
