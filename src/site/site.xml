@@ -75,7 +75,8 @@
 			<item	name="Repository"
 					href="/source-repository.html"
 			/>
-			<item	name="Building" href="/building/autotools.html">
+			<item	name="Building"
+					href="javascript://nop">
 				<item	name="autotools"
 						href="/building/autotools.html"
 				/>
