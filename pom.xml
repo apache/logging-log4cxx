@@ -45,9 +45,9 @@
         </license>
 </licenses>
 <scm>
-        <connection>scm:svn:http://svn.apache.org/repos/asf/logging/log4cxx/trunk</connection>
-        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/logging/log4cxx/trunk</developerConnection>
-        <url>http://svn.apache.org/viewcvs.cgi/logging/log4cxx/trunk</url>
+        <connection>scm:svn:http://svn.apache.org/repos/asf/incubator/log4cxx/trunk</connection>
+        <developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/log4cxx/trunk</developerConnection>
+        <url>http://svn.apache.org/viewcvs.cgi/incubator/log4cxx/trunk</url>
 </scm>
 <organization>
     <name>Apache Software Foundation</name>
