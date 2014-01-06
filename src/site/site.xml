@@ -75,7 +75,7 @@
 			<item	name="Repository"
 					href="/source-repository.html"
 			/>
-			<item	name="Building" href="#">
+			<item	name="Building" href="/building/autotools.html">
 				<item	name="autotools"
 						href="/building/autotools.html"
 				/>
