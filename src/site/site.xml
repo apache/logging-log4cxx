@@ -16,55 +16,97 @@
 
 -->
 <project name="log4cxx">
-  <bannerLeft>
-    <name>Logging Services</name>
-    <src>images/logos/ls-logo.jpg</src>
-    <href>http://logging.apache.org/</href>
-  </bannerLeft>
-  <body>
-    <breadcrumbs>
-      <item name="Apache" href="http://www.apache.org/"/>
-      <item name="Logging Services" href="http://logging.apache.org/"/>
-      <item name="log4cxx" href="http://logging.apache.org:80/log4cxx/"/>
-    </breadcrumbs>
+	<bannerLeft>
+		<name>Logging Services</name>
+		<src>images/logos/ls-logo.jpg</src>
+		<href>http://logging.apache.org/</href>
+	</bannerLeft>
 
-        <menu name="Get Apache log4cxx">
-           <item name="Download" href="/download.html"/>
-           <item name="Changes" href="/changes-report.html"/>
-           <item name="License" href="/license.html"/>
-        </menu>
+	<body>
+		<breadcrumbs>
+			<item	name="Apache"
+					href="http://www.apache.org/"
+			/>
+			<item	name="Logging Services"
+					href="http://logging.apache.org/"
+			/>
+			<item	name="log4cxx"
+					href="http://logging.apache.org:80/log4cxx/"
+			/>
+		</breadcrumbs>
 
-	<menu name="About Apache log4cxx">
-	   <item name="What is log4cxx?" href="/index.html"/>
-		<item name="API Documentation" href="/apidocs/index.html"/>
-	   <item name="FAQ" href="/faq.html"/>
-	</menu>
+		<menu name="Get Apache log4cxx">
+			<item	name="Download"
+					href="/download.html"
+			/>
+			<item	name="Changes"
+					href="/changes-report.html"
+			/>
+			<item	name="License"
+					href="/license.html"
+			/>
+		</menu>
 
-        <menu name="Community">
-                <item name="Mailing Lists" href="/mail-lists.html"/>
-                <item name="Issue Tracking" href="/issue-tracking.html"/>
-                <item name="Wiki" href="http://wiki.apache.org/logging-log4cxx"/>
-        </menu>
+		<menu name="About Apache log4cxx">
+			<item	name="What is log4cxx?"
+					href="/index.html"
+			/>
+			<item	name="API Documentation"
+					href="/apidocs/index.html"
+			/>
+			<item	name="FAQ"
+					href="/faq.html"
+			/>
+		</menu>
 
-        <menu name="Development">
-                <item name="Repository" href="/source-repository.html"/>
+		<menu name="Community">
+			<item	name="Mailing Lists"
+					href="/mail-lists.html"
+			/>
+			<item	name="Issue Tracking"
+					href="/issue-tracking.html"
+			/>
+			<item	name="Wiki"
+					href="http://wiki.apache.org/logging-log4cxx"
+			/>
+		</menu>
 
-    <item name="Building" href="#">
-        <item name="autotools" href="/building/autotools.html"/>
-        <item name="Apache Ant" href="/building/ant.html"/>
-        <item name="Apache Maven 2" href="/building/maven.html"/>
-        <item name="Microsoft Visual Studio" href="/building/vstudio.html"/>
-        <item name="Apple Xcode" href="/building/xcode.html"/>
-    </item>
-    </menu>
+		<menu name="Development">
+			<item	name="Repository"
+					href="/source-repository.html"
+			/>
+			<item	name="Building" href="#">
+				<item	name="autotools"
+						href="/building/autotools.html"
+				/>
+				<item	name="Apache Ant"
+						href="/building/ant.html"
+				/>
+				<item	name="Apache Maven 2"
+						href="/building/maven.html"
+				/>
+				<item	name="Microsoft Visual Studio"
+						href="/building/vstudio.html"
+				/>
+				<item	name="Apple Xcode"
+						href="/building/xcode.html"
+				/>
+			</item>
+		</menu>
 
-
-	<menu name="Apache">
-		<item name="Home" href="http://www.apache.org"/>
-		<item name="Sponsorship" href="http://www.apache.org/foundation/sponsorship.html"/>
-		<item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
-		<item name="Conferences" href="http://www.apachecon.com"/>
-	</menu>
-
-  </body>
+		<menu name="Apache">
+			<item	name="Home"
+					href="http://www.apache.org"
+			/>
+			<item	name="Sponsorship"
+					href="http://www.apache.org/foundation/sponsorship.html"
+			/>
+			<item	name="Thanks"
+					href="http://www.apache.org/foundation/thanks.html"
+			/>
+			<item	name="Conferences"
+					href="http://www.apachecon.com"
+			/>
+		</menu>
+	</body>
 </project>
