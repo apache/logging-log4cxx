@@ -18,7 +18,7 @@
 <project name="log4cxx">
   <bannerLeft>
     <name>Logging Services</name>
-    <src>images/ls-logo.jpg</src>
+    <src>images/logos/ls-logo.jpg</src>
     <href>http://logging.apache.org/</href>
   </bannerLeft>
   <body>
@@ -27,7 +27,7 @@
       <item name="Logging Services" href="http://logging.apache.org/"/>
       <item name="log4cxx" href="http://logging.apache.org:80/log4cxx/"/>
     </breadcrumbs>
-  
+
         <menu name="Get Apache log4cxx">
            <item name="Download" href="/download.html"/>
            <item name="Changes" href="/changes-report.html"/>
@@ -45,10 +45,10 @@
                 <item name="Issue Tracking" href="/issue-tracking.html"/>
                 <item name="Wiki" href="http://wiki.apache.org/logging-log4cxx"/>
         </menu>
-        
+
         <menu name="Development">
                 <item name="Repository" href="/source-repository.html"/>
-        
+
     <item name="Building" href="#">
         <item name="autotools" href="/building/autotools.html"/>
         <item name="Apache Ant" href="/building/ant.html"/>
@@ -60,7 +60,7 @@
 
 
 	<menu name="Apache">
-		<item name="Home" href="http://www.apache.org"/>	
+		<item name="Home" href="http://www.apache.org"/>
 		<item name="Sponsorship" href="http://www.apache.org/foundation/sponsorship.html"/>
 		<item name="Thanks" href="http://www.apache.org/foundation/thanks.html"/>
 		<item name="Conferences" href="http://www.apachecon.com"/>
