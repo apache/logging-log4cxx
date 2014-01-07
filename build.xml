@@ -1791,7 +1791,6 @@
 	</target>
 
 	<target	name="apidocs"
-			depends="init"
 			description="Build log4cxx manual">
 		<copy	file="src/site/doxy/Doxyfile.in"
 				tofile="${target.dir}/Doxyfile"
@@ -1812,28 +1811,6 @@
 
 		<exec	executable="${doxygen.exe}"
 				dir="${target.dir}"
-		/>
-
-		<!--  doxygen.css is GPL'd, looks better with it, but not intolerable without it -->
-		<echo file="${target.dir}/site/apidocs/doxygen.css">
-			/*
-			&license;
-			*/
-			/*  Minimal replacement for GPL'd doxygen.css  */
-		</echo>
-		<echo file="${target.dir}/site/apidocs/tabs.css">
-			/*
-			&license;
-			*/
-			/*  Minimal replacement for GPL'd tabs.css  */
-			DIV.tabs {
-				display : none ;
-			}
-		</echo>
-		 <!--   fix for issue http://jira.codehaus.org/browse/MSKINS-2  -->
-		 <replace	file="${target.dir}/site/css/maven-theme.css"
-					token="font-size: normal;"
-					value="font-size: medium;"
 		/>
 	</target>
 
