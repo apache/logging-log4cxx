@@ -65,6 +65,15 @@
 		<!--Begin PMC-->
 		<!--End PMC, Begin Committers-->
 		<developer>
+			<id>alexz</id>
+			<name>Alex Zbarcea</name>
+			<email>alexz@apache.org</email>
+			<timezone>America/New York</timezone>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
+		<developer>
 			<id>chand</id>
 			<name>Chand Priyankara</name>
 			<email>chand@apache.org</email>
@@ -73,6 +82,15 @@
 				<role>Committer</role>
 			</roles>
 		</developer>
+        <developer>
+            <id>fseydoux</id>
+            <name>Florian Seydoux</name>
+            <email>fseydoux@apache.org</email>
+            <timezone>Europe/Zurich</timezone>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
 		<developer>
 			<id>joseph</id>
 			<name>Joseph Southwell</name>
@@ -92,15 +110,6 @@
 			</roles>
 		</developer>
 		<developer>
-			<id>alexz</id>
-			<name>Alex Zbarcea</name>
-			<email>alexz@apache.org</email>
-			<timezone>America/New York</timezone>
-			<roles>
-				<role>Committer</role>
-			</roles>
-		</developer>
-		<developer>
 			<id>tschoening</id>
 			<name>Thorsten Schöning</name>
 			<email>tschoening@apache.org</email>
@@ -108,15 +117,6 @@
 			<roles>
 				<role>Committer</role>
 			</roles>
-        </developer>
-        <developer>
-            <id>fseydoux</id>
-            <name>Florian Seydoux</name>
-            <email>fseydoux@apache.org</email>
-            <timezone>Europe/Zurich</timezone>
-            <roles>
-                <role>Committer</role>
-            </roles>
         </developer>
 		<!--End Committers, Begin Emeritus-->
 		<developer>
