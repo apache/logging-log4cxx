@@ -42,8 +42,8 @@ namespace log4cxx
                 spi::LoggingEvent LoggingEvent}, then the #decide method returns  {@link
                 spi::Filter#ACCEPT ACCEPT} in case the <b>AcceptOnMatch</b> option value is set
    to <code>true</code>, if it is <code>false</code> then {@link
-   spi::filter::Filter#DENY} is returned. If there is no match, {@link
-   spi::filter::Filter#NEUTRAL} is returned.  A loggerToMatch of "root"
+   spi::Filter#DENY} is returned. If there is no match, {@link
+   spi::Filter#NEUTRAL} is returned.  A loggerToMatch of "root"
    matches both the root logger and a logger named "root".
 
    */
