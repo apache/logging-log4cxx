@@ -112,7 +112,7 @@
         <developer>
             <id>fseydoux</id>
             <name>Florian Seydoux</name>
-            <email>fseydoux@apache.org</name>
+            <email>fseydoux@apache.org</email>
             <timezone>Europe/Zurich</timezone>
             <roles>
                 <role>Committer</role>
