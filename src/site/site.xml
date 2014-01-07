@@ -15,12 +15,29 @@
  limitations under the License.
 
 -->
-<project name="log4cxx">
+<project	xmlns="http://maven.apache.org/DECORATION/1.4.0"
+			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+			xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd"
+			name="log4cxx">
 	<bannerLeft>
 		<name>Logging Services</name>
 		<src>images/logos/ls-logo.jpg</src>
-		<href>http://logging.apache.org/</href>
+		<href>http://logging.apache.org</href>
+		<title>Open the Apache Logging homepage</title>
 	</bannerLeft>
+
+	<bannerRight>
+		<name>Apache Incubator</name>
+		<src>images/logos/egg-logo.png</src>
+		<href>http://incubator.apache.org</href>
+		<title>Open the Apache Incubator homepage</title>
+	</bannerRight>
+
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-default-skin</artifactId>
+		<version>1.1</version>
+	</skin>
 
 	<body>
 		<breadcrumbs>
@@ -31,11 +48,11 @@
 					href="http://logging.apache.org/"
 			/>
 			<item	name="log4cxx"
-					href="http://logging.apache.org:80/log4cxx/"
+					href="http://incubator.apache.org/log4cxx"
 			/>
 		</breadcrumbs>
 
-		<menu name="Get Apache log4cxx">
+		<menu name="Get">
 			<item	name="Download"
 					href="/download.html"
 			/>
@@ -47,7 +64,7 @@
 			/>
 		</menu>
 
-		<menu name="About Apache log4cxx">
+		<menu name="About">
 			<item	name="What is log4cxx?"
 					href="/index.html"
 			/>
