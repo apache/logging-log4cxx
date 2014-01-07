@@ -158,17 +158,17 @@
 
 	<build>
 		<plugins>
-			<!--
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.7</version>
 				<executions>
 					<execution>
 						<phase>compile</phase>
 						<id>compile</id>
 						<configuration>
-							<tasks>
+							<target>
 								<ant target="build" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -178,9 +178,9 @@
 						<phase>test-compile</phase>
 						<id>test-compile</id>
 						<configuration>
-							<tasks>
+							<target>
 								<ant target="test-compile" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -190,9 +190,9 @@
 						<phase>test</phase>
 						<id>test</id>
 						<configuration>
-							<tasks>
+							<target>
 								<ant target="check" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -202,9 +202,9 @@
 						<phase>package</phase>
 						<id>autogen</id>
 						<configuration>
-							<tasks>
+							<target>
 								<ant target="autogen" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -214,8 +214,8 @@
 						<phase>site</phase>
 						<id>site</id>
 						<configuration>
-							<tasks>
-								<ant target="site" />
+							<target>
+								<ant target="apidocs" />
 								<taskdef	name="replaceregexp"
 											classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp"
 								/>
@@ -231,7 +231,7 @@
 												includes="**/*.html"
 									/>
 								</replaceregexp>
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -241,9 +241,9 @@
 						<phase>post-site</phase>
 						<id>post-site</id>
 						<configuration>
-							<tasks>
+							<target>
 								<ant target="post-site" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -253,9 +253,9 @@
 						<phase>site-deploy</phase>
 						<id>site-deploy</id>
 						<configuration>
-							<tasks>
+							<target>
 								<ant target="site-deploy" />
-							</tasks>
+							</target>
 						</configuration>
 						<goals>
 							<goal>run</goal>
@@ -264,12 +264,12 @@
 				</executions>
 				<dependencies>
 					<dependency>
-						<groupId>ant</groupId>
-						<artifactId>ant-nodeps</artifactId>
-						<version>1.6.5</version>
+						<groupId>org.apache.ant</groupId>
+						<artifactId>ant</artifactId>
+						<version>1.9.3</version>
 					</dependency>
 					<dependency>
-					<groupId>ant-contrib</groupId>
+						<groupId>ant-contrib</groupId>
 						<artifactId>ant-contrib</artifactId>
 						<version>1.0b2</version>
 					</dependency>
@@ -280,7 +280,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			-->
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
