@@ -108,7 +108,16 @@
 			<roles>
 				<role>Committer</role>
 			</roles>
-		</developer>
+        </developer>
+        <developer>
+            <id>fseydoux</id>
+            <name>Florian Seydoux</name>
+            <email>fseydoux@apache.org</name>
+            <timezone>Europe/Zurich</timezone>
+            <roles>
+                <role>Committer</role>
+            </roles>
+        </developer>
 		<!--End Committers, Begin Emeritus-->
 		<developer>
 			<id>afester</id>
