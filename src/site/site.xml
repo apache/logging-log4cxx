@@ -52,6 +52,21 @@
 			/>
 		</breadcrumbs>
 
+		<menu name="About">
+			<item	name="What is log4cxx?"
+					href="/index.html"
+			/>
+			<item	name="How to use log4cxx?"
+					href="/usage.html"
+			/>
+			<item	name="API Documentation"
+					href="/apidocs/index.html"
+			/>
+			<item	name="FAQ"
+					href="/faq.html"
+			/>
+		</menu>
+
 		<menu name="Get">
 			<item	name="Download"
 					href="/download.html"
@@ -61,18 +76,6 @@
 			/>
 			<item	name="License"
 					href="/license.html"
-			/>
-		</menu>
-
-		<menu name="About">
-			<item	name="What is log4cxx?"
-					href="/index.html"
-			/>
-			<item	name="API Documentation"
-					href="/apidocs/index.html"
-			/>
-			<item	name="FAQ"
-					href="/faq.html"
 			/>
 		</menu>
 
