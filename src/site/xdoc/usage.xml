@@ -125,12 +125,9 @@ namespace log4cxx {
 					<dt><strong>Level Inheritance</strong></dt>
 
 					<dd>
-						<p>
-							The <em>inherited level</em> for a given logger
-							<i>C</i>, is equal to the first non-null level in the logger
-							hierarchy, starting at <i>C</i> and proceeding upwards in the
-							hierarchy towards the <code>root</code> logger.
-						</p>
+						The <em>inherited level</em> for a given logger <i>C</i>, is equal to the
+						first non-null level in the logger hierarchy, starting at <i>C</i> and
+						proceeding upwards in the hierarchy towards the <code>root</code> logger.
 					</dd>
 				</dl>
 
@@ -321,11 +318,9 @@ LOG4CXX_WARN(logger, L"" &lt;&lt; i &lt;&lt; L" is the number of the iteration."
 					<dt><strong>Basic Selection Rule</strong></dt>
 
 					<dd>
-						<p>
-							A log request of level <i>p</i> in a logger with
-							(either assigned or inherited, whichever is appropriate) level <i>q</i>, is enabled if <i> p &gt;=
-							q</i>.
-						</p>
+						A log request of level <i>p</i> in a logger with (either assigned or
+						inherited, whichever is appropriate) level <i>q</i>, is enabled if
+						<i>p &gt;= q</i>.
 					</dd>
 				</dl>
 
@@ -457,23 +452,14 @@ log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");</pre>
 				<dt><strong>Appender Additivity</strong></dt>
 
 				<dd>
-					<p>
-						The output of a log statement of logger <i>C</i> will
-						go to all the appenders in <i>C</i> and its ancestors. This is
-						the meaning of the term "appender additivity".
-					</p>
-
-					<p>
-						However, if an ancestor of logger <i>C</i>, say <i>P</i>,
-						has the additivity flag set to <code>false</code>, then
-						<i>C</i>'s output will be directed to all the appenders in
-						<i>C</i> and it's ancestors upto and including <i>P</i> but
-						not the appenders in any of the ancestors of <i>P</i>.
-					</p>
-
-					<p>
-						Loggers have their additivity flag set to <code>true</code> by default.
-					</p>
+					The output of a log statement of logger <i>C</i> will go to all the appenders
+					in <i>C</i> and its ancestors. This is the meaning of the term "appender
+					additivity". However, if an ancestor of logger <i>C</i>, say <i>P</i>, has the
+					additivity flag set to <code>false</code>, then <i>C</i>'s output will be
+					directed to all the appenders in <i>C</i> and it's ancestors up to and
+					including <i>P</i> but, not the appenders in any of the ancestors of <i>P</i>.
+					<br /><br />
+					Loggers have their additivity flag set to <code>true</code> by default.
 				</dd>
 			</dl>
 
