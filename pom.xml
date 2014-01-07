@@ -224,13 +224,6 @@
 												replace="/trunk"
 												flags="g"
 								/>
-								<replaceregexp	match="Generated on .* for "
-												replace="Generated for "
-												flags="g">
-									<fileset	dir="target/site/apidocs"
-												includes="**/*.html"
-									/>
-								</replaceregexp>
 							</target>
 						</configuration>
 						<goals>
