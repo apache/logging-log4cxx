@@ -75,9 +75,9 @@
 				</ol>
 
 				<p>
-					Invoking the class static <a href="apidocs/classlog4cxx_1_1Logger.html#e3">log4cxx::Logger::getRootLogger</a>
+					Invoking the class static <a href="apidocs/classlog4cxx_1_1_logger.html#afc0e4d99cab7c38a2851d41e6edc1dee">log4cxx::Logger::getRootLogger</a>
 					method retrieves it. All other loggers are instantiated and retrieved with the class static
-					<a href="apidocs/classlog4cxx_1_1Logger.html#e0">log4cxx::Logger::getLogger</a>
+					<a href="apidocs/classlog4cxx_1_1_logger.html#a76017df17da02bc11bfe50e47de703a3">log4cxx::Logger::getLogger</a>
 					method. This method takes the name of the desired logger as a parameter. Some of the basic methods in the Logger
 					class are listed below.
 				</p>
@@ -111,7 +111,7 @@ namespace log4cxx {
 				<p>
 					Loggers <em>may</em> be assigned levels. The pre-defined
 					levels: TRACE, DEBUG, INFO, WARN, ERROR and FATAL are defined in the
-					<code> <a href="apidocs/classlog4cxx_1_1Level.html">log4cxx::Level</a></code>
+					<code> <a href="apidocs/classlog4cxx_1_1_level.html">log4cxx::Level</a></code>
 					class which provides accessor functions.
 				</p>
 
@@ -418,18 +418,18 @@ log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");</pre>
 				on their logger is only part of the picture. Log4cxx allows logging
 				requests to print to multiple destinations. In log4cxx speak, an output
 				destination is called an <em>appender</em>. Currently, appenders exist
-				for the <a href="apidocs/classlog4cxx_1_1ConsoleAppender.html">console</a>,
-				<a href="apidocs/classlog4cxx_1_1FileAppender.html">files</a>, GUI
-				components, <a href="apidocs/classlog4cxx_1_1net_1_1SocketAppender.html">remote socket</a>
-				servers, <a href="apidocs/classlog4cxx_1_1nt_1_1NTEventLogAppender.html"> NT Event Loggers</a>, and remote UNIX
-				<a href="apidocs/classlog4cxx_1_1net_1_1SyslogAppender.html">Syslog</a>
-				daemons. It is also possible to log <a href="apidocs/classlog4cxx_1_1AsyncAppender.html">asynchronously</a>.
+				for the <a href="apidocs/classlog4cxx_1_1_console_appender.html">console</a>,
+				<a href="apidocs/classlog4cxx_1_1_file_appender.html">files</a>, GUI
+				components, <a href="apidocs/classlog4cxx_1_1net_1_1_socket_appender.html">remote socket</a>
+				servers, <a href="apidocs/classlog4cxx_1_1nt_1_1_n_t_event_log_appender.html"> NT Event Loggers</a>, and remote UNIX
+				<a href="apidocs/classlog4cxx_1_1net_1_1_syslog_appender.html">Syslog</a>
+				daemons. It is also possible to log <a href="apidocs/classlog4cxx_1_1_async_appender.html">asynchronously</a>.
 			</p>
 
 			<p>More than one appender can be attached to a logger.</p>
 
 			<p>
-				The <a href="apidocs/classlog4cxx_1_1Logger.html#a3">addAppender</a>
+				The <a href="apidocs/classlog4cxx_1_1_logger.html#a7c0629acee8dbd1251474bea15d7c9e2">addAppender</a>
 				method adds an appender to a given logger.
 
 				<strong>
@@ -442,7 +442,7 @@ log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");</pre>
 				is added to a logger, say <em>C</em>, then enabled logging requests for <em>C</em> and
 				<em>C</em>'s children will print on a file <em>and</em> on the console. It is possible
 				to override this default behavior so that appender accumulation is no longer additive
-				by <a href="apidocs/classlog4cxx_1_1Logger.html#a46">setting the additivity flag</a> to
+				by <a href="apidocs/classlog4cxx_1_1_logger.html#a80f9397947dba9071ad485f178257c17">setting the additivity flag</a> to
 				<code>false</code>.
 			</p>
 
@@ -538,7 +538,7 @@ log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");</pre>
 			</p>
 
 			<p>
-				The <a href="apidocs/classlog4cxx_1_1PatternLayout.html">PatternLayout</a>, part
+				The <a href="apidocs/classlog4cxx_1_1_pattern_layout.html">PatternLayout</a>, part
 				of the standard log4cxx distribution, lets the user specify the output
 				format according to conversion patterns similar to the C language
 				<code>printf</code> function.
@@ -659,11 +659,11 @@ void Bar::doIt() {
 }</pre>
 
 			<p>
-				The invocation of the <a href="apidocs/classlog4cxx_1_1BasicConfigurator.html#e0">BasicConfigurator::configure</a>
+				The invocation of the <a href="apidocs/classlog4cxx_1_1_basic_configurator.html#a4f96a09e1372664e3556ce94ace4a70c">BasicConfigurator::configure</a>
 				method creates a rather simple log4cxx setup. This method is hardwired
-				to add to the root logger a <a href="apidocs/classlog4cxx_1_1ConsoleAppender.html">
+				to add to the root logger a <a href="apidocs/classlog4cxx_1_1_console_appender.html">
 				ConsoleAppender</a>. The output will be formatted using a
-				<a href="apidocs/classlog4cxx_1_1PatternLayout.html">PatternLayout</a> set
+				<a href="apidocs/classlog4cxx_1_1_pattern_layout.html">PatternLayout</a> set
 				to the pattern "%-4r [%t] %-5p %c %x - %m%n".
 			</p>
 
