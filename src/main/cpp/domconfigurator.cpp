@@ -723,8 +723,8 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
             msg2.append(LOG4CXX_STR("]."));
             LogLog::error(msg2);
         } else {
-            apr_xml_parser *parser;
-            apr_xml_doc *doc;
+            apr_xml_parser *parser = NULL;
+            apr_xml_doc *doc = NULL;
             rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
             if (rv != APR_SUCCESS) {
                 char errbuf[2000];
@@ -734,10 +734,13 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
                 msg2.append(LOG4CXX_STR("], "));
                 apr_strerror(rv, errbuf, sizeof(errbuf));
                 LOG4CXX_DECODE_CHAR(lerrbuf, std::string(errbuf));
-                apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
-                LOG4CXX_DECODE_CHAR(lerrbufXML, std::string(errbufXML));
                 msg2.append(lerrbuf);
-                msg2.append(lerrbufXML);
+		if(parser)
+                {
+                    apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
+                    LOG4CXX_DECODE_CHAR(lerrbufXML, std::string(errbufXML));
+                    msg2.append(lerrbufXML);
+                }
                 LogLog::error(msg2);
             } else {
                 AppenderMap appenders;
