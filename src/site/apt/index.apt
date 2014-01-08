@@ -48,8 +48,8 @@ Short introduction to Apache log4cxx
 
 Disclaimer
 
-	Apache Podling-Name is an effort undergoing incubation at The Apache Software Foundation (ASF),
-	sponsored by the name of Apache TLP sponsor. Incubation is required of all newly accepted
+	Apache log4cxx is an effort undergoing incubation at The Apache Software Foundation (ASF),
+	sponsored by Apache Logging Services. Incubation is required of all newly accepted
 	projects until a further review indicates that the infrastructure, communications, and decision
 	making process have stabilized in a manner consistent with other successful ASF projects. While
 	incubation status is not necessarily a reflection of the completeness or stability of the code,
