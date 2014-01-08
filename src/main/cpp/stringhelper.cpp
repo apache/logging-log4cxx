@@ -30,6 +30,10 @@
 #include <cctype>
 #include <iterator>
 #include <apr.h>
+//LOG4CXX-417: need stdlib.h for atoi on some systems.
+#ifdef APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 
 using namespace log4cxx;
