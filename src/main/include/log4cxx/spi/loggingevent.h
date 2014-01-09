@@ -62,6 +62,8 @@ namespace log4cxx
                                 LOG4CXX_CAST_ENTRY(LoggingEvent)
                         END_LOG4CXX_CAST_MAP()
 
+                        typedef spi::KeySet KeySet;
+
                         /** For serialization only
                         */
                         LoggingEvent();
@@ -168,7 +170,6 @@ namespace log4cxx
                         */
                         void getMDCCopy() const;
 
-                        typedef spi::KeySet KeySet;
                         /**
                         * Return a previously set property.
                         * @param key key.
