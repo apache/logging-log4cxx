@@ -108,7 +108,7 @@
 					href="dependencies.html"
 			/>
 			<item	name="Building"
-					href="javascript://nop">
+					href="/building/index.html">
 				<item	name="autotools"
 						href="/building/autotools.html"
 				/>
