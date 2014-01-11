@@ -25,6 +25,8 @@
 	<body>
 		<release version="0.11.0" date="2010-XX-XX" description="Maintenance release">
 			<action issue="LOGCXX-366" type="fix">Errors when compile log4cxx 0.10.0 under Win7 x64 with Visual Studio 2010 (due to Christian Boos and Feng Nan)</action>
+			<action issue="LOGCXX-417" type="fix">atoi undefined on Mac OS 10.9 compiling stringhelper.cpp</action>
+			<action issue="LOGCXX-415" type="fix">Empty XML configuration file causes crash</action>
 			<action issue="LOGCXX-414" type="fix">possibly wrong use of autotools docdir (due to Alex Zbarcea)</action>
 			<action issue="LOGCXX-413" type="fix">log4cxx doesn't compile on openembedded (due to Alex Zbarcea)</action>
 			<action issue="LOGCXX-249" type="fix">Console appender crashes if layout is not set</action>
