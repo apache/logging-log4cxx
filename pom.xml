@@ -52,7 +52,7 @@
 	<scm>
 		<connection>scm:svn:http://svn.apache.org/repos/asf/incubator/log4cxx/trunk</connection>
 		<developerConnection>scm:svn:https://svn.apache.org/repos/asf/incubator/log4cxx/trunk</developerConnection>
-		<url>http://svn.apache.org/viewcvs.cgi/incubator/log4cxx/trunk</url>
+		<url>http://svn.apache.org/viewcvs.cgi/incubator/log4cxx</url>
 	</scm>
 
 	<organization>
@@ -216,14 +216,6 @@
 						<configuration>
 							<target>
 								<ant target="apidocs" />
-								<taskdef	name="replaceregexp"
-											classname="org.apache.tools.ant.taskdefs.optional.ReplaceRegExp"
-								/>
-								<replaceregexp	file="target/site/source-repository.html"
-												match="/tags/[^ &quot;'&lt;]*"
-												replace="/trunk"
-												flags="g"
-								/>
 							</target>
 						</configuration>
 						<goals>
