@@ -23,7 +23,7 @@ Short introduction to Apache log4cxx
 	Apache log4cxx is currently undergoing Incubation at the Apache Software Foundation.
 
 	Apache log4cxx is a logging framework for C++ patterned after
-	{{{http://logging.apache.org/log4j} Apache log4j}}, which uses
+	{{{http://logging.apache.org/log4j}Apache log4j}}, which uses
 	{{{http://apr.apache.org}Apache Portable Runtime}} for most platform-specific code and should
 	be usable on any platform supported by APR. Apache log4cxx is licensed under the
 	{{{http://www.apache.org/licenses}Apache License}}, an open source license certified by the
