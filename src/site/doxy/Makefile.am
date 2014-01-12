@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-EXTRA_DIST = Doxyfile mainpage.dox license_notice_footer.txt
+EXTRA_DIST = Doxyfile license_notice_footer.txt
 
 # DOC is defined if installer requests doc generation.
 
@@ -61,7 +61,7 @@ endif
 all-local: dox
 
 
-@manual_dest@/index.html: Doxyfile mainpage.dox
+@manual_dest@/index.html: Doxyfile
 	"@DOXYGEN@"
 
 distdir = $(top_builddir)/$(PACKAGE)-$(VERSION)

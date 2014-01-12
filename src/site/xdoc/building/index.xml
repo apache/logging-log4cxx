@@ -1,0 +1,187 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<document>
+	<properties>
+		<title>Building Apache log4cxx</title>
+	</properties>
+
+	<body>
+		<section name="Building Apache log4cxx">
+			<p>
+				The project supports different build tools on different platforms, have a look at
+				the menu to find the platform you need. If your environment is not covered already,
+				feel free to ask about it on one of the <a href="../mail-lists.html">Mailing Lists</a>
+				or leave a bug in our <a href="../issue-tracking.html">Issue Tracker</a>. In this
+				case it would be very helpful of course if you could already provide some patches
+				to support your environment or at least provide some technical details about the
+				build tools, compiler etc. you use.
+			</p>
+		</section>
+
+		<section name="Covered by the team">
+			<p>
+				The following table provides an overview about the environments some of the team
+				members have access to and therefore normally should work out of the box or at
+				least were used sometimes in the past. This list by no means tells something about
+				how good the support on each platform is, it's just a guide.
+			</p>
+
+			<table>
+				<caption>Environments in use</caption>
+				<thead>
+					<tr>
+						<th id="os">OS</th>
+						<th id="os_x86_x64">x86 vs. x64</th>
+						<th id="environment">Environment</th>
+						<th id="compiler">Compiler</th>
+						<th id="compiler_x86_x64">x86 vs. x64</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- Windows -->
+					<tr>
+						<td	headers="os"
+							rowspan="9">
+							Windows 7
+						</td>
+						<td	headers="os_x86_x64"
+							rowspan="9">
+							x64
+						</td>
+						<td	headers="environment"
+							rowspan="6">
+							Win32
+						</td>
+						<td	headers="compiler">
+							MS Visual Studio 2008
+						</td>
+						<td	headers="compiler_x86_x64"
+							rowspan="5">
+							both
+						</td>
+					</tr>
+					<tr>
+						<td headers="compiler">MS Visual Studio 2010 (Pro)</td>
+					</tr>
+					<tr>
+						<td headers="compiler">MS Visual Studio 2010 (Express)</td>
+					</tr>
+					<tr>
+						<td headers="compiler">MS Visual Studio 2012</td>
+					</tr>
+					<tr>
+						<td headers="compiler">MS Visual Studio 2013 (Express)</td>
+					</tr>
+					<tr>
+						<td headers="compiler">Embarcadero C++ Builder XE 4</td>
+						<td headers="compiler_x86_x64">x86</td>
+					</tr>
+					<tr>
+						<td	headers="environment"
+							rowspan="2">
+							MinGW
+						</td>
+						<td	headers="compiler">
+							gcc 4.5.4
+						</td>
+						<td	headers="compiler_x86_x64"
+							rowspan="3">
+							both
+						</td>
+					</tr>
+					<tr>
+						<td headers="compiler">gcc 4.6.4</td>
+					</tr>
+					<tr>
+						<td headers="environment">Cygwin</td>
+						<td headers="compiler">gcc 4.8.2</td>
+					</tr>
+					<!-- Linux -->
+					<tr>
+						<td	headers="os"
+							rowspan="2">
+							Debian
+						</td>
+						<td	headers="os_x86_x64"
+							rowspan="2">
+							x86
+						</td>
+						<td	headers="environment"
+							rowspan="11">
+							Posix
+						</td>
+						<td	headers="compiler">
+							gcc
+						</td>
+						<td	headers="compiler_x86_x64"
+							rowspan="2">
+							x86
+						</td>
+					</tr>
+					<tr>
+						<td headers="compiler">clang</td>
+					</tr>
+					<tr>
+						<td	headers="os" rowspan="7">
+							Ubuntu and Scientific Linux
+						</td>
+						<td	headers="os_x86_x64"
+							rowspan="9">
+							x64
+						</td>
+						<td	headers="compiler">
+							gcc 4.5
+						</td>
+						<td	headers="compiler_x86_x64"
+							rowspan="8">
+							both
+						</td>
+					</tr>
+					<tr>
+						<td headers="compiler">gcc 4.6</td>
+					</tr>
+					<tr>
+						<td headers="compiler">gcc 4.7</td>
+					</tr>
+					<tr>
+						<td headers="compiler">gcc 4.8</td>
+					</tr>
+					<tr>
+						<td headers="compiler">Intel 11.1</td>
+					</tr>
+					<tr>
+						<td headers="compiler">Intel 12.1</td>
+					</tr>
+					<tr>
+						<td headers="compiler">Intel 13.1</td>
+					</tr>
+					<tr>
+						<td headers="os">Red Hat</td>
+						<td headers="compiler">gcc</td>
+					</tr>
+					<!-- Mac OS X -->
+					<tr>
+						<td headers="os">Mac OS X 10.9 Mavericks</td>
+						<td headers="compiler">Xcode 5.0.2</td>
+						<td headers="compiler_x86_x64">x64</td>
+					</tr>
+				</tbody>
+			</table>
+		</section>
+	</body>
+</document>
