@@ -1792,26 +1792,66 @@
 
 	<target	name="apidocs"
 			description="Build log4cxx manual">
-		<copy	file="src/site/doxy/Doxyfile.in"
+		<copy	file="${base.dir}/src/site/doxy/Doxyfile.in"
 				tofile="${target.dir}/Doxyfile"
 				overwrite="true"
 		/>
 		<replace file="${target.dir}/Doxyfile">
-			<replacefilter	token="@VERSION@"
+			<replacefilter	token="@version@"
 							value="${version}"
 			/>
 			<replacefilter	token="@base_dir@"
 							value="${base.dir}"
 			/>
 			<replacefilter	token="@manual_dest@"
-							value="${base.dir}/target/site/apidocs"
+							value="${target.dir}/site/apidocs"
 			/>
 		</replace>
-		<mkdir dir="target/site/apidocs" />
 
+		<!--
+			Copying project site index data to apidocs index
+
+			We need some Apache boilerplate and intro in the apidocs index page and the easiest
+			solution seems to be to simply copy some of the contents of the project site index.
+		 -->
+		<xslt	in="${target.dir}/site/index.html"
+				out="${target.dir}/mainpage.dox"
+				style="${base.dir}/src/site/doxy/mainpage.dox.xsl"
+				force="true">
+			<xmlcatalog>
+				<dtd	publicId="-//W3C//DTD XHTML 1.0 Transitional//EN"
+						location="${base.dir}/src/site/doxy/DTDs/xhtml1-transitional.dtd"
+				/>
+				<dtd	publicId="-//W3C//ENTITIES Latin 1 for XHTML//EN"
+						location="${base.dir}/src/site/doxy/DTDs/xhtml-lat1.ent"
+				/>
+				<dtd	publicId="-//W3C//ENTITIES Symbols for XHTML//EN"
+						location="${base.dir}/src/site/doxy/DTDs/xhtml-symbol.ent"
+				/>
+				<dtd	publicId="-//W3C//ENTITIES Special for XHTML//EN"
+						location="${base.dir}/src/site/doxy/DTDs/xhtml-special.ent"
+				/>
+			</xmlcatalog>
+		</xslt>
+
+		<mkdir	dir="${target.dir}/site/apidocs" />
 		<exec	executable="${doxygen.exe}"
 				dir="${target.dir}"
 		/>
+
+		<!--
+			Links ot the main project site
+
+			We want links to the main project site and adding them after doxygen seems to be the
+			only and easiest way.
+		 -->
+		<replaceregexp	match="(&lt;div (?:id=&quot;projectname&quot;|class=&quot;title&quot;)&gt;)(Apache log4cxx \(Incubating\))"
+						replace="\1&lt;a href=&quot;http://incubator.apache.org/log4cxx&quot;&gt;\2&lt;/a&gt;"
+						flags="img">
+			<fileset dir="${target.dir}/site/apidocs">
+				<include name="*.html" />
+			</fileset>
+		</replaceregexp>
 	</target>
 
 	<target	name="site"
