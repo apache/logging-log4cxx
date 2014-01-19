@@ -106,6 +106,29 @@ namespace log4cxx
         </td>
         </tr>
 
+        <tr>
+          <td align="center">
+            <b>C</b>
+            <p><b>class</b></p>
+          </td>
+
+          <td>
+            Used to output the class of the issuer of the logging event if the
+            compiler used supports a macro to retrieve the method of the
+            currently compiled line and if the LOG4CXX_TRACE-like macros are
+            used to issue a logging request. In this case the macro LOG4CXX_*
+            is expanded at compile time to generate location info of the
+            logging event and adds the method name, besides file and line, if
+            available. In most cases the provided method contains the classname
+            and can therefore be retrieved form the location info as needed.
+
+            <p>
+              Currently supported compilers are those from Microsoft, GNU-C and
+              Borland.
+            </p>
+          </td>
+        </tr>
+
    <tr> <td align=center><b>d</b></td> <td>Used to output the date of
          the logging event. The date conversion specifier may be
          followed by a set of braces containing a
@@ -147,6 +170,30 @@ namespace log4cxx
         <td align=center><b>m</b></td>
         <td>Used to output the application supplied message associated with
         the logging event.</td>
+        </tr>
+
+        <tr>
+          <td align="center">
+            <b>M</b>
+            <p><b>method</b></p>
+          </td>
+
+          <td>
+            Used to output the method of the issuer of the logging event if the
+            compiler used supports a macro to retrieve the method of the
+            currently compiled line and if the LOG4CXX_TRACE-like macros are
+            used to issue a logging request. In this case the macro LOG4CXX_*
+            is expanded at compile time to generate location info of the
+            logging event and adds the method name, besides file and line, if
+            available. In most cases the provided method contains the classname
+            which is ignored in every attempt to retrieve the method from the
+            location info.
+
+            <p>
+              Currently supported compilers are those from Microsoft, GNU-C and
+              Borland.
+            </p>
+          </td>
         </tr>
 
         <tr>
@@ -336,11 +383,13 @@ namespace log4cxx
                 /**
                  * Pattern converters.
                  */
+                LOG4CXX_LIST_DEF(LoggingEventPatternConverterList, log4cxx::pattern::LoggingEventPatternConverterPtr);
                 LoggingEventPatternConverterList patternConverters;
 
                /**
                 * Field widths and alignment corresponding to pattern converters.
                 */
+                LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
                 FormattingInfoList patternFields;
 
 
