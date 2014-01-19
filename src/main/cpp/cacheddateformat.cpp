@@ -134,15 +134,13 @@ int CachedDateFormat::findMillisecondStart(
 
            //   If the next 3 characters match the magic
            //      strings and the remaining fragments are identical
-           //
-           //
            if (plusZero.length() == formatted.length()
-              && regionMatches(magicString, 0, plusMagic, i, magicString.length())
-              && regionMatches(formattedMillis, 0, formatted, i, magicString.length())
-              && regionMatches(zeroString, 0, plusZero, i, 3)
-              && (formatted.length() == i + 3
-                 || plusZero.compare(i + 3,
-                       LogString::npos, plusMagic, i+3, LogString::npos) == 0)) {
+              && regionMatches(magicString, magicString.length() - (plusMagic.length() - i), plusMagic, i, plusMagic.length() - i)
+              && regionMatches(formattedMillis, formattedMillis.length() - (formatted.length() - i), formatted, i, formatted.length() - i)
+              && regionMatches(zeroString, (sizeof(zeroString)/sizeof(zeroString[0]) - 1) - (plusZero.length() - i), plusZero, i, plusZero.length() - i)
+              && (formatted.length() == i + (formatted.length() - i)
+                 || plusZero.compare(i + (plusZero.length() - i),
+                       LogString::npos, plusMagic, i + (plusMagic.length() - i), LogString::npos) == 0)) {
               return i;
            } else {
               return UNRECOGNIZED_MILLISECONDS;
