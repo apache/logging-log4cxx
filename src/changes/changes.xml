@@ -63,6 +63,8 @@
 			<action issue="LOGCXX-415" type="fix">Empty XML configuration file causes crash</action>
 			<action issue="LOGCXX-417" type="fix">atoi undefined on Mac OS 10.9 compiling stringhelper.cpp</action>
 			<action issue="LOGCXX-420" type="fix">Possible out_of_range exception for millisecond formats in CachedDateFormat</action>
+
+			<action type="change">Behavior of StringHelper::startsWith and endsWith synced</action>
 		</release>
 		<release version="0.10.0" date="2008-04-03" description="First Apache release">
 			<action issue="LOGCXX-2" type="fix">logger.h includes config.h</action>
