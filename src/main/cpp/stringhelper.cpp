@@ -84,6 +84,11 @@ LogString StringHelper::trim(const LogString& s)
 
 bool StringHelper::startsWith(const LogString& s, const LogString& prefix)
 {
+    if (s.length() < prefix.length())
+    {
+      return false;
+    }
+
     return s.compare(0, prefix.length(), prefix) == 0;
 }
 
