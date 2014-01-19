@@ -109,28 +109,32 @@ namespace log4cxx
 
         /** Caller's method name. */
         const char * methodName;
-        
+
 
       };
   }
 }
 
-  #if !defined(LOG4CXX_LOCATION)
-#if defined(_MSC_VER)
-#if _MSC_VER >= 1300
+#if !defined(LOG4CXX_LOCATION)
+  #if defined(_MSC_VER)
+    #if _MSC_VER >= 1300
       #define __LOG4CXX_FUNC__ __FUNCSIG__
-#endif
-#else
-#if defined(__GNUC__)
+    #endif
+  #else
+    #if defined(__GNUC__)
       #define __LOG4CXX_FUNC__ __PRETTY_FUNCTION__
-#endif
-#endif
-#if !defined(__LOG4CXX_FUNC__)
-#define __LOG4CXX_FUNC__ ""
-#endif
-      #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__, \
-           __LOG4CXX_FUNC__,                                                         \
-           __LINE__)
+    #else
+      #if defined(__BORLANDC__)
+        #define __LOG4CXX_FUNC__ __FUNC__
+      #endif
+    #endif
   #endif
+  #if !defined(__LOG4CXX_FUNC__)
+    #define __LOG4CXX_FUNC__ ""
+  #endif
+  #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__,         \
+                                                        __LOG4CXX_FUNC__, \
+                                                        __LINE__)
+#endif
 
 #endif //_LOG4CXX_SPI_LOCATION_LOCATIONINFO_H
