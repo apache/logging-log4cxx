@@ -235,7 +235,8 @@
 		/>
 
 		<libset libs="cw32mt" if="is-bcc" />
-		<project	type="${project.type}" outfile="${projects.dir}/xml"
+		<project	type="${project.type}"
+					outfile="${projects.dir}/xml"
 					if="project.if">
 			<comment>&license;</comment>
 		</project>
