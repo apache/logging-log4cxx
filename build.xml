@@ -527,7 +527,9 @@
 					value="msvc6"
 		/>
 
-		<ant antfile="src/ant/apr-build.xml" target="build" inheritAll="false">
+		<ant	antfile="src/ant/apr-build.xml"
+				target="build"
+				inheritAll="false">
 			<property	name="basedir"
 						value="${apr.src.dir}"
 			/>

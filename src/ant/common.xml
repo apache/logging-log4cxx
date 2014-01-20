@@ -67,7 +67,8 @@
 </target>
 
 <target	name="win-init"
-		depends="os-detect" if="is-windows">
+		depends="os-detect"
+		if="is-windows">
 	<property	name="compiler"
 				value="msvc"
 	/>
