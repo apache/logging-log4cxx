@@ -103,7 +103,6 @@
 	/>
 </target>
 
-
 <target	name="unix-init"
 		depends="mac-init" if="is-unix">
 	<property	name="compiler"
@@ -119,7 +118,6 @@
 		<os family="windows" />
 	</condition>
 </target>
-
 
 <target	name="common-init"
 		depends="win-init, unix-init">
