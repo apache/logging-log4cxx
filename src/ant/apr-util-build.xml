@@ -144,17 +144,23 @@
 		depends="unix-configure, win-configure">
 	<condition	property="has-iconv" value="1">
 		<isfileselected file="${include.dir}/apu.h">
-			<contains text="#define APR_HAVE_ICONV 1" ignorewhitespace="true" />
+			<contains	text="#define APR_HAVE_ICONV 1"
+						ignorewhitespace="true"
+			/>
 		</isfileselected>
 	</condition>
 	<condition	property="has-iconv" value="1">
 		<isfileselected file="${include.dir}/apu.h">
-			<contains text="#define APU_HAVE_ICONV 1" ignorewhitespace="true" />
+			<contains	text="#define APU_HAVE_ICONV 1"
+						ignorewhitespace="true"
+			/>
 		</isfileselected>
 	</condition>
 	<condition	property="has-sqlite3" value="1">
 		<isfileselected file="${include.dir}/apu.h">
-			<contains text="#define APU_HAVE_SQLITE3 1" ignorewhitespace="true" />
+			<contains	text="#define APU_HAVE_SQLITE3 1"
+						ignorewhitespace="true"
+			/>
 		</isfileselected>
 	</condition>
 </target>
