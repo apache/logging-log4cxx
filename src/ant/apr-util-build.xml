@@ -119,12 +119,41 @@
 	<copy	tofile="${include.dir}/private/apu_select_dbm.h"
 			file="${include.dir}/private/apu_select_dbm.hw"
 	/>
-	<copy	tofile="${src.dir}/xml/expat/lib/expat.h"
-			file="${src.dir}/xml/expat/lib/expat.h.in"
-	/>
 	<copy	tofile="${src.dir}/xml/expat/lib/config.h"
 			file="${src.dir}/xml/expat/lib/winconfig.h"
 	/>
+
+	<!--
+		apr_dbd_odbc.c needs stdint.h, but at least on BCC it doesn't seem to be included
+		automatically. It's easier to change that using a file we already create than changing core
+		code files.
+	 -->
+	<condition	property="bcc-needs-stdint"
+				value="0"
+				else="1">
+		<and>
+			<isfileselected file="${include.dir}/private/apu_config.h">
+				<contains	text="#include &lt;stdint.h&gt;"
+							ignorewhitespace="true"
+				/>
+			</isfileselected>
+			<equals arg1="${compiler}" arg2="bcc" />
+		</and>
+	</condition>
+	<if>
+		<equals	arg1="${bcc-needs-stdint}"
+				arg2="1"
+		/>
+		<then>
+			<replace	file="${include.dir}/private/apu_config.h"
+						token="#define APU_CONFIG_H">
+				<replacevalue>#define APU_CONFIG_H
+
+#include &lt;stdint.h&gt;
+				</replacevalue>
+			</replace>
+		</then>
+	</if>
 </target>
 
 <target	name="unix-configure"
@@ -142,21 +171,24 @@
 
 <target	name="configure"
 		depends="unix-configure, win-configure">
-	<condition	property="has-iconv" value="1">
+	<condition	property="has-iconv"
+				value="1">
 		<isfileselected file="${include.dir}/apu.h">
 			<contains	text="#define APR_HAVE_ICONV 1"
 						ignorewhitespace="true"
 			/>
 		</isfileselected>
 	</condition>
-	<condition	property="has-iconv" value="1">
+	<condition	property="has-iconv"
+				value="1">
 		<isfileselected file="${include.dir}/apu.h">
 			<contains	text="#define APU_HAVE_ICONV 1"
 						ignorewhitespace="true"
 			/>
 		</isfileselected>
 	</condition>
-	<condition	property="has-sqlite3" value="1">
+	<condition	property="has-sqlite3"
+				value="1">
 		<isfileselected file="${include.dir}/apu.h">
 			<contains	text="#define APU_HAVE_SQLITE3 1"
 						ignorewhitespace="true"
@@ -168,24 +200,6 @@
 <target	name="build-xml"
 		depends="configure"
 		description="Builds Expat">
-	<!--
-		Uses replace instead of preprocessor since the quotes on VERSION cause problems with
-		cpptasks.
-	 -->
-	<replace file="${src.dir}/xml/expat/lib/xmlparse.c">
-		<replacefilter	token="XML_MAJOR_VERSION"
-						value="1" />
-		<replacefilter	token="XML_MINOR_VERSION"
-						value="95"
-		/>
-		<replacefilter	token="XML_MICRO_VERSION"
-						value="1"
-		/>
-		<replacefilter	token="VERSION"
-						value='"expat_1.95.1"'
-		/>
-	</replace>
-
 	<mkdir dir="${executable.dir}/apr-util-ofiles" />
 	<property	name="project.compiler"
 				value="${compiler}"
@@ -224,7 +238,7 @@
 		<defineset>
 			<define name="XMLPARSEAPI" value=" " />
 		</defineset>
-		<defineset	define="WIN32"
+		<defineset	define="WIN32 COMPILED_FROM_DSP"
 					if="is-windows"
 		/>
 		<defineset	define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE"
@@ -303,9 +317,17 @@
 		<defineset>
 			<define name="XMLPARSEAPI" value=" " />
 		</defineset>
-		<defineset	define="WIN32"
+		<defineset	define="WIN32 COMPILED_FROM_DSP"
 					if="is-windows"
 		/>
+		<defineset if="is-bcc">
+			<define	name="EILSEQ"
+					value="50"
+			/>
+			<define	name="HAVE_SQL_H"
+					value="1"
+			/>
+		</defineset>
 		<defineset	define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE"
 					if="is-gcc"
 		/>
@@ -328,9 +350,6 @@
 		<libset	libs="sqlite3"
 				if="has-sqlite3"
 		/>
-		<defineset if="is-bcc">
-			<define name="EILSEQ" value="50" />
-		</defineset>
 
 		<project	type="${project.type}"
 					outfile="${projects.dir}/aprutil"

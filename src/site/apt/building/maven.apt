@@ -18,7 +18,6 @@
  ------
  ------
 
-
 Building Apache log4cxx with Apache Maven 2
 
    {{{http://maven.apache.org}Apache Maven 2}} is used to generate the release assemblies and generate
@@ -35,32 +34,26 @@ Building Apache log4cxx with Apache Maven 2
   *Install APR and APR-Util or place source in apr and apr-util directories in same parent directory
       as log4cxx directory.
 
-
    Building and testing log4cxx on a Unix platform with packaged APR and APR-Util.
 
 +----+
- sudo apt-get install libapr1.0-dev libaprutil1.0-dev doxygen
- cd apache-log4cxx-0.10.0
- export PATH=/home/myself/maven-2.0.8/bin:$PATH
- mvn package
+$ sudo apt-get install libapr1.0-dev libaprutil1.0-dev doxygen
+$ cd apache-log4cxx-0.10.0
+$ export PATH=/home/myself/maven-2.0.8/bin:$PATH
+$ mvn package
 +----+
-
 
    Building and testing log4cxx on a Microsoft Windows with APR and APR-Util built from source.
 
 +----+
- set PATH=\maven-2.0.8\bin;%PATH%
- tar -xvzf apr-1.2.12.tar.gz
- rename apr-1.2.12 apr
- tar -xvzf apr-util-1.2.12.tar.gz
- rename apr-util-1.2.12 apr-util
- cd apache-log4cxx-0.10.0
- mvn package
+$ set PATH=\maven-2.0.8\bin;%PATH%
+$ tar -xvzf apr-1.2.12.tar.gz
+$ rename apr-1.2.12 apr
+$ tar -xvzf apr-util-1.2.12.tar.gz
+$ rename apr-util-1.2.12 apr-util
+$ cd apache-log4cxx-0.10.0
+$ mvn package
 +----+
-
-
-
-
 
 * Common Maven targets
 
@@ -81,15 +74,13 @@ Building Apache log4cxx with Apache Maven 2
    All build products will be placed in the target subdirectory.
 
    It is not possible to directly pass options to the Ant build, however the ant build will read
-   any build.properties file in the log4cxx directory.
+   any build.properties file in the log4cxx directory. The file has to be in the default format
+   for {{{http://en.wikipedia.org/wiki/.properties}Java properties files}}, especially one must not
+   provide options using the syntax -Dxy=z like on the shell, but only as xy=z per line.
 
-   SMTP and ODBC options can depend on libraries that
-   that have different licenses.
-   You should review the corresponding licenses and understand
-   the implications before redistribution.
+   SMTP and ODBC options can depend on libraries that that have different licenses. You should
+   review the corresponding licenses and understand the implications before redistribution.
 
 * Platform specific notes:
 
   See the {{{./ant.html}Apache Ant build}} for platform specific notes.
-
-

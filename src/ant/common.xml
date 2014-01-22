@@ -36,6 +36,7 @@
 
 <taskdef resource="cpptasks.tasks" />
 <typedef resource="cpptasks.types" />
+<taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
 <target name="os-detect">
 	<condition	property="os.family"

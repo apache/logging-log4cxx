@@ -177,6 +177,22 @@
 				value="https://svn.apache.org/repos/asf/logging/site/trunk/docs/log4cxx"
 	/>
 
+	<propertyregex	property="version.major"
+					input="${version}"
+					regexp="^(\d+)"
+					select="\1"
+	/>
+	<propertyregex	property="version.minor"
+					input="${version}"
+					regexp="\.(\d+)\."
+					select="\1"
+	/>
+	<propertyregex	property="version.rev"
+					input="${version}"
+					regexp="(\d+)$"
+					select="\1"
+	/>
+
 	<target	name="usage"
 			description="Describes usage of the build script">
 		<echo>
@@ -827,6 +843,50 @@
 		</cc>
 	</target>
 
+	<target	name="update-rc-files-version-info"
+			description="Provides current version information for Windows resource files."
+			if="is-windows"
+			unless="is-bcc">
+		<replaceregexp	file="${resources.dir}/log4cxx.rc"
+						match="FILEVERSION \d+, \d+, \d+, \d+"
+						replace="FILEVERSION ${version.major}, ${version.minor}, 0, ${version.rev}"
+		/>
+		<replaceregexp	file="${resources.dir}/log4cxx.rc"
+						match="PRODUCTVERSION \d+, \d+, \d+, \d+"
+						replace="PRODUCTVERSION ${version.major}, ${version.minor}, 0, ${version.rev}"
+		/>
+		<replaceregexp	file="${resources.dir}/log4cxx.rc"
+						match="&quot;FileVersion&quot;, &quot;\d+, \d+, \d+, \d+&quot;"
+						replace="&quot;FileVersion&quot;, &quot;${version.major}, ${version.minor}, 0, ${version.rev}&quot;"
+		/>
+		<replaceregexp	file="${resources.dir}/log4cxx.rc"
+						match="&quot;ProductVersion&quot;, &quot;\d+, \d+, \d+, \d+&quot;"
+						replace="&quot;ProductVersion&quot;, &quot;${version.major}, ${version.minor}, 0, ${version.rev}&quot;"
+		/>
+	</target>
+
+	<target	name="restore-rc-files-version-info"
+			description="Restores version information for Windows resource files to their default values."
+			if="is-windows"
+			unless="is-bcc">
+		<replaceregexp	file="${resources.dir}/log4cxx.rc"
+						match="FILEVERSION \d+, \d+, \d+, \d+"
+						replace="FILEVERSION 0, 0, 0, 0"
+		/>
+		<replaceregexp	file="${resources.dir}/log4cxx.rc"
+						match="PRODUCTVERSION \d+, \d+, \d+, \d+"
+						replace="PRODUCTVERSION 0, 0, 0, 0"
+		/>
+		<replaceregexp	file="${resources.dir}/log4cxx.rc"
+						match="&quot;FileVersion&quot;, &quot;\d+, \d+, \d+, \d+&quot;"
+						replace="&quot;FileVersion&quot;, &quot;0, 0, 0, 0&quot;"
+		/>
+		<replaceregexp	file="${resources.dir}/log4cxx.rc"
+						match="&quot;ProductVersion&quot;, &quot;\d+, \d+, \d+, \d+&quot;"
+						replace="&quot;ProductVersion&quot;, &quot;0, 0, 0, 0&quot;"
+		/>
+	</target>
+
 	<target	name="build-lib"
 			depends="build-apr-util, build-libesmtp, configure"
 			description="Build log4cxx library">
@@ -892,6 +952,8 @@
 					value="msrc"
 		/>
 
+		<antcall target="update-rc-files-version-info" />
+
 		<cc	name="${project.compiler}"
 			exceptions="true"
 			outfile="${log4cxx.lib.dir}/${lib.prefix}${lib.name}${lib.suffix}"
@@ -904,8 +966,10 @@
 			debug="${debug}"
 			projectsOnly="${projectsOnly}">
 
+			<!-- brc aborts with an access violation. -->
 			<compiler	name="${resource.compiler}"
-						if="is-windows">
+						if="is-windows"
+						unless="is-bcc">
 				<includepath path="${resources.dir}" />
 				<fileset	dir="${resources.dir}"
 							includes="*.rc"
@@ -963,6 +1027,8 @@
 				<dependency name="${projects.dir}/libesmtp" />
 			</project>
 		</cc>
+
+		<antcall target="restore-rc-files-version-info" />
 
 		<!-- copy liblog4cxx.so to log4cxx.dll for MinGW and Cygwin -->
 		<condition	property="copy.log4cxx"
