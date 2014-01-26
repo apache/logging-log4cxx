@@ -120,15 +120,17 @@ $ ant -Dcompiler=xyz
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Dwith-apr-util   | path to non-default location for APR-Util.                                                                               |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
+| -Denable-char     | Enable char API methods, choice of yes (default), no.                                                                    |
+*-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Denable-wchar_t  | Enable wchar_t API methods, choice of yes (default), no.                                                                 |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Denable-unichar  | Enable UniChar API methods, choice of yes, no (default).                                                                 |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Denable-cfstring | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default).                              |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
-| -Dwith-logchar    | Interal character representation, choice of utf-8 (default), wchar_t , unichar.                                          |
+| -Dwith-logchar    | Internal character representation, choice of utf-8 (default), wchar_t , unichar.                                         |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
-| -Dwith-charset    | Exteral character encoding, choice of utf-8, iso-8859-1, usascii, ebcdic,  auto (default).                               |
+| -Dwith-charset    | External character encoding, choice of utf-8, iso-8859-1, usascii, ebcdic, auto (default).                               |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Dwith-SMTP       | SMTP implementation for SMTPAppender, choice of libesmtp, no (default).                                                  |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
