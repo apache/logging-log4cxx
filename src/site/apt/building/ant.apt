@@ -128,7 +128,7 @@ $ ant -Dcompiler=xyz
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Denable-cfstring | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default).                              |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
-| -Dwith-logchar    | Internal character representation, choice of utf-8 (default), wchar_t , unichar.                                         |
+| -Dwith-logchar    | Internal character representation, choice of utf-8 (default non-Windows), wchar_t (default Windows), unichar.            |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Dwith-charset    | External character encoding, choice of utf-8, iso-8859-1, usascii, ebcdic, auto (default).                               |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
