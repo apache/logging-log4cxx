@@ -51,7 +51,7 @@
 			if="is-unix"
 	/>
 
-	<syslibset	libs="advapi32 mswsock ws2_32 shell32"
+	<syslibset	libs="advapi32 mswsock shell32 ws2_32"
 				if="is-windows"
 	/>
 	<syslibset	libs="stdc++"
@@ -81,6 +81,7 @@
 <!ENTITY find-apr SYSTEM 'src/ant/find-apr.xml'>
 <!ENTITY find-apr-util SYSTEM 'src/ant/find-apr-util.xml'>
 <!ENTITY find-libesmtp SYSTEM 'src/ant/find-libesmtp.xml'>
+<!ENTITY ilink32Workaround SYSTEM 'src/ant/ilink32-workaround.xml'>
 ]>
 
 <!--
@@ -93,6 +94,7 @@
 	&find-apr;
 	&find-apr-util;
 	&find-libesmtp;
+	&ilink32Workaround;
 
 	<property	name="base.dir"
 				location="."
@@ -247,45 +249,52 @@
 		/>
 		<mkdir dir="${log4cxx.lib.dir}" />
 
-		<condition property="with-logchar" value="wchar_t">
+		<condition	property="with-logchar"
+					value="wchar_t">
 			<isset property="is-windows" />
 		</condition>
 		<property	name="with-logchar"
 					value="utf-8"
 		/>
 
-		<condition property="has-libesmtp" value="1">
+		<condition	property="has-libesmtp"
+					value="1">
 			<equals	arg1="${with-SMTP}"
 					arg2="libesmtp"
 			/>
 		</condition>
 
-		<condition property="odbc.lib" value="iodbc">
+		<condition	property="odbc.lib"
+					value="iodbc">
 			<equals	arg1="${with-ODBC}"
 					arg2="iODBC"
 			/>
 		</condition>
 
-		<condition property="odbc.lib" value="unixodbc">
+		<condition	property="odbc.lib"
+					value="unixodbc">
 			<equals	arg1="${with-ODBC}"
 					arg2="unixODBC"
 			/>
 		</condition>
 
-		<condition property="odbc.lib" value="odbc32">
+		<condition	property="odbc.lib"
+					value="odbc32">
 			<equals	arg1="${with-ODBC}"
 					arg2="Microsoft"
 			/>
 		</condition>
 
-		<condition property="has-ODBC" value="1">
+		<condition	property="has-ODBC"
+					value="1">
 			<isset property="odbc.lib" />
 		</condition>
 		<property	name="has-ODBC"
 					value="0"
 		/>
 
-		<condition property="force-ant" value="1">
+		<condition	property="force-ant"
+					value="1">
 			<equals	arg1="${find}"
 					arg2="false"
 			/>
@@ -326,9 +335,6 @@
 				file="${include.dir}/log4cxx/private/log4cxx_private.hw"
 				overwrite="true"
 		/>
-		<property	name="odbc.lib"
-					value="odbc32"
-		/>
 	</target>
 
 	<target	name="configure"
@@ -342,7 +348,8 @@
 		<echo message="Configuring enable-unichar=${enable-unichar}" />
 		<echo message="Configuring enable-cfstring=${enable-cfstring}" />
 
-		<condition property="logchar_is_utf8" value="1">
+		<condition	property="logchar_is_utf8"
+					value="1">
 			<equals	arg1="${with-logchar}"
 					arg2="utf-8"
 			/>
@@ -351,7 +358,8 @@
 					value="0"
 		/>
 
-		<condition property="logchar_is_unichar" value="1">
+		<condition	property="logchar_is_unichar"
+					value="1">
 			<equals	arg1="${with-logchar}"
 					arg2="unichar"
 			/>
@@ -360,7 +368,8 @@
 					value="0"
 		/>
 
-		<condition property="logchar_is_wchar" value="1">
+		<condition	property="logchar_is_wchar"
+					value="1">
 			<equals	arg1="${with-logchar}"
 					arg2="wchar_t"
 			/>
@@ -384,7 +393,8 @@
 						replace="${logchar_is_wchar}"
 		/>
 
-		<condition property="charset_is_utf8" value="1">
+		<condition	property="charset_is_utf8"
+					value="1">
 			<equals	arg1="${with-charset}"
 					arg2="utf-8"
 			/>
@@ -393,7 +403,8 @@
 					value="0"
 		/>
 
-		<condition property="charset_is_iso-8859-1" value="1">
+		<condition	property="charset_is_iso-8859-1"
+					value="1">
 			<equals	arg1="${with-charset}"
 					arg2="iso-8859-1"
 			/>
@@ -402,7 +413,8 @@
 					value="0"
 		/>
 
-		<condition property="charset_is_usascii" value="1">
+		<condition	property="charset_is_usascii"
+					value="1">
 			<equals	arg1="${with-charset}"
 					arg2="usascii"
 			/>
@@ -411,7 +423,8 @@
 					value="0"
 		/>
 
-		<condition property="charset_is_ebcdic" value="1">
+		<condition	property="charset_is_ebcdic"
+					value="1">
 			<equals	arg1="${with-charset}"
 					arg2="ebcdic"
 			/>
@@ -954,6 +967,11 @@
 
 		<antcall target="update-rc-files-version-info" />
 
+		<!--
+			Linking doesn't work for bcc and is implemented manually afterwards, but because
+			compiling works we don't want to unnecessary double code and simply ignore linkage
+			errors until there's a way to explicitly don't link if bcc.
+		 -->
 		<cc	name="${project.compiler}"
 			exceptions="true"
 			outfile="${log4cxx.lib.dir}/${lib.prefix}${lib.name}${lib.suffix}"
@@ -964,7 +982,8 @@
 			outtype="${lib.type}"
 			objdir="${log4cxx.lib.dir}/log4cxx_obj"
 			debug="${debug}"
-			projectsOnly="${projectsOnly}">
+			projectsOnly="${projectsOnly}"
+			failonerror="false">
 
 			<!-- brc aborts with an access violation. -->
 			<compiler	name="${resource.compiler}"
@@ -995,9 +1014,6 @@
 							if="esmtp.include.dir"
 			/>
 
-			<defineset	define="_USRDLL DLL_EXPORTS"
-						if="is-windows"
-			/>
 			<defineset	define="LOG4CXX"
 			/>
 			<defineset	define="LOG4CXX_STATIC"
@@ -1009,14 +1025,16 @@
 			<defineset	define="APU_DECLARE_STATIC"
 						if="apr-util-static"
 			/>
-			<defineset	define="WIN32"
+			<defineset	define="WIN32 _USRDLL DLL_EXPORTS"
 						if="is-windows"
 			/>
 
 			<compilerarg	value="${pic-option}"
 							if="pic-option"
 			/>
+
 			&libsets;
+
 			<project	type="${project.type}"
 						outfile="${projects.dir}/${lib.name}"
 						if="project.if">
@@ -1027,6 +1045,7 @@
 				<dependency name="${projects.dir}/libesmtp" />
 			</project>
 		</cc>
+		<antcall target="build-lib-ilink32-workaround" />
 
 		<antcall target="restore-rc-files-version-info" />
 
@@ -1096,11 +1115,15 @@
 
 			<compilerarg value="${pic-option}" if="pic-option" />
 
-			<libset libs="${lib.prefix}${lib.name}${lib.suffix}" dir="${log4cxx.lib.dir}" />
+			<libset	libs="${lib.prefix}${lib.name}${lib.suffix}"
+					dir="${log4cxx.lib.dir}"
+			/>
 			&libsets;
 
-			<project outfile="${projects.dir}/${example.name}" type="${project.type}" if="project.if">
-			<comment>&license;</comment>
+			<project	outfile="${projects.dir}/${example.name}"
+						type="${project.type}"
+						if="project.if">
+				<comment>&license;</comment>
 				<dependency file="${projects.dir}/apr" />
 				<dependency file="${projects.dir}/xml" />
 				<dependency name="${projects.dir}/aprutil" depends="apr,xml" />
@@ -1219,7 +1242,8 @@
 			outtype="executable"
 			objdir="${log4cxx.lib.dir}/testsuite_obj"
 			debug="${debug}"
-			projectsOnly="${projectsOnly}">
+			projectsOnly="${projectsOnly}"
+			failonerror="false">
 
 			<fileset	dir="${tests.cpp.dir}"
 						includes="**/*.cpp **/*.c **/*.h"
@@ -1268,6 +1292,7 @@
 				<dependency file="${projects.dir}/log4cxx" depends="apr,aprutil,libesmtp" />
 			</project>
 		</cc>
+		<antcall target="build-unittest-ilink32-workaround" />
 	</target>
 
 	<target	name="build-standalone-unittest"

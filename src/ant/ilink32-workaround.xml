@@ -1,0 +1,84 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+
+<!--
+	LOG4CXX-421
+
+	ilink32 doesn't work the way it's used by cpptasks anymore, but it should have created a
+	partially correct answer file which we'll need to update to get a properly linked result.
+ -->
+
+<target	name="apr-build-ilink32-workaround"
+		if="is-bcc">
+	<concat	destfile="${target.dir}/debug/static/apr-1.lib.rsp"
+			append="true"> &amp;
++"${bcc.rootPath}\lib\win32\release\psdk\advapi32.lib" &amp;
++"${bcc.rootPath}\lib\win32\release\psdk\mswsock.lib" &amp;
++"${bcc.rootPath}\lib\win32\release\psdk\rpcrt4.lib" &amp;
++"${bcc.rootPath}\lib\win32\release\psdk\ws2_32.lib"</concat>
+
+	<exec	executable="ilink32"
+			failonerror="true">
+		<arg value="@${target.dir}\debug\static\apr-1.lib.rsp" />
+	</exec>
+</target>
+
+<target	name="build-lib-ilink32-workaround"
+		if="is-bcc">
+	<replace	file="${target.dir}/debug/shared/log4cxx.dll.rsp"
+				token="/Gi +">
+		<replacevalue expandProperties="true">/Gi +
+/aa +</replacevalue>
+	</replace>
+	<replace	file="${target.dir}/debug/shared/log4cxx.dll.rsp"
+				token="apr-1.lib +">
+		<replacevalue expandProperties="true">apr-1.lib +
+"${bcc.rootPath}\lib\win32\release\psdk\advapi32.lib" +
+"${bcc.rootPath}\lib\win32\release\psdk\mswsock.lib" +
+"${bcc.rootPath}\lib\win32\release\psdk\odbc32.lib" +
+"${bcc.rootPath}\lib\win32\release\psdk\shell32.lib" +
+"${bcc.rootPath}\lib\win32\release\psdk\ws2_32.lib" +</replacevalue>
+	</replace>
+	<replaceregexp	file="${target.dir}/debug/shared/log4cxx.dll.rsp"
+					match="cw32\.lib"
+					replace="cw32mt.lib"
+	/>
+
+	<exec	executable="ilink32"
+			failonerror="true">
+		<arg value="@${target.dir}\debug\shared\log4cxx.dll.rsp" />
+	</exec>
+</target>
+
+<target	name="build-unittest-ilink32-workaround"
+		if="is-bcc">
+	<replace	file="${target.dir}/debug/shared/testsuite.exe.rsp"
+				token="apr-1.lib +">
+		<replacevalue expandProperties="true">apr-1.lib +
+"${bcc.rootPath}\lib\win32\release\psdk\ws2_32.lib" +</replacevalue>
+	</replace>
+	<replaceregexp	file="${target.dir}/debug/shared/testsuite.exe.rsp"
+					match="cw32\.lib"
+					replace="cw32mt.lib"
+	/>
+
+	<exec	executable="ilink32"
+			failonerror="true">
+		<arg value="@${target.dir}\debug\shared\testsuite.exe.rsp" />
+	</exec>
+</target>

@@ -18,6 +18,7 @@
 -->
 <!DOCTYPE project [
 <!ENTITY common SYSTEM 'common.xml'>
+<!ENTITY ilink32Workaround SYSTEM 'ilink32-workaround.xml'>
 <!ENTITY license '
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -42,6 +43,7 @@
 <project name="apr" default="check">
 
 &common;
+&ilink32Workaround;
 
 <property	name="src.dir"
 			location="${basedir}"
@@ -161,19 +163,22 @@
 					if="is-static"
 		/>
 		<fileset	dir="${src.dir}/file_io/unix"
-			includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c" />
+				includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"
+		/>
 		<fileset	dir="${src.dir}/memory/unix"
 					includes="*.c"
 		/>
 		<fileset	dir="${src.dir}/misc/unix"
-			includes="errorcodes.c getopt.c otherchild.c version.c" />
+					includes="errorcodes.c getopt.c otherchild.c version.c"
+		/>
 		<fileset	dir="${src.dir}/mmap/unix"
 					includes="common.c"
 		/>
 		<fileset	dir="${src.dir}/network_io/unix"
-			includes="inet_ntop.c inet_pton.c sockaddr.c" />
+					includes="inet_ntop.c inet_pton.c sockaddr.c"
+		/>
 		<fileset	dir="${src.dir}/poll/unix"
-					includes="select.c"
+					includes="*.c"
 		/>
 		<fileset	dir="${src.dir}/random/unix"
 					includes="*.c"
@@ -220,11 +225,23 @@
 		<defineset	define="HAVE_CONFIG_H DARWIN SIGPROCMASK_SETS_THREAD_MASK"
 					if="is-mac"
 		/>
+		<defineset if="is-bcc">
+			<define	name="_dup2"
+					value="dup2"
+			/>
+			<define	name="_isatty"
+					value="isatty"
+			/>
+			<define	name="_setmode"
+					value="setmode"
+			/>
+		</defineset>
+
 		<compilerarg	value="${pic-option}"
 						if="pic-option"
 		/>
 
-		<libset	libs="advapi32 ws2_32 mswsock rpcrt4"
+		<libset	libs="advapi32 mswsock rpcrt4 ws2_32"
 				if="is-windows"
 		/>
 		<libset	libs="pthread dl"
@@ -240,6 +257,7 @@
 			<comment>&license;</comment>
 		</project>
 	</cc>
+	<!-- antcall target="apr-build-ilink32-workaround" /-->
 
 	<property	name="apr.lib.dir"
 				location="${executable.dir}"

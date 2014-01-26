@@ -95,6 +95,19 @@
 			<equals arg1="${compiler}" arg2="g++" />
 		</or>
 	</condition>
+
+	<!-- LOG4CXX-421 -->
+	<exec	executable="where"
+			outputproperty="ilink32.path"
+			failonerror="true">
+		<arg value="ilink32" />
+	</exec>
+	<propertyregex	property="bcc.rootPath"
+					input="${ilink32.path}"
+					regexp="^(.+?)\\bin\\ilink32.exe"
+					select="\1"
+					casesensitive="false"
+	/>
 </target>
 
 <target	name="mac-init"
