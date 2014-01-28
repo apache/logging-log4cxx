@@ -99,7 +99,7 @@
 	<!-- LOG4CXX-421 -->
 	<exec	executable="where"
 			outputproperty="ilink32.path"
-			failonerror="true">
+			failonerror="false">
 		<arg value="ilink32" />
 	</exec>
 	<propertyregex	property="bcc.rootPath"
