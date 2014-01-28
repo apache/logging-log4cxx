@@ -34,24 +34,23 @@ namespace log4cxx
 	LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
 
 	/**
-
 	 * A flexible layout configurable with pattern string.
-
+	 *
 	 * <p>
 	 * 	The goal of this class is to #format a {@link spi::LoggingEvent LoggingEvent} and
 	 * 	return the results as a string. The results depend on the <em>conversion pattern</em>.
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	The conversion pattern is closely related to the conversion pattern of the printf
 	 * 	function in C. A conversion pattern is composed of literal text and format control
 	 * 	expressions called <em>conversion specifiers</em>.
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	<i>You are free to insert any literal text within the conversion pattern.</i>
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	Each conversion specifier starts with a percent sign (%) and is followed by optional
 	 * 	<em>format modifiers</em> and a <em>conversion character</em>. The conversion character
@@ -59,7 +58,7 @@ namespace log4cxx
 	 * 	control such things as field width, padding, left and right justification. The
 	 * 	following is a simple example.
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	Let the conversion pattern be <strong>"%-5p [%t]: %m%n"</strong> and assume that the log4cxx
 	 * 	environment was set to use a PatternLayout. Then the statements
@@ -72,7 +71,7 @@ namespace log4cxx
 	 * 		DEBUG [main]: Message 1
 	 * 		WARN  [main]: Message 2</pre>
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	Note that there is no explicit separator between text and conversion specifiers. The
 	 * 	pattern parser knows when it has reached the end of a conversion specifier when it
@@ -80,9 +79,9 @@ namespace log4cxx
 	 * 	means the level of the logging event should be left justified to a width of five
 	 * 	characters.
 	 * </p>
-
+	 *
 	 * <p>The recognized conversion characters are:</p>
-
+	 *
 	 * <table border="1" cellpadding="8">
 	 * 	<tr>
 	 * 		<th align="center"><strong>Conversion Character</strong></th>
@@ -227,18 +226,18 @@ namespace log4cxx
 	 * 		<td>The sequence \%\% outputs a single percent sign.</td>
 	 * 	</tr>
 	 * </table>
-
+	 *
 	 * <p>
 	 * 	By default the relevant information is output as is. However, with the aid of format
 	 * 	modifiers it is possible to change the minimum field width, the maximum field width
 	 * 	and justification.
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	The optional format modifier is placed between the percent sign and the conversion
 	 * 	character.
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	The first optional format modifier is the <em>left justification flag</em> which is
 	 * 	just the minus (-) character. Then comes the optional <em>minimum field width</em>
@@ -249,7 +248,7 @@ namespace log4cxx
 	 * 	padding character is space. If the data item is larger than the minimum field width,
 	 * 	the field is expanded to accommodate the data. The value is never truncated.
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	This behavior can be changed using the <em>maximum field width</em> modifier which is
 	 * 	designated by a period followed by a decimal constant. If the data item is longer than
@@ -259,9 +258,9 @@ namespace log4cxx
 	 * 	item are dropped. This behavior deviates from the printf function in C where truncation
 	 * 	is done from the end.
 	 * </p>
-
+	 *
 	 * <p>Below are various format modifier examples for the logger conversion specifier.</p>
-
+	 *
 	 * <table border="1" cellpadding="8">
 	 * 	<tr>
 	 * 		<th align="center"><strong>Format modifier</strong></th>
@@ -312,21 +311,21 @@ namespace log4cxx
 	 * 		</td>
 	 * 	</tr>
 	 * </table>
-
+	 *
 	 * <p>Below are some examples of conversion patterns.</p>
-
+	 *
 	 * <p><strong>%r [%t] %-5p %c %x - %m\n</strong></p>
 	 * <p>This is essentially the TTCC layout.</p>
-
+	 *
 	 * <p><strong>%-6r [%15.15t] %-5p %30.30c %x - %m\n</strong></p>
-
+	 *
 	 * <p>
 	 * 	Similar to the TTCC layout except that the relative time is right padded if less than 6
 	 * 	digits, thread name is right padded if less than 15 characters and truncated if longer
 	 * 	and the logger name is left padded if shorter than 30 characters and truncated if
 	 * 	longer.
 	 * </p>
-
+	 *
 	 * <p>
 	 * 	The above text is largely inspired from Peter A. Darnell and Philip E. Margolis' highly
 	 * 	recommended book "C -- a Software Engineering Approach", ISBN 0-387-97389-3.
