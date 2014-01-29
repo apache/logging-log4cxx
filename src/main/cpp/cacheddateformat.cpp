@@ -223,7 +223,7 @@ int CachedDateFormat::findMillisecondStart(
 
 /**
  *   Formats a count of milliseconds (0-999) into a numeric representation.
- *   @param millis Millisecond coun between 0 and 999.
+ *   @param millis Millisecond count between 0 and 999.
  *   @buf String buffer, may not be null.
  *   @offset Starting position in buffer, the length of the
  *       buffer must be at least offset + 3.
