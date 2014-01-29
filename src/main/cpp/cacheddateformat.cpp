@@ -132,8 +132,14 @@ int CachedDateFormat::findMillisecondStart(
            LogString plusZero;
            formatter->format(plusZero, slotBegin, pool);
 
-           //   If the next 3 characters match the magic
-           //      strings and the remaining fragments are identical
+           // If the next 1..3 characters match the magic strings, depending on if the currently
+           // used millis overlap with the magic string, and the remaining fragments are identical.
+           //
+           // LOG4CXX-420:
+           // pattern:		%d{yyyy-MM-dd HH:mm:ss,SSS}
+           // formatted:	2010-08-12 11:04:50,609
+           // plusMagic:	2010-08-12 11:04:50,654
+           // plusZero:		2010-08-12 11:04:50,000
            if (plusZero.length() == formatted.length()
               && regionMatches(magicString, magicString.length() - (plusMagic.length() - i), plusMagic, i, plusMagic.length() - i)
               && regionMatches(formattedMillis, formattedMillis.length() - (formatted.length() - i), formatted, i, formatted.length() - i)
