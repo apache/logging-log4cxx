@@ -24,8 +24,6 @@
 
 	<body>
 		<release version="0.11.0" date="2010-XX-XX" description="Maintenance release">
-			<action issue="LOGCXX-424" type="fix">liblog4cxx.pc.in should reflect dependency on apr-1, apr-1-util</action>
-			<action issue="LOGCXX-423" type="fix">Repair autogen script warnings</action>
 			<action issue="LOGCXX-249" type="fix">Console appender crashes if layout is not set</action>
 			<action issue="LOGCXX-262" type="fix">socketappendertestcase and xmlsocketappendertestcase not run</action>
 			<action issue="LOGCXX-263" type="fix">Bad link to log4cxx-dev archive</action>
@@ -65,6 +63,8 @@
 			<action issue="LOGCXX-415" type="fix">Empty XML configuration file causes crash</action>
 			<action issue="LOGCXX-417" type="fix">atoi undefined on Mac OS 10.9 compiling stringhelper.cpp</action>
 			<action issue="LOGCXX-420" type="fix">Possible out_of_range exception for millisecond formats in CachedDateFormat</action>
+			<action issue="LOGCXX-423" type="fix">Repair autogen script warnings</action>
+			<action issue="LOGCXX-424" type="fix">liblog4cxx.pc.in should reflect dependency on apr-1, apr-1-util</action>
 
 			<action type="change">Behavior of StringHelper::startsWith and endsWith synced</action>
 			<action type="change">Documented C (class) and M (method) log format keywords.</action>
