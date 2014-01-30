@@ -147,7 +147,7 @@ int CachedDateFormat::findMillisecondStart(
               && (formatted.length() == i + (formatted.length() - i)
                  || plusZero.compare(i + (plusZero.length() - i),
                        LogString::npos, plusMagic, i + (plusMagic.length() - i), LogString::npos) == 0)) {
-              return i;
+              return i - (3 - (formatted.length() - i));
            } else {
               return UNRECOGNIZED_MILLISECONDS;
           }
