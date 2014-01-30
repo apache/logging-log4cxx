@@ -22,5 +22,5 @@ Description: log4cxx C++ logging framework
 Version: @VERSION@
 Libs: -L${libdir} -llog4cxx
 Cflags: -I${includedir}
-Requires: apr-1 apr-util-1
+Requires.private: apr-1 apr-util-1
 
