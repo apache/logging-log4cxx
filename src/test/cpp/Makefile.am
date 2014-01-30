@@ -22,7 +22,7 @@ noinst_HEADERS = \
 	$(top_srcdir)/src/test/cpp/xml/*.h \
 	$(top_srcdir)/src/test/cpp/*.h
 
-INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
+AM_CPPFLAGS = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 check_PROGRAMS = testsuite
 

@@ -15,7 +15,7 @@
 #
 lib_LTLIBRARIES = liblog4cxx.la
 
-INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
+AM_CPPFLAGS = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 
 liblog4cxx_la_SOURCES = \
@@ -170,6 +170,6 @@ liblog4cxx_la_SOURCES = \
         xmlsocketappender.cpp \
         zipcompressaction.cpp
 
-AM_CPPFLAGS = @CPPFLAGS_ODBC@
+AM_CPPFLAGS += @CPPFLAGS_ODBC@
 liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_ODBC@ -@APR_LIBS@
 

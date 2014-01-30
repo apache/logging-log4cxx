@@ -15,7 +15,7 @@
 #
 check_PROGRAMS = trivial delayedloop stream console
 
-INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
+AM_CPPFLAGS = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 trivial_SOURCES = trivial.cpp
 trivial_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
