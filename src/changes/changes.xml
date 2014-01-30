@@ -24,6 +24,7 @@
 
 	<body>
 		<release version="0.11.0" date="2010-XX-XX" description="Maintenance release">
+			<action issue="LOGCXX-424" type="fix">liblog4cxx.pc.in should reflect dependency on apr-1, apr-1-util</action>
 			<action issue="LOGCXX-423" type="fix">Repair autogen script warnings</action>
 			<action issue="LOGCXX-249" type="fix">Console appender crashes if layout is not set</action>
 			<action issue="LOGCXX-262" type="fix">socketappendertestcase and xmlsocketappendertestcase not run</action>
