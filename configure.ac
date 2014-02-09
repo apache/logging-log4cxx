@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-AC_INIT([log4cxx], [0.10.1])
+AC_INIT([log4cxx], [0.11.0])
 AC_CONFIG_SRCDIR(src/main/cpp/logger.cpp)
 
 # autoconf 2.50 or higher to rebuild aclocal.m4, because the
