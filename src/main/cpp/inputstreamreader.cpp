@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <cstring>
+#include <string.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -34,7 +35,7 @@ InputStreamReader::InputStreamReader(const InputStreamPtr& in1)
    }
 }
 
-InputStreamReader::InputStreamReader(const InputStreamPtr& in1, const CharsetDecoderPtr &dec1) 
+InputStreamReader::InputStreamReader(const InputStreamPtr& in1, const CharsetDecoderPtr &dec1)
     : in(in1), dec(dec1) {
     if (in1 == 0) {
        throw NullPointerException(LOG4CXX_STR("in parameter may not be null."));
