@@ -20,6 +20,7 @@ includedir=@includedir@
 Name: log4cxx
 Description: log4cxx C++ logging framework
 Version: @VERSION@
+Requires: apr-util-1, apr-1
 Libs: -L${libdir} -llog4cxx
 Cflags: -I${includedir}
 Requires.private: apr-1 apr-util-1
