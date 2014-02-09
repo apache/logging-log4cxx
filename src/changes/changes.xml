@@ -60,6 +60,7 @@
 			<action issue="LOGCXX-366" type="fix">Errors when compile log4cxx 0.10.0 under Win7 x64 with Visual Studio 2010 (due to Christian Boos and Feng Nan)</action>
 			<action issue="LOGCXX-367" type="fix">Build fails on Linux with g++ 4.4</action>
 			<action issue="LOGCXX-381" type="fix">Pkgconfig can't find dependencies properly if log4cxx built statically</action>
+			<action issue="LOGCXX-382" type="fix">Mingw build type conversion error</action>
 			<action issue="LOGCXX-413" type="fix">log4cxx doesn't compile on openembedded (due to Alex Zbarcea)</action>
 			<action issue="LOGCXX-414" type="fix">possibly wrong use of autotools docdir (due to Alex Zbarcea)</action>
 			<action issue="LOGCXX-415" type="fix">Empty XML configuration file causes crash</action>

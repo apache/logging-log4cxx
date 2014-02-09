@@ -23,9 +23,13 @@
 
 #if !defined(LOG4CXX_THREAD_FUNC)
 #if defined(_WIN32)
-#define LOG4CXX_THREAD_FUNC __stdcall
+  #if defined(__MINGW32__)
+    #define LOG4CXX_THREAD_FUNC
+  #else
+    #define LOG4CXX_THREAD_FUNC __stdcall
+  #endif
 #else
-#define LOG4CXX_THREAD_FUNC
+  #define LOG4CXX_THREAD_FUNC
 #endif
 #endif
 
