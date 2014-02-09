@@ -335,7 +335,7 @@ void Hierarchy::updateParents(LoggerPtr logger)
 
         // if name = "w.x.y.z", loop through "w.x.y", "w.x" and "w", but not "w.x.y.z"
         for(size_t i = name.find_last_of(0x2E /* '.' */, length-1);
-            i != LogString::npos;
+            (i != LogString::npos) && (i != 0);
             i = name.find_last_of(0x2E /* '.' */, i-1))
         {
                 LogString substr = name.substr(0, i);
