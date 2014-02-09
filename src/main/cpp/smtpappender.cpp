@@ -163,6 +163,7 @@ namespace log4cxx {
                         const LogString msg, Pool& p) {
                  message = smtp_add_message(session);
                  body = current = toMessage(msg, p);
+                 messagecbState = 0;
                  smtp_set_reverse_path(message, toAscii(from, p));
                  addRecipients(to, "To", p);
                  addRecipients(cc, "Cc", p);
@@ -181,6 +182,7 @@ namespace log4cxx {
            smtp_message_t message;
            const char* body;
            const char* current;
+           int messagecbState;
            void addRecipients(const LogString& addresses, const char* field, Pool& p) {
               if (!addresses.empty()) {
                 char* str = p.pstrdup(toAscii(addresses, p));;
@@ -263,6 +265,10 @@ namespace log4cxx {
                if (len == NULL) {
                    pThis->current = pThis->body;
                } else {
+                  // we are asked for headers, but we don't have any
+                  if ((pThis->messagecbState)++ == 0) {
+                    return NULL;
+                  }
                   if (pThis->current) {
                     *len = strlen(pThis->current);
                   }
