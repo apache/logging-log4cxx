@@ -107,8 +107,10 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
   apr_time_t n = apr_time_now();
   nextCheck = ((n / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC;
 
+  File currentFile(currentActiveFile);
+
   LogString buf;
-  ObjectPtr obj(new Date(n));
+  ObjectPtr obj(new Date(currentFile.exists(pool) ? currentFile.lastModified(pool) : n));
   formatFileName(obj, buf, pool);
   lastFileName = buf;
 
