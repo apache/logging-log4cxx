@@ -63,6 +63,7 @@
 			<action issue="LOGCXX-415" type="fix">Empty XML configuration file causes crash</action>
 			<action issue="LOGCXX-417" type="fix">atoi undefined on Mac OS 10.9 compiling stringhelper.cpp</action>
 			<action issue="LOGCXX-420" type="fix">Possible out_of_range exception for millisecond formats in CachedDateFormat</action>
+			<action issue="LOGCXX-422" type="fix">Regression of LOGCXX-420</action>
 			<action issue="LOGCXX-423" type="fix">Repair autogen script warnings</action>
 			<action issue="LOGCXX-424" type="fix">liblog4cxx.pc.in should reflect dependency on apr-1, apr-1-util</action>
 
