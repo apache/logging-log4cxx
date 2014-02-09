@@ -160,8 +160,13 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
       new FileRenameAction(
         File().setPath(currentFileName), File().setPath(renameTo), false);
 
+#ifdef LOG4CXX_MULTI_PROCESS
+    desc = new RolloverDescription(
+      currentFileName, true, renameAction, compressAction);
+#else
     desc = new RolloverDescription(
       currentFileName, false, renameAction, compressAction);
+#endif
   }
 
   return desc;

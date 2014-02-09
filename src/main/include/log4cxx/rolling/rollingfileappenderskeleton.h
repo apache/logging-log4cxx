@@ -57,6 +57,10 @@ namespace log4cxx {
            */
           size_t fileLength;
 
+          /**
+           *  save the loggingevent
+           */
+          spi::LoggingEventPtr* _event;
         public:
           /**
            * The default constructor simply calls its {@link
@@ -133,6 +137,25 @@ namespace log4cxx {
            * @return byte length of current active log file.
            */
           size_t getFileLength() const;
+          
+#ifdef LOG4CXX_MULTI_PROCESS
+          /**
+           * Set byte length of current active log file.
+           * @return void
+           */
+          void setFileLength(size_t length);
+
+          /**
+           *  Release the file lock
+           * @return void
+           */
+          void releaseFileLock(apr_file_t* lock_file);
+          /**
+           * re-open the latest file when its own handler has been renamed
+           * @return void
+           */
+          void reopenLatestFile(log4cxx::helpers::Pool& p);
+#endif
 
           /**
            * Increments estimated byte length of current active log file.

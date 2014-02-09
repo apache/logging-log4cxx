@@ -179,6 +179,9 @@ namespace log4cxx
                   <p>
                   @param writer An already opened Writer.  */
                 void setWriter(const log4cxx::helpers::WriterPtr& writer);
+#ifdef LOG4CXX_MULTI_PROCESS                
+                const log4cxx::helpers::WriterPtr getWriter() { return writer; };
+#endif
 
                 virtual bool requiresLayout() const;
 

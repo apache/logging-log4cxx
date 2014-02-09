@@ -96,6 +96,9 @@ namespace log4cxx {
            LogString getFileNamePattern() const;
 
 
+#ifdef LOG4CXX_MULTI_PROCESS                
+           PatternConverterList getPatternConverterList() { return patternConverters; }
+#endif
            protected:
            /**
             *   Parse file name pattern.

@@ -52,6 +52,10 @@ namespace log4cxx
                   virtual void write(const LogString& str, Pool& p);
                   LogString getEncoding() const;
 
+#ifdef LOG4CXX_MULTI_PROCESS
+                  OutputStreamPtr getOutPutStreamPtr() { return out; }
+#endif
+
           private:
                   OutputStreamWriter(const OutputStreamWriter&);
                   OutputStreamWriter& operator=(const OutputStreamWriter&);
