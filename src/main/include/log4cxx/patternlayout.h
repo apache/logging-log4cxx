@@ -99,7 +99,7 @@ namespace log4cxx
 	 * 				logger name is printed in full.
 	 * 			</p>
 	 * 			<p>
-	 * 				For example, for the logger name "a.b.c" the pattern <strong>\%c{2}</strong> will
+	 * 				For example, for the logger name "a.b.c" the pattern <strong>%c{2}</strong> will
 	 * 				output "b.c".
 	 * 			</p>
 	 * 		</td>
@@ -215,15 +215,15 @@ namespace log4cxx
 	 * 		<td>
 	 * 			Used to output the MDC (mapped diagnostic context) associated with the thread that
 	 * 			generated the logging event. The <strong>X</strong> conversion character <em>must</em> be
-	 * 			followed by the key for the map placed between braces, as in <strong>\%X{clientNumber}</strong>
+	 * 			followed by the key for the map placed between braces, as in <strong>%X{clientNumber}</strong>
 	 * 			where <code>clientNumber</code> is the key. The value in the MDC corresponding to
 	 * 			the key will be output.
 	 * 			<p>See MDC class for more details.</p>
 	 * 		</td>
 	 * 	</tr>
 	 * 	<tr>
-	 * 		<td align="center"><strong>\%</strong></td>
-	 * 		<td>The sequence \%\% outputs a single percent sign.</td>
+	 * 		<td align="center"><strong>%</strong></td>
+	 * 		<td>The sequence %% outputs a single percent sign.</td>
 	 * 	</tr>
 	 * </table>
 	 *
