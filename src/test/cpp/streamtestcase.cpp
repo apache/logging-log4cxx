@@ -224,13 +224,13 @@ public:
        
         void testLogStreamSimple() {
             logstream root(Logger::getRootLogger(), Level::getInfo());
-            root << "This is a test" << LOG4CXX_ENDMSG;
+            root << std::string("This is a test") << LOG4CXX_ENDMSG;
             LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
         }
 
         void testLogStreamMultiple() {
            logstream root(Logger::getRootLogger(), Level::getInfo());
-           root << "This is a test" << ": Details to follow" << LOG4CXX_ENDMSG;
+           root << std::string("This is a test") << std::string(": Details to follow") << LOG4CXX_ENDMSG;
            LOGUNIT_ASSERT_EQUAL((size_t) 1, vectorAppender->getVector().size());
        }
 
