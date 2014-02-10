@@ -378,13 +378,13 @@ public:
             char* current = out.current();
             size_t remain = out.remaining();
             for(;
-                iter != in.end() && ((unsigned int) *iter) < 0x80 && remain > 0; 
+                iter != in.end() && ((unsigned int) *iter) < 0x80 && remain > 0;
                 iter++, remain--, current++) {
                 *current = *iter;
             }
             out.position(current - out.data());
 #endif
-            if (iter != in.end() && out.remaining() > 0) {  
+            if (iter != in.end() && out.remaining() > 0) {
                   Pool subpool;
                   const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
                   {
@@ -438,7 +438,7 @@ CharsetEncoderPtr CharsetEncoder::getDefaultEncoder() {
   //  if invoked after static variable destruction
   //     (if logging is called in the destructor of a static object)
   //     then create a new decoder.
-  // 
+  //
   if (encoder == 0) {
        return createDefaultEncoder();
   }
@@ -484,9 +484,9 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset) {
     } else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16LE"), LOG4CXX_STR("utf-16le"))) {
         return new UTF16LECharsetEncoder();
     }
-#if APR_HAS_XLATE || !defined(_WIN32)
+#if APR_HAS_XLATE
     return new APRCharsetEncoder(charset);
-#else    
+#else
     throw IllegalArgumentException(charset);
 #endif
 }

@@ -54,6 +54,7 @@
 			<action issue="LOGCXX-303" type="fix">DOMConfigurator does not set ErrorHandler.</action>
 			<action issue="LOGCXX-304" type="fix">BasicConfigurator::configure results in writer not set warning.</action>
 			<action issue="LOGCXX-305" type="fix">Property/DOMConfigurator::configureAndWatch can continue to run after APR termination</action>
+			<action issue="LOGCXX-313" type="fix">Build process fails in case of absence of iconv support in apr-util</action>
 			<action issue="LOGCXX-317" type="fix">Log4cxx triggers locking inversion which can result in a deadlock.</action>
 			<action issue="LOGCXX-319" type="fix">Please make sure that the LOG4CXX_* macro's can be used as ordinary statements.</action>
 			<action issue="LOGCXX-331" type="fix">DailyRollingFileAppender should roll if program doesn't run at rolling time</action>
