@@ -983,7 +983,7 @@
 			objdir="${log4cxx.lib.dir}/log4cxx_obj"
 			debug="${debug}"
 			projectsOnly="${projectsOnly}"
-			failonerror="false">
+			failonerror="true">
 
 			<!-- brc aborts with an access violation. -->
 			<compiler	name="${resource.compiler}"
@@ -1243,7 +1243,7 @@
 			objdir="${log4cxx.lib.dir}/testsuite_obj"
 			debug="${debug}"
 			projectsOnly="${projectsOnly}"
-			failonerror="false">
+			failonerror="true">
 
 			<fileset	dir="${tests.cpp.dir}"
 						includes="**/*.cpp **/*.c **/*.h"
