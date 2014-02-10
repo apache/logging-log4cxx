@@ -28,7 +28,6 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/bytearrayoutputstream.h>
 
-
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
@@ -135,8 +134,13 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 void SocketAppenderSkeleton::fireConnector()
 {
         synchronized sync(mutex);
-        if (!thread.isActive()) {
-                thread.run(monitor, this);
+        if ( !thread.isAlive() ) {
+             LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
+             try {
+                  thread.run(monitor, this);
+             } catch( ThreadException& te ) {
+                  LogLog::error(LOG4CXX_STR("Monitor not started: "), te);
+             }
         }
 }
 

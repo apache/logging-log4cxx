@@ -149,6 +149,11 @@ Thread::~Thread() {
 
 void Thread::run(Runnable start, void* data) {
 #if APR_HAS_THREADS
+        // Try to join first if previous instance did exit
+        if ( isActive() && !isAlive() ) {
+             join();
+        }
+        // now we're ready to create the thread again
         //
         //    if attempting a second run method on the same Thread object
         //         throw an exception
@@ -179,19 +184,24 @@ void Thread::run(Runnable start, void* data) {
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
+	// we need to set alive here already, since we use isAlive() to check
+	// if run() has been called in a thread-safe way.
+	apr_atomic_set32(&alive, 0xFFFFFFFF);
 #else
         throw ThreadException(LOG4CXX_STR("APR_HAS_THREADS is not true"));
 #endif
+    LaunchPackage* package = (LaunchPackage*) data;
+    ThreadLocal& tls = getThreadLocal();
+    tls.set(package->getThread());
+    {
+      (package->getRunnable())(thread, package->getData());
+      package->getThread()->ending();
+    }
+    apr_thread_exit(thread, 0); // this function never returns !
+    return 0;
 }
+#endif
 
-   
-
-
-void Thread::join() {
-#if APR_HAS_THREADS
-        if (thread != NULL) {
-                apr_status_t startStat;
-                apr_status_t stat = apr_thread_join(&startStat, thread);
                 thread = NULL;
                 if (stat != APR_SUCCESS) {
                         throw ThreadException(stat);

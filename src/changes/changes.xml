@@ -59,6 +59,7 @@
 			<action issue="LOGCXX-319" type="fix">Please make sure that the LOG4CXX_* macro's can be used as ordinary statements.</action>
 			<action issue="LOGCXX-331" type="fix">DailyRollingFileAppender should roll if program doesn't run at rolling time</action>
 			<action issue="LOGCXX-336" type="fix">Test compilation fails: Overloading ambiguity</action>
+			<action issue="LOGCXX-337" type="fix">Suggested fix for socketappender not reconnecting multiple times</action>
 			<action issue="LOGCXX-340" type="fix">Transcoder::encodeCharsetName bungles encoding</action>
 			<action issue="LOGCXX-351" type="fix">Download page does not have link to KEYS file</action>
 			<action issue="LOGCXX-353" type="fix">When a client disconnects the SocketHubAppender crashes on the next log message</action>
