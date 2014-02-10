@@ -57,6 +57,7 @@ APRInitializer::~APRInitializer() {
     {
 #if APR_HAS_THREADS
         synchronized sync(mutex);
+        apr_threadkey_private_delete();
 #endif
         for(std::vector<FileWatchdog*>::iterator iter = watchdogs.begin();
             iter != watchdogs.end();
