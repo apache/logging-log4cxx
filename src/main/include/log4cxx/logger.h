@@ -38,7 +38,7 @@ namespace log4cxx
     namespace helpers {
             class synchronized;
     }
-    
+
     namespace spi {
         class LoggerRepository;
         LOG4CXX_PTR_DEF(LoggerRepository);
@@ -66,7 +66,7 @@ namespace log4cxx
                 LOG4CXX_CAST_ENTRY(Logger)
                 LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
         END_LOG4CXX_CAST_MAP()
-        
+
     private:
         /**
          *   Reference to memory pool.
@@ -152,7 +152,7 @@ namespace log4cxx
         hierarchy circumventing any evaluation of whether to log or not
         to log the particular log request.
 
-        @param event the event to log.  
+        @param event the event to log.
         @param p memory pool for any allocations needed to process request.
         */
         void callAppenders(const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
@@ -627,32 +627,32 @@ namespace log4cxx
 
         /**
         * Get the logger name.
-        * @return logger name as LogString.  
+        * @return logger name as LogString.
         */
         const LogString getName() const { return name; }
         /**
         * Get logger name in current encoding.
-        * @param name buffer to which name is appended.  
+        * @param name buffer to which name is appended.
         */
         void getName(std::string& name) const;
 #if LOG4CXX_WCHAR_T_API
         /**
         * Get logger name.
-        * @param name buffer to which name is appended.  
+        * @param name buffer to which name is appended.
         */
         void getName(std::wstring& name) const;
 #endif
 #if LOG4CXX_UNICHAR_API
         /**
         * Get logger name.
-        * @param name buffer to which name is appended.  
+        * @param name buffer to which name is appended.
         */
         void getName(std::basic_string<UniChar>& name) const;
 #endif
 #if LOG4CXX_CFSTRING_API
         /**
         * Get logger name.
-        * @param name buffer to which name is appended.  
+        * @param name buffer to which name is appended.
         */
         void getName(CFStringRef& name) const;
 #endif
@@ -675,43 +675,43 @@ namespace log4cxx
 
         /**
         * Retrieve a logger by name in current encoding.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const std::string& name);
         /**
         * Retrieve a logger by name in current encoding.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const char* const name);
 #if LOG4CXX_WCHAR_T_API
         /**
         * Retrieve a logger by name.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const std::wstring& name);
         /**
         * Retrieve a logger by name.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const wchar_t* const name);
 #endif
 #if LOG4CXX_UNICHAR_API
         /**
         * Retrieve a logger by name.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
 #endif
 #if LOG4CXX_CFSTRING_API
         /**
         * Retrieve a logger by name.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const CFStringRef& name);
 #endif
         /**
         * Retrieve a logger by name in Unicode.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLoggerLS(const LogString& name);
 
@@ -830,7 +830,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -846,7 +846,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -860,7 +860,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -875,7 +875,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -889,7 +889,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -904,7 +904,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -918,7 +918,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -1267,7 +1267,7 @@ namespace log4cxx
         */
         void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
-                    const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2, 
+                    const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2,
                     const std::basic_string<UniChar>& val3) const;
 #endif
 #if LOG4CXX_CFSTRING_API
@@ -1343,7 +1343,7 @@ namespace log4cxx
         */
         void l7dlog(const LevelPtr& level, const CFStringRef& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
-                    const CFStringRef& val1, const CFStringRef& val2, 
+                    const CFStringRef& val1, const CFStringRef& val2,
                     const CFStringRef& val3) const;
 #endif
 
@@ -1718,7 +1718,7 @@ namespace log4cxx
         friend class log4cxx::helpers::synchronized;
    };
    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
-   
+
 }
 
 /** @addtogroup LoggingMacros Logging macros
@@ -1753,10 +1753,10 @@ Logs a message to a specified logger with a specified level.
 @param level the level to log.
 @param message the message string to log.
 */
-#define LOG4CXX_LOG(logger, level, message) { \
+#define LOG4CXX_LOG(logger, level, message) do { \
         if (logger->isEnabledFor(level)) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); } }
+           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a message to a specified logger with a specified level.
@@ -1765,82 +1765,82 @@ Logs a message to a specified logger with a specified level.
 @param level the level to log.
 @param message the message string to log in the internal encoding.
 */
-#define LOG4CXX_LOGLS(logger, level, message) { \
+#define LOG4CXX_LOGLS(logger, level, message) do { \
         if (logger->isEnabledFor(level)) {\
            ::log4cxx::helpers::LogCharMessageBuffer oss_; \
-           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); } }
+           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
-#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000
 /**
 Logs a message to a specified logger with the DEBUG level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_DEBUG(logger, message) { \
+#define LOG4CXX_DEBUG(logger, message) do { \
         if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
 #endif
 
-#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 5000 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 5000
 /**
 Logs a message to a specified logger with the TRACE level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_TRACE(logger, message) { \
+#define LOG4CXX_TRACE(logger, message) do { \
         if (LOG4CXX_UNLIKELY(logger->isTraceEnabled())) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
 #endif
 
-#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 20000 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 20000
 /**
 Logs a message to a specified logger with the INFO level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_INFO(logger, message) { \
+#define LOG4CXX_INFO(logger, message) do { \
         if (logger->isInfoEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
 #endif
 
-#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 30000 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 30000
 /**
 Logs a message to a specified logger with the WARN level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_WARN(logger, message) { \
+#define LOG4CXX_WARN(logger, message) do { \
         if (logger->isWarnEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
 #endif
 
-#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 40000 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 40000
 /**
 Logs a message to a specified logger with the ERROR level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_ERROR(logger, message) { \
+#define LOG4CXX_ERROR(logger, message) do { \
         if (logger->isErrorEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a error if the condition is not true.
@@ -1849,30 +1849,30 @@ Logs a error if the condition is not true.
 @param condition condition
 @param message the message string to log.
 */
-#define LOG4CXX_ASSERT(logger, condition, message) { \
+#define LOG4CXX_ASSERT(logger, condition, message) do { \
         if (!(condition) && logger->isErrorEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 #else
 #define LOG4CXX_ERROR(logger, message)
 #define LOG4CXX_ASSERT(logger, condition, message)
 #endif
 
-#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 50000 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 50000
 /**
 Logs a message to a specified logger with the FATAL level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_FATAL(logger, message) { \
+#define LOG4CXX_FATAL(logger, message) do { \
         if (logger->isFatalEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
-#endif           
+#endif
 
 /**
 Logs a localized message with no parameter.
@@ -1881,9 +1881,9 @@ Logs a localized message with no parameter.
 @param level the level to log.
 @param key the key to be searched in the resourceBundle of the logger.
 */
-#define LOG4CXX_L7DLOG(logger, level, key) { \
+#define LOG4CXX_L7DLOG(logger, level, key) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION); }}
+        logger->l7dlog(level, key, LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a localized message with one parameter.
@@ -1893,9 +1893,9 @@ Logs a localized message with one parameter.
 @param key the key to be searched in the resourceBundle of the logger.
 @param p1 the unique parameter.
 */
-#define LOG4CXX_L7DLOG1(logger, level, key, p1) { \
+#define LOG4CXX_L7DLOG1(logger, level, key, p1) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }}
+        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }} while (0)
 
 /**
 Logs a localized message with two parameters.
@@ -1906,9 +1906,9 @@ Logs a localized message with two parameters.
 @param p1 the first parameter.
 @param p2 the second parameter.
 */
-#define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) { \
+#define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }}
+        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }} while (0)
 
 /**
 Logs a localized message with three parameters.
@@ -1920,9 +1920,9 @@ Logs a localized message with three parameters.
 @param p2 the second parameter.
 @param p3 the third parameter.
 */
-#define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) { \
+#define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }}
+        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }} while (0)
 
 /**@}*/
 
