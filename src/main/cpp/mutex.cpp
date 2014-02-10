@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/exception.h>
 #include <apr_thread_mutex.h>
+#include <log4cxx/helpers/pool.h>
 #include <assert.h>
 #if !defined(LOG4CXX)
 #define LOG4CXX 1

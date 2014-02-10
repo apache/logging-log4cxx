@@ -39,6 +39,9 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/fileinputstream.h>
 
+#define LOG4CXX 1
+#include <log4cxx/helpers/aprinitializer.h>
+
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -135,6 +138,7 @@ void PropertyConfigurator::configureAndWatch(
         const File& configFilename, long delay)
 {
     PropertyWatchdog * pdog = new PropertyWatchdog(configFilename);
+    APRInitializer::registerCleanup(pdog);
     pdog->setDelay(delay);
     pdog->start();
 }

@@ -45,6 +45,9 @@
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/net/smtpappender.h>
 
+#define LOG4CXX 1
+#include <log4cxx/helpers/aprinitializer.h>
+
 using namespace log4cxx;
 using namespace log4cxx::xml;
 using namespace log4cxx::helpers;
@@ -812,6 +815,7 @@ void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
         File file(filename);
 #if APR_HAS_THREADS
         XMLWatchdog * xdog = new XMLWatchdog(file);
+        APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
 #else
@@ -825,6 +829,7 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
         File file(filename);
 #if APR_HAS_THREADS
         XMLWatchdog * xdog = new XMLWatchdog(file);
+        APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
 #else

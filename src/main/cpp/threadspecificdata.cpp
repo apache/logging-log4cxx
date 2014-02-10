@@ -18,6 +18,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <log4cxx/helpers/exception.h>
+#include <apr_thread_proc.h>
 #if !defined(LOG4CXX)
 #define LOG4CXX 1
 #endif
