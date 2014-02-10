@@ -45,7 +45,6 @@ Logger::Logger(Pool& p, const LogString& name1)
 : pool(&p), name(), level(), parent(), resourceBundle(),
 repository(), aai(), mutex(p)
 {
-    synchronized sync(mutex);
     name = name1;
     additive = true;
 }
