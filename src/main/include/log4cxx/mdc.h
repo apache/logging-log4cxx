@@ -36,11 +36,6 @@ namespace log4cxx
         MDC in short, is an instrument for distinguishing interleaved log
         output from different sources. Log output is typically interleaved
         when a server handles multiple clients near-simultaneously.
-
-        <p><b><em>The MDC is managed on a per thread basis</em></b>. A
-        child thread automatically inherits a <em>copy</em> of the mapped
-        diagnostic context of its parent.
-
         */
         class LOG4CXX_EXPORT MDC
         {
@@ -100,7 +95,7 @@ namespace log4cxx
                 * Remove the the context identified by the <code>key</code>
                 * parameter.
                 *  @param key key.
-                * @return value if key had been set, empty if not. 
+                * @return value if key had been set, empty if not.
                 */
                 static std::string remove(const std::string& key);
 #if LOG4CXX_WCHAR_T_API
@@ -135,7 +130,7 @@ namespace log4cxx
                 * Remove the the context identified by the <code>key</code>
                 * parameter.
                 *  @param key key.
-                * @return value if key had been set, empty if not. 
+                * @return value if key had been set, empty if not.
                 */
                 static std::wstring remove(const std::wstring& key);
 #endif
@@ -171,7 +166,7 @@ namespace log4cxx
                 * Remove the the context identified by the <code>key</code>
                 * parameter.
                 *  @param key key.
-                * @return value if key had been set, empty if not. 
+                * @return value if key had been set, empty if not.
                 */
                 static std::basic_string<UniChar> remove(const std::basic_string<UniChar>& key);
 #endif
@@ -207,7 +202,7 @@ namespace log4cxx
                 * Remove the the context identified by the <code>key</code>
                 * parameter.
                 *  @param key key.
-                * @return value if key had been set, empty if not. 
+                * @return value if key had been set, empty if not.
                 */
                 static CFStringRef remove(const CFStringRef& key);
 #endif
@@ -216,7 +211,7 @@ namespace log4cxx
                 * parameter.
                 *  @param key key.
                 * @param prevValue buffer to which previous value is appended.
-                * @return true if key existed in MDC. 
+                * @return true if key existed in MDC.
                 */
                 static bool remove(const LogString& key, LogString& prevValue);
 
@@ -228,7 +223,7 @@ namespace log4cxx
         private:
                 MDC(const MDC&);
                 MDC& operator=(const MDC&);
-                LogString key;                
+                LogString key;
         }; // class MDC;
 }  // namespace log4cxx
 
