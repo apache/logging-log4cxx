@@ -58,6 +58,7 @@
 			<action issue="LOGCXX-336" type="fix">Test compilation fails: Overloading ambiguity</action>
 			<action issue="LOGCXX-340" type="fix">Transcoder::encodeCharsetName bungles encoding</action>
 			<action issue="LOGCXX-351" type="fix">Download page does not have link to KEYS file</action>
+			<action issue="LOGCXX-353" type="fix">When a client disconnects the SocketHubAppender crashes on the next log message</action>
 			<action issue="LOGCXX-358" type="fix">SMTPAppender generating Emails with an empty body</action>
 			<action issue="LOGCXX-365" type="fix">Unit tests fail on system dates later than 2009-12-31.</action>
 			<action issue="LOGCXX-366" type="fix">Errors when compile log4cxx 0.10.0 under Win7 x64 with Visual Studio 2010 (due to Christian Boos and Feng Nan)</action>
