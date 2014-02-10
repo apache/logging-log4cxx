@@ -112,7 +112,11 @@ using namespace log4cxx::helpers;
  const std::string LocationInfo::getMethodName() const
 {
     std::string tmp(methodName);
-    size_t colonPos = tmp.find("::");
+    size_t parenPos = tmp.find('(');
+    if (parenPos != std::string::npos) {
+      tmp.erase(parenPos);
+    }
+    size_t colonPos = tmp.rfind("::");
     if (colonPos != std::string::npos) {
       tmp.erase(0, colonPos + 2);
     } else {
@@ -121,17 +125,17 @@ using namespace log4cxx::helpers;
         tmp.erase(0, spacePos + 1);
       }
     }
-    size_t parenPos = tmp.find('(');
-    if (parenPos != std::string::npos) {
-      tmp.erase(parenPos);
-    }
     return tmp;
 }
 
 
 const std::string LocationInfo::getClassName() const {
         std::string tmp(methodName);
-        size_t colonPos = tmp.find("::");
+        size_t parenPos = tmp.find('(');
+        if (parenPos != std::string::npos) {
+          tmp.erase(parenPos);
+        }
+        size_t colonPos = tmp.rfind("::");
         if (colonPos != std::string::npos) {
            tmp.erase(colonPos);
            size_t spacePos = tmp.find_last_of(' ');
