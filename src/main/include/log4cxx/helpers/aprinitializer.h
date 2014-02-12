@@ -40,7 +40,7 @@ namespace log4cxx
     class APRInitializer
     {
     public:
-    static apr_time_t initialize();
+    static log4cxx_time_t initialize();
     static apr_pool_t* getRootPool();
     static apr_threadkey_t* getTlsKey();
     static bool isDestructed;
