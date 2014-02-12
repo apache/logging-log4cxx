@@ -27,6 +27,7 @@
 #include "abts.h"
 #include <exception>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -112,6 +113,12 @@ namespace LogUnit {
         } catch(TestException&) {
         } catch(AssertException& fx) {
             abts_fail(tc, fx.getMessage().c_str(), fx.getLine());
+        } catch(std::exception& e) {
+            const char* what = e.what();
+            std::ostringstream oss;
+            oss << "Unexpected std::exception: "
+                << (what ? what : "what() == NULL");
+            abts_fail(tc, oss.str().c_str(), -1);
         } catch(...) {
             abts_fail(tc, "Unexpected exception", -1);
         }
