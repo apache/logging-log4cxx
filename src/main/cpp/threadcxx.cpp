@@ -128,14 +128,14 @@ void* LOG4CXX_THREAD_FUNC ThreadLaunch::launcher(apr_thread_t* thread, void* dat
 	LaunchPackage* package = (LaunchPackage*) data;
 	ThreadLocal& tls = getThreadLocal();
 	tls.set(package->getThread());
-	LaunchStatus alive(&package->getThread()->alive);
-	void* retval = (package->getRunnable())(thread, package->getData());
-	apr_thread_exit(thread, 0);
-	return retval;
-}                        
+    {
+      (package->getRunnable())(thread, package->getData());
+      package->getThread()->ending();
+    }
+    apr_thread_exit(thread, 0); // this function never returns !
+    return 0;
+}
 #endif
-
-
 
 Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0), 
     interruptedMutex(NULL), interruptedCondition(NULL) {
@@ -184,32 +184,26 @@ void Thread::run(Runnable start, void* data) {
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
-	// we need to set alive here already, since we use isAlive() to check
-	// if run() has been called in a thread-safe way.
-	apr_atomic_set32(&alive, 0xFFFFFFFF);
+        // we need to set alive here already, since we use isAlive() to check
+        // if run() has been called in a thread-safe way.
+        apr_atomic_set32(&alive, 0xFFFFFFFF);
 #else
         throw ThreadException(LOG4CXX_STR("APR_HAS_THREADS is not true"));
 #endif
-    LaunchPackage* package = (LaunchPackage*) data;
-    ThreadLocal& tls = getThreadLocal();
-    tls.set(package->getThread());
-    {
-      (package->getRunnable())(thread, package->getData());
-      package->getThread()->ending();
-    }
-    apr_thread_exit(thread, 0); // this function never returns !
-    return 0;
 }
-#endif
 
-                thread = NULL;
-                if (stat != APR_SUCCESS) {
-                        throw ThreadException(stat);
-                }
+void Thread::join() {
+#if APR_HAS_THREADS
+    if (thread != NULL) {
+        apr_status_t startStat;
+        apr_status_t stat = apr_thread_join(&startStat, thread);
+        thread = NULL;
+        if (stat != APR_SUCCESS) {
+            throw ThreadException(stat);
         }
+    }
 #endif
 }
-
 
 void Thread::currentThreadInterrupt() {
 #if APR_HAS_THREADS
