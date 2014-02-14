@@ -316,6 +316,9 @@
 		<defineset	define="APR_DECLARE_STATIC"
 					unless="is-apr-shared"
 		/>
+		<defineset	define="XML_STATIC"
+					unless="is-shared"
+		/>
 		<defineset>
 			<define name="XMLPARSEAPI" value=" " />
 		</defineset>
