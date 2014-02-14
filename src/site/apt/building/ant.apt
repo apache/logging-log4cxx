@@ -65,6 +65,7 @@ $ ant
    Building and testing log4cxx on a Microsoft Windows with APR and APR-Util built from source.
 
 +----+
+$ "%VS120COMNTOOLS%\vsvars32.bat"
 $ set PATH=\apache-ant-1.7.0\bin;%PATH%
 $ set CLASSPATH=\cpptasks\cpptasks-1.0b5.jar
 $ tar -xvzf apr-1.2.12.tar.gz
@@ -134,7 +135,7 @@ $ ant -Dcompiler=xyz
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Dwith-SMTP       | SMTP implementation for SMTPAppender, choice of libesmtp, no (default).                                                  |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
-| -Dwith-ODBC       | OBDC implementation for ODBCAppender, choice of unixODBC, iODBC, Microsoft, no (default).                                |
+| -Dwith-ODBC       | OBDC implementation for ODBCAppender, choice of auto (default), unixODBC, iODBC, Microsoft, no                           |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
 | -Dlog4j.jar       | Path to log4j.jar for run-socketserver.                                                                                  |
 *-------------------+--------------------------------------------------------------------------------------------------------------------------+
@@ -174,6 +175,10 @@ $ ant -Dcompiler=xyz
    compilation with Visual Studio 6 unless a later Platform SDK is installed.
    See APR bug {{{http://issues.apache.org/bugzilla/show_bug.cgi?44327}44327}}.
    APR 1.2.11 and the corresponding APR-Util 1.2.10 will compile with Visual Studio 6.
+
+   If your are using Visual Studio, vsvars32.bat from the directory ...\Common7\Tools needs to be
+   executed manually before a build. This script sets include paths etc., else you will get a lot
+   of errors about missing windows.h and such.
 
    *** Cygwin:
 
