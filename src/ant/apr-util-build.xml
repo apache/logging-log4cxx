@@ -319,15 +319,12 @@
 		<defineset>
 			<define name="XMLPARSEAPI" value=" " />
 		</defineset>
-		<defineset	define="WIN32 COMPILED_FROM_DSP"
+		<defineset	define="WIN32 COMPILED_FROM_DSP HAVE_SQL_H"
 					if="is-windows"
 		/>
 		<defineset if="is-bcc">
 			<define	name="EILSEQ"
 					value="50"
-			/>
-			<define	name="HAVE_SQL_H"
-					value="1"
 			/>
 		</defineset>
 		<defineset	define="_HAVE_CONFIG_H _REENTRANT _GNU_SOURCE"
