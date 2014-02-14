@@ -129,15 +129,17 @@
 		code files.
 	 -->
 	<condition	property="bcc-needs-stdint"
-				value="0"
-				else="1">
+				value="1"
+				else="0">
 		<and>
-			<isfileselected file="${include.dir}/private/apu_config.h">
-				<contains	text="#include &lt;stdint.h&gt;"
-							ignorewhitespace="true"
-				/>
-			</isfileselected>
 			<equals arg1="${compiler}" arg2="bcc" />
+			<not>
+				<isfileselected file="${include.dir}/private/apu_config.h">
+					<contains	text="#include &lt;stdint.h&gt;"
+								ignorewhitespace="true"
+					/>
+				</isfileselected>
+			</not>
 		</and>
 	</condition>
 	<if>
