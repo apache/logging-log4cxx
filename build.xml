@@ -238,7 +238,7 @@
 			-Dwith-apr=APRPATH
 			-Dwith-apr-util=PATH
 			-Dwith-SMTP=[libesmtp, no] (default no)
-			-Dwith-ODBC=[unixODBC, iODBC, Microsoft, no] (default no)
+			-Dwith-ODBC=[unixODBC, iODBC, Microsoft, no] (default=no on Unix, Microsoft on Windows)
 		</echo>
 	</target>
 
@@ -280,9 +280,14 @@
 
 		<condition	property="odbc.lib"
 					value="odbc32">
-			<equals	arg1="${with-ODBC}"
-					arg2="Microsoft"
-			/>
+			<and>
+				<not>
+					<equals	arg1="${with-ODBC}"
+							arg2="no"
+					/>
+				</not>
+				<isset property="is-windows" />
+			</and>
 		</condition>
 
 		<condition	property="has-ODBC"
