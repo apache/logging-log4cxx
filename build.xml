@@ -227,13 +227,13 @@
 			-Ddebug=[true|false]
 			-Doptimize=[speed|size|none]
 			-Dversion=n.n.n
-			-Denable-shared=[yes|no] (default yes)
-			-Denable-static=[yes|no] (default yes)
-			-Denable-char=[0, 1] (expose char* API, default 1)
-			-Denable-wchar_t=[0, 1] (expose wchar_t* API, default 1)
-			-Denable-unichar=[0, 1] (expose UniChar API, default 0)
-			-Denable-cfstring[0, 1] (expose CFString API, default 0)
-			-Dwith-charset=[auto|utf-8|iso-8859-1|usascii|ebcdic] (default auto)
+			-Denable-shared=[yes|no] (default=yes)
+			-Denable-static=[yes|no] (default=yes)
+			-Denable-char=[0, 1] (expose char* API, default=1)
+			-Denable-wchar_t=[0, 1] (expose wchar_t* API, default=1)
+			-Denable-unichar=[0, 1] (expose UniChar API, default=0)
+			-Denable-cfstring[0, 1] (expose CFString API, default=0)
+			-Dwith-charset=[auto|utf-8|iso-8859-1|usascii|ebcdic] (default=auto)
 			-Dwith-logchar=[utf-8|wchar_t|unichar] (default=utf-8 on Unix, wchar_t on Windows)
 			-Dwith-apr=APRPATH
 			-Dwith-apr-util=PATH
