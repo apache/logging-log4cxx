@@ -63,6 +63,8 @@
 <property	name="lib.prefix"
 			value=""
 />
+<property	environment="env"
+/>
 
 <target	name="usage"
 		description="Displays usage notes on build">
@@ -236,6 +238,17 @@
 					value="setmode"
 			/>
 		</defineset>
+		<!--
+			apr_atomic.c is not linkable in VS2013 x86 and the only somewhat easy workaround was
+			to claim we are not VS2013, which only works because what we use to claim this is not
+			used elsewhere and doesn't seem to introduce any other problems for now.
+
+			https://groups.google.com/forum/#!topic/aprdev/bc1ILvUe-fk
+			https://groups.google.com/forum/#!topic/unimrcp/Iybpn51UYnI
+		 -->
+		<defineset	define="__MINGW32__"
+					if="env.VS120COMNTOOLS"
+		/>
 
 		<compilerarg	value="${pic-option}"
 						if="pic-option"
