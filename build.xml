@@ -173,7 +173,7 @@
 				value="no"
 	/>
 	<property	name="with-ODBC"
-				value="no"
+				value="auto"
 	/>
 	<property	name="svnsite.url"
 				value="https://svn.apache.org/repos/asf/logging/site/trunk/docs/log4cxx"
@@ -238,7 +238,7 @@
 			-Dwith-apr=APRPATH
 			-Dwith-apr-util=PATH
 			-Dwith-SMTP=[libesmtp, no] (default no)
-			-Dwith-ODBC=[unixODBC, iODBC, Microsoft, no] (default=no on Unix, Microsoft on Windows)
+			-Dwith-ODBC=[auto, unixODBC, iODBC, Microsoft, no] (default=auto resulting in no on Unix, Microsoft on Windows)
 		</echo>
 	</target>
 
