@@ -27,9 +27,16 @@
 
 namespace log4cxx
 {
-    class Level;
-    /** smart pointer to a Level instance */
-    LOG4CXX_PTR_DEF(Level);
+	/**
+	 * LOG4CXX_PTR_DEF can't be used to get a smart pointer for Level because we need to override
+	 * the comparison operator and this doesn't work if the template has alread been initialized,
+	 * which is what the macro does on some platforms. The overriding takes place underneath the
+	 * definition of Level because we need one of it's methods.
+	 *
+	 * https://issues.apache.org/jira/browse/LOGCXX-394
+	 */
+	class Level;
+	typedef log4cxx::helpers::ObjectPtrT<Level> LevelPtr;
 
         /**
         Defines the minimum set of levels recognized by the system, that is
@@ -82,7 +89,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevel(const std::string& sArg,
                         const LevelPtr& defaultLevel);
@@ -105,7 +112,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevel(const std::wstring& sArg,
                         const LevelPtr& defaultLevel);
@@ -128,7 +135,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevel(const std::basic_string<UniChar>& sArg,
                         const LevelPtr& defaultLevel);
@@ -151,7 +158,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevel(const CFStringRef& sArg,
                         const LevelPtr& defaultLevel);
@@ -173,7 +180,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevelLS(const LogString& sArg,
                         const LevelPtr& defaultLevel);
@@ -262,6 +269,25 @@ namespace log4cxx
                 Level(const Level&);
                 Level& operator=(const Level&);
         };
+
+	/**
+	 * We need to double some logic from LOG4CXX_PTR_DEF or else we are unable to override the
+	 * comparison operator, which we need to properly fix LOGCXX-394.
+	 *
+	 * https://issues.apache.org/jira/browse/LOGCXX-394
+	 */
+	inline bool LevelPtr::operator==(const LevelPtr& rhs) const
+	{ return (*this)->equals(rhs); }
+	inline bool LevelPtr::operator!=(const LevelPtr& rhs) const
+	{ return !(*this == rhs); }
+	#if defined(_MSC_VER) && !defined(LOG4CXX_STATIC) && defined(LOG4CXX)
+		template class LOG4CXX_EXPORT log4cxx::helpers::ObjectPtrT<Level>;
+	#elif defined(_MSC_VER) && !defined(LOG4CXX_STATIC)
+		#pragma warning(push)
+		#pragma warning(disable: 4231)
+		extern template class LOG4CXX_EXPORT log4cxx::helpers::ObjectPtrT<Level>;
+		#pragma warning(pop)
+	#endif
 }
 
 #define DECLARE_LOG4CXX_LEVEL(level)\
