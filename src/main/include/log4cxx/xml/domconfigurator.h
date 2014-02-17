@@ -49,6 +49,7 @@ namespace log4cxx
 
         namespace xml
         {
+			class XMLWatchdog;
 
               /**
               Use this class to initialize the log4cxx environment using a DOM tree.
@@ -303,7 +304,7 @@ namespace log4cxx
                         //   prevent assignment or copy statements
                         DOMConfigurator(const DOMConfigurator&);
                         DOMConfigurator& operator=(const DOMConfigurator&);
-
+						static XMLWatchdog *xdog;
                 };
             LOG4CXX_PTR_DEF(DOMConfigurator);
         }  // namespace xml

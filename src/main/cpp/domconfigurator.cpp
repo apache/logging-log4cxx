@@ -57,23 +57,30 @@ using namespace log4cxx::rolling;
 
 
 #if APR_HAS_THREADS
-class XMLWatchdog  : public FileWatchdog
+namespace log4cxx
 {
-public:
-        XMLWatchdog(const File& filename) : FileWatchdog(filename)
-        {
-        }
+    namespace xml
+    {
+		class XMLWatchdog  : public FileWatchdog
+		{
+		public:
+			XMLWatchdog(const File& filename) : FileWatchdog(filename)
+			{
+			}
 
-        /**
-        Call DOMConfigurator#doConfigure with the
-        <code>filename</code> to reconfigure log4cxx.
-        */
-        void doOnChange()
-        {
-                DOMConfigurator().doConfigure(file,
-                        LogManager::getLoggerRepository());
-        }
-};
+			/**
+			Call DOMConfigurator#doConfigure with the
+			<code>filename</code> to reconfigure log4cxx.
+			*/
+			void doOnChange()
+			{
+				DOMConfigurator().doConfigure(file,
+						LogManager::getLoggerRepository());
+			}
+		};
+	}
+}
+XMLWatchdog *DOMConfigurator::xdog = NULL;
 #endif
 
 
@@ -814,7 +821,8 @@ void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 {
         File file(filename);
 #if APR_HAS_THREADS
-        XMLWatchdog * xdog = new XMLWatchdog(file);
+		if( xdog ) delete xdog;
+        xdog = new XMLWatchdog(file);
         APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
@@ -828,7 +836,8 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
 {
         File file(filename);
 #if APR_HAS_THREADS
-        XMLWatchdog * xdog = new XMLWatchdog(file);
+		if( xdog ) delete xdog;
+        xdog = new XMLWatchdog(file);
         APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
@@ -843,7 +852,9 @@ void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filena
 {
         File file(filename);
 #if APR_HAS_THREADS
-        XMLWatchdog * xdog = new XMLWatchdog(file);
+		if( xdog ) delete xdog;
+        xdog = new XMLWatchdog(file);
+        APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
 #else
@@ -857,7 +868,9 @@ void DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
 {
         File file(filename);
 #if APR_HAS_THREADS
-        XMLWatchdog * xdog = new XMLWatchdog(file);
+		if( xdog ) delete xdog;
+        xdog = new XMLWatchdog(file);
+        APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
 #else
