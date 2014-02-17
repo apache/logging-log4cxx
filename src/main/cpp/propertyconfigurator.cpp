@@ -51,30 +51,33 @@ using namespace log4cxx::config;
 
 #if APR_HAS_THREADS
 #include <log4cxx/helpers/filewatchdog.h>
-
-class PropertyWatchdog  : public FileWatchdog
+namespace log4cxx 
 {
-public:
-        PropertyWatchdog(const File& filename) : FileWatchdog(filename)
-        {
-        }
+	class PropertyWatchdog  : public FileWatchdog
+	{
+	public:
+			PropertyWatchdog(const File& filename) : FileWatchdog(filename)
+			{
+			}
 
-        /**
-        Call PropertyConfigurator#doConfigure(const String& configFileName,
-        const spi::LoggerRepositoryPtr& hierarchy) with the
-        <code>filename</code> to reconfigure log4cxx.
-        */
-        void doOnChange()
-        {
-                PropertyConfigurator().doConfigure(file,
-                        LogManager::getLoggerRepository());
-        }
-};
+			/**
+			Call PropertyConfigurator#doConfigure(const String& configFileName,
+			const spi::LoggerRepositoryPtr& hierarchy) with the
+			<code>filename</code> to reconfigure log4cxx.
+			*/
+			void doOnChange()
+			{
+					PropertyConfigurator().doConfigure(file,
+							LogManager::getLoggerRepository());
+			}
+	};
+}
+
+PropertyWatchdog *PropertyConfigurator::pdog = NULL;
+
 #endif
 
 IMPLEMENT_LOG4CXX_OBJECT(PropertyConfigurator)
-
-
 
 PropertyConfigurator::PropertyConfigurator()
 : registry(new std::map<LogString, AppenderPtr>()), loggerFactory(new DefaultLoggerFactory())
@@ -137,7 +140,9 @@ void PropertyConfigurator::configureAndWatch(const File& configFilename)
 void PropertyConfigurator::configureAndWatch(
         const File& configFilename, long delay)
 {
-    PropertyWatchdog * pdog = new PropertyWatchdog(configFilename);
+	if(pdog)
+		delete pdog;
+    pdog = new PropertyWatchdog(configFilename);
     APRInitializer::registerCleanup(pdog);
     pdog->setDelay(delay);
     pdog->start();

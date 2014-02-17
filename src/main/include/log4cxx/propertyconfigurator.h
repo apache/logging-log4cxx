@@ -50,6 +50,7 @@ namespace log4cxx
         class LoggerFactory;
     }
 
+	class PropertyWatchdog;
 /**
 Allows the configuration of log4cxx from an external file.  See
 <b>{@link #doConfigure(const File&, log4cxx::spi::LoggerRepositoryPtr&)}</b>
@@ -384,6 +385,7 @@ protected:
 private:
       PropertyConfigurator(const PropertyConfigurator&);
       PropertyConfigurator& operator=(const PropertyConfigurator&);
+	  static PropertyWatchdog *pdog;
    }; // class PropertyConfigurator
 }  // namespace log4cxx
 
