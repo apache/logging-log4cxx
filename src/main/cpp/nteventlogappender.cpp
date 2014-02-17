@@ -17,6 +17,7 @@
 
 #if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
 
+#define _WINSOCKAPI_
 #include <windows.h>
 #undef ERROR
 #include <log4cxx/nt/nteventlogappender.h>
