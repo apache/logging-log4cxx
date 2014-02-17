@@ -26,7 +26,9 @@
 #include <locale.h>
 #include <cstring>
 #include <cstdio>
+#ifndef WIN32
 #include <stdint.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
