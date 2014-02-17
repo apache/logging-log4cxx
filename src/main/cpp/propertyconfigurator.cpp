@@ -141,7 +141,10 @@ void PropertyConfigurator::configureAndWatch(
         const File& configFilename, long delay)
 {
 	if(pdog)
+	{
+	    APRInitializer::unregisterCleanup(pdog);	
 		delete pdog;
+	}
     pdog = new PropertyWatchdog(configFilename);
     APRInitializer::registerCleanup(pdog);
     pdog->setDelay(delay);

@@ -59,7 +59,7 @@ APRInitializer::~APRInitializer() {
         synchronized sync(mutex);
         apr_threadkey_private_delete(tlsKey);
 #endif
-        for(std::vector<FileWatchdog*>::iterator iter = watchdogs.begin();
+        for(std::list<FileWatchdog*>::iterator iter = watchdogs.begin();
             iter != watchdogs.end();
             iter++) {
             delete *iter;
@@ -93,5 +93,21 @@ void APRInitializer::registerCleanup(FileWatchdog* watchdog) {
     synchronized sync(instance.mutex);
 #endif
     instance.watchdogs.push_back(watchdog);
+}
+
+void APRInitializer::unregisterCleanup(FileWatchdog* watchdog) {
+    APRInitializer& instance(getInstance());
+#if APR_HAS_THREADS
+    synchronized sync(instance.mutex);
+#endif
+    for(std::list<FileWatchdog*>::iterator iter = instance.watchdogs.begin();
+        iter != instance.watchdogs.end();
+        iter++) {
+		if(*iter == watchdog)
+		{
+			instance.watchdogs.erase(iter);
+			return;
+		}
+    }
 }
 

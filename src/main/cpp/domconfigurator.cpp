@@ -821,7 +821,11 @@ void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 {
         File file(filename);
 #if APR_HAS_THREADS
-		if( xdog ) delete xdog;
+		if( xdog )
+		{
+			APRInitializer::unregisterCleanup(xdog);
+			delete xdog;
+		}
         xdog = new XMLWatchdog(file);
         APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
@@ -836,7 +840,11 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
 {
         File file(filename);
 #if APR_HAS_THREADS
-		if( xdog ) delete xdog;
+		if( xdog )
+		{
+			APRInitializer::unregisterCleanup(xdog);
+			delete xdog;
+		}
         xdog = new XMLWatchdog(file);
         APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
@@ -852,7 +860,11 @@ void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filena
 {
         File file(filename);
 #if APR_HAS_THREADS
-		if( xdog ) delete xdog;
+		if( xdog )
+		{
+			APRInitializer::unregisterCleanup(xdog);
+			delete xdog;
+		}
         xdog = new XMLWatchdog(file);
         APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
@@ -868,7 +880,11 @@ void DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
 {
         File file(filename);
 #if APR_HAS_THREADS
-		if( xdog ) delete xdog;
+		if( xdog )
+		{
+			APRInitializer::unregisterCleanup(xdog);
+			delete xdog;
+		}
         xdog = new XMLWatchdog(file);
         APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);

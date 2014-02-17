@@ -22,7 +22,7 @@
 #error "aprinitializer.h should only be included by log4cxx implementation"
 #endif
 
-#include <vector>
+#include <list>
 
 extern "C" {
 typedef struct apr_thread_mutex_t apr_thread_mutex_t;
@@ -51,6 +51,7 @@ namespace log4cxx
      *    allocated on heap and not deleted elsewhere.
      */
     static void registerCleanup(FileWatchdog* watchdog);
+	static void unregisterCleanup(FileWatchdog* watchdog);
 
     private:
       APRInitializer();
@@ -58,7 +59,7 @@ namespace log4cxx
       APRInitializer& operator=(const APRInitializer&);
       apr_pool_t* p;
       apr_thread_mutex_t* mutex;
-      std::vector<FileWatchdog*> watchdogs; 
+      std::list<FileWatchdog*> watchdogs; 
       apr_time_t startTime;
       apr_threadkey_t* tlsKey;
       static APRInitializer& getInstance();
