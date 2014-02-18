@@ -132,29 +132,32 @@ int CachedDateFormat::findMillisecondStart(
            LogString plusZero;
            formatter->format(plusZero, slotBegin, pool);
 
-           // If the next 1..3 characters match the magic strings, depending on if the currently
+           // If the next 1..3 characters match the magic string, depending on if the currently
            // used millis overlap with the magic string, and the remaining fragments are identical.
+           // Because magic string and currently used millis can overlap, i is not always the index
+           // of the first millis char.
            //
            // LOG4CXX-420:
            // pattern:		%d{yyyy-MM-dd HH:mm:ss,SSS}
            // formatted:	2010-08-12 11:04:50,609
            // plusMagic:	2010-08-12 11:04:50,654
            // plusZero:		2010-08-12 11:04:50,000
+           int possibleRetVal = i - (3 - (formatted.length() - i));
            if (plusZero.length() == formatted.length()
-              && regionMatches(magicString, magicString.length() - (plusMagic.length() - i), plusMagic, i, plusMagic.length() - i)
-              && regionMatches(formattedMillis, formattedMillis.length() - (formatted.length() - i), formatted, i, formatted.length() - i)
-              && regionMatches(zeroString, (sizeof(zeroString)/sizeof(zeroString[0]) - 1) - (plusZero.length() - i), plusZero, i, plusZero.length() - i)
-              && (formatted.length() == i + (formatted.length() - i)
-                 || plusZero.compare(i + (plusZero.length() - i),
-                       LogString::npos, plusMagic, i + (plusMagic.length() - i), LogString::npos) == 0)) {
-              return i - (3 - (formatted.length() - i));
+              && regionMatches(magicString,		0, plusMagic,	possibleRetVal, plusMagic.length()	- possibleRetVal)
+              && regionMatches(formattedMillis,	0, formatted,	possibleRetVal, formatted.length()	- possibleRetVal)
+              && regionMatches(zeroString,		0, plusZero,	possibleRetVal, plusZero.length()	- possibleRetVal)
+              && (formatted.length() == possibleRetVal + (formatted.length() - possibleRetVal)
+                 || plusZero.compare(possibleRetVal + (plusZero.length() - possibleRetVal),
+                       LogString::npos, plusMagic, possibleRetVal + (plusMagic.length() - possibleRetVal), LogString::npos) == 0)) {
+              return possibleRetVal;
            } else {
               return UNRECOGNIZED_MILLISECONDS;
           }
         }
      }
   }
-  return  NO_MILLISECONDS;
+  return NO_MILLISECONDS;
 }
 
 
@@ -237,7 +240,7 @@ int CachedDateFormat::findMillisecondStart(
 void CachedDateFormat::millisecondFormat(int millis,
      LogString& buf,
      int offset) {
-     buf[offset] = digits[ millis / 100];
+     buf[offset] = digits[millis / 100];
      buf[offset + 1] = digits[(millis / 10) % 10];
      buf[offset + 2] = digits[millis  % 10];
  }

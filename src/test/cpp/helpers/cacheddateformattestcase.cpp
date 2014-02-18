@@ -49,7 +49,7 @@ using namespace log4cxx::pattern;
 
 /**
    Unit test {@link CachedDateFormat}.
-   
+
    */
 LOGUNIT_CLASS(CachedDateFormatTestCase)
    {
@@ -140,11 +140,11 @@ LOGUNIT_CLASS(CachedDateFormatTestCase)
      LogString actual;
      gmtFormat.format(actual, jul2, p);
      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
-     
+
      actual.erase(actual.begin(), actual.end());
      chicagoFormat.format(actual, jul2, p);
      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("19:00:00,000"), actual);
-     
+
      actual.erase(actual.begin(), actual.end());
      gmtFormat.format(actual, jul2, p);
      LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,000"), actual);
@@ -450,17 +450,40 @@ void test11() {
  * Check pattern location for ISO8601
  */
 void test12() {
-   DateFormatPtr df = new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS"));
-   apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
-
+   DateFormatPtr df    = new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS"));
+   apr_time_t    ticks = 11142L * MICROSECONDS_PER_DAY;
    Pool p;
-
    LogString formatted;
-   df->format(formatted, ticks, p);
 
-   int millisecondStart = CachedDateFormat::findMillisecondStart(ticks,
-       formatted, df, p);
-   LOGUNIT_ASSERT_EQUAL(20, millisecondStart);
+   df->format(formatted, ticks, p);
+   int msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+   LOGUNIT_ASSERT_EQUAL(20, msStart);
+
+   // Test for for milliseconds overlapping with the magic ones as per LOGCXX-420.
+   apr_time_exp_t c;
+   memset(&c, 0, sizeof(c));
+   c.tm_year = 110;
+   c.tm_mon  = 7;
+   c.tm_mday = 12;
+   c.tm_hour = 9;
+   c.tm_min  = 4;
+   c.tm_sec  = 50;
+   c.tm_usec = 406000;
+
+   LOGUNIT_ASSERT_EQUAL(0, apr_time_exp_gmt_get(&ticks, &c));
+
+   formatted.clear();
+   df->format(formatted, ticks, p);
+   int msStartLogcxx420_406 = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+   LOGUNIT_ASSERT_EQUAL(20, msStartLogcxx420_406);
+
+   c.tm_usec = 609000;
+   LOGUNIT_ASSERT_EQUAL(0, apr_time_exp_gmt_get(&ticks, &c));
+
+   formatted.clear();
+   df->format(formatted, ticks, p);
+   int msStartLogcxx420_609 = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+   LOGUNIT_ASSERT_EQUAL(20, msStartLogcxx420_609);
 }
 
 /**
