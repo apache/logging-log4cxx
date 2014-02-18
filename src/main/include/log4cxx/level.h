@@ -276,9 +276,9 @@ namespace log4cxx
 	 *
 	 * https://issues.apache.org/jira/browse/LOGCXX-394
 	 */
-	inline bool LevelPtr::operator==(const LevelPtr& rhs) const
+	template<> inline bool LevelPtr::operator==(const LevelPtr& rhs) const
 	{ return (*this)->equals(rhs); }
-	inline bool LevelPtr::operator!=(const LevelPtr& rhs) const
+	template<> inline bool LevelPtr::operator!=(const LevelPtr& rhs) const
 	{ return !(*this == rhs); }
 	#if defined(_MSC_VER) && !defined(LOG4CXX_STATIC) && defined(LOG4CXX)
 		template class LOG4CXX_EXPORT log4cxx::helpers::ObjectPtrT<Level>;
