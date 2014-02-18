@@ -132,24 +132,38 @@ int CachedDateFormat::findMillisecondStart(
            LogString plusZero;
            formatter->format(plusZero, slotBegin, pool);
 
-           // If the next 1..3 characters match the magic string, depending on if the currently
-           // used millis overlap with the magic string, and the remaining fragments are identical.
-           // Because magic string and currently used millis can overlap, i is not always the index
-           // of the first millis char.
-           //
-           // LOG4CXX-420:
-           // pattern:		%d{yyyy-MM-dd HH:mm:ss,SSS}
-           // formatted:	2010-08-12 11:04:50,609
-           // plusMagic:	2010-08-12 11:04:50,654
-           // plusZero:		2010-08-12 11:04:50,000
-           int possibleRetVal = i - (3 - (formatted.length() - i));
+           // Test if the next 1..3 characters match the magic string, main problem is that magic
+           // available millis in formatted can overlap. Therefore the current i is not always the
+           // index of the first millis char, but may be already within the millis. Besides that
+           // the millis can occur everywhere in formatted. See LOGCXX-420 and following.
+           size_t	magicLength		= magicString.length();
+           size_t	overlapping		= magicString.find(plusMagic[i]);
+           int		possibleRetVal	= i - overlapping;
+
+wprintf(L"formatted: %s\n", formatted.c_str());
+wprintf(L"formattedMillis: %s\n", formattedMillis.c_str());
+wprintf(L"magicString: %s\n", magicString.c_str());
+wprintf(L"plusMagic: %s\n", plusMagic.c_str());
+wprintf(L"plusZero: %s\n", plusZero.c_str());
+
+printf("i: %i\n", i);
+printf("formatted.length(): %i\n", formatted.length());
+printf("overlapping: %i\n", overlapping);
+printf("possibleRetVal: %i\n", possibleRetVal);
+
+printf("1: %i\n", regionMatches(magicString, 0, plusMagic, possibleRetVal, magicLength));
+printf("2: %i\n", regionMatches(formattedMillis, 0, formatted, possibleRetVal, magicLength));
+printf("3: %i\n", regionMatches(zeroString, 0, plusZero, possibleRetVal, magicLength));
+printf("4: %i\n", formatted.length() == possibleRetVal + magicLength);
+printf("5: %i\n", plusZero.compare(possibleRetVal + magicLength, LogString::npos, plusMagic, possibleRetVal + magicLength, LogString::npos) == 0);
+
            if (plusZero.length() == formatted.length()
-              && regionMatches(magicString,		0, plusMagic,	possibleRetVal, plusMagic.length()	- possibleRetVal)
-              && regionMatches(formattedMillis,	0, formatted,	possibleRetVal, formatted.length()	- possibleRetVal)
-              && regionMatches(zeroString,		0, plusZero,	possibleRetVal, plusZero.length()	- possibleRetVal)
-              && (formatted.length() == possibleRetVal + (formatted.length() - possibleRetVal)
-                 || plusZero.compare(possibleRetVal + (plusZero.length() - possibleRetVal),
-                       LogString::npos, plusMagic, possibleRetVal + (plusMagic.length() - possibleRetVal), LogString::npos) == 0)) {
+              && regionMatches(magicString,		0, plusMagic,	possibleRetVal, magicLength)
+              && regionMatches(formattedMillis,	0, formatted,	possibleRetVal, magicLength)
+              && regionMatches(zeroString,		0, plusZero,	possibleRetVal, magicLength)
+              /*&& (formatted.length() == possibleRetVal + magicLength
+                 || plusZero.compare(possibleRetVal + magicLength,
+                       LogString::npos, plusMagic, possibleRetVal + magicLength, LogString::npos) == 0)*/) {
               return possibleRetVal;
            } else {
               return UNRECOGNIZED_MILLISECONDS;
@@ -183,18 +197,16 @@ int CachedDateFormat::findMillisecondStart(
   //     (that is if it was found or milliseconds did not appear)
   //
   if (millisecondStart != UNRECOGNIZED_MILLISECONDS) {
-
       //    Check if the cache is still valid.
       //    If the requested time is within the same integral second
       //       as the last request and a shorter expiration was not requested.
       if (now < slotBegin + expiration
           && now >= slotBegin
           && now < slotBegin + 1000000L) {
-
           //
           //    if there was a millisecond field then update it
           //
-          if (millisecondStart >= 0 ) {
+          if (millisecondStart >= 0) {
               millisecondFormat((int) ((now - slotBegin)/1000), cache, millisecondStart);
           }
           //
@@ -202,10 +214,10 @@ int CachedDateFormat::findMillisecondStart(
           //      (the slot begin should be unchanged)
           previousTime = now;
           buf.append(cache);
+
           return;
       }
   }
-
 
   //
   //  could not use previous value.
@@ -219,7 +231,6 @@ int CachedDateFormat::findMillisecondStart(
       slotBegin -= 1000000;
   }
 
-
   //
   //    if the milliseconds field was previous found
   //       then reevaluate in case it moved.
@@ -228,7 +239,6 @@ int CachedDateFormat::findMillisecondStart(
       millisecondStart = findMillisecondStart(now, cache, formatter, p);
   }
 }
-
 
 /**
  *   Formats a count of milliseconds (0-999) into a numeric representation.

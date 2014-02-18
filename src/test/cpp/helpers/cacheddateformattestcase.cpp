@@ -48,37 +48,35 @@ using namespace log4cxx::pattern;
 
 
 /**
-   Unit test {@link CachedDateFormat}.
-
-   */
+ * Unit test {@link CachedDateFormat}.
+ */
 LOGUNIT_CLASS(CachedDateFormatTestCase)
    {
      LOGUNIT_TEST_SUITE( CachedDateFormatTestCase );
-     LOGUNIT_TEST( test1 );
-     LOGUNIT_TEST( test2 );
-     LOGUNIT_TEST( test3 );
-     LOGUNIT_TEST( test4 );
+     LOGUNIT_TEST(test1);
+     LOGUNIT_TEST(test2);
+     LOGUNIT_TEST(test3);
+     LOGUNIT_TEST(test4);
 #if LOG4CXX_HAS_STD_LOCALE
-     LOGUNIT_TEST( test5 );
+     LOGUNIT_TEST(test5);
 #endif
-     LOGUNIT_TEST( test6 );
-     LOGUNIT_TEST( test8 );
+     LOGUNIT_TEST(test6);
+     LOGUNIT_TEST(test8);
 //   Gump doesn't like this test
-//     LOGUNIT_TEST( test9 );
-     LOGUNIT_TEST( test10 );
-     LOGUNIT_TEST( test11);
-     LOGUNIT_TEST( test12 );
-     LOGUNIT_TEST( test13 );
-     LOGUNIT_TEST( test14 );
-     LOGUNIT_TEST( test15 );
-     LOGUNIT_TEST( test16 );
-     LOGUNIT_TEST( test17);
-     LOGUNIT_TEST( test18);
-     LOGUNIT_TEST( test19);
-     LOGUNIT_TEST( test20);
-     LOGUNIT_TEST( test21);
+//     LOGUNIT_TEST(test9);
+     LOGUNIT_TEST(test10);
+     LOGUNIT_TEST(test11);
+     LOGUNIT_TEST(test12);
+     LOGUNIT_TEST(test13);
+     LOGUNIT_TEST(test14);
+     LOGUNIT_TEST(test15);
+     LOGUNIT_TEST(test16);
+     LOGUNIT_TEST(test17);
+     LOGUNIT_TEST(test18);
+     LOGUNIT_TEST(test19);
+     LOGUNIT_TEST(test20);
+     LOGUNIT_TEST(test21);
      LOGUNIT_TEST_SUITE_END();
-
 
 #define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
 
@@ -474,16 +472,16 @@ void test12() {
 
    formatted.clear();
    df->format(formatted, ticks, p);
-   int msStartLogcxx420_406 = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
-   LOGUNIT_ASSERT_EQUAL(20, msStartLogcxx420_406);
+   msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+   LOGUNIT_ASSERT_EQUAL(20, msStart);
 
    c.tm_usec = 609000;
    LOGUNIT_ASSERT_EQUAL(0, apr_time_exp_gmt_get(&ticks, &c));
 
    formatted.clear();
    df->format(formatted, ticks, p);
-   int msStartLogcxx420_609 = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
-   LOGUNIT_ASSERT_EQUAL(20, msStartLogcxx420_609);
+   msStart = CachedDateFormat::findMillisecondStart(ticks, formatted, df, p);
+   LOGUNIT_ASSERT_EQUAL(20, msStart);
 }
 
 /**
@@ -551,7 +549,6 @@ void test16() {
    LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, millisecondStart);
 }
 
-
 /**
  * Check caching when multiple SSS appear in pattern
  */
@@ -574,12 +571,30 @@ void test17() {
     LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s);
 
     s.erase(s.begin(), s.end());
+printf("test17 1\n");
     cachedFormat->format(s, jul2, p);
-
     LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s) ;
+printf("test17 2\n");
 
     int maxValid = CachedDateFormat::getMaximumCacheValidity(badPattern);
     LOGUNIT_ASSERT_EQUAL(1000, maxValid);
+
+    // Test overlapping millis with a magic string from CachedDateFormat for LOGCXX-420.
+    s.clear();
+    jul2 += 286000;
+printf("test17 3\n");
+    cachedFormat->format(s, jul2, p);
+    int msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
+    LOGUNIT_ASSERT_EQUAL(9, msStart);
+printf("test17 4\n");
+
+    s.clear();
+    jul2 += 203000;
+printf("test17 5\n");
+    cachedFormat->format(s, jul2, p);
+    msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
+    LOGUNIT_ASSERT_EQUAL(9, msStart);
+printf("test17 6\n");
 }
 
 /**
@@ -631,6 +646,5 @@ void test21() {
 }
 
 };
-
 
 LOGUNIT_TEST_SUITE_REGISTRATION(CachedDateFormatTestCase);
