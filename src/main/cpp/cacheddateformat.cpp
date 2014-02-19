@@ -139,31 +139,16 @@ int CachedDateFormat::findMillisecondStart(
            size_t	magicLength		= magicString.length();
            size_t	overlapping		= magicString.find(plusMagic[i]);
            int		possibleRetVal	= i - overlapping;
-
-wprintf(L"formatted: %s\n", formatted.c_str());
-wprintf(L"formattedMillis: %s\n", formattedMillis.c_str());
-wprintf(L"magicString: %s\n", magicString.c_str());
-wprintf(L"plusMagic: %s\n", plusMagic.c_str());
-wprintf(L"plusZero: %s\n", plusZero.c_str());
-
-printf("i: %i\n", i);
-printf("formatted.length(): %i\n", formatted.length());
-printf("overlapping: %i\n", overlapping);
-printf("possibleRetVal: %i\n", possibleRetVal);
-
-printf("1: %i\n", regionMatches(magicString, 0, plusMagic, possibleRetVal, magicLength));
-printf("2: %i\n", regionMatches(formattedMillis, 0, formatted, possibleRetVal, magicLength));
-printf("3: %i\n", regionMatches(zeroString, 0, plusZero, possibleRetVal, magicLength));
-printf("4: %i\n", formatted.length() == possibleRetVal + magicLength);
-printf("5: %i\n", plusZero.compare(possibleRetVal + magicLength, LogString::npos, plusMagic, possibleRetVal + magicLength, LogString::npos) == 0);
-
            if (plusZero.length() == formatted.length()
               && regionMatches(magicString,		0, plusMagic,	possibleRetVal, magicLength)
               && regionMatches(formattedMillis,	0, formatted,	possibleRetVal, magicLength)
               && regionMatches(zeroString,		0, plusZero,	possibleRetVal, magicLength)
-              /*&& (formatted.length() == possibleRetVal + magicLength
+              // The following will and should fail for patterns with more than one SSS because
+              // we only seem to be able to change one SSS in e.g. format and need to reformat the
+              // whole string in other cases.
+              && (formatted.length() == possibleRetVal + magicLength
                  || plusZero.compare(possibleRetVal + magicLength,
-                       LogString::npos, plusMagic, possibleRetVal + magicLength, LogString::npos) == 0)*/) {
+                       LogString::npos, plusMagic, possibleRetVal + magicLength, LogString::npos) == 0)) {
               return possibleRetVal;
            } else {
               return UNRECOGNIZED_MILLISECONDS;

@@ -571,10 +571,11 @@ void test17() {
     LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s);
 
     s.erase(s.begin(), s.end());
-printf("test17 1\n");
+    int msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
+    LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, msStart);
+
     cachedFormat->format(s, jul2, p);
     LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("00:00:00,120 00:00:00,120"), s) ;
-printf("test17 2\n");
 
     int maxValid = CachedDateFormat::getMaximumCacheValidity(badPattern);
     LOGUNIT_ASSERT_EQUAL(1000, maxValid);
@@ -582,19 +583,15 @@ printf("test17 2\n");
     // Test overlapping millis with a magic string from CachedDateFormat for LOGCXX-420.
     s.clear();
     jul2 += 286000;
-printf("test17 3\n");
     cachedFormat->format(s, jul2, p);
-    int msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
-    LOGUNIT_ASSERT_EQUAL(9, msStart);
-printf("test17 4\n");
+    msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
+    LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, msStart);
 
     s.clear();
     jul2 += 203000;
-printf("test17 5\n");
     cachedFormat->format(s, jul2, p);
     msStart = CachedDateFormat::findMillisecondStart(jul2, s, simpleFormat, p);
-    LOGUNIT_ASSERT_EQUAL(9, msStart);
-printf("test17 6\n");
+    LOGUNIT_ASSERT_EQUAL((int) CachedDateFormat::UNRECOGNIZED_MILLISECONDS, msStart);
 }
 
 /**
