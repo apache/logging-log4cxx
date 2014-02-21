@@ -270,14 +270,15 @@ namespace log4cxx
                 Level& operator=(const Level&);
         };
 
-	/*
+	/**
 	 * We need to double some logic from LOG4CXX_PTR_DEF or else we are unable to override the
 	 * comparison operator, which we need to properly fix LOGCXX-394.
 	 *
 	 * https://issues.apache.org/jira/browse/LOGCXX-394
 	 */
 	namespace helpers {
-	
+
+	/** @class log4cxx::helpers::ObjectPtr */
 	template<> inline bool LevelPtr::operator==(const LevelPtr& rhs) const
 	{ return (*this)->equals(rhs); }
 	template<> inline bool LevelPtr::operator!=(const LevelPtr& rhs) const
@@ -290,7 +291,7 @@ namespace log4cxx
 		extern template class LOG4CXX_EXPORT log4cxx::helpers::ObjectPtrT<Level>;
 		#pragma warning(pop)
 	#endif
-	
+
 	}
 
 }
