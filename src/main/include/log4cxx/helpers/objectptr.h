@@ -28,7 +28,7 @@
 //   switching between the initialization styles.
 //
 #if LOG4CXX_HELGRIND
-#define _LOG4CXX_OBJECTPTR_INIT(x) : ObjectPtrBase() { exchange(x); 
+#define _LOG4CXX_OBJECTPTR_INIT(x) : ObjectPtrBase() { exchange(x);
 #else
 #define _LOG4CXX_OBJECTPTR_INIT(x) : ObjectPtrBase(), p(x) {
 #endif
@@ -53,7 +53,7 @@ namespace log4cxx
         template<typename T> class ObjectPtrT : public ObjectPtrBase
         {
         public:
-         ObjectPtrT(const int& null) 
+         ObjectPtrT(const int& null)
                 _LOG4CXX_OBJECTPTR_INIT(0)
                 ObjectPtrBase::checkNull(null);
          }
@@ -79,14 +79,14 @@ namespace log4cxx
                 }
             }
 
-       ObjectPtrT(const ObjectPtrBase& p1) 
+       ObjectPtrT(const ObjectPtrBase& p1)
           _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
              if (this->p != 0) {
                     this->p->addRef();
              }
        }
 
-       ObjectPtrT(ObjectPtrBase& p1) 
+       ObjectPtrT(ObjectPtrBase& p1)
           _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
              if (this->p != 0) {
                     this->p->addRef();
@@ -150,10 +150,10 @@ namespace log4cxx
 
             bool operator==(const ObjectPtrT& p1) const { return (this->p == p1.p); }
             bool operator!=(const ObjectPtrT& p1) const { return (this->p != p1.p); }
-         bool operator<(const ObjectPtrT& p1) const { return (this->p < p1.p); } 
+            bool operator<(const ObjectPtrT& p1) const { return (this->p < p1.p); }
             bool operator==(const T* p1) const { return (this->p == p1); }
             bool operator!=(const T* p1) const { return (this->p != p1); }
-         bool operator<(const T* p1) const { return (this->p < p1); } 
+            bool operator<(const T* p1) const { return (this->p < p1); }
             T* operator->() const {return p; }
             T& operator*() const {return *p; }
             operator T*() const {return p; }
@@ -175,7 +175,7 @@ namespace log4cxx
                void** out;
              } temp = { &p };
              return static_cast<T*>(ObjectPtrBase::exchange(
-                 temp.out, 
+                 temp.out,
                  const_cast<T*>(newValue)));
        }
 
