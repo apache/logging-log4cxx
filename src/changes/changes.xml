@@ -79,6 +79,7 @@
 			<action issue="LOGCXX-413" type="fix">log4cxx doesn't compile on openembedded (due to Alex Zbarcea)</action>
 			<action issue="LOGCXX-414" type="fix">possibly wrong use of autotools docdir (due to Alex Zbarcea)</action>
 			<action issue="LOGCXX-415" type="fix">Empty XML configuration file causes crash</action>
+			<action issue="LOGCXX-416" type="fix">Configure and watch could crash on app exit with static linking</action>
 			<action issue="LOGCXX-417" type="fix">atoi undefined on Mac OS 10.9 compiling stringhelper.cpp</action>
 			<action issue="LOGCXX-420" type="fix">Possible out_of_range exception for millisecond formats in CachedDateFormat</action>
 			<action issue="LOGCXX-422" type="fix">Regression of LOGCXX-420</action>
