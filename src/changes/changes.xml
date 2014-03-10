@@ -75,6 +75,7 @@
 			<action issue="LOGCXX-382" type="fix">Mingw build type conversion error</action>
 			<action issue="LOGCXX-388" type="fix">Hierarchy::updateParents loops forever on illegal logger-name like '.logger1'</action>
 			<action issue="LOGCXX-394" type="fix">Levels are not thread safe</action>
+			<action issue="LOGCXX-411" type="fix">Crash when logging on multiple threads.</action>
 			<action issue="LOGCXX-412" type="fix">Log4cxx doesn't roll normally when working under multiple processes environment</action>
 			<action issue="LOGCXX-413" type="fix">log4cxx doesn't compile on openembedded (due to Alex Zbarcea)</action>
 			<action issue="LOGCXX-414" type="fix">possibly wrong use of autotools docdir (due to Alex Zbarcea)</action>
