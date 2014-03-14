@@ -87,6 +87,7 @@
 			<action issue="LOGCXX-423" type="fix">Repair autogen script warnings</action>
 			<action issue="LOGCXX-424" type="fix">liblog4cxx.pc.in should reflect dependency on apr-1, apr-1-util</action>
 			<action issue="LOGCXX-425" type="fix">exceptions in CachedDateFormatTestCase after LOGCXX-420</action>
+			<action issue="LOGCXX-430" type="fix">LogManager::getRootLogger is not thread-safe</action>
 
 			<action type="change">Behavior of StringHelper::startsWith and endsWith synced</action>
 			<action type="change">Documented C (class) and M (method) log format keywords.</action>
