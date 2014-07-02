@@ -227,8 +227,7 @@
 			-Ddebug=[true|false]
 			-Doptimize=[speed|size|none]
 			-Dversion=n.n.n
-			-Denable-shared=[yes|no] (default=yes)
-			-Denable-static=[yes|no] (default=yes)
+			-Dlib.type=[shared|static] (Library type to create, default=shared)
 			-Denable-char=[0, 1] (expose char* API, default=1)
 			-Denable-wchar_t=[0, 1] (expose wchar_t* API, default=1)
 			-Denable-unichar=[0, 1] (expose UniChar API, default=0)
@@ -836,7 +835,7 @@
 			name="gcc"
 			exceptions="true"
 			subsystem="gui"
-			optimize="none"
+			optimize="${optimize}"
 			multithreaded="true"
 			relentless="true"
 			debug="${debug}"
