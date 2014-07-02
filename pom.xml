@@ -300,7 +300,6 @@
 									<reports>
 										<report>scm</report>
 										<report>dependencies</report>
-										<report>issue-tracking</report>
 										<report>mailing-list</report>
 										<report>license</report>
 									</reports>

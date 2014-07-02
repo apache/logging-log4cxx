@@ -93,7 +93,7 @@
 					href="/mail-lists.html"
 			/>
 			<item	name="Issue Tracking"
-					href="/issue-tracking.html"
+					href="/community/issue-tracking.html"
 			/>
 			<item	name="Wiki"
 					href="http://wiki.apache.org/logging-log4cxx"
