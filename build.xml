@@ -81,7 +81,6 @@
 <!ENTITY find-apr SYSTEM 'src/ant/find-apr.xml'>
 <!ENTITY find-apr-util SYSTEM 'src/ant/find-apr-util.xml'>
 <!ENTITY find-libesmtp SYSTEM 'src/ant/find-libesmtp.xml'>
-<!ENTITY ilink32Workaround SYSTEM 'src/ant/ilink32-workaround.xml'>
 ]>
 
 <!--
@@ -94,7 +93,6 @@
 	&find-apr;
 	&find-apr-util;
 	&find-libesmtp;
-	&ilink32Workaround;
 
 	<property	name="base.dir"
 				location="."
@@ -971,11 +969,6 @@
 
 		<antcall target="update-rc-files-version-info" />
 
-		<!--
-			Linking doesn't work for bcc and is implemented manually afterwards, but because
-			compiling works we don't want to unnecessary double code and simply ignore linkage
-			errors until there's a way to explicitly don't link if bcc.
-		 -->
 		<cc	name="${project.compiler}"
 			exceptions="true"
 			outfile="${log4cxx.lib.dir}/${lib.prefix}${lib.name}${lib.suffix}"
@@ -1049,7 +1042,6 @@
 				<dependency name="${projects.dir}/libesmtp" />
 			</project>
 		</cc>
-		<antcall target="build-lib-ilink32-workaround" />
 
 		<antcall target="restore-rc-files-version-info" />
 
@@ -1296,7 +1288,6 @@
 				<dependency file="${projects.dir}/log4cxx" depends="apr,aprutil,libesmtp" />
 			</project>
 		</cc>
-		<antcall target="build-unittest-ilink32-workaround" />
 	</target>
 
 	<target	name="build-standalone-unittest"
