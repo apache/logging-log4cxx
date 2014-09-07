@@ -49,19 +49,15 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(DefaultRepositorySelector)
 
 void * LogManager::guard = 0;
-spi::RepositorySelectorPtr LogManager::repoSelector(LogManager::getDefaultRepositorySelector());
 
 
 
-RepositorySelectorPtr LogManager::getDefaultRepositorySelector() {
+RepositorySelectorPtr& LogManager::getRepositorySelector() {
    //
    //     call to initialize APR and trigger "start" of logging clock
    //
    APRInitializer::initialize();
-
-   LoggerRepositoryPtr hierarchy(new Hierarchy());
-   RepositorySelectorPtr selector(new DefaultRepositorySelector(hierarchy));
-
+   static spi::RepositorySelectorPtr selector;
    return selector;
 }
 
@@ -79,14 +75,21 @@ void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
         }
 
         LogManager::guard = guard1;
-        LogManager::repoSelector = selector;
+        LogManager::getRepositorySelector() = selector;
 }
 
 
 
 LoggerRepositoryPtr& LogManager::getLoggerRepository()
 {
-        return LogManager::repoSelector->getLoggerRepository();
+        if (getRepositorySelector() == 0)
+        {
+                LoggerRepositoryPtr hierarchy(new Hierarchy());
+                RepositorySelectorPtr selector(new DefaultRepositorySelector(hierarchy));
+                getRepositorySelector() = selector;
+        }
+
+        return getRepositorySelector()->getLoggerRepository();
 }
 
 LoggerPtr LogManager::getRootLogger()

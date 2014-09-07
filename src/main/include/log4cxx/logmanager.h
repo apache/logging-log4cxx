@@ -40,8 +40,8 @@ namespace log4cxx
 
     /**
     * Use the <code>LogManager</code> class to retreive Logger
-    * instances or to operate on the current
-    * {@link log4cxx::spi::LoggerRepository LoggerRepository}.
+    * instances or to operate on the current 
+    * {@link log4cxx::spi::LoggerRepository LoggerRepository}. 
     * When the <code>LogManager</code> class is loaded
     * into memory the default initialization procedure is inititated.
         */
@@ -49,8 +49,7 @@ namespace log4cxx
     {
     private:
         static void * guard;
-        static spi::RepositorySelectorPtr repoSelector;
-        static spi::RepositorySelectorPtr getDefaultRepositorySelector();
+        static spi::RepositorySelectorPtr& getRepositorySelector();
 
     public:
         /**
