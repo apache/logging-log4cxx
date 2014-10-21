@@ -629,7 +629,7 @@ namespace log4cxx
         * Get the logger name.
         * @return logger name as LogString.
         */
-        const LogString getName() const { return name; }
+        const LogString& getName() const { return name; }
         /**
         * Get logger name in current encoding.
         * @param name buffer to which name is appended.
