@@ -38,8 +38,7 @@ AH_VERBATIM([HAVE_NO_EXPLICIT_EXPORTS],
 [/* no explicit exports */
 #define LOG4CXX_EXPORT])
 
-AM_INIT_AUTOMAKE
-
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 
 # Checks for programs
 # ----------------------------------------------------------------------------
