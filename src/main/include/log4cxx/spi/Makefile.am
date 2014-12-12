@@ -15,5 +15,17 @@
 #
 SUBDIRS = location
 spiincdir = $(includedir)/log4cxx/spi
-spiinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/spi/*.h
-
+spiinc_HEADERS= \
+    appenderattachable.h \
+    configurator.h \
+    defaultrepositoryselector.h \
+    errorhandler.h \
+    filter.h \
+    hierarchyeventlistener.h \
+    loggerfactory.h \
+    loggerrepository.h \
+    loggingevent.h \
+    optionhandler.h \
+    repositoryselector.h \
+    rootlogger.h \
+    triggeringeventevaluator.h

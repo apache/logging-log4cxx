@@ -14,5 +14,28 @@
 # limitations under the License.
 #
 patternincdir = $(includedir)/log4cxx/pattern
-patterninc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/pattern/*.h
-
+patterninc_HEADERS= \
+    classnamepatternconverter.h \
+    datepatternconverter.h \
+    filedatepatternconverter.h \
+    filelocationpatternconverter.h \
+    formattinginfo.h \
+    fulllocationpatternconverter.h \
+    integerpatternconverter.h \
+    levelpatternconverter.h \
+    linelocationpatternconverter.h \
+    lineseparatorpatternconverter.h \
+    literalpatternconverter.h \
+    loggerpatternconverter.h \
+    loggingeventpatternconverter.h \
+    messagepatternconverter.h \
+    methodlocationpatternconverter.h \
+    nameabbreviator.h \
+    namepatternconverter.h \
+    ndcpatternconverter.h \
+    patternconverter.h \
+    patternparser.h \
+    propertiespatternconverter.h \
+    relativetimepatternconverter.h \
+    threadpatternconverter.h \
+    throwableinformationpatternconverter.h

@@ -13,13 +13,33 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-EXTRA_DIST = log4j.dtd *.xml
+EXTRA_DIST = \
+    log4j.dtd \
+    asyncAppender1.xml \
+    customLevel1.xml \
+    customLevel2.xml \
+    customLevel3.xml \
+    customLevel4.xml \
+    customLogger1.xml \
+    customLogger2.xml \
+    defaultInit.xml \
+    DOMTestCase1.xml \
+    DOMTestCase2.xml \
+    DOMTestCase3.xml \
+    DOMTestCase4.xml \
+    fallback1.xml \
+    filters.LevelMatchFilter.test4.0.xml \
+    filters.LevelMatchFilter.test4.1.xml \
+    filters.LevelMatchFilter.test4.2.xml \
+    filters.LevelMatchFilter.test4.3.xml \
+    filters.LevelMatchFilter.test4.4.xml \
+    smtpAppender1.xml
 
-# if we are building in a separate build tree, then copy all necessary files
+# if we are building in a separate build tree, then prepare all necessary links
 all-local:
 	@if test "$(top_srcdir)" != "$(top_builddir)"; then \
-	  echo "Copying test suite data files ..." ; \
-	  list='$(EXTRA_DIST)'; for file in $$list; do \
-	    cp -p $(srcdir)/$$file . ; \
+	  echo "Symlinking test suite data files ..." ; \
+	  for file in $(EXTRA_DIST); do \
+	    test -a "$$file" || $(LN_S) "$(srcdir)/$$file"; \
 	  done \
 	fi

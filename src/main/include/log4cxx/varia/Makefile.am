@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 variaincdir = $(includedir)/log4cxx/varia
-variainc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/varia/*.h
-
+variainc_HEADERS= \
+    fallbackerrorhandler.h

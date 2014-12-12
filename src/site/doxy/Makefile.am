@@ -83,4 +83,3 @@ clean-local:
 
 dist-hook:
 	-rm -f $(distdir)/Doxyfile
-

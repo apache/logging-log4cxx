@@ -16,4 +16,3 @@
 privateincdir = $(includedir)/log4cxx/private
 privateinc_HEADERS = log4cxx_private.h
 EXTRA_DIST = log4cxx_private.hw
-

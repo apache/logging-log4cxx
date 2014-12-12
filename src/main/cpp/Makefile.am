@@ -17,7 +17,6 @@ lib_LTLIBRARIES = liblog4cxx.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
-
 liblog4cxx_la_SOURCES = \
         action.cpp \
         andfilter.cpp \
@@ -172,4 +171,3 @@ liblog4cxx_la_SOURCES = \
 
 AM_CPPFLAGS += @CPPFLAGS_ODBC@
 liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_ODBC@ -@APR_LIBS@
-

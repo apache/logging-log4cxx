@@ -16,40 +16,36 @@
 SUBDIRS = input witness
 EXTRA_DIST = L7D_en_US.properties L7D_fr_CH.properties L7D_fr.properties
 
-
-
-# if we are building in a separate build tree, then copy all necessary files
+# if we are building in a separate build tree, then prepare all necessary links
 all-local:
 	@if test "$(top_srcdir)" != "$(top_builddir)"; then \
-	  echo "Copying test suite data files ..." ; \
-	  list='$(EXTRA_DIST)'; for file in $$list; do \
-	    cp -p $(srcdir)/$$file . ; \
+	  echo "Symlinking test suite data files ..." ; \
+	  for file in $(EXTRA_DIST); do \
+	    test -a "$$file" || $(LN_S) "$(srcdir)/$$file"; \
 	  done \
 	fi
 
 prepare:
-	@if test ! -d "output"; then \
-		mkdir output; \
-	fi;
+	@test -d output || mkdir output
 	@rm -rf log4j.xml
 	@rm -rf log4j.properties
 	@rm -rf log4cxx.xml
 	@rm -rf log4cxx.properties
-	
+
 build: check-recursive prepare
 
-cleanOutputDir:
+clean-local:
 	@rm -rf output/*
-	
+
 check: prepare run-unittest DefaultInit
 
-run-unittest: build cleanOutputDir
+run-unittest: build clean-local
 	@export TOTO=wonderful; \
 	export key1=value1; \
 	export key2=value2; \
 	../cpp/testsuite -v
-	
-DefaultInit: build cleanOutputDir
+
+DefaultInit: build clean-local
 	../cpp/testsuite -v testcase1
 	@cp input/xml/defaultInit.xml log4j.xml
 	../cpp/testsuite -v testcase2
@@ -63,6 +59,5 @@ DefaultInit: build cleanOutputDir
 	@rm -f log4j.xml
 	@rm -f log4j.properties
 
-SocketServer: build cleanOutputDir
+SocketServer: build clean-local
 	../cpp/testsuite -v socketservertestcase
-

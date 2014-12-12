@@ -28,4 +28,3 @@ stream_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 console_SOURCES = console.cpp
 console_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
-

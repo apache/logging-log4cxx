@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 configincdir = $(includedir)/log4cxx/config
-configinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/config/*.h
-
+configinc_HEADERS= \
+    propertysetter.h
