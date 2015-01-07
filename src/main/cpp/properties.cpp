@@ -296,7 +296,7 @@ public:
         }
 
 protected:
-        bool get(LogString& in, logchar& c)
+        static bool get(LogString& in, logchar& c)
         {
                 if (in.empty()) {
                     c = 0;

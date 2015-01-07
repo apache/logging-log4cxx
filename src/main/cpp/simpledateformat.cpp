@@ -232,7 +232,6 @@ public:
 
 private:
   size_t width;
-  char zeroDigit;
 };
 
 
@@ -438,7 +437,7 @@ private:
 class HourToken : public NumericToken
 {
 public:
-  HourToken( int width1, int /* offset1 */ ) : NumericToken( width1 )
+  HourToken( int width1, int /* offset1 */ ) : NumericToken( width1 ), offset( 0 )
   {
   }
 

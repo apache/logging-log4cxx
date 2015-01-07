@@ -183,7 +183,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
          SQLFreeHandle(SQL_HANDLE_STMT, stmt);
       }
    
-      throw e;
+      throw;
    }
    SQLFreeHandle(SQL_HANDLE_STMT, stmt);
    closeConnection(con);

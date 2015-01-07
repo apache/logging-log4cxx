@@ -400,7 +400,7 @@ public:
                             Transcoder::decode(encoding, ename);
                             try {
                                 encoder = CharsetEncoder::getEncoder(ename);
-                            } catch(IllegalArgumentException ex) {
+                            } catch(IllegalArgumentException &ex) {
                                 encoder = new USASCIICharsetEncoder();
                             }
                         }

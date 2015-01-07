@@ -275,10 +275,10 @@ void FileAppender::setFile(
           if(!parentDir.exists(p) && parentDir.mkdirs(p)) {
              outStream = new FileOutputStream(filename, append1);
           } else {
-             throw ex;
+             throw;
           }
       } else {
-        throw ex;
+        throw;
       }
   }
   
