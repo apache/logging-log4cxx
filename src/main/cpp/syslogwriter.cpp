@@ -26,13 +26,11 @@
 #include <log4cxx/helpers/datagrampacket.h>
 #include <log4cxx/helpers/transcoder.h>
 
-#define SYSLOG_PORT 514
-
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-SyslogWriter::SyslogWriter(const LogString& syslogHost1)
-: syslogHost(syslogHost1)
+SyslogWriter::SyslogWriter(const LogString& syslogHost1, int syslogHostPort1)
+: syslogHost(syslogHost1), syslogHostPort(syslogHostPort1)
 {
    try
    {
@@ -61,7 +59,7 @@ void SyslogWriter::write(const LogString& source) {
 
       DatagramPacketPtr packet( 
           new DatagramPacket((void*) data.data(), data.length(),
-                             address, SYSLOG_PORT));
+                             address, syslogHostPort));
 
       ds->send(packet);
    }

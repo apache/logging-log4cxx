@@ -129,6 +129,7 @@ namespace log4cxx
                         bool facilityPrinting;
                         helpers::SyslogWriter * sw;
                         LogString syslogHost;
+                        int syslogHostPort;
                 private:
                         SyslogAppender(const SyslogAppender&);
                         SyslogAppender& operator=(const SyslogAppender&);

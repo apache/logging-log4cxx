@@ -323,6 +323,17 @@ void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
                 delete this->sw;
                 this->sw = 0;
         }
+        LogString slHost = syslogHost1;
+        int slHostPort = -1;
+
+        LogString::size_type colonPos = 0;
+        colonPos = slHost.rfind(':');
+        if (colonPos != LogString::npos)
+        {
+            slHostPort = StringHelper::toInt(slHost.substr(colonPos+1));
+            // Erase the :port part of the host name
+            slHost.erase( colonPos );
+        }
 
 // On the local host, we can directly use the system function 'syslog'
 // if it is available (cf. append)
@@ -330,9 +341,11 @@ void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
         if (syslogHost1 != LOG4CXX_STR("localhost") && syslogHost1 != LOG4CXX_STR("127.0.0.1")
         && !syslogHost1.empty())
 #endif
-                this->sw = new SyslogWriter(syslogHost1);
+                if (slHostPort >= 0) this->sw = new SyslogWriter(slHost, slHostPort);
+                else this->sw = new SyslogWriter(slHost);
 
-        this->syslogHost = syslogHost1;
+        this->syslogHost = slHost;
+        this->syslogHostPort = slHostPort;
 }
 
 
