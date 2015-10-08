@@ -26,16 +26,12 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include "../util/compare.h"
 #include "../logunit.h"
+
 #include <apr_strings.h>
-
-
+#include <apr_time.h>
 #ifndef INT64_C
 #define INT64_C(x) x ## LL
 #endif
-#include <apr_time.h>
-
-
-
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
