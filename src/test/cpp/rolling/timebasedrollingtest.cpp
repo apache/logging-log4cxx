@@ -112,9 +112,7 @@ public:
       now += APR_USEC_PER_SEC;
     } }
 
-    std::cout << "Waiting until next second and 100 millis.";
-    delayUntilNextSecond(100);
-    std::cout << "Done waiting.";
+    delayUntilNextSecondWithMsg(100);
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
@@ -275,9 +273,7 @@ public:
     } }
     filenames[3] = LOG4CXX_STR("output/test4.log");
 
-    std::cout << "Waiting until next second and 100 millis.";
-    delayUntilNextSecond(100);
-    std::cout << "Done waiting.";
+    delayUntilNextSecondWithMsg(100);
 
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
@@ -346,9 +342,7 @@ public:
     } }
     filenames[3] = LOG4CXX_STR("output/test5.log");
 
-    std::cout << "Waiting until next second and 100 millis.";
-    delayUntilNextSecond(100);
-    std::cout << "Done waiting.";
+    delayUntilNextSecondWithMsg(100);
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
@@ -420,6 +414,13 @@ public:
           + millis * 1000L;
 
     apr_sleep(next - now);
+  }
+
+  void delayUntilNextSecondWithMsg(int millis)
+  {
+    std::cout << "Waiting until next second and 100 millis.";
+    delayUntilNextSecond(100);
+    std::cout << "Done waiting.";
   }
 
   void delayUntilNextMinute(int seconds) {
