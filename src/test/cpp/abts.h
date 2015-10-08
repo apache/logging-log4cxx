@@ -17,10 +17,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include <apr.h>
+
 #ifdef WIN32
 #include <io.h>
-// WIN32 is missing STDOUT_FILENO and Co.
-#include <apr.h>
 #else
 #include <unistd.h>
 #endif
