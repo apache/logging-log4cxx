@@ -127,7 +127,7 @@ namespace log4cxx
                 Return the currently set spi::ErrorHandler for this
                 Appender.
                 */
-                const spi::ErrorHandlerPtr& getErrorHandler() const { return errorHandler; }
+                const spi::ErrorHandlerPtr& getErrorHandler() const;
 
                 /**
                 Returns the head Filter.
@@ -156,7 +156,7 @@ namespace log4cxx
                 Returns this appenders threshold level. See the #setThreshold
                 method for the meaning of this option.
                 */
-                const LevelPtr& getThreshold() { return threshold; }
+                const LevelPtr& getThreshold() const;
 
                 /**
                 Check whether the message level is below the appender's

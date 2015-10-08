@@ -62,6 +62,11 @@ LogString LevelMatchFilter::getLevelToMatch() const
    return levelToMatch->toString();
 }
 
+void LevelMatchFilter::setAcceptOnMatch(bool acceptOnMatch1)
+{
+    this->acceptOnMatch = acceptOnMatch1;
+}
+
 Filter::FilterDecision LevelMatchFilter::decide(
    const log4cxx::spi::LoggingEventPtr& event) const
 {

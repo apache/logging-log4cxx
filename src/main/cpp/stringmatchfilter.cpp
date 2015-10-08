@@ -50,6 +50,16 @@ void StringMatchFilter::setOption(const LogString& option,
    }
 }
 
+void StringMatchFilter::setStringToMatch(const LogString& stringToMatch1)
+{
+    this->stringToMatch.assign(stringToMatch1);
+}
+
+void StringMatchFilter::setAcceptOnMatch(bool acceptOnMatch1)
+{
+    this->acceptOnMatch = acceptOnMatch1;
+}
+
 Filter::FilterDecision StringMatchFilter::decide(
    const log4cxx::spi::LoggingEventPtr& event) const
 {

@@ -56,6 +56,21 @@ void LevelRangeFilter::setOption(const LogString& option,
    }
 }
 
+void LevelRangeFilter::setLevelMin(const LevelPtr& levelMin1)
+{
+    this->levelMin = levelMin1;
+}
+
+void LevelRangeFilter::setLevelMax(const LevelPtr& levelMax1)
+{
+    this->levelMax = levelMax1;
+}
+
+void LevelRangeFilter::setAcceptOnMatch(bool acceptOnMatch1)
+{
+    this->acceptOnMatch = acceptOnMatch1;
+}
+
 Filter::FilterDecision LevelRangeFilter::decide(
    const spi::LoggingEventPtr& event) const
 {

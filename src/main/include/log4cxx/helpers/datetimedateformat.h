@@ -31,9 +31,7 @@ namespace log4cxx
                 class LOG4CXX_EXPORT DateTimeDateFormat : public SimpleDateFormat
                 {
                 public:
-                        DateTimeDateFormat()
-                         : SimpleDateFormat(LOG4CXX_STR("dd MMM yyyy HH:mm:ss,SSS")) {}
-                         DateTimeDateFormat(const std::locale* locale)
+                         DateTimeDateFormat(const std::locale* locale = NULL)
                           : SimpleDateFormat(LOG4CXX_STR("dd MMM yyyy HH:mm:ss,SSS"), locale) {}
                 };
         }  // namespace helpers

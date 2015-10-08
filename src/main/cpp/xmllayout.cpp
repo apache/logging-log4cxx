@@ -39,6 +39,11 @@ XMLLayout::XMLLayout()
 {
 }
 
+bool XMLLayout::getLocationInfo() const
+{
+	return locationInfo;
+}
+
 void XMLLayout::setOption(const LogString& option,
         const LogString& value)
 {
@@ -99,7 +104,7 @@ void XMLLayout::format(LogString& output,
                 output.append(LOG4CXX_STR("\"/>"));
                 output.append(LOG4CXX_EOL);
         }
-        
+
         if (properties) {
             LoggingEvent::KeySet propertySet(event->getPropertyKeySet());
             LoggingEvent::KeySet keySet(event->getMDCKeySet());
@@ -107,7 +112,7 @@ void XMLLayout::format(LogString& output,
                 output.append(LOG4CXX_STR("<log4j:properties>"));
                 output.append(LOG4CXX_EOL);
                 for (LoggingEvent::KeySet::const_iterator i = keySet.begin();
-                        i != keySet.end(); 
+                        i != keySet.end();
                         i++) {
                         LogString key(*i);
                         LogString value;
@@ -121,7 +126,7 @@ void XMLLayout::format(LogString& output,
                         }
                 }
             for (LoggingEvent::KeySet::const_iterator i2 = propertySet.begin();
-                        i2 != propertySet.end(); 
+                        i2 != propertySet.end();
                         i2++) {
                         LogString key(*i2);
                         LogString value;
@@ -141,6 +146,6 @@ void XMLLayout::format(LogString& output,
 
         output.append(LOG4CXX_STR("</log4j:event>"));
         output.append(LOG4CXX_EOL);
-        output.append(LOG4CXX_EOL);        
+        output.append(LOG4CXX_EOL);
 }
 

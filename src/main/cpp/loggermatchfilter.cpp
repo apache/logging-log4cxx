@@ -42,6 +42,11 @@ LogString LoggerMatchFilter::getLoggerToMatch() const {
     return loggerToMatch;
 }
 
+void LoggerMatchFilter::setAcceptOnMatch(bool acceptOnMatch1)
+{
+    this->acceptOnMatch = acceptOnMatch1;
+}
+
 void LoggerMatchFilter::setOption(const LogString& option,
    const LogString& value)
 {

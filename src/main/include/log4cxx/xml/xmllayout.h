@@ -84,13 +84,12 @@ namespace log4cxx
                                 /**
                         Returns the current value of the <b>LocationInfo</b> option.
                         */
-                        inline bool getLocationInfo() const
-                                { return locationInfo; }
-                                
+                        bool getLocationInfo() const;
+
                         /**
                          * Sets whether MDC key-value pairs should be output, default false.
                          * @param flag new value.
-                         * 
+                         *
                         */
                         inline void setProperties(bool flag) {
                             properties = flag;
@@ -99,12 +98,12 @@ namespace log4cxx
                         /**
                         * Gets whether MDC key-value pairs should be output.
                         * @return true if MDC key-value pairs are output.
-                        * 
+                        *
                         */
                         inline bool getProperties() {
                             return properties;
                         }
-                              
+
 
                         /** No options to activate. */
                         void activateOptions(log4cxx::helpers::Pool& /* p */) { }

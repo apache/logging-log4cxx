@@ -142,6 +142,11 @@ void NTEventLogAppender::setOption(const LogString& option, const LogString& val
         }
 }
 
+void NTEventLogAppender::setSource(const LogString& source)
+{
+    this->source.assign(source);
+}
+
 void NTEventLogAppender::activateOptions(Pool&)
 {
         if (source.empty())
