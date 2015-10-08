@@ -17,9 +17,8 @@
 
 #if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
 
-#define _WINSOCKAPI_
-#include <windows.h>
-#undef ERROR
+#include <apr_strings.h>
+
 #include <log4cxx/nt/nteventlogappender.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/loglog.h>
@@ -27,7 +26,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
-#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -234,15 +232,15 @@ void NTEventLogAppender::addRegistryInfo()
             DWORD modlen = GetModuleFileNameW(hmodule, modpath, _MAX_PATH - 1);
             if (modlen > 0) {
                 modpath[modlen] = 0;
-                RegSetValueExW(hkey, L"EventMessageFile", 0, REG_SZ, 
+                RegSetValueExW(hkey, L"EventMessageFile", 0, REG_SZ,
                         (LPBYTE) modpath, wcslen(modpath) * sizeof(wchar_t));
-                RegSetValueExW(hkey, L"CategoryMessageFile", 0, REG_SZ, 
+                RegSetValueExW(hkey, L"CategoryMessageFile", 0, REG_SZ,
                         (LPBYTE) modpath, wcslen(modpath) * sizeof(wchar_t));
                     DWORD typesSupported = 7;
                     DWORD categoryCount = 6;
-                RegSetValueExW(hkey, L"TypesSupported", 0, REG_DWORD, 
+                RegSetValueExW(hkey, L"TypesSupported", 0, REG_DWORD,
                            (LPBYTE)&typesSupported, sizeof(DWORD));
-                RegSetValueExW(hkey, L"CategoryCount", 0, REG_DWORD, 
+                RegSetValueExW(hkey, L"CategoryCount", 0, REG_DWORD,
                            (LPBYTE)&categoryCount, sizeof(DWORD));
             }
         }
