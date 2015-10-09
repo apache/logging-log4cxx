@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+#include <vector>
+
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/consoleappender.h>
@@ -73,11 +75,19 @@ LOGUNIT_CLASS(TimeBasedRollingTest)
 		LOGUNIT_TEST(test4);
 		LOGUNIT_TEST(test5);
 		LOGUNIT_TEST(test6);
-		//LOGUNIT_TEST(test7);
+		LOGUNIT_TEST(test7);
 	LOGUNIT_TEST_SUITE_END();
 
 private:
 	static LoggerPtr logger;
+
+	/**
+	 * Currently running test.
+	 * <p>
+	 * Number of currently running test, used e.g. for some generic code in {@link setUp()}.
+	 * </p>
+	 */
+	size_t num_test;
 
 	/**
 	 * Build file names with timestamps.
@@ -307,7 +317,69 @@ private:
 		std::cout << "Done waiting." << std::endl;
 	}
 
+	/**
+	 * Delete generic log files.
+	 * <p>
+	 * Some tests use generic log file names which may already be available during subsequent calls
+	 * to the test and influence their behavior, e.g. because RollingFileAppender uses the last
+	 * modification time of already existing files to create their internal names. Such a date may
+	 * be from the arbitrary past, but ost of the test assumes operations like rollovers within few
+	 * seconds around "new". Thos assumptions will fail for older existing files. So this method can
+	 * be called during {@link setUp()} of an test to clear such generically named files for each
+	 * test. We currently only care about {@code output/testxy.log}.
+	 * </p>
+	 * @param[in] num_test
+	 */
+	void deleteGenericLogFilePerTest(size_t num_test)
+	{
+		Pool		pool;
+		LogString	path(LOG4CXX_STR("output/test"));
+
+		StringHelper::toString(num_test, pool, path);
+		path.append(LOG4CXX_STR(".log"));
+
+		File(path).deleteFile(pool);
+	}
+
+	/**
+	 * Setup for internal test call.
+	 * <p>
+	 * This method has a similar intention like {@link setUp()}, only that it focusses on internal
+	 * calls of the tests, where we don't need to create some loggers and such, but may need to
+	 * delete some files etc. to make tests work.
+	 * </p>
+	 * @param[in] num_test
+	 */
+	void internalSetUp(size_t num_test)
+	{
+		this->deleteGenericLogFilePerTest(num_test);
+	}
+
+	/**
+	 * Counterpart for {@like internalSetUp(size_t)}.
+	 * <p>
+	 * Counterpart for {@like internalSetUp(size_t)}.
+	 * </p>
+	 */
+	void internalTearDown()
+	{
+		// Nothing to do currently.
+    }
+
 public:
+	/**
+	 * Extract number of current test.
+	 * <p>
+	 * {@code setUp()} needs the number of the current runnign test for some generic work and this
+	 * is the only place where we can extract and save it in the instance.
+	 * </p>
+	 */
+	void setCase(abts_case* tc)
+	{
+		LogUnit::TestFixture::setCase(tc);
+		this->num_test = tc->suite->num_test;
+	}
+
 	void setUp()
 	{
 		LoggerPtr root(Logger::getRootLogger());
@@ -315,10 +387,12 @@ public:
 			new ConsoleAppender(
 				new PatternLayout(
 					LOG4CXX_STR("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n"))));
+		this->internalSetUp(this->num_test);
 	}
 
 	void tearDown()
 	{
+		this->internalTearDown();
 		LogManager::shutdown();
 	}
 
@@ -522,23 +596,35 @@ public:
 	}
 
 	/**
-	 * Repeat test 6 N times.
+	 * Repeat some test with generic file name.s
 	 * <p>
-	 * This test calls {@link test6} N times, because tests showed that the test can succeed by luck
-	 * and depending on the current hardware.
+	 * This test calls some tests which use generic file names and will only work properly if those
+	 * got deleted before running the test during setup.
 	 * </p>
 	 */
 	void test7()
 	{
-		const size_t max = 10;
+		typedef void (TimeBasedRollingTest::*Test)();
+		typedef std::vector<Test> Tests;
 
-		for (size_t i = 0; i < max; ++i)
+		Tests	tests(10);
+		size_t	numTest = 0;
+
+		tests.at(4) = &TimeBasedRollingTest::test4;
+		tests.at(5) = &TimeBasedRollingTest::test5;
+		tests.at(6) = &TimeBasedRollingTest::test6;
+
+		for (size_t numTest = 1; numTest < tests.size(); ++numTest)
 		{
-			std::cout << "Running test6 as part of test7 " << i + 1 << "/" << max << ":" << std::endl;
+			Test test(tests.at(numTest));
+			if (!test)
+			{
+				continue;
+			}
 
-			this->setUp();
-			this->test6();
-			this->tearDown();
+			this->internalSetUp(numTest);
+			(this->*test)();
+			this->internalTearDown();
 		}
 	}
 };
