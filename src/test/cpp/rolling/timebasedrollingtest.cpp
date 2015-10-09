@@ -422,15 +422,6 @@ public:
     delayUntilNextSecond(100);
     std::cout << "Done waiting.";
   }
-
-  void delayUntilNextMinute(int seconds) {
-    apr_time_t now = apr_time_now();
-    apr_time_t next = ((now / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC
-          + seconds * 1000000L;
-
-    apr_sleep(next - now);
-  }
-
 };
 
 
