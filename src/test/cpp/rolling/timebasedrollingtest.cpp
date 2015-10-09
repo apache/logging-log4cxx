@@ -156,7 +156,7 @@ public:
       now += APR_USEC_PER_SEC;
     } }
 
-    delayUntilNextSecond();
+    delayUntilNextSecondWithMsg();
 
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
@@ -226,7 +226,7 @@ public:
 
     filenames[3].resize(filenames[3].size() - 3);
 
-    delayUntilNextSecond();
+    delayUntilNextSecondWithMsg();
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
@@ -391,7 +391,7 @@ public:
 
     filenames[3] = LOG4CXX_STR("output/test6.log");
 
-    delayUntilNextSecond();
+    delayUntilNextSecondWithMsg();
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
