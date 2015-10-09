@@ -33,6 +33,13 @@
 #define INT64_C(x) x ## LL
 #endif
 
+// We often need one and the same date pattern, but in different contexts, to either easily embed it
+// into other string literals or as an object. While macros are hard to debug, embedding into string
+// literals is easier this way, because the compiler can automatically collaps them, and if we have
+// one macro already, a second for a similar purpose shouldn't hurt as well.
+#define DATE_PATTERN		"yyyy-MM-dd_HH_mm_ss"
+#define DATE_PATTERN_STR	LogString(LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss"))
+
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::rolling;
@@ -55,7 +62,6 @@ using namespace log4cxx::rolling;
  Test5      NO                SET          NO
  Test6      YES               SET          NO
  * </pre>
- * 
  */
 LOGUNIT_CLASS(TimeBasedRollingTest) {
 
@@ -68,65 +74,192 @@ LOGUNIT_CLASS(TimeBasedRollingTest) {
            LOGUNIT_TEST(test6);
         LOGUNIT_TEST_SUITE_END();
 
-    static LoggerPtr logger;
+private:
+	static LoggerPtr logger;
+
+	/**
+	 * Build file names with timestamps.
+	 * <p>
+	 * This method builds some file names based on a hard coded date pattern, while the important
+	 * thing is that the used time is "now" for the first and one additional second into the future
+	 * for each subsequent file name. The method is used to build names which are expected to get
+	 * created by loggers afterwards, so the existence of those files can be checked easily.
+	 * </p>
+	 * <p>
+	 * The given {@code prefix} is for the file name only, we hard code "outpout" as directory.
+	 * </p>
+	 * @param[in,out]	pool
+	 * @param[in]		prefix
+	 * @param[in]		fileNames
+	 */
+	template<size_t N>
+	void buildTsFileNames(Pool& pool, const logchar* prefix, LogString (&fileNames)[N])
+	{
+		SimpleDateFormat	sdf(DATE_PATTERN_STR);
+		apr_time_t			now(apr_time_now());
+
+		for (size_t i = 0; i < N; ++i)
+		{
+			fileNames[i] = LogString(LOG4CXX_STR("output/")) + prefix;
+			sdf.format(fileNames[i], now, pool);
+			now += APR_USEC_PER_SEC;
+		}
+	}
+
+	/**
+	 * Log some msg and sleep.
+	 * <p>
+	 * Most tests need to log some message to some files and sleep afterwards, to spread the msgs
+	 * over time and timestamp based named files. This method handles this for all tests to not need
+	 * to replicate the same code AND deals with the fact that the logigng statements should contain
+	 * the original src function and line. For that we define a macro wrapper for this function to
+	 * easily provide us the needed additional information and redefine LOG4CXX_LOCATION to use our
+	 * provided data instead of those fomr the compiler when a log statement is issued. While this
+	 * is a bit ugly, because we need to duplicate the definition of LOG4CXX_LOCATION, it is easier
+	 * than to duplicate the code per test in this file.
+	 * </p>
+	 * @param[in,out]	pool
+	 * @param[in]		howOften
+	 * @param[in]		srcFunc
+	 * @param[in]		srcLine
+	 */
+	void logSomeMsgAndSleep(Pool& pool, size_t howOften, std::string srcFunc, size_t srcLine)
+	{
+#undef	LOG4CXX_LOCATION
+#define	LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(	\
+							__FILE__,					\
+							srcFunc.c_str(),			\
+							srcLine)
+
+		for (size_t i = 0; i <= howOften; ++i)
+		{
+			std::string	message("Hello---");
+						message.append(pool.itoa(i));
+
+			LOG4CXX_DEBUG(logger, message);
+			apr_sleep(APR_USEC_PER_SEC / 2);
+		}
+
+#undef	LOG4CXX_LOCATION
+#define	LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(	\
+							__FILE__,					\
+							__LOG4CXX_FUNC__,			\
+							__LINE__)
+	}
+
+/**
+ * Wrapper for logging some messages.
+ * <p>
+ * This macro is used to easily provide the src function and line to the method logging into test
+ * files. A macro is used because the name of the macro for the source function differs between
+ * compilers and we already provide our own name for that.
+ * </p>
+ */
+#define	LOG_SOME_MSG_AND_SLEEP(pool, howOften) \
+		this->logSomeMsgAndSleep(pool, howOften, __LOG4CXX_FUNC__, __LINE__)
+
+	/**
+	 * Check witnesses for some test.
+	 * <p>
+	 * This method checks the witnesses for some test, given by the {@code prefix} arg, which should
+	 * correspond to some file, while we hard code the parent dir and such of that file.
+	 * </p>
+	 * <p>
+	 * We don't use a wrapper macro this time because the src line schould have the same name in all
+	 * compilers and is easily to add for the caller.
+	 * </p>
+	 * @param[in,out]	pool
+	 * @param[in]		prefix
+	 * @param[in]		fileNames
+	 * @param[in]		srcLine
+	 */
+	template<size_t N>
+	void checkWitnesses(		Pool&		pool,
+						const	logchar*	prefix,
+								LogString	(&fileNames)[N],
+								size_t		srcLine)
+	{
+		for (int i = 0; i < N; ++i)
+		{
+			LogString	witness(LOG4CXX_STR("witness/rolling/tbr-"));
+						witness.append(prefix);
+
+			StringHelper::toString(i, pool, witness);
+			LOGUNIT_ASSERT_SRCL(Compare::compare(fileNames[i], File(witness)), srcLine);
+		}
+	}
+
+	/**
+	 * Let the current second pass.
+	 * <p>
+	 * This method assures that the current second and some additional time gets passed before
+	 * returning.
+	 * </p>
+	 * @param[in,opt] millis
+	 */
+	void delayUntilNextSecond(size_t millis = 100)
+	{
+		apr_time_t now  = apr_time_now();
+		apr_time_t next = ((now / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC + millis * 1000L;
+
+		apr_sleep(next - now);
+	}
+
+	/**
+	 * Let the current second pass with some msg.
+	 * <p>
+	 * This method works exactly like {@link delayUntilNextSecond(size_t)}, but additionally prints
+	 * a message before and after the wait on STDOUT for debugging purposes.
+	 * </p>
+	 * @param[in,opt] millis
+	 */
+	void delayUntilNextSecondWithMsg(size_t millis = 100)
+	{
+		std::cout << "Waiting until next second and " << millis << " millis.";
+		delayUntilNextSecond(millis);
+		std::cout << "Done waiting.";
+	}
 
 public:
+	void setUp()
+	{
+		LoggerPtr root(Logger::getRootLogger());
+		root->addAppender(
+			new ConsoleAppender(
+				new PatternLayout(
+					LOG4CXX_STR("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n"))));
+	}
 
-  void setUp() {
-      LoggerPtr root(Logger::getRootLogger());
-    root->addAppender(
-      new ConsoleAppender(new PatternLayout(
-         LOG4CXX_STR("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n"))));
-  }
+	void tearDown()
+	{
+		LogManager::shutdown();
+	}
 
-  void tearDown() {
-      LogManager::shutdown();
-  }
+	/**
+	 * Test rolling without compression, activeFileName left blank, no stop/start
+	 */
+	void test1()
+	{
+				Pool		pool;
+		const	size_t		nrOfFileNames = 4;
+				LogString	fileNames[nrOfFileNames];
 
-  /**
-   * Test rolling without compression, activeFileName left blank, no stop/start
-   */
-  void test1()  {
-    PatternLayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c{1} - %m%n")));
-    RollingFileAppenderPtr rfa(new RollingFileAppender());
-    rfa->setLayout(layout);
+		PatternLayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c{1} - %m%n")));
+		RollingFileAppenderPtr rfa(new RollingFileAppender());
+		rfa->setLayout(layout);
 
-    LogString datePattern(LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss"));
+		TimeBasedRollingPolicyPtr tbrp(new TimeBasedRollingPolicy());
+		tbrp->setFileNamePattern(LOG4CXX_STR("output/test1-%d{" DATE_PATTERN "}"));
+		tbrp->activateOptions(pool);
+		rfa->setRollingPolicy(tbrp);
+		rfa->activateOptions(pool);
+		logger->addAppender(rfa);
 
-    TimeBasedRollingPolicyPtr tbrp(new TimeBasedRollingPolicy());
-    tbrp->setFileNamePattern(LOG4CXX_STR("output/test1-%d{yyyy-MM-dd_HH_mm_ss}"));
-    Pool p;
-    tbrp->activateOptions(p);
-    rfa->setRollingPolicy(tbrp);
-    rfa->activateOptions(p);
-    logger->addAppender(rfa);
-
-    SimpleDateFormat sdf(datePattern);
-    LogString filenames[4];
-
-    Pool pool;
-    apr_time_t now = apr_time_now();
-    { for (int i = 0; i < 4; i++) {
-      filenames[i] = LOG4CXX_STR("output/test1-");
-      sdf.format(filenames[i], now, p);
-      now += APR_USEC_PER_SEC;
-    } }
-
-    delayUntilNextSecondWithMsg();
-
-    { for (int i = 0; i < 5; i++) {
-        std::string message("Hello---");
-        message.append(pool.itoa(i));
-        LOG4CXX_DEBUG(logger, message);
-        apr_sleep(APR_USEC_PER_SEC/2);
-    } }
-
-    for (int i = 0; i < 4; i++) {
-      LogString witness(LOG4CXX_STR("witness/rolling/tbr-test1."));
-      StringHelper::toString(i, pool, witness);
-      LOGUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
-    }
-  }
+		this->buildTsFileNames(pool, LOG4CXX_STR("test1-"), fileNames);
+		delayUntilNextSecondWithMsg();
+		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames);
+		this->checkWitnesses(pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
+	}
 
   /**
    * No compression, with stop/restart, activeFileName left blank
@@ -407,23 +540,7 @@ public:
     LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test6.3"))));
 
   }
-
-  void delayUntilNextSecond(size_t millis = 100)
-  {
-    apr_time_t now  = apr_time_now();
-    apr_time_t next = ((now / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC + millis * 1000L;
-
-    apr_sleep(next - now);
-  }
-
-  void delayUntilNextSecondWithMsg(size_t millis = 100)
-  {
-    std::cout << "Waiting until next second and 100 millis.";
-    delayUntilNextSecond(millis);
-    std::cout << "Done waiting.";
-  }
 };
-
 
 LoggerPtr TimeBasedRollingTest::logger(Logger::getLogger("org.apache.log4j.TimeBasedRollingTest"));
 
