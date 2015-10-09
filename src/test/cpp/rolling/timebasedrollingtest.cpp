@@ -159,17 +159,17 @@ private:
 	 * </p>
 	 * @param[in,out]	pool
 	 * @param[in]		howOften
-	 * @param[in]		waitFactor
+	 * @param[in]		srcFunc
+	 * @param[in]		srcLine
 	 * @param[in,opt]	startWith
-	 * @param[in,opt]	srcFunc
-	 * @param[in,opt]	srcLine
+	 * @param[in]		waitFactor
 	 */
 	void logMsgAndSleep(Pool&		pool,
 						size_t		howOften,
-						float		waitFactor,
 						std::string	srcFunc,
 						size_t		srcLine,
-						size_t		startWith = 0)
+						size_t		startWith	= 0,
+						float		waitFactor	= 0.5)
 	{
 #undef	LOG4CXX_LOCATION
 #define	LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(	\
@@ -344,7 +344,7 @@ public:
 
 		this->buildTsFileNames(pool, LOG4CXX_STR("test1-"), fileNames);
 		this->delayUntilNextSecondWithMsg();
-		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->logMsgAndSleep(	pool, nrOfFileNames + 1, __LOG4CXX_FUNC__, __LINE__);
 		this->compareWitnesses(	pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
 	}
 
@@ -370,7 +370,7 @@ public:
 
 		this->buildTsFileNames(pool, LOG4CXX_STR("test2-"), fileNames);
 		this->delayUntilNextSecondWithMsg();
-		this->logMsgAndSleep(pool, 3, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->logMsgAndSleep(pool, 3, __LOG4CXX_FUNC__, __LINE__);
 
 		logger->removeAppender(rfa1);
 		rfa1->close();
@@ -386,7 +386,7 @@ public:
 		rfa2->activateOptions(pool);
 		logger->addAppender(rfa2);
 
-		this->logMsgAndSleep(	pool, 2, 0.5, __LOG4CXX_FUNC__, __LINE__, 3);
+		this->logMsgAndSleep(	pool, 2, __LOG4CXX_FUNC__, __LINE__, 3);
 		this->compareWitnesses(	pool, LOG4CXX_STR("test2."), fileNames, __LINE__);
 	}
 
@@ -414,7 +414,7 @@ public:
 		this->buildTsFileNames(pool, LOG4CXX_STR("test3-"), fileNames, true);
 		fileNames[3].resize(fileNames[3].size() - 3);
 		this->delayUntilNextSecondWithMsg();
-		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->logMsgAndSleep(	pool, nrOfFileNames + 1, __LOG4CXX_FUNC__, __LINE__);
 		this->checkFilesExist(	pool, LOG4CXX_STR("test3."), fileNames, __LINE__);
 	}
 
@@ -442,7 +442,7 @@ public:
 		this->buildTsFileNames(pool, LOG4CXX_STR("test4-"), fileNames);
 		fileNames[3].assign(rfa1->getFile());
 		this->delayUntilNextSecondWithMsg();
-		this->logMsgAndSleep(pool, 3, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->logMsgAndSleep(pool, 3, __LOG4CXX_FUNC__, __LINE__);
 
 		logger->removeAppender(rfa1);
 		rfa1->close();
@@ -459,7 +459,7 @@ public:
 		rfa2->activateOptions(pool);
 		logger->addAppender(rfa2);
 
-		this->logMsgAndSleep(	pool, 2, 0.5, __LOG4CXX_FUNC__, __LINE__, 3);
+		this->logMsgAndSleep(	pool, 2, __LOG4CXX_FUNC__, __LINE__, 3);
 		this->compareWitnesses(	pool, LOG4CXX_STR("test4."), fileNames, __LINE__);
 	}
 
@@ -488,7 +488,7 @@ public:
 		this->buildTsFileNames(pool, LOG4CXX_STR("test5-"), fileNames);
 		fileNames[3].assign(rfa->getFile());
 		this->delayUntilNextSecondWithMsg();
-		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->logMsgAndSleep(	pool, nrOfFileNames + 1, __LOG4CXX_FUNC__, __LINE__);
 		this->compareWitnesses(	pool, LOG4CXX_STR("test5."), fileNames, __LINE__);
 	}
 
@@ -517,7 +517,7 @@ public:
 		this->buildTsFileNames(pool, LOG4CXX_STR("test6-"), fileNames, true);
 		fileNames[3].assign(rfa->getFile());
 		this->delayUntilNextSecondWithMsg();
-		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->logMsgAndSleep(	pool, nrOfFileNames + 1, __LOG4CXX_FUNC__, __LINE__);
 		this->checkFilesExist(	pool, LOG4CXX_STR("test6."), fileNames, __LINE__);
 	}
 
