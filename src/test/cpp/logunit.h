@@ -60,34 +60,34 @@ namespace LogUnit {
         void setCase(abts_case* tc);
         virtual void setUp();
         virtual void tearDown();
-        
+
         void assertEquals(const int expected, const int actual, int lineno);
-        void assertEquals(const std::string expected, 
-            const std::string actual, 
-            const char* expectedExpr, 
-            const char* actualExpr, 
+        void assertEquals(const std::string expected,
+            const std::string actual,
+            const char* expectedExpr,
+            const char* actualExpr,
             int lineno);
-        void assertEquals(const char* expected, 
-            const char* actual, 
-            const char* expectedExpr, 
-            const char* actualExpr, 
+        void assertEquals(const char* expected,
+            const char* actual,
+            const char* expectedExpr,
+            const char* actualExpr,
             int lineno);
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_WCHAR_T_API       
-        void assertEquals(const std::wstring expected, 
-            const std::wstring actual, 
-            const char* expectedExpr, 
-            const char* actualExpr, 
+#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_WCHAR_T_API
+        void assertEquals(const std::wstring expected,
+            const std::wstring actual,
+            const char* expectedExpr,
+            const char* actualExpr,
             int lineno);
-#endif        
+#endif
 #if LOG4CXX_LOGCHAR_IS_UNICHAR || LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
-        void assertEquals(const std::basic_string<log4cxx::UniChar> expected, 
-             const std::basic_string<log4cxx::UniChar> actual, 
-             const char* expectedExpr, 
+        void assertEquals(const std::basic_string<log4cxx::UniChar> expected,
+             const std::basic_string<log4cxx::UniChar> actual,
+             const char* expectedExpr,
              const char* actualExpr, int lineno);
 #endif
         template<class T>
-        void assertEquals(const T& expected, 
-             const T& actual, 
+        void assertEquals(const T& expected,
+             const T& actual,
              const char* expectedExpr,
              const char* actualExpr,
              int lineno) {
@@ -191,8 +191,8 @@ public:                                               \
      private:                                         \
      class RegisterSuite {                            \
      public:                                          \
-        typedef TF ThisFixture                       
-        
+        typedef TF ThisFixture
+
 #define LOGUNIT_TEST(testName)          \
      class testName ## Registration {   \
      public:                            \
@@ -224,7 +224,7 @@ public:                                               \
     }                                      \
     private:                               \
     void nop()
-    
+
 
 #define LOGUNIT_TEST_SUITE_REGISTRATION(TF) \
 static LogUnit::RegisterSuite<TF> registration;
@@ -232,10 +232,12 @@ static LogUnit::RegisterSuite<TF> registration;
 #define LOGUNIT_TEST_SUITE_REGISTRATION_DISABLED(TF) \
 static LogUnit::RegisterDisabledSuite<TF> registration;
 
-    
-#define LOGUNIT_ASSERT(x) { if (!(x)) throw LogUnit::AssertException(true, #x, __LINE__); }
-#define LOGUNIT_ASSERT_EQUAL(expected, actual) assertEquals(expected, actual, #expected, #actual, __LINE__)
-#define LOGUNIT_FAIL(msg) throw LogUnit::AssertException(msg, __LINE__)
+
+#define LOGUNIT_ASSERT(		x)									{ if (!(x)) throw LogUnit::AssertException(true, #x, __LINE__);	}
+#define LOGUNIT_ASSERT_SRCL(x, srcLine)							{ if (!(x)) throw LogUnit::AssertException(true, #x, srcLine);	}
+#define LOGUNIT_ASSERT_EQUAL(		expected, actual)			assertEquals(expected, actual, #expected, #actual, __LINE__)
+#define LOGUNIT_ASSERT_EQUAL_SRCL(	expected, actual, srcLine)	assertEquals(expected, actual, #expected, #actual, srcLine)
+#define LOGUNIT_FAIL(msg)										throw LogUnit::AssertException(msg, __LINE__)
 
 
 #if defined(_MSC_VER)
