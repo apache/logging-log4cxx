@@ -485,7 +485,7 @@ public:
 		rfa->activateOptions(pool);
 		logger->addAppender(rfa);
 
-		this->buildTsFileNames(pool, LOG4CXX_STR("test5-"), fileNames, true);
+		this->buildTsFileNames(pool, LOG4CXX_STR("test5-"), fileNames);
 		fileNames[3].assign(rfa->getFile());
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 0.5, __LOG4CXX_FUNC__, __LINE__);
