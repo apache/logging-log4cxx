@@ -39,6 +39,7 @@
 // one macro already, a second for a similar purpose shouldn't hurt as well.
 #define DATE_PATTERN		"yyyy-MM-dd_HH_mm_ss"
 #define DATE_PATTERN_STR	LogString(LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss"))
+#define PATTERN_LAYOUT		LOG4CXX_STR("%c{1} - %m%n")
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -91,17 +92,24 @@ private:
 	 * @param[in,out]	pool
 	 * @param[in]		prefix
 	 * @param[in]		fileNames
+	 * param[in]		withCompression
 	 */
 	template<size_t N>
-	void buildTsFileNames(Pool& pool, const logchar* prefix, LogString (&fileNames)[N])
+	void buildTsFileNames(			Pool&		pool,
+							const	logchar*	prefix,
+									LogString	(&fileNames)[N],
+									bool		withCompression = false)
 	{
 		SimpleDateFormat	sdf(DATE_PATTERN_STR);
 		apr_time_t			now(apr_time_now());
+		LogString			ext(withCompression ? LOG4CXX_STR(".gz") : LOG4CXX_STR(""));
 
 		for (size_t i = 0; i < N; ++i)
 		{
-			fileNames[i] = LogString(LOG4CXX_STR("output/")) + prefix;
+			fileNames[i].assign(LogString(LOG4CXX_STR("output/")) + prefix);
 			sdf.format(fileNames[i], now, pool);
+			fileNames[i].append(ext);
+
 			now += APR_USEC_PER_SEC;
 		}
 	}
@@ -114,16 +122,21 @@ private:
 	 * to replicate the same code AND deals with the fact that the logigng statements should contain
 	 * the original src function and line. For that we define a macro wrapper for this function to
 	 * easily provide us the needed additional information and redefine LOG4CXX_LOCATION to use our
-	 * provided data instead of those fomr the compiler when a log statement is issued. While this
+	 * provided data instead of those from the compiler when a log statement is issued. While this
 	 * is a bit ugly, because we need to duplicate the definition of LOG4CXX_LOCATION, it is easier
 	 * than to duplicate the code per test in this file.
 	 * </p>
 	 * @param[in,out]	pool
 	 * @param[in]		howOften
-	 * @param[in]		srcFunc
-	 * @param[in]		srcLine
+	 * @param[in,opt]	startWith
+	 * @param[in,opt]	srcFunc
+	 * @param[in,opt]	srcLine
 	 */
-	void logSomeMsgAndSleep(Pool& pool, size_t howOften, std::string srcFunc, size_t srcLine)
+	void logSomeMsgAndSleep(Pool&		pool,
+							size_t		howOften,
+							size_t		startWith	= 0,
+							std::string	srcFunc		= __LOG4CXX_FUNC__,
+							size_t		srcLine		= __LINE__)
 	{
 #undef	LOG4CXX_LOCATION
 #define	LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(	\
@@ -131,7 +144,7 @@ private:
 							srcFunc.c_str(),			\
 							srcLine)
 
-		for (size_t i = 0; i <= howOften; ++i)
+		for (size_t i = startWith; i < startWith + howOften; ++i)
 		{
 			std::string	message("Hello---");
 						message.append(pool.itoa(i));
@@ -155,14 +168,70 @@ private:
  * compilers and we already provide our own name for that.
  * </p>
  */
-#define	LOG_SOME_MSG_AND_SLEEP(pool, howOften) \
-		this->logSomeMsgAndSleep(pool, howOften, __LOG4CXX_FUNC__, __LINE__)
+#define	LOG_SOME_MSG_AND_SLEEP(		pool, howOften) \
+		this->logSomeMsgAndSleep(	pool, howOften, 0, __LOG4CXX_FUNC__, __LINE__)
+#define	LOG_SOME_MSG_AND_SLEEP2(	pool, howOften, startWith) \
+		this->logSomeMsgAndSleep(	pool, howOften, startWith, __LOG4CXX_FUNC__, __LINE__)
 
 	/**
-	 * Check witnesses for some test.
+	 * Check witness by comparing file contents.
 	 * <p>
-	 * This method checks the witnesses for some test, given by the {@code prefix} arg, which should
-	 * correspond to some file, while we hard code the parent dir and such of that file.
+	 * This method checks the witness for some test by comparing the contents of the given file used
+	 * by that test. To find the corresponding witness, the prefix of the test needs to be provided,
+	 * which is some unique part of the file name to use, while we hard code the parent dir and
+	 * other non changing parts of the name.
+	 * </p>
+	 * <p>
+	 * We don't use a wrapper macro this time because the src line schould have the same name in all
+	 * compilers and is easily to add for the caller.
+	 * </p>
+	 * @param[in,out]	pool
+	 * @param[in]		prefix
+	 * @param[in]		fileName
+	 * @param[in]		witnessIdx
+	 * @param[in]		srcLine
+	 */
+	void compareWitness(		Pool&		pool,
+						const	logchar*	prefix,
+						const	LogString&	fileName,
+								size_t		witnessIdx,
+								size_t		srcLine)
+	{
+		LogString	witness(LOG4CXX_STR("witness/rolling/tbr-"));
+					witness.append(prefix);
+
+		StringHelper::toString(witnessIdx, pool, witness);
+		LOGUNIT_ASSERT_SRCL(Compare::compare(fileName, File(witness)), srcLine);
+	}
+
+	/**
+	 * Check witnesses by comparing file contents.
+	 * <p>
+	 * This method is a wrapper around {@link compareWitness}, used to iterate over all files from a
+	 * given test.
+	 * </p>
+	 * @param[in,out]	pool
+	 * @param[in]		prefix
+	 * @param[in]		fileNames
+	 * @param[in]		srcLine
+	 */
+	template<size_t N>
+	void compareAllWitnesses(			Pool&		pool,
+								const	logchar*	prefix,
+										LogString	(&fileNames)[N],
+										size_t		srcLine)
+	{
+		for (int i = 0; i < N; ++i)
+		{
+			this->compareWitness(pool, prefix, fileNames[i], i, srcLine);
+		}
+	}
+
+	/**
+	 * Check existing files.
+	 * <p>
+	 * This method checks that the first N - 1 files of the given array actually exist and compares
+	 * the last one by content to some witness.
 	 * </p>
 	 * <p>
 	 * We don't use a wrapper macro this time because the src line schould have the same name in all
@@ -174,19 +243,17 @@ private:
 	 * @param[in]		srcLine
 	 */
 	template<size_t N>
-	void checkWitnesses(		Pool&		pool,
-						const	logchar*	prefix,
-								LogString	(&fileNames)[N],
-								size_t		srcLine)
+	void checkFilesExist(			Pool&		pool,
+							const	logchar*	prefix,
+									LogString	(&fileNames)[N],
+									size_t		srcLine)
 	{
-		for (int i = 0; i < N; ++i)
+		for (int i = 0; i < N - 1; ++i)
 		{
-			LogString	witness(LOG4CXX_STR("witness/rolling/tbr-"));
-						witness.append(prefix);
-
-			StringHelper::toString(i, pool, witness);
-			LOGUNIT_ASSERT_SRCL(Compare::compare(fileNames[i], File(witness)), srcLine);
+			LOGUNIT_ASSERT_EQUAL_SRCL(true, File(fileNames[0]).exists(pool), srcLine);
 		}
+
+		this->compareWitness(pool, prefix, fileNames[N - 1], N - 1, srcLine);
 	}
 
 	/**
@@ -244,8 +311,8 @@ public:
 		const	size_t		nrOfFileNames = 4;
 				LogString	fileNames[nrOfFileNames];
 
-		PatternLayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c{1} - %m%n")));
-		RollingFileAppenderPtr rfa(new RollingFileAppender());
+		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
 		rfa->setLayout(layout);
 
 		TimeBasedRollingPolicyPtr tbrp(new TimeBasedRollingPolicy());
@@ -256,9 +323,9 @@ public:
 		logger->addAppender(rfa);
 
 		this->buildTsFileNames(pool, LOG4CXX_STR("test1-"), fileNames);
-		delayUntilNextSecondWithMsg();
-		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames);
-		this->checkWitnesses(pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
+		this->delayUntilNextSecondWithMsg();
+		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames + 1);
+		this->compareAllWitnesses(pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
 	}
 
 	/**
@@ -266,66 +333,41 @@ public:
 	 */
 	void test2()
 	{
-		LogString datePattern(LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss"));
+				Pool		pool;
+		const	size_t		nrOfFileNames = 4;
+				LogString	fileNames[nrOfFileNames];
 
-		PatternLayoutPtr layout1(new PatternLayout(LOG4CXX_STR("%c{1} - %m%n")));
-		RollingFileAppenderPtr rfa1(new RollingFileAppender());
+		PatternLayoutPtr		layout1(new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr	rfa1(	new RollingFileAppender());
 		rfa1->setLayout(layout1);
 
 		TimeBasedRollingPolicyPtr tbrp1(new TimeBasedRollingPolicy());
-		tbrp1->setFileNamePattern(LOG4CXX_STR("output/test2-%d{yyyy-MM-dd_HH_mm_ss}"));
-		Pool pool;
+		tbrp1->setFileNamePattern(LOG4CXX_STR("output/test2-%d{" DATE_PATTERN "}"));
 		tbrp1->activateOptions(pool);
 		rfa1->setRollingPolicy(tbrp1);
 		rfa1->activateOptions(pool);
 		logger->addAppender(rfa1);
 
-		SimpleDateFormat sdf(datePattern);
-		LogString filenames[4];
-
-		apr_time_t now = apr_time_now();
-		{ for (int i = 0; i < 4; i++) {
-			filenames[i] = LOG4CXX_STR("output/test2-");
-			sdf.format(filenames[i], now, pool);
-			now += APR_USEC_PER_SEC;
-		} }
-
-		delayUntilNextSecondWithMsg();
-
-		{ for (int i = 0; i <= 2; i++) {
-			std::string message("Hello---");
-			message.append(pool.itoa(i));
-			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC/2);
-		} }
-
+		this->buildTsFileNames(pool, LOG4CXX_STR("test2-"), fileNames);
+		this->delayUntilNextSecondWithMsg();
+		LOG_SOME_MSG_AND_SLEEP(pool, 3);
 
 		logger->removeAppender(rfa1);
 		rfa1->close();
 
-		PatternLayoutPtr layout2(new PatternLayout(LOG4CXX_STR("%c{1} - %m%n")));
-		RollingFileAppenderPtr rfa2 = new RollingFileAppender();
+		PatternLayoutPtr		layout2(new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr	rfa2(	new RollingFileAppender());
 		rfa2->setLayout(layout2);
 
 		TimeBasedRollingPolicyPtr tbrp2 = new TimeBasedRollingPolicy();
-		tbrp2->setFileNamePattern(LOG4CXX_STR("output/test2-%d{yyyy-MM-dd_HH_mm_ss}"));
+		tbrp2->setFileNamePattern(LOG4CXX_STR("output/test2-%d{" DATE_PATTERN "}"));
 		tbrp2->activateOptions(pool);
 		rfa2->setRollingPolicy(tbrp2);
 		rfa2->activateOptions(pool);
 		logger->addAppender(rfa2);
 
-		{ for (int i = 3; i <= 4; i++) {
-			std::string message("Hello---");
-			message.append(pool.itoa(i));
-			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC/2);
-		} }
-
-		for (int i = 0; i < 4; i++) {
-			LogString witness(LOG4CXX_STR("witness/rolling/tbr-test2."));
-			StringHelper::toString(i, pool, witness);
-			LOGUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
-		}
+		LOG_SOME_MSG_AND_SLEEP2(pool, 2, 3);
+		this->compareAllWitnesses(pool, LOG4CXX_STR("test2."), fileNames, __LINE__);
 	}
 
 	/**
@@ -333,48 +375,27 @@ public:
 	 */
 	void test3()
 	{
-		Pool p;
-		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
-		RollingFileAppenderPtr rfa = new RollingFileAppender();
+				Pool		pool;
+		const	size_t		nrOfFileNames = 4;
+				LogString	fileNames[nrOfFileNames];
+
+		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-		LogString datePattern = LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss");
-
 		TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
-		tbrp->setFileNamePattern(LogString(LOG4CXX_STR("output/test3-%d{")) + datePattern + LogString(LOG4CXX_STR("}.gz")));
-		tbrp->activateOptions(p);
+		tbrp->setFileNamePattern(LogString(LOG4CXX_STR("output/test3-%d{" DATE_PATTERN "}.gz")));
+		tbrp->activateOptions(pool);
 		rfa->setRollingPolicy(tbrp);
-		rfa->activateOptions(p);
+		rfa->activateOptions(pool);
 		logger->addAppender(rfa);
 
-		DateFormatPtr sdf = new SimpleDateFormat(datePattern);
-		LogString filenames[4];
-
-		apr_time_t now = apr_time_now();
-		{ for (int i = 0; i < 4; i++) {
-			filenames[i] = LOG4CXX_STR("output/test3-");
-			sdf->format(filenames[i], now, p);
-			filenames[i].append(LOG4CXX_STR(".gz"));
-			now += APR_USEC_PER_SEC;
-		} }
-
-		filenames[3].resize(filenames[3].size() - 3);
-
-		delayUntilNextSecondWithMsg();
-
-		{ for (int i = 0; i < 5; i++) {
-			std::string message("Hello---");
-			message.append(p.itoa(i));
-			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC/2);
-		} }
-
-		LOGUNIT_ASSERT_EQUAL(true, File(filenames[0]).exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File(filenames[1]).exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File(filenames[2]).exists(p));
-
-		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test3.3"))));
+		this->buildTsFileNames(pool, LOG4CXX_STR("test3-"), fileNames, true);
+		fileNames[3].resize(fileNames[3].size() - 3);
+		this->delayUntilNextSecondWithMsg();
+		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames + 1);
+		this->checkFilesExist(pool, LOG4CXX_STR("test3."), fileNames, __LINE__);
 	}
 
 	/**
@@ -382,69 +403,44 @@ public:
 	 */
 	void test4()
 	{
-		LogString datePattern = LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss");
+				Pool		pool;
+		const	size_t		nrOfFileNames = 4;
+				LogString	fileNames[nrOfFileNames];
 
-		PatternLayoutPtr layout1 = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
-		RollingFileAppenderPtr rfa1 = new RollingFileAppender();
+		PatternLayoutPtr		layout1(new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr	rfa1(	new RollingFileAppender());
 		rfa1->setLayout(layout1);
-
-		Pool pool;
 
 		TimeBasedRollingPolicyPtr tbrp1 = new TimeBasedRollingPolicy();
 		rfa1->setFile(LOG4CXX_STR("output/test4.log"));
-		tbrp1->setFileNamePattern(LOG4CXX_STR("output/test4-%d{yyyy-MM-dd_HH_mm_ss}"));
+		tbrp1->setFileNamePattern(LOG4CXX_STR("output/test4-%d{" DATE_PATTERN "}"));
 		tbrp1->activateOptions(pool);
 		rfa1->setRollingPolicy(tbrp1);
 		rfa1->activateOptions(pool);
 		logger->addAppender(rfa1);
 
-		SimpleDateFormat sdf(datePattern);
-		LogString filenames[4];
-
-		apr_time_t now = apr_time_now();
-		{ for (int i = 0; i < 3; i++) {
-			filenames[i] = LOG4CXX_STR("output/test4-");
-			sdf.format(filenames[i], now, pool);
-			now += APR_USEC_PER_SEC;
-		} }
-		filenames[3] = LOG4CXX_STR("output/test4.log");
-
-		delayUntilNextSecondWithMsg();
-
-		{ for (int i = 0; i <= 2; i++) {
-			std::string message("Hello---");
-			message.append(pool.itoa(i));
-			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC/2);
-		} }
+		this->buildTsFileNames(pool, LOG4CXX_STR("test4-"), fileNames);
+		fileNames[3].assign(rfa1->getFile());
+		this->delayUntilNextSecondWithMsg();
+		LOG_SOME_MSG_AND_SLEEP(pool, 3);
 
 		logger->removeAppender(rfa1);
 		rfa1->close();
 
-		PatternLayoutPtr layout2 = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
-		RollingFileAppenderPtr rfa2 = new RollingFileAppender();
+		PatternLayoutPtr		layout2(new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr	rfa2(	new RollingFileAppender());
 		rfa2->setLayout(layout2);
 
 		TimeBasedRollingPolicyPtr tbrp2 = new TimeBasedRollingPolicy();
-		tbrp2->setFileNamePattern(LOG4CXX_STR("output/test4-%d{yyyy-MM-dd_HH_mm_ss}"));
-		rfa2->setFile(LOG4CXX_STR("output/test4.log"));
+		tbrp2->setFileNamePattern(LOG4CXX_STR("output/test4-%d{" DATE_PATTERN "}"));
+		rfa2->setFile(fileNames[3]);
 		tbrp2->activateOptions(pool);
 		rfa2->setRollingPolicy(tbrp2);
 		rfa2->activateOptions(pool);
 		logger->addAppender(rfa2);
 
-		{ for (int i = 3; i <= 4; i++) {
-			std::string message("Hello---");
-			message.append(pool.itoa(i));
-			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC/2);
-		} }
-
-		for (int i = 0; i < 4; i++) {
-			LogString witness(LOG4CXX_STR("witness/rolling/tbr-test4."));
-			StringHelper::toString(i, pool, witness);
-			LOGUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
-		}
+		LOG_SOME_MSG_AND_SLEEP2(pool, 2, 3);
+		this->compareAllWitnesses(pool, LOG4CXX_STR("test4."), fileNames, __LINE__);
 	}
 
 	/**
@@ -452,47 +448,28 @@ public:
 	 */
 	void test5()
 	{
-		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
-		RollingFileAppenderPtr rfa = new RollingFileAppender();
+				Pool		pool;
+		const	size_t		nrOfFileNames = 4;
+				LogString	fileNames[nrOfFileNames];
+
+		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
 		rfa->setLayout(layout);
 
-		LogString datePattern(LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss"));
-
 		TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
-		tbrp->setFileNamePattern(LOG4CXX_STR("output/test5-%d{yyyy-MM-dd_HH_mm_ss}"));
+		tbrp->setFileNamePattern(LOG4CXX_STR("output/test5-%d{" DATE_PATTERN "}"));
 		rfa->setFile(LOG4CXX_STR("output/test5.log"));
-		Pool pool;
 
 		tbrp->activateOptions(pool);
 		rfa->setRollingPolicy(tbrp);
 		rfa->activateOptions(pool);
 		logger->addAppender(rfa);
 
-		SimpleDateFormat sdf(datePattern);
-		LogString filenames[4];
-
-		apr_time_t now = apr_time_now();
-		{ for (int i = 0; i < 3; i++) {
-			filenames[i] = LOG4CXX_STR("output/test5-");
-			sdf.format(filenames[i], now, pool);
-			now += APR_USEC_PER_SEC;
-		} }
-		filenames[3] = LOG4CXX_STR("output/test5.log");
-
-		delayUntilNextSecondWithMsg();
-
-		{ for (int i = 0; i < 5; i++) {
-			std::string message("Hello---");
-			message.append(pool.itoa(i));
-			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC/2);
-		} }
-
-		for (int i = 0; i < 4; i++) {
-			LogString witness(LOG4CXX_STR("witness/rolling/tbr-test5."));
-			StringHelper::toString(i, pool, witness);
-			LOGUNIT_ASSERT(Compare::compare(filenames[i], File(witness)));
-		}
+		this->buildTsFileNames(pool, LOG4CXX_STR("test5-"), fileNames, true);
+		fileNames[3].assign(rfa->getFile());
+		this->delayUntilNextSecondWithMsg();
+		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames + 1);
+		this->compareAllWitnesses(pool, LOG4CXX_STR("test5."), fileNames, __LINE__);
 	}
 
 	/**
@@ -500,49 +477,28 @@ public:
 	 */
 	void test6()
 	{
-		Pool p;
-		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%c{1} - %m%n"));
-		RollingFileAppenderPtr rfa = new RollingFileAppender();
+				Pool		pool;
+		const	size_t		nrOfFileNames = 4;
+				LogString	fileNames[nrOfFileNames];
+
+		PatternLayoutPtr		layout(	new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr	rfa(	new RollingFileAppender());
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-		LogString datePattern = LOG4CXX_STR("yyyy-MM-dd_HH_mm_ss");
-
 		TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
-		tbrp->setFileNamePattern(LogString(LOG4CXX_STR("output/test6-%d{")) + datePattern + LogString(LOG4CXX_STR("}.gz")));
+		tbrp->setFileNamePattern(LogString(LOG4CXX_STR("output/test6-%d{" DATE_PATTERN "}.gz")));
 		rfa->setFile(LOG4CXX_STR("output/test6.log"));
-		tbrp->activateOptions(p);
+		tbrp->activateOptions(pool);
 		rfa->setRollingPolicy(tbrp);
-		rfa->activateOptions(p);
+		rfa->activateOptions(pool);
 		logger->addAppender(rfa);
 
-		DateFormatPtr sdf = new SimpleDateFormat(datePattern);
-		LogString filenames[4];
-
-		apr_time_t now = apr_time_now();
-		{ for (int i = 0; i < 3; i++) {
-			filenames[i] = LOG4CXX_STR("output/test6-");
-			sdf->format(filenames[i], now, p);
-			filenames[i].append(LOG4CXX_STR(".gz"));
-			now += APR_USEC_PER_SEC;
-		} }
-
-		filenames[3] = LOG4CXX_STR("output/test6.log");
-
-		delayUntilNextSecondWithMsg();
-
-		{ for (int i = 0; i < 5; i++) {
-			std::string message("Hello---");
-			message.append(p.itoa(i));
-			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC/2);
-		} }
-
-		LOGUNIT_ASSERT_EQUAL(true, File(filenames[0]).exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File(filenames[1]).exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File(filenames[2]).exists(p));
-
-		LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File(filenames[3]), File(LOG4CXX_STR("witness/rolling/tbr-test6.3"))));
+		this->buildTsFileNames(pool, LOG4CXX_STR("test6-"), fileNames, true);
+		fileNames[3].assign(rfa->getFile());
+		this->delayUntilNextSecondWithMsg();
+		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames + 1);
+		this->checkFilesExist(pool, LOG4CXX_STR("test6."), fileNames, __LINE__);
 	}
 };
 
