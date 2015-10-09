@@ -304,7 +304,7 @@ private:
 	{
 		std::cout << "Waiting until next second and " << millis << " millis.";
 		delayUntilNextSecond(millis);
-		std::cout << "Done waiting.";
+		std::cout << "Done waiting." << std::endl;
 	}
 
 public:
