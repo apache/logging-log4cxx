@@ -73,6 +73,7 @@ LOGUNIT_CLASS(TimeBasedRollingTest)
 		LOGUNIT_TEST(test4);
 		LOGUNIT_TEST(test5);
 		LOGUNIT_TEST(test6);
+		LOGUNIT_TEST(test7);
 	LOGUNIT_TEST_SUITE_END();
 
 private:
@@ -87,23 +88,37 @@ private:
 	 * created by loggers afterwards, so the existence of those files can be checked easily.
 	 * </p>
 	 * <p>
-	 * The given {@code prefix} is for the file name only, we hard code "outpout" as directory.
+	 * The given {@code prefix} is for the file name only, we hard code "output" as directory.
+	 * </p>
+	 * <p>
+	 * Using {@code startInFuture} the caller can specify if the first created file name uses "now"
+	 * or already starts one second in the future. This depends on what the caller wants to check:
+	 * If it is the existence of specially named files and the caller uses some generic log file to
+	 * start with, it's most likely that the first file name to checks needs to be in the future,
+	 * because new files are only created with subsequent log statements. The first goes to the
+	 * generically named file, afterwards the test sleeps a bit and the next statement is creating
+	 * the first file to check for. During the time between those two calls the current second and
+	 * therefore "now" could have easily past and the first file name will never be found, because
+	 * the rolling appender creates it with a newer "now", at least one second in the future.
 	 * </p>
 	 * @param[in,out]	pool
 	 * @param[in]		prefix
 	 * @param[in]		fileNames
-	 * param[in]		withCompression
+	 * param[in,opt]	withCompression
+	 * param[in,opt]	startInFuture
 	 */
 	template<size_t N>
 	void buildTsFileNames(			Pool&		pool,
 							const	logchar*	prefix,
 									LogString	(&fileNames)[N],
-									bool		withCompression = false)
+									bool		withCompression	= false,
+									bool		startInFuture	= false)
 	{
 		SimpleDateFormat	sdf(DATE_PATTERN_STR);
 		apr_time_t			now(apr_time_now());
 		LogString			ext(withCompression ? LOG4CXX_STR(".gz") : LOG4CXX_STR(""));
 
+		now += startInFuture ? APR_USEC_PER_SEC : 0;
 		for (size_t i = 0; i < N; ++i)
 		{
 			fileNames[i].assign(LogString(LOG4CXX_STR("output/")) + prefix);
@@ -120,23 +135,41 @@ private:
 	 * Most tests need to log some message to some files and sleep afterwards, to spread the msgs
 	 * over time and timestamp based named files. This method handles this for all tests to not need
 	 * to replicate the same code AND deals with the fact that the logigng statements should contain
-	 * the original src function and line. For that we define a macro wrapper for this function to
-	 * easily provide us the needed additional information and redefine LOG4CXX_LOCATION to use our
-	 * provided data instead of those from the compiler when a log statement is issued. While this
-	 * is a bit ugly, because we need to duplicate the definition of LOG4CXX_LOCATION, it is easier
-	 * than to duplicate the code per test in this file.
+	 * the original src function and line. For that to work each caller needs to provide us the
+	 * additional information and we redefine LOG4CXX_LOCATION to use that provided data instead of
+	 * that from the compiler when a log statement is issued. While this is a bit ugly, because we
+	 * need to duplicate the definition of LOG4CXX_LOCATION, it is easier than to duplicate the code
+	 * for logging and sleeping per test in this file.
+	 * </p>
+	 * <p>
+	 * The given wait factor is always multiplied with 1 second and the result is waited for, so a
+	 * caller needs to e.g. provide {@code 0.5} if it needs log statements to distribute over given
+	 * files, resulting in two statements per file. If the caller needs indivdual file to check for
+	 * their existence, {@code 1} can be provided, which ensures that we wait for at least the next
+	 * second.
+	 * </p>
+	 * <p>
+	 * It is important the the caller provides aus with {@code __LOG4CXX_FUNC__} instead of only
+	 * {@code __FUNC__} or such, because the latter is compiler specific and log4cxx already deals
+	 * with such things.
+	 * </p>
+	 * <p>
+	 * We had macro wrappers around this method dealing with such things in the past, but as args
+	 * where added, those become more and more difficult to maintain properly and therefore removed.
 	 * </p>
 	 * @param[in,out]	pool
 	 * @param[in]		howOften
+	 * @param[in]		waitFactor
 	 * @param[in,opt]	startWith
 	 * @param[in,opt]	srcFunc
 	 * @param[in,opt]	srcLine
 	 */
-	void logSomeMsgAndSleep(Pool&		pool,
-							size_t		howOften,
-							size_t		startWith	= 0,
-							std::string	srcFunc		= __LOG4CXX_FUNC__,
-							size_t		srcLine		= __LINE__)
+	void logMsgAndSleep(Pool&		pool,
+						size_t		howOften,
+						float		waitFactor,
+						std::string	srcFunc,
+						size_t		srcLine,
+						size_t		startWith = 0)
 	{
 #undef	LOG4CXX_LOCATION
 #define	LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(	\
@@ -150,7 +183,7 @@ private:
 						message.append(pool.itoa(i));
 
 			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC / 2);
+			apr_sleep(APR_USEC_PER_SEC * waitFactor);
 		}
 
 #undef	LOG4CXX_LOCATION
@@ -159,19 +192,6 @@ private:
 							__LOG4CXX_FUNC__,			\
 							__LINE__)
 	}
-
-/**
- * Wrapper for logging some messages.
- * <p>
- * This macro is used to easily provide the src function and line to the method logging into test
- * files. A macro is used because the name of the macro for the source function differs between
- * compilers and we already provide our own name for that.
- * </p>
- */
-#define	LOG_SOME_MSG_AND_SLEEP(		pool, howOften) \
-		this->logSomeMsgAndSleep(	pool, howOften, 0, __LOG4CXX_FUNC__, __LINE__)
-#define	LOG_SOME_MSG_AND_SLEEP2(	pool, howOften, startWith) \
-		this->logSomeMsgAndSleep(	pool, howOften, startWith, __LOG4CXX_FUNC__, __LINE__)
 
 	/**
 	 * Check witness by comparing file contents.
@@ -182,7 +202,7 @@ private:
 	 * other non changing parts of the name.
 	 * </p>
 	 * <p>
-	 * We don't use a wrapper macro this time because the src line schould have the same name in all
+	 * We don't use a wrapper macro this time because the src line should have the same name in all
 	 * compilers and is easily to add for the caller.
 	 * </p>
 	 * @param[in,out]	pool
@@ -216,10 +236,10 @@ private:
 	 * @param[in]		srcLine
 	 */
 	template<size_t N>
-	void compareAllWitnesses(			Pool&		pool,
-								const	logchar*	prefix,
-										LogString	(&fileNames)[N],
-										size_t		srcLine)
+	void compareWitnesses(			Pool&		pool,
+							const	logchar*	prefix,
+									LogString	(&fileNames)[N],
+									size_t		srcLine)
 	{
 		for (int i = 0; i < N; ++i)
 		{
@@ -324,8 +344,8 @@ public:
 
 		this->buildTsFileNames(pool, LOG4CXX_STR("test1-"), fileNames);
 		this->delayUntilNextSecondWithMsg();
-		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames + 1);
-		this->compareAllWitnesses(pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
+		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->compareWitnesses(	pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
 	}
 
 	/**
@@ -350,7 +370,7 @@ public:
 
 		this->buildTsFileNames(pool, LOG4CXX_STR("test2-"), fileNames);
 		this->delayUntilNextSecondWithMsg();
-		LOG_SOME_MSG_AND_SLEEP(pool, 3);
+		this->logMsgAndSleep(pool, 3, 0.5, __LOG4CXX_FUNC__, __LINE__);
 
 		logger->removeAppender(rfa1);
 		rfa1->close();
@@ -366,8 +386,8 @@ public:
 		rfa2->activateOptions(pool);
 		logger->addAppender(rfa2);
 
-		LOG_SOME_MSG_AND_SLEEP2(pool, 2, 3);
-		this->compareAllWitnesses(pool, LOG4CXX_STR("test2."), fileNames, __LINE__);
+		this->logMsgAndSleep(	pool, 2, 0.5, __LOG4CXX_FUNC__, __LINE__, 3);
+		this->compareWitnesses(	pool, LOG4CXX_STR("test2."), fileNames, __LINE__);
 	}
 
 	/**
@@ -394,8 +414,8 @@ public:
 		this->buildTsFileNames(pool, LOG4CXX_STR("test3-"), fileNames, true);
 		fileNames[3].resize(fileNames[3].size() - 3);
 		this->delayUntilNextSecondWithMsg();
-		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames + 1);
-		this->checkFilesExist(pool, LOG4CXX_STR("test3."), fileNames, __LINE__);
+		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->checkFilesExist(	pool, LOG4CXX_STR("test3."), fileNames, __LINE__);
 	}
 
 	/**
@@ -422,7 +442,7 @@ public:
 		this->buildTsFileNames(pool, LOG4CXX_STR("test4-"), fileNames);
 		fileNames[3].assign(rfa1->getFile());
 		this->delayUntilNextSecondWithMsg();
-		LOG_SOME_MSG_AND_SLEEP(pool, 3);
+		this->logMsgAndSleep(pool, 3, 0.5, __LOG4CXX_FUNC__, __LINE__);
 
 		logger->removeAppender(rfa1);
 		rfa1->close();
@@ -439,8 +459,8 @@ public:
 		rfa2->activateOptions(pool);
 		logger->addAppender(rfa2);
 
-		LOG_SOME_MSG_AND_SLEEP2(pool, 2, 3);
-		this->compareAllWitnesses(pool, LOG4CXX_STR("test4."), fileNames, __LINE__);
+		this->logMsgAndSleep(	pool, 2, 0.5, __LOG4CXX_FUNC__, __LINE__, 3);
+		this->compareWitnesses(	pool, LOG4CXX_STR("test4."), fileNames, __LINE__);
 	}
 
 	/**
@@ -468,8 +488,8 @@ public:
 		this->buildTsFileNames(pool, LOG4CXX_STR("test5-"), fileNames, true);
 		fileNames[3].assign(rfa->getFile());
 		this->delayUntilNextSecondWithMsg();
-		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames + 1);
-		this->compareAllWitnesses(pool, LOG4CXX_STR("test5."), fileNames, __LINE__);
+		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 0.5, __LOG4CXX_FUNC__, __LINE__);
+		this->compareWitnesses(	pool, LOG4CXX_STR("test5."), fileNames, __LINE__);
 	}
 
 	/**
@@ -494,11 +514,32 @@ public:
 		rfa->activateOptions(pool);
 		logger->addAppender(rfa);
 
-		this->buildTsFileNames(pool, LOG4CXX_STR("test6-"), fileNames, true);
-		fileNames[3].assign(rfa->getFile());
 		this->delayUntilNextSecondWithMsg();
-		LOG_SOME_MSG_AND_SLEEP(pool, nrOfFileNames + 1);
-		this->checkFilesExist(pool, LOG4CXX_STR("test6."), fileNames, __LINE__);
+		this->buildTsFileNames(pool, LOG4CXX_STR("test6-"), fileNames, true, true);
+		fileNames[3].assign(rfa->getFile());
+		this->logMsgAndSleep(	pool, nrOfFileNames + 1, 1, __LOG4CXX_FUNC__, __LINE__);
+		this->checkFilesExist(	pool, LOG4CXX_STR("test6."), fileNames, __LINE__);
+	}
+
+	/**
+	 * Repeat test 6 N times.
+	 * <p>
+	 * This test calls {@link test6} N times, because tests showed that the test can succeed by luck
+	 * and depending on the current hardware.
+	 * </p>
+	 */
+	void test7()
+	{
+		const size_t max = 10;
+
+		for (size_t i = 0; i < max; ++i)
+		{
+			std::cout << "Running test6 as part of test7 " << i + 1 << "/" << max << ":" << std::endl;
+
+			this->setUp();
+			this->test6();
+			this->tearDown();
+		}
 	}
 };
 
