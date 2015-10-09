@@ -112,7 +112,7 @@ public:
       now += APR_USEC_PER_SEC;
     } }
 
-    delayUntilNextSecondWithMsg(100);
+    delayUntilNextSecondWithMsg();
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
@@ -156,7 +156,7 @@ public:
       now += APR_USEC_PER_SEC;
     } }
 
-    delayUntilNextSecond(100);
+    delayUntilNextSecond();
 
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
@@ -226,7 +226,7 @@ public:
 
     filenames[3].resize(filenames[3].size() - 3);
 
-    delayUntilNextSecond(100);
+    delayUntilNextSecond();
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
@@ -273,7 +273,7 @@ public:
     } }
     filenames[3] = LOG4CXX_STR("output/test4.log");
 
-    delayUntilNextSecondWithMsg(100);
+    delayUntilNextSecondWithMsg();
 
     { for (int i = 0; i <= 2; i++) {
         std::string message("Hello---");
@@ -342,7 +342,7 @@ public:
     } }
     filenames[3] = LOG4CXX_STR("output/test5.log");
 
-    delayUntilNextSecondWithMsg(100);
+    delayUntilNextSecondWithMsg();
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
@@ -391,7 +391,7 @@ public:
 
     filenames[3] = LOG4CXX_STR("output/test6.log");
 
-    delayUntilNextSecond(100);
+    delayUntilNextSecond();
 
     { for (int i = 0; i < 5; i++) {
         std::string message("Hello---");
@@ -408,18 +408,18 @@ public:
 
   }
 
-  void delayUntilNextSecond(int millis) {
-    apr_time_t now = apr_time_now();
-    apr_time_t next = ((now / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC
-          + millis * 1000L;
+  void delayUntilNextSecond(size_t millis = 100)
+  {
+    apr_time_t now  = apr_time_now();
+    apr_time_t next = ((now / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC + millis * 1000L;
 
     apr_sleep(next - now);
   }
 
-  void delayUntilNextSecondWithMsg(int millis)
+  void delayUntilNextSecondWithMsg(size_t millis = 100)
   {
     std::cout << "Waiting until next second and 100 millis.";
-    delayUntilNextSecond(100);
+    delayUntilNextSecond(millis);
     std::cout << "Done waiting.";
   }
 };
