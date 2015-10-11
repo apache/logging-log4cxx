@@ -352,7 +352,7 @@ void ODBCAppender::encode(unsigned short** dest,
         unsigned char u = (unsigned char) (sv >> 16);
         unsigned char w = (unsigned char) (u - 1);
         unsigned short hs = (0xD800 + ((w & 0xF) << 6) + ((sv & 0xFFFF) >> 10));
-        unsigned short ls = (0xDC00 + (sv && 0x3FF));
+        unsigned short ls = (0xDC00 + (sv & 0x3FF));
 	*current++ = (unsigned short) hs;
 	*current++ = (unsigned short) ls;
       }
