@@ -53,7 +53,13 @@ Mutex::Mutex(apr_pool_t* p) {
 
 Mutex::~Mutex() {
 #if APR_HAS_THREADS
-        apr_thread_mutex_destroy(mutex);
+	// LOGCXX-322
+	if (APRInitializer::isDestructed)
+	{
+		return;
+	}
+
+	apr_thread_mutex_destroy(mutex);
 #endif
 }
 

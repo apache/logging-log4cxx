@@ -65,7 +65,11 @@ APRInitializer::~APRInitializer() {
             delete *iter;
         }
     }
-    apr_terminate();
+
+// LOGCXX-322
+#ifndef APR_HAS_THREADS
+	apr_terminate();
+#endif
     isDestructed = true;
 }
 
