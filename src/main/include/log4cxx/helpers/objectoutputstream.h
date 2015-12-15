@@ -25,71 +25,74 @@
 
 namespace log4cxx
 {
+	namespace helpers
+	{
+		/**
+		 *  Emulates java serialization.
+		 */
+		class LOG4CXX_EXPORT ObjectOutputStream : public ObjectImpl
+		{
+			public:
+				DECLARE_ABSTRACT_LOG4CXX_OBJECT(ObjectOutputStream)
+				BEGIN_LOG4CXX_CAST_MAP()
+						LOG4CXX_CAST_ENTRY(ObjectOutputStream)
+				END_LOG4CXX_CAST_MAP()
 
-        namespace helpers {
+				ObjectOutputStream(OutputStreamPtr os, Pool& p);
+				virtual ~ObjectOutputStream();
 
-          /**
-          *  Emulates java serialization.
-          */
-          class LOG4CXX_EXPORT ObjectOutputStream : public ObjectImpl
-          {
-          public:
-                  DECLARE_ABSTRACT_LOG4CXX_OBJECT(ObjectOutputStream)
-                  BEGIN_LOG4CXX_CAST_MAP()
-                          LOG4CXX_CAST_ENTRY(ObjectOutputStream)
-                  END_LOG4CXX_CAST_MAP()
+				void close(Pool& p);
+				void flush(Pool& p);
+				void writeObject(const LogString&, Pool& p);
+				void writeUTFString(const std::string&, Pool& p);
+				void writeObject(const MDC::Map& mdc, Pool& p);
+				void writeInt(int val, Pool& p);
+				void writeLong(log4cxx_time_t val, Pool& p);
+				void writeProlog(const	char*	className,
+										int		classDescIncrement,
+										char*	bytes,
+										size_t	len,
+										Pool&	p);
+				void writeNull(Pool& p);
 
-                  ObjectOutputStream(OutputStreamPtr os, Pool& p);
-                  virtual ~ObjectOutputStream();
+				enum { STREAM_MAGIC		= 0xACED };
+				enum { STREAM_VERSION	= 5 };
+				enum
+				{
+					TC_NULL			= 0x70,
+					TC_REFERENCE	= 0x71,
+					TC_CLASSDESC	= 0x72,
+					TC_OBJECT		= 0x73,
+					TC_STRING		= 0x74,
+					TC_ARRAY		= 0x75,
+					TC_CLASS		= 0x76,
+					TC_BLOCKDATA	= 0x77,
+					TC_ENDBLOCKDATA	= 0x78
+				};
+				enum
+				{
+					SC_WRITE_METHOD	= 0x01,
+					SC_SERIALIZABLE	= 0x02
+				};
 
-                  void close(Pool& p);
-                  void flush(Pool& p);
-                  void writeObject(const LogString&, Pool& p);
-                  void writeUTFString(const std::string&, Pool& p);
-                  void writeObject(const MDC::Map& mdc, Pool& p);
-                  void writeInt(int val, Pool& p);
-                  void writeLong(log4cxx_time_t val, Pool& p);
-                  void writeProlog(const char* className,
-                        int classDescIncrement,
-                        char* bytes,
-                        size_t len,
-                        Pool& p);
-                  void writeNull(Pool& p);
+				void writeByte(char val, Pool& p);
+				void writeBytes(const char* bytes, size_t len, Pool& p);
 
-                  enum { STREAM_MAGIC = 0xACED };
-                  enum { STREAM_VERSION = 5 };
-                  enum { TC_NULL = 0x70,
-                         TC_REFERENCE = 0x71,
-                         TC_CLASSDESC = 0x72,
-                         TC_OBJECT = 0x73,
-                         TC_STRING = 0x74,
-                         TC_ARRAY = 0x75,
-                         TC_CLASS = 0x76,
-                         TC_BLOCKDATA = 0x77,
-                         TC_ENDBLOCKDATA = 0x78 };
-                 enum {
-                     SC_WRITE_METHOD = 0x01,
-                     SC_SERIALIZABLE = 0x02 };
+			private:
+				ObjectOutputStream(const ObjectOutputStream&);
+				ObjectOutputStream& operator=(const ObjectOutputStream&);
 
-                  void writeByte(char val, Pool& p);
-                  void writeBytes(const char* bytes, size_t len, Pool& p);
+				OutputStreamPtr os;
+				log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
+				unsigned int objectHandle;
+				typedef std::map<std::string, unsigned int> ClassDescriptionMap;
+				ClassDescriptionMap* classDescriptions;
+		};
 
-          private:
-                  ObjectOutputStream(const ObjectOutputStream&);
-                  ObjectOutputStream& operator=(const ObjectOutputStream&);
-                     
-                  OutputStreamPtr os;
-                  log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
-                  unsigned int objectHandle;
-                  typedef std::map<std::string, unsigned int> ClassDescriptionMap;
-                  ClassDescriptionMap* classDescriptions;
-          };
-          
-          LOG4CXX_PTR_DEF(ObjectOutputStream);          
+		LOG4CXX_PTR_DEF(ObjectOutputStream);
+	} // namespace helpers
 
-        } // namespace helpers
-
-}  //namespace log4cxx
+} //namespace log4cxx
 
 #endif //_LOG4CXX_HELPERS_OUTPUTSTREAM_H
 
