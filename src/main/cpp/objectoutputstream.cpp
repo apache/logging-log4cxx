@@ -33,7 +33,8 @@ IMPLEMENT_LOG4CXX_OBJECT(ObjectOutputStream)
 ObjectOutputStream::ObjectOutputStream(OutputStreamPtr outputStream, Pool& p)
 	:	os(outputStream),
 		utf8Encoder(CharsetEncoder::getUTF8Encoder()),
-		objectHandle(0x7E0000),
+		objectHandleDefault(0x7E0000),
+		objectHandle(objectHandleDefault),
 		classDescriptions(new ClassDescriptionMap())
 {
 	char start[] = { static_cast<char>(0xAC), static_cast<char>(0xED), 0x00, 0x05 };
@@ -54,6 +55,16 @@ void ObjectOutputStream::close(Pool& p)
 void ObjectOutputStream::flush(Pool& p)
 {
 	os->flush(p);
+}
+
+void ObjectOutputStream::reset(Pool& p)
+{
+	os->flush(p);
+	writeByte(TC_RESET, p);
+	os->flush(p);
+
+	objectHandle = objectHandleDefault;
+	classDescriptions->clear();
 }
 
 void ObjectOutputStream::writeObject(const LogString& val, Pool& p)
@@ -80,7 +91,6 @@ void ObjectOutputStream::writeObject(const LogString& val, Pool& p)
 	os->write(lenBuf,	p);
 	os->write(dataBuf,	p);
 }
-
 
 void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p)
 {
@@ -140,8 +150,6 @@ void ObjectOutputStream::writeUTFString(const std::string& val, Pool& p)
 	os->write(lenBuf, p);
 	os->write(dataBuf, p);
 }
-
-
 
 void ObjectOutputStream::writeByte(char val, Pool& p)
 {

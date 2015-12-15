@@ -43,6 +43,8 @@ namespace log4cxx
 
 				void close(Pool& p);
 				void flush(Pool& p);
+				void reset(Pool& p);
+
 				void writeObject(const LogString&, Pool& p);
 				void writeUTFString(const std::string&, Pool& p);
 				void writeObject(const MDC::Map& mdc, Pool& p);
@@ -55,8 +57,8 @@ namespace log4cxx
 										Pool&	p);
 				void writeNull(Pool& p);
 
-				enum { STREAM_MAGIC		= 0xACED };
-				enum { STREAM_VERSION	= 5 };
+				enum { STREAM_MAGIC		= 0xACED	};
+				enum { STREAM_VERSION	= 5			};
 				enum
 				{
 					TC_NULL			= 0x70,
@@ -67,7 +69,8 @@ namespace log4cxx
 					TC_ARRAY		= 0x75,
 					TC_CLASS		= 0x76,
 					TC_BLOCKDATA	= 0x77,
-					TC_ENDBLOCKDATA	= 0x78
+					TC_ENDBLOCKDATA	= 0x78,
+					TC_RESET		= 0x79
 				};
 				enum
 				{
@@ -82,11 +85,12 @@ namespace log4cxx
 				ObjectOutputStream(const ObjectOutputStream&);
 				ObjectOutputStream& operator=(const ObjectOutputStream&);
 
-				OutputStreamPtr os;
-				log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
-				unsigned int objectHandle;
-				typedef std::map<std::string, unsigned int> ClassDescriptionMap;
-				ClassDescriptionMap* classDescriptions;
+						OutputStreamPtr						os;
+						log4cxx::helpers::CharsetEncoderPtr	utf8Encoder;
+				const	unsigned int						objectHandleDefault;
+						unsigned int						objectHandle;
+				typedef	std::map<std::string, unsigned int>	ClassDescriptionMap;
+						ClassDescriptionMap*				classDescriptions;
 		};
 
 		LOG4CXX_PTR_DEF(ObjectOutputStream);

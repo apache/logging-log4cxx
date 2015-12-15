@@ -116,6 +116,7 @@ void SocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers:
 	{
 		event->write(*oos, p);
 		oos->flush(p);
+		oos->reset(p);
 	}
 	catch(std::exception& e)
 	{
