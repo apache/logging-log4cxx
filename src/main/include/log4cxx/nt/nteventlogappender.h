@@ -55,7 +55,8 @@ namespace log4cxx
                          bool requiresLayout() const
                                 { return true; }
 
-                        void setSource(const LogString& source);
+                        void setSource(const LogString& source)
+                                { this->source.assign(source); }
 
                         const LogString& getSource() const
                                 { return source; }

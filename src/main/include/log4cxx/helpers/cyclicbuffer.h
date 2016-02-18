@@ -26,7 +26,7 @@ namespace log4cxx
         {
                 /**
                 CyclicBuffer is used by other appenders to hold instances of
-                {@link log4cxx::spi::LoggingEvent LoggingEvent} for immediate
+                {@link log4cxx::spi::LoggingEvent LoggingEvent} for immediate 
                 or deferred display.
                 <p>This buffer gives read access to any element in the buffer not
                 just the first or last element.
@@ -63,7 +63,8 @@ namespace log4cxx
                         */
                         spi::LoggingEventPtr get(int i);
 
-                        int getMaxSize() const;
+                        int getMaxSize() const
+                                { return maxSize; }
 
                         /**
                         Get the oldest (first) element in the buffer. The oldest element
@@ -76,7 +77,8 @@ namespace log4cxx
                         guaranteed to be in the range 0 to <code>maxSize</code>
                         (inclusive).
                         */
-                        int length() const;
+                        int length() const
+                                { return numElems; }
 
                         /**
                         Resize the cyclic buffer to <code>newSize</code>.

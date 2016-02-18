@@ -84,7 +84,8 @@ namespace log4cxx
                         /**
                         Set the <code>LevelMin</code> option.
                         */
-                        void setLevelMin(const LevelPtr& levelMin1);
+                        void setLevelMin(const LevelPtr& levelMin1)
+                                { this->levelMin = levelMin1; }
 
                         /**
                         Get the value of the <code>LevelMin</code> option.
@@ -95,7 +96,8 @@ namespace log4cxx
                         /**
                         Set the <code>LevelMax</code> option.
                         */
-                        void setLevelMax(const LevelPtr& levelMax1);
+                        void setLevelMax(const LevelPtr& levelMax1)
+                                { this->levelMax = levelMax1; }
 
                         /**
                         Get the value of the <code>LevelMax</code> option.
@@ -106,7 +108,8 @@ namespace log4cxx
                         /**
                         Set the <code>AcceptOnMatch</code> option.
                         */
-                        void setAcceptOnMatch(bool acceptOnMatch1);
+                        inline void setAcceptOnMatch(bool acceptOnMatch1)
+                                { this->acceptOnMatch = acceptOnMatch1; }
 
                         /**
                         Get the value of the <code>AcceptOnMatch</code> option.

@@ -39,7 +39,7 @@ AppenderSkeleton::AppenderSkeleton()
     errorHandler(new OnlyOnceErrorHandler()),
     headFilter(),
     tailFilter(),
-    pool(),
+    pool(), 
     mutex(pool)
 {
     synchronized sync(mutex);
@@ -98,16 +98,6 @@ void AppenderSkeleton::clearFilters()
 {
         synchronized sync(mutex);
         headFilter = tailFilter = 0;
-}
-
-const spi::ErrorHandlerPtr& AppenderSkeleton::getErrorHandler() const
-{
-    return errorHandler;
-}
-
-const LevelPtr& AppenderSkeleton::getThreshold() const
-{
-    return threshold;
 }
 
 bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const

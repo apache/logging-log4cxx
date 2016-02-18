@@ -103,16 +103,6 @@ spi::LoggingEventPtr CyclicBuffer::get()
         return r;
 }
 
-int CyclicBuffer::getMaxSize() const
-{
-    return maxSize;
-}
-
-int CyclicBuffer::length() const
-{
-    return numElems;
-}
-
 /**
 Resize the cyclic buffer to <code>newSize</code>.
 @throws IllegalArgumentException if <code>newSize</code> is negative.
