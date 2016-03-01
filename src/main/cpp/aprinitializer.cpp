@@ -66,7 +66,7 @@ APRInitializer::~APRInitializer() {
         }
     }
 
-// LOGCXX-322
+// TODO LOGCXX-322
 #ifndef APR_HAS_THREADS
 	apr_terminate();
 #endif
