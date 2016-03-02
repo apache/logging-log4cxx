@@ -67,8 +67,12 @@ provisionNodes(new ProvisionNodeMap())
 
 Hierarchy::~Hierarchy()
 {
-    delete loggers;
-    delete provisionNodes;
+// TODO LOGCXX-430
+// https://issues.apache.org/jira/browse/LOGCXX-430?focusedCommentId=15175254&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-15175254
+#ifndef APR_HAS_THREADS
+	delete loggers;
+	delete provisionNodes;
+#endif
 }
 
 void Hierarchy::addRef() const {
