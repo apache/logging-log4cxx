@@ -33,7 +33,7 @@ Issue Tracking
 	<<Please don't just open bugs only because things don't work for you>>, some issues simply
 	don't are bugs in the code base of the project or it's build tools, but may have a lot of
 	different other reasons. If things don't work for you and you need some help, please subscribe
-	to the {{{http://logging.apache.org/log4cxx/mail-lists.html}users mailing listt}} and describe
+	to the {{{http://logging.apache.org/log4cxx/mail-lists.html}users mailing list}} and describe
 	the issue you have, the more detailled the better. The mailing list is far better place to
 	discuss things than JIRA, besides that there are more users than developers of the project and
 	issues created in JIRA are only forwarded to the latter. There's always the chance to create an
