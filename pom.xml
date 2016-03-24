@@ -282,6 +282,7 @@
 						<descriptor>src/assembly/source.xml</descriptor>
 					</descriptors>
 					<appendAssemblyId>false</appendAssemblyId>
+					<tarLongFileMode>gnu</tarLongFileMode>
 				</configuration>
 				<executions>
 					<execution>
