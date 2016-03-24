@@ -46,7 +46,7 @@ $ sudo make install
 *-------------------+---------------------------------------------------------------------------------------------+
 | --enable-cfstring | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
 *-------------------+---------------------------------------------------------------------------------------------+
-| --with-logchar    | Interal character representation, choice of utf-8 (default), wchar_t , unichar.             | 
+| --with-logchar    | Interal character representation, choice of utf-8 (default), wchar_t , unichar.             |
 *-------------------+---------------------------------------------------------------------------------------------+
 | --with-charset    | Exteral character encoding, choice of utf-8, iso-8859-1, usascii, ebcdic,  auto (default).  |
 *-------------------+---------------------------------------------------------------------------------------------+
@@ -57,8 +57,8 @@ $ sudo make install
 | -help             | Display help showing all options and exit.                                                  |
 *-------------------+---------------------------------------------------------------------------------------------+
 
-        
-   SMTP and ODBC options can depend on libraries that 
+
+   SMTP and ODBC options can depend on libraries that
    that have different licenses.
    You should review the corresponding licenses and understand
    the implications before redistribution.
@@ -66,7 +66,7 @@ $ sudo make install
 * Platform specific notes:
 
 ** Mac OS/X:
-  
+
   APR and APR-Util are provided by the platform in Mac OS/X 10.5 and iODBC in 10.4.
 
 ** Debian:
@@ -74,7 +74,7 @@ $ sudo make install
   APR, APR-Util and zip may be installed by:
 
 +----+
-$ sudo apt-get install libapr1.0-dev libaprutil1.0-dev zip
+$ sudo apt-get install libapr1-dev libaprutil1-dev zip
 +----+
 
 ** FreeBSD:
@@ -89,9 +89,9 @@ $ sudo apt-get install libapr1.0-dev libaprutil1.0-dev zip
 # make
 # make install
 +----+
-  
+
 ** Cygwin:
-  
+
   Install zip (used by RollingFileAppender) and sed (used to normalize
   output files for comparison in the unit tests).  The prepackaged
   APR currently available from Cygwin has APR_HAS_THREADS == 0.
@@ -115,7 +115,7 @@ $ cd ..
 $ svn co https://svn.apache.org/repos/asf/apr/apr/trunk apr
 $ cd apr
 $ ./buildconf.sh
-$ ./configure 
+$ ./configure
 $ make install
 $ cd ..
 $ svn co \
