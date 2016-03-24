@@ -83,6 +83,8 @@
 				<exclude>**/.deps/**</exclude>
 				<exclude>**/.svn</exclude>
 			</excludes>
+			<fileMode>0644</fileMode>
+			<directoryMode>0755</directoryMode>
 		</fileSet>
 		<fileSet>
 			<directory>target</directory>
@@ -97,6 +99,7 @@
 				<exclude>apr*.ds*</exclude>
 				<exclude>xml.ds*</exclude>
 			</excludes>
+                        <fileMode>0644</fileMode>
 		</fileSet>
 	</fileSets>
 </assembly>
