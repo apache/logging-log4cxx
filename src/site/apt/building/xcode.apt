@@ -26,7 +26,7 @@ Building Apache log4cxx with Apple Xcode
    then launch Xcode.
 
 +----+
-cd apache-log4cxx-0.10.0
+cd apache-log4cxx-x.x.x
 ./configure
 open projects/log4cxx.xcodeproj
 +----+

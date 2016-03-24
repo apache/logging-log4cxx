@@ -46,7 +46,7 @@ Building Apache log4cxx with Apache Ant
 
 +----+
 $ export CLASSPATH=~/cpptasks/cpptasks-1.0b5.jar
-$ cd apache-log4cxx-0.10.0
+$ cd apache-log4cxx-x.x.x
 $ ant
 +----+
 
@@ -58,7 +58,7 @@ $ tar -xvzf apr-1.2.12.tar.gz
 $ mv apr-1.2.12 apr
 $ tar -xvzf apr-util-1.2.12.tar.gz
 $ mv apr-util-1.2.12 apr-util
-$ cd apache-log4cxx-0.10.0
+$ cd apache-log4cxx-x.x.x
 $ ant
 +----+
 
@@ -72,7 +72,7 @@ $ tar -xvzf apr-1.2.12.tar.gz
 $ rename apr-1.2.12 apr
 $ tar -xvzf apr-util-1.2.12.tar.gz
 $ rename apr-util-1.2.12 apr-util
-$ cd apache-log4cxx-0.10.0
+$ cd apache-log4cxx-x.x.x
 $ ant -Dcompiler=xyz
 +----+
 
@@ -186,14 +186,14 @@ $ ant -Dcompiler=xyz
    The Win32 path to the APR libraries need to be provided (CYGWIN_HOME/lib) if compiling against an installed APR and APR-Util.
 
 +-----+
-$ cd apache-log4cxx-0.10.0
+$ cd apache-log4cxx-x.x.x
 $ ant -Dos.family=cygwin -Dwith-apr=/cygwin/lib -Dwith-apr-util=/cygwin/lib -Denable-wchar_t=0
 +-----+
 
    *** MinGW:
 
 +----+
-$ cd apache-log4cxx-0.10.0
+$ cd apache-log4cxx-x.x.x
 $ path c:\mingw\bin;%PATH%
 $ ant -Dcompiler=gcc -Dfind=false build-all
 $ cd src\test\resources
@@ -214,7 +214,7 @@ $ ..\..\..\target\debug\shared\stream
    Apache APR, APR-Util, Ant and log4j and zip may be installed using:
 
 +----+
-$ sudo apt-get install libapr1.0-dev libaprutil1.0-dev ant ant-optional liblog4j1.2-java zip
+$ sudo apt-get install libapr1-dev libaprutil1-dev ant ant-optional liblog4j1.2-java zip
 +----+
 
    ** Mac OS/X:

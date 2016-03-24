@@ -27,7 +27,7 @@ unzip apr-1.2.11-win32-src.zip
 rename apr-1.2.11 apr
 unzip apr-util-1.2.10-win32-src.zip
 rename apr-util-1.2.10 apr-util
-cd apache-log4cxx-0.10.0
+cd apache-log4cxx-x.x.x
 configure
 configure-aprutil
 +----+
