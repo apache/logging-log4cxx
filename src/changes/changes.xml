@@ -89,6 +89,7 @@
 			<action issue="LOGCXX-424" type="fix">liblog4cxx.pc.in should reflect dependency on apr-1, apr-1-util</action>
 			<action issue="LOGCXX-425" type="fix">exceptions in CachedDateFormatTestCase after LOGCXX-420</action>
 			<action issue="LOGCXX-428" type="fix">Wildcards in Makefile.am break either VPATH or non-VPATH installs</action>
+			<action issue="LOGCXX-433" type="fix">Autoconf 2.69 needs 'ACLOCAL_AMFLAGS= -I .'</action>
 			<action issue="LOGCXX-443" type="fix">Return by const reference in Logger::getName()</action>
 			<action issue="LOGCXX-446" type="fix">make install fails, trying to overwrite header files</action>
 

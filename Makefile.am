@@ -14,6 +14,7 @@
 # limitations under the License.
 #
 AUTOMAKE_OPTIONS = foreign
+ACLOCAL_AMFLAGS  = -I .
 
 SUBDIRS = src
 EXTRA_DIST = \
