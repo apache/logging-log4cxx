@@ -206,9 +206,6 @@ fi
 # Checks for libraries
 # ----------------------------------------------------------------------------
 
-AC_PROG_RANLIB
-
-
 #for ODBCAppender
 AC_MSG_CHECKING(for ODBC support)
 AC_ARG_WITH(ODBC,
