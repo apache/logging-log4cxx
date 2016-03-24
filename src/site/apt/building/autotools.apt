@@ -22,7 +22,8 @@ Building Apache log4cxx with autotools
 
 * Quick start:
 
-  Make sure autoconf 2.50+, libtool, g++ and make are available, install or build apr 1.x, apr-util 1.x and zip.
+  Make sure autoconf 2.50+, libtool, g++ and make are available, install or
+  build apr 1.x, apr-util 1.x, gzip and zip.
 
 +------------+
 $ cd apache-log4cxx-x.x.x
