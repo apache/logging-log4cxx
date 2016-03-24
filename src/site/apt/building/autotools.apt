@@ -22,16 +22,19 @@ Building Apache log4cxx with autotools
 
 * Quick start:
 
-  Make sure autoconf 2.50+ is available, install or build apr 1.x, apr-util 1.x, gzip and zip.
+  Make sure autoconf 2.50+, libtool, g++ and make are available, install or build apr 1.x, apr-util 1.x and zip.
 
 +------------+
 $ cd apache-log4cxx-x.x.x
+$ [autoreconf]
+$ [automake --add-missing]
 $ ./configure
 $ make
 $ make check
 $ sudo make install
 +------------+
 
+  Those lines in brackets are only necessary if you directly build from source.
 
 * configure options
 
@@ -56,7 +59,6 @@ $ sudo make install
 *-------------------+---------------------------------------------------------------------------------------------+
 | -help             | Display help showing all options and exit.                                                  |
 *-------------------+---------------------------------------------------------------------------------------------+
-
 
    SMTP and ODBC options can depend on libraries that
    that have different licenses.
@@ -98,7 +100,6 @@ $ sudo apt-get install libapr1-dev libaprutil1-dev zip
   Some appenders will not be available and some may operate
   with reduced functionality.  There have been reports of
   building APR on Cygwin with threads enabled.
-
 
 ** MinGW:
 
