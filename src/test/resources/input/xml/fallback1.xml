@@ -27,8 +27,9 @@
       <appender-ref ref="FALLBACK" />
     </errorHandler>
 
-    <param name="File" value="output/xyz/:x.log" />
-    <param name="Append" value="false" />
+    <!-- We need a most likely invalid file name on most file systems to trigger FALLBACK. -->
+    <param name="File"		value="output/xyz/."	/>
+    <param name="Append"	value="false"			/>
 
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
