@@ -13,5 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-SUBDIRS      = main examples site test
-DIST_SUBDIRS = ${SUBDIRS} m4
+#DISTCLEANFILES = libtool.m4 ltoptions.m4 ltsugar.m4 ltversion.m4 lt~obsolete.m4
+
+dist-hook:
+	-rm -f	"$(distdir)/libtool.m4"		\
+		"$(distdir)/ltoptions.m4"	\
+		"$(distdir)/ltsugar.m4"		\
+		"$(distdir)/ltversion.m4"	\
+		"$(distdir)/lt~obsolete.m4"

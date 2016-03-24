@@ -14,6 +14,7 @@
 # limitations under the License.
 
 AC_INIT([log4cxx], [0.11.0])
+AC_CONFIG_MACRO_DIR([src/m4])
 AC_CONFIG_SRCDIR(src/main/cpp/logger.cpp)
 
 # autoconf 2.50 or higher to rebuild aclocal.m4, because the
@@ -469,6 +470,7 @@ src/main/include/log4cxx/db/Makefile
 src/main/include/log4cxx/rolling/Makefile
 src/main/include/log4cxx/pattern/Makefile
 src/main/include/log4cxx/filter/Makefile
+src/m4/Makefile
 src/site/Makefile
 src/site/doxy/Makefile
 src/site/doxy/Doxyfile

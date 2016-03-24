@@ -14,15 +14,15 @@
 # limitations under the License.
 #
 AUTOMAKE_OPTIONS = foreign
-ACLOCAL_AMFLAGS  = -I .
+ACLOCAL_AMFLAGS  = -I src/m4
 
 SUBDIRS = src
 EXTRA_DIST = \
     aclocal.m4 \
     autogen.sh \
     build.xml \
-    find_apr.m4 \
-    find_apu.m4 \
+    src/m4/find_apr.m4 \
+    src/m4/find_apu.m4 \
     INSTALL \
     KEYS \
     LICENSE \

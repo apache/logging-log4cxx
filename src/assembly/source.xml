@@ -47,8 +47,6 @@
 				<include>NOTICE</include>
  				<include>build.xml</include>
 				<include>configure.in</include>
-				<include>find_apr.m4</include>
-				<include>find_apu.m4</include>
 				<include>liblog4cxx.pc.in</include>
 				<include>pom.xml</include>
 				<include>Makefile.in</include>
@@ -65,6 +63,11 @@
 				<exclude>src/examples/cpp/delayedloop</exclude>
 				<exclude>src/examples/cpp/stream</exclude>
 				<exclude>src/examples/cpp/trivial</exclude>
+				<exclude>src/m4/libtool.m4</exclude>
+				<exclude>src/m4/ltoptions.m4</exclude>
+				<exclude>src/m4/ltsugar.m4</exclude>
+				<exclude>src/m4/ltversion.m4</exclude>
+				<exclude>src/m4/lt~obsolete.m4</exclude>
 				<exclude>**/Makefile</exclude>
 				<exclude>**/*.o</exclude>
 				<exclude>**/*.Po</exclude>
