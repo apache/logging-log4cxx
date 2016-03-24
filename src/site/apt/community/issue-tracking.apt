@@ -40,7 +40,7 @@ Issue Tracking
 	issue in JIRA later, hopefully with a specific explanation of the problem and even a solution
 	already.
 
-	As a rule of thumb, if you already digged through the code and found a problem in it or it's
+	As a rule of thumb, if you already digged through the code and found a problem in it or its
 	build tools, feel free to directly create a bug in {{{https://issues.apache.org/jira/browse/LOGCXX}JIRA}}.
 	But if things really only don't work and you don't have any clue why, please use the {{{http://logging.apache.org/log4cxx/mail-lists.html}users mailing listt}}
 	instead.
