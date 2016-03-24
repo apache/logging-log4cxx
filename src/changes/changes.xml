@@ -91,8 +91,8 @@
 			<action issue="LOGCXX-443" type="fix">Return by const reference in Logger::getName()</action>
 			<action issue="LOGCXX-446" type="fix">make install fails, trying to overwrite header files</action>
 
-			<action type="change">Behavior of StringHelper::startsWith and endsWith synced</action>
-			<action type="change">Documented C (class) and M (method) log format keywords.</action>
+			<action type="update">Behavior of StringHelper::startsWith and endsWith synced</action>
+			<action type="update">Documented C (class) and M (method) log format keywords.</action>
 			<action type="add">Locationinfo for Borland C++ Builder and successors improved</action>
 		</release>
 		<release version="0.10.0" date="2008-04-03" description="First Apache release">
