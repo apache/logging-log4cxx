@@ -291,37 +291,6 @@
 				<version>3.3</version>
 				<configuration>
 					<templateFile>${basedir}/src/site/maven-site.vm</templateFile>
-					<reportPlugins>
-						<plugin>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.7</version>
-							<reportSets>
-								<reportSet>
-									<reports>
-										<report>scm</report>
-										<report>dependencies</report>
-										<report>mailing-list</report>
-										<report>license</report>
-									</reports>
-								</reportSet>
-							</reportSets>
-						</plugin>
-
-						<plugin>
-							<artifactId>maven-changes-plugin</artifactId>
-							<version>2.9</version>
-							<reportSets>
-								<reportSet>
-									<reports>
-										<report>changes-report</report>
-									</reports>
-								</reportSet>
-							</reportSets>
-							<configuration>
-								<issueLinkTemplate>%URL%/browse/%ISSUE%</issueLinkTemplate>
-							</configuration>
-						</plugin>
-					</reportPlugins>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -347,7 +316,6 @@
 						<reports>
 							<report>scm</report>
 							<report>dependencies</report>
-							<report>issue-tracking</report>
 							<report>mailing-list</report>
 							<report>license</report>
 						</reports>
