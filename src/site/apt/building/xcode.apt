@@ -24,42 +24,42 @@ Building Apache log4cxx with Apple Xcode
 
    Run configure to generate log4cxx.h and log4cxx_private.h
    then launch Xcode.
-   
+
 +----+
 cd apache-log4cxx-0.10.0
 ./configure
 open projects/log4cxx.xcodeproj
-+----+   
++----+
 
 
 *Running unit tests
 
-   Run configure then open projects/testsuite.xcodeproj 
+   Run configure then open projects/testsuite.xcodeproj
    or projects/testsuite-standalone.xcodeproj
    (test suite and implementation in one project) in Xcode.
-   
+
    The unit tests require the working directory and several environment variables
-   to be set.  To set these, elect the executable in Groups & Files and press Info and:
-   
+   to be set. To set these, select the executable in Groups & Files, press Info and:
+
    * In the General pane, set Working Directory to Custom with path "../src/test/resources".
 
    * In the Arguments pane, add following key value pairs to "Variables to be set in the environment":
      TOTO=wonderful, key1=value1 and key2=value2.
-   
+
    * In the Arguments pane, add "-v" for verbose output, or individual test names in "Arguments to be passed on launch".
 
 *Issues
-    
-   The project file generation does does not 
+
+   The project file generation does does not
    properly create an entry in the "Link Binary with Libraries"
-   build phase for projects (such as the examples and unit tests) that depend 
+   build phase for projects (such as the examples and unit tests) that depend
    on log4cxx.  To work around the problem, open the project in Xcode and
    in the Groups & Files pane, drag log4cxx.dylib
    and drop on the "Link Binary with Libraries" folder
    under Targets.
 
    See issue {{{http://issues.apache.org/jira/browse/LOGCXX-245}LOGCXX-245}} for further information.
-   
-   The projects provided in the release target Mac OS/X 10.5 which provides 
-   preinstalled APR and APR-Util libraries.  To generate XCode projects to target Mac OS/X 10.4, 
+
+   The projects provided in the release target Mac OS/X 10.5 which provides
+   preinstalled APR and APR-Util libraries.  To generate XCode projects to target Mac OS/X 10.4,
    set up the ant build and then "ant build-projects-xcode -Dfind=false".
