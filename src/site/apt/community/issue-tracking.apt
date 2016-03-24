@@ -34,7 +34,7 @@ Issue Tracking
 	don't are bugs in the code base of the project or it's build tools, but may have a lot of
 	different other reasons. If things don't work for you and you need some help, please subscribe
 	to the {{{http://logging.apache.org/log4cxx/mail-lists.html}users mailing list}} and describe
-	the issue you have, the more detailled the better. The mailing list is far better place to
+	the issue you have, the more detailed the better. The mailing list is a far better place to
 	discuss things than JIRA, besides that there are more users than developers of the project and
 	issues created in JIRA are only forwarded to the latter. There's always the chance to create an
 	issue in JIRA later, hopefully with a specific explanation of the problem and even a solution
