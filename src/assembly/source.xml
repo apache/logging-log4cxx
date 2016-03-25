@@ -106,7 +106,7 @@
 			<directoryMode>0755</directoryMode>
 		</fileSet>
 
-		<!-- 
+		<!--
 			Special handling for project files
 
 			Project files are generated in the target directory and contain relative paths out of that dir
