@@ -22,7 +22,6 @@
 		<format>tar.gz</format>
 	</formats>
 	<baseDirectory>apache-log4cxx-${project.version}</baseDirectory>
-	<includeSiteDirectory>true</includeSiteDirectory>
 
 	<fileSets>
 		<!-- Some files need to be executable. -->
@@ -92,6 +91,20 @@
 			<directoryMode>0755</directoryMode>
 		</fileSet>
 
+		<!-- "includeSiteDirectory" seems to add files with wrong permissions. -->
+		<fileSet>
+			<directory>target</directory>
+			<lineEnding>keep</lineEnding>
+			<outputDirectory>.</outputDirectory>
+
+			<includes>
+				<include>site/**</include>
+			</includes>
+
+			<fileMode>0644</fileMode>
+			<directoryMode>0755</directoryMode>
+		</fileSet>
+
 		<fileSet>
 			<directory>target</directory>
 			<lineEnding>keep</lineEnding>
@@ -113,3 +126,4 @@
 		</fileSet>
 	</fileSets>
 </assembly>
+
