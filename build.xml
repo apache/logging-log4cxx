@@ -2003,7 +2003,7 @@
 	</target>
 
 	<target	name="site"
-			depends="apidocs, gen-release-projects">
+			depends="apidocs">
 		<replace	dir="${target.dir}/site"
 					includes="**/*.html">
 			<replacetoken>&lt;html</replacetoken>
@@ -2138,6 +2138,14 @@
 		<exec executable="sh">
 			<arg value="autogen.sh" />
 		</exec>
+
+		<!--
+			This was coupled with "site" originally, but made building "site" itself on Windows unneccessary
+			hard and the projects are not even used on the website, but only in releases instead. This target
+			is called in that case and some part of project files generation is unix centered already, too.
+		 -->
+		<antcall target="gen-release-projects">
+		</antcall>
 	</target>
 </project>
 
