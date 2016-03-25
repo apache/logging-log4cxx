@@ -27,8 +27,7 @@ Building Apache log4cxx with autotools
 
 +------------+
 $ cd apache-log4cxx-x.x.x
-$ [autoreconf]
-$ [automake --add-missing]
+$[./autogen.sh]
 $ ./configure
 $ make
 $ make check
