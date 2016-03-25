@@ -1942,9 +1942,7 @@
 		</replaceregexp>
 	</target>
 
-	<target	name="site"
-			depends="apidocs">
-		<!-- generate Visual Studio and XCode project files -->
+	<target	name="gen-release-projects">
 		<antcall target="build-projects-vc6">
 			<param name="find" value="false" />
 		</antcall>
@@ -1959,6 +1957,7 @@
 						includes="**/*.dsp"
 			/>
 		</replaceregexp>
+
 		<replaceregexp	flags="g"
 						match=".\\apr.dsp"
 						replace="..\\\\..\\\\apr\\\\apr.dsp">
@@ -1966,6 +1965,7 @@
 						includes="**/*.dsw"
 			/>
 		</replaceregexp>
+
 		<replaceregexp	flags="g"
 						match=".\\aprutil.dsp"
 						replace="..\\\\..\\\\apr-util\\\\aprutil.dsp">
@@ -1973,6 +1973,7 @@
 						includes="**/*.dsw"
 			/>
 		</replaceregexp>
+
 		<replaceregexp	flags="g"
 						match=".\\xml.dsp"
 						replace="..\\\\..\\\\apr-util\\\\xml\\\\expat\\\\lib\\\\xml.dsp">
@@ -1980,6 +1981,7 @@
 						includes="**/*.dsw"
 			/>
 		</replaceregexp>
+
 		<!-- drop library search path -->
 		<replaceregexp	flags="g"
 						match="&lt;string&gt;[\./]*/usr/lib&lt;/string&gt;"
@@ -1998,6 +2000,10 @@
 					token="MacOSX10.4u.sdk"
 					value="MacOSX10.5.sdk"
 		/>
+	</target>
+
+	<target	name="site"
+			depends="apidocs, gen-release-projects">
 		<replace	dir="${target.dir}/site"
 					includes="**/*.html">
 			<replacetoken>&lt;html</replacetoken>
