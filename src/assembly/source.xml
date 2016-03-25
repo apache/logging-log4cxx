@@ -23,8 +23,9 @@
 	</formats>
 	<baseDirectory>apache-log4cxx-${project.version}</baseDirectory>
 	<includeSiteDirectory>true</includeSiteDirectory>
+
 	<fileSets>
-		<!-- autogen.sh is executable -->
+		<!-- Some files need to be executable. -->
 		<fileSet>
 			<includes>
 				<include>autogen.sh</include>
