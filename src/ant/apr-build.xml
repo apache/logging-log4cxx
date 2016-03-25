@@ -263,7 +263,7 @@
 		/>
 
 		<project	type="${project.type}"
-					outfile="${projects.dir}/apr"
+					outfile="${projects.dir}/projects/apr"
 					if="project.if">
 			<comment>&license;</comment>
 		</project>
@@ -327,7 +327,7 @@
 		/>
 
 		<project	type="${project.type}"
-					outfile="${projects.dir}/${test}"
+					outfile="${projects.dir}/projects/${test}"
 					if="project.if">
 			<comment>&license;</comment>
 			<dependency file="${projects.dir}/apr" />
@@ -554,7 +554,7 @@
 		/>
 
 		<project	type="${project.type}"
-					outfile="${projects.dir}/mod_test"
+					outfile="${projects.dir}/projects/mod_test"
 					if="project.if">
 			<comment>&license;</comment>
 			<dependency file="${projects.dir}/apr-1" />
@@ -637,7 +637,7 @@
 		/>
 
 		<project	type="${project.type}"
-					outfile="${projects.dir}/testall"
+					outfile="${projects.dir}/projects/testall"
 					if="project.if">
 			<comment>&license;</comment>
 			<dependency file="${projects.dir}/apr-1" />

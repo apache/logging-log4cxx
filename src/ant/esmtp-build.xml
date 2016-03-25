@@ -141,7 +141,7 @@
 		/>
 
 		<project	type="${project.type}"
-					outfile="${projects.dir}/libesmtp"
+					outfile="${projects.dir}/projects/libesmtp"
 					if="project.if"
 		/>
 	</cc>

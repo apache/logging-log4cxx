@@ -252,7 +252,7 @@
 
 		<libset libs="cw32mt" if="is-bcc" />
 		<project	type="${project.type}"
-					outfile="${projects.dir}/xml"
+					outfile="${projects.dir}/projects/xml"
 					if="project.if">
 			<comment>&license;</comment>
 		</project>
@@ -354,7 +354,7 @@
 		/>
 
 		<project	type="${project.type}"
-					outfile="${projects.dir}/aprutil"
+					outfile="${projects.dir}/projects/aprutil"
 					if="project.if">
 			<comment>&license;</comment>
 			<dependency file="${projects.dir}/apr" />
@@ -432,7 +432,7 @@
 		/>
 
 		<project	type="${project.type}"
-					outfile="${projects.dir}/${test}"
+					outfile="${projects.dir}/projects/${test}"
 					if="project.if">
 			<comment>&license;</comment>
 			<dependency file="${projects.dir}/apr"						/>

@@ -851,7 +851,7 @@
 						excludes="log4cxx/private/*.cpp **/aprinitializer.h.cpp"
 			/>
 			<includepath path="${include.dir}" />
-			<project	outfile="${projects.dir}/header-check"
+			<project	outfile="${projects.dir}/projects/header-check"
 						type="${project.type}"
 						if="project.if"
 			/>
@@ -1033,7 +1033,7 @@
 			&libsets;
 
 			<project	type="${project.type}"
-						outfile="${projects.dir}/${lib.name}"
+						outfile="${projects.dir}/projects/${lib.name}"
 						if="project.if">
 				<comment>&license;</comment>
 				<dependency file="${projects.dir}/apr" />
@@ -1116,7 +1116,7 @@
 			/>
 			&libsets;
 
-			<project	outfile="${projects.dir}/${example.name}"
+			<project	outfile="${projects.dir}/projects/${example.name}"
 						type="${project.type}"
 						if="project.if">
 				<comment>&license;</comment>
@@ -1276,7 +1276,7 @@
 			/>
 			&libsets;
 
-			<project	outfile="${projects.dir}/testsuite"
+			<project	outfile="${projects.dir}/projects/testsuite"
 						type="${project.type}"
 						if="project.if">
 				<comment>&license;</comment>
@@ -1375,7 +1375,7 @@
 
 			<libset libs="cw32mt" if="is-bcc" />
 
-			<project	outfile="${projects.dir}/testsuite-standalone"
+			<project	outfile="${projects.dir}/projects/testsuite-standalone"
 						type="${project.type}"
 						if="project.if">
 				<comment>&license;</comment>
@@ -1669,7 +1669,7 @@
 	</target>
 
 	<target	name="build-projects">
-		<mkdir dir="${projects.dir}" />
+		<mkdir dir="${projects.dir}/projects" />
 		<property	name="project.type"
 					value="msvc6"
 		/>
@@ -2134,3 +2134,4 @@
 		</exec>
 	</target>
 </project>
+

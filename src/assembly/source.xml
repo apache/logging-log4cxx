@@ -106,7 +106,7 @@
 		</fileSet>
 
 		<fileSet>
-			<directory>target</directory>
+			<directory>target/projects</directory>
 			<lineEnding>keep</lineEnding>
 			<outputDirectory>projects</outputDirectory>
 
