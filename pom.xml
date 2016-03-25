@@ -179,8 +179,7 @@
 						<phase>test-compile</phase>
 						<id>test-compile</id>
 						<configuration>
-							<skip>${maven.test.skip}</skip>
-							<target>
+							<target unless="${maven.test.skip}">
 								<ant target="test-compile" />
 							</target>
 						</configuration>
@@ -193,8 +192,7 @@
 						<phase>test</phase>
 						<id>test</id>
 						<configuration>
-							<skip>${maven.test.skip}</skip>
-							<target>
+							<target unless="${maven.test.skip}">
 								<ant target="check" />
 							</target>
 						</configuration>
