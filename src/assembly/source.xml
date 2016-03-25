@@ -36,8 +36,10 @@
 				<include>ltmain.sh</include>
 				<include>depcomp</include>
 			</includes>
+
 			<fileMode>0755</fileMode>
 		</fileSet>
+
 		<fileSet>
 			<includes>
 				<include>INSTALL</include>
@@ -55,6 +57,7 @@
 				<include>aclocal.m4</include>
 				<include>src/**</include>
 			</includes>
+
 			<excludes>
 				<exclude>src/main/include/log4cxx/log4cxx.h</exclude>
 				<exclude>src/main/include/log4cxx/private/log4cxx_private.h</exclude>
@@ -83,23 +86,28 @@
 				<exclude>**/.deps/**</exclude>
 				<exclude>**/.svn</exclude>
 			</excludes>
+
 			<fileMode>0644</fileMode>
 			<directoryMode>0755</directoryMode>
 		</fileSet>
+
 		<fileSet>
 			<directory>target</directory>
 			<lineEnding>keep</lineEnding>
 			<outputDirectory>projects</outputDirectory>
+
 			<includes>
 				<include>*.dsw</include>
 				<include>*.dsp</include>
 				<include>*.xcodeproj/project.pbxproj</include>
 			</includes>
+
 			<excludes>
 				<exclude>apr*.ds*</exclude>
 				<exclude>xml.ds*</exclude>
 			</excludes>
-                        <fileMode>0644</fileMode>
+
+			<fileMode>0644</fileMode>
 		</fileSet>
 	</fileSets>
 </assembly>
