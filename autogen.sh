@@ -24,6 +24,6 @@ $LIBTOOLIZE --force --automake --copy
 
 rm -f config.cache
 rm -f config.log
-aclocal -I .
+aclocal -I src/m4
 autoconf
 automake -a --copy
