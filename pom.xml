@@ -221,7 +221,7 @@
 						<id>site</id>
 						<configuration>
 							<target>
-								<ant target="apidocs" />
+								<ant target="site" />
 							</target>
 						</configuration>
 						<goals>

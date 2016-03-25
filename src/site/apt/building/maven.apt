@@ -62,7 +62,7 @@ $ mvn package
 *--------------------------+---------------------------------------------------------------------------------------------+
 | package                  | build logcxx library and build and run unit tests and examples.                             |
 *--------------------------+---------------------------------------------------------------------------------------------+
-| site                     | Generate documentation and apidoc files, requires doxygen.                                  |
+| site                     | Generate documentation and IDE project files, requires doxygen.                             |
 *--------------------------+---------------------------------------------------------------------------------------------+
 | site assembly:assembly   | Generate snapshot tarball and zip file.                                                     |
 *--------------------------+---------------------------------------------------------------------------------------------+
