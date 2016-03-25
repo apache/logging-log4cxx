@@ -48,7 +48,7 @@
 				<include>Makefile.am</include>
 				<include>NOTICE</include>
 				<include>build.xml</include>
-				<include>configure.in</include>
+				<include>configure.ac</include>
 				<include>liblog4cxx.pc.in</include>
 				<include>pom.xml</include>
 				<include>Makefile.in</include>
