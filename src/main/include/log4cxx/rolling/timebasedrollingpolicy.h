@@ -135,9 +135,6 @@ namespace log4cxx {
          * <code> TimeBasedRollingPolicy</code> must be called <em>before</em> calling
          * the {@link #activateOptions} method of the owning
          * <code>RollingFileAppender</code>.
-         *
-         * 
-         * 
          */
         class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
              public TriggeringPolicy {
@@ -168,14 +165,14 @@ namespace log4cxx {
          * pool for mmap handler
          * */
         log4cxx::helpers::Pool* _mmapPool;
-        
+
         /**
          * mmap file descriptor
          */
         apr_file_t* _file_map;
 
         /**
-         * mmap file name 
+         * mmap file name
          */
         std::string _mapFileName;
 
@@ -183,6 +180,7 @@ namespace log4cxx {
          * lock file handle
          * */
         apr_file_t* _lock_file;
+
         /**
          * Check nextCheck if it has already been set
          * Timebased rolling policy has an issue when working at low rps.
