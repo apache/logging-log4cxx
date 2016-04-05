@@ -18,9 +18,9 @@
 #pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
-#ifdef LOG4CXX_MULTI_PROCESS 
+#ifdef LOG4CXX_MULTI_PROCESS
 #include <libgen.h>
-#endif 
+#endif
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
@@ -47,10 +47,10 @@ using namespace log4cxx::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
 
-#ifdef LOG4CXX_MULTI_PROCESS 
+#ifdef LOG4CXX_MULTI_PROCESS
 #define MMAP_FILE_SUFFIX ".map"
 #define LOCK_FILE_SUFFIX ".maplck"
-#define MAX_FILE_LEN 2048 
+#define MAX_FILE_LEN 2048
 
 bool TimeBasedRollingPolicy::isMapFileEmpty(log4cxx::helpers::Pool& pool){
     apr_finfo_t finfo;
@@ -83,7 +83,7 @@ const std::string TimeBasedRollingPolicy::createFile(const std::string& fileName
    memcpy(szDirName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
    memcpy(szBaseName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
 
-   apr_uid_t uid; 
+   apr_uid_t uid;
    apr_gid_t groupid;
    apr_status_t stat = apr_uid_current(&uid, &groupid, pool.getAPRPool());
    if (stat == APR_SUCCESS){
@@ -138,14 +138,14 @@ int TimeBasedRollingPolicy::unLockMMapFile()
 
 #endif
 
-TimeBasedRollingPolicy::TimeBasedRollingPolicy() 
-#ifdef LOG4CXX_MULTI_PROCESS 
+TimeBasedRollingPolicy::TimeBasedRollingPolicy()
+#ifdef LOG4CXX_MULTI_PROCESS
     :_mmap(NULL), _file_map(NULL), bAlreadyInitialized(false), _mmapPool(new Pool()), _lock_file(NULL), bRefreshCurFile(false)
 #endif
 {
 }
 
-#ifdef LOG4CXX_MULTI_PROCESS 
+#ifdef LOG4CXX_MULTI_PROCESS
 TimeBasedRollingPolicy::~TimeBasedRollingPolicy() {
     //no-need to delete mmap
     delete _mmapPool;
@@ -196,7 +196,7 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool) {
             LogLog::warn(LOG4CXX_STR("open lock file failed."));
         }
     }
-    
+
     initMMapFile(lastFileName, *_mmapPool);
 #endif
 
@@ -226,9 +226,10 @@ log4cxx::pattern::PatternMap TimeBasedRollingPolicy::getFormatSpecifiers() const
  * {@inheritDoc}
  */
 RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
-  const LogString& currentActiveFile,
-  const bool append,
-  Pool& pool) {
+	const	LogString&	currentActiveFile,
+	const	bool		append,
+			Pool&		pool)
+{
   apr_time_t n = apr_time_now();
   nextCheck = ((n / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC;
 
@@ -252,11 +253,11 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
   }
 }
 
-
-
 RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
-   const LogString& currentActiveFile,
-   Pool& pool) {
+	const	LogString&	currentActiveFile,
+	const	bool		append,
+			Pool&		pool)
+{
   apr_time_t n = apr_time_now();
   nextCheck = ((n / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC;
 
@@ -331,16 +332,8 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
   lastFileName = newFileName;
 #endif
 
-#ifdef LOG4CXX_MULTI_PROCESS
-  return new RolloverDescription(
-    nextActiveFile, true, renameAction, compressAction);
-#else
-  return new RolloverDescription(
-    nextActiveFile, false, renameAction, compressAction);
-#endif
+  return new RolloverDescription(nextActiveFile, append, renameAction, compressAction);
 }
-
-
 
 bool TimeBasedRollingPolicy::isTriggeringEvent(
   Appender* appender,

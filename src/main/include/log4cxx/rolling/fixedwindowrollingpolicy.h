@@ -62,8 +62,8 @@ namespace log4cxx {
  * larger values are specified by the user.
  *
  *
- * 
- * 
+ *
+ *
  * */
         class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase {
           DECLARE_LOG4CXX_OBJECT(FixedWindowRollingPolicy)
@@ -100,33 +100,21 @@ namespace log4cxx {
           void setMaxIndex(int newVal);
           void setMinIndex(int newVal);
 
+			/**
+			 * {@inheritDoc}
+ 			 */
+			RolloverDescriptionPtr initialize(
+				const	LogString&				currentActiveFile,
+				const	bool					append,
+						log4cxx::helpers::Pool&	pool);
 
-/**
-* Initialize the policy and return any initial actions for rolling file appender.
-*
-* @param file current value of RollingFileAppender::getFile().
-* @param append current value of RollingFileAppender::getAppend().
-* @param p pool used for any required memory allocations.
-* @return Description of the initialization, may be null to indicate
-* no initialization needed.
-* @throws SecurityException if denied access to log files.
-*/
-virtual RolloverDescriptionPtr initialize(
-const LogString& file, const bool append, log4cxx::helpers::Pool& p);
-
-/**
-* Prepare for a rollover.  This method is called prior to
-* closing the active log file, performs any necessary
-* preliminary actions and describes actions needed
-* after close of current log file.
-*
-* @param activeFile file name for current active log file.
-* @param p pool used for any required memory allocations.
-* @return Description of pending rollover, may be null to indicate no rollover
-* at this time.
-* @throws SecurityException if denied access to log files.
-*/
-virtual RolloverDescriptionPtr rollover(const LogString& activeFile, log4cxx::helpers::Pool& p);
+			/**
+			 * {@inheritDoc}
+ 			 */
+			RolloverDescriptionPtr rollover(
+				const	LogString&				currentActiveFile,
+				const	bool					append,
+						log4cxx::helpers::Pool&	pool);
 
 protected:
              log4cxx::pattern::PatternMap getFormatSpecifiers() const;

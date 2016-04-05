@@ -33,8 +33,8 @@ namespace log4cxx {
          * is also responsible for providing the <em>active log file</em>,
          * that is the live file where logging output will be directed.
          *
-         * 
-         * 
+         *
+         *
          *
         */
         class LOG4CXX_EXPORT RollingPolicy :
@@ -43,35 +43,39 @@ namespace log4cxx {
 
         public:
         virtual ~RollingPolicy() {}
-        /**
-       * Initialize the policy and return any initial actions for rolling file appender.
-       *
-       * @param file current value of RollingFileAppender.getFile().
-       * @param append current value of RollingFileAppender.getAppend().
-       * @param p pool for memory allocations during call.
-       * @return Description of the initialization, may be null to indicate
-       * no initialization needed.
-       * @throws SecurityException if denied access to log files.
-       */
-       virtual RolloverDescriptionPtr initialize(
-        const LogString& file,
-        const bool append,
-        log4cxx::helpers::Pool& p) = 0;
 
-      /**
-       * Prepare for a rollover.  This method is called prior to
-       * closing the active log file, performs any necessary
-       * preliminary actions and describes actions needed
-       * after close of current log file.
-       *
-       * @param activeFile file name for current active log file.
-       * @param p pool for memory allocations during call.
-       * @return Description of pending rollover, may be null to indicate no rollover
-       * at this time.
-       * @throws SecurityException if denied access to log files.
-       */
-      virtual RolloverDescriptionPtr rollover(const LogString& activeFile,
-          log4cxx::helpers::Pool& p) = 0;
+		/**
+		 * Initialize the policy and return any initial actions for rolling file appender.
+		 *
+		 * @param currentActiveFile current value of RollingFileAppender.getFile().
+		 * @param append current value of RollingFileAppender.getAppend().
+		 * @param pool pool for memory allocations during call.
+		 * @return Description of the initialization, may be null to indicate
+		 * no initialization needed.
+		 * @throws SecurityException if denied access to log files.
+		 */
+		virtual RolloverDescriptionPtr initialize(
+			const	LogString&				currentActiveFile,
+			const	bool					append,
+					log4cxx::helpers::Pool&	pool) = 0;
+
+		/**
+		 * Prepare for a rollover.  This method is called prior to
+		 * closing the active log file, performs any necessary
+		 * preliminary actions and describes actions needed
+		 * after close of current log file.
+		 *
+		 * @param currentActiveFile file name for current active log file.
+		 * @param append current value of the parent FileAppender.getAppend().
+		 * @param pool pool for memory allocations during call.
+		 * @return Description of pending rollover, may be null to indicate no rollover
+		 * at this time.
+		 * @throws SecurityException if denied access to log files.
+		 */
+		virtual RolloverDescriptionPtr rollover(
+			const	LogString&				currentActiveFile,
+			const	bool					append,
+					log4cxx::helpers::Pool&	pool) = 0;
         };
 
       LOG4CXX_PTR_DEF(RollingPolicy);

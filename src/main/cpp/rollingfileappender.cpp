@@ -168,7 +168,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
 
 #ifdef LOG4CXX_MULTI_PROCESS
             std::string fileName(getFile());
-            RollingPolicyBase *basePolicy = dynamic_cast<RollingPolicyBase* >(&(*rollingPolicy)); 
+            RollingPolicyBase *basePolicy = dynamic_cast<RollingPolicyBase* >(&(*rollingPolicy));
             apr_time_t n = apr_time_now();
             ObjectPtr obj(new Date(n));
             LogString fileNamePattern;
@@ -185,7 +185,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
             char szUid[MAX_FILE_LEN] = {'\0'};
             memcpy(szDirName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
             memcpy(szBaseName, fileName.c_str(), fileName.size() > MAX_FILE_LEN ? MAX_FILE_LEN : fileName.size());
-            apr_uid_t uid; 
+            apr_uid_t uid;
             apr_gid_t groupid;
             apr_status_t stat = apr_uid_current(&uid, &groupid, pool.getAPRPool());
             if (stat == APR_SUCCESS){
@@ -218,7 +218,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
             if (bAlreadyRolled){
                 apr_finfo_t finfo1, finfo2;
                 apr_status_t st1, st2;
-                apr_file_t* _fd = getWriter()->getOutPutStreamPtr()->getFileOutPutStreamPtr().getFilePtr(); 
+                apr_file_t* _fd = getWriter()->getOutPutStreamPtr()->getFileOutPutStreamPtr().getFilePtr();
                 st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, _fd);
                 if (st1 != APR_SUCCESS){
                     LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
@@ -229,14 +229,14 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
                     LogLog::warn(LOG4CXX_STR("apr_stat failed."));
                 }
 
-                bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS) 
+                bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS)
                     && ((finfo1.device != finfo2.device) || (finfo1.inode != finfo2.inode)));
             }
-                    
+
             if (!bAlreadyRolled){
 #endif
                 try {
-                    RolloverDescriptionPtr rollover1(rollingPolicy->rollover(getFile(), p));
+                    RolloverDescriptionPtr rollover1(rollingPolicy->rollover(this->getFile(), this->getAppend(), p));
                     if (rollover1 != NULL) {
                         if (rollover1->getActiveFileName() == getFile()) {
                             closeWriter();
@@ -337,7 +337,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
  * re-open current file when its own handler has been renamed
  */
 void RollingFileAppenderSkeleton::reopenLatestFile(Pool& p){
-    closeWriter(); 
+    closeWriter();
     OutputStreamPtr os(new FileOutputStream(getFile(), true));
     WriterPtr newWriter(createWriter(os));
     setFile(getFile());
@@ -371,11 +371,11 @@ void RollingFileAppenderSkeleton::subAppend(const LoggingEventPtr& event, Pool& 
   }
 
 #ifdef LOG4CXX_MULTI_PROCESS
-  //do re-check before every write 
+  //do re-check before every write
   //
   apr_finfo_t finfo1, finfo2;
   apr_status_t st1, st2;
-  apr_file_t* _fd = getWriter()->getOutPutStreamPtr()->getFileOutPutStreamPtr().getFilePtr(); 
+  apr_file_t* _fd = getWriter()->getOutPutStreamPtr()->getFileOutPutStreamPtr().getFilePtr();
   st1 = apr_file_info_get(&finfo1, APR_FINFO_IDENT, _fd);
   if (st1 != APR_SUCCESS){
       LogLog::warn(LOG4CXX_STR("apr_file_info_get failed"));
@@ -387,7 +387,7 @@ void RollingFileAppenderSkeleton::subAppend(const LoggingEventPtr& event, Pool& 
       LogLog::warn(LOG4CXX_STR(err.c_str()));
   }
 
-  bool bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS) 
+  bool bAlreadyRolled = ((st1 == APR_SUCCESS) && (st2 == APR_SUCCESS)
       && ((finfo1.device != finfo2.device) || (finfo1.inode != finfo2.inode)));
 
   if (bAlreadyRolled){
@@ -524,7 +524,7 @@ size_t RollingFileAppenderSkeleton::getFileLength() const {
   return fileLength;
 }
 
-#ifdef LOG4CXX_MULTI_PROCESS 
+#ifdef LOG4CXX_MULTI_PROCESS
 void RollingFileAppenderSkeleton::setFileLength(size_t length){
     fileLength = length;
 }
