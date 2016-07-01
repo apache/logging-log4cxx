@@ -2004,13 +2004,6 @@
 
 	<target	name="site"
 			depends="apidocs">
-		<replace	dir="${target.dir}/site"
-					includes="**/*.html">
-			<replacetoken>&lt;html</replacetoken>
-			<replacevalue>&lt;!--
-				&license;
-				--&gt;&lt;html</replacevalue>
-		</replace>
 	</target>
 
 	<target	name="gump"
