@@ -1928,7 +1928,7 @@
 		/>
 
 		<!--
-			Links ot the main project site
+			Links to the main project site
 
 			We want links to the main project site and adding them after doxygen seems to be the
 			only and easiest way.
