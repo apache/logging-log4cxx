@@ -2011,22 +2011,6 @@
 				&license;
 				--&gt;&lt;html</replacevalue>
 		</replace>
-		<replace	dir="${target.dir}/site/css"
-					includes="maven*.css">
-			<replacetoken>body {</replacetoken>
-			<replacevalue>/*
-				&license;
-				*/
-				body {</replacevalue>
-		</replace>
-		<replace	dir="${target.dir}/site/css"
-					includes="print.css">
-			<replacetoken>#banner</replacetoken>
-			<replacevalue>/*
-				&license;
-				*/
-				#banner</replacevalue>
-		</replace>
 	</target>
 
 	<target	name="gump"
