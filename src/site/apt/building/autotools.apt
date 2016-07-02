@@ -26,6 +26,7 @@ Building Apache log4cxx with autotools
   build apr 1.x, apr-util 1.x, gzip and zip.
 
 +------------+
+$ apt-get install build-essential automake libtool libapr1-dev libaprutil1-dev gzip zip
 $ cd apache-log4cxx-x.x.x
 $[./autogen.sh]
 $ ./configure
@@ -73,18 +74,21 @@ $ sudo make install
 
 ** Debian:
 
-  APR, APR-Util and zip may be installed by:
+  APR, APR-Util, gzip and zip may be installed by:
 
 +----+
-$ sudo apt-get install libapr1-dev libaprutil1-dev zip
+$ sudo apt-get install libapr1-dev libaprutil1-dev gzip zip
 +----+
 
 ** FreeBSD:
 
-  APR, APR-Util and zip may be installed from the ports collection by:
+  APR, APR-Util, gzip and zip may be installed from the ports collection by:
 
 +----+
 # cd /usr/ports/archivers/zip
+# make
+# make install
+# cd /usr/ports/archivers/gzip
 # make
 # make install
 # cd /usr/ports/devel/apr
