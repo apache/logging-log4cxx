@@ -93,6 +93,7 @@
 			<action issue="LOGCXX-443" type="fix">Return by const reference in Logger::getName()</action>
 			<action issue="LOGCXX-446" type="fix">make install fails, trying to overwrite header files</action>
 			<action issue="LOGCXX-464" type="fix">TimeBasedRollingPolicy should append as configured on rollover</action>
+			<action issue="LOGCXX-482" type="fix">Build failure with GCC-6</action>
 
 			<action type="update">Behavior of StringHelper::startsWith and endsWith synced</action>
 			<action type="update">Documented C (class) and M (method) log format keywords.</action>
