@@ -81,7 +81,9 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const
 	stat = apr_proc_create(&pid, "zip", args, NULL, attr, aprpool);
 	if (stat != APR_SUCCESS) throw IOException(stat);
 
-	apr_proc_wait(&pid, NULL, NULL, APR_WAIT);
+	int exitCode;
+	apr_proc_wait(&pid, &exitCode, NULL, APR_WAIT);
+	if (exitCode != APR_SUCCESS) throw IOException(exitCode);
 
 	if (deleteSource)
 	{
