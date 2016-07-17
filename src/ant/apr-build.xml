@@ -163,7 +163,7 @@
 					if="is-static"
 		/>
 		<fileset	dir="${src.dir}/file_io/unix"
-				includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"
+					includes="copy.c fileacc.c filepath_util.c fullrw.c mktemp.c tempdir.c"
 		/>
 		<fileset	dir="${src.dir}/memory/unix"
 					includes="*.c"
