@@ -35,11 +35,11 @@ Short introduction to Apache log4cxx
 	applications and distributed applications at large.
 
 	Experience indicates that logging is an important component of the development cycle. It offers
-	several advantages. It provides precise <em>context</em> about a run of the application. Once
-	inserted into the code, the generation of logging output requires no human intervention.
-	Moreover, log output can be saved in persistent medium to be studied at a later time. In
-	addition to its use in the development cycle, a sufficiently rich logging package can also be
-	viewed as an auditing tool.
+	several advantages. It provides precise context about a run of the application. Once inserted
+	into the code, the generation of logging output requires no human intervention. Moreover, log
+	output can be saved in persistent medium to be studied at a later time. In addition to its use
+	in the development cycle, a sufficiently rich logging package can also be viewed as an auditing
+	tool.
 
 	Logging does have its drawbacks. It can slow down an application. If too verbose, it can cause
 	scrolling blindness. To alleviate these concerns, log4cxx is designed to be reliable, fast and
