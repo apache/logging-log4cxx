@@ -16,7 +16,7 @@
 
 	<mailingLists>
 		<mailingList>
-			<name>log4cxx-user : log4cxx usage</name>
+			<name>log4cxx usage</name>
 			<subscribe>log4cxx-user-subscribe@logging.apache.org</subscribe>
 			<unsubscribe>log4cxx-user-unsubscribe@logging.apache.org</unsubscribe>
 			<post>log4cxx-user@logging.apache.org</post>
@@ -28,7 +28,19 @@
 			</otherArchives>
 		</mailingList>
 		<mailingList>
-			<name>log4cxx-dev : log4cxx development</name>
+			<name>log4cxx development</name>
+			<subscribe>dev-subscribe@logging.apache.org</subscribe>
+			<unsubscribe>dev-unsubscribe@logging.apache.org</unsubscribe>
+			<post>dev@logging.apache.org</post>
+			<archive>http://mail-archives.apache.org/mod_mbox/logging-dev/</archive>
+			<otherArchives>
+				<otherArchive>http://markmail.org/search/list:org.apache.logging.dev</otherArchive>
+				<otherArchive>http://marc.info/?l=dev</otherArchive>
+				<otherArchive>http://dir.gmane.org/gmane.comp.apache.logging.devel</otherArchive>
+			</otherArchives>
+		</mailingList>
+		<mailingList>
+			<name>Old log4cxx development (NOT USED ANYMORE!)</name>
 			<subscribe>log4cxx-dev-subscribe@logging.apache.org</subscribe>
 			<unsubscribe>log4cxx-dev-unsubscribe@logging.apache.org</unsubscribe>
 			<post>log4cxx-dev@logging.apache.org</post>
