@@ -20,8 +20,6 @@ Short introduction to Apache log4cxx
 
 Short introduction to Apache log4cxx
 
-	Apache log4cxx is currently undergoing Incubation at the Apache Software Foundation.
-
 	Apache log4cxx is a logging framework for C++ patterned after
 	{{{http://logging.apache.org/log4j}Apache log4j}}, which uses
 	{{{http://apr.apache.org}Apache Portable Runtime}} for most platform-specific code and should
@@ -45,12 +43,3 @@ Short introduction to Apache log4cxx
 	scrolling blindness. To alleviate these concerns, log4cxx is designed to be reliable, fast and
 	extensible. Since logging is rarely the main focus of an application, the log4cxx API strives
 	to be simple to understand and to use.
-
-Disclaimer
-
-	Apache log4cxx is an effort undergoing incubation at The Apache Software Foundation (ASF),
-	sponsored by Apache Logging Services. Incubation is required of all newly accepted
-	projects until a further review indicates that the infrastructure, communications, and decision
-	making process have stabilized in a manner consistent with other successful ASF projects. While
-	incubation status is not necessarily a reflection of the completeness or stability of the code,
-	it does indicate that the project has yet to be fully endorsed by the ASF.
