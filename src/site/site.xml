@@ -26,13 +26,6 @@
 		<title>Open the Apache Logging homepage</title>
 	</bannerLeft>
 
-	<bannerRight>
-		<name>Apache Incubator</name>
-		<src>images/logos/egg-logo.png</src>
-		<href>http://incubator.apache.org</href>
-		<title>Open the Apache Incubator homepage</title>
-	</bannerRight>
-
 	<skin>
 		<groupId>org.apache.maven.skins</groupId>
 		<artifactId>maven-default-skin</artifactId>
