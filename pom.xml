@@ -9,6 +9,7 @@
 	<name>Apache log4cxx</name>
 	<description>Logging framework for C++.</description>
 	<url>http://logging.apache.org/log4cxx</url>
+	<inceptionYear>2003</inceptionYear>
 
 	<issueManagement>
 		<system>JIRA</system>
