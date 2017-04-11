@@ -480,7 +480,7 @@
 		<div class="navbar">
 			<div class="navbar-inner">
 				<div class="container-fluid">
-					<a class="brand" href="$project.url">$project.name ®</a>
+					<a class="brand" href="$project.url">$project.name &#8482;</a>
 					#links( $decoration.body.links )
 
 					<div class="pull-right">
