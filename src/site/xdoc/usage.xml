@@ -82,7 +82,7 @@
 					class are listed below.
 				</p>
 
-				<pre>
+				<pre class="prettyprint linenums">
 namespace log4cxx {
 	class <strong>Logger</strong> {
 		public:
@@ -111,7 +111,7 @@ namespace log4cxx {
 				<p>
 					Loggers <em>may</em> be assigned levels. The pre-defined
 					levels: TRACE, DEBUG, INFO, WARN, ERROR and FATAL are defined in the
-					<code> <a href="apidocs/classlog4cxx_1_1_level.html">log4cxx::Level</a></code>
+					<code><a href="apidocs/classlog4cxx_1_1_level.html">log4cxx::Level</a></code>
 					class which provides accessor functions.
 				</p>
 
@@ -294,7 +294,7 @@ namespace log4cxx {
 					and use of the insertion operator (&lt;&lt;) in the message parameter.
 				</p>
 
-				<pre>
+				<pre class="prettyprint linenums">
 log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger(<strong>"com.foo"</strong>));
 const char* region = "World";
 LOG4CXX_INFO(logger, "Simple message text.")
@@ -334,7 +334,7 @@ LOG4CXX_WARN(logger, L"" &lt;&lt; i &lt;&lt; L" is the number of the iteration."
 					Here is an example of this rule.
 				</p>
 
-				<pre>
+				<pre class="prettyprint linenums">
 // get a logger instance named "com.foo"
 log4cxx::LoggerPtr  logger(log4cxx::Logger::getLogger(<strong>"com.foo"</strong>));
 
@@ -369,7 +369,7 @@ LOG4CXX_DEBUG(barlogger, "Exiting gas station search")</pre>
 					For example, in
 				</p>
 
-				<pre>
+				<pre class="prettyprint linenums">
 log4cxx::LoggerPtr x = log4cxx::Logger::getLogger("wombat");
 log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");</pre>
 				<p>
@@ -549,7 +549,7 @@ log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");</pre>
 				%-5p %c - %m%n" will output something akin to:
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 176 [main] INFO org.foo.Bar - Located nearest gas station.</pre>
 
 			<p>
@@ -583,7 +583,7 @@ log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");</pre>
 				imaginary application <code>MyApp</code> that uses log4cxx.
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 #include "com/foo/bar.h"
 using namespace com::foo;
 
@@ -630,7 +630,7 @@ int main(int argc, char **argv)
 				file <code>com/foo/bar.h</code>.
 			</p>
 
-				<pre>
+				<pre class="prettyprint linenums">
 // file com/foo/bar.h
 #include "log4cxx/logger.h"
 
@@ -645,7 +645,7 @@ namespace com {
 	}
 }</pre>
 
-				<pre>
+				<pre class="prettyprint linenums">
 // file bar.cpp
 #include "com/foo/bar.h"
 
@@ -676,7 +676,7 @@ void Bar::doIt() {
 				The output of MyApp is:
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 0    [12345] INFO  MyApp  - Entering application.
 36   [12345] DEBUG com.foo.Bar  - Did it again!
 51   [12345] INFO  MyApp  - Exiting application.</pre>
@@ -688,7 +688,7 @@ void Bar::doIt() {
 				version.
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 // file MyApp2.cpp
 
 #include "com/foo/bar.h"
@@ -745,7 +745,7 @@ int main(int argc, char **argv)
 				output as the previous <code>BasicConfigurator</code> based example.
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 # Set root logger level to DEBUG and its only appender to A1.
 log4j.rootLogger=DEBUG, A1
 
@@ -766,7 +766,7 @@ log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n</pre>
 				configuration file shows one possible way of achieving this.
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 log4j.rootLogger=DEBUG, A1
 log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout
@@ -781,7 +781,7 @@ log4j.appender.A1.layout.ConversionPattern=<strong>%d</strong> [%t] %-5p %c - %m
 				The output of <code>MyApp</code> configured with this file is shown below.
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 <strong>2000-09-07 14:07:41,508</strong> [12345] INFO  MyApp - Entering application.
 <strong>2000-09-07 14:07:41,529</strong> [12345] INFO  MyApp - Exiting application.</pre>
 
@@ -798,7 +798,7 @@ log4j.appender.A1.layout.ConversionPattern=<strong>%d</strong> [%t] %-5p %c - %m
 				Here is another configuration file that uses multiple appenders.
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 log4j.rootLogger=debug, <strong>stdout, R</strong>
 
 log4j.appender.<strong>stdout</strong>=org.apache.log4j.ConsoleAppender
@@ -822,7 +822,7 @@ log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n</pre>
 				output the following on the console.
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 INFO [12345] <strong>(MyApp2.cpp:31)</strong> - Entering application.
 DEBUG [12345] (Bar.h:16) - Doing it again!
 INFO [12345] (MyApp2.cpp:34) - Exiting application.</pre>
@@ -912,7 +912,7 @@ INFO [12345] (MyApp2.cpp:34) - Exiting application.</pre>
 				<em>Nested Diagnostic Context</em>. The NDC class is shown below.
 			</p>
 
-			<pre>
+			<pre class="prettyprint linenums">
 namespace log4cxx {
 	class NDC {
 		public:
