@@ -316,7 +316,7 @@
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.3</version>
 				<configuration>
-					<templateFile>${basedir}/src/site/maven-site.vm</templateFile>
+					<templateFile>${basedir}/src/site/site.vm</templateFile>
 				</configuration>
 			</plugin>
 
