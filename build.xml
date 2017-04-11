@@ -1846,7 +1846,7 @@
 			only and easiest way.
 		 -->
 		<replaceregexp	match="(&lt;div (?:id=&quot;projectname&quot;|class=&quot;title&quot;)&gt;)(Apache log4cxx)"
-						replace="\1&lt;a href=&quot;https://logging.apache.org/log4cxx&quot;&gt;\2&lt;/a&gt;"
+						replace="\1&lt;a href=&quot;http://logging.apache.org/log4cxx&quot;&gt;\2&lt;/a&gt;"
 						flags="img">
 			<fileset dir="${target.dir}/site/apidocs">
 				<include name="*.html" />
