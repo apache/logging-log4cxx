@@ -1845,8 +1845,8 @@
 			We want links to the main project site and adding them after doxygen seems to be the
 			only and easiest way.
 		 -->
-		<replaceregexp	match="(&lt;div (?:id=&quot;projectname&quot;|class=&quot;title&quot;)&gt;)(Apache log4cxx \(Incubating\))"
-						replace="\1&lt;a href=&quot;http://incubator.apache.org/log4cxx&quot;&gt;\2&lt;/a&gt;"
+		<replaceregexp	match="(&lt;div (?:id=&quot;projectname&quot;|class=&quot;title&quot;)&gt;)(Apache log4cxx)"
+						replace="\1&lt;a href=&quot;https://logging.apache.org/log4cxx&quot;&gt;\2&lt;/a&gt;"
 						flags="img">
 			<fileset dir="${target.dir}/site/apidocs">
 				<include name="*.html" />

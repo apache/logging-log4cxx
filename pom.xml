@@ -6,9 +6,10 @@
 	<artifactId>apache-log4cxx</artifactId>
 	<packaging>pom</packaging>
 	<version>0.10.0</version>
-	<name>Apache log4cxx (Incubating)</name>
+	<name>Apache log4cxx</name>
 	<description>Logging framework for C++.</description>
-	<url>http://incubator.apache.org/log4cxx</url>
+	<url>http://logging.apache.org/log4cxx</url>
+
 	<issueManagement>
 		<system>JIRA</system>
 		<url>https://issues.apache.org/jira/browse/LOGCXX</url>
