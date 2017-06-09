@@ -95,6 +95,7 @@
 			<action issue="LOGCXX-464" type="fix">TimeBasedRollingPolicy should append as configured on rollover</action>
 			<action issue="LOGCXX-482" type="fix">Build failure with GCC-6</action>
 			<action issue="LOGCXX-484" type="fix">Spelling error s/excute/execute</action>
+			<action issue="LOGCXX-488" type="fix">Space after log level hides messages</action>
 
 			<action type="update">Behavior of StringHelper::startsWith and endsWith synced</action>
 			<action type="update">Documented C (class) and M (method) log format keywords.</action>
