@@ -1,1 +1,12 @@
 target/
+
+*.o
+*.lo
+Makefile
+Makefile.in
+*.m4
+.deps
+.dirstamp
+*.swp
+config**
+autom4te.cache
