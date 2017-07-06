@@ -3,7 +3,7 @@ Please don't use them for email unless you have to. Their main
 purpose is code signing.
 
 Apache users: pgp < KEYS
-Apache developers: 
+Apache developers:
         (pgpk -ll <your name> && pgpk -xa <your name>) >> this file.
       or
         (gpg --fingerprint --list-sigs <your name>
@@ -49,4 +49,64 @@ lEKenucAv6f5qqZqG7pVW8S48T99HwzwqgFX5VOITwQYEQIADwUCQqtJBQIbDAUJ
 CWYBgAAKCRC+FsldLhFDIjnoAJ9ECOIrTH3adnVLOkHZnewyp2ssxwCgtLjlwZ7/
 4QtL3W5Id3nKxPFiI+c=
 =9ut1
+-----END PGP PUBLIC KEY BLOCK-----
+
+pub   4096R/778C3033 2017-07-06
+  Schl.-Fingerabdruck = A468 E054 E594 9AC5 8FA7  5A0E F649 2CB4 778C 3033
+uid       [ uneing.] Thorsten Schöning <tschoening@apache.org>
+sig 3        778C3033 2017-07-06  Thorsten Schöning <tschoening@apache.org>
+sub   4096R/BF561FB0 2017-07-06
+sig          778C3033 2017-07-06  Thorsten Schöning <tschoening@apache.org>
+
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v2
+
+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
+XuHxrEdQviQ=
+=bmEc
 -----END PGP PUBLIC KEY BLOCK-----
