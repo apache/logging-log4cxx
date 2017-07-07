@@ -2125,7 +2125,6 @@
 		<exec	executable="svn"
 				failonerror="true">
 			<arg value="commit"							/>
-			<arg value="--force-interactive"			/>
 			<arg value="${site.deployDir.curVersion}"	/>
 		</exec>
 	</target>
