@@ -2121,11 +2121,10 @@
 			/>
 		</antcall>
 
-		<!--  requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description -->
-		<exec	executable="svn"
+		<!-- Requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description. -->
+		<exec	executable="bash"
 				failonerror="true">
-			<arg value="commit"							/>
-			<arg value="${site.deployDir.curVersion}"	/>
+			<arg line="-c 'svn ci &quot;${site.deployDir.curVersion}&quot; &lt; /dev/tty &gt; /dev/tty 2&gt; /dev/tty'" />
 		</exec>
 	</target>
 
