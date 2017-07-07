@@ -69,6 +69,14 @@
 		<url>https://git-wip-us.apache.org/repos/asf?p=logging-log4cxx.git</url>
 	</scm>
 
+	<properties>
+		<!-- Note that any properties you want available in velocity templates must not use periods! -->
+		<releaseArtifactId>${project.artifactId}</releaseArtifactId>
+		<releaseVersion>${project.version}</releaseVersion>
+		<releaseManager>Thorsten Schöning</releaseManager>
+		<releaseKey>778C3033</releaseKey>
+	</properties>
+
 	<organization>
 		<name>Apache Software Foundation</name>
 		<url>http://www.apache.org</url>
@@ -125,7 +133,7 @@
 		</developer>
 		<developer>
 			<id>tschoening</id>
-			<name>Thorsten Schöning</name>
+			<name>Thorsten SchÃ¶ning</name>
 			<email>tschoening@apache.org</email>
 			<timezone>Europe/Berlin</timezone>
 			<roles>
