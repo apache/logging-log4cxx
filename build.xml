@@ -170,8 +170,14 @@
 	<property	name="with-ODBC"
 				value="auto"
 	/>
-	<property	name="svnsite.url"
-				value="https://svn.apache.org/repos/infra/websites/production/logging/content/log4cxx/${project.version}"
+	<property	name="site.svnRepoUrl"
+				value="https://svn.apache.org/repos/infra/websites/production/logging/content/log4cxx"
+	/>
+	<property	name="site.deployDir"
+				value="target/site-deploy"
+	/>
+	<property	name="site.deployDir.curVersion"
+				value="${site.deployDir}/${project.version}"
 	/>
 
 	<propertyregex	property="version.major"
@@ -2000,7 +2006,7 @@
 	</target>
 
 	<target	name="site-text-file-cleanup">
-		<fixcrlf	srcDir="${base.dir}/target/${subDir}"
+		<fixcrlf	srcDir="${base.dir}/${subDir}"
 					tab="asis"
 					tablength="4"
 					fixlast="false"
@@ -2012,7 +2018,7 @@
 		<replaceregexp	flags="mg"
 						match="(?: |\t)+$"
 						replace="">
-			<fileset	dir="${base.dir}/target/${subDir}"
+			<fileset	dir="${base.dir}/${subDir}"
 						includes="**/*.css, **/*.html"
 			/>
 		</replaceregexp>
@@ -2022,7 +2028,7 @@
 			depends="apidocs">
 		<antcall target="site-text-file-cleanup">
 			<param	name="subDir"
-					value="site"
+					value="target/site"
 			/>
 		</antcall>
 	</target>
@@ -2043,14 +2049,14 @@
 		<exec	executable="svn"
 				failonerror="true">
 			<arg value="co"					/>
-			<arg value="${svnsite.url}"		/>
-			<arg value="target/site-deploy"	/>
+			<arg value="${site.svnRepoUrl}"	/>
+			<arg value="${site.deployDir}"	/>
 		</exec>
 	</target>
 
 	<target	name="update-site">
 		<exec	executable="svn"
-				dir="target/site-deploy"
+				dir="${site.deployDir}"
 				failonerror="true">
 			<arg value="update" />
 		</exec>
@@ -2080,11 +2086,13 @@
 
 	<target	name="site-deploy">
 		<!-- Add any new files (and generate innocuous warnings for the existing content) -->
-		<delete file="target/site-deploy/svn-commit.tmp~" />
-		<exec	executable="bash"
-				dir="target/site-deploy"
+		<delete file="${site.deployDir}/svn-commit.tmp~" />
+		<exec	executable="svn"
 				failonerror="true">
-			<arg line='-c "svn add --force *"'/>
+			<arg value="add"							/>
+			<arg value="--force"						/>
+			<arg value="--depth=infinity"				/>
+			<arg value="${site.deployDir.curVersion}"	/>
 		</exec>
 
 		<taskdef	name="foreach"
@@ -2093,7 +2101,7 @@
 		<foreach	target="svn-mime=css"
 					param="src.css">
 			<path>
-				<fileset	dir="target/site-deploy"
+				<fileset	dir="${site.deployDir.curVersion}"
 							includes="**/*.css"
 				/>
 			</path>
@@ -2101,7 +2109,7 @@
 		<foreach	target="svn-mime=html"
 					param="src.html">
 			<path>
-				<fileset	dir="target/site-deploy"
+				<fileset	dir="${site.deployDir.curVersion}"
 							includes="**/*.html"
 				/>
 			</path>
@@ -2109,16 +2117,16 @@
 
 		<antcall target="site-text-file-cleanup">
 			<param	name="subDir"
-					value="site-deploy"
+					value="${site.deployDir.curVersion}"
 			/>
 		</antcall>
 
 		<!--  requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description -->
 		<exec	executable="svn"
-				dir="target/site-deploy"
 				failonerror="true">
-			<arg value="commit"					/>
-			<arg value="--force-interactive"	/>
+			<arg value="commit"							/>
+			<arg value="--force-interactive"			/>
+			<arg value="${site.deployDir.curVersion}"	/>
 		</exec>
 	</target>
 

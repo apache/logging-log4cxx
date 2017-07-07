@@ -382,7 +382,7 @@
 		</repository>
 		<site>
 			<id>logging.site</id>
-			<url>file:///${user.dir}/target/site-deploy</url>
+			<url>file:///${user.dir}/target/site-deploy/${project.version}</url>
 		</site>
 	</distributionManagement>
 </project>
