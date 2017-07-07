@@ -107,7 +107,7 @@
 		</fileSet>
 
 		<!--
-			Special handling for project files
+			Special handling for project files.
 
 			Project files are generated in the target directory and contain relative paths out of that dir
 			into the project's src dir and that of apr. Those relative paths stay valid only if those files
@@ -135,18 +135,18 @@
 			<fileMode>0644</fileMode>
 		</fileSet>
 
-                <fileSet>
-                        <directory>target/projects</directory>
-                        <lineEnding>keep</lineEnding>
-                        <outputDirectory>projects/xcode</outputDirectory>
+		<fileSet>
+			<directory>target/projects</directory>
+			<lineEnding>keep</lineEnding>
+			<outputDirectory>projects/xcode</outputDirectory>
 
-                        <includes>
-                                <include>*.xcodeproj/project.pbxproj</include>
-                        </includes>
+			<includes>
+				<include>*.xcodeproj/project.pbxproj</include>
+			</includes>
 
-                        <fileMode>0644</fileMode>
-                        <directoryMode>0755</directoryMode>
-                </fileSet>
+			<fileMode>0644</fileMode>
+			<directoryMode>0755</directoryMode>
+		</fileSet>
 	</fileSets>
 </assembly>
 
