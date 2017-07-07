@@ -21,7 +21,7 @@
 		<format>zip</format>
 		<format>tar.gz</format>
 	</formats>
-	<baseDirectory>apache-log4cxx-${project.version}</baseDirectory>
+	<baseDirectory>${project.artifactId}-${project.version}</baseDirectory>
 
 	<fileSets>
 		<!-- Some files need to be executable. -->
