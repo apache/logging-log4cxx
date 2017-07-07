@@ -67,8 +67,8 @@
 		<connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4cxx.git</connection>
 		<developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4cxx.git</developerConnection>
 		<url>https://git-wip-us.apache.org/repos/asf?p=logging-log4cxx.git</url>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<organization>
 		<name>Apache Software Foundation</name>
@@ -97,15 +97,15 @@
 				<role>Committer</role>
 			</roles>
 		</developer>
-        <developer>
-            <id>fseydoux</id>
-            <name>Florian Seydoux</name>
-            <email>fseydoux@apache.org</email>
-            <timezone>Europe/Zurich</timezone>
-            <roles>
-                <role>Committer</role>
-            </roles>
-        </developer>
+		<developer>
+			<id>fseydoux</id>
+			<name>Florian Seydoux</name>
+			<email>fseydoux@apache.org</email>
+			<timezone>Europe/Zurich</timezone>
+			<roles>
+				<role>Committer</role>
+			</roles>
+		</developer>
 		<developer>
 			<id>joseph</id>
 			<name>Joseph Southwell</name>
@@ -132,7 +132,7 @@
 			<roles>
 				<role>Committer</role>
 			</roles>
-        </developer>
+		</developer>
 		<!--End Committers, Begin Emeritus-->
 		<developer>
 			<id>afester</id>
