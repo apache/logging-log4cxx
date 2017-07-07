@@ -149,9 +149,6 @@
 	<property	name="lib.prefix"
 				value=""
 	/>
-	<property	name="version"
-				value="0.11.0"
-	/>
 	<property	name="enable-char"
 				value="1"
 	/>
@@ -174,22 +171,22 @@
 				value="auto"
 	/>
 	<property	name="svnsite.url"
-				value="https://svn.apache.org/repos/asf/logging/site/trunk/docs/log4cxx"
+				value="https://svn.apache.org/repos/infra/websites/production/logging/content/log4cxx/${project.version}"
 	/>
 
 	<propertyregex	property="version.major"
-					input="${version}"
+					input="${project.version}"
 					regexp="^(\d+)"
 					select="\1"
 	/>
 	<propertyregex	property="version.minor"
-					input="${version}"
+					input="${project.version}"
 					regexp="\.(\d+)\."
 					select="\1"
 	/>
 	<propertyregex	property="version.rev"
-					input="${version}"
-					regexp="(\d+)$"
+					input="${project.version}"
+					regexp="(\d+)(?:-.+)?$"
 					select="\1"
 	/>
 
@@ -1886,7 +1883,7 @@
 		/>
 		<replace file="${target.dir}/Doxyfile">
 			<replacefilter	token="@version@"
-							value="${version}"
+							value="${project.version}"
 			/>
 			<replacefilter	token="@base_dir@"
 							value="${base.dir}"
@@ -2002,27 +1999,37 @@
 		/>
 	</target>
 
+	<target	name="site-text-file-cleanup">
+		<fixcrlf	srcDir="${base.dir}/target/${subDir}"
+					tab="asis"
+					tablength="4"
+					fixlast="false"
+					eof="asis"
+					eol="unix"
+					includes="**/*.css **/*.html"
+		/>
+
+		<replaceregexp	flags="mg"
+						match="(?: |\t)+$"
+						replace="">
+			<fileset	dir="${base.dir}/target/${subDir}"
+						includes="**/*.css, **/*.html"
+			/>
+		</replaceregexp>
+	</target>
+
 	<target	name="site"
 			depends="apidocs">
+		<antcall target="site-text-file-cleanup">
+			<param	name="subDir"
+					value="site"
+			/>
+		</antcall>
 	</target>
 
 	<target	name="gump"
 			depends="check, header-check"
 	/>
-
-	<target	name="fixcrlf"
-			depends="init"
-			description="repair end-of-line sequences">
-		<fixcrlf	srcDir="${base.dir}"
-					tab="remove"
-					tablength="3"
-					eof="remove"
-					fixlast="true"
-					eol="unix"
-					includes="*.xml **/*.cpp **/*.h"
-					excludes="lib/**/*"
-		/>
-	</target>
 
 	<target	name="prepare-changes"
 			description="Prepares changes.xml from a JIRA issues list">
@@ -2032,17 +2039,16 @@
 		/>
 	</target>
 
-	<target	name="checkout-site"
-			unless="svn-available">
-		<exec executable="svn">
-			<arg value="co" />
-			<arg value="${svnsite.url}" />
-			<arg value="target/site-deploy" />
+	<target	name="checkout-site">
+		<exec	executable="svn"
+				failonerror="true">
+			<arg value="co"					/>
+			<arg value="${svnsite.url}"		/>
+			<arg value="target/site-deploy"	/>
 		</exec>
 	</target>
 
-	<target	name="update-site"
-			if="svn-available">
+	<target	name="update-site">
 		<exec	executable="svn"
 				dir="target/site-deploy"
 				failonerror="true">
@@ -2054,21 +2060,21 @@
 			depends="checkout-site, update-site"
 	/>
 
-	<target	name="mime=html">
+	<target	name="svn-mime=css">
 		<exec executable="svn">
-			<arg value="propset" />
-			<arg value="svn:mime-type" />
-			<arg value="text/html" />
-			<arg value="${src.html}" />
+			<arg value="propset"		/>
+			<arg value="svn:mime-type"	/>
+			<arg value="text/css"		/>
+			<arg value="${src.css}"		/>
 		</exec>
 	</target>
 
-	<target	name="mime=css">
+	<target	name="svn-mime=html">
 		<exec executable="svn">
-			<arg value="propset" />
-			<arg value="svn:mime-type" />
-			<arg value="text/css" />
-			<arg value="${src.css}" />
+			<arg value="propset"		/>
+			<arg value="svn:mime-type"	/>
+			<arg value="text/html"		/>
+			<arg value="${src.html}"	/>
 		</exec>
 	</target>
 
@@ -2084,15 +2090,7 @@
 		<taskdef	name="foreach"
 					classname="net.sf.antcontrib.logic.ForEach"
 		/>
-		<foreach	target="mime=html"
-					param="src.html">
-			<path>
-				<fileset	dir="target/site-deploy"
-							includes="**/*.html"
-				/>
-			</path>
-		</foreach>
-		<foreach	target="mime=css"
+		<foreach	target="svn-mime=css"
 					param="src.css">
 			<path>
 				<fileset	dir="target/site-deploy"
@@ -2100,12 +2098,27 @@
 				/>
 			</path>
 		</foreach>
+		<foreach	target="svn-mime=html"
+					param="src.html">
+			<path>
+				<fileset	dir="target/site-deploy"
+							includes="**/*.html"
+				/>
+			</path>
+		</foreach>
+
+		<antcall target="site-text-file-cleanup">
+			<param	name="subDir"
+					value="site-deploy"
+			/>
+		</antcall>
 
 		<!--  requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description -->
 		<exec	executable="svn"
 				dir="target/site-deploy"
 				failonerror="true">
-			<arg value="commit" />
+			<arg value="commit"					/>
+			<arg value="--force-interactive"	/>
 		</exec>
 	</target>
 
