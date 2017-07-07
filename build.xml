@@ -144,7 +144,7 @@
 				value="doxygen"
 	/>
 	<property	name="lib.name"
-				value="log4cxx"
+				value="${project.groupId}"
 	/>
 	<property	name="lib.prefix"
 				value=""
