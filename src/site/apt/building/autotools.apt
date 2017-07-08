@@ -28,14 +28,12 @@ Building Apache log4cxx with autotools
 +------------+
 $ apt-get install build-essential automake libtool libapr1-dev libaprutil1-dev gzip zip
 $ cd apache-log4cxx-x.x.x
-$[./autogen.sh]
+$ ./autogen.sh
 $ ./configure
 $ make
 $ make check
 $ sudo make install
 +------------+
-
-  Those lines in brackets are only necessary if you directly build from source.
 
 * configure options
 
