@@ -31,6 +31,11 @@
 				<include>configure.bat</include>
 				<include>configure-aprutil.bat</include>
 				<include>configure</include>
+				<include>install-sh</include>
+				<include>missing</include>
+				<include>ltmain.sh</include>
+				<include>depcomp</include>
+				<include>ar-lib</include>
 				<include>signRelease.sh</include>
 			</includes>
 
@@ -39,21 +44,26 @@
 
 		<fileSet>
 			<includes>
-				<include>aclocal.m4</include>
-				<include>build.xml</include>
-				<include>configure.ac</include>
 				<include>INSTALL</include>
 				<include>KEYS</include>
-				<include>liblog4cxx.pc.in</include>
 				<include>LICENSE</include>
 				<include>Makefile.am</include>
-				<include>Makefile.in</include>
 				<include>NOTICE</include>
+				<include>build.xml</include>
+				<include>configure.ac</include>
+				<include>liblog4cxx.pc.in</include>
 				<include>pom.xml</include>
+				<include>Makefile.in</include>
+				<include>config.sub</include>
+				<include>config.guess</include>
+				<include>aclocal.m4</include>
 				<include>src/**</include>
 			</includes>
 
 			<excludes>
+				<exclude>src/main/include/log4cxx/log4cxx.h</exclude>
+				<exclude>src/main/include/log4cxx/private/log4cxx_private.h</exclude>
+				<exclude>src/test/cpp/testsuite</exclude>
 				<exclude>src/examples/cpp/console</exclude>
 				<exclude>src/examples/cpp/delayedloop</exclude>
 				<exclude>src/examples/cpp/stream</exclude>
@@ -63,22 +73,20 @@
 				<exclude>src/m4/ltsugar.m4</exclude>
 				<exclude>src/m4/ltversion.m4</exclude>
 				<exclude>src/m4/lt~obsolete.m4</exclude>
-				<exclude>src/main/include/log4cxx/log4cxx.h</exclude>
-				<exclude>src/main/include/log4cxx/private/log4cxx_private.h</exclude>
-				<exclude>src/test/cpp/testsuite</exclude>
-				<exclude>src/test/resources/output/**</exclude>
-				<exclude>**/*.a</exclude>
-				<exclude>**/*.dll</exclude>
-				<exclude>**/*.dylib</exclude>
-				<exclude>**/*.la</exclude>
-				<exclude>**/*.lo</exclude>
+				<exclude>**/Makefile</exclude>
 				<exclude>**/*.o</exclude>
 				<exclude>**/*.Po</exclude>
+				<exclude>**/*.lo</exclude>
+				<exclude>**/*.a</exclude>
+				<exclude>**/*.la</exclude>
 				<exclude>**/*.so</exclude>
-				<exclude>**/.deps/**</exclude>
-				<exclude>**/.libs/**</exclude>
+				<exclude>**/*.dylib</exclude>
+				<exclude>**/*.dll</exclude>
 				<exclude>**/Doxyfile</exclude>
-				<exclude>**/Makefile</exclude>
+				<exclude>src/test/resources/output/**</exclude>
+				<exclude>**/.libs/**</exclude>
+				<exclude>**/.deps/**</exclude>
+				<exclude>**/.svn</exclude>
 			</excludes>
 
 			<fileMode>0644</fileMode>
@@ -116,8 +124,8 @@
 			<outputDirectory>projects/vc6</outputDirectory>
 
 			<includes>
-				<include>*.dsp</include>
 				<include>*.dsw</include>
+				<include>*.dsp</include>
 			</includes>
 
 			<excludes>
