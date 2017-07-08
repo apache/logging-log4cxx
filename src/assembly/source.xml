@@ -18,8 +18,8 @@
 <assembly>
 	<id>source</id>
 	<formats>
-		<format>zip</format>
 		<format>tar.gz</format>
+		<format>zip</format>
 	</formats>
 	<baseDirectory>${project.artifactId}-${project.version}</baseDirectory>
 
