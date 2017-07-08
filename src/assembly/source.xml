@@ -86,7 +86,6 @@
 				<exclude>**/.deps/**</exclude>
 				<exclude>**/Doxyfile</exclude>
 				<exclude>**/Makefile</exclude>
-				<exclude>**/.svn</exclude>
 			</excludes>
 
 			<fileMode>0644</fileMode>
