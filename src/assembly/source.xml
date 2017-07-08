@@ -74,6 +74,8 @@
 				<exclude>src/main/include/log4cxx/private/log4cxx_private.h</exclude>
 				<exclude>src/test/cpp/testsuite</exclude>
 				<exclude>src/test/resources/output/**</exclude>
+				<exclude>**/.libs/**</exclude>
+				<exclude>**/.deps/**</exclude>
 				<exclude>**/*.a</exclude>
 				<exclude>**/*.dll</exclude>
 				<exclude>**/*.dylib</exclude>
@@ -82,8 +84,6 @@
 				<exclude>**/*.o</exclude>
 				<exclude>**/*.Po</exclude>
 				<exclude>**/*.so</exclude>
-				<exclude>**/.libs/**</exclude>
-				<exclude>**/.deps/**</exclude>
 				<exclude>**/Doxyfile</exclude>
 				<exclude>**/Makefile</exclude>
 			</excludes>
