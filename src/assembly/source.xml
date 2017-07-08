@@ -31,6 +31,7 @@
 				<include>configure.bat</include>
 				<include>configure-aprutil.bat</include>
 				<include>configure</include>
+				<include>signRelease.sh</include>
 			</includes>
 
 			<fileMode>0755</fileMode>
