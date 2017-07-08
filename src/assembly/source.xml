@@ -27,15 +27,9 @@
 		<!-- Some files need to be executable. -->
 		<fileSet>
 			<includes>
-				<include>ar-lib</include>
 				<include>autogen.sh</include>
 				<include>configure.bat</include>
 				<include>configure-aprutil.bat</include>
-				<include>configure</include>
-				<include>depcomp</include>
-				<include>install-sh</include>
-				<include>ltmain.sh</include>
-				<include>missing</include>
 				<include>signRelease.sh</include>
 			</includes>
 
@@ -47,8 +41,6 @@
 				<include>aclocal.m4</include>
 				<include>build.xml</include>
 				<include>configure.ac</include>
-				<include>config.guess</include>
-				<include>config.sub</include>
 				<include>INSTALL</include>
 				<include>KEYS</include>
 				<include>liblog4cxx.pc.in</include>
