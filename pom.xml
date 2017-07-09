@@ -324,28 +324,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.codehaus.groovy.maven</groupId>
-				<artifactId>gmaven-plugin</artifactId>
-				<version>1.0</version>
-
-				<executions>
-					<execution>
-						<id>regex-property</id>
-						<phase>site-deploy</phase>
-						<goals>
-							<goal>execute</goal>
-						</goals>
-
-						<configuration>
-							<source>
-								System.setProperty("versionWoSuffix", "${project.version}".replace('-SNAPSHOT', ''))
-							</source>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.3</version>
 				<configuration>
@@ -414,7 +392,7 @@
 		</repository>
 		<site>
 			<id>logging.site</id>
-			<url>file:///${user.dir}/target/site-deploy/${project.versionWoSuffix}</url>
+			<url>file:///${user.dir}/target/site-deploy/${project.version}</url>
 		</site>
 	</distributionManagement>
 </project>
