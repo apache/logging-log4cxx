@@ -17,6 +17,11 @@
 # Sign release artifacts until a better solution is available.
 #
 
+# Might be a good idea to have another look at the GBG plugin for Maven in the
+# future:
+#
+# http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
+# http://maven.apache.org/plugins/maven-gpg-plugin/
 pushd target/checkout/target
 for file in *.tar.gz *.zip
 do
