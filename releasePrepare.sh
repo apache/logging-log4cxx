@@ -1,4 +1,4 @@
-#! /bin/sh -e
+#! /bin/bash -e
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -17,5 +17,29 @@
 # Prepare a release.
 #
 
+TODAY=$(date "+%Y-%m-%d")
+sed -i -r "s/date=\"XXXX-XX-XX\"/date=\"${TODAY}\"/" "src/changes/changes.xml"
+git add "src/changes/changes.xml"
+git commit -m "Set release date to today."
+
 mvn clean
 mvn release:prepare -Dresume=false
+
+# Propagate new version in some additional files:
+NEW_DEV_VER_SHORT=$(grep -E "^project.dev.log4cxx" "release.properties" | cut -d = -f 2 | cut -d - -f 1)
+NEW_RELEASE=$(cat <<-"END"
+	<body>\n\
+		<release	version="VER_NEEDED"\n\
+					date="XXXX-XX-XX"\n\
+					description="Maintenance release">\n\
+		<\/release>\n
+END
+)
+NEW_RELEASE="${NEW_RELEASE/VER_NEEDED/${NEW_DEV_VER_SHORT}}"
+
+sed -i -r "s/AC_INIT\(\[log4cxx\], \[.+?\]\)/AC_INIT([log4cxx], [${NEW_DEV_VER_SHORT}])/" "configure.ac"
+sed -i -r "s/<body>/${NEW_RELEASE}/" "src/changes/changes.xml"
+
+git add "configure.ac"
+git add "src/changes/changes.xml"
+git commit -m "prepare for next development iteration: ${NEW_DEV_VER_SHORT}"

@@ -1,4 +1,4 @@
-#! /bin/sh -e
+#! /bin/bash -e
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -17,12 +17,28 @@
 # Sign release artifacts until a better solution is available.
 #
 
+# Dependencies might be available in a special relative dir struct for the
+# build and if so, that struct needs to be available for the release build as
+# well.
+mkdir -p target/checkout
+pushd target > /dev/null
+if [ -d "../../apr" ] && [ ! -d "apr" ]
+then
+  ln -s "../../apr" "apr"
+fi
+if [ -d "../../apr-util" ] && [ ! -d "apr-util" ]
+then
+  ln -s "../../apr-util" "apr-util"
+fi
+
+mvn release:perform
+
 # Might be a good idea to have another look at the GBG plugin for Maven in the
 # future:
 #
 # http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
 # http://maven.apache.org/plugins/maven-gpg-plugin/
-pushd target/checkout/target
+pushd target
 for file in *.tar.gz *.zip
 do
   echo "Processing ${file}:"
