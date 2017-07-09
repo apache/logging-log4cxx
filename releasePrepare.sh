@@ -24,8 +24,8 @@ git commit -m "Set release date to today."
 
 # mvn clean deletes files in our links, don't know how to stop it, because
 # followSymLinka is already false by default.
-rm "target/apr"
-rm "target/apr-util"
+rm -f "target/apr"
+rm -f "target/apr-util"
 mvn clean
 mvn release:prepare -Dresume=false
 
