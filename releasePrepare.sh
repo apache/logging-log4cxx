@@ -18,4 +18,4 @@
 #
 
 mvn clean
-mvn release:prepare
+mvn release:prepare -Dresume=false
