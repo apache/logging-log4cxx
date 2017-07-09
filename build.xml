@@ -177,7 +177,7 @@
 				value="target/site-deploy"
 	/>
 	<property	name="site.deployDir.curVersion"
-				value="${site.deployDir}/${project.version}"
+				value="${site.deployDir}/${project.versionWoSuffix}"
 	/>
 
 	<propertyregex	property="version.major"

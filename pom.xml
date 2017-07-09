@@ -324,6 +324,30 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.7</version>
+
+				<executions>
+					<execution>
+						<id>regex-property</id>
+						<phase>post-site</phase>
+						<goals>
+							<goal>regex-property</goal>
+						</goals>
+
+						<configuration>
+							<name>project.versionWoSuffix</name>
+							<value>${project.version}</value>
+							<regex>^(\d+)\.(\d+)\.(\d+)(?:-SNAPSHOT)?$</regex>
+							<replacement>$1.$2.$3</replacement>
+							<failIfNoMatch>true</failIfNoMatch>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<artifactId>maven-site-plugin</artifactId>
 				<version>3.3</version>
 				<configuration>
@@ -392,7 +416,7 @@
 		</repository>
 		<site>
 			<id>logging.site</id>
-			<url>file:///${user.dir}/target/site-deploy/${project.version}</url>
+			<url>file:///${user.dir}/target/site-deploy/${project.versionWoSuffix}</url>
 		</site>
 	</distributionManagement>
 </project>
