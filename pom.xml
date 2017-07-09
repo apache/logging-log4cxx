@@ -1,11 +1,9 @@
-<project	xmlns="http://maven.apache.org/POM/4.0.0"
-			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>log4cxx</groupId>
 	<artifactId>apache-log4cxx</artifactId>
 	<packaging>pom</packaging>
-	<version>0.11.0-SNAPSHOT</version>
+	<version>0.11.0</version>
 	<name>Apache log4cxx</name>
 	<description>Logging framework for C++.</description>
 	<url>http://logging.apache.org/log4cxx</url>
@@ -67,7 +65,7 @@
 		<connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4cxx.git</connection>
 		<developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4cxx.git</developerConnection>
 		<url>https://git-wip-us.apache.org/repos/asf?p=logging-log4cxx.git</url>
-		<tag>HEAD</tag>
+		<tag>v0.11.0</tag>
 	</scm>
 
 	<properties>
