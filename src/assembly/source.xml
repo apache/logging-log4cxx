@@ -30,7 +30,6 @@
 				<include>autogen.sh</include>
 				<include>configure.bat</include>
 				<include>configure-aprutil.bat</include>
-				<include>signRelease.sh</include>
 			</includes>
 
 			<fileMode>0755</fileMode>
