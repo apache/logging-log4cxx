@@ -20,7 +20,7 @@
 TODAY=$(date "+%Y-%m-%d")
 sed -i -r "s/date=\"XXXX-XX-XX\"/date=\"${TODAY}\"/" "src/changes/changes.xml"
 git add "src/changes/changes.xml"
-git commit -m "Set release date to today."
+git diff-index --quiet HEAD || git commit -m "Set release date to today."
 
 # mvn clean deletes files in our links, don't know how to stop it, because
 # followSymLinka is already false by default.
@@ -46,4 +46,4 @@ sed -i -r "s/<body>/${NEW_RELEASE}/" "src/changes/changes.xml"
 
 git add "configure.ac"
 git add "src/changes/changes.xml"
-git commit -m "prepare for next development iteration: ${NEW_DEV_VER_SHORT}"
+git diff-index --quiet HEAD || git commit -m "prepare for next development iteration: ${NEW_DEV_VER_SHORT}"
