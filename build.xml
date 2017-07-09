@@ -2097,7 +2097,10 @@
 		Was unable to get a version w/o any suffix in pom.xml/distributionManagement, guess it's a
 		limitation of the property interpolation used. All suggestions found in the net seem to only
 		work outside that section, e.g. I was able to make a shorter version available in some
-		phases calling ANT targets.
+		phases calling ANT targets. Doesn't get me anything... So I'm dealing with the long vs.
+		short name here by simply renaming the folder with the long name created by maven.
+
+		This only works for SVN clients using only one ".svn" folder per working copy!
 
 		https://cwiki.apache.org/confluence/display/MAVENOLD/POM+Interpolation+Refactor
 		https://stackoverflow.com/a/12002359/2055163
