@@ -22,9 +22,9 @@
 		<title>Changes</title>
 	</properties>
 
-	
+	<body>
 		<release	version="0.11.0"
-					date="2017-07-09"
+					date="2010-XX-XX"
 					description="Maintenance release">
 			<action issue="LOGCXX-488" type="fix">Space after log level hides messages</action>
 			<action issue="LOGCXX-484" type="fix">Spelling error s/excute/execute</action>
