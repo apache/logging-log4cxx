@@ -335,6 +335,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>2.3</version>
 				<configuration>
+					<tagNameFormat>v@{project.version}</tagNameFormat>
 					<goals>site-deploy assembly:assembly</goals>
 				</configuration>
 			</plugin>

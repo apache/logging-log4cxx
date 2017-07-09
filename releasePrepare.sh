@@ -1,4 +1,4 @@
-#! /bin/bash -e
+#! /bin/sh -e
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -14,15 +14,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Sign release artifacts until a better solution is available.
+# Prepare a release.
 #
 
-pushd target/checkout/target
-for file in *.tar.gz *.zip
-do
-  echo "Processing ${file}:"
-
-  md5sum        "${file}" > "${file}.md5"
-  sha512sum     "${file}" > "${file}.sha"
-  gpg -ab --yes "${file}" > "${file}.asc"
-done
+mvn clean
+mvn release:prepare
