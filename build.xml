@@ -170,15 +170,6 @@
 	<property	name="with-ODBC"
 				value="auto"
 	/>
-	<property	name="site.svnRepoUrl"
-				value="https://svn.apache.org/repos/infra/websites/production/logging/content/log4cxx"
-	/>
-	<property	name="site.deployDir"
-				value="target/site-deploy"
-	/>
-	<property	name="site.deployDir.curVersion"
-				value="${site.deployDir}/${project.version}"
-	/>
 
 	<propertyregex	property="version.major"
 					input="${project.version}"
@@ -194,6 +185,24 @@
 					input="${project.version}"
 					regexp="(\d+)(?:-.+)?$"
 					select="\1"
+	/>
+	<propertyregex	property="version.hasSuffix"
+					input="${project.version}"
+					regexp="\d+-.+$"
+					select="\0"
+	/>
+
+	<property	name="site.svnRepoUrl"
+				value="https://svn.apache.org/repos/infra/websites/production/logging/content/log4cxx"
+	/>
+	<property	name="site.deployDir"
+				value="target/site-deploy"
+	/>
+	<property	name="site.deployDir.curVersion"
+				value="${site.deployDir}/${project.version}"
+	/>
+	<property	name="site.deployDir.curVersionWoSuffix"
+				value="${site.deployDir}/${version.major}.${version.minor}.${version.rev}"
 	/>
 
 	<target	name="usage"
@@ -2084,15 +2093,35 @@
 		</exec>
 	</target>
 
+	<!--
+		Was unable to get a version w/o any suffix in pom.xml/distributionManagement, guess it's a
+		limitation of the property interpolation used. All suggestions found in the net seem to only
+		work outside that section, e.g. I was able to make a shorter version available in some
+		phases calling ANT targets.
+
+		https://cwiki.apache.org/confluence/display/MAVENOLD/POM+Interpolation+Refactor
+		https://stackoverflow.com/a/12002359/2055163
+		https://gist.github.com/tux2323/970877#file-pom-xml-L24
+	 -->
+	<target	name="svn-shorten-dir-name"
+			if="version.hasSuffix">
+		<delete	dir="${site.deployDir.curVersionWoSuffix}"
+		/>
+		<move	file="${site.deployDir.curVersion}"
+				tofile="${site.deployDir.curVersionWoSuffix}"
+		/>
+	</target>
+
 	<target	name="site-deploy">
-		<!-- Add any new files (and generate innocuous warnings for the existing content) -->
-		<delete file="${site.deployDir}/svn-commit.tmp~" />
+		<antcall	target="svn-shorten-dir-name"				/>
+		<delete		file="${site.deployDir}/svn-commit.tmp~"	/>
+
 		<exec	executable="svn"
 				failonerror="true">
-			<arg value="add"							/>
-			<arg value="--force"						/>
-			<arg value="--depth=infinity"				/>
-			<arg value="${site.deployDir.curVersion}"	/>
+			<arg value="add"									/>
+			<arg value="--force"								/>
+			<arg value="--depth=infinity"						/>
+			<arg value="${site.deployDir.curVersionWoSuffix}"	/>
 		</exec>
 
 		<taskdef	name="foreach"
@@ -2101,7 +2130,7 @@
 		<foreach	target="svn-mime=css"
 					param="src.css">
 			<path>
-				<fileset	dir="${site.deployDir.curVersion}"
+				<fileset	dir="${site.deployDir.curVersionWoSuffix}"
 							includes="**/*.css"
 				/>
 			</path>
@@ -2109,7 +2138,7 @@
 		<foreach	target="svn-mime=html"
 					param="src.html">
 			<path>
-				<fileset	dir="${site.deployDir.curVersion}"
+				<fileset	dir="${site.deployDir.curVersionWoSuffix}"
 							includes="**/*.html"
 				/>
 			</path>
@@ -2117,14 +2146,27 @@
 
 		<antcall target="site-text-file-cleanup">
 			<param	name="subDir"
-					value="${site.deployDir.curVersion}"
+					value="${site.deployDir.curVersionWoSuffix}"
 			/>
 		</antcall>
 
+		<!--
+			Is allowed to fail in case of no files to delete:
+
+			[exec] svn: E205001: Try 'svn help delete' for more information
+     		[exec] svn: E205001: Not enough arguments provided
+		 -->
+		<exec	executable="sh"
+				failonerror="false">
+			<arg value="-c" />
+			<arg value="svn st &quot;${site.deployDir.curVersionWoSuffix}&quot; | grep ! | cut -d! -f2 | sed 's/^ *//' | sed 's/^/\&quot;/g' | sed 's/$/\&quot;/g' | xargs svn rm" />
+		</exec>
+
 		<!-- Requires that SVN_EDITOR, VISUAL or EDITOR being set to edit commit description. -->
-		<exec	executable="bash"
+		<exec	executable="sh"
 				failonerror="true">
-			<arg line="-c 'svn ci &quot;${site.deployDir.curVersion}&quot; &lt; /dev/tty &gt; /dev/tty 2&gt; /dev/tty'" />
+			<arg value="-c" />
+			<arg value="svn ci &quot;${site.deployDir.curVersionWoSuffix}&quot; &lt; /dev/tty &gt; /dev/tty 2&gt; /dev/tty" />
 		</exec>
 	</target>
 
