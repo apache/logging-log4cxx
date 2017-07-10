@@ -17,28 +17,22 @@
 # Sign release artifacts until a better solution is available.
 #
 
-# Dependencies might be available in a special relative dir struct for the
-# build and if so, that struct needs to be available for the release build as
-# well.
-mkdir -p target/checkout
-pushd target > /dev/null
-if [ -d "../../apr" ] && [ ! -d "apr" ]
-then
-  ln -s "../../apr" "apr"
-fi
-if [ -d "../../apr-util" ] && [ ! -d "apr-util" ]
-then
-  ln -s "../../apr-util" "apr-util"
-fi
-
-mvn release:perform
+# log4cxx is able to build using private copies of apr and apr-util, which are
+# then expected in some special relative dir structure. That doesn't work with
+# the default working dir "perform", which is "target/checkout". So we either
+# need to make apr and apr-util available in "target" or change the working
+# dir. Making available seems easy using symlinks, but "mvn clean" deletes the
+# contents of the linked files then. And always copying things around seems a
+# bit unnecessary as well, so I'm using a relocation of the folder for now.
+WD="$(pwd)/../log4cxx-release"
+mvn release:perform "-DworkingDirectory=${WD}"
 
 # Might be a good idea to have another look at the GBG plugin for Maven in the
 # future:
 #
 # http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
 # http://maven.apache.org/plugins/maven-gpg-plugin/
-pushd target
+pushd "${WD}"
 for file in *.tar.gz *.zip
 do
   echo "Processing ${file}:"
