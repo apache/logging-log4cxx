@@ -18,13 +18,14 @@
 #
 
 # log4cxx is able to build using private copies of apr and apr-util, which are
-# then expected in some special relative dir structure. That doesn't work with
-# the default working dir "perform", which is "target/checkout". So we either
+# expected in some special relative dir structure. That doesn't work with the
+# default working dir "perform" uses, which is "target/checkout". So we either
 # need to make apr and apr-util available in "target" or change the working
 # dir. Making available seems easy using symlinks, but "mvn clean" deletes the
-# contents of the linked files then. And always copying things around seems a
-# bit unnecessary as well, so I'm using a relocation of the folder for now.
-WD="$(pwd)/../log4cxx-release"
+# contents(!) of the linked dirs then. And always copying things around seems a
+# bit unnecessary as well, so I'm using a relocation of the folder for now. The
+# downside is that "mvn clean" is ignoring that dir by default...
+WD="$(pwd)/../log4cxx-next_stable"
 mvn release:perform "-DworkingDirectory=${WD}"
 
 # Might be a good idea to have another look at the GBG plugin for Maven in the
