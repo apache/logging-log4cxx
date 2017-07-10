@@ -22,10 +22,6 @@ sed -i -r "s/date=\"XXXX-XX-XX\"/date=\"${TODAY}\"/" "src/changes/changes.xml"
 git add "src/changes/changes.xml"
 git diff-index --quiet HEAD || git commit -m "Set release date to today."
 
-# mvn clean deletes files in our links, don't know how to stop it, because
-# followSymLinka is already false by default.
-rm -f "target/apr"
-rm -f "target/apr-util"
 mvn clean
 mvn release:prepare -Dresume=false
 
