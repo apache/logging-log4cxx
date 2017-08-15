@@ -24,7 +24,27 @@
 
 	<body>
 		<release	version=""
-					date="XXXX-XX-XX"
+					date="2017-08-15"
+					description="Maintenance release">
+		</release>
+
+		<release	version=""
+					date="2017-08-15"
+					description="Maintenance release">
+		</release>
+
+		<release	version=""
+					date="2017-08-15"
+					description="Maintenance release">
+		</release>
+
+		<release	version=""
+					date="2017-08-15"
+					description="Maintenance release">
+		</release>
+
+		<release	version=""
+					date="2017-08-15"
 					description="Maintenance release">
 		</release>
 
