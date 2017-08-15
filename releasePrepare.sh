@@ -34,7 +34,7 @@ fi
 today=$(date "+%Y-%m-%d")
 sed -i -r "1,/date=\".+?\"/ s/date=\".+?\"/date=\"${today}\"/" "src/changes/changes.xml"
 git add "src/changes/changes.xml"
-if git diff-index --quiet HEAD
+if ! git diff-index --quiet HEAD
 then
   git commit -m "Set release date to today."
   commit_changes=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
