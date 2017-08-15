@@ -14,7 +14,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-# Sign release artifacts until a better solution is available.
+
+##
+# Perform a release.
+#
+# Performing a release involves Maven currently to build an test things and we
+# ran into problems with the default dir structure maven assumes. This script
+# works around those and we need to sign the release archives anyway, which can
+# be easily automated as well to not need to follow manual instructions always.
 #
 
 # log4cxx is able to build using private copies of apr and apr-util, which are
@@ -40,7 +47,7 @@ then
 fi
 svn up
 
-# Might be a good idea to have another look at the GBG plugin for Maven in the
+# Might be a good idea to have another look at the GPG plugin for Maven in the
 # future:
 #
 # http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
@@ -54,7 +61,7 @@ do
   md5sum        "${file}" > "${file}.md5"
   sha512sum     "${file}" > "${file}.sha"
 
-  # No symlinks because those would be treated as as, no hardlinks because it
+  # No symlinks because those would be treated as is, no hardlinks because it
   # should be safer for commits.
   cp  --force   "${file}"     "${WD_DIST_DEV}"
   cp  --force   "${file}.asc" "${WD_DIST_DEV}"

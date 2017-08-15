@@ -14,7 +14,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+##
 # Prepare a release.
+#
+# We need to update dates and version numbers at various places during releases
+# and quite a lot of the needed changes are possible in this script, so that is
+# preferred over manually following some docs in the wiki.
 #
 
 TODAY=$(date "+%Y-%m-%d")
@@ -25,7 +31,7 @@ git diff-index --quiet HEAD || git commit -m "Set release date to today."
 mvn clean
 mvn release:prepare -Dresume=false
 
-# Propagate new version in some additional files:
+# Propagate new version into some additional files:
 NEW_DEV_VER_SHORT=$(grep -E "^project.dev.log4cxx" "release.properties" | cut -d = -f 2 | cut -d - -f 1)
 NEW_RELEASE=$(cat <<-"END"
 	<body>\n\
@@ -42,4 +48,4 @@ sed -i -r "s/<body>/${NEW_RELEASE}/" "src/changes/changes.xml"
 
 git add "configure.ac"
 git add "src/changes/changes.xml"
-git diff-index --quiet HEAD || git commit -m "prepare for next development iteration: ${NEW_DEV_VER_SHORT}"
+git diff-index --quiet HEAD || git commit -m "Prepare for next development iteration: ${NEW_DEV_VER_SHORT}"
