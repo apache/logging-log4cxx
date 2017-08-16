@@ -23,7 +23,7 @@
 # preferred over manually following some docs in the wiki.
 #
 
-if [[ -n $(git status) || $(git diff-index HEAD) ]]
+if [[ -n $(git status --short) || -n $(git diff-index HEAD) ]]
 then
   echo Maven release process requires committed changes!
   exit 1
