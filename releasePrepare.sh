@@ -29,8 +29,8 @@ then
   exit 1
 fi
 
-branch_starting=$(         git branch | grep "\*" | cut -d " " -f 2)
-branch_starting_is_ns=$(   git branch | grep "\* next_stable")
+branch_starting=$(      git branch | grep "\*" | cut -d " " -f 2)
+branch_starting_is_ns=$(git branch | grep "\* next_stable")
 
 if [ -z "${branch_starting_is_ns}" ]
 then
@@ -44,10 +44,13 @@ git add "src/changes/changes.xml"
 if ! git diff-index --quiet HEAD
 then
   git commit -m "Set release date to today."
-  commit_changes=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
-  git checkout "${branch_starting}"
-  git merge    "${commit_changes}"
-  git checkout "next_stable"
+  if [ -z "${branch_starting_is_ns}" ]
+  then
+    commit_changes=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
+    git checkout "${branch_starting}"
+    git merge    "${commit_changes}"
+    git checkout "next_stable"
+  fi
 fi
 
 #mvn clean                          || exit 1
@@ -55,13 +58,15 @@ fi
 
 if [ -n "${branch_starting_is_ns}" ]
 then
-  git checkout "${branch_starting}"
-  new_release_cycle=$(grep 'date="XXXX-XX-XX"' "src/changes/changes.xml")
-  if [ -n "${new_release_cycle}" ]
-  then
-    git checkout "next_stable"
-    exit 0
-  fi
+  exit 0
+fi
+
+git checkout "${branch_starting}"
+new_release_cycle=$(grep 'date="XXXX-XX-XX"' "src/changes/changes.xml")
+if [ -n "${new_release_cycle}" ]
+then
+  git checkout "next_stable"
+  exit 0
 fi
 
 # Propagate new version into some additional files:
