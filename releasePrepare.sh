@@ -26,7 +26,7 @@
 if [[ -n $(git status --short) || -n $(git diff-index HEAD) ]]
 then
   echo Maven release process requires committed changes!
-  exit 1
+  #exit 1
 fi
 
 branch_starting=$(      git branch | grep "\*" | cut -d " " -f 2)
@@ -57,8 +57,8 @@ then
 fi
 
 scm_tag_name_format=$(grep "<tagNameFormat>" "pom.xml")
-scm_tag_name_format_needs_one=$(echo "${scm_tag_name_format}" | grep "-RCx")
-scm_tag_name_format_needs_inc=$(echo "${scm_tag_name_format}" | sed -r "s/.+?-RC([0-9]+).+?/\1/")
+scm_tag_name_format_needs_one=$(echo "${scm_tag_name_format}" | grep -E -e "-RCx")
+scm_tag_name_format_needs_inc=$(echo "${scm_tag_name_format}" | grep -E -e "-RC[0-9]+" | sed -r "s/.+?-RC([0-9]+).+?/\1/")
 
 if [ -n "${scm_tag_name_format_needs_one}" ]
 then
@@ -72,8 +72,6 @@ fi
 
 git add "pom.xml"
 git commit -m "scm.tagNameFormat reconfigured to new RC number."
-
-exit 1
 
 mvn clean                          || exit 1
 mvn release:prepare -Dresume=false || exit 1
