@@ -23,16 +23,6 @@
 	</properties>
 
 	<body>
-		<release	version="0.11.1"
-					date="XXXX-XX-XX"
-					description="Maintenance release">
-		</release>
-
-		<release	version="0.11.1"
-					date="2017-08-16"
-					description="Maintenance release">
-		</release>
-
 		<release	version="0.11.0"
 					date="2017-08-16"
 					description="Maintenance release">
