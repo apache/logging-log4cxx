@@ -18,7 +18,28 @@
 ##
 # Prepare a release.
 #
-# We need to update dates and version numbers at various places during releases
+# We need to update dates and version numbers at various places during releases and things can go 
+# wrong, so another RC might need to be released. Am not sure if/how those things are properly
+# handled using the Maven release plugin, because that moves versions of the current branch forward
+# and doesn't seem to provide a way to say that a new release is just another RC for some former
+# release. Additionally, after the current branch has been moved forward, it might have been used to
+# merge new changes already. So hoe to tell Maven to do another release with a former version?
+#
+# So the current approach of this script is to always create a new branch "next_stable" which acts
+# as the base for releases only. One need to manually merge changes to the codebase into that branch
+# as needed for making a release work, but keep all other changes to "master" etc. outside. We try
+# to handle setting release dates, current number of release candidate etc. here automatically as 
+# much as possible. Some of that info is even merged back into some source branch, e.g. "master",
+# because release dates in files like "src/changes/changes.xml" need to be updated with additional
+# candidates or later releases.
+#
+# This script can be invoked with "next_stable" being the current branch already or with some other
+# and "next_stable" is checked out automatically. If it's invoked with some other branch, release
+# dates, new development version etc. are merged to the branch the script was invoked with. Without
+# another branch those changes need to be done/merged manually to wherever they need to be in the
+# end, most likely "master".
+
+
 # and quite a lot of the needed changes are possible in this script, so that is
 # preferred over manually following some docs in the wiki.
 #
