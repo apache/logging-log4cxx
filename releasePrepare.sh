@@ -34,8 +34,10 @@ branch_starting_is_ns=$(git branch | grep "\* next_stable")
 
 if [ -z "${branch_starting_is_ns}" ]
 then
+  # If we didn't start with "next_stable", don't merge the starting branch, because it contains
+  # changes regarding new development iteration etc. we don't want to have. People need to merge
+  # relevant changes manually.
   git checkout "next_stable" || git checkout -b "next_stable"
-  git merge "${branch_starting}"
 fi
 
 today=$(date "+%Y-%m-%d")
