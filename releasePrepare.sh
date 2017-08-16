@@ -43,6 +43,7 @@ fi
 today=$(date "+%Y-%m-%d")
 sed -i -r "1,/date=\".+?\"/ s/date=\".+?\"/date=\"${today}\"/" "src/changes/changes.xml"
 git add "src/changes/changes.xml"
+
 if ! git diff-index --quiet HEAD
 then
   git commit -m "Set release date to today."
@@ -63,10 +64,10 @@ then
   exit 0
 fi
 
-exit 0
-
+commit_mvn_next_dev_iter=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
 git checkout "${branch_starting}"
 new_release_cycle=$(grep 'date="XXXX-XX-XX"' "src/changes/changes.xml")
+
 if [ -n "${new_release_cycle}" ]
 then
   git checkout "next_stable"
@@ -90,6 +91,8 @@ sed -i -r "s/<body>/${new_release}/" "src/changes/changes.xml"
 
 git add "configure.ac"
 git add "src/changes/changes.xml"
+git merge "${commit_mvn_next_dev_iter}"
+
 if ! git diff-index --quiet HEAD
 then
   git commit -m "Prepare for next development iteration: ${new_dev_ver_short}"
