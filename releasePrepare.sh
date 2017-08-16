@@ -38,83 +38,120 @@
 # dates, new development version etc. are merged to the branch the script was invoked with. Without
 # another branch those changes need to be done/merged manually to wherever they need to be in the
 # end, most likely "master".
-
-
-# and quite a lot of the needed changes are possible in this script, so that is
-# preferred over manually following some docs in the wiki.
 #
 
-if [[ -n $(git status --short) || -n $(git diff-index HEAD) ]]
-then
-  echo Maven release process requires committed changes!
-  exit 1
-fi
+function main()
+{
+  exit_on_changes
 
-branch_starting=$(      git branch | grep "\*" | cut -d " " -f 2)
-branch_starting_is_ns=$(git branch | grep "\* next_stable")
+  branch_starting=$(      git branch | grep "\*" | cut -d " " -f 2)
+  branch_starting_is_ns=$(git branch | grep "\* next_stable")
 
-if [ -z "${branch_starting_is_ns}" ]
-then
-  # If we didn't start with "next_stable", don't merge the starting branch, because it contains
-  # changes regarding new development iteration etc. we don't want to have. People need to merge
-  # relevant changes manually.
-  git checkout "next_stable" || git checkout -b "next_stable"
-fi
+  co_next_stable
+  set_release_date_if
+  update_scm_tag_name_format
 
-today=$(date "+%Y-%m-%d")
-sed -i -r "1,/date=\".+?\"/ s/date=\".+?\"/date=\"${today}\"/" "src/changes/changes.xml"
-git add "src/changes/changes.xml"
+  exec_maven
+  exit_on_started_with_ns
 
-if ! git diff-index --quiet HEAD
-then
-  git commit -m "Set release date to today."
+  local commit_mvn_next_dev_iter=$(exit_on_no_new_release_cycle)
+  proc_new_release_cycle "${commit_mvn_next_dev_iter}"
+}
+
+function exit_on_changes()
+{
+  if [[ -n $(git status --short) || -n $(git diff-index HEAD) ]]
+  then
+    echo Maven release process requires committed changes!
+    exit 1
+  fi
+}
+
+function co_next_stable()
+{
   if [ -z "${branch_starting_is_ns}" ]
   then
-    commit_changes=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
-    git checkout "${branch_starting}"
-    git merge    "${commit_changes}"
-    git checkout "next_stable"
+    # If we didn't start with "next_stable", don't merge the starting branch, because it contains
+    # changes regarding new development iteration etc. we don't want to have. People need to merge
+    # relevant changes manually.
+    git checkout "next_stable" || git checkout -b "next_stable"
   fi
-fi
+}
 
-scm_tag_name_format=$(grep "<tagNameFormat>" "pom.xml")
-scm_tag_name_format_needs_one=$(echo "${scm_tag_name_format}" | grep -E -e "-RCx")
-scm_tag_name_format_needs_inc=$(echo "${scm_tag_name_format}" | grep -E -e "-RC[0-9]+" | sed -r "s/.+?-RC([0-9]+).+?/\1/")
+function set_release_date_if()
+{
+  local today=$(date "+%Y-%m-%d")
+  sed -i -r "1,/date=\".+?\"/ s/date=\".+?\"/date=\"${today}\"/" "src/changes/changes.xml"
+  git add "src/changes/changes.xml"
 
-if [ -n "${scm_tag_name_format_needs_one}" ]
-then
-  sed -i -r "s/(<tagNameFormat>.+?-RC)x/\11/" "pom.xml"
-fi
-if [ -n "${scm_tag_name_format_needs_inc}" ]
-then
-  inced_nr=$((${scm_tag_name_format_needs_inc} + 1))
-  sed -i -r "s/(<tagNameFormat>.+?-RC)[0-9]+/\1${inced_nr}/" "pom.xml"
-fi
+  if ! git diff-index --quiet HEAD
+  then
+    git commit -m "Set release date to today."
+    if [ -z "${branch_starting_is_ns}" ]
+    then
+      local commit_changes=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
+      git checkout "${branch_starting}"
+      git merge    "${commit_changes}"
+      git checkout "next_stable"
+    fi
+  fi
+}
 
-git add "pom.xml"
-git commit -m "scm.tagNameFormat reconfigured to new RC number."
+function update_scm_tag_name_format()
+{
+  local scm_tag_name_format=$(grep "<tagNameFormat>" "pom.xml")
+  local scm_tag_name_format_needs_one=$(echo "${scm_tag_name_format}" | grep -E -e "-RCx")
+  local scm_tag_name_format_needs_inc=$(echo "${scm_tag_name_format}" | grep -E -e "-RC[0-9]+" | sed -r "s/.+?-RC([0-9]+).+?/\1/")
 
-mvn clean                          || exit 1
-mvn release:prepare -Dresume=false || exit 1
+  if [ -n "${scm_tag_name_format_needs_one}" ]
+  then
+    sed -i -r "s/(<tagNameFormat>.+?-RC)x/\11/" "pom.xml"
+  fi
+  if [ -n "${scm_tag_name_format_needs_inc}" ]
+  then
+    local inced_nr=$((${scm_tag_name_format_needs_inc} + 1))
+    sed -i -r "s/(<tagNameFormat>.+?-RC)[0-9]+/\1${inced_nr}/" "pom.xml"
+  fi
 
-if [ -n "${branch_starting_is_ns}" ]
-then
-  exit 0
-fi
+  git add "pom.xml"
+  git commit -m "scm.tagNameFormat reconfigured to new RC number."
+}
 
-commit_mvn_next_dev_iter=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
-git checkout "${branch_starting}"
-new_release_cycle=$(grep 'date="XXXX-XX-XX"' "src/changes/changes.xml")
+function exec_maven
+{
+  mvn clean                          || exit 1
+  mvn release:prepare -Dresume=false || exit 1
+}
 
-if [ -n "${new_release_cycle}" ]
-then
-  git checkout "next_stable"
-  exit 0
-fi
+function exit_on_started_with_ns
+{
+  if [ -n "${branch_starting_is_ns}" ]
+  then
+    exit 0
+  fi
+}
 
-# Propagate new version into some additional files:
-new_dev_ver_short=$(grep -E "^project.dev.log4cxx" "release.properties" | cut -d "=" -f 2 | cut -d - -f 1)
-new_release=$(cat <<-"END"
+function exit_on_no_new_release_cycle()
+{
+  local commit_mvn_next_dev_iter=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
+  git checkout "${branch_starting}"
+  local new_release_cycle=$(grep 'date="XXXX-XX-XX"' "src/changes/changes.xml")
+
+  if [ -n "${new_release_cycle}" ]
+  then
+    git checkout "next_stable"
+    exit 0
+  fi
+
+  echo "${commit_mvn_next_dev_iter}"
+}
+
+function proc_new_release_cycle()
+{
+  git checkout "${branch_starting}"
+  local commit_mvn_next_dev_iter=${1}
+  local new_dev_ver_short=$(grep -E "^project.dev.log4cxx" "release.properties" | cut -d "=" -f 2 | cut -d - -f 1)
+  local new_release=$(cat <<-"END"
 	<body>\n\
 		<release	version="VER_NEEDED"\n\
 					date="XXXX-XX-XX"\n\
@@ -122,18 +159,21 @@ new_release=$(cat <<-"END"
 		<\/release>\n
 END
 )
-new_release="${new_release/VER_NEEDED/${new_dev_ver_short}}"
+  local new_release="${new_release/VER_NEEDED/${new_dev_ver_short}}"
 
-sed -i -r "s/AC_INIT\(\[log4cxx\], \[.+?\]\)/AC_INIT([log4cxx], [${new_dev_ver_short}])/" "configure.ac"
-sed -i -r "s/<body>/${new_release}/" "src/changes/changes.xml"
+  sed -i -r "s/AC_INIT\(\[log4cxx\], \[.+?\]\)/AC_INIT([log4cxx], [${new_dev_ver_short}])/" "configure.ac"
+  sed -i -r "s/<body>/${new_release}/" "src/changes/changes.xml"
 
-git add "configure.ac"
-git add "src/changes/changes.xml"
-git merge "${commit_mvn_next_dev_iter}"
+  git add "configure.ac"
+  git add "src/changes/changes.xml"
+  git merge "${commit_mvn_next_dev_iter}"
 
-if ! git diff-index --quiet HEAD
-then
-  git commit -m "Prepare for next development iteration: ${new_dev_ver_short}"
-fi
+  if ! git diff-index --quiet HEAD
+  then
+    git commit -m "Prepare for next development iteration: ${new_dev_ver_short}"
+  fi
 
-git checkout "next_stable"
+  git checkout "next_stable"
+}
+
+main
