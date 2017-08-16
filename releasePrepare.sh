@@ -56,6 +56,25 @@ then
   fi
 fi
 
+scm_tag_name_format=$(grep "<tagNameFormat>" "pom.xml")
+scm_tag_name_format_needs_one=$(echo "${scm_tag_name_format}" | grep "-RCx")
+scm_tag_name_format_needs_inc=$(echo "${scm_tag_name_format}" | sed -r "s/.+?-RC([0-9]+).+?/\1/")
+
+if [ -n "${scm_tag_name_format_needs_one}" ]
+then
+  sed -i -r "s/(<tagNameFormat>.+?-RC)x/\11/" "pom.xml"
+fi
+if [ -n "${scm_tag_name_format_needs_inc}" ]
+then
+  inced_nr=$((${scm_tag_name_format_needs_inc} + 1))
+  sed -i -r "s/(<tagNameFormat>.+?-RC)[0-9]+/\1${inced_nr}/" "pom.xml"
+fi
+
+git add "pom.xml"
+git commit -m "scm.tagNameFormat reconfigured to new RC number."
+
+exit 1
+
 mvn clean                          || exit 1
 mvn release:prepare -Dresume=false || exit 1
 
@@ -97,4 +116,5 @@ if ! git diff-index --quiet HEAD
 then
   git commit -m "Prepare for next development iteration: ${new_dev_ver_short}"
 fi
+
 git checkout "next_stable"
