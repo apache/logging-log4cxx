@@ -55,13 +55,15 @@ then
   fi
 fi
 
-#mvn clean                          || exit 1
-#mvn release:prepare -Dresume=false || exit 1
+mvn clean                          || exit 1
+mvn release:prepare -Dresume=false || exit 1
 
 if [ -n "${branch_starting_is_ns}" ]
 then
   exit 0
 fi
+
+exit 0
 
 git checkout "${branch_starting}"
 new_release_cycle=$(grep 'date="XXXX-XX-XX"' "src/changes/changes.xml")
