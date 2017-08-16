@@ -54,8 +54,8 @@ function main()
   exec_maven
   exit_on_started_with_ns
 
-  local commit_mvn_next_dev_iter=$(exit_on_no_new_release_cycle)
-  proc_new_release_cycle "${commit_mvn_next_dev_iter}"
+  exit_on_no_new_release_cycle)
+  proc_new_release_cycle
 }
 
 function exit_on_changes()
@@ -133,7 +133,6 @@ function exit_on_started_with_ns
 
 function exit_on_no_new_release_cycle()
 {
-  local commit_mvn_next_dev_iter=$(git log --max-count=1 | grep "commit" | cut -d " " -f 2)
   git checkout "${branch_starting}"
   local new_release_cycle=$(grep 'date="XXXX-XX-XX"' "src/changes/changes.xml")
 
@@ -142,15 +141,15 @@ function exit_on_no_new_release_cycle()
     git checkout "next_stable"
     exit 0
   fi
-
-  echo "${commit_mvn_next_dev_iter}"
 }
 
 function proc_new_release_cycle()
 {
   git checkout "${branch_starting}"
+
   local commit_mvn_next_dev_iter=${1}
-  local new_dev_ver_short=$(grep -E "^project.dev.log4cxx" "release.properties" | cut -d "=" -f 2 | cut -d - -f 1)
+  local new_dev_ver=$(      grep -E "^project.dev.log4cxx" "release.properties" | cut -d "=" -f 2)
+  local new_dev_ver_short=$(grep -E "^project.dev.log4cxx" "release.properties" | cut -d "=" -f 2 | cut -d "-" -f 1)
   local new_release=$(cat <<-"END"
 	<body>\n\
 		<release	version="VER_NEEDED"\n\
@@ -162,11 +161,12 @@ END
   local new_release="${new_release/VER_NEEDED/${new_dev_ver_short}}"
 
   sed -i -r "s/AC_INIT\(\[log4cxx\], \[.+?\]\)/AC_INIT([log4cxx], [${new_dev_ver_short}])/" "configure.ac"
-  sed -i -r "s/<body>/${new_release}/" "src/changes/changes.xml"
+  sed -i -r "s/(<version>).+(<)/\1${new_dev_ver}\2/"                                        "pom.xml"
+  sed -i -r "s/<body>/${new_release}/"                                                      "src/changes/changes.xml"
 
   git add "configure.ac"
+  git add "pom.xml"
   git add "src/changes/changes.xml"
-  git merge "${commit_mvn_next_dev_iter}"
 
   if ! git diff-index --quiet HEAD
   then
