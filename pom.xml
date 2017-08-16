@@ -3,7 +3,7 @@
 	<groupId>log4cxx</groupId>
 	<artifactId>apache-log4cxx</artifactId>
 	<packaging>pom</packaging>
-	<version>0.11.0</version>
+	<version>0.11.1-SNAPSHOT</version>
 	<name>Apache log4cxx</name>
 	<description>Logging framework for C++.</description>
 	<url>http://logging.apache.org/log4cxx</url>
