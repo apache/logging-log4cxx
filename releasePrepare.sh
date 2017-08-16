@@ -81,7 +81,7 @@ sed -i -r "s/<body>/${new_release}/" "src/changes/changes.xml"
 
 git add "configure.ac"
 git add "src/changes/changes.xml"
-if git diff-index --quiet HEAD
+if ! git diff-index --quiet HEAD
 then
   git commit -m "Prepare for next development iteration: ${new_dev_ver_short}"
 fi
