@@ -18,20 +18,22 @@
 ##
 # Perform a release.
 #
-# Performing a release involves Maven currently to build an test things and we
-# ran into problems with the default dir structure maven assumes. This script
-# works around those and we need to sign the release archives anyway, which can
-# be easily automated as well to not need to follow manual instructions always.
+# Performing a release involves Maven currently to build and test things and we ran into problems
+# with the default dir structure maven assumes. This script works around those and we need to sign
+# the release archives anyway, which can be easily automated as well to not need to follow manual 
+# instructions always.
+#
+# It's impoirtant to note that this script is expected to be executed in the branch "next_stable",
+# most likely prepared by the preparing counterpart.
 #
 
-# log4cxx is able to build using private copies of apr and apr-util, which are
-# expected in some special relative dir structure. That doesn't work with the
-# default working dir "perform" uses, which is "target/checkout". So we either
-# need to make apr and apr-util available in "target" or change the working
-# dir. Making available seems easy using symlinks, but "mvn clean" deletes the
-# contents(!) of the linked dirs then. And always copying things around seems a
-# bit unnecessary as well, so I'm using a relocation of the folder for now. The
-# downside is that "mvn clean" is ignoring that dir by default...
+# log4cxx is able to build using private copies of apr and apr-util, which are expected in some 
+# special relative dir structure. That doesn't work with the default working dir "perform" uses, 
+# which is "target/checkout". So we either need to make apr and apr-util available in "target" or 
+# change the working dir. Making available seems easy using symlinks, but "mvn clean" deletes the
+# contents(!) of the linked dirs then. And always copying things around seems a bit unnecessary as
+# well, so I'm using a relocation of the folder for now. The downside is that "mvn clean" ignores
+# that dir by default...
 WD_RELEASE="$(pwd)/../log4cxx-next_stable"
 WD_DIST_DEV="$(pwd)/../log4cxx-dist-dev"
 
@@ -47,8 +49,7 @@ then
 fi
 svn up
 
-# Might be a good idea to have another look at the GPG plugin for Maven in the
-# future:
+# Might be a good idea to have another look at the GPG plugin for Maven in the future:
 #
 # http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
 # http://maven.apache.org/plugins/maven-gpg-plugin/
@@ -61,8 +62,8 @@ do
   md5sum        "${file}" > "${file}.md5"
   sha512sum     "${file}" > "${file}.sha"
 
-  # No symlinks because those would be treated as is, no hardlinks because it
-  # should be safer for commits.
+  # No symlinks because those would be treated as is, no hardlinks because it should be safer for
+  # commits.
   cp  --force   "${file}"     "${WD_DIST_DEV}"
   cp  --force   "${file}.asc" "${WD_DIST_DEV}"
   cp  --force   "${file}.md5" "${WD_DIST_DEV}"
