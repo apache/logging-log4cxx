@@ -54,7 +54,7 @@ function main()
   exec_maven
   exit_on_started_with_ns
 
-  exit_on_no_new_release_cycle)
+  exit_on_no_new_release_cycle
   proc_new_release_cycle
 }
 
