@@ -24,4 +24,5 @@
 git checkout  "release_scripts"
 git branch -D "next_stable"
 git tag  --delete "v0.11.0-RC1"
-git push --delete "origin" "next_stable" "v0.11.0-RC1"
+git push --delete "origin" "next_stable" 
+git push --delete "origin" "v0.11.0-RC1"
