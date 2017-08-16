@@ -26,7 +26,7 @@
 if [[ -n $(git status --short) || -n $(git diff-index HEAD) ]]
 then
   echo Maven release process requires committed changes!
-  #exit 1
+  exit 1
 fi
 
 branch_starting=$(      git branch | grep "\*" | cut -d " " -f 2)
