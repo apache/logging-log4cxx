@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -22,8 +22,15 @@
 # and quite a lot of the needed changes are possible in this script, so that is
 # preferred over manually following some docs in the wiki.
 #
-branch_starting=$(      git branch | grep "\*" | cut -d " " -f 2)
-branch_starting_is_ns=$(git branch | grep "\* next_stable")
+
+if [[ -n $(git status) || $(git diff-index HEAD) ]]
+then
+  echo Maven release process requires committed changes!
+  exit 1
+fi
+
+branch_starting=$(         git branch | grep "\*" | cut -d " " -f 2)
+branch_starting_is_ns=$(   git branch | grep "\* next_stable")
 
 if [ -z "${branch_starting_is_ns}" ]
 then
@@ -43,8 +50,8 @@ then
   git checkout "next_stable"
 fi
 
-mvn clean                          || exit 1
-mvn release:prepare -Dresume=false || exit 1
+#mvn clean                          || exit 1
+#mvn release:prepare -Dresume=false || exit 1
 
 if [ -z "${branch_starting_is_ns}" ]
 then
