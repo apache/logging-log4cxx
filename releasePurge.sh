@@ -39,7 +39,7 @@ function purge_branch_and_tag()
 
 function revert_pom_and_changes()
 {
-  sed -i -r "s/^\t(<version>).+(<)/\10.11.0-SNAPSHOT\2/" "pom.xml"
+  sed -i -r "s/^(\t<version>).+(<)/\10.11.0-SNAPSHOT\2/" "pom.xml"
   sed -i -r "1,/.+<release.+/ s/.+<release.+//"          "src/changes/changes.xml"
   sed -i -r "1,/.+date=.+/ s/.+date=.+//"                "src/changes/changes.xml"
   sed -i -r "1,/.+description=.+/ s/.+description=.+//"  "src/changes/changes.xml"
