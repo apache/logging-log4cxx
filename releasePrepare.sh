@@ -45,7 +45,7 @@
 
 function main()
 {
-  exit_on_changes
+  #exit_on_changes
 
   branch_starting=$(      git branch | grep "\*" | cut -d " " -f 2)
   branch_starting_is_ns=$(git branch | grep "\* next_stable")
@@ -122,7 +122,8 @@ function update_scm_tag_name_format()
 
 function get_pom_curr_ver()
 {
-  echo "$(grep -E -e "^\t<version>" "pom.xml" | sed -r "s/<.+>(.+)<.+>/\1/")"
+  # \t doesn't seem to work for grep for some reason.
+  echo "$(grep -E -e "^\s<version>" "pom.xml" | sed -r "s/^\t<.+>(.+)<.+>/\1/")"
 }
 
 function get_mvn_prepare_new_dev_ver()
@@ -157,7 +158,7 @@ function revert_mvn_prepare_new_dev_ver_if()
     return 0
   fi
 
-  sed -i -r "s/(^\t<version>).+(<)/\1${new_dev_ver}\2/" "pom.xml"
+  sed -i -r "s/^(\t<version>).+(<)/\1${new_dev_ver}\2/" "pom.xml"
 }
 
 function exec_maven()
@@ -165,8 +166,8 @@ function exec_maven()
   local new_dev_ver=$(get_mvn_prepare_new_dev_ver)
   local prepare_args="-Dresume=false -DdevelopmentVersion=${new_dev_ver}"
 
-  mvn clean                             || exit 1
-  mvn release:prepare "${prepare_args}" || exit 1
+  mvn clean                           || exit 1
+  mvn release:prepare ${prepare_args} || exit 1
   revert_mvn_prepare_new_dev_ver_if "${new_dev_ver}"
 
   exit 1
