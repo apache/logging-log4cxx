@@ -175,8 +175,8 @@ function exec_mvn()
     prepare_args="${prepare_args} -DdevelopmentVersion=${new_dev_ver}"
   fi
 
-  mvn clean                                   || exit 1
-  mvn release:prepare $(get_mvn_prepare_args) || exit 1
+  mvn clean                           || exit 1
+  mvn release:prepare ${prepare_args} || exit 1
   revert_mvn_prepare_new_dev_ver "${pom_orig_ver}" "${new_dev_ver}"
 
   exit 1
