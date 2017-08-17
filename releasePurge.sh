@@ -37,7 +37,7 @@ function purge_branch_and_tag()
 
   for tag in $(git tag -l | grep "v0.11.0-RC")
   do  
-    git tag  --delete "${tag}"
+    git tag  --delete          "${tag}"
     git push --delete "origin" "${tag}"
   done
 }
