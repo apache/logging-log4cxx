@@ -166,9 +166,9 @@ function get_mvn_prepare_args()
 {
   local new_dev_ver=$(get_mvn_prepare_new_dev_ver)
   local prepare_args="-Dresume=false"
-
+ 
   # Avoid a warning about not being able to parse an empty version:
-  if [ -n "${new_dev_ver}"]
+  if [ -n "${new_dev_ver}" ]
   then
     prepare_args="${prepare_args} -DdevelopmentVersion=${new_dev_ver}"
   fi
@@ -181,8 +181,6 @@ function exec_mvn()
   mvn clean                                   || exit 1
   mvn release:prepare $(get_mvn_prepare_args) || exit 1
   revert_mvn_prepare_new_dev_ver_if "${new_dev_ver}"
-
-  exit 1
 }
 
 function exit_on_started_with_ns()
