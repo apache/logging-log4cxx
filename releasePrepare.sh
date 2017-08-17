@@ -140,47 +140,46 @@ function get_mvn_prepare_new_dev_ver()
 }
 
 ##
-# Revert new version in pom.xml assigned bei Maven if needed.
+# Revert new version in "pom.xml" assigned by Maven.
 #
-# During release preparation Maven assigns some new development version to the pom.xml, which is
-# most likely correct in case of a new release cycle, but within the "next_stable" branch with
-# releases only we always want to keep the current version and only count RCs. In such a case the
-# new version to use by Maven is forced to be the current one, else Maven can decide on it's own.
-# So if a version is given, that's the forced one we write back into the pom.xml, else nothing is
-# done.
+# During release preparation Maven always assigns some new development version to the "pom.xml",
+# which is either a new calculated one or one we specified on our own already to be the same like
+# before. The first case is needed to get a new version into "release.properties", from where it
+# might be merged into a starting branch. In any case, within "next_stable" we want to keep the
+# one known version and therefore need to always revert any changes made by maven. So if a specific
+# new version is provided, always keep that, while without use the formerly available version of the
+# file. The caller most likely already has both values and additionally we are called AFTER Maven
+# already changed "pom.xml", so can't get the old value on our own easily anway.
 #
-# @param[in] Specific version to used by Maven.
+# @param[in] Original version from "pom.xml".
+# @param[in] Specific version to be used by Maven.
 #
-function revert_mvn_prepare_new_dev_ver_if()
+function revert_mvn_prepare_new_dev_ver()
 {
-  local new_dev_ver="${1}"
-  if [ -z "${new_dev_ver}" ]
-  then
-    return 0
-  fi
+  local pom_orig_ver="${1}"
+  local new_dev_ver="${2}"
+  local pom_new_ver="${new_dev_ver:-${pom_orig_ver}}"
 
   sed -i -r "s/^(\t<version>).+(<)/\1${new_dev_ver}\2/" "pom.xml"
 }
 
-function get_mvn_prepare_args()
+function exec_mvn()
 {
-  local new_dev_ver=$(get_mvn_prepare_new_dev_ver)
+  local pom_orig_ver="$(get_pom_curr_ver)"
+  local new_dev_ver="$( get_mvn_prepare_new_dev_ver)"
   local prepare_args="-Dresume=false"
- 
+
   # Avoid a warning about not being able to parse an empty version:
   if [ -n "${new_dev_ver}" ]
   then
     prepare_args="${prepare_args} -DdevelopmentVersion=${new_dev_ver}"
   fi
 
-  echo "${prepare_args}"
-}
-
-function exec_mvn()
-{
   mvn clean                                   || exit 1
   mvn release:prepare $(get_mvn_prepare_args) || exit 1
-  revert_mvn_prepare_new_dev_ver_if "${new_dev_ver}"
+  revert_mvn_prepare_new_dev_ver "${pom_orig_ver}" "${new_dev_ver}"
+
+  exit 1
 }
 
 function exit_on_started_with_ns()
