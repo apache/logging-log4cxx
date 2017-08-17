@@ -24,7 +24,7 @@
 
 function main()
 {
-  #purge_branch_and_tag
+  purge_branch_and_tag
   revert_pom_and_changes
 }
 
@@ -49,10 +49,10 @@ function revert_pom_and_changes()
   local changes=$(cat "src/changes/changes.xml")
   echo "${changes/$'\n\n\n\n\n'/}" > "src/changes/changes.xml"
 
-  #git add "pom.xml"
-  #git add "src/changes/changes_xml"
+  git add "pom.xml"
+  git add "src/changes/changes_xml"
 
-  #git commit -m "No 0.11.1 yet."
+  git commit -m "No 0.11.1 yet."
 }
 
 main
