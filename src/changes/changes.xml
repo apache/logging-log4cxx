@@ -23,9 +23,9 @@
 	</properties>
 
 	<body>
-
-
-
+		<release	version="0.11.0"
+					date="2017-08-17"
+					description="Maintenance release">
 			<action issue="LOGCXX-488" type="fix">Space after log level hides messages</action>
 			<action issue="LOGCXX-484" type="fix">Spelling error s/excute/execute</action>
 			<action issue="LOGCXX-482" type="fix">Build failure with GCC-6</action>
@@ -102,10 +102,10 @@
 			<action type="update">Behavior of StringHelper::startsWith and endsWith synced</action>
 			<action type="update">Documented C (class) and M (method) log format keywords.</action>
 			<action type="add">Locationinfo for Borland C++ Builder and successors improved</action>
-
+		</release>
 
 		<release	version="0.10.0"
-					date="XXXX-XX-XX"
+					date="2008-04-03"
 					description="First Apache release">
 			<action issue="LOGCXX-259" type="fix">Several appenders fail to compile in Visual Studio 2008</action>
 			<action issue="LOGCXX-258" type="fix">unable to build from make dist package due to missing doxygen file</action>
