@@ -23,10 +23,10 @@
 # handled using the Maven release plugin, because that moves versions of the current branch forward
 # and doesn't seem to provide a way to say that a new release is just another RC for some former
 # release. Additionally, after the current branch has been moved forward, it might have been used to
-# merge new changes already. So hoe to tell Maven to do another release with a former version?
+# merge new changes already. So how to tell Maven to do another release with a former version?
 #
 # So the current approach of this script is to always create a new branch "next_stable" which acts
-# as the base for releases only. One need to manually merge changes to the codebase into that branch
+# as the base for releases only. One needs to manually merge changes to the code into that branch
 # as needed for making a release work, but keep all other changes to "master" etc. outside. We try
 # to handle setting release dates, current number of release candidate etc. here automatically as 
 # much as possible. Some of that info is even merged back into some source branch, e.g. "master",
@@ -37,7 +37,10 @@
 # and "next_stable" is checked out automatically. If it's invoked with some other branch, release
 # dates, new development version etc. are merged to the branch the script was invoked with. Without
 # another branch those changes need to be done/merged manually to wherever they need to be in the
-# end, most likely "master".
+# end, most likely "master". If only "master" should be supported in the future, merging back into
+# that might be hard coded, currently it isn't to support arbitrary source branches from which a
+# release gets initiated. If "next_stable" is the starting branch, it's assumed to only create
+# another release based on a former release, without merging things back to anywhere.
 #
 
 function main()
@@ -117,13 +120,59 @@ function update_scm_tag_name_format()
   git commit -m "scm.tagNameFormat reconfigured to new RC number."
 }
 
-function exec_maven
+function get_pom_curr_ver()
 {
-  mvn clean                          || exit 1
-  mvn release:prepare -Dresume=false || exit 1
+  echo "$(grep -E -e "^\t<version>" "pom.xml" | sed -r "s/<.+>(.+)<.+>/\1/")"
 }
 
-function exit_on_started_with_ns
+function get_mvn_prepare_new_dev_ver()
+{
+  if [ -n "${branch_starting_is_ns}" ]
+  then
+    echo "$(get_pom_curr_ver)"
+    return 0
+  fi
+
+  # Maven is able to calculate a useful new version itself:
+  echo ""
+}
+
+##
+# Revert new version in pom.xml assigned bei Maven if needed.
+#
+# During release preparation Maven assigns some new development version to the pom.xml, which is
+# most likely correct in case of a new release cycle, but within the "next_stable" branch with
+# releases only we always want to keep the current version and only count RCs. In such a case the
+# new version to use by Maven is forced to be the current one, else Maven can decide on it's own.
+# So if a version is given, that's the forced one we write back into the pom.xml, else nothing is
+# done.
+#
+# @param[in] Specific version to used by Maven.
+#
+function revert_mvn_prepare_new_dev_ver_if()
+{
+  local new_dev_ver="${1}"
+  if [ -z "${new_dev_ver}" ]
+  then
+    return 0
+  fi
+
+  sed -i -r "s/(^\t<version>).+(<)/\1${new_dev_ver}\2/" "pom.xml"
+}
+
+function exec_maven()
+{
+  local new_dev_ver=$(get_mvn_prepare_new_dev_ver)
+  local prepare_args="-Dresume=false -DdevelopmentVersion=${new_dev_ver}"
+
+  mvn clean                             || exit 1
+  mvn release:prepare "${prepare_args}" || exit 1
+  revert_mvn_prepare_new_dev_ver_if "${new_dev_ver}"
+
+  exit 1
+}
+
+function exit_on_started_with_ns()
 {
   if [ -n "${branch_starting_is_ns}" ]
   then
