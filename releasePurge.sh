@@ -50,7 +50,7 @@ function revert_pom_and_changes()
   echo "${changes/$'\n\n\n\n\n'/}" > "src/changes/changes.xml"
 
   git add "pom.xml"
-  git add "src/changes/changes_xml"
+  git add "src/changes/changes.xml"
 
   git commit -m "No 0.11.1 yet."
 }
