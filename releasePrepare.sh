@@ -160,7 +160,7 @@ function revert_mvn_prepare_new_dev_ver()
   local new_dev_ver="${2}"
   local pom_new_ver="${new_dev_ver:-${pom_orig_ver}}"
 
-  sed -i -r "s/^(\t<version>).+(<)/\1${new_dev_ver}\2/" "pom.xml"
+  sed -i -r "s/^(\t<version>).+(<)/\1${pom_new_ver}\2/" "pom.xml"
 }
 
 function exec_mvn()
