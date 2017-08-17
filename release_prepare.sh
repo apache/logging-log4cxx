@@ -178,8 +178,6 @@ function exec_mvn
   mvn clean                           || exit 1
   mvn release:prepare ${prepare_args} || exit 1
   revert_mvn_prepare_new_dev_ver "${pom_orig_ver}" "${new_dev_ver}"
-
-  exit 1
 }
 
 function exit_on_started_with_ns
