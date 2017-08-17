@@ -70,7 +70,7 @@ function sign_and_copy()
   # http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
   # http://maven.apache.org/plugins/maven-gpg-plugin/
   pushd "${WD_RELEASE}/target" > /dev/null
-  for file in "*.tar.gz" "*.zip"
+  for file in *.tar.gz *.zip
   do
     echo "Processing ${file}:"
 
