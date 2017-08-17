@@ -22,7 +22,7 @@
 # branches and tags created during tests of the release process. Be very careful with execution!
 #
 
-function main()
+function main
 {
   purge_branch_and_tag
   revert_pom
@@ -30,26 +30,26 @@ function main()
   commit_reverts
 }
 
-function purge_branch_and_tag()
+function purge_branch_and_tag
 {
   git checkout  "release_scripts"
 
   git branch -D "next_stable"
-  git push --delete "origin" "next_stable" 
+  git push --delete "origin" "next_stable"
 
   for tag in $(git tag -l | grep "v0.11.0-RC")
-  do  
+  do
     git tag  --delete          "${tag}"
     git push --delete "origin" "${tag}"
   done
 }
 
-function revert_pom()
+function revert_pom
 {
   sed -i -r "s/^(\t<version>).+(<)/\10.11.0-SNAPSHOT\2/" "pom.xml"
 }
 
-function revert_changes()
+function revert_changes
 {
   if [ -n "$(grep "version=\"0.11.1\"" "src/changes/changes.xml")" ]
   then
@@ -58,7 +58,7 @@ function revert_changes()
     sed -i -r "1,/.+date=.+/ s/.+date=.+//"               "src/changes/changes.xml"
     sed -i -r "1,/.+description=.+/ s/.+description=.+//" "src/changes/changes.xml"
     sed -i -r "1,/.+<\/release.+/ s/.+<\/release.+//"     "src/changes/changes.xml"
-  
+
     # Don't know how to remove the left newlines easier...
     local changes=$(cat "src/changes/changes.xml")
     echo "${changes/$'\n\n\n\n\n'/}" > "src/changes/changes.xml"
@@ -68,7 +68,7 @@ function revert_changes()
   sed -i -r "1,/.+date=.+/ s/date=\".+\"/date=\"XXXX-XX-XX\"/" "src/changes/changes.xml"
 }
 
-function commit_reverts()
+function commit_reverts
 {
   git add "pom.xml"
   git add "src/changes/changes.xml"

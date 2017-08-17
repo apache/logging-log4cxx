@@ -20,14 +20,14 @@
 #
 # Performing a release involves Maven currently to build and test things and we ran into problems
 # with the default dir structure maven assumes. This script works around those and we need to sign
-# the release archives anyway, which can be easily automated as well to not need to follow manual 
+# the release archives anyway, which can be easily automated as well to not need to follow manual
 # instructions always.
 #
 # It's impoirtant to note that this script is expected to be executed in the branch "next_stable",
 # most likely prepared by the preparing counterpart.
 #
 
-function main()
+function main
 {
   # log4cxx is able to build using private copies of apr and apr-util, which are expected in some
   # special relative dir structure. That doesn't work with the default working dir "perform" uses,
@@ -45,14 +45,14 @@ function main()
   publish_for_vote
 }
 
-function perform_release()
+function perform_release
 {
   rm -rf "${WD_RELEASE}"
   mvn release:perform "-DworkingDirectory=${WD_RELEASE}"
 }
 
 # Prepare dist/dev to get the release candidate published for a vote.
-function prepare_dist_dev()
+function prepare_dist_dev
 {
   mkdir -p "${WD_DIST_DEV}"
   pushd    "${WD_DIST_DEV}" > /dev/null
@@ -63,7 +63,7 @@ function prepare_dist_dev()
   svn up
 }
 
-function sign_and_copy()
+function sign_and_copy
 {
   # Might be a good idea to have another look at the GPG plugin for Maven in the future:
   #
@@ -87,7 +87,7 @@ function sign_and_copy()
   done
 }
 
-function publish_for_vote()
+function publish_for_vote
 {
   pushd "${WD_DIST_DEV}" > /dev/null
   svn add --force *.*

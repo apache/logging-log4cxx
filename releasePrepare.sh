@@ -18,7 +18,7 @@
 ##
 # Prepare a release.
 #
-# We need to update dates and version numbers at various places during releases and things can go 
+# We need to update dates and version numbers at various places during releases and things can go
 # wrong, so another RC might need to be released. Am not sure if/how those things are properly
 # handled using the Maven release plugin, because that moves versions of the current branch forward
 # and doesn't seem to provide a way to say that a new release is just another RC for some former
@@ -28,7 +28,7 @@
 # So the current approach of this script is to always create a new branch "next_stable" which acts
 # as the base for releases only. One needs to manually merge changes to the code into that branch
 # as needed for making a release work, but keep all other changes to "master" etc. outside. We try
-# to handle setting release dates, current number of release candidate etc. here automatically as 
+# to handle setting release dates, current number of release candidate etc. here automatically as
 # much as possible. Some of that info is even merged back into some source branch, e.g. "master",
 # because release dates in files like "src/changes/changes.xml" need to be updated with additional
 # candidates or later releases.
@@ -43,7 +43,7 @@
 # another release based on a former release, without merging things back to anywhere.
 #
 
-function main()
+function main
 {
   #exit_on_changes
 
@@ -61,7 +61,7 @@ function main()
   proc_new_release_cycle
 }
 
-function exit_on_changes()
+function exit_on_changes
 {
   if [[ -n $(git status --short) || -n $(git diff-index HEAD) ]]
   then
@@ -70,7 +70,7 @@ function exit_on_changes()
   fi
 }
 
-function co_next_stable()
+function co_next_stable
 {
   if [ -z "${branch_starting_is_ns}" ]
   then
@@ -81,7 +81,7 @@ function co_next_stable()
   fi
 }
 
-function set_release_date_if()
+function set_release_date_if
 {
   local today=$(date "+%Y-%m-%d")
   sed -i -r "1,/date=\".+?\"/ s/date=\".+?\"/date=\"${today}\"/" "src/changes/changes.xml"
@@ -100,7 +100,7 @@ function set_release_date_if()
   fi
 }
 
-function update_scm_tag_name_format()
+function update_scm_tag_name_format
 {
   local scm_tag_name_format=$(grep "<tagNameFormat>" "pom.xml")
   local scm_tag_name_format_needs_one=$(echo "${scm_tag_name_format}" | grep -E -e "-RCx")
@@ -120,13 +120,13 @@ function update_scm_tag_name_format()
   git commit -m "scm.tagNameFormat reconfigured to new RC number."
 }
 
-function get_pom_curr_ver()
+function get_pom_curr_ver
 {
   # \t doesn't seem to work for grep for some reason.
   echo "$(grep -E -e "^\s<version>" "pom.xml" | sed -r "s/^\t<.+>(.+)<.+>/\1/")"
 }
 
-function get_mvn_prepare_new_dev_ver()
+function get_mvn_prepare_new_dev_ver
 {
   if [ -n "${branch_starting_is_ns}" ]
   then
@@ -154,7 +154,7 @@ function get_mvn_prepare_new_dev_ver()
 # @param[in] Original version from "pom.xml".
 # @param[in] Specific version to be used by Maven.
 #
-function revert_mvn_prepare_new_dev_ver()
+function revert_mvn_prepare_new_dev_ver
 {
   local pom_orig_ver="${1}"
   local new_dev_ver="${2}"
@@ -163,7 +163,7 @@ function revert_mvn_prepare_new_dev_ver()
   sed -i -r "s/^(\t<version>).+(<)/\1${pom_new_ver}\2/" "pom.xml"
 }
 
-function exec_mvn()
+function exec_mvn
 {
   local pom_orig_ver="$(get_pom_curr_ver)"
   local new_dev_ver="$( get_mvn_prepare_new_dev_ver)"
@@ -182,7 +182,7 @@ function exec_mvn()
   exit 1
 }
 
-function exit_on_started_with_ns()
+function exit_on_started_with_ns
 {
   if [ -n "${branch_starting_is_ns}" ]
   then
@@ -190,7 +190,7 @@ function exit_on_started_with_ns()
   fi
 }
 
-function exit_on_no_new_release_cycle()
+function exit_on_no_new_release_cycle
 {
   git checkout "${branch_starting}"
   local new_release_cycle=$(grep 'date="XXXX-XX-XX"' "src/changes/changes.xml")
@@ -202,7 +202,7 @@ function exit_on_no_new_release_cycle()
   fi
 }
 
-function proc_new_release_cycle()
+function proc_new_release_cycle
 {
   git checkout "${branch_starting}"
 
