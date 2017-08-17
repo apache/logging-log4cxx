@@ -161,7 +161,7 @@ END
   local new_release="${new_release/VER_NEEDED/${new_dev_ver_short}}"
 
   sed -i -r "s/AC_INIT\(\[log4cxx\], \[.+?\]\)/AC_INIT([log4cxx], [${new_dev_ver_short}])/" "configure.ac"
-  sed -i -r "s/(<version>).+(<)/\1${new_dev_ver}\2/"                                        "pom.xml"
+  sed -i -r "s/^\t(<version>).+(<)/\1${new_dev_ver}\2/"                                     "pom.xml"
   sed -i -r "s/<body>/${new_release}/"                                                      "src/changes/changes.xml"
 
   git add "configure.ac"
