@@ -81,6 +81,14 @@ function co_next_stable
   fi
 }
 
+function git_commit_if
+{
+  if ! git diff-index --quiet HEAD
+  then
+    git commit -m "${1}"
+  fi
+}
+
 function set_release_date_if
 {
   local today=$(date "+%Y-%m-%d")
@@ -161,6 +169,8 @@ function revert_mvn_prepare_new_dev_ver
   local pom_new_ver="${new_dev_ver:-${pom_orig_ver}}"
 
   sed -i -r "s/^(\t<version>).+(<)/\1${pom_new_ver}\2/" "pom.xml"
+  git add "pom.xml"
+  git_commit_if "Revert to ${pom_new_ver}."
 }
 
 function exec_mvn
@@ -225,12 +235,8 @@ END
   git add "pom.xml"
   git add "src/changes/changes.xml"
 
-  if ! git diff-index --quiet HEAD
-  then
-    git commit -m "Prepare for next development iteration: ${new_dev_ver_short}"
-  fi
-
-  git checkout "next_stable"
+  git_commit_if "Prepare for next development iteration: ${new_dev_ver_short}"
+  git checkout  "next_stable"
 }
 
 main
