@@ -25,7 +25,9 @@
 function main()
 {
   purge_branch_and_tag
-  revert_pom_and_changes
+  revert_pom
+  revert_changes
+  commit_reverts
 }
 
 function purge_branch_and_tag()
@@ -42,22 +44,32 @@ function purge_branch_and_tag()
   done
 }
 
-function revert_pom_and_changes()
+function revert_pom()
 {
-  # Remove not needed "release" node.
   sed -i -r "s/^(\t<version>).+(<)/\10.11.0-SNAPSHOT\2/" "pom.xml"
-  sed -i -r "1,/.+<release.+/ s/.+<release.+//"          "src/changes/changes.xml"
-  sed -i -r "1,/.+date=.+/ s/.+date=.+//"                "src/changes/changes.xml"
-  sed -i -r "1,/.+description=.+/ s/.+description=.+//"  "src/changes/changes.xml"
-  sed -i -r "1,/.+<\/release.+/ s/.+<\/release.+//"      "src/changes/changes.xml"
+}
+
+function revert_changes()
+{
+  if [ -n "$(grep "version=\"0.11.1\"" "src/changes/changes.xml")" ]
+  then
+    # Remove not needed "release" node.
+    sed -i -r "1,/.+<release.+/ s/.+<release.+//"         "src/changes/changes.xml"
+    sed -i -r "1,/.+date=.+/ s/.+date=.+//"               "src/changes/changes.xml"
+    sed -i -r "1,/.+description=.+/ s/.+description=.+//" "src/changes/changes.xml"
+    sed -i -r "1,/.+<\/release.+/ s/.+<\/release.+//"     "src/changes/changes.xml"
   
-  # Don't know how to remove the left newlines easier...
-  local changes=$(cat "src/changes/changes.xml")
-  echo "${changes/$'\n\n\n\n\n'/}" > "src/changes/changes.xml"
+    # Don't know how to remove the left newlines easier...
+    local changes=$(cat "src/changes/changes.xml")
+    echo "${changes/$'\n\n\n\n\n'/}" > "src/changes/changes.xml"
+  fi
 
   # Last release date needs to be "unknown":
   sed -i -r "1,/.+date=.+/ s/date=\".+\"/date=\"XXXX-XX-XX\"/" "src/changes/changes.xml"
+}
 
+function commit_reverts()
+{
   git add "pom.xml"
   git add "src/changes/changes.xml"
 
