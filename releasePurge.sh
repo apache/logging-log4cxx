@@ -31,10 +31,15 @@ function main()
 function purge_branch_and_tag()
 {
   git checkout  "release_scripts"
+
   git branch -D "next_stable"
-  git tag  --delete "v0.11.0-RC1"
   git push --delete "origin" "next_stable" 
-  git push --delete "origin" "v0.11.0-RC1"
+
+  for tag in $(git tag -l | grep "v0.11.0-RC")
+  do  
+    git tag  --delete "${tag}"
+    git push --delete "origin" "${tag}"
+  done
 }
 
 function revert_pom_and_changes()
