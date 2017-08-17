@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash -e
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -21,8 +21,38 @@
 # This script is mainly used during development of the release scripts itself and simply deletes
 # branches and tags created during tests of the release process. Be very careful with execution!
 #
-git checkout  "release_scripts"
-git branch -D "next_stable"
-git tag  --delete "v0.11.0-RC1"
-git push --delete "origin" "next_stable" 
-git push --delete "origin" "v0.11.0-RC1"
+
+function main()
+{
+  #purge_branch_and_tag
+  revert_pom_and_changes
+}
+
+function purge_branch_and_tag()
+{
+  git checkout  "release_scripts"
+  git branch -D "next_stable"
+  git tag  --delete "v0.11.0-RC1"
+  git push --delete "origin" "next_stable" 
+  git push --delete "origin" "v0.11.0-RC1"
+}
+
+function revert_pom_and_changes()
+{
+  sed -i -r "s/^\t(<version>).+(<)/\10.11.0-SNAPSHOT\2/" "pom.xml"
+  sed -i -r "1,/.+<release.+/ s/.+<release.+//"          "src/changes/changes.xml"
+  sed -i -r "1,/.+date=.+/ s/.+date=.+//"                "src/changes/changes.xml"
+  sed -i -r "1,/.+description=.+/ s/.+description=.+//"  "src/changes/changes.xml"
+  sed -i -r "1,/.+<\/release.+/ s/.+<\/release.+//"      "src/changes/changes.xml"
+  
+  # Don't know ho to remove the created newlines in changes easier...
+  local changes=$(cat "src/changes/changes.xml")
+  echo "${changes/$'\n\n\n\n\n'/}" > "src/changes/changes.xml"
+
+  #git add "pom.xml"
+  #git add "src/changes/changes_xml"
+
+  #git commit -m "No 0.11.1 yet."
+}
+
+main
