@@ -54,7 +54,7 @@ function main()
   set_release_date_if
   update_scm_tag_name_format
 
-  exec_maven
+  exec_mvn
   exit_on_started_with_ns
 
   exit_on_no_new_release_cycle
