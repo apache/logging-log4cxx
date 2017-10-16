@@ -112,7 +112,8 @@ namespace log4cxx
                              return threadName;
                         }
 
-                        /** Return the timeStamp of this event. */
+                        /** The number of microseconds elapsed from 01.01.1970 until logging event
+                         was created. */
                         inline log4cxx_time_t getTimeStamp() const
                                 { return timeStamp; }
 
