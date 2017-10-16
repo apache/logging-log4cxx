@@ -228,6 +228,7 @@
 			<action issue="LOGCXX-257" type="fix">ServerSocket::accept hangs on Unix</action>
 			<action issue="LOGCXX-258" type="fix">unable to build from make dist package due to missing doxygen file</action>
 			<action issue="LOGCXX-259" type="fix">Several appenders fail to compile in Visual Studio 2008</action>
+			<action issue="LOGCXX-493" type="fix">Wrong usage of milli- vs. micro- and non- vs. milliseconds in some docs.</action>
 		</release>
 		<release version="0.9.7" date="2004-05-10">
 			<action type="fix">Fixed examples source code in the "Short introduction to log4cxx".</action>

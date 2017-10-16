@@ -100,7 +100,7 @@ namespace log4cxx
                                 { return message; }
 
                         /**Returns the time when the application started,
-                        in seconds elapsed since 01.01.1970.
+                        in microseconds elapsed since 01.01.1970.
                         */
                         static log4cxx_time_t getStartTime();
 
@@ -226,7 +226,7 @@ namespace log4cxx
                         LogString message;
 
 
-                        /** The number of milliseconds elapsed from 1/1/1970 until logging event
+                        /** The number of microseconds elapsed from 01.01.1970 until logging event
                          was created. */
                         log4cxx_time_t timeStamp;
 
