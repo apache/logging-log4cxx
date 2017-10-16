@@ -174,7 +174,7 @@
 				value="no"
 	/>
 	<property	name="svnsite.url"
-				value="https://svn.apache.org/repos/asf/logging/site/trunk/docs/log4cxx"
+				value="https://svn.apache.org/repos/infra/websites/production/logging/content/log4cxx/0.10.0"
 	/>
 
 	<target	name="usage"
