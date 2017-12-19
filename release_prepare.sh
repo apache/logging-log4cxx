@@ -142,7 +142,7 @@ function get_mvn_prepare_new_dev_ver
     return 0
   fi
 
-  # Maven is able to calculate a useful new version itself, even it warns about not being able to
+  # Maven is able to calculate a useful new version itself, even if it warns about not being able to
   # parse an empty version.
   echo ""
 }
