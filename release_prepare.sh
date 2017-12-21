@@ -221,7 +221,7 @@ function proc_new_release_cycle
 	<body>\n\
 		<release	version="VER_NEEDED"\n\
 					date="XXXX-XX-XX"\n\
-					description="Maintenance release">\n\
+					description="Maintenance release.">\n\
 		<\/release>\n
 END
 )
