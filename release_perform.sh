@@ -23,7 +23,7 @@
 # the release archives anyway, which can be easily automated as well to not need to follow manual
 # instructions always.
 #
-# It's impoirtant to note that this script is expected to be executed in the branch "next_stable",
+# It's important to note that this script is expected to be executed in the branch "next_stable",
 # most likely prepared by the preparing counterpart.
 #
 
