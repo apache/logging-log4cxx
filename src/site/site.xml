@@ -17,7 +17,7 @@
 -->
 <project	xmlns="http://maven.apache.org/DECORATION/1.4.0"
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-			xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 http://maven.apache.org/xsd/decoration-1.4.0.xsd"
+			xsi:schemaLocation="http://maven.apache.org/DECORATION/1.4.0 https://maven.apache.org/xsd/decoration-1.4.0.xsd"
 			name="log4cxx">
 
 	<publishDate	position="right" />
@@ -26,7 +26,7 @@
 	<bannerLeft>
 		<name>Logging Services</name>
 		<src>images/logos/ls-logo.jpg</src>
-		<href>http://logging.apache.org</href>
+		<href>https://logging.apache.org</href>
 		<title>Open the Apache Logging homepage</title>
 	</bannerLeft>
 
@@ -94,7 +94,7 @@
 					href="/community/issue-tracking.html"
 			/>
 			<item	name="Wiki"
-					href="http://wiki.apache.org/logging-log4cxx"
+					href="https://wiki.apache.org/logging-log4cxx"
 			/>
 		</menu>
 
@@ -129,16 +129,16 @@
 		<menu	name="Apache"
 				img="icon-info-sign">
 			<item	name="Home"
-					href="http://www.apache.org"
+					href="https://www.apache.org"
 			/>
 			<item	name="Sponsorship"
-					href="http://www.apache.org/foundation/sponsorship.html"
+					href="https://www.apache.org/foundation/sponsorship.html"
 			/>
 			<item	name="Thanks"
-					href="http://www.apache.org/foundation/thanks.html"
+					href="https://www.apache.org/foundation/thanks.html"
 			/>
 			<item	name="Conferences"
-					href="http://www.apachecon.com"
+					href="https://www.apachecon.com"
 			/>
 		</menu>
 	</body>

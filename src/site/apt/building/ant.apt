@@ -20,7 +20,7 @@
 
 Building Apache log4cxx with Apache Ant
 
-   {{{http://ant.apache.org}Apache Ant}} with cpptasks from the
+   {{{https://ant.apache.org}Apache Ant}} with cpptasks from the
    {{{http://ant-contrib.sourceforge.net}Ant-Contrib}} project can be used to build log4cxx
    with supported compilers and is also used to generate the IDE project files included
    in the releases.  The Apache Maven build which is used to generate the site documentation
@@ -29,7 +29,7 @@ Building Apache log4cxx with Apache Ant
 
 * Quick start:
 
-   * Install {{{http://ant.apache.org}Apache Ant}} 1.6.5 or later.
+   * Install {{{https://ant.apache.org}Apache Ant}} 1.6.5 or later.
 
    * Install cpptasks 1.0b5 or later from the {{{http://ant-contrib.sourceforge.net}Ant-Contrib Project}}.
      ant-contribs 1.0b3 or later is needed for some less frequent build targets.
@@ -156,7 +156,7 @@ $ ant -Dcompiler=xyz
    Combining -Dlib.type=shared and -Druntime=static is unsafe.
 
    Properties may also be placed in a build.properties file in the log4cxx directory. The file has
-   to be in the default format for {{{http://en.wikipedia.org/wiki/.properties}Java properties files}},
+   to be in the default format for {{{https://en.wikipedia.org/wiki/.properties}Java properties files}},
    especially one must not provide options using the syntax -Dxy=z like on the shell, but only as
    xy=z per line.
 
@@ -166,14 +166,14 @@ $ ant -Dcompiler=xyz
 
    {{{http://gnuwin32.sourceforge.net}GnuWin32}}
    provides binary versions of sed, gzip and zip.  Alternative,
-   the bin directory of {{{http://www.cygwin.com}Cygwin}} may be placed on the path.
+   the bin directory of {{{https://www.cygwin.com}Cygwin}} may be placed on the path.
 
    If -Dwith-SMTP=libesmtp is specified, the build will attempt to build
    libesmtp from source, unfortunately libesmtp depends on poll.h and will not build.
 
    APR 1.2.12 has a known issue that will prevent
    compilation with Visual Studio 6 unless a later Platform SDK is installed.
-   See APR bug {{{http://issues.apache.org/bugzilla/show_bug.cgi?44327}44327}}.
+   See APR bug {{{https://issues.apache.org/bugzilla/show_bug.cgi?44327}44327}}.
    APR 1.2.11 and the corresponding APR-Util 1.2.10 will compile with Visual Studio 6.
 
    If your are using Visual Studio, vsvars32.bat from the directory ...\Common7\Tools needs to be
@@ -207,7 +207,7 @@ $ ..\..\..\target\debug\shared\stream
 
    Running "ant check" was observed to fail with unexpected exceptions
    in streamtestcase and datetimedateformattestcase.
-   See {{{http://issues.apache.org/jira/browse/LOGCXX-244}LOGCXX-244}}.
+   See {{{https://issues.apache.org/jira/browse/LOGCXX-244}LOGCXX-244}}.
 
    ** Debian:
 

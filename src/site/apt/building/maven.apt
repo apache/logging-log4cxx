@@ -20,7 +20,7 @@
 
 Building Apache log4cxx with Apache Maven 2
 
-   {{{http://maven.apache.org}Apache Maven 2}} is used to generate the release assemblies and generate
+   {{{https://maven.apache.org}Apache Maven 2}} is used to generate the release assemblies and generate
    product documentation.  It delegates to the {{{./ant.html}Apache Ant build}} to build
    and test log4cxx and can be used as an alternate front end to the Ant
    build process since it can automatically download and use ant-contrib,
@@ -29,7 +29,7 @@ Building Apache log4cxx with Apache Maven 2
 
 * Quick start:
 
-  *Install {{{http://maven.apache.org}Apache Maven}} 2.0.8 or later.
+  *Install {{{https://maven.apache.org}Apache Maven}} 2.0.8 or later.
 
   *Install APR and APR-Util or place source in apr and apr-util directories in same parent directory
       as log4cxx directory.
@@ -75,7 +75,7 @@ $ mvn package
 
    It is not possible to directly pass options to the Ant build, however the ant build will read
    any build.properties file in the log4cxx directory. The file has to be in the default format
-   for {{{http://en.wikipedia.org/wiki/.properties}Java properties files}}, especially one must not
+   for {{{https://en.wikipedia.org/wiki/.properties}Java properties files}}, especially one must not
    provide options using the syntax -Dxy=z like on the shell, but only as xy=z per line.
 
    SMTP and ODBC options can depend on libraries that that have different licenses. You should

@@ -363,7 +363,7 @@
 				#set ( $href = $PathTool.calculateLink( $item.href, $relativePath ) )
 				#set ( $href = $href.replaceAll( '\\', '/' ) )
 			#else
-				#set ( $href="http://maven.apache.org/" )
+				#set ( $href="https://maven.apache.org/" )
 			#end
 ##
 			#if( $item.name )
@@ -414,12 +414,12 @@
 			</a>
 		#end
 		#if( $poweredBy.isEmpty() )
-			<a href="http://maven.apache.org/" title="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" class="poweredBy">
+			<a href="https://maven.apache.org/" title="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" class="poweredBy">
 				<img class="poweredBy" alt="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" src="$relativePath/images/logos/maven-feather.png" />
 			</a>
 		#end
 	#else
-		<a href="http://maven.apache.org/" title="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" class="poweredBy">
+		<a href="https://maven.apache.org/" title="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" class="poweredBy">
 			<img class="poweredBy" alt="$i18n.getString( "site-renderer", $locale, "template.builtby" ) Maven" src="$relativePath/images/logos/maven-feather.png" />
 		</a>
 	#end
@@ -512,7 +512,7 @@
 			#set ( $currentYear = ${currentDate.year} + 1900 )
 				<p>Copyright © ${project.inceptionYear}-${currentYear} <a class="external" href="$project.organization.url">${project.organization.name}</a>. All Rights Reserved.</p>
 				<p>Apache Logging, Apache Log4j, Log4j, Apache, the Apache feather logo, and the Apache Logging project logo are trademarks of The Apache Software Foundation.</p>
-				<p>Site powered by <a class="external" href="http://getbootstrap.com/">Twitter Bootstrap</a>. Icons from <a class="external" href="http://glyphicons.com/">Glyphicons Free</a>.</p>
+				<p>Site powered by <a class="external" href="https://getbootstrap.com/">Twitter Bootstrap</a>. Icons from <a class="external" href="https://glyphicons.com/">Glyphicons Free</a>.</p>
 		</div>
 	</body>
 </html>
