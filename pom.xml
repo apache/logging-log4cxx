@@ -73,8 +73,8 @@
 		<!-- Note that any properties you want available in velocity templates must not use periods! -->
 		<releaseArtifactId>${project.artifactId}</releaseArtifactId>
 		<releaseVersion>${project.version}</releaseVersion>
-		<releaseManager>Thorsten Schöning</releaseManager>
-		<releaseKey>778C3033</releaseKey>
+		<releaseManager>Curt Arnold</releaseManager>
+		<releaseKey>2E114322</releaseKey>
 	</properties>
 
 	<organization>
