@@ -138,4 +138,4 @@ $ make install
 
    Running "make check" was observed to fail with unexpected exceptions
    in streamtestcase and datetimedateformattestcase.
-   See {{{http://issues.apache.org/jira/browse/LOGCXX-244}LOGCXX-244}}.
+   See {{{https://issues.apache.org/jira/browse/LOGCXX-244}LOGCXX-244}}.

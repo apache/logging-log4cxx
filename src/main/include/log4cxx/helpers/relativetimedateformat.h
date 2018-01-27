@@ -25,7 +25,7 @@ namespace log4cxx
         namespace helpers
         {
                 /**
-                Formats a date by printing the number of seconds
+                Formats a date by printing the number of milliseconds
                 elapsed since the start of the application. This is the fastest
                 printing DateFormat in the package.
                 */

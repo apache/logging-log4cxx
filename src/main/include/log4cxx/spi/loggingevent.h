@@ -103,7 +103,7 @@ namespace log4cxx
                                 { return message; }
 
                         /**Returns the time when the application started,
-                        in seconds elapsed since 01.01.1970.
+                        in microseconds elapsed since 01.01.1970.
                         */
                         static log4cxx_time_t getStartTime();
 
@@ -112,7 +112,8 @@ namespace log4cxx
                              return threadName;
                         }
 
-                        /** Return the timeStamp of this event. */
+                        /** The number of microseconds elapsed from 01.01.1970 until logging event
+                         was created. */
                         inline log4cxx_time_t getTimeStamp() const
                                 { return timeStamp; }
 
@@ -127,14 +128,14 @@ namespace log4cxx
                         * should <em>never</em> be called directly.
                         *
                         * @param dest destination for NDC, unchanged if NDC is not set.
-                        * @return true if NDC is set.  
+                        * @return true if NDC is set.
                         */
                         bool getNDC(LogString& dest) const;
 
                         /**
-                         *  Writes the content of the LoggingEvent 
+                         *  Writes the content of the LoggingEvent
                          *  in a format compatible with log4j's serialized form.
-                         */ 
+                         */
                         void write(helpers::ObjectOutputStream& os, helpers::Pool& p) const;
 
                         /**
@@ -160,7 +161,7 @@ namespace log4cxx
                         * The returned set is unmodifiable by the caller.
                         *
                         * @return Set an unmodifiable set of the MDC keys.
-                        * 
+                        *
                         */
                         KeySet getMDCKeySet() const;
 
@@ -228,7 +229,7 @@ namespace log4cxx
                         LogString message;
 
 
-                        /** The number of milliseconds elapsed from 1/1/1970 until logging event
+                        /** The number of microseconds elapsed from 01.01.1970 until logging event
                          was created. */
                         log4cxx_time_t timeStamp;
 
@@ -247,9 +248,9 @@ namespace log4cxx
                        LoggingEvent(const LoggingEvent&);
                        LoggingEvent& operator=(const LoggingEvent&);
                        static const LogString getCurrentThreadName();
-                       
+
                        static void writeProlog(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p);
-                       
+
                 };
 
                 LOG4CXX_PTR_DEF(LoggingEvent);

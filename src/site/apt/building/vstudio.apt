@@ -77,7 +77,7 @@ configure-aprutil
 
   *APR 1.2.12 has a known issue that will prevent
   compilation with Visual Studio 6 unless a later Platform SDK is installed.
-  See APR bug {{{http://issues.apache.org/bugzilla/show_bug.cgi?44327}44327}}.
+  See APR bug {{{https://issues.apache.org/bugzilla/show_bug.cgi?44327}44327}}.
   APR 1.2.11 and the corresponding APR-Util 1.2.10 will compile with Visual Studio 6.
 
   *APR-Util requires later LDAP headers than provided with Visual Studio 6

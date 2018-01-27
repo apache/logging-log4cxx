@@ -58,7 +58,7 @@ open projects/log4cxx.xcodeproj
    and drop on the "Link Binary with Libraries" folder
    under Targets.
 
-   See issue {{{http://issues.apache.org/jira/browse/LOGCXX-245}LOGCXX-245}} for further information.
+   See issue {{{https://issues.apache.org/jira/browse/LOGCXX-245}LOGCXX-245}} for further information.
 
    The projects provided in the release target Mac OS/X 10.5 which provides
    preinstalled APR and APR-Util libraries.  To generate XCode projects to target Mac OS/X 10.4,

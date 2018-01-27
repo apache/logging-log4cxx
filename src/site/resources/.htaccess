@@ -18,16 +18,16 @@
   #
   #   rewrite site requests to equivalent new URLs
   #
-  RewriteRule ^contributing\.html$ http://logging.apache.org/log4cxx/issue-tracking.html [R=permanent,L]
-  RewriteRule ^roadmap\.html$ http://logging.apache.org/log4cxx/issue-tracking.html [R=permanent,L]
-  RewriteRule ^support\.html$ http://logging.apache.org/log4cxx/index.html [R=permanent,L]
-  RewriteRule ^team\.html$ http://logging.apache.org/team-list.html [R=permanent,L]
-  RewriteRule ^performance\.html$ http://logging.apache.org/log4cxx/index.html [R=permanent,L]
-  RewriteRule ^ChangeLog$ http://logging.apache.org/log4cxx/changes-report.html [R=permanent,L]
-  RewriteRule ^news$ http://logging.apache.org/log4cxx/changes-report.html [R=permanent,L]
-  RewriteRule ^manual\.html$ http://logging.apache.org/log4cxx/index.html [R=permanent,L]
-  RewriteRule ^manual/index\.html$ http://logging.apache.org/log4cxx/manual.html [R=permanent,L] 
-  RewriteRule ^manual/(.*)$ http://logging.apache.org/log4cxx/apidocs/$1 [R=permanent,L]
-  RewriteRule ^manual\.html/index\.html$ http://logging.apache.org/log4cxx/manual.html [R=permanent,L] 
-  RewriteRule ^manual\.html/(.*)$ http://logging.apache.org/log4cxx/apidocs/$1 [R=permanent,L]
+  RewriteRule ^contributing\.html$			https://logging.apache.org/log4cxx/issue-tracking.html	[R=permanent,L]
+  RewriteRule ^roadmap\.html$				https://logging.apache.org/log4cxx/issue-tracking.html	[R=permanent,L]
+  RewriteRule ^support\.html$				https://logging.apache.org/log4cxx/index.html			[R=permanent,L]
+  RewriteRule ^team\.html$					https://logging.apache.org/team-list.html				[R=permanent,L]
+  RewriteRule ^performance\.html$			https://logging.apache.org/log4cxx/index.html			[R=permanent,L]
+  RewriteRule ^ChangeLog$					https://logging.apache.org/log4cxx/changes-report.html	[R=permanent,L]
+  RewriteRule ^news$						https://logging.apache.org/log4cxx/changes-report.html	[R=permanent,L]
+  RewriteRule ^manual\.html$				https://logging.apache.org/log4cxx/index.html			[R=permanent,L]
+  RewriteRule ^manual/index\.html$			https://logging.apache.org/log4cxx/manual.html			[R=permanent,L]
+  RewriteRule ^manual/(.*)$					https://logging.apache.org/log4cxx/apidocs/$1			[R=permanent,L]
+  RewriteRule ^manual\.html/index\.html$	https://logging.apache.org/log4cxx/manual.html			[R=permanent,L]
+  RewriteRule ^manual\.html/(.*)$			https://logging.apache.org/log4cxx/apidocs/$1			[R=permanent,L]
 </IfModule>
