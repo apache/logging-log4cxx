@@ -70,7 +70,8 @@ public:
                       LOG4CXX_STR("US-ASCII"));
       common(root);
 
-      BinaryCompare::compare("output/encoding/ascii.log", "witness/encoding/ascii.log");
+      BinaryCompare::compare( "output/encoding/ascii.log",
+                              "witness/encoding/ascii.log");
   }
 
     /**
