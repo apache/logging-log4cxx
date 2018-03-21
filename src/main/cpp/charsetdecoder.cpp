@@ -177,7 +177,7 @@ namespace log4cxx
                                break;
                            } else {
                                stat = append(out, buf);
-                               in.position(in.position() + converted);
+                               in.position(in.position() + requested);
                            }
                       }
                   }
