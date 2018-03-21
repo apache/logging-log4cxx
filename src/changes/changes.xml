@@ -48,10 +48,12 @@
 			<action issue="LOGCXX-412" type="fix">Log4cxx doesn't roll normally when working under multiple processes environment</action>
 			<action issue="LOGCXX-411" type="fix">Crash when logging on multiple threads.</action>
 			<action issue="LOGCXX-400" type="fix">C++11 does not allow char literals with highest bit set unless cast</action>
+			<action issue="LOGCXX-399" type="fix">Non-ascii character output wrong.</action>
 			<action issue="LOGCXX-394" type="fix">Levels are not thread safe</action>
 			<action issue="LOGCXX-388" type="fix">Hierarchy::updateParents loops forever on illegal logger-name like '.logger1'</action>
 			<action issue="LOGCXX-382" type="fix">Mingw build type conversion error</action>
 			<action issue="LOGCXX-381" type="fix">Pkgconfig can't find dependencies properly if log4cxx built statically</action>
+			<action issue="LOGCXX-369" type="fix">Load Properties File Fails When There Are multibyte Characters in the Path</action>
 			<action issue="LOGCXX-368" type="fix">method and class name functions not properly implemented</action>
 			<action issue="LOGCXX-367" type="fix">Build fails on Linux with g++ 4.4</action>
 			<action issue="LOGCXX-366" type="fix">Errors when compile log4cxx 0.10.0 under Win7 x64 with Visual Studio 2010 (due to Christian Boos and Feng Nan)</action>
