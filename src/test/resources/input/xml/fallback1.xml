@@ -27,9 +27,17 @@
       <appender-ref ref="FALLBACK" />
     </errorHandler>
 
-    <!-- We need a most likely invalid file name on most file systems to trigger FALLBACK. -->
-    <param name="File"		value="output/xyz/."	/>
-    <param name="Append"	value="false"			/>
+    <!--
+        The following path is carefully designed to fail on Linux and Windows,
+        so that the appender FALLBACK is used instead and the test succeeds in
+        the end. Linux considers "." as current directory, which can not be
+        created as a file, while Windows strips "/."[1] internally and fails at
+        ":", which is an invalid name.
+
+        [1]: https://en.wikipedia.org/wiki/Filename#Comparison_of_filename_limitations
+    -->
+    <param name="File"      value="output/xyz/:/."   />
+    <param name="Append"    value="false"            />
 
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%-5p %c{2} - %m%n"/>
