@@ -90,17 +90,7 @@ namespace log4cxx
         }
 }
 
-//#define LOCK_R std::shared_lock<shared_mutex_recursive>
-//#define LOCK_W std::unique_lock<shared_mutex_recursive>
-
-//#define LOCK std::lock_guard<std::recursive_mutex>
-
-//#define LOCK synchronized
-
 #define LOCK_R synchronized_read
 #define LOCK_W synchronized_write
-
-//#define LOCK_R synchronized
-//#define LOCK_W synchronized
 
 #endif //_LOG4CXX_HELPERS_SYNCHRONIZED_H
