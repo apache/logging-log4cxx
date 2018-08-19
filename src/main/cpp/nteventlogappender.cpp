@@ -233,15 +233,15 @@ void NTEventLogAppender::addRegistryInfo()
             DWORD modlen = GetModuleFileNameW(hmodule, modpath, _MAX_PATH - 1);
             if (modlen > 0) {
                 modpath[modlen] = 0;
-                RegSetValueExW(hkey, L"EventMessageFile", 0, REG_SZ, 
+                RegSetValueExW(hkey, L"EventMessageFile", 0, REG_SZ,
                         (LPBYTE) modpath, wcslen(modpath) * sizeof(wchar_t));
-                RegSetValueExW(hkey, L"CategoryMessageFile", 0, REG_SZ, 
+                RegSetValueExW(hkey, L"CategoryMessageFile", 0, REG_SZ,
                         (LPBYTE) modpath, wcslen(modpath) * sizeof(wchar_t));
                     DWORD typesSupported = 7;
                     DWORD categoryCount = 6;
-                RegSetValueExW(hkey, L"TypesSupported", 0, REG_DWORD, 
+                RegSetValueExW(hkey, L"TypesSupported", 0, REG_DWORD,
                            (LPBYTE)&typesSupported, sizeof(DWORD));
-                RegSetValueExW(hkey, L"CategoryCount", 0, REG_DWORD, 
+                RegSetValueExW(hkey, L"CategoryCount", 0, REG_DWORD,
                            (LPBYTE)&categoryCount, sizeof(DWORD));
             }
         }

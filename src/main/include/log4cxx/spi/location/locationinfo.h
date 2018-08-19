@@ -109,7 +109,7 @@ namespace log4cxx
 
         /** Caller's method name. */
         const char * methodName;
-        
+
 
       };
   }

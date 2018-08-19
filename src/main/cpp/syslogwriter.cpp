@@ -59,7 +59,7 @@ void SyslogWriter::write(const LogString& source) {
   if (this->ds != 0 && this->address != 0) {
       LOG4CXX_ENCODE_CHAR(data, source);
 
-      DatagramPacketPtr packet( 
+      DatagramPacketPtr packet(
           new DatagramPacket((void*) data.data(), data.length(),
                              address, SYSLOG_PORT));
 

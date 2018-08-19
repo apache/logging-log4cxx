@@ -26,8 +26,8 @@ namespace log4cxx { namespace pattern {
 /**
  * Return the event's NDC in a StringBuffer.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT NDCPatternConverter : public LoggingEventPatternConverter {
 

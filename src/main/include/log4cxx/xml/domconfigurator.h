@@ -108,7 +108,7 @@ namespace log4cxx
                         void parseErrorHandler(
                             log4cxx::helpers::Pool& p,
                             log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
-                            apr_xml_elem* element, 
+                            apr_xml_elem* element,
                             AppenderPtr& appender,
                             apr_xml_doc* doc,
                             AppenderMap& appenders);
@@ -159,7 +159,7 @@ namespace log4cxx
                         /**
                          Used internally to parse the root logger element.
                         */
-                        void parseRoot(log4cxx::helpers::Pool& p, 
+                        void parseRoot(log4cxx::helpers::Pool& p,
                             log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                             apr_xml_elem* rootElement, apr_xml_doc* doc, AppenderMap& appenders);
 
@@ -204,7 +204,7 @@ namespace log4cxx
                         void parse(
                             log4cxx::helpers::Pool& p,
                             log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
-                            apr_xml_elem* element, 
+                            apr_xml_elem* element,
                             apr_xml_doc* doc,
                             AppenderMap& appenders);
 
@@ -289,7 +289,7 @@ namespace log4cxx
                 protected:
                         static LogString getAttribute(
                             log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
-                            apr_xml_elem*, 
+                            apr_xml_elem*,
                             const std::string& attrName);
 
                         LogString subst(const LogString& value);

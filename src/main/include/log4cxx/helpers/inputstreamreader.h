@@ -29,7 +29,7 @@ namespace log4cxx
 
           /**
            * Class for reading from character streams.
-           * Decorates a byte based InputStream and provides appropriate 
+           * Decorates a byte based InputStream and provides appropriate
            * conversion to characters.
            */
           class LOG4CXX_EXPORT InputStreamReader : public Reader

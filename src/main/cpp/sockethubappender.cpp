@@ -127,13 +127,13 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
         {
                 return;
         }
-        
+
         LogString ndcVal;
         event->getNDC(ndcVal);
         event->getThreadName();
         // Get a copy of this thread's MDC.
         event->getMDCCopy();
-       
+
 
         // loop through the current set of open connections, appending the event to each
         std::vector<ObjectOutputStreamPtr>::iterator it = streams.begin();

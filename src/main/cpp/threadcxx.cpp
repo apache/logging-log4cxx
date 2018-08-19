@@ -69,7 +69,7 @@ void Thread::run(Runnable start, void* data) {
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
-        
+
         //   create LaunchPackage on the thread's memory pool
         LaunchPackage* package = new(p) LaunchPackage(this, start, data);
         stat = apr_thread_create(&thread, attrs,
@@ -90,7 +90,7 @@ Thread::LaunchStatus::LaunchStatus(volatile unsigned int* p) : alive(p) {
 Thread::LaunchStatus::~LaunchStatus() {
     apr_atomic_set32(alive, 0);
 }
-    
+
 #if APR_HAS_THREADS
 void* LOG4CXX_THREAD_FUNC Thread::launcher(apr_thread_t* thread, void* data) {
     LaunchPackage* package = (LaunchPackage*) data;
@@ -168,7 +168,7 @@ void Thread::sleep(int duration) {
     if(interrupted()) {
          throw InterruptedException();
     }
-#endif    
+#endif
     if (duration > 0) {
         apr_sleep(duration*1000);
     }

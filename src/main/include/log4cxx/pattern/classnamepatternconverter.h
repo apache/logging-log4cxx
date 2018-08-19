@@ -28,8 +28,8 @@ namespace log4cxx {
 /**
  * Formats the class name of the site of the logging request.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT ClassNamePatternConverter : public NamePatternConverter {
   /**

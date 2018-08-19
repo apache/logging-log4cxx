@@ -380,7 +380,7 @@ protected:
 
       void registryPut(const AppenderPtr& appender);
       AppenderPtr registryGet(const LogString& name);
-      
+
 private:
       PropertyConfigurator(const PropertyConfigurator&);
       PropertyConfigurator& operator=(const PropertyConfigurator&);

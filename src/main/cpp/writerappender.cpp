@@ -258,7 +258,7 @@ void WriterAppender::setOption(const LogString& option, const LogString& value) 
 }
 
 
-void WriterAppender::setImmediateFlush(bool value) { 
+void WriterAppender::setImmediateFlush(bool value) {
     synchronized sync(mutex);
-    immediateFlush = value; 
+    immediateFlush = value;
 }

@@ -35,8 +35,8 @@ namespace log4cxx {
          * occurs. Such conditions include time of day, file size, an
          * external event or a combination thereof.
          *
-         * 
-         * 
+         *
+         *
          * */
 
         class LOG4CXX_EXPORT TriggeringPolicy :

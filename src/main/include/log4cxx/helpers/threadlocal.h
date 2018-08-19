@@ -57,23 +57,23 @@ namespace log4cxx
                      *  Sets the value in the current thread's copy of this thread-local variable.
                      *  @param priv new value.
                      */
-                    void set(void* priv);                    
+                    void set(void* priv);
                     /**
                      *  Returns the value in the current thread's copy of this thread-local variable.
                      *  @return value of thread-local variable for the current thread.
                      */
                     void* get();
-               
+
                 private:
                     /**
                      * Prevent use of default copy constructor.
                      */
                      ThreadLocal(const ThreadLocal&);
                     /**
-                     *   Prevent use of default assignment operator.  
+                     *   Prevent use of default assignment operator.
                      */
                      ThreadLocal& operator=(const ThreadLocal&);
-                     
+
                      static apr_threadkey_t* create(Pool& p);
 
                 Pool p;

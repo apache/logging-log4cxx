@@ -73,11 +73,11 @@ namespace log4cxx
                          */
                         static void sleep(int millis);
                         /**
-                         *  Sets interrupted status for current thread to true.  
+                         *  Sets interrupted status for current thread to true.
                          */
                         static void currentThreadInterrupt();
                         /**
-                         *  Sets interrupted status to true.  
+                         *  Sets interrupted status to true.
                          */
                         void interrupt();
                         /**
@@ -85,11 +85,11 @@ namespace log4cxx
                          *  sets the interrupted status to false.
                          */
                         static bool interrupted();
-                        
+
                         bool isAlive();
                         bool isCurrentThread() const;
                         void ending();
-                        
+
 
                 private:
                         Pool p;
@@ -98,7 +98,7 @@ namespace log4cxx
                         volatile unsigned int interruptedStatus;
                         Thread(const Thread&);
                         Thread& operator=(const Thread&);
-                        
+
                         /**
                          *   This class is used to encapsulate the parameters to
                          *   Thread::run when they are passed to Thread::launcher.
@@ -140,13 +140,13 @@ namespace log4cxx
                             LaunchPackage(const LaunchPackage&);
                             LaunchPackage& operator=(const LaunchPackage&);
                             Thread* thread;
-                            Runnable runnable; 
+                            Runnable runnable;
                             void* data;
                         };
-                        
+
                         /**
                          *  This object atomically sets the specified memory location
-                         *  to non-zero on construction and to zero on destruction.  
+                         *  to non-zero on construction and to zero on destruction.
                          *  Used to maintain Thread.alive.
                          */
                         class LaunchStatus {
@@ -165,7 +165,7 @@ namespace log4cxx
                             LaunchStatus& operator=(const LaunchStatus&);
                             volatile unsigned int* alive;
                         };
-                        
+
                         /**
                          *  This method runs on the created thread and sets up thread-local storage
                          *  used to keep the reference to the corresponding Thread object and
@@ -175,7 +175,7 @@ namespace log4cxx
                         /**
                          *   Get a key to the thread local storage used to hold the reference to
                          *   the corresponding Thread object.
-                         */                        
+                         */
                         static ThreadLocal& getThreadLocal();
                 };
         } // namespace helpers

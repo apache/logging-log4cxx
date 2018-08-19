@@ -88,10 +88,10 @@ servlet.
                         attached client(s). */
                         virtual bool requiresLayout() const
                                 { return true; }
-                                
+
                         LogString getEncoding() const;
                         void setEncoding(const LogString& value);
-        
+
 
                         /** all of the options have been set, create the socket handler and
                         wait for connections. */
@@ -133,7 +133,7 @@ servlet.
 
                         typedef log4cxx::helpers::SocketPtr Connection;
                         LOG4CXX_LIST_DEF(ConnectionList, Connection);
-                        
+
                         void write(log4cxx::helpers::ByteBuffer&);
                         void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
                         ConnectionList connections;
@@ -144,7 +144,7 @@ servlet.
                         size_t activeConnections;
                         static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
                 }; // class TelnetAppender
-                
+
                 LOG4CXX_PTR_DEF(TelnetAppender);
     } // namespace net
 } // namespace log4cxx

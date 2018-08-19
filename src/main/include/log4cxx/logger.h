@@ -38,7 +38,7 @@ namespace log4cxx
     namespace helpers {
             class synchronized;
     }
-    
+
     namespace spi {
         class LoggerRepository;
         LOG4CXX_PTR_DEF(LoggerRepository);
@@ -66,7 +66,7 @@ namespace log4cxx
                 LOG4CXX_CAST_ENTRY(Logger)
                 LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
         END_LOG4CXX_CAST_MAP()
-        
+
     private:
         /**
          *   Reference to memory pool.
@@ -152,7 +152,7 @@ namespace log4cxx
         hierarchy circumventing any evaluation of whether to log or not
         to log the particular log request.
 
-        @param event the event to log.  
+        @param event the event to log.
         @param p memory pool for any allocations needed to process request.
         */
         void callAppenders(const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
@@ -627,32 +627,32 @@ namespace log4cxx
 
         /**
         * Get the logger name.
-        * @return logger name as LogString.  
+        * @return logger name as LogString.
         */
         const LogString getName() const { return name; }
         /**
         * Get logger name in current encoding.
-        * @param name buffer to which name is appended.  
+        * @param name buffer to which name is appended.
         */
         void getName(std::string& name) const;
 #if LOG4CXX_WCHAR_T_API
         /**
         * Get logger name.
-        * @param name buffer to which name is appended.  
+        * @param name buffer to which name is appended.
         */
         void getName(std::wstring& name) const;
 #endif
 #if LOG4CXX_UNICHAR_API
         /**
         * Get logger name.
-        * @param name buffer to which name is appended.  
+        * @param name buffer to which name is appended.
         */
         void getName(std::basic_string<UniChar>& name) const;
 #endif
 #if LOG4CXX_CFSTRING_API
         /**
         * Get logger name.
-        * @param name buffer to which name is appended.  
+        * @param name buffer to which name is appended.
         */
         void getName(CFStringRef& name) const;
 #endif
@@ -675,43 +675,43 @@ namespace log4cxx
 
         /**
         * Retrieve a logger by name in current encoding.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const std::string& name);
         /**
         * Retrieve a logger by name in current encoding.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const char* const name);
 #if LOG4CXX_WCHAR_T_API
         /**
         * Retrieve a logger by name.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const std::wstring& name);
         /**
         * Retrieve a logger by name.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const wchar_t* const name);
 #endif
 #if LOG4CXX_UNICHAR_API
         /**
         * Retrieve a logger by name.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const std::basic_string<UniChar>& name);
 #endif
 #if LOG4CXX_CFSTRING_API
         /**
         * Retrieve a logger by name.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLogger(const CFStringRef& name);
 #endif
         /**
         * Retrieve a logger by name in Unicode.
-        * @param name logger name. 
+        * @param name logger name.
         */
         static LoggerPtr getLoggerLS(const LogString& name);
 
@@ -830,7 +830,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -846,7 +846,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -860,7 +860,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -875,7 +875,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -889,7 +889,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -904,7 +904,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -918,7 +918,7 @@ namespace log4cxx
         Log a message string with the INFO level.
 
         <p>This method first checks if this logger is <code>INFO</code>
-        enabled by comparing the level of this logger with the 
+        enabled by comparing the level of this logger with the
         INFO level. If this logger is
         <code>INFO</code> enabled, it proceeds to call all the
         registered appenders in this logger and also higher in the
@@ -1267,7 +1267,7 @@ namespace log4cxx
         */
         void l7dlog(const LevelPtr& level, const std::basic_string<UniChar>& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
-                    const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2, 
+                    const std::basic_string<UniChar>& val1, const std::basic_string<UniChar>& val2,
                     const std::basic_string<UniChar>& val3) const;
 #endif
 #if LOG4CXX_CFSTRING_API
@@ -1343,7 +1343,7 @@ namespace log4cxx
         */
         void l7dlog(const LevelPtr& level, const CFStringRef& key,
                     const log4cxx::spi::LocationInfo& locationInfo,
-                    const CFStringRef& val1, const CFStringRef& val2, 
+                    const CFStringRef& val1, const CFStringRef& val2,
                     const CFStringRef& val3) const;
 #endif
 
@@ -1718,7 +1718,7 @@ namespace log4cxx
         friend class log4cxx::helpers::synchronized;
    };
    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
-   
+
 }
 
 /** @addtogroup LoggingMacros Logging macros

@@ -33,7 +33,7 @@ InputStreamReader::InputStreamReader(const InputStreamPtr& in1)
    }
 }
 
-InputStreamReader::InputStreamReader(const InputStreamPtr& in1, const CharsetDecoderPtr &dec1) 
+InputStreamReader::InputStreamReader(const InputStreamPtr& in1, const CharsetDecoderPtr &dec1)
     : in(in1), dec(dec1) {
     if (in1 == 0) {
        throw NullPointerException(LOG4CXX_STR("in parameter may not be null."));

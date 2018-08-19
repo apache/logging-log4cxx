@@ -54,7 +54,7 @@ ThreadSpecificData* ThreadSpecificData::getCurrentData() {
   apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
   return (ThreadSpecificData*) pData;
 #else
-  return &getDataNoThreads();  
+  return &getDataNoThreads();
 #endif
 }
 
@@ -70,7 +70,7 @@ void ThreadSpecificData::recycle() {
             }
         }
     }
-#endif    
+#endif
 }
 
 void ThreadSpecificData::put(const LogString& key, const LogString& val) {

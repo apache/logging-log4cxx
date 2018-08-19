@@ -22,7 +22,7 @@
 
 namespace log4cxx
 {
- 
+
         /**
         * ConsoleAppender appends log events to <code>stdout</code> or
         * <code>stderr</code> using a layout specified by the user. The

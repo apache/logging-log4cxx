@@ -110,7 +110,7 @@ balanced by a stop delimeter "}". </p>
                         static LogString substVars(const LogString& val, Properties& props);
 
                         /**
-                         *  Gets the specified system property.  
+                         *  Gets the specified system property.
                         @param key The key to search for.
                         @param def The default value to return.
                         @return the string value of the system property, or the default

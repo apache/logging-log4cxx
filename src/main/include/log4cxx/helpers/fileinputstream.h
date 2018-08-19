@@ -30,7 +30,7 @@ namespace log4cxx
 
           /**
            * InputStream implemented on top of APR file IO.
-           * 
+           *
            */
           class LOG4CXX_EXPORT FileInputStream : public InputStream
           {
@@ -55,7 +55,7 @@ namespace log4cxx
                   FileInputStream(const logchar* filename);
 
                   /**
-                   * Creates a FileInputStream by opening a connection to an actual 
+                   * Creates a FileInputStream by opening a connection to an actual
                    * file, the file named by the File object file in the file system.
                    *
                    * @param aFile The file to be opened for reading.
@@ -65,7 +65,7 @@ namespace log4cxx
                   virtual ~FileInputStream();
 
                   /**
-                   * Closes this file input stream and releases any system 
+                   * Closes this file input stream and releases any system
                    * resources associated with the stream.
                    */
                   virtual void close();

@@ -67,7 +67,7 @@ namespace log4cxx
                 Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
                 */
                 void activateOptions(log4cxx::helpers::Pool& p);
-                
+
                 void close();
 
 
@@ -147,11 +147,11 @@ namespace log4cxx
            protected:
 
                 virtual void setSocket(log4cxx::helpers::SocketPtr& socket, log4cxx::helpers::Pool& p) = 0;
-                
+
                 virtual void cleanUp(log4cxx::helpers::Pool& p) = 0;
-                
+
                 virtual int getDefaultDelay() const = 0;
-                
+
                 virtual int getDefaultPort() const = 0;
 
            private:

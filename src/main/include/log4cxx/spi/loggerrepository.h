@@ -33,7 +33,7 @@ namespace log4cxx
 {
     namespace spi
         {
-            
+
             /**
             A <code>LoggerRepository</code> is used to create and retrieve
             <code>Loggers</code>. The relation between loggers in a repository

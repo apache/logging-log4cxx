@@ -87,7 +87,7 @@ namespace log4cxx
 
                         log4cxx::spi::FilterPtr getNext() const;
                         void setNext(const log4cxx::spi::FilterPtr& newNext);
- 
+
             enum FilterDecision
             {
             /**

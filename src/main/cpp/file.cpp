@@ -30,7 +30,7 @@ using namespace log4cxx::helpers;
 File::File() {
 }
 
-template<class S> 
+template<class S>
 static LogString decodeLS(const S* src) {
     LogString dst;
     if (src != 0) {
@@ -39,7 +39,7 @@ static LogString decodeLS(const S* src) {
     return dst;
 }
 
-template<class S> 
+template<class S>
 static LogString decodeLS(const std::basic_string<S>& src) {
     LogString dst;
     Transcoder::decode(src, dst);
@@ -192,8 +192,8 @@ std::vector<LogString> File::list(Pool& p) const {
     apr_finfo_t entry;
     std::vector<LogString> filenames;
 
-    apr_status_t stat = apr_dir_open(&dir, 
-        convertBackSlashes(getPath(p)), 
+    apr_status_t stat = apr_dir_open(&dir,
+        convertBackSlashes(getPath(p)),
         p.getAPRPool());
     if(stat == APR_SUCCESS) {
         int style = APR_FILEPATH_ENCODING_UNKNOWN;

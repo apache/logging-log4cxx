@@ -26,7 +26,7 @@ namespace log4cxx {
 
 
    namespace helpers {
-   
+
    typedef std::ios_base& (*ios_base_manip)(std::ios_base&);
 
    /**
@@ -45,7 +45,7 @@ namespace log4cxx {
          */
         ~CharMessageBuffer();
 
-        
+
         /**
          *   Appends string to buffer.
          *   @param msg string append.
@@ -171,7 +171,7 @@ namespace log4cxx {
          */
       CharMessageBuffer(const CharMessageBuffer&);
         /**
-         *   Prevent use of default assignment operator.  
+         *   Prevent use of default assignment operator.
          */
       CharMessageBuffer& operator=(const CharMessageBuffer&);
 
@@ -206,10 +206,10 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
          *  Destructor.
          */
         ~UniCharMessageBuffer();
-        
+
         typedef std::basic_ostream<UniChar> uostream;
 
-        
+
         /**
          *   Appends string to buffer.
          *   @param msg string append.
@@ -235,7 +235,7 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
          *   @return this buffer.
          */
         UniCharMessageBuffer& operator<<(const UniChar msg);
-        
+
 #if LOG4CXX_CFSTRING_API
       /**
          *   Appends a string into the buffer and
@@ -244,7 +244,7 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
          *   @return encapsulated CharMessageBuffer.
          */
         UniCharMessageBuffer& operator<<(const CFStringRef& msg);
-#endif        
+#endif
 
         /**
          *   Insertion operator for STL manipulators such as std::fixed.
@@ -346,7 +346,7 @@ std::basic_ostream<char>& operator<<(CharMessageBuffer& os, const V& val) {
          */
       UniCharMessageBuffer(const UniCharMessageBuffer&);
         /**
-         *   Prevent use of default assignment operator.  
+         *   Prevent use of default assignment operator.
          */
       UniCharMessageBuffer& operator=(const UniCharMessageBuffer&);
 
@@ -383,7 +383,7 @@ UniCharMessageBuffer::uostream& operator<<(UniCharMessageBuffer& os, const V& va
          */
         ~WideMessageBuffer();
 
-        
+
         /**
          *   Appends string to buffer.
          *   @param msg string append.
@@ -510,7 +510,7 @@ UniCharMessageBuffer::uostream& operator<<(UniCharMessageBuffer& os, const V& va
          */
       WideMessageBuffer(const WideMessageBuffer&);
         /**
-         *   Prevent use of default assignment operator.  
+         *   Prevent use of default assignment operator.
          */
       WideMessageBuffer& operator=(const WideMessageBuffer&);
 
@@ -590,7 +590,7 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
 
       /**
        *   Get content of buffer.
-       *   @param os used only to signal 
+       *   @param os used only to signal
        *       the character type and that
        *       the embedded stream was used.
        */
@@ -744,12 +744,12 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
 
       /**
        *   Get content of buffer.
-       *   @param os used only to signal 
+       *   @param os used only to signal
        *       the character type and that
        *       the embedded stream was used.
        */
       const std::wstring& str(std::basic_ostream<wchar_t>& os);
-        
+
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
       /**
        *   Get content of buffer.
@@ -761,12 +761,12 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
 
       /**
        *   Get content of buffer.
-       *   @param os used only to signal 
+       *   @param os used only to signal
        *       the character type and that
        *       the embedded stream was used.
        */
       const std::basic_string<UniChar>& str(UniCharMessageBuffer::uostream& os);
-#endif        
+#endif
 
         /**
          *  Returns true if buffer has an encapsulated STL stream.
@@ -780,7 +780,7 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
          */
         MessageBuffer(const MessageBuffer&);
         /**
-         *   Prevent use of default assignment operator.  
+         *   Prevent use of default assignment operator.
          */
         MessageBuffer& operator=(const MessageBuffer&);
 
@@ -792,13 +792,13 @@ std::basic_ostream<wchar_t>& operator<<(WideMessageBuffer& os, const V& val) {
         /**
          * Encapsulated wide message buffer, created on demand.
          */
-        WideMessageBuffer* wbuf;        
+        WideMessageBuffer* wbuf;
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
         /**
          * Encapsulated wide message buffer, created on demand.
          */
-        UniCharMessageBuffer* ubuf;        
-#endif        
+        UniCharMessageBuffer* ubuf;
+#endif
    };
 
 template<class V>

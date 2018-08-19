@@ -125,11 +125,11 @@ namespace log4cxx
 
       protected:
                 virtual void setSocket(log4cxx::helpers::SocketPtr& socket, log4cxx::helpers::Pool& p);
-                
+
                 virtual void cleanUp(log4cxx::helpers::Pool& p);
-                
+
                 virtual int getDefaultDelay() const;
-                
+
                 virtual int getDefaultPort() const;
 
                 void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
@@ -140,9 +140,9 @@ namespace log4cxx
                 XMLSocketAppender(const XMLSocketAppender&);
                 XMLSocketAppender& operator=(const XMLSocketAppender&);
         }; // class XMLSocketAppender
-        
+
         LOG4CXX_PTR_DEF(XMLSocketAppender);
-        
+
     } // namespace net
 } // namespace log4cxx
 

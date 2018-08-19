@@ -133,8 +133,8 @@ namespace log4cxx {
          * the {@link #activateOptions} method of the owning
          * <code>RollingFileAppender</code>.
          *
-         * 
-         * 
+         *
+         *
          */
         class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
              public TriggeringPolicy {

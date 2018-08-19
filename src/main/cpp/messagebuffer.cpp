@@ -189,7 +189,7 @@ std::basic_ostream<wchar_t>& WideMessageBuffer::operator<<(void* val) { return (
 MessageBuffer::MessageBuffer()  : wbuf(0)
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
    , ubuf(0)
-#endif   
+#endif
 {
 }
 
@@ -197,14 +197,14 @@ MessageBuffer::~MessageBuffer() {
     delete wbuf;
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
     delete ubuf;
-#endif   
+#endif
 }
 
 bool MessageBuffer::hasStream() const {
     bool retval = cbuf.hasStream() || (wbuf != 0 && wbuf->hasStream());
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
-    retval = retval || (ubuf != 0 && ubuf->hasStream());    
-#endif   
+    retval = retval || (ubuf != 0 && ubuf->hasStream());
+#endif
     return retval;
 }
 

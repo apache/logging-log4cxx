@@ -37,7 +37,7 @@ namespace log4cxx
         {
             class LOG4CXX_EXPORT SQLException : public log4cxx::helpers::Exception {
             public:
-                SQLException(short fHandleType, 
+                SQLException(short fHandleType,
                             void* hInput, const char* prolog,
                             log4cxx::helpers::Pool& p);
                 SQLException(const char* msg);
@@ -281,7 +281,7 @@ namespace log4cxx
                         ODBCAppender& operator=(const ODBCAppender&);
                 }; // class ODBCAppender
                 LOG4CXX_PTR_DEF(ODBCAppender);
-                
+
     } // namespace db
 } // namespace log4cxx
 

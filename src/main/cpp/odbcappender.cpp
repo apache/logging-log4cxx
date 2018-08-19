@@ -39,18 +39,18 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::db;
 using namespace log4cxx::spi;
 
-SQLException::SQLException(short fHandleType, 
+SQLException::SQLException(short fHandleType,
                            void* hInput, const char* prolog,
-                           log4cxx::helpers::Pool& p) 
+                           log4cxx::helpers::Pool& p)
                            : Exception(formatMessage(fHandleType, hInput, prolog, p)) {
 }
 
 
-SQLException::SQLException(const char* msg) 
+SQLException::SQLException(const char* msg)
    : Exception(msg) {
 }
 
-SQLException::SQLException(const SQLException& src) 
+SQLException::SQLException(const SQLException& src)
    : Exception(src) {
 }
 
@@ -69,7 +69,7 @@ const char* SQLException::formatMessage(short fHandleType,
    // Get the status records.
    i = 1;
    while ((rc2 = SQLGetDiagRecA(fHandleType, hInput, i, SqlState, &NativeError,
-                        Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) 
+                        Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA)
    {
       strReturn.append((char*) Msg);
       i++;
@@ -140,7 +140,7 @@ void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::P
 
    if (buffer.size() >= bufferSize)
       flushBuffer(p);
-#endif      
+#endif
 }
 
 LogString ODBCAppender::getLogStatement(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const
@@ -167,7 +167,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
          throw SQLException( SQL_HANDLE_DBC, con, "Failed to allocate sql handle.", p);
       }
 
-      SQLWCHAR* wsql = Transcoder::wencode(sql, p); 
+      SQLWCHAR* wsql = Transcoder::wencode(sql, p);
       ret = SQLExecDirectW(stmt, wsql, SQL_NTS);
 
      if (ret < 0)
@@ -181,7 +181,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
       {
          SQLFreeHandle(SQL_HANDLE_STMT, stmt);
       }
-   
+
       throw e;
    }
    SQLFreeHandle(SQL_HANDLE_STMT, stmt);
@@ -242,8 +242,8 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
      wchar_t szOutConnectionString[1024];
      SQLSMALLINT nOutConnctionLength = 0;
 
-     ret = SQLDriverConnectW( connection, NULL, 
-            wURL, SQL_NTS, 
+     ret = SQLDriverConnectW( connection, NULL,
+            wURL, SQL_NTS,
             szOutConnectionString, sizeof( szOutConnectionString ),
             &nOutConnctionLength, SQL_DRIVER_NOPROMPT );
 
@@ -260,7 +260,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
    return connection;
 #else
    return 0;
-#endif   
+#endif
 }
 
 void ODBCAppender::close()

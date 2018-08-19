@@ -128,7 +128,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
                      }
                      break;
                  }
-             
+
                 //
                 //   Following code is only reachable if buffer is full
                 //
@@ -174,7 +174,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
         appenders->appendLoopOnAppenders(event, p);
 #endif
   }
-  
+
 
 void AsyncAppender::close() {
     {
@@ -183,7 +183,7 @@ void AsyncAppender::close() {
         bufferNotEmpty.signalAll();
         bufferNotFull.signalAll();
     }
-    
+
 #if APR_HAS_THREADS
     try {
         dispatcher.join();
@@ -192,7 +192,7 @@ void AsyncAppender::close() {
         LogLog::error(LOG4CXX_STR("Got an InterruptedException while waiting for the dispatcher to finish,"), e);
     }
 #endif
-    
+
     {
         synchronized sync(appenders->getMutex());
         AppenderList appenderList = appenders->getAllAppenders();
@@ -278,17 +278,17 @@ bool AsyncAppender::getBlocking() const {
     return blocking;
 }
 
-AsyncAppender::DiscardSummary::DiscardSummary(const LoggingEventPtr& event) : 
+AsyncAppender::DiscardSummary::DiscardSummary(const LoggingEventPtr& event) :
       maxEvent(event), count(1) {
 }
 
-AsyncAppender::DiscardSummary::DiscardSummary(const DiscardSummary& src) : 
+AsyncAppender::DiscardSummary::DiscardSummary(const DiscardSummary& src) :
       maxEvent(src.maxEvent), count(src.count) {
 }
 
 AsyncAppender::DiscardSummary& AsyncAppender::DiscardSummary::operator=(const DiscardSummary& src) {
       maxEvent = src.maxEvent;
-      count = src.count; 
+      count = src.count;
       return *this;
 }
 
@@ -303,8 +303,8 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p) {
     LogString msg(LOG4CXX_STR("Discarded "));
     StringHelper::toString(count, p, msg);
     msg.append(LOG4CXX_STR(" messages due to a full event buffer including: "));
-    msg.append(maxEvent->getMessage()); 
-    return new LoggingEvent(   
+    msg.append(maxEvent->getMessage());
+    return new LoggingEvent(
               maxEvent->getLoggerName(),
               maxEvent->getLevel(),
               msg,
@@ -327,7 +327,7 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* da
                    synchronized sync(pThis->bufferMutex);
                    size_t bufferSize = pThis->buffer.size();
                    isActive = !pThis->closed;
-               
+
                    while((bufferSize == 0) && isActive) {
                        pThis->bufferNotEmpty.await(pThis->bufferMutex);
                        bufferSize = pThis->buffer.size();
@@ -347,7 +347,7 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* da
                    pThis->discardMap->clear();
                    pThis->bufferNotFull.signalAll();
             }
-            
+
             for (LoggingEventList::iterator iter = events.begin();
                  iter != events.end();
                  iter++) {
@@ -361,4 +361,4 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* da
     }
     return 0;
 }
-#endif                
+#endif

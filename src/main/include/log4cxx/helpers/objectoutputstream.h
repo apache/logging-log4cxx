@@ -77,15 +77,15 @@ namespace log4cxx
           private:
                   ObjectOutputStream(const ObjectOutputStream&);
                   ObjectOutputStream& operator=(const ObjectOutputStream&);
-                     
+
                   OutputStreamPtr os;
                   log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
                   unsigned int objectHandle;
                   typedef std::map<std::string, unsigned int> ClassDescriptionMap;
                   ClassDescriptionMap* classDescriptions;
           };
-          
-          LOG4CXX_PTR_DEF(ObjectOutputStream);          
+
+          LOG4CXX_PTR_DEF(ObjectOutputStream);
 
         } // namespace helpers
 

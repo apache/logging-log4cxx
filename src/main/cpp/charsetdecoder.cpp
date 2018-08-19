@@ -122,7 +122,7 @@ namespace log4cxx
                   Mutex mutex;
                   apr_xlate_t *convset;
           };
-          
+
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_MBSRTOWCS
@@ -365,12 +365,12 @@ private:
                   LogString& out) {
                   const char* p = in.current();
                   size_t i = in.position();
-#if !LOG4CXX_CHARSET_EBCDIC                  
+#if !LOG4CXX_CHARSET_EBCDIC
                   for (; i < in.limit() && ((unsigned int) *p) < 0x80; i++, p++) {
                       out.append(1, *p);
                   }
                   in.position(i);
-#endif                  
+#endif
                   if (i < in.limit()) {
                            Pool subpool;
                            const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
@@ -392,9 +392,9 @@ private:
                                     }
                                 }
                             }
-                            return decoder->decode(in, out);        
+                            return decoder->decode(in, out);
                   }
-                  return APR_SUCCESS;  
+                  return APR_SUCCESS;
                }
           private:
                Pool pool;
@@ -478,7 +478,7 @@ CharsetDecoderPtr CharsetDecoder::getDecoder(const LogString& charset) {
     }
 #if APR_HAS_XLATE || !defined(_WIN32)
     return new APRCharsetDecoder(charset);
-#else    
+#else
     throw IllegalArgumentException(charset);
 #endif
 }

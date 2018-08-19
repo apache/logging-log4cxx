@@ -42,8 +42,8 @@ const int TelnetAppender::MAX_CONNECTIONS = 20;
 
 TelnetAppender::TelnetAppender()
   : port(DEFAULT_PORT), connections(MAX_CONNECTIONS),
-    encoding(LOG4CXX_STR("UTF-8")), 
-    encoder(CharsetEncoder::getUTF8Encoder()), 
+    encoding(LOG4CXX_STR("UTF-8")),
+    encoder(CharsetEncoder::getUTF8Encoder()),
     serverSocket(NULL), sh()
 {
    synchronized sync(mutex);
@@ -60,7 +60,7 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 {
         if (serverSocket == NULL) {
                 serverSocket = new ServerSocket(port);
-                serverSocket->setSoTimeout(1000);                
+                serverSocket->setSoTimeout(1000);
         }
         sh.run(acceptConnections, this);
 }
@@ -116,7 +116,7 @@ void TelnetAppender::close()
                 } catch(Exception&) {
                 }
         }
-        
+
         try {
             sh.join();
         } catch(Exception& ex) {
@@ -146,7 +146,7 @@ void TelnetAppender::write(ByteBuffer& buf) {
 void TelnetAppender::writeStatus(const SocketPtr& socket, const LogString& msg, Pool& p) {
         size_t bytesSize = msg.size() * 2;
         char* bytes = p.pstralloc(bytesSize);
-                
+
         LogString::const_iterator msgIter(msg.begin());
         ByteBuffer buf(bytes, bytesSize);
 
@@ -167,7 +167,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                 msg.append(LOG4CXX_STR("\r\n"));
                 size_t bytesSize = msg.size() * 2;
                 char* bytes = p.pstralloc(bytesSize);
-                
+
                 LogString::const_iterator msgIter(msg.begin());
                 ByteBuffer buf(bytes, bytesSize);
 

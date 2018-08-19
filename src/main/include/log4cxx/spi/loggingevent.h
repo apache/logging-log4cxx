@@ -124,14 +124,14 @@ namespace log4cxx
                         * should <em>never</em> be called directly.
                         *
                         * @param dest destination for NDC, unchanged if NDC is not set.
-                        * @return true if NDC is set.  
+                        * @return true if NDC is set.
                         */
                         bool getNDC(LogString& dest) const;
 
                         /**
-                         *  Writes the content of the LoggingEvent 
+                         *  Writes the content of the LoggingEvent
                          *  in a format compatible with log4j's serialized form.
-                         */ 
+                         */
                         void write(helpers::ObjectOutputStream& os, helpers::Pool& p) const;
 
                         /**
@@ -158,7 +158,7 @@ namespace log4cxx
                         * The returned set is unmodifiable by the caller.
                         *
                         * @return Set an unmodifiable set of the MDC keys.
-                        * 
+                        *
                         */
                         KeySet getMDCKeySet() const;
 
@@ -245,9 +245,9 @@ namespace log4cxx
                        LoggingEvent(const LoggingEvent&);
                        LoggingEvent& operator=(const LoggingEvent&);
                        static const LogString getCurrentThreadName();
-                       
+
                        static void writeProlog(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p);
-                       
+
                 };
 
                 LOG4CXX_PTR_DEF(LoggingEvent);

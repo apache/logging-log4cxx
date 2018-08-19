@@ -39,7 +39,7 @@ namespace log4cxx {
       class LOG4CXX_EXPORT Transcoder {
       public:
 
-      
+
       /**
        *   Appends this specified string of UTF-8 characters to LogString.
        */
@@ -64,7 +64,7 @@ namespace log4cxx {
        *    Append UCS-4 code point to a byte buffer as UTF-16BE.
        */
       static void encodeUTF16BE(unsigned int sv, ByteBuffer& dst);
-      
+
 
       /**
        *   Decodes next character from a UTF-8 string.
@@ -90,14 +90,14 @@ namespace log4cxx {
       static void decode(const std::string& src, LogString& dst);
       /**
        *     Appends a LogString to a string in the current
-       *        code-page.  Unrepresentable characters may be 
+       *        code-page.  Unrepresentable characters may be
        *        replaced with loss characters.
       */
       static void encode(const LogString& src, std::string& dst);
 
       /**
         *     Encodes the specified LogString to the current
-        *       character set. 
+        *       character set.
         *      @param src string to encode.
         *      @param p pool from which to allocate return value.
         *      @return pool allocated string.
@@ -134,7 +134,7 @@ namespace log4cxx {
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API || LOG4CXX_LOGCHAR_IS_UNICHAR
       static void decode(const std::basic_string<UniChar>& src, LogString& dst);
       static void encode(const LogString& src, std::basic_string<UniChar>& dst);
-      
+
       /**
        *   Decodes next character from a UniChar string.
        *   @param in string from which the character is extracted.
@@ -160,7 +160,7 @@ namespace log4cxx {
 #endif
 
       enum { LOSSCHAR = 0x3F };
-      
+
       /**
        *   Returns a logchar value given a character literal in the ASCII charset.
        *   Used to implement the LOG4CXX_STR macro for EBCDIC and UNICHAR.
@@ -173,7 +173,7 @@ namespace log4cxx {
       static LogString decode(const char* v);
 
       /**
-       *   Encodes a charset name in the default encoding 
+       *   Encodes a charset name in the default encoding
        *      without using a CharsetEncoder (which could trigger recursion).
        */
       static std::string encodeCharsetName(const LogString& charsetName);
@@ -188,7 +188,7 @@ namespace log4cxx {
       static size_t encodeUTF8(unsigned int ch, char* dst);
       static size_t encodeUTF16BE(unsigned int ch, char* dst);
       static size_t encodeUTF16LE(unsigned int ch, char* dst);
-      
+
       };
    }
 }

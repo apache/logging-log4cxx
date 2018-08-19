@@ -30,8 +30,8 @@ namespace log4cxx { namespace pattern {
  * within the property bundle
  * when this pattern converter has the option set.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT PropertiesPatternConverter
   : public LoggingEventPatternConverter {

@@ -60,7 +60,7 @@ namespace log4cxx
                    virtual ~ByteArrayInputStream();
 
                   /**
-                   * Closes this file input stream and releases any system 
+                   * Closes this file input stream and releases any system
                    * resources associated with the stream.
                    */
                   virtual void close();

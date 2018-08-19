@@ -39,8 +39,8 @@ namespace log4cxx {
          * Implements methods common to most, it not all, rolling
          * policies.
          *
-         * 
-         * 
+         *
+         *
          */
         class LOG4CXX_EXPORT RollingPolicyBase :
            public virtual RollingPolicy,

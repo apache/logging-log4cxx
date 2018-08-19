@@ -86,7 +86,7 @@ LogString System::getProperty(const LogString& lkey)
         LOG4CXX_ENCODE_CHAR(key, lkey);
         Pool p;
         char* value = NULL;
-        apr_status_t stat = apr_env_get(&value, key.c_str(), 
+        apr_status_t stat = apr_env_get(&value, key.c_str(),
             p.getAPRPool());
         if (stat == APR_SUCCESS) {
              Transcoder::decode((const char*) value, rv);

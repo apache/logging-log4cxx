@@ -35,7 +35,7 @@ namespace log4cxx
                         DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerFactory)
                         virtual ~LoggerFactory() {}
                         virtual LoggerPtr makeNewLoggerInstance(
-                            log4cxx::helpers::Pool& pool, 
+                            log4cxx::helpers::Pool& pool,
                             const LogString& name) const = 0;
                 };
 

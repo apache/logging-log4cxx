@@ -24,7 +24,7 @@
 namespace log4cxx {
     namespace rolling {
 
-        
+
         /**
          * <code>RollingFileAppender</code> extends {@link log4cxx::FileAppender} to backup the log files
          * depending on {@link log4cxx::rolling::RollingPolicy RollingPolicy} and {@link log4cxx::rolling::TriggeringPolicy TriggeringPolicy}.
@@ -66,9 +66,9 @@ namespace log4cxx {
          * automatic compression of the archived files. See
          * {@link TimeBasedRollingPolicy} for more details.
          *
-         * 
-         * 
-         * 
+         *
+         *
+         *
          * */
         class LOG4CXX_EXPORT RollingFileAppender : public RollingFileAppenderSkeleton {
           DECLARE_LOG4CXX_OBJECT(RollingFileAppender)

@@ -89,9 +89,9 @@ namespace log4cxx
           virtual void format(LogString& s,
                               const apr_time_exp_t& date,
                               log4cxx::helpers::Pool& p) const = 0;
-                              
+
     protected:
-           
+
            static void incrementMonth(tm& time, apr_time_exp_t& aprtime) {
                time.tm_mon++;
                aprtime.tm_mon++;
@@ -106,12 +106,12 @@ namespace log4cxx
                time.tm_hour += 12;
                aprtime.tm_hour += 12;
            }
-           
-           static void renderFacet(const std::locale* locale, 
-                incrementFunction inc, 
-                char spec, 
-                unsigned int wspec, 
-                const char* aprspec, 
+
+           static void renderFacet(const std::locale* locale,
+                incrementFunction inc,
+                char spec,
+                unsigned int wspec,
+                const char* aprspec,
                 std::vector<LogString>& values) {
                 std::vector<LogString>::iterator valueIter = values.begin();
                 tm time;
@@ -131,7 +131,7 @@ namespace log4cxx
                             start = os.str().length();
                             (*inc)(time, aprtime);
                         }
-                    } else 
+                    } else
 #endif
                     if (HAS_FACET(*locale,  std::time_put<char>)) {
                         const std::time_put<char>& facet = USE_FACET(*locale, std::time_put<char> );
@@ -145,8 +145,8 @@ namespace log4cxx
                         }
                     }
                 }
-#endif          
-                const size_t BUFSIZE = 256; 
+#endif
+                const size_t BUFSIZE = 256;
                 char buf[BUFSIZE];
                 memset(buf, 0, BUFSIZE);
                 apr_size_t retsize = 0;
@@ -160,7 +160,7 @@ namespace log4cxx
                     }
                 }
             }
-                              
+
     private:
           /**
            * Private copy constructor.
@@ -221,7 +221,7 @@ public:
   void format( LogString& s, const apr_time_exp_t & tm, Pool & p ) const
   {
     size_t initialLength = s.length();
-    
+
     StringHelper::toString( getField( tm ), p, s );
     size_t finalLength = s.length();
     if ( initialLength + width > finalLength )
@@ -601,7 +601,7 @@ void SimpleDateFormat::addToken(const logchar spec, const int repeat, const std:
              PatternToken * token = NULL;
              switch ( spec )
              {
-               case 0x47: // 'G' 
+               case 0x47: // 'G'
                  token = ( new EraToken( repeat, locale ) );
                break;
 
@@ -675,11 +675,11 @@ void SimpleDateFormat::addToken(const logchar spec, const int repeat, const std:
                  token = ( new HourToken( repeat, 1 ) );
                break;
 
-               case 0x6D: // 'm' 
+               case 0x6D: // 'm'
                  token = ( new MinuteToken( repeat ) );
                break;
 
-               case 0x73: // 's' 
+               case 0x73: // 's'
                  token = ( new SecondToken( repeat ) );
                break;
 

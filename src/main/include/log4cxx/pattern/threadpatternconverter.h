@@ -26,8 +26,8 @@ namespace log4cxx { namespace pattern {
 /**
  * Formats the event thread name.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT ThreadPatternConverter : public LoggingEventPatternConverter {
   /**

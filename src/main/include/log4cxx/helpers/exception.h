@@ -250,7 +250,7 @@ namespace log4cxx
                       BindException(const BindException&);
                       BindException& operator=(const BindException&);
                 };
-               
+
                 /** Signals that an I/O operation has been interrupted. An
                 InterruptedIOException is thrown to indicate that an input or output
                 transfer has been terminated because the thread performing it was
@@ -265,7 +265,7 @@ namespace log4cxx
                      InterruptedIOException& operator=(const InterruptedIOException&);
                 };
 
-               
+
                 /** Signals that an I/O operation has been interrupted. An
                 InterruptedIOException is thrown to indicate that an input or output
                 transfer has been terminated because the thread performing it was
@@ -279,7 +279,7 @@ namespace log4cxx
                      SocketTimeoutException(const SocketTimeoutException&);
                      SocketTimeoutException& operator=(const SocketTimeoutException&);
                 };
-                 
+
 
         }  // namespace helpers
 } // namespace log4cxx

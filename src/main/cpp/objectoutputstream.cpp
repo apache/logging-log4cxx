@@ -31,8 +31,8 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(ObjectOutputStream)
 
 ObjectOutputStream::ObjectOutputStream(OutputStreamPtr outputStream, Pool& p)
-     : os(outputStream) , 
-       utf8Encoder(CharsetEncoder::getUTF8Encoder()), 
+     : os(outputStream) ,
+       utf8Encoder(CharsetEncoder::getUTF8Encoder()),
        objectHandle(0x7E0000),
        classDescriptions(new ClassDescriptionMap())
 {
@@ -59,13 +59,13 @@ void ObjectOutputStream::writeObject(const LogString& val, Pool& p) {
    char bytes[2];
 #if LOG4CXX_LOGCHAR_IS_UTF8
     size_t len = val.size();
-    ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size()); 
+    ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size());
 #else
     size_t maxSize = 6 * val.size();
     char* data = p.pstralloc(maxSize);
     ByteBuffer dataBuf(data, maxSize);
     LogString::const_iterator iter(val.begin());
-    utf8Encoder->encode(val, iter, dataBuf); 
+    utf8Encoder->encode(val, iter, dataBuf);
     dataBuf.flip();
     size_t len = dataBuf.limit();
 #endif
@@ -82,18 +82,18 @@ void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p) {
     //  TC_OBJECT and the classDesc for java.util.Hashtable
     //
     char prolog[] = {
-        0x72, 0x00, 0x13, 0x6A, 0x61, 0x76, 0x61, 
-        0x2E, 0x75, 0x74, 0x69, 0x6C, 0x2E, 0x48, 0x61, 
-        0x73, 0x68, 0x74, 0x61, 0x62, 0x6C, 0x65, 0x13, 
-        0xBB, 0x0F, 0x25, 0x21, 0x4A, 0xE4, 0xB8, 0x03, 
-        0x00, 0x02, 0x46, 0x00, 0x0A, 0x6C, 0x6F, 0x61, 
-        0x64, 0x46, 0x61, 0x63, 0x74, 0x6F, 0x72, 0x49, 
-        0x00, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68, 
+        0x72, 0x00, 0x13, 0x6A, 0x61, 0x76, 0x61,
+        0x2E, 0x75, 0x74, 0x69, 0x6C, 0x2E, 0x48, 0x61,
+        0x73, 0x68, 0x74, 0x61, 0x62, 0x6C, 0x65, 0x13,
+        0xBB, 0x0F, 0x25, 0x21, 0x4A, 0xE4, 0xB8, 0x03,
+        0x00, 0x02, 0x46, 0x00, 0x0A, 0x6C, 0x6F, 0x61,
+        0x64, 0x46, 0x61, 0x63, 0x74, 0x6F, 0x72, 0x49,
+        0x00, 0x09, 0x74, 0x68, 0x72, 0x65, 0x73, 0x68,
         0x6F, 0x6C, 0x64, 0x78, 0x70  };
     writeProlog("java.util.Hashtable", 1, prolog, sizeof(prolog), p);
     //
     //   loadFactor = 0.75, threshold = 5, blockdata start, buckets.size = 7
-    char data[] = { 0x3F, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 
+    char data[] = { 0x3F, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05,
         TC_BLOCKDATA, 0x08, 0x00, 0x00, 0x00, 0x07 };
     ByteBuffer dataBuf(data, sizeof(data));
     os->write(dataBuf, p);
@@ -117,7 +117,7 @@ void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p) {
 void ObjectOutputStream::writeUTFString(const std::string& val, Pool& p) {
     char bytes[3];
     size_t len = val.size();
-    ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size()); 
+    ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size());
    objectHandle++;
    bytes[0] = 0x74;
    bytes[1] = (char) ((len >> 8) & 0xFF);
@@ -191,4 +191,4 @@ void ObjectOutputStream::writeProlog(const char* className,
         os->write(buf, p);
         objectHandle += (classDescIncrement + 1);
     }
-} 
+}

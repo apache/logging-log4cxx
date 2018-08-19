@@ -27,8 +27,8 @@ namespace log4cxx {
 /**
  * Return the event's line location information in a StringBuffer.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT FileLocationPatternConverter
   : public LoggingEventPatternConverter {

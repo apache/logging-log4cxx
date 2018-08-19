@@ -82,7 +82,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevel(const std::string& sArg,
                         const LevelPtr& defaultLevel);
@@ -105,7 +105,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevel(const std::wstring& sArg,
                         const LevelPtr& defaultLevel);
@@ -128,7 +128,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevel(const std::basic_string<UniChar>& sArg,
                         const LevelPtr& defaultLevel);
@@ -151,7 +151,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevel(const CFStringRef& sArg,
                         const LevelPtr& defaultLevel);
@@ -173,7 +173,7 @@ namespace log4cxx
                 <code>defaultLevel</code>.
                 * @param sArg level name.
                 * @param defaultLevel level to return if no match.
-                * @return 
+                * @return
                 */
                 static LevelPtr toLevelLS(const LogString& sArg,
                         const LevelPtr& defaultLevel);

@@ -43,7 +43,7 @@ namespace log4cxx {
    <p>Conversion specifiers in a conversion patterns are parsed to
    individual PatternConverters. Each of which is responsible for
    converting an object in a converter specific manner.
-   
+
  */
 class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::ObjectImpl {
 

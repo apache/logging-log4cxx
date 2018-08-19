@@ -72,7 +72,7 @@ namespace log4cxx
  * or
  * ! ( LEVEL == DEBUG && MSG ~= 'test' )
  *
- * 
+ *
  */
         class LOG4CXX_EXPORT AndFilter:public log4cxx::spi::Filter
         {

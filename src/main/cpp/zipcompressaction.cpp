@@ -39,10 +39,10 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const {
         apr_procattr_t* attr;
         apr_status_t stat = apr_procattr_create(&attr, pool);
         if (stat != APR_SUCCESS) throw IOException(stat);
-    
+
         stat = apr_procattr_io_set(attr, APR_NO_PIPE, APR_NO_PIPE, APR_FULL_BLOCK);
         if (stat != APR_SUCCESS) throw IOException(stat);
-    
+
         stat = apr_procattr_cmdtype_set(attr, APR_PROGRAM_PATH);
         if (stat != APR_SUCCESS) throw IOException(stat);
 
@@ -57,7 +57,7 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const {
          if (stat != APR_SUCCESS) throw IOException(stat);
         }
 
-        const char** args = (const char**) 
+        const char** args = (const char**)
             apr_palloc(pool, 5 *sizeof(*args));
         int i = 0;
         args[i++] = "zip";
@@ -65,7 +65,7 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const {
         args[i++] = Transcoder::encode(destination.getPath(), p);
         args[i++] = Transcoder::encode(source.getPath(), p);
         args[i++] = NULL;
-    
+
         if (destination.exists(p)) {
             destination.deleteFile(p);
         }
@@ -75,7 +75,7 @@ bool ZipCompressAction::execute(log4cxx::helpers::Pool& p) const {
         if (stat != APR_SUCCESS) throw IOException(stat);
 
         apr_proc_wait(&pid, NULL, NULL, APR_WAIT);
-    
+
         if (deleteSource) {
             source.deleteFile(p);
         }

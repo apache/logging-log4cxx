@@ -62,8 +62,8 @@ namespace log4cxx {
  * larger values are specified by the user.
  *
  *
- * 
- * 
+ *
+ *
  * */
         class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase {
           DECLARE_LOG4CXX_OBJECT(FixedWindowRollingPolicy)

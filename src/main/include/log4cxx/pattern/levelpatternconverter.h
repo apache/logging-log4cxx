@@ -26,8 +26,8 @@ namespace log4cxx { namespace pattern {
 /**
  * Return the event's level in a StringBuffer.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT LevelPatternConverter : public LoggingEventPatternConverter {
   /**
