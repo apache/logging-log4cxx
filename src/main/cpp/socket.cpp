@@ -29,15 +29,15 @@ IMPLEMENT_LOG4CXX_OBJECT(Socket)
 /** Creates a stream socket and connects it to the specified port
 number at the specified IP address.
 */
-Socket::Socket(InetAddressPtr& addr, int prt) : pool(), socket(0), address(addr), port(prt) 
+Socket::Socket(InetAddressPtr& addr, int prt) : pool(), socket(0), address(addr), port(prt)
 {
   apr_status_t status =
-    apr_socket_create(&socket, APR_INET, SOCK_STREAM, 
+    apr_socket_create(&socket, APR_INET, SOCK_STREAM,
                       APR_PROTO_TCP, pool.getAPRPool());
   if (status != APR_SUCCESS) {
     throw SocketException(status);
   }
-  
+
   LOG4CXX_ENCODE_CHAR(host, addr->getHostAddress());
 
   // create socket address (including port)
@@ -98,7 +98,7 @@ size_t Socket::write(ByteBuffer& buf) {
 #else
         apr_status_t status = apr_socket_send(socket, buf.current(), &written);
 #endif
-        
+
         buf.position(buf.position() + written);
         totalWritten += written;
         if (status != APR_SUCCESS) {
@@ -114,7 +114,7 @@ void Socket::close() {
         apr_status_t status = apr_socket_close(socket);
         if (status != APR_SUCCESS) {
             throw SocketException(status);
-        }        
+        }
         socket = 0;
     }
 }

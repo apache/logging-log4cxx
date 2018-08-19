@@ -350,10 +350,10 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
         LogString clazz = _clazz;
 
         LogString filename(configFileName.getPath());
-        if(clazz.empty() 
+        if(clazz.empty()
                 && filename.length() > 4
                 && StringHelper::equalsIgnoreCase(
-                   filename.substr(filename.length() -4), 
+                   filename.substr(filename.length() -4),
                    LOG4CXX_STR(".XML"), LOG4CXX_STR(".xml")))
         {
             clazz = log4cxx::xml::DOMConfigurator::getStaticClass().toString();

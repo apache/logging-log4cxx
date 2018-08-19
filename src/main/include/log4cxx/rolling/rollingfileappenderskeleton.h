@@ -32,8 +32,8 @@ namespace log4cxx {
         /**
          *  Base class for log4cxx::rolling::RollingFileAppender and log4cxx::RollingFileAppender
          * (analogues of org.apache.log4j.rolling.RFA from extras companion and
-         *  org.apache.log4j.RFA from log4j 1.2, respectively). 
-         * 
+         *  org.apache.log4j.RFA from log4j 1.2, respectively).
+         *
          * */
         class LOG4CXX_EXPORT RollingFileAppenderSkeleton : public FileAppender {
           DECLARE_LOG4CXX_OBJECT(RollingFileAppenderSkeleton)
@@ -137,7 +137,7 @@ namespace log4cxx {
            * @return byte length of current active log file.
            */
           size_t getFileLength() const;
-          
+
 #ifdef LOG4CXX_MULTI_PROCESS
           /**
            * Set byte length of current active log file.
@@ -164,7 +164,7 @@ namespace log4cxx {
           void incrementFileLength(size_t increment);
 
         };
-        
+
 
         LOG4CXX_PTR_DEF(RollingFileAppenderSkeleton);
 

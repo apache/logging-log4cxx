@@ -35,10 +35,10 @@ apr_threadkey_t* ThreadLocal::create(Pool& p) {
 
 ThreadLocal::ThreadLocal() : p(), key(create(p)) {
 }
-              
+
 ThreadLocal::~ThreadLocal() {
 }
-              
+
 void ThreadLocal::set(void* priv) {
 #if APR_HAS_THREADS
     apr_status_t stat = apr_threadkey_private_set(priv, key);
@@ -47,7 +47,7 @@ void ThreadLocal::set(void* priv) {
     }
 #endif
 }
-               
+
 void* ThreadLocal::get() {
     void* retval = 0;
 #if APR_HAS_THREADS

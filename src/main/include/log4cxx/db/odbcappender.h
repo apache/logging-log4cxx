@@ -37,7 +37,7 @@ namespace log4cxx
         {
             class LOG4CXX_EXPORT SQLException : public log4cxx::helpers::Exception {
             public:
-                SQLException(short fHandleType, 
+                SQLException(short fHandleType,
                             void* hInput, const char* prolog,
                             log4cxx::helpers::Pool& p);
                 SQLException(const char* msg);
@@ -279,13 +279,13 @@ namespace log4cxx
                 private:
                         ODBCAppender(const ODBCAppender&);
                         ODBCAppender& operator=(const ODBCAppender&);
-                        static void encode(wchar_t** dest, const LogString& src, 
+                        static void encode(wchar_t** dest, const LogString& src,
                              log4cxx::helpers::Pool& p);
-                        static void encode(unsigned short** dest, const LogString& src, 
+                        static void encode(unsigned short** dest, const LogString& src,
                              log4cxx::helpers::Pool& p);
                 }; // class ODBCAppender
                 LOG4CXX_PTR_DEF(ODBCAppender);
-                
+
     } // namespace db
 } // namespace log4cxx
 

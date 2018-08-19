@@ -83,11 +83,11 @@ namespace log4cxx
                          */
                         static void sleep(int millis);
                         /**
-                         *  Sets interrupted status for current thread to true.  
+                         *  Sets interrupted status for current thread to true.
                          */
                         static void currentThreadInterrupt();
                         /**
-                         *  Sets interrupted status to true.  
+                         *  Sets interrupted status to true.
                          */
                         void interrupt();
                         /**
@@ -95,11 +95,11 @@ namespace log4cxx
                          *  sets the interrupted status to false.
                          */
                         static bool interrupted();
-                        
+
                         bool isAlive();
                         bool isCurrentThread() const;
                         void ending();
-                        
+
 
                 private:
                         Pool p;
@@ -110,7 +110,7 @@ namespace log4cxx
                         apr_thread_cond_t* interruptedCondition;
                         Thread(const Thread&);
                         Thread& operator=(const Thread&);
-                        friend void* LOG4CXX_THREAD_FUNC ThreadLaunch::launcher(apr_thread_t* thread, void* data); 
+                        friend void* LOG4CXX_THREAD_FUNC ThreadLaunch::launcher(apr_thread_t* thread, void* data);
                 };
         } // namespace helpers
 } // namespace log4cxx

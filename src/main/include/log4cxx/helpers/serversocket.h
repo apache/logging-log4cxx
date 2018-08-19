@@ -50,13 +50,13 @@ namespace log4cxx
                         /** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
                         */
                         void setSoTimeout(int timeout);
-                        
+
                 private:
                         Pool pool;
                         Mutex mutex;
                         apr_socket_t* socket;
                         int timeout;
-                        
+
                 };
         }  // namespace helpers
 } // namespace log4cxx

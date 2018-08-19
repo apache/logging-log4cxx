@@ -27,7 +27,7 @@ namespace log4cxx
 
           /**
            * Abstract class for reading from character streams.
-           * 
+           *
            */
           class LOG4CXX_EXPORT Reader : public ObjectImpl
           {

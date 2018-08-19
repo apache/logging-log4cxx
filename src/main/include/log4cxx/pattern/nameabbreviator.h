@@ -31,8 +31,8 @@ namespace log4cxx {
 /**
  * NameAbbreviator generates abbreviated logger and class names.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT NameAbbreviator : public log4cxx::helpers::ObjectImpl {
 public:

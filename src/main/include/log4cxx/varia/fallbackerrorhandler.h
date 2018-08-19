@@ -110,7 +110,7 @@ namespace log4cxx
                         void setBackupAppender(const AppenderPtr& backup);
                 };
                 LOG4CXX_PTR_DEF(FallbackErrorHandler);
-                
+
         }  // namespace varia
 } // namespace log4cxx
 

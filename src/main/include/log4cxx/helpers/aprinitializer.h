@@ -36,7 +36,7 @@ namespace log4cxx
   namespace helpers
   {
     class FileWatchdog;
-    
+
     class APRInitializer
     {
     public:
@@ -44,10 +44,10 @@ namespace log4cxx
     static apr_pool_t* getRootPool();
     static apr_threadkey_t* getTlsKey();
     static bool isDestructed;
-    
+
     /**
      *  Register a FileWatchdog for deletion prior to
-     *    APR termination.  FileWatchdog must be 
+     *    APR termination.  FileWatchdog must be
      *    allocated on heap and not deleted elsewhere.
      */
     static void registerCleanup(FileWatchdog* watchdog);
@@ -59,7 +59,7 @@ namespace log4cxx
       APRInitializer& operator=(const APRInitializer&);
       apr_pool_t* p;
       apr_thread_mutex_t* mutex;
-      std::list<FileWatchdog*> watchdogs; 
+      std::list<FileWatchdog*> watchdogs;
       apr_time_t startTime;
       apr_threadkey_t* tlsKey;
       static APRInitializer& getInstance();

@@ -45,7 +45,7 @@ namespace log4cxx
                         LOG4CXX_CAST_ENTRY(Layout)
                         LOG4CXX_CAST_ENTRY(spi::OptionHandler)
                 END_LOG4CXX_CAST_MAP()
-    
+
                 virtual ~Layout();
                 void addRef() const;
                 void releaseRef() const;

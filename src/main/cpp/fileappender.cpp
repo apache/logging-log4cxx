@@ -43,9 +43,9 @@ FileAppender::FileAppender() {
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
-        bool append1, bool bufferedIO1, int bufferSize1) 
+        bool append1, bool bufferedIO1, int bufferSize1)
            : WriterAppender(layout1) {
-        {  
+        {
             synchronized sync(mutex);
             fileAppend = append1;
             fileName = fileName1;
@@ -88,9 +88,9 @@ FileAppender::~FileAppender()
     finalize();
 }
 
-void FileAppender::setAppend(bool fileAppend1) { 
+void FileAppender::setAppend(bool fileAppend1) {
     synchronized sync(mutex);
-    this->fileAppend = fileAppend1; 
+    this->fileAppend = fileAppend1;
 }
 
 void FileAppender::setFile(const LogString& file)
@@ -182,7 +182,7 @@ void FileAppender::activateOptions(Pool& p)
  *
  * @param src source string
  * @return modified string
- * 
+ *
  *
  */
 LogString FileAppender::stripDuplicateBackslashes(const LogString& src) {
@@ -281,8 +281,8 @@ void FileAppender::setFile(
         throw;
       }
   }
-  
-  
+
+
   //
   //   if a new file and UTF-16, then write a BOM
   //

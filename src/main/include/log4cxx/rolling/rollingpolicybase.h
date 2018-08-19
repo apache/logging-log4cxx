@@ -41,8 +41,8 @@ namespace log4cxx {
          * Implements methods common to most, it not all, rolling
          * policies.
          *
-         * 
-         * 
+         *
+         *
          */
         class LOG4CXX_EXPORT RollingPolicyBase :
            public virtual RollingPolicy,
@@ -96,7 +96,7 @@ namespace log4cxx {
            LogString getFileNamePattern() const;
 
 
-#ifdef LOG4CXX_MULTI_PROCESS                
+#ifdef LOG4CXX_MULTI_PROCESS
            PatternConverterList getPatternConverterList() { return patternConverters; }
 #endif
            protected:

@@ -26,8 +26,8 @@ namespace log4cxx { namespace pattern {
 /**
  * Formats an integer.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT IntegerPatternConverter : public PatternConverter {
 

@@ -91,10 +91,10 @@ servlet.
                         attached client(s). */
                         virtual bool requiresLayout() const
                                 { return true; }
-                                
+
                         LogString getEncoding() const;
                         void setEncoding(const LogString& value);
-        
+
 
                         /** all of the options have been set, create the socket handler and
                         wait for connections. */
@@ -144,7 +144,7 @@ servlet.
                         size_t activeConnections;
                         static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
                 }; // class TelnetAppender
-                
+
                 LOG4CXX_PTR_DEF(TelnetAppender);
     } // namespace net
 } // namespace log4cxx

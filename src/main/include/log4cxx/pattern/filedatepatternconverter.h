@@ -28,8 +28,8 @@ namespace log4cxx { namespace pattern {
  * date pattern for a %d specifier in a file name is different than
  * the %d pattern in pattern layout.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT FileDatePatternConverter {
   /**

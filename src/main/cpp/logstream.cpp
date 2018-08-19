@@ -25,7 +25,7 @@
 
 using namespace log4cxx;
 
-logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags initval, 
+logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags initval,
                     int initsize) {
 #if LOG4CXX_MEMSET_IOS_BASE
    //
@@ -37,12 +37,12 @@ logstream_base::logstream_ios_base::logstream_ios_base(std::ios_base::fmtflags i
     flags(initval);
     precision(initsize);
     width(initsize);
-                    
+
 }
 
 
 logstream_base::logstream_base(const LoggerPtr& log,
-     const LevelPtr& lvl) : initset((std::ios_base::fmtflags) -1, 1), 
+     const LevelPtr& lvl) : initset((std::ios_base::fmtflags) -1, 1),
      initclear((std::ios_base::fmtflags) 0, 0), fillchar(0), fillset(false), logger(log), level(lvl), location() {
      enabled = logger->isEnabledFor(level);
 }
@@ -153,7 +153,7 @@ std::ios_base::fmtflags logstream_base::setf(std::ios_base::fmtflags newflags) {
     refresh_stream_state();
     return oldVal;
 }
-    
+
 
 
 void logstream_base::setLevel(const ::log4cxx::LevelPtr& newlevel) {
@@ -180,17 +180,17 @@ void logstream_base::setLocation(const log4cxx::spi::LocationInfo& newlocation) 
 logstream::logstream(const log4cxx::LoggerPtr& logger,
                  const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0) {
 }
-             
-logstream::logstream(const Ch* loggerName, 
-                const log4cxx::LevelPtr& level) 
+
+logstream::logstream(const Ch* loggerName,
+                const log4cxx::LevelPtr& level)
             : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 
 
-logstream::logstream(const std::basic_string<Ch>& loggerName, 
+logstream::logstream(const std::basic_string<Ch>& loggerName,
                 const log4cxx::LevelPtr& level) : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
-             
+
 logstream::~logstream() {
     delete stream;
 }
@@ -214,12 +214,12 @@ logstream& logstream::operator>>(const log4cxx::spi::LocationInfo& newlocation) 
    setLocation(newlocation);
    return *this;
 }
-             
+
 logstream& logstream::operator<<(std::ios_base& (*manip)(std::ios_base&)) {
       logstream_base::insert(manip);
       return *this;
 }
-            
+
 logstream::operator std::basic_ostream<char>&() {
       if (stream == 0) {
           stream = new std::basic_stringstream<Ch>();
@@ -238,7 +238,7 @@ void logstream::log(LoggerPtr& log,
         }
     }
 }
-              
+
 
 void logstream::erase() {
   if (stream != 0) {
@@ -246,7 +246,7 @@ void logstream::erase() {
       stream->str(emptyStr);
   }
 }
-              
+
 
 void logstream::get_stream_state(std::ios_base& base,
                             std::ios_base& mask,
@@ -275,24 +275,24 @@ void logstream::refresh_stream_state() {
       }
    }
 }
-              
+
 
 #if LOG4CXX_WCHAR_T_API
 
 wlogstream::wlogstream(const log4cxx::LoggerPtr& logger,
                  const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0) {
 }
-             
-wlogstream::wlogstream(const Ch* loggerName, 
-                const log4cxx::LevelPtr& level) 
+
+wlogstream::wlogstream(const Ch* loggerName,
+                const log4cxx::LevelPtr& level)
             : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 
 
-wlogstream::wlogstream(const std::basic_string<Ch>& loggerName, 
+wlogstream::wlogstream(const std::basic_string<Ch>& loggerName,
                 const log4cxx::LevelPtr& level) : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
-             
+
 wlogstream::~wlogstream() {
     delete stream;
 }
@@ -319,12 +319,12 @@ wlogstream& wlogstream::operator>>(const log4cxx::spi::LocationInfo& newlocation
 
 
 
-             
+
 wlogstream& wlogstream::operator<<(std::ios_base& (*manip)(std::ios_base&)) {
       logstream_base::insert(manip);
       return *this;
 }
-            
+
 wlogstream::operator std::basic_ostream<wchar_t>&() {
       if (stream == 0) {
           stream = new std::basic_stringstream<Ch>();
@@ -343,7 +343,7 @@ void wlogstream::log(LoggerPtr& log,
         }
     }
 }
-              
+
 
 void wlogstream::erase() {
   if (stream != 0) {
@@ -351,7 +351,7 @@ void wlogstream::erase() {
       stream->str(emptyStr);
   }
 }
-              
+
 
 void wlogstream::get_stream_state(std::ios_base& base,
                             std::ios_base& mask,
@@ -383,34 +383,34 @@ void wlogstream::refresh_stream_state() {
 #endif
 
 #if LOG4CXX_UNICHAR_API
-ulogstream::ulogstream(const Ch* loggerName, 
-                const log4cxx::LevelPtr& level) 
+ulogstream::ulogstream(const Ch* loggerName,
+                const log4cxx::LevelPtr& level)
             : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 
 
-ulogstream::ulogstream(const std::basic_string<Ch>& loggerName, 
+ulogstream::ulogstream(const std::basic_string<Ch>& loggerName,
                 const log4cxx::LevelPtr& level) : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 #endif
 
 #if LOG4CXX_CFSTRING_API
-ulogstream::ulogstream(const CFStringRef& loggerName, 
-                const log4cxx::LevelPtr& level) 
+ulogstream::ulogstream(const CFStringRef& loggerName,
+                const log4cxx::LevelPtr& level)
             : logstream_base(log4cxx::Logger::getLogger(loggerName), level), stream(0) {
 }
 
 #endif
-              
+
 
 #if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
 
 ulogstream::ulogstream(const log4cxx::LoggerPtr& logger,
                  const log4cxx::LevelPtr& level) : logstream_base(logger, level), stream(0) {
 }
-             
-             
-             
+
+
+
 ulogstream::~ulogstream() {
     delete stream;
 }
@@ -437,12 +437,12 @@ ulogstream& ulogstream::operator>>(const log4cxx::spi::LocationInfo& newlocation
 
 
 
-             
+
 ulogstream& ulogstream::operator<<(std::ios_base& (*manip)(std::ios_base&)) {
       logstream_base::insert(manip);
       return *this;
 }
-            
+
 ulogstream::operator std::basic_ostream<UniChar>&() {
       if (stream == 0) {
           stream = new std::basic_stringstream<Ch>();
@@ -462,7 +462,7 @@ void ulogstream::log(LoggerPtr& logger,
         }
     }
 }
-              
+
 
 void ulogstream::erase() {
   if (stream != 0) {
@@ -470,7 +470,7 @@ void ulogstream::erase() {
       stream->str(emptyStr);
   }
 }
-              
+
 
 void ulogstream::get_stream_state(std::ios_base& base,
                             std::ios_base& mask,
@@ -500,5 +500,5 @@ void ulogstream::refresh_stream_state() {
    }
 }
 #endif
-              
+
 

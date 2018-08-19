@@ -27,9 +27,9 @@ namespace log4cxx {
 /**
  * Formats a logger name.
  *
- * 
  *
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT LoggerPatternConverter : public NamePatternConverter {
 

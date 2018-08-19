@@ -26,8 +26,8 @@ namespace log4cxx {
 /**
  * Formats a string literal.
  *
- * 
- * 
+ *
+ *
  *
  */
 class LOG4CXX_EXPORT LiteralPatternConverter : public LoggingEventPatternConverter {

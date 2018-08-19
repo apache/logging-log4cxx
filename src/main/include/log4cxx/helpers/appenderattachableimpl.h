@@ -48,10 +48,10 @@ namespace log4cxx
             /** Array of appenders. */
             AppenderList  appenderList;
 
-        public:            
+        public:
             /**
              *   Create new instance.
-             *   @param pool pool, must be longer-lived than instance. 
+             *   @param pool pool, must be longer-lived than instance.
              */
             AppenderAttachableImpl(Pool& pool);
 

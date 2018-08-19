@@ -45,7 +45,7 @@ UnknownHostException& UnknownHostException::operator=(const UnknownHostException
 }
 
 
-InetAddress::InetAddress(const LogString& hostName, const LogString& hostAddr) 
+InetAddress::InetAddress(const LogString& hostName, const LogString& hostAddr)
     : ipAddrString(hostAddr), hostNameString(hostName) {
 }
 
@@ -59,7 +59,7 @@ std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host) {
     Pool addrPool;
 
     apr_sockaddr_t *address = 0;
-    apr_status_t status = 
+    apr_status_t status =
         apr_sockaddr_info_get(&address, encodedHost.c_str(),
                               APR_INET, 0, 0, addrPool.getAPRPool());
     if (status != APR_SUCCESS) {
@@ -80,7 +80,7 @@ std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host) {
             std::string ip(ipAddr);
             Transcoder::decode(ip, ipAddrString);
         }
-    
+
         // retrieve the host name of this InetAddress.
         LogString hostNameString;
         char *hostName;

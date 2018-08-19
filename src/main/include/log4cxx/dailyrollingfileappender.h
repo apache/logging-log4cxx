@@ -45,7 +45,7 @@ namespace log4cxx {
    underlying file is rolled over at a user chosen frequency.
 
    <p>The rolling schedule is specified by the <b>DatePattern</b>
-   option. This pattern should follow the 
+   option. This pattern should follow the
    {@link log4cxx::helpers::SimpleDateFormat SimpleDateFormat}
    conventions. In particular, you <em>must</em> escape literal text
    within a pair of single quotes. A formatted version of the date

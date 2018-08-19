@@ -39,10 +39,10 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
         apr_procattr_t* attr;
         apr_status_t stat = apr_procattr_create(&attr, aprpool);
         if (stat != APR_SUCCESS) throw IOException(stat);
-    
+
         stat = apr_procattr_io_set(attr, APR_NO_PIPE, APR_FULL_BLOCK, APR_FULL_BLOCK);
         if (stat != APR_SUCCESS) throw IOException(stat);
-    
+
         stat = apr_procattr_cmdtype_set(attr, APR_PROGRAM_PATH);
         if (stat != APR_SUCCESS) throw IOException(stat);
 
@@ -68,14 +68,14 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
          if (stat != APR_SUCCESS) throw IOException(stat);
         }
 
-        const char** args = (const char**) 
+        const char** args = (const char**)
             apr_palloc(aprpool, 4 *sizeof(*args));
         int i = 0;
         args[i++] = "gzip";
         args[i++] = "-c";
         args[i++] = Transcoder::encode(source.getPath(), p);
         args[i++] = NULL;
-    
+
 
         apr_proc_t pid;
         stat = apr_proc_create(&pid, "gzip", args, NULL, attr, aprpool);
@@ -84,7 +84,7 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const {
         apr_proc_wait(&pid, NULL, NULL, APR_WAIT);
         stat = apr_file_close(child_out);
         if (stat != APR_SUCCESS) throw IOException(stat);
-    
+
         if (deleteSource) {
             source.deleteFile(p);
         }

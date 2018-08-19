@@ -90,13 +90,13 @@ namespace log4cxx
                     File(const File& src);
                     /**
                      *  Assignment operator.
-                     */ 
+                     */
                     File& operator=(const File& src);
                     /**
                      *  Destructor.
                      */
                     ~File();
-                    
+
                     /**
                      *  Determines if file exists.
                      *  @param p pool.
@@ -161,7 +161,7 @@ namespace log4cxx
                      *   @return true if file successfully renamed.
                      */
                     bool renameTo(const File& dest, log4cxx::helpers::Pool& p) const;
-                    
+
                     /**
                      *   Get path of parent directory.
                      *   @param p pool.

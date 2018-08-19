@@ -49,9 +49,9 @@ namespace log4cxx {
         //   The following two classes implement an C++ SMTP wrapper over libesmtp.
         //   The same signatures could be implemented over different SMTP implementations
         //   or libesmtp could be combined with libgmime to enable support for non-ASCII
-        //   content.  
+        //   content.
 
-#if LOG4CXX_HAVE_LIBESMTP        
+#if LOG4CXX_HAVE_LIBESMTP
         /**
          *   SMTP Session.
          */
@@ -64,8 +64,8 @@ namespace log4cxx {
                         int smtpPort,
                         const LogString& smtpUsername,
                         const LogString& smtpPassword,
-                        Pool& p) : session(0), authctx(0), 
-                        user(toAscii(smtpUsername, p)), 
+                        Pool& p) : session(0), authctx(0),
+                        user(toAscii(smtpUsername, p)),
                         pwd(toAscii(smtpPassword, p)) {
                 auth_client_init();
                 session = smtp_create_session();
@@ -76,21 +76,21 @@ namespace log4cxx {
                 host.append(1, ':');
                 host.append(p.itoa(smtpPort));
                 smtp_set_server(session, host.c_str());
-   
+
                 authctx = auth_create_context();
                 auth_set_mechanism_flags(authctx, AUTH_PLUGIN_PLAIN, 0);
                 auth_set_interact_cb(authctx, authinteract, (void*) this);
-   
+
                 if (*user || *pwd) {
                     smtp_auth_set_context(session, authctx);
                 }
             }
-            
+
             ~SMTPSession() {
                  smtp_destroy_session(session);
                  auth_destroy_context(authctx);
             }
-            
+
             void send(Pool& p) {
                  int status = smtp_start_session(session);
                  if (!status) {
@@ -100,7 +100,7 @@ namespace log4cxx {
                      throw Exception(buf);
                  }
             }
-            
+
             operator smtp_session_t() {
                 return session;
             }
@@ -120,7 +120,7 @@ namespace log4cxx {
                 *current = 0;
                 return buf;
             }
-                        
+
             private:
             SMTPSession(SMTPSession&);
             SMTPSession& operator=(SMTPSession&);
@@ -145,17 +145,17 @@ namespace log4cxx {
               }
               return 1;
             }
-            
+
 
         };
-        
+
         /**
          *  A message in an SMTP session.
          */
         class SMTPMessage {
         public:
-            SMTPMessage(SMTPSession& session, 
-                        const LogString& from, 
+            SMTPMessage(SMTPSession& session,
+                        const LogString& from,
                         const LogString& to,
                         const LogString& cc,
                         const LogString& bcc,
@@ -171,11 +171,11 @@ namespace log4cxx {
                  if (!subject.empty()) {
                     smtp_set_header(message, "Subject", toAscii(subject, p));
                  }
-                 smtp_set_messagecb(message, messagecb, this); 
+                 smtp_set_messagecb(message, messagecb, this);
             }
             ~SMTPMessage() {
             }
-            
+
         private:
            SMTPMessage(const SMTPMessage&);
            SMTPMessage& operator=(const SMTPMessage&);
@@ -198,9 +198,9 @@ namespace log4cxx {
            static const char* toAscii(const LogString& str, Pool& p) {
                return SMTPSession::toAscii(str, p);
            }
-           
+
            /**
-            *   Message bodies can only contain US-ASCII characters and 
+            *   Message bodies can only contain US-ASCII characters and
             *   CR and LFs can only occur together.
             */
            static const char* toMessage(const LogString& str, Pool& p) {
@@ -253,7 +253,7 @@ namespace log4cxx {
                *current = 0;
                return retval;
            }
-           
+
            /**
             *  Callback for message.
             */
@@ -277,10 +277,10 @@ namespace log4cxx {
                }
                return retval;
            }
-           
+
         };
-#endif        
-        
+#endif
+
                 class LOG4CXX_EXPORT DefaultEvaluator :
                         public virtual spi::TriggeringEventEvaluator,
                         public virtual helpers::ObjectImpl
@@ -305,7 +305,7 @@ namespace log4cxx {
                          DefaultEvaluator(const DefaultEvaluator&);
                          DefaultEvaluator& operator=(const DefaultEvaluator&);
                 }; // class DefaultEvaluator
-        
+
     }
 }
 
@@ -340,8 +340,8 @@ SMTPAppender::~SMTPAppender()
    finalize();
 }
 
-bool SMTPAppender::requiresLayout() const { 
-    return true; 
+bool SMTPAppender::requiresLayout() const {
+    return true;
 }
 
 
@@ -382,8 +382,8 @@ bool SMTPAppender::getLocationInfo() const {
    return locationInfo;
 }
 
-void SMTPAppender::setLocationInfo(bool newVal) { 
-    locationInfo = newVal; 
+void SMTPAppender::setLocationInfo(bool newVal) {
+    locationInfo = newVal;
 }
 
 LogString SMTPAppender::getSMTPUsername() const {
@@ -467,7 +467,7 @@ bool SMTPAppender::asciiCheck(const LogString& value, const LogString& field) {
          if (0x7F < (unsigned int) *iter) {
             LogLog::warn(field + LOG4CXX_STR(" contains non-ASCII character"));
             return false;
-         } 
+         }
      }
      return true;
 }
@@ -501,11 +501,11 @@ void SMTPAppender::activateOptions(Pool& p)
    activate &= asciiCheck(cc, LOG4CXX_STR("cc"));
    activate &= asciiCheck(bcc, LOG4CXX_STR("bcc"));
    activate &= asciiCheck(from, LOG4CXX_STR("from"));
- 
+
 #if !LOG4CXX_HAVE_LIBESMTP
    errorHandler->error(LOG4CXX_STR("log4cxx built without SMTP support."));
    activate = false;
-#endif     
+#endif
    if (activate) {
         AppenderSkeleton::activateOptions(p);
    }
@@ -566,7 +566,7 @@ bool SMTPAppender::checkEntryConditions()
    return true;
 #else
    return false;
-#endif   
+#endif
 }
 
 
@@ -622,10 +622,10 @@ void SMTPAppender::sendBuffer(Pool& p)
       layout->appendFooter(sbuf, p);
 
       SMTPSession session(smtpHost, smtpPort, smtpUsername, smtpPassword, p);
-      
-      SMTPMessage message(session, from, to, cc, 
+
+      SMTPMessage message(session, from, to, cc,
           bcc, subject, sbuf, p);
-      
+
       session.send(p);
 
    }
@@ -633,7 +633,7 @@ void SMTPAppender::sendBuffer(Pool& p)
    {
       LogLog::error(LOG4CXX_STR("Error occured while sending e-mail notification."), e);
    }
-#endif   
+#endif
 }
 
 /**

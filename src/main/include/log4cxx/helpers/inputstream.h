@@ -28,7 +28,7 @@ namespace log4cxx
 
           /**
            * Abstract class for reading from character streams.
-           * 
+           *
            */
           class LOG4CXX_EXPORT InputStream : public ObjectImpl
           {
@@ -54,7 +54,7 @@ namespace log4cxx
                   virtual int read(ByteBuffer& dst) = 0;
 
                   /**
-                   * Closes this input stream and releases any system 
+                   * Closes this input stream and releases any system
                    * resources associated with the stream.
                    */
                   virtual void close() = 0;
