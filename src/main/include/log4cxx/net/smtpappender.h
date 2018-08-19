@@ -241,17 +241,17 @@ namespace log4cxx
                         inline int getBufferSize() const
                                 { return bufferSize; }
 
-                   
+
                         /**
                          *   Gets the current triggering evaluator.
                          *   @return triggering evaluator.
-                         */     
+                         */
                         log4cxx::spi::TriggeringEventEvaluatorPtr getEvaluator() const;
 
                         /**
                          *   Sets the triggering evaluator.
                          *   @param trigger triggering evaluator.
-                         */     
+                         */
                         void setEvaluator(log4cxx::spi::TriggeringEventEvaluatorPtr& trigger);
 
                         /**
@@ -262,7 +262,7 @@ namespace log4cxx
                         for the SMTPAppender.
                         */
                         void setEvaluatorClass(const LogString& value);
-                 
+
                         /**
                         The <b>LocationInfo</b> option is provided for compatibility with log4j
                         and has no effect in log4cxx.
@@ -274,8 +274,8 @@ namespace log4cxx
                         */
                         bool getLocationInfo() const;
                 }; // class SMTPAppender
-                
-                LOG4CXX_PTR_DEF(SMTPAppender);                
+
+                LOG4CXX_PTR_DEF(SMTPAppender);
 
         }  // namespace net
 } // namespace log4cxx

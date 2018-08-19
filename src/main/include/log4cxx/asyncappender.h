@@ -67,7 +67,7 @@ namespace log4cxx
                  * Create new instance.
                 */
                 AsyncAppender();
-                
+
                 /**
                  *  Destructor.
                  */
@@ -97,7 +97,7 @@ namespace log4cxx
                  * @return list of all attached appenders.
                 */
                 AppenderList getAllAppenders() const;
-                
+
                 /**
                  * Get appender by name.
                  *
@@ -121,7 +121,7 @@ namespace log4cxx
                 bool isAttached(const AppenderPtr& appender) const;
 
                 virtual bool requiresLayout() const;
-                    
+
                 /**
                  * Removes and closes all attached appenders.
                 */
@@ -136,7 +136,7 @@ namespace log4cxx
                 * Remove appender by name.
                 * @param name name.
                 */
-                void removeAppender(const LogString& name);                        
+                void removeAppender(const LogString& name);
 
                 /**
                 * The <b>LocationInfo</b> attribute is provided for compatibility
@@ -174,8 +174,8 @@ namespace log4cxx
                  * @return true if calling thread will be blocked when buffer is full.
                  */
                  bool getBlocking() const;
-                 
-                 
+
+
                  /**
                   * Set appender properties by name.
                   * @param option property name.
@@ -203,19 +203,19 @@ namespace log4cxx
                 ::log4cxx::helpers::Mutex bufferMutex;
                 ::log4cxx::helpers::Condition bufferNotFull;
                 ::log4cxx::helpers::Condition bufferNotEmpty;
-    
+
                 class DiscardSummary {
                 private:
                     /**
                      * First event of the highest severity.
                     */
                     ::log4cxx::spi::LoggingEventPtr maxEvent;
-                    
+
                     /**
                     * Total count of messages discarded.
                     */
                     int count;
-                    
+
                 public:
                     /**
                      * Create new instance.
@@ -227,14 +227,14 @@ namespace log4cxx
                     DiscardSummary(const DiscardSummary& src);
                     /** Assignment operator. */
                     DiscardSummary& operator=(const DiscardSummary& src);
-                    
+
                     /**
                      * Add discarded event to summary.
                      *
                      * @param event event, may not be null.
                     */
                     void add(const ::log4cxx::spi::LoggingEventPtr& event);
-                    
+
                     /**
                      * Create event with summary information.
                      *
@@ -248,7 +248,7 @@ namespace log4cxx
                 */
                 typedef std::map<LogString, DiscardSummary> DiscardMap;
                 DiscardMap* discardMap;
-                
+
                 /**
                  * Buffer size.
                 */

@@ -82,13 +82,13 @@ namespace {
                             LaunchPackage(const LaunchPackage&);
                             LaunchPackage& operator=(const LaunchPackage&);
                             Thread* thread;
-                            Runnable runnable; 
+                            Runnable runnable;
                             void* data;
                         };
-                        
+
                         /**
                          *  This object atomically sets the specified memory location
-                         *  to non-zero on construction and to zero on destruction.  
+                         *  to non-zero on construction and to zero on destruction.
                          *  Used to maintain Thread.alive.
                          */
                         class LaunchStatus {
@@ -116,7 +116,7 @@ namespace {
                         /**
                          *   Get a key to the thread local storage used to hold the reference to
                          *   the corresponding Thread object.
-                         */                        
+                         */
 			ThreadLocal& getThreadLocal() {
      				static ThreadLocal tls;
      				return tls;
@@ -137,7 +137,7 @@ void* LOG4CXX_THREAD_FUNC ThreadLaunch::launcher(apr_thread_t* thread, void* dat
 }
 #endif
 
-Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0), 
+Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0),
     interruptedMutex(NULL), interruptedCondition(NULL) {
 }
 
@@ -166,17 +166,17 @@ void Thread::run(Runnable start, void* data) {
         if (stat != APR_SUCCESS) {
                 throw ThreadException(stat);
         }
-        
+
        stat = apr_thread_cond_create(&interruptedCondition, p.getAPRPool());
        if (stat != APR_SUCCESS) {
             throw ThreadException(stat);
        }
-       stat = apr_thread_mutex_create(&interruptedMutex, APR_THREAD_MUTEX_NESTED, 
+       stat = apr_thread_mutex_create(&interruptedMutex, APR_THREAD_MUTEX_NESTED,
                     p.getAPRPool());
        if (stat != APR_SUCCESS) {
             throw ThreadException(stat);
        }
-        
+
         //   create LaunchPackage on the thread's memory pool
         LaunchPackage* package = new(p) LaunchPackage(this, start, data);
         stat = apr_thread_create(&thread, attrs,
@@ -222,7 +222,7 @@ void Thread::interrupt() {
         apr_status_t stat = apr_thread_cond_signal(interruptedCondition);
         if (stat != APR_SUCCESS) throw ThreadException(stat);
     }
-#endif    
+#endif
 }
 
 bool Thread::interrupted() {
@@ -264,7 +264,7 @@ void Thread::sleep(int duration) {
             apr_sleep(duration*1000);
         } else {
             synchronized sync(pThis->interruptedMutex);
-            apr_status_t stat = apr_thread_cond_timedwait(pThis->interruptedCondition, 
+            apr_status_t stat = apr_thread_cond_timedwait(pThis->interruptedCondition,
                 pThis->interruptedMutex, duration*1000);
             if (stat != APR_SUCCESS && !APR_STATUS_IS_TIMEUP(stat)) {
                 throw ThreadException(stat);
@@ -274,9 +274,9 @@ void Thread::sleep(int duration) {
             }
         }
     }
-#else    
+#else
     if (duration > 0) {
         apr_sleep(duration*1000);
     }
-#endif    
+#endif
 }

@@ -353,7 +353,7 @@ IllegalStateException& IllegalStateException::operator=(const IllegalStateExcept
 SocketException::SocketException(const LogString& msg) : IOException(msg) {
 }
 
-SocketException::SocketException(log4cxx_status_t status) : IOException(status) { 
+SocketException::SocketException(log4cxx_status_t status) : IOException(status) {
 }
 
 SocketException::SocketException(const SocketException& src)
@@ -365,7 +365,7 @@ SocketException& SocketException::operator=(const SocketException& src) {
       return *this;
 }
 
-ConnectException::ConnectException(log4cxx_status_t status) : SocketException(status) { 
+ConnectException::ConnectException(log4cxx_status_t status) : SocketException(status) {
 }
 
 ConnectException::ConnectException(const ConnectException& src)
@@ -377,7 +377,7 @@ ConnectException& ConnectException::operator=(const ConnectException& src) {
       return *this;
 }
 
-ClosedChannelException::ClosedChannelException() : SocketException(LOG4CXX_STR("Attempt to write to closed socket")) { 
+ClosedChannelException::ClosedChannelException() : SocketException(LOG4CXX_STR("Attempt to write to closed socket")) {
 }
 
 ClosedChannelException::ClosedChannelException(const ClosedChannelException& src)
@@ -389,7 +389,7 @@ ClosedChannelException& ClosedChannelException::operator=(const ClosedChannelExc
       return *this;
 }
 
-BindException::BindException(log4cxx_status_t status) : SocketException(status) { 
+BindException::BindException(log4cxx_status_t status) : SocketException(status) {
 }
 
 BindException::BindException(const BindException& src)
@@ -401,7 +401,7 @@ BindException& BindException::operator=(const BindException& src) {
       return *this;
 }
 
-InterruptedIOException::InterruptedIOException(const LogString& msg) : IOException(msg) { 
+InterruptedIOException::InterruptedIOException(const LogString& msg) : IOException(msg) {
 }
 
 InterruptedIOException::InterruptedIOException(const InterruptedIOException& src)
@@ -413,8 +413,8 @@ InterruptedIOException& InterruptedIOException::operator=(const InterruptedIOExc
       return *this;
 }
 
-SocketTimeoutException::SocketTimeoutException() 
-    : InterruptedIOException(LOG4CXX_STR("SocketTimeoutException")) { 
+SocketTimeoutException::SocketTimeoutException()
+    : InterruptedIOException(LOG4CXX_STR("SocketTimeoutException")) {
 }
 
 SocketTimeoutException::SocketTimeoutException(const SocketTimeoutException& src)

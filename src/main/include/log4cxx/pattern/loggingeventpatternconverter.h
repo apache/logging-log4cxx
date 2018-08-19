@@ -28,9 +28,9 @@ namespace log4cxx {
     * LoggingEventPatternConverter is a base class for pattern converters
     * that can format information from instances of LoggingEvent.
     *
-    * 
     *
-    * 
+    *
+    *
     */
 class LOG4CXX_EXPORT LoggingEventPatternConverter : public PatternConverter {
 protected:

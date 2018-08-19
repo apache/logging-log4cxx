@@ -27,8 +27,8 @@ namespace pattern {
 /**
  * Format the event's line location information.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT FullLocationPatternConverter
   : public LoggingEventPatternConverter {

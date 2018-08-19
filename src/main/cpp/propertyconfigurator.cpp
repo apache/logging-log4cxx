@@ -51,7 +51,7 @@ using namespace log4cxx::config;
 
 #if APR_HAS_THREADS
 #include <log4cxx/helpers/filewatchdog.h>
-namespace log4cxx 
+namespace log4cxx
 {
 	class PropertyWatchdog  : public FileWatchdog
 	{
@@ -142,7 +142,7 @@ void PropertyConfigurator::configureAndWatch(
 {
 	if(pdog)
 	{
-	    APRInitializer::unregisterCleanup(pdog);	
+	    APRInitializer::unregisterCleanup(pdog);
 		delete pdog;
 	}
     pdog = new PropertyWatchdog(configFilename);

@@ -115,7 +115,7 @@ bool WriterAppender::checkEntryConditions() const {
 
     return false;
   }
-  
+
   if (layout == 0) {
     errorHandler->error(
             LogString(LOG4CXX_STR("No layout set for the appender named [")) +
@@ -265,7 +265,7 @@ void WriterAppender::setOption(const LogString& option, const LogString& value) 
 }
 
 
-void WriterAppender::setImmediateFlush(bool value) { 
+void WriterAppender::setImmediateFlush(bool value) {
     synchronized sync(mutex);
-    immediateFlush = value; 
+    immediateFlush = value;
 }

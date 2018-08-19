@@ -288,7 +288,7 @@ Used internally to parse an {@link ErrorHandler} element.
 */
 void DOMConfigurator::parseErrorHandler(Pool& p,
                                         log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
-                                        apr_xml_elem* element, 
+                                        apr_xml_elem* element,
                                         AppenderPtr& appender,
                                         apr_xml_doc* doc,
                                         AppenderMap& appenders)
@@ -298,7 +298,7 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
                 subst(getAttribute(utf8Decoder, element, CLASS_ATTR)),
                 ErrorHandler::getStaticClass(),
                 0);
-                
+
     if(eh != 0)
         {
                 eh->setAppender(appender);
@@ -340,9 +340,9 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
 /**
  Used internally to parse a filter element.
 */
-void DOMConfigurator::parseFilters(Pool& p,                                 
+void DOMConfigurator::parseFilters(Pool& p,
                                    log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
-                                   apr_xml_elem* element, 
+                                   apr_xml_elem* element,
                                    std::vector<log4cxx::spi::FilterPtr>& filters)
 {
         LogString clazz = subst(getAttribute(utf8Decoder, element, CLASS_ATTR));
@@ -373,8 +373,8 @@ Used internally to parse an category or logger element.
 */
 void DOMConfigurator::parseLogger(
                                   log4cxx::helpers::Pool& p,
-                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
-                                  apr_xml_elem* loggerElement, 
+                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+                                  apr_xml_elem* loggerElement,
                                   apr_xml_doc* doc,
                                   AppenderMap& appenders)
 {
@@ -403,7 +403,7 @@ void DOMConfigurator::parseLogger(
 */
 void DOMConfigurator::parseLoggerFactory(
                                   log4cxx::helpers::Pool& p,
-                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
+                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                                    apr_xml_elem* factoryElement)
 {
         LogString className(subst(getAttribute(utf8Decoder, factoryElement, CLASS_ATTR)));
@@ -438,9 +438,9 @@ void DOMConfigurator::parseLoggerFactory(
 */
 void DOMConfigurator::parseRoot(
                                   log4cxx::helpers::Pool& p,
-                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
-                                  apr_xml_elem* rootElement, 
-                                  apr_xml_doc* doc, 
+                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
+                                  apr_xml_elem* rootElement,
+                                  apr_xml_doc* doc,
                                   AppenderMap& appenders)
 {
         LoggerPtr root = repository->getRootLogger();
@@ -454,9 +454,9 @@ void DOMConfigurator::parseRoot(
 */
 void DOMConfigurator::parseChildrenOfLoggerElement(
                                   log4cxx::helpers::Pool& p,
-                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
+                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                                   apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot,
-                                  apr_xml_doc* doc, 
+                                  apr_xml_doc* doc,
                                   AppenderMap& appenders)
 {
 
@@ -511,7 +511,7 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
 */
 LayoutPtr DOMConfigurator::parseLayout (
                                   log4cxx::helpers::Pool& p,
-                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
+                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                                   apr_xml_elem* layout_element)
 {
         LogString className(subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR)));
@@ -548,7 +548,7 @@ LayoutPtr DOMConfigurator::parseLayout (
 */
 ObjectPtr DOMConfigurator::parseTriggeringPolicy (
                                   log4cxx::helpers::Pool& p,
-                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
+                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                                   apr_xml_elem* layout_element)
 {
         LogString className = subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR));
@@ -596,7 +596,7 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
 */
 RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
                                   log4cxx::helpers::Pool& p,
-                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
+                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                                   apr_xml_elem* layout_element)
 {
         LogString className = subst(getAttribute(utf8Decoder, layout_element, CLASS_ATTR));
@@ -635,7 +635,7 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
 */
 void DOMConfigurator::parseLevel(
                                   log4cxx::helpers::Pool& p,
-                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,                                  
+                                  log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
                                   apr_xml_elem* element, LoggerPtr logger, bool isRoot)
 {
     LogString loggerName = logger->getName();
@@ -703,7 +703,7 @@ void DOMConfigurator::parseLevel(
 
 void DOMConfigurator::setParameter(log4cxx::helpers::Pool& p,
                                 log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
-                                apr_xml_elem* elem, 
+                                apr_xml_elem* elem,
                                 PropertySetter& propSetter)
 {
         LogString name(subst(getAttribute(utf8Decoder, elem, NAME_ATTR)));
@@ -832,7 +832,7 @@ void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
         xdog->start();
 #else
     DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-#endif        
+#endif
 }
 
 #if LOG4CXX_WCHAR_T_API
@@ -851,7 +851,7 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
         xdog->start();
 #else
     DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-#endif        
+#endif
 }
 #endif
 
@@ -871,7 +871,7 @@ void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filena
         xdog->start();
 #else
     DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-#endif        
+#endif
 }
 #endif
 
@@ -891,7 +891,7 @@ void DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
         xdog->start();
 #else
     DOMConfigurator().doConfigure(file, LogManager::getLoggerRepository());
-#endif        
+#endif
 }
 #endif
 
@@ -995,7 +995,7 @@ LogString DOMConfigurator::subst(const LogString& value)
 
 LogString DOMConfigurator::getAttribute(
                                         log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
-                                        apr_xml_elem* element, 
+                                        apr_xml_elem* element,
                                         const std::string& attrName) {
     LogString attrValue;
     for(apr_xml_attr* attr = element->attr;

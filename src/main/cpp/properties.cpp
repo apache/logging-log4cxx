@@ -120,7 +120,7 @@ public:
                                         key.append(1, 0x0D);
                                         lexemType = KEY;
                                         break;
-                                
+
                                 case 0x0A: // '\n'
                                         lexemType = KEY_CONTINUE;
                                         break;
@@ -128,7 +128,7 @@ public:
                                 case 0x0D: // '\r'
                                         lexemType = KEY_CONTINUE2;
                                         break;
-                                        
+
                                 default:
                                         key.append(1, c);
                                         lexemType = KEY;

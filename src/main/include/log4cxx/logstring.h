@@ -54,14 +54,14 @@ typedef unsigned short UniChar;
    typedef char logchar;
 #if LOG4CXX_CHARSET_EBCDIC
 #define LOG4CXX_STR(str) log4cxx::helpers::Transcoder::decode(str)
-#else   
+#else
 #define LOG4CXX_STR(str) str
 #endif
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_UNICHAR
    typedef UniChar logchar;
-#define LOG4CXX_STR(str) log4cxx::helpers::Transcoder::decode(str)   
+#define LOG4CXX_STR(str) log4cxx::helpers::Transcoder::decode(str)
 #endif
 
    typedef std::basic_string<logchar> LogString;

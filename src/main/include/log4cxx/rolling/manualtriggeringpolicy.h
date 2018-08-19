@@ -34,7 +34,7 @@ namespace log4cxx {
          * ManualTriggeringPolicy only rolls over on explicit calls to
          * RollingFileAppender.rollover().
          *
-         * 
+         *
          *
          */
         class LOG4CXX_EXPORT ManualTriggeringPolicy : public TriggeringPolicy {

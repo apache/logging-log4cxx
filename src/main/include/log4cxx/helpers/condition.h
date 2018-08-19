@@ -33,7 +33,7 @@ namespace log4cxx
 
                 /**
                  *   This class provides a means for one thread to suspend exception until
-                 *   notified by another thread to resume.  This class should have 
+                 *   notified by another thread to resume.  This class should have
                  *   similar semantics to java.util.concurrent.locks.Condition.
                  */
                 class LOG4CXX_EXPORT Condition

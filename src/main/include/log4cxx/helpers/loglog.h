@@ -53,7 +53,7 @@ namespace log4cxx
                         LogLog(const LogLog&);
                         LogLog& operator=(const LogLog&);
                         static LogLog& getInstance();
- 
+
 
                 public:
                         /**
@@ -84,7 +84,7 @@ namespace log4cxx
 
                         @param quietMode <code>true</code> for no output.
                         */
-                        static void setQuietMode(bool quietMode);     
+                        static void setQuietMode(bool quietMode);
 
                         /**
                         This method is used to output log4cxx internal warning

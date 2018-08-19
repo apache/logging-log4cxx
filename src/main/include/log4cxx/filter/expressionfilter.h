@@ -79,7 +79,7 @@ namespace log4cxx
  *
  * If there is no match, {@link log4cxx::spi::Filter#NEUTRAL} is returned.
  *
- * 
+ *
  */
         class LOG4CXX_EXPORT ExpressionFilter:public log4cxx::spi::Filter
         {

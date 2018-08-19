@@ -59,9 +59,9 @@ namespace log4cxx
                        SocketOutputStream& operator=(const SocketOutputStream&);
 
                 };
-                
+
                 LOG4CXX_PTR_DEF(SocketOutputStream);
-                
+
         }  // namespace helpers
 } // namespace log4cxx
 

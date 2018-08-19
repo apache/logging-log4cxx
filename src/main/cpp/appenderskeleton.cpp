@@ -39,7 +39,7 @@ AppenderSkeleton::AppenderSkeleton()
     errorHandler(new OnlyOnceErrorHandler()),
     headFilter(),
     tailFilter(),
-    pool(), 
+    pool(),
     mutex(pool)
 {
     synchronized sync(mutex);

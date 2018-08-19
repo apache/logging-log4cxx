@@ -104,7 +104,7 @@ namespace log4cxx
                  Creates a nested diagnostic context.
                  Since java performs no automatic cleanup of objects when a
                  scope is left, in log4j push() and pop() must be used
-                 to manage the NDC. For convenience, log4cxx provides 
+                 to manage the NDC. For convenience, log4cxx provides
                  an NDC constructor and destructor which simply call the push() and
                  pop() methods, allowing for automatic cleanup when the current
                  scope ends.
@@ -233,13 +233,13 @@ namespace log4cxx
                 memory.
                 */
                 static void remove();
-                
+
 #if LOG4CXX_WCHAR_T_API
                /**
                  Creates a nested diagnostic context.
                  Since java performs no automatic cleanup of objects when a
                  scope is left, in log4j push() and pop() must be used
-                 to manage the NDC. For convenience, log4cxx provides 
+                 to manage the NDC. For convenience, log4cxx provides
                  an NDC constructor and destructor which simply call the push() and
                  pop() methods, allowing for automatic cleanup when the current
                  scope ends.
@@ -258,13 +258,13 @@ namespace log4cxx
                 /**
                  *   Appends the current NDC content to the provided string.
                  *   @param dst destination.
-                 *   @return true if NDC value set. 
+                 *   @return true if NDC value set.
                  */
                 static bool peek(std::wstring& dst);
                 /**
                  *   Appends the current NDC content to the provided string and removes the value from the NDC.
                  *   @param dst destination.
-                 *   @return true if NDC value set. 
+                 *   @return true if NDC value set.
                  */
                 static bool pop(std::wstring& dst);
 #endif
@@ -273,7 +273,7 @@ namespace log4cxx
                  Creates a nested diagnostic context.
                  Since java performs no automatic cleanup of objects when a
                  scope is left, in log4j push() and pop() must be used
-                 to manage the NDC. For convenience, log4cxx provides 
+                 to manage the NDC. For convenience, log4cxx provides
                  an NDC constructor and destructor which simply call the push() and
                  pop() methods, allowing for automatic cleanup when the current
                  scope ends.
@@ -292,13 +292,13 @@ namespace log4cxx
                 /**
                  *   Appends the current NDC content to the provided string.
                  *   @param dst destination.
-                 *   @return true if NDC value set. 
+                 *   @return true if NDC value set.
                  */
                 static bool peek(std::basic_string<UniChar>& dst);
                 /**
                  *   Appends the current NDC content to the provided string and removes the value from the NDC.
                  *   @param dst destination.
-                 *   @return true if NDC value set. 
+                 *   @return true if NDC value set.
                  */
                 static bool pop(std::basic_string<UniChar>& dst);
 #endif
@@ -307,7 +307,7 @@ namespace log4cxx
                  Creates a nested diagnostic context.
                  Since java performs no automatic cleanup of objects when a
                  scope is left, in log4j push() and pop() must be used
-                 to manage the NDC. For convenience, log4cxx provides 
+                 to manage the NDC. For convenience, log4cxx provides
                  an NDC constructor and destructor which simply call the push() and
                  pop() methods, allowing for automatic cleanup when the current
                  scope ends.
@@ -326,17 +326,17 @@ namespace log4cxx
                 /**
                  *   Gets the current NDC value.
                  *   @param dst destination.
-                 *   @return true if NDC value set. 
+                 *   @return true if NDC value set.
                  */
                 static bool peek(CFStringRef& dst);
                 /**
                  *  Gets and removes the current NDC value.
                  *   @param dst destination.
-                 *   @return true if NDC value set. 
+                 *   @return true if NDC value set.
                  */
                 static bool pop(CFStringRef& dst);
 #endif
-                
+
         private:
                 NDC(const NDC&);
                 NDC& operator=(const NDC&);

@@ -31,7 +31,7 @@ namespace log4cxx
 {
         namespace helpers
         {
-                class ByteBuffer;                
+                class ByteBuffer;
                 /**
                 <p>This class implements client sockets (also called just "sockets"). A socket
                 is an endpoint for communication between two machines.
@@ -59,7 +59,7 @@ namespace log4cxx
 
                         /** Closes this socket. */
                         void close();
-                                
+
                         /** Returns the value of this socket's address field. */
                         InetAddressPtr getInetAddress() const;
 
@@ -68,9 +68,9 @@ namespace log4cxx
                 private:
                         Socket(const Socket&);
                         Socket& operator=(const Socket&);
-                        
+
                         Pool pool;
-                        
+
                         apr_socket_t* socket;
 
 
@@ -81,9 +81,9 @@ namespace log4cxx
                         this socket is connected. */
                         int port;
                 };
-                
+
                 LOG4CXX_PTR_DEF(Socket);
-                
+
         } // namespace helpers
 } // namespace log4cxx
 

@@ -37,7 +37,7 @@ namespace log4cxx
                 END_LOG4CXX_CAST_MAP()
 
                 virtual LoggerPtr makeNewLoggerInstance(
-                    log4cxx::helpers::Pool& pool, 
+                    log4cxx::helpers::Pool& pool,
                     const LogString& name) const;
         };
 }  // namespace log4cxx

@@ -24,7 +24,7 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-RootLogger::RootLogger(Pool& pool, const LevelPtr& level1) : 
+RootLogger::RootLogger(Pool& pool, const LevelPtr& level1) :
     Logger(pool, LOG4CXX_STR("root"))
 {
    setLevel(level1);

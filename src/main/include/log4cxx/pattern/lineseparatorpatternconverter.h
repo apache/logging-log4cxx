@@ -27,8 +27,8 @@ namespace pattern {
 /**
  * Formats a line separator.
  *
- * 
- * 
+ *
+ *
  */
 class LOG4CXX_EXPORT LineSeparatorPatternConverter
   : public LoggingEventPatternConverter {

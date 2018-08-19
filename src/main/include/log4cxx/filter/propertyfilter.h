@@ -48,7 +48,7 @@ namespace log4cxx
  * Example properties param:
  * somename=somevalue,anothername=anothervalue,thirdname=third value
  *
- * 
+ *
  */
         class LOG4CXX_EXPORT PropertyFilter : public log4cxx::spi::Filter
         {

@@ -30,7 +30,7 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
 namespace log4cxx {
-    class ClassRollingFileAppender : public Class 
+    class ClassRollingFileAppender : public Class
     {
     public:
         ClassRollingFileAppender() : helpers::Class() {}
@@ -44,16 +44,16 @@ namespace log4cxx {
 }
 
 const log4cxx::helpers::Class& RollingFileAppender::getClass() const { return getStaticClass(); }
-const log4cxx::helpers::Class& RollingFileAppender::getStaticClass() { 
+const log4cxx::helpers::Class& RollingFileAppender::getStaticClass() {
    static ClassRollingFileAppender theClass;
    return theClass;
-}                                                        
+}
 const log4cxx::helpers::ClassRegistration& RollingFileAppender::registerClass() {
     static log4cxx::helpers::ClassRegistration classReg(RollingFileAppender::getStaticClass);
     return classReg;
 }
 namespace log4cxx { namespace classes {
-const log4cxx::helpers::ClassRegistration& ObsoleteRollingFileAppenderRegistration = 
+const log4cxx::helpers::ClassRegistration& ObsoleteRollingFileAppenderRegistration =
         RollingFileAppender::registerClass();
 } }
 

@@ -34,7 +34,7 @@ namespace log4cxx {
          * SizeBasedTriggeringPolicy looks at size of the file being
          * currently written to.
          *
-         * 
+         *
          *
          */
         class LOG4CXX_EXPORT SizeBasedTriggeringPolicy : public TriggeringPolicy {

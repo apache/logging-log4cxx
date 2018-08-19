@@ -66,7 +66,7 @@ void Transcoder::encodeUTF8(const LogString& src, std::string& dst) {
             iter++;
         }
      }
-#endif     
+#endif
 }
 
 char* Transcoder::encodeUTF8(const LogString& src, Pool& p) {
@@ -76,7 +76,7 @@ char* Transcoder::encodeUTF8(const LogString& src, Pool& p) {
      std::string tmp;
      encodeUTF8(src, tmp);
      return p.pstrdup(tmp);
-#endif     
+#endif
 }
 
 
@@ -254,7 +254,7 @@ void Transcoder::decode(const std::string& src, LogString& dst) {
        dst.append(1, *iter);
    }
 #endif
-  if (iter != src.end()) {   
+  if (iter != src.end()) {
     size_t offset = iter - src.begin();
     ByteBuffer buf(const_cast<char*>(src.data() + offset), src.size() - offset);
     while(buf.remaining() > 0) {
@@ -266,7 +266,7 @@ void Transcoder::decode(const std::string& src, LogString& dst) {
     }
     decoder->decode(buf, dst);
   }
-#endif  
+#endif
 }
 
 char* Transcoder::encode(const LogString& src, Pool& p) {
@@ -310,7 +310,7 @@ void Transcoder::encode(const LogString& src, std::string& dst) {
     }
     encoder->encode(src, iter, out);
   }
-#endif  
+#endif
 }
 
 
@@ -379,7 +379,7 @@ void Transcoder::decode(const std::wstring& src, LogString& dst) {
         i++;
       }
   }
-#endif  
+#endif
 }
 
 void Transcoder::encode(const LogString& src, std::wstring& dst) {
@@ -405,7 +405,7 @@ wchar_t* Transcoder::wencode(const LogString& src, Pool& p) {
     dst[tmp.length()] = 0;
     memcpy(dst, tmp.data(), tmp.length() * sizeof(wchar_t));
     return dst;
-}    
+}
 
 
 unsigned int Transcoder::decode(const std::wstring& in,
@@ -444,7 +444,7 @@ void Transcoder::decode(const std::basic_string<UniChar>& src, LogString& dst) {
          unsigned int cp = decode(src, i);
          encode(cp, dst);
      }
-#endif     
+#endif
 }
 
 void Transcoder::encode(const LogString& src, std::basic_string<UniChar>& dst) {
@@ -484,7 +484,7 @@ void Transcoder::decode(const CFStringRef& src, LogString& dst) {
               dst.append(&tmp[0], tmp.size());
 #else
               decode(std::basic_string<UniChar>(&tmp[0], tmp.size()), dst);
-#endif              
+#endif
           }
     }
 }
