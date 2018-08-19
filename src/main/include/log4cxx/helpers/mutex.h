@@ -20,7 +20,7 @@
 
 #include <log4cxx/log4cxx.h>
 
-#include <apr-1.0/apr_portable.h>
+#include <apr_portable.h>
 
 #include <atomic>
 
