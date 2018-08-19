@@ -78,9 +78,17 @@ namespace log4cxx
                 log4cxx::helpers::Pool pool;
                 mutable SHARED_MUTEX mutex;
 
+                /**
+                Subclasses of <code>AppenderSkeleton</code> should implement this
+                method to perform actual logging. See also AppenderSkeleton::doAppend
+                method.
+                */
+                virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) = 0;
+
         public:
                 DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderSkeleton)
                 BEGIN_LOG4CXX_CAST_MAP()
+                        LOG4CXX_CAST_ENTRY(AppenderSkeleton)
                         LOG4CXX_CAST_ENTRY(Appender)
                         LOG4CXX_CAST_ENTRY(spi::OptionHandler)
                 END_LOG4CXX_CAST_MAP()
@@ -109,6 +117,7 @@ namespace log4cxx
                 */
                 void addFilter(const spi::FilterPtr& newFilter) ;
 
+        public:
                 /**
                 Subclasses of <code>AppenderSkeleton</code> should implement this
                 method to perform actual logging. See also AppenderSkeleton::doAppend
@@ -122,7 +131,6 @@ namespace log4cxx
                 /**
                 Clear the filters chain.
                 */
-        public:
                 void clearFilters();
 
                 /**

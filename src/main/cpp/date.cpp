@@ -17,18 +17,15 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/date.h>
 
-
+#include <apr_time.h>
 #ifndef INT64_C
 #define INT64_C(x) x ## LL
 #endif
 
-
-#include <apr_time.h>
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Date)
-
 
 Date::Date() : time(apr_time_now()) {
 }

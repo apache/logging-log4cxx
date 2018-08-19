@@ -14,13 +14,45 @@
 # limitations under the License.
 #
 SUBDIRS = ndc xml rolling
-EXTRA_DIST = *.properties
+EXTRA_DIST = \
+    defaultInit3.properties \
+    hierarchyThreshold1.properties \
+    hierarchyThreshold2.properties \
+    hierarchyThreshold3.properties \
+    hierarchyThreshold4.properties \
+    hierarchyThreshold5.properties \
+    hierarchyThreshold6.properties \
+    hierarchyThreshold7.properties \
+    hierarchyThreshold8.properties \
+    l7d1.properties \
+    patternLayout10.properties \
+    patternLayout11.properties \
+    patternLayout12.properties \
+    patternLayout1.properties \
+    patternLayout2.properties \
+    patternLayout3.properties \
+    patternLayout4.properties \
+    patternLayout5.properties \
+    patternLayout6.properties \
+    patternLayout7.properties \
+    patternLayout8.properties \
+    patternLayout9.properties \
+    patternLayout.mdc.1.properties \
+    propertiestestcase.properties \
+    socketServer1.properties \
+    socketServer2.properties \
+    socketServer3.properties \
+    socketServer4.properties \
+    socketServer5.properties \
+    socketServer6.properties \
+    socketServer7.properties \
+    socketServer8.properties
 
-# if we are building in a separate build tree, then copy all necessary files
+# if we are building in a separate build tree, then prepare all necessary links
 all-local:
 	@if test "$(top_srcdir)" != "$(top_builddir)"; then \
-	  echo "Copying test suite data files ..." ; \
-	  list='$(EXTRA_DIST)'; for file in $$list; do \
-	    cp -p $(srcdir)/$$file . ; \
+	  echo "Symlinking test suite data files ..." ; \
+	  for file in $(EXTRA_DIST); do \
+	    test -a "$$file" || $(LN_S) "$(srcdir)/$$file"; \
 	  done \
 	fi

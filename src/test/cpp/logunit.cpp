@@ -115,8 +115,8 @@ int AssertException::getLine() const {
 
 TestFixture::TestFixture() : tc(0) {}
 TestFixture::~TestFixture() {}
-void TestFixture::setCase(abts_case* tc) {
-      this->tc = tc;
+void TestFixture::setCase(abts_case* newtc) {
+      tc = newtc;
 }
 void TestFixture::setUp() {}
 void TestFixture::tearDown() {}

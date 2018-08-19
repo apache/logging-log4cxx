@@ -309,7 +309,7 @@ bool NDC::pop(CFStringRef& dst)
         Stack& stack = data->getStack();
         if(!stack.empty())
         {
-                dst = Transcoder::encode(stack.top().message);
+                dst = Transcoder::encode(getMessage(stack.top()));
                 stack.pop();
                 data->recycle();
                 return true;
@@ -326,7 +326,7 @@ bool NDC::peek(CFStringRef& dst)
         Stack& stack = data->getStack();
         if(!stack.empty())
         {
-                dst = Transcoder::encode(stack.top().message);
+                dst = Transcoder::encode(getMessage(stack.top()));
                 return true;
         }
         data->recycle();

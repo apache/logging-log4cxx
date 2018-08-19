@@ -19,6 +19,9 @@
 #define _LOG4CXX_HELPERS_OUTPUTSTREAM_H
 
 #include <log4cxx/helpers/objectimpl.h>
+#ifdef LOG4CXX_MULTI_PROCESS
+#include <apr_file_io.h>
+#endif
 
 namespace log4cxx
 {
@@ -45,6 +48,10 @@ namespace log4cxx
                   virtual void close(Pool& p) = 0;
                   virtual void flush(Pool& p) = 0;
                   virtual void write(ByteBuffer& buf, Pool& p) = 0;
+#ifdef LOG4CXX_MULTI_PROCESS
+                  virtual apr_file_t* getFilePtr();
+                  virtual OutputStream& getFileOutPutStreamPtr();
+#endif
 
           private:
                   OutputStream(const OutputStream&);

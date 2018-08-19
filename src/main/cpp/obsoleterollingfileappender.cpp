@@ -64,24 +64,24 @@ RollingFileAppender::RollingFileAppender()
 }
 
 RollingFileAppender::RollingFileAppender(
-  const LayoutPtr& layout,
+  const LayoutPtr& newLayout,
   const LogString& filename,
   bool append)
   : maxFileSize(10*1024*1024), maxBackupIndex(1) {
-  setLayout(layout);
+  setLayout(newLayout);
   setFile(filename);
   setAppend(append);
-  Pool pool;
-  activateOptions(pool);
+  Pool p;
+  activateOptions(p);
 }
 
-RollingFileAppender::RollingFileAppender(const LayoutPtr& layout,
+RollingFileAppender::RollingFileAppender(const LayoutPtr& newLayout,
    const LogString& filename)
    : maxFileSize(10*1024*1024), maxBackupIndex(1) {
-  setLayout(layout);
+  setLayout(newLayout);
   setFile(filename);
-  Pool pool;
-  activateOptions(pool);
+  Pool p;
+  activateOptions(p);
 }
 
 RollingFileAppender::~RollingFileAppender() {
@@ -133,11 +133,11 @@ void RollingFileAppender::setMaxFileSize(const LogString& value) {
   maxFileSize = OptionConverter::toFileSize(value, maxFileSize + 1);
 }
 
-void RollingFileAppender::activateOptions(Pool& pool) {
+void RollingFileAppender::activateOptions(Pool& p) {
   log4cxx::rolling::SizeBasedTriggeringPolicyPtr trigger(
       new log4cxx::rolling::SizeBasedTriggeringPolicy());
   trigger->setMaxFileSize(maxFileSize);
-  trigger->activateOptions(pool);
+  trigger->activateOptions(p);
   setTriggeringPolicy(trigger);
 
   log4cxx::rolling::FixedWindowRollingPolicyPtr rolling(
@@ -145,11 +145,11 @@ void RollingFileAppender::activateOptions(Pool& pool) {
   rolling->setMinIndex(1);
   rolling->setMaxIndex(maxBackupIndex);
   rolling->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
-  rolling->activateOptions(pool);
+  rolling->activateOptions(p);
   setRollingPolicy(rolling);
 
   using namespace log4cxx::rolling;
-  RollingFileAppenderSkeleton::activateOptions(pool);
+  RollingFileAppenderSkeleton::activateOptions(p);
 }
 
 

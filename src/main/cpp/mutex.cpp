@@ -18,6 +18,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/pool.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_rwlock.h>
 #include <assert.h>
@@ -55,7 +56,13 @@ Mutex::Mutex(apr_pool_t* p) {
 
 Mutex::~Mutex() {
 #if APR_HAS_THREADS
-        apr_thread_mutex_destroy(mutex);
+	// LOGCXX-322
+	if (APRInitializer::isDestructed)
+	{
+		return;
+	}
+
+	apr_thread_mutex_destroy(mutex);
 #endif
 }
 

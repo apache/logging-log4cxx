@@ -15,29 +15,20 @@
  * limitations under the License.
  */
 
-#define LOG4CXX_TEST 1
-#include <log4cxx/private/log4cxx_private.h>
-
 #include <log4cxx/logger.h>
 #include <log4cxx/xml/domconfigurator.h>
+#include <log4cxx/fileappender.h>
+#include <log4cxx/varia/fallbackerrorhandler.h>
 #include "../logunit.h"
 #include "../util/transformer.h"
 #include "../util/compare.h"
 #include "../util/controlfilter.h"
-#include "../util/threadfilter.h"
 #include "../util/linenumberfilter.h"
 #include <iostream>
-#include <log4cxx/file.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::xml;
-
-#define TEST1_A_PAT "FALLBACK - test - Message [0-9]"
-#define TEST1_B_PAT "FALLBACK - root - Message [0-9]"
-#define TEST1_2_PAT \
-        "^[0-9]\\{4\\}-[0-9]\\{2\\}-[0-9]\\{2\\} [0-9]\\{2\\}:[0-9]\\{2\\}:[0-9]\\{2\\},[0-9]\\{3\\} " \
-        "\\[main]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]"
 
 LOGUNIT_CLASS(ErrorHandlerTestCase)
 {
@@ -47,9 +38,6 @@ LOGUNIT_CLASS(ErrorHandlerTestCase)
 
         LoggerPtr root;
         LoggerPtr logger;
-
-    static const File TEMP;
-    static const File FILTERED;
 
 
 public:
@@ -64,74 +52,67 @@ public:
                 logger->getLoggerRepository()->resetConfiguration();
         }
 
+
         void test1()
         {
                 DOMConfigurator::configure("input/xml/fallback1.xml");
+                FileAppenderPtr primary(root->getAppender(LOG4CXX_STR("PRIMARY")));
+                log4cxx::varia::FallbackErrorHandlerPtr eh(primary->getErrorHandler());
+                LOGUNIT_ASSERT(eh != 0);
+                
                 common();
 
-                ControlFilter cf;
-                cf << TEST1_A_PAT << TEST1_B_PAT << TEST1_2_PAT;
+                std::string TEST1_PAT = 
+                       "FALLBACK - (root|test) - Message {0-9}";
 
-                ThreadFilter threadFilter;
+                ControlFilter cf;
+                cf << TEST1_PAT;
+
                 LineNumberFilter lineNumberFilter;
 
                 std::vector<Filter *> filters;
                 filters.push_back(&cf);
-                filters.push_back(&threadFilter);
                 filters.push_back(&lineNumberFilter);
-
-        common();
 
                 try
                 {
-                        Transformer::transform(TEMP, FILTERED, filters);
+                        Transformer::transform("output/temp", "output/filtered", filters);
                 }
                 catch(UnexpectedFormatException& e)
                 {
-            std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+                    std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
                         throw;
                 }
 
-        const File witness("witness/fallback");
-                LOGUNIT_ASSERT(Compare::compare(FILTERED, witness));
+
+                LOGUNIT_ASSERT(Compare::compare("output/filtered", "witness/fallback1"));
         }
 
         void common()
         {
                 int i = -1;
+                  
+                LOG4CXX_DEBUG(logger, "Message " << ++i);
+                LOG4CXX_DEBUG(root, "Message " << i);
 
-        std::ostringstream os;
-        os << "Message " << ++ i;
-                LOG4CXX_DEBUG(logger, os.str());
-                LOG4CXX_DEBUG(root, os.str());
+                LOG4CXX_INFO(logger, "Message " << ++i);
+                LOG4CXX_INFO(root, "Message " << i);
 
-        os.str("");
-        os << "Message " << ++i;
-                LOG4CXX_INFO(logger, os.str());
-                LOG4CXX_INFO(root, os.str());
+                LOG4CXX_WARN(logger, "Message " << ++i);
+                LOG4CXX_WARN(root, "Message " << i);
 
-        os.str("");
-        os << "Message " << ++i;
-                LOG4CXX_WARN(logger, os.str());
-                LOG4CXX_WARN(root, os.str());
+                LOG4CXX_ERROR(logger, "Message " << ++i);
+                LOG4CXX_ERROR(root, "Message " << i);
 
-        os.str("");
-        os << "Message " << ++i;
-                LOG4CXX_ERROR(logger, os.str());
-                LOG4CXX_ERROR(root, os.str());
+                LOG4CXX_FATAL(logger, "Message " << ++i);
+                LOG4CXX_FATAL(root, "Message " << i);
 
-        os.str("");
-        os << "Message " << ++i;
-                LOG4CXX_FATAL(logger, os.str());
-                LOG4CXX_FATAL(root, os.str());
+                LOG4CXX_DEBUG(logger, "Message " << ++i);
+                LOG4CXX_DEBUG(root, "Message " << i);
+
+                LOG4CXX_ERROR(logger, "Message " << ++i);
+                LOG4CXX_ERROR(root, "Message " << i);
         }
 };
 
-//TODO: Not sure this test ever worked.  0.9.7 didn't call common
-//   had nothing that attempted to dispatch any log events
-
-//LOGUNIT_TEST_SUITE_REGISTRATION(ErrorHandlerTestCase);
-
-const File ErrorHandlerTestCase::TEMP("output/temp");
-const File ErrorHandlerTestCase::FILTERED("output/filtered");
-
+LOGUNIT_TEST_SUITE_REGISTRATION(ErrorHandlerTestCase)

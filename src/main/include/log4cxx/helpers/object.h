@@ -61,8 +61,8 @@ static const helpers::Class& getStaticClass();\
 static const log4cxx::helpers::ClassRegistration&  registerClass();
 
 #define IMPLEMENT_LOG4CXX_OBJECT(object)\
-const log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
-const log4cxx::helpers::Class& object::getStaticClass() { \
+const ::log4cxx::helpers::Class& object::getClass() const { return getStaticClass(); }\
+const ::log4cxx::helpers::Class& object::getStaticClass() { \
    static Clazz##object theClass;                         \
    return theClass;                                       \
 }                                                                      \
@@ -71,7 +71,7 @@ const log4cxx::helpers::ClassRegistration& object::registerClass() {   \
     return classReg; \
 }\
 namespace log4cxx { namespace classes { \
-const log4cxx::helpers::ClassRegistration& object##Registration = object::registerClass(); \
+const ::log4cxx::helpers::ClassRegistration& object##Registration = object::registerClass(); \
 } }
 
 

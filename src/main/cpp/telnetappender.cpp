@@ -204,7 +204,8 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
                         Pool p;
                         pThis->writeStatus(newClient, LOG4CXX_STR("Log closed.\r\n"), p);
                         newClient->close();
-                        return NULL;
+
+                        break;
                 }
 
                 size_t count = pThis->activeConnections;
@@ -223,6 +224,7 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
                                 if (*iter == NULL) {
                                     *iter = newClient;
                                     pThis->activeConnections++;
+
                                     break;
                                 }
                         }
@@ -235,13 +237,13 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
                 }
         } catch(InterruptedIOException &e) {
                 if (pThis->closed) {
-                    return NULL;
+                    break;
                 }
         } catch(Exception& e) {
                 if (!pThis->closed) {
                     LogLog::error(LOG4CXX_STR("Encountered error while in SocketHandler loop."), e);
                 } else {
-                    return NULL;
+                    break;
                 }
         }
     }

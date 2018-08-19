@@ -16,12 +16,19 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/logmanager.h>
 #include <iostream>
 #include <locale.h>
+#include <cstring>
+#include <cstdio>
+#ifndef WIN32
+#include <stdint.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

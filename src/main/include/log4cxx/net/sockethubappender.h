@@ -38,6 +38,8 @@ namespace log4cxx
         }
         namespace net
         {
+                LOG4CXX_LIST_DEF(ObjectOutputStreamList, log4cxx::helpers::ObjectOutputStreamPtr);
+
                 /**
                 Sends {@link log4cxx::spi::LoggingEvent LoggingEvent} objects to a set of remote log
                 servers, usually a SocketNode.
@@ -112,7 +114,6 @@ namespace log4cxx
                         static int DEFAULT_PORT;
 
                         int port;
-                        LOG4CXX_LIST_DEF(ObjectOutputStreamList, log4cxx::helpers::ObjectOutputStreamPtr);
                         ObjectOutputStreamList streams;
                         bool locationInfo;
 

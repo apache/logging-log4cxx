@@ -52,6 +52,9 @@ namespace log4cxx
                   virtual void flush(Pool& p);
                   virtual void write(ByteBuffer& buf, Pool& p);
 
+#ifdef LOG4CXX_MULTI_PROCESS
+                  apr_file_t* getFilePtr() { return fileptr; }
+#endif
           private:
                   FileOutputStream(const FileOutputStream&);
                   FileOutputStream& operator=(const FileOutputStream&);

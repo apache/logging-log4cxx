@@ -21,13 +21,19 @@
 #include <apr_xlate.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+
 #if !defined(LOG4CXX)
 #define LOG4CXX 1
 #endif
+
 #include <log4cxx/private/log4cxx_private.h>
 #include <apr_portable.h>
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/synchronized.h>
+
+#ifdef LOG4CXX_HAS_WCSTOMBS
+#include <stdlib.h>
+#endif
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -400,7 +406,7 @@ public:
                             Transcoder::decode(encoding, ename);
                             try {
                                 encoder = CharsetEncoder::getEncoder(ename);
-                            } catch(IllegalArgumentException ex) {
+                            } catch(IllegalArgumentException &ex) {
                                 encoder = new USASCIICharsetEncoder();
                             }
                         }
@@ -484,7 +490,7 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset) {
     } else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16LE"), LOG4CXX_STR("utf-16le"))) {
         return new UTF16LECharsetEncoder();
     }
-#if APR_HAS_XLATE || !defined(_WIN32)
+#if APR_HAS_XLATE
     return new APRCharsetEncoder(charset);
 #else
     throw IllegalArgumentException(charset);

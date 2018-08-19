@@ -18,6 +18,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <log4cxx/helpers/exception.h>
+#include <apr_thread_proc.h>
 #if !defined(LOG4CXX)
 #define LOG4CXX 1
 #endif
@@ -79,7 +80,7 @@ void ThreadSpecificData::put(const LogString& key, const LogString& val) {
         data = createCurrentData();
     }
     if (data != 0) {
-        data->getMap().insert(log4cxx::MDC::Map::value_type(key, val));
+        data->getMap()[key] = val;
     }
 }
 

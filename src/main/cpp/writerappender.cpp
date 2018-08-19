@@ -106,13 +106,20 @@ bool WriterAppender::checkEntryConditions() const {
   }
 
   if (writer == 0) {
-    if (!warnedNoWriter) {
-        LogLog::error(
+    if (warnedNoWriter) {
+        errorHandler->error(
             LogString(LOG4CXX_STR("No output stream or file set for the appender named [")) +
                name + LOG4CXX_STR("]."));
         warnedNoWriter = true;
     }
 
+    return false;
+  }
+
+  if (layout == 0) {
+    errorHandler->error(
+            LogString(LOG4CXX_STR("No layout set for the appender named [")) +
+               name + LOG4CXX_STR("]."));
     return false;
   }
 

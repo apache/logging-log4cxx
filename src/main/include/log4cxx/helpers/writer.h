@@ -19,6 +19,7 @@
 #define _LOG4CXX_HELPERS_WRITER_H
 
 #include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/outputstream.h>
 
 namespace log4cxx
 {
@@ -44,6 +45,9 @@ namespace log4cxx
                   virtual void close(Pool& p) = 0;
                   virtual void flush(Pool& p) = 0;
                   virtual void write(const LogString& str, Pool& p) = 0;
+#ifdef LOG4CXX_MULTI_PROCESS
+                  virtual OutputStreamPtr getOutPutStreamPtr();
+#endif
 
           private:
                   Writer(const Writer&);

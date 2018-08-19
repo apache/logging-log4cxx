@@ -1,5 +1,3 @@
-AC_INIT(src/main/cpp/logger.cpp)
-
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -14,7 +12,11 @@ AC_INIT(src/main/cpp/logger.cpp)
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
+
+AC_INIT([log4cxx], [0.11.0])
+AC_CONFIG_MACRO_DIR([src/m4])
+AC_CONFIG_SRCDIR(src/main/cpp/logger.cpp)
+
 # autoconf 2.50 or higher to rebuild aclocal.m4, because the
 # AC_CREATE_PREFIX_CONFIG_H macro needs the AS_DIRNAME macro.
 AC_PREREQ(2.50)
@@ -37,13 +39,15 @@ AH_VERBATIM([HAVE_NO_EXPLICIT_EXPORTS],
 [/* no explicit exports */
 #define LOG4CXX_EXPORT])
 
-AM_INIT_AUTOMAKE(log4cxx, 0.10.0)
+AM_INIT_AUTOMAKE([foreign subdir-objects -Wall])
 
 # Checks for programs
 # ----------------------------------------------------------------------------
 
+AM_PROG_AR
 AM_PROG_LIBTOOL
 AC_PROG_INSTALL
+AC_PROG_LN_S
 AC_PROG_MAKE_SET
 
 AC_PROG_CXX([g++ c++ gpp aCC CC cxx cc++ cl FCC KCC RCC xlC_r xlC QCC])
@@ -182,9 +186,9 @@ else
 fi
 
 AC_MSG_CHECKING([for wchar_t])
-AC_COMPILE_IFELSE(AC_LANG_SOURCE([[
+AC_COMPILE_IFELSE([AC_LANG_SOURCE([
                    #include <string>
-                   std::wstring w;]]), [have_wchar_t=yes], [have_wchar_t=no])
+                   std::wstring w;])], [have_wchar_t=yes], [have_wchar_t=no])
 AC_MSG_RESULT($have_wchar_t)
 if test "$have_wchar_t" = "yes"
 then
@@ -204,9 +208,6 @@ fi
 
 # Checks for libraries
 # ----------------------------------------------------------------------------
-
-AC_PROG_RANLIB
-
 
 #for ODBCAppender
 AC_MSG_CHECKING(for ODBC support)
@@ -335,9 +336,9 @@ AC_ARG_ENABLE(cfstring,
 if test "x$enable_cfstring" = xyes; then
         AC_MSG_CHECKING([for cfstring])
         CPPFLAGS="$CPPFLAGS -framework CoreFoundation"
-        AC_COMPILE_IFELSE(AC_LANG_SOURCE([[
+        AC_COMPILE_IFELSE([AC_LANG_SOURCE([
                    #include <CoreFoundation/CFString.h>
-                   CFStringRef x = CFSTR("Hello");]]), [have_cfstring_api=yes], [have_cfstring_api=no])
+                   CFStringRef x = CFSTR("Hello");])], [have_cfstring_api=yes], [have_cfstring_api=no])
         AC_MSG_RESULT($have_cfstring_api)
 else
         have_cfstring_api=no
@@ -471,6 +472,7 @@ src/main/include/log4cxx/db/Makefile
 src/main/include/log4cxx/rolling/Makefile
 src/main/include/log4cxx/pattern/Makefile
 src/main/include/log4cxx/filter/Makefile
+src/m4/Makefile
 src/site/Makefile
 src/site/doxy/Makefile
 src/site/doxy/Doxyfile

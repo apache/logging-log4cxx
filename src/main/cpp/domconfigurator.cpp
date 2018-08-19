@@ -46,6 +46,9 @@
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/helpers/messagebuffer.h>
 
+#define LOG4CXX 1
+#include <log4cxx/helpers/aprinitializer.h>
+
 using namespace log4cxx;
 using namespace log4cxx::xml;
 using namespace log4cxx::helpers;
@@ -55,23 +58,30 @@ using namespace log4cxx::rolling;
 
 
 #if APR_HAS_THREADS
-class XMLWatchdog  : public FileWatchdog
+namespace log4cxx
 {
-public:
-        XMLWatchdog(const File& filename) : FileWatchdog(filename)
-        {
-        }
+    namespace xml
+    {
+		class XMLWatchdog  : public FileWatchdog
+		{
+		public:
+			XMLWatchdog(const File& filename) : FileWatchdog(filename)
+			{
+			}
 
-        /**
-        Call DOMConfigurator#doConfigure with the
-        <code>filename</code> to reconfigure log4cxx.
-        */
-        void doOnChange()
-        {
-                DOMConfigurator().doConfigure(file,
-                        LogManager::getLoggerRepository());
-        }
-};
+			/**
+			Call DOMConfigurator#doConfigure with the
+			<code>filename</code> to reconfigure log4cxx.
+			*/
+			void doOnChange()
+			{
+				DOMConfigurator().doConfigure(file,
+						LogManager::getLoggerRepository());
+			}
+		};
+	}
+}
+XMLWatchdog *DOMConfigurator::xdog = NULL;
 #endif
 
 
@@ -285,6 +295,7 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
                                         apr_xml_doc* doc,
                                         AppenderMap& appenders)
 {
+
     ErrorHandlerPtr eh = OptionConverter::instantiateByClassName(
                 subst(getAttribute(utf8Decoder, element, CLASS_ATTR)),
                 ErrorHandler::getStaticClass(),
@@ -321,7 +332,10 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
                                 }
                 }
                 propSetter.activate(p);
-//                appender->setErrorHandler(eh);
+                ObjectPtrT<AppenderSkeleton> appSkeleton(appender);
+                if (appSkeleton != 0) {
+                    appSkeleton->setErrorHandler(eh);
+                }
     }
 }
 
@@ -721,8 +735,8 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
             msg2.append(LOG4CXX_STR("]."));
             LogLog::error(msg2);
         } else {
-            apr_xml_parser *parser;
-            apr_xml_doc *doc;
+            apr_xml_parser *parser = NULL;
+            apr_xml_doc *doc = NULL;
             rv = apr_xml_parse_file(p.getAPRPool(), &parser, &doc, fd, 2000);
             if (rv != APR_SUCCESS) {
                 char errbuf[2000];
@@ -732,10 +746,13 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
                 msg2.append(LOG4CXX_STR("], "));
                 apr_strerror(rv, errbuf, sizeof(errbuf));
                 LOG4CXX_DECODE_CHAR(lerrbuf, std::string(errbuf));
-                apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
-                LOG4CXX_DECODE_CHAR(lerrbufXML, std::string(errbufXML));
                 msg2.append(lerrbuf);
-                msg2.append(lerrbufXML);
+		if(parser)
+                {
+                    apr_xml_parser_geterror(parser, errbufXML, sizeof(errbufXML));
+                    LOG4CXX_DECODE_CHAR(lerrbufXML, std::string(errbufXML));
+                    msg2.append(lerrbufXML);
+                }
                 LogLog::error(msg2);
             } else {
                 AppenderMap appenders;
@@ -806,7 +823,13 @@ void DOMConfigurator::configureAndWatch(const std::string& filename, long delay)
 {
         File file(filename);
 #if APR_HAS_THREADS
-        XMLWatchdog * xdog = new XMLWatchdog(file);
+		if( xdog )
+		{
+			APRInitializer::unregisterCleanup(xdog);
+			delete xdog;
+		}
+        xdog = new XMLWatchdog(file);
+        APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
 #else
@@ -819,7 +842,13 @@ void DOMConfigurator::configureAndWatch(const std::wstring& filename, long delay
 {
         File file(filename);
 #if APR_HAS_THREADS
-        XMLWatchdog * xdog = new XMLWatchdog(file);
+		if( xdog )
+		{
+			APRInitializer::unregisterCleanup(xdog);
+			delete xdog;
+		}
+        xdog = new XMLWatchdog(file);
+        APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
 #else
@@ -833,7 +862,13 @@ void DOMConfigurator::configureAndWatch(const std::basic_string<UniChar>& filena
 {
         File file(filename);
 #if APR_HAS_THREADS
-        XMLWatchdog * xdog = new XMLWatchdog(file);
+		if( xdog )
+		{
+			APRInitializer::unregisterCleanup(xdog);
+			delete xdog;
+		}
+        xdog = new XMLWatchdog(file);
+        APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
 #else
@@ -847,7 +882,13 @@ void DOMConfigurator::configureAndWatch(const CFStringRef& filename, long delay)
 {
         File file(filename);
 #if APR_HAS_THREADS
-        XMLWatchdog * xdog = new XMLWatchdog(file);
+		if( xdog )
+		{
+			APRInitializer::unregisterCleanup(xdog);
+			delete xdog;
+		}
+        xdog = new XMLWatchdog(file);
+        APRInitializer::registerCleanup(xdog);
         xdog->setDelay(delay);
         xdog->start();
 #else

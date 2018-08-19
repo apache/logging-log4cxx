@@ -36,6 +36,7 @@
 
 namespace log4cxx
 {
+        LOG4CXX_LIST_DEF(LoggingEventList, log4cxx::spi::LoggingEventPtr);
 
         /**
         The AsyncAppender lets users log events asynchronously. It uses a

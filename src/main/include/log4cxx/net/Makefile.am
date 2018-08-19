@@ -14,5 +14,11 @@
 # limitations under the License.
 #
 netincdir = $(includedir)/log4cxx/net
-netinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/net/*.h
-
+netinc_HEADERS= \
+    smtpappender.h \
+    socketappender.h \
+    socketappenderskeleton.h \
+    sockethubappender.h \
+    syslogappender.h \
+    telnetappender.h \
+    xmlsocketappender.h

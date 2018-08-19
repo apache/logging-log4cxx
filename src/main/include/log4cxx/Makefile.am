@@ -15,10 +15,42 @@
 #
 SUBDIRS = helpers net nt rolling spi varia xml config db private pattern filter
 log4cxxincdir = $(includedir)/log4cxx
-log4cxxinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/*.h log4cxx.h
 DISTCLEANFILES = log4cxx.h
 EXTRA_DIST = log4cxx.hw
 
+# Importantly, $(top_srcdir)/src/main/include/log4cxx/log4cxx.h
+# does NOT appear in the following list so the built version is preferred.
+# This subtly is important for properly handling VPATH vs non-VPATH builds.
+log4cxxinc_HEADERS  = $(top_builddir)/src/main/include/log4cxx/log4cxx.h
+log4cxxinc_HEADERS += \
+    $(top_srcdir)/src/main/include/log4cxx/appender.h \
+    $(top_srcdir)/src/main/include/log4cxx/appenderskeleton.h \
+    $(top_srcdir)/src/main/include/log4cxx/asyncappender.h \
+    $(top_srcdir)/src/main/include/log4cxx/basicconfigurator.h \
+    $(top_srcdir)/src/main/include/log4cxx/consoleappender.h \
+    $(top_srcdir)/src/main/include/log4cxx/dailyrollingfileappender.h \
+    $(top_srcdir)/src/main/include/log4cxx/defaultconfigurator.h \
+    $(top_srcdir)/src/main/include/log4cxx/defaultloggerfactory.h \
+    $(top_srcdir)/src/main/include/log4cxx/fileappender.h \
+    $(top_srcdir)/src/main/include/log4cxx/file.h \
+    $(top_srcdir)/src/main/include/log4cxx/hierarchy.h \
+    $(top_srcdir)/src/main/include/log4cxx/htmllayout.h \
+    $(top_srcdir)/src/main/include/log4cxx/layout.h \
+    $(top_srcdir)/src/main/include/log4cxx/level.h \
+    $(top_srcdir)/src/main/include/log4cxx/logger.h \
+    $(top_srcdir)/src/main/include/log4cxx/logmanager.h \
+    $(top_srcdir)/src/main/include/log4cxx/logstring.h \
+    $(top_srcdir)/src/main/include/log4cxx/mdc.h \
+    $(top_srcdir)/src/main/include/log4cxx/ndc.h \
+    $(top_srcdir)/src/main/include/log4cxx/patternlayout.h \
+    $(top_srcdir)/src/main/include/log4cxx/portability.h \
+    $(top_srcdir)/src/main/include/log4cxx/propertyconfigurator.h \
+    $(top_srcdir)/src/main/include/log4cxx/provisionnode.h \
+    $(top_srcdir)/src/main/include/log4cxx/rollingfileappender.h \
+    $(top_srcdir)/src/main/include/log4cxx/simplelayout.h \
+    $(top_srcdir)/src/main/include/log4cxx/stream.h \
+    $(top_srcdir)/src/main/include/log4cxx/ttcclayout.h \
+    $(top_srcdir)/src/main/include/log4cxx/writerappender.h
+
 dist-hook:
 	-rm -f $(distdir)/log4cxx.h
-

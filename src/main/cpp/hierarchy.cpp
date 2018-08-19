@@ -67,8 +67,12 @@ provisionNodes(new ProvisionNodeMap())
 
 Hierarchy::~Hierarchy()
 {
-    delete loggers;
-    delete provisionNodes;
+// TODO LOGCXX-430
+// https://issues.apache.org/jira/browse/LOGCXX-430?focusedCommentId=15175254&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-15175254
+#ifndef APR_HAS_THREADS
+	delete loggers;
+	delete provisionNodes;
+#endif
 }
 
 void Hierarchy::addRef() const {
@@ -333,9 +337,9 @@ void Hierarchy::updateParents(LoggerPtr logger)
         bool parentFound = false;
 
 
-        // if name = "w.x.y.z", loop thourgh "w.x.y", "w.x" and "w", but not "w.x.y.z"
+        // if name = "w.x.y.z", loop through "w.x.y", "w.x" and "w", but not "w.x.y.z"
         for(size_t i = name.find_last_of(0x2E /* '.' */, length-1);
-            i != LogString::npos;
+            (i != LogString::npos) && (i != 0);
             i = name.find_last_of(0x2E /* '.' */, i-1))
         {
                 LogString substr = name.substr(0, i);

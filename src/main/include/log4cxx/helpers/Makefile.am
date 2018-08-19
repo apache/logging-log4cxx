@@ -14,5 +14,75 @@
 # limitations under the License.
 #
 helpersincdir = $(includedir)/log4cxx/helpers
-helpersinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/helpers/*.h
-
+helpersinc_HEADERS= \
+    absolutetimedateformat.h \
+    appenderattachableimpl.h \
+    aprinitializer.h \
+    bufferedoutputstream.h \
+    bufferedwriter.h \
+    bytearrayinputstream.h \
+    bytearrayoutputstream.h \
+    bytebuffer.h \
+    cacheddateformat.h \
+    charsetdecoder.h \
+    charsetencoder.h \
+    class.h \
+    classregistration.h \
+    condition.h \
+    cyclicbuffer.h \
+    datagrampacket.h \
+    datagramsocket.h \
+    dateformat.h \
+    date.h \
+    datelayout.h \
+    datetimedateformat.h \
+    exception.h \
+    fileinputstream.h \
+    fileoutputstream.h \
+    filewatchdog.h \
+    inetaddress.h \
+    inputstream.h \
+    inputstreamreader.h \
+    integer.h \
+    iso8601dateformat.h \
+    loader.h \
+    locale.h \
+    loglog.h \
+    messagebuffer.h \
+    mutex.h \
+    object.h \
+    objectimpl.h \
+    objectoutputstream.h \
+    objectptr.h \
+    onlyonceerrorhandler.h \
+    optionconverter.h \
+    outputstream.h \
+    outputstreamwriter.h \
+    pool.h \
+    properties.h \
+    propertyresourcebundle.h \
+    reader.h \
+    relativetimedateformat.h \
+    resourcebundle.h \
+    serversocket.h \
+    simpledateformat.h \
+    socket.h \
+    socketoutputstream.h \
+    strftimedateformat.h \
+    strictmath.h \
+    stringhelper.h \
+    stringtokenizer.h \
+    synchronized.h \
+    syslogwriter.h \
+    systemerrwriter.h \
+    system.h \
+    systemoutwriter.h \
+    tchar.h \
+    thread.h \
+    threadlocal.h \
+    threadspecificdata.h \
+    timezone.h \
+    transcoder.h \
+    transform.h \
+    writer.h \
+    xml.h
