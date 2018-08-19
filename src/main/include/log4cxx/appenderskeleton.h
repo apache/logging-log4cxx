@@ -85,6 +85,8 @@ namespace log4cxx
                 */
                 virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) = 0;
 
+                void doAppendImpl(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
+
         public:
                 DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderSkeleton)
                 BEGIN_LOG4CXX_CAST_MAP()
@@ -118,16 +120,6 @@ namespace log4cxx
                 void addFilter(const spi::FilterPtr& newFilter) ;
 
         public:
-                /**
-                Subclasses of <code>AppenderSkeleton</code> should implement this
-                method to perform actual logging. See also AppenderSkeleton::doAppend
-                method.
-                */
-        protected:
-                virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) = 0;
-
-                void doAppendImpl(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
-
                 /**
                 Clear the filters chain.
                 */
