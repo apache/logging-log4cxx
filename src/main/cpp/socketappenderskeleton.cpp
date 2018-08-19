@@ -74,7 +74,7 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 }
 
 void SocketAppenderSkeleton::close() {
-    synchronized sync(mutex);
+    LOCK_W sync(mutex);
     if (closed) return;
     closed = true;
     cleanUp(pool);
@@ -129,7 +129,7 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 
 void SocketAppenderSkeleton::fireConnector()
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
         if (thread.isActive()) {
                 thread.run(monitor, this);
         }

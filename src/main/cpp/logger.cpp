@@ -43,9 +43,9 @@ IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
 Logger::Logger(Pool& p, const LogString& name1)
 : pool(&p), name(), level(), parent(), resourceBundle(),
-repository(), aai(), mutex(p)
+repository(), aai(), SHARED_MUTEX_INIT(mutex, p)
 {
-    synchronized sync(mutex);
+    LOCK_W sync(mutex);
     name = name1;
     additive = true;
 }
@@ -64,7 +64,7 @@ void Logger::releaseRef() const {
 
 void Logger::addAppender(const AppenderPtr& newAppender)
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
 
         if (aai == 0)
         {
@@ -86,7 +86,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
          logger = logger->parent)
         {
                 // Protected against simultaneous call to addAppender, removeAppender,...
-                synchronized sync(logger->mutex);
+                LOCK_R sync(logger->mutex);
 
                 if (logger->aai != 0)
                 {
@@ -150,7 +150,7 @@ bool Logger::getAdditivity() const
 
 AppenderList Logger::getAllAppenders() const
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
 
         if (aai == 0)
         {
@@ -164,7 +164,7 @@ AppenderList Logger::getAllAppenders() const
 
 AppenderPtr Logger::getAppender(const LogString& name1) const
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
 
         if (aai == 0 || name1.empty())
         {
@@ -250,7 +250,7 @@ LevelPtr Logger::getLevel() const
 
 bool Logger::isAttached(const AppenderPtr& appender) const
 {
-        synchronized sync(mutex);
+        LOCK_R sync(mutex);
 
         if (appender == 0 || aai == 0)
         {
@@ -434,7 +434,7 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
 
         if(aai != 0)
         {
@@ -445,7 +445,7 @@ void Logger::removeAllAppenders()
 
 void Logger::removeAppender(const AppenderPtr& appender)
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
 
         if(appender == 0 || aai == 0)
         {
@@ -457,7 +457,7 @@ void Logger::removeAppender(const AppenderPtr& appender)
 
 void Logger::removeAppender(const LogString& name1)
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
 
         if(name1.empty() || aai == 0)
         {
@@ -469,7 +469,7 @@ void Logger::removeAppender(const LogString& name1)
 
 void Logger::setAdditivity(bool additive1)
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
         this->additive = additive1;
 }
 

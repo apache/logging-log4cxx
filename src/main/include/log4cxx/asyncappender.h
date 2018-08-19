@@ -32,6 +32,7 @@
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/condition.h>
 
+#include <boost/lockfree/queue.hpp>
 
 namespace log4cxx
 {
@@ -81,6 +82,9 @@ namespace log4cxx
                  * @param newAppender appender to add, may not be null.
                 */
                 void addAppender(const AppenderPtr& newAppender);
+
+                virtual void doAppend(const spi::LoggingEventPtr& event,
+                                      log4cxx::helpers::Pool& pool1);
 
                 void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
@@ -194,15 +198,14 @@ namespace log4cxx
                 /**
                  * Event buffer.
                 */
-                LOG4CXX_LIST_DEF(LoggingEventList, log4cxx::spi::LoggingEventPtr);
-                LoggingEventList buffer;
-
+                boost::lockfree::queue<log4cxx::spi::LoggingEvent* > buffer;
+                std::atomic<unsigned> discardedCount;
                 /**
                  *  Mutex used to guard access to buffer and discardMap.
                  */
-                ::log4cxx::helpers::Mutex bufferMutex;
-                ::log4cxx::helpers::Condition bufferNotFull;
-                ::log4cxx::helpers::Condition bufferNotEmpty;
+                SHARED_MUTEX bufferMutex;
+                SEMAPHORE bufferNotFull;
+                SEMAPHORE bufferNotEmpty;
 
                 class DiscardSummary {
                 private:
@@ -241,6 +244,10 @@ namespace log4cxx
                      * @return new event.
                      */
                      ::log4cxx::spi::LoggingEventPtr createEvent(::log4cxx::helpers::Pool& p);
+
+                     static
+                     ::log4cxx::spi::LoggingEventPtr createEvent(::log4cxx::helpers::Pool& p,
+                                                                 unsigned discardedCount);
                 };
 
                 /**

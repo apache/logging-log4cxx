@@ -47,3 +47,27 @@ synchronized::~synchronized()
         }
 #endif
 }
+
+
+synchronized_read::synchronized_read(const RWMutex& mutex1)
+        : mutex(mutex1)
+{
+        mutex.rdLock();
+}
+
+synchronized_read::~synchronized_read()
+{
+        mutex.rdUnlock();
+}
+
+synchronized_write::synchronized_write(const RWMutex& mutex1)
+        : mutex(mutex1)
+{
+        mutex.wrLock();
+}
+
+synchronized_write::~synchronized_write()
+{
+        mutex.wrUnlock();
+}
+

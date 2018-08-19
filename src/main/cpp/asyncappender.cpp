@@ -44,8 +44,8 @@ IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 
 AsyncAppender::AsyncAppender()
 : AppenderSkeleton(),
-  buffer(),
-  bufferMutex(pool),
+  buffer(DEFAULT_BUFFER_SIZE),
+  SHARED_MUTEX_INIT(bufferMutex, pool),
   bufferNotFull(pool),
   bufferNotEmpty(pool),
   discardMap(new DiscardMap()),
@@ -96,6 +96,13 @@ void AsyncAppender::setOption(const LogString& option,
 }
 
 
+void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
+{
+        LOCK_R sync(mutex);
+
+        doAppendImpl(event, pool1);
+}
+
 void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
 #if APR_HAS_THREADS
        //
@@ -118,16 +125,19 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
 
 
         {
-             synchronized sync(bufferMutex);
+             LOCK_R sync(bufferMutex);
              while(true) {
-                 int previousSize = buffer.size();
-                 if (previousSize < bufferSize) {
-                     buffer.push_back(event);
-                     if (previousSize == 0) {
-                        bufferNotEmpty.signalAll();
-                     }
-                     break;
-                 }
+
+                event->addRef();
+                if (buffer.bounded_push(event))
+                {
+                    bufferNotEmpty.signalAll();
+                    break;
+                }
+                else
+                {
+                    event->releaseRef();
+                }
 
                 //
                 //   Following code is only reachable if buffer is full
@@ -141,7 +151,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
                     && !Thread::interrupted()
                     && !dispatcher.isCurrentThread()) {
                     try {
-                        bufferNotFull.await(bufferMutex);
+                        bufferNotFull.await();
                         discard = false;
                     } catch (InterruptedException& e) {
                         //
@@ -157,14 +167,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
                 //   add event to discard map.
                 //
                 if (discard) {
-                    LogString loggerName = event->getLoggerName();
-                    DiscardMap::iterator iter = discardMap->find(loggerName);
-                    if (iter == discardMap->end()) {
-                        DiscardSummary summary(event);
-                        discardMap->insert(DiscardMap::value_type(loggerName, summary));
-                    } else {
-                        (*iter).second.add(event);
-                    }
+                    discardedCount++;
                     break;
                 }
             }
@@ -178,11 +181,12 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p) {
 
 void AsyncAppender::close() {
     {
-        synchronized sync(bufferMutex);
+        LOCK_W sync(bufferMutex);
         closed = true;
-        bufferNotEmpty.signalAll();
-        bufferNotFull.signalAll();
     }
+
+    bufferNotEmpty.signalAll();
+    bufferNotFull.signalAll();
 
 #if APR_HAS_THREADS
     try {
@@ -258,8 +262,12 @@ void AsyncAppender::setBufferSize(int size)
     if (size < 0) {
           throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
     }
-    synchronized sync(bufferMutex);
-    bufferSize = (size < 1) ? 1 : size;
+
+    {
+        LOCK_W sync(bufferMutex);
+        bufferSize = (size < 1) ? 1 : size;
+        buffer.reserve_unsafe(bufferSize);
+    }
     bufferNotFull.signalAll();
 }
 
@@ -269,8 +277,10 @@ int AsyncAppender::getBufferSize() const
 }
 
 void AsyncAppender::setBlocking(bool value) {
-    synchronized sync(bufferMutex);
-    blocking = value;
+    {
+        LOCK_W sync(bufferMutex);
+        blocking = value;
+    }
     bufferNotFull.signalAll();
 }
 
@@ -311,41 +321,57 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p) {
               LocationInfo::getLocationUnavailable());
 }
 
+::log4cxx::spi::LoggingEventPtr
+AsyncAppender::DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
+                                           unsigned discardedCount)
+{
+    char msg[128];
+
+    snprintf(msg, 128, LOG4CXX_STR("Discarded %u messages due to a full event buffer."), discardedCount);
+
+    return new LoggingEvent(
+              "",
+              log4cxx::Level::getError(),
+              msg,
+              LocationInfo::getLocationUnavailable());
+}
 
 #if APR_HAS_THREADS
 void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) {
     AsyncAppender* pThis = (AsyncAppender*) data;
-    bool isActive = true;
     try {
-        while (isActive) {
+        while (!pThis->closed) {
+
+             pThis->bufferNotEmpty.await();
+
              //
              //   process events after lock on buffer is released.
              //
             Pool p;
             LoggingEventList events;
             {
-                   synchronized sync(pThis->bufferMutex);
-                   size_t bufferSize = pThis->buffer.size();
-                   isActive = !pThis->closed;
+                   LOCK_R sync(pThis->bufferMutex);
 
-                   while((bufferSize == 0) && isActive) {
-                       pThis->bufferNotEmpty.await(pThis->bufferMutex);
-                       bufferSize = pThis->buffer.size();
-                       isActive = !pThis->closed;
+                   unsigned count = 0;
+                   log4cxx::spi::LoggingEvent * logPtr = nullptr;
+                   while (pThis->buffer.pop(logPtr))
+                   {
+                        log4cxx::spi::LoggingEventPtr ptr(logPtr);
+                        events.push_back(ptr);
+                        logPtr->releaseRef();
+                        count++;
                    }
-                   for(LoggingEventList::iterator eventIter = pThis->buffer.begin();
-                       eventIter != pThis->buffer.end();
-                       eventIter++) {
-                       events.push_back(*eventIter);
+
+                   if (pThis->blocking) {
+                       pThis->bufferNotFull.signalAll();
                    }
-                   for(DiscardMap::iterator discardIter = pThis->discardMap->begin();
-                       discardIter != pThis->discardMap->end();
-                       discardIter++) {
-                       events.push_back(discardIter->second.createEvent(p));
+
+                   unsigned discarded = pThis->discardedCount.exchange(0);
+
+                   if (discarded != 0)
+                   {
+                       events.push_back(AsyncAppender::DiscardSummary::createEvent(p, discarded));
                    }
-                   pThis->buffer.clear();
-                   pThis->discardMap->clear();
-                   pThis->bufferNotFull.signalAll();
             }
 
             for (LoggingEventList::iterator iter = events.begin();

@@ -82,7 +82,7 @@ int XMLSocketAppender::getDefaultPort() const {
 void XMLSocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p) {
     OutputStreamPtr os(new SocketOutputStream(socket));
     CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
-    synchronized sync(mutex);
+    LOCK_W sync(mutex);
     writer = new OutputStreamWriter(os, charset);
 }
 

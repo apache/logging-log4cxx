@@ -44,6 +44,7 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/net/smtpappender.h>
+#include <log4cxx/helpers/messagebuffer.h>
 
 using namespace log4cxx;
 using namespace log4cxx::xml;
@@ -100,6 +101,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define REF_ATTR "ref"
 #define ADDITIVITY_ATTR "additivity"
 #define THRESHOLD_ATTR "threshold"
+#define STRINGSTREAM_ATTR "stringstream"
 #define CONFIG_DEBUG_ATTR "configDebug"
 #define INTERNAL_DEBUG_ATTR "debug"
 
@@ -373,7 +375,7 @@ void DOMConfigurator::parseLogger(
         // Setting up a logger needs to be an atomic operation, in order
         // to protect potential log operations while logger
         // configuration is in progress.
-        synchronized sync(logger->getMutex());
+        LOCK_W sync(logger->getMutex());
         bool additivity = OptionConverter::toBoolean(
                 subst(getAttribute(utf8Decoder, loggerElement, ADDITIVITY_ATTR)),
                 true);
@@ -431,7 +433,7 @@ void DOMConfigurator::parseRoot(
 {
         LoggerPtr root = repository->getRootLogger();
         // logger configuration needs to be atomic
-        synchronized sync(root->getMutex());
+        LOCK_W sync(root->getMutex());
         parseChildrenOfLoggerElement(p, utf8Decoder, rootElement, root, true, doc, appenders);
 }
 
@@ -908,6 +910,13 @@ void DOMConfigurator::parse(
     if(!thresholdStr.empty() && thresholdStr != NuLL)
         {
                 repository->setThreshold(thresholdStr);
+    }
+
+    LogString strstrValue = subst(getAttribute(utf8Decoder, element, STRINGSTREAM_ATTR));
+    LogLog::debug(LOG4CXX_STR("Stringstream =\"") + strstrValue +LOG4CXX_STR("\"."));
+    if(!strstrValue.empty() && strstrValue != NuLL)
+    {
+        MessageBufferUseStaticStream();
     }
 
     apr_xml_elem* currentElement;

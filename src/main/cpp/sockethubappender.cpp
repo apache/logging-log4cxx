@@ -85,7 +85,7 @@ void SocketHubAppender::setOption(const LogString& option,
 void SocketHubAppender::close()
 {
         {
-            synchronized sync(mutex);
+            LOCK_W sync(mutex);
             if (closed) {
                 return;
             }
@@ -98,7 +98,7 @@ void SocketHubAppender::close()
         //
         thread.join();
 
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
         // close all of the connections
         LogLog::debug(LOG4CXX_STR("closing client connections"));
         for (std::vector<helpers::ObjectOutputStreamPtr>::iterator iter = streams.begin();
@@ -218,7 +218,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, voi
                                        + LOG4CXX_STR(")"));
 
                                 // add it to the oosList.
-                                synchronized sync(pThis->mutex);
+                                LOCK_W sync(pThis->mutex);
                                 OutputStreamPtr os(new SocketOutputStream(socket));
                                 Pool p;
                                 ObjectOutputStreamPtr oos(new ObjectOutputStream(os, p));

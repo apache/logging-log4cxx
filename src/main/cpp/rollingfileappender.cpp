@@ -72,7 +72,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool &p) {
   }
 
   {
-     synchronized sync(mutex);
+     LOCK_W sync(mutex);
      triggeringPolicy->activateOptions(p);
      rollingPolicy->activateOptions(p);
 
@@ -140,7 +140,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p) {
   if (rollingPolicy != NULL) {
 
 {
-    synchronized sync(mutex);
+    LOCK_W sync(mutex);
       try {
         RolloverDescriptionPtr rollover1(rollingPolicy->rollover(getFile(), p));
 

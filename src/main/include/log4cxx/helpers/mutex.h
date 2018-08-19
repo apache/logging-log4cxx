@@ -20,9 +20,14 @@
 
 #include <log4cxx/log4cxx.h>
 
+#include <apr-1.0/apr_portable.h>
+
+#include <atomic>
+
 extern "C" {
    struct apr_thread_mutex_t;
    struct apr_pool_t;
+   struct apr_thread_rwlock_t;
 }
 
 
@@ -47,5 +52,75 @@ namespace log4cxx
                 };
         } // namespace helpers
 } // namespace log4cxx
+
+
+namespace log4cxx
+{
+        namespace helpers
+        {
+                class Pool;
+
+                class LOG4CXX_EXPORT RWMutex
+                {
+                public:
+                        RWMutex(log4cxx::helpers::Pool& p);
+                        RWMutex(apr_pool_t* p);
+                        ~RWMutex();
+
+                        void rdLock() const;
+                        void rdUnlock() const;
+
+                        void wrLock() const;
+                        void wrUnlock() const;
+
+                private:
+                        mutable std::atomic<apr_os_thread_t> id;
+                        mutable unsigned count;
+                        RWMutex(const RWMutex&);
+                        RWMutex& operator=(const RWMutex&);
+                        apr_thread_rwlock_t* mutex;
+                };
+        } // namespace helpers
+} // namespace log4cxx
+
+//#define SHARED_MUTEX_INIT(mutex, p) mutex()
+//#define SHARED_MUTEX shared_mutex_recursive
+
+//#define SHARED_MUTEX std::shared_mutex
+
+//#define SHARED_MUTEX_INIT(mutex, p) mutex(p)
+//#define SHARED_MUTEX log4cxx::helpers::Mutex
+
+
+#define SHARED_MUTEX log4cxx::helpers::RWMutex
+#define SHARED_MUTEX_INIT(mutex, p) mutex(p)
+
+namespace log4cxx
+{
+    namespace helpers
+    {
+        struct SemaphoreImpl;
+
+        class LOG4CXX_EXPORT Semaphore
+        {
+            public:
+                Semaphore(log4cxx::helpers::Pool& p);
+                ~Semaphore();
+
+                void await() const;
+                void signalAll() const;
+
+            private:
+                Semaphore(const Semaphore&);
+                Semaphore& operator=(const Semaphore&);
+
+                SemaphoreImpl *impl;
+        };
+    } // namespace helpers
+} // namespace log4cxx
+
+#define SEMAPHORE log4cxx::helpers::Semaphore
+
+//#define SEMAPHORE log4cxx::helpers::Condition
 
 #endif //_LOG4CXX_HELPERS_MUTEX_H

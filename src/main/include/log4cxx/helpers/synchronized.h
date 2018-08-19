@@ -41,4 +41,61 @@ namespace log4cxx
         }
 }
 
+namespace log4cxx
+{
+        namespace helpers {
+                class RWMutex;
+
+                // utility class for objects multi-thread synchronization.
+                class LOG4CXX_EXPORT synchronized_read
+                {
+                public:
+                synchronized_read(const RWMutex& mutex);
+                ~synchronized_read();
+
+
+                private:
+                const RWMutex & mutex;
+                //  prevent use of copy and assignment
+                synchronized_read(const synchronized_read&);
+                synchronized_read& operator=(const synchronized_read&);
+                };
+        }
+}
+
+namespace log4cxx
+{
+        namespace helpers {
+                class RWMutex;
+
+                // utility class for objects multi-thread synchronization.
+                class LOG4CXX_EXPORT synchronized_write
+                {
+                public:
+                synchronized_write(const RWMutex& mutex);
+                ~synchronized_write();
+
+
+                private:
+                const RWMutex & mutex;
+                //  prevent use of copy and assignment
+                synchronized_write(const synchronized_write&);
+                synchronized_write& operator=(const synchronized_write&);
+                };
+        }
+}
+
+//#define LOCK_R std::shared_lock<shared_mutex_recursive>
+//#define LOCK_W std::unique_lock<shared_mutex_recursive>
+
+//#define LOCK std::lock_guard<std::recursive_mutex>
+
+//#define LOCK synchronized
+
+#define LOCK_R synchronized_read
+#define LOCK_W synchronized_write
+
+//#define LOCK_R synchronized
+//#define LOCK_W synchronized
+
 #endif //_LOG4CXX_HELPERS_SYNCHRONIZED_H

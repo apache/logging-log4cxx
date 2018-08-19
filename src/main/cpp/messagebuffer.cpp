@@ -20,10 +20,46 @@
 
 using namespace log4cxx::helpers;
 
-CharMessageBuffer::CharMessageBuffer() : stream(0) {}
+static bool gMessageBufferUseStaticStream = false;
+
+namespace log4cxx {
+namespace helpers {
+      void MessageBufferUseStaticStream()
+      {
+         gMessageBufferUseStaticStream = true;
+      }
+   }
+}
+
+template <typename T>
+void ResetStream(std::basic_ostringstream<T> &stream)
+{
+   stream.seekp(0);
+   stream.str(std::basic_string<T>());
+   stream.clear();
+}
+
+CharMessageBuffer::CharMessageBuffer() : stream(0) {
+   if (gMessageBufferUseStaticStream)
+   {
+      thread_local static char ossBuf[8192];
+      thread_local static std::basic_ostringstream<char> sStream;
+      thread_local static bool inited = false;
+      if (!inited)
+      {
+         inited = true;
+         sStream.rdbuf()->pubsetbuf(ossBuf, 8192);
+
+         ResetStream(sStream);
+      }
+      stream = &sStream;
+   }
+}
 
 CharMessageBuffer::~CharMessageBuffer() {
-   delete stream;
+   if (!gMessageBufferUseStaticStream) {
+      delete stream;
+   }
 }
 
 CharMessageBuffer& CharMessageBuffer::operator<<(const std::basic_string<char>& msg) {
@@ -73,6 +109,9 @@ CharMessageBuffer::operator std::basic_ostream<char>&() {
 
 const std::basic_string<char>& CharMessageBuffer::str(std::basic_ostream<char>&) {
    buf = stream->str();
+
+   ResetStream(*stream);
+
    return buf;
 }
 
@@ -103,10 +142,27 @@ std::ostream& CharMessageBuffer::operator<<(void* val) { return ((std::ostream&)
 
 
 #if LOG4CXX_WCHAR_T_API
-WideMessageBuffer::WideMessageBuffer() : stream(0) {}
+WideMessageBuffer::WideMessageBuffer() : stream(0) {
+   if (gMessageBufferUseStaticStream)
+   {
+      thread_local static wchar_t ossBuf[8192];
+      thread_local static std::basic_ostringstream<wchar_t> sStream;
+      thread_local static bool inited = false;
+      if (!inited)
+      {
+         inited = true;
+         sStream.rdbuf()->pubsetbuf(ossBuf, 8192);
+
+         ResetStream(sStream);
+      }
+      stream = &sStream;
+   }
+}
 
 WideMessageBuffer::~WideMessageBuffer() {
-   delete stream;
+   if (!gMessageBufferUseStaticStream) {
+      delete stream;
+   }
 }
 
 WideMessageBuffer& WideMessageBuffer::operator<<(const std::basic_string<wchar_t>& msg) {
@@ -157,6 +213,9 @@ WideMessageBuffer::operator std::basic_ostream<wchar_t>&() {
 
 const std::basic_string<wchar_t>& WideMessageBuffer::str(std::basic_ostream<wchar_t>&) {
    buf = stream->str();
+
+   ResetStream(*stream);
+
    return buf;
 }
 
@@ -312,10 +371,27 @@ const std::basic_string<log4cxx::UniChar>& MessageBuffer::str(std::basic_ostream
 }
 
 
-UniCharMessageBuffer::UniCharMessageBuffer() : stream(0) {}
+UniCharMessageBuffer::UniCharMessageBuffer() : stream(0) {
+   if (gMessageBufferUseStaticStream)
+   {
+      thread_local static log4cxx::UniChar ossBuf[8192];
+      thread_local static std::basic_ostringstream<log4cxx::UniChar> sStream;
+      thread_local static bool inited = false;
+      if (!inited)
+      {
+         inited = true;
+         sStream.rdbuf()->pubsetbuf(ossBuf, 8192);
+
+         ResetStream(sStream);
+      }
+      stream = &sStream;
+   }
+}
 
 UniCharMessageBuffer::~UniCharMessageBuffer() {
-   delete stream;
+   if (!gMessageBufferUseStaticStream) {
+      delete stream;
+   }
 }
 
 
@@ -366,7 +442,8 @@ UniCharMessageBuffer::operator UniCharMessageBuffer::uostream&() {
 }
 
 const std::basic_string<log4cxx::UniChar>& UniCharMessageBuffer::str(UniCharMessageBuffer::uostream&) {
-    buf = stream->str();
+   buf = stream->str();
+   ResetStream(*stream);
    return buf;
 }
 

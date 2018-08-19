@@ -40,9 +40,9 @@ AppenderSkeleton::AppenderSkeleton()
     headFilter(),
     tailFilter(),
     pool(),
-    mutex(pool)
+    SHARED_MUTEX_INIT(mutex, pool)
 {
-    synchronized sync(mutex);
+    LOCK_W sync(mutex);
     closed = false;
 }
 
@@ -54,9 +54,9 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
   headFilter(),
   tailFilter(),
   pool(),
-  mutex(pool)
+  SHARED_MUTEX_INIT(mutex, pool)
 {
-  synchronized sync(mutex);
+  LOCK_W sync(mutex);
   closed = false;
 }
 
@@ -82,7 +82,7 @@ void AppenderSkeleton::finalize()
 
 void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
         if(headFilter == 0)
         {
                 headFilter = tailFilter = newFilter;
@@ -96,7 +96,7 @@ void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 
 void AppenderSkeleton::clearFilters()
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
         headFilter = tailFilter = 0;
 }
 
@@ -107,9 +107,13 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
 
+        doAppendImpl(event, pool1);
+}
 
+void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& pool1)
+{
         if(closed)
         {
                 LogLog::error(((LogString) LOG4CXX_STR("Attempted to append to closed appender named ["))
@@ -144,7 +148,7 @@ void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1)
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
 
         if(errorHandler1 == 0)
         {
@@ -160,7 +164,7 @@ void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1
 
 void AppenderSkeleton::setThreshold(const LevelPtr& threshold1)
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
         this->threshold = threshold1;
 }
 

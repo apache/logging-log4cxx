@@ -76,7 +76,7 @@ namespace log4cxx
                 bool closed;
 
                 log4cxx::helpers::Pool pool;
-                log4cxx::helpers::Mutex mutex;
+                mutable SHARED_MUTEX mutex;
 
         public:
                 DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderSkeleton)
@@ -116,6 +116,8 @@ namespace log4cxx
                 */
         protected:
                 virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) = 0;
+
+                void doAppendImpl(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
 
                 /**
                 Clear the filters chain.
@@ -171,7 +173,7 @@ namespace log4cxx
                 * delegating actual logging to the subclasses specific
                 * AppenderSkeleton#append method.
                 * */
-                void doAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
+                virtual void doAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
 
                 /**
                 Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.

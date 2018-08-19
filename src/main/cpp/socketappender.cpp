@@ -75,7 +75,7 @@ int SocketAppender::getDefaultPort() const {
 }
 
 void SocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p) {
-    synchronized sync(mutex);
+    LOCK_W sync(mutex);
     oos = new ObjectOutputStream(new SocketOutputStream(socket), p);
 }
 

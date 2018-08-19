@@ -46,7 +46,7 @@ TelnetAppender::TelnetAppender()
     encoder(CharsetEncoder::getUTF8Encoder()),
     serverSocket(NULL), sh()
 {
-   synchronized sync(mutex);
+   LOCK_W sync(mutex);
    activeConnections = 0;
 }
 
@@ -83,12 +83,12 @@ void TelnetAppender::setOption(const LogString& option,
 }
 
 LogString TelnetAppender::getEncoding() const {
-    synchronized sync(mutex);
+    LOCK_W sync(mutex);
     return encoding;
 }
 
 void TelnetAppender::setEncoding(const LogString& value) {
-    synchronized sync(mutex);
+    LOCK_W sync(mutex);
     encoder = CharsetEncoder::getEncoder(value);
     encoding = value;
 }
@@ -96,7 +96,7 @@ void TelnetAppender::setEncoding(const LogString& value) {
 
 void TelnetAppender::close()
 {
-        synchronized sync(mutex);
+        LOCK_W sync(mutex);
         if (closed) return;
         closed = true;
 
@@ -171,7 +171,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                 LogString::const_iterator msgIter(msg.begin());
                 ByteBuffer buf(bytes, bytesSize);
 
-                synchronized sync(this->mutex);
+                LOCK_W sync(this->mutex);
                 while(msgIter != msg.end()) {
                     log4cxx_status_t stat = encoder->encode(msg, msgIter, buf);
                     buf.flip();
@@ -216,7 +216,7 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
                         //
                         //   find unoccupied connection
                         //
-                        synchronized sync(pThis->mutex);
+                        LOCK_W sync(pThis->mutex);
                         for(ConnectionList::iterator iter = pThis->connections.begin();
                                 iter != pThis->connections.end();
                                 iter++) {

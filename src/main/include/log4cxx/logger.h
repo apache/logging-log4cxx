@@ -1707,14 +1707,14 @@ namespace log4cxx
         */
         void trace(const std::string& msg) const;
 
-        inline const log4cxx::helpers::Mutex& getMutex() const { return mutex; }
+        inline SHARED_MUTEX & getMutex() { return mutex; }
 
         private:
                 //
         //  prevent copy and assignment
         Logger(const Logger&);
         Logger& operator=(const Logger&);
-        log4cxx::helpers::Mutex mutex;
+        mutable SHARED_MUTEX mutex;
         friend class log4cxx::helpers::synchronized;
    };
    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);

@@ -165,6 +165,13 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
                     + LOG4CXX_STR("]."));
         }
 
+        static const LogString STRINGSTREAM_KEY(LOG4CXX_STR("log4j.stringstream"));
+        LogString strstrValue(properties.getProperty(STRINGSTREAM_KEY));
+        if (strstrValue == LOG4CXX_STR("static"))
+        {
+            MessageBufferUseStaticStream();
+        }
+
         configureRootLogger(properties, hierarchy);
         configureLoggerFactory(properties);
         parseCatsAndRenderers(properties, hierarchy);
@@ -223,7 +230,7 @@ void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
         {
                 LoggerPtr root = hierarchy->getRootLogger();
 
-                synchronized sync(root->getMutex());
+                LOCK_W sync(root->getMutex());
                 static const LogString INTERNAL_ROOT_NAME(LOG4CXX_STR("root"));
                 parseLogger(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
         }
@@ -259,7 +266,7 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
                         LogString value = OptionConverter::findAndSubst(key, props);
                         LoggerPtr logger = hierarchy->getLogger(loggerName, loggerFactory);
 
-                        synchronized sync(logger->getMutex());
+                        LOCK_W sync(logger->getMutex());
                         parseLogger(props, logger, key, loggerName, value);
                         parseAdditivityForLogger(props, logger, loggerName);
                 }
