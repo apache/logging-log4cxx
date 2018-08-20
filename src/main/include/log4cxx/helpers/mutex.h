@@ -20,7 +20,7 @@
 
 #include <log4cxx/log4cxx.h>
 
-#include <apr-1.0/apr_portable.h>
+#include <apr_portable.h>
 
 #include <atomic>
 
@@ -83,15 +83,6 @@ namespace log4cxx
         } // namespace helpers
 } // namespace log4cxx
 
-//#define SHARED_MUTEX_INIT(mutex, p) mutex()
-//#define SHARED_MUTEX shared_mutex_recursive
-
-//#define SHARED_MUTEX std::shared_mutex
-
-//#define SHARED_MUTEX_INIT(mutex, p) mutex(p)
-//#define SHARED_MUTEX log4cxx::helpers::Mutex
-
-
 #define SHARED_MUTEX log4cxx::helpers::RWMutex
 #define SHARED_MUTEX_INIT(mutex, p) mutex(p)
 
@@ -120,7 +111,5 @@ namespace log4cxx
 } // namespace log4cxx
 
 #define SEMAPHORE log4cxx::helpers::Semaphore
-
-//#define SEMAPHORE log4cxx::helpers::Condition
 
 #endif //_LOG4CXX_HELPERS_MUTEX_H
