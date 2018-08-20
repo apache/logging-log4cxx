@@ -16,8 +16,8 @@
  */
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/pool.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_rwlock.h>
