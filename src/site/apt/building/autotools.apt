@@ -22,16 +22,20 @@ Building Apache log4cxx with autotools
 
 * Quick start:
 
-  Install or build apr 1.x, apr-util 1.x, gzip and zip.
+  Make sure autoconf 2.50+, libtool, g++ and make are available, install or
+  build apr 1.x, apr-util 1.x, gzip and zip.
 
 +------------+
-$ cd apache-log4cxx-0.10.0
+$ apt-get install build-essential automake libtool libapr1-dev libaprutil1-dev gzip zip
+$ cd apache-log4cxx-x.x.x
+$[./autogen.sh]
 $ ./configure
 $ make
 $ make check
 $ sudo make install
 +------------+
 
+  Those lines in brackets are only necessary if you directly build from source.
 
 * configure options
 
@@ -46,7 +50,7 @@ $ sudo make install
 *-------------------+---------------------------------------------------------------------------------------------+
 | --enable-cfstring | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
 *-------------------+---------------------------------------------------------------------------------------------+
-| --with-logchar    | Interal character representation, choice of utf-8 (default), wchar_t , unichar.             | 
+| --with-logchar    | Interal character representation, choice of utf-8 (default), wchar_t , unichar.             |
 *-------------------+---------------------------------------------------------------------------------------------+
 | --with-charset    | Exteral character encoding, choice of utf-8, iso-8859-1, usascii, ebcdic,  auto (default).  |
 *-------------------+---------------------------------------------------------------------------------------------+
@@ -57,8 +61,7 @@ $ sudo make install
 | -help             | Display help showing all options and exit.                                                  |
 *-------------------+---------------------------------------------------------------------------------------------+
 
-        
-   SMTP and ODBC options can depend on libraries that 
+   SMTP and ODBC options can depend on libraries that
    that have different licenses.
    You should review the corresponding licenses and understand
    the implications before redistribution.
@@ -66,39 +69,41 @@ $ sudo make install
 * Platform specific notes:
 
 ** Mac OS/X:
-  
+
   APR and APR-Util are provided by the platform in Mac OS/X 10.5 and iODBC in 10.4.
 
 ** Debian:
 
-  APR, APR-Util and zip may be installed by:
+  APR, APR-Util, gzip and zip may be installed by:
 
 +----+
-$ sudo apt-get install libapr1.0-dev libaprutil1.0-dev zip
+$ sudo apt-get install libapr1-dev libaprutil1-dev gzip zip
 +----+
 
 ** FreeBSD:
 
-  APR, APR-Util and zip may be installed from the ports collection by:
+  APR, APR-Util, gzip and zip may be installed from the ports collection by:
 
 +----+
 # cd /usr/ports/archivers/zip
+# make
+# make install
+# cd /usr/ports/archivers/gzip
 # make
 # make install
 # cd /usr/ports/devel/apr
 # make
 # make install
 +----+
-  
+
 ** Cygwin:
-  
+
   Install zip (used by RollingFileAppender) and sed (used to normalize
   output files for comparison in the unit tests).  The prepackaged
   APR currently available from Cygwin has APR_HAS_THREADS == 0.
   Some appenders will not be available and some may operate
   with reduced functionality.  There have been reports of
   building APR on Cygwin with threads enabled.
-
 
 ** MinGW:
 
@@ -115,7 +120,7 @@ $ cd ..
 $ svn co https://svn.apache.org/repos/asf/apr/apr/trunk apr
 $ cd apr
 $ ./buildconf.sh
-$ ./configure 
+$ ./configure
 $ make install
 $ cd ..
 $ svn co \
@@ -133,4 +138,4 @@ $ make install
 
    Running "make check" was observed to fail with unexpected exceptions
    in streamtestcase and datetimedateformattestcase.
-   See {{{http://issues.apache.org/jira/browse/LOGCXX-244}LOGCXX-244}}.
+   See {{{https://issues.apache.org/jira/browse/LOGCXX-244}LOGCXX-244}}.

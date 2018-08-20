@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/sh -e
 # Licensed to the Apache Software Foundation (ASF) under one or more
 # contributor license agreements.  See the NOTICE file distributed with
 # this work for additional information regarding copyright ownership.
@@ -24,6 +24,6 @@ $LIBTOOLIZE --force --automake --copy
 
 rm -f config.cache
 rm -f config.log
-aclocal -I .
+aclocal -I src/m4
 autoconf
 automake -a --copy

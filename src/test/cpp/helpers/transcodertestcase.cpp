@@ -60,7 +60,11 @@ LOGUNIT_CLASS(TranscoderTestCase)
                 LOGUNIT_TEST(uencode3);
                 LOGUNIT_TEST(uencode5);
 #endif
-                
+#if LOG4CXX_LOGCHAR_IS_UTF8
+                LOGUNIT_TEST(encodeCharsetName1);
+                LOGUNIT_TEST(encodeCharsetName2);
+                LOGUNIT_TEST(encodeCharsetName3);
+#endif
         LOGUNIT_TEST_SUITE_END();
 
 
@@ -303,6 +307,35 @@ public:
         }
 #endif
 
+#if LOG4CXX_LOGCHAR_IS_UTF8
+        void encodeCharsetName1() {
+            const logchar utf8[] = { 0x75, 0x74, 0x66, 0x2D, 0x38, 0x00 };
+            std::string encoded(Transcoder::encodeCharsetName(LogString(utf8)));
+            LOGUNIT_ASSERT_EQUAL(std::string("utf-8"), encoded);
+        }
+
+        void encodeCharsetName2() {
+            logchar lascii[0x60];
+            char ascii[0x60];
+            for(int i = 0; i < 0x5F; i++) {
+                lascii[i] = i + 0x20;
+                ascii[i] = i + 0x20;
+            }
+            lascii[0x5F] = 0;
+            ascii[0x5F] = 0;
+            std::string encoded(Transcoder::encodeCharsetName(LogString(ascii)));
+            LOGUNIT_ASSERT_EQUAL(std::string(" !\"#$%&'()*+,-./"), encoded.substr(0, 0x10));
+            if (0x40 == 'A') {
+                LOGUNIT_ASSERT_EQUAL(std::string(ascii), encoded);
+            }
+        }
+
+        void encodeCharsetName3() {
+            logchar unsupported[] = { 0x1F, 0x7F, 0x80, 0x81, 0x00 };
+            std::string encoded(Transcoder::encodeCharsetName(LogString(unsupported)));
+            LOGUNIT_ASSERT_EQUAL(std::string("????"), encoded);
+        }
+#endif
 
 };
 

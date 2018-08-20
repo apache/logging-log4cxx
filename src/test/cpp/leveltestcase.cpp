@@ -36,13 +36,14 @@ LOGUNIT_CLASS(LevelTestCase)
                 LOGUNIT_TEST(testStringToTrace);
 #if LOG4CXX_WCHAR_T_API
                 LOGUNIT_TEST(testWideStringToTrace);
-#endif                
+#endif
 #if LOG4CXX_UNICHAR_API
                 LOGUNIT_TEST(testUniCharStringToTrace);
-#endif                
+#endif
 #if LOG4CXX_CFSTRING_API
                 LOGUNIT_TEST(testCFStringToTrace);
-#endif                
+#endif
+                LOGUNIT_TEST(testTrimmedToTrace);
         LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -51,7 +52,7 @@ public:
                 LevelPtr level(Level::toLevel(LOG4CXX_TEST_STR("fATal")));
                 LOGUNIT_ASSERT_EQUAL((int) Level::FATAL_INT, level->toInt());
         }
-        
+
     /**
      * Tests Level::TRACE_INT.
      */
@@ -92,7 +93,7 @@ public:
         LevelPtr trace(Level::toLevel(L"TRACE"));
         LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
-#endif  
+#endif
 
 #if LOG4CXX_UNICHAR_API
     /**
@@ -103,7 +104,7 @@ public:
         LevelPtr trace(Level::toLevel(name));
         LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
-#endif  
+#endif
 
 #if LOG4CXX_CFSTRING_API
     /**
@@ -113,8 +114,15 @@ public:
         LevelPtr trace(Level::toLevel(CFSTR("TRACE")));
         LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
   }
-#endif  
-        
+#endif
+
+    /**
+     * Tests Level.toLevel("TRACE ");
+     */
+  void testTrimmedToTrace() {
+        LevelPtr trace(Level::toLevel("TRACE "));
+      LOGUNIT_ASSERT(trace->toString() == LOG4CXX_STR("TRACE"));
+  }
 
 };
 

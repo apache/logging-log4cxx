@@ -236,7 +236,7 @@ void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 
 
 void LoggingEvent::writeProlog(ObjectOutputStream& os, Pool& p)  {
-     char classDesc[] = {
+     unsigned char classDesc[] = {
         0x72, 0x00, 0x21,
         0x6F, 0x72, 0x67, 0x2E, 0x61, 0x70, 0x61, 0x63,
         0x68, 0x65, 0x2E, 0x6C, 0x6F, 0x67, 0x34, 0x6A,
@@ -292,7 +292,7 @@ void LoggingEvent::writeProlog(ObjectOutputStream& os, Pool& p)  {
         0x3B, 0x78, 0x70 };
 
      os.writeProlog("org.apache.log4j.spi.LoggingEvent",
-        8, classDesc, sizeof(classDesc), p);
+        8, (char*) classDesc, sizeof(classDesc), p);
 }
 
 void LoggingEvent::write(helpers::ObjectOutputStream& os, Pool& p) const {

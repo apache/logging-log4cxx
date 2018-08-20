@@ -13,4 +13,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-SUBDIRS = main examples site test
+SUBDIRS      = main examples site test
+DIST_SUBDIRS = ${SUBDIRS} m4

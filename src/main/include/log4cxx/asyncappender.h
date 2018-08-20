@@ -36,6 +36,7 @@
 
 namespace log4cxx
 {
+        LOG4CXX_LIST_DEF(LoggingEventList, log4cxx::spi::LoggingEventPtr);
 
         /**
         The AsyncAppender lets users log events asynchronously. It uses a
@@ -200,6 +201,7 @@ namespace log4cxx
                 */
                 boost::lockfree::queue<log4cxx::spi::LoggingEvent* > buffer;
                 std::atomic<unsigned> discardedCount;
+
                 /**
                  *  Mutex used to guard access to buffer and discardMap.
                  */

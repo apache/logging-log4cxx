@@ -97,19 +97,22 @@ void FixedWindowRollingPolicy::activateOptions(Pool& p) {
  * {@inheritDoc}
  */
 RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
-  const LogString& file, bool append, log4cxx::helpers::Pool& p) {
-  LogString newActiveFile(file);
+	const	LogString&	currentActiveFile,
+	const	bool		append,
+			Pool&		pool)
+{
+  LogString newActiveFile(currentActiveFile);
   explicitActiveFile = false;
 
-  if (file.length() > 0) {
+  if (currentActiveFile.length() > 0) {
     explicitActiveFile = true;
-    newActiveFile = file;
+    newActiveFile = currentActiveFile;
   }
 
   if (!explicitActiveFile) {
     LogString buf;
     ObjectPtr obj(new Integer(minIndex));
-    formatFileName(obj, buf, p);
+    formatFileName(obj, buf, pool);
     newActiveFile = buf;
   }
 
@@ -122,49 +125,67 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
  * {@inheritDoc}
  */
 RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
-    const LogString& currentFileName,
-    log4cxx::helpers::Pool& p) {
-  RolloverDescriptionPtr desc;
-  if (maxIndex >= 0) {
-    int purgeStart = minIndex;
+	const	LogString&	currentActiveFile,
+	const	bool		append,
+			Pool&		pool)
+{
+	RolloverDescriptionPtr desc;
 
-    if (!explicitActiveFile) {
-      purgeStart++;
-    }
+	if (maxIndex < 0)
+	{
+		return desc;
+	}
 
-    if (!purge(purgeStart, maxIndex, p)) {
-      return desc;
-    }
+	int purgeStart = minIndex;
 
-    LogString buf;
-    ObjectPtr obj(new Integer(purgeStart));
-    formatFileName(obj, buf, p);
+	if (!explicitActiveFile)
+	{
+		purgeStart++;
+	}
 
-    LogString renameTo(buf);
-    LogString compressedName(renameTo);
-    ActionPtr compressAction ;
+	if (!purge(purgeStart, maxIndex, pool))
+	{
+		return desc;
+	}
 
-    if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz"))) {
-      renameTo.resize(renameTo.size() - 3);
-      compressAction =
-        new GZCompressAction(
-          File().setPath(renameTo), File().setPath(compressedName), true);
-    } else if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".zip"))) {
-      renameTo.resize(renameTo.size() - 4);
-      compressAction =
-        new ZipCompressAction(
-          File().setPath(renameTo), File().setPath(compressedName), true);
-    }
+	LogString buf;
+	ObjectPtr obj(new Integer(purgeStart));
+	formatFileName(obj, buf, pool);
 
-    FileRenameActionPtr renameAction =
-      new FileRenameAction(
-        File().setPath(currentFileName), File().setPath(renameTo), false);
+	LogString renameTo(buf);
+	LogString compressedName(renameTo);
+	ActionPtr compressAction ;
 
-    desc = new RolloverDescription(
-      currentFileName, false, renameAction, compressAction);
-  }
+	if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz")))
+	{
+		renameTo.resize(renameTo.size() - 3);
+		compressAction =
+			new GZCompressAction(
+				File().setPath(renameTo),
+				File().setPath(compressedName),
+				true);
+	}
+	else if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".zip")))
+	{
+		renameTo.resize(renameTo.size() - 4);
+		compressAction =
+			new ZipCompressAction(
+				File().setPath(renameTo),
+				File().setPath(compressedName),
+				true);
+	}
 
-  return desc;
+	FileRenameActionPtr renameAction =
+		new FileRenameAction(
+			File().setPath(currentActiveFile),
+			File().setPath(renameTo),
+			false);
+
+	desc = new RolloverDescription(
+		currentActiveFile,	append,
+		renameAction,		compressAction);
+
+	return desc;
 }
 
 /**

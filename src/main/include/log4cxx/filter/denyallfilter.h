@@ -53,11 +53,11 @@ namespace log4cxx
 
                         /**
                         Always returns the integer constant {@link spi::Filter#DENY DENY}
-                        regardless of the {@link spi::LoggingEvent LoggingEvent} parameter.
+                        regardless of the {@link spi::LoggingEventPtr LoggingEvent} parameter.
                         @param event The LoggingEvent to filter.
                         @return Always returns {@link spi::Filter#DENY DENY}.
                         */
-                        FilterDecision decide(const spi::LoggingEventPtr& /* event */) const
+                        FilterDecision decide(const spi::LoggingEventPtr& event) const
                                 { return spi::Filter::DENY; }
                 }; // class DenyAllFilter
 

@@ -22,7 +22,7 @@
 #include <apr_thread_proc.h>
 #include <apr_atomic.h>
 #include <log4cxx/helpers/transcoder.h>
-
+#include <log4cxx/helpers/exception.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -39,7 +39,11 @@ warnedAlready(false), interrupted(0), thread()
 
 FileWatchdog::~FileWatchdog() {
    apr_atomic_set32(&interrupted, 0xFFFF);
-   thread.join();
+   try {
+        thread.interrupt();
+        thread.join();
+   } catch(Exception &e) {
+   }
 }
 
 void FileWatchdog::checkAndConfigure()
@@ -73,10 +77,10 @@ void* APR_THREAD_FUNC FileWatchdog::run(apr_thread_t* /* thread */, void* data) 
    unsigned int interrupted = apr_atomic_read32(&pThis->interrupted);
     while(!interrupted)
    {
-      apr_sleep(APR_INT64_C(1000) * pThis->delay);
-      interrupted = apr_atomic_read32(&pThis->interrupted);
-      if (!interrupted) {
+      try {
+        Thread::sleep(pThis->delay);
         pThis->checkAndConfigure();
+      } catch(InterruptedException& ex) {
         interrupted = apr_atomic_read32(&pThis->interrupted);
       }
     }

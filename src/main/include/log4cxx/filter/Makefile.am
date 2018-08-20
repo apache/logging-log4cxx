@@ -14,5 +14,14 @@
 # limitations under the License.
 #
 filterincdir = $(includedir)/log4cxx/filter
-filterinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/filter/*.h
-
+filterinc_HEADERS= \
+    andfilter.h \
+    denyallfilter.h \
+    expressionfilter.h \
+    levelmatchfilter.h \
+    levelrangefilter.h \
+    locationinfofilter.h \
+    loggermatchfilter.h \
+    mapfilter.h \
+    propertyfilter.h \
+    stringmatchfilter.h

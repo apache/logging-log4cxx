@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 dbincdir = $(includedir)/log4cxx/db
-dbinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/db/*.h
-
+dbinc_HEADERS= \
+    odbcappender.h

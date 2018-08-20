@@ -14,5 +14,19 @@
 # limitations under the License.
 #
 rollingincdir = $(includedir)/log4cxx/rolling
-rollinginc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/rolling/*.h
-
+rollinginc_HEADERS= \
+    action.h \
+    filerenameaction.h \
+    filterbasedtriggeringpolicy.h \
+    fixedwindowrollingpolicy.h \
+    gzcompressaction.h \
+    manualtriggeringpolicy.h \
+    rollingfileappender.h \
+    rollingfileappenderskeleton.h \
+    rollingpolicybase.h \
+    rollingpolicy.h \
+    rolloverdescription.h \
+    sizebasedtriggeringpolicy.h \
+    timebasedrollingpolicy.h \
+    triggeringpolicy.h \
+    zipcompressaction.h

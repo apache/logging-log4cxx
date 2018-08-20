@@ -42,7 +42,7 @@ namespace log4cxx
         XML stream representing a {@link spi::LoggingEvent LoggingEvent} object
                 to the server side.
 
-       - Remote logging uses the TCP protocol. Consequently, if
+        - Remote logging uses the TCP protocol. Consequently, if
         the server is reachable, then log events will eventually arrive
         at the server.
 

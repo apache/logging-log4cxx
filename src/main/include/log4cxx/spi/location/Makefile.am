@@ -14,5 +14,5 @@
 # limitations under the License.
 #
 spiincdir = $(includedir)/log4cxx/spi/location
-spiinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/spi/location/*.h
-
+spiinc_HEADERS= \
+    locationinfo.h

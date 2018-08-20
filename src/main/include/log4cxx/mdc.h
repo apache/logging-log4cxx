@@ -36,11 +36,6 @@ namespace log4cxx
         MDC in short, is an instrument for distinguishing interleaved log
         output from different sources. Log output is typically interleaved
         when a server handles multiple clients near-simultaneously.
-
-        <p><b><em>The MDC is managed on a per thread basis</em></b>. A
-        child thread automatically inherits a <em>copy</em> of the mapped
-        diagnostic context of its parent.
-
         */
         class LOG4CXX_EXPORT MDC
         {

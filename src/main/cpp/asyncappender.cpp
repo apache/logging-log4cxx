@@ -214,10 +214,10 @@ AppenderList AsyncAppender::getAllAppenders() const
         return appenders->getAllAppenders();
 }
 
-AppenderPtr AsyncAppender::getAppender(const LogString& name) const
+AppenderPtr AsyncAppender::getAppender(const LogString& n) const
 {
         synchronized sync(appenders->getMutex());
-        return appenders->getAppender(name);
+        return appenders->getAppender(n);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr& appender) const
@@ -242,10 +242,10 @@ void AsyncAppender::removeAppender(const AppenderPtr& appender)
     appenders->removeAppender(appender);
 }
 
-void AsyncAppender::removeAppender(const LogString& name)
+void AsyncAppender::removeAppender(const LogString& n)
 {
     synchronized sync(appenders->getMutex());
-    appenders->removeAppender(name);
+    appenders->removeAppender(n);
 }
 
 bool AsyncAppender::getLocationInfo() const {
@@ -337,7 +337,7 @@ AsyncAppender::DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
 }
 
 #if APR_HAS_THREADS
-void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* thread, void* data) {
+void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void* data) {
     AsyncAppender* pThis = (AsyncAppender*) data;
     try {
         while (!pThis->closed) {

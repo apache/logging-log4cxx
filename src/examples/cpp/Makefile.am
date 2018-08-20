@@ -13,9 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-noinst_PROGRAMS = trivial delayedloop stream console
+check_PROGRAMS = trivial delayedloop stream console
 
-INCLUDES = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
+AM_CPPFLAGS = -I$(top_srcdir)/src/main/include -I$(top_builddir)/src/main/include
 
 trivial_SOURCES = trivial.cpp
 trivial_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
@@ -28,4 +28,3 @@ stream_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
 
 console_SOURCES = console.cpp
 console_LDADD = $(top_builddir)/src/main/cpp/liblog4cxx.la
-

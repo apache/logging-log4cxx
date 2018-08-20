@@ -13,13 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-EXTRA_DIST = NDC.*
+EXTRA_DIST = \
+    NDC.1
 
-# if we are building in a separate build tree, then copy all necessary files
+# if we are building in a separate build tree, then prepare all necessary links
 all-local:
 	@if test "$(top_srcdir)" != "$(top_builddir)"; then \
-	  echo "Copying test suite data files ..." ; \
-	  list='$(EXTRA_DIST)'; for file in $$list; do \
-	    cp -p $(srcdir)/$$file . ; \
+	  echo "Symlinking test suite data files ..." ; \
+	  for file in $(EXTRA_DIST); do \
+	    test -a "$$file" || $(LN_S) "$(srcdir)/$$file"; \
 	  done \
 	fi

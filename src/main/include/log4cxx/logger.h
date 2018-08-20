@@ -629,7 +629,7 @@ namespace log4cxx
         * Get the logger name.
         * @return logger name as LogString.
         */
-        const LogString getName() const { return name; }
+        const LogString& getName() const { return name; }
         /**
         * Get logger name in current encoding.
         * @param name buffer to which name is appended.
@@ -1753,10 +1753,10 @@ Logs a message to a specified logger with a specified level.
 @param level the level to log.
 @param message the message string to log.
 */
-#define LOG4CXX_LOG(logger, level, message) { \
+#define LOG4CXX_LOG(logger, level, message) do { \
         if (logger->isEnabledFor(level)) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); } }
+           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a message to a specified logger with a specified level.
@@ -1765,66 +1765,82 @@ Logs a message to a specified logger with a specified level.
 @param level the level to log.
 @param message the message string to log in the internal encoding.
 */
-#define LOG4CXX_LOGLS(logger, level, message) { \
+#define LOG4CXX_LOGLS(logger, level, message) do { \
         if (logger->isEnabledFor(level)) {\
            ::log4cxx::helpers::LogCharMessageBuffer oss_; \
-           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); } }
+           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000
 /**
 Logs a message to a specified logger with the DEBUG level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_DEBUG(logger, message) { \
+#define LOG4CXX_DEBUG(logger, message) do { \
         if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+#else
+#define LOG4CXX_DEBUG(logger, message)
+#endif
 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 5000
 /**
 Logs a message to a specified logger with the TRACE level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_TRACE(logger, message) { \
+#define LOG4CXX_TRACE(logger, message) do { \
         if (LOG4CXX_UNLIKELY(logger->isTraceEnabled())) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+#else
+#define LOG4CXX_TRACE(logger, message)
+#endif
 
-
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 20000
 /**
 Logs a message to a specified logger with the INFO level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_INFO(logger, message) { \
+#define LOG4CXX_INFO(logger, message) do { \
         if (logger->isInfoEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+#else
+#define LOG4CXX_INFO(logger, message)
+#endif
 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 30000
 /**
 Logs a message to a specified logger with the WARN level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_WARN(logger, message) { \
+#define LOG4CXX_WARN(logger, message) do { \
         if (logger->isWarnEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+#else
+#define LOG4CXX_WARN(logger, message)
+#endif
 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 40000
 /**
 Logs a message to a specified logger with the ERROR level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_ERROR(logger, message) { \
+#define LOG4CXX_ERROR(logger, message) do { \
         if (logger->isErrorEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a error if the condition is not true.
@@ -1833,22 +1849,30 @@ Logs a error if the condition is not true.
 @param condition condition
 @param message the message string to log.
 */
-#define LOG4CXX_ASSERT(logger, condition, message) { \
+#define LOG4CXX_ASSERT(logger, condition, message) do { \
         if (!(condition) && logger->isErrorEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
+#else
+#define LOG4CXX_ERROR(logger, message)
+#define LOG4CXX_ASSERT(logger, condition, message)
+#endif
 
+#if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 50000
 /**
 Logs a message to a specified logger with the FATAL level.
 
 @param logger the logger to be used.
 @param message the message string to log.
 */
-#define LOG4CXX_FATAL(logger, message) { \
+#define LOG4CXX_FATAL(logger, message) do { \
         if (logger->isFatalEnabled()) {\
            ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }}
+           logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+#else
+#define LOG4CXX_FATAL(logger, message)
+#endif
 
 /**
 Logs a localized message with no parameter.
@@ -1857,9 +1881,9 @@ Logs a localized message with no parameter.
 @param level the level to log.
 @param key the key to be searched in the resourceBundle of the logger.
 */
-#define LOG4CXX_L7DLOG(logger, level, key) { \
+#define LOG4CXX_L7DLOG(logger, level, key) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION); }}
+        logger->l7dlog(level, key, LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a localized message with one parameter.
@@ -1869,9 +1893,9 @@ Logs a localized message with one parameter.
 @param key the key to be searched in the resourceBundle of the logger.
 @param p1 the unique parameter.
 */
-#define LOG4CXX_L7DLOG1(logger, level, key, p1) { \
+#define LOG4CXX_L7DLOG1(logger, level, key, p1) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }}
+        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }} while (0)
 
 /**
 Logs a localized message with two parameters.
@@ -1882,9 +1906,9 @@ Logs a localized message with two parameters.
 @param p1 the first parameter.
 @param p2 the second parameter.
 */
-#define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) { \
+#define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }}
+        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }} while (0)
 
 /**
 Logs a localized message with three parameters.
@@ -1896,9 +1920,9 @@ Logs a localized message with three parameters.
 @param p2 the second parameter.
 @param p3 the third parameter.
 */
-#define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) { \
+#define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }}
+        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }} while (0)
 
 /**@}*/
 

@@ -36,9 +36,9 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout1)
  :target(getSystemOut())
 {
     setLayout(layout1);
-    WriterPtr wr(createWriter(getSystemOut()));
-    setWriter(wr);
     Pool p;
+    WriterPtr writer1(new SystemOutWriter());
+    setWriter(writer1);
     WriterAppender::activateOptions(p);
 }
 
@@ -46,10 +46,8 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout1, const LogString& targ
  : target(target1)
 {
       setLayout(layout1);
-      WriterPtr wr(createWriter(target1));
-      setWriter(wr);
       Pool p;
-      WriterAppender::activateOptions(p);
+      ConsoleAppender::activateOptions(p);
 }
 
 ConsoleAppender::~ConsoleAppender()
@@ -65,16 +63,6 @@ const LogString& ConsoleAppender::getSystemOut() {
 const LogString& ConsoleAppender::getSystemErr() {
   static const LogString name(LOG4CXX_STR("System.err"));
   return name;
-}
-
-WriterPtr ConsoleAppender::createWriter(const LogString& value) {
-  LogString v = StringHelper::trim(value);
-
-  if (StringHelper::equalsIgnoreCase(v,
-         LOG4CXX_STR("SYSTEM.ERR"), LOG4CXX_STR("system.err"))) {
-          return new SystemErrWriter();
-  }
-  return new SystemOutWriter();
 }
 
 void ConsoleAppender::setTarget(const LogString& value)

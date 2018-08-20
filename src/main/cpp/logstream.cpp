@@ -165,8 +165,8 @@ void logstream_base::setLevel(const ::log4cxx::LevelPtr& newlevel) {
     }
 }
 
-bool logstream_base::isEnabledFor(const ::log4cxx::LevelPtr& level) const {
-    return logger->isEnabledFor(level);
+bool logstream_base::isEnabledFor(const ::log4cxx::LevelPtr& l) const {
+    return logger->isEnabledFor(l);
 }
 
 
@@ -200,8 +200,8 @@ logstream& logstream::operator<<(logstream_base& (*manip)(logstream_base&)) {
     return *this;
 }
 
-logstream& logstream::operator<<(const LevelPtr& level) {
-    setLevel(level);
+logstream& logstream::operator<<(const LevelPtr& l) {
+    setLevel(l);
     return *this;
 }
 
@@ -228,13 +228,13 @@ logstream::operator std::basic_ostream<char>&() {
       return *stream;
 }
 
-void logstream::log(LoggerPtr& logger,
-                               const LevelPtr& level,
-                               const log4cxx::spi::LocationInfo& location) {
+void logstream::log(LoggerPtr& log,
+                               const LevelPtr& lev,
+                               const log4cxx::spi::LocationInfo& loc) {
     if (stream != 0) {
         std::basic_string<Ch> msg = stream->str();
         if (!msg.empty()) {
-            logger->log(level, msg, location);
+            log->log(lev, msg, loc);
         }
     }
 }
@@ -269,9 +269,9 @@ void logstream::get_stream_state(std::ios_base& base,
 
 void logstream::refresh_stream_state() {
    if (stream != 0) {
-      int fillchar;
-      if(logstream_base::set_stream_state(*stream, fillchar)) {
-         stream->fill(fillchar);
+      int ch;
+      if(logstream_base::set_stream_state(*stream, ch)) {
+         stream->fill(ch);
       }
    }
 }
@@ -302,8 +302,8 @@ wlogstream& wlogstream::operator<<(logstream_base& (*manip)(logstream_base&)) {
     return *this;
 }
 
-wlogstream& wlogstream::operator<<(const LevelPtr& level) {
-    setLevel(level);
+wlogstream& wlogstream::operator<<(const LevelPtr& l) {
+    setLevel(l);
     return *this;
 }
 
@@ -333,13 +333,13 @@ wlogstream::operator std::basic_ostream<wchar_t>&() {
       return *stream;
 }
 
-void wlogstream::log(LoggerPtr& logger,
-                               const LevelPtr& level,
-                               const log4cxx::spi::LocationInfo& location) {
+void wlogstream::log(LoggerPtr& log,
+                               const LevelPtr& lev,
+                               const log4cxx::spi::LocationInfo& loc) {
     if (stream != 0) {
         std::basic_string<Ch> msg = stream->str();
         if (!msg.empty()) {
-            logger->log(level, msg, location);
+            log->log(lev, msg, loc);
         }
     }
 }
@@ -374,9 +374,9 @@ void wlogstream::get_stream_state(std::ios_base& base,
 
 void wlogstream::refresh_stream_state() {
    if (stream != 0) {
-      int fillchar;
-      if(logstream_base::set_stream_state(*stream, fillchar)) {
-         stream->fill(fillchar);
+      int ch;
+      if(logstream_base::set_stream_state(*stream, ch)) {
+         stream->fill(ch);
       }
    }
 }

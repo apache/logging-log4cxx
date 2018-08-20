@@ -45,7 +45,6 @@ Logger::Logger(Pool& p, const LogString& name1)
 : pool(&p), name(), level(), parent(), resourceBundle(),
 repository(), aai(), SHARED_MUTEX_INIT(mutex, p)
 {
-    LOCK_W sync(mutex);
     name = name1;
     additive = true;
 }
@@ -64,6 +63,8 @@ void Logger::releaseRef() const {
 
 void Logger::addAppender(const AppenderPtr& newAppender)
 {
+   log4cxx::spi::LoggerRepository* rep = 0;
+   {
         LOCK_W sync(mutex);
 
         if (aai == 0)
@@ -71,8 +72,10 @@ void Logger::addAppender(const AppenderPtr& newAppender)
                   aai = new AppenderAttachableImpl(*pool);
         }
         aai->addAppender(newAppender);
-   if (repository != 0) {
-           repository->fireAddAppenderEvent(this, newAppender);
+        rep = repository;
+   }
+   if (rep != 0) {
+           rep->fireAddAppenderEvent(this, newAppender);
    }
 }
 
@@ -426,7 +429,7 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
   std::vector<LogString> values(3);
   values[0] = lval1;
   values[1] = lval2;
-  values[3] = lval3;
+  values[2] = lval3;
   l7dlog(level1, lkey, location, values);
 }
 

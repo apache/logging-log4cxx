@@ -156,6 +156,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
                 {
                         // there was an io exception so just drop the connection
                         it = streams.erase(it);
+                        itEnd = streams.end();
                         LogLog::debug(LOG4CXX_STR("dropped connection"), e);
                 }
         }

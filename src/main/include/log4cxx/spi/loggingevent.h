@@ -43,6 +43,7 @@ namespace log4cxx
 
         namespace spi
         {
+                LOG4CXX_LIST_DEF(KeySet, LogString);
 
                 /**
                 The internal representation of logging events. When an affirmative
@@ -60,6 +61,8 @@ namespace log4cxx
                         BEGIN_LOG4CXX_CAST_MAP()
                                 LOG4CXX_CAST_ENTRY(LoggingEvent)
                         END_LOG4CXX_CAST_MAP()
+
+                        typedef spi::KeySet KeySet;
 
                         /** For serialization only
                         */
@@ -100,7 +103,7 @@ namespace log4cxx
                                 { return message; }
 
                         /**Returns the time when the application started,
-                        in seconds elapsed since 01.01.1970.
+                        in microseconds elapsed since 01.01.1970.
                         */
                         static log4cxx_time_t getStartTime();
 
@@ -109,7 +112,8 @@ namespace log4cxx
                              return threadName;
                         }
 
-                        /** Return the timeStamp of this event. */
+                        /** The number of microseconds elapsed from 01.01.1970 until logging event
+                         was created. */
                         inline log4cxx_time_t getTimeStamp() const
                                 { return timeStamp; }
 
@@ -152,7 +156,6 @@ namespace log4cxx
                         */
                         bool getMDC(const LogString& key, LogString& dest) const;
 
-                        LOG4CXX_LIST_DEF(KeySet, LogString);
                         /**
                         * Returns the set of of the key values in the MDC for the event.
                         * The returned set is unmodifiable by the caller.
@@ -226,7 +229,7 @@ namespace log4cxx
                         LogString message;
 
 
-                        /** The number of milliseconds elapsed from 1/1/1970 until logging event
+                        /** The number of microseconds elapsed from 01.01.1970 until logging event
                          was created. */
                         log4cxx_time_t timeStamp;
 

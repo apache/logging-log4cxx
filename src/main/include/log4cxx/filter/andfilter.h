@@ -98,6 +98,7 @@ namespace log4cxx
 
             FilterDecision decide(const spi::LoggingEventPtr & event) const;
         };
+        LOG4CXX_PTR_DEF(AndFilter);
 
     }
 }

@@ -28,7 +28,12 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <cctype>
+#include <iterator>
 #include <apr.h>
+//LOG4CXX-417: need stdlib.h for atoi on some systems.
+#ifdef APR_HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
 
 
 using namespace log4cxx;
@@ -79,6 +84,11 @@ LogString StringHelper::trim(const LogString& s)
 
 bool StringHelper::startsWith(const LogString& s, const LogString& prefix)
 {
+    if (s.length() < prefix.length())
+    {
+      return false;
+    }
+
     return s.compare(0, prefix.length(), prefix) == 0;
 }
 

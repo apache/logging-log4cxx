@@ -34,11 +34,13 @@
                 class LOG4CXX_EXPORT SyslogWriter
                 {
                 public:
-                        SyslogWriter(const LogString& syslogHost);
+                        #define SYSLOG_PORT 514
+                        SyslogWriter(const LogString& syslogHost, int syslogHostPort = SYSLOG_PORT);
                         void write(const LogString& string);
 
                 private:
                         LogString syslogHost;
+                        int syslogHostPort;
                         InetAddressPtr address;
                         DatagramSocketPtr ds;
                 };

@@ -163,6 +163,7 @@ namespace log4cxx {
                         const LogString msg, Pool& p) {
                  message = smtp_add_message(session);
                  body = current = toMessage(msg, p);
+                 messagecbState = 0;
                  smtp_set_reverse_path(message, toAscii(from, p));
                  addRecipients(to, "To", p);
                  addRecipients(cc, "Cc", p);
@@ -181,6 +182,7 @@ namespace log4cxx {
            smtp_message_t message;
            const char* body;
            const char* current;
+           int messagecbState;
            void addRecipients(const LogString& addresses, const char* field, Pool& p) {
               if (!addresses.empty()) {
                 char* str = p.pstrdup(toAscii(addresses, p));;
@@ -263,6 +265,10 @@ namespace log4cxx {
                if (len == NULL) {
                    pThis->current = pThis->body;
                } else {
+                  // we are asked for headers, but we don't have any
+                  if ((pThis->messagecbState)++ == 0) {
+                    return NULL;
+                  }
                   if (pThis->current) {
                     *len = strlen(pThis->current);
                   }
@@ -473,21 +479,21 @@ void SMTPAppender::activateOptions(Pool& p)
 {
    bool activate = true;
    if (layout == 0) {
-      LogLog::error(LOG4CXX_STR("No layout set for appender named [") +name+ LOG4CXX_STR("]."));
+      errorHandler->error(LOG4CXX_STR("No layout set for appender named [") +name+ LOG4CXX_STR("]."));
       activate = false;
    }
    if(evaluator == 0) {
-      LogLog::error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [")+
+      errorHandler->error(LOG4CXX_STR("No TriggeringEventEvaluator is set for appender [")+
           name+LOG4CXX_STR("]."));
       activate = false;
    }
    if(smtpHost.empty()) {
-      LogLog::error(LOG4CXX_STR("No smtpHost is set for appender [")+
+      errorHandler->error(LOG4CXX_STR("No smtpHost is set for appender [")+
           name+LOG4CXX_STR("]."));
       activate = false;
    }
    if(to.empty() && cc.empty() && bcc.empty()) {
-      LogLog::error(LOG4CXX_STR("No recipient address is set for appender [")+
+      errorHandler->error(LOG4CXX_STR("No recipient address is set for appender [")+
           name+LOG4CXX_STR("]."));
       activate = false;
    }
@@ -496,8 +502,8 @@ void SMTPAppender::activateOptions(Pool& p)
    activate &= asciiCheck(bcc, LOG4CXX_STR("bcc"));
    activate &= asciiCheck(from, LOG4CXX_STR("from"));
 
-#if !LOG4CXX_HAS_LIBESMTP
-   LogLog::error(LOG4CXX_STR("log4cxx built without SMTP support."));
+#if !LOG4CXX_HAVE_LIBESMTP
+   errorHandler->error(LOG4CXX_STR("log4cxx built without SMTP support."));
    activate = false;
 #endif
    if (activate) {
@@ -598,7 +604,7 @@ Send the contents of the cyclic buffer as an e-mail message.
 */
 void SMTPAppender::sendBuffer(Pool& p)
 {
-#if LOG4CXX_HAS_LIBESMTP
+#if LOG4CXX_HAVE_LIBESMTP
    // Note: this code already owns the monitor for this
    // appender. This frees us from needing to synchronize on 'cb'.
    try
@@ -653,10 +659,10 @@ cyclic buffer. When the <code>BufferSize</code> is reached,
 oldest events are deleted as new events are added to the
 buffer. By default the size of the cyclic buffer is 512 events.
 */
-void SMTPAppender::setBufferSize(int bufferSize)
+void SMTPAppender::setBufferSize(int sz)
 {
-   this->bufferSize = bufferSize;
-   cb.resize(bufferSize);
+   this->bufferSize = sz;
+   cb.resize(sz);
 }
 
 /**

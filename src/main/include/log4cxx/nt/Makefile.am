@@ -14,5 +14,6 @@
 # limitations under the License.
 #
 ntincdir = $(includedir)/log4cxx/nt
-ntinc_HEADERS= $(top_srcdir)/src/main/include/log4cxx/nt/*.h
-
+ntinc_HEADERS= \
+    nteventlogappender.h \
+    outputdebugstringappender.h

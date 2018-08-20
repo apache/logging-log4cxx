@@ -17,8 +17,8 @@
 
 #if (defined(WIN32) || defined(_WIN32)) && !defined(_WIN32_WCE)
 
-#include <windows.h>
-#undef ERROR
+#include <apr_strings.h>
+
 #include <log4cxx/nt/nteventlogappender.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/loglog.h>
@@ -26,7 +26,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
-#include <apr_strings.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;

@@ -22,14 +22,21 @@
 #error "aprinitializer.h should only be included by log4cxx implementation"
 #endif
 
-#include <log4cxx/helpers/pool.h>
-#include <apr_pools.h>
-#include <apr_thread_proc.h>
+#include <list>
+
+extern "C" {
+typedef struct apr_thread_mutex_t apr_thread_mutex_t;
+typedef struct apr_threadkey_t apr_threadkey_t;
+}
+
+#include <apr_time.h>
 
 namespace log4cxx
 {
   namespace helpers
   {
+    class FileWatchdog;
+
     class APRInitializer
     {
     public:
@@ -38,15 +45,24 @@ namespace log4cxx
     static apr_threadkey_t* getTlsKey();
     static bool isDestructed;
 
+    /**
+     *  Register a FileWatchdog for deletion prior to
+     *    APR termination.  FileWatchdog must be
+     *    allocated on heap and not deleted elsewhere.
+     */
+    static void registerCleanup(FileWatchdog* watchdog);
+	static void unregisterCleanup(FileWatchdog* watchdog);
+
     private:
       APRInitializer();
       APRInitializer(const APRInitializer&);
       APRInitializer& operator=(const APRInitializer&);
       apr_pool_t* p;
-      log4cxx_time_t startTime;
+      apr_thread_mutex_t* mutex;
+      std::list<FileWatchdog*> watchdogs;
+      apr_time_t startTime;
       apr_threadkey_t* tlsKey;
       static APRInitializer& getInstance();
-      static void tlsDestruct(void*);
 
     public:
       ~APRInitializer();

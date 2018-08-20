@@ -13,11 +13,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
 AUTOMAKE_OPTIONS = foreign
+ACLOCAL_AMFLAGS  = -I src/m4
 
 SUBDIRS = src
-EXTRA_DIST = autogen.sh aclocal.m4 find_apr.m4 find_apu.m4 build.xml pom.xml NOTICE LICENSE INSTALL pom.xml KEYS
+EXTRA_DIST = \
+    aclocal.m4 \
+    autogen.sh \
+    build.xml \
+    INSTALL \
+    KEYS \
+    LICENSE \
+    NOTICE \
+    pom.xml
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = liblog4cxx.pc

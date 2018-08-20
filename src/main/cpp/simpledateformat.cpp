@@ -232,7 +232,6 @@ public:
 
 private:
   size_t width;
-  char zeroDigit;
 };
 
 
@@ -438,7 +437,7 @@ private:
 class HourToken : public NumericToken
 {
 public:
-  HourToken( int width1, int /* offset1 */ ) : NumericToken( width1 )
+  HourToken( int width1, int /* offset1 */ ) : NumericToken( width1 ), offset( 0 )
   {
   }
 
@@ -493,6 +492,21 @@ public:
   int getField( const apr_time_exp_t & tm ) const
   {
     return tm.tm_usec / 1000;
+  }
+};
+
+
+
+class MicrosecondToken : public NumericToken
+{
+public:
+  MicrosecondToken( int width1 ) : NumericToken( width1 )
+  {
+  }
+
+  int getField( const apr_time_exp_t & tm ) const
+  {
+    return tm.tm_usec;
   }
 };
 
@@ -684,7 +698,17 @@ void SimpleDateFormat::addToken(const logchar spec, const int repeat, const std:
                break;
 
                case 0x53: // 'S'
-                 token = ( new MillisecondToken( repeat ) );
+                 if ( repeat == 6 )
+                 {
+                   token = ( new MicrosecondToken( repeat ) );
+                 }
+                 else
+                 {
+                   // It would be nice to support patterns with arbitrary
+                   // subsecond precision (like "s.S" or "s.SSSS"), but we
+                   // don't; so this is a back-compatible default.
+                   token = ( new MillisecondToken( repeat ) );
+                 }
                break;
 
                case 0x7A: // 'z'

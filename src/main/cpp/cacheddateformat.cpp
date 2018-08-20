@@ -132,25 +132,31 @@ int CachedDateFormat::findMillisecondStart(
            LogString plusZero;
            formatter->format(plusZero, slotBegin, pool);
 
-           //   If the next 3 characters match the magic
-           //      strings and the remaining fragments are identical
-           //
-           //
+           // Test if the next 1..3 characters match the magic string, main problem is that magic
+           // available millis in formatted can overlap. Therefore the current i is not always the
+           // index of the first millis char, but may be already within the millis. Besides that
+           // the millis can occur everywhere in formatted. See LOGCXX-420 and following.
+           size_t	magicLength		= magicString.length();
+           size_t	overlapping		= magicString.find(plusMagic[i]);
+           int		possibleRetVal	= i - overlapping;
            if (plusZero.length() == formatted.length()
-              && regionMatches(magicString, 0, plusMagic, i, magicString.length())
-              && regionMatches(formattedMillis, 0, formatted, i, magicString.length())
-              && regionMatches(zeroString, 0, plusZero, i, 3)
-              && (formatted.length() == i + 3
-                 || plusZero.compare(i + 3,
-                       LogString::npos, plusMagic, i+3, LogString::npos) == 0)) {
-              return i;
+              && regionMatches(magicString,		0, plusMagic,	possibleRetVal, magicLength)
+              && regionMatches(formattedMillis,	0, formatted,	possibleRetVal, magicLength)
+              && regionMatches(zeroString,		0, plusZero,	possibleRetVal, magicLength)
+              // The following will and should fail for patterns with more than one SSS because
+              // we only seem to be able to change one SSS in e.g. format and need to reformat the
+              // whole string in other cases.
+              && (formatted.length() == possibleRetVal + magicLength
+                 || plusZero.compare(possibleRetVal + magicLength,
+                       LogString::npos, plusMagic, possibleRetVal + magicLength, LogString::npos) == 0)) {
+              return possibleRetVal;
            } else {
               return UNRECOGNIZED_MILLISECONDS;
           }
         }
      }
   }
-  return  NO_MILLISECONDS;
+  return NO_MILLISECONDS;
 }
 
 
@@ -176,18 +182,16 @@ int CachedDateFormat::findMillisecondStart(
   //     (that is if it was found or milliseconds did not appear)
   //
   if (millisecondStart != UNRECOGNIZED_MILLISECONDS) {
-
       //    Check if the cache is still valid.
       //    If the requested time is within the same integral second
       //       as the last request and a shorter expiration was not requested.
       if (now < slotBegin + expiration
           && now >= slotBegin
           && now < slotBegin + 1000000L) {
-
           //
           //    if there was a millisecond field then update it
           //
-          if (millisecondStart >= 0 ) {
+          if (millisecondStart >= 0) {
               millisecondFormat((int) ((now - slotBegin)/1000), cache, millisecondStart);
           }
           //
@@ -195,10 +199,10 @@ int CachedDateFormat::findMillisecondStart(
           //      (the slot begin should be unchanged)
           previousTime = now;
           buf.append(cache);
+
           return;
       }
   }
-
 
   //
   //  could not use previous value.
@@ -212,7 +216,6 @@ int CachedDateFormat::findMillisecondStart(
       slotBegin -= 1000000;
   }
 
-
   //
   //    if the milliseconds field was previous found
   //       then reevaluate in case it moved.
@@ -222,10 +225,9 @@ int CachedDateFormat::findMillisecondStart(
   }
 }
 
-
 /**
  *   Formats a count of milliseconds (0-999) into a numeric representation.
- *   @param millis Millisecond coun between 0 and 999.
+ *   @param millis Millisecond count between 0 and 999.
  *   @buf String buffer, may not be null.
  *   @offset Starting position in buffer, the length of the
  *       buffer must be at least offset + 3.
@@ -233,7 +235,7 @@ int CachedDateFormat::findMillisecondStart(
 void CachedDateFormat::millisecondFormat(int millis,
      LogString& buf,
      int offset) {
-     buf[offset] = digits[ millis / 100];
+     buf[offset] = digits[millis / 100];
      buf[offset + 1] = digits[(millis / 10) % 10];
      buf[offset + 2] = digits[millis  % 10];
  }

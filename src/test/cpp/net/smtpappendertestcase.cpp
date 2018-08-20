@@ -111,8 +111,8 @@ public:
       appender->activateOptions(p);
       LoggerPtr root(Logger::getRootLogger());
       root->addAppender(appender);
-      LOG4CXX_INFO(root, "Hello, World.");
-      LOG4CXX_ERROR(root, "Sending Message");
+      LOG4CXX_INFO(root, "Hello, World.")
+      LOG4CXX_ERROR(root, "Sending Message")
   }
 
 };

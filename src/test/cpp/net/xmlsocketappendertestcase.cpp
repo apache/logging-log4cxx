@@ -17,6 +17,7 @@
 
 #include <log4cxx/net/xmlsocketappender.h>
 #include "../appenderskeletontestcase.h"
+#include "apr.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
