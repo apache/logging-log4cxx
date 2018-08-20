@@ -45,7 +45,6 @@ Logger::Logger(Pool& p, const LogString& name1)
 : pool(&p), name(), level(), parent(), resourceBundle(),
 repository(), aai(), SHARED_MUTEX_INIT(mutex, p)
 {
-    LOCK_W sync(mutex);
     name = name1;
     additive = true;
 }
