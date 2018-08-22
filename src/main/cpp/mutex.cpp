@@ -27,7 +27,12 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
+#include <windows.h>
+#else
+// POSIX
 #include <semaphore.h>
+#endif
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
@@ -148,7 +153,72 @@ void RWMutex::wrUnlock() const
 }
 
 
+#if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
 
+namespace log4cxx {
+	namespace helpers {
+		struct SemaphoreImpl
+		{
+			HANDLE semaphore;
+		};
+	}
+}
+
+static const LONG cMax = 10;
+
+Semaphore::Semaphore(log4cxx::helpers::Pool& p)
+	: impl(nullptr)
+{
+#if APR_HAS_THREADS
+	impl = (SemaphoreImpl*)p.palloc(sizeof(SemaphoreImpl));
+	if (nullptr == impl) {
+		throw MutexException(APR_ENOMEM);
+	}
+
+	impl->semaphore = CreateSemaphore(
+		NULL,  // default security attributes
+		0,     // initial count
+		cMax,  // maximum count
+		NULL); // unnamed semaphore
+
+	if (impl->semaphore == NULL) {
+		throw MutexException(APR_ENOSHMAVAIL);
+	}
+#endif
+}
+
+Semaphore::~Semaphore()
+{
+#if APR_HAS_THREADS
+	if (impl && impl->semaphore)
+	{
+		CloseHandle(impl->semaphore);
+	}
+#endif
+}
+
+void Semaphore::await() const
+{
+#if APR_HAS_THREADS
+	DWORD dwWaitResult = WaitForSingleObject(impl->semaphore, INFINITE);
+	if (stat != 0) {
+		throw MutexException(1);
+	}
+#endif
+}
+
+void Semaphore::signalAll() const
+{
+#if APR_HAS_THREADS
+	BOOL stat = ReleaseSemaphore(impl->semaphore, 1, NULL);
+	if (!stat) {
+		throw MutexException(stat);
+	}
+#endif
+}
+
+#else
+// POSIX
 
 namespace log4cxx {
     namespace helpers {
@@ -205,3 +275,4 @@ void Semaphore::signalAll() const
 #endif
 }
 
+#endif

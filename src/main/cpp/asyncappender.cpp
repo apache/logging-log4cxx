@@ -325,12 +325,12 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p) {
 AsyncAppender::DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
                                            unsigned discardedCount)
 {
-    char msg[128];
-
-    snprintf(msg, 128, LOG4CXX_STR("Discarded %u messages due to a full event buffer."), discardedCount);
+	LogString msg(LOG4CXX_STR("Discarded "));
+	StringHelper::toString(discardedCount, p, msg);
+	msg.append(LOG4CXX_STR(" messages due to a full event buffer"));
 
     return new LoggingEvent(
-              "",
+		      LOG4CXX_STR(""),
               log4cxx::Level::getError(),
               msg,
               LocationInfo::getLocationUnavailable());
