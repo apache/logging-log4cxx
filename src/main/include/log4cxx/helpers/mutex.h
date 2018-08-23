@@ -54,6 +54,8 @@ namespace log4cxx
 } // namespace log4cxx
 
 
+#if defined(RW_MUTEX)
+
 namespace log4cxx
 {
         namespace helpers
@@ -84,7 +86,16 @@ namespace log4cxx
 } // namespace log4cxx
 
 #define SHARED_MUTEX log4cxx::helpers::RWMutex
+
+#else // no RW_MUTEX
+
+#define SHARED_MUTEX log4cxx::helpers::Mutex
+
+#endif // RW_MUTEX
+
 #define SHARED_MUTEX_INIT(mutex, p) mutex(p)
+
+#if defined(NON_BLOCKING)
 
 namespace log4cxx
 {
@@ -110,6 +121,6 @@ namespace log4cxx
     } // namespace helpers
 } // namespace log4cxx
 
-#define SEMAPHORE log4cxx::helpers::Semaphore
+#endif // NON_BLOCKING
 
 #endif //_LOG4CXX_HELPERS_MUTEX_H

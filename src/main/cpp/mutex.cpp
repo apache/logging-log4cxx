@@ -27,12 +27,16 @@
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 
+#if defined(NON_BLOCKING)
+
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #else
 // POSIX
 #include <semaphore.h>
 #endif
+
+#endif // NON_BLOCKING
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
@@ -74,6 +78,8 @@ Mutex::~Mutex() {
 apr_thread_mutex_t* Mutex::getAPRMutex() const {
     return mutex;
 }
+
+#if defined(RW_MUTEX)
 
 RWMutex::RWMutex(Pool& p)
         : id((apr_os_thread_t)-1)
@@ -152,6 +158,9 @@ void RWMutex::wrUnlock() const
 #endif
 }
 
+#endif // RW_MUTEX
+
+#if defined(NON_BLOCKING)
 
 #if defined(WIN32) || defined(_WIN32) || defined(_WIN64)
 
@@ -164,7 +173,7 @@ namespace log4cxx {
 	}
 }
 
-static const LONG cMax = 10;
+static const LONG cMax = 10000; // arbitrary high value
 
 Semaphore::Semaphore(log4cxx::helpers::Pool& p)
 	: impl(nullptr)
@@ -275,4 +284,6 @@ void Semaphore::signalAll() const
 #endif
 }
 
-#endif
+#endif // POSIX
+
+#endif // NON_BLOCKING

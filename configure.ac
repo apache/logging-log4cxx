@@ -64,8 +64,6 @@ case "$host" in
         ;;
 esac
 
-CXXFLAGS="$CXXFLAGS -std=c++11"
-
 # Doxygen
 
 AC_ARG_ENABLE(doxygen,
@@ -445,6 +443,17 @@ case "$ac_with_logchar" in
 esac
 
 
+AC_ARG_ENABLE(non-blocking,
+            AC_HELP_STRING(--enable-non-blocking,
+           [non-blocking mode (no)]))
+if test "x$enable_non_blocking" = xyes; then
+        CXXFLAGS="$CXXFLAGS -std=c++11"
+        AC_DEFINE(NON_BLOCKING)
+        AC_DEFINE(RW_MUTEX)
+        AC_DEFINE(STATIC_STRINGSTREAM)
+fi
+
+AM_CONDITIONAL([NON_BLOCKING], [test "x$enable_non_blocking" = xyes])
 
 # Create files
 # ----------------------------------------------------------------------------

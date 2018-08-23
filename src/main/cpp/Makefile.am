@@ -23,7 +23,6 @@ liblog4cxx_la_SOURCES = \
         appenderattachableimpl.cpp \
         appenderskeleton.cpp \
         aprinitializer.cpp \
-        asyncappender.cpp \
         basicconfigurator.cpp \
         bufferedwriter.cpp \
         bytearrayinputstream.cpp \
@@ -168,6 +167,12 @@ liblog4cxx_la_SOURCES = \
         xmllayout.cpp\
         xmlsocketappender.cpp \
         zipcompressaction.cpp
+
+if NON_BLOCKING
+liblog4cxx_la_SOURCES += asyncappender_nonblocking.cpp
+else
+liblog4cxx_la_SOURCES += asyncappender.cpp
+endif
 
 AM_CPPFLAGS += @CPPFLAGS_ODBC@
 liblog4cxx_la_LDFLAGS = -version-info @LT_VERSION@ @LIBS_ODBC@ -@APR_LIBS@

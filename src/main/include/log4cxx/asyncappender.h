@@ -32,7 +32,9 @@
 #include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/condition.h>
 
+#if defined(NON_BLOCKING)
 #include <boost/lockfree/queue.hpp>
+#endif
 
 namespace log4cxx
 {
@@ -199,16 +201,25 @@ namespace log4cxx
                 /**
                  * Event buffer.
                 */
+#if defined(NON_BLOCKING)
                 boost::lockfree::queue<log4cxx::spi::LoggingEvent* > buffer;
-                std::atomic<unsigned> discardedCount;
+                std::atomic<size_t> discardedCount;
+#else
+                LoggingEventList buffer;
+#endif
 
                 /**
                  *  Mutex used to guard access to buffer and discardMap.
                  */
                 SHARED_MUTEX bufferMutex;
-                SEMAPHORE bufferNotFull;
-                SEMAPHORE bufferNotEmpty;
-
+                
+#if defined(NON_BLOCKING)
+                ::log4cxx::helpers::Semaphore bufferNotFull;
+                ::log4cxx::helpers::Semaphore bufferNotEmpty;
+#else
+                ::log4cxx::helpers::Condition bufferNotFull;
+                ::log4cxx::helpers::Condition bufferNotEmpty;
+#endif
                 class DiscardSummary {
                 private:
                     /**
@@ -249,7 +260,7 @@ namespace log4cxx
 
                      static
                      ::log4cxx::spi::LoggingEventPtr createEvent(::log4cxx::helpers::Pool& p,
-                                                                 unsigned discardedCount);
+                                                                 size_t discardedCount);
                 };
 
                 /**

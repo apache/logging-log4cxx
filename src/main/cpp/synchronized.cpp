@@ -60,6 +60,7 @@ synchronized::~synchronized()
 #endif
 }
 
+#if defined(RW_MUTEX)
 
 synchronized_read::synchronized_read(const RWMutex& mutex1)
         : mutex(mutex1)
@@ -83,3 +84,4 @@ synchronized_write::~synchronized_write()
         mutex.wrUnlock();
 }
 
+#endif // RW_MUTEX
