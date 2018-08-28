@@ -22,7 +22,9 @@
 
 #include <apr_portable.h>
 
+#if defined(RW_MUTEX)
 #include <atomic>
+#endif
 
 extern "C" {
    struct apr_thread_mutex_t;
