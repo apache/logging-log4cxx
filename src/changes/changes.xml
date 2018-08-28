@@ -26,6 +26,7 @@
 		<release	version="0.11.0"
 					date="XXXX-XX-XX"
 					description="Maintenance release">
+			<action issue="LOGCXX-500" type="update">Logging in Timing-Critical Applications</action>
 			<action issue="LOGCXX-493" type="fix">Wrong usage of milli- vs. micro- and non- vs. milliseconds in some docs.</action>
 			<action issue="LOGCXX-488" type="fix">Space after log level hides messages</action>
 			<action issue="LOGCXX-484" type="fix">Spelling error s/excute/execute</action>
