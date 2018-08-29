@@ -236,7 +236,7 @@ public:
         rootLogger->addAppender(async);
         {
             synchronized sync(blockableAppender->getBlocker());
-            for (int i = 0; i < 100; i++) {
+            for (int i = 0; i < 140; i++) {
                    LOG4CXX_INFO(rootLogger, "Hello, World");
                    Thread::sleep(1);
             }
