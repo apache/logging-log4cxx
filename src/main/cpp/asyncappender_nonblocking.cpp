@@ -340,7 +340,7 @@ AsyncAppender::DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
 void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void* data) {
     AsyncAppender* pThis = (AsyncAppender*) data;
     try {
-        while (!pThis->closed) {
+        while (!pThis->closed || !pThis->buffer.empty()) {
 
              pThis->bufferNotEmpty.await();
 
