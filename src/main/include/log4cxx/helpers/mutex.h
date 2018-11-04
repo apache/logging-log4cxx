@@ -20,9 +20,8 @@
 
 #include <log4cxx/log4cxx.h>
 
-#include <apr_portable.h>
-
 #if defined(RW_MUTEX)
+#include <apr_portable.h>
 #include <atomic>
 #endif
 
