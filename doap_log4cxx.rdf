@@ -38,8 +38,8 @@
 		<download-page	rdf:resource="http://logging.apache.org/log4cxx/download.html"		/>
 		<repository>
 			<Repository>
-				<location	rdf:resource="git:https://git-wip-us.apache.org/repos/asf/logging-log4cxx.git"			/>
-				<browse		rdf:resource="https://git-wip-us.apache.org/repos/asf?p=logging-log4cxx.git;a=summary"	/>
+				<location	rdf:resource="git:https://gitbox.apache.org/repos/asf/logging-log4cxx.git"			/>
+				<browse		rdf:resource="https://gitbox.apache.org/repos/asf?p=logging-log4cxx.git;a=summary"	/>
 			</Repository>
 		</repository>
 	</Project>

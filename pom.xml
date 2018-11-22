@@ -62,9 +62,9 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:http://git-wip-us.apache.org/repos/asf/logging-log4cxx.git</connection>
-		<developerConnection>scm:git:https://git-wip-us.apache.org/repos/asf/logging-log4cxx.git</developerConnection>
-		<url>https://git-wip-us.apache.org/repos/asf?p=logging-log4cxx.git</url>
+		<connection>scm:git:http://gitbox.apache.org/repos/asf/logging-log4cxx.git</connection>
+		<developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4cxx.git</developerConnection>
+		<url>https://gitbox.apache.org/repos/asf?p=logging-log4cxx.git</url>
 		<tag>v0.11.0-RC1</tag>
 	</scm>
 
