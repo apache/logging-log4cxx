@@ -1,10 +1,10 @@
 <?xml version="1.0"?>
 <?xml-stylesheet type="text/xsl"?>
-<rdf:RDF xml:lang="en"
-         xmlns="http://usefulinc.com/ns/doap#" 
-         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
-         xmlns:asfext="http://projects.apache.org/ns/asfext#"
-         xmlns:foaf="http://xmlns.com/foaf/0.1/">
+<rdf:RDF	xml:lang="en"
+			xmlns="https://usefulinc.com/ns/doap#"
+			xmlns:rdf="https://www.w3.org/1999/02/22-rdf-syntax-ns#"
+			xmlns:asfext="https://projects.apache.org/ns/asfext#"
+			xmlns:foaf="https://xmlns.com/foaf/0.1/">
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with
@@ -13,7 +13,7 @@
  (the "License"); you may not use this file except in compliance with
  the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+      https://www.apache.org/licenses/LICENSE-2.0
 
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,23 +22,25 @@
  limitations under the License.
 
 -->
-  <Project rdf:about="http://logging.apache.org/log4cxx">
-    <created>2007-02-09</created>
-    <license rdf:resource="http://usefulinc.com/doap/licenses/asl20" />
-    <name>Apache log4cxx</name>
-    <homepage rdf:resource="http://logging.apache.org/log4cxx" />
-    <asfext:pmc rdf:resource="http://logging.apache.org" />
-    <shortdesc>Apache log4cxx provides logging services for C++.</shortdesc>
-    <bug-database rdf:resource="http://issues.apache.org/jira/browse/LOGCXX" />
-    <mailing-list rdf:resource="http://logging.apache.org/log4cxx/mail-lists.html" />
-    <download-page rdf:resource="http://logging.apache.org/log4cxx/download.html" />
-    <programming-language>C</programming-language>
-    <category rdf:resource="http://projects.apache.org/category/library" />
-    <repository>
-      <Repository>
-        <location rdf:resource="git:https://gitbox.apache.org/repos/asf/logging-log4cxx.git"         />
-        <browse   rdf:resource="https://gitbox.apache.org/repos/asf?p=logging-log4cxx.git;a=summary" />
-      </Repository>
-    </repository>
-  </Project>
+	<Project rdf:about="https://logging.apache.org/log4cxx">
+		<name>Apache log4cxx</name>
+		<shortdesc>Apache log4cxx provides logging services for C++.</shortdesc>
+		<created>2007-02-09</created>
+
+		<programming-language>C</programming-language>
+		<license	rdf:resource="https://usefulinc.com/doap/licenses/asl20"	/>
+		<homepage	rdf:resource="https://logging.apache.org/log4cxx"			/>
+		<category	rdf:resource="https://projects.apache.org/category/library"	/>
+		<asfext:pmc	rdf:resource="https://logging.apache.org"					/>
+
+		<bug-database	rdf:resource="https://issues.apache.org/jira/browse/LOGCXX"			/>
+		<mailing-list	rdf:resource="https://logging.apache.org/log4cxx/mail-lists.html"	/>
+		<download-page	rdf:resource="https://logging.apache.org/log4cxx/download.html"		/>
+		<repository>
+			<Repository>
+				<location	rdf:resource="git:https://gitbox.apache.org/repos/asf/logging-log4cxx.git"			/>
+				<browse		rdf:resource="https://gitbox.apache.org/repos/asf?p=logging-log4cxx.git;a=summary"	/>
+			</Repository>
+		</repository>
+	</Project>
 </rdf:RDF>
