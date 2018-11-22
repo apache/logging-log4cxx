@@ -35,10 +35,10 @@
     <programming-language>C</programming-language>
     <category rdf:resource="http://projects.apache.org/category/library" />
     <repository>
-      <SVNRepository>
-        <location rdf:resource="http://svn.apache.org/repos/asf/logging/log4cxx/trunk/"/>
-        <browse rdf:resource="http://svn.apache.org/viewvc/logging/log4cxx/trunk/"/>
-      </SVNRepository>
+      <Repository>
+        <location rdf:resource="git:https://gitbox.apache.org/repos/asf/logging-log4cxx.git"         />
+        <browse   rdf:resource="https://gitbox.apache.org/repos/asf?p=logging-log4cxx.git;a=summary" />
+      </Repository>
     </repository>
   </Project>
 </rdf:RDF>
