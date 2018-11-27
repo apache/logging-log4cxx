@@ -1,2 +1,0 @@
-SUBDIRS = console_test
-

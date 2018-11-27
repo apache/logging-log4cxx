@@ -1,0 +1,151 @@
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+-->
+<assembly>
+	<id>source</id>
+	<formats>
+		<format>tar.gz</format>
+		<format>zip</format>
+	</formats>
+	<baseDirectory>${project.artifactId}-${project.version}</baseDirectory>
+
+	<fileSets>
+		<!-- Some files need to be executable. -->
+		<fileSet>
+			<includes>
+				<include>ar-lib</include>
+				<include>autogen.sh</include>
+				<include>configure.bat</include>
+				<include>configure-aprutil.bat</include>
+				<include>configure</include>
+				<include>depcomp</include>
+				<include>install-sh</include>
+				<include>ltmain.sh</include>
+				<include>missing</include>
+			</includes>
+
+			<fileMode>0755</fileMode>
+		</fileSet>
+
+		<fileSet>
+			<includes>
+				<include>aclocal.m4</include>
+				<include>build.xml</include>
+				<include>configure.ac</include>
+				<include>config.guess</include>
+				<include>config.sub</include>
+				<include>INSTALL</include>
+				<include>KEYS</include>
+				<include>liblog4cxx.pc.in</include>
+				<include>LICENSE</include>
+				<include>Makefile.am</include>
+				<include>Makefile.in</include>
+				<include>NOTICE</include>
+				<include>pom.xml</include>
+				<include>src/**</include>
+			</includes>
+
+			<excludes>
+				<exclude>src/examples/cpp/console</exclude>
+				<exclude>src/examples/cpp/delayedloop</exclude>
+				<exclude>src/examples/cpp/stream</exclude>
+				<exclude>src/examples/cpp/trivial</exclude>
+				<exclude>src/m4/libtool.m4</exclude>
+				<exclude>src/m4/ltoptions.m4</exclude>
+				<exclude>src/m4/ltsugar.m4</exclude>
+				<exclude>src/m4/ltversion.m4</exclude>
+				<exclude>src/m4/lt~obsolete.m4</exclude>
+				<exclude>src/main/include/log4cxx/log4cxx.h</exclude>
+				<exclude>src/main/include/log4cxx/private/log4cxx_private.h</exclude>
+				<exclude>src/test/cpp/testsuite</exclude>
+				<exclude>src/test/resources/output/**</exclude>
+				<exclude>**/.libs/**</exclude>
+				<exclude>**/.deps/**</exclude>
+				<exclude>**/*.a</exclude>
+				<exclude>**/*.dll</exclude>
+				<exclude>**/*.dylib</exclude>
+				<exclude>**/*.la</exclude>
+				<exclude>**/*.lo</exclude>
+				<exclude>**/*.o</exclude>
+				<exclude>**/*.Po</exclude>
+				<exclude>**/*.so</exclude>
+				<exclude>**/Doxyfile</exclude>
+				<exclude>**/Makefile</exclude>
+			</excludes>
+
+			<fileMode>0644</fileMode>
+			<directoryMode>0755</directoryMode>
+		</fileSet>
+
+		<!-- "includeSiteDirectory" seems to add files with wrong permissions. -->
+		<fileSet>
+			<directory>target</directory>
+			<lineEnding>keep</lineEnding>
+			<outputDirectory>.</outputDirectory>
+
+			<includes>
+				<include>site/**</include>
+			</includes>
+
+			<fileMode>0644</fileMode>
+			<directoryMode>0755</directoryMode>
+		</fileSet>
+
+		<!--
+			Special handling for project files.
+
+			Project files are generated in the target directory and contain relative paths out of that dir
+			into the project's src dir and that of apr. Those relative paths stay valid only if those files
+			are placed in the same hierarchy level in the release archive. If the files are generated in a
+			different level, the placement in the release archive needs to be adopted and vice versa. That's
+			why the release archive structure is not replicated in the target directory, we need to stay
+			with two levels, but that allows us to keep the target dir somewhat clean and provide a logical
+			structure in the release archive.
+		 -->
+		<fileSet>
+			<directory>target/projects</directory>
+			<lineEnding>keep</lineEnding>
+			<outputDirectory>projects/vc6</outputDirectory>
+
+			<includes>
+				<include>*.dsp</include>
+				<include>*.dsw</include>
+			</includes>
+
+			<excludes>
+				<exclude>apr*.ds*</exclude>
+				<exclude>xml.ds*</exclude>
+			</excludes>
+
+			<fileMode>0644</fileMode>
+		</fileSet>
+
+		<fileSet>
+			<directory>target/projects</directory>
+			<lineEnding>keep</lineEnding>
+			<outputDirectory>projects/xcode</outputDirectory>
+
+			<includes>
+				<include>*.xcodeproj/project.pbxproj</include>
+			</includes>
+
+			<fileMode>0644</fileMode>
+			<directoryMode>0755</directoryMode>
+		</fileSet>
+	</fileSets>
+</assembly>
+
