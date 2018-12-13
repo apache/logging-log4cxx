@@ -31,60 +31,81 @@ number at the specified IP address.
 */
 Socket::Socket(InetAddressPtr& addr, int prt) : pool(), socket(0), address(addr), port(prt)
 {
-  apr_status_t status =
-    apr_socket_create(&socket, APR_INET, SOCK_STREAM,
-                      APR_PROTO_TCP, pool.getAPRPool());
-  if (status != APR_SUCCESS) {
-    throw SocketException(status);
-  }
+    apr_status_t status =
+        apr_socket_create(&socket, APR_INET, SOCK_STREAM,
+                          APR_PROTO_TCP, pool.getAPRPool());
 
-  LOG4CXX_ENCODE_CHAR(host, addr->getHostAddress());
+    if (status != APR_SUCCESS)
+    {
+        throw SocketException(status);
+    }
 
-  // create socket address (including port)
-  apr_sockaddr_t *client_addr;
-  status =
-      apr_sockaddr_info_get(&client_addr, host.c_str(), APR_INET,
-                                  prt, 0, pool.getAPRPool());
-  if (status != APR_SUCCESS) {
-      throw ConnectException(status);
-  }
+    LOG4CXX_ENCODE_CHAR(host, addr->getHostAddress());
 
-        // connect the socket
-  status =  apr_socket_connect(socket, client_addr);
-  if (status != APR_SUCCESS) {
-      throw ConnectException(status);
-  }
+    // create socket address (including port)
+    apr_sockaddr_t* client_addr;
+    status =
+        apr_sockaddr_info_get(&client_addr, host.c_str(), APR_INET,
+                              prt, 0, pool.getAPRPool());
+
+    if (status != APR_SUCCESS)
+    {
+        throw ConnectException(status);
+    }
+
+    // connect the socket
+    status =  apr_socket_connect(socket, client_addr);
+
+    if (status != APR_SUCCESS)
+    {
+        throw ConnectException(status);
+    }
 }
 
 Socket::Socket(apr_socket_t* s, apr_pool_t* p) :
-    pool(p, true), socket(s) {
+    pool(p, true), socket(s)
+{
     apr_sockaddr_t* sa;
     apr_status_t status = apr_socket_addr_get(&sa, APR_REMOTE, s);
-    if (status == APR_SUCCESS) {
+
+    if (status == APR_SUCCESS)
+    {
         port = sa->port;
         LogString remotename;
         LogString remoteip;
-        if (sa->hostname != NULL) {
+
+        if (sa->hostname != NULL)
+        {
             Transcoder::decode(sa->hostname, remotename);
         }
+
         char* buf = 0;
         status = apr_sockaddr_ip_get(&buf, sa);
-        if (status == APR_SUCCESS) {
+
+        if (status == APR_SUCCESS)
+        {
             Transcoder::decode(buf, remoteip);
         }
+
         address = new InetAddress(remotename, remoteip);
     }
 }
 
-Socket::~Socket() {
+Socket::~Socket()
+{
 }
 
-size_t Socket::write(ByteBuffer& buf) {
-    if (socket == 0) {
-            throw ClosedChannelException();
+size_t Socket::write(ByteBuffer& buf)
+{
+    if (socket == 0)
+    {
+        throw ClosedChannelException();
     }
+
     int totalWritten = 0;
-    while(buf.remaining() > 0) {
+
+    while (buf.remaining() > 0)
+    {
         apr_size_t written = buf.remaining();
 
         // while writing to the socket, we need to ignore the SIGPIPE
@@ -101,29 +122,39 @@ size_t Socket::write(ByteBuffer& buf) {
 
         buf.position(buf.position() + written);
         totalWritten += written;
-        if (status != APR_SUCCESS) {
+
+        if (status != APR_SUCCESS)
+        {
             throw SocketException(status);
         }
     }
+
     return totalWritten;
 }
 
 
-void Socket::close() {
-    if (socket != 0) {
+void Socket::close()
+{
+    if (socket != 0)
+    {
         apr_status_t status = apr_socket_close(socket);
-        if (status != APR_SUCCESS) {
+
+        if (status != APR_SUCCESS)
+        {
             throw SocketException(status);
         }
+
         socket = 0;
     }
 }
 
-InetAddressPtr Socket::getInetAddress() const {
+InetAddressPtr Socket::getInetAddress() const
+{
     return address;
 }
 
-int Socket::getPort() const {
+int Socket::getPort() const
+{
     return port;
 }
 

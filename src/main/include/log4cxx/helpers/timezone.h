@@ -26,45 +26,46 @@ struct apr_time_exp_t;
 
 namespace log4cxx
 {
-   namespace helpers
-   {
-      class TimeZone;
-      LOG4CXX_PTR_DEF(TimeZone);
+namespace helpers
+{
+class TimeZone;
+LOG4CXX_PTR_DEF(TimeZone);
 
-      class LOG4CXX_EXPORT TimeZone : public helpers::ObjectImpl
-      {
-      public:
-         DECLARE_ABSTRACT_LOG4CXX_OBJECT(TimeZone)
-         BEGIN_LOG4CXX_CAST_MAP()
-            LOG4CXX_CAST_ENTRY(TimeZone)
-         END_LOG4CXX_CAST_MAP()
+class LOG4CXX_EXPORT TimeZone : public helpers::ObjectImpl
+{
+    public:
+        DECLARE_ABSTRACT_LOG4CXX_OBJECT(TimeZone)
+        BEGIN_LOG4CXX_CAST_MAP()
+        LOG4CXX_CAST_ENTRY(TimeZone)
+        END_LOG4CXX_CAST_MAP()
 
-         static const TimeZonePtr& getDefault();
-            static const TimeZonePtr& getGMT();
-         static const TimeZonePtr getTimeZone(const LogString& ID);
+        static const TimeZonePtr& getDefault();
+        static const TimeZonePtr& getGMT();
+        static const TimeZonePtr getTimeZone(const LogString& ID);
 
-            const LogString getID() const {
-                   return id;
-            }
-
-
-            /**
-             *   Expand an APR time into the human readable
-             *      components for this timezone.
-             */
-            virtual log4cxx_status_t explode(apr_time_exp_t* result,
-                    log4cxx_time_t input) const = 0;
+        const LogString getID() const
+        {
+            return id;
+        }
 
 
-      protected:
-            TimeZone(const LogString& ID);
-            virtual ~TimeZone();
+        /**
+         *   Expand an APR time into the human readable
+         *      components for this timezone.
+         */
+        virtual log4cxx_status_t explode(apr_time_exp_t* result,
+                                         log4cxx_time_t input) const = 0;
 
-            const LogString id;
-      };
+
+    protected:
+        TimeZone(const LogString& ID);
+        virtual ~TimeZone();
+
+        const LogString id;
+};
 
 
-   }
+}
 }
 
 #endif //_LOG4CXX_HELPERS_TIMEZONE_H

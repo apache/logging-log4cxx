@@ -19,8 +19,8 @@
 #define _LOG4CXX_LOGGER_H
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4231 4251 4275 4786 )
+    #pragma warning ( push )
+    #pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #include <log4cxx/helpers/appenderattachableimpl.h>
@@ -35,36 +35,38 @@
 namespace log4cxx
 {
 
-    namespace helpers {
-            class synchronized;
-    }
+namespace helpers
+{
+class synchronized;
+}
 
-    namespace spi {
-        class LoggerRepository;
-        LOG4CXX_PTR_DEF(LoggerRepository);
-        class LoggerFactory;
-        LOG4CXX_PTR_DEF(LoggerFactory);
-    }
+namespace spi
+{
+class LoggerRepository;
+LOG4CXX_PTR_DEF(LoggerRepository);
+class LoggerFactory;
+LOG4CXX_PTR_DEF(LoggerFactory);
+}
 
-    class Logger;
-    /** smart pointer to a Logger class */
-    LOG4CXX_PTR_DEF(Logger);
-    LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
+class Logger;
+/** smart pointer to a Logger class */
+LOG4CXX_PTR_DEF(Logger);
+LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 
 
-    /**
-    This is the central class in the log4cxx package. Most logging
-    operations, except configuration, are done through this class.
-    */
-    class LOG4CXX_EXPORT Logger :
-                public virtual log4cxx::spi::AppenderAttachable,
-                public virtual helpers::ObjectImpl
-    {
+/**
+This is the central class in the log4cxx package. Most logging
+operations, except configuration, are done through this class.
+*/
+class LOG4CXX_EXPORT Logger :
+    public virtual log4cxx::spi::AppenderAttachable,
+    public virtual helpers::ObjectImpl
+{
     public:
         DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
         BEGIN_LOG4CXX_CAST_MAP()
-                LOG4CXX_CAST_ENTRY(Logger)
-                LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
+        LOG4CXX_CAST_ENTRY(Logger)
+        LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
         END_LOG4CXX_CAST_MAP()
 
     private:
@@ -98,18 +100,18 @@ namespace log4cxx
 
 
         // Loggers need to know what Hierarchy they are in
-        log4cxx::spi::LoggerRepository * repository;
+        log4cxx::spi::LoggerRepository* repository;
 
         helpers::AppenderAttachableImplPtr aai;
 
-                /** Additivity is set to true by default, that is children inherit
-                        the appenders of their ancestors by default. If this variable is
-                        set to <code>false</code> then the appenders found in the
-                        ancestors of this logger are not used. However, the children
-                        of this logger will inherit its appenders, unless the children
-                        have their additivity flag set to <code>false</code> too. See
-                        the user manual for more details. */
-                bool additive;
+        /** Additivity is set to true by default, that is children inherit
+                the appenders of their ancestors by default. If this variable is
+                set to <code>false</code> then the appenders found in the
+                ancestors of this logger are not used. However, the children
+                of this logger will inherit its appenders, unless the children
+                have their additivity flag set to <code>false</code> too. See
+                the user manual for more details. */
+        bool additive;
 
     protected:
         friend class DefaultLoggerFactory;
@@ -143,7 +145,7 @@ namespace log4cxx
         virtual void addAppender(const AppenderPtr& newAppender);
 
 
-         /**
+        /**
         Call the appenders in the hierrachy starting at
         <code>this</code>.  If no appenders could be found, emit a
         warning.
@@ -516,7 +518,7 @@ namespace log4cxx
         @param location location of source of logging request.
         */
         void forcedLog(const LevelPtr& level, const std::string& message,
-                        const log4cxx::spi::LocationInfo& location) const;
+                       const log4cxx::spi::LocationInfo& location) const;
         /**
         This method creates a new logging event and logs the event
         without further checks.
@@ -534,7 +536,7 @@ namespace log4cxx
         @param location location of source of logging request.
         */
         void forcedLog(const LevelPtr& level, const std::wstring& message,
-                        const log4cxx::spi::LocationInfo& location) const;
+                       const log4cxx::spi::LocationInfo& location) const;
         /**
         This method creates a new logging event and logs the event
         without further checks.
@@ -552,7 +554,7 @@ namespace log4cxx
         @param location location of source of logging request.
         */
         void forcedLog(const LevelPtr& level, const std::basic_string<UniChar>& message,
-                        const log4cxx::spi::LocationInfo& location) const;
+                       const log4cxx::spi::LocationInfo& location) const;
         /**
         This method creates a new logging event and logs the event
         without further checks.
@@ -570,7 +572,7 @@ namespace log4cxx
         @param location location of source of logging request.
         */
         void forcedLog(const LevelPtr& level, const CFStringRef& message,
-                        const log4cxx::spi::LocationInfo& location) const;
+                       const log4cxx::spi::LocationInfo& location) const;
         /**
         This method creates a new logging event and logs the event
         without further checks.
@@ -587,7 +589,7 @@ namespace log4cxx
         @param location location of the logging statement.
         */
         void forcedLogLS(const LevelPtr& level, const LogString& message,
-                        const log4cxx::spi::LocationInfo& location) const;
+                         const log4cxx::spi::LocationInfo& location) const;
 
         /**
         Get the additivity flag for this Logger instance.
@@ -629,7 +631,10 @@ namespace log4cxx
         * Get the logger name.
         * @return logger name as LogString.
         */
-        const LogString& getName() const { return name; }
+        const LogString& getName() const
+        {
+            return name;
+        }
         /**
         * Get logger name in current encoding.
         * @param name buffer to which name is appended.
@@ -734,7 +739,7 @@ namespace log4cxx
         actually create a new Instance.
         */
         static LoggerPtr getLoggerLS(const LogString& name,
-                        const log4cxx::spi::LoggerFactoryPtr& factory);
+                                     const log4cxx::spi::LoggerFactoryPtr& factory);
         /**
         Like #getLogger except that the type of logger
         instantiated depends on the type returned by the
@@ -749,7 +754,7 @@ namespace log4cxx
         actually create a new Instance.
         */
         static LoggerPtr getLogger(const std::string& name,
-                        const log4cxx::spi::LoggerFactoryPtr& factory);
+                                   const log4cxx::spi::LoggerFactoryPtr& factory);
 #if LOG4CXX_WCHAR_T_API
         /**
         Like #getLogger except that the type of logger
@@ -765,7 +770,7 @@ namespace log4cxx
         actually create a new Instance.
         */
         static LoggerPtr getLogger(const std::wstring& name,
-                        const log4cxx::spi::LoggerFactoryPtr& factory);
+                                   const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 #if LOG4CXX_UNICHAR_API
         /**
@@ -782,7 +787,7 @@ namespace log4cxx
         actually create a new Instance.
         */
         static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
-                        const log4cxx::spi::LoggerFactoryPtr& factory);
+                                   const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 #if LOG4CXX_CFSTRING_API
         /**
@@ -799,7 +804,7 @@ namespace log4cxx
         actually create a new Instance.
         */
         static LoggerPtr getLogger(const CFStringRef& name,
-                        const log4cxx::spi::LoggerFactoryPtr& factory);
+                                   const log4cxx::spi::LoggerFactoryPtr& factory);
 #endif
 
         /**
@@ -813,7 +818,7 @@ namespace log4cxx
         */
         helpers::ResourceBundlePtr getResourceBundle() const;
 
-        protected:
+    protected:
         /**
         Returns the string resource coresponding to <code>key</code> in this
         logger's inherited resource bundle.
@@ -825,7 +830,7 @@ namespace log4cxx
         */
         LogString getResourceBundleString(const LogString& key) const;
 
-        public:
+    public:
         /**
         Log a message string with the INFO level.
 
@@ -839,8 +844,8 @@ namespace log4cxx
         @param msg the message string to log.
         @param location location of source of logging request.
                 */
-       void info(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
-       void info(const std::string& msg) const;
+        void info(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
+        void info(const std::string& msg) const;
 #if LOG4CXX_WCHAR_T_API
         /**
         Log a message string with the INFO level.
@@ -855,7 +860,7 @@ namespace log4cxx
         @param msg the message string to log.
         @param location location of source of logging request.
                 */
-       void info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
+        void info(const std::wstring& msg, const log4cxx::spi::LocationInfo& location) const;
         /**
         Log a message string with the INFO level.
 
@@ -868,7 +873,7 @@ namespace log4cxx
 
         @param msg the message string to log.
                 */
-       void info(const std::wstring& msg) const;
+        void info(const std::wstring& msg) const;
 #endif
 #if LOG4CXX_UNICHAR_API
         /**
@@ -934,40 +939,40 @@ namespace log4cxx
         */
         bool isAttached(const AppenderPtr& appender) const;
 
-       /**
-        *  Check whether this logger is enabled for the <code>DEBUG</code>
-        *  Level.
-        *
-        *  <p> This function is intended to lessen the computational cost of
-        *  disabled log debug statements.
-        *
-        *  <p> For some <code>logger</code> Logger object, when you write,
-        *  <pre>
-        *      logger->debug("debug message");
-        *  </pre>
-        *
-        *  <p>You incur the cost constructing the message, concatenation in
-        *  this case, regardless of whether the message is logged or not.
-        *
-        *  <p>If you are worried about speed, then you should write
-        *  <pre>
-        *    if(logger->isDebugEnabled()) {
-        *      logger->debug("debug message");
-        *    }
-        *  </pre>
-        *
-        *  <p>This way you will not incur the cost of parameter
-        *  construction if debugging is disabled for <code>logger</code>. On
-        *  the other hand, if the <code>logger</code> is debug enabled, you
-        *  will incur the cost of evaluating whether the logger is debug
-        *  enabled twice. Once in <code>isDebugEnabled</code> and once in
-        *  the <code>debug</code>.  This is an insignificant overhead
-        *  since evaluating a logger takes about 1%% of the time it
-        *  takes to actually log.
-        *
-        *  @return bool - <code>true</code> if this logger is debug
-        *  enabled, <code>false</code> otherwise.
-        *   */
+        /**
+         *  Check whether this logger is enabled for the <code>DEBUG</code>
+         *  Level.
+         *
+         *  <p> This function is intended to lessen the computational cost of
+         *  disabled log debug statements.
+         *
+         *  <p> For some <code>logger</code> Logger object, when you write,
+         *  <pre>
+         *      logger->debug("debug message");
+         *  </pre>
+         *
+         *  <p>You incur the cost constructing the message, concatenation in
+         *  this case, regardless of whether the message is logged or not.
+         *
+         *  <p>If you are worried about speed, then you should write
+         *  <pre>
+         *    if(logger->isDebugEnabled()) {
+         *      logger->debug("debug message");
+         *    }
+         *  </pre>
+         *
+         *  <p>This way you will not incur the cost of parameter
+         *  construction if debugging is disabled for <code>logger</code>. On
+         *  the other hand, if the <code>logger</code> is debug enabled, you
+         *  will incur the cost of evaluating whether the logger is debug
+         *  enabled twice. Once in <code>isDebugEnabled</code> and once in
+         *  the <code>debug</code>.  This is an insignificant overhead
+         *  since evaluating a logger takes about 1%% of the time it
+         *  takes to actually log.
+         *
+         *  @return bool - <code>true</code> if this logger is debug
+         *  enabled, <code>false</code> otherwise.
+         *   */
         bool isDebugEnabled() const;
 
         /**
@@ -990,7 +995,7 @@ namespace log4cxx
         */
         bool isInfoEnabled() const;
 
-         /**
+        /**
         Check whether this logger is enabled for the warn Level.
         See also #isDebugEnabled.
 
@@ -999,7 +1004,7 @@ namespace log4cxx
         */
         bool isWarnEnabled() const;
 
-         /**
+        /**
         Check whether this logger is enabled for the error Level.
         See also #isDebugEnabled.
 
@@ -1008,7 +1013,7 @@ namespace log4cxx
         */
         bool isErrorEnabled() const;
 
-         /**
+        /**
         Check whether this logger is enabled for the fatal Level.
         See also #isDebugEnabled.
 
@@ -1347,7 +1352,7 @@ namespace log4cxx
                     const CFStringRef& val3) const;
 #endif
 
-          /**
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1355,8 +1360,8 @@ namespace log4cxx
         @param message The message of the logging request.
         @param location The source file of the logging request, may be null. */
         void log(const LevelPtr& level, const std::string& message,
-            const log4cxx::spi::LocationInfo& location) const;
-          /**
+                 const log4cxx::spi::LocationInfo& location) const;
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1365,7 +1370,7 @@ namespace log4cxx
         */
         void log(const LevelPtr& level, const std::string& message) const;
 #if LOG4CXX_WCHAR_T_API
-          /**
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1373,8 +1378,8 @@ namespace log4cxx
         @param message The message of the logging request.
         @param location The source file of the logging request, may be null. */
         void log(const LevelPtr& level, const std::wstring& message,
-            const log4cxx::spi::LocationInfo& location) const;
-          /**
+                 const log4cxx::spi::LocationInfo& location) const;
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1384,7 +1389,7 @@ namespace log4cxx
         void log(const LevelPtr& level, const std::wstring& message) const;
 #endif
 #if LOG4CXX_UNICHAR_API
-          /**
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1392,8 +1397,8 @@ namespace log4cxx
         @param message The message of the logging request.
         @param location The source file of the logging request, may be null. */
         void log(const LevelPtr& level, const std::basic_string<UniChar>& message,
-            const log4cxx::spi::LocationInfo& location) const;
-          /**
+                 const log4cxx::spi::LocationInfo& location) const;
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1403,7 +1408,7 @@ namespace log4cxx
         void log(const LevelPtr& level, const std::basic_string<UniChar>& message) const;
 #endif
 #if LOG4CXX_CFSTRING_API
-          /**
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1411,8 +1416,8 @@ namespace log4cxx
         @param message The message of the logging request.
         @param location The source file of the logging request, may be null. */
         void log(const LevelPtr& level, const CFStringRef& message,
-            const log4cxx::spi::LocationInfo& location) const;
-          /**
+                 const log4cxx::spi::LocationInfo& location) const;
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1421,7 +1426,7 @@ namespace log4cxx
         */
         void log(const LevelPtr& level, const CFStringRef& message) const;
 #endif
-          /**
+        /**
         This is the most generic printing method. It is intended to be
         invoked by <b>wrapper</b> classes.
 
@@ -1429,7 +1434,7 @@ namespace log4cxx
         @param message The message of the logging request.
         @param location The source file of the logging request, may be null. */
         void logLS(const LevelPtr& level, const LogString& message,
-            const log4cxx::spi::LocationInfo& location) const;
+                   const log4cxx::spi::LocationInfo& location) const;
 
 
 
@@ -1451,18 +1456,18 @@ namespace log4cxx
          */
         void removeAppender(const LogString& name);
 
-       /**
-        Set the additivity flag for this Logger instance.
-         */
+        /**
+         Set the additivity flag for this Logger instance.
+          */
         void setAdditivity(bool additive);
 
     protected:
         friend class Hierarchy;
         /**
         Only the Hierarchy class can set the hierarchy of a logger.*/
-        void setHierarchy(spi::LoggerRepository * repository);
+        void setHierarchy(spi::LoggerRepository* repository);
 
-        public:
+    public:
         /**
         Set the level of this Logger.
 
@@ -1475,7 +1480,9 @@ namespace log4cxx
         Set the resource bundle to be used with localized logging methods.
         */
         inline void setResourceBundle(const helpers::ResourceBundlePtr& bundle)
-                { resourceBundle = bundle; }
+        {
+            resourceBundle = bundle;
+        }
 
 #if LOG4CXX_WCHAR_T_API
         /**
@@ -1707,17 +1714,20 @@ namespace log4cxx
         */
         void trace(const std::string& msg) const;
 
-        inline SHARED_MUTEX & getMutex() { return mutex; }
+        inline SHARED_MUTEX& getMutex()
+        {
+            return mutex;
+        }
 
-        private:
-                //
+    private:
+        //
         //  prevent copy and assignment
         Logger(const Logger&);
         Logger& operator=(const Logger&);
         mutable SHARED_MUTEX mutex;
         friend class log4cxx::helpers::synchronized;
-   };
-   LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
+};
+LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 
 }
 
@@ -1726,23 +1736,23 @@ namespace log4cxx
 */
 
 #if !defined(LOG4CXX_UNLIKELY)
-#if __GNUC__ >= 3
-/**
-Provides optimization hint to the compiler
-to optimize for the expression being false.
-@param expr boolean expression.
-@returns value of expression.
-*/
-#define LOG4CXX_UNLIKELY(expr) __builtin_expect(expr, 0)
-#else
-/**
-Provides optimization hint to the compiler
-to optimize for the expression being false.
-@param expr boolean expression.
-@returns value of expression.
-**/
-#define LOG4CXX_UNLIKELY(expr) expr
-#endif
+    #if __GNUC__ >= 3
+        /**
+        Provides optimization hint to the compiler
+        to optimize for the expression being false.
+        @param expr boolean expression.
+        @returns value of expression.
+        */
+        #define LOG4CXX_UNLIKELY(expr) __builtin_expect(expr, 0)
+    #else
+        /**
+        Provides optimization hint to the compiler
+        to optimize for the expression being false.
+        @param expr boolean expression.
+        @returns value of expression.
+        **/
+        #define LOG4CXX_UNLIKELY(expr) expr
+    #endif
 #endif
 
 
@@ -1755,8 +1765,8 @@ Logs a message to a specified logger with a specified level.
 */
 #define LOG4CXX_LOG(logger, level, message) do { \
         if (logger->isEnabledFor(level)) {\
-           ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::MessageBuffer oss_; \
+            logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a message to a specified logger with a specified level.
@@ -1767,8 +1777,8 @@ Logs a message to a specified logger with a specified level.
 */
 #define LOG4CXX_LOGLS(logger, level, message) do { \
         if (logger->isEnabledFor(level)) {\
-           ::log4cxx::helpers::LogCharMessageBuffer oss_; \
-           logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::LogCharMessageBuffer oss_; \
+            logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000
 /**
@@ -1779,8 +1789,8 @@ Logs a message to a specified logger with the DEBUG level.
 */
 #define LOG4CXX_DEBUG(logger, message) do { \
         if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
-           ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::MessageBuffer oss_; \
+            logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
 #endif
@@ -1794,8 +1804,8 @@ Logs a message to a specified logger with the TRACE level.
 */
 #define LOG4CXX_TRACE(logger, message) do { \
         if (LOG4CXX_UNLIKELY(logger->isTraceEnabled())) {\
-           ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::MessageBuffer oss_; \
+            logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
 #endif
@@ -1809,8 +1819,8 @@ Logs a message to a specified logger with the INFO level.
 */
 #define LOG4CXX_INFO(logger, message) do { \
         if (logger->isInfoEnabled()) {\
-           ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::MessageBuffer oss_; \
+            logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
 #endif
@@ -1824,8 +1834,8 @@ Logs a message to a specified logger with the WARN level.
 */
 #define LOG4CXX_WARN(logger, message) do { \
         if (logger->isWarnEnabled()) {\
-           ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::MessageBuffer oss_; \
+            logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
 #endif
@@ -1839,8 +1849,8 @@ Logs a message to a specified logger with the ERROR level.
 */
 #define LOG4CXX_ERROR(logger, message) do { \
         if (logger->isErrorEnabled()) {\
-           ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::MessageBuffer oss_; \
+            logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a error if the condition is not true.
@@ -1851,8 +1861,8 @@ Logs a error if the condition is not true.
 */
 #define LOG4CXX_ASSERT(logger, condition, message) do { \
         if (!(condition) && logger->isErrorEnabled()) {\
-           ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::MessageBuffer oss_; \
+            logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 #else
 #define LOG4CXX_ERROR(logger, message)
@@ -1868,8 +1878,8 @@ Logs a message to a specified logger with the FATAL level.
 */
 #define LOG4CXX_FATAL(logger, message) do { \
         if (logger->isFatalEnabled()) {\
-           ::log4cxx::helpers::MessageBuffer oss_; \
-           logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+            ::log4cxx::helpers::MessageBuffer oss_; \
+            logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
 #endif
@@ -1883,7 +1893,7 @@ Logs a localized message with no parameter.
 */
 #define LOG4CXX_L7DLOG(logger, level, key) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION); }} while (0)
+            logger->l7dlog(level, key, LOG4CXX_LOCATION); }} while (0)
 
 /**
 Logs a localized message with one parameter.
@@ -1895,7 +1905,7 @@ Logs a localized message with one parameter.
 */
 #define LOG4CXX_L7DLOG1(logger, level, key, p1) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }} while (0)
+            logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }} while (0)
 
 /**
 Logs a localized message with two parameters.
@@ -1908,7 +1918,7 @@ Logs a localized message with two parameters.
 */
 #define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }} while (0)
+            logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }} while (0)
 
 /**
 Logs a localized message with three parameters.
@@ -1922,12 +1932,12 @@ Logs a localized message with three parameters.
 */
 #define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) do { \
         if (logger->isEnabledFor(level)) {\
-        logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }} while (0)
+            logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }} while (0)
 
 /**@}*/
 
 #if defined(_MSC_VER)
-#pragma warning ( pop )
+    #pragma warning ( pop )
 #endif
 
 #include <log4cxx/spi/loggerrepository.h>

@@ -67,19 +67,23 @@ const logchar CachedDateFormat::zeroString[] = { 0x30, 0x30, 0x30, 0 };
  *      caching or 1 to only use cache for duplicate requests.
  */
 CachedDateFormat::CachedDateFormat(const DateFormatPtr& dateFormat,
-        int expiration1) :
-       formatter(dateFormat),
-       millisecondStart(0),
-       slotBegin(std::numeric_limits<log4cxx_time_t>::min()),
-       cache(50, 0x20),
-       expiration(expiration1),
-       previousTime(std::numeric_limits<log4cxx_time_t>::min()) {
-  if (dateFormat == NULL) {
-    throw IllegalArgumentException(LOG4CXX_STR("dateFormat cannot be null"));
-  }
-  if (expiration1 < 0) {
-    throw IllegalArgumentException(LOG4CXX_STR("expiration must be non-negative"));
-  }
+                                   int expiration1) :
+    formatter(dateFormat),
+    millisecondStart(0),
+    slotBegin(std::numeric_limits<log4cxx_time_t>::min()),
+    cache(50, 0x20),
+    expiration(expiration1),
+    previousTime(std::numeric_limits<log4cxx_time_t>::min())
+{
+    if (dateFormat == NULL)
+    {
+        throw IllegalArgumentException(LOG4CXX_STR("dateFormat cannot be null"));
+    }
+
+    if (expiration1 < 0)
+    {
+        throw IllegalArgumentException(LOG4CXX_STR("expiration must be non-negative"));
+    }
 }
 
 
@@ -93,70 +97,86 @@ CachedDateFormat::CachedDateFormat(const DateFormatPtr& dateFormat,
  *    field (likely RelativeTimeDateFormat)
  */
 int CachedDateFormat::findMillisecondStart(
-  log4cxx_time_t time, const LogString& formatted,
-  const DateFormatPtr& formatter,
-  Pool& pool) {
+    log4cxx_time_t time, const LogString& formatted,
+    const DateFormatPtr& formatter,
+    Pool& pool)
+{
 
-  apr_time_t slotBegin = (time / 1000000) * 1000000;
-  if (slotBegin > time) {
-     slotBegin -= 1000000;
-  }
-  int millis = (int) (time - slotBegin)/1000;
+    apr_time_t slotBegin = (time / 1000000) * 1000000;
 
-  int magic = magic1;
-  LogString magicString(magicString1);
-  if (millis == magic1) {
-      magic = magic2;
-      magicString = magicString2;
-  }
+    if (slotBegin > time)
+    {
+        slotBegin -= 1000000;
+    }
 
-  LogString plusMagic;
-  formatter->format(plusMagic, slotBegin + magic, pool);
+    int millis = (int) (time - slotBegin) / 1000;
 
-  /**
-   *   If the string lengths differ then
-   *      we can't use the cache except for duplicate requests.
-   */
-  if (plusMagic.length() != formatted.length()) {
-      return UNRECOGNIZED_MILLISECONDS;
-  } else {
-      // find first difference between values
-     for (LogString::size_type i = 0; i < formatted.length(); i++) {
-        if (formatted[i] != plusMagic[i]) {
-           //
-           //   determine the expected digits for the base time
-           const logchar abc[] = { 0x41, 0x42, 0x43, 0 };
-           LogString formattedMillis(abc);
-           millisecondFormat(millis, formattedMillis, 0);
+    int magic = magic1;
+    LogString magicString(magicString1);
 
-           LogString plusZero;
-           formatter->format(plusZero, slotBegin, pool);
+    if (millis == magic1)
+    {
+        magic = magic2;
+        magicString = magicString2;
+    }
 
-           // Test if the next 1..3 characters match the magic string, main problem is that magic
-           // available millis in formatted can overlap. Therefore the current i is not always the
-           // index of the first millis char, but may be already within the millis. Besides that
-           // the millis can occur everywhere in formatted. See LOGCXX-420 and following.
-           size_t	magicLength		= magicString.length();
-           size_t	overlapping		= magicString.find(plusMagic[i]);
-           int		possibleRetVal	= i - overlapping;
-           if (plusZero.length() == formatted.length()
-              && regionMatches(magicString,		0, plusMagic,	possibleRetVal, magicLength)
-              && regionMatches(formattedMillis,	0, formatted,	possibleRetVal, magicLength)
-              && regionMatches(zeroString,		0, plusZero,	possibleRetVal, magicLength)
-              // The following will and should fail for patterns with more than one SSS because
-              // we only seem to be able to change one SSS in e.g. format and need to reformat the
-              // whole string in other cases.
-              && (formatted.length() == possibleRetVal + magicLength
-                 || plusZero.compare(possibleRetVal + magicLength,
-                       LogString::npos, plusMagic, possibleRetVal + magicLength, LogString::npos) == 0)) {
-              return possibleRetVal;
-           } else {
-              return UNRECOGNIZED_MILLISECONDS;
-          }
+    LogString plusMagic;
+    formatter->format(plusMagic, slotBegin + magic, pool);
+
+    /**
+     *   If the string lengths differ then
+     *      we can't use the cache except for duplicate requests.
+     */
+    if (plusMagic.length() != formatted.length())
+    {
+        return UNRECOGNIZED_MILLISECONDS;
+    }
+    else
+    {
+        // find first difference between values
+        for (LogString::size_type i = 0; i < formatted.length(); i++)
+        {
+            if (formatted[i] != plusMagic[i])
+            {
+                //
+                //   determine the expected digits for the base time
+                const logchar abc[] = { 0x41, 0x42, 0x43, 0 };
+                LogString formattedMillis(abc);
+                millisecondFormat(millis, formattedMillis, 0);
+
+                LogString plusZero;
+                formatter->format(plusZero, slotBegin, pool);
+
+                // Test if the next 1..3 characters match the magic string, main problem is that magic
+                // available millis in formatted can overlap. Therefore the current i is not always the
+                // index of the first millis char, but may be already within the millis. Besides that
+                // the millis can occur everywhere in formatted. See LOGCXX-420 and following.
+                size_t  magicLength     = magicString.length();
+                size_t  overlapping     = magicString.find(plusMagic[i]);
+                int     possibleRetVal  = i - overlapping;
+
+                if (plusZero.length() == formatted.length()
+                        && regionMatches(magicString,       0, plusMagic,   possibleRetVal, magicLength)
+                        && regionMatches(formattedMillis,   0, formatted,   possibleRetVal, magicLength)
+                        && regionMatches(zeroString,        0, plusZero,    possibleRetVal, magicLength)
+                        // The following will and should fail for patterns with more than one SSS because
+                        // we only seem to be able to change one SSS in e.g. format and need to reformat the
+                        // whole string in other cases.
+                        && (formatted.length() == possibleRetVal + magicLength
+                            || plusZero.compare(possibleRetVal + magicLength,
+                                                LogString::npos, plusMagic, possibleRetVal + magicLength, LogString::npos) == 0))
+                {
+                    return possibleRetVal;
+                }
+                else
+                {
+                    return UNRECOGNIZED_MILLISECONDS;
+                }
+            }
         }
-     }
-  }
-  return NO_MILLISECONDS;
+    }
+
+    return NO_MILLISECONDS;
 }
 
 
@@ -166,63 +186,72 @@ int CachedDateFormat::findMillisecondStart(
  *  @param now Number of milliseconds after midnight 1 Jan 1970 GMT.
  *  @param sbuf the string buffer to write to
  */
- void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const {
+void CachedDateFormat::format(LogString& buf, log4cxx_time_t now, Pool& p) const
+{
 
-  //
-  // If the current requested time is identical to the previously
-  //     requested time, then append the cache contents.
-  //
-  if (now == previousTime) {
-       buf.append(cache);
-       return;
-  }
+    //
+    // If the current requested time is identical to the previously
+    //     requested time, then append the cache contents.
+    //
+    if (now == previousTime)
+    {
+        buf.append(cache);
+        return;
+    }
 
-  //
-  //   If millisecond pattern was not unrecognized
-  //     (that is if it was found or milliseconds did not appear)
-  //
-  if (millisecondStart != UNRECOGNIZED_MILLISECONDS) {
-      //    Check if the cache is still valid.
-      //    If the requested time is within the same integral second
-      //       as the last request and a shorter expiration was not requested.
-      if (now < slotBegin + expiration
-          && now >= slotBegin
-          && now < slotBegin + 1000000L) {
-          //
-          //    if there was a millisecond field then update it
-          //
-          if (millisecondStart >= 0) {
-              millisecondFormat((int) ((now - slotBegin)/1000), cache, millisecondStart);
-          }
-          //
-          //   update the previously requested time
-          //      (the slot begin should be unchanged)
-          previousTime = now;
-          buf.append(cache);
+    //
+    //   If millisecond pattern was not unrecognized
+    //     (that is if it was found or milliseconds did not appear)
+    //
+    if (millisecondStart != UNRECOGNIZED_MILLISECONDS)
+    {
+        //    Check if the cache is still valid.
+        //    If the requested time is within the same integral second
+        //       as the last request and a shorter expiration was not requested.
+        if (now < slotBegin + expiration
+                && now >= slotBegin
+                && now < slotBegin + 1000000L)
+        {
+            //
+            //    if there was a millisecond field then update it
+            //
+            if (millisecondStart >= 0)
+            {
+                millisecondFormat((int) ((now - slotBegin) / 1000), cache, millisecondStart);
+            }
 
-          return;
-      }
-  }
+            //
+            //   update the previously requested time
+            //      (the slot begin should be unchanged)
+            previousTime = now;
+            buf.append(cache);
 
-  //
-  //  could not use previous value.
-  //    Call underlying formatter to format date.
-  cache.erase(cache.begin(), cache.end());
-  formatter->format(cache, now, p);
-  buf.append(cache);
-  previousTime = now;
-  slotBegin = (previousTime / 1000000) * 1000000;
-  if (slotBegin > previousTime) {
-      slotBegin -= 1000000;
-  }
+            return;
+        }
+    }
 
-  //
-  //    if the milliseconds field was previous found
-  //       then reevaluate in case it moved.
-  //
-  if (millisecondStart >= 0) {
-      millisecondStart = findMillisecondStart(now, cache, formatter, p);
-  }
+    //
+    //  could not use previous value.
+    //    Call underlying formatter to format date.
+    cache.erase(cache.begin(), cache.end());
+    formatter->format(cache, now, p);
+    buf.append(cache);
+    previousTime = now;
+    slotBegin = (previousTime / 1000000) * 1000000;
+
+    if (slotBegin > previousTime)
+    {
+        slotBegin -= 1000000;
+    }
+
+    //
+    //    if the milliseconds field was previous found
+    //       then reevaluate in case it moved.
+    //
+    if (millisecondStart >= 0)
+    {
+        millisecondStart = findMillisecondStart(now, cache, formatter, p);
+    }
 }
 
 /**
@@ -233,12 +262,13 @@ int CachedDateFormat::findMillisecondStart(
  *       buffer must be at least offset + 3.
  */
 void CachedDateFormat::millisecondFormat(int millis,
-     LogString& buf,
-     int offset) {
-     buf[offset] = digits[millis / 100];
-     buf[offset + 1] = digits[(millis / 10) % 10];
-     buf[offset + 2] = digits[millis  % 10];
- }
+        LogString& buf,
+        int offset)
+{
+    buf[offset] = digits[millis / 100];
+    buf[offset + 1] = digits[(millis / 10) % 10];
+    buf[offset + 2] = digits[millis  % 10];
+}
 
 /**
  * Set timezone.
@@ -247,16 +277,18 @@ void CachedDateFormat::millisecondFormat(int millis,
  * will likely cause caching to misbehave.
  * @param timeZone TimeZone new timezone
  */
-void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone) {
-  formatter->setTimeZone(timeZone);
-  previousTime = std::numeric_limits<log4cxx_time_t>::min();
-  slotBegin = std::numeric_limits<log4cxx_time_t>::min();
+void CachedDateFormat::setTimeZone(const TimeZonePtr& timeZone)
+{
+    formatter->setTimeZone(timeZone);
+    previousTime = std::numeric_limits<log4cxx_time_t>::min();
+    slotBegin = std::numeric_limits<log4cxx_time_t>::min();
 }
 
 
 
-void CachedDateFormat::numberFormat(LogString& s, int n, Pool& p) const {
-  formatter->numberFormat(s, n, p);
+void CachedDateFormat::numberFormat(LogString& s, int n, Pool& p) const
+{
+    formatter->numberFormat(s, n, p);
 }
 
 
@@ -267,27 +299,31 @@ void CachedDateFormat::numberFormat(LogString& s, int n, Pool& p) const {
  *  @returns Duration in microseconds from an integral second
  *      that the cache will return consistent results.
  */
-int CachedDateFormat::getMaximumCacheValidity(const LogString& pattern) {
-   //
-   //   If there are more "S" in the pattern than just one "SSS" then
-   //      (for example, "HH:mm:ss,SSS SSS"), then set the expiration to
-   //      one millisecond which should only perform duplicate request caching.
-   //
-   const logchar S = 0x53;
-   const logchar SSS[] = { 0x53, 0x53, 0x53, 0 };
-   size_t firstS = pattern.find(S);
-   size_t len = pattern.length();
-   //
-   //   if there are no S's or
-   //      three that start with the first S and no fourth S in the string
-   //
-   if (firstS == LogString::npos ||
-       (len >= firstS + 3 && pattern.compare(firstS, 3, SSS) == 0
-           && (len == firstS + 3 ||
-                pattern.find(S, firstS + 3) == LogString::npos))) {
-           return 1000000;
-   }
-   return 1000;
+int CachedDateFormat::getMaximumCacheValidity(const LogString& pattern)
+{
+    //
+    //   If there are more "S" in the pattern than just one "SSS" then
+    //      (for example, "HH:mm:ss,SSS SSS"), then set the expiration to
+    //      one millisecond which should only perform duplicate request caching.
+    //
+    const logchar S = 0x53;
+    const logchar SSS[] = { 0x53, 0x53, 0x53, 0 };
+    size_t firstS = pattern.find(S);
+    size_t len = pattern.length();
+
+    //
+    //   if there are no S's or
+    //      three that start with the first S and no fourth S in the string
+    //
+    if (firstS == LogString::npos ||
+            (len >= firstS + 3 && pattern.compare(firstS, 3, SSS) == 0
+             && (len == firstS + 3 ||
+                 pattern.find(S, firstS + 3) == LogString::npos)))
+    {
+        return 1000000;
+    }
+
+    return 1000;
 }
 
 
@@ -305,7 +341,8 @@ bool CachedDateFormat::regionMatches(
     size_t toffset,
     const LogString& other,
     size_t ooffset,
-    size_t len) {
+    size_t len)
+{
     return target.compare(toffset, len, other, ooffset, len) == 0;
 }
 

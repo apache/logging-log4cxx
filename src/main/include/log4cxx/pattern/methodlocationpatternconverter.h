@@ -20,7 +20,10 @@
 
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 
-namespace log4cxx { namespace pattern {
+namespace log4cxx
+{
+namespace pattern
+{
 
 
 /**
@@ -30,33 +33,34 @@ namespace log4cxx { namespace pattern {
  *
  */
 class LOG4CXX_EXPORT MethodLocationPatternConverter
-  : public LoggingEventPatternConverter {
+    : public LoggingEventPatternConverter
+{
 
-  /**
-   * Private constructor.
-   */
-  MethodLocationPatternConverter();
+        /**
+         * Private constructor.
+         */
+        MethodLocationPatternConverter();
 
-public:
-DECLARE_LOG4CXX_PATTERN(MethodLocationPatternConverter)
-BEGIN_LOG4CXX_CAST_MAP()
-     LOG4CXX_CAST_ENTRY(MethodLocationPatternConverter)
-     LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
-END_LOG4CXX_CAST_MAP()
+    public:
+        DECLARE_LOG4CXX_PATTERN(MethodLocationPatternConverter)
+        BEGIN_LOG4CXX_CAST_MAP()
+        LOG4CXX_CAST_ENTRY(MethodLocationPatternConverter)
+        LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
+        END_LOG4CXX_CAST_MAP()
 
-  /**
-   * Obtains an instance of MethodLocationPatternConverter.
-   * @param options options, may be null.
-   * @return instance of MethodLocationPatternConverter.
-   */
-  static PatternConverterPtr newInstance(
-    const std::vector<LogString>& options);
+        /**
+         * Obtains an instance of MethodLocationPatternConverter.
+         * @param options options, may be null.
+         * @return instance of MethodLocationPatternConverter.
+         */
+        static PatternConverterPtr newInstance(
+            const std::vector<LogString>& options);
 
-  using LoggingEventPatternConverter::format;
+        using LoggingEventPatternConverter::format;
 
-  void format(const log4cxx::spi::LoggingEventPtr& event,
-     LogString& toAppendTo,
-     log4cxx::helpers::Pool& p) const;
+        void format(const log4cxx::spi::LoggingEventPtr& event,
+                    LogString& toAppendTo,
+                    log4cxx::helpers::Pool& p) const;
 };
 }
 }

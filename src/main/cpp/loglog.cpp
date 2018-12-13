@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <iostream>
 #if !defined(LOG4CXX)
-#define LOG4CXX 1
+    #define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/synchronized.h>
@@ -102,7 +102,7 @@ void LogLog::warn(const LogString& msg)
 
     if (!getInstance().quietMode)
     {
-       emit(msg);
+        emit(msg);
     }
 }
 
@@ -132,10 +132,12 @@ void LogLog::emit(const std::exception& ex)
     if (raw != 0)
     {
         Transcoder::decode(raw, out);
-    } else
+    }
+    else
     {
         out.append(LOG4CXX_STR("std::exception::what() == null"));
     }
+
     out.append(1, (logchar) 0x0A);
 
     SystemErrWriter::write(out);

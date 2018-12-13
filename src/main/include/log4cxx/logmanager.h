@@ -19,8 +19,8 @@
 #define _LOG4CXX_LOG_MANAGER_H
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4231 4251 4275 4786 )
+    #pragma warning ( push )
+    #pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #include <log4cxx/logstring.h>
@@ -29,26 +29,27 @@
 
 namespace log4cxx
 {
-    class Logger;
-    typedef helpers::ObjectPtrT<Logger> LoggerPtr;
-    typedef std::vector<LoggerPtr> LoggerList;
+class Logger;
+typedef helpers::ObjectPtrT<Logger> LoggerPtr;
+typedef std::vector<LoggerPtr> LoggerList;
 
-    namespace spi {
-        class LoggerFactory;
-        typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
-    }
+namespace spi
+{
+class LoggerFactory;
+typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
+}
 
-    /**
-    * Use the <code>LogManager</code> class to retreive Logger
-    * instances or to operate on the current
-    * {@link log4cxx::spi::LoggerRepository LoggerRepository}.
-    * When the <code>LogManager</code> class is loaded
-    * into memory the default initialization procedure is inititated.
-        */
-    class LOG4CXX_EXPORT LogManager
-    {
+/**
+* Use the <code>LogManager</code> class to retreive Logger
+* instances or to operate on the current
+* {@link log4cxx::spi::LoggerRepository LoggerRepository}.
+* When the <code>LogManager</code> class is loaded
+* into memory the default initialization procedure is inititated.
+    */
+class LOG4CXX_EXPORT LogManager
+{
     private:
-        static void * guard;
+        static void* guard;
         static spi::RepositorySelectorPtr& getRepositorySelector();
 
     public:
@@ -69,7 +70,7 @@ namespace log4cxx
                 */
 
         static void setRepositorySelector(spi::RepositorySelectorPtr selector,
-                        void * guard);
+                                          void* guard);
 
         static spi::LoggerRepositoryPtr& getLoggerRepository();
 
@@ -91,7 +92,7 @@ namespace log4cxx
         * @return logger.
         */
         static LoggerPtr getLogger(const std::string& name,
-                        const spi::LoggerFactoryPtr& factory);
+                                   const spi::LoggerFactoryPtr& factory);
         /**
          * Determines if logger name exists in the hierarchy.
          * @param name logger name.
@@ -112,7 +113,7 @@ namespace log4cxx
         * @return logger.
         */
         static LoggerPtr getLogger(const std::wstring& name,
-                        const spi::LoggerFactoryPtr& factory);
+                                   const spi::LoggerFactoryPtr& factory);
         /**
          * Determines if logger name exists in the hierarchy.
          * @param name logger name.
@@ -134,7 +135,7 @@ namespace log4cxx
         * @return logger.
         */
         static LoggerPtr getLogger(const std::basic_string<UniChar>& name,
-                        const spi::LoggerFactoryPtr& factory);
+                                   const spi::LoggerFactoryPtr& factory);
         /**
          * Determines if logger name exists in the hierarchy.
          * @param name logger name.
@@ -156,7 +157,7 @@ namespace log4cxx
         * @return logger.
         */
         static LoggerPtr getLogger(const CFStringRef& name,
-                        const spi::LoggerFactoryPtr& factory);
+                                   const spi::LoggerFactoryPtr& factory);
         /**
          * Determines if logger name exists in the hierarchy.
          * @param name logger name.
@@ -179,7 +180,7 @@ namespace log4cxx
         * @return logger.
         */
         static LoggerPtr getLoggerLS(const LogString& name,
-                        const spi::LoggerFactoryPtr& factory);
+                                     const spi::LoggerFactoryPtr& factory);
 
         /**
          * Determines if logger name exists in the hierarchy.
@@ -201,11 +202,11 @@ namespace log4cxx
         spi::LoggerRepository LoggerRepository}  to their default.
         */
         static void resetConfiguration();
-    }; // class LogManager
+}; // class LogManager
 }  // namespace log4cxx
 
 #if defined(_MSC_VER)
-#pragma warning ( pop )
+    #pragma warning ( pop )
 #endif
 
 

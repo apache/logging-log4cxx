@@ -24,11 +24,11 @@
 
 namespace log4cxx
 {
-    class Logger;
-    typedef helpers::ObjectPtrT<Logger> LoggerPtr;
+class Logger;
+typedef helpers::ObjectPtrT<Logger> LoggerPtr;
 
 
-    typedef std::vector<LoggerPtr> ProvisionNode;
+typedef std::vector<LoggerPtr> ProvisionNode;
 
 }  // namespace log4cxx
 

@@ -21,7 +21,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-ClassRegistration::ClassRegistration(ClassAccessor accessor) {
+ClassRegistration::ClassRegistration(ClassAccessor accessor)
+{
     Class::registerClass((*accessor)());
 }
 

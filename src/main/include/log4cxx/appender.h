@@ -19,8 +19,8 @@
 #define _LOG4CXX_APPENDER_H
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4231 4251 4275 4786 )
+    #pragma warning ( push )
+    #pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -32,30 +32,30 @@
 
 namespace log4cxx
 {
-    // Forward declarations
-    namespace spi
-        {
-        class LoggingEvent;
-        typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
+// Forward declarations
+namespace spi
+{
+class LoggingEvent;
+typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
 
-        class Filter;
-        typedef helpers::ObjectPtrT<Filter> FilterPtr;
+class Filter;
+typedef helpers::ObjectPtrT<Filter> FilterPtr;
 
-        class ErrorHandler;
-                typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
-    }
+class ErrorHandler;
+typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
+}
 
-    class Layout;
-    typedef log4cxx::helpers::ObjectPtrT<Layout> LayoutPtr;
+class Layout;
+typedef log4cxx::helpers::ObjectPtrT<Layout> LayoutPtr;
 
 
-        /**
-        Implement this interface for your own strategies for outputting log
-        statements.
-        */
-    class LOG4CXX_EXPORT Appender :
-                public virtual spi::OptionHandler
-    {
+/**
+Implement this interface for your own strategies for outputting log
+statements.
+*/
+class LOG4CXX_EXPORT Appender :
+    public virtual spi::OptionHandler
+{
     public:
         DECLARE_ABSTRACT_LOG4CXX_OBJECT(Appender)
 
@@ -92,7 +92,7 @@ namespace log4cxx
          implementations in order to log.
         */
         virtual void doAppend(const spi::LoggingEventPtr& event,
-              log4cxx::helpers::Pool& pool) = 0;
+                              log4cxx::helpers::Pool& pool) = 0;
 
 
         /**
@@ -102,47 +102,47 @@ namespace log4cxx
         virtual LogString getName() const = 0;
 
 
-       /**
-        Set the Layout for this appender.
-       */
-       virtual void setLayout(const LayoutPtr& layout) = 0;
+        /**
+         Set the Layout for this appender.
+        */
+        virtual void setLayout(const LayoutPtr& layout) = 0;
 
-       /**
-        Returns this appenders layout.
-       */
-       virtual LayoutPtr getLayout() const = 0;
+        /**
+         Returns this appenders layout.
+        */
+        virtual LayoutPtr getLayout() const = 0;
 
 
-       /**
-        Set the name of this appender. The name is used by other
-        components to identify this appender.
-       */
-       virtual void setName(const LogString& name) = 0;
+        /**
+         Set the name of this appender. The name is used by other
+         components to identify this appender.
+        */
+        virtual void setName(const LogString& name) = 0;
 
-       /**
-        Configurators call this method to determine if the appender
-        requires a layout. If this method returns <code>true</code>,
-        meaning that layout is required, then the configurator will
-        configure an layout using the configuration information at its
-        disposal.  If this method returns <code>false</code>, meaning that
-        a layout is not required, then layout configuration will be
-        skipped even if there is available layout configuration
-        information at the disposal of the configurator..
+        /**
+         Configurators call this method to determine if the appender
+         requires a layout. If this method returns <code>true</code>,
+         meaning that layout is required, then the configurator will
+         configure an layout using the configuration information at its
+         disposal.  If this method returns <code>false</code>, meaning that
+         a layout is not required, then layout configuration will be
+         skipped even if there is available layout configuration
+         information at the disposal of the configurator..
 
-        <p>In the rather exceptional case, where the appender
-        implementation admits a layout but can also work without it, then
-        the appender should return <code>true</code>.
-       */
-       virtual bool requiresLayout() const = 0;
-   };
+         <p>In the rather exceptional case, where the appender
+         implementation admits a layout but can also work without it, then
+         the appender should return <code>true</code>.
+        */
+        virtual bool requiresLayout() const = 0;
+};
 
-    LOG4CXX_PTR_DEF(Appender);
-    LOG4CXX_LIST_DEF(AppenderList, AppenderPtr);
+LOG4CXX_PTR_DEF(Appender);
+LOG4CXX_LIST_DEF(AppenderList, AppenderPtr);
 
 }
 
 #if defined(_MSC_VER)
-#pragma warning ( pop )
+    #pragma warning ( pop )
 #endif
 
 #endif //_LOG4CXX_APPENDER_H

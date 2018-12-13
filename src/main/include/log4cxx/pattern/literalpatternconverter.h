@@ -20,8 +20,10 @@
 
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 
-namespace log4cxx {
-  namespace pattern {
+namespace log4cxx
+{
+namespace pattern
+{
 
 /**
  * Formats a string literal.
@@ -30,40 +32,41 @@ namespace log4cxx {
  *
  *
  */
-class LOG4CXX_EXPORT LiteralPatternConverter : public LoggingEventPatternConverter {
-  /**
-   * String literal.
-   */
-  const LogString literal;
+class LOG4CXX_EXPORT LiteralPatternConverter : public LoggingEventPatternConverter
+{
+        /**
+         * String literal.
+         */
+        const LogString literal;
 
-  /**
-   * Create a new instance.
-   * @param literal string literal.
-   */
-  LiteralPatternConverter(const LogString& literal);
+        /**
+         * Create a new instance.
+         * @param literal string literal.
+         */
+        LiteralPatternConverter(const LogString& literal);
 
 
-public:
-   DECLARE_LOG4CXX_PATTERN(LiteralPatternConverter)
-   BEGIN_LOG4CXX_CAST_MAP()
-     LOG4CXX_CAST_ENTRY(LiteralPatternConverter)
-     LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
-  END_LOG4CXX_CAST_MAP()
+    public:
+        DECLARE_LOG4CXX_PATTERN(LiteralPatternConverter)
+        BEGIN_LOG4CXX_CAST_MAP()
+        LOG4CXX_CAST_ENTRY(LiteralPatternConverter)
+        LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
+        END_LOG4CXX_CAST_MAP()
 
-  static PatternConverterPtr newInstance(const LogString& literal);
+        static PatternConverterPtr newInstance(const LogString& literal);
 
-  using LoggingEventPatternConverter::format;
+        using LoggingEventPatternConverter::format;
 
-  void format(const log4cxx::spi::LoggingEventPtr& event,
-     LogString& toAppendTo,
-     log4cxx::helpers::Pool& p) const;
+        void format(const log4cxx::spi::LoggingEventPtr& event,
+                    LogString& toAppendTo,
+                    log4cxx::helpers::Pool& p) const;
 
-  void format(const log4cxx::helpers::ObjectPtr& obj,
-     LogString& toAppendTo,
-     log4cxx::helpers::Pool& p) const;
+        void format(const log4cxx::helpers::ObjectPtr& obj,
+                    LogString& toAppendTo,
+                    log4cxx::helpers::Pool& p) const;
 };
 
-  }
+}
 }
 #endif
 

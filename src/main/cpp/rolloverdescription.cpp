@@ -25,7 +25,8 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(RolloverDescription)
 
 
-RolloverDescription::RolloverDescription() {
+RolloverDescription::RolloverDescription()
+{
 }
 
 RolloverDescription::RolloverDescription(
@@ -33,30 +34,35 @@ RolloverDescription::RolloverDescription(
     const bool append1,
     const ActionPtr& synchronous1,
     const ActionPtr& asynchronous1)
-       : activeFileName(activeFileName1),
-         append(append1),
-         synchronous(synchronous1),
-         asynchronous(asynchronous1) {
+    : activeFileName(activeFileName1),
+      append(append1),
+      synchronous(synchronous1),
+      asynchronous(asynchronous1)
+{
 }
 
-LogString RolloverDescription::getActiveFileName() const {
+LogString RolloverDescription::getActiveFileName() const
+{
     return activeFileName;
 }
 
-bool RolloverDescription::getAppend() const {
+bool RolloverDescription::getAppend() const
+{
     return append;
 }
 
-ActionPtr RolloverDescription::getSynchronous() const {
+ActionPtr RolloverDescription::getSynchronous() const
+{
     return synchronous;
 }
 
-  /**
-   * Action to be completed after close of current active log file
-   * and before next rollover attempt, may be executed asynchronously.
-   *
-   * @return action, may be null.
-   */
-ActionPtr RolloverDescription::getAsynchronous() const {
+/**
+ * Action to be completed after close of current active log file
+ * and before next rollover attempt, may be executed asynchronously.
+ *
+ * @return action, may be null.
+ */
+ActionPtr RolloverDescription::getAsynchronous() const
+{
     return asynchronous;
 }

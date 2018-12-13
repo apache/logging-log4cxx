@@ -24,44 +24,44 @@
 
 namespace log4cxx
 {
-        namespace helpers
-        {
-                /**
-                  *   This class contains all the thread-specific
-                  *   data in use by log4cxx.
-                  */
-                class LOG4CXX_EXPORT ThreadSpecificData
-                {
-                public:
-                        ThreadSpecificData();
-                        ~ThreadSpecificData();
+namespace helpers
+{
+/**
+  *   This class contains all the thread-specific
+  *   data in use by log4cxx.
+  */
+class LOG4CXX_EXPORT ThreadSpecificData
+{
+    public:
+        ThreadSpecificData();
+        ~ThreadSpecificData();
 
-                        /**
-                         *  Gets current thread specific data.
-                         *  @return thread specific data, may be null.
-                         */
-                        static ThreadSpecificData* getCurrentData();
-                        /**
-                         *  Release this ThreadSpecficData if empty.
-                         */
-                        void recycle();
+        /**
+         *  Gets current thread specific data.
+         *  @return thread specific data, may be null.
+         */
+        static ThreadSpecificData* getCurrentData();
+        /**
+         *  Release this ThreadSpecficData if empty.
+         */
+        void recycle();
 
-                        static void put(const LogString& key, const LogString& val);
-                        static void push(const LogString& val);
-                        static void inherit(const log4cxx::NDC::Stack& stack);
+        static void put(const LogString& key, const LogString& val);
+        static void push(const LogString& val);
+        static void inherit(const log4cxx::NDC::Stack& stack);
 
-                        log4cxx::NDC::Stack& getStack();
-                        log4cxx::MDC::Map& getMap();
+        log4cxx::NDC::Stack& getStack();
+        log4cxx::MDC::Map& getMap();
 
 
-                private:
-                        static ThreadSpecificData& getDataNoThreads();
-                        static ThreadSpecificData* createCurrentData();
-                        log4cxx::NDC::Stack ndcStack;
-                        log4cxx::MDC::Map mdcMap;
-                };
+    private:
+        static ThreadSpecificData& getDataNoThreads();
+        static ThreadSpecificData* createCurrentData();
+        log4cxx::NDC::Stack ndcStack;
+        log4cxx::MDC::Map mdcMap;
+};
 
-        }  // namespace helpers
+}  // namespace helpers
 } // namespace log4cxx
 
 #endif

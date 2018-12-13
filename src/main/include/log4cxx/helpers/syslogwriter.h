@@ -23,28 +23,28 @@
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/datagramsocket.h>
 
- namespace log4cxx
+namespace log4cxx
 {
-        namespace helpers
-        {
-                /**
-                SyslogWriter is a wrapper around the DatagramSocket class
-                it writes text to the specified host on the port 514 (UNIX syslog)
-                */
-                class LOG4CXX_EXPORT SyslogWriter
-                {
-                public:
-                        #define SYSLOG_PORT 514
-                        SyslogWriter(const LogString& syslogHost, int syslogHostPort = SYSLOG_PORT);
-                        void write(const LogString& string);
+namespace helpers
+{
+/**
+SyslogWriter is a wrapper around the DatagramSocket class
+it writes text to the specified host on the port 514 (UNIX syslog)
+*/
+class LOG4CXX_EXPORT SyslogWriter
+{
+    public:
+#define SYSLOG_PORT 514
+        SyslogWriter(const LogString& syslogHost, int syslogHostPort = SYSLOG_PORT);
+        void write(const LogString& string);
 
-                private:
-                        LogString syslogHost;
-                        int syslogHostPort;
-                        InetAddressPtr address;
-                        DatagramSocketPtr ds;
-                };
-        }  // namespace helpers
+    private:
+        LogString syslogHost;
+        int syslogHostPort;
+        InetAddressPtr address;
+        DatagramSocketPtr ds;
+};
+}  // namespace helpers
 } // namespace log4cxx
 
 #endif

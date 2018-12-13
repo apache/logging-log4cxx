@@ -30,46 +30,55 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggerMatchFilter)
 
 
 LoggerMatchFilter::LoggerMatchFilter()
-: acceptOnMatch(true), loggerToMatch(LOG4CXX_STR("root"))
+    : acceptOnMatch(true), loggerToMatch(LOG4CXX_STR("root"))
 {
 }
 
-void LoggerMatchFilter::setLoggerToMatch(const LogString& value) {
+void LoggerMatchFilter::setLoggerToMatch(const LogString& value)
+{
     loggerToMatch = value;
 }
 
-LogString LoggerMatchFilter::getLoggerToMatch() const {
+LogString LoggerMatchFilter::getLoggerToMatch() const
+{
     return loggerToMatch;
 }
 
 void LoggerMatchFilter::setOption(const LogString& option,
-   const LogString& value)
+                                  const LogString& value)
 {
 
-   if (StringHelper::equalsIgnoreCase(option,
-                 LOG4CXX_STR("LOGGERTOMATCH"), LOG4CXX_STR("loggertomatch")))
-   {
-      setLoggerToMatch(value);
-   }
-   else if (StringHelper::equalsIgnoreCase(option,
-                LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
-   {
-      acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
-   }
+    if (StringHelper::equalsIgnoreCase(option,
+                                       LOG4CXX_STR("LOGGERTOMATCH"), LOG4CXX_STR("loggertomatch")))
+    {
+        setLoggerToMatch(value);
+    }
+    else if (StringHelper::equalsIgnoreCase(option,
+                                            LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
+    {
+        acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
+    }
 }
 
 Filter::FilterDecision LoggerMatchFilter::decide(
-   const spi::LoggingEventPtr& event) const
+    const spi::LoggingEventPtr& event) const
 {
     bool matchOccured = loggerToMatch == event->getLoggerName();
-    if (matchOccured) {
-      if (acceptOnMatch) {
-        return Filter::ACCEPT;
-      } else {
-        return Filter::DENY;
-      }
-    } else {
-      return Filter::NEUTRAL;
+
+    if (matchOccured)
+    {
+        if (acceptOnMatch)
+        {
+            return Filter::ACCEPT;
+        }
+        else
+        {
+            return Filter::DENY;
+        }
+    }
+    else
+    {
+        return Filter::NEUTRAL;
     }
 }
 

@@ -19,8 +19,8 @@
 #define _LOG4CXX_ROLLING_ROLLING_POLICY_BASE_H
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4231 4251 4275 4786 )
+    #pragma warning ( push )
+    #pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -32,100 +32,106 @@
 #include <log4cxx/pattern/formattinginfo.h>
 #include <log4cxx/pattern/patternparser.h>
 
-namespace log4cxx {
-    namespace rolling {
-        LOG4CXX_LIST_DEF(PatternConverterList, log4cxx::pattern::PatternConverterPtr);
-        LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
+namespace log4cxx
+{
+namespace rolling
+{
+LOG4CXX_LIST_DEF(PatternConverterList, log4cxx::pattern::PatternConverterPtr);
+LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
+
+/**
+ * Implements methods common to most, it not all, rolling
+ * policies.
+ *
+ *
+ *
+ */
+class LOG4CXX_EXPORT RollingPolicyBase :
+    public virtual RollingPolicy,
+    public virtual helpers::ObjectImpl
+{
+    protected:
+        DECLARE_ABSTRACT_LOG4CXX_OBJECT(RollingPolicyBase)
+        BEGIN_LOG4CXX_CAST_MAP()
+        LOG4CXX_CAST_ENTRY(RollingPolicy)
+        LOG4CXX_CAST_ENTRY(spi::OptionHandler)
+        END_LOG4CXX_CAST_MAP()
+
+
+    private:
+        /**
+         * File name pattern converters.
+         */
+        PatternConverterList patternConverters;
 
         /**
-         * Implements methods common to most, it not all, rolling
-         * policies.
-         *
-         *
-         *
+         * File name field specifiers.
          */
-        class LOG4CXX_EXPORT RollingPolicyBase :
-           public virtual RollingPolicy,
-           public virtual helpers::ObjectImpl {
-        protected:
-          DECLARE_ABSTRACT_LOG4CXX_OBJECT(RollingPolicyBase)
-          BEGIN_LOG4CXX_CAST_MAP()
-                  LOG4CXX_CAST_ENTRY(RollingPolicy)
-                  LOG4CXX_CAST_ENTRY(spi::OptionHandler)
-          END_LOG4CXX_CAST_MAP()
+        FormattingInfoList patternFields;
+
+        /**
+         * File name pattern.
+         */
+        LogString fileNamePatternStr;
 
 
-          private:
-          /**
-           * File name pattern converters.
-           */
-          PatternConverterList patternConverters;
+    public:
+        RollingPolicyBase();
+        virtual ~RollingPolicyBase();
+        void addRef() const;
+        void releaseRef() const;
+        virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
+        virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
 
-          /**
-           * File name field specifiers.
-           */
-          FormattingInfoList patternFields;
+        virtual void setOption(const LogString& option,
+                               const LogString& value);
 
-          /**
-           * File name pattern.
-           */
-          LogString fileNamePatternStr;
+        /**
+         * Set file name pattern.
+         * @param fnp file name pattern.
+         */
+        void setFileNamePattern(const LogString& fnp);
 
-
-          public:
-          RollingPolicyBase();
-          virtual ~RollingPolicyBase();
-          void addRef() const;
-          void releaseRef() const;
-          virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
-          virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
-
-          virtual void setOption(const LogString& option,
-               const LogString& value);
-
-          /**
-           * Set file name pattern.
-           * @param fnp file name pattern.
-           */
-           void setFileNamePattern(const LogString& fnp);
-
-           /**
-            * Get file name pattern.
-            * @return file name pattern.
-            */
-           LogString getFileNamePattern() const;
+        /**
+         * Get file name pattern.
+         * @return file name pattern.
+         */
+        LogString getFileNamePattern() const;
 
 
 #ifdef LOG4CXX_MULTI_PROCESS
-           PatternConverterList getPatternConverterList() { return patternConverters; }
+        PatternConverterList getPatternConverterList()
+        {
+            return patternConverters;
+        }
 #endif
-           protected:
-           /**
-            *   Parse file name pattern.
-            */
-           void parseFileNamePattern();
+    protected:
+        /**
+         *   Parse file name pattern.
+         */
+        void parseFileNamePattern();
 
-          /**
-           * Format file name.
-           *
-           * @param obj object to be evaluted in formatting, may not be null.
-           * @param buf string buffer to which formatted file name is appended, may not be null.
-           * @param p memory pool.
-           */
-          void formatFileName(log4cxx::helpers::ObjectPtr& obj,
-             LogString& buf, log4cxx::helpers::Pool& p) const;
+        /**
+         * Format file name.
+         *
+         * @param obj object to be evaluted in formatting, may not be null.
+         * @param buf string buffer to which formatted file name is appended, may not be null.
+         * @param p memory pool.
+         */
+        void formatFileName(log4cxx::helpers::ObjectPtr& obj,
+                            LogString& buf, log4cxx::helpers::Pool& p) const;
 
-           log4cxx::pattern::PatternConverterPtr getIntegerPatternConverter() const;
-           log4cxx::pattern::PatternConverterPtr getDatePatternConverter() const;
+        log4cxx::pattern::PatternConverterPtr getIntegerPatternConverter() const;
+        log4cxx::pattern::PatternConverterPtr getDatePatternConverter() const;
 
 
-       };
-    }
+};
+}
 }
 
 
 #if defined(_MSC_VER)
-#pragma warning ( pop )
+    #pragma warning ( pop )
 #endif
 
 #endif

@@ -23,7 +23,7 @@
 #include <log4cxx/helpers/system.h>
 #include <log4cxx/helpers/socket.h>
 #if !defined(LOG4CXX)
-#define LOG4CXX 1
+    #define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/threadspecificdata.h>
@@ -48,76 +48,84 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 //
 //   Accessor for start time.
 //
-log4cxx_time_t LoggingEvent::getStartTime() {
-  return log4cxx::helpers::APRInitializer::initialize();
+log4cxx_time_t LoggingEvent::getStartTime()
+{
+    return log4cxx::helpers::APRInitializer::initialize();
 }
 
 LoggingEvent::LoggingEvent() :
-   ndc(0),
-   mdcCopy(0),
-   properties(0),
-   ndcLookupRequired(true),
-   mdcCopyLookupRequired(true),
-   timeStamp(0),
-   locationInfo() {
+    ndc(0),
+    mdcCopy(0),
+    properties(0),
+    ndcLookupRequired(true),
+    mdcCopyLookupRequired(true),
+    timeStamp(0),
+    locationInfo()
+{
 }
 
 LoggingEvent::LoggingEvent(
-        const LogString& logger1, const LevelPtr& level1,
-        const LogString& message1, const LocationInfo& locationInfo1) :
-   logger(logger1),
-   level(level1),
-   ndc(0),
-   mdcCopy(0),
-   properties(0),
-   ndcLookupRequired(true),
-   mdcCopyLookupRequired(true),
-   message(message1),
-   timeStamp(apr_time_now()),
-   locationInfo(locationInfo1),
-   threadName(getCurrentThreadName()) {
+    const LogString& logger1, const LevelPtr& level1,
+    const LogString& message1, const LocationInfo& locationInfo1) :
+    logger(logger1),
+    level(level1),
+    ndc(0),
+    mdcCopy(0),
+    properties(0),
+    ndcLookupRequired(true),
+    mdcCopyLookupRequired(true),
+    message(message1),
+    timeStamp(apr_time_now()),
+    locationInfo(locationInfo1),
+    threadName(getCurrentThreadName())
+{
 }
 
 LoggingEvent::~LoggingEvent()
 {
-        delete ndc;
-        delete mdcCopy;
-        delete properties;
+    delete ndc;
+    delete mdcCopy;
+    delete properties;
 }
 
 bool LoggingEvent::getNDC(LogString& dest) const
 {
-        if(ndcLookupRequired)
+    if (ndcLookupRequired)
+    {
+        ndcLookupRequired = false;
+        LogString val;
+
+        if (NDC::get(val))
         {
-                ndcLookupRequired = false;
-                LogString val;
-                if(NDC::get(val)) {
-                     ndc = new LogString(val);
-                }
+            ndc = new LogString(val);
         }
-        if (ndc) {
-            dest.append(*ndc);
-            return true;
-        }
-        return false;
+    }
+
+    if (ndc)
+    {
+        dest.append(*ndc);
+        return true;
+    }
+
+    return false;
 }
 
 bool LoggingEvent::getMDC(const LogString& key, LogString& dest) const
 {
-   // Note the mdcCopy is used if it exists. Otherwise we use the MDC
+    // Note the mdcCopy is used if it exists. Otherwise we use the MDC
     // that is associated with the thread.
     if (mdcCopy != 0 && !mdcCopy->empty())
-        {
-                MDC::Map::const_iterator it = mdcCopy->find(key);
+    {
+        MDC::Map::const_iterator it = mdcCopy->find(key);
 
-                if (it != mdcCopy->end())
-                {
-                        if (!it->second.empty())
-                        {
-                                dest.append(it->second);
-                                return true;
-                        }
-                }
+        if (it != mdcCopy->end())
+        {
+            if (!it->second.empty())
+            {
+                dest.append(it->second);
+                return true;
+            }
+        }
     }
 
     return MDC::get(key, dest);
@@ -126,117 +134,129 @@ bool LoggingEvent::getMDC(const LogString& key, LogString& dest) const
 
 LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 {
-        LoggingEvent::KeySet set;
+    LoggingEvent::KeySet set;
 
-        if (mdcCopy != 0 && !mdcCopy->empty())
+    if (mdcCopy != 0 && !mdcCopy->empty())
+    {
+        MDC::Map::const_iterator it;
+
+        for (it = mdcCopy->begin(); it != mdcCopy->end(); it++)
         {
-                MDC::Map::const_iterator it;
-                for (it = mdcCopy->begin(); it != mdcCopy->end(); it++)
-                {
-                        set.push_back(it->first);
+            set.push_back(it->first);
 
-                }
         }
-        else
+    }
+    else
+    {
+        ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+
+        if (data != 0)
         {
-                ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
-                if (data != 0) {
-                    MDC::Map& m = data->getMap();
+            MDC::Map& m = data->getMap();
 
-                    for(MDC::Map::const_iterator it = m.begin(); it != m.end(); it++) {
-                        set.push_back(it->first);
-                    }
-                }
+            for (MDC::Map::const_iterator it = m.begin(); it != m.end(); it++)
+            {
+                set.push_back(it->first);
+            }
         }
+    }
 
-        return set;
+    return set;
 }
 
 void LoggingEvent::getMDCCopy() const
 {
-        if(mdcCopyLookupRequired)
+    if (mdcCopyLookupRequired)
+    {
+        mdcCopyLookupRequired = false;
+        // the clone call is required for asynchronous logging.
+        ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
+
+        if (data != 0)
         {
-                mdcCopyLookupRequired = false;
-                // the clone call is required for asynchronous logging.
-                ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
-                if (data != 0) {
-                    mdcCopy = new MDC::Map(data->getMap());
-                } else {
-                    mdcCopy = new MDC::Map();
-                }
-       }
+            mdcCopy = new MDC::Map(data->getMap());
+        }
+        else
+        {
+            mdcCopy = new MDC::Map();
+        }
+    }
 }
 
 bool LoggingEvent::getProperty(const LogString& key, LogString& dest) const
 {
-        if (properties == 0)
-        {
-                return false;
-        }
-
-        std::map<LogString, LogString>::const_iterator  it = properties->find(key);
-
-        if (it != properties->end())
-        {
-                dest.append(it->second);
-                return true;
-        }
-
+    if (properties == 0)
+    {
         return false;
+    }
+
+    std::map<LogString, LogString>::const_iterator  it = properties->find(key);
+
+    if (it != properties->end())
+    {
+        dest.append(it->second);
+        return true;
+    }
+
+    return false;
 }
 
 LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 {
-        LoggingEvent::KeySet set;
+    LoggingEvent::KeySet set;
 
-        if (properties != 0)
+    if (properties != 0)
+    {
+        std::map<LogString, LogString>::const_iterator it;
+
+        for (it = properties->begin(); it != properties->end(); it++)
         {
-                std::map<LogString, LogString>::const_iterator it;
-                for (it = properties->begin(); it != properties->end(); it++)
-                {
-                        set.push_back(it->first);
-                }
+            set.push_back(it->first);
         }
+    }
 
-        return set;
+    return set;
 }
 
 
-const LogString LoggingEvent::getCurrentThreadName() {
+const LogString LoggingEvent::getCurrentThreadName()
+{
 #if APR_HAS_THREADS
 #if defined(_WIN32)
-   char result[20];
-   DWORD threadId = GetCurrentThreadId();
-   apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
+    char result[20];
+    DWORD threadId = GetCurrentThreadId();
+    apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
 #else
-   // apr_os_thread_t encoded in HEX takes needs as many characters
-   // as two times the size of the type, plus an additional null byte.
-   char result[sizeof(apr_os_thread_t) * 3 + 10];
-   apr_os_thread_t threadId = apr_os_thread_current();
-   apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
+    // apr_os_thread_t encoded in HEX takes needs as many characters
+    // as two times the size of the type, plus an additional null byte.
+    char result[sizeof(apr_os_thread_t) * 3 + 10];
+    apr_os_thread_t threadId = apr_os_thread_current();
+    apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif
-   LOG4CXX_DECODE_CHAR(str, (const char*) result);
-   return str;
+    LOG4CXX_DECODE_CHAR(str, (const char*) result);
+    return str;
 #else
-   return LOG4CXX_STR("0x00000000");
+    return LOG4CXX_STR("0x00000000");
 #endif
 }
 
 
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
-        if (properties == 0)
-        {
-                properties = new std::map<LogString, LogString>;
-        }
+    if (properties == 0)
+    {
+        properties = new std::map<LogString, LogString>;
+    }
 
-        (*properties)[key] = value;
+    (*properties)[key] = value;
 }
 
 
 
-void LoggingEvent::writeProlog(ObjectOutputStream& os, Pool& p)  {
-     unsigned char classDesc[] = {
+void LoggingEvent::writeProlog(ObjectOutputStream& os, Pool& p)
+{
+    unsigned char classDesc[] =
+    {
         0x72, 0x00, 0x21,
         0x6F, 0x72, 0x67, 0x2E, 0x61, 0x70, 0x61, 0x63,
         0x68, 0x65, 0x2E, 0x6C, 0x6F, 0x67, 0x34, 0x6A,
@@ -289,38 +309,49 @@ void LoggingEvent::writeProlog(ObjectOutputStream& os, Pool& p)  {
         0x73, 0x70, 0x69, 0x2F, 0x54, 0x68, 0x72, 0x6F,
         0x77, 0x61, 0x62, 0x6C, 0x65, 0x49, 0x6E, 0x66,
         0x6F, 0x72, 0x6D, 0x61, 0x74, 0x69, 0x6F, 0x6E,
-        0x3B, 0x78, 0x70 };
+        0x3B, 0x78, 0x70
+    };
 
-     os.writeProlog("org.apache.log4j.spi.LoggingEvent",
-        8, (char*) classDesc, sizeof(classDesc), p);
+    os.writeProlog("org.apache.log4j.spi.LoggingEvent",
+                   8, (char*) classDesc, sizeof(classDesc), p);
 }
 
-void LoggingEvent::write(helpers::ObjectOutputStream& os, Pool& p) const {
-      writeProlog(os, p);
-      // mdc and ndc lookup required should always be false
-      char lookupsRequired[] = { 0, 0 };
-      os.writeBytes(lookupsRequired, sizeof(lookupsRequired), p);
-      os.writeLong(timeStamp/1000, p);
-      os.writeObject(logger, p);
-      locationInfo.write(os, p);
-      if (mdcCopy == 0 || mdcCopy->size() == 0) {
-          os.writeNull(p);
-      } else {
-          os.writeObject(*mdcCopy, p);
-      }
-      if (ndc == 0) {
-          os.writeNull(p);
-      } else {
-          os.writeObject(*ndc, p);
-      }
-      os.writeObject(message, p);
-      os.writeObject(threadName, p);
-      //  throwable
-      os.writeNull(p);
-      os.writeByte(ObjectOutputStream::TC_BLOCKDATA, p);
-      os.writeByte(0x04, p);
-      os.writeInt(level->toInt(), p);
-      os.writeNull(p);
-      os.writeByte(ObjectOutputStream::TC_ENDBLOCKDATA, p);
+void LoggingEvent::write(helpers::ObjectOutputStream& os, Pool& p) const
+{
+    writeProlog(os, p);
+    // mdc and ndc lookup required should always be false
+    char lookupsRequired[] = { 0, 0 };
+    os.writeBytes(lookupsRequired, sizeof(lookupsRequired), p);
+    os.writeLong(timeStamp / 1000, p);
+    os.writeObject(logger, p);
+    locationInfo.write(os, p);
+
+    if (mdcCopy == 0 || mdcCopy->size() == 0)
+    {
+        os.writeNull(p);
+    }
+    else
+    {
+        os.writeObject(*mdcCopy, p);
+    }
+
+    if (ndc == 0)
+    {
+        os.writeNull(p);
+    }
+    else
+    {
+        os.writeObject(*ndc, p);
+    }
+
+    os.writeObject(message, p);
+    os.writeObject(threadName, p);
+    //  throwable
+    os.writeNull(p);
+    os.writeByte(ObjectOutputStream::TC_BLOCKDATA, p);
+    os.writeByte(0x04, p);
+    os.writeInt(level->toInt(), p);
+    os.writeNull(p);
+    os.writeByte(ObjectOutputStream::TC_ENDBLOCKDATA, p);
 }
 

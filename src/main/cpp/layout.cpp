@@ -25,15 +25,20 @@ IMPLEMENT_LOG4CXX_OBJECT(Layout)
 
 Layout::~Layout() {}
 
-void Layout::addRef() const {
+void Layout::addRef() const
+{
     ObjectImpl::addRef();
 }
 
-void Layout::releaseRef() const {
+void Layout::releaseRef() const
+{
     ObjectImpl::releaseRef();
 }
 
-LogString Layout::getContentType() const { return LOG4CXX_STR("text/plain"); }
+LogString Layout::getContentType() const
+{
+    return LOG4CXX_STR("text/plain");
+}
 
 void Layout::appendHeader(LogString&, log4cxx::helpers::Pool&) {}
 

@@ -26,354 +26,431 @@ using namespace log4cxx::helpers;
 
 class PropertyParser
 {
-public:
+    public:
         void parse(LogString& in, Properties& properties)
         {
-                LogString key, element;
-                LexemType lexemType = BEGIN;
-                logchar c;
-                bool finished = false;
+            LogString key, element;
+            LexemType lexemType = BEGIN;
+            logchar c;
+            bool finished = false;
 
-                if (!get(in, c))
-                {
-                        return;
-                }
+            if (!get(in, c))
+            {
+                return;
+            }
 
-                while (!finished)
+            while (!finished)
+            {
+                switch (lexemType)
                 {
-                        switch(lexemType)
+                    case BEGIN:
+                        switch (c)
                         {
-                        case BEGIN:
-                                switch(c)
-                                {
-                                case 0x20: // ' '
-                                case 0x09: // '\t'
-                                case 0x0A: // '\n'
-                                case 0x0D: // '\r'
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                case 0x23: // '#'
-                                case 0x21: // '!'
-                                        lexemType = COMMENT;
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                default:
-                                        lexemType = KEY;
-                                        break;
-                                }
-                                break;
-
-                        case KEY:
-                                switch(c)
-                                {
-                                case 0x5C: // '\\'
-                                        lexemType = KEY_ESCAPE;
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                case 0x09: // '\t'
-                                case 0x20: // ' '
-                                case 0x3A: // ':'
-                                case 0x3D: // '='
-                                        lexemType = DELIMITER;
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                case 0x0A:
-                                case 0x0D:
-                                        // key associated with an empty string element
-                                        properties.setProperty(key, LogString());
-                                        key.erase(key.begin(), key.end());
-                                        lexemType = BEGIN;
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                default:
-                                        key.append(1, c);
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-                                }
-                                break;
-
-                        case KEY_ESCAPE:
-                                switch(c)
-                                {
-                                case 0x74: // 't'
-                                        key.append(1, 0x09);
-                                        lexemType = KEY;
-                                        break;
-
-                                case 0x6E: // 'n'
-                                        key.append(1, 0x0A);
-                                        lexemType = KEY;
-                                        break;
-
-                                case 0x72: // 'r'
-                                        key.append(1, 0x0D);
-                                        lexemType = KEY;
-                                        break;
-
-                                case 0x0A: // '\n'
-                                        lexemType = KEY_CONTINUE;
-                                        break;
-
-                                case 0x0D: // '\r'
-                                        lexemType = KEY_CONTINUE2;
-                                        break;
-
-                                default:
-                                        key.append(1, c);
-                                        lexemType = KEY;
-                                }
-                                if (!get(in, c)) {
-                                    finished = true;
-                                }
-                                break;
-
-                        case KEY_CONTINUE:
-                                switch(c)
-                                {
-                                case 0x20:  // ' '
-                                case 0x09: //  '\t'
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                default:
-                                        lexemType = KEY;
-                                        break;
-                                }
-                                break;
-
-                        case KEY_CONTINUE2:
-                                switch(c)
-                                {
-                                case 0x0A: // '\n'
-                                        if (!get(in, c))
-                                                finished = true;
-                                        lexemType = KEY_CONTINUE;
-                                        break;
-
-                                default:
-                                        lexemType = KEY_CONTINUE;
-                                        break;
-                                }
-                                break;
-
-                        case DELIMITER:
-                                switch(c)
-                                {
-                                case 0x09: // '\t'
-                                case 0x20: // ' '
-                                case 0x3A: // ':'
-                                case 0x3D: // '='
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                default:
-                                        lexemType = ELEMENT;
-                                        break;
-                                }
-                                break;
-
-                        case ELEMENT:
-                                switch(c)
-                                {
-                                case 0x5C: // '\\'
-                                        lexemType = ELEMENT_ESCAPE;
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                case 0x0A: // '\n'
-                                case 0x0D: // '\r'
-                                        // key associated with an empty string element
-                                        properties.setProperty(key, element);
-                                        key.erase(key.begin(), key.end());
-                                        element.erase(element.begin(), element.end());
-                                        lexemType = BEGIN;
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                default:
-                                        element.append(1, c);
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-                                }
-                                break;
-
-                        case ELEMENT_ESCAPE:
-                                switch(c)
-                                {
-                                case 0x74: // 't'
-                                        element.append(1, 0x09);
-                                        lexemType = ELEMENT;
-                                        break;
-
-                                case 0x6E: // 'n'
-                                        element.append(1, 0x0A);
-                                        lexemType = ELEMENT;
-                                        break;
-
-                                case 0x72: // 'r'
-                                        element.append(1, 0x0D);
-                                        lexemType = ELEMENT;
-                                        break;
-
-                                case 0x0A: // '\n'
-                                        lexemType = ELEMENT_CONTINUE;
-                                        break;
-
-                                case 0x0D: // '\r'
-                                        lexemType = ELEMENT_CONTINUE2;
-                                        break;
-                                default:
-                                        element.append(1, c);
-                                        lexemType = ELEMENT;
-                                        break;
-                                }
-                                if (!get(in, c)) {
-                                    finished = true;
-                                }
-                                break;
-
-                        case ELEMENT_CONTINUE:
-                                switch(c)
-                                {
-                                case 0x20: // ' '
-                                case 0x09: // '\t'
-                                        if (!get(in, c))
-                                                finished = true;
-                                        break;
-
-                                default:
-                                        lexemType = ELEMENT;
-                                        break;
-                                }
-                                break;
-
-                        case ELEMENT_CONTINUE2:
-                                switch(c)
-                                {
-                                case 0x0A: // '\n'
-                                        if (!get(in, c))
-                                                finished = true;
-                                        lexemType = ELEMENT_CONTINUE;
-                                        break;
-
-                                default:
-                                        lexemType = ELEMENT_CONTINUE;
-                                        break;
-                                }
-                                break;
-
-                        case COMMENT:
-                                if (c == 0x0A || c == 0x0D)
-                                {
-                                        lexemType = BEGIN;
-                                }
+                            case 0x20: // ' '
+                            case 0x09: // '\t'
+                            case 0x0A: // '\n'
+                            case 0x0D: // '\r'
                                 if (!get(in, c))
-                                        finished = true;
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            case 0x23: // '#'
+                            case 0x21: // '!'
+                                lexemType = COMMENT;
+
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            default:
+                                lexemType = KEY;
                                 break;
                         }
-                }
 
-                if (!key.empty())
-                {
-                        properties.setProperty(key, element);
+                        break;
+
+                    case KEY:
+                        switch (c)
+                        {
+                            case 0x5C: // '\\'
+                                lexemType = KEY_ESCAPE;
+
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            case 0x09: // '\t'
+                            case 0x20: // ' '
+                            case 0x3A: // ':'
+                            case 0x3D: // '='
+                                lexemType = DELIMITER;
+
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            case 0x0A:
+                            case 0x0D:
+                                // key associated with an empty string element
+                                properties.setProperty(key, LogString());
+                                key.erase(key.begin(), key.end());
+                                lexemType = BEGIN;
+
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            default:
+                                key.append(1, c);
+
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+                        }
+
+                        break;
+
+                    case KEY_ESCAPE:
+                        switch (c)
+                        {
+                            case 0x74: // 't'
+                                key.append(1, 0x09);
+                                lexemType = KEY;
+                                break;
+
+                            case 0x6E: // 'n'
+                                key.append(1, 0x0A);
+                                lexemType = KEY;
+                                break;
+
+                            case 0x72: // 'r'
+                                key.append(1, 0x0D);
+                                lexemType = KEY;
+                                break;
+
+                            case 0x0A: // '\n'
+                                lexemType = KEY_CONTINUE;
+                                break;
+
+                            case 0x0D: // '\r'
+                                lexemType = KEY_CONTINUE2;
+                                break;
+
+                            default:
+                                key.append(1, c);
+                                lexemType = KEY;
+                        }
+
+                        if (!get(in, c))
+                        {
+                            finished = true;
+                        }
+
+                        break;
+
+                    case KEY_CONTINUE:
+                        switch (c)
+                        {
+                            case 0x20:  // ' '
+                            case 0x09: //  '\t'
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            default:
+                                lexemType = KEY;
+                                break;
+                        }
+
+                        break;
+
+                    case KEY_CONTINUE2:
+                        switch (c)
+                        {
+                            case 0x0A: // '\n'
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                lexemType = KEY_CONTINUE;
+                                break;
+
+                            default:
+                                lexemType = KEY_CONTINUE;
+                                break;
+                        }
+
+                        break;
+
+                    case DELIMITER:
+                        switch (c)
+                        {
+                            case 0x09: // '\t'
+                            case 0x20: // ' '
+                            case 0x3A: // ':'
+                            case 0x3D: // '='
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            default:
+                                lexemType = ELEMENT;
+                                break;
+                        }
+
+                        break;
+
+                    case ELEMENT:
+                        switch (c)
+                        {
+                            case 0x5C: // '\\'
+                                lexemType = ELEMENT_ESCAPE;
+
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            case 0x0A: // '\n'
+                            case 0x0D: // '\r'
+                                // key associated with an empty string element
+                                properties.setProperty(key, element);
+                                key.erase(key.begin(), key.end());
+                                element.erase(element.begin(), element.end());
+                                lexemType = BEGIN;
+
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            default:
+                                element.append(1, c);
+
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+                        }
+
+                        break;
+
+                    case ELEMENT_ESCAPE:
+                        switch (c)
+                        {
+                            case 0x74: // 't'
+                                element.append(1, 0x09);
+                                lexemType = ELEMENT;
+                                break;
+
+                            case 0x6E: // 'n'
+                                element.append(1, 0x0A);
+                                lexemType = ELEMENT;
+                                break;
+
+                            case 0x72: // 'r'
+                                element.append(1, 0x0D);
+                                lexemType = ELEMENT;
+                                break;
+
+                            case 0x0A: // '\n'
+                                lexemType = ELEMENT_CONTINUE;
+                                break;
+
+                            case 0x0D: // '\r'
+                                lexemType = ELEMENT_CONTINUE2;
+                                break;
+
+                            default:
+                                element.append(1, c);
+                                lexemType = ELEMENT;
+                                break;
+                        }
+
+                        if (!get(in, c))
+                        {
+                            finished = true;
+                        }
+
+                        break;
+
+                    case ELEMENT_CONTINUE:
+                        switch (c)
+                        {
+                            case 0x20: // ' '
+                            case 0x09: // '\t'
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                break;
+
+                            default:
+                                lexemType = ELEMENT;
+                                break;
+                        }
+
+                        break;
+
+                    case ELEMENT_CONTINUE2:
+                        switch (c)
+                        {
+                            case 0x0A: // '\n'
+                                if (!get(in, c))
+                                {
+                                    finished = true;
+                                }
+
+                                lexemType = ELEMENT_CONTINUE;
+                                break;
+
+                            default:
+                                lexemType = ELEMENT_CONTINUE;
+                                break;
+                        }
+
+                        break;
+
+                    case COMMENT:
+                        if (c == 0x0A || c == 0x0D)
+                        {
+                            lexemType = BEGIN;
+                        }
+
+                        if (!get(in, c))
+                        {
+                            finished = true;
+                        }
+
+                        break;
                 }
+            }
+
+            if (!key.empty())
+            {
+                properties.setProperty(key, element);
+            }
         }
 
-protected:
+    protected:
         static bool get(LogString& in, logchar& c)
         {
-                if (in.empty()) {
-                    c = 0;
-                    return false;
-                }
-                c = in[0];
-                in.erase(in.begin());
-                return true;
+            if (in.empty())
+            {
+                c = 0;
+                return false;
+            }
+
+            c = in[0];
+            in.erase(in.begin());
+            return true;
         }
 
         typedef enum
         {
-                BEGIN,
-                KEY,
-                KEY_ESCAPE,
-                KEY_CONTINUE,
-                KEY_CONTINUE2,
-                DELIMITER,
-                ELEMENT,
-                ELEMENT_ESCAPE,
-                ELEMENT_CONTINUE,
-                ELEMENT_CONTINUE2,
-                COMMENT
+            BEGIN,
+            KEY,
+            KEY_ESCAPE,
+            KEY_CONTINUE,
+            KEY_CONTINUE2,
+            DELIMITER,
+            ELEMENT,
+            ELEMENT_ESCAPE,
+            ELEMENT_CONTINUE,
+            ELEMENT_CONTINUE2,
+            COMMENT
         }
         LexemType;
 };
 
-Properties::Properties() : properties(new PropertyMap()) {
+Properties::Properties() : properties(new PropertyMap())
+{
 }
 
-Properties::~Properties() {
+Properties::~Properties()
+{
     delete properties;
 }
 
-LogString Properties::setProperty(const LogString& key, const LogString& value) {
+LogString Properties::setProperty(const LogString& key, const LogString& value)
+{
     return put(key, value);
 }
 
 LogString Properties::put(const LogString& key, const LogString& value)
 {
-        LogString oldValue((*properties)[key]);
-        (*properties)[key] = value;
-        return oldValue;
+    LogString oldValue((*properties)[key]);
+    (*properties)[key] = value;
+    return oldValue;
 }
 
-LogString Properties::getProperty(const LogString& key) const {
+LogString Properties::getProperty(const LogString& key) const
+{
     return get(key);
 }
 
 LogString Properties::get(const LogString& key) const
 {
-        PropertyMap::const_iterator it = properties->find(key);
-        return (it != properties->end()) ? it->second : LogString();
+    PropertyMap::const_iterator it = properties->find(key);
+    return (it != properties->end()) ? it->second : LogString();
 }
 
-void Properties::load(InputStreamPtr inStream) {
-        Pool pool;
-        InputStreamReaderPtr lineReader(
-            new InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()));
-        LogString contents = lineReader->read(pool);
-        properties->clear();
-        PropertyParser parser;
-        parser.parse(contents, *this);
+void Properties::load(InputStreamPtr inStream)
+{
+    Pool pool;
+    InputStreamReaderPtr lineReader(
+        new InputStreamReader(inStream, CharsetDecoder::getISOLatinDecoder()));
+    LogString contents = lineReader->read(pool);
+    properties->clear();
+    PropertyParser parser;
+    parser.parse(contents, *this);
 }
 
 std::vector<LogString> Properties::propertyNames() const
 {
-        std::vector<LogString> names;
-        names.reserve(properties->size());
+    std::vector<LogString> names;
+    names.reserve(properties->size());
 
-        PropertyMap::const_iterator it;
-        for (it = properties->begin(); it != properties->end(); it++)
-        {
-                const LogString& key = it->first;
-                names.push_back(key);
-        }
+    PropertyMap::const_iterator it;
 
-        return names;
+    for (it = properties->begin(); it != properties->end(); it++)
+    {
+        const LogString& key = it->first;
+        names.push_back(key);
+    }
+
+    return names;
 }
 

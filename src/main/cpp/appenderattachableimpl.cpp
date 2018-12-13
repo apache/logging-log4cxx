@@ -29,15 +29,18 @@ IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
 
 AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool)
-   : appenderList(),
-     mutex(pool) {
+    : appenderList(),
+      mutex(pool)
+{
 }
 
-void AppenderAttachableImpl::addRef() const {
+void AppenderAttachableImpl::addRef() const
+{
     ObjectImpl::addRef();
 }
 
-void AppenderAttachableImpl::releaseRef() const {
+void AppenderAttachableImpl::releaseRef() const
+{
     ObjectImpl::releaseRef();
 }
 
@@ -45,13 +48,13 @@ void AppenderAttachableImpl::releaseRef() const {
 void AppenderAttachableImpl::addAppender(const AppenderPtr& newAppender)
 {
     // Null values for newAppender parameter are strictly forbidden.
-    if(newAppender == 0)
+    if (newAppender == 0)
     {
         return;
     }
 
     AppenderList::iterator it = std::find(
-        appenderList.begin(), appenderList.end(), newAppender);
+                                    appenderList.begin(), appenderList.end(), newAppender);
 
     if (it == appenderList.end())
     {
@@ -64,11 +67,13 @@ int AppenderAttachableImpl::appendLoopOnAppenders(
     Pool& p)
 {
     for (AppenderList::iterator it = appenderList.begin();
-         it != appenderList.end();
-         it++) {
+            it != appenderList.end();
+            it++)
+    {
         (*it)->doAppend(event, p);
     }
-        return appenderList.size();
+
+    return appenderList.size();
 }
 
 AppenderList AppenderAttachableImpl::getAllAppenders() const
@@ -78,34 +83,36 @@ AppenderList AppenderAttachableImpl::getAllAppenders() const
 
 AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
 {
-        if (name.empty())
-        {
-                return 0;
-        }
-
-        AppenderList::const_iterator it, itEnd = appenderList.end();
-        AppenderPtr appender;
-        for(it = appenderList.begin(); it != itEnd; it++)
-        {
-                appender = *it;
-                if(name == appender->getName())
-                {
-                        return appender;
-                }
-        }
-
+    if (name.empty())
+    {
         return 0;
+    }
+
+    AppenderList::const_iterator it, itEnd = appenderList.end();
+    AppenderPtr appender;
+
+    for (it = appenderList.begin(); it != itEnd; it++)
+    {
+        appender = *it;
+
+        if (name == appender->getName())
+        {
+            return appender;
+        }
+    }
+
+    return 0;
 }
 
 bool AppenderAttachableImpl::isAttached(const AppenderPtr& appender) const
 {
-        if (appender == 0)
+    if (appender == 0)
     {
         return false;
     }
 
     AppenderList::const_iterator it = std::find(
-        appenderList.begin(), appenderList.end(), appender);
+                                          appenderList.begin(), appenderList.end(), appender);
 
     return it != appenderList.end();
 }
@@ -114,7 +121,8 @@ void AppenderAttachableImpl::removeAllAppenders()
 {
     AppenderList::iterator it, itEnd = appenderList.end();
     AppenderPtr a;
-    for(it = appenderList.begin(); it != itEnd; it++)
+
+    for (it = appenderList.begin(); it != itEnd; it++)
     {
         a = *it;
         a->close();
@@ -126,10 +134,12 @@ void AppenderAttachableImpl::removeAllAppenders()
 void AppenderAttachableImpl::removeAppender(const AppenderPtr& appender)
 {
     if (appender == 0)
+    {
         return;
+    }
 
     AppenderList::iterator it = std::find(
-        appenderList.begin(), appenderList.end(), appender);
+                                    appenderList.begin(), appenderList.end(), appender);
 
     if (it != appenderList.end())
     {
@@ -139,22 +149,24 @@ void AppenderAttachableImpl::removeAppender(const AppenderPtr& appender)
 
 void AppenderAttachableImpl::removeAppender(const LogString& name)
 {
-        if (name.empty())
-        {
-                return;
-        }
+    if (name.empty())
+    {
+        return;
+    }
 
-        AppenderList::iterator it, itEnd = appenderList.end();
-        AppenderPtr appender;
-        for(it = appenderList.begin(); it != itEnd; it++)
+    AppenderList::iterator it, itEnd = appenderList.end();
+    AppenderPtr appender;
+
+    for (it = appenderList.begin(); it != itEnd; it++)
+    {
+        appender = *it;
+
+        if (name == appender->getName())
         {
-                appender = *it;
-                if(name == appender->getName())
-                {
-                        appenderList.erase(it);
-                        return;
-                }
+            appenderList.erase(it);
+            return;
         }
+    }
 }
 
 

@@ -23,27 +23,27 @@
 
 namespace log4cxx
 {
-        namespace helpers
-        {
-                class LOG4CXX_EXPORT StringTokenizer
-                {
-                public:
-                        StringTokenizer(const LogString& str, const LogString& delim);
-                        ~StringTokenizer();
-                        bool hasMoreTokens() const;
-                        LogString nextToken();
+namespace helpers
+{
+class LOG4CXX_EXPORT StringTokenizer
+{
+    public:
+        StringTokenizer(const LogString& str, const LogString& delim);
+        ~StringTokenizer();
+        bool hasMoreTokens() const;
+        LogString nextToken();
 
-                protected:
-                        LogString src;
-                        LogString delim;
-                        size_t pos;
+    protected:
+        LogString src;
+        LogString delim;
+        size_t pos;
 
-                private:
-                        //   prevent copy and assignment statements
-                        StringTokenizer(const StringTokenizer&);
-                        StringTokenizer& operator=(const StringTokenizer&);
-                }; // class StringTokenizer
-        }  // namespace helpers;
+    private:
+        //   prevent copy and assignment statements
+        StringTokenizer(const StringTokenizer&);
+        StringTokenizer& operator=(const StringTokenizer&);
+}; // class StringTokenizer
+}  // namespace helpers;
 } // namespace log4cxx;
 
 #endif //_LOG4CXX_HELPERS_STRING_TOKENIZER_H

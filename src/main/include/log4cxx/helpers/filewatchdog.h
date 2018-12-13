@@ -26,60 +26,62 @@
 
 namespace log4cxx
 {
-        namespace helpers
+namespace helpers
+{
+
+/**
+Check every now and then that a certain file has not changed. If it
+has, then call the #doOnChange method.
+*/
+class LOG4CXX_EXPORT FileWatchdog
+{
+    public:
+        virtual ~FileWatchdog();
+        /**
+        The default delay between every file modification check, set to 60
+        seconds.  */
+        static long DEFAULT_DELAY /*= 60000*/;
+
+    protected:
+        /**
+        The name of the file to observe  for changes.
+        */
+        File file;
+
+        /**
+        The delay to observe between every check.
+        By default set DEFAULT_DELAY.*/
+        long delay;
+        log4cxx_time_t lastModif;
+        bool warnedAlready;
+        volatile unsigned int interrupted;
+
+    protected:
+        FileWatchdog(const File& filename);
+        virtual void doOnChange() = 0;
+        void checkAndConfigure();
+
+    public:
+        /**
+        Set the delay to observe between each check of the file changes.
+        */
+        void setDelay(long delay1)
         {
+            this->delay = delay1;
+        }
 
-                /**
-                Check every now and then that a certain file has not changed. If it
-                has, then call the #doOnChange method.
-                */
-                class LOG4CXX_EXPORT FileWatchdog
-                {
-                public:
-                        virtual ~FileWatchdog();
-                        /**
-                        The default delay between every file modification check, set to 60
-                        seconds.  */
-                        static long DEFAULT_DELAY /*= 60000*/;
+        void start();
 
-                protected:
-                        /**
-                        The name of the file to observe  for changes.
-                        */
-                        File file;
+    private:
+        static void* LOG4CXX_THREAD_FUNC run(apr_thread_t* thread, void* data);
+        Pool pool;
+        Thread thread;
 
-                        /**
-                        The delay to observe between every check.
-                        By default set DEFAULT_DELAY.*/
-                        long delay;
-                        log4cxx_time_t lastModif;
-                        bool warnedAlready;
-                        volatile unsigned int interrupted;
+        FileWatchdog(const FileWatchdog&);
+        FileWatchdog& operator=(const FileWatchdog&);
 
-                protected:
-                        FileWatchdog(const File& filename);
-                        virtual void doOnChange() = 0;
-                        void checkAndConfigure();
-
-                public:
-                        /**
-                        Set the delay to observe between each check of the file changes.
-                        */
-                        void setDelay(long delay1)
-                                { this->delay = delay1; }
-
-                        void start();
-
-                private:
-                    static void* LOG4CXX_THREAD_FUNC run(apr_thread_t* thread, void* data);
-                        Pool pool;
-                        Thread thread;
-
-                        FileWatchdog(const FileWatchdog&);
-                        FileWatchdog& operator=(const FileWatchdog&);
-
-                };
-        }  // namespace helpers
+};
+}  // namespace helpers
 } // namespace log4cxx
 
 

@@ -1,0 +1,36 @@
+##
+# Why am I here?
+#
+# This file exists to document which settings have been used to reformat the code in general the
+# last time and to somewhat describe main aspects of the code style in use. It's NOT intended to get
+# applied whenever any piece of code is changed! Instead, it IS OK to not follow these settings for
+# some pieces of code, if it makes those pieces more readable in the end. Some pieces of code simply
+# can not be described properly using automatic formatting rules.
+#
+# Example invocation:
+#
+# astyle --project src/main/include/*.h src/main/cpp/*.cpp
+#
+
+--add-braces
+--align-pointer=type
+--align-reference=type
+--break-blocks
+--break-one-line-headers
+--convert-tabs
+
+--indent-classes
+--indent-col1-comments
+--indent-continuation=1
+--indent-preproc-block
+--indent-preproc-define
+--indent-switches
+--indent=spaces=4
+
+--lineend=windows
+--pad-comma
+--pad-header
+--pad-oper
+--recursive
+--style=break
+--suffix=none

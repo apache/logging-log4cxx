@@ -23,13 +23,16 @@
 
 
 
-namespace log4cxx {
+namespace log4cxx
+{
 
-    namespace helpers {
-      class Pool;
-    }
+namespace helpers
+{
+class Pool;
+}
 
-    namespace rolling {
+namespace rolling
+{
 
 
 /**
@@ -65,65 +68,66 @@ namespace log4cxx {
  *
  *
  * */
-        class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase {
-          DECLARE_LOG4CXX_OBJECT(FixedWindowRollingPolicy)
-          BEGIN_LOG4CXX_CAST_MAP()
-                  LOG4CXX_CAST_ENTRY(FixedWindowRollingPolicy)
-                  LOG4CXX_CAST_ENTRY_CHAIN(RollingPolicyBase)
-          END_LOG4CXX_CAST_MAP()
+class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
+{
+        DECLARE_LOG4CXX_OBJECT(FixedWindowRollingPolicy)
+        BEGIN_LOG4CXX_CAST_MAP()
+        LOG4CXX_CAST_ENTRY(FixedWindowRollingPolicy)
+        LOG4CXX_CAST_ENTRY_CHAIN(RollingPolicyBase)
+        END_LOG4CXX_CAST_MAP()
 
-          int minIndex;
-          int maxIndex;
-          bool explicitActiveFile;
+        int minIndex;
+        int maxIndex;
+        bool explicitActiveFile;
 
-          /**
-           * It's almost always a bad idea to have a large window size, say over 12.
-           */
-          enum { MAX_WINDOW_SIZE = 12 };
+        /**
+         * It's almost always a bad idea to have a large window size, say over 12.
+         */
+        enum { MAX_WINDOW_SIZE = 12 };
 
-          bool purge(int purgeStart, int maxIndex, log4cxx::helpers::Pool& p) const;
+        bool purge(int purgeStart, int maxIndex, log4cxx::helpers::Pool& p) const;
 
-        public:
+    public:
 
-          FixedWindowRollingPolicy();
+        FixedWindowRollingPolicy();
 
-          void activateOptions(log4cxx::helpers::Pool& p);
-          void setOption(const LogString& option,
-             const LogString& value);
+        void activateOptions(log4cxx::helpers::Pool& p);
+        void setOption(const LogString& option,
+                       const LogString& value);
 
-          void rollover();
+        void rollover();
 
-          int getMaxIndex() const;
+        int getMaxIndex() const;
 
-          int getMinIndex() const;
+        int getMinIndex() const;
 
-          void setMaxIndex(int newVal);
-          void setMinIndex(int newVal);
+        void setMaxIndex(int newVal);
+        void setMinIndex(int newVal);
 
-			/**
-			 * {@inheritDoc}
- 			 */
-			RolloverDescriptionPtr initialize(
-				const	LogString&				currentActiveFile,
-				const	bool					append,
-						log4cxx::helpers::Pool&	pool);
+        /**
+         * {@inheritDoc}
+         */
+        RolloverDescriptionPtr initialize(
+            const   LogString&              currentActiveFile,
+            const   bool                    append,
+            log4cxx::helpers::Pool& pool);
 
-			/**
-			 * {@inheritDoc}
- 			 */
-			RolloverDescriptionPtr rollover(
-				const	LogString&				currentActiveFile,
-				const	bool					append,
-						log4cxx::helpers::Pool&	pool);
+        /**
+         * {@inheritDoc}
+         */
+        RolloverDescriptionPtr rollover(
+            const   LogString&              currentActiveFile,
+            const   bool                    append,
+            log4cxx::helpers::Pool& pool);
 
-protected:
-             log4cxx::pattern::PatternMap getFormatSpecifiers() const;
+    protected:
+        log4cxx::pattern::PatternMap getFormatSpecifiers() const;
 
-        };
+};
 
-        LOG4CXX_PTR_DEF(FixedWindowRollingPolicy);
+LOG4CXX_PTR_DEF(FixedWindowRollingPolicy);
 
-     }
+}
 }
 
 #endif

@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/exception.h>
 #include <apr_thread_proc.h>
 #if !defined(LOG4CXX)
-#define LOG4CXX 1
+    #define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 
@@ -29,57 +29,76 @@ using namespace log4cxx::helpers;
 
 
 ThreadSpecificData::ThreadSpecificData()
-    : ndcStack(), mdcMap() {
+    : ndcStack(), mdcMap()
+{
 }
 
-ThreadSpecificData::~ThreadSpecificData() {
+ThreadSpecificData::~ThreadSpecificData()
+{
 }
 
 
-log4cxx::NDC::Stack& ThreadSpecificData::getStack() {
-  return ndcStack;
+log4cxx::NDC::Stack& ThreadSpecificData::getStack()
+{
+    return ndcStack;
 }
 
-log4cxx::MDC::Map& ThreadSpecificData::getMap() {
-  return mdcMap;
+log4cxx::MDC::Map& ThreadSpecificData::getMap()
+{
+    return mdcMap;
 }
 
-ThreadSpecificData& ThreadSpecificData::getDataNoThreads() {
+ThreadSpecificData& ThreadSpecificData::getDataNoThreads()
+{
     static ThreadSpecificData noThreadData;
     return noThreadData;
 }
 
-ThreadSpecificData* ThreadSpecificData::getCurrentData() {
+ThreadSpecificData* ThreadSpecificData::getCurrentData()
+{
 #if APR_HAS_THREADS
-  void* pData = NULL;
-  apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
-  return (ThreadSpecificData*) pData;
+    void* pData = NULL;
+    apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
+    return (ThreadSpecificData*) pData;
 #else
-  return &getDataNoThreads();
+    return &getDataNoThreads();
 #endif
 }
 
-void ThreadSpecificData::recycle() {
+void ThreadSpecificData::recycle()
+{
 #if APR_HAS_THREADS
-    if(ndcStack.empty() && mdcMap.empty()) {
+
+    if (ndcStack.empty() && mdcMap.empty())
+    {
         void* pData = NULL;
         apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
-        if (stat == APR_SUCCESS && pData == this) {
+
+        if (stat == APR_SUCCESS && pData == this)
+        {
             stat = apr_threadkey_private_set(0, APRInitializer::getTlsKey());
-            if (stat == APR_SUCCESS) {
+
+            if (stat == APR_SUCCESS)
+            {
                 delete this;
             }
         }
     }
+
 #endif
 }
 
-void ThreadSpecificData::put(const LogString& key, const LogString& val) {
+void ThreadSpecificData::put(const LogString& key, const LogString& val)
+{
     ThreadSpecificData* data = getCurrentData();
-    if (data == 0) {
+
+    if (data == 0)
+    {
         data = createCurrentData();
     }
-    if (data != 0) {
+
+    if (data != 0)
+    {
         data->getMap()[key] = val;
     }
 }
@@ -87,16 +106,25 @@ void ThreadSpecificData::put(const LogString& key, const LogString& val) {
 
 
 
-void ThreadSpecificData::push(const LogString& val) {
+void ThreadSpecificData::push(const LogString& val)
+{
     ThreadSpecificData* data = getCurrentData();
-    if (data == 0) {
+
+    if (data == 0)
+    {
         data = createCurrentData();
     }
-    if (data != 0) {
+
+    if (data != 0)
+    {
         NDC::Stack& stack = data->getStack();
-        if(stack.empty()) {
+
+        if (stack.empty())
+        {
             stack.push(NDC::DiagnosticContext(val, val));
-        } else {
+        }
+        else
+        {
             LogString fullMessage(stack.top().second);
             fullMessage.append(1, (logchar) 0x20);
             fullMessage.append(val);
@@ -105,26 +133,35 @@ void ThreadSpecificData::push(const LogString& val) {
     }
 }
 
-void ThreadSpecificData::inherit(const NDC::Stack& src) {
+void ThreadSpecificData::inherit(const NDC::Stack& src)
+{
     ThreadSpecificData* data = getCurrentData();
-    if (data == 0) {
+
+    if (data == 0)
+    {
         data = createCurrentData();
     }
-    if (data != 0) {
+
+    if (data != 0)
+    {
         data->getStack() = src;
     }
 }
 
 
 
-ThreadSpecificData* ThreadSpecificData::createCurrentData() {
+ThreadSpecificData* ThreadSpecificData::createCurrentData()
+{
 #if APR_HAS_THREADS
     ThreadSpecificData* newData = new ThreadSpecificData();
     apr_status_t stat = apr_threadkey_private_set(newData, APRInitializer::getTlsKey());
-    if (stat != APR_SUCCESS) {
-      delete newData;
-      newData = NULL;
+
+    if (stat != APR_SUCCESS)
+    {
+        delete newData;
+        newData = NULL;
     }
+
     return newData;
 #else
     return 0;
