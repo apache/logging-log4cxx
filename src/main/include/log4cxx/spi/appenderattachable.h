@@ -31,18 +31,17 @@
 
 namespace log4cxx
 {
-
     namespace spi
     {
-
         /**
          * This Interface is for attaching Appenders to objects.
          */
         class LOG4CXX_EXPORT AppenderAttachable : public virtual helpers::Object
         {
         public:
-          // Methods
-         DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachable)
+            // Methods
+            DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachable)
+
             /**
              * Add an appender.
              */
@@ -59,10 +58,10 @@ namespace log4cxx
             virtual AppenderPtr getAppender(const LogString& name) const = 0;
 
             /**
-         Returns <code>true</code> if the specified appender is in list of
-         attached attached, <code>false</code> otherwise.
-         */
-         virtual bool isAttached(const AppenderPtr& appender) const = 0;
+             * Returns <code>true</code> if the specified appender is in list of
+             * attached appenders, <code>false</code> otherwise.
+             */
+            virtual bool isAttached(const AppenderPtr& appender) const = 0;
 
             /**
              * Remove all previously added appenders.
@@ -80,19 +79,16 @@ namespace log4cxx
              */
             virtual void removeAppender(const LogString& name) = 0;
 
-          // Dtor
-            virtual ~AppenderAttachable(){}
+            // Dtor
+            virtual ~AppenderAttachable() {}
         };
 
-
         LOG4CXX_PTR_DEF(AppenderAttachable);
-
     }
 }
 
 #if defined(_MSC_VER)
 #pragma warning ( pop )
 #endif
-
 
 #endif //_LOG4CXX_SPI_APPENDER_ATTACHABLE_H_

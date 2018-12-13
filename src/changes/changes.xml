@@ -25,7 +25,8 @@
 	<body>
 		<release	version="0.11.0"
 					date="XXXX-XX-XX"
-					description="Maintenance release">
+					description="Maintenance release.">
+			<action issue="LOGCXX-502" type="update">appenderattachable.h function doc formatted "incorrectly"</action>
 			<action issue="LOGCXX-500" type="update">Logging in Timing-Critical Applications</action>
 			<action issue="LOGCXX-493" type="fix">Wrong usage of milli- vs. micro- and non- vs. milliseconds in some docs.</action>
 			<action issue="LOGCXX-488" type="fix">Space after log level hides messages</action>
