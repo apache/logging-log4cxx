@@ -26,31 +26,31 @@ using namespace log4cxx::helpers;
 using namespace log4cxx;
 
 synchronized::synchronized(const Mutex& mutex1)
-    : mutex(mutex1.getAPRMutex())
+	: mutex(mutex1.getAPRMutex())
 {
 #if APR_HAS_THREADS
-    apr_status_t stat = apr_thread_mutex_lock(
-                            (apr_thread_mutex_t*) this->mutex);
+	apr_status_t stat = apr_thread_mutex_lock(
+			(apr_thread_mutex_t*) this->mutex);
 
-    if (stat != APR_SUCCESS)
-    {
-        throw MutexException(stat);
-    }
+	if (stat != APR_SUCCESS)
+	{
+		throw MutexException(stat);
+	}
 
 #endif
 }
 
 synchronized::synchronized(apr_thread_mutex_t* mutex1)
-    : mutex(mutex1)
+	: mutex(mutex1)
 {
 #if APR_HAS_THREADS
-    apr_status_t stat = apr_thread_mutex_lock(
-                            (apr_thread_mutex_t*) this->mutex);
+	apr_status_t stat = apr_thread_mutex_lock(
+			(apr_thread_mutex_t*) this->mutex);
 
-    if (stat != APR_SUCCESS)
-    {
-        throw MutexException(stat);
-    }
+	if (stat != APR_SUCCESS)
+	{
+		throw MutexException(stat);
+	}
 
 #endif
 }
@@ -58,13 +58,13 @@ synchronized::synchronized(apr_thread_mutex_t* mutex1)
 synchronized::~synchronized()
 {
 #if APR_HAS_THREADS
-    apr_status_t stat = apr_thread_mutex_unlock(
-                            (apr_thread_mutex_t*) mutex);
+	apr_status_t stat = apr_thread_mutex_unlock(
+			(apr_thread_mutex_t*) mutex);
 
-    if (stat != APR_SUCCESS)
-    {
-        throw MutexException(stat);
-    }
+	if (stat != APR_SUCCESS)
+	{
+		throw MutexException(stat);
+	}
 
 #endif
 }
@@ -72,25 +72,25 @@ synchronized::~synchronized()
 #if defined(RW_MUTEX)
 
 synchronized_read::synchronized_read(const RWMutex& mutex1)
-    : mutex(mutex1)
+	: mutex(mutex1)
 {
-    mutex.rdLock();
+	mutex.rdLock();
 }
 
 synchronized_read::~synchronized_read()
 {
-    mutex.rdUnlock();
+	mutex.rdUnlock();
 }
 
 synchronized_write::synchronized_write(const RWMutex& mutex1)
-    : mutex(mutex1)
+	: mutex(mutex1)
 {
-    mutex.wrLock();
+	mutex.wrLock();
 }
 
 synchronized_write::~synchronized_write()
 {
-    mutex.wrUnlock();
+	mutex.wrUnlock();
 }
 
 #endif // RW_MUTEX

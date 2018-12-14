@@ -32,19 +32,19 @@ It cannot be instantiated.
 */
 class LOG4CXX_EXPORT System
 {
-    public:
+	public:
 
-        /**
-        Gets the system property indicated by the specified key.
+		/**
+		Gets the system property indicated by the specified key.
 
-        @param key the name of the system property.
+		@param key the name of the system property.
 
-        @return the string value of the system property, or the default value if
-        there is no property with that key.
+		@return the string value of the system property, or the default value if
+		there is no property with that key.
 
-        @throws IllegalArgumentException if key is empty.
-        */
-        static LogString getProperty(const LogString& key);
+		@throws IllegalArgumentException if key is empty.
+		*/
+		static LogString getProperty(const LogString& key);
 
 };
 } // namespace helpers

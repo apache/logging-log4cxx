@@ -43,77 +43,77 @@ typedef helpers::ObjectPtrT<FormattingInfo> FormattingInfoPtr;
 class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::ObjectImpl
 {
 
-        /**
-         * Minimum length.
-         */
-        const int minLength;
+		/**
+		 * Minimum length.
+		 */
+		const int minLength;
 
-        /**
-         * Maximum length.
-         */
-        const int maxLength;
+		/**
+		 * Maximum length.
+		 */
+		const int maxLength;
 
-        /**
-         * Alignment.
-         */
-        const bool leftAlign;
+		/**
+		 * Alignment.
+		 */
+		const bool leftAlign;
 
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(FormattingInfo)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(FormattingInfo)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(FormattingInfo)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(FormattingInfo)
+		END_LOG4CXX_CAST_MAP()
 
 
-        /**
-         * Creates new instance.
-         * @param leftAlign left align if true.
-         * @param minLength minimum length.
-         * @param maxLength maximum length.
-         */
-        FormattingInfo(
-            const bool leftAlign, const int minLength, const int maxLength);
+		/**
+		 * Creates new instance.
+		 * @param leftAlign left align if true.
+		 * @param minLength minimum length.
+		 * @param maxLength maximum length.
+		 */
+		FormattingInfo(
+			const bool leftAlign, const int minLength, const int maxLength);
 
-        /**
-         * Gets default instance.
-         * @return default instance.
-         */
-        static FormattingInfoPtr getDefault();
+		/**
+		 * Gets default instance.
+		 * @return default instance.
+		 */
+		static FormattingInfoPtr getDefault();
 
-        /**
-         * Determine if left aligned.
-         * @return true if left aligned.
-         */
-        inline bool isLeftAligned() const
-        {
-            return leftAlign;
-        }
+		/**
+		 * Determine if left aligned.
+		 * @return true if left aligned.
+		 */
+		inline bool isLeftAligned() const
+		{
+			return leftAlign;
+		}
 
-        /**
-         * Get minimum length.
-         * @return minimum length.
-         */
-        inline int getMinLength() const
-        {
-            return minLength;
-        }
+		/**
+		 * Get minimum length.
+		 * @return minimum length.
+		 */
+		inline int getMinLength() const
+		{
+			return minLength;
+		}
 
-        /**
-         * Get maximum length.
-         * @return maximum length.
-         */
-        inline int getMaxLength() const
-        {
-            return maxLength;
-        }
+		/**
+		 * Get maximum length.
+		 * @return maximum length.
+		 */
+		inline int getMaxLength() const
+		{
+			return maxLength;
+		}
 
-        /**
-         * Adjust the content of the buffer based on the specified lengths and alignment.
-         *
-         * @param fieldStart start of field in buffer.
-         * @param buffer buffer to be modified.
-         */
-        void format(const int fieldStart, LogString& buffer) const;
+		/**
+		 * Adjust the content of the buffer based on the specified lengths and alignment.
+		 *
+		 * @param fieldStart start of field in buffer.
+		 * @param buffer buffer to be modified.
+		 */
+		void format(const int fieldStart, LogString& buffer) const;
 };
 LOG4CXX_PTR_DEF(FormattingInfo);
 }

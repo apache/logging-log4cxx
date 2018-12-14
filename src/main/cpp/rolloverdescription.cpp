@@ -30,30 +30,30 @@ RolloverDescription::RolloverDescription()
 }
 
 RolloverDescription::RolloverDescription(
-    const LogString& activeFileName1,
-    const bool append1,
-    const ActionPtr& synchronous1,
-    const ActionPtr& asynchronous1)
-    : activeFileName(activeFileName1),
-      append(append1),
-      synchronous(synchronous1),
-      asynchronous(asynchronous1)
+	const LogString& activeFileName1,
+	const bool append1,
+	const ActionPtr& synchronous1,
+	const ActionPtr& asynchronous1)
+	: activeFileName(activeFileName1),
+	  append(append1),
+	  synchronous(synchronous1),
+	  asynchronous(asynchronous1)
 {
 }
 
 LogString RolloverDescription::getActiveFileName() const
 {
-    return activeFileName;
+	return activeFileName;
 }
 
 bool RolloverDescription::getAppend() const
 {
-    return append;
+	return append;
 }
 
 ActionPtr RolloverDescription::getSynchronous() const
 {
-    return synchronous;
+	return synchronous;
 }
 
 /**
@@ -64,5 +64,5 @@ ActionPtr RolloverDescription::getSynchronous() const
  */
 ActionPtr RolloverDescription::getAsynchronous() const
 {
-    return asynchronous;
+	return asynchronous;
 }

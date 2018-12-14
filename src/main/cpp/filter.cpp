@@ -28,22 +28,22 @@ Filter::Filter() : next()
 
 void Filter::addRef() const
 {
-    ObjectImpl::addRef();
+	ObjectImpl::addRef();
 }
 
 void Filter::releaseRef() const
 {
-    ObjectImpl::releaseRef();
+	ObjectImpl::releaseRef();
 }
 
 FilterPtr Filter::getNext() const
 {
-    return next;
+	return next;
 }
 
 void Filter::setNext(const FilterPtr& newNext)
 {
-    next = newNext;
+	next = newNext;
 }
 
 void Filter::activateOptions(Pool&)

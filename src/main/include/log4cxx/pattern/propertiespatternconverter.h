@@ -37,40 +37,40 @@ namespace pattern
  *
  */
 class LOG4CXX_EXPORT PropertiesPatternConverter
-    : public LoggingEventPatternConverter
+	: public LoggingEventPatternConverter
 {
-        /**
-         * Name of property to output.
-         */
-        const LogString option;
+		/**
+		 * Name of property to output.
+		 */
+		const LogString option;
 
-        /**
-         * Private constructor.
-         * @param options options, may be null.
-         * @param logger logger for diagnostic messages, may be null.
-         */
-        PropertiesPatternConverter(const LogString& name, const LogString& option);
+		/**
+		 * Private constructor.
+		 * @param options options, may be null.
+		 * @param logger logger for diagnostic messages, may be null.
+		 */
+		PropertiesPatternConverter(const LogString& name, const LogString& option);
 
-    public:
-        DECLARE_LOG4CXX_PATTERN(PropertiesPatternConverter)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(PropertiesPatternConverter)
-        LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_PATTERN(PropertiesPatternConverter)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(PropertiesPatternConverter)
+		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
+		END_LOG4CXX_CAST_MAP()
 
-        /**
-         * Obtains an instance of PropertiesPatternConverter.
-         * @param options options, may be null or first element contains name of property to format.
-         * @return instance of PropertiesPatternConverter.
-         */
-        static PatternConverterPtr newInstance(
-            const std::vector<LogString>& options);
+		/**
+		 * Obtains an instance of PropertiesPatternConverter.
+		 * @param options options, may be null or first element contains name of property to format.
+		 * @return instance of PropertiesPatternConverter.
+		 */
+		static PatternConverterPtr newInstance(
+			const std::vector<LogString>& options);
 
-        using LoggingEventPatternConverter::format;
+		using LoggingEventPatternConverter::format;
 
-        void format(const log4cxx::spi::LoggingEventPtr& event,
-                    LogString& toAppendTo,
-                    log4cxx::helpers::Pool& p) const;
+		void format(const log4cxx::spi::LoggingEventPtr& event,
+			LogString& toAppendTo,
+			log4cxx::helpers::Pool& p) const;
 };
 }
 }

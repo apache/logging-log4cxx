@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #if defined(_MSC_VER)
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -32,22 +32,22 @@ using namespace helpers;
 IMPLEMENT_LOG4CXX_OBJECT(FileLocationPatternConverter)
 
 FileLocationPatternConverter::FileLocationPatternConverter() :
-    LoggingEventPatternConverter(LOG4CXX_STR("File Location"),
-                                 LOG4CXX_STR("file"))
+	LoggingEventPatternConverter(LOG4CXX_STR("File Location"),
+		LOG4CXX_STR("file"))
 {
 }
 
 PatternConverterPtr FileLocationPatternConverter::newInstance(
-    const std::vector<LogString>& /* options */ )
+	const std::vector<LogString>& /* options */ )
 {
-    static PatternConverterPtr instance(new FileLocationPatternConverter());
-    return instance;
+	static PatternConverterPtr instance(new FileLocationPatternConverter());
+	return instance;
 }
 
 void FileLocationPatternConverter::format(
-    const LoggingEventPtr& event,
-    LogString& toAppendTo,
-    Pool& /* p */ ) const
+	const LoggingEventPtr& event,
+	LogString& toAppendTo,
+	Pool& /* p */ ) const
 {
-    append(toAppendTo, event->getLocationInformation().getFileName());
+	append(toAppendTo, event->getLocationInformation().getFileName());
 }

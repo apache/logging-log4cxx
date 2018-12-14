@@ -20,7 +20,7 @@
 #include <log4cxx/log4cxx.h>
 
 extern "C" {
-    typedef struct apr_thread_mutex_t apr_thread_mutex_t;
+	typedef struct apr_thread_mutex_t apr_thread_mutex_t;
 }
 
 namespace log4cxx
@@ -32,17 +32,17 @@ class Mutex;
 /** utility class for objects multi-thread synchronization.*/
 class LOG4CXX_EXPORT synchronized
 {
-    public:
-        synchronized(const Mutex& mutex);
-        synchronized(apr_thread_mutex_t* mutex);
-        ~synchronized();
+	public:
+		synchronized(const Mutex& mutex);
+		synchronized(apr_thread_mutex_t* mutex);
+		~synchronized();
 
 
-    private:
-        void* mutex;
-        //  prevent use of copy and assignment
-        synchronized(const synchronized&);
-        synchronized& operator=(const synchronized&);
+	private:
+		void* mutex;
+		//  prevent use of copy and assignment
+		synchronized(const synchronized&);
+		synchronized& operator=(const synchronized&);
 };
 }
 }
@@ -58,16 +58,16 @@ class RWMutex;
 // utility class for objects multi-thread synchronization.
 class LOG4CXX_EXPORT synchronized_read
 {
-    public:
-        synchronized_read(const RWMutex& mutex);
-        ~synchronized_read();
+	public:
+		synchronized_read(const RWMutex& mutex);
+		~synchronized_read();
 
 
-    private:
-        const RWMutex& mutex;
-        //  prevent use of copy and assignment
-        synchronized_read(const synchronized_read&);
-        synchronized_read& operator=(const synchronized_read&);
+	private:
+		const RWMutex& mutex;
+		//  prevent use of copy and assignment
+		synchronized_read(const synchronized_read&);
+		synchronized_read& operator=(const synchronized_read&);
 };
 }
 }
@@ -81,16 +81,16 @@ class RWMutex;
 // utility class for objects multi-thread synchronization.
 class LOG4CXX_EXPORT synchronized_write
 {
-    public:
-        synchronized_write(const RWMutex& mutex);
-        ~synchronized_write();
+	public:
+		synchronized_write(const RWMutex& mutex);
+		~synchronized_write();
 
 
-    private:
-        const RWMutex& mutex;
-        //  prevent use of copy and assignment
-        synchronized_write(const synchronized_write&);
-        synchronized_write& operator=(const synchronized_write&);
+	private:
+		const RWMutex& mutex;
+		//  prevent use of copy and assignment
+		synchronized_write(const synchronized_write&);
+		synchronized_write& operator=(const synchronized_write&);
 };
 }
 }

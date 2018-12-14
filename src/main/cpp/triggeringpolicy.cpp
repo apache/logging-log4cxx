@@ -29,10 +29,10 @@ TriggeringPolicy::~TriggeringPolicy()
 
 void TriggeringPolicy::addRef() const
 {
-    ObjectImpl::addRef();
+	ObjectImpl::addRef();
 }
 
 void TriggeringPolicy::releaseRef() const
 {
-    ObjectImpl::releaseRef();
+	ObjectImpl::releaseRef();
 }

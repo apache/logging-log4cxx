@@ -31,12 +31,12 @@ a sub-class of Logger.
 */
 class LOG4CXX_EXPORT LoggerFactory : public virtual helpers::Object
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerFactory)
-        virtual ~LoggerFactory() {}
-        virtual LoggerPtr makeNewLoggerInstance(
-            log4cxx::helpers::Pool& pool,
-            const LogString& name) const = 0;
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(LoggerFactory)
+		virtual ~LoggerFactory() {}
+		virtual LoggerPtr makeNewLoggerInstance(
+			log4cxx::helpers::Pool& pool,
+			const LogString& name) const = 0;
 };
 
 

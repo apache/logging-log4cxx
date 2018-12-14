@@ -31,14 +31,14 @@ printing DateFormat in the package.
 */
 class LOG4CXX_EXPORT RelativeTimeDateFormat : public DateFormat
 {
-    public:
-        RelativeTimeDateFormat();
-        virtual void format(LogString& s,
-                            log4cxx_time_t tm,
-                            log4cxx::helpers::Pool& p) const;
+	public:
+		RelativeTimeDateFormat();
+		virtual void format(LogString& s,
+			log4cxx_time_t tm,
+			log4cxx::helpers::Pool& p) const;
 
-    private:
-        log4cxx_time_t startTime;
+	private:
+		log4cxx_time_t startTime;
 
 };
 }  // namespace helpers

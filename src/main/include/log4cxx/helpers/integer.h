@@ -27,21 +27,21 @@ namespace helpers
 {
 class LOG4CXX_EXPORT Integer : public ObjectImpl
 {
-        const int val;
-    public:
-        DECLARE_LOG4CXX_OBJECT(Integer)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(Integer)
-        END_LOG4CXX_CAST_MAP()
+		const int val;
+	public:
+		DECLARE_LOG4CXX_OBJECT(Integer)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(Integer)
+		END_LOG4CXX_CAST_MAP()
 
-        Integer();
-        Integer(int i);
-        virtual ~Integer();
+		Integer();
+		Integer(int i);
+		virtual ~Integer();
 
-        inline int intValue() const
-        {
-            return val;
-        }
+		inline int intValue() const
+		{
+			return val;
+		}
 
 };
 

@@ -19,7 +19,7 @@
 #define _LOG4CXX_HELPERS_SOCKET_H
 
 extern "C" {
-    struct apr_socket_t;
+	struct apr_socket_t;
 }
 
 
@@ -42,44 +42,44 @@ local firewall.
 */
 class LOG4CXX_EXPORT Socket : public helpers::ObjectImpl
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(Socket)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(Socket)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Socket)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(Socket)
+		END_LOG4CXX_CAST_MAP()
 
-        /** Creates a stream socket and connects it to the specified port
-        number at the specified IP address.
-        */
-        Socket(InetAddressPtr& address, int port);
-        Socket(apr_socket_t* socket, apr_pool_t* pool);
-        ~Socket();
+		/** Creates a stream socket and connects it to the specified port
+		number at the specified IP address.
+		*/
+		Socket(InetAddressPtr& address, int port);
+		Socket(apr_socket_t* socket, apr_pool_t* pool);
+		~Socket();
 
-        size_t write(ByteBuffer&);
+		size_t write(ByteBuffer&);
 
-        /** Closes this socket. */
-        void close();
+		/** Closes this socket. */
+		void close();
 
-        /** Returns the value of this socket's address field. */
-        InetAddressPtr getInetAddress() const;
+		/** Returns the value of this socket's address field. */
+		InetAddressPtr getInetAddress() const;
 
-        /** Returns the value of this socket's port field. */
-        int getPort() const;
-    private:
-        Socket(const Socket&);
-        Socket& operator=(const Socket&);
+		/** Returns the value of this socket's port field. */
+		int getPort() const;
+	private:
+		Socket(const Socket&);
+		Socket& operator=(const Socket&);
 
-        Pool pool;
+		Pool pool;
 
-        apr_socket_t* socket;
+		apr_socket_t* socket;
 
 
-        /** The IP address of the remote end of this socket. */
-        InetAddressPtr address;
+		/** The IP address of the remote end of this socket. */
+		InetAddressPtr address;
 
-        /** The port number on the remote host to which
-        this socket is connected. */
-        int port;
+		/** The port number on the remote host to which
+		this socket is connected. */
+		int port;
 };
 
 LOG4CXX_PTR_DEF(Socket);

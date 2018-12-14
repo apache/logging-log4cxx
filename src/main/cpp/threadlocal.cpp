@@ -24,17 +24,17 @@ using namespace log4cxx;
 
 apr_threadkey_t* ThreadLocal::create(Pool& p)
 {
-    apr_threadkey_t* key = 0;
+	apr_threadkey_t* key = 0;
 #if APR_HAS_THREADS
-    apr_status_t stat = apr_threadkey_private_create(&key, 0, p.getAPRPool());
+	apr_status_t stat = apr_threadkey_private_create(&key, 0, p.getAPRPool());
 
-    if (stat != APR_SUCCESS)
-    {
-        throw RuntimeException(stat);
-    }
+	if (stat != APR_SUCCESS)
+	{
+		throw RuntimeException(stat);
+	}
 
 #endif
-    return key;
+	return key;
 }
 
 ThreadLocal::ThreadLocal() : p(), key(create(p))
@@ -48,27 +48,27 @@ ThreadLocal::~ThreadLocal()
 void ThreadLocal::set(void* priv)
 {
 #if APR_HAS_THREADS
-    apr_status_t stat = apr_threadkey_private_set(priv, key);
+	apr_status_t stat = apr_threadkey_private_set(priv, key);
 
-    if (stat != APR_SUCCESS)
-    {
-        throw RuntimeException(stat);
-    }
+	if (stat != APR_SUCCESS)
+	{
+		throw RuntimeException(stat);
+	}
 
 #endif
 }
 
 void* ThreadLocal::get()
 {
-    void* retval = 0;
+	void* retval = 0;
 #if APR_HAS_THREADS
-    apr_status_t stat = apr_threadkey_private_get(&retval, key);
+	apr_status_t stat = apr_threadkey_private_get(&retval, key);
 
-    if (stat != APR_SUCCESS)
-    {
-        throw RuntimeException(stat);
-    }
+	if (stat != APR_SUCCESS)
+	{
+		throw RuntimeException(stat);
+	}
 
 #endif
-    return retval;
+	return retval;
 }

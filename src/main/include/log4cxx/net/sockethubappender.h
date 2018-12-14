@@ -19,8 +19,8 @@
 #define _LOG4CXX_NET_SOCKET_HUB_APPENDER_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -108,93 +108,93 @@ exiting the application.
 
 class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 {
-    private:
-        /**
-        The default port number of the ServerSocket will be created on.
-        */
-        static int DEFAULT_PORT;
+	private:
+		/**
+		The default port number of the ServerSocket will be created on.
+		*/
+		static int DEFAULT_PORT;
 
-        int port;
-        ObjectOutputStreamList streams;
-        bool locationInfo;
+		int port;
+		ObjectOutputStreamList streams;
+		bool locationInfo;
 
-    public:
-        DECLARE_LOG4CXX_OBJECT(SocketHubAppender)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(SocketHubAppender)
-        LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_OBJECT(SocketHubAppender)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(SocketHubAppender)
+		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_CAST_MAP()
 
-        SocketHubAppender();
-        ~SocketHubAppender();
+		SocketHubAppender();
+		~SocketHubAppender();
 
-        /**
-        Connects to remote server at <code>address</code> and <code>port</code>.
-        */
-        SocketHubAppender(int port) ;
+		/**
+		Connects to remote server at <code>address</code> and <code>port</code>.
+		*/
+		SocketHubAppender(int port) ;
 
-        /**
-        Set up the socket server on the specified port.
-        */
-        virtual void activateOptions(log4cxx::helpers::Pool& p);
+		/**
+		Set up the socket server on the specified port.
+		*/
+		virtual void activateOptions(log4cxx::helpers::Pool& p);
 
-        /**
-        Set options
-        */
-        virtual void setOption(const LogString& option, const LogString& value);
+		/**
+		Set options
+		*/
+		virtual void setOption(const LogString& option, const LogString& value);
 
-        virtual void close();
+		virtual void close();
 
-        /**
-        Append an event to all of current connections. */
-        virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		/**
+		Append an event to all of current connections. */
+		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
-        /**
-        The SocketHubAppender does not use a layout. Hence, this method returns
-        <code>false</code>. */
-        virtual bool requiresLayout() const
-        {
-            return false;
-        }
+		/**
+		The SocketHubAppender does not use a layout. Hence, this method returns
+		<code>false</code>. */
+		virtual bool requiresLayout() const
+		{
+			return false;
+		}
 
-        /**
-        The <b>Port</b> option takes a positive integer representing
-        the port where the server is waiting for connections. */
-        inline void setPort(int port1)
-        {
-            this->port = port1;
-        }
+		/**
+		The <b>Port</b> option takes a positive integer representing
+		the port where the server is waiting for connections. */
+		inline void setPort(int port1)
+		{
+			this->port = port1;
+		}
 
-        /**
-        Returns value of the <b>Port</b> option. */
-        inline int getPort() const
-        {
-            return port;
-        }
+		/**
+		Returns value of the <b>Port</b> option. */
+		inline int getPort() const
+		{
+			return port;
+		}
 
-        /**
-        The <b>LocationInfo</b> option takes a boolean value. If true,
-        the information sent to the remote host will include location
-        information. By default no location information is sent to the server. */
-        inline void setLocationInfo(bool locationInfo1)
-        {
-            this->locationInfo = locationInfo1;
-        }
+		/**
+		The <b>LocationInfo</b> option takes a boolean value. If true,
+		the information sent to the remote host will include location
+		information. By default no location information is sent to the server. */
+		inline void setLocationInfo(bool locationInfo1)
+		{
+			this->locationInfo = locationInfo1;
+		}
 
-        /**
-        Returns value of the <b>LocationInfo</b> option. */
-        inline bool getLocationInfo() const
-        {
-            return locationInfo;
-        }
+		/**
+		Returns value of the <b>LocationInfo</b> option. */
+		inline bool getLocationInfo() const
+		{
+			return locationInfo;
+		}
 
-        /**
-        Start the ServerMonitor thread. */
-    private:
-        void startServer();
+		/**
+		Start the ServerMonitor thread. */
+	private:
+		void startServer();
 
-        helpers::Thread thread;
-        static void* LOG4CXX_THREAD_FUNC monitor(apr_thread_t* thread, void* data);
+		helpers::Thread thread;
+		static void* LOG4CXX_THREAD_FUNC monitor(apr_thread_t* thread, void* data);
 
 }; // class SocketHubAppender
 LOG4CXX_PTR_DEF(SocketHubAppender);
@@ -203,7 +203,7 @@ LOG4CXX_PTR_DEF(SocketHubAppender);
 
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 #endif // _LOG4CXX_NET_SOCKET_HUB_APPENDER_H

@@ -25,7 +25,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DatagramPacket)
 /** Constructs a DatagramPacket for receiving packets of length
 <code>length</code>. */
 DatagramPacket::DatagramPacket(void* buf1, int length1)
-    : buf(buf1), offset(0), length(length1), address(), port(0)
+	: buf(buf1), offset(0), length(length1), address(), port(0)
 {
 }
 
@@ -33,23 +33,23 @@ DatagramPacket::DatagramPacket(void* buf1, int length1)
 <code>length/<code> to the specified port number on the specified
 host. */
 DatagramPacket::DatagramPacket(void* buf1, int length1, InetAddressPtr address1,
-                               int port1)
-    : buf(buf1), offset(0), length(length1), address(address1), port(port1)
+	int port1)
+	: buf(buf1), offset(0), length(length1), address(address1), port(port1)
 {
 }
 
 /** Constructs a DatagramPacket for receiving packets of length
 <code>length</code>, specifying an offset into the buffer. */
 DatagramPacket::DatagramPacket(void* buf1, int offset1, int length1)
-    : buf(buf1), offset(offset1), length(length1), address(), port(0)
+	: buf(buf1), offset(offset1), length(length1), address(), port(0)
 {
 }
 /** Constructs a datagram packet for sending packets of length
 <code>length</code> with offset <code>offset</code> to the
 specified port number on the specified host. */
 DatagramPacket::DatagramPacket(void* buf1, int offset1, int length1,
-                               InetAddressPtr address1, int port1)
-    : buf(buf1), offset(offset1), length(length1), address(address1), port(port1)
+	InetAddressPtr address1, int port1)
+	: buf(buf1), offset(offset1), length(length1), address(address1), port(port1)
 {
 }
 

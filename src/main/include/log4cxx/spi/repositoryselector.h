@@ -42,10 +42,10 @@ assumptions about the application context or on its management.
 */
 class LOG4CXX_EXPORT RepositorySelector : public virtual helpers::Object
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(RepositorySelector)
-        virtual ~RepositorySelector() {}
-        virtual LoggerRepositoryPtr& getLoggerRepository() = 0;
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(RepositorySelector)
+		virtual ~RepositorySelector() {}
+		virtual LoggerRepositoryPtr& getLoggerRepository() = 0;
 };
 LOG4CXX_PTR_DEF(RepositorySelector);
 }  //namespace spi

@@ -32,11 +32,11 @@ class Class;
 
 class LOG4CXX_EXPORT Loader
 {
-    public:
-        static const Class& loadClass(const LogString& clazz);
+	public:
+		static const Class& loadClass(const LogString& clazz);
 
-        static InputStreamPtr getResourceAsStream(
-            const LogString& name);
+		static InputStreamPtr getResourceAsStream(
+			const LogString& name);
 };
 }  // namespace helpers
 } // namespace log4cxx

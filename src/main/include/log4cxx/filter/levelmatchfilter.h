@@ -19,8 +19,8 @@
 #define _LOG4CXX_FILTER_LEVEL_MATCH_FILTER_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -48,59 +48,59 @@ then {@link spi::Filter#DENY DENY} is returned. If there is no match,
 
 class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
 {
-    private:
-        bool acceptOnMatch;
-        LevelPtr levelToMatch;
+	private:
+		bool acceptOnMatch;
+		LevelPtr levelToMatch;
 
-    public:
-        typedef spi::Filter BASE_CLASS;
-        DECLARE_LOG4CXX_OBJECT(LevelMatchFilter)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(LevelMatchFilter)
-        LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		typedef spi::Filter BASE_CLASS;
+		DECLARE_LOG4CXX_OBJECT(LevelMatchFilter)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(LevelMatchFilter)
+		LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
+		END_LOG4CXX_CAST_MAP()
 
-        LevelMatchFilter();
+		LevelMatchFilter();
 
-        /**
-        Set options
-        */
-        virtual void setOption(const LogString& option,
-                               const LogString& value);
+		/**
+		Set options
+		*/
+		virtual void setOption(const LogString& option,
+			const LogString& value);
 
-        void setLevelToMatch(const LogString& levelToMatch);
+		void setLevelToMatch(const LogString& levelToMatch);
 
-        LogString getLevelToMatch() const;
+		LogString getLevelToMatch() const;
 
-        inline void setAcceptOnMatch(bool acceptOnMatch1)
-        {
-            this->acceptOnMatch = acceptOnMatch1;
-        }
+		inline void setAcceptOnMatch(bool acceptOnMatch1)
+		{
+			this->acceptOnMatch = acceptOnMatch1;
+		}
 
-        inline bool getAcceptOnMatch() const
-        {
-            return acceptOnMatch;
-        }
+		inline bool getAcceptOnMatch() const
+		{
+			return acceptOnMatch;
+		}
 
-        /**
-        Return the decision of this filter.
+		/**
+		Return the decision of this filter.
 
-        Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
-        <b>LevelToMatch</b> option is not set or if there is not match.
-        Otherwise, if there is a match, then the returned decision is
-        {@link spi::Filter#ACCEPT ACCEPT} if the <b>AcceptOnMatch</b>
-        property is set to <code>true</code>. The returned decision is
-        {@link spi::Filter#DENY DENY} if the
-        <b>AcceptOnMatch</b> property is set to false.
-        */
-        FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
+		<b>LevelToMatch</b> option is not set or if there is not match.
+		Otherwise, if there is a match, then the returned decision is
+		{@link spi::Filter#ACCEPT ACCEPT} if the <b>AcceptOnMatch</b>
+		property is set to <code>true</code>. The returned decision is
+		{@link spi::Filter#DENY DENY} if the
+		<b>AcceptOnMatch</b> property is set to false.
+		*/
+		FilterDecision decide(const spi::LoggingEventPtr& event) const;
 }; // class LevelMatchFilter
 LOG4CXX_PTR_DEF(LevelMatchFilter);
 }  // namespace filter
 } // namespace log4cxx
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 #endif // _LOG4CXX_FILTER_LEVEL_MATCH_FILTER_H

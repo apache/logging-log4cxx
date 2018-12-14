@@ -44,15 +44,15 @@ void ByteArrayOutputStream::flush(Pool& /* p */)
 
 void ByteArrayOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 {
-    size_t sz = array.size();
-    array.resize(sz + buf.remaining());
-    memcpy(&array[sz], buf.current(), buf.remaining());
-    buf.position(buf.limit());
+	size_t sz = array.size();
+	array.resize(sz + buf.remaining());
+	memcpy(&array[sz], buf.current(), buf.remaining());
+	buf.position(buf.limit());
 }
 
 std::vector<unsigned char> ByteArrayOutputStream::toByteArray() const
 {
-    return array;
+	return array;
 }
 
 

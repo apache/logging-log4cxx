@@ -30,91 +30,91 @@ namespace nt
  */
 class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 {
-    public:
-        DECLARE_LOG4CXX_OBJECT(NTEventLogAppender)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(NTEventLogAppender)
-        LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_OBJECT(NTEventLogAppender)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(NTEventLogAppender)
+		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_CAST_MAP()
 
-        NTEventLogAppender();
-        NTEventLogAppender(const LogString& server, const LogString& log,
-                           const LogString& source, const LayoutPtr& layout);
+		NTEventLogAppender();
+		NTEventLogAppender(const LogString& server, const LogString& log,
+			const LogString& source, const LayoutPtr& layout);
 
-        virtual ~NTEventLogAppender();
+		virtual ~NTEventLogAppender();
 
-        virtual void activateOptions(log4cxx::helpers::Pool& p);
-        virtual void close();
-        virtual void setOption(const LogString& option, const LogString& value);
+		virtual void activateOptions(log4cxx::helpers::Pool& p);
+		virtual void close();
+		virtual void setOption(const LogString& option, const LogString& value);
 
-        /**
-         * The SocketAppender does not use a layout. Hence, this method
-         * returns <code>false</code>.
-         *
-         */
-        bool requiresLayout() const
-        {
-            return true;
-        }
+		/**
+		 * The SocketAppender does not use a layout. Hence, this method
+		 * returns <code>false</code>.
+		 *
+		 */
+		bool requiresLayout() const
+		{
+			return true;
+		}
 
-        void setSource(const LogString& source)
-        {
-            this->source.assign(source);
-        }
+		void setSource(const LogString& source)
+		{
+			this->source.assign(source);
+		}
 
-        const LogString& getSource() const
-        {
-            return source;
-        }
+		const LogString& getSource() const
+		{
+			return source;
+		}
 
-        void setLog(const LogString& log)
-        {
-            this->log.assign(log);
-        }
+		void setLog(const LogString& log)
+		{
+			this->log.assign(log);
+		}
 
-        const LogString& getLog() const
-        {
-            return log;
-        }
+		const LogString& getLog() const
+		{
+			return log;
+		}
 
-        void setServer(const LogString& server)
-        {
-            this->server.assign(server);
-        }
+		void setServer(const LogString& server)
+		{
+			this->server.assign(server);
+		}
 
-        const LogString& getServer() const
-        {
-            return server;
-        }
+		const LogString& getServer() const
+		{
+			return server;
+		}
 
 
-    protected:
-        //
-        //   these typedef are proxies for the real Win32 definitions
-        //     and need to be cast to the global definitions before
-        //     use with a Win32 API call
-        typedef void SID;
-        typedef void* HANDLE;
+	protected:
+		//
+		//   these typedef are proxies for the real Win32 definitions
+		//     and need to be cast to the global definitions before
+		//     use with a Win32 API call
+		typedef void SID;
+		typedef void* HANDLE;
 
-        virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
-        static unsigned short getEventType(const spi::LoggingEventPtr& event);
-        static unsigned short getEventCategory(const spi::LoggingEventPtr& event);
-        /*
-         * Add this source with appropriate configuration keys to the registry.
-         */
-        void addRegistryInfo();
+		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		static unsigned short getEventType(const spi::LoggingEventPtr& event);
+		static unsigned short getEventCategory(const spi::LoggingEventPtr& event);
+		/*
+		 * Add this source with appropriate configuration keys to the registry.
+		 */
+		void addRegistryInfo();
 
-        // Data
-        LogString server;
-        LogString log;
-        LogString source;
-        HANDLE hEventLog;
-        SID* pCurrentUserSID;
-        static LogString getErrorString(const LogString& function);
+		// Data
+		LogString server;
+		LogString log;
+		LogString source;
+		HANDLE hEventLog;
+		SID* pCurrentUserSID;
+		static LogString getErrorString(const LogString& function);
 
-    private:
-        NTEventLogAppender(const NTEventLogAppender&);
-        NTEventLogAppender& operator=(const NTEventLogAppender&);
+	private:
+		NTEventLogAppender(const NTEventLogAppender&);
+		NTEventLogAppender& operator=(const NTEventLogAppender&);
 }; // class NTEventLogAppender
 
 LOG4CXX_PTR_DEF(NTEventLogAppender);

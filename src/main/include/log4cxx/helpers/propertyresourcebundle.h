@@ -34,25 +34,25 @@ property file.
 */
 class LOG4CXX_EXPORT PropertyResourceBundle : public ResourceBundle
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(PropertyResourceBundle)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(PropertyResourceBundle)
-        LOG4CXX_CAST_ENTRY_CHAIN(ResourceBundle)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(PropertyResourceBundle)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(PropertyResourceBundle)
+		LOG4CXX_CAST_ENTRY_CHAIN(ResourceBundle)
+		END_LOG4CXX_CAST_MAP()
 
-        /**
-        Creates a property resource bundle.
-        @param inStream property file to read from.
-        @throw IOException if an error occurred when reading from the
-        input stream.
-        */
-        PropertyResourceBundle(InputStreamPtr inStream);
+		/**
+		Creates a property resource bundle.
+		@param inStream property file to read from.
+		@throw IOException if an error occurred when reading from the
+		input stream.
+		*/
+		PropertyResourceBundle(InputStreamPtr inStream);
 
-        virtual LogString getString(const LogString& key) const;
+		virtual LogString getString(const LogString& key) const;
 
-    protected:
-        Properties properties;
+	protected:
+		Properties properties;
 }; // class PropertyResourceBundle
 LOG4CXX_PTR_DEF(PropertyResourceBundle);
 }  // namespace helpers

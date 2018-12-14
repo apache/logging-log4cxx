@@ -28,9 +28,9 @@
 //   switching between the initialization styles.
 //
 #if LOG4CXX_HELGRIND
-    #define _LOG4CXX_OBJECTPTR_INIT(x) : ObjectPtrBase() { exchange(x);
+	#define _LOG4CXX_OBJECTPTR_INIT(x) : ObjectPtrBase() { exchange(x);
 #else
-    #define _LOG4CXX_OBJECTPTR_INIT(x) : ObjectPtrBase(), p(x) {
+	#define _LOG4CXX_OBJECTPTR_INIT(x) : ObjectPtrBase(), p(x) {
 #endif
 
 namespace log4cxx
@@ -41,22 +41,22 @@ class Class;
 
 class LOG4CXX_EXPORT ObjectPtrBase
 {
-    public:
-        ObjectPtrBase();
-        virtual ~ObjectPtrBase();
-        static void checkNull(const int& null);
-        static void* exchange(void** destination, void* newValue);
-        virtual void* cast(const Class& cls) const = 0;
+	public:
+		ObjectPtrBase();
+		virtual ~ObjectPtrBase();
+		static void checkNull(const int& null);
+		static void* exchange(void** destination, void* newValue);
+		virtual void* cast(const Class& cls) const = 0;
 };
 
 
 /** smart pointer to a Object descendant */
 template<typename T> class ObjectPtrT : public ObjectPtrBase
 {
-    public:
-        ObjectPtrT(const int& null)
-        _LOG4CXX_OBJECTPTR_INIT(0)
-        ObjectPtrBase::checkNull(null);
+	public:
+		ObjectPtrT(const int& null)
+		_LOG4CXX_OBJECTPTR_INIT(0)
+		ObjectPtrBase::checkNull(null);
 }
 
 ObjectPtrT()
@@ -68,7 +68,7 @@ _LOG4CXX_OBJECTPTR_INIT(p1)
 
 if (this->p != 0)
 {
-    this->p->addRef();
+	this->p->addRef();
 }
 }
 
@@ -78,7 +78,7 @@ _LOG4CXX_OBJECTPTR_INIT(p1.p)
 
 if (this->p != 0)
 {
-    this->p->addRef();
+	this->p->addRef();
 }
 }
 
@@ -87,7 +87,7 @@ _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
 
 if (this->p != 0)
 {
-    this->p->addRef();
+	this->p->addRef();
 }
 }
 
@@ -96,119 +96,119 @@ _LOG4CXX_OBJECTPTR_INIT(reinterpret_cast<T*>(p1.cast(T::getStaticClass())))
 
 if (this->p != 0)
 {
-    this->p->addRef();
+	this->p->addRef();
 }
 }
 
 
 ~ObjectPtrT()
 {
-    if (p != 0)
-    {
-        p->releaseRef();
-    }
+	if (p != 0)
+	{
+		p->releaseRef();
+	}
 }
 
 ObjectPtrT& operator=(const ObjectPtrT& p1)
 {
-    T* newPtr = p1.p;
+	T* newPtr = p1.p;
 
-    if (newPtr != 0)
-    {
-        newPtr->addRef();
-    }
+	if (newPtr != 0)
+	{
+		newPtr->addRef();
+	}
 
-    T* oldPtr = exchange(newPtr);
+	T* oldPtr = exchange(newPtr);
 
-    if (oldPtr != 0)
-    {
-        oldPtr->releaseRef();
-    }
+	if (oldPtr != 0)
+	{
+		oldPtr->releaseRef();
+	}
 
-    return *this;
+	return *this;
 }
 
 ObjectPtrT& operator=(const int& null)   //throw(IllegalArgumentException)
 {
-    //
-    //   throws IllegalArgumentException if null != 0
-    //
-    ObjectPtrBase::checkNull(null);
-    T* oldPtr = exchange(0);
+	//
+	//   throws IllegalArgumentException if null != 0
+	//
+	ObjectPtrBase::checkNull(null);
+	T* oldPtr = exchange(0);
 
-    if (oldPtr != 0)
-    {
-        oldPtr->releaseRef();
-    }
+	if (oldPtr != 0)
+	{
+		oldPtr->releaseRef();
+	}
 
-    return *this;
+	return *this;
 }
 
 ObjectPtrT& operator=(T* p1)
 {
-    if (p1 != 0)
-    {
-        p1->addRef();
-    }
+	if (p1 != 0)
+	{
+		p1->addRef();
+	}
 
-    T* oldPtr = exchange(p1);
+	T* oldPtr = exchange(p1);
 
-    if (oldPtr != 0)
-    {
-        oldPtr->releaseRef();
-    }
+	if (oldPtr != 0)
+	{
+		oldPtr->releaseRef();
+	}
 
-    return *this;
+	return *this;
 }
 
 
 ObjectPtrT& operator=(ObjectPtrBase& p1)
 {
-    T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
-    return operator=(newPtr);
+	T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
+	return operator=(newPtr);
 }
 
 ObjectPtrT& operator=(const ObjectPtrBase& p1)
 {
-    T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
-    return operator=(newPtr);
+	T* newPtr = reinterpret_cast<T*>(p1.cast(T::getStaticClass()));
+	return operator=(newPtr);
 }
 
 bool operator==(const ObjectPtrT& p1) const
 {
-    return (this->p == p1.p);
+	return (this->p == p1.p);
 }
 bool operator!=(const ObjectPtrT& p1) const
 {
-    return (this->p != p1.p);
+	return (this->p != p1.p);
 }
 bool operator<(const ObjectPtrT& p1) const
 {
-    return (this->p < p1.p);
+	return (this->p < p1.p);
 }
 bool operator==(const T* p1) const
 {
-    return (this->p == p1);
+	return (this->p == p1);
 }
 bool operator!=(const T* p1) const
 {
-    return (this->p != p1);
+	return (this->p != p1);
 }
 bool operator<(const T* p1) const
 {
-    return (this->p < p1);
+	return (this->p < p1);
 }
 T* operator->() const
 {
-    return p;
+	return p;
 }
 T& operator*() const
 {
-    return *p;
+	return *p;
 }
 operator T* () const
 {
-    return p;
+	return p;
 }
 
 
@@ -217,24 +217,24 @@ private:
 T* p;
 virtual void* cast(const Class& cls) const
 {
-    if (p != 0)
-    {
-        return const_cast<void*>(p->cast(cls));
-    }
+	if (p != 0)
+	{
+		return const_cast<void*>(p->cast(cls));
+	}
 
-    return 0;
+	return 0;
 }
 T* exchange(const T* newValue)
 {
-    // Avoid GCC strict aliasing warnings
-    union
-    {
-        T** in;
-        void** out;
-    } temp = { &p };
-    return static_cast<T*>(ObjectPtrBase::exchange(
-                               temp.out,
-                               const_cast<T*>(newValue)));
+	// Avoid GCC strict aliasing warnings
+	union
+	{
+		T** in;
+		void** out;
+	} temp = { &p };
+	return static_cast<T*>(ObjectPtrBase::exchange(
+				temp.out,
+				const_cast<T*>(newValue)));
 }
 
 };

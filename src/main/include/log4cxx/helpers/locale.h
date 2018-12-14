@@ -26,22 +26,22 @@ namespace helpers
 {
 class LOG4CXX_EXPORT Locale
 {
-    public:
-        Locale(const LogString& language);
-        Locale(const LogString& language, const LogString& country);
-        Locale(const LogString& language, const LogString& country,
-               const LogString& variant);
+	public:
+		Locale(const LogString& language);
+		Locale(const LogString& language, const LogString& country);
+		Locale(const LogString& language, const LogString& country,
+			const LogString& variant);
 
-        const LogString& getLanguage() const;
-        const LogString& getCountry() const;
-        const LogString& getVariant() const;
+		const LogString& getLanguage() const;
+		const LogString& getCountry() const;
+		const LogString& getVariant() const;
 
-    protected:
-        Locale(const Locale&);
-        Locale& operator=(const Locale&);
-        const LogString language;
-        const LogString country;
-        const LogString variant;
+	protected:
+		Locale(const Locale&);
+		Locale& operator=(const Locale&);
+		const LogString language;
+		const LogString country;
+		const LogString variant;
 }; // class Locale
 }  // namespace helpers
 } // namespace log4cxx

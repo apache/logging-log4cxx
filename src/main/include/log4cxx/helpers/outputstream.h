@@ -20,7 +20,7 @@
 
 #include <log4cxx/helpers/objectimpl.h>
 #ifdef LOG4CXX_MULTI_PROCESS
-    #include <apr_file_io.h>
+	#include <apr_file_io.h>
 #endif
 
 namespace log4cxx
@@ -35,28 +35,28 @@ class ByteBuffer;
 */
 class LOG4CXX_EXPORT OutputStream : public ObjectImpl
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(OutputStream)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(OutputStream)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(OutputStream)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(OutputStream)
+		END_LOG4CXX_CAST_MAP()
 
-    protected:
-        OutputStream();
-        virtual ~OutputStream();
+	protected:
+		OutputStream();
+		virtual ~OutputStream();
 
-    public:
-        virtual void close(Pool& p) = 0;
-        virtual void flush(Pool& p) = 0;
-        virtual void write(ByteBuffer& buf, Pool& p) = 0;
+	public:
+		virtual void close(Pool& p) = 0;
+		virtual void flush(Pool& p) = 0;
+		virtual void write(ByteBuffer& buf, Pool& p) = 0;
 #ifdef LOG4CXX_MULTI_PROCESS
-        virtual apr_file_t* getFilePtr();
-        virtual OutputStream& getFileOutPutStreamPtr();
+		virtual apr_file_t* getFilePtr();
+		virtual OutputStream& getFileOutPutStreamPtr();
 #endif
 
-    private:
-        OutputStream(const OutputStream&);
-        OutputStream& operator=(const OutputStream&);
+	private:
+		OutputStream(const OutputStream&);
+		OutputStream& operator=(const OutputStream&);
 };
 
 LOG4CXX_PTR_DEF(OutputStream);

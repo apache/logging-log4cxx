@@ -29,7 +29,7 @@ using namespace std;
 IMPLEMENT_LOG4CXX_OBJECT(ByteArrayInputStream)
 
 ByteArrayInputStream::ByteArrayInputStream(const std::vector<unsigned char>& bytes) :
-    buf(bytes), pos(0)
+	buf(bytes), pos(0)
 {
 }
 
@@ -47,16 +47,16 @@ void ByteArrayInputStream::close()
 
 int ByteArrayInputStream::read(ByteBuffer& dst)
 {
-    if (pos >= buf.size())
-    {
-        return -1;
-    }
-    else
-    {
-        size_t bytesCopied = min(dst.remaining(), buf.size() - pos);
-        memcpy(dst.current(), &buf[pos], bytesCopied);
-        pos += bytesCopied;
-        dst.position(dst.position() + bytesCopied);
-        return bytesCopied;
-    }
+	if (pos >= buf.size())
+	{
+		return -1;
+	}
+	else
+	{
+		size_t bytesCopied = min(dst.remaining(), buf.size() - pos);
+		memcpy(dst.current(), &buf[pos], bytesCopied);
+		pos += bytesCopied;
+		dst.position(dst.position() + bytesCopied);
+		return bytesCopied;
+	}
 }

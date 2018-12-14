@@ -139,151 +139,151 @@ namespace rolling
  * <code>RollingFileAppender</code>.
  */
 class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
-    public TriggeringPolicy
+	public TriggeringPolicy
 {
-        DECLARE_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(TimeBasedRollingPolicy)
-        LOG4CXX_CAST_ENTRY_CHAIN(RollingPolicyBase)
-        LOG4CXX_CAST_ENTRY_CHAIN(TriggeringPolicy)
-        END_LOG4CXX_CAST_MAP()
+		DECLARE_LOG4CXX_OBJECT(TimeBasedRollingPolicy)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(TimeBasedRollingPolicy)
+		LOG4CXX_CAST_ENTRY_CHAIN(RollingPolicyBase)
+		LOG4CXX_CAST_ENTRY_CHAIN(TriggeringPolicy)
+		END_LOG4CXX_CAST_MAP()
 
-    private:
-        /**
-         * Time for next determination if time for rollover.
-         */
-        log4cxx_time_t nextCheck;
+	private:
+		/**
+		 * Time for next determination if time for rollover.
+		 */
+		log4cxx_time_t nextCheck;
 
-        /**
-         * File name at last rollover.
-         */
-        LogString lastFileName;
+		/**
+		 * File name at last rollover.
+		 */
+		LogString lastFileName;
 
-        /**
-         * mmap pointer
-         */
-        apr_mmap_t* _mmap;
+		/**
+		 * mmap pointer
+		 */
+		apr_mmap_t* _mmap;
 
-        /*
-         * pool for mmap handler
-         * */
-        log4cxx::helpers::Pool* _mmapPool;
+		/*
+		 * pool for mmap handler
+		 * */
+		log4cxx::helpers::Pool* _mmapPool;
 
-        /**
-         * mmap file descriptor
-         */
-        apr_file_t* _file_map;
+		/**
+		 * mmap file descriptor
+		 */
+		apr_file_t* _file_map;
 
-        /**
-         * mmap file name
-         */
-        std::string _mapFileName;
+		/**
+		 * mmap file name
+		 */
+		std::string _mapFileName;
 
-        /*
-         * lock file handle
-         * */
-        apr_file_t* _lock_file;
+		/*
+		 * lock file handle
+		 * */
+		apr_file_t* _lock_file;
 
-        /**
-         * Check nextCheck if it has already been set
-         * Timebased rolling policy has an issue when working at low rps.
-         * Under low rps, multiple processes will not be scheduled in time for the second chance(do rolling),
-         * so the rolling mechanism will not be triggered even if the time period is out of date.
-         * This results in log entries will be accumulated for serveral minutes to be rolling.
-         * Adding this flag to provide rolling opportunity for a process even if it is writing the first log entry
-         */
-        bool bAlreadyInitialized;
+		/**
+		 * Check nextCheck if it has already been set
+		 * Timebased rolling policy has an issue when working at low rps.
+		 * Under low rps, multiple processes will not be scheduled in time for the second chance(do rolling),
+		 * so the rolling mechanism will not be triggered even if the time period is out of date.
+		 * This results in log entries will be accumulated for serveral minutes to be rolling.
+		 * Adding this flag to provide rolling opportunity for a process even if it is writing the first log entry
+		 */
+		bool bAlreadyInitialized;
 
-        /*
-         * If the current file name contains date information, retrieve the current writting file from mmap
-         * */
-        bool bRefreshCurFile;
+		/*
+		 * If the current file name contains date information, retrieve the current writting file from mmap
+		 * */
+		bool bRefreshCurFile;
 
-        /*
-         * mmap file name
-         * */
-        LogString _fileNamePattern;
+		/*
+		 * mmap file name
+		 * */
+		LogString _fileNamePattern;
 
-        /**
-         * Length of any file type suffix (.gz, .zip).
-         */
-        int suffixLength;
+		/**
+		 * Length of any file type suffix (.gz, .zip).
+		 */
+		int suffixLength;
 
-    public:
-        TimeBasedRollingPolicy();
-        void addRef() const;
-        void releaseRef() const;
-        void activateOptions(log4cxx::helpers::Pool& );
+	public:
+		TimeBasedRollingPolicy();
+		void addRef() const;
+		void releaseRef() const;
+		void activateOptions(log4cxx::helpers::Pool& );
 
 #ifdef LOG4CXX_MULTI_PROCESS
-        virtual ~TimeBasedRollingPolicy();
+		virtual ~TimeBasedRollingPolicy();
 
-        /**
-         * Generate mmap file
-         */
-        int createMMapFile(const std::string& lastfilename, log4cxx::helpers::Pool& pool);
+		/**
+		 * Generate mmap file
+		 */
+		int createMMapFile(const std::string& lastfilename, log4cxx::helpers::Pool& pool);
 
-        /**
-         *  Detect if the mmap file is empty
-         */
-        bool isMapFileEmpty(log4cxx::helpers::Pool& pool);
+		/**
+		 *  Detect if the mmap file is empty
+		 */
+		bool isMapFileEmpty(log4cxx::helpers::Pool& pool);
 
-        /**
-         *   init MMapFile
-         */
-        void initMMapFile(const LogString& lastFileName, log4cxx::helpers::Pool& pool);
+		/**
+		 *   init MMapFile
+		 */
+		void initMMapFile(const LogString& lastFileName, log4cxx::helpers::Pool& pool);
 
-        /**
-         *   lock MMapFile
-         */
-        int lockMMapFile(int type);
+		/**
+		 *   lock MMapFile
+		 */
+		int lockMMapFile(int type);
 
-        /**
-         *   unlock MMapFile
-         */
-        int unLockMMapFile();
+		/**
+		 *   unlock MMapFile
+		 */
+		int unLockMMapFile();
 
-        /**
-         *   create MMapFile/lockFile
-         */
-        const std::string createFile(const std::string& filename, const std::string& suffix, log4cxx::helpers::Pool& pool);
+		/**
+		 *   create MMapFile/lockFile
+		 */
+		const std::string createFile(const std::string& filename, const std::string& suffix, log4cxx::helpers::Pool& pool);
 #endif
 
-        /**
-         * {@inheritDoc}
-         */
-        RolloverDescriptionPtr initialize(
-            const   LogString&              currentActiveFile,
-            const   bool                    append,
-            log4cxx::helpers::Pool& pool);
+		/**
+		 * {@inheritDoc}
+		 */
+		RolloverDescriptionPtr initialize(
+			const   LogString&              currentActiveFile,
+			const   bool                    append,
+			log4cxx::helpers::Pool& pool);
 
-        /**
-         * {@inheritDoc}
-         */
-        RolloverDescriptionPtr rollover(
-            const   LogString&              currentActiveFile,
-            const   bool                    append,
-            log4cxx::helpers::Pool& pool);
+		/**
+		 * {@inheritDoc}
+		 */
+		RolloverDescriptionPtr rollover(
+			const   LogString&              currentActiveFile,
+			const   bool                    append,
+			log4cxx::helpers::Pool& pool);
 
-        /**
-         * Determines if a rollover may be appropriate at this time.  If
-         * true is returned, RolloverPolicy.rollover will be called but it
-         * can determine that a rollover is not warranted.
-         *
-         * @param appender A reference to the appender.
-         * @param event A reference to the currently event.
-         * @param filename The filename for the currently active log file.
-         * @param fileLength Length of the file in bytes.
-         * @return true if a rollover should occur.
-         */
-        virtual bool isTriggeringEvent(
-            Appender* appender,
-            const log4cxx::spi::LoggingEventPtr& event,
-            const LogString& filename,
-            size_t fileLength);
+		/**
+		 * Determines if a rollover may be appropriate at this time.  If
+		 * true is returned, RolloverPolicy.rollover will be called but it
+		 * can determine that a rollover is not warranted.
+		 *
+		 * @param appender A reference to the appender.
+		 * @param event A reference to the currently event.
+		 * @param filename The filename for the currently active log file.
+		 * @param fileLength Length of the file in bytes.
+		 * @return true if a rollover should occur.
+		 */
+		virtual bool isTriggeringEvent(
+			Appender* appender,
+			const log4cxx::spi::LoggingEventPtr& event,
+			const LogString& filename,
+			size_t fileLength);
 
-    protected:
-        log4cxx::pattern::PatternMap getFormatSpecifiers() const;
+	protected:
+		log4cxx::pattern::PatternMap getFormatSpecifiers() const;
 
 };
 

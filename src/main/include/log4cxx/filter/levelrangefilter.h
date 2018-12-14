@@ -56,91 +56,91 @@ filter out events by level.
 
 class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 {
-    private:
-        /**
-        Do we return ACCEPT when a match occurs. Default is
-        <code>false</code>, so that later filters get run by default
-        */
-        bool acceptOnMatch;
-        LevelPtr levelMin;
-        LevelPtr levelMax;
+	private:
+		/**
+		Do we return ACCEPT when a match occurs. Default is
+		<code>false</code>, so that later filters get run by default
+		*/
+		bool acceptOnMatch;
+		LevelPtr levelMin;
+		LevelPtr levelMax;
 
-    public:
-        typedef spi::Filter BASE_CLASS;
-        DECLARE_LOG4CXX_OBJECT(LevelRangeFilter)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(LevelRangeFilter)
-        LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		typedef spi::Filter BASE_CLASS;
+		DECLARE_LOG4CXX_OBJECT(LevelRangeFilter)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(LevelRangeFilter)
+		LOG4CXX_CAST_ENTRY_CHAIN(BASE_CLASS)
+		END_LOG4CXX_CAST_MAP()
 
-        LevelRangeFilter();
+		LevelRangeFilter();
 
-        /**
-        Set options
-        */
-        virtual void setOption(const LogString& option,
-                               const LogString& value);
+		/**
+		Set options
+		*/
+		virtual void setOption(const LogString& option,
+			const LogString& value);
 
-        /**
-        Set the <code>LevelMin</code> option.
-        */
-        void setLevelMin(const LevelPtr& levelMin1)
-        {
-            this->levelMin = levelMin1;
-        }
+		/**
+		Set the <code>LevelMin</code> option.
+		*/
+		void setLevelMin(const LevelPtr& levelMin1)
+		{
+			this->levelMin = levelMin1;
+		}
 
-        /**
-        Get the value of the <code>LevelMin</code> option.
-        */
-        const LevelPtr& getLevelMin() const
-        {
-            return levelMin;
-        }
+		/**
+		Get the value of the <code>LevelMin</code> option.
+		*/
+		const LevelPtr& getLevelMin() const
+		{
+			return levelMin;
+		}
 
-        /**
-        Set the <code>LevelMax</code> option.
-        */
-        void setLevelMax(const LevelPtr& levelMax1)
-        {
-            this->levelMax = levelMax1;
-        }
+		/**
+		Set the <code>LevelMax</code> option.
+		*/
+		void setLevelMax(const LevelPtr& levelMax1)
+		{
+			this->levelMax = levelMax1;
+		}
 
-        /**
-        Get the value of the <code>LevelMax</code> option.
-        */
-        const LevelPtr& getLevelMax() const
-        {
-            return levelMax;
-        }
+		/**
+		Get the value of the <code>LevelMax</code> option.
+		*/
+		const LevelPtr& getLevelMax() const
+		{
+			return levelMax;
+		}
 
-        /**
-        Set the <code>AcceptOnMatch</code> option.
-        */
-        inline void setAcceptOnMatch(bool acceptOnMatch1)
-        {
-            this->acceptOnMatch = acceptOnMatch1;
-        }
+		/**
+		Set the <code>AcceptOnMatch</code> option.
+		*/
+		inline void setAcceptOnMatch(bool acceptOnMatch1)
+		{
+			this->acceptOnMatch = acceptOnMatch1;
+		}
 
-        /**
-        Get the value of the <code>AcceptOnMatch</code> option.
-        */
-        inline bool getAcceptOnMatch() const
-        {
-            return acceptOnMatch;
-        }
+		/**
+		Get the value of the <code>AcceptOnMatch</code> option.
+		*/
+		inline bool getAcceptOnMatch() const
+		{
+			return acceptOnMatch;
+		}
 
-        /**
-        Return the decision of this filter.
+		/**
+		Return the decision of this filter.
 
-        Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
-        <b>LevelToMatch</b> option is not set or if there is not match.
-        Otherwise, if there is a match, then the returned decision is
-        {@link spi::Filter#ACCEPT ACCEPT} if the
-        <b>AcceptOnMatch</b> property is set to <code>true</code>. The
-        returned decision is {@link spi::Filter#DENY DENY} if the
-        <b>AcceptOnMatch</b> property is set to false.
-        */
-        FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		Returns {@link spi::Filter#NEUTRAL NEUTRAL} if the
+		<b>LevelToMatch</b> option is not set or if there is not match.
+		Otherwise, if there is a match, then the returned decision is
+		{@link spi::Filter#ACCEPT ACCEPT} if the
+		<b>AcceptOnMatch</b> property is set to <code>true</code>. The
+		returned decision is {@link spi::Filter#DENY DENY} if the
+		<b>AcceptOnMatch</b> property is set to false.
+		*/
+		FilterDecision decide(const spi::LoggingEventPtr& event) const;
 }; // class LevelRangeFilter
 LOG4CXX_PTR_DEF(LevelRangeFilter);
 }  // namespace filter

@@ -30,45 +30,45 @@ namespace log4cxx
 */
 class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
 {
-    private:
-        LogString target;
+	private:
+		LogString target;
 
-    public:
-        DECLARE_LOG4CXX_OBJECT(ConsoleAppender)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(ConsoleAppender)
-        LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_OBJECT(ConsoleAppender)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(ConsoleAppender)
+		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_CAST_MAP()
 
-        ConsoleAppender();
-        ConsoleAppender(const LayoutPtr& layout);
-        ConsoleAppender(const LayoutPtr& layout, const LogString& target);
-        ~ConsoleAppender();
-
-
-        /**
-        *  Sets the value of the <b>target</b> property. Recognized values
-        *  are "System.out" and "System.err". Any other value will be
-        *  ignored.
-        * */
-        void setTarget(const LogString& value);
-
-        /**
-        * Returns the current value of the <b>target</b> property. The
-        * default value of the option is "System.out".
-        *
-        * See also #setTarget.
-        * */
-        LogString getTarget() const;
-
-        void activateOptions(log4cxx::helpers::Pool& p);
-        void setOption(const LogString& option, const LogString& value);
-        static const LogString& getSystemOut();
-        static const LogString& getSystemErr();
+		ConsoleAppender();
+		ConsoleAppender(const LayoutPtr& layout);
+		ConsoleAppender(const LayoutPtr& layout, const LogString& target);
+		~ConsoleAppender();
 
 
-    private:
-        void targetWarn(const LogString& val);
+		/**
+		*  Sets the value of the <b>target</b> property. Recognized values
+		*  are "System.out" and "System.err". Any other value will be
+		*  ignored.
+		* */
+		void setTarget(const LogString& value);
+
+		/**
+		* Returns the current value of the <b>target</b> property. The
+		* default value of the option is "System.out".
+		*
+		* See also #setTarget.
+		* */
+		LogString getTarget() const;
+
+		void activateOptions(log4cxx::helpers::Pool& p);
+		void setOption(const LogString& option, const LogString& value);
+		static const LogString& getSystemOut();
+		static const LogString& getSystemErr();
+
+
+	private:
+		void targetWarn(const LogString& val);
 
 };
 LOG4CXX_PTR_DEF(ConsoleAppender);

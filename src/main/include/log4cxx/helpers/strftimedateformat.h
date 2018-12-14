@@ -32,33 +32,33 @@ locale-sensitive manner.
 */
 class LOG4CXX_EXPORT StrftimeDateFormat : public DateFormat
 {
-    public:
-        /**
-        Constructs a DateFormat using the given pattern and the default
-        time zone.
+	public:
+		/**
+		Constructs a DateFormat using the given pattern and the default
+		time zone.
 
-        @param pattern the pattern describing the date and time format
-        */
-        StrftimeDateFormat(const LogString& pattern);
-        ~StrftimeDateFormat();
+		@param pattern the pattern describing the date and time format
+		*/
+		StrftimeDateFormat(const LogString& pattern);
+		~StrftimeDateFormat();
 
-        virtual void format(LogString& s,
-                            log4cxx_time_t tm,
-                            log4cxx::helpers::Pool& p) const;
+		virtual void format(LogString& s,
+			log4cxx_time_t tm,
+			log4cxx::helpers::Pool& p) const;
 
-        /**
-        *    Set time zone.
-        * @param zone new time zone.
-        */
-        void setTimeZone(const TimeZonePtr& zone);
+		/**
+		*    Set time zone.
+		* @param zone new time zone.
+		*/
+		void setTimeZone(const TimeZonePtr& zone);
 
 
-    private:
-        /**
-        *    Time zone.
-        */
-        TimeZonePtr timeZone;
-        std::string pattern;
+	private:
+		/**
+		*    Time zone.
+		*/
+		TimeZonePtr timeZone;
+		std::string pattern;
 };
 
 

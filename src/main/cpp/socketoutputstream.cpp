@@ -29,7 +29,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(SocketOutputStream)
 
 SocketOutputStream::SocketOutputStream(const SocketPtr& socket1)
-    : socket(socket1)
+	: socket(socket1)
 {
 }
 
@@ -39,29 +39,29 @@ SocketOutputStream::~SocketOutputStream()
 
 void SocketOutputStream::close(Pool& p)
 {
-    flush(p);
-    socket->close();
+	flush(p);
+	socket->close();
 }
 
 void SocketOutputStream::flush(Pool& /* p */)
 {
-    if (array.size() > 0)
-    {
-        ByteBuffer buf((char*) &array[0], array.size());
-        socket->write(buf);
-        array.resize(0);
-    }
+	if (array.size() > 0)
+	{
+		ByteBuffer buf((char*) &array[0], array.size());
+		socket->write(buf);
+		array.resize(0);
+	}
 }
 
 void SocketOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 {
-    if (buf.remaining() > 0)
-    {
-        size_t sz = array.size();
-        array.resize(sz + buf.remaining());
-        memcpy(&array[sz], buf.current(), buf.remaining());
-        buf.position(buf.limit());
-    }
+	if (buf.remaining() > 0)
+	{
+		size_t sz = array.size();
+		array.resize(sz + buf.remaining());
+		memcpy(&array[sz], buf.current(), buf.remaining());
+		buf.position(buf.limit());
+	}
 }
 
 

@@ -19,8 +19,8 @@
 #define _LOG4CXX_PATTERN_LAYOUT_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #include <log4cxx/layout.h>
@@ -333,86 +333,86 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  */
 class LOG4CXX_EXPORT PatternLayout : public Layout
 {
-        /**
-         * Conversion pattern.
-         */
-        LogString conversionPattern;
+		/**
+		 * Conversion pattern.
+		 */
+		LogString conversionPattern;
 
-        /**
-         * Pattern converters.
-         */
-        LoggingEventPatternConverterList patternConverters;
+		/**
+		 * Pattern converters.
+		 */
+		LoggingEventPatternConverterList patternConverters;
 
-        /**
-         * Field widths and alignment corresponding to pattern converters.
-         */
-        FormattingInfoList patternFields;
+		/**
+		 * Field widths and alignment corresponding to pattern converters.
+		 */
+		FormattingInfoList patternFields;
 
-    public:
-        DECLARE_LOG4CXX_OBJECT(PatternLayout)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(PatternLayout)
-        LOG4CXX_CAST_ENTRY_CHAIN(Layout)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_OBJECT(PatternLayout)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(PatternLayout)
+		LOG4CXX_CAST_ENTRY_CHAIN(Layout)
+		END_LOG4CXX_CAST_MAP()
 
-        /**
-         * Does nothing
-         */
-        PatternLayout();
+		/**
+		 * Does nothing
+		 */
+		PatternLayout();
 
-        /**
-         * Constructs a PatternLayout using the supplied conversion pattern.
-         */
-        PatternLayout(const LogString& pattern);
+		/**
+		 * Constructs a PatternLayout using the supplied conversion pattern.
+		 */
+		PatternLayout(const LogString& pattern);
 
-        /**
-         * Set the <strong>ConversionPattern</strong> option. This is the string which
-         * controls formatting and consists of a mix of literal content and
-         * conversion specifiers.
-         */
-        void setConversionPattern(const LogString& conversionPattern);
+		/**
+		 * Set the <strong>ConversionPattern</strong> option. This is the string which
+		 * controls formatting and consists of a mix of literal content and
+		 * conversion specifiers.
+		 */
+		void setConversionPattern(const LogString& conversionPattern);
 
-        /**
-         * Returns the value of the <strong>ConversionPattern</strong> option.
-         */
-        inline LogString getConversionPattern() const
-        {
-            return conversionPattern;
-        }
+		/**
+		 * Returns the value of the <strong>ConversionPattern</strong> option.
+		 */
+		inline LogString getConversionPattern() const
+		{
+			return conversionPattern;
+		}
 
-        /**
-         * Call createPatternParser
-         */
-        virtual void activateOptions(log4cxx::helpers::Pool& p);
+		/**
+		 * Call createPatternParser
+		 */
+		virtual void activateOptions(log4cxx::helpers::Pool& p);
 
-        virtual void setOption(const LogString& option, const LogString& value);
+		virtual void setOption(const LogString& option, const LogString& value);
 
-        /**
-         * The PatternLayout does not handle the throwable contained within
-         * {@link spi::LoggingEvent LoggingEvents}. Thus, it returns
-         * <code>true</code>.
-         */
-        virtual bool ignoresThrowable() const
-        {
-            return true;
-        }
+		/**
+		 * The PatternLayout does not handle the throwable contained within
+		 * {@link spi::LoggingEvent LoggingEvents}. Thus, it returns
+		 * <code>true</code>.
+		 */
+		virtual bool ignoresThrowable() const
+		{
+			return true;
+		}
 
-        /**
-         * Produces a formatted string as specified by the conversion pattern.
-         */
-        virtual void format(    LogString& output,
-                                const spi::LoggingEventPtr& event,
-                                log4cxx::helpers::Pool& pool) const;
+		/**
+		 * Produces a formatted string as specified by the conversion pattern.
+		 */
+		virtual void format(    LogString& output,
+			const spi::LoggingEventPtr& event,
+			log4cxx::helpers::Pool& pool) const;
 
-    protected:
-        virtual log4cxx::pattern::PatternMap getFormatSpecifiers();
+	protected:
+		virtual log4cxx::pattern::PatternMap getFormatSpecifiers();
 };
 
 LOG4CXX_PTR_DEF(PatternLayout);
 } // namespace log4cxx
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 #endif //_LOG4CXX_PATTERN_LAYOUT_H

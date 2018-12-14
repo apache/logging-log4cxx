@@ -34,6 +34,6 @@ Writer::~Writer()
 #ifdef LOG4CXX_MULTI_PROCESS
 OutputStreamPtr Writer::getOutPutStreamPtr()
 {
-    throw std::logic_error("getOutPutStreamPtr must be implemented in the derived class that you are using");
+	throw std::logic_error("getOutPutStreamPtr must be implemented in the derived class that you are using");
 }
 #endif

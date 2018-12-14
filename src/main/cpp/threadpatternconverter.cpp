@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #if defined(_MSC_VER)
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #include <log4cxx/logstring.h>
@@ -31,23 +31,23 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(ThreadPatternConverter)
 
 ThreadPatternConverter::ThreadPatternConverter() :
-    LoggingEventPatternConverter(LOG4CXX_STR("Thread"),
-                                 LOG4CXX_STR("Thread"))
+	LoggingEventPatternConverter(LOG4CXX_STR("Thread"),
+		LOG4CXX_STR("Thread"))
 {
 }
 
 PatternConverterPtr ThreadPatternConverter::newInstance(
-    const std::vector<LogString>& /* options */)
+	const std::vector<LogString>& /* options */)
 {
-    static PatternConverterPtr def(new ThreadPatternConverter());
-    return def;
+	static PatternConverterPtr def(new ThreadPatternConverter());
+	return def;
 }
 
 void ThreadPatternConverter::format(
-    const LoggingEventPtr& event,
-    LogString& toAppendTo,
-    Pool& /* p */) const
+	const LoggingEventPtr& event,
+	LogString& toAppendTo,
+	Pool& /* p */) const
 {
-    toAppendTo.append(event->getThreadName());
+	toAppendTo.append(event->getThreadName());
 }
 

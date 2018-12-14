@@ -19,8 +19,8 @@
 #define _LOG4CXX_HELPERS_XML_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -45,8 +45,8 @@ typedef helpers::ObjectPtrT<XMLDOMNodeList> XMLDOMNodeListPtr;
 
 class LOG4CXX_EXPORT DOMException : public RuntimeException
 {
-    public:
-        DOMException() : RuntimeException(LOG4CXX_STR("DOM exception")) {}
+	public:
+		DOMException() : RuntimeException(LOG4CXX_STR("DOM exception")) {}
 };
 
 
@@ -56,18 +56,18 @@ Object Model.
 */
 class LOG4CXX_EXPORT XMLDOMNode : virtual public Object
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMNode)
-        enum XMLDOMNodeType
-        {
-            NOT_IMPLEMENTED_NODE = 0,
-            ELEMENT_NODE = 1,
-            DOCUMENT_NODE = 9
-        };
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMNode)
+		enum XMLDOMNodeType
+		{
+			NOT_IMPLEMENTED_NODE = 0,
+			ELEMENT_NODE = 1,
+			DOCUMENT_NODE = 9
+		};
 
-        virtual XMLDOMNodeListPtr getChildNodes() = 0;
-        virtual XMLDOMNodeType getNodeType() = 0;
-        virtual XMLDOMDocumentPtr getOwnerDocument() = 0;
+		virtual XMLDOMNodeListPtr getChildNodes() = 0;
+		virtual XMLDOMNodeType getNodeType() = 0;
+		virtual XMLDOMDocumentPtr getOwnerDocument() = 0;
 };
 LOG4CXX_PTR_DEF(XMLDOMNode);
 
@@ -77,10 +77,10 @@ The XMLDOMElement interface represents an element in an XML document
 */
 class LOG4CXX_EXPORT XMLDOMElement : virtual public XMLDOMNode
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMElement)
-        virtual LogString getTagName() = 0;
-        virtual LogString getAttribute(const LogString& name) = 0;
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMElement)
+		virtual LogString getTagName() = 0;
+		virtual LogString getAttribute(const LogString& name) = 0;
 };
 LOG4CXX_PTR_DEF(XMLDOMElement);
 
@@ -92,12 +92,12 @@ primary access to the document's data.
 */
 class LOG4CXX_EXPORT XMLDOMDocument : virtual public XMLDOMNode
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMDocument)
-        virtual void load(const File& fileName) = 0;
-        virtual XMLDOMElementPtr getDocumentElement() = 0;
-        virtual XMLDOMElementPtr getElementById(const LogString& tagName,
-                                                const LogString& elementId) = 0;
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMDocument)
+		virtual void load(const File& fileName) = 0;
+		virtual XMLDOMElementPtr getDocumentElement() = 0;
+		virtual XMLDOMElementPtr getElementById(const LogString& tagName,
+			const LogString& elementId) = 0;
 };
 LOG4CXX_PTR_DEF(XMLDOMDocument);
 
@@ -113,10 +113,10 @@ starting from 0.
 */
 class LOG4CXX_EXPORT XMLDOMNodeList : virtual public Object
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMNodeList)
-        virtual int getLength() = 0;
-        virtual XMLDOMNodePtr item(int index) = 0;
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XMLDOMNodeList)
+		virtual int getLength() = 0;
+		virtual XMLDOMNodePtr item(int index) = 0;
 };
 LOG4CXX_PTR_DEF(XMLDOMNodeList);
 }  // namespace helpers
@@ -124,7 +124,7 @@ LOG4CXX_PTR_DEF(XMLDOMNodeList);
 
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 #endif // _LOG4CXX_HELPERS_XML_H

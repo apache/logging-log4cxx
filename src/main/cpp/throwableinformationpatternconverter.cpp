@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #if defined(_MSC_VER)
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -34,29 +34,29 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(ThrowableInformationPatternConverter)
 
 ThrowableInformationPatternConverter::ThrowableInformationPatternConverter(bool shortReport1) :
-    LoggingEventPatternConverter(LOG4CXX_STR("Throwable"),
-                                 LOG4CXX_STR("throwable")),
-    shortReport(shortReport1)
+	LoggingEventPatternConverter(LOG4CXX_STR("Throwable"),
+		LOG4CXX_STR("throwable")),
+	shortReport(shortReport1)
 {
 }
 
 PatternConverterPtr ThrowableInformationPatternConverter::newInstance(
-    const std::vector<LogString>& options)
+	const std::vector<LogString>& options)
 {
-    if (options.size() > 0 && options[0].compare(LOG4CXX_STR("short")) == 0)
-    {
-        static PatternConverterPtr shortConverter(new ThrowableInformationPatternConverter(true));
-        return shortConverter;
-    }
+	if (options.size() > 0 && options[0].compare(LOG4CXX_STR("short")) == 0)
+	{
+		static PatternConverterPtr shortConverter(new ThrowableInformationPatternConverter(true));
+		return shortConverter;
+	}
 
-    static PatternConverterPtr converter(new ThrowableInformationPatternConverter(false));
-    return converter;
+	static PatternConverterPtr converter(new ThrowableInformationPatternConverter(false));
+	return converter;
 }
 
 void ThrowableInformationPatternConverter::format(
-    const LoggingEventPtr& /* event */,
-    LogString& /* toAppendTo */,
-    Pool& /* p */) const
+	const LoggingEventPtr& /* event */,
+	LogString& /* toAppendTo */,
+	Pool& /* p */) const
 {
 }
 
@@ -66,5 +66,5 @@ void ThrowableInformationPatternConverter::format(
  */
 bool ThrowableInformationPatternConverter::handlesThrowable() const
 {
-    return true;
+	return true;
 }

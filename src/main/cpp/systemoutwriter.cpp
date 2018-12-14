@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <stdio.h>
 #if !defined(LOG4CXX)
-    #define LOG4CXX 1
+	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 
@@ -43,22 +43,22 @@ void SystemOutWriter::close(Pool& /* p */ )
 
 void SystemOutWriter::flush(Pool& /* p */ )
 {
-    flush();
+	flush();
 }
 
 void SystemOutWriter::write(const LogString& str, Pool& /* p */ )
 {
-    write(str);
+	write(str);
 }
 
 bool SystemOutWriter::isWide()
 {
 #if LOG4CXX_FORCE_WIDE_CONSOLE
-    return true;
+	return true;
 #elif LOG4CXX_FORCE_BYTE_CONSOLE || !LOG4CXX_HAS_FWIDE
-    return false;
+	return false;
 #else
-    return fwide(stdout, 0) > 0;
+	return fwide(stdout, 0) > 0;
 #endif
 }
 
@@ -66,19 +66,19 @@ void SystemOutWriter::write(const LogString& str)
 {
 #if LOG4CXX_WCHAR_T_API
 
-    if (isWide())
-    {
-        LOG4CXX_ENCODE_WCHAR(msg, str);
-        fputws(msg.c_str(), stdout);
-        return;
-    }
+	if (isWide())
+	{
+		LOG4CXX_ENCODE_WCHAR(msg, str);
+		fputws(msg.c_str(), stdout);
+		return;
+	}
 
 #endif
-    LOG4CXX_ENCODE_CHAR(msg, str);
-    fputs(msg.c_str(), stdout);
+	LOG4CXX_ENCODE_CHAR(msg, str);
+	fputs(msg.c_str(), stdout);
 }
 
 void SystemOutWriter::flush()
 {
-    fflush(stdout);
+	fflush(stdout);
 }

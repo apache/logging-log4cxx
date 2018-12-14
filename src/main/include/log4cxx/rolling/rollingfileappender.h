@@ -74,28 +74,28 @@ namespace rolling
  * */
 class LOG4CXX_EXPORT RollingFileAppender : public RollingFileAppenderSkeleton
 {
-        DECLARE_LOG4CXX_OBJECT(RollingFileAppender)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(RollingFileAppender)
-        LOG4CXX_CAST_ENTRY_CHAIN(RollingFileAppenderSkeleton)
-        END_LOG4CXX_CAST_MAP()
+		DECLARE_LOG4CXX_OBJECT(RollingFileAppender)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(RollingFileAppender)
+		LOG4CXX_CAST_ENTRY_CHAIN(RollingFileAppenderSkeleton)
+		END_LOG4CXX_CAST_MAP()
 
-    public:
-        RollingFileAppender();
+	public:
+		RollingFileAppender();
 
-        using RollingFileAppenderSkeleton::getRollingPolicy;
+		using RollingFileAppenderSkeleton::getRollingPolicy;
 
-        using RollingFileAppenderSkeleton::getTriggeringPolicy;
+		using RollingFileAppenderSkeleton::getTriggeringPolicy;
 
-        /**
-         * Sets the rolling policy. In case the 'policy' argument also implements
-         * {@link TriggeringPolicy}, then the triggering policy for this appender
-         * is automatically set to be the policy argument.
-         * @param policy
-         */
-        using RollingFileAppenderSkeleton::setRollingPolicy;
+		/**
+		 * Sets the rolling policy. In case the 'policy' argument also implements
+		 * {@link TriggeringPolicy}, then the triggering policy for this appender
+		 * is automatically set to be the policy argument.
+		 * @param policy
+		 */
+		using RollingFileAppenderSkeleton::setRollingPolicy;
 
-        using RollingFileAppenderSkeleton::setTriggeringPolicy;
+		using RollingFileAppenderSkeleton::setTriggeringPolicy;
 
 };
 

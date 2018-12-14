@@ -34,50 +34,50 @@ namespace rolling
  */
 class Action : public virtual log4cxx::helpers::ObjectImpl
 {
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(Action)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(Action)
-        END_LOG4CXX_CAST_MAP()
-        /**
-         * Is action complete.
-         */
-        bool complete;
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Action)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(Action)
+		END_LOG4CXX_CAST_MAP()
+		/**
+		 * Is action complete.
+		 */
+		bool complete;
 
-        /**
-         * Is action interrupted.
-         */
-        bool interrupted;
+		/**
+		 * Is action interrupted.
+		 */
+		bool interrupted;
 
-        log4cxx::helpers::Pool pool;
-        log4cxx::helpers::Mutex mutex;
+		log4cxx::helpers::Pool pool;
+		log4cxx::helpers::Mutex mutex;
 
 
-    protected:
-        /**
-         * Constructor.
-         */
-        Action();
-        virtual ~Action();
+	protected:
+		/**
+		 * Constructor.
+		 */
+		Action();
+		virtual ~Action();
 
-    public:
-        /**
-         * Perform action.
-         *
-         * @return true if successful.
-         */
-        virtual bool execute(log4cxx::helpers::Pool& pool) const = 0;
+	public:
+		/**
+		 * Perform action.
+		 *
+		 * @return true if successful.
+		 */
+		virtual bool execute(log4cxx::helpers::Pool& pool) const = 0;
 
-        void run(log4cxx::helpers::Pool& pool);
+		void run(log4cxx::helpers::Pool& pool);
 
-        void close();
+		void close();
 
-        /**
-         * Tests if the action is complete.
-         * @return true if action is complete.
-         */
-        bool isComplete() const;
+		/**
+		 * Tests if the action is complete.
+		 * @return true if action is complete.
+		 */
+		bool isComplete() const;
 
-        void reportException(const std::exception&);
+		void reportException(const std::exception&);
 
 
 };

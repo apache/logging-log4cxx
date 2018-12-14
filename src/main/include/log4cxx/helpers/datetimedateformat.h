@@ -30,11 +30,11 @@ Formats a date in the format <b>dd MMM yyyy HH:mm:ss,SSS</b> for example,
 */
 class LOG4CXX_EXPORT DateTimeDateFormat : public SimpleDateFormat
 {
-    public:
-        DateTimeDateFormat()
-            : SimpleDateFormat(LOG4CXX_STR("dd MMM yyyy HH:mm:ss,SSS")) {}
-        DateTimeDateFormat(const std::locale* locale)
-            : SimpleDateFormat(LOG4CXX_STR("dd MMM yyyy HH:mm:ss,SSS"), locale) {}
+	public:
+		DateTimeDateFormat()
+			: SimpleDateFormat(LOG4CXX_STR("dd MMM yyyy HH:mm:ss,SSS")) {}
+		DateTimeDateFormat(const std::locale* locale)
+			: SimpleDateFormat(LOG4CXX_STR("dd MMM yyyy HH:mm:ss,SSS"), locale) {}
 };
 }  // namespace helpers
 } // namespace log4cxx

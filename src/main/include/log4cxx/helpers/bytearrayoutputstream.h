@@ -19,8 +19,8 @@
 #define _LOG4CXX_HELPERS_BYTEARRAYOUTPUTSTREAM_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -43,27 +43,27 @@ LOG4CXX_LIST_DEF(ByteList, unsigned char);
 */
 class LOG4CXX_EXPORT ByteArrayOutputStream : public OutputStream
 {
-    private:
-        ByteList array;
+	private:
+		ByteList array;
 
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(ByteArrayOutputStream)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(ByteArrayOutputStream)
-        LOG4CXX_CAST_ENTRY_CHAIN(OutputStream)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ByteArrayOutputStream)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(ByteArrayOutputStream)
+		LOG4CXX_CAST_ENTRY_CHAIN(OutputStream)
+		END_LOG4CXX_CAST_MAP()
 
-        ByteArrayOutputStream();
-        virtual ~ByteArrayOutputStream();
+		ByteArrayOutputStream();
+		virtual ~ByteArrayOutputStream();
 
-        virtual void close(Pool& p);
-        virtual void flush(Pool& p);
-        virtual void write(ByteBuffer& buf, Pool& p);
-        ByteList toByteArray() const;
+		virtual void close(Pool& p);
+		virtual void flush(Pool& p);
+		virtual void write(ByteBuffer& buf, Pool& p);
+		ByteList toByteArray() const;
 
-    private:
-        ByteArrayOutputStream(const ByteArrayOutputStream&);
-        ByteArrayOutputStream& operator=(const ByteArrayOutputStream&);
+	private:
+		ByteArrayOutputStream(const ByteArrayOutputStream&);
+		ByteArrayOutputStream& operator=(const ByteArrayOutputStream&);
 };
 
 LOG4CXX_PTR_DEF(ByteArrayOutputStream);
@@ -72,7 +72,7 @@ LOG4CXX_PTR_DEF(ByteArrayOutputStream);
 }  //namespace log4cxx
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 

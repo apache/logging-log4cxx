@@ -27,13 +27,13 @@ namespace helpers
 class Class;
 class LOG4CXX_EXPORT ClassRegistration
 {
-    public:
-        typedef const Class& (*ClassAccessor)();
-        ClassRegistration(ClassAccessor classAccessor);
+	public:
+		typedef const Class& (*ClassAccessor)();
+		ClassRegistration(ClassAccessor classAccessor);
 
-    private:
-        ClassRegistration(const ClassRegistration&);
-        ClassRegistration& operator=(const ClassRegistration&);
+	private:
+		ClassRegistration(const ClassRegistration&);
+		ClassRegistration& operator=(const ClassRegistration&);
 };
 }  // namespace log4cxx
 } // namespace helper

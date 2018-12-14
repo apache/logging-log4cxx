@@ -31,10 +31,10 @@ IMPLEMENT_LOG4CXX_OBJECT(FormattingInfo)
  * @param maxLength maximum length.
  */
 FormattingInfo::FormattingInfo(
-    const bool leftAlign1, const int minLength1, const int maxLength1) :
-    minLength(minLength1),
-    maxLength(maxLength1),
-    leftAlign(leftAlign1)
+	const bool leftAlign1, const int minLength1, const int maxLength1) :
+	minLength(minLength1),
+	maxLength(maxLength1),
+	leftAlign(leftAlign1)
 {
 }
 
@@ -44,8 +44,8 @@ FormattingInfo::FormattingInfo(
  */
 FormattingInfoPtr FormattingInfo::getDefault()
 {
-    static FormattingInfoPtr def(new FormattingInfo(false, 0, INT_MAX));
-    return def;
+	static FormattingInfoPtr def(new FormattingInfo(false, 0, INT_MAX));
+	return def;
 }
 
 /**
@@ -56,22 +56,22 @@ FormattingInfoPtr FormattingInfo::getDefault()
  */
 void FormattingInfo::format(const int fieldStart, LogString& buffer) const
 {
-    int rawLength = buffer.length() - fieldStart;
+	int rawLength = buffer.length() - fieldStart;
 
-    if (rawLength > maxLength)
-    {
-        buffer.erase(buffer.begin() + fieldStart,
-                     buffer.begin() + fieldStart + (rawLength - maxLength));
-    }
-    else if (rawLength < minLength)
-    {
-        if (leftAlign)
-        {
-            buffer.append(minLength - rawLength, (logchar) 0x20 /* ' ' */);
-        }
-        else
-        {
-            buffer.insert(fieldStart, minLength - rawLength, 0x20 /* ' ' */);
-        }
-    }
+	if (rawLength > maxLength)
+	{
+		buffer.erase(buffer.begin() + fieldStart,
+			buffer.begin() + fieldStart + (rawLength - maxLength));
+	}
+	else if (rawLength < minLength)
+	{
+		if (leftAlign)
+		{
+			buffer.append(minLength - rawLength, (logchar) 0x20 /* ' ' */);
+		}
+		else
+		{
+			buffer.insert(fieldStart, minLength - rawLength, 0x20 /* ' ' */);
+		}
+	}
 }

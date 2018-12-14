@@ -27,48 +27,48 @@ using namespace log4cxx::helpers;
 */
 ServerSocket::ServerSocket(int port) : pool(), mutex(pool), socket(0), timeout(0)
 {
-    apr_status_t status =
-        apr_socket_create(&socket, APR_INET, SOCK_STREAM,
-                          APR_PROTO_TCP, pool.getAPRPool());
+	apr_status_t status =
+		apr_socket_create(&socket, APR_INET, SOCK_STREAM,
+			APR_PROTO_TCP, pool.getAPRPool());
 
-    if (status != APR_SUCCESS)
-    {
-        throw SocketException(status);
-    }
+	if (status != APR_SUCCESS)
+	{
+		throw SocketException(status);
+	}
 
-    status = apr_socket_opt_set(socket, APR_SO_NONBLOCK, 1);
+	status = apr_socket_opt_set(socket, APR_SO_NONBLOCK, 1);
 
-    if (status != APR_SUCCESS)
-    {
-        throw SocketException(status);
-    }
+	if (status != APR_SUCCESS)
+	{
+		throw SocketException(status);
+	}
 
-    // Create server socket address (including port number)
-    apr_sockaddr_t* server_addr;
-    status =
-        apr_sockaddr_info_get(&server_addr, NULL, APR_INET,
-                              port, 0, pool.getAPRPool());
+	// Create server socket address (including port number)
+	apr_sockaddr_t* server_addr;
+	status =
+		apr_sockaddr_info_get(&server_addr, NULL, APR_INET,
+			port, 0, pool.getAPRPool());
 
-    if (status != APR_SUCCESS)
-    {
-        throw ConnectException(status);
-    }
+	if (status != APR_SUCCESS)
+	{
+		throw ConnectException(status);
+	}
 
-    // bind the socket to the address
-    status = apr_socket_bind(socket, server_addr);
+	// bind the socket to the address
+	status = apr_socket_bind(socket, server_addr);
 
-    if (status != APR_SUCCESS)
-    {
-        throw BindException(status);
-    }
+	if (status != APR_SUCCESS)
+	{
+		throw BindException(status);
+	}
 
 
-    status = apr_socket_listen(socket, 50);
+	status = apr_socket_listen(socket, 50);
 
-    if (status != APR_SUCCESS)
-    {
-        throw SocketException(status);
-    }
+	if (status != APR_SUCCESS)
+	{
+		throw SocketException(status);
+	}
 }
 
 
@@ -78,19 +78,19 @@ ServerSocket::~ServerSocket()
 
 void ServerSocket::close()
 {
-    synchronized sync(mutex);
+	synchronized sync(mutex);
 
-    if (socket != 0)
-    {
-        apr_status_t status = apr_socket_close(socket);
+	if (socket != 0)
+	{
+		apr_status_t status = apr_socket_close(socket);
 
-        if (status != APR_SUCCESS)
-        {
-            throw SocketException(status);
-        }
+		if (status != APR_SUCCESS)
+		{
+			throw SocketException(status);
+		}
 
-        socket = 0;
-    }
+		socket = 0;
+	}
 }
 
 /** Listens for a connection to be made to this socket and
@@ -98,72 +98,72 @@ accepts it
 */
 SocketPtr ServerSocket::accept()
 {
-    synchronized sync(mutex);
+	synchronized sync(mutex);
 
-    if (socket == 0)
-    {
-        throw IOException();
-    }
+	if (socket == 0)
+	{
+		throw IOException();
+	}
 
-    apr_pollfd_t poll;
-    poll.p = pool.getAPRPool();
-    poll.desc_type = APR_POLL_SOCKET;
-    poll.reqevents = APR_POLLIN;
-    poll.rtnevents = 0;
-    poll.desc.s = socket;
-    poll.client_data = NULL;
+	apr_pollfd_t poll;
+	poll.p = pool.getAPRPool();
+	poll.desc_type = APR_POLL_SOCKET;
+	poll.reqevents = APR_POLLIN;
+	poll.rtnevents = 0;
+	poll.desc.s = socket;
+	poll.client_data = NULL;
 
-    apr_int32_t signaled;
-    apr_interval_time_t to = timeout * 1000;
-    apr_status_t status = apr_poll(&poll, 1, &signaled, to);
+	apr_int32_t signaled;
+	apr_interval_time_t to = timeout * 1000;
+	apr_status_t status = apr_poll(&poll, 1, &signaled, to);
 
-    if (APR_STATUS_IS_TIMEUP(status))
-    {
-        throw SocketTimeoutException();
-    }
-    else if (status != APR_SUCCESS)
-    {
-        throw SocketException(status);
-    }
+	if (APR_STATUS_IS_TIMEUP(status))
+	{
+		throw SocketTimeoutException();
+	}
+	else if (status != APR_SUCCESS)
+	{
+		throw SocketException(status);
+	}
 
-    apr_pool_t* newPool;
-    status = apr_pool_create(&newPool, 0);
+	apr_pool_t* newPool;
+	status = apr_pool_create(&newPool, 0);
 
-    if (status != APR_SUCCESS)
-    {
-        throw PoolException(status);
-    }
+	if (status != APR_SUCCESS)
+	{
+		throw PoolException(status);
+	}
 
-    apr_socket_t* newSocket;
-    status = apr_socket_accept(&newSocket, socket, newPool);
+	apr_socket_t* newSocket;
+	status = apr_socket_accept(&newSocket, socket, newPool);
 
-    if (status != APR_SUCCESS)
-    {
-        apr_pool_destroy(newPool);
-        throw SocketException(status);
-    }
+	if (status != APR_SUCCESS)
+	{
+		apr_pool_destroy(newPool);
+		throw SocketException(status);
+	}
 
-    status = apr_socket_opt_set(newSocket, APR_SO_NONBLOCK, 0);
+	status = apr_socket_opt_set(newSocket, APR_SO_NONBLOCK, 0);
 
-    if (status != APR_SUCCESS)
-    {
-        apr_pool_destroy(newPool);
-        throw SocketException(status);
-    }
+	if (status != APR_SUCCESS)
+	{
+		apr_pool_destroy(newPool);
+		throw SocketException(status);
+	}
 
-    return new Socket(newSocket, newPool);
+	return new Socket(newSocket, newPool);
 }
 
 /** Retrive setting for SO_TIMEOUT.
 */
 int ServerSocket::getSoTimeout() const
 {
-    return timeout;
+	return timeout;
 }
 
 /** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
 */
 void ServerSocket::setSoTimeout(int newVal)
 {
-    timeout = newVal;
+	timeout = newVal;
 }

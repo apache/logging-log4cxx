@@ -32,65 +32,65 @@ formatting work.
 */
 class LOG4CXX_EXPORT DateLayout : public Layout
 {
-    private:
-        LogString timeZoneID;
-        LogString dateFormatOption;
+	private:
+		LogString timeZoneID;
+		LogString dateFormatOption;
 
-    protected:
-        DateFormatPtr dateFormat;
+	protected:
+		DateFormatPtr dateFormat;
 
-    public:
-        DateLayout(const LogString& dateLayoutOption);
-        virtual ~DateLayout();
+	public:
+		DateLayout(const LogString& dateLayoutOption);
+		virtual ~DateLayout();
 
-        virtual void activateOptions(log4cxx::helpers::Pool& p);
-        virtual void setOption(const LogString& option, const LogString& value);
+		virtual void activateOptions(log4cxx::helpers::Pool& p);
+		virtual void setOption(const LogString& option, const LogString& value);
 
-        /**
-        The value of the <b>DateFormat</b> option should be either an
-        argument to the constructor of helpers::DateFormat or one of
-        the strings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
-        <b>"DATE"</b> or <b>"ISO8601</b>.
-        */
-        inline void setDateFormat(const LogString& dateFormat1)
-        {
-            this->dateFormatOption.assign(dateFormat1);
-        }
+		/**
+		The value of the <b>DateFormat</b> option should be either an
+		argument to the constructor of helpers::DateFormat or one of
+		the strings <b>"NULL"</b>, <b>"RELATIVE"</b>, <b>"ABSOLUTE"</b>,
+		<b>"DATE"</b> or <b>"ISO8601</b>.
+		*/
+		inline void setDateFormat(const LogString& dateFormat1)
+		{
+			this->dateFormatOption.assign(dateFormat1);
+		}
 
-        /**
-        Returns value of the <b>DateFormat</b> option.
-        */
-        inline const LogString& getDateFormat() const
-        {
-            return dateFormatOption;
-        }
+		/**
+		Returns value of the <b>DateFormat</b> option.
+		*/
+		inline const LogString& getDateFormat() const
+		{
+			return dateFormatOption;
+		}
 
-        /**
-        The <b>TimeZoneID</b> option is a time zone ID string in the format
-        expected by the <code>locale</code> C++ standard class.
-        */
-        inline void setTimeZone(const LogString& timeZone)
-        {
-            this->timeZoneID.assign(timeZone);
-        }
+		/**
+		The <b>TimeZoneID</b> option is a time zone ID string in the format
+		expected by the <code>locale</code> C++ standard class.
+		*/
+		inline void setTimeZone(const LogString& timeZone)
+		{
+			this->timeZoneID.assign(timeZone);
+		}
 
-        /**
-        Returns value of the <b>TimeZone</b> option.
-        */
-        inline const LogString& getTimeZone() const
-        {
-            return timeZoneID;
-        }
+		/**
+		Returns value of the <b>TimeZone</b> option.
+		*/
+		inline const LogString& getTimeZone() const
+		{
+			return timeZoneID;
+		}
 
-        void formatDate(LogString& s,
-                        const spi::LoggingEventPtr& event,
-                        log4cxx::helpers::Pool& p) const;
+		void formatDate(LogString& s,
+			const spi::LoggingEventPtr& event,
+			log4cxx::helpers::Pool& p) const;
 
-    private:
-        //
-        //  prevent copy and assignment
-        DateLayout(const DateLayout&);
-        DateLayout& operator=(const DateLayout&);
+	private:
+		//
+		//  prevent copy and assignment
+		DateLayout(const DateLayout&);
+		DateLayout& operator=(const DateLayout&);
 
 };
 }  // namespace helpers

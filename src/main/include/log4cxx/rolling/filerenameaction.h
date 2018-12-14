@@ -29,29 +29,29 @@ namespace rolling
 
 class FileRenameAction : public Action
 {
-        const File source;
-        const File destination;
-        bool renameEmptyFile;
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(FileRenameAction)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(FileRenameAction)
-        LOG4CXX_CAST_ENTRY_CHAIN(Action)
-        END_LOG4CXX_CAST_MAP()
+		const File source;
+		const File destination;
+		bool renameEmptyFile;
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(FileRenameAction)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(FileRenameAction)
+		LOG4CXX_CAST_ENTRY_CHAIN(Action)
+		END_LOG4CXX_CAST_MAP()
 
-        /**
-         * Constructor.
-         */
-        FileRenameAction(const File& toRename,
-                         const File& renameTo,
-                         bool renameEmptyFile);
+		/**
+		 * Constructor.
+		 */
+		FileRenameAction(const File& toRename,
+			const File& renameTo,
+			bool renameEmptyFile);
 
-        /**
-         * Perform action.
-         *
-         * @return true if successful.
-         */
-        virtual bool execute(log4cxx::helpers::Pool& pool) const;
+		/**
+		 * Perform action.
+		 *
+		 * @return true if successful.
+		 */
+		virtual bool execute(log4cxx::helpers::Pool& pool) const;
 };
 
 LOG4CXX_PTR_DEF(FileRenameAction);

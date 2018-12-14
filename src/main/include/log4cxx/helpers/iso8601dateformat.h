@@ -35,9 +35,9 @@ information on this format.
 */
 class LOG4CXX_EXPORT ISO8601DateFormat : public SimpleDateFormat
 {
-    public:
-        ISO8601DateFormat()
-            : SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS")) {}
+	public:
+		ISO8601DateFormat()
+			: SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS")) {}
 };
 }  // namespace helpers
 } // namespace log4cxx

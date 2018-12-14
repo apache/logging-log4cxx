@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #if defined(_MSC_VER)
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -33,23 +33,23 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(MessagePatternConverter)
 
 MessagePatternConverter::MessagePatternConverter() :
-    LoggingEventPatternConverter(LOG4CXX_STR("Message"),
-                                 LOG4CXX_STR("message"))
+	LoggingEventPatternConverter(LOG4CXX_STR("Message"),
+		LOG4CXX_STR("message"))
 {
 }
 
 PatternConverterPtr MessagePatternConverter::newInstance(
-    const std::vector<LogString>& /* options */)
+	const std::vector<LogString>& /* options */)
 {
-    static PatternConverterPtr def(new MessagePatternConverter());
-    return def;
+	static PatternConverterPtr def(new MessagePatternConverter());
+	return def;
 }
 
 void MessagePatternConverter::format(
-    const LoggingEventPtr& event,
-    LogString& toAppendTo,
-    Pool& /* p */) const
+	const LoggingEventPtr& event,
+	LogString& toAppendTo,
+	Pool& /* p */) const
 {
-    toAppendTo.append(event->getRenderedMessage());
+	toAppendTo.append(event->getRenderedMessage());
 }
 

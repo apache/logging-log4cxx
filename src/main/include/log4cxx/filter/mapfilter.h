@@ -27,16 +27,16 @@ namespace filter
 
 class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 {
-    public:
-        DECLARE_LOG4CXX_OBJECT(MapFilter)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(log4cxx::spi::Filter)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_OBJECT(MapFilter)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(log4cxx::spi::Filter)
+		END_LOG4CXX_CAST_MAP()
 
-        MapFilter();
+		MapFilter();
 
 
-        FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const;
 
 };
 }

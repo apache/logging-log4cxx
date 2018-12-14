@@ -36,12 +36,12 @@ returned result is <code>false</code>.
 */
 class LOG4CXX_EXPORT TriggeringEventEvaluator : public virtual helpers::Object
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(TriggeringEventEvaluator)
-        /**
-        Is this the triggering event?
-        */
-        virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event) = 0;
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(TriggeringEventEvaluator)
+		/**
+		Is this the triggering event?
+		*/
+		virtual bool isTriggeringEvent(const spi::LoggingEventPtr& event) = 0;
 };
 LOG4CXX_PTR_DEF(TriggeringEventEvaluator);
 }

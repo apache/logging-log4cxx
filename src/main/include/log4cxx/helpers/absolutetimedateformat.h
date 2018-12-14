@@ -30,9 +30,9 @@ Formats a date in the format <b>HH:mm:ss,SSS</b> for example,
 */
 class LOG4CXX_EXPORT AbsoluteTimeDateFormat : public SimpleDateFormat
 {
-    public:
-        AbsoluteTimeDateFormat()
-            : SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SSS")) {}
+	public:
+		AbsoluteTimeDateFormat()
+			: SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SSS")) {}
 };
 }  // namespace helpers
 } // namespace log4cxx

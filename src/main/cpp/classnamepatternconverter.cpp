@@ -16,7 +16,7 @@
  */
 
 #if defined(_MSC_VER)
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #include <log4cxx/logstring.h>
@@ -32,30 +32,30 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(ClassNamePatternConverter)
 
 ClassNamePatternConverter::ClassNamePatternConverter(
-    const std::vector<LogString>& options) :
-    NamePatternConverter(LOG4CXX_STR("Class Name"),
-                         LOG4CXX_STR("class name"), options)
+	const std::vector<LogString>& options) :
+	NamePatternConverter(LOG4CXX_STR("Class Name"),
+		LOG4CXX_STR("class name"), options)
 {
 }
 
 PatternConverterPtr ClassNamePatternConverter::newInstance(
-    const std::vector<LogString>& options)
+	const std::vector<LogString>& options)
 {
-    if (options.size() == 0)
-    {
-        static PatternConverterPtr def(new ClassNamePatternConverter(options));
-        return def;
-    }
+	if (options.size() == 0)
+	{
+		static PatternConverterPtr def(new ClassNamePatternConverter(options));
+		return def;
+	}
 
-    return new ClassNamePatternConverter(options);
+	return new ClassNamePatternConverter(options);
 }
 
 void ClassNamePatternConverter::format(
-    const LoggingEventPtr& event,
-    LogString& toAppendTo,
-    Pool& /* p */) const
+	const LoggingEventPtr& event,
+	LogString& toAppendTo,
+	Pool& /* p */) const
 {
-    int initialLength = toAppendTo.length();
-    append(toAppendTo, event->getLocationInformation().getClassName());
-    abbreviate(initialLength, toAppendTo);
+	int initialLength = toAppendTo.length();
+	append(toAppendTo, event->getLocationInformation().getClassName());
+	abbreviate(initialLength, toAppendTo);
 }

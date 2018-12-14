@@ -27,17 +27,17 @@ Layout::~Layout() {}
 
 void Layout::addRef() const
 {
-    ObjectImpl::addRef();
+	ObjectImpl::addRef();
 }
 
 void Layout::releaseRef() const
 {
-    ObjectImpl::releaseRef();
+	ObjectImpl::releaseRef();
 }
 
 LogString Layout::getContentType() const
 {
-    return LOG4CXX_STR("text/plain");
+	return LOG4CXX_STR("text/plain");
 }
 
 void Layout::appendHeader(LogString&, log4cxx::helpers::Pool&) {}

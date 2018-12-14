@@ -35,34 +35,34 @@ namespace pattern
  */
 class LOG4CXX_EXPORT ClassNamePatternConverter : public NamePatternConverter
 {
-        /**
-         * Private constructor.
-         * @param options options, may be null.
-         * @param logger logger for diagnostic messages, may be null.
-         */
-        ClassNamePatternConverter(
-            const std::vector<LogString>& options);
+		/**
+		 * Private constructor.
+		 * @param options options, may be null.
+		 * @param logger logger for diagnostic messages, may be null.
+		 */
+		ClassNamePatternConverter(
+			const std::vector<LogString>& options);
 
-    public:
-        DECLARE_LOG4CXX_PATTERN(ClassNamePatternConverter)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(ClassNamePatternConverter)
-        LOG4CXX_CAST_ENTRY_CHAIN(NamePatternConverter)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_PATTERN(ClassNamePatternConverter)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(ClassNamePatternConverter)
+		LOG4CXX_CAST_ENTRY_CHAIN(NamePatternConverter)
+		END_LOG4CXX_CAST_MAP()
 
-        /**
-         * Gets an instance of ClassNamePatternConverter.
-         * @param options options, may be null.
-         * @return instance of pattern converter.
-         */
-        static PatternConverterPtr newInstance(
-            const std::vector<LogString>& options);
+		/**
+		 * Gets an instance of ClassNamePatternConverter.
+		 * @param options options, may be null.
+		 * @return instance of pattern converter.
+		 */
+		static PatternConverterPtr newInstance(
+			const std::vector<LogString>& options);
 
-        using NamePatternConverter::format;
+		using NamePatternConverter::format;
 
-        void format(const log4cxx::spi::LoggingEventPtr& event,
-                    LogString& toAppendTo,
-                    log4cxx::helpers::Pool& p) const;
+		void format(const log4cxx::spi::LoggingEventPtr& event,
+			LogString& toAppendTo,
+			log4cxx::helpers::Pool& p) const;
 };
 
 }

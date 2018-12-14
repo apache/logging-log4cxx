@@ -19,8 +19,8 @@
 #define _LOG4CXX_NET_TELNET_APPENDER_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -70,86 +70,86 @@ servlet.
 */
 class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 {
-        class SocketHandler;
-        friend class SocketHandler;
-    private:
-        static const int DEFAULT_PORT;
-        static const int MAX_CONNECTIONS;
-        int port;
+		class SocketHandler;
+		friend class SocketHandler;
+	private:
+		static const int DEFAULT_PORT;
+		static const int MAX_CONNECTIONS;
+		int port;
 
-    public:
-        DECLARE_LOG4CXX_OBJECT(TelnetAppender)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(TelnetAppender)
-        LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_OBJECT(TelnetAppender)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(TelnetAppender)
+		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_CAST_MAP()
 
-        TelnetAppender();
-        ~TelnetAppender();
+		TelnetAppender();
+		~TelnetAppender();
 
-        /**
-        This appender requires a layout to format the text to the
-        attached client(s). */
-        virtual bool requiresLayout() const
-        {
-            return true;
-        }
+		/**
+		This appender requires a layout to format the text to the
+		attached client(s). */
+		virtual bool requiresLayout() const
+		{
+			return true;
+		}
 
-        LogString getEncoding() const;
-        void setEncoding(const LogString& value);
-
-
-        /** all of the options have been set, create the socket handler and
-        wait for connections. */
-        void activateOptions(log4cxx::helpers::Pool& p);
-
-        /**
-        Set options
-        */
-        virtual void setOption(const LogString& option, const LogString& value);
-
-        /**
-        Returns value of the <b>Port</b> option.
-        */
-        int getPort() const
-        {
-            return port;
-        }
-
-        /**
-        The <b>Port</b> option takes a positive integer representing
-        the port where the server is waiting for connections.
-        */
-        void setPort(int port1)
-        {
-            this->port = port1;
-        }
+		LogString getEncoding() const;
+		void setEncoding(const LogString& value);
 
 
-        /** shuts down the appender. */
-        void close();
+		/** all of the options have been set, create the socket handler and
+		wait for connections. */
+		void activateOptions(log4cxx::helpers::Pool& p);
 
-    protected:
-        /** Handles a log event.  For this appender, that means writing the
-        message to each connected client.  */
-        virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) ;
+		/**
+		Set options
+		*/
+		virtual void setOption(const LogString& option, const LogString& value);
 
-        //---------------------------------------------------------- SocketHandler:
+		/**
+		Returns value of the <b>Port</b> option.
+		*/
+		int getPort() const
+		{
+			return port;
+		}
 
-    private:
-        //   prevent copy and assignment statements
-        TelnetAppender(const TelnetAppender&);
-        TelnetAppender& operator=(const TelnetAppender&);
+		/**
+		The <b>Port</b> option takes a positive integer representing
+		the port where the server is waiting for connections.
+		*/
+		void setPort(int port1)
+		{
+			this->port = port1;
+		}
 
-        void write(log4cxx::helpers::ByteBuffer&);
-        void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
-        ConnectionList connections;
-        LogString encoding;
-        log4cxx::helpers::CharsetEncoderPtr encoder;
-        helpers::ServerSocket* serverSocket;
-        helpers::Thread sh;
-        size_t activeConnections;
-        static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
+
+		/** shuts down the appender. */
+		void close();
+
+	protected:
+		/** Handles a log event.  For this appender, that means writing the
+		message to each connected client.  */
+		virtual void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) ;
+
+		//---------------------------------------------------------- SocketHandler:
+
+	private:
+		//   prevent copy and assignment statements
+		TelnetAppender(const TelnetAppender&);
+		TelnetAppender& operator=(const TelnetAppender&);
+
+		void write(log4cxx::helpers::ByteBuffer&);
+		void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
+		ConnectionList connections;
+		LogString encoding;
+		log4cxx::helpers::CharsetEncoderPtr encoder;
+		helpers::ServerSocket* serverSocket;
+		helpers::Thread sh;
+		size_t activeConnections;
+		static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
 }; // class TelnetAppender
 
 LOG4CXX_PTR_DEF(TelnetAppender);
@@ -158,7 +158,7 @@ LOG4CXX_PTR_DEF(TelnetAppender);
 
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 #endif // _LOG4CXX_NET_TELNET_APPENDER_H

@@ -16,7 +16,7 @@
  */
 
 #if defined(_MSC_VER)
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #include <log4cxx/logstring.h>
@@ -27,7 +27,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/log4cxx.h>
 #if !defined(LOG4CXX)
-    #define LOG4CXX 1
+	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/rollingfileappender.h>
@@ -39,10 +39,10 @@
 #include <log4cxx/fileappender.h>
 #include <log4cxx/db/odbcappender.h>
 #if defined(WIN32) || defined(_WIN32)
-    #if !defined(_WIN32_WCE)
-        #include <log4cxx/nt/nteventlogappender.h>
-    #endif
-    #include <log4cxx/nt/outputdebugstringappender.h>
+	#if !defined(_WIN32_WCE)
+		#include <log4cxx/nt/nteventlogappender.h>
+	#endif
+	#include <log4cxx/nt/outputdebugstringappender.h>
 #endif
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/net/socketappender.h>
@@ -91,14 +91,14 @@ Class::~Class()
 
 LogString Class::toString() const
 {
-    return getName();
+	return getName();
 }
 
 ObjectPtr Class::newInstance() const
 {
-    throw InstantiationException(LOG4CXX_STR("Cannot create new instances of Class."));
+	throw InstantiationException(LOG4CXX_STR("Cannot create new instances of Class."));
 #if LOG4CXX_RETURN_AFTER_THROW
-    return 0;
+	return 0;
 #endif
 }
 
@@ -106,102 +106,102 @@ ObjectPtr Class::newInstance() const
 
 Class::ClassMap& Class::getRegistry()
 {
-    static ClassMap registry;
-    return registry;
+	static ClassMap registry;
+	return registry;
 }
 
 const Class& Class::forName(const LogString& className)
 {
-    LogString lowerName(StringHelper::toLowerCase(className));
-    //
-    //  check registry using full class name
-    //
-    const Class* clazz = getRegistry()[lowerName];
+	LogString lowerName(StringHelper::toLowerCase(className));
+	//
+	//  check registry using full class name
+	//
+	const Class* clazz = getRegistry()[lowerName];
 
-    if (clazz == 0)
-    {
-        LogString::size_type pos = className.find_last_of(LOG4CXX_STR(".$"));
+	if (clazz == 0)
+	{
+		LogString::size_type pos = className.find_last_of(LOG4CXX_STR(".$"));
 
-        if (pos != LogString::npos)
-        {
-            LogString terminalName(lowerName, pos + 1, LogString::npos);
-            clazz = getRegistry()[terminalName];
+		if (pos != LogString::npos)
+		{
+			LogString terminalName(lowerName, pos + 1, LogString::npos);
+			clazz = getRegistry()[terminalName];
 
-            if (clazz == 0)
-            {
-                registerClasses();
-                clazz = getRegistry()[lowerName];
+			if (clazz == 0)
+			{
+				registerClasses();
+				clazz = getRegistry()[lowerName];
 
-                if (clazz == 0)
-                {
-                    clazz = getRegistry()[terminalName];
-                }
-            }
-        }
-        else
-        {
-            registerClasses();
-            clazz = getRegistry()[lowerName];
-        }
-    }
+				if (clazz == 0)
+				{
+					clazz = getRegistry()[terminalName];
+				}
+			}
+		}
+		else
+		{
+			registerClasses();
+			clazz = getRegistry()[lowerName];
+		}
+	}
 
-    if (clazz == 0)
-    {
-        throw ClassNotFoundException(className);
-    }
+	if (clazz == 0)
+	{
+		throw ClassNotFoundException(className);
+	}
 
-    return *clazz;
+	return *clazz;
 }
 
 bool Class::registerClass(const Class& newClass)
 {
-    getRegistry()[StringHelper::toLowerCase(newClass.getName())] = &newClass;
-    return true;
+	getRegistry()[StringHelper::toLowerCase(newClass.getName())] = &newClass;
+	return true;
 }
 
 void Class::registerClasses()
 {
 #if APR_HAS_THREADS
-    AsyncAppender::registerClass();
+	AsyncAppender::registerClass();
 #endif
-    ConsoleAppender::registerClass();
-    FileAppender::registerClass();
-    log4cxx::db::ODBCAppender::registerClass();
+	ConsoleAppender::registerClass();
+	FileAppender::registerClass();
+	log4cxx::db::ODBCAppender::registerClass();
 #if (defined(WIN32) || defined(_WIN32))
 #if !defined(_WIN32_WCE)
-    log4cxx::nt::NTEventLogAppender::registerClass();
+	log4cxx::nt::NTEventLogAppender::registerClass();
 #endif
-    log4cxx::nt::OutputDebugStringAppender::registerClass();
+	log4cxx::nt::OutputDebugStringAppender::registerClass();
 #endif
-    log4cxx::RollingFileAppender::registerClass();
-    SMTPAppender::registerClass();
-    SocketAppender::registerClass();
+	log4cxx::RollingFileAppender::registerClass();
+	SMTPAppender::registerClass();
+	SocketAppender::registerClass();
 #if APR_HAS_THREADS
-    SocketHubAppender::registerClass();
+	SocketHubAppender::registerClass();
 #endif
-    SyslogAppender::registerClass();
+	SyslogAppender::registerClass();
 #if APR_HAS_THREADS
-    TelnetAppender::registerClass();
+	TelnetAppender::registerClass();
 #endif
-    XMLSocketAppender::registerClass();
-    DateLayout::registerClass();
-    HTMLLayout::registerClass();
-    PatternLayout::registerClass();
-    SimpleLayout::registerClass();
-    TTCCLayout::registerClass();
-    XMLLayout::registerClass();
-    LevelMatchFilter::registerClass();
-    LevelRangeFilter::registerClass();
-    StringMatchFilter::registerClass();
-    log4cxx::RollingFileAppender::registerClass();
-    log4cxx::rolling::RollingFileAppender::registerClass();
-    DailyRollingFileAppender::registerClass();
-    log4cxx::rolling::SizeBasedTriggeringPolicy::registerClass();
-    log4cxx::rolling::TimeBasedRollingPolicy::registerClass();
-    log4cxx::rolling::ManualTriggeringPolicy::registerClass();
-    log4cxx::rolling::FixedWindowRollingPolicy::registerClass();
-    log4cxx::rolling::FilterBasedTriggeringPolicy::registerClass();
-    log4cxx::xml::DOMConfigurator::registerClass();
-    log4cxx::PropertyConfigurator::registerClass();
+	XMLSocketAppender::registerClass();
+	DateLayout::registerClass();
+	HTMLLayout::registerClass();
+	PatternLayout::registerClass();
+	SimpleLayout::registerClass();
+	TTCCLayout::registerClass();
+	XMLLayout::registerClass();
+	LevelMatchFilter::registerClass();
+	LevelRangeFilter::registerClass();
+	StringMatchFilter::registerClass();
+	log4cxx::RollingFileAppender::registerClass();
+	log4cxx::rolling::RollingFileAppender::registerClass();
+	DailyRollingFileAppender::registerClass();
+	log4cxx::rolling::SizeBasedTriggeringPolicy::registerClass();
+	log4cxx::rolling::TimeBasedRollingPolicy::registerClass();
+	log4cxx::rolling::ManualTriggeringPolicy::registerClass();
+	log4cxx::rolling::FixedWindowRollingPolicy::registerClass();
+	log4cxx::rolling::FilterBasedTriggeringPolicy::registerClass();
+	log4cxx::xml::DOMConfigurator::registerClass();
+	log4cxx::PropertyConfigurator::registerClass();
 }
 

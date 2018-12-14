@@ -24,7 +24,7 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 ByteBuffer::ByteBuffer(char* data1, size_t capacity)
-    : base(data1), pos(0), lim(capacity), cap(capacity)
+	: base(data1), pos(0), lim(capacity), cap(capacity)
 {
 }
 
@@ -34,46 +34,46 @@ ByteBuffer::~ByteBuffer()
 
 void ByteBuffer::clear()
 {
-    lim = cap;
-    pos = 0;
+	lim = cap;
+	pos = 0;
 }
 
 void ByteBuffer::flip()
 {
-    lim = pos;
-    pos = 0;
+	lim = pos;
+	pos = 0;
 }
 
 void ByteBuffer::position(size_t newPosition)
 {
-    if (newPosition < lim)
-    {
-        pos = newPosition;
-    }
-    else
-    {
-        pos = lim;
-    }
+	if (newPosition < lim)
+	{
+		pos = newPosition;
+	}
+	else
+	{
+		pos = lim;
+	}
 }
 
 void ByteBuffer::limit(size_t newLimit)
 {
-    if (newLimit > cap)
-    {
-        throw IllegalArgumentException(LOG4CXX_STR("newLimit"));
-    }
+	if (newLimit > cap)
+	{
+		throw IllegalArgumentException(LOG4CXX_STR("newLimit"));
+	}
 
-    lim = newLimit;
+	lim = newLimit;
 }
 
 
 bool ByteBuffer::put(char byte)
 {
-    if (pos < lim)
-    {
-        base[pos++] = byte;
-        return true;
-    }
+	if (pos < lim)
+	{
+		base[pos++] = byte;
+		return true;
+	}
 
-    return false;
+	return false;
 }

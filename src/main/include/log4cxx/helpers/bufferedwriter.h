@@ -32,29 +32,29 @@ namespace helpers
 */
 class LOG4CXX_EXPORT BufferedWriter : public Writer
 {
-    private:
-        WriterPtr out;
-        size_t sz;
-        LogString buf;
+	private:
+		WriterPtr out;
+		size_t sz;
+		LogString buf;
 
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(BufferedWriter)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(BufferedWriter)
-        LOG4CXX_CAST_ENTRY_CHAIN(Writer)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(BufferedWriter)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(BufferedWriter)
+		LOG4CXX_CAST_ENTRY_CHAIN(Writer)
+		END_LOG4CXX_CAST_MAP()
 
-        BufferedWriter(WriterPtr& out);
-        BufferedWriter(WriterPtr& out, size_t sz);
-        virtual ~BufferedWriter();
+		BufferedWriter(WriterPtr& out);
+		BufferedWriter(WriterPtr& out, size_t sz);
+		virtual ~BufferedWriter();
 
-        virtual void close(Pool& p);
-        virtual void flush(Pool& p);
-        virtual void write(const LogString& str, Pool& p);
+		virtual void close(Pool& p);
+		virtual void flush(Pool& p);
+		virtual void write(const LogString& str, Pool& p);
 
-    private:
-        BufferedWriter(const BufferedWriter&);
-        BufferedWriter& operator=(const BufferedWriter&);
+	private:
+		BufferedWriter(const BufferedWriter&);
+		BufferedWriter& operator=(const BufferedWriter&);
 };
 
 } // namespace helpers

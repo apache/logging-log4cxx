@@ -35,46 +35,46 @@ namespace pattern
  *
  */
 class LOG4CXX_EXPORT ThrowableInformationPatternConverter
-    : public LoggingEventPatternConverter
+	: public LoggingEventPatternConverter
 {
-        /**
-         * If "short", only first line of throwable report will be formatted.
-         */
-        const bool shortReport;
+		/**
+		 * If "short", only first line of throwable report will be formatted.
+		 */
+		const bool shortReport;
 
-        /**
-         * Private constructor.
-         */
-        ThrowableInformationPatternConverter(bool shortReport);
+		/**
+		 * Private constructor.
+		 */
+		ThrowableInformationPatternConverter(bool shortReport);
 
-    public:
-        DECLARE_LOG4CXX_PATTERN(ThrowableInformationPatternConverter)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(ThrowableInformationPatternConverter)
-        LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_PATTERN(ThrowableInformationPatternConverter)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(ThrowableInformationPatternConverter)
+		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
+		END_LOG4CXX_CAST_MAP()
 
 
-        /**
-         * Gets an instance of the class.
-          * @param options pattern options, may be null.  If first element is "short",
-         * only the first line of the throwable will be formatted.
-         * @return instance of class.
-         */
-        static PatternConverterPtr newInstance(
-            const std::vector<LogString>& options);
+		/**
+		 * Gets an instance of the class.
+		  * @param options pattern options, may be null.  If first element is "short",
+		 * only the first line of the throwable will be formatted.
+		 * @return instance of class.
+		 */
+		static PatternConverterPtr newInstance(
+			const std::vector<LogString>& options);
 
-        using LoggingEventPatternConverter::format;
+		using LoggingEventPatternConverter::format;
 
-        void format(const log4cxx::spi::LoggingEventPtr& event,
-                    LogString& toAppendTo,
-                    log4cxx::helpers::Pool& p) const;
+		void format(const log4cxx::spi::LoggingEventPtr& event,
+			LogString& toAppendTo,
+			log4cxx::helpers::Pool& p) const;
 
-        /**
-         * This converter obviously handles throwables.
-         * @return true.
-         */
-        bool handlesThrowable() const;
+		/**
+		 * This converter obviously handles throwables.
+		 * @return true.
+		 */
+		bool handlesThrowable() const;
 };
 }
 }

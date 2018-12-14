@@ -19,8 +19,8 @@
 #define _LOG4CXX_SPI_HIERARCHY_EVENT_LISTENER_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -39,18 +39,18 @@ namespace spi
 
 /** Listen to events occuring within a Hierarchy.*/
 class LOG4CXX_EXPORT HierarchyEventListener :
-    public virtual log4cxx::helpers::Object
+	public virtual log4cxx::helpers::Object
 {
-    public:
-        virtual ~HierarchyEventListener() {}
+	public:
+		virtual ~HierarchyEventListener() {}
 
-        virtual void addAppenderEvent(
-            const log4cxx::helpers::ObjectPtrT<Logger>& logger,
-            const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
+		virtual void addAppenderEvent(
+			const log4cxx::helpers::ObjectPtrT<Logger>& logger,
+			const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
 
-        virtual void removeAppenderEvent(
-            const log4cxx::helpers::ObjectPtrT<Logger>& logger,
-            const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
+		virtual void removeAppenderEvent(
+			const log4cxx::helpers::ObjectPtrT<Logger>& logger,
+			const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
 };
 LOG4CXX_PTR_DEF(HierarchyEventListener);
 LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr);
@@ -59,7 +59,7 @@ LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr);
 } // namespace log4cxx
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 #endif //_LOG4CXX_SPI_HIERARCHY_EVENT_LISTENER_H

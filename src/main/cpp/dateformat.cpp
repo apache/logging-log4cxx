@@ -31,7 +31,7 @@ void DateFormat::setTimeZone(const TimeZonePtr&) {}
 
 void DateFormat::numberFormat(LogString& s, int n, Pool& p) const
 {
-    StringHelper::toString(n, p, s);
+	StringHelper::toString(n, p, s);
 }
 
 DateFormat::DateFormat() {}

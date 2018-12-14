@@ -27,22 +27,22 @@ namespace log4cxx
 namespace spi
 {
 class LOG4CXX_EXPORT DefaultRepositorySelector :
-    public virtual RepositorySelector,
-    public virtual helpers::ObjectImpl
+	public virtual RepositorySelector,
+	public virtual helpers::ObjectImpl
 {
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultRepositorySelector)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(RepositorySelector)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultRepositorySelector)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(RepositorySelector)
+		END_LOG4CXX_CAST_MAP()
 
-        DefaultRepositorySelector(const LoggerRepositoryPtr& repository1);
-        void addRef() const;
-        void releaseRef() const;
-        virtual LoggerRepositoryPtr& getLoggerRepository();
+		DefaultRepositorySelector(const LoggerRepositoryPtr& repository1);
+		void addRef() const;
+		void releaseRef() const;
+		virtual LoggerRepositoryPtr& getLoggerRepository();
 
-    private:
-        LoggerRepositoryPtr repository;
+	private:
+		LoggerRepositoryPtr repository;
 };
 }  // namespace spi
 } // namespace log4cxx

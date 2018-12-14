@@ -30,18 +30,18 @@ operations
 */
 class StrictMath
 {
-    public:
-        template<typename _type> static inline const _type&
-        minimum(const _type& a, const _type& b)
-        {
-            return (a < b) ? a : b;
-        }
+	public:
+		template<typename _type> static inline const _type&
+		minimum(const _type& a, const _type& b)
+		{
+			return (a < b) ? a : b;
+		}
 
-        template<typename _type> static inline const _type&
-        maximum(const _type& a, const _type& b)
-        {
-            return (a > b) ? a : b;
-        }
+		template<typename _type> static inline const _type&
+		maximum(const _type& a, const _type& b)
+		{
+			return (a > b) ? a : b;
+		}
 }; // class StrictMath
 }  // namespace helpers
 } // namespace log4cx

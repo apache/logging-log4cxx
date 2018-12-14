@@ -19,15 +19,15 @@
 --break-one-line-headers
 --convert-tabs
 
+--indent-after-parens
 --indent-classes
 --indent-col1-comments
---indent-continuation=1
 --indent-preproc-block
 --indent-preproc-define
 --indent-switches
---indent=spaces=4
+--indent=force-tab=4
 
---lineend=windows
+--lineend=linux
 --pad-comma
 --pad-header
 --pad-oper

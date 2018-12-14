@@ -30,12 +30,12 @@ using namespace log4cxx;
 Condition::Condition(Pool& p)
 {
 #if APR_HAS_THREADS
-    apr_status_t stat = apr_thread_cond_create(&condition, p.getAPRPool());
+	apr_status_t stat = apr_thread_cond_create(&condition, p.getAPRPool());
 
-    if (stat != APR_SUCCESS)
-    {
-        throw RuntimeException(stat);
-    }
+	if (stat != APR_SUCCESS)
+	{
+		throw RuntimeException(stat);
+	}
 
 #endif
 }
@@ -43,16 +43,16 @@ Condition::Condition(Pool& p)
 Condition::~Condition()
 {
 #if APR_HAS_THREADS
-    apr_thread_cond_destroy(condition);
+	apr_thread_cond_destroy(condition);
 #endif
 }
 
 log4cxx_status_t Condition::signalAll()
 {
 #if APR_HAS_THREADS
-    return apr_thread_cond_broadcast(condition);
+	return apr_thread_cond_broadcast(condition);
 #else
-    return APR_SUCCESS;
+	return APR_SUCCESS;
 #endif
 }
 
@@ -60,19 +60,19 @@ void Condition::await(Mutex& mutex)
 {
 #if APR_HAS_THREADS
 
-    if (Thread::interrupted())
-    {
-        throw InterruptedException();
-    }
+	if (Thread::interrupted())
+	{
+		throw InterruptedException();
+	}
 
-    apr_status_t stat = apr_thread_cond_wait(
-                            condition,
-                            mutex.getAPRMutex());
+	apr_status_t stat = apr_thread_cond_wait(
+			condition,
+			mutex.getAPRMutex());
 
-    if (stat != APR_SUCCESS)
-    {
-        throw InterruptedException(stat);
-    }
+	if (stat != APR_SUCCESS)
+	{
+		throw InterruptedException(stat);
+	}
 
 #endif
 }

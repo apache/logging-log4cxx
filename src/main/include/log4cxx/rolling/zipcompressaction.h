@@ -19,8 +19,8 @@
 #define _LOG4CXX_ROLLING_ZIP_COMPRESS_ACTION_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -35,33 +35,33 @@ namespace rolling
 
 class ZipCompressAction : public Action
 {
-        const File source;
-        const File destination;
-        bool deleteSource;
-    public:
-        DECLARE_ABSTRACT_LOG4CXX_OBJECT(ZipCompressAction)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(ZipCompressAction)
-        LOG4CXX_CAST_ENTRY_CHAIN(Action)
-        END_LOG4CXX_CAST_MAP()
+		const File source;
+		const File destination;
+		bool deleteSource;
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ZipCompressAction)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(ZipCompressAction)
+		LOG4CXX_CAST_ENTRY_CHAIN(Action)
+		END_LOG4CXX_CAST_MAP()
 
-        /**
-         * Constructor.
-         */
-        ZipCompressAction(const File& source,
-                          const File& destination,
-                          bool deleteSource);
+		/**
+		 * Constructor.
+		 */
+		ZipCompressAction(const File& source,
+			const File& destination,
+			bool deleteSource);
 
-        /**
-         * Perform action.
-         *
-         * @return true if successful.
-         */
-        virtual bool execute(log4cxx::helpers::Pool& pool) const;
+		/**
+		 * Perform action.
+		 *
+		 * @return true if successful.
+		 */
+		virtual bool execute(log4cxx::helpers::Pool& pool) const;
 
-    private:
-        ZipCompressAction(const ZipCompressAction&);
-        ZipCompressAction& operator=(const ZipCompressAction&);
+	private:
+		ZipCompressAction(const ZipCompressAction&);
+		ZipCompressAction& operator=(const ZipCompressAction&);
 };
 
 LOG4CXX_PTR_DEF(ZipCompressAction);
@@ -69,7 +69,7 @@ LOG4CXX_PTR_DEF(ZipCompressAction);
 }
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 }

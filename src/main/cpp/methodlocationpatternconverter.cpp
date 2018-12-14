@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #if defined(_MSC_VER)
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -33,22 +33,22 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(MethodLocationPatternConverter)
 
 MethodLocationPatternConverter::MethodLocationPatternConverter() :
-    LoggingEventPatternConverter(LOG4CXX_STR("Method"),
-                                 LOG4CXX_STR("method"))
+	LoggingEventPatternConverter(LOG4CXX_STR("Method"),
+		LOG4CXX_STR("method"))
 {
 }
 
 PatternConverterPtr MethodLocationPatternConverter::newInstance(
-    const std::vector<LogString>& /* options */ )
+	const std::vector<LogString>& /* options */ )
 {
-    static PatternConverterPtr def(new MethodLocationPatternConverter());
-    return def;
+	static PatternConverterPtr def(new MethodLocationPatternConverter());
+	return def;
 }
 
 void MethodLocationPatternConverter::format(
-    const LoggingEventPtr& event,
-    LogString& toAppendTo,
-    Pool& /* p */ ) const
+	const LoggingEventPtr& event,
+	LogString& toAppendTo,
+	Pool& /* p */ ) const
 {
-    append(toAppendTo, event->getLocationInformation().getMethodName());
+	append(toAppendTo, event->getLocationInformation().getMethodName());
 }

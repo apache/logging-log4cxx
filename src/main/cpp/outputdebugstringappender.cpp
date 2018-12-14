@@ -33,14 +33,14 @@ OutputDebugStringAppender::OutputDebugStringAppender()
 
 void OutputDebugStringAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-    LogString buf;
-    layout->format(buf, event, p);
+	LogString buf;
+	layout->format(buf, event, p);
 #if LOG4CXX_WCHAR_T_API
-    LOG4CXX_ENCODE_WCHAR(wstr, buf);
-    ::OutputDebugStringW(wstr.c_str());
+	LOG4CXX_ENCODE_WCHAR(wstr, buf);
+	::OutputDebugStringW(wstr.c_str());
 #else
-    LOG4CXX_ENCODE_CHAR(str, buf);
-    ::OutputDebugStringA(str.c_str());
+	LOG4CXX_ENCODE_CHAR(str, buf);
+	::OutputDebugStringA(str.c_str());
 #endif
 }
 

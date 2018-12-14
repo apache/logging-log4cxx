@@ -36,19 +36,19 @@ namespace pattern
  */
 class LOG4CXX_EXPORT FileDatePatternConverter
 {
-        /**
-         * Private constructor.
-         */
-        FileDatePatternConverter();
+		/**
+		 * Private constructor.
+		 */
+		FileDatePatternConverter();
 
-    public:
-        /**
-         * Obtains an instance of pattern converter.
-         * @param options options, may be null.
-         * @return instance of pattern converter.
-         */
-        static PatternConverterPtr newInstance(
-            const std::vector<LogString>& options);
+	public:
+		/**
+		 * Obtains an instance of pattern converter.
+		 * @param options options, may be null.
+		 * @return instance of pattern converter.
+		 */
+		static PatternConverterPtr newInstance(
+			const std::vector<LogString>& options);
 };
 }
 }

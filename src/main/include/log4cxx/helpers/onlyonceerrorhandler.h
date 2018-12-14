@@ -36,65 +36,65 @@ first error in an appender and ignoring all following errors.
 from being flooded with error messages when logging fails
 */
 class LOG4CXX_EXPORT OnlyOnceErrorHandler :
-    public virtual spi::ErrorHandler,
-    public virtual ObjectImpl
+	public virtual spi::ErrorHandler,
+	public virtual ObjectImpl
 {
-    private:
-        LogString WARN_PREFIX;
-        LogString ERROR_PREFIX;
-        mutable bool firstTime;
+	private:
+		LogString WARN_PREFIX;
+		LogString ERROR_PREFIX;
+		mutable bool firstTime;
 
-    public:
-        DECLARE_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(spi::OptionHandler)
-        LOG4CXX_CAST_ENTRY(spi::ErrorHandler)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_OBJECT(OnlyOnceErrorHandler)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
+		LOG4CXX_CAST_ENTRY(spi::ErrorHandler)
+		END_LOG4CXX_CAST_MAP()
 
-        OnlyOnceErrorHandler();
-        void addRef() const;
-        void releaseRef() const;
+		OnlyOnceErrorHandler();
+		void addRef() const;
+		void releaseRef() const;
 
-        /**
-         Does not do anything.
-         */
-        void setLogger(const LoggerPtr& logger);
-
-
-        /**
-        No options to activate.
-        */
-        void activateOptions(log4cxx::helpers::Pool& p);
-        void setOption(const LogString& option, const LogString& value);
+		/**
+		 Does not do anything.
+		 */
+		void setLogger(const LoggerPtr& logger);
 
 
-        /**
-        Prints the message and the stack trace of the exception on
-        <code>System.err</code>.  */
-        void error(const LogString& message, const std::exception& e,
-                   int errorCode) const;
-        /**
-        Prints the message and the stack trace of the exception on
-        <code>System.err</code>.
-        */
-        void error(const LogString& message, const std::exception& e,
-                   int errorCode, const spi::LoggingEventPtr& event) const;
+		/**
+		No options to activate.
+		*/
+		void activateOptions(log4cxx::helpers::Pool& p);
+		void setOption(const LogString& option, const LogString& value);
 
-        /**
-        Print a the error message passed as parameter on
-        <code>System.err</code>.
-        */
-        void error(const LogString& message) const;
 
-        /**
-        Does not do anything.
-        */
-        void setAppender(const AppenderPtr& appender);
+		/**
+		Prints the message and the stack trace of the exception on
+		<code>System.err</code>.  */
+		void error(const LogString& message, const std::exception& e,
+			int errorCode) const;
+		/**
+		Prints the message and the stack trace of the exception on
+		<code>System.err</code>.
+		*/
+		void error(const LogString& message, const std::exception& e,
+			int errorCode, const spi::LoggingEventPtr& event) const;
 
-        /**
-        Does not do anything.
-        */
-        void setBackupAppender(const AppenderPtr& appender);
+		/**
+		Print a the error message passed as parameter on
+		<code>System.err</code>.
+		*/
+		void error(const LogString& message) const;
+
+		/**
+		Does not do anything.
+		*/
+		void setAppender(const AppenderPtr& appender);
+
+		/**
+		Does not do anything.
+		*/
+		void setBackupAppender(const AppenderPtr& appender);
 };
 }  // namespace helpers
 } // namespace log4cxx

@@ -36,32 +36,32 @@ FilterBasedTriggeringPolicy::~FilterBasedTriggeringPolicy()
 
 
 bool FilterBasedTriggeringPolicy::isTriggeringEvent(
-    Appender* /* appender */,
-    const log4cxx::spi::LoggingEventPtr& event,
-    const LogString& /* filename */,
-    size_t /* fileLength */ )
+	Appender* /* appender */,
+	const log4cxx::spi::LoggingEventPtr& event,
+	const LogString& /* filename */,
+	size_t /* fileLength */ )
 {
-    if (headFilter == NULL)
-    {
-        return false;
-    }
+	if (headFilter == NULL)
+	{
+		return false;
+	}
 
-    for (log4cxx::spi::FilterPtr f = headFilter; f != NULL; f = f->getNext())
-    {
-        switch (f->decide(event))
-        {
-            case Filter::DENY:
-                return false;
+	for (log4cxx::spi::FilterPtr f = headFilter; f != NULL; f = f->getNext())
+	{
+		switch (f->decide(event))
+		{
+			case Filter::DENY:
+				return false;
 
-            case Filter::ACCEPT:
-                return true;
+			case Filter::ACCEPT:
+				return true;
 
-            case Filter::NEUTRAL:
-                break;
-        }
-    }
+			case Filter::NEUTRAL:
+				break;
+		}
+	}
 
-    return true;
+	return true;
 }
 
 /**
@@ -70,28 +70,28 @@ bool FilterBasedTriggeringPolicy::isTriggeringEvent(
  */
 void FilterBasedTriggeringPolicy::addFilter(const log4cxx::spi::FilterPtr& newFilter)
 {
-    if (headFilter == NULL)
-    {
-        headFilter = newFilter;
-        tailFilter = newFilter;
-    }
-    else
-    {
-        tailFilter->setNext(newFilter);
-        tailFilter = newFilter;
-    }
+	if (headFilter == NULL)
+	{
+		headFilter = newFilter;
+		tailFilter = newFilter;
+	}
+	else
+	{
+		tailFilter->setNext(newFilter);
+		tailFilter = newFilter;
+	}
 }
 
 void FilterBasedTriggeringPolicy::clearFilters()
 {
-    log4cxx::spi::FilterPtr empty;
-    headFilter = empty;
-    tailFilter = empty;
+	log4cxx::spi::FilterPtr empty;
+	headFilter = empty;
+	tailFilter = empty;
 }
 
 log4cxx::spi::FilterPtr& FilterBasedTriggeringPolicy::getFilter()
 {
-    return headFilter;
+	return headFilter;
 }
 
 /**
@@ -99,10 +99,10 @@ log4cxx::spi::FilterPtr& FilterBasedTriggeringPolicy::getFilter()
  */
 void FilterBasedTriggeringPolicy::activateOptions(log4cxx::helpers::Pool& p)
 {
-    for (log4cxx::spi::FilterPtr f = headFilter; f != NULL; f = f->getNext())
-    {
-        f->activateOptions(p);
-    }
+	for (log4cxx::spi::FilterPtr f = headFilter; f != NULL; f = f->getNext())
+	{
+		f->activateOptions(p);
+	}
 }
 
 void FilterBasedTriggeringPolicy::setOption(const LogString& /* option */, const LogString& /* value */ )

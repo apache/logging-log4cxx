@@ -19,8 +19,8 @@
 #define _LOG4CXX_FILTER_ANDFILTER_H
 
 #if defined(_MSC_VER)
-    #pragma warning ( push )
-    #pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 
@@ -76,27 +76,27 @@ namespace filter
  */
 class LOG4CXX_EXPORT AndFilter: public log4cxx::spi::Filter
 {
-    private:
-        log4cxx::spi::FilterPtr headFilter;
-        log4cxx::spi::FilterPtr tailFilter;
-        bool acceptOnMatch;
-        AndFilter(const AndFilter&);
-        AndFilter& operator=(const AndFilter&);
+	private:
+		log4cxx::spi::FilterPtr headFilter;
+		log4cxx::spi::FilterPtr tailFilter;
+		bool acceptOnMatch;
+		AndFilter(const AndFilter&);
+		AndFilter& operator=(const AndFilter&);
 
 
-    public:
-        DECLARE_LOG4CXX_OBJECT(AndFilter)
-        BEGIN_LOG4CXX_CAST_MAP()
-        LOG4CXX_CAST_ENTRY(log4cxx::spi::Filter)
-        END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_LOG4CXX_OBJECT(AndFilter)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(log4cxx::spi::Filter)
+		END_LOG4CXX_CAST_MAP()
 
-        AndFilter();
+		AndFilter();
 
-        void addFilter(const log4cxx::spi::FilterPtr& filter);
+		void addFilter(const log4cxx::spi::FilterPtr& filter);
 
-        void setAcceptOnMatch(bool acceptOnMatch);
+		void setAcceptOnMatch(bool acceptOnMatch);
 
-        FilterDecision decide(const spi::LoggingEventPtr& event) const;
+		FilterDecision decide(const spi::LoggingEventPtr& event) const;
 };
 LOG4CXX_PTR_DEF(AndFilter);
 
@@ -104,7 +104,7 @@ LOG4CXX_PTR_DEF(AndFilter);
 }
 
 #if defined(_MSC_VER)
-    #pragma warning ( pop )
+	#pragma warning ( pop )
 #endif
 
 #endif

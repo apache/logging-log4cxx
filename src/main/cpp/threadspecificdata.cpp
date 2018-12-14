@@ -20,7 +20,7 @@
 #include <log4cxx/helpers/exception.h>
 #include <apr_thread_proc.h>
 #if !defined(LOG4CXX)
-    #define LOG4CXX 1
+	#define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
 
@@ -29,7 +29,7 @@ using namespace log4cxx::helpers;
 
 
 ThreadSpecificData::ThreadSpecificData()
-    : ndcStack(), mdcMap()
+	: ndcStack(), mdcMap()
 {
 }
 
@@ -40,28 +40,28 @@ ThreadSpecificData::~ThreadSpecificData()
 
 log4cxx::NDC::Stack& ThreadSpecificData::getStack()
 {
-    return ndcStack;
+	return ndcStack;
 }
 
 log4cxx::MDC::Map& ThreadSpecificData::getMap()
 {
-    return mdcMap;
+	return mdcMap;
 }
 
 ThreadSpecificData& ThreadSpecificData::getDataNoThreads()
 {
-    static ThreadSpecificData noThreadData;
-    return noThreadData;
+	static ThreadSpecificData noThreadData;
+	return noThreadData;
 }
 
 ThreadSpecificData* ThreadSpecificData::getCurrentData()
 {
 #if APR_HAS_THREADS
-    void* pData = NULL;
-    apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
-    return (ThreadSpecificData*) pData;
+	void* pData = NULL;
+	apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
+	return (ThreadSpecificData*) pData;
 #else
-    return &getDataNoThreads();
+	return &getDataNoThreads();
 #endif
 }
 
@@ -69,38 +69,38 @@ void ThreadSpecificData::recycle()
 {
 #if APR_HAS_THREADS
 
-    if (ndcStack.empty() && mdcMap.empty())
-    {
-        void* pData = NULL;
-        apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
+	if (ndcStack.empty() && mdcMap.empty())
+	{
+		void* pData = NULL;
+		apr_status_t stat = apr_threadkey_private_get(&pData, APRInitializer::getTlsKey());
 
-        if (stat == APR_SUCCESS && pData == this)
-        {
-            stat = apr_threadkey_private_set(0, APRInitializer::getTlsKey());
+		if (stat == APR_SUCCESS && pData == this)
+		{
+			stat = apr_threadkey_private_set(0, APRInitializer::getTlsKey());
 
-            if (stat == APR_SUCCESS)
-            {
-                delete this;
-            }
-        }
-    }
+			if (stat == APR_SUCCESS)
+			{
+				delete this;
+			}
+		}
+	}
 
 #endif
 }
 
 void ThreadSpecificData::put(const LogString& key, const LogString& val)
 {
-    ThreadSpecificData* data = getCurrentData();
+	ThreadSpecificData* data = getCurrentData();
 
-    if (data == 0)
-    {
-        data = createCurrentData();
-    }
+	if (data == 0)
+	{
+		data = createCurrentData();
+	}
 
-    if (data != 0)
-    {
-        data->getMap()[key] = val;
-    }
+	if (data != 0)
+	{
+		data->getMap()[key] = val;
+	}
 }
 
 
@@ -108,44 +108,44 @@ void ThreadSpecificData::put(const LogString& key, const LogString& val)
 
 void ThreadSpecificData::push(const LogString& val)
 {
-    ThreadSpecificData* data = getCurrentData();
+	ThreadSpecificData* data = getCurrentData();
 
-    if (data == 0)
-    {
-        data = createCurrentData();
-    }
+	if (data == 0)
+	{
+		data = createCurrentData();
+	}
 
-    if (data != 0)
-    {
-        NDC::Stack& stack = data->getStack();
+	if (data != 0)
+	{
+		NDC::Stack& stack = data->getStack();
 
-        if (stack.empty())
-        {
-            stack.push(NDC::DiagnosticContext(val, val));
-        }
-        else
-        {
-            LogString fullMessage(stack.top().second);
-            fullMessage.append(1, (logchar) 0x20);
-            fullMessage.append(val);
-            stack.push(NDC::DiagnosticContext(val, fullMessage));
-        }
-    }
+		if (stack.empty())
+		{
+			stack.push(NDC::DiagnosticContext(val, val));
+		}
+		else
+		{
+			LogString fullMessage(stack.top().second);
+			fullMessage.append(1, (logchar) 0x20);
+			fullMessage.append(val);
+			stack.push(NDC::DiagnosticContext(val, fullMessage));
+		}
+	}
 }
 
 void ThreadSpecificData::inherit(const NDC::Stack& src)
 {
-    ThreadSpecificData* data = getCurrentData();
+	ThreadSpecificData* data = getCurrentData();
 
-    if (data == 0)
-    {
-        data = createCurrentData();
-    }
+	if (data == 0)
+	{
+		data = createCurrentData();
+	}
 
-    if (data != 0)
-    {
-        data->getStack() = src;
-    }
+	if (data != 0)
+	{
+		data->getStack() = src;
+	}
 }
 
 
@@ -153,17 +153,17 @@ void ThreadSpecificData::inherit(const NDC::Stack& src)
 ThreadSpecificData* ThreadSpecificData::createCurrentData()
 {
 #if APR_HAS_THREADS
-    ThreadSpecificData* newData = new ThreadSpecificData();
-    apr_status_t stat = apr_threadkey_private_set(newData, APRInitializer::getTlsKey());
+	ThreadSpecificData* newData = new ThreadSpecificData();
+	apr_status_t stat = apr_threadkey_private_set(newData, APRInitializer::getTlsKey());
 
-    if (stat != APR_SUCCESS)
-    {
-        delete newData;
-        newData = NULL;
-    }
+	if (stat != APR_SUCCESS)
+	{
+		delete newData;
+		newData = NULL;
+	}
 
-    return newData;
+	return newData;
 #else
-    return 0;
+	return 0;
 #endif
 }
