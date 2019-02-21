@@ -331,7 +331,7 @@ public:
         }
 
         void encodeCharsetName3() {
-            logchar unsupported[] = { 0x1F, 0x7F, 0x80, 0x81, 0x00 };
+            logchar unsupported[] = { 0x1F, 0x7F, static_cast<logchar>(0x80), static_cast<logchar>(0x81), 0x00 };
             std::string encoded(Transcoder::encodeCharsetName(LogString(unsupported)));
             LOGUNIT_ASSERT_EQUAL(std::string("????"), encoded);
         }
