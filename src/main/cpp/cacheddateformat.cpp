@@ -39,14 +39,29 @@ using namespace log4cxx::pattern;
 */
 const logchar CachedDateFormat::digits[] = { 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39, 0 };
 
+
 /**
- *  Expected representation of first magic number.
+ * First magic number (in microseconds) used to detect
+ * the millisecond position.
+ */
+const int CachedDateFormat::magic1 = 654000;
+
+
+/**
+ *  Expected representation of first magic number in milliseconds.
  */
 const logchar CachedDateFormat::magicString1[] = { 0x36, 0x35, 0x34, 0 };
 
 
 /**
- *  Expected representation of second magic number.
+ * Second magic number (in microseconds) used to detect
+ * the millisecond position.
+ */
+const int CachedDateFormat::magic2 = 987000;
+
+
+/**
+ *  Expected representation of second magic number in milliseconds.
  */
 const logchar CachedDateFormat::magicString2[] = { 0x39, 0x38, 0x37, 0};
 

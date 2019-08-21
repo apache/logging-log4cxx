@@ -50,26 +50,29 @@ class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
 		 */
 		static const logchar digits[];
 
-		enum
-		{
-			/**
-			 *  First magic number used to detect the millisecond position.
-			 */
-			magic1 = 654000,
-			/**
-			 *  Second magic number used to detect the millisecond position.
-			 */
-			magic2 = 987000
-		};
 
 		/**
-		 *  Expected representation of first magic number.
+		 * First magic number (in microseconds) used to detect
+		 * the millisecond position.
+		 */
+		static const int magic1;
+
+
+		/**
+		 *  Expected representation of first magic number in milliseconds.
 		 */
 		static const logchar magicString1[];
 
 
 		/**
-		 *  Expected representation of second magic number.
+		 * Second magic number (in microseconds) used to detect
+		 * the millisecond position.
+		 */
+		static const int magic2;
+
+
+		/**
+		 *  Expected representation of second magic number in milliseconds.
 		 */
 		static const logchar magicString2[];
 
