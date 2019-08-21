@@ -18,6 +18,7 @@
 #include <log4cxx/helpers/cacheddateformat.h>
 #include "../logunit.h"
 #include <log4cxx/helpers/absolutetimedateformat.h>
+#include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/relativetimedateformat.h>
 #include <log4cxx/helpers/pool.h>
 #include <locale>
@@ -76,6 +77,7 @@ LOGUNIT_CLASS(CachedDateFormatTestCase)
      LOGUNIT_TEST(test19);
      LOGUNIT_TEST(test20);
      LOGUNIT_TEST(test21);
+     LOGUNIT_TEST(test22);
      LOGUNIT_TEST_SUITE_END();
 
 #define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
@@ -640,6 +642,26 @@ void test21() {
        CachedDateFormat::getMaximumCacheValidity(
           LOG4CXX_STR("yyyy-MM-dd SSS SSS"));
     LOGUNIT_ASSERT_EQUAL(1000, maxValid);
+}
+
+/**
+ * Check that findMillisecondStart correctly handles timestamps
+ * which use the magic millisecond value 654.
+ */
+void test22() {
+    DateFormatPtr baseFormatter(new ISO8601DateFormat());
+    CachedDateFormat isoFormat(baseFormatter, 1000000);
+    isoFormat.setTimeZone(TimeZone::getGMT());
+
+    Pool p;
+    LogString formatted;
+
+    isoFormat.format(formatted, 654000, p);
+    LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:00,654"), formatted);
+
+    formatted.clear();
+    isoFormat.format(formatted, 999000, p);
+    LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:00,999"), formatted);
 }
 
 };
