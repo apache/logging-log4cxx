@@ -129,6 +129,7 @@ int CachedDateFormat::findMillisecondStart(
 	// the magic numbers are in microseconds
 	int magic = magic1;
 	LogString magicString(magicString1);
+
 	if (millis == magic1 / 1000)
 	{
 		magic = magic2;
