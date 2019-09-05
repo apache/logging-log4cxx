@@ -124,13 +124,12 @@ int CachedDateFormat::findMillisecondStart(
 		slotBegin -= 1000000;
 	}
 
-	int micros = (int) (time - slotBegin);
+	int millis = (int) (time - slotBegin) / 1000;
 
 	// the magic numbers are in microseconds
 	int magic = magic1;
 	LogString magicString(magicString1);
-
-	if (micros == magic1)
+	if (millis == magic1 / 1000)
 	{
 		magic = magic2;
 		magicString = magicString2;
@@ -158,7 +157,7 @@ int CachedDateFormat::findMillisecondStart(
 				//   determine the expected digits for the base time
 				const logchar abc[] = { 0x41, 0x42, 0x43, 0 };
 				LogString formattedMillis(abc);
-				millisecondFormat(micros / 1000, formattedMillis, 0);
+				millisecondFormat(millis, formattedMillis, 0);
 
 				LogString plusZero;
 				formatter->format(plusZero, slotBegin, pool);

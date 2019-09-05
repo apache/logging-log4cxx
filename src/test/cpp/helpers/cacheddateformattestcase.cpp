@@ -662,6 +662,14 @@ void test22() {
     formatted.clear();
     isoFormat.format(formatted, 999000, p);
     LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:00,999"), formatted);
+
+    formatted.clear();
+    isoFormat.format(formatted, 1654010, p);
+    LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:01,654"), formatted);
+
+    formatted.clear();
+    isoFormat.format(formatted, 1999010, p);
+    LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("1970-01-01 00:00:01,999"), formatted);
 }
 
 };
