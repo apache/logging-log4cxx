@@ -1,0 +1,3 @@
+add_executable(odbcappendertestcase odbcappendertestcase.cpp)
+target_include_directories(odbcappendertestcase PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
+target_link_libraries(odbcappendertestcase log4cxx testingFramework testingUtilities ${APR_LIBRARIES})
