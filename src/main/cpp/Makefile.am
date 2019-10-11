@@ -72,6 +72,7 @@ liblog4cxx_la_SOURCES = \
         inputstreamreader.cpp \
         integer.cpp \
         integerpatternconverter.cpp \
+        jsonlayout.cpp \
         layout.cpp\
         level.cpp \
         levelmatchfilter.cpp \
