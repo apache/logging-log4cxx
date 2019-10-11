@@ -49,5 +49,5 @@ ENDIF()
 install(EXPORT log4cxxTargets
   FILE log4cxx-targets.cmake
   NAMESPACE log4cxx::
-  DESTINATION lib/cmake/log4cxx
+  DESTINATION share/cmake/log4cxx
 )
