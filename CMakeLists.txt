@@ -4,13 +4,13 @@ project(log4cxx VERSION 0.10.0 LANGUAGES CXX)
 # Find Apache Runtime
 find_package(apr QUIET)
 # If APR find module sets the cache, the following will do nothing
-find_path(APR_INCLUDE_DIR apr.h)
+find_path(APR_INCLUDE_DIR apr.h PATH_SUFFIXES apr-1)
 find_library(APR_LIBRARIES NAMES libapr-1 apr-1)
 
 # Find Apache Runtime Utilities
 find_package(apr-util QUIET)
 # If APR-UTIL find module sets the cache, the following will do nothing
-find_path(APR_UTIL_INCLUDE_DIR apu.h)
+find_path(APR_UTIL_INCLUDE_DIR apu.h PATH_SUFFIXES apr-1)
 find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1 aprutil-1)
 
 ## Testing
@@ -38,7 +38,7 @@ install(TARGETS log4cxx EXPORT log4cxxTargets
   LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
-IF(LOG4CXX_INSTALL_PDB)
+IF(WIN32 AND LOG4CXX_INSTALL_PDB)
   INSTALL(FILES $<TARGET_PDB_FILE:log4cxx>
           DESTINATION ${CMAKE_INSTALL_BINDIR}
           CONFIGURATIONS RelWithDebInfo Debug

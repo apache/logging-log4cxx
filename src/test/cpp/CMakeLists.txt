@@ -50,7 +50,7 @@ add_subdirectory(xml)
 
 foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     target_include_directories(${testName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
-    target_link_libraries(${testName} PRIVATE log4cxx testingFramework testingUtilities ${APR_LIBRARIES})
+    target_link_libraries(${testName} PRIVATE testingFramework testingUtilities log4cxx ${APR_LIBRARIES})
     add_test(NAME ${testName}
         COMMAND ${testName} -v
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../resources
