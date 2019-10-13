@@ -14,7 +14,7 @@ find_path(APR_UTIL_INCLUDE_DIR apu.h PATH_SUFFIXES apr-1)
 find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1 aprutil-1)
 
 ## Testing
-option(TEST_LOG4CXX "Build log4cxx tests" ON)
+option(TEST_LOG4CXX "Build log4cxx tests" OFF)
 if(TEST_LOG4CXX)
   enable_testing()
 endif()
