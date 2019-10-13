@@ -34,16 +34,22 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 	private:
 		// Print no location info by default
 		bool locationInfo; //= false
+		bool prettyPrint; //= false
 
 		helpers::ISO8601DateFormat dateFormat;
 
 	protected:
+
+		LogString ppIndentL1;
+		LogString ppIndentL2;
 
 		void appendQuotedEscapedString(LogString& buf, const LogString& input) const;
 		void appendSerializedMDC(LogString& buf,
 			const spi::LoggingEventPtr& event) const;
 		void appendSerializedNDC(LogString& buf,
 			const spi::LoggingEventPtr& event) const;
+		void appendSerializedLocationInfo(LogString& buf,
+			const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) const;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(JSONLayout)
@@ -66,6 +72,7 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 			this->locationInfo = locationInfoFlag;
 		}
 
+
 		/**
 		Returns the current value of the <b>LocationInfo</b> option.
 		*/
@@ -73,6 +80,27 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 		{
 			return locationInfo;
 		}
+
+		/**
+		The <b>PrettyPrint</b> option takes a boolean value. By
+		default, it is set to false which means output by this layout will
+		be one line per log event.  If the option is set to true, then
+		then each log event will produce multiple lines, each indented
+		for readability.
+		*/
+		inline void setPrettyPrint(bool prettyPrintFlag)
+		{
+			this->prettyPrint = prettyPrintFlag;
+		}
+
+		/**
+		Returns the current value of the <b>PrettyPrint</b> option.
+		*/
+		inline bool getPrettyPrint() const
+		{
+			return prettyPrint;
+		}
+
 
 		/**
 		Returns the content type output by this layout, i.e "application/json".

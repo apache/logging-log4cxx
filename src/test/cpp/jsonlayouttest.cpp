@@ -47,8 +47,13 @@ LOGUNIT_CLASS(JSONLayoutTest), public JSONLayout
 	LOGUNIT_TEST(testAppendQuotedEscapedStringWithPrintableChars);
 	LOGUNIT_TEST(testAppendQuotedEscapedStringWithControlChars);
 	LOGUNIT_TEST(testAppendSerializedMDC);
+	LOGUNIT_TEST(testAppendSerializedMDCWithPrettyPrint);
 	LOGUNIT_TEST(testAppendSerializedNDC);
+	LOGUNIT_TEST(testAppendSerializedNDCWithPrettyPrint);
+	LOGUNIT_TEST(testAppendSerializedLocationInfo);
+	LOGUNIT_TEST(testAppendSerializedLocationInfoWithPrettyPrint);
 	LOGUNIT_TEST(testFormat);
+	LOGUNIT_TEST(testFormatWithPrettyPrint);
 	LOGUNIT_TEST(testGetSetLocationInfo);
 	LOGUNIT_TEST_SUITE_END();
 
@@ -178,6 +183,41 @@ public:
 
 	}
 
+	/**
+	 * Tests appendSerializedMDC with prettyPrint set to true.
+	 */
+	void testAppendSerializedMDCWithPrettyPrint()
+	{
+
+		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
+			Level::getInfo(),
+			LOG4CXX_STR("A message goes here."),
+			LOG4CXX_LOCATION);
+
+		MDC::put("key1", "value1");
+		MDC::put("key2", "value2");
+
+		LogString output1;
+
+		LogString expected1;
+		expected1.append(",\n")
+		.append(ppIndentL1)
+		.append("\"context_map\": {\n")
+		.append(ppIndentL2)
+		.append("\"key1\": \"value1\",\n")
+		.append(ppIndentL2)
+		.append("\"key2\": \"value2\"\n")
+		.append(ppIndentL1)
+		.append("}");
+
+		setPrettyPrint(true);
+		appendSerializedMDC(output1, event1);
+
+		LOGUNIT_ASSERT_EQUAL(expected1, output1);
+
+	}
+
+
 
 	/**
 	 * Tests appendSerializedNDC.
@@ -201,8 +241,103 @@ public:
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
 
+	}
+
+
+	/**
+	 * Tests appendSerializedNDC with prettyPrint set to true.
+	 */
+	void testAppendSerializedNDCWithPrettyPrint()
+	{
+
+		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
+			Level::getInfo(),
+			LOG4CXX_STR("A message goes here."),
+			LOG4CXX_LOCATION);
+
+		NDC::push("one");
+		NDC::push("two");
+		NDC::push("three");
+
+		LogString output1;
+		LogString expected1;
+		expected1.append(",\n")
+		.append(ppIndentL1)
+		.append("\"context_stack\": [\n")
+		.append(ppIndentL2)
+		.append("\"one two three\"\n")
+		.append(ppIndentL1)
+		.append("]");
+
+		setPrettyPrint(true);
+
+		appendSerializedNDC(output1, event1);
+
+		LOGUNIT_ASSERT_EQUAL(expected1, output1);
 
 	}
+
+	/**
+	 * Tests appendSerializedLocationInfo.
+	 */
+	void testAppendSerializedLocationInfo()
+	{
+		Pool p;
+
+		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
+			Level::getInfo(),
+			LOG4CXX_STR("A message goes here."),
+			spi::LocationInfo("FooFile", "BarFunc", 42));
+
+		LogString output1;
+		LogString expected1;
+		expected1.append("\"location_info\": { ")
+		.append("\"file\": \"FooFile\", ")
+		.append("\"line\": \"42\", ")
+		.append("\"class\": \"\", ")
+		.append("\"method\": \"BarFunc\" }");
+
+		appendSerializedLocationInfo(output1, event1, p);
+
+		LOGUNIT_ASSERT_EQUAL(expected1, output1);
+
+	}
+
+	/**
+	 * Tests appendSerializedLocationInfo with prettyPrint set to true.
+	 */
+	void testAppendSerializedLocationInfoWithPrettyPrint()
+	{
+
+		Pool p;
+
+		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
+			Level::getInfo(),
+			LOG4CXX_STR("A message goes here."),
+			spi::LocationInfo("FooFile", "BarFunc", 42));
+
+		LogString output1;
+		LogString expected1;
+		expected1.append(ppIndentL1)
+		.append("\"location_info\": {\n")
+		.append(ppIndentL2)
+		.append("\"file\": \"FooFile\",\n")
+		.append(ppIndentL2)
+		.append("\"line\": \"42\",\n")
+		.append(ppIndentL2)
+		.append("\"class\": \"\",\n")
+		.append(ppIndentL2)
+		.append("\"method\": \"BarFunc\"\n")
+		.append(ppIndentL1)
+		.append("}");
+
+		setPrettyPrint(true);
+		appendSerializedLocationInfo(output1, event1, p);
+
+		LOGUNIT_ASSERT_EQUAL(expected1, output1);
+
+	}
+
 
 
 	/**
@@ -216,7 +351,7 @@ public:
 		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
 			Level::getInfo(),
 			LOG4CXX_STR("A message goes here."),
-			LOG4CXX_LOCATION);
+			spi::LocationInfo("FooFile", "BarFunc", 42));
 
 		LogString timestamp;
 		helpers::ISO8601DateFormat dateFormat;
@@ -239,8 +374,12 @@ public:
 		.append("\"logger\": \"Logger\", ")
 		.append("\"message\": \"A message goes here.\"");
 
+		setLocationInfo(true);
+
 		appendSerializedMDC(expected1, event1);
 		appendSerializedNDC(expected1, event1);
+		expected1.append(", ");
+		appendSerializedLocationInfo(expected1, event1, p);
 
 		expected1.append(" }\n");
 
@@ -249,6 +388,62 @@ public:
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
 
 	}
+	/**
+	 * Tests format with PrettyPrint set to true.
+	 */
+	void testFormatWithPrettyPrint()
+	{
+
+		Pool p;
+
+		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
+			Level::getInfo(),
+			LOG4CXX_STR("A message goes here."),
+			spi::LocationInfo("FooFile", "BarFunc", 42));
+
+		LogString timestamp;
+		helpers::ISO8601DateFormat dateFormat;
+		dateFormat.format(timestamp, event1->getTimeStamp(), p);
+
+		NDC::push("one");
+		NDC::push("two");
+		NDC::push("three");
+
+		MDC::put("key1", "value1");
+		MDC::put("key2", "value2");
+
+		LogString output1;
+		LogString expected1;
+
+		expected1.append("{\n")
+		.append(ppIndentL1)
+		.append("\"timestamp\": \"")
+		.append(timestamp)
+		.append("\",\n")
+		.append(ppIndentL1)
+		.append("\"level\": \"INFO\",\n")
+		.append(ppIndentL1)
+		.append("\"logger\": \"Logger\",\n")
+		.append(ppIndentL1)
+		.append("\"message\": \"A message goes here.\"");
+
+
+		setPrettyPrint(true);
+		setLocationInfo(true);
+
+		appendSerializedMDC(expected1, event1);
+		appendSerializedNDC(expected1, event1);
+		expected1.append(",\n");
+		appendSerializedLocationInfo(expected1, event1, p);
+
+		expected1.append("\n}\n");
+
+		format(output1, event1, p);
+
+		LOGUNIT_ASSERT_EQUAL(expected1, output1);
+
+	}
+
 
 	/**
 	 * Tests getLocationInfo and setLocationInfo.
@@ -261,6 +456,19 @@ public:
 		LOGUNIT_ASSERT_EQUAL(true, layout.getLocationInfo());
 		layout.setLocationInfo(false);
 		LOGUNIT_ASSERT_EQUAL(false, layout.getLocationInfo());
+	}
+
+	/**
+	 * Tests getPrettyPrint and setPrettyPrint.
+	 */
+	void testGetSetPrettyPrint()
+	{
+		JSONLayout layout;
+		LOGUNIT_ASSERT_EQUAL(false, layout.getPrettyPrint());
+		layout.setPrettyPrint(true);
+		LOGUNIT_ASSERT_EQUAL(true, layout.getPrettyPrint());
+		layout.setPrettyPrint(false);
+		LOGUNIT_ASSERT_EQUAL(false, layout.getPrettyPrint());
 	}
 
 };
