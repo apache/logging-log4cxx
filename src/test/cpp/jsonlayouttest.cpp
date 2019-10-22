@@ -101,24 +101,23 @@ public:
 	 */
 	void testAppendQuotedEscapedStringWithPrintableChars()
 	{
-
-		LogString s1("foo");                  /*  foo */
+		LogString s1(LOG4CXX_STR("foo"));	/*  foo */
 		LogString s2;
-		appendQuotedEscapedString(s2, s1);    /*  "foo"  */
-		LOGUNIT_ASSERT_EQUAL("\"foo\"", s2);
+		appendQuotedEscapedString(s2, s1);	/*  "foo"  */
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\"foo\""), s2);
 
 		LogString s3;
-		appendQuotedEscapedString(s3, s2);    /*  "\"foo\""  */
-		LOGUNIT_ASSERT_EQUAL("\"\\\"foo\\\"\"", s3);
+		appendQuotedEscapedString(s3, s2);	/*  "\"foo\""  */
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\"\\\"foo\\\"\""), s3);
 
-		LogString t1("bar\"baz");             /*  bar"baz */
+		LogString t1(LOG4CXX_STR("bar\"baz"));	/*  bar"baz */
 		LogString t2;
-		appendQuotedEscapedString(t2, t1);    /*  "bar\"baz"  */
-		LOGUNIT_ASSERT_EQUAL("\"bar\\\"baz\"", t2);
+		appendQuotedEscapedString(t2, t1);		/*  "bar\"baz"  */
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\"bar\\\"baz\""), t2);
 
 		LogString t3;
-		appendQuotedEscapedString(t3, t2);    /*  "\"bar\\\"baz\""    */
-		LOGUNIT_ASSERT_EQUAL("\"\\\"bar\\\\\\\"baz\\\"\"", t3);
+		appendQuotedEscapedString(t3, t2);		/*  "\"bar\\\"baz\""    */
+		LOGUNIT_ASSERT_EQUAL(LOG4CXX_STR("\"\\\"bar\\\\\\\"baz\\\"\""), t3);
 	}
 
 	/**
@@ -126,37 +125,40 @@ public:
 	 */
 	void testAppendQuotedEscapedStringWithControlChars()
 	{
-
-		LogString bs = {0x08};
-		LogString bs_expected = {0x22, 0x5c, 'b', 0x22};      /* "\b" */
+		logchar bs[] = {0x08, 0x00};
+		logchar bs_expected[] = {0x22, 0x5c, 'b', 0x22, 0x00};      /* "\b" */
 		LogString bs_escaped;
+
 		appendQuotedEscapedString(bs_escaped, bs);
 		LOGUNIT_ASSERT_EQUAL(bs_expected, bs_escaped);
 
-		LogString tab = {0x09};
-		LogString tab_expected = {0x22, 0x5c, 't', 0x22};     /* "\t" */
+		logchar tab[] = {0x09, 0x00};
+		logchar tab_expected[] = {0x22, 0x5c, 't', 0x22, 0x00};     /* "\t" */
 		LogString tab_escaped;
+
 		appendQuotedEscapedString(tab_escaped, tab);
 		LOGUNIT_ASSERT_EQUAL(tab_expected, tab_escaped);
 
-		LogString newline = {0x0a};
-		LogString newline_expected = {0x22, 0x5c, 'n', 0x22}; /* "\n" */
+		logchar newline[] = {0x0a, 0x00};
+		logchar newline_expected[] = {0x22, 0x5c, 'n', 0x22, 0x00}; /* "\n" */
 		LogString newline_escaped;
+
 		appendQuotedEscapedString(newline_escaped, newline);
 		LOGUNIT_ASSERT_EQUAL(newline_expected, newline_escaped);
 
-		LogString ff = {0x0c};
-		LogString ff_expected = {0x22, 0x5c, 'f', 0x22};      /* "\f" */
+		logchar ff[] = {0x0c, 0x00};
+		logchar ff_expected[] = {0x22, 0x5c, 'f', 0x22, 0x00};      /* "\f" */
 		LogString ff_escaped;
+
 		appendQuotedEscapedString(ff_escaped, ff);
 		LOGUNIT_ASSERT_EQUAL(ff_expected, ff_escaped);
 
-		LogString cr = {0x0d};
-		LogString cr_expected = {0x22, 0x5c, 'r', 0x22};      /* "\r" */
+		logchar cr[] = {0x0d, 0x00};
+		logchar cr_expected[] = {0x22, 0x5c, 'r', 0x22, 0x00};      /* "\r" */
 		LogString cr_escaped;
+
 		appendQuotedEscapedString(cr_escaped, cr);
 		LOGUNIT_ASSERT_EQUAL(cr_expected, cr_escaped);
-
 	}
 
 	/**
@@ -164,7 +166,6 @@ public:
 	 */
 	void testAppendSerializedMDC()
 	{
-
 		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
 			Level::getInfo(),
 			LOG4CXX_STR("A message goes here."),
@@ -174,13 +175,11 @@ public:
 		MDC::put("key2", "value2");
 
 		LogString output1;
-		LogString expected1 = ", \"context_map\": { "
-			"\"key1\": \"value1\", \"key2\": \"value2\" }";
+		LogString expected1 = LOG4CXX_STR(", \"context_map\": { "
+			"\"key1\": \"value1\", \"key2\": \"value2\" }");
 
 		appendSerializedMDC(output1, event1);
-
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
-
 	}
 
 	/**
@@ -188,7 +187,6 @@ public:
 	 */
 	void testAppendSerializedMDCWithPrettyPrint()
 	{
-
 		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
 			Level::getInfo(),
 			LOG4CXX_STR("A message goes here."),
@@ -198,33 +196,34 @@ public:
 		MDC::put("key2", "value2");
 
 		LogString output1;
-
 		LogString expected1;
-		expected1.append(",\n")
-		.append(ppIndentL1)
-		.append("\"context_map\": {\n")
-		.append(ppIndentL2)
-		.append("\"key1\": \"value1\",\n")
-		.append(ppIndentL2)
-		.append("\"key2\": \"value2\"\n")
-		.append(ppIndentL1)
-		.append("}");
+
+		expected1
+			.append(LOG4CXX_STR(","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("\"context_map\": {"))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL2)
+			.append(LOG4CXX_STR("\"key1\": \"value1\","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL2)
+			.append(LOG4CXX_STR("\"key2\": \"value2\""))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("}"));
 
 		setPrettyPrint(true);
 		appendSerializedMDC(output1, event1);
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
-
 	}
-
-
 
 	/**
 	 * Tests appendSerializedNDC.
 	 */
 	void testAppendSerializedNDC()
 	{
-
 		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
 			Level::getInfo(),
 			LOG4CXX_STR("A message goes here."),
@@ -235,21 +234,17 @@ public:
 		NDC::push("three");
 
 		LogString output1;
-		LogString expected1 = ", \"context_stack\": [ \"one two three\" ]";
+		LogString expected1 = LOG4CXX_STR(", \"context_stack\": [ \"one two three\" ]");
 
 		appendSerializedNDC(output1, event1);
-
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
-
 	}
-
 
 	/**
 	 * Tests appendSerializedNDC with prettyPrint set to true.
 	 */
 	void testAppendSerializedNDCWithPrettyPrint()
 	{
-
 		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
 			Level::getInfo(),
 			LOG4CXX_STR("A message goes here."),
@@ -261,20 +256,23 @@ public:
 
 		LogString output1;
 		LogString expected1;
-		expected1.append(",\n")
-		.append(ppIndentL1)
-		.append("\"context_stack\": [\n")
-		.append(ppIndentL2)
-		.append("\"one two three\"\n")
-		.append(ppIndentL1)
-		.append("]");
+
+		expected1
+			.append(LOG4CXX_STR(","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("\"context_stack\": ["))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL2)
+			.append(LOG4CXX_STR("\"one two three\""))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("]"));
 
 		setPrettyPrint(true);
-
 		appendSerializedNDC(output1, event1);
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
-
 	}
 
 	/**
@@ -291,16 +289,16 @@ public:
 
 		LogString output1;
 		LogString expected1;
-		expected1.append("\"location_info\": { ")
-		.append("\"file\": \"FooFile\", ")
-		.append("\"line\": \"42\", ")
-		.append("\"class\": \"\", ")
-		.append("\"method\": \"BarFunc\" }");
+
+		expected1
+			.append(LOG4CXX_STR("\"location_info\": { "))
+			.append(LOG4CXX_STR("\"file\": \"FooFile\", "))
+			.append(LOG4CXX_STR("\"line\": \"42\", "))
+			.append(LOG4CXX_STR("\"class\": \"\", "))
+			.append(LOG4CXX_STR("\"method\": \"BarFunc\" }"));
 
 		appendSerializedLocationInfo(output1, event1, p);
-
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
-
 	}
 
 	/**
@@ -308,7 +306,6 @@ public:
 	 */
 	void testAppendSerializedLocationInfoWithPrettyPrint()
 	{
-
 		Pool p;
 
 		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
@@ -318,34 +315,37 @@ public:
 
 		LogString output1;
 		LogString expected1;
-		expected1.append(ppIndentL1)
-		.append("\"location_info\": {\n")
-		.append(ppIndentL2)
-		.append("\"file\": \"FooFile\",\n")
-		.append(ppIndentL2)
-		.append("\"line\": \"42\",\n")
-		.append(ppIndentL2)
-		.append("\"class\": \"\",\n")
-		.append(ppIndentL2)
-		.append("\"method\": \"BarFunc\"\n")
-		.append(ppIndentL1)
-		.append("}");
+
+		expected1
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("\"location_info\": {"))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL2)
+			.append(LOG4CXX_STR("\"file\": \"FooFile\","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL2)
+			.append(LOG4CXX_STR("\"line\": \"42\","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL2)
+			.append(LOG4CXX_STR("\"class\": \"\","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL2)
+			.append(LOG4CXX_STR("\"method\": \"BarFunc\""))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("}"));
 
 		setPrettyPrint(true);
 		appendSerializedLocationInfo(output1, event1, p);
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
-
 	}
-
-
 
 	/**
 	 * Tests format.
 	 */
 	void testFormat()
 	{
-
 		Pool p;
 
 		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
@@ -367,33 +367,33 @@ public:
 		LogString output1;
 		LogString expected1;
 
-		expected1.append("{ \"timestamp\": \"")
-		.append(timestamp)
-		.append("\", ")
-		.append("\"level\": \"INFO\", ")
-		.append("\"logger\": \"Logger\", ")
-		.append("\"message\": \"A message goes here.\"");
+		expected1
+			.append(LOG4CXX_STR("{ \"timestamp\": \""))
+			.append(timestamp)
+			.append(LOG4CXX_STR("\", "))
+			.append(LOG4CXX_STR("\"level\": \"INFO\", "))
+			.append(LOG4CXX_STR("\"logger\": \"Logger\", "))
+			.append(LOG4CXX_STR("\"message\": \"A message goes here.\""));
 
 		setLocationInfo(true);
 
 		appendSerializedMDC(expected1, event1);
 		appendSerializedNDC(expected1, event1);
-		expected1.append(", ");
+		expected1.append(LOG4CXX_STR(", "));
 		appendSerializedLocationInfo(expected1, event1, p);
 
-		expected1.append(" }\n");
-
+		expected1.append(LOG4CXX_STR(" }"));
+		expected1.append(LOG4CXX_EOL);
 		format(output1, event1, p);
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
-
 	}
+
 	/**
 	 * Tests format with PrettyPrint set to true.
 	 */
 	void testFormatWithPrettyPrint()
 	{
-
 		Pool p;
 
 		LoggingEventPtr event1 = new LoggingEvent(LOG4CXX_STR("Logger"),
@@ -415,35 +415,39 @@ public:
 		LogString output1;
 		LogString expected1;
 
-		expected1.append("{\n")
-		.append(ppIndentL1)
-		.append("\"timestamp\": \"")
-		.append(timestamp)
-		.append("\",\n")
-		.append(ppIndentL1)
-		.append("\"level\": \"INFO\",\n")
-		.append(ppIndentL1)
-		.append("\"logger\": \"Logger\",\n")
-		.append(ppIndentL1)
-		.append("\"message\": \"A message goes here.\"");
-
+		expected1
+			.append(LOG4CXX_STR("{"))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("\"timestamp\": \""))
+			.append(timestamp)
+			.append(LOG4CXX_STR("\","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("\"level\": \"INFO\","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("\"logger\": \"Logger\","))
+			.append(LOG4CXX_EOL)
+			.append(ppIndentL1)
+			.append(LOG4CXX_STR("\"message\": \"A message goes here.\""));
 
 		setPrettyPrint(true);
 		setLocationInfo(true);
 
 		appendSerializedMDC(expected1, event1);
 		appendSerializedNDC(expected1, event1);
-		expected1.append(",\n");
+		expected1.append(LOG4CXX_STR(","));
+		expected1.append(LOG4CXX_EOL);
 		appendSerializedLocationInfo(expected1, event1, p);
 
-		expected1.append("\n}\n");
-
+		expected1.append(LOG4CXX_EOL);
+		expected1.append(LOG4CXX_STR("}"));
+		expected1.append(LOG4CXX_EOL);
 		format(output1, event1, p);
 
 		LOGUNIT_ASSERT_EQUAL(expected1, output1);
-
 	}
-
 
 	/**
 	 * Tests getLocationInfo and setLocationInfo.
@@ -470,7 +474,6 @@ public:
 		layout.setPrettyPrint(false);
 		LOGUNIT_ASSERT_EQUAL(false, layout.getPrettyPrint());
 	}
-
 };
 
 

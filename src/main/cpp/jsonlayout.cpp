@@ -22,6 +22,7 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include <apr_time.h>
 #include <apr_strings.h>
@@ -38,8 +39,8 @@ JSONLayout::JSONLayout() :
 	locationInfo(false),
 	prettyPrint(false),
 	dateFormat(),
-	ppIndentL1("  "),
-	ppIndentL2("    ")
+	ppIndentL1(LOG4CXX_STR("  ")),
+	ppIndentL2(LOG4CXX_STR("    "))
 {
 }
 
@@ -62,72 +63,68 @@ void JSONLayout::format(LogString& output,
 	const spi::LoggingEventPtr& event,
 	Pool& p) const
 {
-
-	output.append("{");
-	output.append(prettyPrint ? "\n" : " ");
+	output.append(LOG4CXX_STR("{"));
+	output.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		output.append(ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, "timestamp");
-	output.append(": ");
+	appendQuotedEscapedString(output, LOG4CXX_STR("timestamp"));
+	output.append(LOG4CXX_STR(": "));
 	LogString timestamp;
 	dateFormat.format(timestamp, event->getTimeStamp(), p);
 	appendQuotedEscapedString(output, timestamp);
-	output.append(",");
-	output.append(prettyPrint ? "\n" : " ");
+	output.append(LOG4CXX_STR(","));
+	output.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		output.append(ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, "level");
-	output.append(": ");
+	appendQuotedEscapedString(output, LOG4CXX_STR("level"));
+	output.append(LOG4CXX_STR(": "));
 	LogString level;
 	event->getLevel()->toString(level);
 	appendQuotedEscapedString(output, level);
-	output.append(",");
-	output.append(prettyPrint ? "\n" : " ");
+	output.append(LOG4CXX_STR(","));
+	output.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		output.append(ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, "logger");
-	output.append(": ");
+	appendQuotedEscapedString(output, LOG4CXX_STR("logger"));
+	output.append(LOG4CXX_STR(": "));
 	appendQuotedEscapedString(output, event->getLoggerName());
-	output.append(",");
-	output.append(prettyPrint ? "\n" : " ");
+	output.append(LOG4CXX_STR(","));
+	output.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		output.append(ppIndentL1);
 	}
 
-	appendQuotedEscapedString(output, "message");
-	output.append(": ");
+	appendQuotedEscapedString(output, LOG4CXX_STR("message"));
+	output.append(LOG4CXX_STR(": "));
 	appendQuotedEscapedString(output, event->getMessage());
 
 	appendSerializedMDC(output, event);
-
 	appendSerializedNDC(output, event);
-
 
 	if (locationInfo)
 	{
-		output.append(",");
-		output.append(prettyPrint ? "\n" : " ");
+		output.append(LOG4CXX_STR(","));
+		output.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 		appendSerializedLocationInfo(output, event, p);
 	}
 
-	output.append(prettyPrint ? "\n" : " ");
-	output.append("}");
+	output.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
+	output.append(LOG4CXX_STR("}"));
 	output.append(LOG4CXX_EOL);
-
 }
 
 void JSONLayout::appendQuotedEscapedString(LogString& buf,
@@ -146,7 +143,6 @@ void JSONLayout::appendQuotedEscapedString(LogString& buf,
 		0x22,   /* \" double quote      */
 		0x5c    /* \\ backslash         */
 	};
-
 
 	size_t start = 0;
 	size_t found = input.find_first_of(specialChars, start);
@@ -226,13 +222,11 @@ void JSONLayout::appendQuotedEscapedString(LogString& buf,
 
 	/* add trailing quote */
 	buf.push_back(0x22);
-
 }
 
 void JSONLayout::appendSerializedMDC(LogString& buf,
 	const LoggingEventPtr& event) const
 {
-
 	LoggingEvent::KeySet keys = event->getMDCKeySet();
 
 	if (keys.empty())
@@ -240,17 +234,17 @@ void JSONLayout::appendSerializedMDC(LogString& buf,
 		return;
 	}
 
-	buf.append(",");
-	buf.append(prettyPrint ? "\n" : " ");
+	buf.append(LOG4CXX_STR(","));
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		buf.append(ppIndentL1);
 	}
 
-	appendQuotedEscapedString(buf, "context_map");
-	buf.append(": {");
-	buf.append(prettyPrint ? "\n" : " ");
+	appendQuotedEscapedString(buf, LOG4CXX_STR("context_map"));
+	buf.append(LOG4CXX_STR(": {"));
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	for (LoggingEvent::KeySet::iterator it = keys.begin();
 		it != keys.end(); ++it)
@@ -261,7 +255,7 @@ void JSONLayout::appendSerializedMDC(LogString& buf,
 		}
 
 		appendQuotedEscapedString(buf, *it);
-		buf.append(": ");
+		buf.append(LOG4CXX_STR(": "));
 		LogString value;
 		event->getMDC(*it, value);
 		appendQuotedEscapedString(buf, value);
@@ -269,12 +263,12 @@ void JSONLayout::appendSerializedMDC(LogString& buf,
 		/* if this isn't the last k:v pair, we need a comma */
 		if (it + 1 != keys.end())
 		{
-			buf.append(",");
-			buf.append(prettyPrint ? "\n" : " ");
+			buf.append(LOG4CXX_STR(","));
+			buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 		}
 		else
 		{
-			buf.append(prettyPrint ? "\n" : " ");
+			buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 		}
 	}
 
@@ -283,14 +277,12 @@ void JSONLayout::appendSerializedMDC(LogString& buf,
 		buf.append(ppIndentL1);
 	}
 
-	buf.append("}");
-
+	buf.append(LOG4CXX_STR("}"));
 }
 
 void JSONLayout::appendSerializedNDC(LogString& buf,
 	const LoggingEventPtr& event) const
 {
-
 	LogString ndcVal;
 
 	if (!event->getNDC(ndcVal))
@@ -298,17 +290,17 @@ void JSONLayout::appendSerializedNDC(LogString& buf,
 		return;
 	}
 
-	buf.append(",");
-	buf.append(prettyPrint ? "\n" : " ");
+	buf.append(LOG4CXX_STR(","));
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		buf.append(ppIndentL1);
 	}
 
-	appendQuotedEscapedString(buf, "context_stack");
-	buf.append(": [");
-	buf.append(prettyPrint ? "\n" : " ");
+	appendQuotedEscapedString(buf, LOG4CXX_STR("context_stack"));
+	buf.append(LOG4CXX_STR(": ["));
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
@@ -316,29 +308,27 @@ void JSONLayout::appendSerializedNDC(LogString& buf,
 	}
 
 	appendQuotedEscapedString(buf, ndcVal);
-	buf.append(prettyPrint ? "\n" : " ");
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		buf.append(ppIndentL1);
 	}
 
-	buf.append("]");
-
+	buf.append(LOG4CXX_STR("]"));
 }
 
 void JSONLayout::appendSerializedLocationInfo(LogString& buf,
 	const LoggingEventPtr& event, Pool& p) const
 {
-
 	if (prettyPrint)
 	{
 		buf.append(ppIndentL1);
 	}
 
-	appendQuotedEscapedString(buf, "location_info");
-	buf.append(": {");
-	buf.append(prettyPrint ? "\n" : " ");
+	appendQuotedEscapedString(buf, LOG4CXX_STR("location_info"));
+	buf.append(LOG4CXX_STR(": {"));
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 	const LocationInfo& locInfo = event->getLocationInformation();
 
 	if (prettyPrint)
@@ -346,53 +336,54 @@ void JSONLayout::appendSerializedLocationInfo(LogString& buf,
 		buf.append(ppIndentL2);
 	}
 
-	appendQuotedEscapedString(buf, "file");
-	buf.append(": ");
+	appendQuotedEscapedString(buf, LOG4CXX_STR("file"));
+	buf.append(LOG4CXX_STR(": "));
 	LOG4CXX_DECODE_CHAR(fileName, locInfo.getFileName());
 	appendQuotedEscapedString(buf, fileName);
-	buf.append(",");
-	buf.append(prettyPrint ? "\n" : " ");
+	buf.append(LOG4CXX_STR(","));
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		buf.append(ppIndentL2);
 	}
 
-	appendQuotedEscapedString(buf, "line");
-	buf.append(": ");
+	appendQuotedEscapedString(buf, LOG4CXX_STR("line"));
+	buf.append(LOG4CXX_STR(": "));
 	LogString lineNumber;
 	StringHelper::toString(locInfo.getLineNumber(), p, lineNumber);
 	appendQuotedEscapedString(buf, lineNumber);
-	buf.append(",");
-	buf.append(prettyPrint ? "\n" : " ");
+	buf.append(LOG4CXX_STR(","));
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		buf.append(ppIndentL2);
 	}
 
-	appendQuotedEscapedString(buf, "class");
-	buf.append(": ");
-	appendQuotedEscapedString(buf, locInfo.getClassName());
-	buf.append(",");
-	buf.append(prettyPrint ? "\n" : " ");
+	appendQuotedEscapedString(buf, LOG4CXX_STR("class"));
+	buf.append(LOG4CXX_STR(": "));
+	LOG4CXX_DECODE_CHAR(className, locInfo.getClassName());
+	appendQuotedEscapedString(buf, className);
+	buf.append(LOG4CXX_STR(","));
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		buf.append(ppIndentL2);
 	}
 
-	appendQuotedEscapedString(buf, "method");
-	buf.append(": ");
-	appendQuotedEscapedString(buf, locInfo.getMethodName());
-	buf.append(prettyPrint ? "\n" : " ");
+	appendQuotedEscapedString(buf, LOG4CXX_STR("method"));
+	buf.append(LOG4CXX_STR(": "));
+	LOG4CXX_DECODE_CHAR(methodName, locInfo.getMethodName());
+	appendQuotedEscapedString(buf, methodName);
+	buf.append(prettyPrint ? LOG4CXX_EOL : LOG4CXX_STR(" "));
 
 	if (prettyPrint)
 	{
 		buf.append(ppIndentL1);
 	}
 
-	buf.append("}");
-
+	buf.append(LOG4CXX_STR("}"));
 }
 
