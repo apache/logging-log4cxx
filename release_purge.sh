@@ -32,7 +32,7 @@ function main
 
 function purge_branch_and_tag
 {
-  git checkout  "release_scripts"
+  git checkout "release_scripts"
 
   git branch -D "next_stable"
   git push --delete "origin" "next_stable"
