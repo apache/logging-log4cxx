@@ -16,9 +16,9 @@
 #
 
 ##
-# Purge (some) releases during development of release scripts.
+# Purge (some) releases during development of release-scripts.
 #
-# This script is mainly used during development of the release scripts itself and simply deletes
+# This script is mainly used during development of the release-scripts themself and simply deletes
 # branches and tags created during tests of the release process. Be very careful with execution!
 #
 
