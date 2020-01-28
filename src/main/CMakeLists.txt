@@ -1,5 +1,6 @@
 add_subdirectory(include)
 add_subdirectory(cpp)
+add_subdirectory(resources)
 
 # setup include directories 
 include(GNUInstallDirs)

@@ -74,10 +74,11 @@ END
 //
 // Version
 //
+#include <log4cxx/version_info.h>
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 0, 0, 0, 0
- PRODUCTVERSION 0, 0, 0, 0
+ FILEVERSION INFO_FILE_VERSION_LIST
+ PRODUCTVERSION INFO_PRODUCT_VERSION_LIST
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -94,12 +95,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Apache Software Foundation"
             VALUE "FileDescription", "Apache log4cxx"
-            VALUE "FileVersion", "0, 0, 0, 0"
+            VALUE "FileVersion", INFO_FILE_VERSION_STRING
             VALUE "InternalName", "log4cxx"
             VALUE "LegalCopyright",  "Licensed to the Apache Software Foundation (ASF) under one or more\ncontributor license agreements.  See the NOTICE file distributed with\nthis work for additional information regarding copyright ownership.\nThe ASF licenses this file to You under the Apache License, Version 2.0\n(the ""License""); you may not use this file except in compliance with\nthe License.  You may obtain a copy of the License at\n\n     http://www.apache.org/licenses/LICENSE-2.0\n\nUnless required by applicable law or agreed to in writing, software\ndistributed under the License is distributed on an ""AS IS"" BASIS,\nWITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\nSee the License for the specific language governing permissions and\nlimitations under the License."
             VALUE "OriginalFilename", "log4cxx.dll"
             VALUE "ProductName", "Apache log4cxx"
-            VALUE "ProductVersion", "0, 0, 0, 0"
+            VALUE "ProductVersion", INFO_PRODUCT_VERSION_STRING
         END
     END
     BLOCK "VarFileInfo"

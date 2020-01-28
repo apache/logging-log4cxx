@@ -7,6 +7,6 @@ target_link_libraries(log4cxx PRIVATE odbc32.lib)
 option(LOG4CXX_INSTALL_PDB "Install .pdb files (if generated)"  ON)
 endif()
 
-if(TEST_LOG4CXX)
-  add_subdirectory(test)
+if(BUILD_TESTING)
+   add_subdirectory(test)
 endif()

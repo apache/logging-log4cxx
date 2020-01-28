@@ -14,6 +14,10 @@ add_custom_target(configure_log4cxx
     ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
     ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
 )
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
+               @ONLY
+)
 else()
 # Configure log4cxx.h
 set(LOG4CXX_CHAR "utf-8" CACHE STRING "Interal character representation, choice of utf-8 (default), wchar_t, unichar")

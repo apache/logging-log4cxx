@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.13)
-project(log4cxx VERSION 0.10.0 LANGUAGES CXX)
+include(src/cmake/projectVersionDetails.cmake)
+project(log4cxx VERSION ${log4cxx_VER} LANGUAGES CXX)
+include(CTest)
+
+# FindAPR and FindAPR-util are not provided by APR and APR-Util so source them locally
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/src/cmake")
 
 # Find Apache Runtime
 find_package(apr QUIET)
@@ -12,12 +17,6 @@ find_package(apr-util QUIET)
 # If APR-UTIL find module sets the cache, the following will do nothing
 find_path(APR_UTIL_INCLUDE_DIR apu.h PATH_SUFFIXES apr-1)
 find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1 aprutil-1)
-
-## Testing
-option(TEST_LOG4CXX "Build log4cxx tests" OFF)
-if(TEST_LOG4CXX)
-  enable_testing()
-endif()
 
 # Building
 add_subdirectory(src)
