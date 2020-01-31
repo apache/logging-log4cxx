@@ -7,13 +7,13 @@ include(CTest)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/src/cmake")
 
 # Find Apache Runtime
-find_package(apr QUIET)
+find_package(APR QUIET)
 # If APR find module sets the cache, the following will do nothing
 find_path(APR_INCLUDE_DIR apr.h PATH_SUFFIXES apr-1)
 find_library(APR_LIBRARIES NAMES libapr-1 apr-1)
 
 # Find Apache Runtime Utilities
-find_package(apr-util QUIET)
+find_package(APR-Util QUIET)
 # If APR-UTIL find module sets the cache, the following will do nothing
 find_path(APR_UTIL_INCLUDE_DIR apu.h PATH_SUFFIXES apr-1)
 find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1 aprutil-1)
