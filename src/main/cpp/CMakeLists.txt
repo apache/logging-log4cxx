@@ -67,6 +67,7 @@ target_sources(log4cxx
   inputstreamreader.cpp
   integer.cpp
   integerpatternconverter.cpp
+  jsonlayout.cpp
   layout.cpp
   level.cpp
   levelmatchfilter.cpp
