@@ -24,7 +24,7 @@
 
 	<body>
 		<release	version="0.11.0"
-					date="XXXX-XX-XX"
+					date="2020-01-31"
 					description="Maintenance release.">
 			<action issue="LOGCXX-506" type="fix">CachedDateFormat reuses timestamps without updating milliseconds after formatting timestamp with ms == 654</action>
 			<action issue="LOGCXX-503" type="update">Checksums/Signatures don't match for log4cxx binaries</action>
