@@ -17,8 +17,8 @@
 # Regenerate the files autoconf / automake
 
 case `uname` in
-      (Darwin)        LIBTOOLIZE=glibtoolize  ;;
-      (*)             LIBTOOLIZE=libtoolize   ;;
+  (Darwin)  LIBTOOLIZE=glibtoolize  ;;
+  (*)       LIBTOOLIZE=libtoolize   ;;
 esac
 $LIBTOOLIZE --force --automake --copy
 
