@@ -35,7 +35,7 @@ function main
   # change the working dir. Making available seems easy using symlinks, but "mvn clean" deletes the
   # contents(!) of the linked dirs then. And always copying things around seems a bit unnecessary as
   # well, so I'm using a relocation of the folder for now. The downside is that "mvn clean" ignores
-  # that dir by default...
+  # that dir by default.
   WD_RELEASE="$( pwd)/../log4cxx-next_stable"
   WD_DIST_DEV="$(pwd)/../log4cxx-dist-dev"
 
@@ -56,6 +56,7 @@ function prepare_dist_dev
 {
   mkdir -p "${WD_DIST_DEV}"
   pushd    "${WD_DIST_DEV}" > /dev/null
+
   if [ ! -d ".svn" ]
   then
     svn co "https://dist.apache.org/repos/dist/dev/logging/log4cxx" .
@@ -65,7 +66,7 @@ function prepare_dist_dev
 
 function sign_and_copy
 {
-  # Might be a good idea to have another look at the GPG plugin for Maven in the future:
+  # Might be a good idea to have another look at the GPG-plugin for Maven in the future:
   #
   # http://blog.sonatype.com/2010/01/how-to-generate-pgp-signatures-with-maven/
   # http://maven.apache.org/plugins/maven-gpg-plugin/
@@ -78,12 +79,12 @@ function sign_and_copy
     md5sum        "${file}" > "${file}.md5"
     sha512sum     "${file}" > "${file}.sha"
 
-    # No symlinks because those would be treated as is, no hardlinks because it should be safer for
+    # No symlinks because those would be treated as is, no hard-links because it should be safer for
     # commits.
-    cp  --force   "${file}"     "${WD_DIST_DEV}"
-    cp  --force   "${file}.asc" "${WD_DIST_DEV}"
-    cp  --force   "${file}.md5" "${WD_DIST_DEV}"
-    cp  --force   "${file}.sha" "${WD_DIST_DEV}"
+    cp --force "${file}"     "${WD_DIST_DEV}"
+    cp --force "${file}.asc" "${WD_DIST_DEV}"
+    cp --force "${file}.md5" "${WD_DIST_DEV}"
+    cp --force "${file}.sha" "${WD_DIST_DEV}"
   done
 }
 

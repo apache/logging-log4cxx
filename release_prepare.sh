@@ -36,9 +36,9 @@
 # This script can be invoked with "next_stable" being the current branch already or with some other
 # and "next_stable" is checked out automatically. If it's invoked with some other branch, release
 # dates, new development version etc. are merged to the branch the script was invoked with. Without
-# another branch those changes need to be done/merged manually to wherever they need to be in the
+# another branch, those changes need to be done/merged manually to wherever they need to be in the
 # end, most likely "master". If only "master" should be supported in the future, merging back into
-# that might be hard coded, currently it isn't to support arbitrary source branches from which a
+# that might be hard-coded, currently it isn't to support arbitrary source branches from which a
 # release gets initiated. If "next_stable" is the starting branch, it's assumed to only create
 # another release based on a former release, without merging things back to anywhere.
 #
