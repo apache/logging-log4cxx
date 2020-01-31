@@ -55,6 +55,7 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     add_test(NAME ${testName}
         COMMAND ${testName} -v
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../resources
+        ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
     )
     if(WIN32)
       set_tests_properties(${testName} PROPERTIES ENVIRONMENT
