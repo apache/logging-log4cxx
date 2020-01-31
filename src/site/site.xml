@@ -111,17 +111,14 @@
 				<item	name="autotools"
 						href="/building/autotools.html"
 				/>
-				<item	name="Apache Ant"
-						href="/building/ant.html"
-				/>
 				<item	name="Apache Maven 2"
 						href="/building/maven.html"
 				/>
-				<item	name="Microsoft Visual Studio"
-						href="/building/vstudio.html"
+				<item	name="Microsoft vcpkg"
+						href="/building/vcpkg.html"
 				/>
-				<item	name="Apple Xcode"
-						href="/building/xcode.html"
+				<item	name="CMake"
+						href="/building/cmake.html"
 				/>
 			</item>
 		</menu>

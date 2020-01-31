@@ -3,7 +3,7 @@
 	<groupId>log4cxx</groupId>
 	<artifactId>apache-log4cxx</artifactId>
 	<packaging>pom</packaging>
-	<version>0.11.0-SNAPSHOT</version>
+	<version>0.11.0</version>
 	<name>Apache log4cxx</name>
 	<description>Logging framework for C++.</description>
 	<url>http://logging.apache.org/log4cxx</url>
@@ -65,7 +65,7 @@
 		<connection>scm:git:http://gitbox.apache.org/repos/asf/logging-log4cxx.git</connection>
 		<developerConnection>scm:git:https://gitbox.apache.org/repos/asf/logging-log4cxx.git</developerConnection>
 		<url>https://gitbox.apache.org/repos/asf?p=logging-log4cxx.git</url>
-		<tag>HEAD</tag>
+		<tag>v0.11.0-RC1</tag>
 	</scm>
 
 	<properties>
@@ -74,6 +74,7 @@
 		<releaseVersion>${project.version}</releaseVersion>
 		<releaseManager>Matt Sicker</releaseManager>
 		<releaseKey>B62BABE8</releaseKey>
+        <windowsArchitecture>x64</windowsArchitecture>
 	</properties>
 
 	<organization>
@@ -179,49 +180,58 @@
 
 	<build>
 		<plugins>
+            <plugin>
+              <groupId>com.googlecode.cmake-maven-project</groupId>
+              <artifactId>cmake-maven-plugin</artifactId>
+              <version>3.14.5-b1</version>
+              <executions>
+                <execution>
+                  <id>cmake-generate</id>
+                  <goals>
+                    <goal>generate</goal>
+                  </goals>
+                  <configuration>
+                    <sourcePath>${project.basedir}</sourcePath>
+                    <targetPath>${project.build.directory}/${platform}</targetPath>
+                    <classifier>${cmake.classifier}</classifier>
+                    <options>${cmake.options}</options>
+                    <environmentVariables>
+                        <CMAKE_CLASSIFIER>${cmake.classifier}</CMAKE_CLASSIFIER>
+                    </environmentVariables>
+                    <downloadBinaries>${download.cmake}</downloadBinaries>
+                  </configuration>
+                </execution>
+                <execution>
+                    <id>cmake-compile</id>
+                    <phase>process-resources</phase>
+                    <goals>
+                      <goal>compile</goal>
+                    </goals>
+                    <configuration>
+                        <projectDirectory>${project.build.directory}/${platform}</projectDirectory>
+                        <classifier>${cmake.classifier}</classifier>
+                        <config>${cmake.config}</config>
+                        <downloadBinaries>true</downloadBinaries>
+                    </configuration>
+                </execution>
+                <execution>
+                  <phase>test</phase>
+                  <id>cmake-run-tests</id>
+                  <goals>
+                    <goal>test</goal>
+                  </goals>
+                  <configuration>
+                    <buildDirectory>${project.build.directory}/${platform}</buildDirectory>
+                    <testFailureIgnore>true</testFailureIgnore>
+                    <ctest.skip.tests>${maven.test.skip}</ctest.skip.tests>
+                  </configuration>
+                </execution>
+              </executions>
+            </plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
 				<executions>
-					<execution>
-						<phase>compile</phase>
-						<id>compile</id>
-						<configuration>
-							<target>
-								<ant target="build" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-
-					<execution>
-						<phase>test-compile</phase>
-						<id>test-compile</id>
-						<configuration>
-							<target unless="${maven.test.skip}">
-								<ant target="test-compile" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-
-					<execution>
-						<phase>test</phase>
-						<id>test</id>
-						<configuration>
-							<target unless="${maven.test.skip}">
-								<ant target="check" />
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-
 					<execution>
 						<phase>package</phase>
 						<id>autogen</id>
@@ -394,4 +404,82 @@
 			<url>file:///${user.dir}/target/site-deploy/${project.version}</url>
 		</site>
 	</distributionManagement>
+
+	<profiles>
+		<profile>
+			<id>linux-x86_64-debug</id>
+			<properties>
+				<platform>linux-x86_64</platform>
+				<build.type>debug</build.type>
+			</properties>
+		</profile>
+		<profile>
+			<id>linux-x86_64-release</id>
+			<activation>
+				<os>
+					<family>linux</family>
+					<arch>amd64</arch>
+				</os>
+			</activation>
+			<properties>
+				<platform>linux-x86_64</platform>
+				<build.type>release</build.type>
+				<cmake.classifier>linux-x86_64</cmake.classifier>
+			</properties>
+		</profile>
+		<profile>
+			<id>Win32</id>
+			<properties>
+				<windowsArchitecture>Win32</windowsArchitecture>
+			</properties>
+		</profile>
+		<profile>
+			<id>windows-debug</id>
+			<properties>
+				<platform>windows-${windowsArchitecture}</platform>
+				<build.type>debug</build.type>
+				<cmake.classifier>windows-x86_64</cmake.classifier>
+				<cmake.options>-A${windowsArchitecture}</cmake.options>
+				<cmake.config>${build.type}</cmake.config>
+			</properties>
+		</profile>
+		<profile>
+			<id>windows-release</id>
+			<activation>
+				<os>
+					<family>windows</family>
+					<arch>amd64</arch>
+				</os>
+			</activation>
+			<properties>
+				<platform>windows-${windowsArchitecture}</platform>
+				<build.type>release</build.type>
+				<cmake.classifier>windows-x86_64</cmake.classifier>
+				<cmake.options>-A${windowsArchitecture}</cmake.options>
+				<cmake.config>${build.type}</cmake.config>
+			</properties>
+		</profile>
+		<profile>
+			<id>mac-x86_64-debug</id>
+			<properties>
+				<platform>mac-x86_64</platform>
+				<build.type>debug</build.type>
+				<cmake.classifier>mac-x86_64</cmake.classifier>
+			</properties>
+		</profile>
+		<profile>
+			<id>mac-x86_64-release</id>
+			<activation>
+				<os>
+					<family>mac</family>
+					<arch>x86_64</arch>
+				</os>
+			</activation>
+			<properties>
+				<platform>mac-x86_64</platform>
+				<build.type>release</build.type>
+				<cmake.classifier>mac-x86_64</cmake.classifier>
+			</properties>
+		</profile>
+    </profiles>
 </project>

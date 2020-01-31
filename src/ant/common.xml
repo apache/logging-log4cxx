@@ -34,8 +34,6 @@
 			value="dynamic"
 />
 
-<taskdef resource="cpptasks.tasks" />
-<typedef resource="cpptasks.types" />
 <taskdef resource="net/sf/antcontrib/antcontrib.properties" />
 
 <target name="os-detect">
@@ -124,26 +122,6 @@
 
 <target	name="common-init"
 		depends="win-init, unix-init">
-	<available	classname="net.sf.antcontrib.cpptasks.CCTask"
-				property="cctask-available" />
-	<fail unless="cctask-available">cpptasks required
-
-Use cpptasks 1.0b5 or later from
-http://ant-contrib.sourceforge.net.
-	</fail>
-
-	<available	classname="net.sf.antcontrib.cpptasks.ide.ProjectDef"
-				property="cctask-project-available" />
-		<!-- fail unless="cctask-project-available">later version of cpptasks required
-
-Required features not present in cpptasks releases prior to Feb 2005
-		</fail -->
-
-	<mkdir dir="${target.dir}" />
-	<property	name="projects.dir"
-				value="${target.dir}"
-	/>
-	<mkdir dir="${projects.dir}" />
 
 	<condition	property="is-gcc"
 				value="true">
@@ -210,27 +188,6 @@ Required features not present in cpptasks releases prior to Feb 2005
 
 	<property	name="projectsOnly"
 				value="false"
-	/>
-
-	<property	name="apr.lib.name"
-				value="apr-1"
-	/>
-	<property	name="apr.sample.h"
-				value="apr_pools.h"
-	/>
-	<property	name="apr.sample.c" value="file_io/unix/dir.c"
-	/>
-	<property	name="apr-util.lib.name" value="aprutil-1"
-	/>
-	<property	name="apr-util.sample.h" value="apr_xml.h"
-	/>
-	<property	name="apr-util.sample.c" value="xml/apr_xml.c"
-	/>
-	<property	name="esmtp.lib.name" value="esmtp"
-	/>
-	<property	name="esmtp.sample.h" value="libesmtp.h"
-	/>
-	<property	name="esmtp.sample.c" value="smtp-api.c"
 	/>
 </target>
 

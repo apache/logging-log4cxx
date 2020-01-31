@@ -45,6 +45,7 @@
 			<includes>
 				<include>aclocal.m4</include>
 				<include>build.xml</include>
+				<include>CMakeLists.txt</include>
 				<include>configure.ac</include>
 				<include>config.guess</include>
 				<include>config.sub</include>
@@ -99,48 +100,6 @@
 
 			<includes>
 				<include>site/**</include>
-			</includes>
-
-			<fileMode>0644</fileMode>
-			<directoryMode>0755</directoryMode>
-		</fileSet>
-
-		<!--
-			Special handling for project files.
-
-			Project files are generated in the target directory and contain relative paths out of that dir
-			into the project's src dir and that of apr. Those relative paths stay valid only if those files
-			are placed in the same hierarchy level in the release archive. If the files are generated in a
-			different level, the placement in the release archive needs to be adopted and vice versa. That's
-			why the release archive structure is not replicated in the target directory, we need to stay
-			with two levels, but that allows us to keep the target dir somewhat clean and provide a logical
-			structure in the release archive.
-		 -->
-		<fileSet>
-			<directory>target/projects</directory>
-			<lineEnding>keep</lineEnding>
-			<outputDirectory>projects/vc6</outputDirectory>
-
-			<includes>
-				<include>*.dsp</include>
-				<include>*.dsw</include>
-			</includes>
-
-			<excludes>
-				<exclude>apr*.ds*</exclude>
-				<exclude>xml.ds*</exclude>
-			</excludes>
-
-			<fileMode>0644</fileMode>
-		</fileSet>
-
-		<fileSet>
-			<directory>target/projects</directory>
-			<lineEnding>keep</lineEnding>
-			<outputDirectory>projects/xcode</outputDirectory>
-
-			<includes>
-				<include>*.xcodeproj/project.pbxproj</include>
 			</includes>
 
 			<fileMode>0644</fileMode>
