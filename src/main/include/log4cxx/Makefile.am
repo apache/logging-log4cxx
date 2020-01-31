@@ -35,6 +35,7 @@ log4cxxinc_HEADERS += \
     $(top_srcdir)/src/main/include/log4cxx/file.h \
     $(top_srcdir)/src/main/include/log4cxx/hierarchy.h \
     $(top_srcdir)/src/main/include/log4cxx/htmllayout.h \
+    $(top_srcdir)/src/main/include/log4cxx/jsonlayout.h \
     $(top_srcdir)/src/main/include/log4cxx/layout.h \
     $(top_srcdir)/src/main/include/log4cxx/level.h \
     $(top_srcdir)/src/main/include/log4cxx/logger.h \

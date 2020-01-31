@@ -168,6 +168,7 @@ testsuite_SOURCES = \
     filetestcase.cpp \
     hierarchytest.cpp \
     hierarchythresholdtestcase.cpp \
+    jsonlayouttest.cpp \
     l7dtestcase.cpp \
     leveltestcase.cpp \
     logunit.cpp \
