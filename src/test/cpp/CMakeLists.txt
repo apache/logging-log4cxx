@@ -14,6 +14,7 @@ set(ALL_LOG4CXX_TESTS
     filetestcase
     hierarchytest
     hierarchythresholdtestcase
+    jsonlayouttest
     l7dtestcase
     leveltestcase
     loggertestcase
