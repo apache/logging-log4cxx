@@ -22,6 +22,7 @@ find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1 aprutil-1)
 add_subdirectory(src)
 
 ## Installing
+include(GNUInstallDirs)
 install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/src/main/include/log4cxx
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   FILES_MATCHING PATTERN "*.h"
