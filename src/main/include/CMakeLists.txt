@@ -67,21 +67,37 @@ elseif(${LOG4CXX_CHARSET} STREQUAL "utf-8")
   set(CHARSET_UTF8 1)
 endif()
 
-option(LOG4CXX_HAS_STD_LOCALE "Is the standard locale header available?" OFF)
-option(LOG4CXX_HAS_ODBC "Build with ODBC appender?" OFF)
-option(LOG4CXX_HAS_MBSRTOWCS "Default character encoder converts multi-byte string to LogString using mbstowcs()?" OFF)
-option(LOG4CXX_HAS_WCSTOMBS "Default wide character encoder converts using wcstombs()?" OFF)
-option(LOG4CXX_HAS_FWIDE "Is the fwide(fd) function available?" OFF)
-option(LOG4CXX_HAS_LIBESMTP "Use libESMTP in SMTPAppender?" OFF)
-option(LOG4CXX_HAS_SYSLOG "Is the syslog function available?" OFF)
+#
+# Test for various functions
+#
+include(CheckFunctionExists)
+include(CheckCXXSymbolExists)
+include(CheckIncludeFiles)
+include(CheckIncludeFileCXX)
+include(CheckLibraryExists)
+
+CHECK_INCLUDE_FILE_CXX(locale HAS_STD_LOCALE)
+CHECK_INCLUDE_FILES(sqlext.h HAS_ODBC)
+CHECK_FUNCTION_EXISTS(mbsrtowcs HAS_MBSRTOWCS)
+CHECK_FUNCTION_EXISTS(wcstombs HAS_WCSTOMBS)
+CHECK_FUNCTION_EXISTS(fwide HAS_FWIDE)
+CHECK_LIBRARY_EXISTS(esmtp smtp_create_session "" HAS_LIBESMTP)
+CHECK_FUNCTION_EXISTS(syslog HAS_SYSLOG)
 
 foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG)
-  if(${LOG4CXX_${varName}})
-    set(${varName} 1)
+  if(${varName} EQUAL 0)
+    continue()
+  elseif(${varName} EQUAL 1)
+    continue()
+  elseif("${varName}" STREQUAL "ON")
+    set(${varName} 1 )
+  elseif("${varName}" STREQUAL "OFF")
+    set(${varName} 0 )
   else()
-    set(${varName} 0)
+    set(${varName} 0 )
   endif()
 endforeach()
+
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
