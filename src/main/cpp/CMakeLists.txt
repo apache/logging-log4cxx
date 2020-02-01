@@ -164,3 +164,7 @@ target_sources(log4cxx
   xmlsocketappender.cpp
   zipcompressaction.cpp
 )
+set_target_properties(log4cxx PROPERTIES
+  VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}
+  SOVERSION ${log4cxx_VERSION_MAJOR}
+)
