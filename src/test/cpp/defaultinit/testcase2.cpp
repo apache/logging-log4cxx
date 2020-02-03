@@ -21,6 +21,8 @@
 
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/helpers/pool.h>
+#include <apr_file_io.h>
 #include "../insertwide.h"
 #include "../logunit.h"
 
@@ -35,17 +37,21 @@ LOGUNIT_CLASS(TestCase2)
 public:
    void setUp()
    {
+      helpers::Pool p;
+      apr_file_copy("input/xml/defaultInit.xml", "log4cxx.xml", APR_FPROT_UREAD|APR_FPROT_UWRITE, p.getAPRPool());
    }
 
    void tearDown()
    {
+      helpers::Pool p;
+      apr_file_remove("log4cxx.xml", p.getAPRPool());
       LogManager::shutdown();
    }
 
    void xmlTest()
    {
       LoggerPtr root = Logger::getRootLogger();
-     LOG4CXX_DEBUG(root, "Hello, world");
+      LOG4CXX_DEBUG(root, "Hello, world");
       bool rootIsConfigured = !root->getAllAppenders().empty();
       LOGUNIT_ASSERT(rootIsConfigured);
 
@@ -56,6 +62,6 @@ public:
 
 };
 
-LOGUNIT_TEST_SUITE_REGISTRATION_DISABLED(TestCase2)
+LOGUNIT_TEST_SUITE_REGISTRATION(TestCase2)
 
 

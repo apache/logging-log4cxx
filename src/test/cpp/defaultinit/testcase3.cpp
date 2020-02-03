@@ -17,6 +17,8 @@
 
 #include <log4cxx/logmanager.h>
 #include <log4cxx/logger.h>
+#include <log4cxx/helpers/pool.h>
+#include <apr_file_io.h>
 #include "../insertwide.h"
 #include "../logunit.h"
 
@@ -31,10 +33,14 @@ LOGUNIT_CLASS(TestCase3)
 public:
    void setUp()
    {
+      helpers::Pool p;
+      apr_file_copy("input/defaultInit3.properties", "log4cxx.properties", APR_FPROT_UREAD|APR_FPROT_UWRITE, p.getAPRPool());
    }
 
    void tearDown()
    {
+      helpers::Pool p;
+      apr_file_remove("log4cxx.properties", p.getAPRPool());
       LogManager::shutdown();
    }
 
@@ -52,4 +58,4 @@ public:
 
 };
 
-LOGUNIT_TEST_SUITE_REGISTRATION_DISABLED(TestCase3)
+LOGUNIT_TEST_SUITE_REGISTRATION(TestCase3)
