@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/logmanager.h>
+#include <log4cxx/propertyconfigurator.h>
 #include <log4cxx/logger.h>
 #include "../insertwide.h"
 #include "../logunit.h"
@@ -31,6 +32,7 @@ LOGUNIT_CLASS(TestCase3)
 public:
    void setUp()
    {
+      PropertyConfigurator::configure(LOG4CXX_FILE("input/defaultInit3.properties"));
    }
 
    void tearDown()
@@ -52,4 +54,4 @@ public:
 
 };
 
-LOGUNIT_TEST_SUITE_REGISTRATION_DISABLED(TestCase3)
+LOGUNIT_TEST_SUITE_REGISTRATION(TestCase3)

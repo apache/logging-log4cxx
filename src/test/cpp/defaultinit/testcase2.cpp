@@ -23,6 +23,7 @@
 #include <log4cxx/logger.h>
 #include "../insertwide.h"
 #include "../logunit.h"
+#include <log4cxx/xml/domconfigurator.h>
 
 using namespace log4cxx;
 
@@ -35,6 +36,7 @@ LOGUNIT_CLASS(TestCase2)
 public:
    void setUp()
    {
+      log4cxx::xml::DOMConfigurator::configure("input/xml/defaultInit.xml");
    }
 
    void tearDown()
@@ -56,6 +58,6 @@ public:
 
 };
 
-LOGUNIT_TEST_SUITE_REGISTRATION_DISABLED(TestCase2)
+LOGUNIT_TEST_SUITE_REGISTRATION(TestCase2)
 
 
