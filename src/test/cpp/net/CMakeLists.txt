@@ -1,7 +1,6 @@
 
 # Tests defined in this directory
 set(NET_TESTS 
-    smtpappendertestcase
     socketappendertestcase
     sockethubappendertestcase
     socketservertestcase
@@ -9,6 +8,9 @@ set(NET_TESTS
     telnetappendertestcase
     xmlsocketappendertestcase
 )
+if(HAS_LIBESMPT)
+    list(APPEND NET_TESTS smtpappendertestcase)
+endif(HAS_LIBESMPT)
 foreach(fileName IN LISTS NET_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
 endforeach()
