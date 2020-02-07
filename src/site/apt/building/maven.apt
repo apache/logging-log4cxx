@@ -50,7 +50,7 @@ Building Apache log4cxx with Apache Maven 2
    cmake --build buildtrees\expat --target install --config Release
    cmake -S apr-1.7.0 -B buildtrees\apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
    cmake --build buildtrees\apr --target install --config Release
-   set CMAKE_PATH_PREFIX=%HOMEPATH%\Libraries\installed
+   set CMAKE_PREFIX_PATH=%HOMEPATH%\Libraries\installed
    cmake -S apr-util-1.6.1 -B buildtrees\apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
    cmake --build buildtrees\apr-util --target install --config Release
    cd apache-log4cxx-x.x.x
