@@ -191,9 +191,6 @@
 				/>
 			</path>
 		</foreach>
-		<property	name="project.type"
-					value="msvc6"
-		/>
 		<cc	objdir="${target.dir}/header-check"
 			name="gcc"
 			exceptions="true"
@@ -497,6 +494,7 @@
 	</target>
 
 	<target	name="autogen"
+			depends="init"
 			if="is-unix">
 		<exec executable="sh">
 			<arg value="autogen.sh" />
