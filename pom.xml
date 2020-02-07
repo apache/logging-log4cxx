@@ -224,6 +224,7 @@
                     <buildDirectory>${project.build.directory}/${platform}</buildDirectory>
                     <testFailureIgnore>true</testFailureIgnore>
                     <ctest.skip.tests>${maven.test.skip}</ctest.skip.tests>
+                    <config>${cmake.config}</config>
                   </configuration>
                 </execution>
               </executions>
@@ -465,6 +466,7 @@
 				<platform>mac-x86_64</platform>
 				<build.type>debug</build.type>
 				<cmake.classifier>mac-x86_64</cmake.classifier>
+				<cmake.config>${build.type}</cmake.config>
 			</properties>
 		</profile>
 		<profile>
@@ -479,6 +481,7 @@
 				<platform>mac-x86_64</platform>
 				<build.type>release</build.type>
 				<cmake.classifier>mac-x86_64</cmake.classifier>
+				<cmake.config>${build.type}</cmake.config>
 			</properties>
 		</profile>
     </profiles>
