@@ -21,38 +21,41 @@
 Building Apache log4cxx with Apache Maven 2
 
    {{{https://maven.apache.org}Apache Maven 2}} is used to generate the release assemblies and generate
-   product documentation.  It delegates to the {{{./ant.html}Apache Ant build}} to build
-   and test log4cxx and can be used as an alternate front end to the Ant
-   build process since it can automatically download and use ant-contrib,
-   cpptasks and log4j.
-   The Maven build, like the Ant build, can build APR and APR-Util from source.
+   product documentation.  It delegates to {{{./cmake.html}CMake}} to build
+   and test log4cxx and can be used as an alternate front end to the CMake
+   build process since it can automatically download and use cmake,
+   and log4j.
 
 * Quick start:
 
   *Install {{{https://maven.apache.org}Apache Maven}} 2.0.8 or later.
 
-  *Install APR and APR-Util or place source in apr and apr-util directories in same parent directory
-      as log4cxx directory.
+  *Install APR and APR-Util.
 
    Building and testing log4cxx on a Unix platform with packaged APR and APR-Util.
 
 +----+
-$ sudo apt-get install libapr1-dev libaprutil1-dev doxygen
-$ cd apache-log4cxx-x.x.x
-$ export PATH=/home/myself/maven-2.0.8/bin:$PATH
-$ mvn package
+   sudo apt-get install libapr1-dev libaprutil1-dev doxygen
+   cd apache-log4cxx-x.x.x
+   export PATH=/home/myself/maven-3.6.3/bin:$PATH
+   mvn package
 +----+
 
-   Building and testing log4cxx on a Microsoft Windows with APR and APR-Util built from source.
+   Building and testing log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
+   extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%\Libraries.
 
 +----+
-$ set PATH=\maven-2.0.8\bin;%PATH%
-$ tar -xvzf apr-1.2.12.tar.gz
-$ rename apr-1.2.12 apr
-$ tar -xvzf apr-util-1.2.12.tar.gz
-$ rename apr-util-1.2.12 apr-util
-$ cd apache-log4cxx-x.x.x
-$ mvn package
+   cd %HOMEPATH%\Libraries
+   cmake -S libexpat\expat -B buildtrees\expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake --build buildtrees\expat --target install --config Release
+   cmake -S apr-1.7.0 -B buildtrees\apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake --build buildtrees\apr --target install --config Release
+   set CMAKE_PATH_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake -S apr-util-1.6.1 -B buildtrees\apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake --build buildtrees\apr-util --target install --config Release
+   cd apache-log4cxx-x.x.x
+   set PATH=%MAVEN_HOME%\bin;%PATH%
+   mvn package
 +----+
 
 * Common Maven targets
@@ -73,14 +76,5 @@ $ mvn package
 
    All build products will be placed in the target subdirectory.
 
-   It is not possible to directly pass options to the Ant build, however the ant build will read
-   any build.properties file in the log4cxx directory. The file has to be in the default format
-   for {{{https://en.wikipedia.org/wiki/.properties}Java properties files}}, especially one must not
-   provide options using the syntax -Dxy=z like on the shell, but only as xy=z per line.
-
    SMTP and ODBC options can depend on libraries that that have different licenses. You should
    review the corresponding licenses and understand the implications before redistribution.
-
-* Platform specific notes:
-
-  See the {{{./ant.html}Apache Ant build}} for platform specific notes.

@@ -18,9 +18,9 @@
  ------
  ------
 
-Building Apache log4cxx with cmake
-
 * Quick start:
+
+  Building and testing log4cxx on a Unix platform with packaged APR and APR-Util.
 
   Make sure cmake 3.13+, g++ and make are available, install or
   build apr 1.x, apr-util 1.x, gzip and zip.
@@ -43,6 +43,22 @@ $ sudo make install
 *------------------------+---------------------------------------------------------------------------------------------+
 | -DLOG4CXX_CFSTRING=yes | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
 *------------------------+---------------------------------------------------------------------------------------------+
+
+   Building and testing log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
+   extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%\Libraries.
+
++------------+
+   cd %HOMEPATH%\Libraries
+   cmake -S libexpat\expat -B buildtrees\expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake --build buildtrees\expat --target install --config Release
+   cmake -S apr-1.7.0 -B buildtrees\apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake --build buildtrees\apr --target install --config Release
+   set CMAKE_PATH_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake -S apr-util-1.6.1 -B buildtrees\apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake --build buildtrees\apr-util --target install --config Release
+   cmake -S apache-log4cxx-x.x.x -B buildtrees\log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+   cmake --build buildtrees\log4cxx --target install --config Release
++------------+
 
 * Platform specific notes:
 
