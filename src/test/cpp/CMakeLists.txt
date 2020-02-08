@@ -56,9 +56,16 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         COMMAND ${testName} -v
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../resources
     )
-    set_tests_properties(${testName} PROPERTIES
-        ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
-    )
+
+    if(${testName} STREQUAL socketservertestcase)
+        set_tests_properties(socketservertestcase PROPERTIES
+            ENVIRONMENT "SOCKET_SERVER_COMMAND=$<JOIN:${START_SOCKET_SERVER_COMMAND}, >"
+        )
+    else()
+       set_tests_properties(${testName} PROPERTIES
+            ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
+       )
+    endif()
     if(WIN32)
       set_tests_properties(${testName} PROPERTIES ENVIRONMENT
         "PATH=$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>$<SEMICOLON>$ENV{PATH}"

@@ -229,51 +229,6 @@
 		</delete>
 	</target>
 
-	<target	name="run-socketserver"
-			depends="clean-output"
-			description="Runs SocketServer test">
-		<property environment="env" />
-		<mkdir dir="${tests.output.dir}" />
-		<delete>
-			<fileset	dir="${tests.output.dir}"
-						includes="*"
-			/>
-		</delete>
-		<mkdir dir="target/test-classes" />
-		<javac	srcdir="src/test/java"
-				includes="org/apache/log4j/net/ShortSocketServer.java"
-				destdir="target/test-classes"
-				classpath="${log4j.jar}"
-		/>
-		<parallel>
-			<java	classname="org.apache.log4j.net.ShortSocketServer"
-					fork="yes" dir="src/test/resources"
-					classpath="target/test-classes:${log4j.jar}">
-				<arg value="8" />
-				<arg value="input/socketServer" />
-			</java>
-			<sequential>
-				<sleep seconds="2" />
-				<exec	executable="${testsuite.exe}"
-						dir="${tests.resources.dir}"
-						failonerror="true">
-					<arg value="-v" />
-					<arg value="socketservertestcase" />
-
-					<env	key="LD_LIBRARY_PATH"
-							value="${log4cxx.lib.dir}:${apr.lib.dir}:${apr-util.lib.dir}:${env.LD_LIBRARY_PATH}"
-					/>
-					<env	key="DYLD_LIBRARY_PATH"
-							value="${log4cxx.lib.dir}:${apr.lib.dir}:${apr-util.lib.dir}:${env.DYLD_LIBRARY_PATH}"
-					/>
-					<env	key="Path"
-							value="${log4cxx.lib.dir};${env.Path}"
-					/>
-				</exec>
-			</sequential>
-		</parallel>
-	</target>
-
 	<target	name="apidocs"
 			description="Build log4cxx manual">
 		<copy	file="${base.dir}/src/site/doxy/Doxyfile.in"

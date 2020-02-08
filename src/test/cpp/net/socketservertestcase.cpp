@@ -38,7 +38,6 @@
 #include "../logunit.h"
 #include <log4cxx/spi/loggerrepository.h>
 
-
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))
 #define INT64_C(value)  value ## LL
@@ -478,4 +477,4 @@ public:
 const File SocketServerTestCase::TEMP("output/temp");
 const File SocketServerTestCase::FILTERED("output/filtered");
 
-LOGUNIT_TEST_SUITE_REGISTRATION_DISABLED(SocketServerTestCase)
+LOGUNIT_TEST_SUITE_REGISTRATION(SocketServerTestCase)
