@@ -7,10 +7,10 @@ include(CTest)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/src/cmake")
 
 # Find Apache Runtime
-find_package(APR QUIET)
+find_package(APR REQUIRED)
 
 # Find Apache Runtime Utilities
-find_package(APR-Util QUIET)
+find_package(APR-Util REQUIRED)
 
 # Building
 add_subdirectory(src)
