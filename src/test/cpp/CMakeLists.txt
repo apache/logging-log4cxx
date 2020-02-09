@@ -57,18 +57,26 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../resources
     )
 
-    if(${testName} STREQUAL socketservertestcase)
-        set_tests_properties(socketservertestcase PROPERTIES
-            ENVIRONMENT "SOCKET_SERVER_COMMAND=$<JOIN:${START_SOCKET_SERVER_COMMAND}, >"
-        )
-    else()
-       set_tests_properties(${testName} PROPERTIES
-            ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
-       )
-    endif()
     if(WIN32)
-      set_tests_properties(${testName} PROPERTIES ENVIRONMENT
-        "PATH=$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>$<SEMICOLON>$ENV{PATH}"
-      )
+        set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>")
+        if(${testName} STREQUAL socketservertestcase)
+            set_tests_properties(socketservertestcase PROPERTIES
+                ENVIRONMENT "SOCKET_SERVER_COMMAND=$<JOIN:${START_SOCKET_SERVER_COMMAND}, >;PATH=${LOG4CXX_DLL_DIR}\;${APR_DLL_DIR}\;${APR_UTIL_DLL_DIR}"
+            )
+        else()
+           set_tests_properties(${testName} PROPERTIES
+                ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2;PATH==${LOG4CXX_DLL_DIR}\;${APR_DLL_DIR}\;${APR_UTIL_DLL_DIR}"
+           )
+        endif()
+    else()
+        if(${testName} STREQUAL socketservertestcase)
+            set_tests_properties(socketservertestcase PROPERTIES
+                ENVIRONMENT "SOCKET_SERVER_COMMAND=$<JOIN:${START_SOCKET_SERVER_COMMAND}, >"
+            )
+        else()
+           set_tests_properties(${testName} PROPERTIES
+                ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
+           )
+        endif()
     endif()
 endforeach()

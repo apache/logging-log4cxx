@@ -4,6 +4,7 @@ include(FindPackageHandleStandardArgs)
 # This module defines
 # APR_INCLUDE_DIR, where to find apr.h, etc.
 # APR_LIBRARIES, the libraries to link against to use APR.
+# APR_DLL_DIR, where to find libapr-1.dll
 # APR_FOUND, set to 'yes' if found
 macro(_apr_invoke _varname)
     execute_process(
@@ -33,6 +34,10 @@ mark_as_advanced(APR_CONFIG_EXECUTABLE)
 if(EXISTS ${APR_CONFIG_EXECUTABLE})
     _apr_invoke(APR_INCLUDE_DIR  --includedir)
     _apr_invoke(APR_LIBRARIES  --link-ld)
+else()
+    find_path(APR_INCLUDE_DIR apr.h PATH_SUFFIXES apr-1)
+    find_library(APR_LIBRARIES NAMES libapr-1 apr-1)
+    find_path(APR_DLL_DIR libapr-1.dll)
 endif()
 
 find_package_handle_standard_args(apr
