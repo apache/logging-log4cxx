@@ -66,12 +66,25 @@ $ sudo make install
 
   APR and APR-Util are provided by the platform in Mac OS/X 10.5 and iODBC in 10.4.
 
+  cmake can be installed by typing "brew install cmake"
+
 ** Debian:
 
-  APR, APR-Util, gzip and zip may be installed by:
+  APR, APR-Util, openssl, gzip and zip may be installed by:
 
 +----+
-$ sudo apt-get install libapr1-dev libaprutil1-dev gzip zip
+$ sudo apt-get install libssl-dev libapr1-dev libaprutil1-dev gzip zip
++----+
+
+  CMake can be built from source by typing:
+
++----+
+$ wget https://github.com/Kitware/CMake/releases/download/v3.16.4/cmake-3.16.4.tar.gz
+$ tar xf cmake-3.16.4.tar.gz
+$ cd cmake-3.16.4
+$ ./bootstrap
+$ make
+$ sudo make install
 +----+
 
 ** FreeBSD:
