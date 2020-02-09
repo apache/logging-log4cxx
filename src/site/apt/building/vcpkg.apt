@@ -28,7 +28,7 @@ Building Apache log4cxx with vcpkg
 
    PS> .\bootstrap-vcpkg.bat
    Linux:~/$ ./bootstrap-vcpkg.sh
-   
+
    Then, to hook up user-wide integration, run (note: requires admin on first use)
 
    PS> .\vcpkg integrate install
@@ -37,5 +37,7 @@ Building Apache log4cxx with vcpkg
 
 *Building log4cxx.dll
 
++----+
    PS> .\vcpkg install log4cxx
    Linux:~/$ ./vcpkg install log4cxx
++----+
