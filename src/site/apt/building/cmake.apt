@@ -18,6 +18,8 @@
  ------
  ------
 
+Building Apache log4cxx with CMake
+
 * Quick start:
 
   Building and testing log4cxx on a Unix platform with packaged APR and APR-Util.
@@ -28,7 +30,7 @@
 +------------+
 $ apt-get install build-essential libapr1-dev libaprutil1-dev gzip zip
 $ cd apache-log4cxx-x.x.x
-$ mkdir build 
+$ mkdir build
 $ cd build
 $ ccmake ..
 $ make
@@ -36,6 +38,7 @@ $ sudo make install
 +------------+
 
 * ccmake options
+
 *------------------------+---------------------------------------------------------------------------------------------+
 | -DLOG4CXX_WCHAR_T=no   | Enable wchar_t API methods, choice of yes (default), no.                                    |
 *------------------------+---------------------------------------------------------------------------------------------+
