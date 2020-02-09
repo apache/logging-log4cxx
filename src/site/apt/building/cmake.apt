@@ -43,6 +43,8 @@ $ sudo make install
 *------------------------+---------------------------------------------------------------------------------------------+
 | -DLOG4CXX_CFSTRING=yes | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
 *------------------------+---------------------------------------------------------------------------------------------+
+| -DBUILD_TESTING=off    | Disable tests.  Tests are enabled by default                                                |
+*------------------------+---------------------------------------------------------------------------------------------+
 
    Building and testing log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
    extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%\Libraries.
