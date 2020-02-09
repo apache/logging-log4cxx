@@ -89,6 +89,7 @@ message(STATUS "log4cxx configuration summary:")
 message(STATUS "")
 
 message(STATUS "  Build type ...................... : ${CMAKE_BUILD_TYPE}")
+message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
 message(STATUS "  log4cxx char API ................ : ${LOG4CXX_CHAR}")
