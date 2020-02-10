@@ -93,7 +93,7 @@ using namespace log4cxx::net;
 /**
  *  This test checks receipt of SocketAppender messages by the ShortSocketServer
  *  class from log4j.  That class must be started externally to this class
- *  for this test to succeed. 
+ *  for this test to succeed.
  */
 LOGUNIT_CLASS(SocketServerTestCase)
 {
@@ -135,8 +135,6 @@ public:
         }
 
         /**
-        The pattern on the server side: %5p %x [%t] %c %m%n.
-
         We are testing NDC functionality across the wire.
         */
         void test1()
@@ -422,7 +420,7 @@ public:
                 int i = -1;
                 NDC::push(dc);
                 MDC::put(key, val);
-                
+
                 logger->setLevel(Level::getDebug());
                 root->setLevel(Level::getDebug());
 
@@ -431,17 +429,17 @@ public:
 
                 logger->setLevel(Level::getTrace());
                 root->setLevel(Level::getTrace());
-                
+
                 LOG4CXX_TRACE(logger, "Message " << ++i);
                 LOG4CXX_TRACE(root, "Message " << ++i);
 
                 LOG4CXX_DEBUG(logger, "Message " << ++i);
                 LOG4CXX_DEBUG(root, "Message " << ++i);
-                
+
                 LOG4CXX_INFO(logger, "Message "  << ++i);
                 LOG4CXX_WARN(logger, "Message " << ++i);
                 LOG4CXX_FATAL(logger, "Message " << ++i); //5
-                
+
                 std::string exceptionMsg("\njava.lang.Exception: Just testing\n"
                     "\tat org.apache.log4j.net.SocketServerTestCase.common(SocketServerTestCase.java:XXX)\n"
                     "\tat org.apache.log4j.net.SocketServerTestCase.");
@@ -456,7 +454,7 @@ public:
                     "\tat junit.framework.TestSuite.runTest(TestSuite.java:XXX)\n"
                     "\tat junit.framework.TestSuite.run(TestSuite.java:XXX)");
 
-                
+
                 LOG4CXX_DEBUG(logger, "Message " << ++i << exceptionMsg);
                 LOG4CXX_ERROR(root, "Message " << ++i << exceptionMsg);
 
