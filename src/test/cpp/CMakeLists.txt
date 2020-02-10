@@ -61,7 +61,7 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         set(LOG4CXX_DLL_DIR "$<SHELL_PATH:$<TARGET_FILE_DIR:log4cxx>>")
         if(${testName} STREQUAL socketservertestcase)
             set_tests_properties(socketservertestcase PROPERTIES
-                ENVIRONMENT "SOCKET_SERVER_COMMAND=$<JOIN:${START_SOCKET_SERVER_COMMAND}, >;PATH=${LOG4CXX_DLL_DIR}\;${APR_DLL_DIR}\;${APR_UTIL_DLL_DIR}"
+                ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${LOG4CXX_DLL_DIR}\;${APR_DLL_DIR}\;${APR_UTIL_DLL_DIR}"
             )
         else()
            set_tests_properties(${testName} PROPERTIES
@@ -71,7 +71,7 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     else()
         if(${testName} STREQUAL socketservertestcase)
             set_tests_properties(socketservertestcase PROPERTIES
-                ENVIRONMENT "SOCKET_SERVER_COMMAND=$<JOIN:${START_SOCKET_SERVER_COMMAND}, >"
+                ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}"
             )
         else()
            set_tests_properties(${testName} PROPERTIES

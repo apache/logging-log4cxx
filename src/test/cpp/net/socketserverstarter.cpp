@@ -23,7 +23,7 @@
 #include <apr_strings.h>
 #include <apr_time.h>
 #include <log4cxx/helpers/pool.h>
-
+#include <fstream>
 
 using namespace log4cxx;
 
@@ -48,56 +48,114 @@ public:
      apr_pool_t* pool = p.getAPRPool();
      char* cmd = NULL;
      apr_status_t stat = apr_env_get(&cmd, "SOCKET_SERVER_COMMAND", pool);
+     char* param_file = NULL;
+     stat = apr_env_get(&param_file, "SOCKET_SERVER_PARAMETER_FILE", pool);
+
+     // prepare to launch the server
+     //
+     apr_proc_t server_pid;
+     apr_procattr_t* attr = NULL;
+     stat = apr_procattr_create(&attr, pool);
+     if (stat != APR_SUCCESS)
+         LOGUNIT_FAIL("apr_procattr_create failed");
+     stat = apr_procattr_io_set(attr, APR_NO_PIPE, APR_NO_PIPE, APR_NO_PIPE);
+     if (stat != APR_SUCCESS)
+         LOGUNIT_FAIL("apr_procattr_io_set failed");
+
+     //fprintf(stdout, "SOCKET_SERVER_COMMAND=%s\n", cmd);
+     stat = apr_procattr_cmdtype_set(attr, APR_PROGRAM);
+     if (stat != APR_SUCCESS)
+         LOGUNIT_FAIL("apr_procattr_cmdtype_set failed");
 
      if (cmd && *cmd)
      {
-          // prepare to launch the server
-          //
-          apr_proc_t server_pid;
-          apr_procattr_t* attr = NULL;
-          stat = apr_procattr_create(&attr, pool);
-          LOGUNIT_ASSERT(stat == APR_SUCCESS);
-          stat = apr_procattr_io_set(attr, APR_NO_PIPE, APR_NO_PIPE, APR_NO_PIPE);
-          LOGUNIT_ASSERT(stat == APR_SUCCESS);
-
-          //fprintf(stdout, "SOCKET_SERVER_COMMAND=%s\n", cmd);
-#ifdef SHELL_CMD_TYPE_WORKS
-          stat = apr_procattr_cmdtype_set(attr, APR_SHELLCMD);
-          LOGUNIT_ASSERT(stat == APR_SUCCESS);
-          stat = apr_proc_create(&server_pid, cmd, NULL, NULL, attr, pool);
-#else
-          stat = apr_procattr_cmdtype_set(attr, APR_PROGRAM);
-          LOGUNIT_ASSERT(stat == APR_SUCCESS);
           // convert the space separated cmd string to the argument list
           //
-          char** args = (char**)apr_palloc(pool, 15 * sizeof(*args));
+          static const int MaxArgumentCount = 14;
+          char** argv = (char**)apr_palloc(pool, MaxArgumentCount + 1 * sizeof(*argv));
           char* pcmd = apr_pstrdup(pool, cmd);
           int i = 0;
-          for (; i < 14 && pcmd && *pcmd; ++i)
+          char separ = ' ';
+          for (; i < MaxArgumentCount && pcmd && *pcmd; ++i)
           {
-              args[i] = pcmd;
-              if (NULL != (pcmd = strchr(pcmd, ';')))
+              while(' ' == *pcmd)
               {
-                while(';' == *pcmd)
+                *pcmd = 0;
+                ++pcmd;
+              }
+              if ('"' == *pcmd || '\'' == *pcmd)
+              {
+                 separ = *pcmd;
+                 ++pcmd;
+              }
+              else
+                separ = ' ';
+              argv[i] = pcmd;
+              if (NULL != (pcmd = strchr(pcmd, separ)))
+              {
+                *pcmd = 0;
+                ++pcmd;
+                while(' ' == *pcmd)
                 {
                   *pcmd = 0;
                   ++pcmd;
                 }
               }
           }
-          args[i] = 0;
-          //fprintf(stdout, "starting=%s with %d arguments\n", args[0], i);
-          stat = apr_proc_create(&server_pid, args[0], args, NULL, attr, pool);
-#endif
+          argv[i] = 0;
+          stat = apr_proc_create(&server_pid, argv[0], argv, NULL, attr, pool);
 
 
           if (stat == APR_SUCCESS) // Allow server time to load
               apr_sleep(1000000); // 1 seconds
+          else
+              fprintf(stderr, "apr_proc_create failed to start %s\n", argv[0]);
+     }
+     else if (param_file && *param_file)
+     {
+          // Build the argument list from param_file
+          //
+          //fprintf(stderr, "Processing: %s\n", param_file);
+          std::ifstream in(param_file);
+          std::vector<std::string> params;
+          while (in)
+          {
+              params.push_back(std::string());
+              std::string& line = params.back();
+              std::getline(in, line);
+              while (!line.empty() && ' ' == line.back())
+                 line.pop_back();
+              if (line.empty())
+                  params.pop_back();
+          }
+          const char** argv = (const char**)apr_palloc(pool, params.size() + 1 * sizeof(*argv));
+          int i = 0;
+          for (; i < params.size(); ++i)
+          {
+              argv[i] = params[i].c_str();
+              //fprintf(stderr, "argv[%i]: %s\n", i, argv[i]);
+          }
+          argv[i] = 0;
+          stat = apr_proc_create(&server_pid, argv[0], argv, NULL, attr, pool);
+
+
+          if (stat == APR_SUCCESS) // Allow server time to load
+              apr_sleep(1000000); // 1 seconds
+          else
+              fprintf(stderr, "apr_proc_create failed to start %s\n", argv[0]);
       }
       else
-          fputs("The environment variable SOCKET_SERVER_COMMAND"
+      {
+          fputs("Either:\n", stderr);
+          fputs(" The environment variable SOCKET_SERVER_COMMAND"
                " must contain the server process path"
                " followed by space separated command arguments\n", stderr);
+          fputs("Or:\n", stderr);
+          fputs(" The file named in the environment variable SOCKET_SERVER_PARAMETER_FILE"
+               " must contain a line per argument starting with the server process path"
+               " followed by lines containing command arguments\n", stderr);
+          stat = -1;
+      }
 
       LOGUNIT_ASSERT(stat == APR_SUCCESS);
    }

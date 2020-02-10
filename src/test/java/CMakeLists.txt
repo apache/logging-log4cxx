@@ -14,5 +14,20 @@ add_custom_target(test-classes
           --class-path "${log4j_CLASSPATH}" ${SOCKET_SERVER_SOURCES}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
-set(SOCKET_SERVER_CLASSPATH "${CMAKE_CURRENT_BINARY_DIR}:${log4j_CLASSPATH}" )
-set(START_SOCKET_SERVER_COMMAND ${Java_JAVA_EXECUTABLE} --class-path ${SOCKET_SERVER_CLASSPATH} org.apache.log4j.net.ShortSocketServer 8 input/socketServer PARENT_SCOPE)
+if(WIN32)
+  set(SOCKET_SERVER_CLASSPATH "${CMAKE_CURRENT_BINARY_DIR};${log4j_CLASSPATH}")
+else()
+  set(SOCKET_SERVER_CLASSPATH "${CMAKE_CURRENT_BINARY_DIR}:${log4j_CLASSPATH}")
+endif()
+
+# Use a parameter file to avoid issues with processing ';'
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/StartSocketServerParams.txt
+"${Java_JAVA_EXECUTABLE}
+-classpath
+${SOCKET_SERVER_CLASSPATH}
+org.apache.log4j.net.ShortSocketServer
+8
+input/socketServer
+"
+)
+set(START_SOCKET_SERVER_PARAMETER_FILE ${CMAKE_CURRENT_BINARY_DIR}/StartSocketServerParams.txt PARENT_SCOPE)
