@@ -11,7 +11,7 @@ set(log4j_CLASSPATH "${log4j_SOURCE_DIR}/log4j-1.2.17.jar" )
 set(SOCKET_SERVER_SOURCES org/apache/log4j/net/ShortSocketServer.java)
 add_custom_target(test-classes
   COMMAND ${Java_JAVAC_EXECUTABLE} -d ${CMAKE_CURRENT_BINARY_DIR}
-          --class-path "${log4j_CLASSPATH}" ${SOCKET_SERVER_SOURCES}
+          -classpath "${log4j_CLASSPATH}" ${SOCKET_SERVER_SOURCES}
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 if(WIN32)
