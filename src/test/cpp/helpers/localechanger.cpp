@@ -27,24 +27,33 @@ using namespace log4cxx::helpers;
 *   Construction attemtps to change default locale.
 * @param locale locale.
 */
-LocaleChanger::LocaleChanger(const char* locale) {
-    effective = false;
-    try {
-        std::locale newLocale(locale);
-        initial = std::locale::global(newLocale);
-        effective = true;
-    } catch(std::runtime_error&) {
-    } catch(std::exception&) {
-    }
-  }
+LocaleChanger::LocaleChanger(const char* locale)
+{
+	effective = false;
+
+	try
+	{
+		std::locale newLocale(locale);
+		initial = std::locale::global(newLocale);
+		effective = true;
+	}
+	catch (std::runtime_error&)
+	{
+	}
+	catch (std::exception&)
+	{
+	}
+}
 
 /**
 * Restores previous locale.
 */
-LocaleChanger::~LocaleChanger() {
-      if (effective) {
-        std::locale::global(initial);
-      }
-  }
+LocaleChanger::~LocaleChanger()
+{
+	if (effective)
+	{
+		std::locale::global(initial);
+	}
+}
 
 #endif

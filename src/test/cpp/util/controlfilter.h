@@ -23,13 +23,13 @@
 
 namespace log4cxx
 {
-   class ControlFilter : public Filter
-   {
-   public:
-      ControlFilter();
-      ControlFilter& operator<<(const std::string& allowedPattern);
+class ControlFilter : public Filter
+{
+	public:
+		ControlFilter();
+		ControlFilter& operator<<(const std::string& allowedPattern);
 
-   };
+};
 }
 
 

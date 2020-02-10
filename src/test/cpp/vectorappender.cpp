@@ -25,23 +25,23 @@ IMPLEMENT_LOG4CXX_OBJECT(VectorAppender)
 
 void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& /*p*/)
 {
-        try
-        {
-            Thread::sleep(100);
-        }
-        catch (Exception&)
-        {
-        }
+	try
+	{
+		Thread::sleep(100);
+	}
+	catch (Exception&)
+	{
+	}
 
-        vector.push_back(event);
+	vector.push_back(event);
 }
 
 void VectorAppender::close()
 {
-        if (this->closed)
-        {
-                return;
-        }
+	if (this->closed)
+	{
+		return;
+	}
 
-        this->closed = true;
+	this->closed = true;
 }

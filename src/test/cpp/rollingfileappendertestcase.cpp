@@ -26,21 +26,22 @@ using namespace log4cxx::helpers;
  */
 class RollingFileAppenderTestCase : public FileAppenderAbstractTestCase
 {
-   LOGUNIT_TEST_SUITE(RollingFileAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST_SUITE(RollingFileAppenderTestCase);
+		//
+		//    tests inherited from AppenderSkeletonTestCase
+		//
+		LOGUNIT_TEST(testDefaultThreshold);
+		LOGUNIT_TEST(testSetOptionThreshold);
 
-   LOGUNIT_TEST_SUITE_END();
+		LOGUNIT_TEST_SUITE_END();
 
 
-public:
+	public:
 
-        FileAppender* createFileAppender() const {
-          return new log4cxx::rolling::RollingFileAppender();
-        }
+		FileAppender* createFileAppender() const
+		{
+			return new log4cxx::rolling::RollingFileAppender();
+		}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(RollingFileAppenderTestCase);

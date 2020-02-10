@@ -10,6 +10,7 @@
 # Example invocation:
 #
 # astyle --project src/main/include/*.h src/main/cpp/*.cpp
+# astyle --project src/test/cpp/*.h src/test/cpp/*.cpp
 #
 
 --add-braces

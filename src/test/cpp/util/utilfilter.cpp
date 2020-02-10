@@ -24,8 +24,9 @@ using namespace log4cxx::helpers;
 Filter::Filter() {}
 
 Filter::Filter(const std::string& match,
-               const std::string& replacement) {
-     patterns.push_back( PatternReplacement(match, replacement));
+	const std::string& replacement)
+{
+	patterns.push_back( PatternReplacement(match, replacement));
 }
-               
+
 Filter::~Filter() {}

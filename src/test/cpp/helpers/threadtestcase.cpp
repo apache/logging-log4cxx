@@ -26,39 +26,46 @@ using namespace log4cxx::helpers;
 
 /**
    Unit test for Thread.
-   
-   */
-LOGUNIT_CLASS(ThreadTestCase) {
-  LOGUNIT_TEST_SUITE(ThreadTestCase);
-          LOGUNIT_TEST(testInterrupt);
-  LOGUNIT_TEST_SUITE_END();
 
-  public:
-  /**
-   * Start a thread that will wait for a minute, then interrupt it.
    */
-  void testInterrupt() {
-    Thread thread1;
-    bool interrupted = false;
-    thread1.run(sleep, &interrupted);
-    apr_sleep(100000);
-    apr_time_t start = apr_time_now();
-    thread1.interrupt();
-    thread1.join();
-    LOGUNIT_ASSERT_EQUAL(true, interrupted);
-    apr_time_t elapsed = apr_time_now() - start;
-    LOGUNIT_ASSERT(elapsed < 1000000); 
-  }
+LOGUNIT_CLASS(ThreadTestCase)
+{
+	LOGUNIT_TEST_SUITE(ThreadTestCase);
+	LOGUNIT_TEST(testInterrupt);
+	LOGUNIT_TEST_SUITE_END();
+
+public:
+	/**
+	 * Start a thread that will wait for a minute, then interrupt it.
+	 */
+	void testInterrupt()
+	{
+		Thread thread1;
+		bool interrupted = false;
+		thread1.run(sleep, &interrupted);
+		apr_sleep(100000);
+		apr_time_t start = apr_time_now();
+		thread1.interrupt();
+		thread1.join();
+		LOGUNIT_ASSERT_EQUAL(true, interrupted);
+		apr_time_t elapsed = apr_time_now() - start;
+		LOGUNIT_ASSERT(elapsed < 1000000);
+	}
 
 private:
-  static void* LOG4CXX_THREAD_FUNC sleep(apr_thread_t* thread, void* data) {
-      try {
-        Thread::sleep(60000);
-      } catch(InterruptedException& ex) {
-        *(reinterpret_cast<bool*>(data)) = true;
-      }
-      return NULL;
-  }
+	static void* LOG4CXX_THREAD_FUNC sleep(apr_thread_t* thread, void* data)
+	{
+		try
+		{
+			Thread::sleep(60000);
+		}
+		catch (InterruptedException& ex)
+		{
+			*(reinterpret_cast<bool*>(data)) = true;
+		}
+
+		return NULL;
+	}
 
 };
 

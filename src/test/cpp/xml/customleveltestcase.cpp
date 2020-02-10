@@ -39,85 +39,85 @@ using namespace log4cxx::xml;
 
 LOGUNIT_CLASS(CustomLevelTestCase)
 {
-   LOGUNIT_TEST_SUITE(CustomLevelTestCase);
-      LOGUNIT_TEST(test1);
-      LOGUNIT_TEST(test2);
-      LOGUNIT_TEST(test3);
-      LOGUNIT_TEST(test4);
-   LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(CustomLevelTestCase);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
+	LOGUNIT_TEST(test3);
+	LOGUNIT_TEST(test4);
+	LOGUNIT_TEST_SUITE_END();
 
-   LoggerPtr root;
-   LoggerPtr logger;
-    static const File TEMP;
+	LoggerPtr root;
+	LoggerPtr logger;
+	static const File TEMP;
 
 public:
-   void setUp()
-   {
-      root = Logger::getRootLogger();
-      logger = Logger::getLogger(LOG4CXX_TEST_STR("xml.CustomLevelTestCase"));
-   }
+	void setUp()
+	{
+		root = Logger::getRootLogger();
+		logger = Logger::getLogger(LOG4CXX_TEST_STR("xml.CustomLevelTestCase"));
+	}
 
-   void tearDown()
-   {
-      root->getLoggerRepository()->resetConfiguration();
+	void tearDown()
+	{
+		root->getLoggerRepository()->resetConfiguration();
 
-      LoggerPtr logger1 = Logger::getLogger(LOG4CXX_TEST_STR("LOG4J"));
-      logger1->setAdditivity(false);
-      logger1->addAppender(
-         new ConsoleAppender(new PatternLayout(LOG4CXX_STR("log4j: %-22c{2} - %m%n"))));
-   }
+		LoggerPtr logger1 = Logger::getLogger(LOG4CXX_TEST_STR("LOG4J"));
+		logger1->setAdditivity(false);
+		logger1->addAppender(
+			new ConsoleAppender(new PatternLayout(LOG4CXX_STR("log4j: %-22c{2} - %m%n"))));
+	}
 
-   void test1()
-   {
-      DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel1.xml"));
-      common();
-        const File witness("witness/customLevel.1");
-      LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
-   }
+	void test1()
+	{
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel1.xml"));
+		common();
+		const File witness("witness/customLevel.1");
+		LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
+	}
 
-   void test2()
-   {
-      DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel2.xml"));
-      common();
-        const File witness("witness/customLevel.2");
-      LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
-   }
+	void test2()
+	{
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel2.xml"));
+		common();
+		const File witness("witness/customLevel.2");
+		LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
+	}
 
-   void test3()
-   {
-      DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel3.xml"));
-      common();
-        const File witness("witness/customLevel.3");
-      LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
-   }
+	void test3()
+	{
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel3.xml"));
+		common();
+		const File witness("witness/customLevel.3");
+		LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
+	}
 
-   void test4()
-   {
-      DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel4.xml"));
-      common();
-        const File witness("witness/customLevel.4");
-      LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
-   }
+	void test4()
+	{
+		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/customLevel4.xml"));
+		common();
+		const File witness("witness/customLevel.4");
+		LOGUNIT_ASSERT(Compare::compare(TEMP, witness));
+	}
 
-   void common()
-   {
-      int i = 0;
-        std::ostringstream os;
-        os << "Message " << ++i;
-      LOG4CXX_DEBUG(logger, os.str());
-        os.str("");
-        os << "Message " <<  ++i;
-      LOG4CXX_INFO(logger, os.str());
-        os.str("");
-        os << "Message " <<  ++i;
-      LOG4CXX_WARN(logger, os.str());
-        os.str("");
-        os << "Message " <<  ++i;
-      LOG4CXX_ERROR(logger, os.str());
-        os.str("");
-        os << "Message " <<  ++i;
-      LOG4CXX_LOG(logger, XLevel::getTrace(), os.str());
-   }
+	void common()
+	{
+		int i = 0;
+		std::ostringstream os;
+		os << "Message " << ++i;
+		LOG4CXX_DEBUG(logger, os.str());
+		os.str("");
+		os << "Message " <<  ++i;
+		LOG4CXX_INFO(logger, os.str());
+		os.str("");
+		os << "Message " <<  ++i;
+		LOG4CXX_WARN(logger, os.str());
+		os.str("");
+		os << "Message " <<  ++i;
+		LOG4CXX_ERROR(logger, os.str());
+		os.str("");
+		os << "Message " <<  ++i;
+		LOG4CXX_LOG(logger, XLevel::getTrace(), os.str());
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(CustomLevelTestCase);

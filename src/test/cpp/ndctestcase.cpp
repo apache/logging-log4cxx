@@ -30,76 +30,82 @@ using namespace log4cxx;
 
 LOGUNIT_CLASS(NDCTestCase)
 {
-         static File TEMP;
-         static LoggerPtr logger;
+	static File TEMP;
+	static LoggerPtr logger;
 
-        LOGUNIT_TEST_SUITE(NDCTestCase);
-                LOGUNIT_TEST(testPushPop);
-                LOGUNIT_TEST(test1);
-                LOGUNIT_TEST(testInherit);
-        LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(NDCTestCase);
+	LOGUNIT_TEST(testPushPop);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(testInherit);
+	LOGUNIT_TEST_SUITE_END();
 
 public:
 
-        void setUp() {
-        }
+	void setUp()
+	{
+	}
 
-        void tearDown() {
-            logger->getLoggerRepository()->resetConfiguration();
-        }
+	void tearDown()
+	{
+		logger->getLoggerRepository()->resetConfiguration();
+	}
 
-        /**
-         *   Push and pop a value from the NDC
-         */
-        void testPushPop()
-        {
-                NDC::push("trivial context");
-                LogString actual(NDC::pop());
-                LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("trivial context"), actual);
-        }
+	/**
+	 *   Push and pop a value from the NDC
+	 */
+	void testPushPop()
+	{
+		NDC::push("trivial context");
+		LogString actual(NDC::pop());
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("trivial context"), actual);
+	}
 
 
-        void test1()  {
-            PropertyConfigurator::configure(File("input/ndc/NDC1.properties"));
-            common();
-            LOGUNIT_ASSERT(Compare::compare(TEMP, File("witness/ndc/NDC.1")));
-        }
+	void test1()
+	{
+		PropertyConfigurator::configure(File("input/ndc/NDC1.properties"));
+		common();
+		LOGUNIT_ASSERT(Compare::compare(TEMP, File("witness/ndc/NDC.1")));
+	}
 
-        static void common() {
-            commonLog();
-            NDC::push("n1");
-            commonLog();
-            NDC::push("n2");
-            NDC::push("n3");
-            commonLog();
-            NDC::pop();
-            commonLog();
-            NDC::clear();
-            commonLog();
-        }
+	static void common()
+	{
+		commonLog();
+		NDC::push("n1");
+		commonLog();
+		NDC::push("n2");
+		NDC::push("n3");
+		commonLog();
+		NDC::pop();
+		commonLog();
+		NDC::clear();
+		commonLog();
+	}
 
-        static void commonLog() {
-            LOG4CXX_DEBUG(logger, "m1");
-            LOG4CXX_INFO(logger, "m2");
-            LOG4CXX_WARN(logger, "m3");
-            LOG4CXX_ERROR(logger, "m4");
-            LOG4CXX_FATAL(logger, "m5");
-        }
-        
-        void testInherit() {
-           NDC::push("hello");
-           NDC::push("world");
-           NDC::Stack* clone = NDC::cloneStack();
-           NDC::clear();
-           NDC::push("discard");
-           NDC::inherit(clone);
-           LogString expected1(LOG4CXX_STR("world"));
-           LOGUNIT_ASSERT_EQUAL(expected1, NDC::pop());
-           LogString expected2(LOG4CXX_STR("hello"));
-           LOGUNIT_ASSERT_EQUAL(expected2, NDC::pop());
-           LogString expected3;
-           LOGUNIT_ASSERT_EQUAL(expected3, NDC::pop());
-        }
+	static void commonLog()
+	{
+		LOG4CXX_DEBUG(logger, "m1");
+		LOG4CXX_INFO(logger, "m2");
+		LOG4CXX_WARN(logger, "m3");
+		LOG4CXX_ERROR(logger, "m4");
+		LOG4CXX_FATAL(logger, "m5");
+	}
+
+	void testInherit()
+	{
+		NDC::push("hello");
+		NDC::push("world");
+		NDC::Stack* clone = NDC::cloneStack();
+		NDC::clear();
+		NDC::push("discard");
+		NDC::inherit(clone);
+		LogString expected1(LOG4CXX_STR("world"));
+		LOGUNIT_ASSERT_EQUAL(expected1, NDC::pop());
+		LogString expected2(LOG4CXX_STR("hello"));
+		LOGUNIT_ASSERT_EQUAL(expected2, NDC::pop());
+		LogString expected3;
+		LOGUNIT_ASSERT_EQUAL(expected3, NDC::pop());
+	}
 
 };
 

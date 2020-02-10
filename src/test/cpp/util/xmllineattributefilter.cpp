@@ -20,6 +20,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-XMLLineAttributeFilter::XMLLineAttributeFilter() {
-        patterns.push_back( PatternReplacement("line=\\(.+\\)[0-9]+", "line=\\\\1X"));
+XMLLineAttributeFilter::XMLLineAttributeFilter()
+{
+	patterns.push_back( PatternReplacement("line=\\(.+\\)[0-9]+", "line=\\\\1X"));
 }

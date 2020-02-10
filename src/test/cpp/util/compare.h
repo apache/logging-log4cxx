@@ -19,25 +19,26 @@
 
 namespace log4cxx
 {
-        class File;
-        namespace helpers {
-            class Pool;
-        }
+class File;
+namespace helpers
+{
+class Pool;
+}
 
-        class Compare
-        {
-        public:
-                static bool compare(const File& file1,
-                  const File& file2);
+class Compare
+{
+	public:
+		static bool compare(const File& file1,
+			const File& file2);
 
-        private:
-                /// Prints file on the console.
-                static void outputFile(const File& file,
-                      const LogString& contents,
-                      log4cxx::helpers::Pool& pool);
+	private:
+		/// Prints file on the console.
+		static void outputFile(const File& file,
+			const LogString& contents,
+			log4cxx::helpers::Pool& pool);
 
-                static void emit(const LogString &line);
-                static bool getline(LogString& buf, LogString& line);
+		static void emit(const LogString& line);
+		static bool getline(LogString& buf, LogString& line);
 
-        };
+};
 }

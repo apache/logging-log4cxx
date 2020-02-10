@@ -25,99 +25,106 @@ using namespace log4cxx::helpers;
 
 //Define INT64_C for compilers that don't have it
 #if (!defined(INT64_C))
-#define INT64_C(value)  value ## LL
+	#define INT64_C(value)  value ## LL
 #endif
 
 
 /**
    Unit test {@link TimeZone}.
-   
+
    */
-LOGUNIT_CLASS(TimeZoneTestCase) {
-  LOGUNIT_TEST_SUITE(TimeZoneTestCase);
-          LOGUNIT_TEST(test1);
-          LOGUNIT_TEST(test2);
+LOGUNIT_CLASS(TimeZoneTestCase)
+{
+	LOGUNIT_TEST_SUITE(TimeZoneTestCase);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
 #if !defined(__BORLANDC__)
-          LOGUNIT_TEST(test3);
+	LOGUNIT_TEST(test3);
 #endif
-          LOGUNIT_TEST(test4);
-          LOGUNIT_TEST(test5);
-          LOGUNIT_TEST(test6);
-  LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST(test4);
+	LOGUNIT_TEST(test5);
+	LOGUNIT_TEST(test6);
+	LOGUNIT_TEST_SUITE_END();
 
 #define MICROSECONDS_PER_DAY APR_INT64_C(86400000000)
 
 
-  public:
-  /**
-   * Checks the GMT timezone
-   */
-  void test1() {
-    TimeZonePtr tz(TimeZone::getGMT());
-    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
-  }
+public:
+	/**
+	 * Checks the GMT timezone
+	 */
+	void test1()
+	{
+		TimeZonePtr tz(TimeZone::getGMT());
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
+	}
 
-  /**
-   * Get "GMT-6" time zone
-   */
-  void test2() {
-    TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
-    LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT-06:00"), tz->getID());
+	/**
+	 * Get "GMT-6" time zone
+	 */
+	void test2()
+	{
+		TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT-6")));
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT-06:00"), tz->getID());
 
-    apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
-    apr_time_exp_t exploded;
-    tz->explode(&exploded, jan2);
-    LOGUNIT_ASSERT_EQUAL(-6 * 3600, exploded.tm_gmtoff);
-    LOGUNIT_ASSERT_EQUAL(18, exploded.tm_hour);
-  }
+		apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
+		apr_time_exp_t exploded;
+		tz->explode(&exploded, jan2);
+		LOGUNIT_ASSERT_EQUAL(-6 * 3600, exploded.tm_gmtoff);
+		LOGUNIT_ASSERT_EQUAL(18, exploded.tm_hour);
+	}
 
-  /**
-   * Get the default timezone name
-   */
-  void test3() {
-    TimeZonePtr tz(TimeZone::getDefault());
-    LogString tzName(tz->getID());
-    LOGUNIT_ASSERT(tzName.length() > 0);
-  }
-
-
-/**
- * Get "GMT+0010" time zone
- */
-void test4() {
-  TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT+0010")));
-  LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+00:10"), tz->getID());
-
-  apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
-  apr_time_exp_t exploded;
-  tz->explode(&exploded, jan2);
-  LOGUNIT_ASSERT_EQUAL(600, exploded.tm_gmtoff);
-  LOGUNIT_ASSERT_EQUAL(0, exploded.tm_hour);
-  LOGUNIT_ASSERT_EQUAL(10, exploded.tm_min);
-}
+	/**
+	 * Get the default timezone name
+	 */
+	void test3()
+	{
+		TimeZonePtr tz(TimeZone::getDefault());
+		LogString tzName(tz->getID());
+		LOGUNIT_ASSERT(tzName.length() > 0);
+	}
 
 
-/**
- * Get "GMT+6" time zone
- */
-void test5() {
-  TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT+6")));
-  LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+06:00"), tz->getID());
+	/**
+	 * Get "GMT+0010" time zone
+	 */
+	void test4()
+	{
+		TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT+0010")));
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+00:10"), tz->getID());
 
-  apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
-  apr_time_exp_t exploded;
-  tz->explode(&exploded, jan2);
-  LOGUNIT_ASSERT_EQUAL(6 * 3600, exploded.tm_gmtoff);
-  LOGUNIT_ASSERT_EQUAL(6, exploded.tm_hour);
-}
+		apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
+		apr_time_exp_t exploded;
+		tz->explode(&exploded, jan2);
+		LOGUNIT_ASSERT_EQUAL(600, exploded.tm_gmtoff);
+		LOGUNIT_ASSERT_EQUAL(0, exploded.tm_hour);
+		LOGUNIT_ASSERT_EQUAL(10, exploded.tm_min);
+	}
 
-/**
- * Checks the GMT timezone
- */
-void test6() {
-  TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT")));
-  LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
-}
+
+	/**
+	 * Get "GMT+6" time zone
+	 */
+	void test5()
+	{
+		TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT+6")));
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT+06:00"), tz->getID());
+
+		apr_time_t jan2 = MICROSECONDS_PER_DAY * 12420;
+		apr_time_exp_t exploded;
+		tz->explode(&exploded, jan2);
+		LOGUNIT_ASSERT_EQUAL(6 * 3600, exploded.tm_gmtoff);
+		LOGUNIT_ASSERT_EQUAL(6, exploded.tm_hour);
+	}
+
+	/**
+	 * Checks the GMT timezone
+	 */
+	void test6()
+	{
+		TimeZonePtr tz(TimeZone::getTimeZone(LOG4CXX_STR("GMT")));
+		LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("GMT"), tz->getID());
+	}
 
 
 };

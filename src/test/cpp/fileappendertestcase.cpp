@@ -23,8 +23,9 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-WriterAppender* FileAppenderAbstractTestCase::createWriterAppender() const {
-    return createFileAppender();
+WriterAppender* FileAppenderAbstractTestCase::createWriterAppender() const
+{
+	return createFileAppender();
 }
 
 
@@ -33,78 +34,82 @@ WriterAppender* FileAppenderAbstractTestCase::createWriterAppender() const {
  */
 class FileAppenderTestCase : public FileAppenderAbstractTestCase
 {
-   LOGUNIT_TEST_SUITE(FileAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST_SUITE(FileAppenderTestCase);
+		//
+		//    tests inherited from AppenderSkeletonTestCase
+		//
+		LOGUNIT_TEST(testDefaultThreshold);
+		LOGUNIT_TEST(testSetOptionThreshold);
 
-                //  tests defined here
-                LOGUNIT_TEST(testSetDoubleBackslashes);
-                LOGUNIT_TEST(testStripDuplicateBackslashes);
+		//  tests defined here
+		LOGUNIT_TEST(testSetDoubleBackslashes);
+		LOGUNIT_TEST(testStripDuplicateBackslashes);
 
-   LOGUNIT_TEST_SUITE_END();
-
-
+		LOGUNIT_TEST_SUITE_END();
 
 
-public:
 
-        FileAppender* createFileAppender() const {
-          return new log4cxx::FileAppender();
-        }
 
-        void testSetDoubleBackslashes() {
-            FileAppender appender;
-            appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
-            const File& file = appender.getFile();
-            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getPath()); 
-        }
+	public:
 
-          /**
-           * Tests that double backslashes in filespecs are stripped
-           *  on calls to setOption.
-           * 
-           */
-        void testStripDoubleBackslashes() {
+		FileAppender* createFileAppender() const
+		{
+			return new log4cxx::FileAppender();
+		}
 
-            FileAppender appender;
-            appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
-            const File& file = appender.getFile();
-            LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getPath()); 
-        }
+		void testSetDoubleBackslashes()
+		{
+			FileAppender appender;
+			appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
+			const File& file = appender.getFile();
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getPath());
+		}
 
-          /**
-           * Tests stripDuplicateBackslashes
-           *
-           * 
-           */
-        void testStripDuplicateBackslashes() {
-             LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo"), 
-                 FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\foo\\bar\\foo")));
-             LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo\\"), 
-                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo\\\\bar\\\\foo\\\\")));
-             LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo\\"), 
-                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\foo\\bar\\foo\\")));
-             //
-             //   UNC's should either start with two backslashes and contain additional singles
-             //       or four back slashes and addition doubles
-             LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo\\bar\\foo"), 
-                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo\\\\bar\\\\foo")));
-             LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo\\bar\\foo"), 
-                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo\\bar\\foo")));
-            //
-            //   it it starts with doubles but has no other path component
-            //      then it is a file path
-             LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo.log"), 
-                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo.log")));
-            //
-            //   it it starts with quads but has no other path component
-            //      then it is a UNC
-             LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo.log"), 
-                FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo.log")));
-          }  
+		/**
+		 * Tests that double backslashes in filespecs are stripped
+		 *  on calls to setOption.
+		 *
+		 */
+		void testStripDoubleBackslashes()
+		{
+
+			FileAppender appender;
+			appender.setOption(LOG4CXX_STR("FILE"), LOG4CXX_STR("output\\\\temp"));
+			const File& file = appender.getFile();
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("output\\temp"), file.getPath());
+		}
+
+		/**
+		 * Tests stripDuplicateBackslashes
+		 *
+		 *
+		 */
+		void testStripDuplicateBackslashes()
+		{
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo"),
+				FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\foo\\bar\\foo")));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo\\"),
+				FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo\\\\bar\\\\foo\\\\")));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo\\bar\\foo\\"),
+				FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\foo\\bar\\foo\\")));
+			//
+			//   UNC's should either start with two backslashes and contain additional singles
+			//       or four back slashes and addition doubles
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo\\bar\\foo"),
+				FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo\\\\bar\\\\foo")));
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo\\bar\\foo"),
+				FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo\\bar\\foo")));
+			//
+			//   it it starts with doubles but has no other path component
+			//      then it is a file path
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\foo.log"),
+				FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\foo.log")));
+			//
+			//   it it starts with quads but has no other path component
+			//      then it is a UNC
+			LOGUNIT_ASSERT_EQUAL((LogString) LOG4CXX_STR("\\\\foo.log"),
+				FileAppender::stripDuplicateBackslashes(LOG4CXX_STR("\\\\\\\\foo.log")));
+		}
 
 };
 

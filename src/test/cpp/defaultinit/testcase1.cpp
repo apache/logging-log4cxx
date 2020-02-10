@@ -5,9 +5,9 @@
  * The ASF licenses this file to You under the Apache License, Version 2.0
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,27 +24,27 @@ using namespace log4cxx;
 
 LOGUNIT_CLASS(TestCase1)
 {
-   LOGUNIT_TEST_SUITE(TestCase1);
-      LOGUNIT_TEST(noneTest);
-   LOGUNIT_TEST_SUITE_END();
-   
-public:
-   void setUp()
-   {
-   }
+	LOGUNIT_TEST_SUITE(TestCase1);
+	LOGUNIT_TEST(noneTest);
+	LOGUNIT_TEST_SUITE_END();
 
-   void tearDown()
-   {
-      LogManager::shutdown();
-   }
-   
-   void noneTest()
-   {
-      LoggerPtr root = Logger::getRootLogger();
-     LOG4CXX_DEBUG(root, "Hello, world");
-      bool rootIsConfigured = !root->getAllAppenders().empty();
-      LOGUNIT_ASSERT(!rootIsConfigured);
-   }
+public:
+	void setUp()
+	{
+	}
+
+	void tearDown()
+	{
+		LogManager::shutdown();
+	}
+
+	void noneTest()
+	{
+		LoggerPtr root = Logger::getRootLogger();
+		LOG4CXX_DEBUG(root, "Hello, world");
+		bool rootIsConfigured = !root->getAllAppenders().empty();
+		LOGUNIT_ASSERT(!rootIsConfigured);
+	}
 };
 
 

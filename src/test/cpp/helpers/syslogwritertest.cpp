@@ -24,19 +24,20 @@ using namespace log4cxx::helpers;
 
 LOGUNIT_CLASS(SyslogWriterTest)
 {
-        LOGUNIT_TEST_SUITE(SyslogWriterTest);
-                LOGUNIT_TEST(testUnknownHost);
-        LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(SyslogWriterTest);
+	LOGUNIT_TEST(testUnknownHost);
+	LOGUNIT_TEST_SUITE_END();
 
 public:
-        /**
-         * Tests writing to an unknown host.
-         */
-        void testUnknownHost() {
-           SyslogWriter writer(LOG4CXX_STR("unknown.invalid"));
-           writer.write(LOG4CXX_STR("Hello, Unknown World."));
-        }
-      
+	/**
+	 * Tests writing to an unknown host.
+	 */
+	void testUnknownHost()
+	{
+		SyslogWriter writer(LOG4CXX_STR("unknown.invalid"));
+		writer.write(LOG4CXX_STR("Hello, Unknown World."));
+	}
+
 };
 
 

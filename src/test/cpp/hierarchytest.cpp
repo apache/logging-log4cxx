@@ -25,31 +25,33 @@ using namespace log4cxx;
 
 /**
  * Tests hierarchy.
- * 
+ *
  */
-LOGUNIT_CLASS(HierarchyTest) {
-  LOGUNIT_TEST_SUITE(HierarchyTest);
-          LOGUNIT_TEST(testGetParent);
-  LOGUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(HierarchyTest)
+{
+	LOGUNIT_TEST_SUITE(HierarchyTest);
+	LOGUNIT_TEST(testGetParent);
+	LOGUNIT_TEST_SUITE_END();
 public:
 
-    /**
-     * Tests getParent.
-     */
-  void testGetParent() {
-      //
-      //  Note: test inspired by LOGCXX-118.
-      //
-      LoggerPtr logger1(Logger::getLogger("HierarchyTest_testGetParent.logger1"));
-      LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("root")), logger1->getParent()->getName());
-      LoggerPtr logger2(Logger::getLogger("HierarchyTest_testGetParent.logger2"));
-      LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("root")), logger1->getParent()->getName());
-      LoggerPtr logger3(Logger::getLogger("HierarchyTest_testGetParent"));
-      LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("HierarchyTest_testGetParent")), 
-          logger1->getParent()->getName());
-      LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("HierarchyTest_testGetParent")), 
-          logger2->getParent()->getName());
-  }
+	/**
+	 * Tests getParent.
+	 */
+	void testGetParent()
+	{
+		//
+		//  Note: test inspired by LOGCXX-118.
+		//
+		LoggerPtr logger1(Logger::getLogger("HierarchyTest_testGetParent.logger1"));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("root")), logger1->getParent()->getName());
+		LoggerPtr logger2(Logger::getLogger("HierarchyTest_testGetParent.logger2"));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("root")), logger1->getParent()->getName());
+		LoggerPtr logger3(Logger::getLogger("HierarchyTest_testGetParent"));
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("HierarchyTest_testGetParent")),
+			logger1->getParent()->getName());
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("HierarchyTest_testGetParent")),
+			logger2->getParent()->getName());
+	}
 
 };
 

@@ -32,21 +32,22 @@ using namespace log4cxx::helpers;
  */
 class ODBCAppenderTestCase : public AppenderSkeletonTestCase
 {
-   LOGUNIT_TEST_SUITE(ODBCAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST_SUITE(ODBCAppenderTestCase);
+		//
+		//    tests inherited from AppenderSkeletonTestCase
+		//
+		LOGUNIT_TEST(testDefaultThreshold);
+		LOGUNIT_TEST(testSetOptionThreshold);
 
-   LOGUNIT_TEST_SUITE_END();
+		LOGUNIT_TEST_SUITE_END();
 
 
-public:
+	public:
 
-        AppenderSkeleton* createAppenderSkeleton() const {
-         return new log4cxx::db::ODBCAppender();
-        }
+		AppenderSkeleton* createAppenderSkeleton() const
+		{
+			return new log4cxx::db::ODBCAppender();
+		}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(ODBCAppenderTestCase);

@@ -32,87 +32,87 @@ using namespace log4cxx::xml;
 
 LOGUNIT_CLASS(ErrorHandlerTestCase)
 {
-        LOGUNIT_TEST_SUITE(ErrorHandlerTestCase);
-                LOGUNIT_TEST(test1);
-        LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(ErrorHandlerTestCase);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST_SUITE_END();
 
-        LoggerPtr root;
-        LoggerPtr logger;
+	LoggerPtr root;
+	LoggerPtr logger;
 
 
 public:
-        void setUp()
-        {
-                root = Logger::getRootLogger();
-                logger = Logger::getLogger("test");
-        }
+	void setUp()
+	{
+		root = Logger::getRootLogger();
+		logger = Logger::getLogger("test");
+	}
 
-        void tearDown()
-        {
-                logger->getLoggerRepository()->resetConfiguration();
-        }
-
-
-        void test1()
-        {
-                DOMConfigurator::configure("input/xml/fallback1.xml");
-                FileAppenderPtr primary(root->getAppender(LOG4CXX_STR("PRIMARY")));
-                log4cxx::varia::FallbackErrorHandlerPtr eh(primary->getErrorHandler());
-                LOGUNIT_ASSERT(eh != 0);
-                
-                common();
-
-                std::string TEST1_PAT = 
-                       "FALLBACK - (root|test) - Message {0-9}";
-
-                ControlFilter cf;
-                cf << TEST1_PAT;
-
-                LineNumberFilter lineNumberFilter;
-
-                std::vector<Filter *> filters;
-                filters.push_back(&cf);
-                filters.push_back(&lineNumberFilter);
-
-                try
-                {
-                        Transformer::transform("output/temp", "output/filtered", filters);
-                }
-                catch(UnexpectedFormatException& e)
-                {
-                    std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
-                        throw;
-                }
+	void tearDown()
+	{
+		logger->getLoggerRepository()->resetConfiguration();
+	}
 
 
-                LOGUNIT_ASSERT(Compare::compare("output/filtered", "witness/fallback1"));
-        }
+	void test1()
+	{
+		DOMConfigurator::configure("input/xml/fallback1.xml");
+		FileAppenderPtr primary(root->getAppender(LOG4CXX_STR("PRIMARY")));
+		log4cxx::varia::FallbackErrorHandlerPtr eh(primary->getErrorHandler());
+		LOGUNIT_ASSERT(eh != 0);
 
-        void common()
-        {
-                int i = -1;
-                  
-                LOG4CXX_DEBUG(logger, "Message " << ++i);
-                LOG4CXX_DEBUG(root, "Message " << i);
+		common();
 
-                LOG4CXX_INFO(logger, "Message " << ++i);
-                LOG4CXX_INFO(root, "Message " << i);
+		std::string TEST1_PAT =
+			"FALLBACK - (root|test) - Message {0-9}";
 
-                LOG4CXX_WARN(logger, "Message " << ++i);
-                LOG4CXX_WARN(root, "Message " << i);
+		ControlFilter cf;
+		cf << TEST1_PAT;
 
-                LOG4CXX_ERROR(logger, "Message " << ++i);
-                LOG4CXX_ERROR(root, "Message " << i);
+		LineNumberFilter lineNumberFilter;
 
-                LOG4CXX_FATAL(logger, "Message " << ++i);
-                LOG4CXX_FATAL(root, "Message " << i);
+		std::vector<Filter*> filters;
+		filters.push_back(&cf);
+		filters.push_back(&lineNumberFilter);
 
-                LOG4CXX_DEBUG(logger, "Message " << ++i);
-                LOG4CXX_DEBUG(root, "Message " << i);
+		try
+		{
+			Transformer::transform("output/temp", "output/filtered", filters);
+		}
+		catch (UnexpectedFormatException& e)
+		{
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+			throw;
+		}
 
-                LOG4CXX_ERROR(logger, "Message " << ++i);
-                LOG4CXX_ERROR(root, "Message " << i);
-        }
+
+		LOGUNIT_ASSERT(Compare::compare("output/filtered", "witness/fallback1"));
+	}
+
+	void common()
+	{
+		int i = -1;
+
+		LOG4CXX_DEBUG(logger, "Message " << ++i);
+		LOG4CXX_DEBUG(root, "Message " << i);
+
+		LOG4CXX_INFO(logger, "Message " << ++i);
+		LOG4CXX_INFO(root, "Message " << i);
+
+		LOG4CXX_WARN(logger, "Message " << ++i);
+		LOG4CXX_WARN(root, "Message " << i);
+
+		LOG4CXX_ERROR(logger, "Message " << ++i);
+		LOG4CXX_ERROR(root, "Message " << i);
+
+		LOG4CXX_FATAL(logger, "Message " << ++i);
+		LOG4CXX_FATAL(root, "Message " << i);
+
+		LOG4CXX_DEBUG(logger, "Message " << ++i);
+		LOG4CXX_DEBUG(root, "Message " << i);
+
+		LOG4CXX_ERROR(logger, "Message " << ++i);
+		LOG4CXX_ERROR(root, "Message " << i);
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(ErrorHandlerTestCase)

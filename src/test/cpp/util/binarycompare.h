@@ -19,18 +19,19 @@
 
 namespace log4cxx
 {
-   namespace util {
-        class BinaryCompare
-        {
-        private:
-            /**
-             * Class can not be constructed.
-             */
-            BinaryCompare();
+namespace util
+{
+class BinaryCompare
+{
+	private:
+		/**
+		 * Class can not be constructed.
+		 */
+		BinaryCompare();
 
-        public:
-            static void compare(const char* filename1,
-                            const char* filename2);
-        };
-   }
+	public:
+		static void compare(const char* filename1,
+			const char* filename2);
+};
+}
 }

@@ -21,4 +21,4 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 AbsoluteTimeFilter::AbsoluteTimeFilter()
-    : Filter(ABSOLUTE_TIME_PAT, "") {}
+	: Filter(ABSOLUTE_TIME_PAT, "") {}

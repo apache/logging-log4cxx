@@ -31,51 +31,58 @@ using namespace log4cxx::spi;
 
 
 bool SerializationTestHelper::compare(
-    const char* witness, const LoggingEventPtr& event, size_t endCompare)  {
-    ByteArrayOutputStreamPtr memOut = new ByteArrayOutputStream();
-    Pool p;
-    ObjectOutputStream objOut(memOut, p);
-    event->write(objOut, p);
-    objOut.close(p);
-    return compare(witness, memOut->toByteArray(), endCompare, p);
-  }
+	const char* witness, const LoggingEventPtr& event, size_t endCompare)
+{
+	ByteArrayOutputStreamPtr memOut = new ByteArrayOutputStream();
+	Pool p;
+	ObjectOutputStream objOut(memOut, p);
+	event->write(objOut, p);
+	objOut.close(p);
+	return compare(witness, memOut->toByteArray(), endCompare, p);
+}
 
-  /**
-   * Asserts the serialized form of an object.
-   * @param witness file name of expected serialization.
-   * @param actual byte array of actual serialization.
-   * @param skip positions to skip comparison.
-   * @param endCompare position to stop comparison.
-   * @throws IOException thrown on IO or serialization exception.
-   */
+/**
+ * Asserts the serialized form of an object.
+ * @param witness file name of expected serialization.
+ * @param actual byte array of actual serialization.
+ * @param skip positions to skip comparison.
+ * @param endCompare position to stop comparison.
+ * @throws IOException thrown on IO or serialization exception.
+ */
 bool SerializationTestHelper::compare(
-    const char* witness, const std::vector<unsigned char>& actual, 
-    size_t endCompare, Pool& p) {
-    File witnessFile(witness);
+	const char* witness, const std::vector<unsigned char>& actual,
+	size_t endCompare, Pool& p)
+{
+	File witnessFile(witness);
 
-      char* expected = p.pstralloc(actual.size());
-      FileInputStreamPtr is(new FileInputStream(witnessFile));
-      ByteBuffer readBuffer(expected, actual.size());
-      int bytesRead = is->read(readBuffer);
-      is->close();
+	char* expected = p.pstralloc(actual.size());
+	FileInputStreamPtr is(new FileInputStream(witnessFile));
+	ByteBuffer readBuffer(expected, actual.size());
+	int bytesRead = is->read(readBuffer);
+	is->close();
 
-      if(bytesRead < endCompare) {
-          puts("Witness file is shorter than expected");
-          return false;
-      }
+	if (bytesRead < endCompare)
+	{
+		puts("Witness file is shorter than expected");
+		return false;
+	}
 
-      int endScan = actual.size();
+	int endScan = actual.size();
 
-      if (endScan > endCompare) {
-        endScan = endCompare;
-      }
+	if (endScan > endCompare)
+	{
+		endScan = endCompare;
+	}
 
-      for (int i = 0; i < endScan; i++) {
-          if (((unsigned char) expected[i]) != actual[i]) {
-            printf("Difference at offset %d, expected %x, actual %x\n", i, expected[i], actual[i]);
-            return false;
-          }
-        }
-    return true;
-  
+	for (int i = 0; i < endScan; i++)
+	{
+		if (((unsigned char) expected[i]) != actual[i])
+		{
+			printf("Difference at offset %d, expected %x, actual %x\n", i, expected[i], actual[i]);
+			return false;
+		}
+	}
+
+	return true;
+
 }

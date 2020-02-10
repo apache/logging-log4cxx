@@ -22,6 +22,6 @@ using namespace log4cxx::helpers;
 
 LineNumberFilter::LineNumberFilter()
 {
-    patterns.push_back( PatternReplacement(" [^ ]*[\\\\]", " "));
-    patterns.push_back( PatternReplacement("([0-9]*)", "(X)"));
+	patterns.push_back( PatternReplacement(" [^ ]*[\\\\]", " "));
+	patterns.push_back( PatternReplacement("([0-9]*)", "(X)"));
 }

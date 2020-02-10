@@ -23,37 +23,43 @@ namespace log4cxx
 {
 
 
-        /**
-        An appender that appends logging events to a vector.
-        */
-        class VectorAppender : public AppenderSkeleton
-        {
-        public:
-                DECLARE_LOG4CXX_OBJECT(VectorAppender)
-                BEGIN_LOG4CXX_CAST_MAP()
-                        LOG4CXX_CAST_ENTRY(VectorAppender)
-                        LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
-                END_LOG4CXX_CAST_MAP()
+/**
+An appender that appends logging events to a vector.
+*/
+class VectorAppender : public AppenderSkeleton
+{
+	public:
+		DECLARE_LOG4CXX_OBJECT(VectorAppender)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(VectorAppender)
+		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
+		END_LOG4CXX_CAST_MAP()
 
-                std::vector<spi::LoggingEventPtr> vector;
+		std::vector<spi::LoggingEventPtr> vector;
 
 
-                /**
-                This method is called by the AppenderSkeleton#doAppend
-                method.
-                */
-                void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+		/**
+		This method is called by the AppenderSkeleton#doAppend
+		method.
+		*/
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
-                const std::vector<spi::LoggingEventPtr>& getVector() const
-                        { return vector; }
+		const std::vector<spi::LoggingEventPtr>& getVector() const
+		{
+			return vector;
+		}
 
-                void close();
+		void close();
 
-                bool isClosed() const
-                        { return closed; }
+		bool isClosed() const
+		{
+			return closed;
+		}
 
-                bool requiresLayout() const
-                        { return false;   }
-        };
-        typedef helpers::ObjectPtrT<VectorAppender> VectorAppenderPtr;
+		bool requiresLayout() const
+		{
+			return false;
+		}
+};
+typedef helpers::ObjectPtrT<VectorAppender> VectorAppenderPtr;
 }

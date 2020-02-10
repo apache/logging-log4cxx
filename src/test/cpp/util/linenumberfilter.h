@@ -22,11 +22,11 @@
 
 namespace log4cxx
 {
-   class LineNumberFilter : public Filter
-   {
-   public:
-       LineNumberFilter();
-   };
+class LineNumberFilter : public Filter
+{
+	public:
+		LineNumberFilter();
+};
 }
 
 

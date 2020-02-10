@@ -27,21 +27,22 @@ using namespace log4cxx::helpers;
  */
 class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 {
-   LOGUNIT_TEST_SUITE(SyslogAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST_SUITE(SyslogAppenderTestCase);
+		//
+		//    tests inherited from AppenderSkeletonTestCase
+		//
+		LOGUNIT_TEST(testDefaultThreshold);
+		LOGUNIT_TEST(testSetOptionThreshold);
 
-   LOGUNIT_TEST_SUITE_END();
+		LOGUNIT_TEST_SUITE_END();
 
 
-public:
+	public:
 
-        AppenderSkeleton* createAppenderSkeleton() const {
-          return new log4cxx::net::SyslogAppender();
-        }
+		AppenderSkeleton* createAppenderSkeleton() const
+		{
+			return new log4cxx::net::SyslogAppender();
+		}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(SyslogAppenderTestCase);

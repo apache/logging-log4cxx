@@ -36,62 +36,76 @@ using namespace log4cxx::spi;
  */
 class NTEventLogAppenderTestCase : public AppenderSkeletonTestCase
 {
-   LOGUNIT_TEST_SUITE(NTEventLogAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
-                LOGUNIT_TEST(testHelloWorld);
+		LOGUNIT_TEST_SUITE(NTEventLogAppenderTestCase);
+		//
+		//    tests inherited from AppenderSkeletonTestCase
+		//
+		LOGUNIT_TEST(testDefaultThreshold);
+		LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST(testHelloWorld);
 
-   LOGUNIT_TEST_SUITE_END();
-
-
-public:
-
-        AppenderSkeleton* createAppenderSkeleton() const {
-          return new log4cxx::nt::NTEventLogAppender();
-        }
-
-        void testHelloWorld() {
-           DWORD expectedId = 1;
-           HANDLE hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");
-           if (hEventLog != NULL) {
-               BOOL stat = GetNumberOfEventLogRecords(hEventLog, &expectedId);
-               DWORD oldest;
-               if(stat) stat = GetOldestEventLogRecord(hEventLog, &oldest);
-               CloseEventLog(hEventLog);
-               LOGUNIT_ASSERT(stat);
-               expectedId += oldest;
-           }
+		LOGUNIT_TEST_SUITE_END();
 
 
-            Pool p;
-            Date now;
-            DWORD expectedTime = now.getTime() / Date::getMicrosecondsPerSecond();
-            {
-                NTEventLogAppenderPtr appender(new NTEventLogAppender());
-                appender->setSource(LOG4CXX_STR("log4cxx_test"));
-                LayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c - %m%n")));
-                appender->setLayout(layout);
-                appender->activateOptions(p);
+	public:
 
-                LoggingEventPtr event(new LoggingEvent(
-                    LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));
-                appender->doAppend(event, p);
-            }
-            hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");
-            LOGUNIT_ASSERT(hEventLog != NULL);
-            DWORD actualId;
-            BOOL stat = GetNumberOfEventLogRecords(hEventLog, &actualId);
-            DWORD oldest;
-            if (stat) stat = GetOldestEventLogRecord(hEventLog, &oldest);
-            actualId += oldest;
-            actualId--;
-            CloseEventLog(hEventLog);
-            LOGUNIT_ASSERT(stat);
-            LOGUNIT_ASSERT_EQUAL(expectedId, actualId);
-        }
+		AppenderSkeleton* createAppenderSkeleton() const
+		{
+			return new log4cxx::nt::NTEventLogAppender();
+		}
+
+		void testHelloWorld()
+		{
+			DWORD expectedId = 1;
+			HANDLE hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");
+
+			if (hEventLog != NULL)
+			{
+				BOOL stat = GetNumberOfEventLogRecords(hEventLog, &expectedId);
+				DWORD oldest;
+
+				if (stat)
+				{
+					stat = GetOldestEventLogRecord(hEventLog, &oldest);
+				}
+
+				CloseEventLog(hEventLog);
+				LOGUNIT_ASSERT(stat);
+				expectedId += oldest;
+			}
+
+
+			Pool p;
+			Date now;
+			DWORD expectedTime = now.getTime() / Date::getMicrosecondsPerSecond();
+			{
+				NTEventLogAppenderPtr appender(new NTEventLogAppender());
+				appender->setSource(LOG4CXX_STR("log4cxx_test"));
+				LayoutPtr layout(new PatternLayout(LOG4CXX_STR("%c - %m%n")));
+				appender->setLayout(layout);
+				appender->activateOptions(p);
+
+				LoggingEventPtr event(new LoggingEvent(
+						LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("Hello,  World"), LOG4CXX_LOCATION));
+				appender->doAppend(event, p);
+			}
+			hEventLog = ::OpenEventLogW(NULL, L"log4cxx_test");
+			LOGUNIT_ASSERT(hEventLog != NULL);
+			DWORD actualId;
+			BOOL stat = GetNumberOfEventLogRecords(hEventLog, &actualId);
+			DWORD oldest;
+
+			if (stat)
+			{
+				stat = GetOldestEventLogRecord(hEventLog, &oldest);
+			}
+
+			actualId += oldest;
+			actualId--;
+			CloseEventLog(hEventLog);
+			LOGUNIT_ASSERT(stat);
+			LOGUNIT_ASSERT_EQUAL(expectedId, actualId);
+		}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(NTEventLogAppenderTestCase);

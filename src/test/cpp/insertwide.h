@@ -23,12 +23,12 @@
 
 #if LOG4CXX_WCHAR_T_API
 std::ostream& operator<<(std::ostream& os,
-                               const std::wstring& str);
+	const std::wstring& str);
 #endif
 
 #if LOG4CXX_LOGCHAR_IS_UNICHAR  || LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
 std::ostream& operator<<(std::ostream& os,
-                               const std::basic_string<log4cxx::UniChar>& str);
+	const std::basic_string<log4cxx::UniChar>& str);
 #endif
 
 #endif

@@ -20,11 +20,12 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-XMLFilenameFilter::XMLFilenameFilter(const std::string& /*actual*/, const std::string& expected) {
-    std::string pattern(" file=\\(.\\).*");
-    pattern += expected;
+XMLFilenameFilter::XMLFilenameFilter(const std::string& /*actual*/, const std::string& expected)
+{
+	std::string pattern(" file=\\(.\\).*");
+	pattern += expected;
 
-    std::string replacement(" file=\\\\1");
-    replacement += expected;
-//    patterns.push_back( PatternReplacement(pattern, replacement) );
+	std::string replacement(" file=\\\\1");
+	replacement += expected;
+	//    patterns.push_back( PatternReplacement(pattern, replacement) );
 }

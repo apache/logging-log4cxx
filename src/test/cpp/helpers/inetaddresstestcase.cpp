@@ -24,60 +24,65 @@ using namespace log4cxx::helpers;
 
 LOGUNIT_CLASS(InetAddressTestCase)
 {
-        LOGUNIT_TEST_SUITE(InetAddressTestCase);
-                LOGUNIT_TEST(testGetLocalHost);
-                LOGUNIT_TEST(testByNameLocal);
-                LOGUNIT_TEST(testAllByNameLocal);
-                LOGUNIT_TEST(testUnreachable);
-        LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(InetAddressTestCase);
+	LOGUNIT_TEST(testGetLocalHost);
+	LOGUNIT_TEST(testByNameLocal);
+	LOGUNIT_TEST(testAllByNameLocal);
+	LOGUNIT_TEST(testUnreachable);
+	LOGUNIT_TEST_SUITE_END();
 
 public:
-        /**
-         * Tests the InetAddress::getLocalHost() method.
-         */
-        void testGetLocalHost() {
-           InetAddressPtr addr = InetAddress::getLocalHost();
+	/**
+	 * Tests the InetAddress::getLocalHost() method.
+	 */
+	void testGetLocalHost()
+	{
+		InetAddressPtr addr = InetAddress::getLocalHost();
 
-           LOGUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("127.0.0.1"));
-           LOGUNIT_ASSERT(!addr->getHostName().empty());
-        }
+		LOGUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("127.0.0.1"));
+		LOGUNIT_ASSERT(!addr->getHostName().empty());
+	}
 
-        /**
-         * Tests the InetAddress::getByName() method with the
-         * "localhost" host name.
-         */
-        void testByNameLocal() {
-           InetAddressPtr addr = InetAddress::getByName(LOG4CXX_STR("localhost"));
+	/**
+	 * Tests the InetAddress::getByName() method with the
+	 * "localhost" host name.
+	 */
+	void testByNameLocal()
+	{
+		InetAddressPtr addr = InetAddress::getByName(LOG4CXX_STR("localhost"));
 
-           LOGUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("127.0.0.1"));
-           LOGUNIT_ASSERT(!addr->getHostName().empty());
-        }
+		LOGUNIT_ASSERT(addr->getHostAddress() == LOG4CXX_STR("127.0.0.1"));
+		LOGUNIT_ASSERT(!addr->getHostName().empty());
+	}
 
-        /**
-         * Tests the InetAddress::getAllByName() method with the
-         * "localhost" host name.
-         */
-        void testAllByNameLocal() {
-           std::vector<InetAddressPtr> addr = InetAddress::getAllByName(LOG4CXX_STR("localhost"));
+	/**
+	 * Tests the InetAddress::getAllByName() method with the
+	 * "localhost" host name.
+	 */
+	void testAllByNameLocal()
+	{
+		std::vector<InetAddressPtr> addr = InetAddress::getAllByName(LOG4CXX_STR("localhost"));
 
-           LOGUNIT_ASSERT(addr.size() > 0);
-        }
+		LOGUNIT_ASSERT(addr.size() > 0);
+	}
 
-        /**
-         * Tests the UnknownHostException.
-         */
-        void testUnknownHost() {
-           InetAddressPtr addr = InetAddress::getByName(LOG4CXX_STR("unknown.invalid"));
-        }
-      
-    /**
-    * Tests an (likely) unreachable address.
-    */
-      void testUnreachable()  {
-       InetAddressPtr addr(InetAddress::getByName(LOG4CXX_STR("192.168.10.254")));
-      LogString addrStr(addr->toString());
-      LOGUNIT_ASSERT_EQUAL(addrStr.size() - 15, addrStr.find(LOG4CXX_STR("/192.168.10.254")));
-   }
+	/**
+	 * Tests the UnknownHostException.
+	 */
+	void testUnknownHost()
+	{
+		InetAddressPtr addr = InetAddress::getByName(LOG4CXX_STR("unknown.invalid"));
+	}
+
+	/**
+	* Tests an (likely) unreachable address.
+	*/
+	void testUnreachable()
+	{
+		InetAddressPtr addr(InetAddress::getByName(LOG4CXX_STR("192.168.10.254")));
+		LogString addrStr(addr->toString());
+		LOGUNIT_ASSERT_EQUAL(addrStr.size() - 15, addrStr.find(LOG4CXX_STR("/192.168.10.254")));
+	}
 
 };
 
