@@ -72,13 +72,13 @@ public:
           // convert the space separated cmd string to the argument list
           //
           static const int MaxArgumentCount = 14;
-          char** argv = (char**)apr_palloc(pool, MaxArgumentCount + 1 * sizeof(*argv));
+          char** argv = (char**)apr_palloc(pool, (MaxArgumentCount + 1) * sizeof(*argv));
           char* pcmd = apr_pstrdup(pool, cmd);
           int i = 0;
-          char separ = ' ';
           for (; i < MaxArgumentCount && pcmd && *pcmd; ++i)
           {
-              while(' ' == *pcmd)
+              char separ = ' ';
+              while(separ == *pcmd)
               {
                 *pcmd = 0;
                 ++pcmd;
@@ -88,8 +88,6 @@ public:
                  separ = *pcmd;
                  ++pcmd;
               }
-              else
-                separ = ' ';
               argv[i] = pcmd;
               if (NULL != (pcmd = strchr(pcmd, separ)))
               {
@@ -123,12 +121,14 @@ public:
               params.push_back(std::string());
               std::string& line = params.back();
               std::getline(in, line);
-              while (!line.empty() && ' ' == line.back())
-                 line.pop_back();
+              while (!line.empty() && (' ' == line[0] || '\t' == line[0]))
+                 line.erase(0, 1);
+              while (!line.empty() && (' ' == line[line.size() - 1] || '\t' == line[line.size() - 1]))
+                 line.erase(line.size() - 1, 1);
               if (line.empty())
                   params.pop_back();
           }
-          const char** argv = (const char**)apr_palloc(pool, params.size() + 1 * sizeof(*argv));
+          const char** argv = (const char**)apr_palloc(pool, (params.size() + 1) * sizeof(*argv));
           int i = 0;
           for (; i < params.size(); ++i)
           {
