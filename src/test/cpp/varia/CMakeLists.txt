@@ -1,9 +1,12 @@
 # Tests defined in this directory
 set(VARIA_TESTS
-    errorhandlertestcase
     levelmatchfiltertestcase
     levelrangefiltertestcase
 )
+if(sedProgram)
+    list(APPEND VARIA_TESTS errorhandlertestcase)
+endif()
+
 foreach(fileName  IN LISTS VARIA_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
 endforeach()
