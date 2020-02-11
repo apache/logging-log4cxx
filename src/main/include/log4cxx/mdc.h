@@ -18,17 +18,18 @@
 #ifndef _LOG4CXX_MDC_H
 #define _LOG4CXX_MDC_H
 
+#include <log4cxx/log4cxx.h>
+#include <log4cxx/logstring.h>
+#include <map>
+
 #if defined(_MSC_VER)
 	#pragma warning (push)
 	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
-#include <log4cxx/log4cxx.h>
-#include <log4cxx/logstring.h>
-#include <map>
-
 namespace log4cxx
 {
+
 /**
 The MDC class is similar to the {@link log4cxx::NDC NDC} class except that it is
 based on a map instead of a stack. It provides <em>mapped

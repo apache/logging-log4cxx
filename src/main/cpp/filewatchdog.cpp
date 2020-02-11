@@ -46,7 +46,7 @@ FileWatchdog::~FileWatchdog()
 		thread.interrupt();
 		thread.join();
 	}
-	catch (Exception& e)
+	catch (Exception&)
 	{
 	}
 }
@@ -91,7 +91,7 @@ void* APR_THREAD_FUNC FileWatchdog::run(apr_thread_t* /* thread */, void* data)
 			Thread::sleep(pThis->delay);
 			pThis->checkAndConfigure();
 		}
-		catch (InterruptedException& ex)
+		catch (InterruptedException&)
 		{
 			interrupted = apr_atomic_read32(&pThis->interrupted);
 		}

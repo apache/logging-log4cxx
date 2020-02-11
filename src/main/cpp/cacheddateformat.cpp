@@ -169,7 +169,7 @@ int CachedDateFormat::findMillisecondStart(
 				// the millis can occur everywhere in formatted. See LOGCXX-420 and following.
 				size_t  magicLength     = magicString.length();
 				size_t  overlapping     = magicString.find(plusMagic[i]);
-				int     possibleRetVal  = i - overlapping;
+				int     possibleRetVal  = int(i - overlapping);
 
 				if (plusZero.length() == formatted.length()
 					&& regionMatches(magicString,       0, plusMagic,   possibleRetVal, magicLength)

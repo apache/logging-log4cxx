@@ -306,7 +306,7 @@ void FileAppender::setFile(
 	{
 		outStream = new FileOutputStream(filename, append1);
 	}
-	catch (IOException& ex)
+	catch (IOException&)
 	{
 		LogString parentName = File().setPath(filename).getParent(p);
 
@@ -353,7 +353,7 @@ void FileAppender::setFile(
 	this->fileAppend = append1;
 	this->bufferedIO = bufferedIO1;
 	this->fileName = filename;
-	this->bufferSize = bufferSize1;
+	this->bufferSize = (int)bufferSize1;
 	writeHeader(p);
 
 }

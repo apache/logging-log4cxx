@@ -109,7 +109,7 @@ int log4cxx::logstream_base::precision(int p)
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
 	initset.precision(p);
-	int oldVal = initclear.precision(p);
+	int oldVal = (int)initclear.precision(p);
 	refresh_stream_state();
 	return oldVal;
 }
@@ -117,14 +117,14 @@ int log4cxx::logstream_base::precision(int p)
 int log4cxx::logstream_base::precision()
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
-	return initclear.precision();
+	return (int)initclear.precision();
 }
 
 int log4cxx::logstream_base::width(int w)
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
 	initset.width(w);
-	int oldVal = initclear.width(w);
+	int oldVal = (int)initclear.width(w);
 	refresh_stream_state();
 	return oldVal;
 }
@@ -132,7 +132,7 @@ int log4cxx::logstream_base::width(int w)
 int log4cxx::logstream_base::width()
 {
 	get_stream_state(initclear, initset, fillchar, fillset);
-	return initclear.width();
+	return (int)initclear.width();
 }
 
 int log4cxx::logstream_base::fill(int newfill)
@@ -306,10 +306,10 @@ void logstream::get_stream_state(std::ios_base& base,
 		std::ios_base::fmtflags flags = stream->flags();
 		base.flags(flags);
 		mask.flags(flags);
-		int width = stream->width();
+		int width = (int)stream->width();
 		base.width(width);
 		mask.width(width);
-		int precision = stream->precision();
+		int precision = (int)stream->precision();
 		base.precision(precision);
 		mask.precision(precision);
 		fill = stream->fill();
@@ -435,10 +435,10 @@ void wlogstream::get_stream_state(std::ios_base& base,
 		std::ios_base::fmtflags flags = stream->flags();
 		base.flags(flags);
 		mask.flags(flags);
-		int width = stream->width();
+		int width = (int)stream->width();
 		base.width(width);
 		mask.width(width);
-		int precision = stream->precision();
+		int precision = (int)stream->precision();
 		base.precision(precision);
 		mask.precision(precision);
 		fill = stream->fill();

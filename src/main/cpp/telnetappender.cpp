@@ -137,7 +137,7 @@ void TelnetAppender::close()
 	{
 		sh.join();
 	}
-	catch (Exception& ex)
+	catch (Exception&)
 	{
 	}
 
@@ -158,7 +158,7 @@ void TelnetAppender::write(ByteBuffer& buf)
 				ByteBuffer b(buf.current(), buf.remaining());
 				(*iter)->write(b);
 			}
-			catch (Exception& ex)
+			catch (Exception&)
 			{
 				// The client has closed the connection, remove it from our list:
 				*iter = 0;
@@ -279,7 +279,7 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
 				pThis->writeStatus(newClient, oss, p);
 			}
 		}
-		catch (InterruptedIOException& e)
+		catch (InterruptedIOException&)
 		{
 			if (pThis->closed)
 			{

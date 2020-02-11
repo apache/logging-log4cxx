@@ -143,9 +143,9 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 		while (true)
 		{
-			int previousSize = buffer.size();
+			size_t previousSize = buffer.size();
 
-			if (previousSize < bufferSize)
+			if (previousSize < (size_t)bufferSize)
 			{
 				buffer.push_back(event);
 
@@ -175,7 +175,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 					bufferNotFull.await(bufferMutex);
 					discard = false;
 				}
-				catch (InterruptedException& e)
+				catch (InterruptedException&)
 				{
 					//
 					//  reset interrupt status so
@@ -442,7 +442,7 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void
 			}
 		}
 	}
-	catch (InterruptedException& ex)
+	catch (InterruptedException&)
 	{
 		Thread::currentThreadInterrupt();
 	}

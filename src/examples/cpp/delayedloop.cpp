@@ -93,7 +93,7 @@ public:
                         {
                                 apr_sleep(1000000);
                         }
-                        catch(std::exception& e)
+                        catch(std::exception&)
                         {
                         }
                 }

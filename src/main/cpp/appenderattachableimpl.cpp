@@ -73,7 +73,7 @@ int AppenderAttachableImpl::appendLoopOnAppenders(
 		(*it)->doAppend(event, p);
 	}
 
-	return appenderList.size();
+	return (int)appenderList.size();
 }
 
 AppenderList AppenderAttachableImpl::getAllAppenders() const

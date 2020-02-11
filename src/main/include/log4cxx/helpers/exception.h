@@ -22,6 +22,11 @@
 #include <log4cxx/log4cxx.h>
 #include <log4cxx/logstring.h>
 
+#ifdef _MSC_VER
+	#pragma warning ( push )
+	#pragma warning (disable : 4251 4275) // ::std::exception needs to have dll-interface
+#endif
+
 namespace log4cxx
 {
 namespace helpers
@@ -287,5 +292,9 @@ class LOG4CXX_EXPORT SocketTimeoutException : public InterruptedIOException
 
 }  // namespace helpers
 } // namespace log4cxx
+
+#if defined(_MSC_VER)
+	#pragma warning (pop)
+#endif
 
 #endif // _LOG4CXX_HELPERS_EXCEPTION_H

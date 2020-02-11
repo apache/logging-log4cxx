@@ -22,6 +22,11 @@
 #include <log4cxx/helpers/dateformat.h>
 #include <log4cxx/helpers/timezone.h>
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4251 )
+#endif
+
 namespace log4cxx
 {
 namespace helpers
@@ -95,5 +100,9 @@ class LOG4CXX_EXPORT DateLayout : public Layout
 };
 }  // namespace helpers
 } // namespace log4cxx
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #endif // _LOG4CXX_HELPERS_DATE_LAYOUT_H

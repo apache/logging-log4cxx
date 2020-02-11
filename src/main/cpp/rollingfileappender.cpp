@@ -139,7 +139,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 
 			FileAppender::activateOptions(p);
 		}
-		catch (std::exception& ex)
+		catch (std::exception&)
 		{
 			LogLog::warn(
 				LogString(LOG4CXX_STR("Exception will initializing RollingFileAppender named "))
@@ -301,7 +301,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 								{
 									success = rollover1->getSynchronous()->execute(p);
 								}
-								catch (std::exception& ex)
+								catch (std::exception&)
 								{
 									LogLog::warn(LOG4CXX_STR("Exception on rollover"));
 								}
@@ -357,7 +357,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 								{
 									success = rollover1->getSynchronous()->execute(p);
 								}
-								catch (std::exception& ex)
+								catch (std::exception&)
 								{
 									LogLog::warn(LOG4CXX_STR("Exception during rollover"));
 								}
@@ -394,7 +394,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 						return true;
 					}
 				}
-				catch (std::exception& ex)
+				catch (std::exception&)
 				{
 					LogLog::warn(LOG4CXX_STR("Exception during rollover"));
 				}
@@ -452,7 +452,7 @@ void RollingFileAppenderSkeleton::subAppend(const LoggingEventPtr& event, Pool& 
 			_event = &(const_cast<LoggingEventPtr&>(event));
 			rollover(p);
 		}
-		catch (std::exception& ex)
+		catch (std::exception&)
 		{
 			LogLog::warn(LOG4CXX_STR("Exception during rollover attempt."));
 		}

@@ -56,7 +56,7 @@ FormattingInfoPtr FormattingInfo::getDefault()
  */
 void FormattingInfo::format(const int fieldStart, LogString& buffer) const
 {
-	int rawLength = buffer.length() - fieldStart;
+	int rawLength = int(buffer.length() - fieldStart);
 
 	if (rawLength > maxLength)
 	{

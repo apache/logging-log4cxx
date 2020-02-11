@@ -501,7 +501,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 						{
 							encoder = CharsetEncoder::getEncoder(ename);
 						}
-						catch (IllegalArgumentException& ex)
+						catch (IllegalArgumentException&)
 						{
 							encoder = new USASCIICharsetEncoder();
 						}

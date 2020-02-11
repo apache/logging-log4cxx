@@ -107,7 +107,7 @@ int FileInputStream::read(ByteBuffer& buf)
 		}
 
 		buf.position(buf.position() + bytesRead);
-		retval = bytesRead;
+		retval = (int)bytesRead;
 	}
 
 	return retval;

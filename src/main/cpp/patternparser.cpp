@@ -55,7 +55,7 @@ bool PatternParser::isUnicodeIdentifierPart(logchar ch)
 		|| (ch == 0x5F /* '_' */);
 }
 
-int PatternParser::extractConverter(
+size_t PatternParser::extractConverter(
 	logchar lastChar, const LogString& pattern,
 	LogString::size_type i, LogString& convBuf,
 	LogString& currentLiteral)
@@ -92,14 +92,14 @@ int PatternParser::extractConverter(
 }
 
 
-int PatternParser::extractOptions(const LogString& pattern, LogString::size_type i,
+size_t PatternParser::extractOptions(const LogString& pattern, LogString::size_type i,
 	std::vector<LogString>& options)
 {
 	while ((i < pattern.length()) && (pattern[i] == 0x7B /* '{' */))
 	{
-		int end = pattern.find(0x7D /* '}' */, i);
+		size_t end = pattern.find(0x7D /* '}' */, i);
 
-		if (end == -1)
+		if (end == pattern.npos)
 		{
 			break;
 		}
@@ -121,10 +121,10 @@ void PatternParser::parse(
 
 	LogString currentLiteral;
 
-	int patternLength = pattern.length();
+	size_t patternLength = pattern.length();
 	int state = LITERAL_STATE;
 	logchar c;
-	int i = 0;
+	size_t i = 0;
 	FormattingInfoPtr formattingInfo(FormattingInfo::getDefault());
 
 	while (i < patternLength)
@@ -318,7 +318,7 @@ PatternConverterPtr PatternParser::createConverter(
 
 	LogString converterName(converterId);
 
-	for (int i = converterId.length(); i > 0; i--)
+	for (size_t i = converterId.length(); i > 0; i--)
 	{
 		converterName = converterName.substr(0, i);
 		PatternMap::const_iterator iter = rules.find(converterName);
@@ -337,8 +337,8 @@ PatternConverterPtr PatternParser::createConverter(
 	return converterObj;
 }
 
-int PatternParser::finalizeConverter(
-	logchar c, const LogString& pattern, int i,
+size_t PatternParser::finalizeConverter(
+	logchar c, const LogString& pattern, size_t i,
 	LogString& currentLiteral, const FormattingInfoPtr& formattingInfo,
 	const PatternMap&  rules,
 	std::vector<PatternConverterPtr>& patternConverters,

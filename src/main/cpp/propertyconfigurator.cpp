@@ -111,7 +111,7 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
 		InputStreamPtr inputStream = new FileInputStream(configFileName);
 		props.load(inputStream);
 	}
-	catch (const IOException& ie)
+	catch (const IOException&)
 	{
 		LogLog::error(((LogString) LOG4CXX_STR("Could not read configuration file ["))
 			+ configFileName.getPath() + LOG4CXX_STR("]."));

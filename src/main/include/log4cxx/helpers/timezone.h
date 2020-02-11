@@ -22,6 +22,11 @@
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/helpers/objectptr.h>
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4251 )
+#endif
+
 struct apr_time_exp_t;
 
 namespace log4cxx
@@ -67,5 +72,9 @@ class LOG4CXX_EXPORT TimeZone : public helpers::ObjectImpl
 
 }
 }
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #endif //_LOG4CXX_HELPERS_TIMEZONE_H

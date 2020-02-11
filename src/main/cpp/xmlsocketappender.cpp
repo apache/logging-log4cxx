@@ -99,7 +99,7 @@ void XMLSocketAppender::cleanUp(Pool& p)
 			writer->close(p);
 			writer = 0;
 		}
-		catch (std::exception& e)
+		catch (std::exception&)
 		{
 		}
 	}

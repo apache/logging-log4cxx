@@ -90,7 +90,7 @@ class LOG4CXX_EXPORT PatternParser
 		 * @param currentLiteral literal to be output in case format specifier in unrecognized.
 		 * @return position in pattern after converter.
 		 */
-		static int extractConverter(
+		static size_t extractConverter(
 			logchar lastChar, const LogString& pattern,
 			LogString::size_type i, LogString& convBuf,
 			LogString& currentLiteral);
@@ -102,7 +102,7 @@ class LOG4CXX_EXPORT PatternParser
 		 * @param options array to receive extracted options
 		 * @return position in pattern after options.
 		 */
-		static int extractOptions(const LogString& pattern, LogString::size_type i,
+		static size_t extractOptions(const LogString& pattern, LogString::size_type i,
 			std::vector<LogString>& options);
 
 	public:
@@ -150,8 +150,8 @@ class LOG4CXX_EXPORT PatternParser
 		 * @param formattingInfos list to receive corresponding field specifier.
 		 * @return position after format specifier sequence.
 		 */
-		static int finalizeConverter(
-			logchar c, const LogString& pattern, int i,
+		static size_t finalizeConverter(
+			logchar c, const LogString& pattern, size_t i,
 			LogString& currentLiteral, const FormattingInfoPtr& formattingInfo,
 			const PatternMap&  rules,
 			std::vector<PatternConverterPtr>& patternConverters,

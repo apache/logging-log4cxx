@@ -64,7 +64,7 @@ bool SerializationTestHelper::compare(
           return false;
       }
 
-      int endScan = actual.size();
+      size_t endScan = actual.size();
 
       if (endScan > endCompare) {
         endScan = endCompare;

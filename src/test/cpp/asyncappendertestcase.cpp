@@ -216,7 +216,7 @@ public:
         try {
            LOG4CXX_INFO(root, "Message");
            LOGUNIT_FAIL("Should have thrown exception");
-        } catch(NullPointerException& ex) {
+        } catch(NullPointerException&) {
         }
     }
     

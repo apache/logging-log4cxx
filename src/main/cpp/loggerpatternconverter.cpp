@@ -54,7 +54,7 @@ void LoggerPatternConverter::format(
 	LogString& toAppendTo,
 	Pool& /* p */ ) const
 {
-	int initialLength = toAppendTo.length();
+	int initialLength = (int)toAppendTo.length();
 	toAppendTo.append(event->getLoggerName());
 	abbreviate(initialLength, toAppendTo);
 }

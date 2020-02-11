@@ -18,17 +18,18 @@
 #ifndef _LOG4CXX_NDC_H
 #define _LOG4CXX_NDC_H
 
+#include <log4cxx/log4cxx.h>
+#include <log4cxx/logstring.h>
+#include <stack>
+
 #if defined(_MSC_VER)
 	#pragma warning ( push )
 	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
-#include <log4cxx/log4cxx.h>
-#include <log4cxx/logstring.h>
-#include <stack>
-
 namespace log4cxx
 {
+
 /**
 the ndc class implements <i>nested diagnostic contexts</i> as
 defined by neil harrison in the article "patterns for logging

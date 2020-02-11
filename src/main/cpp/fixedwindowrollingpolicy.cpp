@@ -332,7 +332,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 				return false;
 			}
 		}
-		catch (std::exception& ex)
+		catch (std::exception&)
 		{
 			LogLog::warn(LOG4CXX_STR("Exception during purge in RollingFileAppender"));
 

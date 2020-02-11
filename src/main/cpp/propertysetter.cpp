@@ -48,7 +48,7 @@ void PropertySetter::setProperties(helpers::Properties& properties,
 	const LogString& prefix,
 	Pool& p)
 {
-	int len = prefix.length();
+	size_t len = prefix.length();
 
 	std::vector<LogString> names = properties.propertyNames();
 	std::vector<LogString>::iterator it;
