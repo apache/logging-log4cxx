@@ -225,6 +225,7 @@
                     <testFailureIgnore>true</testFailureIgnore>
                     <ctest.skip.tests>${maven.test.skip}</ctest.skip.tests>
                     <config>${cmake.config}</config>
+                    <threadCount>1</threadCount>
                   </configuration>
                 </execution>
               </executions>
