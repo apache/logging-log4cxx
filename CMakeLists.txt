@@ -61,3 +61,44 @@ install(EXPORT log4cxxTargets
   NAMESPACE log4cxx::
   DESTINATION share/cmake/log4cxx
 )
+
+#
+# Get the varaibles from the subdirectories
+#
+get_directory_property( HAS_LIBESMTP DIRECTORY src/main/include DEFINITION HAS_LIBESMTP )
+get_directory_property( HAS_ODBC DIRECTORY src/main/include DEFINITION HAS_ODBC )
+get_directory_property( HAS_SYSLOG DIRECTORY src/main/include DEFINITION HAS_SYSLOG )
+
+foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG)
+  if(${varName} EQUAL 0)
+    set(${varName} "OFF" )
+  elseif(${varName} EQUAL 1)
+    set(${varName} "ON" )
+  else()
+    set(${varName} "UNKNOWN" )
+  endif()
+endforeach()
+
+#
+# Output configuration information
+# Similar to APR CMake configuration
+#
+message(STATUS "")
+message(STATUS "")
+message(STATUS "log4cxx configuration summary:")
+message(STATUS "")
+
+message(STATUS "  Build type ...................... : ${CMAKE_BUILD_TYPE}")
+message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
+message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
+message(STATUS "  log4cxx char API ................ : ${LOG4CXX_CHAR}")
+message(STATUS "  log4cxx wchar API ............... : ${LOG4CXX_WCHAR_T}")
+message(STATUS "  log4cxx unichar API ............. : ${LOG4CXX_UNICHAR}")
+if(APPLE)
+message(STATUS "  log4cxx cfstring API ............ : ${LOG4CXX_CFSTRING}")
+endif()
+message(STATUS "  logchar type .................... : ${LOG4CXX_CHAR}")
+message(STATUS "  Using libESMTP .................. : ${HAS_LIBESMTP}")
+message(STATUS "  ODBC library .................... : ${HAS_ODBC}")
+message(STATUS "  syslog .......................... : ${HAS_SYSLOG}")
