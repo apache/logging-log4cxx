@@ -26,57 +26,68 @@ using namespace log4cxx::util;
 using namespace log4cxx::helpers;
 
 void BinaryCompare::compare(const char* filename1,
-                            const char* filename2) {
-    Pool p;
-    apr_pool_t* pool = p.getAPRPool();
-    apr_file_t* file1;
-    apr_int32_t flags = APR_FOPEN_READ;
-    apr_fileperms_t perm = APR_OS_DEFAULT;
-    apr_status_t stat1 = apr_file_open(&file1,
-        filename1, flags, perm, pool);
-    if (stat1 != APR_SUCCESS) {
-      LOGUNIT_FAIL(std::string("Unable to open ") + filename1);
-    }
+	const char* filename2)
+{
+	Pool p;
+	apr_pool_t* pool = p.getAPRPool();
+	apr_file_t* file1;
+	apr_int32_t flags = APR_FOPEN_READ;
+	apr_fileperms_t perm = APR_OS_DEFAULT;
+	apr_status_t stat1 = apr_file_open(&file1,
+			filename1, flags, perm, pool);
 
-    apr_file_t* file2;
-    apr_status_t stat2 = apr_file_open(&file2,
-        filename2, flags, perm, pool);
-    if (stat2 != APR_SUCCESS) {
-      LOGUNIT_FAIL(std::string("Unable to open ") + filename2);
-    }
+	if (stat1 != APR_SUCCESS)
+	{
+		LOGUNIT_FAIL(std::string("Unable to open ") + filename1);
+	}
 
-    enum { BUFSIZE = 1024 };
-    char* contents1 = (char*) apr_palloc(pool, BUFSIZE);
-    char* contents2 = (char*) apr_palloc(pool, BUFSIZE);
-    memset(contents1, 0, BUFSIZE);
-    memset(contents2, 0, BUFSIZE);
-    apr_size_t bytesRead1 = BUFSIZE;
-    apr_size_t bytesRead2 = BUFSIZE;
+	apr_file_t* file2;
+	apr_status_t stat2 = apr_file_open(&file2,
+			filename2, flags, perm, pool);
 
-    stat1 = apr_file_read(file1, contents1, &bytesRead1);
-    if (stat1 != APR_SUCCESS) {
-      LOGUNIT_FAIL(std::string("Unable to read ") + filename1);
-    }
+	if (stat2 != APR_SUCCESS)
+	{
+		LOGUNIT_FAIL(std::string("Unable to open ") + filename2);
+	}
 
-    stat2 = apr_file_read(file2, contents2, &bytesRead2);
-    if (stat2 != APR_SUCCESS) {
-      LOGUNIT_FAIL(std::string("Unable to read ") + filename2);
-    }
+	enum { BUFSIZE = 1024 };
+	char* contents1 = (char*) apr_palloc(pool, BUFSIZE);
+	char* contents2 = (char*) apr_palloc(pool, BUFSIZE);
+	memset(contents1, 0, BUFSIZE);
+	memset(contents2, 0, BUFSIZE);
+	apr_size_t bytesRead1 = BUFSIZE;
+	apr_size_t bytesRead2 = BUFSIZE;
 
-    for (int i = 0; i < BUFSIZE; i++) {
-       if (contents1[i] != contents2[i]) {
-         std::string msg("Contents differ at position ");
-         msg += apr_itoa(pool, i);
-         msg += ": [";
-         msg += filename1;
-         msg += "] has ";
-         msg += apr_itoa(pool, contents1[i]);
-         msg += ", [";
-         msg += filename2;
-         msg += "] has ";
-         msg += apr_itoa(pool, contents2[i]);
-         msg += ".";
-         LOGUNIT_FAIL(msg);
-       }
-    }
+	stat1 = apr_file_read(file1, contents1, &bytesRead1);
+
+	if (stat1 != APR_SUCCESS)
+	{
+		LOGUNIT_FAIL(std::string("Unable to read ") + filename1);
+	}
+
+	stat2 = apr_file_read(file2, contents2, &bytesRead2);
+
+	if (stat2 != APR_SUCCESS)
+	{
+		LOGUNIT_FAIL(std::string("Unable to read ") + filename2);
+	}
+
+	for (int i = 0; i < BUFSIZE; i++)
+	{
+		if (contents1[i] != contents2[i])
+		{
+			std::string msg("Contents differ at position ");
+			msg += apr_itoa(pool, i);
+			msg += ": [";
+			msg += filename1;
+			msg += "] has ";
+			msg += apr_itoa(pool, contents1[i]);
+			msg += ", [";
+			msg += filename2;
+			msg += "] has ";
+			msg += apr_itoa(pool, contents2[i]);
+			msg += ".";
+			LOGUNIT_FAIL(msg);
+		}
+	}
 }

@@ -20,19 +20,26 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-FilenameFilter::FilenameFilter(const std::string& actual, const std::string& expected) {
-    std::string pattern(actual);
-   size_t backslash = pattern.rfind('\\', pattern.length() - 1);
-   while (backslash != std::string::npos) {
-      pattern.replace(backslash, 1, "\\\\", 2);
-      if (backslash == 0) {
-         backslash = std::string::npos;
-      } else {
-          backslash = pattern.rfind('\\', backslash - 1);
-      }
-   }
-   
-   patterns.push_back( PatternReplacement(pattern, expected) );
+FilenameFilter::FilenameFilter(const std::string& actual, const std::string& expected)
+{
+	std::string pattern(actual);
+	size_t backslash = pattern.rfind('\\', pattern.length() - 1);
+
+	while (backslash != std::string::npos)
+	{
+		pattern.replace(backslash, 1, "\\\\", 2);
+
+		if (backslash == 0)
+		{
+			backslash = std::string::npos;
+		}
+		else
+		{
+			backslash = pattern.rfind('\\', backslash - 1);
+		}
+	}
+
+	patterns.push_back( PatternReplacement(pattern, expected) );
 }
 
 

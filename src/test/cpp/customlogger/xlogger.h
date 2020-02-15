@@ -22,94 +22,100 @@
 
 namespace log4cxx
 {
-        namespace spi {
-          namespace location {
-            class LocationInfo;
-          }
-        }
-        // Any sub-class of Logger must also have its own implementation of
-        // LoggerFactory.
-        class XFactory :
-                public virtual spi::LoggerFactory,
-                public virtual helpers::ObjectImpl
-        {
-        public:
-                DECLARE_ABSTRACT_LOG4CXX_OBJECT(XFactory)
-                BEGIN_LOG4CXX_CAST_MAP()
-                        LOG4CXX_CAST_ENTRY(XFactory)
-                        LOG4CXX_CAST_ENTRY(spi::LoggerFactory)
-                END_LOG4CXX_CAST_MAP()
+namespace spi
+{
+namespace location
+{
+class LocationInfo;
+}
+}
+// Any sub-class of Logger must also have its own implementation of
+// LoggerFactory.
+class XFactory :
+	public virtual spi::LoggerFactory,
+	public virtual helpers::ObjectImpl
+{
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XFactory)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(XFactory)
+		LOG4CXX_CAST_ENTRY(spi::LoggerFactory)
+		END_LOG4CXX_CAST_MAP()
 
-                XFactory();
-                virtual LoggerPtr makeNewLoggerInstance(
-                   log4cxx::helpers::Pool& pool,
-                   const LogString& name) const;
-        };
+		XFactory();
+		virtual LoggerPtr makeNewLoggerInstance(
+			log4cxx::helpers::Pool& pool,
+			const LogString& name) const;
+};
 
-        typedef helpers::ObjectPtrT<XFactory> XFactoryPtr;
+typedef helpers::ObjectPtrT<XFactory> XFactoryPtr;
 
-        /**
-        A simple example showing Logger sub-classing. It shows the
-        minimum steps necessary to implement one's {@link LoggerFactory}.
-        Note that sub-classes follow the hierarchy even if its loggers
-        belong to different classes.
-        */
-        class XLogger : public Logger
-        {
-        // It's enough to instantiate a factory once and for all.
-        static XFactoryPtr factory;
-        LogString suffix;
+/**
+A simple example showing Logger sub-classing. It shows the
+minimum steps necessary to implement one's {@link LoggerFactory}.
+Note that sub-classes follow the hierarchy even if its loggers
+belong to different classes.
+*/
+class XLogger : public Logger
+{
+		// It's enough to instantiate a factory once and for all.
+		static XFactoryPtr factory;
+		LogString suffix;
 
-        public:
-                DECLARE_ABSTRACT_LOG4CXX_OBJECT(XLogger)
-                BEGIN_LOG4CXX_CAST_MAP()
-                        LOG4CXX_CAST_ENTRY(XLogger)
-                        LOG4CXX_CAST_ENTRY_CHAIN(Logger)
-                END_LOG4CXX_CAST_MAP()
+	public:
+		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XLogger)
+		BEGIN_LOG4CXX_CAST_MAP()
+		LOG4CXX_CAST_ENTRY(XLogger)
+		LOG4CXX_CAST_ENTRY_CHAIN(Logger)
+		END_LOG4CXX_CAST_MAP()
 
-                /**
-                        Just calls the parent constuctor.
-                */
-                XLogger(log4cxx::helpers::Pool& pool,
-                        const LogString& name1) : Logger(pool, name1) {}
+		/**
+		        Just calls the parent constuctor.
+		*/
+		XLogger(log4cxx::helpers::Pool& pool,
+			const LogString& name1) : Logger(pool, name1) {}
 
-                /**
-                        Nothing to activate.
-                */
-                void activateOptions() {}
+		/**
+		        Nothing to activate.
+		*/
+		void activateOptions() {}
 
 
-                /**
-                        We introduce a new printing method in order to support {@link
-                        XLevel#LETHAL}.  */
-                void lethal(const LogString& message, const log4cxx::spi::LocationInfo& location);
+		/**
+		        We introduce a new printing method in order to support {@link
+		        XLevel#LETHAL}.  */
+		void lethal(const LogString& message, const log4cxx::spi::LocationInfo& location);
 
-                /**
-                        We introduce a new printing method in order to support {@link
-                        XLevel#LETHAL}.  */
-                void lethal(const LogString& message);
+		/**
+		        We introduce a new printing method in order to support {@link
+		        XLevel#LETHAL}.  */
+		void lethal(const LogString& message);
 
-                static LoggerPtr getLogger(const LogString& name);
+		static LoggerPtr getLogger(const LogString& name);
 
-                static LoggerPtr getLogger(const helpers::Class& clazz);
+		static LoggerPtr getLogger(const helpers::Class& clazz);
 
-                LogString getSuffix() const
-                        { return suffix; }
+		LogString getSuffix() const
+		{
+			return suffix;
+		}
 
-                void setSuffix(const LogString& suffix1)
-                        { this->suffix = suffix1; }
+		void setSuffix(const LogString& suffix1)
+		{
+			this->suffix = suffix1;
+		}
 
-                /**
-                        We introduce a new printing method that takes the TRACE level.
-                */
-                void trace(const LogString& message, const log4cxx::spi::LocationInfo& location);
+		/**
+		        We introduce a new printing method that takes the TRACE level.
+		*/
+		void trace(const LogString& message, const log4cxx::spi::LocationInfo& location);
 
-                /**
-                        We introduce a new printing method that takes the TRACE level.
-                */
-                void trace(const LogString& message);
-        };
+		/**
+		        We introduce a new printing method that takes the TRACE level.
+		*/
+		void trace(const LogString& message);
+};
 
-        typedef helpers::ObjectPtrT<XLogger> XLoggerPtr;
+typedef helpers::ObjectPtrT<XLogger> XLoggerPtr;
 }
 

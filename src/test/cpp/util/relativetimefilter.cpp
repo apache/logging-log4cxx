@@ -20,5 +20,5 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-RelativeTimeFilter::RelativeTimeFilter() 
-   : Filter(RELATIVE_TIME_PAT, "") {}
+RelativeTimeFilter::RelativeTimeFilter()
+	: Filter(RELATIVE_TIME_PAT, "") {}

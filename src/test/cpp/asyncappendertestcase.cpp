@@ -36,63 +36,74 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-class NullPointerAppender : public AppenderSkeleton {
-public:
-    NullPointerAppender() {
-    }
+class NullPointerAppender : public AppenderSkeleton
+{
+	public:
+		NullPointerAppender()
+		{
+		}
 
 
-    /**
-     * @{inheritDoc}
-     */
-    void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&) {
-         throw NullPointerException(LOG4CXX_STR("Intentional NullPointerException"));
-    }
+		/**
+		 * @{inheritDoc}
+		 */
+		void append(const spi::LoggingEventPtr&, log4cxx::helpers::Pool&)
+		{
+			throw NullPointerException(LOG4CXX_STR("Intentional NullPointerException"));
+		}
 
-    void close() {
-    }
+		void close()
+		{
+		}
 
-    bool requiresLayout() const {
-            return false;
-    }
+		bool requiresLayout() const
+		{
+			return false;
+		}
 };
 
-    /**
-     * Vector appender that can be explicitly blocked.
-     */
-class BlockableVectorAppender : public VectorAppender {
-private:
-      Mutex blocker;
-public:
-      /**
-       * Create new instance.
-       */
-      BlockableVectorAppender() : blocker(pool) {
-      }
+/**
+ * Vector appender that can be explicitly blocked.
+ */
+class BlockableVectorAppender : public VectorAppender
+{
+	private:
+		Mutex blocker;
+	public:
+		/**
+		 * Create new instance.
+		 */
+		BlockableVectorAppender() : blocker(pool)
+		{
+		}
 
-      /**
-       * {@inheritDoc}
-       */
-    void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p) {
-          synchronized sync(blocker);
-          VectorAppender::append(event, p);
-            //
-            //   if fatal, echo messages for testLoggingInDispatcher
-            //
-            if (event->getLevel() == Level::getInfo()) {
-                LoggerPtr logger = Logger::getLoggerLS(event->getLoggerName());
-                LOG4CXX_LOGLS(logger, Level::getError(), event->getMessage());
-                LOG4CXX_LOGLS(logger, Level::getWarn(), event->getMessage());
-                LOG4CXX_LOGLS(logger, Level::getInfo(), event->getMessage());
-                LOG4CXX_LOGLS(logger, Level::getDebug(), event->getMessage());
-            }
-      }
-      
-      Mutex& getBlocker() {
-          return blocker;
-      }
+		/**
+		 * {@inheritDoc}
+		 */
+		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
+		{
+			synchronized sync(blocker);
+			VectorAppender::append(event, p);
 
-    };
+			//
+			//   if fatal, echo messages for testLoggingInDispatcher
+			//
+			if (event->getLevel() == Level::getInfo())
+			{
+				LoggerPtr logger = Logger::getLoggerLS(event->getLoggerName());
+				LOG4CXX_LOGLS(logger, Level::getError(), event->getMessage());
+				LOG4CXX_LOGLS(logger, Level::getWarn(), event->getMessage());
+				LOG4CXX_LOGLS(logger, Level::getInfo(), event->getMessage());
+				LOG4CXX_LOGLS(logger, Level::getDebug(), event->getMessage());
+			}
+		}
+
+		Mutex& getBlocker()
+		{
+			return blocker;
+		}
+
+};
 
 typedef helpers::ObjectPtrT<BlockableVectorAppender> BlockableVectorAppenderPtr;
 
@@ -281,8 +292,8 @@ public:
 //              LOGUNIT_ASSERT_EQUAL(true, vectorAppender->isClosed());
         }
 
-        
-};
+
+};        
 
 LOGUNIT_TEST_SUITE_REGISTRATION(AsyncAppenderTestCase);
 #endif

@@ -20,40 +20,46 @@
 
 #include <locale>
 
-namespace log4cxx {
-  namespace helpers {
-    /**
-    *   Utility class to change the locale for the duration of a test.
-    *
-    * 
-    * 
-    *
-    */
-    class LocaleChanger {
-    public:
-    /**
-    *   Construction attemtps to change default locale.
-    * @param locale locale.
-    */
-       LocaleChanger(const char* locale);
+namespace log4cxx
+{
+namespace helpers
+{
+/**
+*   Utility class to change the locale for the duration of a test.
+*
+*
+*
+*
+*/
+class LocaleChanger
+{
+	public:
+		/**
+		*   Construction attemtps to change default locale.
+		* @param locale locale.
+		*/
+		LocaleChanger(const char* locale);
 
-    /**
-    * Restores previous locale.
-    */
-      ~LocaleChanger();
+		/**
+		* Restores previous locale.
+		*/
+		~LocaleChanger();
 
-      /**
-      * Determines whether locale change was effective.
-      * @return true if effective.
-      */
-      inline bool isEffective() { return effective; }
+		/**
+		* Determines whether locale change was effective.
+		* @return true if effective.
+		*/
+		inline bool isEffective()
+		{
+			return effective;
+		}
 
-    private:
-      LocaleChanger(LocaleChanger&);
-      LocaleChanger& operator=(LocaleChanger&);
-      std::locale initial;
-      bool effective;
-    };
-  }
+	private:
+		LocaleChanger(LocaleChanger&);
+		LocaleChanger& operator=(LocaleChanger&);
+		std::locale initial;
+		bool effective;
+};
+}
 }
 #endif

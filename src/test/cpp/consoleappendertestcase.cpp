@@ -27,31 +27,33 @@ using namespace log4cxx::helpers;
  */
 class ConsoleAppenderTestCase : public WriterAppenderTestCase
 {
-   LOGUNIT_TEST_SUITE(ConsoleAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
-                LOGUNIT_TEST(testNoLayout);
-   LOGUNIT_TEST_SUITE_END();
+		LOGUNIT_TEST_SUITE(ConsoleAppenderTestCase);
+		//
+		//    tests inherited from AppenderSkeletonTestCase
+		//
+		LOGUNIT_TEST(testDefaultThreshold);
+		LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST(testNoLayout);
+		LOGUNIT_TEST_SUITE_END();
 
 
-public:
+	public:
 
-        WriterAppender* createWriterAppender() const {
-          return new log4cxx::ConsoleAppender();
-        }
-        
-        void testNoLayout() {
-            Pool p;
-            ConsoleAppenderPtr appender(new ConsoleAppender());
-            appender->activateOptions(p);
-            LoggerPtr logger(Logger::getRootLogger());
-            logger->addAppender(appender);
-            LOG4CXX_INFO(logger, "No layout specified for ConsoleAppender");
-            logger->removeAppender(appender);
-        }
+		WriterAppender* createWriterAppender() const
+		{
+			return new log4cxx::ConsoleAppender();
+		}
+
+		void testNoLayout()
+		{
+			Pool p;
+			ConsoleAppenderPtr appender(new ConsoleAppender());
+			appender->activateOptions(p);
+			LoggerPtr logger(Logger::getRootLogger());
+			logger->addAppender(appender);
+			LOG4CXX_INFO(logger, "No layout specified for ConsoleAppender");
+			logger->removeAppender(appender);
+		}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(ConsoleAppenderTestCase);

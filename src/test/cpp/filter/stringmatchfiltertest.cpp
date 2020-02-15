@@ -22,108 +22,114 @@
 
 using namespace log4cxx;
 using namespace log4cxx::filter;
-using namespace log4cxx::spi; 
+using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 
 /**
  * Unit tests for StringMatchFilter.
  */
-LOGUNIT_CLASS(StringMatchFilterTest) {
-    LOGUNIT_TEST_SUITE(StringMatchFilterTest);
-       LOGUNIT_TEST(test1);
-       LOGUNIT_TEST(test2);
-       LOGUNIT_TEST(test3);
-       LOGUNIT_TEST(test4);
-    LOGUNIT_TEST_SUITE_END();
-    
+LOGUNIT_CLASS(StringMatchFilterTest)
+{
+	LOGUNIT_TEST_SUITE(StringMatchFilterTest);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
+	LOGUNIT_TEST(test3);
+	LOGUNIT_TEST(test4);
+	LOGUNIT_TEST_SUITE_END();
+
 public:
 
-    /**
-     * Check that StringMatchFilter.decide() returns Filter.NEUTRAL
-     *   when string to match is unspecified.
-     */
-    void test1() {
-        LoggingEventPtr event(new LoggingEvent(
-                LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
-                Level::getInfo(), 
-                LOG4CXX_STR("Hello, World"), 
-                LOG4CXX_LOCATION));
-        FilterPtr filter(new StringMatchFilter());
-        Pool p; 
-        filter->activateOptions(p);
-        LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
-    }
+	/**
+	 * Check that StringMatchFilter.decide() returns Filter.NEUTRAL
+	 *   when string to match is unspecified.
+	 */
+	void test1()
+	{
+		LoggingEventPtr event(new LoggingEvent(
+				LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
+				Level::getInfo(),
+				LOG4CXX_STR("Hello, World"),
+				LOG4CXX_LOCATION));
+		FilterPtr filter(new StringMatchFilter());
+		Pool p;
+		filter->activateOptions(p);
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
+	}
 
-    /**
-     * Check that StringMatchFilter.decide() returns Filter.NEUTRAL
-     *   when string to match does not appear in message.
-     */
-    void test2() {
-        LoggingEventPtr event(new LoggingEvent(
-                LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
-                Level::getInfo(), 
-                LOG4CXX_STR("Hello, World"), 
-                LOG4CXX_LOCATION));
-        StringMatchFilterPtr filter(new StringMatchFilter());
-        filter->setStringToMatch(LOG4CXX_STR("Monde"));
-        Pool p; 
-        filter->activateOptions(p);
-        LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
-    }
+	/**
+	 * Check that StringMatchFilter.decide() returns Filter.NEUTRAL
+	 *   when string to match does not appear in message.
+	 */
+	void test2()
+	{
+		LoggingEventPtr event(new LoggingEvent(
+				LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
+				Level::getInfo(),
+				LOG4CXX_STR("Hello, World"),
+				LOG4CXX_LOCATION));
+		StringMatchFilterPtr filter(new StringMatchFilter());
+		filter->setStringToMatch(LOG4CXX_STR("Monde"));
+		Pool p;
+		filter->activateOptions(p);
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
+	}
 
-    /**
-     * Check that StringMatchFilter.decide() returns Filter.ACCEPT
-     *   when string to match does appear in message.
-     */
-    void test3() {
-        LoggingEventPtr event(new LoggingEvent(
-                LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
-                Level::getInfo(), 
-                LOG4CXX_STR("Hello, World"), 
-                LOG4CXX_LOCATION));
-        StringMatchFilterPtr filter(new StringMatchFilter());
-        filter->setStringToMatch(LOG4CXX_STR("World"));
-        Pool p; 
-        filter->activateOptions(p);
-        LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
-    }
+	/**
+	 * Check that StringMatchFilter.decide() returns Filter.ACCEPT
+	 *   when string to match does appear in message.
+	 */
+	void test3()
+	{
+		LoggingEventPtr event(new LoggingEvent(
+				LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
+				Level::getInfo(),
+				LOG4CXX_STR("Hello, World"),
+				LOG4CXX_LOCATION));
+		StringMatchFilterPtr filter(new StringMatchFilter());
+		filter->setStringToMatch(LOG4CXX_STR("World"));
+		Pool p;
+		filter->activateOptions(p);
+		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
+	}
 
-    /**
-     * Check that StringMatchFilter.decide() returns Filter.DENY
-     *   when string to match does appear in message and
-     *   accept on match is false.
-     */
-    void test4() {
-        LoggingEventPtr event(new LoggingEvent(
-                LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
-                Level::getInfo(), 
-                LOG4CXX_STR("Hello, World"), 
-                LOG4CXX_LOCATION));
-        StringMatchFilterPtr filter(new StringMatchFilter());
-        filter->setStringToMatch(LOG4CXX_STR("World"));
-        filter->setAcceptOnMatch(false);
-        Pool p; 
-        filter->activateOptions(p);
-        LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
-    }
+	/**
+	 * Check that StringMatchFilter.decide() returns Filter.DENY
+	 *   when string to match does appear in message and
+	 *   accept on match is false.
+	 */
+	void test4()
+	{
+		LoggingEventPtr event(new LoggingEvent(
+				LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
+				Level::getInfo(),
+				LOG4CXX_STR("Hello, World"),
+				LOG4CXX_LOCATION));
+		StringMatchFilterPtr filter(new StringMatchFilter());
+		filter->setStringToMatch(LOG4CXX_STR("World"));
+		filter->setAcceptOnMatch(false);
+		Pool p;
+		filter->activateOptions(p);
+		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
+	}
 
-    /**
-     * Check that StringMatchFilter.decide() returns Filter.NEUTRAL
-     *   when string to match does appear in message but differs in case.
-     */
-    void test5() {
-        LoggingEventPtr event(new LoggingEvent(
-                LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
-                Level::getInfo(), 
-                LOG4CXX_STR("Hello, World"), 
-                LOG4CXX_LOCATION));
-        StringMatchFilterPtr filter(new StringMatchFilter());
-        filter->setStringToMatch(LOG4CXX_STR("world"));
-        Pool p; 
-        filter->activateOptions(p);
-        LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
-    }
+	/**
+	 * Check that StringMatchFilter.decide() returns Filter.NEUTRAL
+	 *   when string to match does appear in message but differs in case.
+	 */
+	void test5()
+	{
+		LoggingEventPtr event(new LoggingEvent(
+				LOG4CXX_STR("org.apache.log4j.filter.StringMatchFilterTest"),
+				Level::getInfo(),
+				LOG4CXX_STR("Hello, World"),
+				LOG4CXX_LOCATION));
+		StringMatchFilterPtr filter(new StringMatchFilter());
+		filter->setStringToMatch(LOG4CXX_STR("world"));
+		Pool p;
+		filter->activateOptions(p);
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
+	}
 
 };
 

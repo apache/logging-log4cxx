@@ -74,7 +74,7 @@
 		<releaseVersion>${project.version}</releaseVersion>
 		<releaseManager>Matt Sicker</releaseManager>
 		<releaseKey>B62BABE8</releaseKey>
-        <windowsArchitecture>x64</windowsArchitecture>
+		<windowsArchitecture>x64</windowsArchitecture>
 	</properties>
 
 	<organization>
@@ -180,56 +180,62 @@
 
 	<build>
 		<plugins>
-            <plugin>
-              <groupId>com.googlecode.cmake-maven-project</groupId>
-              <artifactId>cmake-maven-plugin</artifactId>
-              <version>3.16.3-b1</version>
-              <executions>
-                <execution>
-                  <id>cmake-generate</id>
-                  <goals>
-                    <goal>generate</goal>
-                  </goals>
-                  <configuration>
-                    <sourcePath>${project.basedir}</sourcePath>
-                    <targetPath>${project.build.directory}/${platform}</targetPath>
-                    <classifier>${cmake.classifier}</classifier>
-                    <options>${cmake.options}</options>
-                    <environmentVariables>
-                        <CMAKE_CLASSIFIER>${cmake.classifier}</CMAKE_CLASSIFIER>
-                    </environmentVariables>
-                    <downloadBinaries>${download.cmake}</downloadBinaries>
-                  </configuration>
-                </execution>
-                <execution>
-                    <id>cmake-compile</id>
-                    <phase>process-resources</phase>
-                    <goals>
-                      <goal>compile</goal>
-                    </goals>
-                    <configuration>
-                        <projectDirectory>${project.build.directory}/${platform}</projectDirectory>
-                        <classifier>${cmake.classifier}</classifier>
-                        <config>${cmake.config}</config>
-                        <downloadBinaries>true</downloadBinaries>
-                    </configuration>
-                </execution>
-                <execution>
-                  <phase>test</phase>
-                  <id>cmake-run-tests</id>
-                  <goals>
-                    <goal>test</goal>
-                  </goals>
-                  <configuration>
-                    <buildDirectory>${project.build.directory}/${platform}</buildDirectory>
-                    <testFailureIgnore>true</testFailureIgnore>
-                    <ctest.skip.tests>${maven.test.skip}</ctest.skip.tests>
-                    <config>${cmake.config}</config>
-                    <threadCount>1</threadCount>
-                  </configuration>
-                </execution>
-              </executions>
-            </plugin>
+			<plugin>
+				<groupId>com.googlecode.cmake-maven-project</groupId>
+				<artifactId>cmake-maven-plugin</artifactId>
+				<version>3.16.3-b1</version>
+
+				<executions>
+					<execution>
+						<id>cmake-generate</id>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+
+						<configuration>
+							<sourcePath>${project.basedir}</sourcePath>
+							<targetPath>${project.build.directory}/${platform}</targetPath>
+							<classifier>${cmake.classifier}</classifier>
+							<options>${cmake.options}</options>
+							<environmentVariables>
+								<CMAKE_CLASSIFIER>${cmake.classifier}</CMAKE_CLASSIFIER>
+							</environmentVariables>
+							<downloadBinaries>${download.cmake}</downloadBinaries>
+						</configuration>
+					</execution>
+
+					<execution>
+						<id>cmake-compile</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+
+						<configuration>
+							<projectDirectory>${project.build.directory}/${platform}</projectDirectory>
+							<classifier>${cmake.classifier}</classifier>
+							<config>${cmake.config}</config>
+							<downloadBinaries>true</downloadBinaries>
+						</configuration>
+					</execution>
+
+					<execution>
+						<phase>test</phase>
+						<id>cmake-run-tests</id>
+						<goals>
+							<goal>test</goal>
+						</goals>
+
+						<configuration>
+							<buildDirectory>${project.build.directory}/${platform}</buildDirectory>
+							<testFailureIgnore>true</testFailureIgnore>
+							<ctest.skip.tests>${maven.test.skip}</ctest.skip.tests>
+							<config>${cmake.config}</config>
+							<threadCount>1</threadCount>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<artifactId>maven-antrun-plugin</artifactId>
 				<version>1.7</version>
@@ -480,5 +486,5 @@
 				<cmake.config>${build.type}</cmake.config>
 			</properties>
 		</profile>
-    </profiles>
+	</profiles>
 </project>

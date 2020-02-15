@@ -32,72 +32,72 @@ XFactoryPtr XLogger::factory = new XFactory();
 
 void XLogger::lethal(const LogString& message, const LocationInfo& locationInfo)
 {
-        if (repository->isDisabled(XLevel::LETHAL_INT))
-        {
-                return;
-        }
+	if (repository->isDisabled(XLevel::LETHAL_INT))
+	{
+		return;
+	}
 
-        if (XLevel::getLethal()->isGreaterOrEqual(this->getEffectiveLevel()))
-        {
-                forcedLog(XLevel::getLethal(), message, locationInfo);
-        }
+	if (XLevel::getLethal()->isGreaterOrEqual(this->getEffectiveLevel()))
+	{
+		forcedLog(XLevel::getLethal(), message, locationInfo);
+	}
 }
 
 void XLogger::lethal(const LogString& message)
 {
-        if (repository->isDisabled(XLevel::LETHAL_INT))
-        {
-                return;
-        }
+	if (repository->isDisabled(XLevel::LETHAL_INT))
+	{
+		return;
+	}
 
-        if (XLevel::getLethal()->isGreaterOrEqual(this->getEffectiveLevel()))
-        {
-                forcedLog(XLevel::getLethal(), message, LocationInfo::getLocationUnavailable());
-        }
+	if (XLevel::getLethal()->isGreaterOrEqual(this->getEffectiveLevel()))
+	{
+		forcedLog(XLevel::getLethal(), message, LocationInfo::getLocationUnavailable());
+	}
 }
 
 LoggerPtr XLogger::getLogger(const LogString& name)
 {
-        return LogManager::getLogger(name, factory);
+	return LogManager::getLogger(name, factory);
 }
 
 LoggerPtr XLogger::getLogger(const helpers::Class& clazz)
 {
-        return XLogger::getLogger(clazz.getName());
+	return XLogger::getLogger(clazz.getName());
 }
 
 void XLogger::trace(const LogString& message, const LocationInfo& locationInfo)
 {
-        if (repository->isDisabled(XLevel::TRACE_INT))
-        {
-                return;
-        }
+	if (repository->isDisabled(XLevel::TRACE_INT))
+	{
+		return;
+	}
 
-        if (XLevel::getTrace()->isGreaterOrEqual(this->getEffectiveLevel()))
-        {
-                forcedLog(XLevel::getTrace(), message, locationInfo);
-        }
+	if (XLevel::getTrace()->isGreaterOrEqual(this->getEffectiveLevel()))
+	{
+		forcedLog(XLevel::getTrace(), message, locationInfo);
+	}
 }
 
 void XLogger::trace(const LogString& message)
 {
-        if (repository->isDisabled(XLevel::TRACE_INT))
-        {
-                return;
-        }
+	if (repository->isDisabled(XLevel::TRACE_INT))
+	{
+		return;
+	}
 
-        if (XLevel::getTrace()->isGreaterOrEqual(this->getEffectiveLevel()))
-        {
-                forcedLog(XLevel::getTrace(), message, LocationInfo::getLocationUnavailable());
-        }
+	if (XLevel::getTrace()->isGreaterOrEqual(this->getEffectiveLevel()))
+	{
+		forcedLog(XLevel::getTrace(), message, LocationInfo::getLocationUnavailable());
+	}
 }
 
 XFactory::XFactory()
 {
 }
 
-LoggerPtr XFactory::makeNewLoggerInstance(log4cxx::helpers::Pool& pool, 
-       const LogString& name) const
+LoggerPtr XFactory::makeNewLoggerInstance(log4cxx::helpers::Pool& pool,
+	const LogString& name) const
 {
-        return new XLogger(pool, name);
+	return new XLogger(pool, name);
 }

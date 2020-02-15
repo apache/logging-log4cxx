@@ -22,11 +22,11 @@
 
 namespace log4cxx
 {
-   class XMLLineAttributeFilter : public Filter
-   {
-   public:
-       XMLLineAttributeFilter();
-   };
+class XMLLineAttributeFilter : public Filter
+{
+	public:
+		XMLLineAttributeFilter();
+};
 }
 
 

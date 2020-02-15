@@ -27,56 +27,60 @@ using namespace log4cxx::helpers;
  *
  * FileAppender tests.
  */
-LOGUNIT_CLASS(FileAppenderTest) {
-  LOGUNIT_TEST_SUITE(FileAppenderTest);
-          LOGUNIT_TEST(testDirectoryCreation);
-          LOGUNIT_TEST(testgetSetThreshold);
-          LOGUNIT_TEST(testIsAsSevereAsThreshold);
-  LOGUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(FileAppenderTest)
+{
+	LOGUNIT_TEST_SUITE(FileAppenderTest);
+	LOGUNIT_TEST(testDirectoryCreation);
+	LOGUNIT_TEST(testgetSetThreshold);
+	LOGUNIT_TEST(testIsAsSevereAsThreshold);
+	LOGUNIT_TEST_SUITE_END();
 public:
-  /**
-   * Tests that any necessary directories are attempted to
-   * be created if they don't exist.  See bug 9150.
-   *
-   */
-  void testDirectoryCreation() {
-      File newFile(LOG4CXX_STR("output/newdir/temp.log"));
-      Pool p;
-      newFile.deleteFile(p);
+	/**
+	 * Tests that any necessary directories are attempted to
+	 * be created if they don't exist.  See bug 9150.
+	 *
+	 */
+	void testDirectoryCreation()
+	{
+		File newFile(LOG4CXX_STR("output/newdir/temp.log"));
+		Pool p;
+		newFile.deleteFile(p);
 
-      File newDir(LOG4CXX_STR("output/newdir"));
-      newDir.deleteFile(p);
+		File newDir(LOG4CXX_STR("output/newdir"));
+		newDir.deleteFile(p);
 
-      FileAppenderPtr wa(new FileAppender());
-      wa->setFile(LOG4CXX_STR("output/newdir/temp.log"));
-      wa->setLayout(new PatternLayout(LOG4CXX_STR("%m%n")));
-      wa->activateOptions(p);
+		FileAppenderPtr wa(new FileAppender());
+		wa->setFile(LOG4CXX_STR("output/newdir/temp.log"));
+		wa->setLayout(new PatternLayout(LOG4CXX_STR("%m%n")));
+		wa->activateOptions(p);
 
-      LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists(p));
-  }
+		LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists(p));
+	}
 
-  /**
-   * Tests getThreshold and setThreshold.
-   */
-  void testgetSetThreshold() {
-    FileAppenderPtr appender = new FileAppender();
-    LevelPtr debug = Level::getDebug();
-    //
-    //  different from log4j where threshold is null.
-    //
-    LOGUNIT_ASSERT_EQUAL(Level::getAll(), appender->getThreshold());
-    appender->setThreshold(debug);
-    LOGUNIT_ASSERT_EQUAL(debug, appender->getThreshold());
-  }
+	/**
+	 * Tests getThreshold and setThreshold.
+	 */
+	void testgetSetThreshold()
+	{
+		FileAppenderPtr appender = new FileAppender();
+		LevelPtr debug = Level::getDebug();
+		//
+		//  different from log4j where threshold is null.
+		//
+		LOGUNIT_ASSERT_EQUAL(Level::getAll(), appender->getThreshold());
+		appender->setThreshold(debug);
+		LOGUNIT_ASSERT_EQUAL(debug, appender->getThreshold());
+	}
 
-  /**
-   * Tests isAsSevereAsThreshold.
-   */
-  void testIsAsSevereAsThreshold() {
-    FileAppenderPtr appender = new FileAppender();
-    LevelPtr debug = Level::getDebug();
-    LOGUNIT_ASSERT(appender->isAsSevereAsThreshold(debug));
-  }
+	/**
+	 * Tests isAsSevereAsThreshold.
+	 */
+	void testIsAsSevereAsThreshold()
+	{
+		FileAppenderPtr appender = new FileAppender();
+		LevelPtr debug = Level::getDebug();
+		LOGUNIT_ASSERT(appender->isAsSevereAsThreshold(debug));
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(FileAppenderTest);

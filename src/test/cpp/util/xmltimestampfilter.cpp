@@ -21,6 +21,6 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 XMLTimestampFilter::XMLTimestampFilter()
-    : Filter("[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]*", "XXX") {}
+	: Filter("[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]*", "XXX") {}
 
 

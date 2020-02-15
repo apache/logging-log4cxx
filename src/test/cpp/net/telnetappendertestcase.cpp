@@ -31,58 +31,65 @@ using namespace log4cxx::net;
  */
 class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 {
-   LOGUNIT_TEST_SUITE(TelnetAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
-                LOGUNIT_TEST(testActivateClose);
-                LOGUNIT_TEST(testActivateSleepClose);
-                LOGUNIT_TEST(testActivateWriteClose);
+		LOGUNIT_TEST_SUITE(TelnetAppenderTestCase);
+		//
+		//    tests inherited from AppenderSkeletonTestCase
+		//
+		LOGUNIT_TEST(testDefaultThreshold);
+		LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST(testActivateClose);
+		LOGUNIT_TEST(testActivateSleepClose);
+		LOGUNIT_TEST(testActivateWriteClose);
 
-   LOGUNIT_TEST_SUITE_END();
+		LOGUNIT_TEST_SUITE_END();
 
-   enum { TEST_PORT = 1723 };
+		enum { TEST_PORT = 1723 };
 
-public:
+	public:
 
-        AppenderSkeleton* createAppenderSkeleton() const {
-          return new log4cxx::net::TelnetAppender();
-        }
-        
-        void testActivateClose() {
-            TelnetAppenderPtr appender(new TelnetAppender());
-            appender->setLayout(new TTCCLayout());
-            appender->setPort(TEST_PORT);
-            Pool p;
-            appender->activateOptions(p);
-            appender->close();
-        }
+		AppenderSkeleton* createAppenderSkeleton() const
+		{
+			return new log4cxx::net::TelnetAppender();
+		}
 
-        void testActivateSleepClose() {
-            TelnetAppenderPtr appender(new TelnetAppender());
-            appender->setLayout(new TTCCLayout());
-            appender->setPort(TEST_PORT);
-            Pool p;
-            appender->activateOptions(p);
-            Thread::sleep(1000);
-            appender->close();
-        }
+		void testActivateClose()
+		{
+			TelnetAppenderPtr appender(new TelnetAppender());
+			appender->setLayout(new TTCCLayout());
+			appender->setPort(TEST_PORT);
+			Pool p;
+			appender->activateOptions(p);
+			appender->close();
+		}
 
-        void testActivateWriteClose() {
-            TelnetAppenderPtr appender(new TelnetAppender());
-            appender->setLayout(new TTCCLayout());
-            appender->setPort(TEST_PORT);
-            Pool p;
-            appender->activateOptions(p);
-            LoggerPtr root(Logger::getRootLogger());
-            root->addAppender(appender);
-            for (int i = 0; i < 50; i++) {
-                LOG4CXX_INFO(root, "Hello, World " << i);
-            }
-            appender->close();
-        }
+		void testActivateSleepClose()
+		{
+			TelnetAppenderPtr appender(new TelnetAppender());
+			appender->setLayout(new TTCCLayout());
+			appender->setPort(TEST_PORT);
+			Pool p;
+			appender->activateOptions(p);
+			Thread::sleep(1000);
+			appender->close();
+		}
+
+		void testActivateWriteClose()
+		{
+			TelnetAppenderPtr appender(new TelnetAppender());
+			appender->setLayout(new TTCCLayout());
+			appender->setPort(TEST_PORT);
+			Pool p;
+			appender->activateOptions(p);
+			LoggerPtr root(Logger::getRootLogger());
+			root->addAppender(appender);
+
+			for (int i = 0; i < 50; i++)
+			{
+				LOG4CXX_INFO(root, "Hello, World " << i);
+			}
+
+			appender->close();
+		}
 
 };
 

@@ -23,11 +23,11 @@
 //      check either the wchar_t or char based methods.
 //
 #if LOG4CXX_WCHAR_T_API && defined(LOG4CXX_TEST_WCHAR)
-#define LOG4CXX_TEST_STR(str) L ## str
-typedef wchar_t testchar;
+	#define LOG4CXX_TEST_STR(str) L ## str
+	typedef wchar_t testchar;
 #else
-#define LOG4CXX_TEST_STR(str) str
-typedef char testchar;
+	#define LOG4CXX_TEST_STR(str) str
+	typedef char testchar;
 #endif
 
 #endif

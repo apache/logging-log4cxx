@@ -22,11 +22,11 @@
 
 namespace log4cxx
 {
-   class XMLTimestampFilter : public Filter
-   {
-   public:
-       XMLTimestampFilter();
-   };
+class XMLTimestampFilter : public Filter
+{
+	public:
+		XMLTimestampFilter();
+};
 }
 
 

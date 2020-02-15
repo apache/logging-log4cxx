@@ -26,5 +26,5 @@ ControlFilter::ControlFilter()
 
 ControlFilter& ControlFilter::operator<<(const std::string&)
 {
-   return *this;
+	return *this;
 }

@@ -33,88 +33,93 @@ using namespace std;
  */
 LOGUNIT_CLASS(LoggingEventTest)
 {
-        LOGUNIT_TEST_SUITE(LoggingEventTest);
-                LOGUNIT_TEST(testSerializationSimple);
-                LOGUNIT_TEST(testSerializationWithLocation);
-                LOGUNIT_TEST(testSerializationNDC);
-                LOGUNIT_TEST(testSerializationMDC);
-         LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(LoggingEventTest);
+	LOGUNIT_TEST(testSerializationSimple);
+	LOGUNIT_TEST(testSerializationWithLocation);
+	LOGUNIT_TEST(testSerializationNDC);
+	LOGUNIT_TEST(testSerializationMDC);
+	LOGUNIT_TEST_SUITE_END();
 
 public:
-        void setUp() {
-            NDC::clear();
-            MDC::clear();
-        }
+	void setUp()
+	{
+		NDC::clear();
+		MDC::clear();
+	}
 
-        void tearDown()
-        {
-            LogManager::shutdown();
-        }
-        
-        
-  
-        
-  /**
-   * Serialize a simple logging event and check it against
-   * a witness.
-   * @throws Exception if exception during test.
-   */
-  void testSerializationSimple() {
-    LoggingEventPtr event =
-      new LoggingEvent(
-        LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
-        
-    LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
-      "witness/serialization/simple.bin", event, 237));
-  }
+	void tearDown()
+	{
+		LogManager::shutdown();
+	}
 
 
-  /**
-   * Serialize a logging event with an exception and check it against
-   * a witness.
-   * @throws Exception if exception during test.
-   *
-   */
-  void testSerializationWithLocation() {
-    LoggingEventPtr event =
-      new LoggingEvent(
-        LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LOG4CXX_LOCATION);
 
-    LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
-      "witness/serialization/location.bin", event, 237));
-  }
 
-  /**
-   * Serialize a logging event with ndc.
-   * @throws Exception if exception during test.
-   *
-   */
-  void testSerializationNDC() {
-    NDC::push("ndc test");
+	/**
+	 * Serialize a simple logging event and check it against
+	 * a witness.
+	 * @throws Exception if exception during test.
+	 */
+	void testSerializationSimple()
+	{
+		LoggingEventPtr event =
+			new LoggingEvent(
+			LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
 
-    LoggingEventPtr event =
-      new LoggingEvent(
-        LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
+		LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
+				"witness/serialization/simple.bin", event, 237));
+	}
 
-    LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
-      "witness/serialization/ndc.bin", event, 237));
-    }
 
-  /**
-   * Serialize a logging event with mdc.
-   * @throws Exception if exception during test.
-   *
-   */
-  void testSerializationMDC() {
-    MDC::put("mdckey", "mdcvalue");
- 
-    LoggingEventPtr event =
-      new LoggingEvent(
-        LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
+	/**
+	 * Serialize a logging event with an exception and check it against
+	 * a witness.
+	 * @throws Exception if exception during test.
+	 *
+	 */
+	void testSerializationWithLocation()
+	{
+		LoggingEventPtr event =
+			new LoggingEvent(
+			LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LOG4CXX_LOCATION);
 
-    LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
-      "witness/serialization/mdc.bin", event, 237));
-  }
+		LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
+				"witness/serialization/location.bin", event, 237));
+	}
+
+	/**
+	 * Serialize a logging event with ndc.
+	 * @throws Exception if exception during test.
+	 *
+	 */
+	void testSerializationNDC()
+	{
+		NDC::push("ndc test");
+
+		LoggingEventPtr event =
+			new LoggingEvent(
+			LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
+
+		LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
+				"witness/serialization/ndc.bin", event, 237));
+	}
+
+	/**
+	 * Serialize a logging event with mdc.
+	 * @throws Exception if exception during test.
+	 *
+	 */
+	void testSerializationMDC()
+	{
+		MDC::put("mdckey", "mdcvalue");
+
+		LoggingEventPtr event =
+			new LoggingEvent(
+			LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable());
+
+		LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
+				"witness/serialization/mdc.bin", event, 237));
+	}
 
 };
 

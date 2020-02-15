@@ -22,35 +22,35 @@
 #include <vector>
 
 extern "C" {
-struct apr_pool_t;
+	struct apr_pool_t;
 }
 
 namespace log4cxx
 {
-       class File;
+class File;
 
-        class Transformer
-        {
-        public:
-                static void transform(const File& in,
-                        const File& out,
-                        const std::vector<Filter *>& filters);
+class Transformer
+{
+	public:
+		static void transform(const File& in,
+			const File& out,
+			const std::vector<Filter*>& filters);
 
-                static void transform(const File& in,
-                        const File& out,
-                        const Filter& filter);
-                        
-                static void transform(const File& in,
-                                      const File& out,
-                                      const std::vector< log4cxx::Filter::PatternReplacement >& patterns);
-        private:
-                static void copyFile(const File& in,
-                                      const File& out);
-                static void createSedCommandFile(const std::string& regexName, 
-                    const log4cxx::Filter::PatternList& patterns,
-                    apr_pool_t* pool);
-        
-        };
+		static void transform(const File& in,
+			const File& out,
+			const Filter& filter);
+
+		static void transform(const File& in,
+			const File& out,
+			const std::vector< log4cxx::Filter::PatternReplacement >& patterns);
+	private:
+		static void copyFile(const File& in,
+			const File& out);
+		static void createSedCommandFile(const std::string& regexName,
+			const log4cxx::Filter::PatternList& patterns,
+			apr_pool_t* pool);
+
+};
 }
 
 #endif //_LOG4CXX_TESTS_UTIL_TRANSFORMER_H

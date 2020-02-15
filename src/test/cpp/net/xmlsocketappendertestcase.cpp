@@ -28,21 +28,22 @@ using namespace log4cxx::helpers;
  */
 class XMLSocketAppenderTestCase : public AppenderSkeletonTestCase
 {
-   LOGUNIT_TEST_SUITE(XMLSocketAppenderTestCase);
-                //
-                //    tests inherited from AppenderSkeletonTestCase
-                //
-                LOGUNIT_TEST(testDefaultThreshold);
-                LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST_SUITE(XMLSocketAppenderTestCase);
+		//
+		//    tests inherited from AppenderSkeletonTestCase
+		//
+		LOGUNIT_TEST(testDefaultThreshold);
+		LOGUNIT_TEST(testSetOptionThreshold);
 
-   LOGUNIT_TEST_SUITE_END();
+		LOGUNIT_TEST_SUITE_END();
 
 
-public:
+	public:
 
-        AppenderSkeleton* createAppenderSkeleton() const {
-          return new log4cxx::net::XMLSocketAppender();
-        }
+		AppenderSkeleton* createAppenderSkeleton() const
+		{
+			return new log4cxx::net::XMLSocketAppender();
+		}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(XMLSocketAppenderTestCase);

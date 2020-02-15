@@ -21,63 +21,66 @@
 #include <apr.h>
 
 #ifdef WIN32
-#include <io.h>
+	#include <io.h>
 #else
-#include <unistd.h>
+	#include <unistd.h>
 #endif
 
 #ifndef ABTS_H
 #define ABTS_H
 
 #ifndef FALSE
-#define FALSE 0
+	#define FALSE 0
 #endif
 #ifndef TRUE
-#define TRUE  1
+	#define TRUE  1
 #endif
 
-struct sub_suite {
-    const char *name;
-    int num_test;
-    int failed;
-    int not_run;
-    int not_impl;
-    struct sub_suite *next;
+struct sub_suite
+{
+	const char* name;
+	int num_test;
+	int failed;
+	int not_run;
+	int not_impl;
+	struct sub_suite* next;
 };
 typedef struct sub_suite sub_suite;
 
-struct abts_suite {
-    sub_suite *head;
-    sub_suite *tail;
+struct abts_suite
+{
+	sub_suite* head;
+	sub_suite* tail;
 };
 typedef struct abts_suite abts_suite;
 
-struct abts_case {
-    int failed;
-    sub_suite *suite;
+struct abts_case
+{
+	int failed;
+	sub_suite* suite;
 };
 typedef struct abts_case abts_case;
 
-typedef void (*test_func)(abts_case *tc, void *data);
+typedef void (*test_func)(abts_case* tc, void* data);
 
 #define ADD_SUITE(suite) abts_add_suite(suite, __FILE__);
 
-abts_suite *abts_add_suite(abts_suite *suite, const char *suite_name);
-void abts_run_test(abts_suite *ts, test_func f, void *value);
-void abts_log_message(const char *fmt, ...);
+abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name);
+void abts_run_test(abts_suite* ts, test_func f, void* value);
+void abts_log_message(const char* fmt, ...);
 
-void abts_int_equal(abts_case *tc, const int expected, const int actual, int lineno);
-void abts_int_nequal(abts_case *tc, const int expected, const int actual, int lineno);
-void abts_str_equal(abts_case *tc, const char *expected, const char *actual, int lineno);
-void abts_str_nequal(abts_case *tc, const char *expected, const char *actual,
-                       size_t n, int lineno);
-void abts_ptr_notnull(abts_case *tc, const void *ptr, int lineno);
-void abts_ptr_equal(abts_case *tc, const void *expected, const void *actual, int lineno);
-void abts_true(abts_case *tc, int condition, int lineno);
-void abts_fail(abts_case *tc, const char *message, int lineno);
-void abts_not_impl(abts_case *tc, const char *message, int lineno);
-void abts_assert(abts_case *tc, const char *message, int condition, int lineno);
-void abts_size_equal(abts_case *tc, size_t expected, size_t actual, int lineno);
+void abts_int_equal(abts_case* tc, const int expected, const int actual, int lineno);
+void abts_int_nequal(abts_case* tc, const int expected, const int actual, int lineno);
+void abts_str_equal(abts_case* tc, const char* expected, const char* actual, int lineno);
+void abts_str_nequal(abts_case* tc, const char* expected, const char* actual,
+	size_t n, int lineno);
+void abts_ptr_notnull(abts_case* tc, const void* ptr, int lineno);
+void abts_ptr_equal(abts_case* tc, const void* expected, const void* actual, int lineno);
+void abts_true(abts_case* tc, int condition, int lineno);
+void abts_fail(abts_case* tc, const char* message, int lineno);
+void abts_not_impl(abts_case* tc, const char* message, int lineno);
+void abts_assert(abts_case* tc, const char* message, int condition, int lineno);
+void abts_size_equal(abts_case* tc, size_t expected, size_t actual, int lineno);
 
 /* Convenience macros. Ryan hates these! */
 #define ABTS_INT_EQUAL(a, b, c)     abts_int_equal(a, b, c, __LINE__)
@@ -94,8 +97,8 @@ void abts_size_equal(abts_case *tc, size_t expected, size_t actual, int lineno);
 #define ABTS_SIZE_EQUAL(a, b, c)    abts_size_equal(a, b, c, __LINE__)
 
 
-abts_suite *run_tests(abts_suite *suite);
-abts_suite *run_tests1(abts_suite *suite);
+abts_suite* run_tests(abts_suite* suite);
+abts_suite* run_tests1(abts_suite* suite);
 
 
 #endif

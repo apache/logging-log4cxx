@@ -22,21 +22,23 @@
 
 namespace log4cxx
 {
-       namespace util {
-            class SerializationTestHelper {
-            public:
-                static bool compare(const char* filename,
-                          const log4cxx::spi::LoggingEventPtr& event,
-                          size_t stopCompare);
-                static bool compare(const char* filename,
-                          const std::vector<unsigned char>& array,
-                          size_t stopCompare, log4cxx::helpers::Pool& p);
-            private:
-                SerializationTestHelper();
-                SerializationTestHelper(const SerializationTestHelper&);
-                SerializationTestHelper& operator=(SerializationTestHelper&);
-            };
-        }
+namespace util
+{
+class SerializationTestHelper
+{
+	public:
+		static bool compare(const char* filename,
+			const log4cxx::spi::LoggingEventPtr& event,
+			size_t stopCompare);
+		static bool compare(const char* filename,
+			const std::vector<unsigned char>& array,
+			size_t stopCompare, log4cxx::helpers::Pool& p);
+	private:
+		SerializationTestHelper();
+		SerializationTestHelper(const SerializationTestHelper&);
+		SerializationTestHelper& operator=(SerializationTestHelper&);
+};
+}
 }
 
 #endif

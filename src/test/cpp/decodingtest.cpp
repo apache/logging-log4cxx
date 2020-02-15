@@ -51,98 +51,106 @@ using namespace log4cxx::helpers;
  * @see LOGCXX-369
  * @see LOGCXX-399
  */
-LOGUNIT_CLASS(DecodingTest) {
-  LOGUNIT_TEST_SUITE(DecodingTest);
+LOGUNIT_CLASS(DecodingTest)
+{
+	LOGUNIT_TEST_SUITE(DecodingTest);
 #if LOG4CXX_CHARSET_USASCII
-          LOGUNIT_TEST(testASCII);
+	LOGUNIT_TEST(testASCII);
 #elif LOG4CXX_CHARSET_ISO88591 || defined(_WIN32_WCE)
-          LOGUNIT_TEST(testLatin1);
+	LOGUNIT_TEST(testLatin1);
 #elif LOG4CXX_CHARSET_UTF8
-          LOGUNIT_TEST(testUtf8);
+	LOGUNIT_TEST(testUtf8);
 #elif LOG4CXX_LOGCHAR_IS_WCHAR && LOG4CXX_HAS_MBSRTOWCS
-          LOGUNIT_TEST(testUtf16);
-          LOGUNIT_TEST(testUtf16LE);
-          LOGUNIT_TEST(testUtf16BE);
+	LOGUNIT_TEST(testUtf16);
+	LOGUNIT_TEST(testUtf16LE);
+	LOGUNIT_TEST(testUtf16BE);
 #else
-          // LocaleCharsetDecoder, so it's difficult to provide a file working for e.g. windows-1252
-          // as well as something completely different.
-          LOGUNIT_TEST(testASCII);
+	// LocaleCharsetDecoder, so it's difficult to provide a file working for e.g. windows-1252
+	// as well as something completely different.
+	LOGUNIT_TEST(testASCII);
 #endif
-  LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE_END();
 public:
-    /**
-     * Test us-ascii decoding.
-     */
-  void testASCII() {
-      const wchar_t witness[] = { L'A', 0x003F, 0x003F, 0x003F, 0x003F, 0x003F, 0x0020, 0x003F, 0 };
+	/**
+	 * Test us-ascii decoding.
+	 */
+	void testASCII()
+	{
+		const wchar_t witness[] = { L'A', 0x003F, 0x003F, 0x003F, 0x003F, 0x003F, 0x0020, 0x003F, 0 };
 
-      testImpl(LOG4CXX_STR("ascii.txt"), witness);
+		testImpl(LOG4CXX_STR("ascii.txt"), witness);
 
-  }
+	}
 
-    /**
-     * Test iso-8859-1 decoding.
-     */
-    void testLatin1() {
-      const wchar_t witness[] = { L'A', 0x003F, 0x003F, 0x003F, 0x003F, 0x003F, 0x0020, 0x00B9, 0 };
+	/**
+	 * Test iso-8859-1 decoding.
+	 */
+	void testLatin1()
+	{
+		const wchar_t witness[] = { L'A', 0x003F, 0x003F, 0x003F, 0x003F, 0x003F, 0x0020, 0x00B9, 0 };
 
-        testImpl(LOG4CXX_STR("latin1.txt"), witness);
-    }
+		testImpl(LOG4CXX_STR("latin1.txt"), witness);
+	}
 
-    /**
-     * Test utf-8 decoding.
-     */
-    void testUtf8() {
-        const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
+	/**
+	 * Test utf-8 decoding.
+	 */
+	void testUtf8()
+	{
+		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 
-        testImpl(LOG4CXX_STR("UTF-8.txt"), witness);
-    }
+		testImpl(LOG4CXX_STR("UTF-8.txt"), witness);
+	}
 
-    /**
-     * Test utf-16 decoding.
-     */
-    void testUtf16() {
-        const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
+	/**
+	 * Test utf-16 decoding.
+	 */
+	void testUtf16()
+	{
+		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 
-        testImpl(LOG4CXX_STR("UTF-16.txt"), witness);
-    }
+		testImpl(LOG4CXX_STR("UTF-16.txt"), witness);
+	}
 
-    /**
-     * Test utf-16be decoding.
-     */
-    void testUtf16BE() {
-        const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
+	/**
+	 * Test utf-16be decoding.
+	 */
+	void testUtf16BE()
+	{
+		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 
-        testImpl(LOG4CXX_STR("UTF-16BE.txt"), witness);
-    }
+		testImpl(LOG4CXX_STR("UTF-16BE.txt"), witness);
+	}
 
-    /**
-     * Test utf16-le decoding.
-     */
-    void testUtf16LE() {
-        const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
+	/**
+	 * Test utf16-le decoding.
+	 */
+	void testUtf16LE()
+	{
+		const wchar_t witness[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x0400, 0x0020, 0x00B9, 0 };
 
-        testImpl(LOG4CXX_STR("UTF-16LE.txt"), witness);
-    }
+		testImpl(LOG4CXX_STR("UTF-16LE.txt"), witness);
+	}
 
-    private:
-      void testImpl(
-               const LogString& fileName,
-               const wchar_t*   witness) {
-          CharsetDecoderPtr decoder(CharsetDecoder::getDefaultDecoder());
-          LogString         lsContent;
-          std::wstring      wsContent;
-          LogString         path(LOG4CXX_STR("input/decoding/") + fileName);
-          Pool              pool;
+private:
+	void testImpl(
+		const LogString & fileName,
+		const wchar_t*   witness)
+	{
+		CharsetDecoderPtr decoder(CharsetDecoder::getDefaultDecoder());
+		LogString         lsContent;
+		std::wstring      wsContent;
+		LogString         path(LOG4CXX_STR("input/decoding/") + fileName);
+		Pool              pool;
 
-          FileInputStreamPtr   fis(     new FileInputStream(path));
-          InputStreamReaderPtr isReader(new InputStreamReader(fis, decoder));
+		FileInputStreamPtr   fis(     new FileInputStream(path));
+		InputStreamReaderPtr isReader(new InputStreamReader(fis, decoder));
 
-          lsContent.assign(isReader->read(pool));
-          Transcoder::encode(lsContent, wsContent);
+		lsContent.assign(isReader->read(pool));
+		Transcoder::encode(lsContent, wsContent);
 
-          LOGUNIT_ASSERT_EQUAL((std::wstring) witness, wsContent);
-      }
+		LOGUNIT_ASSERT_EQUAL((std::wstring) witness, wsContent);
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(DecodingTest);

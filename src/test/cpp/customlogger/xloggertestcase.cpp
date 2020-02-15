@@ -36,55 +36,61 @@ using namespace log4cxx::xml;
 */
 LOGUNIT_CLASS(XLoggerTestCase)
 {
-   LOGUNIT_TEST_SUITE(XLoggerTestCase);
-      LOGUNIT_TEST(test1);
-      LOGUNIT_TEST(test2);
-   LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(XLoggerTestCase);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
+	LOGUNIT_TEST_SUITE_END();
 
-   XLoggerPtr logger;
+	XLoggerPtr logger;
 
 public:
-   void setUp()
-   {
-      logger = XLogger::getLogger(
-            LOG4CXX_STR("org.apache.log4j.customLogger.XLoggerTestCase"));
-   }
+	void setUp()
+	{
+		logger = XLogger::getLogger(
+				LOG4CXX_STR("org.apache.log4j.customLogger.XLoggerTestCase"));
+	}
 
-   void tearDown()
-   {
-      logger->getLoggerRepository()->resetConfiguration();
-   }
+	void tearDown()
+	{
+		logger->getLoggerRepository()->resetConfiguration();
+	}
 
-   void test1() { common("1"); }
-   void test2() { common("2"); }
+	void test1()
+	{
+		common("1");
+	}
+	void test2()
+	{
+		common("2");
+	}
 
-   void common(const char* number)
-   {
-        std::string fn("input/xml/customLogger");
-        fn.append(number);
-        fn.append(".xml");
-        DOMConfigurator::configure(fn);
+	void common(const char* number)
+	{
+		std::string fn("input/xml/customLogger");
+		fn.append(number);
+		fn.append(".xml");
+		DOMConfigurator::configure(fn);
 
-        int i = 0;
-        LOG4CXX_LOG(logger, log4cxx::XLevel::getTrace(), "Message " << i);
+		int i = 0;
+		LOG4CXX_LOG(logger, log4cxx::XLevel::getTrace(), "Message " << i);
 
-        i++;
-        LOG4CXX_DEBUG(logger, "Message " << i);
-        i++;
-        LOG4CXX_WARN(logger, "Message " << i);
-        i++;
-        LOG4CXX_ERROR(logger, "Message " << i);
-        i++;
-        LOG4CXX_FATAL(logger, "Message " << i);
-        i++;
-        LOG4CXX_DEBUG(logger, "Message " << i);
+		i++;
+		LOG4CXX_DEBUG(logger, "Message " << i);
+		i++;
+		LOG4CXX_WARN(logger, "Message " << i);
+		i++;
+		LOG4CXX_ERROR(logger, "Message " << i);
+		i++;
+		LOG4CXX_FATAL(logger, "Message " << i);
+		i++;
+		LOG4CXX_DEBUG(logger, "Message " << i);
 
-        const File OUTPUT("output/temp");
-        std::string witness("witness/customLogger.");
-        witness.append(number);
-        const File WITNESS(witness);
-      LOGUNIT_ASSERT(Compare::compare(OUTPUT, WITNESS));
-    }
+		const File OUTPUT("output/temp");
+		std::string witness("witness/customLogger.");
+		witness.append(number);
+		const File WITNESS(witness);
+		LOGUNIT_ASSERT(Compare::compare(OUTPUT, WITNESS));
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(XLoggerTestCase);

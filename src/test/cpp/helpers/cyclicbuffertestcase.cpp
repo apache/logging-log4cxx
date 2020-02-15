@@ -32,138 +32,141 @@ using namespace log4cxx::spi;
 
 LOGUNIT_CLASS(CyclicBufferTestCase)
 {
-   LOGUNIT_TEST_SUITE(CyclicBufferTestCase);
-      LOGUNIT_TEST(test0);
-      LOGUNIT_TEST(test1);
-      LOGUNIT_TEST(testResize);
-   LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(CyclicBufferTestCase);
+	LOGUNIT_TEST(test0);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(testResize);
+	LOGUNIT_TEST_SUITE_END();
 
-   LoggerPtr logger;
-   std::vector<LoggingEventPtr> e;
+	LoggerPtr logger;
+	std::vector<LoggingEventPtr> e;
 
 public:
-   void setUp()
-   {
-      e.reserve(1000);
-      LoggingEventPtr event;
-      for (int i = 0; i < MAX; i++)
-      {
-         event = new LoggingEvent(LOG4CXX_STR("x"), Level::getDebug(), LOG4CXX_STR("e"),
-                          log4cxx::spi::LocationInfo::getLocationUnavailable());
-         e.push_back(event);
-      }
-   }
+	void setUp()
+	{
+		e.reserve(1000);
+		LoggingEventPtr event;
 
-   void tearDown()
-   {
-      LogManager::shutdown();
-   }
+		for (int i = 0; i < MAX; i++)
+		{
+			event = new LoggingEvent(LOG4CXX_STR("x"), Level::getDebug(), LOG4CXX_STR("e"),
+				log4cxx::spi::LocationInfo::getLocationUnavailable());
+			e.push_back(event);
+		}
+	}
 
-   void test0()
-   {
-      int size = 2;
+	void tearDown()
+	{
+		LogManager::shutdown();
+	}
 
-      CyclicBuffer cb(size);
-      LOGUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
+	void test0()
+	{
+		int size = 2;
 
-      cb.add(e[0]);
-      LOGUNIT_ASSERT_EQUAL(1, cb.length());
-      LOGUNIT_ASSERT_EQUAL(e[0], cb.get());
-      LOGUNIT_ASSERT_EQUAL(0, cb.length());
-      LOGUNIT_ASSERT(cb.get() == 0);
-      LOGUNIT_ASSERT_EQUAL(0, cb.length());
+		CyclicBuffer cb(size);
+		LOGUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
 
-      CyclicBuffer cb2(size);
-      cb2.add(e[0]);
-      cb2.add(e[1]);
-      LOGUNIT_ASSERT_EQUAL(2, cb2.length());
-      LOGUNIT_ASSERT_EQUAL(e[0], cb2.get());
-      LOGUNIT_ASSERT_EQUAL(1, cb2.length());
-      LOGUNIT_ASSERT_EQUAL(e[1], cb2.get());
-      LOGUNIT_ASSERT_EQUAL(0, cb2.length());
-      LOGUNIT_ASSERT(cb2.get() == 0);
-      LOGUNIT_ASSERT_EQUAL(0, cb2.length());
-   }
+		cb.add(e[0]);
+		LOGUNIT_ASSERT_EQUAL(1, cb.length());
+		LOGUNIT_ASSERT_EQUAL(e[0], cb.get());
+		LOGUNIT_ASSERT_EQUAL(0, cb.length());
+		LOGUNIT_ASSERT(cb.get() == 0);
+		LOGUNIT_ASSERT_EQUAL(0, cb.length());
 
-   void test1()
-   {
-      for (int bufSize = 1; bufSize <= 128; bufSize *= 2)
-         doTest1(bufSize);
-   }
+		CyclicBuffer cb2(size);
+		cb2.add(e[0]);
+		cb2.add(e[1]);
+		LOGUNIT_ASSERT_EQUAL(2, cb2.length());
+		LOGUNIT_ASSERT_EQUAL(e[0], cb2.get());
+		LOGUNIT_ASSERT_EQUAL(1, cb2.length());
+		LOGUNIT_ASSERT_EQUAL(e[1], cb2.get());
+		LOGUNIT_ASSERT_EQUAL(0, cb2.length());
+		LOGUNIT_ASSERT(cb2.get() == 0);
+		LOGUNIT_ASSERT_EQUAL(0, cb2.length());
+	}
 
-   void doTest1(int size)
-   {
-      //System.out.println("Doing test with size = "+size);
-      CyclicBuffer cb(size);
+	void test1()
+	{
+		for (int bufSize = 1; bufSize <= 128; bufSize *= 2)
+		{
+			doTest1(bufSize);
+		}
+	}
 
-      LOGUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
+	void doTest1(int size)
+	{
+		//System.out.println("Doing test with size = "+size);
+		CyclicBuffer cb(size);
 
-      int i;
+		LOGUNIT_ASSERT_EQUAL(size, cb.getMaxSize());
 
-      for (i = -(size + 10); i < (size + 10); i++)
-      {
-         LOGUNIT_ASSERT(cb.get(i) == 0);
-      }
+		int i;
 
-      for (i = 0; i < MAX; i++)
-      {
-         cb.add(e[i]);
+		for (i = -(size + 10); i < (size + 10); i++)
+		{
+			LOGUNIT_ASSERT(cb.get(i) == 0);
+		}
 
-         int limit = (i < (size - 1)) ? i : (size - 1);
+		for (i = 0; i < MAX; i++)
+		{
+			cb.add(e[i]);
 
-         //System.out.println("\nLimit is " + limit + ", i="+i);
-         for (int j = limit; j >= 0; j--)
-         {
-            //System.out.println("i= "+i+", j="+j);
-            LOGUNIT_ASSERT_EQUAL(e[i - (limit - j)], cb.get(j));
-         }
+			int limit = (i < (size - 1)) ? i : (size - 1);
 
-         LOGUNIT_ASSERT(cb.get(-1) == 0);
-         LOGUNIT_ASSERT(cb.get(limit + 1) == 0);
-      }
-   }
+			//System.out.println("\nLimit is " + limit + ", i="+i);
+			for (int j = limit; j >= 0; j--)
+			{
+				//System.out.println("i= "+i+", j="+j);
+				LOGUNIT_ASSERT_EQUAL(e[i - (limit - j)], cb.get(j));
+			}
 
-   void testResize()
-   {
-      for (int isize = 1; isize <= 128; isize *= 2)
-      {
-         doTestResize(isize, (isize / 2) + 1, (isize / 2) + 1);
-         doTestResize(isize, (isize / 2) + 1, isize + 10);
-         doTestResize(isize, isize + 10, (isize / 2) + 1);
-         doTestResize(isize, isize + 10, isize + 10);
-      }
+			LOGUNIT_ASSERT(cb.get(-1) == 0);
+			LOGUNIT_ASSERT(cb.get(limit + 1) == 0);
+		}
+	}
 
-   }
+	void testResize()
+	{
+		for (int isize = 1; isize <= 128; isize *= 2)
+		{
+			doTestResize(isize, (isize / 2) + 1, (isize / 2) + 1);
+			doTestResize(isize, (isize / 2) + 1, isize + 10);
+			doTestResize(isize, isize + 10, (isize / 2) + 1);
+			doTestResize(isize, isize + 10, isize + 10);
+		}
 
-   void doTestResize(int initialSize, int numberOfAdds, int newSize)
-   {
-      //System.out.println("initialSize = "+initialSize+", numberOfAdds="
-      //        +numberOfAdds+", newSize="+newSize);
-      CyclicBuffer cb(initialSize);
+	}
 
-      for (int i = 0; i < numberOfAdds; i++)
-      {
-         cb.add(e[i]);
-      }
+	void doTestResize(int initialSize, int numberOfAdds, int newSize)
+	{
+		//System.out.println("initialSize = "+initialSize+", numberOfAdds="
+		//        +numberOfAdds+", newSize="+newSize);
+		CyclicBuffer cb(initialSize);
 
-      cb.resize(newSize);
+		for (int i = 0; i < numberOfAdds; i++)
+		{
+			cb.add(e[i]);
+		}
 
-      int offset = numberOfAdds - initialSize;
+		cb.resize(newSize);
 
-      if (offset < 0)
-      {
-         offset = 0;
-      }
+		int offset = numberOfAdds - initialSize;
 
-      int len = (newSize < numberOfAdds) ? newSize : numberOfAdds;
-      len = (len < initialSize) ? len : initialSize;
+		if (offset < 0)
+		{
+			offset = 0;
+		}
 
-      //System.out.println("Len = "+len+", offset="+offset);
-      for (int j = 0; j < len; j++)
-      {
-         LOGUNIT_ASSERT_EQUAL(e[offset + j], cb.get(j));
-      }
-   }
+		int len = (newSize < numberOfAdds) ? newSize : numberOfAdds;
+		len = (len < initialSize) ? len : initialSize;
+
+		//System.out.println("Len = "+len+", offset="+offset);
+		for (int j = 0; j < len; j++)
+		{
+			LOGUNIT_ASSERT_EQUAL(e[offset + j], cb.get(j));
+		}
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(CyclicBufferTestCase);

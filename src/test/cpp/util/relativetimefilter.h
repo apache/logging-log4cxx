@@ -22,11 +22,11 @@
 
 namespace log4cxx
 {
-   class RelativeTimeFilter : public Filter
-   {
-   public:
-       RelativeTimeFilter();
-   };
+class RelativeTimeFilter : public Filter
+{
+	public:
+		RelativeTimeFilter();
+};
 }
 
 

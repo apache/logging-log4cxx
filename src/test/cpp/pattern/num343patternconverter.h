@@ -20,21 +20,22 @@
 
 namespace log4cxx
 {
-   namespace pattern {
-     class Num343PatternConverter : public LoggingEventPatternConverter
-     {
-     public:
-        DECLARE_LOG4CXX_OBJECT(Num343PatternConverter)
+namespace pattern
+{
+class Num343PatternConverter : public LoggingEventPatternConverter
+{
+	public:
+		DECLARE_LOG4CXX_OBJECT(Num343PatternConverter)
 
-       Num343PatternConverter();
-       static PatternConverterPtr newInstance(
-          const std::vector<LogString>& options);
+		Num343PatternConverter();
+		static PatternConverterPtr newInstance(
+			const std::vector<LogString>& options);
 
-     protected:
-          void format(
-              const log4cxx::spi::LoggingEventPtr& event,
-              LogString& toAppendTo,
-              log4cxx::helpers::Pool& pool) const;
-     };
-   }
+	protected:
+		void format(
+			const log4cxx::spi::LoggingEventPtr& event,
+			LogString& toAppendTo,
+			log4cxx::helpers::Pool& pool) const;
+};
+}
 }

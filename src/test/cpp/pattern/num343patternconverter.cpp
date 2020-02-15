@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 #if defined(_MSC_VER)
-#pragma warning ( disable: 4231 4251 4275 4786 )
+	#pragma warning ( disable: 4231 4251 4275 4786 )
 #endif
 
 #include <log4cxx/logstring.h>
@@ -29,20 +29,22 @@ IMPLEMENT_LOG4CXX_OBJECT(Num343PatternConverter)
 
 
 Num343PatternConverter::Num343PatternConverter() :
-   LoggingEventPatternConverter(LOG4CXX_STR("Num343"), LOG4CXX_STR("num343")) {
+	LoggingEventPatternConverter(LOG4CXX_STR("Num343"), LOG4CXX_STR("num343"))
+{
 }
 
 PatternConverterPtr Num343PatternConverter::newInstance(
-   const std::vector<LogString>&) {
-   return new Num343PatternConverter();
+	const std::vector<LogString>&)
+{
+	return new Num343PatternConverter();
 }
 
 
 void Num343PatternConverter::format(
-    const spi::LoggingEventPtr&,
-    LogString& sbuf,
-    Pool&) const
+	const spi::LoggingEventPtr&,
+	LogString& sbuf,
+	Pool&) const
 {
-        sbuf.append(LOG4CXX_STR("343"));
+	sbuf.append(LOG4CXX_STR("343"));
 }
 

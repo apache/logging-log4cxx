@@ -43,92 +43,102 @@ using namespace log4cxx::helpers;
 /**
  * Tests the emulation of org.apache.log4j.DailyRollingFileAppender
  *
- * 
+ *
  *
  */
-LOGUNIT_CLASS(ObsoleteDailyRollingFileAppenderTest)  {
-  LOGUNIT_TEST_SUITE(ObsoleteDailyRollingFileAppenderTest);
-          LOGUNIT_TEST(test1);
-          LOGUNIT_TEST(test2);
-  LOGUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(ObsoleteDailyRollingFileAppenderTest)
+{
+	LOGUNIT_TEST_SUITE(ObsoleteDailyRollingFileAppenderTest);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
+	LOGUNIT_TEST_SUITE_END();
 
 
 public:
 
-  void tearDown() {
-    LogManager::shutdown();
-  }
+	void tearDown()
+	{
+		LogManager::shutdown();
+	}
 
-  /**
-   * Test basic rolling functionality.
-   */
-  void test1() {
-    PropertyConfigurator::configure(File("input/rolling/obsoleteDRFA1.properties"));
+	/**
+	 * Test basic rolling functionality.
+	 */
+	void test1()
+	{
+		PropertyConfigurator::configure(File("input/rolling/obsoleteDRFA1.properties"));
 
-    int preCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test1.log."));
-    LoggerPtr logger(Logger::getLogger("org.apache.log4j.ObsoleteDailyRollingFileAppenderTest"));
+		int preCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test1.log."));
+		LoggerPtr logger(Logger::getLogger("org.apache.log4j.ObsoleteDailyRollingFileAppenderTest"));
 
-    char msg[11];
-    strcpy(msg, "Hello---??");
+		char msg[11];
+		strcpy(msg, "Hello---??");
 
-    for (int i = 0; i < 25; i++) {
-      apr_sleep(100000);
-      msg[8] = (char) ('0' + (i / 10));
-      msg[9] = (char) ('0' + (i % 10));
-      LOG4CXX_DEBUG(logger, msg);
-    }
+		for (int i = 0; i < 25; i++)
+		{
+			apr_sleep(100000);
+			msg[8] = (char) ('0' + (i / 10));
+			msg[9] = (char) ('0' + (i % 10));
+			LOG4CXX_DEBUG(logger, msg);
+		}
 
-    int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test1.log."));
-    LOGUNIT_ASSERT_EQUAL(true, postCount > preCount);
-  }
+		int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test1.log."));
+		LOGUNIT_ASSERT_EQUAL(true, postCount > preCount);
+	}
 
-  /**
-   * Test basic rolling functionality.
-   * @deprecated Class under test is deprecated.
-   */
-  void test2() {
-    PatternLayoutPtr layout(new PatternLayout(LOG4CXX_STR("%m%n")));
-    log4cxx::DailyRollingFileAppenderPtr rfa(new log4cxx::DailyRollingFileAppender());
-    rfa->setName(LOG4CXX_STR("ROLLING"));
-    rfa->setLayout(layout);
-    rfa->setAppend(false);
-    rfa->setFile(LOG4CXX_STR("output/obsoleteDRFA-test2.log"));
-    rfa->setDatePattern(LOG4CXX_STR("'.'yyyy-MM-dd-HH_mm_ss"));
-    Pool p;
-    rfa->activateOptions(p);
-    LoggerPtr root(Logger::getRootLogger());
-    root->addAppender(rfa);
-    LoggerPtr logger(Logger::getLogger("org.apache.log4j.ObsoleteDailyRollingAppenderTest"));
+	/**
+	 * Test basic rolling functionality.
+	 * @deprecated Class under test is deprecated.
+	 */
+	void test2()
+	{
+		PatternLayoutPtr layout(new PatternLayout(LOG4CXX_STR("%m%n")));
+		log4cxx::DailyRollingFileAppenderPtr rfa(new log4cxx::DailyRollingFileAppender());
+		rfa->setName(LOG4CXX_STR("ROLLING"));
+		rfa->setLayout(layout);
+		rfa->setAppend(false);
+		rfa->setFile(LOG4CXX_STR("output/obsoleteDRFA-test2.log"));
+		rfa->setDatePattern(LOG4CXX_STR("'.'yyyy-MM-dd-HH_mm_ss"));
+		Pool p;
+		rfa->activateOptions(p);
+		LoggerPtr root(Logger::getRootLogger());
+		root->addAppender(rfa);
+		LoggerPtr logger(Logger::getLogger("org.apache.log4j.ObsoleteDailyRollingAppenderTest"));
 
-    int preCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test2.log."));
+		int preCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test2.log."));
 
-    char msg[11];
-    strcpy(msg, "Hello---??");
-    for (int i = 0; i < 25; i++) {
-      apr_sleep(100000);
-      msg[8] = (char) ('0' + i / 10);
-      msg[9] = (char) ('0' + i % 10);
-      LOG4CXX_DEBUG(logger, msg);
-    }
+		char msg[11];
+		strcpy(msg, "Hello---??");
 
-    int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test2.log."));
-    LOGUNIT_ASSERT_EQUAL(true, postCount > preCount);
-  }
+		for (int i = 0; i < 25; i++)
+		{
+			apr_sleep(100000);
+			msg[8] = (char) ('0' + i / 10);
+			msg[9] = (char) ('0' + i % 10);
+			LOG4CXX_DEBUG(logger, msg);
+		}
+
+		int postCount = getFileCount("output", LOG4CXX_STR("obsoleteDRFA-test2.log."));
+		LOGUNIT_ASSERT_EQUAL(true, postCount > preCount);
+	}
 
 private:
-  static int getFileCount(const char* dir, const LogString& initial) {
-    Pool p;
-    std::vector<LogString> files(File(dir).list(p));
-    int count = 0;
+	static int getFileCount(const char* dir, const LogString & initial)
+	{
+		Pool p;
+		std::vector<LogString> files(File(dir).list(p));
+		int count = 0;
 
-    for (size_t i = 0; i < files.size(); i++) {
-      if (StringHelper::startsWith(files[i], initial)) {
-        count++;
-      }
-    }
+		for (size_t i = 0; i < files.size(); i++)
+		{
+			if (StringHelper::startsWith(files[i], initial))
+			{
+				count++;
+			}
+		}
 
-    return count;
-  }
+		return count;
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(ObsoleteDailyRollingFileAppenderTest);

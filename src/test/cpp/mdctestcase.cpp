@@ -30,31 +30,33 @@ using namespace log4cxx;
 
 LOGUNIT_CLASS(MDCTestCase)
 {
-        LOGUNIT_TEST_SUITE(MDCTestCase);
-                LOGUNIT_TEST(test1);
-        LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE(MDCTestCase);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST_SUITE_END();
 
 public:
 
-        void setUp() {
-        }
+	void setUp()
+	{
+	}
 
-        void tearDown() {
-            Logger::getRootLogger()->getLoggerRepository()->resetConfiguration();
-        }
+	void tearDown()
+	{
+		Logger::getRootLogger()->getLoggerRepository()->resetConfiguration();
+	}
 
-        /**
-         *   log4cxx 0.10.0 did not replace previously set value.
-         */
-        void test1()
-        {
-                std::string key("key1");
-                std::string expected("value2");
-                MDC::put(key, "value1");
-                MDC::put(key, expected);
-                std::string actual(MDC::get(key));
-                LOGUNIT_ASSERT_EQUAL(expected, actual);
-        }
+	/**
+	 *   log4cxx 0.10.0 did not replace previously set value.
+	 */
+	void test1()
+	{
+		std::string key("key1");
+		std::string expected("value2");
+		MDC::put(key, "value1");
+		MDC::put(key, expected);
+		std::string actual(MDC::get(key));
+		LOGUNIT_ASSERT_EQUAL(expected, actual);
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(MDCTestCase);

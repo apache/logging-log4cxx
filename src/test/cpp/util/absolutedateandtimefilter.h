@@ -22,11 +22,11 @@
 
 namespace log4cxx
 {
-   class AbsoluteDateAndTimeFilter : public Filter
-   {
-   public:
-       AbsoluteDateAndTimeFilter();
-   };
+class AbsoluteDateAndTimeFilter : public Filter
+{
+	public:
+		AbsoluteDateAndTimeFilter();
+};
 }
 
 

@@ -22,33 +22,35 @@
 
 using namespace log4cxx;
 using namespace log4cxx::filter;
-using namespace log4cxx::spi; 
+using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 
 /**
  * Unit tests for DenyAllFilter.
  */
-LOGUNIT_CLASS(DenyAllFilterTest) {
-    LOGUNIT_TEST_SUITE(DenyAllFilterTest);
-       LOGUNIT_TEST(test1);
-    LOGUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(DenyAllFilterTest)
+{
+	LOGUNIT_TEST_SUITE(DenyAllFilterTest);
+	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST_SUITE_END();
 
 public:
-    /**
-     * Check that DenyAllFilter.decide() returns Filter.DENY.
-     */
-    void test1() {
-        LoggingEventPtr event(new LoggingEvent(
-                LOG4CXX_STR("org.apache.log4j.filter.DenyAllFilterTest"),
-                Level::getInfo(), 
-                LOG4CXX_STR("Hello, World"), 
-                LOG4CXX_LOCATION));
-        FilterPtr filter(new DenyAllFilter());
-        Pool p;
-        filter->activateOptions(p);
-        LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
-    }
+	/**
+	 * Check that DenyAllFilter.decide() returns Filter.DENY.
+	 */
+	void test1()
+	{
+		LoggingEventPtr event(new LoggingEvent(
+				LOG4CXX_STR("org.apache.log4j.filter.DenyAllFilterTest"),
+				Level::getInfo(),
+				LOG4CXX_STR("Hello, World"),
+				LOG4CXX_LOCATION));
+		FilterPtr filter(new DenyAllFilter());
+		Pool p;
+		filter->activateOptions(p);
+		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
+	}
 
 };
 

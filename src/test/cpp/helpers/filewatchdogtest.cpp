@@ -27,38 +27,43 @@ using namespace log4cxx::helpers;
  *
  * FileWatchdog tests.
  */
-LOGUNIT_CLASS(FileWatchdogTest) {
-  LOGUNIT_TEST_SUITE(FileWatchdogTest);
-          LOGUNIT_TEST(testShutdownDelay);
-  LOGUNIT_TEST_SUITE_END();
-  
+LOGUNIT_CLASS(FileWatchdogTest)
+{
+	LOGUNIT_TEST_SUITE(FileWatchdogTest);
+	LOGUNIT_TEST(testShutdownDelay);
+	LOGUNIT_TEST_SUITE_END();
+
 private:
-    class MockWatchdog : public FileWatchdog {
-    public:
-        MockWatchdog(const File& file) : FileWatchdog(file) {
-        }
-        
-        void doOnChange() {
-        }
-    };
-    
+	class MockWatchdog : public FileWatchdog
+	{
+		public:
+			MockWatchdog(const File& file) : FileWatchdog(file)
+			{
+			}
+
+			void doOnChange()
+			{
+			}
+	};
+
 public:
-  
-  /**
-   *  Tests that FileWatchdog will respond to a shutdown request more rapidly
-   *     than waiting out its delay. 
-   */
-  void testShutdownDelay() {
-      apr_time_t start = apr_time_now();
-      {
-        MockWatchdog dog(File(LOG4CXX_STR("input/patternlayout1.properties")));
-        dog.start();
-        //   wait 50 ms for thread to get rolling 
-        apr_sleep(50000);
-      }
-      apr_time_t delta = apr_time_now() - start;
-      LOGUNIT_ASSERT(delta < 30000000);
-  }
+
+	/**
+	 *  Tests that FileWatchdog will respond to a shutdown request more rapidly
+	 *     than waiting out its delay.
+	 */
+	void testShutdownDelay()
+	{
+		apr_time_t start = apr_time_now();
+		{
+			MockWatchdog dog(File(LOG4CXX_STR("input/patternlayout1.properties")));
+			dog.start();
+			//   wait 50 ms for thread to get rolling
+			apr_sleep(50000);
+		}
+		apr_time_t delta = apr_time_now() - start;
+		LOGUNIT_ASSERT(delta < 30000000);
+	}
 
 };
 

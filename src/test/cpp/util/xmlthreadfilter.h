@@ -22,11 +22,11 @@
 
 namespace log4cxx
 {
-   class XMLThreadFilter : public Filter
-   {
-   public:
-       XMLThreadFilter();
-   };
+class XMLThreadFilter : public Filter
+{
+	public:
+		XMLThreadFilter();
+};
 }
 
 

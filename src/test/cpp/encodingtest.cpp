@@ -42,151 +42,161 @@ using namespace log4cxx::helpers;
  *
  *
  */
-LOGUNIT_CLASS(EncodingTest) {
-  LOGUNIT_TEST_SUITE(EncodingTest);
-          LOGUNIT_TEST(testASCII);
-          LOGUNIT_TEST(testLatin1);
-          LOGUNIT_TEST(testUtf8);
-          LOGUNIT_TEST(testUtf16);
-          LOGUNIT_TEST(testUtf16LE);
-          LOGUNIT_TEST(testUtf16BE);
-  LOGUNIT_TEST_SUITE_END();
+LOGUNIT_CLASS(EncodingTest)
+{
+	LOGUNIT_TEST_SUITE(EncodingTest);
+	LOGUNIT_TEST(testASCII);
+	LOGUNIT_TEST(testLatin1);
+	LOGUNIT_TEST(testUtf8);
+	LOGUNIT_TEST(testUtf16);
+	LOGUNIT_TEST(testUtf16LE);
+	LOGUNIT_TEST(testUtf16BE);
+	LOGUNIT_TEST_SUITE_END();
 public:
-    /**
-     * Resets configuration after each test.
-     */
-    void tearDown() {
-      Logger::getRootLogger()->getLoggerRepository()->resetConfiguration();
-    }
+	/**
+	 * Resets configuration after each test.
+	 */
+	void tearDown()
+	{
+		Logger::getRootLogger()->getLoggerRepository()->resetConfiguration();
+	}
 
 
-    /**
-     * Test us-ascii encoding.
-     */
-  void testASCII() {
-      LoggerPtr root(Logger::getRootLogger());
+	/**
+	 * Test us-ascii encoding.
+	 */
+	void testASCII()
+	{
+		LoggerPtr root(Logger::getRootLogger());
 
-      configure(root, LOG4CXX_STR("output/encoding/ascii.log"),
-                      LOG4CXX_STR("US-ASCII"));
-      common(root);
+		configure(root, LOG4CXX_STR("output/encoding/ascii.log"),
+			LOG4CXX_STR("US-ASCII"));
+		common(root);
 
-      BinaryCompare::compare( "output/encoding/ascii.log",
-                              "witness/encoding/ascii.log");
-  }
+		BinaryCompare::compare( "output/encoding/ascii.log",
+			"witness/encoding/ascii.log");
+	}
 
-    /**
-     * Test iso-8859-1 encoding.
-     */
-    void testLatin1() {
-        LoggerPtr root(Logger::getRootLogger());
+	/**
+	 * Test iso-8859-1 encoding.
+	 */
+	void testLatin1()
+	{
+		LoggerPtr root(Logger::getRootLogger());
 
-        configure(root, LOG4CXX_STR("output/encoding/latin1.log"),
-                        LOG4CXX_STR("iso-8859-1"));
-        common(root);
+		configure(root, LOG4CXX_STR("output/encoding/latin1.log"),
+			LOG4CXX_STR("iso-8859-1"));
+		common(root);
 
-        BinaryCompare::compare( "output/encoding/latin1.log",
-                                "witness/encoding/latin1.log");
-    }
+		BinaryCompare::compare( "output/encoding/latin1.log",
+			"witness/encoding/latin1.log");
+	}
 
-    /**
-     * Test utf-8 encoding.
-     */
-    void testUtf8() {
-        LoggerPtr root(Logger::getRootLogger());
+	/**
+	 * Test utf-8 encoding.
+	 */
+	void testUtf8()
+	{
+		LoggerPtr root(Logger::getRootLogger());
 
-        configure(root, LOG4CXX_STR("output/encoding/UTF-8.log"),
-                        LOG4CXX_STR("UTF-8"));
-        common(root);
+		configure(root, LOG4CXX_STR("output/encoding/UTF-8.log"),
+			LOG4CXX_STR("UTF-8"));
+		common(root);
 
-        BinaryCompare::compare( "output/encoding/UTF-8.log",
-                                "witness/encoding/UTF-8.log");
-    }
+		BinaryCompare::compare( "output/encoding/UTF-8.log",
+			"witness/encoding/UTF-8.log");
+	}
 
-    /**
-     * Test utf-16 encoding.
-     */
-    void testUtf16() {
-        LoggerPtr root(Logger::getRootLogger());
+	/**
+	 * Test utf-16 encoding.
+	 */
+	void testUtf16()
+	{
+		LoggerPtr root(Logger::getRootLogger());
 
-        configure(root, LOG4CXX_STR("output/encoding/UTF-16.log"),
-                        LOG4CXX_STR("UTF-16"));
-        common(root);
+		configure(root, LOG4CXX_STR("output/encoding/UTF-16.log"),
+			LOG4CXX_STR("UTF-16"));
+		common(root);
 
-        BinaryCompare::compare( "output/encoding/UTF-16.log",
-                                "witness/encoding/UTF-16.log");
-    }
+		BinaryCompare::compare( "output/encoding/UTF-16.log",
+			"witness/encoding/UTF-16.log");
+	}
 
-    /**
-     * Test utf-16be encoding.
-     */
-    void testUtf16BE() {
-        LoggerPtr root(Logger::getRootLogger());
+	/**
+	 * Test utf-16be encoding.
+	 */
+	void testUtf16BE()
+	{
+		LoggerPtr root(Logger::getRootLogger());
 
-        configure(root, LOG4CXX_STR("output/encoding/UTF-16BE.log"),
-                        LOG4CXX_STR("UTF-16BE"));
-        common(root);
+		configure(root, LOG4CXX_STR("output/encoding/UTF-16BE.log"),
+			LOG4CXX_STR("UTF-16BE"));
+		common(root);
 
-        BinaryCompare::compare( "output/encoding/UTF-16BE.log",
-                                "witness/encoding/UTF-16BE.log");
-    }
+		BinaryCompare::compare( "output/encoding/UTF-16BE.log",
+			"witness/encoding/UTF-16BE.log");
+	}
 
-    /**
-     * Test utf16-le encoding.
-     */
-    void testUtf16LE() {
-        LoggerPtr root(Logger::getRootLogger());
+	/**
+	 * Test utf16-le encoding.
+	 */
+	void testUtf16LE()
+	{
+		LoggerPtr root(Logger::getRootLogger());
 
-        configure(root, LOG4CXX_STR("output/encoding/UTF-16LE.log"),
-                        LOG4CXX_STR("UTF-16LE"));
-        common(root);
+		configure(root, LOG4CXX_STR("output/encoding/UTF-16LE.log"),
+			LOG4CXX_STR("UTF-16LE"));
+		common(root);
 
-        BinaryCompare::compare( "output/encoding/UTF-16LE.log",
-                                "witness/encoding/UTF-16LE.log");
-    }
+		BinaryCompare::compare( "output/encoding/UTF-16LE.log",
+			"witness/encoding/UTF-16LE.log");
+	}
 
-    /**
-     * Configure logging.
-     * @param logger logger
-     * @param filename logging file name
-     * @param encoding encoding
-     */
-    private:
-    void configure(      LoggerPtr& logger,
-                   const LogString& filename,
-                   const LogString& encoding) {
-        FileAppenderPtr  appender(new FileAppender());
-        PatternLayoutPtr layout(new PatternLayout());
-        Pool             p;
+	/**
+	 * Configure logging.
+	 * @param logger logger
+	 * @param filename logging file name
+	 * @param encoding encoding
+	 */
+private:
+	void configure(      LoggerPtr & logger,
+		const LogString & filename,
+		const LogString & encoding)
+	{
+		FileAppenderPtr  appender(new FileAppender());
+		PatternLayoutPtr layout(new PatternLayout());
+		Pool             p;
 
-        layout->setConversionPattern(LOG4CXX_STR("%p - %m\n"));
-        layout->activateOptions(p);
+		layout->setConversionPattern(LOG4CXX_STR("%p - %m\n"));
+		layout->activateOptions(p);
 
-        appender->setAppend(false);
-        appender->setEncoding(encoding);
-        appender->setFile(filename);
-        appender->setLayout(layout);
-        appender->activateOptions(p);
+		appender->setAppend(false);
+		appender->setEncoding(encoding);
+		appender->setFile(filename);
+		appender->setLayout(layout);
+		appender->activateOptions(p);
 
-        logger->addAppender(appender);
-        logger->setLevel(Level::getInfo());
-    }
+		logger->addAppender(appender);
+		logger->setLevel(Level::getInfo());
+	}
 
-    /**
-     * Common logging requests.
-     * @param logger logger
-     */
-    void common(LoggerPtr& logger) {
-        logger->info("Hello, World");
+	/**
+	 * Common logging requests.
+	 * @param logger logger
+	 */
+	void common(LoggerPtr & logger)
+	{
+		logger->info("Hello, World");
 
-        // pi can be encoded in iso-8859-1
-        const wchar_t pi[] = { 0x00B9, 0 };
-        logger->info(pi);
+		// pi can be encoded in iso-8859-1
+		const wchar_t pi[] = { 0x00B9, 0 };
+		logger->info(pi);
 
-        //   arbitrary, hopefully meaningless, characters from
-        //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
-        const wchar_t greeting[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
-        logger->info(greeting);
-    }
+		//   arbitrary, hopefully meaningless, characters from
+		//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
+		const wchar_t greeting[] = { L'A', 0x0605, 0x0530, 0x986, 0x4E03, 0x400, 0 };
+		logger->info(greeting);
+	}
 };
 
 LOGUNIT_TEST_SUITE_REGISTRATION(EncodingTest);
