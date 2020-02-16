@@ -37,8 +37,6 @@ extern "C" {
 }
 #endif
 
-
-
 namespace log4cxx
 {
 

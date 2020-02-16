@@ -57,6 +57,6 @@ int ByteArrayInputStream::read(ByteBuffer& dst)
 		memcpy(dst.current(), &buf[pos], bytesCopied);
 		pos += bytesCopied;
 		dst.position(dst.position() + bytesCopied);
-		return bytesCopied;
+		return (int)bytesCopied;
 	}
 }

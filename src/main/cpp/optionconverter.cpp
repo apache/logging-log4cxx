@@ -187,14 +187,13 @@ LogString OptionConverter::substVars(const LogString& val, Properties& props)
 	const size_t DELIM_START_LEN = 2;
 	const size_t DELIM_STOP_LEN = 1;
 
-	int i = 0;
-	int j, k;
+	size_t i = 0;
 
 	while (true)
 	{
-		j = val.find(delimStart, i);
+		size_t j = val.find(delimStart, i);
 
-		if (j == -1)
+		if (j == val.npos)
 		{
 			// no more variables
 			if (i == 0)
@@ -212,9 +211,9 @@ LogString OptionConverter::substVars(const LogString& val, Properties& props)
 		else
 		{
 			sbuf.append(val.substr(i, j - i));
-			k = val.find(delimStop, j);
+			size_t k = val.find(delimStop, j);
 
-			if (k == -1)
+			if (k == val.npos)
 			{
 				LogString msg(1, (logchar) 0x22 /* '\"' */);
 				msg.append(val);

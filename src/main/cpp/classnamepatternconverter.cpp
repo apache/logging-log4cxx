@@ -55,7 +55,7 @@ void ClassNamePatternConverter::format(
 	LogString& toAppendTo,
 	Pool& /* p */) const
 {
-	int initialLength = toAppendTo.length();
+	int initialLength = (int)toAppendTo.length();
 	append(toAppendTo, event->getLocationInformation().getClassName());
 	abbreviate(initialLength, toAppendTo);
 }

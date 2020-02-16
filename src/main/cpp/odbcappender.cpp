@@ -187,7 +187,7 @@ void ODBCAppender::execute(const LogString& sql, log4cxx::helpers::Pool& p)
 			throw SQLException(SQL_HANDLE_STMT, stmt, "Failed to execute sql statement.", p);
 		}
 	}
-	catch (SQLException& e)
+	catch (SQLException&)
 	{
 		if (stmt != SQL_NULL_HSTMT)
 		{

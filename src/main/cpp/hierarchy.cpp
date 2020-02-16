@@ -345,7 +345,7 @@ void Hierarchy::updateParents(LoggerPtr logger)
 {
 	synchronized sync(mutex);
 	const LogString name(logger->getName());
-	int length = name.size();
+	size_t length = name.size();
 	bool parentFound = false;
 
 

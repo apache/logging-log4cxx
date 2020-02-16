@@ -67,14 +67,14 @@ bool SerializationTestHelper::compare(
 		return false;
 	}
 
-	int endScan = actual.size();
+	size_t endScan = actual.size();
 
 	if (endScan > endCompare)
 	{
 		endScan = endCompare;
 	}
 
-	for (int i = 0; i < endScan; i++)
+	for (size_t i = 0; i < endScan; i++)
 	{
 		if (((unsigned char) expected[i]) != actual[i])
 		{

@@ -21,6 +21,11 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/logstring.h>
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4251 )
+#endif
+
 extern "C" {
 	struct apr_file_t;
 	struct apr_finfo_t;
@@ -183,6 +188,10 @@ class LOG4CXX_EXPORT File
 };
 } // namespace log4cxx
 
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #define LOG4CXX_FILE(name) log4cxx::File(name)
 

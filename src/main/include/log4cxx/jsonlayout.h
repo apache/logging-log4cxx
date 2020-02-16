@@ -22,6 +22,10 @@
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/spi/loggingevent.h>
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4251 )
+#endif
 
 
 namespace log4cxx
@@ -135,5 +139,8 @@ class LOG4CXX_EXPORT JSONLayout : public Layout
 LOG4CXX_PTR_DEF(JSONLayout);
 }  // namespace log4cxx
 
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #endif // _LOG4CXX_JSON_LAYOUT_H

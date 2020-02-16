@@ -23,6 +23,11 @@
 #include <log4cxx/helpers/cyclicbuffer.h>
 #include <log4cxx/spi/triggeringeventevaluator.h>
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4251 )
+#endif
+
 namespace log4cxx
 {
 namespace net
@@ -281,5 +286,9 @@ LOG4CXX_PTR_DEF(SMTPAppender);
 
 }  // namespace net
 } // namespace log4cxx
+
+#if defined(_MSC_VER)
+#pragma warning (pop)
+#endif
 
 #endif // _LOG4CXX_NET_SMTP_H

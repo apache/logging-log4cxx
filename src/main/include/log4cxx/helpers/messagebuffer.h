@@ -22,6 +22,11 @@
 #include <log4cxx/logstring.h>
 #include <sstream>
 
+#if defined(_MSC_VER)
+	#pragma warning ( push )
+	#pragma warning ( disable: 4251 4275 )
+#endif
+
 namespace log4cxx
 {
 
@@ -837,5 +842,10 @@ typedef CharMessageBuffer LogCharMessageBuffer;
 
 }
 }
+
+#if defined(_MSC_VER)
+	#pragma warning (pop)
+#endif
+
 #endif
 

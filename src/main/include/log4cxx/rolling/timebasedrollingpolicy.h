@@ -26,6 +26,11 @@
 #include <log4cxx/helpers/outputstream.h>
 #include <apr_mmap.h>
 
+#if defined(_MSC_VER)
+#pragma warning ( push )
+#pragma warning ( disable: 4251 )
+#endif
+
 namespace log4cxx
 {
 
@@ -291,6 +296,10 @@ LOG4CXX_PTR_DEF(TimeBasedRollingPolicy);
 
 }
 }
+
+#if defined(_MSC_VER)
+#pragma warning ( pop )
+#endif
 
 #endif
 

@@ -119,7 +119,7 @@ int NDC::getDepth()
 
 	if (data != 0)
 	{
-		size = data->getStack().size();
+		size = (int)data->getStack().size();
 
 		if (size == 0)
 		{

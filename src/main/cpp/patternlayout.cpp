@@ -89,7 +89,7 @@ void PatternLayout::format(LogString& output,
 		converterIter != patternConverters.end();
 		converterIter++, formatterIter++)
 	{
-		int startField = output.length();
+		int startField = (int)output.length();
 		(*converterIter)->format(event, output, pool);
 		(*formatterIter)->format(startField, output);
 	}

@@ -471,7 +471,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 							Transcoder::decode(encoding, e);
 							decoder = getDecoder(e);
 						}
-						catch (IllegalArgumentException& ex)
+						catch (IllegalArgumentException&)
 						{
 							decoder = new USASCIICharsetDecoder();
 						}
