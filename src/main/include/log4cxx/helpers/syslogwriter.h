@@ -24,8 +24,8 @@
 #include <log4cxx/helpers/datagramsocket.h>
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4251 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4251 )
 #endif
 
 namespace log4cxx
@@ -53,7 +53,7 @@ class LOG4CXX_EXPORT SyslogWriter
 } // namespace log4cxx
 
 #if defined(_MSC_VER)
-#pragma warning (pop)
+	#pragma warning (pop)
 #endif
 
 #endif

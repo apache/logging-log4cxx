@@ -22,8 +22,8 @@
 #include <log4cxx/logstring.h>
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4251 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4251 )
 #endif
 
 extern "C" {
@@ -190,7 +190,7 @@ class LOG4CXX_EXPORT File
 
 
 #if defined(_MSC_VER)
-#pragma warning (pop)
+	#pragma warning (pop)
 #endif
 
 #define LOG4CXX_FILE(name) log4cxx::File(name)

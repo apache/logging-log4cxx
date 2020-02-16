@@ -22,8 +22,8 @@
 #include <log4cxx/mdc.h>
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4251 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4251 )
 #endif
 
 namespace log4cxx
@@ -69,7 +69,7 @@ class LOG4CXX_EXPORT ThreadSpecificData
 } // namespace log4cxx
 
 #if defined(_MSC_VER)
-#pragma warning (pop)
+	#pragma warning (pop)
 #endif
 
 #endif

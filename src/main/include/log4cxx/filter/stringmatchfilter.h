@@ -21,8 +21,8 @@
 #include <log4cxx/spi/filter.h>
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4251 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4251 )
 #endif
 
 namespace log4cxx
@@ -103,7 +103,7 @@ LOG4CXX_PTR_DEF(StringMatchFilter);
 } // namespace log4cxx
 
 #if defined(_MSC_VER)
-#pragma warning (pop)
+	#pragma warning (pop)
 #endif
 
 #endif // _LOG4CXX_FILTER_STRING_MATCH_FILTER_H

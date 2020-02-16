@@ -23,8 +23,8 @@
 #include <log4cxx/spi/loggingevent.h>
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4251 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4251 )
 #endif
 
 
@@ -140,7 +140,7 @@ LOG4CXX_PTR_DEF(JSONLayout);
 }  // namespace log4cxx
 
 #if defined(_MSC_VER)
-#pragma warning (pop)
+	#pragma warning (pop)
 #endif
 
 #endif // _LOG4CXX_JSON_LAYOUT_H

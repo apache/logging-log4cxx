@@ -22,8 +22,8 @@
 #include <log4cxx/helpers/objectimpl.h>
 
 #ifdef _MSC_VER
-#pragma warning ( push )
-#pragma warning (disable : 4251) // ::std::exception needs to have dll-interface
+	#pragma warning ( push )
+	#pragma warning (disable : 4251) // ::std::exception needs to have dll-interface
 #endif
 
 namespace log4cxx
@@ -105,7 +105,7 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 } // namespace log4cxx
 
 #if defined(_MSC_VER)
-#pragma warning (pop)
+	#pragma warning (pop)
 #endif
 
 #endif //_LOG4CXX_HELPERS_ONLY_ONCE_ERROR_HANDLER_H

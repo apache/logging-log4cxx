@@ -25,8 +25,8 @@
 #include <log4cxx/helpers/objectptr.h>
 
 #if defined(_MSC_VER)
-#pragma warning ( push )
-#pragma warning ( disable: 4251 )
+	#pragma warning ( push )
+	#pragma warning ( disable: 4251 )
 #endif
 
 namespace log4cxx
@@ -335,7 +335,7 @@ template<> inline bool LevelPtr::operator!=(const LevelPtr& rhs) const
 	IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(level, Class##level)
 
 #if defined(_MSC_VER)
- #pragma warning (pop)
+	#pragma warning (pop)
 #endif
 
 #endif //_LOG4CXX_LEVEL_H
