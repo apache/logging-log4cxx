@@ -52,10 +52,14 @@ LOGUNIT_CLASS(SizeBasedRollingTest)
 	LOGUNIT_TEST_SUITE(SizeBasedRollingTest);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
+#ifndef EXCLUDE_GZIP_TESTS
 	LOGUNIT_TEST(test3);
+#endif
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(test5);
+#ifndef EXCLUDE_ZIP_TESTS
 	LOGUNIT_TEST(test6);
+#endif
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;

@@ -37,7 +37,7 @@ if(EXISTS ${APR_CONFIG_EXECUTABLE})
 else()
     find_path(APR_INCLUDE_DIR apr.h PATH_SUFFIXES apr-1)
     find_library(APR_LIBRARIES NAMES libapr-1 apr-1)
-    find_path(APR_DLL_DIR libapr-1.dll)
+    find_program(APR_DLL libapr-1.dll)
 endif()
 
 find_package_handle_standard_args(apr

@@ -38,7 +38,7 @@ if(EXISTS ${APR_UTIL_CONFIG_EXECUTABLE})
 else()
     find_path(APR_UTIL_INCLUDE_DIR apu.h PATH_SUFFIXES apr-1)
     find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1 aprutil-1)
-    find_path(APR_UTIL_DLL_DIR libaprutil-1.dll)
+    find_program(APR_UTIL_DLL libaprutil-1.dll)
 endif()
 
 find_package_handle_standard_args(apr-util DEFAULT_MSG
