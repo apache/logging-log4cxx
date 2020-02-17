@@ -53,16 +53,16 @@ $ sudo make install
    extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%\Libraries.
 
 +------------+
-   cd %HOMEPATH%\Libraries
-   cmake -S libexpat\expat -B buildtrees\expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
-   cmake --build buildtrees\expat --target install --config Release
-   cmake -S apr-1.7.0 -B buildtrees\apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
-   cmake --build buildtrees\apr --target install --config Release
-   set CMAKE_PREFIX_PATH=%HOMEPATH%\Libraries\installed
-   cmake -S apr-util-1.6.1 -B buildtrees\apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
-   cmake --build buildtrees\apr-util --target install --config Release
-   cmake -S apache-log4cxx-x.x.x -B buildtrees\log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
-   cmake --build buildtrees\log4cxx --target install --config Release
+$ cd %HOMEPATH%\Libraries
+$ cmake -S libexpat\expat -B buildtrees\expat -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+$ cmake --build buildtrees\expat --target install --config Release
+$ cmake -S apr-1.7.0 -B buildtrees\apr -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+$ cmake --build buildtrees\apr --target install --config Release
+$ set CMAKE_PREFIX_PATH=%HOMEPATH%\Libraries\installed
+$ cmake -S apr-util-1.6.1 -B buildtrees\apr-util -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+$ cmake --build buildtrees\apr-util --target install --config Release
+$ cmake -S apache-log4cxx-x.x.x -B buildtrees\log4cxx -DCMAKE_INSTALL_PREFIX=%HOMEPATH%\Libraries\installed
+$ cmake --build buildtrees\log4cxx --target install --config Release
 +------------+
 
 * Platform specific notes:
@@ -97,13 +97,13 @@ $ sudo make install
   APR, APR-Util, gzip and zip may be installed from the ports collection by:
 
 +----+
-# cd /usr/ports/archivers/zip
-# make
-# make install
-# cd /usr/ports/archivers/gzip
-# make
-# make install
-# cd /usr/ports/devel/apr
-# make
-# make install
+$ cd /usr/ports/archivers/zip
+$ make
+$ make install
+$ cd /usr/ports/archivers/gzip
+$ make
+$ make install
+$ cd /usr/ports/devel/apr
+$ make
+$ make install
 +----+
