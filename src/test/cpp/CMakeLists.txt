@@ -3,6 +3,9 @@ find_program(sedProgram sed)
 find_program(gzipProgram gzip)
 find_program(zipProgram zip)
 
+# Some timebasedrollingtest may fail when the output directory is already populated
+file(REMOVE_RECURSE ${CMAKE_CURRENT_LIST_DIR}/../resources/output)
+
 # Components required by all tests
 add_library(testingFramework STATIC abts.cpp appenderskeletontestcase.cpp logunit.cpp vectorappender.cpp writerappendertestcase.cpp )
 target_include_directories(testingFramework PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
@@ -65,6 +68,8 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     )
 
     if(WIN32)
+        get_filename_component(APR_DLL_DIR "${APR_DLL}" DIRECTORY)
+        get_filename_component(APR_UTIL_DLL_DIR "${APR_UTIL_DLL}" DIRECTORY)
         get_filename_component(SED_DIR "${sedProgram}" DIRECTORY)
         get_filename_component(GZIP_DIR "${gzipProgram}" DIRECTORY)
         get_filename_component(ZIP_DIR "${zipProgram}" DIRECTORY)
