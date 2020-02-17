@@ -1,6 +1,3 @@
-# Determine whether to include tests that call sed
-find_program(sedProgram sed)
-
 # Components required by all tests
 add_library(testingFramework STATIC abts.cpp appenderskeletontestcase.cpp logunit.cpp vectorappender.cpp writerappendertestcase.cpp )
 target_include_directories(testingFramework PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
@@ -8,7 +5,7 @@ add_subdirectory(util)
 target_sources(testingUtilities PRIVATE xml/xlevel.cpp)
 
 # Tests defined in this directory
-set(ALL_LOG4CXX_TESTS 
+set(ALL_LOG4CXX_TESTS
     asyncappendertestcase
     consoleappendertestcase
     decodingtest
@@ -22,15 +19,13 @@ set(ALL_LOG4CXX_TESTS
     leveltestcase
     loggertestcase
     mdctestcase
+    minimumtestcase
     ndctestcase
-   
+    patternlayouttest
     propertyconfiguratortest
     rollingfileappendertestcase
     streamtestcase
 )
-if(sedProgram)
-    list(APPEND ALL_LOG4CXX_TESTS minimumtestcase patternlayouttest)
-endif()
 foreach(fileName IN LISTS ALL_LOG4CXX_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
 endforeach()
