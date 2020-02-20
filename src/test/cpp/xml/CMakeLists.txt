@@ -2,7 +2,6 @@ add_executable(xmltests
     domtestcase
     xmllayouttest
     xmllayouttestcase
-    xmltests
 )
 
 target_link_libraries(xmltests PRIVATE ${APR_UTIL_LIBRARIES})
