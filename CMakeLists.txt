@@ -57,7 +57,7 @@ endif(UNIX)
 
 # Support for find_package(log4cxx) in consuming CMake projects using
 # target_include_directories(myApplication PRIVATE $<TARGET_PROPERTY:log4cxx,INTERFACE_INCLUDE_DIRECTORIES>)
-# target_link_libraries( myApplication PRIVATE $<TARGET_PROPERTY:log4cxx,IMPORTED_IMPLIB_${CMAKE_BUILD_TYPE}>)
+# target_link_libraries( myApplication PRIVATE log4cxx)
 install(EXPORT log4cxxTargets
   FILE        log4cxxConfig.cmake
   DESTINATION share/cmake/log4cxx
