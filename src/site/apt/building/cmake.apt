@@ -110,8 +110,9 @@ $ make install
 
 * Using log4cxx in a CMake build
 
-A log4cxxConfig.cmake and log4cxxConfigVersion.cmake is installed to allow use of find_package() in your CMakeLists.txt.
-Below are example cmake commands that compile and link 'myApplication" with log4cxx.
+   A log4cxxConfig.cmake and log4cxxConfigVersion.cmake is installed to allow use of find_package() in your CMakeLists.txt.
+   
+   Below are example cmake commands that compile and link 'myApplication" with log4cxx.
 
 +----+
 find_package(log4cxx 0.11)
