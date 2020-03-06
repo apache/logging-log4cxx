@@ -8,7 +8,6 @@ file(REMOVE_RECURSE ${CMAKE_CURRENT_LIST_DIR}/../resources/output)
 
 # Determine whether to include tests that call sed
 find_program(sedProgram sed)
->>>>>>> parent of 76671956... GHPR #18 wants to introduce additional excluded tests, but not sure if this is the correct approach. If it's not, a missing SED shouldn't be excluded as well of course, so I'm removing that. I'm pretty sure to not want to add additional excluded tests, because at some points the running and optionally succeeded ones don't mean anything anymore if the half of them is not executed at all. Additionally, SED, ZIP and GZIP can easily be provided on Windows as well e.g. using the following or MSYS2 or GIT for Windows or...:
 
 # Components required by all tests
 add_library(testingFramework STATIC abts.cpp appenderskeletontestcase.cpp logunit.cpp vectorappender.cpp writerappendertestcase.cpp )
