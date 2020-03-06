@@ -41,6 +41,7 @@ IF(WIN32 AND LOG4CXX_INSTALL_PDB)
 ENDIF(WIN32 AND LOG4CXX_INSTALL_PDB)
 
 if(UNIX)
+  # Support for pkg-config in consuming projects
   set(prefix "${CMAKE_INSTALL_PREFIX}")
   set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
   set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
@@ -54,12 +55,21 @@ if(UNIX)
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
 endif(UNIX)
 
-
-# create export file which can be imported by other cmake projects
+# Support for find_package(log4cxx) in consuming CMake projects using
+# target_include_directories(myApplication PRIVATE $<TARGET_PROPERTY:log4cxx,INTERFACE_INCLUDE_DIRECTORIES>)
+# target_link_libraries( myApplication PRIVATE $<TARGET_PROPERTY:log4cxx,IMPORTED_IMPLIB_${CMAKE_BUILD_TYPE}>)
 install(EXPORT log4cxxTargets
-  FILE log4cxx-targets.cmake
-  NAMESPACE log4cxx::
+  FILE        log4cxxConfig.cmake
   DESTINATION share/cmake/log4cxx
+)
+# Support for find_package(log4cxx 0.11) in consuming CMake projects
+include(CMakePackageConfigHelpers)
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
+  VERSION       ${PROJECT_VERSION}
+  COMPATIBILITY SameMinorVersion
+)
+install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
+  DESTINATION   share/cmake/log4cxx
 )
 
 #
