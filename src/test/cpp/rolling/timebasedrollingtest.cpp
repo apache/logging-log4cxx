@@ -71,10 +71,14 @@ LOGUNIT_CLASS(TimeBasedRollingTest)
 	LOGUNIT_TEST_SUITE(TimeBasedRollingTest);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
+#ifndef EXCLUDE_GZIP_TESTS
 	LOGUNIT_TEST(test3);
+#endif
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(test5);
+#ifndef EXCLUDE_GZIP_TESTS
 	LOGUNIT_TEST(test6);
+#endif
 	LOGUNIT_TEST(test7);
 	LOGUNIT_TEST_SUITE_END();
 
@@ -145,7 +149,7 @@ private:
 	 * <p>
 	 * Most tests need to log some message to some files and sleep afterwards, to spread the msgs
 	 * over time and timestamp based named files. This method handles this for all tests to not need
-	 * to replicate the same code AND deals with the fact that the logigng statements should contain
+	 * to replicate the same code AND deals with the fact that the logging statements should contain
 	 * the original src function and line. For that to work each caller needs to provide us the
 	 * additional information and we redefine LOG4CXX_LOCATION to use that provided data instead of
 	 * that from the compiler when a log statement is issued. While this is a bit ugly, because we
@@ -465,6 +469,7 @@ public:
 		this->compareWitnesses( pool, LOG4CXX_STR("test2."), fileNames, __LINE__);
 	}
 
+#ifndef EXCLUDE_GZIP_TESTS
 	/**
 	 * With compression, activeFileName left blank, no stop/restart
 	 */
@@ -492,6 +497,7 @@ public:
 		this->logMsgAndSleep(   pool, nrOfFileNames + 1, __LOG4CXX_FUNC__, __LINE__);
 		this->checkFilesExist(  pool, LOG4CXX_STR("test3."), fileNames, __LINE__);
 	}
+#endif
 
 	/**
 	 * Without compression, activeFileName set,  with stop/restart
@@ -567,6 +573,7 @@ public:
 		this->compareWitnesses( pool, LOG4CXX_STR("test5."), fileNames, __LINE__);
 	}
 
+#ifndef EXCLUDE_GZIP_TESTS
 	/**
 	 * With compression, activeFileName set, no stop/restart,
 	 */
@@ -595,6 +602,7 @@ public:
 		this->logMsgAndSleep(   pool, nrOfFileNames + 1, __LOG4CXX_FUNC__, __LINE__);
 		this->checkFilesExist(  pool, LOG4CXX_STR("test6."), fileNames, __LINE__);
 	}
+#endif
 
 	/**
 	 * Repeat some test with generic file name.s
@@ -613,8 +621,9 @@ public:
 
 		tests.at(4) = &TimeBasedRollingTest::test4;
 		tests.at(5) = &TimeBasedRollingTest::test5;
+#ifndef EXCLUDE_GZIP_TESTS
 		tests.at(6) = &TimeBasedRollingTest::test6;
-
+#endif
 		for (size_t numTest = 1; numTest < tests.size(); ++numTest)
 		{
 			Test test(tests.at(numTest));
