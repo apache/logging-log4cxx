@@ -18,4 +18,5 @@ add_library(testingUtilities STATIC
     xmlthreadfilter.cpp
     xmltimestampfilter.cpp
 )
+target_compile_definitions(testingUtilities PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
 target_include_directories(testingUtilities PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)

@@ -12,6 +12,12 @@ find_package(APR REQUIRED)
 # Find Apache Runtime Utilities
 find_package(APR-Util REQUIRED)
 
+# Add support for linking statically
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+if(NOT BUILD_SHARED_LIBS)
+  set(LOG4CXX_COMPILE_DEFINITIONS LOG4CXX_STATIC)
+endif()
+
 # Building
 add_subdirectory(src)
 
@@ -33,12 +39,12 @@ install(TARGETS log4cxx EXPORT log4cxxTargets
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-IF(WIN32 AND LOG4CXX_INSTALL_PDB)
+IF(WIN32 AND BUILD_SHARED_LIBS AND LOG4CXX_INSTALL_PDB)
   INSTALL(FILES $<TARGET_PDB_FILE:log4cxx>
           DESTINATION ${CMAKE_INSTALL_BINDIR}
           CONFIGURATIONS RelWithDebInfo Debug
   )
-ENDIF(WIN32 AND LOG4CXX_INSTALL_PDB)
+ENDIF()
 
 if(UNIX)
   # Support for pkg-config in consuming projects

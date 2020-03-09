@@ -46,7 +46,10 @@ $ sudo make install
 *------------------------+---------------------------------------------------------------------------------------------+
 | -DLOG4CXX_CFSTRING=yes | Enable CFString API methods, requires Mac OS/X CoreFoundation, choice of yes, no (default). |
 *------------------------+---------------------------------------------------------------------------------------------+
-| -DBUILD_TESTING=off    | Disable tests.  Tests are enabled by default                                                |
+| -DBUILD_TESTING=off    | Do not build tests.  Tests are built by default                                             |
+*------------------------+---------------------------------------------------------------------------------------------+
+| -DBUILD_SHARED_LIBS=off| Build log4cxx as a static library. A dynamically linked log4cxx library is built by default.|
+|                        | Any compilation unit that includes a log4cxx header must define LOG4CXX_STATIC.             |
 *------------------------+---------------------------------------------------------------------------------------------+
 
    Building and testing log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
