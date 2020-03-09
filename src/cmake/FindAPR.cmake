@@ -36,9 +36,15 @@ if(EXISTS ${APR_CONFIG_EXECUTABLE})
     _apr_invoke(APR_LIBRARIES  --link-ld)
 else()
     find_path(APR_INCLUDE_DIR apr.h PATH_SUFFIXES apr-1)
-    find_library(APR_LIBRARIES NAMES libapr-1 apr-1)
-    find_path(APR_DLL_DIR libapr-1.dll)
+    if (LINK_APR_STATICALLY OR NOT BUILD_SHARED_LIBS)
+      set(APR_SYSTEM_LIBS  ws2_32  mswsock  rpcrt4)
+      set(APR_COMPILE_DEFINITIONS APR_DECLARE_STATIC)
+      find_library(APR_LIBRARIES NAMES apr-1)
+    else()
+      find_library(APR_LIBRARIES NAMES libapr-1)
+      find_program(APR_DLL libapr-1.dll)
+    endif()
 endif()
 
-find_package_handle_standard_args(apr
+find_package_handle_standard_args(APR
     APR_INCLUDE_DIR APR_LIBRARIES)

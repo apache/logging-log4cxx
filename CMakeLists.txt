@@ -12,6 +12,12 @@ find_package(APR REQUIRED)
 # Find Apache Runtime Utilities
 find_package(APR-Util REQUIRED)
 
+# Add support for linking statically
+option(BUILD_SHARED_LIBS "Build shared libraries" ON)
+if(NOT BUILD_SHARED_LIBS)
+  set(LOG4CXX_COMPILE_DEFINITIONS LOG4CXX_STATIC)
+endif()
+
 # Building
 add_subdirectory(src)
 
@@ -33,12 +39,12 @@ install(TARGETS log4cxx EXPORT log4cxxTargets
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
-IF(WIN32 AND LOG4CXX_INSTALL_PDB)
+IF(WIN32 AND BUILD_SHARED_LIBS AND LOG4CXX_INSTALL_PDB)
   INSTALL(FILES $<TARGET_PDB_FILE:log4cxx>
           DESTINATION ${CMAKE_INSTALL_BINDIR}
           CONFIGURATIONS RelWithDebInfo Debug
   )
-ENDIF(WIN32 AND LOG4CXX_INSTALL_PDB)
+ENDIF()
 
 if(UNIX)
   set(prefix "${CMAKE_INSTALL_PREFIX}")
@@ -88,7 +94,7 @@ message(STATUS "")
 message(STATUS "log4cxx configuration summary:")
 message(STATUS "")
 
-message(STATUS "  Build type ...................... : ${CMAKE_BUILD_TYPE}")
+message(STATUS "  Build shared library ............ : ${BUILD_SHARED_LIBS}")
 message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
