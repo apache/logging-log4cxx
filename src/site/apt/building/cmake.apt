@@ -49,8 +49,8 @@ $ sudo make install
 | -DBUILD_TESTING=off    | Disable tests.  Tests are enabled by default                                                |
 *------------------------+---------------------------------------------------------------------------------------------+
 
-   Building and testing log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
-   extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%\Libraries.
+  Building and testing log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
+  extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%\Libraries.
 
 +------------+
 $ cd %HOMEPATH%\Libraries
@@ -71,7 +71,7 @@ $ cmake --build buildtrees\log4cxx --target install --config Release
 
   APR and APR-Util are provided by the platform in Mac OS/X 10.5 and iODBC in 10.4.
 
-  cmake can be installed by typing "brew install cmake"
+  cmake can be installed by typing "brew install cmake".
 
 ** Debian:
 
@@ -110,9 +110,10 @@ $ make install
 
 * Using log4cxx in a CMake build
 
-   A log4cxxConfig.cmake and log4cxxConfigVersion.cmake is installed to allow use of find_package() in your CMakeLists.txt.
-   
-   Below are example cmake commands that compile and link 'myApplication" with log4cxx.
+  A log4cxxConfig.cmake and log4cxxConfigVersion.cmake is installed to allow use of find_package()
+  in your CMakeLists.txt.
+
+  Below are example cmake commands that compile and link "myApplication" with log4cxx.
 
 +----+
 find_package(log4cxx 0.11)
@@ -120,5 +121,3 @@ add_executable(myApplication myMain.cpp)
 target_include_directories(myApplication PRIVATE $<TARGET_PROPERTY:log4cxx,INTERFACE_INCLUDE_DIRECTORIES>)
 target_link_libraries( myApplication PRIVATE log4cxx)
 +----+
-
-
