@@ -1,7 +1,6 @@
 
 # Options
 option(LOG4CXX_BLOCKING_ASYNC_APPENDER "Async appender behaviour" ON)
-option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 
 # Build the log4cxx library
 add_library(log4cxx action.cpp)
