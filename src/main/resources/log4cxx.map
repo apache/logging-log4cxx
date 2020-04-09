@@ -1,0 +1,6 @@
+{
+  global:
+    *log4cxx*;
+  local:
+    *;
+};

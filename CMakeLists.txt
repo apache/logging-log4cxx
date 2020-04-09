@@ -18,6 +18,13 @@ if(NOT BUILD_SHARED_LIBS)
   set(LOG4CXX_COMPILE_DEFINITIONS LOG4CXX_STATIC)
 endif()
 
+option(EXPORT_ONLY_LOG4CXX_SYMBOLS "Only exports the log4cxx symbols" ON)
+if(BUILD_SHARED_LIBS AND EXPORT_ONLY_LOG4CXX_SYMBOLS)
+  SET(LINKER_VERSION_SCRIPT_FILE "${CMAKE_CURRENT_SOURCE_DIR}/src/main/resources/log4cxx.map")
+  SET(LINKER_VERSION_SCRIPT_FLAG "-Wl,--version-script=${LINKER_VERSION_SCRIPT_FILE}")
+  SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${LINKER_VERSION_SCRIPT_FLAG}")
+endif()
+
 # Building
 add_subdirectory(src)
 
@@ -105,6 +112,10 @@ message(STATUS "log4cxx configuration summary:")
 message(STATUS "")
 
 message(STATUS "  Build shared library ............ : ${BUILD_SHARED_LIBS}")
+message(STATUS "  Export only log4cxx symbols ..... : ${EXPORT_ONLY_LOG4CXX_SYMBOLS}")
+if(EXPORT_ONLY_LOG4CXX_SYMBOLS)
+message(STATUS "  Linker version script: .......... : ${LINKER_VERSION_SCRIPT_FILE}")
+endif()
 message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
