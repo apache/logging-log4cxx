@@ -57,7 +57,7 @@ $ sudo make install
 | -DAPR_STATIC=yes                  | Link to the APR static library. By default, the log4cxx shared library is linked to the     |
 |                                   | APR shared library. If BUILD_SHARED_LIBS=off, the static APR library is always used.        |
 *-----------------------------------+---------------------------------------------------------------------------------------------+
-| -DEXPORT_ONLY_LOG4CXX_SYMBOLS=yes | Only export the log4cxx symbols in the log4cxx shared library.                              |
+| -DEXPORT_ONLY_LOG4CXX_SYMBOLS=yes | Only export the log4cxx symbols in the log4cxx shared library, choice of yes, no (default). |
 *-----------------------------------+---------------------------------------------------------------------------------------------+
 
   Building and testing log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
