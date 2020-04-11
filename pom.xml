@@ -391,7 +391,10 @@
 					</reportSet>
 				</reportSets>
 				<configuration>
-					<issueLinkTemplate>%URL%/browse/%ISSUE%</issueLinkTemplate>
+					<issueLinkTemplatePerSystem>
+						<GHPR>https://github.com/apache/logging-log4cxx/pull/%ISSUE%</GHPR>
+						<JIRA>%URL%/%ISSUE%</JIRA>
+					</issueLinkTemplatePerSystem>
 				</configuration>
 			</plugin>
 		</plugins>
