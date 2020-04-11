@@ -442,15 +442,14 @@
 					date="2003-05-31">
 			<action type="add">Loggers, Hierarchy, Filters, Appenders, Layouts, NDC</action>
 			<action type="add">Appenders:
-			  AsyncAppender, ConsoleAppender, FileAppender, NTEventLogAppender,
-			  RollingFileAppender, SocketAppender, SocketHubAappender,
-			  TelnetAppender
+				AsyncAppender, ConsoleAppender, FileAppender, NTEventLogAppender,
+				RollingFileAppender, SocketAppender, SocketHubAappender, TelnetAppender
 			</action>
 			<action type="add">Layouts:
-			  HTMLLayout, PatternLayout, SimpleLayout, TTCCLayout, XMLLayout
+				HTMLLayout, PatternLayout, SimpleLayout, TTCCLayout, XMLLayout
 			</action>
 			<action type="add">Filters:
-			  DenyAllFilter, LevelMatchFilter, LevelRangeFilter, StringMatchFilter
+				DenyAllFilter, LevelMatchFilter, LevelRangeFilter, StringMatchFilter
 			</action>
 			<action type="add">Configurators: DOMConfigurator</action>
 		</release>
