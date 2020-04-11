@@ -110,7 +110,7 @@
 			<action type="add">JSONLayout (https://github.com/apache/logging-log4cxx/pull/13)</action>
 			<action type="update">Behavior of StringHelper::startsWith and endsWith synced</action>
 			<action type="update">Documented C (class) and M (method) log format keywords.</action>
-			<action type="add">Locationinfo for Borland C++ Builder and successors improved</action>
+			<action type="add">LocationInfo for Borland C++ Builder and successors improved</action>
 		</release>
 
 		<release	version="0.10.0"
