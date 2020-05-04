@@ -34,7 +34,15 @@ find_program(APR_UTIL_CONFIG_EXECUTABLE
 mark_as_advanced(APR_UTIL_CONFIG_EXECUTABLE)
 if(EXISTS ${APR_UTIL_CONFIG_EXECUTABLE})
     _apu_invoke(APR_UTIL_INCLUDE_DIR   --includedir)
-    _apu_invoke(APR_UTIL_LIBRARIES     --link-ld)
+    if (APU_STATIC OR NOT BUILD_SHARED_LIBS)
+      _apu_invoke(_apu_util_link_args  --link-ld)
+      string(REGEX MATCH "-L([^ ]+)" _apu_util_L_flag ${_apu_util_link_args})
+      find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1.a PATHS "${CMAKE_MATCH_1}")
+      _apu_invoke(XMLLIB_LIBRARIES --libs)
+      set(APR_UTIL_COMPILE_DEFINITIONS APU_DECLARE_STATIC)
+    else()
+      _apu_invoke(APR_UTIL_LIBRARIES   --link-ld)
+    endif()
 else()
     find_path(APR_UTIL_INCLUDE_DIR apu.h PATH_SUFFIXES apr-1)
     if (APU_STATIC OR NOT BUILD_SHARED_LIBS)
@@ -48,5 +56,5 @@ else()
     endif()
 endif()
 
-find_package_handle_standard_args(APR-Util DEFAULT_MSG
+find_package_handle_standard_args(APR-Util
   APR_UTIL_INCLUDE_DIR APR_UTIL_LIBRARIES)
