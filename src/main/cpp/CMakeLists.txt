@@ -87,6 +87,7 @@ target_sources(log4cxx
   logmanager.cpp
   logstream.cpp
   manualtriggeringpolicy.cpp
+  mapfilter.cpp
   mdc.cpp
   messagebuffer.cpp
   messagepatternconverter.cpp
