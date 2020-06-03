@@ -32,48 +32,56 @@ void MapFilter::setOption(const LogString& option,
 	const LogString& value)
 {
 
-	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch"))) {
-
+	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
+	{
 		acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
 	}
-	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("OPERATOR"), LOG4CXX_STR("operator"))) {
-
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("OPERATOR"), LOG4CXX_STR("operator")))
+	{
 		mustMatchAll = StringHelper::equalsIgnoreCase(value, LOG4CXX_STR("AND"), LOG4CXX_STR("and")) ? true : false;
 	}
-	else if (!option.empty() && !value.empty()) {
-
-		mapKeyValList.emplace(option, value);
+	else if (!option.empty() && !value.empty())
+	{
+		mapKeyValList[option] = value;
 	}
 }
 
 Filter::FilterDecision MapFilter::decide(
 	const log4cxx::spi::LoggingEventPtr& event) const
 {
-	if (mapKeyValList.empty()) {
+	if (mapKeyValList.empty())
+	{
 		return Filter::NEUTRAL;
 	}
 
-	bool	matched = true;
-	for (auto it = mapKeyValList.cbegin(); it != mapKeyValList.cend(); ++it) {
+	bool    matched = true;
+
+	for (auto it = mapKeyValList.cbegin(); it != mapKeyValList.cend(); ++it)
+	{
 		LogString curval;
 		event->getMDC(it->first, curval);
 
-		if (curval.empty() || curval != it->second) {
+		if (curval.empty() || curval != it->second)
+		{
 			matched = false;
 		}
-		else {
+		else
+		{
 			matched = true;
 		}
-			
-		if (mustMatchAll != matched) {
+
+		if (mustMatchAll != matched)
+		{
 			break;
 		}
 	}
 
-	if (acceptOnMatch)	{
+	if (acceptOnMatch)
+	{
 		return matched ? Filter::ACCEPT : Filter::DENY;
 	}
-	else {
+	else
+	{
 		return matched ? Filter::DENY : Filter::ACCEPT;
 	}
 }

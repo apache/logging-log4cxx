@@ -124,35 +124,35 @@ public:
 		Pool p;
 		filter->activateOptions(p);
 
-		filter->setMustMatchAll(true);		// AND T/F
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));		// does not match second
+		filter->setMustMatchAll(true);      // AND T/F
+		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));      // does not match second
 
-		filter->setMustMatchAll(false);	// OR T/F
-		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));	// matches first
+		filter->setMustMatchAll(false); // OR T/F
+		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));    // matches first
 
-		filter->setKeyValue(LOG4CXX_STR("my.name"), LOG4CXX_STR("Test"));	
+		filter->setKeyValue(LOG4CXX_STR("my.name"), LOG4CXX_STR("Test"));
 
-		filter->setMustMatchAll(true);		// AND T/T
-		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));	// matches all
+		filter->setMustMatchAll(true);      // AND T/T
+		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));    // matches all
 
-		filter->setMustMatchAll(false);	// OR T/T
-		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));	// matches first
+		filter->setMustMatchAll(false); // OR T/T
+		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));    // matches first
 
-		filter->setKeyValue(LOG4CXX_STR("my.ip"), LOG4CXX_STR("localhost"));	
+		filter->setKeyValue(LOG4CXX_STR("my.ip"), LOG4CXX_STR("localhost"));
 
-		filter->setMustMatchAll(true);		// AND F/T
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));		// does not match first
+		filter->setMustMatchAll(true);      // AND F/T
+		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));      // does not match first
 
-		filter->setMustMatchAll(false);	// OR F/T
-		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));	// matches second
+		filter->setMustMatchAll(false); // OR F/T
+		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));    // matches second
 
-		filter->setKeyValue(LOG4CXX_STR("my.name"), LOG4CXX_STR("Unkonwn"));	
+		filter->setKeyValue(LOG4CXX_STR("my.name"), LOG4CXX_STR("Unkonwn"));
 
-		filter->setMustMatchAll(true);		// AND F/F
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));		// does not match first
+		filter->setMustMatchAll(true);      // AND F/F
+		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));      // does not match first
 
-		filter->setMustMatchAll(false);	// OR F/F
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));		// matches none
+		filter->setMustMatchAll(false); // OR F/F
+		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));      // matches none
 	}
 
 };
