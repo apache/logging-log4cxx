@@ -28,10 +28,14 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(MapFilter)
 
-void MapFilter::setOption(const LogString& option,
-	const LogString& value)
+MapFilter::MapFilter() : acceptOnMatch(true), mustMatchAll(false)
 {
 
+}
+
+void MapFilter::setOption(	const LogString& option,
+							const LogString& value)
+{
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
 	{
 		acceptOnMatch = OptionConverter::toBoolean(value, acceptOnMatch);
@@ -42,21 +46,21 @@ void MapFilter::setOption(const LogString& option,
 	}
 	else if (!option.empty() && !value.empty())
 	{
-		mapKeyValList[option] = value;
+		keyVals[option] = value;
 	}
 }
 
 Filter::FilterDecision MapFilter::decide(
 	const log4cxx::spi::LoggingEventPtr& event) const
 {
-	if (mapKeyValList.empty())
+	if (keyVals.empty())
 	{
 		return Filter::NEUTRAL;
 	}
 
-	bool    matched = true;
+	bool matched = true;
 
-	for (auto it = mapKeyValList.cbegin(); it != mapKeyValList.cend(); ++it)
+	for (KeyVals::const_iterator it = keyVals.begin(); it != keyVals.end(); ++it)
 	{
 		LogString curval;
 		event->getMDC(it->first, curval);
