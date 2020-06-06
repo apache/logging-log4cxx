@@ -32,10 +32,10 @@ namespace filter
  * A Filter that operates on a Map.
  */
 
-using KeyValList = std::map<LogString, LogString>;
-
 class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 {
+	typedef std::map < LogString, LogString > KeyValList;
+
 	private:
 		bool acceptOnMatch = true;
 		bool mustMatchAll = false;  // true = AND; false = OR
