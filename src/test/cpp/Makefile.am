@@ -67,6 +67,7 @@ filter_tests = \
     filter/levelmatchfiltertest.cpp \
     filter/levelrangefiltertest.cpp \
     filter/loggermatchfiltertest.cpp \
+    filter/mapfiltertest.cpp \
     filter/stringmatchfiltertest.cpp
 
 helpers = \
