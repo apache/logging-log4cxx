@@ -30,7 +30,15 @@ namespace filter
 {
 
 /**
- * A Filter that operates on a Map.
+ * A Filter that operates on a Map and can be used like in the following example:
+ * <pre>
+ * &lt;filter class="MapFilter"&gt;
+ *     &lt;param name="user.ip"       value="127.0.0.1" /&gt;
+ *     &lt;param name="user.name"     value="test2"     /&gt;
+ *     &lt;param name="Operator"      value="AND"       /&gt;
+ *     &lt;param name="AcceptOnMatch" value="false"     /&gt;
+ * &lt;/filter&gt;
+ * </pre>
  */
 class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 {
