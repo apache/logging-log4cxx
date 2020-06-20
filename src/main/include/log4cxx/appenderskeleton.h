@@ -173,7 +173,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		Returns this appenders threshold level. See the #setThreshold
 		method for the meaning of this option.
 		*/
-		const LevelPtr& getThreshold()
+		const LevelPtr& getThreshold() const
 		{
 			return threshold;
 		}
