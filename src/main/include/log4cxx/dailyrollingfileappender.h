@@ -183,7 +183,7 @@ class LOG4CXX_EXPORT DailyRollingFileAppender : public log4cxx::rolling::Rolling
 		void setDatePattern(const LogString& pattern);
 
 		/** Returns the value of the <b>DatePattern</b> option. */
-		LogString getDatePattern();
+		LogString getDatePattern() const;
 
 		void setOption(const LogString& option,
 			const LogString& value);

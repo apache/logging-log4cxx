@@ -53,7 +53,7 @@ void DailyRollingFileAppender::setDatePattern(const LogString& newPattern)
 	datePattern = newPattern;
 }
 
-LogString DailyRollingFileAppender::getDatePattern()
+LogString DailyRollingFileAppender::getDatePattern() const
 {
 	return datePattern;
 }
