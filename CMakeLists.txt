@@ -6,17 +6,17 @@ include(CTest)
 # FindAPR and FindAPR-util are not provided by APR and APR-Util so source them locally
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/src/cmake")
 
-# Find Apache Runtime
-find_package(APR REQUIRED)
-
-# Find Apache Runtime Utilities
-find_package(APR-Util REQUIRED)
-
 # Add support for linking statically
 option(BUILD_SHARED_LIBS "Build shared libraries" ON)
 if(NOT BUILD_SHARED_LIBS)
   set(LOG4CXX_COMPILE_DEFINITIONS LOG4CXX_STATIC)
 endif()
+
+# Find Apache Runtime
+find_package(APR REQUIRED)
+
+# Find Apache Runtime Utilities
+find_package(APR-Util REQUIRED)
 
 # Building
 add_subdirectory(src)
