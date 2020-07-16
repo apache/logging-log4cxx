@@ -97,6 +97,7 @@
 			<action issue="LOGCXX-277" type="fix">Reconnection not working for sockets</action>
 			<action issue="LOGCXX-276" type="fix">AndFilter and others defined but not implemented</action>
 			<action issue="LOGCXX-275" type="fix">Headers cannot be included with very strict warning settings</action>
+			<action issue="LOGCXX-273" type="fix">Prevent filenamepatterntestcase from failing in some timezones</action>
 			<action issue="LOGCXX-272" type="update">Apache log4cxx 0.11.0 release</action>
 			<action issue="LOGCXX-271" type="fix">MDC::put will not overwrite existing key value pair</action>
 			<action issue="LOGCXX-270" type="fix">Add ability to compile out logging by logging level.</action>
