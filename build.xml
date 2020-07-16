@@ -432,7 +432,7 @@
 			Is allowed to fail in case of no files to delete:
 
 			[exec] svn: E205001: Try 'svn help delete' for more information
-     		[exec] svn: E205001: Not enough arguments provided
+			[exec] svn: E205001: Not enough arguments provided
 		 -->
 		<exec	executable="sh"
 				failonerror="false">
