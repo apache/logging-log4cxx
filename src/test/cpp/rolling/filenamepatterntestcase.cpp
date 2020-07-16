@@ -99,13 +99,14 @@ public:
 	{
 		apr_time_exp_t tm;
 		memset(&tm, 0, sizeof(tm));
+		apr_time_exp_lt(&tm, 0); // set tm_gmtoff
 		tm.tm_min = min;
 		tm.tm_hour = hour;
 		tm.tm_mday = day;
 		tm.tm_mon = month;
 		tm.tm_year = year - 1900;
 		apr_time_t n;
-		/*apr_status_t stat = */apr_time_exp_get(&n, &tm);
+		apr_time_exp_gmt_get(&n, &tm);
 		ObjectPtr obj(new Date(n));
 		LOGUNIT_ASSERT_EQUAL(expected, format(pattern, obj));
 	}
