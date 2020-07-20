@@ -108,17 +108,17 @@
 			/>
 			<item	name="Building"
 					href="/building/index.html">
-				<item	name="autotools"
-						href="/building/autotools.html"
-				/>
 				<item	name="Apache Maven 2"
 						href="/building/maven.html"
 				/>
-				<item	name="Microsoft vcpkg"
-						href="/building/vcpkg.html"
+				<item	name="Autotools"
+						href="/building/autotools.html"
 				/>
 				<item	name="CMake"
 						href="/building/cmake.html"
+				/>
+				<item	name="Microsoft vcpkg"
+						href="/building/vcpkg.html"
 				/>
 			</item>
 		</menu>
