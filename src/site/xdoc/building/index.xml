@@ -33,6 +33,14 @@
 			</p>
 		</section>
 
+		<section name="Running unit tests">
+			<p>
+				Autotools will link all tests into a single executable (testsuite).
+				The cmake build generates a number of executables which can be run using the ctest tool.
+				Some unit tests will fail if sed, gzip and zip are not available.
+			</p>
+		</section>
+
 		<section name="Covered by the team">
 			<p>
 				The following table provides an overview about the environments some of the team
@@ -86,6 +94,11 @@
 					</tr>
 					<tr>
 						<td headers="compiler">MS Visual Studio 2013 (Express)</td>
+					</tr>
+					<tr>
+						<td headers="os">Windows 10</td>
+						<td headers="compiler">MS Visual Studio 2019 (Community)</td>
+						<td headers="compiler_x86_x64">both</td>
 					</tr>
 					<tr>
 						<td headers="compiler">Embarcadero C++ Builder XE 4</td>
@@ -160,6 +173,19 @@
 					</tr>
 					<tr>
 						<td headers="compiler">gcc 4.8</td>
+					</tr>
+					<tr>
+						<td headers="compiler">gcc 7.5</td>
+					</tr>
+					<tr>
+						<td headers="os">Raspian</td>
+						<td headers="compiler_x86_x64">armv7</td>
+						<td headers="compiler">gcc 8.3</td>
+					</tr>
+					<tr>
+						<td headers="compiler">gcc 9.10</td>
+						<td headers="os">Ubuntu 20.04</td>
+						<td headers="compiler_x86_x64">armv8 (aarch)</td>
 					</tr>
 					<tr>
 						<td headers="compiler">Intel 11.1</td>
