@@ -137,7 +137,7 @@
 							x86
 						</td>
 						<td	headers="environment"
-							rowspan="12">
+							rowspan="14">
 							Posix
 						</td>
 						<td	headers="compiler">
