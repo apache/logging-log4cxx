@@ -15,24 +15,16 @@ limitations under the License.
 
 Detailed build instructions are provided for in both HTML
 and APT format in releases.  The APT sources are 
-available in Subversion checkouts.
+available in Git checkouts.
 
 autotools:
 site/building/autotools.html
 src/site/apt/building/autotools.apt
 
-Apache Ant:
-site/building/ant.html
-src/site/apt/building/ant.apt
+CMake:
+site/building/cmake.html
+src/site/apt/building/cmake.apt
 
 Apache Maven 2:
 site/building/maven.html
 src/site/apt/building/maven.apt
-
-Microsoft Visual Studio:
-site/building/vstudio.html
-src/site/apt/building/vstudio.apt
-
-Apple Xcode:
-site/building/xcode.html
-src/site/apt/building/xcode.apt
