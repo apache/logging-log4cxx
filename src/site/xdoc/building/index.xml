@@ -54,10 +54,10 @@
 				<thead>
 					<tr>
 						<th id="os">OS</th>
-						<th id="os_x86_x64">x86 vs. x64</th>
+						<th id="os_x86_x64">Architecture</th>
 						<th id="environment">Environment</th>
 						<th id="compiler">Compiler</th>
-						<th id="compiler_x86_x64">x86 vs. x64</th>
+						<th id="compiler_x86_x64">Architecture</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -96,11 +96,6 @@
 						<td headers="compiler">MS Visual Studio 2013 (Express)</td>
 					</tr>
 					<tr>
-						<td headers="os">Windows 10</td>
-						<td headers="compiler">MS Visual Studio 2019 (Community)</td>
-						<td headers="compiler_x86_x64">both</td>
-					</tr>
-					<tr>
 						<td headers="compiler">Embarcadero C++ Builder XE 4</td>
 						<td headers="compiler_x86_x64">x86</td>
 					</tr>
@@ -124,6 +119,13 @@
 						<td headers="environment">Cygwin</td>
 						<td headers="compiler">gcc 4.8.2</td>
 					</tr>
+					<tr>
+						<td headers="os">Windows 10</td>
+						<td headers="os_x86_x64">x64</td>
+						<td headers="environment">Win32</td>
+						<td headers="compiler">MS Visual Studio 2019 (Community)</td>
+						<td headers="compiler_x86_x64">x86</td>
+					</tr>
 					<!-- Linux -->
 					<tr>
 						<td	headers="os"
@@ -135,7 +137,7 @@
 							x86
 						</td>
 						<td	headers="environment"
-							rowspan="11">
+							rowspan="12">
 							Posix
 						</td>
 						<td	headers="compiler">
@@ -150,11 +152,11 @@
 						<td headers="compiler">clang</td>
 					</tr>
 					<tr>
-						<td	headers="os" rowspan="7">
+						<td	headers="os" rowspan="8">
 							Ubuntu and Scientific Linux
 						</td>
 						<td	headers="os_x86_x64"
-							rowspan="9">
+							rowspan="10">
 							x64
 						</td>
 						<td	headers="compiler">
@@ -178,16 +180,6 @@
 						<td headers="compiler">gcc 7.5</td>
 					</tr>
 					<tr>
-						<td headers="os">Raspian</td>
-						<td headers="compiler_x86_x64">armv7</td>
-						<td headers="compiler">gcc 8.3</td>
-					</tr>
-					<tr>
-						<td headers="compiler">gcc 9.10</td>
-						<td headers="os">Ubuntu 20.04</td>
-						<td headers="compiler_x86_x64">armv8 (aarch)</td>
-					</tr>
-					<tr>
 						<td headers="compiler">Intel 11.1</td>
 					</tr>
 					<tr>
@@ -205,6 +197,19 @@
 						<td headers="os">Mac OS X 10.9 Mavericks</td>
 						<td headers="compiler">Xcode 5.0.2</td>
 						<td headers="compiler_x86_x64">x64</td>
+					</tr>
+					<!-- Arm -->
+					<tr>
+						<td headers="os">Raspian</td>
+						<td headers="os_x86_x64">armv7</td>
+						<td headers="compiler">gcc 8.3</td>
+						<td headers="compiler_x86_x64">armv7</td>
+					</tr>
+					<tr>
+						<td headers="os">Ubuntu 20.04</td>
+						<td headers="os_x86_x64">armv8</td>
+						<td headers="compiler">gcc 9.10</td>
+						<td headers="compiler_x86_x64">aarch</td>
 					</tr>
 				</tbody>
 			</table>
