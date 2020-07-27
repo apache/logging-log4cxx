@@ -29,6 +29,6 @@ CMake:
 site/building/cmake.html
 src/site/apt/building/cmake.apt
 
-Microsoft Visual Studio:
-site/building/vstudio.html
-src/site/apt/building/vstudio.apt
+Microsoft Vcpkg:
+site/building/vcpkg.html
+src/site/apt/building/vcpkg.apt
