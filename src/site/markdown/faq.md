@@ -21,8 +21,7 @@
 <ol>
 	<li><a href="#custom_levels">How do I add a custom level to Apache log4cxx?</a></li>
 	<li><a href="#msvc_crash">My application on Windows crashes on shutdown?</a></li>
-	<li><a href="#unicode">Does Apache log4cxx support Unicode?</a></li>
-	<li><a href="#non_english">Non-English logging</a></li>
+	<li><a href="#unicode_supported">Does Apache log4cxx support Unicode?</a></li>
 </ol>
 
 ## <a name="custom_levels"></a>How do I add a custom level to Apache log4cxx?
@@ -45,41 +44,34 @@ memory that was originally allocated by log4cxx would be freed by the caller. If
 caller are using different C RTL's, the program will likely crash at the point. Use "Multithread
 DLL" with release builds of log4cxx and "Multithread DLL Debug" with debug builds.
 
-## <a name="unicode"></a>Does Apache log4cxx support Unicode?
+## <a name="unicode_supported"></a>Does Apache log4cxx support Unicode?
+### Multiple string flavors
 
 Yes. Apache log4cxx exposes API methods in multiple string flavors `const char*`, `std::string`,
 `wchar_t*`, `std::wstring`, `CFStringRef` et al. `const char*` and `std::string` are interpreted
 according to the current locale settings. Applications should call `setlocale(LC_ALL, "")` on
-startup or the C RTL will assume US-ASCII. Before being processed internally, all these are
+startup or the C RTL will assume `US-ASCII`. Before being processed internally, all these are
 converted to the `LogString` type which is one of several supported Unicode representations selected
-by the `--with-logchar` option. When using methods that take `LogString` as arguments, the macor
+by the `--with-logchar` option. When using methods that take `LogString` as arguments, the macro
 `LOG4CXX_STR()` can be used to convert ASCII literals to the current `LogString` type. FileAppenders
 support an encoding property which should be explicitly specified to `UTF-8` or `UTF-16` for XML
 files.
 
-## <a name="non_english"></a>Non-English logging
-
-When logging messages in languages other than English, you may need to
-set your locale correctly for messages to be displayed.
+### Example of wrong non-English logging
 
 For example, here is some Hebrew text which says "People with disabilities":
 
 	נשים עם מוגבלות
 
-If you are to log this information on a system with a locale of `en_US.UTF-8`,
-the log message will look something like the following:
+If you are to log this information on a system with a locale of `en_US.UTF-8`, the log message might
+look something like the following, because the given characters can't be converted to `US-ASCII`:
 
 ```
 loggername - ?????????? ???? ??????????????
 ```
 
-One way to fix this is to call `setlocale` as follows before the function that logs:
-
-```
-std::setlocale( LC_ALL, "" );
-```
-
-This will then allow the message to be logged appropriately. See issue [LOG4CXX-483][1] for more
+Executing `std::setlocale(LC_ALL, "")` either before actually logging the text above or at the app-
+startup will allow the message to be logged appropriately. See issue [LOG4CXX-483][1] for more
 information.
 
 [1]:https://issues.apache.org/jira/browse/LOGCXX-483
