@@ -165,6 +165,6 @@ target_sources(log4cxx
   zipcompressaction.cpp
 )
 set_target_properties(log4cxx PROPERTIES
-  VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}
-  SOVERSION ${log4cxx_VERSION_MAJOR}
+  VERSION ${LIBLOG4CXX_LIB_VERSION}
+  SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
 )
