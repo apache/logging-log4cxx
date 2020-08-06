@@ -26,6 +26,7 @@
 		<release	version="0.11.0"
 					date="XXXX-XX-XX"
 					description="Maintenance release.">
+			<action issue="LOGCXX-512" type="fix">cmake and autotools generate different versioned binaries</action>
 			<action issue="LOGCXX-506" type="fix">CachedDateFormat reuses timestamps without updating milliseconds after formatting timestamp with ms == 654</action>
 			<action issue="LOGCXX-503" type="update">Checksums/Signatures don't match for log4cxx binaries</action>
 			<action issue="LOGCXX-502" type="update">appenderattachable.h function doc formatted "incorrectly"</action>
@@ -109,6 +110,7 @@
 			<action issue="LOGCXX-262" type="fix">socketappendertestcase and xmlsocketappendertestcase not run</action>
 			<action issue="LOGCXX-249" type="fix">Console appender crashes if layout is not set</action>
 
+			<action issue="32" system="GHPR" type="add">Set SONAME in cmake like autotools based buildsystem would do.</action>
 			<action issue="24" system="GHPR" type="add">Implementation of map-based filter.</action>
 			<action issue="21" system="GHPR" type="add">Added support for building log4cxx as a statically linked library on Windows.</action>
 			<action issue="14" system="GHPR" type="add">Replaced ant build with cmake.</action>
