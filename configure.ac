@@ -31,7 +31,7 @@ AC_CANONICAL_TARGET
 #  ? :+1 : ?   == just some internal changes, nothing breaks but might work
 #                 better
 # CURRENT : REVISION : AGE
-LT_VERSION=10:0:0
+LT_VERSION=11:0:0
 
 AC_SUBST(LT_VERSION)
 
