@@ -24,7 +24,7 @@
 
 	<body>
 		<release	version="0.11.0"
-					date="2020-02-09"
+					date="XXXX-XX-XX"
 					description="Maintenance release.">
 			<action issue="LOGCXX-506" type="fix">CachedDateFormat reuses timestamps without updating milliseconds after formatting timestamp with ms == 654</action>
 			<action issue="LOGCXX-503" type="update">Checksums/Signatures don't match for log4cxx binaries</action>
@@ -34,6 +34,7 @@
 			<action issue="LOGCXX-493" type="fix">Wrong usage of milli- vs. micro- and non- vs. milliseconds in some docs.</action>
 			<action issue="LOGCXX-488" type="fix">Space after log level hides messages</action>
 			<action issue="LOGCXX-484" type="fix">Spelling error s/excute/execute</action>
+			<action issue="LOGCXX-483" type="update">Not able to see hebrew values when logging in log4cxx</action>
 			<action issue="LOGCXX-482" type="fix">Build failure with GCC-6</action>
 			<action issue="LOGCXX-464" type="fix">TimeBasedRollingPolicy should append as configured on rollover</action>
 			<action issue="LOGCXX-446" type="fix">make install fails, trying to overwrite header files</action>

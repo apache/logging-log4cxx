@@ -45,33 +45,42 @@ caller are using different C RTL's, the program will likely crash at the point. 
 DLL" with release builds of log4cxx and "Multithread DLL Debug" with debug builds.
 
 ## <a name="unicode_supported"></a>Does Apache log4cxx support Unicode?
-### Multiple string flavors
 
-Yes. Apache log4cxx exposes API methods in multiple string flavors `const char*`, `std::string`,
-`wchar_t*`, `std::wstring`, `CFStringRef` et al. `const char*` and `std::string` are interpreted
-according to the current locale settings. Applications should call `setlocale(LC_ALL, "")` on
-startup or the C RTL will assume `US-ASCII`. Before being processed internally, all these are
-converted to the `LogString` type which is one of several supported Unicode representations selected
-by the `--with-logchar` option. When using methods that take `LogString` as arguments, the macro
-`LOG4CXX_STR()` can be used to convert ASCII literals to the current `LogString` type. FileAppenders
-support an encoding property which should be explicitly specified to `UTF-8` or `UTF-16` for XML
-files.
+Yes. Apache log4cxx exposes API methods in multiple string flavors supporting differently encoded
+textual content, like `char*`, `std::string`, `wchar_t*`, `std::wstring`, `CFStringRef` et al. All
+provided texts will be converted to the `LogString` type before further processing, which is one of
+several supported Unicode representations selected by the `--with-logchar` option. If methods are
+used that take `LogString` as arguments, the macro `LOG4CXX_STR()` can be used to convert literals
+to the current `LogString` type. FileAppenders support an encoding property as well, which should be
+explicitly specified to `UTF-8` or `UTF-16` for e.g. XML files. The important point is to get the
+chain of input, internal processing and output correct and that might need some additional setup in
+the app using log4cxx:
 
-### Example of wrong non-English logging
-
-For example, here is some Hebrew text which says "People with disabilities":
+According to the [libc documentation](https://www.gnu.org/software/libc/manual/html_node/Setting-the-Locale.html),
+all programs start in the `C` locale by default, which is the [same as ANSI_X3.4-1968](https://stackoverflow.com/questions/48743106/whats-ansi-x3-4-1968-encoding)
+and what's commonly known as the encoding `US-ASCII`. That encoding supports a very limited set of
+characters only, so inputting Unicode with that encoding in effect to output characters can't work
+properly. For example, here is some Hebrew text which says "People with disabilities":
 
 	נשים עם מוגבלות
 
-If you are to log this information on a system with a locale of `en_US.UTF-8`, the log message might
-look something like the following, because the given characters can't be converted to `US-ASCII`:
+If you are to log this information, output on some console might be like the following, simply
+because the app uses `US-ASCII` by default and that can't map those characters:
 
 ```
 loggername - ?????????? ???? ??????????????
 ```
 
-Executing `std::setlocale(LC_ALL, "")` either before actually logging the text above or at the app-
-startup will allow the message to be logged appropriately. See issue [LOG4CXX-483][1] for more
-information.
+The important thing to understand is that this is some always applied, backwards compatible default
+behaviour and even the case when the current environment sets a locale like `en_US.UTF-8`. One might
+need to explicitly tell the app at startup to use the locale of the environment and make things
+compatible with Unicode this way. See also [some SO post](https://stackoverflow.com/questions/571359/how-do-i-set-the-proper-initial-locale-for-a-c-program-on-windows)
+on setting the default locale in C++.
 
-[1]:https://issues.apache.org/jira/browse/LOGCXX-483
+```
+std::setlocale( LC_ALL, "" ); /* Set locale for C functions */
+std::locale::global(std::locale("")); /* set locale for C++ functions */
+```
+
+See [LOGCXX-483](https://issues.apache.org/jira/browse/LOGCXX-483) or [GHPR #31](https://github.com/apache/logging-log4cxx/pull/31#issuecomment-668870727)
+for additional details.
