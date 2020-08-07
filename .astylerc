@@ -20,13 +20,13 @@
 --break-one-line-headers
 --convert-tabs
 
+--indent=force-tab=4
 --indent-after-parens
 --indent-classes
 --indent-col1-comments
 --indent-preproc-block
 --indent-preproc-define
 --indent-switches
---indent=force-tab=4
 
 --lineend=linux
 --pad-comma

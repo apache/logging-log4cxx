@@ -42,12 +42,12 @@ namespace filter
  */
 class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 {
-	typedef std::map < LogString, LogString > KeyVals;
+		typedef std::map < LogString, LogString > KeyVals;
 
 	private:
-		bool	acceptOnMatch;
-		bool	mustMatchAll; // true = AND; false = OR
-		KeyVals	keyVals;
+		bool    acceptOnMatch;
+		bool    mustMatchAll; // true = AND; false = OR
+		KeyVals keyVals;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(MapFilter)
@@ -71,8 +71,8 @@ class LOG4CXX_EXPORT MapFilter: public log4cxx::spi::Filter
 
 		inline const LogString& getValue(const LogString& strKey) const
 		{
-			static	const LogString					empty;
-					const KeyVals::const_iterator	it(this->keyVals.find(strKey));
+			static  const LogString                 empty;
+			const KeyVals::const_iterator   it(this->keyVals.find(strKey));
 
 			return (it != keyVals.end() ? it->second : empty);
 		}
