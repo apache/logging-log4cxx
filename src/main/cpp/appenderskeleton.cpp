@@ -21,8 +21,6 @@
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/synchronized.h>
-
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -38,10 +36,9 @@ AppenderSkeleton::AppenderSkeleton()
 		errorHandler(new OnlyOnceErrorHandler()),
 		headFilter(),
 		tailFilter(),
-		pool(),
-		SHARED_MUTEX_INIT(mutex, pool)
+        pool()
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	closed = false;
 }
 
@@ -52,10 +49,9 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
 	  errorHandler(new OnlyOnceErrorHandler()),
 	  headFilter(),
 	  tailFilter(),
-	  pool(),
-	  SHARED_MUTEX_INIT(mutex, pool)
+      pool()
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	closed = false;
 }
 
@@ -83,7 +79,7 @@ void AppenderSkeleton::finalize()
 
 void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 
 	if (headFilter == 0)
 	{
@@ -98,7 +94,7 @@ void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 
 void AppenderSkeleton::clearFilters()
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	headFilter = tailFilter = 0;
 }
 
@@ -109,7 +105,7 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	LOCK_W sync(mutex);
+    std::shared_lock lock(mutex);;
 
 	doAppendImpl(event, pool1);
 }
@@ -152,7 +148,7 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 
 	if (errorHandler1 == 0)
 	{
@@ -168,7 +164,7 @@ void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1
 
 void AppenderSkeleton::setThreshold(const LevelPtr& threshold1)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	this->threshold = threshold1;
 }
 

@@ -32,7 +32,6 @@
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringtokenizer.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/fileinputstream.h>
 
@@ -251,7 +250,7 @@ void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
 
-		LOCK_W sync(root->getMutex());
+        std::unique_lock lock(root->getMutex());
 		static const LogString INTERNAL_ROOT_NAME(LOG4CXX_STR("root"));
 		parseLogger(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
 	}
@@ -288,7 +287,7 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 			LogString value = OptionConverter::findAndSubst(key, props);
 			LoggerPtr logger = hierarchy->getLogger(loggerName, loggerFactory);
 
-			LOCK_W sync(logger->getMutex());
+            std::unique_lock lock(logger->getMutex());
 			parseLogger(props, logger, key, loggerName, value);
 			parseAdditivityForLogger(props, logger, loggerName);
 		}

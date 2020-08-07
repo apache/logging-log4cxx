@@ -26,8 +26,8 @@
 
 #include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/pool.h>
+#include <mutex>
 
 namespace log4cxx
 {
@@ -108,13 +108,13 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		virtual void removeAppender(const LogString& name);
 
-		inline const log4cxx::helpers::Mutex& getMutex() const
+        inline std::mutex& getMutex() const
 		{
 			return mutex;
 		}
 
 	private:
-		log4cxx::helpers::Mutex mutex;
+        mutable std::mutex mutex;
 		AppenderAttachableImpl(const AppenderAttachableImpl&);
 		AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);
 };

@@ -32,7 +32,6 @@
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/defaultloggerfactory.h>
 #include <log4cxx/helpers/filewatchdog.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/pool.h>
@@ -430,8 +429,8 @@ void DOMConfigurator::parseLogger(
 
 	// Setting up a logger needs to be an atomic operation, in order
 	// to protect potential log operations while logger
-	// configuration is in progress.
-	LOCK_W sync(logger->getMutex());
+    // configuration is in progress.
+    std::unique_lock lock(logger->getMutex());
 	bool additivity = OptionConverter::toBoolean(
 			subst(getAttribute(utf8Decoder, loggerElement, ADDITIVITY_ATTR)),
 			true);
@@ -492,7 +491,7 @@ void DOMConfigurator::parseRoot(
 {
 	LoggerPtr root = repository->getRootLogger();
 	// logger configuration needs to be atomic
-	LOCK_W sync(root->getMutex());
+    std::unique_lock lock(root->getMutex());
 	parseChildrenOfLoggerElement(p, utf8Decoder, rootElement, root, true, doc, appenders);
 }
 

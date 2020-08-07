@@ -27,10 +27,10 @@
 #include <apr_strings.h>
 #include "testchar.h"
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/file.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -68,12 +68,12 @@ class NullPointerAppender : public AppenderSkeleton
 class BlockableVectorAppender : public VectorAppender
 {
 	private:
-		Mutex blocker;
+        std::mutex blocker;
 	public:
 		/**
 		 * Create new instance.
 		 */
-		BlockableVectorAppender() : blocker(pool)
+        BlockableVectorAppender()
 		{
 		}
 
@@ -82,7 +82,7 @@ class BlockableVectorAppender : public VectorAppender
 		 */
 		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
 		{
-			synchronized sync(blocker);
+            std::unique_lock<std::mutex> lock( blocker );
 			VectorAppender::append(event, p);
 
 			//
@@ -98,7 +98,7 @@ class BlockableVectorAppender : public VectorAppender
 			}
 		}
 
-		Mutex& getBlocker()
+        std::mutex& getBlocker()
 		{
 			return blocker;
 		}
@@ -255,7 +255,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LoggerPtr rootLogger = Logger::getRootLogger();
 			rootLogger->addAppender(async);
 			{
-				synchronized sync(blockableAppender->getBlocker());
+                std::unique_lock<std::mutex> sync(blockableAppender->getBlocker());
 
 				for (int i = 0; i < 140; i++)
 				{

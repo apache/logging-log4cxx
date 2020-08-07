@@ -28,8 +28,7 @@
 
 #include <log4cxx/private/log4cxx_private.h>
 #include <apr_portable.h>
-#include <log4cxx/helpers/mutex.h>
-#include <log4cxx/helpers/synchronized.h>
+#include <mutex>
 
 #ifdef LOG4CXX_HAS_WCSTOMBS
 	#include <stdlib.h>
@@ -53,7 +52,7 @@ namespace helpers
 class APRCharsetEncoder : public CharsetEncoder
 {
 	public:
-		APRCharsetEncoder(const LogString& topage) : pool(), mutex(pool)
+        APRCharsetEncoder(const LogString& topage) : pool()
 		{
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 			const char* frompage = "WCHAR_T";
@@ -91,7 +90,7 @@ class APRCharsetEncoder : public CharsetEncoder
 
 			if (iter == in.end())
 			{
-				synchronized sync(mutex);
+                std::unique_lock lock(mutex);
 				stat = apr_xlate_conv_buffer(convset, NULL, NULL,
 						out.data() + position, &outbytes_left);
 			}
@@ -102,7 +101,7 @@ class APRCharsetEncoder : public CharsetEncoder
 					(in.size() - inOffset) * sizeof(LogString::value_type);
 				apr_size_t initial_inbytes_left = inbytes_left;
 				{
-					synchronized sync(mutex);
+                    std::unique_lock lock(mutex);
 					stat = apr_xlate_conv_buffer(convset,
 							(const char*) (in.data() + inOffset),
 							&inbytes_left,
@@ -120,7 +119,7 @@ class APRCharsetEncoder : public CharsetEncoder
 		APRCharsetEncoder(const APRCharsetEncoder&);
 		APRCharsetEncoder& operator=(const APRCharsetEncoder&);
 		Pool pool;
-		Mutex mutex;
+        std::mutex mutex;
 		apr_xlate_t* convset;
 };
 #endif
@@ -452,7 +451,7 @@ class UTF16LECharsetEncoder : public CharsetEncoder
 class LocaleCharsetEncoder : public CharsetEncoder
 {
 	public:
-		LocaleCharsetEncoder() : pool(), mutex(pool), encoder(), encoding()
+        LocaleCharsetEncoder() : pool(), encoder(), encoding()
 		{
 		}
 		virtual ~LocaleCharsetEncoder()
@@ -481,7 +480,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 				Pool subpool;
 				const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
 				{
-					synchronized sync(mutex);
+                    std::unique_lock lock(mutex);
 
 					if (enc == 0)
 					{
@@ -517,7 +516,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 		LocaleCharsetEncoder(const LocaleCharsetEncoder&);
 		LocaleCharsetEncoder& operator=(const LocaleCharsetEncoder&);
 		Pool pool;
-		Mutex mutex;
+        std::mutex mutex;
 		CharsetEncoderPtr encoder;
 		std::string encoding;
 };

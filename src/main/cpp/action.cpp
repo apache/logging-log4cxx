@@ -16,7 +16,6 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/action.h>
-#include <log4cxx/helpers/synchronized.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
@@ -27,8 +26,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Action)
 Action::Action() :
 	complete(false),
 	interrupted(false),
-	pool(),
-	mutex(pool)
+    pool()
 {
 }
 
@@ -41,7 +39,7 @@ Action::~Action()
  */
 void Action::run(log4cxx::helpers::Pool& pool1)
 {
-	synchronized sync(mutex);
+    std::unique_lock<std::mutex> lock(mutex);
 
 	if (!interrupted)
 	{
@@ -64,7 +62,7 @@ void Action::run(log4cxx::helpers::Pool& pool1)
  */
 void Action::close()
 {
-	synchronized sync(mutex);
+    std::unique_lock<std::mutex> lock(mutex);
 	interrupted = true;
 }
 

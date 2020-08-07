@@ -34,7 +34,6 @@
 
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/rolling/rolloverdescription.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
@@ -93,7 +92,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 	}
 
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		triggeringPolicy->activateOptions(p);
 		rollingPolicy->activateOptions(p);
 
@@ -189,7 +188,7 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 	{
 
 		{
-			LOCK_W sync(mutex);
+            std::unique_lock lock(mutex);
 
 #ifdef LOG4CXX_MULTI_PROCESS
 			std::string fileName(getFile());

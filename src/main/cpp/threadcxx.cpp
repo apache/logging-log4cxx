@@ -22,8 +22,10 @@
 #include <apr_atomic.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/threadlocal.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <apr_thread_cond.h>
+#include <mutex>
+#include <condition_variable>
+#include <chrono>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
@@ -150,8 +152,7 @@ void* LOG4CXX_THREAD_FUNC ThreadLaunch::launcher(apr_thread_t* thread, void* dat
 }
 #endif
 
-Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0),
-	interruptedMutex(NULL), interruptedCondition(NULL)
+Thread::Thread() : thread(NULL), alive(0), interruptedStatus(0)
 {
 }
 
@@ -184,21 +185,6 @@ void Thread::run(Runnable start, void* data)
 
 	apr_threadattr_t* attrs;
 	apr_status_t stat = apr_threadattr_create(&attrs, p.getAPRPool());
-
-	if (stat != APR_SUCCESS)
-	{
-		throw ThreadException(stat);
-	}
-
-	stat = apr_thread_cond_create(&interruptedCondition, p.getAPRPool());
-
-	if (stat != APR_SUCCESS)
-	{
-		throw ThreadException(stat);
-	}
-
-	stat = apr_thread_mutex_create(&interruptedMutex, APR_THREAD_MUTEX_NESTED,
-			p.getAPRPool());
 
 	if (stat != APR_SUCCESS)
 	{
@@ -260,16 +246,9 @@ void Thread::interrupt()
 	apr_atomic_set32(&interruptedStatus, 0xFFFFFFFF);
 #if APR_HAS_THREADS
 
-	if (interruptedMutex != NULL)
-	{
-		synchronized sync(interruptedMutex);
-		apr_status_t stat = apr_thread_cond_signal(interruptedCondition);
 
-		if (stat != APR_SUCCESS)
-		{
-			throw ThreadException(stat);
-		}
-	}
+    std::unique_lock lock(interruptedMutex);
+    interruptedCondition.notify_all();
 
 #endif
 }
@@ -327,15 +306,16 @@ void Thread::sleep(int duration)
 			apr_sleep(duration * 1000);
 		}
 		else
-		{
-			synchronized sync(pThis->interruptedMutex);
-			apr_status_t stat = apr_thread_cond_timedwait(pThis->interruptedCondition,
-					pThis->interruptedMutex, duration * 1000);
+        {
+            std::unique_lock lock(pThis->interruptedMutex);
+            pThis->interruptedCondition.wait_for( lock, std::chrono::milliseconds( duration ) );
+//			apr_status_t stat = apr_thread_cond_timedwait(pThis->interruptedCondition,
+//					pThis->interruptedMutex, duration * 1000);
 
-			if (stat != APR_SUCCESS && !APR_STATUS_IS_TIMEUP(stat))
-			{
-				throw ThreadException(stat);
-			}
+//			if (stat != APR_SUCCESS && !APR_STATUS_IS_TIMEUP(stat))
+//			{
+//				throw ThreadException(stat);
+//			}
 
 			if (interrupted())
 			{

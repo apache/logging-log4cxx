@@ -22,7 +22,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <log4cxx/helpers/synchronized.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif

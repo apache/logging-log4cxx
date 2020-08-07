@@ -29,10 +29,9 @@
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/filter.h>
 #include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/level.h>
-
+#include <shared_mutex>
 
 namespace log4cxx
 {
@@ -76,7 +75,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		bool closed;
 
 		log4cxx::helpers::Pool pool;
-		mutable SHARED_MUTEX mutex;
+        mutable std::shared_mutex mutex;
 
 		/**
 		Subclasses of <code>AppenderSkeleton</code> should implement this

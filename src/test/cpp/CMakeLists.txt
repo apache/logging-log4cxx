@@ -1,5 +1,6 @@
 # Components required by all tests
 add_library(testingFramework STATIC abts.cpp appenderskeletontestcase.cpp logunit.cpp vectorappender.cpp writerappendertestcase.cpp )
+target_compile_features(testingFramework PUBLIC cxx_std_17)
 target_compile_definitions(testingFramework PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
 target_include_directories(testingFramework PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
 add_subdirectory(util)
@@ -54,6 +55,8 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     target_compile_definitions(${testName} PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
     target_include_directories(${testName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
     target_link_libraries(${testName} PRIVATE testingFramework testingUtilities log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS})
+    target_compile_features(${testName} PUBLIC
+        cxx_std_17)
     add_test(NAME ${testName}
         COMMAND ${testName} -v
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../resources

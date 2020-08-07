@@ -19,7 +19,6 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <apr_thread_proc.h>
 #include <apr_atomic.h>
 #include <apr_strings.h>
@@ -46,7 +45,6 @@ TelnetAppender::TelnetAppender()
 	  encoder(CharsetEncoder::getUTF8Encoder()),
 	  serverSocket(NULL), sh()
 {
-	LOCK_W sync(mutex);
 	activeConnections = 0;
 }
 
@@ -86,13 +84,13 @@ void TelnetAppender::setOption(const LogString& option,
 
 LogString TelnetAppender::getEncoding() const
 {
-	LOCK_W sync(mutex);
+    std::shared_lock lock(mutex);
 	return encoding;
 }
 
 void TelnetAppender::setEncoding(const LogString& value)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	encoder = CharsetEncoder::getEncoder(value);
 	encoding = value;
 }
@@ -100,7 +98,7 @@ void TelnetAppender::setEncoding(const LogString& value)
 
 void TelnetAppender::close()
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 
 	if (closed)
 	{
@@ -200,7 +198,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		LogString::const_iterator msgIter(msg.begin());
 		ByteBuffer buf(bytes, bytesSize);
 
-		LOCK_W sync(this->mutex);
+        std::shared_lock lock(mutex);
 
 		while (msgIter != msg.end())
 		{
@@ -257,7 +255,7 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
 				//
 				//   find unoccupied connection
 				//
-				LOCK_W sync(pThis->mutex);
+                std::unique_lock lock(pThis->mutex);
 
 				for (ConnectionList::iterator iter = pThis->connections.begin();
 					iter != pThis->connections.end();

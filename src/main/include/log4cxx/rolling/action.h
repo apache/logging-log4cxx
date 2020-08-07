@@ -20,8 +20,8 @@
 
 #include <log4cxx/portability.h>
 #include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/mutex.h>
 #include <log4cxx/helpers/pool.h>
+#include <mutex>
 
 namespace log4cxx
 {
@@ -49,7 +49,7 @@ class Action : public virtual log4cxx::helpers::ObjectImpl
 		bool interrupted;
 
 		log4cxx::helpers::Pool pool;
-		log4cxx::helpers::Mutex mutex;
+        std::mutex mutex;
 
 
 	protected:

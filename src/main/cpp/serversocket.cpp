@@ -16,7 +16,6 @@
  */
 
 #include <log4cxx/helpers/serversocket.h>
-#include <log4cxx/helpers/synchronized.h>
 #include "apr_network_io.h"
 #include "apr_pools.h"
 #include "apr_poll.h"
@@ -25,7 +24,7 @@ using namespace log4cxx::helpers;
 
 /**  Creates a server socket on a specified port.
 */
-ServerSocket::ServerSocket(int port) : pool(), mutex(pool), socket(0), timeout(0)
+ServerSocket::ServerSocket(int port) : pool(), socket(0), timeout(0)
 {
 	apr_status_t status =
 		apr_socket_create(&socket, APR_INET, SOCK_STREAM,
@@ -78,7 +77,7 @@ ServerSocket::~ServerSocket()
 
 void ServerSocket::close()
 {
-	synchronized sync(mutex);
+    std::unique_lock<std::mutex> lock(mutex);
 
 	if (socket != 0)
 	{
@@ -98,7 +97,7 @@ accepts it
 */
 SocketPtr ServerSocket::accept()
 {
-	synchronized sync(mutex);
+    std::unique_lock<std::mutex> lock(mutex);
 
 	if (socket == 0)
 	{

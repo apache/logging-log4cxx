@@ -25,7 +25,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/serversocket.h>
 #include <log4cxx/spi/loggingevent.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <apr_atomic.h>
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/objectoutputstream.h>
@@ -85,7 +84,7 @@ void SocketHubAppender::setOption(const LogString& option,
 void SocketHubAppender::close()
 {
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 
 		if (closed)
 		{
@@ -101,7 +100,7 @@ void SocketHubAppender::close()
 	//
 	thread.join();
 
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	// close all of the connections
 	LogLog::debug(LOG4CXX_STR("closing client connections"));
 
@@ -233,7 +232,7 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, voi
 					+ LOG4CXX_STR(")"));
 
 				// add it to the oosList.
-				LOCK_W sync(pThis->mutex);
+                std::unique_lock lock(pThis->mutex);
 				OutputStreamPtr os(new SocketOutputStream(socket));
 				Pool p;
 				ObjectOutputStreamPtr oos(new ObjectOutputStream(os, p));

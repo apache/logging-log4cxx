@@ -24,7 +24,6 @@
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/spi/loggingevent.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/bytearrayoutputstream.h>
 
@@ -86,7 +85,7 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 
 	if (closed)
 	{
@@ -156,7 +155,7 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 
 void SocketAppenderSkeleton::fireConnector()
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 
 	if ( !thread.isAlive() )
 	{

@@ -24,7 +24,6 @@
 #include <log4cxx/xml/xmllayout.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/transform.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/socketoutputstream.h>
 
@@ -85,7 +84,7 @@ void XMLSocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 {
 	OutputStreamPtr os(new SocketOutputStream(socket));
 	CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	writer = new OutputStreamWriter(os, charset);
 }
 

@@ -27,8 +27,6 @@
 #include <apr_thread_proc.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
-#include <log4cxx/helpers/condition.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <apr_atomic.h>
 #include <log4cxx/helpers/optionconverter.h>
@@ -44,10 +42,7 @@ IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 
 AsyncAppender::AsyncAppender()
 	: AppenderSkeleton(),
-	  buffer(),
-	  bufferMutex(pool),
-	  bufferNotFull(pool),
-	  bufferNotEmpty(pool),
+      buffer(),
 	  discardMap(new DiscardMap()),
 	  bufferSize(DEFAULT_BUFFER_SIZE),
 	  appenders(new AppenderAttachableImpl(pool)),
@@ -78,7 +73,7 @@ void AsyncAppender::releaseRef() const
 
 void AsyncAppender::addAppender(const AppenderPtr& newAppender)
 {
-	synchronized sync(appenders->getMutex());
+    std::unique_lock lock(appenders->getMutex());
 	appenders->addAppender(newAppender);
 }
 
@@ -109,7 +104,7 @@ void AsyncAppender::setOption(const LogString& option,
 
 void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	LOCK_R sync(mutex);
+    std::shared_lock lock(mutex);
 
 	doAppendImpl(event, pool1);
 }
@@ -124,7 +119,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	//
 	if (!dispatcher.isAlive() || bufferSize <= 0)
 	{
-		synchronized sync(appenders->getMutex());
+        std::unique_lock lock(appenders->getMutex());
 		appenders->appendLoopOnAppenders(event, p);
 		return;
 	}
@@ -138,8 +133,8 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	event->getMDCCopy();
 
 
-	{
-		synchronized sync(bufferMutex);
+    {
+        std::unique_lock<std::mutex> lock(bufferMutex);
 
 		while (true)
 		{
@@ -151,7 +146,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 				if (previousSize == 0)
 				{
-					bufferNotEmpty.signalAll();
+                    bufferNotEmpty.notify_all();
 				}
 
 				break;
@@ -172,7 +167,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			{
 				try
 				{
-					bufferNotFull.await(bufferMutex);
+                    bufferNotFull.wait(lock);
 					discard = false;
 				}
 				catch (InterruptedException&)
@@ -218,10 +213,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 void AsyncAppender::close()
 {
 	{
-		synchronized sync(bufferMutex);
+        std::unique_lock<std::mutex> lock(bufferMutex);
 		closed = true;
-		bufferNotEmpty.signalAll();
-		bufferNotFull.signalAll();
+        bufferNotEmpty.notify_all();
+        bufferNotFull.notify_all();
 	}
 
 #if APR_HAS_THREADS
@@ -239,7 +234,7 @@ void AsyncAppender::close()
 #endif
 
 	{
-		synchronized sync(appenders->getMutex());
+        std::unique_lock lock(appenders->getMutex());
 		AppenderList appenderList = appenders->getAllAppenders();
 
 		for (AppenderList::iterator iter = appenderList.begin();
@@ -253,19 +248,19 @@ void AsyncAppender::close()
 
 AppenderList AsyncAppender::getAllAppenders() const
 {
-	synchronized sync(appenders->getMutex());
+    std::unique_lock lock(appenders->getMutex());
 	return appenders->getAllAppenders();
 }
 
 AppenderPtr AsyncAppender::getAppender(const LogString& n) const
 {
-	synchronized sync(appenders->getMutex());
+    std::unique_lock lock(appenders->getMutex());
 	return appenders->getAppender(n);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 {
-	synchronized sync(appenders->getMutex());
+    std::unique_lock lock(appenders->getMutex());
 	return appenders->isAttached(appender);
 }
 
@@ -276,19 +271,19 @@ bool AsyncAppender::requiresLayout() const
 
 void AsyncAppender::removeAllAppenders()
 {
-	synchronized sync(appenders->getMutex());
+    std::unique_lock lock(appenders->getMutex());
 	appenders->removeAllAppenders();
 }
 
 void AsyncAppender::removeAppender(const AppenderPtr& appender)
 {
-	synchronized sync(appenders->getMutex());
+    std::unique_lock lock(appenders->getMutex());
 	appenders->removeAppender(appender);
 }
 
 void AsyncAppender::removeAppender(const LogString& n)
 {
-	synchronized sync(appenders->getMutex());
+    std::unique_lock lock(appenders->getMutex());
 	appenders->removeAppender(n);
 }
 
@@ -310,9 +305,9 @@ void AsyncAppender::setBufferSize(int size)
 		throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
 	}
 
-	synchronized sync(bufferMutex);
+    std::unique_lock<std::mutex> lock(bufferMutex);
 	bufferSize = (size < 1) ? 1 : size;
-	bufferNotFull.signalAll();
+    bufferNotFull.notify_all();
 }
 
 int AsyncAppender::getBufferSize() const
@@ -322,9 +317,9 @@ int AsyncAppender::getBufferSize() const
 
 void AsyncAppender::setBlocking(bool value)
 {
-	synchronized sync(bufferMutex);
+    std::unique_lock<std::mutex> lock(bufferMutex);
 	blocking = value;
-	bufferNotFull.signalAll();
+    bufferNotFull.notify_all();
 }
 
 bool AsyncAppender::getBlocking() const
@@ -402,14 +397,14 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void
 			//
 			Pool p;
 			LoggingEventList events;
-			{
-				synchronized sync(pThis->bufferMutex);
+            {
+                std::unique_lock<std::mutex> lock(pThis->bufferMutex);
 				size_t bufferSize = pThis->buffer.size();
 				isActive = !pThis->closed;
 
 				while ((bufferSize == 0) && isActive)
 				{
-					pThis->bufferNotEmpty.await(pThis->bufferMutex);
+                    pThis->bufferNotEmpty.wait(lock);
 					bufferSize = pThis->buffer.size();
 					isActive = !pThis->closed;
 				}
@@ -430,14 +425,14 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void
 
 				pThis->buffer.clear();
 				pThis->discardMap->clear();
-				pThis->bufferNotFull.signalAll();
+                pThis->bufferNotFull.notify_all();
 			}
 
 			for (LoggingEventList::iterator iter = events.begin();
 				iter != events.end();
 				iter++)
 			{
-				synchronized sync(pThis->appenders->getMutex());
+                std::unique_lock lock(pThis->appenders->getMutex());
 				pThis->appenders->appendLoopOnAppenders(*iter, p);
 			}
 		}

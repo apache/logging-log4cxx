@@ -17,7 +17,6 @@
 
 #include <log4cxx/writerappender.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/helpers/stringhelper.h>
 
@@ -29,7 +28,6 @@ IMPLEMENT_LOG4CXX_OBJECT(WriterAppender)
 
 WriterAppender::WriterAppender()
 {
-	LOCK_W sync(mutex);
 	immediateFlush = true;
 }
 
@@ -37,8 +35,7 @@ WriterAppender::WriterAppender(const LayoutPtr& layout1,
 	log4cxx::helpers::WriterPtr& writer1)
 	: AppenderSkeleton(layout1), writer(writer1)
 {
-	Pool p;
-	LOCK_W sync(mutex);
+    Pool p;
 	immediateFlush = true;
 	activateOptions(p);
 }
@@ -46,7 +43,6 @@ WriterAppender::WriterAppender(const LayoutPtr& layout1,
 WriterAppender::WriterAppender(const LayoutPtr& layout1)
 	: AppenderSkeleton(layout1)
 {
-	LOCK_W sync(mutex);
 	immediateFlush = true;
 }
 
@@ -154,7 +150,7 @@ bool WriterAppender::checkEntryConditions() const
    */
 void WriterAppender::close()
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 
 	if (closed)
 	{
@@ -246,7 +242,7 @@ void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
 	LogString msg;
 	layout->format(msg, event, p);
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 
 		if (writer != NULL)
 		{
@@ -267,7 +263,7 @@ void WriterAppender::writeFooter(Pool& p)
 	{
 		LogString foot;
 		layout->appendFooter(foot, p);
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		writer->write(foot, p);
 	}
 }
@@ -278,7 +274,7 @@ void WriterAppender::writeHeader(Pool& p)
 	{
 		LogString header;
 		layout->appendHeader(header, p);
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		writer->write(header, p);
 	}
 }
@@ -286,7 +282,7 @@ void WriterAppender::writeHeader(Pool& p)
 
 void WriterAppender::setWriter(const WriterPtr& newWriter)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	writer = newWriter;
 }
 
@@ -311,6 +307,6 @@ void WriterAppender::setOption(const LogString& option, const LogString& value)
 
 void WriterAppender::setImmediateFlush(bool value)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	immediateFlush = value;
 }

@@ -31,6 +31,7 @@
 #include <log4cxx/helpers/objectimpl.h>
 #include <log4cxx/spi/hierarchyeventlistener.h>
 #include <log4cxx/helpers/pool.h>
+#include <mutex>
 
 namespace log4cxx
 {
@@ -58,7 +59,7 @@ class LOG4CXX_EXPORT Hierarchy :
 {
 	private:
 		log4cxx::helpers::Pool pool;
-		log4cxx::helpers::Mutex mutex;
+        mutable std::mutex mutex;
 		bool configured;
 
 		spi::LoggerFactoryPtr defaultFactory;

@@ -119,16 +119,6 @@ class LOG4CXX_EXPORT PoolException : public Exception
 };
 
 
-class LOG4CXX_EXPORT MutexException : public Exception
-{
-	public:
-		MutexException(log4cxx_status_t stat);
-		MutexException(const MutexException& src);
-		MutexException& operator=(const MutexException&);
-	private:
-		static LogString formatMessage(log4cxx_status_t stat);
-};
-
 class LOG4CXX_EXPORT InterruptedException : public Exception
 {
 	public:

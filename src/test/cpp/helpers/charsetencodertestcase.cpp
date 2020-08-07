@@ -20,12 +20,10 @@
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/thread.h>
-#include <log4cxx/helpers/mutex.h>
-#include <log4cxx/helpers/condition.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <apr.h>
 #include <apr_atomic.h>
-
+#include <mutex>
+#include <condition_variable>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -186,20 +184,20 @@ public:
 	{
 		public:
 			ThreadPackage(CharsetEncoderPtr& enc, int repetitions) :
-				p(), lock(p), condition(p), passCount(0), failCount(0), enc(enc), repetitions(repetitions)
+                p(), passCount(0), failCount(0), enc(enc), repetitions(repetitions)
 			{
 			}
 
 			void await()
 			{
-				synchronized sync(lock);
-				condition.await(lock);
+                std::unique_lock<std::mutex> sync(lock);
+                condition.wait(sync);
 			}
 
 			void signalAll()
 			{
-				synchronized sync(lock);
-				condition.signalAll();
+                std::unique_lock<std::mutex> sync(lock);
+                condition.notify_all();
 			}
 
 			void fail()
@@ -236,8 +234,8 @@ public:
 			ThreadPackage(const ThreadPackage&);
 			ThreadPackage& operator=(ThreadPackage&);
 			Pool p;
-			Mutex lock;
-			Condition condition;
+            std::mutex lock;
+            std::condition_variable condition;
 			volatile apr_uint32_t passCount;
 			volatile apr_uint32_t failCount;
 			CharsetEncoderPtr enc;

@@ -28,7 +28,6 @@ target_sources(log4cxx
   class.cpp
   classnamepatternconverter.cpp
   classregistration.cpp
-  condition.cpp
   configurator.cpp
   consoleappender.cpp
   cyclicbuffer.cpp
@@ -92,7 +91,6 @@ target_sources(log4cxx
   messagebuffer.cpp
   messagepatternconverter.cpp
   methodlocationpatternconverter.cpp
-  mutex.cpp
   nameabbreviator.cpp
   namepatternconverter.cpp
   ndc.cpp
@@ -140,7 +138,6 @@ target_sources(log4cxx
   stringhelper.cpp
   stringmatchfilter.cpp
   stringtokenizer.cpp
-  synchronized.cpp
   syslogappender.cpp
   syslogwriter.cpp
   system.cpp

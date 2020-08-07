@@ -20,6 +20,8 @@
 
 #include <log4cxx/log4cxx.h>
 #include <log4cxx/helpers/pool.h>
+#include <mutex>
+#include <condition_variable>
 
 #if !defined(LOG4CXX_THREAD_FUNC)
 	#if defined(_WIN32)
@@ -110,8 +112,8 @@ class LOG4CXX_EXPORT Thread
 		apr_thread_t* thread;
 		volatile unsigned int alive;
 		volatile unsigned int interruptedStatus;
-		apr_thread_mutex_t* interruptedMutex;
-		apr_thread_cond_t* interruptedCondition;
+        std::mutex interruptedMutex;
+        std::condition_variable interruptedCondition;
 		Thread(const Thread&);
 		Thread& operator=(const Thread&);
 		friend void* LOG4CXX_THREAD_FUNC ThreadLaunch::launcher(apr_thread_t* thread, void* data);

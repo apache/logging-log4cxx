@@ -20,13 +20,11 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <log4cxx/helpers/bufferedwriter.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <log4cxx/helpers/synchronized.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -37,7 +35,7 @@ IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
 FileAppender::FileAppender()
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	fileAppend = true;
 	bufferedIO = false;
 	bufferSize = 8 * 1024;
@@ -48,7 +46,7 @@ FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
 	: WriterAppender(layout1)
 {
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		fileAppend = append1;
 		fileName = fileName1;
 		bufferedIO = bufferedIO1;
@@ -63,7 +61,7 @@ FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
 	: WriterAppender(layout1)
 {
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		fileAppend = append1;
 		fileName = fileName1;
 		bufferedIO = false;
@@ -77,7 +75,7 @@ FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
 	: WriterAppender(layout1)
 {
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		fileAppend = true;
 		fileName = fileName1;
 		bufferedIO = false;
@@ -94,13 +92,13 @@ FileAppender::~FileAppender()
 
 void FileAppender::setAppend(bool fileAppend1)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	this->fileAppend = fileAppend1;
 }
 
 void FileAppender::setFile(const LogString& file)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	fileName = file;
 }
 
@@ -108,7 +106,7 @@ void FileAppender::setFile(const LogString& file)
 
 void FileAppender::setBufferedIO(bool bufferedIO1)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	this->bufferedIO = bufferedIO1;
 
 	if (bufferedIO1)
@@ -123,27 +121,27 @@ void FileAppender::setOption(const LogString& option,
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
 		|| StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		fileName = stripDuplicateBackslashes(value);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		fileAppend = OptionConverter::toBoolean(value, true);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDIO"), LOG4CXX_STR("bufferedio")))
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		bufferedIO = OptionConverter::toBoolean(value, true);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("IMMEDIATEFLUSH"), LOG4CXX_STR("immediateflush")))
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		bufferedIO = !OptionConverter::toBoolean(value, false);
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
 	{
-		LOCK_W sync(mutex);
+        std::unique_lock lock(mutex);
 		bufferSize = OptionConverter::toFileSize(value, 8 * 1024);
 	}
 	else
@@ -154,7 +152,7 @@ void FileAppender::setOption(const LogString& option,
 
 void FileAppender::activateOptions(Pool& p)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 	int errors = 0;
 
 	if (!fileName.empty())
@@ -270,7 +268,7 @@ void FileAppender::setFile(
 	size_t bufferSize1,
 	Pool& p)
 {
-	LOCK_W sync(mutex);
+    std::unique_lock lock(mutex);
 
 	// It does not make sense to have immediate flush and bufferedIO.
 	if (bufferedIO1)

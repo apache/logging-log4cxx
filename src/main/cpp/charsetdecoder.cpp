@@ -18,8 +18,6 @@
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
-#include <log4cxx/helpers/mutex.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/pool.h>
 #include <apr_xlate.h>
 #if !defined(LOG4CXX)
@@ -30,6 +28,7 @@
 #include <apr_portable.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -55,7 +54,7 @@ class APRCharsetDecoder : public CharsetDecoder
 		 *  Creates a new instance.
 		 *  @param frompage name of source encoding.
 		 */
-		APRCharsetDecoder(const LogString& frompage) : pool(), mutex(pool)
+        APRCharsetDecoder(const LogString& frompage) : pool()
 		{
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 			const char* topage = "WCHAR_T";
@@ -97,7 +96,7 @@ class APRCharsetDecoder : public CharsetDecoder
 			{
 				size_t outbytes_left = initial_outbytes_left;
 				{
-					synchronized sync(mutex);
+                    std::unique_lock lock(mutex);
 					stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
 							NULL, NULL, (char*) buf, &outbytes_left);
 				}
@@ -112,7 +111,7 @@ class APRCharsetDecoder : public CharsetDecoder
 					size_t pos = in.position();
 					apr_size_t outbytes_left = initial_outbytes_left;
 					{
-						synchronized sync(mutex);
+                        std::unique_lock lock(mutex);
 						stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
 								in.data() + pos,
 								&inbytes_left,
@@ -131,7 +130,7 @@ class APRCharsetDecoder : public CharsetDecoder
 		APRCharsetDecoder(const APRCharsetDecoder&);
 		APRCharsetDecoder& operator=(const APRCharsetDecoder&);
 		log4cxx::helpers::Pool pool;
-		Mutex mutex;
+        std::mutex mutex;
 		apr_xlate_t* convset;
 };
 
@@ -425,7 +424,7 @@ class USASCIICharsetDecoder : public CharsetDecoder
 class LocaleCharsetDecoder : public CharsetDecoder
 {
 	public:
-		LocaleCharsetDecoder() : pool(), mutex(pool), decoder(), encoding()
+        LocaleCharsetDecoder() : pool(), decoder(), encoding()
 		{
 		}
 		virtual ~LocaleCharsetDecoder()
@@ -450,8 +449,8 @@ class LocaleCharsetDecoder : public CharsetDecoder
 			{
 				Pool subpool;
 				const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
-				{
-					synchronized sync(mutex);
+                {
+                    std::unique_lock lock(mutex);
 
 					if (enc == 0)
 					{
@@ -484,7 +483,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 		}
 	private:
 		Pool pool;
-		Mutex mutex;
+        std::mutex mutex;
 		CharsetDecoderPtr decoder;
 		std::string encoding;
 };

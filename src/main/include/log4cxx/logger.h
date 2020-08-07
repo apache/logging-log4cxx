@@ -26,11 +26,10 @@
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/pool.h>
-#include <log4cxx/helpers/mutex.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/messagebuffer.h>
-
+#include <shared_mutex>
 
 namespace log4cxx
 {
@@ -1714,7 +1713,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void trace(const std::string& msg) const;
 
-		inline SHARED_MUTEX& getMutex()
+        inline std::shared_mutex& getMutex()
 		{
 			return mutex;
 		}
@@ -1724,7 +1723,7 @@ class LOG4CXX_EXPORT Logger :
 		//  prevent copy and assignment
 		Logger(const Logger&);
 		Logger& operator=(const Logger&);
-		mutable SHARED_MUTEX mutex;
+        mutable std::shared_mutex mutex;
 		friend class log4cxx::helpers::synchronized;
 };
 LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
