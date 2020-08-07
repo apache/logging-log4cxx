@@ -17,7 +17,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/exception.h>
-#include <apr_pools.h>
 #include <log4cxx/helpers/pool.h>
 
 using namespace log4cxx;

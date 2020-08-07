@@ -169,5 +169,4 @@ set_target_properties(log4cxx PROPERTIES
   SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
 )
 target_compile_features(log4cxx PUBLIC
-    cxx_nullptr
-    cxx_thread_local)
+    cxx_std_17)

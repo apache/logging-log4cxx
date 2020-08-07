@@ -24,8 +24,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 
-#include <apr_time.h>
-#include <apr_strings.h>
 #include <string.h>
 
 using namespace log4cxx;

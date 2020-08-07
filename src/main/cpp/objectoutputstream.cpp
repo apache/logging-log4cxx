@@ -23,7 +23,6 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/outputstream.h>
 #include <log4cxx/helpers/charsetencoder.h>
-#include "apr_pools.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

@@ -38,7 +38,6 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/spi/rootlogger.h>
-#include <apr_atomic.h>
 #include "assert.h"
 
 

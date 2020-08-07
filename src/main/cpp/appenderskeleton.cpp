@@ -22,7 +22,6 @@
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/synchronized.h>
-#include <apr_atomic.h>
 
 
 using namespace log4cxx;

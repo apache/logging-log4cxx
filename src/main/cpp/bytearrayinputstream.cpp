@@ -18,9 +18,9 @@
 #include <log4cxx/helpers/bytearrayinputstream.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/bytebuffer.h>
-#include <apr_file_io.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <algorithm>
+#include <cstring>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -54,7 +54,7 @@ int ByteArrayInputStream::read(ByteBuffer& dst)
 	else
 	{
 		size_t bytesCopied = min(dst.remaining(), buf.size() - pos);
-		memcpy(dst.current(), &buf[pos], bytesCopied);
+        std::memcpy(dst.current(), &buf[pos], bytesCopied);
 		pos += bytesCopied;
 		dst.position(dst.position() + bytesCopied);
 		return (int)bytesCopied;

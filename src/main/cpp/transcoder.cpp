@@ -24,8 +24,7 @@
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/helpers/charsetencoder.h>
 #include <vector>
-#include <apr.h>
-#include <apr_strings.h>
+#include <cstring>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
@@ -529,7 +528,7 @@ wchar_t* Transcoder::wencode(const LogString& src, Pool& p)
 #endif
 	wchar_t* dst = (wchar_t*) p.palloc((tmp.length() + 1) * sizeof(wchar_t));
 	dst[tmp.length()] = 0;
-	memcpy(dst, tmp.data(), tmp.length() * sizeof(wchar_t));
+    std::memcpy(dst, tmp.data(), tmp.length() * sizeof(wchar_t));
 	return dst;
 }
 

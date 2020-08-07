@@ -24,7 +24,6 @@
 #include <log4cxx/xml/xmllayout.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/transform.h>
-#include <apr_time.h>
 #include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/socketoutputstream.h>

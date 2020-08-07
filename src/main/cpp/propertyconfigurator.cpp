@@ -33,9 +33,6 @@
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/synchronized.h>
-#include <apr_file_io.h>
-#include <apr_file_info.h>
-#include <apr_pools.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/fileinputstream.h>
 
