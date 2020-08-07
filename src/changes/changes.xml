@@ -33,6 +33,7 @@
 			<action issue="LOGCXX-500" type="update">Logging in Timing-Critical Applications</action>
 			<action issue="LOGCXX-494" type="fix">Provide a windows build environment for the project by replacing the ant build with a CMake build</action>
 			<action issue="LOGCXX-493" type="fix">Wrong usage of milli- vs. micro- and non- vs. milliseconds in some docs.</action>
+			<action issue="LOGCXX-490" type="fix">conditional expression is constant</action>
 			<action issue="LOGCXX-488" type="fix">Space after log level hides messages</action>
 			<action issue="LOGCXX-484" type="fix">Spelling error s/excute/execute</action>
 			<action issue="LOGCXX-483" type="update">Not able to see hebrew values when logging in log4cxx</action>
