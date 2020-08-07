@@ -34,8 +34,8 @@ LogLog::LogLog() : mutex(APRInitializer::getRootPool())
 {
 	synchronized sync(mutex);
 
-	debugEnabled    = false;
-	quietMode       = false;
+	debugEnabled	= false;
+	quietMode		= false;
 }
 
 LogLog& LogLog::getInstance()
@@ -54,16 +54,23 @@ void LogLog::setInternalDebugging(bool debugEnabled1)
 
 void LogLog::debug(const LogString& msg)
 {
+	if (!getInstance().debugEnabled)
+	{
+		return;
+	}
+
 	synchronized sync(getInstance().mutex);
 
-	if (getInstance().debugEnabled && !getInstance().quietMode)
-	{
-		emit(msg);
-	}
+	emit(msg);
 }
 
 void LogLog::debug(const LogString& msg, const std::exception& e)
 {
+	if (!getInstance().debugEnabled)
+	{
+		return;
+	}
+
 	synchronized sync(getInstance().mutex);
 
 	debug(msg);
@@ -75,10 +82,7 @@ void LogLog::error(const LogString& msg)
 {
 	synchronized sync(getInstance().mutex);
 
-	if (!getInstance().quietMode)
-	{
-		emit(msg);
-	}
+	emit(msg);
 }
 
 void LogLog::error(const LogString& msg, const std::exception& e)
@@ -100,10 +104,7 @@ void LogLog::warn(const LogString& msg)
 {
 	synchronized sync(getInstance().mutex);
 
-	if (!getInstance().quietMode)
-	{
-		emit(msg);
-	}
+	emit(msg);
 }
 
 void LogLog::warn(const LogString& msg, const std::exception& e)
@@ -116,6 +117,11 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 
 void LogLog::emit(const LogString& msg)
 {
+	if (getInstance().quietMode)
+	{
+		return;
+	}
+
 	LogString out(LOG4CXX_STR("log4cxx: "));
 
 	out.append(msg);
@@ -126,6 +132,11 @@ void LogLog::emit(const LogString& msg)
 
 void LogLog::emit(const std::exception& ex)
 {
+	if (getInstance().quietMode)
+	{
+		return;
+	}
+
 	LogString out(LOG4CXX_STR("log4cxx: "));
 	const char* raw = ex.what();
 
