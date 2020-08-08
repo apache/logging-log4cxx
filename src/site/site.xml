@@ -103,6 +103,9 @@
 			<item	name="Repository"
 					href="/source-repository.html"
 			/>
+			<item	name="Dependencies"
+					href="dependencies.html"
+			/>
 			<item	name="Building"
 					href="/building/index.html">
 				<item	name="Apache Maven 2"
