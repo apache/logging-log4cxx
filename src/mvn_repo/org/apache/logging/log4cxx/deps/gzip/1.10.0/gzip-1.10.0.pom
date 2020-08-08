@@ -3,7 +3,7 @@
 			xmlns="http://maven.apache.org/POM/4.0.0"
 			xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.apache.logging.log4cxx.test-bins</groupId>
+	<groupId>org.apache.logging.log4cxx.deps</groupId>
 	<artifactId>gzip</artifactId>
 	<version>1.10.0</version>
 	<packaging>zip</packaging>

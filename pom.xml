@@ -19,8 +19,8 @@
 
 		<!-- Local repos to model non-public dependencies for different purposes. -->
 		<repository>
-			<id>log4cxx_test_bins</id>
-			<url>file:///${project.basedir}/src/test/mvn_repo</url>
+			<id>log4cxx_non_public_deps</id>
+			<url>file:///${project.basedir}/src/mvn_repo</url>
 		</repository>
 	</repositories>
 
@@ -385,21 +385,14 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.logging.log4cxx.test-bins</groupId>
-			<artifactId>grep</artifactId>
-			<version>3.1.0</version>
-			<scope>test</scope>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.logging.log4cxx.test-bins</groupId>
+			<groupId>org.apache.logging.log4cxx.deps</groupId>
 			<artifactId>gzip</artifactId>
 			<version>1.10.0</version>
-			<scope>test</scope>
+			<scope>runtime</scope>
 			<type>pom</type>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.logging.log4cxx.test-bins</groupId>
+			<groupId>org.apache.logging.log4cxx.deps</groupId>
 			<artifactId>sed</artifactId>
 			<version>4.8.0</version>
 			<scope>test</scope>
