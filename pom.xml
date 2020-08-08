@@ -17,11 +17,10 @@
 			<url>https://maven.tmatesoft.com/content/repositories/releases</url>
 		</repository>
 
-		<!-- SED, GREP -->
+		<!-- Local repos to model non-public dependencies for different purposes. -->
 		<repository>
-			<id>mvn_bintray_com</id>
-			<name>dl.bintray.com</name>
-			<url>https://dl.bintray.com/jfrog/jfrog-jars/</url>
+			<id>log4cxx_test_bins</id>
+			<url>file:///${project.basedir}/src/test/mvn_repo</url>
 		</repository>
 	</repositories>
 
@@ -386,24 +385,32 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.apache.logging.log4cxx.test-bins</groupId>
+			<artifactId>grep</artifactId>
+			<version>3.1.0</version>
+			<scope>test</scope>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4cxx.test-bins</groupId>
+			<artifactId>gzip</artifactId>
+			<version>1.10.0</version>
+			<scope>test</scope>
+			<type>pom</type>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4cxx.test-bins</groupId>
+			<artifactId>sed</artifactId>
+			<version>4.8.0</version>
+			<scope>test</scope>
+			<type>pom</type>
+		</dependency>
+
+		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
 			<version>1.2.14</version>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>grep</groupId>
-			<artifactId>grep</artifactId>
-			<version>2.5.4</version>
-			<scope>test</scope>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>sed</groupId>
-			<artifactId>sed</artifactId>
-			<version>4.2.1</version>
-			<scope>test</scope>
-			<type>pom</type>
 		</dependency>
 	</dependencies>
 
