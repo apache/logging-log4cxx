@@ -29,7 +29,7 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST_SUITE(TranscoderTestCase);
 	LOGUNIT_TEST(decode1);
 #if LOG4CXX_WCHAR_T_API
-	LOGUNIT_TEST(decode2);
+    LOGUNIT_TEST(decode2);
 #endif
 	LOGUNIT_TEST(decode3);
 #if LOG4CXX_WCHAR_T_API
@@ -43,6 +43,7 @@ LOGUNIT_CLASS(TranscoderTestCase)
 	LOGUNIT_TEST(encode2);
 #if LOG4CXX_WCHAR_T_API
 	LOGUNIT_TEST(encode3);
+    LOGUNIT_TEST(encode3_1);
 #endif
 	LOGUNIT_TEST(encode4);
 #if LOG4CXX_WCHAR_T_API
@@ -163,6 +164,19 @@ public:
 		LOGUNIT_ASSERT_EQUAL(manyAs, encoded.substr(0, BUFSIZE - 3));
 		LOGUNIT_ASSERT_EQUAL(std::wstring(L"Hello"), encoded.substr(BUFSIZE - 3));
 	}
+
+    void encode3_1()
+    {
+        // Test invalid multibyte string
+        LogString greeting;
+        greeting.push_back( 0xff );
+        std::wstring encoded;
+        Transcoder::encode(greeting, encoded);
+
+        std::wstring expected;
+        expected.push_back( log4cxx::helpers::Transcoder::LOSSCHAR );
+        LOGUNIT_ASSERT_EQUAL(encoded, expected );
+    }
 #endif
 
 	void encode4()
