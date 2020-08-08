@@ -36,8 +36,8 @@
 		<section name="Running unit tests">
 			<p>
 				Autotools will link all tests into a single executable (testsuite).
-				The cmake build generates a number of executables which can be run using the ctest tool.
-				Some unit tests will fail if sed, gzip and zip are not available.
+				The cmake build generates a number of executables which can be run using the ctest
+				tool. Some unit tests will fail if sed and gzip are not available.
 			</p>
 		</section>
 
