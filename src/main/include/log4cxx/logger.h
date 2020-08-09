@@ -1713,7 +1713,7 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void trace(const std::string& msg) const;
 
-        inline std::shared_mutex& getMutex()
+		inline std::shared_mutex& getMutex()
 		{
 			return mutex;
 		}
@@ -1723,7 +1723,7 @@ class LOG4CXX_EXPORT Logger :
 		//  prevent copy and assignment
 		Logger(const Logger&);
 		Logger& operator=(const Logger&);
-        mutable std::shared_mutex mutex;
+		mutable std::shared_mutex mutex;
 		friend class log4cxx::helpers::synchronized;
 };
 LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);

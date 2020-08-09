@@ -144,7 +144,6 @@ target_sources(log4cxx
   systemerrwriter.cpp
   systemoutwriter.cpp
   telnetappender.cpp
-  threadcxx.cpp
   threadlocal.cpp
   threadpatternconverter.cpp
   threadspecificdata.cpp

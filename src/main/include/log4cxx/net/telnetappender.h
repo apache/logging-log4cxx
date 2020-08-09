@@ -28,7 +28,7 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
 #include <log4cxx/helpers/serversocket.h>
-#include <log4cxx/helpers/thread.h>
+#include <thread>
 #include <vector>
 #include <log4cxx/helpers/charsetencoder.h>
 
@@ -147,9 +147,9 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		LogString encoding;
 		log4cxx::helpers::CharsetEncoderPtr encoder;
 		helpers::ServerSocket* serverSocket;
-		helpers::Thread sh;
+		std::thread sh;
 		size_t activeConnections;
-		static void* LOG4CXX_THREAD_FUNC acceptConnections(apr_thread_t* thread, void* data);
+		void acceptConnections();
 }; // class TelnetAppender
 
 LOG4CXX_PTR_DEF(TelnetAppender);

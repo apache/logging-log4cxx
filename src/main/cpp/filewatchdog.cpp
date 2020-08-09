@@ -23,13 +23,12 @@
 #include <apr_atomic.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/exception.h>
+#include <functional>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 long FileWatchdog::DEFAULT_DELAY = 60000;
-
-#if APR_HAS_THREADS
 
 FileWatchdog::FileWatchdog(const File& file1)
 	: file(file1), delay(DEFAULT_DELAY), lastModif(0),
@@ -39,16 +38,11 @@ FileWatchdog::FileWatchdog(const File& file1)
 
 FileWatchdog::~FileWatchdog()
 {
-	apr_atomic_set32(&interrupted, 0xFFFF);
+    interrupted = 0xFFFF;
 
-	try
-	{
-		thread.interrupt();
-		thread.join();
-	}
-	catch (Exception&)
-	{
-	}
+    std::unique_lock lock(interrupt_mutex);
+    interrupt.notify_all();
+    thread.join();
 }
 
 void FileWatchdog::checkAndConfigure()
@@ -78,33 +72,27 @@ void FileWatchdog::checkAndConfigure()
 	}
 }
 
-void* APR_THREAD_FUNC FileWatchdog::run(apr_thread_t* /* thread */, void* data)
+void FileWatchdog::run()
 {
-	FileWatchdog* pThis = (FileWatchdog*) data;
 
-	unsigned int interrupted = apr_atomic_read32(&pThis->interrupted);
+    while (interrupted != 0xFFFF)
+    {
+        std::unique_lock lock( interrupt_mutex );
+        interrupt.wait_for( lock, std::chrono::milliseconds( delay ),
+                            std::bind(&FileWatchdog::is_interrupted, this) );
 
-	while (!interrupted)
-	{
-		try
-		{
-			Thread::sleep(pThis->delay);
-			pThis->checkAndConfigure();
-		}
-		catch (InterruptedException&)
-		{
-			interrupted = apr_atomic_read32(&pThis->interrupted);
-		}
-	}
+        checkAndConfigure();
+    }
 
-	return NULL;
 }
 
 void FileWatchdog::start()
 {
 	checkAndConfigure();
 
-	thread.run(run, this);
+    thread = std::thread( &FileWatchdog::run, this );
 }
 
-#endif
+bool FileWatchdog::is_interrupted(){
+    return interrupted == 0xFFFF;
+}

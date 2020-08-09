@@ -48,7 +48,7 @@ class LOG4CXX_EXPORT LogLog
 		       In quietMode not even errors generate any output.
 		 */
 		bool quietMode;
-        std::mutex mutex;
+		std::mutex mutex;
 		LogLog();
 		LogLog(const LogLog&);
 		LogLog& operator=(const LogLog&);

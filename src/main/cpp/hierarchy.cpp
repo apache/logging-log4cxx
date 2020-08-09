@@ -143,13 +143,7 @@ void Hierarchy::setThreshold(const LevelPtr& l)
 	if (l != 0)
 	{
         std::unique_lock lock(mutex);
-		thresholdInt = l->toInt();
-		threshold = l;
-
-		if (thresholdInt != Level::ALL_INT)
-		{
-			setConfigured(true);
-		}
+        setThresholdInternal(l);
 	}
 }
 
@@ -166,6 +160,16 @@ void Hierarchy::setThreshold(const LogString& levelStr)
 		LogLog::warn(((LogString) LOG4CXX_STR("No level could be found named \""))
 			+ levelStr + LOG4CXX_STR("\"."));
 	}
+}
+
+void Hierarchy::setThresholdInternal(const LevelPtr &l){
+    thresholdInt = l->toInt();
+    threshold = l;
+
+    if (thresholdInt != Level::ALL_INT)
+    {
+        setConfigured(true);
+    }
 }
 
 void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
@@ -290,20 +294,18 @@ void Hierarchy::resetConfiguration()
 
 	getRootLogger()->setLevel(Level::getDebug());
 	root->setResourceBundle(0);
-	setThreshold(Level::getAll());
+    setThresholdInternal(Level::getAll());
 
-	shutdown(); // nested locks are OK
+    shutdownInternal();
 
-	LoggerList loggers1 = getCurrentLoggers();
-	LoggerList::iterator it, itEnd = loggers1.end();
+    LoggerMap::const_iterator it, itEnd = loggers->end();
 
-	for (it = loggers1.begin(); it != itEnd; it++)
-	{
-		LoggerPtr& logger = *it;
-		logger->setLevel(0);
-		logger->setAdditivity(true);
-		logger->setResourceBundle(0);
-	}
+    for (it = loggers->begin(); it != itEnd; it++)
+    {
+        it->second->setLevel(0);
+        it->second->setAdditivity(true);
+        it->second->setResourceBundle(0);
+    }
 
 	//rendererMap.clear();
 }
@@ -312,23 +314,27 @@ void Hierarchy::shutdown()
 {
     std::unique_lock lock(mutex);
 
+    shutdownInternal();
+}
+
+void Hierarchy::shutdownInternal(){
     configured = false;
 
-	LoggerPtr root1 = getRootLogger();
+    LoggerPtr root1 = getRootLogger();
 
-	// begin by closing nested appenders
-	root1->closeNestedAppenders();
+    // begin by closing nested appenders
+    root1->closeNestedAppenders();
 
     LoggerMap::iterator it, itEnd = loggers->end();
 
     for (it = loggers->begin(); it != itEnd; it++)
-	{
+    {
         LoggerPtr& logger = it->second;
-		logger->closeNestedAppenders();
-	}
+        logger->closeNestedAppenders();
+    }
 
-	// then, remove all appenders
-	root1->removeAllAppenders();
+    // then, remove all appenders
+    root1->removeAllAppenders();
 
     for (it = loggers->begin(); it != itEnd; it++)
     {
@@ -337,10 +343,8 @@ void Hierarchy::shutdown()
     }
 }
 
-
 void Hierarchy::updateParents(LoggerPtr logger)
 {
-    std::unique_lock lock(mutex);
 	const LogString name(logger->getName());
 	size_t length = name.size();
 	bool parentFound = false;

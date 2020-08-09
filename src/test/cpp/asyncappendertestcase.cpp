@@ -117,17 +117,17 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		// tests inherited from AppenderSkeletonTestCase
 		//
-		LOGUNIT_TEST(testDefaultThreshold);
-		LOGUNIT_TEST(testSetOptionThreshold);
+        LOGUNIT_TEST(testDefaultThreshold);
+        LOGUNIT_TEST(testSetOptionThreshold);
 
-		LOGUNIT_TEST(closeTest);
-		LOGUNIT_TEST(test2);
-		LOGUNIT_TEST(test3);
+        LOGUNIT_TEST(closeTest);
+        LOGUNIT_TEST(test2);
+        LOGUNIT_TEST(test3);
 		//
 		// TODO: test fails on Linux.
 		//LOGUNIT_TEST(testBadAppender);
-		LOGUNIT_TEST(testLocationInfoTrue);
-		LOGUNIT_TEST(testConfiguration);
+        LOGUNIT_TEST(testLocationInfoTrue);
+        LOGUNIT_TEST(testConfiguration);
 		LOGUNIT_TEST_SUITE_END();
 
 
@@ -226,8 +226,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			asyncAppender->activateOptions(p);
 			LoggerPtr root = Logger::getRootLogger();
 			root->addAppender(asyncAppender);
-			LOG4CXX_INFO(root, "Message");
-			Thread::sleep(10);
+            LOG4CXX_INFO(root, "Message");
+            std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
 
 			try
 			{
@@ -260,7 +260,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 				for (int i = 0; i < 140; i++)
 				{
 					LOG4CXX_INFO(rootLogger, "Hello, World");
-					Thread::sleep(1);
+                    std::this_thread::sleep_for( std::chrono::milliseconds( 1 ) );
 				}
 
 				LOG4CXX_ERROR(rootLogger, "That's all folks.");

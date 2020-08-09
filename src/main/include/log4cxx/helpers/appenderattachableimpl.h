@@ -108,13 +108,13 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		virtual void removeAppender(const LogString& name);
 
-        inline std::mutex& getMutex() const
+		inline std::mutex& getMutex() const
 		{
 			return mutex;
 		}
 
 	private:
-        mutable std::mutex mutex;
+		mutable std::mutex mutex;
 		AppenderAttachableImpl(const AppenderAttachableImpl&);
 		AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);
 };

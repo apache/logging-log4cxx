@@ -61,6 +61,8 @@ class LOG4CXX_EXPORT Appender :
 
 		virtual ~Appender() {}
 
+		void asdf();
+
 		/**
 		 Add a filter to the end of the filter list.
 		*/

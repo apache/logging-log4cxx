@@ -23,6 +23,8 @@ find_package(APR REQUIRED)
 # Find Apache Runtime Utilities
 find_package(APR-Util REQUIRED)
 
+find_package( Threads REQUIRED )
+
 # Building
 add_subdirectory(src)
 

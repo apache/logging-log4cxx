@@ -26,6 +26,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/bytearrayoutputstream.h>
+#include <functional>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -37,7 +38,7 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnection
 	   port(defaultPort),
 	   reconnectionDelay(reconnectionDelay1),
 	   locationInfo(false),
-	   thread()
+       thread()
 {
 }
 
@@ -66,15 +67,7 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1,
 SocketAppenderSkeleton::~SocketAppenderSkeleton()
 {
 	finalize();
-
-	try
-	{
-		thread.join();
-	}
-	catch (ThreadException& ex)
-	{
-		LogLog::error(LOG4CXX_STR("Error closing socket appender connection thread"), ex);
-	}
+    thread.join();
 }
 
 void SocketAppenderSkeleton::activateOptions(Pool& p)
@@ -94,7 +87,10 @@ void SocketAppenderSkeleton::close()
 
 	closed = true;
 	cleanUp(pool);
-	thread.interrupt();
+
+    std::unique_lock lock2(interrupt_mutex);
+    interrupt.notify_all();
+    thread.join();
 }
 
 void SocketAppenderSkeleton::connect(Pool& p)
@@ -157,54 +153,50 @@ void SocketAppenderSkeleton::fireConnector()
 {
     std::unique_lock lock(mutex);
 
-	if ( !thread.isAlive() )
+    if ( !thread.joinable() )
 	{
 		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
 
-		try
-		{
-			thread.run(monitor, this);
-		}
-		catch ( ThreadException& te )
-		{
-			LogLog::error(LOG4CXX_STR("Monitor not started: "), te);
-		}
+        thread = std::thread( &SocketAppenderSkeleton::monitor, this );
 	}
 }
 
-void* LOG4CXX_THREAD_FUNC SocketAppenderSkeleton::monitor(apr_thread_t* /* thread */, void* data)
+void SocketAppenderSkeleton::monitor()
 {
-	SocketAppenderSkeleton* socketAppender = (SocketAppenderSkeleton*) data;
 	SocketPtr socket;
-	bool isClosed = socketAppender->closed;
+    bool isClosed = closed;
 
 	while (!isClosed)
 	{
 		try
-		{
-			Thread::sleep(socketAppender->reconnectionDelay);
+        {
+            std::this_thread::sleep_for( std::chrono::milliseconds( reconnectionDelay ) );
 
-			if (!socketAppender->closed)
+            std::unique_lock lock( interrupt_mutex );
+            interrupt.wait_for( lock, std::chrono::milliseconds( reconnectionDelay ),
+                                std::bind(&SocketAppenderSkeleton::is_closed, this) );
+
+            if (!closed)
 			{
 				LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
-					+ socketAppender->address->getHostName());
-				socket = new Socket(socketAppender->address, socketAppender->port);
+                    + address->getHostName());
+                socket = new Socket(address, port);
 				Pool p;
-				socketAppender->setSocket(socket, p);
+                setSocket(socket, p);
 				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
 			}
 
-			return NULL;
+            return;
 		}
 		catch (InterruptedException&)
 		{
 			LogLog::debug(LOG4CXX_STR("Connector interrupted.  Leaving loop."));
-			return NULL;
+            return;
 		}
 		catch (ConnectException&)
 		{
 			LogLog::debug(LOG4CXX_STR("Remote host ")
-				+ socketAppender->address->getHostName()
+                + address->getHostName()
 				+ LOG4CXX_STR(" refused connection."));
 		}
 		catch (IOException& e)
@@ -213,14 +205,17 @@ void* LOG4CXX_THREAD_FUNC SocketAppenderSkeleton::monitor(apr_thread_t* /* threa
 			log4cxx::helpers::Transcoder::decode(e.what(), exmsg);
 
 			LogLog::debug(((LogString) LOG4CXX_STR("Could not connect to "))
-				+ socketAppender->address->getHostName()
+                + address->getHostName()
 				+ LOG4CXX_STR(". Exception is ")
 				+ exmsg);
 		}
 
-		isClosed = socketAppender->closed;
+        isClosed = closed;
 	}
 
-	LogLog::debug(LOG4CXX_STR("Exiting Connector.run() method."));
-	return NULL;
+    LogLog::debug(LOG4CXX_STR("Exiting Connector.run() method."));
+}
+
+bool SocketAppenderSkeleton::is_closed(){
+    return closed;
 }

@@ -50,9 +50,7 @@ AsyncAppender::AsyncAppender()
 	  locationInfo(false),
 	  blocking(true)
 {
-#if APR_HAS_THREADS
-	dispatcher.run(dispatch, this);
-#endif
+    dispatcher = std::thread( &AsyncAppender::dispatch, this );
 }
 
 AsyncAppender::~AsyncAppender()
@@ -111,18 +109,16 @@ void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 
 void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-#if APR_HAS_THREADS
-
 	//
 	//   if dispatcher has died then
 	//      append subsequent events synchronously
 	//
-	if (!dispatcher.isAlive() || bufferSize <= 0)
+    if (!dispatcher.joinable() || bufferSize <= 0)
 	{
         std::unique_lock lock(appenders->getMutex());
 		appenders->appendLoopOnAppenders(event, p);
 		return;
-	}
+    }
 
 	// Set the NDC and thread name for the calling thread as these
 	// LoggingEvent fields were not set at event creation time.
@@ -162,8 +158,8 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			bool discard = true;
 
 			if (blocking
-				&& !Thread::interrupted()
-				&& !dispatcher.isCurrentThread())
+                //&& !Thread::interrupted()
+                && (dispatcher.get_id() != std::this_thread::get_id()) )
 			{
 				try
 				{
@@ -176,7 +172,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 					//  reset interrupt status so
 					//    calling code can see interrupt on
 					//    their next wait or sleep.
-					Thread::currentThreadInterrupt();
+                    //Thread::currentThreadInterrupt();
 				}
 			}
 
@@ -203,10 +199,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			}
 		}
 	}
-#else
-	synchronized sync(appenders->getMutex());
-	appenders->appendLoopOnAppenders(event, p);
-#endif
 }
 
 
@@ -219,19 +211,9 @@ void AsyncAppender::close()
         bufferNotFull.notify_all();
 	}
 
-#if APR_HAS_THREADS
-
-	try
-	{
-		dispatcher.join();
-	}
-	catch (InterruptedException& e)
-	{
-		Thread::currentThreadInterrupt();
-		LogLog::error(LOG4CXX_STR("Got an InterruptedException while waiting for the dispatcher to finish,"), e);
-	}
-
-#endif
+    if( dispatcher.joinable() ){
+        dispatcher.join();
+    }
 
 	{
         std::unique_lock lock(appenders->getMutex());
@@ -382,10 +364,8 @@ AsyncAppender::DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
 			LocationInfo::getLocationUnavailable());
 }
 
-#if APR_HAS_THREADS
-void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void* data)
+void AsyncAppender::dispatch()
 {
-	AsyncAppender* pThis = (AsyncAppender*) data;
 	bool isActive = true;
 
 	try
@@ -398,53 +378,51 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void
 			Pool p;
 			LoggingEventList events;
             {
-                std::unique_lock lock(pThis->bufferMutex);
-				size_t bufferSize = pThis->buffer.size();
-				isActive = !pThis->closed;
+                std::unique_lock lock(bufferMutex);
+                size_t bufferSize = buffer.size();
+                isActive = !closed;
 
 				while ((bufferSize == 0) && isActive)
 				{
-                    pThis->bufferNotEmpty.wait(lock);
-					bufferSize = pThis->buffer.size();
-					isActive = !pThis->closed;
+                    bufferNotEmpty.wait(lock);
+                    bufferSize = buffer.size();
+                    isActive = !closed;
 				}
 
-				for (LoggingEventList::iterator eventIter = pThis->buffer.begin();
-					eventIter != pThis->buffer.end();
+                for (LoggingEventList::iterator eventIter = buffer.begin();
+                    eventIter != buffer.end();
 					eventIter++)
 				{
 					events.push_back(*eventIter);
 				}
 
-				for (DiscardMap::iterator discardIter = pThis->discardMap->begin();
-					discardIter != pThis->discardMap->end();
+                for (DiscardMap::iterator discardIter = discardMap->begin();
+                    discardIter != discardMap->end();
 					discardIter++)
 				{
 					events.push_back(discardIter->second.createEvent(p));
 				}
 
-				pThis->buffer.clear();
-				pThis->discardMap->clear();
-                pThis->bufferNotFull.notify_all();
+                buffer.clear();
+                discardMap->clear();
+                bufferNotFull.notify_all();
 			}
 
 			for (LoggingEventList::iterator iter = events.begin();
 				iter != events.end();
 				iter++)
 			{
-                std::unique_lock lock(pThis->appenders->getMutex());
-				pThis->appenders->appendLoopOnAppenders(*iter, p);
+                std::unique_lock lock(appenders->getMutex());
+                appenders->appendLoopOnAppenders(*iter, p);
 			}
 		}
 	}
 	catch (InterruptedException&)
 	{
-		Thread::currentThreadInterrupt();
+        //Thread::currentThreadInterrupt();
 	}
 	catch (...)
 	{
-	}
+    }
 
-	return 0;
 }
-#endif

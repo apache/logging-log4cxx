@@ -68,8 +68,8 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 			appender->setLayout(new TTCCLayout());
 			appender->setPort(TEST_PORT);
 			Pool p;
-			appender->activateOptions(p);
-			Thread::sleep(1000);
+            appender->activateOptions(p);
+            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 			appender->close();
 		}
 

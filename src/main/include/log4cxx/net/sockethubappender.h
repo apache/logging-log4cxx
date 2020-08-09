@@ -26,7 +26,7 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <vector>
-#include <log4cxx/helpers/thread.h>
+#include <thread>
 #include <log4cxx/helpers/objectoutputstream.h>
 
 
@@ -193,8 +193,8 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 	private:
 		void startServer();
 
-		helpers::Thread thread;
-		static void* LOG4CXX_THREAD_FUNC monitor(apr_thread_t* thread, void* data);
+		std::thread thread;
+		void monitor();
 
 }; // class SocketHubAppender
 LOG4CXX_PTR_DEF(SocketHubAppender);

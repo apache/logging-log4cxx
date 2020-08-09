@@ -15,7 +15,6 @@ set(HELPER_TESTS
     stringhelpertestcase
     stringtokenizertestcase
     syslogwritertest
-    threadtestcase
     timezonetestcase
     transcodertestcase
 )

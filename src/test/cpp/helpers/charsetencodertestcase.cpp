@@ -19,11 +19,11 @@
 #include "../logunit.h"
 #include "../insertwide.h"
 #include <log4cxx/helpers/bytebuffer.h>
-#include <log4cxx/helpers/thread.h>
 #include <apr.h>
 #include <apr_atomic.h>
 #include <mutex>
 #include <condition_variable>
+#include <thread>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -230,6 +230,71 @@ public:
 				return enc;
 			}
 
+            void run()
+            {
+        #if LOG4CXX_LOGCHAR_IS_UTF8
+                const logchar greet[] = { 'H', 'e', 'l', 'l', 'o', ' ',
+                        (char) 0xC2, (char) 0xA2,  //  cent sign
+                        (char) 0xC2, (char) 0xA9,  //  copyright
+                        (char) 0xc3, (char) 0xb4,  //  latin small letter o with circumflex
+                        0
+                    };
+        #endif
+        #if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+                //   arbitrary, hopefully meaningless, characters from
+                //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
+                const logchar greet[] = { L'H', L'e', L'l', L'l', L'o', L' ',
+                        0x00A2, 0x00A9, 0x00F4, 0
+                    };
+        #endif
+
+                const char expected[] =  { 'H', 'e', 'l', 'l', 'o', ' ',
+                        (char) 0x00A2, (char) 0x00A9, (char) 0x00F4
+                    };
+
+                LogString greeting(greet);
+
+                await();
+
+                for (int i = 0; i < getRepetitions(); i++)
+                {
+                    bool pass = true;
+                    char buf[BUFSIZE];
+                    ByteBuffer out(buf, BUFSIZE);
+                    LogString::const_iterator iter = greeting.begin();
+                    log4cxx_status_t stat = getEncoder()->encode(greeting, iter, out);
+                    pass = (false == CharsetEncoder::isError(stat));
+
+                    if (pass)
+                    {
+                        stat = getEncoder()->encode(greeting, iter, out);
+                        pass = (false == CharsetEncoder::isError(stat));
+
+                        if (pass)
+                        {
+                            out.flip();
+                            pass = (sizeof(expected) == out.limit());
+
+                            for (size_t i = 0; i < out.limit() && pass; i++)
+                            {
+                                pass = (expected[i] == out.data()[i]);
+                            }
+
+                            pass = pass && (iter == greeting.end());
+                        }
+                    }
+
+                    if (pass)
+                    {
+                        ThreadPackage::pass();
+                    }
+                    else
+                    {
+                        fail();
+                    }
+                }
+            }
+
 		private:
 			ThreadPackage(const ThreadPackage&);
 			ThreadPackage& operator=(ThreadPackage&);
@@ -242,90 +307,22 @@ public:
 			int repetitions;
 	};
 
-	static void* LOG4CXX_THREAD_FUNC thread1Action(apr_thread_t* /* thread */, void* data)
-	{
-		ThreadPackage* package = (ThreadPackage*) data;
-#if LOG4CXX_LOGCHAR_IS_UTF8
-		const logchar greet[] = { 'H', 'e', 'l', 'l', 'o', ' ',
-				(char) 0xC2, (char) 0xA2,  //  cent sign
-				(char) 0xC2, (char) 0xA9,  //  copyright
-				(char) 0xc3, (char) 0xb4,  //  latin small letter o with circumflex
-				0
-			};
-#endif
-#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
-		//   arbitrary, hopefully meaningless, characters from
-		//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
-		const logchar greet[] = { L'H', L'e', L'l', L'l', L'o', L' ',
-				0x00A2, 0x00A9, 0x00F4, 0
-			};
-#endif
-
-		const char expected[] =  { 'H', 'e', 'l', 'l', 'o', ' ',
-				(char) 0x00A2, (char) 0x00A9, (char) 0x00F4
-			};
-
-		LogString greeting(greet);
-
-		package->await();
-
-		for (int i = 0; i < package->getRepetitions(); i++)
-		{
-			bool pass = true;
-			char buf[BUFSIZE];
-			ByteBuffer out(buf, BUFSIZE);
-			LogString::const_iterator iter = greeting.begin();
-			log4cxx_status_t stat = package->getEncoder()->encode(greeting, iter, out);
-			pass = (false == CharsetEncoder::isError(stat));
-
-			if (pass)
-			{
-				stat = package->getEncoder()->encode(greeting, iter, out);
-				pass = (false == CharsetEncoder::isError(stat));
-
-				if (pass)
-				{
-					out.flip();
-					pass = (sizeof(expected) == out.limit());
-
-					for (size_t i = 0; i < out.limit() && pass; i++)
-					{
-						pass = (expected[i] == out.data()[i]);
-					}
-
-					pass = pass && (iter == greeting.end());
-				}
-			}
-
-			if (pass)
-			{
-				package->pass();
-			}
-			else
-			{
-				package->fail();
-			}
-		}
-
-		return 0;
-	}
-
 	void thread1()
 	{
 		enum { THREAD_COUNT = 10, THREAD_REPS = 10000 };
-		Thread threads[THREAD_COUNT];
+        std::thread threads[THREAD_COUNT];
 		CharsetEncoderPtr enc(CharsetEncoder::getEncoder(LOG4CXX_STR("ISO-8859-1")));
 		ThreadPackage* package = new ThreadPackage(enc, THREAD_REPS);
 		{
 			for (int i = 0; i < THREAD_COUNT; i++)
 			{
-				threads[i].run(thread1Action, package);
+                threads[i] = std::thread(&ThreadPackage::run, package);
 			}
 		}
 		//
 		//   give time for all threads to be launched so
-		//      we don't signal before everybody is waiting.
-		Thread::sleep(100);
+        //      we don't signal before everybody is waiting.
+        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 		package->signalAll();
 
 		for (int i = 0; i < THREAD_COUNT; i++)

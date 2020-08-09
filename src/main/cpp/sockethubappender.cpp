@@ -36,8 +36,6 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 using namespace log4cxx::spi;
 
-#if APR_HAS_THREADS
-
 IMPLEMENT_LOG4CXX_OBJECT(SocketHubAppender)
 
 int SocketHubAppender::DEFAULT_PORT = 4560;
@@ -174,28 +172,26 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void SocketHubAppender::startServer()
 {
-	thread.run(monitor, this);
+    thread = std::thread( &SocketHubAppender::monitor, this );
 }
 
-void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, void* data)
+void SocketHubAppender::monitor()
 {
-	SocketHubAppender* pThis = (SocketHubAppender*) data;
-
 	ServerSocket* serverSocket = 0;
 
 	try
 	{
-		serverSocket = new ServerSocket(pThis->port);
+        serverSocket = new ServerSocket(port);
 		serverSocket->setSoTimeout(1000);
 	}
 	catch (SocketException& e)
 	{
 		LogLog::error(LOG4CXX_STR("exception setting timeout, shutting down server socket."), e);
 		delete serverSocket;
-		return NULL;
+        return;
 	}
 
-	bool stopRunning = pThis->closed;
+    bool stopRunning = closed;
 
 	while (!stopRunning)
 	{
@@ -232,11 +228,11 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, voi
 					+ LOG4CXX_STR(")"));
 
 				// add it to the oosList.
-                std::unique_lock lock(pThis->mutex);
+                std::unique_lock lock(mutex);
 				OutputStreamPtr os(new SocketOutputStream(socket));
 				Pool p;
 				ObjectOutputStreamPtr oos(new ObjectOutputStream(os, p));
-				pThis->streams.push_back(oos);
+                streams.push_back(oos);
 			}
 			catch (IOException& e)
 			{
@@ -244,11 +240,8 @@ void* APR_THREAD_FUNC SocketHubAppender::monitor(apr_thread_t* /* thread */, voi
 			}
 		}
 
-		stopRunning = (stopRunning || pThis->closed);
+        stopRunning = (stopRunning ||closed);
 	}
 
-	delete serverSocket;
-	return NULL;
+    delete serverSocket;
 }
-
-#endif
