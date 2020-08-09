@@ -508,11 +508,18 @@ void Transcoder::encode(const LogString& src, std::wstring& dst)
 	dst.append(src);
 #else
 
-	for (LogString::const_iterator i = src.begin();
-		i != src.end();)
+	for (LogString::const_iterator i = src.begin(); i != src.end();)
 	{
 		unsigned int cp = Transcoder::decode(src, i);
-		encode(cp, dst);
+		if (cp != 0xFFFF)
+		{
+			encode(cp, dst);
+		}
+		else
+		{
+			dst.append(1, LOSSCHAR);
+			i++;
+		}
 	}
 
 #endif

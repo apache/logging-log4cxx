@@ -33,8 +33,8 @@ MapFilter::MapFilter() : acceptOnMatch(true), mustMatchAll(false)
 
 }
 
-void MapFilter::setOption(	const LogString& option,
-							const LogString& value)
+void MapFilter::setOption(  const LogString& option,
+	const LogString& value)
 {
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("ACCEPTONMATCH"), LOG4CXX_STR("acceptonmatch")))
 	{
