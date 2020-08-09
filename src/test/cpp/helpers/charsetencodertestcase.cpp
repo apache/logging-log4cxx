@@ -190,13 +190,13 @@ public:
 
 			void await()
 			{
-                std::unique_lock<std::mutex> sync(lock);
+                std::unique_lock sync(lock);
                 condition.wait(sync);
 			}
 
 			void signalAll()
 			{
-                std::unique_lock<std::mutex> sync(lock);
+                std::unique_lock sync(lock);
                 condition.notify_all();
 			}
 

@@ -31,7 +31,7 @@ using namespace log4cxx::helpers;
 
 LogLog::LogLog()
 {
-    std::unique_lock<std::mutex> lock(mutex);
+    std::unique_lock lock(mutex);
 
 	debugEnabled    = false;
 	quietMode       = false;
@@ -46,14 +46,14 @@ LogLog& LogLog::getInstance()
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
-    std::unique_lock<std::mutex> lock(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	getInstance().debugEnabled = debugEnabled1;
 }
 
 void LogLog::debug(const LogString& msg)
 {
-    std::unique_lock<std::mutex> lock(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	if (getInstance().debugEnabled && !getInstance().quietMode)
 	{
@@ -63,7 +63,7 @@ void LogLog::debug(const LogString& msg)
 
 void LogLog::debug(const LogString& msg, const std::exception& e)
 {
-    std::unique_lock<std::mutex> lock(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	debug(msg);
 	emit(e);
@@ -72,7 +72,7 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 
 void LogLog::error(const LogString& msg)
 {
-    std::unique_lock<std::mutex> lock(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	if (!getInstance().quietMode)
 	{
@@ -82,7 +82,7 @@ void LogLog::error(const LogString& msg)
 
 void LogLog::error(const LogString& msg, const std::exception& e)
 {
-    std::unique_lock<std::mutex> lock(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	error(msg);
 	emit(e);
@@ -90,14 +90,14 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 
 void LogLog::setQuietMode(bool quietMode1)
 {
-    std::unique_lock<std::mutex> lock(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	getInstance().quietMode = quietMode1;
 }
 
 void LogLog::warn(const LogString& msg)
 {
-    std::unique_lock<std::mutex> lock(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	if (!getInstance().quietMode)
 	{
@@ -107,7 +107,7 @@ void LogLog::warn(const LogString& msg)
 
 void LogLog::warn(const LogString& msg, const std::exception& e)
 {
-    std::unique_lock<std::mutex> lock(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	warn(msg);
 	emit(e);

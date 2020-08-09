@@ -134,7 +134,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 
     {
-        std::unique_lock<std::mutex> lock(bufferMutex);
+        std::unique_lock lock(bufferMutex);
 
 		while (true)
 		{
@@ -213,7 +213,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 void AsyncAppender::close()
 {
 	{
-        std::unique_lock<std::mutex> lock(bufferMutex);
+        std::unique_lock lock(bufferMutex);
 		closed = true;
         bufferNotEmpty.notify_all();
         bufferNotFull.notify_all();
@@ -305,7 +305,7 @@ void AsyncAppender::setBufferSize(int size)
 		throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
 	}
 
-    std::unique_lock<std::mutex> lock(bufferMutex);
+    std::unique_lock lock(bufferMutex);
 	bufferSize = (size < 1) ? 1 : size;
     bufferNotFull.notify_all();
 }
@@ -317,7 +317,7 @@ int AsyncAppender::getBufferSize() const
 
 void AsyncAppender::setBlocking(bool value)
 {
-    std::unique_lock<std::mutex> lock(bufferMutex);
+    std::unique_lock lock(bufferMutex);
 	blocking = value;
     bufferNotFull.notify_all();
 }
@@ -398,7 +398,7 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void
 			Pool p;
 			LoggingEventList events;
             {
-                std::unique_lock<std::mutex> lock(pThis->bufferMutex);
+                std::unique_lock lock(pThis->bufferMutex);
 				size_t bufferSize = pThis->buffer.size();
 				isActive = !pThis->closed;
 

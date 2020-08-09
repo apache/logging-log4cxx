@@ -82,7 +82,7 @@ class BlockableVectorAppender : public VectorAppender
 		 */
 		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
 		{
-            std::unique_lock<std::mutex> lock( blocker );
+            std::unique_lock lock( blocker );
 			VectorAppender::append(event, p);
 
 			//
@@ -255,7 +255,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LoggerPtr rootLogger = Logger::getRootLogger();
 			rootLogger->addAppender(async);
 			{
-                std::unique_lock<std::mutex> sync(blockableAppender->getBlocker());
+                std::unique_lock sync(blockableAppender->getBlocker());
 
 				for (int i = 0; i < 140; i++)
 				{
