@@ -232,15 +232,15 @@ class LOG4CXX_EXPORT Hierarchy :
 
 	private:
 
-        /**
-         * Set the threshold.  The mutex must already be locked.
-         */
-        void setThresholdInternal(const LevelPtr& l);
+		/**
+		 * Set the threshold.  The mutex must already be locked.
+		 */
+		void setThresholdInternal(const LevelPtr& l);
 
-        /**
-         * Internal shutdown.  The mutex must already be locked.
-         */
-        void shutdownInternal();
+		/**
+		 * Internal shutdown.  The mutex must already be locked.
+		 */
+		void shutdownInternal();
 
 		/**
 		This method loops through all the *potential* parents of

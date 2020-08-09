@@ -168,7 +168,7 @@ void Hierarchy::setThresholdInternal(const LevelPtr &l){
 
     if (thresholdInt != Level::ALL_INT)
     {
-        setConfigured(true);
+        configured = true;
     }
 }
 
