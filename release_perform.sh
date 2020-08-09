@@ -91,8 +91,9 @@ function sign_and_copy
 function publish_for_vote
 {
   pushd "${WD_DIST_DEV}" > /dev/null
-  svn add --force *.*
-  svn ci  -m "Publishing artifacts for new release to vote on."
+  echo "Please validate the files in $(pwd)"
+  #svn add --force *.*
+  #svn ci  -m "Publishing artifacts for new release to vote on."
 }
 
 main
