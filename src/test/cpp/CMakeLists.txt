@@ -61,7 +61,6 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         COMMAND ${testName} -v
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../resources
     )
-message("working dir is ${CMAKE_CURRENT_LIST_DIR}/../resources")
 
     if(WIN32)
         get_filename_component(APR_DLL_DIR "${APR_DLL}" DIRECTORY)

@@ -40,8 +40,10 @@ FileWatchdog::~FileWatchdog()
 {
     interrupted = 0xFFFF;
 
-    std::unique_lock lock(interrupt_mutex);
-    interrupt.notify_all();
+    {
+        std::unique_lock lock(interrupt_mutex);
+        interrupt.notify_all();
+    }
     thread.join();
 }
 

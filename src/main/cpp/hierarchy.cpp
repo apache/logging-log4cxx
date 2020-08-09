@@ -273,15 +273,15 @@ LoggerPtr Hierarchy::getRootLogger() const
 
 bool Hierarchy::isDisabled(int level) const
 {
-	if (!configured)
-	{
+    bool currentlyConfigured;
+    {
         std::unique_lock lock(mutex);
-
-		if (!configured)
-		{
-			DefaultConfigurator::configure(
-				const_cast<Hierarchy*>(this));
-		}
+        currentlyConfigured = configured;
+    }
+    if (!currentlyConfigured)
+    {
+        DefaultConfigurator::configure(
+            const_cast<Hierarchy*>(this));
 	}
 
 	return thresholdInt > level;

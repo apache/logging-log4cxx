@@ -70,7 +70,7 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 
 	std::unique_lock lock(getInstance().mutex);
 
-	debug(msg);
+    emit(msg);
 	emit(e);
 }
 
@@ -86,7 +86,7 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 {
     std::unique_lock lock(getInstance().mutex);
 
-	error(msg);
+    emit(msg);
 	emit(e);
 }
 
@@ -108,7 +108,7 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 {
     std::unique_lock lock(getInstance().mutex);
 
-	warn(msg);
+    emit(msg);
 	emit(e);
 }
 

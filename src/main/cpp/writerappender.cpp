@@ -240,20 +240,16 @@ void WriterAppender::setEncoding(const LogString& enc)
 void WriterAppender::subAppend(const spi::LoggingEventPtr& event, Pool& p)
 {
 	LogString msg;
-	layout->format(msg, event, p);
-	{
-        std::unique_lock lock(mutex);
+    layout->format(msg, event, p);
+    if (writer != NULL)
+    {
+        writer->write(msg, p);
 
-		if (writer != NULL)
-		{
-			writer->write(msg, p);
-
-			if (immediateFlush)
-			{
-				writer->flush(p);
-			}
-		}
-	}
+        if (immediateFlush)
+        {
+            writer->flush(p);
+        }
+    }
 }
 
 
@@ -262,8 +258,7 @@ void WriterAppender::writeFooter(Pool& p)
 	if (layout != NULL)
 	{
 		LogString foot;
-		layout->appendFooter(foot, p);
-        std::unique_lock lock(mutex);
+        layout->appendFooter(foot, p);
 		writer->write(foot, p);
 	}
 }
@@ -273,8 +268,7 @@ void WriterAppender::writeHeader(Pool& p)
 	if (layout != NULL)
 	{
 		LogString header;
-		layout->appendHeader(header, p);
-        std::unique_lock lock(mutex);
+        layout->appendHeader(header, p);
 		writer->write(header, p);
 	}
 }

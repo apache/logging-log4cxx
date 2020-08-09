@@ -66,8 +66,7 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1,
 
 SocketAppenderSkeleton::~SocketAppenderSkeleton()
 {
-	finalize();
-    thread.join();
+    finalize();
 }
 
 void SocketAppenderSkeleton::activateOptions(Pool& p)
@@ -88,9 +87,14 @@ void SocketAppenderSkeleton::close()
 	closed = true;
 	cleanUp(pool);
 
-    std::unique_lock lock2(interrupt_mutex);
-    interrupt.notify_all();
-    thread.join();
+    {
+        std::unique_lock lock2(interrupt_mutex);
+        interrupt.notify_all();
+    }
+
+    if( thread.joinable() ){
+        thread.join();
+    }
 }
 
 void SocketAppenderSkeleton::connect(Pool& p)
