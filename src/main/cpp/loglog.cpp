@@ -44,7 +44,7 @@ LogLog& LogLog::getInstance()
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
-	synchronized sync(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	getInstance().debugEnabled = debugEnabled1;
 }
@@ -77,7 +77,7 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 
 void LogLog::error(const LogString& msg)
 {
-	synchronized sync(getInstance().mutex);
+    std::unique_lock lock(getInstance().mutex);
 
 	emit(msg);
 }
