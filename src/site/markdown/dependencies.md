@@ -24,28 +24,29 @@ log4cxx requires the following software to build and/or run correctly:
 |Apache Portable Runtime(APR)|>=1.5.4|Compile/Runtime|https://apr.apache.org
 |APR-Util       |>=1.5.4|Compile/Runtime|https://apr.apache.org
 |gzip           |any    |Test/Runtime(optional)|https://gzip.org
+|sed            |any    |Test|N/A
 |zip            |any    |Test/Runtime(optional)|N/A
 |log4j          |1.2.14 |Test           |https://http://logging.apache.org/log4j/2.x/
-|java           |>=6    |Test           |https://www.oracle.com/java/technologies/
+|java           |>=6    |Test           |https://adoptopenjdk.net
 
-## APR/APR-Util
+## APR+APR-Util
 
 The Apache Portable Runtime(APR) provides the cross-platform backend for log4cxx.
 Both APR and APR-util need to be installed and available on your system.
 
-## zip/gzip
+## sed+gzip+zip
 
-These applications are needed during test of log4cxx.  gzip is generally installed
-by default on Linux.  zip may not be installed by default; check your distribution's
+These applications are needed during test of log4cxx.  `gzip`and `sed` are generally installed
+by default on Linux.  `zip` may not be installed by default; check your distribution's
 documentation for information on how to install these applications.
 
-For Windows, you will have to install gzip and zip through a system such as
+For Windows, you will have to install those tools through a system such as
 MinGW, cygwin, or MSYS2.
 
-These applications are only needed during runtime if you are compressing the log
-files, for example by setting a rollover policy which ends in ".zip" or ".gz".
+`gzip` and `zip` only needed during runtime if you are compressing the log
+files, for example by setting a rollover policy which ends in `.gz` or `.zip`.
 
-## log4j / Java
+## log4j+Java
 
 Log4j and Java are needed to run tests to ensure that log4cxx has binary
 compatability with log4j.

@@ -106,9 +106,6 @@
 			<item	name="Dependencies"
 					href="dependencies.html"
 			/>
-			<item	name="Dependencies-markdown"
-					href="dependencies2.html"
-			/>
 			<item	name="Building"
 					href="/building/index.html">
 				<item	name="Apache Maven 2"
