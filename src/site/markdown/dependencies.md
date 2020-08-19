@@ -48,10 +48,11 @@ files, for example by setting a rollover policy which ends in `.gz` or `.zip`.
 
 ## log4j+Java
 
-Log4j and Java are needed to run tests to ensure that log4cxx has binary
-compatability with log4j.
-Note that the correct binary for log4j will be downloaded and used automatically.
-As such, you only need to have Java installed on your system.
+log4j and Java are needed to run some tests to ensure that log4cxx has binary compatability with
+log4j. Note that the correct binary for log4j will be downloaded and used automatically if CMAKE is
+used to build the project, otherwise one needs to get that manually. Java needs to be installed on
+the system already in all cases, but with CMAKE again, if it's not, the corresponding tests are
+skipped entirely automatically.
 
 # Licenses(direct dependencies only)
 
