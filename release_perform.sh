@@ -76,15 +76,13 @@ function sign_and_copy
     echo "Processing ${file}:"
 
     gpg -ab --yes "${file}" > "${file}.asc"
-    md5sum        "${file}" > "${file}.md5"
-    sha512sum     "${file}" > "${file}.sha"
+    sha512sum     "${file}" > "${file}.sha512"
 
     # No symlinks because those would be treated as is, no hard-links because it should be safer for
     # commits.
-    cp --force "${file}"     "${WD_DIST_DEV}"
-    cp --force "${file}.asc" "${WD_DIST_DEV}"
-    cp --force "${file}.md5" "${WD_DIST_DEV}"
-    cp --force "${file}.sha" "${WD_DIST_DEV}"
+    cp --force "${file}"        "${WD_DIST_DEV}"
+    cp --force "${file}.asc"    "${WD_DIST_DEV}"
+    cp --force "${file}.sha512" "${WD_DIST_DEV}"
   done
 }
 
