@@ -8,9 +8,9 @@ target_sources(testingUtilities PRIVATE xml/xlevel.cpp)
 # sed, zip, and gzip are needed for the tests to work properly
 # Note: option 'required' not available until cmake 3.18, however adding
 # it does not cause an issue
-find_program(SED_EXE sed REQUIRED)
-find_program(ZIP_EXE zip REQUIRED)
-find_program(GZIP_EXE gzip REQUIRED)
+find_program(SED_APP sed REQUIRED)
+find_program(ZIP_APP zip REQUIRED)
+find_program(GZIP_APP gzip REQUIRED)
 
 # Tests defined in this directory
 set(ALL_LOG4CXX_TESTS
