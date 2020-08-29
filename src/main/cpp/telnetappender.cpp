@@ -129,12 +129,8 @@ void TelnetAppender::close()
 		}
 	}
 
-	try
-	{
+	if( sh.joinable() ){
 		sh.join();
-	}
-	catch (Exception&)
-	{
 	}
 
 	activeConnections = 0;

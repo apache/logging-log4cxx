@@ -96,7 +96,9 @@ void SocketHubAppender::close()
 	//
 	//  wait until the server thread completes
 	//
-	thread.join();
+	if( thread.joinable() ){
+		thread.join();
+	}
 
     std::unique_lock lock(mutex);
 	// close all of the connections
