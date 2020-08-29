@@ -99,10 +99,8 @@ void FileAppender::setAppend(bool fileAppend1)
 void FileAppender::setFile(const LogString& file)
 {
     std::unique_lock lock(mutex);
-    fileName = file;
+	fileName = file;
 }
-
-
 
 void FileAppender::setBufferedIO(bool bufferedIO1)
 {
@@ -152,13 +150,18 @@ void FileAppender::setOption(const LogString& option,
 
 void FileAppender::activateOptions(Pool& p)
 {
+	std::unique_lock lock(mutex);
+	activateOptionsInternal(p);
+}
+
+void FileAppender::activateOptionsInternal(Pool& p){
     int errors = 0;
 
     if (!fileName.empty())
     {
         try
         {
-            setFile(fileName, fileAppend, bufferedIO, bufferSize, p);
+			setFileInternal(fileName, fileAppend, bufferedIO, bufferSize, p);
         }
         catch (IOException& e)
         {
@@ -260,7 +263,7 @@ LogString FileAppender::stripDuplicateBackslashes(const LogString& src)
   @throws IOException
 
  */
-void FileAppender::setFile(
+void FileAppender::setFileInternal(
     const LogString& filename,
     bool append1,
     bool bufferedIO1,
@@ -341,9 +344,7 @@ void FileAppender::setFile(
     if (bufferedIO1)
     {
         newWriter = new BufferedWriter(newWriter, bufferSize1);
-    }
-
-    std::unique_lock lock(mutex);
+	}
 
     setWriterInternal(newWriter);
 

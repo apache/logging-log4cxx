@@ -110,8 +110,8 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 					syncAction->execute(p);
 				}
 
-				setFile(rollover1->getActiveFileName());
-				setAppend(rollover1->getAppend());
+				fileName = rollover1->getActiveFileName();
+				fileAppend = rollover1->getAppend();
 
 				//
 				//  async action not yet implemented
@@ -136,7 +136,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 				fileLength = 0;
 			}
 
-			FileAppender::activateOptions(p);
+			FileAppender::activateOptionsInternal(p);
 		}
 		catch (std::exception&)
 		{
@@ -181,6 +181,12 @@ void RollingFileAppenderSkeleton::releaseFileLock(apr_file_t* lock_file)
  */
 bool RollingFileAppenderSkeleton::rollover(Pool& p)
 {
+	std::unique_lock lock(mutex);
+	return rolloverInternal(p);
+}
+
+bool RollingFileAppenderSkeleton::rolloverInternal(Pool& p)
+{
 	//
 	//   can't roll without a policy
 	//
@@ -188,7 +194,6 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 	{
 
 		{
-            std::unique_lock lock(mutex);
 
 #ifdef LOG4CXX_MULTI_PROCESS
 			std::string fileName(getFile());
@@ -327,13 +332,13 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 									asyncAction->execute(p);
 								}
 
-								setFile(
+								setFileInternal(
 									rollover1->getActiveFileName(), rollover1->getAppend(),
 									bufferedIO, bufferSize, p);
 							}
 							else
 							{
-								setFile(
+								setFileInternal(
 									rollover1->getActiveFileName(), true, bufferedIO, bufferSize, p);
 							}
 						}
@@ -343,8 +348,8 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 									rollover1->getActiveFileName(), rollover1->getAppend()));
 							WriterPtr newWriter(createWriter(os));
 							closeWriter();
-							setFile(rollover1->getActiveFileName());
-							setWriter(newWriter);
+							fileName = rollover1->getActiveFileName();
+							setWriterInternal(newWriter);
 
 							bool success = true;
 
@@ -449,7 +454,7 @@ void RollingFileAppenderSkeleton::subAppend(const LoggingEventPtr& event, Pool& 
 		try
 		{
 			_event = &(const_cast<LoggingEventPtr&>(event));
-			rollover(p);
+			rolloverInternal(p);
 		}
 		catch (std::exception&)
 		{
