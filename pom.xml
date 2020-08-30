@@ -347,7 +347,7 @@
 				<version>2.3</version>
 				<configuration>
 					<tagNameFormat>v@{project.version}-RCx</tagNameFormat>
-					<goals>site-deploy assembly:assembly</goals>
+					<goals>site-deploy assembly:single</goals>
 				</configuration>
 			</plugin>
 		</plugins>
