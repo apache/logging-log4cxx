@@ -57,6 +57,9 @@ $ sudo make install
 | -DAPR_STATIC=yes       | Link to the APR static library. By default, the log4cxx shared library is linked to the     |
 |                        | APR shared library. If BUILD_SHARED_LIBS=off, the static APR library is always used.        |
 *------------------------+---------------------------------------------------------------------------------------------+
+|-DLOG4CXX_TEST_PROGRAM_PATH=path| An extra path to prepend to the PATH for test programs.  Log4cxx requires zip,      |
+|                        | sed, and grep on the PATH in order for the tests to work properly.                          |
+*------------------------+---------------------------------------------------------------------------------------------+
 
   Building and testing log4cxx on a Microsoft Windows with APR, Expat and APR-Util built from source
   extracted into apr-1.7.0, libexpat(from github) and apr-util-1.6.1 in %HOMEPATH%\Libraries.
@@ -116,6 +119,18 @@ $ cd /usr/ports/devel/apr
 $ make
 $ make install
 +----+
+
+** Windows:
+
+The easiest way to get dependencies installed is to use vcpkg(for APR/expat), and msys2 for the command-line
+utilities(zip, grep, sed).
+
+Msys2 can be downloaded from: https://www.msys2.org/
+By default, this will be installed under C:\msys2, so you can add that to the build PATH by setting
+LOG4CXX_TEST_PROGRAM_PATH=C:/msys64/usr/bin in your build settings.
+
+For vcpkg, follow the directions at https://github.com/microsoft/vcpkg#quick-start-windows and then install
+the dependencies needed using `vcpkg install apr apr-util`.
 
 * Using log4cxx in a CMake build
 
