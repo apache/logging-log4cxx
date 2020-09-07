@@ -29,7 +29,7 @@ endmacro(_apu_invoke)
 
 find_program(APR_UTIL_CONFIG_EXECUTABLE
     apu-1-config
-    PATHS /usr/local/bin    /usr/bin    C:/Progra~1/apr-util/bin
+    PATHS /usr/local/bin    /usr/bin    C:/Progra~1/apr-util/bin /usr/local/opt/apr-util/bin
     )
 mark_as_advanced(APR_UTIL_CONFIG_EXECUTABLE)
 if(EXISTS ${APR_UTIL_CONFIG_EXECUTABLE})
