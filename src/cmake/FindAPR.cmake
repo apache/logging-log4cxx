@@ -28,7 +28,7 @@ endmacro(_apr_invoke)
 
 find_program(APR_CONFIG_EXECUTABLE
     apr-1-config
-    PATHS /usr/local/bin    /usr/local/opt/apr/bin    /usr/bin    C:/Progra~1/apr/bin
+    PATHS /usr/local/bin    /usr/local/opt/apr/bin    /usr/bin    $ENV{ProgramFiles}/apr/bin
     )
 mark_as_advanced(APR_CONFIG_EXECUTABLE)
 if(EXISTS ${APR_CONFIG_EXECUTABLE})
