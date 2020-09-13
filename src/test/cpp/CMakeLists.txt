@@ -93,10 +93,9 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         COMMAND ${testName} -v
         WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../resources
     )
-	  set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
+    set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
 
     if(WIN32)
-
         if(${testName} STREQUAL socketservertestcase)
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${ESCAPED_PATH}"
