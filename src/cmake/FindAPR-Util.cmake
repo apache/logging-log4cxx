@@ -29,7 +29,7 @@ endmacro(_apu_invoke)
 
 find_program(APR_UTIL_CONFIG_EXECUTABLE
     apu-1-config
-    PATHS /usr/local/bin    /usr/bin    C:/Progra~1/apr-util/bin
+    PATHS /usr/local/bin    /usr/local/opt/apr-util/bin    /usr/bin    $ENV{ProgramFiles}/apr-util/bin
     )
 mark_as_advanced(APR_UTIL_CONFIG_EXECUTABLE)
 if(EXISTS ${APR_UTIL_CONFIG_EXECUTABLE})
@@ -48,8 +48,6 @@ else()
     if (APU_STATIC OR NOT BUILD_SHARED_LIBS)
       set(APR_UTIL_COMPILE_DEFINITIONS APU_DECLARE_STATIC)
       find_library(APR_UTIL_LIBRARIES NAMES aprutil-1)
-      find_library(XMLLIB_LIBRARIES NAMES libexpat)
-      find_program(XMLLIB_DLL libexpat.dll)
     else()
       find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1)
       find_program(APR_UTIL_DLL libaprutil-1.dll)

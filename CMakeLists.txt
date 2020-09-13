@@ -25,6 +25,9 @@ find_package(APR-Util REQUIRED)
 
 find_package( Threads REQUIRED )
 
+# Find expat for XML parsing
+find_package(EXPAT REQUIRED)
+
 # Building
 add_subdirectory(src)
 
@@ -125,3 +128,10 @@ message(STATUS "  logchar type .................... : ${LOG4CXX_CHAR}")
 message(STATUS "  Using libESMTP .................. : ${HAS_LIBESMTP}")
 message(STATUS "  ODBC library .................... : ${HAS_ODBC}")
 message(STATUS "  syslog .......................... : ${HAS_SYSLOG}")
+
+if(BUILD_TESTING)
+message(STATUS "Applications required for tests:")
+message(STATUS "  zip ............................. : ${ZIP_APP}")
+message(STATUS "  sed ............................. : ${SED_APP}")
+message(STATUS "  gzip ............................ : ${GZIP_APP}")
+endif(BUILD_TESTING)
