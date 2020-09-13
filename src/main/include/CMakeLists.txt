@@ -109,11 +109,5 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
 # Provide the dependencies
 add_custom_target(configure_log4cxx
   COMMAND "${CMAKE_COMMAND}" -E echo "Checking configuration"
-  DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
-    ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
-  BYPRODUCTS
-    ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
-    ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
 )
 endif()
