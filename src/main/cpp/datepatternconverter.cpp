@@ -140,7 +140,7 @@ void DatePatternConverter::format(
 	LogString& toAppendTo,
 	Pool& p) const
 {
-    DatePtr date = std::dynamic_pointer_cast<Date>(obj);
+    DatePtr date = log4cxx::cast<Date>(obj);
 
 	if (date != NULL)
 	{
@@ -148,7 +148,7 @@ void DatePatternConverter::format(
 	}
 	else
 	{
-        LoggingEventPtr event = std::dynamic_pointer_cast<LoggingEvent>(obj);
+        LoggingEventPtr event = log4cxx::cast<LoggingEvent>(obj);
 
 		if (event != NULL)
 		{

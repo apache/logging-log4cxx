@@ -350,7 +350,7 @@ void ODBCAppender::setSql(const LogString& s)
 	{
         PatternLayoutPtr patternLayout;
         LayoutPtr asLayout = this->getLayout();
-        patternLayout = std::dynamic_pointer_cast<PatternLayout>(asLayout);
+        patternLayout = log4cxx::cast<PatternLayout>(asLayout);
 
 		if (patternLayout != 0)
 		{

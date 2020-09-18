@@ -71,7 +71,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 		{
 			const Class& classObj = Loader::loadClass(bundleName);
             ObjectPtr obj = ObjectPtr(classObj.newInstance());
-            current = std::dynamic_pointer_cast<PropertyResourceBundle>(obj);
+            current = log4cxx::cast<PropertyResourceBundle>(obj);
 		}
 		catch (ClassNotFoundException&)
 		{

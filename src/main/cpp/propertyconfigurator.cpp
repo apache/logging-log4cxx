@@ -210,7 +210,7 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
         std::shared_ptr<Object> instance = std::shared_ptr<Object>(
                     Loader::loadClass(factoryClassName).newInstance() );
 
-        loggerFactory = std::dynamic_pointer_cast<LoggerFactory>( instance );
+        loggerFactory = log4cxx::cast<LoggerFactory>( instance );
         static const LogString FACTORY_PREFIX(LOG4CXX_STR("log4j.factory."));
         Pool p;
         PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX, p);
@@ -420,7 +420,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
     std::shared_ptr<Object> obj =
         OptionConverter::instantiateByKey(
             props, prefix, Appender::getStaticClass(), 0);
-    appender = std::dynamic_pointer_cast<Appender>( obj );
+    appender = log4cxx::cast<Appender>( obj );
 
     if (appender == 0)
     {
@@ -441,7 +441,7 @@ AppenderPtr PropertyConfigurator::parseAppender(
             std::shared_ptr<Object> obj =
                 OptionConverter::instantiateByKey(
                     props, layoutPrefix, Layout::getStaticClass(), 0);
-            layout = std::dynamic_pointer_cast<Layout>( obj );
+            layout = log4cxx::cast<Layout>( obj );
 
             if (layout != 0)
             {

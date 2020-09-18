@@ -130,7 +130,7 @@ PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const
 	{
         IntegerPatternConverterPtr intPattern;
         PatternConverterPtr patternptr = (*converterIter);
-        intPattern = std::dynamic_pointer_cast<IntegerPatternConverter>(patternptr);
+        intPattern = log4cxx::cast<IntegerPatternConverter>(patternptr);
 
 		if (intPattern != NULL)
 		{
@@ -151,7 +151,7 @@ PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const
 	{
         DatePatternConverterPtr datePattern;
         PatternConverterPtr patternptr = (*converterIter);
-        datePattern = std::dynamic_pointer_cast<DatePatternConverter>(patternptr);
+        datePattern = log4cxx::cast<DatePatternConverter>(patternptr);
 
 		if (datePattern != NULL)
 		{

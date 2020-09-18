@@ -785,6 +785,6 @@ for the SMTPAppender.
 void SMTPAppender::setEvaluatorClass(const LogString& value)
 {
     ObjectPtr obj = ObjectPtr(Loader::loadClass(value).newInstance());
-    evaluator = std::dynamic_pointer_cast<TriggeringEventEvaluator>(obj);
+    evaluator = log4cxx::cast<TriggeringEventEvaluator>(obj);
 }
 

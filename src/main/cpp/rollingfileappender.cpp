@@ -78,7 +78,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 	//
 	if (triggeringPolicy == NULL)
 	{
-        TriggeringPolicyPtr trig = std::dynamic_pointer_cast<TriggeringPolicy>(rollingPolicy);
+        TriggeringPolicyPtr trig = log4cxx::cast<TriggeringPolicy>(rollingPolicy);
 
 		if (trig != NULL)
 		{

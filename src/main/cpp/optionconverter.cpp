@@ -396,7 +396,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 		LogLog::debug(LOG4CXX_STR("Preferred configurator class: ") + clazz);
         const Class& clazzObj = Loader::loadClass(clazz);
         ObjectPtr obj = ObjectPtr(clazzObj.newInstance());
-        configurator = std::dynamic_pointer_cast<Configurator>(obj);
+        configurator = log4cxx::cast<Configurator>(obj);
 
 		if (configurator == 0)
 		{

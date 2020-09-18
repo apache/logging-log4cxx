@@ -40,7 +40,7 @@ void LoggingEventPatternConverter::format(const ObjectPtr& obj,
 	LogString& output,
 	log4cxx::helpers::Pool& p) const
 {
-    LoggingEventPtr le = std::dynamic_pointer_cast<LoggingEvent>(obj);
+    LoggingEventPtr le = log4cxx::cast<LoggingEvent>(obj);
 
 	if (le != NULL)
 	{

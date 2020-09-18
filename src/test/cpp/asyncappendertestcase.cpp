@@ -279,7 +279,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void testConfiguration()
 		{
 			log4cxx::xml::DOMConfigurator::configure("input/xml/asyncAppender1.xml");
-            AsyncAppenderPtr asyncAppender = std::dynamic_pointer_cast<AsyncAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("ASYNC")));
+            AsyncAppenderPtr asyncAppender = log4cxx::cast<AsyncAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("ASYNC")));
 			LOGUNIT_ASSERT(!(asyncAppender == 0));
 			LOGUNIT_ASSERT_EQUAL(100, asyncAppender->getBufferSize());
 			LOGUNIT_ASSERT_EQUAL(false, asyncAppender->getBlocking());

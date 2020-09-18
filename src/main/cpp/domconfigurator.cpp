@@ -206,7 +206,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
     try
     {
         ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
-        AppenderPtr appender = std::dynamic_pointer_cast<Appender>(instance);
+        AppenderPtr appender = log4cxx::cast<Appender>(instance);
         PropertySetter propSetter(appender);
 
         appender->setName(subst(getAttribute(utf8Decoder, appenderElement, NAME_ATTR)));
@@ -248,7 +248,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
             else if (tagName == ROLLING_POLICY_TAG)
             {
                 RollingPolicyPtr rollPolicy(parseRollingPolicy(p, utf8Decoder, currentElement));
-                RollingFileAppenderPtr rfa = std::dynamic_pointer_cast<RollingFileAppender>(appender);
+                RollingFileAppenderPtr rfa = log4cxx::cast<RollingFileAppender>(appender);
 
                 if (rfa != NULL)
                 {
@@ -258,8 +258,8 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
             else if (tagName == TRIGGERING_POLICY_TAG)
             {
                 ObjectPtr policy(parseTriggeringPolicy(p, utf8Decoder, currentElement));
-                RollingFileAppenderPtr rfa = std::dynamic_pointer_cast<RollingFileAppender>(appender);
-                TriggeringPolicyPtr policyPtr = std::dynamic_pointer_cast<TriggeringPolicy>(policy);
+                RollingFileAppenderPtr rfa = log4cxx::cast<RollingFileAppender>(appender);
+                TriggeringPolicyPtr policyPtr = log4cxx::cast<TriggeringPolicy>(policy);
 
                 if (rfa != NULL)
                 {
@@ -267,11 +267,11 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
                 }
                 else
                 {
-                    log4cxx::net::SMTPAppenderPtr smtpa = std::dynamic_pointer_cast<log4cxx::net::SMTPAppender>(appender);
+                    log4cxx::net::SMTPAppenderPtr smtpa = log4cxx::cast<log4cxx::net::SMTPAppender>(appender);
 
                     if (smtpa != NULL)
                     {
-                        log4cxx::spi::TriggeringEventEvaluatorPtr evaluator = std::dynamic_pointer_cast<TriggeringEventEvaluator>(policyPtr);
+                        log4cxx::spi::TriggeringEventEvaluatorPtr evaluator = log4cxx::cast<TriggeringEventEvaluator>(policyPtr);
                         smtpa->setEvaluator(evaluator);
                     }
                 }
@@ -282,7 +282,7 @@ AppenderPtr DOMConfigurator::parseAppender(Pool& p,
 
                 if (appender->instanceof(AppenderAttachable::getStaticClass()))
                 {
-                    AppenderAttachablePtr aa = std::dynamic_pointer_cast<AppenderAttachable>(appender);
+                    AppenderAttachablePtr aa = log4cxx::cast<AppenderAttachable>(appender);
                     LogLog::debug(LOG4CXX_STR("Attaching appender named [") +
                                   refName + LOG4CXX_STR("] to appender named [") +
                                   appender->getName() + LOG4CXX_STR("]."));
@@ -326,7 +326,7 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
                              subst(getAttribute(utf8Decoder, element, CLASS_ATTR)),
                              ErrorHandler::getStaticClass(),
                              0);
-    eh = std::dynamic_pointer_cast<ErrorHandler>(obj);
+    eh = log4cxx::cast<ErrorHandler>(obj);
 
     if (eh != 0)
     {
@@ -362,7 +362,7 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
         }
 
         propSetter.activate(p);
-        std::shared_ptr<AppenderSkeleton> appSkeleton = std::dynamic_pointer_cast<AppenderSkeleton>(appender);
+        std::shared_ptr<AppenderSkeleton> appSkeleton = log4cxx::cast<AppenderSkeleton>(appender);
 
         if (appSkeleton != 0)
         {
@@ -383,7 +383,7 @@ void DOMConfigurator::parseFilters(Pool& p,
     FilterPtr filter;
     std::shared_ptr<Object> obj = OptionConverter::instantiateByClassName(clazz,
                        Filter::getStaticClass(), 0);
-    filter = std::dynamic_pointer_cast<Filter>(obj);
+    filter = log4cxx::cast<Filter>(obj);
 
     if (filter != 0)
     {
@@ -456,7 +456,7 @@ void DOMConfigurator::parseLoggerFactory(
                             className,
                             LoggerFactory::getStaticClass(),
                             0);
-        loggerFactory = std::dynamic_pointer_cast<LoggerFactory>(obj);
+        loggerFactory = log4cxx::cast<LoggerFactory>(obj);
         PropertySetter propSetter(loggerFactory);
 
         for (apr_xml_elem* currentElement = factoryElement->first_child;
@@ -560,7 +560,7 @@ LayoutPtr DOMConfigurator::parseLayout (
     try
     {
         ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
-        LayoutPtr layout = std::dynamic_pointer_cast<Layout>(instance);
+        LayoutPtr layout = log4cxx::cast<Layout>(instance);
         PropertySetter propSetter(layout);
 
         for (apr_xml_elem* currentElement = layout_element->first_child;
@@ -616,7 +616,7 @@ ObjectPtr DOMConfigurator::parseTriggeringPolicy (
             {
                 std::vector<log4cxx::spi::FilterPtr> filters;
                 parseFilters(p, utf8Decoder, currentElement, filters);
-                FilterBasedTriggeringPolicyPtr fbtp = std::dynamic_pointer_cast<FilterBasedTriggeringPolicy>(instance);
+                FilterBasedTriggeringPolicyPtr fbtp = log4cxx::cast<FilterBasedTriggeringPolicy>(instance);
 
                 if (fbtp != NULL)
                 {
@@ -655,7 +655,7 @@ RollingPolicyPtr DOMConfigurator::parseRollingPolicy (
     try
     {
         ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
-        RollingPolicyPtr layout = std::dynamic_pointer_cast<RollingPolicy>(instance);
+        RollingPolicyPtr layout = log4cxx::cast<RollingPolicy>(instance);
         PropertySetter propSetter(layout);
 
         for (apr_xml_elem* currentElement = layout_element->first_child;

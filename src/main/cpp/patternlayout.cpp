@@ -132,7 +132,7 @@ void PatternLayout::activateOptions(Pool&)
 		converterIter++)
 	{
         LoggingEventPatternConverterPtr eventConverter =
-                std::dynamic_pointer_cast<LoggingEventPatternConverter>(*converterIter);
+                log4cxx::cast<LoggingEventPatternConverter>(*converterIter);
 
 		if (eventConverter != NULL)
 		{

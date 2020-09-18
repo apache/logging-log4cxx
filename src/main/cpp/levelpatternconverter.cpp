@@ -59,7 +59,7 @@ void LevelPatternConverter::format(
  */
 LogString LevelPatternConverter::getStyleClass(const ObjectPtr& obj) const
 {
-    LoggingEventPtr e = std::dynamic_pointer_cast<LoggingEvent>(obj);
+    LoggingEventPtr e = log4cxx::cast<LoggingEvent>(obj);
 
 	if (e != NULL)
 	{
