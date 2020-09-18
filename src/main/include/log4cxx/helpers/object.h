@@ -108,6 +108,19 @@ class LOG4CXX_EXPORT Object
 };
 LOG4CXX_PTR_DEF(Object);
 }
+
+template<typename Ret,
+         typename Type,
+         bool = std::is_base_of<Ret,helpers::Object>::value,
+         bool = std::is_base_of<Type,helpers::Object>::value>
+std::shared_ptr<Ret> cast(const std::shared_ptr<Type>& incoming){
+    Ret* casted = reinterpret_cast<Ret*>(const_cast<void*>(incoming->cast(Ret::getStaticClass())));
+    if( casted ){
+        return std::shared_ptr<Ret>( incoming, casted );
+    }
+    return std::shared_ptr<Ret>();
+}
+
 }
 
 #define BEGIN_LOG4CXX_CAST_MAP()\

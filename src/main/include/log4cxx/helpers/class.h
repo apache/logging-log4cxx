@@ -54,8 +54,8 @@ class LOG4CXX_EXPORT Class
 		static ClassMap& getRegistry();
 		static void registerClasses();
 };
-}  // namespace log4cxx
-} // namespace helper
+}  // namespace helpers
+} // namespace log4cxx
 
 #if defined(_MSC_VER)
 	#pragma warning (pop)
