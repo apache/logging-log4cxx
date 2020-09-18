@@ -385,9 +385,9 @@ public:
 	{
 		LoggerPtr root(Logger::getRootLogger());
 		root->addAppender(
-			new ConsoleAppender(
-				new PatternLayout(
-					LOG4CXX_STR("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n"))));
+            ConsoleAppenderPtr(new ConsoleAppender(
+                PatternLayoutPtr(new PatternLayout(
+                    LOG4CXX_STR("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n"))))));
 		this->internalSetUp(this->num_test);
 	}
 
@@ -454,7 +454,7 @@ public:
 		RollingFileAppenderPtr  rfa2(   new RollingFileAppender());
 		rfa2->setLayout(layout2);
 
-		TimeBasedRollingPolicyPtr tbrp2 = new TimeBasedRollingPolicy();
+        TimeBasedRollingPolicyPtr tbrp2 = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp2->setFileNamePattern(LOG4CXX_STR("output/test2-%d{" DATE_PATTERN "}"));
 		tbrp2->activateOptions(pool);
 		rfa2->setRollingPolicy(tbrp2);
@@ -479,7 +479,7 @@ public:
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-		TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
+        TimeBasedRollingPolicyPtr tbrp = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp->setFileNamePattern(LogString(LOG4CXX_STR("output/test3-%d{" DATE_PATTERN "}.gz")));
 		tbrp->activateOptions(pool);
 		rfa->setRollingPolicy(tbrp);
@@ -506,7 +506,7 @@ public:
 		RollingFileAppenderPtr  rfa1(   new RollingFileAppender());
 		rfa1->setLayout(layout1);
 
-		TimeBasedRollingPolicyPtr tbrp1 = new TimeBasedRollingPolicy();
+        TimeBasedRollingPolicyPtr tbrp1 = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		rfa1->setFile(LOG4CXX_STR("output/test4.log"));
 		tbrp1->setFileNamePattern(LOG4CXX_STR("output/test4-%d{" DATE_PATTERN "}"));
 		tbrp1->activateOptions(pool);
@@ -526,7 +526,7 @@ public:
 		RollingFileAppenderPtr  rfa2(   new RollingFileAppender());
 		rfa2->setLayout(layout2);
 
-		TimeBasedRollingPolicyPtr tbrp2 = new TimeBasedRollingPolicy();
+        TimeBasedRollingPolicyPtr tbrp2 = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp2->setFileNamePattern(LOG4CXX_STR("output/test4-%d{" DATE_PATTERN "}"));
 		rfa2->setFile(fileNames[3]);
 		tbrp2->activateOptions(pool);
@@ -551,7 +551,7 @@ public:
 		RollingFileAppenderPtr  rfa(    new RollingFileAppender());
 		rfa->setLayout(layout);
 
-		TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
+        TimeBasedRollingPolicyPtr tbrp = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp->setFileNamePattern(LOG4CXX_STR("output/test5-%d{" DATE_PATTERN "}"));
 		rfa->setFile(LOG4CXX_STR("output/test5.log"));
 
@@ -581,7 +581,7 @@ public:
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-		TimeBasedRollingPolicyPtr tbrp = new TimeBasedRollingPolicy();
+        TimeBasedRollingPolicyPtr tbrp = TimeBasedRollingPolicyPtr(new TimeBasedRollingPolicy());
 		tbrp->setFileNamePattern(LogString(LOG4CXX_STR("output/test6-%d{" DATE_PATTERN "}.gz")));
 		rfa->setFile(LOG4CXX_STR("output/test6.log"));
 		tbrp->activateOptions(pool);

@@ -59,16 +59,6 @@ AsyncAppender::~AsyncAppender()
 	delete discardMap;
 }
 
-void AsyncAppender::addRef() const
-{
-	ObjectImpl::addRef();
-}
-
-void AsyncAppender::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
 void AsyncAppender::addAppender(const AppenderPtr& newAppender)
 {
     std::unique_lock lock(appenders->getMutex());
@@ -342,11 +332,11 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p)
 	StringHelper::toString(count, p, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer including: "));
 	msg.append(maxEvent->getMessage());
-	return new LoggingEvent(
+    return LoggingEventPtr( new LoggingEvent(
 			maxEvent->getLoggerName(),
 			maxEvent->getLevel(),
 			msg,
-			LocationInfo::getLocationUnavailable());
+            LocationInfo::getLocationUnavailable()) );
 }
 
 ::log4cxx::spi::LoggingEventPtr
@@ -357,11 +347,11 @@ AsyncAppender::DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
 	StringHelper::toString(discardedCount, p, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer"));
 
-	return new LoggingEvent(
+    return LoggingEventPtr( new LoggingEvent(
 			LOG4CXX_STR(""),
 			log4cxx::Level::getError(),
 			msg,
-			LocationInfo::getLocationUnavailable());
+            LocationInfo::getLocationUnavailable()) );
 }
 
 void AsyncAppender::dispatch()

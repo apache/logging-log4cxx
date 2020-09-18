@@ -46,7 +46,7 @@ PatternConverterPtr LoggerPatternConverter::newInstance(
 		return def;
 	}
 
-	return new LoggerPatternConverter(options);
+    return PatternConverterPtr(new LoggerPatternConverter(options));
 }
 
 void LoggerPatternConverter::format(

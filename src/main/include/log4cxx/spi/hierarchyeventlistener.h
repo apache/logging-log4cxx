@@ -25,7 +25,6 @@
 
 
 #include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/objectptr.h>
 #include <vector>
 
 namespace log4cxx
@@ -45,12 +44,12 @@ class LOG4CXX_EXPORT HierarchyEventListener :
 		virtual ~HierarchyEventListener() {}
 
 		virtual void addAppenderEvent(
-			const log4cxx::helpers::ObjectPtrT<Logger>& logger,
-			const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
+            const Logger* logger,
+            const Appender* appender) = 0;
 
 		virtual void removeAppenderEvent(
-			const log4cxx::helpers::ObjectPtrT<Logger>& logger,
-			const log4cxx::helpers::ObjectPtrT<Appender>& appender) = 0;
+            const Logger* logger,
+            const Appender* appender) = 0;
 };
 LOG4CXX_PTR_DEF(HierarchyEventListener);
 LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr);

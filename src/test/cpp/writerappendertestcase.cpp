@@ -16,7 +16,6 @@
  */
 
 #include "writerappendertestcase.h"
-#include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/writerappender.h>
 
 

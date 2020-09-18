@@ -34,6 +34,7 @@
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/fileinputstream.h>
+#include <log4cxx/helpers/loader.h>
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>
@@ -85,16 +86,6 @@ PropertyConfigurator::~PropertyConfigurator()
     delete registry;
 }
 
-void PropertyConfigurator::addRef() const
-{
-    ObjectImpl::addRef();
-}
-
-void PropertyConfigurator::releaseRef() const
-{
-    ObjectImpl::releaseRef();
-}
-
 void PropertyConfigurator::doConfigure(const File& configFileName,
                                        spi::LoggerRepositoryPtr& hierarchy)
 {
@@ -104,7 +95,7 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
 
     try
     {
-        InputStreamPtr inputStream = new FileInputStream(configFileName);
+        InputStreamPtr inputStream = InputStreamPtr( new FileInputStream(configFileName) );
         props.load(inputStream);
     }
     catch (const IOException&)
@@ -216,9 +207,10 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
         msg += factoryClassName;
         msg += LOG4CXX_STR("].");
         LogLog::debug(msg);
-        loggerFactory =
-            OptionConverter::instantiateByClassName(
-                factoryClassName, LoggerFactory::getStaticClass(), loggerFactory);
+        std::shared_ptr<Object> instance = std::shared_ptr<Object>(
+                    Loader::loadClass(factoryClassName).newInstance() );
+
+        loggerFactory = std::dynamic_pointer_cast<LoggerFactory>( instance );
         static const LogString FACTORY_PREFIX(LOG4CXX_STR("log4j.factory."));
         Pool p;
         PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX, p);
@@ -425,9 +417,10 @@ AppenderPtr PropertyConfigurator::parseAppender(
     LogString prefix = APPENDER_PREFIX + appenderName;
     LogString layoutPrefix = prefix + LOG4CXX_STR(".layout");
 
-    appender =
+    std::shared_ptr<Object> obj =
         OptionConverter::instantiateByKey(
             props, prefix, Appender::getStaticClass(), 0);
+    appender = std::dynamic_pointer_cast<Appender>( obj );
 
     if (appender == 0)
     {
@@ -444,9 +437,11 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
         if (appender->requiresLayout())
         {
-            LayoutPtr layout =
+            LayoutPtr layout;
+            std::shared_ptr<Object> obj =
                 OptionConverter::instantiateByKey(
                     props, layoutPrefix, Layout::getStaticClass(), 0);
+            layout = std::dynamic_pointer_cast<Layout>( obj );
 
             if (layout != 0)
             {

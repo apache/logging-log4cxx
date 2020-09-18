@@ -35,16 +35,6 @@ FallbackErrorHandler::FallbackErrorHandler()
 {
 }
 
-void FallbackErrorHandler::addRef() const
-{
-	ObjectImpl::addRef();
-}
-
-void FallbackErrorHandler::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
 void FallbackErrorHandler::setLogger(const LoggerPtr& logger)
 {
 	LogLog::debug(((LogString) LOG4CXX_STR("FB: Adding logger ["))

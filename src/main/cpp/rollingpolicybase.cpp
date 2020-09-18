@@ -44,16 +44,6 @@ RollingPolicyBase::~RollingPolicyBase()
 {
 }
 
-void RollingPolicyBase::addRef() const
-{
-	ObjectImpl::addRef();
-}
-
-void RollingPolicyBase::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
 void RollingPolicyBase::activateOptions(log4cxx::helpers::Pool& /* pool */)
 {
 	if (fileNamePatternStr.length() > 0)
@@ -138,7 +128,9 @@ PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const
 		converterIter != patternConverters.end();
 		converterIter++)
 	{
-		IntegerPatternConverterPtr intPattern(*converterIter);
+        IntegerPatternConverterPtr intPattern;
+        PatternConverterPtr patternptr = (*converterIter);
+        intPattern = std::dynamic_pointer_cast<IntegerPatternConverter>(patternptr);
 
 		if (intPattern != NULL)
 		{
@@ -157,7 +149,9 @@ PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const
 		converterIter != patternConverters.end();
 		converterIter++)
 	{
-		DatePatternConverterPtr datePattern(*converterIter);
+        DatePatternConverterPtr datePattern;
+        PatternConverterPtr patternptr = (*converterIter);
+        datePattern = std::dynamic_pointer_cast<DatePatternConverter>(patternptr);
 
 		if (datePattern != NULL)
 		{

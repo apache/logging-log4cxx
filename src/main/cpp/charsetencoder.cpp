@@ -487,7 +487,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 						if (encoder == 0)
 						{
 							encoding = "C";
-							encoder = new USASCIICharsetEncoder();
+                            encoder.reset( new USASCIICharsetEncoder() );
 						}
 					}
 					else if (encoding != enc)
@@ -502,7 +502,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 						}
 						catch (IllegalArgumentException&)
 						{
-							encoder = new USASCIICharsetEncoder();
+                            encoder.reset( new USASCIICharsetEncoder() );
 						}
 					}
 				}
@@ -547,7 +547,7 @@ CharsetEncoderPtr CharsetEncoder::getDefaultEncoder()
 	//
 	if (encoder == 0)
 	{
-		return createDefaultEncoder();
+        return CharsetEncoderPtr( createDefaultEncoder() );
 	}
 
 	return encoder;
@@ -571,7 +571,7 @@ CharsetEncoder* CharsetEncoder::createDefaultEncoder()
 
 CharsetEncoderPtr CharsetEncoder::getUTF8Encoder()
 {
-	return new UTF8CharsetEncoder();
+    return CharsetEncoderPtr( new UTF8CharsetEncoder() );
 }
 
 
@@ -580,7 +580,7 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset)
 {
 	if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-8"), LOG4CXX_STR("utf-8")))
 	{
-		return new UTF8CharsetEncoder();
+        return CharsetEncoderPtr( new UTF8CharsetEncoder() );
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("C"), LOG4CXX_STR("c")) ||
 		charset == LOG4CXX_STR("646") ||
@@ -588,25 +588,25 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset)
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO646-US"), LOG4CXX_STR("iso646-US")) ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ANSI_X3.4-1968"), LOG4CXX_STR("ansi_x3.4-1968")))
 	{
-		return new USASCIICharsetEncoder();
+        return CharsetEncoderPtr( new USASCIICharsetEncoder() );
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-8859-1"), LOG4CXX_STR("iso-8859-1")) ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-LATIN-1"), LOG4CXX_STR("iso-latin-1")))
 	{
-		return new ISOLatinCharsetEncoder();
+        return CharsetEncoderPtr( new ISOLatinCharsetEncoder() );
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16BE"), LOG4CXX_STR("utf-16be"))
 		|| StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16"), LOG4CXX_STR("utf-16")))
 	{
-		return new UTF16BECharsetEncoder();
+        return CharsetEncoderPtr( new UTF16BECharsetEncoder() );
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16LE"), LOG4CXX_STR("utf-16le")))
 	{
-		return new UTF16LECharsetEncoder();
+        return CharsetEncoderPtr( new UTF16LECharsetEncoder() );
 	}
 
 #if APR_HAS_XLATE
-	return new APRCharsetEncoder(charset);
+    return CharsetEncoderPtr( new APRCharsetEncoder(charset) );
 #else
 	throw IllegalArgumentException(charset);
 #endif

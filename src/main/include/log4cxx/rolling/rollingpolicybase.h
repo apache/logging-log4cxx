@@ -48,7 +48,7 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  */
 class LOG4CXX_EXPORT RollingPolicyBase :
 	public virtual RollingPolicy,
-	public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 	protected:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(RollingPolicyBase)
@@ -77,9 +77,7 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 
 	public:
 		RollingPolicyBase();
-		virtual ~RollingPolicyBase();
-		void addRef() const;
-		void releaseRef() const;
+        virtual ~RollingPolicyBase();
 		virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
 		virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
 

@@ -105,7 +105,7 @@ class BlockableVectorAppender : public VectorAppender
 
 };
 
-typedef helpers::ObjectPtrT<BlockableVectorAppender> BlockableVectorAppenderPtr;
+typedef std::shared_ptr<BlockableVectorAppender> BlockableVectorAppenderPtr;
 
 #if APR_HAS_THREADS
 /**
@@ -152,9 +152,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void closeTest()
 		{
 			LoggerPtr root = Logger::getRootLogger();
-			LayoutPtr layout = new SimpleLayout();
-			VectorAppenderPtr vectorAppender = new VectorAppender();
-			AsyncAppenderPtr asyncAppender = new AsyncAppender();
+            LayoutPtr layout = LayoutPtr(new SimpleLayout());
+            VectorAppenderPtr vectorAppender = VectorAppenderPtr(new VectorAppender());
+            AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
 			asyncAppender->setName(LOG4CXX_STR("async-CloseTest"));
 			asyncAppender->addAppender(vectorAppender);
 			root->addAppender(asyncAppender);
@@ -172,9 +172,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void test2()
 		{
 			LoggerPtr root = Logger::getRootLogger();
-			LayoutPtr layout = new SimpleLayout();
-			VectorAppenderPtr vectorAppender = new VectorAppender();
-			AsyncAppenderPtr asyncAppender = new AsyncAppender();
+            LayoutPtr layout = SimpleLayoutPtr(new SimpleLayout());
+            VectorAppenderPtr vectorAppender = VectorAppenderPtr(new VectorAppender());
+            AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
 			asyncAppender->setName(LOG4CXX_STR("async-test2"));
 			asyncAppender->addAppender(vectorAppender);
 			root->addAppender(asyncAppender);
@@ -194,8 +194,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		{
 			size_t LEN = 200;
 			LoggerPtr root = Logger::getRootLogger();
-			VectorAppenderPtr vectorAppender = new VectorAppender();
-			AsyncAppenderPtr asyncAppender = new AsyncAppender();
+            VectorAppenderPtr vectorAppender = VectorAppenderPtr(new VectorAppender());
+            AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
 			asyncAppender->setName(LOG4CXX_STR("async-test3"));
 			asyncAppender->addAppender(vectorAppender);
 			root->addAppender(asyncAppender);
@@ -218,8 +218,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		 */
 		void testBadAppender()
 		{
-			AppenderPtr nullPointerAppender = new NullPointerAppender();
-			AsyncAppenderPtr asyncAppender = new AsyncAppender();
+            AppenderPtr nullPointerAppender = AppenderPtr(new NullPointerAppender());
+            AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
 			asyncAppender->addAppender(nullPointerAppender);
 			asyncAppender->setBufferSize(5);
 			Pool p;
@@ -244,8 +244,8 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		 */
 		void testLocationInfoTrue()
 		{
-			BlockableVectorAppenderPtr blockableAppender = new BlockableVectorAppender();
-			AsyncAppenderPtr async = new AsyncAppender();
+            BlockableVectorAppenderPtr blockableAppender = BlockableVectorAppenderPtr(new BlockableVectorAppender());
+            AsyncAppenderPtr async = AsyncAppenderPtr(new AsyncAppender());
 			async->addAppender(blockableAppender);
 			async->setBufferSize(5);
 			async->setLocationInfo(true);
@@ -279,7 +279,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void testConfiguration()
 		{
 			log4cxx::xml::DOMConfigurator::configure("input/xml/asyncAppender1.xml");
-			AsyncAppenderPtr asyncAppender(Logger::getRootLogger()->getAppender(LOG4CXX_STR("ASYNC")));
+            AsyncAppenderPtr asyncAppender = std::dynamic_pointer_cast<AsyncAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("ASYNC")));
 			LOGUNIT_ASSERT(!(asyncAppender == 0));
 			LOGUNIT_ASSERT_EQUAL(100, asyncAppender->getBufferSize());
 			LOGUNIT_ASSERT_EQUAL(false, asyncAppender->getBlocking());

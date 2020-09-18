@@ -27,7 +27,7 @@ namespace rolling
 {
 
 
-class RolloverDescription : public log4cxx::helpers::ObjectImpl
+class RolloverDescription : public log4cxx::helpers::Object
 {
 		DECLARE_LOG4CXX_OBJECT(RolloverDescription)
 		BEGIN_LOG4CXX_CAST_MAP()

@@ -25,7 +25,7 @@ namespace log4cxx
 namespace spi
 {
 class LoggerRepository;
-typedef helpers::ObjectPtrT<LoggerRepository> LoggerRepositoryPtr;
+typedef std::shared_ptr<LoggerRepository> LoggerRepositoryPtr;
 }
 
 /**

@@ -19,7 +19,7 @@
 #define _LOG4CXX_HELPERS_ONLY_ONCE_ERROR_HANDLER_H
 
 #include <log4cxx/spi/errorhandler.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 
 #ifdef _MSC_VER
 	#pragma warning ( push )
@@ -42,7 +42,7 @@ from being flooded with error messages when logging fails
 */
 class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 	public virtual spi::ErrorHandler,
-	public virtual ObjectImpl
+    public virtual Object
 {
 	private:
 		LogString WARN_PREFIX;
@@ -56,9 +56,7 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		LOG4CXX_CAST_ENTRY(spi::ErrorHandler)
 		END_LOG4CXX_CAST_MAP()
 
-		OnlyOnceErrorHandler();
-		void addRef() const;
-		void releaseRef() const;
+        OnlyOnceErrorHandler();
 
 		/**
 		 Does not do anything.

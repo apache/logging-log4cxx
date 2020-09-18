@@ -224,7 +224,7 @@ WriterPtr WriterAppender::createWriter(OutputStreamPtr& os)
         }
     }
 
-    return new OutputStreamWriter(os, encoder);
+    return WriterPtr(new OutputStreamWriter(os, encoder));
 }
 
 LogString WriterAppender::getEncoding() const

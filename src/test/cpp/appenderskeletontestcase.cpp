@@ -17,7 +17,7 @@
 
 #include "appenderskeletontestcase.h"
 #include "logunit.h"
-#include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/appenderskeleton.h>
 
 
@@ -27,14 +27,14 @@ using namespace log4cxx::helpers;
 
 void AppenderSkeletonTestCase::testDefaultThreshold()
 {
-	ObjectPtrT<AppenderSkeleton> appender(createAppenderSkeleton());
+    std::shared_ptr<AppenderSkeleton> appender(createAppenderSkeleton());
 	LevelPtr threshold(appender->getThreshold());
 	LOGUNIT_ASSERT_EQUAL(Level::getAll()->toInt(), threshold->toInt());
 }
 
 void AppenderSkeletonTestCase::testSetOptionThreshold()
 {
-	ObjectPtrT<AppenderSkeleton> appender(createAppenderSkeleton());
+    std::shared_ptr<AppenderSkeleton> appender(createAppenderSkeleton());
 	appender->setOption(LOG4CXX_STR("threshold"), LOG4CXX_STR("debug"));
 	LevelPtr threshold(appender->getThreshold());
 	LOGUNIT_ASSERT_EQUAL(Level::getDebug()->toInt(), threshold->toInt());

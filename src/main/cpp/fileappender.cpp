@@ -302,7 +302,7 @@ void FileAppender::setFileInternal(
 
     try
     {
-        outStream = new FileOutputStream(filename, append1);
+        outStream = FileOutputStreamPtr(new FileOutputStream(filename, append1));
     }
     catch (IOException&)
     {
@@ -315,7 +315,7 @@ void FileAppender::setFileInternal(
 
             if (!parentDir.exists(p) && parentDir.mkdirs(p))
             {
-                outStream = new FileOutputStream(filename, append1);
+                outStream = OutputStreamPtr(new FileOutputStream(filename, append1));
             }
             else
             {
@@ -343,7 +343,7 @@ void FileAppender::setFileInternal(
 
     if (bufferedIO1)
     {
-        newWriter = new BufferedWriter(newWriter, bufferSize1);
+        newWriter = WriterPtr(new BufferedWriter(newWriter, bufferSize1));
 	}
 
     setWriterInternal(newWriter);

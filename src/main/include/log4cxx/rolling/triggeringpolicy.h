@@ -21,7 +21,7 @@
 
 
 #include <log4cxx/spi/optionhandler.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/appender.h>
 
@@ -43,7 +43,7 @@ namespace rolling
 
 class LOG4CXX_EXPORT TriggeringPolicy :
 	public virtual spi::OptionHandler,
-	public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(TriggeringPolicy)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -51,9 +51,7 @@ class LOG4CXX_EXPORT TriggeringPolicy :
 		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
 		END_LOG4CXX_CAST_MAP()
 	public:
-		virtual ~TriggeringPolicy();
-		void addRef() const;
-		void releaseRef() const;
+        virtual ~TriggeringPolicy();
 
 		/**
 		 * Determines if a rollover may be appropriate at this time.  If

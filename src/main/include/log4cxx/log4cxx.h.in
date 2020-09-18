@@ -24,6 +24,8 @@
  *
  */
 
+#include <memory>
+
 
 #define LOG4CXX_LOGCHAR_IS_UNICHAR @LOGCHAR_IS_UNICHAR@
 #define LOG4CXX_LOGCHAR_IS_UTF8 @LOGCHAR_IS_UTF8@
@@ -44,8 +46,7 @@ typedef unsigned int log4cxx_uint32_t;
 
 
 #define LOG4CXX_EXPORT
-#define LOG4CXX_PTR_DEF(T) typedef log4cxx::helpers::ObjectPtrT<T> T##Ptr
+#define LOG4CXX_PTR_DEF(T) typedef std::shared_ptr<T> T##Ptr
 #define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N
-
 
 #endif

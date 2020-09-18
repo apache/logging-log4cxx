@@ -96,9 +96,7 @@ target_sources(log4cxx
   ndc.cpp
   ndcpatternconverter.cpp
   nteventlogappender.cpp
-  objectimpl.cpp
   objectoutputstream.cpp
-  objectptr.cpp
   obsoleterollingfileappender.cpp
   odbcappender.cpp
   onlyonceerrorhandler.cpp

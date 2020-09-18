@@ -77,9 +77,6 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 */
 		virtual ~AsyncAppender();
 
-		void addRef() const;
-		void releaseRef() const;
-
 		/**
 		 * Add appender.
 		 *

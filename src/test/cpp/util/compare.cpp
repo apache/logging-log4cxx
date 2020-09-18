@@ -29,13 +29,13 @@ using namespace log4cxx::helpers;
 bool Compare::compare(const File& file1, const File& file2)
 {
 	Pool pool;
-	InputStreamPtr fileIn1 = new FileInputStream(file1);
-	InputStreamReaderPtr reader1 = new InputStreamReader(fileIn1);
+    InputStreamPtr fileIn1 = InputStreamPtr( new FileInputStream(file1) );
+    InputStreamReaderPtr reader1 = InputStreamReaderPtr( new InputStreamReader(fileIn1) );
 	LogString in1(reader1->read(pool));
 
 	Pool pool2;
-	InputStreamPtr fileIn2 = new FileInputStream(file2);
-	InputStreamReaderPtr reader2 = new InputStreamReader(fileIn2);
+    InputStreamPtr fileIn2 = InputStreamPtr( new FileInputStream(file2) );
+    InputStreamReaderPtr reader2 = InputStreamReaderPtr( new InputStreamReader(fileIn2) );
 	LogString in2(reader2->read(pool2));
 
 	LogString back1(in1);

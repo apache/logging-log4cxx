@@ -184,7 +184,7 @@ void SocketAppenderSkeleton::monitor()
 			{
 				LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
                     + address->getHostName());
-                socket = new Socket(address, port);
+                socket = SocketPtr(new Socket(address, port));
 				Pool p;
                 setSocket(socket, p);
 				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));

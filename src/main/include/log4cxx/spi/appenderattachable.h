@@ -25,7 +25,6 @@
 
 #include <log4cxx/logstring.h>
 #include <vector>
-#include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/appender.h>
 

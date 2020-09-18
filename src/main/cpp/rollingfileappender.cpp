@@ -68,7 +68,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 {
 	if (rollingPolicy == NULL)
 	{
-		FixedWindowRollingPolicy* fwrp = new FixedWindowRollingPolicy();
+        FixedWindowRollingPolicyPtr fwrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
 		rollingPolicy = fwrp;
 	}
@@ -78,7 +78,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 	//
 	if (triggeringPolicy == NULL)
 	{
-		TriggeringPolicyPtr trig(rollingPolicy);
+        TriggeringPolicyPtr trig = std::dynamic_pointer_cast<TriggeringPolicy>(rollingPolicy);
 
 		if (trig != NULL)
 		{
@@ -88,7 +88,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 
 	if (triggeringPolicy == NULL)
 	{
-		triggeringPolicy = new ManualTriggeringPolicy();
+        triggeringPolicy = TriggeringPolicyPtr(new ManualTriggeringPolicy());
 	}
 
 	{

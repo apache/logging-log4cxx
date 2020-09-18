@@ -25,8 +25,7 @@
 
 
 
-#include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/logstring.h>
 #include <vector>
 #include <log4cxx/helpers/exception.h>
@@ -48,7 +47,7 @@ class InetAddress;
 LOG4CXX_PTR_DEF(InetAddress);
 LOG4CXX_LIST_DEF(InetAddressList, InetAddressPtr);
 
-class LOG4CXX_EXPORT InetAddress : public ObjectImpl
+class LOG4CXX_EXPORT InetAddress : public Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(InetAddress)

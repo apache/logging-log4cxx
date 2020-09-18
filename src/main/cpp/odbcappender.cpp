@@ -344,11 +344,13 @@ void ODBCAppender::setSql(const LogString& s)
 
 	if (getLayout() == 0)
 	{
-		this->setLayout(new PatternLayout(s));
+        this->setLayout(PatternLayoutPtr(new PatternLayout(s)));
 	}
 	else
 	{
-		PatternLayoutPtr patternLayout = this->getLayout();
+        PatternLayoutPtr patternLayout;
+        LayoutPtr asLayout = this->getLayout();
+        patternLayout = std::dynamic_pointer_cast<PatternLayout>(asLayout);
 
 		if (patternLayout != 0)
 		{

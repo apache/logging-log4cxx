@@ -19,6 +19,7 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
+#include <log4cxx/appender.h>
 #include "../logunit.h"
 #include "../util/transformer.h"
 #include "../util/compare.h"
@@ -56,8 +57,11 @@ public:
 	void test1()
 	{
 		DOMConfigurator::configure("input/xml/fallback1.xml");
-		FileAppenderPtr primary(root->getAppender(LOG4CXX_STR("PRIMARY")));
-		log4cxx::varia::FallbackErrorHandlerPtr eh(primary->getErrorHandler());
+        AppenderPtr appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
+        FileAppenderPtr primary = std::dynamic_pointer_cast<FileAppender>(appender);
+        log4cxx::varia::FallbackErrorHandlerPtr eh;
+        log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
+        eh = std::dynamic_pointer_cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
 		LOGUNIT_ASSERT(eh != 0);
 
 		common();

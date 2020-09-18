@@ -18,8 +18,7 @@
 #ifndef _LOG4CXX_SPI_FILTER_H
 #define _LOG4CXX_SPI_FILTER_H
 
-#include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/spi/loggingevent.h>
 
@@ -67,7 +66,7 @@ Linux ipchains.
 xml::DOMConfigurator DOMConfigurator}.
 */
 class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
-	public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 		/**
 		Points to the next filter in the filter chain.
@@ -75,9 +74,6 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
 		FilterPtr next;
 	public:
 		Filter();
-
-		void addRef() const;
-		void releaseRef() const;
 
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
 		BEGIN_LOG4CXX_CAST_MAP()

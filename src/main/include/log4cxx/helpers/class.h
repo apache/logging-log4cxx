@@ -25,7 +25,6 @@
 
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/objectptr.h>
 #include <map>
 
 namespace log4cxx
@@ -33,14 +32,13 @@ namespace log4cxx
 namespace helpers
 {
 class Object;
-typedef ObjectPtrT<Object> ObjectPtr;
 
 
 class LOG4CXX_EXPORT Class
 {
 	public:
 		virtual ~Class();
-		virtual ObjectPtr newInstance() const;
+        virtual Object* newInstance() const;
 		LogString toString() const;
 		virtual LogString getName() const = 0;
 		static const Class& forName(const LogString& className);

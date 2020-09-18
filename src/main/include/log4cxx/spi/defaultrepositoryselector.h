@@ -19,7 +19,7 @@
 #define _LOG4CXX_SPI_DEFAULT_REPOSITORY_SELECTOR_H
 
 #include <log4cxx/spi/repositoryselector.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/loggerrepository.h>
 
 namespace log4cxx
@@ -28,7 +28,7 @@ namespace spi
 {
 class LOG4CXX_EXPORT DefaultRepositorySelector :
 	public virtual RepositorySelector,
-	public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultRepositorySelector)
@@ -37,8 +37,6 @@ class LOG4CXX_EXPORT DefaultRepositorySelector :
 		END_LOG4CXX_CAST_MAP()
 
 		DefaultRepositorySelector(const LoggerRepositoryPtr& repository1);
-		void addRef() const;
-		void releaseRef() const;
 		virtual LoggerRepositoryPtr& getLoggerRepository();
 
 	private:

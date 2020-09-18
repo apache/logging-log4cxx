@@ -131,7 +131,8 @@ void PatternLayout::activateOptions(Pool&)
 		converterIter != converters.end();
 		converterIter++)
 	{
-		LoggingEventPatternConverterPtr eventConverter(*converterIter);
+        LoggingEventPatternConverterPtr eventConverter =
+                std::dynamic_pointer_cast<LoggingEventPatternConverter>(*converterIter);
 
 		if (eventConverter != NULL)
 		{

@@ -61,5 +61,5 @@ class VectorAppender : public AppenderSkeleton
 			return false;
 		}
 };
-typedef helpers::ObjectPtrT<VectorAppender> VectorAppenderPtr;
+typedef std::shared_ptr<VectorAppender> VectorAppenderPtr;
 }

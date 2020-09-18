@@ -27,17 +27,6 @@ DefaultRepositorySelector::DefaultRepositorySelector(const LoggerRepositoryPtr& 
 {
 }
 
-void DefaultRepositorySelector::addRef() const
-{
-	ObjectImpl::addRef();
-}
-
-
-void DefaultRepositorySelector::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
 LoggerRepositoryPtr& DefaultRepositorySelector::getLoggerRepository()
 {
 	return repository;

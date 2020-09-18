@@ -28,7 +28,7 @@
 #include <vector>
 #include <map>
 #include <log4cxx/provisionnode.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/hierarchyeventlistener.h>
 #include <log4cxx/helpers/pool.h>
 #include <mutex>
@@ -55,7 +55,7 @@ themselves to the previously created provision node.
 */
 class LOG4CXX_EXPORT Hierarchy :
 	public virtual spi::LoggerRepository,
-	public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 	private:
 		log4cxx::helpers::Pool pool;
@@ -92,9 +92,6 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		~Hierarchy();
 
-		void addRef() const;
-		void releaseRef() const;
-
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
 
 		/**
@@ -107,7 +104,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		*/
 		void clear();
 
-		void emitNoAppenderWarning(const LoggerPtr& logger);
+        void emitNoAppenderWarning(const Logger* logger);
 
 		/**
 		Check if the named logger exists in the hierarchy. If so return
@@ -131,10 +128,10 @@ class LOG4CXX_EXPORT Hierarchy :
 		their appenders.  */
 		void setThreshold(const LevelPtr& l);
 
-		void fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender);
+        void fireAddAppenderEvent(const Logger* logger, const Appender* appender);
 
-		void fireRemoveAppenderEvent(const LoggerPtr& logger,
-			const AppenderPtr& appender);
+        void fireRemoveAppenderEvent(const Logger* logger,
+            const Appender* appender);
 
 		/**
 		Returns a Level representation of the <code>enable</code>

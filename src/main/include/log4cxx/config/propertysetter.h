@@ -19,14 +19,14 @@
 #define _LOG4CXX_CONFIG_PROPERTYSETTER_H
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/object.h>
 
 namespace log4cxx
 {
 namespace helpers
 {
 class Object;
-typedef ObjectPtrT<Object> ObjectPtr;
+typedef std::shared_ptr<Object> ObjectPtr;
 
 class Properties;
 class Pool;

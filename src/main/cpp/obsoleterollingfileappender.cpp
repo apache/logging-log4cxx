@@ -39,9 +39,9 @@ class ClassRollingFileAppender : public Class
 		{
 			return LOG4CXX_STR("org.apache.log4j.RollingFileAppender");
 		}
-		virtual ObjectPtr newInstance() const
+        virtual Object* newInstance() const
 		{
-			return new RollingFileAppender();
+            return new RollingFileAppender();
 		}
 };
 }

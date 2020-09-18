@@ -19,7 +19,7 @@
 #define _LOG4CXX_HELPER_FORMATTING_INFO_H
 
 
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/logstring.h>
 
 namespace log4cxx
@@ -29,7 +29,7 @@ namespace pattern
 
 
 class FormattingInfo;
-typedef helpers::ObjectPtrT<FormattingInfo> FormattingInfoPtr;
+typedef std::shared_ptr<FormattingInfo> FormattingInfoPtr;
 
 
 /**
@@ -40,7 +40,7 @@ typedef helpers::ObjectPtrT<FormattingInfo> FormattingInfoPtr;
  *
  *
  */
-class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::ObjectImpl
+class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::Object
 {
 
 		/**

@@ -25,8 +25,7 @@
 
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/inputstream.h>
 #include <map>
 #include <vector>

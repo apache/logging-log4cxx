@@ -19,8 +19,7 @@
 #define _LOG4CXX_HELPERS_TIMEZONE_H
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/object.h>
 
 #if defined(_MSC_VER)
 	#pragma warning ( push )
@@ -36,7 +35,7 @@ namespace helpers
 class TimeZone;
 LOG4CXX_PTR_DEF(TimeZone);
 
-class LOG4CXX_EXPORT TimeZone : public helpers::ObjectImpl
+class LOG4CXX_EXPORT TimeZone : public helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(TimeZone)

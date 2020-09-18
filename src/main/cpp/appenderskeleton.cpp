@@ -55,16 +55,6 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
 	closed = false;
 }
 
-void AppenderSkeleton::addRef() const
-{
-	ObjectImpl::addRef();
-}
-
-void AppenderSkeleton::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
 void AppenderSkeleton::finalize()
 {
 	// An appender might be closed then garbage collected. There is no

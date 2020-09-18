@@ -18,7 +18,7 @@
 #ifndef _LOG4CXX_HELPERS_OBJECTOUTPUTSTREAM_H
 #define _LOG4CXX_HELPERS_OBJECTOUTPUTSTREAM_H
 
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/mdc.h>
 #include <log4cxx/helpers/outputstream.h>
 #include <log4cxx/helpers/charsetencoder.h>
@@ -30,7 +30,7 @@ namespace helpers
 /**
  *  Emulates java serialization.
  */
-class LOG4CXX_EXPORT ObjectOutputStream : public ObjectImpl
+class LOG4CXX_EXPORT ObjectOutputStream : public Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ObjectOutputStream)

@@ -355,7 +355,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 		try
 		{
 			const Class& classObj = Loader::loadClass(className);
-			ObjectPtr newObject =  classObj.newInstance();
+            ObjectPtr newObject =  ObjectPtr(classObj.newInstance());
 
 			if (!newObject->instanceof(superClass))
 			{
@@ -394,9 +394,9 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	if (!clazz.empty())
 	{
 		LogLog::debug(LOG4CXX_STR("Preferred configurator class: ") + clazz);
-		configurator = instantiateByClassName(clazz,
-				Configurator::getStaticClass(),
-				0);
+        const Class& clazzObj = Loader::loadClass(clazz);
+        ObjectPtr obj = ObjectPtr(clazzObj.newInstance());
+        configurator = std::dynamic_pointer_cast<Configurator>(obj);
 
 		if (configurator == 0)
 		{
@@ -407,7 +407,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	}
 	else
 	{
-		configurator = new PropertyConfigurator();
+        configurator = ConfiguratorPtr(new PropertyConfigurator());
 	}
 
 	configurator->doConfigure(configFileName, hierarchy);

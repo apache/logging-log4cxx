@@ -33,7 +33,7 @@ class LocationInfo;
 // LoggerFactory.
 class XFactory :
 	public virtual spi::LoggerFactory,
-	public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XFactory)
@@ -48,7 +48,7 @@ class XFactory :
 			const LogString& name) const;
 };
 
-typedef helpers::ObjectPtrT<XFactory> XFactoryPtr;
+typedef std::shared_ptr<XFactory> XFactoryPtr;
 
 /**
 A simple example showing Logger sub-classing. It shows the
@@ -116,6 +116,6 @@ class XLogger : public Logger
 		void trace(const LogString& message);
 };
 
-typedef helpers::ObjectPtrT<XLogger> XLoggerPtr;
+typedef std::shared_ptr<XLogger> XLoggerPtr;
 }
 

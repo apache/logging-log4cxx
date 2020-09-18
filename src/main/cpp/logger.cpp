@@ -52,16 +52,6 @@ Logger::~Logger()
 {
 }
 
-void Logger::addRef() const
-{
-    ObjectImpl::addRef();
-}
-
-void Logger::releaseRef() const
-{
-    ObjectImpl::releaseRef();
-}
-
 void Logger::addAppender(const AppenderPtr& newAppender)
 {
     log4cxx::spi::LoggerRepository* rep = 0;
@@ -70,7 +60,7 @@ void Logger::addAppender(const AppenderPtr& newAppender)
 
         if (aai == 0)
         {
-            aai = new AppenderAttachableImpl(*pool);
+            aai = AppenderAttachableImplPtr(new AppenderAttachableImpl(*pool));
         }
 
         aai->addAppender(newAppender);
@@ -79,7 +69,7 @@ void Logger::addAppender(const AppenderPtr& newAppender)
 
     if (rep != 0)
     {
-        rep->fireAddAppenderEvent(this, newAppender);
+        rep->fireAddAppenderEvent(this, newAppender.get());
     }
 }
 
@@ -94,7 +84,7 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
         aai = 0;
     }
 
-    aai = new AppenderAttachableImpl(*pool);
+    aai = AppenderAttachableImplPtr(new AppenderAttachableImpl(*pool));
 
     for( std::vector<AppenderPtr>::const_iterator it = appenders.cbegin();
             it != appenders.cend();
@@ -103,7 +93,7 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
 
         if (repository != 0)
         {
-            repository->fireAddAppenderEvent(this, *it);
+            repository->fireAddAppenderEvent(this, it->get());
         }
     }
 }
@@ -208,7 +198,7 @@ AppenderPtr Logger::getAppender(const LogString& name1) const
 
 const LevelPtr& Logger::getEffectiveLevel() const
 {
-    for (const Logger* l = this; l != 0; l = l->parent)
+    for (const Logger* l = this; l != 0; l = l->parent.get())
     {
         if (l->level != 0)
         {
@@ -222,7 +212,7 @@ const LevelPtr& Logger::getEffectiveLevel() const
 #endif
 }
 
-LoggerRepositoryPtr Logger::getLoggerRepository() const
+LoggerRepository* Logger::getLoggerRepository() const
 {
     return repository;
 }

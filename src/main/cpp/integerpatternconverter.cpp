@@ -48,7 +48,7 @@ void IntegerPatternConverter::format(
 	LogString& toAppendTo,
 	Pool& p) const
 {
-	IntegerPtr i(obj);
+    IntegerPtr i = std::dynamic_pointer_cast<Integer>(obj);
 
 	if (i != NULL)
 	{

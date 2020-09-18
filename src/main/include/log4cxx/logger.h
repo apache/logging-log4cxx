@@ -63,7 +63,7 @@ operations, except configuration, are done through this class.
 */
 class LOG4CXX_EXPORT Logger :
     public virtual log4cxx::spi::AppenderAttachable,
-    public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 public:
     DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
@@ -134,9 +134,6 @@ protected:
 public:
     ~Logger();
 
-
-    void addRef() const;
-    void releaseRef() const;
 
     /**
     Add <code>newAppender</code> to the list of appenders of this
@@ -627,7 +624,7 @@ public:
     Return the the LoggerRepository where this
     <code>Logger</code> is attached.
     */
-    log4cxx::spi::LoggerRepositoryPtr getLoggerRepository() const;
+    log4cxx::spi::LoggerRepository* getLoggerRepository() const;
 
 
     /**

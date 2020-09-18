@@ -28,7 +28,7 @@
 #include <log4cxx/layout.h>
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/filter.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/level.h>
 #include <shared_mutex>
@@ -43,7 +43,7 @@ namespace log4cxx
 * */
 class LOG4CXX_EXPORT AppenderSkeleton :
 	public virtual Appender,
-	public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 	protected:
 		/** The layout variable does not need to be set if the appender
@@ -96,9 +96,6 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 
 		AppenderSkeleton();
 		AppenderSkeleton(const LayoutPtr& layout);
-
-		void addRef() const;
-		void releaseRef() const;
 
 		/**
 		Finalize this appender by calling the derived class'

@@ -40,7 +40,7 @@ class. An application, by changing the socket factory that creates the socket
 implementation, can configure itself to create sockets appropriate to the
 local firewall.
 */
-class LOG4CXX_EXPORT Socket : public helpers::ObjectImpl
+class LOG4CXX_EXPORT Socket : public helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Socket)

@@ -19,7 +19,7 @@
 #define _LOG4CXX_VARIA_FALLBACK_ERROR_HANDLER_H
 
 #include <log4cxx/spi/errorhandler.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/appender.h>
 #include <log4cxx/logger.h>
 #include <vector>
@@ -39,7 +39,7 @@ logged in the new secondary appender.
 */
 class LOG4CXX_EXPORT FallbackErrorHandler :
 	public virtual spi::ErrorHandler,
-	public virtual helpers::ObjectImpl
+    public virtual helpers::Object
 {
 	private:
 		AppenderPtr backup;
@@ -53,10 +53,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		LOG4CXX_CAST_ENTRY_CHAIN(spi::ErrorHandler)
 		END_LOG4CXX_CAST_MAP()
 
-		FallbackErrorHandler();
-		void addRef() const;
-		void releaseRef() const;
-
+        FallbackErrorHandler();
 
 		/**
 		<em>Adds</em> the logger passed as parameter to the list of

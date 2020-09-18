@@ -62,11 +62,11 @@ public:
 	void accept()
 	{
 		// set up appender
-		LayoutPtr layout = new SimpleLayout();
-		AppenderPtr appender = new FileAppender(layout, ACCEPT_FILE, false);
+        LayoutPtr layout = LayoutPtr(new SimpleLayout());
+        AppenderPtr appender = AppenderPtr(new FileAppender(layout, ACCEPT_FILE, false));
 
 		// create LevelMatchFilter
-		LevelMatchFilterPtr matchFilter = new LevelMatchFilter();
+        LevelMatchFilterPtr matchFilter = LevelMatchFilterPtr(new LevelMatchFilter());
 
 		// attach match filter to appender
 		appender->addFilter(matchFilter);
@@ -105,11 +105,11 @@ public:
 	void deny()
 	{
 		// set up appender
-		LayoutPtr layout = new SimpleLayout();
-		AppenderPtr appender = new FileAppender(layout, DENY_FILE, false);
+        LayoutPtr layout = LayoutPtr(new SimpleLayout());
+        AppenderPtr appender = AppenderPtr(new FileAppender(layout, DENY_FILE, false));
 
 		// create LevelMatchFilter, set to deny matches
-		LevelMatchFilterPtr matchFilter = new LevelMatchFilter();
+        LevelMatchFilterPtr matchFilter = LevelMatchFilterPtr(new LevelMatchFilter());
 		matchFilter->setAcceptOnMatch(false);
 
 		// attach match filter to appender

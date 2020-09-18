@@ -55,7 +55,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-			appender->setLayout(new TTCCLayout());
+            appender->setLayout(LayoutPtr(new TTCCLayout()));
 			appender->setPort(TEST_PORT);
 			Pool p;
 			appender->activateOptions(p);
@@ -65,7 +65,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateSleepClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-			appender->setLayout(new TTCCLayout());
+            appender->setLayout(LayoutPtr(new TTCCLayout()));
 			appender->setPort(TEST_PORT);
 			Pool p;
             appender->activateOptions(p);
@@ -76,7 +76,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateWriteClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-			appender->setLayout(new TTCCLayout());
+            appender->setLayout(LayoutPtr(new TTCCLayout()));
 			appender->setPort(TEST_PORT);
 			Pool p;
 			appender->activateOptions(p);

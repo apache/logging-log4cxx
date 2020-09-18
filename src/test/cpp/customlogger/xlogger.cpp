@@ -28,7 +28,7 @@ using namespace log4cxx::spi;
 IMPLEMENT_LOG4CXX_OBJECT(XLogger)
 IMPLEMENT_LOG4CXX_OBJECT(XFactory)
 
-XFactoryPtr XLogger::factory = new XFactory();
+XFactoryPtr XLogger::factory = XFactoryPtr(new XFactory());
 
 void XLogger::lethal(const LogString& message, const LocationInfo& locationInfo)
 {
@@ -99,5 +99,5 @@ XFactory::XFactory()
 LoggerPtr XFactory::makeNewLoggerInstance(log4cxx::helpers::Pool& pool,
 	const LogString& name) const
 {
-	return new XLogger(pool, name);
+    return LoggerPtr(new XLogger(pool, name));
 }

@@ -20,14 +20,13 @@
 
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/object.h>
-#include <log4cxx/helpers/objectptr.h>
 
 namespace log4cxx
 {
 namespace spi
 {
 class OptionHandler;
-typedef helpers::ObjectPtrT<OptionHandler> OptionHandlerPtr;
+typedef std::shared_ptr<OptionHandler> OptionHandlerPtr;
 
 /**
 A string based interface to configure package components.

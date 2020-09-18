@@ -18,7 +18,7 @@
 #ifndef _LOG4CXX_HELPERS_DATE_H
 #define _LOG4CXX_HELPERS_DATE_H
 
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/log4cxx.h>
 
 
@@ -32,7 +32,7 @@ namespace helpers
 *      internal strings.
 *
 */
-class LOG4CXX_EXPORT Date : public ObjectImpl
+class LOG4CXX_EXPORT Date : public Object
 {
 		const log4cxx_time_t time;
 

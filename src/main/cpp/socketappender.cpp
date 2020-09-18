@@ -80,7 +80,8 @@ void SocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 {
     std::unique_lock lock(mutex);
 
-	oos = new ObjectOutputStream(new SocketOutputStream(socket), p);
+    SocketOutputStreamPtr sock = SocketOutputStreamPtr(new SocketOutputStream(socket));
+    oos = ObjectOutputStreamPtr(new ObjectOutputStream(sock, p));
 }
 
 void SocketAppender::cleanUp(Pool& p)

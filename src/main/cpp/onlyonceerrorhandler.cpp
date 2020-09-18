@@ -32,16 +32,6 @@ OnlyOnceErrorHandler::OnlyOnceErrorHandler() :
 {
 }
 
-void OnlyOnceErrorHandler::addRef() const
-{
-	ObjectImpl::addRef();
-}
-
-void OnlyOnceErrorHandler::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
 void OnlyOnceErrorHandler::setLogger(const LoggerPtr&)
 {
 }
