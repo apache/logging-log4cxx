@@ -618,7 +618,7 @@ public:
 
     @throws RuntimeException if all levels are null in the hierarchy
     */
-    virtual const LevelPtr& getEffectiveLevel() const;
+    virtual const LevelPtr getEffectiveLevel() const;
 
     /**
     Return the the LoggerRepository where this
@@ -1474,7 +1474,7 @@ public:
     <p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::getDebug()); </pre>
 
     <p>Null values are admitted.  */
-    virtual void setLevel(const LevelPtr& level);
+    virtual void setLevel(const LevelPtr level);
 
     /**
     Set the resource bundle to be used with localized logging methods.

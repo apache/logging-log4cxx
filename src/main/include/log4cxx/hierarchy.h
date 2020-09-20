@@ -55,7 +55,8 @@ themselves to the previously created provision node.
 */
 class LOG4CXX_EXPORT Hierarchy :
 	public virtual spi::LoggerRepository,
-    public virtual helpers::Object
+    public virtual helpers::Object,
+    public std::enable_shared_from_this<Hierarchy>
 {
 	private:
 		log4cxx::helpers::Pool pool;
@@ -66,10 +67,10 @@ class LOG4CXX_EXPORT Hierarchy :
 		spi::HierarchyEventListenerList listeners;
 
 		typedef std::map<LogString, LoggerPtr> LoggerMap;
-		LoggerMap* loggers;
+        std::unique_ptr<LoggerMap> loggers;
 
 		typedef std::map<LogString, ProvisionNode> ProvisionNodeMap;
-		ProvisionNodeMap* provisionNodes;
+        std::unique_ptr<ProvisionNodeMap> provisionNodes;
 
 		LoggerPtr root;
 

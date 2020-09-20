@@ -155,7 +155,7 @@ class LOG4CXX_EXPORT OptionConverter
 		@param hierarchy The Hierarchy to act on.
 		*/
 		static void selectAndConfigure(const File& configFileName,
-			const LogString& clazz, spi::LoggerRepositoryPtr& hierarchy);
+            const LogString& clazz, spi::LoggerRepositoryPtr hierarchy);
 };
 }  // namespace helpers
 } // namespace log4cxx

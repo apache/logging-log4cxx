@@ -270,8 +270,9 @@ bool Hierarchy::isDisabled(int level) const
     }
     if (!currentlyConfigured)
     {
+        std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
         DefaultConfigurator::configure(
-            const_cast<Hierarchy*>(this));
+            nonconstThis);
 	}
 
 	return thresholdInt > level;
@@ -319,7 +320,7 @@ void Hierarchy::shutdownInternal(){
 
     for (it = loggers->begin(); it != itEnd; it++)
     {
-        LoggerPtr& logger = it->second;
+        LoggerPtr logger = it->second;
         logger->closeNestedAppenders();
     }
 
@@ -328,7 +329,7 @@ void Hierarchy::shutdownInternal(){
 
     for (it = loggers->begin(); it != itEnd; it++)
     {
-        LoggerPtr& logger = it->second;
+        LoggerPtr logger = it->second;
         logger->removeAllAppenders();
     }
 }

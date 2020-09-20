@@ -27,7 +27,7 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-void DefaultConfigurator::configure(LoggerRepository* repository)
+void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 {
 	repository->setConfigured(true);
 	const LogString configuratorClassName(getConfiguratorClass());

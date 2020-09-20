@@ -22,12 +22,12 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 
-DefaultRepositorySelector::DefaultRepositorySelector(const LoggerRepositoryPtr& repository1)
+DefaultRepositorySelector::DefaultRepositorySelector(const LoggerRepositoryPtr repository1)
 	: repository(repository1)
 {
 }
 
-LoggerRepositoryPtr& DefaultRepositorySelector::getLoggerRepository()
+LoggerRepositoryPtr DefaultRepositorySelector::getLoggerRepository()
 {
 	return repository;
 }

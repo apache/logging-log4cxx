@@ -766,7 +766,7 @@ void DOMConfigurator::setParameter(log4cxx::helpers::Pool& p,
     propSetter.setProperty(name, value, p);
 }
 
-void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr& repository1)
+void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr repository1)
 {
     repository1->setConfigured(true);
     this->repository = repository1;

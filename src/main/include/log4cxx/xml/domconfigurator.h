@@ -286,7 +286,7 @@ public:
     @param repository The hierarchy to operation upon.
     */
     void doConfigure(const File& filename,
-                     spi::LoggerRepositoryPtr& repository);
+                     spi::LoggerRepositoryPtr repository);
 
 protected:
     static LogString getAttribute(

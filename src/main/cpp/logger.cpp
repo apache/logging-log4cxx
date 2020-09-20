@@ -102,9 +102,9 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 {
     int writes = 0;
 
-    for (LoggerPtr logger(const_cast<Logger*>(this));
+    for (const Logger* logger = this;
             logger != 0;
-            logger = logger->parent)
+            logger = logger->parent.get())
     {
         // Protected against simultaneous call to addAppender, removeAppender,...
         std::unique_lock lock(logger->mutex);
@@ -196,7 +196,7 @@ AppenderPtr Logger::getAppender(const LogString& name1) const
     return aai->getAppender(name1);
 }
 
-const LevelPtr& Logger::getEffectiveLevel() const
+const LevelPtr Logger::getEffectiveLevel() const
 {
     for (const Logger* l = this; l != 0; l = l->parent.get())
     {
@@ -219,7 +219,7 @@ LoggerRepository* Logger::getLoggerRepository() const
 
 ResourceBundlePtr Logger::getResourceBundle() const
 {
-    for (LoggerPtr l(const_cast<Logger*>(this)); l != 0; l = l->parent)
+    for (const Logger* l = this; l != 0; l = l->parent.get())
     {
         if (l->resourceBundle != 0)
         {
@@ -504,7 +504,7 @@ void Logger::setHierarchy(spi::LoggerRepository* repository1)
     this->repository = repository1;
 }
 
-void Logger::setLevel(const LevelPtr& level1)
+void Logger::setLevel(const LevelPtr level1)
 {
     this->level = level1;
 }

@@ -87,7 +87,7 @@ PropertyConfigurator::~PropertyConfigurator()
 }
 
 void PropertyConfigurator::doConfigure(const File& configFileName,
-                                       spi::LoggerRepositoryPtr& hierarchy)
+                                       spi::LoggerRepositoryPtr hierarchy)
 {
     hierarchy->setConfigured(true);
 
@@ -151,7 +151,7 @@ void PropertyConfigurator::configureAndWatch(
 #endif
 
 void PropertyConfigurator::doConfigure(helpers::Properties& properties,
-                                       spi::LoggerRepositoryPtr& hierarchy)
+                                       spi::LoggerRepositoryPtr hierarchy)
 {
     hierarchy->setConfigured(true);
 
