@@ -10,9 +10,6 @@ add_custom_target(configure_log4cxx
   DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.hw
     ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.hw
-  BYPRODUCTS
-    ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
-    ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
 )
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
@@ -112,8 +109,5 @@ add_custom_target(configure_log4cxx
   DEPENDS
     ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
     ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
-  BYPRODUCTS
-    ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
-    ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
 )
 endif()
