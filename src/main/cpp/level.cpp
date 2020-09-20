@@ -23,51 +23,93 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
+volatile bool Level::initialized = false;
+std::mutex Level::initMutex;
+LevelPtr Level::allLevel;
+LevelPtr Level::fatalLevel;
+LevelPtr Level::errorLevel;
+LevelPtr Level::warnLevel;
+LevelPtr Level::infoLevel;
+LevelPtr Level::debugLevel;
+LevelPtr Level::traceLevel;
+LevelPtr Level::offLevel;
+
+void Level::initializeLevels(){
+    if( initialized ){
+        return;
+    }
+
+    std::unique_lock lock(initMutex);
+    if( initialized ){
+        return;
+    }
+
+    allLevel   = LevelPtr(new Level(Level::ALL_INT, LOG4CXX_STR("ALL"), 7));
+    fatalLevel = LevelPtr(new Level(Level::FATAL_INT, LOG4CXX_STR("FATAL"), 0));
+    errorLevel = LevelPtr(new Level(Level::ERROR_INT, LOG4CXX_STR("ERROR"), 3));
+    warnLevel  = LevelPtr(new Level(Level::WARN_INT, LOG4CXX_STR("WARN"), 4));
+    infoLevel  = LevelPtr(new Level(Level::INFO_INT, LOG4CXX_STR("INFO"), 6));
+    debugLevel = LevelPtr(new Level(Level::DEBUG_INT, LOG4CXX_STR("DEBUG"), 7));
+    traceLevel = LevelPtr(new Level(Level::TRACE_INT, LOG4CXX_STR("TRACE"), 7));
+    offLevel   = LevelPtr(new Level(Level::OFF_INT, LOG4CXX_STR("OFF"), 0));
+
+    initialized = true;
+}
+
 LevelPtr Level::getOff()
 {
-	return LevelPtr(new Level(Level::OFF_INT, LOG4CXX_STR("OFF"), 0));
+    initializeLevels();
+    return offLevel;
 }
 
 LevelPtr Level::getFatal()
 {
-	return LevelPtr(new Level(Level::FATAL_INT, LOG4CXX_STR("FATAL"), 0));
+    initializeLevels();
+    return fatalLevel;
 }
 
 LevelPtr Level::getError()
 {
-	return LevelPtr(new Level(Level::ERROR_INT, LOG4CXX_STR("ERROR"), 3));
+    initializeLevels();
+    return errorLevel;
 }
 
 LevelPtr Level::getWarn()
 {
-	return LevelPtr(new Level(Level::WARN_INT, LOG4CXX_STR("WARN"), 4));
+    initializeLevels();
+    return warnLevel;
 }
 
 LevelPtr Level::getInfo()
 {
-	return LevelPtr(new Level(Level::INFO_INT, LOG4CXX_STR("INFO"), 6));
+    initializeLevels();
+    return infoLevel;
 }
 
 LevelPtr Level::getDebug()
 {
-	return LevelPtr(new Level(Level::DEBUG_INT, LOG4CXX_STR("DEBUG"), 7));
+    initializeLevels();
+    return debugLevel;
 }
 
 LevelPtr Level::getTrace()
 {
-	return LevelPtr(new Level(Level::TRACE_INT, LOG4CXX_STR("TRACE"), 7));
+    initializeLevels();
+    return traceLevel;
 }
 
 
 LevelPtr Level::getAll()
 {
-	return LevelPtr(new Level(Level::ALL_INT, LOG4CXX_STR("ALL"), 7));
+    initializeLevels();
+    return allLevel;
 }
 
 
@@ -76,7 +118,7 @@ Level::Level(int level1,
 	const LogString& name1, int syslogEquivalent1)
 	: level(level1), name(name1), syslogEquivalent(syslogEquivalent1)
 {
-	APRInitializer::initialize();
+    APRInitializer::initialize();
 }
 
 

@@ -22,6 +22,7 @@
 #include <log4cxx/logstring.h>
 #include <limits.h>
 #include <log4cxx/helpers/object.h>
+#include <mutex>
 
 #if defined(_MSC_VER)
 	#pragma warning ( push )
@@ -223,6 +224,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		};
 
 
+        static void initializeLevels();
 		static LevelPtr getAll();
 		static LevelPtr getFatal();
 		static LevelPtr getError();
@@ -277,7 +279,18 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 			return level;
 		}
 
-	private:
+    private:
+        static volatile bool initialized;
+        static std::mutex initMutex;
+        static LevelPtr allLevel;
+        static LevelPtr fatalLevel;
+        static LevelPtr errorLevel;
+        static LevelPtr warnLevel;
+        static LevelPtr infoLevel;
+        static LevelPtr debugLevel;
+        static LevelPtr traceLevel;
+        static LevelPtr offLevel;
+
 		int level;
 		LogString name;
 		int syslogEquivalent;
