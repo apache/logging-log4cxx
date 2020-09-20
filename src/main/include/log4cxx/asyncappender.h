@@ -82,7 +82,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 *
 		 * @param newAppender appender to add, may not be null.
 		*/
-		void addAppender(const AppenderPtr& newAppender);
+        void addAppender(const AppenderPtr newAppender);
 
 		virtual void doAppend(const spi::LoggingEventPtr& event,
 			log4cxx::helpers::Pool& pool1);
@@ -122,7 +122,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		* @param appender appender.
 		* @return true if attached.
 		*/
-		bool isAttached(const AppenderPtr& appender) const;
+        bool isAttached(const AppenderPtr appender) const;
 
 		virtual bool requiresLayout() const;
 
@@ -135,7 +135,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 * Removes an appender.
 		 * @param appender appender to remove.
 		*/
-		void removeAppender(const AppenderPtr& appender);
+        void removeAppender(const AppenderPtr appender);
 		/**
 		* Remove appender by name.
 		* @param name name.

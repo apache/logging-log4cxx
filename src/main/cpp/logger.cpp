@@ -52,7 +52,7 @@ Logger::~Logger()
 {
 }
 
-void Logger::addAppender(const AppenderPtr& newAppender)
+void Logger::addAppender(const AppenderPtr newAppender)
 {
     log4cxx::spi::LoggerRepository* rep = 0;
     {
@@ -270,7 +270,7 @@ LevelPtr Logger::getLevel() const
 }
 
 
-bool Logger::isAttached(const AppenderPtr& appender) const
+bool Logger::isAttached(const AppenderPtr appender) const
 {
     std::shared_lock lock(mutex);
 
@@ -469,7 +469,7 @@ void Logger::removeAllAppenders()
     }
 }
 
-void Logger::removeAppender(const AppenderPtr& appender)
+void Logger::removeAppender(const AppenderPtr appender)
 {
     std::unique_lock lock(mutex);
 

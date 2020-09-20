@@ -59,7 +59,7 @@ AsyncAppender::~AsyncAppender()
 	delete discardMap;
 }
 
-void AsyncAppender::addAppender(const AppenderPtr& newAppender)
+void AsyncAppender::addAppender(const AppenderPtr newAppender)
 {
     std::unique_lock lock(appenders->getMutex());
 	appenders->addAppender(newAppender);
@@ -230,7 +230,7 @@ AppenderPtr AsyncAppender::getAppender(const LogString& n) const
 	return appenders->getAppender(n);
 }
 
-bool AsyncAppender::isAttached(const AppenderPtr& appender) const
+bool AsyncAppender::isAttached(const AppenderPtr appender) const
 {
     std::unique_lock lock(appenders->getMutex());
 	return appenders->isAttached(appender);
@@ -247,7 +247,7 @@ void AsyncAppender::removeAllAppenders()
 	appenders->removeAllAppenders();
 }
 
-void AsyncAppender::removeAppender(const AppenderPtr& appender)
+void AsyncAppender::removeAppender(const AppenderPtr appender)
 {
     std::unique_lock lock(appenders->getMutex());
 	appenders->removeAppender(appender);

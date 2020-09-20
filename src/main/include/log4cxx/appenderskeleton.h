@@ -192,7 +192,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.
 		*/
-		void setErrorHandler(const spi::ErrorHandlerPtr& eh);
+        void setErrorHandler(const spi::ErrorHandlerPtr eh);
 
 		/**
 		Set the layout for this appender. Note that some appenders have

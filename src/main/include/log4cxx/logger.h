@@ -142,7 +142,7 @@ public:
     <p>If <code>newAppender</code> is already in the list of
     appenders, then it won't be added again.
     */
-    virtual void addAppender(const AppenderPtr& newAppender);
+    virtual void addAppender(const AppenderPtr newAppender);
 
 
     /**
@@ -937,7 +937,7 @@ public:
     /**
     Is the appender passed as parameter attached to this logger?
     */
-    bool isAttached(const AppenderPtr& appender) const;
+    bool isAttached(const AppenderPtr appender) const;
 
     /**
      *  Check whether this logger is enabled for the <code>DEBUG</code>
@@ -1448,7 +1448,7 @@ public:
     /**
     Remove the appender passed as parameter form the list of appenders.
     */
-    void removeAppender(const AppenderPtr& appender);
+    void removeAppender(const AppenderPtr appender);
 
     /**
     Remove the appender with the name passed as parameter form the

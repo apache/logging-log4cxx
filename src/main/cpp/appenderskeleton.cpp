@@ -136,7 +136,7 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 	append(event, pool1);
 }
 
-void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr& errorHandler1)
+void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 {
     std::unique_lock lock(mutex);
 
