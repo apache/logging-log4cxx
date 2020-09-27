@@ -14,7 +14,7 @@
 # limitations under the License.
 name: log4cxx
 
-on: push
+on: [push, pull_request]
 
 jobs:
   job:
@@ -54,6 +54,7 @@ jobs:
     - name: 'Configure Dependencies - Ubuntu'
       if: matrix.name == 'ubuntu18-gcc' || matrix.name == 'ubuntu18-clang'
       run: |
+        sudo apt-get update
         sudo apt-get install -y libapr1-dev libaprutil1-dev
         # note: sqlext.h exists on github VM, purge for now as we don't link correctly...
         sudo apt-get purge unixodbc-dev
