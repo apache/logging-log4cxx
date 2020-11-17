@@ -69,7 +69,7 @@ jobs:
 
     - name: 'Configure Dependencies - Windows'
       if: matrix.name == 'windows-2019' || matrix.name == 'windows-2016'
-      uses: lukka/run-vcpkg@v2
+      uses: lukka/run-vcpkg@v5
       id: runvcpkg
       with:
         vcpkgArguments: apr apr-util
@@ -78,7 +78,7 @@ jobs:
         vcpkgTriplet: x64-windows
 
     - name: 'run cmake'
-      uses: lukka/run-cmake@v2
+      uses: lukka/run-cmake@v3
       with:
         cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
         buildDirectory: ${{ runner.workspace }}/build
