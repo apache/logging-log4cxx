@@ -57,8 +57,8 @@ public:
 	}
 
 	/**
-	 * Check that MapFilter.decide() returns Filter.ACCEPT or Filter.DENY
-	 *   based on Accept on Match setting when key/value does not match
+	 * Check that MapFilter.decide() returns Filter.NEUTRAL
+	 *   when key/value does not match
 	 */
 	void test2()
 	{
@@ -74,10 +74,10 @@ public:
 		filter->activateOptions(p);
 
 		filter->setAcceptOnMatch(true);
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 
 		filter->setAcceptOnMatch(false);
-		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));
 	}
 
 	/**
@@ -125,9 +125,9 @@ public:
 		filter->activateOptions(p);
 
 		filter->setMustMatchAll(true);      // AND T/F
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));      // does not match second
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));   // does not match second
 
-		filter->setMustMatchAll(false); // OR T/F
+		filter->setMustMatchAll(false);     // OR T/F
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));    // matches first
 
 		filter->setKeyValue(LOG4CXX_STR("my.name"), LOG4CXX_STR("Test"));
@@ -135,29 +135,26 @@ public:
 		filter->setMustMatchAll(true);      // AND T/T
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));    // matches all
 
-		filter->setMustMatchAll(false); // OR T/T
+		filter->setMustMatchAll(false);     // OR T/T
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));    // matches first
 
 		filter->setKeyValue(LOG4CXX_STR("my.ip"), LOG4CXX_STR("localhost"));
 
 		filter->setMustMatchAll(true);      // AND F/T
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));      // does not match first
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));   // does not match first
 
-		filter->setMustMatchAll(false); // OR F/T
+		filter->setMustMatchAll(false);     // OR F/T
 		LOGUNIT_ASSERT_EQUAL(Filter::ACCEPT, filter->decide(event));    // matches second
 
 		filter->setKeyValue(LOG4CXX_STR("my.name"), LOG4CXX_STR("Unkonwn"));
 
 		filter->setMustMatchAll(true);      // AND F/F
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));      // does not match first
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));   // does not match first
 
-		filter->setMustMatchAll(false); // OR F/F
-		LOGUNIT_ASSERT_EQUAL(Filter::DENY, filter->decide(event));      // matches none
+		filter->setMustMatchAll(false);     // OR F/F
+		LOGUNIT_ASSERT_EQUAL(Filter::NEUTRAL, filter->decide(event));   // matches none
 	}
 
 };
 
-
 LOGUNIT_TEST_SUITE_REGISTRATION(MapFilterTest);
-
-

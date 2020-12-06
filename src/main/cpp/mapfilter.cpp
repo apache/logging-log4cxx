@@ -82,10 +82,10 @@ Filter::FilterDecision MapFilter::decide(
 
 	if (acceptOnMatch)
 	{
-		return matched ? Filter::ACCEPT : Filter::DENY;
+		return matched ? Filter::ACCEPT : Filter::NEUTRAL;
 	}
 	else
 	{
-		return matched ? Filter::DENY : Filter::ACCEPT;
+		return matched ? Filter::DENY : Filter::NEUTRAL;
 	}
 }
