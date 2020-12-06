@@ -99,6 +99,11 @@ void FileAppender::setAppend(bool fileAppend1)
 void FileAppender::setFile(const LogString& file)
 {
     std::unique_lock lock(mutex);
+	setFileInternal(file);
+}
+
+void FileAppender::setFileInternal(const LogString& file)
+{
 	fileName = file;
 }
 

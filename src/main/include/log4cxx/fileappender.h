@@ -237,6 +237,8 @@ protected:
 					bool bufferedIO, size_t bufferSize,
 					log4cxx::helpers::Pool& p);
 
+		void setFileInternal(const LogString& file);
+
 	private:
 		FileAppender(const FileAppender&);
 		FileAppender& operator=(const FileAppender&);

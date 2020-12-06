@@ -345,9 +345,9 @@ bool RollingFileAppenderSkeleton::rolloverInternal(Pool& p)
 						else
 						{
 							closeWriter();
-							setFile(rollover1->getActiveFileName());
+							setFileInternal(rollover1->getActiveFileName());
 							// Call activateOptions to create any intermediate directories(if required)
-							FileAppender::activateOptions(p);
+							FileAppender::activateOptionsInternal(p);
 							OutputStreamPtr os(new FileOutputStream(
 									rollover1->getActiveFileName(), rollover1->getAppend()));
 							WriterPtr newWriter(createWriter(os));
