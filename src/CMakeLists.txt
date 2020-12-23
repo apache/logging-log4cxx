@@ -20,6 +20,9 @@ if(BUILD_SITE)
     configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/site/doxy/Doxyfile.in
                     ${CMAKE_CURRENT_BINARY_DIR}/site/Doxyfile )
 
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/site/markdown/download.md.in
+                    ${CMAKE_CURRENT_BINARY_DIR}/site/markdown/download.md )
+
     add_custom_target( doc_doxygen ALL
         COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/site/Doxyfile
         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
