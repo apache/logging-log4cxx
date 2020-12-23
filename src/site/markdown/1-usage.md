@@ -1,4 +1,4 @@
-Community {#community}
+Usage {#usage-overview}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,7 +21,7 @@ Community {#community}
  limitations under the License.
 -->
 
-See the following pages for community information:
+See the following pages for usage information:
 
-* @subpage issue-tracking
-* @subpage mailing-lists
+* @subpage usage
+* @subpage faq
