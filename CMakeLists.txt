@@ -114,6 +114,7 @@ message(STATUS "")
 
 message(STATUS "  Build shared library ............ : ${BUILD_SHARED_LIBS}")
 message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
+message(STATUS "  Build site ...................... : ${BUILD_SITE}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
 message(STATUS "  log4cxx char API ................ : ${LOG4CXX_CHAR}")

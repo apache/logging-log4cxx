@@ -53,7 +53,7 @@ PROJECT_NAME           = "Apache log4cxx"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = "Version @version@"
+PROJECT_NUMBER         = "Version ${log4cxx_VER}"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
@@ -805,8 +805,8 @@ WARN_LOGFILE           =
 # spaces. See also FILE_PATTERNS and EXTENSION_MAPPING
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = @base_dir@/src/main/include \
-                         @base_dir@/src/site/markdown
+INPUT                  = ${CMAKE_SOURCE_DIR}/src/main/include \
+                         ${CMAKE_SOURCE_DIR}/src/site/markdown
 
 # This tag can be used to specify the character encoding of the source files
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding. Doxygen uses
@@ -942,7 +942,7 @@ EXAMPLE_RECURSIVE      = NO
 # that contain images that are to be included in the documentation (see the
 # \image command).
 
-IMAGE_PATH             = @base_dir@/src/site/images
+IMAGE_PATH             = ${CMAKE_SOURCE_DIR}/src/site/images
 
 # The INPUT_FILTER tag can be used to specify a program that doxygen should
 # invoke to filter for each input file. Doxygen will invoke the filter program
@@ -998,7 +998,7 @@ FILTER_SOURCE_PATTERNS =
 # (index.html). This can be useful if you have a project on for instance GitHub
 # and want to reuse the introduction page also for the doxygen output.
 
-USE_MDFILE_AS_MAINPAGE = @base_dir@/src/site/markdown/index.md
+USE_MDFILE_AS_MAINPAGE = ${CMAKE_SOURCE_DIR}/src/site/markdown/index.md
 
 #---------------------------------------------------------------------------
 # Configuration options related to source browsing
@@ -1146,7 +1146,7 @@ GENERATE_HTML          = YES
 # The default directory is: html.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_OUTPUT            = @manual_dest@
+HTML_OUTPUT            = html
 
 # The HTML_FILE_EXTENSION tag can be used to specify the file extension for each
 # generated HTML page (for example: .htm, .php, .asp).

@@ -45,9 +45,9 @@ followed by a dot is a prefix of the *descendant* logger name. A logger
 is said to be a *parent* of a *child* logger if there are no ancestors
 between itself and the descendant logger. 
 
-For example, the logger named *"com.foo"* is a parent of the logger
-named *"com.foo.Bar"*. Similarly, *"java"* is a parent of *"java.util"*
-and an ancestor of *"java.util.Vector"*. This naming scheme should be
+For example, the logger named *com.foo* is a parent of the logger
+named *com.foo.Bar*. Similarly, *java* is a parent of *java.util*
+and an ancestor of *java.util.Vector*. This naming scheme should be
 familiar to most developers. 
 
 The root logger resides at the top of the logger hierarchy. It is
@@ -57,32 +57,41 @@ exceptional in two ways:
 2.  it cannot be retrieved by name. 
 
 Invoking the class static
-[log4cxx::Logger::getRootLogger](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_logger.html#afc0e4d99cab7c38a2851d41e6edc1dee)
-method retrieves it. All other loggers are instantiated and retrieved
-with the class static
-[log4cxx::Logger::getLogger](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_logger.html#a76017df17da02bc11bfe50e47de703a3)
+log4cxx::Logger::getRootLogger method retrieves it. All other loggers are instantiated and retrieved
+with the class static log4cxx::Logger::getLogger
 method. This method takes the name of the desired logger as a parameter.
 Some of the basic methods in the Logger class are listed below. 
 
-namespace log4cxx {    class **Logger** {         public:               
-// Creation & retrieval methods:                       static LoggerPtr
-getRootLogger();                      static LoggerPtr getLogger(const
-std::string& name);                   static LoggerPtr getLogger(const
-std::wstring& name);  }} //// Use these macros instead of calling Logger
-methods directly.// Macros will handle char or wchar\_t pointers or
-strings// or most right-hand side expressions of an//
-std::basic\_string::operator\<\<.//\#define LOG4CXX\_TRACE(logger,
-expression) ...\#define LOG4CXX\_DEBUG(logger, expression) ...\#define
-LOG4CXX\_INFO(logger, expression) ...\#define LOG4CXX\_WARN(logger,
-expression) ...\#define LOG4CXX\_ERROR(logger, expression) ...\#define
-LOG4CXX\_FATAL(logger, expression) ...
+~~~{.cpp}
+    namespace log4cxx {
+    	class Logger {
+    		public:
+    			// Creation & retrieval methods:
+    			static LoggerPtr getRootLogger();
+    			static LoggerPtr getLogger(const std::string& name);
+    			static LoggerPtr getLogger(const std::wstring& name);
+    	}
+    }
+     
+    //
+    // Use these macros instead of calling Logger methods directly.
+    // Macros will handle char or wchar_t pointers or strings
+    // or most right-hand side expressions of an
+    // std::basic_string::operator<<.
+    //
+    #define LOG4CXX_TRACE(logger, expression) ...
+    #define LOG4CXX_DEBUG(logger, expression) ...
+    #define LOG4CXX_INFO(logger, expression) ...
+    #define LOG4CXX_WARN(logger, expression) ...
+    #define LOG4CXX_ERROR(logger, expression) ...
+    #define LOG4CXX_FATAL(logger, expression) ...
+~~~
 
 ### Levels<span id="anchor-2"></span>
 
 Loggers *may* be assigned levels. The pre-defined levels: TRACE, DEBUG,
 INFO, WARN, ERROR and FATAL are defined in the
-[*log4cxx::Level*](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_level.html)
-class which provides accessor functions. 
+log4cxx::Level class which provides accessor functions. 
 
 If a given logger is not assigned a level, then it inherits one from its
 closest ancestor with an assigned level. More formally: 
@@ -99,9 +108,8 @@ logger always has an assigned level.
 Below are four tables with various assigned level values and the
 resulting inherited levels according to the above rule. 
 
-|             |                |                 |
-| ----------- | -------------- | --------------- |
 | Logger name | Assigned level | Inherited level |
+| ----------- | -------------- | --------------- |
 | root        | Proot          | Proot           |
 | X           | none           | Proot           |
 | X.Y         | none           | Proot           |
@@ -113,9 +121,8 @@ In example 1 above, only the root logger is assigned a level. This level
 value, *Proot*, is inherited by the other loggers *X*, *X.Y* and
 *X.Y.Z*. 
 
-|             |                |                 |
-| ----------- | -------------- | --------------- |
 | Logger name | Assigned level | Inherited level |
+| ----------- | -------------- | --------------- |
 | root        | Proot          | Proot           |
 | X           | Px             | Px              |
 | X.Y         | Pxy            | Pxy             |
@@ -126,9 +133,8 @@ Example 2
 In example 2, all loggers have an assigned level value. There is no need
 for level inheritence. 
 
-|             |                |                 |
-| ----------- | -------------- | --------------- |
 | Logger name | Assigned level | Inherited level |
+| ----------- | -------------- | --------------- |
 | root        | Proot          | Proot           |
 | X           | Px             | Px              |
 | X.Y         | none           | Px              |
@@ -140,9 +146,8 @@ In example 3, the loggers *root*, *X* and *X.Y.Z* are assigned the
 levels *Proot*, *Px* and *Pxyz* respectively. The logger *X.Y* inherits
 its level value from its parent *X*. 
 
-|             |                |                 |
-| ----------- | -------------- | --------------- |
 | Logger name | Assigned level | Inherited level |
+| ----------- | -------------- | --------------- |
 | root        | Proot          | Proot           |
 | X           | Px             | Px              |
 | X.Y         | none           | Px              |
@@ -162,15 +167,18 @@ preferrably through the use of LOG4CXX\_INFO or similar macros which
 support short-circuiting if the threshold is not satisfied and use of
 the insertion operator (\<\<) in the message parameter. 
 
-log4cxx::LoggerPtr
-logger(log4cxx::Logger::getLogger(**"com.foo"**));const char\* region =
-"World";LOG4CXX\_INFO(logger, "Simple message
-text.")LOG4CXX\_INFO(logger, "Hello, " \<\<
-region)LOG4CXX\_DEBUG(logger, L"Iteration " \<\<
-i)LOG4CXX\_DEBUG(logger, "e^10 = " \<\< std::scientific \<\<
-exp(10.0))//// Use a wchar\_t first operand to force use of wchar\_t
-based stream.//LOG4CXX\_WARN(logger, L"" \<\< i \<\< L" is the number of
-the iteration.")
+~~~{.cpp}
+    log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("com.foo"));
+    const char* region = "World";
+    LOG4CXX_INFO(logger, "Simple message text.")
+    LOG4CXX_INFO(logger, "Hello, " << region)
+    LOG4CXX_DEBUG(logger, L"Iteration " << i)
+    LOG4CXX_DEBUG(logger, "e^10 = " << std::scientific << exp(10.0))
+    //
+    // Use a wchar_t first operand to force use of wchar_t based stream.
+    //
+    LOG4CXX_WARN(logger, L"" << i << L" is the number of the iteration.")
+~~~
 
 A logging request is said to be *enabled* if its level is higher than or
 equal to the level of its logger. Otherwise, the request is said to be
@@ -188,30 +196,42 @@ WARN \< ERROR \< FATAL*.
 
 Here is an example of this rule. 
 
-// get a logger instance named "com.foo"log4cxx::LoggerPtr
-logger(log4cxx::Logger::getLogger(**"com.foo"**)); // Now set its level.
-Normally you do not need to set the// level of a logger
-programmatically. This is usually done// in configuration
-files.**logger**-\>setLevel(**log4cxx::Level::getInfo()**); log4cxx::LoggerPtr
-barlogger(log4cxx::Logger::getLogger(**"com.foo.Bar"**)); // This
-request is enabled, because **WARN** \>= **INFO**.LOG4CXX\_WARN(logger,
-"Low fuel level.") // This request is disabled, because **DEBUG** \<
-**INFO**.LOG4CXX\_DEBUG(logger, "Starting search for nearest gas
-station.") // The logger instance barlogger, named "com.foo.Bar",// will
-inherit its level from the logger named// "com.foo" Thus, the following
-request is enabled// because **INFO** \>=
-**INFO**.LOG4CXX\_INFO(barlogger. "Located nearest gas station.") //
-This request is disabled, because **DEBUG** \<
-**INFO**.LOG4CXX\_DEBUG(barlogger, "Exiting gas station search")
+~~~{.cpp}
+    // get a logger instance named "com.foo"
+    log4cxx::LoggerPtr  logger(log4cxx::Logger::getLogger("com.foo"));
+     
+    // Now set its level. Normally you do not need to set the
+    // level of a logger programmatically. This is usually done
+    // in configuration files.
+    logger->setLevel(log4cxx::Level::getInfo());
+     
+    log4cxx::LoggerPtr barlogger(log4cxx::Logger::getLogger("com.foo.Bar"));
+     
+    // This request is enabled, because WARN >= INFO.
+    LOG4CXX_WARN(logger, "Low fuel level.")
+     
+    // This request is disabled, because DEBUG < INFO.
+    LOG4CXX_DEBUG(logger, "Starting search for nearest gas station.")
+     
+    // The logger instance barlogger, named "com.foo.Bar",
+    // will inherit its level from the logger named
+    // "com.foo" Thus, the following request is enabled
+    // because INFO >= INFO.
+    LOG4CXX_INFO(barlogger. "Located nearest gas station.")
+     
+    // This request is disabled, because DEBUG < INFO.
+    LOG4CXX_DEBUG(barlogger, "Exiting gas station search")
+~~~
 
 Calling the *getLogger* method with the same name will always return a
 reference to the exact same logger object. 
 
 For example, in 
 
-log4cxx::LoggerPtr x =
-log4cxx::Logger::getLogger("wombat");log4cxx::LoggerPtr y =
-log4cxx::Logger::getLogger("wombat");
+~~~{.cpp}
+    log4cxx::LoggerPtr x = log4cxx::Logger::getLogger("wombat");
+    log4cxx::LoggerPtr y = log4cxx::Logger::getLogger("wombat");
+~~~
 
 *x* and *y* refer to *exactly* the same logger object. 
 
@@ -245,24 +265,20 @@ The ability to selectively enable or disable logging requests based on
 their logger is only part of the picture. Log4cxx allows logging
 requests to print to multiple destinations. In log4cxx speak, an output
 destination is called an *appender*. Currently, appenders exist for the
-[console](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_console_appender.html),
-[files](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_file_appender.html),
-GUI components, [remote
-socket](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1net_1_1_socket_appender.html)
-servers, [NT Event
-Loggers](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1nt_1_1_n_t_event_log_appender.html),
-and remote UNIX
-[Syslog](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1net_1_1_syslog_appender.html)
+[console](@ref log4cxx.ConsoleAppender), [files](@ref log4cxx.FileAppender),
+GUI components, [remote socket](@ref log4cxx.net.SocketAppender)
+servers, [NT Event Loggers](@ref log4cxx.nt.NTEventLogAppender),
+and remote UNIX [Syslog](@ref log4cxx.net.SyslogAppender)
 daemons. It is also possible to log
-[asynchronously](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_async_appender.html).
+[asynchronously](@ref log4cxx.AsyncAppender).
 
 More than one appender can be attached to a logger.
 
 The
-[addAppender](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_logger.html#a7c0629acee8dbd1251474bea15d7c9e2)
-method adds an appender to a given logger. **Each enabled logging
+[addAppender](@ref log4cxx.Logger.addAppender)
+method adds an appender to a given logger. *Each enabled logging
 request for a given logger will be forwarded to all the appenders in
-that logger as well as the appenders higher in the hierarchy. **In other
+that logger as well as the appenders higher in the hierarchy.* In other
 words, appenders are inherited additively from the logger hierarchy. For
 example, if a console appender is added to the root logger, then all
 enabled logging requests will at least print on the console. If in
@@ -270,8 +286,7 @@ addition a file appender is added to a logger, say *C*, then enabled
 logging requests for *C* and *C*'s children will print on a file *and*
 on the console. It is possible to override this default behavior so that
 appender accumulation is no longer additive by [setting the additivity
-flag](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_logger.html#a80f9397947dba9071ad485f178257c17)
-to *false*. 
+flag](@ref log4cxx.Logger.setAdditivity) to *false*. 
 
 The rules governing appender additivity are summarized below.
 
@@ -289,9 +304,8 @@ Loggers have their additivity flag set to *true* by default.
 The table below shows an
 example:
 
-|                 |                 |                 |                        |                                                                                                                                                   |
-| --------------- | --------------- | --------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Logger Name     | Added Appenders | Additivity Flag | Output Targets         | Comment                                                                                                                                           |
+| --------------- | --------------- | --------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
 | root            | A1              | not applicable  | A1                     | The root logger is anonymous but can be accessed with the log4cxx::Logger::getRootLogger() method. There is no default appender attached to root. |
 | x               | A-x1, A-x2      | true            | A1, A-x1, A-x2         | Appenders of "x" and root.                                                                                                                        |
 | x.y             | none            | true            | A1, A-x1, A-x2         | Appenders of "x" and root.                                                                                                                        |
@@ -306,16 +320,17 @@ formatting the logging request according to the user's wishes, whereas
 an appender takes care of sending the formatted output to its
 destination. 
 
-The
-[PatternLayout](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_pattern_layout.html),
+The [PatternLayout](@ref log4cxx.PatternLayout),
 part of the standard log4cxx distribution, lets the user specify the
 output format according to conversion patterns similar to the C language
 *printf* function. 
 
-For example, the PatternLayout with the conversion pattern "%r \[%t\]
-%-5p %c - %m%n" will output something akin to: 
+For example, the PatternLayout with the conversion pattern `%%r [%%t]
+%%-5p %%c - %%m%%n` will output something akin to: 
 
-176 \[main\] INFO org.foo.Bar - Located nearest gas station.
+~~~
+176 [main] INFO org.foo.Bar - Located nearest gas station.
+~~~
 
 The first field is the number of milliseconds elapsed since the start of
 the program. The second field is the thread making the log request. The
@@ -340,18 +355,41 @@ properties (key=value) format.
 Let us give a taste of how this is done with the help of an imaginary
 application *MyApp* that uses log4cxx. 
 
-\#include "com/foo/bar.h"using namespace com::foo; // include log4cxx
-header files.\#include "log4cxx/logger.h"\#include
-"log4cxx/basicconfigurator.h"\#include
-"log4cxx/helpers/exception.h" using namespace log4cxx;using namespace
-log4cxx::helpers; LoggerPtr logger(Logger::getLogger("MyApp")); int
-main(int argc, char \*\*argv){     int result = EXIT\_SUCCESS;     try  
- {              // Set up a simple configuration that logs on the
-console.             BasicConfigurator::configure();               
-LOG4CXX\_INFO(logger, "Entering application.")          Bar bar;        
-      bar.doIt();            LOG4CXX\_INFO(logger, "Exiting
-application.")   }      catch(Exception&)      {              result =
-EXIT\_FAILURE; }      return result;}
+~~~{.cpp}
+    #include "com/foo/bar.h"
+    using namespace com::foo;
+     
+    // include log4cxx header files.
+    #include "log4cxx/logger.h"
+    #include "log4cxx/basicconfigurator.h"
+    #include "log4cxx/helpers/exception.h"
+     
+    using namespace log4cxx;
+    using namespace log4cxx::helpers;
+     
+    LoggerPtr logger(Logger::getLogger("MyApp"));
+     
+    int main(int argc, char **argv)
+    {
+    	int result = EXIT_SUCCESS;
+    	try
+    	{
+    		// Set up a simple configuration that logs on the console.
+    		BasicConfigurator::configure();
+     
+    		LOG4CXX_INFO(logger, "Entering application.")
+    		Bar bar;
+    		bar.doIt();
+    		LOG4CXX_INFO(logger, "Exiting application.")
+    	}
+    	catch(Exception&)
+    	{
+    		result = EXIT_FAILURE;
+    	}
+     
+    	return result;
+    }
+~~~
 
 *MyApp* begins by including log4cxx headers. It then defines a static
 logger variable with the name *MyApp* which happens to be the fully
@@ -359,55 +397,105 @@ qualified name of the class.
 
 *MyApp* uses the *Bar* class defined in header file *com/foo/bar.h*. 
 
-// file com/foo/bar.h\#include "log4cxx/logger.h" namespace com {      
-namespace foo {        class Bar {                    static
-log4cxx::LoggerPtr logger;                      public:                 
-      void doIt();           }      }}
+~~~{.cpp}
+    // file com/foo/bar.h
+    #include "log4cxx/logger.h"
+     
+    namespace com {
+    	namespace foo {
+    		class Bar {
+    			static log4cxx::LoggerPtr logger;
+     
+    			public:
+    				void doIt();
+    		}
+    	}
+    }
+~~~
 
-// file bar.cpp\#include "com/foo/bar.h" using namespace com::foo;using
-namespace log4cxx; LoggerPtr
-Bar::logger(Logger::getLogger("com.foo.bar")); void Bar::doIt() { 
-LOG4CXX\_DEBUG(logger, "Did it again\!")}
+~~~{.cpp}
+    // file bar.cpp
+    #include "com/foo/bar.h"
+     
+    using namespace com::foo;
+    using namespace log4cxx;
+     
+    LoggerPtr Bar::logger(Logger::getLogger("com.foo.bar"));
+     
+    void Bar::doIt() {
+    	LOG4CXX_DEBUG(logger, "Did it again!")
+    }
+~~~
 
 The invocation of the
-[BasicConfigurator::configure](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_basic_configurator.html#a4f96a09e1372664e3556ce94ace4a70c)
+[BasicConfigurator::configure](@ref log4cxx.BasicConfigurator.configure)
 method creates a rather simple log4cxx setup. This method is hardwired
-to add to the root logger a
-[ConsoleAppender](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_console_appender.html).
+to add to the root logger a [ConsoleAppender](@ref log4cxx.ConsoleAppender).
 The output will be formatted using a
-[PatternLayout](https://logging.apache.org/log4cxx/latest_stable/apidocs/classlog4cxx_1_1_pattern_layout.html)
-set to the pattern "%-4r \[%t\] %-5p %c %x - %m%n". 
+[PatternLayout](@ref log4cxx.PatternLayout)
+set to the pattern `%%-4r [%%t] %%-5p %%c %%x - %%m%%n`. 
 
 Note that by default, the root logger is assigned to
 *Level::getDebug()*. 
 
 The output of MyApp is: 
 
-0   \[12345\] INFO MyApp - Entering application.36  \[12345\] DEBUG
-com.foo.Bar - Did it again\!51  \[12345\] INFO MyApp - Exiting
-application.
+~~~
+    0    [12345] INFO  MyApp  - Entering application.
+    36   [12345] DEBUG com.foo.Bar  - Did it again!
+    51   [12345] INFO  MyApp  - Exiting application.
+~~~
 
 The previous example always outputs the same log information.
 Fortunately, it is easy to modify *MyApp* so that the log output can be
 controlled at run-time. Here is a slightly modified version. 
 
-// file MyApp2.cpp \#include "com/foo/bar.h"using namespace com::foo; //
-include log4cxx header files.\#include "log4cxx/logger.h"\#include
-"log4cxx/basicconfigurator.h"\#include
-"log4cxx/propertyconfigurator.h"\#include
-"log4cxx/helpers/exception.h" using namespace log4cxx;using namespace
-log4cxx::helpers;// Define a static logger variable so that it
-references the// Logger instance named "MyApp".LoggerPtr
-logger(Logger::getLogger("MyApp")); int main(int argc, char \*\*argv){  
-  int result = EXIT\_SUCCESS;     try    {              if (argc \> 1)  
-       {                      // BasicConfigurator replaced with
-PropertyConfigurator.                      
-PropertyConfigurator::configure(argv\[1\]);              }             
-else           {                      BasicConfigurator::configure();   
-    }              LOG4CXX\_INFO(logger, "Entering application.")       
-  Bar bar        bar.doIt();            LOG4CXX\_INFO(logger, "Exiting
-application.")   }      catch(Exception&)      {              result =
-EXIT\_FAILURE; }      return result;}
+~~~{.cpp}
+    // file MyApp2.cpp
+     
+    #include "com/foo/bar.h"
+    using namespace com::foo;
+     
+    // include log4cxx header files.
+    #include "log4cxx/logger.h"
+    #include "log4cxx/basicconfigurator.h"
+    #include "log4cxx/propertyconfigurator.h"
+    #include "log4cxx/helpers/exception.h"
+     
+    using namespace log4cxx;
+    using namespace log4cxx::helpers;
+    // Define a static logger variable so that it references the
+    // Logger instance named "MyApp".
+    LoggerPtr logger(Logger::getLogger("MyApp"));
+     
+    int main(int argc, char **argv)
+    {
+    	int result = EXIT_SUCCESS;
+    	try
+    	{
+    		if (argc > 1)
+    		{
+    			// BasicConfigurator replaced with PropertyConfigurator.
+    			PropertyConfigurator::configure(argv[1]);
+    		}
+    		else
+    		{
+    			BasicConfigurator::configure();
+    		}
+     
+    		LOG4CXX_INFO(logger, "Entering application.")
+    		Bar bar
+    		bar.doIt();
+    		LOG4CXX_INFO(logger, "Exiting application.")
+    	}
+    	catch(Exception&)
+    	{
+    		result = EXIT_FAILURE;
+    	}
+     
+    	return result;
+    }
+~~~
 
 This version of *MyApp* instructs *PropertyConfigurator* to parse a
 configuration file and set up logging accordingly. 
@@ -415,12 +503,17 @@ configuration file and set up logging accordingly.
 Here is a sample configuration file that results in exactly same output
 as the previous *BasicConfigurator* based example. 
 
-\# Set root logger level to DEBUG and its only appender to
-A1.log4j.rootLogger=DEBUG, A1 \# A1 is set to be a
-ConsoleAppender.log4j.appender.A1=org.apache.log4j.ConsoleAppender \# A1
-uses
-PatternLayout.log4j.appender.A1.layout=org.apache.log4j.PatternLayoutlog4j.appender.A1.layout.ConversionPattern=%-4r
-\[%t\] %-5p %c %x - %m%n
+~~~
+    # Set root logger level to DEBUG and its only appender to A1.
+    log4j.rootLogger=DEBUG, A1
+     
+    # A1 is set to be a ConsoleAppender.
+    log4j.appender.A1=org.apache.log4j.ConsoleAppender
+     
+    # A1 uses PatternLayout.
+    log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+    log4j.appender.A1.layout.ConversionPattern=%-4r [%t] %-5p %c %x - %m%n
+~~~
 
 It can be noticed that the PropertyConfigurator file format is the same
 as log4j. 
@@ -429,18 +522,24 @@ Suppose we are no longer interested in seeing the output of any
 component belonging to the *com::foo* package. The following
 configuration file shows one possible way of achieving this. 
 
-log4j.rootLogger=DEBUG,
-A1log4j.appender.A1=org.apache.log4j.ConsoleAppenderlog4j.appender.A1.layout=org.apache.log4j.PatternLayout \#
-**Print the date in ISO 8601
-format**log4j.appender.A1.layout.ConversionPattern=**%d** \[%t\] %-5p %c
-- %m%n \# Print only messages of level WARN or above in the package
-com.foo.**log4j.logger.com.foo=WARN**
+~~~
+    log4j.rootLogger=DEBUG, A1
+    log4j.appender.A1=org.apache.log4j.ConsoleAppender
+    log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+     
+    # Print the date in ISO 8601 format
+    log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
+     
+    # Print only messages of level WARN or above in the package com.foo.
+    log4j.logger.com.foo=WARN
+~~~
 
 The output of *MyApp* configured with this file is shown below. 
 
-**2000-09-07 14:07:41,508** \[12345\] INFO MyApp - Entering
-application.**2000-09-07 14:07:41,529** \[12345\] INFO MyApp - Exiting
-application.
+~~~
+    2000-09-07 14:07:41,508 [12345] INFO  MyApp - Entering application.
+    2000-09-07 14:07:41,529 [12345] INFO  MyApp - Exiting application.
+~~~
 
 As the logger *com.foo.Bar* does not have an assigned level, it inherits
 its level from *com.foo*, which was set to WARN in the configuration
@@ -450,22 +549,34 @@ request is suppressed.
 
 Here is another configuration file that uses multiple appenders. 
 
-log4j.rootLogger=debug, **stdout,
-R** log4j.appender.**stdout**=org.apache.log4j.ConsoleAppenderlog4j.appender.stdout.layout=org.apache.log4j.PatternLayout \#
-Pattern to output the caller's file name and line
-number.log4j.appender.stdout.layout.ConversionPattern=%5p \[%t\]
-**(%F:%L)** -
-%m%n log4j.appender.**R**=org.apache.log4j.RollingFileAppenderlog4j.appender.R.File=example.log log4j.appender.R.MaxFileSize=**100KB**\#
-Keep one backup
-filelog4j.appender.R.MaxBackupIndex=1 log4j.appender.R.layout=org.apache.log4j.PatternLayoutlog4j.appender.R.layout.ConversionPattern=%p
-%t %c - %m%n
+~~~
+    log4j.rootLogger=debug, stdout, R
+     
+    log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+    log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+     
+    # Pattern to output the caller's file name and line number.
+    log4j.appender.stdout.layout.ConversionPattern=%5p [%t] (%F:%L) - %m%n
+     
+    log4j.appender.R=org.apache.log4j.RollingFileAppender
+    log4j.appender.R.File=example.log
+     
+    log4j.appender.R.MaxFileSize=100KB
+    # Keep one backup file
+    log4j.appender.R.MaxBackupIndex=1
+     
+    log4j.appender.R.layout=org.apache.log4j.PatternLayout
+    log4j.appender.R.layout.ConversionPattern=%p %t %c - %m%n
+~~~
 
 Calling the enhanced MyApp with the this configuration file will output
 the following on the console. 
 
-INFO \[12345\] **(MyApp2.cpp:31)** - Entering application.DEBUG
-\[12345\] (Bar.h:16) - Doing it again\!INFO \[12345\] (MyApp2.cpp:34) -
-Exiting application.
+~~~
+    INFO [12345] (MyApp2.cpp:31) - Entering application.
+    DEBUG [12345] (Bar.h:16) - Doing it again!
+    INFO [12345] (MyApp2.cpp:34) - Exiting application.
+~~~
 
 In addition, as the root logger has been allocated a second appender,
 output will also be directed to the *example.log* file. This file will
@@ -525,14 +636,23 @@ To uniquely stamp each request, the user pushes contextual information
 into the NDC, the abbreviation of *Nested Diagnostic Context*. The NDC
 class is shown below. 
 
-namespace log4cxx {    class NDC {            public:                //
-pushes the value on construction and pops on destruction.               
-   NDC(const std::string& value);                 NDC(const
-std::wstring& value);                        // Remove the top of the
-context from the NDC.                 **static** LogString pop();       
-                // Add diagnostic context for the current thread.       
-              **static** void push(const std::string& message);         
-        **static** void push(const std::wstring& message); }}
+~~~{.cpp}
+    namespace log4cxx {
+    	class NDC {
+    		public:
+    			// pushes the value on construction and pops on destruction.
+    			NDC(const std::string& value);
+    			NDC(const std::wstring& value);
+     
+    			// Remove the top of the context from the NDC.
+    			static LogString pop();
+     
+    			// Add diagnostic context for the current thread.
+    			static void push(const std::string& message);
+    			static void push(const std::wstring& message);
+    	}
+    }
+~~~
 
 The NDC is managed per thread as a *stack* of contextual information.
 Note that all methods of the *log4cxx::NDC* class are static. Assuming
