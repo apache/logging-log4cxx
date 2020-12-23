@@ -49,4 +49,4 @@ instead.
 
 Thanks!
 
-[users mailing list]:#mailing-list
+[users mailing list]:@ref mailing-lists

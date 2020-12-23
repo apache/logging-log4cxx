@@ -22,3 +22,4 @@ Community {#community}
 -->
 
 @subpage issue-tracking
+@subpage mailing-lists
