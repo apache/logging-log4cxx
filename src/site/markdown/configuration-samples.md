@@ -167,7 +167,7 @@ For this configuration, we have set any logger that is at the `com` level or bel
 to be debug.  However, we have also set the logger `com.example` to have a more
 verbose `trace` level to see more information from that particular logger.
 
-~~~{.cpp}
+~~~{.xml}
 <?xml version="1.0" encoding="UTF-8" ?>
 <log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
 
