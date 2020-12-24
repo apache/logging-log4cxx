@@ -7,6 +7,8 @@ include(CTest)
 # (at least in the past it was project vesion: 0.a.b.c and the library so vesion a.b.c.0
 set(LIBLOG4CXX_LIB_VERSION ${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}.${log4cxx_VERSION_TWEAK})
 set(LIBLOG4CXX_LIB_SOVERSION ${log4cxx_VERSION_MINOR})
+# Set the 'release' version.  This is the human-readable version
+set(LOG4CXX_RELEASE_VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
 
 # FindAPR and FindAPR-util are not provided by APR and APR-Util so source them locally
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/src/cmake")

@@ -20,9 +20,9 @@ Download {#download}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Download Apache log4cxx ${log4cxx_VER}
+# Download Apache log4cxx ${LOG4CXX_RELEASE_VERSION}
 
-  Apache log4cxx ${log4cxx_VER} is distributed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
+  Apache log4cxx ${LOG4CXX_RELEASE_VERSION} is distributed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
 
   The link in the Mirrors column should display a list of available mirrors with a
   default selection based on your inferred location.  If you do not see that page,
@@ -31,8 +31,8 @@ Download {#download}
 
 |                         | Mirrors | Checksum | Signature |
 |-------------------------|---------|----------|-----------|
-| Apache log4cxx ${log4cxx_VER} (tar.gz)      | [apache-log4cxx-${log4cxx_VER}.tar.gz] | [apache-log4cxx-${log4cxx_VER}.tar.gz.sha512] | [apache-log4cxx-${log4cxx_VER}.tar.gz.asc] |
-| Apache log4cxx ${log4cxx_VER} (zip)      | [apache-log4cxx-${log4cxx_VER}.zip] | [apache-log4cxx-${log4cxx_VER}.zip.sha512] | [apache-log4cxx-${log4cxx_VER}.zip.asc] |
+| Apache log4cxx ${LOG4CXX_RELEASE_VERSION} (tar.gz)      | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc] |
+| Apache log4cxx ${LOG4CXX_RELEASE_VERSION} (zip)      | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc] |
 
 It is essential that you verify the integrity of the downloaded files using the PGP or SHA512 signatures.
 Please read [Verifying Apache HTTP Server Releases](https://httpd.apache.org/dev/verification.html) for more
@@ -44,10 +44,10 @@ as well as the asc signature file for the relevant distribution. Make sure you g
 
 ~~~
 % gpg --import KEYS
-% gpg --verify apache-log4cxx-${log4cxx_VER}.tar.gz.asc apache-log4cxx-${log4cxx_VER}.tar.gz
+% gpg --verify apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz
 ~~~
 
-* apache-log4cxx-${log4cxx_VER} is signed by ${releaseManager} (${releaseKey})
+* apache-log4cxx-${LOG4CXX_RELEASE_VERSION} is signed by ${releaseManager} (${releaseKey})
 
 Alternatively, you can verify the SHA512 signature on the files. A unix program called sha512 or sha512sum is included
 in many unix distributions.
@@ -56,9 +56,9 @@ in many unix distributions.
 
 All previous releases of Apache log4cxx can be found in the [archive repository](https://archive.apache.org/dist/logging/log4cxx).
 
-[apache-log4cxx-${log4cxx_VER}.tar.gz]:https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${log4cxx_VER}/apache-log4cxx-${log4cxx_VER}.tar.gz
-[apache-log4cxx-${log4cxx_VER}.tar.gz.sha512]:https://www.apache.org/dist/logging/log4cxx/${log4cxx_VER}/apache-log4cxx-${log4cxx_VER}.tar.gz.sha512
-[apache-log4cxx-${log4cxx_VER}.tar.gz.asc]:https://www.apache.org/dist/logging/log4cxx/${log4cxx_VER}/apache-log4cxx-${log4cxx_VER}.tar.gz.asc
-[apache-log4cxx-${log4cxx_VER}.zip]:https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${log4cxx_VER}/apache-log4cxx-${log4cxx_VER}.zip
-[apache-log4cxx-${log4cxx_VER}.zip.sha512]:https://www.apache.org/dist/logging/log4cxx/${log4cxx_VER}/apache-log4cxx-${log4cxx_VER}.zip.sha512
-[apache-log4cxx-${log4cxx_VER}.zip.asc]:https://www.apache.org/dist/logging/log4cxx/${log4cxx_VER}/apache-log4cxx-${log4cxx_VER}.zip.asc
+[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz]:https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz
+[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512
+[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc
+[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip]:https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip
+[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512
+[apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc

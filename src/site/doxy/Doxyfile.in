@@ -53,7 +53,7 @@ PROJECT_NAME           = "Apache log4cxx"
 # could be handy for archiving the generated documentation or if some version
 # control system is used.
 
-PROJECT_NUMBER         = "Version ${log4cxx_VER}"
+PROJECT_NUMBER         = "Version ${LOG4CXX_RELEASE_VERSION}"
 
 # Using the PROJECT_BRIEF tag one can provide an optional one line description
 # for a project that appears at the top of each page and should give viewer a
