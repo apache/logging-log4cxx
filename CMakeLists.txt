@@ -104,6 +104,25 @@ foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE
 endforeach()
 
 #
+# Package and sign if Apache maintainer
+#
+option(APACHE_MAINTAINER "Apache maintainer" OFF)
+if(APACHE_MAINTAINER)
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "apache-log4cxx-${log4cxx_VER}")
+set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+set(CPACK_SOURCE_IGNORE_FILES ".git/;build/")
+include(CPack)
+
+add_custom_target( dist 
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -- package_source
+    COMMAND ${CMAKE_COMMAND} -E sha512sum "apache-log4cxx-${log4cxx_VER}.tar.gz" > "apache-log4cxx-${log4cxx_VER}.tar.gz.sha512"
+    COMMAND ${CMAKE_COMMAND} -E sha512sum "apache-log4cxx-${log4cxx_VER}.zip" > "apache-log4cxx-${log4cxx_VER}.zip.sha512"
+    COMMAND gpg -ab --yes "apache-log4cxx-${log4cxx_VER}.tar.gz" > "apache-log4cxx-${log4cxx_VER}.tar.gz.asc"
+    COMMAND gpg -ab --yes "apache-log4cxx-${log4cxx_VER}.zip" > "apache-log4cxx-${log4cxx_VER}.zip.asc"
+    )
+endif()
+
+#
 # Output configuration information
 # Similar to APR CMake configuration
 #
