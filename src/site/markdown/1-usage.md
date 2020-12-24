@@ -25,3 +25,4 @@ See the following pages for usage information:
 
 * @subpage usage
 * @subpage faq
+* @subpage configuration-samples
