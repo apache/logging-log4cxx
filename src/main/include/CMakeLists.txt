@@ -1,21 +1,12 @@
 # Configure
+
 if(WIN32)
-add_custom_target(configure_log4cxx
-  COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-    ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.hw
-    ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
-  COMMAND "${CMAKE_COMMAND}" -E copy_if_different
-    ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.hw
-    ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
-  DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.hw
-    ${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.hw
-)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
                @ONLY
 )
-else()
+endif()
+
 # Configure log4cxx.h
 set(LOG4CXX_CHAR "utf-8" CACHE STRING "Interal character representation, choice of utf-8 (default), wchar_t, unichar")
 set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
@@ -107,4 +98,3 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
 add_custom_target(configure_log4cxx
   COMMAND "${CMAKE_COMMAND}" -E echo "Checking configuration"
 )
-endif()
