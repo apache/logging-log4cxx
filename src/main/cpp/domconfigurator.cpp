@@ -431,7 +431,8 @@ void DOMConfigurator::parseLogger(
 
     LogLog::debug(LOG4CXX_STR("Setting [") + logger->getName() + LOG4CXX_STR("] additivity to [") +
                   (additivity ? LogString(LOG4CXX_STR("true")) : LogString(LOG4CXX_STR("false"))) + LOG4CXX_STR("]."));
-    parseChildrenOfLoggerElement(p, utf8Decoder, loggerElement, logger, false, doc, appenders, additivity);
+	logger->setAdditivity(additivity);
+	parseChildrenOfLoggerElement(p, utf8Decoder, loggerElement, logger, false, doc, appenders);
 }
 
 /**
@@ -484,7 +485,7 @@ void DOMConfigurator::parseRoot(
     AppenderMap& appenders)
 {
     LoggerPtr root = repository->getRootLogger();
-    parseChildrenOfLoggerElement(p, utf8Decoder, rootElement, root, true, doc, appenders, true);
+	parseChildrenOfLoggerElement(p, utf8Decoder, rootElement, root, true, doc, appenders);
 }
 
 /**
@@ -495,8 +496,7 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
     log4cxx::helpers::CharsetDecoderPtr& utf8Decoder,
     apr_xml_elem* loggerElement, LoggerPtr logger, bool isRoot,
     apr_xml_doc* doc,
-    AppenderMap& appenders,
-    bool additivity)
+	AppenderMap& appenders)
 {
     PropertySetter propSetter(logger);
     std::vector<AppenderPtr> newappenders;
@@ -523,7 +523,7 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
                               LOG4CXX_STR("] not found."));
             }
 
-            newappenders.push_back(appender);
+			logger->addAppender(appender);
 
         }
         else if (tagName == LEVEL_TAG)
@@ -538,10 +538,7 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
         {
             setParameter(p, utf8Decoder, currentElement, propSetter);
         }
-    }
-
-    // Handle the reconfiguring of the logger in an atomic manner.
-    logger->reconfigure( newappenders, additivity );
+	}
 
     propSetter.activate(p);
 }

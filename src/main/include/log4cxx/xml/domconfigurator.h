@@ -173,8 +173,7 @@ protected:
         apr_xml_elem* catElement,
         LoggerPtr logger, bool isRoot,
         apr_xml_doc* doc,
-        AppenderMap& appenders,
-        bool additivity );
+		AppenderMap& appenders );
 
     /**
      Used internally to parse a layout element.
