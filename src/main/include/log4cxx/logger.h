@@ -34,6 +34,7 @@
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/messagebuffer.h>
 #include <shared_mutex>
+#include <atomic>
 
 namespace log4cxx
 {
@@ -114,7 +115,7 @@ protected:
             of this logger will inherit its appenders, unless the children
             have their additivity flag set to <code>false</code> too. See
             the user manual for more details. */
-    bool additive;
+	std::atomic<bool> additive;
 
 protected:
     friend class DefaultLoggerFactory;

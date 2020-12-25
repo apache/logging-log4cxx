@@ -495,7 +495,6 @@ void Logger::removeAppender(const LogString& name1)
 
 void Logger::setAdditivity(bool additive1)
 {
-    std::shared_lock lock(mutex);
     this->additive = additive1;
 }
 
