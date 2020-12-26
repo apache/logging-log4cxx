@@ -30,7 +30,7 @@ runtime how these messages are formatted and where they are reported.
 ### Hierarchy<span id="anchor-1"></span>
 
 The first and foremost advantage of any logging API over plain
-*std::cout* resides in its ability to disable certain log statements
+`std::cout` resides in its ability to disable certain log statements
 while allowing others to print unhindered. This capability assumes that
 the logging space, that is, the space of all possible logging
 statements, is categorized according to some developer-chosen criteria. 
@@ -45,9 +45,9 @@ followed by a dot is a prefix of the *descendant* logger name. A logger
 is said to be a *parent* of a *child* logger if there are no ancestors
 between itself and the descendant logger. 
 
-For example, the logger named *com.foo* is a parent of the logger
-named *com.foo.Bar*. Similarly, *java* is a parent of *java.util*
-and an ancestor of *java.util.Vector*. This naming scheme should be
+For example, the logger named `com.foo` is a parent of the logger
+named `com.foo.Bar`. Similarly, `java` is a parent of `java.util`
+and an ancestor of `java.util.Vector`. This naming scheme should be
 familiar to most developers. 
 
 The root logger resides at the top of the logger hierarchy. It is
@@ -285,8 +285,8 @@ enabled logging requests will at least print on the console. If in
 addition a file appender is added to a logger, say *C*, then enabled
 logging requests for *C* and *C*'s children will print on a file *and*
 on the console. It is possible to override this default behavior so that
-appender accumulation is no longer additive by [setting the additivity
-flag](@ref log4cxx.Logger.setAdditivity) to *false*. 
+appender accumulation is no longer additive by
+[setting the additivity flag](@ref log4cxx.Logger.setAdditivity) to `false`.
 
 The rules governing appender additivity are summarized below.
 
