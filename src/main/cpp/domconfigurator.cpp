@@ -501,6 +501,10 @@ void DOMConfigurator::parseChildrenOfLoggerElement(
     PropertySetter propSetter(logger);
     std::vector<AppenderPtr> newappenders;
 
+	// Remove all existing appenders from logger. They will be
+	// reconstructed if need be.
+	logger->removeAllAppenders();
+
     for (apr_xml_elem* currentElement = loggerElement->first_child;
             currentElement;
             currentElement = currentElement->next)
