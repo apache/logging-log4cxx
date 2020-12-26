@@ -53,7 +53,7 @@ private:
     <code>true</code> by default.
 
     */
-    bool immediateFlush;
+	std::atomic<bool> immediateFlush;
 
     /**
     The encoding to use when opening an input stream.

@@ -305,6 +305,5 @@ void WriterAppender::setOption(const LogString& option, const LogString& value)
 
 void WriterAppender::setImmediateFlush(bool value)
 {
-    std::unique_lock lock(mutex);
     immediateFlush = value;
 }
