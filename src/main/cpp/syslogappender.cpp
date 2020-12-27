@@ -403,7 +403,7 @@ void SyslogAppender::setOption(const LogString& option, const LogString& value)
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("MAXMESSAGELENGTH"), LOG4CXX_STR("maxmessagelength")))
 	{
-		setMaxMessagelength(OptionConverter::toInt(value, 1024));
+		setMaxMessageLength(OptionConverter::toInt(value, 1024));
 	}
 	else
 	{

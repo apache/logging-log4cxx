@@ -148,7 +148,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 			return facilityPrinting;
 		}
 
-		inline void setMaxMessagelength(int maxMessageLength1)
+		inline void setMaxMessageLength(int maxMessageLength1)
 		{
 			maxMessageLength = maxMessageLength1;
 		}
