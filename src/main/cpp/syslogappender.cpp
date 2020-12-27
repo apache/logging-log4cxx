@@ -22,10 +22,12 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/optionconverter.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
+#include <apr_strings.h>
 
 #if LOG4CXX_HAVE_SYSLOG
 	#include <syslog.h>
@@ -64,7 +66,7 @@ using namespace log4cxx::net;
 IMPLEMENT_LOG4CXX_OBJECT(SyslogAppender)
 
 SyslogAppender::SyslogAppender()
-	: syslogFacility(LOG_USER), facilityPrinting(false), sw(0)
+	: syslogFacility(LOG_USER), facilityPrinting(false), sw(0), maxMessageLength(1024)
 {
 	this->initSyslogFacilityStr();
 
@@ -72,7 +74,7 @@ SyslogAppender::SyslogAppender()
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 	int syslogFacility1)
-	: syslogFacility(syslogFacility1), facilityPrinting(false), sw(0)
+	: syslogFacility(syslogFacility1), facilityPrinting(false), sw(0), maxMessageLength(1024)
 {
 	this->layout = layout1;
 	this->initSyslogFacilityStr();
@@ -80,7 +82,7 @@ SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 	const LogString& syslogHost1, int syslogFacility1)
-	: syslogFacility(syslogFacility1), facilityPrinting(false), sw(0)
+	: syslogFacility(syslogFacility1), facilityPrinting(false), sw(0), maxMessageLength(1024)
 {
 	this->layout = layout1;
 	this->initSyslogFacilityStr();
@@ -306,7 +308,40 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	}
 
 	LogString msg;
+	std::string encoded;
 	layout->format(msg, event, p);
+
+	Transcoder::encode(msg, encoded);
+
+	// Split up the message if it is over maxMessageLength in size.
+	// According to RFC 3164, the max message length is 1024, however
+	// newer systems(such as syslog-ng) can go up to 8k in size for their
+	// messages.  We will append (x/y) at the end of each message
+	// to indicate how far through the message we are
+	std::vector<LogString> packets;
+	if( msg.size() > maxMessageLength ){
+		LogString::iterator start = msg.begin();
+		while( start != msg.end() ){
+			LogString::iterator end = start + maxMessageLength - 12;
+			if( end > msg.end() ){
+				end = msg.end();
+			}
+			LogString newMsg = LogString( start, end );
+			packets.push_back( newMsg );
+			start = end;
+		}
+
+		int current = 1;
+		for( std::vector<LogString>::iterator it = packets.begin();
+			 it != packets.end();
+			 it++, current++ ){
+			char buf[12];
+			apr_snprintf( buf, sizeof(buf), "(%d/%d)", current, packets.size() );
+			it->append( buf );
+		}
+	}else{
+		packets.push_back( msg );
+	}
 
 	// On the local host, we can directly use the system function 'syslog'
 	// if it is available
@@ -314,12 +349,13 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if (sw == 0)
 	{
-		std::string sbuf;
-		Transcoder::encode(msg, sbuf);
-
-		// use of "%s" to avoid a security hole
-		::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(),
-			"%s", sbuf.c_str());
+		for( std::vector<LogString>::iterator it = packets.begin();
+			 it != packets.end();
+			 it++ ){
+			// use of "%s" to avoid a security hole
+			::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(),
+				"%s", it->c_str());
+		}
 
 		return;
 	}
@@ -334,17 +370,21 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		return;
 	}
 
-	LogString sbuf(1, 0x3C /* '<' */);
-	StringHelper::toString((syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
-	sbuf.append(1, (logchar) 0x3E /* '>' */);
+	for( std::vector<LogString>::iterator it = packets.begin();
+		 it != packets.end();
+		 it++ ){
+		LogString sbuf(1, 0x3C /* '<' */);
+		StringHelper::toString((syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
+		sbuf.append(1, (logchar) 0x3E /* '>' */);
 
-	if (facilityPrinting)
-	{
-		sbuf.append(facilityStr);
+		if (facilityPrinting)
+		{
+			sbuf.append(facilityStr);
+		}
+
+		sbuf.append(*it);
+		sw->write(sbuf);
 	}
-
-	sbuf.append(msg);
-	sw->write(sbuf);
 }
 
 void SyslogAppender::activateOptions(Pool&)
@@ -360,6 +400,10 @@ void SyslogAppender::setOption(const LogString& option, const LogString& value)
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FACILITY"), LOG4CXX_STR("facility")))
 	{
 		setFacility(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("MAXMESSAGELENGTH"), LOG4CXX_STR("maxmessagelength")))
+	{
+		setMaxMessageLength(OptionConverter::toInt(value, 1024));
 	}
 	else
 	{

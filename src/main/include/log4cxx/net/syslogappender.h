@@ -30,7 +30,19 @@ namespace log4cxx
 {
 namespace net
 {
-/** Use SyslogAppender to send log messages to a remote syslog daemon.*/
+/**
+ * Use SyslogAppender to send log messages to a remote syslog daemon.
+ *
+ * Note that by default, this appender will split up messages that are
+ * more than 1024 bytes long, for compatability with BSD syslog(see
+ * RFC 3164).  Modern syslog implementations(e.g. syslog-ng) can accept
+ * messages much larger, and may have a default of 8k.  You may modify
+ * the default size of the messages by setting the MaxMessageLength option.
+ *
+ * When the message is too large for the current MaxMessageLength,
+ * the packet number and total # will be appended to the end of the
+ * message like this: (5/10)
+ */
 class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 {
 	public:
@@ -136,6 +148,16 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 			return facilityPrinting;
 		}
 
+		inline void setMaxMessageLength(int maxMessageLength1)
+		{
+			maxMessageLength = maxMessageLength1;
+		}
+
+		inline int getMaxMessageLength() const
+		{
+			return maxMessageLength;
+		}
+
 	protected:
 		void initSyslogFacilityStr();
 
@@ -145,6 +167,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		helpers::SyslogWriter* sw;
 		LogString syslogHost;
 		int syslogHostPort;
+		int maxMessageLength;
 	private:
 		SyslogAppender(const SyslogAppender&);
 		SyslogAppender& operator=(const SyslogAppender&);
