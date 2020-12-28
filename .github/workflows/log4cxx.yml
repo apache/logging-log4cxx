@@ -82,6 +82,7 @@ jobs:
         ./vcpkg install apr apr-util --triplet=x64-windows
 
     - name: 'run cmake - win'
+      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') 
       shell: pwsh
       run: |
         cd main
@@ -91,6 +92,7 @@ jobs:
         cmake --build .
 
     - name: 'run cmake - *nix'
+      if: matrix.name != 'windows-2019'
       run: |
         cd main
         mkdir build
