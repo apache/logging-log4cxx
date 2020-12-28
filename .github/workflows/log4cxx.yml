@@ -81,7 +81,7 @@ jobs:
         ./bootstrap-vcpkg.bat
         ./vcpkg install apr apr-util --triplet=x64-windows
 
-    - name: 'run cmake'
+    - name: 'run cmake - win'
       shell: pwsh
       run: |
         cd main
@@ -90,8 +90,17 @@ jobs:
         cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DCMAKE_TOOLCHAIN_FILE=${{runner.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
         cmake --build .
 
+    - name: 'run cmake - *nix'
+      run: |
+        cd main
+        mkdir build
+        cd build
+        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
+        cmake --build .
+
     - name: run unit tests
       shell: pwsh
       run: |
-        cd ${{ runner.workspace }}/build
+        cd main
+        cd build
         ctest -C Debug --output-on-failure -V
