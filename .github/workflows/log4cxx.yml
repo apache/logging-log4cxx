@@ -46,11 +46,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - uses: lukka/set-shell-env@v1.1
-      with:
-        CXX: ${{ matrix.cxx }}
-        CC: ${{ matrix.cc }}
-
     - name: 'Configure Dependencies - Ubuntu'
       if: matrix.name == 'ubuntu18-gcc' || matrix.name == 'ubuntu18-clang'
       run: |
@@ -67,23 +62,31 @@ jobs:
         path: ${{ runner.workspace }}/vcpkg
         key: ${{ runner.os }}-${{ matrix.name }}-cache
 
-    - name: 'Configure Dependencies - Windows'
-      if: matrix.name == 'windows-2019' || matrix.name == 'windows-2016'
-      uses: lukka/run-vcpkg@v5
-      id: runvcpkg
+    - name: 'Checkout VCPKG - Windows'
+      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') && steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
       with:
-        vcpkgArguments: apr apr-util
-        vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-        vcpkgGitCommitId: ffa7fd27cfa29f206d1fd2ccfc722cad4aaeef3d
-        vcpkgTriplet: x64-windows
+        repository: microsoft/vcpkg
+        path: vcpkg
+        ref: ffa7fd27cfa29f206d1fd2ccfc722cad4aaeef3d
+
+    - name: 'Configure Dependencies - Windows'
+      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') && steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
+      id: runvcpkg
+      shell: pwsh
+      run: |
+        cd ${{ runner.workspace }}/vcpkg
+        ./bootstrap-vcpkg.bat
+        ./vcpkg install apr apr-util --triplet=x64-windows
 
     - name: 'run cmake'
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        buildDirectory: ${{ runner.workspace }}/build
-        useVcpkgToolchainFile: true
-        cmakeAppendedArgs: '-DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin'
+      shell: pwsh
+      run: |
+        cd ${{ runner.workspace }}
+        mkdir build
+        cd build
+        cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DCMAKE_TOOLCHAIN_FILE=${{runner.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
+        cmake --build .
 
     - name: run unit tests
       shell: pwsh
