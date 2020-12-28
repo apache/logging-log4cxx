@@ -61,7 +61,7 @@ jobs:
       if: matrix.name == 'windows-2019' || matrix.name == 'windows-2016'
       uses: actions/cache@v2
       with:
-        path: ${{ runner.workspace }}/vcpkg
+        path: vcpkg
         key: ${{ runner.os }}-${{ matrix.name }}-cache
 
     - name: 'Checkout VCPKG - Windows'
@@ -77,14 +77,14 @@ jobs:
       id: runvcpkg
       shell: pwsh
       run: |
-        cd ${{ runner.workspace }}/vcpkg
+        cd vcpkg
         ./bootstrap-vcpkg.bat
         ./vcpkg install apr apr-util --triplet=x64-windows
 
     - name: 'run cmake'
       shell: pwsh
       run: |
-        cd ${{ runner.workspace }}
+        cd main
         mkdir build
         cd build
         cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DCMAKE_TOOLCHAIN_FILE=${{runner.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
