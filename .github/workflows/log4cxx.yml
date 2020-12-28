@@ -45,6 +45,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        path: ${{ runner.workspace }}/log4cxx
 
     - name: 'Configure Dependencies - Ubuntu'
       if: matrix.name == 'ubuntu18-gcc' || matrix.name == 'ubuntu18-clang'
