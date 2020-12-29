@@ -85,10 +85,11 @@ jobs:
       if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') 
       shell: pwsh
       run: |
+        $THISDIR=Get-Location
         cd main
         mkdir build
         cd build
-        cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DCMAKE_TOOLCHAIN_FILE=${{runner.workspace}}/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
+        cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin -DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
         cmake --build .
 
     - name: 'run cmake - *nix'
