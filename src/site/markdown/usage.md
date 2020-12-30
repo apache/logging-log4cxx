@@ -730,6 +730,41 @@ The user should be aware of the following performance issues.
     layouts (formatters) perform as quickly as possible. The same is
     true for appenders. 
 
+# Removing log statements {#removing-log-statements}
+
+Sometimes, you may want to remove all log statements from your program,
+either for speed purposes or to remove sensitive information.  This can easily
+be accomplished at build-time when using the standard `LOG4CXX_[level]` macros
+(`LOG4CXX_TRACE`, `LOG4CXX_DEBUG`, `LOG4CXX_INFO`, `LOG4CXX_WARN`,
+`LOG4CXX_ERROR`, `LOG4CXX_FATAL`).
+
+Log statements can be removed either above a certain level, or they
+can be disabled entirely.
+
+For example, if we want to remove all log statements within our program
+that use the `LOG4CXX_[level]` family of macros, add a preprocessor
+definition `LOG4CXX_THRESHOLD` set to 50001
+or greater.  This will ensure that any log statement that uses the
+`LOG4CXX_[level]`-macro will be compiled out of the program.  To remove
+all log statements at `DEBUG` or below, set `LOG4CXX_THRESHOLD` to a
+value between 10001-20000.
+
+The levels are set as follows:
+
+|Logger Level|Integer Value|
+|------------|-------------|
+|TRACE       |5000         |
+|DEBUG       |10000        |
+|INFO        |20000        |
+|WARN        |30000        |
+|ERROR(1)    |40000        |
+|FATAL       |50000        |
+
+(1) The `LOG4CXX_ASSERT` macro is the same level as `LOG4CXX_ERROR`
+
+Note that this has no effect on other macros, such as using the
+`LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
+
 # Conclusions {#conclusions}
 
 Apache Log4cxx is a popular logging package written in C++. One of its
