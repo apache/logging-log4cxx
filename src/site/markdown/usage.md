@@ -20,14 +20,16 @@ Usage {#usage}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-## Loggers<span id="anchor"></span>
+[TOC]
+
+# Loggers {#loggers}
 
 Log4cxx has three main components: *loggers*, *appenders* and *layouts*.
 These three types of components work together to enable developers to
 log messages according to message type and level, and to control at
 runtime how these messages are formatted and where they are reported. 
 
-### Hierarchy<span id="anchor-1"></span>
+## Hierarchy {#hierarchy}
 
 The first and foremost advantage of any logging API over plain
 `std::cout` resides in its ability to disable certain log statements
@@ -87,7 +89,7 @@ Some of the basic methods in the Logger class are listed below.
     #define LOG4CXX_FATAL(logger, expression) ...
 ~~~
 
-### Levels<span id="anchor-2"></span>
+## Levels {#levels}
 
 Loggers *may* be assigned levels. The pre-defined levels: TRACE, DEBUG,
 INFO, WARN, ERROR and FATAL are defined in the
@@ -160,7 +162,7 @@ In example 4, the loggers *root* and *X* and are assigned the levels
 their level value from their nearest parent *X* having an assigned
 level. 
 
-### Requests<span id="anchor-3"></span>
+## Requests {#requests}
 
 Logging requests are made by invoking a method of a logger instance,
 preferrably through the use of LOG4CXX\_INFO or similar macros which
@@ -259,7 +261,7 @@ name the loggers as desired.
 Nevertheless, naming loggers after the class where they are located
 seems to be the best strategy known so far. 
 
-## Appenders and Layouts<span id="anchor-4"></span>
+# Appenders and Layouts {#appenders-and-layouts}
 
 The ability to selectively enable or disable logging requests based on
 their logger is only part of the picture. Log4cxx allows logging
@@ -338,7 +340,7 @@ third field is the level of the log statement. The fourth field is the
 name of the logger associated with the log request. The text after the
 '-' is the message of the statement. 
 
-## Configuration<span id="anchor-5"></span>
+# Configuration {#configuration}
 
 Inserting log requests into the application code requires a fair amount
 of planning and effort. Observation shows that approximately 4 percent
@@ -590,7 +592,7 @@ forwarded logging events to a remote log4cxx server, which would log
 according to local server policy, for example by forwarding the log
 event to a second log4cxx server. 
 
-## Default Initialization Procedure<span id="anchor-6"></span>
+# Default Initialization Procedure {#default-initialization-procedure}
 
 The log4cxx library does not make any assumptions about its environment.
 In particular, there are no default log4cxx appenders. Under certain
@@ -615,7 +617,7 @@ The exact default initialization algorithm is defined as follows:
     contain a fully qualified class name of a class that implements the
     Configurator interface. 
 
-## Nested Diagnostic Contexts<span id="anchor-7"></span>
+# Nested Diagnostic Contexts {#nested-diagnostic-contexts}
 
 Most real-world systems have to deal with multiple clients
 simultaneously. In a typical multithreaded implementation of such a
@@ -683,7 +685,7 @@ log4cxx releases support multiple hierarchy trees. This enhancement
 allows each virtual host to possess its own copy of the logger
 hierarchy. 
 
-## Performance<span id="anchor-8"></span>
+# Performance {#performance}
 
 One of the often-cited arguments against logging is its computational
 cost. This is a legitimate concern as even moderately sized applications
@@ -728,7 +730,7 @@ The user should be aware of the following performance issues.
     layouts (formatters) perform as quickly as possible. The same is
     true for appenders. 
 
-## Conclusions<span id="anchor-9"></span>
+# Conclusions {#conclusions}
 
 Apache Log4cxx is a popular logging package written in C++. One of its
 distinctive features is the notion of inheritance in loggers. Using a
