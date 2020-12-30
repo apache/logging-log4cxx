@@ -23,7 +23,9 @@ Configuration Samples {#configuration-samples}
 
 The following snippets show various ways of configuring log4cxx.
 
-## Patterns
+[TOC]
+
+# Patterns {#patterns}
 
 The basic way of outputing messages is by using a [PatternLayout](@ref log4cxx.PatternLayout),
 and then sending the messages to stderr/stdout/file.  The following
@@ -33,7 +35,7 @@ achieve the results shown.
 Each example has two blocks of code: the layout for the PatternLayout,
 and a sample output message.
 
-### Pattern 1
+## Pattern 1 {#pattern1}
 
 This pattern contains the date in an ISO-8601 format(without fractional seconds),
 followed by the logger name, the level, and then the message.
@@ -46,7 +48,7 @@ followed by the logger name, the level, and then the message.
 [2020-12-24 15:31:46] root INFO  - Hello there!
 ~~~
 
-### Pattern 2
+## Pattern 2 {#pattern2}
 
 Similar to Pattern 1, except using ISO-8601 with fractional seconds
 
@@ -58,7 +60,7 @@ Similar to Pattern 1, except using ISO-8601 with fractional seconds
 [2020-12-24 15:35:39,225] root INFO  - Hello there!
 ~~~
 
-### Pattern 3
+## Pattern 3 {#pattern3}
 
 Prints out the number of milliseconds since the start of the application,
 followed by the level(5 character width), followed by the logger name
@@ -72,12 +74,12 @@ followed by the level(5 character width), followed by the logger name
 0 INFO  root                 Hello there!
 ~~~
 
-## XML Files
+# XML Files {#xmlfiles}
 
 One way of configuring log4cxx is with XML files.  The following are some examples
 on various ways of using an XML file to configure the logging.
 
-### XML Example 1
+## XML Example 1 {#xml-example-1}
 
 This simple example simply writes messages to stdout.
 If you want to send messages to stderr instead, simply change the 'Target' value
@@ -107,7 +109,7 @@ Sample output:
 Hello there!
 ~~~
 
-### XML Example 2
+## XML Example 2 {#xml-example-2}
 
 This example sends data to both stdout, as well as to a file.  In this case,
 the file will be in our working directory.  The pattern has also been updated
@@ -145,7 +147,7 @@ Sample output:
 [2020-12-24 15:57:35] root INFO  - Hello there!
 ~~~
 
-### XML Example 3
+## XML Example 3 {#xml-example-3}
 
 This example shows how you can configure logging for a particular category.
 
