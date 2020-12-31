@@ -24,5 +24,6 @@ Usage {#usage-overview}
 See the following pages for usage information:
 
 * @subpage usage
+* @subpage extending-log4cxx
 * @subpage faq
 * @subpage configuration-samples
