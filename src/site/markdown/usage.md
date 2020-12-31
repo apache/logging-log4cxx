@@ -765,6 +765,38 @@ The levels are set as follows:
 Note that this has no effect on other macros, such as using the
 `LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
 
+# Logging Custom Types {#custom-types}
+
+Often, the data that needs to be logged is not just standard data types
+(such as int, string, etc), but amalgamations of those types in a data
+structure such as a class or struct.  In order to log these custom types,
+simply override an `operator<<` function, the same as if you would
+print the custom type to `std::cout`.  This can be accomplished by
+doing the following:
+
+~~~{.cpp}
+struct MyStruct {
+	int x;
+};
+
+std::ostream& operator<<( std::ostream& stream, const MyStruct& mystruct ){
+	stream << "[MyStruct x:" << mystruct.x << "]";
+	return stream;
+}
+
+void someMethod(){
+	MyStruct mine;
+	mine.x = 90;
+	LOG4CXX_INFO( logger, "Some important information: " << mine );
+}
+~~~
+
+This will output data similar to the following:
+
+~~~
+0 [0x7fd1eed63bc0] INFO root null - Some important information: [MyStruct x:90]
+~~~
+
 # Conclusions {#conclusions}
 
 Apache Log4cxx is a popular logging package written in C++. One of its
