@@ -30,7 +30,6 @@
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/file.h>
-#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -68,7 +67,7 @@ class NullPointerAppender : public AppenderSkeleton
 class BlockableVectorAppender : public VectorAppender
 {
 	private:
-        std::mutex blocker;
+		log4cxx::mutex blocker;
 	public:
 		/**
 		 * Create new instance.
@@ -82,7 +81,7 @@ class BlockableVectorAppender : public VectorAppender
 		 */
 		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
 		{
-            std::unique_lock lock( blocker );
+			log4cxx::unique_lock<log4cxx::mutex> lock( blocker );
 			VectorAppender::append(event, p);
 
 			//
@@ -98,14 +97,14 @@ class BlockableVectorAppender : public VectorAppender
 			}
 		}
 
-        std::mutex& getBlocker()
+		log4cxx::mutex& getBlocker()
 		{
 			return blocker;
 		}
 
 };
 
-typedef std::shared_ptr<BlockableVectorAppender> BlockableVectorAppenderPtr;
+LOG4CXX_PTR_DEF(BlockableVectorAppender);
 
 #if APR_HAS_THREADS
 /**
@@ -255,7 +254,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LoggerPtr rootLogger = Logger::getRootLogger();
 			rootLogger->addAppender(async);
 			{
-                std::unique_lock sync(blockableAppender->getBlocker());
+				log4cxx::unique_lock<log4cxx::mutex> sync(blockableAppender->getBlocker());
 
 				for (int i = 0; i < 140; i++)
 				{

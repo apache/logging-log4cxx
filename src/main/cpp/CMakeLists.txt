@@ -162,5 +162,4 @@ set_target_properties(log4cxx PROPERTIES
   VERSION ${LIBLOG4CXX_LIB_VERSION}
   SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
 )
-target_compile_features(log4cxx PUBLIC
-    cxx_std_17)
+boostfallback_link(log4cxx)

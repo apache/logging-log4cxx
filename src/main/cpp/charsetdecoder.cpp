@@ -28,7 +28,6 @@
 #include <apr_portable.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -96,7 +95,7 @@ class APRCharsetDecoder : public CharsetDecoder
 			{
 				size_t outbytes_left = initial_outbytes_left;
 				{
-                    std::unique_lock lock(mutex);
+					log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 					stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
 							NULL, NULL, (char*) buf, &outbytes_left);
 				}
@@ -111,7 +110,7 @@ class APRCharsetDecoder : public CharsetDecoder
 					size_t pos = in.position();
 					apr_size_t outbytes_left = initial_outbytes_left;
 					{
-                        std::unique_lock lock(mutex);
+						log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 						stat = apr_xlate_conv_buffer((apr_xlate_t*) convset,
 								in.data() + pos,
 								&inbytes_left,
@@ -130,7 +129,7 @@ class APRCharsetDecoder : public CharsetDecoder
 		APRCharsetDecoder(const APRCharsetDecoder&);
 		APRCharsetDecoder& operator=(const APRCharsetDecoder&);
 		log4cxx::helpers::Pool pool;
-        std::mutex mutex;
+		log4cxx::mutex mutex;
 		apr_xlate_t* convset;
 };
 
@@ -450,7 +449,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 				Pool subpool;
 				const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
                 {
-                    std::unique_lock lock(mutex);
+					log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 					if (enc == 0)
 					{
@@ -483,7 +482,7 @@ class LocaleCharsetDecoder : public CharsetDecoder
 		}
 	private:
 		Pool pool;
-        std::mutex mutex;
+		log4cxx::mutex mutex;
 		CharsetDecoderPtr decoder;
 		std::string encoding;
 };

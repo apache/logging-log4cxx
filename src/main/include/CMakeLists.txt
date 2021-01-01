@@ -1,24 +1,29 @@
 # Configure
 
 if(WIN32)
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
-               @ONLY
-)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/version_info.h.in
+	           ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/version_info.h
+		   @ONLY
+    )
+    set(LOG4CXX_CHAR "utf-8" CACHE STRING "Interal character representation, choice of utf-8, wchar_t(default), unichar")
+    set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
+    set(LOGCHAR_IS_UNICHAR 0)
+    set(LOGCHAR_IS_WCHAR 1)
+    set(LOGCHAR_IS_UTF8 0)
+else()
+    set(LOG4CXX_CHAR "utf-8" CACHE STRING "Interal character representation, choice of utf-8 (default), wchar_t, unichar")
+    set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
+    set(LOGCHAR_IS_UNICHAR 0)
+    set(LOGCHAR_IS_WCHAR 0)
+    set(LOGCHAR_IS_UTF8 1)
 endif()
 
 # Configure log4cxx.h
-set(LOG4CXX_CHAR "utf-8" CACHE STRING "Interal character representation, choice of utf-8 (default), wchar_t, unichar")
-set_property(CACHE LOG4CXX_CHAR PROPERTY STRINGS "utf-8" "wchar_t" "unichar")
-set(LOGCHAR_IS_UNICHAR 0)
-set(LOGCHAR_IS_WCHAR 0)
-set(LOGCHAR_IS_UTF8 0)
+
 if(${LOG4CXX_CHAR} STREQUAL "unichar")
   set(LOGCHAR_IS_UNICHAR 1)
 elseif(${LOG4CXX_CHAR} STREQUAL "wchar_t")
   set(LOGCHAR_IS_WCHAR 1)
-else()
-  set(LOGCHAR_IS_UTF8 1)
 endif()
 option(LOG4CXX_WCHAR_T "Enable wchar_t API methods" ON)
 option(LOG4CXX_UNICHAR "Enable UniChar API methods" OFF)
@@ -35,10 +40,7 @@ foreach(varName WCHAR_T  UNICHAR  CFSTRING )
     set("${varName}_API" 0)
   endif()
 endforeach()
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
-               ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
-               @ONLY
-)
+
 
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "locale" CACHE STRING "LogString characters, choice of locale (default), utf-8, ISO-8859-1, US-ASCII, EBCDIC")
@@ -88,10 +90,21 @@ foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE
   endif()
 endforeach()
 
+# Check for standard headers that we need, fall back to boost if they're not found
+include(${CMAKE_SOURCE_DIR}/src/cmake/boost-fallback/boost-fallback.cmake)
+set(NAMESPACE_ALIAS log4cxx)
 
+# Configure both our private header and our public header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
                @ONLY
+)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
+               ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
+	       @ONLY
+)
+configure_file(${CMAKE_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
+                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/boost-std-configuration.h
 )
 
 # Provide the dependencies

@@ -27,14 +27,14 @@
 #include <log4cxx/spi/appenderattachable.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
-#include <mutex>
+#include <log4cxx/log4cxx.h>
 
 namespace log4cxx
 {
 namespace spi
 {
 class LoggingEvent;
-typedef std::shared_ptr<LoggingEvent> LoggingEventPtr;
+typedef log4cxx::shared_ptr<LoggingEvent> LoggingEventPtr;
 }
 
 namespace helpers
@@ -105,13 +105,13 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		virtual void removeAppender(const LogString& name);
 
-		inline std::mutex& getMutex() const
+		inline mutex& getMutex() const
 		{
-			return mutex;
+			return m_mutex;
 		}
 
 	private:
-		mutable std::mutex mutex;
+		mutable mutex m_mutex;
 		AppenderAttachableImpl(const AppenderAttachableImpl&);
 		AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);
 };

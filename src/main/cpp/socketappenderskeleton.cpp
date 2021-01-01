@@ -77,7 +77,7 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 	if (closed)
 	{
@@ -88,7 +88,7 @@ void SocketAppenderSkeleton::close()
 	cleanUp(pool);
 
     {
-        std::unique_lock lock2(interrupt_mutex);
+		log4cxx::unique_lock<log4cxx::mutex> lock2(interrupt_mutex);
         interrupt.notify_all();
     }
 
@@ -155,13 +155,13 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 
 void SocketAppenderSkeleton::fireConnector()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
     if ( !thread.joinable() )
 	{
 		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
 
-        thread = std::thread( &SocketAppenderSkeleton::monitor, this );
+		thread = log4cxx::thread( &SocketAppenderSkeleton::monitor, this );
 	}
 }
 
@@ -176,7 +176,7 @@ void SocketAppenderSkeleton::monitor()
         {
             std::this_thread::sleep_for( std::chrono::milliseconds( reconnectionDelay ) );
 
-            std::unique_lock lock( interrupt_mutex );
+			log4cxx::unique_lock<log4cxx::mutex> lock( interrupt_mutex );
             interrupt.wait_for( lock, std::chrono::milliseconds( reconnectionDelay ),
                                 std::bind(&SocketAppenderSkeleton::is_closed, this) );
 

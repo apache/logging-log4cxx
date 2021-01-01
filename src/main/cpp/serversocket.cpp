@@ -77,7 +77,7 @@ ServerSocket::~ServerSocket()
 
 void ServerSocket::close()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 	if (socket != 0)
 	{
@@ -97,7 +97,7 @@ accepts it
 */
 SocketPtr ServerSocket::accept()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 	if (socket == 0)
 	{

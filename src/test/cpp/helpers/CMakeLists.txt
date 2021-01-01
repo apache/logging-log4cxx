@@ -23,8 +23,6 @@ foreach(fileName IN LISTS HELPER_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
     target_compile_definitions(${fileName} PRIVATE ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
     target_include_directories(${fileName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES> ${APR_INCLUDE_DIR})
-    target_compile_features(${fileName} PUBLIC
-        cxx_std_17)
 endforeach()
 target_sources(cacheddateformattestcase PRIVATE localechanger.cpp)
 target_sources(datetimedateformattestcase PRIVATE  localechanger.cpp)

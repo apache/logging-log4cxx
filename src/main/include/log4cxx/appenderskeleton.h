@@ -31,7 +31,6 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/level.h>
-#include <shared_mutex>
 
 namespace log4cxx
 {
@@ -75,7 +74,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		bool closed;
 
 		log4cxx::helpers::Pool pool;
-		mutable std::shared_mutex mutex;
+		mutable log4cxx::shared_mutex mutex;
 
 		/**
 		Subclasses of <code>AppenderSkeleton</code> should implement this

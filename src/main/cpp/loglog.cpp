@@ -44,7 +44,7 @@ LogLog& LogLog::getInstance()
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
-    std::unique_lock lock(getInstance().mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(getInstance().mutex);
 
 	getInstance().debugEnabled = debugEnabled1;
 }
@@ -56,7 +56,7 @@ void LogLog::debug(const LogString& msg)
 		return;
 	}
 
-	std::unique_lock lock(getInstance().mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(getInstance().mutex);
 
 	emit(msg);
 }
@@ -68,7 +68,7 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 		return;
 	}
 
-	std::unique_lock lock(getInstance().mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(getInstance().mutex);
 
     emit(msg);
 	emit(e);
@@ -77,14 +77,14 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 
 void LogLog::error(const LogString& msg)
 {
-    std::unique_lock lock(getInstance().mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(getInstance().mutex);
 
 	emit(msg);
 }
 
 void LogLog::error(const LogString& msg, const std::exception& e)
 {
-    std::unique_lock lock(getInstance().mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(getInstance().mutex);
 
     emit(msg);
 	emit(e);
@@ -92,21 +92,21 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 
 void LogLog::setQuietMode(bool quietMode1)
 {
-    std::unique_lock lock(getInstance().mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(getInstance().mutex);
 
 	getInstance().quietMode = quietMode1;
 }
 
 void LogLog::warn(const LogString& msg)
 {
-    std::unique_lock lock(getInstance().mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(getInstance().mutex);
 
 	emit(msg);
 }
 
 void LogLog::warn(const LogString& msg, const std::exception& e)
 {
-    std::unique_lock lock(getInstance().mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(getInstance().mutex);
 
     emit(msg);
 	emit(e);

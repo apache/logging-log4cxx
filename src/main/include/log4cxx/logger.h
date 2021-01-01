@@ -33,8 +33,6 @@
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/messagebuffer.h>
-#include <shared_mutex>
-#include <atomic>
 
 namespace log4cxx
 {
@@ -115,7 +113,7 @@ protected:
             of this logger will inherit its appenders, unless the children
             have their additivity flag set to <code>false</code> too. See
             the user manual for more details. */
-	std::atomic<bool> additive;
+	bool additive;
 
 protected:
     friend class DefaultLoggerFactory;
@@ -1728,7 +1726,7 @@ private:
     //  prevent copy and assignment
     Logger(const Logger&);
     Logger& operator=(const Logger&);
-    mutable std::shared_mutex mutex;
+	mutable shared_mutex mutex;
     friend class log4cxx::helpers::synchronized;
 };
 LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);

@@ -29,10 +29,6 @@
 #include <deque>
 #include <log4cxx/spi/loggingevent.h>
 
-#include <mutex>
-#include <condition_variable>
-#include <thread>
-
 #if defined(NON_BLOCKING)
 	#include <boost/lockfree/queue.hpp>
 #endif
@@ -209,14 +205,14 @@ class LOG4CXX_EXPORT AsyncAppender :
 		/**
 		 *  Mutex used to guard access to buffer and discardMap.
 		 */
-		std::mutex bufferMutex;
+		log4cxx::mutex bufferMutex;
 
 #if defined(NON_BLOCKING)
 		::log4cxx::helpers::Semaphore bufferNotFull;
 		::log4cxx::helpers::Semaphore bufferNotEmpty;
 #else
-		std::condition_variable bufferNotFull;
-		std::condition_variable bufferNotEmpty;
+		log4cxx::condition_variable bufferNotFull;
+		log4cxx::condition_variable bufferNotEmpty;
 #endif
 		class DiscardSummary
 		{
@@ -281,7 +277,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		/**
 		 *  Dispatcher.
 		 */
-		std::thread dispatcher;
+		log4cxx::thread dispatcher;
 
 		/**
 		 * Should location info be included in dispatched messages.

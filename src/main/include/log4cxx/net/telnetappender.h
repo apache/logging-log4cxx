@@ -147,7 +147,7 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		LogString encoding;
 		log4cxx::helpers::CharsetEncoderPtr encoder;
 		helpers::ServerSocket* serverSocket;
-		std::thread sh;
+		log4cxx::thread sh;
 		size_t activeConnections;
 		void acceptConnections();
 }; // class TelnetAppender

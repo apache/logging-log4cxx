@@ -23,7 +23,6 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/helpers/aprinitializer.h>
-#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -31,7 +30,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
 volatile bool Level::initialized = false;
-std::mutex Level::initMutex;
+log4cxx::mutex Level::initMutex;
 LevelPtr Level::allLevel;
 LevelPtr Level::fatalLevel;
 LevelPtr Level::errorLevel;
@@ -46,7 +45,7 @@ void Level::initializeLevels(){
         return;
     }
 
-    std::unique_lock lock(initMutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(initMutex);
     if( initialized ){
         return;
     }

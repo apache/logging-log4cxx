@@ -56,7 +56,7 @@ void Logger::addAppender(const AppenderPtr newAppender)
 {
     log4cxx::spi::LoggerRepository* rep = 0;
     {
-        std::shared_lock lock(mutex);
+		log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
 
         if (aai == 0)
         {
@@ -74,7 +74,7 @@ void Logger::addAppender(const AppenderPtr newAppender)
 }
 
 void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additive1 ) {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
     additive = additive1;
 
@@ -107,7 +107,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
             logger = logger->parent.get())
     {
         // Protected against simultaneous call to addAppender, removeAppender,...
-        std::unique_lock lock(logger->mutex);
+		log4cxx::unique_lock<log4cxx::shared_mutex> lock(logger->mutex);
 
         if (logger->aai != 0)
         {
@@ -172,7 +172,7 @@ bool Logger::getAdditivity() const
 
 AppenderList Logger::getAllAppenders() const
 {
-    std::shared_lock lock(mutex);
+	log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
 
     if (aai == 0)
     {
@@ -186,7 +186,7 @@ AppenderList Logger::getAllAppenders() const
 
 AppenderPtr Logger::getAppender(const LogString& name1) const
 {
-    std::shared_lock lock(mutex);
+	log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
 
     if (aai == 0 || name1.empty())
     {
@@ -272,7 +272,7 @@ LevelPtr Logger::getLevel() const
 
 bool Logger::isAttached(const AppenderPtr appender) const
 {
-    std::shared_lock lock(mutex);
+	log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
 
     if (appender == 0 || aai == 0)
     {
@@ -460,7 +460,7 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
     if (aai != 0)
     {
@@ -471,7 +471,7 @@ void Logger::removeAllAppenders()
 
 void Logger::removeAppender(const AppenderPtr appender)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
     if (appender == 0 || aai == 0)
     {
@@ -483,7 +483,7 @@ void Logger::removeAppender(const AppenderPtr appender)
 
 void Logger::removeAppender(const LogString& name1)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
     if (name1.empty() || aai == 0)
     {

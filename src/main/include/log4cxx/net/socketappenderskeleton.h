@@ -20,8 +20,6 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/socket.h>
-#include <thread>
-#include <atomic>
 #include <log4cxx/helpers/objectoutputstream.h>
 
 #if defined(_MSC_VER)
@@ -190,9 +188,9 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		     connection is droppped.
 		     */
 
-		std::thread thread;
-		std::condition_variable interrupt;
-		std::mutex interrupt_mutex;
+		log4cxx::thread thread;
+		log4cxx::condition_variable interrupt;
+		log4cxx::mutex interrupt_mutex;
 		void monitor();
 		bool is_closed();
 		SocketAppenderSkeleton(const SocketAppenderSkeleton&);

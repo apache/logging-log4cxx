@@ -58,7 +58,7 @@ APRInitializer::~APRInitializer()
 {
 	{
 #if APR_HAS_THREADS
-        std::unique_lock lock(mutex);
+		log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 		apr_threadkey_private_delete(tlsKey);
 #endif
 
@@ -103,7 +103,7 @@ void APRInitializer::registerCleanup(FileWatchdog* watchdog)
 {
 	APRInitializer& instance(getInstance());
 #if APR_HAS_THREADS
-    std::unique_lock lock(instance.mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(instance.mutex);
 #endif
 	instance.watchdogs.push_back(watchdog);
 }
@@ -112,7 +112,7 @@ void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
 {
 	APRInitializer& instance(getInstance());
 #if APR_HAS_THREADS
-    std::unique_lock lock(instance.mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(instance.mutex);
 #endif
 
 	for (std::list<FileWatchdog*>::iterator iter = instance.watchdogs.begin();

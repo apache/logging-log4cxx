@@ -39,7 +39,7 @@ Action::~Action()
  */
 void Action::run(log4cxx::helpers::Pool& pool1)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 	if (!interrupted)
 	{
@@ -62,7 +62,7 @@ void Action::run(log4cxx::helpers::Pool& pool1)
  */
 void Action::close()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 	interrupted = true;
 }
 

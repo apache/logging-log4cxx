@@ -38,7 +38,7 @@ AppenderSkeleton::AppenderSkeleton()
 		tailFilter(),
         pool()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	closed = false;
 }
 
@@ -51,7 +51,7 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
 	  tailFilter(),
       pool()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	closed = false;
 }
 
@@ -69,7 +69,7 @@ void AppenderSkeleton::finalize()
 
 void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 	if (headFilter == 0)
 	{
@@ -84,7 +84,7 @@ void AppenderSkeleton::addFilter(const spi::FilterPtr& newFilter)
 
 void AppenderSkeleton::clearFilters()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	headFilter = tailFilter = 0;
 }
 
@@ -95,7 +95,7 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	std::shared_lock lock(mutex);
+	log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
 
 	doAppendImpl(event, pool1);
 }
@@ -138,7 +138,7 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 	if (errorHandler1 == 0)
 	{
@@ -154,7 +154,7 @@ void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 
 void AppenderSkeleton::setThreshold(const LevelPtr& threshold1)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	this->threshold = threshold1;
 }
 

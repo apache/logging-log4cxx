@@ -53,5 +53,4 @@
 #define LOG4CXX_WIN32_THREAD_FMTSPEC "0x%.8x"
 #define LOG4CXX_APR_THREAD_FMTSPEC "0x%pt"
 
-
 #endif

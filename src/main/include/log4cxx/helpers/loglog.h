@@ -20,7 +20,6 @@
 
 #include <log4cxx/logstring.h>
 #include <exception>
-#include <mutex>
 
 namespace log4cxx
 {
@@ -48,7 +47,7 @@ class LOG4CXX_EXPORT LogLog
 		       In quietMode not even errors generate any output.
 		 */
 		bool quietMode;
-		std::mutex mutex;
+		log4cxx::mutex mutex;
 		LogLog();
 		LogLog(const LogLog&);
 		LogLog& operator=(const LogLog&);

@@ -38,7 +38,6 @@
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/spi/rootlogger.h>
 #include "assert.h"
-#include <mutex>
 
 
 using namespace log4cxx;
@@ -52,7 +51,7 @@ Hierarchy::Hierarchy() :
 	loggers(new LoggerMap()),
 	provisionNodes(new ProvisionNodeMap())
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
     root = LoggerPtr(new RootLogger(pool, Level::getDebug()));
 	root->setHierarchy(this);
     defaultFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
@@ -75,7 +74,7 @@ Hierarchy::~Hierarchy()
 
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 	if (std::find(listeners.begin(), listeners.end(), listener) != listeners.end())
 	{
@@ -89,7 +88,7 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 
 void Hierarchy::clear()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 	loggers->clear();
 }
 
@@ -97,7 +96,7 @@ void Hierarchy::emitNoAppenderWarning(const Logger* logger)
 {
 	bool emitWarning = false;
 	{
-        std::unique_lock lock(mutex);
+		log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 		emitWarning = !emittedNoAppenderWarning;
 		emittedNoAppenderWarning = true;
 	}
@@ -114,7 +113,7 @@ void Hierarchy::emitNoAppenderWarning(const Logger* logger)
 
 LoggerPtr Hierarchy::exists(const LogString& name)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 	LoggerPtr logger;
 	LoggerMap::iterator it = loggers->find(name);
@@ -132,7 +131,7 @@ void Hierarchy::setThreshold(const LevelPtr& l)
 {
 	if (l != 0)
 	{
-        std::unique_lock lock(mutex);
+		log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
         setThresholdInternal(l);
 	}
 }
@@ -167,7 +166,7 @@ void Hierarchy::fireAddAppenderEvent(const Logger* logger, const Appender* appen
 	setConfigured(true);
 	HierarchyEventListenerList clonedList;
 	{
-        std::unique_lock lock(mutex);
+		log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 		clonedList = listeners;
 	}
 
@@ -186,7 +185,7 @@ void Hierarchy::fireRemoveAppenderEvent(const Logger* logger, const Appender* ap
 {
 	HierarchyEventListenerList clonedList;
 	{
-        std::unique_lock lock(mutex);
+		log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 		clonedList = listeners;
 	}
 	HierarchyEventListenerList::iterator it, itEnd = clonedList.end();
@@ -212,7 +211,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name)
 LoggerPtr Hierarchy::getLogger(const LogString& name,
 	const spi::LoggerFactoryPtr& factory)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 	LoggerMap::iterator it = loggers->find(name);
 
@@ -242,7 +241,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 
 LoggerList Hierarchy::getCurrentLoggers() const
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 	LoggerList v;
 	LoggerMap::const_iterator it, itEnd = loggers->end();
@@ -265,7 +264,7 @@ bool Hierarchy::isDisabled(int level) const
 {
     bool currentlyConfigured;
     {
-        std::unique_lock lock(mutex);
+		log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
         currentlyConfigured = configured;
     }
     if (!currentlyConfigured)
@@ -281,7 +280,7 @@ bool Hierarchy::isDisabled(int level) const
 
 void Hierarchy::resetConfiguration()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 	getRootLogger()->setLevel(Level::getDebug());
 	root->setResourceBundle(0);
@@ -303,7 +302,7 @@ void Hierarchy::resetConfiguration()
 
 void Hierarchy::shutdown()
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
     shutdownInternal();
 }
@@ -401,7 +400,7 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 
 void Hierarchy::setConfigured(bool newValue)
 {
-    std::unique_lock lock(mutex);
+	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 	configured = newValue;
 }
 

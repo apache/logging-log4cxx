@@ -16,7 +16,6 @@
  */
 
 #include "vectorappender.h"
-#include <thread>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -25,7 +24,7 @@ IMPLEMENT_LOG4CXX_OBJECT(VectorAppender)
 
 void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& /*p*/)
 {
-    std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+	std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 
 	vector.push_back(event);
 }

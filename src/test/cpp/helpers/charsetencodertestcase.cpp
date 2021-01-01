@@ -21,9 +21,7 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <apr.h>
 #include <apr_atomic.h>
-#include <mutex>
 #include <condition_variable>
-#include <thread>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -190,13 +188,13 @@ public:
 
 			void await()
 			{
-                std::unique_lock sync(lock);
+				log4cxx::unique_lock<log4cxx::mutex> sync(lock);
                 condition.wait(sync);
 			}
 
 			void signalAll()
 			{
-                std::unique_lock sync(lock);
+				log4cxx::unique_lock<log4cxx::mutex> sync(lock);
                 condition.notify_all();
 			}
 
@@ -299,8 +297,8 @@ public:
 			ThreadPackage(const ThreadPackage&);
 			ThreadPackage& operator=(ThreadPackage&);
 			Pool p;
-            std::mutex lock;
-            std::condition_variable condition;
+			mutex lock;
+			condition_variable condition;
 			volatile apr_uint32_t passCount;
 			volatile apr_uint32_t failCount;
 			CharsetEncoderPtr enc;
@@ -310,13 +308,13 @@ public:
 	void thread1()
 	{
 		enum { THREAD_COUNT = 10, THREAD_REPS = 10000 };
-        std::thread threads[THREAD_COUNT];
+		log4cxx::thread threads[THREAD_COUNT];
 		CharsetEncoderPtr enc(CharsetEncoder::getEncoder(LOG4CXX_STR("ISO-8859-1")));
 		ThreadPackage* package = new ThreadPackage(enc, THREAD_REPS);
 		{
 			for (int i = 0; i < THREAD_COUNT; i++)
 			{
-                threads[i] = std::thread(&ThreadPackage::run, package);
+				threads[i] = log4cxx::thread(&ThreadPackage::run, package);
 			}
 		}
 		//

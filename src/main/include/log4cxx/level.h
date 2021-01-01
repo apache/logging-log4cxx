@@ -22,7 +22,6 @@
 #include <log4cxx/logstring.h>
 #include <limits.h>
 #include <log4cxx/helpers/object.h>
-#include <mutex>
 
 #if defined(_MSC_VER)
 	#pragma warning ( push )
@@ -40,7 +39,7 @@ namespace log4cxx
  * https://issues.apache.org/jira/browse/LOGCXX-394
  */
 class Level;
-typedef std::shared_ptr<Level> LevelPtr;
+typedef log4cxx::shared_ptr<Level> LevelPtr;
 
 /**
 Defines the minimum set of levels recognized by the system, that is
@@ -281,7 +280,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 
     private:
         static volatile bool initialized;
-        static std::mutex initMutex;
+		static mutex initMutex;
         static LevelPtr allLevel;
         static LevelPtr fatalLevel;
         static LevelPtr errorLevel;

@@ -28,7 +28,6 @@
 
 #include <log4cxx/private/log4cxx_private.h>
 #include <apr_portable.h>
-#include <mutex>
 
 #ifdef LOG4CXX_HAS_WCSTOMBS
 	#include <stdlib.h>
@@ -90,7 +89,7 @@ class APRCharsetEncoder : public CharsetEncoder
 
 			if (iter == in.end())
 			{
-                std::unique_lock lock(mutex);
+				log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 				stat = apr_xlate_conv_buffer(convset, NULL, NULL,
 						out.data() + position, &outbytes_left);
 			}
@@ -101,7 +100,7 @@ class APRCharsetEncoder : public CharsetEncoder
 					(in.size() - inOffset) * sizeof(LogString::value_type);
 				apr_size_t initial_inbytes_left = inbytes_left;
 				{
-                    std::unique_lock lock(mutex);
+					log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 					stat = apr_xlate_conv_buffer(convset,
 							(const char*) (in.data() + inOffset),
 							&inbytes_left,
@@ -119,7 +118,7 @@ class APRCharsetEncoder : public CharsetEncoder
 		APRCharsetEncoder(const APRCharsetEncoder&);
 		APRCharsetEncoder& operator=(const APRCharsetEncoder&);
 		Pool pool;
-        std::mutex mutex;
+		log4cxx::mutex mutex;
 		apr_xlate_t* convset;
 };
 #endif
@@ -480,7 +479,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 				Pool subpool;
 				const char* enc = apr_os_locale_encoding(subpool.getAPRPool());
 				{
-                    std::unique_lock lock(mutex);
+					log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
 					if (enc == 0)
 					{
@@ -516,7 +515,7 @@ class LocaleCharsetEncoder : public CharsetEncoder
 		LocaleCharsetEncoder(const LocaleCharsetEncoder&);
 		LocaleCharsetEncoder& operator=(const LocaleCharsetEncoder&);
 		Pool pool;
-        std::mutex mutex;
+		log4cxx::mutex mutex;
 		CharsetEncoderPtr encoder;
 		std::string encoding;
 };

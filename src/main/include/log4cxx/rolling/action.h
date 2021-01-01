@@ -21,7 +21,6 @@
 #include <log4cxx/portability.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
-#include <mutex>
 
 namespace log4cxx
 {
@@ -49,7 +48,7 @@ class Action : public virtual log4cxx::helpers::Object
 		bool interrupted;
 
 		log4cxx::helpers::Pool pool;
-		std::mutex mutex;
+		log4cxx::mutex mutex;
 
 
 	protected:
