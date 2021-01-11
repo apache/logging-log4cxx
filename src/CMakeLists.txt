@@ -14,18 +14,4 @@ if(BUILD_TESTING)
    add_subdirectory(examples/cpp)
 endif()
 
-option(BUILD_SITE "Build log4cxx website" OFF)
-if(BUILD_SITE)
-    find_package( Doxygen REQUIRED dot )
-    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/site/doxy/Doxyfile.in
-                    ${CMAKE_CURRENT_BINARY_DIR}/site/Doxyfile )
-
-    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/site/markdown/download.md.in
-                    ${CMAKE_CURRENT_BINARY_DIR}/site/markdown/download.md )
-
-    add_custom_target( doc_doxygen ALL
-        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/site/Doxyfile
-        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-        COMMENT "Generate site with Doxygen"
-        VERBATIM )
-endif()
+add_subdirectory(site)
