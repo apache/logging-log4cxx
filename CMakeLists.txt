@@ -7,6 +7,8 @@ include(CTest)
 # (at least in the past it was project vesion: 0.a.b.c and the library so vesion a.b.c.0
 set(LIBLOG4CXX_LIB_VERSION ${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}.${log4cxx_VERSION_TWEAK})
 set(LIBLOG4CXX_LIB_SOVERSION ${log4cxx_VERSION_MINOR})
+# Set the 'release' version.  This is the human-readable version
+set(LOG4CXX_RELEASE_VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
 
 # FindAPR and FindAPR-util are not provided by APR and APR-Util so source them locally
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/src/cmake")
@@ -104,6 +106,25 @@ foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE
 endforeach()
 
 #
+# Package and sign if Apache maintainer
+#
+option(APACHE_MAINTAINER "Apache maintainer" OFF)
+if(APACHE_MAINTAINER)
+    set(CPACK_SOURCE_PACKAGE_FILE_NAME "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}")
+    set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+    set(CPACK_SOURCE_IGNORE_FILES ".git/;build/;.vs/;out/")
+    include(CPack)
+
+    add_custom_target( dist
+	COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -- package_source
+	COMMAND ${CMAKE_COMMAND} -E sha512sum "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512"
+	COMMAND ${CMAKE_COMMAND} -E sha512sum "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512"
+	COMMAND gpg -ab --yes "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc"
+	COMMAND gpg -ab --yes "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc"
+	)
+endif()
+
+#
 # Output configuration information
 # Similar to APR CMake configuration
 #
@@ -114,6 +135,7 @@ message(STATUS "")
 
 message(STATUS "  Build shared library ............ : ${BUILD_SHARED_LIBS}")
 message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
+message(STATUS "  Build site ...................... : ${BUILD_SITE}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
 message(STATUS "  log4cxx char API ................ : ${LOG4CXX_CHAR}")

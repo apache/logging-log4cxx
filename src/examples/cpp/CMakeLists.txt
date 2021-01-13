@@ -1,4 +1,4 @@
-set(ALL_LOG4CXX_EXAMPLES console delayedloop stream trivial)
+set(ALL_LOG4CXX_EXAMPLES console delayedloop stream trivial custom-appender)
 
 foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
     add_executable(${exampleName} ${exampleName}.cpp)
@@ -6,3 +6,7 @@ foreach(exampleName IN LISTS ALL_LOG4CXX_EXAMPLES)
     target_include_directories(${exampleName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
     target_link_libraries(${exampleName} PRIVATE log4cxx ${APR_UTIL_LIBRARIES} ${XMLLIB_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS})
 endforeach()
+
+configure_file( custom-appender.xml
+    ${CMAKE_CURRENT_BINARY_DIR}/custom-appender.xml
+    COPYONLY )
