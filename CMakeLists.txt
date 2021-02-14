@@ -69,6 +69,20 @@ if(UNIX)
 
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx.pc" 
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+
+  if(LOG4CXX_QT_SUPPORT)
+      set(prefix "${CMAKE_INSTALL_PREFIX}")
+      set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
+      set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
+      set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+      set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
+      configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx-qt.pc.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
+      )
+
+      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
+	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+  endif(LOG4CXX_QT_SUPPORT)
 endif(UNIX)
 
 # Support for find_package(log4cxx) in consuming CMake projects using
@@ -148,6 +162,7 @@ message(STATUS "  logchar type .................... : ${LOG4CXX_CHAR}")
 message(STATUS "  Using libESMTP .................. : ${HAS_LIBESMTP}")
 message(STATUS "  ODBC library .................... : ${HAS_ODBC}")
 message(STATUS "  syslog .......................... : ${HAS_SYSLOG}")
+message(STATUS "  Qt support ...................... : ${LOG4CXX_QT_SUPPORT}")
 
 if(BUILD_TESTING)
 message(STATUS "Applications required for tests:")
