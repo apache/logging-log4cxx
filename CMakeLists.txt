@@ -49,6 +49,19 @@ install(TARGETS log4cxx EXPORT log4cxxTargets
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+if(LOG4CXX_QT_SUPPORT)
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/main/include/log4cxx-qt
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+      FILES_MATCHING PATTERN "*.h"
+    )
+    install(TARGETS log4cxx-qt EXPORT log4cxx-qtTargets
+      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endif(LOG4CXX_QT_SUPPORT)
+
 IF(WIN32 AND BUILD_SHARED_LIBS AND LOG4CXX_INSTALL_PDB)
   INSTALL(FILES $<TARGET_PDB_FILE:log4cxx>
           DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -101,6 +114,22 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersi
 install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
   DESTINATION   share/cmake/log4cxx
 )
+
+if(LOG4CXX_QT_SUPPORT)
+    install(EXPORT log4cxx-qtTargets
+      FILE        log4cxx-qtConfig.cmake
+      DESTINATION share/cmake/log4cxx
+    )
+    # Support for find_package(log4cxx 0.11) in consuming CMake projects
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
+      VERSION       ${PROJECT_VERSION}
+      COMPATIBILITY SameMinorVersion
+    )
+    install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
+      DESTINATION   share/cmake/log4cxx
+    )
+endif(LOG4CXX_QT_SUPPORT)
 
 #
 # Get the varaibles from the subdirectories

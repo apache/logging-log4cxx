@@ -18,7 +18,8 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/spi/location/locationinfo.h>
 
-using namespace log4cxx::qt;
+namespace log4cxx {
+namespace qt {
 
 void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message )
 {
@@ -50,3 +51,6 @@ void messageHandler(QtMsgType type, const QMessageLogContext& context, const QSt
 			std::abort();
 	}
 }
+
+} /* namespace qt */
+} /* namespace log4cxx */

@@ -1,4 +1,4 @@
-Usage {#usage-overview}
+Qt Support {#qt-support}
 ===
 <!--
  Note: License header cannot be first, as doxygen does not generate
@@ -21,10 +21,25 @@ Usage {#usage-overview}
  limitations under the License.
 -->
 
-See the following pages for usage information:
+When using Qt, messages from the Qt framework itself or other libraries
+may use the `QDebug` classes.  By default, this will print to stderr,
+thus bypassing the logger entirely.  In order to have these messages
+routed to log4cxx, a message handler for Qt must be installed.
 
-* @subpage usage
-* @subpage extending-log4cxx
-* @subpage faq
-* @subpage configuration-samples
-* @subpage qt-support
+Log4cxx provides a separate library, log4cxx-qt, which contains useful
+utilities for working with Qt.
+
+To install a message handler that will route the Qt logging messages
+through log4cxx, include the messagehandler.h and call
+`qInstallMessageHandler` as follows:
+
+```cpp
+#include <log4cxx-qt/messagehandler.h>
+
+...
+
+qInstallMessageHandler( log4cxx::qt::messageHandler );
+```
+
+Note that by default, this message handler also calls `abort` upon a
+fatal message.
