@@ -126,6 +126,14 @@ else()
     set( SMART_PTR_IMPL "NONE" )
 endif()
 
+if( ${STD_ATOMIC_FOUND} )
+    set( ATOMIC_IMPL "std::atomic" )
+elseif( ${Boost_ATOMIC_FOUND} )
+    set( ATOMIC_IMPL "boost::atomic" )
+else()
+    set( ATOMIC_IMPL "NONE" )
+endif()
+
 # Configure both our private header and our public header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h

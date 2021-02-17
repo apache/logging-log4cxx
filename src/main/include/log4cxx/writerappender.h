@@ -25,6 +25,7 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/outputstreamwriter.h>
+#include <log4cxx/boost-std-configuration.h>
 
 namespace log4cxx
 {
@@ -53,7 +54,7 @@ private:
     <code>true</code> by default.
 
     */
-	std::atomic<bool> immediateFlush;
+	log4cxx::atomic<bool> immediateFlush;
 
     /**
     The encoding to use when opening an input stream.

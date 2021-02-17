@@ -30,6 +30,12 @@ find_package( Threads REQUIRED )
 # Find expat for XML parsing
 find_package(EXPAT REQUIRED)
 
+# Request C++17, if available
+# This *should* fallback to an older standard if it is not available
+if( NOT "${CMAKE_CXX_STANDARD}")
+    set(CMAKE_CXX_STANDARD 17)
+endif()
+
 # Building
 add_subdirectory(src)
 
@@ -143,6 +149,7 @@ get_directory_property( THREAD_IMPL DIRECTORY src/main/include DEFINITION THREAD
 get_directory_property( SMART_PTR_IMPL DIRECTORY src/main/include DEFINITION SMART_PTR_IMPL )
 get_directory_property( MUTEX_IMPL DIRECTORY src/main/include DEFINITION MUTEX_IMPL )
 get_directory_property( SHARED_MUTEX_IMPL DIRECTORY src/main/include DEFINITION SHARED_MUTEX_IMPL )
+get_directory_property( ATOMIC_IMPL DIRECTORY src/main/include DEFINITION ATOMIC_IMPL )
 
 foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG)
   if(${varName} EQUAL 0)
@@ -203,6 +210,7 @@ message(STATUS "  thread implementation ........... : ${THREAD_IMPL}")
 message(STATUS "  smart pointer implementation .... : ${SMART_PTR_IMPL}")
 message(STATUS "  mutex implementation ............ : ${MUTEX_IMPL}")
 message(STATUS "  shared_mutex implementation ..... : ${SHARED_MUTEX_IMPL}")
+message(STATUS "  atomic implementation ........... : ${ATOMIC_IMPL}")
 
 if(BUILD_TESTING)
 message(STATUS "Applications required for tests:")
