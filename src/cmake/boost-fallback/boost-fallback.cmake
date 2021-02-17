@@ -52,6 +52,8 @@ try_compile(STD_SHARED_MUTEX_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-t
     "${CMAKE_CURRENT_LIST_DIR}/test-stdsharedmutex.cpp")
 try_compile(STD_SHARED_PTR_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-stdsharedptr.cpp")
+try_compile(STD_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
+    "${CMAKE_CURRENT_LIST_DIR}/test-stdatomic.cpp")
 
 find_package(Boost COMPONENTS thread)
 try_compile(Boost_SHARED_PTR_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
@@ -62,6 +64,8 @@ try_compile(Boost_SHARED_MUTEX_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile
     "${CMAKE_CURRENT_LIST_DIR}/test-boostsharedmutex.cpp"
     LINK_LIBRARIES Threads::Threads
 )
+try_compile(Boost_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
+    "${CMAKE_CURRENT_LIST_DIR}/test-boostatomic.cpp")
 
 # Link the target with the appropriate boost libraries(if required)
 function(boostfallback_link target)

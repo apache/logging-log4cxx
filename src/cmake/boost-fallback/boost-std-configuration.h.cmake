@@ -9,6 +9,8 @@
 #cmakedefine01 Boost_SHARED_MUTEX_FOUND
 #cmakedefine01 STD_SHARED_PTR_FOUND
 #cmakedefine01 Boost_SHARED_PTR_FOUND
+#cmakedefine01 STD_ATOMIC_FOUND
+#cmakedefine01 Boost_ATOMIC_FOUND
 
 #if STD_THREAD_FOUND
 #include <thread>
@@ -72,6 +74,20 @@ namespace ${NAMESPACE_ALIAS} {
     using shared_ptr = boost::shared_ptr<T>;
     template <typename T>
     using weak_ptr = boost::weak_ptr<T>;
+}
+#endif
+
+#if STD_ATOMIC_FOUND
+#include <atomic>
+namespace ${NAMESPACE_ALIAS} {
+    template <typename T>
+    using atomic = std::atomic<T>;
+}
+#elif Boost_ATOMIC_FOUND
+#include <boost/atomic.hpp>
+namespace ${NAMESPACE_ALIAS} {
+    template <typename T>
+    using atomic = boost::atomic<T>;
 }
 #endif
 

@@ -12,3 +12,12 @@ configure_file(boost-fallback/boost-std-configuration.h.cmake
     boost-fallback/boost-std-configuration.h)
 target_include_directories( executable-name PRIVATE ${CMAKE_CURRENT_BINARY_DIR}/boost-fallback )
 ```
+
+Fallback looks for the following C++11 features:
+* std::thread / boost::thread
+* std::mutex / boost::mutex (and the locks for these structures) 
+* std::shared\_ptr / boost::shared\_ptr
+* std::atomic / boost::atomic
+
+The following C++17 features are looked for:
+* std::shared\_mutex / boost::shared\_mutex
