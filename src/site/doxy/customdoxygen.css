@@ -1,0 +1,22 @@
+.navpath li.center
+{
+        list-style-type:none;
+        float:none;
+        padding-left:10px;
+        padding-right:10px;
+        background-image:none;
+        background-repeat:no-repeat;
+        background-position:right;
+        color:#364D7C;
+        font-size: 8pt;
+	line-height: 100%;
+        text-align: center;
+}
+
+code
+{
+	border-radius: 3px;
+	padding: 3px 4px;
+	background-color: #f7f7f9;
+	border: 1px solid #e1e1e8;
+}

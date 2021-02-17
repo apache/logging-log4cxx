@@ -45,11 +45,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - uses: lukka/set-shell-env@v1.1
       with:
-        CXX: ${{ matrix.cxx }}
-        CC: ${{ matrix.cc }}
+        path: main
 
     - name: 'Configure Dependencies - Ubuntu'
       if: matrix.name == 'ubuntu18-gcc' || matrix.name == 'ubuntu18-clang'
@@ -64,29 +61,49 @@ jobs:
       if: matrix.name == 'windows-2019' || matrix.name == 'windows-2016'
       uses: actions/cache@v2
       with:
-        path: ${{ runner.workspace }}/vcpkg
+        path: vcpkg
         key: ${{ runner.os }}-${{ matrix.name }}-cache
 
-    - name: 'Configure Dependencies - Windows'
-      if: matrix.name == 'windows-2019' || matrix.name == 'windows-2016'
-      uses: lukka/run-vcpkg@v5
-      id: runvcpkg
+    - name: 'Checkout VCPKG - Windows'
+      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') && steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v2
       with:
-        vcpkgArguments: apr apr-util
-        vcpkgDirectory: ${{ runner.workspace }}/vcpkg/
-        vcpkgGitCommitId: ffa7fd27cfa29f206d1fd2ccfc722cad4aaeef3d
-        vcpkgTriplet: x64-windows
+        repository: microsoft/vcpkg
+        path: vcpkg
+        ref: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5
 
-    - name: 'run cmake'
-      uses: lukka/run-cmake@v3
-      with:
-        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
-        buildDirectory: ${{ runner.workspace }}/build
-        useVcpkgToolchainFile: true
-        cmakeAppendedArgs: '-DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin'
+    - name: 'Configure Dependencies - Windows'
+      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') && steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
+      id: runvcpkg
+      shell: pwsh
+      run: |
+        cd vcpkg
+        ./bootstrap-vcpkg.bat
+        ./vcpkg install apr apr-util --triplet=x64-windows
+
+    - name: 'run cmake - win'
+      if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') 
+      shell: pwsh
+      run: |
+        $THISDIR=Get-Location
+        cd main
+        mkdir build
+        cd build
+        cmake -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
+        cmake --build .
+
+    - name: 'run cmake - *nix'
+      if: matrix.name != 'windows-2019'
+      run: |
+        cd main
+        mkdir build
+        cd build
+        cmake -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
+        cmake --build .
 
     - name: run unit tests
       shell: pwsh
       run: |
-        cd ${{ runner.workspace }}/build
+        cd main
+        cd build
         ctest -C Debug --output-on-failure -V

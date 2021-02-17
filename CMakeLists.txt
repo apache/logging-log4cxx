@@ -7,6 +7,8 @@ include(CTest)
 # (at least in the past it was project vesion: 0.a.b.c and the library so vesion a.b.c.0
 set(LIBLOG4CXX_LIB_VERSION ${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}.${log4cxx_VERSION_TWEAK})
 set(LIBLOG4CXX_LIB_SOVERSION ${log4cxx_VERSION_MINOR})
+# Set the 'release' version.  This is the human-readable version
+set(LOG4CXX_RELEASE_VERSION ${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH})
 
 # FindAPR and FindAPR-util are not provided by APR and APR-Util so source them locally
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/src/cmake")
@@ -49,6 +51,19 @@ install(TARGETS log4cxx EXPORT log4cxxTargets
   INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
 
+if(LOG4CXX_QT_SUPPORT)
+    install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src/main/include/log4cxx-qt
+      DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+      FILES_MATCHING PATTERN "*.h"
+    )
+    install(TARGETS log4cxx-qt EXPORT log4cxx-qtTargets
+      RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+      ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+      INCLUDES DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endif(LOG4CXX_QT_SUPPORT)
+
 IF(WIN32 AND BUILD_SHARED_LIBS AND LOG4CXX_INSTALL_PDB)
   INSTALL(FILES $<TARGET_PDB_FILE:log4cxx>
           DESTINATION ${CMAKE_INSTALL_BINDIR}
@@ -69,6 +84,20 @@ if(UNIX)
 
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx.pc" 
     DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+
+  if(LOG4CXX_QT_SUPPORT)
+      set(prefix "${CMAKE_INSTALL_PREFIX}")
+      set(exec_prefix "${CMAKE_INSTALL_PREFIX}")
+      set(libdir "\${prefix}/${CMAKE_INSTALL_LIBDIR}")
+      set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+      set(VERSION "${log4cxx_VERSION_MAJOR}.${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}")
+      configure_file("${CMAKE_CURRENT_SOURCE_DIR}/liblog4cxx-qt.pc.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
+      )
+
+      install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
+	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+  endif(LOG4CXX_QT_SUPPORT)
 endif(UNIX)
 
 # Support for find_package(log4cxx) in consuming CMake projects using
@@ -87,6 +116,22 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersi
 install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
   DESTINATION   share/cmake/log4cxx
 )
+
+if(LOG4CXX_QT_SUPPORT)
+    install(EXPORT log4cxx-qtTargets
+      FILE        log4cxx-qtConfig.cmake
+      DESTINATION share/cmake/log4cxx
+    )
+    # Support for find_package(log4cxx 0.11) in consuming CMake projects
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
+      VERSION       ${PROJECT_VERSION}
+      COMPATIBILITY SameMinorVersion
+    )
+    install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
+      DESTINATION   share/cmake/log4cxx
+    )
+endif(LOG4CXX_QT_SUPPORT)
 
 #
 # Get the varaibles from the subdirectories
@@ -109,6 +154,25 @@ foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE
 endforeach()
 
 #
+# Package and sign if Apache maintainer
+#
+option(APACHE_MAINTAINER "Apache maintainer" OFF)
+if(APACHE_MAINTAINER)
+    set(CPACK_SOURCE_PACKAGE_FILE_NAME "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}")
+    set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
+    set(CPACK_SOURCE_IGNORE_FILES ".git/;build/;.vs/;out/")
+    include(CPack)
+
+    add_custom_target( dist
+	COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} -- package_source
+	COMMAND ${CMAKE_COMMAND} -E sha512sum "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512"
+	COMMAND ${CMAKE_COMMAND} -E sha512sum "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512"
+	COMMAND gpg -ab --yes "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc"
+	COMMAND gpg -ab --yes "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc"
+	)
+endif()
+
+#
 # Output configuration information
 # Similar to APR CMake configuration
 #
@@ -119,6 +183,7 @@ message(STATUS "")
 
 message(STATUS "  Build shared library ............ : ${BUILD_SHARED_LIBS}")
 message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
+message(STATUS "  Build site ...................... : ${BUILD_SITE}")
 message(STATUS "  Install prefix .................. : ${CMAKE_INSTALL_PREFIX}")
 message(STATUS "  C++ compiler .................... : ${CMAKE_CXX_COMPILER}")
 message(STATUS "  log4cxx char API ................ : ${LOG4CXX_CHAR}")
@@ -132,6 +197,7 @@ message(STATUS "  charset ......................... : ${LOG4CXX_CHARSET}")
 message(STATUS "  Using libESMTP .................. : ${HAS_LIBESMTP}")
 message(STATUS "  ODBC library .................... : ${HAS_ODBC}")
 message(STATUS "  syslog .......................... : ${HAS_SYSLOG}")
+message(STATUS "  Qt support ...................... : ${LOG4CXX_QT_SUPPORT}")
 message(STATUS "  thread implementation ........... : ${THREAD_IMPL}")
 message(STATUS "  smart pointer implementation .... : ${SMART_PTR_IMPL}")
 message(STATUS "  mutex implementation ............ : ${MUTEX_IMPL}")

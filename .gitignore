@@ -7,6 +7,7 @@
 
 ar-lib
 config**
+!configuration-samples.md
 depcomp
 install-sh
 liblog4cxx.pc

@@ -3,7 +3,7 @@
 option(LOG4CXX_BLOCKING_ASYNC_APPENDER "Async appender behaviour" ON)
 
 # Build the log4cxx library
-add_library(log4cxx action.cpp)
+add_library(log4cxx)
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(log4cxx PRIVATE LOG4CXX)
 else()
@@ -12,6 +12,7 @@ endif()
 add_dependencies(log4cxx configure_log4cxx)
 target_sources(log4cxx
   PRIVATE
+  action.cpp
   andfilter.cpp
   appenderattachableimpl.cpp
   appenderskeleton.cpp
