@@ -94,6 +94,38 @@ endforeach()
 include(${CMAKE_SOURCE_DIR}/src/cmake/boost-fallback/boost-fallback.cmake)
 set(NAMESPACE_ALIAS log4cxx)
 
+if( ${STD_THREAD_FOUND} )
+    set( THREAD_IMPL "std::thread" )
+elseif( ${Boost_THREAD_FOUND} )
+    set( THREAD_IMPL "boost::thread" )
+else()
+    set( THREAD_IMPL "NONE" )
+endif()
+
+if( ${STD_MUTEX_FOUND} )
+    set( MUTEX_IMPL "std::mutex" )
+elseif( ${Boost_MUTEX_FOUND} )
+    set( MUTEX_IMPL "boost::mutex" )
+else()
+    set( MUTEX_IMPL "NONE" )
+endif()
+
+if( ${STD_SHARED_PTR_FOUND} )
+    set( SMART_PTR_IMPL "std::shared_ptr" )
+elseif( ${Boost_SHARED_PTR_FOUND} )
+    set( SMART_PTR_IMPL "boost::shared_ptr" )
+else()
+    set( SMART_PTR_IMPL "NONE" )
+endif()
+
+if( ${STD_SHARED_MUTEX_FOUND} )
+    set( SHARED_MUTEX_IMPL "std::shared_mutex" )
+elseif( ${Boost_SHARED_MUTEX_FOUND} )
+    set( SHARED_MUTEX_IMPL "boost::shared_mutex" )
+else()
+    set( SMART_PTR_IMPL "NONE" )
+endif()
+
 # Configure both our private header and our public header
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/private/log4cxx_private.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/private/log4cxx_private.h
