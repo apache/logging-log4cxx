@@ -53,4 +53,8 @@
 #define LOG4CXX_WIN32_THREAD_FMTSPEC "0x%.8x"
 #define LOG4CXX_APR_THREAD_FMTSPEC "0x%pt"
 
+#if defined(_MSC_VER)
+#define LOG4CXX_MEMSET_IOS_BASE 1
+#endif
+
 #endif
