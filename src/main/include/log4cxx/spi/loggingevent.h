@@ -51,7 +51,7 @@ components.
 <p>This class is of concern to those wishing to extend log4cxx.
 */
 class LOG4CXX_EXPORT LoggingEvent :
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	public:
 		DECLARE_LOG4CXX_OBJECT(LoggingEvent)

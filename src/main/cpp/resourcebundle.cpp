@@ -70,8 +70,8 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 		try
 		{
 			const Class& classObj = Loader::loadClass(bundleName);
-            ObjectPtr obj = ObjectPtr(classObj.newInstance());
-            current = log4cxx::cast<PropertyResourceBundle>(obj);
+			ObjectPtr obj = ObjectPtr(classObj.newInstance());
+			current = log4cxx::cast<PropertyResourceBundle>(obj);
 		}
 		catch (ClassNotFoundException&)
 		{
@@ -92,7 +92,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 
 			try
 			{
-                current = PropertyResourceBundlePtr(new PropertyResourceBundle(bundleStream));
+				current = PropertyResourceBundlePtr(new PropertyResourceBundle(bundleStream));
 			}
 			catch (Exception&)
 			{

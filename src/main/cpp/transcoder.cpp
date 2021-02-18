@@ -511,6 +511,7 @@ void Transcoder::encode(const LogString& src, std::wstring& dst)
 	for (LogString::const_iterator i = src.begin(); i != src.end();)
 	{
 		unsigned int cp = Transcoder::decode(src, i);
+
 		if (cp != 0xFFFF)
 		{
 			encode(cp, dst);
@@ -535,7 +536,7 @@ wchar_t* Transcoder::wencode(const LogString& src, Pool& p)
 #endif
 	wchar_t* dst = (wchar_t*) p.palloc((tmp.length() + 1) * sizeof(wchar_t));
 	dst[tmp.length()] = 0;
-    std::memcpy(dst, tmp.data(), tmp.length() * sizeof(wchar_t));
+	std::memcpy(dst, tmp.data(), tmp.length() * sizeof(wchar_t));
 	return dst;
 }
 

@@ -210,7 +210,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		 */
 		static LogString stripDuplicateBackslashes(const LogString& name);
 
-protected:
+	protected:
 		void activateOptionsInternal(log4cxx::helpers::Pool& p);
 
 		/**
@@ -234,8 +234,8 @@ protected:
 		@param p memory pool for operation.
 		*/
 		void setFileInternal(const LogString& file, bool append,
-					bool bufferedIO, size_t bufferSize,
-					log4cxx::helpers::Pool& p);
+			bool bufferedIO, size_t bufferSize,
+			log4cxx::helpers::Pool& p);
 
 		void setFileInternal(const LogString& file);
 

@@ -26,5 +26,5 @@ LoggerPtr DefaultLoggerFactory::makeNewLoggerInstance(
 	log4cxx::helpers::Pool& pool,
 	const LogString& name) const
 {
-    return LoggerPtr(new Logger(pool, name));
+	return LoggerPtr(new Logger(pool, name));
 }

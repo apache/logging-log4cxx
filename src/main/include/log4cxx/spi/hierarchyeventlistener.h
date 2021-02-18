@@ -44,12 +44,12 @@ class LOG4CXX_EXPORT HierarchyEventListener :
 		virtual ~HierarchyEventListener() {}
 
 		virtual void addAppenderEvent(
-            const Logger* logger,
-            const Appender* appender) = 0;
+			const Logger* logger,
+			const Appender* appender) = 0;
 
 		virtual void removeAppenderEvent(
-            const Logger* logger,
-            const Appender* appender) = 0;
+			const Logger* logger,
+			const Appender* appender) = 0;
 };
 LOG4CXX_PTR_DEF(HierarchyEventListener);
 LOG4CXX_LIST_DEF(HierarchyEventListenerList, HierarchyEventListenerPtr);

@@ -441,8 +441,8 @@ public:
 		LogString mdcMsgPattern5 = LOG4CXX_STR("%m : %X{key1},%X{key2},%X{key3}%n");
 
 		// set up appender
-        PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m%n")));
-        AppenderPtr appender = FileAppenderPtr(new FileAppender(layout, OUTPUT_FILE, false));
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m%n")));
+		AppenderPtr appender = FileAppenderPtr(new FileAppender(layout, OUTPUT_FILE, false));
 
 		// set appender on root and set level to debug
 		root->addAppender(appender);

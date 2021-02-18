@@ -36,64 +36,64 @@ IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 FileAppender::FileAppender()
 {
 	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-    fileAppend = true;
-    bufferedIO = false;
-    bufferSize = 8 * 1024;
+	fileAppend = true;
+	bufferedIO = false;
+	bufferSize = 8 * 1024;
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
-                           bool append1, bool bufferedIO1, int bufferSize1)
-    : WriterAppender(layout1)
+	bool append1, bool bufferedIO1, int bufferSize1)
+	: WriterAppender(layout1)
 {
-    {
+	{
 		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-        fileAppend = append1;
-        fileName = fileName1;
-        bufferedIO = bufferedIO1;
-        bufferSize = bufferSize1;
-    }
-    Pool p;
-    activateOptions(p);
+		fileAppend = append1;
+		fileName = fileName1;
+		bufferedIO = bufferedIO1;
+		bufferSize = bufferSize1;
+	}
+	Pool p;
+	activateOptions(p);
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
-                           bool append1)
-    : WriterAppender(layout1)
+	bool append1)
+	: WriterAppender(layout1)
 {
-    {
+	{
 		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-        fileAppend = append1;
-        fileName = fileName1;
-        bufferedIO = false;
-        bufferSize = 8 * 1024;
-    }
-    Pool p;
-    activateOptions(p);
+		fileAppend = append1;
+		fileName = fileName1;
+		bufferedIO = false;
+		bufferSize = 8 * 1024;
+	}
+	Pool p;
+	activateOptions(p);
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
-    : WriterAppender(layout1)
+	: WriterAppender(layout1)
 {
-    {
+	{
 		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-        fileAppend = true;
-        fileName = fileName1;
-        bufferedIO = false;
-        bufferSize = 8 * 1024;
-    }
-    Pool p;
-    activateOptions(p);
+		fileAppend = true;
+		fileName = fileName1;
+		bufferedIO = false;
+		bufferSize = 8 * 1024;
+	}
+	Pool p;
+	activateOptions(p);
 }
 
 FileAppender::~FileAppender()
 {
-    finalize();
+	finalize();
 }
 
 void FileAppender::setAppend(bool fileAppend1)
 {
 	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-    this->fileAppend = fileAppend1;
+	this->fileAppend = fileAppend1;
 }
 
 void FileAppender::setFile(const LogString& file)
@@ -110,47 +110,47 @@ void FileAppender::setFileInternal(const LogString& file)
 void FileAppender::setBufferedIO(bool bufferedIO1)
 {
 	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-    this->bufferedIO = bufferedIO1;
+	this->bufferedIO = bufferedIO1;
 
-    if (bufferedIO1)
-    {
-        setImmediateFlush(false);
-    }
+	if (bufferedIO1)
+	{
+		setImmediateFlush(false);
+	}
 }
 
 void FileAppender::setOption(const LogString& option,
-                             const LogString& value)
+	const LogString& value)
 {
-    if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
-            || StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
-    {
+	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILE"), LOG4CXX_STR("file"))
+		|| StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("FILENAME"), LOG4CXX_STR("filename")))
+	{
 		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-        fileName = stripDuplicateBackslashes(value);
-    }
-    else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
-    {
+		fileName = stripDuplicateBackslashes(value);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("APPEND"), LOG4CXX_STR("append")))
+	{
 		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-        fileAppend = OptionConverter::toBoolean(value, true);
-    }
-    else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDIO"), LOG4CXX_STR("bufferedio")))
-    {
+		fileAppend = OptionConverter::toBoolean(value, true);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFEREDIO"), LOG4CXX_STR("bufferedio")))
+	{
 		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-        bufferedIO = OptionConverter::toBoolean(value, true);
-    }
-    else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("IMMEDIATEFLUSH"), LOG4CXX_STR("immediateflush")))
-    {
+		bufferedIO = OptionConverter::toBoolean(value, true);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("IMMEDIATEFLUSH"), LOG4CXX_STR("immediateflush")))
+	{
 		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-        bufferedIO = !OptionConverter::toBoolean(value, false);
-    }
-    else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
-    {
+		bufferedIO = !OptionConverter::toBoolean(value, false);
+	}
+	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("BUFFERSIZE"), LOG4CXX_STR("buffersize")))
+	{
 		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-        bufferSize = OptionConverter::toFileSize(value, 8 * 1024);
-    }
-    else
-    {
-        WriterAppender::setOption(option, value);
-    }
+		bufferSize = OptionConverter::toFileSize(value, 8 * 1024);
+	}
+	else
+	{
+		WriterAppender::setOption(option, value);
+	}
 }
 
 void FileAppender::activateOptions(Pool& p)
@@ -159,38 +159,39 @@ void FileAppender::activateOptions(Pool& p)
 	activateOptionsInternal(p);
 }
 
-void FileAppender::activateOptionsInternal(Pool& p){
-    int errors = 0;
+void FileAppender::activateOptionsInternal(Pool& p)
+{
+	int errors = 0;
 
-    if (!fileName.empty())
-    {
-        try
-        {
+	if (!fileName.empty())
+	{
+		try
+		{
 			setFileInternal(fileName, fileAppend, bufferedIO, bufferSize, p);
-        }
-        catch (IOException& e)
-        {
-            errors++;
-            LogString msg(LOG4CXX_STR("setFile("));
-            msg.append(fileName);
-            msg.append(1, (logchar) 0x2C /* ',' */);
-            StringHelper::toString(fileAppend, msg);
-            msg.append(LOG4CXX_STR(") call failed."));
-            errorHandler->error(msg, e, ErrorCode::FILE_OPEN_FAILURE);
-        }
-    }
-    else
-    {
-        errors++;
-        LogLog::error(LogString(LOG4CXX_STR("File option not set for appender ["))
-                      +  name + LOG4CXX_STR("]."));
-        LogLog::warn(LOG4CXX_STR("Are you using FileAppender instead of ConsoleAppender?"));
-    }
+		}
+		catch (IOException& e)
+		{
+			errors++;
+			LogString msg(LOG4CXX_STR("setFile("));
+			msg.append(fileName);
+			msg.append(1, (logchar) 0x2C /* ',' */);
+			StringHelper::toString(fileAppend, msg);
+			msg.append(LOG4CXX_STR(") call failed."));
+			errorHandler->error(msg, e, ErrorCode::FILE_OPEN_FAILURE);
+		}
+	}
+	else
+	{
+		errors++;
+		LogLog::error(LogString(LOG4CXX_STR("File option not set for appender ["))
+			+  name + LOG4CXX_STR("]."));
+		LogLog::warn(LOG4CXX_STR("Are you using FileAppender instead of ConsoleAppender?"));
+	}
 
-    if (errors == 0)
-    {
-        WriterAppender::activateOptions(p);
-    }
+	if (errors == 0)
+	{
+		WriterAppender::activateOptions(p);
+	}
 }
 
 
@@ -207,45 +208,45 @@ void FileAppender::activateOptionsInternal(Pool& p){
  */
 LogString FileAppender::stripDuplicateBackslashes(const LogString& src)
 {
-    logchar backslash = 0x5C; // '\\'
-    LogString::size_type i = src.find_last_of(backslash);
+	logchar backslash = 0x5C; // '\\'
+	LogString::size_type i = src.find_last_of(backslash);
 
-    if (i != LogString::npos)
-    {
-        LogString tmp(src);
+	if (i != LogString::npos)
+	{
+		LogString tmp(src);
 
-        for (;
-                i != LogString::npos && i > 0;
-                i = tmp.find_last_of(backslash, i - 1))
-        {
-            //
-            //   if the preceding character is a slash then
-            //      remove the preceding character
-            //      and continue processing
-            if (tmp[i - 1] == backslash)
-            {
-                tmp.erase(i, 1);
-                i--;
+		for (;
+			i != LogString::npos && i > 0;
+			i = tmp.find_last_of(backslash, i - 1))
+		{
+			//
+			//   if the preceding character is a slash then
+			//      remove the preceding character
+			//      and continue processing
+			if (tmp[i - 1] == backslash)
+			{
+				tmp.erase(i, 1);
+				i--;
 
-                if (i == 0)
-                {
-                    break;
-                }
-            }
-            else
-            {
-                //
-                //  if there an odd number of slashes
-                //     the string wasn't trying to work around
-                //     OptionConverter::convertSpecialChars
-                return src;
-            }
-        }
+				if (i == 0)
+				{
+					break;
+				}
+			}
+			else
+			{
+				//
+				//  if there an odd number of slashes
+				//     the string wasn't trying to work around
+				//     OptionConverter::convertSpecialChars
+				return src;
+			}
+		}
 
-        return tmp;
-    }
+		return tmp;
+	}
 
-    return src;
+	return src;
 }
 
 /**
@@ -269,95 +270,95 @@ LogString FileAppender::stripDuplicateBackslashes(const LogString& src)
 
  */
 void FileAppender::setFileInternal(
-    const LogString& filename,
-    bool append1,
-    bool bufferedIO1,
-    size_t bufferSize1,
-    Pool& p)
+	const LogString& filename,
+	bool append1,
+	bool bufferedIO1,
+	size_t bufferSize1,
+	Pool& p)
 {
-    // It does not make sense to have immediate flush and bufferedIO.
-    if (bufferedIO1)
-    {
-        setImmediateFlush(false);
-    }
-
-    closeWriter();
-
-    bool writeBOM = false;
-
-    if (StringHelper::equalsIgnoreCase(getEncoding(),
-                                       LOG4CXX_STR("utf-16"), LOG4CXX_STR("UTF-16")))
-    {
-        //
-        //    don't want to write a byte order mark if the file exists
-        //
-        if (append1)
-        {
-            File outFile;
-            outFile.setPath(filename);
-            writeBOM = !outFile.exists(p);
-        }
-        else
-        {
-            writeBOM = true;
-        }
-    }
-
-    OutputStreamPtr outStream;
-
-    try
-    {
-        outStream = FileOutputStreamPtr(new FileOutputStream(filename, append1));
-    }
-    catch (IOException&)
-    {
-        LogString parentName = File().setPath(filename).getParent(p);
-
-        if (!parentName.empty())
-        {
-            File parentDir;
-            parentDir.setPath(parentName);
-
-            if (!parentDir.exists(p) && parentDir.mkdirs(p))
-            {
-                outStream = OutputStreamPtr(new FileOutputStream(filename, append1));
-            }
-            else
-            {
-                throw;
-            }
-        }
-        else
-        {
-            throw;
-        }
-    }
-
-
-    //
-    //   if a new file and UTF-16, then write a BOM
-    //
-    if (writeBOM)
-    {
-        char bom[] = { (char) 0xFE, (char) 0xFF };
-        ByteBuffer buf(bom, 2);
-        outStream->write(buf, p);
-    }
-
-    WriterPtr newWriter(createWriter(outStream));
-
-    if (bufferedIO1)
-    {
-        newWriter = WriterPtr(new BufferedWriter(newWriter, bufferSize1));
+	// It does not make sense to have immediate flush and bufferedIO.
+	if (bufferedIO1)
+	{
+		setImmediateFlush(false);
 	}
 
-    setWriterInternal(newWriter);
+	closeWriter();
 
-    this->fileAppend = append1;
-    this->bufferedIO = bufferedIO1;
-    this->fileName = filename;
-    this->bufferSize = (int)bufferSize1;
-    writeHeader(p);
+	bool writeBOM = false;
+
+	if (StringHelper::equalsIgnoreCase(getEncoding(),
+			LOG4CXX_STR("utf-16"), LOG4CXX_STR("UTF-16")))
+	{
+		//
+		//    don't want to write a byte order mark if the file exists
+		//
+		if (append1)
+		{
+			File outFile;
+			outFile.setPath(filename);
+			writeBOM = !outFile.exists(p);
+		}
+		else
+		{
+			writeBOM = true;
+		}
+	}
+
+	OutputStreamPtr outStream;
+
+	try
+	{
+		outStream = FileOutputStreamPtr(new FileOutputStream(filename, append1));
+	}
+	catch (IOException&)
+	{
+		LogString parentName = File().setPath(filename).getParent(p);
+
+		if (!parentName.empty())
+		{
+			File parentDir;
+			parentDir.setPath(parentName);
+
+			if (!parentDir.exists(p) && parentDir.mkdirs(p))
+			{
+				outStream = OutputStreamPtr(new FileOutputStream(filename, append1));
+			}
+			else
+			{
+				throw;
+			}
+		}
+		else
+		{
+			throw;
+		}
+	}
+
+
+	//
+	//   if a new file and UTF-16, then write a BOM
+	//
+	if (writeBOM)
+	{
+		char bom[] = { (char) 0xFE, (char) 0xFF };
+		ByteBuffer buf(bom, 2);
+		outStream->write(buf, p);
+	}
+
+	WriterPtr newWriter(createWriter(outStream));
+
+	if (bufferedIO1)
+	{
+		newWriter = WriterPtr(new BufferedWriter(newWriter, bufferSize1));
+	}
+
+	setWriterInternal(newWriter);
+
+	this->fileAppend = append1;
+	this->bufferedIO = bufferedIO1;
+	this->fileName = filename;
+	this->bufferSize = (int)bufferSize1;
+	writeHeader(p);
 
 }
 

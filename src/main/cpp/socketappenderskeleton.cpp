@@ -38,7 +38,7 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnection
 	   port(defaultPort),
 	   reconnectionDelay(reconnectionDelay1),
 	   locationInfo(false),
-       thread()
+	   thread()
 {
 }
 
@@ -66,7 +66,7 @@ SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1,
 
 SocketAppenderSkeleton::~SocketAppenderSkeleton()
 {
-    finalize();
+	finalize();
 }
 
 void SocketAppenderSkeleton::activateOptions(Pool& p)
@@ -87,14 +87,15 @@ void SocketAppenderSkeleton::close()
 	closed = true;
 	cleanUp(pool);
 
-    {
+	{
 		log4cxx::unique_lock<log4cxx::mutex> lock2(interrupt_mutex);
-        interrupt.notify_all();
-    }
+		interrupt.notify_all();
+	}
 
-    if( thread.joinable() ){
-        thread.join();
-    }
+	if ( thread.joinable() )
+	{
+		thread.join();
+	}
 }
 
 void SocketAppenderSkeleton::connect(Pool& p)
@@ -157,7 +158,7 @@ void SocketAppenderSkeleton::fireConnector()
 {
 	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
-    if ( !thread.joinable() )
+	if ( !thread.joinable() )
 	{
 		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
 
@@ -168,39 +169,39 @@ void SocketAppenderSkeleton::fireConnector()
 void SocketAppenderSkeleton::monitor()
 {
 	SocketPtr socket;
-    bool isClosed = closed;
+	bool isClosed = closed;
 
 	while (!isClosed)
 	{
 		try
-        {
-            std::this_thread::sleep_for( std::chrono::milliseconds( reconnectionDelay ) );
+		{
+			std::this_thread::sleep_for( std::chrono::milliseconds( reconnectionDelay ) );
 
 			log4cxx::unique_lock<log4cxx::mutex> lock( interrupt_mutex );
-            interrupt.wait_for( lock, std::chrono::milliseconds( reconnectionDelay ),
-                                std::bind(&SocketAppenderSkeleton::is_closed, this) );
+			interrupt.wait_for( lock, std::chrono::milliseconds( reconnectionDelay ),
+				std::bind(&SocketAppenderSkeleton::is_closed, this) );
 
-            if (!closed)
+			if (!closed)
 			{
 				LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
-                    + address->getHostName());
-                socket = SocketPtr(new Socket(address, port));
+					+ address->getHostName());
+				socket = SocketPtr(new Socket(address, port));
 				Pool p;
-                setSocket(socket, p);
+				setSocket(socket, p);
 				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
 			}
 
-            return;
+			return;
 		}
 		catch (InterruptedException&)
 		{
 			LogLog::debug(LOG4CXX_STR("Connector interrupted.  Leaving loop."));
-            return;
+			return;
 		}
 		catch (ConnectException&)
 		{
 			LogLog::debug(LOG4CXX_STR("Remote host ")
-                + address->getHostName()
+				+ address->getHostName()
 				+ LOG4CXX_STR(" refused connection."));
 		}
 		catch (IOException& e)
@@ -209,17 +210,18 @@ void SocketAppenderSkeleton::monitor()
 			log4cxx::helpers::Transcoder::decode(e.what(), exmsg);
 
 			LogLog::debug(((LogString) LOG4CXX_STR("Could not connect to "))
-                + address->getHostName()
+				+ address->getHostName()
 				+ LOG4CXX_STR(". Exception is ")
 				+ exmsg);
 		}
 
-        isClosed = closed;
+		isClosed = closed;
 	}
 
-    LogLog::debug(LOG4CXX_STR("Exiting Connector.run() method."));
+	LogLog::debug(LOG4CXX_STR("Exiting Connector.run() method."));
 }
 
-bool SocketAppenderSkeleton::is_closed(){
-    return closed;
+bool SocketAppenderSkeleton::is_closed()
+{
+	return closed;
 }

@@ -355,7 +355,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 		try
 		{
 			const Class& classObj = Loader::loadClass(className);
-            ObjectPtr newObject =  ObjectPtr(classObj.newInstance());
+			ObjectPtr newObject =  ObjectPtr(classObj.newInstance());
 
 			if (!newObject->instanceof(superClass))
 			{
@@ -375,7 +375,7 @@ ObjectPtr OptionConverter::instantiateByClassName(const LogString& className,
 }
 
 void OptionConverter::selectAndConfigure(const File& configFileName,
-    const LogString& _clazz, spi::LoggerRepositoryPtr hierarchy)
+	const LogString& _clazz, spi::LoggerRepositoryPtr hierarchy)
 {
 	ConfiguratorPtr configurator;
 	LogString clazz = _clazz;
@@ -394,9 +394,9 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	if (!clazz.empty())
 	{
 		LogLog::debug(LOG4CXX_STR("Preferred configurator class: ") + clazz);
-        const Class& clazzObj = Loader::loadClass(clazz);
-        ObjectPtr obj = ObjectPtr(clazzObj.newInstance());
-        configurator = log4cxx::cast<Configurator>(obj);
+		const Class& clazzObj = Loader::loadClass(clazz);
+		ObjectPtr obj = ObjectPtr(clazzObj.newInstance());
+		configurator = log4cxx::cast<Configurator>(obj);
 
 		if (configurator == 0)
 		{
@@ -407,7 +407,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	}
 	else
 	{
-        configurator = ConfiguratorPtr(new PropertyConfigurator());
+		configurator = ConfiguratorPtr(new PropertyConfigurator());
 	}
 
 	configurator->doConfigure(configFileName, hierarchy);

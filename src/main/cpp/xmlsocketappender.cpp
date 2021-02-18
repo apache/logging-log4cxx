@@ -45,13 +45,13 @@ const int XMLSocketAppender::MAX_EVENT_LEN          = 1024;
 XMLSocketAppender::XMLSocketAppender()
 	: SocketAppenderSkeleton(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY)
 {
-    layout = XMLLayoutPtr(new XMLLayout());
+	layout = XMLLayoutPtr(new XMLLayout());
 }
 
 XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
 	: SocketAppenderSkeleton(address1, port1, DEFAULT_RECONNECTION_DELAY)
 {
-    layout = XMLLayoutPtr(new XMLLayout());
+	layout = XMLLayoutPtr(new XMLLayout());
 	Pool p;
 	activateOptions(p);
 }
@@ -59,7 +59,7 @@ XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
 XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
 	: SocketAppenderSkeleton(host, port1, DEFAULT_RECONNECTION_DELAY)
 {
-    layout = XMLLayoutPtr(new XMLLayout());
+	layout = XMLLayoutPtr(new XMLLayout());
 	Pool p;
 	activateOptions(p);
 }
@@ -85,7 +85,7 @@ void XMLSocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 	OutputStreamPtr os(new SocketOutputStream(socket));
 	CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
 	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
-    writer = OutputStreamWriterPtr(new OutputStreamWriter(os, charset));
+	writer = OutputStreamWriterPtr(new OutputStreamWriter(os, charset));
 }
 
 void XMLSocketAppender::cleanUp(Pool& p)

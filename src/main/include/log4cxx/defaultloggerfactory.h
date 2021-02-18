@@ -28,7 +28,7 @@ typedef std::shared_ptr<Logger> LoggerPtr;
 
 class LOG4CXX_EXPORT DefaultLoggerFactory :
 	public virtual spi::LoggerFactory,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultLoggerFactory)

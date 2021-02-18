@@ -99,5 +99,5 @@ XFactory::XFactory()
 LoggerPtr XFactory::makeNewLoggerInstance(log4cxx::helpers::Pool& pool,
 	const LogString& name) const
 {
-    return LoggerPtr(new XLogger(pool, name));
+	return LoggerPtr(new XLogger(pool, name));
 }

@@ -133,8 +133,8 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
 
 	ActionPtr noAction;
 
-    return RolloverDescriptionPtr(
-                new RolloverDescription(newActiveFile, append, noAction, noAction));
+	return RolloverDescriptionPtr(
+			new RolloverDescription(newActiveFile, append, noAction, noAction));
 }
 
 /**
@@ -175,31 +175,31 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz")))
 	{
 		renameTo.resize(renameTo.size() - 3);
-        compressAction = ActionPtr(
-			new GZCompressAction(
-			File().setPath(renameTo),
-			File().setPath(compressedName),
-            true));
+		compressAction = ActionPtr(
+				new GZCompressAction(
+					File().setPath(renameTo),
+					File().setPath(compressedName),
+					true));
 	}
 	else if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".zip")))
 	{
 		renameTo.resize(renameTo.size() - 4);
-        compressAction = ActionPtr(
-			new ZipCompressAction(
-			File().setPath(renameTo),
-			File().setPath(compressedName),
-            true));
+		compressAction = ActionPtr(
+				new ZipCompressAction(
+					File().setPath(renameTo),
+					File().setPath(compressedName),
+					true));
 	}
 
-    FileRenameActionPtr renameAction = FileRenameActionPtr(
-		new FileRenameAction(
-		File().setPath(currentActiveFile),
-		File().setPath(renameTo),
-        false));
+	FileRenameActionPtr renameAction = FileRenameActionPtr(
+			new FileRenameAction(
+				File().setPath(currentActiveFile),
+				File().setPath(renameTo),
+				false));
 
-    desc = RolloverDescriptionPtr(new RolloverDescription(
-		currentActiveFile,  append,
-        renameAction,       compressAction));
+	desc = RolloverDescriptionPtr(new RolloverDescription(
+				currentActiveFile,  append,
+				renameAction,       compressAction));
 
 	return desc;
 }
@@ -236,7 +236,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 
 	std::vector<FileRenameActionPtr> renames;
 	LogString buf;
-    ObjectPtr obj = ObjectPtr(new Integer(lowIndex));
+	ObjectPtr obj = ObjectPtr(new Integer(lowIndex));
 	formatFileName(obj, buf, p);
 
 	LogString lowFilename(buf);
@@ -297,7 +297,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 			//   if intermediate index
 			//     add a rename action to the list
 			buf.erase(buf.begin(), buf.end());
-            obj = ObjectPtr(new Integer(i + 1));
+			obj = ObjectPtr(new Integer(i + 1));
 			formatFileName(obj, buf, p);
 
 			LogString highFilename(buf);
@@ -309,7 +309,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 					highFilename.substr(0, highFilename.length() - suffixLength);
 			}
 
-            renames.push_back(FileRenameActionPtr(new FileRenameAction(*toRename, File().setPath(renameTo), true)));
+			renames.push_back(FileRenameActionPtr(new FileRenameAction(*toRename, File().setPath(renameTo), true)));
 			lowFilename = highFilename;
 		}
 		else

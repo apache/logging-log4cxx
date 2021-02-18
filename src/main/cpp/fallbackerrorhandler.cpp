@@ -60,7 +60,8 @@ void FallbackErrorHandler::error(const LogString& message,
 	AppenderPtr primaryLocked = primary.lock();
 	AppenderPtr backupLocked = backup.lock();
 
-	if( !primaryLocked || !backupLocked ){
+	if ( !primaryLocked || !backupLocked )
+	{
 		return;
 	}
 

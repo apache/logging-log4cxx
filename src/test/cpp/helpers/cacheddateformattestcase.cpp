@@ -310,9 +310,9 @@ public:
 	{
 		std::locale localeUS(LOCALE_US);
 
-        DateFormatPtr baseFormat = DateFormatPtr(new SimpleDateFormat(
-            LOG4CXX_STR("yyyy-MMMM-dd HH:mm:ss,SS Z"), &localeUS));
-        DateFormatPtr cachedFormat = DateFormatPtr(new CachedDateFormat(baseFormat, 1000000));
+		DateFormatPtr baseFormat = DateFormatPtr(new SimpleDateFormat(
+					LOG4CXX_STR("yyyy-MMMM-dd HH:mm:ss,SS Z"), &localeUS));
+		DateFormatPtr cachedFormat = DateFormatPtr(new CachedDateFormat(baseFormat, 1000000));
 		TimeZonePtr cet = TimeZone::getTimeZone(LOG4CXX_STR("GMT+1"));
 		cachedFormat->setTimeZone(cet);
 
@@ -370,9 +370,9 @@ public:
 #else
 		std::locale* localeUS = NULL;
 #endif
-        DateFormatPtr baseFormat = DateFormatPtr(new SimpleDateFormat(
-            LOG4CXX_STR("MMMM SSS EEEEEE"), localeUS));
-        DateFormatPtr cachedFormat = DateFormatPtr(new CachedDateFormat(baseFormat, 1000000));
+		DateFormatPtr baseFormat = DateFormatPtr(new SimpleDateFormat(
+					LOG4CXX_STR("MMMM SSS EEEEEE"), localeUS));
+		DateFormatPtr cachedFormat = DateFormatPtr(new CachedDateFormat(baseFormat, 1000000));
 		TimeZonePtr cet = TimeZone::getTimeZone(LOG4CXX_STR("GMT+1"));
 		cachedFormat->setTimeZone(cet);
 
@@ -432,8 +432,8 @@ public:
 		//   Earlier versions could be tricked by "SS0" patterns.
 		//
 		LogString badPattern(LOG4CXX_STR("ss,SS0"));
-        DateFormatPtr simpleFormat = DateFormatPtr(new SimpleDateFormat(badPattern));
-        DateFormatPtr gmtFormat = DateFormatPtr(new CachedDateFormat(simpleFormat, 1000000));
+		DateFormatPtr simpleFormat = DateFormatPtr(new SimpleDateFormat(badPattern));
+		DateFormatPtr gmtFormat = DateFormatPtr(new CachedDateFormat(simpleFormat, 1000000));
 		gmtFormat->setTimeZone(TimeZone::getGMT());
 
 		//
@@ -464,7 +464,7 @@ public:
 	 */
 	void test12()
 	{
-        DateFormatPtr df    = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS")));
+		DateFormatPtr df    = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd HH:mm:ss,SSS")));
 		apr_time_t    ticks = 11142L * MICROSECONDS_PER_DAY;
 		Pool p;
 		LogString formatted;
@@ -505,7 +505,7 @@ public:
 	 */
 	void test13()
 	{
-        DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd")));
+		DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("yyyy-MM-dd")));
 		apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
 
 		Pool p;
@@ -523,7 +523,7 @@ public:
 	 */
 	void test14()
 	{
-        DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SSS")));
+		DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SSS")));
 		apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
 
 		Pool p;
@@ -540,7 +540,7 @@ public:
 	 */
 	void test15()
 	{
-        DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,S")));
+		DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,S")));
 		apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
 
 		Pool p;
@@ -557,7 +557,7 @@ public:
 	 */
 	void test16()
 	{
-        DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SS")));
+		DateFormatPtr df = DateFormatPtr(new SimpleDateFormat(LOG4CXX_STR("HH:mm:ss,SS")));
 		apr_time_t ticks = 11142L * MICROSECONDS_PER_DAY;
 
 		Pool p;
@@ -576,9 +576,9 @@ public:
 	{
 		apr_time_t jul2 = 12602L * MICROSECONDS_PER_DAY;
 		LogString badPattern(LOG4CXX_STR("HH:mm:ss,SSS HH:mm:ss,SSS"));
-        DateFormatPtr simpleFormat = DateFormatPtr(new SimpleDateFormat(badPattern));
+		DateFormatPtr simpleFormat = DateFormatPtr(new SimpleDateFormat(badPattern));
 		simpleFormat->setTimeZone(TimeZone::getGMT());
-        DateFormatPtr cachedFormat = DateFormatPtr(new CachedDateFormat(simpleFormat, 1000000));
+		DateFormatPtr cachedFormat = DateFormatPtr(new CachedDateFormat(simpleFormat, 1000000));
 
 		Pool p;
 		LogString s;

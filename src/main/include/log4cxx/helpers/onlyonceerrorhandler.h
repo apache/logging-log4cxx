@@ -42,7 +42,7 @@ from being flooded with error messages when logging fails
 */
 class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 	public virtual spi::ErrorHandler,
-    public virtual Object
+	public virtual Object
 {
 	private:
 		LogString WARN_PREFIX;
@@ -56,7 +56,7 @@ class LOG4CXX_EXPORT OnlyOnceErrorHandler :
 		LOG4CXX_CAST_ENTRY(spi::ErrorHandler)
 		END_LOG4CXX_CAST_MAP()
 
-        OnlyOnceErrorHandler();
+		OnlyOnceErrorHandler();
 
 		/**
 		 Does not do anything.

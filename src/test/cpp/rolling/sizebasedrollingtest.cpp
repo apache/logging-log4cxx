@@ -106,14 +106,14 @@ public:
 	 */
 	void test1()
 	{
-        PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
-        RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-        FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
-        SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
 
 		sbtp->setMaxFileSize(100);
 		swrp->setMinIndex(0);
@@ -146,15 +146,15 @@ public:
 	 */
 	void test2()
 	{
-        PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
-        RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 		rfa->setFile(LOG4CXX_STR("output/sizeBased-test2.log"));
 
-        FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
-        SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
 
 		sbtp->setMaxFileSize(100);
 		swrp->setMinIndex(0);
@@ -187,13 +187,13 @@ public:
 	 */
 	void test3()
 	{
-        PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
-        RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-        FixedWindowRollingPolicyPtr  fwrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
-        SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
+		FixedWindowRollingPolicyPtr  fwrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
 
 		sbtp->setMaxFileSize(100);
 		fwrp->setMinIndex(0);
@@ -222,15 +222,15 @@ public:
 	 */
 	void test4()
 	{
-        PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
-        RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 		rfa->setFile(LOG4CXX_STR("output/sizeBased-test4.log"));
 
-        FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
-        SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
 
 		sbtp->setMaxFileSize(100);
 		swrp->setMinIndex(0);
@@ -261,15 +261,15 @@ public:
 	 */
 	void test5()
 	{
-        PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
-        RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 		rfa->setFile(LOG4CXX_STR("output/sizeBased-test5.log"));
 
-        FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
-        SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
 
 		sbtp->setMaxFileSize(100);
 		swrp->setMinIndex(0);
@@ -335,13 +335,13 @@ public:
 	 */
 	void test6()
 	{
-        PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
-        RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-        FixedWindowRollingPolicyPtr  fwrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
-        SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
+		FixedWindowRollingPolicyPtr  fwrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
 
 		sbtp->setMaxFileSize(100);
 		fwrp->setMinIndex(0);

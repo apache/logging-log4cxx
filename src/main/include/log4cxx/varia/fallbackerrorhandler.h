@@ -39,7 +39,7 @@ logged in the new secondary appender.
 */
 class LOG4CXX_EXPORT FallbackErrorHandler :
 	public virtual spi::ErrorHandler,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	private:
 		AppenderWeakPtr backup;
@@ -53,7 +53,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		LOG4CXX_CAST_ENTRY_CHAIN(spi::ErrorHandler)
 		END_LOG4CXX_CAST_MAP()
 
-        FallbackErrorHandler();
+		FallbackErrorHandler();
 
 		/**
 		<em>Adds</em> the logger passed as parameter to the list of

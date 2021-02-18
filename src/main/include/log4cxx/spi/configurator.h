@@ -45,7 +45,7 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		@param repository The hierarchy to operation upon.
 		*/
 		virtual void doConfigure(const File& configFileName,
-            spi::LoggerRepositoryPtr repository) = 0;
+			spi::LoggerRepositoryPtr repository) = 0;
 
 
 	private:

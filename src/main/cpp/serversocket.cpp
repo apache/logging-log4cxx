@@ -150,7 +150,7 @@ SocketPtr ServerSocket::accept()
 		throw SocketException(status);
 	}
 
-    return SocketPtr(new Socket(newSocket, newPool));
+	return SocketPtr(new Socket(newSocket, newPool));
 }
 
 /** Retrive setting for SO_TIMEOUT.

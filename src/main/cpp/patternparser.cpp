@@ -179,10 +179,10 @@ void PatternParser::parse(
 				switch (c)
 				{
 					case 0x2D: // '-'
-                        formattingInfo = FormattingInfoPtr(
-							new FormattingInfo(
-							true, formattingInfo->getMinLength(),
-                            formattingInfo->getMaxLength()));
+						formattingInfo = FormattingInfoPtr(
+								new FormattingInfo(
+									true, formattingInfo->getMinLength(),
+									formattingInfo->getMaxLength()));
 
 						break;
 
@@ -195,10 +195,10 @@ void PatternParser::parse(
 
 						if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 						{
-                            formattingInfo = FormattingInfoPtr(
-								new FormattingInfo(
-								formattingInfo->isLeftAligned(), c - 0x30 /* '0' */,
-                                formattingInfo->getMaxLength()));
+							formattingInfo = FormattingInfoPtr(
+									new FormattingInfo(
+										formattingInfo->isLeftAligned(), c - 0x30 /* '0' */,
+										formattingInfo->getMaxLength()));
 							state = MIN_STATE;
 						}
 						else
@@ -225,11 +225,11 @@ void PatternParser::parse(
 
 				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 				{
-                    formattingInfo = FormattingInfoPtr(
-						new FormattingInfo(
-						formattingInfo->isLeftAligned(),
-						(formattingInfo->getMinLength() * 10) + (c - 0x30 /* '0' */),
-                        formattingInfo->getMaxLength()));
+					formattingInfo = FormattingInfoPtr(
+							new FormattingInfo(
+								formattingInfo->isLeftAligned(),
+								(formattingInfo->getMinLength() * 10) + (c - 0x30 /* '0' */),
+								formattingInfo->getMaxLength()));
 				}
 				else if (c == 0x2E /* '.' */)
 				{
@@ -256,10 +256,10 @@ void PatternParser::parse(
 
 				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 				{
-                    formattingInfo = FormattingInfoPtr(
-						new FormattingInfo(
-						formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
-                        c - 0x30 /* '0' */));
+					formattingInfo = FormattingInfoPtr(
+							new FormattingInfo(
+								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
+								c - 0x30 /* '0' */));
 					state = MAX_STATE;
 				}
 				else
@@ -276,10 +276,10 @@ void PatternParser::parse(
 
 				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 				{
-                    formattingInfo = FormattingInfoPtr(
-						new FormattingInfo(
-						formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
-                        (formattingInfo->getMaxLength() * 10) + (c - 0x30 /* '0' */)));
+					formattingInfo = FormattingInfoPtr(
+							new FormattingInfo(
+								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
+								(formattingInfo->getMaxLength() * 10) + (c - 0x30 /* '0' */)));
 				}
 				else
 				{
@@ -333,7 +333,7 @@ PatternConverterPtr PatternParser::createConverter(
 
 	LogLog::error(LogString(LOG4CXX_STR("Unrecognized format specifier ")) + converterId);
 
-    return PatternConverterPtr();
+	return PatternConverterPtr();
 }
 
 size_t PatternParser::finalizeConverter(

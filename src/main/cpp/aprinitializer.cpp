@@ -49,7 +49,7 @@ APRInitializer::APRInitializer() : p(0), startTime(0), tlsKey(0)
 	startTime = apr_time_now();
 #if APR_HAS_THREADS
 	apr_status_t stat = apr_threadkey_private_create(&tlsKey, tlsDestruct, p);
-    assert(stat == APR_SUCCESS);
+	assert(stat == APR_SUCCESS);
 	assert(stat == APR_SUCCESS);
 #endif
 }

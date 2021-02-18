@@ -54,7 +54,7 @@ int ByteArrayInputStream::read(ByteBuffer& dst)
 	else
 	{
 		size_t bytesCopied = min(dst.remaining(), buf.size() - pos);
-        std::memcpy(dst.current(), &buf[pos], bytesCopied);
+		std::memcpy(dst.current(), &buf[pos], bytesCopied);
 		pos += bytesCopied;
 		dst.position(dst.position() + bytesCopied);
 		return (int)bytesCopied;

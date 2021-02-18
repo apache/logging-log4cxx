@@ -51,7 +51,7 @@ public:
 
 		FileAppenderPtr wa(new FileAppender());
 		wa->setFile(LOG4CXX_STR("output/newdir/temp.log"));
-        wa->setLayout(PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m%n"))));
+		wa->setLayout(PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m%n"))));
 		wa->activateOptions(p);
 
 		LOGUNIT_ASSERT(File(LOG4CXX_STR("output/newdir/temp.log")).exists(p));
@@ -62,7 +62,7 @@ public:
 	 */
 	void testgetSetThreshold()
 	{
-        FileAppenderPtr appender = FileAppenderPtr(new FileAppender());
+		FileAppenderPtr appender = FileAppenderPtr(new FileAppender());
 		LevelPtr debug = Level::getDebug();
 		//
 		//  different from log4j where threshold is null.
@@ -77,7 +77,7 @@ public:
 	 */
 	void testIsAsSevereAsThreshold()
 	{
-        FileAppenderPtr appender = FileAppenderPtr(new FileAppender());
+		FileAppenderPtr appender = FileAppenderPtr(new FileAppender());
 		LevelPtr debug = Level::getDebug();
 		LOGUNIT_ASSERT(appender->isAsSevereAsThreshold(debug));
 	}

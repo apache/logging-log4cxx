@@ -42,7 +42,7 @@ namespace log4cxx
 * */
 class LOG4CXX_EXPORT AppenderSkeleton :
 	public virtual Appender,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	protected:
 		/** The layout variable does not need to be set if the appender
@@ -191,7 +191,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.
 		*/
-        void setErrorHandler(const spi::ErrorHandlerPtr eh);
+		void setErrorHandler(const spi::ErrorHandlerPtr eh);
 
 		/**
 		Set the layout for this appender. Note that some appenders have

@@ -60,8 +60,8 @@ class SocketHubAppenderTestCase : public AppenderSkeletonTestCase
 		{
 			SocketHubAppenderPtr hubAppender(new SocketHubAppender());
 			Pool p;
-            hubAppender->activateOptions(p);
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+			hubAppender->activateOptions(p);
+			std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 			hubAppender->close();
 		}
 

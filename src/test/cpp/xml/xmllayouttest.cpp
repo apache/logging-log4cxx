@@ -274,9 +274,9 @@ public:
 	void testFormat()
 	{
 		LogString logger = LOG4CXX_STR("org.apache.log4j.xml.XMLLayoutTest");
-        LoggingEventPtr event = LoggingEventPtr(
-			new LoggingEvent(
-            logger, Level::getInfo(), LOG4CXX_STR("Hello, World"), LOG4CXX_LOCATION));
+		LoggingEventPtr event = LoggingEventPtr(
+				new LoggingEvent(
+					logger, Level::getInfo(), LOG4CXX_STR("Hello, World"), LOG4CXX_LOCATION));
 		Pool p;
 		XMLLayout layout;
 		LogString result;
@@ -308,9 +308,9 @@ public:
 		LogString logger = LOG4CXX_STR("org.apache.log4j.xml.XMLLayoutTest");
 		NDC::push("NDC goes here");
 
-        LoggingEventPtr event = LoggingEventPtr(
-			new LoggingEvent(
-            logger, Level::getInfo(), LOG4CXX_STR("Hello, World"), LOG4CXX_LOCATION));
+		LoggingEventPtr event = LoggingEventPtr(
+				new LoggingEvent(
+					logger, Level::getInfo(), LOG4CXX_STR("Hello, World"), LOG4CXX_LOCATION));
 		Pool p;
 		XMLLayout layout;
 		LogString result;
@@ -372,12 +372,12 @@ public:
 	{
 		std::string problemName = "com.example.bar<>&\"'";
 		LogString problemNameLS = LOG4CXX_STR("com.example.bar<>&\"'");
-        LevelPtr level = LevelPtr(new XLevel(6000, problemNameLS, 7));
+		LevelPtr level = LevelPtr(new XLevel(6000, problemNameLS, 7));
 		NDC::push(problemName);
 		MDC::clear();
 		MDC::put(problemName, problemName);
-        LoggingEventPtr event = LoggingEventPtr(
-            new LoggingEvent(problemNameLS, level, problemNameLS, LOG4CXX_LOCATION));
+		LoggingEventPtr event = LoggingEventPtr(
+				new LoggingEvent(problemNameLS, level, problemNameLS, LOG4CXX_LOCATION));
 		XMLLayout layout;
 		layout.setProperties(true);
 		Pool p;
@@ -428,9 +428,9 @@ public:
 		LevelPtr level = Level::getInfo();
 		std::string ndcMessage = "<envelope><faultstring><![CDATA[The EffectiveDate]]></faultstring><envelope>";
 		NDC::push(ndcMessage);
-        LoggingEventPtr event = LoggingEventPtr(
-			new LoggingEvent(
-            logger, level, LOG4CXX_STR("Hello, World"), LOG4CXX_LOCATION));
+		LoggingEventPtr event = LoggingEventPtr(
+				new LoggingEvent(
+					logger, level, LOG4CXX_STR("Hello, World"), LOG4CXX_LOCATION));
 		XMLLayout layout;
 		Pool p;
 		LogString result;

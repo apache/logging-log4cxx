@@ -47,7 +47,7 @@ PatternConverterPtr ClassNamePatternConverter::newInstance(
 		return def;
 	}
 
-    return PatternConverterPtr( new ClassNamePatternConverter(options) );
+	return PatternConverterPtr( new ClassNamePatternConverter(options) );
 }
 
 void ClassNamePatternConverter::format(

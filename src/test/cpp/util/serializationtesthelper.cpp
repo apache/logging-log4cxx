@@ -33,7 +33,7 @@ using namespace log4cxx::spi;
 bool SerializationTestHelper::compare(
 	const char* witness, const LoggingEventPtr& event, size_t endCompare)
 {
-    ByteArrayOutputStreamPtr memOut = ByteArrayOutputStreamPtr( new ByteArrayOutputStream() );
+	ByteArrayOutputStreamPtr memOut = ByteArrayOutputStreamPtr( new ByteArrayOutputStream() );
 	Pool p;
 	ObjectOutputStream objOut(memOut, p);
 	event->write(objOut, p);

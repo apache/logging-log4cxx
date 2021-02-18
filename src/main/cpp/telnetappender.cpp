@@ -129,7 +129,8 @@ void TelnetAppender::close()
 		}
 	}
 
-	if( sh.joinable() ){
+	if ( sh.joinable() )
+	{
 		sh.join();
 	}
 
@@ -223,24 +224,24 @@ void TelnetAppender::acceptConnections()
 	{
 		try
 		{
-            SocketPtr newClient = serverSocket->accept();
-            bool done = closed;
+			SocketPtr newClient = serverSocket->accept();
+			bool done = closed;
 
 			if (done)
 			{
 				Pool p;
-                writeStatus(newClient, LOG4CXX_STR("Log closed.\r\n"), p);
+				writeStatus(newClient, LOG4CXX_STR("Log closed.\r\n"), p);
 				newClient->close();
 
 				break;
 			}
 
-            size_t count = activeConnections;
+			size_t count = activeConnections;
 
-            if (count >= connections.size())
+			if (count >= connections.size())
 			{
 				Pool p;
-                writeStatus(newClient, LOG4CXX_STR("Too many connections.\r\n"), p);
+				writeStatus(newClient, LOG4CXX_STR("Too many connections.\r\n"), p);
 				newClient->close();
 			}
 			else
@@ -250,14 +251,14 @@ void TelnetAppender::acceptConnections()
 				//
 				log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
-                for (ConnectionList::iterator iter = connections.begin();
-                    iter != connections.end();
+				for (ConnectionList::iterator iter = connections.begin();
+					iter != connections.end();
 					iter++)
 				{
 					if (*iter == NULL)
 					{
 						*iter = newClient;
-                        activeConnections++;
+						activeConnections++;
 
 						break;
 					}
@@ -267,19 +268,19 @@ void TelnetAppender::acceptConnections()
 				LogString oss(LOG4CXX_STR("TelnetAppender v1.0 ("));
 				StringHelper::toString((int) count + 1, p, oss);
 				oss += LOG4CXX_STR(" active connections)\r\n\r\n");
-                writeStatus(newClient, oss, p);
+				writeStatus(newClient, oss, p);
 			}
 		}
 		catch (InterruptedIOException&)
 		{
-            if (closed)
+			if (closed)
 			{
 				break;
 			}
 		}
 		catch (Exception& e)
 		{
-            if (!closed)
+			if (!closed)
 			{
 				LogLog::error(LOG4CXX_STR("Encountered error while in SocketHandler loop."), e);
 			}

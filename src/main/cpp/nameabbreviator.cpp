@@ -291,7 +291,7 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern)
 		//
 		if (i == trimmed.length())
 		{
-            return NameAbbreviatorPtr(new MaxElementAbbreviator(StringHelper::toInt(trimmed)));
+			return NameAbbreviatorPtr(new MaxElementAbbreviator(StringHelper::toInt(trimmed)));
 		}
 
 		std::vector<PatternAbbreviatorFragment> fragments;

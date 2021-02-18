@@ -62,9 +62,9 @@ public:
 	 */
 	void testSerializationSimple()
 	{
-        LoggingEventPtr event = LoggingEventPtr(
-			new LoggingEvent(
-            LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable()));
+		LoggingEventPtr event = LoggingEventPtr(
+				new LoggingEvent(
+					LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable()));
 
 		LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
 				"witness/serialization/simple.bin", event, 237));
@@ -79,9 +79,9 @@ public:
 	 */
 	void testSerializationWithLocation()
 	{
-        LoggingEventPtr event = LoggingEventPtr(
-			new LoggingEvent(
-            LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LOG4CXX_LOCATION));
+		LoggingEventPtr event = LoggingEventPtr(
+				new LoggingEvent(
+					LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LOG4CXX_LOCATION));
 
 		LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
 				"witness/serialization/location.bin", event, 237));
@@ -96,9 +96,9 @@ public:
 	{
 		NDC::push("ndc test");
 
-        LoggingEventPtr event = LoggingEventPtr(
-			new LoggingEvent(
-            LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable()));
+		LoggingEventPtr event = LoggingEventPtr(
+				new LoggingEvent(
+					LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable()));
 
 		LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
 				"witness/serialization/ndc.bin", event, 237));
@@ -113,9 +113,9 @@ public:
 	{
 		MDC::put("mdckey", "mdcvalue");
 
-        LoggingEventPtr event = LoggingEventPtr(
-			new LoggingEvent(
-            LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable()));
+		LoggingEventPtr event = LoggingEventPtr(
+				new LoggingEvent(
+					LOG4CXX_STR("root"), Level::getInfo(), LOG4CXX_STR("Hello, world."), LocationInfo::getLocationUnavailable()));
 
 		LOGUNIT_ASSERT_EQUAL(true, SerializationTestHelper::compare(
 				"witness/serialization/mdc.bin", event, 237));

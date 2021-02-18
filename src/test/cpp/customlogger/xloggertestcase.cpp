@@ -41,7 +41,7 @@ LOGUNIT_CLASS(XLoggerTestCase)
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST_SUITE_END();
 
-    LoggerPtr logger;
+	LoggerPtr logger;
 
 public:
 	void setUp()

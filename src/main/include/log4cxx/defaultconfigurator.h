@@ -42,7 +42,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		Add a ConsoleAppender that uses PatternLayout
 		using the PatternLayout#TTCC_CONVERSION_PATTERN and
 		prints to <code>stdout</code> to the root logger.*/
-        static void configure(log4cxx::spi::LoggerRepositoryPtr repository);
+		static void configure(log4cxx::spi::LoggerRepositoryPtr repository);
 
 	private:
 		static const LogString getConfigurationFileName();

@@ -30,34 +30,34 @@ using namespace log4cxx::helpers;
  */
 LOGUNIT_CLASS(CastTestCase)
 {
-    LOGUNIT_TEST_SUITE( CastTestCase );
-    LOGUNIT_TEST(testGoodCast);
-    LOGUNIT_TEST(testBadCast);
+	LOGUNIT_TEST_SUITE( CastTestCase );
+	LOGUNIT_TEST(testGoodCast);
+	LOGUNIT_TEST(testBadCast);
 
-    LOGUNIT_TEST_SUITE_END();
+	LOGUNIT_TEST_SUITE_END();
 
 public:
 
-    /**
-     *
-     */
-    void testGoodCast()
-    {
-        OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
+	/**
+	 *
+	 */
+	void testGoodCast()
+	{
+		OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
 
-        ByteArrayOutputStreamPtr byteOut = log4cxx::cast<ByteArrayOutputStream>(out);
+		ByteArrayOutputStreamPtr byteOut = log4cxx::cast<ByteArrayOutputStream>(out);
 
-        LOGUNIT_ASSERT(byteOut);
-    }
+		LOGUNIT_ASSERT(byteOut);
+	}
 
-    void testBadCast()
-    {
-        OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
+	void testBadCast()
+	{
+		OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
 
-        FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>(out);
+		FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>(out);
 
-        LOGUNIT_ASSERT(!fos);
-    }
+		LOGUNIT_ASSERT(!fos);
+	}
 
 };
 

@@ -55,7 +55,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-            appender->setLayout(LayoutPtr(new TTCCLayout()));
+			appender->setLayout(LayoutPtr(new TTCCLayout()));
 			appender->setPort(TEST_PORT);
 			Pool p;
 			appender->activateOptions(p);
@@ -65,18 +65,18 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateSleepClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-            appender->setLayout(LayoutPtr(new TTCCLayout()));
+			appender->setLayout(LayoutPtr(new TTCCLayout()));
 			appender->setPort(TEST_PORT);
 			Pool p;
-            appender->activateOptions(p);
-            std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
+			appender->activateOptions(p);
+			std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 			appender->close();
 		}
 
 		void testActivateWriteClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-            appender->setLayout(LayoutPtr(new TTCCLayout()));
+			appender->setLayout(LayoutPtr(new TTCCLayout()));
 			appender->setPort(TEST_PORT);
 			Pool p;
 			appender->activateOptions(p);

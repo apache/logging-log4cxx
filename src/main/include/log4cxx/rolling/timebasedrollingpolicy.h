@@ -215,7 +215,7 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 		int suffixLength;
 
 	public:
-        TimeBasedRollingPolicy();
+		TimeBasedRollingPolicy();
 		void activateOptions(log4cxx::helpers::Pool& );
 
 #ifdef LOG4CXX_MULTI_PROCESS

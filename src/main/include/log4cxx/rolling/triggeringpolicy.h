@@ -43,7 +43,7 @@ namespace rolling
 
 class LOG4CXX_EXPORT TriggeringPolicy :
 	public virtual spi::OptionHandler,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(TriggeringPolicy)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -51,7 +51,7 @@ class LOG4CXX_EXPORT TriggeringPolicy :
 		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
 		END_LOG4CXX_CAST_MAP()
 	public:
-        virtual ~TriggeringPolicy();
+		virtual ~TriggeringPolicy();
 
 		/**
 		 * Determines if a rollover may be appropriate at this time.  If

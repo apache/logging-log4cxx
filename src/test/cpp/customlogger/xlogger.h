@@ -33,7 +33,7 @@ class LocationInfo;
 // LoggerFactory.
 class XFactory :
 	public virtual spi::LoggerFactory,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(XFactory)

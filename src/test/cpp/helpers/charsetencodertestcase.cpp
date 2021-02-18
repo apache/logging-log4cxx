@@ -182,20 +182,20 @@ public:
 	{
 		public:
 			ThreadPackage(CharsetEncoderPtr& enc, int repetitions) :
-                p(), passCount(0), failCount(0), enc(enc), repetitions(repetitions)
+				p(), passCount(0), failCount(0), enc(enc), repetitions(repetitions)
 			{
 			}
 
 			void await()
 			{
 				log4cxx::unique_lock<log4cxx::mutex> sync(lock);
-                condition.wait(sync);
+				condition.wait(sync);
 			}
 
 			void signalAll()
 			{
 				log4cxx::unique_lock<log4cxx::mutex> sync(lock);
-                condition.notify_all();
+				condition.notify_all();
 			}
 
 			void fail()
@@ -228,70 +228,70 @@ public:
 				return enc;
 			}
 
-            void run()
-            {
-        #if LOG4CXX_LOGCHAR_IS_UTF8
-                const logchar greet[] = { 'H', 'e', 'l', 'l', 'o', ' ',
-                        (char) 0xC2, (char) 0xA2,  //  cent sign
-                        (char) 0xC2, (char) 0xA9,  //  copyright
-                        (char) 0xc3, (char) 0xb4,  //  latin small letter o with circumflex
-                        0
-                    };
-        #endif
-        #if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
-                //   arbitrary, hopefully meaningless, characters from
-                //     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
-                const logchar greet[] = { L'H', L'e', L'l', L'l', L'o', L' ',
-                        0x00A2, 0x00A9, 0x00F4, 0
-                    };
-        #endif
+			void run()
+			{
+#if LOG4CXX_LOGCHAR_IS_UTF8
+				const logchar greet[] = { 'H', 'e', 'l', 'l', 'o', ' ',
+						(char) 0xC2, (char) 0xA2,  //  cent sign
+						(char) 0xC2, (char) 0xA9,  //  copyright
+						(char) 0xc3, (char) 0xb4,  //  latin small letter o with circumflex
+						0
+					};
+#endif
+#if LOG4CXX_LOGCHAR_IS_WCHAR || LOG4CXX_LOGCHAR_IS_UNICHAR
+				//   arbitrary, hopefully meaningless, characters from
+				//     Latin, Arabic, Armenian, Bengali, CJK and Cyrillic
+				const logchar greet[] = { L'H', L'e', L'l', L'l', L'o', L' ',
+						0x00A2, 0x00A9, 0x00F4, 0
+					};
+#endif
 
-                const char expected[] =  { 'H', 'e', 'l', 'l', 'o', ' ',
-                        (char) 0x00A2, (char) 0x00A9, (char) 0x00F4
-                    };
+				const char expected[] =  { 'H', 'e', 'l', 'l', 'o', ' ',
+						(char) 0x00A2, (char) 0x00A9, (char) 0x00F4
+					};
 
-                LogString greeting(greet);
+				LogString greeting(greet);
 
-                await();
+				await();
 
-                for (int i = 0; i < getRepetitions(); i++)
-                {
-                    bool pass = true;
-                    char buf[BUFSIZE];
-                    ByteBuffer out(buf, BUFSIZE);
-                    LogString::const_iterator iter = greeting.begin();
-                    log4cxx_status_t stat = getEncoder()->encode(greeting, iter, out);
-                    pass = (false == CharsetEncoder::isError(stat));
+				for (int i = 0; i < getRepetitions(); i++)
+				{
+					bool pass = true;
+					char buf[BUFSIZE];
+					ByteBuffer out(buf, BUFSIZE);
+					LogString::const_iterator iter = greeting.begin();
+					log4cxx_status_t stat = getEncoder()->encode(greeting, iter, out);
+					pass = (false == CharsetEncoder::isError(stat));
 
-                    if (pass)
-                    {
-                        stat = getEncoder()->encode(greeting, iter, out);
-                        pass = (false == CharsetEncoder::isError(stat));
+					if (pass)
+					{
+						stat = getEncoder()->encode(greeting, iter, out);
+						pass = (false == CharsetEncoder::isError(stat));
 
-                        if (pass)
-                        {
-                            out.flip();
-                            pass = (sizeof(expected) == out.limit());
+						if (pass)
+						{
+							out.flip();
+							pass = (sizeof(expected) == out.limit());
 
-                            for (size_t i = 0; i < out.limit() && pass; i++)
-                            {
-                                pass = (expected[i] == out.data()[i]);
-                            }
+							for (size_t i = 0; i < out.limit() && pass; i++)
+							{
+								pass = (expected[i] == out.data()[i]);
+							}
 
-                            pass = pass && (iter == greeting.end());
-                        }
-                    }
+							pass = pass && (iter == greeting.end());
+						}
+					}
 
-                    if (pass)
-                    {
-                        ThreadPackage::pass();
-                    }
-                    else
-                    {
-                        fail();
-                    }
-                }
-            }
+					if (pass)
+					{
+						ThreadPackage::pass();
+					}
+					else
+					{
+						fail();
+					}
+				}
+			}
 
 		private:
 			ThreadPackage(const ThreadPackage&);
@@ -319,8 +319,8 @@ public:
 		}
 		//
 		//   give time for all threads to be launched so
-        //      we don't signal before everybody is waiting.
-        std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
+		//      we don't signal before everybody is waiting.
+		std::this_thread::sleep_for( std::chrono::milliseconds( 100 ) );
 		package->signalAll();
 
 		for (int i = 0; i < THREAD_COUNT; i++)

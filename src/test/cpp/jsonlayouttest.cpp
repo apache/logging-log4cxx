@@ -166,10 +166,10 @@ public:
 	 */
 	void testAppendSerializedMDC()
 	{
-        LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
-			Level::getInfo(),
-			LOG4CXX_STR("A message goes here."),
-            LOG4CXX_LOCATION));
+		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
+					Level::getInfo(),
+					LOG4CXX_STR("A message goes here."),
+					LOG4CXX_LOCATION));
 
 		MDC::put("key1", "value1");
 		MDC::put("key2", "value2");
@@ -187,10 +187,10 @@ public:
 	 */
 	void testAppendSerializedMDCWithPrettyPrint()
 	{
-        LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
-			Level::getInfo(),
-			LOG4CXX_STR("A message goes here."),
-            LOG4CXX_LOCATION));
+		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
+					Level::getInfo(),
+					LOG4CXX_STR("A message goes here."),
+					LOG4CXX_LOCATION));
 
 		MDC::put("key1", "value1");
 		MDC::put("key2", "value2");
@@ -224,10 +224,10 @@ public:
 	 */
 	void testAppendSerializedNDC()
 	{
-        LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
-			Level::getInfo(),
-			LOG4CXX_STR("A message goes here."),
-            LOG4CXX_LOCATION));
+		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
+					Level::getInfo(),
+					LOG4CXX_STR("A message goes here."),
+					LOG4CXX_LOCATION));
 
 		NDC::push("one");
 		NDC::push("two");
@@ -245,10 +245,10 @@ public:
 	 */
 	void testAppendSerializedNDCWithPrettyPrint()
 	{
-        LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
-			Level::getInfo(),
-			LOG4CXX_STR("A message goes here."),
-            LOG4CXX_LOCATION));
+		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
+					Level::getInfo(),
+					LOG4CXX_STR("A message goes here."),
+					LOG4CXX_LOCATION));
 
 		NDC::push("one");
 		NDC::push("two");
@@ -282,10 +282,10 @@ public:
 	{
 		Pool p;
 
-        LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
-			Level::getInfo(),
-			LOG4CXX_STR("A message goes here."),
-            spi::LocationInfo("FooFile", "BarFunc", 42)));
+		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
+					Level::getInfo(),
+					LOG4CXX_STR("A message goes here."),
+					spi::LocationInfo("FooFile", "BarFunc", 42)));
 
 		LogString output1;
 		LogString expected1;
@@ -308,10 +308,10 @@ public:
 	{
 		Pool p;
 
-        LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
-			Level::getInfo(),
-			LOG4CXX_STR("A message goes here."),
-            spi::LocationInfo("FooFile", "BarFunc", 42)));
+		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
+					Level::getInfo(),
+					LOG4CXX_STR("A message goes here."),
+					spi::LocationInfo("FooFile", "BarFunc", 42)));
 
 		LogString output1;
 		LogString expected1;
@@ -348,10 +348,10 @@ public:
 	{
 		Pool p;
 
-        LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
-			Level::getInfo(),
-			LOG4CXX_STR("A message goes here."),
-            spi::LocationInfo("FooFile", "BarFunc", 42)));
+		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
+					Level::getInfo(),
+					LOG4CXX_STR("A message goes here."),
+					spi::LocationInfo("FooFile", "BarFunc", 42)));
 
 		LogString timestamp;
 		helpers::ISO8601DateFormat dateFormat;
@@ -396,10 +396,10 @@ public:
 	{
 		Pool p;
 
-        LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
-			Level::getInfo(),
-			LOG4CXX_STR("A message goes here."),
-            spi::LocationInfo("FooFile", "BarFunc", 42)));
+		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
+					Level::getInfo(),
+					LOG4CXX_STR("A message goes here."),
+					spi::LocationInfo("FooFile", "BarFunc", 42)));
 
 		LogString timestamp;
 		helpers::ISO8601DateFormat dateFormat;

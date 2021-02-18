@@ -131,8 +131,8 @@ void PatternLayout::activateOptions(Pool&)
 		converterIter != converters.end();
 		converterIter++)
 	{
-        LoggingEventPatternConverterPtr eventConverter =
-                log4cxx::cast<LoggingEventPatternConverter>(*converterIter);
+		LoggingEventPatternConverterPtr eventConverter =
+			log4cxx::cast<LoggingEventPatternConverter>(*converterIter);
 
 		if (eventConverter != NULL)
 		{

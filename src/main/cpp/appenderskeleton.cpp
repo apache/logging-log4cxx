@@ -36,7 +36,7 @@ AppenderSkeleton::AppenderSkeleton()
 		errorHandler(new OnlyOnceErrorHandler()),
 		headFilter(),
 		tailFilter(),
-        pool()
+		pool()
 {
 	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	closed = false;
@@ -49,7 +49,7 @@ AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
 	  errorHandler(new OnlyOnceErrorHandler()),
 	  headFilter(),
 	  tailFilter(),
-      pool()
+	  pool()
 {
 	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	closed = false;

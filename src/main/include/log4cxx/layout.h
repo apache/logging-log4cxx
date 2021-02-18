@@ -36,7 +36,7 @@ Extend this abstract class to create your own log layout format.
 */
 class LOG4CXX_EXPORT Layout :
 	public virtual spi::OptionHandler,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Layout)
@@ -45,7 +45,7 @@ class LOG4CXX_EXPORT Layout :
 		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
 		END_LOG4CXX_CAST_MAP()
 
-        virtual ~Layout();
+		virtual ~Layout();
 
 		/**
 		Implement this method to create your own layout format.

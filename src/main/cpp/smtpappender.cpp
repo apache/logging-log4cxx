@@ -348,7 +348,7 @@ class SMTPMessage
 
 class LOG4CXX_EXPORT DefaultEvaluator :
 	public virtual spi::TriggeringEventEvaluator,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	public:
 		DECLARE_LOG4CXX_OBJECT(DefaultEvaluator)
@@ -784,7 +784,7 @@ for the SMTPAppender.
 */
 void SMTPAppender::setEvaluatorClass(const LogString& value)
 {
-    ObjectPtr obj = ObjectPtr(Loader::loadClass(value).newInstance());
-    evaluator = log4cxx::cast<TriggeringEventEvaluator>(obj);
+	ObjectPtr obj = ObjectPtr(Loader::loadClass(value).newInstance());
+	evaluator = log4cxx::cast<TriggeringEventEvaluator>(obj);
 }
 

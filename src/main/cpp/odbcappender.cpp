@@ -344,13 +344,13 @@ void ODBCAppender::setSql(const LogString& s)
 
 	if (getLayout() == 0)
 	{
-        this->setLayout(PatternLayoutPtr(new PatternLayout(s)));
+		this->setLayout(PatternLayoutPtr(new PatternLayout(s)));
 	}
 	else
 	{
-        PatternLayoutPtr patternLayout;
-        LayoutPtr asLayout = this->getLayout();
-        patternLayout = log4cxx::cast<PatternLayout>(asLayout);
+		PatternLayoutPtr patternLayout;
+		LayoutPtr asLayout = this->getLayout();
+		patternLayout = log4cxx::cast<PatternLayout>(asLayout);
 
 		if (patternLayout != 0)
 		{

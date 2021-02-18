@@ -49,8 +49,8 @@ public:
 	{
 		//
 		//    read patternLayout1.properties
-        FileInputStreamPtr propFile = FileInputStreamPtr(
-            new FileInputStream(LOG4CXX_STR("input/patternLayout1.properties")));
+		FileInputStreamPtr propFile = FileInputStreamPtr(
+				new FileInputStream(LOG4CXX_STR("input/patternLayout1.properties")));
 		Properties properties;
 		properties.load(propFile);
 		LogString pattern(properties.getProperty(LOG4CXX_STR("log4j.appender.testAppender.layout.ConversionPattern")));

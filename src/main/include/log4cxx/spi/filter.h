@@ -66,7 +66,7 @@ Linux ipchains.
 xml::DOMConfigurator DOMConfigurator}.
 */
 class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 		/**
 		Points to the next filter in the filter chain.

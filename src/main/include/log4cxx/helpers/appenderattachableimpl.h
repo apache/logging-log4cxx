@@ -42,7 +42,7 @@ namespace helpers
 
 class LOG4CXX_EXPORT AppenderAttachableImpl :
 	public virtual spi::AppenderAttachable,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	protected:
 		/** Array of appenders. */
@@ -65,7 +65,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 * Add an appender.
 		 */
-        virtual void addAppender(const AppenderPtr newAppender);
+		virtual void addAppender(const AppenderPtr newAppender);
 
 		/**
 		 Call the <code>doAppend</code> method on all attached appenders.
@@ -87,7 +87,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 Returns <code>true</code> if the specified appender is in the
 		 list of attached appenders, <code>false</code> otherwise.
 		*/
-        virtual bool isAttached(const AppenderPtr appender) const;
+		virtual bool isAttached(const AppenderPtr appender) const;
 
 		/**
 		 * Remove all previously added appenders.
@@ -97,7 +97,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 * Remove the appender passed as parameter from the list of appenders.
 		 */
-        virtual void removeAppender(const AppenderPtr appender);
+		virtual void removeAppender(const AppenderPtr appender);
 
 		/**
 		 * Remove the appender with the name passed as parameter from the

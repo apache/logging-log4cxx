@@ -93,10 +93,12 @@ void SocketHubAppender::close()
 	}
 
 	LogLog::debug(LOG4CXX_STR("closing SocketHubAppender ") + getName());
+
 	//
 	//  wait until the server thread completes
 	//
-	if( thread.joinable() ){
+	if ( thread.joinable() )
+	{
 		thread.join();
 	}
 
@@ -183,17 +185,17 @@ void SocketHubAppender::monitor()
 
 	try
 	{
-        serverSocket = new ServerSocket(port);
+		serverSocket = new ServerSocket(port);
 		serverSocket->setSoTimeout(1000);
 	}
 	catch (SocketException& e)
 	{
 		LogLog::error(LOG4CXX_STR("exception setting timeout, shutting down server socket."), e);
 		delete serverSocket;
-        return;
+		return;
 	}
 
-    bool stopRunning = closed;
+	bool stopRunning = closed;
 
 	while (!stopRunning)
 	{
@@ -234,7 +236,7 @@ void SocketHubAppender::monitor()
 				OutputStreamPtr os(new SocketOutputStream(socket));
 				Pool p;
 				ObjectOutputStreamPtr oos(new ObjectOutputStream(os, p));
-                streams.push_back(oos);
+				streams.push_back(oos);
 			}
 			catch (IOException& e)
 			{
@@ -242,8 +244,8 @@ void SocketHubAppender::monitor()
 			}
 		}
 
-        stopRunning = (stopRunning ||closed);
+		stopRunning = (stopRunning || closed);
 	}
 
-    delete serverSocket;
+	delete serverSocket;
 }

@@ -42,7 +42,7 @@ IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 
 AsyncAppender::AsyncAppender()
 	: AppenderSkeleton(),
-      buffer(),
+	  buffer(),
 	  discardMap(new DiscardMap()),
 	  bufferSize(DEFAULT_BUFFER_SIZE),
 	  appenders(new AppenderAttachableImpl(pool)),
@@ -103,12 +103,12 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	//   if dispatcher has died then
 	//      append subsequent events synchronously
 	//
-    if (!dispatcher.joinable() || bufferSize <= 0)
+	if (!dispatcher.joinable() || bufferSize <= 0)
 	{
 		log4cxx::unique_lock<log4cxx::mutex> lock(appenders->getMutex());
 		appenders->appendLoopOnAppenders(event, p);
 		return;
-    }
+	}
 
 	// Set the NDC and thread name for the calling thread as these
 	// LoggingEvent fields were not set at event creation time.
@@ -119,7 +119,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	event->getMDCCopy();
 
 
-    {
+	{
 		log4cxx::unique_lock<log4cxx::mutex> lock(bufferMutex);
 
 		while (true)
@@ -132,7 +132,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 				if (previousSize == 0)
 				{
-                    bufferNotEmpty.notify_all();
+					bufferNotEmpty.notify_all();
 				}
 
 				break;
@@ -148,12 +148,12 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			bool discard = true;
 
 			if (blocking
-                //&& !Thread::interrupted()
-                && (dispatcher.get_id() != std::this_thread::get_id()) )
+				//&& !Thread::interrupted()
+				&& (dispatcher.get_id() != std::this_thread::get_id()) )
 			{
 				try
 				{
-                    bufferNotFull.wait(lock);
+					bufferNotFull.wait(lock);
 					discard = false;
 				}
 				catch (InterruptedException&)
@@ -162,7 +162,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 					//  reset interrupt status so
 					//    calling code can see interrupt on
 					//    their next wait or sleep.
-                    //Thread::currentThreadInterrupt();
+					//Thread::currentThreadInterrupt();
 				}
 			}
 
@@ -197,13 +197,14 @@ void AsyncAppender::close()
 	{
 		log4cxx::unique_lock<log4cxx::mutex> lock(bufferMutex);
 		closed = true;
-        bufferNotEmpty.notify_all();
-        bufferNotFull.notify_all();
+		bufferNotEmpty.notify_all();
+		bufferNotFull.notify_all();
 	}
 
-    if( dispatcher.joinable() ){
-        dispatcher.join();
-    }
+	if ( dispatcher.joinable() )
+	{
+		dispatcher.join();
+	}
 
 	{
 		log4cxx::unique_lock<log4cxx::mutex> lock(appenders->getMutex());
@@ -279,7 +280,7 @@ void AsyncAppender::setBufferSize(int size)
 
 	log4cxx::unique_lock<log4cxx::mutex> lock(bufferMutex);
 	bufferSize = (size < 1) ? 1 : size;
-    bufferNotFull.notify_all();
+	bufferNotFull.notify_all();
 }
 
 int AsyncAppender::getBufferSize() const
@@ -291,7 +292,7 @@ void AsyncAppender::setBlocking(bool value)
 {
 	log4cxx::unique_lock<log4cxx::mutex> lock(bufferMutex);
 	blocking = value;
-    bufferNotFull.notify_all();
+	bufferNotFull.notify_all();
 }
 
 bool AsyncAppender::getBlocking() const
@@ -332,11 +333,11 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p)
 	StringHelper::toString(count, p, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer including: "));
 	msg.append(maxEvent->getMessage());
-    return LoggingEventPtr( new LoggingEvent(
-			maxEvent->getLoggerName(),
-			maxEvent->getLevel(),
-			msg,
-            LocationInfo::getLocationUnavailable()) );
+	return LoggingEventPtr( new LoggingEvent(
+				maxEvent->getLoggerName(),
+				maxEvent->getLevel(),
+				msg,
+				LocationInfo::getLocationUnavailable()) );
 }
 
 ::log4cxx::spi::LoggingEventPtr
@@ -347,11 +348,11 @@ AsyncAppender::DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
 	StringHelper::toString(discardedCount, p, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer"));
 
-    return LoggingEventPtr( new LoggingEvent(
-			LOG4CXX_STR(""),
-			log4cxx::Level::getError(),
-			msg,
-            LocationInfo::getLocationUnavailable()) );
+	return LoggingEventPtr( new LoggingEvent(
+				LOG4CXX_STR(""),
+				log4cxx::Level::getError(),
+				msg,
+				LocationInfo::getLocationUnavailable()) );
 }
 
 void AsyncAppender::dispatch()
@@ -367,35 +368,35 @@ void AsyncAppender::dispatch()
 			//
 			Pool p;
 			LoggingEventList events;
-            {
+			{
 				log4cxx::unique_lock<log4cxx::mutex> lock(bufferMutex);
-                size_t bufferSize = buffer.size();
-                isActive = !closed;
+				size_t bufferSize = buffer.size();
+				isActive = !closed;
 
 				while ((bufferSize == 0) && isActive)
 				{
-                    bufferNotEmpty.wait(lock);
-                    bufferSize = buffer.size();
-                    isActive = !closed;
+					bufferNotEmpty.wait(lock);
+					bufferSize = buffer.size();
+					isActive = !closed;
 				}
 
-                for (LoggingEventList::iterator eventIter = buffer.begin();
-                    eventIter != buffer.end();
+				for (LoggingEventList::iterator eventIter = buffer.begin();
+					eventIter != buffer.end();
 					eventIter++)
 				{
 					events.push_back(*eventIter);
 				}
 
-                for (DiscardMap::iterator discardIter = discardMap->begin();
-                    discardIter != discardMap->end();
+				for (DiscardMap::iterator discardIter = discardMap->begin();
+					discardIter != discardMap->end();
 					discardIter++)
 				{
 					events.push_back(discardIter->second.createEvent(p));
 				}
 
-                buffer.clear();
-                discardMap->clear();
-                bufferNotFull.notify_all();
+				buffer.clear();
+				discardMap->clear();
+				bufferNotFull.notify_all();
 			}
 
 			for (LoggingEventList::iterator iter = events.begin();
@@ -403,16 +404,16 @@ void AsyncAppender::dispatch()
 				iter++)
 			{
 				log4cxx::unique_lock<log4cxx::mutex> lock(appenders->getMutex());
-                appenders->appendLoopOnAppenders(*iter, p);
+				appenders->appendLoopOnAppenders(*iter, p);
 			}
 		}
 	}
 	catch (InterruptedException&)
 	{
-        //Thread::currentThreadInterrupt();
+		//Thread::currentThreadInterrupt();
 	}
 	catch (...)
 	{
-    }
+	}
 
 }

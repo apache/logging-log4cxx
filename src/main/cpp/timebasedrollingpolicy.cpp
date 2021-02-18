@@ -282,15 +282,15 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 
 	if (currentActiveFile.length() > 0)
 	{
-        return RolloverDescriptionPtr(new RolloverDescription(
-                currentActiveFile, append, noAction, noAction));
+		return RolloverDescriptionPtr(new RolloverDescription(
+					currentActiveFile, append, noAction, noAction));
 	}
 	else
 	{
 		bRefreshCurFile = true;
-        return RolloverDescriptionPtr(new RolloverDescription(
-				lastFileName.substr(0, lastFileName.length() - suffixLength), append,
-                noAction, noAction));
+		return RolloverDescriptionPtr(new RolloverDescription(
+					lastFileName.substr(0, lastFileName.length() - suffixLength), append,
+					noAction, noAction));
 	}
 }
 
@@ -348,24 +348,24 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	//        and requires a rename plus maintaining the same name
 	if (currentActiveFile != lastBaseName)
 	{
-        renameAction = FileRenameActionPtr(
-			new FileRenameAction(
-            File().setPath(currentActiveFile), File().setPath(lastBaseName), true));
+		renameAction = FileRenameActionPtr(
+				new FileRenameAction(
+					File().setPath(currentActiveFile), File().setPath(lastBaseName), true));
 		nextActiveFile = currentActiveFile;
 	}
 
 	if (suffixLength == 3)
 	{
-        compressAction = GZCompressActionPtr(
-			new GZCompressAction(
-            File().setPath(lastBaseName), File().setPath(lastFileName), true));
+		compressAction = GZCompressActionPtr(
+				new GZCompressAction(
+					File().setPath(lastBaseName), File().setPath(lastFileName), true));
 	}
 
 	if (suffixLength == 4)
 	{
-        compressAction = ZipCompressActionPtr(
-			new ZipCompressAction(
-            File().setPath(lastBaseName), File().setPath(lastFileName), true));
+		compressAction = ZipCompressActionPtr(
+				new ZipCompressAction(
+					File().setPath(lastBaseName), File().setPath(lastFileName), true));
 	}
 
 #ifdef LOG4CXX_MULTI_PROCESS
@@ -387,7 +387,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	lastFileName = newFileName;
 #endif
 
-    return RolloverDescriptionPtr(new RolloverDescription(nextActiveFile, append, renameAction, compressAction));
+	return RolloverDescriptionPtr(new RolloverDescription(nextActiveFile, append, renameAction, compressAction));
 }
 
 bool TimeBasedRollingPolicy::isTriggeringEvent(

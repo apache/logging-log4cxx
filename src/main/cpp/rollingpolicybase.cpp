@@ -128,9 +128,9 @@ PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const
 		converterIter != patternConverters.end();
 		converterIter++)
 	{
-        IntegerPatternConverterPtr intPattern;
-        PatternConverterPtr patternptr = (*converterIter);
-        intPattern = log4cxx::cast<IntegerPatternConverter>(patternptr);
+		IntegerPatternConverterPtr intPattern;
+		PatternConverterPtr patternptr = (*converterIter);
+		intPattern = log4cxx::cast<IntegerPatternConverter>(patternptr);
 
 		if (intPattern != NULL)
 		{
@@ -149,9 +149,9 @@ PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const
 		converterIter != patternConverters.end();
 		converterIter++)
 	{
-        DatePatternConverterPtr datePattern;
-        PatternConverterPtr patternptr = (*converterIter);
-        datePattern = log4cxx::cast<DatePatternConverter>(patternptr);
+		DatePatternConverterPtr datePattern;
+		PatternConverterPtr patternptr = (*converterIter);
+		datePattern = log4cxx::cast<DatePatternConverter>(patternptr);
 
 		if (datePattern != NULL)
 		{

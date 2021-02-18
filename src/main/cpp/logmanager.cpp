@@ -55,14 +55,16 @@ RepositorySelectorPtr LogManager::getRepositorySelector()
 	//
 	//     call to initialize APR and trigger "start" of logging clock
 	//
-    APRInitializer::initialize();
-    if (!repositorySelector)
-    {
-        LoggerRepositoryPtr hierarchy(new Hierarchy());
-        RepositorySelectorPtr selector(new DefaultRepositorySelector(hierarchy));
-        repositorySelector = selector;
-    }
-    return repositorySelector;
+	APRInitializer::initialize();
+
+	if (!repositorySelector)
+	{
+		LoggerRepositoryPtr hierarchy(new Hierarchy());
+		RepositorySelectorPtr selector(new DefaultRepositorySelector(hierarchy));
+		repositorySelector = selector;
+	}
+
+	return repositorySelector;
 }
 
 void LogManager::setRepositorySelector(spi::RepositorySelectorPtr selector,
@@ -207,7 +209,7 @@ LoggerList LogManager::getCurrentLoggers()
 
 void LogManager::shutdown()
 {
-    LoggerRepositoryPtr repPtr = getLoggerRepository();
+	LoggerRepositoryPtr repPtr = getLoggerRepository();
 	getLoggerRepository()->shutdown();
 }
 

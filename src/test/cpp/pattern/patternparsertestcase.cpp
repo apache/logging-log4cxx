@@ -78,8 +78,8 @@ LOGUNIT_CLASS(PatternParserTestCase)
 public:
 	void setUp()
 	{
-        event = LoggingEventPtr(new LoggingEvent(
-            LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION));
+		event = LoggingEventPtr(new LoggingEvent(
+					LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION));
 	}
 
 	void tearDown()

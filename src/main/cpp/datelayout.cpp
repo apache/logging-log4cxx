@@ -72,30 +72,30 @@ void DateLayout::activateOptions(Pool&)
 		else if (StringHelper::equalsIgnoreCase(dateFormatOption,
 				LOG4CXX_STR("RELATIVE"), LOG4CXX_STR("relative")))
 		{
-            dateFormat =  DateFormatPtr(new RelativeTimeDateFormat());
+			dateFormat =  DateFormatPtr(new RelativeTimeDateFormat());
 			dateFormatOption = LOG4CXX_STR("RELATIVE");
 		}
 		else if (StringHelper::equalsIgnoreCase(dateFormatOption,
 				LOG4CXX_STR("ABSOLUTE"),  LOG4CXX_STR("absolute")))
 		{
-            dateFormat =  DateFormatPtr(new AbsoluteTimeDateFormat());
+			dateFormat =  DateFormatPtr(new AbsoluteTimeDateFormat());
 			dateFormatOption = LOG4CXX_STR("ABSOLUTE");
 		}
 		else if (StringHelper::equalsIgnoreCase(dateFormatOption,
 				LOG4CXX_STR("DATE"), LOG4CXX_STR("date")))
 		{
-            dateFormat =  DateFormatPtr(new DateTimeDateFormat());
+			dateFormat =  DateFormatPtr(new DateTimeDateFormat());
 			dateFormatOption = LOG4CXX_STR("DATE");
 		}
 		else if (StringHelper::equalsIgnoreCase(dateFormatOption,
 				LOG4CXX_STR("ISO8601"), LOG4CXX_STR("iso8601")))
 		{
-            dateFormat =  DateFormatPtr(new ISO8601DateFormat());
+			dateFormat =  DateFormatPtr(new ISO8601DateFormat());
 			dateFormatOption = LOG4CXX_STR("iso8601");
 		}
 		else
 		{
-            dateFormat = DateFormatPtr(new SimpleDateFormat(dateFormatOption));
+			dateFormat = DateFormatPtr(new SimpleDateFormat(dateFormatOption));
 		}
 	}
 

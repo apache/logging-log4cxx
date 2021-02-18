@@ -38,13 +38,13 @@ FileWatchdog::FileWatchdog(const File& file1)
 
 FileWatchdog::~FileWatchdog()
 {
-    interrupted = 0xFFFF;
+	interrupted = 0xFFFF;
 
-    {
+	{
 		log4cxx::unique_lock<log4cxx::mutex> lock(interrupt_mutex);
-        interrupt.notify_all();
-    }
-    thread.join();
+		interrupt.notify_all();
+	}
+	thread.join();
 }
 
 void FileWatchdog::checkAndConfigure()
@@ -77,14 +77,14 @@ void FileWatchdog::checkAndConfigure()
 void FileWatchdog::run()
 {
 
-    while (interrupted != 0xFFFF)
-    {
+	while (interrupted != 0xFFFF)
+	{
 		log4cxx::unique_lock<log4cxx::mutex> lock( interrupt_mutex );
-        interrupt.wait_for( lock, std::chrono::milliseconds( delay ),
-                            std::bind(&FileWatchdog::is_interrupted, this) );
+		interrupt.wait_for( lock, std::chrono::milliseconds( delay ),
+			std::bind(&FileWatchdog::is_interrupted, this) );
 
-        checkAndConfigure();
-    }
+		checkAndConfigure();
+	}
 
 }
 
@@ -95,6 +95,7 @@ void FileWatchdog::start()
 	thread = log4cxx::thread( &FileWatchdog::run, this );
 }
 
-bool FileWatchdog::is_interrupted(){
-    return interrupted == 0xFFFF;
+bool FileWatchdog::is_interrupted()
+{
+	return interrupted == 0xFFFF;
 }

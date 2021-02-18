@@ -28,7 +28,7 @@ namespace spi
 {
 class LOG4CXX_EXPORT DefaultRepositorySelector :
 	public virtual RepositorySelector,
-    public virtual helpers::Object
+	public virtual helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DefaultRepositorySelector)
@@ -36,8 +36,8 @@ class LOG4CXX_EXPORT DefaultRepositorySelector :
 		LOG4CXX_CAST_ENTRY(RepositorySelector)
 		END_LOG4CXX_CAST_MAP()
 
-        DefaultRepositorySelector(const LoggerRepositoryPtr repository1);
-        virtual LoggerRepositoryPtr getLoggerRepository();
+		DefaultRepositorySelector(const LoggerRepositoryPtr repository1);
+		virtual LoggerRepositoryPtr getLoggerRepository();
 
 	private:
 		LoggerRepositoryPtr repository;

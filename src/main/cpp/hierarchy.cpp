@@ -47,14 +47,14 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 Hierarchy::Hierarchy() :
-    pool(),
+	pool(),
 	loggers(new LoggerMap()),
 	provisionNodes(new ProvisionNodeMap())
 {
 	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
-    root = LoggerPtr(new RootLogger(pool, Level::getDebug()));
+	root = LoggerPtr(new RootLogger(pool, Level::getDebug()));
 	root->setHierarchy(this);
-    defaultFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
+	defaultFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
 	emittedNoAppenderWarning = false;
 	configured = false;
 	thresholdInt = Level::ALL_INT;
@@ -132,7 +132,7 @@ void Hierarchy::setThreshold(const LevelPtr& l)
 	if (l != 0)
 	{
 		log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
-        setThresholdInternal(l);
+		setThresholdInternal(l);
 	}
 }
 
@@ -151,14 +151,15 @@ void Hierarchy::setThreshold(const LogString& levelStr)
 	}
 }
 
-void Hierarchy::setThresholdInternal(const LevelPtr &l){
-    thresholdInt = l->toInt();
-    threshold = l;
+void Hierarchy::setThresholdInternal(const LevelPtr& l)
+{
+	thresholdInt = l->toInt();
+	threshold = l;
 
-    if (thresholdInt != Level::ALL_INT)
-    {
-        configured = true;
-    }
+	if (thresholdInt != Level::ALL_INT)
+	{
+		configured = true;
+	}
 }
 
 void Hierarchy::fireAddAppenderEvent(const Logger* logger, const Appender* appender)
@@ -176,7 +177,7 @@ void Hierarchy::fireAddAppenderEvent(const Logger* logger, const Appender* appen
 	for (it = clonedList.begin(); it != itEnd; it++)
 	{
 		listener = *it;
-        listener->addAppenderEvent(logger, appender);
+		listener->addAppenderEvent(logger, appender);
 	}
 }
 
@@ -262,16 +263,17 @@ LoggerPtr Hierarchy::getRootLogger() const
 
 bool Hierarchy::isDisabled(int level) const
 {
-    bool currentlyConfigured;
-    {
+	bool currentlyConfigured;
+	{
 		log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
-        currentlyConfigured = configured;
-    }
-    if (!currentlyConfigured)
-    {
-        std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
-        DefaultConfigurator::configure(
-            nonconstThis);
+		currentlyConfigured = configured;
+	}
+
+	if (!currentlyConfigured)
+	{
+		std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
+		DefaultConfigurator::configure(
+			nonconstThis);
 	}
 
 	return thresholdInt > level;
@@ -284,18 +286,18 @@ void Hierarchy::resetConfiguration()
 
 	getRootLogger()->setLevel(Level::getDebug());
 	root->setResourceBundle(0);
-    setThresholdInternal(Level::getAll());
+	setThresholdInternal(Level::getAll());
 
-    shutdownInternal();
+	shutdownInternal();
 
-    LoggerMap::const_iterator it, itEnd = loggers->end();
+	LoggerMap::const_iterator it, itEnd = loggers->end();
 
-    for (it = loggers->begin(); it != itEnd; it++)
-    {
-        it->second->setLevel(0);
-        it->second->setAdditivity(true);
-        it->second->setResourceBundle(0);
-    }
+	for (it = loggers->begin(); it != itEnd; it++)
+	{
+		it->second->setLevel(0);
+		it->second->setAdditivity(true);
+		it->second->setResourceBundle(0);
+	}
 
 	//rendererMap.clear();
 }
@@ -304,33 +306,34 @@ void Hierarchy::shutdown()
 {
 	log4cxx::unique_lock<log4cxx::mutex> lock(mutex);
 
-    shutdownInternal();
+	shutdownInternal();
 }
 
-void Hierarchy::shutdownInternal(){
-    configured = false;
+void Hierarchy::shutdownInternal()
+{
+	configured = false;
 
-    LoggerPtr root1 = getRootLogger();
+	LoggerPtr root1 = getRootLogger();
 
-    // begin by closing nested appenders
-    root1->closeNestedAppenders();
+	// begin by closing nested appenders
+	root1->closeNestedAppenders();
 
-    LoggerMap::iterator it, itEnd = loggers->end();
+	LoggerMap::iterator it, itEnd = loggers->end();
 
-    for (it = loggers->begin(); it != itEnd; it++)
-    {
-        LoggerPtr logger = it->second;
-        logger->closeNestedAppenders();
-    }
+	for (it = loggers->begin(); it != itEnd; it++)
+	{
+		LoggerPtr logger = it->second;
+		logger->closeNestedAppenders();
+	}
 
-    // then, remove all appenders
-    root1->removeAllAppenders();
+	// then, remove all appenders
+	root1->removeAllAppenders();
 
-    for (it = loggers->begin(); it != itEnd; it++)
-    {
-        LoggerPtr logger = it->second;
-        logger->removeAllAppenders();
-    }
+	for (it = loggers->begin(); it != itEnd; it++)
+	{
+		LoggerPtr logger = it->second;
+		logger->removeAllAppenders();
+	}
 }
 
 void Hierarchy::updateParents(LoggerPtr logger)

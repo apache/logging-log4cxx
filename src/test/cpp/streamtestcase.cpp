@@ -127,7 +127,7 @@ public:
 	{
 		LoggerPtr root(Logger::getRootLogger());
 		LayoutPtr layout(new SimpleLayout());
-        vectorAppender = VectorAppenderPtr(new VectorAppender());
+		vectorAppender = VectorAppenderPtr(new VectorAppender());
 		root->addAppender(vectorAppender);
 	}
 

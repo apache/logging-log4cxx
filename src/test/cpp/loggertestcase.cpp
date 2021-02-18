@@ -97,7 +97,7 @@ public:
 	void testAppender1()
 	{
 		logger = Logger::getLogger(LOG4CXX_TEST_STR("test"));
-        a1 = FileAppenderPtr(new FileAppender());
+		a1 = FileAppenderPtr(new FileAppender());
 		a1->setName(LOG4CXX_STR("testAppender1"));
 		logger->addAppender(a1);
 
@@ -112,9 +112,9 @@ public:
 	*/
 	void testAppender2()
 	{
-        a1 = FileAppenderPtr(new FileAppender());
+		a1 = FileAppenderPtr(new FileAppender());
 		a1->setName(LOG4CXX_STR("testAppender2.1"));
-        a2 = FileAppenderPtr(new FileAppender());
+		a2 = FileAppenderPtr(new FileAppender());
 		a2->setName(LOG4CXX_STR("testAppender2.2"));
 
 		logger = Logger::getLogger(LOG4CXX_TEST_STR("test"));
@@ -135,7 +135,7 @@ public:
 	{
 		LoggerPtr a = Logger::getLogger(LOG4CXX_TEST_STR("a"));
 		LoggerPtr ab = Logger::getLogger(LOG4CXX_TEST_STR("a.b"));
-        CountingAppenderPtr ca = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr ca = CountingAppenderPtr(new CountingAppender());
 		a->addAppender(ca);
 
 		LOGUNIT_ASSERT_EQUAL(ca->counter, 0);
@@ -159,8 +159,8 @@ public:
 		LoggerPtr abc = Logger::getLogger(LOG4CXX_TEST_STR("a.b.c"));
 		LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
 
-        CountingAppenderPtr ca1 = CountingAppenderPtr(new CountingAppender());
-        CountingAppenderPtr ca2 = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr ca1 = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr ca2 = CountingAppenderPtr(new CountingAppender());
 
 		a->addAppender(ca1);
 		abc->addAppender(ca2);
@@ -192,9 +192,9 @@ public:
 		LoggerPtr abc = Logger::getLogger(LOG4CXX_TEST_STR("a.b.c"));
 		LoggerPtr x = Logger::getLogger(LOG4CXX_TEST_STR("x"));
 
-        CountingAppenderPtr caRoot = CountingAppenderPtr(new CountingAppender());
-        CountingAppenderPtr caA = CountingAppenderPtr(new CountingAppender());
-        CountingAppenderPtr caABC = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr caRoot = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr caA = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr caABC = CountingAppenderPtr(new CountingAppender());
 
 		root->addAppender(caRoot);
 		a->addAppender(caA);
@@ -224,7 +224,7 @@ public:
 
 	void testDisable1()
 	{
-        CountingAppenderPtr caRoot = CountingAppenderPtr(new CountingAppender());
+		CountingAppenderPtr caRoot = CountingAppenderPtr(new CountingAppender());
 		LoggerPtr root = Logger::getRootLogger();
 		root->addAppender(caRoot);
 
@@ -391,7 +391,7 @@ public:
 
 	void testHierarchy1()
 	{
-        LoggerRepositoryPtr h = LoggerRepositoryPtr(new Hierarchy());
+		LoggerRepositoryPtr h = LoggerRepositoryPtr(new Hierarchy());
 		LoggerPtr root(h->getRootLogger());
 		root->setLevel(Level::getError());
 		LoggerPtr a0 = h->getLogger(LOG4CXX_STR("a"));
@@ -409,7 +409,7 @@ public:
 		//   prior to fix, these line would compile.
 		//
 		(*logger).info("Hello, World.");
-        ((Logger*) logger.get())->info("Hello, World.");
+		((Logger*) logger.get())->info("Hello, World.");
 		//
 		//   this one would not.
 		//
@@ -423,7 +423,7 @@ public:
 	 */
 	void testTrace()
 	{
-        VectorAppenderPtr appender = VectorAppenderPtr(new VectorAppender());
+		VectorAppenderPtr appender = VectorAppenderPtr(new VectorAppender());
 		LoggerPtr root = Logger::getRootLogger();
 		root->addAppender(appender);
 		root->setLevel(Level::getInfo());
@@ -448,7 +448,7 @@ public:
 	 */
 	void testIsTraceEnabled()
 	{
-        VectorAppenderPtr appender = VectorAppenderPtr(new VectorAppender());
+		VectorAppenderPtr appender = VectorAppenderPtr(new VectorAppender());
 		LoggerPtr root = Logger::getRootLogger();
 		root->addAppender(appender);
 		root->setLevel(Level::getInfo());
