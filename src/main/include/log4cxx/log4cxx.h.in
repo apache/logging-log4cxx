@@ -45,6 +45,7 @@ typedef unsigned int log4cxx_uint32_t;
 #include "boost-std-configuration.h"
 
 #define LOG4CXX_PTR_DEF(T) typedef log4cxx::shared_ptr<T> T##Ptr
+#define LOG4CXX_WEAK_PTR_DEF(T) typedef log4cxx::weak_ptr<T> T##WeakPtr
 #define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N
 
 #if _WIN32

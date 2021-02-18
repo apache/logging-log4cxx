@@ -42,8 +42,8 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
     public virtual helpers::Object
 {
 	private:
-		AppenderPtr backup;
-		AppenderPtr primary;
+		AppenderWeakPtr backup;
+		AppenderWeakPtr primary;
 		std::vector<LoggerPtr> loggers;
 
 	public:
@@ -89,14 +89,6 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		<code>System.err</code>.
 		*/
 		void error(const LogString& /* message */) const {}
-
-		/**
-		Return the backup appender.
-		*/
-		const AppenderPtr& getBackupAppender() const
-		{
-			return backup;
-		}
 
 		/**
 		The appender to which this error handler is attached.

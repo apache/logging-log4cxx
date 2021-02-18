@@ -57,20 +57,27 @@ void FallbackErrorHandler::error(const LogString& message,
 		+  message, e);
 	LogLog::debug(LOG4CXX_STR("FB: INITIATING FALLBACK PROCEDURE."));
 
+	AppenderPtr primaryLocked = primary.lock();
+	AppenderPtr backupLocked = backup.lock();
+
+	if( !primaryLocked || !backupLocked ){
+		return;
+	}
+
 	for (LoggerPtr l : loggers)
 	{
 		LogLog::debug(((LogString) LOG4CXX_STR("FB: Searching for ["))
-			+ primary->getName() + LOG4CXX_STR("] in logger [")
+			+ primaryLocked->getName() + LOG4CXX_STR("] in logger [")
 			+ l->getName() + LOG4CXX_STR("]."));
 		LogLog::debug(((LogString) LOG4CXX_STR("FB: Replacing ["))
-			+ primary->getName() + LOG4CXX_STR("] by [")
-			+ backup->getName() + LOG4CXX_STR("] in logger [")
+			+ primaryLocked->getName() + LOG4CXX_STR("] by [")
+			+ backupLocked->getName() + LOG4CXX_STR("] in logger [")
 			+ l->getName() + LOG4CXX_STR("]."));
-		l->removeAppender(primary);
+		l->removeAppender(primaryLocked);
 		LogLog::debug(((LogString) LOG4CXX_STR("FB: Adding appender ["))
-			+ backup->getName() + LOG4CXX_STR("] to logger ")
+			+ backupLocked->getName() + LOG4CXX_STR("] to logger ")
 			+ l->getName());
-		l->addAppender(backup);
+		l->addAppender(backupLocked);
 	}
 }
 
