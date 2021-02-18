@@ -138,7 +138,6 @@ class LOG4CXX_EXPORT Appender :
 };
 
 LOG4CXX_PTR_DEF(Appender);
-LOG4CXX_WEAK_PTR_DEF(Appender);
 LOG4CXX_LIST_DEF(AppenderList, AppenderPtr);
 
 }
