@@ -139,7 +139,8 @@ void JSONLayout::appendQuotedEscapedString(LogString& buf,
 		0x0c,   /* \f form feed         */
 		0x0d,   /* \r carriage return   */
 		0x22,   /* \" double quote      */
-		0x5c    /* \\ backslash         */
+		0x5c,   /* \\ backslash         */
+		0x00    /* terminating NULL for C-strings */
 	};
 
 	size_t start = 0;
