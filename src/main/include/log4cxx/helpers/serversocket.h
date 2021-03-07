@@ -52,7 +52,7 @@ class LOG4CXX_EXPORT ServerSocket
 
 	private:
 		Pool pool;
-		log4cxx::mutex mutex;
+		std::mutex mutex;
 		apr_socket_t* socket;
 		int timeout;
 

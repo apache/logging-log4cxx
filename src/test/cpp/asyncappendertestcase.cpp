@@ -67,7 +67,7 @@ class NullPointerAppender : public AppenderSkeleton
 class BlockableVectorAppender : public VectorAppender
 {
 	private:
-		log4cxx::mutex blocker;
+		std::mutex blocker;
 	public:
 		/**
 		 * Create new instance.
@@ -81,7 +81,7 @@ class BlockableVectorAppender : public VectorAppender
 		 */
 		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
 		{
-			log4cxx::unique_lock<log4cxx::mutex> lock( blocker );
+			std::unique_lock<std::mutex> lock( blocker );
 			VectorAppender::append(event, p);
 
 			//
@@ -97,7 +97,7 @@ class BlockableVectorAppender : public VectorAppender
 			}
 		}
 
-		log4cxx::mutex& getBlocker()
+		std::mutex& getBlocker()
 		{
 			return blocker;
 		}
@@ -254,7 +254,7 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 			LoggerPtr rootLogger = Logger::getRootLogger();
 			rootLogger->addAppender(async);
 			{
-				log4cxx::unique_lock<log4cxx::mutex> sync(blockableAppender->getBlocker());
+				std::unique_lock<std::mutex> sync(blockableAppender->getBlocker());
 
 				for (int i = 0; i < 140; i++)
 				{

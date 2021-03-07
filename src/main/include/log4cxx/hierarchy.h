@@ -59,7 +59,7 @@ class LOG4CXX_EXPORT Hierarchy :
 {
 	private:
 		log4cxx::helpers::Pool pool;
-		mutable log4cxx::mutex mutex;
+		mutable std::mutex mutex;
 		bool configured;
 
 		spi::LoggerFactoryPtr defaultFactory;

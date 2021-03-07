@@ -26,6 +26,7 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <log4cxx/boost-std-configuration.h>
+#include <atomic>
 
 namespace log4cxx
 {
@@ -54,7 +55,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		<code>true</code> by default.
 
 		*/
-		log4cxx::atomic<bool> immediateFlush;
+		std::atomic<bool> immediateFlush;
 
 		/**
 		The encoding to use when opening an input stream.

@@ -60,7 +60,7 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 		serverSocket->setSoTimeout(1000);
 	}
 
-	sh = log4cxx::thread( &TelnetAppender::acceptConnections, this );
+	sh = std::thread( &TelnetAppender::acceptConnections, this );
 }
 
 void TelnetAppender::setOption(const LogString& option,
@@ -88,7 +88,7 @@ LogString TelnetAppender::getEncoding() const
 
 void TelnetAppender::setEncoding(const LogString& value)
 {
-	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	encoder = CharsetEncoder::getEncoder(value);
 	encoding = value;
 }
@@ -96,7 +96,7 @@ void TelnetAppender::setEncoding(const LogString& value)
 
 void TelnetAppender::close()
 {
-	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 	if (closed)
 	{
@@ -249,7 +249,7 @@ void TelnetAppender::acceptConnections()
 				//
 				//   find unoccupied connection
 				//
-				log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+				std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 				for (ConnectionList::iterator iter = connections.begin();
 					iter != connections.end();

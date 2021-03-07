@@ -193,7 +193,7 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 	private:
 		void startServer();
 
-		log4cxx::thread thread;
+		std::thread thread;
 		void monitor();
 
 }; // class SocketHubAppender

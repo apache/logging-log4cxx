@@ -30,7 +30,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
 volatile bool Level::initialized = false;
-log4cxx::mutex Level::initMutex;
+std::mutex Level::initMutex;
 LevelPtr Level::allLevel;
 LevelPtr Level::fatalLevel;
 LevelPtr Level::errorLevel;
@@ -47,7 +47,7 @@ void Level::initializeLevels()
 		return;
 	}
 
-	log4cxx::unique_lock<log4cxx::mutex> lock(initMutex);
+	std::unique_lock<std::mutex> lock(initMutex);
 
 	if ( initialized )
 	{

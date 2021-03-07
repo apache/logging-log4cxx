@@ -82,7 +82,7 @@ void SocketHubAppender::setOption(const LogString& option,
 void SocketHubAppender::close()
 {
 	{
-		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+		std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 		if (closed)
 		{
@@ -102,7 +102,7 @@ void SocketHubAppender::close()
 		thread.join();
 	}
 
-	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	// close all of the connections
 	LogLog::debug(LOG4CXX_STR("closing client connections"));
 
@@ -176,7 +176,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void SocketHubAppender::startServer()
 {
-	thread = log4cxx::thread( &SocketHubAppender::monitor, this );
+	thread = std::thread( &SocketHubAppender::monitor, this );
 }
 
 void SocketHubAppender::monitor()
@@ -232,7 +232,7 @@ void SocketHubAppender::monitor()
 					+ LOG4CXX_STR(")"));
 
 				// add it to the oosList.
-				log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+				std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 				OutputStreamPtr os(new SocketOutputStream(socket));
 				Pool p;
 				ObjectOutputStreamPtr oos(new ObjectOutputStream(os, p));

@@ -78,7 +78,7 @@ int SocketAppender::getDefaultPort() const
 
 void SocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 {
-	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 	SocketOutputStreamPtr sock = SocketOutputStreamPtr(new SocketOutputStream(socket));
 	oos = ObjectOutputStreamPtr(new ObjectOutputStream(sock, p));

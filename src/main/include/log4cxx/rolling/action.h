@@ -48,7 +48,7 @@ class Action : public virtual log4cxx::helpers::Object
 		bool interrupted;
 
 		log4cxx::helpers::Pool pool;
-		log4cxx::mutex mutex;
+		std::mutex mutex;
 
 
 	protected:

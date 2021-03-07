@@ -92,7 +92,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 	}
 
 	{
-		log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+		std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 		triggeringPolicy->activateOptions(p);
 		rollingPolicy->activateOptions(p);
 
@@ -181,7 +181,7 @@ void RollingFileAppenderSkeleton::releaseFileLock(apr_file_t* lock_file)
  */
 bool RollingFileAppenderSkeleton::rollover(Pool& p)
 {
-	log4cxx::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	return rolloverInternal(p);
 }
 

@@ -23,6 +23,8 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/file.h>
 #include <atomic>
+#include <thread>
+#include <condition_variable>
 
 namespace log4cxx
 {
@@ -76,9 +78,9 @@ class LOG4CXX_EXPORT FileWatchdog
 		void run();
 		bool is_interrupted();
 		Pool pool;
-		log4cxx::thread thread;
-		log4cxx::condition_variable interrupt;
-		log4cxx::mutex interrupt_mutex;
+		std::thread thread;
+		std::condition_variable interrupt;
+		std::mutex interrupt_mutex;
 
 		FileWatchdog(const FileWatchdog&);
 		FileWatchdog& operator=(const FileWatchdog&);

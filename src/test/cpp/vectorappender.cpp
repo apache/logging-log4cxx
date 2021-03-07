@@ -16,6 +16,7 @@
  */
 
 #include "vectorappender.h"
+#include <thread>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
