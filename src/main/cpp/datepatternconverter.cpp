@@ -53,7 +53,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 
 	if (options.size() == 0)
 	{
-		df = new ISO8601DateFormat();
+		df = DateFormatPtr(new ISO8601DateFormat());
 	}
 	else
 	{
@@ -63,17 +63,17 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 			StringHelper::equalsIgnoreCase(dateFormatStr,
 				LOG4CXX_STR("ISO8601"), LOG4CXX_STR("iso8601")))
 		{
-			df = new ISO8601DateFormat();
+			df = DateFormatPtr(new ISO8601DateFormat());
 		}
 		else if (StringHelper::equalsIgnoreCase(dateFormatStr,
 				LOG4CXX_STR("ABSOLUTE"), LOG4CXX_STR("absolute")))
 		{
-			df = new AbsoluteTimeDateFormat();
+			df = DateFormatPtr(new AbsoluteTimeDateFormat());
 		}
 		else if (StringHelper::equalsIgnoreCase(dateFormatStr,
 				LOG4CXX_STR("DATE"), LOG4CXX_STR("date")))
 		{
-			df = new DateTimeDateFormat();
+			df = DateFormatPtr(new DateTimeDateFormat());
 		}
 		else
 		{
@@ -81,13 +81,13 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 			{
 				try
 				{
-					df = new SimpleDateFormat(dateFormatStr);
+					df = DateFormatPtr(new SimpleDateFormat(dateFormatStr));
 					maximumCacheValidity =
 						CachedDateFormat::getMaximumCacheValidity(dateFormatStr);
 				}
 				catch (IllegalArgumentException& e)
 				{
-					df = new ISO8601DateFormat();
+					df = DateFormatPtr(new ISO8601DateFormat());
 					LogLog::warn(((LogString)
 							LOG4CXX_STR("Could not instantiate SimpleDateFormat with pattern "))
 						+ dateFormatStr, e);
@@ -95,7 +95,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 			}
 			else
 			{
-				df = new StrftimeDateFormat(dateFormatStr);
+				df = DateFormatPtr(new StrftimeDateFormat(dateFormatStr));
 			}
 		}
 
@@ -112,7 +112,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 
 	if (maximumCacheValidity > 0)
 	{
-		df = new CachedDateFormat(df, maximumCacheValidity);
+		df = DateFormatPtr(new CachedDateFormat(df, maximumCacheValidity));
 	}
 
 	return df;
@@ -121,7 +121,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 PatternConverterPtr DatePatternConverter::newInstance(
 	const std::vector<LogString>& options)
 {
-	return new DatePatternConverter(options);
+	return PatternConverterPtr(new DatePatternConverter(options));
 }
 
 void DatePatternConverter::format(
@@ -140,7 +140,7 @@ void DatePatternConverter::format(
 	LogString& toAppendTo,
 	Pool& p) const
 {
-	DatePtr date(obj);
+	DatePtr date = log4cxx::cast<Date>(obj);
 
 	if (date != NULL)
 	{
@@ -148,7 +148,7 @@ void DatePatternConverter::format(
 	}
 	else
 	{
-		LoggingEventPtr event(obj);
+		LoggingEventPtr event = log4cxx::cast<LoggingEvent>(obj);
 
 		if (event != NULL)
 		{

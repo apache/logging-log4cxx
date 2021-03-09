@@ -216,8 +216,6 @@ class LOG4CXX_EXPORT TimeBasedRollingPolicy : public RollingPolicyBase,
 
 	public:
 		TimeBasedRollingPolicy();
-		void addRef() const;
-		void releaseRef() const;
 		void activateOptions(log4cxx::helpers::Pool& );
 
 #ifdef LOG4CXX_MULTI_PROCESS

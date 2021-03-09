@@ -90,7 +90,7 @@ public:
 		const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.1"));
 		const File filteredFile("output/filtered.xmlLayout.1");
 
-		XMLLayoutPtr xmlLayout = new XMLLayout();
+		XMLLayoutPtr xmlLayout = XMLLayoutPtr(new XMLLayout());
 		AppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
 		root->addAppender(appender);
 		common();
@@ -120,9 +120,9 @@ public:
 		const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.2"));
 		const File filteredFile("output/filtered.xmlLayout.2");
 
-		XMLLayoutPtr xmlLayout = new XMLLayout();
+		XMLLayoutPtr xmlLayout = XMLLayoutPtr(new XMLLayout());
 		xmlLayout->setLocationInfo(true);
-		root->addAppender(new FileAppender(xmlLayout, tempFileName, false));
+		root->addAppender(AppenderPtr(new FileAppender(xmlLayout, tempFileName, false)));
 		common();
 
 		XMLTimestampFilter xmlTimestampFilter;
@@ -163,7 +163,7 @@ public:
 		const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.3"));
 		const File filteredFile("output/filtered.xmlLayout.3");
 
-		XMLLayoutPtr xmlLayout = new XMLLayout();
+		XMLLayoutPtr xmlLayout = XMLLayoutPtr(new XMLLayout());
 		xmlLayout->setLocationInfo(true);
 		FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
 		root->addAppender(appender);
@@ -202,7 +202,7 @@ public:
 		const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.null"));
 		const File filteredFile("output/filtered.xmlLayout.null");
 
-		XMLLayoutPtr xmlLayout = new XMLLayout();
+		XMLLayoutPtr xmlLayout = XMLLayoutPtr(new XMLLayout());
 		FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
 		root->addAppender(appender);
 
@@ -235,7 +235,7 @@ public:
 		const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.mdc.1"));
 		const File filteredFile("output/filtered.xmlLayout.mdc.1");
 
-		XMLLayoutPtr xmlLayout = new XMLLayout();
+		XMLLayoutPtr xmlLayout = XMLLayoutPtr(new XMLLayout());
 		xmlLayout->setProperties(true);
 		FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
 		root->addAppender(appender);
@@ -274,7 +274,7 @@ public:
 		const LogString tempFileName(LOG4CXX_STR("output/temp.xmlLayout.mdc.2"));
 		const File filteredFile("output/filtered.xmlLayout.mdc.2");
 
-		XMLLayoutPtr xmlLayout = new XMLLayout();
+		XMLLayoutPtr xmlLayout = XMLLayoutPtr(new XMLLayout());
 		xmlLayout->setProperties(true);
 		FileAppenderPtr appender(new FileAppender(xmlLayout, tempFileName, false));
 		root->addAppender(appender);

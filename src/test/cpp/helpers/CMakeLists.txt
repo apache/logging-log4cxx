@@ -1,6 +1,7 @@
 set(HELPER_TESTS 
     absolutetimedateformattestcase
     cacheddateformattestcase
+    casttestcase
     charsetdecodertestcase
     charsetencodertestcase
     cyclicbuffertestcase
@@ -15,7 +16,6 @@ set(HELPER_TESTS
     stringhelpertestcase
     stringtokenizertestcase
     syslogwritertest
-    threadtestcase
     timezonetestcase
     transcodertestcase
 )

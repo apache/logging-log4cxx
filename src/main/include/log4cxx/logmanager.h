@@ -30,13 +30,13 @@
 namespace log4cxx
 {
 class Logger;
-typedef helpers::ObjectPtrT<Logger> LoggerPtr;
+typedef std::shared_ptr<Logger> LoggerPtr;
 typedef std::vector<LoggerPtr> LoggerList;
 
 namespace spi
 {
 class LoggerFactory;
-typedef helpers::ObjectPtrT<LoggerFactory> LoggerFactoryPtr;
+typedef std::shared_ptr<LoggerFactory> LoggerFactoryPtr;
 }
 
 /**
@@ -50,7 +50,8 @@ class LOG4CXX_EXPORT LogManager
 {
 	private:
 		static void* guard;
-		static spi::RepositorySelectorPtr& getRepositorySelector();
+		static spi::RepositorySelectorPtr repositorySelector;
+		static spi::RepositorySelectorPtr getRepositorySelector();
 
 	public:
 		/**
@@ -72,7 +73,7 @@ class LOG4CXX_EXPORT LogManager
 		static void setRepositorySelector(spi::RepositorySelectorPtr selector,
 			void* guard);
 
-		static spi::LoggerRepositoryPtr& getLoggerRepository();
+		static spi::LoggerRepositoryPtr getLoggerRepository();
 
 		/**
 		Retrieve the appropriate root logger.

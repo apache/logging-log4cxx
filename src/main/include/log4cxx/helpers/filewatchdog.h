@@ -21,8 +21,10 @@
 #include <log4cxx/logstring.h>
 #include <time.h>
 #include <log4cxx/helpers/pool.h>
-#include <log4cxx/helpers/thread.h>
 #include <log4cxx/file.h>
+#include <atomic>
+#include <thread>
+#include <condition_variable>
 
 namespace log4cxx
 {
@@ -54,7 +56,7 @@ class LOG4CXX_EXPORT FileWatchdog
 		long delay;
 		log4cxx_time_t lastModif;
 		bool warnedAlready;
-		volatile unsigned int interrupted;
+		volatile int interrupted;
 
 	protected:
 		FileWatchdog(const File& filename);
@@ -73,9 +75,12 @@ class LOG4CXX_EXPORT FileWatchdog
 		void start();
 
 	private:
-		static void* LOG4CXX_THREAD_FUNC run(apr_thread_t* thread, void* data);
+		void run();
+		bool is_interrupted();
 		Pool pool;
-		Thread thread;
+		std::thread thread;
+		std::condition_variable interrupt;
+		std::mutex interrupt_mutex;
 
 		FileWatchdog(const FileWatchdog&);
 		FileWatchdog& operator=(const FileWatchdog&);

@@ -25,7 +25,6 @@
 
 
 #include <log4cxx/logstring.h>
-#include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/exception.h>
 
@@ -35,13 +34,13 @@ class File;
 namespace helpers
 {
 class XMLDOMNode;
-typedef helpers::ObjectPtrT<XMLDOMNode> XMLDOMNodePtr;
+typedef std::shared_ptr<XMLDOMNode> XMLDOMNodePtr;
 
 class XMLDOMDocument;
-typedef helpers::ObjectPtrT<XMLDOMDocument> XMLDOMDocumentPtr;
+typedef std::shared_ptr<XMLDOMDocument> XMLDOMDocumentPtr;
 
 class XMLDOMNodeList;
-typedef helpers::ObjectPtrT<XMLDOMNodeList> XMLDOMNodeListPtr;
+typedef std::shared_ptr<XMLDOMNodeList> XMLDOMNodeListPtr;
 
 class LOG4CXX_EXPORT DOMException : public RuntimeException
 {

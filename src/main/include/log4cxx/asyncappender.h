@@ -28,9 +28,8 @@
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <deque>
 #include <log4cxx/spi/loggingevent.h>
-#include <log4cxx/helpers/thread.h>
-#include <log4cxx/helpers/mutex.h>
-#include <log4cxx/helpers/condition.h>
+#include <thread>
+#include <condition_variable>
 
 #if defined(NON_BLOCKING)
 	#include <boost/lockfree/queue.hpp>
@@ -76,15 +75,12 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 */
 		virtual ~AsyncAppender();
 
-		void addRef() const;
-		void releaseRef() const;
-
 		/**
 		 * Add appender.
 		 *
 		 * @param newAppender appender to add, may not be null.
 		*/
-		void addAppender(const AppenderPtr& newAppender);
+		void addAppender(const AppenderPtr newAppender);
 
 		virtual void doAppend(const spi::LoggingEventPtr& event,
 			log4cxx::helpers::Pool& pool1);
@@ -124,7 +120,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		* @param appender appender.
 		* @return true if attached.
 		*/
-		bool isAttached(const AppenderPtr& appender) const;
+		bool isAttached(const AppenderPtr appender) const;
 
 		virtual bool requiresLayout() const;
 
@@ -137,7 +133,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		 * Removes an appender.
 		 * @param appender appender to remove.
 		*/
-		void removeAppender(const AppenderPtr& appender);
+		void removeAppender(const AppenderPtr appender);
 		/**
 		* Remove appender by name.
 		* @param name name.
@@ -211,14 +207,14 @@ class LOG4CXX_EXPORT AsyncAppender :
 		/**
 		 *  Mutex used to guard access to buffer and discardMap.
 		 */
-		SHARED_MUTEX bufferMutex;
+		std::mutex bufferMutex;
 
 #if defined(NON_BLOCKING)
 		::log4cxx::helpers::Semaphore bufferNotFull;
 		::log4cxx::helpers::Semaphore bufferNotEmpty;
 #else
-		::log4cxx::helpers::Condition bufferNotFull;
-		::log4cxx::helpers::Condition bufferNotEmpty;
+		std::condition_variable bufferNotFull;
+		std::condition_variable bufferNotEmpty;
 #endif
 		class DiscardSummary
 		{
@@ -283,7 +279,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		/**
 		 *  Dispatcher.
 		 */
-		helpers::Thread dispatcher;
+		std::thread dispatcher;
 
 		/**
 		 * Should location info be included in dispatched messages.
@@ -298,7 +294,7 @@ class LOG4CXX_EXPORT AsyncAppender :
 		/**
 		 *  Dispatch routine.
 		 */
-		static void* LOG4CXX_THREAD_FUNC dispatch(apr_thread_t* thread, void* data);
+		void dispatch();
 
 }; // class AsyncAppender
 LOG4CXX_PTR_DEF(AsyncAppender);

@@ -22,7 +22,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/stringtokenizer.h>
 #include <log4cxx/helpers/transcoder.h>
-#include <log4cxx/helpers/synchronized.h>
+#include <log4cxx/helpers/loader.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
@@ -348,7 +348,7 @@ class SMTPMessage
 
 class LOG4CXX_EXPORT DefaultEvaluator :
 	public virtual spi::TriggeringEventEvaluator,
-	public virtual helpers::ObjectImpl
+	public virtual helpers::Object
 {
 	public:
 		DECLARE_LOG4CXX_OBJECT(DefaultEvaluator)
@@ -784,7 +784,7 @@ for the SMTPAppender.
 */
 void SMTPAppender::setEvaluatorClass(const LogString& value)
 {
-	evaluator = OptionConverter::instantiateByClassName(value,
-			TriggeringEventEvaluator::getStaticClass(), evaluator);
+	ObjectPtr obj = ObjectPtr(Loader::loadClass(value).newInstance());
+	evaluator = log4cxx::cast<TriggeringEventEvaluator>(obj);
 }
 

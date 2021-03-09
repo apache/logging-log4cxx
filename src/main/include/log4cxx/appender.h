@@ -25,7 +25,6 @@
 
 
 #include <log4cxx/spi/optionhandler.h>
-#include <log4cxx/helpers/objectptr.h>
 #include <log4cxx/helpers/object.h>
 #include <vector>
 
@@ -36,17 +35,17 @@ namespace log4cxx
 namespace spi
 {
 class LoggingEvent;
-typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
+typedef std::shared_ptr<LoggingEvent> LoggingEventPtr;
 
 class Filter;
-typedef helpers::ObjectPtrT<Filter> FilterPtr;
+typedef std::shared_ptr<Filter> FilterPtr;
 
 class ErrorHandler;
-typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
+typedef std::shared_ptr<ErrorHandler> ErrorHandlerPtr;
 }
 
 class Layout;
-typedef log4cxx::helpers::ObjectPtrT<Layout> LayoutPtr;
+typedef std::shared_ptr<Layout> LayoutPtr;
 
 
 /**
@@ -60,6 +59,8 @@ class LOG4CXX_EXPORT Appender :
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Appender)
 
 		virtual ~Appender() {}
+
+		void asdf();
 
 		/**
 		 Add a filter to the end of the filter list.

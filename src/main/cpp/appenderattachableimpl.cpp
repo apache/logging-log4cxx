@@ -29,23 +29,12 @@ IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
 
 AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool)
-	: appenderList(),
-	  mutex(pool)
+	: appenderList()
 {
 }
 
-void AppenderAttachableImpl::addRef() const
-{
-	ObjectImpl::addRef();
-}
 
-void AppenderAttachableImpl::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
-
-void AppenderAttachableImpl::addAppender(const AppenderPtr& newAppender)
+void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
 {
 	// Null values for newAppender parameter are strictly forbidden.
 	if (newAppender == 0)
@@ -104,7 +93,7 @@ AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
 	return 0;
 }
 
-bool AppenderAttachableImpl::isAttached(const AppenderPtr& appender) const
+bool AppenderAttachableImpl::isAttached(const AppenderPtr appender) const
 {
 	if (appender == 0)
 	{
@@ -131,7 +120,7 @@ void AppenderAttachableImpl::removeAllAppenders()
 	appenderList.clear();
 }
 
-void AppenderAttachableImpl::removeAppender(const AppenderPtr& appender)
+void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
 {
 	if (appender == 0)
 	{

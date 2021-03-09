@@ -87,7 +87,7 @@ Socket::Socket(apr_socket_t* s, apr_pool_t* p) :
 			Transcoder::decode(buf, remoteip);
 		}
 
-		address = new InetAddress(remotename, remoteip);
+		address = InetAddressPtr(new InetAddress(remotename, remoteip));
 	}
 }
 

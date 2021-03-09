@@ -17,7 +17,6 @@
 
 #include <log4cxx/net/sockethubappender.h>
 #include "../appenderskeletontestcase.h"
-#include <log4cxx/helpers/thread.h>
 #include <apr.h>
 
 using namespace log4cxx;
@@ -62,7 +61,7 @@ class SocketHubAppenderTestCase : public AppenderSkeletonTestCase
 			SocketHubAppenderPtr hubAppender(new SocketHubAppender());
 			Pool p;
 			hubAppender->activateOptions(p);
-			Thread::sleep(1000);
+			std::this_thread::sleep_for( std::chrono::milliseconds( 1000 ) );
 			hubAppender->close();
 		}
 

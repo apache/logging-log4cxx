@@ -19,7 +19,6 @@
 #define _LOG4CXX_HELPERS_SERVER_SOCKET_H
 
 #include <log4cxx/helpers/socket.h>
-#include <log4cxx/helpers/mutex.h>
 
 namespace log4cxx
 {
@@ -53,7 +52,7 @@ class LOG4CXX_EXPORT ServerSocket
 
 	private:
 		Pool pool;
-		Mutex mutex;
+		std::mutex mutex;
 		apr_socket_t* socket;
 		int timeout;
 

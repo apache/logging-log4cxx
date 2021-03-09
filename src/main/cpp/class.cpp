@@ -94,7 +94,7 @@ LogString Class::toString() const
 	return getName();
 }
 
-ObjectPtr Class::newInstance() const
+Object* Class::newInstance() const
 {
 	throw InstantiationException(LOG4CXX_STR("Cannot create new instances of Class."));
 #if LOG4CXX_RETURN_AFTER_THROW

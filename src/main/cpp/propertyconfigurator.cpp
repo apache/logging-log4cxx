@@ -32,12 +32,9 @@
 #include <log4cxx/config/propertysetter.h>
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/helpers/stringtokenizer.h>
-#include <log4cxx/helpers/synchronized.h>
-#include <apr_file_io.h>
-#include <apr_file_info.h>
-#include <apr_pools.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/fileinputstream.h>
+#include <log4cxx/helpers/loader.h>
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>
@@ -89,18 +86,8 @@ PropertyConfigurator::~PropertyConfigurator()
 	delete registry;
 }
 
-void PropertyConfigurator::addRef() const
-{
-	ObjectImpl::addRef();
-}
-
-void PropertyConfigurator::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
 void PropertyConfigurator::doConfigure(const File& configFileName,
-	spi::LoggerRepositoryPtr& hierarchy)
+	spi::LoggerRepositoryPtr hierarchy)
 {
 	hierarchy->setConfigured(true);
 
@@ -108,7 +95,7 @@ void PropertyConfigurator::doConfigure(const File& configFileName,
 
 	try
 	{
-		InputStreamPtr inputStream = new FileInputStream(configFileName);
+		InputStreamPtr inputStream = InputStreamPtr( new FileInputStream(configFileName) );
 		props.load(inputStream);
 	}
 	catch (const IOException&)
@@ -164,7 +151,7 @@ void PropertyConfigurator::configureAndWatch(
 #endif
 
 void PropertyConfigurator::doConfigure(helpers::Properties& properties,
-	spi::LoggerRepositoryPtr& hierarchy)
+	spi::LoggerRepositoryPtr hierarchy)
 {
 	hierarchy->setConfigured(true);
 
@@ -220,9 +207,10 @@ void PropertyConfigurator::configureLoggerFactory(helpers::Properties& props)
 		msg += factoryClassName;
 		msg += LOG4CXX_STR("].");
 		LogLog::debug(msg);
-		loggerFactory =
-			OptionConverter::instantiateByClassName(
-				factoryClassName, LoggerFactory::getStaticClass(), loggerFactory);
+		std::shared_ptr<Object> instance = std::shared_ptr<Object>(
+				Loader::loadClass(factoryClassName).newInstance() );
+
+		loggerFactory = log4cxx::cast<LoggerFactory>( instance );
 		static const LogString FACTORY_PREFIX(LOG4CXX_STR("log4j.factory."));
 		Pool p;
 		PropertySetter::setProperties(loggerFactory, props, FACTORY_PREFIX, p);
@@ -254,9 +242,8 @@ void PropertyConfigurator::configureRootLogger(helpers::Properties& props,
 	{
 		LoggerPtr root = hierarchy->getRootLogger();
 
-		LOCK_W sync(root->getMutex());
 		static const LogString INTERNAL_ROOT_NAME(LOG4CXX_STR("root"));
-		parseLogger(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value);
+		parseLogger(props, root, effectiveFrefix, INTERNAL_ROOT_NAME, value, true);
 	}
 }
 
@@ -291,14 +278,14 @@ void PropertyConfigurator::parseCatsAndRenderers(helpers::Properties& props,
 			LogString value = OptionConverter::findAndSubst(key, props);
 			LoggerPtr logger = hierarchy->getLogger(loggerName, loggerFactory);
 
-			LOCK_W sync(logger->getMutex());
-			parseLogger(props, logger, key, loggerName, value);
-			parseAdditivityForLogger(props, logger, loggerName);
+			bool additivity = parseAdditivityForLogger(props, logger, loggerName);
+			parseLogger(props, logger, key, loggerName, value, additivity);
+
 		}
 	}
 }
 
-void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
+bool PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 	LoggerPtr& cat, const LogString& loggerName)
 {
 
@@ -318,8 +305,11 @@ void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 			+ loggerName
 			+ ((additivity) ?  LOG4CXX_STR("\" to true") :
 				LOG4CXX_STR("\" to false")));
-		cat->setAdditivity(additivity);
+
+		return additivity;
 	}
+
+	return true;
 }
 
 /**
@@ -327,7 +317,7 @@ void PropertyConfigurator::parseAdditivityForLogger(helpers::Properties& props,
 */
 void PropertyConfigurator::parseLogger(
 	helpers::Properties& props, LoggerPtr& logger, const LogString& /* optionKey */,
-	const LogString& loggerName, const LogString& value)
+	const LogString& loggerName, const LogString& value, bool additivity)
 {
 	LogLog::debug(((LogString) LOG4CXX_STR("Parsing for ["))
 		+ loggerName
@@ -382,11 +372,9 @@ void PropertyConfigurator::parseLogger(
 
 	}
 
-	// Begin by removing all existing appenders.
-	logger->removeAllAppenders();
-
 	AppenderPtr appender;
 	LogString appenderName;
+	std::vector<AppenderPtr> newappenders;
 
 	while (st.hasMoreTokens())
 	{
@@ -403,9 +391,11 @@ void PropertyConfigurator::parseLogger(
 
 		if (appender != 0)
 		{
-			logger->addAppender(appender);
+			newappenders.push_back(appender);
 		}
 	}
+
+	logger->reconfigure( newappenders, additivity );
 }
 
 AppenderPtr PropertyConfigurator::parseAppender(
@@ -427,9 +417,10 @@ AppenderPtr PropertyConfigurator::parseAppender(
 	LogString prefix = APPENDER_PREFIX + appenderName;
 	LogString layoutPrefix = prefix + LOG4CXX_STR(".layout");
 
-	appender =
+	std::shared_ptr<Object> obj =
 		OptionConverter::instantiateByKey(
 			props, prefix, Appender::getStaticClass(), 0);
+	appender = log4cxx::cast<Appender>( obj );
 
 	if (appender == 0)
 	{
@@ -446,9 +437,11 @@ AppenderPtr PropertyConfigurator::parseAppender(
 
 		if (appender->requiresLayout())
 		{
-			LayoutPtr layout =
+			LayoutPtr layout;
+			std::shared_ptr<Object> obj =
 				OptionConverter::instantiateByKey(
 					props, layoutPrefix, Layout::getStaticClass(), 0);
+			layout = log4cxx::cast<Layout>( obj );
 
 			if (layout != 0)
 			{

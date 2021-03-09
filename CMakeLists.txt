@@ -25,8 +25,16 @@ find_package(APR REQUIRED)
 # Find Apache Runtime Utilities
 find_package(APR-Util REQUIRED)
 
+find_package( Threads REQUIRED )
+
 # Find expat for XML parsing
 find_package(EXPAT REQUIRED)
+
+# Request C++17, if available
+# This *should* fallback to an older standard if it is not available
+if( NOT "${CMAKE_CXX_STANDARD}")
+    set(CMAKE_CXX_STANDARD 17)
+endif()
 
 # Building
 add_subdirectory(src)
@@ -137,6 +145,11 @@ endif(LOG4CXX_QT_SUPPORT)
 get_directory_property( HAS_LIBESMTP DIRECTORY src/main/include DEFINITION HAS_LIBESMTP )
 get_directory_property( HAS_ODBC DIRECTORY src/main/include DEFINITION HAS_ODBC )
 get_directory_property( HAS_SYSLOG DIRECTORY src/main/include DEFINITION HAS_SYSLOG )
+get_directory_property( THREAD_IMPL DIRECTORY src/main/include DEFINITION THREAD_IMPL )
+get_directory_property( SMART_PTR_IMPL DIRECTORY src/main/include DEFINITION SMART_PTR_IMPL )
+get_directory_property( MUTEX_IMPL DIRECTORY src/main/include DEFINITION MUTEX_IMPL )
+get_directory_property( SHARED_MUTEX_IMPL DIRECTORY src/main/include DEFINITION SHARED_MUTEX_IMPL )
+get_directory_property( ATOMIC_IMPL DIRECTORY src/main/include DEFINITION ATOMIC_IMPL )
 
 foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG)
   if(${varName} EQUAL 0)
@@ -188,10 +201,12 @@ if(APPLE)
 message(STATUS "  log4cxx cfstring API ............ : ${LOG4CXX_CFSTRING}")
 endif()
 message(STATUS "  logchar type .................... : ${LOG4CXX_CHAR}")
+message(STATUS "  charset ......................... : ${LOG4CXX_CHARSET}")
 message(STATUS "  Using libESMTP .................. : ${HAS_LIBESMTP}")
 message(STATUS "  ODBC library .................... : ${HAS_ODBC}")
 message(STATUS "  syslog .......................... : ${HAS_SYSLOG}")
 message(STATUS "  Qt support ...................... : ${LOG4CXX_QT_SUPPORT}")
+message(STATUS "  shared_mutex implementation ..... : ${SHARED_MUTEX_IMPL}")
 
 if(BUILD_TESTING)
 message(STATUS "Applications required for tests:")

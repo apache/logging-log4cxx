@@ -30,6 +30,7 @@
 #include <apr_pools.h>
 #include <apr_file_io.h>
 #include "../testchar.h"
+#include "log4cxx/helpers/loglog.h"
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -80,6 +81,7 @@ public:
 
 	void test1()
 	{
+		LogLog::setInternalDebugging(true);
 		DOMConfigurator::configure(LOG4CXX_TEST_STR("input/xml/DOMTestCase1.xml"));
 		common();
 

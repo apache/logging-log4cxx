@@ -28,11 +28,9 @@
 #include <log4cxx/layout.h>
 #include <log4cxx/spi/errorhandler.h>
 #include <log4cxx/spi/filter.h>
-#include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/level.h>
-
 
 namespace log4cxx
 {
@@ -44,7 +42,7 @@ namespace log4cxx
 * */
 class LOG4CXX_EXPORT AppenderSkeleton :
 	public virtual Appender,
-	public virtual helpers::ObjectImpl
+	public virtual helpers::Object
 {
 	protected:
 		/** The layout variable does not need to be set if the appender
@@ -76,7 +74,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		bool closed;
 
 		log4cxx::helpers::Pool pool;
-		mutable SHARED_MUTEX mutex;
+		mutable log4cxx::shared_mutex mutex;
 
 		/**
 		Subclasses of <code>AppenderSkeleton</code> should implement this
@@ -97,9 +95,6 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 
 		AppenderSkeleton();
 		AppenderSkeleton(const LayoutPtr& layout);
-
-		void addRef() const;
-		void releaseRef() const;
 
 		/**
 		Finalize this appender by calling the derived class'
@@ -196,7 +191,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		/**
 		Set the {@link spi::ErrorHandler ErrorHandler} for this Appender.
 		*/
-		void setErrorHandler(const spi::ErrorHandlerPtr& eh);
+		void setErrorHandler(const spi::ErrorHandlerPtr eh);
 
 		/**
 		Set the layout for this appender. Note that some appenders have

@@ -141,8 +141,8 @@ public:
 	*/
 	void test1()
 	{
-		SocketAppenderPtr socketAppender1 =
-			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
+		SocketAppenderPtr socketAppender1 = SocketAppenderPtr(
+				new SocketAppender(LOG4CXX_STR("localhost"), PORT));
 		root->addAppender(socketAppender1);
 		common("test1", LOG4CXX_STR("T1"), LOG4CXX_STR("key1"), LOG4CXX_STR("MDC-TEST1"));
 		delay(1);
@@ -171,8 +171,8 @@ public:
 
 	void test2()
 	{
-		SocketAppenderPtr socketAppender1 =
-			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
+		SocketAppenderPtr socketAppender1 = SocketAppenderPtr(
+				new SocketAppender(LOG4CXX_STR("localhost"), PORT));
 		root->addAppender(socketAppender1);
 		common("test2", LOG4CXX_STR("T2"), LOG4CXX_STR("key2"), LOG4CXX_STR("MDC-TEST2"));
 		delay(1);
@@ -206,8 +206,8 @@ public:
 
 	void test3()
 	{
-		SocketAppenderPtr socketAppender1 =
-			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
+		SocketAppenderPtr socketAppender1 = SocketAppenderPtr(
+				new SocketAppender(LOG4CXX_STR("localhost"), PORT));
 		root->addAppender(socketAppender1);
 		common("test3", LOG4CXX_STR("T3"), LOG4CXX_STR("key3"), LOG4CXX_STR("MDC-TEST3"));
 		delay(1);
@@ -241,8 +241,8 @@ public:
 
 	void test4()
 	{
-		SocketAppenderPtr socketAppender1 =
-			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
+		SocketAppenderPtr socketAppender1 = SocketAppenderPtr(
+				new SocketAppender(LOG4CXX_STR("localhost"), PORT));
 		root->addAppender(socketAppender1);
 		NDC::push(LOG4CXX_TEST_STR("some"));
 		common("test4", LOG4CXX_STR("T4"), LOG4CXX_STR("key4"), LOG4CXX_STR("MDC-TEST4"));
@@ -273,9 +273,9 @@ public:
 
 	void test5()
 	{
-		SocketAppenderPtr socketAppender1 =
-			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
-		AsyncAppenderPtr asyncAppender = new AsyncAppender();
+		SocketAppenderPtr socketAppender1 = SocketAppenderPtr(
+				new SocketAppender(LOG4CXX_STR("localhost"), PORT));
+		AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
 
 		root->addAppender(socketAppender1);
 		root->addAppender(asyncAppender);
@@ -309,9 +309,9 @@ public:
 
 	void test6()
 	{
-		SocketAppenderPtr socketAppender1 =
-			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
-		AsyncAppenderPtr asyncAppender = new AsyncAppender();
+		SocketAppenderPtr socketAppender1 = SocketAppenderPtr(
+				new SocketAppender(LOG4CXX_STR("localhost"), PORT));
+		AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
 
 		root->addAppender(socketAppender1);
 		root->addAppender(asyncAppender);
@@ -347,9 +347,9 @@ public:
 
 	void test7()
 	{
-		SocketAppenderPtr socketAppender1 =
-			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
-		AsyncAppenderPtr asyncAppender = new AsyncAppender();
+		SocketAppenderPtr socketAppender1 = SocketAppenderPtr(
+				new SocketAppender(LOG4CXX_STR("localhost"), PORT));
+		AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
 
 		root->addAppender(socketAppender1);
 		root->addAppender(asyncAppender);
@@ -385,8 +385,8 @@ public:
 
 	void test8()
 	{
-		SocketAppenderPtr socketAppender1 =
-			new SocketAppender(LOG4CXX_STR("localhost"), PORT);
+		SocketAppenderPtr socketAppender1 = SocketAppenderPtr(
+				new SocketAppender(LOG4CXX_STR("localhost"), PORT));
 
 		root->addAppender(socketAppender1);
 

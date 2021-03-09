@@ -29,7 +29,6 @@ target_sources(log4cxx
   class.cpp
   classnamepatternconverter.cpp
   classregistration.cpp
-  condition.cpp
   configurator.cpp
   consoleappender.cpp
   cyclicbuffer.cpp
@@ -93,15 +92,12 @@ target_sources(log4cxx
   messagebuffer.cpp
   messagepatternconverter.cpp
   methodlocationpatternconverter.cpp
-  mutex.cpp
   nameabbreviator.cpp
   namepatternconverter.cpp
   ndc.cpp
   ndcpatternconverter.cpp
   nteventlogappender.cpp
-  objectimpl.cpp
   objectoutputstream.cpp
-  objectptr.cpp
   obsoleterollingfileappender.cpp
   odbcappender.cpp
   onlyonceerrorhandler.cpp
@@ -141,14 +137,12 @@ target_sources(log4cxx
   stringhelper.cpp
   stringmatchfilter.cpp
   stringtokenizer.cpp
-  synchronized.cpp
   syslogappender.cpp
   syslogwriter.cpp
   system.cpp
   systemerrwriter.cpp
   systemoutwriter.cpp
   telnetappender.cpp
-  threadcxx.cpp
   threadlocal.cpp
   threadpatternconverter.cpp
   threadspecificdata.cpp
@@ -169,3 +163,4 @@ set_target_properties(log4cxx PROPERTIES
   VERSION ${LIBLOG4CXX_LIB_VERSION}
   SOVERSION ${LIBLOG4CXX_LIB_SOVERSION}
 )
+boostfallback_link(log4cxx)

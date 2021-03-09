@@ -39,7 +39,7 @@ class Pool;
 namespace spi
 {
 class ErrorHandler;
-typedef log4cxx::helpers::ObjectPtrT<ErrorHandler> ErrorHandlerPtr;
+typedef std::shared_ptr<ErrorHandler> ErrorHandlerPtr;
 }
 
 

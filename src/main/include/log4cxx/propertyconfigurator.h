@@ -24,8 +24,7 @@
 #endif
 
 
-#include <log4cxx/helpers/objectptr.h>
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/configurator.h>
 #include <map>
@@ -35,10 +34,10 @@
 namespace log4cxx
 {
 class Logger;
-typedef helpers::ObjectPtrT<Logger> LoggerPtr;
+typedef std::shared_ptr<Logger> LoggerPtr;
 
 class Appender;
-typedef helpers::ObjectPtrT<Appender> AppenderPtr;
+typedef std::shared_ptr<Appender> AppenderPtr;
 
 namespace helpers
 {
@@ -92,7 +91,7 @@ example, if <code>java.home</code> system property is set to
 */
 class LOG4CXX_EXPORT PropertyConfigurator :
 	virtual public spi::Configurator,
-	virtual public helpers::ObjectImpl
+	virtual public helpers::Object
 {
 	protected:
 
@@ -104,7 +103,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		/**
 		Used to create new instances of logger
 		*/
-		helpers::ObjectPtrT<spi::LoggerFactory> loggerFactory;
+		std::shared_ptr<spi::LoggerFactory> loggerFactory;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PropertyConfigurator)
@@ -114,9 +113,6 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 
 		PropertyConfigurator();
 		virtual ~PropertyConfigurator();
-		void addRef() const;
-		void releaseRef() const;
-
 		/**
 		Read configuration from a file. <b>The existing configuration is
 		not cleared nor reset.</b> If you require a different behavior,
@@ -294,7 +290,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		@param hierarchy The hierarchy to operation upon.
 		*/
 		void doConfigure(const File& configFileName,
-			spi::LoggerRepositoryPtr& hierarchy);
+			spi::LoggerRepositoryPtr hierarchy);
 
 		/**
 		Read configuration options from file <code>configFilename</code>.
@@ -337,7 +333,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		for the expected format.
 		*/
 		void doConfigure(helpers::Properties& properties,
-			spi::LoggerRepositoryPtr& hierarchy);
+			spi::LoggerRepositoryPtr hierarchy);
 
 		// --------------------------------------------------------------------------
 		// Internal stuff
@@ -366,7 +362,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		/**
 		Parse the additivity option for a non-root logger.
 		*/
-		void parseAdditivityForLogger(helpers::Properties& props,
+		bool parseAdditivityForLogger(helpers::Properties& props,
 			LoggerPtr& cat, const LogString& loggerName);
 
 		/**
@@ -375,7 +371,7 @@ class LOG4CXX_EXPORT PropertyConfigurator :
 		void parseLogger(
 			helpers::Properties& props, LoggerPtr& logger,
 			const LogString& optionKey, const LogString& loggerName,
-			const LogString& value);
+			const LogString& value, bool additivity);
 
 		AppenderPtr parseAppender(
 			helpers::Properties& props, const LogString& appenderName);

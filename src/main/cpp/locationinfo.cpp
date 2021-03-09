@@ -18,8 +18,6 @@
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/pool.h>
-#include "apr_pools.h"
-#include "apr_strings.h"
 
 using namespace ::log4cxx::spi;
 using namespace log4cxx::helpers;

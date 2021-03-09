@@ -62,11 +62,11 @@ public:
 	void accept()
 	{
 		// set up appender
-		LayoutPtr layout = new SimpleLayout();
-		AppenderPtr appender = new FileAppender(layout, ACCEPT_FILE, false);
+		LayoutPtr layout = LayoutPtr(new SimpleLayout());
+		AppenderPtr appender = AppenderPtr(new FileAppender(layout, ACCEPT_FILE, false));
 
 		// create LevelMatchFilter
-		LevelRangeFilterPtr rangeFilter = new LevelRangeFilter();
+		LevelRangeFilterPtr rangeFilter = LevelRangeFilterPtr(new LevelRangeFilter());
 
 		// set it to accept on a match
 		rangeFilter->setAcceptOnMatch(true);
@@ -98,7 +98,7 @@ public:
 
 		// create a clean filter
 		appender->clearFilters();
-		rangeFilter = new LevelRangeFilter();
+		rangeFilter = LevelRangeFilterPtr(new LevelRangeFilter());
 		appender->addFilter(rangeFilter);
 
 		//test with max set
@@ -149,11 +149,11 @@ public:
 	void neutral()
 	{
 		// set up appender
-		LayoutPtr layout = new SimpleLayout();
-		AppenderPtr appender = new FileAppender(layout, NEUTRAL_FILE, false);
+		LayoutPtr layout = LayoutPtr(new SimpleLayout());
+		AppenderPtr appender = AppenderPtr(new FileAppender(layout, NEUTRAL_FILE, false));
 
 		// create LevelMatchFilter
-		LevelRangeFilterPtr rangeFilter = new LevelRangeFilter();
+		LevelRangeFilterPtr rangeFilter = LevelRangeFilterPtr(new LevelRangeFilter());
 
 		// set it to accept on a match
 		rangeFilter->setAcceptOnMatch(true);
@@ -187,7 +187,7 @@ public:
 
 		// create a clean filter
 		appender->clearFilters();
-		rangeFilter = new LevelRangeFilter();
+		rangeFilter = LevelRangeFilterPtr(new LevelRangeFilter());
 		appender->addFilter(rangeFilter);
 
 		//test with max set

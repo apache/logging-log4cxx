@@ -34,7 +34,6 @@
 
 #include <log4cxx/rolling/rollingfileappender.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/rolling/rolloverdescription.h>
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/bytebuffer.h>
@@ -69,7 +68,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 {
 	if (rollingPolicy == NULL)
 	{
-		FixedWindowRollingPolicy* fwrp = new FixedWindowRollingPolicy();
+		FixedWindowRollingPolicyPtr fwrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
 		rollingPolicy = fwrp;
 	}
@@ -79,7 +78,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 	//
 	if (triggeringPolicy == NULL)
 	{
-		TriggeringPolicyPtr trig(rollingPolicy);
+		TriggeringPolicyPtr trig = log4cxx::cast<TriggeringPolicy>(rollingPolicy);
 
 		if (trig != NULL)
 		{
@@ -89,11 +88,11 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 
 	if (triggeringPolicy == NULL)
 	{
-		triggeringPolicy = new ManualTriggeringPolicy();
+		triggeringPolicy = TriggeringPolicyPtr(new ManualTriggeringPolicy());
 	}
 
 	{
-		LOCK_W sync(mutex);
+		std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 		triggeringPolicy->activateOptions(p);
 		rollingPolicy->activateOptions(p);
 
@@ -111,8 +110,8 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 					syncAction->execute(p);
 				}
 
-				setFile(rollover1->getActiveFileName());
-				setAppend(rollover1->getAppend());
+				fileName = rollover1->getActiveFileName();
+				fileAppend = rollover1->getAppend();
 
 				//
 				//  async action not yet implemented
@@ -137,7 +136,7 @@ void RollingFileAppenderSkeleton::activateOptions(Pool& p)
 				fileLength = 0;
 			}
 
-			FileAppender::activateOptions(p);
+			FileAppender::activateOptionsInternal(p);
 		}
 		catch (std::exception&)
 		{
@@ -182,6 +181,12 @@ void RollingFileAppenderSkeleton::releaseFileLock(apr_file_t* lock_file)
  */
 bool RollingFileAppenderSkeleton::rollover(Pool& p)
 {
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	return rolloverInternal(p);
+}
+
+bool RollingFileAppenderSkeleton::rolloverInternal(Pool& p)
+{
 	//
 	//   can't roll without a policy
 	//
@@ -189,7 +194,6 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 	{
 
 		{
-			LOCK_W sync(mutex);
 
 #ifdef LOG4CXX_MULTI_PROCESS
 			std::string fileName(getFile());
@@ -328,26 +332,26 @@ bool RollingFileAppenderSkeleton::rollover(Pool& p)
 									asyncAction->execute(p);
 								}
 
-								setFile(
+								setFileInternal(
 									rollover1->getActiveFileName(), rollover1->getAppend(),
 									bufferedIO, bufferSize, p);
 							}
 							else
 							{
-								setFile(
+								setFileInternal(
 									rollover1->getActiveFileName(), true, bufferedIO, bufferSize, p);
 							}
 						}
 						else
 						{
 							closeWriter();
-							setFile(rollover1->getActiveFileName());
+							setFileInternal(rollover1->getActiveFileName());
 							// Call activateOptions to create any intermediate directories(if required)
-							FileAppender::activateOptions(p);
+							FileAppender::activateOptionsInternal(p);
 							OutputStreamPtr os(new FileOutputStream(
 									rollover1->getActiveFileName(), rollover1->getAppend()));
 							WriterPtr newWriter(createWriter(os));
-							setWriter(newWriter);
+							setWriterInternal(newWriter);
 
 							bool success = true;
 
@@ -452,7 +456,7 @@ void RollingFileAppenderSkeleton::subAppend(const LoggingEventPtr& event, Pool& 
 		try
 		{
 			_event = &(const_cast<LoggingEventPtr&>(event));
-			rollover(p);
+			rolloverInternal(p);
 		}
 		catch (std::exception&)
 		{

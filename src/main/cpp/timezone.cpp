@@ -276,7 +276,7 @@ const TimeZonePtr TimeZone::getTimeZone( const LogString& id )
 
 		s.append(mm);
 		apr_int32_t offset = sign * (hours * 3600 + minutes * 60);
-		return new log4cxx::helpers::TimeZoneImpl::FixedTimeZone( s, offset );
+		return TimeZonePtr(new log4cxx::helpers::TimeZoneImpl::FixedTimeZone( s, offset ));
 	}
 
 	const TimeZonePtr& ltz = getDefault();

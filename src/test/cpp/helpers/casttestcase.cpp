@@ -14,60 +14,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include <log4cxx/helpers/thread.h>
-#include "../insertwide.h"
+
 #include "../logunit.h"
-#include <apr_time.h>
-#include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/bytearrayoutputstream.h>
+#include <log4cxx/helpers/fileoutputstream.h>
+#include <iostream>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx_private.h>
 
 /**
-   Unit test for Thread.
-
-   */
-LOGUNIT_CLASS(ThreadTestCase)
+ */
+LOGUNIT_CLASS(CastTestCase)
 {
-	LOGUNIT_TEST_SUITE(ThreadTestCase);
-	LOGUNIT_TEST(testInterrupt);
+	LOGUNIT_TEST_SUITE( CastTestCase );
+	LOGUNIT_TEST(testGoodCast);
+	LOGUNIT_TEST(testBadCast);
+
 	LOGUNIT_TEST_SUITE_END();
 
 public:
+
 	/**
-	 * Start a thread that will wait for a minute, then interrupt it.
+	 *
 	 */
-	void testInterrupt()
+	void testGoodCast()
 	{
-		Thread thread1;
-		bool interrupted = false;
-		thread1.run(sleep, &interrupted);
-		apr_sleep(100000);
-		apr_time_t start = apr_time_now();
-		thread1.interrupt();
-		thread1.join();
-		LOGUNIT_ASSERT_EQUAL(true, interrupted);
-		apr_time_t elapsed = apr_time_now() - start;
-		LOGUNIT_ASSERT(elapsed < 1000000);
+		OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
+
+		ByteArrayOutputStreamPtr byteOut = log4cxx::cast<ByteArrayOutputStream>(out);
+
+		LOGUNIT_ASSERT(byteOut);
 	}
 
-private:
-	static void* LOG4CXX_THREAD_FUNC sleep(apr_thread_t* thread, void* data)
+	void testBadCast()
 	{
-		try
-		{
-			Thread::sleep(60000);
-		}
-		catch (InterruptedException& ex)
-		{
-			*(reinterpret_cast<bool*>(data)) = true;
-		}
+		OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
 
-		return NULL;
+		FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>(out);
+
+		LOGUNIT_ASSERT(!fos);
 	}
 
 };
 
-LOGUNIT_TEST_SUITE_REGISTRATION(ThreadTestCase);
-
+LOGUNIT_TEST_SUITE_REGISTRATION(CastTestCase);

@@ -18,7 +18,7 @@
 #ifndef _LOG4CXX_HELPERS_OUTPUTSTREAM_H
 #define _LOG4CXX_HELPERS_OUTPUTSTREAM_H
 
-#include <log4cxx/helpers/objectimpl.h>
+#include <log4cxx/helpers/object.h>
 #ifdef LOG4CXX_MULTI_PROCESS
 	#include <apr_file_io.h>
 #endif
@@ -33,7 +33,7 @@ class ByteBuffer;
 /**
 *   Abstract class for writing to character streams.
 */
-class LOG4CXX_EXPORT OutputStream : public ObjectImpl
+class LOG4CXX_EXPORT OutputStream : public Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(OutputStream)

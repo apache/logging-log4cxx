@@ -25,6 +25,8 @@
 
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/helpers/outputstreamwriter.h>
+#include <log4cxx/boost-std-configuration.h>
+#include <atomic>
 
 namespace log4cxx
 {
@@ -53,7 +55,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		<code>true</code> by default.
 
 		*/
-		bool immediateFlush;
+		std::atomic<bool> immediateFlush;
 
 		/**
 		The encoding to use when opening an input stream.
@@ -208,6 +210,11 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		Write a header as produced by the embedded layout's
 		Layout#appendHeader method.  */
 		virtual void writeHeader(log4cxx::helpers::Pool& p);
+
+		/**
+		 * Set the writer.  Mutex must already be held.
+		 */
+		void setWriterInternal(const log4cxx::helpers::WriterPtr& writer);
 
 	private:
 		//

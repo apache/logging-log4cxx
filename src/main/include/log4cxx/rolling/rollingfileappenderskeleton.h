@@ -97,6 +97,8 @@ class LOG4CXX_EXPORT RollingFileAppenderSkeleton : public FileAppender
 		*/
 		virtual void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
 
+		bool rolloverInternal(log4cxx::helpers::Pool& p);
+
 	protected:
 
 		RollingPolicyPtr getRollingPolicy() const;

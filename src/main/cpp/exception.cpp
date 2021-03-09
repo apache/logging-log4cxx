@@ -246,30 +246,6 @@ LogString TranscoderException::formatMessage(log4cxx_status_t)
 }
 
 
-MutexException::MutexException(log4cxx_status_t stat)
-	: Exception(formatMessage(stat))
-{
-}
-
-MutexException::MutexException(const MutexException& src)
-	: Exception(src)
-{
-}
-
-MutexException& MutexException::operator=(const MutexException& src)
-{
-	Exception::operator=(src);
-	return *this;
-}
-
-LogString MutexException::formatMessage(log4cxx_status_t stat)
-{
-	LogString s(LOG4CXX_STR("Mutex exception: stat = "));
-	Pool p;
-	StringHelper::toString(stat, p, s);
-	return s;
-}
-
 InterruptedException::InterruptedException() : Exception(LOG4CXX_STR("Thread was interrupted"))
 {
 }

@@ -60,7 +60,7 @@ LogString DailyRollingFileAppender::getDatePattern() const
 
 void DailyRollingFileAppender::activateOptions(log4cxx::helpers::Pool& p)
 {
-	TimeBasedRollingPolicyPtr policy = new TimeBasedRollingPolicy();
+	TimeBasedRollingPolicyPtr policy = TimeBasedRollingPolicyPtr( new TimeBasedRollingPolicy() );
 	LogString pattern(getFile());
 	bool inLiteral = false;
 	bool inPattern = false;

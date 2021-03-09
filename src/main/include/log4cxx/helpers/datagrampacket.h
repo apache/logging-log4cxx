@@ -18,8 +18,7 @@
 #ifndef _LOG4CXX_HELPERS_DATAGRAM_PACKET
 #define _LOG4CXX_HELPERS_DATAGRAM_PACKET
 
-#include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/inetaddress.h>
 
 namespace log4cxx
@@ -34,7 +33,7 @@ based solely on information contained within that packet. Multiple
 packets sent from one machine to another might be routed differently,
 and might arrive in any order.
 */
-class LOG4CXX_EXPORT DatagramPacket : public helpers::ObjectImpl
+class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 {
 	protected:
 		/** the data for this packet. */

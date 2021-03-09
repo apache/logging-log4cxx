@@ -25,7 +25,6 @@
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <apr_thread_mutex.h>
 #include <apr_thread_proc.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/filewatchdog.h>
 
 using namespace log4cxx::helpers;
@@ -42,7 +41,7 @@ extern "C" void tlsDestruct(void* ptr)
 }
 }
 
-APRInitializer::APRInitializer() : p(0), mutex(0), startTime(0), tlsKey(0)
+APRInitializer::APRInitializer() : p(0), startTime(0), tlsKey(0)
 {
 	apr_initialize();
 	apr_pool_create(&p, NULL);
@@ -51,7 +50,6 @@ APRInitializer::APRInitializer() : p(0), mutex(0), startTime(0), tlsKey(0)
 #if APR_HAS_THREADS
 	apr_status_t stat = apr_threadkey_private_create(&tlsKey, tlsDestruct, p);
 	assert(stat == APR_SUCCESS);
-	stat = apr_thread_mutex_create(&mutex, APR_THREAD_MUTEX_NESTED, p);
 	assert(stat == APR_SUCCESS);
 #endif
 }
@@ -60,7 +58,7 @@ APRInitializer::~APRInitializer()
 {
 	{
 #if APR_HAS_THREADS
-		synchronized sync(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
 		apr_threadkey_private_delete(tlsKey);
 #endif
 
@@ -105,7 +103,7 @@ void APRInitializer::registerCleanup(FileWatchdog* watchdog)
 {
 	APRInitializer& instance(getInstance());
 #if APR_HAS_THREADS
-	synchronized sync(instance.mutex);
+	std::unique_lock<std::mutex> lock(instance.mutex);
 #endif
 	instance.watchdogs.push_back(watchdog);
 }
@@ -114,7 +112,7 @@ void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
 {
 	APRInitializer& instance(getInstance());
 #if APR_HAS_THREADS
-	synchronized sync(instance.mutex);
+	std::unique_lock<std::mutex> lock(instance.mutex);
 #endif
 
 	for (std::list<FileWatchdog*>::iterator iter = instance.watchdogs.begin();

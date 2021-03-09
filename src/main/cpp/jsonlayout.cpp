@@ -24,8 +24,6 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 
-#include <apr_time.h>
-#include <apr_strings.h>
 #include <string.h>
 
 using namespace log4cxx;
@@ -141,7 +139,8 @@ void JSONLayout::appendQuotedEscapedString(LogString& buf,
 		0x0c,   /* \f form feed         */
 		0x0d,   /* \r carriage return   */
 		0x22,   /* \" double quote      */
-		0x5c    /* \\ backslash         */
+		0x5c,   /* \\ backslash         */
+		0x00    /* terminating NULL for C-strings */
 	};
 
 	size_t start = 0;

@@ -19,7 +19,7 @@
 #define _LOG4CXX_SYSLOG_WRITER_H
 
 
-#include <log4cxx/helpers/objectptr.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/datagramsocket.h>
 

@@ -25,16 +25,16 @@
 
 
 #include <log4cxx/spi/appenderattachable.h>
-#include <log4cxx/helpers/objectimpl.h>
-#include <log4cxx/helpers/mutex.h>
+#include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/log4cxx.h>
 
 namespace log4cxx
 {
 namespace spi
 {
 class LoggingEvent;
-typedef helpers::ObjectPtrT<LoggingEvent> LoggingEventPtr;
+typedef std::shared_ptr<LoggingEvent> LoggingEventPtr;
 }
 
 namespace helpers
@@ -42,7 +42,7 @@ namespace helpers
 
 class LOG4CXX_EXPORT AppenderAttachableImpl :
 	public virtual spi::AppenderAttachable,
-	public virtual helpers::ObjectImpl
+	public virtual helpers::Object
 {
 	protected:
 		/** Array of appenders. */
@@ -61,14 +61,11 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		LOG4CXX_CAST_ENTRY(spi::AppenderAttachable)
 		END_LOG4CXX_CAST_MAP()
 
-		void addRef() const;
-		void releaseRef() const;
-
 		// Methods
 		/**
 		 * Add an appender.
 		 */
-		virtual void addAppender(const AppenderPtr& newAppender);
+		virtual void addAppender(const AppenderPtr newAppender);
 
 		/**
 		 Call the <code>doAppend</code> method on all attached appenders.
@@ -90,7 +87,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 Returns <code>true</code> if the specified appender is in the
 		 list of attached appenders, <code>false</code> otherwise.
 		*/
-		virtual bool isAttached(const AppenderPtr& appender) const;
+		virtual bool isAttached(const AppenderPtr appender) const;
 
 		/**
 		 * Remove all previously added appenders.
@@ -100,7 +97,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		/**
 		 * Remove the appender passed as parameter from the list of appenders.
 		 */
-		virtual void removeAppender(const AppenderPtr& appender);
+		virtual void removeAppender(const AppenderPtr appender);
 
 		/**
 		 * Remove the appender with the name passed as parameter from the
@@ -108,13 +105,13 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		virtual void removeAppender(const LogString& name);
 
-		inline const log4cxx::helpers::Mutex& getMutex() const
+		inline std::mutex& getMutex() const
 		{
-			return mutex;
+			return m_mutex;
 		}
 
 	private:
-		log4cxx::helpers::Mutex mutex;
+		mutable std::mutex m_mutex;
 		AppenderAttachableImpl(const AppenderAttachableImpl&);
 		AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);
 };

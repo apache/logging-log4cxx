@@ -30,11 +30,9 @@
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/pool.h>
-#include <log4cxx/helpers/mutex.h>
 #include <log4cxx/spi/location/locationinfo.h>
 #include <log4cxx/helpers/resourcebundle.h>
 #include <log4cxx/helpers/messagebuffer.h>
-
 
 namespace log4cxx
 {
@@ -64,7 +62,7 @@ operations, except configuration, are done through this class.
 */
 class LOG4CXX_EXPORT Logger :
 	public virtual log4cxx::spi::AppenderAttachable,
-	public virtual helpers::ObjectImpl
+	public virtual helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Logger)
@@ -136,9 +134,6 @@ class LOG4CXX_EXPORT Logger :
 		~Logger();
 
 
-		void addRef() const;
-		void releaseRef() const;
-
 		/**
 		Add <code>newAppender</code> to the list of appenders of this
 		Logger instance.
@@ -146,7 +141,7 @@ class LOG4CXX_EXPORT Logger :
 		<p>If <code>newAppender</code> is already in the list of
 		appenders, then it won't be added again.
 		*/
-		virtual void addAppender(const AppenderPtr& newAppender);
+		virtual void addAppender(const AppenderPtr newAppender);
 
 
 		/**
@@ -622,13 +617,13 @@ class LOG4CXX_EXPORT Logger :
 
 		@throws RuntimeException if all levels are null in the hierarchy
 		*/
-		virtual const LevelPtr& getEffectiveLevel() const;
+		virtual const LevelPtr getEffectiveLevel() const;
 
 		/**
 		Return the the LoggerRepository where this
 		<code>Logger</code> is attached.
 		*/
-		log4cxx::spi::LoggerRepositoryPtr getLoggerRepository() const;
+		log4cxx::spi::LoggerRepository* getLoggerRepository() const;
 
 
 		/**
@@ -941,7 +936,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Is the appender passed as parameter attached to this logger?
 		*/
-		bool isAttached(const AppenderPtr& appender) const;
+		bool isAttached(const AppenderPtr appender) const;
 
 		/**
 		 *  Check whether this logger is enabled for the <code>DEBUG</code>
@@ -1452,7 +1447,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Remove the appender passed as parameter form the list of appenders.
 		*/
-		void removeAppender(const AppenderPtr& appender);
+		void removeAppender(const AppenderPtr appender);
 
 		/**
 		Remove the appender with the name passed as parameter form the
@@ -1478,7 +1473,7 @@ class LOG4CXX_EXPORT Logger :
 		<p>As in <pre> &nbsp;&nbsp;&nbsp;logger->setLevel(Level::getDebug()); </pre>
 
 		<p>Null values are admitted.  */
-		virtual void setLevel(const LevelPtr& level);
+		virtual void setLevel(const LevelPtr level);
 
 		/**
 		Set the resource bundle to be used with localized logging methods.
@@ -1718,17 +1713,20 @@ class LOG4CXX_EXPORT Logger :
 		*/
 		void trace(const std::string& msg) const;
 
-		inline SHARED_MUTEX& getMutex()
-		{
-			return mutex;
-		}
+		/**
+		 * Reconfigure this logger by configuring all of the appenders.
+		 *
+		 * @param appenders The appenders to set.  Any currently existing appenders are removed.
+		 * @param additivity The additivity of this logger
+		 */
+		void reconfigure( const std::vector<AppenderPtr>& appenders, bool additivity );
 
 	private:
 		//
 		//  prevent copy and assignment
 		Logger(const Logger&);
 		Logger& operator=(const Logger&);
-		mutable SHARED_MUTEX mutex;
+		mutable shared_mutex mutex;
 		friend class log4cxx::helpers::synchronized;
 };
 LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);

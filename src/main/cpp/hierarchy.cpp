@@ -29,7 +29,6 @@
 #include <algorithm>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/appender.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/stringhelper.h>
 #if !defined(LOG4CXX)
@@ -38,7 +37,6 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/spi/rootlogger.h>
-#include <apr_atomic.h>
 #include "assert.h"
 
 
@@ -50,14 +48,13 @@ IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
 
 Hierarchy::Hierarchy() :
 	pool(),
-	mutex(pool),
 	loggers(new LoggerMap()),
 	provisionNodes(new ProvisionNodeMap())
 {
-	synchronized sync(mutex);
-	root = new RootLogger(pool, Level::getDebug());
+	std::unique_lock<std::mutex> lock(mutex);
+	root = LoggerPtr(new RootLogger(pool, Level::getDebug()));
 	root->setHierarchy(this);
-	defaultFactory = new DefaultLoggerFactory();
+	defaultFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
 	emittedNoAppenderWarning = false;
 	configured = false;
 	thresholdInt = Level::ALL_INT;
@@ -75,19 +72,9 @@ Hierarchy::~Hierarchy()
 #endif
 }
 
-void Hierarchy::addRef() const
-{
-	ObjectImpl::addRef();
-}
-
-void Hierarchy::releaseRef() const
-{
-	ObjectImpl::releaseRef();
-}
-
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
 {
-	synchronized sync(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 
 	if (std::find(listeners.begin(), listeners.end(), listener) != listeners.end())
 	{
@@ -101,15 +88,15 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 
 void Hierarchy::clear()
 {
-	synchronized sync(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 	loggers->clear();
 }
 
-void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
+void Hierarchy::emitNoAppenderWarning(const Logger* logger)
 {
 	bool emitWarning = false;
 	{
-		synchronized sync(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
 		emitWarning = !emittedNoAppenderWarning;
 		emittedNoAppenderWarning = true;
 	}
@@ -126,7 +113,7 @@ void Hierarchy::emitNoAppenderWarning(const LoggerPtr& logger)
 
 LoggerPtr Hierarchy::exists(const LogString& name)
 {
-	synchronized sync(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 
 	LoggerPtr logger;
 	LoggerMap::iterator it = loggers->find(name);
@@ -144,14 +131,8 @@ void Hierarchy::setThreshold(const LevelPtr& l)
 {
 	if (l != 0)
 	{
-		synchronized sync(mutex);
-		thresholdInt = l->toInt();
-		threshold = l;
-
-		if (thresholdInt != Level::ALL_INT)
-		{
-			setConfigured(true);
-		}
+		std::unique_lock<std::mutex> lock(mutex);
+		setThresholdInternal(l);
 	}
 }
 
@@ -170,12 +151,23 @@ void Hierarchy::setThreshold(const LogString& levelStr)
 	}
 }
 
-void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
+void Hierarchy::setThresholdInternal(const LevelPtr& l)
+{
+	thresholdInt = l->toInt();
+	threshold = l;
+
+	if (thresholdInt != Level::ALL_INT)
+	{
+		configured = true;
+	}
+}
+
+void Hierarchy::fireAddAppenderEvent(const Logger* logger, const Appender* appender)
 {
 	setConfigured(true);
 	HierarchyEventListenerList clonedList;
 	{
-		synchronized sync(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
 		clonedList = listeners;
 	}
 
@@ -189,12 +181,12 @@ void Hierarchy::fireAddAppenderEvent(const LoggerPtr& logger, const AppenderPtr&
 	}
 }
 
-void Hierarchy::fireRemoveAppenderEvent(const LoggerPtr& logger, const AppenderPtr& appender)
+void Hierarchy::fireRemoveAppenderEvent(const Logger* logger, const Appender* appender)
 
 {
 	HierarchyEventListenerList clonedList;
 	{
-		synchronized sync(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
 		clonedList = listeners;
 	}
 	HierarchyEventListenerList::iterator it, itEnd = clonedList.end();
@@ -220,7 +212,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name)
 LoggerPtr Hierarchy::getLogger(const LogString& name,
 	const spi::LoggerFactoryPtr& factory)
 {
-	synchronized sync(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 
 	LoggerMap::iterator it = loggers->find(name);
 
@@ -250,7 +242,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 
 LoggerList Hierarchy::getCurrentLoggers() const
 {
-	synchronized sync(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 
 	LoggerList v;
 	LoggerMap::const_iterator it, itEnd = loggers->end();
@@ -271,15 +263,17 @@ LoggerPtr Hierarchy::getRootLogger() const
 
 bool Hierarchy::isDisabled(int level) const
 {
-	if (!configured)
+	bool currentlyConfigured;
 	{
-		synchronized sync(mutex);
+		std::unique_lock<std::mutex> lock(mutex);
+		currentlyConfigured = configured;
+	}
 
-		if (!configured)
-		{
-			DefaultConfigurator::configure(
-				const_cast<Hierarchy*>(this));
-		}
+	if (!currentlyConfigured)
+	{
+		std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
+		DefaultConfigurator::configure(
+			nonconstThis);
 	}
 
 	return thresholdInt > level;
@@ -288,23 +282,21 @@ bool Hierarchy::isDisabled(int level) const
 
 void Hierarchy::resetConfiguration()
 {
-	synchronized sync(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 
 	getRootLogger()->setLevel(Level::getDebug());
 	root->setResourceBundle(0);
-	setThreshold(Level::getAll());
+	setThresholdInternal(Level::getAll());
 
-	shutdown(); // nested locks are OK
+	shutdownInternal();
 
-	LoggerList loggers1 = getCurrentLoggers();
-	LoggerList::iterator it, itEnd = loggers1.end();
+	LoggerMap::const_iterator it, itEnd = loggers->end();
 
-	for (it = loggers1.begin(); it != itEnd; it++)
+	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		LoggerPtr& logger = *it;
-		logger->setLevel(0);
-		logger->setAdditivity(true);
-		logger->setResourceBundle(0);
+		it->second->setLevel(0);
+		it->second->setAdditivity(true);
+		it->second->setResourceBundle(0);
 	}
 
 	//rendererMap.clear();
@@ -312,38 +304,40 @@ void Hierarchy::resetConfiguration()
 
 void Hierarchy::shutdown()
 {
-	synchronized sync(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 
-	setConfigured(false);
+	shutdownInternal();
+}
+
+void Hierarchy::shutdownInternal()
+{
+	configured = false;
 
 	LoggerPtr root1 = getRootLogger();
 
 	// begin by closing nested appenders
 	root1->closeNestedAppenders();
 
-	LoggerList loggers1 = getCurrentLoggers();
-	LoggerList::iterator it, itEnd = loggers1.end();
+	LoggerMap::iterator it, itEnd = loggers->end();
 
-	for (it = loggers1.begin(); it != itEnd; it++)
+	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		LoggerPtr& logger = *it;
+		LoggerPtr logger = it->second;
 		logger->closeNestedAppenders();
 	}
 
 	// then, remove all appenders
 	root1->removeAllAppenders();
 
-	for (it = loggers1.begin(); it != itEnd; it++)
+	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		LoggerPtr& logger = *it;
+		LoggerPtr logger = it->second;
 		logger->removeAllAppenders();
 	}
 }
 
-
 void Hierarchy::updateParents(LoggerPtr logger)
 {
-	synchronized sync(mutex);
 	const LogString name(logger->getName());
 	size_t length = name.size();
 	bool parentFound = false;
@@ -409,7 +403,7 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 
 void Hierarchy::setConfigured(bool newValue)
 {
-	synchronized sync(mutex);
+	std::unique_lock<std::mutex> lock(mutex);
 	configured = newValue;
 }
 

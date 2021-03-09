@@ -319,28 +319,39 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	// messages.  We will append (x/y) at the end of each message
 	// to indicate how far through the message we are
 	std::vector<LogString> packets;
-	if( msg.size() > maxMessageLength ){
+
+	if ( msg.size() > maxMessageLength )
+	{
 		LogString::iterator start = msg.begin();
-		while( start != msg.end() ){
+
+		while ( start != msg.end() )
+		{
 			LogString::iterator end = start + maxMessageLength - 12;
-			if( end > msg.end() ){
+
+			if ( end > msg.end() )
+			{
 				end = msg.end();
 			}
+
 			LogString newMsg = LogString( start, end );
 			packets.push_back( newMsg );
 			start = end;
 		}
 
 		int current = 1;
-		for( std::vector<LogString>::iterator it = packets.begin();
-			 it != packets.end();
-			 it++, current++ ){
+
+		for ( std::vector<LogString>::iterator it = packets.begin();
+			it != packets.end();
+			it++, current++ )
+		{
 			char buf[12];
 			apr_snprintf( buf, sizeof(buf), "(%d/%d)", current, packets.size() );
 			LOG4CXX_DECODE_CHAR(str, buf);
 			it->append( str );
 		}
-	}else{
+	}
+	else
+	{
 		packets.push_back( msg );
 	}
 
@@ -350,9 +361,10 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if (sw == 0)
 	{
-		for( std::vector<LogString>::iterator it = packets.begin();
-			 it != packets.end();
-			 it++ ){
+		for ( std::vector<LogString>::iterator it = packets.begin();
+			it != packets.end();
+			it++ )
+		{
 			// use of "%s" to avoid a security hole
 			::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(),
 				"%s", it->c_str());
@@ -371,9 +383,10 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		return;
 	}
 
-	for( std::vector<LogString>::iterator it = packets.begin();
-		 it != packets.end();
-		 it++ ){
+	for ( std::vector<LogString>::iterator it = packets.begin();
+		it != packets.end();
+		it++ )
+	{
 		LogString sbuf(1, 0x3C /* '<' */);
 		StringHelper::toString((syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
 		sbuf.append(1, (logchar) 0x3E /* '>' */);

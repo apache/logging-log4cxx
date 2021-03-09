@@ -23,19 +23,16 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/helpers/systemerrwriter.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogLog::LogLog() : mutex(APRInitializer::getRootPool())
+LogLog::LogLog()
 {
-	synchronized sync(mutex);
-
-	debugEnabled	= false;
-	quietMode		= false;
+	debugEnabled    = false;
+	quietMode       = false;
 }
 
 LogLog& LogLog::getInstance()
@@ -47,7 +44,7 @@ LogLog& LogLog::getInstance()
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
-	synchronized sync(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().mutex);
 
 	getInstance().debugEnabled = debugEnabled1;
 }
@@ -59,7 +56,7 @@ void LogLog::debug(const LogString& msg)
 		return;
 	}
 
-	synchronized sync(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().mutex);
 
 	emit(msg);
 }
@@ -71,47 +68,47 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 		return;
 	}
 
-	synchronized sync(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().mutex);
 
-	debug(msg);
+	emit(msg);
 	emit(e);
 }
 
 
 void LogLog::error(const LogString& msg)
 {
-	synchronized sync(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().mutex);
 
 	emit(msg);
 }
 
 void LogLog::error(const LogString& msg, const std::exception& e)
 {
-	synchronized sync(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().mutex);
 
-	error(msg);
+	emit(msg);
 	emit(e);
 }
 
 void LogLog::setQuietMode(bool quietMode1)
 {
-	synchronized sync(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().mutex);
 
 	getInstance().quietMode = quietMode1;
 }
 
 void LogLog::warn(const LogString& msg)
 {
-	synchronized sync(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().mutex);
 
 	emit(msg);
 }
 
 void LogLog::warn(const LogString& msg, const std::exception& e)
 {
-	synchronized sync(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().mutex);
 
-	warn(msg);
+	emit(msg);
 	emit(e);
 }
 

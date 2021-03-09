@@ -19,7 +19,6 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <apr_thread_proc.h>
 #include <apr_atomic.h>
 #include <apr_strings.h>
@@ -29,8 +28,6 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
-
-#if APR_HAS_THREADS
 
 IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 
@@ -46,7 +43,6 @@ TelnetAppender::TelnetAppender()
 	  encoder(CharsetEncoder::getUTF8Encoder()),
 	  serverSocket(NULL), sh()
 {
-	LOCK_W sync(mutex);
 	activeConnections = 0;
 }
 
@@ -64,7 +60,7 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 		serverSocket->setSoTimeout(1000);
 	}
 
-	sh.run(acceptConnections, this);
+	sh = std::thread( &TelnetAppender::acceptConnections, this );
 }
 
 void TelnetAppender::setOption(const LogString& option,
@@ -86,13 +82,13 @@ void TelnetAppender::setOption(const LogString& option,
 
 LogString TelnetAppender::getEncoding() const
 {
-	LOCK_W sync(mutex);
+	log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
 	return encoding;
 }
 
 void TelnetAppender::setEncoding(const LogString& value)
 {
-	LOCK_W sync(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 	encoder = CharsetEncoder::getEncoder(value);
 	encoding = value;
 }
@@ -100,7 +96,7 @@ void TelnetAppender::setEncoding(const LogString& value)
 
 void TelnetAppender::close()
 {
-	LOCK_W sync(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 	if (closed)
 	{
@@ -133,12 +129,9 @@ void TelnetAppender::close()
 		}
 	}
 
-	try
+	if ( sh.joinable() )
 	{
 		sh.join();
-	}
-	catch (Exception&)
-	{
 	}
 
 	activeConnections = 0;
@@ -200,7 +193,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		LogString::const_iterator msgIter(msg.begin());
 		ByteBuffer buf(bytes, bytesSize);
 
-		LOCK_W sync(this->mutex);
+		log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
 
 		while (msgIter != msg.end())
 		{
@@ -223,33 +216,32 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	}
 }
 
-void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread */, void* data)
+void TelnetAppender::acceptConnections()
 {
-	TelnetAppender* pThis = (TelnetAppender*) data;
 
 	// main loop; is left when This->closed is != 0 after an accept()
 	while (true)
 	{
 		try
 		{
-			SocketPtr newClient = pThis->serverSocket->accept();
-			bool done = pThis->closed;
+			SocketPtr newClient = serverSocket->accept();
+			bool done = closed;
 
 			if (done)
 			{
 				Pool p;
-				pThis->writeStatus(newClient, LOG4CXX_STR("Log closed.\r\n"), p);
+				writeStatus(newClient, LOG4CXX_STR("Log closed.\r\n"), p);
 				newClient->close();
 
 				break;
 			}
 
-			size_t count = pThis->activeConnections;
+			size_t count = activeConnections;
 
-			if (count >= pThis->connections.size())
+			if (count >= connections.size())
 			{
 				Pool p;
-				pThis->writeStatus(newClient, LOG4CXX_STR("Too many connections.\r\n"), p);
+				writeStatus(newClient, LOG4CXX_STR("Too many connections.\r\n"), p);
 				newClient->close();
 			}
 			else
@@ -257,16 +249,16 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
 				//
 				//   find unoccupied connection
 				//
-				LOCK_W sync(pThis->mutex);
+				std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
-				for (ConnectionList::iterator iter = pThis->connections.begin();
-					iter != pThis->connections.end();
+				for (ConnectionList::iterator iter = connections.begin();
+					iter != connections.end();
 					iter++)
 				{
 					if (*iter == NULL)
 					{
 						*iter = newClient;
-						pThis->activeConnections++;
+						activeConnections++;
 
 						break;
 					}
@@ -276,19 +268,19 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
 				LogString oss(LOG4CXX_STR("TelnetAppender v1.0 ("));
 				StringHelper::toString((int) count + 1, p, oss);
 				oss += LOG4CXX_STR(" active connections)\r\n\r\n");
-				pThis->writeStatus(newClient, oss, p);
+				writeStatus(newClient, oss, p);
 			}
 		}
 		catch (InterruptedIOException&)
 		{
-			if (pThis->closed)
+			if (closed)
 			{
 				break;
 			}
 		}
 		catch (Exception& e)
 		{
-			if (!pThis->closed)
+			if (!closed)
 			{
 				LogLog::error(LOG4CXX_STR("Encountered error while in SocketHandler loop."), e);
 			}
@@ -299,7 +291,4 @@ void* APR_THREAD_FUNC TelnetAppender::acceptConnections(apr_thread_t* /* thread 
 		}
 	}
 
-	return NULL;
 }
-
-#endif

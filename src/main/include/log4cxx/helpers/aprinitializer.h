@@ -58,7 +58,7 @@ class APRInitializer
 		APRInitializer(const APRInitializer&);
 		APRInitializer& operator=(const APRInitializer&);
 		apr_pool_t* p;
-		apr_thread_mutex_t* mutex;
+		std::mutex mutex;
 		std::list<FileWatchdog*> watchdogs;
 		apr_time_t startTime;
 		apr_threadkey_t* tlsKey;

@@ -68,7 +68,7 @@ files. You can enable log4cxx internal logging by setting the
 */
 class LOG4CXX_EXPORT DOMConfigurator :
 	virtual public spi::Configurator,
-	virtual public helpers::ObjectImpl
+	virtual public helpers::Object
 {
 	protected:
 		typedef std::map<LogString, AppenderPtr> AppenderMap;
@@ -173,7 +173,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 			apr_xml_elem* catElement,
 			LoggerPtr logger, bool isRoot,
 			apr_xml_doc* doc,
-			AppenderMap& appenders);
+			AppenderMap& appenders );
 
 		/**
 		 Used internally to parse a layout element.
@@ -218,9 +218,6 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		END_LOG4CXX_CAST_MAP()
 
 		DOMConfigurator(log4cxx::helpers::Pool& p);
-
-		void addRef() const;
-		void releaseRef() const;
 
 		/**
 		A static version of #doConfigure.
@@ -285,7 +282,7 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		@param repository The hierarchy to operation upon.
 		*/
 		void doConfigure(const File& filename,
-			spi::LoggerRepositoryPtr& repository);
+			spi::LoggerRepositoryPtr repository);
 
 	protected:
 		static LogString getAttribute(

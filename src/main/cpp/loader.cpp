@@ -65,7 +65,7 @@ InputStreamPtr Loader::getResourceAsStream(const LogString& name)
 
 	try
 	{
-		return new FileInputStream(name);
+		return InputStreamPtr( new FileInputStream(name) );
 	}
 	catch (const IOException&)
 	{

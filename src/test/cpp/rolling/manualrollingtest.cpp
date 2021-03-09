@@ -110,13 +110,13 @@ public:
 	 */
 	void test1()
 	{
-		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%m\n"));
-		RollingFileAppenderPtr rfa = new RollingFileAppender();
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-		FixedWindowRollingPolicyPtr swrp = new FixedWindowRollingPolicy();
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 		swrp->setMinIndex(0);
 
 		swrp->setFileNamePattern(LOG4CXX_STR("output/manual-test1.%i"));
@@ -146,8 +146,8 @@ public:
 	 */
 	void test2()
 	{
-		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%m\n"));
-		RollingFileAppenderPtr rfa = new RollingFileAppender();
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
@@ -176,12 +176,12 @@ public:
 	 */
 	void test3()
 	{
-		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%m\n"));
-		RollingFileAppenderPtr rfa = new RollingFileAppender();
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 
-		FixedWindowRollingPolicyPtr  fwrp = new FixedWindowRollingPolicy();
+		FixedWindowRollingPolicyPtr  fwrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 
 		fwrp->setMinIndex(0);
 		rfa->setFile(LOG4CXX_STR("output/manual-test3.log"));
@@ -208,14 +208,14 @@ public:
 	 */
 	void test4()
 	{
-		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%m\n"));
-		RollingFileAppenderPtr rfa = new RollingFileAppender();
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 		rfa->setFile(LOG4CXX_STR("output/manual-test4.log"));
 
-		FixedWindowRollingPolicyPtr swrp = new FixedWindowRollingPolicy();
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 
 		swrp->setMinIndex(0);
 
@@ -244,14 +244,14 @@ public:
 	 */
 	void test5()
 	{
-		PatternLayoutPtr layout = new PatternLayout(LOG4CXX_STR("%m\n"));
-		RollingFileAppenderPtr rfa = new RollingFileAppender();
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
 		rfa->setName(LOG4CXX_STR("ROLLING"));
 		rfa->setAppend(false);
 		rfa->setLayout(layout);
 		rfa->setFile(LOG4CXX_STR("output/manual-test5.log"));
 
-		FixedWindowRollingPolicyPtr swrp = new FixedWindowRollingPolicy();
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 
 		swrp->setMinIndex(0);
 
