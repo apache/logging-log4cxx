@@ -66,7 +66,10 @@ public:
 
 	void tearDown()
 	{
-		root->getLoggerRepository()->resetConfiguration();
+		log4cxx::spi::LoggerRepositoryPtr rep = root->getLoggerRepository().lock();
+		if (rep) {
+			rep->resetConfiguration();
+		}
 	}
 
 	void simple()

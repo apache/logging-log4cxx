@@ -54,7 +54,7 @@ Logger::~Logger()
 
 void Logger::addAppender(const AppenderPtr newAppender)
 {
-	log4cxx::spi::LoggerRepository* rep = 0;
+	log4cxx::spi::LoggerRepositoryPtr rep;
 	{
 		log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
 
@@ -64,10 +64,10 @@ void Logger::addAppender(const AppenderPtr newAppender)
 		}
 
 		aai->addAppender(newAppender);
-		rep = repository;
+		rep = repository.lock();
 	}
 
-	if (rep != 0)
+	if (rep)
 	{
 		rep->fireAddAppenderEvent(this, newAppender.get());
 	}
@@ -93,9 +93,9 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
 	{
 		aai->addAppender( *it );
 
-		if (repository != 0)
+		if (log4cxx::spi::LoggerRepositoryPtr rep = repository.lock())
 		{
-			repository->fireAddAppenderEvent(this, it->get());
+			rep->fireAddAppenderEvent(this, it->get());
 		}
 	}
 }
@@ -122,9 +122,10 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 		}
 	}
 
-	if (writes == 0 && repository != 0)
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (writes == 0 && rep)
 	{
-		repository->emitNoAppenderWarning(const_cast<Logger*>(this));
+		rep->emitNoAppenderWarning(const_cast<Logger*>(this));
 	}
 }
 
@@ -214,7 +215,7 @@ const LevelPtr Logger::getEffectiveLevel() const
 #endif
 }
 
-LoggerRepository* Logger::getLoggerRepository() const
+LoggerRepositoryWeakPtr Logger::getLoggerRepository() const
 {
 	return repository;
 }
@@ -288,7 +289,8 @@ bool Logger::isAttached(const AppenderPtr appender) const
 
 bool Logger::isTraceEnabled() const
 {
-	if (repository == 0 || repository->isDisabled(Level::TRACE_INT))
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (!rep || rep->isDisabled(Level::TRACE_INT))
 	{
 		return false;
 	}
@@ -298,7 +300,8 @@ bool Logger::isTraceEnabled() const
 
 bool Logger::isDebugEnabled() const
 {
-	if (repository == 0 || repository->isDisabled(Level::DEBUG_INT))
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (!rep || rep->isDisabled(Level::DEBUG_INT))
 	{
 		return false;
 	}
@@ -308,7 +311,8 @@ bool Logger::isDebugEnabled() const
 
 bool Logger::isEnabledFor(const LevelPtr& level1) const
 {
-	if (repository == 0 || repository->isDisabled(level1->toInt()))
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (!rep || rep->isDisabled(level1->toInt()))
 	{
 		return false;
 	}
@@ -319,7 +323,8 @@ bool Logger::isEnabledFor(const LevelPtr& level1) const
 
 bool Logger::isInfoEnabled() const
 {
-	if (repository == 0 || repository->isDisabled(Level::INFO_INT))
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (!rep || rep->isDisabled(Level::INFO_INT))
 	{
 		return false;
 	}
@@ -329,7 +334,8 @@ bool Logger::isInfoEnabled() const
 
 bool Logger::isErrorEnabled() const
 {
-	if (repository == 0 || repository->isDisabled(Level::ERROR_INT))
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (!rep || rep->isDisabled(Level::ERROR_INT))
 	{
 		return false;
 	}
@@ -339,7 +345,8 @@ bool Logger::isErrorEnabled() const
 
 bool Logger::isWarnEnabled() const
 {
-	if (repository == 0 || repository->isDisabled(Level::WARN_INT))
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (!rep || rep->isDisabled(Level::WARN_INT))
 	{
 		return false;
 	}
@@ -349,7 +356,8 @@ bool Logger::isWarnEnabled() const
 
 bool Logger::isFatalEnabled() const
 {
-	if (repository == 0 || repository->isDisabled(Level::FATAL_INT))
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (!rep || rep->isDisabled(Level::FATAL_INT))
 	{
 		return false;
 	}
@@ -385,7 +393,8 @@ bool Logger::isFatalEnabled() const
 void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
 	const LocationInfo& location, const std::vector<LogString>& params) const
 {
-	if (repository == 0 || repository->isDisabled(level1->toInt()))
+	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	if (!rep || rep->isDisabled(level1->toInt()))
 	{
 		return;
 	}
@@ -500,7 +509,7 @@ void Logger::setAdditivity(bool additive1)
 	this->additive = additive1;
 }
 
-void Logger::setHierarchy(spi::LoggerRepository* repository1)
+void Logger::setHierarchy(spi::LoggerRepositoryWeakPtr repository1)
 {
 	this->repository = repository1;
 }

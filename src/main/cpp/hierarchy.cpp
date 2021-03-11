@@ -53,7 +53,7 @@ Hierarchy::Hierarchy() :
 {
 	std::unique_lock<std::mutex> lock(mutex);
 	root = LoggerPtr(new RootLogger(pool, Level::getDebug()));
-	root->setHierarchy(this);
+	root->setHierarchy(weak_from_this());
 	defaultFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
 	emittedNoAppenderWarning = false;
 	configured = false;
@@ -223,7 +223,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	else
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(pool, name));
-		logger->setHierarchy(this);
+		logger->setHierarchy(weak_from_this());
 		loggers->insert(LoggerMap::value_type(name, logger));
 
 		ProvisionNodeMap::iterator it2 = provisionNodes->find(name);

@@ -131,7 +131,10 @@ public:
 	void tearDown()
 	{
 		socketAppender = 0;
-		root->getLoggerRepository()->resetConfiguration();
+		log4cxx::spi::LoggerRepositoryPtr rep = root->getLoggerRepository().lock();
+		if (rep) {
+			rep->resetConfiguration();
+		}
 		logger = 0;
 		root = 0;
 	}

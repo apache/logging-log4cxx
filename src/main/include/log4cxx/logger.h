@@ -102,7 +102,7 @@ class LOG4CXX_EXPORT Logger :
 
 
 		// Loggers need to know what Hierarchy they are in
-		log4cxx::spi::LoggerRepository* repository;
+		log4cxx::spi::LoggerRepositoryWeakPtr repository;
 
 		helpers::AppenderAttachableImplPtr aai;
 
@@ -623,7 +623,7 @@ class LOG4CXX_EXPORT Logger :
 		Return the the LoggerRepository where this
 		<code>Logger</code> is attached.
 		*/
-		log4cxx::spi::LoggerRepository* getLoggerRepository() const;
+		log4cxx::spi::LoggerRepositoryWeakPtr getLoggerRepository() const;
 
 
 		/**
@@ -1464,7 +1464,7 @@ class LOG4CXX_EXPORT Logger :
 		friend class Hierarchy;
 		/**
 		Only the Hierarchy class can set the hierarchy of a logger.*/
-		void setHierarchy(spi::LoggerRepository* repository);
+		void setHierarchy(spi::LoggerRepositoryWeakPtr repository);
 
 	public:
 		/**
