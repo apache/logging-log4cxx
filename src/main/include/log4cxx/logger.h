@@ -1771,6 +1771,17 @@ Logs a message to a specified logger with a specified level.
 			logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
+Logs a message to a specified logger with a specified level, formatting utilizing libfmt
+
+@param logger the logger to be used.
+@param level the level to log.
+@param ... The format string and message to log
+*/
+#define LOG4CXX_LOG_FMT(logger, level, ...) do { \
+		if (logger->isEnabledFor(level)) {\
+			logger->forcedLog(level, fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+
+/**
 Logs a message to a specified logger with a specified level.
 
 @param logger the logger to be used.
@@ -1793,8 +1804,19 @@ Logs a message to a specified logger with the DEBUG level.
 		if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
 			logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+
+/**
+Logs a message to a specified logger with the DEBUG level, formatting with libfmt
+
+@param logger the logger to be used.
+@param ... The format string and message to log
+*/
+#define LOG4CXX_DEBUG_FMT(logger, ...) do { \
+		if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
+			logger->forcedLog(::log4cxx::Level::getDebug(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
+#define LOG4CXX_DEBUG_FMT(logger, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 5000
@@ -1808,8 +1830,19 @@ Logs a message to a specified logger with the TRACE level.
 		if (LOG4CXX_UNLIKELY(logger->isTraceEnabled())) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
 			logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+
+/**
+Logs a message to a specified logger with the TRACE level, formatting with libfmt.
+
+@param logger the logger to be used.
+@param ... The format string and message to log
+*/
+#define LOG4CXX_TRACE_FMT(logger, ...) do { \
+		if (LOG4CXX_UNLIKELY(logger->isTraceEnabled())) {\
+			logger->forcedLog(::log4cxx::Level::getTrace(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
+#define LOG4CXX_TRACE_FMT(logger, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 20000
@@ -1823,8 +1856,20 @@ Logs a message to a specified logger with the INFO level.
 		if (logger->isInfoEnabled()) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
 			logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+
+/**
+Logs a message to a specified logger with the INFO level, formatting with libfmt.
+
+@param logger the logger to be used.
+@param message the message string to log.
+@param ... The format string and message to log
+*/
+#define LOG4CXX_INFO_FMT(logger, ...) do { \
+		if (logger->isInfoEnabled()) {\
+			logger->forcedLog(::log4cxx::Level::getInfo(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
+#define LOG4CXX_INFO_FMT(logger, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 30000
@@ -1838,8 +1883,19 @@ Logs a message to a specified logger with the WARN level.
 		if (logger->isWarnEnabled()) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
 			logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+
+/**
+Logs a message to a specified logger with the WARN level, formatting with libfmt
+
+@param logger the logger to be used.
+@param ... The format string and message to log
+*/
+#define LOG4CXX_WARN_FMT(logger, ...) do { \
+		if (logger->isWarnEnabled()) {\
+			logger->forcedLog(::log4cxx::Level::getWarn(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
+#define LOG4CXX_WARN_FMT(logger, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 40000
@@ -1855,6 +1911,16 @@ Logs a message to a specified logger with the ERROR level.
 			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
 /**
+Logs a message to a specified logger with the ERROR level, formatting with libfmt
+
+@param logger the logger to be used.
+@param ... The format string and message to log
+*/
+#define LOG4CXX_ERROR_FMT(logger, ...) do { \
+		if (logger->isErrorEnabled()) {\
+			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+
+/**
 Logs a error if the condition is not true.
 
 @param logger the logger to be used.
@@ -1866,9 +1932,22 @@ Logs a error if the condition is not true.
 			::log4cxx::helpers::MessageBuffer oss_; \
 			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
 
+/**
+Logs a error if the condition is not true, formatting with libfmt
+
+@param logger the logger to be used.
+@param condition condition
+@param ... The format string and message to log
+*/
+#define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
+		if (!(condition) && logger->isErrorEnabled()) {\
+			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+
 #else
 #define LOG4CXX_ERROR(logger, message)
+#define LOG4CXX_ERROR_FMT(logger, ...)
 #define LOG4CXX_ASSERT(logger, condition, message)
+#define LOG4CXX_ASSERT_FMT(logger, condition, ...)
 #endif
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 50000
@@ -1882,8 +1961,19 @@ Logs a message to a specified logger with the FATAL level.
 		if (logger->isFatalEnabled()) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
 			logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+
+/**
+Logs a message to a specified logger with the FATAL level, formatting with libfmt
+
+@param logger the logger to be used.
+@param ... The format string and message to log
+*/
+#define LOG4CXX_FATAL_FMT(logger, ...) do { \
+		if (logger->isFatalEnabled()) {\
+			logger->forcedLog(::log4cxx::Level::getFatal(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
+#define LOG4CXX_FATAL_FMT(logger, ...)
 #endif
 
 /**
