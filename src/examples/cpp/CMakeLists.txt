@@ -10,3 +10,12 @@ endforeach()
 configure_file( custom-appender.xml
     ${CMAKE_CURRENT_BINARY_DIR}/custom-appender.xml
     COPYONLY )
+
+# Custom handling for format string example, since it utilizes libfmt
+find_package(fmt)
+if(${fmt_FOUND})
+    add_executable( format-string format-string.cpp )
+    target_compile_definitions(format-string PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
+    target_include_directories(format-string PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
+    target_link_libraries(format-string PRIVATE log4cxx ${APR_UTIL_LIBRARIES} ${XMLLIB_LIBRARIES} ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} fmt::fmt)
+endif(${fmt_FOUND})
