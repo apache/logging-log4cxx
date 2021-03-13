@@ -213,13 +213,6 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 {
 	std::unique_lock<std::mutex> lock(mutex);
 
-	// This should really be done in the constructor, but in order to fix
-	// LOGCXX-322 we need to turn the repositroy into a weak_ptr, and we
-	// can't use weak_from_this() in the constructor.
-	if( !root->getLoggerRepository().lock() ){
-		root->setHierarchy(weak_from_this());
-	}
-
 	LoggerMap::iterator it = loggers->find(name);
 
 	if (it != loggers->end())
@@ -416,4 +409,19 @@ void Hierarchy::setConfigured(bool newValue)
 bool Hierarchy::isConfigured()
 {
 	return configured;
+}
+
+HierarchyPtr Hierarchy::create(){
+	HierarchyPtr ret( new Hierarchy() );
+	ret->configureRoot();
+	return ret;
+}
+
+void Hierarchy::configureRoot(){
+	// This should really be done in the constructor, but in order to fix
+	// LOGCXX-322 we need to turn the repositroy into a weak_ptr, and we
+	// can't use weak_from_this() in the constructor.
+	if( !root->getLoggerRepository().lock() ){
+		root->setHierarchy(weak_from_this());
+	}
 }

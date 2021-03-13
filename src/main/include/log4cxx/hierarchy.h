@@ -34,6 +34,10 @@
 
 namespace log4cxx
 {
+
+class Hierarchy;
+LOG4CXX_PTR_DEF(Hierarchy);
+
 /**
 This class is specialized in retrieving loggers by name and also
 maintaining the logger hierarchy.
@@ -85,10 +89,14 @@ class LOG4CXX_EXPORT Hierarchy :
 		LOG4CXX_CAST_ENTRY(spi::LoggerRepository)
 		END_LOG4CXX_CAST_MAP()
 
+	private:
 		/**
 		Create a new logger hierarchy.
 		*/
 		Hierarchy();
+
+	public:
+		static HierarchyPtr create();
 
 		~Hierarchy();
 
@@ -279,6 +287,8 @@ class LOG4CXX_EXPORT Hierarchy :
 		Hierarchy& operator=(const Hierarchy&);
 
 		void updateChildren(ProvisionNode& pn, LoggerPtr logger);
+
+		void configureRoot();
 };
 
 }  //namespace log4cxx

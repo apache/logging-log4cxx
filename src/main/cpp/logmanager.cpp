@@ -59,7 +59,7 @@ RepositorySelectorPtr LogManager::getRepositorySelector()
 
 	if (!repositorySelector)
 	{
-		LoggerRepositoryPtr hierarchy(new Hierarchy());
+		LoggerRepositoryPtr hierarchy = Hierarchy::create();
 		RepositorySelectorPtr selector(new DefaultRepositorySelector(hierarchy));
 		repositorySelector = selector;
 	}
