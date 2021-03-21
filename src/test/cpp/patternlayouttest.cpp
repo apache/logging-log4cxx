@@ -93,7 +93,8 @@ public:
 	void tearDown()
 	{
 		MDC::clear();
-		root->getLoggerRepository()->resetConfiguration();
+		log4cxx::spi::LoggerRepositoryPtr rep = root->getLoggerRepository().lock();
+		if (rep) rep->resetConfiguration();
 	}
 
 	void test1()

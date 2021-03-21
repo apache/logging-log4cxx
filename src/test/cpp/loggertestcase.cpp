@@ -391,7 +391,7 @@ public:
 
 	void testHierarchy1()
 	{
-		LoggerRepositoryPtr h = LoggerRepositoryPtr(new Hierarchy());
+		LoggerRepositoryPtr h = Hierarchy::create();
 		LoggerPtr root(h->getRootLogger());
 		root->setLevel(Level::getError());
 		LoggerPtr a0 = h->getLogger(LOG4CXX_STR("a"));
