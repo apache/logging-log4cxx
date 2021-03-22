@@ -797,6 +797,40 @@ This will output data similar to the following:
 0 [0x7fd1eed63bc0] INFO root null - Some important information: [MyStruct x:90]
 ~~~
 
+# Logging with {fmt} {#logging-with-fmt}
+
+One issue with utilizing log4cxx and its ostream style of logging is that log
+statements can be very awkward if you need to precisely format something:
+
+~~~{.cpp}
+LOG4CXX_INFO( rootLogger, "Numbers can be formatted with excessive operator<<: "
+			  << std::setprecision(3) << 22.456
+			  << " And as hex: "
+			  << std::setbase( 16 ) << 123 );
+~~~
+
+This leads to very awkward code to read and write, especially as iostreams don't
+support positional arguments at all.
+
+In order to get around this, one popular library(that has been standardized as
+part of C++20) is [{fmt}](https://fmt.dev/latest/index.html).  Supporting
+positional arguments and printf-like formatting, it makes for much clearer
+code like the following:
+
+~~~{.cpp}
+LOG4CXX_INFO_FMT( rootLogger, "Numbers can be formatted with a format string {:.1f} and as hex: {:x}", 22.456, 123 );
+~~~
+
+Note that log4cxx does not include a copy of {fmt}, so you must include the
+correct headers and linker flags in order to use the `LOG4CXX_[level]_FMT`
+family of macros.
+
+As with the standard logger macros, these macros will also be compiled out
+if the `LOG4CXX_THRESHOLD` macro is set to a level that will compile out
+the non-FMT macros.
+
+A full example can be seen in the src/examples/cpp/format-string.cpp file.
+
 # Conclusions {#conclusions}
 
 Apache Log4cxx is a popular logging package written in C++. One of its
