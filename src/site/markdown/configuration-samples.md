@@ -212,3 +212,58 @@ Sample output:
 [2020-12-24 16:05:48] com.example DEBUG - com.example debug message
 [2020-12-24 16:05:48] com.example TRACE - com.example trace message
 ~~~
+
+## XML Example 4 {#xml-example-4}
+
+This example shows how to add a filter to an appender that will accept messages
+that match a certain string.  If our loggers are configured as such:
+
+~~~{.cpp}
+	log4cxx::LoggerPtr root = log4cxx::Logger::getRootLogger();
+	log4cxx::LoggerPtr com  = log4cxx::Logger::getLogger( "com" );
+	log4cxx::LoggerPtr com_example = log4cxx::Logger::getLogger( "com.example" );
+	LOG4CXX_INFO( root, "Hello there!" );
+	LOG4CXX_DEBUG( com, "Starting to do the thing" );
+	LOG4CXX_DEBUG( com_example, "A more specific logger" );
+	LOG4CXX_TRACE( com, "Done with the thing" );
+	LOG4CXX_TRACE( com_example, "A very specific message" );
+~~~
+
+and we only want to see messages that have the string "specific" in them, we can
+create a filter chain that will accept messages that have that, and deny
+everything else:
+
+~~~{.xml}
+<?xml version="1.0" encoding="UTF-8" ?>
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+  <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+    <param name="Target" value="System.out"/>
+    <layout class="org.apache.log4j.PatternLayout">
+      <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n"/>
+    </layout>
+
+    <filter class="org.apache.log4j.varia.StringMatchFilter">
+      <param name="StringToMatch"
+             value="specific" />
+      <param name="AcceptOnMatch" value="true" />
+    </filter>
+
+    <filter class="org.apache.log4j.varia.DenyAllFilter"/>
+  </appender>
+
+  <root>
+     <priority value="trace" />
+     <appender-ref ref="ConsoleAppender"/>
+  </root>
+</log4j:configuration>
+~~~
+
+Sample output:
+
+~~~
+[2021-03-26 20:20:36] com.example DEBUG - A more specific logger
+[2021-03-26 20:20:36] com.example TRACE - A very specific message
+~~~
+
+Note that even though we have the root logger set to the most verbose level(trace),
+the only messages that we saw were the ones with "specific" in them.
