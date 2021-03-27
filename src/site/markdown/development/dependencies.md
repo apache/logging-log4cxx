@@ -24,12 +24,17 @@ Dependencies {#dependencies}
 
 # LOG4CXX Dependencies
 
+As of version 0.12.0, log4cxx requires a minimum C++ version of C++11.
+If C++17 is not available, then log4cxx requires Boost Thread in order
+to build.
+
 log4cxx requires the following software to build and/or run correctly:
 
 |Dependency Name|Version|Dependency Type|Homepage|
 |---------------|-------|---------------|--------|
 |Apache Portable Runtime(APR)|>=1.5.4|Compile/Runtime|https://apr.apache.org
 |APR-Util       |>=1.5.4|Compile/Runtime|https://apr.apache.org
+|Boost          |any?   |Compile/runtime.  Not required if your compiler supports C++17|https://boost.org
 |gzip           |any    |Test/Runtime(optional)|https://gzip.org
 |sed            |any    |Test|N/A
 |zip            |any    |Test/Runtime(optional)|N/A
@@ -64,3 +69,4 @@ skipped entirely automatically.
 # Licenses(direct dependencies only)
 
 **Apache License, Version 2.0**: log4cxx, APR, APR-util
+**Boost License, Version 1.0**: boost
