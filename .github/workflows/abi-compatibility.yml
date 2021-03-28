@@ -48,7 +48,7 @@ jobs:
         cd main
         mkdir build
         cd build
-        cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DLOG4CXX_ABI_CHECK=ON ..
+        cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DLOG4CXX_ABI_CHECK=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-Og" ..
         cmake --build .
 
     - uses: actions/upload-artifact@v2
