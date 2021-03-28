@@ -1,0 +1,57 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+name: abi-compatibility
+
+on: [push, pull_request]
+#on:
+#  push:
+#    branches:
+#      - master
+#  pull_request:
+#    branches:
+#      - master
+
+jobs:
+  job:
+    name: abi-check
+    runs-on: ubuntu-20.04
+    timeout-minutes: 38
+    strategy:
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: main
+
+    - name: 'Configure Dependencies - Ubuntu'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libapr1-dev libaprutil1-dev
+        # note: sqlext.h exists on github VM, purge for now as we don't link correctly...
+        sudo apt-get purge unixodbc-dev
+
+    - name: 'run CMake'
+      run: |
+        cd main
+        mkdir build
+        cd build
+        cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DLOG4CXX_ABI_CHECK=ON ..
+        cmake --build .
+
+    - uses: actions/upload-artifact@v2
+      with:
+        name: abi-compatibility-report
+        path: main/build/src/main/cpp/compat_reports/log4cxx/11_to_11/compat_report.html
