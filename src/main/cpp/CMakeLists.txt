@@ -197,7 +197,7 @@ if(LOG4CXX_ABI_CHECK)
 	COMMENT "Dumping ABI symbols")
 
     add_custom_target(compare-abi ALL
-	COMMAND perl ${abi-compliance-script} -l log4cxx -old ${CMAKE_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump || true
+	COMMAND perl ${abi-compliance-script} -l log4cxx -old ${CMAKE_SOURCE_DIR}/src/main/abi-symbols/abi.dump -new new-abi.dump
 	DEPENDS dump-abi
 	COMMENT "Comparing ABI symbols")
 endif(LOG4CXX_ABI_CHECK)

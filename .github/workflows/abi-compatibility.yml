@@ -39,7 +39,7 @@ jobs:
     - name: 'Configure Dependencies - Ubuntu'
       run: |
         sudo apt-get update
-        sudo apt-get install -y libapr1-dev libaprutil1-dev
+        sudo apt-get install -y libapr1-dev libaprutil1-dev elfutils
         # note: sqlext.h exists on github VM, purge for now as we don't link correctly...
         sudo apt-get purge unixodbc-dev
 
