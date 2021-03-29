@@ -8,6 +8,10 @@ if(WIN32)
 # The ODBC appender is always enabled in the Windows configuration
 target_link_libraries(log4cxx PRIVATE odbc32.lib)
 option(LOG4CXX_INSTALL_PDB "Install .pdb files (if generated)"  ON)
+else()
+    if(${odbc_FOUND})
+	target_link_libraries( log4cxx PUBLIC ${odbc_LIBRARIES})
+    endif(${odbc_FOUND})
 endif()
 
 if(BUILD_TESTING)

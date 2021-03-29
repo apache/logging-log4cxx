@@ -53,8 +53,6 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y libapr1-dev libaprutil1-dev
-        # note: sqlext.h exists on github VM, purge for now as we don't link correctly...
-        sudo apt-get purge unixodbc-dev
 
     - name: 'Restore Prebuilt Dependencies - Windows'
       id: restore-vcpkg-cache
