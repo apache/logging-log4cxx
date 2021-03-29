@@ -11,7 +11,7 @@ option(LOG4CXX_INSTALL_PDB "Install .pdb files (if generated)"  ON)
 else()
     if(${odbc_FOUND})
 	target_include_directories(log4cxx PRIVATE ${odbc_INCLUDE_DIRS})
-	target_link_libraries( log4cxx PUBLIC ${odbc_LIBRARIES})
+	target_link_libraries( log4cxx PUBLIC ${odbc_LINK_LIBRARIES})
     endif(${odbc_FOUND})
 endif()
 
