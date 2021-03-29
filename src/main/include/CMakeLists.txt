@@ -69,7 +69,7 @@ include(CheckIncludeFileCXX)
 include(CheckLibraryExists)
 
 if(WIN32)
-    CHECK_INCLUDE_FILE(sqlext.h HAS_ODBC)
+    CHECK_INCLUDE_FILES(sqlext.h HAS_ODBC)
 else()
     include(FindPkgConfig)
 
