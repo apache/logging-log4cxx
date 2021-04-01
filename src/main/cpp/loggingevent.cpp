@@ -227,6 +227,11 @@ const LogString LoggingEvent::getCurrentThreadName()
 	DWORD threadId = GetCurrentThreadId();
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
 #else
+	thread_local LogString thread_name;
+	if( thread_name.size() ){
+		return thread_name;
+	}
+
 	// apr_os_thread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	char result[sizeof(apr_os_thread_t) * 3 + 10];
@@ -234,6 +239,7 @@ const LogString LoggingEvent::getCurrentThreadName()
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif
 	LOG4CXX_DECODE_CHAR(str, (const char*) result);
+	thread_name = str;
 	return str;
 #else
 	return LOG4CXX_STR("0x00000000");
