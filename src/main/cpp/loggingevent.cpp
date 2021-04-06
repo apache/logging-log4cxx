@@ -222,12 +222,10 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 const LogString LoggingEvent::getCurrentThreadName()
 {
 #if APR_HAS_THREADS
-#if LOG4CXX_THREAD_LOCAL
-	thread_local LogString thread_name;
+	LOG4CXX_THREAD_LOCAL LogString thread_name;
 	if( thread_name.size() ){
 		return thread_name;
 	}
-#endif /* LOG4CXX_THREAD_LOCAL */
 
 #if defined(_WIN32)
 	char result[20];
@@ -241,13 +239,9 @@ const LogString LoggingEvent::getCurrentThreadName()
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif /* _WIN32 */
 
-	LOG4CXX_DECODE_CHAR(str, (const char*) result);
+	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
 
-#if LOG4CXX_THREAD_LOCAL
-	thread_name = str;
-#endif /* LOG4CXX_THREAD_LOCAL */
-
-	return str;
+	return thread_name;
 #else
 	return LOG4CXX_STR("0x00000000");
 #endif /* APR_HAS_THREADS */
