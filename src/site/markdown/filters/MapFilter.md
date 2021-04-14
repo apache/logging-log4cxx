@@ -2,11 +2,11 @@
 
 The MapFilter allows filtering against data elements that are in the Mapped Diagnostic Context (MDC).
 
-| **Parameter Name** 	| **Type**  	| **Description**                                                                                                                                                                                                    	|
-|:-------------------	|:----------	|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
-| Operator           	| LogString 	| If the operator is `AND` then all the key/value pairs must match; any other value is implicitly an `OR` and a match by any one of the key/value pairs will be considered to be a match. The default value is `OR`. 	|
-| AcceptOnMatch      	| LogString 	| Action to take when the filter matches. May be `true` or `false`. The default value is `false`.                                                                                                                    	|
-| MDC key            	| LogString 	| Any name other than `Operator` or `AcceptOnMatch` is considered a key to the MDC along with the value to match on. Keys may only be specified once; duplicate keys will replace earlier ones.                      	|
+| **Parameter Name** | **Type**  | **Description**                                                                                                                                                                                                    |
+|:-------------------|:----------|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Operator           | LogString | If the operator is `AND` then all the key/value pairs must match; any other value is implicitly an `OR` and a match by any one of the key/value pairs will be considered to be a match. The default value is `OR`. |
+| AcceptOnMatch      | LogString | Action to take when the filter matches. May be `true` or `false`. The default value is `false`.                                                                                                                    |
+| MDC key            | LogString | Any name other than `Operator` or `AcceptOnMatch` is considered a key to the MDC along with the value to match on. Keys may only be specified once; duplicate keys will replace earlier ones.                      |
 
 In this configuration, the MapFilter can be used to filter based on system inserted values such as IP address and/or Username. In this example, we assume that the program has inserted appropriate values for `user.ip` and `user.name` into the MDC. In this case, when both the IP address is `127.0.0.1` and the Username is `test`, the entry will not be logged.
 
