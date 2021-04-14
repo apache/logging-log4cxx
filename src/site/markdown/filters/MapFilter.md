@@ -4,11 +4,11 @@ The MapFilter allows filtering against data elements that are in the Mapped Diag
 
 | **Parameter Name** 	| **Type**  	| **Description**                                                                                                                                                                                                    	|
 |:-------------------	|:----------	|:-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------	|
-| Operator           	| LogString 	| If the operator is ```AND``` then all the key/value pairs must match; any other value is implicitly an ```OR``` and a match by any one of the key/value pairs will be considered to be a match. The default value is ```OR```. 	|
-| AcceptOnMatch      	| LogString 	| Action to take when the filter matches. May be ```true``` or ```false```. The default value is ```false```.                                                                                                                    	|
-| MDC key            	| LogString 	| Any name other than ```Operator``` or ```AcceptOnMatch``` is considered a key to the MDC along with the value to match on. Keys may only be specified once; duplicate keys will replace earlier ones.                      	|
+| Operator           	| LogString 	| If the operator is `AND` then all the key/value pairs must match; any other value is implicitly an `OR` and a match by any one of the key/value pairs will be considered to be a match. The default value is `OR`. 	|
+| AcceptOnMatch      	| LogString 	| Action to take when the filter matches. May be `true` or `false`. The default value is `false`.                                                                                                                    	|
+| MDC key            	| LogString 	| Any name other than `Operator` or `AcceptOnMatch` is considered a key to the MDC along with the value to match on. Keys may only be specified once; duplicate keys will replace earlier ones.                      	|
 
-In this configuration, the MapFilter can be used to filter based on system inserted values such as IP address and/or Username. In this example, we assume that the program has inserted appropriate values for ```user.ip``` and ```user.name``` into the MDC. In this case, when both the IP address is ```127.0.0.1``` and the Username is ```test```, the entry will not be logged.
+In this configuration, the MapFilter can be used to filter based on system inserted values such as IP address and/or Username. In this example, we assume that the program has inserted appropriate values for `user.ip` and `user.name` into the MDC. In this case, when both the IP address is `127.0.0.1` and the Username is `test`, the entry will not be logged.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -33,7 +33,7 @@ In this configuration, the MapFilter can be used to filter based on system inser
 </log4j:configuration>
 ```
 
-If we wanted to exclude multiple IP addresses from the log, we need to define a separate filter for each one as we don’t support wildcards. Since the default ```AcceptOnMatch``` value is ```false```, we can simplify to a single line per filter. In the configuration below we would skip logs for IP addresses matching 192.168.0.5 - 7.
+If we wanted to exclude multiple IP addresses from the log, we need to define a separate filter for each one as we don’t support wildcards. Since the default `AcceptOnMatch` value is `false`, we can simplify to a single line per filter. In the configuration below we would skip logs for IP addresses matching 192.168.0.5 - 7.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -58,7 +58,7 @@ If we wanted to exclude multiple IP addresses from the log, we need to define a 
 </log4j:configuration>
 ```
 
-In the case where we only want to log entries from a particular set of IP addresses (**not recommended** as this could be a security vulnerability), we need to have a final ```DenyAllFilter``` to catch the fall through. In this configuration, we would **only** log entries from 192.168.0.251 and 192.168.0.252.
+In the case where we only want to log entries from a particular set of IP addresses (**not recommended** as this could be a security vulnerability), we need to have a final `DenyAllFilter` to catch the fall through. In this configuration, we would **only** log entries from 192.168.0.251 and 192.168.0.252.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
