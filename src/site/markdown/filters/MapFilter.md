@@ -13,23 +13,36 @@ In this configuration, the MapFilter can be used to filter based on system inser
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <log4j:configuration xmlns:log4j="http://logging.apache.org/">
- <appender name="SIMPLE" class="log4cxx.FileAppender">
- <layout class="log4cxx.SimpleLayout">
- <param name="File" value="logs/app.log"/>
- <param name="Append" value="true"/>
- </layout>
+	<appender name="SIMPLE" class="log4cxx.FileAppender">
+		<layout class="log4cxx.SimpleLayout">
+			<param	name="File"
+					value="logs/app.log"
+			/>
+			<param	name="Append"
+					value="true"
+			/>
+		</layout>
 
- <filter class="log4cxx.MapFilter">
- <param name="user.ip" value="127.0.0.1"/>
- <param name="user.name" value="test"/>
- <param name="Operator" value="AND"/>
- <param name="AcceptOnMatch" value="false"/>
- </filter>
- </appender>
- <root>
- <priority value="all"/>
- <appender-ref ref="SIMPLE"/>
- </root>
+		<filter class="log4cxx.MapFilter">
+			<param	name="user.ip"
+					value="127.0.0.1"
+			/>
+			<param	name="user.name"
+					value="test"
+			/>
+			<param	name="Operator"
+					value="AND"
+			/>
+			<param	name="AcceptOnMatch"
+					value="false"
+			/>
+		</filter>
+	</appender>
+
+	<root>
+		<priority		value="all"		/>
+		<appender-ref	ref="SIMPLE"	/>
+	</root>
 </log4j:configuration>
 ```
 
@@ -38,23 +51,37 @@ If we wanted to exclude multiple IP addresses from the log, we need to define a 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <log4j:configuration xmlns:log4j="http://logging.apache.org/">
- <appender name="SIMPLE" class="log4cxx.FileAppender">
- <layout class="log4cxx.SimpleLayout">
- <param name="File" value="logs/app.log"/>
- <param name="Append" value="true"/>
- </layout>
+	<appender name="SIMPLE" class="log4cxx.FileAppender">
+		<layout class="log4cxx.SimpleLayout">
+			<param	name="File"
+					value="logs/app.log"
+			/>
+			<param	name="Append"
+					value="true"
+			/>
+		</layout>
 
- <filter class="MapFilter"><param name="user.ip"
- value="192.168.0.5"/></filter>
- <filter class="MapFilter"><param name="user.ip"
- value="192.168.0.6"/></filter>
- <filter class="MapFilter"><param name="user.ip"
- value="192.168.0.7"/></filter>
- </appender>
- <root>
- <priority value="all"/>
- <appender-ref ref="SIMPLE"/>
- </root>
+		<filter class="MapFilter">
+			<param	name="user.ip" 
+					value="192.168.0.5"
+			/>
+		</filter>
+		<filter class="MapFilter">
+			<param	name="user.ip"
+					value="192.168.0.6"
+			/>
+		</filter>
+		<filter class="MapFilter">
+			<param	name="user.ip"
+					value="192.168.0.7"
+			/>
+		</filter>
+	</appender>
+
+	<root>
+		<priority		value="all"		/>
+		<appender-ref	ref="SIMPLE"	/>
+	</root>
 </log4j:configuration>
 ```
 
@@ -63,25 +90,38 @@ In the case where we only want to log entries from a particular set of IP addres
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <log4j:configuration xmlns:log4j="http://logging.apache.org/">
- <appender name="SIMPLE" class="log4cxx.FileAppender">
- <layout class="log4cxx.SimpleLayout">
- <param name="File" value="logs/app.log"/>
- <param name="Append" value="true"/>
- </layout>
+	<appender name="SIMPLE" class="log4cxx.FileAppender">
+		<layout class="log4cxx.SimpleLayout">
+			<param	name="File"
+					value="logs/app.log"
+			/>
+			<param	name="Append"
+					value="true"
+			/>
+		</layout>
 
- <filter class="MapFilter">
- <param name="user.ip" value="192.168.0.251"/>
- <param name="AcceptOnMatch" value="true"/>
- </filter>
- <filter class="MapFilter">
- <param name="user.ip" value="192.168.0.252"/>
- <param name="AcceptOnMatch" value="true"/>
- </filter>
- <filter class="DenyAllFilter">
- </appender>
- <root>
- <priority value="all"/>
- <appender-ref ref="SIMPLE"/>
- </root>
+		<filter class="MapFilter">
+			<param	name="user.ip"
+					value="192.168.0.251"
+			/>
+			<param	name="AcceptOnMatch"
+					value="true"
+			/>
+		</filter>
+		<filter class="MapFilter">
+			<param	name="user.ip"
+					value="192.168.0.252"
+			/>
+			<param	name="AcceptOnMatch"
+					value="true"
+			/>
+		</filter>
+		<filter class="DenyAllFilter" />
+	</appender>
+
+	<root>
+		<priority		value="all"		/>
+		<appender-ref	ref="SIMPLE"	/>
+	</root>
 </log4j:configuration>
 ```
