@@ -101,7 +101,7 @@ foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE
 endforeach()
 
 # Check for standard headers that we need, fall back to boost if they're not found
-include(${CMAKE_SOURCE_DIR}/src/cmake/boost-fallback/boost-fallback.cmake)
+include(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-fallback.cmake)
 set(NAMESPACE_ALIAS log4cxx)
 
 if( ${STD_THREAD_FOUND} )
@@ -153,7 +153,7 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/log4cxx/log4cxx.h.in
                ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/log4cxx.h
 	       @ONLY
 )
-configure_file(${CMAKE_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
+configure_file(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-std-configuration.h.cmake
                 ${CMAKE_CURRENT_BINARY_DIR}/log4cxx/boost-std-configuration.h
 )
 
