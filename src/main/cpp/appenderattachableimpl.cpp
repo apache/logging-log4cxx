@@ -42,6 +42,7 @@ void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
 		return;
 	}
 
+	std::unique_lock<std::mutex> lock( m_mutex );
 	AppenderList::iterator it = std::find(
 			appenderList.begin(), appenderList.end(), newAppender);
 
@@ -55,14 +56,27 @@ int AppenderAttachableImpl::appendLoopOnAppenders(
 	const spi::LoggingEventPtr& event,
 	Pool& p)
 {
-	for (AppenderList::iterator it = appenderList.begin();
-		it != appenderList.end();
+
+	AppenderList allAppenders;
+	int numberAppended = 0;
+	{
+		// There are occasions where we want to modify our list of appenders
+		// while we are iterating over them.  For example, if one of the
+		// appenders fails, we may want to swap it out for a new one.
+		// So, make a local copy of the appenders that we want to iterate over
+		// before actually iterating over them.
+		std::unique_lock<std::mutex> lock( m_mutex );
+		allAppenders = appenderList;
+	}
+	for (AppenderList::iterator it = allAppenders.begin();
+		it != allAppenders.end();
 		it++)
 	{
 		(*it)->doAppend(event, p);
+		numberAppended++;
 	}
 
-	return (int)appenderList.size();
+	return numberAppended;
 }
 
 AppenderList AppenderAttachableImpl::getAllAppenders() const
@@ -77,6 +91,7 @@ AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
 		return 0;
 	}
 
+	std::unique_lock<std::mutex> lock( m_mutex );
 	AppenderList::const_iterator it, itEnd = appenderList.end();
 	AppenderPtr appender;
 
@@ -100,6 +115,7 @@ bool AppenderAttachableImpl::isAttached(const AppenderPtr appender) const
 		return false;
 	}
 
+	std::unique_lock<std::mutex> lock( m_mutex );
 	AppenderList::const_iterator it = std::find(
 			appenderList.begin(), appenderList.end(), appender);
 
@@ -108,6 +124,7 @@ bool AppenderAttachableImpl::isAttached(const AppenderPtr appender) const
 
 void AppenderAttachableImpl::removeAllAppenders()
 {
+	std::unique_lock<std::mutex> lock( m_mutex );
 	AppenderList::iterator it, itEnd = appenderList.end();
 	AppenderPtr a;
 
@@ -127,6 +144,7 @@ void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
 		return;
 	}
 
+	std::unique_lock<std::mutex> lock( m_mutex );
 	AppenderList::iterator it = std::find(
 			appenderList.begin(), appenderList.end(), appender);
 
@@ -143,6 +161,7 @@ void AppenderAttachableImpl::removeAppender(const LogString& name)
 		return;
 	}
 
+	std::unique_lock<std::mutex> lock( m_mutex );
 	AppenderList::iterator it, itEnd = appenderList.end();
 	AppenderPtr appender;
 

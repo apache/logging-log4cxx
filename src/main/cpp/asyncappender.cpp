@@ -61,7 +61,6 @@ AsyncAppender::~AsyncAppender()
 
 void AsyncAppender::addAppender(const AppenderPtr newAppender)
 {
-	std::unique_lock<std::mutex> lock(appenders->getMutex());
 	appenders->addAppender(newAppender);
 }
 
@@ -221,19 +220,16 @@ void AsyncAppender::close()
 
 AppenderList AsyncAppender::getAllAppenders() const
 {
-	std::unique_lock<std::mutex> lock(appenders->getMutex());
 	return appenders->getAllAppenders();
 }
 
 AppenderPtr AsyncAppender::getAppender(const LogString& n) const
 {
-	std::unique_lock<std::mutex> lock(appenders->getMutex());
 	return appenders->getAppender(n);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr appender) const
 {
-	std::unique_lock<std::mutex> lock(appenders->getMutex());
 	return appenders->isAttached(appender);
 }
 
@@ -244,19 +240,16 @@ bool AsyncAppender::requiresLayout() const
 
 void AsyncAppender::removeAllAppenders()
 {
-	std::unique_lock<std::mutex> lock(appenders->getMutex());
 	appenders->removeAllAppenders();
 }
 
 void AsyncAppender::removeAppender(const AppenderPtr appender)
 {
-	std::unique_lock<std::mutex> lock(appenders->getMutex());
 	appenders->removeAppender(appender);
 }
 
 void AsyncAppender::removeAppender(const LogString& n)
 {
-	std::unique_lock<std::mutex> lock(appenders->getMutex());
 	appenders->removeAppender(n);
 }
 
@@ -403,7 +396,6 @@ void AsyncAppender::dispatch()
 				iter != events.end();
 				iter++)
 			{
-				std::unique_lock<std::mutex> lock(appenders->getMutex());
 				appenders->appendLoopOnAppenders(*iter, p);
 			}
 		}
