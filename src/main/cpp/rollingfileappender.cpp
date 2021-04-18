@@ -308,7 +308,9 @@ bool RollingFileAppenderSkeleton::rolloverInternal(Pool& p)
 								catch (std::exception& ex)
 								{
 									LogLog::warn(LOG4CXX_STR("Exception on rollover"));
-									errorHandler->error(ex.what(), ex, 0);
+									LogString exmsg;
+									log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
+									errorHandler->error(exmsg, ex, 0);
 								}
 							}
 
@@ -367,7 +369,9 @@ bool RollingFileAppenderSkeleton::rolloverInternal(Pool& p)
 								catch (std::exception& ex)
 								{
 									LogLog::warn(LOG4CXX_STR("Exception during rollover"));
-									errorHandler->error(ex.what(), ex, 0);
+									LogString exmsg;
+									log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
+									errorHandler->error(exmsg, ex, 0);
 								}
 							}
 
@@ -405,7 +409,9 @@ bool RollingFileAppenderSkeleton::rolloverInternal(Pool& p)
 				catch (std::exception& ex)
 				{
 					LogLog::warn(LOG4CXX_STR("Exception during rollover"));
-					errorHandler->error(ex.what(), ex, 0);
+					LogString exmsg;
+					log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
+					errorHandler->error(exmsg, ex, 0);
 				}
 
 #ifdef LOG4CXX_MULTI_PROCESS
@@ -464,7 +470,9 @@ void RollingFileAppenderSkeleton::subAppend(const LoggingEventPtr& event, Pool& 
 		catch (std::exception& ex)
 		{
 			LogLog::warn(LOG4CXX_STR("Exception during rollover attempt."));
-			errorHandler->error(ex.what());
+			LogString exmsg;
+			log4cxx::helpers::Transcoder::decode(ex.what(), exmsg);
+			errorHandler->error(exmsg);
 		}
 	}
 
