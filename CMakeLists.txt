@@ -3,6 +3,11 @@ include(src/cmake/projectVersionDetails.cmake)
 project(log4cxx VERSION ${log4cxx_VER} LANGUAGES CXX)
 include(CTest)
 
+# If you are including log4cxx from a higher-level CMake file(perhaps as a submodule?)
+# CMAKE_SOURCE_DIR will refer to the first CMakeLists.txt.  Since we need some files
+# in relation to the log4cxx source root, set a variable that contains the log4cxx root.
+set(LOG4CXX_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+
 # define the SO Version of the library. Version of the log4cxx project is subtly different than the version of the library
 # (at least in the past it was project vesion: 0.a.b.c and the library so vesion a.b.c.0
 set(LIBLOG4CXX_LIB_VERSION ${log4cxx_VERSION_MINOR}.${log4cxx_VERSION_PATCH}.${log4cxx_VERSION_TWEAK})
