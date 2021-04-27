@@ -109,6 +109,12 @@ class LOG4CXX_EXPORT Object
 LOG4CXX_PTR_DEF(Object);
 }
 
+/**
+ * Attempt to cast one Object to another kind of Object.
+ *
+ * On success, returns a new shared pointer that points at incoming.
+ * On failure, returns an invalid shared pointer.
+ */
 template<typename Ret,
 	typename Type,
 	bool = std::is_base_of<Ret, helpers::Object>::value,

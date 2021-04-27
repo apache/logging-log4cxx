@@ -48,6 +48,27 @@ are now created using `std::shared_ptr` as the smart pointer implementation.
 
 Alternative build systems have been removed, and we now support CMake only for building the library.
 
+With the introduction of smart pointers, the old behavior of implicit casting no longer works.  In
+order to cast between classes, use the new [log4cxx::cast](@ref log4cxx.cast) method.  This method returns an invalid
+`shared_ptr` on failure, or a `shared_ptr` pointing at the same object on success.  This should be
+transparent to user code, unless you are interacting with log4cxx internals directly.
+
+Before:
+
+```{.cpp}
+ObjectPtr instance = Loader::loadClass(className).newInstance();
+AppenderPtr appender = instance;
+```
+
+After:
+
+```{.cpp}
+ObjectPtr instance = ObjectPtr(Loader::loadClass(className).newInstance());
+AppenderPtr appender = log4cxx::cast<Appender>(instance);
+// At this point(assuming the cast was good), instance and appender
+// both point at the same object.
+```
+
 Bug
 ---
 
@@ -74,6 +95,11 @@ New Feature
 -   \[[LOGCXX-515](https://issues.apache.org/jira/browse/LOGCXX-515)\] -
     Add macros to utilize libfmt formatting for messages
 
+Improvement
+-----------
+
+-   \[[LOGCXX-523](https://issues.apache.org/jira/browse/LOGCXX-523)\] -
+    Add in error handling for rollover errors
 
 <a name="0.11.0"/>
 ### Release 0.11.0 - 2020-08-09
