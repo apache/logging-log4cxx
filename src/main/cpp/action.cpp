@@ -16,6 +16,7 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/action.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;

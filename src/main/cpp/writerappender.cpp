@@ -19,6 +19,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

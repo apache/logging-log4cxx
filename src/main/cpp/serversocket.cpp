@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/helpers/serversocket.h>
+#include <mutex>
 #include "apr_network_io.h"
 #include "apr_pools.h"
 #include "apr_poll.h"

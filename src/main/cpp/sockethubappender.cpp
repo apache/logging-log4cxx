@@ -30,6 +30,7 @@
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/exception.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

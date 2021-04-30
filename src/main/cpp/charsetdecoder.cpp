@@ -28,6 +28,7 @@
 #include <apr_portable.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

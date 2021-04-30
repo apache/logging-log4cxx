@@ -24,6 +24,7 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/charsetencoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

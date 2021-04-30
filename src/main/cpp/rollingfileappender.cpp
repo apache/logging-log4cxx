@@ -40,6 +40,7 @@
 #include <log4cxx/rolling/fixedwindowrollingpolicy.h>
 #include <log4cxx/rolling/manualtriggeringpolicy.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;

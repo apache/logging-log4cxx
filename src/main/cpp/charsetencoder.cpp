@@ -28,6 +28,7 @@
 
 #include <log4cxx/private/log4cxx_private.h>
 #include <apr_portable.h>
+#include <mutex>
 
 #ifdef LOG4CXX_HAS_WCSTOMBS
 	#include <stdlib.h>
