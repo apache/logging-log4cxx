@@ -20,6 +20,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <algorithm>
 #include <log4cxx/helpers/pool.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;

@@ -37,6 +37,7 @@
 #include <log4cxx/helpers/aprinitializer.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/spi/rootlogger.h>
+#include <mutex>
 #include "assert.h"
 
 

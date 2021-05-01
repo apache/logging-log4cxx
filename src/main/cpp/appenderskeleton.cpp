@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;

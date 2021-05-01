@@ -43,6 +43,7 @@ typedef int log4cxx_status_t;
 typedef unsigned int log4cxx_uint32_t;
 
 #include "boost-std-configuration.h"
+#include <memory>
 
 #define LOG4CXX_PTR_DEF(T) typedef std::shared_ptr<T> T##Ptr;\
 	typedef std::weak_ptr<T> T##WeakPtr

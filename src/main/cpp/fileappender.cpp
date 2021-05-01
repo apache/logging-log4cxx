@@ -25,6 +25,7 @@
 #include <log4cxx/helpers/outputstreamwriter.h>
 #include <log4cxx/helpers/bufferedwriter.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
