@@ -173,7 +173,7 @@ option(APACHE_MAINTAINER "Apache maintainer" OFF)
 if(APACHE_MAINTAINER)
     set(CPACK_SOURCE_PACKAGE_FILE_NAME "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}")
     set(CPACK_SOURCE_GENERATOR "TGZ;ZIP")
-    set(CPACK_SOURCE_IGNORE_FILES ".git/;build/;.vs/;out/")
+    set(CPACK_SOURCE_IGNORE_FILES ".git/;build/;.vs/;out/;CMakeLists.txt.user;src/main/abi-symbols/*")
     include(CPack)
 
     add_custom_target( dist
