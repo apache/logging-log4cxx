@@ -25,7 +25,7 @@ Changelog {#changelog}
 
 | Version                                                                                | Date       | Description          |
 | -------------------------------------------------------------------------------------- | ---------- | -------------------- |
-| [0.12.0](#0.12.0) | Not yet released| First release to require C++11. Updates for smart pointers.  Standardization on CMake for building. |
+| [0.12.0](#0.12.0) | 2021-05-01 | First release to require C++11. Updates for smart pointers.  Standardization on CMake for building. |
 | [0.11.0](#0.11.0) | 2020-08-09 | Maintenance release. |
 | [0.10.0](#0.10.0) | 2008-04-03 | First Apache release |
 | [0.9.7](#0.9.7)   | 2004-05-10 |                      |
@@ -41,7 +41,7 @@ Changelog {#changelog}
 | [0.0.1](#0.0.1)   | 2003-05-31 |                      |
 
 <a name="0.12.0"/>
-## Release 0.12.0 - Not yet released
+## Release 0.12.0 - 2020-05-01
 
 This is the first release to require a minimum version of C++11.  This means that all objects in log4cxx
 are now created using `std::shared_ptr` as the smart pointer implementation.
@@ -88,6 +88,8 @@ Bug
     Circular reference in ErrorHandlerTestCase
 -   \[[LOGCXX-521](https://issues.apache.org/jira/browse/LOGCXX-521)\] -
     Can\'t link cleanly with ODBC
+-   \[[LOGCXX-526](https://issues.apache.org/jira/browse/LOGCXX-526)\] -
+    GCC-11.1.0 Support
 
 New Feature
 -----------
