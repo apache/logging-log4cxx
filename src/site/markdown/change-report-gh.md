@@ -41,7 +41,7 @@ Changelog {#changelog}
 | [0.0.1](#0.0.1)   | 2003-05-31 |                      |
 
 <a name="0.12.0"/>
-## Release 0.12.0 - 2020-05-01
+## Release 0.12.0 - 2021-05-01
 
 This is the first release to require a minimum version of C++11.  This means that all objects in log4cxx
 are now created using `std::shared_ptr` as the smart pointer implementation.
