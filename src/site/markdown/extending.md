@@ -21,9 +21,9 @@ Extending Log4cxx {#extending-log4cxx}
  limitations under the License.
 -->
 
-Sometimes, you may want to extend log4cxx, for example by creating
+Sometimes, you may want to extend Log4cxx, for example by creating
 a new appender to write out data in a new format.  The following
-guide shows how you can extend log4cxx in order to add a new appender.
+guide shows how you can extend Log4cxx in order to add a new appender.
 
 The full sample application can be found in the src/examples/cpp
 directory.
@@ -42,7 +42,7 @@ class NullWriterAppender : public log4cxx::AppenderSkeleton {
 ~~~
 
 Next, we need to add in a few macros in order to properly register
-our new appender with log4cxx:
+our new appender with Log4cxx:
 
 ~~~{.cpp}
 namespace log4cxx {
@@ -62,8 +62,8 @@ IMPLEMENT_LOG4CXX_OBJECT(NullWriterAppender)
 }
 ~~~
 
-These macros tell log4cxx what the name of our class is, as well as giving
-log4cxx a way of instansiating our class.  Without these macros, the custom
+These macros tell Log4cxx what the name of our class is, as well as giving
+Log4cxx a way of instansiating our class.  Without these macros, the custom
 class will not work.
 
 Now, let's add some basic functionality to our class.  As the name of
@@ -131,11 +131,11 @@ refer to this appender in our configuration file like so:
 </log4j:configuration>
 ~~~
 
-When log4cxx is configured, any messages that go to the `NullLogger` will
+When Log4cxx is configured, any messages that go to the `NullLogger` will
 then be forwarded on to the `NullWriterAppender`.
 
 This same technique can be used to add new classes of many different kinds
-to log4cxx, including(but not limited to):
+to Log4cxx, including(but not limited to):
 * [Appenders](@ref log4cxx.Appender)
 * [Layouts](@ref log4cxx.Layout)
 * [Filters](@ref log4cxx.spi.Filter)
