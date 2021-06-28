@@ -21,7 +21,7 @@ Configuration Samples {#configuration-samples}
  limitations under the License.
 -->
 
-The following snippets show various ways of configuring log4cxx.
+The following snippets show various ways of configuring Log4cxx.
 
 [TOC]
 
@@ -74,9 +74,30 @@ followed by the level(5 character width), followed by the logger name
 0 INFO  root                 Hello there!
 ~~~
 
+## Pattern 4 {#pattern4}
+
+If you have no idea where a log message is coming from, it's possible to print
+out more information about the place the log statement is coming from.  For example,
+we can get the filename, class name, method name, and line number in one log
+message.  This utilises the %%F(file name), %%C(class name), %%M(method name), %%L(line number)
+patterns to output more information:
+
+~~~
+(%F:%C[%M]:%L) %m%n
+~~~
+
+Possible output:
+~~~
+(/home/robert/log4cxx-test-programs/fooclass.cpp:FooClass[FooClass]:9) Constructor running
+(/home/robert/log4cxx-test-programs/fooclass.cpp:FooClass[doFoo]:13) Doing foo
+~~~
+
+Note that unlike Java logging, the location information is free(as it utilizes
+macros to determine this information at compile-time).
+
 # XML Files {#xmlfiles}
 
-One way of configuring log4cxx is with XML files.  The following are some examples
+One way of configuring Log4cxx is with XML files.  The following are some examples
 on various ways of using an XML file to configure the logging.
 
 ## XML Example 1 {#xml-example-1}
