@@ -15,11 +15,11 @@
  limitations under the License.
 -->
 
-# Short introduction to Apache log4cxx
+# Short introduction to Apache Log4cxx
 
-Apache log4cxx is a logging framework for C++ patterned after [Apache log4j],
+Apache Log4cxx is a logging framework for C++ patterned after [Apache log4j],
 which uses [Apache Portable Runtime] for most platform-specific code and should
-be usable on any platform supported by APR. Apache log4cxx is licensed under
+be usable on any platform supported by APR. Apache Log4cxx is licensed under
 the [Apache License], an open source license certified by the [Open Source Initiative].
 
 Almost every large application includes its own logging or tracing API.
@@ -36,9 +36,9 @@ medium to be studied at a later time. In addition to its use in the development
 cycle, a sufficiently rich logging package can also be viewed as an auditing tool.
 
 Logging does have its drawbacks. It can slow down an application. If too verbose,
-it can cause scrolling blindness. To alleviate these concerns, log4cxx is
+it can cause scrolling blindness. To alleviate these concerns, Log4cxx is
 designed to be reliable, fast and extensible. Since logging is rarely the
-main focus of an application, the log4cxx API strives to be simple to
+main focus of an application, the Log4cxx API strives to be simple to
 understand and to use.
 
 [Apache log4j]:https://logging.apache.org/log4j/2.x/
