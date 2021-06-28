@@ -25,12 +25,12 @@ FAQ {#faq}
 ## <a name="table_of_contents"></a>Table of contents
 
 <ol>
-	<li><a href="#custom_levels">How do I add a custom level to Apache log4cxx?</a></li>
+	<li><a href="#custom_levels">How do I add a custom level to Apache Log4cxx?</a></li>
 	<li><a href="#msvc_crash">My application on Windows crashes on shutdown?</a></li>
-	<li><a href="#unicode_supported">Does Apache log4cxx support Unicode?</a></li>
+	<li><a href="#unicode_supported">Does Apache Log4cxx support Unicode?</a></li>
 </ol>
 
-## <a name="custom_levels"></a>How do I add a custom level to Apache log4cxx?
+## <a name="custom_levels"></a>How do I add a custom level to Apache Log4cxx?
 
 This is a common topic for all the Apache logging frameworks and typically motivated to try to
 categorize events by functionality or audience.  An common request is to add an AUDIT level so that
@@ -44,15 +44,15 @@ ability to distinguish between different significances within the audit messages
 
 ## <a name="msvc_crash"></a>My application on Windows crashes on shutdown?
 
-Apache log4cxx API calls use C++ Standard Template Library string parameters. If the caller is using
-a different instance or type of the C Runtime Library that log4cxx, then it is very likely that some
-memory that was originally allocated by log4cxx would be freed by the caller. If log4cxx and the
+Apache Log4cxx API calls use C++ Standard Template Library string parameters. If the caller is using
+a different instance or type of the C Runtime Library that Log4cxx, then it is very likely that some
+memory that was originally allocated by Log4cxx would be freed by the caller. If log4cxx and the
 caller are using different C RTL's, the program will likely crash at the point. Use "Multithread
-DLL" with release builds of log4cxx and "Multithread DLL Debug" with debug builds.
+DLL" with release builds of Log4cxx and "Multithread DLL Debug" with debug builds.
 
-## <a name="unicode_supported"></a>Does Apache log4cxx support Unicode?
+## <a name="unicode_supported"></a>Does Apache Log4cxx support Unicode?
 
-Yes. Apache log4cxx exposes API methods in multiple string flavors supporting differently encoded
+Yes. Apache Log4cxx exposes API methods in multiple string flavors supporting differently encoded
 textual content, like `char*`, `std::string`, `wchar_t*`, `std::wstring`, `CFStringRef` et al. All
 provided texts will be converted to the `LogString` type before further processing, which is one of
 several supported Unicode representations selected by the `--with-logchar` option. If methods are
@@ -60,7 +60,7 @@ used that take `LogString` as arguments, the macro `LOG4CXX_STR()` can be used t
 to the current `LogString` type. FileAppenders support an encoding property as well, which should be
 explicitly specified to `UTF-8` or `UTF-16` for e.g. XML files. The important point is to get the
 chain of input, internal processing and output correct and that might need some additional setup in
-the app using log4cxx:
+the app using Log4cxx:
 
 According to the [libc documentation](https://www.gnu.org/software/libc/manual/html_node/Setting-the-Locale.html),
 all programs start in the `C` locale by default, which is the [same as ANSI_X3.4-1968](https://stackoverflow.com/questions/48743106/whats-ansi-x3-4-1968-encoding)
