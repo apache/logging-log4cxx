@@ -19,6 +19,7 @@
 #include <apr_thread_proc.h>
 #include <apr_strings.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/transcoder.h>
 
 using namespace log4cxx;
@@ -111,7 +112,22 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const
 
 		if (stat != APR_SUCCESS)
 		{
-			throw IOException(stat);
+			/* If we fail here (to create the gzip child process),
+			 * skip the compression and consider the rotation to be
+			 * otherwise successful. The caller has already rotated
+			 * the log file (`source` here refers to the
+			 * uncompressed, rotated path, and `destination` the
+			 * same path with `.gz` appended). Remove the empty
+			 * destination file and leave source as-is.
+			 */
+			LogLog::warn(LOG4CXX_STR("Failed to fork gzip during log rotation; leaving log file uncompressed"));
+			stat = apr_file_close(child_out);
+			if (stat != APR_SUCCESS)
+			{
+				LogLog::warn(LOG4CXX_STR("Failed to close abandoned .gz file; ignoring"));
+			}
+			destination.deleteFile(p);
+			return true;
 		}
 
 		apr_proc_wait(&pid, NULL, NULL, APR_WAIT);
