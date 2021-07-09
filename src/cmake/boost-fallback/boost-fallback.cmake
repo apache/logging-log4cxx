@@ -62,7 +62,7 @@ try_compile(Boost_MUTEX_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-boostmutex.cpp")
 try_compile(Boost_SHARED_MUTEX_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-boostsharedmutex.cpp"
-    LINK_LIBRARIES Threads::Threads
+    LINK_LIBRARIES Threads::Threads Boost::thread
 )
 try_compile(Boost_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-boostatomic.cpp")
