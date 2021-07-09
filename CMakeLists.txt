@@ -189,6 +189,13 @@ if(APACHE_MAINTAINER)
 endif()
 
 #
+# Check for any fatal configuration errors
+#
+if( "${SHARED_MUTEX_IMPL}" STREQUAL "NONE" )
+    message( FATAL_ERROR "No shared_mutex implementation found.  Requires Boost or C++17" )
+endif()
+
+#
 # Output configuration information
 # Similar to APR CMake configuration
 #
