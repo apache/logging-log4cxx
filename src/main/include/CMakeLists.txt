@@ -133,7 +133,7 @@ if( ${STD_SHARED_MUTEX_FOUND} )
 elseif( ${Boost_SHARED_MUTEX_FOUND} )
     set( SHARED_MUTEX_IMPL "boost::shared_mutex" )
 else()
-    set( SMART_PTR_IMPL "NONE" )
+    set( SHARED_MUTEX_IMPL "NONE" )
 endif()
 
 if( ${STD_ATOMIC_FOUND} )

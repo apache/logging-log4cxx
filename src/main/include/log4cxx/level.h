@@ -22,6 +22,7 @@
 #include <log4cxx/logstring.h>
 #include <limits.h>
 #include <log4cxx/helpers/object.h>
+#include <mutex>
 
 #if defined(_MSC_VER)
 	#pragma warning ( push )

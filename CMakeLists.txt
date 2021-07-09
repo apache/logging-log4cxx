@@ -41,6 +41,9 @@ if( NOT "${CMAKE_CXX_STANDARD}")
     set(CMAKE_CXX_STANDARD 17)
 endif()
 
+# Don't allow for compiler-specific extensions
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Building
 add_subdirectory(src)
 
@@ -183,6 +186,13 @@ if(APACHE_MAINTAINER)
 	COMMAND gpg -ab --yes "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc"
 	COMMAND gpg -ab --yes "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip" > "apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc"
 	)
+endif()
+
+#
+# Check for any fatal configuration errors
+#
+if( "${SHARED_MUTEX_IMPL}" STREQUAL "NONE" )
+    message( FATAL_ERROR "No shared_mutex implementation found.  Requires Boost or C++17" )
 endif()
 
 #

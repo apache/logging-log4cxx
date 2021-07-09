@@ -223,7 +223,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	else
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(pool, name));
-		logger->setHierarchy(weak_from_this());
+		logger->setHierarchy(shared_from_this());
 		loggers->insert(LoggerMap::value_type(name, logger));
 
 		ProvisionNodeMap::iterator it2 = provisionNodes->find(name);
@@ -423,6 +423,6 @@ void Hierarchy::configureRoot(){
 	// LOGCXX-322 we need to turn the repositroy into a weak_ptr, and we
 	// can't use weak_from_this() in the constructor.
 	if( !root->getLoggerRepository().lock() ){
-		root->setHierarchy(weak_from_this());
+		root->setHierarchy(shared_from_this());
 	}
 }

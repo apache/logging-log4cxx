@@ -21,6 +21,7 @@
 #include <log4cxx/portability.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
+#include <mutex>
 
 namespace log4cxx
 {

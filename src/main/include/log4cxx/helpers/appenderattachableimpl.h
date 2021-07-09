@@ -28,6 +28,7 @@
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/log4cxx.h>
+#include <mutex>
 
 namespace log4cxx
 {
