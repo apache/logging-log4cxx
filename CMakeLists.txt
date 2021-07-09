@@ -41,6 +41,9 @@ if( NOT "${CMAKE_CXX_STANDARD}")
     set(CMAKE_CXX_STANDARD 17)
 endif()
 
+# Don't allow for compiler-specific extensions
+set(CMAKE_CXX_EXTENSIONS OFF)
+
 # Building
 add_subdirectory(src)
 
