@@ -20,6 +20,7 @@
 
 #include <log4cxx/logstring.h>
 #include <exception>
+#include <mutex>
 
 namespace log4cxx
 {

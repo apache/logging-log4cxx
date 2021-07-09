@@ -19,6 +19,7 @@
 #define _LOG4CXX_HELPERS_SERVER_SOCKET_H
 
 #include <log4cxx/helpers/socket.h>
+#include <mutex>
 
 namespace log4cxx
 {

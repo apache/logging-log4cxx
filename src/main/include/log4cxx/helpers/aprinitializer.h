@@ -30,6 +30,7 @@ extern "C" {
 }
 
 #include <apr_time.h>
+#include <mutex>
 
 namespace log4cxx
 {
