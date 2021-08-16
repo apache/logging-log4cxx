@@ -1,6 +1,6 @@
 include(FetchContent)
 FetchContent_Declare(log4j
-  URL https://www-us.apache.org/dist/logging/log4j/1.2.17/log4j-1.2.17.tar.gz
+  URL https://downloads.apache.org/logging/log4j/1.2.17/log4j-1.2.17.tar.gz
   URL_HASH MD5=8218714e41ee0c6509dcfeafa2e1f53f
 )
 FetchContent_GetProperties(log4j)
