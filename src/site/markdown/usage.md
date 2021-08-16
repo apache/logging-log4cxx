@@ -486,7 +486,7 @@ controlled at run-time. Here is a slightly modified version.
     		}
      
     		LOG4CXX_INFO(logger, "Entering application.")
-    		Bar bar
+    		Bar bar;
     		bar.doIt();
     		LOG4CXX_INFO(logger, "Exiting application.")
     	}
