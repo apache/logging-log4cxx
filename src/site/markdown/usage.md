@@ -172,14 +172,14 @@ the insertion operator (\<\<) in the message parameter.
 ~~~{.cpp}
     log4cxx::LoggerPtr logger(log4cxx::Logger::getLogger("com.foo"));
     const char* region = "World";
-    LOG4CXX_INFO(logger, "Simple message text.")
-    LOG4CXX_INFO(logger, "Hello, " << region)
-    LOG4CXX_DEBUG(logger, L"Iteration " << i)
-    LOG4CXX_DEBUG(logger, "e^10 = " << std::scientific << exp(10.0))
+    LOG4CXX_INFO(logger, "Simple message text.");
+    LOG4CXX_INFO(logger, "Hello, " << region);
+    LOG4CXX_DEBUG(logger, L"Iteration " << i);
+    LOG4CXX_DEBUG(logger, "e^10 = " << std::scientific << exp(10.0));
     //
     // Use a wchar_t first operand to force use of wchar_t based stream.
     //
-    LOG4CXX_WARN(logger, L"" << i << L" is the number of the iteration.")
+    LOG4CXX_WARN(logger, L"" << i << L" is the number of the iteration.");
 ~~~
 
 A logging request is said to be *enabled* if its level is higher than or
@@ -210,19 +210,19 @@ Here is an example of this rule.
     log4cxx::LoggerPtr barlogger(log4cxx::Logger::getLogger("com.foo.Bar"));
      
     // This request is enabled, because WARN >= INFO.
-    LOG4CXX_WARN(logger, "Low fuel level.")
+    LOG4CXX_WARN(logger, "Low fuel level.");
      
     // This request is disabled, because DEBUG < INFO.
-    LOG4CXX_DEBUG(logger, "Starting search for nearest gas station.")
+    LOG4CXX_DEBUG(logger, "Starting search for nearest gas station.");
      
     // The logger instance barlogger, named "com.foo.Bar",
     // will inherit its level from the logger named
     // "com.foo" Thus, the following request is enabled
     // because INFO >= INFO.
-    LOG4CXX_INFO(barlogger. "Located nearest gas station.")
+    LOG4CXX_INFO(barlogger. "Located nearest gas station.");
      
     // This request is disabled, because DEBUG < INFO.
-    LOG4CXX_DEBUG(barlogger, "Exiting gas station search")
+    LOG4CXX_DEBUG(barlogger, "Exiting gas station search");
 ~~~
 
 Calling the *getLogger* method with the same name will always return a
@@ -379,10 +379,10 @@ application *MyApp* that uses log4cxx.
     		// Set up a simple configuration that logs on the console.
     		BasicConfigurator::configure();
      
-    		LOG4CXX_INFO(logger, "Entering application.")
+    		LOG4CXX_INFO(logger, "Entering application.");
     		Bar bar;
     		bar.doIt();
-    		LOG4CXX_INFO(logger, "Exiting application.")
+    		LOG4CXX_INFO(logger, "Exiting application.");
     	}
     	catch(Exception&)
     	{
@@ -410,7 +410,7 @@ qualified name of the class.
      
     			public:
     				void doIt();
-    		}
+    		};
     	}
     }
 ~~~
@@ -425,7 +425,7 @@ qualified name of the class.
     LoggerPtr Bar::logger(Logger::getLogger("com.foo.bar"));
      
     void Bar::doIt() {
-    	LOG4CXX_DEBUG(logger, "Did it again!")
+    	LOG4CXX_DEBUG(logger, "Did it again!");
     }
 ~~~
 
@@ -485,10 +485,10 @@ controlled at run-time. Here is a slightly modified version.
     			BasicConfigurator::configure();
     		}
      
-    		LOG4CXX_INFO(logger, "Entering application.")
-    		Bar bar
+    		LOG4CXX_INFO(logger, "Entering application.");
+    		Bar bar;
     		bar.doIt();
-    		LOG4CXX_INFO(logger, "Exiting application.")
+    		LOG4CXX_INFO(logger, "Exiting application.");
     	}
     	catch(Exception&)
     	{
