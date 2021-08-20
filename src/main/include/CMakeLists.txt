@@ -88,8 +88,14 @@ CHECK_FUNCTION_EXISTS(syslog HAS_SYSLOG)
 if(UNIX)
     set(CMAKE_REQUIRED_LIBRARIES "pthread")
     CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
-    set(CMAKE_REQUIRED_LIBRARIES "pthread")
-    CHECK_SYMBOL_EXISTS(pthread_setname_np "pthread.h" HAS_PTHREAD_SETNAME)
+
+    # Check for the (linux) pthread_setname_np.
+    # OSX and BSD are special apparently.  OSX only lets you name
+    # the current thread, while BSD calls it pthread_set_name_np.
+    # Since this is really not a core feature and the end-user can configure
+    # it anyway, we're only going to worry about linux.
+    include(${LOG4CXX_SOURCE_DIR}/src/cmake/pthread/log4cxx-pthread.cmake)
+    set(HAS_PTHREAD_SETNAME ${PTHREAD_SETNAME_NP_FOUND})
 endif(UNIX)
 
 if(WIN32)
