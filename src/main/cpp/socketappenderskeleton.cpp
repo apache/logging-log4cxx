@@ -26,6 +26,7 @@
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/bytearrayoutputstream.h>
+#include <log4cxx/helpers/threadutility.h>
 #include <functional>
 
 using namespace log4cxx;
@@ -162,7 +163,7 @@ void SocketAppenderSkeleton::fireConnector()
 	{
 		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
 
-		thread = std::thread( &SocketAppenderSkeleton::monitor, this );
+		thread = ThreadUtility::createThread( "SocketAppend", &SocketAppenderSkeleton::monitor, this );
 	}
 }
 

@@ -24,6 +24,7 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/charsetencoder.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/threadutility.h>
 #include <mutex>
 
 using namespace log4cxx;
@@ -61,7 +62,7 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 		serverSocket->setSoTimeout(1000);
 	}
 
-	sh = std::thread( &TelnetAppender::acceptConnections, this );
+	sh = ThreadUtility::createThread( "TelnetAppend", &TelnetAppender::acceptConnections, this );
 }
 
 void TelnetAppender::setOption(const LogString& option,

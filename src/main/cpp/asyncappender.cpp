@@ -30,6 +30,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <apr_atomic.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/threadutility.h>
 
 
 using namespace log4cxx;
@@ -50,7 +51,7 @@ AsyncAppender::AsyncAppender()
 	  locationInfo(false),
 	  blocking(true)
 {
-	dispatcher = std::thread( &AsyncAppender::dispatch, this );
+	dispatcher = ThreadUtility::createThread( "AyncAppend", &AsyncAppender::dispatch, this );
 }
 
 AsyncAppender::~AsyncAppender()

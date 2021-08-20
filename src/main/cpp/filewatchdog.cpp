@@ -23,6 +23,7 @@
 #include <apr_atomic.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/threadutility.h>
 #include <functional>
 
 using namespace log4cxx;
@@ -92,7 +93,7 @@ void FileWatchdog::start()
 {
 	checkAndConfigure();
 
-	thread = std::thread( &FileWatchdog::run, this );
+	thread = ThreadUtility::createThread( "Filewatchdog", &FileWatchdog::run, this );
 }
 
 bool FileWatchdog::is_interrupted()

@@ -147,6 +147,7 @@ target_sources(log4cxx
   threadlocal.cpp
   threadpatternconverter.cpp
   threadspecificdata.cpp
+  threadutility.cpp
   throwableinformationpatternconverter.cpp
   timebasedrollingpolicy.cpp
   timezone.cpp
