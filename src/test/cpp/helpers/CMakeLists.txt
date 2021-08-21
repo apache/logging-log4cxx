@@ -18,6 +18,7 @@ set(HELPER_TESTS
     syslogwritertest
     timezonetestcase
     transcodertestcase
+    threadutilitytestcase
 )
 foreach(fileName IN LISTS HELPER_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
