@@ -46,7 +46,7 @@ void ThreadUtility::preThreadBlockSignals(){
 	sigset_t set;
 	sigfillset(&set);
 	if( pthread_sigmask(SIG_SETMASK, &set, nullptr) < 0 ){
-		LOGLOG_ERROR( "Unable to set thread sigmask" );
+		LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
 	}
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
 }
@@ -60,12 +60,12 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 							 std::thread::native_handle_type native_handle){
 #if LOG4CXX_HAS_PTHREAD_SETNAME
 	if( pthread_setname_np( static_cast<pthread_t>( native_handle ), threadName.c_str() ) < 0 ){
-		LOGLOG_ERROR( "unable to set thread name" );
+		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
 #elif LOG4CXX_HAS_SETTHREADDESCRIPTION
 	HRESULT hr = SetThreadDescription(static_cast<HANDLE>(native_handle), threadName.c_str());
 	if(FAILED(hr)){
-		LOGLOG_ERROR( "unable to set thread name" );
+		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
 #endif
 }
@@ -77,7 +77,7 @@ void ThreadUtility::postThreadUnblockSignals(){
 	sigset_t set;
 	sigemptyset(&set);
 	if( pthread_sigmask(SIG_SETMASK, &set, nullptr) < 0 ){
-		LOGLOG_ERROR( "Unable to set thread sigmask" );
+		LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
 	}
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
 }
