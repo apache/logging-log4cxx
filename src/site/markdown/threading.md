@@ -68,7 +68,7 @@ In order to use these callback functions, use the ThreadUtility class.  You
 can use some sample functions(not no-ops) as follows:
 
 ```
-ThreadUtility::configureThreadFunctions( ThreadUtility::preThreadBlockSignals,
+ThreadUtility::instance()->configureThreadFunctions( ThreadUtility::preThreadBlockSignals,
 					 ThreadUtility::threadStartedNameThread,
 					 ThreadUtility::postThreadUnblockSignals );
 ```
