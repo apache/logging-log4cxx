@@ -8,6 +8,7 @@
 #include "log4cxx/logstring.h"
 
 namespace log4cxx {
+namespace helpers {
 
 /**
  * A function that will be called before a thread is started.  This can
@@ -42,9 +43,9 @@ class LOG4CXX_EXPORT ThreadUtility {
 private:
 	ThreadUtility();
 
-	log4cxx::pre_thread_start preStartFunction();
-	log4cxx::thread_started threadStartedFunction();
-	log4cxx::post_thread_start postStartFunction();
+	log4cxx::helpers::pre_thread_start preStartFunction();
+	log4cxx::helpers::thread_started threadStartedFunction();
+	log4cxx::helpers::post_thread_start postStartFunction();
 
 	struct priv_data;
 	std::unique_ptr<priv_data> m_priv;
@@ -92,9 +93,9 @@ public:
 	std::thread createThread(LogString name,
 							 Function&& f,
 							 Args&&... args){
-		log4cxx::pre_thread_start pre_start = preStartFunction();
-		log4cxx::thread_started thread_start = threadStartedFunction();
-		log4cxx::post_thread_start post_start = postStartFunction();
+		log4cxx::helpers::pre_thread_start pre_start = preStartFunction();
+		log4cxx::helpers::thread_started thread_start = threadStartedFunction();
+		log4cxx::helpers::post_thread_start post_start = postStartFunction();
 
 		if( pre_start ){
 			pre_start();
@@ -112,6 +113,7 @@ public:
 	}
 };
 
-}
+} /* namespace helpers */
+} /* namespace log4cxx */
 
 #endif

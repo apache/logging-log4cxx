@@ -9,7 +9,7 @@
 #include <processthreadsapi.h>
 #endif
 
-using log4cxx::ThreadUtility;
+using log4cxx::helpers::ThreadUtility;
 
 struct ThreadUtility::priv_data{
 	priv_data(){
@@ -18,9 +18,9 @@ struct ThreadUtility::priv_data{
 		post_start = nullptr;
 	}
 
-	log4cxx::pre_thread_start pre_start;
-	log4cxx::thread_started thread_start;
-	log4cxx::post_thread_start post_start;
+	log4cxx::helpers::pre_thread_start pre_start;
+	log4cxx::helpers::thread_started thread_start;
+	log4cxx::helpers::post_thread_start post_start;
 };
 
 ThreadUtility::ThreadUtility() :
@@ -78,14 +78,14 @@ void ThreadUtility::postThreadUnblockSignals(){
 }
 
 
-log4cxx::pre_thread_start ThreadUtility::preStartFunction(){
+log4cxx::helpers::pre_thread_start ThreadUtility::preStartFunction(){
 	return m_priv->pre_start;
 }
 
-log4cxx::thread_started ThreadUtility::threadStartedFunction(){
+log4cxx::helpers::thread_started ThreadUtility::threadStartedFunction(){
 	return m_priv->thread_start;
 }
 
-log4cxx::post_thread_start ThreadUtility::postStartFunction(){
+log4cxx::helpers::post_thread_start ThreadUtility::postStartFunction(){
 	return m_priv->post_start;
 }

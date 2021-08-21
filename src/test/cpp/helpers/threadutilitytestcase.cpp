@@ -35,7 +35,7 @@ public:
 
 		thrUtil->configureThreadFunctions( nullptr, nullptr, nullptr );
 
-		std::thread t = thrUtil->createThread( "FooName", [](){} );
+		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [](){} );
 
 		t.join();
 	}
@@ -58,7 +58,7 @@ public:
 			num_post++;
 		});
 
-		std::thread t = thrUtil->createThread( "FooName", [](){} );
+		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [](){} );
 
 		t.join();
 
