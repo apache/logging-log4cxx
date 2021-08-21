@@ -2,5 +2,5 @@
 
 int main(){
 	pthread_t tid;
-	pthread_set_name_np(tid, "name");
+	pthread_setname_np(tid, "name");
 }
