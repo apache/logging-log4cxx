@@ -56,9 +56,8 @@ public:
 
 	/**
 	 * Configure the thread functions that log4cxx will use.
-	 * Note that setting any of these parameters to nullptr will cause the
-	 * default function to be used.
-	 *
+	 * Note that setting any of these parameters to nullptr is valid,
+	 * and simply results in the callback not being called.	 *
 	 */
 	void configureThreadFunctions( pre_thread_start pre_start,
 								   thread_started started,
