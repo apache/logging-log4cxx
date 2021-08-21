@@ -62,7 +62,7 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 		serverSocket->setSoTimeout(1000);
 	}
 
-	sh = ThreadUtility::createThread( "TelnetAppend", &TelnetAppender::acceptConnections, this );
+	sh = ThreadUtility::createThread( LOG4CXX_STR("TelnetAppend"), &TelnetAppender::acceptConnections, this );
 }
 
 void TelnetAppender::setOption(const LogString& option,

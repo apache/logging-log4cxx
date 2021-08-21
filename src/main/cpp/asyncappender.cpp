@@ -51,7 +51,7 @@ AsyncAppender::AsyncAppender()
 	  locationInfo(false),
 	  blocking(true)
 {
-	dispatcher = ThreadUtility::createThread( "AyncAppend", &AsyncAppender::dispatch, this );
+	dispatcher = ThreadUtility::createThread( LOG4CXX_STR("AyncAppend"), &AsyncAppender::dispatch, this );
 }
 
 AsyncAppender::~AsyncAppender()

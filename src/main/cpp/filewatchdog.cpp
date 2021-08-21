@@ -93,7 +93,7 @@ void FileWatchdog::start()
 {
 	checkAndConfigure();
 
-	thread = ThreadUtility::createThread( "Filewatchdog", &FileWatchdog::run, this );
+	thread = ThreadUtility::createThread( LOG4CXX_STR("Filewatchdog"), &FileWatchdog::run, this );
 }
 
 bool FileWatchdog::is_interrupted()
