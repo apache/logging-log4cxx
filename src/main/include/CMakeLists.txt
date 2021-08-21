@@ -96,6 +96,8 @@ if(UNIX)
     # it anyway, we're only going to worry about linux.
     include(${LOG4CXX_SOURCE_DIR}/src/cmake/pthread/log4cxx-pthread.cmake)
     set(HAS_PTHREAD_SETNAME ${PTHREAD_SETNAME_NP_FOUND})
+
+    message("setname np: ${PTHREAD_SETNAME_NP_FOUND}")
 endif(UNIX)
 
 if(WIN32)

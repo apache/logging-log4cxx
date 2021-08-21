@@ -11,35 +11,36 @@
 
 using log4cxx::ThreadUtility;
 
-log4cxx::pre_thread_start ThreadUtility::pre_start = ThreadUtility::preThreadDoNothing;
-log4cxx::thread_started ThreadUtility::thread_start = ThreadUtility::threadStartedDoNothing;
-log4cxx::post_thread_start ThreadUtility::post_start = ThreadUtility::postThreadDoNothing;
+struct ThreadUtility::priv_data{
+	priv_data(){
+		pre_start = nullptr;
+		thread_start = nullptr;
+		post_start = nullptr;
+	}
 
-ThreadUtility::ThreadUtility(){}
+	log4cxx::pre_thread_start pre_start;
+	log4cxx::thread_started thread_start;
+	log4cxx::post_thread_start post_start;
+};
+
+ThreadUtility::ThreadUtility() :
+	m_priv( new priv_data() )
+{}
+
+ThreadUtility::~ThreadUtility(){}
+
+std::shared_ptr<ThreadUtility> ThreadUtility::instance(){
+	static std::shared_ptr<ThreadUtility> instance( new ThreadUtility() );
+	return instance;
+}
 
 void ThreadUtility::configureThreadFunctions( pre_thread_start pre_start1,
 							   thread_started started,
 							   post_thread_start post_start1 ){
-	if( pre_start1 == nullptr ){
-		pre_start = ThreadUtility::preThreadDoNothing;
-	}else{
-		pre_start = pre_start1;
-	}
-
-	if( started == nullptr ){
-		thread_start = ThreadUtility::threadStartedDoNothing;
-	}else{
-		thread_start = started;
-	}
-
-	if( post_start1 == nullptr ){
-		post_start = ThreadUtility::postThreadDoNothing;
-	}else{
-		post_start = pre_start1;
-	}
+	m_priv->pre_start = pre_start1;
+	m_priv->thread_start = started;
+	m_priv->post_start = post_start1;
 }
-
-void ThreadUtility::preThreadDoNothing(){}
 
 void ThreadUtility::preThreadBlockSignals(){
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
@@ -50,10 +51,6 @@ void ThreadUtility::preThreadBlockSignals(){
 	}
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
 }
-
-void ThreadUtility::threadStartedDoNothing(LogString,
-							std::thread::id,
-							std::thread::native_handle_type){}
 
 void ThreadUtility::threadStartedNameThread(LogString threadName,
 							 std::thread::id /*thread_id*/,
@@ -70,8 +67,6 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 #endif
 }
 
-void ThreadUtility::postThreadDoNothing(){}
-
 void ThreadUtility::postThreadUnblockSignals(){
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
 	sigset_t set;
@@ -80,4 +75,17 @@ void ThreadUtility::postThreadUnblockSignals(){
 		LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
 	}
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
+}
+
+
+log4cxx::pre_thread_start ThreadUtility::preStartFunction(){
+	return m_priv->pre_start;
+}
+
+log4cxx::thread_started ThreadUtility::threadStartedFunction(){
+	return m_priv->thread_start;
+}
+
+log4cxx::post_thread_start ThreadUtility::postStartFunction(){
+	return m_priv->post_start;
 }

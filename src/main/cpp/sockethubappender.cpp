@@ -178,7 +178,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void SocketHubAppender::startServer()
 {
-	thread = ThreadUtility::createThread( LOG4CXX_STR("SocketHub"), &SocketHubAppender::monitor, this );
+	thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketHub"), &SocketHubAppender::monitor, this );
 }
 
 void SocketHubAppender::monitor()

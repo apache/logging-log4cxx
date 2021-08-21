@@ -163,7 +163,7 @@ void SocketAppenderSkeleton::fireConnector()
 	{
 		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
 
-		thread = ThreadUtility::createThread( LOG4CXX_STR("SocketAppend"), &SocketAppenderSkeleton::monitor, this );
+		thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketAppend"), &SocketAppenderSkeleton::monitor, this );
 	}
 }
 

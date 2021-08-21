@@ -3,6 +3,7 @@
 
 #include <thread>
 #include <functional>
+#include <memory>
 
 #include "log4cxx/logstring.h"
 
@@ -34,79 +35,82 @@ typedef std::function<void( LogString threadName,
  */
 typedef std::function<void()> post_thread_start;
 
+class ThreadUtility;
+LOG4CXX_PTR_DEF(ThreadUtility);
+
 class LOG4CXX_EXPORT ThreadUtility {
+private:
+	ThreadUtility();
+
+	log4cxx::pre_thread_start preStartFunction();
+	log4cxx::thread_started threadStartedFunction();
+	log4cxx::post_thread_start postStartFunction();
+
+	struct priv_data;
+	std::unique_ptr<priv_data> m_priv;
+
 public:
+	~ThreadUtility();
+
+	static std::shared_ptr<ThreadUtility> instance();
+
 	/**
 	 * Configure the thread functions that log4cxx will use.
 	 * Note that setting any of these parameters to nullptr will cause the
 	 * default function to be used.
 	 *
 	 */
-	static void configureThreadFunctions( pre_thread_start pre_start,
+	void configureThreadFunctions( pre_thread_start pre_start,
 								   thread_started started,
 								   post_thread_start post_start );
-
-	/**
-	 * A pre-start thread function that does nothing
-	 */
-	static void preThreadDoNothing();
 
 	/**
 	 * A pre-start thread function that blocks signals to the new thread
 	 * (if the system has pthreads).  If the system does not have pthreads,
 	 * is equivalent to preThreadDoNothing();
 	 */
-	static void preThreadBlockSignals();
-
-	/**
-	 * A thread_started function that does nothing when the thread starts.
-	 */
-	static void threadStartedDoNothing(LogString threadName,
-								std::thread::id thread_id,
-								std::thread::native_handle_type native_handle);
+	void preThreadBlockSignals();
 
 	/**
 	 * A thread_started function that names the thread using the appropriate
 	 * system call.
 	 */
-	static void threadStartedNameThread(LogString threadName,
+	void threadStartedNameThread(LogString threadName,
 								 std::thread::id thread_id,
 								 std::thread::native_handle_type native_handle);
-
-	/**
-	 * A post-start thread function that does nothing.
-	 */
-	static void postThreadDoNothing();
 
 	/**
 	 * A post-start thread function that unblocks signals that preThreadBlockSignals
 	 * blocked before starting the thread.  If the system does not have pthreads,
 	 * is equivalent to postThreadDoNothing();
 	 */
-	static void postThreadUnblockSignals();
+	void postThreadUnblockSignals();
 
 	/**
 	 * Start a thread
 	 */
 	template<class Function, class... Args>
-	static std::thread createThread(LogString name,
+	std::thread createThread(LogString name,
 							 Function&& f,
 							 Args&&... args){
-		pre_start();
+		log4cxx::pre_thread_start pre_start = preStartFunction();
+		log4cxx::thread_started thread_start = threadStartedFunction();
+		log4cxx::post_thread_start post_start = postStartFunction();
+
+		if( pre_start ){
+			pre_start();
+		}
 		std::thread t( f, args... );
-		thread_start( name,
+		if( thread_start ){
+			thread_start( name,
 					  t.get_id(),
 					  t.native_handle() );
-		post_start();
+		}
+		if( post_start ){
+			post_start();
+		}
 		return t;
 	}
-
-private:
-	ThreadUtility();
-
-	static log4cxx::pre_thread_start pre_start;
-	static log4cxx::thread_started thread_start;
-	static log4cxx::post_thread_start post_start;
 };
 
 }
