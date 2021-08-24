@@ -1,7 +1,7 @@
 add_executable(xmltests
-    domtestcase
-    xmllayouttest
-    xmllayouttestcase
+    domtestcase.cpp
+    xmllayouttest.cpp
+    xmllayouttestcase.cpp
 )
 
 target_link_libraries(xmltests PRIVATE ${APR_UTIL_LIBRARIES} EXPAT::EXPAT)
