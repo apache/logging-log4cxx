@@ -40,6 +40,32 @@ std::shared_ptr<ThreadUtility> ThreadUtility::instance(){
 	return instance;
 }
 
+void ThreadUtility::configure( ThreadConfigurationType type ){
+	std::shared_ptr<ThreadUtility> utility = instance();
+
+	if( type == ThreadConfigurationType::NoConfiguration ){
+		utility->configureFuncs( nullptr, nullptr, nullptr );
+	}else if( type == ThreadConfigurationType::NameThreadOnly ){
+		utility->configureFuncs( nullptr,
+								 std::bind( &ThreadUtility::threadStartedNameThread, utility,
+											std::placeholders::_1,
+											std::placeholders::_2,
+											std::placeholders::_3 ),
+								 nullptr );
+	}else if( type == ThreadConfigurationType::BlockSignalsOnly ){
+		utility->configureFuncs( std::bind( &ThreadUtility::preThreadBlockSignals, utility ),
+								 nullptr,
+								 std::bind( &ThreadUtility::postThreadUnblockSignals, utility ) );
+	}else if( type == ThreadConfigurationType::BlockSignalsAndNameThread ){
+		utility->configureFuncs( std::bind( &ThreadUtility::preThreadBlockSignals, utility ),
+								 std::bind( &ThreadUtility::threadStartedNameThread, utility,
+											std::placeholders::_1,
+											std::placeholders::_2,
+											std::placeholders::_3 ),
+								 std::bind( &ThreadUtility::postThreadUnblockSignals, utility ) );
+	}
+}
+
 void ThreadUtility::configureFuncs( ThreadStartPre pre_start,
 							   ThreadStarted started,
 							   ThreadStartPost post_start ){

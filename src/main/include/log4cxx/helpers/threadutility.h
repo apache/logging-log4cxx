@@ -36,6 +36,13 @@ typedef std::function<void( LogString threadName,
  */
 typedef std::function<void()> ThreadStartPost;
 
+enum class ThreadConfigurationType {
+	NoConfiguration,
+	BlockSignalsOnly,
+	NameThreadOnly,
+	BlockSignalsAndNameThread,
+};
+
 class ThreadUtility;
 LOG4CXX_PTR_DEF(ThreadUtility);
 
@@ -54,6 +61,12 @@ public:
 	~ThreadUtility();
 
 	static std::shared_ptr<ThreadUtility> instance();
+
+	/**
+	 * Utility method for configuring the ThreadUtility in a standard
+	 * configuration.
+	 */
+	static void configure( ThreadConfigurationType type );
 
 	/**
 	 * Configure the thread functions that log4cxx will use.

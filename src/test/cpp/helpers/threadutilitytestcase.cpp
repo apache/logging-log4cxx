@@ -27,6 +27,7 @@ LOGUNIT_CLASS(ThreadUtilityTest)
 	LOGUNIT_TEST_SUITE(ThreadUtilityTest);
 	LOGUNIT_TEST(testNullFunctions);
 	LOGUNIT_TEST(testCustomFunctions);
+	LOGUNIT_TEST(testDefaultFunctions);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -67,6 +68,16 @@ public:
 		LOGUNIT_ASSERT_EQUAL( num_pre, 1 );
 		LOGUNIT_ASSERT_EQUAL( num_started, 1 );
 		LOGUNIT_ASSERT_EQUAL( num_post, 1 );
+	}
+
+	void testDefaultFunctions(){
+		ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
+
+		ThreadUtilityPtr thrUtil = ThreadUtility::instance();
+
+		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [](){} );
+
+		t.join();
 	}
 
 };

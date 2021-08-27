@@ -38,18 +38,28 @@ all threads be terminated properly before returning from `main()`.
 
 See [LOGCXX-322][3] for more information.
 
-## Threads Created by Log4cxx
+## Signal Handling with Log4cxx
 
 Under certain configurations, Log4cxx may create new threads in order to do
-tasks(e.g. network comms, other async operations).  On Linux systems, this
-can lead to undesirable signal delivery, as signals can be delivered to
-any thread in the process.
+tasks(e.g. network comms, other async operations).  On Linux/POSIX systems,
+this can lead to undesirable signal delivery, as signals can be delivered to
+any thread in the process.  This can be most clearly seen if your application
+uses the [sigwait(3)][4] system call, as the thread that calls sigwait may
+not be the thread that actually gets the signal.
 
-To handle signals properly on Linux, you may wish to utilize the [signalfd][1]
-API to handle signals correctly.  Another way of handling signals is to
-create a pipe internal to your application to notify the main loop that there
-is a signal available - see the [Qt documentation][2] for more information.
+There are three main ways to handle signals coming to your process.   All
+of these ways of handling signals are supported by Log4cxx in order to
+provide flexibility to users of the library.  These three ways are:
 
+1. Write to a file descriptor in a signal handler, notifying your main event
+loop of a signal. If you use Qt, [their documentation][2] has information on
+this method of handling a signal.
+2. (Linux-only) Use [signalfd(2)][1] to create a file descriptor that notifies
+you of a signal.  This is a special case of (1).
+3. Block signals in newly created threads, ensuring that signals can only be
+sent to threads of your choosing.
+
+If you need to use option #3(for example, because you are using sigwait),
 Log4cxx provides a mechanism for defining methods to be called at two main
 points in the lifecycle of a thread:
 
@@ -64,20 +74,21 @@ Once a new thread is created, there is also a callback function that lets
 client code do operations on the thread directly.  A sample method in Log4cxx
 has a callback to name the thread in order to make debugging nicer.
 
-In order to use these callback functions, use the ThreadUtility class.  You
-can use some sample functions(not no-ops) as follows:
+In order to use these callback functions, use the [ThreadUtility](@ref log4cxx.helpers.ThreadUtility)
+class.  You can configure the ThreadUtility class in several different ways by using the
+[ThreadUtility::configure](@ref log4cxx.helpers.ThreadUtility.configure)
+method with several pre-defined configurations.
+In the event that you need special signal handling, you can implement your own
+functions, and use the ThreadUtility::configureFuncs method in order to
+customize exactly what happens.
 
-```
-ThreadUtility::instance()->configureThreadFunctions( ThreadUtility::preThreadBlockSignals,
-					 ThreadUtility::threadStartedNameThread,
-					 ThreadUtility::postThreadUnblockSignals );
-```
-
-These sample functions will block all POSIX signals before starting a new thread,
-and then unblock them once the thread has been created.  You may provide your
-own functions to handle this if you so choose.
-
+**NOTE:** It is very important that if you use the `ThreadUtility::preThreadBlockSignals`
+method, it must be paired with the equivalent `ThreadUtility::postThreadUnblockSignals`
+call, as there is an internal mutex that is locked and unlocked in order to ensure that
+only one thread can be started at a time.  Failure to do this may lead to deadlock.
+The ThreadUtility::configure method handles this automatically.
 
 [1]: https://man7.org/linux/man-pages/man2/signalfd.2.html
 [2]: https://doc.qt.io/qt-5/unix-signals.html
 [3]: https://issues.apache.org/jira/browse/LOGCXX-322
+[4]: https://man7.org/linux/man-pages/man3/sigwait.3.html
