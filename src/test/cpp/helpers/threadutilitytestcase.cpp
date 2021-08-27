@@ -33,7 +33,7 @@ public:
 	void testNullFunctions(){
 		ThreadUtilityPtr thrUtil = ThreadUtility::instance();
 
-		thrUtil->configureThreadFunctions( nullptr, nullptr, nullptr );
+		thrUtil->configureFuncs( nullptr, nullptr, nullptr );
 
 		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [](){} );
 
@@ -46,17 +46,19 @@ public:
 		int num_started = 0;
 		int num_post = 0;
 
-		thrUtil->configureThreadFunctions( [&num_pre](){
-			num_pre++;
-		},
-		[&num_started]( LogString,
-		std::thread::id,
-		std::thread::native_handle_type ){
-			num_started++;
-		},
-		[&num_post](){
-			num_post++;
-		});
+		thrUtil->configureFuncs(
+			[&num_pre](){
+				num_pre++;
+			},
+			[&num_started]( LogString,
+							std::thread::id,
+							std::thread::native_handle_type ){
+				num_started++;
+			},
+			[&num_post](){
+				num_post++;
+			}
+		);
 
 		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [](){} );
 

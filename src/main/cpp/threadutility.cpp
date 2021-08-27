@@ -13,14 +13,14 @@ using log4cxx::helpers::ThreadUtility;
 
 struct ThreadUtility::priv_data{
 	priv_data(){
-		pre_start = nullptr;
-		thread_start = nullptr;
-		post_start = nullptr;
+		start_pre = nullptr;
+		started = nullptr;
+		start_post = nullptr;
 	}
 
-	log4cxx::helpers::pre_thread_start pre_start;
-	log4cxx::helpers::thread_started thread_start;
-	log4cxx::helpers::post_thread_start post_start;
+	log4cxx::helpers::ThreadStartPre start_pre;
+	log4cxx::helpers::ThreadStarted started;
+	log4cxx::helpers::ThreadStartPost start_post;
 };
 
 ThreadUtility::ThreadUtility() :
@@ -34,12 +34,12 @@ std::shared_ptr<ThreadUtility> ThreadUtility::instance(){
 	return instance;
 }
 
-void ThreadUtility::configureThreadFunctions( pre_thread_start pre_start1,
-							   thread_started started,
-							   post_thread_start post_start1 ){
-	m_priv->pre_start = pre_start1;
-	m_priv->thread_start = started;
-	m_priv->post_start = post_start1;
+void ThreadUtility::configureFuncs( ThreadStartPre pre_start,
+							   ThreadStarted started,
+							   ThreadStartPost post_start ){
+	m_priv->start_pre = pre_start;
+	m_priv->started = started;
+	m_priv->start_post = post_start;
 }
 
 void ThreadUtility::preThreadBlockSignals(){
@@ -78,14 +78,14 @@ void ThreadUtility::postThreadUnblockSignals(){
 }
 
 
-log4cxx::helpers::pre_thread_start ThreadUtility::preStartFunction(){
-	return m_priv->pre_start;
+log4cxx::helpers::ThreadStartPre ThreadUtility::preStartFunction(){
+	return m_priv->start_pre;
 }
 
-log4cxx::helpers::thread_started ThreadUtility::threadStartedFunction(){
-	return m_priv->thread_start;
+log4cxx::helpers::ThreadStarted ThreadUtility::threadStartedFunction(){
+	return m_priv->started;
 }
 
-log4cxx::helpers::post_thread_start ThreadUtility::postStartFunction(){
-	return m_priv->post_start;
+log4cxx::helpers::ThreadStartPost ThreadUtility::postStartFunction(){
+	return m_priv->start_post;
 }
