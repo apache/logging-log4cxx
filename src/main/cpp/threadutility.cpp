@@ -3,6 +3,7 @@
 #include "log4cxx/helpers/loglog.h"
 
 #include <signal.h>
+#include <mutex>
 
 #if LOG4CXX_HAS_SETTHREADDESCRIPTION
 #include <windows.h>
@@ -21,6 +22,11 @@ struct ThreadUtility::priv_data{
 	log4cxx::helpers::ThreadStartPre start_pre;
 	log4cxx::helpers::ThreadStarted started;
 	log4cxx::helpers::ThreadStartPost start_post;
+#if LOG4CXX_HAS_PTHREAD_SIGMASK
+	std::mutex creation_mutex;
+	sigset_t old_mask;
+	bool sigmask_valid;
+#endif
 };
 
 ThreadUtility::ThreadUtility() :
@@ -44,19 +50,23 @@ void ThreadUtility::configureFuncs( ThreadStartPre pre_start,
 
 void ThreadUtility::preThreadBlockSignals(){
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
+	m_priv->creation_mutex.lock();
 	sigset_t set;
 	sigfillset(&set);
-	if( pthread_sigmask(SIG_SETMASK, &set, nullptr) < 0 ){
+	if( pthread_sigmask(SIG_SETMASK, &set, &m_priv->old_mask) < 0 ){
 		LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
+		m_priv->sigmask_valid = false;
+	}else{
+		m_priv->sigmask_valid = true;
 	}
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
 }
 
 void ThreadUtility::threadStartedNameThread(LogString threadName,
-							 std::thread::id /*thread_id*/,
-							 std::thread::native_handle_type native_handle){
+							 std::thread::id /*threadId*/,
+							 std::thread::native_handle_type nativeHandle){
 #if LOG4CXX_HAS_PTHREAD_SETNAME
-	if( pthread_setname_np( static_cast<pthread_t>( native_handle ), threadName.c_str() ) < 0 ){
+	if( pthread_setname_np( static_cast<pthread_t>( nativeHandle ), threadName.c_str() ) < 0 ){
 		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
 #elif LOG4CXX_HAS_SETTHREADDESCRIPTION
@@ -69,11 +79,13 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 
 void ThreadUtility::postThreadUnblockSignals(){
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
-	sigset_t set;
-	sigemptyset(&set);
-	if( pthread_sigmask(SIG_SETMASK, &set, nullptr) < 0 ){
-		LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
+	// Only restore the signal mask if we were able to set it in the first place.
+	if( m_priv->sigmask_valid ){
+		if( pthread_sigmask(SIG_SETMASK, &m_priv->old_mask, nullptr) < 0 ){
+			LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
+		}
 	}
+	m_priv->creation_mutex.unlock();
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
 }
 
