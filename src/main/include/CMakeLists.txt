@@ -85,8 +85,26 @@ CHECK_FUNCTION_EXISTS(wcstombs HAS_WCSTOMBS)
 CHECK_FUNCTION_EXISTS(fwide HAS_FWIDE)
 CHECK_LIBRARY_EXISTS(esmtp smtp_create_session "" HAS_LIBESMTP)
 CHECK_FUNCTION_EXISTS(syslog HAS_SYSLOG)
+if(UNIX)
+    set(CMAKE_REQUIRED_LIBRARIES "pthread")
+    CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
 
-foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG)
+    # Check for the (linux) pthread_setname_np.
+    # OSX and BSD are special apparently.  OSX only lets you name
+    # the current thread, while BSD calls it pthread_set_name_np.
+    # Since this is really not a core feature and the end-user can configure
+    # it anyway, we're only going to worry about linux.
+    include(${LOG4CXX_SOURCE_DIR}/src/cmake/pthread/log4cxx-pthread.cmake)
+    if(${PTHREAD_SETNAME_NP_FOUND})
+	set(HAS_PTHREAD_SETNAME 1)
+    endif()
+endif(UNIX)
+
+if(WIN32)
+    CHECK_SYMBOL_EXISTS(SetThreadDescription "windows.h;processthreadsapi.h" HAS_SETTHREADDESCRIPTION)
+endif(WIN32)
+
+foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG HAS_PTHREAD_SIGMASK HAS_PTHREAD_SETNAME HAS_SETTHREADDESCRIPTION)
   if(${varName} EQUAL 0)
     continue()
   elseif(${varName} EQUAL 1)

@@ -30,6 +30,7 @@
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/exception.h>
+#include <log4cxx/helpers/threadutility.h>
 #include <mutex>
 
 using namespace log4cxx;
@@ -177,7 +178,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void SocketHubAppender::startServer()
 {
-	thread = std::thread( &SocketHubAppender::monitor, this );
+	thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketHub"), &SocketHubAppender::monitor, this );
 }
 
 void SocketHubAppender::monitor()
