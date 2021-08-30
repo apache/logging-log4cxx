@@ -95,7 +95,7 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
 #elif LOG4CXX_HAS_SETTHREADDESCRIPTION
-	HRESULT hr = SetThreadDescription(static_cast<HANDLE>(native_handle), threadName.c_str());
+	HRESULT hr = SetThreadDescription(static_cast<HANDLE>(nativeHandle), threadName.c_str());
 	if(FAILED(hr)){
 		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
 	}
