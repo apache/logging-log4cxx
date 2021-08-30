@@ -22,12 +22,12 @@ struct ThreadUtility::priv_data{
 	log4cxx::helpers::ThreadStartPre start_pre;
 	log4cxx::helpers::ThreadStarted started;
 	log4cxx::helpers::ThreadStartPost start_post;
-#if LOG4CXX_HAS_PTHREAD_SIGMASK
-	std::mutex creation_mutex;
-	sigset_t old_mask;
-	bool sigmask_valid;
-#endif
 };
+
+#if LOG4CXX_HAS_PTHREAD_SIGMASK
+static thread_local sigset_t old_mask;
+static thread_local bool sigmask_valid;
+#endif
 
 ThreadUtility::ThreadUtility() :
 	m_priv( new priv_data() )
@@ -76,14 +76,13 @@ void ThreadUtility::configureFuncs( ThreadStartPre pre_start,
 
 void ThreadUtility::preThreadBlockSignals(){
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
-	m_priv->creation_mutex.lock();
 	sigset_t set;
 	sigfillset(&set);
-	if( pthread_sigmask(SIG_SETMASK, &set, &m_priv->old_mask) < 0 ){
+	if( pthread_sigmask(SIG_SETMASK, &set, &old_mask) < 0 ){
 		LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
-		m_priv->sigmask_valid = false;
+		sigmask_valid = false;
 	}else{
-		m_priv->sigmask_valid = true;
+		sigmask_valid = true;
 	}
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
 }
@@ -106,12 +105,11 @@ void ThreadUtility::threadStartedNameThread(LogString threadName,
 void ThreadUtility::postThreadUnblockSignals(){
 #if LOG4CXX_HAS_PTHREAD_SIGMASK
 	// Only restore the signal mask if we were able to set it in the first place.
-	if( m_priv->sigmask_valid ){
-		if( pthread_sigmask(SIG_SETMASK, &m_priv->old_mask, nullptr) < 0 ){
+	if( sigmask_valid ){
+		if( pthread_sigmask(SIG_SETMASK, &old_mask, nullptr) < 0 ){
 			LOGLOG_ERROR( LOG4CXX_STR("Unable to set thread sigmask") );
 		}
 	}
-	m_priv->creation_mutex.unlock();
 #endif /* LOG4CXX_HAS_PTHREAD_SIGMASK */
 }
 
