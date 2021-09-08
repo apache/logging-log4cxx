@@ -44,6 +44,7 @@
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/helpers/messagebuffer.h>
+#include <log4cxx/helpers/threadutility.h>
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>
@@ -113,6 +114,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define STRINGSTREAM_ATTR "stringstream"
 #define CONFIG_DEBUG_ATTR "configDebug"
 #define INTERNAL_DEBUG_ATTR "debug"
+#define THREAD_TYPE_ATTR "threadConfiguration"
 
 DOMConfigurator::DOMConfigurator()
 	: props(), repository()
@@ -1033,6 +1035,19 @@ void DOMConfigurator::parse(
 	if (!strstrValue.empty() && strstrValue != NuLL)
 	{
 		MessageBufferUseStaticStream();
+	}
+
+	LogString threadSignalValue = subst(getAttribute(utf8Decoder, element, THREAD_TYPE_ATTR));
+	if( !threadSignalValue.empty() && threadSignalValue != NuLL ){
+		if( threadSignalValue == LOG4CXX_STR("NoConfiguration") ){
+			helpers::ThreadUtility::configure( ThreadConfigurationType::NoConfiguration );
+		}else if( threadSignalValue == LOG4CXX_STR("BlockSignalsOnly") ){
+			helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsOnly );
+		}else if( threadSignalValue == LOG4CXX_STR("NameThreadOnly") ){
+			helpers::ThreadUtility::configure( ThreadConfigurationType::NameThreadOnly );
+		}else if( threadSignalValue == LOG4CXX_STR("BlockSignalsAndNameThread") ){
+			helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
+		}
 	}
 
 	apr_xml_elem* currentElement;

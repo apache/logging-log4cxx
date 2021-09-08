@@ -35,6 +35,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/fileinputstream.h>
 #include <log4cxx/helpers/loader.h>
+#include <log4cxx/helpers/threadutility.h>
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>
@@ -181,6 +182,17 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	if (strstrValue == LOG4CXX_STR("static"))
 	{
 		MessageBufferUseStaticStream();
+	}
+
+	LogString threadConfigurationValue(properties.getProperty(LOG4CXX_STR("log4j.threadConfiguration")));
+	if( threadConfigurationValue == LOG4CXX_STR("NoConfiguration") ){
+		helpers::ThreadUtility::configure( ThreadConfigurationType::NoConfiguration );
+	}else if( threadConfigurationValue == LOG4CXX_STR("BlockSignalsOnly") ){
+		helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsOnly );
+	}else if( threadConfigurationValue == LOG4CXX_STR("NameThreadOnly") ){
+		helpers::ThreadUtility::configure( ThreadConfigurationType::NameThreadOnly );
+	}else if( threadConfigurationValue == LOG4CXX_STR("BlockSignalsAndNameThread") ){
+		helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
 	}
 
 	configureRootLogger(properties, hierarchy);
