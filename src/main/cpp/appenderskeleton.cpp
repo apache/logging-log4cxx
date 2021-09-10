@@ -96,7 +96,7 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
 	doAppendImpl(event, pool1);
 }
