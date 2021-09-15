@@ -84,14 +84,8 @@ class.  You can configure the ThreadUtility class in several different ways by u
 [ThreadUtility::configure](@ref log4cxx.helpers.ThreadUtility.configure)
 method with several pre-defined configurations.
 In the event that you need special signal handling, you can implement your own
-functions, and use the ThreadUtility::configureFuncs method in order to
+functions, and use the [ThreadUtility::configureFuncs](@ref log4cxx.helpers.ThreadUtility.configureFuncs) method in order to
 customize exactly what happens.
-
-**NOTE:** It is very important that if you use the `ThreadUtility::preThreadBlockSignals`
-method, it must be paired with the equivalent `ThreadUtility::postThreadUnblockSignals`
-call, as there is an internal mutex that is locked and unlocked in order to ensure that
-only one thread can be started at a time.  Failure to do this may lead to deadlock.
-The ThreadUtility::configure method handles this automatically.
 
 ### Configuring Thread {#configuring}
 
@@ -102,16 +96,16 @@ systems will be blocked to ensure that other threads do not get signals.
 
 To change this default, a simple change to your configuration files may be done.
 
-Example with XML configuration:
+Example to disable the automatic signal blocking with XML configuration:
 ```
-<log4j:configuration threadConfiguration="BlockSignalsOnly">
+<log4j:configuration threadConfiguration="NoConfiguration">
 ...
 </log4j:configuration>
 ```
 
-Example with properties configuration:
+Example to disable the automatic signal blocking with properties configuration:
 ```
-log4j.threadConfiguration=BlockSignalsOnly
+log4j.threadConfiguration=NoConfiguration
 ```
 
 [1]: https://man7.org/linux/man-pages/man2/signalfd.2.html
