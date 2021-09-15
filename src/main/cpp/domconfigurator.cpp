@@ -44,6 +44,7 @@
 #include <log4cxx/helpers/charsetdecoder.h>
 #include <log4cxx/net/smtpappender.h>
 #include <log4cxx/helpers/messagebuffer.h>
+#include <log4cxx/helpers/threadutility.h>
 
 #define LOG4CXX 1
 #include <log4cxx/helpers/aprinitializer.h>
@@ -113,6 +114,7 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define STRINGSTREAM_ATTR "stringstream"
 #define CONFIG_DEBUG_ATTR "configDebug"
 #define INTERNAL_DEBUG_ATTR "debug"
+#define THREAD_CONFIG_ATTR "threadConfiguration"
 
 DOMConfigurator::DOMConfigurator()
 	: props(), repository()
@@ -995,12 +997,12 @@ void DOMConfigurator::parse(
 
 	LogString debugAttrib = subst(getAttribute(utf8Decoder, element, INTERNAL_DEBUG_ATTR));
 
-	static const LogString NuLL(LOG4CXX_STR("NULL"));
+	static const LogString NULL_STRING(LOG4CXX_STR("NULL"));
 	LogLog::debug(LOG4CXX_STR("debug attribute= \"") + debugAttrib + LOG4CXX_STR("\"."));
 
 	// if the log4j.dtd is not specified in the XML file, then the
 	// "debug" attribute is returned as the empty string.
-	if (!debugAttrib.empty() && debugAttrib != NuLL)
+	if (!debugAttrib.empty() && debugAttrib != NULL_STRING)
 	{
 		LogLog::setInternalDebugging(OptionConverter::toBoolean(debugAttrib, true));
 	}
@@ -1012,7 +1014,7 @@ void DOMConfigurator::parse(
 
 	LogString confDebug = subst(getAttribute(utf8Decoder, element, CONFIG_DEBUG_ATTR));
 
-	if (!confDebug.empty() && confDebug != NuLL)
+	if (!confDebug.empty() && confDebug != NULL_STRING)
 	{
 		LogLog::warn(LOG4CXX_STR("The \"configDebug\" attribute is deprecated."));
 		LogLog::warn(LOG4CXX_STR("Use the \"internalDebug\" attribute instead."));
@@ -1022,7 +1024,7 @@ void DOMConfigurator::parse(
 	LogString thresholdStr = subst(getAttribute(utf8Decoder, element, THRESHOLD_ATTR));
 	LogLog::debug(LOG4CXX_STR("Threshold =\"") + thresholdStr + LOG4CXX_STR("\"."));
 
-	if (!thresholdStr.empty() && thresholdStr != NuLL)
+	if (!thresholdStr.empty() && thresholdStr != NULL_STRING)
 	{
 		repository->setThreshold(thresholdStr);
 	}
@@ -1030,9 +1032,22 @@ void DOMConfigurator::parse(
 	LogString strstrValue = subst(getAttribute(utf8Decoder, element, STRINGSTREAM_ATTR));
 	LogLog::debug(LOG4CXX_STR("Stringstream =\"") + strstrValue + LOG4CXX_STR("\"."));
 
-	if (!strstrValue.empty() && strstrValue != NuLL)
+	if (!strstrValue.empty() && strstrValue != NULL_STRING)
 	{
 		MessageBufferUseStaticStream();
+	}
+
+	LogString threadSignalValue = subst(getAttribute(utf8Decoder, element, THREAD_CONFIG_ATTR));
+	if( !threadSignalValue.empty() && threadSignalValue != NULL_STRING ){
+		if( threadSignalValue == LOG4CXX_STR("NoConfiguration") ){
+			helpers::ThreadUtility::configure( ThreadConfigurationType::NoConfiguration );
+		}else if( threadSignalValue == LOG4CXX_STR("BlockSignalsOnly") ){
+			helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsOnly );
+		}else if( threadSignalValue == LOG4CXX_STR("NameThreadOnly") ){
+			helpers::ThreadUtility::configure( ThreadConfigurationType::NameThreadOnly );
+		}else if( threadSignalValue == LOG4CXX_STR("BlockSignalsAndNameThread") ){
+			helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
+		}
 	}
 
 	apr_xml_elem* currentElement;

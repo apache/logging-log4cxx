@@ -48,7 +48,12 @@ static thread_local bool sigmask_valid;
 
 ThreadUtility::ThreadUtility() :
 	m_priv( new priv_data() )
-{}
+{
+	// Block signals by default.
+	configureFuncs( std::bind( &ThreadUtility::preThreadBlockSignals, this ),
+					nullptr,
+					std::bind( &ThreadUtility::postThreadUnblockSignals, this ) );
+}
 
 ThreadUtility::~ThreadUtility(){}
 

@@ -20,13 +20,15 @@ Threading {#threading}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Threading Notes with Log4cxx
+[TOC]
+
+# Threading Notes with Log4cxx {#threading-notes}
 
 Log4cxx is designed to be thread-safe under under normal usage.  This
 means that logging itself is always thread-safe, however there are
 certain circumstances that can cause threading issues with Log4cxx.
 
-## Unexpected Exit
+## Unexpected Exit {#unexpected-exit}
 
 In multithreaded applications, it is possible to call `exit()` from any
 thread in the application.  When this happens, other threads in the
@@ -38,14 +40,17 @@ all threads be terminated properly before returning from `main()`.
 
 See [LOGCXX-322][3] for more information.
 
-## Signal Handling with Log4cxx
+## Signal Handling with Log4cxx {#signal-handling}
 
 Under certain configurations, Log4cxx may create new threads in order to do
 tasks(e.g. network comms, other async operations).  On Linux/POSIX systems,
 this can lead to undesirable signal delivery, as signals can be delivered to
 any thread in the process.  This can be most clearly seen if your application
 uses the [sigwait(3)][4] system call, as the thread that calls sigwait may
-not be the thread that actually gets the signal.
+not be the thread that actually gets the signal.  By default, Log4cxx
+configures itself to block all signals to new threads that it creates on
+Linux/POSIX systems.  See the [section on configuring](@ref configuring)
+for more details on how to configure.
 
 There are three main ways to handle signals coming to your process.   All
 of these ways of handling signals are supported by Log4cxx in order to
@@ -79,14 +84,29 @@ class.  You can configure the ThreadUtility class in several different ways by u
 [ThreadUtility::configure](@ref log4cxx.helpers.ThreadUtility.configure)
 method with several pre-defined configurations.
 In the event that you need special signal handling, you can implement your own
-functions, and use the ThreadUtility::configureFuncs method in order to
+functions, and use the [ThreadUtility::configureFuncs](@ref log4cxx.helpers.ThreadUtility.configureFuncs) method in order to
 customize exactly what happens.
 
-**NOTE:** It is very important that if you use the `ThreadUtility::preThreadBlockSignals`
-method, it must be paired with the equivalent `ThreadUtility::postThreadUnblockSignals`
-call, as there is an internal mutex that is locked and unlocked in order to ensure that
-only one thread can be started at a time.  Failure to do this may lead to deadlock.
-The ThreadUtility::configure method handles this automatically.
+### Configuring Thread {#configuring}
+
+To tell Log4cxx what to do by default when starting a new thread, the enum
+[ThreadConfigurationType](@ref log4cxx.helpers.ThreadConfigurationType) may be
+used to configure the library appropriately.  By default, all signals on POSIX
+systems will be blocked to ensure that other threads do not get signals.
+
+To change this default, a simple change to your configuration files may be done.
+
+Example to disable the automatic signal blocking with XML configuration:
+```
+<log4j:configuration threadConfiguration="NoConfiguration">
+...
+</log4j:configuration>
+```
+
+Example to disable the automatic signal blocking with properties configuration:
+```
+log4j.threadConfiguration=NoConfiguration
+```
 
 [1]: https://man7.org/linux/man-pages/man2/signalfd.2.html
 [2]: https://doc.qt.io/qt-5/unix-signals.html
