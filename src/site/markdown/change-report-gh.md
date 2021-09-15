@@ -25,6 +25,7 @@ Changelog {#changelog}
 
 | Version                                                                                | Date       | Description          |
 | -------------------------------------------------------------------------------------- | ---------- | -------------------- |
+| [0.12.1](#0.12.1) | 2021-??-?? | Bugfix for 0.12.0 |
 | [0.12.0](#0.12.0) | 2021-05-01 | First release to require C++11. Updates for smart pointers.  Standardization on CMake for building. |
 | [0.11.0](#0.11.0) | 2020-08-09 | Maintenance release. |
 | [0.10.0](#0.10.0) | 2008-04-03 | First Apache release |
@@ -39,6 +40,20 @@ Changelog {#changelog}
 | [0.1.1](#0.1.1)   | 2003-07-09 |                      |
 | [0.1.0](#0.1.0)   | 2003-07-08 |                      |
 | [0.0.1](#0.0.1)   | 2003-05-31 |                      |
+
+<a name="0.12.0"/>
+## Release 0.12.1 - 2021-??-??
+
+This is a minor bugfix release to fix issues found with 0.12.0.  Notably, this version fixes a bug
+where a multithreaded application would crash when using a rolling file.
+
+Bug
+---
+
+-   \[[LOGCXX-534](https://issues.apache.org/jira/browse/LOGCXX-534)\] -
+    Crashed in log->forcedLog function when running with multi-thread
+
+
 
 <a name="0.12.0"/>
 ## Release 0.12.0 - 2021-05-01
