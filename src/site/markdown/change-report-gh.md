@@ -52,7 +52,8 @@ Bug
 
 -   \[[LOGCXX-534](https://issues.apache.org/jira/browse/LOGCXX-534)\] -
     Crashed in log->forcedLog function when running with multi-thread
-
+-   \[[LOGCXX-528](https://issues.apache.org/jira/browse/LOGCXX-528)\] -
+    log4cxx fails to build on Centos 7.6 / g++ 4.8.5 / Boost 1.53
 
 
 <a name="0.12.0"/>
