@@ -51,29 +51,26 @@ void ColorStartPatternConverter::format(
 {
 
   log4cxx::LevelPtr lvl = event->getLevel();
-  std::string color;
   switch (lvl->toInt()){
     case log4cxx::Level::FATAL_INT:
-      color = "\x1B[35m"; //magenta
+      toAppendTo.append(LOG4CXX_STR("\x1B[35m")); //magenta
       break;
     case log4cxx::Level::ERROR_INT:
-      color = "\x1B[91m"; //red
+      toAppendTo.append(LOG4CXX_STR("\x1B[91m")); //red
       break;
     case log4cxx::Level::WARN_INT:
-      color = "\x1B[33m"; //yellow
+      toAppendTo.append(LOG4CXX_STR("\x1B[33m")); //yellow
       break;
     case log4cxx::Level::INFO_INT:
-      color = "\x1B[32m"; //green
+      toAppendTo.append(LOG4CXX_STR("\x1B[32m")); //green
       break;
     case log4cxx::Level::DEBUG_INT:
-      color = "\x1B[36m"; //cyan
+      toAppendTo.append(LOG4CXX_STR("\x1B[36m")); //cyan
       break;
     case log4cxx::Level::TRACE_INT:
-      color = "\x1B[34m"; //blue
+      toAppendTo.append(LOG4CXX_STR("\x1B[34m")); //blue
       break;
     default:
       break;
   }
-  toAppendTo.append(LOG4CXX_STR(color)); //magenta
-
 }
