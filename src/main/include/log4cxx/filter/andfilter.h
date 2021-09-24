@@ -43,22 +43,23 @@ namespace filter
  *
  * Here is an example config that will accept only events that contain BOTH
  * a DEBUG level AND 'test' in the message:
- *
- *&lt;appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"&gt;
- * &lt;filter class="org.apache.log4j.filter.AndFilter"&gt;
- *  &lt;filter class="org.apache.log4j.filter.LevelMatchFilter"&gt;
+ *<pre>
+ * &lt;appender name="STDOUT" class="org.apache.log4j.ConsoleAppender"&gt;
+ *  &lt;filter class="org.apache.log4j.filter.AndFilter"&gt;
+ *   &lt;filter class="org.apache.log4j.filter.LevelMatchFilter"&gt;
  *        &lt;param name="levelToMatch" value="DEBUG" /&gt;
  *        &lt;param name="acceptOnMatch" value="true" /&gt;
- *  &lt;/filter>
- *  &lt;filter class="org.apache.log4j.filter.StringMatchFilter"&gt;
+ *   &lt;/filter>
+ *   &lt;filter class="org.apache.log4j.filter.StringMatchFilter"&gt;
  *        &lt;param name="stringToMatch" value="test" /&gt;
  *        &lt;param name="acceptOnMatch" value="true" /&gt;
- *  &lt;/filter>
- *  &lt;param name="acceptOnMatch" value="false"/&gt;
- * &lt;/filter&gt;
- * &lt;filter class="org.apache.log4j.filter.DenyAllFilter"/&gt;
- *&lt;layout class="org.apache.log4j.SimpleLayout"/&gt;
- *&lt;/appender&gt;
+ *   &lt;/filter>
+ *   &lt;param name="acceptOnMatch" value="false"/&gt;
+ *  &lt;/filter&gt;
+ *  &lt;filter class="org.apache.log4j.filter.DenyAllFilter"/&gt;
+ * &lt;layout class="org.apache.log4j.SimpleLayout"/&gt;
+ * &lt;/appender&gt;
+ * </pre>
  *
  * To accept all events EXCEPT those events that contain a
  * DEBUG level and 'test' in the message:
