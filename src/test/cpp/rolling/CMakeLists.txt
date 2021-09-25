@@ -3,8 +3,6 @@ set(ROLLING_TESTS
     filenamepatterntestcase
     filterbasedrollingtest
     manualrollingtest
-    obsoletedailyrollingfileappendertest
-    obsoleterollingfileappendertest
     sizebasedrollingtest
     timebasedrollingtest
 )
