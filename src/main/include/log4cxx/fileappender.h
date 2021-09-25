@@ -35,6 +35,9 @@ namespace helpers
 {
 class Pool;
 }
+namespace priv{
+struct FileAppenderPriv;
+}
 
 /**
 *  FileAppender appends log events to a file.
@@ -45,28 +48,6 @@ class Pool;
 */
 class LOG4CXX_EXPORT FileAppender : public WriterAppender
 {
-	protected:
-		/** Append to or truncate the file? The default value for this
-		variable is <code>true</code>, meaning that by default a
-		<code>FileAppender</code> will append to an existing file and
-		not truncate it.
-		<p>This option is meaningful only if the FileAppender opens the
-		file.
-		*/
-		bool fileAppend;
-
-		/**
-		The name of the log file. */
-		LogString fileName;
-
-		/**
-		Do we do bufferedIO? */
-		bool bufferedIO;
-
-		/**
-		How big should the IO buffer be? Default is 8K. */
-		int bufferSize;
-
 	public:
 		DECLARE_LOG4CXX_OBJECT(FileAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -130,16 +111,10 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/**
 		Returns the value of the <b>Append</b> option.
 		*/
-		inline bool getAppend() const
-		{
-			return fileAppend;
-		}
+		bool getAppend() const;
 
 		/** Returns the value of the <b>File</b> option. */
-		inline LogString getFile() const
-		{
-			return fileName;
-		}
+		LogString getFile() const;
 
 		/**
 		<p>Sets and <i>opens</i> the file where the log output will
@@ -158,18 +133,12 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		loaded systems.
 
 		*/
-		inline bool getBufferedIO() const
-		{
-			return bufferedIO;
-		}
+		bool getBufferedIO() const;
 
 		/**
 		Get the size of the IO buffer.
 		*/
-		inline  int getBufferSize() const
-		{
-			return bufferSize;
-		}
+		int getBufferSize() const;
 
 		/**
 		The <b>Append</b> option takes a boolean value. It is set to
@@ -197,10 +166,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		/**
 		Set the size of the IO buffer.
 		*/
-		void setBufferSize(int bufferSize1)
-		{
-			this->bufferSize = bufferSize1;
-		}
+		void setBufferSize(int bufferSize1);
 
 		/**
 		 *   Replaces double backslashes with single backslashes
@@ -242,6 +208,8 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 	private:
 		FileAppender(const FileAppender&);
 		FileAppender& operator=(const FileAppender&);
+protected:
+		FileAppender(std::unique_ptr<priv::FileAppenderPriv> priv);
 
 }; // class FileAppender
 LOG4CXX_PTR_DEF(FileAppender);

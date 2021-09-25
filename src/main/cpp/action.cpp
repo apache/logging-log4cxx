@@ -24,10 +24,28 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Action)
 
+struct Action::priv_data{
+	priv_data() :
+		complete(false),
+		interrupted(false),
+		pool(){}
+
+	/**
+	 * Is action complete.
+	 */
+	bool complete;
+
+	/**
+	 * Is action interrupted.
+	 */
+	bool interrupted;
+
+	log4cxx::helpers::Pool pool;
+	std::mutex mutex;
+};
+
 Action::Action() :
-	complete(false),
-	interrupted(false),
-	pool()
+	m_priv( std::make_unique<Action::priv_data>() )
 {
 }
 
@@ -40,9 +58,9 @@ Action::~Action()
  */
 void Action::run(log4cxx::helpers::Pool& pool1)
 {
-	std::unique_lock<std::mutex> lock(mutex);
+	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
-	if (!interrupted)
+	if (!m_priv->interrupted)
 	{
 		try
 		{
@@ -53,8 +71,8 @@ void Action::run(log4cxx::helpers::Pool& pool1)
 			reportException(ex);
 		}
 
-		complete = true;
-		interrupted = true;
+		m_priv->complete = true;
+		m_priv->interrupted = true;
 	}
 }
 
@@ -63,8 +81,8 @@ void Action::run(log4cxx::helpers::Pool& pool1)
  */
 void Action::close()
 {
-	std::unique_lock<std::mutex> lock(mutex);
-	interrupted = true;
+	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	m_priv->interrupted = true;
 }
 
 /**
@@ -73,7 +91,7 @@ void Action::close()
  */
 bool Action::isComplete() const
 {
-	return complete;
+	return m_priv->complete;
 }
 
 /**

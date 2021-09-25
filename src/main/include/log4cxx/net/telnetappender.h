@@ -75,7 +75,6 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 	private:
 		static const int DEFAULT_PORT;
 		static const int MAX_CONNECTIONS;
-		int port;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(TelnetAppender)
@@ -111,19 +110,13 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		/**
 		Returns value of the <b>Port</b> option.
 		*/
-		int getPort() const
-		{
-			return port;
-		}
+		int getPort() const;
 
 		/**
 		The <b>Port</b> option takes a positive integer representing
 		the port where the server is waiting for connections.
 		*/
-		void setPort(int port1)
-		{
-			this->port = port1;
-		}
+		void setPort(int port1);
 
 
 		/** shuts down the appender. */
@@ -143,12 +136,6 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 
 		void write(log4cxx::helpers::ByteBuffer&);
 		void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
-		ConnectionList connections;
-		LogString encoding;
-		log4cxx::helpers::CharsetEncoderPtr encoder;
-		helpers::ServerSocket* serverSocket;
-		std::thread sh;
-		size_t activeConnections;
 		void acceptConnections();
 }; // class TelnetAppender
 

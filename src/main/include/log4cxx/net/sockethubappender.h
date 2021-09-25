@@ -114,10 +114,6 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 		*/
 		static int DEFAULT_PORT;
 
-		int port;
-		ObjectOutputStreamList streams;
-		bool locationInfo;
-
 	public:
 		DECLARE_LOG4CXX_OBJECT(SocketHubAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -160,40 +156,27 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 		/**
 		The <b>Port</b> option takes a positive integer representing
 		the port where the server is waiting for connections. */
-		inline void setPort(int port1)
-		{
-			this->port = port1;
-		}
+		void setPort(int port1);
 
 		/**
 		Returns value of the <b>Port</b> option. */
-		inline int getPort() const
-		{
-			return port;
-		}
+		int getPort() const;
 
 		/**
 		The <b>LocationInfo</b> option takes a boolean value. If true,
 		the information sent to the remote host will include location
 		information. By default no location information is sent to the server. */
-		inline void setLocationInfo(bool locationInfo1)
-		{
-			this->locationInfo = locationInfo1;
-		}
+		void setLocationInfo(bool locationInfo1);
 
 		/**
 		Returns value of the <b>LocationInfo</b> option. */
-		inline bool getLocationInfo() const
-		{
-			return locationInfo;
-		}
+		bool getLocationInfo() const;
 
 		/**
 		Start the ServerMonitor thread. */
 	private:
 		void startServer();
 
-		std::thread thread;
 		void monitor();
 
 }; // class SocketHubAppender

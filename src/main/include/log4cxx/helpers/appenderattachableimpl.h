@@ -46,8 +46,7 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 	public virtual helpers::Object
 {
 	protected:
-		/** Array of appenders. */
-		AppenderList  appenderList;
+		AppenderList& appenderList();
 
 	public:
 		/**
@@ -55,6 +54,8 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 *   @param pool pool, must be longer-lived than instance.
 		 */
 		AppenderAttachableImpl(Pool& pool);
+
+		~AppenderAttachableImpl();
 
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -106,13 +107,12 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		virtual void removeAppender(const LogString& name);
 
-		inline std::mutex& getMutex() const
-		{
-			return m_mutex;
-		}
+		std::mutex& getMutex();
 
 	private:
-		mutable std::mutex m_mutex;
+		struct priv_data;
+		std::unique_ptr<priv_data> m_priv;
+
 		AppenderAttachableImpl(const AppenderAttachableImpl&);
 		AppenderAttachableImpl& operator=(const AppenderAttachableImpl&);
 };

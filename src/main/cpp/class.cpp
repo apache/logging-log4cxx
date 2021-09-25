@@ -30,8 +30,6 @@
 	#define LOG4CXX 1
 #endif
 #include <log4cxx/private/log4cxx_private.h>
-#include <log4cxx/rollingfileappender.h>
-#include <log4cxx/dailyrollingfileappender.h>
 
 
 #include <log4cxx/asyncappender.h>
@@ -173,7 +171,6 @@ void Class::registerClasses()
 #endif
 	log4cxx::nt::OutputDebugStringAppender::registerClass();
 #endif
-	log4cxx::RollingFileAppender::registerClass();
 	SMTPAppender::registerClass();
 	SocketAppender::registerClass();
 #if APR_HAS_THREADS
@@ -193,9 +190,7 @@ void Class::registerClasses()
 	LevelMatchFilter::registerClass();
 	LevelRangeFilter::registerClass();
 	StringMatchFilter::registerClass();
-	log4cxx::RollingFileAppender::registerClass();
 	log4cxx::rolling::RollingFileAppender::registerClass();
-	DailyRollingFileAppender::registerClass();
 	log4cxx::rolling::SizeBasedTriggeringPolicy::registerClass();
 	log4cxx::rolling::TimeBasedRollingPolicy::registerClass();
 	log4cxx::rolling::ManualTriggeringPolicy::registerClass();

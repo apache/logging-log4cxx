@@ -31,38 +31,145 @@
 #include <apr_atomic.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/threadutility.h>
-
+#include <log4cxx/private/appenderskeleton_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+/**
+ * The default buffer size is set to 128 events.
+*/
+enum { DEFAULT_BUFFER_SIZE = 128 };
+
+class DiscardSummary
+{
+	private:
+		/**
+		 * First event of the highest severity.
+		*/
+		::log4cxx::spi::LoggingEventPtr maxEvent;
+
+		/**
+		* Total count of messages discarded.
+		*/
+		int count;
+
+	public:
+		/**
+		 * Create new instance.
+		 *
+		 * @param event event, may not be null.
+		*/
+		DiscardSummary(const ::log4cxx::spi::LoggingEventPtr& event);
+		/** Copy constructor.  */
+		DiscardSummary(const DiscardSummary& src);
+		/** Assignment operator. */
+		DiscardSummary& operator=(const DiscardSummary& src);
+
+		/**
+		 * Add discarded event to summary.
+		 *
+		 * @param event event, may not be null.
+		*/
+		void add(const ::log4cxx::spi::LoggingEventPtr& event);
+
+		/**
+		 * Create event with summary information.
+		 *
+		 * @return new event.
+		 */
+		::log4cxx::spi::LoggingEventPtr createEvent(::log4cxx::helpers::Pool& p);
+
+		static
+		::log4cxx::spi::LoggingEventPtr createEvent(::log4cxx::helpers::Pool& p,
+			size_t discardedCount);
+};
+
+typedef std::map<LogString, DiscardSummary> DiscardMap;
+
+struct AsyncAppenderPriv : public priv::AppenderSkeletonPrivate {
+	AsyncAppenderPriv()	:
+		buffer(),
+		bufferSize(DEFAULT_BUFFER_SIZE),
+		appenders(std::make_shared<AppenderAttachableImpl>(pool)),
+		dispatcher(),
+		locationInfo(false),
+		blocking(true){}
+
+	/**
+	 * Event buffer.
+	*/
+#if defined(NON_BLOCKING)
+	boost::lockfree::queue<log4cxx::spi::LoggingEvent* > buffer;
+	std::atomic<size_t> discardedCount;
+#else
+	LoggingEventList buffer;
+#endif
+
+	/**
+	 *  Mutex used to guard access to buffer and discardMap.
+	 */
+	std::mutex bufferMutex;
+
+#if defined(NON_BLOCKING)
+	::log4cxx::helpers::Semaphore bufferNotFull;
+	::log4cxx::helpers::Semaphore bufferNotEmpty;
+#else
+	std::condition_variable bufferNotFull;
+	std::condition_variable bufferNotEmpty;
+#endif
+
+	/**
+	  * Map of DiscardSummary objects keyed by logger name.
+	*/
+	DiscardMap discardMap;
+
+	/**
+	 * Buffer size.
+	*/
+	int bufferSize;
+
+	/**
+	 * Nested appenders.
+	*/
+	helpers::AppenderAttachableImplPtr appenders;
+
+	/**
+	 *  Dispatcher.
+	 */
+	std::thread dispatcher;
+
+	/**
+	 * Should location info be included in dispatched messages.
+	*/
+	bool locationInfo;
+
+	/**
+	 * Does appender block when buffer is full.
+	*/
+	bool blocking;
+};
+
 
 IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 
+#define priv static_cast<AsyncAppenderPriv*>(m_priv.get())
 
 AsyncAppender::AsyncAppender()
-	: AppenderSkeleton(),
-	  buffer(),
-	  discardMap(new DiscardMap()),
-	  bufferSize(DEFAULT_BUFFER_SIZE),
-	  appenders(new AppenderAttachableImpl(pool)),
-	  dispatcher(),
-	  locationInfo(false),
-	  blocking(true)
+	: AppenderSkeleton(std::make_unique<AsyncAppenderPriv>())
 {
-	dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
+	priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 }
 
 AsyncAppender::~AsyncAppender()
 {
 	finalize();
-	delete discardMap;
 }
 
 void AsyncAppender::addAppender(const AppenderPtr newAppender)
 {
-	appenders->addAppender(newAppender);
+	priv->appenders->addAppender(newAppender);
 }
 
 
@@ -92,7 +199,7 @@ void AsyncAppender::setOption(const LogString& option,
 
 void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(priv->mutex);
 
 	doAppendImpl(event, pool1);
 }
@@ -103,10 +210,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	//   if dispatcher has died then
 	//      append subsequent events synchronously
 	//
-	if (!dispatcher.joinable() || bufferSize <= 0)
+	if (!priv->dispatcher.joinable() || priv->bufferSize <= 0)
 	{
-		std::unique_lock<std::mutex> lock(appenders->getMutex());
-		appenders->appendLoopOnAppenders(event, p);
+		std::unique_lock<std::mutex> lock(priv->appenders->getMutex());
+		priv->appenders->appendLoopOnAppenders(event, p);
 		return;
 	}
 
@@ -120,19 +227,19 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 
 	{
-		std::unique_lock<std::mutex> lock(bufferMutex);
+		std::unique_lock<std::mutex> lock(priv->bufferMutex);
 
 		while (true)
 		{
-			size_t previousSize = buffer.size();
+			size_t previousSize = priv->buffer.size();
 
-			if (previousSize < (size_t)bufferSize)
+			if (previousSize < (size_t)priv->bufferSize)
 			{
-				buffer.push_back(event);
+				priv->buffer.push_back(event);
 
 				if (previousSize == 0)
 				{
-					bufferNotEmpty.notify_all();
+					priv->bufferNotEmpty.notify_all();
 				}
 
 				break;
@@ -147,13 +254,13 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			//      wait for a buffer notification
 			bool discard = true;
 
-			if (blocking
+			if (priv->blocking
 				//&& !Thread::interrupted()
-				&& (dispatcher.get_id() != std::this_thread::get_id()) )
+				&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
 			{
 				try
 				{
-					bufferNotFull.wait(lock);
+					priv->bufferNotFull.wait(lock);
 					discard = false;
 				}
 				catch (InterruptedException&)
@@ -173,12 +280,12 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			if (discard)
 			{
 				LogString loggerName = event->getLoggerName();
-				DiscardMap::iterator iter = discardMap->find(loggerName);
+				DiscardMap::iterator iter = priv->discardMap.find(loggerName);
 
-				if (iter == discardMap->end())
+				if (iter == priv->discardMap.end())
 				{
 					DiscardSummary summary(event);
-					discardMap->insert(DiscardMap::value_type(loggerName, summary));
+					priv->discardMap.insert(DiscardMap::value_type(loggerName, summary));
 				}
 				else
 				{
@@ -195,20 +302,20 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 void AsyncAppender::close()
 {
 	{
-		std::unique_lock<std::mutex> lock(bufferMutex);
-		closed = true;
-		bufferNotEmpty.notify_all();
-		bufferNotFull.notify_all();
+		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		priv->closed = true;
+		priv->bufferNotEmpty.notify_all();
+		priv->bufferNotFull.notify_all();
 	}
 
-	if ( dispatcher.joinable() )
+	if ( priv->dispatcher.joinable() )
 	{
-		dispatcher.join();
+		priv->dispatcher.join();
 	}
 
 	{
-		std::unique_lock<std::mutex> lock(appenders->getMutex());
-		AppenderList appenderList = appenders->getAllAppenders();
+		std::unique_lock<std::mutex> lock(priv->appenders->getMutex());
+		AppenderList appenderList = priv->appenders->getAllAppenders();
 
 		for (AppenderList::iterator iter = appenderList.begin();
 			iter != appenderList.end();
@@ -221,17 +328,17 @@ void AsyncAppender::close()
 
 AppenderList AsyncAppender::getAllAppenders() const
 {
-	return appenders->getAllAppenders();
+	return priv->appenders->getAllAppenders();
 }
 
 AppenderPtr AsyncAppender::getAppender(const LogString& n) const
 {
-	return appenders->getAppender(n);
+	return priv->appenders->getAppender(n);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr appender) const
 {
-	return appenders->isAttached(appender);
+	return priv->appenders->isAttached(appender);
 }
 
 bool AsyncAppender::requiresLayout() const
@@ -241,27 +348,27 @@ bool AsyncAppender::requiresLayout() const
 
 void AsyncAppender::removeAllAppenders()
 {
-	appenders->removeAllAppenders();
+	priv->appenders->removeAllAppenders();
 }
 
 void AsyncAppender::removeAppender(const AppenderPtr appender)
 {
-	appenders->removeAppender(appender);
+	priv->appenders->removeAppender(appender);
 }
 
 void AsyncAppender::removeAppender(const LogString& n)
 {
-	appenders->removeAppender(n);
+	priv->appenders->removeAppender(n);
 }
 
 bool AsyncAppender::getLocationInfo() const
 {
-	return locationInfo;
+	return priv->locationInfo;
 }
 
 void AsyncAppender::setLocationInfo(bool flag)
 {
-	locationInfo = flag;
+	priv->locationInfo = flag;
 }
 
 
@@ -272,46 +379,46 @@ void AsyncAppender::setBufferSize(int size)
 		throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
 	}
 
-	std::unique_lock<std::mutex> lock(bufferMutex);
-	bufferSize = (size < 1) ? 1 : size;
-	bufferNotFull.notify_all();
+	std::unique_lock<std::mutex> lock(priv->bufferMutex);
+	priv->bufferSize = (size < 1) ? 1 : size;
+	priv->bufferNotFull.notify_all();
 }
 
 int AsyncAppender::getBufferSize() const
 {
-	return bufferSize;
+	return priv->bufferSize;
 }
 
 void AsyncAppender::setBlocking(bool value)
 {
-	std::unique_lock<std::mutex> lock(bufferMutex);
-	blocking = value;
-	bufferNotFull.notify_all();
+	std::unique_lock<std::mutex> lock(priv->bufferMutex);
+	priv->blocking = value;
+	priv->bufferNotFull.notify_all();
 }
 
 bool AsyncAppender::getBlocking() const
 {
-	return blocking;
+	return priv->blocking;
 }
 
-AsyncAppender::DiscardSummary::DiscardSummary(const LoggingEventPtr& event) :
+DiscardSummary::DiscardSummary(const LoggingEventPtr& event) :
 	maxEvent(event), count(1)
 {
 }
 
-AsyncAppender::DiscardSummary::DiscardSummary(const DiscardSummary& src) :
+DiscardSummary::DiscardSummary(const DiscardSummary& src) :
 	maxEvent(src.maxEvent), count(src.count)
 {
 }
 
-AsyncAppender::DiscardSummary& AsyncAppender::DiscardSummary::operator=(const DiscardSummary& src)
+DiscardSummary& DiscardSummary::operator=(const DiscardSummary& src)
 {
 	maxEvent = src.maxEvent;
 	count = src.count;
 	return *this;
 }
 
-void AsyncAppender::DiscardSummary::add(const LoggingEventPtr& event)
+void DiscardSummary::add(const LoggingEventPtr& event)
 {
 	if (event->getLevel()->toInt() > maxEvent->getLevel()->toInt())
 	{
@@ -321,7 +428,7 @@ void AsyncAppender::DiscardSummary::add(const LoggingEventPtr& event)
 	count++;
 }
 
-LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p)
+LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 {
 	LogString msg(LOG4CXX_STR("Discarded "));
 	StringHelper::toString(count, p, msg);
@@ -335,7 +442,7 @@ LoggingEventPtr AsyncAppender::DiscardSummary::createEvent(Pool& p)
 }
 
 ::log4cxx::spi::LoggingEventPtr
-AsyncAppender::DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
+DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
 	size_t discardedCount)
 {
 	LogString msg(LOG4CXX_STR("Discarded "));
@@ -363,41 +470,41 @@ void AsyncAppender::dispatch()
 			Pool p;
 			LoggingEventList events;
 			{
-				std::unique_lock<std::mutex> lock(bufferMutex);
-				size_t bufferSize = buffer.size();
-				isActive = !closed;
+				std::unique_lock<std::mutex> lock(priv->bufferMutex);
+				size_t bufferSize = priv->buffer.size();
+				isActive = !priv->closed;
 
 				while ((bufferSize == 0) && isActive)
 				{
-					bufferNotEmpty.wait(lock);
-					bufferSize = buffer.size();
-					isActive = !closed;
+					priv->bufferNotEmpty.wait(lock);
+					bufferSize = priv->buffer.size();
+					isActive = !priv->closed;
 				}
 
-				for (LoggingEventList::iterator eventIter = buffer.begin();
-					eventIter != buffer.end();
+				for (LoggingEventList::iterator eventIter = priv->buffer.begin();
+					eventIter != priv->buffer.end();
 					eventIter++)
 				{
 					events.push_back(*eventIter);
 				}
 
-				for (DiscardMap::iterator discardIter = discardMap->begin();
-					discardIter != discardMap->end();
+				for (DiscardMap::iterator discardIter = priv->discardMap.begin();
+					discardIter != priv->discardMap.end();
 					discardIter++)
 				{
 					events.push_back(discardIter->second.createEvent(p));
 				}
 
-				buffer.clear();
-				discardMap->clear();
-				bufferNotFull.notify_all();
+				priv->buffer.clear();
+				priv->discardMap.clear();
+				priv->bufferNotFull.notify_all();
 			}
 
 			for (LoggingEventList::iterator iter = events.begin();
 				iter != events.end();
 				iter++)
 			{
-				appenders->appendLoopOnAppenders(*iter, p);
+				priv->appenders->appendLoopOnAppenders(*iter, p);
 			}
 		}
 	}

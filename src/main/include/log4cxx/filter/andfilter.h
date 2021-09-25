@@ -25,6 +25,7 @@
 
 
 #include <log4cxx/spi/filter.h>
+#include <memory>
 
 namespace log4cxx
 {
@@ -78,12 +79,11 @@ namespace filter
 class LOG4CXX_EXPORT AndFilter: public log4cxx::spi::Filter
 {
 	private:
-		log4cxx::spi::FilterPtr headFilter;
-		log4cxx::spi::FilterPtr tailFilter;
-		bool acceptOnMatch;
+		struct priv_data;
+		std::unique_ptr<priv_data> m_priv;
+
 		AndFilter(const AndFilter&);
 		AndFilter& operator=(const AndFilter&);
-
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(AndFilter)
@@ -92,6 +92,7 @@ class LOG4CXX_EXPORT AndFilter: public log4cxx::spi::Filter
 		END_LOG4CXX_CAST_MAP()
 
 		AndFilter();
+		~AndFilter();
 
 		void addFilter(const log4cxx::spi::FilterPtr& filter);
 

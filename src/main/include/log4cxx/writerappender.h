@@ -36,40 +36,15 @@ namespace helpers
 class Transcoder;
 }
 
+namespace priv{
+struct WriterAppenderPriv;
+}
+
 /**
 WriterAppender appends log events to a standard output stream
 */
 class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 {
-	private:
-		/**
-		Immediate flush means that the underlying writer or output stream
-		will be flushed at the end of each append operation. Immediate
-		flush is slower but ensures that each append request is actually
-		written. If <code>immediateFlush</code> is set to
-		<code>false</code>, then there is a good chance that the last few
-		logs events are not actually written to persistent media if and
-		when the application crashes.
-
-		<p>The <code>immediateFlush</code> variable is set to
-		<code>true</code> by default.
-
-		*/
-		std::atomic<bool> immediateFlush;
-
-		/**
-		The encoding to use when opening an input stream.
-		<p>The <code>encoding</code> variable is set to <code>""</code> by
-		default which results in the utilization of the system's default
-		encoding.  */
-		LogString encoding;
-
-		/**
-		*  This is the {@link Writer Writer} where we will write to.
-		*/
-		log4cxx::helpers::WriterPtr writer;
-
-
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(WriterAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -84,6 +59,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		WriterAppender(const LayoutPtr& layout,
 			log4cxx::helpers::WriterPtr& writer);
 		WriterAppender(const LayoutPtr& layout);
+		WriterAppender(std::unique_ptr<priv::WriterAppenderPriv> priv);
 
 	public:
 		~WriterAppender();
@@ -112,10 +88,7 @@ class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 		/**
 		Returns value of the <b>ImmediateFlush</b> option.
 		*/
-		bool getImmediateFlush() const
-		{
-			return immediateFlush;
-		}
+		bool getImmediateFlush() const;
 
 		/**
 		This method is called by the AppenderSkeleton#doAppend

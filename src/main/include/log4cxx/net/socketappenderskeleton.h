@@ -40,21 +40,6 @@ namespace net
  */
 class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 {
-	private:
-		/**
-		host name
-		*/
-		LogString remoteHost;
-
-		/**
-		IP address
-		*/
-		helpers::InetAddressPtr address;
-
-		int port;
-		int reconnectionDelay;
-		bool locationInfo;
-
 	public:
 		SocketAppenderSkeleton(int defaultPort, int reconnectionDelay);
 		~SocketAppenderSkeleton();
@@ -92,54 +77,35 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		* the host name of the server where a
 		* Apache Chainsaw or compatible is running.
 		* */
-		inline void setRemoteHost(const LogString& host)
-		{
-			address = helpers::InetAddress::getByName(host);
-			remoteHost.assign(host);
-		}
+		void setRemoteHost(const LogString& host);
 
 		/**
 		Returns value of the <b>RemoteHost</b> option.
 		*/
-		inline const LogString& getRemoteHost() const
-		{
-			return remoteHost;
-		}
+		const LogString& getRemoteHost() const;
 
 		/**
 		The <b>Port</b> option takes a positive integer representing
 		the port where the server is waiting for connections.
 		*/
-		void setPort(int port1)
-		{
-			this->port = port1;
-		}
+		void setPort(int port1);
 
 		/**
 		Returns value of the <b>Port</b> option.
 		*/
-		int getPort() const
-		{
-			return port;
-		}
+		int getPort() const;
 
 		/**
 		The <b>LocationInfo</b> option takes a boolean value. If true,
 		the information sent to the remote host will include location
 		information. By default no location information is sent to the server.
 		*/
-		void setLocationInfo(bool locationInfo1)
-		{
-			this->locationInfo = locationInfo1;
-		}
+		void setLocationInfo(bool locationInfo1);
 
 		/**
 		Returns value of the <b>LocationInfo</b> option.
 		*/
-		bool getLocationInfo() const
-		{
-			return locationInfo;
-		}
+		bool getLocationInfo() const;
 
 		/**
 		The <b>ReconnectionDelay</b> option takes a positive integer
@@ -150,18 +116,12 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		<p>Setting this option to zero turns off reconnection
 		capability.
 		*/
-		void setReconnectionDelay(int reconnectionDelay1)
-		{
-			this->reconnectionDelay = reconnectionDelay1;
-		}
+		void setReconnectionDelay(int reconnectionDelay1);
 
 		/**
 		Returns value of the <b>ReconnectionDelay</b> option.
 		*/
-		int getReconnectionDelay() const
-		{
-			return reconnectionDelay;
-		}
+		int getReconnectionDelay() const;
 
 		void fireConnector();
 
@@ -190,9 +150,6 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		     connection is droppped.
 		     */
 
-		std::thread thread;
-		std::condition_variable interrupt;
-		std::mutex interrupt_mutex;
 		void monitor();
 		bool is_closed();
 		SocketAppenderSkeleton(const SocketAppenderSkeleton&);

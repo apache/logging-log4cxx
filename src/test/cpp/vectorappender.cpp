@@ -32,10 +32,10 @@ void VectorAppender::append(const spi::LoggingEventPtr& event, Pool& /*p*/)
 
 void VectorAppender::close()
 {
-	if (this->closed)
+	if (m_priv->closed)
 	{
 		return;
 	}
 
-	this->closed = true;
+	m_priv->closed = true;
 }

@@ -31,6 +31,7 @@
 #include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/threadutility.h>
+#include <log4cxx/private/appenderskeleton_priv.h>
 #include <mutex>
 
 using namespace log4cxx;
@@ -42,18 +43,34 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketHubAppender)
 
 int SocketHubAppender::DEFAULT_PORT = 4560;
 
+struct SocketHubAppenderPriv : public priv::AppenderSkeletonPrivate{
+	SocketHubAppenderPriv(int port) :
+		AppenderSkeletonPrivate(),
+		port(port),
+		streams(),
+		locationInfo(false),
+		thread(){}
+
+	int port;
+	ObjectOutputStreamList streams;
+	bool locationInfo;
+	std::thread thread;
+};
+
+#define _priv static_cast<SocketHubAppenderPriv*>(m_priv.get())
+
 SocketHubAppender::~SocketHubAppender()
 {
 	finalize();
 }
 
 SocketHubAppender::SocketHubAppender()
-	: port(DEFAULT_PORT), streams(), locationInfo(false), thread()
+	:AppenderSkeleton (std::make_unique<SocketHubAppenderPriv>(SocketHubAppender::DEFAULT_PORT))
 {
 }
 
 SocketHubAppender::SocketHubAppender(int port1)
-	: port(port1), streams(), locationInfo(false), thread()
+	: AppenderSkeleton (std::make_unique<SocketHubAppenderPriv>(port1))
 {
 	startServer();
 }
@@ -84,14 +101,14 @@ void SocketHubAppender::setOption(const LogString& option,
 void SocketHubAppender::close()
 {
 	{
-		std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+		std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
 
-		if (closed)
+		if (_priv->closed)
 		{
 			return;
 		}
 
-		closed = true;
+		_priv->closed = true;
 	}
 
 	LogLog::debug(LOG4CXX_STR("closing SocketHubAppender ") + getName());
@@ -99,24 +116,24 @@ void SocketHubAppender::close()
 	//
 	//  wait until the server thread completes
 	//
-	if ( thread.joinable() )
+	if ( _priv->thread.joinable() )
 	{
-		thread.join();
+		_priv->thread.join();
 	}
 
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
 	// close all of the connections
 	LogLog::debug(LOG4CXX_STR("closing client connections"));
 
-	for (std::vector<helpers::ObjectOutputStreamPtr>::iterator iter = streams.begin();
-		iter != streams.end();
+	for (std::vector<helpers::ObjectOutputStreamPtr>::iterator iter = _priv->streams.begin();
+		iter != _priv->streams.end();
 		iter++)
 	{
 		if ( (*iter) != NULL)
 		{
 			try
 			{
-				(*iter)->close(pool);
+				(*iter)->close(_priv->pool);
 			}
 			catch (SocketException& e)
 			{
@@ -125,7 +142,7 @@ void SocketHubAppender::close()
 		}
 	}
 
-	streams.erase(streams.begin(), streams.end());
+	_priv->streams.erase(_priv->streams.begin(), _priv->streams.end());
 
 
 	LogLog::debug(LOG4CXX_STR("SocketHubAppender ")
@@ -136,7 +153,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
 
 	// if no open connections, exit now
-	if (streams.empty())
+	if (_priv->streams.empty())
 	{
 		return;
 	}
@@ -149,8 +166,8 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 
 	// loop through the current set of open connections, appending the event to each
-	std::vector<ObjectOutputStreamPtr>::iterator it = streams.begin();
-	std::vector<ObjectOutputStreamPtr>::iterator itEnd = streams.end();
+	std::vector<ObjectOutputStreamPtr>::iterator it = _priv->streams.begin();
+	std::vector<ObjectOutputStreamPtr>::iterator itEnd = _priv->streams.end();
 
 	while (it != itEnd)
 	{
@@ -169,8 +186,8 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		catch (std::exception& e)
 		{
 			// there was an io exception so just drop the connection
-			it = streams.erase(it);
-			itEnd = streams.end();
+			it = _priv->streams.erase(it);
+			itEnd = _priv->streams.end();
 			LogLog::debug(LOG4CXX_STR("dropped connection"), e);
 		}
 	}
@@ -178,7 +195,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 void SocketHubAppender::startServer()
 {
-	thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketHub"), &SocketHubAppender::monitor, this );
+	_priv->thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketHub"), &SocketHubAppender::monitor, this );
 }
 
 void SocketHubAppender::monitor()
@@ -187,7 +204,7 @@ void SocketHubAppender::monitor()
 
 	try
 	{
-		serverSocket = new ServerSocket(port);
+		serverSocket = new ServerSocket(_priv->port);
 		serverSocket->setSoTimeout(1000);
 	}
 	catch (SocketException& e)
@@ -197,7 +214,7 @@ void SocketHubAppender::monitor()
 		return;
 	}
 
-	bool stopRunning = closed;
+	bool stopRunning = _priv->closed;
 
 	while (!stopRunning)
 	{
@@ -234,11 +251,11 @@ void SocketHubAppender::monitor()
 					+ LOG4CXX_STR(")"));
 
 				// add it to the oosList.
-				std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+				std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
 				OutputStreamPtr os(new SocketOutputStream(socket));
 				Pool p;
 				ObjectOutputStreamPtr oos(new ObjectOutputStream(os, p));
-				streams.push_back(oos);
+				_priv->streams.push_back(oos);
 			}
 			catch (IOException& e)
 			{
@@ -246,8 +263,28 @@ void SocketHubAppender::monitor()
 			}
 		}
 
-		stopRunning = (stopRunning || closed);
+		stopRunning = (stopRunning || _priv->closed);
 	}
 
 	delete serverSocket;
+}
+
+void SocketHubAppender::setPort(int port1)
+{
+	_priv->port = port1;
+}
+
+int SocketHubAppender::getPort() const
+{
+	return _priv->port;
+}
+
+void SocketHubAppender::setLocationInfo(bool locationInfo1)
+{
+	_priv->locationInfo = locationInfo1;
+}
+
+bool SocketHubAppender::getLocationInfo() const
+{
+	return _priv->locationInfo;
 }

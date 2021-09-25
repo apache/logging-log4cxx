@@ -34,6 +34,11 @@
 
 namespace log4cxx
 {
+namespace priv
+{
+struct AppenderSkeletonPrivate;
+}
+
 /**
 *  Implementation base class for all appenders.
 *
@@ -45,36 +50,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 	public virtual helpers::Object
 {
 	protected:
-		/** The layout variable does not need to be set if the appender
-		implementation has its own layout. */
-		LayoutPtr layout;
-
-		/** Appenders are named. */
-		LogString name;
-
-		/**
-		There is no level threshold filtering by default.  */
-		LevelPtr threshold;
-
-		/**
-		It is assumed and enforced that errorHandler is never null.
-		*/
-		spi::ErrorHandlerPtr errorHandler;
-
-		/** The first filter in the filter chain. Set to <code>null</code>
-		initially. */
-		spi::FilterPtr headFilter;
-
-		/** The last filter in the filter chain. */
-		spi::FilterPtr tailFilter;
-
-		/**
-		Is this appender closed?
-		*/
-		bool closed;
-
-		log4cxx::helpers::Pool pool;
-		mutable log4cxx::shared_mutex mutex;
+		AppenderSkeleton( std::unique_ptr<priv::AppenderSkeletonPrivate> priv );
 
 		/**
 		Subclasses of <code>AppenderSkeleton</code> should implement this
@@ -95,6 +71,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 
 		AppenderSkeleton();
 		AppenderSkeleton(const LayoutPtr& layout);
+		virtual ~AppenderSkeleton();
 
 		/**
 		Finalize this appender by calling the derived class'
@@ -112,7 +89,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		/**
 		Add a filter to end of the filter list.
 		*/
-		void addFilter(const spi::FilterPtr& newFilter) ;
+		void addFilter(const spi::FilterPtr newFilter) ;
 
 	public:
 		/**
@@ -124,54 +101,36 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		Return the currently set spi::ErrorHandler for this
 		Appender.
 		*/
-		const spi::ErrorHandlerPtr& getErrorHandler() const
-		{
-			return errorHandler;
-		}
+		const spi::ErrorHandlerPtr getErrorHandler() const;
 
 		/**
 		Returns the head Filter.
 		*/
-		spi::FilterPtr getFilter() const
-		{
-			return headFilter;
-		}
+		spi::FilterPtr getFilter() const;
 
 		/**
 		Return the first filter in the filter chain for this
-		Appender. The return value may be <code>0</code> if no is
+		Appender. The return value may be <code>nullptr</code> if no is
 		filter is set.
 		*/
-		const spi::FilterPtr& getFirstFilter() const
-		{
-			return headFilter;
-		}
+		const spi::FilterPtr getFirstFilter() const;
 
 		/**
-		Returns the layout of this appender. The value may be 0.
+		Returns the layout of this appender. The value may be nullptr.
 		*/
-		LayoutPtr getLayout() const
-		{
-			return layout;
-		}
+		LayoutPtr getLayout() const;
 
 
 		/**
 		Returns the name of this Appender.
 		*/
-		LogString getName() const
-		{
-			return name;
-		}
+		LogString getName() const;
 
 		/**
 		Returns this appenders threshold level. See the #setThreshold
 		method for the meaning of this option.
 		*/
-		const LevelPtr& getThreshold() const
-		{
-			return threshold;
-		}
+		const LevelPtr getThreshold() const;
 
 		/**
 		Check whether the message level is below the appender's
@@ -199,18 +158,12 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		{@link net::SocketAppender SocketAppender} ignores the layout set
 		here.
 		*/
-		void setLayout(const LayoutPtr& layout1)
-		{
-			this->layout = layout1;
-		}
+		void setLayout(const LayoutPtr layout1);
 
 		/**
 		Set the name of this Appender.
 		*/
-		void setName(const LogString& name1)
-		{
-			this->name.assign(name1);
-		}
+		void setName(const LogString& name1);
 
 
 		/**
@@ -222,6 +175,9 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		string, such as "DEBUG", "INFO" and so on.
 		*/
 		void setThreshold(const LevelPtr& threshold);
+
+protected:
+		std::unique_ptr<priv::AppenderSkeletonPrivate> m_priv;
 
 }; // class AppenderSkeleton
 }  // namespace log4cxx

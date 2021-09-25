@@ -45,31 +45,16 @@ delivering useful application context.
 class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 {
 	private:
-
-	private:
 		SMTPAppender(const SMTPAppender&);
 		SMTPAppender& operator=(const SMTPAppender&);
 		static bool asciiCheck(const LogString& value, const LogString& label);
+
 		/**
 		This method determines if there is a sense in attempting to append.
 		<p>It checks whether there is a set output target and also if
 		there is a set layout. If these checks fail, then the boolean
 		value <code>false</code> is returned. */
 		bool checkEntryConditions();
-
-		LogString to;
-		LogString cc;
-		LogString bcc;
-		LogString from;
-		LogString subject;
-		LogString smtpHost;
-		LogString smtpUsername;
-		LogString smtpPassword;
-		int smtpPort;
-		int bufferSize; // 512
-		bool locationInfo;
-		helpers::CyclicBuffer cb;
-		spi::TriggeringEventEvaluatorPtr evaluator;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(SMTPAppender)
@@ -243,10 +228,7 @@ class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 		/**
 		Returns value of the <b>BufferSize</b> option.
 		*/
-		inline int getBufferSize() const
-		{
-			return bufferSize;
-		}
+		int getBufferSize() const;
 
 
 		/**

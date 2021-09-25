@@ -33,7 +33,6 @@ target_sources(log4cxx
   configurator.cpp
   consoleappender.cpp
   cyclicbuffer.cpp
-  dailyrollingfileappender.cpp
   datagrampacket.cpp
   datagramsocket.cpp
   date.cpp
@@ -99,7 +98,6 @@ target_sources(log4cxx
   ndcpatternconverter.cpp
   nteventlogappender.cpp
   objectoutputstream.cpp
-  obsoleterollingfileappender.cpp
   odbcappender.cpp
   onlyonceerrorhandler.cpp
   optionconverter.cpp

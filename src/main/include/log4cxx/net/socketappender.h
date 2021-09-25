@@ -122,9 +122,6 @@ class LOG4CXX_EXPORT SocketAppender : public SocketAppenderSkeleton
 		virtual int getDefaultPort() const;
 		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
 
-	private:
-		log4cxx::helpers::ObjectOutputStreamPtr oos;
-
 }; // class SocketAppender
 
 LOG4CXX_PTR_DEF(SocketAppender);

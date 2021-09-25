@@ -21,6 +21,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/patternlayout.h>
 #include <apr_strings.h>
+#include <log4cxx/private/odbcappender_priv.h>
 
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
@@ -90,10 +91,10 @@ const char* SQLException::formatMessage(short fHandleType,
 
 IMPLEMENT_LOG4CXX_OBJECT(ODBCAppender)
 
-
+#define _priv static_cast<priv::ODBCAppenderPriv*>(m_priv.get())
 
 ODBCAppender::ODBCAppender()
-	: connection(0), env(0), bufferSize(1)
+	: AppenderSkeleton (std::make_unique<priv::ODBCAppenderPriv>())
 {
 }
 
@@ -143,9 +144,9 @@ void ODBCAppender::activateOptions(log4cxx::helpers::Pool&)
 void ODBCAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
 {
 #if LOG4CXX_HAVE_ODBC
-	buffer.push_back(event);
+	_priv->buffer.push_back(event);
 
-	if (buffer.size() >= bufferSize)
+	if (_priv->buffer.size() >=_priv->bufferSize)
 	{
 		flushBuffer(p);
 	}
@@ -219,46 +220,46 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 #if LOG4CXX_HAVE_ODBC
 	SQLRETURN ret;
 
-	if (env == SQL_NULL_HENV)
+	if (_priv->env == SQL_NULL_HENV)
 	{
-		ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &env);
+		ret = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &_priv->env);
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_ENV, env, "Failed to allocate SQL handle.", p);
-			env = SQL_NULL_HENV;
+			SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to allocate SQL handle.", p);
+			_priv->env = SQL_NULL_HENV;
 			throw ex;
 		}
 
-		ret = SQLSetEnvAttr(env, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_INTEGER);
+		ret = SQLSetEnvAttr(_priv->env, SQL_ATTR_ODBC_VERSION, (SQLPOINTER) SQL_OV_ODBC3, SQL_IS_INTEGER);
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_ENV, env, "Failed to set odbc version.", p);
-			SQLFreeHandle(SQL_HANDLE_ENV, env);
-			env = SQL_NULL_HENV;
+			SQLException ex(SQL_HANDLE_ENV, _priv->env, "Failed to set odbc version.", p);
+			SQLFreeHandle(SQL_HANDLE_ENV, _priv->env);
+			_priv->env = SQL_NULL_HENV;
 			throw ex;
 		}
 	}
 
-	if (connection == SQL_NULL_HDBC)
+	if (_priv->connection == SQL_NULL_HDBC)
 	{
-		ret = SQLAllocHandle(SQL_HANDLE_DBC, env, &connection);
+		ret = SQLAllocHandle(SQL_HANDLE_DBC, _priv->env, &_priv->connection);
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_DBC, connection, "Failed to allocate sql handle.", p);
-			connection = SQL_NULL_HDBC;
+			SQLException ex(SQL_HANDLE_DBC, _priv->connection, "Failed to allocate sql handle.", p);
+			_priv->connection = SQL_NULL_HDBC;
 			throw ex;
 		}
 
 
 		SQLWCHAR* wURL, *wUser, *wPwd;
-		encode(&wURL, databaseURL, p);
-		encode(&wUser, databaseUser, p);
-		encode(&wPwd, databasePassword, p);
+		encode(&wURL, _priv->databaseURL, p);
+		encode(&wUser, _priv->databaseUser, p);
+		encode(&wPwd, _priv->databasePassword, p);
 
-		ret = SQLConnectW( connection,
+		ret = SQLConnectW( _priv->connection,
 				wURL, SQL_NTS,
 				wUser, SQL_NTS,
 				wPwd, SQL_NTS);
@@ -266,14 +267,14 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 
 		if (ret < 0)
 		{
-			SQLException ex(SQL_HANDLE_DBC, connection, "Failed to connect to database.", p);
-			SQLFreeHandle(SQL_HANDLE_DBC, connection);
-			connection = SQL_NULL_HDBC;
+			SQLException ex(SQL_HANDLE_DBC, _priv->connection, "Failed to connect to database.", p);
+			SQLFreeHandle(SQL_HANDLE_DBC, _priv->connection);
+			_priv->connection = SQL_NULL_HDBC;
 			throw ex;
 		}
 	}
 
-	return connection;
+	return _priv->connection;
 #else
 	return 0;
 #endif
@@ -281,7 +282,7 @@ ODBCAppender::SQLHDBC ODBCAppender::getConnection(log4cxx::helpers::Pool& p)
 
 void ODBCAppender::close()
 {
-	if (closed)
+	if (_priv->closed)
 	{
 		return;
 	}
@@ -294,32 +295,32 @@ void ODBCAppender::close()
 	}
 	catch (SQLException& e)
 	{
-		errorHandler->error(LOG4CXX_STR("Error closing connection"),
+		_priv->errorHandler->error(LOG4CXX_STR("Error closing connection"),
 			e, ErrorCode::GENERIC_FAILURE);
 	}
 
 #if LOG4CXX_HAVE_ODBC
 
-	if (connection != SQL_NULL_HDBC)
+	if (_priv->connection != SQL_NULL_HDBC)
 	{
-		SQLDisconnect(connection);
-		SQLFreeHandle(SQL_HANDLE_DBC, connection);
+		SQLDisconnect(_priv->connection);
+		SQLFreeHandle(SQL_HANDLE_DBC, _priv->connection);
 	}
 
-	if (env != SQL_NULL_HENV)
+	if (_priv->env != SQL_NULL_HENV)
 	{
-		SQLFreeHandle(SQL_HANDLE_ENV, env);
+		SQLFreeHandle(SQL_HANDLE_ENV, _priv->env);
 	}
 
 #endif
-	this->closed = true;
+	_priv->closed = true;
 }
 
 void ODBCAppender::flushBuffer(Pool& p)
 {
 	std::list<spi::LoggingEventPtr>::iterator i;
 
-	for (i = buffer.begin(); i != buffer.end(); i++)
+	for (i = _priv->buffer.begin(); i != _priv->buffer.end(); i++)
 	{
 		try
 		{
@@ -329,18 +330,18 @@ void ODBCAppender::flushBuffer(Pool& p)
 		}
 		catch (SQLException& e)
 		{
-			errorHandler->error(LOG4CXX_STR("Failed to execute sql"), e,
+			_priv->errorHandler->error(LOG4CXX_STR("Failed to execute sql"), e,
 				ErrorCode::FLUSH_FAILURE);
 		}
 	}
 
 	// clear the buffer of reported events
-	buffer.clear();
+	_priv->buffer.clear();
 }
 
 void ODBCAppender::setSql(const LogString& s)
 {
-	sqlStatement = s;
+	_priv->sqlStatement = s;
 
 	if (getLayout() == 0)
 	{
@@ -395,5 +396,50 @@ void ODBCAppender::encode(unsigned short** dest,
 	}
 
 	*current = 0;
+}
+
+const LogString& ODBCAppender::getSql() const
+{
+	return _priv->sqlStatement;
+}
+
+void ODBCAppender::setUser(const LogString& user)
+{
+	_priv->databaseUser = user;
+}
+
+void ODBCAppender::setURL(const LogString& url)
+{
+	_priv->databaseURL = url;
+}
+
+void ODBCAppender::setPassword(const LogString& password)
+{
+	_priv->databasePassword = password;
+}
+
+void ODBCAppender::setBufferSize(size_t newBufferSize)
+{
+	_priv->bufferSize = newBufferSize;
+}
+
+const LogString& ODBCAppender::getUser() const
+{
+	return _priv->databaseUser;
+}
+
+const LogString& ODBCAppender::getURL() const
+{
+	return _priv->databaseURL;
+}
+
+const LogString& ODBCAppender::getPassword() const
+{
+	return _priv->databasePassword;
+}
+
+size_t ODBCAppender::getBufferSize() const
+{
+	return _priv->bufferSize;
 }
 

@@ -18,8 +18,12 @@
 #if !defined(_LOG4CXX_ROLLING_ROLLING_FILE_APPENDER_H)
 #define _LOG4CXX_ROLLING_ROLLING_FILE_APPENDER_H
 
-#include <log4cxx/rolling/rollingfileappenderskeleton.h>
-
+#include <log4cxx/fileappender.h>
+#include <log4cxx/spi/optionhandler.h>
+#include <log4cxx/fileappender.h>
+#include <log4cxx/rolling/triggeringpolicy.h>
+#include <log4cxx/rolling/rollingpolicy.h>
+#include <log4cxx/rolling/action.h>
 
 namespace log4cxx
 {
@@ -72,20 +76,49 @@ namespace rolling
  *
  *
  * */
-class LOG4CXX_EXPORT RollingFileAppender : public RollingFileAppenderSkeleton
+class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 {
 		DECLARE_LOG4CXX_OBJECT(RollingFileAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(RollingFileAppender)
-		LOG4CXX_CAST_ENTRY_CHAIN(RollingFileAppenderSkeleton)
 		END_LOG4CXX_CAST_MAP()
 
 	public:
 		RollingFileAppender();
 
-		using RollingFileAppenderSkeleton::getRollingPolicy;
+		void activateOptions(log4cxx::helpers::Pool&);
 
-		using RollingFileAppenderSkeleton::getTriggeringPolicy;
+
+		/**
+		   Implements the usual roll over behaviour.
+
+		   <p>If <code>MaxBackupIndex</code> is positive, then files
+		   {<code>File.1</code>, ..., <code>File.MaxBackupIndex -1</code>}
+		   are renamed to {<code>File.2</code>, ...,
+		   <code>File.MaxBackupIndex</code>}. Moreover, <code>File</code> is
+		   renamed <code>File.1</code> and closed. A new <code>File</code> is
+		   created to receive further log output.
+
+		   <p>If <code>MaxBackupIndex</code> is equal to zero, then the
+		   <code>File</code> is truncated with no backup files created.
+
+		 */
+		bool rollover(log4cxx::helpers::Pool& p);
+
+	protected:
+
+		/**
+		 Actual writing occurs here.
+		*/
+		virtual void subAppend(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p);
+
+		bool rolloverInternal(log4cxx::helpers::Pool& p);
+
+	public:
+
+		RollingPolicyPtr getRollingPolicy() const;
+
+		TriggeringPolicyPtr getTriggeringPolicy() const;
 
 		/**
 		 * Sets the rolling policy. In case the 'policy' argument also implements
@@ -93,9 +126,62 @@ class LOG4CXX_EXPORT RollingFileAppender : public RollingFileAppenderSkeleton
 		 * is automatically set to be the policy argument.
 		 * @param policy
 		 */
-		using RollingFileAppenderSkeleton::setRollingPolicy;
+		void setRollingPolicy(const RollingPolicyPtr& policy);
 
-		using RollingFileAppenderSkeleton::setTriggeringPolicy;
+		void setTriggeringPolicy(const TriggeringPolicyPtr& policy);
+
+	public:
+		/**
+		  * Close appender.  Waits for any asynchronous file compression actions to be completed.
+		*/
+		void close();
+
+	protected:
+		/**
+		   Returns an OutputStreamWriter when passed an OutputStream.  The
+		   encoding used will depend on the value of the
+		   <code>encoding</code> property.  If the encoding value is
+		   specified incorrectly the writer will be opened using the default
+		   system encoding (an error message will be printed to the loglog.
+		 @param os output stream, may not be null.
+		 @return new writer.
+		 */
+		log4cxx::helpers::WriterPtr createWriter(log4cxx::helpers::OutputStreamPtr& os);
+
+	public:
+
+
+
+		/**
+		 * Get byte length of current active log file.
+		 * @return byte length of current active log file.
+		 */
+		size_t getFileLength() const;
+
+#ifdef LOG4CXX_MULTI_PROCESS
+		/**
+		 * Set byte length of current active log file.
+		 * @return void
+		 */
+		void setFileLength(size_t length);
+
+		/**
+		 *  Release the file lock
+		 * @return void
+		 */
+		void releaseFileLock(apr_file_t* lock_file);
+		/**
+		 * re-open the latest file when its own handler has been renamed
+		 * @return void
+		 */
+		void reopenLatestFile(log4cxx::helpers::Pool& p);
+#endif
+
+		/**
+		 * Increments estimated byte length of current active log file.
+		 * @param increment additional bytes written to log file.
+		 */
+		void incrementFileLength(size_t increment);
 
 };
 

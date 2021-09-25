@@ -78,53 +78,53 @@ int SocketAppender::getDefaultPort() const
 
 void SocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+//	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
-	SocketOutputStreamPtr sock = SocketOutputStreamPtr(new SocketOutputStream(socket));
-	oos = ObjectOutputStreamPtr(new ObjectOutputStream(sock, p));
+//	SocketOutputStreamPtr sock = SocketOutputStreamPtr(new SocketOutputStream(socket));
+//	oos = ObjectOutputStreamPtr(new ObjectOutputStream(sock, p));
 }
 
 void SocketAppender::cleanUp(Pool& p)
 {
-	if (oos == 0)
-	{
-		return;
-	}
+//	if (oos == 0)
+//	{
+//		return;
+//	}
 
-	try
-	{
-		oos->close(p);
-		oos = 0;
-	}
-	catch (std::exception&)
-	{}
+//	try
+//	{
+//		oos->close(p);
+//		oos = 0;
+//	}
+//	catch (std::exception&)
+//	{}
 }
 
 void SocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
 {
-	if (oos == 0)
-	{
-		return;
-	}
+//	if (oos == 0)
+//	{
+//		return;
+//	}
 
-	LogString ndcVal;
-	event->getNDC(ndcVal);
-	event->getThreadName();
-	event->getMDCCopy();
+//	LogString ndcVal;
+//	event->getNDC(ndcVal);
+//	event->getThreadName();
+//	event->getMDCCopy();
 
-	try
-	{
-		event->write(*oos, p);
-		oos->reset(p);
-	}
-	catch (std::exception& e)
-	{
-		oos = 0;
-		LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
+//	try
+//	{
+//		event->write(*oos, p);
+//		oos->reset(p);
+//	}
+//	catch (std::exception& e)
+//	{
+//		oos = 0;
+//		LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
 
-		if (getReconnectionDelay() > 0)
-		{
-			fireConnector();
-		}
-	}
+//		if (getReconnectionDelay() > 0)
+//		{
+//			fireConnector();
+//		}
+//	}
 }

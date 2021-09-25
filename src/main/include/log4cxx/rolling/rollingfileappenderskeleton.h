@@ -18,7 +18,6 @@
 #if !defined(_LOG4CXX_ROLLING_ROLLING_FILE_APPENDER_SKELETON_H)
 #define _LOG4CXX_ROLLING_ROLLING_FILE_APPENDER_SKELETON_H
 
-#include <log4cxx/portability.h>
 #include <log4cxx/spi/optionhandler.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/rolling/triggeringpolicy.h>

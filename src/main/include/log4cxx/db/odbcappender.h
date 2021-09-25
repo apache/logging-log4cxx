@@ -30,6 +30,7 @@
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <list>
+#include <memory>
 
 namespace log4cxx
 {
@@ -97,65 +98,17 @@ sql option value.
 
 class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 {
-	protected:
-		/**
-		* URL of the DB for default connection handling
-		*/
-		LogString databaseURL;
-
-		/**
-		* User to connect as for default connection handling
-		*/
-		LogString databaseUser;
-
-		/**
-		* User to use for default connection handling
-		*/
-		LogString databasePassword;
-
-		typedef void* SQLHDBC;
-		typedef void* SQLHENV;
-		typedef void* SQLHANDLE;
-		typedef short SQLSMALLINT;
-
-		/**
-		* Connection used by default.  The connection is opened the first time it
-		* is needed and then held open until the appender is closed (usually at
-		* garbage collection).  This behavior is best modified by creating a
-		* sub-class and overriding the <code>getConnection</code> and
-		* <code>closeConnection</code> methods.
-		*/
-		SQLHDBC connection;
-		SQLHENV env;
-
-		/**
-		* Stores the string given to the pattern layout for conversion into a SQL
-		* statement, eg: insert into LogTable (Thread, File, Message) values
-		* ("%t", "%F", "%m")
-		*
-		* Be careful of quotes in your messages!
-		*
-		* Also see PatternLayout.
-		*/
-		LogString sqlStatement;
-
-		/**
-		* size of LoggingEvent buffer before writing to the database.
-		* Default is 1.
-		*/
-		size_t bufferSize;
-
-		/**
-		* ArrayList holding the buffer of Logging Events.
-		*/
-		std::list<spi::LoggingEventPtr> buffer;
-
 	public:
 		DECLARE_LOG4CXX_OBJECT(ODBCAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(ODBCAppender)
 		LOG4CXX_CAST_ENTRY_CHAIN(AppenderSkeleton)
 		END_LOG4CXX_CAST_MAP()
+
+		typedef void* SQLHDBC;
+		typedef void* SQLHENV;
+		typedef void* SQLHANDLE;
+		typedef short SQLSMALLINT;
 
 		ODBCAppender();
 		virtual ~ODBCAppender();
@@ -247,56 +200,24 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 		/**
 		* Returns pre-formated statement eg: insert into LogTable (msg) values ("%m")
 		*/
-		inline const LogString& getSql() const
-		{
-			return sqlStatement;
-		}
+		const LogString& getSql() const;
 
 
-		inline void setUser(const LogString& user)
-		{
-			databaseUser = user;
-		}
+		void setUser(const LogString& user);
 
+		void setURL(const LogString& url);
 
-		inline void setURL(const LogString& url)
-		{
-			databaseURL = url;
-		}
+		void setPassword(const LogString& password);
 
+		void setBufferSize(size_t newBufferSize);
 
-		inline void setPassword(const LogString& password)
-		{
-			databasePassword = password;
-		}
+		const LogString& getUser() const;
 
+		const LogString& getURL() const;
 
-		inline void setBufferSize(size_t newBufferSize)
-		{
-			bufferSize = newBufferSize;
-		}
+		const LogString& getPassword() const;
 
-		inline const LogString& getUser() const
-		{
-			return databaseUser;
-		}
-
-
-		inline const LogString& getURL() const
-		{
-			return databaseURL;
-		}
-
-
-		inline const LogString& getPassword() const
-		{
-			return databasePassword;
-		}
-
-		inline size_t getBufferSize() const
-		{
-			return bufferSize;
-		}
+		size_t getBufferSize() const;
 	private:
 		ODBCAppender(const ODBCAppender&);
 		ODBCAppender& operator=(const ODBCAppender&);

@@ -18,7 +18,6 @@
 #if !defined(_LOG4CXX_ROLLING_ROLLOVER_DESCRIPTION_H)
 #define _LOG4CXX_ROLLING_ROLLOVER_DESCRIPTION_H
 
-#include <log4cxx/portability.h>
 #include <log4cxx/rolling/action.h>
 
 namespace log4cxx

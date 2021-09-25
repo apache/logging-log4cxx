@@ -135,7 +135,6 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		void append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& pool);
 
 	private:
-		log4cxx::helpers::WriterPtr writer;
 		//  prevent copy and assignment statements
 		XMLSocketAppender(const XMLSocketAppender&);
 		XMLSocketAppender& operator=(const XMLSocketAppender&);

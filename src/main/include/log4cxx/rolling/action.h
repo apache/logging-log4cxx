@@ -18,10 +18,10 @@
 #if !defined(_LOG4CXX_ROLLING_ACTION_H)
 #define _LOG4CXX_ROLLING_ACTION_H
 
-#include <log4cxx/portability.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/pool.h>
 #include <mutex>
+#include <memory>
 
 namespace log4cxx
 {
@@ -38,19 +38,9 @@ class Action : public virtual log4cxx::helpers::Object
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(Action)
 		END_LOG4CXX_CAST_MAP()
-		/**
-		 * Is action complete.
-		 */
-		bool complete;
 
-		/**
-		 * Is action interrupted.
-		 */
-		bool interrupted;
-
-		log4cxx::helpers::Pool pool;
-		std::mutex mutex;
-
+		struct priv_data;
+		std::unique_ptr<priv_data> m_priv;
 
 	protected:
 		/**

@@ -27,36 +27,45 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(AndFilter)
 
+struct AndFilter::priv_data{
+	priv_data() : headFilter(), tailFilter(), acceptOnMatch(true){}
+
+	log4cxx::spi::FilterPtr headFilter;
+	log4cxx::spi::FilterPtr tailFilter;
+	bool acceptOnMatch;
+};
 
 AndFilter::AndFilter()
-	: headFilter(), tailFilter(), acceptOnMatch(true)
+	: m_priv( std::make_unique<priv_data>() )
 {
 }
 
+AndFilter::~AndFilter(){}
+
 void AndFilter::addFilter(const FilterPtr& filter)
 {
-	if (headFilter == NULL)
+	if (m_priv->headFilter == NULL)
 	{
-		headFilter = filter;
-		tailFilter = filter;
+		m_priv->headFilter = filter;
+		m_priv->tailFilter = filter;
 	}
 	else
 	{
-		tailFilter->setNext(filter);
+		m_priv->tailFilter->setNext(filter);
 	}
 }
 
 
 void AndFilter::setAcceptOnMatch(bool newValue)
 {
-	acceptOnMatch = newValue;
+	m_priv->acceptOnMatch = newValue;
 }
 
 Filter::FilterDecision AndFilter::decide(
 	const spi::LoggingEventPtr& event) const
 {
 	bool accepted = true;
-	FilterPtr f(headFilter);
+	FilterPtr f(m_priv->headFilter);
 
 	while (f != NULL)
 	{
@@ -66,7 +75,7 @@ Filter::FilterDecision AndFilter::decide(
 
 	if (accepted)
 	{
-		if (acceptOnMatch)
+		if (m_priv->acceptOnMatch)
 		{
 			return Filter::ACCEPT;
 		}

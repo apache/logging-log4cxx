@@ -35,9 +35,6 @@ namespace log4cxx
 */
 class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
 {
-	private:
-		LogString target;
-
 	public:
 		DECLARE_LOG4CXX_OBJECT(ConsoleAppender)
 		BEGIN_LOG4CXX_CAST_MAP()

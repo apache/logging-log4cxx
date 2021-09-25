@@ -27,41 +27,75 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/bytearrayoutputstream.h>
 #include <log4cxx/helpers/threadutility.h>
+#include <log4cxx/private/appenderskeleton_priv.h>
 #include <functional>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
+struct SocketAppenderSkeletonPriv : public priv::AppenderSkeletonPrivate {
+	SocketAppenderSkeletonPriv(int defaultPort, int reconnectionDelay) :
+		AppenderSkeletonPrivate(),
+		remoteHost(),
+		address(),
+		port(defaultPort),
+		reconnectionDelay(reconnectionDelay),
+		locationInfo(false),
+		thread(){}
+
+	SocketAppenderSkeletonPriv(InetAddressPtr address, int defaultPort, int reconnectionDelay) :
+		AppenderSkeletonPrivate(),
+		remoteHost(),
+		address(address),
+		port(defaultPort),
+		reconnectionDelay(reconnectionDelay),
+		locationInfo(false),
+		thread(){}
+
+	SocketAppenderSkeletonPriv(const LogString& host, int port, int delay) :
+		AppenderSkeletonPrivate(),
+		remoteHost(host),
+		address(InetAddress::getByName(host)),
+		port(port),
+		reconnectionDelay(delay),
+		locationInfo(false),
+		thread(){}
+
+	/**
+	host name
+	*/
+	LogString remoteHost;
+
+	/**
+	IP address
+	*/
+	helpers::InetAddressPtr address;
+
+	int port;
+	int reconnectionDelay;
+	bool locationInfo;
+	std::thread thread;
+	std::condition_variable interrupt;
+	std::mutex interrupt_mutex;
+};
+
+#define _priv static_cast<SocketAppenderSkeletonPriv*>(m_priv.get())
+
 SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay1)
-	:  remoteHost(),
-	   address(),
-	   port(defaultPort),
-	   reconnectionDelay(reconnectionDelay1),
-	   locationInfo(false),
-	   thread()
+	:  AppenderSkeleton (std::make_unique<SocketAppenderSkeletonPriv>(defaultPort, reconnectionDelay1))
 {
 }
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address1, int port1, int delay)
-	:
-	remoteHost(),
-	address(address1),
-	port(port1),
-	reconnectionDelay(delay),
-	locationInfo(false),
-	thread()
+	:AppenderSkeleton (std::make_unique<SocketAppenderSkeletonPriv>(address1, port1, delay))
+
 {
-	remoteHost = this->address->getHostName();
+	_priv->remoteHost = _priv->address->getHostName();
 }
 
 SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1, int delay)
-	:   remoteHost(host),
-		address(InetAddress::getByName(host)),
-		port(port1),
-		reconnectionDelay(delay),
-		locationInfo(false),
-		thread()
+	:   AppenderSkeleton (std::make_unique<SocketAppenderSkeletonPriv>(host, port1, delay))
 {
 }
 
@@ -78,33 +112,33 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
 
-	if (closed)
+	if (_priv->closed)
 	{
 		return;
 	}
 
-	closed = true;
-	cleanUp(pool);
+	_priv->closed = true;
+	cleanUp(_priv->pool);
 
 	{
-		std::unique_lock<std::mutex> lock2(interrupt_mutex);
-		interrupt.notify_all();
+		std::unique_lock<std::mutex> lock2(_priv->interrupt_mutex);
+		_priv->interrupt.notify_all();
 	}
 
-	if ( thread.joinable() )
+	if ( _priv->thread.joinable() )
 	{
-		thread.join();
+		_priv->thread.join();
 	}
 }
 
 void SocketAppenderSkeleton::connect(Pool& p)
 {
-	if (address == 0)
+	if (_priv->address == 0)
 	{
 		LogLog::error(LogString(LOG4CXX_STR("No remote host is set for Appender named \"")) +
-			name + LOG4CXX_STR("\"."));
+			_priv->name + LOG4CXX_STR("\"."));
 	}
 	else
 	{
@@ -112,15 +146,15 @@ void SocketAppenderSkeleton::connect(Pool& p)
 
 		try
 		{
-			SocketPtr socket(new Socket(address, port));
+			SocketPtr socket(new Socket(_priv->address, _priv->port));
 			setSocket(socket, p);
 		}
 		catch (SocketException& e)
 		{
 			LogString msg = LOG4CXX_STR("Could not connect to remote log4cxx server at [")
-				+ address->getHostName() + LOG4CXX_STR("].");
+				+ _priv->address->getHostName() + LOG4CXX_STR("].");
 
-			if (reconnectionDelay > 0)
+			if (_priv->reconnectionDelay > 0)
 			{
 				msg += LOG4CXX_STR(" We will try again later. ");
 			}
@@ -157,36 +191,36 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 
 void SocketAppenderSkeleton::fireConnector()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
 
-	if ( !thread.joinable() )
+	if ( !_priv->thread.joinable() )
 	{
 		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
 
-		thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketAppend"), &SocketAppenderSkeleton::monitor, this );
+		_priv->thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketAppend"), &SocketAppenderSkeleton::monitor, this );
 	}
 }
 
 void SocketAppenderSkeleton::monitor()
 {
 	SocketPtr socket;
-	bool isClosed = closed;
+	bool isClosed = _priv->closed;
 
 	while (!isClosed)
 	{
 		try
 		{
-			std::this_thread::sleep_for( std::chrono::milliseconds( reconnectionDelay ) );
+			std::this_thread::sleep_for( std::chrono::milliseconds( _priv->reconnectionDelay ) );
 
-			std::unique_lock<std::mutex> lock( interrupt_mutex );
-			interrupt.wait_for( lock, std::chrono::milliseconds( reconnectionDelay ),
+			std::unique_lock<std::mutex> lock( _priv->interrupt_mutex );
+			_priv->interrupt.wait_for( lock, std::chrono::milliseconds( _priv->reconnectionDelay ),
 				std::bind(&SocketAppenderSkeleton::is_closed, this) );
 
-			if (!closed)
+			if (!_priv->closed)
 			{
 				LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
-					+ address->getHostName());
-				socket = SocketPtr(new Socket(address, port));
+					+ _priv->address->getHostName());
+				socket = SocketPtr(new Socket(_priv->address, _priv->port));
 				Pool p;
 				setSocket(socket, p);
 				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
@@ -202,7 +236,7 @@ void SocketAppenderSkeleton::monitor()
 		catch (ConnectException&)
 		{
 			LogLog::debug(LOG4CXX_STR("Remote host ")
-				+ address->getHostName()
+				+ _priv->address->getHostName()
 				+ LOG4CXX_STR(" refused connection."));
 		}
 		catch (IOException& e)
@@ -211,12 +245,12 @@ void SocketAppenderSkeleton::monitor()
 			log4cxx::helpers::Transcoder::decode(e.what(), exmsg);
 
 			LogLog::debug(((LogString) LOG4CXX_STR("Could not connect to "))
-				+ address->getHostName()
+				+ _priv->address->getHostName()
 				+ LOG4CXX_STR(". Exception is ")
 				+ exmsg);
 		}
 
-		isClosed = closed;
+		isClosed = _priv->closed;
 	}
 
 	LogLog::debug(LOG4CXX_STR("Exiting Connector.run() method."));
@@ -224,5 +258,46 @@ void SocketAppenderSkeleton::monitor()
 
 bool SocketAppenderSkeleton::is_closed()
 {
-	return closed;
+	return _priv->closed;
+}
+
+void SocketAppenderSkeleton::setRemoteHost(const LogString& host)
+{
+	_priv->address = helpers::InetAddress::getByName(host);
+	_priv->remoteHost.assign(host);
+}
+
+const LogString& SocketAppenderSkeleton::getRemoteHost() const
+{
+	return _priv->remoteHost;
+}
+
+void SocketAppenderSkeleton::setPort(int port1)
+{
+	_priv->port = port1;
+}
+
+int SocketAppenderSkeleton::getPort() const
+{
+	return _priv->port;
+}
+
+void SocketAppenderSkeleton::setLocationInfo(bool locationInfo1)
+{
+	_priv->locationInfo = locationInfo1;
+}
+
+bool SocketAppenderSkeleton::getLocationInfo() const
+{
+	return _priv->locationInfo;
+}
+
+void SocketAppenderSkeleton::setReconnectionDelay(int reconnectionDelay1)
+{
+	_priv->reconnectionDelay = reconnectionDelay1;
+}
+
+int SocketAppenderSkeleton::getReconnectionDelay() const
+{
+	return _priv->reconnectionDelay;
 }

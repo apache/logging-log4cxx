@@ -19,7 +19,6 @@
 #if !defined(_LOG4CXX_ROLLING_TIME_BASED_ROLLING_POLICY_H)
 #define _LOG4CXX_ROLLING_TIME_BASED_ROLLING_POLICY_H
 
-#include <log4cxx/portability.h>
 #include <log4cxx/rolling/rollingpolicybase.h>
 #include <log4cxx/rolling/triggeringpolicy.h>
 #include <log4cxx/writerappender.h>

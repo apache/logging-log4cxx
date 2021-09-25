@@ -107,10 +107,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		/**
 		Returns the value of the <b>SyslogHost</b> option.
 		*/
-		inline const LogString& getSyslogHost() const
-		{
-			return syslogHost;
-		}
+		const LogString& getSyslogHost() const;
 
 		/**
 		Set the syslog facility. This is the <b>Facility</b> option.
@@ -125,49 +122,27 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		/**
 		Returns the value of the <b>Facility</b> option.
 		*/
-		inline LogString getFacility() const
-		{
-			return getFacilityString(syslogFacility);
-		}
+		LogString getFacility() const;
 
 		/**
 		If the <b>FacilityPrinting</b> option is set to true, the printed
 		message will include the facility name of the application. It is
 		<em>false</em> by default.
 		*/
-		inline void setFacilityPrinting(bool facilityPrinting1)
-		{
-			this->facilityPrinting = facilityPrinting1;
-		}
+		void setFacilityPrinting(bool facilityPrinting1);
 
 		/**
 		Returns the value of the <b>FacilityPrinting</b> option.
 		*/
-		inline bool getFacilityPrinting() const
-		{
-			return facilityPrinting;
-		}
+		bool getFacilityPrinting() const;
 
-		inline void setMaxMessageLength(int maxMessageLength1)
-		{
-			maxMessageLength = maxMessageLength1;
-		}
+		void setMaxMessageLength(int maxMessageLength1);
 
-		inline int getMaxMessageLength() const
-		{
-			return maxMessageLength;
-		}
+		int getMaxMessageLength() const;
 
 	protected:
 		void initSyslogFacilityStr();
 
-		int syslogFacility; // Have LOG_USER as default
-		LogString facilityStr;
-		bool facilityPrinting;
-		helpers::SyslogWriter* sw;
-		LogString syslogHost;
-		int syslogHostPort;
-		int maxMessageLength;
 	private:
 		SyslogAppender(const SyslogAppender&);
 		SyslogAppender& operator=(const SyslogAppender&);

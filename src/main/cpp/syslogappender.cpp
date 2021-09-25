@@ -26,36 +26,8 @@
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
-#include <log4cxx/private/log4cxx_private.h>
 #include <apr_strings.h>
-
-#if LOG4CXX_HAVE_SYSLOG
-	#include <syslog.h>
-#else
-	/* facility codes */
-	#define   LOG_KERN (0<<3)   /* kernel messages */
-	#define   LOG_USER (1<<3)   /* random user-level messages */
-	#define   LOG_MAIL (2<<3)   /* mail system */
-	#define   LOG_DAEMON  (3<<3)   /* system daemons */
-	#define   LOG_AUTH (4<<3)   /* security/authorization messages */
-	#define   LOG_SYSLOG  (5<<3)   /* messages generated internally by syslogd */
-	#define   LOG_LPR     (6<<3)   /* line printer subsystem */
-	#define   LOG_NEWS (7<<3)   /* network news subsystem */
-	#define   LOG_UUCP (8<<3)   /* UUCP subsystem */
-	#define   LOG_CRON (9<<3)   /* clock daemon */
-	#define   LOG_AUTHPRIV   (10<<3)  /* security/authorization messages (private) */
-	#define   LOG_FTP     (11<<3)  /* ftp daemon */
-
-	/* other codes through 15 reserved for system use */
-	#define   LOG_LOCAL0  (16<<3)  /* reserved for local use */
-	#define   LOG_LOCAL1  (17<<3)  /* reserved for local use */
-	#define   LOG_LOCAL2  (18<<3)  /* reserved for local use */
-	#define   LOG_LOCAL3  (19<<3)  /* reserved for local use */
-	#define   LOG_LOCAL4  (20<<3)  /* reserved for local use */
-	#define   LOG_LOCAL5  (21<<3)  /* reserved for local use */
-	#define   LOG_LOCAL6  (22<<3)  /* reserved for local use */
-	#define   LOG_LOCAL7  (23<<3)  /* reserved for local use */
-#endif
+#include <log4cxx/private/syslogappender_priv.h>
 
 #define LOG_UNDEF -1
 
@@ -65,8 +37,10 @@ using namespace log4cxx::net;
 
 IMPLEMENT_LOG4CXX_OBJECT(SyslogAppender)
 
+#define _priv static_cast<priv::SyslogAppenderPriv*>(m_priv.get())
+
 SyslogAppender::SyslogAppender()
-	: syslogFacility(LOG_USER), facilityPrinting(false), sw(0), maxMessageLength(1024)
+	: AppenderSkeleton (std::make_unique<priv::SyslogAppenderPriv>())
 {
 	this->initSyslogFacilityStr();
 
@@ -74,17 +48,15 @@ SyslogAppender::SyslogAppender()
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 	int syslogFacility1)
-	: syslogFacility(syslogFacility1), facilityPrinting(false), sw(0), maxMessageLength(1024)
+	: AppenderSkeleton (std::make_unique<priv::SyslogAppenderPriv>(layout1, syslogFacility1))
 {
-	this->layout = layout1;
 	this->initSyslogFacilityStr();
 }
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 	const LogString& syslogHost1, int syslogFacility1)
-	: syslogFacility(syslogFacility1), facilityPrinting(false), sw(0), maxMessageLength(1024)
+	: AppenderSkeleton (std::make_unique<priv::SyslogAppenderPriv>(layout1, syslogHost1, syslogFacility1))
 {
-	this->layout = layout1;
 	this->initSyslogFacilityStr();
 	setSyslogHost(syslogHost1);
 }
@@ -97,32 +69,31 @@ SyslogAppender::~SyslogAppender()
 /** Release any resources held by this SyslogAppender.*/
 void SyslogAppender::close()
 {
-	closed = true;
+	_priv->closed = true;
 
-	if (sw != 0)
+	if (_priv->sw)
 	{
-		delete sw;
-		sw = 0;
+		_priv->sw = nullptr;
 	}
 }
 
 void SyslogAppender::initSyslogFacilityStr()
 {
-	facilityStr = getFacilityString(this->syslogFacility);
+	_priv->facilityStr = getFacilityString(_priv->syslogFacility);
 
-	if (facilityStr.empty())
+	if (_priv->facilityStr.empty())
 	{
 		Pool p;
 		LogString msg(LOG4CXX_STR("\""));
-		StringHelper::toString(syslogFacility, p, msg);
+		StringHelper::toString(_priv->syslogFacility, p, msg);
 		msg.append(LOG4CXX_STR("\" is an unknown syslog facility. Defaulting to \"USER\"."));
 		LogLog::error(msg);
-		this->syslogFacility = LOG_USER;
-		facilityStr = LOG4CXX_STR("user:");
+		_priv->syslogFacility = LOG_USER;
+		_priv->facilityStr = LOG4CXX_STR("user:");
 	}
 	else
 	{
-		facilityStr += LOG4CXX_STR(":");
+		_priv->facilityStr += LOG4CXX_STR(":");
 	}
 }
 
@@ -309,7 +280,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	LogString msg;
 	std::string encoded;
-	layout->format(msg, event, p);
+	_priv->layout->format(msg, event, p);
 
 	Transcoder::encode(msg, encoded);
 
@@ -320,13 +291,13 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	// to indicate how far through the message we are
 	std::vector<LogString> packets;
 
-	if ( msg.size() > maxMessageLength )
+	if ( msg.size() > _priv->maxMessageLength )
 	{
 		LogString::iterator start = msg.begin();
 
 		while ( start != msg.end() )
 		{
-			LogString::iterator end = start + maxMessageLength - 12;
+			LogString::iterator end = start + _priv->maxMessageLength - 12;
 
 			if ( end > msg.end() )
 			{
@@ -359,14 +330,14 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	// if it is available
 #if LOG4CXX_HAVE_SYSLOG
 
-	if (sw == 0)
+	if (_priv->sw == 0)
 	{
 		for ( std::vector<LogString>::iterator it = packets.begin();
 			it != packets.end();
 			it++ )
 		{
 			// use of "%s" to avoid a security hole
-			::syslog(syslogFacility | event->getLevel()->getSyslogEquivalent(),
+			::syslog(_priv->syslogFacility | event->getLevel()->getSyslogEquivalent(),
 				"%s", it->c_str());
 		}
 
@@ -376,10 +347,10 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 #endif
 
 	// We must not attempt to append if sw is null.
-	if (sw == 0)
+	if (_priv->sw == 0)
 	{
-		errorHandler->error(LOG4CXX_STR("No syslog host is set for SyslogAppedender named \"") +
-			this->name + LOG4CXX_STR("\"."));
+		_priv->errorHandler->error(LOG4CXX_STR("No syslog host is set for SyslogAppedender named \"") +
+			_priv->name + LOG4CXX_STR("\"."));
 		return;
 	}
 
@@ -388,16 +359,16 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		it++ )
 	{
 		LogString sbuf(1, 0x3C /* '<' */);
-		StringHelper::toString((syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
+		StringHelper::toString((_priv->syslogFacility | event->getLevel()->getSyslogEquivalent()), p, sbuf);
 		sbuf.append(1, (logchar) 0x3E /* '>' */);
 
-		if (facilityPrinting)
+		if (_priv->facilityPrinting)
 		{
-			sbuf.append(facilityStr);
+			sbuf.append(_priv->facilityStr);
 		}
 
 		sbuf.append(*it);
-		sw->write(sbuf);
+		_priv->sw->write(sbuf);
 	}
 }
 
@@ -427,10 +398,9 @@ void SyslogAppender::setOption(const LogString& option, const LogString& value)
 
 void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
 {
-	if (this->sw != 0)
+	if (_priv->sw != 0)
 	{
-		delete this->sw;
-		this->sw = 0;
+		_priv->sw = nullptr;
 	}
 
 	LogString slHost = syslogHost1;
@@ -455,15 +425,15 @@ void SyslogAppender::setSyslogHost(const LogString& syslogHost1)
 #endif
 		if (slHostPort >= 0)
 		{
-			this->sw = new SyslogWriter(slHost, slHostPort);
+			_priv->sw = std::make_unique<SyslogWriter>(slHost, slHostPort);
 		}
 		else
 		{
-			this->sw = new SyslogWriter(slHost);
+			_priv->sw = std::make_unique<SyslogWriter>(slHost);
 		}
 
-	this->syslogHost = slHost;
-	this->syslogHostPort = slHostPort;
+	_priv->syslogHost = slHost;
+	_priv->syslogHostPort = slHostPort;
 }
 
 
@@ -474,15 +444,45 @@ void SyslogAppender::setFacility(const LogString& facilityName)
 		return;
 	}
 
-	syslogFacility = getFacility(facilityName);
+	_priv->syslogFacility = getFacility(facilityName);
 
-	if (syslogFacility == LOG_UNDEF)
+	if (_priv->syslogFacility == LOG_UNDEF)
 	{
 		LogLog::error(LOG4CXX_STR("[") + facilityName +
 			LOG4CXX_STR("] is an unknown syslog facility. Defaulting to [USER]."));
-		syslogFacility = LOG_USER;
+		_priv->syslogFacility = LOG_USER;
 	}
 
 	this->initSyslogFacilityStr();
+}
+
+const LogString& SyslogAppender::getSyslogHost() const
+{
+	return _priv->syslogHost;
+}
+
+LogString SyslogAppender::getFacility() const
+{
+	return getFacilityString(_priv->syslogFacility);
+}
+
+void SyslogAppender::setFacilityPrinting(bool facilityPrinting1)
+{
+	_priv->facilityPrinting = facilityPrinting1;
+}
+
+bool SyslogAppender::getFacilityPrinting() const
+{
+	return _priv->facilityPrinting;
+}
+
+void SyslogAppender::setMaxMessageLength(int maxMessageLength1)
+{
+	_priv->maxMessageLength = maxMessageLength1;
+}
+
+int SyslogAppender::getMaxMessageLength() const
+{
+	return _priv->maxMessageLength;
 }
 

@@ -28,12 +28,21 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
+struct AppenderAttachableImpl::priv_data{
+	/** Array of appenders. */
+	AppenderList  appenderList;
+	mutable std::mutex m_mutex;
+};
 
-AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool)
-	: appenderList()
+
+AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool) :
+	m_priv(std::make_unique<AppenderAttachableImpl::priv_data>())
 {
 }
 
+AppenderAttachableImpl::~AppenderAttachableImpl(){
+
+}
 
 void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
 {
@@ -43,13 +52,13 @@ void AppenderAttachableImpl::addAppender(const AppenderPtr newAppender)
 		return;
 	}
 
-	std::unique_lock<std::mutex> lock( m_mutex );
+	std::unique_lock<std::mutex> lock( m_priv->m_mutex );
 	AppenderList::iterator it = std::find(
-			appenderList.begin(), appenderList.end(), newAppender);
+			m_priv->appenderList.begin(), m_priv->appenderList.end(), newAppender);
 
-	if (it == appenderList.end())
+	if (it == m_priv->appenderList.end())
 	{
-		appenderList.push_back(newAppender);
+		m_priv->appenderList.push_back(newAppender);
 	}
 }
 
@@ -66,8 +75,8 @@ int AppenderAttachableImpl::appendLoopOnAppenders(
 		// appenders fails, we may want to swap it out for a new one.
 		// So, make a local copy of the appenders that we want to iterate over
 		// before actually iterating over them.
-		std::unique_lock<std::mutex> lock( m_mutex );
-		allAppenders = appenderList;
+		std::unique_lock<std::mutex> lock( m_priv->m_mutex );
+		allAppenders = m_priv->appenderList;
 	}
 	for (AppenderList::iterator it = allAppenders.begin();
 		it != allAppenders.end();
@@ -82,7 +91,7 @@ int AppenderAttachableImpl::appendLoopOnAppenders(
 
 AppenderList AppenderAttachableImpl::getAllAppenders() const
 {
-	return appenderList;
+	return m_priv->appenderList;
 }
 
 AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
@@ -92,11 +101,11 @@ AppenderPtr AppenderAttachableImpl::getAppender(const LogString& name) const
 		return 0;
 	}
 
-	std::unique_lock<std::mutex> lock( m_mutex );
-	AppenderList::const_iterator it, itEnd = appenderList.end();
+	std::unique_lock<std::mutex> lock( m_priv->m_mutex );
+	AppenderList::const_iterator it, itEnd = m_priv->appenderList.end();
 	AppenderPtr appender;
 
-	for (it = appenderList.begin(); it != itEnd; it++)
+	for (it = m_priv->appenderList.begin(); it != itEnd; it++)
 	{
 		appender = *it;
 
@@ -116,26 +125,26 @@ bool AppenderAttachableImpl::isAttached(const AppenderPtr appender) const
 		return false;
 	}
 
-	std::unique_lock<std::mutex> lock( m_mutex );
+	std::unique_lock<std::mutex> lock( m_priv->m_mutex );
 	AppenderList::const_iterator it = std::find(
-			appenderList.begin(), appenderList.end(), appender);
+			m_priv->appenderList.begin(), m_priv->appenderList.end(), appender);
 
-	return it != appenderList.end();
+	return it != m_priv->appenderList.end();
 }
 
 void AppenderAttachableImpl::removeAllAppenders()
 {
-	std::unique_lock<std::mutex> lock( m_mutex );
-	AppenderList::iterator it, itEnd = appenderList.end();
+	std::unique_lock<std::mutex> lock( m_priv->m_mutex );
+	AppenderList::iterator it, itEnd = m_priv->appenderList.end();
 	AppenderPtr a;
 
-	for (it = appenderList.begin(); it != itEnd; it++)
+	for (it = m_priv->appenderList.begin(); it != itEnd; it++)
 	{
 		a = *it;
 		a->close();
 	}
 
-	appenderList.clear();
+	m_priv->appenderList.clear();
 }
 
 void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
@@ -145,13 +154,13 @@ void AppenderAttachableImpl::removeAppender(const AppenderPtr appender)
 		return;
 	}
 
-	std::unique_lock<std::mutex> lock( m_mutex );
+	std::unique_lock<std::mutex> lock( m_priv->m_mutex );
 	AppenderList::iterator it = std::find(
-			appenderList.begin(), appenderList.end(), appender);
+			m_priv->appenderList.begin(), m_priv->appenderList.end(), appender);
 
-	if (it != appenderList.end())
+	if (it != m_priv->appenderList.end())
 	{
-		appenderList.erase(it);
+		m_priv->appenderList.erase(it);
 	}
 }
 
@@ -162,20 +171,23 @@ void AppenderAttachableImpl::removeAppender(const LogString& name)
 		return;
 	}
 
-	std::unique_lock<std::mutex> lock( m_mutex );
-	AppenderList::iterator it, itEnd = appenderList.end();
+	std::unique_lock<std::mutex> lock( m_priv->m_mutex );
+	AppenderList::iterator it, itEnd = m_priv->appenderList.end();
 	AppenderPtr appender;
 
-	for (it = appenderList.begin(); it != itEnd; it++)
+	for (it = m_priv->appenderList.begin(); it != itEnd; it++)
 	{
 		appender = *it;
 
 		if (name == appender->getName())
 		{
-			appenderList.erase(it);
+			m_priv->appenderList.erase(it);
 			return;
 		}
 	}
 }
 
+std::mutex& AppenderAttachableImpl::getMutex(){
+	return m_priv->m_mutex;
+}
 

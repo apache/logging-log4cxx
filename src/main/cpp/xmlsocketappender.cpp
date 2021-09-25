@@ -26,6 +26,7 @@
 #include <log4cxx/helpers/transform.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/socketoutputstream.h>
+#include <log4cxx/private/appenderskeleton_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -33,6 +34,14 @@ using namespace log4cxx::net;
 using namespace log4cxx::xml;
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
+
+struct XMLSocketAppenderPriv : public priv::AppenderSkeletonPrivate {
+	XMLSocketAppenderPriv() : AppenderSkeletonPrivate(){}
+
+	log4cxx::helpers::WriterPtr writer;
+};
+
+#define _priv static_cast<XMLSocketAppenderPriv*>(m_priv.get())
 
 // The default port number of remote logging server (4560)
 int XMLSocketAppender::DEFAULT_PORT                 = 4560;
@@ -45,13 +54,13 @@ const int XMLSocketAppender::MAX_EVENT_LEN          = 1024;
 XMLSocketAppender::XMLSocketAppender()
 	: SocketAppenderSkeleton(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY)
 {
-	layout = XMLLayoutPtr(new XMLLayout());
+	_priv->layout = std::make_shared<XMLLayout>();
 }
 
 XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
 	: SocketAppenderSkeleton(address1, port1, DEFAULT_RECONNECTION_DELAY)
 {
-	layout = XMLLayoutPtr(new XMLLayout());
+	_priv->layout = std::make_shared<XMLLayout>();
 	Pool p;
 	activateOptions(p);
 }
@@ -59,7 +68,7 @@ XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
 XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
 	: SocketAppenderSkeleton(host, port1, DEFAULT_RECONNECTION_DELAY)
 {
-	layout = XMLLayoutPtr(new XMLLayout());
+	_priv->layout = std::make_shared<XMLLayout>();
 	Pool p;
 	activateOptions(p);
 }
@@ -84,18 +93,18 @@ void XMLSocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 {
 	OutputStreamPtr os(new SocketOutputStream(socket));
 	CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
-	writer = OutputStreamWriterPtr(new OutputStreamWriter(os, charset));
+	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
+	_priv->writer = std::make_shared<OutputStreamWriter>(os, charset);
 }
 
 void XMLSocketAppender::cleanUp(Pool& p)
 {
-	if (writer != 0)
+	if (_priv->writer)
 	{
 		try
 		{
-			writer->close(p);
-			writer = 0;
+			_priv->writer->close(p);
+			_priv->writer = nullptr;
 		}
 		catch (std::exception&)
 		{
@@ -105,19 +114,19 @@ void XMLSocketAppender::cleanUp(Pool& p)
 
 void XMLSocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
 {
-	if (writer != 0)
+	if (_priv->writer)
 	{
 		LogString output;
-		layout->format(output, event, p);
+		_priv->layout->format(output, event, p);
 
 		try
 		{
-			writer->write(output, p);
-			writer->flush(p);
+			_priv->writer->write(output, p);
+			_priv->writer->flush(p);
 		}
 		catch (std::exception& e)
 		{
-			writer = 0;
+			_priv->writer = nullptr;
 			LogLog::warn(LOG4CXX_STR("Detected problem with connection: "), e);
 
 			if (getReconnectionDelay() > 0)
