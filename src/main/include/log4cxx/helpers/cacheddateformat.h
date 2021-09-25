@@ -87,40 +87,8 @@ class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
 		 */
 		static const logchar zeroString[];
 
-		/**
-		 *   Wrapped formatter.
-		 */
-		log4cxx::helpers::DateFormatPtr formatter;
-
-		/**
-		 *  Index of initial digit of millisecond pattern or
-		 *   UNRECOGNIZED_MILLISECONDS or NO_MILLISECONDS.
-		 */
-		mutable int millisecondStart;
-
-		/**
-		 *  Integral second preceding the previous convered Date.
-		 */
-		mutable log4cxx_time_t slotBegin;
-
-
-		/**
-		 *  Cache of previous conversion.
-		 */
-		mutable LogString cache;
-
-
-		/**
-		 *  Maximum validity period for the cache.
-		 *  Typically 1, use cache for duplicate requests only, or
-		 *  1000000, use cache for requests within the same integral second.
-		 */
-		const int expiration;
-
-		/**
-		 *  Date requested in previous conversion.
-		 */
-		mutable log4cxx_time_t previousTime;
+		struct CachedDateFormatPriv;
+		std::unique_ptr<CachedDateFormatPriv> m_priv;
 
 	public:
 		/**
@@ -132,6 +100,7 @@ class LOG4CXX_EXPORT CachedDateFormat : public log4cxx::helpers::DateFormat
 		 *      caching or 1 to only use cache for duplicate requests.
 		 */
 		CachedDateFormat(const log4cxx::helpers::DateFormatPtr& dateFormat, int expiration);
+		~CachedDateFormat();
 
 		/**
 		 * Finds start of millisecond field in formatted time.

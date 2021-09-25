@@ -23,10 +23,6 @@
 #include <log4cxx/helpers/pool.h>
 #include <log4cxx/helpers/datagrampacket.h>
 
-extern "C" {
-	struct apr_socket_t;
-}
-
 namespace log4cxx
 {
 namespace helpers
@@ -69,47 +65,26 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		void connect(InetAddressPtr address, int port);
 
 		/** Returns the address to which this socket is connected. */
-		inline InetAddressPtr getInetAddress() const
-		{
-			return address;
-		}
+		InetAddressPtr getInetAddress() const;
 
 		/** Gets the local address to which the socket is bound. */
-		inline InetAddressPtr getLocalAddress() const
-		{
-			return localAddress;
-		}
+		InetAddressPtr getLocalAddress() const;
 
 		/**  Returns the port number on the local host to which this
 		socket is bound. */
-		inline int getLocalPort() const
-		{
-			return localPort;
-		}
+		int getLocalPort() const;
 
 		/** Returns the port for this socket */
-		inline int getPort() const
-		{
-			return port;
-		}
+		int getPort() const;
 
 		/** Returns the binding state of the socket. **/
-		inline bool isBound() const
-		{
-			return localPort != 0;
-		}
+		bool isBound() const;
 
 		/** Returns wether the socket is closed or not. */
-		inline bool isClosed() const
-		{
-			return socket != 0;
-		}
+		bool isClosed() const;
 
 		/** Returns the connection state of the socket. */
-		inline bool isConnected() const
-		{
-			return port != 0;
-		}
+		bool isConnected() const;
 
 		/**  Receives a datagram packet from this socket. */
 		void receive(DatagramPacketPtr& p);
@@ -120,20 +95,9 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 	private:
 		DatagramSocket(const DatagramSocket&);
 		DatagramSocket& operator=(const DatagramSocket&);
-		/** The APR socket */
-		apr_socket_t* socket;
 
-		/** The memory pool for the socket */
-		Pool socketPool;
-
-		InetAddressPtr address;
-
-		InetAddressPtr localAddress;
-
-		int port;
-
-		/** The local port number to which this socket is connected. */
-		int localPort;
+		struct DatagramSocketPriv;
+		std::unique_ptr<DatagramSocketPriv> m_priv;
 
 };
 LOG4CXX_PTR_DEF(DatagramSocket);

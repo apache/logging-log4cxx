@@ -33,7 +33,6 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 {
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Configurator)
-		Configurator();
 
 		/**
 		Interpret a resource pointed by a URL and set up log4j accordingly.
@@ -47,11 +46,12 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		virtual void doConfigure(const File& configFileName,
 			spi::LoggerRepositoryPtr repository) = 0;
 
+protected:
+		Configurator();
 
 	private:
 		Configurator(const Configurator&);
 		Configurator& operator=(const Configurator&);
-		bool initialized;
 };
 
 LOG4CXX_PTR_DEF(Configurator);

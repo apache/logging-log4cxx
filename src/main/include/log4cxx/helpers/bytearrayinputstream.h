@@ -41,8 +41,8 @@ LOG4CXX_LIST_DEF(ByteList, unsigned char);
 class LOG4CXX_EXPORT ByteArrayInputStream : public InputStream
 {
 	private:
-		ByteList buf;
-		size_t pos;
+		struct ByteArrayInputStreamPriv;
+		std::unique_ptr<ByteArrayInputStreamPriv> m_priv;
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ByteArrayInputStream)

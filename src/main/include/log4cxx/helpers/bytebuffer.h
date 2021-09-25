@@ -33,10 +33,8 @@ namespace helpers
 class LOG4CXX_EXPORT ByteBuffer
 {
 	private:
-		char* base;
-		size_t pos;
-		size_t lim;
-		size_t cap;
+		struct ByteBufferPriv;
+		std::unique_ptr<ByteBufferPriv> m_priv;
 
 	public:
 		ByteBuffer(char* data, size_t capacity);
@@ -45,35 +43,14 @@ class LOG4CXX_EXPORT ByteBuffer
 		void clear();
 		void flip();
 
-		inline char* data()
-		{
-			return base;
-		}
-		inline const char* data() const
-		{
-			return base;
-		}
-		inline char* current()
-		{
-			return base + pos;
-		}
-		inline const char* current() const
-		{
-			return base + pos;
-		}
-		inline size_t limit() const
-		{
-			return lim;
-		}
+		char* data();
+		const char* data() const;
+		char* current();
+		const char* current() const;
+		size_t limit() const;
 		void limit(size_t newLimit);
-		inline size_t position() const
-		{
-			return pos;
-		}
-		inline size_t remaining() const
-		{
-			return lim - pos;
-		}
+		size_t position() const;
+		size_t remaining() const;
 		void position(size_t newPosition);
 
 		bool put(char byte);

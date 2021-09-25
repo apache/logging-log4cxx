@@ -25,16 +25,48 @@
 
 using namespace log4cxx::helpers;
 
+struct DatagramSocket::DatagramSocketPriv{
+	DatagramSocketPriv()
+		: socket(0), address(), localAddress(), port(0), localPort(0)
+	{
+	}
+
+	DatagramSocketPriv(int localPort1)
+		: socket(0), address(), localAddress(), port(0), localPort(0)
+	{
+	}
+
+	DatagramSocketPriv(int localPort1, InetAddressPtr localAddress1)
+		: socket(0), address(), localAddress(), port(0), localPort(0)
+	{
+	}
+
+	/** The APR socket */
+	apr_socket_t* socket;
+
+	/** The memory pool for the socket */
+	Pool socketPool;
+
+	InetAddressPtr address;
+
+	InetAddressPtr localAddress;
+
+	int port;
+
+	/** The local port number to which this socket is connected. */
+	int localPort;
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(DatagramSocket)
 
 DatagramSocket::DatagramSocket()
-	: socket(0), address(), localAddress(), port(0), localPort(0)
+	: m_priv(std::make_unique<DatagramSocketPriv>())
 {
 	create();
 }
 
 DatagramSocket::DatagramSocket(int localPort1)
-	: socket(0), address(), localAddress(), port(0), localPort(0)
+	: m_priv(std::make_unique<DatagramSocketPriv>(localPort1))
 {
 	InetAddressPtr bindAddr = InetAddress::anyAddress();
 
@@ -43,7 +75,7 @@ DatagramSocket::DatagramSocket(int localPort1)
 }
 
 DatagramSocket::DatagramSocket(int localPort1, InetAddressPtr localAddress1)
-	: socket(0), address(), localAddress(), port(0), localPort(0)
+	: m_priv(std::make_unique<DatagramSocketPriv>(localPort1, localAddress1))
 {
 	create();
 	bind(localPort1, localAddress1);
@@ -78,39 +110,39 @@ void DatagramSocket::bind(int localPort1, InetAddressPtr localAddress1)
 	}
 
 	// bind the socket to the address
-	status = apr_socket_bind(socket, server_addr);
+	status = apr_socket_bind(m_priv->socket, server_addr);
 
 	if (status != APR_SUCCESS)
 	{
 		throw BindException(status);
 	}
 
-	this->localPort = localPort1;
-	this->localAddress = localAddress1;
+	m_priv->localPort = localPort1;
+	m_priv->localAddress = localAddress1;
 }
 
 /** Close the socket.*/
 void DatagramSocket::close()
 {
-	if (socket != 0)
+	if (m_priv->socket != 0)
 	{
-		apr_status_t status = apr_socket_close(socket);
+		apr_status_t status = apr_socket_close(m_priv->socket);
 
 		if (status != APR_SUCCESS)
 		{
 			throw SocketException(status);
 		}
 
-		socket = 0;
-		localPort = 0;
+		m_priv->socket = 0;
+		m_priv->localPort = 0;
 	}
 }
 
 void DatagramSocket::connect(InetAddressPtr address1, int port1)
 {
 
-	this->address = address1;
-	this->port = port1;
+	m_priv->address = address1;
+	m_priv->port = port1;
 
 	Pool addrPool;
 
@@ -119,7 +151,7 @@ void DatagramSocket::connect(InetAddressPtr address1, int port1)
 	apr_sockaddr_t* client_addr;
 	apr_status_t status =
 		apr_sockaddr_info_get(&client_addr, hostAddr.c_str(), APR_INET,
-			port, 0, addrPool.getAPRPool());
+			m_priv->port, 0, addrPool.getAPRPool());
 
 	if (status != APR_SUCCESS)
 	{
@@ -127,7 +159,7 @@ void DatagramSocket::connect(InetAddressPtr address1, int port1)
 	}
 
 	// connect the socket
-	status = apr_socket_connect(socket, client_addr);
+	status = apr_socket_connect(m_priv->socket, client_addr);
 
 	if (status != APR_SUCCESS)
 	{
@@ -141,8 +173,8 @@ void DatagramSocket::create()
 	apr_socket_t* newSocket;
 	apr_status_t status =
 		apr_socket_create(&newSocket, APR_INET, SOCK_DGRAM,
-			APR_PROTO_UDP, socketPool.getAPRPool());
-	socket = newSocket;
+			APR_PROTO_UDP, m_priv->socketPool.getAPRPool());
+	m_priv->socket = newSocket;
 
 	if (status != APR_SUCCESS)
 	{
@@ -169,7 +201,7 @@ void DatagramSocket::receive(DatagramPacketPtr& p)
 
 	// receive the datagram packet
 	apr_size_t len = p->getLength();
-	status = apr_socket_recvfrom(addr, socket, 0,
+	status = apr_socket_recvfrom(addr, m_priv->socket, 0,
 			(char*)p->getData(), &len);
 
 	if (status != APR_SUCCESS)
@@ -197,11 +229,46 @@ void DatagramSocket::send(DatagramPacketPtr& p)
 
 	// send the datagram packet
 	apr_size_t len = p->getLength();
-	status = apr_socket_sendto(socket, addr, 0,
+	status = apr_socket_sendto(m_priv->socket, addr, 0,
 			(char*)p->getData(), &len);
 
 	if (status != APR_SUCCESS)
 	{
 		throw IOException(status);
 	}
+}
+
+InetAddressPtr DatagramSocket::getInetAddress() const
+{
+	return m_priv->address;
+}
+
+InetAddressPtr DatagramSocket::getLocalAddress() const
+{
+	return m_priv->localAddress;
+}
+
+int DatagramSocket::getLocalPort() const
+{
+	return m_priv->localPort;
+}
+
+int DatagramSocket::getPort() const
+{
+	return m_priv->port;
+}
+
+bool DatagramSocket::isBound() const
+{
+	return m_priv->localPort != 0;
+}
+
+bool DatagramSocket::isClosed() const
+{
+	return m_priv->socket != 0;
+}
+
+bool DatagramSocket::isConnected() const
+{
+	return m_priv->port != 0;
 }

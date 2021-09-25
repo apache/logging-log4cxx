@@ -35,21 +35,9 @@ and might arrive in any order.
 */
 class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 {
-	protected:
-		/** the data for this packet. */
-		void* buf;
-
-		/** The offset of the data for this packet. */
-		int offset;
-
-		/** The length of the data for this packet. */
-		int length;
-
-		/** The IP address for this packet. */
-		InetAddressPtr address;
-
-		/** The UDP port number of the remote host. */
-		int port;
+	private:
+		struct DatagramPacketPriv;
+		std::unique_ptr<DatagramPacketPriv> m_priv;
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DatagramPacket)
@@ -80,67 +68,35 @@ class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 
 		/** Returns the IP address of the machine to which this datagram
 		is being sent or from which the datagram was received. */
-		inline InetAddressPtr getAddress() const
-		{
-			return address;
-		}
+		InetAddressPtr getAddress() const;
 
 		/** Returns the data received or the data to be sent. */
-		inline void* getData() const
-		{
-			return buf;
-		}
+		void* getData() const;
 
 		/** Returns the length of the data to be sent or the length of the
 		data received. */
-		inline int getLength() const
-		{
-			return length;
-		}
+		int getLength() const;
 
 		/** Returns the offset of the data to be sent or the offset of the
 		data received. */
-		inline int getOffset() const
-		{
-			return offset;
-		}
+		int getOffset() const;
 
 		/** Returns the port number on the remote host to which this
 		 datagram is being sent or from which the datagram was received. */
-		inline int getPort() const
-		{
-			return port;
-		}
+		int getPort() const;
 
-		inline void setAddress(InetAddressPtr address1)
-		{
-			this->address = address1;
-		}
+		void setAddress(InetAddressPtr address1);
 
 		/** Set the data buffer for this packet. */
-		inline void setData(void* buf1)
-		{
-			this->buf = buf1;
-		}
+		void setData(void* buf1);
 
 		/** Set the data buffer for this packet. */
-		inline void setData(void* buf1, int offset1, int length1)
-		{
-			this->buf = buf1;
-			this->offset = offset1;
-			this->length = length1;
-		}
+		void setData(void* buf1, int offset1, int length1);
 
 		/** Set the length for this packet. */
-		inline void setLength(int length1)
-		{
-			this->length = length1;
-		}
+		void setLength(int length1);
 
-		inline void setPort(int port1)
-		{
-			this->port = port1;
-		}
+		void setPort(int port1);
 
 	private:
 		//
