@@ -91,10 +91,10 @@ const char* SQLException::formatMessage(short fHandleType,
 
 IMPLEMENT_LOG4CXX_OBJECT(ODBCAppender)
 
-#define _priv static_cast<priv::ODBCAppenderPriv*>(m_priv.get())
+#define _priv static_cast<ODBCAppenderPriv*>(m_priv.get())
 
 ODBCAppender::ODBCAppender()
-	: AppenderSkeleton (std::make_unique<priv::ODBCAppenderPriv>())
+	: AppenderSkeleton (std::make_unique<ODBCAppenderPriv>())
 {
 }
 

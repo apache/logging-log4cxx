@@ -34,10 +34,6 @@
 
 namespace log4cxx
 {
-namespace priv
-{
-struct AppenderSkeletonPrivate;
-}
 
 /**
 *  Implementation base class for all appenders.
@@ -50,7 +46,8 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 	public virtual helpers::Object
 {
 	protected:
-		AppenderSkeleton( std::unique_ptr<priv::AppenderSkeletonPrivate> priv );
+		struct AppenderSkeletonPrivate;
+		AppenderSkeleton( std::unique_ptr<AppenderSkeletonPrivate> priv );
 
 		/**
 		Subclasses of <code>AppenderSkeleton</code> should implement this
@@ -177,7 +174,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		void setThreshold(const LevelPtr& threshold);
 
 protected:
-		std::unique_ptr<priv::AppenderSkeletonPrivate> m_priv;
+		std::unique_ptr<AppenderSkeletonPrivate> m_priv;
 
 }; // class AppenderSkeleton
 }  // namespace log4cxx

@@ -34,7 +34,7 @@ using namespace log4cxx::net;
 
 IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 
-struct TelnetAppenderPriv : public priv::AppenderSkeletonPrivate{
+struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate{
 	TelnetAppenderPriv( int port, int maxConnections ) : AppenderSkeletonPrivate(),
 		port(port),
 		connections(maxConnections),

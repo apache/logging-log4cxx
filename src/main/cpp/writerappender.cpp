@@ -27,29 +27,29 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-#define _priv static_cast<priv::WriterAppenderPriv*>(m_priv.get())
+#define _priv static_cast<WriterAppenderPriv*>(m_priv.get())
 
 IMPLEMENT_LOG4CXX_OBJECT(WriterAppender)
 
 WriterAppender::WriterAppender() :
-	AppenderSkeleton (std::make_unique<priv::WriterAppenderPriv>())
+	AppenderSkeleton (std::make_unique<WriterAppenderPriv>())
 {
 }
 
 WriterAppender::WriterAppender(const LayoutPtr& layout1,
 	log4cxx::helpers::WriterPtr& writer1)
-	: AppenderSkeleton (std::make_unique<priv::WriterAppenderPriv>(layout1, writer1))
+	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout1, writer1))
 {
 	Pool p;
 	activateOptions(p);
 }
 
 WriterAppender::WriterAppender(const LayoutPtr& layout1)
-	: AppenderSkeleton (std::make_unique<priv::WriterAppenderPriv>(layout1))
+	: AppenderSkeleton (std::make_unique<WriterAppenderPriv>(layout1))
 {
 }
 
-WriterAppender::WriterAppender(std::unique_ptr<priv::WriterAppenderPriv> priv)
+WriterAppender::WriterAppender(std::unique_ptr<WriterAppenderPriv> priv)
 	: AppenderSkeleton (std::move(priv)){
 
 }

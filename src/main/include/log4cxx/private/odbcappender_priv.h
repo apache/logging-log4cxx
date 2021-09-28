@@ -15,15 +15,18 @@
  * limitations under the License.
  */
 
+#ifndef LOG4CXX_ODBCAPPENDER_PRIV
+#define LOG4CXX_ODBCAPPENDER_PRIV
+
 #include <log4cxx/db/odbcappender.h>
 #include "appenderskeleton_priv.h"
 
 #include <list>
 
 namespace log4cxx{
-namespace priv{
+namespace db{
 
-struct ODBCAppenderPriv : public AppenderSkeletonPrivate {
+struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate {
     ODBCAppenderPriv() :
         AppenderSkeletonPrivate(),
         connection(nullptr),
@@ -80,3 +83,5 @@ struct ODBCAppenderPriv : public AppenderSkeletonPrivate {
 
 }
 }
+
+#endif /* LOG4CXX_ODBCAPPENDER_PRIV */

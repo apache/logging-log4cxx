@@ -57,6 +57,9 @@ class LOG4CXX_EXPORT AsyncAppender :
 	public virtual spi::AppenderAttachable,
 	public virtual AppenderSkeleton
 {
+protected:
+	struct AsyncAppenderPriv;
+
 	public:
 		DECLARE_LOG4CXX_OBJECT(AsyncAppender)
 		BEGIN_LOG4CXX_CAST_MAP()

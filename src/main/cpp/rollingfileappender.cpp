@@ -48,7 +48,7 @@ using namespace log4cxx::rolling;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-struct RollingFileAppenderPriv : public priv::FileAppenderPriv{
+struct RollingFileAppender::RollingFileAppenderPriv : public FileAppenderPriv{
 	RollingFileAppenderPriv() :
 		FileAppenderPriv(),
 		fileLength(0){}

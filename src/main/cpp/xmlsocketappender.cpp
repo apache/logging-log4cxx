@@ -35,7 +35,7 @@ using namespace log4cxx::xml;
 
 IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
 
-struct XMLSocketAppenderPriv : public priv::AppenderSkeletonPrivate {
+struct XMLSocketAppender::XMLSocketAppenderPriv : public AppenderSkeletonPrivate {
 	XMLSocketAppenderPriv() : AppenderSkeletonPrivate(){}
 
 	log4cxx::helpers::WriterPtr writer;

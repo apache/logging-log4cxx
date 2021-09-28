@@ -35,9 +35,6 @@ namespace helpers
 {
 class Pool;
 }
-namespace priv{
-struct FileAppenderPriv;
-}
 
 /**
 *  FileAppender appends log events to a file.
@@ -48,6 +45,9 @@ struct FileAppenderPriv;
 */
 class LOG4CXX_EXPORT FileAppender : public WriterAppender
 {
+protected:
+	struct FileAppenderPriv;
+
 	public:
 		DECLARE_LOG4CXX_OBJECT(FileAppender)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -209,7 +209,7 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 		FileAppender(const FileAppender&);
 		FileAppender& operator=(const FileAppender&);
 protected:
-		FileAppender(std::unique_ptr<priv::FileAppenderPriv> priv);
+		FileAppender(std::unique_ptr<FileAppenderPriv> priv);
 
 }; // class FileAppender
 LOG4CXX_PTR_DEF(FileAppender);

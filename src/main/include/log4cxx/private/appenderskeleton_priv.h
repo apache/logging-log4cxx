@@ -23,9 +23,8 @@
 #include <memory>
 
 namespace log4cxx {
-namespace priv{
 
-struct AppenderSkeletonPrivate {
+struct AppenderSkeleton::AppenderSkeletonPrivate {
     AppenderSkeletonPrivate() :
         threshold(Level::getAll()),
         errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
@@ -69,7 +68,6 @@ struct AppenderSkeletonPrivate {
     mutable log4cxx::shared_mutex mutex;
 };
 
-}
 }
 
 #endif /* _LOG4CXX_APPENDERSKELETON_PRIV */

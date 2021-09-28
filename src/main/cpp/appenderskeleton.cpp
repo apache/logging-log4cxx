@@ -30,20 +30,20 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(AppenderSkeleton)
 
-AppenderSkeleton::AppenderSkeleton( std::unique_ptr<priv::AppenderSkeletonPrivate> priv )
+AppenderSkeleton::AppenderSkeleton( std::unique_ptr<AppenderSkeletonPrivate> priv )
 	:	m_priv(std::move(priv))
 {
 
 }
 
 AppenderSkeleton::AppenderSkeleton()
-	:   m_priv(std::make_unique<priv::AppenderSkeletonPrivate>())
+	:   m_priv(std::make_unique<AppenderSkeletonPrivate>())
 {
 
 }
 
 AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
-	:	m_priv(std::make_unique<priv::AppenderSkeletonPrivate>())
+	:	m_priv(std::make_unique<AppenderSkeletonPrivate>())
 {
 
 }

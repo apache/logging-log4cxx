@@ -16,6 +16,7 @@
  */
 
 #include <log4cxx/helpers/writer.h>
+#include <log4cxx/writerappender.h>
 #include <atomic>
 
 #include "appenderskeleton_priv.h"
@@ -24,9 +25,8 @@
 #define _LOG4CXX_WRITERAPPENDER_PRIV_H
 
 namespace log4cxx{
-namespace priv{
 
-struct WriterAppenderPriv : public priv::AppenderSkeletonPrivate {
+struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate {
         WriterAppenderPriv() :
 	        AppenderSkeletonPrivate(),
 	        immediateFlush(true){}
@@ -71,7 +71,6 @@ struct WriterAppenderPriv : public priv::AppenderSkeletonPrivate {
 	log4cxx::helpers::WriterPtr writer;
 };
 
-}
 }
 
 #endif /* _LOG4CXX_WRITERAPPENDER_PRIV_H */

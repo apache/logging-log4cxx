@@ -35,10 +35,10 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 
-#define _priv static_cast<priv::FileAppenderPriv*>(m_priv.get())
+#define _priv static_cast<FileAppenderPriv*>(m_priv.get())
 
 FileAppender::FileAppender() :
-	WriterAppender (std::make_unique<priv::FileAppenderPriv>())
+	WriterAppender (std::make_unique<FileAppenderPriv>())
 {
 	_priv->fileAppend = true;
 	_priv->bufferedIO = false;
@@ -47,7 +47,7 @@ FileAppender::FileAppender() :
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
 	bool append1, bool bufferedIO1, int bufferSize1)
-	: WriterAppender(std::make_unique<priv::FileAppenderPriv>(layout1))
+	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1))
 {
 	_priv->fileAppend = append1;
 	_priv->fileName = fileName1;
@@ -59,7 +59,7 @@ FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
 	bool append1)
-	: WriterAppender(std::make_unique<priv::FileAppenderPriv>(layout1))
+	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1))
 {
 	_priv->fileAppend = append1;
 	_priv->fileName = fileName1;
@@ -70,7 +70,7 @@ FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
-	: WriterAppender(std::make_unique<priv::FileAppenderPriv>(layout1))
+	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1))
 {
 	_priv->fileAppend = true;
 	_priv->fileName = fileName1;
@@ -80,7 +80,7 @@ FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
 	activateOptions(p);
 }
 
-FileAppender::FileAppender(std::unique_ptr<priv::FileAppenderPriv> priv) :
+FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv) :
 	WriterAppender (std::move(priv)){
 
 }

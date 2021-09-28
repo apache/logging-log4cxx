@@ -40,6 +40,9 @@ namespace net
  */
 class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 {
+protected:
+	struct SocketAppenderSkeletonPriv;
+
 	public:
 		SocketAppenderSkeleton(int defaultPort, int reconnectionDelay);
 		~SocketAppenderSkeleton();

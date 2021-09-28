@@ -50,9 +50,9 @@
 #endif
 
 namespace log4cxx{
-namespace priv{
+namespace net{
 
-struct SyslogAppenderPriv : public AppenderSkeletonPrivate{
+struct SyslogAppender::SyslogAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate{
     SyslogAppenderPriv() :
         AppenderSkeletonPrivate(),
         syslogFacility(LOG_USER),

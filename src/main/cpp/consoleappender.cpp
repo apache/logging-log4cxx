@@ -27,7 +27,7 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-struct ConsoleAppenderPriv : public priv::WriterAppenderPriv{
+struct ConsoleAppender::ConsoleAppenderPriv : public WriterAppender::WriterAppenderPriv{
 	ConsoleAppenderPriv(LogString target) :
 		WriterAppenderPriv(),
 		target(target){}

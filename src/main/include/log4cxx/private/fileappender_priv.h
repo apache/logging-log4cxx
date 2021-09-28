@@ -19,11 +19,11 @@
 #define _LOG4CXX_FILEAPPENDER_PRIV_H
 
 #include <log4cxx/private/writerappender_priv.h>
+#include <log4cxx/fileappender.h>
 
 namespace log4cxx{
-namespace priv{
 
-struct FileAppenderPriv : public WriterAppenderPriv {
+struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPriv {
     FileAppenderPriv() : WriterAppenderPriv(){}
 
     FileAppenderPriv(LayoutPtr layout) : WriterAppenderPriv(layout){}
@@ -50,7 +50,6 @@ struct FileAppenderPriv : public WriterAppenderPriv {
     int bufferSize;
 };
 
-}
 }
 
 #endif

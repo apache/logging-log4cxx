@@ -45,6 +45,7 @@ delivering useful application context.
 class LOG4CXX_EXPORT SMTPAppender : public AppenderSkeleton
 {
 	private:
+		struct SMTPPriv;
 		SMTPAppender(const SMTPAppender&);
 		SMTPAppender& operator=(const SMTPAppender&);
 		static bool asciiCheck(const LogString& value, const LogString& label);

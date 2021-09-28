@@ -179,6 +179,8 @@ class LOG4CXX_EXPORT SocketHubAppender : public AppenderSkeleton
 
 		void monitor();
 
+		struct SocketHubAppenderPriv;
+
 }; // class SocketHubAppender
 LOG4CXX_PTR_DEF(SocketHubAppender);
 }  // namespace net

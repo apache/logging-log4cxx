@@ -138,6 +138,8 @@ class LOG4CXX_EXPORT XMLSocketAppender : public SocketAppenderSkeleton
 		//  prevent copy and assignment statements
 		XMLSocketAppender(const XMLSocketAppender&);
 		XMLSocketAppender& operator=(const XMLSocketAppender&);
+
+		struct XMLSocketAppenderPriv;
 }; // class XMLSocketAppender
 
 LOG4CXX_PTR_DEF(XMLSocketAppender);

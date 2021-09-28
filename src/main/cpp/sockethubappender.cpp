@@ -43,7 +43,7 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketHubAppender)
 
 int SocketHubAppender::DEFAULT_PORT = 4560;
 
-struct SocketHubAppenderPriv : public priv::AppenderSkeletonPrivate{
+struct SocketHubAppender::SocketHubAppenderPriv : public AppenderSkeletonPrivate{
 	SocketHubAppenderPriv(int port) :
 		AppenderSkeletonPrivate(),
 		port(port),

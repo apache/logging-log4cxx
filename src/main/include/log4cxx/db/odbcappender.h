@@ -227,6 +227,9 @@ class LOG4CXX_EXPORT ODBCAppender : public AppenderSkeleton
 #endif
 		static void encode(unsigned short** dest, const LogString& src,
 			log4cxx::helpers::Pool& p);
+
+protected:
+		struct ODBCAppenderPriv;
 }; // class ODBCAppender
 LOG4CXX_PTR_DEF(ODBCAppender);
 

@@ -144,6 +144,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		void initSyslogFacilityStr();
 
 	private:
+		struct SyslogAppenderPriv;
 		SyslogAppender(const SyslogAppender&);
 		SyslogAppender& operator=(const SyslogAppender&);
 }; // class SyslogAppender

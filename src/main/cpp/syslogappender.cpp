@@ -37,10 +37,10 @@ using namespace log4cxx::net;
 
 IMPLEMENT_LOG4CXX_OBJECT(SyslogAppender)
 
-#define _priv static_cast<priv::SyslogAppenderPriv*>(m_priv.get())
+#define _priv static_cast<SyslogAppenderPriv*>(m_priv.get())
 
 SyslogAppender::SyslogAppender()
-	: AppenderSkeleton (std::make_unique<priv::SyslogAppenderPriv>())
+	: AppenderSkeleton (std::make_unique<SyslogAppenderPriv>())
 {
 	this->initSyslogFacilityStr();
 
@@ -48,14 +48,14 @@ SyslogAppender::SyslogAppender()
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 	int syslogFacility1)
-	: AppenderSkeleton (std::make_unique<priv::SyslogAppenderPriv>(layout1, syslogFacility1))
+	: AppenderSkeleton (std::make_unique<SyslogAppenderPriv>(layout1, syslogFacility1))
 {
 	this->initSyslogFacilityStr();
 }
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
 	const LogString& syslogHost1, int syslogFacility1)
-	: AppenderSkeleton (std::make_unique<priv::SyslogAppenderPriv>(layout1, syslogHost1, syslogFacility1))
+	: AppenderSkeleton (std::make_unique<SyslogAppenderPriv>(layout1, syslogHost1, syslogFacility1))
 {
 	this->initSyslogFacilityStr();
 	setSyslogHost(syslogHost1);

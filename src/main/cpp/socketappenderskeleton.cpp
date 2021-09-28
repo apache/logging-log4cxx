@@ -34,7 +34,7 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
-struct SocketAppenderSkeletonPriv : public priv::AppenderSkeletonPrivate {
+struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkeletonPrivate {
 	SocketAppenderSkeletonPriv(int defaultPort, int reconnectionDelay) :
 		AppenderSkeletonPrivate(),
 		remoteHost(),

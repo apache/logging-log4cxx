@@ -137,6 +137,8 @@ class LOG4CXX_EXPORT TelnetAppender : public AppenderSkeleton
 		void write(log4cxx::helpers::ByteBuffer&);
 		void writeStatus(const log4cxx::helpers::SocketPtr& socket, const LogString& msg, log4cxx::helpers::Pool& p);
 		void acceptConnections();
+
+		struct TelnetAppenderPriv;
 }; // class TelnetAppender
 
 LOG4CXX_PTR_DEF(TelnetAppender);
