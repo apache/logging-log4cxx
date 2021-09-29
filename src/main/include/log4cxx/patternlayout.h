@@ -222,6 +222,25 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *      </td>
  *  </tr>
  *  <tr>
+ *      <td align="center"><strong>y</strong></td>
+ *      <td>
+ *          Used to wrap log with color. The <strong>y</strong> is the end of a color block.<br>
+ *      </td>
+ *  </tr>
+ *  <tr>
+ *      <td align="center"><strong>Y</strong></td>
+ *      <td>
+ *          Used to wrap log with color. The <strong>Y</strong> is the start of a color block.
+ *          Color will be taken from the log level.
+ *          - `TRACE` - blue
+ *          - `DEBUG` - cyan
+ *          - `INFO` - green
+ *          - `WARN` - yellow
+ *          - `ERROR` - red
+ *          - `FATAL` - magenta
+ *      </td>
+ *  </tr>
+ *  <tr>
  *      <td align="center"><strong>%</strong></td>
  *      <td>The sequence %% outputs a single percent sign.</td>
  *  </tr>

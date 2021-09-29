@@ -75,6 +75,7 @@ LOGUNIT_CLASS(PatternLayoutTest)
 	LOGUNIT_TEST(test10);
 	LOGUNIT_TEST(test11);
 	LOGUNIT_TEST(test12);
+	LOGUNIT_TEST(test13);
 	LOGUNIT_TEST(testMDC1);
 	LOGUNIT_TEST(testMDC2);
 	LOGUNIT_TEST_SUITE_END();
@@ -417,6 +418,13 @@ public:
 		}
 
 		LOGUNIT_ASSERT(Compare::compare(FILTERED, LOG4CXX_FILE("witness/patternLayout.12")));
+	}
+
+	void test13()
+	{
+		PropertyConfigurator::configure(LOG4CXX_FILE("input/patternLayout13.properties"));
+		common();
+		LOGUNIT_ASSERT(Compare::compare(TEMP, LOG4CXX_FILE("witness/patternLayout.13")));
 	}
 
 	void testMDC1()
