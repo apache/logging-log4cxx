@@ -37,7 +37,6 @@ set(ALL_LOG4CXX_TESTS
     rollingfileappendertestcase
     streamtestcase
     multithreadtest
-    throughputtests
 )
 foreach(fileName IN LISTS ALL_LOG4CXX_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
