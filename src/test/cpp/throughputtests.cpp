@@ -178,7 +178,9 @@ public:
 #else
 		auto msgCount = 200000;
 #endif
-		auto threadCount = std::max(1, int(std::thread::hardware_concurrency() / 2));
+		auto threadCount = std::thread::hardware_concurrency() / 2;
+		if (threadCount < 1)
+			threadCount = 1;
 		log4cxx_int64_t startMessageCount = 0;
 		if (auto mockAppender = log4cxx::cast<MockAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("mock_appender"))))
 			startMessageCount = mockAppender->messageCount;
@@ -193,7 +195,9 @@ public:
 #else
 		auto msgCount = 2000000;
 #endif
-		auto threadCount = std::max(1, int(std::thread::hardware_concurrency() / 2));
+		auto threadCount = std::thread::hardware_concurrency() / 2;
+		if (threadCount < 1)
+			threadCount = 1;
 		log4cxx_int64_t startMessageCount = 0;
 		if (auto mockAppender = log4cxx::cast<MockAppender>(Logger::getRootLogger()->getAppender(LOG4CXX_STR("mock_appender"))))
 			startMessageCount = mockAppender->messageCount;
