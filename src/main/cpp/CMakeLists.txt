@@ -37,7 +37,6 @@ target_sources(log4cxx
   datagramsocket.cpp
   date.cpp
   dateformat.cpp
-  datelayout.cpp
   datepatternconverter.cpp
   defaultconfigurator.cpp
   defaultloggerfactory.cpp
@@ -152,7 +151,6 @@ target_sources(log4cxx
   transcoder.cpp
   transform.cpp
   triggeringpolicy.cpp
-  ttcclayout.cpp
   writer.cpp
   writerappender.cpp
   xmllayout.cpp

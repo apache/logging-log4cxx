@@ -17,7 +17,6 @@
 #include "logunit.h"
 #include <log4cxx/logger.h>
 #include <log4cxx/simplelayout.h>
-#include <log4cxx/ttcclayout.h>
 #include <log4cxx/fileappender.h>
 #include <log4cxx/helpers/absolutetimedateformat.h>
 
@@ -39,22 +38,10 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-
-#define TTCC_PAT  \
-	ABSOLUTE_DATE_AND_TIME_PAT \
-	" \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - Message [0-9]\\{1,2\\}"
-
-#define TTCC2_PAT \
-	ABSOLUTE_DATE_AND_TIME_PAT \
-	" \\[0x[0-9A-F]*]\\ (DEBUG|INFO|WARN|ERROR|FATAL) .* - " \
-	"Messages should bear numbers 0 through 23\\."
-
-
 LOGUNIT_CLASS(MinimumTestCase)
 {
 	LOGUNIT_TEST_SUITE(MinimumTestCase);
 	LOGUNIT_TEST(simple);
-	LOGUNIT_TEST(ttcc);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -80,39 +67,6 @@ public:
 		common();
 
 		LOGUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/simple"), LOG4CXX_FILE("witness/simple")));
-	}
-
-	void ttcc()
-	{
-		LayoutPtr layout = TTCCLayoutPtr(
-				new TTCCLayout(LOG4CXX_STR("DATE")));
-		AppenderPtr appender = FileAppenderPtr(new FileAppender(layout, LOG4CXX_STR("output/ttcc"), false));
-		root->addAppender(appender);
-		common();
-
-		ControlFilter filter1;
-		filter1 << TTCC_PAT << TTCC2_PAT;
-		AbsoluteDateAndTimeFilter filter2;
-		ThreadFilter filter3;
-
-		std::vector<Filter*> filters;
-		filters.push_back(&filter1);
-		filters.push_back(&filter2);
-		filters.push_back(&filter3);
-
-		try
-		{
-			const File output("output/ttcc");
-			Transformer::transform(output, FILTERED, filters);
-		}
-		catch (std::exception& e)
-		{
-			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
-			throw;
-		}
-
-		const File witness("witness/ttcc");
-		LOGUNIT_ASSERT(Compare::compare(FILTERED, witness));
 	}
 
 	std::string createMessage(int i, Pool & pool)

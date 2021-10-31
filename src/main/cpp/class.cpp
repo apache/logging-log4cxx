@@ -55,7 +55,6 @@
 #include <log4cxx/htmllayout.h>
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/xml/xmllayout.h>
-#include <log4cxx/ttcclayout.h>
 
 #include <log4cxx/filter/levelmatchfilter.h>
 #include <log4cxx/filter/levelrangefilter.h>
@@ -181,11 +180,9 @@ void Class::registerClasses()
 	TelnetAppender::registerClass();
 #endif
 	XMLSocketAppender::registerClass();
-	DateLayout::registerClass();
 	HTMLLayout::registerClass();
 	PatternLayout::registerClass();
 	SimpleLayout::registerClass();
-	TTCCLayout::registerClass();
 	XMLLayout::registerClass();
 	LevelMatchFilter::registerClass();
 	LevelRangeFilter::registerClass();

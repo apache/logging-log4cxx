@@ -118,3 +118,5 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         endif()
     endif()
 endforeach()
+
+target_link_libraries(streamtestcase PRIVATE )

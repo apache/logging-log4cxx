@@ -16,7 +16,7 @@
  */
 
 #include <log4cxx/net/telnetappender.h>
-#include <log4cxx/ttcclayout.h>
+#include <log4cxx/patternlayout.h>
 #include "../appenderskeletontestcase.h"
 #include <apr_thread_proc.h>
 #include <apr_time.h>
@@ -45,6 +45,11 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 
 		enum { TEST_PORT = 1723 };
 
+		static LayoutPtr createLayout(){
+			PatternLayoutPtr pl = std::make_shared<PatternLayout>();
+			pl->setConversionPattern( "%r [%t] %-5p - %m%n" );
+		}
+
 	public:
 
 		AppenderSkeleton* createAppenderSkeleton() const
@@ -55,7 +60,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-			appender->setLayout(LayoutPtr(new TTCCLayout()));
+			appender->setLayout(createLayout());
 			appender->setPort(TEST_PORT);
 			Pool p;
 			appender->activateOptions(p);
@@ -65,7 +70,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateSleepClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-			appender->setLayout(LayoutPtr(new TTCCLayout()));
+			appender->setLayout(createLayout());
 			appender->setPort(TEST_PORT);
 			Pool p;
 			appender->activateOptions(p);
@@ -76,7 +81,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		void testActivateWriteClose()
 		{
 			TelnetAppenderPtr appender(new TelnetAppender());
-			appender->setLayout(LayoutPtr(new TTCCLayout()));
+			appender->setLayout(createLayout());
 			appender->setPort(TEST_PORT);
 			Pool p;
 			appender->activateOptions(p);
