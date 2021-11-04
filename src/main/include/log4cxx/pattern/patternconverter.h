@@ -49,26 +49,24 @@ typedef std::vector<LogString> OptionsList;
  */
 class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::Object
 {
-
-		/**
-		 * Converter name.
-		 */
-		const LogString name;
-
-		/**
-		 * Converter style name.
-		 */
-		const LogString style;
-
-
 	protected:
+		struct PatternConverterPrivate;
+		std::unique_ptr<PatternConverterPrivate> m_priv;
+
 		/**
-		 * Create a new pattern converter.
+		 * Use this constructor when you have a subclass that has its own private data
+		 * @param priv
+		 */
+		PatternConverter(std::unique_ptr<PatternConverterPrivate> priv);
+
+		/**
+		 * Create a new pattern converter.  Use this constructor when you have a subclass
+		 * that does not have any private data.
 		 * @param name name for pattern converter.
 		 * @param style CSS style for formatted output.
 		 */
 		PatternConverter(const LogString& name,
-			const LogString& style);
+						 const LogString& style);
 
 		virtual ~PatternConverter();
 

@@ -22,18 +22,31 @@
 #include <log4cxx/pattern/literalpatternconverter.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/spi/location/locationinfo.h>
-
+#include <log4cxx/private/patternconverter_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::pattern;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+#define priv static_cast<LiteralPatternConverterPrivate*>(m_priv.get())
+
+struct LiteralPatternConverter::LiteralPatternConverterPrivate : public PatternConverterPrivate {
+	LiteralPatternConverterPrivate( const LogString& name, const LogString& style, const LogString& literal1 ) :
+		PatternConverterPrivate( name, style ),
+		literal(literal1){}
+
+	/**
+	 * String literal.
+	 */
+	const LogString literal;
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(LiteralPatternConverter)
 
 LiteralPatternConverter::LiteralPatternConverter(const LogString& literal1) :
-	LoggingEventPatternConverter(LOG4CXX_STR("Literal"), LOG4CXX_STR("literal")),
-	literal(literal1)
+	LoggingEventPatternConverter(std::make_unique<LiteralPatternConverterPrivate>
+								 (LOG4CXX_STR("Literal"), LOG4CXX_STR("literal"),literal1))
 {
 }
 
@@ -55,7 +68,7 @@ void LiteralPatternConverter::format(
 	LogString& toAppendTo,
 	Pool& /* p */) const
 {
-	toAppendTo.append(literal);
+	toAppendTo.append(priv->literal);
 }
 
 void LiteralPatternConverter::format(
@@ -63,6 +76,6 @@ void LiteralPatternConverter::format(
 	LogString& toAppendTo,
 	Pool& /* p */)  const
 {
-	toAppendTo.append(literal);
+	toAppendTo.append(priv->literal);
 }
 

@@ -23,6 +23,7 @@
 #include <log4cxx/pattern/propertiespatternconverter.h>
 #include <log4cxx/spi/loggingevent.h>
 #include <log4cxx/spi/location/locationinfo.h>
+#include <log4cxx/private/patternconverter_priv.h>
 
 #include <iterator>
 
@@ -31,12 +32,25 @@ using namespace log4cxx::pattern;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+#define priv static_cast<PropertiesPatternConverterPrivate*>(m_priv.get())
+
+struct PropertiesPatternConverter::PropertiesPatternConverterPrivate : public PatternConverterPrivate {
+	PropertiesPatternConverterPrivate( const LogString& name, const LogString& style, const LogString& propertyName ) :
+		PatternConverterPrivate( name, style ),
+		option(propertyName){}
+
+	/**
+	 * Name of property to output.
+	 */
+	const LogString option;
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(PropertiesPatternConverter)
 
 PropertiesPatternConverter::PropertiesPatternConverter(const LogString& name1,
 	const LogString& propertyName) :
-	LoggingEventPatternConverter(name1, LOG4CXX_STR("property")),
-	option(propertyName)
+	LoggingEventPatternConverter(
+		std::make_unique<PropertiesPatternConverterPrivate>(name1, LOG4CXX_STR("property"),propertyName))
 {
 }
 
@@ -63,7 +77,7 @@ void PropertiesPatternConverter::format(
 	LogString& toAppendTo,
 	Pool& /* p */) const
 {
-	if (option.length() == 0)
+	if (priv->option.length() == 0)
 	{
 		toAppendTo.append(1, (logchar) 0x7B /* '{' */);
 
@@ -85,7 +99,7 @@ void PropertiesPatternConverter::format(
 	}
 	else
 	{
-		event->getMDC(option, toAppendTo);
+		event->getMDC(priv->option, toAppendTo);
 	}
 }
 

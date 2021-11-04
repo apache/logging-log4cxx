@@ -21,6 +21,7 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include <log4cxx/spi/loggingevent.h>
+#include <log4cxx/private/patternconverter_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::pattern;
@@ -34,6 +35,11 @@ IMPLEMENT_LOG4CXX_OBJECT(LoggingEventPatternConverter)
 LoggingEventPatternConverter::LoggingEventPatternConverter(
 	const LogString& name1, const LogString& style1) : PatternConverter(name1, style1)
 {
+}
+
+LoggingEventPatternConverter::LoggingEventPatternConverter(std::unique_ptr<PatternConverterPrivate> priv) :
+	PatternConverter (std::move(priv)){
+
 }
 
 void LoggingEventPatternConverter::format(const ObjectPtr& obj,

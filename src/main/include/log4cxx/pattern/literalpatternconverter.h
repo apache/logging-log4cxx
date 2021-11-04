@@ -39,10 +39,7 @@ namespace pattern
  */
 class LOG4CXX_EXPORT LiteralPatternConverter : public LoggingEventPatternConverter
 {
-		/**
-		 * String literal.
-		 */
-		const LogString literal;
+	struct LiteralPatternConverterPrivate;
 
 		/**
 		 * Create a new instance.

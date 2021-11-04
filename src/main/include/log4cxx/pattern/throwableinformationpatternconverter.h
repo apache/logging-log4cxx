@@ -37,10 +37,7 @@ namespace pattern
 class LOG4CXX_EXPORT ThrowableInformationPatternConverter
 	: public LoggingEventPatternConverter
 {
-		/**
-		 * If "short", only first line of throwable report will be formatted.
-		 */
-		const bool shortReport;
+	struct ThrowableInformationPatternConverterPrivate;
 
 		/**
 		 * Private constructor.

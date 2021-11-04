@@ -35,10 +35,7 @@ namespace pattern
  */
 class LOG4CXX_EXPORT NamePatternConverter : public LoggingEventPatternConverter
 {
-		/**
-		 * Abbreviator.
-		 */
-		const NameAbbreviatorPtr abbreviator;
+	struct NamePatternConverterPrivate;
 
 	public:
 		DECLARE_LOG4CXX_PATTERN(NamePatternConverter)

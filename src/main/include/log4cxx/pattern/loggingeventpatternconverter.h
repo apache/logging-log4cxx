@@ -45,6 +45,8 @@ class LOG4CXX_EXPORT LoggingEventPatternConverter : public PatternConverter
 		LoggingEventPatternConverter(
 			const LogString& name, const LogString& style);
 
+		LoggingEventPatternConverter(std::unique_ptr<PatternConverterPrivate> priv);
+
 	public:
 		DECLARE_LOG4CXX_PATTERN(LoggingEventPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()

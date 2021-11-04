@@ -37,10 +37,7 @@ namespace pattern
  */
 class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 {
-		/**
-		 * Date format.
-		 */
-		log4cxx::helpers::DateFormatPtr df;
+		struct DatePatternConverterPrivate;
 
 		/**
 		 * Private constructor.
@@ -62,6 +59,7 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
 
+		~DatePatternConverter();
 
 		static PatternConverterPtr newInstance(
 			const std::vector<LogString>& options);

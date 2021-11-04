@@ -31,20 +31,35 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/date.h>
+#include <log4cxx/private/patternconverter_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::pattern;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+struct DatePatternConverter::DatePatternConverterPrivate : public PatternConverterPrivate{
+	DatePatternConverterPrivate( const LogString& name, const LogString& style, DateFormatPtr _df ):
+		PatternConverterPrivate(name,style),
+		df(_df){}
+	/**
+	 * Date format.
+	 */
+	log4cxx::helpers::DateFormatPtr df;
+};
+
+#define priv static_cast<DatePatternConverterPrivate*>(m_priv.get())
+
 IMPLEMENT_LOG4CXX_OBJECT(DatePatternConverter)
 
 DatePatternConverter::DatePatternConverter(
 	const std::vector<LogString>& options) :
-	LoggingEventPatternConverter(LOG4CXX_STR("Class Name"),
-		LOG4CXX_STR("class name")), df(getDateFormat(options))
+	LoggingEventPatternConverter (std::make_unique<DatePatternConverterPrivate>(LOG4CXX_STR("Class Name"),
+		LOG4CXX_STR("class name"), getDateFormat(options)))
 {
 }
+
+DatePatternConverter::~DatePatternConverter(){}
 
 DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 {
@@ -129,7 +144,7 @@ void DatePatternConverter::format(
 	LogString& toAppendTo,
 	Pool& p) const
 {
-	df->format(toAppendTo, event->getTimeStamp(), p);
+	priv->df->format(toAppendTo, event->getTimeStamp(), p);
 }
 
 /**
@@ -167,5 +182,5 @@ void DatePatternConverter::format(
 	LogString& toAppendTo,
 	Pool& p) const
 {
-	df->format(toAppendTo, date->getTime(), p);
+	priv->df->format(toAppendTo, date->getTime(), p);
 }
