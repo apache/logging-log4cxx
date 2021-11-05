@@ -62,26 +62,8 @@ class LOG4CXX_EXPORT Hierarchy :
 	public std::enable_shared_from_this<Hierarchy>
 {
 	private:
-		log4cxx::helpers::Pool pool;
-		mutable std::mutex mutex;
-		bool configured;
-
-		spi::LoggerFactoryPtr defaultFactory;
-		spi::HierarchyEventListenerList listeners;
-
-		typedef std::map<LogString, LoggerPtr> LoggerMap;
-		std::unique_ptr<LoggerMap> loggers;
-
-		typedef std::map<LogString, ProvisionNode> ProvisionNodeMap;
-		std::unique_ptr<ProvisionNodeMap> provisionNodes;
-
-		LoggerPtr root;
-
-		int thresholdInt;
-		LevelPtr threshold;
-
-		bool emittedNoAppenderWarning;
-		bool emittedNoResourceBundleWarning;
+		struct HierarchyPrivate;
+		std::unique_ptr<HierarchyPrivate> m_priv;
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)
