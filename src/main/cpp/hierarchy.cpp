@@ -355,7 +355,7 @@ void Hierarchy::updateParents(LoggerPtr logger)
 		if (it != loggers->end())
 		{
 			parentFound = true;
-			logger->parent = it->second;
+			logger->setParent( it->second );
 			break; // no need to update the ancestors of the closest ancestor
 		}
 		else
@@ -378,7 +378,7 @@ void Hierarchy::updateParents(LoggerPtr logger)
 	// If we could not find any existing parents, then link with root.
 	if (!parentFound)
 	{
-		logger->parent = root;
+		logger->setParent( root );
 	}
 }
 
@@ -393,10 +393,10 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 
 		// Unless this child already points to a correct (lower) parent,
 		// make cat.parent point to l.parent and l.parent to cat.
-		if (!StringHelper::startsWith(l->parent->name, logger->name))
+		if (!StringHelper::startsWith(l->getParent()->getName(), logger->getName()))
 		{
-			logger->parent = l->parent;
-			l->parent = logger;
+			logger->setParent( l->getParent() );
+			l->setParent( logger );
 		}
 	}
 }

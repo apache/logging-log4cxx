@@ -37,6 +37,7 @@ class LOG4CXX_EXPORT Locale
 		Locale(const LogString& language, const LogString& country);
 		Locale(const LogString& language, const LogString& country,
 			const LogString& variant);
+		~Locale();
 
 		const LogString& getLanguage() const;
 		const LogString& getCountry() const;

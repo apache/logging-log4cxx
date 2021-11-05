@@ -72,48 +72,8 @@ class LOG4CXX_EXPORT Logger :
 		END_LOG4CXX_CAST_MAP()
 
 	private:
-		/**
-		 *   Reference to memory pool.
-		 */
-		helpers::Pool* pool;
-
-	protected:
-		/**
-		The name of this logger.
-		*/
-		LogString name;
-
-		/**
-		The assigned level of this logger.  The
-		<code>level</code> variable need not be assigned a value in
-		which case it is inherited form the hierarchy.  */
-		LevelPtr level;
-
-		/**
-		The parent of this logger. All loggers have at least one
-		ancestor which is the root logger. */
-		LoggerPtr parent;
-
-		/** The resourceBundle for localized messages.
-
-		@see setResourceBundle, getResourceBundle
-		*/
-		helpers::ResourceBundlePtr resourceBundle;
-
-
-		// Loggers need to know what Hierarchy they are in
-		log4cxx::spi::LoggerRepositoryWeakPtr repository;
-
-		helpers::AppenderAttachableImplPtr aai;
-
-		/** Additivity is set to true by default, that is children inherit
-		        the appenders of their ancestors by default. If this variable is
-		        set to <code>false</code> then the appenders found in the
-		        ancestors of this logger are not used. However, the children
-		        of this logger will inherit its appenders, unless the children
-		        have their additivity flag set to <code>false</code> too. See
-		        the user manual for more details. */
-		bool additive;
+		struct LoggerPrivate;
+		std::unique_ptr<LoggerPrivate> m_priv;
 
 	protected:
 		friend class DefaultLoggerFactory;
@@ -630,10 +590,8 @@ class LOG4CXX_EXPORT Logger :
 		* Get the logger name.
 		* @return logger name as LogString.
 		*/
-		const LogString& getName() const
-		{
-			return name;
-		}
+		const LogString& getName() const;
+
 		/**
 		* Get logger name in current encoding.
 		* @param name buffer to which name is appended.
@@ -1465,6 +1423,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Only the Hierarchy class can set the hierarchy of a logger.*/
 		void setHierarchy(spi::LoggerRepositoryWeakPtr repository);
+		void setParent(LoggerPtr parentLogger);
 
 	public:
 		/**
@@ -1478,10 +1437,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Set the resource bundle to be used with localized logging methods.
 		*/
-		inline void setResourceBundle(const helpers::ResourceBundlePtr& bundle)
-		{
-			resourceBundle = bundle;
-		}
+		void setResourceBundle(const helpers::ResourceBundlePtr& bundle);
 
 #if LOG4CXX_WCHAR_T_API
 		/**
@@ -1726,8 +1682,6 @@ class LOG4CXX_EXPORT Logger :
 		//  prevent copy and assignment
 		Logger(const Logger&);
 		Logger& operator=(const Logger&);
-		mutable shared_mutex mutex;
-		friend class log4cxx::helpers::synchronized;
 };
 LOG4CXX_LIST_DEF(LoggerList, LoggerPtr);
 

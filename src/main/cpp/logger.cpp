@@ -39,14 +39,67 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
+struct Logger::LoggerPrivate{
+	LoggerPrivate(Pool& p, const LogString& name1):
+		pool(&p),
+		name(name1),
+		level(),
+		parent(),
+		resourceBundle(),
+		repository(),
+		aai(new AppenderAttachableImpl(*pool)),
+		additive(true){}
+
+	/**
+	 *   Reference to memory pool.
+	 */
+	helpers::Pool* pool;
+
+	/**
+	The name of this logger.
+	*/
+	LogString name;
+
+	/**
+	The assigned level of this logger.  The
+	<code>level</code> variable need not be assigned a value in
+	which case it is inherited form the hierarchy.  */
+	LevelPtr level;
+
+	/**
+	The parent of this logger. All loggers have at least one
+	ancestor which is the root logger. */
+	LoggerPtr parent;
+
+	/** The resourceBundle for localized messages.
+
+	@see setResourceBundle, getResourceBundle
+	*/
+	helpers::ResourceBundlePtr resourceBundle;
+
+
+	// Loggers need to know what Hierarchy they are in
+	log4cxx::spi::LoggerRepositoryWeakPtr repository;
+
+	helpers::AppenderAttachableImplPtr aai;
+
+	/** Additivity is set to true by default, that is children inherit
+			the appenders of their ancestors by default. If this variable is
+			set to <code>false</code> then the appenders found in the
+			ancestors of this logger are not used. However, the children
+			of this logger will inherit its appenders, unless the children
+			have their additivity flag set to <code>false</code> too. See
+			the user manual for more details. */
+	bool additive;
+
+	mutable shared_mutex mutex;
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
 Logger::Logger(Pool& p, const LogString& name1)
-	: pool(&p), name(), level(), parent(), resourceBundle(),
-	  repository(), aai(new AppenderAttachableImpl(*pool))
+	: m_priv(std::make_unique<LoggerPrivate>(p, name1))
 {
-	name = name1;
-	additive = true;
 }
 
 Logger::~Logger()
@@ -57,8 +110,8 @@ void Logger::addAppender(const AppenderPtr newAppender)
 {
 	log4cxx::spi::LoggerRepositoryPtr rep;
 
-	aai->addAppender(newAppender);
-	rep = repository.lock();
+	m_priv->aai->addAppender(newAppender);
+	rep = m_priv->repository.lock();
 
 	if (rep)
 	{
@@ -68,19 +121,19 @@ void Logger::addAppender(const AppenderPtr newAppender)
 
 void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additive1 )
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::unique_lock<log4cxx::shared_mutex> lock(m_priv->mutex);
 
-	additive = additive1;
+	m_priv->additive = additive1;
 
-	aai->removeAllAppenders();
+	m_priv->aai->removeAllAppenders();
 
 	for ( std::vector<AppenderPtr>::const_iterator it = appenders.cbegin();
 		it != appenders.cend();
 		it++ )
 	{
-		aai->addAppender( *it );
+		m_priv->aai->addAppender( *it );
 
-		if (log4cxx::spi::LoggerRepositoryPtr rep = repository.lock())
+		if (log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock())
 		{
 			rep->fireAddAppenderEvent(this, it->get());
 		}
@@ -93,17 +146,17 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 
 	for (const Logger* logger = this;
 		logger != 0;
-		logger = logger->parent.get())
+		logger = logger->m_priv->parent.get())
 	{
-		writes += logger->aai->appendLoopOnAppenders(event, p);
+		writes += logger->m_priv->aai->appendLoopOnAppenders(event, p);
 
-		if (!logger->additive)
+		if (!logger->m_priv->additive)
 		{
 			break;
 		}
 	}
 
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (writes == 0 && rep)
 	{
 		rep->emitNoAppenderWarning(const_cast<Logger*>(this));
@@ -126,7 +179,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message,
 {
 	Pool p;
 	LOG4CXX_DECODE_CHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
+	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
 	callAppenders(event, p);
 }
 
@@ -135,7 +188,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message) const
 {
 	Pool p;
 	LOG4CXX_DECODE_CHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(name, level1, msg,
+	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
 			LocationInfo::getLocationUnavailable()));
 	callAppenders(event, p);
 }
@@ -144,54 +197,54 @@ void Logger::forcedLogLS(const LevelPtr& level1, const LogString& message,
 	const LocationInfo& location) const
 {
 	Pool p;
-	LoggingEventPtr event(new LoggingEvent(name, level1, message, location));
+	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, message, location));
 	callAppenders(event, p);
 }
 
 
 bool Logger::getAdditivity() const
 {
-	return additive;
+	return m_priv->additive;
 }
 
 AppenderList Logger::getAllAppenders() const
 {
-	return aai->getAllAppenders();
+	return m_priv->aai->getAllAppenders();
 }
 
 AppenderPtr Logger::getAppender(const LogString& name1) const
 {
-	return aai->getAppender(name1);
+	return m_priv->aai->getAppender(name1);
 }
 
 const LevelPtr Logger::getEffectiveLevel() const
 {
-	for (const Logger* l = this; l != 0; l = l->parent.get())
+	for (const Logger* l = this; l != 0; l = l->m_priv->parent.get())
 	{
-		if (l->level != 0)
+		if (l->m_priv->level != 0)
 		{
-			return l->level;
+			return l->m_priv->level;
 		}
 	}
 
 	throw NullPointerException(LOG4CXX_STR("No level specified for logger or ancestors."));
 #if LOG4CXX_RETURN_AFTER_THROW
-	return this->level;
+	return m_priv->level;
 #endif
 }
 
 LoggerRepositoryWeakPtr Logger::getLoggerRepository() const
 {
-	return repository;
+	return m_priv->repository;
 }
 
 ResourceBundlePtr Logger::getResourceBundle() const
 {
-	for (const Logger* l = this; l != 0; l = l->parent.get())
+	for (const Logger* l = this; l != 0; l = l->m_priv->parent.get())
 	{
-		if (l->resourceBundle != 0)
+		if (l->m_priv->resourceBundle != 0)
 		{
-			return l->resourceBundle;
+			return l->m_priv->resourceBundle;
 		}
 	}
 
@@ -229,23 +282,22 @@ LogString Logger::getResourceBundleString(const LogString& key) const
 
 LoggerPtr Logger::getParent() const
 {
-	return parent;
+	return m_priv->parent;
 }
 
 LevelPtr Logger::getLevel() const
 {
-	return level;
+	return m_priv->level;
 }
-
 
 bool Logger::isAttached(const AppenderPtr appender) const
 {
-	return aai->isAttached(appender);
+	return m_priv->aai->isAttached(appender);
 }
 
 bool Logger::isTraceEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (!rep || rep->isDisabled(Level::TRACE_INT))
 	{
 		return false;
@@ -256,7 +308,7 @@ bool Logger::isTraceEnabled() const
 
 bool Logger::isDebugEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (!rep || rep->isDisabled(Level::DEBUG_INT))
 	{
 		return false;
@@ -267,7 +319,7 @@ bool Logger::isDebugEnabled() const
 
 bool Logger::isEnabledFor(const LevelPtr& level1) const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (!rep || rep->isDisabled(level1->toInt()))
 	{
 		return false;
@@ -279,7 +331,7 @@ bool Logger::isEnabledFor(const LevelPtr& level1) const
 
 bool Logger::isInfoEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (!rep || rep->isDisabled(Level::INFO_INT))
 	{
 		return false;
@@ -290,7 +342,7 @@ bool Logger::isInfoEnabled() const
 
 bool Logger::isErrorEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (!rep || rep->isDisabled(Level::ERROR_INT))
 	{
 		return false;
@@ -301,7 +353,7 @@ bool Logger::isErrorEnabled() const
 
 bool Logger::isWarnEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (!rep || rep->isDisabled(Level::WARN_INT))
 	{
 		return false;
@@ -312,7 +364,7 @@ bool Logger::isWarnEnabled() const
 
 bool Logger::isFatalEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (!rep || rep->isDisabled(Level::FATAL_INT))
 	{
 		return false;
@@ -349,7 +401,7 @@ bool Logger::isFatalEnabled() const
 void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
 	const LocationInfo& location, const std::vector<LogString>& params) const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = repository.lock();
+	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
 	if (!rep || rep->isDisabled(level1->toInt()))
 	{
 		return;
@@ -427,35 +479,42 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
-	aai->removeAllAppenders();
+	m_priv->aai->removeAllAppenders();
 }
 
 void Logger::removeAppender(const AppenderPtr appender)
 {
-	aai->removeAppender(appender);
+	m_priv->aai->removeAppender(appender);
 }
 
 void Logger::removeAppender(const LogString& name1)
 {
-	aai->removeAppender(name1);
+	m_priv->aai->removeAppender(name1);
 }
 
 void Logger::setAdditivity(bool additive1)
 {
-	this->additive = additive1;
+	m_priv->additive = additive1;
 }
 
 void Logger::setHierarchy(spi::LoggerRepositoryWeakPtr repository1)
 {
-	this->repository = repository1;
+	m_priv->repository = repository1;
+}
+
+void Logger::setParent(LoggerPtr parentLogger){
+	m_priv->parent = parentLogger;
 }
 
 void Logger::setLevel(const LevelPtr level1)
 {
-	this->level = level1;
+	m_priv->level = level1;
 }
 
-
+const LogString& Logger::getName() const
+{
+	return m_priv->name;
+}
 
 LoggerPtr Logger::getLogger(const std::string& name)
 {
@@ -468,7 +527,10 @@ LoggerPtr Logger::getLogger(const char* const name)
 	return LogManager::getLogger(name);
 }
 
-
+void Logger::setResourceBundle(const helpers::ResourceBundlePtr& bundle)
+{
+	m_priv->resourceBundle = bundle;
+}
 
 LoggerPtr Logger::getRootLogger()
 {
@@ -483,7 +545,7 @@ LoggerPtr Logger::getLoggerLS(const LogString& name,
 
 void Logger::getName(std::string& rv) const
 {
-	Transcoder::encode(name, rv);
+	Transcoder::encode(m_priv->name, rv);
 }
 
 
@@ -626,7 +688,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message,
 {
 	Pool p;
 	LOG4CXX_DECODE_WCHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
+	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
 	callAppenders(event, p);
 }
 
@@ -634,14 +696,14 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message) cons
 {
 	Pool p;
 	LOG4CXX_DECODE_WCHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(name, level1, msg,
+	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
 			LocationInfo::getLocationUnavailable()));
 	callAppenders(event, p);
 }
 
 void Logger::getName(std::wstring& rv) const
 {
-	Transcoder::encode(name, rv);
+	Transcoder::encode(m_priv->name, rv);
 }
 
 LoggerPtr Logger::getLogger(const std::wstring& name)
@@ -777,7 +839,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 {
 	Pool p;
 	LOG4CXX_DECODE_UNICHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
+	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
 	callAppenders(event, p);
 }
 
@@ -785,7 +847,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 {
 	Pool p;
 	LOG4CXX_DECODE_UNICHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(name, level1, msg,
+	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
 			LocationInfo::getLocationUnavailable()));
 	callAppenders(event, p);
 }
@@ -794,7 +856,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 #if LOG4CXX_UNICHAR_API
 void Logger::getName(std::basic_string<UniChar>& rv) const
 {
-	Transcoder::encode(name, rv);
+	Transcoder::encode(m_priv->name, rv);
 }
 
 LoggerPtr Logger::getLogger(const std::basic_string<UniChar>& name)

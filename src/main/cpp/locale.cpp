@@ -58,6 +58,7 @@ Locale::Locale(const LogString& language1, const LogString& country1,
 {
 }
 
+Locale::~Locale(){}
 
 const LogString& Locale::getLanguage() const
 {
