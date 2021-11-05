@@ -43,7 +43,7 @@ void RootLogger::setLevel(const LevelPtr level1)
 	}
 	else
 	{
-		setLevel(level1);
+		Logger::setLevel(level1);
 	}
 }
 

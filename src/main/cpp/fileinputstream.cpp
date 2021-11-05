@@ -65,7 +65,8 @@ void FileInputStream::open(const LogString& filename)
 }
 
 
-FileInputStream::FileInputStream(const File& aFile)
+FileInputStream::FileInputStream(const File& aFile) :
+	m_priv(std::make_unique<FileInputStreamPrivate>())
 {
 	apr_fileperms_t perm = APR_OS_DEFAULT;
 	apr_int32_t flags = APR_READ;
