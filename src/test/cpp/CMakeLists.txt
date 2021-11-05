@@ -57,7 +57,6 @@ if(WIN32)
 endif()
 add_subdirectory(pattern)
 add_subdirectory(rolling)
-add_subdirectory(spi)
 add_subdirectory(varia)
 add_subdirectory(xml)
 

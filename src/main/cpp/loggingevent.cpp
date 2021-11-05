@@ -42,6 +42,90 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+struct LoggingEvent::LoggingEventPrivate{
+	LoggingEventPrivate() :
+		ndc(0),
+		mdcCopy(0),
+		properties(0),
+		ndcLookupRequired(true),
+		mdcCopyLookupRequired(true),
+		timeStamp(0),
+		locationInfo()
+	{
+	}
+
+	LoggingEventPrivate(
+		const LogString& logger1, const LevelPtr& level1,
+		const LogString& message1, const LocationInfo& locationInfo1) :
+		logger(logger1),
+		level(level1),
+		ndc(0),
+		mdcCopy(0),
+		properties(0),
+		ndcLookupRequired(true),
+		mdcCopyLookupRequired(true),
+		message(message1),
+		timeStamp(apr_time_now()),
+		locationInfo(locationInfo1),
+		threadName(getCurrentThreadName()){}
+
+	~LoggingEventPrivate(){
+		delete ndc;
+		delete mdcCopy;
+		delete properties;
+	}
+
+	/**
+	* The logger of the logging event.
+	**/
+	LogString logger;
+
+	/** level of logging event. */
+	LevelPtr level;
+
+	/** The nested diagnostic context (NDC) of logging event. */
+	mutable LogString* ndc;
+
+	/** The mapped diagnostic context (MDC) of logging event. */
+	mutable MDC::Map* mdcCopy;
+
+	/**
+	* A map of String keys and String values.
+	*/
+	std::map<LogString, LogString>* properties;
+
+	/** Have we tried to do an NDC lookup? If we did, there is no need
+	*  to do it again.  Note that its value is always false when
+	*  serialized. Thus, a receiving SocketNode will never use it's own
+	*  (incorrect) NDC. See also writeObject method.
+	*/
+	mutable bool ndcLookupRequired;
+
+	/**
+	* Have we tried to do an MDC lookup? If we did, there is no need to do it
+	* again.  Note that its value is always false when serialized. See also
+	* the getMDC and getMDCCopy methods.
+	*/
+	mutable bool mdcCopyLookupRequired;
+
+	/** The application supplied message of logging event. */
+	LogString message;
+
+
+	/** The number of microseconds elapsed from 01.01.1970 until logging event
+	 was created. */
+	log4cxx_time_t timeStamp;
+
+	/** The is the location where this log statement was written. */
+	const log4cxx::spi::LocationInfo locationInfo;
+
+
+	/** The identifier of thread in which this logging event
+	was generated.
+	*/
+	const LogString threadName;
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
 
 
@@ -54,56 +138,37 @@ log4cxx_time_t LoggingEvent::getStartTime()
 }
 
 LoggingEvent::LoggingEvent() :
-	ndc(0),
-	mdcCopy(0),
-	properties(0),
-	ndcLookupRequired(true),
-	mdcCopyLookupRequired(true),
-	timeStamp(0),
-	locationInfo()
+	m_priv(std::make_unique<LoggingEventPrivate>())
 {
 }
 
 LoggingEvent::LoggingEvent(
 	const LogString& logger1, const LevelPtr& level1,
 	const LogString& message1, const LocationInfo& locationInfo1) :
-	logger(logger1),
-	level(level1),
-	ndc(0),
-	mdcCopy(0),
-	properties(0),
-	ndcLookupRequired(true),
-	mdcCopyLookupRequired(true),
-	message(message1),
-	timeStamp(apr_time_now()),
-	locationInfo(locationInfo1),
-	threadName(getCurrentThreadName())
+	m_priv(std::make_unique<LoggingEventPrivate>(logger1, level1, message1, locationInfo1))
 {
 }
 
 LoggingEvent::~LoggingEvent()
 {
-	delete ndc;
-	delete mdcCopy;
-	delete properties;
 }
 
 bool LoggingEvent::getNDC(LogString& dest) const
 {
-	if (ndcLookupRequired)
+	if (m_priv->ndcLookupRequired)
 	{
-		ndcLookupRequired = false;
+		m_priv->ndcLookupRequired = false;
 		LogString val;
 
 		if (NDC::get(val))
 		{
-			ndc = new LogString(val);
+			m_priv->ndc = new LogString(val);
 		}
 	}
 
-	if (ndc)
+	if (m_priv->ndc)
 	{
-		dest.append(*ndc);
+		dest.append(*m_priv->ndc);
 		return true;
 	}
 
@@ -114,11 +179,11 @@ bool LoggingEvent::getMDC(const LogString& key, LogString& dest) const
 {
 	// Note the mdcCopy is used if it exists. Otherwise we use the MDC
 	// that is associated with the thread.
-	if (mdcCopy != 0 && !mdcCopy->empty())
+	if (m_priv->mdcCopy != 0 && !m_priv->mdcCopy->empty())
 	{
-		MDC::Map::const_iterator it = mdcCopy->find(key);
+		MDC::Map::const_iterator it = m_priv->mdcCopy->find(key);
 
-		if (it != mdcCopy->end())
+		if (it != m_priv->mdcCopy->end())
 		{
 			if (!it->second.empty())
 			{
@@ -136,11 +201,11 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 {
 	LoggingEvent::KeySet set;
 
-	if (mdcCopy != 0 && !mdcCopy->empty())
+	if (m_priv->mdcCopy != 0 && !m_priv->mdcCopy->empty())
 	{
 		MDC::Map::const_iterator it;
 
-		for (it = mdcCopy->begin(); it != mdcCopy->end(); it++)
+		for (it = m_priv->mdcCopy->begin(); it != m_priv->mdcCopy->end(); it++)
 		{
 			set.push_back(it->first);
 
@@ -166,33 +231,33 @@ LoggingEvent::KeySet LoggingEvent::getMDCKeySet() const
 
 void LoggingEvent::getMDCCopy() const
 {
-	if (mdcCopyLookupRequired)
+	if (m_priv->mdcCopyLookupRequired)
 	{
-		mdcCopyLookupRequired = false;
+		m_priv->mdcCopyLookupRequired = false;
 		// the clone call is required for asynchronous logging.
 		ThreadSpecificData* data = ThreadSpecificData::getCurrentData();
 
 		if (data != 0)
 		{
-			mdcCopy = new MDC::Map(data->getMap());
+			m_priv->mdcCopy = new MDC::Map(data->getMap());
 		}
 		else
 		{
-			mdcCopy = new MDC::Map();
+			m_priv->mdcCopy = new MDC::Map();
 		}
 	}
 }
 
 bool LoggingEvent::getProperty(const LogString& key, LogString& dest) const
 {
-	if (properties == 0)
+	if (m_priv->properties == 0)
 	{
 		return false;
 	}
 
-	std::map<LogString, LogString>::const_iterator  it = properties->find(key);
+	std::map<LogString, LogString>::const_iterator  it = m_priv->properties->find(key);
 
-	if (it != properties->end())
+	if (it != m_priv->properties->end())
 	{
 		dest.append(it->second);
 		return true;
@@ -205,11 +270,11 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 {
 	LoggingEvent::KeySet set;
 
-	if (properties != 0)
+	if (m_priv->properties != 0)
 	{
 		std::map<LogString, LogString>::const_iterator it;
 
-		for (it = properties->begin(); it != properties->end(); it++)
+		for (it = m_priv->properties->begin(); it != m_priv->properties->end(); it++)
 		{
 			set.push_back(it->first);
 		}
@@ -250,115 +315,46 @@ const LogString LoggingEvent::getCurrentThreadName()
 
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
-	if (properties == 0)
+	if (m_priv->properties == 0)
 	{
-		properties = new std::map<LogString, LogString>;
+		m_priv->properties = new std::map<LogString, LogString>;
 	}
 
-	(*properties)[key] = value;
+	(*m_priv->properties)[key] = value;
 }
 
-
-
-void LoggingEvent::writeProlog(ObjectOutputStream& os, Pool& p)
+const LevelPtr& LoggingEvent::getLevel() const
 {
-	unsigned char classDesc[] =
-	{
-		0x72, 0x00, 0x21,
-		0x6F, 0x72, 0x67, 0x2E, 0x61, 0x70, 0x61, 0x63,
-		0x68, 0x65, 0x2E, 0x6C, 0x6F, 0x67, 0x34, 0x6A,
-		0x2E, 0x73, 0x70, 0x69, 0x2E, 0x4C, 0x6F, 0x67,
-		0x67, 0x69, 0x6E, 0x67, 0x45, 0x76, 0x65, 0x6E,
-		0x74, 0xF3, 0xF2, 0xB9, 0x23, 0x74, 0x0B, 0xB5,
-		0x3F, 0x03, 0x00, 0x0A, 0x5A, 0x00, 0x15, 0x6D,
-		0x64, 0x63, 0x43, 0x6F, 0x70, 0x79, 0x4C, 0x6F,
-		0x6F, 0x6B, 0x75, 0x70, 0x52, 0x65, 0x71, 0x75,
-		0x69, 0x72, 0x65, 0x64, 0x5A, 0x00, 0x11, 0x6E,
-		0x64, 0x63, 0x4C, 0x6F, 0x6F, 0x6B, 0x75, 0x70,
-		0x52, 0x65, 0x71, 0x75, 0x69, 0x72, 0x65, 0x64,
-		0x4A, 0x00, 0x09, 0x74, 0x69, 0x6D, 0x65, 0x53,
-		0x74, 0x61, 0x6D, 0x70, 0x4C, 0x00, 0x0C, 0x63,
-		0x61, 0x74, 0x65, 0x67, 0x6F, 0x72, 0x79, 0x4E,
-		0x61, 0x6D, 0x65, 0x74, 0x00, 0x12, 0x4C, 0x6A,
-		0x61, 0x76, 0x61, 0x2F, 0x6C, 0x61, 0x6E, 0x67,
-		0x2F, 0x53, 0x74, 0x72, 0x69, 0x6E, 0x67, 0x3B,
-		0x4C, 0x00, 0x0C, 0x6C, 0x6F, 0x63, 0x61, 0x74,
-		0x69, 0x6F, 0x6E, 0x49, 0x6E, 0x66, 0x6F, 0x74,
-		0x00, 0x23, 0x4C, 0x6F, 0x72, 0x67, 0x2F, 0x61,
-		0x70, 0x61, 0x63, 0x68, 0x65, 0x2F, 0x6C, 0x6F,
-		0x67, 0x34, 0x6A, 0x2F, 0x73, 0x70, 0x69, 0x2F,
-		0x4C, 0x6F, 0x63, 0x61, 0x74, 0x69, 0x6F, 0x6E,
-		0x49, 0x6E, 0x66, 0x6F, 0x3B, 0x4C, 0x00, 0x07,
-		0x6D, 0x64, 0x63, 0x43, 0x6F, 0x70, 0x79, 0x74,
-		0x00, 0x15, 0x4C, 0x6A, 0x61, 0x76, 0x61, 0x2F,
-		0x75, 0x74, 0x69, 0x6C, 0x2F, 0x48, 0x61, 0x73,
-		0x68, 0x74, 0x61, 0x62, 0x6C, 0x65, 0x3B, 0x4C,
-		0x00, 0x03, 0x6E, 0x64, 0x63,
-		0x74, 0x00, 0x12, 0x4C, 0x6A,
-		0x61, 0x76, 0x61, 0x2F, 0x6C, 0x61, 0x6E, 0x67,
-		0x2F, 0x53, 0x74, 0x72, 0x69, 0x6E, 0x67, 0x3B,
-		0x4C, 0x00, 0x0F, 0x72, 0x65, 0x6E,
-		0x64, 0x65, 0x72, 0x65, 0x64, 0x4D, 0x65, 0x73,
-		0x73, 0x61, 0x67, 0x65,
-		0x74, 0x00, 0x12, 0x4C, 0x6A,
-		0x61, 0x76, 0x61, 0x2F, 0x6C, 0x61, 0x6E, 0x67,
-		0x2F, 0x53, 0x74, 0x72, 0x69, 0x6E, 0x67, 0x3B,
-		0x4C, 0x00, 0x0A, 0x74, 0x68, 0x72, 0x65,
-		0x61, 0x64, 0x4E, 0x61, 0x6D, 0x65,
-		0x74, 0x00, 0x12, 0x4C, 0x6A,
-		0x61, 0x76, 0x61, 0x2F, 0x6C, 0x61, 0x6E, 0x67,
-		0x2F, 0x53, 0x74, 0x72, 0x69, 0x6E, 0x67, 0x3B,
-		0x4C, 0x00, 0x0D, 0x74, 0x68,
-		0x72, 0x6F, 0x77, 0x61, 0x62, 0x6C, 0x65, 0x49,
-		0x6E, 0x66, 0x6F, 0x74, 0x00, 0x2B, 0x4C, 0x6F,
-		0x72, 0x67, 0x2F, 0x61, 0x70, 0x61, 0x63, 0x68,
-		0x65, 0x2F, 0x6C, 0x6F, 0x67, 0x34, 0x6A, 0x2F,
-		0x73, 0x70, 0x69, 0x2F, 0x54, 0x68, 0x72, 0x6F,
-		0x77, 0x61, 0x62, 0x6C, 0x65, 0x49, 0x6E, 0x66,
-		0x6F, 0x72, 0x6D, 0x61, 0x74, 0x69, 0x6F, 0x6E,
-		0x3B, 0x78, 0x70
-	};
-
-	os.writeProlog("org.apache.log4j.spi.LoggingEvent",
-		8, (char*) classDesc, sizeof(classDesc), p);
+	return m_priv->level;
 }
 
-void LoggingEvent::write(helpers::ObjectOutputStream& os, Pool& p) const
+const LogString& LoggingEvent::getLoggerName() const
 {
-	writeProlog(os, p);
-	// mdc and ndc lookup required should always be false
-	char lookupsRequired[] = { 0, 0 };
-	os.writeBytes(lookupsRequired, sizeof(lookupsRequired), p);
-	os.writeLong(timeStamp / 1000, p);
-	os.writeObject(logger, p);
-	locationInfo.write(os, p);
+	return m_priv->logger;
+}
 
-	if (mdcCopy == 0 || mdcCopy->size() == 0)
-	{
-		os.writeNull(p);
-	}
-	else
-	{
-		os.writeObject(*mdcCopy, p);
-	}
+const LogString& LoggingEvent::getMessage() const
+{
+	return m_priv->message;
+}
 
-	if (ndc == 0)
-	{
-		os.writeNull(p);
-	}
-	else
-	{
-		os.writeObject(*ndc, p);
-	}
+const LogString& LoggingEvent::getRenderedMessage() const
+{
+	return m_priv->message;
+}
 
-	os.writeObject(message, p);
-	os.writeObject(threadName, p);
-	//  throwable
-	os.writeNull(p);
-	os.writeByte(ObjectOutputStream::TC_BLOCKDATA, p);
-	os.writeByte(0x04, p);
-	os.writeInt(level->toInt(), p);
-	os.writeNull(p);
-	os.writeByte(ObjectOutputStream::TC_ENDBLOCKDATA, p);
+const LogString& LoggingEvent::getThreadName() const
+{
+	return m_priv->threadName;
+}
+
+log4cxx_time_t LoggingEvent::getTimeStamp() const
+{
+	return m_priv->timeStamp;
+}
+
+const log4cxx::spi::LocationInfo& LoggingEvent::getLocationInformation() const
+{
+	return m_priv->locationInfo;
 }
 

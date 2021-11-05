@@ -1,6 +1,5 @@
 # Components required by all tests
 add_library(testingUtilities STATIC
-    serializationtesthelper.cpp
     absolutedateandtimefilter.cpp
     absolutetimefilter.cpp
     binarycompare.cpp

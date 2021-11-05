@@ -179,7 +179,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 		try
 		{
-			event->write(**it, p);
+//			event->write(**it, p);
 			(*it)->flush(p);
 			it++;
 		}
