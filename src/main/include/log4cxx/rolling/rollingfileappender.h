@@ -78,10 +78,11 @@ namespace rolling
  * */
 class LOG4CXX_EXPORT RollingFileAppender : public FileAppender
 {
-		DECLARE_LOG4CXX_OBJECT(RollingFileAppender)
-		BEGIN_LOG4CXX_CAST_MAP()
-		LOG4CXX_CAST_ENTRY(RollingFileAppender)
-		END_LOG4CXX_CAST_MAP()
+	DECLARE_LOG4CXX_OBJECT(RollingFileAppender)
+	BEGIN_LOG4CXX_CAST_MAP()
+	LOG4CXX_CAST_ENTRY(RollingFileAppender)
+	LOG4CXX_CAST_ENTRY_CHAIN(FileAppender)
+	END_LOG4CXX_CAST_MAP()
 		protected:
 			struct RollingFileAppenderPriv;
 

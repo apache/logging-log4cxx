@@ -18,6 +18,7 @@
 #include "../logunit.h"
 #include <log4cxx/helpers/bytearrayoutputstream.h>
 #include <log4cxx/helpers/fileoutputstream.h>
+#include <log4cxx/rolling/rollingfileappender.h>
 #include <iostream>
 
 using namespace log4cxx;
@@ -33,7 +34,7 @@ LOGUNIT_CLASS(CastTestCase)
 	LOGUNIT_TEST_SUITE( CastTestCase );
 	LOGUNIT_TEST(testGoodCast);
 	LOGUNIT_TEST(testBadCast);
-
+	LOGUNIT_TEST(testRollingFileAppender);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -57,6 +58,14 @@ public:
 		FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>(out);
 
 		LOGUNIT_ASSERT(!fos);
+	}
+
+	void testRollingFileAppender(){
+		rolling::RollingFileAppenderPtr rolling = rolling::RollingFileAppenderPtr(new rolling::RollingFileAppender());
+
+		AppenderPtr appender = log4cxx::cast<Appender>(rolling);
+
+		LOGUNIT_ASSERT(appender);
 	}
 
 };
