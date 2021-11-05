@@ -34,9 +34,7 @@ namespace rolling
 
 class GZCompressAction : public Action
 {
-		const File source;
-		const File destination;
-		bool deleteSource;
+		struct GZCompressActionPrivate;
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(GZCompressAction)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -50,6 +48,7 @@ class GZCompressAction : public Action
 		GZCompressAction(const File& source,
 			const File& destination,
 			bool deleteSource);
+		~GZCompressAction();
 
 		/**
 		 * Perform action.

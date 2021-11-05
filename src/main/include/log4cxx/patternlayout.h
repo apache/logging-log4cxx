@@ -333,20 +333,8 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  */
 class LOG4CXX_EXPORT PatternLayout : public Layout
 {
-		/**
-		 * Conversion pattern.
-		 */
-		LogString conversionPattern;
-
-		/**
-		 * Pattern converters.
-		 */
-		LoggingEventPatternConverterList patternConverters;
-
-		/**
-		 * Field widths and alignment corresponding to pattern converters.
-		 */
-		FormattingInfoList patternFields;
+		struct PatternLayoutPrivate;
+		std::unique_ptr<PatternLayoutPrivate> m_priv;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PatternLayout)
@@ -365,6 +353,8 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		 */
 		PatternLayout(const LogString& pattern);
 
+		~PatternLayout();
+
 		/**
 		 * Set the <strong>ConversionPattern</strong> option. This is the string which
 		 * controls formatting and consists of a mix of literal content and
@@ -375,10 +365,7 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 		/**
 		 * Returns the value of the <strong>ConversionPattern</strong> option.
 		 */
-		inline LogString getConversionPattern() const
-		{
-			return conversionPattern;
-		}
+		LogString getConversionPattern() const;
 
 		/**
 		 * Call createPatternParser

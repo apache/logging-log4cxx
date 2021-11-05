@@ -16,6 +16,7 @@
  */
 #include <log4cxx/logstring.h>
 #include <log4cxx/rolling/action.h>
+#include <log4cxx/private/action_priv.h>
 #include <mutex>
 
 using namespace log4cxx;
@@ -24,30 +25,13 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Action)
 
-struct Action::priv_data{
-	priv_data() :
-		complete(false),
-		interrupted(false),
-		pool(){}
-
-	/**
-	 * Is action complete.
-	 */
-	bool complete;
-
-	/**
-	 * Is action interrupted.
-	 */
-	bool interrupted;
-
-	log4cxx::helpers::Pool pool;
-	std::mutex mutex;
-};
-
 Action::Action() :
-	m_priv( std::make_unique<Action::priv_data>() )
+	m_priv( std::make_unique<Action::ActionPrivate>() )
 {
 }
+
+Action::Action( std::unique_ptr<ActionPrivate> priv ) :
+	m_priv( std::move(priv) ){}
 
 Action::~Action()
 {

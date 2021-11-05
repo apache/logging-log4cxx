@@ -53,26 +53,50 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::pattern;
 
+struct PatternLayout::PatternLayoutPrivate{
+	PatternLayoutPrivate(){}
+	PatternLayoutPrivate(const LogString& pattern) :
+		conversionPattern(pattern){}
+
+	/**
+	 * Conversion pattern.
+	 */
+	LogString conversionPattern;
+
+	/**
+	 * Pattern converters.
+	 */
+	LoggingEventPatternConverterList patternConverters;
+
+	/**
+	 * Field widths and alignment corresponding to pattern converters.
+	 */
+	FormattingInfoList patternFields;
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(PatternLayout)
 
 
-PatternLayout::PatternLayout()
+PatternLayout::PatternLayout() :
+	m_priv(std::make_unique<PatternLayoutPrivate>())
 {
 }
 
 /**
 Constructs a PatternLayout using the supplied conversion pattern.
 */
-PatternLayout::PatternLayout(const LogString& pattern)
-	: conversionPattern(pattern)
+PatternLayout::PatternLayout(const LogString& pattern) :
+	m_priv(std::make_unique<PatternLayoutPrivate>(pattern))
 {
 	Pool pool;
 	activateOptions(pool);
 }
 
+PatternLayout::~PatternLayout(){}
+
 void PatternLayout::setConversionPattern(const LogString& pattern)
 {
-	conversionPattern = pattern;
+	m_priv->conversionPattern = pattern;
 	Pool pool;
 	activateOptions(pool);
 }
@@ -82,11 +106,11 @@ void PatternLayout::format(LogString& output,
 	Pool& pool) const
 {
 	std::vector<FormattingInfoPtr>::const_iterator formatterIter =
-		patternFields.begin();
+		m_priv->patternFields.begin();
 
 	for (std::vector<LoggingEventPatternConverterPtr>::const_iterator
-		converterIter = patternConverters.begin();
-		converterIter != patternConverters.end();
+		converterIter = m_priv->patternConverters.begin();
+		converterIter != m_priv->patternConverters.end();
 		converterIter++, formatterIter++)
 	{
 		int startField = (int)output.length();
@@ -102,25 +126,25 @@ void PatternLayout::setOption(const LogString& option, const LogString& value)
 			LOG4CXX_STR("CONVERSIONPATTERN"),
 			LOG4CXX_STR("conversionpattern")))
 	{
-		conversionPattern = OptionConverter::convertSpecialChars(value);
+		m_priv->conversionPattern = OptionConverter::convertSpecialChars(value);
 	}
 }
 
 void PatternLayout::activateOptions(Pool&)
 {
-	LogString pat(conversionPattern);
+	LogString pat(m_priv->conversionPattern);
 
 	if (pat.empty())
 	{
 		pat = LOG4CXX_STR("%m%n");
 	}
 
-	patternConverters.erase(patternConverters.begin(), patternConverters.end());
-	patternFields.erase(patternFields.begin(), patternFields.end());
+	m_priv->patternConverters.erase(m_priv->patternConverters.begin(), m_priv->patternConverters.end());
+	m_priv->patternFields.erase(m_priv->patternFields.begin(), m_priv->patternFields.end());
 	std::vector<PatternConverterPtr> converters;
 	PatternParser::parse(pat,
 		converters,
-		patternFields,
+		m_priv->patternFields,
 		getFormatSpecifiers());
 
 	//
@@ -136,7 +160,7 @@ void PatternLayout::activateOptions(Pool&)
 
 		if (eventConverter != NULL)
 		{
-			patternConverters.push_back(eventConverter);
+			m_priv->patternConverters.push_back(eventConverter);
 		}
 	}
 }
@@ -190,6 +214,11 @@ log4cxx::pattern::PatternMap PatternLayout::getFormatSpecifiers()
 
 	RULES_PUT("throwable", ThrowableInformationPatternConverter);
 	return specs;
+}
+
+LogString PatternLayout::getConversionPattern() const
+{
+	return m_priv->conversionPattern;
 }
 
 

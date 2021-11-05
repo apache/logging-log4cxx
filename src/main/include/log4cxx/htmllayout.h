@@ -37,12 +37,8 @@ This layout outputs events in a HTML table.
 class LOG4CXX_EXPORT HTMLLayout : public Layout
 {
 	private:
-		// Print no location info by default
-		bool locationInfo; //= false
-
-		LogString title;
-
-		helpers::ISO8601DateFormat dateFormat;
+		struct HTMLLayoutPrivate;
+		std::unique_ptr<HTMLLayoutPrivate> m_priv;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(HTMLLayout)
@@ -64,44 +60,29 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		{@link net::SMTPAppender SMTPAppender} then make sure
 		to set the <b>LocationInfo</b> option of that appender as well.
 		*/
-		inline void setLocationInfo(bool locationInfoFlag)
-		{
-			this->locationInfo = locationInfoFlag;
-		}
+		void setLocationInfo(bool locationInfoFlag);
 
 		/**
 		Returns the current value of the <b>LocationInfo</b> option.
 		*/
-		inline bool getLocationInfo() const
-		{
-			return locationInfo;
-		}
+		bool getLocationInfo() const;
 
 		/**
 		The <b>Title</b> option takes a String value. This option sets the
 		document title of the generated HTML document.
 		<p>Defaults to 'Log4cxx Log Messages'.
 		*/
-		inline void setTitle(const LogString& title1)
-		{
-			this->title.assign(title1);
-		}
+		void setTitle(const LogString& title1);
 
 		/**
 		Returns the current value of the <b>Title</b> option.
 		*/
-		inline const LogString& getTitle() const
-		{
-			return title;
-		}
+		const LogString& getTitle() const;
 
 		/**
 		Returns the content type output by this layout, i.e "text/html".
 		*/
-		virtual LogString getContentType() const
-		{
-			return LOG4CXX_STR("text/html");
-		}
+		virtual LogString getContentType() const;
 
 		/**
 		No options to activate.
@@ -129,10 +110,7 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		/**
 		The HTML layout handles the throwable contained in logging
 		events. Hence, this method return <code>false</code>.  */
-		virtual bool ignoresThrowable() const
-		{
-			return false;
-		}
+		bool ignoresThrowable() const;
 
 }; // class HtmlLayout
 LOG4CXX_PTR_DEF(HTMLLayout);

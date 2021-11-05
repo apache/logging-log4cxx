@@ -21,7 +21,7 @@
 #include <log4cxx/helpers/inputstream.h>
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/pool.h>
-
+#include <memory>
 
 namespace log4cxx
 {
@@ -36,8 +36,8 @@ namespace helpers
 class LOG4CXX_EXPORT FileInputStream : public InputStream
 {
 	private:
-		Pool pool;
-		apr_file_t* fileptr;
+		struct FileInputStreamPrivate;
+		std::unique_ptr<FileInputStreamPrivate> m_priv;
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(FileInputStream)

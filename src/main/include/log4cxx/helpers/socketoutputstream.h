@@ -51,8 +51,8 @@ class LOG4CXX_EXPORT SocketOutputStream : public OutputStream
 		virtual void write(ByteBuffer& buf, Pool& p);
 
 	private:
-		ByteList array;
-		SocketPtr socket;
+		struct SocketOutputStreamPrivate;
+		std::unique_ptr<SocketOutputStreamPrivate> m_priv;
 		//
 		//   prevent copy and assignment statements
 		SocketOutputStream(const SocketOutputStream&);

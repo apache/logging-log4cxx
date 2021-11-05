@@ -29,9 +29,7 @@ namespace rolling
 
 class FileRenameAction : public Action
 {
-		const File source;
-		const File destination;
-		bool renameEmptyFile;
+	struct FileRenameActionPrivate;
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(FileRenameAction)
 		BEGIN_LOG4CXX_CAST_MAP()

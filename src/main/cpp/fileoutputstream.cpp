@@ -29,16 +29,25 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
+struct FileOutputStream::FileOutputStreamPrivate{
+	FileOutputStreamPrivate() : fileptr(nullptr){}
+
+	Pool pool;
+	apr_file_t* fileptr;
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(FileOutputStream)
 
 FileOutputStream::FileOutputStream(const LogString& filename,
-	bool append) : pool(), fileptr(open(filename, append, pool))
+	bool append) : m_priv(std::make_unique<FileOutputStreamPrivate>())
 {
+	m_priv->fileptr = open(filename, append, m_priv->pool);
 }
 
 FileOutputStream::FileOutputStream(const logchar* filename,
-	bool append) : pool(), fileptr(open(filename, append, pool))
+	bool append) : m_priv(std::make_unique<FileOutputStreamPrivate>())
 {
+	m_priv->fileptr = open(filename, append, m_priv->pool);
 }
 
 apr_file_t* FileOutputStream::open(const LogString& filename,
@@ -71,24 +80,24 @@ apr_file_t* FileOutputStream::open(const LogString& filename,
 
 FileOutputStream::~FileOutputStream()
 {
-	if (fileptr != NULL && !APRInitializer::isDestructed)
+	if (m_priv->fileptr != NULL && !APRInitializer::isDestructed)
 	{
-		apr_file_close(fileptr);
+		apr_file_close(m_priv->fileptr);
 	}
 }
 
 void FileOutputStream::close(Pool& /* p */)
 {
-	if (fileptr != NULL)
+	if (m_priv->fileptr != NULL)
 	{
-		apr_status_t stat = apr_file_close(fileptr);
+		apr_status_t stat = apr_file_close(m_priv->fileptr);
 
 		if (stat != APR_SUCCESS)
 		{
 			throw IOException(stat);
 		}
 
-		fileptr = NULL;
+		m_priv->fileptr = NULL;
 	}
 }
 
@@ -98,7 +107,7 @@ void FileOutputStream::flush(Pool& /* p */)
 
 void FileOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 {
-	if (fileptr == NULL)
+	if (m_priv->fileptr == NULL)
 	{
 		throw IOException(-1);
 	}
@@ -110,7 +119,7 @@ void FileOutputStream::write(ByteBuffer& buf, Pool& /* p */ )
 	while (nbytes > 0)
 	{
 		apr_status_t stat = apr_file_write(
-				fileptr, data + pos, &nbytes);
+				m_priv->fileptr, data + pos, &nbytes);
 
 		if (stat != APR_SUCCESS)
 		{

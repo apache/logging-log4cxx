@@ -42,21 +42,8 @@ typedef std::shared_ptr<FormattingInfo> FormattingInfoPtr;
  */
 class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::Object
 {
-
-		/**
-		 * Minimum length.
-		 */
-		const int minLength;
-
-		/**
-		 * Maximum length.
-		 */
-		const int maxLength;
-
-		/**
-		 * Alignment.
-		 */
-		const bool leftAlign;
+	struct FormattingInfoPrivate;
+	std::unique_ptr<FormattingInfoPrivate> m_priv;
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(FormattingInfo)
@@ -73,6 +60,7 @@ class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::Object
 		 */
 		FormattingInfo(
 			const bool leftAlign, const int minLength, const int maxLength);
+		~FormattingInfo();
 
 		/**
 		 * Gets default instance.
@@ -84,28 +72,19 @@ class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::Object
 		 * Determine if left aligned.
 		 * @return true if left aligned.
 		 */
-		inline bool isLeftAligned() const
-		{
-			return leftAlign;
-		}
+		bool isLeftAligned() const;
 
 		/**
 		 * Get minimum length.
 		 * @return minimum length.
 		 */
-		inline int getMinLength() const
-		{
-			return minLength;
-		}
+		int getMinLength() const;
 
 		/**
 		 * Get maximum length.
 		 * @return maximum length.
 		 */
-		inline int getMaxLength() const
-		{
-			return maxLength;
-		}
+		int getMaxLength() const;
 
 		/**
 		 * Adjust the content of the buffer based on the specified lengths and alignment.

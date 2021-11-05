@@ -35,9 +35,7 @@ namespace rolling
 
 class ZipCompressAction : public Action
 {
-		const File source;
-		const File destination;
-		bool deleteSource;
+	struct ZipCompressActionPrivate;
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ZipCompressAction)
 		BEGIN_LOG4CXX_CAST_MAP()

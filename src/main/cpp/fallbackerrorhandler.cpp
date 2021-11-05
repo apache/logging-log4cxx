@@ -30,16 +30,24 @@ using namespace log4cxx::varia;
 
 IMPLEMENT_LOG4CXX_OBJECT(FallbackErrorHandler)
 
+struct FallbackErrorHandler::FallbackErrorHandlerPrivate {
+	AppenderWeakPtr backup;
+	AppenderWeakPtr primary;
+	std::vector<LoggerPtr> loggers;
+};
+
 FallbackErrorHandler::FallbackErrorHandler()
-	: backup(), primary(), loggers()
+	: m_priv(std::make_unique<FallbackErrorHandlerPrivate>())
 {
 }
+
+FallbackErrorHandler::~FallbackErrorHandler(){}
 
 void FallbackErrorHandler::setLogger(const LoggerPtr& logger)
 {
 	LogLog::debug(((LogString) LOG4CXX_STR("FB: Adding logger ["))
 		+ logger->getName() + LOG4CXX_STR("]."));
-	loggers.push_back(logger);
+	m_priv->loggers.push_back(logger);
 }
 
 void FallbackErrorHandler::error(const LogString& message,
@@ -57,15 +65,15 @@ void FallbackErrorHandler::error(const LogString& message,
 		+  message, e);
 	LogLog::debug(LOG4CXX_STR("FB: INITIATING FALLBACK PROCEDURE."));
 
-	AppenderPtr primaryLocked = primary.lock();
-	AppenderPtr backupLocked = backup.lock();
+	AppenderPtr primaryLocked = m_priv->primary.lock();
+	AppenderPtr backupLocked = m_priv->backup.lock();
 
 	if ( !primaryLocked || !backupLocked )
 	{
 		return;
 	}
 
-	for (LoggerPtr l : loggers)
+	for (LoggerPtr l : m_priv->loggers)
 	{
 		LogLog::debug(((LogString) LOG4CXX_STR("FB: Searching for ["))
 			+ primaryLocked->getName() + LOG4CXX_STR("] in logger [")
@@ -86,14 +94,14 @@ void FallbackErrorHandler::setAppender(const AppenderPtr& primary1)
 {
 	LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting primary appender to ["))
 		+ primary1->getName() + LOG4CXX_STR("]."));
-	this->primary = primary1;
+	m_priv->primary = primary1;
 }
 
 void FallbackErrorHandler::setBackupAppender(const AppenderPtr& backup1)
 {
 	LogLog::debug(((LogString) LOG4CXX_STR("FB: Setting backup appender to ["))
 		+ backup1->getName() + LOG4CXX_STR("]."));
-	this->backup = backup1;
+	m_priv->backup = backup1;
 }
 
 void FallbackErrorHandler::activateOptions(Pool&)

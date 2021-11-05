@@ -39,14 +39,15 @@ class Action : public virtual log4cxx::helpers::Object
 		LOG4CXX_CAST_ENTRY(Action)
 		END_LOG4CXX_CAST_MAP()
 
-		struct priv_data;
-		std::unique_ptr<priv_data> m_priv;
+		struct ActionPrivate;
+		std::unique_ptr<ActionPrivate> m_priv;
 
 	protected:
 		/**
 		 * Constructor.
 		 */
 		Action();
+		Action( std::unique_ptr<ActionPrivate> priv );
 		virtual ~Action();
 
 	public:

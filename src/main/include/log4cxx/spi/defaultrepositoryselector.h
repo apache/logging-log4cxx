@@ -21,6 +21,7 @@
 #include <log4cxx/spi/repositoryselector.h>
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/spi/loggerrepository.h>
+#include <memory>
 
 namespace log4cxx
 {
@@ -37,10 +38,12 @@ class LOG4CXX_EXPORT DefaultRepositorySelector :
 		END_LOG4CXX_CAST_MAP()
 
 		DefaultRepositorySelector(const LoggerRepositoryPtr repository1);
+		~DefaultRepositorySelector();
 		virtual LoggerRepositoryPtr getLoggerRepository();
 
 	private:
-		LoggerRepositoryPtr repository;
+		struct DefaultRepositorySelectorPrivate;
+		std::unique_ptr<DefaultRepositorySelectorPrivate> m_priv;
 };
 }  // namespace spi
 } // namespace log4cxx

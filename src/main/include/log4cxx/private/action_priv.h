@@ -14,26 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef LOG4CXX_ACTION_PRIVATE_H
+#define LOG4CXX_ACTION_PRIVATE_H
 
-#include <log4cxx/spi/defaultrepositoryselector.h>
+#include <log4cxx/rolling/action.h>
 
-using namespace log4cxx;
-using namespace log4cxx::spi;
-using namespace log4cxx::helpers;
+namespace log4cxx{
+namespace rolling{
 
-struct DefaultRepositorySelector::DefaultRepositorySelectorPrivate{
-	LoggerRepositoryPtr repository;
+struct Action::ActionPrivate{
+        ActionPrivate() :
+	        complete(false),
+	        interrupted(false),
+	        pool(){}
+
+	/**
+	 * Is action complete.
+	 */
+	bool complete;
+
+	/**
+	 * Is action interrupted.
+	 */
+	bool interrupted;
+
+	log4cxx::helpers::Pool pool;
+	std::mutex mutex;
 };
 
-DefaultRepositorySelector::DefaultRepositorySelector(const LoggerRepositoryPtr repository1)
-	: m_priv(std::make_unique<DefaultRepositorySelectorPrivate>())
-{
-	m_priv->repository = repository1;
+}
 }
 
-DefaultRepositorySelector::~DefaultRepositorySelector(){}
-
-LoggerRepositoryPtr DefaultRepositorySelector::getLoggerRepository()
-{
-	return m_priv->repository;
-}
+#endif /* LOG4CXX_ACTION_PRIVATE_H */

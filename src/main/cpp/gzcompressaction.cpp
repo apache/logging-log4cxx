@@ -20,23 +20,40 @@
 #include <apr_strings.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/private/action_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
 using namespace log4cxx::helpers;
+
+#define priv static_cast<GZCompressActionPrivate*>(m_priv.get())
+
+struct GZCompressAction::GZCompressActionPrivate : public ActionPrivate{
+	GZCompressActionPrivate( const File& toRename,
+							 const File& renameTo,
+							 bool deleteSource):
+		source(toRename), destination(renameTo), deleteSource(deleteSource){}
+
+	const File source;
+	const File destination;
+	bool deleteSource;
+};
 
 IMPLEMENT_LOG4CXX_OBJECT(GZCompressAction)
 
 GZCompressAction::GZCompressAction(const File& src,
 	const File& dest,
 	bool del)
-	: source(src), destination(dest), deleteSource(del)
+	: Action(std::make_unique<GZCompressActionPrivate>(
+				 src, dest, del))
 {
 }
 
+GZCompressAction::~GZCompressAction(){}
+
 bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const
 {
-	if (source.exists(p))
+	if (priv->source.exists(p))
 	{
 		apr_pool_t* aprpool = p.getAPRPool();
 		apr_procattr_t* attr;
@@ -67,7 +84,7 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const
 		apr_file_t* child_out;
 		apr_int32_t flags = APR_FOPEN_READ | APR_FOPEN_WRITE |
 			APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE;
-		stat = destination.open(&child_out, flags, APR_OS_DEFAULT, p);
+		stat = priv->destination.open(&child_out, flags, APR_OS_DEFAULT, p);
 
 		if (stat != APR_SUCCESS)
 		{
@@ -102,7 +119,7 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const
 		int i = 0;
 		args[i++] = "gzip";
 		args[i++] = "-c";
-		args[i++] = Transcoder::encode(source.getPath(), p);
+		args[i++] = Transcoder::encode(priv->source.getPath(), p);
 		args[i++] = NULL;
 
 
@@ -122,9 +139,9 @@ bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const
 			throw IOException(stat);
 		}
 
-		if (deleteSource)
+		if (priv->deleteSource)
 		{
-			source.deleteFile(p);
+			priv->source.deleteFile(p);
 		}
 
 		return true;

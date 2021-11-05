@@ -70,6 +70,9 @@ class LOG4CXX_EXPORT DOMConfigurator :
 	virtual public spi::Configurator,
 	virtual public helpers::Object
 {
+public:
+	~DOMConfigurator();
+
 	protected:
 		typedef std::map<LogString, AppenderPtr> AppenderMap;
 		/**
@@ -292,16 +295,14 @@ class LOG4CXX_EXPORT DOMConfigurator :
 
 		LogString subst(const LogString& value);
 
-	protected:
-		helpers::Properties props;
-		spi::LoggerRepositoryPtr repository;
-		spi::LoggerFactoryPtr loggerFactory;
-
 	private:
 		//   prevent assignment or copy statements
 		DOMConfigurator(const DOMConfigurator&);
 		DOMConfigurator& operator=(const DOMConfigurator&);
 		static XMLWatchdog* xdog;
+
+		struct DOMConfiguratorPrivate;
+		std::unique_ptr<DOMConfiguratorPrivate> m_priv;
 };
 LOG4CXX_PTR_DEF(DOMConfigurator);
 }  // namespace xml

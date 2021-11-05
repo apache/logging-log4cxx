@@ -42,9 +42,8 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 	public virtual helpers::Object
 {
 	private:
-		AppenderWeakPtr backup;
-		AppenderWeakPtr primary;
-		std::vector<LoggerPtr> loggers;
+		struct FallbackErrorHandlerPrivate;
+		std::unique_ptr<FallbackErrorHandlerPrivate> m_priv;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(FallbackErrorHandler)
@@ -54,6 +53,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 		END_LOG4CXX_CAST_MAP()
 
 		FallbackErrorHandler();
+		~FallbackErrorHandler();
 
 		/**
 		<em>Adds</em> the logger passed as parameter to the list of

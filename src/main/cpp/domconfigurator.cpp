@@ -56,6 +56,12 @@ using namespace log4cxx::spi;
 using namespace log4cxx::config;
 using namespace log4cxx::rolling;
 
+struct DOMConfigurator::DOMConfiguratorPrivate{
+	helpers::Properties props;
+	spi::LoggerRepositoryPtr repository;
+	spi::LoggerFactoryPtr loggerFactory;
+};
+
 
 #if APR_HAS_THREADS
 namespace log4cxx
@@ -117,9 +123,11 @@ IMPLEMENT_LOG4CXX_OBJECT(DOMConfigurator)
 #define THREAD_CONFIG_ATTR "threadConfiguration"
 
 DOMConfigurator::DOMConfigurator()
-	: props(), repository()
+	: m_priv(std::make_unique<DOMConfiguratorPrivate>())
 {
 }
+
+DOMConfigurator::~DOMConfigurator(){}
 
 /**
 Used internally to parse appenders by IDREF name.
@@ -353,12 +361,12 @@ void DOMConfigurator::parseErrorHandler(Pool& p,
 			else if (tagName == LOGGER_REF)
 			{
 				LogString loggerName(getAttribute(utf8Decoder, currentElement, REF_ATTR));
-				LoggerPtr logger = repository->getLogger(loggerName, loggerFactory);
+				LoggerPtr logger = m_priv->repository->getLogger(loggerName, m_priv->loggerFactory);
 				eh->setLogger(logger);
 			}
 			else if (tagName == ROOT_REF)
 			{
-				LoggerPtr root = repository->getRootLogger();
+				LoggerPtr root = m_priv->repository->getRootLogger();
 				eh->setLogger(root);
 			}
 		}
@@ -422,7 +430,7 @@ void DOMConfigurator::parseLogger(
 	LogString loggerName = subst(getAttribute(utf8Decoder, loggerElement, NAME_ATTR));
 
 	LogLog::debug(LOG4CXX_STR("Retreiving an instance of Logger."));
-	LoggerPtr logger = repository->getLogger(loggerName, loggerFactory);
+	LoggerPtr logger = m_priv->repository->getLogger(loggerName, m_priv->loggerFactory);
 
 	// Setting up a logger needs to be an atomic operation, in order
 	// to protect potential log operations while logger
@@ -459,8 +467,8 @@ void DOMConfigurator::parseLoggerFactory(
 				className,
 				LoggerFactory::getStaticClass(),
 				0);
-		loggerFactory = log4cxx::cast<LoggerFactory>(obj);
-		PropertySetter propSetter(loggerFactory);
+		m_priv->loggerFactory = log4cxx::cast<LoggerFactory>(obj);
+		PropertySetter propSetter(m_priv->loggerFactory);
 
 		for (apr_xml_elem* currentElement = factoryElement->first_child;
 			currentElement;
@@ -486,7 +494,7 @@ void DOMConfigurator::parseRoot(
 	apr_xml_doc* doc,
 	AppenderMap& appenders)
 {
-	LoggerPtr root = repository->getRootLogger();
+	LoggerPtr root = m_priv->repository->getRootLogger();
 	parseChildrenOfLoggerElement(p, utf8Decoder, rootElement, root, true, doc, appenders);
 }
 
@@ -772,13 +780,13 @@ void DOMConfigurator::setParameter(log4cxx::helpers::Pool& p,
 void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr repository1)
 {
 	repository1->setConfigured(true);
-	this->repository = repository1;
+	m_priv->repository = repository1;
 	LogString msg(LOG4CXX_STR("DOMConfigurator configuring file "));
 	msg.append(filename.getPath());
 	msg.append(LOG4CXX_STR("..."));
 	LogLog::debug(msg);
 
-	loggerFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
+	m_priv->loggerFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
 
 	Pool p;
 	apr_file_t* fd;
@@ -1026,7 +1034,7 @@ void DOMConfigurator::parse(
 
 	if (!thresholdStr.empty() && thresholdStr != NULL_STRING)
 	{
-		repository->setThreshold(thresholdStr);
+		m_priv->repository->setThreshold(thresholdStr);
 	}
 
 	LogString strstrValue = subst(getAttribute(utf8Decoder, element, STRINGSTREAM_ATTR));
@@ -1085,7 +1093,7 @@ LogString DOMConfigurator::subst(const LogString& value)
 {
 	try
 	{
-		return OptionConverter::substVars(value, props);
+		return OptionConverter::substVars(value, m_priv->props);
 	}
 	catch (IllegalArgumentException& e)
 	{
