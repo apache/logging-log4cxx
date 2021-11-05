@@ -79,8 +79,7 @@ namespace filter
 class LOG4CXX_EXPORT AndFilter: public log4cxx::spi::Filter
 {
 	private:
-		struct priv_data;
-		std::unique_ptr<priv_data> m_priv;
+		struct AndFilterPrivate;
 
 		AndFilter(const AndFilter&);
 		AndFilter& operator=(const AndFilter&);

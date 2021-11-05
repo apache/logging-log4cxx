@@ -53,8 +53,7 @@ seeting up a <code>StringMatchFilter</code>.
 class LOG4CXX_EXPORT StringMatchFilter : public spi::Filter
 {
 	private:
-		bool acceptOnMatch;
-		LogString stringToMatch;
+		struct StringMatchFilterPrivate;
 
 	public:
 		typedef spi::Filter BASE_CLASS;
@@ -65,6 +64,7 @@ class LOG4CXX_EXPORT StringMatchFilter : public spi::Filter
 		END_LOG4CXX_CAST_MAP()
 
 		StringMatchFilter();
+		~StringMatchFilter();
 
 		/**
 		Set options
@@ -72,25 +72,13 @@ class LOG4CXX_EXPORT StringMatchFilter : public spi::Filter
 		virtual void setOption(const LogString& option,
 			const LogString& value);
 
-		inline void setStringToMatch(const LogString& stringToMatch1)
-		{
-			this->stringToMatch.assign(stringToMatch1);
-		}
+		void setStringToMatch(const LogString& stringToMatch1);
 
-		inline const LogString& getStringToMatch() const
-		{
-			return stringToMatch;
-		}
+		const LogString& getStringToMatch() const;
 
-		inline void setAcceptOnMatch(bool acceptOnMatch1)
-		{
-			this->acceptOnMatch = acceptOnMatch1;
-		}
+		void setAcceptOnMatch(bool acceptOnMatch1);
 
-		inline bool getAcceptOnMatch() const
-		{
-			return acceptOnMatch;
-		}
+		bool getAcceptOnMatch() const;
 
 		/**
 		Returns {@link log4cxx::spi::Filter#NEUTRAL NEUTRAL}

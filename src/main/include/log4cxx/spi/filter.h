@@ -68,12 +68,14 @@ xml::DOMConfigurator DOMConfigurator}.
 class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
 	public virtual helpers::Object
 {
-		/**
-		Points to the next filter in the filter chain.
-		*/
-		FilterPtr next;
+protected:
+		struct FilterPrivate;
+		std::unique_ptr<FilterPrivate> m_priv;
+
 	public:
 		Filter();
+		Filter(std::unique_ptr<FilterPrivate> priv);
+		virtual ~Filter();
 
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Filter)
 		BEGIN_LOG4CXX_CAST_MAP()

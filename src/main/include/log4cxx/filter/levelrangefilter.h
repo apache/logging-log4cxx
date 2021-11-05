@@ -57,13 +57,7 @@ filter out events by level.
 class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 {
 	private:
-		/**
-		Do we return ACCEPT when a match occurs. Default is
-		<code>false</code>, so that later filters get run by default
-		*/
-		bool acceptOnMatch;
-		LevelPtr levelMin;
-		LevelPtr levelMax;
+		struct LevelRangeFilterPrivate;
 
 	public:
 		typedef spi::Filter BASE_CLASS;
@@ -74,6 +68,7 @@ class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		END_LOG4CXX_CAST_MAP()
 
 		LevelRangeFilter();
+		~LevelRangeFilter();
 
 		/**
 		Set options
@@ -84,50 +79,32 @@ class LOG4CXX_EXPORT LevelRangeFilter : public spi::Filter
 		/**
 		Set the <code>LevelMin</code> option.
 		*/
-		void setLevelMin(const LevelPtr& levelMin1)
-		{
-			this->levelMin = levelMin1;
-		}
+		void setLevelMin(const LevelPtr& levelMin1);
 
 		/**
 		Get the value of the <code>LevelMin</code> option.
 		*/
-		const LevelPtr& getLevelMin() const
-		{
-			return levelMin;
-		}
+		const LevelPtr& getLevelMin() const;
 
 		/**
 		Set the <code>LevelMax</code> option.
 		*/
-		void setLevelMax(const LevelPtr& levelMax1)
-		{
-			this->levelMax = levelMax1;
-		}
+		void setLevelMax(const LevelPtr& levelMax1);
 
 		/**
 		Get the value of the <code>LevelMax</code> option.
 		*/
-		const LevelPtr& getLevelMax() const
-		{
-			return levelMax;
-		}
+		const LevelPtr& getLevelMax() const;
 
 		/**
 		Set the <code>AcceptOnMatch</code> option.
 		*/
-		inline void setAcceptOnMatch(bool acceptOnMatch1)
-		{
-			this->acceptOnMatch = acceptOnMatch1;
-		}
+		void setAcceptOnMatch(bool acceptOnMatch1);
 
 		/**
 		Get the value of the <code>AcceptOnMatch</code> option.
 		*/
-		inline bool getAcceptOnMatch() const
-		{
-			return acceptOnMatch;
-		}
+		bool getAcceptOnMatch() const;
 
 		/**
 		Return the decision of this filter.

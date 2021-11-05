@@ -49,8 +49,7 @@ then {@link spi::Filter#DENY DENY} is returned. If there is no match,
 class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
 {
 	private:
-		bool acceptOnMatch;
-		LevelPtr levelToMatch;
+		struct LevelMatchFilterPrivate;
 
 	public:
 		typedef spi::Filter BASE_CLASS;
@@ -61,6 +60,7 @@ class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
 		END_LOG4CXX_CAST_MAP()
 
 		LevelMatchFilter();
+		~LevelMatchFilter();
 
 		/**
 		Set options
@@ -72,15 +72,9 @@ class LOG4CXX_EXPORT LevelMatchFilter : public spi::Filter
 
 		LogString getLevelToMatch() const;
 
-		inline void setAcceptOnMatch(bool acceptOnMatch1)
-		{
-			this->acceptOnMatch = acceptOnMatch1;
-		}
+		void setAcceptOnMatch(bool acceptOnMatch1);
 
-		inline bool getAcceptOnMatch() const
-		{
-			return acceptOnMatch;
-		}
+		bool getAcceptOnMatch() const;
 
 		/**
 		Return the decision of this filter.

@@ -51,8 +51,7 @@ namespace filter
 class LOG4CXX_EXPORT LoggerMatchFilter : public spi::Filter
 {
 	private:
-		bool acceptOnMatch;
-		LogString loggerToMatch;
+		struct LoggerMatchFilterPrivate;
 
 	public:
 		typedef spi::Filter BASE_CLASS;
@@ -63,6 +62,7 @@ class LOG4CXX_EXPORT LoggerMatchFilter : public spi::Filter
 		END_LOG4CXX_CAST_MAP()
 
 		LoggerMatchFilter();
+		~LoggerMatchFilter();
 
 		/**
 		Set options
@@ -74,15 +74,9 @@ class LOG4CXX_EXPORT LoggerMatchFilter : public spi::Filter
 
 		LogString getLoggerToMatch() const;
 
-		inline void setAcceptOnMatch(bool acceptOnMatch1)
-		{
-			this->acceptOnMatch = acceptOnMatch1;
-		}
+		void setAcceptOnMatch(bool acceptOnMatch1);
 
-		inline bool getAcceptOnMatch() const
-		{
-			return acceptOnMatch;
-		}
+		bool getAcceptOnMatch() const;
 
 		/**
 		Return the decision of this filter.
