@@ -127,7 +127,6 @@ target_sources(log4cxx
   sizebasedtriggeringpolicy.cpp
   smtpappender.cpp
   socket.cpp
-  socketappender.cpp
   socketappenderskeleton.cpp
   sockethubappender.cpp
   socketoutputstream.cpp

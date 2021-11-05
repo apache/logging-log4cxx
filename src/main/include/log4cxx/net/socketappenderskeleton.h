@@ -44,18 +44,8 @@ protected:
 	struct SocketAppenderSkeletonPriv;
 
 	public:
-		SocketAppenderSkeleton(int defaultPort, int reconnectionDelay);
+		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);
 		~SocketAppenderSkeleton();
-
-		/**
-		Connects to remote server at <code>address</code> and <code>port</code>.
-		*/
-		SocketAppenderSkeleton(helpers::InetAddressPtr address, int port, int reconnectionDelay);
-
-		/**
-		Connects to remote server at <code>host</code> and <code>port</code>.
-		*/
-		SocketAppenderSkeleton(const LogString& host, int port, int reconnectionDelay);
 
 		/**
 		Connect to the specified <b>RemoteHost</b> and <b>Port</b>.

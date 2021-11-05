@@ -28,74 +28,17 @@
 #include <log4cxx/helpers/bytearrayoutputstream.h>
 #include <log4cxx/helpers/threadutility.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
+#include <log4cxx/private/socketappenderskeleton_priv.h>
 #include <functional>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 
-struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkeletonPrivate {
-	SocketAppenderSkeletonPriv(int defaultPort, int reconnectionDelay) :
-		AppenderSkeletonPrivate(),
-		remoteHost(),
-		address(),
-		port(defaultPort),
-		reconnectionDelay(reconnectionDelay),
-		locationInfo(false),
-		thread(){}
-
-	SocketAppenderSkeletonPriv(InetAddressPtr address, int defaultPort, int reconnectionDelay) :
-		AppenderSkeletonPrivate(),
-		remoteHost(),
-		address(address),
-		port(defaultPort),
-		reconnectionDelay(reconnectionDelay),
-		locationInfo(false),
-		thread(){}
-
-	SocketAppenderSkeletonPriv(const LogString& host, int port, int delay) :
-		AppenderSkeletonPrivate(),
-		remoteHost(host),
-		address(InetAddress::getByName(host)),
-		port(port),
-		reconnectionDelay(delay),
-		locationInfo(false),
-		thread(){}
-
-	/**
-	host name
-	*/
-	LogString remoteHost;
-
-	/**
-	IP address
-	*/
-	helpers::InetAddressPtr address;
-
-	int port;
-	int reconnectionDelay;
-	bool locationInfo;
-	std::thread thread;
-	std::condition_variable interrupt;
-	std::mutex interrupt_mutex;
-};
-
 #define _priv static_cast<SocketAppenderSkeletonPriv*>(m_priv.get())
 
-SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay1)
-	:  AppenderSkeleton (std::make_unique<SocketAppenderSkeletonPriv>(defaultPort, reconnectionDelay1))
-{
-}
-
-SocketAppenderSkeleton::SocketAppenderSkeleton(InetAddressPtr address1, int port1, int delay)
-	:AppenderSkeleton (std::make_unique<SocketAppenderSkeletonPriv>(address1, port1, delay))
-
-{
-	_priv->remoteHost = _priv->address->getHostName();
-}
-
-SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port1, int delay)
-	:   AppenderSkeleton (std::make_unique<SocketAppenderSkeletonPriv>(host, port1, delay))
+SocketAppenderSkeleton::SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv)
+	:  AppenderSkeleton (std::move(priv))
 {
 }
 

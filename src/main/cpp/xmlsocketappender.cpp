@@ -27,19 +27,27 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/socketoutputstream.h>
 #include <log4cxx/private/appenderskeleton_priv.h>
+#include <log4cxx/private/socketappenderskeleton_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 using namespace log4cxx::xml;
 
-IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
+struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonPriv {
+	XMLSocketAppenderPriv(int defaultPort, int reconnectionDelay) :
+		SocketAppenderSkeletonPriv(defaultPort, reconnectionDelay){}
 
-struct XMLSocketAppender::XMLSocketAppenderPriv : public AppenderSkeletonPrivate {
-	XMLSocketAppenderPriv() : AppenderSkeletonPrivate(){}
+	XMLSocketAppenderPriv(InetAddressPtr address, int defaultPort, int reconnectionDelay) :
+		SocketAppenderSkeletonPriv( address, defaultPort, reconnectionDelay ){}
+
+	XMLSocketAppenderPriv(const LogString& host, int port, int delay) :
+		SocketAppenderSkeletonPriv( host, port, delay ){}
 
 	log4cxx::helpers::WriterPtr writer;
 };
+
+IMPLEMENT_LOG4CXX_OBJECT(XMLSocketAppender)
 
 #define _priv static_cast<XMLSocketAppenderPriv*>(m_priv.get())
 
@@ -52,13 +60,13 @@ int XMLSocketAppender::DEFAULT_RECONNECTION_DELAY   = 30000;
 const int XMLSocketAppender::MAX_EVENT_LEN          = 1024;
 
 XMLSocketAppender::XMLSocketAppender()
-	: SocketAppenderSkeleton(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY)
+	: SocketAppenderSkeleton(std::make_unique<XMLSocketAppenderPriv>(DEFAULT_PORT, DEFAULT_RECONNECTION_DELAY))
 {
 	_priv->layout = std::make_shared<XMLLayout>();
 }
 
 XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
-	: SocketAppenderSkeleton(address1, port1, DEFAULT_RECONNECTION_DELAY)
+	: SocketAppenderSkeleton(std::make_unique<XMLSocketAppenderPriv>(address1, port1, DEFAULT_RECONNECTION_DELAY))
 {
 	_priv->layout = std::make_shared<XMLLayout>();
 	Pool p;
@@ -66,7 +74,7 @@ XMLSocketAppender::XMLSocketAppender(InetAddressPtr address1, int port1)
 }
 
 XMLSocketAppender::XMLSocketAppender(const LogString& host, int port1)
-	: SocketAppenderSkeleton(host, port1, DEFAULT_RECONNECTION_DELAY)
+	: SocketAppenderSkeleton(std::make_unique<XMLSocketAppenderPriv>(host, port1, DEFAULT_RECONNECTION_DELAY))
 {
 	_priv->layout = std::make_shared<XMLLayout>();
 	Pool p;

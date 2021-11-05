@@ -43,7 +43,6 @@
 	#include <log4cxx/nt/outputdebugstringappender.h>
 #endif
 #include <log4cxx/net/smtpappender.h>
-#include <log4cxx/net/socketappender.h>
 #include <log4cxx/net/sockethubappender.h>
 #include <log4cxx/helpers/datagramsocket.h>
 #include <log4cxx/net/syslogappender.h>
@@ -171,7 +170,6 @@ void Class::registerClasses()
 	log4cxx::nt::OutputDebugStringAppender::registerClass();
 #endif
 	SMTPAppender::registerClass();
-	SocketAppender::registerClass();
 #if APR_HAS_THREADS
 	SocketHubAppender::registerClass();
 #endif
