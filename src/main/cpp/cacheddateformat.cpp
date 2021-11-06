@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 #define __STDC_CONSTANT_MACROS
+#define NOMINMAX /* tell wnidows not to define min/max macros */
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/cacheddateformat.h>
 
@@ -114,8 +115,6 @@ const logchar CachedDateFormat::magicString2[] = { 0x39, 0x38, 0x37, 0};
  *  Expected representation of 0 milliseconds.
  */
 const logchar CachedDateFormat::zeroString[] = { 0x30, 0x30, 0x30, 0 };
-
-#undef min
 
 /**
  *  Creates a new CachedDateFormat object.
