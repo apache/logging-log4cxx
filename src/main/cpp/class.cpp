@@ -67,6 +67,7 @@
 
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/propertyconfigurator.h>
+#include <log4cxx/varia/fallbackerrorhandler.h>
 #include <apr.h>
 
 
@@ -193,5 +194,6 @@ void Class::registerClasses()
 	log4cxx::rolling::FilterBasedTriggeringPolicy::registerClass();
 	log4cxx::xml::DOMConfigurator::registerClass();
 	log4cxx::PropertyConfigurator::registerClass();
+	log4cxx::varia::FallbackErrorHandler::registerClass();
 }
 

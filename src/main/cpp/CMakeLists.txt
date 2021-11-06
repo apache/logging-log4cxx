@@ -30,6 +30,8 @@ target_sources(log4cxx
   class.cpp
   classnamepatternconverter.cpp
   classregistration.cpp
+        colorstartpatternconverter.cpp
+        colorendpatternconverter.cpp
   configurator.cpp
   consoleappender.cpp
   cyclicbuffer.cpp
