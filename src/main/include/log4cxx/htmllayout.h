@@ -48,6 +48,7 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 		END_LOG4CXX_CAST_MAP()
 
 		HTMLLayout();
+		~HTMLLayout();
 
 		/**
 		The <b>LocationInfo</b> option takes a boolean value. By

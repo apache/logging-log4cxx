@@ -54,6 +54,8 @@ HTMLLayout::HTMLLayout()
 	m_priv->dateFormat.setTimeZone(TimeZone::getGMT());
 }
 
+HTMLLayout::~HTMLLayout(){}
+
 
 void HTMLLayout::setOption(const LogString& option,
 	const LogString& value)
