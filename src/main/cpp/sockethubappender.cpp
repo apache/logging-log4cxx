@@ -43,13 +43,14 @@ IMPLEMENT_LOG4CXX_OBJECT(SocketHubAppender)
 
 int SocketHubAppender::DEFAULT_PORT = 4560;
 
-struct SocketHubAppender::SocketHubAppenderPriv : public AppenderSkeletonPrivate{
+struct SocketHubAppender::SocketHubAppenderPriv : public AppenderSkeletonPrivate
+{
 	SocketHubAppenderPriv(int port) :
 		AppenderSkeletonPrivate(),
 		port(port),
 		streams(),
 		locationInfo(false),
-		thread(){}
+		thread() {}
 
 	int port;
 	ObjectOutputStreamList streams;
@@ -65,7 +66,7 @@ SocketHubAppender::~SocketHubAppender()
 }
 
 SocketHubAppender::SocketHubAppender()
-	:AppenderSkeleton (std::make_unique<SocketHubAppenderPriv>(SocketHubAppender::DEFAULT_PORT))
+	: AppenderSkeleton (std::make_unique<SocketHubAppenderPriv>(SocketHubAppender::DEFAULT_PORT))
 {
 }
 
@@ -179,7 +180,7 @@ void SocketHubAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 		try
 		{
-//			event->write(**it, p);
+			//          event->write(**it, p);
 			(*it)->flush(p);
 			it++;
 		}

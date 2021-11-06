@@ -37,7 +37,7 @@ namespace pattern
 class LOG4CXX_EXPORT ThrowableInformationPatternConverter
 	: public LoggingEventPatternConverter
 {
-	struct ThrowableInformationPatternConverterPrivate;
+		struct ThrowableInformationPatternConverterPrivate;
 
 		/**
 		 * Private constructor.

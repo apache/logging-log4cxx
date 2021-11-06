@@ -31,7 +31,7 @@ using namespace log4cxx::helpers;
 IMPLEMENT_LOG4CXX_OBJECT(AppenderSkeleton)
 
 AppenderSkeleton::AppenderSkeleton( std::unique_ptr<AppenderSkeletonPrivate> priv )
-	:	m_priv(std::move(priv))
+	:   m_priv(std::move(priv))
 {
 
 }
@@ -43,12 +43,12 @@ AppenderSkeleton::AppenderSkeleton()
 }
 
 AppenderSkeleton::AppenderSkeleton(const LayoutPtr& layout1)
-	:	m_priv(std::make_unique<AppenderSkeletonPrivate>())
+	:   m_priv(std::make_unique<AppenderSkeletonPrivate>())
 {
 
 }
 
-AppenderSkeleton::~AppenderSkeleton(){}
+AppenderSkeleton::~AppenderSkeleton() {}
 
 void AppenderSkeleton::finalize()
 {
@@ -163,34 +163,42 @@ void AppenderSkeleton::setOption(const LogString& option,
 	}
 }
 
-const spi::ErrorHandlerPtr AppenderSkeleton::getErrorHandler() const{
+const spi::ErrorHandlerPtr AppenderSkeleton::getErrorHandler() const
+{
 	return m_priv->errorHandler;
 }
 
-spi::FilterPtr AppenderSkeleton::getFilter() const{
+spi::FilterPtr AppenderSkeleton::getFilter() const
+{
 	return m_priv->headFilter;
 }
 
-const spi::FilterPtr AppenderSkeleton::getFirstFilter() const{
+const spi::FilterPtr AppenderSkeleton::getFirstFilter() const
+{
 	return m_priv->headFilter;
 }
 
-LayoutPtr AppenderSkeleton::getLayout() const{
+LayoutPtr AppenderSkeleton::getLayout() const
+{
 	return m_priv->layout;
 }
 
-LogString AppenderSkeleton::getName() const{
+LogString AppenderSkeleton::getName() const
+{
 	return m_priv->name;
 }
 
-const LevelPtr AppenderSkeleton::getThreshold() const{
+const LevelPtr AppenderSkeleton::getThreshold() const
+{
 	return m_priv->threshold;
 }
 
-void AppenderSkeleton::setLayout(const LayoutPtr layout1){
+void AppenderSkeleton::setLayout(const LayoutPtr layout1)
+{
 	m_priv->layout = layout1;
 }
 
-void AppenderSkeleton::setName(const LogString& name1){
+void AppenderSkeleton::setName(const LogString& name1)
+{
 	m_priv->name.assign(name1);
 }

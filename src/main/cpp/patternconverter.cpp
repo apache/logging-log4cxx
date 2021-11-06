@@ -35,8 +35,9 @@ PatternConverter::PatternConverter(
 }
 
 PatternConverter::PatternConverter(const LogString& name,
-				 const LogString& style) :
-	m_priv(std::make_unique<PatternConverterPrivate>(name,style)){
+	const LogString& style) :
+	m_priv(std::make_unique<PatternConverterPrivate>(name, style))
+{
 
 }
 

@@ -24,11 +24,12 @@ namespace log4cxx
 namespace spi
 {
 
-struct Filter::FilterPrivate{
-    /**
-    Points to the next filter in the filter chain.
-    */
-    FilterPtr next;
+struct Filter::FilterPrivate
+{
+	/**
+	Points to the next filter in the filter chain.
+	*/
+	FilterPtr next;
 };
 
 }

@@ -31,10 +31,11 @@ using namespace log4cxx::spi;
 
 #define priv static_cast<NamePatternConverterPrivate*>(m_priv.get())
 
-struct NamePatternConverter::NamePatternConverterPrivate : public PatternConverterPrivate {
+struct NamePatternConverter::NamePatternConverterPrivate : public PatternConverterPrivate
+{
 	NamePatternConverterPrivate( const LogString& name, const LogString& style, const NameAbbreviatorPtr abbrev ) :
 		PatternConverterPrivate( name, style ),
-	  abbreviator(abbrev){}
+		abbreviator(abbrev) {}
 
 	/**
 	 * Abbreviator.
@@ -49,7 +50,7 @@ NamePatternConverter::NamePatternConverter(
 	const LogString& style1,
 	const std::vector<LogString>& options) :
 	LoggingEventPatternConverter(std::make_unique<NamePatternConverterPrivate>(name1, style1,
-	getAbbreviator(options)))
+			getAbbreviator(options)))
 {
 }
 

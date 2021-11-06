@@ -41,8 +41,8 @@ WriterAppender appends log events to a standard output stream
 */
 class LOG4CXX_EXPORT WriterAppender : public AppenderSkeleton
 {
-protected:
-	struct WriterAppenderPriv;
+	protected:
+		struct WriterAppenderPriv;
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(WriterAppender)
 		BEGIN_LOG4CXX_CAST_MAP()

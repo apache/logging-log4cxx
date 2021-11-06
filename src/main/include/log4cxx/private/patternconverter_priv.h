@@ -28,19 +28,20 @@ namespace pattern
  * @param name name for pattern converter.
  * @param style CSS style for formatted output.
  */
-struct PatternConverter::PatternConverterPrivate {
-    PatternConverterPrivate( const LogString& _name, const LogString& _style ) :
-        name(_name),
-        style(_style){}
+struct PatternConverter::PatternConverterPrivate
+{
+	PatternConverterPrivate( const LogString& _name, const LogString& _style ) :
+		name(_name),
+		style(_style) {}
 
-    /**
-     * Converter name.
-     */
-    const LogString name;
-    /**
-     * Converter style name.
-     */
-    const LogString style;
+	/**
+	 * Converter name.
+	 */
+	const LogString name;
+	/**
+	 * Converter style name.
+	 */
+	const LogString style;
 };
 
 }

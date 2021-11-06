@@ -20,7 +20,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-struct Locale::LocalePrivate {
+struct Locale::LocalePrivate
+{
 	LocalePrivate(const LogString& language1)
 		: language(language1)
 	{
@@ -58,7 +59,7 @@ Locale::Locale(const LogString& language1, const LogString& country1,
 {
 }
 
-Locale::~Locale(){}
+Locale::~Locale() {}
 
 const LogString& Locale::getLanguage() const
 {

@@ -33,6 +33,7 @@ XFactoryPtr XLogger::factory = XFactoryPtr(new XFactory());
 void XLogger::lethal(const LogString& message, const LocationInfo& locationInfo)
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = getLoggerRepository().lock();
+
 	if (rep->isDisabled(XLevel::LETHAL_INT))
 	{
 		return;
@@ -47,6 +48,7 @@ void XLogger::lethal(const LogString& message, const LocationInfo& locationInfo)
 void XLogger::lethal(const LogString& message)
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = getLoggerRepository().lock();
+
 	if (rep->isDisabled(XLevel::LETHAL_INT))
 	{
 		return;
@@ -71,6 +73,7 @@ LoggerPtr XLogger::getLogger(const helpers::Class& clazz)
 void XLogger::trace(const LogString& message, const LocationInfo& locationInfo)
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = getLoggerRepository().lock();
+
 	if (rep->isDisabled(XLevel::TRACE_INT))
 	{
 		return;
@@ -85,6 +88,7 @@ void XLogger::trace(const LogString& message, const LocationInfo& locationInfo)
 void XLogger::trace(const LogString& message)
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = getLoggerRepository().lock();
+
 	if (rep->isDisabled(XLevel::TRACE_INT))
 	{
 		return;

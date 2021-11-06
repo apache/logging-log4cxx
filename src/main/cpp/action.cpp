@@ -31,7 +31,7 @@ Action::Action() :
 }
 
 Action::Action( std::unique_ptr<ActionPrivate> priv ) :
-	m_priv( std::move(priv) ){}
+	m_priv( std::move(priv) ) {}
 
 Action::~Action()
 {

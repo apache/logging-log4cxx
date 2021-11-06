@@ -42,7 +42,8 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-struct LoggingEvent::LoggingEventPrivate{
+struct LoggingEvent::LoggingEventPrivate
+{
 	LoggingEventPrivate() :
 		ndc(0),
 		mdcCopy(0),
@@ -67,9 +68,10 @@ struct LoggingEvent::LoggingEventPrivate{
 		message(message1),
 		timeStamp(apr_time_now()),
 		locationInfo(locationInfo1),
-		threadName(getCurrentThreadName()){}
+		threadName(getCurrentThreadName()) {}
 
-	~LoggingEventPrivate(){
+	~LoggingEventPrivate()
+	{
 		delete ndc;
 		delete mdcCopy;
 		delete properties;
@@ -288,7 +290,9 @@ const LogString LoggingEvent::getCurrentThreadName()
 {
 #if APR_HAS_THREADS
 	LOG4CXX_THREAD_LOCAL LogString thread_name;
-	if( thread_name.size() ){
+
+	if ( thread_name.size() )
+	{
 		return thread_name;
 	}
 

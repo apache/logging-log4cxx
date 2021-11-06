@@ -35,7 +35,7 @@ namespace rolling
 
 class ZipCompressAction : public Action
 {
-	struct ZipCompressActionPrivate;
+		struct ZipCompressActionPrivate;
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(ZipCompressAction)
 		BEGIN_LOG4CXX_CAST_MAP()

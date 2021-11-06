@@ -25,9 +25,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-struct CyclicBuffer::CyclicBufferPriv{
+struct CyclicBuffer::CyclicBufferPriv
+{
 	CyclicBufferPriv(int maxSize1) :
-		ea(maxSize1), first(0), last(0), numElems(0), maxSize(maxSize1){}
+		ea(maxSize1), first(0), last(0), numElems(0), maxSize(maxSize1) {}
 
 	log4cxx::spi::LoggingEventList ea;
 	int first;

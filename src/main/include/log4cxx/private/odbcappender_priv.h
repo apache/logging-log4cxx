@@ -23,62 +23,65 @@
 
 #include <list>
 
-namespace log4cxx{
-namespace db{
+namespace log4cxx
+{
+namespace db
+{
 
-struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate {
-    ODBCAppenderPriv() :
-        AppenderSkeletonPrivate(),
-        connection(nullptr),
-        env(nullptr),
-        bufferSize(1){}
+struct ODBCAppender::ODBCAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
+{
+	ODBCAppenderPriv() :
+		AppenderSkeletonPrivate(),
+		connection(nullptr),
+		env(nullptr),
+		bufferSize(1) {}
 
-    /**
-    * URL of the DB for default connection handling
-    */
-    LogString databaseURL;
+	/**
+	* URL of the DB for default connection handling
+	*/
+	LogString databaseURL;
 
-    /**
-    * User to connect as for default connection handling
-    */
-    LogString databaseUser;
+	/**
+	* User to connect as for default connection handling
+	*/
+	LogString databaseUser;
 
-    /**
-    * User to use for default connection handling
-    */
-    LogString databasePassword;
+	/**
+	* User to use for default connection handling
+	*/
+	LogString databasePassword;
 
-    /**
-    * Connection used by default.  The connection is opened the first time it
-    * is needed and then held open until the appender is closed (usually at
-    * garbage collection).  This behavior is best modified by creating a
-    * sub-class and overriding the <code>getConnection</code> and
-    * <code>closeConnection</code> methods.
-    */
-    log4cxx::db::ODBCAppender::SQLHDBC connection;
-    log4cxx::db::ODBCAppender::SQLHENV env;
+	/**
+	* Connection used by default.  The connection is opened the first time it
+	* is needed and then held open until the appender is closed (usually at
+	* garbage collection).  This behavior is best modified by creating a
+	* sub-class and overriding the <code>getConnection</code> and
+	* <code>closeConnection</code> methods.
+	*/
+	log4cxx::db::ODBCAppender::SQLHDBC connection;
+	log4cxx::db::ODBCAppender::SQLHENV env;
 
-    /**
-    * Stores the string given to the pattern layout for conversion into a SQL
-    * statement, eg: insert into LogTable (Thread, File, Message) values
-    * ("%t", "%F", "%m")
-    *
-    * Be careful of quotes in your messages!
-    *
-    * Also see PatternLayout.
-    */
-    LogString sqlStatement;
+	/**
+	* Stores the string given to the pattern layout for conversion into a SQL
+	* statement, eg: insert into LogTable (Thread, File, Message) values
+	* ("%t", "%F", "%m")
+	*
+	* Be careful of quotes in your messages!
+	*
+	* Also see PatternLayout.
+	*/
+	LogString sqlStatement;
 
-    /**
-    * size of LoggingEvent buffer before writing to the database.
-    * Default is 1.
-    */
-    size_t bufferSize;
+	/**
+	* size of LoggingEvent buffer before writing to the database.
+	* Default is 1.
+	*/
+	size_t bufferSize;
 
-    /**
-    * ArrayList holding the buffer of Logging Events.
-    */
-    std::list<spi::LoggingEventPtr> buffer;
+	/**
+	* ArrayList holding the buffer of Logging Events.
+	*/
+	std::list<spi::LoggingEventPtr> buffer;
 };
 
 }

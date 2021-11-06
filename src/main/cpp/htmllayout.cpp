@@ -33,9 +33,10 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-struct HTMLLayout::HTMLLayoutPrivate {
+struct HTMLLayout::HTMLLayoutPrivate
+{
 	HTMLLayoutPrivate() : locationInfo(false), title(LOG4CXX_STR("Log4cxx Log Messages")),
-		dateFormat(){}
+		dateFormat() {}
 
 	// Print no location info by default
 	bool locationInfo; //= false
@@ -54,7 +55,7 @@ HTMLLayout::HTMLLayout()
 	m_priv->dateFormat.setTimeZone(TimeZone::getGMT());
 }
 
-HTMLLayout::~HTMLLayout(){}
+HTMLLayout::~HTMLLayout() {}
 
 
 void HTMLLayout::setOption(const LogString& option,

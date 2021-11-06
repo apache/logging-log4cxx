@@ -377,14 +377,15 @@ class LOG4CXX_EXPORT DefaultEvaluator :
 IMPLEMENT_LOG4CXX_OBJECT(DefaultEvaluator)
 IMPLEMENT_LOG4CXX_OBJECT(SMTPAppender)
 
-struct SMTPAppender::SMTPPriv : public AppenderSkeletonPrivate {
+struct SMTPAppender::SMTPPriv : public AppenderSkeletonPrivate
+{
 	SMTPPriv() :
 		AppenderSkeletonPrivate(),
 		smtpPort(25),
 		bufferSize(512),
 		locationInfo(false),
 		cb(bufferSize),
-		evaluator(new DefaultEvaluator()){}
+		evaluator(new DefaultEvaluator()) {}
 
 	SMTPPriv(spi::TriggeringEventEvaluatorPtr evaluator) :
 		AppenderSkeletonPrivate(),
@@ -392,7 +393,7 @@ struct SMTPAppender::SMTPPriv : public AppenderSkeletonPrivate {
 		bufferSize(512),
 		locationInfo(false),
 		cb(bufferSize),
-		evaluator(evaluator){}
+		evaluator(evaluator) {}
 
 	LogString to;
 	LogString cc;
@@ -820,6 +821,7 @@ void SMTPAppender::setEvaluatorClass(const LogString& value)
 	_priv->evaluator = log4cxx::cast<TriggeringEventEvaluator>(obj);
 }
 
-int SMTPAppender::getBufferSize() const{
+int SMTPAppender::getBufferSize() const
+{
 
 }

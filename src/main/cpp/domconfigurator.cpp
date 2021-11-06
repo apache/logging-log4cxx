@@ -56,7 +56,8 @@ using namespace log4cxx::spi;
 using namespace log4cxx::config;
 using namespace log4cxx::rolling;
 
-struct DOMConfigurator::DOMConfiguratorPrivate{
+struct DOMConfigurator::DOMConfiguratorPrivate
+{
 	helpers::Properties props;
 	spi::LoggerRepositoryPtr repository;
 	spi::LoggerFactoryPtr loggerFactory;
@@ -127,7 +128,7 @@ DOMConfigurator::DOMConfigurator()
 {
 }
 
-DOMConfigurator::~DOMConfigurator(){}
+DOMConfigurator::~DOMConfigurator() {}
 
 /**
 Used internally to parse appenders by IDREF name.
@@ -1046,14 +1047,23 @@ void DOMConfigurator::parse(
 	}
 
 	LogString threadSignalValue = subst(getAttribute(utf8Decoder, element, THREAD_CONFIG_ATTR));
-	if( !threadSignalValue.empty() && threadSignalValue != NULL_STRING ){
-		if( threadSignalValue == LOG4CXX_STR("NoConfiguration") ){
+
+	if ( !threadSignalValue.empty() && threadSignalValue != NULL_STRING )
+	{
+		if ( threadSignalValue == LOG4CXX_STR("NoConfiguration") )
+		{
 			helpers::ThreadUtility::configure( ThreadConfigurationType::NoConfiguration );
-		}else if( threadSignalValue == LOG4CXX_STR("BlockSignalsOnly") ){
+		}
+		else if ( threadSignalValue == LOG4CXX_STR("BlockSignalsOnly") )
+		{
 			helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsOnly );
-		}else if( threadSignalValue == LOG4CXX_STR("NameThreadOnly") ){
+		}
+		else if ( threadSignalValue == LOG4CXX_STR("NameThreadOnly") )
+		{
 			helpers::ThreadUtility::configure( ThreadConfigurationType::NameThreadOnly );
-		}else if( threadSignalValue == LOG4CXX_STR("BlockSignalsAndNameThread") ){
+		}
+		else if ( threadSignalValue == LOG4CXX_STR("BlockSignalsAndNameThread") )
+		{
 			helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
 		}
 	}

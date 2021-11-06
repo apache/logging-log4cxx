@@ -40,8 +40,8 @@ namespace net
  */
 class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 {
-protected:
-	struct SocketAppenderSkeletonPriv;
+	protected:
+		struct SocketAppenderSkeletonPriv;
 
 	public:
 		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);

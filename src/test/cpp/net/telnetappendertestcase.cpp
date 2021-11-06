@@ -45,7 +45,8 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 
 		enum { TEST_PORT = 1723 };
 
-		static LayoutPtr createLayout(){
+		static LayoutPtr createLayout()
+		{
 			PatternLayoutPtr pl = std::make_shared<PatternLayout>();
 			pl->setConversionPattern( "%r [%t] %-5p - %m%n" );
 			return pl;

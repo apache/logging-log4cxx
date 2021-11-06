@@ -37,9 +37,9 @@ namespace helpers
 */
 class LOG4CXX_EXPORT BufferedWriter : public Writer
 {
-private:
-	struct BufferedWriterPriv;
-	std::unique_ptr<BufferedWriterPriv> m_priv;
+	private:
+		struct BufferedWriterPriv;
+		std::unique_ptr<BufferedWriterPriv> m_priv;
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(BufferedWriter)

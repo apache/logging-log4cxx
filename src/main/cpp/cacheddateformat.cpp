@@ -29,7 +29,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::pattern;
 
-struct CachedDateFormat::CachedDateFormatPriv{
+struct CachedDateFormat::CachedDateFormatPriv
+{
 	CachedDateFormatPriv(DateFormatPtr dateFormat, int expiration1) :
 		formatter(dateFormat),
 		millisecondStart(0),
@@ -139,7 +140,7 @@ CachedDateFormat::CachedDateFormat(const DateFormatPtr& dateFormat,
 	}
 }
 
-CachedDateFormat::~CachedDateFormat(){}
+CachedDateFormat::~CachedDateFormat() {}
 
 
 /**

@@ -34,14 +34,15 @@ using namespace log4cxx::net;
 
 IMPLEMENT_LOG4CXX_OBJECT(TelnetAppender)
 
-struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate{
+struct TelnetAppender::TelnetAppenderPriv : public AppenderSkeletonPrivate
+{
 	TelnetAppenderPriv( int port, int maxConnections ) : AppenderSkeletonPrivate(),
 		port(port),
 		connections(maxConnections),
 		encoding(LOG4CXX_STR("UTF-8")),
 		encoder(CharsetEncoder::getUTF8Encoder()),
 		sh(),
-		activeConnections(0){}
+		activeConnections(0) {}
 
 	int port;
 	ConnectionList connections;
@@ -61,7 +62,7 @@ const int TelnetAppender::DEFAULT_PORT = 23;
 const int TelnetAppender::MAX_CONNECTIONS = 20;
 
 TelnetAppender::TelnetAppender()
-	: AppenderSkeleton (std::make_unique<TelnetAppenderPriv>(DEFAULT_PORT,MAX_CONNECTIONS))
+	: AppenderSkeleton (std::make_unique<TelnetAppenderPriv>(DEFAULT_PORT, MAX_CONNECTIONS))
 {
 }
 
@@ -311,10 +312,12 @@ void TelnetAppender::acceptConnections()
 
 }
 
-int TelnetAppender::getPort() const{
+int TelnetAppender::getPort() const
+{
 	return _priv->port;
 }
 
-void TelnetAppender::setPort(int port1){
+void TelnetAppender::setPort(int port1)
+{
 	_priv->port = port1;
 }

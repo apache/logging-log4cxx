@@ -29,7 +29,7 @@ namespace rolling
 
 class FileRenameAction : public Action
 {
-	struct FileRenameActionPrivate;
+		struct FileRenameActionPrivate;
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(FileRenameAction)
 		BEGIN_LOG4CXX_CAST_MAP()

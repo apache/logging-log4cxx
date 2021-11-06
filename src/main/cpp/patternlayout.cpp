@@ -55,10 +55,11 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::pattern;
 
-struct PatternLayout::PatternLayoutPrivate{
-	PatternLayoutPrivate(){}
+struct PatternLayout::PatternLayoutPrivate
+{
+	PatternLayoutPrivate() {}
 	PatternLayoutPrivate(const LogString& pattern) :
-		conversionPattern(pattern){}
+		conversionPattern(pattern) {}
 
 	/**
 	 * Conversion pattern.
@@ -94,7 +95,7 @@ PatternLayout::PatternLayout(const LogString& pattern) :
 	activateOptions(pool);
 }
 
-PatternLayout::~PatternLayout(){}
+PatternLayout::~PatternLayout() {}
 
 void PatternLayout::setConversionPattern(const LogString& pattern)
 {

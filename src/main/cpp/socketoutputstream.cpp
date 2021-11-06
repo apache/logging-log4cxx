@@ -26,7 +26,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-struct SocketOutputStream::SocketOutputStreamPrivate{
+struct SocketOutputStream::SocketOutputStreamPrivate
+{
 	ByteList array;
 	SocketPtr socket;
 };

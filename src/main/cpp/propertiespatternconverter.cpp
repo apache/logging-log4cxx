@@ -34,10 +34,11 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<PropertiesPatternConverterPrivate*>(m_priv.get())
 
-struct PropertiesPatternConverter::PropertiesPatternConverterPrivate : public PatternConverterPrivate {
+struct PropertiesPatternConverter::PropertiesPatternConverterPrivate : public PatternConverterPrivate
+{
 	PropertiesPatternConverterPrivate( const LogString& name, const LogString& style, const LogString& propertyName ) :
 		PatternConverterPrivate( name, style ),
-		option(propertyName){}
+		option(propertyName) {}
 
 	/**
 	 * Name of property to output.
@@ -50,7 +51,7 @@ IMPLEMENT_LOG4CXX_OBJECT(PropertiesPatternConverter)
 PropertiesPatternConverter::PropertiesPatternConverter(const LogString& name1,
 	const LogString& propertyName) :
 	LoggingEventPatternConverter(
-		std::make_unique<PropertiesPatternConverterPrivate>(name1, LOG4CXX_STR("property"),propertyName))
+		std::make_unique<PropertiesPatternConverterPrivate>(name1, LOG4CXX_STR("property"), propertyName))
 {
 }
 

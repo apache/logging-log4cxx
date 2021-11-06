@@ -20,7 +20,8 @@
 
 using namespace log4cxx::helpers;
 
-struct DatagramPacket::DatagramPacketPriv{
+struct DatagramPacket::DatagramPacketPriv
+{
 	DatagramPacketPriv(void* buf1, int length1)
 		: buf(buf1), offset(0), length(length1), address(), port(0)
 	{

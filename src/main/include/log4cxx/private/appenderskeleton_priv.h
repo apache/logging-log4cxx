@@ -22,50 +22,52 @@
 #include <log4cxx/helpers/onlyonceerrorhandler.h>
 #include <memory>
 
-namespace log4cxx {
+namespace log4cxx
+{
 
-struct AppenderSkeleton::AppenderSkeletonPrivate {
-    AppenderSkeletonPrivate() :
-        threshold(Level::getAll()),
-        errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
-        closed(false){}
+struct AppenderSkeleton::AppenderSkeletonPrivate
+{
+	AppenderSkeletonPrivate() :
+		threshold(Level::getAll()),
+		errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
+		closed(false) {}
 
-    AppenderSkeletonPrivate( LayoutPtr lay ) :
-        layout( lay ),
-        threshold(Level::getAll()),
-        errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
-        closed(false){}
+	AppenderSkeletonPrivate( LayoutPtr lay ) :
+		layout( lay ),
+		threshold(Level::getAll()),
+		errorHandler(std::make_shared<log4cxx::helpers::OnlyOnceErrorHandler>()),
+		closed(false) {}
 
-    /** The layout variable does not need to be set if the appender
-    implementation has its own layout. */
-    LayoutPtr layout;
+	/** The layout variable does not need to be set if the appender
+	implementation has its own layout. */
+	LayoutPtr layout;
 
-    /** Appenders are named. */
-    LogString name;
+	/** Appenders are named. */
+	LogString name;
 
-    /**
-    There is no level threshold filtering by default.  */
-    LevelPtr threshold;
+	/**
+	There is no level threshold filtering by default.  */
+	LevelPtr threshold;
 
-    /**
-    It is assumed and enforced that errorHandler is never null.
-    */
-    spi::ErrorHandlerPtr errorHandler;
+	/**
+	It is assumed and enforced that errorHandler is never null.
+	*/
+	spi::ErrorHandlerPtr errorHandler;
 
-    /** The first filter in the filter chain. Set to <code>null</code>
-    initially. */
-    spi::FilterPtr headFilter;
+	/** The first filter in the filter chain. Set to <code>null</code>
+	initially. */
+	spi::FilterPtr headFilter;
 
-    /** The last filter in the filter chain. */
-    spi::FilterPtr tailFilter;
+	/** The last filter in the filter chain. */
+	spi::FilterPtr tailFilter;
 
-    /**
-    Is this appender closed?
-    */
-    bool closed;
+	/**
+	Is this appender closed?
+	*/
+	bool closed;
 
-    log4cxx::helpers::Pool pool;
-    mutable log4cxx::shared_mutex mutex;
+	log4cxx::helpers::Pool pool;
+	mutable log4cxx::shared_mutex mutex;
 };
 
 }

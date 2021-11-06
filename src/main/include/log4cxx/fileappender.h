@@ -45,8 +45,8 @@ class Pool;
 */
 class LOG4CXX_EXPORT FileAppender : public WriterAppender
 {
-protected:
-	struct FileAppenderPriv;
+	protected:
+		struct FileAppenderPriv;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(FileAppender)
@@ -208,7 +208,7 @@ protected:
 	private:
 		FileAppender(const FileAppender&);
 		FileAppender& operator=(const FileAppender&);
-protected:
+	protected:
 		FileAppender(std::unique_ptr<FileAppenderPriv> priv);
 
 }; // class FileAppender

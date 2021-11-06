@@ -29,8 +29,9 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-struct FileOutputStream::FileOutputStreamPrivate{
-	FileOutputStreamPrivate() : fileptr(nullptr){}
+struct FileOutputStream::FileOutputStreamPrivate
+{
+	FileOutputStreamPrivate() : fileptr(nullptr) {}
 
 	Pool pool;
 	apr_file_t* fileptr;

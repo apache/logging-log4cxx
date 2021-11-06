@@ -21,33 +21,35 @@
 #include <log4cxx/private/writerappender_priv.h>
 #include <log4cxx/fileappender.h>
 
-namespace log4cxx{
+namespace log4cxx
+{
 
-struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPriv {
-    FileAppenderPriv() : WriterAppenderPriv(){}
+struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPriv
+{
+	FileAppenderPriv() : WriterAppenderPriv() {}
 
-    FileAppenderPriv(LayoutPtr layout) : WriterAppenderPriv(layout){}
+	FileAppenderPriv(LayoutPtr layout) : WriterAppenderPriv(layout) {}
 
-    /** Append to or truncate the file? The default value for this
-    variable is <code>true</code>, meaning that by default a
-    <code>FileAppender</code> will append to an existing file and
-    not truncate it.
-    <p>This option is meaningful only if the FileAppender opens the
-    file.
-    */
-    bool fileAppend;
+	/** Append to or truncate the file? The default value for this
+	variable is <code>true</code>, meaning that by default a
+	<code>FileAppender</code> will append to an existing file and
+	not truncate it.
+	<p>This option is meaningful only if the FileAppender opens the
+	file.
+	*/
+	bool fileAppend;
 
-    /**
-    The name of the log file. */
-    LogString fileName;
+	/**
+	The name of the log file. */
+	LogString fileName;
 
-    /**
-    Do we do bufferedIO? */
-    bool bufferedIO;
+	/**
+	Do we do bufferedIO? */
+	bool bufferedIO;
 
-    /**
-    How big should the IO buffer be? Default is 8K. */
-    int bufferSize;
+	/**
+	How big should the IO buffer be? Default is 8K. */
+	int bufferSize;
 };
 
 }

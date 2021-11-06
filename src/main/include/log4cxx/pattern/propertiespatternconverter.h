@@ -39,7 +39,7 @@ namespace pattern
 class LOG4CXX_EXPORT PropertiesPatternConverter
 	: public LoggingEventPatternConverter
 {
-	struct PropertiesPatternConverterPrivate;
+		struct PropertiesPatternConverterPrivate;
 
 		/**
 		 * Private constructor.

@@ -81,7 +81,8 @@ FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
 }
 
 FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv) :
-	WriterAppender (std::move(priv)){
+	WriterAppender (std::move(priv))
+{
 	_priv->fileAppend = true;
 	_priv->bufferedIO = false;
 	_priv->bufferSize = 8 * 1024;

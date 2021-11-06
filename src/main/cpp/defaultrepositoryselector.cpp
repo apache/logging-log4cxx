@@ -21,7 +21,8 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-struct DefaultRepositorySelector::DefaultRepositorySelectorPrivate{
+struct DefaultRepositorySelector::DefaultRepositorySelectorPrivate
+{
 	LoggerRepositoryPtr repository;
 };
 
@@ -31,7 +32,7 @@ DefaultRepositorySelector::DefaultRepositorySelector(const LoggerRepositoryPtr r
 	m_priv->repository = repository1;
 }
 
-DefaultRepositorySelector::~DefaultRepositorySelector(){}
+DefaultRepositorySelector::~DefaultRepositorySelector() {}
 
 LoggerRepositoryPtr DefaultRepositorySelector::getLoggerRepository()
 {

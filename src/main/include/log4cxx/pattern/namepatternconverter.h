@@ -35,7 +35,7 @@ namespace pattern
  */
 class LOG4CXX_EXPORT NamePatternConverter : public LoggingEventPatternConverter
 {
-	struct NamePatternConverterPrivate;
+		struct NamePatternConverterPrivate;
 
 	public:
 		DECLARE_LOG4CXX_PATTERN(NamePatternConverter)

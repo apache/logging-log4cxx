@@ -22,11 +22,12 @@
 using namespace log4cxx;
 using namespace log4cxx::pattern;
 
-struct FormattingInfo::FormattingInfoPrivate{
+struct FormattingInfo::FormattingInfoPrivate
+{
 	FormattingInfoPrivate(const bool leftAlign1, const int minLength1, const int maxLength1):
 		minLength(minLength1),
 		maxLength(maxLength1),
-		leftAlign(leftAlign1){}
+		leftAlign(leftAlign1) {}
 
 	/**
 	 * Minimum length.
@@ -58,7 +59,7 @@ FormattingInfo::FormattingInfo(
 {
 }
 
-FormattingInfo::~FormattingInfo(){}
+FormattingInfo::~FormattingInfo() {}
 
 /**
  * Gets default instance.

@@ -31,37 +31,42 @@ LOGUNIT_CLASS(ThreadUtilityTest)
 	LOGUNIT_TEST_SUITE_END();
 
 public:
-	void testNullFunctions(){
+	void testNullFunctions()
+	{
 		ThreadUtilityPtr thrUtil = ThreadUtility::instance();
 
 		thrUtil->configureFuncs( nullptr, nullptr, nullptr );
 
-		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [](){} );
+		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), []() {} );
 
 		t.join();
 	}
 
-	void testCustomFunctions(){
+	void testCustomFunctions()
+	{
 		ThreadUtilityPtr thrUtil = ThreadUtility::instance();
 		int num_pre = 0;
 		int num_started = 0;
 		int num_post = 0;
 
 		thrUtil->configureFuncs(
-			[&num_pre](){
-				num_pre++;
-			},
-			[&num_started]( LogString,
-							std::thread::id,
-							std::thread::native_handle_type ){
-				num_started++;
-			},
-			[&num_post](){
-				num_post++;
-			}
+			[&num_pre]()
+		{
+			num_pre++;
+		},
+		[&num_started]( LogString,
+			std::thread::id,
+			std::thread::native_handle_type )
+		{
+			num_started++;
+		},
+		[&num_post]()
+		{
+			num_post++;
+		}
 		);
 
-		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [](){} );
+		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), []() {} );
 
 		t.join();
 
@@ -70,12 +75,13 @@ public:
 		LOGUNIT_ASSERT_EQUAL( num_post, 1 );
 	}
 
-	void testDefaultFunctions(){
+	void testDefaultFunctions()
+	{
 		ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
 
 		ThreadUtilityPtr thrUtil = ThreadUtility::instance();
 
-		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), [](){} );
+		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), []() {} );
 
 		t.join();
 	}

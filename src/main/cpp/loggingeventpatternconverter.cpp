@@ -38,7 +38,8 @@ LoggingEventPatternConverter::LoggingEventPatternConverter(
 }
 
 LoggingEventPatternConverter::LoggingEventPatternConverter(std::unique_ptr<PatternConverterPrivate> priv) :
-	PatternConverter (std::move(priv)){
+	PatternConverter (std::move(priv))
+{
 
 }
 

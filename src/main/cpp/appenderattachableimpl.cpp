@@ -28,7 +28,8 @@ using namespace log4cxx::spi;
 
 IMPLEMENT_LOG4CXX_OBJECT(AppenderAttachableImpl)
 
-struct AppenderAttachableImpl::priv_data{
+struct AppenderAttachableImpl::priv_data
+{
 	/** Array of appenders. */
 	AppenderList  appenderList;
 	mutable std::mutex m_mutex;
@@ -40,7 +41,8 @@ AppenderAttachableImpl::AppenderAttachableImpl(Pool& pool) :
 {
 }
 
-AppenderAttachableImpl::~AppenderAttachableImpl(){
+AppenderAttachableImpl::~AppenderAttachableImpl()
+{
 
 }
 
@@ -78,6 +80,7 @@ int AppenderAttachableImpl::appendLoopOnAppenders(
 		std::unique_lock<std::mutex> lock( m_priv->m_mutex );
 		allAppenders = m_priv->appenderList;
 	}
+
 	for (AppenderList::iterator it = allAppenders.begin();
 		it != allAppenders.end();
 		it++)
@@ -187,7 +190,8 @@ void AppenderAttachableImpl::removeAppender(const LogString& name)
 	}
 }
 
-std::mutex& AppenderAttachableImpl::getMutex(){
+std::mutex& AppenderAttachableImpl::getMutex()
+{
 	return m_priv->m_mutex;
 }
 

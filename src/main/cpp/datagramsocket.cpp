@@ -25,7 +25,8 @@
 
 using namespace log4cxx::helpers;
 
-struct DatagramSocket::DatagramSocketPriv{
+struct DatagramSocket::DatagramSocketPriv
+{
 	DatagramSocketPriv()
 		: socket(0), address(), localAddress(), port(0), localPort(0)
 	{

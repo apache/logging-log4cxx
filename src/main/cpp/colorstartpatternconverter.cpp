@@ -50,27 +50,35 @@ void ColorStartPatternConverter::format(
 	Pool& p) const
 {
 
-  log4cxx::LevelPtr lvl = event->getLevel();
-  switch (lvl->toInt()){
-    case log4cxx::Level::FATAL_INT:
-      toAppendTo.append(LOG4CXX_STR("\x1B[35m")); //magenta
-      break;
-    case log4cxx::Level::ERROR_INT:
-      toAppendTo.append(LOG4CXX_STR("\x1B[91m")); //red
-      break;
-    case log4cxx::Level::WARN_INT:
-      toAppendTo.append(LOG4CXX_STR("\x1B[33m")); //yellow
-      break;
-    case log4cxx::Level::INFO_INT:
-      toAppendTo.append(LOG4CXX_STR("\x1B[32m")); //green
-      break;
-    case log4cxx::Level::DEBUG_INT:
-      toAppendTo.append(LOG4CXX_STR("\x1B[36m")); //cyan
-      break;
-    case log4cxx::Level::TRACE_INT:
-      toAppendTo.append(LOG4CXX_STR("\x1B[34m")); //blue
-      break;
-    default:
-      break;
-  }
+	log4cxx::LevelPtr lvl = event->getLevel();
+
+	switch (lvl->toInt())
+	{
+		case log4cxx::Level::FATAL_INT:
+			toAppendTo.append(LOG4CXX_STR("\x1B[35m")); //magenta
+			break;
+
+		case log4cxx::Level::ERROR_INT:
+			toAppendTo.append(LOG4CXX_STR("\x1B[91m")); //red
+			break;
+
+		case log4cxx::Level::WARN_INT:
+			toAppendTo.append(LOG4CXX_STR("\x1B[33m")); //yellow
+			break;
+
+		case log4cxx::Level::INFO_INT:
+			toAppendTo.append(LOG4CXX_STR("\x1B[32m")); //green
+			break;
+
+		case log4cxx::Level::DEBUG_INT:
+			toAppendTo.append(LOG4CXX_STR("\x1B[36m")); //cyan
+			break;
+
+		case log4cxx::Level::TRACE_INT:
+			toAppendTo.append(LOG4CXX_STR("\x1B[34m")); //blue
+			break;
+
+		default:
+			break;
+	}
 }

@@ -30,8 +30,9 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<LevelRangeFilterPrivate*>(m_priv.get())
 
-struct LevelRangeFilter::LevelRangeFilterPrivate : public FilterPrivate{
-	LevelRangeFilterPrivate() : acceptOnMatch(false), levelMin(Level::getAll()), levelMax(Level::getOff()){}
+struct LevelRangeFilter::LevelRangeFilterPrivate : public FilterPrivate
+{
+	LevelRangeFilterPrivate() : acceptOnMatch(false), levelMin(Level::getAll()), levelMax(Level::getOff()) {}
 
 	/**
 	Do we return ACCEPT when a match occurs. Default is
@@ -50,7 +51,7 @@ LevelRangeFilter::LevelRangeFilter()
 {
 }
 
-LevelRangeFilter::~LevelRangeFilter(){}
+LevelRangeFilter::~LevelRangeFilter() {}
 
 void LevelRangeFilter::setOption(const LogString& option,
 	const LogString& value)

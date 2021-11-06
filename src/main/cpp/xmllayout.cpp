@@ -32,8 +32,9 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 using namespace log4cxx::xml;
 
-struct XMLLayout::XMLLayoutPrivate{
-	XMLLayoutPrivate() : locationInfo(false), properties(false){}
+struct XMLLayout::XMLLayoutPrivate
+{
+	XMLLayoutPrivate() : locationInfo(false), properties(false) {}
 
 	// Print no location info by default
 	bool locationInfo; //= false
@@ -47,7 +48,7 @@ XMLLayout::XMLLayout()
 {
 }
 
-XMLLayout::~XMLLayout(){}
+XMLLayout::~XMLLayout() {}
 
 void XMLLayout::setOption(const LogString& option,
 	const LogString& value)

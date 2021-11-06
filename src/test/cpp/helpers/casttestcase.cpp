@@ -60,7 +60,8 @@ public:
 		LOGUNIT_ASSERT(!fos);
 	}
 
-	void testRollingFileAppender(){
+	void testRollingFileAppender()
+	{
 		rolling::RollingFileAppenderPtr rolling = rolling::RollingFileAppenderPtr(new rolling::RollingFileAppender());
 
 		AppenderPtr appender = log4cxx::cast<Appender>(rolling);

@@ -33,10 +33,11 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
 struct ThrowableInformationPatternConverter::ThrowableInformationPatternConverterPrivate :
-		public PatternConverterPrivate {
+	public PatternConverterPrivate
+{
 	ThrowableInformationPatternConverterPrivate( const LogString& name, const LogString& style, bool shortReport ) :
 		PatternConverterPrivate( name, style ),
-		shortReport(shortReport){}
+		shortReport(shortReport) {}
 
 	/**
 	 * If "short", only first line of throwable report will be formatted.
@@ -50,8 +51,8 @@ ThrowableInformationPatternConverter::ThrowableInformationPatternConverter(bool 
 	LoggingEventPatternConverter(
 		std::make_unique<ThrowableInformationPatternConverterPrivate>(
 			LOG4CXX_STR("Throwable"),
-		LOG4CXX_STR("throwable"),
-	shortReport1))
+			LOG4CXX_STR("throwable"),
+			shortReport1))
 {
 }
 

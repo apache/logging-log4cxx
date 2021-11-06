@@ -28,11 +28,12 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<AndFilterPrivate*>(m_priv.get())
 
-struct AndFilter::AndFilterPrivate : public FilterPrivate{
+struct AndFilter::AndFilterPrivate : public FilterPrivate
+{
 	AndFilterPrivate() : FilterPrivate(),
-						headFilter(),
-						tailFilter(),
-						acceptOnMatch(true){}
+		headFilter(),
+		tailFilter(),
+		acceptOnMatch(true) {}
 
 	log4cxx::spi::FilterPtr headFilter;
 	log4cxx::spi::FilterPtr tailFilter;
@@ -46,7 +47,7 @@ AndFilter::AndFilter()
 {
 }
 
-AndFilter::~AndFilter(){}
+AndFilter::~AndFilter() {}
 
 void AndFilter::addFilter(const FilterPtr& filter)
 {

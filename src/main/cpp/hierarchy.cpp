@@ -49,8 +49,10 @@ using namespace log4cxx::helpers;
 typedef std::map<LogString, LoggerPtr> LoggerMap;
 typedef std::map<LogString, ProvisionNode> ProvisionNodeMap;
 
-struct Hierarchy::HierarchyPrivate {
-	HierarchyPrivate(){
+struct Hierarchy::HierarchyPrivate
+{
+	HierarchyPrivate()
+	{
 		loggers = std::make_unique<LoggerMap>();
 		provisionNodes = std::make_unique<ProvisionNodeMap>();
 		root = std::make_shared<RootLogger>(pool, Level::getDebug());
@@ -439,17 +441,20 @@ bool Hierarchy::isConfigured()
 	return m_priv->configured;
 }
 
-HierarchyPtr Hierarchy::create(){
+HierarchyPtr Hierarchy::create()
+{
 	HierarchyPtr ret( new Hierarchy() );
 	ret->configureRoot();
 	return ret;
 }
 
-void Hierarchy::configureRoot(){
+void Hierarchy::configureRoot()
+{
 	// This should really be done in the constructor, but in order to fix
 	// LOGCXX-322 we need to turn the repositroy into a weak_ptr, and we
 	// can't use weak_from_this() in the constructor.
-	if( !m_priv->root->getLoggerRepository().lock() ){
+	if ( !m_priv->root->getLoggerRepository().lock() )
+	{
 		m_priv->root->setHierarchy(shared_from_this());
 	}
 }

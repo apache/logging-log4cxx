@@ -28,11 +28,12 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<GZCompressActionPrivate*>(m_priv.get())
 
-struct GZCompressAction::GZCompressActionPrivate : public ActionPrivate{
+struct GZCompressAction::GZCompressActionPrivate : public ActionPrivate
+{
 	GZCompressActionPrivate( const File& toRename,
-							 const File& renameTo,
-							 bool deleteSource):
-		source(toRename), destination(renameTo), deleteSource(deleteSource){}
+		const File& renameTo,
+		bool deleteSource):
+		source(toRename), destination(renameTo), deleteSource(deleteSource) {}
 
 	const File source;
 	const File destination;
@@ -45,11 +46,11 @@ GZCompressAction::GZCompressAction(const File& src,
 	const File& dest,
 	bool del)
 	: Action(std::make_unique<GZCompressActionPrivate>(
-				 src, dest, del))
+			  src, dest, del))
 {
 }
 
-GZCompressAction::~GZCompressAction(){}
+GZCompressAction::~GZCompressAction() {}
 
 bool GZCompressAction::execute(log4cxx::helpers::Pool& p) const
 {

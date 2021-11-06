@@ -30,7 +30,8 @@ using namespace log4cxx::varia;
 
 IMPLEMENT_LOG4CXX_OBJECT(FallbackErrorHandler)
 
-struct FallbackErrorHandler::FallbackErrorHandlerPrivate {
+struct FallbackErrorHandler::FallbackErrorHandlerPrivate
+{
 	AppenderWeakPtr backup;
 	AppenderWeakPtr primary;
 	std::vector<LoggerPtr> loggers;
@@ -41,7 +42,7 @@ FallbackErrorHandler::FallbackErrorHandler()
 {
 }
 
-FallbackErrorHandler::~FallbackErrorHandler(){}
+FallbackErrorHandler::~FallbackErrorHandler() {}
 
 void FallbackErrorHandler::setLogger(const LoggerPtr& logger)
 {

@@ -38,10 +38,11 @@ using namespace log4cxx::pattern;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-struct DatePatternConverter::DatePatternConverterPrivate : public PatternConverterPrivate{
+struct DatePatternConverter::DatePatternConverterPrivate : public PatternConverterPrivate
+{
 	DatePatternConverterPrivate( const LogString& name, const LogString& style, DateFormatPtr _df ):
-		PatternConverterPrivate(name,style),
-		df(_df){}
+		PatternConverterPrivate(name, style),
+		df(_df) {}
 	/**
 	 * Date format.
 	 */
@@ -55,11 +56,11 @@ IMPLEMENT_LOG4CXX_OBJECT(DatePatternConverter)
 DatePatternConverter::DatePatternConverter(
 	const std::vector<LogString>& options) :
 	LoggingEventPatternConverter (std::make_unique<DatePatternConverterPrivate>(LOG4CXX_STR("Class Name"),
-		LOG4CXX_STR("class name"), getDateFormat(options)))
+			LOG4CXX_STR("class name"), getDateFormat(options)))
 {
 }
 
-DatePatternConverter::~DatePatternConverter(){}
+DatePatternConverter::~DatePatternConverter() {}
 
 DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 {

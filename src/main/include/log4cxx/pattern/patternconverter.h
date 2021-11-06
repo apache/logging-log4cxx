@@ -66,7 +66,7 @@ class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::Object
 		 * @param style CSS style for formatted output.
 		 */
 		PatternConverter(const LogString& name,
-						 const LogString& style);
+			const LogString& style);
 
 		virtual ~PatternConverter();
 

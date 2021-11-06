@@ -29,10 +29,11 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<LoggerMatchFilterPrivate*>(m_priv.get())
 
-struct LoggerMatchFilter::LoggerMatchFilterPrivate : public FilterPrivate {
+struct LoggerMatchFilter::LoggerMatchFilterPrivate : public FilterPrivate
+{
 	LoggerMatchFilterPrivate() : FilterPrivate(),
 		acceptOnMatch(true),
-		loggerToMatch(LOG4CXX_STR("root")){}
+		loggerToMatch(LOG4CXX_STR("root")) {}
 
 	bool acceptOnMatch;
 	LogString loggerToMatch;
@@ -46,7 +47,7 @@ LoggerMatchFilter::LoggerMatchFilter()
 {
 }
 
-LoggerMatchFilter::~LoggerMatchFilter(){}
+LoggerMatchFilter::~LoggerMatchFilter() {}
 
 void LoggerMatchFilter::setLoggerToMatch(const LogString& value)
 {

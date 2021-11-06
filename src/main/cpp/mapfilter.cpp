@@ -29,9 +29,10 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<MapFilterPrivate*>(m_priv.get())
 
-struct MapFilter::MapFilterPrivate : public FilterPrivate {
+struct MapFilter::MapFilterPrivate : public FilterPrivate
+{
 	MapFilterPrivate() : FilterPrivate(),
-		acceptOnMatch(true), mustMatchAll(false){}
+		acceptOnMatch(true), mustMatchAll(false) {}
 
 	bool    acceptOnMatch;
 	bool    mustMatchAll; // true = AND; false = OR
@@ -45,7 +46,7 @@ MapFilter::MapFilter() : Filter(std::make_unique<MapFilterPrivate>())
 
 }
 
-MapFilter::~MapFilter(){}
+MapFilter::~MapFilter() {}
 
 void MapFilter::setOption(  const LogString& option,
 	const LogString& value)

@@ -46,7 +46,7 @@ class LOG4CXX_EXPORT Configurator : virtual public helpers::Object
 		virtual void doConfigure(const File& configFileName,
 			spi::LoggerRepositoryPtr repository) = 0;
 
-protected:
+	protected:
 		Configurator();
 
 	private:

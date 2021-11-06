@@ -29,22 +29,26 @@ using log4cxx::Logger;
 using log4cxx::LoggerPtr;
 using log4cxx::LogManager;
 
-class NullWriterAppender : public log4cxx::AppenderSkeleton{
-public:
-	NullWriterAppender(){}
+class NullWriterAppender : public log4cxx::AppenderSkeleton
+{
+	public:
+		NullWriterAppender() {}
 
-	virtual void close(){}
+		virtual void close() {}
 
-	virtual bool requiresLayout() const {
-		return false;
-	}
+		virtual bool requiresLayout() const
+		{
+			return false;
+		}
 
-	virtual void append(const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p){
-		// Do nothing but discard the data
-	}
+		virtual void append(const log4cxx::spi::LoggingEventPtr& event, log4cxx::helpers::Pool& p)
+		{
+			// Do nothing but discard the data
+		}
 };
 
-static void multithread_logger( int times ){
+static void multithread_logger( int times )
+{
 	/*
 	 * An explanation on this test: according to LOGCXX-322, calling
 	 * exit(0) (or equivalent) from a secondary thread causes a segfault.
@@ -61,15 +65,19 @@ static void multithread_logger( int times ){
 	std::mt19937 gen(rd());
 	std::uniform_int_distribution<> distribution( 100, times );
 
-	for( int x = 0; x < times; x++ ){
+	for ( int x = 0; x < times; x++ )
+	{
 		LOG4CXX_INFO( logger, "This is a test message that has some data" );
-		if( distribution(gen) == x ){
+
+		if ( distribution(gen) == x )
+		{
 			std::exit(0);
 		}
 	}
 }
 
-LOGUNIT_CLASS(MultithreadTest){
+LOGUNIT_CLASS(MultithreadTest)
+{
 	LOGUNIT_TEST_SUITE(MultithreadTest);
 	LOGUNIT_TEST(testMultithreadedLoggers);
 	LOGUNIT_TEST_SUITE_END();
@@ -84,19 +92,23 @@ public:
 
 	void tearDown()
 	{
-//		root->getLoggerRepository()->resetConfiguration();
+		//      root->getLoggerRepository()->resetConfiguration();
 	}
 
-	void testMultithreadedLoggers(){
+	void testMultithreadedLoggers()
+	{
 		std::vector<std::thread> threads;
 
-		for( int x = 0; x < 6; x++ ){
+		for ( int x = 0; x < 6; x++ )
+		{
 			std::thread thr( multithread_logger, 20000 );
 			threads.push_back( std::move(thr) );
 		}
 
-		for( std::thread& thr : threads ){
-			if( thr.joinable() ){
+		for ( std::thread& thr : threads )
+		{
+			if ( thr.joinable() )
+			{
 				thr.join();
 			}
 		}

@@ -173,7 +173,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		*/
 		void setThreshold(const LevelPtr& threshold);
 
-protected:
+	protected:
 		std::unique_ptr<AppenderSkeletonPrivate> m_priv;
 
 }; // class AppenderSkeleton

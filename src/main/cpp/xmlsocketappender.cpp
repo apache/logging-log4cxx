@@ -34,15 +34,16 @@ using namespace log4cxx::helpers;
 using namespace log4cxx::net;
 using namespace log4cxx::xml;
 
-struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonPriv {
+struct XMLSocketAppender::XMLSocketAppenderPriv : public SocketAppenderSkeletonPriv
+{
 	XMLSocketAppenderPriv(int defaultPort, int reconnectionDelay) :
-		SocketAppenderSkeletonPriv(defaultPort, reconnectionDelay){}
+		SocketAppenderSkeletonPriv(defaultPort, reconnectionDelay) {}
 
 	XMLSocketAppenderPriv(InetAddressPtr address, int defaultPort, int reconnectionDelay) :
-		SocketAppenderSkeletonPriv( address, defaultPort, reconnectionDelay ){}
+		SocketAppenderSkeletonPriv( address, defaultPort, reconnectionDelay ) {}
 
 	XMLSocketAppenderPriv(const LogString& host, int port, int delay) :
-		SocketAppenderSkeletonPriv( host, port, delay ){}
+		SocketAppenderSkeletonPriv( host, port, delay ) {}
 
 	log4cxx::helpers::WriterPtr writer;
 };

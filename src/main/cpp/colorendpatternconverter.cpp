@@ -50,6 +50,6 @@ void ColorEndPatternConverter::format(
 	Pool& p) const
 {
 
-  toAppendTo.append(LOG4CXX_STR("\x1B[39m"));
+	toAppendTo.append(LOG4CXX_STR("\x1B[39m"));
 
 }

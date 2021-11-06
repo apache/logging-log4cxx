@@ -95,7 +95,11 @@ public:
 	{
 		MDC::clear();
 		log4cxx::spi::LoggerRepositoryPtr rep = root->getLoggerRepository().lock();
-		if (rep) rep->resetConfiguration();
+
+		if (rep)
+		{
+			rep->resetConfiguration();
+		}
 	}
 
 	void test1()

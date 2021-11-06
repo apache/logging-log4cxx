@@ -28,11 +28,12 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<ZipCompressActionPrivate*>(m_priv.get())
 
-struct ZipCompressAction::ZipCompressActionPrivate : public ActionPrivate{
+struct ZipCompressAction::ZipCompressActionPrivate : public ActionPrivate
+{
 	ZipCompressActionPrivate( const File& toRename,
-							 const File& renameTo,
-							 bool deleteSource):
-		source(toRename), destination(renameTo), deleteSource(deleteSource){}
+		const File& renameTo,
+		bool deleteSource):
+		source(toRename), destination(renameTo), deleteSource(deleteSource) {}
 
 	const File source;
 	const File destination;
@@ -45,7 +46,7 @@ ZipCompressAction::ZipCompressAction(const File& src,
 	const File& dest,
 	bool del)
 	: Action(std::make_unique<ZipCompressActionPrivate>(
-				 src, dest, del))
+			  src, dest, del))
 {
 }
 

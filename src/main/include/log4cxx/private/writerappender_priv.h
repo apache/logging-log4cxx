@@ -24,23 +24,27 @@
 #ifndef _LOG4CXX_WRITERAPPENDER_PRIV_H
 #define _LOG4CXX_WRITERAPPENDER_PRIV_H
 
-namespace log4cxx{
+namespace log4cxx
+{
 
-struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate {
-        WriterAppenderPriv() :
-	        AppenderSkeletonPrivate(),
-	        immediateFlush(true){}
+struct WriterAppender::WriterAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
+{
+	WriterAppenderPriv() :
+		AppenderSkeletonPrivate(),
+		immediateFlush(true) {}
 
 	WriterAppenderPriv(const LayoutPtr& layout1,
-	                                   log4cxx::helpers::WriterPtr& writer1) :
-	        AppenderSkeletonPrivate(layout1),
-	        immediateFlush(true),
-	        writer(writer1){
+		log4cxx::helpers::WriterPtr& writer1) :
+		AppenderSkeletonPrivate(layout1),
+		immediateFlush(true),
+		writer(writer1)
+	{
 	}
 
 	WriterAppenderPriv(const LayoutPtr& layout1) :
-	        AppenderSkeletonPrivate(layout1),
-	        immediateFlush(true){
+		AppenderSkeletonPrivate(layout1),
+		immediateFlush(true)
+	{
 	}
 
 	/**

@@ -28,11 +28,12 @@ Filter::Filter() : m_priv(std::make_unique<FilterPrivate>())
 }
 
 Filter::Filter(std::unique_ptr<FilterPrivate> priv) :
-	m_priv(std::move(priv)){
+	m_priv(std::move(priv))
+{
 
 }
 
-Filter::~Filter(){}
+Filter::~Filter() {}
 
 FilterPtr Filter::getNext() const
 {

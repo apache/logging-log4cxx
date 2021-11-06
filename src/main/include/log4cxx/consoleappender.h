@@ -35,8 +35,8 @@ namespace log4cxx
 */
 class LOG4CXX_EXPORT ConsoleAppender : public WriterAppender
 {
-private:
-	struct ConsoleAppenderPriv;
+	private:
+		struct ConsoleAppenderPriv;
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(ConsoleAppender)

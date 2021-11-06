@@ -26,10 +26,11 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace std;
 
-struct ByteArrayInputStream::ByteArrayInputStreamPriv{
+struct ByteArrayInputStream::ByteArrayInputStreamPriv
+{
 	ByteArrayInputStreamPriv(const ByteList& bytes) :
 		buf(bytes),
-		pos(0){}
+		pos(0) {}
 
 	ByteList buf;
 	size_t pos;

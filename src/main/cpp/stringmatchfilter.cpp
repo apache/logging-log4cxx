@@ -29,10 +29,11 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<StringMatchFilterPrivate*>(m_priv.get())
 
-struct StringMatchFilter::StringMatchFilterPrivate : public FilterPrivate {
+struct StringMatchFilter::StringMatchFilterPrivate : public FilterPrivate
+{
 	StringMatchFilterPrivate() : FilterPrivate(),
-			acceptOnMatch(true),
-			stringToMatch(){}
+		acceptOnMatch(true),
+		stringToMatch() {}
 
 	bool acceptOnMatch;
 	LogString stringToMatch;
@@ -45,7 +46,7 @@ StringMatchFilter::StringMatchFilter() :
 {
 }
 
-StringMatchFilter::~StringMatchFilter(){}
+StringMatchFilter::~StringMatchFilter() {}
 
 void StringMatchFilter::setOption(const LogString& option,
 	const LogString& value)

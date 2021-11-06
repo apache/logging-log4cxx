@@ -21,7 +21,8 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-struct BufferedWriter::BufferedWriterPriv {
+struct BufferedWriter::BufferedWriterPriv
+{
 	BufferedWriterPriv(WriterPtr& out1, size_t sz1) :
 		out(out1),
 		sz(sz1)

@@ -53,7 +53,9 @@ public:
 	void tearDown()
 	{
 		log4cxx::spi::LoggerRepositoryPtr rep = logger->getLoggerRepository().lock();
-		if (rep) {
+
+		if (rep)
+		{
 			rep->resetConfiguration();
 		}
 	}

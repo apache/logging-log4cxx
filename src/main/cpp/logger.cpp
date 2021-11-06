@@ -39,7 +39,8 @@ using namespace log4cxx;
 using namespace log4cxx::helpers;
 using namespace log4cxx::spi;
 
-struct Logger::LoggerPrivate{
+struct Logger::LoggerPrivate
+{
 	LoggerPrivate(Pool& p, const LogString& name1):
 		pool(&p),
 		name(name1),
@@ -48,7 +49,7 @@ struct Logger::LoggerPrivate{
 		resourceBundle(),
 		repository(),
 		aai(new AppenderAttachableImpl(*pool)),
-		additive(true){}
+		additive(true) {}
 
 	/**
 	 *   Reference to memory pool.
@@ -84,12 +85,12 @@ struct Logger::LoggerPrivate{
 	helpers::AppenderAttachableImplPtr aai;
 
 	/** Additivity is set to true by default, that is children inherit
-			the appenders of their ancestors by default. If this variable is
-			set to <code>false</code> then the appenders found in the
-			ancestors of this logger are not used. However, the children
-			of this logger will inherit its appenders, unless the children
-			have their additivity flag set to <code>false</code> too. See
-			the user manual for more details. */
+	        the appenders of their ancestors by default. If this variable is
+	        set to <code>false</code> then the appenders found in the
+	        ancestors of this logger are not used. However, the children
+	        of this logger will inherit its appenders, unless the children
+	        have their additivity flag set to <code>false</code> too. See
+	        the user manual for more details. */
 	bool additive;
 
 	mutable shared_mutex mutex;
@@ -157,6 +158,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 	}
 
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (writes == 0 && rep)
 	{
 		rep->emitNoAppenderWarning(const_cast<Logger*>(this));
@@ -298,6 +300,7 @@ bool Logger::isAttached(const AppenderPtr appender) const
 bool Logger::isTraceEnabled() const
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (!rep || rep->isDisabled(Level::TRACE_INT))
 	{
 		return false;
@@ -309,6 +312,7 @@ bool Logger::isTraceEnabled() const
 bool Logger::isDebugEnabled() const
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (!rep || rep->isDisabled(Level::DEBUG_INT))
 	{
 		return false;
@@ -320,6 +324,7 @@ bool Logger::isDebugEnabled() const
 bool Logger::isEnabledFor(const LevelPtr& level1) const
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (!rep || rep->isDisabled(level1->toInt()))
 	{
 		return false;
@@ -332,6 +337,7 @@ bool Logger::isEnabledFor(const LevelPtr& level1) const
 bool Logger::isInfoEnabled() const
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (!rep || rep->isDisabled(Level::INFO_INT))
 	{
 		return false;
@@ -343,6 +349,7 @@ bool Logger::isInfoEnabled() const
 bool Logger::isErrorEnabled() const
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (!rep || rep->isDisabled(Level::ERROR_INT))
 	{
 		return false;
@@ -354,6 +361,7 @@ bool Logger::isErrorEnabled() const
 bool Logger::isWarnEnabled() const
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (!rep || rep->isDisabled(Level::WARN_INT))
 	{
 		return false;
@@ -365,6 +373,7 @@ bool Logger::isWarnEnabled() const
 bool Logger::isFatalEnabled() const
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (!rep || rep->isDisabled(Level::FATAL_INT))
 	{
 		return false;
@@ -402,6 +411,7 @@ void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
 	const LocationInfo& location, const std::vector<LogString>& params) const
 {
 	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+
 	if (!rep || rep->isDisabled(level1->toInt()))
 	{
 		return;
@@ -502,7 +512,8 @@ void Logger::setHierarchy(spi::LoggerRepositoryWeakPtr repository1)
 	m_priv->repository = repository1;
 }
 
-void Logger::setParent(LoggerPtr parentLogger){
+void Logger::setParent(LoggerPtr parentLogger)
+{
 	m_priv->parent = parentLogger;
 }
 

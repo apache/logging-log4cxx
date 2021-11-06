@@ -185,13 +185,21 @@ void PropertyConfigurator::doConfigure(helpers::Properties& properties,
 	}
 
 	LogString threadConfigurationValue(properties.getProperty(LOG4CXX_STR("log4j.threadConfiguration")));
-	if( threadConfigurationValue == LOG4CXX_STR("NoConfiguration") ){
+
+	if ( threadConfigurationValue == LOG4CXX_STR("NoConfiguration") )
+	{
 		helpers::ThreadUtility::configure( ThreadConfigurationType::NoConfiguration );
-	}else if( threadConfigurationValue == LOG4CXX_STR("BlockSignalsOnly") ){
+	}
+	else if ( threadConfigurationValue == LOG4CXX_STR("BlockSignalsOnly") )
+	{
 		helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsOnly );
-	}else if( threadConfigurationValue == LOG4CXX_STR("NameThreadOnly") ){
+	}
+	else if ( threadConfigurationValue == LOG4CXX_STR("NameThreadOnly") )
+	{
 		helpers::ThreadUtility::configure( ThreadConfigurationType::NameThreadOnly );
-	}else if( threadConfigurationValue == LOG4CXX_STR("BlockSignalsAndNameThread") ){
+	}
+	else if ( threadConfigurationValue == LOG4CXX_STR("BlockSignalsAndNameThread") )
+	{
 		helpers::ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
 	}
 

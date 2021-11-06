@@ -22,9 +22,10 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-struct ByteBuffer::ByteBufferPriv{
+struct ByteBuffer::ByteBufferPriv
+{
 	ByteBufferPriv(char* data1, size_t capacity) :
-		base(data1), pos(0), lim(capacity), cap(capacity){}
+		base(data1), pos(0), lim(capacity), cap(capacity) {}
 
 	char* base;
 	size_t pos;

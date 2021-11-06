@@ -30,7 +30,8 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<LevelMatchFilterPrivate*>(m_priv.get())
 
-struct LevelMatchFilter::LevelMatchFilterPrivate : public FilterPrivate {
+struct LevelMatchFilter::LevelMatchFilterPrivate : public FilterPrivate
+{
 	bool acceptOnMatch;
 	LevelPtr levelToMatch;
 };
@@ -43,7 +44,7 @@ LevelMatchFilter::LevelMatchFilter()
 	priv->acceptOnMatch = true;
 }
 
-LevelMatchFilter::~LevelMatchFilter(){}
+LevelMatchFilter::~LevelMatchFilter() {}
 
 void LevelMatchFilter::setOption(const LogString& option,
 	const LogString& value)

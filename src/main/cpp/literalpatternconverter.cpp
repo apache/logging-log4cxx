@@ -31,10 +31,11 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<LiteralPatternConverterPrivate*>(m_priv.get())
 
-struct LiteralPatternConverter::LiteralPatternConverterPrivate : public PatternConverterPrivate {
+struct LiteralPatternConverter::LiteralPatternConverterPrivate : public PatternConverterPrivate
+{
 	LiteralPatternConverterPrivate( const LogString& name, const LogString& style, const LogString& literal1 ) :
 		PatternConverterPrivate( name, style ),
-		literal(literal1){}
+		literal(literal1) {}
 
 	/**
 	 * String literal.
@@ -46,7 +47,7 @@ IMPLEMENT_LOG4CXX_OBJECT(LiteralPatternConverter)
 
 LiteralPatternConverter::LiteralPatternConverter(const LogString& literal1) :
 	LoggingEventPatternConverter(std::make_unique<LiteralPatternConverterPrivate>
-								 (LOG4CXX_STR("Literal"), LOG4CXX_STR("literal"),literal1))
+		(LOG4CXX_STR("Literal"), LOG4CXX_STR("literal"), literal1))
 {
 }
 

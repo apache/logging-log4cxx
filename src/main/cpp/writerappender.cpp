@@ -50,7 +50,8 @@ WriterAppender::WriterAppender(const LayoutPtr& layout1)
 }
 
 WriterAppender::WriterAppender(std::unique_ptr<WriterAppenderPriv> priv)
-	: AppenderSkeleton (std::move(priv)){
+	: AppenderSkeleton (std::move(priv))
+{
 
 }
 
@@ -316,6 +317,7 @@ void WriterAppender::setImmediateFlush(bool value)
 	_priv->immediateFlush = value;
 }
 
-bool WriterAppender::getImmediateFlush() const{
+bool WriterAppender::getImmediateFlush() const
+{
 	return _priv->immediateFlush;
 }

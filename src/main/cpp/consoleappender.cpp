@@ -27,10 +27,11 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-struct ConsoleAppender::ConsoleAppenderPriv : public WriterAppender::WriterAppenderPriv{
+struct ConsoleAppender::ConsoleAppenderPriv : public WriterAppender::WriterAppenderPriv
+{
 	ConsoleAppenderPriv(LogString target) :
 		WriterAppenderPriv(),
-		target(target){}
+		target(target) {}
 
 	LogString target;
 };

@@ -26,33 +26,34 @@ namespace log4cxx
 namespace net
 {
 
-struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkeletonPrivate {
-        SocketAppenderSkeletonPriv(int defaultPort, int reconnectionDelay) :
-	        AppenderSkeletonPrivate(),
-	        remoteHost(),
-	        address(),
-	        port(defaultPort),
-	        reconnectionDelay(reconnectionDelay),
-	        locationInfo(false),
-	        thread(){}
+struct SocketAppenderSkeleton::SocketAppenderSkeletonPriv : public AppenderSkeletonPrivate
+{
+	SocketAppenderSkeletonPriv(int defaultPort, int reconnectionDelay) :
+		AppenderSkeletonPrivate(),
+		remoteHost(),
+		address(),
+		port(defaultPort),
+		reconnectionDelay(reconnectionDelay),
+		locationInfo(false),
+		thread() {}
 
 	SocketAppenderSkeletonPriv(helpers::InetAddressPtr address, int defaultPort, int reconnectionDelay) :
-	        AppenderSkeletonPrivate(),
-	        remoteHost(),
-	        address(address),
-	        port(defaultPort),
-	        reconnectionDelay(reconnectionDelay),
-	        locationInfo(false),
-	        thread(){}
+		AppenderSkeletonPrivate(),
+		remoteHost(),
+		address(address),
+		port(defaultPort),
+		reconnectionDelay(reconnectionDelay),
+		locationInfo(false),
+		thread() {}
 
 	SocketAppenderSkeletonPriv(const LogString& host, int port, int delay) :
-	        AppenderSkeletonPrivate(),
-	        remoteHost(host),
-	        address(helpers::InetAddress::getByName(host)),
-	        port(port),
-	        reconnectionDelay(delay),
-	        locationInfo(false),
-	        thread(){}
+		AppenderSkeletonPrivate(),
+		remoteHost(host),
+		address(helpers::InetAddress::getByName(host)),
+		port(port),
+		reconnectionDelay(delay),
+		locationInfo(false),
+		thread() {}
 
 	/**
 	host name

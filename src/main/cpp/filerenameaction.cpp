@@ -25,11 +25,12 @@ using namespace log4cxx::helpers;
 
 #define priv static_cast<FileRenameActionPrivate*>(m_priv.get())
 
-struct FileRenameAction::FileRenameActionPrivate : public ActionPrivate{
+struct FileRenameAction::FileRenameActionPrivate : public ActionPrivate
+{
 	FileRenameActionPrivate( const File& toRename,
-							 const File& renameTo,
-							 bool renameEmptyFile1):
-		source(toRename), destination(renameTo), renameEmptyFile(renameEmptyFile1){}
+		const File& renameTo,
+		bool renameEmptyFile1):
+		source(toRename), destination(renameTo), renameEmptyFile(renameEmptyFile1) {}
 
 	const File source;
 	const File destination;

@@ -68,7 +68,7 @@ xml::DOMConfigurator DOMConfigurator}.
 class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
 	public virtual helpers::Object
 {
-protected:
+	protected:
 		struct FilterPrivate;
 		std::unique_ptr<FilterPrivate> m_priv;
 

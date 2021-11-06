@@ -19,14 +19,17 @@
 
 #include <log4cxx/rolling/action.h>
 
-namespace log4cxx{
-namespace rolling{
+namespace log4cxx
+{
+namespace rolling
+{
 
-struct Action::ActionPrivate{
-        ActionPrivate() :
-	        complete(false),
-	        interrupted(false),
-	        pool(){}
+struct Action::ActionPrivate
+{
+	ActionPrivate() :
+		complete(false),
+		interrupted(false),
+		pool() {}
 
 	/**
 	 * Is action complete.

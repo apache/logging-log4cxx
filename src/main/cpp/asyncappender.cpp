@@ -88,15 +88,16 @@ class DiscardSummary
 
 typedef std::map<LogString, DiscardSummary> DiscardMap;
 
-struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate {
-	AsyncAppenderPriv()	:
+struct AsyncAppender::AsyncAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
+{
+	AsyncAppenderPriv() :
 		AppenderSkeletonPrivate(),
 		buffer(),
 		bufferSize(DEFAULT_BUFFER_SIZE),
 		appenders(std::make_shared<AppenderAttachableImpl>(pool)),
 		dispatcher(),
 		locationInfo(false),
-		blocking(true){}
+		blocking(true) {}
 
 	/**
 	 * Event buffer.
