@@ -48,7 +48,7 @@ class TelnetAppenderTestCase : public AppenderSkeletonTestCase
 		static LayoutPtr createLayout()
 		{
 			PatternLayoutPtr pl = std::make_shared<PatternLayout>();
-			pl->setConversionPattern( "%r [%t] %-5p - %m%n" );
+			pl->setConversionPattern( LOG4CXX_STR("%r [%t] %-5p - %m%n") );
 			return pl;
 		}
 

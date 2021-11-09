@@ -823,5 +823,5 @@ void SMTPAppender::setEvaluatorClass(const LogString& value)
 
 int SMTPAppender::getBufferSize() const
 {
-
+	return _priv->bufferSize;
 }

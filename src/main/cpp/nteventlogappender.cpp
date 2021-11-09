@@ -26,6 +26,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/private/appenderskeleton_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
@@ -95,9 +96,9 @@ NTEventLogAppender::NTEventLogAppender() : hEventLog(NULL), pCurrentUserSID(NULL
 }
 
 NTEventLogAppender::NTEventLogAppender(const LogString& server, const LogString& log, const LogString& source, const LayoutPtr& layout)
-	: server(server), log(log), source(source), hEventLog(NULL), pCurrentUserSID(NULL)
+	:	AppenderSkeleton(std::make_unique<AppenderSkeletonPrivate>(layout)),
+		server(server), log(log), source(source), hEventLog(NULL), pCurrentUserSID(NULL)
 {
-	this->layout = layout;
 	Pool pool;
 	activateOptions(pool);
 }
@@ -149,7 +150,7 @@ void NTEventLogAppender::activateOptions(Pool&)
 	{
 		LogLog::warn(
 			((LogString) LOG4CXX_STR("Source option not set for appender ["))
-			+ name + LOG4CXX_STR("]."));
+			+ this->m_priv->name + LOG4CXX_STR("]."));
 		return;
 	}
 
@@ -191,7 +192,7 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 	}
 
 	LogString oss;
-	layout->format(oss, event, p);
+	this->m_priv->layout->format(oss, event, p);
 	wchar_t* msgs = Transcoder::wencode(oss, p);
 	BOOL bSuccess = ::ReportEventW(
 			hEventLog,
