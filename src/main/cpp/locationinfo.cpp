@@ -19,6 +19,12 @@
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/pool.h>
 
+#if defined(_WIN32)
+#define SHORT_FILENAME_SPLIT_CHAR R"(\)"
+#else
+#define SHORT_FILENAME_SPLIT_CHAR R"(/)"
+#endif
+
 using namespace ::log4cxx::spi;
 using namespace log4cxx::helpers;
 
@@ -42,7 +48,7 @@ const LocationInfo& LocationInfo::getLocationUnavailable()
  */
 const std::string filterFileName(const char* const fileName){
 	std::string fullFileName(fileName);
-	std::size_t found = fullFileName.rfind(R"(/)");
+	std::size_t found = fullFileName.rfind(SHORT_FILENAME_SPLIT_CHAR);
 	if (found != std::string::npos) {
 		return fullFileName.substr(found + 1);
 	} else {
