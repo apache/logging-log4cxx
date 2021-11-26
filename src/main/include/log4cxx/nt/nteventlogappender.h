@@ -62,35 +62,17 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 			return true;
 		}
 
-		void setSource(const LogString& source)
-		{
-			this->source.assign(source);
-		}
+		void setSource(const LogString& source);
 
-		const LogString& getSource() const
-		{
-			return source;
-		}
+		const LogString& getSource() const;
 
-		void setLog(const LogString& log)
-		{
-			this->log.assign(log);
-		}
+		void setLog(const LogString& log);
 
-		const LogString& getLog() const
-		{
-			return log;
-		}
+		const LogString& getLog() const;
 
-		void setServer(const LogString& server)
-		{
-			this->server.assign(server);
-		}
+		void setServer(const LogString& server);
 
-		const LogString& getServer() const
-		{
-			return server;
-		}
+		const LogString& getServer() const;
 
 
 	protected:
@@ -109,12 +91,7 @@ class LOG4CXX_EXPORT NTEventLogAppender : public AppenderSkeleton
 		 */
 		void addRegistryInfo();
 
-		// Data
-		LogString server;
-		LogString log;
-		LogString source;
-		HANDLE hEventLog;
-		SID* pCurrentUserSID;
+		struct NTEventLogAppenderPrivate;
 		static LogString getErrorString(const LogString& function);
 
 	private:

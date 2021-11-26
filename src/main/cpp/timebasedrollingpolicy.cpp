@@ -31,7 +31,6 @@
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/rolling/gzcompressaction.h>
 #include <log4cxx/rolling/zipcompressaction.h>
-#include <log4cxx/rolling/rollingfileappenderskeleton.h>
 #include<iostream>
 
 #ifndef INT64_C

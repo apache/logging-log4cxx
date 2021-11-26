@@ -33,6 +33,26 @@ using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 using namespace log4cxx::nt;
 
+#define priv static_cast<NTEventLogAppenderPrivate*>(m_priv.get())
+
+struct NTEventLogAppender::NTEventLogAppenderPrivate : public AppenderSkeleton::AppenderSkeletonPrivate {
+	NTEventLogAppenderPrivate() :
+		hEventLog(nullptr),
+		pCurrentUserSID(nullptr) {}
+
+	NTEventLogAppenderPrivate( LayoutPtr layout ) :
+		AppenderSkeletonPrivate(layout),
+		hEventLog(nullptr),
+		pCurrentUserSID(nullptr) {}
+
+	// Data
+	LogString server;
+	LogString log;
+	LogString source;
+	HANDLE hEventLog;
+	SID* pCurrentUserSID;
+};
+
 class CCtUserSIDHelper
 {
 	public:
@@ -91,15 +111,18 @@ class CCtUserSIDHelper
 
 IMPLEMENT_LOG4CXX_OBJECT(NTEventLogAppender)
 
-NTEventLogAppender::NTEventLogAppender() : hEventLog(NULL), pCurrentUserSID(NULL)
+NTEventLogAppender::NTEventLogAppender() :
+	AppenderSkeleton(std::make_unique<NTEventLogAppenderPrivate>())
 {
 }
 
 NTEventLogAppender::NTEventLogAppender(const LogString& server, const LogString& log, const LogString& source, const LayoutPtr& layout)
-	:	AppenderSkeleton(std::make_unique<AppenderSkeletonPrivate>(layout)),
-		server(server), log(log), source(source), hEventLog(NULL), pCurrentUserSID(NULL)
+	:	AppenderSkeleton(std::make_unique<NTEventLogAppenderPrivate>(layout))
 {
 	Pool pool;
+	priv->server = server;
+	priv->log = log;
+	priv->source = source;
 	activateOptions(pool);
 }
 
@@ -111,16 +134,16 @@ NTEventLogAppender::~NTEventLogAppender()
 
 void NTEventLogAppender::close()
 {
-	if (hEventLog != NULL)
+	if (priv->hEventLog != NULL)
 	{
-		::DeregisterEventSource(hEventLog);
-		hEventLog = NULL;
+		::DeregisterEventSource(priv->hEventLog);
+		priv->hEventLog = NULL;
 	}
 
-	if (pCurrentUserSID != NULL)
+	if (priv->pCurrentUserSID != NULL)
 	{
-		CCtUserSIDHelper::FreeSid((::SID*) pCurrentUserSID);
-		pCurrentUserSID = NULL;
+		CCtUserSIDHelper::FreeSid((::SID*) priv->pCurrentUserSID);
+		priv->pCurrentUserSID = NULL;
 	}
 }
 
@@ -128,15 +151,15 @@ void NTEventLogAppender::setOption(const LogString& option, const LogString& val
 {
 	if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SERVER"), LOG4CXX_STR("server")))
 	{
-		server = value;
+		priv->server = value;
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("LOG"), LOG4CXX_STR("log")))
 	{
-		log = value;
+		priv->log = value;
 	}
 	else if (StringHelper::equalsIgnoreCase(option, LOG4CXX_STR("SOURCE"), LOG4CXX_STR("source")))
 	{
-		source = value;
+		priv->source = value;
 	}
 	else
 	{
@@ -146,7 +169,7 @@ void NTEventLogAppender::setOption(const LogString& option, const LogString& val
 
 void NTEventLogAppender::activateOptions(Pool&)
 {
-	if (source.empty())
+	if (priv->source.empty())
 	{
 		LogLog::warn(
 			((LogString) LOG4CXX_STR("Source option not set for appender ["))
@@ -154,30 +177,30 @@ void NTEventLogAppender::activateOptions(Pool&)
 		return;
 	}
 
-	if (log.empty())
+	if (priv->log.empty())
 	{
-		log = LOG4CXX_STR("Application");
+		priv->log = LOG4CXX_STR("Application");
 	}
 
 	close();
 
 	// current user security identifier
-	CCtUserSIDHelper::GetCurrentUserSID((::SID**) &pCurrentUserSID);
+	CCtUserSIDHelper::GetCurrentUserSID((::SID**) &priv->pCurrentUserSID);
 
 	addRegistryInfo();
 
-	LOG4CXX_ENCODE_WCHAR(wsource, source);
-	LOG4CXX_ENCODE_WCHAR(wserver, server);
-	hEventLog = ::RegisterEventSourceW(
+	LOG4CXX_ENCODE_WCHAR(wsource, priv->source);
+	LOG4CXX_ENCODE_WCHAR(wserver, priv->server);
+	priv->hEventLog = ::RegisterEventSourceW(
 			wserver.empty() ? NULL : wserver.c_str(),
 			wsource.c_str());
 
-	if (hEventLog == NULL)
+	if (priv->hEventLog == NULL)
 	{
 		LogString msg(LOG4CXX_STR("Cannot register NT EventLog -- server: '"));
-		msg.append(server);
+		msg.append(priv->server);
 		msg.append(LOG4CXX_STR("' source: '"));
-		msg.append(source);
+		msg.append(priv->source);
 		LogLog::error(msg);
 		LogLog::error(getErrorString(LOG4CXX_STR("RegisterEventSource")));
 	}
@@ -185,7 +208,7 @@ void NTEventLogAppender::activateOptions(Pool&)
 
 void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 {
-	if (hEventLog == NULL)
+	if (priv->hEventLog == NULL)
 	{
 		LogLog::warn(LOG4CXX_STR("NT EventLog not opened."));
 		return;
@@ -195,11 +218,11 @@ void NTEventLogAppender::append(const LoggingEventPtr& event, Pool& p)
 	this->m_priv->layout->format(oss, event, p);
 	wchar_t* msgs = Transcoder::wencode(oss, p);
 	BOOL bSuccess = ::ReportEventW(
-			hEventLog,
+			priv->hEventLog,
 			getEventType(event),
 			getEventCategory(event),
 			0x1000,
-			pCurrentUserSID,
+			priv->pCurrentUserSID,
 			1,
 			0,
 			(LPCWSTR*) &msgs,
@@ -219,9 +242,9 @@ void NTEventLogAppender::addRegistryInfo()
 	DWORD disposition = 0;
 	::HKEY hkey = 0;
 	LogString subkey(LOG4CXX_STR("SYSTEM\\CurrentControlSet\\Services\\EventLog\\"));
-	subkey.append(log);
+	subkey.append(priv->log);
 	subkey.append(1, (logchar) 0x5C /* '\\' */);
-	subkey.append(source);
+	subkey.append(priv->source);
 	LOG4CXX_ENCODE_WCHAR(wsubkey, subkey);
 
 	long stat = RegCreateKeyExW(HKEY_LOCAL_MACHINE, wsubkey.c_str(), 0, NULL,
@@ -339,6 +362,36 @@ LogString NTEventLogAppender::getErrorString(const LogString& function)
 	Transcoder::decode(lpMsgBuf, msg);
 
 	return msg;
+}
+
+void NTEventLogAppender::setSource(const LogString& source)
+{
+	priv->source.assign(source);
+}
+
+const LogString& NTEventLogAppender::getSource() const
+{
+	return priv->source;
+}
+
+void NTEventLogAppender::setLog(const LogString& log)
+{
+	priv->log.assign(log);
+}
+
+const LogString& NTEventLogAppender::getLog() const
+{
+	return priv->log;
+}
+
+void NTEventLogAppender::setServer(const LogString& server)
+{
+	priv->server.assign(server);
+}
+
+const LogString& NTEventLogAppender::getServer() const
+{
+	return priv->server;
 }
 
 #endif // WIN32
