@@ -38,15 +38,13 @@ class LOG4CXX_EXPORT StringTokenizer
 		bool hasMoreTokens() const;
 		LogString nextToken();
 
-	protected:
-		LogString src;
-		LogString delim;
-		size_t pos;
-
 	private:
 		//   prevent copy and assignment statements
 		StringTokenizer(const StringTokenizer&);
 		StringTokenizer& operator=(const StringTokenizer&);
+
+		struct StringTokenizerPrivate;
+		std::unique_ptr<StringTokenizerPrivate> m_priv;
 }; // class StringTokenizer
 }  // namespace helpers;
 } // namespace log4cxx;

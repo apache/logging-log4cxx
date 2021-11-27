@@ -45,46 +45,29 @@ class LOG4CXX_EXPORT FileWatchdog
 		static long DEFAULT_DELAY /*= 60000*/;
 
 	protected:
-		/**
-		The name of the file to observe  for changes.
-		*/
-		File file;
-
-		/**
-		The delay to observe between every check.
-		By default set DEFAULT_DELAY.*/
-		long delay;
-		log4cxx_time_t lastModif;
-		bool warnedAlready;
-		volatile int interrupted;
-
-	protected:
 		FileWatchdog(const File& filename);
 		virtual void doOnChange() = 0;
 		void checkAndConfigure();
+		const File& file();
 
 	public:
 		/**
 		Set the delay to observe between each check of the file changes.
 		*/
-		void setDelay(long delay1)
-		{
-			this->delay = delay1;
-		}
+		void setDelay(long delay1);
 
 		void start();
 
 	private:
 		void run();
 		bool is_interrupted();
-		Pool pool;
-		std::thread thread;
-		std::condition_variable interrupt;
-		std::mutex interrupt_mutex;
+
 
 		FileWatchdog(const FileWatchdog&);
 		FileWatchdog& operator=(const FileWatchdog&);
 
+		struct FileWatchdogPrivate;
+		std::unique_ptr<FileWatchdogPrivate> m_priv;
 };
 }  // namespace helpers
 } // namespace log4cxx

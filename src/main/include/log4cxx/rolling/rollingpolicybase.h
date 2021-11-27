@@ -58,25 +58,12 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		END_LOG4CXX_CAST_MAP()
 
 
-	private:
-		/**
-		 * File name pattern converters.
-		 */
-		PatternConverterList patternConverters;
-
-		/**
-		 * File name field specifiers.
-		 */
-		FormattingInfoList patternFields;
-
-		/**
-		 * File name pattern.
-		 */
-		LogString fileNamePatternStr;
-
+		struct RollingPolicyBasePrivate;
+		std::unique_ptr<RollingPolicyBasePrivate> m_priv;
 
 	public:
 		RollingPolicyBase();
+		RollingPolicyBase( std::unique_ptr<RollingPolicyBasePrivate> priv );
 		virtual ~RollingPolicyBase();
 		virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
 		virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
@@ -121,8 +108,6 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 
 		log4cxx::pattern::PatternConverterPtr getIntegerPatternConverter() const;
 		log4cxx::pattern::PatternConverterPtr getDatePatternConverter() const;
-
-
 };
 }
 }

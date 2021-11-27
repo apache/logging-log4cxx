@@ -185,14 +185,8 @@ class LOG4CXX_EXPORT CharMessageBuffer
 		 */
 		CharMessageBuffer& operator=(const CharMessageBuffer&);
 
-		/**
-		   * Encapsulated std::string.
-		   */
-		std::basic_string<char> buf;
-		/**
-		 *  Encapsulated stream, created on demand.
-		 */
-		std::basic_ostringstream<char>* stream;
+		struct CharMessageBufferPrivate;
+		std::unique_ptr<CharMessageBufferPrivate> m_priv;
 };
 
 template<class V>
@@ -362,14 +356,8 @@ class LOG4CXX_EXPORT UniCharMessageBuffer
 		 */
 		UniCharMessageBuffer& operator=(const UniCharMessageBuffer&);
 
-		/**
-		   * Encapsulated std::string.
-		   */
-		std::basic_string<UniChar> buf;
-		/**
-		 *  Encapsulated stream, created on demand.
-		 */
-		std::basic_ostringstream<UniChar>* stream;
+		struct UniCharMessageBufferPrivate;
+		std::unique_ptr<UniCharMessageBufferPrivate> m_priv;
 };
 
 template<class V>
@@ -528,14 +516,8 @@ class LOG4CXX_EXPORT WideMessageBuffer
 		 */
 		WideMessageBuffer& operator=(const WideMessageBuffer&);
 
-		/**
-		   * Encapsulated std::string.
-		   */
-		std::basic_string<wchar_t> buf;
-		/**
-		 *  Encapsulated stream, created on demand.
-		 */
-		std::basic_ostringstream<wchar_t>* stream;
+		struct WideMessageBufferPrivate;
+		std::unique_ptr<WideMessageBufferPrivate> m_priv;
 };
 
 template<class V>
@@ -800,21 +782,8 @@ class LOG4CXX_EXPORT MessageBuffer
 		 */
 		MessageBuffer& operator=(const MessageBuffer&);
 
-		/**
-		 *  Character message buffer.
-		 */
-		CharMessageBuffer cbuf;
-
-		/**
-		 * Encapsulated wide message buffer, created on demand.
-		 */
-		WideMessageBuffer* wbuf;
-#if LOG4CXX_UNICHAR_API || LOG4CXX_CFSTRING_API
-		/**
-		 * Encapsulated wide message buffer, created on demand.
-		 */
-		UniCharMessageBuffer* ubuf;
-#endif
+		struct MessageBufferPrivate;
+		std::unique_ptr<MessageBufferPrivate> m_priv;
 };
 
 template<class V>

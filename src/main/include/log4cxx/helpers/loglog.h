@@ -42,20 +42,17 @@ the string "log4cxx: ".
 class LOG4CXX_EXPORT LogLog
 {
 	private:
-		bool debugEnabled;
+		struct LogLogPrivate;
+		std::unique_ptr<LogLogPrivate> m_priv;
 
-		/**
-		       In quietMode not even errors generate any output.
-		 */
-		bool quietMode;
-		std::mutex mutex;
 		LogLog();
 		LogLog(const LogLog&);
 		LogLog& operator=(const LogLog&);
 		static LogLog& getInstance();
 
-
 	public:
+		~LogLog();
+
 		/**
 		Allows to enable/disable log4cxx internal logging.
 		*/

@@ -61,8 +61,8 @@ class LOG4CXX_EXPORT ThreadSpecificData
 	private:
 		static ThreadSpecificData& getDataNoThreads();
 		static ThreadSpecificData* createCurrentData();
-		log4cxx::NDC::Stack ndcStack;
-		log4cxx::MDC::Map mdcMap;
+		struct ThreadSpecificDataPrivate;
+		std::unique_ptr<ThreadSpecificDataPrivate> m_priv;
 };
 
 }  // namespace helpers

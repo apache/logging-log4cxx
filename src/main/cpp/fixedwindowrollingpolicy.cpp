@@ -32,27 +32,44 @@
 #include <log4cxx/rolling/gzcompressaction.h>
 #include <log4cxx/rolling/zipcompressaction.h>
 #include <log4cxx/pattern/integerpatternconverter.h>
+#include <log4cxx/private/rollingpolicybase_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
 using namespace log4cxx::helpers;
 using namespace log4cxx::pattern;
 
+#define priv static_cast<FixedWindowRollingPolicyPrivate*>(m_priv.get())
+
+struct FixedWindowRollingPolicy::FixedWindowRollingPolicyPrivate : public RollingPolicyBasePrivate {
+	FixedWindowRollingPolicyPrivate() :
+		RollingPolicyBasePrivate(),
+		minIndex(1),
+		maxIndex(7)
+	{}
+
+	int minIndex;
+	int maxIndex;
+	bool explicitActiveFile;
+};
+
 IMPLEMENT_LOG4CXX_OBJECT(FixedWindowRollingPolicy)
 
 FixedWindowRollingPolicy::FixedWindowRollingPolicy() :
-	minIndex(1), maxIndex(7)
+	RollingPolicyBase (std::make_unique<FixedWindowRollingPolicyPrivate>())
 {
 }
 
+FixedWindowRollingPolicy::~FixedWindowRollingPolicy(){}
+
 void FixedWindowRollingPolicy::setMaxIndex(int maxIndex1)
 {
-	this->maxIndex = maxIndex1;
+	priv->maxIndex = maxIndex1;
 }
 
 void FixedWindowRollingPolicy::setMinIndex(int minIndex1)
 {
-	this->minIndex = minIndex1;
+	priv->minIndex = minIndex1;
 }
 
 
@@ -64,13 +81,13 @@ void FixedWindowRollingPolicy::setOption(const LogString& option,
 			LOG4CXX_STR("MININDEX"),
 			LOG4CXX_STR("minindex")))
 	{
-		minIndex = OptionConverter::toInt(value, 1);
+		priv->minIndex = OptionConverter::toInt(value, 1);
 	}
 	else if (StringHelper::equalsIgnoreCase(option,
 			LOG4CXX_STR("MAXINDEX"),
 			LOG4CXX_STR("maxindex")))
 	{
-		maxIndex = OptionConverter::toInt(value, 7);
+		priv->maxIndex = OptionConverter::toInt(value, 7);
 	}
 	else
 	{
@@ -85,17 +102,17 @@ void FixedWindowRollingPolicy::activateOptions(Pool& p)
 {
 	RollingPolicyBase::activateOptions(p);
 
-	if (maxIndex < minIndex)
+	if (priv->maxIndex < priv->minIndex)
 	{
 		LogLog::warn(
 			LOG4CXX_STR("MaxIndex  cannot be smaller than MinIndex."));
-		maxIndex = minIndex;
+		priv->maxIndex = priv->minIndex;
 	}
 
-	if ((maxIndex - minIndex) > MAX_WINDOW_SIZE)
+	if ((priv->maxIndex - priv->minIndex) > MAX_WINDOW_SIZE)
 	{
 		LogLog::warn(LOG4CXX_STR("Large window sizes are not allowed."));
-		maxIndex = minIndex + MAX_WINDOW_SIZE;
+		priv->maxIndex = priv->minIndex + MAX_WINDOW_SIZE;
 	}
 
 	PatternConverterPtr itc = getIntegerPatternConverter();
@@ -115,18 +132,18 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
 	Pool&       pool)
 {
 	LogString newActiveFile(currentActiveFile);
-	explicitActiveFile = false;
+	priv->explicitActiveFile = false;
 
 	if (currentActiveFile.length() > 0)
 	{
-		explicitActiveFile = true;
+		priv->explicitActiveFile = true;
 		newActiveFile = currentActiveFile;
 	}
 
-	if (!explicitActiveFile)
+	if (!priv->explicitActiveFile)
 	{
 		LogString buf;
-		ObjectPtr obj(new Integer(minIndex));
+		ObjectPtr obj(new Integer(priv->minIndex));
 		formatFileName(obj, buf, pool);
 		newActiveFile = buf;
 	}
@@ -147,19 +164,19 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 {
 	RolloverDescriptionPtr desc;
 
-	if (maxIndex < 0)
+	if (priv->maxIndex < 0)
 	{
 		return desc;
 	}
 
-	int purgeStart = minIndex;
+	int purgeStart = priv->minIndex;
 
-	if (!explicitActiveFile)
+	if (!priv->explicitActiveFile)
 	{
 		purgeStart++;
 	}
 
-	if (!purge(purgeStart, maxIndex, pool))
+	if (!purge(purgeStart, priv->maxIndex, pool))
 	{
 		return desc;
 	}
@@ -210,7 +227,7 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
  */
 int FixedWindowRollingPolicy::getMaxIndex() const
 {
-	return maxIndex;
+	return priv->maxIndex;
 }
 
 /**
@@ -219,7 +236,7 @@ int FixedWindowRollingPolicy::getMaxIndex() const
  */
 int FixedWindowRollingPolicy::getMinIndex() const
 {
-	return minIndex;
+	return priv->minIndex;
 }
 
 

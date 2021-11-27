@@ -82,7 +82,7 @@ class XMLWatchdog  : public FileWatchdog
 		*/
 		void doOnChange()
 		{
-			DOMConfigurator().doConfigure(file,
+			DOMConfigurator().doConfigure(file(),
 				LogManager::getLoggerRepository());
 		}
 };

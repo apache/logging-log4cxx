@@ -76,9 +76,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 		LOG4CXX_CAST_ENTRY_CHAIN(RollingPolicyBase)
 		END_LOG4CXX_CAST_MAP()
 
-		int minIndex;
-		int maxIndex;
-		bool explicitActiveFile;
+		struct FixedWindowRollingPolicyPrivate;
 
 		/**
 		 * It's almost always a bad idea to have a large window size, say over 12.
@@ -90,6 +88,7 @@ class LOG4CXX_EXPORT FixedWindowRollingPolicy : public RollingPolicyBase
 	public:
 
 		FixedWindowRollingPolicy();
+		~FixedWindowRollingPolicy();
 
 		void activateOptions(log4cxx::helpers::Pool& p);
 		void setOption(const LogString& option,

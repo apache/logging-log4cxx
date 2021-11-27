@@ -28,6 +28,7 @@
 #include <log4cxx/pattern/patternparser.h>
 #include <log4cxx/pattern/integerpatternconverter.h>
 #include <log4cxx/pattern/datepatternconverter.h>
+#include <log4cxx/private/rollingpolicybase_priv.h>
 
 using namespace log4cxx;
 using namespace log4cxx::rolling;
@@ -36,8 +37,13 @@ using namespace log4cxx::pattern;
 
 IMPLEMENT_LOG4CXX_OBJECT(RollingPolicyBase)
 
-RollingPolicyBase::RollingPolicyBase()
+RollingPolicyBase::RollingPolicyBase() :
+	m_priv(std::make_unique<RollingPolicyBasePrivate>())
 {
+}
+
+RollingPolicyBase::RollingPolicyBase( std::unique_ptr<RollingPolicyBasePrivate> priv ) :
+	m_priv(std::move(priv)){
 }
 
 RollingPolicyBase::~RollingPolicyBase()
@@ -46,7 +52,7 @@ RollingPolicyBase::~RollingPolicyBase()
 
 void RollingPolicyBase::activateOptions(log4cxx::helpers::Pool& /* pool */)
 {
-	if (fileNamePatternStr.length() > 0)
+	if (m_priv->fileNamePatternStr.length() > 0)
 	{
 		parseFileNamePattern();
 	}
@@ -67,19 +73,19 @@ void RollingPolicyBase::setOption(const LogString& option, const LogString& valu
 			LOG4CXX_STR("FILENAMEPATTERN"),
 			LOG4CXX_STR("filenamepattern")))
 	{
-		fileNamePatternStr = value;
+		m_priv->fileNamePatternStr = value;
 	}
 }
 
 void RollingPolicyBase::setFileNamePattern(const LogString& fnp)
 {
-	fileNamePatternStr = fnp;
+	m_priv->fileNamePatternStr = fnp;
 }
 
 
 LogString RollingPolicyBase::getFileNamePattern() const
 {
-	return fileNamePatternStr;
+	return m_priv->fileNamePatternStr;
 }
 
 /**
@@ -87,11 +93,11 @@ LogString RollingPolicyBase::getFileNamePattern() const
  */
 void RollingPolicyBase::parseFileNamePattern()
 {
-	patternConverters.erase(patternConverters.begin(), patternConverters.end());
-	patternFields.erase(patternFields.begin(), patternFields.end());
-	PatternParser::parse(fileNamePatternStr,
-		patternConverters,
-		patternFields,
+	m_priv->patternConverters.erase(m_priv->patternConverters.begin(), m_priv->patternConverters.end());
+	m_priv->patternFields.erase(m_priv->patternFields.begin(), m_priv->patternFields.end());
+	PatternParser::parse(m_priv->fileNamePatternStr,
+		m_priv->patternConverters,
+		m_priv->patternFields,
 		getFormatSpecifiers());
 }
 
@@ -107,11 +113,11 @@ void RollingPolicyBase::formatFileName(
 	Pool& pool) const
 {
 	std::vector<FormattingInfoPtr>::const_iterator formatterIter =
-		patternFields.begin();
+		m_priv->patternFields.begin();
 
 	for (std::vector<PatternConverterPtr>::const_iterator
-		converterIter = patternConverters.begin();
-		converterIter != patternConverters.end();
+		converterIter = m_priv->patternConverters.begin();
+		converterIter != m_priv->patternConverters.end();
 		converterIter++, formatterIter++)
 	{
 		int startField = toAppendTo.length();
@@ -124,8 +130,8 @@ void RollingPolicyBase::formatFileName(
 PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const
 {
 	for (std::vector<PatternConverterPtr>::const_iterator
-		converterIter = patternConverters.begin();
-		converterIter != patternConverters.end();
+		converterIter = m_priv->patternConverters.begin();
+		converterIter != m_priv->patternConverters.end();
 		converterIter++)
 	{
 		IntegerPatternConverterPtr intPattern;
@@ -145,8 +151,8 @@ PatternConverterPtr RollingPolicyBase::getIntegerPatternConverter() const
 PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const
 {
 	for (std::vector<PatternConverterPtr>::const_iterator
-		converterIter = patternConverters.begin();
-		converterIter != patternConverters.end();
+		converterIter = m_priv->patternConverters.begin();
+		converterIter != m_priv->patternConverters.end();
 		converterIter++)
 	{
 		DatePatternConverterPtr datePattern;

@@ -65,7 +65,7 @@ class PropertyWatchdog  : public FileWatchdog
 		*/
 		void doOnChange()
 		{
-			PropertyConfigurator().doConfigure(file,
+			PropertyConfigurator().doConfigure(file(),
 				LogManager::getLoggerRepository());
 		}
 };

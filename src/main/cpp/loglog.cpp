@@ -30,11 +30,26 @@
 using namespace log4cxx;
 using namespace log4cxx::helpers;
 
-LogLog::LogLog()
+struct LogLog::LogLogPrivate {
+	LogLogPrivate() :
+		debugEnabled(false),
+		quietMode(false){}
+
+	bool debugEnabled;
+
+	/**
+		   In quietMode not even errors generate any output.
+	 */
+	bool quietMode;
+	std::mutex mutex;
+};
+
+LogLog::LogLog() :
+	m_priv(std::make_unique<LogLogPrivate>())
 {
-	debugEnabled    = false;
-	quietMode       = false;
 }
+
+LogLog::~LogLog(){}
 
 LogLog& LogLog::getInstance()
 {
@@ -45,31 +60,31 @@ LogLog& LogLog::getInstance()
 
 void LogLog::setInternalDebugging(bool debugEnabled1)
 {
-	std::unique_lock<std::mutex> lock(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
 
-	getInstance().debugEnabled = debugEnabled1;
+	getInstance().m_priv->debugEnabled = debugEnabled1;
 }
 
 void LogLog::debug(const LogString& msg)
 {
-	if (!getInstance().debugEnabled)
+	if (!getInstance().m_priv->debugEnabled)
 	{
 		return;
 	}
 
-	std::unique_lock<std::mutex> lock(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
 
 	emit(msg);
 }
 
 void LogLog::debug(const LogString& msg, const std::exception& e)
 {
-	if (!getInstance().debugEnabled)
+	if (!getInstance().m_priv->debugEnabled)
 	{
 		return;
 	}
 
-	std::unique_lock<std::mutex> lock(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
 
 	emit(msg);
 	emit(e);
@@ -78,14 +93,14 @@ void LogLog::debug(const LogString& msg, const std::exception& e)
 
 void LogLog::error(const LogString& msg)
 {
-	std::unique_lock<std::mutex> lock(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
 
 	emit(msg);
 }
 
 void LogLog::error(const LogString& msg, const std::exception& e)
 {
-	std::unique_lock<std::mutex> lock(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
 
 	emit(msg);
 	emit(e);
@@ -93,21 +108,21 @@ void LogLog::error(const LogString& msg, const std::exception& e)
 
 void LogLog::setQuietMode(bool quietMode1)
 {
-	std::unique_lock<std::mutex> lock(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
 
-	getInstance().quietMode = quietMode1;
+	getInstance().m_priv->quietMode = quietMode1;
 }
 
 void LogLog::warn(const LogString& msg)
 {
-	std::unique_lock<std::mutex> lock(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
 
 	emit(msg);
 }
 
 void LogLog::warn(const LogString& msg, const std::exception& e)
 {
-	std::unique_lock<std::mutex> lock(getInstance().mutex);
+	std::unique_lock<std::mutex> lock(getInstance().m_priv->mutex);
 
 	emit(msg);
 	emit(e);
@@ -115,7 +130,7 @@ void LogLog::warn(const LogString& msg, const std::exception& e)
 
 void LogLog::emit(const LogString& msg)
 {
-	if (getInstance().quietMode)
+	if (getInstance().m_priv->quietMode)
 	{
 		return;
 	}
@@ -130,7 +145,7 @@ void LogLog::emit(const LogString& msg)
 
 void LogLog::emit(const std::exception& ex)
 {
-	if (getInstance().quietMode)
+	if (getInstance().m_priv->quietMode)
 	{
 		return;
 	}

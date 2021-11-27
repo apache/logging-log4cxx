@@ -31,46 +31,72 @@ using namespace log4cxx::helpers;
 
 long FileWatchdog::DEFAULT_DELAY = 60000;
 
+struct FileWatchdog::FileWatchdogPrivate{
+	FileWatchdogPrivate(const File& file1) :
+		file(file1), delay(DEFAULT_DELAY), lastModif(0),
+		warnedAlready(false), interrupted(0), thread(){}
+
+	/**
+	The name of the file to observe  for changes.
+	*/
+	File file;
+
+	/**
+	The delay to observe between every check.
+	By default set DEFAULT_DELAY.*/
+	long delay;
+	log4cxx_time_t lastModif;
+	bool warnedAlready;
+	volatile int interrupted;
+	Pool pool;
+	std::thread thread;
+	std::condition_variable interrupt;
+	std::mutex interrupt_mutex;
+};
+
 FileWatchdog::FileWatchdog(const File& file1)
-	: file(file1), delay(DEFAULT_DELAY), lastModif(0),
-	  warnedAlready(false), interrupted(0), thread()
+	: m_priv(std::make_unique<FileWatchdogPrivate>(file1))
 {
 }
 
 FileWatchdog::~FileWatchdog()
 {
-	interrupted = 0xFFFF;
+	m_priv->interrupted = 0xFFFF;
 
 	{
-		std::unique_lock<std::mutex> lock(interrupt_mutex);
-		interrupt.notify_all();
+		std::unique_lock<std::mutex> lock(m_priv->interrupt_mutex);
+		m_priv->interrupt.notify_all();
 	}
-	thread.join();
+	m_priv->thread.join();
+}
+
+const File& FileWatchdog::file(){
+	return m_priv->file;
 }
 
 void FileWatchdog::checkAndConfigure()
 {
 	Pool pool1;
 
-	if (!file.exists(pool1))
+	if (!m_priv->file.exists(pool1))
 	{
-		if (!warnedAlready)
+		if (!m_priv->warnedAlready)
 		{
 			LogLog::debug(((LogString) LOG4CXX_STR("["))
-				+ file.getPath()
+				+ m_priv->file.getPath()
 				+ LOG4CXX_STR("] does not exist."));
-			warnedAlready = true;
+			m_priv->warnedAlready = true;
 		}
 	}
 	else
 	{
-		apr_time_t thisMod = file.lastModified(pool1);
+		apr_time_t thisMod = m_priv->file.lastModified(pool1);
 
-		if (thisMod > lastModif)
+		if (thisMod > m_priv->lastModif)
 		{
-			lastModif = thisMod;
+			m_priv->lastModif = thisMod;
 			doOnChange();
-			warnedAlready = false;
+			m_priv->warnedAlready = false;
 		}
 	}
 }
@@ -78,10 +104,10 @@ void FileWatchdog::checkAndConfigure()
 void FileWatchdog::run()
 {
 
-	while (interrupted != 0xFFFF)
+	while (m_priv->interrupted != 0xFFFF)
 	{
-		std::unique_lock<std::mutex> lock( interrupt_mutex );
-		interrupt.wait_for( lock, std::chrono::milliseconds( delay ),
+		std::unique_lock<std::mutex> lock( m_priv->interrupt_mutex );
+		m_priv->interrupt.wait_for( lock, std::chrono::milliseconds( m_priv->delay ),
 			std::bind(&FileWatchdog::is_interrupted, this) );
 
 		checkAndConfigure();
@@ -93,10 +119,14 @@ void FileWatchdog::start()
 {
 	checkAndConfigure();
 
-	thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("FileWatchdog"), &FileWatchdog::run, this );
+	m_priv->thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("FileWatchdog"), &FileWatchdog::run, this );
 }
 
 bool FileWatchdog::is_interrupted()
 {
-	return interrupted == 0xFFFF;
+	return m_priv->interrupted == 0xFFFF;
+}
+
+void FileWatchdog::setDelay(long delay1){
+	m_priv->delay = delay1;
 }
