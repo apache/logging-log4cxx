@@ -41,13 +41,12 @@ class LOG4CXX_EXPORT SyslogWriter
 	public:
 #define SYSLOG_PORT 514
 		SyslogWriter(const LogString& syslogHost, int syslogHostPort = SYSLOG_PORT);
+		~SyslogWriter();
 		void write(const LogString& string);
 
 	private:
-		LogString syslogHost;
-		int syslogHostPort;
-		InetAddressPtr address;
-		DatagramSocketPtr ds;
+		struct SyslogWriterPrivate;
+		std::unique_ptr<SyslogWriterPrivate> m_priv;
 };
 }  // namespace helpers
 } // namespace log4cxx
