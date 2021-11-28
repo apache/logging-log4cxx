@@ -67,16 +67,16 @@ This can be done to any depth that is required.
 
 ## Example
 
-Parent-private.h:
+parent\_priv.h:
 ```
-#include "Parent.h"
+#include "parent.h"
 
 struct Parent::ParentPrivate{
   int parentVariable;
 };
 ```
 
-Parent.h:
+parent.h:
 ```
 class Parent {
 pubic:
@@ -85,19 +85,21 @@ pubic:
   virtual ~Parent();
 
 protected:
-  std::unique_ptr<AppenderSkeletonPrivate> m_priv;
+  std::unique_ptr<ParentPrivate> m_priv;
 };
 ```
 
-Parent.cpp:
+parent.cpp:
 ```
+#include "parent_priv.h"
+
 Parent::Parent( std::unique_ptr<ParentPrivate> priv ) :
   m_priv( std::move(priv) ){}
 ```
 
-Child.h:
+child.h:
 ```
-#include "Parent.h"
+#include "parent.h"
 
 class Child : public Parent {
 public:
@@ -111,10 +113,10 @@ private:
 };
 ```
 
-Child.cpp:
+child.cpp:
 ```
-#include "Parent-private.h"
-#include "Child.h"
+#include "parent_priv.h"
+#include "child.h"
 
 struct Child::ChildPriv : public Parent::ParentPriv {
   int childVariable;
