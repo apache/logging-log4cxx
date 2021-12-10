@@ -78,7 +78,7 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 
 	if (closed)
 	{
@@ -157,7 +157,7 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 
 void SocketAppenderSkeleton::fireConnector()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 
 	if ( !thread.joinable() )
 	{

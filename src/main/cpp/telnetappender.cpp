@@ -84,13 +84,13 @@ void TelnetAppender::setOption(const LogString& option,
 
 LogString TelnetAppender::getEncoding() const
 {
-	log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 	return encoding;
 }
 
 void TelnetAppender::setEncoding(const LogString& value)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 	encoder = CharsetEncoder::getEncoder(value);
 	encoding = value;
 }
@@ -98,7 +98,7 @@ void TelnetAppender::setEncoding(const LogString& value)
 
 void TelnetAppender::close()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 
 	if (closed)
 	{
@@ -195,7 +195,7 @@ void TelnetAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		LogString::const_iterator msgIter(msg.begin());
 		ByteBuffer buf(bytes, bytesSize);
 
-		log4cxx::shared_lock<log4cxx::shared_mutex> lock(mutex);
+		std::lock_guard<std::recursive_mutex> lock(mutex);
 
 		while (msgIter != msg.end())
 		{
@@ -251,7 +251,7 @@ void TelnetAppender::acceptConnections()
 				//
 				//   find unoccupied connection
 				//
-				std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+				std::lock_guard<std::recursive_mutex> lock(mutex);
 
 				for (ConnectionList::iterator iter = connections.begin();
 					iter != connections.end();
