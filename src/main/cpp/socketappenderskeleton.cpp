@@ -158,12 +158,18 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 void SocketAppenderSkeleton::fireConnector()
 {
 	std::lock_guard<std::recursive_mutex> lock(mutex);
-
-	if ( !thread.joinable() )
+	if (!thread.joinable())
 	{
 		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
 
-		thread = ThreadUtility::instance()->createThread( LOG4CXX_STR("SocketAppend"), &SocketAppenderSkeleton::monitor, this );
+		thread = ThreadUtility::instance()->createThread(LOG4CXX_STR("SocketAppend"), &SocketAppenderSkeleton::monitor, this);
+	}
+	else
+	{
+		LogLog::debug(LOG4CXX_STR("Monitor thread still runing. Waiting for monitor thread."));
+
+		thread.join();
+		thread = ThreadUtility::instance()->createThread(LOG4CXX_STR("SocketAppend"), &SocketAppenderSkeleton::monitor, this);
 	}
 }
 
