@@ -1,13 +1,24 @@
+find_package(Java)
+include(UseJava)
+
 include(FetchContent)
 FetchContent_Declare(log4j
   URL https://downloads.apache.org/logging/log4j/1.2.17/log4j-1.2.17.tar.gz
-  URL_HASH MD5=8218714e41ee0c6509dcfeafa2e1f53f
+  URL_HASH SHA256=a528e3771ee6234661b5eb0fa02e14faee89dfec38de94088c163ddf2a0a8663
 )
-FetchContent_GetProperties(log4j)
-if(NOT log4j_POPULATED)
-  FetchContent_Populate(log4j)
+
+find_jar(LOG4J NAMES log4j-1.2 DOC "System log4j location")
+
+if(${LOG4J} STREQUAL "LOG4J-NOTFOUND")
+  FetchContent_GetProperties(log4j)
+  if(NOT log4j_POPULATED)
+    FetchContent_Populate(log4j)
+  endif()
+  set(log4j_CLASSPATH "${log4j_SOURCE_DIR}/log4j-1.2.17.jar" )
+else()
+  set(log4j_CLASSPATH "${LOG4J}" )
 endif()
-set(log4j_CLASSPATH "${log4j_SOURCE_DIR}/log4j-1.2.17.jar" )
+
 set(SOCKET_SERVER_SOURCES org/apache/log4j/net/ShortSocketServer.java)
 add_custom_target(test-classes
   COMMAND ${Java_JAVAC_EXECUTABLE} -d ${CMAKE_CURRENT_BINARY_DIR}
