@@ -178,6 +178,11 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 
 		virtual int getDefaultPort() const = 0;
 
+		/**
+		 * Fire the connector.  Caller must have mutex locked.
+		 */
+		void fireConnectorInternal();
+
 	private:
 		void connect(log4cxx::helpers::Pool& p);
 		/**

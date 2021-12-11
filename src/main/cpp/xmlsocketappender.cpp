@@ -122,7 +122,7 @@ void XMLSocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpe
 
 			if (getReconnectionDelay() > 0)
 			{
-				fireConnector();
+				fireConnectorInternal();
 			}
 		}
 	}

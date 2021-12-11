@@ -159,6 +159,10 @@ void SocketAppenderSkeleton::fireConnector()
 {
 	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
 
+	fireConnectorInternal();
+}
+
+void SocketAppenderSkeleton::fireConnectorInternal(){
 	if ( !thread.joinable() )
 	{
 		LogLog::debug(LOG4CXX_STR("Connector thread not alive: starting monitor."));
