@@ -60,7 +60,7 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 
 		void testInvalidHost(){
 			log4cxx::net::SocketAppenderPtr appender = std::make_shared<log4cxx::net::SocketAppender>();
-			log4cxx::PatternLayoutPtr layout = std::make_shared<log4cxx::PatternLayout>("%m%n");
+			log4cxx::PatternLayoutPtr layout = std::make_shared<log4cxx::PatternLayout>(LOG4CXX_STR("%m%n"));
 
 			log4cxx::helpers::ServerSocket serverSocket(4445);
 
