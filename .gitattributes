@@ -1,7 +1,8 @@
 * text eol=lf
 *.png binary
 *.jpg binary
-# This file has a CRLF that are important and must not be changed by git.
+
+# This file has a CRLF that is important and must not be changed by git.
 src/test/resources/input/propertiestestcase.properties -text
 
 # This is a windows-specific file
