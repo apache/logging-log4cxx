@@ -97,7 +97,7 @@ if(UNIX)
   )
 
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx.pc" 
-    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
   if(LOG4CXX_QT_SUPPORT)
       set(prefix "${CMAKE_INSTALL_PREFIX}")
@@ -110,7 +110,7 @@ if(UNIX)
       )
 
       install(FILES "${CMAKE_CURRENT_BINARY_DIR}/liblog4cxx-qt.pc"
-	DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig)
+	DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
   endif(LOG4CXX_QT_SUPPORT)
 endif(UNIX)
 
@@ -119,7 +119,7 @@ endif(UNIX)
 # target_link_libraries( myApplication PRIVATE log4cxx)
 install(EXPORT log4cxxTargets
   FILE        log4cxxConfig.cmake
-  DESTINATION share/cmake/log4cxx
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
 )
 # Support for find_package(log4cxx 0.11) in consuming CMake projects
 include(CMakePackageConfigHelpers)
@@ -128,13 +128,13 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersi
   COMPATIBILITY SameMinorVersion
 )
 install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxxConfigVersion.cmake"
-  DESTINATION   share/cmake/log4cxx
+  DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
 )
 
 if(LOG4CXX_QT_SUPPORT)
     install(EXPORT log4cxx-qtTargets
       FILE        log4cxx-qtConfig.cmake
-      DESTINATION share/cmake/log4cxx
+      DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
     )
     # Support for find_package(log4cxx 0.11) in consuming CMake projects
     include(CMakePackageConfigHelpers)
@@ -143,7 +143,7 @@ if(LOG4CXX_QT_SUPPORT)
       COMPATIBILITY SameMinorVersion
     )
     install(FILES   "${CMAKE_CURRENT_BINARY_DIR}/log4cxx-qtConfigVersion.cmake"
-      DESTINATION   share/cmake/log4cxx
+      DESTINATION   ${CMAKE_INSTALL_LIBDIR}/cmake/log4cxx
     )
 endif(LOG4CXX_QT_SUPPORT)
 
