@@ -116,7 +116,7 @@ void Transformer::createSedCommandFile(const std::string& regexName,
 
 	std::string tmp;
 
-	auto sedsaniziter = [] (const std::string in, const std::string sedseperator = "Q") {
+	auto sedsaniziter = [] (const std::string &in, const std::string &sedseperator = "Q") {
 		std::string ret = in;
 		std::string replace_to = "\\" + sedseperator;
 		size_t pos = 0;
