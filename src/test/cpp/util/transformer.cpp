@@ -116,14 +116,18 @@ void Transformer::createSedCommandFile(const std::string& regexName,
 
 	std::string tmp;
 
-	auto sedsaniziter = [] (const std::string &in, const std::string &sedseperator = "Q") {
+	auto sedSanitizer = [] (const std::string& in, const std::string& sedSeperator = "Q")
+	{
 		std::string ret = in;
-		std::string replace_to = "\\" + sedseperator;
+		std::string replaceTo = "\\" + sedSeperator;
 		size_t pos = 0;
-		while((pos = ret.find(sedseperator, pos)) != std::string::npos) {
-			ret.replace(pos, sedseperator.length(), replace_to);
-			pos += replace_to.length();
+
+		while((pos = ret.find(sedSeperator, pos)) != std::string::npos)
+		{
+			ret.replace(pos, sedSeperator.length(), replaceTo);
+			pos += replaceTo.length();
 		}
+
 		return ret;
 	};
 
@@ -132,9 +136,9 @@ void Transformer::createSedCommandFile(const std::string& regexName,
 		iter++)
 	{
 		tmp = "sQ";
-		tmp.append(sedsaniziter(iter->first));
+		tmp.append(sedSanitizer(iter->first));
 		tmp.append(1, 'Q');
-		tmp.append(sedsaniziter(iter->second));
+		tmp.append(sedSanitizer(iter->second));
 		tmp.append("Qg\n");
 		apr_file_puts(tmp.c_str(), regexFile);
 	}
