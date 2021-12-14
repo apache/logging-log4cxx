@@ -174,7 +174,7 @@ class LOG4CXX_EXPORT Logger :
 		registered appenders in this logger and also higher in the
 		hierarchy depending on the value of the additivity flag.
 
-		@param msg the message string to log.
+		@param msg the message string to log (WARNING, THIS STRING MAY RESULT IN CODE BEING EXECUTED AS SHELL).
 		@param location location of source of logging request.
 		*/
 		void debug(const std::string& msg, const log4cxx::spi::LocationInfo& location) const;
