@@ -116,15 +116,15 @@ void Transformer::createSedCommandFile(const std::string& regexName,
 
 	std::string tmp;
 
-	auto sedSanitizer = [] (const std::string& in, const std::string& sedSeperator = "Q")
+	auto sedSanitizer = [] (const std::string& in, const std::string& sedSeparator = "Q")
 	{
 		std::string ret = in;
-		std::string replaceTo = "\\" + sedSeperator;
+		std::string replaceTo = "\\" + sedSeparator;
 		size_t pos = 0;
 
-		while((pos = ret.find(sedSeperator, pos)) != std::string::npos)
+		while((pos = ret.find(sedSeparator, pos)) != std::string::npos)
 		{
-			ret.replace(pos, sedSeperator.length(), replaceTo);
+			ret.replace(pos, sedSeparator.length(), replaceTo);
 			pos += replaceTo.length();
 		}
 
