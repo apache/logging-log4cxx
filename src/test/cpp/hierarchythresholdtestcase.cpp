@@ -126,7 +126,7 @@ private:
 	static LoggerPtr logger;
 };
 
-File HierarchyThresholdTestCase::TEMP(LOG4CXX_FILE("output/temp"));
+File HierarchyThresholdTestCase::TEMP(LOG4CXX_FILE("output/hierarchythreshold"));
 
 LoggerPtr HierarchyThresholdTestCase::logger =
 	Logger::getLogger(LOG4CXX_TEST_STR("HierarchyThresholdTestCase"));

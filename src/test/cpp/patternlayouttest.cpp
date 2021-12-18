@@ -550,8 +550,8 @@ private:
 
 };
 
-const LogString PatternLayoutTest::TEMP(LOG4CXX_STR("output/temp"));
-const LogString PatternLayoutTest::FILTERED(LOG4CXX_STR("output/filtered"));
+const LogString PatternLayoutTest::TEMP(LOG4CXX_STR("output/patternlayout"));
+const LogString PatternLayoutTest::FILTERED(LOG4CXX_STR("output/patternlayoutfiltered"));
 
 
 LOGUNIT_TEST_SUITE_REGISTRATION(PatternLayoutTest);
