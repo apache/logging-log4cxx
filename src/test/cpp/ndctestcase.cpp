@@ -113,7 +113,7 @@ public:
 };
 
 
-File NDCTestCase::TEMP("output/temp");
+File NDCTestCase::TEMP("output/ndc");
 LoggerPtr NDCTestCase::logger(Logger::getLogger("org.apache.log4j.NDCTestCase"));
 
 LOGUNIT_TEST_SUITE_REGISTRATION(NDCTestCase);

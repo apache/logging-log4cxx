@@ -35,13 +35,15 @@ LOGUNIT_CLASS(PropertiesTestCase)
 	LOGUNIT_TEST(testTab5);
 	LOGUNIT_TEST(testTab6);
 	LOGUNIT_TEST(testTab7);
-	LOGUNIT_TEST(testCRLF1);
 	LOGUNIT_TEST(testEscT1);
 	LOGUNIT_TEST(testEscT2);
 	LOGUNIT_TEST(testEscN1);
 	LOGUNIT_TEST(testEscN2);
 	LOGUNIT_TEST(testEscR1);
 	LOGUNIT_TEST(testEscR2);
+	LOGUNIT_TEST(testCRLF);
+	LOGUNIT_TEST(testLF);
+	LOGUNIT_TEST(testMixedLineEndings);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
@@ -153,19 +155,6 @@ public:
 	}
 
 	/**
-	 *  Test tab in value continuation, see LOGCXX-292.
-	*/
-	void testCRLF1()
-	{
-		FileInputStreamPtr propFile(
-			new FileInputStream(LOG4CXX_STR("input/propertiestestcase.properties")));
-		Properties properties;
-		properties.load(propFile);
-		LogString actual(properties.getProperty(LOG4CXX_STR("propertiestestcase.crlf1")));
-		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("continuedvalue")), actual);
-	}
-
-	/**
 	 *  Test tab as escaped within key, see LOGCXX-293.
 	*/
 	void testEscT1()
@@ -261,6 +250,50 @@ public:
 		LOGUNIT_ASSERT_EQUAL(expected, actual);
 	}
 
+	void testCRLF(){
+		FileInputStreamPtr propFile(
+			new FileInputStream(LOG4CXX_STR("input/propertiestestcase-crlf.properties")));
+		Properties properties;
+		properties.load(propFile);
+
+		LogString value1(properties.getProperty(LOG4CXX_STR("propertiestestcase.value1")));
+		LogString value2(properties.getProperty(LOG4CXX_STR("propertiestestcase.value2")));
+		LogString value3(properties.getProperty(LOG4CXX_STR("propertiestestcase.value3")));
+
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("hi this is a test")), value1);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("multiline")), value2);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("some_value")), value3);
+	}
+
+	void testLF(){
+		FileInputStreamPtr propFile(
+			new FileInputStream(LOG4CXX_STR("input/propertiestestcase-lf.properties")));
+		Properties properties;
+		properties.load(propFile);
+
+		LogString value1(properties.getProperty(LOG4CXX_STR("propertiestestcase.value1")));
+		LogString value2(properties.getProperty(LOG4CXX_STR("propertiestestcase.value2")));
+		LogString value3(properties.getProperty(LOG4CXX_STR("propertiestestcase.value3")));
+
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("hi this is a test")), value1);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("multiline")), value2);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("some_value")), value3);
+	}
+
+	void testMixedLineEndings(){
+		FileInputStreamPtr propFile(
+			new FileInputStream(LOG4CXX_STR("input/propertiestestcase-mixed.properties")));
+		Properties properties;
+		properties.load(propFile);
+
+		LogString value1(properties.getProperty(LOG4CXX_STR("propertiestestcase.value1")));
+		LogString value2(properties.getProperty(LOG4CXX_STR("propertiestestcase.value2")));
+		LogString value3(properties.getProperty(LOG4CXX_STR("propertiestestcase.value3")));
+
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("hi this is a test")), value1);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("something")), value2);
+		LOGUNIT_ASSERT_EQUAL(LogString(LOG4CXX_STR("some_value")), value3);
+	}
 
 };
 
