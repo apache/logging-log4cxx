@@ -78,7 +78,7 @@ int SocketAppender::getDefaultPort() const
 
 void SocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(mutex);
+	std::lock_guard<std::recursive_mutex> lock(mutex);
 
 	SocketOutputStreamPtr sock = SocketOutputStreamPtr(new SocketOutputStream(socket));
 	oos = ObjectOutputStreamPtr(new ObjectOutputStream(sock, p));
@@ -124,7 +124,7 @@ void SocketAppender::append(const spi::LoggingEventPtr& event, log4cxx::helpers:
 
 		if (getReconnectionDelay() > 0)
 		{
-			fireConnectorInternal();
+			fireConnector();
 		}
 	}
 }
