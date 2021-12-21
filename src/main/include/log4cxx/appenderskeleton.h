@@ -74,7 +74,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		bool closed;
 
 		log4cxx::helpers::Pool pool;
-		mutable log4cxx::shared_mutex mutex;
+		mutable std::recursive_mutex mutex;
 
 		/**
 		Subclasses of <code>AppenderSkeleton</code> should implement this
