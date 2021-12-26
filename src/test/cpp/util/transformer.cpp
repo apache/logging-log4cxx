@@ -116,14 +116,29 @@ void Transformer::createSedCommandFile(const std::string& regexName,
 
 	std::string tmp;
 
+	auto sedSanitizer = [] (const std::string& in, const std::string& sedSeparator = "Q")
+	{
+		std::string ret = in;
+		std::string replaceTo = "\\" + sedSeparator;
+		size_t pos = 0;
+
+		while((pos = ret.find(sedSeparator, pos)) != std::string::npos)
+		{
+			ret.replace(pos, sedSeparator.length(), replaceTo);
+			pos += replaceTo.length();
+		}
+
+		return ret;
+	};
+
 	for (log4cxx::Filter::PatternList::const_iterator iter = patterns.begin();
 		iter != patterns.end();
 		iter++)
 	{
 		tmp = "sQ";
-		tmp.append(iter->first);
+		tmp.append(sedSanitizer(iter->first));
 		tmp.append(1, 'Q');
-		tmp.append(iter->second);
+		tmp.append(sedSanitizer(iter->second));
 		tmp.append("Qg\n");
 		apr_file_puts(tmp.c_str(), regexFile);
 	}

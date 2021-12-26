@@ -158,7 +158,7 @@ bool WriterAppender::checkEntryConditions() const
    */
 void WriterAppender::close()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 
 	if (_priv->closed)
 	{
@@ -285,7 +285,7 @@ void WriterAppender::writeHeader(Pool& p)
 
 void WriterAppender::setWriter(const WriterPtr& newWriter)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
+	std::unique_lock<std::recursive_mutex> lock(_priv->mutex);
 	setWriterInternal(newWriter);
 }
 

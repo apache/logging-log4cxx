@@ -102,7 +102,7 @@ void SocketHubAppender::setOption(const LogString& option,
 void SocketHubAppender::close()
 {
 	{
-		std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
+		std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 
 		if (_priv->closed)
 		{
@@ -122,7 +122,7 @@ void SocketHubAppender::close()
 		_priv->thread.join();
 	}
 
-	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 	// close all of the connections
 	LogLog::debug(LOG4CXX_STR("closing client connections"));
 
@@ -252,7 +252,7 @@ void SocketHubAppender::monitor()
 					+ LOG4CXX_STR(")"));
 
 				// add it to the oosList.
-				std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
+				std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 				OutputStreamPtr os(new SocketOutputStream(socket));
 				Pool p;
 				ObjectOutputStreamPtr oos(new ObjectOutputStream(os, p));

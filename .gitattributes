@@ -5,3 +5,9 @@
 # This is a windows-specific file
 src/main/resources/log4cxx.rc eol=crlf
 
+# These files have specific line endings to ensure that they work
+# correctly on all platforms
+src/test/resources/input/propertiestestcase.properties eol=auto
+src/test/resources/input/propertiestestcase-crlf.properties eol=crlf
+src/test/resources/input/propertiestestcase-lf.properties eol=lf
+src/test/resources/input/propertiestestcase-mixed.properties -text

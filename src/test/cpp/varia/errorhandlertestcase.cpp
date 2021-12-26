@@ -85,7 +85,7 @@ public:
 
 		try
 		{
-			Transformer::transform("output/temp", "output/filtered", filters);
+			Transformer::transform("output/fallback", "output/fallbackfiltered", filters);
 		}
 		catch (UnexpectedFormatException& e)
 		{
@@ -94,7 +94,7 @@ public:
 		}
 
 
-		LOGUNIT_ASSERT(Compare::compare("output/filtered", "witness/fallback1"));
+		LOGUNIT_ASSERT(Compare::compare("output/fallbackfiltered", "witness/fallback1"));
 	}
 
 	void common()

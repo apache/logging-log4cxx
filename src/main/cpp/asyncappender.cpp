@@ -201,7 +201,7 @@ void AsyncAppender::setOption(const LogString& option,
 
 void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(priv->mutex);
 
 	doAppendImpl(event, pool1);
 }

@@ -202,7 +202,7 @@ private:
 };
 
 
-const File MinimumTestCase::FILTERED("output/filtered");
+const File MinimumTestCase::FILTERED("output/minimumfiltered");
 
 
 LOGUNIT_TEST_SUITE_REGISTRATION(MinimumTestCase);

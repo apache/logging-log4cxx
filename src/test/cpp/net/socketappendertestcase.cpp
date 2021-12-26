@@ -33,15 +33,61 @@ class SocketAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
+		LOGUNIT_TEST(testInvalidHost);
 
 		LOGUNIT_TEST_SUITE_END();
 
 
 	public:
 
+		void setUp()
+		{
+		}
+
+		void tearDown()
+		{
+			BasicConfigurator::resetConfiguration();
+		}
+
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
 			return new log4cxx::net::SocketAppender();
+		}
+
+		void testInvalidHost(){
+//			log4cxx::net::SocketAppenderPtr appender = std::make_shared<log4cxx::net::SocketAppender>();
+//			log4cxx::PatternLayoutPtr layout = std::make_shared<log4cxx::PatternLayout>(LOG4CXX_STR("%m%n"));
+
+//			log4cxx::helpers::ServerSocket serverSocket(4445);
+
+//			appender->setLayout(layout);
+//			appender->setRemoteHost(LOG4CXX_STR("localhost"));
+//			appender->setReconnectionDelay(1);
+//			appender->setPort(4445);
+//			log4cxx::helpers::Pool pool;
+//			appender->activateOptions(pool);
+
+//			BasicConfigurator::configure(appender);
+
+//			log4cxx::Logger::getRootLogger()->setLevel(log4cxx::Level::getAll());
+
+//			std::thread th1( [](){
+//				for( int x = 0; x < 3000; x++ ){
+//					LOG4CXX_INFO(Logger::getLogger(LOG4CXX_STR("test")), "Some message" );
+//				}
+//			});
+//			std::thread th2( [](){
+//				for( int x = 0; x < 3000; x++ ){
+//					LOG4CXX_INFO(Logger::getLogger(LOG4CXX_STR("test")), "Some message" );
+//				}
+//			});
+
+//			SocketPtr incomingSocket = serverSocket.accept();
+//			incomingSocket->close();
+
+//			// If we do not get here, we have deadlocked
+//			th1.join();
+//			th2.join();
 		}
 };
 

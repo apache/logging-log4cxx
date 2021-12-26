@@ -104,7 +104,7 @@ public:
 				LOG4CXX_TEST_STR("log4j"), LOG4CXX_TEST_STR("log4cxx"));
 		}
 
-		LOGUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/temp"),
+		LOGUNIT_ASSERT(Compare::compare(LOG4CXX_FILE("output/l7d1"),
 				LOG4CXX_FILE("witness/l7d.1")));
 	}
 

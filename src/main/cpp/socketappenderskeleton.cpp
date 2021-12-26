@@ -55,7 +55,7 @@ void SocketAppenderSkeleton::activateOptions(Pool& p)
 
 void SocketAppenderSkeleton::close()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 
 	if (_priv->closed)
 	{
@@ -134,7 +134,7 @@ void SocketAppenderSkeleton::setOption(const LogString& option, const LogString&
 
 void SocketAppenderSkeleton::fireConnector()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
 
 	if ( !_priv->thread.joinable() )
 	{
@@ -153,12 +153,6 @@ void SocketAppenderSkeleton::monitor()
 	{
 		try
 		{
-			std::this_thread::sleep_for( std::chrono::milliseconds( _priv->reconnectionDelay ) );
-
-			std::unique_lock<std::mutex> lock( _priv->interrupt_mutex );
-			_priv->interrupt.wait_for( lock, std::chrono::milliseconds( _priv->reconnectionDelay ),
-				std::bind(&SocketAppenderSkeleton::is_closed, this) );
-
 			if (!_priv->closed)
 			{
 				LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
@@ -167,9 +161,8 @@ void SocketAppenderSkeleton::monitor()
 				Pool p;
 				setSocket(socket, p);
 				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));
+				return;
 			}
-
-			return;
 		}
 		catch (InterruptedException&)
 		{
@@ -192,6 +185,10 @@ void SocketAppenderSkeleton::monitor()
 				+ LOG4CXX_STR(". Exception is ")
 				+ exmsg);
 		}
+
+		std::unique_lock<std::mutex> lock( _priv->interrupt_mutex );
+		_priv->interrupt.wait_for( lock, std::chrono::milliseconds( _priv->reconnectionDelay ),
+			std::bind(&SocketAppenderSkeleton::is_closed, this) );
 
 		isClosed = _priv->closed;
 	}

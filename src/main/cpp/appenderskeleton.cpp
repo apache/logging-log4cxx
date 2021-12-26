@@ -64,7 +64,7 @@ void AppenderSkeleton::finalize()
 
 void AppenderSkeleton::addFilter(const spi::FilterPtr newFilter)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	if (m_priv->headFilter == nullptr)
 	{
@@ -79,7 +79,7 @@ void AppenderSkeleton::addFilter(const spi::FilterPtr newFilter)
 
 void AppenderSkeleton::clearFilters()
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	m_priv->headFilter = m_priv->tailFilter = nullptr;
 }
 
@@ -90,7 +90,7 @@ bool AppenderSkeleton::isAsSevereAsThreshold(const LevelPtr& level) const
 
 void AppenderSkeleton::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	doAppendImpl(event, pool1);
 }
@@ -133,7 +133,7 @@ void AppenderSkeleton::doAppendImpl(const spi::LoggingEventPtr& event, Pool& poo
 
 void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 
 	if (errorHandler1 == nullptr)
 	{
@@ -149,7 +149,7 @@ void AppenderSkeleton::setErrorHandler(const spi::ErrorHandlerPtr errorHandler1)
 
 void AppenderSkeleton::setThreshold(const LevelPtr& threshold1)
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(m_priv->mutex);
+	std::lock_guard<std::recursive_mutex> lock(m_priv->mutex);
 	m_priv->threshold = threshold1;
 }
 

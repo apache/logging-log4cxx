@@ -90,7 +90,7 @@ public:
 		i++;
 		LOG4CXX_DEBUG(logger, "Message " << i);
 
-		const File OUTPUT("output/temp");
+		const File OUTPUT("output/customlogger");
 		std::string witness("witness/customLogger.");
 		witness.append(number);
 		const File WITNESS(witness);

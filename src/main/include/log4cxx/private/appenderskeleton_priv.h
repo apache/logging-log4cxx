@@ -67,7 +67,7 @@ struct AppenderSkeleton::AppenderSkeletonPrivate
 	bool closed;
 
 	log4cxx::helpers::Pool pool;
-	mutable log4cxx::shared_mutex mutex;
+	mutable std::recursive_mutex mutex;
 };
 
 }

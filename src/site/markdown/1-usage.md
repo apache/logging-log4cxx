@@ -29,3 +29,4 @@ See the following pages for usage information:
 * @subpage faq
 * @subpage configuration-samples
 * @subpage qt-support
+* @subpage performance
