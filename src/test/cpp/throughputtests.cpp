@@ -22,9 +22,12 @@
 #include <log4cxx/simplelayout.h>
 #include <log4cxx/appenderskeleton.h>
 #include <log4cxx/logstring.h>
+#include <log4cxx/file.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/outputstreamwriter.h>
+#include <log4cxx/helpers/fileoutputstream.h>
 #include <thread>
 #include <vector>
 
@@ -32,7 +35,11 @@ using log4cxx::Logger;
 using log4cxx::LoggerPtr;
 using log4cxx::LogManager;
 using log4cxx::LogString;
-using log4cxx::helpers::LogLog;
+using log4cxx::File;
+using log4cxx::helpers::FileOutputStream;
+using log4cxx::helpers::OutputStreamPtr;
+using log4cxx::helpers::OutputStreamWriter;
+using log4cxx::helpers::OutputStreamWriterPtr;
 using log4cxx::helpers::StringHelper;
 using log4cxx::helpers::Pool;
 
@@ -61,27 +68,50 @@ LOGUNIT_CLASS(ThroughputTests){
 	LOGUNIT_TEST(disabledMultiThreadMessageBenchmark);
 	LOGUNIT_TEST_SUITE_END();
 
+	OutputStreamWriterPtr osw;
+	Pool pool;
 public:
 	void setUp()
 	{
 		Logger::getRootLogger()->removeAllAppenders();
 		std::shared_ptr<MockAppender> nullWriter( new MockAppender() );
 		Logger::getRootLogger()->addAppender( nullWriter );
+		File outputDir("output");
+		if (!outputDir.exists(this->pool))
+			outputDir.mkdirs(this->pool);
+		OutputStreamPtr fos(new FileOutputStream(LOG4CXX_STR("output/benchmarks.json"), true));
+		this->osw = OutputStreamWriterPtr(new OutputStreamWriter(fos));
 	}
 
 	void tearDown()
 	{
-//		root->getLoggerRepository()->resetConfiguration();
+		this->osw->flush(this->pool);
+		this->osw->close(this->pool);
 	}
 
-	static void info_logger( int times ){
+	void add_benchmark(const LogString& name, const log4cxx_int64_t& value, const LogString& units)
+	{
+		this->osw->write(LOG4CXX_STR(",{ \"name\" : \""), this->pool);
+		this->osw->write(name, this->pool);
+		this->osw->write(LOG4CXX_STR("\", \"value\" : "), this->pool);
+		LogString benchmarkValue;
+		StringHelper::toString(value, this->pool, benchmarkValue);
+		this->osw->write(benchmarkValue, this->pool);
+		this->osw->write(LOG4CXX_STR(", \"units\" : \""), this->pool);
+		this->osw->write(units, this->pool);
+		this->osw->write(LOG4CXX_STR("\" }\n"), this->pool);
+	}
+
+	static void info_logger( int times )
+	{
 		LoggerPtr logger = LogManager::getLogger( "test.multithreaded" );
 		for( int x = 0; x < times; ++x ){
 			LOG4CXX_INFO( logger, "This is a test message that has some data" );
 		}
 	}
 
-	static void trace_logger( int times ){
+	static void trace_logger( int times )
+	{
 		LoggerPtr logger = LogManager::getLogger( "test.multithreaded" );
 		for( int x = 0; x < times; ++x ){
 			LOG4CXX_TRACE( logger, "This is a test message that has some data" );
@@ -89,29 +119,24 @@ public:
 	}
 	using level_logger = void (*)(int times);
 
-	void singleThreadBenchmark(const LogString& name, level_logger logging_func, int msgCount){
+	void singleThreadBenchmark(const LogString& name, level_logger logging_func, int msgCount)
+	{
 		std::vector<std::thread> threads;
 		auto startTick = clock();
 		logging_func(msgCount);
 		auto stopTick = clock();
-		auto elapsed = stopTick - startTick;
-		auto milliseconds = log4cxx_int64_t(float(elapsed) / CLOCKS_PER_SEC * 1000);
-		auto nanosecondsPerLog = milliseconds * 1000000 / msgCount;
-		Pool pool;
-		LogString msg;
-		msg += name;
-		msg += LOG4CXX_STR(": ");
-		StringHelper::toString(nanosecondsPerLog, pool, msg);
-		msg += LOG4CXX_STR(" ns/log ");
-		StringHelper::toString(msgCount, pool, msg);
-		msg += LOG4CXX_STR(" messages ");
-		StringHelper::toString(milliseconds, pool, msg);
-		msg += LOG4CXX_STR(" ms elapsed ");
-		LogLog::setInternalDebugging(true);
-		LogLog::debug(msg);
+		auto elapsedTicks = stopTick - startTick;
+		auto milliseconds = log4cxx_int64_t(float(elapsedTicks) / CLOCKS_PER_SEC * 1000) + 1;
+		auto logOpsPerMillisecond = msgCount / milliseconds;
+		LogString benchmarkName;
+		benchmarkName += LOG4CXX_STR("singleThread");
+		benchmarkName += LOG4CXX_STR(".");
+		benchmarkName += name;
+		add_benchmark(benchmarkName, logOpsPerMillisecond, LOG4CXX_STR("ops/ms"));
 	}
 
-	void enabledSingleThreadMessageBenchmark(){
+	void enabledSingleThreadMessageBenchmark()
+	{
 #ifdef _DEBUG
 		auto msgCount = 2000;
 #else
@@ -125,7 +150,8 @@ public:
 			LOGUNIT_ASSERT(startMessageCount + msgCount == mockAppender->messageCount);
 	}
 
-	void disabledSingleThreadMessageBenchmark(){
+	void disabledSingleThreadMessageBenchmark()
+	{
 #ifdef _DEBUG
 		auto msgCount = 20000;
 #else
@@ -139,7 +165,8 @@ public:
 			LOGUNIT_ASSERT(startMessageCount == mockAppender->messageCount);
 	}
 
-	void multithreadBenchmark(const LogString& name, level_logger logging_func, int threadCount, int msgCount){
+	void multithreadBenchmark(const LogString& name, level_logger logging_func, int threadCount, int msgCount)
+	{
 		auto startTick = clock();
 		std::vector<std::thread> threads;
 		for( auto threadNumber = threadCount; 0 < threadNumber; --threadNumber ){
@@ -153,26 +180,18 @@ public:
 			}
 		}
 		auto stopTick = clock();
-		auto elapsed = stopTick - startTick;
-		auto milliseconds = log4cxx_int64_t(float(elapsed) / CLOCKS_PER_SEC * 1000);
-		auto nanosecondsPerLog = milliseconds * 1000000 / msgCount;
-		Pool pool;
-		LogString msg;
-		msg += name;
-		msg += LOG4CXX_STR(": ");
-		StringHelper::toString(nanosecondsPerLog, pool, msg);
-		msg += LOG4CXX_STR(" ns/log ");
-		StringHelper::toString(msgCount, pool, msg);
-		msg += LOG4CXX_STR(" messages/thread ");
-		StringHelper::toString(log4cxx_int64_t(threadCount), pool, msg);
-		msg += LOG4CXX_STR(" threads ");
-		StringHelper::toString(milliseconds, pool, msg);
-		msg += LOG4CXX_STR(" ms elapsed ");
-		LogLog::setInternalDebugging(true);
-		LogLog::debug(msg);
+		auto elapsedTicks = stopTick - startTick;
+		auto milliseconds = log4cxx_int64_t(float(elapsedTicks) / CLOCKS_PER_SEC * 1000) + 1;
+		auto logOpsPerMillisecond = msgCount / milliseconds;
+		LogString benchmarkName;
+		benchmarkName += LOG4CXX_STR("multiThread");
+		benchmarkName += LOG4CXX_STR(".");
+		benchmarkName += name;
+		add_benchmark(benchmarkName, logOpsPerMillisecond, LOG4CXX_STR("ops/ms"));
 	}
 
-	void enabledMultiThreadMessageBenchmark(){
+	void enabledMultiThreadMessageBenchmark()
+	{
 #ifdef _DEBUG
 		auto msgCount = 2000;
 #else
@@ -189,7 +208,8 @@ public:
 			LOGUNIT_ASSERT(startMessageCount + msgCount * threadCount == mockAppender->messageCount);
 	}
 
-	void disabledMultiThreadMessageBenchmark(){
+	void disabledMultiThreadMessageBenchmark()
+	{
 #ifdef _DEBUG
 		auto msgCount = 20000;
 #else
