@@ -59,6 +59,7 @@ add_subdirectory(pattern)
 add_subdirectory(rolling)
 add_subdirectory(varia)
 add_subdirectory(xml)
+add_subdirectory(throughput)
 
 # Note: we need to include the APR DLLs on our path so that the tests will run.
 # The way that CMake sets the environment is that it actually generates a secondary file,
