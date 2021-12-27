@@ -69,7 +69,8 @@ class LOG4CXX_EXPORT Hierarchy :
 		spi::LoggerFactoryPtr defaultFactory;
 		spi::HierarchyEventListenerList listeners;
 
-		typedef std::map<LogString, LoggerPtr> LoggerMap;
+		typedef std::weak_ptr<Logger> WeakLoggerPtr;
+		typedef std::map<LogString, WeakLoggerPtr> LoggerMap;
 		std::unique_ptr<LoggerMap> loggers;
 
 		typedef std::map<LogString, ProvisionNode> ProvisionNodeMap;
@@ -288,7 +289,6 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		void updateChildren(ProvisionNode& pn, LoggerPtr logger);
 
-		void configureRoot();
 };
 
 }  //namespace log4cxx
