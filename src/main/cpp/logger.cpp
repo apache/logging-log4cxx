@@ -161,7 +161,7 @@ AppenderPtr Logger::getAppender(const LogString& name1) const
 	return aai->getAppender(name1);
 }
 
-const LevelPtr Logger::getEffectiveLevel() const
+const LevelPtr& Logger::getEffectiveLevel() const
 {
 	for (const Logger* l = this; l != 0; l = l->parent.get())
 	{

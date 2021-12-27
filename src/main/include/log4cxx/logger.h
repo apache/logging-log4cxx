@@ -617,7 +617,7 @@ class LOG4CXX_EXPORT Logger :
 
 		@throws RuntimeException if all levels are null in the hierarchy
 		*/
-		virtual const LevelPtr getEffectiveLevel() const;
+		virtual const LevelPtr& getEffectiveLevel() const;
 
 		/**
 		Return the the LoggerRepository where this
