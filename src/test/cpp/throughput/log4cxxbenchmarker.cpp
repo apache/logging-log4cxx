@@ -120,7 +120,7 @@ void log4cxxbenchmarker::logWithFMT(int howmany)
 	}
 }
 
-void log4cxxbenchmarker::logSetupMultithreaded()
+log4cxx::LoggerPtr log4cxxbenchmarker::logSetupMultithreaded()
 {
 	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( "bench_logger" );
 
@@ -135,6 +135,7 @@ void log4cxxbenchmarker::logSetupMultithreaded()
 	nullWriter->setLayout( pattern );
 
 	logger->addAppender( nullWriter );
+	return logger;
 }
 
 void log4cxxbenchmarker::logWithFMTMultithreaded(int howmany)

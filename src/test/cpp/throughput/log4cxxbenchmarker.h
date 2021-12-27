@@ -49,7 +49,7 @@ class log4cxxbenchmarker
 		/**
 		 * Reset logger for multithreaded setup.
 		 */
-		static void logSetupMultithreaded();
+		static log4cxx::LoggerPtr logSetupMultithreaded();
 
 		/**
 		 * Log with the LOG4CXX_INFO_FMT macro to see how long it takes(multithreaded).

@@ -101,7 +101,7 @@ static void bench_log4cxx_multi_threaded(size_t threads, int iters)
 
 	std::vector<std::thread> runningThreads;
 
-	log4cxxbenchmarker::logSetupMultithreaded();
+	auto logger = log4cxxbenchmarker::logSetupMultithreaded();
 
 	for ( size_t x = 0; x < threads; x++ )
 	{
@@ -125,7 +125,7 @@ static void bench_log4cxx_multi_threaded_disabled(size_t threads, int iters)
 
 	std::vector<std::thread> runningThreads;
 
-	log4cxxbenchmarker::logSetupMultithreaded();
+	auto logger = log4cxxbenchmarker::logSetupMultithreaded();
 
 	for ( size_t x = 0; x < threads; x++ )
 	{
