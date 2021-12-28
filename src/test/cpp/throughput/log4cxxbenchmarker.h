@@ -36,7 +36,7 @@ class log4cxxbenchmarker
 		 *
 		 * @param conversionPattern The conversion pattern used, as passed to the PatternLayout
 		 */
-		static void logWithConversionPattern( std::string conversionPattern, int howmany );
+		static void logWithConversionPattern( const log4cxx::LogString& conversionPattern, int howmany );
 
 		/**
 		 * Log with the LOG4CXX_INFO_FMT macro to see how long it takes.

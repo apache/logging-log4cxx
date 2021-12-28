@@ -71,14 +71,14 @@ log4cxxbenchmarker::log4cxxbenchmarker()
 
 log4cxx::LoggerPtr log4cxxbenchmarker::resetLogger()
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( "bench_logger" );
+	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	logger->removeAllAppenders();
 	logger->setAdditivity( false );
 	logger->setLevel( log4cxx::Level::getInfo() );
 
 	log4cxx::PatternLayoutPtr pattern = std::make_shared<log4cxx::PatternLayout>();
-	pattern->setConversionPattern( "%m%n" );
+	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
 
 	log4cxx::NullWriterAppenderPtr nullWriter = std::make_shared<log4cxx::NullWriterAppender>();
 	nullWriter->setLayout( pattern );
@@ -88,9 +88,9 @@ log4cxx::LoggerPtr log4cxxbenchmarker::resetLogger()
 	return logger;
 }
 
-void log4cxxbenchmarker::logWithConversionPattern( std::string conversionPattern, int howmany )
+void log4cxxbenchmarker::logWithConversionPattern( const log4cxx::LogString& conversionPattern, int howmany )
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( "bench_logger" );
+	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	logger->removeAllAppenders();
 	logger->setAdditivity( false );
@@ -106,7 +106,7 @@ void log4cxxbenchmarker::logWithConversionPattern( std::string conversionPattern
 
 	for ( int x = 0; x < howmany; x++ )
 	{
-		LOG4CXX_INFO( logger, "Hello logger: msg number " << x);
+		LOG4CXX_INFO( logger, LOG4CXX_STR("Hello logger: msg number ") << x);
 	}
 }
 
@@ -122,14 +122,14 @@ void log4cxxbenchmarker::logWithFMT(int howmany)
 
 log4cxx::LoggerPtr log4cxxbenchmarker::logSetupMultithreaded()
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( "bench_logger" );
+	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	logger->removeAllAppenders();
 	logger->setAdditivity( false );
 	logger->setLevel( log4cxx::Level::getInfo() );
 
 	log4cxx::PatternLayoutPtr pattern = std::make_shared<log4cxx::PatternLayout>();
-	pattern->setConversionPattern( "%m%n" );
+	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
 
 	log4cxx::NullWriterAppenderPtr nullWriter = std::make_shared<log4cxx::NullWriterAppender>();
 	nullWriter->setLayout( pattern );
@@ -140,7 +140,7 @@ log4cxx::LoggerPtr log4cxxbenchmarker::logSetupMultithreaded()
 
 void log4cxxbenchmarker::logWithFMTMultithreaded(int howmany)
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( "bench_logger" );
+	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	for ( int x = 0; x < howmany; x++ )
 	{
@@ -150,11 +150,11 @@ void log4cxxbenchmarker::logWithFMTMultithreaded(int howmany)
 
 void log4cxxbenchmarker::logDisabledMultithreaded( int howmany )
 {
-	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( "bench_logger" );
+	log4cxx::LoggerPtr logger = log4cxx::Logger::getLogger( LOG4CXX_STR("bench_logger") );
 
 	for ( int x = 0; x < howmany; x++ )
 	{
-		LOG4CXX_TRACE( logger, "Hello logger!  What is happening");
+		LOG4CXX_TRACE( logger, LOG4CXX_STR("Hello logger!  What is happening"));
 	}
 }
 
@@ -164,7 +164,7 @@ void log4cxxbenchmarker::logStaticString( int howmany )
 
 	for ( int x = 0; x < howmany; x++ )
 	{
-		LOG4CXX_INFO( logger, "This is a static string to see what happens");
+		LOG4CXX_INFO( logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
 
@@ -184,7 +184,7 @@ void log4cxxbenchmarker::logDisabledDebug( int howmany )
 
 	for ( int x = 0; x < howmany; x++ )
 	{
-		LOG4CXX_DEBUG( logger, "This is a static string to see what happens");
+		LOG4CXX_DEBUG( logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
 
@@ -194,7 +194,7 @@ void log4cxxbenchmarker::logDisabledTrace( int howmany )
 
 	for ( int x = 0; x < howmany; x++ )
 	{
-		LOG4CXX_TRACE( logger, "This is a static string to see what happens");
+		LOG4CXX_TRACE( logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
 
@@ -205,7 +205,7 @@ void log4cxxbenchmarker::logEnabledDebug( int howmany )
 
 	for ( int x = 0; x < howmany; x++ )
 	{
-		LOG4CXX_DEBUG( logger, "This is a static string to see what happens");
+		LOG4CXX_DEBUG( logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
 
@@ -216,6 +216,6 @@ void log4cxxbenchmarker::logEnabledTrace( int howmany )
 
 	for ( int x = 0; x < howmany; x++ )
 	{
-		LOG4CXX_DEBUG( logger, "This is a static string to see what happens");
+		LOG4CXX_DEBUG( logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
