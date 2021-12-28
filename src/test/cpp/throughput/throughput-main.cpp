@@ -28,11 +28,12 @@
 #include <fmt/ostream.h>
 
 #include "log4cxxbenchmarker.h"
+using log4cxx::LogString;
 
 static log4cxx::LoggerPtr console = log4cxx::Logger::getLogger( "console" );
 static std::vector<uint64_t> results;
 
-static void benchmark_function( std::string name, void (*fn)(int), int howmany )
+static void benchmark_function( const std::string& name, void (*fn)(int), int howmany )
 {
 	using std::chrono::duration;
 	using std::chrono::duration_cast;
@@ -43,7 +44,7 @@ static void benchmark_function( std::string name, void (*fn)(int), int howmany )
 	auto delta = high_resolution_clock::now() - start;
 	auto delta_d = duration_cast<duration<double>>(delta).count();
 
-	LOG4CXX_INFO_FMT( console, "Log4cxx {} Elapsed: {:.4} secs {:L}/sec",
+	LOG4CXX_INFO_FMT( console, "Log4cxx {} Elapsed: {:.4f} secs {:L}/sec",
 		name,
 		delta_d,
 		int(howmany / delta_d));
@@ -51,9 +52,18 @@ static void benchmark_function( std::string name, void (*fn)(int), int howmany )
 	results.push_back( howmany / delta_d );
 }
 
-static void benchmark_conversion_pattern( std::string name,
-	std::string conversion_pattern,
-	void(*fn)(std::string, int),
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+#define BENCHMARK_PATTERN(str) LOG4CXX_STR(str), str
+#else
+#define BENCHMARK_PATTERN(str) LOG4CXX_STR(str)
+#endif
+
+static void benchmark_conversion_pattern( const std::string& name,
+	const LogString& conversion_pattern,
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+	const std::string& conversion_pattern_std,
+#endif
+	void(*fn)(const LogString&, int),
 	int howmany)
 {
 	using std::chrono::duration;
@@ -65,9 +75,14 @@ static void benchmark_conversion_pattern( std::string name,
 	auto delta = high_resolution_clock::now() - start;
 	auto delta_d = duration_cast<duration<double>>(delta).count();
 
-	LOG4CXX_INFO_FMT( console, "Log4cxx {} pattern: {} Elapsed: {:.4} secs {:L}/sec",
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+	auto& conversion_pattern_fmt = conversion_pattern_std;
+#else
+	auto& conversion_pattern_fmt = conversion_pattern;
+#endif
+	LOG4CXX_INFO_FMT( console, "Log4cxx {} pattern: {} Elapsed: {:.4f} secs {:L}/sec",
 		name,
-		conversion_pattern,
+		conversion_pattern_fmt,
 		delta_d,
 		int(howmany / delta_d) );
 
@@ -76,13 +91,13 @@ static void benchmark_conversion_pattern( std::string name,
 
 static void bench_log4cxx_single_threaded(int iters)
 {
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 	LOG4CXX_INFO_FMT(console, "Benchmarking Single threaded: {} messages", iters );
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 
-	benchmark_conversion_pattern( "NoFormat", "%m%n", &log4cxxbenchmarker::logWithConversionPattern, iters );
-	benchmark_conversion_pattern( "DateOnly", "[%d] %m%n", &log4cxxbenchmarker::logWithConversionPattern, iters );
-	benchmark_conversion_pattern( "DateClassLevel", "[%d] [%c] [%p] %m%n", &log4cxxbenchmarker::logWithConversionPattern, iters );
+	benchmark_conversion_pattern( "NoFormat", BENCHMARK_PATTERN("%m%n"), &log4cxxbenchmarker::logWithConversionPattern, iters );
+	benchmark_conversion_pattern( "DateOnly", BENCHMARK_PATTERN("[%d] %m%n"), &log4cxxbenchmarker::logWithConversionPattern, iters );
+	benchmark_conversion_pattern( "DateClassLevel", BENCHMARK_PATTERN("[%d] [%c] [%p] %m%n"), &log4cxxbenchmarker::logWithConversionPattern, iters );
 
 	benchmark_function( "Logging with FMT", &log4cxxbenchmarker::logWithFMT, iters );
 	benchmark_function( "Logging static string", &log4cxxbenchmarker::logStaticString, iters );
@@ -95,9 +110,9 @@ static void bench_log4cxx_single_threaded(int iters)
 
 static void bench_log4cxx_multi_threaded(size_t threads, int iters)
 {
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 	LOG4CXX_INFO_FMT(console, "Benchmarking multithreaded threaded: {} messages/thread, {} threads", iters, threads );
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 
 	std::vector<std::thread> runningThreads;
 
@@ -119,9 +134,9 @@ static void bench_log4cxx_multi_threaded(size_t threads, int iters)
 
 static void bench_log4cxx_multi_threaded_disabled(size_t threads, int iters)
 {
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 	LOG4CXX_INFO_FMT(console, "Benchmarking multithreaded disabled: {} messages/thread, {} threads", iters, threads );
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 
 	std::vector<std::thread> runningThreads;
 
@@ -152,11 +167,11 @@ int main(int argc, char* argv[])
 
 	console->setAdditivity( false );
 	log4cxx::PatternLayoutPtr pattern( new log4cxx::PatternLayout() );
-	pattern->setConversionPattern( "%m%n" );
+	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
 
 	log4cxx::ConsoleAppenderPtr consoleWriter( new log4cxx::ConsoleAppender );
 	consoleWriter->setLayout( pattern );
-	consoleWriter->setTarget( "System.out" );
+	consoleWriter->setTarget( LOG4CXX_STR("System.out") );
 	log4cxx::helpers::Pool p;
 	consoleWriter->activateOptions(p);
 
