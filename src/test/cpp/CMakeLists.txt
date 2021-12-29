@@ -17,7 +17,7 @@ find_program(GZIP_APP gzip REQUIRED)
 
 # Tests defined in this directory
 set(ALL_LOG4CXX_TESTS
-    autoConfigureTestCase
+    autoconfiguretestcase
     asyncappendertestcase
     consoleappendertestcase
     decodingtest
@@ -103,8 +103,8 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${ESCAPED_PATH}"
             )
-        elseif(${testName} STREQUAL autoConfigureTestCase)
-            set_tests_properties(autoConfigureTestCase PROPERTIES
+        elseif(${testName} STREQUAL autoconfiguretestcase)
+            set_tests_properties(autoconfiguretestcase PROPERTIES
                 ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties;PATH=${ESCAPED_PATH}"
             )
         else()
@@ -117,8 +117,8 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}"
             )
-        elseif(${testName} STREQUAL autoConfigureTestCase)
-            set_tests_properties(autoConfigureTestCase PROPERTIES
+        elseif(${testName} STREQUAL autoconfiguretestcase)
+            set_tests_properties(autoconfiguretestcase PROPERTIES
                 ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties"
             )
         else()
