@@ -48,7 +48,7 @@ static void benchmark_function( const std::string& name, void (*fn)(int), int ho
 	LOG4CXX_INFO_FMT( console, "Log4cxx {} Elapsed: {:.4} secs {:L}/sec",
 		name,
 		delta_d,
-		int(howmany / delta_d));
+		uint64_t(howmany / delta_d));
 
 	results.push_back( uint64_t(howmany / delta_d) );
 }
@@ -72,7 +72,7 @@ static void benchmark_conversion_pattern( const std::string& name,
 		name,
 		conversion_pattern,
 		delta_d,
-		int(howmany / delta_d) );
+		uint64_t(howmany / delta_d) );
 
 	results.push_back( uint64_t(howmany / delta_d) );
 }
