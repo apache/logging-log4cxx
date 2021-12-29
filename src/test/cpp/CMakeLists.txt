@@ -17,6 +17,7 @@ find_program(GZIP_APP gzip REQUIRED)
 
 # Tests defined in this directory
 set(ALL_LOG4CXX_TESTS
+    autoConfigureTestCase
     asyncappendertestcase
     consoleappendertestcase
     decodingtest
@@ -86,13 +87,14 @@ if( WIN32 )
   endforeach()
 endif( WIN32 )
 
+get_filename_component(UNIT_TEST_WORKING_DIR ../resources ABSOLUTE)
 foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     target_compile_definitions(${testName} PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
     target_include_directories(${testName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
     target_link_libraries(${testName} PRIVATE testingFramework testingUtilities log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads)
     add_test(NAME ${testName}
         COMMAND ${testName} -v
-        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/../resources
+        WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
     )
     set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
 
@@ -100,6 +102,10 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         if(${testName} STREQUAL socketservertestcase)
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${ESCAPED_PATH}"
+            )
+        elseif(${testName} STREQUAL autoConfigureTestCase)
+            set_tests_properties(autoConfigureTestCase PROPERTIES
+                ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties;PATH=${ESCAPED_PATH}"
             )
         else()
            set_tests_properties(${testName} PROPERTIES
@@ -110,6 +116,10 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         if(${testName} STREQUAL socketservertestcase)
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}"
+            )
+        elseif(${testName} STREQUAL autoConfigureTestCase)
+            set_tests_properties(autoConfigureTestCase PROPERTIES
+                ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties"
             )
         else()
            set_tests_properties(${testName} PROPERTIES
