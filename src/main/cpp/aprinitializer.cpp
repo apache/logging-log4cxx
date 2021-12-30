@@ -140,7 +140,7 @@ const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<Objec
 #if APR_HAS_THREADS
 	std::unique_lock<std::mutex> lock(this->mutex);
 #endif
-    auto& pItem = this->objects.find(key);
+    auto pItem = this->objects.find(key);
     if (this->objects.end() == pItem)
         pItem = this->objects.emplace(key, creator()).first;
     return pItem->second;

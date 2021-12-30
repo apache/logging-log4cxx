@@ -20,6 +20,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/file.h>
 #include "util/compare.h"
+#include <thread>
 
 using namespace log4cxx;
 
@@ -52,10 +53,10 @@ public:
 			);
 		}
 
-		for( auto& item : threads )
+		while (!threads.empty())
 		{
-			if (item.joinable() )
-				item.join();
+			threads.back().join();
+			threads.pop_back();
 		}
 	}
 
