@@ -19,6 +19,7 @@
 #include <log4cxx/xml/domconfigurator.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/consoleappender.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include <string>
 #include <thread>
@@ -28,11 +29,12 @@
 #include <fmt/ostream.h>
 
 #include "log4cxxbenchmarker.h"
+using log4cxx::LogString;
 
 static log4cxx::LoggerPtr console = log4cxx::Logger::getLogger( "console" );
 static std::vector<uint64_t> results;
 
-static void benchmark_function( std::string name, void (*fn)(int), int howmany )
+static void benchmark_function( const std::string& name, void (*fn)(int), int howmany )
 {
 	using std::chrono::duration;
 	using std::chrono::duration_cast;
@@ -46,14 +48,14 @@ static void benchmark_function( std::string name, void (*fn)(int), int howmany )
 	LOG4CXX_INFO_FMT( console, "Log4cxx {} Elapsed: {:.4} secs {:L}/sec",
 		name,
 		delta_d,
-		int(howmany / delta_d));
+		uint64_t(howmany / delta_d));
 
-	results.push_back( howmany / delta_d );
+	results.push_back( uint64_t(howmany / delta_d) );
 }
 
-static void benchmark_conversion_pattern( std::string name,
-	std::string conversion_pattern,
-	void(*fn)(std::string, int),
+static void benchmark_conversion_pattern( const std::string& name,
+	const std::string& conversion_pattern,
+	void(*fn)(const LogString&, int),
 	int howmany)
 {
 	using std::chrono::duration;
@@ -61,7 +63,8 @@ static void benchmark_conversion_pattern( std::string name,
 	using std::chrono::high_resolution_clock;
 
 	auto start = high_resolution_clock::now();
-	fn(conversion_pattern, howmany);
+	LOG4CXX_DECODE_CHAR(conversion_patternLS, conversion_pattern);
+	fn(conversion_patternLS, howmany);
 	auto delta = high_resolution_clock::now() - start;
 	auto delta_d = duration_cast<duration<double>>(delta).count();
 
@@ -69,16 +72,16 @@ static void benchmark_conversion_pattern( std::string name,
 		name,
 		conversion_pattern,
 		delta_d,
-		int(howmany / delta_d) );
+		uint64_t(howmany / delta_d) );
 
-	results.push_back( howmany / delta_d );
+	results.push_back( uint64_t(howmany / delta_d) );
 }
 
 static void bench_log4cxx_single_threaded(int iters)
 {
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 	LOG4CXX_INFO_FMT(console, "Benchmarking Single threaded: {} messages", iters );
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 
 	benchmark_conversion_pattern( "NoFormat", "%m%n", &log4cxxbenchmarker::logWithConversionPattern, iters );
 	benchmark_conversion_pattern( "DateOnly", "[%d] %m%n", &log4cxxbenchmarker::logWithConversionPattern, iters );
@@ -95,13 +98,13 @@ static void bench_log4cxx_single_threaded(int iters)
 
 static void bench_log4cxx_multi_threaded(size_t threads, int iters)
 {
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 	LOG4CXX_INFO_FMT(console, "Benchmarking multithreaded threaded: {} messages/thread, {} threads", iters, threads );
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 
 	std::vector<std::thread> runningThreads;
 
-	log4cxxbenchmarker::logSetupMultithreaded();
+	auto logger = log4cxxbenchmarker::logSetupMultithreaded();
 
 	for ( size_t x = 0; x < threads; x++ )
 	{
@@ -119,13 +122,13 @@ static void bench_log4cxx_multi_threaded(size_t threads, int iters)
 
 static void bench_log4cxx_multi_threaded_disabled(size_t threads, int iters)
 {
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 	LOG4CXX_INFO_FMT(console, "Benchmarking multithreaded disabled: {} messages/thread, {} threads", iters, threads );
-	LOG4CXX_INFO(console, "**************************************************************");
+	LOG4CXX_INFO(console, LOG4CXX_STR("**************************************************************"));
 
 	std::vector<std::thread> runningThreads;
 
-	log4cxxbenchmarker::logSetupMultithreaded();
+	auto logger = log4cxxbenchmarker::logSetupMultithreaded();
 
 	for ( size_t x = 0; x < threads; x++ )
 	{
@@ -152,11 +155,11 @@ int main(int argc, char* argv[])
 
 	console->setAdditivity( false );
 	log4cxx::PatternLayoutPtr pattern( new log4cxx::PatternLayout() );
-	pattern->setConversionPattern( "%m%n" );
+	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
 
 	log4cxx::ConsoleAppenderPtr consoleWriter( new log4cxx::ConsoleAppender );
 	consoleWriter->setLayout( pattern );
-	consoleWriter->setTarget( "System.out" );
+	consoleWriter->setTarget( LOG4CXX_STR("System.out") );
 	log4cxx::helpers::Pool p;
 	consoleWriter->activateOptions(p);
 
