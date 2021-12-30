@@ -17,35 +17,52 @@
 #include "logunit.h"
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
+#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/file.h>
 #include "util/compare.h"
 
 using namespace log4cxx;
+
 LOGUNIT_CLASS(AutoConfigureTestCase)
 {
 	LOGUNIT_TEST_SUITE(AutoConfigureTestCase);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST_SUITE_END();
-
 public:
-
+#ifdef _DEBUG
+	void setUp()
+	{
+		helpers::LogLog::setInternalDebugging(true);
+	}
+#endif
 	void test1()
 	{
-		LoggerPtr debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test1"));
-		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
-		LOGUNIT_ASSERT(LogManager::getLoggerRepository()->isConfigured());
-    }
+		std::vector<std::thread> threads;
+		for (auto i = 4; 0 < i; --i)
+		{
+			threads.emplace_back( []()
+				{
+					auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test1"));
+					LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
+					auto rep = LogManager::getLoggerRepository();
+					LOGUNIT_ASSERT(rep);
+					LOGUNIT_ASSERT(rep->isConfigured());
+				}
+			);
+		}
+
+		for( auto& item : threads )
+		{
+			if (item.joinable() )
+				item.join();
+		}
+	}
 
 	void test2()
 	{
-		LoggerPtr debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test2"));
+		auto debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test2"));
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
-		LOG4CXX_DEBUG(debugLogger, LOG4CXX_STR("This is some expected ouput"));
-		LOGUNIT_ASSERT_EQUAL(true, Compare::compare
-				( File("output/autoConfigureTest.log")
-				, File("witness/autoConfigureTest.log")
-				));
 	}
 };
 

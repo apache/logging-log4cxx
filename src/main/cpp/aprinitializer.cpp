@@ -127,3 +127,21 @@ void APRInitializer::unregisterCleanup(FileWatchdog* watchdog)
 	}
 }
 
+void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)
+{
+#if APR_HAS_THREADS
+	std::unique_lock<std::mutex> lock(this->mutex);
+#endif
+    this->objects[key] = pObject;
+}
+
+const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<ObjectPtr()> creator)
+{
+#if APR_HAS_THREADS
+	std::unique_lock<std::mutex> lock(this->mutex);
+#endif
+    auto& pItem = this->objects.find(key);
+    if (this->objects.end() == pItem)
+        pItem = this->objects.emplace(key, creator()).first;
+    return pItem->second;
+}
