@@ -438,11 +438,7 @@ void Hierarchy::setConfigured(bool newValue)
 
 bool Hierarchy::isConfigured()
 {
-	bool result = false;
-	std::unique_lock<std::mutex> lock(m_priv->configuredMutex, std::try_to_lock);
-	if (lock.owns_lock()) // Not being auto-configured?
-		result = m_priv->configured;
-	return result;
+	return m_priv->configured;
 }
 
 HierarchyPtr Hierarchy::create()
