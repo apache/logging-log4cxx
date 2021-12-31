@@ -19,50 +19,58 @@
 #include <log4cxx/logmanager.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/file.h>
-#include "util/compare.h"
 #include <thread>
+
+#define LOGUNIT_TEST_THREADS(testName, threadCount) \
+	class testName ## ThreadTestRegistration { \
+		public: \
+			testName ## ThreadTestRegistration() { \
+				ThisFixture::getSuite()->addTest(#testName, &testName ## ThreadTestRegistration :: run); \
+			} \
+			static void run(abts_case* tc, void*) { \
+				std::vector<std::thread> threads; \
+				for (auto i = threadCount; 0 < i; --i) \
+					threads.emplace_back( [tc]() { \
+						LogUnit::runTest<ThisFixture>(tc, &ThisFixture::testName); \
+					} ); \
+				while (!threads.empty()) { \
+					threads.back().join(); \
+					threads.pop_back(); \
+				} \
+			} \
+	} register ## testName ## ThreadTest
 
 using namespace log4cxx;
 
 LOGUNIT_CLASS(AutoConfigureTestCase)
 {
 	LOGUNIT_TEST_SUITE(AutoConfigureTestCase);
-	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST_THREADS(test1, 4);
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST_SUITE_END();
-public:
 #ifdef _DEBUG
-	void setUp()
+	struct Fixture
 	{
-		helpers::LogLog::setInternalDebugging(true);
-	}
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
 #endif
+public:
 	void test1()
 	{
-		std::vector<std::thread> threads;
-		for (auto i = 4; 0 < i; --i)
-		{
-			threads.emplace_back( []()
-				{
-					auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test1"));
-					LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
-					auto rep = LogManager::getLoggerRepository();
-					LOGUNIT_ASSERT(rep);
-					LOGUNIT_ASSERT(rep->isConfigured());
-				}
-			);
-		}
-
-		while (!threads.empty())
-		{
-			threads.back().join();
-			threads.pop_back();
-		}
+		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test1"));
+		LOGUNIT_ASSERT(debugLogger);
+		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
+		auto rep = LogManager::getLoggerRepository();
+		LOGUNIT_ASSERT(rep);
+		LOGUNIT_ASSERT(rep->isConfigured());
 	}
 
 	void test2()
 	{
 		auto debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test2"));
+		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 };

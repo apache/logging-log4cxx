@@ -300,6 +300,7 @@ bool Hierarchy::isDisabled(int level) const
 		{
 			std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
 			DefaultConfigurator::configure(nonconstThis);
+			m_priv->configured = true;
 		}
 	}
 
@@ -430,12 +431,18 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 
 void Hierarchy::setConfigured(bool newValue)
 {
-	m_priv->configured = newValue;
+	std::unique_lock<std::mutex> lock(m_priv->configuredMutex, std::try_to_lock);
+	if (lock.owns_lock()) // Not being auto-configured?
+		m_priv->configured = newValue;
 }
 
 bool Hierarchy::isConfigured()
 {
-	return m_priv->configured;
+	bool result = false;
+	std::unique_lock<std::mutex> lock(m_priv->configuredMutex, std::try_to_lock);
+	if (lock.owns_lock()) // Not being auto-configured?
+		result = m_priv->configured;
+	return result;
 }
 
 HierarchyPtr Hierarchy::create()
