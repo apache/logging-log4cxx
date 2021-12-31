@@ -30,7 +30,6 @@ using namespace log4cxx::helpers;
 void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 {
 	repository->setConfigured(true);
-
 	const LogString configuratorClassName(getConfiguratorClass());
 
 	LogString configurationOptionStr(getConfigurationFileName());
@@ -84,6 +83,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 			LogLog::debug(msg);
 		}
 	}
+
 }
 
 
