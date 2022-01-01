@@ -293,7 +293,7 @@ LoggerPtr Hierarchy::getRootLogger() const
 
 bool Hierarchy::isDisabled(int level) const
 {
-	if (!m_priv->configured)
+	if (!m_priv->configured) // auto-configuration required?
 	{
 		std::unique_lock<std::mutex> lock(m_priv->configuredMutex);
 		if (!m_priv->configured)
@@ -438,6 +438,7 @@ void Hierarchy::setConfigured(bool newValue)
 
 bool Hierarchy::isConfigured()
 {
+	std::unique_lock<std::mutex> lock(m_priv->configuredMutex); // Blocks while auto-configuration is active
 	return m_priv->configured;
 }
 
