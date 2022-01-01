@@ -67,7 +67,7 @@ Hierarchy::~Hierarchy()
 	std::unique_lock<std::mutex> lock(mutex);
 	for (auto& item : *this->loggers)
 	{
-		if (auto pLogger = item.second.lock())
+		if (auto pLogger = item.second)
 			pLogger->setHierarchy(0);
 	}
 	root->setHierarchy(0);
@@ -224,7 +224,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	LoggerPtr result;
 	if (it != loggers->end())
 	{
-		result = it->second.lock();
+		result = it->second;
 	}
 	if (!result)
 	{
@@ -257,7 +257,7 @@ LoggerList Hierarchy::getCurrentLoggers() const
 	LoggerList v;
 	for (auto& item : *this->loggers)
 	{
-		if (auto pLogger = item.second.lock())
+		if (auto pLogger = item.second)
 			v.push_back(pLogger);
 	}
 	return v;
@@ -295,9 +295,7 @@ void Hierarchy::resetConfiguration()
 
 	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		if (auto pLogger = it->second.lock())
-		{
-			pLogger->setLevel(0);
+		if (auto pLogger = it->second)
 			pLogger->setAdditivity(true);
 			pLogger->setResourceBundle(0);
 		}
@@ -324,7 +322,7 @@ void Hierarchy::shutdownInternal()
 
 	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		if (auto pLogger = it->second.lock())
+		if (auto pLogger = it->second)
 			pLogger->closeNestedAppenders();
 	}
 
@@ -333,7 +331,7 @@ void Hierarchy::shutdownInternal()
 
 	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		if (auto pLogger = it->second.lock())
+		if (auto pLogger = it->second)
 			pLogger->removeAllAppenders();
 	}
 }
@@ -356,7 +354,7 @@ void Hierarchy::updateParents(LoggerPtr logger)
 
 		if (it != loggers->end())
 		{
-			if (auto pLogger = it->second.lock())
+			if (auto pLogger = it->second)
 			{
 				parentFound = true;
 				logger->parent = pLogger;
