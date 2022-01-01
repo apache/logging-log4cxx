@@ -288,7 +288,6 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		void updateChildren(ProvisionNode& pn, LoggerPtr logger);
 
-		void configureRoot();
 };
 
 }  //namespace log4cxx

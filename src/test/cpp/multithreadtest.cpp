@@ -84,7 +84,6 @@ public:
 
 	void tearDown()
 	{
-//		root->getLoggerRepository()->resetConfiguration();
 	}
 
 	void testMultithreadedLoggers(){

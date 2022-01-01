@@ -52,8 +52,8 @@ Hierarchy::Hierarchy() :
 	loggers(new LoggerMap()),
 	provisionNodes(new ProvisionNodeMap())
 {
-	std::unique_lock<std::mutex> lock(mutex);
 	root = LoggerPtr(new RootLogger(pool, Level::getDebug()));
+	root->setHierarchy(this);
 	defaultFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
 	emittedNoAppenderWarning = false;
 	configured = false;
@@ -64,8 +64,13 @@ Hierarchy::Hierarchy() :
 
 Hierarchy::~Hierarchy()
 {
-	// TODO LOGCXX-430
-	// https://issues.apache.org/jira/browse/LOGCXX-430?focusedCommentId=15175254&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-15175254
+	std::unique_lock<std::mutex> lock(mutex);
+	for (auto& item : *this->loggers)
+	{
+		if (auto pLogger = item.second)
+			pLogger->setHierarchy(0);
+	}
+	root->setHierarchy(0);
 #ifndef APR_HAS_THREADS
 	delete loggers;
 	delete provisionNodes;
@@ -216,15 +221,19 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 
 	LoggerMap::iterator it = loggers->find(name);
 
+	LoggerPtr result;
 	if (it != loggers->end())
 	{
-		return it->second;
+		result = it->second;
 	}
-	else
+	if (!result)
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(pool, name));
-		logger->setHierarchy(shared_from_this());
-		loggers->insert(LoggerMap::value_type(name, logger));
+		logger->setHierarchy(this);
+		if (it != loggers->end())
+			it->second = logger;
+		else
+			loggers->insert(LoggerMap::value_type(name, logger));
 
 		ProvisionNodeMap::iterator it2 = provisionNodes->find(name);
 
@@ -235,8 +244,9 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 		}
 
 		updateParents(logger);
-		return logger;
+		result = logger;
 	}
+	return result;
 
 }
 
@@ -245,31 +255,22 @@ LoggerList Hierarchy::getCurrentLoggers() const
 	std::unique_lock<std::mutex> lock(mutex);
 
 	LoggerList v;
-	LoggerMap::const_iterator it, itEnd = loggers->end();
-
-	for (it = loggers->begin(); it != itEnd; it++)
+	for (auto& item : *this->loggers)
 	{
-		v.push_back(it->second);
+		if (auto pLogger = item.second)
+			v.push_back(pLogger);
 	}
-
-
 	return v;
 }
 
 LoggerPtr Hierarchy::getRootLogger() const
 {
-	return root;
+	return this->root;
 }
 
 bool Hierarchy::isDisabled(int level) const
 {
-	bool currentlyConfigured;
-	{
-		std::unique_lock<std::mutex> lock(mutex);
-		currentlyConfigured = configured;
-	}
-
-	if (!currentlyConfigured)
+	if (!configured)
 	{
 		std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
 		DefaultConfigurator::configure(
@@ -284,7 +285,7 @@ void Hierarchy::resetConfiguration()
 {
 	std::unique_lock<std::mutex> lock(mutex);
 
-	getRootLogger()->setLevel(Level::getDebug());
+	root->setLevel(Level::getDebug());
 	root->setResourceBundle(0);
 	setThresholdInternal(Level::getAll());
 
@@ -294,9 +295,12 @@ void Hierarchy::resetConfiguration()
 
 	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		it->second->setLevel(0);
-		it->second->setAdditivity(true);
-		it->second->setResourceBundle(0);
+		if (auto pLogger = it->second)
+		{
+			pLogger->setLevel(0);
+			pLogger->setAdditivity(true);
+			pLogger->setResourceBundle(0);
+		}
 	}
 
 	//rendererMap.clear();
@@ -313,26 +317,24 @@ void Hierarchy::shutdownInternal()
 {
 	configured = false;
 
-	LoggerPtr root1 = getRootLogger();
-
 	// begin by closing nested appenders
-	root1->closeNestedAppenders();
+	root->closeNestedAppenders();
 
 	LoggerMap::iterator it, itEnd = loggers->end();
 
 	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		LoggerPtr logger = it->second;
-		logger->closeNestedAppenders();
+		if (auto pLogger = it->second)
+			pLogger->closeNestedAppenders();
 	}
 
 	// then, remove all appenders
-	root1->removeAllAppenders();
+	root->removeAllAppenders();
 
 	for (it = loggers->begin(); it != itEnd; it++)
 	{
-		LoggerPtr logger = it->second;
-		logger->removeAllAppenders();
+		if (auto pLogger = it->second)
+			pLogger->removeAllAppenders();
 	}
 }
 
@@ -354,9 +356,12 @@ void Hierarchy::updateParents(LoggerPtr logger)
 
 		if (it != loggers->end())
 		{
-			parentFound = true;
-			logger->parent = it->second;
-			break; // no need to update the ancestors of the closest ancestor
+			if (auto pLogger = it->second)
+			{
+				parentFound = true;
+				logger->parent = pLogger;
+				break; // no need to update the ancestors of the closest ancestor
+			}
 		}
 		else
 		{
@@ -378,7 +383,7 @@ void Hierarchy::updateParents(LoggerPtr logger)
 	// If we could not find any existing parents, then link with root.
 	if (!parentFound)
 	{
-		logger->parent = root;
+		logger->parent = getRootLogger();
 	}
 }
 
@@ -414,15 +419,5 @@ bool Hierarchy::isConfigured()
 
 HierarchyPtr Hierarchy::create(){
 	HierarchyPtr ret( new Hierarchy() );
-	ret->configureRoot();
 	return ret;
-}
-
-void Hierarchy::configureRoot(){
-	// This should really be done in the constructor, but in order to fix
-	// LOGCXX-322 we need to turn the repositroy into a weak_ptr, and we
-	// can't use weak_from_this() in the constructor.
-	if( !root->getLoggerRepository().lock() ){
-		root->setHierarchy(shared_from_this());
-	}
 }

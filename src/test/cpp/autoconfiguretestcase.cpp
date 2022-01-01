@@ -1,4 +1,3 @@
-
 /*
  * Licensed to the Apache Software Foundation (ASF) under one or more
  * contributor license agreements.  See the NOTICE file distributed with
@@ -15,51 +14,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#include <log4cxx/mdc.h>
-#include <log4cxx/file.h>
-#include <log4cxx/logger.h>
-#include <log4cxx/propertyconfigurator.h>
-#include "insertwide.h"
 #include "logunit.h"
+#include <log4cxx/logger.h>
+#include <log4cxx/logmanager.h>
+#include <log4cxx/file.h>
 #include "util/compare.h"
 
-
-
 using namespace log4cxx;
-
-LOGUNIT_CLASS(MDCTestCase)
+LOGUNIT_CLASS(AutoConfigureTestCase)
 {
-	LOGUNIT_TEST_SUITE(MDCTestCase);
+	LOGUNIT_TEST_SUITE(AutoConfigureTestCase);
 	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST_SUITE_END();
 
 public:
 
-	void setUp()
-	{
-	}
-
-	void tearDown()
-	{
-		if (auto rep = Logger::getRootLogger()->getLoggerRepository())
-		{
-			rep->resetConfiguration();
-		}
-	}
-
-	/**
-	 *   log4cxx 0.10.0 did not replace previously set value.
-	 */
 	void test1()
 	{
-		std::string key("key1");
-		std::string expected("value2");
-		MDC::put(key, "value1");
-		MDC::put(key, expected);
-		std::string actual(MDC::get(key));
-		LOGUNIT_ASSERT_EQUAL(expected, actual);
+		LoggerPtr debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test1"));
+		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
+		LOGUNIT_ASSERT(LogManager::getLoggerRepository()->isConfigured());
+    }
+
+	void test2()
+	{
+		LoggerPtr debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test2"));
+		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
+		LOG4CXX_DEBUG(debugLogger, LOG4CXX_STR("This is some expected ouput"));
+		LOGUNIT_ASSERT_EQUAL(true, Compare::compare
+				( File("output/autoConfigureTest.log")
+				, File("witness/autoConfigureTest.log")
+				));
 	}
 };
 
-LOGUNIT_TEST_SUITE_REGISTRATION(MDCTestCase);
+LOGUNIT_TEST_SUITE_REGISTRATION(AutoConfigureTestCase);
