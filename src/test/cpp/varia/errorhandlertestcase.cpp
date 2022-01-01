@@ -50,7 +50,7 @@ public:
 
 	void tearDown()
 	{
-		log4cxx::spi::LoggerRepositoryPtr rep = logger->getLoggerRepository().lock();
+		auto rep = logger->getLoggerRepository();
 
 		if (rep)
 		{

@@ -58,7 +58,7 @@ public:
 	 */
 	void tearDown()
 	{
-		log4cxx::spi::LoggerRepositoryPtr rep = Logger::getRootLogger()->getLoggerRepository().lock();
+		auto rep = Logger::getRootLogger()->getLoggerRepository();
 
 		if (rep)
 		{

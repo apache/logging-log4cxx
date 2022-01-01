@@ -577,13 +577,13 @@ class LOG4CXX_EXPORT Logger :
 
 		@throws RuntimeException if all levels are null in the hierarchy
 		*/
-		virtual const LevelPtr getEffectiveLevel() const;
+		virtual const LevelPtr& getEffectiveLevel() const;
 
 		/**
 		Return the the LoggerRepository where this
 		<code>Logger</code> is attached.
 		*/
-		log4cxx::spi::LoggerRepositoryWeakPtr getLoggerRepository() const;
+		log4cxx::spi::LoggerRepository* getLoggerRepository() const;
 
 
 		/**
@@ -633,7 +633,7 @@ class LOG4CXX_EXPORT Logger :
 
 		@return Level - the assigned Level, can be null.
 		*/
-		LevelPtr getLevel() const;
+		const LevelPtr& getLevel() const;
 
 		/**
 		* Retrieve a logger by name in current encoding.
@@ -1422,7 +1422,7 @@ class LOG4CXX_EXPORT Logger :
 		friend class Hierarchy;
 		/**
 		Only the Hierarchy class can set the hierarchy of a logger.*/
-		void setHierarchy(spi::LoggerRepositoryWeakPtr repository);
+		void setHierarchy(spi::LoggerRepository* repository);
 		void setParent(LoggerPtr parentLogger);
 
 	public:

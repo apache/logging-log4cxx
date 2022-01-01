@@ -94,8 +94,13 @@ Hierarchy::Hierarchy() :
 
 Hierarchy::~Hierarchy()
 {
-	// TODO LOGCXX-430
-	// https://issues.apache.org/jira/browse/LOGCXX-430?focusedCommentId=15175254&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-15175254
+	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	for (auto& item : *m_priv->loggers)
+	{
+		if (auto& pLogger = item.second)
+			pLogger->setHierarchy(0);
+	}
+	m_priv->root->setHierarchy(0);
 #ifndef APR_HAS_THREADS
 	delete loggers;
 	delete provisionNodes;
@@ -253,7 +258,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	else
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
-		logger->setHierarchy(shared_from_this());
+		logger->setHierarchy(this);
 		m_priv->loggers->insert(LoggerMap::value_type(name, logger));
 
 		ProvisionNodeMap::iterator it2 = m_priv->provisionNodes->find(name);
@@ -445,6 +450,6 @@ bool Hierarchy::isConfigured()
 HierarchyPtr Hierarchy::create()
 {
 	HierarchyPtr ret( new Hierarchy() );
-	ret->m_priv->root->setHierarchy(ret);
+	ret->m_priv->root->setHierarchy(ret.get());
 	return ret;
 }
