@@ -50,7 +50,6 @@ class LOG4CXX_EXPORT LogManager
 {
 	private:
 		static void* guard;
-		static spi::RepositorySelectorPtr repositorySelector;
 		static spi::RepositorySelectorPtr getRepositorySelector();
 
 	public:

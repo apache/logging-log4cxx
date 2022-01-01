@@ -269,8 +269,6 @@ class LOG4CXX_EXPORT Hierarchy :
 		Hierarchy& operator=(const Hierarchy&);
 
 		void updateChildren(ProvisionNode& pn, LoggerPtr logger);
-
-		void configureRoot();
 };
 
 }  //namespace log4cxx

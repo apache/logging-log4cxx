@@ -22,6 +22,7 @@
 	#error "aprinitializer.h should only be included by log4cxx implementation"
 #endif
 
+#include <log4cxx/helpers/object.h>
 #include <list>
 
 extern "C" {
@@ -31,6 +32,7 @@ extern "C" {
 
 #include <apr_time.h>
 #include <mutex>
+#include <functional>
 
 namespace log4cxx
 {
@@ -47,25 +49,46 @@ class APRInitializer
 		static bool isDestructed;
 
 		/**
-		 *  Register a FileWatchdog for deletion prior to
-		 *    APR termination.  FileWatchdog must be
+		 *  Register a FileWatchdog for deletion prior to termination.
+		 *    FileWatchdog must be
 		 *    allocated on heap and not deleted elsewhere.
 		 */
 		static void registerCleanup(FileWatchdog* watchdog);
 		static void unregisterCleanup(FileWatchdog* watchdog);
+		/**
+		 *  Store a single instance type ObjectPtr for deletion prior to termination
+		 */
+		template <class T> static void setUnique(const std::shared_ptr<T>& pObject)
+		{
+			getInstance().addObject(typeid(T).hash_code(), pObject);
+		}
+		/**
+		 *  Fetch or add a single instance type ObjectPtr for deletion prior to termination
+		 */
+		template <class T> static std::shared_ptr<T> getUnique(std::function<ObjectPtr()> creator)
+		{
+			return cast<T>(getInstance().findOrAddObject(typeid(T).hash_code(), creator));
+		}
 
-	private:
+
+	private: // Constructors
 		APRInitializer();
-		APRInitializer(const APRInitializer&);
-		APRInitializer& operator=(const APRInitializer&);
+		APRInitializer(const APRInitializer&) = delete;
+		APRInitializer& operator=(const APRInitializer&) = delete;
+	private: // Modifiers
+		void addObject(size_t key, const ObjectPtr& pObject);
+		const ObjectPtr& findOrAddObject(size_t key, std::function<ObjectPtr()> creator);
+	private: // Attributes
 		apr_pool_t* p;
 		std::mutex mutex;
 		std::list<FileWatchdog*> watchdogs;
 		apr_time_t startTime;
 		apr_threadkey_t* tlsKey;
+		std::map<size_t, ObjectPtr> objects;
+	private: // Class methods
 		static APRInitializer& getInstance();
 
-	public:
+	public: // Destructor
 		~APRInitializer();
 };
 } // namespace helpers

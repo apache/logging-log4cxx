@@ -67,6 +67,7 @@ struct Hierarchy::HierarchyPrivate
 	log4cxx::helpers::Pool pool;
 	mutable std::mutex mutex;
 	bool configured;
+	mutable std::mutex configuredMutex;
 
 	spi::LoggerFactoryPtr defaultFactory;
 	spi::HierarchyEventListenerList listeners;
@@ -292,17 +293,15 @@ LoggerPtr Hierarchy::getRootLogger() const
 
 bool Hierarchy::isDisabled(int level) const
 {
-	bool currentlyConfigured;
+	if (!m_priv->configured) // auto-configuration required?
 	{
-		std::unique_lock<std::mutex> lock(m_priv->mutex);
-		currentlyConfigured = m_priv->configured;
-	}
-
-	if (!currentlyConfigured)
-	{
-		std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
-		DefaultConfigurator::configure(
-			nonconstThis);
+		std::unique_lock<std::mutex> lock(m_priv->configuredMutex);
+		if (!m_priv->configured)
+		{
+			std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
+			DefaultConfigurator::configure(nonconstThis);
+			m_priv->configured = true;
+		}
 	}
 
 	return m_priv->thresholdInt > level;
@@ -432,29 +431,20 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 
 void Hierarchy::setConfigured(bool newValue)
 {
-	std::unique_lock<std::mutex> lock(m_priv->mutex);
-	m_priv->configured = newValue;
+	std::unique_lock<std::mutex> lock(m_priv->configuredMutex, std::try_to_lock);
+	if (lock.owns_lock()) // Not being auto-configured?
+		m_priv->configured = newValue;
 }
 
 bool Hierarchy::isConfigured()
 {
+	std::unique_lock<std::mutex> lock(m_priv->configuredMutex); // Blocks while auto-configuration is active
 	return m_priv->configured;
 }
 
 HierarchyPtr Hierarchy::create()
 {
 	HierarchyPtr ret( new Hierarchy() );
-	ret->configureRoot();
+	ret->m_priv->root->setHierarchy(ret);
 	return ret;
-}
-
-void Hierarchy::configureRoot()
-{
-	// This should really be done in the constructor, but in order to fix
-	// LOGCXX-322 we need to turn the repositroy into a weak_ptr, and we
-	// can't use weak_from_this() in the constructor.
-	if ( !m_priv->root->getLoggerRepository().lock() )
-	{
-		m_priv->root->setHierarchy(shared_from_this());
-	}
 }
