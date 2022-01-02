@@ -98,9 +98,9 @@ Hierarchy::~Hierarchy()
 	for (auto& item : *m_priv->loggers)
 	{
 		if (auto& pLogger = item.second)
-			pLogger->setHierarchy(0);
+			pLogger->removeHierarchy();
 	}
-	m_priv->root->setHierarchy(0);
+	m_priv->root->removeHierarchy();
 #ifndef APR_HAS_THREADS
 	delete loggers;
 	delete provisionNodes;
@@ -258,7 +258,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	else
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
-		logger->setHierarchy(this);
+		logger->setHierarchy(shared_from_this());
 		m_priv->loggers->insert(LoggerMap::value_type(name, logger));
 
 		ProvisionNodeMap::iterator it2 = m_priv->provisionNodes->find(name);
@@ -450,6 +450,6 @@ bool Hierarchy::isConfigured()
 HierarchyPtr Hierarchy::create()
 {
 	HierarchyPtr ret( new Hierarchy() );
-	ret->m_priv->root->setHierarchy(ret.get());
+	ret->m_priv->root->setHierarchy(ret);
 	return ret;
 }
