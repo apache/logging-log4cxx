@@ -38,3 +38,5 @@ endif( WIN32 )
 target_compile_definitions(throughputtests PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
 target_include_directories(throughputtests PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
 target_link_libraries(throughputtests PRIVATE log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads fmt::fmt)
+
+add_custom_target(run-throughput COMMAND throughputtests DEPENDS throughputtests)

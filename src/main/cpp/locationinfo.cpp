@@ -19,12 +19,6 @@
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/pool.h>
 
-#if defined(_WIN32)
-#define SHORT_FILENAME_SPLIT_CHAR R"(\)"
-#else
-#define SHORT_FILENAME_SPLIT_CHAR R"(/)"
-#endif
-
 using namespace ::log4cxx::spi;
 using namespace log4cxx::helpers;
 
@@ -42,21 +36,6 @@ const LocationInfo& LocationInfo::getLocationUnavailable()
 }
 
 /**
- * filter short file name
- * @param fileName
- * @return shortFileName
- */
-const std::string filterFileName(const char* const fileName){
-	std::string fullFileName(fileName);
-	std::size_t found = fullFileName.rfind(SHORT_FILENAME_SPLIT_CHAR);
-	if (found != std::string::npos) {
-		return fullFileName.substr(found + 1);
-	} else {
-		return std::string(fileName);
-	}
-}
-
-/**
 *   Constructor.
 *   @remarks Used by LOG4CXX_LOCATION to generate
 *       location info for current code site
@@ -66,9 +45,26 @@ LocationInfo::LocationInfo( const char* const fileName1,
 	int lineNumber1 )
 	:  lineNumber( lineNumber1 ),
 	   fileName( fileName1 ),
-	   shortFileName(filterFileName(fileName)),
+	   shortFileName(nullptr),
 	   methodName( methodName1 )
 {
+}
+
+LocationInfo::LocationInfo( const char* const fileName1,
+							int shortFilenameOffset,
+	const char* const methodName1,
+	int lineNumber1 )
+	:  lineNumber( lineNumber1 ),
+	   fileName( fileName1 ),
+	   methodName( methodName1 )
+{
+	if( shortFilenameOffset < 0 || shortFilenameOffset > 300 ){
+		// Arbitrary cap at 300 chars for the filename offset - anything greather
+		// than that sounds suspicous.
+		shortFileName = fileName;
+	}else{
+		shortFileName = fileName + shortFilenameOffset;
+	}
 }
 
 /**
@@ -130,8 +126,25 @@ const char* LocationInfo::getFileName() const
  *   Return the short file name of the caller.
  *   @returns file name, may be null.
  */
-const std::string LocationInfo::getShortFileName() const{
-	return shortFileName;
+const char* LocationInfo::getShortFileName() const{
+	if(shortFileName){
+		return shortFileName;
+	}
+
+	if(fileName == nullptr){
+		return nullptr;
+	}
+
+	const char* begin = fileName;
+	size_t pos = 0;
+	while( fileName[pos] != 0 ){
+	  if( fileName[pos] == LOG4CXX_SHORT_FILENAME_SPLIT_CHAR &&
+		  fileName[pos+1] != 0 ){
+		  begin = fileName + pos + 1;
+	  }
+	  pos++;
+	}
+	return begin;
 }
 
 /**

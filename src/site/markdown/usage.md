@@ -765,6 +765,16 @@ The levels are set as follows:
 Note that this has no effect on other macros, such as using the
 `LOG4CXX_LOG`, `LOG4CXX_LOGLS`, or `LOG4CXX_L7DLOG` family of macros.
 
+# Removing location information {#removing-location information}
+
+Whenever you log a message with Log4cxx, metadata about the location of the
+logging statement is captured as well through the preprocessor.  This includes
+the file name, the method name, and the line number.  If you would not like to
+include this information in your build but you still wish to keep the log
+statements, define `LOG4CXX_DISABLE_LOCATION_INFO` in your build system.  This
+will allow log messages to still be created, but the location information
+will be invalid.
+
 # Logging Custom Types {#custom-types}
 
 Often, the data that needs to be logged is not just standard data types

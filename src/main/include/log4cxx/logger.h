@@ -1768,7 +1768,8 @@ Logs a message to a specified logger with a specified level.
 #define LOG4CXX_LOG(logger, level, message) do { \
 		if (logger->isEnabledFor(level)) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(level, oss_.str(oss_ << message), location); }} while (0)
 
 /**
 Logs a message to a specified logger with a specified level, formatting utilizing libfmt
@@ -1779,7 +1780,8 @@ Logs a message to a specified logger with a specified level, formatting utilizin
 */
 #define LOG4CXX_LOG_FMT(logger, level, ...) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->forcedLog(level, fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(level, fmt::format( __VA_ARGS__ ), location); }} while (0)
 
 /**
 Logs a message to a specified logger with a specified level.
@@ -1791,7 +1793,8 @@ Logs a message to a specified logger with a specified level.
 #define LOG4CXX_LOGLS(logger, level, message) do { \
 		if (logger->isEnabledFor(level)) {\
 			::log4cxx::helpers::LogCharMessageBuffer oss_; \
-			logger->forcedLog(level, oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(level, oss_.str(oss_ << message), location); }} while (0)
 
 #if !defined(LOG4CXX_THRESHOLD) || LOG4CXX_THRESHOLD <= 10000
 /**
@@ -1803,7 +1806,8 @@ Logs a message to a specified logger with the DEBUG level.
 #define LOG4CXX_DEBUG(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getDebug(), oss_.str(oss_ << message), location); }} while (0)
 
 /**
 Logs a message to a specified logger with the DEBUG level, formatting with libfmt
@@ -1813,7 +1817,8 @@ Logs a message to a specified logger with the DEBUG level, formatting with libfm
 */
 #define LOG4CXX_DEBUG_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(logger->isDebugEnabled())) {\
-			logger->forcedLog(::log4cxx::Level::getDebug(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getDebug(), fmt::format( __VA_ARGS__ ), location); }} while (0)
 #else
 #define LOG4CXX_DEBUG(logger, message)
 #define LOG4CXX_DEBUG_FMT(logger, ...)
@@ -1829,7 +1834,8 @@ Logs a message to a specified logger with the TRACE level.
 #define LOG4CXX_TRACE(logger, message) do { \
 		if (LOG4CXX_UNLIKELY(logger->isTraceEnabled())) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getTrace(), oss_.str(oss_ << message), location); }} while (0)
 
 /**
 Logs a message to a specified logger with the TRACE level, formatting with libfmt.
@@ -1839,7 +1845,8 @@ Logs a message to a specified logger with the TRACE level, formatting with libfm
 */
 #define LOG4CXX_TRACE_FMT(logger, ...) do { \
 		if (LOG4CXX_UNLIKELY(logger->isTraceEnabled())) {\
-			logger->forcedLog(::log4cxx::Level::getTrace(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getTrace(), fmt::format( __VA_ARGS__ ), location); }} while (0)
 #else
 #define LOG4CXX_TRACE(logger, message)
 #define LOG4CXX_TRACE_FMT(logger, ...)
@@ -1855,7 +1862,8 @@ Logs a message to a specified logger with the INFO level.
 #define LOG4CXX_INFO(logger, message) do { \
 		if (logger->isInfoEnabled()) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getInfo(), oss_.str(oss_ << message), location); }} while (0)
 
 /**
 Logs a message to a specified logger with the INFO level, formatting with libfmt.
@@ -1866,7 +1874,8 @@ Logs a message to a specified logger with the INFO level, formatting with libfmt
 */
 #define LOG4CXX_INFO_FMT(logger, ...) do { \
 		if (logger->isInfoEnabled()) {\
-			logger->forcedLog(::log4cxx::Level::getInfo(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getInfo(), fmt::format( __VA_ARGS__ ), location); }} while (0)
 #else
 #define LOG4CXX_INFO(logger, message)
 #define LOG4CXX_INFO_FMT(logger, ...)
@@ -1882,7 +1891,8 @@ Logs a message to a specified logger with the WARN level.
 #define LOG4CXX_WARN(logger, message) do { \
 		if (logger->isWarnEnabled()) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getWarn(), oss_.str(oss_ << message), location); }} while (0)
 
 /**
 Logs a message to a specified logger with the WARN level, formatting with libfmt
@@ -1892,7 +1902,8 @@ Logs a message to a specified logger with the WARN level, formatting with libfmt
 */
 #define LOG4CXX_WARN_FMT(logger, ...) do { \
 		if (logger->isWarnEnabled()) {\
-			logger->forcedLog(::log4cxx::Level::getWarn(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getWarn(), fmt::format( __VA_ARGS__ ), location); }} while (0)
 #else
 #define LOG4CXX_WARN(logger, message)
 #define LOG4CXX_WARN_FMT(logger, ...)
@@ -1908,7 +1919,8 @@ Logs a message to a specified logger with the ERROR level.
 #define LOG4CXX_ERROR(logger, message) do { \
 		if (logger->isErrorEnabled()) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), location); }} while (0)
 
 /**
 Logs a message to a specified logger with the ERROR level, formatting with libfmt
@@ -1918,7 +1930,8 @@ Logs a message to a specified logger with the ERROR level, formatting with libfm
 */
 #define LOG4CXX_ERROR_FMT(logger, ...) do { \
 		if (logger->isErrorEnabled()) {\
-			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), location); }} while (0)
 
 /**
 Logs a error if the condition is not true.
@@ -1930,7 +1943,8 @@ Logs a error if the condition is not true.
 #define LOG4CXX_ASSERT(logger, condition, message) do { \
 		if (!(condition) && logger->isErrorEnabled()) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getError(), oss_.str(oss_ << message), location); }} while (0)
 
 /**
 Logs a error if the condition is not true, formatting with libfmt
@@ -1941,7 +1955,8 @@ Logs a error if the condition is not true, formatting with libfmt
 */
 #define LOG4CXX_ASSERT_FMT(logger, condition, ...) do { \
 		if (!(condition) && logger->isErrorEnabled()) {\
-			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getError(), fmt::format( __VA_ARGS__ ), location); }} while (0)
 
 #else
 #define LOG4CXX_ERROR(logger, message)
@@ -1960,7 +1975,8 @@ Logs a message to a specified logger with the FATAL level.
 #define LOG4CXX_FATAL(logger, message) do { \
 		if (logger->isFatalEnabled()) {\
 			::log4cxx::helpers::MessageBuffer oss_; \
-			logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getFatal(), oss_.str(oss_ << message), location); }} while (0)
 
 /**
 Logs a message to a specified logger with the FATAL level, formatting with libfmt
@@ -1970,7 +1986,8 @@ Logs a message to a specified logger with the FATAL level, formatting with libfm
 */
 #define LOG4CXX_FATAL_FMT(logger, ...) do { \
 		if (logger->isFatalEnabled()) {\
-			logger->forcedLog(::log4cxx::Level::getFatal(), fmt::format( __VA_ARGS__ ), LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->forcedLog(::log4cxx::Level::getFatal(), fmt::format( __VA_ARGS__ ), location); }} while (0)
 #else
 #define LOG4CXX_FATAL(logger, message)
 #define LOG4CXX_FATAL_FMT(logger, ...)
@@ -1985,7 +2002,8 @@ Logs a localized message with no parameter.
 */
 #define LOG4CXX_L7DLOG(logger, level, key) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->l7dlog(level, key, LOG4CXX_LOCATION); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->l7dlog(level, key, location); }} while (0)
 
 /**
 Logs a localized message with one parameter.
@@ -1997,7 +2015,8 @@ Logs a localized message with one parameter.
 */
 #define LOG4CXX_L7DLOG1(logger, level, key, p1) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->l7dlog(level, key, location, p1); }} while (0)
 
 /**
 Logs a localized message with two parameters.
@@ -2010,7 +2029,8 @@ Logs a localized message with two parameters.
 */
 #define LOG4CXX_L7DLOG2(logger, level, key, p1, p2) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->l7dlog(level, key, location, p1, p2); }} while (0)
 
 /**
 Logs a localized message with three parameters.
@@ -2024,7 +2044,8 @@ Logs a localized message with three parameters.
 */
 #define LOG4CXX_L7DLOG3(logger, level, key, p1, p2, p3) do { \
 		if (logger->isEnabledFor(level)) {\
-			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }} while (0)
+			LOG4CXX_LOCATION_CREATE;\
+			logger->l7dlog(level, key, location, p1, p2, p3); }} while (0)
 
 /**@}*/
 

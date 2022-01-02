@@ -56,6 +56,11 @@ class LOG4CXX_EXPORT LocationInfo
 			const char* const functionName,
 			int lineNumber);
 
+		LocationInfo( const char* const fileName,
+					  int shortFileNameOffset,
+			const char* const functionName,
+			int lineNumber);
+
 		/**
 		 *   Default constructor.
 		 */
@@ -92,7 +97,7 @@ class LOG4CXX_EXPORT LocationInfo
 		 *   Return the short file name of the caller.
 		 *   @returns file name, may be null.
 		 */
-		const std::string getShortFileName() const;
+		const char* getShortFileName() const;
 
 		/**
 		  *   Returns the line number of the caller.
@@ -114,7 +119,7 @@ class LOG4CXX_EXPORT LocationInfo
 		const char* fileName;
 
   		/** Caller's short file name. */
-		const std::string shortFileName;
+		const char* shortFileName;
 
 		/** Caller's method name. */
 		const char* methodName;
@@ -124,7 +129,7 @@ class LOG4CXX_EXPORT LocationInfo
 }
 }
 
-#if !defined(LOG4CXX_LOCATION)
+#if !defined(LOG4CXX_LOCATION) && !LOG4CXX_DISABLE_LOCATION_INFO
 #if defined(_MSC_VER)
 	#if _MSC_VER >= 1300
 		#define __LOG4CXX_FUNC__ __FUNCSIG__
@@ -141,9 +146,33 @@ class LOG4CXX_EXPORT LocationInfo
 #if !defined(__LOG4CXX_FUNC__)
 	#define __LOG4CXX_FUNC__ ""
 #endif
+
+#if __cpp_lib_string_view || (_MSVC_LANG >= 201703L)
+#include <string_view>
+#if defined(_WIN32)
+#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
+#else
+#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '/'
+#endif
+
+#define LOG4CXX_LOCATION_CREATE ::std::string_view file_name{__FILE__};\
+	const int short_filename_offset = file_name.find_last_of(LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;\
+	::log4cxx::spi::LocationInfo location(__FILE__,         \
+	short_filename_offset, \
+	__LOG4CXX_FUNC__, \
+	__LINE__)
 #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__,         \
 	__LOG4CXX_FUNC__, \
 	__LINE__)
+#else
+#define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__,         \
+	__LOG4CXX_FUNC__, \
+	__LINE__)
+#define LOG4CXX_LOCATION_CREATE ::log4cxx::spi::LocationInfo location = LOG4CXX_LOCATION
 #endif
+#else
+#define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo::getLocationUnavailable()
+#define LOG4CXX_LOCATION_CREATE ::log4cxx::spi::LocationInfo location = LOG4CXX_LOCATION
+#endif // LOG4CXX_LOCATION
 
 #endif //_LOG4CXX_SPI_LOCATION_LOCATIONINFO_H
