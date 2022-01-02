@@ -94,8 +94,13 @@ Hierarchy::Hierarchy() :
 
 Hierarchy::~Hierarchy()
 {
-	// TODO LOGCXX-430
-	// https://issues.apache.org/jira/browse/LOGCXX-430?focusedCommentId=15175254&page=com.atlassian.jira.plugin.system.issuetabpanels:comment-tabpanel#comment-15175254
+	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	for (auto& item : *m_priv->loggers)
+	{
+		if (auto& pLogger = item.second)
+			pLogger->removeHierarchy();
+	}
+	m_priv->root->removeHierarchy();
 #ifndef APR_HAS_THREADS
 	delete loggers;
 	delete provisionNodes;

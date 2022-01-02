@@ -30,7 +30,7 @@ RootLogger::RootLogger(Pool& pool, const LevelPtr level1) :
 	setLevel(level1);
 }
 
-const LevelPtr RootLogger::getEffectiveLevel() const
+const LevelPtr& RootLogger::getEffectiveLevel() const
 {
 	return getLevel();
 }

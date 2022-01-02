@@ -44,10 +44,7 @@ struct Logger::LoggerPrivate
 	LoggerPrivate(Pool& p, const LogString& name1):
 		pool(&p),
 		name(name1),
-		level(),
-		parent(),
-		resourceBundle(),
-		repository(),
+		repositoryRaw(0),
 		aai(new AppenderAttachableImpl(*pool)),
 		additive(true) {}
 
@@ -81,6 +78,7 @@ struct Logger::LoggerPrivate
 
 	// Loggers need to know what Hierarchy they are in
 	log4cxx::spi::LoggerRepositoryWeakPtr repository;
+	log4cxx::spi::LoggerRepository* repositoryRaw;
 
 	helpers::AppenderAttachableImplPtr aai;
 
@@ -109,12 +107,8 @@ Logger::~Logger()
 
 void Logger::addAppender(const AppenderPtr newAppender)
 {
-	log4cxx::spi::LoggerRepositoryPtr rep;
-
 	m_priv->aai->addAppender(newAppender);
-	rep = m_priv->repository.lock();
-
-	if (rep)
+	if (auto rep = getHierarchy())
 	{
 		rep->fireAddAppenderEvent(this, newAppender.get());
 	}
@@ -134,7 +128,7 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
 	{
 		m_priv->aai->addAppender( *it );
 
-		if (log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock())
+		if (auto rep = getHierarchy())
 		{
 			rep->fireAddAppenderEvent(this, it->get());
 		}
@@ -157,7 +151,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 		}
 	}
 
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (writes == 0 && rep)
 	{
@@ -219,7 +213,7 @@ AppenderPtr Logger::getAppender(const LogString& name1) const
 	return m_priv->aai->getAppender(name1);
 }
 
-const LevelPtr Logger::getEffectiveLevel() const
+const LevelPtr& Logger::getEffectiveLevel() const
 {
 	for (const Logger* l = this; l != 0; l = l->m_priv->parent.get())
 	{
@@ -235,9 +229,14 @@ const LevelPtr Logger::getEffectiveLevel() const
 #endif
 }
 
-LoggerRepositoryWeakPtr Logger::getLoggerRepository() const
+LoggerRepositoryPtr Logger::getLoggerRepository() const
 {
-	return m_priv->repository;
+	return m_priv->repository.lock();
+}
+
+LoggerRepository* Logger::getHierarchy() const
+{
+	return m_priv->repositoryRaw;
 }
 
 ResourceBundlePtr Logger::getResourceBundle() const
@@ -287,7 +286,7 @@ LoggerPtr Logger::getParent() const
 	return m_priv->parent;
 }
 
-LevelPtr Logger::getLevel() const
+const LevelPtr& Logger::getLevel() const
 {
 	return m_priv->level;
 }
@@ -299,7 +298,7 @@ bool Logger::isAttached(const AppenderPtr appender) const
 
 bool Logger::isTraceEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::TRACE_INT))
 	{
@@ -311,7 +310,7 @@ bool Logger::isTraceEnabled() const
 
 bool Logger::isDebugEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::DEBUG_INT))
 	{
@@ -323,7 +322,7 @@ bool Logger::isDebugEnabled() const
 
 bool Logger::isEnabledFor(const LevelPtr& level1) const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(level1->toInt()))
 	{
@@ -336,7 +335,7 @@ bool Logger::isEnabledFor(const LevelPtr& level1) const
 
 bool Logger::isInfoEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::INFO_INT))
 	{
@@ -348,7 +347,7 @@ bool Logger::isInfoEnabled() const
 
 bool Logger::isErrorEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::ERROR_INT))
 	{
@@ -360,7 +359,7 @@ bool Logger::isErrorEnabled() const
 
 bool Logger::isWarnEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::WARN_INT))
 	{
@@ -372,7 +371,7 @@ bool Logger::isWarnEnabled() const
 
 bool Logger::isFatalEnabled() const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::FATAL_INT))
 	{
@@ -385,7 +384,9 @@ bool Logger::isFatalEnabled() const
 /*void Logger::l7dlog(const LevelPtr& level, const String& key,
                         const char* file, int line)
 {
-        if (repository == 0 || repository->isDisabled(level->level))
+	auto rep = getHierarchy();
+
+        if (!rep || rep->isDisabled(level->level))
         {
                 return;
         }
@@ -410,7 +411,7 @@ bool Logger::isFatalEnabled() const
 void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
 	const LocationInfo& location, const std::vector<LogString>& params) const
 {
-	log4cxx::spi::LoggerRepositoryPtr rep = m_priv->repository.lock();
+	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(level1->toInt()))
 	{
@@ -502,14 +503,21 @@ void Logger::removeAppender(const LogString& name1)
 	m_priv->aai->removeAppender(name1);
 }
 
+void Logger::removeHierarchy()
+{
+	m_priv->repository.reset();
+	m_priv->repositoryRaw = 0;
+}
+
 void Logger::setAdditivity(bool additive1)
 {
 	m_priv->additive = additive1;
 }
 
-void Logger::setHierarchy(spi::LoggerRepositoryWeakPtr repository1)
+void Logger::setHierarchy(const spi::LoggerRepositoryPtr& repository1)
 {
 	m_priv->repository = repository1;
+	m_priv->repositoryRaw = repository1.get();
 }
 
 void Logger::setParent(LoggerPtr parentLogger)
