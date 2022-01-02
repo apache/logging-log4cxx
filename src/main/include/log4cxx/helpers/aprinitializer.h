@@ -65,7 +65,7 @@ class APRInitializer
 		/**
 		 *  Fetch or add a single instance type ObjectPtr for deletion prior to termination
 		 */
-		template <class T> static std::shared_ptr<T> getUnique(std::function<ObjectPtr()> creator)
+		template <class T> static std::shared_ptr<T> getOrAddUnique(std::function<ObjectPtr()> creator)
 		{
 			return cast<T>(getInstance().findOrAddObject(typeid(T).hash_code(), creator));
 		}

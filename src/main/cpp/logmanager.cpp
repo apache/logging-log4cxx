@@ -50,7 +50,7 @@ void* LogManager::guard = 0;
 
 RepositorySelectorPtr LogManager::getRepositorySelector()
 {
-	auto result = APRInitializer::getUnique<spi::RepositorySelector>( []() -> ObjectPtr
+	auto result = APRInitializer::getOrAddUnique<spi::RepositorySelector>( []() -> ObjectPtr
 		{
 			LoggerRepositoryPtr hierarchy = Hierarchy::create();
 			return ObjectPtr(new DefaultRepositorySelector(hierarchy));
