@@ -57,7 +57,7 @@ class LOG4CXX_EXPORT LocationInfo
 			int lineNumber);
 
 		LocationInfo( const char* const fileName,
-					  int shortFileNameOffset,
+					  size_t shortFileNameOffset,
 			const char* const functionName,
 			int lineNumber);
 
@@ -156,7 +156,7 @@ class LOG4CXX_EXPORT LocationInfo
 #endif
 
 #define LOG4CXX_LOCATION_CREATE ::std::string_view file_name{__FILE__};\
-	const int short_filename_offset = file_name.find_last_of(LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;\
+	const size_t short_filename_offset = file_name.find_last_of(LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;\
 	::log4cxx::spi::LocationInfo location(__FILE__,         \
 	short_filename_offset, \
 	__LOG4CXX_FUNC__, \

@@ -51,7 +51,7 @@ LocationInfo::LocationInfo( const char* const fileName1,
 }
 
 LocationInfo::LocationInfo( const char* const fileName1,
-							int shortFilenameOffset,
+							size_t shortFilenameOffset,
 	const char* const methodName1,
 	int lineNumber1 )
 	:  lineNumber( lineNumber1 ),

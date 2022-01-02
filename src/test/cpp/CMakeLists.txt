@@ -38,6 +38,8 @@ set(ALL_LOG4CXX_TESTS
     rollingfileappendertestcase
     streamtestcase
     multithreadtest
+    locationtest
+    locationdisabledtest
 )
 foreach(fileName IN LISTS ALL_LOG4CXX_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
@@ -129,3 +131,5 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         endif()
     endif()
 endforeach()
+
+target_compile_definitions(locationdisabledtest PRIVATE LOG4CXX_DISABLE_LOCATION_INFO)
