@@ -24,6 +24,7 @@
 #include <thread>
 #include <vector>
 #include <random>
+#include <mutex>
 
 using log4cxx::Logger;
 using log4cxx::LoggerPtr;
@@ -60,6 +61,7 @@ static void multithread_logger( int times )
 	 * fine.
 	 */
 
+	static std::once_flag exiting;
 	LoggerPtr logger = LogManager::getLogger( "test.multithreaded" );
 	std::random_device rd;
 	std::mt19937 gen(rd());
@@ -71,7 +73,7 @@ static void multithread_logger( int times )
 
 		if ( distribution(gen) == x )
 		{
-			std::exit(0);
+			std::call_once(exiting, std::exit, 0);
 		}
 	}
 }
