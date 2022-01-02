@@ -110,7 +110,7 @@ Logger::~Logger()
 void Logger::addAppender(const AppenderPtr newAppender)
 {
 	m_priv->aai->addAppender(newAppender);
-	if (auto rep = m_priv->repository)
+	if (auto rep = getLoggerRepository())
 	{
 		rep->fireAddAppenderEvent(this, newAppender.get());
 	}
@@ -130,7 +130,7 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
 	{
 		m_priv->aai->addAppender( *it );
 
-		if (auto rep = m_priv->repository)
+		if (auto rep = getLoggerRepository())
 		{
 			rep->fireAddAppenderEvent(this, it->get());
 		}
@@ -153,7 +153,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 		}
 	}
 
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (writes == 0 && rep)
 	{
@@ -295,7 +295,7 @@ bool Logger::isAttached(const AppenderPtr appender) const
 
 bool Logger::isTraceEnabled() const
 {
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (!rep || rep->isDisabled(Level::TRACE_INT))
 	{
@@ -307,7 +307,7 @@ bool Logger::isTraceEnabled() const
 
 bool Logger::isDebugEnabled() const
 {
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (!rep || rep->isDisabled(Level::DEBUG_INT))
 	{
@@ -319,7 +319,7 @@ bool Logger::isDebugEnabled() const
 
 bool Logger::isEnabledFor(const LevelPtr& level1) const
 {
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (!rep || rep->isDisabled(level1->toInt()))
 	{
@@ -332,7 +332,7 @@ bool Logger::isEnabledFor(const LevelPtr& level1) const
 
 bool Logger::isInfoEnabled() const
 {
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (!rep || rep->isDisabled(Level::INFO_INT))
 	{
@@ -344,7 +344,7 @@ bool Logger::isInfoEnabled() const
 
 bool Logger::isErrorEnabled() const
 {
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (!rep || rep->isDisabled(Level::ERROR_INT))
 	{
@@ -356,7 +356,7 @@ bool Logger::isErrorEnabled() const
 
 bool Logger::isWarnEnabled() const
 {
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (!rep || rep->isDisabled(Level::WARN_INT))
 	{
@@ -368,7 +368,7 @@ bool Logger::isWarnEnabled() const
 
 bool Logger::isFatalEnabled() const
 {
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (!rep || rep->isDisabled(Level::FATAL_INT))
 	{
@@ -381,7 +381,9 @@ bool Logger::isFatalEnabled() const
 /*void Logger::l7dlog(const LevelPtr& level, const String& key,
                         const char* file, int line)
 {
-        if (repository == 0 || repository->isDisabled(level->level))
+	auto rep = getLoggerRepository();
+
+        if (!rep || rep->isDisabled(level->level))
         {
                 return;
         }
@@ -406,7 +408,7 @@ bool Logger::isFatalEnabled() const
 void Logger::l7dlog(const LevelPtr& level1, const LogString& key,
 	const LocationInfo& location, const std::vector<LogString>& params) const
 {
-	auto rep = m_priv->repository;
+	auto rep = getLoggerRepository();
 
 	if (!rep || rep->isDisabled(level1->toInt()))
 	{
