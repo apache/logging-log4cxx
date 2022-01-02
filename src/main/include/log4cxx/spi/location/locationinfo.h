@@ -129,6 +129,12 @@ class LOG4CXX_EXPORT LocationInfo
 }
 }
 
+#if defined(_WIN32)
+#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
+#else
+#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '/'
+#endif
+
 #if !defined(LOG4CXX_LOCATION) && !LOG4CXX_DISABLE_LOCATION_INFO
 #if defined(_MSC_VER)
 	#if _MSC_VER >= 1300
@@ -149,11 +155,6 @@ class LOG4CXX_EXPORT LocationInfo
 
 #if __cpp_lib_string_view || (_MSVC_LANG >= 201703L)
 #include <string_view>
-#if defined(_WIN32)
-#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
-#else
-#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '/'
-#endif
 
 #define LOG4CXX_LOCATION_CREATE ::std::string_view file_name{__FILE__};\
 	const size_t short_filename_offset = file_name.find_last_of(LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;\
