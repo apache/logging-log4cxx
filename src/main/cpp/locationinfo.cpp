@@ -19,6 +19,12 @@
 #include <log4cxx/helpers/objectoutputstream.h>
 #include <log4cxx/helpers/pool.h>
 
+#if defined(_WIN32)
+#define SHORT_FILENAME_SPLIT_CHAR R"(\)"
+#else
+#define SHORT_FILENAME_SPLIT_CHAR R"(/)"
+#endif
+
 using namespace ::log4cxx::spi;
 using namespace log4cxx::helpers;
 
@@ -36,6 +42,21 @@ const LocationInfo& LocationInfo::getLocationUnavailable()
 }
 
 /**
+ * filter short file name
+ * @param fileName
+ * @return shortFileName
+ */
+const std::string filterFileName(const char* const fileName){
+	std::string fullFileName(fileName);
+	std::size_t found = fullFileName.rfind(SHORT_FILENAME_SPLIT_CHAR);
+	if (found != std::string::npos) {
+		return fullFileName.substr(found + 1);
+	} else {
+		return std::string(fileName);
+	}
+}
+
+/**
 *   Constructor.
 *   @remarks Used by LOG4CXX_LOCATION to generate
 *       location info for current code site
@@ -45,6 +66,7 @@ LocationInfo::LocationInfo( const char* const fileName1,
 	int lineNumber1 )
 	:  lineNumber( lineNumber1 ),
 	   fileName( fileName1 ),
+	   shortFileName(filterFileName(fileName)),
 	   methodName( methodName1 )
 {
 }
@@ -55,6 +77,7 @@ LocationInfo::LocationInfo( const char* const fileName1,
 LocationInfo::LocationInfo()
 	: lineNumber( -1 ),
 	  fileName(LocationInfo::NA),
+	  shortFileName(LocationInfo::NA),
 	  methodName(LocationInfo::NA_METHOD)
 {
 }
@@ -66,6 +89,7 @@ LocationInfo::LocationInfo()
 LocationInfo::LocationInfo( const LocationInfo& src )
 	:  lineNumber( src.lineNumber ),
 	   fileName( src.fileName ),
+	   shortFileName( src.shortFileName ),
 	   methodName( src.methodName )
 {
 }
@@ -100,6 +124,14 @@ void LocationInfo::clear()
 const char* LocationInfo::getFileName() const
 {
 	return fileName;
+}
+
+/**
+ *   Return the short file name of the caller.
+ *   @returns file name, may be null.
+ */
+const std::string LocationInfo::getShortFileName() const{
+	return shortFileName;
 }
 
 /**

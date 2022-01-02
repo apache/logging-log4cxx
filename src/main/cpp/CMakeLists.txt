@@ -30,8 +30,8 @@ target_sources(log4cxx
   class.cpp
   classnamepatternconverter.cpp
   classregistration.cpp
-        colorstartpatternconverter.cpp
-        colorendpatternconverter.cpp
+  colorstartpatternconverter.cpp
+  colorendpatternconverter.cpp
   configurator.cpp
   consoleappender.cpp
   cyclicbuffer.cpp
@@ -127,6 +127,7 @@ target_sources(log4cxx
   rolloverdescription.cpp
   rootlogger.cpp
   serversocket.cpp
+  shortfilelocationpatternconverter.cpp
   simpledateformat.cpp
   simplelayout.cpp
   sizebasedtriggeringpolicy.cpp

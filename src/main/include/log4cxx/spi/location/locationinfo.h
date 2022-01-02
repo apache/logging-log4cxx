@@ -89,6 +89,12 @@ class LOG4CXX_EXPORT LocationInfo
 		const char* getFileName() const;
 
 		/**
+		 *   Return the short file name of the caller.
+		 *   @returns file name, may be null.
+		 */
+		const std::string getShortFileName() const;
+
+		/**
 		  *   Returns the line number of the caller.
 		  * @returns line number, -1 if not available.
 		  */
@@ -106,6 +112,9 @@ class LOG4CXX_EXPORT LocationInfo
 
 		/** Caller's file name. */
 		const char* fileName;
+
+  		/** Caller's short file name. */
+		const std::string shortFileName;
 
 		/** Caller's method name. */
 		const char* methodName;
