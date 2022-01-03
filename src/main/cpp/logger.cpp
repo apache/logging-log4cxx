@@ -33,7 +33,6 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/aprinitializer.h>
-#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -42,16 +41,10 @@ using namespace log4cxx::spi;
 struct Logger::LoggerPrivate
 {
 	LoggerPrivate(Pool& p, const LogString& name1):
-		pool(&p),
 		name(name1),
 		repositoryRaw(0),
-		aai(*pool),
+		aai(p),
 		additive(true) {}
-
-	/**
-	 *   Reference to memory pool.
-	 */
-	helpers::Pool* pool;
 
 	/**
 	The name of this logger.
@@ -90,8 +83,6 @@ struct Logger::LoggerPrivate
 	        have their additivity flag set to <code>false</code> too. See
 	        the user manual for more details. */
 	bool additive;
-
-	mutable shared_mutex mutex;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
@@ -116,8 +107,6 @@ void Logger::addAppender(const AppenderPtr newAppender)
 
 void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additive1 )
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(m_priv->mutex);
-
 	m_priv->additive = additive1;
 
 	m_priv->aai.removeAllAppenders();
