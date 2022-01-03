@@ -45,7 +45,7 @@ struct Logger::LoggerPrivate
 		pool(&p),
 		name(name1),
 		repositoryRaw(0),
-		aai(new AppenderAttachableImpl(*pool)),
+		aai(*pool),
 		additive(true) {}
 
 	/**
@@ -80,7 +80,7 @@ struct Logger::LoggerPrivate
 	log4cxx::spi::LoggerRepositoryWeakPtr repository;
 	log4cxx::spi::LoggerRepository* repositoryRaw;
 
-	helpers::AppenderAttachableImplPtr aai;
+	helpers::AppenderAttachableImpl aai;
 
 	/** Additivity is set to true by default, that is children inherit
 	        the appenders of their ancestors by default. If this variable is
@@ -107,7 +107,7 @@ Logger::~Logger()
 
 void Logger::addAppender(const AppenderPtr newAppender)
 {
-	m_priv->aai->addAppender(newAppender);
+	m_priv->aai.addAppender(newAppender);
 	if (auto rep = getHierarchy())
 	{
 		rep->fireAddAppenderEvent(this, newAppender.get());
@@ -120,13 +120,13 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
 
 	m_priv->additive = additive1;
 
-	m_priv->aai->removeAllAppenders();
+	m_priv->aai.removeAllAppenders();
 
 	for ( std::vector<AppenderPtr>::const_iterator it = appenders.cbegin();
 		it != appenders.cend();
 		it++ )
 	{
-		m_priv->aai->addAppender( *it );
+		m_priv->aai.addAppender( *it );
 
 		if (auto rep = getHierarchy())
 		{
@@ -143,7 +143,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 		logger != 0;
 		logger = logger->m_priv->parent.get())
 	{
-		writes += logger->m_priv->aai->appendLoopOnAppenders(event, p);
+		writes += logger->m_priv->aai.appendLoopOnAppenders(event, p);
 
 		if (!logger->m_priv->additive)
 		{
@@ -205,12 +205,12 @@ bool Logger::getAdditivity() const
 
 AppenderList Logger::getAllAppenders() const
 {
-	return m_priv->aai->getAllAppenders();
+	return m_priv->aai.getAllAppenders();
 }
 
 AppenderPtr Logger::getAppender(const LogString& name1) const
 {
-	return m_priv->aai->getAppender(name1);
+	return m_priv->aai.getAppender(name1);
 }
 
 const LevelPtr& Logger::getEffectiveLevel() const
@@ -293,7 +293,7 @@ const LevelPtr& Logger::getLevel() const
 
 bool Logger::isAttached(const AppenderPtr appender) const
 {
-	return m_priv->aai->isAttached(appender);
+	return m_priv->aai.isAttached(appender);
 }
 
 bool Logger::isTraceEnabled() const
@@ -490,17 +490,17 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
-	m_priv->aai->removeAllAppenders();
+	m_priv->aai.removeAllAppenders();
 }
 
 void Logger::removeAppender(const AppenderPtr appender)
 {
-	m_priv->aai->removeAppender(appender);
+	m_priv->aai.removeAppender(appender);
 }
 
 void Logger::removeAppender(const LogString& name1)
 {
-	m_priv->aai->removeAppender(name1);
+	m_priv->aai.removeAppender(name1);
 }
 
 void Logger::removeHierarchy()
