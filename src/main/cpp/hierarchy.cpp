@@ -53,8 +53,6 @@ struct Hierarchy::HierarchyPrivate
 {
 	HierarchyPrivate()
 	{
-		loggers = std::make_unique<LoggerMap>();
-		provisionNodes = std::make_unique<ProvisionNodeMap>();
 		root = std::make_shared<RootLogger>(pool, Level::getDebug());
 		defaultFactory = std::make_shared<DefaultLoggerFactory>();
 		emittedNoAppenderWarning = false;
@@ -72,9 +70,9 @@ struct Hierarchy::HierarchyPrivate
 	spi::LoggerFactoryPtr defaultFactory;
 	spi::HierarchyEventListenerList listeners;
 
-	std::unique_ptr<LoggerMap> loggers;
+	LoggerMap loggers;
 
-	std::unique_ptr<ProvisionNodeMap> provisionNodes;
+	ProvisionNodeMap provisionNodes;
 
 	LoggerPtr root;
 
@@ -95,16 +93,12 @@ Hierarchy::Hierarchy() :
 Hierarchy::~Hierarchy()
 {
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
-	for (auto& item : *m_priv->loggers)
+	for (auto& item : m_priv->loggers)
 	{
 		if (auto& pLogger = item.second)
 			pLogger->removeHierarchy();
 	}
 	m_priv->root->removeHierarchy();
-#ifndef APR_HAS_THREADS
-	delete loggers;
-	delete provisionNodes;
-#endif
 }
 
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
@@ -124,7 +118,7 @@ void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& 
 void Hierarchy::clear()
 {
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
-	m_priv->loggers->clear();
+	m_priv->loggers.clear();
 }
 
 void Hierarchy::emitNoAppenderWarning(const Logger* logger)
@@ -151,9 +145,9 @@ LoggerPtr Hierarchy::exists(const LogString& name)
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
 	LoggerPtr logger;
-	LoggerMap::iterator it = m_priv->loggers->find(name);
+	LoggerMap::iterator it = m_priv->loggers.find(name);
 
-	if (it != m_priv->loggers->end())
+	if (it != m_priv->loggers.end())
 	{
 		logger = it->second;
 	}
@@ -249,9 +243,9 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 {
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
-	LoggerMap::iterator it = m_priv->loggers->find(name);
+	LoggerMap::iterator it = m_priv->loggers.find(name);
 
-	if (it != m_priv->loggers->end())
+	if (it != m_priv->loggers.end())
 	{
 		return it->second;
 	}
@@ -259,14 +253,14 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
 		logger->setHierarchy(shared_from_this());
-		m_priv->loggers->insert(LoggerMap::value_type(name, logger));
+		m_priv->loggers.insert(LoggerMap::value_type(name, logger));
 
-		ProvisionNodeMap::iterator it2 = m_priv->provisionNodes->find(name);
+		ProvisionNodeMap::iterator it2 = m_priv->provisionNodes.find(name);
 
-		if (it2 != m_priv->provisionNodes->end())
+		if (it2 != m_priv->provisionNodes.end())
 		{
 			updateChildren(it2->second, logger);
-			m_priv->provisionNodes->erase(it2);
+			m_priv->provisionNodes.erase(it2);
 		}
 
 		updateParents(logger);
@@ -280,9 +274,9 @@ LoggerList Hierarchy::getCurrentLoggers() const
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
 	LoggerList v;
-	LoggerMap::const_iterator it, itEnd = m_priv->loggers->end();
+	LoggerMap::const_iterator it, itEnd = m_priv->loggers.end();
 
-	for (it = m_priv->loggers->begin(); it != itEnd; it++)
+	for (it = m_priv->loggers.begin(); it != itEnd; it++)
 	{
 		v.push_back(it->second);
 	}
@@ -323,9 +317,9 @@ void Hierarchy::resetConfiguration()
 
 	shutdownInternal();
 
-	LoggerMap::const_iterator it, itEnd = m_priv->loggers->end();
+	LoggerMap::const_iterator it, itEnd = m_priv->loggers.end();
 
-	for (it = m_priv->loggers->begin(); it != itEnd; it++)
+	for (it = m_priv->loggers.begin(); it != itEnd; it++)
 	{
 		it->second->setLevel(0);
 		it->second->setAdditivity(true);
@@ -351,9 +345,9 @@ void Hierarchy::shutdownInternal()
 	// begin by closing nested appenders
 	root1->closeNestedAppenders();
 
-	LoggerMap::iterator it, itEnd = m_priv->loggers->end();
+	LoggerMap::iterator it, itEnd = m_priv->loggers.end();
 
-	for (it = m_priv->loggers->begin(); it != itEnd; it++)
+	for (it = m_priv->loggers.begin(); it != itEnd; it++)
 	{
 		LoggerPtr logger = it->second;
 		logger->closeNestedAppenders();
@@ -362,7 +356,7 @@ void Hierarchy::shutdownInternal()
 	// then, remove all appenders
 	root1->removeAllAppenders();
 
-	for (it = m_priv->loggers->begin(); it != itEnd; it++)
+	for (it = m_priv->loggers.begin(); it != itEnd; it++)
 	{
 		LoggerPtr logger = it->second;
 		logger->removeAllAppenders();
@@ -383,9 +377,9 @@ void Hierarchy::updateParents(LoggerPtr logger)
 	{
 		LogString substr = name.substr(0, i);
 
-		LoggerMap::iterator it = m_priv->loggers->find(substr);
+		LoggerMap::iterator it = m_priv->loggers.find(substr);
 
-		if (it != m_priv->loggers->end())
+		if (it != m_priv->loggers.end())
 		{
 			parentFound = true;
 			logger->setParent( it->second );
@@ -393,16 +387,16 @@ void Hierarchy::updateParents(LoggerPtr logger)
 		}
 		else
 		{
-			ProvisionNodeMap::iterator it2 = m_priv->provisionNodes->find(substr);
+			ProvisionNodeMap::iterator it2 = m_priv->provisionNodes.find(substr);
 
-			if (it2 != m_priv->provisionNodes->end())
+			if (it2 != m_priv->provisionNodes.end())
 			{
 				it2->second.push_back(logger);
 			}
 			else
 			{
 				ProvisionNode node(1, logger);
-				m_priv->provisionNodes->insert(
+				m_priv->provisionNodes.insert(
 					ProvisionNodeMap::value_type(substr, node));
 			}
 		}
