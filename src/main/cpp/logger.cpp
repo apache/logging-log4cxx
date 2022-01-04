@@ -101,7 +101,7 @@ void Logger::addAppender(const AppenderPtr newAppender)
 	m_priv->aai.addAppender(newAppender);
 	if (auto rep = getHierarchy())
 	{
-		rep->fireAddAppenderEvent(this, newAppender.get());
+		m_priv->repositoryRaw->fireAddAppenderEvent(this, newAppender.get());
 	}
 }
 
@@ -119,7 +119,7 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
 
 		if (auto rep = getHierarchy())
 		{
-			rep->fireAddAppenderEvent(this, it->get());
+			m_priv->repositoryRaw->fireAddAppenderEvent(this, it->get());
 		}
 	}
 }
@@ -144,7 +144,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 
 	if (writes == 0 && rep)
 	{
-		rep->emitNoAppenderWarning(const_cast<Logger*>(this));
+		m_priv->repositoryRaw->emitNoAppenderWarning(const_cast<Logger*>(this));
 	}
 }
 

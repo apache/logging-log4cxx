@@ -244,12 +244,13 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
 	LoggerMap::iterator it = m_priv->loggers.find(name);
+	LoggerPtr result;
 
 	if (it != m_priv->loggers.end())
 	{
-		return it->second;
+		result = it->second;
 	}
-	else
+	if (!result)
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
 		logger->setHierarchy(shared_from_this());
@@ -264,8 +265,9 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 		}
 
 		updateParents(logger);
-		return logger;
+		result = logger;
 	}
+	return result;
 
 }
 
@@ -274,14 +276,11 @@ LoggerList Hierarchy::getCurrentLoggers() const
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
 	LoggerList v;
-	LoggerMap::const_iterator it, itEnd = m_priv->loggers.end();
-
-	for (it = m_priv->loggers.begin(); it != itEnd; it++)
+	for (auto& item : m_priv->loggers)
 	{
-		v.push_back(it->second);
+		if (auto pLogger = item.second)
+			v.push_back(pLogger);
 	}
-
-
 	return v;
 }
 
@@ -321,9 +320,12 @@ void Hierarchy::resetConfiguration()
 
 	for (it = m_priv->loggers.begin(); it != itEnd; it++)
 	{
-		it->second->setLevel(0);
-		it->second->setAdditivity(true);
-		it->second->setResourceBundle(0);
+		if (auto pLogger = it->second)
+		{
+			pLogger->setLevel(0);
+			pLogger->setAdditivity(true);
+			pLogger->setResourceBundle(0);
+		}
 	}
 
 	//rendererMap.clear();
@@ -340,26 +342,24 @@ void Hierarchy::shutdownInternal()
 {
 	m_priv->configured = false;
 
-	LoggerPtr root1 = getRootLogger();
-
 	// begin by closing nested appenders
-	root1->closeNestedAppenders();
+	m_priv->root->closeNestedAppenders();
 
 	LoggerMap::iterator it, itEnd = m_priv->loggers.end();
 
 	for (it = m_priv->loggers.begin(); it != itEnd; it++)
 	{
-		LoggerPtr logger = it->second;
-		logger->closeNestedAppenders();
+		if (auto pLogger = it->second)
+			pLogger->closeNestedAppenders();
 	}
 
 	// then, remove all appenders
-	root1->removeAllAppenders();
+	m_priv->root->removeAllAppenders();
 
 	for (it = m_priv->loggers.begin(); it != itEnd; it++)
 	{
-		LoggerPtr logger = it->second;
-		logger->removeAllAppenders();
+		if (auto pLogger = it->second)
+			pLogger->removeAllAppenders();
 	}
 }
 
