@@ -33,6 +33,7 @@ using log4cxx::LogString;
 
 static log4cxx::LoggerPtr console = log4cxx::Logger::getLogger( "console" );
 static std::vector<uint64_t> results;
+static std::mutex results_mutex;
 
 static void benchmark_function( const std::string& name, void (*fn)(int), int howmany )
 {
@@ -45,11 +46,12 @@ static void benchmark_function( const std::string& name, void (*fn)(int), int ho
 	auto delta = high_resolution_clock::now() - start;
 	auto delta_d = duration_cast<duration<double>>(delta).count();
 
+	std::unique_lock<std::mutex> lk(results_mutex);
 	results.push_back( uint64_t(howmany / delta_d) );
 	LOG4CXX_INFO_FMT( console, "Log4cxx {} Elapsed: {:.4} secs {:L}/sec",
 		name,
 		delta_d,
-		results.back() );
+		results.back());
 }
 
 static void benchmark_conversion_pattern( const std::string& name,
@@ -67,12 +69,13 @@ static void benchmark_conversion_pattern( const std::string& name,
 	auto delta = high_resolution_clock::now() - start;
 	auto delta_d = duration_cast<duration<double>>(delta).count();
 
+	std::unique_lock<std::mutex> lk(results_mutex);
 	results.push_back( uint64_t(howmany / delta_d) );
 	LOG4CXX_INFO_FMT( console, "Log4cxx {} pattern: {} Elapsed: {:.4} secs {:L}/sec",
 		name,
 		conversion_pattern,
 		delta_d,
-		results.back() );
+		results.back());
 }
 
 static void bench_log4cxx_single_threaded(int iters)
