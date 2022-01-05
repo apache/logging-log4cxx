@@ -67,7 +67,8 @@ class LOG4CXX_EXPORT LocationInfo
 		}
 #else
 		static const char* calcShortFileName(const char* fileName){
-			return strrchr(fileName, LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;
+			const char* location = strrchr(fileName, LOG4CXX_SHORT_FILENAME_SPLIT_CHAR);
+			return location == nullptr ? fileName : location + 1;
 		}
 #endif
 
