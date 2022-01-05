@@ -41,30 +41,14 @@ const LocationInfo& LocationInfo::getLocationUnavailable()
 *       location info for current code site
 */
 LocationInfo::LocationInfo( const char* const fileName1,
+	const char* const shortFileName1,
 	const char* const methodName1,
 	int lineNumber1 )
 	:  lineNumber( lineNumber1 ),
 	   fileName( fileName1 ),
-	   shortFileName(nullptr),
+	   shortFileName(shortFileName1),
 	   methodName( methodName1 )
 {
-}
-
-LocationInfo::LocationInfo( const char* const fileName1,
-							size_t shortFilenameOffset,
-	const char* const methodName1,
-	int lineNumber1 )
-	:  lineNumber( lineNumber1 ),
-	   fileName( fileName1 ),
-	   methodName( methodName1 )
-{
-	if( shortFilenameOffset < 0 || shortFilenameOffset > 300 ){
-		// Arbitrary cap at 300 chars for the filename offset - anything greather
-		// than that sounds suspicous.
-		shortFileName = fileName;
-	}else{
-		shortFileName = fileName + shortFilenameOffset;
-	}
 }
 
 /**
@@ -122,29 +106,8 @@ const char* LocationInfo::getFileName() const
 	return fileName;
 }
 
-/**
- *   Return the short file name of the caller.
- *   @returns file name, may be null.
- */
 const char* LocationInfo::getShortFileName() const{
-	if(shortFileName){
-		return shortFileName;
-	}
-
-	if(fileName == nullptr){
-		return nullptr;
-	}
-
-	const char* begin = fileName;
-	size_t pos = 0;
-	while( fileName[pos] != 0 ){
-	  if( fileName[pos] == LOG4CXX_SHORT_FILENAME_SPLIT_CHAR &&
-		  fileName[pos+1] != 0 ){
-		  begin = fileName + pos + 1;
-	  }
-	  pos++;
-	}
-	return begin;
+	return shortFileName;
 }
 
 /**

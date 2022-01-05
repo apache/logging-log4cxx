@@ -22,6 +22,19 @@
 #include <string>
 #include <log4cxx/helpers/objectoutputstream.h>
 
+#if __cpp_lib_string_view || (_MSVC_LANG >= 201703L)
+#include <string_view>
+#define LOG4CXX_HAS_STRING_VIEW
+#else
+#include <string.h>
+#endif
+
+#if defined(_WIN32)
+#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
+#else
+#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '/'
+#endif
+
 namespace log4cxx
 {
 namespace spi
@@ -45,7 +58,18 @@ class LOG4CXX_EXPORT LocationInfo
 
 		static const LocationInfo& getLocationUnavailable();
 
-
+#ifdef LOG4CXX_HAS_STRING_VIEW
+		static constexpr const char* calcShortFileName(const char* fileName){
+			std::string_view view(fileName);
+			// If the separator is not found, rfind will return -1.  Adding 1 to
+			// that will have it pointing at fileName, which is a good fallback.
+			return fileName + view.rfind(LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;
+		}
+#else
+		static const char* calcShortFileName(const char* fileName){
+			return strrchr(fileName, LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;
+		}
+#endif
 
 		/**
 		 *   Constructor.
@@ -53,13 +77,9 @@ class LOG4CXX_EXPORT LocationInfo
 		 *       location info for current code site
 		 */
 		LocationInfo( const char* const fileName,
-			const char* const functionName,
-			int lineNumber);
-
-		LocationInfo( const char* const fileName,
-					  size_t shortFileNameOffset,
-			const char* const functionName,
-			int lineNumber);
+					  const char* const shortFileName,
+					  const char* const functionName,
+					  int lineNumber);
 
 		/**
 		 *   Default constructor.
@@ -95,7 +115,8 @@ class LOG4CXX_EXPORT LocationInfo
 
 		/**
 		 *   Return the short file name of the caller.
-		 *   @returns file name, may be null.
+		 *   @returns file name.  Note that this will fallback to the full filename when using
+		 *    calcShortFileName to calculate the filename at compile-time.
 		 */
 		const char* getShortFileName() const;
 
@@ -129,12 +150,6 @@ class LOG4CXX_EXPORT LocationInfo
 }
 }
 
-#if defined(_WIN32)
-#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '\\'
-#else
-#define LOG4CXX_SHORT_FILENAME_SPLIT_CHAR '/'
-#endif
-
 #if !defined(LOG4CXX_LOCATION) && !LOG4CXX_DISABLE_LOCATION_INFO
 #if defined(_MSC_VER)
 	#if _MSC_VER >= 1300
@@ -153,27 +168,14 @@ class LOG4CXX_EXPORT LocationInfo
 	#define __LOG4CXX_FUNC__ ""
 #endif
 
-#if __cpp_lib_string_view || (_MSVC_LANG >= 201703L)
-#include <string_view>
 
-#define LOG4CXX_LOCATION_CREATE ::std::string_view file_name{__FILE__};\
-	const size_t short_filename_offset = file_name.find_last_of(LOG4CXX_SHORT_FILENAME_SPLIT_CHAR) + 1;\
-	::log4cxx::spi::LocationInfo location(__FILE__,         \
-	short_filename_offset, \
-	__LOG4CXX_FUNC__, \
-	__LINE__)
 #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__,         \
+	::log4cxx::spi::LocationInfo::calcShortFileName(__FILE__), \
 	__LOG4CXX_FUNC__, \
 	__LINE__)
-#else
-#define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(__FILE__,         \
-	__LOG4CXX_FUNC__, \
-	__LINE__)
-#define LOG4CXX_LOCATION_CREATE ::log4cxx::spi::LocationInfo location = LOG4CXX_LOCATION
-#endif
+
 #else
 #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo::getLocationUnavailable()
-#define LOG4CXX_LOCATION_CREATE ::log4cxx::spi::LocationInfo location = LOG4CXX_LOCATION
 #endif // LOG4CXX_LOCATION
 
 #endif //_LOG4CXX_SPI_LOCATION_LOCATIONINFO_H
