@@ -185,6 +185,7 @@ private:
 #undef  LOG4CXX_LOCATION
 #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(  \
 	__FILE__,                   \
+	__FILE__,                   \
 	srcFunc.c_str(),            \
 	srcLine)
 
@@ -199,6 +200,7 @@ private:
 
 #undef  LOG4CXX_LOCATION
 #define LOG4CXX_LOCATION ::log4cxx::spi::LocationInfo(  \
+	__FILE__,                   \
 	__FILE__,                   \
 	__LOG4CXX_FUNC__,           \
 	__LINE__)

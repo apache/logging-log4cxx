@@ -134,6 +134,12 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *      </td>
  *  </tr>
  *  <tr>
+ *      <td align="center"><strong>f</strong></td>
+ *      <td>
+ *          Used to output the short file name where the logging request was issued.
+ *      </td>
+ *  </tr>
+ *  <tr>
  *      <td align="center"><strong>F</strong></td>
  *      <td>
  *          Used to output the file name where the logging request was issued.

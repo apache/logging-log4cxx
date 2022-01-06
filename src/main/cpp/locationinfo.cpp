@@ -41,10 +41,12 @@ const LocationInfo& LocationInfo::getLocationUnavailable()
 *       location info for current code site
 */
 LocationInfo::LocationInfo( const char* const fileName1,
+	const char* const shortFileName1,
 	const char* const methodName1,
 	int lineNumber1 )
 	:  lineNumber( lineNumber1 ),
 	   fileName( fileName1 ),
+	   shortFileName(shortFileName1),
 	   methodName( methodName1 )
 {
 }
@@ -55,6 +57,7 @@ LocationInfo::LocationInfo( const char* const fileName1,
 LocationInfo::LocationInfo()
 	: lineNumber( -1 ),
 	  fileName(LocationInfo::NA),
+	  shortFileName(LocationInfo::NA),
 	  methodName(LocationInfo::NA_METHOD)
 {
 }
@@ -66,6 +69,7 @@ LocationInfo::LocationInfo()
 LocationInfo::LocationInfo( const LocationInfo& src )
 	:  lineNumber( src.lineNumber ),
 	   fileName( src.fileName ),
+	   shortFileName( src.shortFileName ),
 	   methodName( src.methodName )
 {
 }
@@ -100,6 +104,10 @@ void LocationInfo::clear()
 const char* LocationInfo::getFileName() const
 {
 	return fileName;
+}
+
+const char* LocationInfo::getShortFileName() const{
+	return shortFileName;
 }
 
 /**
