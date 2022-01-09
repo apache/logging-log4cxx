@@ -30,6 +30,7 @@
 #include <log4cxx/pattern/loggerpatternconverter.h>
 #include <log4cxx/pattern/colorendpatternconverter.h>
 #include <log4cxx/pattern/colorstartpatternconverter.h>
+#include <log4cxx/pattern/shortfilelocationpatternconverter.h>
 #include <log4cxx/pattern/literalpatternconverter.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/pattern/classnamepatternconverter.h>
@@ -186,6 +187,8 @@ log4cxx::pattern::PatternMap PatternLayout::getFormatSpecifiers()
 
 	RULES_PUT("d", DatePatternConverter);
 	RULES_PUT("date", DatePatternConverter);
+
+	RULES_PUT("f", ShortFileLocationPatternConverter);
 
 	RULES_PUT("F", FileLocationPatternConverter);
 	RULES_PUT("file", FileLocationPatternConverter);
