@@ -32,7 +32,7 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/fileoutputstream.h>
-
+#include <random>
 
 using namespace log4cxx;
 using namespace log4cxx::xml;
@@ -55,6 +55,7 @@ LOGUNIT_CLASS(ManualRollingTest)
 	//           LOGUNIT_TEST(test3);
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(test5);
+	LOGUNIT_TEST(create_directories);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
@@ -308,6 +309,40 @@ public:
 			LOGUNIT_ASSERT_EQUAL(true, Compare::compare(File("output/manual-test5.log"),
 					File("witness/rolling/sbr-test4.log")));
 		}
+	}
+
+	void create_directories()
+	{
+		PatternLayoutPtr layout = PatternLayoutPtr(new PatternLayout(LOG4CXX_STR("%m\n")));
+		RollingFileAppenderPtr rfa = RollingFileAppenderPtr(new RollingFileAppender());
+		rfa->setName(LOG4CXX_STR("ROLLING"));
+		rfa->setAppend(false);
+		rfa->setLayout(layout);
+		rfa->setFile(LOG4CXX_STR("output/create-directory-file.log"));
+
+		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		swrp->setMinIndex(0);
+
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_int_distribution<std::mt19937::result_type> dist(1,100000);
+		LogString filenamePattern = LOG4CXX_STR("output/directory-");
+		filenamePattern.append( std::to_string(dist(rng)) );
+		LogString filenamePatternPrefix = filenamePattern;
+		filenamePattern.append( LOG4CXX_STR("/file-%i.gz") );
+		swrp->setFileNamePattern(filenamePattern);
+		Pool p;
+		swrp->activateOptions(p);
+
+		rfa->setRollingPolicy(swrp);
+		rfa->activateOptions(p);
+		root->addAppender(rfa);
+
+
+		common(rfa, p, logger);
+
+		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + "/file-0.gz").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + "/file-1.gz").exists(p));
 	}
 
 };
