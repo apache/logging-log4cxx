@@ -63,7 +63,7 @@ public:
 		// what we expect
 		PropertyConfigurator::configure(LOG4CXX_FILE("input/rolling/rollingFileAppenderFromProperties.properties"));
 
-		AppenderPtr appender = LogManager::getRootLogger()->getAppender("FILE");
+		AppenderPtr appender = LogManager::getRootLogger()->getAppender(LOG4CXX_STR("FILE"));
 		LOGUNIT_ASSERT(appender);
 
 		RollingFileAppenderPtr rfa = cast<RollingFileAppender>(appender);
