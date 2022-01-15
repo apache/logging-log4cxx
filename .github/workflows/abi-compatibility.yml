@@ -52,12 +52,12 @@ jobs:
         cmake --build .
 
     - name: 'copy compat report'
-      if: failure()
+      if: always()
       run: |
         cp $(find . -name compat_report.html) .
 
     - uses: actions/upload-artifact@v2
-      if: failure()
+      if: always()
       with:
         name: compat_report.html
         path: compat_report.html

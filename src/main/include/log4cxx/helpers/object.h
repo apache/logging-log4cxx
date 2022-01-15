@@ -121,8 +121,11 @@ template<typename Ret,
 	bool = std::is_base_of<Type, helpers::Object>::value>
 std::shared_ptr<Ret> cast(const std::shared_ptr<Type>& incoming)
 {
-	const helpers::Class& staticClass = Ret::getStaticClass();
-	LogString name = staticClass.getName();
+	if(!incoming)
+	{
+		return std::shared_ptr<Ret>();
+	}
+
 	Ret* casted = reinterpret_cast<Ret*>(const_cast<void*>(incoming->cast(Ret::getStaticClass())));
 
 	if ( casted )
