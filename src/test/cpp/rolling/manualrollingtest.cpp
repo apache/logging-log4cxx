@@ -328,7 +328,14 @@ public:
 		std::mt19937 rng(dev());
 		std::uniform_int_distribution<std::mt19937::result_type> dist(1,100000);
 		LogString filenamePattern = LOG4CXX_STR("output/directory-");
-		filenamePattern.append( std::to_string(dist(rng)) );
+
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+		LogString dirNumber = std::to_wstring(dist(rng));
+#else
+		LogString dirNumber = std::to_string(dist(rng));
+#endif
+
+		filenamePattern.append( dirNumber );
 		LogString filenamePatternPrefix = filenamePattern;
 		filenamePattern.append( LOG4CXX_STR("/file-%i.gz") );
 		swrp->setFileNamePattern(filenamePattern);
@@ -342,8 +349,8 @@ public:
 
 		common(rfa, p, logger);
 
-		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + "/file-0.gz").exists(p));
-		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + "/file-1.gz").exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + LOG4CXX_STR("/file-0.gz")).exists(p));
+		LOGUNIT_ASSERT_EQUAL(true, File(filenamePatternPrefix + LOG4CXX_STR("/file-1.gz")).exists(p));
 	}
 
 };
