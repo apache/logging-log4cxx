@@ -322,6 +322,7 @@ public:
 
 		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 		swrp->setMinIndex(0);
+		swrp->setCreateIntermediateDirectories(true);
 
 		std::random_device dev;
 		std::mt19937 rng(dev());

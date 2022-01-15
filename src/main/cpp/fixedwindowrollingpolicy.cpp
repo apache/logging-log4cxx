@@ -172,7 +172,7 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	LogString compressedName(renameTo);
 	ActionPtr compressAction ;
 
-	{
+	if(getCreateIntermediateDirectories()){
 		File compressedFile(compressedName);
 		File compressedParent (compressedFile.getParent(pool));
 		compressedParent.mkdirs(pool);
