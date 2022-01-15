@@ -24,6 +24,7 @@ set(ROLLING_TESTS
     obsoleterollingfileappendertest
     sizebasedrollingtest
     timebasedrollingtest
+    rollingfileappenderpropertiestest
 )
 foreach(fileName  IN LISTS ROLLING_TESTS)
     add_executable(${fileName} "${fileName}.cpp")

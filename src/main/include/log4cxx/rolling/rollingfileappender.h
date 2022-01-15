@@ -57,7 +57,7 @@ namespace rolling
     &lt;/layout>
   &lt;/appender>
 
-  &lt;root">
+  &lt;root>
     &lt;appender-ref ref="ROLL"/>
   &lt;/root>
 
