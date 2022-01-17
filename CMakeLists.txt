@@ -50,6 +50,7 @@ find_package( Threads REQUIRED )
 
 # Find expat for XML parsing
 find_package(EXPAT REQUIRED)
+set(XMLLIB_LIBRARIES EXPAT::EXPAT)
 
 # Request C++17, if available
 # This *should* fallback to an older standard if it is not available
