@@ -91,7 +91,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		conversion fails, then this method returns DEBUG.
 		* @param sArg level name.
 		*/
-		static LevelPtr toLevel(const std::string& sArg);
+		static const LevelPtr& toLevel(const std::string& sArg);
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns the value of
@@ -100,7 +100,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		* @param defaultLevel level to return if no match.
 		* @return
 		*/
-		static LevelPtr toLevel(const std::string& sArg,
+		static const LevelPtr& toLevel(const std::string& sArg,
 			const LevelPtr& defaultLevel);
 		/**
 		 *  Get the name of the level in the current encoding.
@@ -114,7 +114,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		conversion fails, then this method returns DEBUG.
 		* @param sArg level name.
 		*/
-		static LevelPtr toLevel(const std::wstring& sArg);
+		static const LevelPtr& toLevel(const std::wstring& sArg);
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns the value of
@@ -123,7 +123,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		* @param defaultLevel level to return if no match.
 		* @return
 		*/
-		static LevelPtr toLevel(const std::wstring& sArg,
+		static const LevelPtr& toLevel(const std::wstring& sArg,
 			const LevelPtr& defaultLevel);
 		/**
 		 *  Get the name of the level.
@@ -137,7 +137,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		conversion fails, then this method returns DEBUG.
 		* @param sArg level name.
 		*/
-		static LevelPtr toLevel(const std::basic_string<UniChar>& sArg);
+		static const LevelPtr& toLevel(const std::basic_string<UniChar>& sArg);
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns the value of
@@ -146,7 +146,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		* @param defaultLevel level to return if no match.
 		* @return
 		*/
-		static LevelPtr toLevel(const std::basic_string<UniChar>& sArg,
+		static const LevelPtr& toLevel(const std::basic_string<UniChar>& sArg,
 			const LevelPtr& defaultLevel);
 		/**
 		 *  Get the name of the level.
@@ -160,7 +160,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		conversion fails, then this method returns DEBUG.
 		* @param sArg level name.
 		*/
-		static LevelPtr toLevel(const CFStringRef& sArg);
+		static const LevelPtr& toLevel(const CFStringRef& sArg);
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns the value of
@@ -169,7 +169,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		* @param defaultLevel level to return if no match.
 		* @return
 		*/
-		static LevelPtr toLevel(const CFStringRef& sArg,
+		static const LevelPtr& toLevel(const CFStringRef& sArg,
 			const LevelPtr& defaultLevel);
 		/**
 		 *  Get the name of the level.
@@ -182,7 +182,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		conversion fails, then this method returns DEBUG.
 		* @param sArg level name.
 		*/
-		static LevelPtr toLevelLS(const LogString& sArg);
+		static const LevelPtr& toLevelLS(const LogString& sArg);
 		/**
 		Convert the string passed as argument to a level. If the
 		conversion fails, then this method returns the value of
@@ -191,7 +191,7 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		* @param defaultLevel level to return if no match.
 		* @return
 		*/
-		static LevelPtr toLevelLS(const LogString& sArg,
+		static const LevelPtr& toLevelLS(const LogString& sArg,
 			const LevelPtr& defaultLevel);
 		/**
 		Returns the string representation of this level.
@@ -203,13 +203,13 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		Convert an integer passed as argument to a level. If the
 		conversion fails, then this method returns DEBUG.
 		*/
-		static LevelPtr toLevel(int val);
+		static const LevelPtr& toLevel(int val);
 
 		/**
 		Convert an integer passed as argument to a level. If the
 		conversion fails, then this method returns the specified default.
 		*/
-		static LevelPtr toLevel(int val, const LevelPtr& defaultLevel);
+		static const LevelPtr& toLevel(int val, const LevelPtr& defaultLevel);
 
 		enum
 		{
@@ -224,15 +224,14 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		};
 
 
-		static void initializeLevels();
-		static LevelPtr getAll();
-		static LevelPtr getFatal();
-		static LevelPtr getError();
-		static LevelPtr getWarn();
-		static LevelPtr getInfo();
-		static LevelPtr getDebug();
-		static LevelPtr getTrace();
-		static LevelPtr getOff();
+		static const LevelPtr& getAll();
+		static const LevelPtr& getFatal();
+		static const LevelPtr& getError();
+		static const LevelPtr& getWarn();
+		static const LevelPtr& getInfo();
+		static const LevelPtr& getDebug();
+		static const LevelPtr& getTrace();
+		static const LevelPtr& getOff();
 
 
 		/**
@@ -278,18 +277,6 @@ class LOG4CXX_EXPORT Level : public helpers::Object
 		{
 			return level;
 		}
-
-	private:
-		static volatile bool initialized;
-		static std::mutex initMutex;
-		static LevelPtr allLevel;
-		static LevelPtr fatalLevel;
-		static LevelPtr errorLevel;
-		static LevelPtr warnLevel;
-		static LevelPtr infoLevel;
-		static LevelPtr debugLevel;
-		static LevelPtr traceLevel;
-		static LevelPtr offLevel;
 
 		int level;
 		LogString name;
