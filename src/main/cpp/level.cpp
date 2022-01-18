@@ -30,50 +30,50 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
-const LevelPtr& Level::getOff()
+LevelPtr Level::getOff()
 {
 	static LevelPtr offLevel(new Level(Level::OFF_INT, LOG4CXX_STR("OFF"), 0));
 	return offLevel;
 }
 
-const LevelPtr& Level::getFatal()
+LevelPtr Level::getFatal()
 {
 	static LevelPtr fatalLevel(new Level(Level::FATAL_INT, LOG4CXX_STR("FATAL"), 0));
 	return fatalLevel;
 }
 
-const LevelPtr& Level::getError()
+LevelPtr Level::getError()
 {
 	static LevelPtr errorLevel(new Level(Level::ERROR_INT, LOG4CXX_STR("ERROR"), 3));
 	return errorLevel;
 }
 
-const LevelPtr& Level::getWarn()
+LevelPtr Level::getWarn()
 {
 	static LevelPtr warnLevel(new Level(Level::WARN_INT, LOG4CXX_STR("WARN"), 4));
 	return warnLevel;
 }
 
-const LevelPtr& Level::getInfo()
+LevelPtr Level::getInfo()
 {
 	static LevelPtr infoLevel(new Level(Level::INFO_INT, LOG4CXX_STR("INFO"), 6));
 	return infoLevel;
 }
 
-const LevelPtr& Level::getDebug()
+LevelPtr Level::getDebug()
 {
 	static LevelPtr debugLevel(new Level(Level::DEBUG_INT, LOG4CXX_STR("DEBUG"), 7));
 	return debugLevel;
 }
 
-const LevelPtr& Level::getTrace()
+LevelPtr Level::getTrace()
 {
 	static LevelPtr traceLevel(new Level(Level::TRACE_INT, LOG4CXX_STR("TRACE"), 7));
 	return traceLevel;
 }
 
 
-const LevelPtr& Level::getAll()
+LevelPtr Level::getAll()
 {
 	static LevelPtr allLevel(new Level(Level::ALL_INT, LOG4CXX_STR("ALL"), 7));
 	return allLevel;
@@ -89,7 +89,7 @@ Level::Level(int level1,
 }
 
 
-const LevelPtr& Level::toLevelLS(const LogString& sArg)
+LevelPtr Level::toLevelLS(const LogString& sArg)
 {
 	return toLevelLS(sArg, Level::getDebug());
 }
@@ -100,12 +100,12 @@ LogString Level::toString() const
 }
 
 
-const LevelPtr& Level::toLevel(int val)
+LevelPtr Level::toLevel(int val)
 {
 	return toLevel(val, Level::getDebug());
 }
 
-const LevelPtr& Level::toLevel(int val, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevel(int val, const LevelPtr& defaultLevel)
 {
 	switch (val)
 	{
@@ -138,12 +138,12 @@ const LevelPtr& Level::toLevel(int val, const LevelPtr& defaultLevel)
 	}
 }
 
-const LevelPtr& Level::toLevel(const std::string& sArg)
+LevelPtr Level::toLevel(const std::string& sArg)
 {
 	return toLevel(sArg, Level::getDebug());
 }
 
-const LevelPtr& Level::toLevel(const std::string& sArg, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevel(const std::string& sArg, const LevelPtr& defaultLevel)
 {
 	LOG4CXX_DECODE_CHAR(s, sArg);
 	return toLevelLS(s, defaultLevel);
@@ -155,12 +155,12 @@ void Level::toString(std::string& dst) const
 }
 
 #if LOG4CXX_WCHAR_T_API
-const LevelPtr& Level::toLevel(const std::wstring& sArg)
+LevelPtr Level::toLevel(const std::wstring& sArg)
 {
 	return toLevel(sArg, Level::getDebug());
 }
 
-const LevelPtr& Level::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevel(const std::wstring& sArg, const LevelPtr& defaultLevel)
 {
 	LOG4CXX_DECODE_WCHAR(s, sArg);
 	return toLevelLS(s, defaultLevel);
@@ -174,12 +174,12 @@ void Level::toString(std::wstring& dst) const
 #endif
 
 #if LOG4CXX_UNICHAR_API
-const LevelPtr& Level::toLevel(const std::basic_string<UniChar>& sArg)
+LevelPtr Level::toLevel(const std::basic_string<UniChar>& sArg)
 {
 	return toLevel(sArg, Level::getDebug());
 }
 
-const LevelPtr& Level::toLevel(const std::basic_string<UniChar>& sArg, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevel(const std::basic_string<UniChar>& sArg, const LevelPtr& defaultLevel)
 {
 	LOG4CXX_DECODE_UNICHAR(s, sArg);
 	return toLevelLS(s, defaultLevel);
@@ -193,12 +193,12 @@ void Level::toString(std::basic_string<UniChar>& dst) const
 #endif
 
 #if LOG4CXX_CFSTRING_API
-const LevelPtr& Level::toLevel(const CFStringRef& sArg)
+LevelPtr Level::toLevel(const CFStringRef& sArg)
 {
 	return toLevel(sArg, Level::getDebug());
 }
 
-const LevelPtr& Level::toLevel(const CFStringRef& sArg, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevel(const CFStringRef& sArg, const LevelPtr& defaultLevel)
 {
 	LogString s;
 	Transcoder::decode(sArg, s);
@@ -212,7 +212,7 @@ void Level::toString(CFStringRef& dst) const
 #endif
 
 
-const LevelPtr& Level::toLevelLS(const LogString& sArg, const LevelPtr& defaultLevel)
+LevelPtr Level::toLevelLS(const LogString& sArg, const LevelPtr& defaultLevel)
 {
 	const LogString trimmed(StringHelper::trim(sArg));
 	const size_t len = trimmed.length();
@@ -276,11 +276,11 @@ const LevelPtr& Level::toLevelLS(const LogString& sArg, const LevelPtr& defaultL
 
 bool Level::equals(const LevelPtr& level1) const
 {
-	return (this->level == level1->level);
+	return level1 && this->level == level1->level;
 }
 
 bool Level::isGreaterOrEqual(const LevelPtr& level1) const
 {
-	return this->level >= level1->level;
+	return level1 && this->level >= level1->level;
 }
 
