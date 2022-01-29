@@ -55,6 +55,8 @@ try_compile(STD_SHARED_PTR_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tes
 try_compile(STD_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-stdatomic.cpp")
 
+# search for boost only in case needed for legacy c++ standard < c++17
+if(NOT ${STD_THREAD_FOUND} OR NOT ${STD_MUTEX_FOUND} OR NOT ${STD_SHARED_MUTEX_FOUND} OR NOT ${STD_SHARED_PTR_FOUND} OR NOT ${STD_ATOMIC_FOUND})
 find_package(Boost COMPONENTS thread)
 if( ${Boost_FOUND} )
     try_compile(Boost_SHARED_PTR_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
@@ -67,6 +69,7 @@ if( ${Boost_FOUND} )
     try_compile(Boost_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
         "${CMAKE_CURRENT_LIST_DIR}/test-boostatomic.cpp")
 endif( ${Boost_FOUND} )
+endif()
 
 # Link the target with the appropriate boost libraries(if required)
 function(boostfallback_link target)
