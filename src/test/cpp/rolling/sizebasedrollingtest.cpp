@@ -231,7 +231,7 @@ public:
 
 		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
-
+		swrp->setCreateIntermediateDirectories(false);
 		sbtp->setMaxFileSize(100);
 		swrp->setMinIndex(0);
 
@@ -270,7 +270,7 @@ public:
 
 		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 		SizeBasedTriggeringPolicyPtr sbtp = SizeBasedTriggeringPolicyPtr(new SizeBasedTriggeringPolicy());
-
+		swrp->setCreateIntermediateDirectories(false);
 		sbtp->setMaxFileSize(100);
 		swrp->setMinIndex(0);
 

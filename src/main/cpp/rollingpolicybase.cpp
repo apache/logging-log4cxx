@@ -39,7 +39,7 @@ IMPLEMENT_LOG4CXX_OBJECT(RollingPolicyBase)
 
 RollingPolicyBase::RollingPolicyBase()
 {
-	createIntermediateDirectories = false;
+	createIntermediateDirectories = true;
 }
 
 RollingPolicyBase::~RollingPolicyBase()

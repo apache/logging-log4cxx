@@ -217,7 +217,7 @@ public:
 		rfa->setFile(LOG4CXX_STR("output/manual-test4.log"));
 
 		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
-
+		swrp->setCreateIntermediateDirectories(false);
 		swrp->setMinIndex(0);
 
 		//
@@ -322,7 +322,6 @@ public:
 
 		FixedWindowRollingPolicyPtr swrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
 		swrp->setMinIndex(0);
-		swrp->setCreateIntermediateDirectories(true);
 
 		std::random_device dev;
 		std::mt19937 rng(dev());
