@@ -18,8 +18,9 @@ on:
   push:
     branches:
       - master
-  pull_request:
-    types: [opened, synchronize, reopened]
+      - next_stable
+#  pull_request:
+#    types: [opened, synchronize, reopened]
 
 jobs:
   build:
