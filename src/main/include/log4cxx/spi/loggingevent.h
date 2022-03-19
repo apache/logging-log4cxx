@@ -117,6 +117,12 @@ class LOG4CXX_EXPORT LoggingEvent :
 			return threadName;
 		}
 
+		/**
+		 * Get the user name of the thread.  The default name is (noname) if
+		 * Log4cxx is unable to retrieve the name using a platform-specific call.
+		 */
+		const LogString& getThreadUserName() const;
+
 		/** The number of microseconds elapsed from 01.01.1970 until logging event
 		 was created. */
 		inline log4cxx_time_t getTimeStamp() const
@@ -248,8 +254,17 @@ class LOG4CXX_EXPORT LoggingEvent :
 
 		/** The identifier of thread in which this logging event
 		was generated.
+		Note: This is the thread ID in hex.
+		See also LoggingEvent::threadUserName
 		*/
 		const LogString threadName;
+
+		/**
+		 * The user-specified name of the thread(on a per-platform basis).
+		 * This is set using a method such as pthread_setname_np on POSIX
+		 * systems or SetThreadDescription on Windows.
+		 */
+		const LogString threadUserName;
 
 		//
 		//   prevent copy and assignment
@@ -257,6 +272,7 @@ class LOG4CXX_EXPORT LoggingEvent :
 		LoggingEvent(const LoggingEvent&);
 		LoggingEvent& operator=(const LoggingEvent&);
 		static const LogString getCurrentThreadName();
+		static const LogString getCurrentThreadUserName();
 
 		static void writeProlog(log4cxx::helpers::ObjectOutputStream& os, log4cxx::helpers::Pool& p);
 
