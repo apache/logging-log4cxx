@@ -84,7 +84,7 @@ LOGUNIT_CLASS(PatternParserTestCase)
 public:
 	void setUp()
 	{
-		LogString threadName = "log4cxx-thr";
+		LogString threadName = LOG4CXX_STR("log4cxx-thr");
 
 #if LOG4CXX_HAS_PTHREAD_SETNAME
 	if( pthread_setname_np( pthread_self(), threadName.c_str() ) < 0 ){
