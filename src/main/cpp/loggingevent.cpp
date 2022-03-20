@@ -268,7 +268,7 @@ const LogString LoggingEvent::getCurrentThreadUserName()
 
 	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
 #elif LOG4CXX_HAS_GETTHREADDESCRIPTION
-	char* result;
+	PWSTR result;
 	HANDLE threadId = GetCurrentThread();
 	if( GetThreadDescription( threadId, &result ) == 0 ){
 		// Success
