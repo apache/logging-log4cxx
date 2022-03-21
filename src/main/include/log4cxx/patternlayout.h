@@ -206,8 +206,12 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  *      </td>
  *  </tr>
  *  <tr>
- *      <td align="center"><strong>t</strong></td>
- *      <td>Used to output the name of the thread that generated the logging event.</td>
+ *      <td align="center"><strong>t</strong><p><strong>thread</strong></p></td>
+ *      <td>Used to output the ID of the thread that generated the logging event.</td>
+ *  </tr>
+ *  <tr>
+ *      <td align="center"><strong>T</strong><p><strong>threadname</strong></p></td>
+ *      <td>Used to output the name of the thread that generated the logging event.  May not be available on all platforms.</td>
  *  </tr>
  *  <tr>
  *      <td align="center"><strong>x</strong></td>

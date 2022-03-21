@@ -77,7 +77,8 @@ LoggingEvent::LoggingEvent(
 	message(message1),
 	timeStamp(apr_time_now()),
 	locationInfo(locationInfo1),
-	threadName(getCurrentThreadName())
+	threadName(getCurrentThreadName()),
+	threadUserName(getCurrentThreadUserName())
 {
 }
 
@@ -86,6 +87,10 @@ LoggingEvent::~LoggingEvent()
 	delete ndc;
 	delete mdcCopy;
 	delete properties;
+}
+
+const LogString& LoggingEvent::getThreadUserName() const{
+	return threadUserName;
 }
 
 bool LoggingEvent::getNDC(LogString& dest) const
@@ -247,6 +252,36 @@ const LogString LoggingEvent::getCurrentThreadName()
 #endif /* APR_HAS_THREADS */
 }
 
+const LogString LoggingEvent::getCurrentThreadUserName()
+{
+	LOG4CXX_THREAD_LOCAL LogString thread_name;
+	if( thread_name.size() ){
+		return thread_name;
+	}
+
+#if LOG4CXX_HAS_PTHREAD_GETNAME
+	char result[16];
+	pthread_t current_thread = pthread_self();
+	if( pthread_getname_np( current_thread, result, sizeof(result) ) < 0 ){
+		thread_name = LOG4CXX_STR("(noname)");
+	}
+
+	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
+#elif LOG4CXX_HAS_GETTHREADDESCRIPTION
+	PWSTR result;
+	HANDLE threadId = GetCurrentThread();
+	if( GetThreadDescription( threadId, &result ) == 0 ){
+		// Success
+		log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
+		LocalFree(result);
+	}else{
+		thread_name = LOG4CXX_STR("(noname)");
+	}
+#else
+	thread_name = LOG4CXX_STR("(noname)");
+#endif
+	return thread_name;
+}
 
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
 {
