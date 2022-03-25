@@ -23,13 +23,14 @@
 #endif
 
 #include <list>
+#include <log4cxx/helpers/date.h>
 
 extern "C" {
 	typedef struct apr_thread_mutex_t apr_thread_mutex_t;
 	typedef struct apr_threadkey_t apr_threadkey_t;
+	struct apr_pool_t;
 }
 
-#include <apr_time.h>
 #include <mutex>
 
 namespace log4cxx
@@ -61,7 +62,7 @@ class APRInitializer
 		apr_pool_t* p;
 		std::mutex mutex;
 		std::list<FileWatchdog*> watchdogs;
-		apr_time_t startTime;
+		log4cxx_time_t startTime;
 		apr_threadkey_t* tlsKey;
 		static APRInitializer& getInstance();
 
