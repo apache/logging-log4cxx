@@ -24,6 +24,7 @@
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/rolling/timebasedrollingpolicy.h>
 #include <log4cxx/helpers/simpledateformat.h>
+#include <log4cxx/helpers/date.h>
 #include <iostream>
 #include <log4cxx/helpers/stringhelper.h>
 #include "../util/compare.h"
@@ -73,11 +74,11 @@ LOGUNIT_CLASS(TimeBasedRollingTest)
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test3);
-	LOGUNIT_TEST(test4);
+//	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(test5);
 	LOGUNIT_TEST(test6);
-	LOGUNIT_TEST(test7);
-//	LOGUNIT_TEST(create_directories);
+//	LOGUNIT_TEST(test7);
+	LOGUNIT_TEST(create_directories);
 	LOGUNIT_TEST_SUITE_END();
 
 private:
@@ -90,6 +91,8 @@ private:
 	 * </p>
 	 */
 	size_t num_test;
+
+	log4cxx_time_t current_time;
 
 	/**
 	 * Build file names with timestamps.
@@ -127,7 +130,7 @@ private:
 		bool        startInFuture   = false)
 	{
 		SimpleDateFormat    sdf(DATE_PATTERN_STR);
-		apr_time_t          now(apr_time_now());
+		log4cxx_time_t      now(current_time);
 		LogString           ext(withCompression ? LOG4CXX_STR(".gz") : LOG4CXX_STR(""));
 
 		now += startInFuture ? APR_USEC_PER_SEC : 0;
@@ -197,7 +200,7 @@ private:
 			message.append(pool.itoa(i));
 
 			LOG4CXX_DEBUG(logger, message);
-			apr_sleep(APR_USEC_PER_SEC * waitFactor);
+			current_time += (APR_USEC_PER_SEC * waitFactor);
 		}
 
 #undef  LOG4CXX_LOCATION
@@ -299,12 +302,9 @@ private:
 	 * </p>
 	 * @param[in,opt] millis
 	 */
-	void delayUntilNextSecond(size_t millis = 100)
+	void delayUntilNextSecond()
 	{
-		apr_time_t now  = apr_time_now();
-		apr_time_t next = ((now / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC + millis * 1000L;
-
-		apr_sleep(next - now);
+		current_time += APR_USEC_PER_SEC;
 	}
 
 	/**
@@ -315,11 +315,10 @@ private:
 	 * </p>
 	 * @param[in,opt] millis
 	 */
-	void delayUntilNextSecondWithMsg(size_t millis = 100)
+	void delayUntilNextSecondWithMsg()
 	{
-		std::cout << "Waiting until next second and " << millis << " millis.";
-		delayUntilNextSecond(millis);
-		std::cout << "Done waiting." << std::endl;
+		std::cout << "Advancing one second\n";
+		delayUntilNextSecond();
 	}
 
 	/**
@@ -385,6 +384,11 @@ public:
 		this->num_test = tc->suite->num_test;
 	}
 
+	log4cxx_time_t currentTime()
+	{
+		return current_time;
+	}
+
 	void setUp()
 	{
 		LoggerPtr root(Logger::getRootLogger());
@@ -393,6 +397,11 @@ public:
 					PatternLayoutPtr(new PatternLayout(
 							LOG4CXX_STR("%d{ABSOLUTE} [%t] %level %c{2}#%M:%L - %m%n"))))));
 		this->internalSetUp(this->num_test);
+//		current_time = log4cxx::helpers::Date::currentTime(); // Start at "about" now.
+//		current_time -= (current_time % APR_USEC_PER_SEC); // Go to the top of the second
+//		current_time++; // Need to not be at the top of a second for rollover logic to work correctly
+		current_time = 1; // Start at about unix epoch
+		log4cxx::helpers::Date::setGetCurrentTimeFunction( std::bind( &TimeBasedRollingTest::currentTime, this ) );
 	}
 
 	void tearDown()
@@ -413,6 +422,7 @@ public:
 		PatternLayoutPtr        layout( new PatternLayout(PATTERN_LAYOUT));
 		RollingFileAppenderPtr  rfa(    new RollingFileAppender());
 		rfa->setLayout(layout);
+		rfa->setAppend(false);
 
 		TimeBasedRollingPolicyPtr tbrp(new TimeBasedRollingPolicy());
 		tbrp->setFileNamePattern(LOG4CXX_STR("output/test1-%d{" DATE_PATTERN "}"));
@@ -427,6 +437,7 @@ public:
 		this->compareWitnesses( pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
 	}
 
+
 	/**
 	 * No compression, with stop/restart, activeFileName left blank
 	 */
@@ -439,6 +450,7 @@ public:
 		PatternLayoutPtr        layout1(new PatternLayout(PATTERN_LAYOUT));
 		RollingFileAppenderPtr  rfa1(   new RollingFileAppender());
 		rfa1->setLayout(layout1);
+		rfa1->setAppend(false);
 
 		TimeBasedRollingPolicyPtr tbrp1(new TimeBasedRollingPolicy());
 		tbrp1->setFileNamePattern(LOG4CXX_STR("output/test2-%d{" DATE_PATTERN "}"));
@@ -463,11 +475,13 @@ public:
 		tbrp2->activateOptions(pool);
 		rfa2->setRollingPolicy(tbrp2);
 		rfa2->activateOptions(pool);
+		rfa2->setAppend(false);
 		logger->addAppender(rfa2);
 
 		this->logMsgAndSleep(   pool, 2, __LOG4CXX_FUNC__, __LINE__, 3);
 		this->compareWitnesses( pool, LOG4CXX_STR("test2."), fileNames, __LINE__);
 	}
+
 
 	/**
 	 * With compression, activeFileName left blank, no stop/restart
@@ -499,6 +513,10 @@ public:
 
 	/**
 	 * Without compression, activeFileName set,  with stop/restart
+	 *
+	 * Note: because this test stops and restarts, it is not possible to use the
+	 * date pattern in the filenames, as log4cxx will use the file's last modified
+	 * time when rolling over and determining the new filename.
 	 */
 	void test4()
 	{
@@ -648,13 +666,15 @@ public:
 		std::random_device dev;
 		std::mt19937 rng(dev());
 		std::uniform_int_distribution<std::mt19937::result_type> dist(1,100000);
-		LogString filenamePattern = LOG4CXX_STR("output/tbrolling-directory-");
+		LogString filenamePattern = LOG4CXX_STR("output/");
 #if LOG4CXX_LOGCHAR_IS_WCHAR
 		LogString dirNumber = std::to_wstring(dist(rng));
 #else
 		LogString dirNumber = std::to_string(dist(rng));
 #endif
-		filenamePattern.append( dirNumber );
+		LogString directoryName = LOG4CXX_STR("tbrolling-directory-");
+		directoryName.append( dirNumber );
+		filenamePattern.append( directoryName );
 		LogString filenamePatternPrefix = filenamePattern;
 		filenamePattern.append( LOG4CXX_STR("/file-%d{" DATE_PATTERN "}") );
 
@@ -665,15 +685,17 @@ public:
 		rfa->activateOptions(pool);
 		logger->addAppender(rfa);
 
-		this->buildTsFileNames(pool, filenamePatternPrefix.append(LOG4CXX_STR("/file-")).data(), fileNames);
+		this->buildTsFileNames(pool, directoryName.append(LOG4CXX_STR("/file-")).data(), fileNames);
 		this->delayUntilNextSecondWithMsg();
 		this->logMsgAndSleep(   pool, nrOfFileNames + 1, __LOG4CXX_FUNC__, __LINE__);
 //		this->compareWitnesses( pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
 
-		for( size_t x = 0; x < nrOfFileNames - 1; x++ ){
+		fileNames[3] = LOG4CXX_STR("output/timebasedrolling_create_dir.log");
+		for( size_t x = 0; x < nrOfFileNames; x++ ){
 			LOGUNIT_ASSERT_EQUAL(true, File(fileNames[x]).exists(pool));
 		}
 	}
+
 };
 
 LoggerPtr TimeBasedRollingTest::logger(Logger::getLogger("org.apache.log4j.TimeBasedRollingTest"));
