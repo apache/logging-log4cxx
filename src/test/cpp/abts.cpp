@@ -101,14 +101,14 @@ static void end_suite(abts_suite* suite)
 			fflush(stdout);
 		}
 
-		if (last->failed == 0)
+		if (last->failed.size() == 0)
 		{
 			fprintf(stdout, "SUCCESS\n");
 			fflush(stdout);
 		}
 		else
 		{
-			fprintf(stdout, "FAILED %d of %d\n", last->failed, last->num_test);
+			fprintf(stdout, "FAILED %d of %d\n", last->failed.size(), last->num_test);
 			fflush(stdout);
 		}
 	}
@@ -129,7 +129,7 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 
 	subsuite = (sub_suite*) malloc(sizeof(*subsuite));
 	subsuite->num_test = 0;
-	subsuite->failed = 0;
+	subsuite->failed.clear();
 	subsuite->next = NULL;
 	/* suite_name_full may be an absolute path depending on __FILE__
 	 * expansion */
@@ -189,7 +189,7 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 	return suite;
 }
 
-void abts_run_test(abts_suite* ts, test_func f, void* value)
+void abts_run_test(abts_suite* ts, const char* name, test_func f, void* value)
 {
 	abts_case tc;
 	sub_suite* ss;
@@ -211,7 +211,7 @@ void abts_run_test(abts_suite* ts, test_func f, void* value)
 
 	if (tc.failed)
 	{
-		ss->failed++;
+		ss->failed.push_back(name);
 	}
 }
 
@@ -227,7 +227,7 @@ static int report(abts_suite* suite)
 
 	for (dptr = suite->head; dptr; dptr = dptr->next)
 	{
-		count += dptr->failed;
+		count += dptr->failed.size();
 	}
 
 	if (list_tests)
@@ -247,11 +247,14 @@ static int report(abts_suite* suite)
 
 	while (dptr != NULL)
 	{
-		if (dptr->failed != 0)
+		if (dptr->failed.size() != 0)
 		{
-			float percent = ((float)dptr->failed / (float)dptr->num_test);
+			float percent = ((float)dptr->failed.size() / (float)dptr->num_test);
 			fprintf(stdout, "%-15s\t\t%5d\t%4d\t%6.2f%%\n", dptr->name,
-				dptr->num_test, dptr->failed, percent * 100);
+				dptr->num_test, dptr->failed.size(), percent * 100);
+			for( const char* failed_name : dptr->failed ){
+				fprintf(stdout, "  %s\n", failed_name );
+			}
 		}
 
 		dptr = dptr->next;
