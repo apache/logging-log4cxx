@@ -127,7 +127,7 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 		end_suite(suite);
 	}
 
-	subsuite = (sub_suite*) malloc(sizeof(*subsuite));
+	subsuite = new sub_suite();
 	subsuite->num_test = 0;
 	subsuite->failed.clear();
 	subsuite->next = NULL;
@@ -165,7 +165,7 @@ abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name_full)
 
 	if (suite == NULL)
 	{
-		suite = (abts_suite*) malloc(sizeof(*suite));
+		suite = new abts_suite();
 		suite->head = subsuite;
 		suite->tail = subsuite;
 	}
@@ -600,16 +600,17 @@ int main(int argc, const char* const argv[])
 		//
 		//    clean up suite
 		//
-		sub_suite* next;
+		// We're about to exit, who cares about memory leaks?
+//		sub_suite* next;
 
-		for (sub_suite* head = suite->head; head != NULL; head = next)
-		{
-			next = head->next;
-			free((void*) head->name);
-			free(head);
-		}
+//		for (sub_suite* head = suite->head; head != NULL; head = next)
+//		{
+//			next = head->next;
+//			delete[] head->name;
+//			delete head;
+//		}
 
-		free(suite);
+//		delete suite;
 	}
 
 	return rv;
