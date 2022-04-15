@@ -21,15 +21,13 @@ Building {#building}
  limitations under the License.
 -->
 
-# Building Apache log4cxx
+# Building Apache Log4cxx
 
-The project supports different build tools on different platforms, have a
-look at the menu to find the platform you need. If your environment is not
-covered already, feel free to ask about it on one of the Mailing Lists or
-leave a bug in our Issue Tracker. In this case it would be very helpful of
-course if you could already provide some patches to support your environment
-or at least provide some technical details about the build tools, compiler
-etc. you use.
+As of version 0.11.0, the only supported build system for Log4cxx is CMake.
+Have a look at the [build with CMake](build-cmake.html) page for more
+information.  If you have trouble building, either create an issue in
+[Jira](https://issues.apache.org/jira/projects/LOGCXX/issues) or send a
+message to the [users mailing list].
 
 ## Covered by the team
 
@@ -46,6 +44,8 @@ The following platforms/compilers are expected to work correctly:
 * Ubuntu 20.04(32 and 64-bit) - gcc, clang
 * Mac OSX - clang
 
-Various Linux distributions already have log4cxx as part of their package
+Various Linux distributions already have Log4cxx as part of their package
 managers - consult the documentation for your distribution to determine
 if a package already exists.
+
+[users mailing list]:@ref mailing-lists

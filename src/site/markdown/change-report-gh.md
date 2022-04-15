@@ -25,7 +25,8 @@ Changelog {#changelog}
 
 | Version                                                                                | Date       | Description          |
 | -------------------------------------------------------------------------------------- | ---------- | -------------------- |
-| [0.12.1](#0.12.1) | 2021-??-?? | Bugfix for 0.12.0 |
+| [0.13.0](#0.13.0) | 2022-??-?? | Maintenance release  |
+| [0.12.1](#0.12.1) | 2021-09-21 | Bugfix for 0.12.0 |
 | [0.12.0](#0.12.0) | 2021-05-01 | First release to require C++11. Updates for smart pointers.  Standardization on CMake for building. |
 | [0.11.0](#0.11.0) | 2020-08-09 | Maintenance release. |
 | [0.10.0](#0.10.0) | 2008-04-03 | First Apache release |
@@ -41,8 +42,77 @@ Changelog {#changelog}
 | [0.1.0](#0.1.0)   | 2003-07-08 |                      |
 | [0.0.1](#0.0.1)   | 2003-05-31 |                      |
 
+<a name="0.13.0"/>
+## Release 0.13.1 - 2022-??-??
+
+This release fixes a number of issues.  Notable new features include the
+ability to block signals from threads that the library creates, automatic
+creation of log directories, new color patterns, and the ability to determine
+the library version at compile and run-time.
+
+Bug
+---
+
+-   \[[LOGCXX-102](https://issues.apache.org/jira/browse/LOGCXX-102)\] -
+    PropertyConfigurator does not process the RollingFileAppender
+    options
+-   \[[LOGCXX-387](https://issues.apache.org/jira/browse/LOGCXX-387)\] -
+    SocketAppenderSkeleton re-connects only once
+-   \[[LOGCXX-431](https://issues.apache.org/jira/browse/LOGCXX-431)\] -
+    When log4cxx creates a thread, it doesn\'t block signals it\'s not
+    using, leading to unreliable signal delivery for the calling
+    process.
+-   \[[LOGCXX-519](https://issues.apache.org/jira/browse/LOGCXX-519)\] -
+    Version11 - \"INSTALL.TXT\" and \"vstudio.apt\" miss explenation for
+    generating the log4cxx.dll
+-   \[[LOGCXX-525](https://issues.apache.org/jira/browse/LOGCXX-525)\] -
+    Compressing log files does not create directories
+-   \[[LOGCXX-536](https://issues.apache.org/jira/browse/LOGCXX-536)\] -
+    CMakeLists.txt install pgkconfig and cmake modue to wrong place
+-   \[[LOGCXX-537](https://issues.apache.org/jira/browse/LOGCXX-537)\] -
+    double mutex lock
+-   \[[LOGCXX-540](https://issues.apache.org/jira/browse/LOGCXX-540)\] -
+    propertiestestcase.properties contains CRLF, does not well play with
+    git
+-   \[[LOGCXX-543](https://issues.apache.org/jira/browse/LOGCXX-543)\] -
+    Some tests can fail when there is a \"Q\" in the pathname
+-   \[[LOGCXX-546](https://issues.apache.org/jira/browse/LOGCXX-546)\] -
+    Multi threaded applications run at single threaded speed
+
+New Feature
+-----------
+
+-   \[[LOGCXX-529](https://issues.apache.org/jira/browse/LOGCXX-529)\] -
+    Support color and highlight conversion patterns
+
+Improvement
+-----------
+
+-   \[[LOGCXX-337](https://issues.apache.org/jira/browse/LOGCXX-337)\] -
+    Suggested fix for socketappender not reconnecting multiple times
+-   \[[LOGCXX-538](https://issues.apache.org/jira/browse/LOGCXX-538)\] -
+    Tests cannot be run in parallel
+-   \[[LOGCXX-539](https://issues.apache.org/jira/browse/LOGCXX-539)\] -
+    Allow distribustion log4j to be used for socketservertest
+-   \[[LOGCXX-547](https://issues.apache.org/jira/browse/LOGCXX-547)\] -
+    Allow for hiding of location data
+-   \[[LOGCXX-548](https://issues.apache.org/jira/browse/LOGCXX-548)\] -
+    Doxygen documentation is not reproducible
+-   \[[LOGCXX-550](https://issues.apache.org/jira/browse/LOGCXX-550)\] -
+    Add ability to get thread name not just ID
+
+Wish
+----
+
+-   \[[LOGCXX-544](https://issues.apache.org/jira/browse/LOGCXX-544)\] -
+    Please embedd library version in a header
+-   \[[LOGCXX-551](https://issues.apache.org/jira/browse/LOGCXX-551)\] -
+    CMake documented build option for Boost vs C++17 Implementation for
+    shared\_mutex
+
+
 <a name="0.12.0"/>
-## Release 0.12.1 - 2021-??-??
+## Release 0.12.1 - 2021-09-21
 
 This is a minor bugfix release to fix issues found with 0.12.0.  Notably, this version fixes a bug
 where a multithreaded application would crash when using a rolling file.
