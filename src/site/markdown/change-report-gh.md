@@ -25,7 +25,7 @@ Changelog {#changelog}
 
 | Version                                                                                | Date       | Description          |
 | -------------------------------------------------------------------------------------- | ---------- | -------------------- |
-| [0.13.0](#0.13.0) | 2022-??-?? | Maintenance release  |
+| [0.13.0](#0.13.0) | 2022-04-15 | Maintenance release  |
 | [0.12.1](#0.12.1) | 2021-09-21 | Bugfix for 0.12.0 |
 | [0.12.0](#0.12.0) | 2021-05-01 | First release to require C++11. Updates for smart pointers.  Standardization on CMake for building. |
 | [0.11.0](#0.11.0) | 2020-08-09 | Maintenance release. |
@@ -43,7 +43,7 @@ Changelog {#changelog}
 | [0.0.1](#0.0.1)   | 2003-05-31 |                      |
 
 <a name="0.13.0"/>
-## Release 0.13.1 - 2022-??-??
+## Release 0.13.1 - 2022-04-15
 
 This release fixes a number of issues.  Notable new features include the
 ability to block signals from threads that the library creates, automatic
