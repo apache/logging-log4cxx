@@ -43,7 +43,7 @@ Changelog {#changelog}
 | [0.0.1](#0.0.1)   | 2003-05-31 |                      |
 
 <a name="0.13.0"/>
-## Release 0.13.1 - 2022-04-15
+## Release 0.13.0 - 2022-04-15
 
 This release fixes a number of issues.  Notable new features include the
 ability to block signals from threads that the library creates, automatic
