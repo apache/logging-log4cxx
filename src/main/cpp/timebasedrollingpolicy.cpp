@@ -341,6 +341,12 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	LogString nextActiveFile(
 		newFileName.substr(0, newFileName.length() - suffixLength));
 
+	if(getCreateIntermediateDirectories()){
+		File compressedFile(lastFileName);
+		File compressedParent (compressedFile.getParent(pool));
+		compressedParent.mkdirs(pool);
+	}
+
 	//
 	//   if currentActiveFile is not lastBaseName then
 	//        active file name is not following file pattern

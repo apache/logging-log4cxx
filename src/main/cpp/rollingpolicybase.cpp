@@ -28,6 +28,7 @@
 #include <log4cxx/pattern/patternparser.h>
 #include <log4cxx/pattern/integerpatternconverter.h>
 #include <log4cxx/pattern/datepatternconverter.h>
+#include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/private/rollingpolicybase_priv.h>
 
 using namespace log4cxx;
@@ -74,6 +75,11 @@ void RollingPolicyBase::setOption(const LogString& option, const LogString& valu
 			LOG4CXX_STR("filenamepattern")))
 	{
 		m_priv->fileNamePatternStr = value;
+	}else if (StringHelper::equalsIgnoreCase(option,
+			LOG4CXX_STR("CREATEINTERMEDIATEDIRECTORIES"),
+			LOG4CXX_STR("createintermediatedirectories")))
+	{
+		m_priv->createIntermediateDirectories = OptionConverter::toBoolean(value, false);
 	}
 }
 
@@ -167,6 +173,14 @@ PatternConverterPtr RollingPolicyBase::getDatePatternConverter() const
 
 	PatternConverterPtr noMatch;
 	return noMatch;
+}
+
+bool RollingPolicyBase::getCreateIntermediateDirectories() const{
+	return m_priv->createIntermediateDirectories;
+}
+
+void RollingPolicyBase::setCreateIntermediateDirectories(bool createIntermediate){
+	m_priv->createIntermediateDirectories = createIntermediate;
 }
 
 

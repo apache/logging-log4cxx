@@ -161,6 +161,7 @@ target_sources(log4cxx
   telnetappender.cpp
   threadlocal.cpp
   threadpatternconverter.cpp
+  threadusernamepatternconverter.cpp
   threadspecificdata.cpp
   threadutility.cpp
   throwableinformationpatternconverter.cpp

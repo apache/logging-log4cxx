@@ -49,6 +49,7 @@
 #include <log4cxx/pattern/ndcpatternconverter.h>
 #include <log4cxx/pattern/propertiespatternconverter.h>
 #include <log4cxx/pattern/throwableinformationpatternconverter.h>
+#include <log4cxx/pattern/threadusernamepatternconverter.h>
 
 
 using namespace log4cxx;
@@ -214,6 +215,9 @@ log4cxx::pattern::PatternMap PatternLayout::getFormatSpecifiers()
 
 	RULES_PUT("t", ThreadPatternConverter);
 	RULES_PUT("thread", ThreadPatternConverter);
+
+	RULES_PUT("T", ThreadUsernamePatternConverter);
+	RULES_PUT("threadname", ThreadUsernamePatternConverter);
 
 	RULES_PUT("x", NDCPatternConverter);
 	RULES_PUT("ndc", NDCPatternConverter);

@@ -31,6 +31,7 @@
 
 #include <apr_strings.h>
 #include <apr_time.h>
+#include <random>
 #ifndef INT64_C
 	#define INT64_C(x) x ## LL
 #endif
@@ -76,6 +77,7 @@ LOGUNIT_CLASS(TimeBasedRollingTest)
 	LOGUNIT_TEST(test5);
 	LOGUNIT_TEST(test6);
 	LOGUNIT_TEST(test7);
+//	LOGUNIT_TEST(create_directories);
 	LOGUNIT_TEST_SUITE_END();
 
 private:
@@ -629,6 +631,47 @@ public:
 			this->internalSetUp(numTest);
 			(this->*test)();
 			this->internalTearDown();
+		}
+	}
+
+	void create_directories()
+	{
+		Pool        pool;
+		const   size_t      nrOfFileNames = 4;
+		LogString   fileNames[nrOfFileNames];
+
+		PatternLayoutPtr        layout( new PatternLayout(PATTERN_LAYOUT));
+		RollingFileAppenderPtr  rfa(    new RollingFileAppender());
+		rfa->setLayout(layout);
+		rfa->setFile(LOG4CXX_STR("output/timebasedrolling_create_dir.log"));
+
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_int_distribution<std::mt19937::result_type> dist(1,100000);
+		LogString filenamePattern = LOG4CXX_STR("output/tbrolling-directory-");
+#if LOG4CXX_LOGCHAR_IS_WCHAR
+		LogString dirNumber = std::to_wstring(dist(rng));
+#else
+		LogString dirNumber = std::to_string(dist(rng));
+#endif
+		filenamePattern.append( dirNumber );
+		LogString filenamePatternPrefix = filenamePattern;
+		filenamePattern.append( LOG4CXX_STR("/file-%d{" DATE_PATTERN "}") );
+
+		TimeBasedRollingPolicyPtr tbrp(new TimeBasedRollingPolicy());
+		tbrp->setFileNamePattern(filenamePattern);
+		tbrp->activateOptions(pool);
+		rfa->setRollingPolicy(tbrp);
+		rfa->activateOptions(pool);
+		logger->addAppender(rfa);
+
+		this->buildTsFileNames(pool, filenamePatternPrefix.append(LOG4CXX_STR("/file-")).data(), fileNames);
+		this->delayUntilNextSecondWithMsg();
+		this->logMsgAndSleep(   pool, nrOfFileNames + 1, __LOG4CXX_FUNC__, __LINE__);
+//		this->compareWitnesses( pool, LOG4CXX_STR("test1."), fileNames, __LINE__);
+
+		for( size_t x = 0; x < nrOfFileNames - 1; x++ ){
+			LOGUNIT_ASSERT_EQUAL(true, File(fileNames[x]).exists(pool));
 		}
 	}
 };
