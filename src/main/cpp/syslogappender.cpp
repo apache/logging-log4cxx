@@ -23,6 +23,7 @@
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/patternlayout.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
@@ -69,7 +70,7 @@ SyslogAppender::SyslogAppender()
 	: syslogFacility(LOG_USER), facilityPrinting(false), sw(0), maxMessageLength(1024)
 {
 	this->initSyslogFacilityStr();
-
+	this->layout = LayoutPtr(new PatternLayout("%m"));
 }
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
@@ -326,11 +327,17 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 		while ( start != msg.end() )
 		{
-			LogString::iterator end = start + maxMessageLength - 12;
+			LogString::iterator end;// = start + maxMessageLength - 12;
 
-			if ( end > msg.end() )
-			{
+//			if ( end > msg.end() )
+//			{
+//				end = msg.end();
+//			}
+
+			if( msg.size() > (maxMessageLength - MINIMUM_MESSAGE_SIZE) ) {
 				end = msg.end();
+			}else{
+				end = start + maxMessageLength - MINIMUM_MESSAGE_SIZE;
 			}
 
 			LogString newMsg = LogString( start, end );

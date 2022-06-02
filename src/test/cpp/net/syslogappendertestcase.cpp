@@ -21,6 +21,7 @@
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
+using namespace log4cxx::net;
 
 /**
    Unit tests of log4cxx::SyslogAppender
@@ -33,7 +34,7 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 		//
 		LOGUNIT_TEST(testDefaultThreshold);
 		LOGUNIT_TEST(testSetOptionThreshold);
-
+		LOGUNIT_TEST(testLargeMessage);
 		LOGUNIT_TEST_SUITE_END();
 
 
@@ -42,6 +43,17 @@ class SyslogAppenderTestCase : public AppenderSkeletonTestCase
 		AppenderSkeleton* createAppenderSkeleton() const
 		{
 			return new log4cxx::net::SyslogAppender();
+		}
+
+		void testLargeMessage() {
+			SyslogAppenderPtr syslogAppender =
+					SyslogAppenderPtr(new SyslogAppender());
+
+			syslogAppender->setMaxMessageLength(20);
+
+			Logger::getRootLogger()->addAppender(syslogAppender);
+
+			Logger::getRootLogger()->error( LOG4CXX_STR( "This is a message over 20 characters in length so we can test stuff" ) );
 		}
 };
 

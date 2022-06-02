@@ -42,6 +42,9 @@ namespace net
  * When the message is too large for the current MaxMessageLength,
  * the packet number and total # will be appended to the end of the
  * message like this: (5/10)
+ *
+ * Note the maximum message length must be at least 12 to account
+ * for the total number of packets.
  */
 class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 {
@@ -150,6 +153,9 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 
 		inline void setMaxMessageLength(int maxMessageLength1)
 		{
+			if( maxMessageLength1 < MINIMUM_MESSAGE_SIZE ){
+				maxMessageLength1 = MINIMUM_MESSAGE_SIZE;
+			}
 			maxMessageLength = maxMessageLength1;
 		}
 
@@ -171,6 +177,8 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 	private:
 		SyslogAppender(const SyslogAppender&);
 		SyslogAppender& operator=(const SyslogAppender&);
+
+		const int MINIMUM_MESSAGE_SIZE = 12;
 }; // class SyslogAppender
 LOG4CXX_PTR_DEF(SyslogAppender);
 } // namespace net
