@@ -327,12 +327,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 		while ( start != msg.end() )
 		{
-			LogString::iterator end;// = start + maxMessageLength - 12;
-
-//			if ( end > msg.end() )
-//			{
-//				end = msg.end();
-//			}
+			LogString::iterator end;
 
 			if( msg.size() > (maxMessageLength - MINIMUM_MESSAGE_SIZE) ) {
 				end = msg.end();
