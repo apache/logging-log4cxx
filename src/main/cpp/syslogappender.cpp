@@ -70,7 +70,7 @@ SyslogAppender::SyslogAppender()
 	: syslogFacility(LOG_USER), facilityPrinting(false), sw(0), maxMessageLength(1024)
 {
 	this->initSyslogFacilityStr();
-	this->layout = LayoutPtr(new PatternLayout("%m"));
+	this->layout = LayoutPtr(new PatternLayout(LOG4CXX_STR("%m")));
 }
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,

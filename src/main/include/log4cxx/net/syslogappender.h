@@ -178,7 +178,7 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		SyslogAppender(const SyslogAppender&);
 		SyslogAppender& operator=(const SyslogAppender&);
 
-		const int MINIMUM_MESSAGE_SIZE = 12;
+		static const int MINIMUM_MESSAGE_SIZE = 12;
 }; // class SyslogAppender
 LOG4CXX_PTR_DEF(SyslogAppender);
 } // namespace net
