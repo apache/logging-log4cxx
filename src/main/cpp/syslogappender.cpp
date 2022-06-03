@@ -323,34 +323,34 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if ( msg.size() > maxMessageLength )
 	{
+		int numberOfFullChunks = msg.size() / maxMessageLength;
 		LogString::iterator start = msg.begin();
+		LogString::iterator end = msg.begin() + maxMessageLength;
+		char buf[MINIMUM_MESSAGE_SIZE];
 
-		while ( start != msg.end() )
-		{
-			LogString::iterator end;
-
-			if( msg.size() > (maxMessageLength - MINIMUM_MESSAGE_SIZE) ) {
-				end = msg.end();
-			}else{
-				end = start + maxMessageLength - MINIMUM_MESSAGE_SIZE;
-			}
-
+		for( int x = 0; x < numberOfFullChunks; x++ ){
 			LogString newMsg = LogString( start, end );
-			packets.push_back( newMsg );
-			start = end;
-		}
 
-		int current = 1;
-
-		for ( std::vector<LogString>::iterator it = packets.begin();
-			it != packets.end();
-			it++, current++ )
-		{
-			char buf[12];
-			apr_snprintf( buf, sizeof(buf), "(%d/%d)", current, packets.size() );
+			apr_snprintf( buf, sizeof(buf), "(%d/%d)", x, numberOfFullChunks + 1);
 			LOG4CXX_DECODE_CHAR(str, buf);
-			it->append( str );
+			newMsg.append( str );
+
+			packets.push_back( newMsg );
+
+			start = end;
+			end = end + maxMessageLength;
 		}
+
+		// Handle the last chunk as a special case: it will be a different size from the rest of
+		// the chunks
+		end = msg.end() - 1;
+		LogString newMsg = LogString( start, end );
+
+		apr_snprintf( buf, sizeof(buf), "(%d/%d)", numberOfFullChunks + 1, numberOfFullChunks + 1 );
+		LOG4CXX_DECODE_CHAR(str, buf);
+		newMsg.append( str );
+
+		packets.push_back( newMsg );
 	}
 	else
 	{

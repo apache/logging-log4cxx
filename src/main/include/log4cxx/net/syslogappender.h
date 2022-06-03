@@ -154,9 +154,9 @@ class LOG4CXX_EXPORT SyslogAppender : public AppenderSkeleton
 		inline void setMaxMessageLength(int maxMessageLength1)
 		{
 			if( maxMessageLength1 < MINIMUM_MESSAGE_SIZE ){
-				maxMessageLength1 = MINIMUM_MESSAGE_SIZE;
+				maxMessageLength1 = MINIMUM_MESSAGE_SIZE + 1;
 			}
-			maxMessageLength = maxMessageLength1;
+			maxMessageLength = maxMessageLength1 - MINIMUM_MESSAGE_SIZE;
 		}
 
 		inline int getMaxMessageLength() const
