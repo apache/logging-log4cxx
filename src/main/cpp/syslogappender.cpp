@@ -338,7 +338,10 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			packets.push_back( newMsg );
 
 			start = end;
-			end = end + maxMessageLength;
+			if (x != numberOfFullChunks - 1) {
+				// Note: MSVC/Windows does not like it when you seek past the end of the string
+				end = end + maxMessageLength;
+			}
 		}
 
 		// Handle the last chunk as a special case: it will be a different size from the rest of
