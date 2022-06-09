@@ -23,6 +23,7 @@
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/patternlayout.h>
 #if !defined(LOG4CXX)
 	#define LOG4CXX 1
 #endif
@@ -69,7 +70,7 @@ SyslogAppender::SyslogAppender()
 	: syslogFacility(LOG_USER), facilityPrinting(false), sw(0), maxMessageLength(1024)
 {
 	this->initSyslogFacilityStr();
-
+	this->layout = LayoutPtr(new PatternLayout(LOG4CXX_STR("%m")));
 }
 
 SyslogAppender::SyslogAppender(const LayoutPtr& layout1,
@@ -322,33 +323,37 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 
 	if ( msg.size() > maxMessageLength )
 	{
+		int numberOfFullChunks = msg.size() / maxMessageLength;
 		LogString::iterator start = msg.begin();
+		LogString::iterator end = msg.begin() + maxMessageLength;
+		char buf[MINIMUM_MESSAGE_SIZE];
 
-		while ( start != msg.end() )
-		{
-			LogString::iterator end = start + maxMessageLength - 12;
-
-			if ( end > msg.end() )
-			{
-				end = msg.end();
-			}
-
+		for( int x = 0; x < numberOfFullChunks; x++ ){
 			LogString newMsg = LogString( start, end );
-			packets.push_back( newMsg );
-			start = end;
-		}
 
-		int current = 1;
-
-		for ( std::vector<LogString>::iterator it = packets.begin();
-			it != packets.end();
-			it++, current++ )
-		{
-			char buf[12];
-			apr_snprintf( buf, sizeof(buf), "(%d/%d)", current, packets.size() );
+			apr_snprintf( buf, sizeof(buf), "(%d/%d)", x, numberOfFullChunks + 1);
 			LOG4CXX_DECODE_CHAR(str, buf);
-			it->append( str );
+			newMsg.append( str );
+
+			packets.push_back( newMsg );
+
+			start = end;
+			if (x != numberOfFullChunks - 1) {
+				// Note: MSVC/Windows does not like it when you seek past the end of the string
+				end = end + maxMessageLength;
+			}
 		}
+
+		// Handle the last chunk as a special case: it will be a different size from the rest of
+		// the chunks
+		end = msg.end() - 1;
+		LogString newMsg = LogString( start, end );
+
+		apr_snprintf( buf, sizeof(buf), "(%d/%d)", numberOfFullChunks + 1, numberOfFullChunks + 1 );
+		LOG4CXX_DECODE_CHAR(str, buf);
+		newMsg.append( str );
+
+		packets.push_back( newMsg );
 	}
 	else
 	{
