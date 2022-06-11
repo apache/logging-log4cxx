@@ -857,7 +857,19 @@ message means that the message will be logged immediately without
 consulting other filters.  Denying has the opposite affect, immediately
 dropping the log message and not consulting any other filters.
 
-See the documentation for [Filter](@ref log4cxx.Filter) for some more
+The basic filters are as follows:
+
+|Filter      |Usage        |
+|------------|-------------|
+|AndFilter   |Contains a list of filters that must all match for the message to be logged|
+|DenyAllFilter|Drop all log messages|
+|LevelMatchFilter|Given a log message at a specific log level, either accept or drop the message.  For example, this could be used to drop INFO messages at DEBUG level|
+|LevelRangeFilter|Given a log message at a specific log level, either accept or drop the message depending on if the log message is between two levels.|
+|LoggerMatchFilter|Given a log message from a specific logger, either accept or drop the message depending on if the logger matches.|
+|MapFilter   |Given a log message, accept or deny based off of values in the MDC of the log message.|
+|StringMatchFilter|Given a log message, accept or deny based off of a substring in the log message.|
+
+See the documentation for [Filter](@ref log4cxx.spi.Filter) for some more
 information, or view a [configuration sample](@ref configuration-samples).
 
 # Conclusions {#conclusions}
