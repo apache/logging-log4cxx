@@ -57,6 +57,13 @@ class LOG4CXX_EXPORT BufferedWriter : public Writer
 		virtual void flush(Pool& p);
 		virtual void write(const LogString& str, Pool& p);
 
+#ifdef LOG4CXX_MULTI_PROCESS
+		OutputStreamPtr getOutPutStreamPtr()
+		{
+			return out->getOutPutStreamPtr();
+		}
+#endif
+
 	private:
 		BufferedWriter(const BufferedWriter&);
 		BufferedWriter& operator=(const BufferedWriter&);
