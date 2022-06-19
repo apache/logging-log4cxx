@@ -60,7 +60,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: vcpkg
-        key: ${{ runner.os }}-${{ matrix.name }}-cache
+        key: ${{ runner.os }}-${{ matrix.name }}-cache-x64
 
     - name: 'Checkout VCPKG - Windows'
       if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') && steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
