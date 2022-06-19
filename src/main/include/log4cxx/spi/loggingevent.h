@@ -102,6 +102,12 @@ class LOG4CXX_EXPORT LoggingEvent :
 		/** Return the threadName of this event. */
 		const LogString& getThreadName() const;
 
+		/**
+		 * Get the user name of the thread.  The default name is (noname) if
+		 * Log4cxx is unable to retrieve the name using a platform-specific call.
+		 */
+		const LogString& getThreadUserName() const;
+
 		/** The number of microseconds elapsed from 01.01.1970 until logging event
 		 was created. */
 		log4cxx_time_t getTimeStamp() const;
@@ -183,6 +189,7 @@ class LOG4CXX_EXPORT LoggingEvent :
 		LoggingEvent(const LoggingEvent&);
 		LoggingEvent& operator=(const LoggingEvent&);
 		static const LogString getCurrentThreadName();
+		static const LogString getCurrentThreadUserName();
 
 };
 

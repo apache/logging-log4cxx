@@ -285,7 +285,7 @@ public:
 		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
 					Level::getInfo(),
 					LOG4CXX_STR("A message goes here."),
-					spi::LocationInfo("FooFile", "BarFunc", 42)));
+					spi::LocationInfo("FooFile", "FooFile", "BarFunc", 42)));
 
 		LogString output1;
 		LogString expected1;
@@ -311,7 +311,7 @@ public:
 		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
 					Level::getInfo(),
 					LOG4CXX_STR("A message goes here."),
-					spi::LocationInfo("FooFile", "BarFunc", 42)));
+					spi::LocationInfo("FooFile", "FooFile", "BarFunc", 42)));
 
 		LogString output1;
 		LogString expected1;
@@ -351,7 +351,7 @@ public:
 		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
 					Level::getInfo(),
 					LOG4CXX_STR("A message goes here."),
-					spi::LocationInfo("FooFile", "BarFunc", 42)));
+					spi::LocationInfo("FooFile", "FooFile", "BarFunc", 42)));
 
 		LogString timestamp;
 		helpers::ISO8601DateFormat dateFormat;
@@ -399,7 +399,7 @@ public:
 		LoggingEventPtr event1 = LoggingEventPtr(new LoggingEvent(LOG4CXX_STR("Logger"),
 					Level::getInfo(),
 					LOG4CXX_STR("A message goes here."),
-					spi::LocationInfo("FooFile", "BarFunc", 42)));
+					spi::LocationInfo("FooFile", "FooFile", "BarFunc", 42)));
 
 		LogString timestamp;
 		helpers::ISO8601DateFormat dateFormat;

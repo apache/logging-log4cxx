@@ -42,6 +42,8 @@ struct RollingPolicyBase::RollingPolicyBasePrivate {
      * File name pattern.
      */
     LogString fileNamePatternStr;
+
+	bool createIntermediateDirectories = true;
 };
 
 }

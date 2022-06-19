@@ -55,7 +55,9 @@ try_compile(STD_SHARED_PTR_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tes
 try_compile(STD_ATOMIC_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
     "${CMAKE_CURRENT_LIST_DIR}/test-stdatomic.cpp")
 
-find_package(Boost COMPONENTS thread)
+# We need to have all three boost components in order to run our tests
+# Boost thread requires chrono and atomic to work
+find_package(Boost COMPONENTS thread chrono atomic)
 if( ${Boost_FOUND} )
     try_compile(Boost_SHARED_PTR_FOUND "${CMAKE_BINARY_DIR}/boost-fallback-compile-tests"
         "${CMAKE_CURRENT_LIST_DIR}/test-boostsharedptr.cpp")

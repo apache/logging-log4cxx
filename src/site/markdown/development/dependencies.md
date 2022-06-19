@@ -22,11 +22,11 @@ Dependencies {#dependencies}
 -->
 
 
-# LOG4CXX Dependencies
+# Log4cxx Dependencies
 
-As of version 0.12.0, log4cxx requires a minimum C++ version of C++11.
-If C++17 is not available, then log4cxx requires Boost Thread in order
-to build.
+As of version 0.12.0, Log4cxx requires a minimum C++ version of C++11.
+If C++17 is not available, then Log4cxx requires Boost Thread in order
+to build, which in turn requires chrono and date\_time.
 
 log4cxx requires the following software to build and/or run correctly:
 

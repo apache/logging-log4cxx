@@ -51,7 +51,13 @@ jobs:
         cmake -DCMAKE_CXX_COMPILER=g++ -DCMAKE_C_COMPILER=gcc -DLOG4CXX_ABI_CHECK=ON -DCMAKE_BUILD_TYPE=Debug -DCMAKE_CXX_FLAGS="-Og" -DBUILD_TESTING=off ..
         cmake --build .
 
+    - name: 'copy compat report'
+      if: always()
+      run: |
+        cp $(find . -name compat_report.html) .
+
     - uses: actions/upload-artifact@v2
+      if: always()
       with:
-        name: abi-compatibility-report
-        path: main/build/src/main/cpp/compat_reports/log4cxx/11_to_11/compat_report.html
+        name: compat_report.html
+        path: compat_report.html

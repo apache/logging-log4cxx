@@ -189,6 +189,12 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	LogString compressedName(renameTo);
 	ActionPtr compressAction ;
 
+	if(getCreateIntermediateDirectories()){
+		File compressedFile(compressedName);
+		File compressedParent (compressedFile.getParent(pool));
+		compressedParent.mkdirs(pool);
+	}
+
 	if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz")))
 	{
 		renameTo.resize(renameTo.size() - 3);

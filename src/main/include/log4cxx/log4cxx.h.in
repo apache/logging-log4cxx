@@ -29,10 +29,14 @@
 #define LOG4CXX_VERSION_MINOR @log4cxx_VERSION_MINOR@
 #define LOG4CXX_VERSION_PATCH @log4cxx_VERSION_PATCH@
 #define LOG4CXX_VERSION_TWEAK @log4cxx_VERSION_TWEAK@
-#define LOG4CXX_MAKE_VERSION(major, minor, patch, tweak) ((major << 24) |\
-	(minor << 16) |\
-	(patch << 8) |\
+#define LOG4CXX_MAKE_VERSION(major, minor, patch, tweak) (((major) << 24) |\
+	((minor) << 16) |\
+	((patch) << 8) |\
 	(tweak) )
+#define LOG4CXX_VERSION_GET_MAJOR(version) (((version) >> 24) & 0xFF)
+#define LOG4CXX_VERSION_GET_MINOR(version) (((version) >> 16) & 0xFF)
+#define LOG4CXX_VERSION_GET_PATCH(version) (((version) >> 8) & 0xFF)
+#define LOG4CXX_VERSION_GET_TWEAK(version) ((version) & 0xFF)
 #define LOG4CXX_VERSION \
   LOG4CXX_MAKE_VERSION(LOG4CXX_VERSION_MAJOR, LOG4CXX_VERSION_MINOR, LOG4CXX_VERSION_PATCH, LOG4CXX_VERSION_TWEAK)
 
@@ -74,5 +78,18 @@ typedef unsigned int log4cxx_uint32_t;
 #else
 #define LOG4CXX_EXPORT
 #endif /* WIN32 */
+
+namespace log4cxx {
+
+/**
+ * Query the compiled version of the library.  Ideally, this should
+ * be the same as the LOG4CXX_VERSION macro defined above.
+ *
+ * The LOG4CXX_VERSION_GET_ series of macros let you extract the
+ * specific bytes of the version if required.
+ */
+LOG4CXX_EXPORT log4cxx_uint32_t libraryVersion();
+
+}
 
 #endif

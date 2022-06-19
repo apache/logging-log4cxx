@@ -30,3 +30,4 @@ See the following pages for usage information:
 * @subpage configuration-samples
 * @subpage qt-support
 * @subpage performance
+* @subpage map-filter

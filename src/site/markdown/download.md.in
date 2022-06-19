@@ -20,9 +20,9 @@ Download {#download}
  See the License for the specific language governing permissions and
  limitations under the License.
 -->
-# Download Apache log4cxx ${LOG4CXX_RELEASE_VERSION}
+# Download Apache Log4cxx ${LOG4CXX_RELEASE_VERSION}
 
-  Apache log4cxx ${LOG4CXX_RELEASE_VERSION} is distributed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
+  Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} is distributed under the [Apache License, version 2.0](https://www.apache.org/licenses/LICENSE-2.0.html).
 
   The link in the Mirrors column should display a list of available mirrors with a
   default selection based on your inferred location.  If you do not see that page,
@@ -31,8 +31,8 @@ Download {#download}
 
 |                         | Mirrors | Checksum | Signature |
 |-------------------------|---------|----------|-----------|
-| Apache log4cxx ${LOG4CXX_RELEASE_VERSION} (tar.gz)      | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc] |
-| Apache log4cxx ${LOG4CXX_RELEASE_VERSION} (zip)      | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc] |
+| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (tar.gz)      | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.asc] |
+| Apache Log4cxx ${LOG4CXX_RELEASE_VERSION} (zip)      | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.sha512] | [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.zip.asc] |
 
 It is essential that you verify the integrity of the downloaded files using the PGP or SHA512 signatures.
 Please read [Verifying Apache HTTP Server Releases](https://httpd.apache.org/dev/verification.html) for more
@@ -54,7 +54,7 @@ in many unix distributions.
 
 ## Previous Releases
 
-All previous releases of Apache log4cxx can be found in the [archive repository](https://archive.apache.org/dist/logging/log4cxx).
+All previous releases of Apache Log4cxx can be found in the [archive repository](https://archive.apache.org/dist/logging/log4cxx).
 
 [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz]:https://www.apache.org/dyn/closer.cgi/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz
 [apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512]:https://www.apache.org/dist/logging/log4cxx/${LOG4CXX_RELEASE_VERSION}/apache-log4cxx-${LOG4CXX_RELEASE_VERSION}.tar.gz.sha512

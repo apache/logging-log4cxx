@@ -33,7 +33,6 @@
 #endif
 #include <log4cxx/private/log4cxx_private.h>
 #include <log4cxx/helpers/aprinitializer.h>
-#include <mutex>
 
 using namespace log4cxx;
 using namespace log4cxx::helpers;
@@ -42,16 +41,10 @@ using namespace log4cxx::spi;
 struct Logger::LoggerPrivate
 {
 	LoggerPrivate(Pool& p, const LogString& name1):
-		pool(&p),
 		name(name1),
 		repositoryRaw(0),
-		aai(new AppenderAttachableImpl(*pool)),
+		aai(p),
 		additive(true) {}
-
-	/**
-	 *   Reference to memory pool.
-	 */
-	helpers::Pool* pool;
 
 	/**
 	The name of this logger.
@@ -80,7 +73,7 @@ struct Logger::LoggerPrivate
 	log4cxx::spi::LoggerRepositoryWeakPtr repository;
 	log4cxx::spi::LoggerRepository* repositoryRaw;
 
-	helpers::AppenderAttachableImplPtr aai;
+	helpers::AppenderAttachableImpl aai;
 
 	/** Additivity is set to true by default, that is children inherit
 	        the appenders of their ancestors by default. If this variable is
@@ -90,8 +83,6 @@ struct Logger::LoggerPrivate
 	        have their additivity flag set to <code>false</code> too. See
 	        the user manual for more details. */
 	bool additive;
-
-	mutable shared_mutex mutex;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(Logger)
@@ -107,30 +98,28 @@ Logger::~Logger()
 
 void Logger::addAppender(const AppenderPtr newAppender)
 {
-	m_priv->aai->addAppender(newAppender);
+	m_priv->aai.addAppender(newAppender);
 	if (auto rep = getHierarchy())
 	{
-		rep->fireAddAppenderEvent(this, newAppender.get());
+		m_priv->repositoryRaw->fireAddAppenderEvent(this, newAppender.get());
 	}
 }
 
 void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additive1 )
 {
-	std::unique_lock<log4cxx::shared_mutex> lock(m_priv->mutex);
-
 	m_priv->additive = additive1;
 
-	m_priv->aai->removeAllAppenders();
+	m_priv->aai.removeAllAppenders();
 
 	for ( std::vector<AppenderPtr>::const_iterator it = appenders.cbegin();
 		it != appenders.cend();
 		it++ )
 	{
-		m_priv->aai->addAppender( *it );
+		m_priv->aai.addAppender( *it );
 
 		if (auto rep = getHierarchy())
 		{
-			rep->fireAddAppenderEvent(this, it->get());
+			m_priv->repositoryRaw->fireAddAppenderEvent(this, it->get());
 		}
 	}
 }
@@ -143,7 +132,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 		logger != 0;
 		logger = logger->m_priv->parent.get())
 	{
-		writes += logger->m_priv->aai->appendLoopOnAppenders(event, p);
+		writes += logger->m_priv->aai.appendLoopOnAppenders(event, p);
 
 		if (!logger->m_priv->additive)
 		{
@@ -155,7 +144,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 
 	if (writes == 0 && rep)
 	{
-		rep->emitNoAppenderWarning(const_cast<Logger*>(this));
+		m_priv->repositoryRaw->emitNoAppenderWarning(const_cast<Logger*>(this));
 	}
 }
 
@@ -205,12 +194,12 @@ bool Logger::getAdditivity() const
 
 AppenderList Logger::getAllAppenders() const
 {
-	return m_priv->aai->getAllAppenders();
+	return m_priv->aai.getAllAppenders();
 }
 
 AppenderPtr Logger::getAppender(const LogString& name1) const
 {
-	return m_priv->aai->getAppender(name1);
+	return m_priv->aai.getAppender(name1);
 }
 
 const LevelPtr& Logger::getEffectiveLevel() const
@@ -293,7 +282,7 @@ const LevelPtr& Logger::getLevel() const
 
 bool Logger::isAttached(const AppenderPtr appender) const
 {
-	return m_priv->aai->isAttached(appender);
+	return m_priv->aai.isAttached(appender);
 }
 
 bool Logger::isTraceEnabled() const
@@ -490,17 +479,17 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 
 void Logger::removeAllAppenders()
 {
-	m_priv->aai->removeAllAppenders();
+	m_priv->aai.removeAllAppenders();
 }
 
 void Logger::removeAppender(const AppenderPtr appender)
 {
-	m_priv->aai->removeAppender(appender);
+	m_priv->aai.removeAppender(appender);
 }
 
 void Logger::removeAppender(const LogString& name1)
 {
-	m_priv->aai->removeAppender(name1);
+	m_priv->aai.removeAppender(name1);
 }
 
 void Logger::removeHierarchy()

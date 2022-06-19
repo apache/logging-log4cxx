@@ -34,6 +34,7 @@ LOGUNIT_CLASS(CastTestCase)
 	LOGUNIT_TEST_SUITE( CastTestCase );
 	LOGUNIT_TEST(testGoodCast);
 	LOGUNIT_TEST(testBadCast);
+	LOGUNIT_TEST(testNullParameter);
 	LOGUNIT_TEST(testRollingFileAppender);
 	LOGUNIT_TEST_SUITE_END();
 
@@ -54,6 +55,15 @@ public:
 	void testBadCast()
 	{
 		OutputStreamPtr out = OutputStreamPtr(new ByteArrayOutputStream());
+
+		FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>(out);
+
+		LOGUNIT_ASSERT(!fos);
+	}
+
+	void testNullParameter()
+	{
+		OutputStreamPtr out = nullptr;
 
 		FileOutputStreamPtr fos = log4cxx::cast<FileOutputStream>(out);
 

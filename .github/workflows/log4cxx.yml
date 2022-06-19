@@ -68,7 +68,7 @@ jobs:
       with:
         repository: microsoft/vcpkg
         path: vcpkg
-        ref: ec6fe06e8da05a8157dc8581fa96b36b571c1bd5
+        ref: af2287382b1991dbdcb7e5112d236f3323b9dd7a
 
     - name: 'Configure Dependencies - Windows'
       if: (matrix.name == 'windows-2019' || matrix.name == 'windows-2016') && steps.restore-vcpkg-cache.outputs.cache-hit != 'true'
