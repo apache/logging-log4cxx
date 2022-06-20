@@ -99,7 +99,7 @@ jobs:
         cd main
         mkdir build-static
         cd build-static
-        cmake -DBUILD_SHARED_LIBS=off -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
+        cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static -DBUILD_SHARED_LIBS=off -DLOG4CXX_TEST_PROGRAM_PATH=C:\msys64\usr\bin "-DCMAKE_TOOLCHAIN_FILE=$THISDIR/vcpkg/scripts/buildsystems/vcpkg.cmake" -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }} ..
         cmake --build .
 
     - name: 'run cmake - *nix'
