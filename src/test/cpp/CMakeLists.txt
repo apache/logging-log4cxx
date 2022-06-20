@@ -131,6 +131,13 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
                 ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2;PATH=${ESCAPED_PATH}"
            )
         endif()
+        if(NOT BUILD_SHARED_LIBS)
+            # cmake selects a multi-threaded dynamically-linked runtime library by default
+            # (i.e. MSVC_RUNTIME_LIBRARY target property default value is "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+            # APR static libraries specify the MSVC statically-linked runtime as the default library
+            # Use the MSVC statically-linked runtime to prevent the warning message 'LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs'
+            set_target_properties(${testName} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        endif()
     else()
         if(${testName} STREQUAL socketservertestcase)
             set_tests_properties(socketservertestcase PROPERTIES
