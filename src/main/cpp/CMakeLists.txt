@@ -51,8 +51,9 @@ target_sources(log4cxx
   configurator.cpp
   consoleappender.cpp
   cyclicbuffer.cpp
-  datagrampacket.cpp
-  datagramsocket.cpp
+  $<IF:$<BOOL:NETWORKING_SUPPORT>,datagrampacket.cpp,>
+  $<IF:$<BOOL:NETWORKING_SUPPORT>,datagramsocket.cpp,>
+  $<IF:$<BOOL:NETWORKING_SUPPORT>,aprdatagramsocket.cpp,>
   date.cpp
   dateformat.cpp
   datepatternconverter.cpp
