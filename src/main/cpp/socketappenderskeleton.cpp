@@ -89,7 +89,7 @@ void SocketAppenderSkeleton::connect(Pool& p)
 
 		try
 		{
-			SocketPtr socket(new Socket(_priv->address, _priv->port));
+			SocketPtr socket = Socket::create(_priv->address, _priv->port);
 			setSocket(socket, p);
 		}
 		catch (SocketException& e)
@@ -157,7 +157,7 @@ void SocketAppenderSkeleton::monitor()
 			{
 				LogLog::debug(LogString(LOG4CXX_STR("Attempting connection to "))
 					+ _priv->address->getHostName());
-				socket = SocketPtr(new Socket(_priv->address, _priv->port));
+				socket = Socket::create(_priv->address, _priv->port);
 				Pool p;
 				setSocket(socket, p);
 				LogLog::debug(LOG4CXX_STR("Connection established. Exiting connector thread."));

@@ -15,11 +15,10 @@
  * limitations under the License.
  */
 
-#ifndef _LOG4CXX_HELPERS_SERVER_SOCKET_H
-#define _LOG4CXX_HELPERS_SERVER_SOCKET_H
+#ifndef LOG4CXX_HELPERS_APRSOCKET_H
+#define LOG4CXX_HELPERS_APRSOCKET_H
 
 #include <log4cxx/helpers/socket.h>
-#include <mutex>
 
 struct apr_socket_t;
 
@@ -28,44 +27,25 @@ namespace log4cxx
 namespace helpers
 {
 
-class ServerSocket;
-LOG4CXX_PTR_DEF(ServerSocket);
-LOG4CXX_UNIQUE_PTR_DEF(ServerSocket);
-
-class LOG4CXX_EXPORT ServerSocket
+class LOG4CXX_EXPORT APRSocket : public helpers::Socket
 {
-	protected:
-		struct ServerSocketPrivate;
-		ServerSocket(std::unique_ptr<ServerSocketPrivate> priv);
-
 	public:
-
-		virtual ~ServerSocket();
-
-		/** Listens for a connection to be made to this socket and
-		accepts it
+		/** Creates a stream socket and connects it to the specified port
+		number at the specified IP address.
 		*/
-		virtual SocketPtr accept() = 0;
+		APRSocket(InetAddressPtr& address, int port);
+		APRSocket(apr_socket_t*, apr_pool_t* pool);
 
-		/** Closes this socket.
-		*/
+		virtual size_t write(ByteBuffer&);
+
+		/** Closes this socket. */
 		virtual void close();
 
-		/** Retrive setting for SO_TIMEOUT.
-		*/
-		int getSoTimeout() const;
-
-		/** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
-		*/
-		void setSoTimeout(int timeout);
-
-		static ServerSocketUniquePtr create(int port);
-
-	protected:
-		std::unique_ptr<ServerSocketPrivate> m_priv;
-
+	private:
+		struct APRSocketPriv;
 };
-}  // namespace helpers
-} // namespace log4cxx
 
-#endif //_LOG4CXX_HELPERS_SERVER_SOCKET_H
+}
+}
+
+#endif /* LOG4CXX_HELPERS_APRSOCKET_H */

@@ -75,7 +75,7 @@ void TelnetAppender::activateOptions(Pool& /* p */)
 {
 	if (_priv->serverSocket == NULL)
 	{
-		_priv->serverSocket = std::make_unique<ServerSocket>(_priv->port);
+		_priv->serverSocket = ServerSocket::create(_priv->port);
 		_priv->serverSocket->setSoTimeout(1000);
 	}
 

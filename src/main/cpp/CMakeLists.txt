@@ -139,13 +139,15 @@ target_sources(log4cxx
   rollingpolicybase.cpp
   rolloverdescription.cpp
   rootlogger.cpp
-  serversocket.cpp
+  $<IF:$<BOOL:NETWORKING_SUPPORT>,serversocket.cpp,>
+  $<IF:$<BOOL:NETWORKING_SUPPORT>,aprserversocket.cpp,>
   shortfilelocationpatternconverter.cpp
   simpledateformat.cpp
   simplelayout.cpp
   sizebasedtriggeringpolicy.cpp
   smtpappender.cpp
-  socket.cpp
+  $<IF:$<BOOL:NETWORKING_SUPPORT>,socket.cpp,>
+  $<IF:$<BOOL:NETWORKING_SUPPORT>,aprsocket.cpp,>
   socketappenderskeleton.cpp
   sockethubappender.cpp
   socketoutputstream.cpp
