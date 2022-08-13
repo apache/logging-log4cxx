@@ -21,8 +21,6 @@
 #include <log4cxx/helpers/socket.h>
 #include <mutex>
 
-struct apr_socket_t;
-
 namespace log4cxx
 {
 namespace helpers
