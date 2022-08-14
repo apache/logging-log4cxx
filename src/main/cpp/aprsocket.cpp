@@ -18,6 +18,7 @@
 #include <log4cxx/private/aprsocket.h>
 #include <log4cxx/private/socket_priv.h>
 #include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/transcoder.h>
 
 #include "apr_network_io.h"
 #include "apr_signal.h"
