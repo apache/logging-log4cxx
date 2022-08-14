@@ -176,14 +176,6 @@ void Class::registerClasses()
 	log4cxx::nt::OutputDebugStringAppender::registerClass();
 #endif
 	SMTPAppender::registerClass();
-#if APR_HAS_THREADS
-	SocketHubAppender::registerClass();
-#endif
-	SyslogAppender::registerClass();
-#if APR_HAS_THREADS
-	TelnetAppender::registerClass();
-#endif
-	XMLSocketAppender::registerClass();
 	HTMLLayout::registerClass();
 	PatternLayout::registerClass();
 	SimpleLayout::registerClass();
@@ -200,5 +192,11 @@ void Class::registerClasses()
 	log4cxx::xml::DOMConfigurator::registerClass();
 	log4cxx::PropertyConfigurator::registerClass();
 	log4cxx::varia::FallbackErrorHandler::registerClass();
+#if LOG4CXX_HAS_NETWORKING
+	TelnetAppender::registerClass();
+	XMLSocketAppender::registerClass();
+	SocketHubAppender::registerClass();
+	SyslogAppender::registerClass();
+#endif
 }
 

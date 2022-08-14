@@ -27,6 +27,28 @@ else()
     target_compile_definitions(log4cxx PUBLIC LOG4CXX_STATIC)
 endif()
 add_dependencies(log4cxx configure_log4cxx)
+
+if(LOG4CXX_NETWORKING_SUPPORT)
+    set(networking_classes
+	datagrampacket.cpp
+	datagramsocket.cpp
+	aprdatagramsocket.cpp
+	serversocket.cpp
+	aprserversocket.cpp
+	socket.cpp
+	aprsocket.cpp
+	telnetappender.cpp
+	socketappenderskeleton.cpp
+	sockethubappender.cpp
+	socketoutputstream.cpp
+	xmlsocketappender.cpp
+	syslogwriter.cpp
+	syslogappender.cpp
+	)
+else()
+    set(networking_classes "")
+endif()
+
 target_sources(log4cxx
   PRIVATE
   action.cpp
@@ -51,9 +73,6 @@ target_sources(log4cxx
   configurator.cpp
   consoleappender.cpp
   cyclicbuffer.cpp
-  $<IF:$<BOOL:NETWORKING_SUPPORT>,datagrampacket.cpp,>
-  $<IF:$<BOOL:NETWORKING_SUPPORT>,datagramsocket.cpp,>
-  $<IF:$<BOOL:NETWORKING_SUPPORT>,aprdatagramsocket.cpp,>
   date.cpp
   dateformat.cpp
   datepatternconverter.cpp
@@ -140,28 +159,18 @@ target_sources(log4cxx
   rollingpolicybase.cpp
   rolloverdescription.cpp
   rootlogger.cpp
-  $<IF:$<BOOL:NETWORKING_SUPPORT>,serversocket.cpp,>
-  $<IF:$<BOOL:NETWORKING_SUPPORT>,aprserversocket.cpp,>
   shortfilelocationpatternconverter.cpp
   simpledateformat.cpp
   simplelayout.cpp
   sizebasedtriggeringpolicy.cpp
   smtpappender.cpp
-  $<IF:$<BOOL:NETWORKING_SUPPORT>,socket.cpp,>
-  $<IF:$<BOOL:NETWORKING_SUPPORT>,aprsocket.cpp,>
-  socketappenderskeleton.cpp
-  sockethubappender.cpp
-  socketoutputstream.cpp
   strftimedateformat.cpp
   stringhelper.cpp
   stringmatchfilter.cpp
   stringtokenizer.cpp
-  syslogappender.cpp
-  syslogwriter.cpp
   system.cpp
   systemerrwriter.cpp
   systemoutwriter.cpp
-  telnetappender.cpp
   threadlocal.cpp
   threadpatternconverter.cpp
   threadusernamepatternconverter.cpp
@@ -176,8 +185,8 @@ target_sources(log4cxx
   writer.cpp
   writerappender.cpp
   xmllayout.cpp
-  xmlsocketappender.cpp
   zipcompressaction.cpp
+  ${networking_classes}
 )
 set_target_properties(log4cxx PROPERTIES
   VERSION ${LIBLOG4CXX_LIB_VERSION}

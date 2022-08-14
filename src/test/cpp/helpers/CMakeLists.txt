@@ -32,11 +32,15 @@ set(HELPER_TESTS
     relativetimedateformattestcase
     stringhelpertestcase
     stringtokenizertestcase
-    syslogwritertest
     timezonetestcase
     transcodertestcase
     threadutilitytestcase
 )
+
+if(LOG4CXX_NETWORKING_SUPPORT)
+    list(APPEND HELPER_TESTS syslogwritertest)
+endif()
+
 foreach(fileName IN LISTS HELPER_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
     target_compile_definitions(${fileName} PRIVATE ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
