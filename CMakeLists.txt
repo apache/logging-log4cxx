@@ -190,6 +190,12 @@ foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE
   endif()
 endforeach()
 
+if(${WIN32})
+    set(HAS_NT_EVENTLOG_APPENDER "ON")
+else()
+    set(HAS_NT_EVENTLOG_APPENDER "OFF")
+endif()
+
 #
 # Package and sign if Apache maintainer
 #
@@ -267,7 +273,7 @@ message(STATUS "  XMLSocketAppender ............... : ${LOG4CXX_NETWORKING_SUPPO
 message(STATUS "  SocketHubAppender ............... : ${LOG4CXX_NETWORKING_SUPPORT}")
 message(STATUS "  SyslogAppender .................. : ${LOG4CXX_NETWORKING_SUPPORT}")
 message(STATUS "  TelnetAppender .................. : ${LOG4CXX_NETWORKING_SUPPORT}")
-message(STATUS "  NTEventLogAppender .............. : ${LOG4CXX_NETWORKING_SUPPORT}")
+message(STATUS "  NTEventLogAppender .............. : ${HAS_NT_EVENTLOG_APPENDER}")
 message(STATUS "  OutputDebugStringAppender ....... : ${LOG4CXX_NETWORKING_SUPPORT}")
 message(STATUS "  ConsoleAppender ................. : ON")
 message(STATUS "  FileAppender .................... : ON")
