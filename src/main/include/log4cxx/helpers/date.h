@@ -20,7 +20,7 @@
 
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/log4cxx.h>
-#include <functional>
+
 
 namespace log4cxx
 {
@@ -35,13 +35,6 @@ namespace helpers
 class LOG4CXX_EXPORT Date : public Object
 {
 		const log4cxx_time_t time;
-
-		/**
-		 * A function that will return the current time(in microseconds) when called
-		 */
-		typedef std::function<log4cxx_time_t()> GetCurrentTimeFn;
-
-		static log4cxx_time_t getCurrentTimeStd();
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(Date)
@@ -66,19 +59,6 @@ class LOG4CXX_EXPORT Date : public Object
 
 		static log4cxx_time_t getMicrosecondsPerDay();
 		static log4cxx_time_t getMicrosecondsPerSecond();
-
-		static log4cxx_time_t currentTime();
-
-		static GetCurrentTimeFn getCurrentTimeFn;
-
-		/**
-		 * Set the function that is used to get the current time.
-		 * This is used only for testing purposes and should never be called
-		 * under normal circumstances.
-		 *
-		 * @param fn
-		 */
-		static void setGetCurrentTimeFunction(GetCurrentTimeFn fn);
 
 };
 

@@ -38,7 +38,6 @@
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/spi/rootlogger.h>
 #include <mutex>
-#include <apr.h>
 #include "assert.h"
 
 

@@ -20,7 +20,6 @@
 #include <log4cxx/propertyconfigurator.h>
 #include <apr_general.h>
 #include <apr_time.h>
-#include <apr.h>
 #include <iostream>
 #include <log4cxx/stream.h>
 #include <exception>
