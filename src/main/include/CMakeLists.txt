@@ -58,6 +58,12 @@ foreach(varName WCHAR_T  UNICHAR  CFSTRING )
   endif()
 endforeach()
 
+option(LOG4CXX_NETWORKING_SUPPORT "Support logging over a network socket" ON)
+if(LOG4CXX_NETWORKING_SUPPORT)
+    set(NETWORKING_SUPPORT 1)
+else()
+    set(NETWORKING_SUPPORT 0)
+endif()
 
 # Configure log4cxx_private.h
 set(LOG4CXX_CHARSET "locale" CACHE STRING "LogString characters, choice of locale (default), utf-8, ISO-8859-1, US-ASCII, EBCDIC")

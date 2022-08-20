@@ -48,7 +48,7 @@
 #define LOG4CXX_WCHAR_T_API @WCHAR_T_API@
 #define LOG4CXX_UNICHAR_API @UNICHAR_API@
 #define LOG4CXX_CFSTRING_API @CFSTRING_API@
-
+#define LOG4CXX_HAS_NETWORKING @NETWORKING_SUPPORT@
 
 typedef long long log4cxx_int64_t;
 #define LOG4CXX_USE_GLOBAL_SCOPE_TEMPLATE 0
@@ -62,6 +62,7 @@ typedef unsigned int log4cxx_uint32_t;
 
 #define LOG4CXX_PTR_DEF(T) typedef std::shared_ptr<T> T##Ptr;\
 	typedef std::weak_ptr<T> T##WeakPtr
+#define LOG4CXX_UNIQUE_PTR_DEF(T) typedef std::unique_ptr<T> T##UniquePtr;
 #define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N
 
 #if _WIN32

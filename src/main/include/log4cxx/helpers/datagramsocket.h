@@ -27,42 +27,38 @@ namespace log4cxx
 {
 namespace helpers
 {
+
+class DatagramSocket;
+LOG4CXX_PTR_DEF(DatagramSocket);
+LOG4CXX_UNIQUE_PTR_DEF(DatagramSocket);
+
 /** This class represents a socket for sending and receiving
 datagram packets.*/
 class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 {
+	protected:
+		struct DatagramSocketPriv;
+		std::unique_ptr<DatagramSocketPriv> m_priv;
+
+		DatagramSocket(std::unique_ptr<DatagramSocketPriv> priv);
+
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DatagramSocket)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(DatagramSocket)
 		END_LOG4CXX_CAST_MAP()
 
-		/** Constructs a datagram socket and binds it to any available port
-		on the local host machine.*/
-		DatagramSocket();
-
-		/** Constructs a datagram socket and binds it to the specified
-		port on the local host machine. */
-		DatagramSocket(int port);
-
-		/**  Creates a datagram socket, bound to the specified local
-		address. */
-		DatagramSocket(int port, InetAddressPtr laddr);
-
 		/** ensure the socket is closed. */
-		~DatagramSocket();
+		virtual ~DatagramSocket();
 
 		/**  Binds a datagram socket to a local port and address.*/
-		void bind(int lport, InetAddressPtr laddress);
-
-		/** Creates a datagram socket.*/
-		void create();
+		virtual void bind(int lport, InetAddressPtr laddress) = 0;
 
 		/** Closes this datagram socket */
-		void close();
+		virtual void close();
 
 		/** Connects the socket to a remote address for this socket. */
-		void connect(InetAddressPtr address, int port);
+		virtual void connect(InetAddressPtr address, int port) = 0;
 
 		/** Returns the address to which this socket is connected. */
 		InetAddressPtr getInetAddress() const;
@@ -81,26 +77,35 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		bool isBound() const;
 
 		/** Returns wether the socket is closed or not. */
-		bool isClosed() const;
+		virtual bool isClosed() const = 0;
 
 		/** Returns the connection state of the socket. */
 		bool isConnected() const;
 
 		/**  Receives a datagram packet from this socket. */
-		void receive(DatagramPacketPtr& p);
+		virtual void receive(DatagramPacketPtr& p) = 0;
 
 		/** Sends a datagram packet from this socket. */
-		void  send(DatagramPacketPtr& p);
+		virtual void  send(DatagramPacketPtr& p) = 0;
+
+		/** Constructs a datagram socket and binds it to any available port
+		on the local host machine.*/
+		static DatagramSocketUniquePtr create();
+
+		/** Constructs a datagram socket and binds it to the specified
+		port on the local host machine. */
+		static DatagramSocketUniquePtr create(int port);
+
+		/**  Creates a datagram socket, bound to the specified local
+		address. */
+		static DatagramSocketUniquePtr create(int port, InetAddressPtr laddr);
 
 	private:
 		DatagramSocket(const DatagramSocket&);
 		DatagramSocket& operator=(const DatagramSocket&);
 
-		struct DatagramSocketPriv;
-		std::unique_ptr<DatagramSocketPriv> m_priv;
-
 };
-LOG4CXX_PTR_DEF(DatagramSocket);
+
 }  // namespace helpers
 } // namespace log4cxx
 
