@@ -185,8 +185,7 @@ class LOG4CXX_EXPORT CharMessageBuffer
 		 */
 		CharMessageBuffer& operator=(const CharMessageBuffer&);
 
-		struct CharMessageBufferPrivate;
-		std::unique_ptr<CharMessageBufferPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(CharMessageBufferPrivate, m_priv)
 };
 
 template<class V>
@@ -356,8 +355,7 @@ class LOG4CXX_EXPORT UniCharMessageBuffer
 		 */
 		UniCharMessageBuffer& operator=(const UniCharMessageBuffer&);
 
-		struct UniCharMessageBufferPrivate;
-		std::unique_ptr<UniCharMessageBufferPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(UniCharMessageBufferPrivate, m_priv)
 };
 
 template<class V>
@@ -516,8 +514,7 @@ class LOG4CXX_EXPORT WideMessageBuffer
 		 */
 		WideMessageBuffer& operator=(const WideMessageBuffer&);
 
-		struct WideMessageBufferPrivate;
-		std::unique_ptr<WideMessageBufferPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(WideMessageBufferPrivate, m_priv)
 };
 
 template<class V>
@@ -782,8 +779,7 @@ class LOG4CXX_EXPORT MessageBuffer
 		 */
 		MessageBuffer& operator=(const MessageBuffer&);
 
-		struct MessageBufferPrivate;
-		std::unique_ptr<MessageBufferPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(MessageBufferPrivate, m_priv)
 };
 
 template<class V>

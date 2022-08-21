@@ -21,11 +21,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/exception.h>
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4251 )
-#endif
-
 namespace log4cxx
 {
 namespace helpers
@@ -43,14 +38,9 @@ class LOG4CXX_EXPORT StringTokenizer
 		StringTokenizer(const StringTokenizer&);
 		StringTokenizer& operator=(const StringTokenizer&);
 
-		struct StringTokenizerPrivate;
-		std::unique_ptr<StringTokenizerPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(StringTokenizerPrivate, m_priv)
 }; // class StringTokenizer
 }  // namespace helpers;
 } // namespace log4cxx;
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif //_LOG4CXX_HELPERS_STRING_TOKENIZER_H

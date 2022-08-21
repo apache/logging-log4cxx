@@ -42,8 +42,7 @@ the string "log4cxx: ".
 class LOG4CXX_EXPORT LogLog
 {
 	private:
-		struct LogLogPrivate;
-		std::unique_ptr<LogLogPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LogLogPrivate, m_priv)
 
 		LogLog();
 		LogLog(const LogLog&);

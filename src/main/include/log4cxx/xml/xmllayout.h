@@ -53,8 +53,7 @@ appender where it is embedded.
 class LOG4CXX_EXPORT XMLLayout : public Layout
 {
 	private:
-		struct XMLLayoutPrivate;
-		std::unique_ptr<XMLLayoutPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(XMLLayoutPrivate, m_priv)
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(XMLLayout)

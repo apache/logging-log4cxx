@@ -35,8 +35,7 @@ just the first or last element.
 class LOG4CXX_EXPORT CyclicBuffer
 {
 	private:
-		struct CyclicBufferPriv;
-		std::unique_ptr<CyclicBufferPriv> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(CyclicBufferPriv, m_priv)
 
 	public:
 		/**

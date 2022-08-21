@@ -34,16 +34,19 @@
 #include <log4cxx/private/appenderskeleton_priv.h>
 #include <mutex>
 
-using namespace log4cxx;
-using namespace log4cxx::helpers;
-using namespace log4cxx::net;
-using namespace log4cxx::spi;
+namespace log4cxx
+{
+using namespace helpers;
+using namespace spi;
+
+namespace net
+{
 
 IMPLEMENT_LOG4CXX_OBJECT(SocketHubAppender)
 
 int SocketHubAppender::DEFAULT_PORT = 4560;
 
-struct SocketHubAppender::SocketHubAppenderPriv : public AppenderSkeletonPrivate
+struct SocketHubAppender::SocketHubAppenderPriv : public AppenderSkeleton::AppenderSkeletonPrivate
 {
 	SocketHubAppenderPriv(int port) :
 		AppenderSkeletonPrivate(),
@@ -289,3 +292,8 @@ bool SocketHubAppender::getLocationInfo() const
 {
 	return _priv->locationInfo;
 }
+
+
+} // namespace net
+
+} //namespace log4cxx

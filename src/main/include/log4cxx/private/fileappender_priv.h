@@ -26,9 +26,19 @@ namespace log4cxx
 
 struct FileAppender::FileAppenderPriv : public WriterAppender::WriterAppenderPriv
 {
-	FileAppenderPriv() : WriterAppenderPriv() {}
-
-	FileAppenderPriv(LayoutPtr layout) : WriterAppenderPriv(layout) {}
+	FileAppenderPriv
+		( LayoutPtr _layout = LayoutPtr()
+		, const LogString& _fileName = LogString()
+		, bool _fileAppend = true
+		, bool _bufferedIO = false
+		, int _bufferSize = 8 * 1024
+		)
+		: WriterAppenderPriv(_layout)
+		, fileAppend(_fileAppend)
+		, fileName(_fileName)
+		, bufferedIO(_bufferedIO)
+		, bufferSize(_bufferSize)
+		{}
 
 	/** Append to or truncate the file? The default value for this
 	variable is <code>true</code>, meaning that by default a

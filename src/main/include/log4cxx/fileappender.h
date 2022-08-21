@@ -24,11 +24,6 @@
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/pool.h>
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4251 )
-#endif
-
 namespace log4cxx
 {
 namespace helpers
@@ -215,9 +210,5 @@ class LOG4CXX_EXPORT FileAppender : public WriterAppender
 LOG4CXX_PTR_DEF(FileAppender);
 
 }  // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif

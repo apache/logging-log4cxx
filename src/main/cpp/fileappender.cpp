@@ -40,52 +40,42 @@ IMPLEMENT_LOG4CXX_OBJECT(FileAppender)
 FileAppender::FileAppender() :
 	WriterAppender (std::make_unique<FileAppenderPriv>())
 {
-	_priv->fileAppend = true;
-	_priv->bufferedIO = false;
-	_priv->bufferSize = 8 * 1024;
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
-	bool append1, bool bufferedIO1, int bufferSize1)
-	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1))
+FileAppender::FileAppender
+	( const LayoutPtr& layout1
+	, const LogString& fileName1
+	, bool append1
+	, bool bufferedIO1
+	, int bufferSize1
+	)
+	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, bufferedIO1, bufferSize1))
 {
-	_priv->fileAppend = append1;
-	_priv->fileName = fileName1;
-	_priv->bufferedIO = bufferedIO1;
-	_priv->bufferSize = bufferSize1;
 	Pool p;
 	activateOptions(p);
 }
 
-FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1,
-	bool append1)
-	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1))
+FileAppender::FileAppender
+	( const LayoutPtr& layout1
+	, const LogString& fileName1
+	, bool append1
+	)
+	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1, append1, false))
 {
-	_priv->fileAppend = append1;
-	_priv->fileName = fileName1;
-	_priv->bufferedIO = false;
-	_priv->bufferSize = 8 * 1024;
 	Pool p;
 	activateOptions(p);
 }
 
 FileAppender::FileAppender(const LayoutPtr& layout1, const LogString& fileName1)
-	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1))
+	: WriterAppender(std::make_unique<FileAppenderPriv>(layout1, fileName1))
 {
-	_priv->fileAppend = true;
-	_priv->fileName = fileName1;
-	_priv->bufferedIO = false;
-	_priv->bufferSize = 8 * 1024;
 	Pool p;
 	activateOptions(p);
 }
 
-FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv) :
-	WriterAppender (std::move(priv))
+FileAppender::FileAppender(std::unique_ptr<FileAppenderPriv> priv)
+	: WriterAppender (std::move(priv))
 {
-	_priv->fileAppend = true;
-	_priv->bufferedIO = false;
-	_priv->bufferSize = 8 * 1024;
 }
 
 FileAppender::~FileAppender()

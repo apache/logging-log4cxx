@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_HTML_LAYOUT_H
 #define _LOG4CXX_HTML_LAYOUT_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/layout.h>
 #include <log4cxx/helpers/iso8601dateformat.h>
 
@@ -37,8 +31,7 @@ This layout outputs events in a HTML table.
 class LOG4CXX_EXPORT HTMLLayout : public Layout
 {
 	private:
-		struct HTMLLayoutPrivate;
-		std::unique_ptr<HTMLLayoutPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(HTMLLayoutPrivate, m_priv)
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(HTMLLayout)
@@ -116,10 +109,5 @@ class LOG4CXX_EXPORT HTMLLayout : public Layout
 }; // class HtmlLayout
 LOG4CXX_PTR_DEF(HTMLLayout);
 }  // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
-
 
 #endif // _LOG4CXX_HTML_LAYOUT_H

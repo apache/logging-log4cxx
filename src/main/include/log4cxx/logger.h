@@ -18,15 +18,6 @@
 #ifndef _LOG4CXX_LOGGER_H
 #define _LOG4CXX_LOGGER_H
 
-#if defined(_MSC_VER) && (_MSC_VER < 1900)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4127 )
-#endif
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
 #include <log4cxx/helpers/appenderattachableimpl.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/pool.h>
@@ -72,8 +63,7 @@ class LOG4CXX_EXPORT Logger :
 		END_LOG4CXX_CAST_MAP()
 
 	private:
-		struct LoggerPrivate;
-		std::unique_ptr<LoggerPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LoggerPrivate, m_priv)
 
 	protected:
 		friend class DefaultLoggerFactory;
@@ -1983,10 +1973,6 @@ Logs a localized message with three parameters.
 			logger->l7dlog(level, key, LOG4CXX_LOCATION, p1, p2, p3); }} while (0)
 
 /**@}*/
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #include <log4cxx/spi/loggerrepository.h>
 

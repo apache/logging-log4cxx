@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_APPENDER_SKELETON_H
 #define _LOG4CXX_APPENDER_SKELETON_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/appender.h>
 #include <log4cxx/layout.h>
 #include <log4cxx/spi/errorhandler.h>
@@ -46,8 +40,8 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 	public virtual helpers::Object
 {
 	protected:
-		struct AppenderSkeletonPrivate;
-		AppenderSkeleton( std::unique_ptr<AppenderSkeletonPrivate> priv );
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(AppenderSkeletonPrivate, m_priv)
+		AppenderSkeleton(LOG4CXX_PRIVATE_PTR(AppenderSkeletonPrivate) priv);
 
 		/**
 		Subclasses of <code>AppenderSkeleton</code> should implement this
@@ -173,15 +167,7 @@ class LOG4CXX_EXPORT AppenderSkeleton :
 		*/
 		void setThreshold(const LevelPtr& threshold);
 
-	protected:
-		std::unique_ptr<AppenderSkeletonPrivate> m_priv;
-
 }; // class AppenderSkeleton
 }  // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
-
 
 #endif //_LOG4CXX_APPENDER_SKELETON_H

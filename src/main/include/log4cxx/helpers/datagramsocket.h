@@ -96,8 +96,7 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 		DatagramSocket(const DatagramSocket&);
 		DatagramSocket& operator=(const DatagramSocket&);
 
-		struct DatagramSocketPriv;
-		std::unique_ptr<DatagramSocketPriv> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(DatagramSocketPriv, m_priv)
 
 };
 LOG4CXX_PTR_DEF(DatagramSocket);

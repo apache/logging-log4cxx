@@ -63,8 +63,15 @@ typedef unsigned int log4cxx_uint32_t;
 #define LOG4CXX_PTR_DEF(T) typedef std::shared_ptr<T> T##Ptr;\
 	typedef std::weak_ptr<T> T##WeakPtr
 #define LOG4CXX_LIST_DEF(N, T) typedef std::vector<T> N
+#define LOG4CXX_PRIVATE_PTR(T) std::unique_ptr<T>
 
 #if _WIN32
+#define LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(T, V) \
+__pragma( warning( push ) ) \
+__pragma( warning( disable : 4251 ) ) \
+    struct T; LOG4CXX_PRIVATE_PTR(T) V; \
+__pragma( warning( pop ) )
+
 //  definitions used when using static library
 #if defined(LOG4CXX_STATIC)
 #define LOG4CXX_EXPORT
@@ -77,6 +84,7 @@ typedef unsigned int log4cxx_uint32_t;
 #endif
 #else
 #define LOG4CXX_EXPORT
+#define LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(T, V) struct T; LOG4CXX_PRIVATE_PTR(T) V;
 #endif /* WIN32 */
 
 namespace log4cxx {

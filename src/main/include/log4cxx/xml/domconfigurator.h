@@ -18,13 +18,6 @@
 #ifndef _LOG4CXX_XML_DOM_CONFIGURATOR_H
 #define _LOG4CXX_XML_DOM_CONFIGURATOR_H
 
-#if defined(_MSC_VER)
-	#pragma warning (push)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
-
 #include <log4cxx/logstring.h>
 #include <map>
 #include <log4cxx/appender.h>
@@ -301,15 +294,10 @@ class LOG4CXX_EXPORT DOMConfigurator :
 		DOMConfigurator& operator=(const DOMConfigurator&);
 		static XMLWatchdog* xdog;
 
-		struct DOMConfiguratorPrivate;
-		std::unique_ptr<DOMConfiguratorPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(DOMConfiguratorPrivate, m_priv)
 };
 LOG4CXX_PTR_DEF(DOMConfigurator);
 }  // namespace xml
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif // _LOG4CXX_XML_DOM_CONFIGURATOR_H

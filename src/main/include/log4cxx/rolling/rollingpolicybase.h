@@ -18,12 +18,6 @@
 #if !defined(_LOG4CXX_ROLLING_ROLLING_POLICY_BASE_H)
 #define _LOG4CXX_ROLLING_ROLLING_POLICY_BASE_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/logmanager.h>
@@ -57,13 +51,10 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		LOG4CXX_CAST_ENTRY(spi::OptionHandler)
 		END_LOG4CXX_CAST_MAP()
 
-
-		struct RollingPolicyBasePrivate;
-		std::unique_ptr<RollingPolicyBasePrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(RollingPolicyBasePrivate, m_priv)
 
 	public:
 		RollingPolicyBase();
-		RollingPolicyBase( std::unique_ptr<RollingPolicyBasePrivate> priv );
 		virtual ~RollingPolicyBase();
 		virtual void activateOptions(log4cxx::helpers::Pool& p) = 0;
 		virtual log4cxx::pattern::PatternMap getFormatSpecifiers() const = 0;
@@ -94,6 +85,7 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		}
 #endif
 	protected:
+		RollingPolicyBase(LOG4CXX_PRIVATE_PTR(RollingPolicyBasePrivate) priv);
 		/**
 		 *   Parse file name pattern.
 		 */
@@ -114,10 +106,5 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 };
 }
 }
-
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif

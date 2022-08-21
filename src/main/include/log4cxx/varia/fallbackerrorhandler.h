@@ -42,8 +42,7 @@ class LOG4CXX_EXPORT FallbackErrorHandler :
 	public virtual helpers::Object
 {
 	private:
-		struct FallbackErrorHandlerPrivate;
-		std::unique_ptr<FallbackErrorHandlerPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FallbackErrorHandlerPrivate, m_priv)
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(FallbackErrorHandler)

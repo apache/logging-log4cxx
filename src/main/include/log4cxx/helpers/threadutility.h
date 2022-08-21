@@ -75,8 +75,7 @@ class LOG4CXX_EXPORT ThreadUtility
 		log4cxx::helpers::ThreadStarted threadStartedFunction();
 		log4cxx::helpers::ThreadStartPost postStartFunction();
 
-		struct priv_data;
-		std::unique_ptr<priv_data> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)
 
 	public:
 		~ThreadUtility();
