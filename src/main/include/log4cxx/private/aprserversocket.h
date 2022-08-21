@@ -15,42 +15,33 @@
  * limitations under the License.
  */
 
+#ifndef LOG4CXX_HELPERS_APRSERVERSOCKET_H
+#define LOG4CXX_HELPERS_APRSERVERSOCKET_H
+
 #include <log4cxx/helpers/serversocket.h>
-#include <log4cxx/private/serversocket_priv.h>
-#include <log4cxx/private/aprserversocket.h>
 
-using namespace log4cxx::helpers;
-
-/**  Creates a server socket on a specified port.
-*/
-ServerSocket::ServerSocket(std::unique_ptr<ServerSocketPrivate> priv) :
-	m_priv(std::move(priv))
+namespace log4cxx
 {
-}
-
-ServerSocket::~ServerSocket()
+namespace helpers
 {
-	close();
-}
 
-void ServerSocket::close()
+/**
+ * A ServerSocket that uses APR as the network implementation
+ */
+class LOG4CXX_EXPORT APRServerSocket : public helpers::ServerSocket
 {
+        public:
+            APRServerSocket(int port);
+
+	    void close();
+
+	    SocketPtr accept();
+
+	private:
+		struct APRServerSocketPriv;
+};
+
+}
 }
 
-/** Retrive setting for SO_TIMEOUT.
-*/
-int ServerSocket::getSoTimeout() const
-{
-	return m_priv->timeout;
-}
-
-/** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
-*/
-void ServerSocket::setSoTimeout(int newVal)
-{
-	m_priv->timeout = newVal;
-}
-
-ServerSocketUniquePtr ServerSocket::create(int port){
-	return std::make_unique<APRServerSocket>(port);
-}
+#endif /* LOG4CXX_HELPERS_APRSERVERSOCKET_H */

@@ -204,17 +204,16 @@ void SocketHubAppender::startServer()
 
 void SocketHubAppender::monitor()
 {
-	ServerSocket* serverSocket = 0;
+	ServerSocketUniquePtr serverSocket = 0;
 
 	try
 	{
-		serverSocket = new ServerSocket(_priv->port);
+		serverSocket = ServerSocket::create(_priv->port);
 		serverSocket->setSoTimeout(1000);
 	}
 	catch (SocketException& e)
 	{
 		LogLog::error(LOG4CXX_STR("exception setting timeout, shutting down server socket."), e);
-		delete serverSocket;
 		return;
 	}
 
@@ -269,8 +268,6 @@ void SocketHubAppender::monitor()
 
 		stopRunning = (stopRunning || _priv->closed);
 	}
-
-	delete serverSocket;
 }
 
 void SocketHubAppender::setPort(int port1)

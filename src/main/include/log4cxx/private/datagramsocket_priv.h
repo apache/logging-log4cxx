@@ -15,42 +15,44 @@
  * limitations under the License.
  */
 
-#include <log4cxx/helpers/serversocket.h>
-#include <log4cxx/private/serversocket_priv.h>
-#include <log4cxx/private/aprserversocket.h>
+#ifndef LOG4CXX_HELPERS_SOCKET_PRIV_H
+#define LOG4CXX_HELPERS_SOCKET_PRIV_H
 
-using namespace log4cxx::helpers;
+#include <log4cxx/helpers/datagramsocket.h>
 
-/**  Creates a server socket on a specified port.
-*/
-ServerSocket::ServerSocket(std::unique_ptr<ServerSocketPrivate> priv) :
-	m_priv(std::move(priv))
+namespace log4cxx
 {
-}
-
-ServerSocket::~ServerSocket()
+namespace helpers
 {
-	close();
-}
 
-void ServerSocket::close()
+struct DatagramSocket::DatagramSocketPriv
 {
+        DatagramSocketPriv()
+	        : address(), localAddress(), port(0), localPort(0)
+	{
+	}
+
+	DatagramSocketPriv(int localPort1)
+	        : address(), localAddress(), port(0), localPort(0)
+	{
+	}
+
+	DatagramSocketPriv(int localPort1, InetAddressPtr localAddress1)
+	        : address(), localAddress(), port(0), localPort(0)
+	{
+	}
+
+	InetAddressPtr address;
+
+	InetAddressPtr localAddress;
+
+	int port;
+
+	/** The local port number to which this socket is connected. */
+	int localPort;
+};
+
+}
 }
 
-/** Retrive setting for SO_TIMEOUT.
-*/
-int ServerSocket::getSoTimeout() const
-{
-	return m_priv->timeout;
-}
-
-/** Enable/disable SO_TIMEOUT with the specified timeout, in milliseconds.
-*/
-void ServerSocket::setSoTimeout(int newVal)
-{
-	m_priv->timeout = newVal;
-}
-
-ServerSocketUniquePtr ServerSocket::create(int port){
-	return std::make_unique<APRServerSocket>(port);
-}
+#endif /* LOG4CXX_HELPERS_SOCKET_PRIV_H */

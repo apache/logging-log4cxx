@@ -16,12 +16,17 @@
 #
 
 # Tests defined in this directory
-set(NET_TESTS
-    sockethubappendertestcase
-    syslogappendertestcase
-    telnetappendertestcase
-    xmlsocketappendertestcase
-)
+if(LOG4CXX_NETWORKING_SUPPORT)
+    set(NET_TESTS
+	sockethubappendertestcase
+	syslogappendertestcase
+	telnetappendertestcase
+	xmlsocketappendertestcase
+    )
+else()
+    set(NET_TESTS "")
+endif()
+
 if(HAS_LIBESMPT)
     list(APPEND NET_TESTS smtpappendertestcase)
 endif(HAS_LIBESMPT)

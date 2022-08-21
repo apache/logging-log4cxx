@@ -192,6 +192,12 @@ foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE
   endif()
 endforeach()
 
+if(${WIN32})
+    set(HAS_NT_EVENTLOG_APPENDER "ON")
+else()
+    set(HAS_NT_EVENTLOG_APPENDER "OFF")
+endif()
+
 #
 # Package and sign if Apache maintainer
 #
@@ -244,6 +250,7 @@ message(STATUS "  charset ......................... : ${LOG4CXX_CHARSET}")
 message(STATUS "  Using libESMTP .................. : ${HAS_LIBESMTP}")
 message(STATUS "  ODBC library .................... : ${HAS_ODBC}")
 message(STATUS "  syslog .......................... : ${HAS_SYSLOG}")
+message(STATUS "  Networking support .............. : ${LOG4CXX_NETWORKING_SUPPORT}")
 message(STATUS "  Qt support ...................... : ${LOG4CXX_QT_SUPPORT}")
 message(STATUS "C++ version and Boost settings:")
 message(STATUS "  Prefer boost: ................... : ${PREFER_BOOST}")
@@ -259,3 +266,17 @@ message(STATUS "  zip ............................. : ${ZIP_APP}")
 message(STATUS "  sed ............................. : ${SED_APP}")
 message(STATUS "  gzip ............................ : ${GZIP_APP}")
 endif(BUILD_TESTING)
+
+message(STATUS "Available appenders:")
+message(STATUS "  Async Appender .................. : ON")
+message(STATUS "  ODBC Appender ................... : ${HAS_ODBC}")
+message(STATUS "  SMTP Appender ................... : ${HAS_LIBESMTP}")
+message(STATUS "  XMLSocketAppender ............... : ${LOG4CXX_NETWORKING_SUPPORT}")
+message(STATUS "  SocketHubAppender ............... : ${LOG4CXX_NETWORKING_SUPPORT}")
+message(STATUS "  SyslogAppender .................. : ${LOG4CXX_NETWORKING_SUPPORT}")
+message(STATUS "  TelnetAppender .................. : ${LOG4CXX_NETWORKING_SUPPORT}")
+message(STATUS "  NTEventLogAppender .............. : ${HAS_NT_EVENTLOG_APPENDER}")
+message(STATUS "  OutputDebugStringAppender ....... : ${LOG4CXX_NETWORKING_SUPPORT}")
+message(STATUS "  ConsoleAppender ................. : ON")
+message(STATUS "  FileAppender .................... : ON")
+message(STATUS "  RollingFileAppender ............. : ON")
