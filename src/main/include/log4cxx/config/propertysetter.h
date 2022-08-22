@@ -26,6 +26,8 @@ namespace log4cxx
 namespace helpers
 {
 class Object;
+// Instantiate template pointer type passed as parameter
+template class LOG4CXX_EXPORT std::shared_ptr<Object>;
 typedef std::shared_ptr<Object> ObjectPtr;
 
 class Properties;

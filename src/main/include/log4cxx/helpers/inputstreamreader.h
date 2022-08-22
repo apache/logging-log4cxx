@@ -28,6 +28,10 @@ namespace log4cxx
 namespace helpers
 {
 
+// Instantiate template pointer types passed as parameters
+LOG4CXX_INSTANTIATE_EXPORTED_PTR(InputStream);
+LOG4CXX_INSTANTIATE_EXPORTED_PTR(CharsetDecoder);
+
 /**
  * Class for reading from character streams.
  * Decorates a byte based InputStream and provides appropriate

@@ -83,9 +83,11 @@ __pragma( warning( pop ) )
 //    definitions used when using DLL
 #define LOG4CXX_EXPORT __declspec(dllimport)
 #endif
+#define LOG4CXX_INSTANTIATE_EXPORTED_PTR(T) template class LOG4CXX_EXPORT std::shared_ptr<T>; 
 #else
 #define LOG4CXX_EXPORT
 #define LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(T, V) struct T; LOG4CXX_PRIVATE_PTR(T) V;
+#define LOG4CXX_INSTANTIATE_EXPORTED_PTR(T)
 #endif /* WIN32 */
 
 namespace log4cxx {
