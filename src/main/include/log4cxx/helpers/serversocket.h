@@ -33,8 +33,8 @@ LOG4CXX_UNIQUE_PTR_DEF(ServerSocket);
 class LOG4CXX_EXPORT ServerSocket
 {
 	protected:
-		struct ServerSocketPrivate;
-		ServerSocket(std::unique_ptr<ServerSocketPrivate> priv);
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ServerSocketPrivate, m_priv)
+		ServerSocket(LOG4CXX_PRIVATE_PTR(ServerSocketPrivate) priv);
 
 	public:
 
@@ -58,9 +58,6 @@ class LOG4CXX_EXPORT ServerSocket
 		void setSoTimeout(int timeout);
 
 		static ServerSocketUniquePtr create(int port);
-
-	protected:
-		std::unique_ptr<ServerSocketPrivate> m_priv;
 
 };
 }  // namespace helpers

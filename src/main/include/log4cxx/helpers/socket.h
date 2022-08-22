@@ -43,9 +43,8 @@ local firewall.
 class LOG4CXX_EXPORT Socket : public helpers::Object
 {
 	protected:
-		struct SocketPrivate;
-
-		Socket(std::unique_ptr<SocketPrivate>);
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(SocketPrivate, m_priv)
+		Socket(LOG4CXX_PRIVATE_PTR(SocketPrivate) priv);
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Socket)
@@ -72,8 +71,6 @@ class LOG4CXX_EXPORT Socket : public helpers::Object
 		Socket(const Socket&);
 		Socket& operator=(const Socket&);
 
-	protected:
-		std::unique_ptr<SocketPrivate> m_priv;
 };
 
 } // namespace helpers
