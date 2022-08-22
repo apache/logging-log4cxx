@@ -35,6 +35,8 @@ class Pool;
 namespace rolling
 {
 
+// Instantiate template pointer types passed as parameters
+LOG4CXX_INSTANTIATE_EXPORTED_PTR(log4cxx::spi::Filter);
 
 /**
  * FilterBasedTriggeringPolicy determines if rolling should be triggered
