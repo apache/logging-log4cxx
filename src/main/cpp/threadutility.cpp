@@ -16,8 +16,11 @@
  */
 
 #include "log4cxx/helpers/threadutility.h"
-#include "log4cxx/private/log4cxx_private.h"
 #include "log4cxx/helpers/loglog.h"
+#if !defined(LOG4CXX)
+        #define LOG4CXX 1
+#endif
+#include "log4cxx/private/log4cxx_private.h"
 
 #include <signal.h>
 #include <mutex>

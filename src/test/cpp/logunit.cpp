@@ -253,9 +253,9 @@ LogUnit::TestSuite::TestSuite(const char* fname) : filename(fname), disabled(fal
 #endif
 }
 
-void LogUnit::TestSuite::addTest(const char*, test_func func)
+void LogUnit::TestSuite::addTest(const char* test_name, test_func func)
 {
-	test_funcs.push_back(func);
+	test_funcs.push_back({test_name,func});
 }
 
 std::string LogUnit::TestSuite::getName() const
@@ -281,7 +281,7 @@ abts_suite* TestSuite::run(abts_suite* suite) const
 		iter != test_funcs.end();
 		iter++)
 	{
-		abts_run_test(suite, *iter, NULL);
+		abts_run_test(suite, iter->first, *iter->second, NULL);
 	}
 
 	return suite;

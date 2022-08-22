@@ -24,7 +24,10 @@ namespace qt {
 void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& message )
 {
 	log4cxx::LoggerPtr qtLogger = log4cxx::Logger::getLogger( context.category );
-	log4cxx::spi::LocationInfo location( context.file, context.function, context.line );
+	log4cxx::spi::LocationInfo location( context.file,
+										 log4cxx::spi::LocationInfo::calcShortFileName(context.file),
+										 context.function,
+										 context.line );
 
 	switch ( type )
 	{

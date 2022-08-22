@@ -24,13 +24,13 @@ Qt Support {#qt-support}
 When using Qt, messages from the Qt framework itself or other libraries
 may use the `QDebug` classes.  By default, this will print to stderr,
 thus bypassing the logger entirely.  In order to have these messages
-routed to log4cxx, a message handler for Qt must be installed.
+routed to Log4cxx, a message handler for Qt must be installed.
 
 Log4cxx provides a separate library, log4cxx-qt, which contains useful
 utilities for working with Qt.
 
 To install a message handler that will route the Qt logging messages
-through log4cxx, include the messagehandler.h and call
+through Log4cxx, include the messagehandler.h and call
 `qInstallMessageHandler` as follows:
 
 ```cpp

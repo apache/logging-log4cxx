@@ -74,6 +74,8 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		 */
 		LogString fileNamePatternStr;
 
+		bool createIntermediateDirectories;
+
 
 	public:
 		RollingPolicyBase();
@@ -95,6 +97,9 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		 * @return file name pattern.
 		 */
 		LogString getFileNamePattern() const;
+
+		bool getCreateIntermediateDirectories() const;
+		void setCreateIntermediateDirectories(bool createIntermediate);
 
 
 #ifdef LOG4CXX_MULTI_PROCESS

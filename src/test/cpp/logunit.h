@@ -182,7 +182,7 @@ class TestSuite
 	private:
 		TestSuite(const TestSuite&);
 		TestSuite& operator=(const TestSuite&);
-		typedef std::vector<test_func> TestList;
+		typedef std::vector<std::pair<const char*,test_func>> TestList;
 		TestList test_funcs;
 		std::string filename;
 		bool disabled;

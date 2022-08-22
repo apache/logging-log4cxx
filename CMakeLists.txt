@@ -1,3 +1,19 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
 cmake_minimum_required(VERSION 3.13)
 include(src/cmake/projectVersionDetails.cmake)
 project(log4cxx VERSION ${log4cxx_VER} LANGUAGES CXX)
@@ -34,6 +50,11 @@ find_package( Threads REQUIRED )
 
 # Find expat for XML parsing
 find_package(EXPAT REQUIRED)
+if(TARGET EXPAT::EXPAT)
+  set(EXPAT_LIBRARIES EXPAT::EXPAT)
+elseif(TARGET expat::expat)
+  set(EXPAT_LIBRARIES expat::expat)
+endif()
 
 # Request C++17, if available
 # This *should* fallback to an older standard if it is not available
@@ -204,6 +225,7 @@ message(STATUS "")
 message(STATUS "log4cxx configuration summary:")
 message(STATUS "")
 
+message(STATUS "  C++ standard: ................... : ${CMAKE_CXX_STANDARD}")
 message(STATUS "  Build shared library ............ : ${BUILD_SHARED_LIBS}")
 message(STATUS "  Build tests ..................... : ${BUILD_TESTING}")
 message(STATUS "  Build site ...................... : ${BUILD_SITE}")
@@ -221,7 +243,13 @@ message(STATUS "  Using libESMTP .................. : ${HAS_LIBESMTP}")
 message(STATUS "  ODBC library .................... : ${HAS_ODBC}")
 message(STATUS "  syslog .......................... : ${HAS_SYSLOG}")
 message(STATUS "  Qt support ...................... : ${LOG4CXX_QT_SUPPORT}")
+message(STATUS "C++ version and Boost settings:")
+message(STATUS "  Prefer boost: ................... : ${PREFER_BOOST}")
+message(STATUS "  thread implementation ........... : ${THREAD_IMPL}")
+message(STATUS "  mutex implementation ............ : ${MUTEX_IMPL}")
+message(STATUS "  shared_ptr implementation ....... : ${SMART_PTR_IMPL}")
 message(STATUS "  shared_mutex implementation ..... : ${SHARED_MUTEX_IMPL}")
+message(STATUS "  atomic implementation ........... : ${ATOMIC_IMPL}")
 
 if(BUILD_TESTING)
 message(STATUS "Applications required for tests:")

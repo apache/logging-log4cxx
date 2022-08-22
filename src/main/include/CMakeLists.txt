@@ -1,3 +1,20 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 # Configure
 
 if(WIN32)
@@ -98,13 +115,17 @@ if(UNIX)
     if(${PTHREAD_SETNAME_NP_FOUND})
 	set(HAS_PTHREAD_SETNAME 1)
     endif()
+    if(${PTHREAD_GETNAME_NP_FOUND})
+	set(HAS_PTHREAD_GETNAME 1)
+    endif()
 endif(UNIX)
 
 if(WIN32)
     CHECK_SYMBOL_EXISTS(SetThreadDescription "windows.h;processthreadsapi.h" HAS_SETTHREADDESCRIPTION)
+    CHECK_SYMBOL_EXISTS(GetThreadDescription "windows.h;processthreadsapi.h" HAS_GETTHREADDESCRIPTION)
 endif(WIN32)
 
-foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG HAS_PTHREAD_SIGMASK HAS_PTHREAD_SETNAME HAS_SETTHREADDESCRIPTION)
+foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG HAS_PTHREAD_SIGMASK HAS_PTHREAD_SETNAME HAS_PTHREAD_GETNAME HAS_SETTHREADDESCRIPTION HAS_GETTHREADDESCRIPTION)
   if(${varName} EQUAL 0)
     continue()
   elseif(${varName} EQUAL 1)
@@ -121,8 +142,9 @@ endforeach()
 # Check for standard headers that we need, fall back to boost if they're not found
 include(${LOG4CXX_SOURCE_DIR}/src/cmake/boost-fallback/boost-fallback.cmake)
 set(NAMESPACE_ALIAS log4cxx)
+option(PREFER_BOOST "Prefer Boost over std:: equivalents" OFF)
 
-if( ${STD_THREAD_FOUND} )
+if( ${STD_THREAD_FOUND} AND NOT ${PREFER_BOOST} )
     set( THREAD_IMPL "std::thread" )
 elseif( ${Boost_THREAD_FOUND} )
     set( THREAD_IMPL "boost::thread" )
@@ -130,7 +152,7 @@ else()
     set( THREAD_IMPL "NONE" )
 endif()
 
-if( ${STD_MUTEX_FOUND} )
+if( ${STD_MUTEX_FOUND} AND NOT ${PREFER_BOOST} )
     set( MUTEX_IMPL "std::mutex" )
 elseif( ${Boost_MUTEX_FOUND} )
     set( MUTEX_IMPL "boost::mutex" )
@@ -138,7 +160,7 @@ else()
     set( MUTEX_IMPL "NONE" )
 endif()
 
-if( ${STD_SHARED_PTR_FOUND} )
+if( ${STD_SHARED_PTR_FOUND} AND NOT ${PREFER_BOOST} )
     set( SMART_PTR_IMPL "std::shared_ptr" )
 elseif( ${Boost_SHARED_PTR_FOUND} )
     set( SMART_PTR_IMPL "boost::shared_ptr" )
@@ -146,7 +168,7 @@ else()
     set( SMART_PTR_IMPL "NONE" )
 endif()
 
-if( ${STD_SHARED_MUTEX_FOUND} )
+if( ${STD_SHARED_MUTEX_FOUND} AND NOT ${PREFER_BOOST} )
     set( SHARED_MUTEX_IMPL "std::shared_mutex" )
 elseif( ${Boost_SHARED_MUTEX_FOUND} )
     set( SHARED_MUTEX_IMPL "boost::shared_mutex" )
@@ -154,7 +176,7 @@ else()
     set( SHARED_MUTEX_IMPL "NONE" )
 endif()
 
-if( ${STD_ATOMIC_FOUND} )
+if( ${STD_ATOMIC_FOUND} AND NOT ${PREFER_BOOST} )
     set( ATOMIC_IMPL "std::atomic" )
 elseif( ${Boost_ATOMIC_FOUND} )
     set( ATOMIC_IMPL "boost::atomic" )

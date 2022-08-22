@@ -17,6 +17,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <vector>
+#include <string>
 
 #include <apr.h>
 
@@ -40,7 +42,7 @@ struct sub_suite
 {
 	const char* name;
 	int num_test;
-	int failed;
+	std::vector<const char*> failed;
 	int not_run;
 	int not_impl;
 	struct sub_suite* next;
@@ -66,7 +68,7 @@ typedef void (*test_func)(abts_case* tc, void* data);
 #define ADD_SUITE(suite) abts_add_suite(suite, __FILE__);
 
 abts_suite* abts_add_suite(abts_suite* suite, const char* suite_name);
-void abts_run_test(abts_suite* ts, test_func f, void* value);
+void abts_run_test(abts_suite* ts, const char* name, test_func f, void* value);
 void abts_log_message(const char* fmt, ...);
 
 void abts_int_equal(abts_case* tc, const int expected, const int actual, int lineno);

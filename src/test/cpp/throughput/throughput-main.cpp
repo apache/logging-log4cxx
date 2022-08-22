@@ -45,12 +45,11 @@ static void benchmark_function( const std::string& name, void (*fn)(int), int ho
 	auto delta = high_resolution_clock::now() - start;
 	auto delta_d = duration_cast<duration<double>>(delta).count();
 
+	results.push_back( uint64_t(howmany / delta_d) );
 	LOG4CXX_INFO_FMT( console, "Log4cxx {} Elapsed: {:.4} secs {:L}/sec",
 		name,
 		delta_d,
-		int(howmany / delta_d));
-
-	results.push_back( uint64_t(howmany / delta_d) );
+		results.back() );
 }
 
 static void benchmark_conversion_pattern( const std::string& name,
@@ -68,13 +67,12 @@ static void benchmark_conversion_pattern( const std::string& name,
 	auto delta = high_resolution_clock::now() - start;
 	auto delta_d = duration_cast<duration<double>>(delta).count();
 
+	results.push_back( uint64_t(howmany / delta_d) );
 	LOG4CXX_INFO_FMT( console, "Log4cxx {} pattern: {} Elapsed: {:.4} secs {:L}/sec",
 		name,
 		conversion_pattern,
 		delta_d,
-		int(howmany / delta_d) );
-
-	results.push_back( uint64_t(howmany / delta_d) );
+		results.back() );
 }
 
 static void bench_log4cxx_single_threaded(int iters)

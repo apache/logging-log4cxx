@@ -44,6 +44,8 @@ followed by the logger name, the level, and then the message.
 [%d{yyyy-MM-dd HH:mm:ss}] %c %-5p - %m%n
 ~~~
 
+Sample output:
+
 ~~~
 [2020-12-24 15:31:46] root INFO  - Hello there!
 ~~~
@@ -55,6 +57,8 @@ Similar to Pattern 1, except using ISO-8601 with fractional seconds
 ~~~
 [%d] %c %-5p - %m%n
 ~~~
+
+Sample output:
 
 ~~~
 [2020-12-24 15:35:39,225] root INFO  - Hello there!
@@ -70,11 +74,13 @@ followed by the level(5 character width), followed by the logger name
 %r %-5p %-20c %m%n
 ~~~
 
+Sample output:
+
 ~~~
 0 INFO  root                 Hello there!
 ~~~
 
-## Pattern 4 {#pattern4}
+## Pattern 4 - Location Information {#pattern4}
 
 If you have no idea where a log message is coming from, it's possible to print
 out more information about the place the log statement is coming from.  For example,
@@ -86,7 +92,8 @@ patterns to output more information:
 (%F:%C[%M]:%L) %m%n
 ~~~
 
-Possible output:
+Sample output:
+
 ~~~
 (/home/robert/log4cxx-test-programs/fooclass.cpp:FooClass[FooClass]:9) Constructor running
 (/home/robert/log4cxx-test-programs/fooclass.cpp:FooClass[doFoo]:13) Doing foo
@@ -100,7 +107,7 @@ macros to determine this information at compile-time).
 One way of configuring Log4cxx is with XML files.  The following are some examples
 on various ways of using an XML file to configure the logging.
 
-## XML Example 1 {#xml-example-1}
+## XML Example 1 - Messages to stdout{#xml-example-1}
 
 This simple example simply writes messages to stdout.
 If you want to send messages to stderr instead, simply change the 'Target' value
@@ -130,7 +137,7 @@ Sample output:
 Hello there!
 ~~~
 
-## XML Example 2 {#xml-example-2}
+## XML Example 2 - Send data to stdout and file {#xml-example-2}
 
 This example sends data to both stdout, as well as to a file.  In this case,
 the file will be in our working directory.  The pattern has also been updated
@@ -168,7 +175,7 @@ Sample output:
 [2020-12-24 15:57:35] root INFO  - Hello there!
 ~~~
 
-## XML Example 3 {#xml-example-3}
+## XML Example 3 - Different log levels for different loggers {#xml-example-3}
 
 This example shows how you can configure logging for a particular category.
 
@@ -234,7 +241,7 @@ Sample output:
 [2020-12-24 16:05:48] com.example TRACE - com.example trace message
 ~~~
 
-## XML Example 4 {#xml-example-4}
+## XML Example 4 - String Match Filter {#xml-example-4}
 
 This example shows how to add a filter to an appender that will accept messages
 that match a certain string.  If our loggers are configured as such:
@@ -288,3 +295,4 @@ Sample output:
 
 Note that even though we have the root logger set to the most verbose level(trace),
 the only messages that we saw were the ones with "specific" in them.
+
