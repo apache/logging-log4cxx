@@ -125,7 +125,7 @@ LoggerPtr Hierarchy::exists(const LogString& name)
 
 	if (it != loggers->end())
 	{
-		logger = it->second.lock();
+		logger = it->second;
 	}
 
 
