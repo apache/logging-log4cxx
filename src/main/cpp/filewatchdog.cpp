@@ -107,7 +107,7 @@ void FileWatchdog::run()
 	LogString msg(LOG4CXX_STR("Checking ["));
 	msg += m_priv->file.getPath();
 	msg += LOG4CXX_STR("] at ");
-	StringHelper::toString(m_priv->delay, m_priv->pool, msg);
+	StringHelper::toString((int)m_priv->delay, m_priv->pool, msg);
 	msg += LOG4CXX_STR(" ms interval");
 	LogLog::debug(msg);
 
