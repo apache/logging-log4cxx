@@ -42,8 +42,7 @@ typedef std::shared_ptr<FormattingInfo> FormattingInfoPtr;
  */
 class LOG4CXX_EXPORT FormattingInfo : public virtual log4cxx::helpers::Object
 {
-		struct FormattingInfoPrivate;
-		std::unique_ptr<FormattingInfoPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FormattingInfoPrivate, m_priv)
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(FormattingInfo)

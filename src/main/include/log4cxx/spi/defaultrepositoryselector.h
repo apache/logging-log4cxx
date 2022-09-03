@@ -42,8 +42,7 @@ class LOG4CXX_EXPORT DefaultRepositorySelector :
 		virtual LoggerRepositoryPtr getLoggerRepository();
 
 	private:
-		struct DefaultRepositorySelectorPrivate;
-		std::unique_ptr<DefaultRepositorySelectorPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(DefaultRepositorySelectorPrivate, m_priv)
 };
 }  // namespace spi
 } // namespace log4cxx

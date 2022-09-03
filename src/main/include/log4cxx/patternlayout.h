@@ -18,11 +18,6 @@
 #ifndef _LOG4CXX_PATTERN_LAYOUT_H
 #define _LOG4CXX_PATTERN_LAYOUT_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
 #include <log4cxx/layout.h>
 #include <log4cxx/pattern/loggingeventpatternconverter.h>
 #include <log4cxx/pattern/formattinginfo.h>
@@ -362,8 +357,7 @@ LOG4CXX_LIST_DEF(FormattingInfoList, log4cxx::pattern::FormattingInfoPtr);
  */
 class LOG4CXX_EXPORT PatternLayout : public Layout
 {
-		struct PatternLayoutPrivate;
-		std::unique_ptr<PatternLayoutPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(PatternLayoutPrivate, m_priv)
 
 	public:
 		DECLARE_LOG4CXX_OBJECT(PatternLayout)
@@ -426,9 +420,5 @@ class LOG4CXX_EXPORT PatternLayout : public Layout
 
 LOG4CXX_PTR_DEF(PatternLayout);
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
 
 #endif //_LOG4CXX_PATTERN_LAYOUT_H

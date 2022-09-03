@@ -29,46 +29,60 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(ObjectOutputStream)
 
+typedef std::map<std::string, unsigned int> ClassDescriptionMap;
+
+struct ObjectOutputStream::ObjectOutputStreamPriv
+{
+
+	OutputStreamPtr                     os;
+	log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
+	const   unsigned int                objectHandleDefault;
+	unsigned int                        objectHandle;
+	ClassDescriptionMap                 classDescriptions;
+
+	ObjectOutputStreamPriv(OutputStreamPtr outputStream, Pool& p)
+		: os(outputStream)
+		, utf8Encoder(CharsetEncoder::getUTF8Encoder())
+		, objectHandleDefault(0x7E0000)
+		, objectHandle(objectHandleDefault)
+		{}
+};
+
 ObjectOutputStream::ObjectOutputStream(OutputStreamPtr outputStream, Pool& p)
-	:   os(outputStream),
-		utf8Encoder(CharsetEncoder::getUTF8Encoder()),
-		objectHandleDefault(0x7E0000),
-		objectHandle(objectHandleDefault),
-		classDescriptions(new ClassDescriptionMap())
+	:   m_priv(std::make_unique<ObjectOutputStreamPriv>(outputStream, p))
 {
 	unsigned char start[] = { 0xAC, 0xED, 0x00, 0x05 };
 	ByteBuffer buf((char*) start, sizeof(start));
-	os->write(buf, p);
+	m_priv->os->write(buf, p);
 }
 
 ObjectOutputStream::~ObjectOutputStream()
 {
-	delete classDescriptions;
 }
 
 void ObjectOutputStream::close(Pool& p)
 {
-	os->close(p);
+	m_priv->os->close(p);
 }
 
 void ObjectOutputStream::flush(Pool& p)
 {
-	os->flush(p);
+	m_priv->os->flush(p);
 }
 
 void ObjectOutputStream::reset(Pool& p)
 {
-	os->flush(p);
+	m_priv->os->flush(p);
 	writeByte(TC_RESET, p);
-	os->flush(p);
+	m_priv->os->flush(p);
 
-	objectHandle = objectHandleDefault;
-	classDescriptions->clear();
+	m_priv->objectHandle = m_priv->objectHandleDefault;
+	m_priv->classDescriptions.clear();
 }
 
 void ObjectOutputStream::writeObject(const LogString& val, Pool& p)
 {
-	objectHandle++;
+	m_priv->objectHandle++;
 	writeByte(TC_STRING, p);
 	char bytes[2];
 #if LOG4CXX_LOGCHAR_IS_UTF8
@@ -79,7 +93,7 @@ void ObjectOutputStream::writeObject(const LogString& val, Pool& p)
 	char* data = p.pstralloc(maxSize);
 	ByteBuffer dataBuf(data, maxSize);
 	LogString::const_iterator iter(val.begin());
-	utf8Encoder->encode(val, iter, dataBuf);
+	m_priv->utf8Encoder->encode(val, iter, dataBuf);
 	dataBuf.flip();
 	size_t len = dataBuf.limit();
 #endif
@@ -87,8 +101,8 @@ void ObjectOutputStream::writeObject(const LogString& val, Pool& p)
 	bytes[0] = (char) ((len >> 8) & 0xFF);
 	ByteBuffer lenBuf(bytes, sizeof(bytes));
 
-	os->write(lenBuf,   p);
-	os->write(dataBuf,  p);
+	m_priv->os->write(lenBuf,   p);
+	m_priv->os->write(dataBuf,  p);
 }
 
 void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p)
@@ -114,7 +128,7 @@ void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p)
 			TC_BLOCKDATA, 0x08, 0x00, 0x00, 0x00, 0x07
 		};
 	ByteBuffer dataBuf(data, sizeof(data));
-	os->write(dataBuf, p);
+	m_priv->os->write(dataBuf, p);
 
 	char size[4];
 	size_t sz = val.size();
@@ -125,7 +139,7 @@ void ObjectOutputStream::writeObject(const MDC::Map& val, Pool& p)
 	size[0] = (char) ((sz >> 24)    & 0xFF);
 
 	ByteBuffer sizeBuf(size, sizeof(size));
-	os->write(sizeBuf, p);
+	m_priv->os->write(sizeBuf, p);
 
 	for (MDC::Map::const_iterator   iter  = val.begin();
 		iter != val.end();
@@ -143,21 +157,21 @@ void ObjectOutputStream::writeUTFString(const std::string& val, Pool& p)
 	char bytes[3];
 	size_t len = val.size();
 	ByteBuffer dataBuf(const_cast<char*>(val.data()), val.size());
-	objectHandle++;
+	m_priv->objectHandle++;
 
 	bytes[0] = 0x74;
 	bytes[1] = (char) ((len >> 8) & 0xFF);
 	bytes[2] = (char) (len & 0xFF);
 
 	ByteBuffer lenBuf(bytes, sizeof(bytes));
-	os->write(lenBuf, p);
-	os->write(dataBuf, p);
+	m_priv->os->write(lenBuf, p);
+	m_priv->os->write(dataBuf, p);
 }
 
 void ObjectOutputStream::writeByte(char val, Pool& p)
 {
 	ByteBuffer buf(&val, 1);
-	os->write(buf, p);
+	m_priv->os->write(buf, p);
 }
 
 void ObjectOutputStream::writeInt(int val, Pool& p)
@@ -170,7 +184,7 @@ void ObjectOutputStream::writeInt(int val, Pool& p)
 	bytes[0] = (char) ((val >> 24) & 0xFF);
 
 	ByteBuffer buf(bytes, sizeof(bytes));
-	os->write(buf, p);
+	m_priv->os->write(buf, p);
 }
 
 void ObjectOutputStream::writeLong(log4cxx_time_t val, Pool& p)
@@ -187,13 +201,13 @@ void ObjectOutputStream::writeLong(log4cxx_time_t val, Pool& p)
 	bytes[0] = (char) ((val >> 56) & 0xFF);
 
 	ByteBuffer buf(bytes, sizeof(bytes));
-	os->write(buf, p);
+	m_priv->os->write(buf, p);
 }
 
 void ObjectOutputStream::writeBytes(const char* bytes, size_t len, Pool& p)
 {
 	ByteBuffer buf(const_cast<char*>(bytes), len);
-	os->write(buf, p);
+	m_priv->os->write(buf, p);
 }
 
 void ObjectOutputStream::writeNull(Pool& p)
@@ -207,9 +221,9 @@ void ObjectOutputStream::writeProlog(const  char*   className,
 	size_t len,
 	Pool&  p)
 {
-	ClassDescriptionMap::const_iterator match = classDescriptions->find(className);
+	ClassDescriptionMap::const_iterator match = m_priv->classDescriptions.find(className);
 
-	if (match != classDescriptions->end())
+	if (match != m_priv->classDescriptions.end())
 	{
 		char bytes[6];
 
@@ -221,18 +235,18 @@ void ObjectOutputStream::writeProlog(const  char*   className,
 		bytes[5] = (char) (match->second & 0xFF);
 
 		ByteBuffer buf(bytes, sizeof(bytes));
-		os->write(buf, p);
+		m_priv->os->write(buf, p);
 
-		objectHandle++;
+		m_priv->objectHandle++;
 	}
 	else
 	{
-		classDescriptions->insert(ClassDescriptionMap::value_type(className, objectHandle));
+		m_priv->classDescriptions.insert(ClassDescriptionMap::value_type(className, m_priv->objectHandle));
 		writeByte(TC_OBJECT, p);
 
 		ByteBuffer buf(classDesc, len);
-		os->write(buf, p);
+		m_priv->os->write(buf, p);
 
-		objectHandle += (classDescIncrement + 1);
+		m_priv->objectHandle += (classDescIncrement + 1);
 	}
 }

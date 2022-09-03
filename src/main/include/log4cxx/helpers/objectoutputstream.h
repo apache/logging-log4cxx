@@ -84,13 +84,7 @@ class LOG4CXX_EXPORT ObjectOutputStream : public Object
 	private:
 		ObjectOutputStream(const ObjectOutputStream&);
 		ObjectOutputStream& operator=(const ObjectOutputStream&);
-
-		OutputStreamPtr                     os;
-		log4cxx::helpers::CharsetEncoderPtr utf8Encoder;
-		const   unsigned int                        objectHandleDefault;
-		unsigned int                        objectHandle;
-		typedef std::map<std::string, unsigned int> ClassDescriptionMap;
-		ClassDescriptionMap*                classDescriptions;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(ObjectOutputStreamPriv, m_priv)
 };
 
 LOG4CXX_PTR_DEF(ObjectOutputStream);

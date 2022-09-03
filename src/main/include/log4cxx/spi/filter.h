@@ -69,8 +69,7 @@ class LOG4CXX_EXPORT Filter : public virtual OptionHandler,
 	public virtual helpers::Object
 {
 	protected:
-		struct FilterPrivate;
-		std::unique_ptr<FilterPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FilterPrivate, m_priv)
 
 	public:
 		Filter();

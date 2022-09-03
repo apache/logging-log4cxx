@@ -37,10 +37,8 @@ datagram packets.*/
 class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 {
 	protected:
-		struct DatagramSocketPriv;
-		std::unique_ptr<DatagramSocketPriv> m_priv;
-
-		DatagramSocket(std::unique_ptr<DatagramSocketPriv> priv);
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(DatagramSocketPriv, m_priv)
+		DatagramSocket(LOG4CXX_PRIVATE_PTR(DatagramSocketPriv) priv);
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DatagramSocket)
@@ -103,7 +101,6 @@ class LOG4CXX_EXPORT DatagramSocket : public helpers::Object
 	private:
 		DatagramSocket(const DatagramSocket&);
 		DatagramSocket& operator=(const DatagramSocket&);
-
 };
 
 }  // namespace helpers

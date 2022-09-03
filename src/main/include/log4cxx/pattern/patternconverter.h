@@ -23,11 +23,6 @@
 #include <log4cxx/logstring.h>
 #include <vector>
 
-#ifdef _MSC_VER
-	//   disable identifier too wide for debugging warning
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
 #define DECLARE_LOG4CXX_PATTERN(cls) DECLARE_ABSTRACT_LOG4CXX_OBJECT(cls)
 
 namespace log4cxx
@@ -50,14 +45,8 @@ typedef std::vector<LogString> OptionsList;
 class LOG4CXX_EXPORT PatternConverter : public virtual log4cxx::helpers::Object
 {
 	protected:
-		struct PatternConverterPrivate;
-		std::unique_ptr<PatternConverterPrivate> m_priv;
-
-		/**
-		 * Use this constructor when you have a subclass that has its own private data
-		 * @param priv
-		 */
-		PatternConverter(std::unique_ptr<PatternConverterPrivate> priv);
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(PatternConverterPrivate, m_priv)
+		PatternConverter(LOG4CXX_PRIVATE_PTR(PatternConverterPrivate) priv);
 
 		/**
 		 * Create a new pattern converter.  Use this constructor when you have a subclass

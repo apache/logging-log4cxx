@@ -18,10 +18,6 @@
 #ifndef _LOG4CXX_HIERARCHY_H
 #define _LOG4CXX_HIERARCHY_H
 
-#if defined(_MSC_VER)
-	#pragma warning (push)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
 
 #include <log4cxx/spi/loggerrepository.h>
 #include <log4cxx/spi/loggerfactory.h>
@@ -62,8 +58,7 @@ class LOG4CXX_EXPORT Hierarchy :
 	public std::enable_shared_from_this<Hierarchy>
 {
 	private:
-		struct HierarchyPrivate;
-		std::unique_ptr<HierarchyPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(HierarchyPrivate, m_priv)
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(Hierarchy)
@@ -272,10 +267,5 @@ class LOG4CXX_EXPORT Hierarchy :
 };
 
 }  //namespace log4cxx
-
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif //_LOG4CXX_HIERARCHY_H

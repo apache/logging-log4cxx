@@ -18,12 +18,6 @@
 #ifndef _LOG4CXX_HELPERS_SOCKET_OUTPUT_STREAM_H
 #define _LOG4CXX_HELPERS_SOCKET_OUTPUT_STREAM_H
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
-
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/outputstream.h>
 #include <log4cxx/helpers/socket.h>
@@ -51,8 +45,7 @@ class LOG4CXX_EXPORT SocketOutputStream : public OutputStream
 		virtual void write(ByteBuffer& buf, Pool& p);
 
 	private:
-		struct SocketOutputStreamPrivate;
-		std::unique_ptr<SocketOutputStreamPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(SocketOutputStreamPrivate, m_priv)
 		//
 		//   prevent copy and assignment statements
 		SocketOutputStream(const SocketOutputStream&);
@@ -64,11 +57,6 @@ LOG4CXX_PTR_DEF(SocketOutputStream);
 
 }  // namespace helpers
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning ( pop )
-#endif
-
 
 
 #endif // _LOG4CXX_HELPERS_SOCKET_OUTPUT_STREAM_H

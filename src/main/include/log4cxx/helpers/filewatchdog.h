@@ -66,8 +66,7 @@ class LOG4CXX_EXPORT FileWatchdog
 		FileWatchdog(const FileWatchdog&);
 		FileWatchdog& operator=(const FileWatchdog&);
 
-		struct FileWatchdogPrivate;
-		std::unique_ptr<FileWatchdogPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FileWatchdogPrivate, m_priv)
 };
 }  // namespace helpers
 } // namespace log4cxx

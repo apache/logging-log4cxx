@@ -21,11 +21,6 @@
 #include <log4cxx/logstring.h>
 #include <memory>
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4251 )
-#endif
-
 namespace log4cxx
 {
 namespace helpers
@@ -46,14 +41,10 @@ class LOG4CXX_EXPORT Locale
 	protected:
 		Locale(const Locale&);
 		Locale& operator=(const Locale&);
-		struct LocalePrivate;
-		std::unique_ptr<LocalePrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LocalePrivate, m_priv)
 }; // class Locale
 }  // namespace helpers
 } // namespace log4cxx
 
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif // _LOG4CXX_HELPERS_LOCALE_H

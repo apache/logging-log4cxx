@@ -36,8 +36,7 @@ namespace helpers
 class LOG4CXX_EXPORT FileInputStream : public InputStream
 {
 	private:
-		struct FileInputStreamPrivate;
-		std::unique_ptr<FileInputStreamPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(FileInputStreamPrivate, m_priv)
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(FileInputStream)

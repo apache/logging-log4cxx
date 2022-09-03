@@ -18,11 +18,6 @@
 #ifndef _LOG4CXX_SPI_LOGGING_EVENT_H
 #define _LOG4CXX_SPI_LOGGING_EVENT_H
 
-#if defined(_MSC_VER)
-	#pragma warning (push)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
 #include <log4cxx/logstring.h>
 #include <time.h>
 #include <log4cxx/logger.h>
@@ -180,8 +175,7 @@ class LOG4CXX_EXPORT LoggingEvent :
 		void setProperty(const LogString& key, const LogString& value);
 
 	private:
-		struct LoggingEventPrivate;
-		std::unique_ptr<LoggingEventPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LoggingEventPrivate, m_priv)
 
 		//
 		//   prevent copy and assignment
@@ -197,10 +191,5 @@ LOG4CXX_PTR_DEF(LoggingEvent);
 LOG4CXX_LIST_DEF(LoggingEventList, LoggingEventPtr);
 }
 }
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
-
 
 #endif //_LOG4CXX_SPI_LOGGING_EVENT_H

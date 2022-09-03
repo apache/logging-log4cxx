@@ -24,11 +24,6 @@
 #include <thread>
 #include <condition_variable>
 
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4251 )
-#endif
-
 namespace log4cxx
 {
 
@@ -44,8 +39,18 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 		struct SocketAppenderSkeletonPriv;
 
 	public:
-		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);
+		SocketAppenderSkeleton(int defaultPort, int reconnectionDelay);
 		~SocketAppenderSkeleton();
+
+		/**
+		Connects to remote server at <code>address</code> and <code>port</code>.
+		*/
+		SocketAppenderSkeleton(helpers::InetAddressPtr address, int port, int reconnectionDelay);
+
+		/**
+		Connects to remote server at <code>host</code> and <code>port</code>.
+		*/
+		SocketAppenderSkeleton(const LogString& host, int port, int reconnectionDelay);
 
 		/**
 		Connect to the specified <b>RemoteHost</b> and <b>Port</b>.
@@ -122,6 +127,7 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 			const LogString& value);
 
 	protected:
+		SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv);
 
 		virtual void setSocket(log4cxx::helpers::SocketPtr& socket, log4cxx::helpers::Pool& p) = 0;
 
@@ -151,10 +157,6 @@ class LOG4CXX_EXPORT SocketAppenderSkeleton : public AppenderSkeleton
 }; // class SocketAppenderSkeleton
 } // namespace net
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif // _LOG4CXX_NET_SOCKET_APPENDER_SKELETON_H
 

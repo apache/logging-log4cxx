@@ -6,7 +6,6 @@
 *.swp
 
 ar-lib
-config**
 !configuration-samples.md
 depcomp
 install-sh

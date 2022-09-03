@@ -36,8 +36,7 @@ and might arrive in any order.
 class LOG4CXX_EXPORT DatagramPacket : public helpers::Object
 {
 	private:
-		struct DatagramPacketPriv;
-		std::unique_ptr<DatagramPacketPriv> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(DatagramPacketPriv, m_priv)
 
 	public:
 		DECLARE_ABSTRACT_LOG4CXX_OBJECT(DatagramPacket)

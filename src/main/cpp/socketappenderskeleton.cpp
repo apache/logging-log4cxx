@@ -37,6 +37,21 @@ using namespace log4cxx::net;
 
 #define _priv static_cast<SocketAppenderSkeletonPriv*>(m_priv.get())
 
+SocketAppenderSkeleton::SocketAppenderSkeleton(int defaultPort, int reconnectionDelay)
+    : AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(defaultPort, reconnectionDelay))
+{
+}
+
+SocketAppenderSkeleton::SocketAppenderSkeleton(helpers::InetAddressPtr address, int port, int reconnectionDelay)
+    : AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(address, port, reconnectionDelay))
+{
+}
+
+SocketAppenderSkeleton::SocketAppenderSkeleton(const LogString& host, int port, int reconnectionDelay)
+    : AppenderSkeleton(std::make_unique<SocketAppenderSkeletonPriv>(host, port, reconnectionDelay))
+{
+}
+
 SocketAppenderSkeleton::SocketAppenderSkeleton(std::unique_ptr<SocketAppenderSkeletonPriv> priv)
 	:  AppenderSkeleton (std::move(priv))
 {

@@ -18,15 +18,9 @@
 #ifndef _LOG4CXX_SYSLOG_WRITER_H
 #define _LOG4CXX_SYSLOG_WRITER_H
 
-
 #include <log4cxx/helpers/object.h>
 #include <log4cxx/helpers/inetaddress.h>
 #include <log4cxx/helpers/datagramsocket.h>
-
-#if defined(_MSC_VER)
-	#pragma warning ( push )
-	#pragma warning ( disable: 4251 )
-#endif
 
 namespace log4cxx
 {
@@ -45,14 +39,9 @@ class LOG4CXX_EXPORT SyslogWriter
 		void write(const LogString& string);
 
 	private:
-		struct SyslogWriterPrivate;
-		std::unique_ptr<SyslogWriterPrivate> m_priv;
+		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(SyslogWriterPrivate, m_priv)
 };
 }  // namespace helpers
 } // namespace log4cxx
-
-#if defined(_MSC_VER)
-	#pragma warning (pop)
-#endif
 
 #endif
