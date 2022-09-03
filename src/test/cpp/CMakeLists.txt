@@ -124,7 +124,7 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             )
         elseif(${testName} STREQUAL autoconfiguretestcase)
             set_tests_properties(autoconfiguretestcase PROPERTIES
-                ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties;PATH=${ESCAPED_PATH}"
+                ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties;LOG4CXX_CONFIGURATION_WATCH_SECONDS=1;PATH=${ESCAPED_PATH}"
             )
         else()
            set_tests_properties(${testName} PROPERTIES
