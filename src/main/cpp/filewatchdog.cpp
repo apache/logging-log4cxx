@@ -24,6 +24,7 @@
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/exception.h>
 #include <log4cxx/helpers/threadutility.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <functional>
 
 using namespace log4cxx;
@@ -103,6 +104,12 @@ void FileWatchdog::checkAndConfigure()
 
 void FileWatchdog::run()
 {
+	LogString msg(LOG4CXX_STR("Checking ["));
+	msg += m_priv->file.getPath();
+	msg += LOG4CXX_STR("] at ");
+	StringHelper::toString(m_priv->delay, m_priv->pool, msg);
+	msg += LOG4CXX_STR(" ms interval");
+	LogLog::debug(msg);
 
 	while (m_priv->interrupted != 0xFFFF)
 	{
@@ -113,6 +120,10 @@ void FileWatchdog::run()
 		checkAndConfigure();
 	}
 
+	LogString msg2(LOG4CXX_STR("Stop checking ["));
+	msg2 += m_priv->file.getPath();
+	msg2 += LOG4CXX_STR("]");
+	LogLog::debug(msg2);
 }
 
 void FileWatchdog::start()

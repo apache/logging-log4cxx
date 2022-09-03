@@ -153,9 +153,12 @@ class LOG4CXX_EXPORT OptionConverter
 		filename pointed to by <code>configFileName</code> ends in '.xml',
 		in which case DOMConfigurator is used.
 		@param hierarchy The Hierarchy to act on.
+		@param delay If greater than zero, the milliseconds to sleep
+		between checking if <code>configFileName</code> has been modified
+		and needs to be reloaded.
 		*/
 		static void selectAndConfigure(const File& configFileName,
-			const LogString& clazz, spi::LoggerRepositoryPtr hierarchy);
+			const LogString& clazz, spi::LoggerRepositoryPtr hierarchy, int delay = 0);
 };
 }  // namespace helpers
 } // namespace log4cxx

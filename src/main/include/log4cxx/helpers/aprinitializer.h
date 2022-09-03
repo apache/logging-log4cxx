@@ -55,6 +55,7 @@ class APRInitializer
 		 */
 		static void registerCleanup(FileWatchdog* watchdog);
 		static void unregisterCleanup(FileWatchdog* watchdog);
+		static void unregisterAll();
 		/**
 		 *  Store a single instance type ObjectPtr for deletion prior to termination
 		 */
@@ -78,6 +79,7 @@ class APRInitializer
 	private: // Modifiers
 		void addObject(size_t key, const ObjectPtr& pObject);
 		const ObjectPtr& findOrAddObject(size_t key, std::function<ObjectPtr()> creator);
+		void stopWatchDogs();
 	private: // Attributes
 		apr_pool_t* p;
 		std::mutex mutex;

@@ -46,6 +46,7 @@ APRInitializer::APRInitializer() : p(0), startTime(0), tlsKey(0)
 	apr_initialize();
 	apr_pool_create(&p, NULL);
 	apr_atomic_init(p);
+	apr_atomic_init(p);
 	startTime = apr_time_now();
 #if APR_HAS_THREADS
 	apr_status_t stat = apr_threadkey_private_create(&tlsKey, tlsDestruct, p);
@@ -56,25 +57,31 @@ APRInitializer::APRInitializer() : p(0), startTime(0), tlsKey(0)
 
 APRInitializer::~APRInitializer()
 {
-	{
-#if APR_HAS_THREADS
-		std::unique_lock<std::mutex> lock(mutex);
-		apr_threadkey_private_delete(tlsKey);
-#endif
-
-		for (std::list<FileWatchdog*>::iterator iter = watchdogs.begin();
-			iter != watchdogs.end();
-			iter++)
-		{
-			delete *iter;
-		}
-	}
-
-	// TODO LOGCXX-322
+	stopWatchDogs();
+	isDestructed = true;
 #ifndef APR_HAS_THREADS
+	std::unique_lock<std::mutex> lock(mutex);
+	apr_threadkey_private_delete(tlsKey);
 	apr_terminate();
 #endif
-	isDestructed = true;
+}
+
+void APRInitializer::stopWatchDogs()
+{
+#if APR_HAS_THREADS
+	std::unique_lock<std::mutex> lock(mutex);
+#endif
+
+	while (!watchdogs.empty())
+	{
+		delete watchdogs.back();
+		watchdogs.pop_back();
+	}
+}
+
+void APRInitializer::unregisterAll()
+{
+	getInstance().stopWatchDogs();
 }
 
 APRInitializer& APRInitializer::getInstance()
@@ -132,7 +139,7 @@ void APRInitializer::addObject(size_t key, const ObjectPtr& pObject)
 #if APR_HAS_THREADS
 	std::unique_lock<std::mutex> lock(this->mutex);
 #endif
-    this->objects[key] = pObject;
+	this->objects[key] = pObject;
 }
 
 const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<ObjectPtr()> creator)
@@ -140,8 +147,8 @@ const ObjectPtr& APRInitializer::findOrAddObject(size_t key, std::function<Objec
 #if APR_HAS_THREADS
 	std::unique_lock<std::mutex> lock(this->mutex);
 #endif
-    auto pItem = this->objects.find(key);
-    if (this->objects.end() == pItem)
-        pItem = this->objects.emplace(key, creator()).first;
-    return pItem->second;
+	auto pItem = this->objects.find(key);
+	if (this->objects.end() == pItem)
+		pItem = this->objects.emplace(key, creator()).first;
+	return pItem->second;
 }
