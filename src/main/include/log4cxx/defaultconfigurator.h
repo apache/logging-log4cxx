@@ -47,7 +47,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 	private:
 		static const LogString getConfigurationFileName();
 		static const LogString getConfiguratorClass();
-		static int DefaultConfigurator::getConfigurationWatchDelay();
+		static int getConfigurationWatchDelay();
 
 
 
