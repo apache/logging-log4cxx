@@ -59,9 +59,10 @@ APRInitializer::~APRInitializer()
 {
 	stopWatchDogs();
 	isDestructed = true;
-#ifndef APR_HAS_THREADS
+#if APR_HAS_THREADS
 	std::unique_lock<std::mutex> lock(mutex);
 	apr_threadkey_private_delete(tlsKey);
+#else
 	apr_terminate();
 #endif
 }
