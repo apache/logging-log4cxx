@@ -47,6 +47,7 @@ LOGUNIT_CLASS(AutoConfigureTestCase)
 	LOGUNIT_TEST_SUITE(AutoConfigureTestCase);
 	LOGUNIT_TEST_THREADS(test1, 4);
 	LOGUNIT_TEST(test2);
+	LOGUNIT_TEST(stop);
 	LOGUNIT_TEST_SUITE_END();
 #ifdef _DEBUG
 	struct Fixture
@@ -72,6 +73,11 @@ public:
 		auto debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test2"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
+	}
+
+	void stop()
+	{
+		LogManager::shutdown();
 	}
 };
 

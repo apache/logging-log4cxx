@@ -67,7 +67,8 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 		OptionConverter::selectAndConfigure(
 			configuration,
 			configuratorClassName,
-			repo);
+			repo,
+			getConfigurationWatchDelay());
 	}
 	else
 	{
@@ -110,6 +111,17 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 		OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_KEY,
 			log4jConfigurationOptionStr));
 	return configurationOptionStr;
+}
+
+
+int DefaultConfigurator::getConfigurationWatchDelay()
+{
+	static const LogString LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION_WATCH_SECONDS"));
+	LogString optionStr = OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY, LogString());
+	int milliseconds = 0;
+	if (!optionStr.empty())
+		milliseconds = stoi(optionStr) * 1000;
+	return milliseconds;
 }
 
 

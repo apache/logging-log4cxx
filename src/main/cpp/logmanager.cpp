@@ -200,6 +200,7 @@ LoggerList LogManager::getCurrentLoggers()
 
 void LogManager::shutdown()
 {
+	APRInitializer::unregisterAll();
 	LoggerRepositoryPtr repPtr = getLoggerRepository();
 	getLoggerRepository()->shutdown();
 }
