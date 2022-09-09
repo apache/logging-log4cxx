@@ -500,6 +500,7 @@ void Logger::removeAppender(const LogString& name1)
 
 void Logger::removeHierarchy()
 {
+	std::unique_lock<std::mutex> lock( m_priv->aai.getMutex() ); // Wait for appenders to complete
 	m_priv->repository.reset();
 	m_priv->repositoryRaw = 0;
 }

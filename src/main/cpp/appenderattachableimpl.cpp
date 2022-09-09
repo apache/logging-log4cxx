@@ -68,24 +68,11 @@ int AppenderAttachableImpl::appendLoopOnAppenders(
 	const spi::LoggingEventPtr& event,
 	Pool& p)
 {
-
-	AppenderList allAppenders;
 	int numberAppended = 0;
+	std::unique_lock<std::mutex> lock( m_priv->m_mutex );
+	for (auto appender : m_priv->appenderList)
 	{
-		// There are occasions where we want to modify our list of appenders
-		// while we are iterating over them.  For example, if one of the
-		// appenders fails, we may want to swap it out for a new one.
-		// So, make a local copy of the appenders that we want to iterate over
-		// before actually iterating over them.
-		std::unique_lock<std::mutex> lock( m_priv->m_mutex );
-		allAppenders = m_priv->appenderList;
-	}
-
-	for (AppenderList::iterator it = allAppenders.begin();
-		it != allAppenders.end();
-		it++)
-	{
-		(*it)->doAppend(event, p);
+		appender->doAppend(event, p);
 		numberAppended++;
 	}
 
