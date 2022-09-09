@@ -39,11 +39,24 @@ extern "C" void tlsDestruct(void* ptr)
 {
 	delete ((ThreadSpecificData*) ptr);
 }
+
+// The first object created and the last object destroyed
+struct apr_environment
+{
+    apr_environment()
+    {
+        apr_initialize();
+    }
+    ~apr_environment()
+    {
+        apr_terminate();
+    }
+};
+
 }
 
 APRInitializer::APRInitializer() : p(0), startTime(0), tlsKey(0)
 {
-	apr_initialize();
 	apr_pool_create(&p, NULL);
 	apr_atomic_init(p);
 	apr_atomic_init(p);
@@ -62,8 +75,6 @@ APRInitializer::~APRInitializer()
 #if APR_HAS_THREADS
 	std::unique_lock<std::mutex> lock(mutex);
 	apr_threadkey_private_delete(tlsKey);
-#else
-	apr_terminate();
 #endif
 }
 
@@ -87,6 +98,7 @@ void APRInitializer::unregisterAll()
 
 APRInitializer& APRInitializer::getInstance()
 {
+	static apr_environment env;
 	static APRInitializer init;
 	return init;
 }
