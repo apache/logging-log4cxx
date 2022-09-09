@@ -101,7 +101,7 @@ void Logger::addAppender(const AppenderPtr newAppender)
 	m_priv->aai.addAppender(newAppender);
 	if (auto rep = getHierarchy())
 	{
-		m_priv->repositoryRaw->fireAddAppenderEvent(this, newAppender.get());
+		rep->fireAddAppenderEvent(this, newAppender.get());
 	}
 }
 
@@ -119,7 +119,7 @@ void Logger::reconfigure( const std::vector<AppenderPtr>& appenders, bool additi
 
 		if (auto rep = getHierarchy())
 		{
-			m_priv->repositoryRaw->fireAddAppenderEvent(this, it->get());
+			rep->fireAddAppenderEvent(this, it->get());
 		}
 	}
 }
@@ -144,7 +144,7 @@ void Logger::callAppenders(const spi::LoggingEventPtr& event, Pool& p) const
 
 	if (writes == 0 && rep)
 	{
-		m_priv->repositoryRaw->emitNoAppenderWarning(const_cast<Logger*>(this));
+		rep->emitNoAppenderWarning(const_cast<Logger*>(this));
 	}
 }
 
@@ -162,6 +162,8 @@ void Logger::closeNestedAppenders()
 void Logger::forcedLog(const LevelPtr& level1, const std::string& message,
 	const LocationInfo& location) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LOG4CXX_DECODE_CHAR(msg, message);
 	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
@@ -171,6 +173,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message,
 
 void Logger::forcedLog(const LevelPtr& level1, const std::string& message) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LOG4CXX_DECODE_CHAR(msg, message);
 	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
@@ -181,6 +185,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message) const
 void Logger::forcedLogLS(const LevelPtr& level1, const LogString& message,
 	const LocationInfo& location) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, message, location));
 	callAppenders(event, p);
