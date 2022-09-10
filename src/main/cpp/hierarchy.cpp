@@ -96,9 +96,13 @@ Hierarchy::~Hierarchy()
 	for (auto& item : m_priv->loggers)
 	{
 		if (auto& pLogger = item.second)
+		{
 			pLogger->removeHierarchy();
+			pLogger->removeAllAppenders();
+		}
 	}
 	m_priv->root->removeHierarchy();
+	m_priv->root->removeAllAppenders();
 }
 
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)

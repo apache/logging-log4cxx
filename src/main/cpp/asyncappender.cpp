@@ -214,7 +214,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	//
 	if (!priv->dispatcher.joinable() || priv->bufferSize <= 0)
 	{
-		std::unique_lock<std::mutex> lock(priv->appenders->getMutex());
 		priv->appenders->appendLoopOnAppenders(event, p);
 		return;
 	}
@@ -316,7 +315,6 @@ void AsyncAppender::close()
 	}
 
 	{
-		std::unique_lock<std::mutex> lock(priv->appenders->getMutex());
 		AppenderList appenderList = priv->appenders->getAllAppenders();
 
 		for (AppenderList::iterator iter = appenderList.begin();

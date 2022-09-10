@@ -28,7 +28,6 @@
 #include <apr_thread_mutex.h>
 #include <apr_thread_cond.h>
 #include <log4cxx/helpers/condition.h>
-#include <log4cxx/helpers/synchronized.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <apr_atomic.h>
 #include <log4cxx/helpers/optionconverter.h>
@@ -78,7 +77,6 @@ void AsyncAppender::releaseRef() const
 
 void AsyncAppender::addAppender(const AppenderPtr& newAppender)
 {
-	synchronized sync(appenders->getMutex());
 	appenders->addAppender(newAppender);
 }
 
@@ -124,7 +122,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 	//
 	if (!dispatcher.isAlive() || bufferSize <= 0)
 	{
-		synchronized sync(appenders->getMutex());
 		appenders->appendLoopOnAppenders(event, p);
 		return;
 	}
@@ -196,7 +193,6 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		}
 	}
 #else
-	synchronized sync(appenders->getMutex());
 	appenders->appendLoopOnAppenders(event, p);
 #endif
 }
@@ -227,7 +223,6 @@ void AsyncAppender::close()
 #endif
 
 	{
-		synchronized sync(appenders->getMutex());
 		AppenderList appenderList = appenders->getAllAppenders();
 
 		for (AppenderList::iterator iter = appenderList.begin();
@@ -241,19 +236,16 @@ void AsyncAppender::close()
 
 AppenderList AsyncAppender::getAllAppenders() const
 {
-	synchronized sync(appenders->getMutex());
 	return appenders->getAllAppenders();
 }
 
 AppenderPtr AsyncAppender::getAppender(const LogString& n) const
 {
-	synchronized sync(appenders->getMutex());
 	return appenders->getAppender(n);
 }
 
 bool AsyncAppender::isAttached(const AppenderPtr& appender) const
 {
-	synchronized sync(appenders->getMutex());
 	return appenders->isAttached(appender);
 }
 
@@ -264,19 +256,16 @@ bool AsyncAppender::requiresLayout() const
 
 void AsyncAppender::removeAllAppenders()
 {
-	synchronized sync(appenders->getMutex());
 	appenders->removeAllAppenders();
 }
 
 void AsyncAppender::removeAppender(const AppenderPtr& appender)
 {
-	synchronized sync(appenders->getMutex());
 	appenders->removeAppender(appender);
 }
 
 void AsyncAppender::removeAppender(const LogString& n)
 {
-	synchronized sync(appenders->getMutex());
 	appenders->removeAppender(n);
 }
 
@@ -429,7 +418,6 @@ void* LOG4CXX_THREAD_FUNC AsyncAppender::dispatch(apr_thread_t* /*thread*/, void
 				iter != events.end();
 				iter++)
 			{
-				synchronized sync(pThis->appenders->getMutex());
 				pThis->appenders->appendLoopOnAppenders(*iter, p);
 			}
 		}
