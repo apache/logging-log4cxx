@@ -20,6 +20,7 @@
 #include <log4cxx/fileappender.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
 #include <log4cxx/appender.h>
+#include <log4cxx/helpers/loglog.h>
 #include "../logunit.h"
 #include "../util/transformer.h"
 #include "../util/compare.h"
@@ -35,11 +36,19 @@ LOGUNIT_CLASS(ErrorHandlerTestCase)
 {
 	LOGUNIT_TEST_SUITE(ErrorHandlerTestCase);
 	LOGUNIT_TEST(test1);
+	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggerPtr root;
 	LoggerPtr logger;
-
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 public:
 	void setUp()
@@ -85,7 +94,7 @@ public:
 
 		try
 		{
-			Transformer::transform("output/fallback", "output/fallbackfiltered", filters);
+			Transformer::transform("output/fallback1", "output/fallbackfiltered1", filters);
 		}
 		catch (UnexpectedFormatException& e)
 		{
@@ -94,7 +103,45 @@ public:
 		}
 
 
-		LOGUNIT_ASSERT(Compare::compare("output/fallbackfiltered", "witness/fallback1"));
+		LOGUNIT_ASSERT(Compare::compare("output/fallbackfiltered1", "witness/fallback1"));
+	}
+
+	void test2()
+	{
+		DOMConfigurator::configure("input/xml/fallback2.xml");
+		AppenderPtr appender = root->getAppender(LOG4CXX_STR("PRIMARY"));
+		FileAppenderPtr primary = log4cxx::cast<FileAppender>(appender);
+		log4cxx::varia::FallbackErrorHandlerPtr eh;
+		log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
+		eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
+		LOGUNIT_ASSERT(eh != 0);
+		eh->setLogger(logger);
+		common();
+
+		std::string TEST1_PAT =
+			"FALLBACK - (root|test) - Message {0-9}";
+
+		ControlFilter cf;
+		cf << TEST1_PAT;
+
+		LineNumberFilter lineNumberFilter;
+
+		std::vector<Filter*> filters;
+		filters.push_back(&cf);
+		filters.push_back(&lineNumberFilter);
+
+		try
+		{
+			Transformer::transform("output/fallback2", "output/fallbackfiltered2", filters);
+		}
+		catch (UnexpectedFormatException& e)
+		{
+			std::cout << "UnexpectedFormatException :" << e.what() << std::endl;
+			throw;
+		}
+
+
+		LOGUNIT_ASSERT(Compare::compare("output/fallbackfiltered2", "witness/fallback1"));
 	}
 
 	void common()

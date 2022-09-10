@@ -102,8 +102,6 @@ class LOG4CXX_EXPORT AppenderAttachableImpl :
 		 */
 		virtual void removeAppender(const LogString& name);
 
-		std::mutex& getMutex();
-
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)
 

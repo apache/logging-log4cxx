@@ -28,11 +28,6 @@
 namespace log4cxx
 {
 
-namespace helpers
-{
-class synchronized;
-}
-
 namespace spi
 {
 class LoggerRepository;
