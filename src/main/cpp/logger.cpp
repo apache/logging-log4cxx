@@ -701,6 +701,8 @@ LoggerPtr Logger::getLoggerLS(const LogString& name)
 void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message,
 	const LocationInfo& location) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LOG4CXX_DECODE_WCHAR(msg, message);
 	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
@@ -709,6 +711,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message,
 
 void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LOG4CXX_DECODE_WCHAR(msg, message);
 	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
@@ -852,6 +856,8 @@ void Logger::warn(const std::wstring& msg) const
 void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>& message,
 	const LocationInfo& location) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LOG4CXX_DECODE_UNICHAR(msg, message);
 	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
@@ -860,6 +866,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 
 void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>& message) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LOG4CXX_DECODE_UNICHAR(msg, message);
 	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
@@ -1000,6 +1008,8 @@ void Logger::warn(const std::basic_string<UniChar>& msg) const
 void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message,
 	const LocationInfo& location) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LOG4CXX_DECODE_CFSTRING(msg, message);
 	LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
@@ -1008,6 +1018,8 @@ void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message,
 
 void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message) const
 {
+	if (!getHierarchy()) // Has removeHierarchy() been called?
+		return;
 	Pool p;
 	LOG4CXX_DECODE_CFSTRING(msg, message);
 	LoggingEventPtr event(new LoggingEvent(name, level1, msg,
