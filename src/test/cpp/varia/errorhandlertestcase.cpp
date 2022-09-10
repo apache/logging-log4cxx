@@ -20,6 +20,7 @@
 #include <log4cxx/fileappender.h>
 #include <log4cxx/varia/fallbackerrorhandler.h>
 #include <log4cxx/appender.h>
+#include <log4cxx/helpers/loglog.h>
 #include "../logunit.h"
 #include "../util/transformer.h"
 #include "../util/compare.h"
@@ -40,7 +41,14 @@ LOGUNIT_CLASS(ErrorHandlerTestCase)
 
 	LoggerPtr root;
 	LoggerPtr logger;
-
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 public:
 	void setUp()
@@ -107,7 +115,7 @@ public:
 		log4cxx::spi::ErrorHandlerPtr errHandle = primary->getErrorHandler();
 		eh = log4cxx::cast<log4cxx::varia::FallbackErrorHandler>(errHandle);
 		LOGUNIT_ASSERT(eh != 0);
-
+		eh->setLogger(logger);
 		common();
 
 		std::string TEST1_PAT =
