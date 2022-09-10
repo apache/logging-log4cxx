@@ -15,9 +15,6 @@
  * limitations under the License.
  */
 
-#if defined(_MSC_VER)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
 
 #include <log4cxx/asyncappender.h>
 
@@ -256,22 +253,11 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			bool discard = true;
 
 			if (priv->blocking
-				//&& !Thread::interrupted()
+				&& !priv->closed
 				&& (priv->dispatcher.get_id() != std::this_thread::get_id()) )
 			{
-				try
-				{
-					priv->bufferNotFull.wait(lock);
-					discard = false;
-				}
-				catch (InterruptedException&)
-				{
-					//
-					//  reset interrupt status so
-					//    calling code can see interrupt on
-					//    their next wait or sleep.
-					//Thread::currentThreadInterrupt();
-				}
+				priv->bufferNotFull.wait(lock);
+				discard = false;
 			}
 
 			//
@@ -303,7 +289,7 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 void AsyncAppender::close()
 {
 	{
-		std::unique_lock<std::mutex> lock(priv->bufferMutex);
+		std::lock_guard<std::mutex> lock(priv->bufferMutex);
 		priv->closed = true;
 		priv->bufferNotEmpty.notify_all();
 		priv->bufferNotFull.notify_all();
@@ -379,7 +365,7 @@ void AsyncAppender::setBufferSize(int size)
 		throw IllegalArgumentException(LOG4CXX_STR("size argument must be non-negative"));
 	}
 
-	std::unique_lock<std::mutex> lock(priv->bufferMutex);
+	std::lock_guard<std::mutex> lock(priv->bufferMutex);
 	priv->bufferSize = (size < 1) ? 1 : size;
 	priv->bufferNotFull.notify_all();
 }
@@ -391,7 +377,7 @@ int AsyncAppender::getBufferSize() const
 
 void AsyncAppender::setBlocking(bool value)
 {
-	std::unique_lock<std::mutex> lock(priv->bufferMutex);
+	std::lock_guard<std::mutex> lock(priv->bufferMutex);
 	priv->blocking = value;
 	priv->bufferNotFull.notify_all();
 }
@@ -507,10 +493,6 @@ void AsyncAppender::dispatch()
 				priv->appenders->appendLoopOnAppenders(*iter, p);
 			}
 		}
-	}
-	catch (InterruptedException&)
-	{
-		//Thread::currentThreadInterrupt();
 	}
 	catch (...)
 	{
