@@ -16,7 +16,6 @@
 #
 
 # Options
-option(LOG4CXX_BLOCKING_ASYNC_APPENDER "Async appender behaviour" ON)
 option(LOG4CXX_ABI_CHECK "Check for ABI changes" OFF)
 
 # Build the log4cxx library
@@ -56,7 +55,7 @@ target_sources(log4cxx
   appenderattachableimpl.cpp
   appenderskeleton.cpp
   aprinitializer.cpp
-  $<IF:$<BOOL:LOG4CXX_BLOCKING_ASYNC_APPENDER>,asyncappender.cpp,asyncappender_nonblocking.cpp>
+  asyncappender.cpp
   basicconfigurator.cpp
   bufferedwriter.cpp
   bytearrayinputstream.cpp
