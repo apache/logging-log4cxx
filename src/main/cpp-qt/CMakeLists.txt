@@ -29,7 +29,7 @@ if(LOG4CXX_QT_SUPPORT)
     endif()
     add_dependencies(log4cxx-qt configure_log4cxx)
     target_compile_definitions(log4cxx-qt PRIVATE "QT_NO_KEYWORDS")
-    target_link_libraries(log4cxx-qt Qt5::Core)
+    target_link_libraries(log4cxx-qt Qt5::Core log4cxx)
     target_sources(log4cxx-qt
       PRIVATE
       messagehandler.cpp

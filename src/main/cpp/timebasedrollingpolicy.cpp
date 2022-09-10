@@ -33,12 +33,6 @@
 #include <log4cxx/rolling/zipcompressaction.h>
 #include<iostream>
 
-#ifndef INT64_C
-	#define INT64_C(x) x ## LL
-#endif
-
-#include <apr_time.h>
-
 using namespace log4cxx;
 using namespace log4cxx::rolling;
 using namespace log4cxx::helpers;
@@ -201,9 +195,8 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 		throw IllegalStateException();
 	}
 
-	apr_time_t n = apr_time_now();
 	LogString buf;
-	ObjectPtr obj(new Date(n));
+	ObjectPtr obj(new Date());
 	formatFileName(obj, buf, pool);
 	lastFileName = buf;
 
@@ -267,8 +260,9 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 	const   bool        append,
 	Pool&       pool)
 {
-	apr_time_t n = apr_time_now();
-	nextCheck = ((n / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC;
+	Date now;
+	log4cxx_time_t n = now.getTime();
+	nextCheck = now.getNextSecond();
 
 	File currentFile(currentActiveFile);
 
@@ -298,8 +292,9 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	const   bool        append,
 	Pool&       pool)
 {
-	apr_time_t n = apr_time_now();
-	nextCheck = ((n / APR_USEC_PER_SEC) + 1) * APR_USEC_PER_SEC;
+	Date now;
+	log4cxx_time_t n = now.getTime();
+	nextCheck = now.getNextSecond();
 
 	LogString buf;
 	ObjectPtr obj(new Date(n));
@@ -418,6 +413,6 @@ bool TimeBasedRollingPolicy::isTriggeringEvent(
 
 	return ((apr_time_now()) > nextCheck) || (!bAlreadyInitialized);
 #else
-	return apr_time_now() > nextCheck;
+	return Date::currentTime() > nextCheck;
 #endif
 }

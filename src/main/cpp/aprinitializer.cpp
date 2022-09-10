@@ -26,6 +26,7 @@
 #include <apr_thread_mutex.h>
 #include <apr_thread_proc.h>
 #include <log4cxx/helpers/filewatchdog.h>
+#include <log4cxx/helpers/date.h>
 
 using namespace log4cxx::helpers;
 using namespace log4cxx;
@@ -59,8 +60,7 @@ APRInitializer::APRInitializer() : p(0), startTime(0), tlsKey(0)
 {
 	apr_pool_create(&p, NULL);
 	apr_atomic_init(p);
-	apr_atomic_init(p);
-	startTime = apr_time_now();
+	startTime = Date::currentTime();
 #if APR_HAS_THREADS
 	apr_status_t stat = apr_threadkey_private_create(&tlsKey, tlsDestruct, p);
 	assert(stat == APR_SUCCESS);

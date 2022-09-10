@@ -118,17 +118,39 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
 
     if(WIN32)
+        set_target_properties(${testName} PROPERTIES
+          VS_DEBUGGER_WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
+        )
+        set_target_properties(${testName} PROPERTIES
+          VS_DEBUGGER_COMMAND_ARGUMENTS "-v"
+        )
         if(${testName} STREQUAL socketservertestcase)
+            set_target_properties(${testName} PROPERTIES
+              VS_DEBUGGER_ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}\nPATH=${ESCAPED_PATH}"
+            )
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${ESCAPED_PATH}"
             )
         elseif(${testName} STREQUAL autoconfiguretestcase)
+            set_target_properties(${testName} PROPERTIES
+              VS_DEBUGGER_ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties\nPATH=${ESCAPED_PATH}"
+            )
             set_tests_properties(autoconfiguretestcase PROPERTIES
                 ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties;LOG4CXX_CONFIGURATION_WATCH_SECONDS=1;PATH=${ESCAPED_PATH}"
             )
-        else()
+        elseif(${testName} STREQUAL optionconvertertestcase)
+            set_target_properties(${testName} PROPERTIES
+              VS_DEBUGGER_ENVIRONMENT "TOTO=wonderful\nkey1=value1\nkey2=value2\nPATH=${ESCAPED_PATH}"
+            )
            set_tests_properties(${testName} PROPERTIES
                 ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2;PATH=${ESCAPED_PATH}"
+           )
+        else()
+            set_target_properties(${testName} PROPERTIES
+              VS_DEBUGGER_ENVIRONMENT "key1=value1\nkey2=value2\nPATH=${ESCAPED_PATH}"
+            )
+           set_tests_properties(${testName} PROPERTIES
+                ENVIRONMENT "key1=value1;key2=value2;PATH=${ESCAPED_PATH}"
            )
         endif()
         if(NOT BUILD_SHARED_LIBS)

@@ -29,7 +29,6 @@
 #include <log4cxx/helpers/threadspecificdata.h>
 #include <log4cxx/helpers/transcoder.h>
 
-#include <apr_time.h>
 #include <apr_portable.h>
 #include <apr_strings.h>
 #include <log4cxx/helpers/stringhelper.h>
@@ -37,6 +36,7 @@
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/logger.h>
 #include <log4cxx/private/log4cxx_private.h>
+#include <log4cxx/helpers/date.h>
 
 using namespace log4cxx;
 using namespace log4cxx::spi;
