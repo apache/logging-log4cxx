@@ -316,7 +316,7 @@ void SyslogAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 			it++, current++ )
 		{
 			char buf[12];
-			apr_snprintf( buf, sizeof(buf), "(%d/%d)", current, packets.size() );
+			apr_snprintf( buf, sizeof(buf), "(%d/%d)", current, (int)packets.size() );
 			LOG4CXX_DECODE_CHAR(str, buf);
 			it->append( str );
 		}
