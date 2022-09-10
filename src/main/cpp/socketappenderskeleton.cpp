@@ -179,11 +179,6 @@ void SocketAppenderSkeleton::monitor()
 				return;
 			}
 		}
-		catch (InterruptedException&)
-		{
-			LogLog::debug(LOG4CXX_STR("Connector interrupted.  Leaving loop."));
-			return;
-		}
 		catch (ConnectException&)
 		{
 			LogLog::debug(LOG4CXX_STR("Remote host ")
