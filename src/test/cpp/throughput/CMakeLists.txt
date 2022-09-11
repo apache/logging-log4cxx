@@ -50,6 +50,9 @@ if( WIN32 )
   foreach( ENTRY ${PATH_FOR_TESTS}${NORMAL_PATH} )
 	  set(ESCAPED_PATH "${ESCAPED_PATH}${ENTRY}\\\;")
   endforeach()
+  set_target_properties(throughputtests PROPERTIES
+    VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
+  )
 endif( WIN32 )
 
 target_compile_definitions(throughputtests PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
