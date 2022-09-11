@@ -28,7 +28,7 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     env:
-      SONAR_SCANNER_VERSION: 4.4.0.2170
+      SONAR_SCANNER_VERSION: 4.7.0.2747
       SONAR_SERVER_URL: "https://sonarcloud.io"
       BUILD_WRAPPER_OUT_DIR: build_wrapper_output_directory # Directory where build-wrapper output will be placed
     steps:
@@ -41,6 +41,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
+      - name: Set up Python 3.8 for gcovr
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: install gcovr 5.0
+        run: |
+          pip install gcovr==5.0 # 5.1 is not supported
 
       - name: 'Configure Dependencies - Ubuntu'
         run: |
@@ -68,8 +77,18 @@ jobs:
         run: |
           cd main
           mkdir build
-          cmake -DBUILD_TESTING=off -S . -B build
+          cmake -DBUILD_TESTING=on -DENABLE_COVERAGE=on -S . -B build
           build-wrapper-linux-x86-64 --out-dir ${{ env.BUILD_WRAPPER_OUT_DIR }} cmake --build build/ --config Release
+
+      - name: Run tests to generate coverage statistics
+        run: |
+          cd main/build
+          make test
+
+      - name: Collect coverage into one XML report
+        run: |
+          cd main/build
+          gcovr --sonarqube --exclude-directories 'src/test$' > coverage.xml
 
       - name: Run sonar-scanner
         env:
@@ -77,5 +96,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
         run: |
           cd main
-          sonar-scanner --define sonar.host.url="${{ env.SONAR_SERVER_URL }}" --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}"
-
+          sonar-scanner \
+            --define sonar.host.url="${{ env.SONAR_SERVER_URL }}" \
+            --define sonar.cfamily.build-wrapper-output="${{ env.BUILD_WRAPPER_OUT_DIR }}" \
+            --define sonar.coverageReportPaths=build/coverage.xml
