@@ -19,6 +19,7 @@ on:
     branches:
       - master
       - next_stable
+      - sonar*
 #  pull_request:
 #    types: [opened, synchronize, reopened]
 
