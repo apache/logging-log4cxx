@@ -454,7 +454,7 @@ void AsyncAppender::dispatch()
 		{
 			std::unique_lock<std::mutex> lock(priv->bufferMutex);
 			priv->bufferNotEmpty.wait(lock, [this]() -> bool
-				{ return 0 < priv->bufferSize || priv->closed; }
+				{ return 0 < priv->buffer.size() || priv->closed; }
 			);
 			isActive = !priv->closed;
 
