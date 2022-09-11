@@ -158,7 +158,6 @@ IMPLEMENT_LOG4CXX_OBJECT(AsyncAppender)
 AsyncAppender::AsyncAppender()
 	: AppenderSkeleton(std::make_unique<AsyncAppenderPriv>())
 {
-	priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 }
 
 AsyncAppender::~AsyncAppender()
@@ -205,14 +204,13 @@ void AsyncAppender::doAppend(const spi::LoggingEventPtr& event, Pool& pool1)
 
 void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 {
-	//
-	//   if dispatcher has died then
-	//      append subsequent events synchronously
-	//
-	if (!priv->dispatcher.joinable() || priv->bufferSize <= 0)
+	if (priv->bufferSize <= 0)
 	{
 		priv->appenders->appendLoopOnAppenders(event, p);
-		return;
+	}
+	if (!priv->dispatcher.joinable())
+	{
+		priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 	}
 
 	// Set the NDC and thread name for the calling thread as these
@@ -446,56 +444,58 @@ void AsyncAppender::dispatch()
 {
 	bool isActive = true;
 
-	try
+	while (isActive)
 	{
-		while (isActive)
+		//
+		//   process events after lock on buffer is released.
+		//
+		Pool p;
+		LoggingEventList events;
 		{
-			//
-			//   process events after lock on buffer is released.
-			//
-			Pool p;
-			LoggingEventList events;
+			std::unique_lock<std::mutex> lock(priv->bufferMutex);
+			priv->bufferNotEmpty.wait(lock, [this]() -> bool
+				{ return 0 < priv->bufferSize || priv->closed; }
+			);
+			isActive = !priv->closed;
+
+			for (LoggingEventList::iterator eventIter = priv->buffer.begin();
+				eventIter != priv->buffer.end();
+				eventIter++)
 			{
-				std::unique_lock<std::mutex> lock(priv->bufferMutex);
-				size_t bufferSize = priv->buffer.size();
-				isActive = !priv->closed;
-
-				while ((bufferSize == 0) && isActive)
-				{
-					priv->bufferNotEmpty.wait(lock);
-					bufferSize = priv->buffer.size();
-					isActive = !priv->closed;
-				}
-
-				for (LoggingEventList::iterator eventIter = priv->buffer.begin();
-					eventIter != priv->buffer.end();
-					eventIter++)
-				{
-					events.push_back(*eventIter);
-				}
-
-				for (DiscardMap::iterator discardIter = priv->discardMap.begin();
-					discardIter != priv->discardMap.end();
-					discardIter++)
-				{
-					events.push_back(discardIter->second.createEvent(p));
-				}
-
-				priv->buffer.clear();
-				priv->discardMap.clear();
-				priv->bufferNotFull.notify_all();
+				events.push_back(*eventIter);
 			}
 
-			for (LoggingEventList::iterator iter = events.begin();
-				iter != events.end();
-				iter++)
+			for (DiscardMap::iterator discardIter = priv->discardMap.begin();
+				discardIter != priv->discardMap.end();
+				discardIter++)
+			{
+				events.push_back(discardIter->second.createEvent(p));
+			}
+
+			priv->buffer.clear();
+			priv->discardMap.clear();
+			priv->bufferNotFull.notify_all();
+		}
+
+		for (LoggingEventList::iterator iter = events.begin();
+			iter != events.end();
+			iter++)
+		{
+			try
 			{
 				priv->appenders->appendLoopOnAppenders(*iter, p);
 			}
+			catch (std::exception& ex)
+			{
+				priv->errorHandler->error(LOG4CXX_STR("async dispatcher"), ex, 0, *iter);
+				isActive = false;
+			}
+			catch (...)
+			{
+				priv->errorHandler->error(LOG4CXX_STR("async dispatcher"));
+				isActive = false;
+			}
 		}
-	}
-	catch (...)
-	{
 	}
 
 }

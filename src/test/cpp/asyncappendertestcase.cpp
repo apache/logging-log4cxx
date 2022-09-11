@@ -23,7 +23,9 @@
 #include "vectorappender.h"
 #include <log4cxx/asyncappender.h>
 #include "appenderskeletontestcase.h"
+#include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/varia/fallbackerrorhandler.h>
 #include <apr_strings.h>
 #include "testchar.h"
 #include <log4cxx/helpers/stringhelper.h>
@@ -122,13 +124,19 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		LOGUNIT_TEST(closeTest);
 		LOGUNIT_TEST(test2);
 		LOGUNIT_TEST(test3);
-		//
-		// TODO: test fails on Linux.
-		//LOGUNIT_TEST(testBadAppender);
+		LOGUNIT_TEST(testBadAppender);
 		LOGUNIT_TEST(testLocationInfoTrue);
 		LOGUNIT_TEST(testConfiguration);
 		LOGUNIT_TEST_SUITE_END();
 
+#ifdef _DEBUG
+	struct Fixture
+	{
+		Fixture() {
+			helpers::LogLog::setInternalDebugging(true);
+		}
+	} suiteFixture;
+#endif
 
 	public:
 		void setUp()
@@ -213,29 +221,33 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		}
 
 		/**
-		 * Tests that a bad appender will switch async back to sync.
+		 * Checks that async will switch a bad appender to another appender.
 		 */
 		void testBadAppender()
 		{
-			AppenderPtr nullPointerAppender = AppenderPtr(new NullPointerAppender());
-			AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
+			AppenderPtr nullPointerAppender(new NullPointerAppender());
+			AsyncAppenderPtr asyncAppender(new AsyncAppender());
+			asyncAppender->setName(LOG4CXX_STR("async-testBadAppender"));
 			asyncAppender->addAppender(nullPointerAppender);
 			asyncAppender->setBufferSize(5);
 			Pool p;
 			asyncAppender->activateOptions(p);
 			LoggerPtr root = Logger::getRootLogger();
 			root->addAppender(asyncAppender);
+
+			varia::FallbackErrorHandlerPtr errorHandler(new varia::FallbackErrorHandler());
+			errorHandler->setAppender(asyncAppender);
+			VectorAppenderPtr vectorAppender(new VectorAppender());
+			vectorAppender->setName(LOG4CXX_STR("async-memoryAppender"));
+			errorHandler->setBackupAppender(vectorAppender);
+			errorHandler->setLogger(root);
+			asyncAppender->setErrorHandler(errorHandler);
+
 			LOG4CXX_INFO(root, "Message");
 			std::this_thread::sleep_for( std::chrono::milliseconds( 10 ) );
-
-			try
-			{
-				LOG4CXX_INFO(root, "Message");
-				LOGUNIT_FAIL("Should have thrown exception");
-			}
-			catch (NullPointerException&)
-			{
-			}
+            LOG4CXX_INFO(root, "Message");
+			auto& v = vectorAppender->getVector();
+			LOGUNIT_ASSERT(0 < v.size());
 		}
 
 		/**
@@ -244,7 +256,9 @@ class AsyncAppenderTestCase : public AppenderSkeletonTestCase
 		void testLocationInfoTrue()
 		{
 			BlockableVectorAppenderPtr blockableAppender = BlockableVectorAppenderPtr(new BlockableVectorAppender());
+			async->setName(LOG4CXX_STR("async-blockableVector"));
 			AsyncAppenderPtr async = AsyncAppenderPtr(new AsyncAppender());
+			async->setName(LOG4CXX_STR("async-testLocationInfoTrue"));
 			async->addAppender(blockableAppender);
 			async->setBufferSize(5);
 			async->setLocationInfo(true);
