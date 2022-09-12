@@ -36,13 +36,6 @@ class LOG4CXX_EXPORT Date : public Object
 {
 		const log4cxx_time_t time;
 
-		/**
-		 * A function that will return the current time(in microseconds) when called
-		 */
-		typedef std::function<log4cxx_time_t()> GetCurrentTimeFn;
-
-		static log4cxx_time_t getCurrentTimeStd();
-
 	public:
 		DECLARE_LOG4CXX_OBJECT(Date)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -66,10 +59,13 @@ class LOG4CXX_EXPORT Date : public Object
 
 		static log4cxx_time_t getMicrosecondsPerDay();
 		static log4cxx_time_t getMicrosecondsPerSecond();
-
+		static log4cxx_time_t getCurrentTimeStd();
 		static log4cxx_time_t currentTime();
 
-		static GetCurrentTimeFn getCurrentTimeFn;
+		/**
+		 * A function that will return the current time(in microseconds) when called
+		 */
+		typedef std::function<log4cxx_time_t()> GetCurrentTimeFn;
 
 		/**
 		 * Set the function that is used to get the current time.

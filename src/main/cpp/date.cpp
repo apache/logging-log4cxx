@@ -27,10 +27,11 @@ using namespace log4cxx::helpers;
 
 IMPLEMENT_LOG4CXX_OBJECT(Date)
 
+namespace {
+Date::GetCurrentTimeFn getCurrentTimeFn = 0;
+}
 
-Date::GetCurrentTimeFn Date::getCurrentTimeFn = Date::getCurrentTimeStd;
-
-Date::Date() : time(getCurrentTimeFn())
+Date::Date() : time(currentTime())
 {
 }
 
@@ -63,7 +64,7 @@ void Date::setGetCurrentTimeFunction(GetCurrentTimeFn fn){
 }
 
 log4cxx_time_t Date::currentTime(){
-	return getCurrentTimeFn();
+	return getCurrentTimeFn ? getCurrentTimeFn() : getCurrentTimeStd();
 }
 
 log4cxx_time_t Date::getCurrentTimeStd(){
