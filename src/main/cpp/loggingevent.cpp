@@ -318,6 +318,8 @@ const LogString& LoggingEvent::getCurrentThreadName()
 #if defined(__BORLANDC__)
 	using ListItem = std::pair<ThreadIdType, LogString>;
 	static std::list<ListItem> thread_id_map;
+	static std::mutex mutex;
+	std::lock_guard<std::mutex> lock(mutex);
 	auto pThreadId = std::find_if(thread_id_map.begin(), thread_id_map.end()
 		, [threadId](const ListItem& item) { return threadId == item.first; });
 	if (thread_id_map.end() == pThreadId)
