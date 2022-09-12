@@ -305,12 +305,13 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 const LogString& LoggingEvent::getCurrentThreadName()
 {
 #if defined(_WIN32)
-    using ThreadIdType = DWORD;
+	using ThreadIdType = DWORD;
 	ThreadIdType threadId = GetCurrentThreadId();
 #elif APR_HAS_THREADS
-    using ThreadIdType = apr_os_thread_t;
+	using ThreadIdType = apr_os_thread_t;
 	ThreadIdType threadId = apr_os_thread_current();
 #else
+	using ThreadIdType = int;
 	ThreadIdType threadId = 0;
 #endif
 
