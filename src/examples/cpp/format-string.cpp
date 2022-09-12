@@ -30,15 +30,11 @@ struct MyStruct {
 		int x;
 };
 
-template <> struct fmt::formatter<MyStruct> {
-	constexpr auto parse(format_parse_context& ctx) -> decltype(ctx.begin()) {
-		return ctx.begin();
-	}
-	template <typename FormatContext>
-	auto format(const MyStruct& p, FormatContext& ctx) -> decltype(ctx.out()) {
-		return format_to(ctx.out(), "{:d}", p.x);
-	}
-};
+std::ostream& operator<<( std::ostream& stream, const MyStruct& mystruct ){
+		stream << "[MyStruct x:" << mystruct.x << "]";
+		return stream;
+}
+template <> struct fmt::formatter<MyStruct> : ostream_formatter {};
 
 int main()
 {
