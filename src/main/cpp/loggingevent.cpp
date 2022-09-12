@@ -51,7 +51,9 @@ struct LoggingEvent::LoggingEventPrivate
 		ndcLookupRequired(true),
 		mdcCopyLookupRequired(true),
 		timeStamp(0),
-		locationInfo()
+		locationInfo(),
+		threadName(getCurrentThreadName()),
+		threadUserName(getCurrentThreadUserName())
 	{
 	}
 
@@ -68,7 +70,10 @@ struct LoggingEvent::LoggingEventPrivate
 		message(message1),
 		timeStamp(apr_time_now()),
 		locationInfo(locationInfo1),
-		threadName(getCurrentThreadName()) {}
+		threadName(getCurrentThreadName()),
+		threadUserName(getCurrentThreadUserName())
+	{
+	}
 
 	~LoggingEventPrivate()
 	{
@@ -125,14 +130,14 @@ struct LoggingEvent::LoggingEventPrivate
 	/** The identifier of thread in which this logging event
 	was generated.
 	*/
-	const LogString threadName;
+	const LogString& threadName;
 
 	/**
 	 * The user-specified name of the thread(on a per-platform basis).
 	 * This is set using a method such as pthread_setname_np on POSIX
 	 * systems or SetThreadDescription on Windows.
 	 */
-	const LogString threadUserName;
+	const LogString& threadUserName;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
@@ -297,16 +302,19 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 }
 
 
-const LogString LoggingEvent::getCurrentThreadName()
+const LogString& LoggingEvent::getCurrentThreadName()
 {
-#if APR_HAS_THREADS
+#if defined(__BORLANDC__)
+	static LogString thread_name;
+#else
 	LOG4CXX_THREAD_LOCAL LogString thread_name;
-
-	if ( thread_name.size() )
+#endif
+	if ( !thread_name.empty() )
 	{
 		return thread_name;
 	}
 
+#if APR_HAS_THREADS
 #if defined(_WIN32)
 	char result[20];
 	DWORD threadId = GetCurrentThreadId();
@@ -321,41 +329,45 @@ const LogString LoggingEvent::getCurrentThreadName()
 
 	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
 
-	return thread_name;
 #else
-	return LOG4CXX_STR("0x00000000");
+    thread_name = LOG4CXX_STR("0x00000000");
 #endif /* APR_HAS_THREADS */
+	return thread_name;
 }
 
-const LogString LoggingEvent::getCurrentThreadUserName()
+const LogString& LoggingEvent::getCurrentThreadUserName()
 {
-	LOG4CXX_THREAD_LOCAL LogString thread_name;
-	if( thread_name.size() ){
-		return thread_name;
+#if defined(__BORLANDC__)
+	static LogString user_name;
+#else
+	LOG4CXX_THREAD_LOCAL LogString user_name;
+#endif
+	if( !user_name.empty() ){
+		return user_name;
 	}
 
 #if LOG4CXX_HAS_PTHREAD_GETNAME
 	char result[16];
 	pthread_t current_thread = pthread_self();
 	if( pthread_getname_np( current_thread, result, sizeof(result) ) < 0 ){
-		thread_name = LOG4CXX_STR("(noname)");
+		user_name = LOG4CXX_STR("(noname)");
 	}
 
-	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
+	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), user_name);
 #elif LOG4CXX_HAS_GETTHREADDESCRIPTION
 	PWSTR result;
 	HANDLE threadId = GetCurrentThread();
 	if( GetThreadDescription( threadId, &result ) == 0 ){
 		// Success
-		log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
+		log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), user_name);
 		LocalFree(result);
 	}else{
-		thread_name = LOG4CXX_STR("(noname)");
+		user_name = LOG4CXX_STR("(noname)");
 	}
 #else
-	thread_name = LOG4CXX_STR("(noname)");
+	user_name = LOG4CXX_STR("(noname)");
 #endif
-	return thread_name;
+	return user_name;
 }
 
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
