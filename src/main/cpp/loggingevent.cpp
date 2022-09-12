@@ -305,13 +305,13 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 const LogString& LoggingEvent::getCurrentThreadName()
 {
 #if defined(__BORLANDC__)
-	static LogString thread_name;
+	static LogString thread_id_string;
 #else
-	LOG4CXX_THREAD_LOCAL LogString thread_name;
+	LOG4CXX_THREAD_LOCAL LogString thread_id_string;
 #endif
-	if ( !thread_name.empty() )
+	if ( !thread_id_string.empty() )
 	{
-		return thread_name;
+		return thread_id_string;
 	}
 
 #if APR_HAS_THREADS
@@ -327,47 +327,47 @@ const LogString& LoggingEvent::getCurrentThreadName()
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif /* _WIN32 */
 
-	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
+	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
 
 #else
-    thread_name = LOG4CXX_STR("0x00000000");
+    thread_id_string = LOG4CXX_STR("0x00000000");
 #endif /* APR_HAS_THREADS */
-	return thread_name;
+	return thread_id_string;
 }
 
 const LogString& LoggingEvent::getCurrentThreadUserName()
 {
 #if defined(__BORLANDC__)
-	static LogString user_name;
+	static LogString thread_name;
 #else
-	LOG4CXX_THREAD_LOCAL LogString user_name;
+	LOG4CXX_THREAD_LOCAL LogString thread_name;
 #endif
-	if( !user_name.empty() ){
-		return user_name;
+	if( !thread_name.empty() ){
+		return thread_name;
 	}
 
 #if LOG4CXX_HAS_PTHREAD_GETNAME
 	char result[16];
 	pthread_t current_thread = pthread_self();
 	if( pthread_getname_np( current_thread, result, sizeof(result) ) < 0 ){
-		user_name = LOG4CXX_STR("(noname)");
+		thread_name = LOG4CXX_STR("(noname)");
 	}
 
-	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), user_name);
+	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
 #elif LOG4CXX_HAS_GETTHREADDESCRIPTION
 	PWSTR result;
 	HANDLE threadId = GetCurrentThread();
 	if( GetThreadDescription( threadId, &result ) == 0 ){
 		// Success
-		log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), user_name);
+		log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
 		LocalFree(result);
 	}else{
-		user_name = LOG4CXX_STR("(noname)");
+		thread_name = LOG4CXX_STR("(noname)");
 	}
 #else
-	user_name = LOG4CXX_STR("(noname)");
+	thread_name = LOG4CXX_STR("(noname)");
 #endif
-	return user_name;
+	return thread_name;
 }
 
 void LoggingEvent::setProperty(const LogString& key, const LogString& value)
