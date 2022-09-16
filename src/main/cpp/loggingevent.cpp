@@ -304,30 +304,8 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 
 const LogString& LoggingEvent::getCurrentThreadName()
 {
-#if defined(_WIN32)
-	using ThreadIdType = DWORD;
-	ThreadIdType threadId = GetCurrentThreadId();
-#elif APR_HAS_THREADS
-	using ThreadIdType = apr_os_thread_t;
-	ThreadIdType threadId = apr_os_thread_current();
-#else
-	using ThreadIdType = int;
-	ThreadIdType threadId = 0;
-#endif
+	thread_local LogString thread_id_string;
 
-#if defined(__BORLANDC__)
-	using ListItem = std::pair<ThreadIdType, LogString>;
-	static std::list<ListItem> thread_id_map;
-	static std::mutex mutex;
-	std::lock_guard<std::mutex> lock(mutex);
-	auto pThreadId = std::find_if(thread_id_map.begin(), thread_id_map.end()
-		, [threadId](const ListItem& item) { return threadId == item.first; });
-	if (thread_id_map.end() == pThreadId)
-		pThreadId = thread_id_map.insert(thread_id_map.begin(), ListItem(threadId, LogString()));
-	LogString& thread_id_string = pThreadId->second;
-#else
-	LOG4CXX_THREAD_LOCAL LogString thread_id_string;
-#endif
 	if ( !thread_id_string.empty() )
 	{
 		return thread_id_string;
@@ -336,11 +314,13 @@ const LogString& LoggingEvent::getCurrentThreadName()
 #if APR_HAS_THREADS
 #if defined(_WIN32)
 	char result[20];
+	auto threadId = GetCurrentThreadId();
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
 #else
 	// apr_os_thread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	char result[sizeof(apr_os_thread_t) * 3 + 10];
+	auto threadId = apr_os_thread_current();
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif /* _WIN32 */
 
@@ -354,11 +334,7 @@ const LogString& LoggingEvent::getCurrentThreadName()
 
 const LogString& LoggingEvent::getCurrentThreadUserName()
 {
-#if defined(__BORLANDC__)
-	static LogString thread_name;
-#else
-	LOG4CXX_THREAD_LOCAL LogString thread_name;
-#endif
+	thread_local LogString thread_name;
 	if( !thread_name.empty() ){
 		return thread_name;
 	}
