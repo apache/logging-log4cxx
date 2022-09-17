@@ -298,8 +298,8 @@ BENCHMARK_DEFINE_F(benchmarker, logToAsyncAppender)(benchmark::State& state)
 		LOG4CXX_INFO( logger, LOG4CXX_STR("Hello logger: msg number ") << ++x);
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logToAsyncAppender)->Name("Async pattern: %m%n");
-BENCHMARK_REGISTER_F(benchmarker, logToAsyncAppender)->Name("Async pattern: %m%n")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logToAsyncAppender)->Name("Logging int value with std::ostream to AsyncAppender");
+BENCHMARK_REGISTER_F(benchmarker, logToAsyncAppender)->Name("Logging int value with std::ostream to AsyncAppender")->Threads(benchmarker::threadCount());
 
 BENCHMARK_MAIN();
 
