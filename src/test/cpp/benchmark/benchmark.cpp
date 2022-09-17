@@ -219,6 +219,29 @@ BENCHMARK_DEFINE_F(benchmarker, logIntValueFMTMultithreaded)(benchmark::State& s
 BENCHMARK_REGISTER_F(benchmarker, logIntValueFMTMultithreaded)->Name("Logging int value with FMT")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
 #endif
 
+BENCHMARK_DEFINE_F(benchmarker, logIntValueStream)(benchmark::State& state)
+{
+	LoggerPtr logger = resetLogger();
+	int x = 0;
+	for (auto _ : state)
+	{
+		LOG4CXX_INFO( logger, "Hello logger: msg number " << ++x);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream");
+
+BENCHMARK_DEFINE_F(benchmarker, logIntValueStreamMultithreaded)(benchmark::State& state)
+{
+	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
+
+	int x = 0;
+	for (auto _ : state)
+	{
+		LOG4CXX_INFO( logger, "Hello logger: msg number " << ++x);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, logIntValueStreamMultithreaded)->Name("Logging int value with std::ostream")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
+
 template <class ...Args>
 void logWithConversionPattern(benchmark::State& state, Args&&... args)
 {
