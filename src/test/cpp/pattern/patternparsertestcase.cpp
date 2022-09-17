@@ -50,6 +50,11 @@
 #include <log4cxx/pattern/ndcpatternconverter.h>
 #include <log4cxx/pattern/propertiespatternconverter.h>
 #include <log4cxx/pattern/throwableinformationpatternconverter.h>
+#include <log4cxx/pattern/threadusernamepatternconverter.h>
+
+#define LOG4CXX_TEST 1
+#include <log4cxx/private/log4cxx_private.h>
+#include <thread>
 
 
 using namespace log4cxx;
@@ -71,6 +76,7 @@ LOGUNIT_CLASS(PatternParserTestCase)
 	LOGUNIT_TEST(testBasic1);
 	LOGUNIT_TEST(testBasic2);
 	LOGUNIT_TEST(testMultiOption);
+	LOGUNIT_TEST(testThreadUsername);
 	LOGUNIT_TEST_SUITE_END();
 
 	LoggingEventPtr event;
@@ -78,6 +84,21 @@ LOGUNIT_CLASS(PatternParserTestCase)
 public:
 	void setUp()
 	{
+		LogString threadName = LOG4CXX_STR("log4cxx-thr");
+
+#if LOG4CXX_HAS_PTHREAD_SETNAME
+	if( pthread_setname_np( pthread_self(), threadName.c_str() ) < 0 ){
+		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
+	}
+#elif LOG4CXX_HAS_SETTHREADDESCRIPTION
+	HRESULT hr = SetThreadDescription(GetCurrentThread(), threadName.c_str());
+	if(FAILED(hr)){
+		LOGLOG_ERROR( LOG4CXX_STR("unable to set thread name") );
+	}
+#else
+		threadName = LOG4CXX_STR("(noname)");
+#endif
+
 		event = LoggingEventPtr(new LoggingEvent(
 					LOG4CXX_STR("org.foobar"), Level::getInfo(), LOG4CXX_STR("msg 1"), LOG4CXX_LOCATION));
 	}
@@ -123,6 +144,9 @@ public:
 
 		RULES_PUT("t", ThreadPatternConverter);
 		RULES_PUT("thread", ThreadPatternConverter);
+
+		RULES_PUT("T", ThreadUsernamePatternConverter);
+		RULES_PUT("threadname", ThreadUsernamePatternConverter);
 
 		RULES_PUT("x", NDCPatternConverter);
 		RULES_PUT("ndc", NDCPatternConverter);
@@ -239,6 +263,23 @@ public:
 
 
 		assertFormattedEquals(LOG4CXX_STR("%d{HH:mm:ss}{GMT} %d{HH:mm:ss} %c  - %m"),
+			getFormatSpecifiers(),
+			expected);
+	}
+
+	void testThreadUsername()
+	{
+		Pool pool;
+		RelativeTimeDateFormat relativeFormat;
+		LogString expected;
+		relativeFormat.format(expected, event->getTimeStamp(), pool);
+
+		expected.append(LOG4CXX_STR(" INFO  ["));
+		expected.append(event->getThreadUserName());
+		expected.append(LOG4CXX_STR("] org.foobar - msg 1"));
+		expected.append(LOG4CXX_EOL);
+
+		assertFormattedEquals(LOG4CXX_STR("%relative %-5level [%threadname] %logger - %m%n"),
 			getFormatSpecifiers(),
 			expected);
 	}

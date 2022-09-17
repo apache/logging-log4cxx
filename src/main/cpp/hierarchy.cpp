@@ -125,7 +125,7 @@ LoggerPtr Hierarchy::exists(const LogString& name)
 
 	if (it != loggers->end())
 	{
-		logger = it->second.lock();
+		logger = it->second;
 	}
 
 
@@ -296,6 +296,7 @@ void Hierarchy::resetConfiguration()
 	for (it = loggers->begin(); it != itEnd; it++)
 	{
 		if (auto pLogger = it->second)
+		{
 			pLogger->setAdditivity(true);
 			pLogger->setResourceBundle(0);
 		}

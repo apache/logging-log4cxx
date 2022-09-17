@@ -1,3 +1,20 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
 # Components required by all tests
 add_library(testingFramework STATIC abts.cpp appenderskeletontestcase.cpp logunit.cpp vectorappender.cpp writerappendertestcase.cpp )
 target_compile_definitions(testingFramework PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
@@ -38,6 +55,8 @@ set(ALL_LOG4CXX_TESTS
     rollingfileappendertestcase
     streamtestcase
     multithreadtest
+    locationtest
+    locationdisabledtest
 )
 foreach(fileName IN LISTS ALL_LOG4CXX_TESTS)
     add_executable(${fileName} "${fileName}.cpp")
@@ -100,18 +119,47 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
     set_tests_properties( ${testName} PROPERTIES TIMEOUT 120 )
 
     if(WIN32)
+        set_target_properties(${testName} PROPERTIES
+          VS_DEBUGGER_WORKING_DIRECTORY ${UNIT_TEST_WORKING_DIR}
+        )
+        set_target_properties(${testName} PROPERTIES
+          VS_DEBUGGER_COMMAND_ARGUMENTS "-v"
+        )
         if(${testName} STREQUAL socketservertestcase)
+            set_target_properties(${testName} PROPERTIES
+              VS_DEBUGGER_ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}\nPATH=${ESCAPED_PATH}"
+            )
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${ESCAPED_PATH}"
             )
         elseif(${testName} STREQUAL autoconfiguretestcase)
+            set_target_properties(${testName} PROPERTIES
+              VS_DEBUGGER_ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties\nPATH=${ESCAPED_PATH}"
+            )
             set_tests_properties(autoconfiguretestcase PROPERTIES
                 ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties;PATH=${ESCAPED_PATH}"
             )
-        else()
+        elseif(${testName} STREQUAL optionconvertertestcase)
+            set_target_properties(${testName} PROPERTIES
+              VS_DEBUGGER_ENVIRONMENT "TOTO=wonderful\nkey1=value1\nkey2=value2\nPATH=${ESCAPED_PATH}"
+            )
            set_tests_properties(${testName} PROPERTIES
                 ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2;PATH=${ESCAPED_PATH}"
            )
+        else()
+            set_target_properties(${testName} PROPERTIES
+              VS_DEBUGGER_ENVIRONMENT "key1=value1\nkey2=value2\nPATH=${ESCAPED_PATH}"
+            )
+           set_tests_properties(${testName} PROPERTIES
+                ENVIRONMENT "key1=value1;key2=value2;PATH=${ESCAPED_PATH}"
+           )
+        endif()
+        if(NOT BUILD_SHARED_LIBS)
+            # cmake selects a multi-threaded dynamically-linked runtime library by default
+            # (i.e. MSVC_RUNTIME_LIBRARY target property default value is "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+            # APR static libraries specify the MSVC statically-linked runtime as the default library
+            # Use the MSVC statically-linked runtime to prevent the warning message 'LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs'
+            set_target_properties(${testName} PROPERTIES MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
         endif()
     else()
         if(${testName} STREQUAL socketservertestcase)
@@ -129,3 +177,5 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
         endif()
     endif()
 endforeach()
+
+target_compile_definitions(locationdisabledtest PRIVATE LOG4CXX_DISABLE_LOCATION_INFO)

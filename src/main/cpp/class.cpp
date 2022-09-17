@@ -82,6 +82,11 @@ using namespace log4cxx::filter;
 using namespace log4cxx::xml;
 using namespace log4cxx::rolling;
 
+log4cxx_uint32_t libraryVersion(){
+	// This function defined in log4cxx.h
+	return LOG4CXX_VERSION;
+}
+
 Class::Class()
 {
 }
