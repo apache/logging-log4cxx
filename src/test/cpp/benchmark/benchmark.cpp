@@ -6,6 +6,7 @@
 #include <log4cxx/helpers/stringhelper.h>
 #include <fmt/format.h>
 #include <benchmark/benchmark.h>
+#include <thread>
 
 using namespace log4cxx;
 
