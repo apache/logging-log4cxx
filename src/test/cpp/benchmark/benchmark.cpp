@@ -100,6 +100,7 @@ static void ResetLogger(const benchmark::State& state)
 	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
 
 	NullWriterAppenderPtr nullWriter(new NullWriterAppender);
+	nullWriter->setName(LOG4CXX_STR("NullWriterAppender"));
 	nullWriter->setLayout( pattern );
 
 	logger->addAppender( nullWriter );
@@ -202,19 +203,11 @@ void logWithConversionPattern(benchmark::State& state, Args&&... args)
 {
     auto args_tuple = std::make_tuple(std::move(args)...);
 	LogString conversionPattern = std::get<0>(args_tuple);
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-
-	logger->removeAllAppenders();
-	logger->setAdditivity( false );
-	logger->setLevel( Level::getInfo() );
 
 	PatternLayoutPtr pattern(new PatternLayout);
 	pattern->setConversionPattern( conversionPattern );
-
-	NullWriterAppenderPtr nullWriter(new NullWriterAppender);
-	nullWriter->setLayout( pattern );
-
-	logger->addAppender( nullWriter );
+	auto logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
+	logger->getAppender(LOG4CXX_STR("NullWriterAppender"))->setLayout(pattern);
 
 	int x = 0;
 	for (auto _ : state)
