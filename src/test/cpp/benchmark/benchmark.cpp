@@ -4,6 +4,7 @@
 #include <log4cxx/consoleappender.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
+#include <log4cxx/asyncappender.h>
 #include <fmt/format.h>
 #include <benchmark/benchmark.h>
 #include <thread>
@@ -271,6 +272,34 @@ void logWithConversionPattern(benchmark::State& state, Args&&... args)
 BENCHMARK_CAPTURE(logWithConversionPattern, NoFormat, LOG4CXX_STR("%m%n"))->Name("NoFormat pattern: %m%n");
 BENCHMARK_CAPTURE(logWithConversionPattern, DateOnly, LOG4CXX_STR("[%d] %m%n"))->Name("DateOnly pattern: [%d] %m%n");
 BENCHMARK_CAPTURE(logWithConversionPattern, DateClassLevel, LOG4CXX_STR("[%d] [%c] [%p] %m%n"))->Name("DateClassLevel pattern: [%d] [%c] [%p] %m%n");
+
+BENCHMARK_DEFINE_F(benchmarker, logToAsyncAppender)(benchmark::State& state)
+{
+	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
+	logger->removeAllAppenders();
+	logger->setAdditivity( false );
+	logger->setLevel( Level::getInfo() );
+
+	PatternLayoutPtr pattern(new PatternLayout);
+	pattern->setConversionPattern(LOG4CXX_STR("%m%n"));
+
+	NullWriterAppenderPtr nullWriter(new NullWriterAppender);
+	nullWriter->setLayout( pattern );
+	AsyncAppenderPtr asyncAppender = AsyncAppenderPtr(new AsyncAppender());
+	asyncAppender->addAppender(nullWriter);
+	asyncAppender->setBufferSize(5);
+	helpers::Pool p;
+	asyncAppender->activateOptions(p);
+	logger->addAppender(asyncAppender);
+
+	int x = 0;
+	for (auto _ : state)
+	{
+		LOG4CXX_INFO( logger, LOG4CXX_STR("Hello logger: msg number ") << ++x);
+	}
+}
+BENCHMARK_REGISTER_F(benchmarker, logToAsyncAppender)->Name("Async pattern: %m%n");
+BENCHMARK_REGISTER_F(benchmarker, logToAsyncAppender)->Name("Async pattern: %m%n")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
 
 BENCHMARK_MAIN();
 
