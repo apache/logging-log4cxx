@@ -108,6 +108,10 @@ CHECK_FUNCTION_EXISTS(wcstombs HAS_WCSTOMBS)
 CHECK_FUNCTION_EXISTS(fwide HAS_FWIDE)
 CHECK_LIBRARY_EXISTS(esmtp smtp_create_session "" HAS_LIBESMTP)
 CHECK_FUNCTION_EXISTS(syslog HAS_SYSLOG)
+try_compile(HAS_THREAD_LOCAL "${CMAKE_BINARY_DIR}/thread-local-test"
+    "${LOG4CXX_SOURCE_DIR}/src/cmake/test-thread-local.cpp"
+    CXX_STANDARD 11
+    )
 if(UNIX)
     set(CMAKE_REQUIRED_LIBRARIES "pthread")
     CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)
@@ -131,16 +135,28 @@ if(WIN32)
     CHECK_SYMBOL_EXISTS(GetThreadDescription "windows.h;processthreadsapi.h" HAS_GETTHREADDESCRIPTION)
 endif(WIN32)
 
-foreach(varName HAS_STD_LOCALE  HAS_ODBC  HAS_MBSRTOWCS  HAS_WCSTOMBS  HAS_FWIDE  HAS_LIBESMTP  HAS_SYSLOG HAS_PTHREAD_SIGMASK HAS_PTHREAD_SETNAME HAS_PTHREAD_GETNAME HAS_SETTHREADDESCRIPTION HAS_GETTHREADDESCRIPTION)
+foreach(varName
+  HAS_THREAD_LOCAL
+  HAS_STD_LOCALE
+  HAS_ODBC
+  HAS_MBSRTOWCS
+  HAS_WCSTOMBS
+  HAS_FWIDE
+  HAS_LIBESMTP
+  HAS_SYSLOG
+  HAS_PTHREAD_SIGMASK
+  HAS_PTHREAD_SETNAME
+  HAS_PTHREAD_GETNAME
+  HAS_SETTHREADDESCRIPTION
+  HAS_GETTHREADDESCRIPTION
+  )
   if(${varName} EQUAL 0)
     continue()
   elseif(${varName} EQUAL 1)
     continue()
-  elseif("${varName}" STREQUAL "ON")
+  elseif("${varName}" STREQUAL "ON" OR "${varName}" STREQUAL "TRUE")
     set(${varName} 1 )
-  elseif("${varName}" STREQUAL "OFF")
-    set(${varName} 0 )
-  else()
+ else()
     set(${varName} 0 )
   endif()
 endforeach()

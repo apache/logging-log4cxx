@@ -51,7 +51,9 @@ struct LoggingEvent::LoggingEventPrivate
 		ndcLookupRequired(true),
 		mdcCopyLookupRequired(true),
 		timeStamp(0),
-		locationInfo()
+		locationInfo(),
+		threadName(getCurrentThreadName()),
+		threadUserName(getCurrentThreadUserName())
 	{
 	}
 
@@ -68,7 +70,10 @@ struct LoggingEvent::LoggingEventPrivate
 		message(message1),
 		timeStamp(apr_time_now()),
 		locationInfo(locationInfo1),
-		threadName(getCurrentThreadName()) {}
+		threadName(getCurrentThreadName()),
+		threadUserName(getCurrentThreadUserName())
+	{
+	}
 
 	~LoggingEventPrivate()
 	{
@@ -125,14 +130,14 @@ struct LoggingEvent::LoggingEventPrivate
 	/** The identifier of thread in which this logging event
 	was generated.
 	*/
-	const LogString threadName;
+	const LogString& threadName;
 
 	/**
 	 * The user-specified name of the thread(on a per-platform basis).
 	 * This is set using a method such as pthread_setname_np on POSIX
 	 * systems or SetThreadDescription on Windows.
 	 */
-	const LogString threadUserName;
+	const LogString& threadUserName;
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(LoggingEvent)
@@ -297,40 +302,64 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 }
 
 
-const LogString LoggingEvent::getCurrentThreadName()
+const LogString& LoggingEvent::getCurrentThreadName()
 {
-#if APR_HAS_THREADS
-	LOG4CXX_THREAD_LOCAL LogString thread_name;
+#if defined(_WIN32)
+	using ThreadIdType = DWORD;
+	ThreadIdType threadId = GetCurrentThreadId();
+#elif APR_HAS_THREADS
+	using ThreadIdType = apr_os_thread_t;
+	ThreadIdType threadId = apr_os_thread_current();
+#else
+	using ThreadIdType = int;
+	ThreadIdType threadId = 0;
+#endif
 
-	if ( thread_name.size() )
+#if LOG4CXX_HAS_THREAD_LOCAL
+	thread_local LogString thread_id_string;
+#else
+	using ListItem = std::pair<ThreadIdType, LogString>;
+	static std::list<ListItem> thread_id_map;
+	static std::mutex mutex;
+	std::lock_guard<std::mutex> lock(mutex);
+	auto pThreadId = std::find_if(thread_id_map.begin(), thread_id_map.end()
+		, [threadId](const ListItem& item) { return threadId == item.first; });
+	if (thread_id_map.end() == pThreadId)
+		pThreadId = thread_id_map.insert(thread_id_map.begin(), ListItem(threadId, LogString()));
+	LogString& thread_id_string = pThreadId->second;
+#endif
+	if ( !thread_id_string.empty() )
 	{
-		return thread_name;
+		return thread_id_string;
 	}
 
+#if APR_HAS_THREADS
 #if defined(_WIN32)
 	char result[20];
-	DWORD threadId = GetCurrentThreadId();
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
 #else
 	// apr_os_thread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	char result[sizeof(apr_os_thread_t) * 3 + 10];
-	apr_os_thread_t threadId = apr_os_thread_current();
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif /* _WIN32 */
 
-	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_name);
+	log4cxx::helpers::Transcoder::decode(reinterpret_cast<const char*>(result), thread_id_string);
 
-	return thread_name;
 #else
-	return LOG4CXX_STR("0x00000000");
+    thread_id_string = LOG4CXX_STR("0x00000000");
 #endif /* APR_HAS_THREADS */
+	return thread_id_string;
 }
 
-const LogString LoggingEvent::getCurrentThreadUserName()
+const LogString& LoggingEvent::getCurrentThreadUserName()
 {
-	LOG4CXX_THREAD_LOCAL LogString thread_name;
-	if( thread_name.size() ){
+#if LOG4CXX_HAS_THREAD_LOCAL
+	thread_local LogString thread_name;
+#else
+	static LogString thread_name = LOG4CXX_STR("(noname)");
+#endif
+	if( !thread_name.empty() ){
 		return thread_name;
 	}
 
