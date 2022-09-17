@@ -1,7 +1,6 @@
 #include <log4cxx/logger.h>
 #include <log4cxx/patternlayout.h>
 #include <log4cxx/appenderskeleton.h>
-#include <log4cxx/consoleappender.h>
 #include <log4cxx/helpers/optionconverter.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/asyncappender.h>
@@ -57,22 +56,10 @@ typedef log4cxx::helpers::ObjectPtrT<NullWriterAppender> NullWriterAppenderPtr;
 class benchmarker : public ::benchmark::Fixture
 {
 public:
-	LoggerPtr console;
 	void SetUp(const ::benchmark::State& state)
 	{
 		std::setlocale( LC_ALL, "" ); /* Set locale for C functions */
 		std::locale::global(std::locale("")); /* set locale for C++ functions */
-		console = Logger::getLogger( "console" );
-		console->setAdditivity( false );
-		PatternLayoutPtr pattern( new PatternLayout() );
-		pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
-
-		ConsoleAppenderPtr consoleWriter( new ConsoleAppender );
-		consoleWriter->setLayout( pattern );
-		consoleWriter->setTarget( LOG4CXX_STR("System.out") );
-		helpers::Pool p;
-		consoleWriter->activateOptions(p);
-		console->addAppender( consoleWriter );
 	}
 
 	void TearDown(const ::benchmark::State& state)
