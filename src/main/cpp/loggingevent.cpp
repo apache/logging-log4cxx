@@ -315,7 +315,9 @@ const LogString& LoggingEvent::getCurrentThreadName()
 	ThreadIdType threadId = 0;
 #endif
 
-#if defined(__BORLANDC__)
+#if LOG4CXX_HAS_THREAD_LOCAL
+	thread_local LogString thread_id_string;
+#else
 	using ListItem = std::pair<ThreadIdType, LogString>;
 	static std::list<ListItem> thread_id_map;
 	static std::mutex mutex;
@@ -325,8 +327,6 @@ const LogString& LoggingEvent::getCurrentThreadName()
 	if (thread_id_map.end() == pThreadId)
 		pThreadId = thread_id_map.insert(thread_id_map.begin(), ListItem(threadId, LogString()));
 	LogString& thread_id_string = pThreadId->second;
-#else
-	LOG4CXX_THREAD_LOCAL LogString thread_id_string;
 #endif
 	if ( !thread_id_string.empty() )
 	{
@@ -354,10 +354,10 @@ const LogString& LoggingEvent::getCurrentThreadName()
 
 const LogString& LoggingEvent::getCurrentThreadUserName()
 {
-#if defined(__BORLANDC__)
-	static LogString thread_name;
+#if LOG4CXX_HAS_THREAD_LOCAL
+	thread_local LogString thread_name;
 #else
-	LOG4CXX_THREAD_LOCAL LogString thread_name;
+	static LogString thread_name = LOG4CXX_STR("(noname)");
 #endif
 	if( !thread_name.empty() ){
 		return thread_name;

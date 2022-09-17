@@ -108,6 +108,16 @@ CHECK_FUNCTION_EXISTS(wcstombs HAS_WCSTOMBS)
 CHECK_FUNCTION_EXISTS(fwide HAS_FWIDE)
 CHECK_LIBRARY_EXISTS(esmtp smtp_create_session "" HAS_LIBESMTP)
 CHECK_FUNCTION_EXISTS(syslog HAS_SYSLOG)
+
+try_compile(THREAD_LOCAL_IS_SUPPORTED "${CMAKE_BINARY_DIR}/thread-local-test"
+    "${LOG4CXX_SOURCE_DIR}/src/cmake/test-thread-local.cpp"
+    CXX_STANDARD 11
+    )
+if(THREAD_LOCAL_IS_SUPPORTED)
+    set(HAS_THREAD_LOCAL 1)
+else()
+    set(HAS_THREAD_LOCAL 0)
+endif()
 if(UNIX)
     set(CMAKE_REQUIRED_LIBRARIES "pthread")
     CHECK_SYMBOL_EXISTS(pthread_sigmask "signal.h" HAS_PTHREAD_SIGMASK)

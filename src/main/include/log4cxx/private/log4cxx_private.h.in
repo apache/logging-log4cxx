@@ -62,15 +62,6 @@
 #define LOG4CXX_HAS_PTHREAD_GETNAME @HAS_PTHREAD_GETNAME@
 #define LOG4CXX_HAS_SETTHREADDESCRIPTION @HAS_SETTHREADDESCRIPTION@
 #define LOG4CXX_HAS_GETTHREADDESCRIPTION @HAS_GETTHREADDESCRIPTION@
-
-#ifdef __BORLANDC__
-/*
- * embarcadero/RAD Studio compilers don't support thread_local:
- * http://docwiki.embarcadero.com/RADStudio/Sydney/en/Modern_C%2B%2B_Language_Features_Compliance_Status
- */
-#define LOG4CXX_THREAD_LOCAL
-#else
-#define LOG4CXX_THREAD_LOCAL thread_local
-#endif
+#define LOG4CXX_HAS_THREAD_LOCAL @HAS_THREAD_LOCAL@
 
 #endif

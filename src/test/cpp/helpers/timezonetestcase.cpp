@@ -38,9 +38,7 @@ LOGUNIT_CLASS(TimeZoneTestCase)
 	LOGUNIT_TEST_SUITE(TimeZoneTestCase);
 	LOGUNIT_TEST(test1);
 	LOGUNIT_TEST(test2);
-#if !defined(__BORLANDC__)
 	LOGUNIT_TEST(test3);
-#endif
 	LOGUNIT_TEST(test4);
 	LOGUNIT_TEST(test5);
 	LOGUNIT_TEST(test6);
