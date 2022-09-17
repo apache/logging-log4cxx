@@ -304,11 +304,8 @@ LoggingEvent::KeySet LoggingEvent::getPropertyKeySet() const
 
 const LogString& LoggingEvent::getCurrentThreadName()
 {
-#if APR_HAS_THREADS
 	thread_local LogString thread_id_string;
-#else
-	static LogString thread_id_string;
-#endif
+
 	if ( !thread_id_string.empty() )
 	{
 		return thread_id_string;
@@ -317,13 +314,13 @@ const LogString& LoggingEvent::getCurrentThreadName()
 #if APR_HAS_THREADS
 #if defined(_WIN32)
 	char result[20];
-	DWORD threadId = GetCurrentThreadId();
+	auto threadId = GetCurrentThreadId();
 	apr_snprintf(result, sizeof(result), LOG4CXX_WIN32_THREAD_FMTSPEC, threadId);
 #else
 	// apr_os_thread_t encoded in HEX takes needs as many characters
 	// as two times the size of the type, plus an additional null byte.
 	char result[sizeof(apr_os_thread_t) * 3 + 10];
-	apr_os_thread_t threadId = apr_os_thread_current();
+	auto threadId = apr_os_thread_current();
 	apr_snprintf(result, sizeof(result), LOG4CXX_APR_THREAD_FMTSPEC, (void*) &threadId);
 #endif /* _WIN32 */
 
@@ -337,11 +334,7 @@ const LogString& LoggingEvent::getCurrentThreadName()
 
 const LogString& LoggingEvent::getCurrentThreadUserName()
 {
-#if APR_HAS_THREADS
 	thread_local LogString thread_name;
-#else
-	static LogString thread_name;
-#endif
 	if( !thread_name.empty() ){
 		return thread_name;
 	}
