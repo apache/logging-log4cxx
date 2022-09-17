@@ -195,17 +195,7 @@ BENCHMARK_DEFINE_F(benchmarker, logIntValueFMT)(benchmark::State& state)
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Logging int value with FMT")->Setup(ResetLogger);
-
-BENCHMARK_DEFINE_F(benchmarker, logIntValueFMTMultithreaded)(benchmark::State& state)
-{
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-	int x = 0;
-	for (auto _ : state)
-	{
-		LOG4CXX_INFO_FMT( logger, "Hello logger: msg number {}", ++x);
-	}
-}
-BENCHMARK_REGISTER_F(benchmarker, logIntValueFMTMultithreaded)->Name("Logging int value with FMT")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Logging int value with FMT")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
 #endif
 
 BENCHMARK_DEFINE_F(benchmarker, logIntValueStream)(benchmark::State& state)
@@ -218,17 +208,7 @@ BENCHMARK_DEFINE_F(benchmarker, logIntValueStream)(benchmark::State& state)
 	}
 }
 BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream")->Setup(ResetLogger);
-
-BENCHMARK_DEFINE_F(benchmarker, logIntValueStreamMultithreaded)(benchmark::State& state)
-{
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-	int x = 0;
-	for (auto _ : state)
-	{
-		LOG4CXX_INFO( logger, "Hello logger: msg number " << ++x);
-	}
-}
-BENCHMARK_REGISTER_F(benchmarker, logIntValueStreamMultithreaded)->Name("Logging int value with std::ostream")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
 
 template <class ...Args>
 void logWithConversionPattern(benchmark::State& state, Args&&... args)
@@ -278,19 +258,8 @@ static void SetAsyncAppender(const benchmark::State& state)
 	asyncAppender->activateOptions(p);
 	logger->addAppender(asyncAppender);
 }
-
-BENCHMARK_DEFINE_F(benchmarker, logToAsyncAppender)(benchmark::State& state)
-{
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-
-	int x = 0;
-	for (auto _ : state)
-	{
-		LOG4CXX_INFO( logger, LOG4CXX_STR("Hello logger: msg number ") << ++x);
-	}
-}
-BENCHMARK_REGISTER_F(benchmarker, logToAsyncAppender)->Name("Logging int value with std::ostream to AsyncAppender")->Setup(SetAsyncAppender);
-BENCHMARK_REGISTER_F(benchmarker, logToAsyncAppender)->Name("Logging int value with std::ostream to AsyncAppender")->Threads(benchmarker::threadCount());
+BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream to AsyncAppender")->Setup(SetAsyncAppender);
+BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream to AsyncAppender")->Threads(benchmarker::threadCount());
 
 BENCHMARK_MAIN();
 
