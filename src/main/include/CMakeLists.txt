@@ -154,7 +154,7 @@ foreach(varName
     continue()
   elseif(${varName} EQUAL 1)
     continue()
-  elseif("${varName}" STREQUAL "ON" OR "${varName}" STREQUAL "TRUE")
+  elseif(${varName} STREQUAL "ON" OR ${varName} STREQUAL "TRUE")
     set(${varName} 1 )
  else()
     set(${varName} 0 )
