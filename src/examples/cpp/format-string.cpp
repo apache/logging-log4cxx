@@ -34,6 +34,7 @@ std::ostream& operator<<( std::ostream& stream, const MyStruct& mystruct ){
 		stream << "[MyStruct x:" << mystruct.x << "]";
 		return stream;
 }
+template <> struct fmt::formatter<MyStruct> : ostream_formatter {};
 
 int main()
 {

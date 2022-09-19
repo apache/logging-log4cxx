@@ -40,6 +40,11 @@ if(NOT BUILD_SHARED_LIBS)
   set(LOG4CXX_COMPILE_DEFINITIONS LOG4CXX_STATIC)
 endif()
 
+option(ENABLE_COVERAGE "Enable code coverage" OFF)
+if(ENABLE_COVERAGE)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")
+endif()
+
 # Find Apache Runtime
 find_package(APR REQUIRED)
 
