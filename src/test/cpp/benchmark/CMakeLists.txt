@@ -15,17 +15,19 @@
 # limitations under the License.
 #
 
-option(BUILD_THROUGHPUT_TESTS "Build throughput tests"  OFF)
+option(BUILD_BENCHMARK_CHECKS "Build google benchmark checks"  OFF)
 
-if( NOT BUILD_THROUGHPUT_TESTS )
+if( NOT BUILD_BENCHMARK_CHECKS )
 	return()
 endif()
-
-find_package(fmt REQUIRED)
-
-add_executable(throughputtests
-	throughput-main.cpp
-	log4cxxbenchmarker.cpp)
+find_package(benchmark REQUIRED)
+find_package(fmt QUIET)
+if(fmt_FOUND)
+    set(LOG4CXX_HAS_FMT 1)
+else()
+    set(LOG4CXX_HAS_FMT 0)
+endif()
+add_executable(benchmark benchmark.cpp)
 
 # Note: we need to include the APR DLLs on our path so that the tests will run.
 # The way that CMake sets the environment is that it actually generates a secondary file,
@@ -50,13 +52,13 @@ if( WIN32 )
   foreach( ENTRY ${PATH_FOR_TESTS}${NORMAL_PATH} )
 	  set(ESCAPED_PATH "${ESCAPED_PATH}${ENTRY}\\\;")
   endforeach()
-  set_target_properties(throughputtests PROPERTIES
-    VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
+  set_target_properties(benchmark PROPERTIES
+    VS_DEBUGGER_ENVIRONMENT "LOG4CXX_BENCHMARK_THREAD_COUNT=4\nPATH=${ESCAPED_PATH}"
   )
+else()
+add_custom_target(run-benchmarks COMMAND benchmark DEPENDS benchmark)
 endif( WIN32 )
 
-target_compile_definitions(throughputtests PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
-target_include_directories(throughputtests PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
-target_link_libraries(throughputtests PRIVATE log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads fmt::fmt)
-
-add_custom_target(run-throughput COMMAND throughputtests DEPENDS throughputtests)
+target_compile_definitions(benchmark PRIVATE "LOG4CXX_HAS_FMT=${LOG4CXX_HAS_FMT}" ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
+target_include_directories(benchmark PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
+target_link_libraries(benchmark PRIVATE log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads fmt::fmt benchmark::benchmark benchmark::benchmark_main)

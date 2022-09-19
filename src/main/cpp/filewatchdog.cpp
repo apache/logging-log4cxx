@@ -18,7 +18,6 @@
 #include <log4cxx/logstring.h>
 #include <log4cxx/helpers/filewatchdog.h>
 #include <log4cxx/helpers/loglog.h>
-#include <apr_time.h>
 #include <apr_thread_proc.h>
 #include <apr_atomic.h>
 #include <log4cxx/helpers/transcoder.h>

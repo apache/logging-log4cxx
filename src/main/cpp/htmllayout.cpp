@@ -24,8 +24,8 @@
 #include <log4cxx/helpers/iso8601dateformat.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
+#include <log4cxx/helpers/date.h>
 
-#include <apr_time.h>
 #include <apr_strings.h>
 #include <string.h>
 
@@ -185,7 +185,7 @@ void HTMLLayout::appendHeader(LogString& output, Pool& p)
 	output.append(LOG4CXX_EOL);
 	output.append(LOG4CXX_STR("Log session start time "));
 
-	dateFormat.format(output, apr_time_now(), p);
+	dateFormat.format(output, Date::currentTime(), p);
 
 	output.append(LOG4CXX_STR("<br>"));
 	output.append(LOG4CXX_EOL);
