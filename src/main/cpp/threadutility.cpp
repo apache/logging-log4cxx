@@ -64,7 +64,7 @@ ThreadUtility::~ThreadUtility() {}
 
 std::shared_ptr<ThreadUtility> ThreadUtility::instance()
 {
-	static std::shared_ptr<ThreadUtility> instance( new ThreadUtility() );
+	static std::shared_ptr<ThreadUtility> instance = std::make_shared<ThreadUtility>();
 	return instance;
 }
 

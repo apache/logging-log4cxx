@@ -35,17 +35,15 @@ namespace pattern
 class LOG4CXX_EXPORT ColorStartPatternConverter
 	: public LoggingEventPatternConverter
 {
-		/**
-		 * Private constructor.
-		 */
-		ColorStartPatternConverter();
-
 	public:
 		DECLARE_LOG4CXX_PATTERN(ColorStartPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(ColorStartPatternConverter)
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
+
+		ColorStartPatternConverter();
+
 
 		/**
 		 * Obtains an instance of pattern converter.

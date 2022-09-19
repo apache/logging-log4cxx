@@ -60,22 +60,18 @@ class LOG4CXX_EXPORT Logger :
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LoggerPrivate, m_priv)
 
-	protected:
-		friend class DefaultLoggerFactory;
-
+	public:
 		/**
-		This constructor created a new <code>logger</code> instance and
+		This constructor initializes a new <code>logger</code> instance and
 		sets its name.
 
-		<p>It is intended to be used by sub-classes only. You should not
-		create categories directly.
+		<p>It is intended to be only used by factory-classes.
 
 		@param pool lifetime of pool must be longer than logger.
 		@param name The name of the logger.
 		*/
-		Logger(log4cxx::helpers::Pool& pool, const LogString& name);
+		Logger(helpers::Pool& pool, const LogString& name);
 
-	public:
 		~Logger();
 
 

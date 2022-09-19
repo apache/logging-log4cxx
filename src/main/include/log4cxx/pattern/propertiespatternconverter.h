@@ -41,19 +41,18 @@ class LOG4CXX_EXPORT PropertiesPatternConverter
 {
 		struct PropertiesPatternConverterPrivate;
 
-		/**
-		 * Private constructor.
-		 * @param options options, may be null.
-		 * @param logger logger for diagnostic messages, may be null.
-		 */
-		PropertiesPatternConverter(const LogString& name, const LogString& option);
-
 	public:
 		DECLARE_LOG4CXX_PATTERN(PropertiesPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(PropertiesPatternConverter)
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
+
+		/**
+		 * @param options options, may be null.
+		 * @param logger logger for diagnostic messages, may be null.
+		 */
+		PropertiesPatternConverter(const LogString& name, const LogString& option);
 
 		/**
 		 * Obtains an instance of PropertiesPatternConverter.

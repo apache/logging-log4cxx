@@ -291,7 +291,7 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern)
 		//
 		if (i == trimmed.length())
 		{
-			return NameAbbreviatorPtr(new MaxElementAbbreviator(StringHelper::toInt(trimmed)));
+			return std::make_shared<MaxElementAbbreviator>(StringHelper::toInt(trimmed));
 		}
 
 		std::vector<PatternAbbreviatorFragment> fragments;
@@ -345,8 +345,7 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern)
 			pos++;
 		}
 
-		NameAbbreviatorPtr abbrev(new PatternAbbreviator(fragments));
-		return abbrev;
+		return std::make_shared<PatternAbbreviator>(fragments);
 	}
 
 	//
@@ -362,7 +361,7 @@ NameAbbreviatorPtr NameAbbreviator::getAbbreviator(const LogString& pattern)
  */
 NameAbbreviatorPtr NameAbbreviator::getDefaultAbbreviator()
 {
-	static NameAbbreviatorPtr def(new NOPAbbreviator());
+	static NameAbbreviatorPtr def = std::make_shared<NOPAbbreviator>();
 	return def;
 }
 

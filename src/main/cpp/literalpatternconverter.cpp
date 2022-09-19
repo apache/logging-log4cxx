@@ -56,12 +56,11 @@ PatternConverterPtr LiteralPatternConverter::newInstance(
 {
 	if (literal.length() == 1 && literal[0] == 0x20 /* ' ' */)
 	{
-		static PatternConverterPtr blank(new LiteralPatternConverter(literal));
+		static PatternConverterPtr blank = std::make_shared<LiteralPatternConverter>(literal);
 		return blank;
 	}
 
-	PatternConverterPtr pattern(new LiteralPatternConverter(literal));
-	return pattern;
+	return std::make_shared<LiteralPatternConverter>(literal);
 }
 
 void LiteralPatternConverter::format(

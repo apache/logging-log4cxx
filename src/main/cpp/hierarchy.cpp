@@ -448,7 +448,7 @@ bool Hierarchy::isConfigured()
 
 HierarchyPtr Hierarchy::create()
 {
-	HierarchyPtr ret( new Hierarchy() );
+	auto ret = std::make_shared<Hierarchy>();
 	ret->m_priv->root->setHierarchy(ret);
 	return ret;
 }

@@ -98,7 +98,7 @@ APRSocket::APRSocket(apr_socket_t* s, apr_pool_t* pool) :
 			Transcoder::decode(buf, remoteip);
 		}
 
-		_priv->address = InetAddressPtr(new InetAddress(remotename, remoteip));
+		_priv->address = std::make_shared<InetAddress>(remotename, remoteip);
 	}
 }
 

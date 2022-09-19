@@ -100,10 +100,10 @@ int XMLSocketAppender::getDefaultPort() const
 
 void XMLSocketAppender::setSocket(log4cxx::helpers::SocketPtr& socket, Pool& p)
 {
-	OutputStreamPtr os(new SocketOutputStream(socket));
+	OutputStreamPtr os = std::make_shared<SocketOutputStream>(socket);
 	CharsetEncoderPtr charset(CharsetEncoder::getUTF8Encoder());
 	std::lock_guard<std::recursive_mutex> lock(_priv->mutex);
-	_priv->writer = OutputStreamWriterPtr(new OutputStreamWriter(os, charset));
+	_priv->writer = std::make_shared<OutputStreamWriter>(os, charset);
 }
 
 void XMLSocketAppender::cleanUp(Pool& p)

@@ -41,7 +41,7 @@ MethodLocationPatternConverter::MethodLocationPatternConverter() :
 PatternConverterPtr MethodLocationPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */ )
 {
-	static PatternConverterPtr def(new MethodLocationPatternConverter());
+	static PatternConverterPtr def = std::make_shared<MethodLocationPatternConverter>();
 	return def;
 }
 

@@ -95,7 +95,7 @@ void RollingFileAppender::activateOptions(Pool& p)
 {
 	if (_priv->rollingPolicy == NULL)
 	{
-		FixedWindowRollingPolicyPtr fwrp = FixedWindowRollingPolicyPtr(new FixedWindowRollingPolicy());
+		auto fwrp = std::make_shared<FixedWindowRollingPolicy>();
 		fwrp->setFileNamePattern(getFile() + LOG4CXX_STR(".%i"));
 		_priv->rollingPolicy = fwrp;
 	}
@@ -115,7 +115,7 @@ void RollingFileAppender::activateOptions(Pool& p)
 
 	if (_priv->triggeringPolicy == NULL)
 	{
-		_priv->triggeringPolicy = TriggeringPolicyPtr(new ManualTriggeringPolicy());
+		_priv->triggeringPolicy = std::make_shared<ManualTriggeringPolicy>();
 	}
 
 	{
@@ -226,7 +226,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 			std::string fileName(getFile());
 			RollingPolicyBase* basePolicy = dynamic_cast<RollingPolicyBase* >(&(*rollingPolicy));
 			apr_time_t n = apr_time_now();
-			ObjectPtr obj(new Date(n));
+			ObjectPtr obj = std::make_shared<Date>(n);
 			LogString fileNamePattern;
 
 			if (basePolicy)
@@ -463,7 +463,7 @@ bool RollingFileAppender::rolloverInternal(Pool& p)
 void RollingFileAppenderSkeleton::reopenLatestFile(Pool& p)
 {
 	closeWriter();
-	OutputStreamPtr os(new FileOutputStream(getFile(), true));
+	OutputStreamPtr os = std::make_shared<FileOutputStream(getFile>(), true);
 	WriterPtr newWriter(createWriter(os));
 	setFile(getFile());
 	setWriter(newWriter);
@@ -669,7 +669,7 @@ class CountingOutputStream : public OutputStream
  */
 WriterPtr RollingFileAppender::createWriter(OutputStreamPtr& os)
 {
-	OutputStreamPtr cos(new CountingOutputStream(os, this));
+	OutputStreamPtr cos = std::make_shared<CountingOutputStream>(os, this);
 	return FileAppender::createWriter(cos);
 }
 
