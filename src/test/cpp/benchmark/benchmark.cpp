@@ -56,10 +56,30 @@ typedef log4cxx::helpers::ObjectPtrT<NullWriterAppender> NullWriterAppenderPtr;
 class benchmarker : public ::benchmark::Fixture
 {
 public:
+	LoggerPtr m_logger;
+	void SetupLogger()
+	{
+		m_logger = Logger::getLogger(LOG4CXX_STR("bench_logger"));
+
+		m_logger->removeAllAppenders();
+		m_logger->setAdditivity(false);
+		m_logger->setLevel(Level::getInfo());
+
+		PatternLayoutPtr pattern(new PatternLayout);
+		pattern->setConversionPattern(LOG4CXX_STR("%m%n"));
+
+		NullWriterAppenderPtr nullWriter(new NullWriterAppender);
+		nullWriter->setName(LOG4CXX_STR("NullWriterAppender"));
+		nullWriter->setLayout(pattern);
+
+		m_logger->addAppender(nullWriter);
+	}
+
 	void SetUp(const ::benchmark::State& state)
 	{
 		std::setlocale( LC_ALL, "" ); /* Set locale for C functions */
 		std::locale::global(std::locale("")); /* set locale for C++ functions */
+		SetupLogger();
 	}
 
 	void TearDown(const ::benchmark::State& state)
@@ -88,115 +108,89 @@ public:
 
 };
 
-static void ResetLogger(const benchmark::State& state)
-{
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-
-	logger->removeAllAppenders();
-	logger->setAdditivity( false );
-	logger->setLevel( Level::getInfo() );
-
-	PatternLayoutPtr pattern(new PatternLayout);
-	pattern->setConversionPattern( LOG4CXX_STR("%m%n") );
-
-	NullWriterAppenderPtr nullWriter(new NullWriterAppender);
-	nullWriter->setName(LOG4CXX_STR("NullWriterAppender"));
-	nullWriter->setLayout( pattern );
-
-	logger->addAppender( nullWriter );
-}
-
 BENCHMARK_DEFINE_F(benchmarker, logDisabledTrace)(benchmark::State& state)
 {
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-	logger->setLevel(Level::getDebug());
+	m_logger->setLevel(Level::getDebug());
 	for (auto _ : state)
 	{
-		LOG4CXX_TRACE( logger, LOG4CXX_STR("This is a static string to see what happens"));
+		LOG4CXX_TRACE( m_logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Logging disabled trace")->Setup(ResetLogger)->MinWarmUpTime(benchmarker::warmUpSeconds());
-BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Logging disabled trace")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Logging disabled trace")->MinWarmUpTime(benchmarker::warmUpSeconds());
+BENCHMARK_REGISTER_F(benchmarker, logDisabledTrace)->Name("Logging disabled trace")->Threads(benchmarker::threadCount());
 
 BENCHMARK_DEFINE_F(benchmarker, logDisabledDebug)(benchmark::State& state)
 {
-	LoggerPtr logger = Logger::getLogger(LOG4CXX_STR("bench_logger"));
-	logger->setLevel(Level::getInfo());
+	m_logger->setLevel(Level::getInfo());
 	for (auto _ : state)
 	{
-		LOG4CXX_DEBUG(logger, LOG4CXX_STR("This is a static string to see what happens"));
+		LOG4CXX_DEBUG(m_logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logDisabledDebug)->Name("Logging disabled debug")->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logDisabledDebug)->Name("Logging disabled debug");
 
 BENCHMARK_DEFINE_F(benchmarker, logStaticString)(benchmark::State& state)
 {
-	LoggerPtr logger = Logger::getLogger(LOG4CXX_STR("bench_logger"));
-	logger->setLevel(Level::getInfo());
+	m_logger->setLevel(Level::getInfo());
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO( logger, LOG4CXX_STR("This is a static string to see what happens"));
+		LOG4CXX_INFO( m_logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logStaticString)->Name("Logging info static string")->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logStaticString)->Name("Logging info static string");
 
 BENCHMARK_DEFINE_F(benchmarker, logEnabledDebug)(benchmark::State& state)
 {
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-	logger->setLevel( Level::getDebug() );
+	m_logger->setLevel( Level::getDebug() );
 	for (auto _ : state)
 	{
-		LOG4CXX_DEBUG( logger, LOG4CXX_STR("This is a static string to see what happens"));
+		LOG4CXX_DEBUG( m_logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logEnabledDebug)->Name("Logging enabled debug static string")->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logEnabledDebug)->Name("Logging enabled debug static string");
 
 BENCHMARK_DEFINE_F(benchmarker, logEnabledTrace)(benchmark::State& state)
 {
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
-	logger->setLevel( Level::getTrace() );
+	m_logger->setLevel( Level::getTrace() );
 	for (auto _ : state)
 	{
-		LOG4CXX_DEBUG( logger, LOG4CXX_STR("This is a static string to see what happens"));
+		LOG4CXX_DEBUG( m_logger, LOG4CXX_STR("This is a static string to see what happens"));
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logEnabledTrace)->Name("Logging enabled trace static string")->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logEnabledTrace)->Name("Logging enabled trace static string");
 
 #if LOG4CXX_HAS_FMT
 BENCHMARK_DEFINE_F(benchmarker, logStaticStringFMT)(benchmark::State& state)
 {
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO_FMT(logger, "This is a static string to see what happens");
+		LOG4CXX_INFO_FMT(m_logger, "This is a static string to see what happens");
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logStaticStringFMT)->Name("Logging static string with FMT")->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logStaticStringFMT)->Name("Logging static string with FMT");
 
 BENCHMARK_DEFINE_F(benchmarker, logIntValueFMT)(benchmark::State& state)
 {
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
 	int x = 0;
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO_FMT( logger, "Hello logger: msg number {}", ++x);
+		LOG4CXX_INFO_FMT( m_logger, "Hello m_logger: msg number {}", ++x);
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Logging int value with FMT")->Setup(ResetLogger);
-BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Logging int value with FMT")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Logging int value with FMT");
+BENCHMARK_REGISTER_F(benchmarker, logIntValueFMT)->Name("Logging int value with FMT")->Threads(benchmarker::threadCount());
 #endif
 
 BENCHMARK_DEFINE_F(benchmarker, logIntValueStream)(benchmark::State& state)
 {
-	LoggerPtr logger = Logger::getLogger( LOG4CXX_STR("bench_logger") );
 	int x = 0;
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO( logger, "Hello logger: msg number " << ++x);
+		LOG4CXX_INFO( m_logger, "Hello m_logger: msg number " << ++x);
 	}
 }
-BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream")->Setup(ResetLogger);
-BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream")->Threads(benchmarker::threadCount())->Setup(ResetLogger);
+BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream");
+BENCHMARK_REGISTER_F(benchmarker, logIntValueStream)->Name("Logging int value with std::ostream")->Threads(benchmarker::threadCount());
 
 template <class ...Args>
 void logWithConversionPattern(benchmark::State& state, Args&&... args)
@@ -212,7 +206,7 @@ void logWithConversionPattern(benchmark::State& state, Args&&... args)
 	int x = 0;
 	for (auto _ : state)
 	{
-		LOG4CXX_INFO( logger, LOG4CXX_STR("Hello logger: msg number ") << ++x);
+		LOG4CXX_INFO( logger, LOG4CXX_STR("Hello m_logger: msg number ") << ++x);
 	}
 }
 BENCHMARK_CAPTURE(logWithConversionPattern, NoFormat, LOG4CXX_STR("%m%n"))->Name("NoFormat pattern: %m%n");
