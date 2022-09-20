@@ -40,13 +40,6 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 		struct DatePatternConverterPrivate;
 
 		/**
-		 * Private constructor.
-		 * @param options options, may be null.
-		 * @param logger logger for diagnostic messages, may be null.
-		 */
-		DatePatternConverter(const OptionsList& options);
-
-		/**
 		 * Obtains an instance of pattern converter.
 		 * @param options options, may be null.
 		 * @return instance of pattern converter.
@@ -58,6 +51,8 @@ class LOG4CXX_EXPORT DatePatternConverter : public LoggingEventPatternConverter
 		LOG4CXX_CAST_ENTRY(DatePatternConverter)
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
+
+		DatePatternConverter(const OptionsList& options);
 
 		~DatePatternConverter();
 

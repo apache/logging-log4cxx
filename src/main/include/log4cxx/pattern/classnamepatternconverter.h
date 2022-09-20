@@ -35,15 +35,13 @@ namespace pattern
  */
 class LOG4CXX_EXPORT ClassNamePatternConverter : public NamePatternConverter
 {
+	public:
 		/**
-		 * Private constructor.
 		 * @param options options, may be null.
 		 * @param logger logger for diagnostic messages, may be null.
 		 */
-		ClassNamePatternConverter(
-			const std::vector<LogString>& options);
+		ClassNamePatternConverter(const std::vector<LogString>& options);
 
-	public:
 		DECLARE_LOG4CXX_PATTERN(ClassNamePatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(ClassNamePatternConverter)

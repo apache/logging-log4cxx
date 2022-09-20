@@ -196,7 +196,7 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 	}
 
 	LogString buf;
-	ObjectPtr obj(new Date());
+	ObjectPtr obj = std::make_shared<Date>();
 	formatFileName(obj, buf, pool);
 	lastFileName = buf;
 
@@ -267,7 +267,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 	File currentFile(currentActiveFile);
 
 	LogString buf;
-	ObjectPtr obj(new Date(currentFile.exists(pool) ? currentFile.lastModified(pool) : n));
+	ObjectPtr obj = std::make_shared<Date>(currentFile.exists(pool) ? currentFile.lastModified(pool) : n);
 	formatFileName(obj, buf, pool);
 	lastFileName = buf;
 
@@ -275,15 +275,15 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::initialize(
 
 	if (currentActiveFile.length() > 0)
 	{
-		return RolloverDescriptionPtr(new RolloverDescription(
-					currentActiveFile, append, noAction, noAction));
+		return std::make_shared<RolloverDescription>(
+					currentActiveFile, append, noAction, noAction);
 	}
 	else
 	{
 		bRefreshCurFile = true;
-		return RolloverDescriptionPtr(new RolloverDescription(
+		return std::make_shared<RolloverDescription>(
 					lastFileName.substr(0, lastFileName.length() - suffixLength), append,
-					noAction, noAction));
+					noAction, noAction);
 	}
 }
 
@@ -297,7 +297,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	nextCheck = now.getNextSecond();
 
 	LogString buf;
-	ObjectPtr obj(new Date(n));
+	ObjectPtr obj = std::make_shared<Date>(n);
 	formatFileName(obj, buf, pool);
 
 	LogString newFileName(buf);
@@ -348,24 +348,21 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	//        and requires a rename plus maintaining the same name
 	if (currentActiveFile != lastBaseName)
 	{
-		renameAction = FileRenameActionPtr(
-				new FileRenameAction(
-					File().setPath(currentActiveFile), File().setPath(lastBaseName), true));
+		renameAction = std::make_shared<FileRenameAction>(
+					File().setPath(currentActiveFile), File().setPath(lastBaseName), true);
 		nextActiveFile = currentActiveFile;
 	}
 
 	if (suffixLength == 3)
 	{
-		compressAction = GZCompressActionPtr(
-				new GZCompressAction(
-					File().setPath(lastBaseName), File().setPath(lastFileName), true));
+		compressAction = std::make_shared<GZCompressAction>(
+					File().setPath(lastBaseName), File().setPath(lastFileName), true);
 	}
 
 	if (suffixLength == 4)
 	{
-		compressAction = ZipCompressActionPtr(
-				new ZipCompressAction(
-					File().setPath(lastBaseName), File().setPath(lastFileName), true));
+		compressAction = std::make_shared<ZipCompressAction>(
+					File().setPath(lastBaseName), File().setPath(lastFileName), true);
 	}
 
 #ifdef LOG4CXX_MULTI_PROCESS
@@ -387,7 +384,7 @@ RolloverDescriptionPtr TimeBasedRollingPolicy::rollover(
 	lastFileName = newFileName;
 #endif
 
-	return RolloverDescriptionPtr(new RolloverDescription(nextActiveFile, append, renameAction, compressAction));
+	return std::make_shared<RolloverDescription>(nextActiveFile, append, renameAction, compressAction);
 }
 
 bool TimeBasedRollingPolicy::isTriggeringEvent(

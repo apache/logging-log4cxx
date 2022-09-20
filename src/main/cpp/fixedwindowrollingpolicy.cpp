@@ -143,15 +143,14 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::initialize(
 	if (!priv->explicitActiveFile)
 	{
 		LogString buf;
-		ObjectPtr obj(new Integer(priv->minIndex));
+		ObjectPtr obj = std::make_shared<Integer>(priv->minIndex);
 		formatFileName(obj, buf, pool);
 		newActiveFile = buf;
 	}
 
 	ActionPtr noAction;
 
-	return RolloverDescriptionPtr(
-			new RolloverDescription(newActiveFile, append, noAction, noAction));
+	return std::make_shared<RolloverDescription>(newActiveFile, append, noAction, noAction);
 }
 
 /**
@@ -182,7 +181,7 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	}
 
 	LogString buf;
-	ObjectPtr obj(new Integer(purgeStart));
+	ObjectPtr obj = std::make_shared<Integer>(purgeStart);
 	formatFileName(obj, buf, pool);
 
 	LogString renameTo(buf);
@@ -198,31 +197,28 @@ RolloverDescriptionPtr FixedWindowRollingPolicy::rollover(
 	if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".gz")))
 	{
 		renameTo.resize(renameTo.size() - 3);
-		compressAction = ActionPtr(
-				new GZCompressAction(
+		compressAction = std::make_shared<GZCompressAction>(
 					File().setPath(renameTo),
 					File().setPath(compressedName),
-					true));
+					true);
 	}
 	else if (StringHelper::endsWith(renameTo, LOG4CXX_STR(".zip")))
 	{
 		renameTo.resize(renameTo.size() - 4);
-		compressAction = ActionPtr(
-				new ZipCompressAction(
+		compressAction = std::make_shared<ZipCompressAction>(
 					File().setPath(renameTo),
 					File().setPath(compressedName),
-					true));
+					true);
 	}
 
-	FileRenameActionPtr renameAction = FileRenameActionPtr(
-			new FileRenameAction(
+	auto renameAction = std::make_shared<FileRenameAction>(
 				File().setPath(currentActiveFile),
 				File().setPath(renameTo),
-				false));
+				false);
 
-	desc = RolloverDescriptionPtr(new RolloverDescription(
+	desc = std::make_shared<RolloverDescription>(
 				currentActiveFile,  append,
-				renameAction,       compressAction));
+				renameAction,       compressAction);
 
 	return desc;
 }
@@ -259,7 +255,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 
 	std::vector<FileRenameActionPtr> renames;
 	LogString buf;
-	ObjectPtr obj = ObjectPtr(new Integer(lowIndex));
+	ObjectPtr obj = std::make_shared<Integer>(lowIndex);
 	formatFileName(obj, buf, p);
 
 	LogString lowFilename(buf);
@@ -320,7 +316,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 			//   if intermediate index
 			//     add a rename action to the list
 			buf.erase(buf.begin(), buf.end());
-			obj = ObjectPtr(new Integer(i + 1));
+			obj = std::make_shared<Integer>(i + 1);
 			formatFileName(obj, buf, p);
 
 			LogString highFilename(buf);
@@ -332,7 +328,7 @@ bool FixedWindowRollingPolicy::purge(int lowIndex, int highIndex, Pool& p) const
 					highFilename.substr(0, highFilename.length() - suffixLength);
 			}
 
-			renames.push_back(FileRenameActionPtr(new FileRenameAction(*toRename, File().setPath(renameTo), true)));
+			renames.push_back(std::make_shared<FileRenameAction>(*toRename, File().setPath(renameTo), true));
 			lowFilename = highFilename;
 		}
 		else

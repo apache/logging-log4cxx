@@ -213,11 +213,10 @@ void AsyncAppender::append(const spi::LoggingEventPtr& event, Pool& p)
 		priv->dispatcher = ThreadUtility::instance()->createThread( LOG4CXX_STR("AsyncAppender"), &AsyncAppender::dispatch, this );
 	}
 
-	// Set the NDC and thread name for the calling thread as these
+	// Set the NDC and MDC for the calling thread as these
 	// LoggingEvent fields were not set at event creation time.
 	LogString ndcVal;
 	event->getNDC(ndcVal);
-	event->getThreadName();
 	// Get a copy of this thread's MDC.
 	event->getMDCCopy();
 
@@ -418,11 +417,11 @@ LoggingEventPtr DiscardSummary::createEvent(Pool& p)
 	StringHelper::toString(count, p, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer including: "));
 	msg.append(maxEvent->getMessage());
-	return LoggingEventPtr( new LoggingEvent(
+	return std::make_shared<LoggingEvent>(
 				maxEvent->getLoggerName(),
 				maxEvent->getLevel(),
 				msg,
-				LocationInfo::getLocationUnavailable()) );
+				LocationInfo::getLocationUnavailable() );
 }
 
 ::log4cxx::spi::LoggingEventPtr
@@ -433,11 +432,11 @@ DiscardSummary::createEvent(::log4cxx::helpers::Pool& p,
 	StringHelper::toString(discardedCount, p, msg);
 	msg.append(LOG4CXX_STR(" messages due to a full event buffer"));
 
-	return LoggingEventPtr( new LoggingEvent(
+	return std::make_shared<LoggingEvent>(
 				LOG4CXX_STR(""),
 				log4cxx::Level::getError(),
 				msg,
-				LocationInfo::getLocationUnavailable()) );
+				LocationInfo::getLocationUnavailable() );
 }
 
 void AsyncAppender::dispatch()

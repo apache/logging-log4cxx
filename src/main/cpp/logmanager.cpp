@@ -53,7 +53,7 @@ RepositorySelectorPtr LogManager::getRepositorySelector()
 	auto result = APRInitializer::getOrAddUnique<spi::RepositorySelector>( []() -> ObjectPtr
 		{
 			LoggerRepositoryPtr hierarchy = Hierarchy::create();
-			return ObjectPtr(new DefaultRepositorySelector(hierarchy));
+			return std::make_shared<DefaultRepositorySelector>(hierarchy);
 		}
 	);
 	return result;

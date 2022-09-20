@@ -71,9 +71,9 @@ void SyslogWriter::write(const LogString& source)
 	{
 		LOG4CXX_ENCODE_CHAR(data, source);
 
-		DatagramPacketPtr packet(
-			new DatagramPacket((void*) data.data(), data.length(),
-				m_priv->address, m_priv->syslogHostPort));
+		auto packet = std::make_shared<DatagramPacket>(
+				(void*) data.data(), data.length(),
+				m_priv->address, m_priv->syslogHostPort);
 
 		m_priv->ds->send(packet);
 	}

@@ -39,11 +39,6 @@ class LOG4CXX_EXPORT ThrowableInformationPatternConverter
 {
 		struct ThrowableInformationPatternConverterPrivate;
 
-		/**
-		 * Private constructor.
-		 */
-		ThrowableInformationPatternConverter(bool shortReport);
-
 	public:
 		DECLARE_LOG4CXX_PATTERN(ThrowableInformationPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -51,6 +46,7 @@ class LOG4CXX_EXPORT ThrowableInformationPatternConverter
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
 
+		ThrowableInformationPatternConverter(bool shortReport);
 
 		/**
 		 * Gets an instance of the class.

@@ -29,7 +29,6 @@ namespace pattern
 
 class LOG4CXX_EXPORT ThreadUsernamePatternConverter : public LoggingEventPatternConverter
 {
-        ThreadUsernamePatternConverter();
 
     public:
 	    DECLARE_LOG4CXX_PATTERN(ThreadUsernamePatternConverter)
@@ -37,6 +36,8 @@ class LOG4CXX_EXPORT ThreadUsernamePatternConverter : public LoggingEventPattern
 	    LOG4CXX_CAST_ENTRY(ThreadUsernamePatternConverter)
 	    LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 	    END_LOG4CXX_CAST_MAP()
+
+		ThreadUsernamePatternConverter();
 
 	    static PatternConverterPtr newInstance(
 	            const std::vector<LogString>& options);
