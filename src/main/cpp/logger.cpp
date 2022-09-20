@@ -70,7 +70,6 @@ struct Logger::LoggerPrivate
 
 
 	// Loggers need to know what Hierarchy they are in
-	log4cxx::spi::LoggerRepositoryWeakPtr repository;
 	log4cxx::spi::LoggerRepository* repositoryRaw;
 
 	helpers::AppenderAttachableImpl aai;
@@ -224,9 +223,9 @@ const LevelPtr& Logger::getEffectiveLevel() const
 #endif
 }
 
-LoggerRepositoryPtr Logger::getLoggerRepository() const
+LoggerRepository* Logger::getLoggerRepository() const
 {
-	return m_priv->repository.lock();
+	return m_priv->repositoryRaw;
 }
 
 LoggerRepository* Logger::getHierarchy() const
@@ -500,7 +499,6 @@ void Logger::removeAppender(const LogString& name1)
 
 void Logger::removeHierarchy()
 {
-	m_priv->repository.reset();
 	m_priv->repositoryRaw = 0;
 }
 
@@ -509,10 +507,9 @@ void Logger::setAdditivity(bool additive1)
 	m_priv->additive = additive1;
 }
 
-void Logger::setHierarchy(const spi::LoggerRepositoryPtr& repository1)
+void Logger::setHierarchy(spi::LoggerRepository* repository1)
 {
-	m_priv->repository = repository1;
-	m_priv->repositoryRaw = repository1.get();
+	m_priv->repositoryRaw = repository1;
 }
 
 void Logger::setParent(LoggerPtr parentLogger)

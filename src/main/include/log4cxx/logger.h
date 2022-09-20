@@ -564,7 +564,7 @@ class LOG4CXX_EXPORT Logger :
 		Return the the LoggerRepository where this
 		<code>Logger</code> is attached.
 		*/
-		log4cxx::spi::LoggerRepositoryPtr getLoggerRepository() const;
+		log4cxx::spi::LoggerRepository* getLoggerRepository() const;
 
 
 		/**
@@ -1404,7 +1404,7 @@ class LOG4CXX_EXPORT Logger :
 		/**
 		Only the Hierarchy class can set the hierarchy of a logger.*/
 		void removeHierarchy();
-		void setHierarchy(const spi::LoggerRepositoryPtr& repository);
+		void setHierarchy(spi::LoggerRepository* repository);
 		void setParent(LoggerPtr parentLogger);
 		spi::LoggerRepository* getHierarchy() const;
 

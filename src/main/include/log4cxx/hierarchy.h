@@ -66,10 +66,15 @@ class LOG4CXX_EXPORT Hierarchy :
 		LOG4CXX_CAST_ENTRY(spi::LoggerRepository)
 		END_LOG4CXX_CAST_MAP()
 
+	private:
+		/**
+		Create a new logger hierarchy.
+		*/
+		Hierarchy();
+
 	public:
 		static HierarchyPtr create();
 
-		Hierarchy();
 		~Hierarchy();
 
 		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
