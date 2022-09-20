@@ -62,15 +62,15 @@ ThreadUtility::ThreadUtility() :
 
 ThreadUtility::~ThreadUtility() {}
 
-std::shared_ptr<ThreadUtility> ThreadUtility::instance()
+ThreadUtility* ThreadUtility::instance()
 {
-	static std::shared_ptr<ThreadUtility> instance = std::make_shared<ThreadUtility>();
-	return instance;
+	static ThreadUtility instance;
+	return &instance;
 }
 
 void ThreadUtility::configure( ThreadConfigurationType type )
 {
-	std::shared_ptr<ThreadUtility> utility = instance();
+	auto utility = instance();
 
 	if ( type == ThreadConfigurationType::NoConfiguration )
 	{

@@ -33,7 +33,7 @@ LOGUNIT_CLASS(ThreadUtilityTest)
 public:
 	void testNullFunctions()
 	{
-		ThreadUtilityPtr thrUtil = ThreadUtility::instance();
+		auto thrUtil = ThreadUtility::instance();
 
 		thrUtil->configureFuncs( nullptr, nullptr, nullptr );
 
@@ -44,7 +44,7 @@ public:
 
 	void testCustomFunctions()
 	{
-		ThreadUtilityPtr thrUtil = ThreadUtility::instance();
+		auto thrUtil = ThreadUtility::instance();
 		int num_pre = 0;
 		int num_started = 0;
 		int num_post = 0;
@@ -79,7 +79,7 @@ public:
 	{
 		ThreadUtility::configure( ThreadConfigurationType::BlockSignalsAndNameThread );
 
-		ThreadUtilityPtr thrUtil = ThreadUtility::instance();
+		auto thrUtil = ThreadUtility::instance();
 
 		std::thread t = thrUtil->createThread( LOG4CXX_STR("FooName"), []() {} );
 
