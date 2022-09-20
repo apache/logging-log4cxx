@@ -98,8 +98,8 @@ class LOG4CXX_EXPORT RollingPolicyBase :
 		 * @param buf string buffer to which formatted file name is appended, may not be null.
 		 * @param p memory pool.
 		 */
-		void formatFileName(log4cxx::helpers::ObjectPtr& obj,
-			LogString& buf, log4cxx::helpers::Pool& p) const;
+		void formatFileName(const helpers::ObjectPtr& obj,
+			LogString& buf, helpers::Pool& p) const;
 
 		log4cxx::pattern::PatternConverterPtr getIntegerPatternConverter() const;
 		log4cxx::pattern::PatternConverterPtr getDatePatternConverter() const;

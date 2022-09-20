@@ -196,7 +196,7 @@ void TimeBasedRollingPolicy::activateOptions(log4cxx::helpers::Pool& pool)
 	}
 
 	LogString buf;
-	auto obj = std::make_shared<Date>();
+	ObjectPtr obj = std::make_shared<Date>();
 	formatFileName(obj, buf, pool);
 	lastFileName = buf;
 
