@@ -39,7 +39,7 @@ if(APR_UTIL_FOUND)
 else()
   find_program(APR_UTIL_CONFIG_EXECUTABLE
       apu-1-config
-      PATHS /usr/local/bin    /usr/local/opt/apr-util/bin    /usr/bin    $ENV{ProgramFiles}/apr-util/bin
+      PATHS /usr/local/opt/apr-util/bin    $ENV{ProgramFiles}/apr-util/bin
       )
   mark_as_advanced(APR_UTIL_CONFIG_EXECUTABLE)
   if(EXISTS ${APR_UTIL_CONFIG_EXECUTABLE})
