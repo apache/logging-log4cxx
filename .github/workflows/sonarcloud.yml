@@ -87,8 +87,8 @@ jobs:
 
       - name: Collect coverage into one XML report
         run: |
-          cd main/build
-          gcovr --sonarqube --exclude-directories 'src/test$' > coverage.xml
+          cd main/build/src/main/cpp
+          gcovr --sonarqube -r ../../../../ --verbose --gcov-ignore-parse-errors --exclude '../../../../src/test/' --exclude '../../../../src/examples' > ../../../coverage.xml
 
       - name: Run sonar-scanner
         env:
