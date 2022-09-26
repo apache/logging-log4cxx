@@ -54,7 +54,6 @@ themselves to the previously created provision node.
 */
 class LOG4CXX_EXPORT Hierarchy :
 	public virtual spi::LoggerRepository,
-	public virtual helpers::Object,
 	public std::enable_shared_from_this<Hierarchy>
 {
 	private:
@@ -77,7 +76,12 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		~Hierarchy();
 
-		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener);
+		void addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener) override;
+
+		/**
+		 * Load the configuration if not yet configured.
+		 */
+		void autoConfigure() override;
 
 		/**
 		This call will clear all logger definitions from the internal
@@ -89,7 +93,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		*/
 		void clear();
 
-		void emitNoAppenderWarning(const Logger* logger);
+		void emitNoAppenderWarning(const Logger* logger) override;
 
 		/**
 		Check if the named logger exists in the hierarchy. If so return
@@ -103,7 +107,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		/**
 		The string form of {@link #setThreshold(const LevelPtr&) setThreshold}.
 		*/
-		void setThreshold(const LogString& levelStr);
+		void setThreshold(const LogString& levelStr) override;
 
 		/**
 		Enable logging for logging requests with level <code>l</code> or
@@ -111,18 +115,17 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		        @param l The minimum level for which logging requests are sent to
 		their appenders.  */
-		void setThreshold(const LevelPtr& l);
+		void setThreshold(const LevelPtr& l) override;
 
-		void fireAddAppenderEvent(const Logger* logger, const Appender* appender);
+		void fireAddAppenderEvent(const Logger* logger, const Appender* appender) override;
 
-		void fireRemoveAppenderEvent(const Logger* logger,
-			const Appender* appender);
+		void fireRemoveAppenderEvent(const Logger* logger, const Appender* appender) override;
 
 		/**
 		Returns a Level representation of the <code>enable</code>
 		state.
 		*/
-		const LevelPtr& getThreshold() const;
+		LevelPtr getThreshold() const override;
 
 		/**
 		Return a new logger instance named as the first parameter using
@@ -135,7 +138,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		@param name The name of the logger to retrieve.
 
 		*/
-		LoggerPtr getLogger(const LogString& name);
+		LoggerPtr getLogger(const LogString& name) override;
 
 		/**
 		Return a new logger instance named as the first parameter using
@@ -151,7 +154,7 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		*/
 		LoggerPtr getLogger(const LogString& name,
-			const spi::LoggerFactoryPtr& factory);
+			const spi::LoggerFactoryPtr& factory) override;
 
 		/**
 		Returns all the currently defined loggers in this hierarchy as
@@ -164,14 +167,14 @@ class LOG4CXX_EXPORT Hierarchy :
 		/**
 		Get the root of this hierarchy.
 		*/
-		LoggerPtr getRootLogger() const;
+		LoggerPtr getRootLogger() const override;
 
 		/**
 		This method will return <code>true</code> if this repository is
 		disabled for <code>level</code> object passed as parameter and
 		<code>false</code> otherwise. See also the
 		{@link #setThreshold(const LevelPtr&) setThreshold} method.  */
-		bool isDisabled(int level) const;
+		bool isDisabled(int level) const override;
 
 		/**
 		Reset all values contained in this hierarchy instance to their
@@ -186,7 +189,7 @@ class LOG4CXX_EXPORT Hierarchy :
 		<p>This method should be used sparingly and with care as it will
 		block all logging until it is completed.</p>
 		*/
-		void resetConfiguration();
+		void resetConfiguration() override;
 
 		/**
 		Used by subclasses to add a renderer to the hierarchy passed as parameter.
@@ -205,11 +208,11 @@ class LOG4CXX_EXPORT Hierarchy :
 		configurations where a regular appender is attached to a logger
 		and again to a nested appender.
 		*/
-		void shutdown();
+		void shutdown() override;
 
 
-		virtual bool isConfigured();
-		virtual void setConfigured(bool configured);
+		virtual bool isConfigured() override;
+		virtual void setConfigured(bool configured) override;
 
 
 	private:

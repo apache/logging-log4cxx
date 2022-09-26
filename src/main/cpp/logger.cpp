@@ -88,6 +88,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
 Logger::Logger(Pool& p, const LogString& name1)
 	: m_priv(std::make_unique<LoggerPrivate>(p, name1))
+	, m_threshold(0)
 {
 }
 
@@ -292,6 +293,9 @@ bool Logger::isAttached(const AppenderPtr appender) const
 
 bool Logger::isTraceEnabled() const
 {
+	if (Level::TRACE_INT < m_threshold)
+		return false;
+
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::TRACE_INT))
@@ -304,6 +308,9 @@ bool Logger::isTraceEnabled() const
 
 bool Logger::isDebugEnabled() const
 {
+	if (Level::DEBUG_INT < m_threshold)
+		return false;
+
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::DEBUG_INT))
@@ -329,6 +336,9 @@ bool Logger::isEnabledFor(const LevelPtr& level1) const
 
 bool Logger::isInfoEnabled() const
 {
+	if (Level::INFO_INT < m_threshold)
+		return false;
+
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::INFO_INT))
@@ -341,6 +351,9 @@ bool Logger::isInfoEnabled() const
 
 bool Logger::isErrorEnabled() const
 {
+	if (Level::ERROR_INT < m_threshold)
+		return false;
+
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::ERROR_INT))
@@ -353,6 +366,9 @@ bool Logger::isErrorEnabled() const
 
 bool Logger::isWarnEnabled() const
 {
+	if (Level::WARN_INT < m_threshold)
+		return false;
+
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::WARN_INT))
@@ -365,6 +381,9 @@ bool Logger::isWarnEnabled() const
 
 bool Logger::isFatalEnabled() const
 {
+	if (Level::FATAL_INT < m_threshold)
+		return false;
+
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::FATAL_INT))
@@ -480,8 +499,6 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 	l7dlog(level1, lkey, location, values);
 }
 
-
-
 void Logger::removeAllAppenders()
 {
 	m_priv->aai.removeAllAppenders();
@@ -515,11 +532,13 @@ void Logger::setHierarchy(spi::LoggerRepository* repository1)
 void Logger::setParent(LoggerPtr parentLogger)
 {
 	m_priv->parent = parentLogger;
+	m_threshold = getEffectiveLevel()->toInt();
 }
 
 void Logger::setLevel(const LevelPtr level1)
 {
 	m_priv->level = level1;
+	m_threshold = getEffectiveLevel()->toInt();
 }
 
 const LogString& Logger::getName() const

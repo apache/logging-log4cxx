@@ -59,6 +59,7 @@ class LOG4CXX_EXPORT Logger :
 
 	private:
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(LoggerPrivate, m_priv)
+		int m_threshold; //!< The cached level of this logger
 
 	public:
 		/**
