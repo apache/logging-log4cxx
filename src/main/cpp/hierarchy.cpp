@@ -283,6 +283,7 @@ LoggerList Hierarchy::getCurrentLoggers() const
 
 LoggerPtr Hierarchy::getRootLogger() const
 {
+	std::unique_lock<std::mutex> lock(m_priv->mutex);
 	if (!m_priv->root)
 	{
 		m_priv->root = std::make_shared<RootLogger>(m_priv->pool, Level::getDebug());
