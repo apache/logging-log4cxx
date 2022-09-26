@@ -41,7 +41,7 @@ LevelPatternConverter::LevelPatternConverter() :
 PatternConverterPtr LevelPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static PatternConverterPtr def(new LevelPatternConverter());
+	static PatternConverterPtr def = std::make_shared<LevelPatternConverter>();
 	return def;
 }
 

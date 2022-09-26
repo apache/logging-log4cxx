@@ -114,7 +114,7 @@ void RollingPolicyBase::parseFileNamePattern()
  * @param buf string buffer to which formatted file name is appended, may not be null.
  */
 void RollingPolicyBase::formatFileName(
-	ObjectPtr& obj,
+	const ObjectPtr& obj,
 	LogString& toAppendTo,
 	Pool& pool) const
 {

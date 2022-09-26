@@ -50,8 +50,7 @@ ConsoleAppender::ConsoleAppender(const LayoutPtr& layout1)
 {
 	setLayout(layout1);
 	Pool p;
-	WriterPtr writer1(new SystemOutWriter());
-	setWriter(writer1);
+	setWriter(std::make_shared<SystemOutWriter>());
 	WriterAppender::activateOptions(p);
 }
 

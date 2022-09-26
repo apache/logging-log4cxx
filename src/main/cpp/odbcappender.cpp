@@ -345,7 +345,7 @@ void ODBCAppender::setSql(const LogString& s)
 
 	if (getLayout() == 0)
 	{
-		this->setLayout(PatternLayoutPtr(new PatternLayout(s)));
+		this->setLayout(std::make_shared<PatternLayout>(s));
 	}
 	else
 	{

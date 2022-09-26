@@ -41,19 +41,14 @@ class LOG4CXX_EXPORT LiteralPatternConverter : public LoggingEventPatternConvert
 {
 		struct LiteralPatternConverterPrivate;
 
-		/**
-		 * Create a new instance.
-		 * @param literal string literal.
-		 */
-		LiteralPatternConverter(const LogString& literal);
-
-
 	public:
 		DECLARE_LOG4CXX_PATTERN(LiteralPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(LiteralPatternConverter)
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
+
+		LiteralPatternConverter(const LogString& literal);
 
 		static PatternConverterPtr newInstance(const LogString& literal);
 

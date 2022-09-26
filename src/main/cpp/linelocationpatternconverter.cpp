@@ -40,7 +40,7 @@ LineLocationPatternConverter::LineLocationPatternConverter() :
 PatternConverterPtr LineLocationPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static PatternConverterPtr instance(new LineLocationPatternConverter());
+	static PatternConverterPtr instance = std::make_shared<LineLocationPatternConverter>();
 	return instance;
 }
 

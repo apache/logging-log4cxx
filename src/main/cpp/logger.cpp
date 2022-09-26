@@ -70,7 +70,6 @@ struct Logger::LoggerPrivate
 
 
 	// Loggers need to know what Hierarchy they are in
-	log4cxx::spi::LoggerRepositoryWeakPtr repository;
 	log4cxx::spi::LoggerRepository* repositoryRaw;
 
 	helpers::AppenderAttachableImpl aai;
@@ -166,7 +165,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message,
 		return;
 	Pool p;
 	LOG4CXX_DECODE_CHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, msg, location);
 	callAppenders(event, p);
 }
 
@@ -177,8 +176,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::string& message) const
 		return;
 	Pool p;
 	LOG4CXX_DECODE_CHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
-			LocationInfo::getLocationUnavailable()));
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, msg,
+			LocationInfo::getLocationUnavailable());
 	callAppenders(event, p);
 }
 
@@ -188,7 +187,7 @@ void Logger::forcedLogLS(const LevelPtr& level1, const LogString& message,
 	if (!getHierarchy()) // Has removeHierarchy() been called?
 		return;
 	Pool p;
-	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, message, location));
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, message, location);
 	callAppenders(event, p);
 }
 
@@ -224,9 +223,9 @@ const LevelPtr& Logger::getEffectiveLevel() const
 #endif
 }
 
-LoggerRepositoryPtr Logger::getLoggerRepository() const
+LoggerRepository* Logger::getLoggerRepository() const
 {
-	return m_priv->repository.lock();
+	return m_priv->repositoryRaw;
 }
 
 LoggerRepository* Logger::getHierarchy() const
@@ -500,7 +499,6 @@ void Logger::removeAppender(const LogString& name1)
 
 void Logger::removeHierarchy()
 {
-	m_priv->repository.reset();
 	m_priv->repositoryRaw = 0;
 }
 
@@ -509,10 +507,9 @@ void Logger::setAdditivity(bool additive1)
 	m_priv->additive = additive1;
 }
 
-void Logger::setHierarchy(const spi::LoggerRepositoryPtr& repository1)
+void Logger::setHierarchy(spi::LoggerRepository* repository1)
 {
-	m_priv->repository = repository1;
-	m_priv->repositoryRaw = repository1.get();
+	m_priv->repositoryRaw = repository1;
 }
 
 void Logger::setParent(LoggerPtr parentLogger)
@@ -704,7 +701,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message,
 		return;
 	Pool p;
 	LOG4CXX_DECODE_WCHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, msg, location);
 	callAppenders(event, p);
 }
 
@@ -714,8 +711,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::wstring& message) cons
 		return;
 	Pool p;
 	LOG4CXX_DECODE_WCHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
-			LocationInfo::getLocationUnavailable()));
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, msg,
+			LocationInfo::getLocationUnavailable());
 	callAppenders(event, p);
 }
 
@@ -859,7 +856,7 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 		return;
 	Pool p;
 	LOG4CXX_DECODE_UNICHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg, location));
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, msg, location);
 	callAppenders(event, p);
 }
 
@@ -869,8 +866,8 @@ void Logger::forcedLog(const LevelPtr& level1, const std::basic_string<UniChar>&
 		return;
 	Pool p;
 	LOG4CXX_DECODE_UNICHAR(msg, message);
-	LoggingEventPtr event(new LoggingEvent(m_priv->name, level1, msg,
-			LocationInfo::getLocationUnavailable()));
+	auto event = std::make_shared<LoggingEvent>(m_priv->name, level1, msg,
+			LocationInfo::getLocationUnavailable());
 	callAppenders(event, p);
 }
 #endif
@@ -1011,7 +1008,7 @@ void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message,
 		return;
 	Pool p;
 	LOG4CXX_DECODE_CFSTRING(msg, message);
-	LoggingEventPtr event(new LoggingEvent(name, level1, msg, location));
+	auto event = std::make_shared<LoggingEvent>(name, level1, msg, location);
 	callAppenders(event, p);
 }
 
@@ -1021,8 +1018,8 @@ void Logger::forcedLog(const LevelPtr& level1, const CFStringRef& message) const
 		return;
 	Pool p;
 	LOG4CXX_DECODE_CFSTRING(msg, message);
-	LoggingEventPtr event(new LoggingEvent(name, level1, msg,
-			LocationInfo::getLocationUnavailable()));
+	auto event = std::make_shared<LoggingEvent>(name, level1, msg,
+			LocationInfo::getLocationUnavailable());
 	callAppenders(event, p);
 }
 

@@ -571,7 +571,7 @@ CharsetEncoder* CharsetEncoder::createDefaultEncoder()
 
 CharsetEncoderPtr CharsetEncoder::getUTF8Encoder()
 {
-	return CharsetEncoderPtr( new UTF8CharsetEncoder() );
+	return std::make_shared<UTF8CharsetEncoder>();
 }
 
 
@@ -580,7 +580,7 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset)
 {
 	if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-8"), LOG4CXX_STR("utf-8")))
 	{
-		return CharsetEncoderPtr( new UTF8CharsetEncoder() );
+		return std::make_shared<UTF8CharsetEncoder>();
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("C"), LOG4CXX_STR("c")) ||
 		charset == LOG4CXX_STR("646") ||
@@ -588,25 +588,25 @@ CharsetEncoderPtr CharsetEncoder::getEncoder(const LogString& charset)
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO646-US"), LOG4CXX_STR("iso646-US")) ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ANSI_X3.4-1968"), LOG4CXX_STR("ansi_x3.4-1968")))
 	{
-		return CharsetEncoderPtr( new USASCIICharsetEncoder() );
+		return std::make_shared<USASCIICharsetEncoder>();
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-8859-1"), LOG4CXX_STR("iso-8859-1")) ||
 		StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("ISO-LATIN-1"), LOG4CXX_STR("iso-latin-1")))
 	{
-		return CharsetEncoderPtr( new ISOLatinCharsetEncoder() );
+		return std::make_shared<ISOLatinCharsetEncoder>();
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16BE"), LOG4CXX_STR("utf-16be"))
 		|| StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16"), LOG4CXX_STR("utf-16")))
 	{
-		return CharsetEncoderPtr( new UTF16BECharsetEncoder() );
+		return std::make_shared<UTF16BECharsetEncoder>();
 	}
 	else if (StringHelper::equalsIgnoreCase(charset, LOG4CXX_STR("UTF-16LE"), LOG4CXX_STR("utf-16le")))
 	{
-		return CharsetEncoderPtr( new UTF16LECharsetEncoder() );
+		return std::make_shared<UTF16LECharsetEncoder>();
 	}
 
 #if APR_HAS_XLATE
-	return CharsetEncoderPtr( new APRCharsetEncoder(charset) );
+	return std::make_shared<APRCharsetEncoder>(charset);
 #else
 	throw IllegalArgumentException(charset);
 #endif

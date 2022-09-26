@@ -92,7 +92,7 @@ ResourceBundlePtr ResourceBundle::getBundle(const LogString& baseName,
 
 			try
 			{
-				current = PropertyResourceBundlePtr(new PropertyResourceBundle(bundleStream));
+				current = std::make_shared<PropertyResourceBundle>(bundleStream);
 			}
 			catch (Exception&)
 			{

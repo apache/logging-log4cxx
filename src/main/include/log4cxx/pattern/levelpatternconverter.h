@@ -34,17 +34,14 @@ namespace pattern
  */
 class LOG4CXX_EXPORT LevelPatternConverter : public LoggingEventPatternConverter
 {
-		/**
-		 * Private constructor.
-		 */
-		LevelPatternConverter();
-
 	public:
 		DECLARE_LOG4CXX_PATTERN(LevelPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(LevelPatternConverter)
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
+
+		LevelPatternConverter();
 
 		/**
 		 * Obtains an instance of pattern converter.

@@ -103,7 +103,7 @@ std::vector<InetAddressPtr> InetAddress::getAllByName(const LogString& host)
 			Transcoder::decode(host, hostNameString);
 		}
 
-		result.push_back(InetAddressPtr(new InetAddress(hostNameString, ipAddrString)));
+		result.push_back(std::make_shared<InetAddress>(hostNameString, ipAddrString));
 		currentAddr = currentAddr->next;
 	}
 

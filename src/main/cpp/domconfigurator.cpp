@@ -787,7 +787,7 @@ void DOMConfigurator::doConfigure(const File& filename, spi::LoggerRepositoryPtr
 	msg.append(LOG4CXX_STR("..."));
 	LogLog::debug(msg);
 
-	m_priv->loggerFactory = LoggerFactoryPtr(new DefaultLoggerFactory());
+	m_priv->loggerFactory = std::make_shared<DefaultLoggerFactory>();
 
 	Pool p;
 	apr_file_t* fd;

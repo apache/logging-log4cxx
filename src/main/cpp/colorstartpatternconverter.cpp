@@ -40,7 +40,7 @@ ColorStartPatternConverter::ColorStartPatternConverter() :
 PatternConverterPtr ColorStartPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static PatternConverterPtr instance(new ColorStartPatternConverter());
+	static PatternConverterPtr instance = std::make_shared<ColorStartPatternConverter>();
 	return instance;
 }
 

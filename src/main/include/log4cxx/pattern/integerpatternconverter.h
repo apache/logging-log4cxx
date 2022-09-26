@@ -34,17 +34,14 @@ namespace pattern
  */
 class LOG4CXX_EXPORT IntegerPatternConverter : public PatternConverter
 {
-		/**
-		 * Private constructor.
-		 */
-		IntegerPatternConverter();
-
 	public:
 		DECLARE_LOG4CXX_PATTERN(IntegerPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(IntegerPatternConverter)
 		LOG4CXX_CAST_ENTRY_CHAIN(PatternConverter)
 		END_LOG4CXX_CAST_MAP()
+
+		IntegerPatternConverter();
 
 		/**
 		 * Obtains an instance of pattern converter.

@@ -69,7 +69,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 
 	if (options.size() == 0)
 	{
-		df = DateFormatPtr(new ISO8601DateFormat());
+		df = std::make_shared<ISO8601DateFormat>();
 	}
 	else
 	{
@@ -79,17 +79,17 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 			StringHelper::equalsIgnoreCase(dateFormatStr,
 				LOG4CXX_STR("ISO8601"), LOG4CXX_STR("iso8601")))
 		{
-			df = DateFormatPtr(new ISO8601DateFormat());
+			df = std::make_shared<ISO8601DateFormat>();
 		}
 		else if (StringHelper::equalsIgnoreCase(dateFormatStr,
 				LOG4CXX_STR("ABSOLUTE"), LOG4CXX_STR("absolute")))
 		{
-			df = DateFormatPtr(new AbsoluteTimeDateFormat());
+			df = std::make_shared<AbsoluteTimeDateFormat>();
 		}
 		else if (StringHelper::equalsIgnoreCase(dateFormatStr,
 				LOG4CXX_STR("DATE"), LOG4CXX_STR("date")))
 		{
-			df = DateFormatPtr(new DateTimeDateFormat());
+			df = std::make_shared<DateTimeDateFormat>();
 		}
 		else
 		{
@@ -97,13 +97,13 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 			{
 				try
 				{
-					df = DateFormatPtr(new SimpleDateFormat(dateFormatStr));
+					df = std::make_shared<SimpleDateFormat>(dateFormatStr);
 					maximumCacheValidity =
 						CachedDateFormat::getMaximumCacheValidity(dateFormatStr);
 				}
 				catch (IllegalArgumentException& e)
 				{
-					df = DateFormatPtr(new ISO8601DateFormat());
+					df = std::make_shared<ISO8601DateFormat>();
 					LogLog::warn(((LogString)
 							LOG4CXX_STR("Could not instantiate SimpleDateFormat with pattern "))
 						+ dateFormatStr, e);
@@ -111,7 +111,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 			}
 			else
 			{
-				df = DateFormatPtr(new StrftimeDateFormat(dateFormatStr));
+				df = std::make_shared<StrftimeDateFormat>(dateFormatStr);
 			}
 		}
 
@@ -128,7 +128,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 
 	if (maximumCacheValidity > 0)
 	{
-		df = DateFormatPtr(new CachedDateFormat(df, maximumCacheValidity));
+		df = std::make_shared<CachedDateFormat>(df, maximumCacheValidity);
 	}
 
 	return df;
@@ -137,7 +137,7 @@ DateFormatPtr DatePatternConverter::getDateFormat(const OptionsList& options)
 PatternConverterPtr DatePatternConverter::newInstance(
 	const std::vector<LogString>& options)
 {
-	return PatternConverterPtr(new DatePatternConverter(options));
+	return std::make_shared<DatePatternConverter>(options);
 }
 
 void DatePatternConverter::format(

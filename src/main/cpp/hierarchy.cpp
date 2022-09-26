@@ -258,7 +258,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 	if (!result)
 	{
 		LoggerPtr logger(factory->makeNewLoggerInstance(m_priv->pool, name));
-		logger->setHierarchy(shared_from_this());
+		logger->setHierarchy(this);
 		m_priv->loggers.insert(LoggerMap::value_type(name, logger));
 
 		ProvisionNodeMap::iterator it2 = m_priv->provisionNodes.find(name);
@@ -448,7 +448,7 @@ bool Hierarchy::isConfigured()
 
 HierarchyPtr Hierarchy::create()
 {
-	HierarchyPtr ret( new Hierarchy() );
-	ret->m_priv->root->setHierarchy(ret);
+	HierarchyPtr ret(new Hierarchy);
+	ret->m_priv->root->setHierarchy(ret.get());
 	return ret;
 }

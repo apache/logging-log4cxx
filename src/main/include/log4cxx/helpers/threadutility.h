@@ -76,11 +76,10 @@ class LOG4CXX_EXPORT ThreadUtility
 		log4cxx::helpers::ThreadStartPost postStartFunction();
 
 		LOG4CXX_DECLARE_PRIVATE_MEMBER_PTR(priv_data, m_priv)
-
 	public:
 		~ThreadUtility();
 
-		static std::shared_ptr<ThreadUtility> instance();
+		static ThreadUtility* instance();
 
 		/**
 		 * Utility method for configuring the ThreadUtility in a standard

@@ -179,10 +179,9 @@ void PatternParser::parse(
 				switch (c)
 				{
 					case 0x2D: // '-'
-						formattingInfo = FormattingInfoPtr(
-								new FormattingInfo(
+						formattingInfo = std::make_shared<FormattingInfo>(
 									true, formattingInfo->getMinLength(),
-									formattingInfo->getMaxLength()));
+									formattingInfo->getMaxLength());
 
 						break;
 
@@ -195,10 +194,9 @@ void PatternParser::parse(
 
 						if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 						{
-							formattingInfo = FormattingInfoPtr(
-									new FormattingInfo(
+							formattingInfo = std::make_shared<FormattingInfo>(
 										formattingInfo->isLeftAligned(), c - 0x30 /* '0' */,
-										formattingInfo->getMaxLength()));
+										formattingInfo->getMaxLength());
 							state = MIN_STATE;
 						}
 						else
@@ -225,11 +223,10 @@ void PatternParser::parse(
 
 				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 				{
-					formattingInfo = FormattingInfoPtr(
-							new FormattingInfo(
+					formattingInfo = std::make_shared<FormattingInfo>(
 								formattingInfo->isLeftAligned(),
 								(formattingInfo->getMinLength() * 10) + (c - 0x30 /* '0' */),
-								formattingInfo->getMaxLength()));
+								formattingInfo->getMaxLength());
 				}
 				else if (c == 0x2E /* '.' */)
 				{
@@ -256,10 +253,9 @@ void PatternParser::parse(
 
 				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 				{
-					formattingInfo = FormattingInfoPtr(
-							new FormattingInfo(
+					formattingInfo = std::make_shared<FormattingInfo>(
 								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
-								c - 0x30 /* '0' */));
+								c - 0x30 /* '0' */);
 					state = MAX_STATE;
 				}
 				else
@@ -276,10 +272,9 @@ void PatternParser::parse(
 
 				if ((c >= 0x30 /* '0' */) && (c <= 0x39 /* '9' */))
 				{
-					formattingInfo = FormattingInfoPtr(
-							new FormattingInfo(
+					formattingInfo = std::make_shared<FormattingInfo>(
 								formattingInfo->isLeftAligned(), formattingInfo->getMinLength(),
-								(formattingInfo->getMaxLength() * 10) + (c - 0x30 /* '0' */)));
+								(formattingInfo->getMaxLength() * 10) + (c - 0x30 /* '0' */));
 				}
 				else
 				{

@@ -42,11 +42,11 @@ PatternConverterPtr LoggerPatternConverter::newInstance(
 {
 	if (options.size() == 0)
 	{
-		static PatternConverterPtr def(new LoggerPatternConverter(options));
+		static PatternConverterPtr def = std::make_shared<LoggerPatternConverter>(options);
 		return def;
 	}
 
-	return PatternConverterPtr(new LoggerPatternConverter(options));
+	return std::make_shared<LoggerPatternConverter>(options);
 }
 
 void LoggerPatternConverter::format(

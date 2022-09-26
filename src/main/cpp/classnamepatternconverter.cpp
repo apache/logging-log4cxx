@@ -43,11 +43,11 @@ PatternConverterPtr ClassNamePatternConverter::newInstance(
 {
 	if (options.size() == 0)
 	{
-		static PatternConverterPtr def(new ClassNamePatternConverter(options));
+		static PatternConverterPtr def = std::make_shared<ClassNamePatternConverter>(options);
 		return def;
 	}
 
-	return PatternConverterPtr( new ClassNamePatternConverter(options) );
+	return std::make_shared<ClassNamePatternConverter>(options);
 }
 
 void ClassNamePatternConverter::format(

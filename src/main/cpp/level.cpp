@@ -32,50 +32,50 @@ IMPLEMENT_LOG4CXX_OBJECT_WITH_CUSTOM_CLASS(Level, LevelClass)
 
 LevelPtr Level::getOff()
 {
-	static LevelPtr offLevel(new Level(Level::OFF_INT, LOG4CXX_STR("OFF"), 0));
+	static LevelPtr offLevel = std::make_shared<Level>(Level::OFF_INT, LOG4CXX_STR("OFF"), 0);
 	return offLevel;
 }
 
 LevelPtr Level::getFatal()
 {
-	static LevelPtr fatalLevel(new Level(Level::FATAL_INT, LOG4CXX_STR("FATAL"), 0));
+	static LevelPtr fatalLevel = std::make_shared<Level>(Level::FATAL_INT, LOG4CXX_STR("FATAL"), 0);
 	return fatalLevel;
 }
 
 LevelPtr Level::getError()
 {
-	static LevelPtr errorLevel(new Level(Level::ERROR_INT, LOG4CXX_STR("ERROR"), 3));
+	static LevelPtr errorLevel = std::make_shared<Level>(Level::ERROR_INT, LOG4CXX_STR("ERROR"), 3);
 	return errorLevel;
 }
 
 LevelPtr Level::getWarn()
 {
-	static LevelPtr warnLevel(new Level(Level::WARN_INT, LOG4CXX_STR("WARN"), 4));
+	static LevelPtr warnLevel = std::make_shared<Level>(Level::WARN_INT, LOG4CXX_STR("WARN"), 4);
 	return warnLevel;
 }
 
 LevelPtr Level::getInfo()
 {
-	static LevelPtr infoLevel(new Level(Level::INFO_INT, LOG4CXX_STR("INFO"), 6));
+	static LevelPtr infoLevel = std::make_shared<Level>(Level::INFO_INT, LOG4CXX_STR("INFO"), 6);
 	return infoLevel;
 }
 
 LevelPtr Level::getDebug()
 {
-	static LevelPtr debugLevel(new Level(Level::DEBUG_INT, LOG4CXX_STR("DEBUG"), 7));
+	static LevelPtr debugLevel = std::make_shared<Level>(Level::DEBUG_INT, LOG4CXX_STR("DEBUG"), 7);
 	return debugLevel;
 }
 
 LevelPtr Level::getTrace()
 {
-	static LevelPtr traceLevel(new Level(Level::TRACE_INT, LOG4CXX_STR("TRACE"), 7));
+	static LevelPtr traceLevel = std::make_shared<Level>(Level::TRACE_INT, LOG4CXX_STR("TRACE"), 7);
 	return traceLevel;
 }
 
 
 LevelPtr Level::getAll()
 {
-	static LevelPtr allLevel(new Level(Level::ALL_INT, LOG4CXX_STR("ALL"), 7));
+	static LevelPtr allLevel = std::make_shared<Level>(Level::ALL_INT, LOG4CXX_STR("ALL"), 7);
 	return allLevel;
 }
 

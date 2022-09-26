@@ -228,7 +228,7 @@ public:
 		LoggerPtr root = Logger::getRootLogger();
 		root->addAppender(caRoot);
 
-		LoggerRepositoryPtr h = LogManager::getLoggerRepository();
+		auto h = LogManager::getLoggerRepository();
 
 		//h.disableDebug();
 		h->setThreshold(Level::getInfo());

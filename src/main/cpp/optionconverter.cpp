@@ -442,7 +442,7 @@ void OptionConverter::selectAndConfigure(const File& configFileName,
 	}
 	else
 	{
-		configurator = ConfiguratorPtr(new PropertyConfigurator());
+		configurator = std::make_shared<PropertyConfigurator>();
 	}
 
 #if APR_HAS_THREADS

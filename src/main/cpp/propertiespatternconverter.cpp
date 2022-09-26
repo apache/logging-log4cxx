@@ -60,17 +60,15 @@ PatternConverterPtr PropertiesPatternConverter::newInstance(
 {
 	if (options.size() == 0)
 	{
-		static PatternConverterPtr def(new PropertiesPatternConverter(
-				LOG4CXX_STR("Properties"), LOG4CXX_STR("")));
+		static PatternConverterPtr def = std::make_shared<PropertiesPatternConverter>(
+				LOG4CXX_STR("Properties"), LOG4CXX_STR(""));
 		return def;
 	}
 
 	LogString converterName(LOG4CXX_STR("Property{"));
 	converterName.append(options[0]);
 	converterName.append(LOG4CXX_STR("}"));
-	PatternConverterPtr converter(new PropertiesPatternConverter(
-			converterName, options[0]));
-	return converter;
+	return std::make_shared<PropertiesPatternConverter>(converterName, options[0]);
 }
 
 void PropertiesPatternConverter::format(

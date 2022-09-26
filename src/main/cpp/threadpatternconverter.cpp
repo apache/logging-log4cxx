@@ -39,7 +39,7 @@ ThreadPatternConverter::ThreadPatternConverter() :
 PatternConverterPtr ThreadPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */)
 {
-	static PatternConverterPtr def(new ThreadPatternConverter());
+	static PatternConverterPtr def = std::make_shared<ThreadPatternConverter>();
 	return def;
 }
 

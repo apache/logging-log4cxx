@@ -35,17 +35,14 @@ namespace pattern
 class LOG4CXX_EXPORT FullLocationPatternConverter
 	: public LoggingEventPatternConverter
 {
-		/**
-		 * Private constructor.
-		 */
-		FullLocationPatternConverter();
-
 	public:
 		DECLARE_LOG4CXX_PATTERN(FullLocationPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
 		LOG4CXX_CAST_ENTRY(FullLocationPatternConverter)
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
+
+		FullLocationPatternConverter();
 
 		/**
 		 * Obtains an instance of pattern converter.

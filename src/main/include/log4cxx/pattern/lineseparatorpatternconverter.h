@@ -35,12 +35,6 @@ namespace pattern
 class LOG4CXX_EXPORT LineSeparatorPatternConverter
 	: public LoggingEventPatternConverter
 {
-
-		/**
-		 * Private constructor.
-		 */
-		LineSeparatorPatternConverter();
-
 	public:
 		DECLARE_LOG4CXX_PATTERN(LineSeparatorPatternConverter)
 		BEGIN_LOG4CXX_CAST_MAP()
@@ -48,6 +42,7 @@ class LOG4CXX_EXPORT LineSeparatorPatternConverter
 		LOG4CXX_CAST_ENTRY_CHAIN(LoggingEventPatternConverter)
 		END_LOG4CXX_CAST_MAP()
 
+		LineSeparatorPatternConverter();
 
 		/**
 		 * Obtains an instance of pattern converter.

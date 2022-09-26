@@ -40,7 +40,7 @@ FileLocationPatternConverter::FileLocationPatternConverter() :
 PatternConverterPtr FileLocationPatternConverter::newInstance(
 	const std::vector<LogString>& /* options */ )
 {
-	static PatternConverterPtr instance(new FileLocationPatternConverter());
+	static PatternConverterPtr instance = std::make_shared<FileLocationPatternConverter>();
 	return instance;
 }
 

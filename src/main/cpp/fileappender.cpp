@@ -342,7 +342,7 @@ void FileAppender::setFileInternal(
 
 	if (bufferedIO1)
 	{
-		newWriter = WriterPtr(new BufferedWriter(newWriter, bufferSize1));
+		newWriter = std::make_shared<BufferedWriter>(newWriter, bufferSize1);
 	}
 
 	setWriterInternal(newWriter);
