@@ -302,12 +302,10 @@ void Hierarchy::autoConfigure()
 	std::unique_lock<std::mutex> lock(m_priv->configuredMutex);
 	if (!m_priv->configured)
 	{
-		std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
-		DefaultConfigurator::configure(nonconstThis);
+		DefaultConfigurator::configure(shared_from_this());
 		m_priv->configured = true;
 	}
 }
-
 
 void Hierarchy::resetConfiguration()
 {
