@@ -21,6 +21,7 @@
 #include <log4cxx/file.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/optionconverter.h>
+#include <log4cxx/helpers/stringhelper.h>
 
 
 using namespace log4cxx;
@@ -120,7 +121,7 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 	LogString optionStr = OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY, LogString());
 	int milliseconds = 0;
 	if (!optionStr.empty())
-		milliseconds = stoi(optionStr) * 1000;
+		milliseconds = StringHelper::toInt(optionStr) * 1000;
 	return milliseconds;
 }
 
