@@ -241,14 +241,14 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		2) There entry is of type Logger for the potential parent.
 
-		The entry is "w.x.y.z"s nearest existing parent. We update cat's
+		The entry is "w.x.y.z"'s nearest existing parent. We update "w.x.y.z"'s
 		parent field with this entry. We also break from the loop
 		because updating our parent's parent is our parent's
 		responsibility.
 
 		3) There entry is of type ProvisionNode for this potential parent.
 
-		We add 'cat' to the list of children for this potential parent.
+		We add "w.x.y.z" to the list of children for this potential parent.
 		*/
 		void updateParents(const LoggerPtr& logger, const LoggerPtr& root);
 
