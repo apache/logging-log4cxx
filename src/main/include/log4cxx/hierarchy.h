@@ -229,16 +229,19 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		/**
 		This method loops through all the *potential* parents of
-		'cat'. There 3 possible cases:
+		\c logger using the logger name.
+		For example, for a logger named "w.x.y.z",
+		loop through "w.x.y", "w.x" and "w", but not "w.x.y.z".
+		There 3 possible cases:
 
-		1) No entry for the potential parent of 'cat' exists
+		1) No entry for the potential parent of "w.x.y.z" exists
 
 		We create a ProvisionNode for this potential parent and insert
-		'cat' in that provision node.
+		"w.x.y.z" in that provision node.
 
 		2) There entry is of type Logger for the potential parent.
 
-		The entry is 'cat's nearest existing parent. We update cat's
+		The entry is "w.x.y.z"s nearest existing parent. We update cat's
 		parent field with this entry. We also break from the loop
 		because updating our parent's parent is our parent's
 		responsibility.
@@ -247,12 +250,12 @@ class LOG4CXX_EXPORT Hierarchy :
 
 		We add 'cat' to the list of children for this potential parent.
 		*/
-		void updateParents(LoggerPtr logger);
+		void updateParents(const LoggerPtr& logger, const LoggerPtr& root);
 
 		/**
 		We update the links for all the children that placed themselves
-		in the provision node 'pn'. The second argument 'cat' is a
-		reference for the newly created Logger, parent of all the
+		in the provision node 'pn'. The \c logger argument is a
+		newly created Logger, a potential parent of all the
 		children in 'pn'
 
 		We loop on all the children 'c' in 'pn':
@@ -260,13 +263,14 @@ class LOG4CXX_EXPORT Hierarchy :
 		If the child 'c' has been already linked to a child of
 		'cat' then there is no need to update 'c'.
 
-		Otherwise, we set cat's parent field to c's parent and set
-		c's parent field to cat.
+		Otherwise, we set the \c logger parent to 'c's parent and set
+		'c's parent field to \c logger.
 		*/
+		void updateChildren(ProvisionNode& pn, const LoggerPtr& logger);
+
 		Hierarchy(const Hierarchy&);
 		Hierarchy& operator=(const Hierarchy&);
 
-		void updateChildren(ProvisionNode& pn, LoggerPtr logger);
 };
 
 }  //namespace log4cxx

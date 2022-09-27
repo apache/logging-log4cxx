@@ -238,6 +238,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name)
 LoggerPtr Hierarchy::getLogger(const LogString& name,
 	const spi::LoggerFactoryPtr& factory)
 {
+	auto root = getRootLogger();
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
 	LoggerMap::iterator it = m_priv->loggers.find(name);
@@ -261,7 +262,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 			m_priv->provisionNodes.erase(it2);
 		}
 
-		updateParents(logger);
+		updateParents(logger, root);
 		result = logger;
 	}
 	return result;
@@ -370,7 +371,7 @@ void Hierarchy::shutdownInternal()
 	}
 }
 
-void Hierarchy::updateParents(LoggerPtr logger)
+void Hierarchy::updateParents(const LoggerPtr& logger, const LoggerPtr& root)
 {
 	const LogString name(logger->getName());
 	size_t length = name.size();
@@ -412,13 +413,12 @@ void Hierarchy::updateParents(LoggerPtr logger)
 	// If we could not find any existing parents, then link with root.
 	if (!parentFound)
 	{
-		logger->setParent( getRootLogger() );
+		logger->setParent( root );
 	}
 }
 
-void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
+void Hierarchy::updateChildren(ProvisionNode& pn, const LoggerPtr& logger)
 {
-
 	ProvisionNode::iterator it, itEnd = pn.end();
 
 	for (it = pn.begin(); it != itEnd; it++)
@@ -426,7 +426,7 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 		LoggerPtr& l = *it;
 
 		// Unless this child already points to a correct (lower) parent,
-		// make cat.parent point to l.parent and l.parent to cat.
+		// make logger.parent point to l.parent and l.parent to logger.
 		if (!StringHelper::startsWith(l->getParent()->getName(), logger->getName()))
 		{
 			logger->setParent( l->getParent() );
