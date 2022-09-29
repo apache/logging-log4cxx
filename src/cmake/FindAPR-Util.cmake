@@ -27,30 +27,41 @@ macro(_apu_invoke _varname)
     endif(_apr_failed)
 endmacro(_apu_invoke)
 
-find_program(APR_UTIL_CONFIG_EXECUTABLE
-    apu-1-config
-    PATHS /usr/local/bin    /usr/local/opt/apr-util/bin    /usr/bin    $ENV{ProgramFiles}/apr-util/bin
-    )
-mark_as_advanced(APR_UTIL_CONFIG_EXECUTABLE)
-if(EXISTS ${APR_UTIL_CONFIG_EXECUTABLE})
-    _apu_invoke(APR_UTIL_INCLUDE_DIR   --includedir)
-    if (APU_STATIC OR NOT BUILD_SHARED_LIBS)
-      _apu_invoke(_apu_util_link_args  --link-ld)
-      string(REGEX MATCH "-L([^ ]+)" _apu_util_L_flag ${_apu_util_link_args})
-      find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1.a PATHS "${CMAKE_MATCH_1}")
-      set(APR_UTIL_COMPILE_DEFINITIONS APU_DECLARE_STATIC)
-    else()
-      _apu_invoke(APR_UTIL_LIBRARIES   --link-ld)
-    endif()
+find_package(PkgConfig)
+pkg_check_modules(APR_UTIL apr-util-1)
+
+if(APR_UTIL_FOUND)
+  find_path(APR_UTIL_INCLUDE_DIR
+            NAMES apu.h
+            HINTS ${APR_UTIL_INCLUDE_DIRS}
+            PATH_SUFFIXES apr-1)
+  set(APR_UTIL_LIBRARIES ${APR_UTIL_LINK_LIBRARIES})
 else()
-    find_path(APR_UTIL_INCLUDE_DIR apu.h PATH_SUFFIXES apr-1)
-    if (APU_STATIC OR NOT BUILD_SHARED_LIBS)
-      set(APR_UTIL_COMPILE_DEFINITIONS APU_DECLARE_STATIC)
-      find_library(APR_UTIL_LIBRARIES NAMES aprutil-1)
-    else()
-      find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1)
-      find_program(APR_UTIL_DLL libaprutil-1.dll)
-    endif()
+  find_program(APR_UTIL_CONFIG_EXECUTABLE
+      apu-1-config
+      PATHS /usr/local/opt/apr-util/bin    $ENV{ProgramFiles}/apr-util/bin
+      )
+  mark_as_advanced(APR_UTIL_CONFIG_EXECUTABLE)
+  if(EXISTS ${APR_UTIL_CONFIG_EXECUTABLE})
+      _apu_invoke(APR_UTIL_INCLUDE_DIR   --includedir)
+      if (APU_STATIC OR NOT BUILD_SHARED_LIBS)
+        _apu_invoke(_apu_util_link_args  --link-ld)
+        string(REGEX MATCH "-L([^ ]+)" _apu_util_L_flag ${_apu_util_link_args})
+        find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1.a PATHS "${CMAKE_MATCH_1}")
+        set(APR_UTIL_COMPILE_DEFINITIONS APU_DECLARE_STATIC)
+      else()
+        _apu_invoke(APR_UTIL_LIBRARIES   --link-ld)
+      endif()
+  else()
+      find_path(APR_UTIL_INCLUDE_DIR apu.h PATH_SUFFIXES apr-1)
+      if (APU_STATIC OR NOT BUILD_SHARED_LIBS)
+        set(APR_UTIL_COMPILE_DEFINITIONS APU_DECLARE_STATIC)
+        find_library(APR_UTIL_LIBRARIES NAMES aprutil-1)
+      else()
+        find_library(APR_UTIL_LIBRARIES NAMES libaprutil-1)
+        find_program(APR_UTIL_DLL libaprutil-1.dll)
+      endif()
+  endif()
 endif()
 
 find_package_handle_standard_args(APR-Util
