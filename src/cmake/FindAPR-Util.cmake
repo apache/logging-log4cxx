@@ -27,15 +27,22 @@ macro(_apu_invoke _varname)
     endif(_apr_failed)
 endmacro(_apu_invoke)
 
+if(NOT APU_STATIC) # apu-1-config does not yet support --static used in FindPkgConfig.cmake
 find_package(PkgConfig)
 pkg_check_modules(APR_UTIL apr-util-1)
+endif()
 
 if(APR_UTIL_FOUND)
   find_path(APR_UTIL_INCLUDE_DIR
             NAMES apu.h
             HINTS ${APR_UTIL_INCLUDE_DIRS}
             PATH_SUFFIXES apr-1)
-  set(APR_UTIL_LIBRARIES ${APR_UTIL_LINK_LIBRARIES})
+  if (APU_STATIC OR NOT BUILD_SHARED_LIBS)
+    set(APR_UTIL_COMPILE_DEFINITIONS APU_DECLARE_STATIC)
+    set(APR_UTIL_LIBRARIES ${APR_UTIL_STATIC_LINK_LIBRARIES})
+  else()
+    set(APR_UTIL_LIBRARIES ${APR_UTIL_LINK_LIBRARIES})
+  endif()
 else()
   find_program(APR_UTIL_CONFIG_EXECUTABLE
       apu-1-config

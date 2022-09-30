@@ -25,15 +25,27 @@ macro(_apr_invoke _varname)
     endif(_apr_failed)
 endmacro(_apr_invoke)
 
+if(NOT APR_STATIC) # apr-1-config does not support --static using in FindPkgConfig.cmake
 find_package(PkgConfig)
 pkg_check_modules(APR apr-1)
+endif()
 
 if(APR_FOUND)
   find_path(APR_INCLUDE_DIR
             NAMES apr.h
             HINTS ${APR_INCLUDE_DIRS}
             PATH_SUFFIXES apr-1)
-  set(APR_LIBRARIES ${APR_LINK_LIBRARIES})
+  if (APR_STATIC OR NOT BUILD_SHARED_LIBS)
+    set(APR_COMPILE_DEFINITIONS APR_DECLARE_STATIC)
+    set(APR_LIBRARIES ${APR_STATIC_LINK_LIBRARIES})
+    if(WIN32)
+      set(APR_SYSTEM_LIBS  ws2_32  mswsock  rpcrt4)
+    else()
+      set(APR_SYSTEM_LIBS  pthread)
+    endif()
+  else()
+    set(APR_LIBRARIES ${APR_LINK_LIBRARIES})
+  endif()
 else()
   find_program(APR_CONFIG_EXECUTABLE
       apr-1-config
