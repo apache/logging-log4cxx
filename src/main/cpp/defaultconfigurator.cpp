@@ -28,16 +28,34 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
+LogString DefaultConfigurator::m_path;
+
+void DefaultConfigurator::setConfigurationFileName(const LogString& path)
+{
+	m_path = path;
+}
+
+int DefaultConfigurator::m_watchSeconds(0);
+
+void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
+{
+	m_watchSeconds = seconds;
+}
+
+static const int MillisecondsPerSecond = 1000;
+
 void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 {
 	repository->setConfigured(true);
 	const LogString configuratorClassName(getConfiguratorClass());
 
-	LogString configurationOptionStr(getConfigurationFileName());
+	LogString configurationFileName = m_path;
+	if (configurationFileName.empty())
+		configurationFileName = getConfigurationFileName();
 	Pool pool;
 	File configuration;
 
-	if (configurationOptionStr.empty())
+	if (configurationFileName.empty())
 	{
 		const char* names[] = { "log4cxx.xml", "log4cxx.properties", "log4j.xml", "log4j.properties", 0 };
 
@@ -54,7 +72,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 	}
 	else
 	{
-		configuration.setPath(configurationOptionStr);
+		configuration.setPath(configurationFileName);
 	}
 
 	if (configuration.exists(pool))
@@ -69,18 +87,21 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 			configuration,
 			configuratorClassName,
 			repo,
-			getConfigurationWatchDelay());
+			0 < m_watchSeconds
+				? m_watchSeconds * MillisecondsPerSecond
+				: getConfigurationWatchDelay()
+			);
 	}
 	else
 	{
-		if (configurationOptionStr.empty())
+		if (configurationFileName.empty())
 		{
 			LogLog::debug(LOG4CXX_STR("Could not find default configuration file."));
 		}
 		else
 		{
 			LogString msg(LOG4CXX_STR("Could not find configuration file: ["));
-			msg += configurationOptionStr;
+			msg += configurationFileName;
 			msg += LOG4CXX_STR("].");
 			LogLog::debug(msg);
 		}
@@ -106,12 +127,12 @@ const LogString DefaultConfigurator::getConfigurationFileName()
 {
 	static const LogString LOG4CXX_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("LOG4CXX_CONFIGURATION"));
 	static const LogString LOG4J_DEFAULT_CONFIGURATION_KEY(LOG4CXX_STR("log4j.configuration"));
-	const LogString log4jConfigurationOptionStr(
+	const LogString log4jConfigurationFileName(
 		OptionConverter::getSystemProperty(LOG4J_DEFAULT_CONFIGURATION_KEY, LOG4CXX_STR("")));
-	const LogString configurationOptionStr(
+	const LogString configurationFileName(
 		OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_KEY,
-			log4jConfigurationOptionStr));
-	return configurationOptionStr;
+			log4jConfigurationFileName));
+	return configurationFileName;
 }
 
 
@@ -121,7 +142,7 @@ int DefaultConfigurator::getConfigurationWatchDelay()
 	LogString optionStr = OptionConverter::getSystemProperty(LOG4CXX_DEFAULT_CONFIGURATION_WATCH_KEY, LogString());
 	int milliseconds = 0;
 	if (!optionStr.empty())
-		milliseconds = StringHelper::toInt(optionStr) * 1000;
+		milliseconds = StringHelper::toInt(optionStr) * MillisecondsPerSecond;
 	return milliseconds;
 }
 
