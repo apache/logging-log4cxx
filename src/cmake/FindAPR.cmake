@@ -25,7 +25,7 @@ macro(_apr_invoke _varname)
     endif(_apr_failed)
 endmacro(_apr_invoke)
 
-if(NOT APR_STATIC) # apr-1-config does not support --static using in FindPkgConfig.cmake
+if(NOT APR_STATIC) # apr-1-config does not support --static used in FindPkgConfig.cmake
 find_package(PkgConfig)
 pkg_check_modules(APR apr-1)
 endif()
