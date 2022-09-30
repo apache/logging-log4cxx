@@ -214,6 +214,10 @@ class LOG4CXX_EXPORT Hierarchy :
 		virtual bool isConfigured() override;
 		virtual void setConfigured(bool configured) override;
 
+		/**
+		Refresh the threshold in children of parent
+		*/
+		void updateChildren(const Logger* parent);
 
 	private:
 

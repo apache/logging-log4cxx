@@ -433,6 +433,22 @@ void Hierarchy::updateChildren(ProvisionNode& pn, const LoggerPtr& logger)
 			l->setParent( logger );
 		}
 	}
+    
+}
+
+void Hierarchy::updateChildren(const Logger* parent)
+{
+	for (auto& item : m_priv->loggers)
+	{
+		for (auto l = item.second; l; l = l->getParent())
+		{
+			if (l->getParent().get() == parent)
+			{
+				item.second->updateThreshold();
+				break;
+			}
+		}
+	}
 }
 
 void Hierarchy::setConfigured(bool newValue)

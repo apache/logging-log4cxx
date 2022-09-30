@@ -23,7 +23,7 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/hierarchy.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
@@ -532,12 +532,19 @@ void Logger::setHierarchy(spi::LoggerRepository* repository1)
 void Logger::setParent(LoggerPtr parentLogger)
 {
 	m_priv->parent = parentLogger;
-	m_threshold = getEffectiveLevel()->toInt();
+	updateThreshold();
 }
 
 void Logger::setLevel(const LevelPtr level1)
 {
 	m_priv->level = level1;
+	updateThreshold();
+	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
+		rep->updateChildren(this);
+}
+
+void Logger::updateThreshold()
+{
 	m_threshold = getEffectiveLevel()->toInt();
 }
 

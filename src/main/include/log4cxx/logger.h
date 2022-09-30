@@ -1408,6 +1408,7 @@ class LOG4CXX_EXPORT Logger :
 		void setHierarchy(spi::LoggerRepository* repository);
 		void setParent(LoggerPtr parentLogger);
 		spi::LoggerRepository* getHierarchy() const;
+		void updateThreshold();
 
 	public:
 		/**
