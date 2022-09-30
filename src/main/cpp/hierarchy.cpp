@@ -298,6 +298,7 @@ void Hierarchy::resetConfiguration()
 	{
 		if (auto pLogger = it->second)
 		{
+			pLogger->setLevel(0);
 			pLogger->setAdditivity(true);
 			pLogger->setResourceBundle(0);
 		}
