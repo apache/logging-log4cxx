@@ -67,11 +67,7 @@ class LOG4CXX_EXPORT DefaultConfigurator
 		static const LogString getConfiguratorClass();
 		static int getConfigurationWatchDelay();
 
-		static LogString m_path;
-		static int m_watchSeconds;
-
-
-}; // class DefaultConfigurator
+};	 // class DefaultConfigurator
 }  // namespace log4cxx
 
 #endif //_LOG4CXX_DEFAULT_CONFIGURATOR_H

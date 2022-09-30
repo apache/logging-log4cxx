@@ -28,18 +28,21 @@ using namespace log4cxx;
 using namespace log4cxx::spi;
 using namespace log4cxx::helpers;
 
-LogString DefaultConfigurator::m_path;
+namespace 
+{
+	LogString DefaultConfiguratorPath;
+	int DefaultConfiguratorWatchSeconds = 0;
+}
 
 void DefaultConfigurator::setConfigurationFileName(const LogString& path)
 {
-	m_path = path;
+	DefaultConfiguratorPath = path;
 }
 
-int DefaultConfigurator::m_watchSeconds(0);
 
 void DefaultConfigurator::setConfigurationWatchSeconds(int seconds)
 {
-	m_watchSeconds = seconds;
+	DefaultConfiguratorWatchSeconds = seconds;
 }
 
 static const int MillisecondsPerSecond = 1000;
@@ -49,7 +52,7 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 	repository->setConfigured(true);
 	const LogString configuratorClassName(getConfiguratorClass());
 
-	LogString configurationFileName = m_path;
+	LogString configurationFileName = DefaultConfiguratorPath;
 	if (configurationFileName.empty())
 		configurationFileName = getConfigurationFileName();
 	Pool pool;
@@ -87,8 +90,8 @@ void DefaultConfigurator::configure(LoggerRepositoryPtr repository)
 			configuration,
 			configuratorClassName,
 			repo,
-			0 < m_watchSeconds
-				? m_watchSeconds * MillisecondsPerSecond
+			0 < DefaultConfiguratorWatchSeconds
+				? DefaultConfiguratorWatchSeconds * MillisecondsPerSecond
 				: getConfigurationWatchDelay()
 			);
 	}
