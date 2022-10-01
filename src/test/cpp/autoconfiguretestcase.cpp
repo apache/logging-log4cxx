@@ -88,6 +88,7 @@ public:
 	void shutdown()
 	{
 		LogManager::shutdown();
+		LOGUNIT_ASSERT(apr_file_remove("output/autoConfigureTest.properties", m_pool.getAPRPool()) == APR_SUCCESS);
 	}
 
 	void test1()
