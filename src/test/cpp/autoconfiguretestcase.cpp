@@ -50,9 +50,11 @@ using namespace log4cxx;
 LOGUNIT_CLASS(AutoConfigureTestCase)
 {
 	LOGUNIT_TEST_SUITE(AutoConfigureTestCase);
+	LOGUNIT_TEST(copyPropertyFile);
 	LOGUNIT_TEST_THREADS(test1, 4);
 	LOGUNIT_TEST(test2);
 	LOGUNIT_TEST(test3);
+	LOGUNIT_TEST(shutdown);
 	LOGUNIT_TEST_SUITE_END();
 #ifdef _DEBUG
 	struct Fixture
@@ -66,44 +68,42 @@ LOGUNIT_CLASS(AutoConfigureTestCase)
 	char m_buf[2048];
 public:
 
-	void setUp()
+	void copyPropertyFile()
 	{
 		helpers::ByteBuffer bbuf(m_buf, sizeof(m_buf));
 		auto sz = helpers::FileInputStream(LOG4CXX_STR("input/autoConfigureTest.properties")).read(bbuf);
-		helpers::FileOutputStream of(LOG4CXX_STR("output/autoConfigureTest.properties"));
 		bbuf.position(0);
 		bbuf.limit(sz);
-		of.write(bbuf, m_pool);
-		of.flush(m_pool);
+		helpers::FileOutputStream(LOG4CXX_STR("output/autoConfigureTest.properties")).write(bbuf, m_pool);
+		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("output/autoConfigureTest.properties"));
+		DefaultConfigurator::setConfigurationWatchSeconds(1);
 	}
 
-	void tearDown()
+	void shutdown()
 	{
 		LogManager::shutdown();
 	}
 
 	void test1()
 	{
-		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("output/autoConfigureTest.properties"));
-		DefaultConfigurator::setConfigurationWatchSeconds(1);
-		auto debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test1"));
+		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test1"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
-		auto rep = debugLogger->getLoggerRepository();
+		auto rep = LogManager::getLoggerRepository();
 		LOGUNIT_ASSERT(rep);
 		LOGUNIT_ASSERT(rep->isConfigured());
 	}
 
 	void test2()
 	{
-		auto debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test2"));
+		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test2"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 
 	void test3()
 	{
-		auto debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test3"));
+		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
 
