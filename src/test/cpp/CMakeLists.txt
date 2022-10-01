@@ -139,13 +139,6 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${ESCAPED_PATH}"
             )
-        elseif(${testName} STREQUAL autoconfiguretestcase)
-            set_target_properties(${testName} PROPERTIES
-              VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
-            )
-            set_tests_properties(autoconfiguretestcase PROPERTIES
-                ENVIRONMENT "PATH=${ESCAPED_PATH}"
-            )
         elseif(${testName} STREQUAL optionconvertertestcase)
             set_target_properties(${testName} PROPERTIES
               VS_DEBUGGER_ENVIRONMENT "TOTO=wonderful\nkey1=value1\nkey2=value2\nPATH=${ESCAPED_PATH}"
@@ -173,13 +166,13 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}"
             )
-        elseif(${testName} STREQUAL autoconfiguretestcase)
-            set_tests_properties(autoconfiguretestcase PROPERTIES
-                ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties"
+        elseif(${testName} STREQUAL optionconvertertestcase)
+            set_tests_properties(optionconvertertestcase PROPERTIES
+                ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
             )
         else()
            set_tests_properties(${testName} PROPERTIES
-                ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
+                ENVIRONMENT "key1=value1;key2=value2"
            )
         endif()
     endif()
