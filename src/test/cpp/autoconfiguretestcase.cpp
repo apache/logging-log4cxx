@@ -110,8 +110,8 @@ public:
 
 	void test3()
 	{
-		// wait 0.1 sec for the file time to be loaded
-		apr_sleep(100000);
+		// wait 0.2 sec for the file time to be loaded
+		apr_sleep(200000);
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
@@ -131,8 +131,8 @@ public:
 		of.flush(m_pool);
 		of.close(m_pool);
 
-		// wait 1.1 sec for the change to be noticed
-		apr_sleep(1100000);
+		// wait 1.5 sec for the change to be noticed
+		apr_sleep(1500000);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 };
