@@ -24,6 +24,7 @@
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/pool.h>
 #include <thread>
+#include <apr_file_io.h>
 #include "apr_time.h"
 
 #define LOGUNIT_TEST_THREADS(testName, threadCount) \
@@ -70,11 +71,12 @@ public:
 
 	void copyPropertyFile()
 	{
-		helpers::ByteBuffer bbuf(m_buf, sizeof(m_buf));
-		auto sz = helpers::FileInputStream(LOG4CXX_STR("input/autoConfigureTest.properties")).read(bbuf);
-		bbuf.position(0);
-		bbuf.limit(sz);
-		helpers::FileOutputStream(LOG4CXX_STR("output/autoConfigureTest.properties")).write(bbuf, m_pool);
+		apr_file_copy
+			( "input/autoConfigureTest.properties"
+			, "output/autoConfigureTest.properties"
+			, APR_FPROT_UREAD | APR_FPROT_UWRITE
+			, m_pool.getAPRPool()
+			);
 		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("output/autoConfigureTest.properties"));
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
 	}
@@ -103,6 +105,8 @@ public:
 
 	void test3()
 	{
+		// wait 0.1 sec for the file time to be loaded
+		apr_sleep(100000);
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
@@ -122,8 +126,8 @@ public:
 		of.flush(m_pool);
 		of.close(m_pool);
 
-		// wait 1.5 sec for the change to be noticed
-		apr_sleep(1500000);
+		// wait 1.1 sec for the change to be noticed
+		apr_sleep(1100000);
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 };
