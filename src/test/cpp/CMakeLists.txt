@@ -134,10 +134,10 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             )
         elseif(${testName} STREQUAL autoconfiguretestcase)
             set_target_properties(${testName} PROPERTIES
-              VS_DEBUGGER_ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties\nPATH=${ESCAPED_PATH}"
+              VS_DEBUGGER_ENVIRONMENT "PATH=${ESCAPED_PATH}"
             )
             set_tests_properties(autoconfiguretestcase PROPERTIES
-                ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties;LOG4CXX_CONFIGURATION_WATCH_SECONDS=1;PATH=${ESCAPED_PATH}"
+                ENVIRONMENT "PATH=${ESCAPED_PATH}"
             )
         elseif(${testName} STREQUAL optionconvertertestcase)
             set_target_properties(${testName} PROPERTIES

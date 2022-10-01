@@ -16,10 +16,14 @@
  */
 #include "logunit.h"
 #include <log4cxx/logger.h>
-#include <log4cxx/logmanager.h>
+#include <log4cxx/defaultconfigurator.h>
+#include <log4cxx/helpers/bytebuffer.h>
+#include <log4cxx/helpers/fileinputstream.h>
+#include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/file.h>
+#include <log4cxx/helpers/pool.h>
 #include <thread>
+#include "apr_time.h"
 
 #define LOGUNIT_TEST_THREADS(testName, threadCount) \
 	class testName ## ThreadTestRegistration { \
@@ -47,7 +51,7 @@ LOGUNIT_CLASS(AutoConfigureTestCase)
 	LOGUNIT_TEST_SUITE(AutoConfigureTestCase);
 	LOGUNIT_TEST_THREADS(test1, 4);
 	LOGUNIT_TEST(test2);
-	LOGUNIT_TEST(stop);
+	LOGUNIT_TEST(test3);
 	LOGUNIT_TEST_SUITE_END();
 #ifdef _DEBUG
 	struct Fixture
@@ -57,13 +61,26 @@ LOGUNIT_CLASS(AutoConfigureTestCase)
 		}
 	} suiteFixture;
 #endif
+	helpers::Pool m_pool;
+	char m_buf[2048];
 public:
+
+	void setUp()
+	{
+		helpers::ByteBuffer bbuf(m_buf, sizeof(m_buf));
+		auto sz = helpers::FileInputStream(LOG4CXX_STR("input/autoConfigureTest.properties")).read(bbuf);
+		bbuf.position(0);
+		bbuf.limit(sz);
+		helpers::FileOutputStream(LOG4CXX_STR("output/autoConfigureTest.properties")).write(bbuf, m_pool);
+	}
 	void test1()
 	{
-		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test1"));
+		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("output/autoConfigureTest.properties"));
+		DefaultConfigurator::setConfigurationWatchSeconds(1);
+		auto debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test1"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
-		auto rep = LogManager::getLoggerRepository();
+		auto rep = debugLogger->getLoggerRepository();
 		LOGUNIT_ASSERT(rep);
 		LOGUNIT_ASSERT(rep->isConfigured());
 	}
@@ -75,9 +92,30 @@ public:
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 
-	void stop()
+	void test3()
 	{
-		LogManager::shutdown();
+		auto debugLogger = Logger::getLogger(LOG4CXX_STR("AutoConfig.test3"));
+		LOGUNIT_ASSERT(debugLogger);
+		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
+
+		// Append a configuration for test3 logger
+		helpers::ByteBuffer bbuf(m_buf, sizeof(m_buf));
+		int sz = 0;
+		for (auto p = "\nlog4j.logger.AutoConfig.test3=DEBUG\n"; *p; ++p)
+		{
+			bbuf.put(*p);
+			++sz;
+		}
+		bbuf.position(0);
+		bbuf.limit(sz);
+		helpers::FileOutputStream of(LOG4CXX_STR("output/autoConfigureTest.properties"), true);
+		of.write(bbuf, m_pool);
+		of.flush(m_pool);
+		of.close(m_pool);
+
+		// wait 1.5 sec for the change to be noticed
+		apr_sleep(1500000);
+		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 };
 
