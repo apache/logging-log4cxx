@@ -101,7 +101,7 @@ public:
 		// Append a configuration for test3 logger
 		helpers::ByteBuffer bbuf(m_buf, sizeof(m_buf));
 		int sz = 0;
-		for (auto p = "\nlog4j.logger.AutoConfig.test3=DEBUG\n"; *p; ++p)
+		for (char* p = "\nlog4j.logger.AutoConfig.test3=DEBUG\n"; *p; ++p)
 		{
 			bbuf.put(*p);
 			++sz;
