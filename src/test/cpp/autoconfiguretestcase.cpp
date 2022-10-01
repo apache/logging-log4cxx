@@ -72,12 +72,13 @@ public:
 
 	void copyPropertyFile()
 	{
-		apr_file_copy
+		LOGUNIT_ASSERT(File(LOG4CXX_STR("input/autoConfigureTest.properties")).exists(m_pool));
+		LOGUNIT_ASSERT(apr_file_copy
 			( "input/autoConfigureTest.properties"
 			, "output/autoConfigureTest.properties"
 			, APR_FPROT_UREAD | APR_FPROT_UWRITE
 			, m_pool.getAPRPool()
-			);
+			) == APR_SUCCESS);
 
 		DefaultConfigurator::setConfigurationFileName(m_configFile);
 		DefaultConfigurator::setConfigurationWatchSeconds(1);
