@@ -16,6 +16,7 @@
  */
 #include "logunit.h"
 #include <log4cxx/logger.h>
+#include <log4cxx/logmanager.h>
 #include <log4cxx/defaultconfigurator.h>
 #include <log4cxx/helpers/bytebuffer.h>
 #include <log4cxx/helpers/fileinputstream.h>
@@ -69,10 +70,18 @@ public:
 	{
 		helpers::ByteBuffer bbuf(m_buf, sizeof(m_buf));
 		auto sz = helpers::FileInputStream(LOG4CXX_STR("input/autoConfigureTest.properties")).read(bbuf);
+		helpers::FileOutputStream of(LOG4CXX_STR("output/autoConfigureTest.properties"));
 		bbuf.position(0);
 		bbuf.limit(sz);
-		helpers::FileOutputStream(LOG4CXX_STR("output/autoConfigureTest.properties")).write(bbuf, m_pool);
+		of.write(bbuf, m_pool);
+		of.flush(m_pool);
 	}
+
+	void tearDown()
+	{
+		LogManager::shutdown();
+	}
+
 	void test1()
 	{
 		DefaultConfigurator::setConfigurationFileName(LOG4CXX_STR("output/autoConfigureTest.properties"));
