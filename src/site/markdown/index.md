@@ -23,10 +23,10 @@ be usable on any platform supported by APR. Apache Log4cxx is licensed under
 the [Apache License], an open source license certified by the [Open Source Initiative].
 
 Experience indicates that almost every large application needs runtime configurable logging.
-Informational, warning and error log messages should saved
+Informational, warning and error log messages should be saved
 in persistent medium available for study at a later time.
 
-In the development cycle logging can be an auditing tool.
+In the development cycle, logging can be an auditing tool.
 Debugging log output can be activated for an aspect of the application
 simply by modifying a configuration file.
 The correctness of a function should be verified by viewing logged calculated values.
