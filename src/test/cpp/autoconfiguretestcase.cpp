@@ -23,8 +23,10 @@
 #include <log4cxx/helpers/fileoutputstream.h>
 #include <log4cxx/helpers/loglog.h>
 #include <log4cxx/helpers/pool.h>
+#include <log4cxx/helpers/stringhelper.h>
 #include <thread>
 #include <apr_file_io.h>
+#include <apr_file_info.h>
 #include "apr_time.h"
 
 #define LOGUNIT_TEST_THREADS(testName, threadCount) \
@@ -64,6 +66,7 @@ LOGUNIT_CLASS(AutoConfigureTestCase)
 			helpers::LogLog::setInternalDebugging(true);
 		}
 	} suiteFixture;
+	apr_time_t m_initTime = apr_time_now();
 #endif
 	helpers::Pool m_pool;
 	char m_buf[2048];
@@ -110,6 +113,14 @@ public:
 
 	void test3()
 	{
+#ifdef _DEBUG
+		apr_finfo_t finfo;
+		LOGUNIT_ASSERT(apr_stat(&finfo, "autoConfigureTest.properties", APR_FINFO_MTIME, m_pool.getAPRPool()) == APR_SUCCESS);
+		LogString msg1 = m_configFile;
+		msg1 += LOG4CXX_STR(" created at ");
+		helpers::StringHelper::toString((int)(finfo.mtime - m_initTime), m_pool, msg1);
+		helpers::LogLog::debug(msg1);
+#endif
 		// wait 0.2 sec for the file time to be loaded
 		apr_sleep(200000);
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));
@@ -133,6 +144,13 @@ public:
 
 		// wait 1.5 sec for the change to be noticed
 		apr_sleep(1500000);
+#ifdef _DEBUG
+		LOGUNIT_ASSERT(apr_stat(&finfo, "autoConfigureTest.properties", APR_FINFO_MTIME, m_pool.getAPRPool()) == APR_SUCCESS);
+		LogString msg2 = m_configFile;
+		msg2 += LOG4CXX_STR(" modified at ");
+		helpers::StringHelper::toString((int)(finfo.mtime - m_initTime), m_pool, msg2);
+		helpers::LogLog::debug(msg2);
+#endif
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 };
