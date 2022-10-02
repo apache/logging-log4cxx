@@ -113,15 +113,7 @@ public:
 
 	void test3()
 	{
-#ifdef _DEBUG
-		apr_finfo_t finfo;
-		LOGUNIT_ASSERT(apr_stat(&finfo, "autoConfigureTest.properties", APR_FINFO_MTIME, m_pool.getAPRPool()) == APR_SUCCESS);
-		LogString msg1 = m_configFile;
-		msg1 += LOG4CXX_STR(" created at ");
-		helpers::StringHelper::toString((int)(finfo.mtime - m_initTime), m_pool, msg1);
-		helpers::LogLog::debug(msg1);
-#endif
-		// wait 2 sec for the file time to be loaded
+		// wait 2 sec to ensure the modification time is different to that held in the WatchDog
 		apr_sleep(2000000);
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));
 		LOGUNIT_ASSERT(debugLogger);
@@ -144,13 +136,6 @@ public:
 
 		// wait 1.5 sec for the change to be noticed
 		apr_sleep(1500000);
-#ifdef _DEBUG
-		LOGUNIT_ASSERT(apr_stat(&finfo, "autoConfigureTest.properties", APR_FINFO_MTIME, m_pool.getAPRPool()) == APR_SUCCESS);
-		LogString msg2 = m_configFile;
-		msg2 += LOG4CXX_STR(" modified at ");
-		helpers::StringHelper::toString((int)(finfo.mtime - m_initTime), m_pool, msg2);
-		helpers::LogLog::debug(msg2);
-#endif
 		LOGUNIT_ASSERT(debugLogger->isDebugEnabled());
 	}
 };
