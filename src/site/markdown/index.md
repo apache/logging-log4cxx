@@ -22,24 +22,27 @@ which uses [Apache Portable Runtime] for most platform-specific code and should
 be usable on any platform supported by APR. Apache Log4cxx is licensed under
 the [Apache License], an open source license certified by the [Open Source Initiative].
 
-Almost every large application includes its own logging or tracing API.
-Inserting log statements into code is a low-tech method for debugging it.
-It may also be the only way because debuggers are not always available or
-applicable. This is usually the case for multithreaded applications and distributed
-applications at large.
+Experience indicates that almost every large application needs runtime configurable logging.
+Informational, warning and error log messages should saved
+in persistent medium available for study at a later time.
 
-Experience indicates that logging is an important component of the development
-cycle. It offers several advantages. It provides precise context about a run of
-the application. Once inserted into the code, the generation of logging output
-requires no human intervention. Moreover, log output can be saved in persistent
-medium to be studied at a later time. In addition to its use in the development
-cycle, a sufficiently rich logging package can also be viewed as an auditing tool.
+In the development cycle logging can be an auditing tool.
+Debugging log output can be activated for an aspect of the application
+simply by modifying a configuration file.
+The correctness of a function should be verified by viewing logged calculated values.
+A faulty piece of code can be isolated by viewing logged function input values
+and the corresponding logged result values.
+These debugging log statements can be removed from the shipped application
+using a compiler build directive.
+Logging statements do increase the (code) size of the application,
+but with log4cxx the speed of the application is not generally affected.
 
-Logging does have its drawbacks. It can slow down an application. If too verbose,
-it can cause scrolling blindness. To alleviate these concerns, Log4cxx is
-designed to be reliable, fast and extensible. Since logging is rarely the
-main focus of an application, the Log4cxx API strives to be simple to
-understand and to use.
+Logging is useful where debuggers are not, for example:
+- distributed applications
+- multithreaded applications
+- scientific applications (with vector and matrix valued variables)
+- real-time applications
+- event centered (e.g. GUI) applications
 
 [Apache log4j]:https://logging.apache.org/log4j/2.x/
 [Apache Portable Runtime]:https://apr.apache.org/
