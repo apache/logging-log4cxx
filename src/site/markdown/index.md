@@ -44,6 +44,12 @@ Logging is useful where debuggers are not, for example:
 - real-time applications
 - event centered (e.g. GUI) applications
 
+For persisted messages, the storage location and the quantity retained
+can be specified and changed using a configuration file.
+The configuration also allows you to control the destination of log messages.
+They can be sent to a file, a remote socket server, event loggers as well as the console,
+with support for directing particular messages to one or more destinations.
+
 [Apache log4j]:https://logging.apache.org/log4j/2.x/
 [Apache Portable Runtime]:https://apr.apache.org/
 [Apache License]:https://www.apache.org/licenses/
