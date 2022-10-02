@@ -35,7 +35,7 @@ and the corresponding logged result values.
 These debugging log statements can be removed from the shipped application
 using a compiler build directive.
 Logging statements do increase the (code) size of the application,
-but with log4cxx the speed of the application is not generally affected.
+but with log4cxx the speed of the application is not generally affected (see [Performance]).
 
 Logging is useful where debuggers are not, for example:
 - distributed applications
@@ -48,3 +48,4 @@ Logging is useful where debuggers are not, for example:
 [Apache Portable Runtime]:https://apr.apache.org/
 [Apache License]:https://www.apache.org/licenses/
 [Open Source Initiative]:https://opensource.org/
+[Performance]:usage.html#performance
