@@ -121,8 +121,8 @@ public:
 		helpers::StringHelper::toString((int)(finfo.mtime - m_initTime), m_pool, msg1);
 		helpers::LogLog::debug(msg1);
 #endif
-		// wait 0.2 sec for the file time to be loaded
-		apr_sleep(200000);
+		// wait 2 sec for the file time to be loaded
+		apr_sleep(2000000);
 		auto debugLogger = LogManager::getLogger(LOG4CXX_STR("AutoConfig.test3"));
 		LOGUNIT_ASSERT(debugLogger);
 		LOGUNIT_ASSERT(!debugLogger->isDebugEnabled());
