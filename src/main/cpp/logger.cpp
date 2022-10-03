@@ -308,9 +308,6 @@ bool Logger::isTraceEnabled() const
 
 bool Logger::isDebugEnabled() const
 {
-	if (Level::DEBUG_INT < m_threshold)
-		return false;
-
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::DEBUG_INT))
@@ -336,9 +333,6 @@ bool Logger::isEnabledFor(const LevelPtr& level1) const
 
 bool Logger::isInfoEnabled() const
 {
-	if (Level::INFO_INT < m_threshold)
-		return false;
-
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::INFO_INT))
@@ -351,9 +345,6 @@ bool Logger::isInfoEnabled() const
 
 bool Logger::isErrorEnabled() const
 {
-	if (Level::ERROR_INT < m_threshold)
-		return false;
-
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::ERROR_INT))
@@ -366,9 +357,6 @@ bool Logger::isErrorEnabled() const
 
 bool Logger::isWarnEnabled() const
 {
-	if (Level::WARN_INT < m_threshold)
-		return false;
-
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::WARN_INT))
@@ -381,9 +369,6 @@ bool Logger::isWarnEnabled() const
 
 bool Logger::isFatalEnabled() const
 {
-	if (Level::FATAL_INT < m_threshold)
-		return false;
-
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::FATAL_INT))
