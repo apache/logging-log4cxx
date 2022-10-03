@@ -105,11 +105,18 @@ if( WIN32 )
   foreach( ENTRY ${PATH_FOR_TESTS}${NORMAL_PATH} )
 	  set(ESCAPED_PATH "${ESCAPED_PATH}${ENTRY}\\\;")
   endforeach()
-endif( WIN32 )
+elseif(CMAKE_BUILD_TYPE)
+  string(TOUPPER ${CMAKE_BUILD_TYPE} UPPER_BUILD_TYPE)
+  if (UPPER_BUILD_TYPE STREQUAL "DEBUG")
+    set(TEST_COMPILE_DEFINITIONS _DEBUG)
+  endif()
+else()
+  set(TEST_COMPILE_DEFINITIONS _DEBUG)
+endif()
 
 get_filename_component(UNIT_TEST_WORKING_DIR ../resources ABSOLUTE)
 foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
-    target_compile_definitions(${testName} PRIVATE ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
+    target_compile_definitions(${testName} PRIVATE ${TEST_COMPILE_DEFINITIONS} ${LOG4CXX_COMPILE_DEFINITIONS} ${APR_COMPILE_DEFINITIONS} ${APR_UTIL_COMPILE_DEFINITIONS} )
     target_include_directories(${testName} PRIVATE ${CMAKE_CURRENT_LIST_DIR} $<TARGET_PROPERTY:log4cxx,INCLUDE_DIRECTORIES>)
     target_link_libraries(${testName} PRIVATE testingFramework testingUtilities log4cxx ${APR_LIBRARIES} ${APR_SYSTEM_LIBS} Threads::Threads)
     add_test(NAME ${testName}
@@ -131,13 +138,6 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             )
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE};PATH=${ESCAPED_PATH}"
-            )
-        elseif(${testName} STREQUAL autoconfiguretestcase)
-            set_target_properties(${testName} PROPERTIES
-              VS_DEBUGGER_ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties\nPATH=${ESCAPED_PATH}"
-            )
-            set_tests_properties(autoconfiguretestcase PROPERTIES
-                ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties;LOG4CXX_CONFIGURATION_WATCH_SECONDS=1;PATH=${ESCAPED_PATH}"
             )
         elseif(${testName} STREQUAL optionconvertertestcase)
             set_target_properties(${testName} PROPERTIES
@@ -166,13 +166,13 @@ foreach(testName IN LISTS ALL_LOG4CXX_TESTS)
             set_tests_properties(socketservertestcase PROPERTIES
                 ENVIRONMENT "SOCKET_SERVER_PARAMETER_FILE=${START_SOCKET_SERVER_PARAMETER_FILE}"
             )
-        elseif(${testName} STREQUAL autoconfiguretestcase)
-            set_tests_properties(autoconfiguretestcase PROPERTIES
-                ENVIRONMENT "LOG4CXX_CONFIGURATION=${UNIT_TEST_WORKING_DIR}/input/autoConfigureTest.properties"
+        elseif(${testName} STREQUAL optionconvertertestcase)
+            set_tests_properties(optionconvertertestcase PROPERTIES
+                ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
             )
         else()
            set_tests_properties(${testName} PROPERTIES
-                ENVIRONMENT "TOTO=wonderful;key1=value1;key2=value2"
+                ENVIRONMENT "key1=value1;key2=value2"
            )
         endif()
     endif()
