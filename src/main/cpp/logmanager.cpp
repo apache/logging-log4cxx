@@ -85,7 +85,10 @@ LoggerRepositoryPtr LogManager::getLoggerRepository()
 LoggerPtr LogManager::getRootLogger()
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
-	return getLoggerRepository()->getRootLogger();
+	auto r = getLoggerRepository();
+	if (!r->isConfigured())
+		r->autoConfigure();
+	return r->getRootLogger();
 }
 
 /**
@@ -93,7 +96,10 @@ Retrieve the appropriate Logger instance.
 */
 LoggerPtr LogManager::getLoggerLS(const LogString& name)
 {
-	return getLoggerRepository()->getLogger(name);
+	auto r = getLoggerRepository();
+	if (!r->isConfigured())
+		r->autoConfigure();
+	return r->getLogger(name);
 }
 
 /**
@@ -103,7 +109,10 @@ LoggerPtr LogManager::getLoggerLS(const LogString& name,
 	const spi::LoggerFactoryPtr& factory)
 {
 	// Delegate the actual manufacturing of the logger to the logger repository.
-	return getLoggerRepository()->getLogger(name, factory);
+	auto r = getLoggerRepository();
+	if (!r->isConfigured())
+		r->autoConfigure();
+	return r->getLogger(name, factory);
 }
 
 LoggerPtr LogManager::getLogger(const std::string& name)

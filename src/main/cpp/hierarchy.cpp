@@ -15,10 +15,6 @@
  * limitations under the License.
  */
 
-#if defined(_MSC_VER)
-	#pragma warning ( disable: 4231 4251 4275 4786 )
-#endif
-
 #include <log4cxx/logstring.h>
 #include <log4cxx/spi/loggerfactory.h>
 #include <log4cxx/hierarchy.h>
@@ -53,35 +49,27 @@ typedef std::map<LogString, ProvisionNode> ProvisionNodeMap;
 struct Hierarchy::HierarchyPrivate
 {
 	HierarchyPrivate()
+		: configured(false)
+		, emittedNoAppenderWarning(false)
+		, emittedNoResourceBundleWarning(false)
+		, thresholdInt(Level::ALL_INT)
 	{
-		root = std::make_shared<RootLogger>(pool, Level::getDebug());
-		defaultFactory = std::make_shared<DefaultLoggerFactory>();
-		emittedNoAppenderWarning = false;
-		configured = false;
-		thresholdInt = Level::ALL_INT;
-		threshold = Level::getAll();
-		emittedNoResourceBundleWarning = false;
 	}
 
-	log4cxx::helpers::Pool pool;
+	helpers::Pool pool;
 	mutable std::mutex mutex;
-	bool configured;
 	mutable std::mutex configuredMutex;
-
-	spi::LoggerFactoryPtr defaultFactory;
-	spi::HierarchyEventListenerList listeners;
-
-	LoggerMap loggers;
-
-	ProvisionNodeMap provisionNodes;
-
-	LoggerPtr root;
-
-	int thresholdInt;
-	LevelPtr threshold;
-
+	bool configured;
 	bool emittedNoAppenderWarning;
 	bool emittedNoResourceBundleWarning;
+	int thresholdInt;
+
+	spi::HierarchyEventListenerList listeners;
+	LoggerPtr root;
+	LevelPtr threshold;
+	LoggerMap loggers;
+	ProvisionNodeMap provisionNodes;
+
 };
 
 IMPLEMENT_LOG4CXX_OBJECT(Hierarchy)
@@ -102,8 +90,11 @@ Hierarchy::~Hierarchy()
 			pLogger->removeAllAppenders();
 		}
 	}
-	m_priv->root->removeHierarchy();
-	m_priv->root->removeAllAppenders();
+	if (m_priv->root)
+	{
+		m_priv->root->removeHierarchy();
+		m_priv->root->removeAllAppenders();
+	}
 }
 
 void Hierarchy::addHierarchyEventListener(const spi::HierarchyEventListenerPtr& listener)
@@ -233,19 +224,21 @@ void Hierarchy::fireRemoveAppenderEvent(const Logger* logger, const Appender* ap
 	}
 }
 
-const LevelPtr& Hierarchy::getThreshold() const
+LevelPtr Hierarchy::getThreshold() const
 {
-	return m_priv->threshold;
+	return m_priv->threshold ? m_priv->threshold : Level::getAll();
 }
 
 LoggerPtr Hierarchy::getLogger(const LogString& name)
 {
-	return getLogger(name, m_priv->defaultFactory);
+	static spi::LoggerFactoryPtr defaultFactory = std::make_shared<DefaultLoggerFactory>();
+	return getLogger(name, defaultFactory);
 }
 
 LoggerPtr Hierarchy::getLogger(const LogString& name,
 	const spi::LoggerFactoryPtr& factory)
 {
+	auto root = getRootLogger();
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
 	LoggerMap::iterator it = m_priv->loggers.find(name);
@@ -269,7 +262,7 @@ LoggerPtr Hierarchy::getLogger(const LogString& name,
 			m_priv->provisionNodes.erase(it2);
 		}
 
-		updateParents(logger);
+		updateParents(logger, root);
 		result = logger;
 	}
 	return result;
@@ -291,32 +284,40 @@ LoggerList Hierarchy::getCurrentLoggers() const
 
 LoggerPtr Hierarchy::getRootLogger() const
 {
+	std::unique_lock<std::mutex> lock(m_priv->mutex);
+	if (!m_priv->root)
+	{
+		m_priv->root = std::make_shared<RootLogger>(m_priv->pool, Level::getDebug());
+		m_priv->root->setHierarchy(const_cast<Hierarchy*>(this));
+	}
+
 	return m_priv->root;
 }
 
 bool Hierarchy::isDisabled(int level) const
 {
-	if (!m_priv->configured) // auto-configuration required?
-	{
-		std::unique_lock<std::mutex> lock(m_priv->configuredMutex);
-		if (!m_priv->configured)
-		{
-			std::shared_ptr<Hierarchy> nonconstThis = std::const_pointer_cast<Hierarchy>(shared_from_this());
-			DefaultConfigurator::configure(nonconstThis);
-			m_priv->configured = true;
-		}
-	}
-
 	return m_priv->thresholdInt > level;
 }
 
+void Hierarchy::autoConfigure()
+{
+	std::unique_lock<std::mutex> lock(m_priv->configuredMutex);
+	if (!m_priv->configured)
+	{
+		DefaultConfigurator::configure(shared_from_this());
+		m_priv->configured = true;
+	}
+}
 
 void Hierarchy::resetConfiguration()
 {
 	std::unique_lock<std::mutex> lock(m_priv->mutex);
 
-	getRootLogger()->setLevel(Level::getDebug());
-	m_priv->root->setResourceBundle(0);
+	if (m_priv->root)
+	{
+		m_priv->root->setLevel(Level::getDebug());
+		m_priv->root->setResourceBundle(0);
+	}
 	setThresholdInternal(Level::getAll());
 
 	shutdownInternal();
@@ -348,7 +349,8 @@ void Hierarchy::shutdownInternal()
 	m_priv->configured = false;
 
 	// begin by closing nested appenders
-	m_priv->root->closeNestedAppenders();
+	if (m_priv->root)
+		m_priv->root->closeNestedAppenders();
 
 	LoggerMap::iterator it, itEnd = m_priv->loggers.end();
 
@@ -359,7 +361,8 @@ void Hierarchy::shutdownInternal()
 	}
 
 	// then, remove all appenders
-	m_priv->root->removeAllAppenders();
+	if (m_priv->root)
+		m_priv->root->removeAllAppenders();
 
 	for (it = m_priv->loggers.begin(); it != itEnd; it++)
 	{
@@ -368,7 +371,7 @@ void Hierarchy::shutdownInternal()
 	}
 }
 
-void Hierarchy::updateParents(LoggerPtr logger)
+void Hierarchy::updateParents(const LoggerPtr& logger, const LoggerPtr& root)
 {
 	const LogString name(logger->getName());
 	size_t length = name.size();
@@ -410,13 +413,12 @@ void Hierarchy::updateParents(LoggerPtr logger)
 	// If we could not find any existing parents, then link with root.
 	if (!parentFound)
 	{
-		logger->setParent( m_priv->root );
+		logger->setParent( root );
 	}
 }
 
-void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
+void Hierarchy::updateChildren(ProvisionNode& pn, const LoggerPtr& logger)
 {
-
 	ProvisionNode::iterator it, itEnd = pn.end();
 
 	for (it = pn.begin(); it != itEnd; it++)
@@ -424,11 +426,27 @@ void Hierarchy::updateChildren(ProvisionNode& pn, LoggerPtr logger)
 		LoggerPtr& l = *it;
 
 		// Unless this child already points to a correct (lower) parent,
-		// make cat.parent point to l.parent and l.parent to cat.
+		// make logger.parent point to l.parent and l.parent to logger.
 		if (!StringHelper::startsWith(l->getParent()->getName(), logger->getName()))
 		{
 			logger->setParent( l->getParent() );
 			l->setParent( logger );
+		}
+	}
+    
+}
+
+void Hierarchy::updateChildren(const Logger* parent)
+{
+	for (auto& item : m_priv->loggers)
+	{
+		for (auto l = item.second; l; l = l->getParent())
+		{
+			if (l->getParent().get() == parent)
+			{
+				item.second->updateThreshold();
+				break;
+			}
 		}
 	}
 }
@@ -449,6 +467,5 @@ bool Hierarchy::isConfigured()
 HierarchyPtr Hierarchy::create()
 {
 	HierarchyPtr ret(new Hierarchy);
-	ret->m_priv->root->setHierarchy(ret.get());
 	return ret;
 }

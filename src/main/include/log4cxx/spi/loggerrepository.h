@@ -56,6 +56,12 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		*/
 		virtual void addHierarchyEventListener(const HierarchyEventListenerPtr&
 			listener) = 0;
+
+		/**
+		 * Load the configuration if not yet configured.
+		 */
+		virtual void autoConfigure() {};
+
 		/**
 		Is the repository disabled for a given level? The answer depends
 		on the repository threshold and the <code>level</code>
@@ -80,7 +86,7 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 		Get the repository-wide threshold. See {@link
 		#setThreshold(const LevelPtr&) setThreshold}
 		            for an explanation. */
-		virtual const LevelPtr& getThreshold() const = 0;
+		virtual LevelPtr getThreshold() const = 0;
 
 		virtual LoggerPtr getLogger(const LogString& name) = 0;
 
@@ -95,8 +101,9 @@ class LOG4CXX_EXPORT LoggerRepository : public virtual helpers::Object
 
 		virtual LoggerList getCurrentLoggers() const = 0;
 
-		virtual void fireAddAppenderEvent(const Logger* logger,
-			const Appender* appender) = 0;
+		virtual void fireAddAppenderEvent(const Logger* logger,	const Appender* appender) {};
+
+		virtual void fireRemoveAppenderEvent(const Logger* logger, const Appender* appender) {};
 
 		virtual void resetConfiguration() = 0;
 

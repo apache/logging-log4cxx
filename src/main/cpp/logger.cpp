@@ -23,7 +23,7 @@
 #include <log4cxx/appender.h>
 #include <log4cxx/level.h>
 #include <log4cxx/helpers/loglog.h>
-#include <log4cxx/spi/loggerrepository.h>
+#include <log4cxx/hierarchy.h>
 #include <log4cxx/helpers/stringhelper.h>
 #include <log4cxx/helpers/transcoder.h>
 #include <log4cxx/helpers/appenderattachableimpl.h>
@@ -88,6 +88,7 @@ IMPLEMENT_LOG4CXX_OBJECT(Logger)
 
 Logger::Logger(Pool& p, const LogString& name1)
 	: m_priv(std::make_unique<LoggerPrivate>(p, name1))
+	, m_threshold(0)
 {
 }
 
@@ -480,8 +481,6 @@ void Logger::l7dlog(const LevelPtr& level1, const std::string& key,
 	l7dlog(level1, lkey, location, values);
 }
 
-
-
 void Logger::removeAllAppenders()
 {
 	m_priv->aai.removeAllAppenders();
@@ -515,11 +514,20 @@ void Logger::setHierarchy(spi::LoggerRepository* repository1)
 void Logger::setParent(LoggerPtr parentLogger)
 {
 	m_priv->parent = parentLogger;
+	updateThreshold();
 }
 
 void Logger::setLevel(const LevelPtr level1)
 {
 	m_priv->level = level1;
+	updateThreshold();
+	if (auto rep = dynamic_cast<Hierarchy*>(getHierarchy()))
+		rep->updateChildren(this);
+}
+
+void Logger::updateThreshold()
+{
+	m_threshold = getEffectiveLevel()->toInt();
 }
 
 const LogString& Logger::getName() const
