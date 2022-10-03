@@ -293,9 +293,6 @@ bool Logger::isAttached(const AppenderPtr appender) const
 
 bool Logger::isTraceEnabled() const
 {
-	if (Level::TRACE_INT < m_threshold)
-		return false;
-
 	auto rep = getHierarchy();
 
 	if (!rep || rep->isDisabled(Level::TRACE_INT))
