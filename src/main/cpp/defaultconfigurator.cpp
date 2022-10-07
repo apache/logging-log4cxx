@@ -28,6 +28,8 @@
 #include <Windows.h>
 #else
 #include <unistd.h>     /* getpid */
+#include <link.h>
+#include <dlfcn.h>
 #endif
 
 using namespace log4cxx;
